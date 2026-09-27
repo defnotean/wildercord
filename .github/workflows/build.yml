@@ -12,18 +12,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 25
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       # Assets, recipes, language and docs/RECIPES.md are generated from the code. If a change to
       # the runes wasn't followed by `python tools/generate_assets.py`, fail here and say so.
@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew build --stacktrace
 
       - name: Upload the mod jar
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wildercord
           path: build/libs/*.jar
