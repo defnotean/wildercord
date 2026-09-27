@@ -1,0 +1,32 @@
+# gradle
+.gradle/
+build/
+build-alt/
+out/
+classes/
+
+# idea / eclipse / vscode
+.idea/
+*.iml
+*.ipr
+*.iws
+*.launch
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# fabric dev runs
+run/
+
+# os / java
+*.DS_Store
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+
+# python
+__pycache__/
+*.pyc

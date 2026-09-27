@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:pointed_dripstone",
+    "minecraft:water_bucket",
+    "wildercord:mana_crystal",
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:rain"
+    }
+  }
+}

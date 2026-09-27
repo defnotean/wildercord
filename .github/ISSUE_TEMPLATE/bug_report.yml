@@ -1,0 +1,38 @@
+name: Bug report
+description: Something doesn't work the way it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: spell
+    attributes:
+      label: The spell
+      description: If it's about a spell, list its runes in order (e.g. `Bolt · Fire · Split · On Hit · Burst · Explode`) and which Cord you wore.
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Wear an Echo Cord
+        2. Thread ...
+        3. Cast at ...
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Wildercord, Minecraft, Fabric Loader and Fabric API versions.
+      placeholder: Wildercord 0.1.0-alpha, Minecraft 26.3, Loader 0.19.5, Fabric API 0.161.0+26.3
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or crash report
+      description: Paste `latest.log` or the crash report, or a link to one (mclo.gs works well).
+      render: shell

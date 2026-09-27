@@ -1,0 +1,45 @@
+package dev.wildercord;
+
+import dev.wildercord.cast.Scheduler;
+import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.cast.WildercordEntities;
+import dev.wildercord.command.WildercordCommand;
+import dev.wildercord.content.WildercordComponents;
+import dev.wildercord.content.WildercordEffects;
+import dev.wildercord.content.WildercordLoot;
+import dev.wildercord.content.WildercordItems;
+import dev.wildercord.net.WildercordNetworking;
+import dev.wildercord.player.WildercordAttachments;
+import net.fabricmc.api.ModInitializer;
+import net.minecraft.resources.Identifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/** Common entrypoint: runs on both the dedicated server and the client's integrated server. */
+public final class Wildercord implements ModInitializer {
+	public static final String MOD_ID = "wildercord";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
+	}
+
+	@Override
+	public void onInitialize() {
+		WildercordComponents.init();
+		WildercordEffects.init();
+		WildercordItems.init();
+		WildercordLoot.init();
+		WildercordEntities.init();
+		WildercordAttachments.init();
+		WildercordNetworking.init();
+		Scheduler.init();
+		dev.wildercord.cast.Spirits.init();
+		dev.wildercord.cast.Wards.init();
+		dev.wildercord.cast.HeartCircles.init();
+		dev.wildercord.cast.PassiveCaster.init();
+		SpellCaster.init();
+		WildercordCommand.init();
+		LOGGER.info("Wildercord initialized");
+	}
+}

@@ -1,0 +1,21 @@
+name: Idea or rune suggestion
+description: A new rune, mechanic, or improvement
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What should it do? For a rune, give its family (shape, effect, modifier, link), a tier, and what it does in one or two sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What spells or playstyles would it make possible that aren't possible now?
+  - type: textarea
+    id: balance
+    attributes:
+      label: Balance thoughts
+      description: Numbers, costs, or limits that would keep it fair.

@@ -1,0 +1,479 @@
+package dev.wildercord.cast;
+
+import dev.wildercord.spell.RuneColors;
+import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.SpellNumbers;
+import dev.wildercord.spell.SpellPlan;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+/** Runs a compiled spell in the world. */
+public final class CastEngine {
+	private CastEngine() {}
+
+	public static final double BEAM_RANGE = 24.0;
+	public static final double AIM_RANGE = 24.0;
+	private static final int MAX_TRIGGERS_PER_HIT = 8;
+
+	public static void cast(ServerPlayer caster, SpellPlan.Segment root) {
+		cast(caster, root, 1, dev.wildercord.player.Heart.Bonuses.NONE, false, null);
+	}
+
+	/**
+	 * @param castNumber how many times this spell has now been cast, for Combo
+	 * @param bonuses    the caster's Heart Circles and Cord enchantments
+	 * @param passive    a passive renewing itself
+	 */
+	public static void cast(ServerPlayer caster, SpellPlan.Segment root, int castNumber, dev.wildercord.player.Heart.Bonuses bonuses, boolean passive,
+			java.util.function.BooleanSupplier wanted) {
+		runSegment(new Cast(caster, castNumber, bonuses, passive, wanted), root, Cast.Trigger.self(caster));
+	}
+
+	static void runSegment(Cast cast, SpellPlan.Segment seg, Cast.Trigger at) {
+		if (seg == null || !cast.alive()) {
+			return;
+		}
+		for (SpellPlan.Group group : seg.groups) {
+			SpellPlan.Link anchored = seg.link != null && seg.link.anchor == group ? seg.link : null;
+			deliver(cast, group, at, anchored);
+		}
+		SpellPlan.Link link = seg.link;
+		if (link == null) {
+			return;
+		}
+		ServerPlayer caster = cast.caster;
+		String id = link.link.id();
+		if (id.equals(Runes.DELAY.id())) {
+			Cast child = cast.child();
+			Scheduler.later(SpellNumbers.delayTicks(link), () -> runSegment(child, link.next, Cast.Trigger.self(caster)));
+		} else if (id.equals(Runes.ON_LAND.id())) {
+			Cast child = cast.child();
+			Scheduler.onLand(caster, 200, pos -> {
+				Vfx.shockwave(child.level, pos, 2.0, Vfx.theme(""), 4);
+				Fx.sound(child.level, pos, net.minecraft.sounds.SoundEvents.MACE_SMASH_GROUND, 0.7F, 1.3F);
+				runSegment(child, link.next, new Cast.Trigger(pos, caster.getLookAngle(), caster, null, null));
+			});
+		} else if (id.equals(Runes.PULSE.id())) {
+			int interval = SpellNumbers.pulseInterval(link);
+			for (int i = 0; i < SpellNumbers.PULSES; i++) {
+				Cast child = cast.child();
+				Scheduler.later(1 + i * interval, () -> runSegment(child, link.next, Cast.Trigger.self(caster)));
+			}
+		} else if (id.equals(Runes.ON_HURT.id())) {
+			Cast child = cast.child();
+			Scheduler.onHurt(caster, 300, attacker -> {
+				Vfx.shockwave(child.level, caster.position(), 1.8, Vfx.theme(""), 3);
+				if (attacker != null && attacker.isAlive()) {
+					Vec3 dir = attacker.getBoundingBox().getCenter().subtract(caster.getEyePosition()).normalize();
+					runSegment(child, link.next, new Cast.Trigger(attacker.getBoundingBox().getCenter(), dir, attacker, null, null));
+				} else {
+					runSegment(child, link.next, new Cast.Trigger(caster.position(), caster.getLookAngle(), null, null, null));
+				}
+			});
+		} else if (id.equals(Runes.IF_SNEAKING.id())) {
+			if (caster.isShiftKeyDown()) {
+				runSegment(cast, link.next, at);
+			}
+		} else if (id.equals(Runes.IF_AIRBORNE.id())) {
+			if (!caster.onGround() && !caster.isInWater()) {
+				TechniqueVfx.airborne(cast.level, caster);
+				runSegment(cast, link.next, at);
+			}
+		} else if (id.equals(Runes.COMBO.id())) {
+			if (cast.castNumber % 3 == 0) {
+				TechniqueVfx.combo(cast.level, caster);
+				Reactions.callout(cast, "combo", 0xF0C440);
+				runSegment(cast, link.next, at);
+			}
+		} else if (id.equals(Runes.ON_LOW_HEALTH.id())) {
+			Cast child = cast.child();
+			Scheduler.onLowHealth(caster, 600, () -> {
+				Vfx.shockwave(child.level, caster.position(), 2.4, Vfx.theme("life"), 4);
+				runSegment(child, link.next, new Cast.Trigger(caster.position().add(0, 1, 0), caster.getLookAngle(), caster, null, null));
+			});
+		} else if (id.equals(Runes.ECHO.id())) {
+			if (link.echoPrefix != null) {
+				Cast child = cast.child();
+				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, Cast.Trigger.self(caster)));
+			}
+			runSegment(cast, link.next, at);
+		}
+		// On Hit and On Kill fire from onHit(), through their anchor group.
+	}
+
+	// ------------------------------------------------------------------ shapes
+
+	private static void deliver(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored) {
+		ServerPlayer caster = cast.caster;
+		String shape = g.shape.id();
+		int copies = SpellNumbers.copies(g);
+		int color = colorOf(g);
+		Vfx.Theme theme = Vfx.theme(g);
+
+		if (shape.equals(Runes.SELF.id())) {
+			Vfx.self(caster, theme);
+			onHit(cast, g, new Cast.Hit(List.of(caster), caster.position(), caster.getLookAngle(), caster.position(), null, null, true), anchored);
+		} else if (shape.equals(Runes.TRIGGER.id())) {
+			Entity entity = at.entity() != null && at.entity().isAlive() ? at.entity() : null;
+			List<Entity> entities = entity == null ? List.of() : List.of(entity);
+			onHit(cast, g, new Cast.Hit(entities, at.pos(), at.dir(), at.pos(), at.block(), at.face(), entity == caster), anchored);
+		} else if (shape.equals(Runes.TOUCH.id())) {
+			touch(cast, g, at, anchored, theme);
+		} else if (shape.equals(Runes.BOLT.id()) || shape.equals(Runes.ARC.id())) {
+			boolean arc = shape.equals(Runes.ARC.id());
+			volley(cast, g, () -> {
+				boolean fromCaster = at.fromCaster(caster);
+				Vec3 origin = fromCaster ? caster.getEyePosition().add(caster.getLookAngle().scale(0.6)) : at.pos();
+				Vec3 aim = fromCaster ? caster.getLookAngle() : at.dir();
+				for (Vec3 dir : fan(aim, copies)) {
+					RuneBolt.launch(cast, g, anchored, origin, arc ? dir.add(0, 0.28, 0).normalize() : dir, arc);
+				}
+			});
+		} else if (shape.equals(Runes.BEAM.id())) {
+			volley(cast, g, () -> {
+				boolean fromCaster = at.fromCaster(caster);
+				Vec3 origin = fromCaster ? caster.getEyePosition() : at.pos();
+				Vec3 aim = fromCaster ? caster.getLookAngle() : at.dir();
+				for (Vec3 dir : fan(aim, copies)) {
+					beam(cast, g, anchored, origin, dir, theme);
+				}
+			});
+		} else if (shape.equals(Runes.CONE.id())) {
+			Vec3 origin = at.fromCaster(caster) ? caster.getEyePosition().subtract(0, 0.2, 0) : at.pos();
+			ShapeRunners.cone(cast, g, anchored, origin, at.fromCaster(caster) ? caster.getLookAngle() : at.dir(), theme);
+		} else if (shape.equals(Runes.TRAIL.id())) {
+			ShapeRunners.trail(cast, g, anchored, theme);
+		} else if (shape.equals(Runes.WALL.id())) {
+			ShapeRunners.wall(cast, g, anchored, aimPoint(cast, at), at.fromCaster(caster) ? caster.getLookAngle() : at.dir(), theme);
+		} else if (shape.equals(Runes.ORBIT.id())) {
+			ShapeRunners.orbit(cast, g, anchored, theme);
+		} else if (shape.equals(Runes.RING.id())) {
+			ShapeRunners.ring(cast, g, anchored, at.fromCaster(caster) ? caster.position().add(0, 0.2, 0) : at.pos(), theme);
+		} else if (shape.equals(Runes.PILLAR.id())) {
+			double radius = SpellNumbers.pillarRadius(g);
+			for (Vec3 base : spread(aimPoint(cast, at), copies, radius)) {
+				ShapeRunners.pillar(cast, g, anchored, base, theme);
+			}
+		} else if (shape.equals(Runes.WAVE.id())) {
+			ShapeRunners.wave(cast, g, anchored, at.fromCaster(caster) ? caster.position() : at.pos(), at.fromCaster(caster) ? caster.getLookAngle() : at.dir(), theme);
+		} else if (shape.equals(Runes.MINE.id())) {
+			for (Vec3 point : spread(aimPoint(cast, at), copies, 2.0)) {
+				ShapeRunners.mine(cast, g, anchored, point, theme);
+			}
+		} else if (shape.equals(Runes.TOTEM.id())) {
+			ShapeRunners.totem(cast, g, anchored, aimPoint(cast, at), theme);
+		} else if (shape.equals(Runes.STAND.id())) {
+			ShapeRunners.stand(cast, g, anchored, theme);
+		} else if (shape.equals(Runes.DOMAIN.id())) {
+			ShapeRunners.domain(cast, g, anchored, at.fromCaster(caster) ? caster.position() : ground(cast.level, at.pos()), theme);
+		} else if (shape.equals(Runes.CRESCENT.id())) {
+			volley(cast, g, () -> {
+				boolean fromCaster = at.fromCaster(caster);
+				Vec3 origin = fromCaster ? caster.getEyePosition().subtract(0, 0.3, 0) : at.pos();
+				Vec3 aim = fromCaster ? caster.getLookAngle() : at.dir();
+				for (Vec3 dir : fan(aim, copies)) {
+					ShapeRunners.crescent(cast, g, anchored, origin, dir, theme);
+				}
+			});
+		} else if (shape.equals(Runes.BARRAGE.id())) {
+			ShapeRunners.barrage(cast, g, anchored, at, theme);
+		} else if (shape.equals(Runes.ORB.id())) {
+			boolean fromCaster = at.fromCaster(caster);
+			Vec3 origin = fromCaster ? caster.getEyePosition().add(caster.getLookAngle().scale(1.2)) : at.pos();
+			Vec3 aim = fromCaster ? caster.getLookAngle() : at.dir();
+			for (Vec3 dir : fan(aim, copies)) {
+				ShapeRunners.orb(cast, g, anchored, origin, dir, theme);
+			}
+		} else if (shape.equals(Runes.BLITZ.id())) {
+			ShapeRunners.blitz(cast, g, anchored, theme);
+		} else if (shape.equals(Runes.BURST.id())) {
+			double radius = SpellNumbers.burstRadius(g);
+			Vec3 base = at.fromCaster(caster) ? caster.position().add(0, 1, 0) : at.pos();
+			for (Vec3 center : spread(base, copies, radius)) {
+				Vfx.burst(cast.level, center, radius, theme);
+				onHit(cast, g, new Cast.Hit(inRadius(cast, center, radius), center, at.dir(), center, null, null, false), anchored);
+			}
+		} else if (shape.equals(Runes.ZONE.id())) {
+			double radius = SpellNumbers.zoneRadius(g);
+			int pulses = Math.max(1, SpellNumbers.zoneSeconds(g) * 20 / SpellNumbers.zoneInterval(g));
+			int interval = SpellNumbers.zoneInterval(g);
+			for (Vec3 center : spread(aimPoint(cast, at), copies, radius)) {
+				for (int i = 0; i < pulses; i++) {
+					Cast child = cast.pulse();
+					int pulse = i;
+					Scheduler.later(1 + i * interval, () -> {
+						if (!child.alive()) {
+							return;
+						}
+						Vfx.zonePulse(child.level, center, radius, theme, pulse);
+						onHit(child, g, new Cast.Hit(inRadius(child, center.add(0, 1, 0), radius), center, at.dir(), center, null, null, false), anchored);
+					});
+				}
+			}
+		} else if (shape.equals(Runes.RAIN.id())) {
+			double radius = SpellNumbers.rainRadius(g);
+			Vec3 center = aimPoint(cast, at);
+			int strikes = 5 * copies;
+			for (int i = 0; i < strikes; i++) {
+				Cast child = cast.pulse();
+				double a = cast.level.getRandom().nextDouble() * Math.PI * 2;
+				double r = Math.sqrt(cast.level.getRandom().nextDouble()) * radius;
+				Vec3 target = ground(cast.level, center.add(Math.cos(a) * r, 2, Math.sin(a) * r));
+				int delay = 1 + i * 40 / strikes;
+				Scheduler.later(delay, () -> {
+					if (child.alive()) {
+						Vfx.rainStrike(child.level, target, theme);
+					}
+				});
+				// The hit lands when the streak does.
+				Scheduler.later(delay + 6, () -> {
+					if (!child.alive()) {
+						return;
+					}
+					BlockPos below = BlockPos.containing(target.x, target.y - 0.5, target.z);
+					onHit(child, g, new Cast.Hit(inRadius(child, target.add(0, 1, 0), 1.6), target, new Vec3(0, -1, 0), target, below, net.minecraft.core.Direction.UP, false), anchored);
+				});
+			}
+		}
+	}
+
+	private static void touch(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored, Vfx.Theme theme) {
+		ServerPlayer caster = cast.caster;
+		Vec3 from = at.fromCaster(caster) ? caster.getEyePosition() : at.pos();
+		double reach = at.fromCaster(caster) ? caster.entityInteractionRange() : 3.0;
+		Vec3 to = from.add(at.dir().scale(Math.max(reach, caster.blockInteractionRange())));
+		BlockHitResult block = cast.level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, caster));
+		Vec3 entityTo = from.add(at.dir().scale(reach));
+		if (block.getType() != HitResult.Type.MISS && block.getLocation().distanceTo(from) < reach) {
+			entityTo = block.getLocation();
+		}
+		EntityHitResult entityHit = ProjectileUtil.getEntityHitResult(caster, from, entityTo,
+			new AABB(from, entityTo).inflate(1.0), e -> e != caster && e instanceof LivingEntity && e.isAlive(), reach * reach);
+		if (entityHit != null) {
+			Entity target = entityHit.getEntity();
+			Vfx.beam(cast.level, from.add(at.dir().scale(0.5)), entityHit.getLocation(), theme);
+			Vfx.impact(cast.level, entityHit.getLocation(), theme, 0.8);
+			onHit(cast, g, new Cast.Hit(List.of(target), entityHit.getLocation(), at.dir(), from, null, null, false), anchored);
+			chain(cast, g, anchored, target, theme);
+		} else if (block.getType() != HitResult.Type.MISS) {
+			Vfx.impact(cast.level, block.getLocation(), theme, 0.6);
+			onHit(cast, g, new Cast.Hit(List.of(), block.getLocation(), at.dir(), from, block.getBlockPos(), block.getDirection(), false), anchored);
+		}
+	}
+
+	private static void beam(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 from, Vec3 dir, Vfx.Theme theme) {
+		ServerPlayer caster = cast.caster;
+		Vec3 to = from.add(dir.scale(BEAM_RANGE));
+		BlockHitResult block = cast.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
+		Vec3 end = block.getType() == HitResult.Type.MISS ? to : block.getLocation();
+		List<Entity> along = new ArrayList<>();
+		for (Entity e : cast.level.getEntities(caster, new AABB(from, end).inflate(1.0), e -> e instanceof LivingEntity && e.isAlive())) {
+			if (e.getBoundingBox().inflate(0.3).clip(from, end).isPresent() || e.getBoundingBox().contains(from)) {
+				along.add(e);
+			}
+		}
+		along.sort(Comparator.comparingDouble(e -> e.distanceToSqr(from)));
+		int maxHits = 1 + SpellNumbers.pierce(g);
+		Vec3 stop = end;
+		if (along.size() > maxHits) {
+			along = new ArrayList<>(along.subList(0, maxHits));
+		}
+		if (!along.isEmpty() && along.size() == maxHits && SpellNumbers.pierce(g) == 0) {
+			stop = along.getLast().getBoundingBox().getCenter();
+		}
+		Vfx.beam(cast.level, from.add(dir.scale(0.8)), stop, theme);
+		if (!along.isEmpty()) {
+			for (Entity e : along) {
+				Vfx.impact(cast.level, e.getBoundingBox().getCenter(), theme, 0.8);
+				onHit(cast, g, new Cast.Hit(List.of(e), e.getBoundingBox().getCenter(), dir, from, null, null, false), anchored);
+			}
+			chain(cast, g, anchored, along.getFirst(), theme);
+		} else if (block.getType() != HitResult.Type.MISS) {
+			Vfx.impact(cast.level, end, theme, 0.7);
+			onHit(cast, g, new Cast.Hit(List.of(), end, dir, from, block.getBlockPos(), block.getDirection(), false), anchored);
+		}
+	}
+
+	/** Chain: from the first creature hit, jump to up to N more enemies within 6 blocks. */
+	static void chain(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Entity first, Vfx.Theme theme) {
+		int jumps = SpellNumbers.chainJumps(g);
+		Entity current = first;
+		List<Entity> visited = new ArrayList<>();
+		visited.add(first);
+		for (int i = 0; i < jumps; i++) {
+			Entity from = current;
+			Entity next = cast.level.getEntities(cast.caster, from.getBoundingBox().inflate(6.0),
+					e -> !visited.contains(e) && Targets.canHarm(cast.caster, e) && e.distanceTo(from) <= 6.0)
+				.stream().min(Comparator.comparingDouble(e -> e.distanceToSqr(from))).orElse(null);
+			if (next == null) {
+				return;
+			}
+			visited.add(next);
+			Vfx.beam(cast.level, from.getBoundingBox().getCenter(), next.getBoundingBox().getCenter(), theme);
+			Vfx.impact(cast.level, next.getBoundingBox().getCenter(), theme, 0.6);
+			onHit(cast, g, new Cast.Hit(List.of(next), next.getBoundingBox().getCenter(), next.position().subtract(from.position()).normalize(),
+				from.position(), null, null, false), anchored);
+			current = next;
+		}
+	}
+
+	// ------------------------------------------------------------------ hits and links
+
+	/** Applies a group's effects to a hit, then fires any On Hit / On Kill link watching it. */
+	public static void onHit(Cast cast, SpellPlan.Group g, Cast.Hit hit, SpellPlan.Link anchored) {
+		if (!cast.alive()) {
+			return;
+		}
+		List<Entity> entities = hit.entities();
+		int granted = cast.takeEntities(entities.size());
+		if (granted < entities.size()) {
+			entities = entities.subList(0, granted);
+			hit = new Cast.Hit(entities, hit.point(), hit.dir(), hit.origin(), hit.block(), hit.face(), hit.self());
+		}
+		List<LivingEntity> aliveBefore = new ArrayList<>();
+		for (Entity e : entities) {
+			if (e instanceof LivingEntity living && living.isAlive() && e != cast.caster) {
+				aliveBefore.add(living);
+			}
+		}
+		double groupPower = SpellNumbers.groupPower(g);
+		for (SpellPlan.EffectNode effect : stasisFirst(g.effects)) {
+			Effects.apply(cast, effect, hit, groupPower);
+			int again = SpellNumbers.lingerHits(effect);
+			for (int i = 1; i <= again; i++) {
+				Cast.Hit first = hit;
+				Cast child = cast.child();
+				Scheduler.later(20 * i, () -> {
+					if (!child.alive()) {
+						return;
+					}
+					List<Entity> still = first.entities().stream().filter(Entity::isAlive).toList();
+					Effects.apply(child, effect, new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self()), groupPower);
+				});
+			}
+		}
+		cast.siphon(aliveBefore.stream().filter(e -> Targets.canHarm(cast.caster, e) || !e.isAlive()).count());
+		if (anchored == null) {
+			return;
+		}
+		String id = anchored.link.id();
+		if (id.equals(Runes.ON_HIT.id())) {
+			if (!entities.isEmpty()) {
+				int n = 0;
+				for (Entity e : entities) {
+					if (n++ >= MAX_TRIGGERS_PER_HIT) {
+						break;
+					}
+					runSegment(cast.child(), anchored.next, new Cast.Trigger(e.getBoundingBox().getCenter(), hit.dir(), e, null, null));
+				}
+			} else if (hit.block() != null) {
+				runSegment(cast.child(), anchored.next, new Cast.Trigger(hit.point(), hit.dir(), null, hit.block(), hit.face()));
+			}
+		} else if (id.equals(Runes.ON_KILL.id())) {
+			for (LivingEntity victim : aliveBefore) {
+				if (!victim.isAlive() || victim.isDeadOrDying()) {
+					Fx.particle(cast.level, ParticleTypes.SOUL, victim.getBoundingBox().getCenter(), 10, 0.3, 0.04);
+					Fx.particle(cast.level, ParticleTypes.SCULK_SOUL, victim.getBoundingBox().getCenter(), 6, 0.3, 0.04);
+					runSegment(cast.child(), anchored.next, new Cast.Trigger(victim.getBoundingBox().getCenter(), hit.dir(), null, null, null));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Time stops before anything else lands: a group's Stasis is applied first, so every other
+	 * effect in it (Sonic Boom, Explode, a Barrage's blows) is held too, whatever order it was threaded in.
+	 */
+	private static List<SpellPlan.EffectNode> stasisFirst(List<SpellPlan.EffectNode> effects) {
+		boolean late = false;
+		for (int i = 1; i < effects.size(); i++) {
+			late |= effects.get(i).effect.is(Runes.STASIS.id());
+		}
+		if (!late) {
+			return effects;
+		}
+		List<SpellPlan.EffectNode> ordered = new ArrayList<>(effects.size());
+		effects.stream().filter(e -> e.effect.is(Runes.STASIS.id())).forEach(ordered::add);
+		effects.stream().filter(e -> !e.effect.is(Runes.STASIS.id())).forEach(ordered::add);
+		return ordered;
+	}
+
+	/** Runs {@code shot} once, or several times a quarter-second apart with Volley. */
+	static void volley(Cast cast, SpellPlan.Group g, Runnable shot) {
+		int shots = SpellNumbers.volleyShots(g);
+		shot.run();
+		for (int i = 1; i < shots; i++) {
+			Scheduler.later(i * 5, () -> {
+				if (cast.alive()) {
+					shot.run();
+				}
+			});
+		}
+	}
+
+	// ------------------------------------------------------------------ geometry
+
+	static List<Entity> inRadius(Cast cast, Vec3 center, double radius) {
+		return cast.level.getEntities((Entity) null, new AABB(center, center).inflate(radius),
+			e -> e instanceof LivingEntity && e.isAlive() && e.getBoundingBox().getCenter().distanceTo(center) <= radius + e.getBbWidth() / 2);
+	}
+
+	/** Split for bolts and beams: fan the copies out horizontally, 12 degrees apart. */
+	static List<Vec3> fan(Vec3 dir, int copies) {
+		List<Vec3> dirs = new ArrayList<>(copies);
+		for (int i = 0; i < copies; i++) {
+			double angle = Math.toRadians((i - (copies - 1) / 2.0) * 12.0);
+			dirs.add(dir.yRot((float) angle).normalize());
+		}
+		return dirs;
+	}
+
+	/** Split for areas: the first copy in the middle, the rest in a ring around it. */
+	static List<Vec3> spread(Vec3 center, int copies, double radius) {
+		List<Vec3> centers = new ArrayList<>(copies);
+		centers.add(center);
+		for (int i = 1; i < copies; i++) {
+			double a = Math.PI * 2 * i / (copies - 1);
+			centers.add(center.add(Math.cos(a) * radius * 1.4, 0, Math.sin(a) * radius * 1.4));
+		}
+		return centers;
+	}
+
+	/** Where Zone and Rain land: the block you look at (up to 24 blocks) or, after a link, the trigger. */
+	static Vec3 aimPoint(Cast cast, Cast.Trigger at) {
+		if (!at.fromCaster(cast.caster)) {
+			return ground(cast.level, at.pos());
+		}
+		ServerPlayer caster = cast.caster;
+		Vec3 from = caster.getEyePosition();
+		Vec3 to = from.add(caster.getLookAngle().scale(AIM_RANGE));
+		BlockHitResult hit = cast.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
+		return ground(cast.level, hit.getType() == HitResult.Type.MISS ? to : hit.getLocation());
+	}
+
+	/** Drops a point onto the ground below it (up to 16 blocks). */
+	static Vec3 ground(ServerLevel level, Vec3 pos) {
+		BlockHitResult hit = level.clip(new ClipContext(pos.add(0, 0.5, 0), pos.add(0, -16, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
+		return hit.getType() == HitResult.Type.MISS ? pos : hit.getLocation();
+	}
+
+	/** The group's colour: its first effect's element, or the shape colour. */
+	static int colorOf(SpellPlan.Group g) {
+		return g.effects.isEmpty() ? RuneColors.SHAPE : RuneColors.of(g.effects.getFirst().effect);
+	}
+}

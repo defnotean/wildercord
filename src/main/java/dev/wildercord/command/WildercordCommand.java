@@ -1,0 +1,131 @@
+package dev.wildercord.command;
+
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.content.CordTier;
+import dev.wildercord.player.Spellbook;
+import dev.wildercord.player.Spellbooks;
+import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.Runes;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * {@code /wildercord} test and admin tools:
+ * <ul>
+ *   <li>{@code learnall}: learn every rune</li>
+ *   <li>{@code learn <rune>}: learn one rune</li>
+ *   <li>{@code spell <1-4> <runes...>}: thread a spell, e.g. {@code spell 1 bolt fire split}</li>
+ *   <li>{@code mana}: refill mana</li>
+ *   <li>{@code reset}: forget everything</li>
+ * </ul>
+ */
+public final class WildercordCommand {
+	private WildercordCommand() {}
+
+	public static void init() {
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
+			Commands.literal("wildercord")
+				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+				.then(Commands.literal("learnall").executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					Spellbook book = Spellbooks.get(player);
+					for (RuneDef rune : Runes.all()) {
+						book = book.learn(rune.id());
+					}
+					Spellbooks.set(player, book);
+					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.learnall", Runes.all().size()), false);
+					return Runes.all().size();
+				}))
+				.then(Commands.literal("learn").then(Commands.argument("rune", StringArgumentType.word())
+					.suggests((ctx, builder) -> {
+						Runes.all().forEach(r -> builder.suggest(r.path()));
+						return builder.buildFuture();
+					})
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayerOrException();
+						Optional<RuneDef> rune = find(StringArgumentType.getString(ctx, "rune"));
+						if (rune.isEmpty()) {
+							ctx.getSource().sendFailure(Component.translatable("command.wildercord.unknown", StringArgumentType.getString(ctx, "rune")));
+							return 0;
+						}
+						Spellbooks.learn(player, rune.get().id());
+						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.learned", rune.get().name()), false);
+						return 1;
+					})))
+				.then(Commands.literal("spell").then(Commands.argument("index", IntegerArgumentType.integer(1, CordTier.MAX_SPELLS))
+					.then(Commands.argument("runes", StringArgumentType.greedyString()).executes(WildercordCommand::setSpell))))
+				.then(Commands.literal("mana").executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					Spellbooks.setMana(player, dev.wildercord.player.Mana.max(player));
+					return 1;
+				}))
+				.then(Commands.literal("circles").then(Commands.argument("count", IntegerArgumentType.integer(0, dev.wildercord.spell.Circles.MAX))
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayerOrException();
+						int count = IntegerArgumentType.getInteger(ctx, "count");
+						player.setAttached(dev.wildercord.player.WildercordAttachments.CIRCLES, count);
+						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.circles", count), false);
+						return 1;
+					})))
+				.then(Commands.literal("condense").then(Commands.argument("mana", IntegerArgumentType.integer(0))
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayerOrException();
+						int mana = IntegerArgumentType.getInteger(ctx, "mana");
+						player.setAttached(dev.wildercord.player.WildercordAttachments.CONDENSED, dev.wildercord.player.Heart.condensed(player) + mana);
+						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.condensed", mana), false);
+						return 1;
+					})))
+				.then(Commands.literal("reset").executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					Spellbooks.set(player, Spellbook.EMPTY);
+					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.reset"), false);
+					return 1;
+				}))
+		));
+	}
+
+	private static int setSpell(CommandContext<CommandSourceStack> ctx) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+		ServerPlayer player = ctx.getSource().getPlayerOrException();
+		int index = IntegerArgumentType.getInteger(ctx, "index") - 1;
+		List<String> ids = new ArrayList<>();
+		Spellbook book = Spellbooks.get(player);
+		for (String word : StringArgumentType.getString(ctx, "runes").trim().split("\\s+")) {
+			Optional<RuneDef> rune = find(word);
+			if (rune.isEmpty()) {
+				ctx.getSource().sendFailure(Component.translatable("command.wildercord.unknown", word));
+				return 0;
+			}
+			// Testing shortcut: threading a rune by command also teaches it.
+			book = book.learn(rune.get().id());
+			ids.add(rune.get().id());
+		}
+		Spellbooks.set(player, book);
+		// Clear first so the command replaces the spell under the same Cord rules as the editor.
+		SpellCaster.edit(player, index, List.of());
+		Component problem = SpellCaster.edit(player, index, ids);
+		if (problem != null) {
+			ctx.getSource().sendFailure(problem);
+		}
+		int threaded = Spellbooks.get(player).spells().get(index).size();
+		if (threaded > 0) {
+			ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.spell_set", index + 1, threaded), false);
+		}
+		return threaded;
+	}
+
+	/** Accepts {@code fire}, {@code wildercord:fire} or {@code on_hit}. */
+	private static Optional<RuneDef> find(String word) {
+		String id = word.contains(":") ? word : "wildercord:" + word;
+		return Runes.get(id);
+	}
+}

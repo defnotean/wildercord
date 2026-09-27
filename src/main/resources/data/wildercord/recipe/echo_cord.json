@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:amethyst_cord",
+    "minecraft:echo_shard",
+    "minecraft:echo_shard",
+    "minecraft:netherite_scrap"
+  ],
+  "result": {
+    "id": "wildercord:echo_cord"
+  }
+}

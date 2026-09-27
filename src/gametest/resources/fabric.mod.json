@@ -1,0 +1,15 @@
+{
+	"schemaVersion": 1,
+	"id": "wildercord-gametest",
+	"version": "1.0.0",
+	"name": "Wildercord visual tests",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-client-gametest": [
+			"dev.wildercord.gametest.WildercordScreenshots"
+		]
+	},
+	"depends": {
+		"wildercord": "*"
+	}
+}

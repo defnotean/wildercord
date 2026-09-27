@@ -1,0 +1,89 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+// `-PaltBuild` builds into build-alt/ instead of build/. The dev client loads classes straight
+// from build/, so this lets code be compiled and tested while a dev session is still running.
+if (project.hasProperty('altBuild')) {
+	layout.buildDirectory = file('build-alt')
+}
+
+version = "${project.mod_version}+mc${project.minecraft_version}"
+group = project.maven_group
+def targetJavaVersion = project.java_version.toString().toInteger()
+
+repositories {
+	// Loom adds the Minecraft/Fabric repositories automatically; Maven Central
+	// is declared here for ordinary library dependencies such as JUnit.
+	mavenCentral()
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"wildercord" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
+fabricApi {
+	// A separate test mod that drives a real client: screenshots of the HUD and Cord screen
+	// at every GUI scale (run with ./gradlew runClientGameTest).
+	configureTests {
+		createSourceSet = true
+		modId = "wildercord-gametest"
+		enableGameTests = false
+		enableClientGameTests = true
+		eula = false
+	}
+}
+
+dependencies {
+	// To change the versions see the gradle.properties file
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// JUnit 5 for the Minecraft-free spell engine (run by the `test` task).
+	testImplementation platform("org.junit:junit-bom:5.11.4")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = targetJavaVersion
+}
+
+test {
+	useJUnitPlatform()
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+	}
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.toVersion(targetJavaVersion)
+	targetCompatibility = JavaVersion.toVersion(targetJavaVersion)
+}
+
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+}

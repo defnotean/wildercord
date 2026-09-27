@@ -1,0 +1,39 @@
+{
+	"schemaVersion": 1,
+	"id": "wildercord",
+	"version": "${version}",
+	"name": "Wildercord",
+	"description": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key. 135 runes, element reactions, Heart Circles and passive spells.",
+	"authors": [
+		"defnotean"
+	],
+	"contact": {
+		"homepage": "https://github.com/defnotean/wildercord",
+		"sources": "https://github.com/defnotean/wildercord",
+		"issues": "https://github.com/defnotean/wildercord/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/wildercord/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"dev.wildercord.Wildercord"
+		],
+		"client": [
+			"dev.wildercord.client.WildercordClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": ">=0.161.0+26.3"
+	},
+	"mixins": [
+		"wildercord.mixins.json",
+		{
+			"config": "wildercord.client.mixins.json",
+			"environment": "client"
+		}
+	]
+}

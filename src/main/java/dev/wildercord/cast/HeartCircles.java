@@ -1,0 +1,263 @@
+package dev.wildercord.cast;
+
+import dev.wildercord.player.Heart;
+import dev.wildercord.player.Mana;
+import dev.wildercord.player.Spellbooks;
+import dev.wildercord.player.WildercordAttachments;
+import dev.wildercord.spell.Circles;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * Heart Circles on the server: mana spent condenses toward the next circle; once the heart is
+ * ready the player is told, and meditating (sneak and stand still) for five seconds forms it.
+ * Also the 3rd Circle's Mana Skin, boss kills for the 7th's breakthrough, and the rings
+ * themselves: they turn around the heart while you meditate and spin up whenever you cast.
+ */
+public final class HeartCircles {
+	private HeartCircles() {}
+
+	/** Ring colours from the 1st circle (deep blue) out to the 8th (white gold). */
+	private static final int[] COLORS = {0x3F6BFF, 0x5A5BFF, 0x7E52FF, 0xA64FF0, 0xD35CD0, 0xF08A8A, 0xF5C46A, 0xFFF3D0};
+
+	private static final Map<UUID, Integer> FORMING = new HashMap<>();
+	/** Who last hurt each creature with a spell, and when: a monster dying soon after counts as a spell kill. */
+	private record SpellHit(UUID caster, long time) {}
+	private static final Map<UUID, SpellHit> LAST_SPELL_HIT = new HashMap<>();
+	private static final Map<UUID, Integer> NOTIFIED = new HashMap<>();
+	private static final Map<UUID, Float> CONDENSING = new HashMap<>();
+
+	public static void init() {
+		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
+			if (entity instanceof ServerPlayer player && damage > 0 && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+				manaSkin(player, damage);
+				// Forming a circle takes unbroken concentration.
+				if (FORMING.remove(player.getUUID()) != null) {
+					player.sendOverlayMessage(Component.translatable("message.wildercord.circle_broken").withStyle(ChatFormatting.RED));
+					Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_CLUSTER_BREAK, 0.8F, 0.6F);
+				}
+			}
+		});
+		// Monsters defeated with spells: a breakthrough for the higher circles.
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			SpellHit hit = LAST_SPELL_HIT.remove(entity.getUUID());
+			if (hit == null || !(entity instanceof net.minecraft.world.entity.monster.Enemy) || entity.level().getGameTime() - hit.time() > 100
+					|| !(entity.level() instanceof ServerLevel level)) {
+				return;
+			}
+			ServerPlayer caster = level.getServer().getPlayerList().getPlayer(hit.caster());
+			if (caster != null) {
+				caster.setAttached(WildercordAttachments.SPELL_KILLS, Heart.spellKills(caster) + 1);
+			}
+		});
+		// Everyone nearby shares a boss kill: it's the 7th Circle's breakthrough.
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (!Spirits.isBoss(entity) || !(entity.level() instanceof ServerLevel level)) {
+				return;
+			}
+			for (ServerPlayer player : level.players()) {
+				if (player.distanceTo(entity) <= 96 && !Heart.bossSlain(player)) {
+					player.setAttached(WildercordAttachments.BOSS_SLAIN, true);
+					player.sendSystemMessage(Component.translatable("message.wildercord.boss_breakthrough").withStyle(ChatFormatting.GOLD));
+				}
+			}
+		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			FORMING.clear();
+			LAST_SPELL_HIT.clear();
+			NOTIFIED.clear();
+			CONDENSING.clear();
+		});
+	}
+
+	/** Remembers that a spell of {@code caster}'s hurt {@code target}, so its death can count as a spell kill. */
+	static void hurtBySpell(ServerPlayer caster, net.minecraft.world.entity.LivingEntity target) {
+		LAST_SPELL_HIT.put(target.getUUID(), new SpellHit(caster.getUUID(), target.level().getGameTime()));
+		if (LAST_SPELL_HIT.size() > 4096) {
+			long now = target.level().getGameTime();
+			LAST_SPELL_HIT.values().removeIf(h -> now - h.time() > 100);
+		}
+	}
+
+	/** Mana spent casting spells condenses toward the next circle. */
+	public static void condense(ServerPlayer player, float mana) {
+		if (mana <= 0 || player.isCreative()) {
+			return;
+		}
+		float total = CONDENSING.getOrDefault(player.getUUID(), 0.0F) + mana;
+		int whole = (int) total;
+		CONDENSING.put(player.getUUID(), total - whole);
+		if (whole > 0) {
+			player.setAttached(WildercordAttachments.CONDENSED, Heart.condensed(player) + whole);
+		}
+	}
+
+	/** Every 5 ticks: tell the player when the heart is ready, and form the circle while they meditate. */
+	public static void tick(ServerPlayer player, boolean meditating) {
+		UUID id = player.getUUID();
+		int circles = Heart.circles(player);
+		boolean ready = Heart.ready(player);
+		int next = circles + 1;
+		if (ready && NOTIFIED.getOrDefault(id, 0) != next) {
+			NOTIFIED.put(id, next);
+			player.sendSystemMessage(Component.translatable("message.wildercord.circle_ready", Circles.ordinal(next)).withColor(0xF5C46A));
+			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
+		}
+		if (meditating && circles > 0) {
+			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F);
+		}
+		if (!ready || !meditating) {
+			FORMING.remove(id);
+			return;
+		}
+		int progress = FORMING.merge(id, 5, Integer::sum);
+		forming(player, circles, progress);
+		if (progress >= Circles.FORM_TICKS) {
+			FORMING.remove(id);
+			form(player);
+		}
+	}
+
+	/** Forms the next circle: the breakthrough moment. */
+	public static void form(ServerPlayer player) {
+		int n = Math.min(Circles.MAX, Heart.circles(player) + 1);
+		player.setAttached(WildercordAttachments.CIRCLES, n);
+		Spellbooks.setMana(player, Mana.max(player));
+		ServerLevel level = player.level();
+		Vec3 heart = heartOf(player);
+		// The flash goes through Fx.send, which keeps it out of the player's own face.
+		Vfx.emit(level, net.minecraft.core.particles.ColorParticleOption.create(ParticleTypes.FLASH, 0xFF000000 | COLORS[n - 1]), heart.add(0, 0.6, 0), 1, 0.0, 0.0);
+		Vfx.radial(level, ParticleTypes.END_ROD, heart, 40, 0.35);
+		Vfx.shockwave(level, player.position(), 3.5, Vfx.theme("time"), 6);
+		for (int t = 0; t < 10; t++) {
+			int tick = t;
+			Scheduler.later(t + 1, () -> rings(player, n, tick * 0.6, 0.5F + (10 - tick) * 0.05F));
+		}
+		Fx.sound(level, heart, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.8F);
+		Fx.sound(level, heart, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.6F, 1.2F);
+		Component title = Component.translatable("title.wildercord.circle", Circles.ordinal(n)).withColor(COLORS[n - 1]);
+		Component subtitle = Component.translatable("title.wildercord.circle." + n);
+		player.connection.send(new ClientboundSetTitlesAnimationPacket(10, 50, 20));
+		player.connection.send(new ClientboundSetTitleTextPacket(title));
+		player.connection.send(new ClientboundSetSubtitleTextPacket(subtitle));
+		player.sendSystemMessage(Component.translatable("message.wildercord.circle_formed", Circles.ordinal(n), Circles.MANA_PER_CIRCLE,
+			String.format(java.util.Locale.ROOT, "%.1f", Circles.REGEN_PER_CIRCLE), Math.round(Circles.POWER_PER_CIRCLE * 100)).withColor(COLORS[n - 1]));
+		Component perk = switch (n) {
+			case 1, 5 -> Component.translatable("message.wildercord.passive_slot", dev.wildercord.spell.Passives.slots(n));
+			default -> null;
+		};
+		if (perk != null) {
+			player.sendSystemMessage(perk.copy().withColor(0xB8A8FF));
+		}
+		if (n == Circles.MANA_SKIN || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
+			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
+		}
+	}
+
+	/** Your circles turn when you cast: a quick spin, seen by everyone around. */
+	public static void onCast(ServerPlayer player) {
+		int circles = Heart.circles(player);
+		if (circles <= 0) {
+			return;
+		}
+		for (int t = 0; t < 3; t++) {
+			int tick = t;
+			Scheduler.later(1 + t * 2, () -> {
+				if (!player.isRemoved()) {
+					rings(player, circles, player.level().getGameTime() * 0.35 + tick, 0.4F);
+				}
+			});
+		}
+	}
+
+	/** 3rd Circle: Mana Skin. A fifth of the damage you take is paid from mana instead. */
+	private static void manaSkin(ServerPlayer player, float damage) {
+		if (Heart.circles(player) < Circles.MANA_SKIN || player.isCreative() || !player.isAlive() || Spellbooks.tier(player) == null) {
+			return;
+		}
+		float mana = Spellbooks.mana(player);
+		float share = (float) Math.min(damage * Circles.MANA_SKIN_SHARE, mana / Circles.MANA_SKIN_COST);
+		if (share < 0.25F) {
+			return;
+		}
+		player.heal(share);
+		Spellbooks.setMana(player, mana - share * Circles.MANA_SKIN_COST);
+		Vfx.emit(player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 6, 0.35, 0.0);
+	}
+
+	private static Vec3 heartOf(ServerPlayer player) {
+		return player.position().add(0, player.isShiftKeyDown() ? 0.95 : 1.2, 0);
+	}
+
+	/**
+	 * The rings: one per circle around the heart, each on its own tilt and turning its own way,
+	 * like a gyroscope. Inner rings are deep blue; the outer ones burn toward white gold.
+	 */
+	static void rings(ServerPlayer player, int circles, double spin, float size) {
+		ServerLevel level = player.level();
+		Vec3 heart = heartOf(player);
+		Fx.sendAll(level, new DustParticleOptions(0xFFE0A0, 0.8F), heart, 1, 0.0, 0.0);
+		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
+			double r = 0.3 + 0.09 * i;
+			double phi = spin * (1 + 0.25 * i) + i * 0.8;
+			double tilt = 0.3 + 0.14 * (i % 3);
+			// The ring's normal: straight up, tipped by `tilt` toward direction `phi`.
+			Vec3 normal = new Vec3(Math.cos(phi) * Math.sin(tilt), Math.cos(tilt), Math.sin(phi) * Math.sin(tilt)).normalize();
+			Vec3 u = normal.cross(new Vec3(0, 0, 1));
+			u = u.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : u.normalize();
+			Vec3 v = normal.cross(u).normalize();
+			int points = 12 + 3 * i;
+			double turn = spin * (i % 2 == 0 ? 1.4 : -1.4);
+			DustParticleOptions dust = new DustParticleOptions(COLORS[i], size);
+			for (int k = 0; k < points; k++) {
+				double a = turn + Math.PI * 2 * k / points;
+				Fx.sendAll(level, dust, heart.add(u.scale(Math.cos(a) * r)).add(v.scale(Math.sin(a) * r)), 1, 0.0, 0.0);
+			}
+		}
+	}
+
+	/** While a circle forms: the existing rings spin faster, mana streams in, and the new ring draws itself. */
+	private static void forming(ServerPlayer player, int circles, int progress) {
+		ServerLevel level = player.level();
+		Vec3 heart = heartOf(player);
+		double t = progress / (double) Circles.FORM_TICKS;
+		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F);
+		double r = 0.3 + 0.09 * circles;
+		int points = (int) Math.round((12 + 3 * circles) * t);
+		DustParticleOptions dust = new DustParticleOptions(COLORS[Math.min(Circles.MAX - 1, circles)], 0.55F);
+		for (int k = 0; k < points; k++) {
+			double a = Math.PI * 2 * k / (12 + 3 * circles);
+			Fx.sendAll(level, dust, heart.add(Math.cos(a) * r, 0, Math.sin(a) * r), 1, 0.0, 0.0);
+		}
+		for (int i = 0; i < 3; i++) {
+			double a = level.getRandom().nextDouble() * Math.PI * 2;
+			Vec3 from = heart.add(Math.cos(a) * 1.6, (level.getRandom().nextDouble() - 0.3) * 1.2, Math.sin(a) * 1.6);
+			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(heart, COLORS[Math.min(Circles.MAX - 1, circles)], 12),
+				from.x, from.y, from.z, 1, 0, 0, 0, 0);
+		}
+		if (progress % 20 == 0) {
+			Fx.sound(level, heart, SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 0.6F + (float) t);
+		}
+	}
+
+	public static void forget(UUID player) {
+		FORMING.remove(player);
+		CONDENSING.remove(player);
+	}
+}

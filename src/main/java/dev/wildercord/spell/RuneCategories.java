@@ -1,0 +1,67 @@
+package dev.wildercord.spell;
+
+import java.util.List;
+
+/**
+ * Sub-categories inside each family, so the Codex can be browsed by what a rune is for.
+ * Order here is the order the Cord screen shows them in.
+ */
+public final class RuneCategories {
+	private RuneCategories() {}
+
+	public static final List<String> SHAPE = List.of("personal", "direct", "projectile", "area", "lingering");
+	public static final List<String> EFFECT = List.of("damage", "control", "support", "movement", "time", "world", "summon");
+	public static final List<String> MODIFIER = List.of("power", "area", "timing", "projectile");
+	public static final List<String> LINK = List.of("timing", "trigger", "reactive", "condition");
+
+	public static List<String> of(RuneFamily family) {
+		return switch (family) {
+			case SHAPE -> SHAPE;
+			case EFFECT -> EFFECT;
+			case MODIFIER -> MODIFIER;
+			case LINK -> LINK;
+		};
+	}
+
+	/** Sort position of a category within its family (unknown categories sort last). */
+	public static int order(RuneDef rune) {
+		int index = of(rune.family()).indexOf(rune.category());
+		return index < 0 ? Integer.MAX_VALUE : index;
+	}
+
+	/** The built-in runes' categories. Add-on runes will declare their own. */
+	static String categoryFor(String path, RuneFamily family) {
+		return switch (family) {
+			case SHAPE -> switch (path) {
+				case "self", "orbit", "stand" -> "personal";
+				case "touch", "beam", "barrage", "blitz" -> "direct";
+				case "bolt", "arc", "wave", "crescent", "orb" -> "projectile";
+				case "burst", "cone", "ring", "pillar", "rain" -> "area";
+				default -> "lingering";
+			};
+			case EFFECT -> switch (path) {
+				case "push", "pull", "launch", "root", "freeze", "levitate", "gravity_well", "blind", "chill", "silence", "reveal",
+					"decree", "weigh", "shackle", "bubble" -> "control";
+				case "heal", "shield", "regrowth", "cleanse", "stoneskin", "empower", "haste", "swift", "night_eye", "feather_fall", "veil",
+					"fireward", "nourish", "tidebreath", "leap", "infinity", "reversal", "reflect", "overdrive", "foresight", "restore" -> "support";
+				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep" -> "movement";
+				case "stasis", "rewind", "accelerate", "time_skip" -> "time";
+				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart" -> "world";
+				case "summon", "shades", "thunderbird" -> "summon";
+				default -> "damage";
+			};
+			case MODIFIER -> switch (path) {
+				case "amplify", "overcharge", "frugal", "vow", "blood_price", "execute" -> "power";
+				case "widen", "focus", "split" -> "area";
+				case "extend", "linger", "rapid" -> "timing";
+				default -> "projectile";
+			};
+			case LINK -> switch (path) {
+				case "delay", "pulse", "echo" -> "timing";
+				case "on_hurt", "on_low_health" -> "reactive";
+				case "if_sneaking", "if_airborne", "combo" -> "condition";
+				default -> "trigger";
+			};
+		};
+	}
+}

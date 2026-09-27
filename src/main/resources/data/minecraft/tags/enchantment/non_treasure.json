@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "wildercord:reservoir",
+    "wildercord:wellspring",
+    "wildercord:siphon",
+    "wildercord:potency",
+    "wildercord:celerity",
+    "wildercord:thrift",
+    "wildercord:persistence"
+  ]
+}

@@ -1,0 +1,87 @@
+package dev.wildercord.spell;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static dev.wildercord.spell.Runes.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+class HeartAndPassivesTest {
+	private static List<RuneDef> runes(RuneDef... runes) {
+		return List.of(runes);
+	}
+
+	@Test
+	void twoPassiveSlotsOpenAtTheFirstAndFifthCircle() {
+		assertEquals(2, Passives.MAX);
+		assertEquals(0, Passives.slots(0));
+		assertEquals(1, Passives.slots(1));
+		assertEquals(1, Passives.slots(4));
+		assertEquals(2, Passives.slots(5));
+		assertEquals(2, Passives.slots(8));
+		assertEquals(List.of(1, 5), List.of(Passives.circleFor(0), Passives.circleFor(1)));
+	}
+
+	@Test
+	void onlySustainableRunesCanBePassives() {
+		for (RuneDef ok : runes(SELF, ORBIT, STAND, SWIFT, STONESKIN, INFINITY, REFLECT, SHOCK, DISMANTLE, AMPLIFY, FRUGAL_MOD, QUICKEN)) {
+			assertTrue(Passives.allowed(ok), ok.name());
+		}
+		for (RuneDef no : runes(BOLT, BEAM, DOMAIN, HEAL, REVERSAL, FORESIGHT, STASIS, LIGHTNING, HOLLOW, SUMMON, SHIELD, VEIL, SPLIT_MOD,
+				VOLLEY_MOD, VOW_MOD, BLOOD_PRICE_MOD, DELAY, ON_HIT, COMBO)) {
+			assertFalse(Passives.allowed(no), no.name());
+		}
+	}
+
+	@Test
+	void damageNeedsAnOrbitOrStandAndOneShapeAtMost() {
+		assertNull(Passives.problem(runes(SWIFT)));
+		assertNull(Passives.problem(runes(SELF, STONESKIN, AMPLIFY)));
+		assertNull(Passives.problem(runes(ORBIT, SHOCK)));
+		assertNull(Passives.problem(runes(STAND, DISMANTLE, FIRE)));
+		assertTrue(Passives.problem(runes(SELF, SHOCK)).contains("Orbit or a Stand"));
+		assertTrue(Passives.problem(runes(ORBIT, SWIFT, STAND)).contains("one shape"));
+		assertTrue(Passives.problem(runes(BOLT, HARM)).contains("can't be sustained"));
+	}
+
+	@Test
+	void upkeepAndRenewal() {
+		assertEquals(1.2, Passives.upkeep(10), 1e-9);
+		assertEquals(Passives.SELF_INTERVAL, Passives.interval(SpellCompiler.compile(runes(SWIFT)).root()));
+		assertEquals(160, Passives.interval(SpellCompiler.compile(runes(ORBIT, SHOCK)).root()));
+		assertEquals(160, Passives.interval(SpellCompiler.compile(runes(STAND, HARM)).root()));
+		assertEquals(320, Passives.interval(SpellCompiler.compile(runes(STAND, EXTEND, HARM)).root()));
+	}
+
+	@Test
+	void circlesNeedMoreAndMoreMana() {
+		int last = 0;
+		for (int n = 1; n <= Circles.MAX; n++) {
+			assertTrue(Circles.condenseNeeded(n) > last, "circle " + n);
+			last = Circles.condenseNeeded(n);
+		}
+		assertEquals(600, Circles.condenseNeeded(1));
+		assertEquals(80000, Circles.condenseNeeded(8));
+		assertTrue(Circles.requirements(1).isEmpty());
+		for (int n = 2; n <= Circles.MAX; n++) {
+			assertFalse(Circles.requirements(n).isEmpty(), "circle " + n + " needs a breakthrough");
+		}
+		assertTrue(Circles.requirements(7).contains(new Circles.Requirement(Circles.Need.BOSS, 1)));
+		assertTrue(Circles.requirements(8).contains(new Circles.Requirement(Circles.Need.CORD, 3)));
+		assertEquals(List.of("1st", "2nd", "3rd", "4th", "8th", "11th", "21st"),
+			List.of(Circles.ordinal(1), Circles.ordinal(2), Circles.ordinal(3), Circles.ordinal(4), Circles.ordinal(8), Circles.ordinal(11), Circles.ordinal(21)));
+	}
+
+	@Test
+	void circlesAndEnchantmentsScaleSpells() {
+		assertEquals(1.0, Circles.power(0, 0, false), 1e-9);
+		assertEquals(1.24 * 1.24, Circles.power(3, 8, false), 1e-9);
+		assertEquals(1.24 * 1.24 * 1.3, Circles.power(3, 8, true), 1e-9);
+		assertEquals(1.06, Circles.power(0, 2, true), 1e-9); // Overflow needs the 7th Circle
+		assertEquals((1 - 0.21) * 0.85, Circles.cost(3, 8), 1e-9);
+		assertEquals(0.85, Circles.cooldown(0, 5), 1e-9);
+		assertEquals(1 - 0.24, Circles.cooldown(3, 4), 1e-9);
+		assertEquals(1.4, Circles.duration(2), 1e-9);
+	}
+}

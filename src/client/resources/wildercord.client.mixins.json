@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "dev.wildercord.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"InventoryScreenMixin",
+		"CreativeModeInventoryScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

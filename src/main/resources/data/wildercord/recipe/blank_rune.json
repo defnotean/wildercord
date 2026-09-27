@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:cobblestone",
+    "L": "minecraft:lapis_lazuli"
+  },
+  "pattern": [
+    " C ",
+    "CLC",
+    " C "
+  ],
+  "result": {
+    "id": "wildercord:blank_rune",
+    "count": 4
+  }
+}

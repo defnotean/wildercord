@@ -1,0 +1,108 @@
+package dev.wildercord.spell;
+
+import java.util.List;
+
+/**
+ * Heart Circles: rings of condensed mana a caster builds around their heart, from the 1st to
+ * the 8th (the Archmage). Every point of mana spent on spells condenses toward the next circle;
+ * once enough has gathered (and, for some circles, a breakthrough has been earned), the caster
+ * meditates to form it. Each circle deepens the heart; some bring a perk.
+ *
+ * <p>Pure numbers only, so the readout, the server and the tests agree. Conditions that need
+ * the player (runes known, Cord worn, monsters and bosses slain) are checked in {@code player.Heart}.</p>
+ */
+public final class Circles {
+	private Circles() {}
+
+	public static final int MAX = 8;
+
+	/** Mana condensed (spent casting spells, in total) needed before circle {@code n} can form. Index 0 unused. */
+	private static final int[] CONDENSE = {0, 600, 2000, 5000, 10000, 18000, 30000, 50000, 80000};
+
+	/** Per circle. */
+	public static final int MANA_PER_CIRCLE = 15;
+	public static final float REGEN_PER_CIRCLE = 0.5F;
+	public static final double POWER_PER_CIRCLE = 0.03;
+
+	/** Perks. */
+	public static final int MANA_SKIN = 3;
+	public static final double MANA_SKIN_SHARE = 0.2;
+	public static final float MANA_SKIN_COST = 2.0F;
+	public static final int FLOW = 5;
+	public static final double FLOW_COOLDOWN = 0.85;
+	public static final int OVERFLOW = 7;
+	public static final double OVERFLOW_POWER = 1.3;
+	public static final int ARCHMAGE = 8;
+	public static final double ARCHMAGE_COST = 0.85;
+
+	/** Meditation ticks it takes to form a circle once the heart is ready (taking damage starts it over). */
+	public static final int FORM_TICKS = 200;
+
+	/** Kinds of breakthrough a circle can need besides condensed mana. */
+	public enum Need {
+		/** Know this many runes. */
+		RUNES,
+		/** Wear a Cord of at least this tier (1 Copper, 2 Amethyst, 3 Echo). */
+		CORD,
+		/** Have defeated this many monsters with spells. */
+		KILLS,
+		/** Have helped slay a boss: the Wither, the Warden, an Elder Guardian or the Ender Dragon. */
+		BOSS
+	}
+
+	public record Requirement(Need need, int amount) {}
+
+	/** Every circle after the 1st needs a breakthrough (or several) as well as condensed mana. */
+	public static List<Requirement> requirements(int circle) {
+		return switch (circle) {
+			case 2 -> List.of(new Requirement(Need.RUNES, 10));
+			case 3 -> List.of(new Requirement(Need.RUNES, 20), new Requirement(Need.CORD, 1));
+			case 4 -> List.of(new Requirement(Need.KILLS, 50));
+			case 5 -> List.of(new Requirement(Need.RUNES, 40), new Requirement(Need.CORD, 2));
+			case 6 -> List.of(new Requirement(Need.KILLS, 200));
+			case 7 -> List.of(new Requirement(Need.BOSS, 1), new Requirement(Need.KILLS, 350));
+			case 8 -> List.of(new Requirement(Need.RUNES, 100), new Requirement(Need.CORD, 3), new Requirement(Need.KILLS, 500));
+			default -> List.of();
+		};
+	}
+
+	public static int condenseNeeded(int circle) {
+		return circle <= 0 ? 0 : CONDENSE[Math.min(MAX, circle)];
+	}
+
+	/** "1st", "2nd", "3rd", "4th"... */
+	public static String ordinal(int n) {
+		int mod100 = n % 100;
+		String suffix = mod100 >= 11 && mod100 <= 13 ? "th" : switch (n % 10) {
+			case 1 -> "st";
+			case 2 -> "nd";
+			case 3 -> "rd";
+			default -> "th";
+		};
+		return n + suffix;
+	}
+
+	// ------------------------------------------------------------------ what circles and Cord enchantments do to spells
+
+	public static final double POTENCY_PER_LEVEL = 0.08;
+	public static final double CELERITY_PER_LEVEL = 0.08;
+	public static final double THRIFT_PER_LEVEL = 0.07;
+	public static final double PERSISTENCE_PER_LEVEL = 0.2;
+
+	public static double power(int potency, int circles, boolean overflow) {
+		double p = (1 + POTENCY_PER_LEVEL * potency) * (1 + POWER_PER_CIRCLE * Math.min(MAX, circles));
+		return overflow && circles >= OVERFLOW ? p * OVERFLOW_POWER : p;
+	}
+
+	public static double cost(int thrift, int circles) {
+		return Math.max(0.2, 1 - THRIFT_PER_LEVEL * thrift) * (circles >= ARCHMAGE ? ARCHMAGE_COST : 1.0);
+	}
+
+	public static double cooldown(int celerity, int circles) {
+		return Math.max(0.2, 1 - CELERITY_PER_LEVEL * celerity) * (circles >= FLOW ? FLOW_COOLDOWN : 1.0);
+	}
+
+	public static double duration(int persistence) {
+		return 1 + PERSISTENCE_PER_LEVEL * persistence;
+	}
+}
