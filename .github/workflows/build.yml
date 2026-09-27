@@ -1,0 +1,47 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Assets, recipes, language and docs/RECIPES.md are generated from the code. If a change to
+      # the runes wasn't followed by `python tools/generate_assets.py`, fail here and say so.
+      - name: Check generated files are up to date
+        run: |
+          pip install pillow
+          python tools/generate_assets.py
+          if ! git diff --quiet -- '*.json' docs/RECIPES.md; then
+            echo "::error::Generated files are out of date. Run 'python tools/generate_assets.py' and commit the result."
+            git --no-pager diff --stat -- '*.json' docs/RECIPES.md
+            exit 1
+          fi
+
+      - name: Build and run unit tests
+        run: ./gradlew build --stacktrace
+
+      - name: Upload the mod jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: wildercord
+          path: build/libs/*.jar
