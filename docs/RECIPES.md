@@ -256,7 +256,7 @@ Any effect of an element counts.
 | Bonespur | Earth + Blood | Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 damage each, and they bleed for 3 seconds. |
 | Monolith | Earth + Earth | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |
 | Soulbond | Life + Arcane | Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks. |
-| Second Wind | Life + Time | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. |
+| Second Wind | Life + Time | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once it has saved someone, not again on them for a minute. |
 | Transfusion | Life + Blood | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
 | Lifebloom | Life + Life | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
 | Sanguine Rite | Blood + Blood | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
