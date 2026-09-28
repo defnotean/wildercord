@@ -1,0 +1,174 @@
+package dev.wildercord.content;
+
+import dev.wildercord.cast.Cast;
+import dev.wildercord.cast.CastEngine;
+import dev.wildercord.cast.Grimoire;
+import dev.wildercord.cast.SecretSpells;
+import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.cast.Vfx;
+import dev.wildercord.player.Heart;
+import dev.wildercord.player.Spellbook;
+import dev.wildercord.player.Spellbooks;
+import dev.wildercord.spell.Feats;
+import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.Secrets;
+import dev.wildercord.spell.SpellCompiler;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+
+/**
+ * A Spell Scroll: one spell, inscribed from a Cord onto paper, that anyone can cast once, with
+ * or without a Cord and whether or not they know its runes. Inscribing takes a sheet of paper, an
+ * ink sac and twice the spell's mana. Good for trading, and for handing a friend your best spell
+ * for one fight.
+ */
+public class SpellScrollItem extends Item {
+	public SpellScrollItem(Properties properties) {
+		super(properties);
+	}
+
+	public static List<RuneDef> runesOf(ScrollSpell scroll) {
+		List<RuneDef> runes = new ArrayList<>();
+		for (String id : scroll.runes()) {
+			Runes.get(id).ifPresent(runes::add);
+		}
+		return runes;
+	}
+
+	/** Inscribes one of the player's spells onto a new scroll. */
+	public static void inscribe(ServerPlayer player, int spell) {
+		CordTier tier = Spellbooks.tier(player);
+		if (tier == null || spell < 0 || spell >= tier.spells) {
+			return;
+		}
+		Spellbook book = Spellbooks.get(player);
+		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
+		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+		if (runes.isEmpty() || compiled.isEmpty()) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.spell_empty", spell + 1).withStyle(ChatFormatting.RED));
+			return;
+		}
+		int cost = 2 * Math.max(1, compiled.manaCost());
+		boolean creative = player.isCreative();
+		if (!creative) {
+			if (!has(player, Items.PAPER) || !has(player, Items.INK_SAC) && !has(player, Items.GLOW_INK_SAC)) {
+				player.sendOverlayMessage(Component.translatable("message.wildercord.scroll_needs").withStyle(ChatFormatting.RED));
+				return;
+			}
+			float mana = Spellbooks.mana(player);
+			if (mana < cost) {
+				player.sendOverlayMessage(Component.translatable("message.wildercord.scroll_mana", (int) mana, cost).withStyle(ChatFormatting.RED));
+				return;
+			}
+			take(player, Items.PAPER);
+			if (!take(player, Items.INK_SAC)) {
+				take(player, Items.GLOW_INK_SAC);
+			}
+			Spellbooks.setMana(player, mana - cost);
+		}
+		ItemStack scroll = new ItemStack(WildercordItems.SPELL_SCROLL);
+		scroll.set(WildercordComponents.SCROLL, new ScrollSpell(runes.stream().map(RuneDef::id).toList(), SpellCaster.nameOf(book, spell, runes),
+			player.getGameProfile().name()));
+		if (!player.getInventory().add(scroll)) {
+			player.drop(scroll, false, net.minecraft.util.Prediction.SERVER_ONLY);
+		}
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.0F);
+		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.PLAYERS, 0.8F, 1.2F);
+		player.sendOverlayMessage(Component.translatable("message.wildercord.inscribed", SpellCaster.nameOf(book, spell, runes)).withColor(0xE8D8B0));
+		Grimoire.feat(player, Feats.SCROLL);
+	}
+
+	private static boolean has(Player player, Item item) {
+		return player.getInventory().hasAnyMatching(stack -> stack.is(item));
+	}
+
+	private static boolean take(Player player, Item item) {
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			ItemStack stack = player.getInventory().getItem(i);
+			if (stack.is(item)) {
+				stack.shrink(1);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		ScrollSpell scroll = stack.get(WildercordComponents.SCROLL);
+		if (scroll == null) {
+			return InteractionResult.PASS;
+		}
+		if (player instanceof ServerPlayer serverPlayer) {
+			List<RuneDef> runes = runesOf(scroll);
+			SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+			if (runes.isEmpty() || compiled.isEmpty()) {
+				return InteractionResult.FAIL;
+			}
+			Optional<Secrets.Secret> secret = Secrets.match(runes);
+			Cast cast = new Cast(serverPlayer, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), runes.size(), "", List.copyOf(runes)));
+			Vfx.castCircle(serverPlayer, secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst())), runes);
+			if (secret.isPresent()) {
+				SecretSpells.cast(cast, secret.get());
+			} else {
+				CastEngine.cast(cast, compiled.root());
+			}
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.4F);
+			stack.consume(1, player);
+			player.getCooldowns().addCooldown(stack, 20);
+		}
+		return InteractionResult.SUCCESS;
+	}
+
+	@Override
+	public Component getName(ItemStack stack) {
+		ScrollSpell scroll = stack.get(WildercordComponents.SCROLL);
+		if (scroll == null || scroll.name().isEmpty()) {
+			return super.getName(stack);
+		}
+		return Component.translatable("item.wildercord.spell_scroll.named", scroll.name()).withColor(0xE8D8B0);
+	}
+
+	@Override
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+		ScrollSpell scroll = stack.get(WildercordComponents.SCROLL);
+		if (scroll == null) {
+			builder.accept(Component.translatable("tooltip.wildercord.scroll_blank").withStyle(ChatFormatting.GRAY));
+			return;
+		}
+		List<RuneDef> runes = runesOf(scroll);
+		if (!runes.isEmpty()) {
+			for (String line : SpellCompiler.compile(runes).lines()) {
+				builder.accept(Component.literal(line).withStyle(ChatFormatting.GRAY));
+			}
+		}
+		if (!scroll.author().isEmpty()) {
+			builder.accept(Component.translatable("tooltip.wildercord.scroll_author", scroll.author()).withStyle(ChatFormatting.DARK_GRAY));
+		}
+		builder.accept(Component.translatable("tooltip.wildercord.scroll_use").withStyle(ChatFormatting.DARK_AQUA));
+	}
+
+	@Override
+	public boolean isFoil(ItemStack stack) {
+		return stack.has(WildercordComponents.SCROLL);
+	}
+}

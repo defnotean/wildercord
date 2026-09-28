@@ -1,0 +1,12 @@
+{
+  "textures": [
+    "wildercord:sigil_circle",
+    "wildercord:sigil_ring",
+    "wildercord:sigil_star",
+    "wildercord:sigil_target",
+    "wildercord:sigil_cracked",
+    "wildercord:sigil_glow",
+    "wildercord:sigil_band",
+    "wildercord:sigil_beam"
+  ]
+}

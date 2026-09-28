@@ -171,7 +171,7 @@ class SpellCompilerTest {
 
 	@Test
 	void manyHitShapesAreSofterPerHit() {
-		assertEquals(0.6, SpellNumbers.groupPower(compile(STAND, HARM).root().groups.getFirst()), 1e-9);
+		assertEquals(1.0, SpellNumbers.groupPower(compile(BOLT, HARM).root().groups.getFirst()), 1e-9);
 		assertEquals(0.35, SpellNumbers.groupPower(compile(BARRAGE, HARM).root().groups.getFirst()), 1e-9);
 		assertEquals(12, SpellNumbers.barrageBlows(compile(BARRAGE, QUICKEN, HARM).root().groups.getFirst()));
 		assertEquals(2.0, SpellNumbers.executeBonus(compile(BOLT, HARM, EXECUTE_MOD).root().groups.getFirst().effects.getFirst()), 1e-9);
@@ -192,7 +192,7 @@ class SpellCompilerTest {
 			}
 		}
 		assertEquals("time", STASIS.category());
-		assertEquals("personal", STAND.category());
+		assertEquals("personal", ORBIT.category());
 	}
 
 	@Test

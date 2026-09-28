@@ -55,15 +55,25 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **135 runes** | 23 shapes, 83 effects, 18 modifiers and 11 links across four tiers, each with a hand-drawn animated icon. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **144 runes** | 22 shapes, 93 effects, 18 modifiers and 11 links across four tiers, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle opens in front of them, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
+| **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its shape's seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
+| **Spells drawn in light** | Beams with a white-hot core fired through a magic circle, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. |
+| **Secret spells** | Ten exact rune sequences become something new (a sun that falls from the sky, a lance of ice, a black star that swallows everything). Nothing lists them: experiment, or read the riddles on Torn Pages. |
+| **The Grimoire** | Every reaction, secret, feat and riddle you discover, written into a page of the Cord screen. Each new reaction, secret and feat condenses mana toward your next Heart Circle. |
+| **Runebound and the Archive** | Some monsters carry Cords and cast real spells, telegraphed by a magic circle and a readable nameplate. Deep underground, the Archive holds Rune Seal doors, the Archivist (a three-phase boss who rewrites its Cord) and a vault of Tier IV runes. |
+| **Ley lines** | Veins of world mana, visible to Cord-wearers as rising violet motes: mana flows twice as fast on them. A Wellstone set on one becomes a well for everyone nearby. |
+| **Play together** | Paste a spell code (`wc:bolt.frost.split`) in chat and it becomes a readable spell card; inscribe spells onto scrolls anyone can cast; hit the foe another player just hit, with a different element, for **Unison**; win **domain clashes**; shoot enemy bolts out of the air. |
 | **Four Cords** | Twine → Copper → Amethyst → Echo: more sockets, more spells, higher rune tiers, more mana. |
 | **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look and sound. |
 | **Element reactions** | Shatter, Conduct, Wildfire, Implode and Collapse: the right element on the right mark sets off a bonus. |
-| **Heart Circles** | Condense mana by casting, earn breakthroughs, and meditate to form rings of mana around your heart, from the 1st Circle to the 8th (Archmage). |
-| **Passive spells** | Up to two always-on spells (a buff, or an Orbit or Stand aura) that drain mana every second instead of having a cooldown. |
+| **Heart Circles** | Condense mana by casting, earn breakthroughs (mostly feats: set off every reaction, find secret spells, defeat the Archivist), and meditate to form rings of mana around your heart, from the 1st Circle to the 8th (Archmage). In a pinch, **overcast**: crack a circle to cast beyond your mana. |
+| **Rhythm and leaning** | Cast again right as your last spell comes off cooldown and the chain builds power. The element you cast most slowly colours your magic and strengthens it. |
+| **Passive spells** | Up to two always-on spells (a buff, or an Orbit aura) that drain mana every second instead of having a cooldown. |
 | **Mana that grows** | Mana Crystals, Cord enchantments (Reservoir, Wellspring, Siphon), Clarity and Mana potions, meditation, Heart Circles. |
 | **Spell enchantments** | Potency, Celerity, Thrift and Persistence make your spells stronger, faster, cheaper and longer. |
-| **A readable Cord screen** | Type-to-search Codex, family tabs and category chips, drag and drop, and a live plain-English readout. |
+| **A readable Cord screen** | Type-to-search Codex, family tabs and category chips, drag and drop, a live plain-English readout, spell names you can change, and a spell wheel (hold `V`). |
+| **A practice dummy** | Place a Training Dummy to try spells on: every hit floats up as a number, and it shows your damage per second. |
 | **Crafting and loot** | Every Tier I-III rune is craftable (costlier by tier) and shows in the recipe book; Tier IV runes come from bosses and rare structures. |
 | **Server-authoritative** | The client only asks; the server validates every edit and cast. Friendly fire is off, and every cast has hard budgets. |
 | **Built to extend** | Runes are plain data with traits, so new runes slot into the reading rules without special cases. |
@@ -74,7 +84,7 @@ Runes come in four families. The rules are short, and the Cord screen always sho
 
 | Family | Colour | What it does | Examples |
 |---|---|---|---|
-| **Shape** | Teal | Decides *where* and *who*. Starts a group. | Self, Bolt, Beam, Burst, Zone, Orbit, Stand, Domain |
+| **Shape** | Teal | Decides *where* and *who*. Starts a group. | Self, Bolt, Beam, Burst, Zone, Orbit, Domain |
 | **Effect** | Its element | Decides *what happens* to whatever the shape hit. | Fire, Heal, Freeze, Blink, Stasis, Swap |
 | **Modifier** | Gold | Changes the closest rune on its left that it *can* change. | Amplify, Extend, Widen, Split, Homing, Rapid |
 | **Link** | Purple | Ends the segment; everything after it fires *later*. | On Hit, Delay, Echo, Pulse, On Hurt, Combo |
@@ -93,17 +103,60 @@ with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Screenshots
 
+### In the world
+
+**Reading a spell circle.** The star has a point for every rune, and each point's roundel carries
+that rune's emblem: read them around from the top. This one is Zone, Fire, Widen, Shock, Linger,
+On Hit, Burst (a fire zone that bursts when it hits); the band of script around it repeats them.
+
+<img src="docs/images/spell-circle.jpg" alt="A player holding out a charging magic circle: a frame, a band of script, a seven-pointed star with a coloured roundel on each point, and a seal in the middle" width="760">
+
+| A Domain: the spell's circle as its floor | Beam |
+|---|---|
+| <img src="docs/images/domain.jpg" alt="A Domain seen from the side: the spell's magic circle spread across the ground under a dome of light, light pouring down from its crown" width="420"> | <img src="docs/images/beam.jpg" alt="A beam with a hot core fired through a small magic circle into a line of husks, rings of light along it" width="420"> |
+| Crescent | Burst |
+| <img src="docs/images/crescent.jpg" alt="Blades of fiery light sweeping forward into a group of husks" width="420"> | <img src="docs/images/burst.jpg" alt="A shell of light, crossed rings racing out over a shockwave on the ground" width="420"> |
+| Pillar | Rain |
+| <img src="docs/images/pillar.jpg" alt="A column of light erupting from a magic circle on the ground beneath a husk" width="420"> | <img src="docs/images/rain.jpg" alt="A magic circle open in the sky above a target circle, a streak of light falling from it" width="420"> |
+| Charging a spell | A Runebound telegraphs its cast |
+| <img src="docs/images/charge.jpg" alt="A player with raised hands charging a spell, its magic circle open in front of them" width="420"> | <img src="docs/images/runebound.jpg" alt="An Adept pillager holding out a small magic circle, its spell and runes on its nameplate" width="420"> |
+| **Glacial Lance**, a secret spell | **Tectonic Rise**, a secret spell |
+| <img src="docs/images/glacial-lance.jpg" alt="A lance of ice pierces a line of husks and closes each one in a block of ice" width="420"> | <img src="docs/images/tectonic-rise.jpg" alt="A line of stone spires bursts out of the ground toward a group of husks" width="420"> |
+| A domain clash | The Training Dummy |
+| <img src="docs/images/domain-clash.jpg" alt="Two domains meet: facing magic circles where the player's domain presses against a witch's" width="420"> | <img src="docs/images/training-dummy.jpg" alt="Arcane bolts striking a training dummy, a damage number rising over its DPS readout" width="420"> |
+| The mouth of an Archive | The Archivist, mid-cast |
+| <img src="docs/images/archive.jpg" alt="Broken deepslate pillars crowned with amethyst around a stairway leading underground" width="420"> | <img src="docs/images/archivist.jpg" alt="The Archivist in its domed arena holding out its spell's circle, the boss bar naming the spell it is casting" width="420"> |
+| A Wellstone on a ley line | The spell wheel |
+| <img src="docs/images/wellstone.jpg" alt="A Wellstone block with a slow magic circle around it and ley motes drifting along the line" width="420"> | <img src="docs/images/spell-wheel.png" alt="The radial spell wheel: four spells around a centre showing cost and cooldown" width="420"> |
+
+**The Grimoire:** your innate rune and leaning, and every reaction, secret spell and feat
+you've found, with the riddles you've read.
+
+<img src="docs/images/grimoire.png" alt="The Grimoire page of the Cord screen beside discovery toasts" width="760">
+
+### Screens
+
 | The Codex, searched | The HUD |
 |---|---|
 | <img src="docs/images/search.png" alt="Searching the Codex for fire" width="420"> | <img src="docs/images/hud.png" alt="The spell HUD beside the hotbar" width="420"> |
 
-| A Stand, striking | Passive spells |
-|---|---|
-| <img src="docs/images/stand.png" alt="A crimson guardian spirit striking beside the player" width="420"> | <img src="docs/images/passives.png" alt="The Passives page of the Cord screen, with upkeep and on/off switches" width="420"> |
+**Passive spells:** up to two always-on spells, each with an on/off switch and its upkeep.
+
+<img src="docs/images/passives.png" alt="The Passives page of the Cord screen, with upkeep and on/off switches" width="760">
 
 **Heart Circles:** hover the heart for your circles, perks and what the next one needs.
 
 <img src="docs/images/heart.png" alt="The heart tooltip at the 8th Circle, listing every perk" width="760">
+
+<details>
+<summary><b>Every rune's emblem and ring pattern</b></summary>
+
+Learn these and you can read any spell being cast. Each rune's emblem (on its roundel, in the band
+of script and as a seal) and ring pattern, generated by `tools/circle_art.py`.
+
+<img src="docs/images/rune-rings.png" alt="All 144 runes' emblems and ring patterns, each drawn as a ring with its emblem, labelled with the rune's name" width="900">
+
+</details>
 
 <details>
 <summary><b>Every rune icon</b></summary>
@@ -130,14 +183,19 @@ learn it.
 
 | Key | Action |
 |---|---|
-| `R` | Cast the selected spell |
-| `V` | Select the next spell |
+| `R` | Cast the selected spell. **Hold** to charge it, then let go |
+| `V` | Select the next spell. **Hold** for the spell wheel: point and let go, or let go first and it stays open (click a spell, press its number, or Esc) |
 | `K` | Open the Cord screen |
 | *(unbound)* | "Cast spell 1-4": bind these to cast a spell directly |
 | Sneak + stand still | Meditate: double mana regeneration, and form a Heart Circle when ready |
 
 In the Cord screen: click or drag runes from the Codex onto a spell, drag runes to reorder them,
-click a threaded rune to remove it, **just type to search** (Ctrl+F also works, Esc clears).
+click a threaded rune to remove it, **just type to search** (Ctrl+F also works, Esc clears). The
+small buttons over the readout rename the spell, copy or paste its spell code, and inscribe it
+onto a scroll. The **Grimoire** tab lists everything you've discovered.
+
+Out of mana? Cast the same spell again within two seconds to **overcast**: your outermost Heart
+Circle cracks for three minutes to pay for it.
 
 Commands (operators, permission level 2):
 
@@ -149,6 +207,9 @@ Commands (operators, permission level 2):
 | `/wildercord mana` | Refill your mana |
 | `/wildercord circles <0-8>` | Set your Heart Circles |
 | `/wildercord condense <mana>` | Add condensed mana toward the next circle |
+| `/wildercord innate <rune>` | Choose your innate rune |
+| `/wildercord runebound` | Bind the nearest monster to a Cord |
+| `/place structure wildercord:archive` | Build an Archive where you stand (vanilla command) |
 | `/wildercord reset` | Forget every rune and spell |
 
 ## Building from source
@@ -183,30 +244,45 @@ src/
 ├── main/java/dev/wildercord/
 │   ├── spell/      The spell engine: pure Java, no Minecraft imports.
 │   │                 Runes (the roster), RuneDef, Trait, RuneCategories, SpellCompiler,
-│   │                 SpellPlan, SpellNumbers, Passives, Circles
+│   │                 SpellPlan, SpellNumbers, Passives, Circles, Secrets, Feats, Leaning,
+│   │                 SpellNames, SpellCodes, SpellSigil
 │   ├── cast/       Running spells in the world: SpellCaster (the gate), CastEngine, Cast,
-│   │                 ShapeRunners, Effects, Techniques, Wards, Reactions, Scheduler, Spirits,
-│   │                 RuneBolt, HeartCircles, PassiveCaster, Vfx, TechniqueVfx, Fx
+│   │                 Casters, Targets, ShapeRunners, Effects, Techniques, Wards, Reactions,
+│   │                 Scheduler, Spirits, RuneBolt, HeartCircles, PassiveCaster, Charging,
+│   │                 Rhythm, Overcast, Unison, DomainClash, SecretSpells, Innates, Grimoire,
+│   │                 Runebound, Archivist, RuneSeals, LeyWalker, TrainingDummy, SpellChat,
+│   │                 Vfx, TechniqueVfx, Sigils, BlockFx, Fx
 │   ├── player/     Per-player state: Spellbook, Mana, Heart, WildercordAttachments
-│   ├── content/    Items, Cord tiers, data components, potions, loot
+│   ├── content/    Items, blocks (Wellstone, Rune Seal, Archive Lectern), Cord tiers, data
+│   │                 components, the sigil and rune ring particles, potions, loot
+│   ├── world/      The Archive structure, and ley lines (pure maths shared by both sides)
 │   ├── menu/       The Cord slot
-│   ├── mixin/      Cord slot in the inventory menu, creative sync, lightning rods
-│   ├── net/        Client-to-server packets (cast, select, edit, passives)
+│   ├── mixin/      Cord slot in the inventory menu, creative sync, lightning rods,
+│   │                 Phantom's afterimage
+│   ├── net/        Packets: cast, charge, select, edit, rename, passives, scrolls; and the
+│   │                 two notices the server sends (discoveries, the ley seed)
 │   └── command/    /wildercord
 ├── client/java/dev/wildercord/client/
-│                   CordScreen, SpellHud, key bindings, inventory screen mixins
+│                   CordScreen (with the Grimoire page), SpellHud, SpellWheelScreen,
+│                   GrimoireToast, key bindings, inventory screen mixins;
+│                   fx/ (magic circles, charging, aim preview, ley motes) and
+│                   render/ (the Archivist and the Training Dummy)
 ├── main/resources/ Generated assets and data (textures, models, lang, recipes, ...)
-├── test/           JUnit tests for the spell engine
-└── gametest/       Client game tests: mechanics checks and screenshots
+├── test/           JUnit tests for the spell engine (and ley lines)
+└── gametest/       Client game tests: mechanics checks, screenshots and the feature tour
 tools/
 ├── generate_assets.py   Reads Runes.java and writes every asset and data file
 ├── item_art.py          Hand-tuned pixel art for runes, cords and badges
-└── gui_art.py           GUI and HUD sprites
+├── gui_art.py           GUI and HUD sprites
+├── sigil_art.py         Magic circles, and the wheel, beat ring and toast sprites
+├── circle_art.py        Every rune's own ring pattern and emblem for magic circles
+└── world_art.py         Scroll, page, dummy, Wellstone, seals, lectern and entity skins
 docs/
 ├── DESIGN.md            The full design: every rune, number and rule
 ├── ARCHITECTURE.md      How the code fits together, for developers
 ├── ADDING_RUNES.md      Step by step: adding a shape, effect, modifier or link
-└── RECIPES.md           Every recipe and drop (generated)
+├── RECIPES.md           Every recipe and drop (generated)
+└── images/              The screenshots in this README
 ```
 
 ## How it works (the short version)
@@ -231,7 +307,8 @@ docs/
   touches Minecraft, the readout the player sees and the spell the server runs can never disagree,
   and it's all unit-tested.
 - **`cast/` runs a plan in the world.** A `Cast` carries hard budgets (64 creatures, 32 blocks,
-  8 link depth) shared by everything it chains into, so no spell can run away.
+  8 link depth) shared by everything it chains into, so no spell can run away. Its caster can be
+  any living thing, so Runebound monsters and the Archivist cast through the same engine.
 - **Player state lives in Fabric data attachments**: saved, synced to the owner, and kept
   through death where it should be.
 
@@ -248,13 +325,18 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
 ## Testing
 
 - **Unit tests** (`./gradlew test`): the compiler's reading rules, costs, cooldowns, Blood Price,
-  Vow, passive rules, Heart Circle and enchantment maths.
+  Vow, passive rules, Heart Circle and enchantment maths; spell names and codes, secret spells,
+  leaning, innate runes, ley lines and the breakthrough table.
 - **Client game tests** (`./gradlew runClientGameTest`): starts a real client and world, then
   - screenshots the HUD and Cord screen at every GUI scale and three window sizes,
   - casts every newer rune at test mobs (any exception fails the run),
   - checks mechanics for real: Stasis holds Sonic Boom, Primer, Meteor and more until time moves
     again; Reflect, Foresight, Reversal, Blood Price and Combo work; passives drain mana; forming a
-    Heart Circle raises max mana; the Cord screen turns on text input for its search box.
+    Heart Circle raises max mana; the Cord screen turns on text input for its search box;
+  - tours the world features on a cleared stage (charging, the wheel, every secret spell,
+    Runebound, the dummy, a domain clash, overcasting, a ley line, and a placed Archive with its
+    Archivist), asserting what it can and screenshotting the rest. Set `WILDERCORD_TOUR_ONLY=1` to
+    run just the tour; the images in [Screenshots](#screenshots) come from it.
 
 Screenshots land in `build/run/clientGameTest/screenshots/`. CI runs the build and unit tests on
 every push.
@@ -263,7 +345,6 @@ every push.
 
 - **Fusion Altar:** upgrade three of a rune into a stronger one, combine two effects into a new
   one, and tie a finished spell into a single Knot rune you can share (see DESIGN.md).
-- A hold-to-choose spell wheel.
 - An add-on API so other mods can register runes, categories and reactions.
 - Config for server owners (budgets, PvP scaling, loot chances).
 

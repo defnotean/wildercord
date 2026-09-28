@@ -1457,17 +1457,6 @@ GLYPHS: dict[str, str] = {
     """,
     # ================================================================ batch 4
     # ---------------------------------------------------------------- shapes
-    "stand": """
-        ..#####..
-        .#+####-.
-        .#kkkkk#.
-        .#k*k*k#.
-        ..#kkk#..
-        ##+---+##
-        #+-----+#
-        .-#---#-.
-        ..-.-.-..
-    """,
     "domain": """
         ...###...
         .#+---##.
@@ -1888,6 +1877,122 @@ GLYPHS: dict[str, str] = {
         ...#.#.
         .#.#.#.
         .#.#.#.
+    """,
+    # ---------------------------------------------------------------- innate runes
+    # two drops joined by a pale looping thread
+    "blood_thread": """
+        ...**....
+        ..*..*...
+        ..*.**...
+        .#.*..*..
+        .#.....#.
+        #+#....#.
+        #*#...#+#
+        .#....#*#
+        .......#.
+    """,
+    # a small flame over a row of five embers, dimming as they wait to catch
+    "kindling": """
+        ...+.....
+        ...#+....
+        ..##+#...
+        .#+#*#+..
+        .##***#..
+        ..#*+*#..
+        .........
+        +.+.#.#.-
+    """,
+    "twin_star": """
+        ....+..+.
+        ....#.+*+
+        ...#+#.+.
+        ..#+*+#..
+        +#+***+#+
+        ..#+*+#..
+        ...#+#...
+        ....#....
+        ....+....
+    """,
+    # an hourglass inside a looping arrow
+    "borrowed_time": """
+        ..----+..
+        .-....++.
+        -.#####+.
+        -..#+#...
+        -...*....
+        -..#-#...
+        -.#-*-#.-
+        .-#####-.
+        ..-----..
+    """,
+    # a wing drawn in gusting streaks
+    "gale_mantle": """
+        ......##.
+        ....##+.#
+        ..##+..##
+        .#+..###.
+        #+.##..#.
+        #.#..##..
+        .#.##....
+        ..#......
+    """,
+    # a raised stone fist
+    "stoneform": """
+        .##.##.#.
+        #++#++#+#
+        #++#++#+#
+        #--#--#-#
+        #++++##+#
+        .#---#-#.
+        ..#++-#..
+        ..#++-#..
+        ..#+--#..
+    """,
+    # a diamond mirror with a frost crack
+    "mirrorfrost": """
+        ....#....
+        ...#*#...
+        ..#+*+#..
+        .#++o+-#.
+        #+++-o--#
+        .#+o---#.
+        ..#o--#..
+        ...#-#...
+        ....#....
+    """,
+    "fortune": """
+        .##...##.
+        #++#.#++#
+        #+*#.#*+#
+        .###.###.
+        ....*....
+        .###.###.
+        #++#-#++#
+        #+##-##+#
+        .##.#.##.
+    """,
+    # a ghost with its afterimage trailing behind
+    "phantom": """
+        ..---###.
+        .---#+++#
+        .---#k+k#
+        .---#+++#
+        .---#+++#
+        .---#+++#
+        .---#+++#
+        .---#+#+#
+        .-.-#.#..
+    """,
+    # a red heart split by the storm's bolt (r/R/p, whatever the stone)
+    "stormheart": """
+        .rr...*r.
+        rppr.**Rr
+        rpRR**RRr
+        rRR****Rr
+        .rRR**Rr.
+        ..r**Rr..
+        ..*rRr...
+        ....r....
     """,
 }
 
@@ -2448,7 +2553,7 @@ blind effect void 1|chill effect frost 1|silence effect arcane 2|fireward effect
 tidebreath effect frost 1|leap effect wind 1|grapple effect void 2|harvest effect life 1|icepath effect frost 1
 collect effect void 1|excavate effect earth 2|focus modifier - 2|overcharge modifier - 3|rapid modifier - 2
 if_sneaking link - 2|on_low_health link - 3
-stand shape - 3|domain shape - 4|crescent shape - 2|barrage shape - 2|orb shape - 3
+domain shape - 4|crescent shape - 2|barrage shape - 2|orb shape - 3
 blitz shape - 2|cleave effect blood 3|dismantle effect blood 2|blackspark effect void 3
 aftershock effect earth 2|resonance effect arcane 3|ripple effect storm 2|primer effect fire 3
 blackflame effect void 3|hollow effect void 4|repel effect wind 2|decree effect arcane 2

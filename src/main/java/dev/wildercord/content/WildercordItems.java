@@ -25,6 +25,9 @@ public final class WildercordItems {
 	public static final CordItem COPPER_CORD = cord(CordTier.COPPER, Rarity.COMMON);
 	public static final CordItem AMETHYST_CORD = cord(CordTier.AMETHYST, Rarity.UNCOMMON);
 	public static final CordItem ECHO_CORD = cord(CordTier.ECHO, Rarity.RARE);
+	public static final Item SPELL_SCROLL = register("spell_scroll", SpellScrollItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+	public static final Item TORN_PAGE = register("torn_page", TornPageItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+	public static final Item TRAINING_DUMMY = register("training_dummy", TrainingDummyItem::new, new Item.Properties().stacksTo(16));
 
 	public static final CreativeModeTab TAB = Registry.register(
 		BuiltInRegistries.CREATIVE_MODE_TAB,
@@ -39,6 +42,11 @@ public final class WildercordItems {
 				output.accept(ECHO_CORD);
 				output.accept(BLANK_RUNE);
 				output.accept(MANA_CRYSTAL);
+				output.accept(TORN_PAGE);
+				output.accept(TRAINING_DUMMY);
+				output.accept(WildercordBlocks.WELLSTONE);
+				output.accept(WildercordBlocks.RUNE_SEAL);
+				output.accept(WildercordBlocks.ARCHIVE_LECTERN);
 				for (var potion : java.util.List.of(WildercordEffects.CLARITY_POTION, WildercordEffects.LONG_CLARITY_POTION, WildercordEffects.STRONG_CLARITY_POTION,
 						WildercordEffects.MANA_POTION, WildercordEffects.STRONG_MANA_POTION)) {
 					output.accept(net.minecraft.world.item.alchemy.PotionContents.createItemStack(net.minecraft.world.item.Items.POTION, potion));

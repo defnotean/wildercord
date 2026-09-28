@@ -21,5 +21,12 @@ public final class WildercordComponents {
 		DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
 	);
 
+	/** The spell inscribed on a Spell Scroll. */
+	public static final DataComponentType<ScrollSpell> SCROLL = Registry.register(
+		BuiltInRegistries.DATA_COMPONENT_TYPE,
+		Wildercord.id("scroll"),
+		DataComponentType.<ScrollSpell>builder().persistent(ScrollSpell.CODEC).networkSynchronized(ScrollSpell.STREAM_CODEC).build()
+	);
+
 	public static void init() {}
 }

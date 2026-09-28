@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "wildercord:block/rune_seal_blood_lit"
+  }
+}

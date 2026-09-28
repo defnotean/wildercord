@@ -11,7 +11,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 import java.util.List;
 
-/** Client-to-server requests. The server validates every one of them. */
+/** Requests from the client (the server validates every one of them), and a few notices back. */
 public final class WildercordNetworking {
 	private WildercordNetworking() {}
 
@@ -75,6 +75,69 @@ public final class WildercordNetworking {
 		}
 	}
 
+	/** Start (true) or release (false) charging a spell: its index, or -1 for the selected one. */
+	public record ChargeSpell(int spell, boolean start) implements CustomPacketPayload {
+		public static final Type<ChargeSpell> TYPE = new Type<>(Wildercord.id("charge_spell"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, ChargeSpell> CODEC =
+			StreamCodec.composite(ByteBufCodecs.VAR_INT, ChargeSpell::spell, ByteBufCodecs.BOOL, ChargeSpell::start, ChargeSpell::new).cast();
+
+		@Override
+		public Type<ChargeSpell> type() {
+			return TYPE;
+		}
+	}
+
+	/** Give a spell a custom name ("" goes back to the automatic one). */
+	public record RenameSpell(int spell, String name) implements CustomPacketPayload {
+		public static final Type<RenameSpell> TYPE = new Type<>(Wildercord.id("rename_spell"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, RenameSpell> CODEC =
+			StreamCodec.composite(ByteBufCodecs.VAR_INT, RenameSpell::spell, ByteBufCodecs.stringUtf8(64), RenameSpell::name, RenameSpell::new).cast();
+
+		@Override
+		public Type<RenameSpell> type() {
+			return TYPE;
+		}
+	}
+
+	/** Inscribe a spell onto a scroll (costs paper, ink and mana). */
+	public record InscribeScroll(int spell) implements CustomPacketPayload {
+		public static final Type<InscribeScroll> TYPE = new Type<>(Wildercord.id("inscribe_scroll"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, InscribeScroll> CODEC =
+			StreamCodec.composite(ByteBufCodecs.VAR_INT, InscribeScroll::spell, InscribeScroll::new).cast();
+
+		@Override
+		public Type<InscribeScroll> type() {
+			return TYPE;
+		}
+	}
+
+	/** Server to client: a new Grimoire entry (the client shows a toast). */
+	public record Discovery(String key) implements CustomPacketPayload {
+		public static final Type<Discovery> TYPE = new Type<>(Wildercord.id("discovery"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, Discovery> CODEC =
+			StreamCodec.composite(ByteBufCodecs.stringUtf8(128), Discovery::key, Discovery::new).cast();
+
+		@Override
+		public Type<Discovery> type() {
+			return TYPE;
+		}
+	}
+
+	/**
+	 * Server to client: the seed ley lines are drawn from. It's derived from the world seed by a
+	 * one-way hash, so the world seed itself never leaves the server.
+	 */
+	public record LeySeed(long seed) implements CustomPacketPayload {
+		public static final Type<LeySeed> TYPE = new Type<>(Wildercord.id("ley_seed"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, LeySeed> CODEC =
+			StreamCodec.composite(ByteBufCodecs.VAR_LONG, LeySeed::seed, LeySeed::new).cast();
+
+		@Override
+		public Type<LeySeed> type() {
+			return TYPE;
+		}
+	}
+
 	public static void init() {
 		PayloadTypeRegistry.serverboundPlay().register(EditPassive.TYPE, EditPassive.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TogglePassive.TYPE, TogglePassive.CODEC);
@@ -90,6 +153,14 @@ public final class WildercordNetworking {
 		PayloadTypeRegistry.serverboundPlay().register(EditSpell.TYPE, EditSpell.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(CastSpell.TYPE, (payload, context) -> SpellCaster.cast(context.player(), payload.spell()));
 		ServerPlayNetworking.registerGlobalReceiver(SelectSpell.TYPE, (payload, context) -> SpellCaster.select(context.player(), payload.spell()));
+		PayloadTypeRegistry.serverboundPlay().register(ChargeSpell.TYPE, ChargeSpell.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(RenameSpell.TYPE, RenameSpell.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(InscribeScroll.TYPE, InscribeScroll.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(Discovery.TYPE, Discovery.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(LeySeed.TYPE, LeySeed.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(ChargeSpell.TYPE, (payload, context) -> dev.wildercord.cast.Charging.request(context.player(), payload.spell(), payload.start()));
+		ServerPlayNetworking.registerGlobalReceiver(RenameSpell.TYPE, (payload, context) -> SpellCaster.rename(context.player(), payload.spell(), payload.name()));
+		ServerPlayNetworking.registerGlobalReceiver(InscribeScroll.TYPE, (payload, context) -> dev.wildercord.content.SpellScrollItem.inscribe(context.player(), payload.spell()));
 		ServerPlayNetworking.registerGlobalReceiver(EditSpell.TYPE, (payload, context) -> {
 			net.minecraft.network.chat.Component problem = SpellCaster.edit(context.player(), payload.spell(), payload.runes());
 			if (problem != null) {

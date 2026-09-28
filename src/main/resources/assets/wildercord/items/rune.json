@@ -124,13 +124,6 @@
         }
       },
       {
-        "when": "wildercord:stand",
-        "model": {
-          "type": "minecraft:model",
-          "model": "wildercord:item/rune/stand"
-        }
-      },
-      {
         "when": "wildercord:domain",
         "model": {
           "type": "minecraft:model",
@@ -744,6 +737,76 @@
         "model": {
           "type": "minecraft:model",
           "model": "wildercord:item/rune/thunderbird"
+        }
+      },
+      {
+        "when": "wildercord:blood_thread",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/blood_thread"
+        }
+      },
+      {
+        "when": "wildercord:kindling",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/kindling"
+        }
+      },
+      {
+        "when": "wildercord:twin_star",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/twin_star"
+        }
+      },
+      {
+        "when": "wildercord:borrowed_time",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/borrowed_time"
+        }
+      },
+      {
+        "when": "wildercord:gale_mantle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gale_mantle"
+        }
+      },
+      {
+        "when": "wildercord:stoneform",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stoneform"
+        }
+      },
+      {
+        "when": "wildercord:mirrorfrost",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/mirrorfrost"
+        }
+      },
+      {
+        "when": "wildercord:fortune",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fortune"
+        }
+      },
+      {
+        "when": "wildercord:phantom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/phantom"
+        }
+      },
+      {
+        "when": "wildercord:stormheart",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stormheart"
         }
       },
       {

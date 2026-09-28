@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "A": "minecraft:amethyst_block",
+    "M": "wildercord:mana_crystal",
+    "D": "minecraft:polished_deepslate",
+    "T": "minecraft:deepslate_tiles"
+  },
+  "pattern": [
+    "DAD",
+    "AMA",
+    "TTT"
+  ],
+  "result": {
+    "id": "wildercord:wellstone"
+  }
+}

@@ -105,7 +105,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Trail | Shape | 2x Glowstone Dust |
 | Wave | Shape | 2x Kelp |
 
-## Tier III (39 runes, + a Mana Crystal and a Diamond)
+## Tier III (38 runes, + a Mana Crystal and a Diamond)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -144,7 +144,6 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Orb | Shape | Slime Block |
 | Orbit | Shape | Ender Eye |
 | Rain | Shape | Pointed Dripstone, Water Bucket |
-| Stand | Shape | Armor Stand, Soul Lantern |
 | Totem | Shape | Emerald Block |
 | Wall | Shape | 2x Obsidian |
 | Zone | Shape | Redstone Block |
@@ -153,17 +152,34 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 
 | Rune | Family | Found |
 |---|---|---|
-| Dragon Breath | Effect | the Ender Dragon |
-| Hollow | Effect | the Wither (50%) |
-| Infinity | Effect | Ominous vaults, the Ender Dragon |
-| Reversal | Effect | Ominous vaults |
-| Rewind | Effect | End cities |
-| Sonic Boom | Effect | the Warden |
-| Starfall | Effect | the Elder Guardian |
-| Stasis | Effect | End cities, the Elder Guardian (25%) |
-| Summon | Effect | Evokers (15%) |
-| Wither | Effect | the Wither |
-| Domain | Shape | Ancient cities, the Warden (35%) |
+| Dragon Breath | Effect | the Ender Dragon, Archive vaults, the Archivist |
+| Hollow | Effect | the Wither (50%), Archive vaults, the Archivist |
+| Infinity | Effect | Ominous vaults, the Ender Dragon, Archive vaults, the Archivist |
+| Reversal | Effect | Ominous vaults, Archive vaults, the Archivist |
+| Rewind | Effect | End cities, Archive vaults, the Archivist |
+| Sonic Boom | Effect | the Warden, Archive vaults, the Archivist |
+| Starfall | Effect | the Elder Guardian, Archive vaults, the Archivist |
+| Stasis | Effect | End cities, the Elder Guardian (25%), Archive vaults, the Archivist |
+| Summon | Effect | Evokers (15%), Archive vaults, the Archivist |
+| Wither | Effect | the Wither, Archive vaults, the Archivist |
+| Domain | Shape | Ancient cities, the Warden (35%), Archive vaults, the Archivist |
+
+## Innate runes (10, never crafted or found)
+
+One wakes in each caster's heart at the 1st Circle, chosen at random, and grows with every circle.
+
+| Rune | Element | Does |
+|---|---|---|
+| Blood Thread | Blood | Threads everything hit together for 8 seconds: half of any damage one of them takes is dealt to the rest. |
+| Borrowed Time | Time | Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay something. |
+| Fortune | Life | For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple. |
+| Gale Mantle | Wind | For 12 seconds, jump again in midair to dash forward (up to 3 dashes). |
+| Kindling | Fire | 3 fire damage and a stack of Kindling. The fifth stack ignites: 10 damage in a 3-block burst. |
+| Mirrorfrost | Frost | Casts back the last spell that hit you in the past 30 seconds, as your own. |
+| Phantom | Void | Leaves an afterimage of you that every monster within 16 blocks turns on for 4 seconds, then it bursts for 8 damage. |
+| Stoneform | Earth | For 8 seconds: no knockback, 20% less damage, and every hit you take sends out an aftershock. |
+| Stormheart | Storm | For 10 seconds, whatever hits you is struck by lightning (at most once a second). |
+| Twin Star | Arcane | Your next spell within 6 seconds is cast twice. |
 
 Chests favour low tiers: next to each other in a pool, Tier I runes are 8x as likely as Tier IV,
 Tier II 5x and Tier III 2x.

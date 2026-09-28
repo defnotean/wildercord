@@ -43,7 +43,7 @@ public final class Wards {
 
 	private static final class Stasis {
 		final LivingEntity target;
-		final ServerPlayer caster;
+		final LivingEntity caster;
 		final Vec3 anchor;
 		final boolean hadNoGravity;
 		long until;
@@ -51,7 +51,7 @@ public final class Wards {
 		int hits;
 		DamageSource source;
 
-		Stasis(LivingEntity target, ServerPlayer caster, long until) {
+		Stasis(LivingEntity target, LivingEntity caster, long until) {
 			this.target = target;
 			this.caster = caster;
 			this.anchor = target.position();
@@ -69,10 +69,10 @@ public final class Wards {
 
 	private static final class Infinity {
 		final LivingEntity who;
-		final ServerPlayer caster;
+		final LivingEntity caster;
 		long until;
 
-		Infinity(LivingEntity who, ServerPlayer caster, long until) {
+		Infinity(LivingEntity who, LivingEntity caster, long until) {
 			this.who = who;
 			this.caster = caster;
 			this.until = until;
@@ -219,7 +219,7 @@ public final class Wards {
 			held.source = source;
 			TechniqueVfx.stasisStore(level, entity, held.hits);
 			if (!held.caster.isRemoved()) {
-				held.caster.sendOverlayMessage(Component.translatable("message.wildercord.time_held", Math.round(held.stored), held.hits).withColor(0xF2D98A));
+				Casters.tell(held.caster, Component.translatable("message.wildercord.time_held", Math.round(held.stored), held.hits).withColor(0xF2D98A));
 			}
 			return false;
 		}
@@ -375,7 +375,7 @@ public final class Wards {
 			Vec3 away = Effects.horizontal(t.position().subtract(held.caster.position()), held.caster.getLookAngle());
 			Effects.push(t, away.scale(Math.min(2.0, 0.4 + held.hits * 0.15)).add(0, 0.35, 0));
 			if (!held.caster.isRemoved()) {
-				held.caster.sendOverlayMessage(Component.translatable("message.wildercord.time_resumes", Math.round(held.stored), held.hits).withColor(0xF2D98A));
+				Casters.tell(held.caster, Component.translatable("message.wildercord.time_resumes", Math.round(held.stored), held.hits).withColor(0xF2D98A));
 			}
 		}
 	}

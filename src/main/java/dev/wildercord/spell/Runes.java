@@ -44,7 +44,6 @@ public final class Runes {
 	public static final RuneDef WAVE = shape("wave", "Wave", 2, 6, 1.5, "A 3-wide wave rolls 14 blocks forward along the ground.", RADIUS, SPEED);
 	public static final RuneDef MINE = shape("mine", "Mine", 2, 5, 1.3, "Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds).", RADIUS, SPLIT);
 	public static final RuneDef TOTEM = shape("totem", "Totem", 3, 10, 2.4, "A floating totem where you look pulses every 2 seconds for 10 seconds.", RADIUS, DURATION, SPEED);
-	public static final RuneDef STAND = shape("stand", "Stand", 3, 11, 2.2, "A guardian spirit stands behind you for 8 seconds, striking the nearest enemy within 5 blocks every 0.75 seconds (60% power).", DURATION, SPEED, RADIUS);
 	public static final RuneDef DOMAIN = shape("domain", "Domain", 4, 20, 3.0, "Expands a 9-block domain around you for 6 seconds. Every second everything inside is struck, and enemies inside are slowed.", RADIUS, DURATION, SPEED);
 	public static final RuneDef CRESCENT = shape("crescent", "Crescent", 2, 5, 1.4, "A crescent slash flies 16 blocks forward, cutting everything in its 5-wide path.", RADIUS, SPEED, SPLIT, VOLLEY);
 	public static final RuneDef BARRAGE = shape("barrage", "Barrage", 2, 5, 1.6, "A flurry of 8 blows in one second on everything right in front of you, each at 35% power.", SPEED);
@@ -139,6 +138,19 @@ public final class Runes {
 	public static final RuneDef SHADES = effect("shades", "Shades", 3, 22, "void", EffectKind.HELPFUL, "Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.", DURATION, POWER);
 	public static final RuneDef THUNDERBIRD = effect("thunderbird", "Thunderbird", 3, 20, "storm", EffectKind.HELPFUL, "A storm bird circles above you for 15 seconds, striking the nearest enemy within 12 blocks every 1.5 seconds.", DURATION, POWER);
 
+	// ---- Innate runes: one is awakened in each caster's heart at the 1st Circle. They can't be
+	// crafted, found or taught, and they grow stronger with every circle.
+	public static final RuneDef BLOOD_THREAD = effect("blood_thread", "Blood Thread", 1, 10, "blood", EffectKind.HARMFUL, "Threads everything hit together for 8 seconds: half of any damage one of them takes is dealt to the rest.", DURATION);
+	public static final RuneDef KINDLING = effect("kindling", "Kindling", 1, 7, "fire", EffectKind.HARMFUL, "3 fire damage and a stack of Kindling. The fifth stack ignites: 10 damage in a 3-block burst.", POWER, LINGER);
+	public static final RuneDef TWIN_STAR = effect("twin_star", "Twin Star", 1, 12, "arcane", EffectKind.HELPFUL, "Your next spell within 6 seconds is cast twice.");
+	public static final RuneDef BORROWED_TIME = effect("borrowed_time", "Borrowed Time", 1, 14, "time", EffectKind.HELPFUL, "Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay something.");
+	public static final RuneDef GALE_MANTLE = effect("gale_mantle", "Gale Mantle", 1, 10, "wind", EffectKind.HELPFUL, "For 12 seconds, jump again in midair to dash forward (up to 3 dashes).", DURATION);
+	public static final RuneDef STONEFORM = effect("stoneform", "Stoneform", 1, 12, "earth", EffectKind.HELPFUL, "For 8 seconds: no knockback, 20% less damage, and every hit you take sends out an aftershock.", DURATION);
+	public static final RuneDef MIRRORFROST = effect("mirrorfrost", "Mirrorfrost", 1, 12, "frost", EffectKind.HELPFUL, "Casts back the last spell that hit you in the past 30 seconds, as your own.");
+	public static final RuneDef FORTUNE = effect("fortune", "Fortune", 1, 10, "life", EffectKind.HELPFUL, "For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple.", DURATION);
+	public static final RuneDef PHANTOM = effect("phantom", "Phantom", 1, 12, "void", EffectKind.HELPFUL, "Leaves an afterimage of you that every monster within 16 blocks turns on for 4 seconds, then it bursts for 8 damage.", DURATION);
+	public static final RuneDef STORMHEART = effect("stormheart", "Stormheart", 1, 12, "storm", EffectKind.HELPFUL, "For 10 seconds, whatever hits you is struck by lightning (at most once a second).", DURATION);
+
 	// ---- Modifiers
 	public static final RuneDef AMPLIFY = modifier("amplify", "Amplify", 1, 1.6, POWER, "+50% power (damage, healing, force, blast).");
 	public static final RuneDef EXTEND = modifier("extend", "Extend", 1, 1.4, DURATION, "+100% duration.");
@@ -174,6 +186,14 @@ public final class Runes {
 
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());
+
+	/** Innate runes: never crafted or found, one per caster. */
+	public static final java.util.List<RuneDef> INNATE = java.util.List.of(BLOOD_THREAD, KINDLING, TWIN_STAR, BORROWED_TIME, GALE_MANTLE, STONEFORM,
+		MIRRORFROST, FORTUNE, PHANTOM, STORMHEART);
+
+	public static boolean innate(RuneDef rune) {
+		return INNATE.contains(rune);
+	}
 
 	public static Optional<RuneDef> get(String id) {
 		return Optional.ofNullable(ALL.get(id));

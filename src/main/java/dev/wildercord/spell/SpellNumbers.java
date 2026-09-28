@@ -15,16 +15,13 @@ public final class SpellNumbers {
 			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD));
 	}
 
-	/** Focus and Vow on a shape, times the shape's own strength per hit (Stand and Barrage hit often, so softer). */
+	/** Focus and Vow on a shape, times the shape's own strength per hit (Barrage hits often, so softer). */
 	public static double groupPower(SpellPlan.Group g) {
 		return Math.pow(1.5, g.count(Runes.FOCUS_MOD)) * Math.pow(2.0, g.count(Runes.VOW_MOD)) * shapeStrength(g.shape);
 	}
 
 	/** Power per hit for shapes that hit many times. */
 	public static double shapeStrength(RuneDef shape) {
-		if (shape.is(Runes.STAND.id())) {
-			return 0.6;
-		}
 		if (shape.is(Runes.BARRAGE.id())) {
 			return 0.35;
 		}
@@ -34,19 +31,6 @@ public final class SpellNumbers {
 	/** Execute on an effect: power multiplier against targets under half health. */
 	public static double executeBonus(SpellPlan.EffectNode e) {
 		return Math.pow(2.0, e.count(Runes.EXECUTE_MOD));
-	}
-
-	public static int standSeconds(SpellPlan.Group g) {
-		return (int) Math.round(8 * Math.pow(2.0, g.count(Runes.EXTEND)));
-	}
-
-	/** Ticks between a Stand's strikes: 15, halved by each Quicken. */
-	public static int standInterval(SpellPlan.Group g) {
-		return Math.max(4, (int) Math.round(15 / Math.pow(2.0, g.count(Runes.QUICKEN))));
-	}
-
-	public static double standReach(SpellPlan.Group g) {
-		return 5.0 * shapeRadius(g);
 	}
 
 	/** Domain radius: 9 blocks, widened up to 24 at most (beyond that it can't be seen or kept up). */

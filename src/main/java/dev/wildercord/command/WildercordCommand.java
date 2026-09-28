@@ -26,6 +26,9 @@ import java.util.Optional;
  *   <li>{@code learn <rune>}: learn one rune</li>
  *   <li>{@code spell <1-4> <runes...>}: thread a spell, e.g. {@code spell 1 bolt fire split}</li>
  *   <li>{@code mana}: refill mana</li>
+ *   <li>{@code circles <0-8>}, {@code condense <mana>}: set Heart Circles, add condensed mana</li>
+ *   <li>{@code innate <rune>}: choose your innate rune</li>
+ *   <li>{@code runebound}: bind the nearest monster to a Cord</li>
  *   <li>{@code reset}: forget everything</li>
  * </ul>
  */
@@ -85,6 +88,41 @@ public final class WildercordCommand {
 						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.condensed", mana), false);
 						return 1;
 					})))
+				.then(Commands.literal("innate").then(Commands.argument("rune", StringArgumentType.word())
+					.suggests((ctx, builder) -> {
+						Runes.INNATE.forEach(r -> builder.suggest(r.path()));
+						return builder.buildFuture();
+					})
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayerOrException();
+						Optional<RuneDef> rune = find(StringArgumentType.getString(ctx, "rune"));
+						if (rune.isEmpty() || !Runes.innate(rune.get())) {
+							ctx.getSource().sendFailure(Component.translatable("command.wildercord.unknown", StringArgumentType.getString(ctx, "rune")));
+							return 0;
+						}
+						player.setAttached(dev.wildercord.player.WildercordAttachments.INNATE, rune.get().id());
+						Spellbooks.learn(player, rune.get().id());
+						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.innate", rune.get().name()), false);
+						return 1;
+					})))
+				.then(Commands.literal("runebound").executes(ctx -> {
+					// Binds the monster you're looking at (or the nearest one) to a Cord.
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					net.minecraft.world.entity.Mob best = null;
+					for (net.minecraft.world.entity.Entity e : player.level().getEntities(player, player.getBoundingBox().inflate(16),
+							e -> e instanceof net.minecraft.world.entity.Mob && e instanceof net.minecraft.world.entity.monster.Enemy)) {
+						if (best == null || e.distanceToSqr(player) < best.distanceToSqr(player)) {
+							best = (net.minecraft.world.entity.Mob) e;
+						}
+					}
+					if (best == null) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.no_monster"));
+						return 0;
+					}
+					dev.wildercord.cast.Runebound.bind(best, false);
+					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.runebound"), false);
+					return 1;
+				}))
 				.then(Commands.literal("reset").executes(ctx -> {
 					ServerPlayer player = ctx.getSource().getPlayerOrException();
 					Spellbooks.set(player, Spellbook.EMPTY);

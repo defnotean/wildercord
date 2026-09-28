@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "wildercord:block/wellstone"
+    },
+    "active=true": {
+      "model": "wildercord:block/wellstone_active"
+    }
+  }
+}

@@ -111,6 +111,9 @@ public class RuneBolt extends Projectile {
 		BlockHitResult block = server.clip(new net.minecraft.world.level.ClipContext(from, to,
 			net.minecraft.world.level.ClipContext.Block.COLLIDER, net.minecraft.world.level.ClipContext.Fluid.NONE, this));
 		Vec3 end = block.getType() == HitResult.Type.MISS ? to : block.getLocation();
+		if (collide(server, from, end)) {
+			return;
+		}
 		EntityHitResult entity = ProjectileUtil.getEntityHitResult(server, this, from, end,
 			getBoundingBox().expandTowards(motion).inflate(1.0), this::canHitEntity);
 		if (entity != null) {
@@ -141,6 +144,70 @@ public class RuneBolt extends Projectile {
 		trail(server, from, end);
 	}
 
+	/**
+	 * Spell collision: a bolt that meets an enemy caster's bolt in the air. Both burst; different
+	 * elements burst harder, and a reacting pair (fire and frost, storm and frost, fire and wind,
+	 * void and arcane) sets off a small reaction around the point.
+	 */
+	private boolean collide(ServerLevel server, Vec3 from, Vec3 to) {
+		for (Entity e : server.getEntities(this, new net.minecraft.world.phys.AABB(from, to).inflate(0.9), e -> e instanceof RuneBolt)) {
+			RuneBolt other = (RuneBolt) e;
+			if (other.cast == null || other.cast.caster == cast.caster || !Targets.canHarm(cast.caster, other.cast.caster)) {
+				continue;
+			}
+			Vec3 at = position().add(other.position()).scale(0.5);
+			String mine = element();
+			String theirs = other.element();
+			String reaction = collisionReaction(mine, theirs);
+			LivingEntity player = cast.caster instanceof net.minecraft.server.level.ServerPlayer ? cast.caster : other.cast.caster;
+			Cast owner = player == cast.caster ? cast : other.cast;
+			double radius = reaction != null ? 4.0 : 2.5;
+			double damage = reaction != null ? 8 : mine.equals(theirs) ? 0 : 5;
+			Sigils.flash(server, at, 0xFF000000 | color, 1.3F);
+			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(color, 1.3F), at, 16, 0.3);
+			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(other.color, 1.3F), at, 16, 0.3);
+			Vfx.radial(server, ParticleTypes.ELECTRIC_SPARK, at, 12, 0.4);
+			Fx.sound(server, at, SoundEvents.AMETHYST_BLOCK_BREAK, 1.2F, 0.7F);
+			Fx.sound(server, at, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.6F);
+			if (damage > 0) {
+				for (Entity victim : CastEngine.inRadius(owner, at, radius)) {
+					if (Targets.canHarm(player, victim)) {
+						Effects.hurt(owner, (LivingEntity) victim, server.damageSources().indirectMagic(player, player), damage * owner.power);
+					}
+				}
+			}
+			if (reaction != null) {
+				Vfx.shockwave(server, at.subtract(0, 0.5, 0), radius, Vfx.theme(mine), 5);
+				Reactions.callout(owner, reaction, color);
+			}
+			Reactions.callout(owner, "collision", 0xFFF0C0);
+			Grimoire.feat(player, dev.wildercord.spell.Feats.COLLISION);
+			other.fizzle();
+			fizzle();
+			return true;
+		}
+		return false;
+	}
+
+	private String element() {
+		return group == null || group.effects.isEmpty() ? "" : group.effects.getFirst().effect.element();
+	}
+
+	/** The reaction two elements set off when their bolts meet, or null. Same elements never react. */
+	static String collisionReaction(String a, String b) {
+		if (a.equals(b)) {
+			return null;
+		}
+		String pair = a.compareTo(b) < 0 ? a + "+" + b : b + "+" + a;
+		return switch (pair) {
+			case "fire+frost" -> "shatter";
+			case "frost+storm" -> "conduct";
+			case "fire+wind" -> "wildfire";
+			case "arcane+void" -> "implode";
+			default -> null;
+		};
+	}
+
 	private void hitEntity(EntityHitResult result) {
 		Entity target = result.getEntity();
 		alreadyHit.add(target);
@@ -165,6 +232,11 @@ public class RuneBolt extends Projectile {
 	}
 
 	private void trail(ServerLevel server, Vec3 from, Vec3 to) {
+		// Not right in front of the caster's eyes, where a first-person view sees it as a smear.
+		Entity owner = getOwner();
+		if (owner != null && to.distanceToSqr(owner.getEyePosition()) < 2.25) {
+			return;
+		}
 		Vfx.boltTick(server, from, to, theme, tickCount);
 	}
 

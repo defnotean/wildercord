@@ -343,9 +343,6 @@ public final class SpellCompiler {
 		if (id.equals(Runes.TOTEM.id())) {
 			return "A totem (" + blocks(SpellNumbers.totemRadius(g)) + ", " + SpellNumbers.totemSeconds(g) + "s, every " + seconds(SpellNumbers.totemInterval(g)) + ")";
 		}
-		if (id.equals(Runes.STAND.id())) {
-			return "Your stand (" + SpellNumbers.standSeconds(g) + "s, reach " + blocks(SpellNumbers.standReach(g)) + ", every " + seconds(SpellNumbers.standInterval(g)) + ", 60% power)";
-		}
 		if (id.equals(Runes.DOMAIN.id())) {
 			return "Your domain (" + blocks(SpellNumbers.domainRadius(g)) + ", " + SpellNumbers.domainSeconds(g) + "s, every " + seconds(SpellNumbers.domainInterval(g)) + ")";
 		}

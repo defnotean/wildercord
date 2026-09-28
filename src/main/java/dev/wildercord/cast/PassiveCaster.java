@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * Keeps passives running. Every second each passive that's on costs its upkeep; if the mana
  * isn't there it falters (stops renewing) until it is. There's no cooldown: a Self passive is
- * renewed every two seconds, an Orbit or Stand whenever its shape runs out. After the first
+ * renewed every two seconds, an Orbit whenever its orbs run out. After the first
  * cast renewals are quiet, so a passive buff doesn't sparkle every two seconds.
  */
 public final class PassiveCaster {
@@ -70,7 +70,7 @@ public final class PassiveCaster {
 		});
 		CordTier tier = Spellbooks.tier(player);
 		Spellbook book = Spellbooks.get(player);
-		int slots = Passives.slots(Heart.circles(player));
+		int slots = Passives.slots(Heart.active(player));
 		long now = player.level().getGameTime();
 		boolean second = tickCount % 20 == 0;
 		for (int slot = 0; slot < Passives.MAX; slot++) {
@@ -111,7 +111,7 @@ public final class PassiveCaster {
 		}
 	}
 
-	/** Whether this passive is still the one running in its slot: its Orbit or Stand ends the moment it isn't. */
+	/** Whether this passive is still the one running in its slot: its Orbit ends the moment it isn't. */
 	public static boolean running(ServerPlayer player, int slot, String key) {
 		State[] states = STATES.get(player.getUUID());
 		return states != null && key.equals(states[slot].key) && !states[slot].faltering;

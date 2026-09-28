@@ -11,6 +11,7 @@ rules and how a cast runs.
 - [A shape](#a-shape)
 - [A modifier](#a-modifier)
 - [A link](#a-link)
+- [An innate rune](#an-innate-rune)
 - [Art, recipes and loot](#art-recipes-and-loot)
 - [Checklist](#checklist)
 
@@ -21,8 +22,9 @@ rules and how a cast runs.
 | Define the rune | `src/main/java/dev/wildercord/spell/Runes.java` |
 | Put it in a Codex category | `spell/RuneCategories.java` (`categoryFor`) |
 | What it does | `cast/Effects.java` (effects), `cast/CastEngine.java` + `cast/ShapeRunners.java` (shapes), `spell/SpellNumbers.java` (modifier numbers), `spell/SpellCompiler.java` + `cast/CastEngine.java` (links) |
-| How it looks | `cast/Vfx.java` or `cast/TechniqueVfx.java` |
+| How it looks | `cast/Vfx.java` or `cast/TechniqueVfx.java` (magic circles through `cast/Sigils.java`) |
 | Its icon | `tools/item_art.py` (`GLYPHS`) |
+| Its magic ring (pattern and emblem) | automatic: `tools/circle_art.py` gives every rune its own, run by `generate_assets.py` |
 | Its recipe | `tools/generate_assets.py` (`RUNE_RECIPES`) |
 | Where it drops | `content/WildercordLoot.java` |
 | Tests | `src/test/java/dev/wildercord/spell/`, and the smoke list in `src/gametest/.../WildercordScreenshots.java` |
@@ -68,7 +70,7 @@ In `RuneCategories.categoryFor`, add `"gust"` to the `control` list (or it falls
 In `Effects.applyEffect`, add a case. You get ready-made lists: `harmed` (fair game), `helped`
 (allies), `moved` (the caster on Self, otherwise `harmed`), plus `power`, `duration` and `amplify`
 already worked out from its modifiers, the shape, the caster's Heart Circles and Cord
-enchantments:
+enchantments, the charge, the rhythm chain and the caster's leaning:
 
 ```java
 case "gust" -> harmed.forEach(t -> {
@@ -83,17 +85,28 @@ case "gust" -> harmed.forEach(t -> {
 Rules of thumb:
 
 - **Damage always goes through `Effects.hurt(cast, target, source, amount)`.** It skips
-  invulnerability frames, scales PvP, applies Execute, and counts spell kills.
+  invulnerability frames, scales PvP, applies Execute, Fortune and Unison, and counts spell kills.
+- **The caster may be a monster.** `cast.caster` is a `LivingEntity` (a Runebound or the
+  Archivist casts your rune too). Send messages with `Casters.tell`, check `Casters.creative`, and
+  never assume a `ServerPlayer`.
+- **Changing blocks?** Check `Casters.mayBuild(cast.caster)`, `level.mayInteract` and
+  `cast.takeBlock()` (as `Effects.mayEdit` does), so monsters never grief and the block budget
+  holds.
 - **Schedule later work with `Scheduler.later(ticks, ...)`** and check `cast.alive()` inside.
 - **Anything bigger than a few lines** belongs in a helper (see `Techniques`).
 - **Don't stop a boss's AI or move it.** Use `Spirits.isBoss` (see `Spirits.hold`).
+
+An element comes with things for free: the effect counts toward elemental leaning, joins Unison,
+lights Rune Seals of its element, and (for fire) lights campfires.
 
 ### 4. Give it a look
 
 Add a method to `Vfx` or `TechniqueVfx` and call it from your case. Use `Vfx.theme("wind")` for the
 element's colours and sounds, and the primitives (`Vfx.radial`, `Vfx.ring`, `Vfx.helix`,
 `Vfx.stream`, `Vfx.shockwave`). Always send particles through these helpers or `Fx`, never
-`level.sendParticles` directly: `Fx.send` keeps particles out of the caster's face.
+`level.sendParticles` directly: `Fx.send` keeps particles out of the caster's face. For a flash,
+emit a `SigilOption.glow` with `Vfx.emit` (so it goes through `Fx.send` too), not vanilla's
+firework flash; magic circles go through `Sigils`.
 
 ## A shape
 
@@ -142,6 +155,18 @@ Links change *when* the rest fires, so they touch both the compiler and the runt
 5. **Cost**: links have a small flat cost; if yours repeats the rest (like Pulse), multiply the
    rest's cost in `SpellCompiler.cost`.
 
+## An innate rune
+
+Innate runes are Tier I effects: each caster wakes with one of them, at random, at the 1st
+Circle, and they're never crafted or dropped. On top of the effect steps above:
+
+1. Add it to `Runes.INNATE`, and to the `innate` list in `RuneCategories.categoryFor`. Update the
+   count in `DiscoveryTest.innateRunesAreSeparate`.
+2. Add its path to the `INNATE` set at the top of `tools/generate_assets.py` (it gets the animated
+   Tier IV icon treatment, no recipe, and stays out of loot).
+3. Route its case in `Effects.applyEffect` to `Innates.apply`, and keep any state it needs in
+   `Innates`, cleared when the server stops. Its power already grows +6% per circle.
+
 ## Art, recipes and loot
 
 ### Icon
@@ -158,7 +183,8 @@ Keep it about 7-9 wide and centred. Run `python tools/item_art.py` and look at
 
 ### Recipe
 
-Every Tier I-III rune must have a recipe (the generator asserts this); Tier IV runes must not. Add
+Every Tier I-III rune must have a recipe (the generator asserts this); Tier IV and innate runes
+must not. Add
 the themed items to `RUNE_RECIPES` in `tools/generate_assets.py`:
 
 ```python

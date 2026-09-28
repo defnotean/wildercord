@@ -1,0 +1,390 @@
+package dev.wildercord.client.fx;
+
+import dev.wildercord.Wildercord;
+import dev.wildercord.content.SpellCircleOption;
+import dev.wildercord.spell.RuneColors;
+import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.RuneFamily;
+import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.SpellSigil;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+/**
+ * A spell's whole magic circle, built from its runes every frame (the layout is
+ * {@link SpellSigil}'s): a soft glow; a heavy frame with rays on the star's points; a band of
+ * script made of the spell's rune emblems; a band in the first effect's pattern; a star polygon
+ * with a roundel on each point (a rune's pattern around its emblem); an inner ring; and the seal.
+ * The bands and the star turn, each its own way. It opens in stages: the frame, then the script and
+ * the star's lines drawing themselves, then the roundels one by one, in casting order.
+ *
+ * <p>Lines are drawn as short straight pieces of a thin-line texture, and bands as tiles laid end to
+ * end, so every line keeps its width and every pattern its size at any radius. Everything is drawn
+ * from both sides at full brightness.
+ */
+public class SpellCircleParticle extends SingleQuadParticle implements SigilGroup.Extent {
+	/** One rune on the circle: its ring pattern, its emblem and its colour. */
+	protected record Rune(TextureAtlasSprite band, TextureAtlasSprite mark, int color) {}
+
+	protected final List<Rune> runes = new ArrayList<>();
+	protected final int color;
+	protected final float radius;
+	protected final float yaw;
+	protected final float pitch;
+	private final int points;
+	private final int step;
+	private final float roundel;
+	private final Rune pattern;
+	private final TextureAtlasSprite line;
+	private final TextureAtlasSprite glow;
+	private final TextureAtlasSprite[] script;
+
+	/** How far each part has turned: the script band, the pattern band (the other way) and the star. */
+	private float scriptTurn;
+	private float oScriptTurn;
+	private float patternTurn;
+	private float oPatternTurn;
+	private float starTurn;
+	private float oStarTurn;
+
+	// While drawing a frame.
+	private QuadParticleRenderState state;
+	private final Quaternionf plane = new Quaternionf();
+	private final Quaternionf turn = new Quaternionf();
+	private final Vector3f at = new Vector3f();
+	private float cx;
+	private float cy;
+	private float cz;
+	private int light;
+
+	protected SpellCircleParticle(ClientLevel level, double x, double y, double z, SpellCircleOption option) {
+		super(level, x, y, z, particleSprite("sigil_band"));
+		this.color = option.color() & 0xFFFFFF;
+		this.radius = option.radius();
+		this.yaw = option.yaw();
+		this.pitch = option.pitch();
+		Rune firstEffect = null;
+		for (String id : option.runes().subList(0, Math.min(option.runes().size(), SpellSigil.MAX_RUNES))) {
+			RuneDef def = Runes.get(id).orElse(null);
+			Rune rune = new Rune(runeSprite(id, def, "band"), runeSprite(id, def, "mark"), def == null ? 0xFFFFFF : RuneColors.of(def));
+			runes.add(rune);
+			if (firstEffect == null && def != null && def.family() == RuneFamily.EFFECT) {
+				firstEffect = rune;
+			}
+		}
+		if (runes.isEmpty()) {
+			runes.add(new Rune(particleSprite("circle/_shape_band"), particleSprite("circle/_shape_mark"), 0xFFFFFF));
+		}
+		this.pattern = firstEffect != null ? firstEffect : runes.getFirst();
+		this.points = SpellSigil.points(runes.size());
+		this.step = SpellSigil.step(points);
+		this.roundel = SpellSigil.roundel(runes.size());
+		this.line = particleSprite("sigil_band");
+		this.glow = particleSprite("sigil_glow");
+		this.script = runes.stream().map(Rune::mark).toArray(TextureAtlasSprite[]::new);
+		this.starTurn = 0;
+		this.scriptTurn = level.getRandom().nextFloat() * Mth.TWO_PI;
+		this.patternTurn = level.getRandom().nextFloat() * Mth.TWO_PI;
+		this.lifetime = Math.max(2, option.lifetime());
+		this.gravity = 0;
+		this.hasPhysics = false;
+		this.xd = 0;
+		this.yd = 0;
+		this.zd = 0;
+		setAlpha(0);
+	}
+
+	static TextureAtlasSprite particleSprite(String path) {
+		return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES).getSprite(Wildercord.id(path));
+	}
+
+	/** A rune's pattern ({@code band}) or emblem ({@code mark}), drawn by tools/circle_art.py; add-ons get their family's. */
+	static TextureAtlasSprite runeSprite(String rune, RuneDef def, String part) {
+		TextureAtlas atlas = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.PARTICLES);
+		Identifier id = Identifier.tryParse(rune);
+		if (id != null && id.getNamespace().equals(Wildercord.MOD_ID)) {
+			TextureAtlasSprite own = atlas.getSprite(Wildercord.id("circle/" + id.getPath() + "_" + part));
+			if (own != atlas.missingSprite()) {
+				return own;
+			}
+		}
+		String family = def == null ? "effect" : def.family().name().toLowerCase(Locale.ROOT);
+		return atlas.getSprite(Wildercord.id("circle/_" + family + "_" + part));
+	}
+
+	@Override
+	public void tick() {
+		xo = x;
+		yo = y;
+		zo = z;
+		oScriptTurn = scriptTurn;
+		scriptTurn += 0.012F;
+		oPatternTurn = patternTurn;
+		patternTurn -= 0.018F;
+		oStarTurn = starTurn;
+		starTurn += 0.006F;
+		if (age++ >= lifetime) {
+			remove();
+		}
+	}
+
+	/** How far the circle has opened, 0 to 1. */
+	protected float opening(float partial) {
+		return Mth.clamp((age + partial) / (6F + runes.size()), 0, 1);
+	}
+
+	/** Its brightness: quickly in, and out over the last part of its life. */
+	protected float fade(float partial) {
+		float t = age + partial;
+		return Math.min(Mth.clamp(t / 2F, 0, 1), Mth.clamp((lifetime - t) / (lifetime * 0.3F), 0, 1));
+	}
+
+	/** Its radius right now, in blocks. */
+	protected float size(float partial) {
+		return radius;
+	}
+
+	protected Vec3 centre(float partial) {
+		return new Vec3(Mth.lerp(partial, xo, x), Mth.lerp(partial, yo, y), Mth.lerp(partial, zo, z));
+	}
+
+	/** The circle's orientation: local x and y lie in its plane, local y up the circle. */
+	protected Quaternionf orientation(float partial) {
+		return new Quaternionf().rotationYXZ((float) Math.toRadians(-yaw), (float) Math.toRadians(pitch), 0);
+	}
+
+	private static float part(float open, float from, float length) {
+		return Mth.clamp((open - from) / length, 0, 1);
+	}
+
+	private static int argb(float alpha, int rgb) {
+		return (Mth.clamp((int) (alpha * 255), 0, 255) << 24) | (rgb & 0xFFFFFF);
+	}
+
+	private static int lighter(int rgb, float t) {
+		int r = (rgb >> 16) & 0xFF;
+		int g = (rgb >> 8) & 0xFF;
+		int b = rgb & 0xFF;
+		return ((r + Math.round((255 - r) * t)) << 16) | ((g + Math.round((255 - g) * t)) << 8) | (b + Math.round((255 - b) * t));
+	}
+
+	@Override
+	public void extract(QuadParticleRenderState state, Camera camera, float partial) {
+		float alpha = fade(partial);
+		if (alpha <= 0.01F) {
+			return;
+		}
+		this.state = state;
+		float open = opening(partial);
+		plane.set(orientation(partial));
+		Vec3 c = centre(partial);
+		Vec3 cam = camera.position();
+		cx = (float) (c.x - cam.x);
+		cy = (float) (c.y - cam.y);
+		cz = (float) (c.z - cam.z);
+		light = LightCoordsUtil.FULL_BRIGHT;
+		float grow = part(open, 0, 0.3F);
+		float r = size(partial) * (0.55F + 0.45F * (1 - (1 - grow) * (1 - grow)));
+		// Once it's open, a gentle pulse.
+		float pulse = open >= 1 ? 0.85F + 0.15F * Mth.sin((age + partial) * 0.35F) : 1F;
+		float a = alpha * pulse;
+		float fine = Math.max(0.004F, SpellSigil.FINE * r);
+		float heavy = Math.max(0.007F, SpellSigil.HEAVY * r);
+		float star = Mth.lerp(partial, oStarTurn, starTurn);
+
+		// The glow behind it all.
+		piece(glow, 0, 0, 0, r * 1.3F, argb(a * 0.28F * (0.4F + 0.6F * open), color), 0);
+
+		// The frame, and rays on the star's points.
+		float frame = part(open, 0, 0.2F);
+		ring(0, 0, r * SpellSigil.FRAME, heavy, argb(a * frame, color), 0.002F);
+		ring(0, 0, r * SpellSigil.FRAME_INNER, fine, argb(a * frame * 0.9F, color), 0.002F);
+		for (int k = 0; k < points; k++) {
+			float ang = star + Mth.HALF_PI - Mth.TWO_PI * k / points;
+			line(Mth.cos(ang) * r * SpellSigil.FRAME, Mth.sin(ang) * r * SpellSigil.FRAME,
+				Mth.cos(ang) * r * (SpellSigil.FRAME + (SpellSigil.RAYS - SpellSigil.FRAME) * frame),
+				Mth.sin(ang) * r * (SpellSigil.FRAME + (SpellSigil.RAYS - SpellSigil.FRAME) * frame), fine, argb(a * frame, color), 0.002F);
+		}
+
+		// The script: the spell's emblems, in order, round and round.
+		float writing = part(open, 0.1F, 0.25F);
+		tiles(script, 0, 0, r * SpellSigil.SCRIPT, r * SpellSigil.SCRIPT_HEIGHT, Mth.lerp(partial, oScriptTurn, scriptTurn),
+			argb(a * writing * 0.95F, lighter(color, 0.25F)), 0.003F, true);
+		ring(0, 0, r * SpellSigil.SCRIPT_INNER, fine, argb(a * writing, color), 0.002F);
+
+		// The pattern band, in the first effect's own ring pattern.
+		tiles(new TextureAtlasSprite[] {pattern.band}, 0, 0, r * SpellSigil.PATTERN, r * SpellSigil.PATTERN_HEIGHT,
+			Mth.lerp(partial, oPatternTurn, patternTurn), argb(a * writing, pattern.color), 0.003F, false);
+
+		// The star: its circle, then its lines drawing themselves from every point.
+		float drawn = part(open, 0.2F, 0.35F);
+		ring(0, 0, r * SpellSigil.STAR, fine, argb(a * drawn * 0.7F, color), 0.004F);
+		int starColor = argb(a * Math.min(1, drawn * 1.5F), lighter(color, 0.35F));
+		for (int k = 0; k < points; k++) {
+			float a0 = star + Mth.HALF_PI - Mth.TWO_PI * k / points;
+			float a1 = star + Mth.HALF_PI - Mth.TWO_PI * (k + step) / points;
+			float x0 = Mth.cos(a0) * r * SpellSigil.STAR;
+			float y0 = Mth.sin(a0) * r * SpellSigil.STAR;
+			float x1 = Mth.cos(a1) * r * SpellSigil.STAR;
+			float y1 = Mth.sin(a1) * r * SpellSigil.STAR;
+			line(x0, y0, x0 + (x1 - x0) * drawn, y0 + (y1 - y0) * drawn, fine, starColor, 0.004F);
+		}
+
+		// The inner rings and the seal.
+		float middle = part(open, 0.3F, 0.3F);
+		ring(0, 0, r * SpellSigil.INNER, fine, argb(a * middle, color), 0.004F);
+		ring(0, 0, r * SpellSigil.MEDALLION, fine, argb(a * middle, lighter(color, 0.3F)), 0.004F);
+		Rune first = runes.getFirst();
+		piece(first.mark, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, first.color), 0.007F);
+
+		// The roundels, one by one: a rune's pattern around its emblem, on its star point.
+		int n = runes.size();
+		float s = r * roundel;
+		for (int i = 0; i < n; i++) {
+			float shown = part(open, 0.35F + 0.55F * i / n, 0.1F);
+			if (shown <= 0) {
+				continue;
+			}
+			Rune rune = runes.get(i);
+			float ang = star + Mth.HALF_PI - Mth.TWO_PI * SpellSigil.pointOf(i, n) / points;
+			float u = Mth.cos(ang) * r * SpellSigil.STAR;
+			float v = Mth.sin(ang) * r * SpellSigil.STAR;
+			float rs = s * (0.5F + 0.5F * shown);
+			// A soft glow behind the roundel, so it stands out from the star's lines.
+			piece(glow, u, v, 0, rs * 1.25F, argb(a * shown * 0.35F, lighter(rune.color, 0.5F)), 0.005F);
+			ring(u, v, rs, fine, argb(a * shown, rune.color), 0.005F);
+			tiles(new TextureAtlasSprite[] {rune.band}, u, v, rs * 0.72F, rs * 0.4F, -star * 3, argb(a * shown * 0.9F, rune.color), 0.006F, false);
+			piece(rune.mark, u, v, ang - Mth.HALF_PI, rs * 0.5F, argb(a * shown, lighter(rune.color, 0.15F)), 0.007F);
+		}
+		this.state = null;
+	}
+
+	/** One square piece of {@code sprite} at ({@code u}, {@code v}) in the circle's plane, drawn from both sides. */
+	private void piece(TextureAtlasSprite sprite, float u, float v, float rot, float half, int argb, float depth) {
+		if ((argb >>> 24) < 3 || half <= 0) {
+			return;
+		}
+		Layer layer = getLayer();
+		plane.transform(at.set(u, v, depth));
+		turn.set(plane).rotateZ(rot);
+		state.add(layer, cx + at.x, cy + at.y, cz + at.z, turn.x, turn.y, turn.z, turn.w, half,
+			sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, light);
+		plane.transform(at.set(u, v, -depth));
+		turn.rotateY(Mth.PI);
+		state.add(layer, cx + at.x, cy + at.y, cz + at.z, turn.x, turn.y, turn.z, turn.w, half,
+			sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, light);
+	}
+
+	/** A thin ring of {@code width} around (u, v): short pieces of line laid end to end. */
+	private void ring(float u, float v, float rad, float width, int argb, float depth) {
+		if ((argb >>> 24) < 3 || rad <= 0) {
+			return;
+		}
+		float pieceLength = width * 3.2F;
+		int n = Math.max(12, (int) Math.ceil(Mth.TWO_PI * rad / pieceLength));
+		float half = Mth.PI * rad / n * 1.08F;
+		for (int i = 0; i < n; i++) {
+			float a = Mth.TWO_PI * i / n;
+			piece(line, u + Mth.cos(a) * rad, v + Mth.sin(a) * rad, a + Mth.HALF_PI, half, argb, depth);
+		}
+	}
+
+	/** A straight line of {@code width} from (u0, v0) to (u1, v1). */
+	private void line(float u0, float v0, float u1, float v1, float width, int argb, float depth) {
+		float du = u1 - u0;
+		float dv = v1 - v0;
+		float length = Mth.sqrt(du * du + dv * dv);
+		if ((argb >>> 24) < 3 || length < 1.0E-4F) {
+			return;
+		}
+		int n = Math.max(1, (int) Math.ceil(length / (width * 3.2F)));
+		float half = length / n / 2 * 1.08F;
+		float rot = (float) Math.atan2(dv, du);
+		for (int i = 0; i < n; i++) {
+			float t = (i + 0.5F) / n;
+			piece(line, u0 + du * t, v0 + dv * t, rot, half, argb, depth);
+		}
+	}
+
+	/**
+	 * A band of tiles around (u, v), {@code height} tall, top edge outward, cycling through
+	 * {@code sprites}; with {@code whole}, always a whole number of cycles, so the order reads true.
+	 */
+	private void tiles(TextureAtlasSprite[] sprites, float u, float v, float rad, float height, float angle, int argb, float depth, boolean whole) {
+		if ((argb >>> 24) < 3 || rad <= 0 || height <= 0) {
+			return;
+		}
+		int n = Math.max(6, Math.round(Mth.TWO_PI * rad / height));
+		if (whole && sprites.length > 1) {
+			n = Math.max(sprites.length, Math.round(n / (float) sprites.length) * sprites.length);
+		}
+		float half = Mth.PI * rad / n;
+		for (int i = 0; i < n; i++) {
+			float a = angle + Mth.TWO_PI * i / n;
+			piece(sprites[i % sprites.length], u + Mth.cos(a) * rad, v + Mth.sin(a) * rad, a - Mth.HALF_PI, half, argb, depth);
+		}
+	}
+
+	@Override
+	public int getLightCoords(float partial) {
+		return LightCoordsUtil.FULL_BRIGHT;
+	}
+
+	@Override
+	protected Layer getLayer() {
+		return Layer.TRANSLUCENT;
+	}
+
+	@Override
+	public ParticleRenderType getGroup() {
+		return SigilGroup.TYPE;
+	}
+
+	@Override
+	public double centreX() {
+		return x;
+	}
+
+	@Override
+	public double centreY() {
+		return y;
+	}
+
+	@Override
+	public double centreZ() {
+		return z;
+	}
+
+	@Override
+	public double reach() {
+		return radius * 1.3 + 0.5;
+	}
+
+	public static class Provider implements ParticleProvider<SpellCircleOption> {
+		@Override
+		public Particle createParticle(SpellCircleOption option, ClientLevel level, double x, double y, double z, double xa, double ya, double za,
+				RandomSource random) {
+			return new SpellCircleParticle(level, x, y, z, option);
+		}
+	}
+}

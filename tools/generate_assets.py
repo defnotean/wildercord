@@ -16,6 +16,9 @@ try:  # Hand-drawn icons (tools/item_art.py); the procedural stones below are on
 except ImportError:
     item_art = None
 
+import sigil_art  # Magic circles and the GUI sprites that came with them.
+import world_art  # Scrolls, pages, the dummy, the Wellstone, Rune Seals, the lectern and the two skins.
+
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "src/main/resources"
 ASSETS = RES / "assets/wildercord"
@@ -29,6 +32,9 @@ ELEMENT_COLOR = {
 }
 
 # ---------------------------------------------------------------- roster
+
+# Innate runes: one wakes in each caster at the 1st Circle. Never crafted, never found.
+INNATE = {"blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart"}
 
 
 def read_runes():
@@ -188,7 +194,7 @@ CORDS = {
 
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def save(img, path, preview=None):
@@ -206,7 +212,7 @@ def save(img, path, preview=None):
     for i, frame in enumerate(frames):
         strip.paste(frame, (0, i * h))
     strip.save(path)
-    meta.write_text(json.dumps({"animation": {"frametime": getattr(item_art, "ANIMATION_FRAMETIME", 3)}}, indent=2) + "\n", encoding="utf-8")
+    meta.write_text(json.dumps({"animation": {"frametime": getattr(item_art, "ANIMATION_FRAMETIME", 3)}}, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 
 def item_model(path, texture):
@@ -221,7 +227,9 @@ def main():
     cases = []
     for r in runes:
         accent = FAMILY_COLOR[r["family"]] if r["family"] != "effect" else ELEMENT_COLOR[r["element"]]
-        art = item_art.rune_icon(r["path"], r["family"], r["element"], r["tier"]) if item_art else stone(r["family"], accent, glyph_for(r["path"]))
+        # Innate runes wear the Tier IV treatment (a slow pulse): they're one of a kind.
+        art_tier = 4 if r["path"] in INNATE else r["tier"]
+        art = item_art.rune_icon(r["path"], r["family"], r["element"], art_tier) if item_art else stone(r["family"], accent, glyph_for(r["path"]))
         save(art, tex / f"rune/{r['path']}.png")
         item_model(f"rune/{r['path']}", f"rune/{r['path']}")
         cases.append({"when": f"wildercord:{r['path']}", "model": {"type": "minecraft:model", "model": f"wildercord:item/rune/{r['path']}"}})
@@ -265,6 +273,10 @@ def main():
     write_lang(runes)
     write_recipes(runes)
     write_mana_data()
+    sigil_art.main()
+    import circle_art  # Every rune's own ring and emblem for magic circles (imported here: it reads the runes from this file).
+    circle_art.main()
+    write_new_content(runes)
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -307,8 +319,8 @@ def write_lang(runes):
         "command.wildercord.spell_set": "Spell %s set (%s runes)",
         "command.wildercord.reset": "Forgot every rune and spell",
         "key.category.wildercord.wildercord": "Wildercord",
-        "key.wildercord.cast": "Cast spell",
-        "key.wildercord.next_spell": "Next spell",
+        "key.wildercord.cast": "Cast spell (hold to charge)",
+        "key.wildercord.next_spell": "Next spell (hold for the wheel)",
         "key.wildercord.open_cord": "Open Cord",
         "screen.wildercord.cord": "Cord",
         "screen.wildercord.stats": "%s sockets · %s · Tier %s",
@@ -322,7 +334,7 @@ def write_lang(runes):
         "screen.wildercord.help.4": "Click a threaded rune to take it out",
         "screen.wildercord.help.5": "Gold marks show what each modifier changes",
         "screen.wildercord.help.6": "Scroll over the Codex or the readout to see more",
-        "screen.wildercord.help.keys": "%s casts · %s switches spell · %s opens this screen",
+        "screen.wildercord.help.keys": "%s casts (hold to charge) · %s switches spell (hold for the wheel) · %s opens this screen",
         "screen.wildercord.row_locked": "Needs a %s",
         "screen.wildercord.row_kept": "%s runes kept",
         "screen.wildercord.quiet_silent": "Its add-on is missing, so it stays quiet",
@@ -384,7 +396,7 @@ def write_lang(runes):
         "tooltip.wildercord.not_craftable": "Tier IV: can't be crafted, only found",
         "screen.wildercord.page.spells": "Spells",
         "screen.wildercord.page.passives": "Passives",
-        "screen.wildercord.not_sustainable": "Can't be a passive: only lasting buffs, wards and Orbit or Stand auras",
+        "screen.wildercord.not_sustainable": "Can't be a passive: only lasting buffs, wards and Orbit auras",
         "screen.wildercord.passive_locked": "Opens with the %s Heart Circle",
         "screen.wildercord.passive.on": "On",
         "screen.wildercord.passive.off": "Off",
@@ -394,9 +406,8 @@ def write_lang(runes):
         "screen.wildercord.quiet_passive_socket": "Passives hold %s runes",
         "screen.wildercord.passive.summary": "Passives drain %s mana/s · you regenerate %s/s",
         "screen.wildercord.passive.locked_hint": "Form Heart Circles to open passive slots: the 1st and 5th Circle each open one. Hover the heart above to see your progress.",
-        "screen.wildercord.passive.stand_slow": "As a passive, the Stand strikes %sx less often.",
         "screen.wildercord.passive.empty": "Empty passive. Thread runes that can be sustained.",
-        "screen.wildercord.passive.rules": "Self, Orbit or Stand, then lasting buffs (Swift, Stoneskin, Infinity, Reflect...). Damage like Shock or Dismantle needs Orbit or Stand to carry it. No links and no cooldown: it costs mana every second instead.",
+        "screen.wildercord.passive.rules": "Self or Orbit, then lasting buffs (Swift, Stoneskin, Infinity, Reflect...). Damage like Shock or Dismantle needs an Orbit to carry it. No links and no cooldown: it costs mana every second instead.",
         "screen.wildercord.passive.header": "Passive · %s mana/s · renews every %ss · no cooldown",
         "screen.wildercord.passive.header_off": "Passive (off) · %s mana/s when on · renews every %ss",
         "screen.wildercord.mana.max_circles": "+%s from %s Heart Circles",
@@ -422,7 +433,7 @@ def write_lang(runes):
         "screen.wildercord.heart.need.runes": "Know %s runes (%s)",
         "screen.wildercord.heart.need.cord": "Wear a %s or better",
         "screen.wildercord.heart.need.kills": "Defeat %s monsters with spells (%s)",
-        "screen.wildercord.heart.need.boss": "Help slay a boss (Wither, Warden, Elder Guardian or Ender Dragon)",
+        "screen.wildercord.heart.need.boss": "Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon or the Archivist)",
         "message.wildercord.circle_broken": "Your concentration broke: the circle unravels",
         "screen.wildercord.heart.how": "Mana spent casting spells condenses in your heart. Once it's ready, meditate to form the circle.",
         "message.wildercord.circle_ready": "Your heart is ready to form the %s Circle. Meditate (sneak and stand still) for 10 seconds without getting hurt to form it.",
@@ -520,6 +531,11 @@ def write_lang(runes):
         lang[f"rune.wildercord.{r['path']}"] = r["name"]
         lang[f"rune.wildercord.{r['path']}.desc"] = r["desc"]
     lang.update(source_lang(runes))
+    lang.update(NEW_LANG)
+    # In rune order, not set order: set order changes from run to run and the file must not.
+    for path in (r["path"] for r in runes if r["path"] in INNATE):
+        lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
+        lang.pop(f"rune.wildercord.{path}.craft", None)
     write_recipe_doc(runes)
     write_json(ASSETS / "lang/en_us.json", lang)
 
@@ -568,6 +584,18 @@ def rune_constants():
 
 
 def loot_sources():
+    found = _loot_sources()
+    # Every Tier IV rune can also come from an Archive: its vault, or the Archivist itself.
+    for path in _tier_four_paths():
+        found.setdefault(path, []).extend(["Archive vaults", "the Archivist"])
+    return found
+
+
+def _tier_four_paths():
+    return [r["path"] for r in read_runes() if r["tier"] == 4]
+
+
+def _loot_sources():
     """Parses WildercordLoot.java: rune path -> list of places it drops, so tooltips never drift from the loot."""
     src = (ROOT / "src/main/java/dev/wildercord/content/WildercordLoot.java").read_text(encoding="utf-8")
     consts = rune_constants()
@@ -607,7 +635,7 @@ def write_recipe_doc(runes):
     lines += ["", "Recipes appear in the crafting recipe book once you hold a Blank Rune",
               "(Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.", ""]
     for tier in (1, 2, 3):
-        rs = [r for r in runes if r["tier"] == tier]
+        rs = [r for r in runes if r["tier"] == tier and r["path"] not in INNATE]
         lines += [f"## Tier {['I', 'II', 'III'][tier - 1]} ({len(rs)} runes, + {extras[tier]})", "",
                   "| Rune | Family | Items |", "|---|---|---|"]
         for r in sorted(rs, key=lambda r: (r["family"], r["name"])):
@@ -618,9 +646,15 @@ def write_recipe_doc(runes):
     lines += [f"## Tier IV ({len(t4)} runes, found only)", "", "| Rune | Family | Found |", "|---|---|---|"]
     for r in sorted(t4, key=lambda r: (r["family"], r["name"])):
         lines.append(f"| {r['name']} | {r['family'].title()} | {', '.join(found.get(r['path'], ['?']))} |")
+    innate = sorted((r for r in runes if r["path"] in INNATE), key=lambda r: r["name"])
+    lines += ["", f"## Innate runes ({len(innate)}, never crafted or found)", "",
+              "One wakes in each caster's heart at the 1st Circle, chosen at random, and grows with every circle.", "",
+              "| Rune | Element | Does |", "|---|---|---|"]
+    for r in innate:
+        lines.append(f"| {r['name']} | {r['element'].title()} | {r['desc']} |")
     lines += ["", "Chests favour low tiers: next to each other in a pool, Tier I runes are 8x as likely as Tier IV,",
               "Tier II 5x and Tier III 2x.", ""]
-    (ROOT / "docs/RECIPES.md").write_text("\n".join(lines), encoding="utf-8")
+    (ROOT / "docs/RECIPES.md").write_text("\n".join(lines), encoding="utf-8", newline="\n")
 
 
 def source_lang(runes):
@@ -741,7 +775,6 @@ RUNE_RECIPES = {
     "wall": ["minecraft:obsidian", "minecraft:obsidian"],
     "orbit": ["minecraft:ender_eye"],
     "totem": ["minecraft:emerald_block"],
-    "stand": ["minecraft:armor_stand", "minecraft:soul_lantern"],
     "orb": ["minecraft:slime_block"],
     "lightning": ["minecraft:copper_block", "minecraft:glowstone"],
     "blink": ["minecraft:ender_pearl", "minecraft:chorus_fruit"],
@@ -811,7 +844,7 @@ def write_recipes(runes):
         assert path in by_path, path
     for r in runes:
         # Every Tier I-III rune can be crafted; Tier IV is found only (bosses and rare chests).
-        assert (r["path"] in RUNE_RECIPES) == (r["tier"] <= 3), f"{r['path']} (tier {r['tier']})"
+        assert (r["path"] in RUNE_RECIPES) == (r["tier"] <= 3 and r["path"] not in INNATE), f"{r['path']} (tier {r['tier']})"
     for path in RUNE_RECIPES:
         ingredients = rune_ingredients(by_path[path])
         assert len(ingredients) <= 9, path
@@ -902,6 +935,247 @@ def write_mana_data():
         "type": "minecraft:crafting_shaped", "category": "misc",
         "key": {"L": "minecraft:lapis_lazuli", "A": "minecraft:amethyst_shard", "D": "minecraft:diamond"},
         "pattern": ["LAL", "ADA", "LAL"], "result": {"id": "wildercord:mana_crystal"}})
+
+
+# ---------------------------------------------------------------- the Archive, the Grimoire and friends
+
+NEW_LANG = {
+    "command.wildercord.innate": "Your innate rune is now %s",
+    "command.wildercord.runebound": "Bound a Cord to the nearest monster",
+    "command.wildercord.no_monster": "No monster within 16 blocks",
+    # Items and blocks
+    "item.wildercord.spell_scroll": "Spell Scroll",
+    "item.wildercord.spell_scroll.named": "Scroll of %s",
+    "item.wildercord.torn_page": "Torn Page",
+    "item.wildercord.training_dummy": "Training Dummy",
+    "block.wildercord.wellstone": "Wellstone",
+    "block.wildercord.rune_seal": "Rune Seal",
+    "block.wildercord.archive_lectern": "Archive Lectern",
+    "entity.wildercord.archivist": "The Archivist",
+    "entity.wildercord.training_dummy": "Training Dummy",
+    "entity.wildercord.training_dummy.dps": "DPS %s · %s total",
+    "entity.wildercord.afterimage": "%s's Afterimage",
+    "tooltip.wildercord.scroll_blank": "Inscribe a spell from the Cord screen",
+    "tooltip.wildercord.scroll_author": "Inscribed by %s",
+    "tooltip.wildercord.scroll_use": "Right-click to cast it once. No Cord needed",
+    "tooltip.wildercord.torn_page": "Right-click to read the riddle of a secret spell",
+    "tooltip.wildercord.training_dummy": "Place it and try your spells: it shows every hit and your damage per second. Sneak and punch it to pick it up",
+    "category.wildercord.effect.innate": "Innate",
+    # Casting
+    "message.wildercord.overcast_prompt": "Not enough mana (%s/%s). Cast again to overcast: your %s Circle cracks for 3 minutes",
+    "message.wildercord.overcast": "Overcast! Your %s Circle cracks. It mends in %s minutes",
+    "message.wildercord.mended": "Your cracked circles have mended.",
+    "message.wildercord.rhythm": "\u266A Rhythm x%s (+%s%% power)",
+    "message.wildercord.charge_fizzled": "The charge fizzles",
+    "message.wildercord.leaning": "Your magic leans toward %s: its spells hit a little harder, and your circles take its colour.",
+    "message.wildercord.no_targets": "Nothing to strike nearby",
+    "message.wildercord.reborn": "Reborn in flame!",
+    "message.wildercord.innate": "Your innate rune awakens: %s. It's in your Codex, and it grows with every circle.",
+    "message.wildercord.innate_item": "An innate rune can't be learned from an item",
+    "message.wildercord.debt_forgiven": "Borrowed time repaid in full",
+    "message.wildercord.nothing_borrowed": "No hurt to borrow back",
+    "message.wildercord.borrowed": "Borrowed %s health. Slay something, or it comes back",
+    "message.wildercord.nothing_to_mirror": "No spell has hit you lately",
+    "title.wildercord.secret": "A secret spell",
+    "title.wildercord.innate": "Innate rune awakened",
+    "reaction.wildercord.ignite": "Ignite!",
+    "reaction.wildercord.collision": "Collision!",
+    "reaction.wildercord.unison": "Unison!",
+    "reaction.wildercord.shatter.desc": "Fire on a frozen target: +60% damage, and the ice bursts.",
+    "reaction.wildercord.conduct.desc": "Storm on a wet or soaked target: +50% damage, arcing to two more.",
+    "reaction.wildercord.wildfire.desc": "Fire on a target just thrown by wind: flames spread to everything around it.",
+    "reaction.wildercord.implode.desc": "A blast where enemies were just pulled together: 50% wider, 30% harder.",
+    "reaction.wildercord.collapse.desc": "Repel on enemies just pulled in: double damage.",
+    "message.wildercord.domain_clash": "Domain clash!",
+    "message.wildercord.domain_holds": "Your domain holds",
+    "message.wildercord.domain_shattered": "Your domain shatters",
+    "chat.wildercord.spell_cost": "%s mana · %ss cooldown",
+    "chat.wildercord.spell_copy": "Click to copy the code, then paste it in the Cord screen",
+    # Ley lines and the Wellstone
+    "message.wildercord.ley_first": "You stand on a ley line, where the world's mana runs close to the surface. Mana flows twice as fast here, and circles form twice as quickly. A Wellstone set on one becomes a well for everyone near it.",
+    "message.wildercord.ley_on": "A ley line runs beneath you",
+    "screen.wildercord.mana.regen_ley": "+%s%% on a ley line",
+    "screen.wildercord.mana.regen_well": "+%s%% from a Wellstone nearby",
+    "screen.wildercord.mana.way.ley": "Stand on a ley line (Cord-wearers see its violet motes), or set a Wellstone on one",
+    # The Archive
+    "message.wildercord.archivist_wakes": "Pages stir. The Archivist rises from its lectern.",
+    "message.wildercord.archivist_rewrites.2": "The Archivist tears out a page and rewrites its Cord.",
+    "message.wildercord.archivist_rewrites.3": "The Archivist burns its last pages. Its Cord blazes with new runes.",
+    "boss.wildercord.archivist_casting": "%s \u00B7 casting %s",
+    "boss.wildercord.archivist_rewriting": "%s \u00B7 rewriting its Cord",
+    "message.wildercord.page_nothing": "Nothing on this page you don't already know",
+    "message.wildercord.page_read": "The page is torn, but a riddle survives:",
+    "message.wildercord.page_map": "In the margin, a map: an Archive lies about %s blocks to the %s.",
+    "direction.wildercord.north": "north", "direction.wildercord.northeast": "northeast", "direction.wildercord.east": "east",
+    "direction.wildercord.southeast": "southeast", "direction.wildercord.south": "south", "direction.wildercord.southwest": "southwest",
+    "direction.wildercord.west": "west", "direction.wildercord.northwest": "northwest",
+    # Scrolls and codes
+    "message.wildercord.scroll_needs": "Inscribing a scroll takes paper and an ink sac",
+    "message.wildercord.scroll_mana": "Inscribing costs twice the spell's mana (%s/%s)",
+    "message.wildercord.inscribed": "Inscribed: %s",
+    "message.wildercord.code_copied": "Copied %s",
+    "message.wildercord.code_none": "No spell code (wc:...) on the clipboard",
+    "message.wildercord.code_loaded": "Spell loaded from the code",
+    "message.wildercord.code_partial": "Loaded, but %s rune(s) left out: not known, too strong, or no socket free",
+    # Toasts, the wheel and the Cord screen
+    "toast.wildercord.grimoire": "New in your Grimoire",
+    "toast.wildercord.riddle": "A riddle, found",
+    "toast.wildercord.riddle_hint": "See the Grimoire",
+    "screen.wildercord.wheel": "Spell wheel",
+    "screen.wildercord.wheel.empty": "(empty)",
+    "screen.wildercord.page.grimoire": "Grimoire",
+    "screen.wildercord.tool.rename": "Rename",
+    "screen.wildercord.tool.rename.hint": "Give this spell a name. Enter saves; an empty name goes back to the automatic one",
+    "screen.wildercord.tool.copy": "Copy spell code",
+    "screen.wildercord.tool.copy.hint": "Paste the code in chat and everyone can read the spell",
+    "screen.wildercord.tool.paste": "Paste spell code",
+    "screen.wildercord.tool.paste.hint": "Load a copied code into this spell (runes you know, that this Cord holds)",
+    "screen.wildercord.tool.scroll": "Inscribe a scroll",
+    "screen.wildercord.tool.scroll.hint": "Write this spell onto a scroll anyone can cast once. Takes paper, an ink sac and twice the mana",
+    "screen.wildercord.secret_line": "Secret spell: %s",
+    "screen.wildercord.grimoire.heart": "Your heart",
+    "screen.wildercord.grimoire.innate": "Innate rune: %s",
+    "screen.wildercord.grimoire.innate_none": "Innate rune: wakes at the 1st Circle",
+    "screen.wildercord.grimoire.leaning_none": "Leaning: none yet (cast one element %s times, more than the rest)",
+    "screen.wildercord.grimoire.leaning": "Leaning: %s (+%s%% power with it)",
+    "screen.wildercord.grimoire.reactions": "Reactions (%s of %s)",
+    "screen.wildercord.grimoire.secrets": "Secret spells (%s of %s)",
+    "screen.wildercord.grimoire.secret_unknown": "Some exact rune sequences are secret spells. Torn Pages hold their riddles.",
+    "screen.wildercord.grimoire.feats": "Feats (%s of %s)",
+    "screen.wildercord.heart.cracked": "Cracked by overcasting: %s circle(s), mending in %s",
+    "screen.wildercord.heart.innate": "Innate rune: %s (+%s%% from your circles)",
+    "screen.wildercord.heart.leaning": "Leaning: %s (+%s%% power)",
+    "screen.wildercord.heart.need.reactions": "Set off %s different reactions (%s)",
+    "screen.wildercord.heart.need.runebound": "Slay %s Runebound (%s)",
+    "screen.wildercord.heart.need.secrets": "Find %s secret spells (%s)",
+    "screen.wildercord.heart.need.feat": "%s: %s",
+}
+
+ARCHIVE_LAND = ["#minecraft:is_taiga", "#minecraft:is_jungle", "#minecraft:is_forest", "#minecraft:is_savanna", "#minecraft:is_badlands",
+                "minecraft:plains", "minecraft:sunflower_plains", "minecraft:snowy_plains", "minecraft:desert", "minecraft:meadow",
+                "minecraft:cherry_grove", "minecraft:snowy_taiga", "minecraft:grove"]
+
+
+def rune_entry(path, weight):
+    return {"type": "minecraft:item", "name": "wildercord:rune", "weight": weight,
+            "functions": [{"function": "minecraft:set_components", "components": {"wildercord:rune": f"wildercord:{path}"}}]}
+
+
+def item_entry(item, weight, low=1, high=1):
+    entry = {"type": "minecraft:item", "name": item, "weight": weight}
+    if high > 1:
+        entry["functions"] = [{"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": low, "max": high}}]
+    return entry
+
+
+def write_new_content(runes):
+    tex = ASSETS / "textures"
+    # ---- items
+    save(world_art.spell_scroll_icon(), tex / "item/spell_scroll.png")
+    save(world_art.torn_page_icon(), tex / "item/torn_page.png")
+    save(world_art.training_dummy_icon(), tex / "item/training_dummy.png")
+    for name in ("spell_scroll", "torn_page", "training_dummy"):
+        item_model(name, name)
+        write_json(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}})
+
+    # ---- the Wellstone: dim off a ley line, glowing on one
+    well = world_art.wellstone_textures()
+    for key, image in well.items():
+        save(image, tex / f"block/{key}.png")
+    for state in ("", "_active"):
+        write_json(ASSETS / f"models/block/wellstone{state}.json", {"parent": "minecraft:block/cube_bottom_top", "textures": {
+            "side": f"wildercord:block/wellstone_side{state}", "top": f"wildercord:block/wellstone_top{state}", "bottom": "wildercord:block/wellstone_bottom"}})
+    write_json(ASSETS / "blockstates/wellstone.json", {"variants": {
+        "active=false": {"model": "wildercord:block/wellstone"}, "active=true": {"model": "wildercord:block/wellstone_active"}}})
+    write_json(ASSETS / "items/wellstone.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/wellstone_active"}})
+
+    # ---- Rune Seals: one model per element, dark and lit
+    seals = world_art.rune_seal_textures()
+    variants = {}
+    for element, (unlit, lit) in seals.items():
+        save(unlit, tex / f"block/rune_seal_{element}.png")
+        save(lit, tex / f"block/rune_seal_{element}_lit.png")
+        for suffix in ("", "_lit"):
+            write_json(ASSETS / f"models/block/rune_seal_{element}{suffix}.json", {"parent": "minecraft:block/cube_all",
+                "textures": {"all": f"wildercord:block/rune_seal_{element}{suffix}"}})
+        variants[f"element={element},lit=false"] = {"model": f"wildercord:block/rune_seal_{element}"}
+        variants[f"element={element},lit=true"] = {"model": f"wildercord:block/rune_seal_{element}_lit"}
+    write_json(ASSETS / "blockstates/rune_seal.json", {"variants": variants})
+    write_json(ASSETS / "items/rune_seal.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/rune_seal_arcane_lit"}})
+
+    # ---- the Archive Lectern: a squat plinth with an open book on top
+    lectern = world_art.archive_lectern_textures()
+    for key, image in lectern.items():
+        save(image, tex / f"block/archive_lectern_{key}.png")
+    face = lambda t, uv=(2, 2, 14, 14): {"texture": f"#{t}", "uv": list(uv)}
+    write_json(ASSETS / "models/block/archive_lectern.json", {
+        "parent": "minecraft:block/block",
+        "textures": {"particle": "wildercord:block/archive_lectern_side", "top": "wildercord:block/archive_lectern_top",
+                     "side": "wildercord:block/archive_lectern_side", "front": "wildercord:block/archive_lectern_front",
+                     "bottom": "wildercord:block/archive_lectern_bottom"},
+        "elements": [{"from": [2, 0, 2], "to": [14, 14, 14], "faces": {
+            "down": face("bottom"), "up": face("top"),
+            "north": face("front", (2, 2, 14, 16)), "south": face("side", (2, 2, 14, 16)),
+            "west": face("side", (2, 2, 14, 16)), "east": face("side", (2, 2, 14, 16))}}]})
+    write_json(ASSETS / "blockstates/archive_lectern.json", {"variants": {
+        "awake=false": {"model": "wildercord:block/archive_lectern"}, "awake=true": {"model": "wildercord:block/archive_lectern"}}})
+    write_json(ASSETS / "items/archive_lectern.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/archive_lectern"}})
+
+    # ---- entity skins
+    save(world_art.archivist_texture(), tex / "entity/archivist.png")
+    save(world_art.dummy_texture(), tex / "entity/training_dummy.png")
+
+    # ---- loot
+    write_json(DATA / "loot_table/blocks/wellstone.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": "wildercord:wellstone"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    rollable = [r for r in runes if r["path"] not in INNATE]
+    third = [r["path"] for r in rollable if r["tier"] == 3]
+    second = [r["path"] for r in rollable if r["tier"] == 2]
+    fourth = [r["path"] for r in rollable if r["tier"] == 4]
+    write_json(DATA / "loot_table/chests/archive_library.json", {"type": "minecraft:chest", "pools": [
+        {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 3}, "entries": [rune_entry(p, 3) for p in second] + [rune_entry(p, 2) for p in third]},
+        {"rolls": {"type": "minecraft:uniform", "min": 1, "max": 2}, "entries": [
+            item_entry("wildercord:torn_page", 6), item_entry("wildercord:mana_crystal", 3), item_entry("wildercord:blank_rune", 4, 2, 5),
+            item_entry("minecraft:book", 4, 1, 3), item_entry("minecraft:lapis_lazuli", 4, 3, 9), item_entry("minecraft:amethyst_shard", 3, 2, 6)]},
+    ]})
+    write_json(DATA / "loot_table/chests/archive_vault.json", {"type": "minecraft:chest", "pools": [
+        {"rolls": 1, "entries": [rune_entry(p, 1) for p in fourth]},
+        {"rolls": {"type": "minecraft:uniform", "min": 1, "max": 2}, "entries": [rune_entry(p, 1) for p in third]},
+        {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 3}, "entries": [
+            item_entry("wildercord:mana_crystal", 4, 1, 2), item_entry("wildercord:torn_page", 4), item_entry("minecraft:diamond", 2, 1, 3),
+            item_entry("minecraft:gold_ingot", 3, 2, 6), item_entry("minecraft:echo_shard", 1)]},
+    ]})
+
+    # ---- recipes
+    write_json(DATA / "recipe/wellstone.json", {
+        "type": "minecraft:crafting_shaped", "category": "building",
+        "key": {"A": "minecraft:amethyst_block", "M": "wildercord:mana_crystal", "D": "minecraft:polished_deepslate", "T": "minecraft:deepslate_tiles"},
+        "pattern": ["DAD", "AMA", "TTT"], "result": {"id": "wildercord:wellstone"}})
+    unlock_advancement("wildercord:wellstone", "wildercord:mana_crystal")
+    write_json(DATA / "recipe/training_dummy.json", {
+        "type": "minecraft:crafting_shaped", "category": "misc",
+        "key": {"W": "minecraft:white_wool", "H": "minecraft:hay_block", "S": "minecraft:stick", "B": "minecraft:smooth_stone_slab"},
+        "pattern": [" W ", "SHS", " B "], "result": {"id": "wildercord:training_dummy"}})
+    unlock_advancement("wildercord:training_dummy", "wildercord:twine_cord")
+
+    # ---- mining
+    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone"]})
+
+    # ---- the Archive in the world
+    write_json(DATA / "worldgen/structure/archive.json", {
+        "type": "wildercord:archive",
+        "biomes": "#wildercord:has_structure/archive",
+        "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": [
+            {"type": "minecraft:skeleton", "weight": 3, "count": 1},
+            {"type": "minecraft:zombie", "weight": 3, "count": 1},
+            {"type": "minecraft:witch", "weight": 1, "count": 1}]}},
+        "step": "underground_structures",
+        "terrain_adaptation": "none"})
+    write_json(DATA / "worldgen/structure_set/archives.json", {
+        "placement": {"type": "minecraft:random_spread", "salt": 20260927, "separation": 14, "spacing": 44},
+        "structures": [{"structure": "wildercord:archive", "weight": 1}]})
+    write_json(DATA / "tags/worldgen/biome/has_structure/archive.json", {"values": ARCHIVE_LAND})
+    write_json(DATA / "tags/worldgen/structure/archive.json", {"values": ["wildercord:archive"]})
 
 
 if __name__ == "__main__":

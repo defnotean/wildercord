@@ -41,6 +41,7 @@ public final class SpellHud {
 	private static final Identifier BADGE = Wildercord.id("hud/badge");
 	private static final Identifier BAR = Wildercord.id("hud/bar_frame");
 	private static final Identifier FILL = Wildercord.id("hud/mana_fill");
+	private static final Identifier BEAT = Wildercord.id("hud/beat_ring");
 
 	private static final int HEIGHT = 32;
 	private static final int BODY_X = 28;
@@ -109,16 +110,20 @@ public final class SpellHud {
 		int costW = font.width(cost);
 		int iconSize = 10;
 		int shown = runes.size();
-		int bodyW = bodyWidth(shown, iconSize, costW, font);
+		// The bottom row holds the mana count (and its boost chevron) and, on the right, the charge,
+		// the cooldown or the passives' drain: the panel is never narrower than both side by side.
+		int row3 = font.width(maxMana + "/" + maxMana) + 6 + 4
+			+ Math.max(font.width("100%"), Math.max(font.width("FULL"), font.width("20.0s")));
+		int bodyW = Math.max(row3, bodyWidth(shown, iconSize, costW, font));
 		if (BODY_X + bodyW + 4 > avail) {
 			iconSize = 8;
-			bodyW = bodyWidth(shown, iconSize, costW, font);
+			bodyW = Math.max(row3, bodyWidth(shown, iconSize, costW, font));
 		}
 		String more = "";
 		while (shown > 1 && BODY_X + bodyW + 4 > avail) {
 			shown--;
 			more = "+" + (runes.size() - shown);
-			bodyW = Math.max(MIN_BODY, shown * iconSize + 2 + font.width(more) + 4 + costW);
+			bodyW = Math.max(row3, Math.max(MIN_BODY, shown * iconSize + 2 + font.width(more) + 4 + costW));
 		}
 		int width = BODY_X + bodyW + 4;
 		if (width > avail) {
@@ -128,6 +133,30 @@ public final class SpellHud {
 
 		sprite(g, FRAME, x0, y0, width, HEIGHT);
 
+		// ---- above the panel: the spell's name, rhythm notes and cracked circles.
+		long gameTime = player.level().getGameTime();
+		dev.wildercord.player.WildercordAttachments.Rhythm rhythm = player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.RHYTHM,
+			dev.wildercord.player.WildercordAttachments.Rhythm.NONE);
+		int above = y0 - 10;
+		int lx = x0 + 3;
+		for (int i = 0; i < rhythm.stacks(); i++) {
+			g.text(font, "\u266A", lx, above, GOLD, true);
+			lx += 6;
+		}
+		int cracked = dev.wildercord.player.Heart.cracked(player);
+		if (cracked > 0) {
+			String crack = "\u2726" + cracked;
+			g.text(font, crack, lx + 1, above, RED, true);
+			lx += font.width(crack) + 3;
+		}
+		if (compiled != null) {
+			String name = SpellCaster.nameOf(book, spell, runes);
+			int nameX = Math.max(lx + 3, x0 + BODY_X);
+			String nameShown = font.plainSubstrByWidth(name, Math.max(20, g.guiWidth() - nameX - 4));
+			int nameColor = 0xFF000000 | spellColor(runes);
+			g.text(font, nameShown, nameX, above, nameColor, true);
+		}
+
 		// ---- badge: spell number, cooldown shade, and one dot per spell.
 		int bx = x0 + 4;
 		int by = y0 + 4;
@@ -136,6 +165,18 @@ public final class SpellHud {
 			int total = Math.max(1, dev.wildercord.player.Heart.cooldownTicks(player, compiled));
 			int shade = (int) Math.ceil(14 * Math.min(1.0, remaining / (double) total));
 			g.fill(bx + 3, by + 3 + (14 - shade), bx + 17, by + 17, 0x90000000);
+		}
+		// The beat: a ring closes in on the badge as the next on-beat moment comes, and glows during it.
+		if (rhythm.windowEnd() >= gameTime && rhythm.windowStart() - gameTime <= 16) {
+			float partial = delta.getGameTimeDeltaPartialTick(false);
+			double until = rhythm.windowStart() - gameTime - partial;
+			boolean onBeat = until <= 0;
+			int size = onBeat ? 22 : 22 + (int) Math.round(18 * Math.min(1, until / 16.0));
+			int alpha = onBeat ? 0xFF : (int) (0x60 + 0x9F * (1 - Math.min(1, until / 16.0)));
+			g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, bx + 10 - size / 2, by + 10 - size / 2, size, size, (alpha << 24) | 0xFFFFFF);
+			if (onBeat) {
+				g.fill(bx + 3, by + 3, bx + 17, by + 17, 0x40F5D56A);
+			}
 		}
 		String number = Integer.toString(spell + 1);
 		int numberColor = compiled == null ? DIM : !affordable ? RED : GOLD;
@@ -196,13 +237,21 @@ public final class SpellHud {
 		String manaText = (int) mana + "/" + maxMana;
 		g.text(font, manaText, rx, textY, stats.boosted() ? 0xFF7FE0F0 : 0xFFA898E8, true);
 		if (stats.boosted()) {
-			// A small up-chevron: regeneration is boosted right now.
+			// A small up-chevron: regeneration is boosted right now (violet on a ley line or by a Wellstone).
+			int chevron = stats.ley() || stats.well() ? 0xFFB8A0FF : 0xFF7FE0F0;
 			int cx = rx + font.width(manaText) + 2;
-			g.fill(cx + 2, textY + 1, cx + 3, textY + 2, 0xFF7FE0F0);
-			g.fill(cx + 1, textY + 2, cx + 4, textY + 3, 0xFF7FE0F0);
-			g.fill(cx, textY + 3, cx + 5, textY + 4, 0xFF7FE0F0);
+			g.fill(cx + 2, textY + 1, cx + 3, textY + 2, chevron);
+			g.fill(cx + 1, textY + 2, cx + 4, textY + 3, chevron);
+			g.fill(cx, textY + 3, cx + 5, textY + 4, chevron);
 		}
-		if (cooling) {
+		dev.wildercord.player.WildercordAttachments.Charge charge = player.getAttached(dev.wildercord.player.WildercordAttachments.CHARGE);
+		if (charge != null) {
+			double progress = dev.wildercord.cast.Charging.progress(charge, gameTime);
+			String text = progress >= 1 ? "FULL" : Math.round(progress * 100) + "%";
+			int tw = font.width(text);
+			boolean blink = progress >= 1 && (gameTime / 4) % 2 == 0;
+			g.text(font, text, x0 + width - 4 - tw, textY, blink ? 0xFFFFFFFF : GOLD, true);
+		} else if (cooling) {
 			String time = String.format(Locale.ROOT, "%.1fs", remaining / 20.0);
 			int tw = font.width(time);
 			if (rx + font.width(manaText) + 4 + tw <= x0 + width - 4) {
@@ -219,6 +268,15 @@ public final class SpellHud {
 				}
 			}
 		}
+	}
+
+	private static int spellColor(List<RuneDef> runes) {
+		for (RuneDef rune : runes) {
+			if (rune.family() == dev.wildercord.spell.RuneFamily.EFFECT) {
+				return dev.wildercord.spell.RuneColors.of(rune);
+			}
+		}
+		return 0xE8C46A;
 	}
 
 	private static int bodyWidth(int icons, int iconSize, int costW, Font font) {

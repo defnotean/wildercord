@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20260927,
+    "separation": 14,
+    "spacing": 44
+  },
+  "structures": [
+    {
+      "structure": "wildercord:archive",
+      "weight": 1
+    }
+  ]
+}

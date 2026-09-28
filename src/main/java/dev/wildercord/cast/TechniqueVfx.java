@@ -1,7 +1,8 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.content.SigilOption;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -34,8 +35,8 @@ final class TechniqueVfx {
 		return new DustParticleOptions(color, scale);
 	}
 
-	private static ColorParticleOption flash(int color) {
-		return ColorParticleOption.create(ParticleTypes.FLASH, 0xFF000000 | color);
+	private static SigilOption flash(int color) {
+		return SigilOption.glow(color, 2.2F);
 	}
 
 	private static void dot(ServerLevel level, ParticleOptions p, Vec3 at) {
@@ -85,71 +86,6 @@ final class TechniqueVfx {
 
 	// ------------------------------------------------------------------ shapes
 
-	static void standRise(ServerLevel level, Vec3 body, Vfx.Theme theme) {
-		Vfx.emit(level, theme.flash(), body, 1, 0.0, 0.0);
-		Vfx.radial(level, theme.mote(), body, 20, 0.15);
-		Vfx.helix(level, body.subtract(0, 1.3, 0), 0.45, 1.9, theme, 8);
-		Fx.sound(level, body, SoundEvents.RESPAWN_ANCHOR_CHARGE, 0.7F, 1.5F);
-		Fx.sound(level, body, SoundEvents.EVOKER_PREPARE_SUMMON, 0.5F, 1.6F);
-	}
-
-	/** The guardian spirit: a head with glowing eyes, broad shoulders and a body that fades into a wisp. */
-	static void standFigure(ServerLevel level, Vec3 body, Vec3 look, Vfx.Theme theme, int tick) {
-		Vec3 f = flat(look);
-		Vec3 r = f.cross(UP).normalize();
-		DustParticleOptions skin = dust(theme.primary(), 0.75F);
-		DustParticleOptions edge = dust(theme.secondary(), 0.55F);
-		Vec3 head = body.add(0, 0.55, 0);
-		for (int i = 0; i < 8; i++) {
-			double a = Math.PI * 2 * i / 8;
-			dot(level, skin, head.add(r.scale(Math.cos(a) * 0.17)).add(0, Math.sin(a) * 0.17, 0));
-		}
-		dot(level, dust(0xFFFFFF, 0.45F), head.add(f.scale(0.16)).add(r.scale(0.07)).add(0, 0.02, 0));
-		dot(level, dust(0xFFFFFF, 0.45F), head.add(f.scale(0.16)).add(r.scale(-0.07)).add(0, 0.02, 0));
-		for (int s = -3; s <= 3; s++) {
-			dot(level, skin, body.add(0, 0.3, 0).add(r.scale(s * 0.1)));
-		}
-		for (int k = 0; k < 5; k++) {
-			double y = 0.18 - k * 0.14;
-			double w = 0.24 - k * 0.04;
-			dot(level, k < 3 ? skin : edge, body.add(0, y, 0).add(r.scale(w)));
-			dot(level, k < 3 ? skin : edge, body.add(0, y, 0).add(r.scale(-w)));
-		}
-		// Arms, raised and ready.
-		double swing = Math.sin(tick * 0.4) * 0.05;
-		for (int side : new int[] {1, -1}) {
-			Vec3 shoulder = body.add(0, 0.28, 0).add(r.scale(side * 0.34));
-			dot(level, skin, shoulder.add(f.scale(0.12)).add(0, -0.12, 0));
-			dot(level, edge, shoulder.add(f.scale(0.26 + swing * side)).add(0, -0.05, 0));
-		}
-		Vfx.emit(level, theme.fade(0.6F), body.add(0, -0.55, 0), 1, 0.06, 0.0);
-		if (tick % 6 == 0) {
-			Vfx.emit(level, theme.mote(), body, 1, 0.3, 0.01);
-		}
-	}
-
-	/** A flurry of fists on the target: flashes, sparks and streaks from the spirit, over four ticks. */
-	static void standStrike(ServerLevel level, Vec3 body, Vec3 target, Vfx.Theme theme) {
-		Vec3 dir = target.subtract(body).normalize();
-		for (int i = 0; i < 4; i++) {
-			Scheduler.later(i, () -> {
-				Vec3 at = target.add((level.getRandom().nextDouble() - 0.5) * 0.7, (level.getRandom().nextDouble() - 0.5) * 0.7,
-					(level.getRandom().nextDouble() - 0.5) * 0.7);
-				dot(level, theme.flash(), at);
-				Vfx.radial(level, ParticleTypes.CRIT, at, 6, 0.3);
-				Vec3 from = body.add(dir.scale(0.3));
-				Fx.send(level, theme.trail(at, 4), from.x, from.y, from.z, 2, 0.1, 0.1, 0.1, 0);
-				Fx.sound(level, at, SoundEvents.PLAYER_ATTACK_STRONG, 0.5F, 0.9F + level.getRandom().nextFloat() * 0.6F);
-			});
-		}
-	}
-
-	static void standFade(ServerLevel level, Vec3 body, Vfx.Theme theme) {
-		Vfx.emit(level, ParticleTypes.SOUL, body, 8, 0.25, 0.03);
-		Vfx.radial(level, theme.mote(), body, 12, 0.1);
-		Fx.sound(level, body, SoundEvents.RESPAWN_ANCHOR_DEPLETE, 0.5F, 1.6F);
-	}
-
 	/** Domain particles are seen from afar (the far side of a big dome is often 30+ blocks away). */
 	private static void far(ServerLevel level, ParticleOptions p, Vec3 at) {
 		Fx.sendFar(level, p, at);
@@ -169,157 +105,154 @@ final class TechniqueVfx {
 		return (float) Math.min(3.0, 1.0 + radius / 12.0);
 	}
 
-	/** Domain: the dome grows out from the centre over ten ticks. */
-	static void domainOpen(ServerLevel level, Vec3 c, double radius, Vfx.Theme theme) {
-		Vfx.emit(level, theme.flash(), c.add(0, 1, 0), 1, 0.0, 0.0);
+	/**
+	 * Domain opens: the spell's own magic circle spreads across the whole floor of it (readable like
+	 * any other), a flare, and the dome rising in rings.
+	 */
+	static void domainOpen(ServerLevel level, Vec3 c, double radius, Vfx.Theme theme, java.util.List<dev.wildercord.spell.RuneDef> spell, int lifetime) {
+		if (!spell.isEmpty()) {
+			Sigils.spell(level, c.add(0, 0.07, 0), UP, spell, theme.primary(), (float) radius, lifetime);
+		} else {
+			Sigils.ground(level, c, theme.primary(), theme.secondary(), (float) radius, lifetime);
+		}
+		Sigils.flash(level, c.add(0, 1, 0), theme.primary(), (float) Math.min(8, radius));
+		for (int t = 0; t < 5; t++) {
+			double lat = (t + 1) / 6.0;
+			Scheduler.later(2 + t * 2, () -> Light.ring(level, c.add(0, radius * Math.sin(lat * Math.PI / 2), 0), UP, theme.primary(),
+				radius * Math.cos(lat * Math.PI / 2) * 0.6, radius * Math.cos(lat * Math.PI / 2), domainLine(radius), 14));
+		}
 		Fx.sound(level, c, SoundEvents.END_PORTAL_SPAWN, 0.45F, 1.3F);
 		Fx.sound(level, c, SoundEvents.BEACON_ACTIVATE, 1.0F, 0.7F);
-		float size = frameSize(radius);
-		for (int t = 0; t < 10; t++) {
-			double r = radius * (t + 1) / 10;
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				// Rings stacked up the growing dome, then the ground ring.
-				for (double lat = 0.15; lat < 0.95; lat += 0.2) {
-					farRing(level, theme.fade(size), c.add(0, r * Math.sin(lat * Math.PI / 2), 0), r * Math.cos(lat * Math.PI / 2), 1.1, tick * 0.2);
-				}
-				farRing(level, theme.dust(size), c.add(0, 0.1, 0), r, 0.8, 0.0);
-			});
-		}
 	}
 
-	/** Domain: a wireframe dome (rings and meridians), a runic ground ring and a dim interior. */
+	/** How wide a domain's lines are: wider for bigger domains, so the far side still reads. */
+	private static double domainLine(double radius) {
+		return 0.06 + radius * 0.006;
+	}
+
+	/** Domain: a dome of light (meridians and parallels) breathing over the circle, and a dim interior. */
 	static void domainShell(ServerLevel level, Vec3 c, double radius, Vfx.Theme theme, int tick) {
-		// Redrawn every half second: dust lingers, so drawing more often only turns the frame to confetti.
-		if (tick % 10 != 0) {
-			return;
-		}
-		float size = frameSize(radius);
-		DustParticleOptions frame = theme.dust(size);
-		DustParticleOptions bright = dust(theme.secondary(), size * 0.9F);
-		double spacing = 1.1 + radius / 30.0;
-		for (double lat : new double[] {0.25, 0.5, 0.72, 0.9}) {
-			double y = radius * Math.sin(lat * Math.PI / 2);
-			double r = radius * Math.cos(lat * Math.PI / 2);
-			farRing(level, lat == 0.5 ? bright : frame, c.add(0, y, 0), r, spacing, tick * 0.01);
-		}
-		double spin = tick * 0.02;
-		int meridians = radius > 14 ? 12 : 8;
-		int steps = (int) Math.max(10, Math.min(60, (Math.PI / 2) * radius / spacing));
-		for (int m = 0; m < meridians; m++) {
-			double a = spin + Math.PI * 2 * m / meridians;
-			for (int i = 0; i <= steps; i++) {
-				double phi = (Math.PI / 2) * i / steps;
-				far(level, frame, c.add(Math.cos(a) * Math.cos(phi) * radius, Math.sin(phi) * radius, Math.sin(a) * Math.cos(phi) * radius));
+		if (tick % 20 == 0) {
+			double w = domainLine(radius);
+			double spin = tick * 0.01;
+			for (int m = 0; m < 4; m++) {
+				double a = spin + Math.PI * m / 4;
+				// A meridian: a vertical great circle (its lower half is under the floor, out of sight).
+				Light.ring(level, c, new Vec3(Math.cos(a), 0, Math.sin(a)), theme.primary(), radius, radius, w, 30);
 			}
+			for (double lat : new double[] {0.3, 0.6, 0.85}) {
+				Light.ring(level, c.add(0, radius * Math.sin(lat * Math.PI / 2), 0), UP, lat == 0.6 ? theme.secondary() : theme.primary(),
+					radius * Math.cos(lat * Math.PI / 2), radius * Math.cos(lat * Math.PI / 2), w, 30);
+			}
+			Light.groundRing(level, c, theme.primary(), radius, radius, w * 1.5, 30);
 		}
-		far(level, bright, c.add(0, radius, 0));
 		if (tick % 10 == 0) {
-			farRing(level, theme.dust(size * 0.8F), c.add(0, 0.1, 0), radius, spacing * 0.8, 0.0);
-			farRing(level, dust(theme.secondary(), 0.9F), c.add(0, 0.1, 0), radius * 0.62, spacing, 0.0);
-			for (int i = 0; i < 8; i++) {
-				double a = tick * 0.03 + Math.PI * 2 * i / 8;
-				Vec3 mark = c.add(Math.cos(a) * radius * 0.82, 0.12, Math.sin(a) * radius * 0.82);
-				far(level, theme.dust(1.8F), mark);
-				Vfx.fling(level, ParticleTypes.ENCHANT, mark, UP, 0.4);
+			for (int i = 0; i < 6; i++) {
+				double a = tick * 0.03 + Math.PI * 2 * i / 6;
+				Vfx.fling(level, ParticleTypes.ENCHANT, c.add(Math.cos(a) * radius * 0.82, 0.12, Math.sin(a) * radius * 0.82), UP, 0.4);
 			}
 		}
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 4; i++) {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			double rr = Math.sqrt(level.getRandom().nextDouble()) * radius * 0.9;
 			dot(level, dust(0x2A1A40, 0.9F), c.add(Math.cos(a) * rr, 0.3 + level.getRandom().nextDouble() * radius * 0.6, Math.sin(a) * rr));
 		}
 	}
 
+	/** Domain strikes: a wave of light across the floor, and light pouring down from the crown of the dome. */
 	static void domainStrike(ServerLevel level, Vec3 c, double radius, Vfx.Theme theme) {
-		farRing(level, theme.dust(frameSize(radius)), c.add(0, 0.15, 0), radius * 0.96, 0.7, 0.0);
+		Light.groundRing(level, c, theme.primary(), radius * 0.1, radius * 0.98, domainLine(radius) * 1.6, 12);
+		Light.ray(level, c.add(0, radius, 0), c.add(0, 0.2, 0), theme.secondary(), 0.12 + radius * 0.01, 8);
+		Sigils.flash(level, c.add(0, radius, 0), theme.primary(), 2.5F);
 		Vfx.emit(level, theme.sparkle(), c.add(0, 1.5, 0), 8, radius * 0.4, 0.0);
 		Fx.sound(level, c, theme.impact(), 0.8F, 0.7F);
 	}
 
+	/** Domain closes: the dome falls in on itself and the floor cracks. */
 	static void domainClose(ServerLevel level, Vec3 c, double radius, Vfx.Theme theme) {
-		float size = frameSize(radius);
-		for (int t = 0; t < 6; t++) {
-			double r = radius * (1 - (t + 1) / 7.0);
-			Scheduler.later(t + 1, () -> {
-				for (double lat = 0.15; lat < 0.95; lat += 0.25) {
-					farRing(level, theme.fade(size), c.add(0, r * Math.sin(lat * Math.PI / 2), 0), r * Math.cos(lat * Math.PI / 2), 1.2, 0.0);
-				}
-			});
+		double w = domainLine(radius);
+		for (int m = 0; m < 4; m++) {
+			double a = Math.PI * m / 4;
+			Light.ring(level, c, new Vec3(Math.cos(a), 0, Math.sin(a)), theme.primary(), radius, radius * 0.1, w, 10);
 		}
-		Vfx.emit(level, theme.flash(), c.add(0, 1, 0), 1, 0.0, 0.0);
+		Light.groundRing(level, c, theme.secondary(), radius, radius * 0.05, w * 1.5, 10);
+		Sigils.send(level, SigilOption.flat(SigilOption.CRACKED, theme.primary(), (float) radius * 0.8F, 30, 0.0F), c.add(0, 0.09, 0));
+		Sigils.flash(level, c.add(0, 1, 0), theme.primary(), (float) Math.min(8, radius));
 		Fx.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 1.0F, 0.8F);
 	}
 
-	/** Crescent: a bright curved blade edge with a paler trailing band. */
+	/** Crescent: a blade of light, white at its edge, sweeping forward with a paler echo behind it. */
 	static void crescent(ServerLevel level, Vec3 front, Vec3 aim, Vec3 side, double width, Vfx.Theme theme, int tick) {
-		int points = (int) Math.max(10, width * 5);
-		for (int i = 0; i < points; i++) {
-			double s = -1 + 2.0 * i / (points - 1);
-			Vec3 p = front.add(side.scale(s * width / 2)).subtract(aim.scale(0.8 * s * s)).add(0, s * 0.15, 0);
-			dot(level, theme.dust(1.4F - 0.6F * (float) Math.abs(s)), p);
-			if (i % 2 == 0) {
-				dot(level, dust(theme.secondary(), 0.8F), p.subtract(aim.scale(0.35)));
-			}
-		}
+		double radius = width * 0.62;
+		double span = 2 * Math.asin(Math.min(0.99, width / 2 / radius));
+		// A slight tilt, like a real swing.
+		Vec3 normal = UP.add(side.scale(0.18)).normalize();
+		Vec3 centre = front.subtract(aim.scale(radius * 0.8));
+		Light.slash(level, centre, normal, aim, theme.primary(), radius, span, tick == 0 ? 0.42 : 0.34, tick == 0 ? 2 : 1, 4);
 		if (tick % 2 == 0) {
-			dot(level, ParticleTypes.SWEEP_ATTACK, front);
+			Light.slash(level, centre.subtract(aim.scale(0.6)), normal, aim, theme.secondary(), radius * 0.95, span * 0.9, 0.16, 1, 4);
 		}
 		Vfx.emit(level, theme.mote(), front, 2, width * 0.2, 0.01);
 	}
 
-	/** One blow of a Barrage: a fist flash and crit sparks; the last blow lands with a bang. */
+	/** One blow of a Barrage: a quick arc of light and a flare where it lands; the last lands with a bang. */
 	static void barrageBlow(ServerLevel level, Vec3 origin, Vec3 front, Vfx.Theme theme, int blow, boolean last) {
 		Vec3 at = front.add((level.getRandom().nextDouble() - 0.5) * 0.8, (level.getRandom().nextDouble() - 0.5) * 0.8,
 			(level.getRandom().nextDouble() - 0.5) * 0.8);
-		Vfx.emit(level, ParticleTypes.CRIT, at, 5, 0.1, 0.25);
-		Vfx.emit(level, theme.dust(1.4F), at, 3, 0.12, 0.0);
 		Vec3 dir = at.subtract(origin).normalize();
-		Vec3 from = origin.add(dir.scale(0.8));
-		Fx.send(level, theme.trail(at, 3), from.x, from.y, from.z, 1, 0.05, 0.05, 0.05, 0);
+		// Each blow swings on its own tilt around the line of the punch.
+		double tilt = level.getRandom().nextDouble() * Math.PI;
+		Vec3 side = dir.cross(UP);
+		side = side.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : side.normalize();
+		Vec3 up = side.cross(dir).normalize();
+		Vec3 normal = up.scale(Math.cos(tilt)).add(side.scale(Math.sin(tilt)));
+		Light.slash(level, at.subtract(dir.scale(0.5)), normal, dir, blow % 2 == 0 ? theme.primary() : theme.secondary(), 0.55, 2.3, 0.14, 1, 4);
+		Vfx.emit(level, SigilOption.glow(theme.primary(), 0.8F), at, 1, 0.0, 0.0);
+		Vfx.emit(level, ParticleTypes.CRIT, at, 4, 0.1, 0.25);
 		Fx.sound(level, at, blow % 2 == 0 ? SoundEvents.PLAYER_ATTACK_WEAK : SoundEvents.PLAYER_ATTACK_STRONG, 0.55F, 0.9F + blow * 0.05F);
 		if (last) {
-			dot(level, theme.flash(), front);
+			Sigils.flash(level, front, theme.primary(), 2.2F);
+			Light.ring(level, front, dir, theme.primary(), 0.2, 1.8, 0.07, 10);
+			Light.groundRing(level, front.subtract(0, 0.5, 0), theme.secondary(), 0.3, 1.8, 0.06, 10);
 			Vfx.radial(level, theme.spark(), front, 16, 0.3);
-			Vfx.shockwave(level, front.subtract(0, 0.5, 0), 1.4, theme, 3);
 			Fx.sound(level, front, SoundEvents.PLAYER_ATTACK_KNOCKBACK, 1.0F, 0.8F);
 		}
 	}
 
-	/** Orb: a glowing core, a shell, and a tilted ring turning around it. */
+	/** Orb: a glowing core wrapped in three turning rings, drifting forward. */
 	static void orb(ServerLevel level, Vec3 pos, double radius, Vfx.Theme theme, int tick) {
-		double core = radius * 0.45;
-		sphere(level, theme.dust(1.6F), pos, core, 22, tick * 0.3, false);
-		for (int i = 0; i < 12; i++) {
-			double a = tick * 0.35 + Math.PI * 2 * i / 12;
-			Vec3 p = pos.add(Math.cos(a) * core * 1.7, Math.sin(a) * core * 0.6, Math.sin(a) * core * 1.7 * 0.5);
-			dot(level, dust(theme.secondary(), 0.8F), p);
-		}
-		Vfx.emit(level, theme.sparkle(), pos, 2, core * 0.4, 0.0);
+		Light.orb(level, pos, theme.primary(), radius * 0.4, 2);
+		Vfx.emit(level, SigilOption.glow(theme.secondary(), (float) (radius * 1.1)), pos, 1, 0.0, 0.0);
 		if (tick % 3 == 0) {
-			Vfx.emit(level, theme.mote(), pos, 2, core, 0.02);
+			Vfx.emit(level, theme.mote(), pos, 2, radius * 0.4, 0.02);
 		}
 		if (tick % 10 == 0) {
 			Fx.sound(level, pos, SoundEvents.BEACON_AMBIENT, 0.8F, 1.4F);
 		}
 	}
 
-	/** Blitz: a crackling streak with afterimages where you were. */
+	/** Blitz: a streak of light where you were, afterimages along it, and a cross of slashes where you land. */
 	static void blitz(ServerLevel level, Vec3 a, Vec3 b, Vfx.Theme theme) {
 		Vec3 d = b.subtract(a);
 		double length = d.length();
-		dot(level, theme.flash(), a);
+		Sigils.flash(level, a, theme.primary(), 1.6F);
 		if (length > 0.1) {
-			line(level, theme.fade(1.2F), a, b, 0.3);
+			Light.ray(level, a, b, theme.primary(), 0.22, 10);
 			for (int k = 1; k <= 3; k++) {
 				Vec3 feet = a.add(d.scale(k / 4.0)).subtract(0, 0.9, 0);
 				silhouette(level, dust(theme.secondary(), 0.7F), feet, d, 1.0);
 			}
-			for (double s = 0; s < length; s += 1.0) {
-				Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, a.add(d.scale(s / length)), 2, 0.2, 0.05);
+			for (double s = 0; s < length; s += 1.5) {
+				Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, a.add(d.scale(s / length)), 1, 0.2, 0.05);
 			}
+			Vec3 dir = d.normalize();
+			Vec3 side = dir.cross(UP);
+			side = side.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : side.normalize();
+			Vec3 up = side.cross(dir).normalize();
+			Light.slash(level, b, up.add(side).normalize(), dir, theme.primary(), 0.9, 2.2, 0.16, 1, 5);
+			Light.slash(level, b, up.subtract(side).normalize(), dir, theme.secondary(), 0.9, 2.2, 0.16, 1, 5);
 		}
-		dot(level, theme.flash(), b);
+		Sigils.flash(level, b, theme.primary(), 1.8F);
 		Fx.sound(level, a, SoundEvents.TRIDENT_RIPTIDE_1, 1.0F, 1.4F);
 		Fx.sound(level, b, theme.cast(), 0.5F, 1.4F);
 	}
@@ -500,7 +433,7 @@ final class TechniqueVfx {
 	// ------------------------------------------------------------------ control
 
 	/** Decree: the words leave the caster's mouth as rings of force. */
-	static void decreeSpoken(ServerLevel level, ServerPlayer caster) {
+	static void decreeSpoken(ServerLevel level, LivingEntity caster) {
 		Vec3 mouth = caster.getEyePosition().subtract(0, 0.15, 0);
 		Vec3 f = caster.getLookAngle();
 		for (int t = 0; t < 3; t++) {
@@ -832,13 +765,46 @@ final class TechniqueVfx {
 	}
 
 	/** If Airborne fired: a gust ring under your feet. */
-	static void airborne(ServerLevel level, ServerPlayer caster) {
+	static void airborne(ServerLevel level, LivingEntity caster) {
 		Vfx.ring(level, Vfx.theme("wind").dust(1.0F), caster.position().add(0, -0.1, 0), 0.8, 12);
 		Vfx.emit(level, ParticleTypes.SMALL_GUST, caster.position(), 3, 0.3, 0.02);
 	}
 
 	/** Combo fired: a golden burst around you. */
-	static void combo(ServerLevel level, ServerPlayer caster) {
+	/** Twin Star, armed: two small stars circle the caster for a moment. */
+	static void twinStarMark(ServerLevel level, LivingEntity caster) {
+		for (int t = 0; t < 12; t++) {
+			int tick = t;
+			Scheduler.later(t + 1, () -> {
+				Vec3 c = caster.position().add(0, 1.1, 0);
+				for (int s = 0; s < 2; s++) {
+					double a = tick * 0.55 + s * Math.PI;
+					dot(level, dust(s == 0 ? 0xFFE8FF : 0xE678DC, 1.2F), c.add(Math.cos(a) * 0.8, Math.sin(tick * 0.3) * 0.2, Math.sin(a) * 0.8));
+				}
+			});
+		}
+		Fx.sound(level, caster.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.8F);
+	}
+
+	/** Twin Star's second cast: a flash of starlight at the hands. */
+	static void twinStar(ServerLevel level, LivingEntity caster) {
+		Vec3 hand = caster.getEyePosition().add(caster.getLookAngle().scale(0.8)).add(0, -0.3, 0);
+		dot(level, flash(0xE678DC), hand);
+		Vfx.radial(level, ParticleTypes.END_ROD, hand, 10, 0.12);
+		Fx.sound(level, hand, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.9F);
+	}
+
+	/** On the beat: notes rise and a gold ring pulses out, one note per step of the chain. */
+	static void rhythm(ServerLevel level, LivingEntity caster, int stacks) {
+		Vec3 c = caster.position().add(0, 2.1, 0);
+		for (int i = 0; i < stacks; i++) {
+			double a = Math.PI * 2 * i / stacks;
+			Fx.send(level, ParticleTypes.NOTE, c.x + Math.cos(a) * 0.5, c.y, c.z + Math.sin(a) * 0.5, 0, (0.2 + 0.25 * i) / 1.0, 0, 0, 1.0);
+		}
+		Vfx.ring(level, dust(0xF5D56A, 0.9F), caster.position().add(0, 0.1, 0), 0.9 + 0.3 * stacks, 18 + 4 * stacks);
+	}
+
+	static void combo(ServerLevel level, LivingEntity caster) {
 		Vec3 c = caster.position().add(0, 1, 0);
 		Vfx.radial(level, ParticleTypes.WAX_ON, c, 16, 0.3);
 		Vfx.ring(level, dust(0xF0C440, 1.3F), caster.position().add(0, 0.1, 0), 1.1, 18);

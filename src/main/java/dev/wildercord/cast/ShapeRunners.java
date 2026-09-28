@@ -49,7 +49,7 @@ final class ShapeRunners {
 		Deque<Vec3> patches = new ArrayDeque<>();
 		Deque<Long> laid = new ArrayDeque<>();
 		Map<UUID, Long> lastHit = new HashMap<>();
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		for (int t = 0; t <= total + 60; t += 2) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -131,7 +131,7 @@ final class ShapeRunners {
 		int orbs = SpellNumbers.orbs(g);
 		int total = SpellNumbers.orbitSeconds(g) * 20;
 		Map<UUID, Long> lastHit = new HashMap<>();
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		for (int t = 0; t <= total; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -291,59 +291,6 @@ final class ShapeRunners {
 
 	// ------------------------------------------------------------------ batch 4
 
-	/**
-	 * Stand: a guardian spirit hovers behind your shoulder and, every interval, strikes the
-	 * nearest enemy within reach with the group's effects.
-	 */
-	static void stand(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vfx.Theme theme) {
-		int total = SpellNumbers.standSeconds(g) * 20;
-		// Kept up as a passive, a Stand strikes far less often: it never stops, so it mustn't shred.
-		int interval = SpellNumbers.standInterval(g) * (cast.passive ? dev.wildercord.spell.Passives.STAND_SLOWDOWN : 1);
-		double reach = SpellNumbers.standReach(g);
-		ServerPlayer caster = cast.caster;
-		if (!cast.passive) {
-			TechniqueVfx.standRise(cast.level, standBody(caster), theme);
-		}
-		for (int t = 0; t <= total; t += 2) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				if (!cast.alive()) {
-					return;
-				}
-				Vec3 body = standBody(caster);
-				TechniqueVfx.standFigure(cast.level, body, caster.getLookAngle(), theme, tick);
-				if (tick == 0 || tick % interval >= 2) {
-					return;
-				}
-				LivingEntity target = nearestEnemy(cast, caster.position().add(0, 1, 0), reach, caster.getLastHurtMob());
-				if (target == null) {
-					return;
-				}
-				Vec3 at = target.getBoundingBox().getCenter();
-				TechniqueVfx.standStrike(cast.level, body, at, theme);
-				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(List.of(target), at, at.subtract(body).normalize(), body, null, null, false), anchored);
-			});
-		}
-		Scheduler.later(total + 3, () -> {
-			if (cast.alive() && !cast.passive) {
-				TechniqueVfx.standFade(cast.level, standBody(caster), theme);
-			}
-		});
-	}
-
-	/**
-	 * Where a Stand floats: behind and to the right of the caster's shoulder, far enough from
-	 * their eyes (over 1.1 blocks) that the camera-clearance rule in {@link Fx#send} keeps it visible.
-	 */
-	private static Vec3 standBody(ServerPlayer caster) {
-		Vec3 look = caster.getLookAngle();
-		Vec3 flat = new Vec3(look.x, 0, look.z);
-		flat = flat.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flat.normalize();
-		Vec3 right = flat.cross(new Vec3(0, 1, 0)).normalize();
-		double bob = Math.sin(caster.level().getGameTime() * 0.15) * 0.06;
-		return caster.position().add(flat.scale(-0.95)).add(right.scale(0.95)).add(0, 1.3 + bob, 0);
-	}
-
 	/** The enemy nearest {@code from} within {@code range}; {@code preferred} wins if it is in range. */
 	static LivingEntity nearestEnemy(Cast cast, Vec3 from, double range, LivingEntity preferred) {
 		if (preferred != null && preferred.isAlive() && Targets.canHarm(cast.caster, preferred)
@@ -370,7 +317,8 @@ final class ShapeRunners {
 		double radius = SpellNumbers.domainRadius(g);
 		int total = SpellNumbers.domainSeconds(g) * 20;
 		int interval = SpellNumbers.domainInterval(g);
-		TechniqueVfx.domainOpen(cast.level, center, radius, theme);
+		TechniqueVfx.domainOpen(cast.level, center, radius, theme, cast.info.spell(), total + 20);
+		DomainClash.open(cast, g, center, radius, total, theme.primary());
 		for (int t = 10; t <= total + 10; t += 5) {
 			int tick = t;
 			Scheduler.later(t, () -> {
@@ -393,7 +341,11 @@ final class ShapeRunners {
 				}
 			});
 		}
-		Scheduler.later(total + 16, () -> TechniqueVfx.domainClose(cast.level, center, radius, theme));
+		Scheduler.later(total + 16, () -> {
+			if (cast.alive()) {
+				TechniqueVfx.domainClose(cast.level, center, radius, theme);
+			}
+		});
 	}
 
 	/** Crescent: a wide slash flying forward at chest height, cutting each creature once. */
@@ -443,7 +395,7 @@ final class ShapeRunners {
 	/** Barrage: a flurry of blows over one second on whatever is right in front of you. */
 	static void barrage(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Cast.Trigger at, Vfx.Theme theme) {
 		int blows = SpellNumbers.barrageBlows(g);
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		boolean fromCaster = at.fromCaster(caster);
 		for (int i = 0; i < blows; i++) {
 			int blow = i;
@@ -539,9 +491,11 @@ final class ShapeRunners {
 
 	/** Blitz: the caster flashes forward up to 8 blocks and strikes everything along the way. */
 	static void blitz(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vfx.Theme theme) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		Vec3 look = caster.getLookAngle();
-		Vec3 dir = new Vec3(look.x, Math.max(-0.35, Math.min(0.35, look.y)), look.z);
+		// On the ground, a dash runs level: looking a little down shouldn't drive it into the floor.
+		double rise = caster.onGround() ? Math.max(0, look.y) : look.y;
+		Vec3 dir = new Vec3(look.x, Math.max(-0.35, Math.min(0.35, rise)), look.z);
 		dir = dir.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : dir.normalize();
 		Vec3 start = caster.position();
 		Vec3 end = start;

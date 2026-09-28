@@ -9,8 +9,8 @@ import java.util.Set;
  * a passive can be a lasting buff or a guardian aura but never a machine gun or a free death save.
  *
  * <ul>
- *   <li>Shapes: Self (the default), Orbit or Stand.</li>
- *   <li>Effects: lasting buffs and wards; damage effects only through Orbit or Stand. Nothing
+ *   <li>Shapes: Self (the default) or Orbit.</li>
+ *   <li>Effects: lasting buffs and wards; damage effects only through an Orbit. Nothing
  *       that renewing would break: no heals, absorption, death saves, dodges or summons.</li>
  *   <li>Modifiers: Amplify, Extend, Frugal, Widen, Focus, Quicken. No links.</li>
  * </ul>
@@ -19,8 +19,6 @@ public final class Passives {
 	private Passives() {}
 
 	public static final int MAX = 2;
-	/** A Stand kept up as a passive strikes this many times less often than a cast one. */
-	public static final int STAND_SLOWDOWN = 4;
 	/** Runes per passive, at most (and never more than the Cord's sockets). */
 	public static final int SOCKETS = 5;
 	/** Mana per second for each point of the passive's cost. */
@@ -28,10 +26,10 @@ public final class Passives {
 	/** How often a Self passive is renewed, in ticks. */
 	public static final int SELF_INTERVAL = 40;
 
-	private static final Set<String> SHAPES = Set.of("self", "orbit", "stand");
+	private static final Set<String> SHAPES = Set.of("self", "orbit");
 	private static final Set<String> BUFFS = Set.of("feather_fall", "swift", "night_eye", "haste", "regrowth", "stoneskin", "empower",
 		"fireward", "tidebreath", "leap", "infinity", "reflect", "accelerate", "overdrive");
-	/** Damage and control that an Orbit or a Stand may carry. */
+	/** Damage and control that an Orbit may carry. */
 	private static final Set<String> AURA = Set.of("harm", "shock", "fire", "frost", "chill", "venom", "dismantle", "ripple", "aftershock", "push");
 	private static final Set<String> MODIFIERS = Set.of("amplify", "extend", "frugal", "widen", "focus", "quicken");
 
@@ -59,7 +57,7 @@ public final class Passives {
 		};
 	}
 
-	/** Damage and control effects need an Orbit or a Stand to carry them. */
+	/** Damage and control effects need an Orbit to carry them. */
 	public static boolean needsAura(RuneDef rune) {
 		return rune.family() == RuneFamily.EFFECT && AURA.contains(rune.path());
 	}
@@ -82,7 +80,7 @@ public final class Passives {
 		}
 		for (RuneDef rune : runes) {
 			if (needsAura(rune) && !aura) {
-				return rune.name() + " needs an Orbit or a Stand to carry it in a passive.";
+				return rune.name() + " needs an Orbit to carry it in a passive.";
 			}
 		}
 		return null;
@@ -93,7 +91,7 @@ public final class Passives {
 		return cost * UPKEEP_PER_COST;
 	}
 
-	/** Ticks between renewals: Self every 2 seconds, Orbit and Stand whenever their shape runs out. */
+	/** Ticks between renewals: Self every 2 seconds, Orbit whenever its orbs run out. */
 	public static int interval(SpellPlan.Segment root) {
 		if (root == null || root.groups.isEmpty()) {
 			return SELF_INTERVAL;
@@ -101,9 +99,6 @@ public final class Passives {
 		SpellPlan.Group g = root.groups.getFirst();
 		if (g.shape.is(Runes.ORBIT.id())) {
 			return SpellNumbers.orbitSeconds(g) * 20;
-		}
-		if (g.shape.is(Runes.STAND.id())) {
-			return SpellNumbers.standSeconds(g) * 20;
 		}
 		return SELF_INTERVAL;
 	}

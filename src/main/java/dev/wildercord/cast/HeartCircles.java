@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
@@ -26,7 +27,7 @@ import java.util.UUID;
 
 /**
  * Heart Circles on the server: mana spent condenses toward the next circle; once the heart is
- * ready the player is told, and meditating (sneak and stand still) for five seconds forms it.
+ * ready the player is told, and meditating (sneak and stand still) for ten seconds forms it (five on a ley line).
  * Also the 3rd Circle's Mana Skin, boss kills for the 7th's breakthrough, and the rings
  * themselves: they turn around the heart while you meditate and spin up whenever you cast.
  */
@@ -38,7 +39,7 @@ public final class HeartCircles {
 
 	private static final Map<UUID, Integer> FORMING = new HashMap<>();
 	/** Who last hurt each creature with a spell, and when: a monster dying soon after counts as a spell kill. */
-	private record SpellHit(UUID caster, long time) {}
+	private record SpellHit(UUID caster, long time, int runes) {}
 	private static final Map<UUID, SpellHit> LAST_SPELL_HIT = new HashMap<>();
 	private static final Map<UUID, Integer> NOTIFIED = new HashMap<>();
 	private static final Map<UUID, Float> CONDENSING = new HashMap<>();
@@ -64,6 +65,9 @@ public final class HeartCircles {
 			ServerPlayer caster = level.getServer().getPlayerList().getPlayer(hit.caster());
 			if (caster != null) {
 				caster.setAttached(WildercordAttachments.SPELL_KILLS, Heart.spellKills(caster) + 1);
+				if (hit.runes() >= 6) {
+					Grimoire.feat(caster, dev.wildercord.spell.Feats.LONG_SPELL_KILL);
+				}
 			}
 		});
 		// Everyone nearby shares a boss kill: it's the 7th Circle's breakthrough.
@@ -87,8 +91,11 @@ public final class HeartCircles {
 	}
 
 	/** Remembers that a spell of {@code caster}'s hurt {@code target}, so its death can count as a spell kill. */
-	static void hurtBySpell(ServerPlayer caster, net.minecraft.world.entity.LivingEntity target) {
-		LAST_SPELL_HIT.put(target.getUUID(), new SpellHit(caster.getUUID(), target.level().getGameTime()));
+	static void hurtBySpell(Cast cast, net.minecraft.world.entity.LivingEntity target) {
+		if (!(cast.caster instanceof ServerPlayer)) {
+			return;
+		}
+		LAST_SPELL_HIT.put(target.getUUID(), new SpellHit(cast.caster.getUUID(), target.level().getGameTime(), cast.info.runes()));
 		if (LAST_SPELL_HIT.size() > 4096) {
 			long now = target.level().getGameTime();
 			LAST_SPELL_HIT.values().removeIf(h -> now - h.time() > 100);
@@ -120,13 +127,14 @@ public final class HeartCircles {
 			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
 		}
 		if (meditating && circles > 0) {
-			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F);
+			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F, true);
 		}
 		if (!ready || !meditating) {
 			FORMING.remove(id);
 			return;
 		}
-		int progress = FORMING.merge(id, 5, Integer::sum);
+		// On a ley line the world's own mana helps: circles form twice as fast.
+		int progress = FORMING.merge(id, player.getAttachedOrElse(WildercordAttachments.ON_LEY, false) ? 10 : 5, Integer::sum);
 		forming(player, circles, progress);
 		if (progress >= Circles.FORM_TICKS) {
 			FORMING.remove(id);
@@ -142,12 +150,12 @@ public final class HeartCircles {
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);
 		// The flash goes through Fx.send, which keeps it out of the player's own face.
-		Vfx.emit(level, net.minecraft.core.particles.ColorParticleOption.create(ParticleTypes.FLASH, 0xFF000000 | COLORS[n - 1]), heart.add(0, 0.6, 0), 1, 0.0, 0.0);
+		Sigils.flash(level, heart.add(0, 0.6, 0), 0xFF000000 | COLORS[n - 1], 2.6F);
 		Vfx.radial(level, ParticleTypes.END_ROD, heart, 40, 0.35);
 		Vfx.shockwave(level, player.position(), 3.5, Vfx.theme("time"), 6);
 		for (int t = 0; t < 10; t++) {
 			int tick = t;
-			Scheduler.later(t + 1, () -> rings(player, n, tick * 0.6, 0.5F + (10 - tick) * 0.05F));
+			Scheduler.later(t + 1, () -> rings(player, n, tick * 0.6, 0.5F + (10 - tick) * 0.05F, true));
 		}
 		Fx.sound(level, heart, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.8F);
 		Fx.sound(level, heart, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.6F, 1.2F);
@@ -168,9 +176,20 @@ public final class HeartCircles {
 		if (n == Circles.MANA_SKIN || n == Circles.FLOW || n == Circles.OVERFLOW || n == Circles.ARCHMAGE) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.perk." + n).withColor(0xF5C46A));
 		}
+		if (n == 1) {
+			// The heart's first ring wakes something only this caster has.
+			Scheduler.later(60, () -> {
+				if (!player.isRemoved()) {
+					Innates.awaken(player);
+				}
+			});
+		}
 	}
 
-	/** Your circles turn when you cast: a quick spin, seen by everyone around. */
+	/**
+	 * Your circles turn when you cast: a quick spin for everyone around to see. Not for you: it
+	 * happens on every cast, and around your own chest it fills the bottom of a first-person view.
+	 */
 	public static void onCast(ServerPlayer player) {
 		int circles = Heart.circles(player);
 		if (circles <= 0) {
@@ -180,7 +199,7 @@ public final class HeartCircles {
 			int tick = t;
 			Scheduler.later(1 + t * 2, () -> {
 				if (!player.isRemoved()) {
-					rings(player, circles, player.level().getGameTime() * 0.35 + tick, 0.4F);
+					rings(player, circles, player.level().getGameTime() * 0.35 + tick, 0.4F, false);
 				}
 			});
 		}
@@ -188,7 +207,7 @@ public final class HeartCircles {
 
 	/** 3rd Circle: Mana Skin. A fifth of the damage you take is paid from mana instead. */
 	private static void manaSkin(ServerPlayer player, float damage) {
-		if (Heart.circles(player) < Circles.MANA_SKIN || player.isCreative() || !player.isAlive() || Spellbooks.tier(player) == null) {
+		if (Heart.active(player) < Circles.MANA_SKIN || player.isCreative() || !player.isAlive() || Spellbooks.tier(player) == null) {
 			return;
 		}
 		float mana = Spellbooks.mana(player);
@@ -209,10 +228,10 @@ public final class HeartCircles {
 	 * The rings: one per circle around the heart, each on its own tilt and turning its own way,
 	 * like a gyroscope. Inner rings are deep blue; the outer ones burn toward white gold.
 	 */
-	static void rings(ServerPlayer player, int circles, double spin, float size) {
+	static void rings(ServerPlayer player, int circles, double spin, float size, boolean self) {
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);
-		Fx.sendAll(level, new DustParticleOptions(0xFFE0A0, 0.8F), heart, 1, 0.0, 0.0);
+		ring(level, player, self, new DustParticleOptions(0xFFE0A0, 0.8F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
 			double r = 0.3 + 0.09 * i;
 			double phi = spin * (1 + 0.25 * i) + i * 0.8;
@@ -224,12 +243,34 @@ public final class HeartCircles {
 			Vec3 v = normal.cross(u).normalize();
 			int points = 12 + 3 * i;
 			double turn = spin * (i % 2 == 0 ? 1.4 : -1.4);
-			DustParticleOptions dust = new DustParticleOptions(COLORS[i], size);
+			DustParticleOptions dust = new DustParticleOptions(ringColor(player, i), size);
 			for (int k = 0; k < points; k++) {
 				double a = turn + Math.PI * 2 * k / points;
-				Fx.sendAll(level, dust, heart.add(u.scale(Math.cos(a) * r)).add(v.scale(Math.sin(a) * r)), 1, 0.0, 0.0);
+				ring(level, player, self, dust, heart.add(u.scale(Math.cos(a) * r)).add(v.scale(Math.sin(a) * r)));
 			}
 		}
+	}
+
+	private static void ring(ServerLevel level, ServerPlayer player, boolean self, ParticleOptions particle, Vec3 at) {
+		if (self) {
+			Fx.sendAll(level, particle, at, 1, 0.0, 0.0);
+		} else {
+			Fx.sendOthers(level, player, particle, at);
+		}
+	}
+
+	/** A ring's colour: blue to white gold from the inside out, drawn halfway toward the element the caster leans to. */
+	private static int ringColor(ServerPlayer player, int ring) {
+		String leaning = Heart.leaning(player);
+		int base = COLORS[ring];
+		if (leaning.isEmpty()) {
+			return base;
+		}
+		int tint = dev.wildercord.spell.RuneColors.element(leaning);
+		int r = (((base >> 16) & 0xFF) + ((tint >> 16) & 0xFF)) / 2;
+		int g = (((base >> 8) & 0xFF) + ((tint >> 8) & 0xFF)) / 2;
+		int b = ((base & 0xFF) + (tint & 0xFF)) / 2;
+		return (r << 16) | (g << 8) | b;
 	}
 
 	/** While a circle forms: the existing rings spin faster, mana streams in, and the new ring draws itself. */
@@ -237,7 +278,7 @@ public final class HeartCircles {
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);
 		double t = progress / (double) Circles.FORM_TICKS;
-		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F);
+		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F, true);
 		double r = 0.3 + 0.09 * circles;
 		int points = (int) Math.round((12 + 3 * circles) * t);
 		DustParticleOptions dust = new DustParticleOptions(COLORS[Math.min(Circles.MAX - 1, circles)], 0.55F);

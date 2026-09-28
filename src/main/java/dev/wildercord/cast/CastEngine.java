@@ -30,7 +30,7 @@ public final class CastEngine {
 	public static final double AIM_RANGE = 24.0;
 	private static final int MAX_TRIGGERS_PER_HIT = 8;
 
-	public static void cast(ServerPlayer caster, SpellPlan.Segment root) {
+	public static void cast(LivingEntity caster, SpellPlan.Segment root) {
 		cast(caster, root, 1, dev.wildercord.player.Heart.Bonuses.NONE, false, null);
 	}
 
@@ -39,9 +39,14 @@ public final class CastEngine {
 	 * @param bonuses    the caster's Heart Circles and Cord enchantments
 	 * @param passive    a passive renewing itself
 	 */
-	public static void cast(ServerPlayer caster, SpellPlan.Segment root, int castNumber, dev.wildercord.player.Heart.Bonuses bonuses, boolean passive,
+	public static void cast(LivingEntity caster, SpellPlan.Segment root, int castNumber, dev.wildercord.player.Heart.Bonuses bonuses, boolean passive,
 			java.util.function.BooleanSupplier wanted) {
-		runSegment(new Cast(caster, castNumber, bonuses, passive, wanted), root, Cast.Trigger.self(caster));
+		cast(new Cast(caster, castNumber, bonuses, passive, wanted, new Cast.Info(root, 0, "")), root);
+	}
+
+	/** Runs a spell for a cast that's already set up. */
+	public static void cast(Cast cast, SpellPlan.Segment root) {
+		runSegment(cast, root, Cast.Trigger.self(cast.caster));
 	}
 
 	static void runSegment(Cast cast, SpellPlan.Segment seg, Cast.Trigger at) {
@@ -56,7 +61,7 @@ public final class CastEngine {
 		if (link == null) {
 			return;
 		}
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		String id = link.link.id();
 		if (id.equals(Runes.DELAY.id())) {
 			Cast child = cast.child();
@@ -119,7 +124,7 @@ public final class CastEngine {
 	// ------------------------------------------------------------------ shapes
 
 	private static void deliver(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		String shape = g.shape.id();
 		int copies = SpellNumbers.copies(g);
 		int color = colorOf(g);
@@ -177,8 +182,6 @@ public final class CastEngine {
 			}
 		} else if (shape.equals(Runes.TOTEM.id())) {
 			ShapeRunners.totem(cast, g, anchored, aimPoint(cast, at), theme);
-		} else if (shape.equals(Runes.STAND.id())) {
-			ShapeRunners.stand(cast, g, anchored, theme);
 		} else if (shape.equals(Runes.DOMAIN.id())) {
 			ShapeRunners.domain(cast, g, anchored, at.fromCaster(caster) ? caster.position() : ground(cast.level, at.pos()), theme);
 		} else if (shape.equals(Runes.CRESCENT.id())) {
@@ -213,6 +216,7 @@ public final class CastEngine {
 			int pulses = Math.max(1, SpellNumbers.zoneSeconds(g) * 20 / SpellNumbers.zoneInterval(g));
 			int interval = SpellNumbers.zoneInterval(g);
 			for (Vec3 center : spread(aimPoint(cast, at), copies, radius)) {
+				Vfx.zoneOpen(cast.level, center, radius, theme, pulses * interval + 12);
 				for (int i = 0; i < pulses; i++) {
 					Cast child = cast.pulse();
 					int pulse = i;
@@ -229,6 +233,7 @@ public final class CastEngine {
 			double radius = SpellNumbers.rainRadius(g);
 			Vec3 center = aimPoint(cast, at);
 			int strikes = 5 * copies;
+			Vfx.rainCloud(cast.level, center, radius, theme, 56);
 			for (int i = 0; i < strikes; i++) {
 				Cast child = cast.pulse();
 				double a = cast.level.getRandom().nextDouble() * Math.PI * 2;
@@ -253,10 +258,10 @@ public final class CastEngine {
 	}
 
 	private static void touch(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored, Vfx.Theme theme) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		Vec3 from = at.fromCaster(caster) ? caster.getEyePosition() : at.pos();
-		double reach = at.fromCaster(caster) ? caster.entityInteractionRange() : 3.0;
-		Vec3 to = from.add(at.dir().scale(Math.max(reach, caster.blockInteractionRange())));
+		double reach = at.fromCaster(caster) ? Casters.entityReach(caster) : 3.0;
+		Vec3 to = from.add(at.dir().scale(Math.max(reach, Casters.blockReach(caster))));
 		BlockHitResult block = cast.level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, caster));
 		Vec3 entityTo = from.add(at.dir().scale(reach));
 		if (block.getType() != HitResult.Type.MISS && block.getLocation().distanceTo(from) < reach) {
@@ -277,7 +282,7 @@ public final class CastEngine {
 	}
 
 	private static void beam(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 from, Vec3 dir, Vfx.Theme theme) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		Vec3 to = from.add(dir.scale(BEAM_RANGE));
 		BlockHitResult block = cast.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
 		Vec3 end = block.getType() == HitResult.Type.MISS ? to : block.getLocation();
@@ -459,7 +464,7 @@ public final class CastEngine {
 		if (!at.fromCaster(cast.caster)) {
 			return ground(cast.level, at.pos());
 		}
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		Vec3 from = caster.getEyePosition();
 		Vec3 to = from.add(caster.getLookAngle().scale(AIM_RANGE));
 		BlockHitResult hit = cast.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));

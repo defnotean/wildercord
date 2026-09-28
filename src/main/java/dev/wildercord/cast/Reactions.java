@@ -1,7 +1,6 @@
 package dev.wildercord.cast;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -87,7 +86,7 @@ public final class Reactions {
 			multiplier *= 1.6;
 			Vec3 c = target.getBoundingBox().getCenter();
 			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), c, 26, 0.35);
-			Vfx.emit(level, ColorParticleOption.create(ParticleTypes.FLASH, 0xFFBFEFFF), c, 1, 0.0, 0.0);
+			Sigils.flash(level, c, 0xFFBFEFFF, 2.2F);
 			Fx.sound(level, c, SoundEvents.GLASS_BREAK, 1.0F, 0.7F);
 			callout(cast, "shatter", 0x8CDCFF);
 		}
@@ -160,14 +159,15 @@ public final class Reactions {
 
 	/** Tells the caster what they set off, at most once a second. */
 	static void callout(Cast cast, String reaction, int color) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
+		Grimoire.reaction(caster, reaction);
 		long now = cast.level.getGameTime();
 		Long last = LAST_CALLOUT.get(caster.getUUID());
 		if (last != null && now - last < 20) {
 			return;
 		}
 		LAST_CALLOUT.put(caster.getUUID(), now);
-		caster.sendOverlayMessage(Component.translatable("reaction.wildercord." + reaction).withColor(color).withStyle(ChatFormatting.BOLD));
+		Casters.tell(caster, Component.translatable("reaction.wildercord." + reaction).withColor(color).withStyle(ChatFormatting.BOLD));
 	}
 
 	/** Drops marks for entities that no longer exist, so the table can't grow forever. */

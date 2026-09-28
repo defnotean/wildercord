@@ -19,11 +19,11 @@ import java.util.List;
  * removing an add-on never deletes anything (its runes go silent instead).</p>
  */
 public record Spellbook(List<String> learned, List<List<String>> spells, int selected, boolean starterGiven,
-		List<List<String>> passives, int passivesOff) {
-	public static final Spellbook EMPTY = new Spellbook(List.of(), List.of(), 0, false, List.of(), 0);
+		List<List<String>> passives, int passivesOff, List<String> names) {
+	public static final Spellbook EMPTY = new Spellbook(List.of(), List.of(), 0, false, List.of(), 0, List.of());
 
 	public Spellbook(List<String> learned, List<List<String>> spells, int selected, boolean starterGiven) {
-		this(learned, spells, selected, starterGiven, List.of(), 0);
+		this(learned, spells, selected, starterGiven, List.of(), 0, List.of());
 	}
 
 	public Spellbook {
@@ -32,6 +32,11 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 		passives = sized(passives, Passives.MAX, Passives.SOCKETS);
 		selected = Math.floorMod(selected, CordTier.MAX_SPELLS);
 		passivesOff &= (1 << Passives.MAX) - 1;
+		List<String> sizedNames = new ArrayList<>(CordTier.MAX_SPELLS);
+		for (int i = 0; i < CordTier.MAX_SPELLS; i++) {
+			sizedNames.add(i < names.size() ? dev.wildercord.spell.SpellNames.clean(names.get(i)) : "");
+		}
+		names = List.copyOf(sizedNames);
 	}
 
 	private static List<List<String>> sized(List<List<String>> lists, int count, int sockets) {
@@ -49,7 +54,8 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 		Codec.INT.optionalFieldOf("selected", 0).forGetter(Spellbook::selected),
 		Codec.BOOL.optionalFieldOf("starter_given", false).forGetter(Spellbook::starterGiven),
 		Codec.STRING.listOf().listOf().optionalFieldOf("passives", List.of()).forGetter(Spellbook::passives),
-		Codec.INT.optionalFieldOf("passives_off", 0).forGetter(Spellbook::passivesOff)
+		Codec.INT.optionalFieldOf("passives_off", 0).forGetter(Spellbook::passivesOff),
+		Codec.STRING.listOf().optionalFieldOf("names", List.of()).forGetter(Spellbook::names)
 	).apply(i, Spellbook::new));
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, Spellbook> STREAM_CODEC = StreamCodec.composite(
@@ -59,6 +65,7 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 		ByteBufCodecs.BOOL, Spellbook::starterGiven,
 		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).apply(ByteBufCodecs.list()), Spellbook::passives,
 		ByteBufCodecs.VAR_INT, Spellbook::passivesOff,
+		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), Spellbook::names,
 		Spellbook::new
 	);
 
@@ -72,19 +79,19 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 		}
 		List<String> next = new ArrayList<>(learned);
 		next.add(runeId);
-		return new Spellbook(next, spells, selected, starterGiven, passives, passivesOff);
+		return new Spellbook(next, spells, selected, starterGiven, passives, passivesOff, names);
 	}
 
 	public Spellbook withSpell(int index, List<String> runes) {
 		List<List<String>> next = new ArrayList<>(spells);
 		next.set(index, runes);
-		return new Spellbook(learned, next, selected, starterGiven, passives, passivesOff);
+		return new Spellbook(learned, next, selected, starterGiven, passives, passivesOff, names);
 	}
 
 	public Spellbook withPassive(int index, List<String> runes) {
 		List<List<String>> next = new ArrayList<>(passives);
 		next.set(index, runes);
-		return new Spellbook(learned, spells, selected, starterGiven, next, passivesOff);
+		return new Spellbook(learned, spells, selected, starterGiven, next, passivesOff, names);
 	}
 
 	public boolean passiveOn(int index) {
@@ -93,14 +100,25 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 
 	public Spellbook withPassiveOn(int index, boolean on) {
 		int off = on ? passivesOff & ~(1 << index) : passivesOff | (1 << index);
-		return new Spellbook(learned, spells, selected, starterGiven, passives, off);
+		return new Spellbook(learned, spells, selected, starterGiven, passives, off, names);
 	}
 
 	public Spellbook withSelected(int index) {
-		return new Spellbook(learned, spells, index, starterGiven, passives, passivesOff);
+		return new Spellbook(learned, spells, index, starterGiven, passives, passivesOff, names);
+	}
+
+	/** A spell's custom name, or "" to use the automatic one. */
+	public String name(int index) {
+		return index >= 0 && index < names.size() ? names.get(index) : "";
+	}
+
+	public Spellbook withName(int index, String name) {
+		List<String> next = new ArrayList<>(names);
+		next.set(index, name);
+		return new Spellbook(learned, spells, selected, starterGiven, passives, passivesOff, next);
 	}
 
 	public Spellbook withStarterGiven() {
-		return new Spellbook(learned, spells, selected, true, passives, passivesOff);
+		return new Spellbook(learned, spells, selected, true, passives, passivesOff, names);
 	}
 }

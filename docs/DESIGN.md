@@ -70,6 +70,8 @@ Every source stacks. The Cord screen's mana badge shows exactly where your numbe
 | **Potion of Clarity** | +50% regeneration per level for 3 min (8 min long, II for 1.5 min) | Brew: Awkward + amethyst shard; redstone to lengthen, glowstone to strengthen |
 | **Potion of Mana** | Instantly restores 60 mana (II: 120) | Brew: Awkward + lapis lazuli; glowstone to strengthen. Splash and lingering work too |
 | **Meditation** | +100% regeneration | Sneak and stand still for a second while wearing a Cord |
+| **Ley line** | +100% regeneration, and Heart Circles form twice as fast | Walk onto one (Cord-wearers see its violet motes) |
+| **Wellstone** | +50% regeneration within 12 blocks | Craft one and set it on a ley line |
 
 ## Runes
 
@@ -284,7 +286,6 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 
 | Rune | Family · category | Tier | Does |
 |---|---|---|---|
-| Stand | Shape · Personal | III | A guardian spirit behind you strikes the nearest enemy within 5 blocks every 0.75 s for 8 s (60% power per strike) |
 | Domain | Shape · Lingering | IV | A 9-block dome around you for 6 s: everything inside is struck every second, enemies inside are slowed. Widen grows it up to 24 blocks, and its frame can be seen from up to 512 blocks away |
 | Crescent | Shape · Projectile | II | A 5-wide slash flies 16 blocks, cutting each creature once |
 | Barrage | Shape · Direct | II | 8 blows in one second on everything right in front of you (35% power each; Quicken adds 4) |
@@ -326,12 +327,12 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | If Airborne | Link · Condition | II | The rest fires only while you're in the air |
 | Combo | Link · Condition | III | The rest fires only on every third cast of this spell |
 
-Shapes that strike again and again (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Stand, Barrage, Orb) get a fresh 64-creature budget for every strike, so a big one keeps working to the end. The Siphon cap still counts for the whole cast.
+Shapes that strike again and again (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb) get a fresh 64-creature budget for every strike, so a big one keeps working to the end. The Siphon cap still counts for the whole cast.
 
 Also new: one player can have at most **6 spirits** at once (Summon and Shades together), so a Zone or Totem carrying Summon no longer floods the world with wolves.
 
 Combos worth trying:
-- `Stand · Dismantle · Execute`: a guardian that finishes off anything below half health.
+- `Cone · Dismantle · Execute`: a sweep that finishes off anything below half health.
 - `Bolt · Pull · Repel` or `Gravity Well · Delay · Burst · Repel`: sets off **Collapse**.
 - `Bolt · Bubble`, then any Shock spell within 5 seconds of the pop: the soaked target sets off **Conduct**.
 - `Barrage · Stasis · Harm`: every blow is held, then lands at once when time moves again.
@@ -342,22 +343,231 @@ Combos worth trying:
 Casters build rings of condensed mana around their heart, from the 1st Circle to the 8th (the Archmage).
 
 - **Condensing:** every point of mana spent casting spells (Blood Price counts 5 mana per health) condenses toward the next circle. Passive upkeep doesn't count. Nothing to farm or craft, but it takes a lot of casting.
-- **Breakthroughs:** every circle after the 1st also needs milestones: runes known, a better Cord, monsters defeated with spells (a monster killed within 5 seconds of your spell hurting it), a boss.
-- **Forming:** once the heart is ready you're told in chat, and the heart badge in the Cord screen blinks. Meditate (sneak and stand still) for 10 seconds without getting hurt (a hit breaks your concentration and starts it over): the rings spin up, mana streams in, and the new circle forms with a title, a burst of light and a full mana refill.
-- **The rings:** one per circle around the heart, each on its own tilt, blue on the inside burning to white gold on the outside. They turn while you meditate and spin up whenever you cast; everyone nearby sees them.
+- **Breakthroughs:** every circle after the 1st also needs milestones. Early ones ask for knowledge (runes known, a better Cord); later ones for things you've actually done with magic: reactions set off, Runebound slain, secret spells found, feats. A monster counts as "defeated with spells" if it dies within 5 seconds of your spell hurting it.
+- **Forming:** once the heart is ready you're told in chat, and the heart badge in the Cord screen blinks. Meditate (sneak and stand still) for 10 seconds (5 on a ley line) without getting hurt (a hit breaks your concentration and starts it over): the rings spin up, mana streams in, and the new circle forms with a title, a burst of light and a full mana refill.
+- **The rings:** one per circle around the heart, each on its own tilt, blue on the inside burning to white gold on the outside (tinted toward the element you lean to). They turn while you meditate, for everyone to see. They also spin up whenever you cast, but only the people around you see that: on every cast it would fill the bottom of your own view.
 
 | Circle | Mana condensed | Breakthrough | Opens |
 |---|---|---|---|
-| 1st | 600 | | Passive slot 1 |
+| 1st | 600 | | Passive slot 1, your **innate rune** |
 | 2nd | 2,000 | Know 10 runes | |
-| 3rd | 5,000 | Know 20 runes, wear a Copper Cord | **Mana Skin**: a fifth of damage taken is paid with mana (2 mana per health) |
-| 4th | 10,000 | Defeat 50 monsters with spells | |
-| 5th | 18,000 | Know 40 runes, wear an Amethyst Cord | Passive slot 2, **Flow**: cooldowns 15% shorter |
-| 6th | 30,000 | Defeat 200 monsters with spells | |
-| 7th | 50,000 | Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon; everyone within 96 blocks counts), defeat 350 monsters with spells | **Overflow**: spells cast at full mana hit 30% harder |
-| 8th | 80,000 | Know 100 runes, wear an Echo Cord, defeat 500 monsters with spells | **Archmage**: spells and passives cost 15% less mana |
+| 3rd | 5,000 | Wear a Copper Cord, set off a reaction | **Mana Skin**: a fifth of damage taken is paid with mana (2 mana per health) |
+| 4th | 10,000 | Defeat 40 monsters with spells, set off 3 different reactions | |
+| 5th | 18,000 | Know 35 runes, wear an Amethyst Cord, *Long Incantation* (slay a monster with a spell of 6+ runes) | Passive slot 2, **Flow**: cooldowns 15% shorter |
+| 6th | 30,000 | Defeat 150 monsters with spells, slay 8 Runebound, set off all 5 reactions | |
+| 7th | 50,000 | Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon or the Archivist; everyone within 96 blocks counts), find 2 secret spells, *In Rhythm* (3 casts on the beat) | **Overflow**: spells cast at full mana hit 30% harder |
+| 8th | 80,000 | Wear an Echo Cord, find 4 secret spells, *The Last Page* (defeat the Archivist) | **Archmage**: spells and passives cost 15% less mana |
 
-Every circle also adds +15 max mana, +0.5 mana/s and +3% spell power. Hover the heart badge (left of the mana badge) for your circles, perks and what the next one needs. `/wildercord circles <n>` and `/wildercord condense <mana>` set them for testing.
+Every circle also adds +15 max mana, +0.5 mana/s and +3% spell power (a circle cracked by overcasting gives none of this until it mends). Hover the heart badge (left of the mana badge) for your circles, perks and what the next one needs. `/wildercord circles <n>` and `/wildercord condense <mana>` set them for testing.
+
+## Batch 5: a world of magic
+
+Everything below came in one batch, built on one change to the engine: **a spell's caster can be
+any living thing**, not just a player. Runebound monsters and the Archivist cast real spells
+through exactly the same code as players (`cast.Casters` answers the player-only questions:
+messages, building rights, reach).
+
+### Charged casting and the aim preview
+- **Tap** the cast key to cast at once, as before. **Hold** it and you raise both hands and a magic
+  circle opens in front of them as the charge builds: the frame, then its script and star drawing
+  themselves, then a roundel for each rune in turn. At a full charge (1.5 s) it flares and chimes.
+- **Every spell writes its own magic circle**, built like a classic magic circle from the outside in:
+  a heavy frame with rays on the star's points; a band of script, the spell's own rune emblems again
+  and again; a band in the first effect's pattern (its element at a glance); a star polygon with a
+  point for every rune ({5/2} for five runes, {7/2} for seven, a hexagram or octagram for short
+  spells) and on each point a roundel, that rune's own ring pattern around its emblem, in casting
+  order around from the top; an inner ring; and the shape rune's emblem as the seal in the middle.
+  The bands and the star turn, each its own way.
+- **Every rune has its own emblem and ring pattern**, no two alike. The pattern's line tells the
+  family (Shape: a double line, Effect: solid, Modifier: dashed, Link: a chain), its motif tells an
+  effect's element (flame teeth, crystals, zig-zags, waves, crenels, buds, crescents, stars,
+  hourglasses, drops); the emblem's frame tells the family too (square, circle, diamond, octagon).
+  Anyone who has learned them can read a spell off its circle, and learn a secret spell by watching
+  it cast.
+- **The same circle everywhere, never too big:** under every cast on the ground (1 block across the
+  frame's radius), in front of a charging caster's hands (0.42), in a Runebound's hand as its
+  telegraph (0.4; the Archivist's Sunfall shows Sunfall's own runes) and as the floor of a Domain
+  (the Domain's radius). A longer spell gets more star points and smaller roundels, never a bigger
+  circle. In your own first-person view your charge circle is a small seal in the lower right.
+- Let go to cast: up to **+40% power** at a full charge. You walk 40% slower while charging, and
+  a charge held 12 s fizzles.
+- While charging, you (only you) see **where the spell goes**: a reticle on the ground at the spell's
+  real radius for Zone, Rain, Pillar, Totem and Mine; around you for Burst, Ring and Domain; a
+  dotted line for Bolt, Arc, Beam, Crescent, Orb and Wave.
+- The circle is drawn by every client from a synced attachment, so it follows the caster's hands
+  smoothly. A spell's circle is one particle, `wildercord:spell_circle`, carrying the spell's runes;
+  each client builds the whole circle from them every frame, laying lines down as short pieces and
+  bands as tiles, so every line keeps its width at any size. The emblems and ring patterns are
+  generated by `tools/circle_art.py`.
+
+### How spells look
+Every shape is drawn in light: a new particle, `wildercord:light`, draws expanding shockwave rings,
+beams (a white-hot core in a coloured halo, always facing you), sweeping crescent slashes (tapered,
+brightest at the leading edge) and orbs wrapped in turning rings.
+- **Bolt / Arc:** a glowing comet leaving a streak of light; the impact flares and throws a ring.
+- **Beam:** fired through a small magic circle at the hand, rings of power racing down it, a flare
+  where it ends.
+- **Crescent:** a blade of light sweeping forward, a paler echo behind it. **Barrage:** a flurry of
+  quick arcs on their own tilts, the last blow landing with a shockwave. **Blitz:** a streak of
+  light, afterimages along it and a cross of slashes where you land (on the ground a Blitz now runs
+  level, so looking down no longer stops it dead).
+- **Burst:** a shell of light (crossed rings racing out) over a ground shockwave. **Ring:** a band
+  of light racing along the ground. **Cone:** a fan of beams swept by arcs that open with it.
+- **Zone:** its ornate circle on the ground for as long as it lasts, a wave of light across it each
+  pulse. **Rain:** a magic circle opens in the sky, facing down; each strike is a streak of light.
+  **Pillar:** a circle on the ground and a column of light erupting from it, ringed as it climbs.
+- **Domain:** the spell's own magic circle spread across the whole floor, under a dome of light
+  (meridians and parallels breathing); each strike pours light down from its crown; it closes by
+  falling in on itself and cracking the floor.
+- **Wall:** a fence of light. **Wave:** a glowing crest rolling forward. **Orbit / Orb / Totem /
+  Mine / Trail:** glowing cores, orbs and seals.
+- **Self:** rings of light close in as they climb you.
+
+### The spell wheel, names and codes
+- **Hold `V`** (a tap still selects the next spell): your spells fan out in a ring with their names,
+  runes and cooldowns. Point and let go. Let go without pointing and the wheel stays open: click a
+  spell, press its number, or point and press `V` again (right-click or Esc closes it).
+- **Every spell has a name**, made from its runes ("Splitting Frost Bolt", "Arcane Bolt › Blasting
+  Burst"); rename any spell from the Cord screen. The HUD shows it above the panel.
+- **Spell codes:** `wc:bolt.frost.split`. Copy one from the Cord screen; paste it in chat and it
+  becomes a hoverable card (name, runes, cost, readout) that copies the code when clicked; paste it
+  into the Cord screen to load it (only runes you know and your Cord holds).
+
+### Rhythm
+Cast again **just as your last spell comes off cooldown** (a window of a quarter of its cooldown,
+0.25-0.5 s) and the chain grows, up to 3: **+8% power per step**. Early or late just starts over.
+The HUD draws a gold ring closing in on the spell badge as the beat comes, and a note per step.
+
+### Secret spells
+Ten exact sequences become unique spells. They're all valid ordinary spells too, so a guess never
+looks broken; only the exact order, with nothing before or after, counts. The first cast writes
+the secret into the Grimoire with a title. They cost 1.1-1.5x the ordinary spell's mana and have a
+50% longer cooldown. Their names: Glacial Lance, Sunfall, Horizon Cut, Petal Storm, Tempest Step,
+Singularity, Zero Hour, Rebirth, Tectonic Rise and Starlight Cascade. (The sequences are in
+`spell/Secrets.java`, for developers; players find them by experimenting or from **Torn Pages**:
+read one to learn the riddle of a secret you haven't found, and its margin sketches the way to
+the nearest Archive.) Torn Pages turn up in stronghold libraries (45%), ancient cities
+and woodland mansions (25%), trial vaults (15%), dungeons and desert pyramids (12%), and in the
+Archive; Runebound and the Archivist drop them too.
+
+### The Grimoire
+A third page of the Cord screen: your innate rune and leaning, the five reactions, the secret
+spells (found ones in full, hinted ones as riddles), and sixteen feats. Every first discovery
+shows a toast, and each new reaction, feat and secret condenses mana toward your next circle: 150
+for a reaction, 250 for a feat, 400 for a secret, 2,000 for defeating the Archivist.
+
+### Innate runes
+At the 1st Circle one of ten innate runes wakes in your heart, chosen at random. It can't be
+crafted, found or learned from an item, and it grows **+6% per circle**. It's a Tier I effect in
+the Codex's Innate category, so any Cord can hold it.
+
+| Innate rune | Element | Does |
+|---|---|---|
+| Blood Thread | Blood | Threads everything hit together for 8 s: half of any damage one takes is dealt to the rest |
+| Kindling | Fire | 3 fire damage and a stack; the fifth stack ignites for 10 in 3 blocks |
+| Twin Star | Arcane | Your next spell within 6 s is cast twice |
+| Borrowed Time | Time | Heals the damage you took in the last 5 s; it comes back over 10 s unless you slay something |
+| Gale Mantle | Wind | 12 s: jump in midair to dash forward (3 dashes) |
+| Stoneform | Earth | 8 s: no knockback, Resistance, and each hit you take sends out an aftershock |
+| Mirrorfrost | Frost | Casts back the last spell that hit you in the past 30 s, as your own |
+| Fortune | Life | 10 s: each hit you deal (spells and melee) has a 1 in 4 chance to strike for triple |
+| Phantom | Void | An afterimage of you (your skin) draws every monster within 16 blocks for 4 s, then bursts for 8 |
+| Stormheart | Storm | 10 s: whatever hits you is struck by lightning (once a second) |
+
+### Elemental leaning
+Each cast counts toward the elements in it. Once one element has 40+ casts and 1.25x the
+runner-up, your magic **leans** toward it: its effects hit **10% harder**, and your charging
+circle takes its colour.
+
+### Overcasting
+Short on mana? The first press says so; cast the same spell again within 2 s and you
+**overcast**: your outermost working Heart Circle cracks to pay for it (mana goes to 0). With no
+working circle there's nothing to crack, and the spell simply fails. A cracked circle gives
+nothing (mana, regeneration, power, its perk, a passive slot) until it mends **3 minutes** later;
+overcasting again cracks the next one in and resets the clock. The HUD shows ✦ and the number
+cracked.
+
+### Runebound
+About 2-6% of zombies and skeletons of every kind (husks, drowned, zombie villagers, strays,
+bogged...), witches, pillagers and vindicators spawn **Runebound** (more where the local difficulty
+is higher, none on Peaceful, and 35% of the monsters inside an Archive), carrying a spell that
+suits them; one in six is an **Adept**, whose spell gains a Split or an Amplify. They have 60% more
+health (Adepts 120%).
+- Their **nameplate** is their spell: its rune icons and name, in its colour.
+- Before every cast their spell's circle opens for 1.1 s, held out in their right hand so their
+  face stays in view, and the nameplate lights up (`» … «`); Zone, Rain, Mine and Domain spells also
+  mark the ground. Plenty of time to dodge or shoot the bolt down.
+- Their spells hit players, pets, golems and whatever they're hunting, never other monsters, and
+  never change blocks. Power 0.6/0.8/1.0 by difficulty (Adepts ×1.15).
+- Slain by a player: a 35% chance (Adepts 60%) of a rune from their Cord, a 6% chance (Adepts
+  20%) of a Torn Page, 10 extra experience (Adepts 20), and it counts toward the 6th Circle.
+
+### Collisions, clashes and Unison
+- **Spell collision:** a bolt that meets an enemy caster's bolt in the air bursts with it. Different
+  elements burst harder (5 damage around the point); a reacting pair (fire/frost, storm/frost,
+  fire/wind, void/arcane) sets off a small named reaction (8 damage, 4 blocks).
+- **Domain clash:** two casters' Domains can't overlap. The two shells push against each other for
+  1.5 s, then the weaker one shatters like glass. Strength is power × shape power (Focus, Vow) ×
+  (1 + 0.1 per working circle; a monster counts as 4) × √(radius / 9); the incumbent holds a tie.
+- **Unison:** hit a foe with a different element than another player did within the last second:
+  that hit lands **50% harder**, both colours burst, and both of you see *Unison!*
+
+### Ley lines and the Wellstone
+Ley lines are thin, winding veins of world mana in the Overworld, worked out from the world seed
+(the server sends clients a one-way hash of it, never the seed itself). Players wearing a Cord see
+violet motes rising along them. **On a ley line**, mana regenerates twice as fast (+100%) and Heart
+Circles form twice as quickly. The **Wellstone** (crafted from amethyst blocks, polished deepslate,
+deepslate tiles and a Mana Crystal) wakes when set on a ley line: a slowly turning circle above
+it, and +50% regeneration for everyone within 12 blocks.
+
+### Spell Scrolls and the Training Dummy
+- **Spell Scroll:** inscribe any of your spells from the Cord screen (paper, an ink sac and twice the
+  spell's mana). Anyone can cast it once, with or without a Cord or its runes, at base power.
+- **Training Dummy:** crafted from wool, hay, sticks and a slab. It never dies; every hit floats up
+  as a number coloured by damage type, and its name shows DPS over the last 5 s and the burst's
+  total. Sneak and punch it to pick it up.
+
+### How magic looks
+- **Your own view stays clear.** Particles that would sit right in front of a player's eyes are
+  left out for that player (everyone else still sees them). The circle under every cast is the
+  spell's own circle, flat on the ground, and nothing in a cast flies outward across your screen.
+- **Flashes are glows.** Impacts and bursts flash with a small glow of their own (a sigil that
+  always faces you) instead of vanilla's firework flash, which up close is a pale square.
+- **Stone and ice.** Tectonic Rise raises dripstone spires and Glacial Lance closes its targets in
+  ice. Both are block displays that grow and shrink away: they never place real blocks, and any
+  left over after a restart are removed.
+- **Falling stars** (Starfall, Starlight Cascade) mark where each will land.
+
+### The Archive and the Archivist
+A buried library (spacing 44 chunks, in most land biomes), found by a ring of broken pillars
+around a stairway going down. `/place structure wildercord:archive` builds one.
+
+1. **The Hall of Shelves:** bookshelves, reading tables, Runebound guards and a chest (runes of
+   Tier II and III, Torn Pages, a Mana Crystal).
+2. **A Rune Seal door (Frost and Storm):** seals are unbreakable. Strike the door with a spell of
+   one of its elements and every seal of that element lights; light every element within 10 s and
+   the door dissolves.
+3. **The Hall of Braziers:** unlit campfires that fire spells light; a Runebound Adept.
+4. **A second door (Fire and Wind)**, then the **Arena**: a domed circle with a magic circle inlaid
+   in the floor. The **Archivist** rises from its lectern when you come within 12 blocks.
+5. **The Vault**, behind a door of Arcane and Life off the arena: two chests (a Tier IV rune each,
+   Tier III runes, Mana Crystals, Torn Pages) and a Wellstone.
+
+The **Archivist** (400 health, armour 8, immune to fire): every spell it's about to cast is written
+on its boss bar (*The Archivist · casting Shock Rain*), with a telegraph circle. It blinks away
+when you get close and never strays from the arena. At two thirds and one third health it
+**rewrites its Cord**: untouchable for a moment, summoning two Runebound (Adepts the second time),
+then a new phase of spells.
+
+| Phase | Its spells |
+|---|---|
+| 1 | Splitting Frost Bolt, Shock Rain, Arcane Orb |
+| 2 | Volleying Fire Crescent, Wide Venom Zone, Greater Arcane Blitz, Splitting Chill Mine |
+| 3 | Arcane-Chill Domain (clash it with yours), Dismantle Barrage, Sonic Boom Beam, Frost-Shock Bolt, and sometimes **Sunfall** (everyone who sees it learns the riddle) |
+
+It drops a Tier IV rune its killer doesn't know yet, two Torn Pages, three Mana Crystals and 200
+experience, and counts as a boss for the 7th Circle and as the 8th Circle's feat for everyone
+within 64 blocks.
 
 ## Passives
 
@@ -365,17 +575,16 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
 
 - **No cooldown, no cost per cast:** a passive costs mana every second instead, 0.12 × its cost (Thrift and Archmage lower it). The HUD shows the total drain; the Passives page compares it to your regeneration.
 - **Faltering:** without the mana for a second's upkeep, a passive stops renewing until you have it again.
-- **Renewal:** a Self passive re-applies every 2 seconds, quietly (no particles after the first time). An Orbit or Stand passive restarts whenever its shape runs out, and stops the moment it's switched off.
-- **A passive Stand strikes 4x less often** than a cast one (every 3 seconds instead of 0.75).
+- **Renewal:** a Self passive re-applies every 2 seconds, quietly (no particles after the first time). An Orbit passive restarts whenever its orbs run out, and stops the moment it's switched off.
 - **Each passive has an on/off switch.** Up to 5 runes each (fewer on small Cords).
 - **Only sustainable runes, so it isn't broken:**
-  - Shapes: Self, Orbit or Stand.
+  - Shapes: Self or Orbit.
   - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive.
-  - Auras (only with Orbit or Stand): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push.
+  - Auras (only with Orbit): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push.
   - Modifiers: Amplify, Extend, Frugal, Widen, Focus, Quicken.
   - Never: heals, Shield (absorption), Reversal, Foresight, summons, links, big area damage, Stasis.
 
-Examples: `Self · Infinity` (projectiles always stop around you, about 3.8 mana/s), `Orbit · Shock · Amplify` (a crackling guard), `Stand · Dismantle` (a spirit that cuts whatever comes near).
+Examples: `Self · Infinity` (projectiles always stop around you, about 3.8 mana/s), `Orbit · Shock · Amplify` (a crackling guard), `Orbit · Dismantle` (orbs that cut whatever comes near).
 
 ## Spell enchantments
 
@@ -394,7 +603,7 @@ The HUD and the Cord screen always show costs and cooldowns after these (and the
 - **Search:** just start typing (or Ctrl+F). Several words must all match, against name, element, category and family. Words of 5+ letters also match descriptions. Esc clears.
 - **Families and categories:** pick a family tab, then a category chip.
   - Shapes: Personal, Direct, Projectile, Area, Lingering
-  - Effects: Damage, Control, Support, Movement, Time, World, Summon
+  - Effects: Damage, Control, Support, Movement, Time, World, Summon, Innate
   - Modifiers: Power, Area, Timing, Projectile
   - Links: Timing, Trigger, Reactive, Condition
 - **Codex rows:** the Codex lists one row per category, labelled on the left.
@@ -521,8 +730,8 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
 
 | Key (rebindable) | Action |
 |---|---|
-| **R** | Cast the selected spell |
-| **V** (hold) | Spell wheel: move the mouse toward a spell, release to select it |
+| **R** | Cast the selected spell. Hold to charge it, then release |
+| **V** | Tap: select the next spell. Hold: the spell wheel; point at a spell and let go to select it. Let go without pointing and it stays open until you click a spell, press `V` or Enter, press a number, or press Esc |
 | **K** | Open the Cord screen |
 | (unbound) | Cast spell 1 / 2 / 3 / 4 directly |
 
@@ -550,16 +759,17 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
 - **Friendly fire:** harmful effects never hit you, your scoreboard team or your
   tamed pets.
 - **PvP:** with PvP off, harmful effects never affect players. With PvP on, rune
-  damage to players is ×0.6 and crowd-control (Frost, Glacier, Pull, Launch) lasts
-  half as long.
+  damage to players is ×0.6. *(Planned: crowd-control such as Frost, Pull and Launch
+  lasting half as long on players.)*
 - **Hard caps per cast:** 64 creatures, 32 blocks, 24 live projectiles per player,
-  4 links deep, Knots 2 deep. Nobody can crash a server with
+  8 links deep (and, once Knots exist, Knots 2 deep). Nobody can crash a server with
   `Split · Split · Echo · Echo · Echo`.
-- **Blocks:** only Break and Grow change blocks. Both respect spawn protection and
-  can be turned off.
+- **Blocks:** only World effects (Break, Excavate, Grow, Harvest, Icepath, Light,
+  Rampart) change blocks, and only where the caster may build (spawn protection and
+  claims are respected). Monsters' spells never change blocks.
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
-- **Config file:** `config/wildercord.json` holds all of the above, plus
+- **Config file (planned):** `config/wildercord.json` will hold all of the above, plus
   mana-regen and cost multipliers.
 
 ## Add-on compatibility contract

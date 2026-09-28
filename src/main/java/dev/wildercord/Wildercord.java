@@ -7,6 +7,7 @@ import dev.wildercord.command.WildercordCommand;
 import dev.wildercord.content.WildercordComponents;
 import dev.wildercord.content.WildercordEffects;
 import dev.wildercord.content.WildercordLoot;
+import dev.wildercord.content.WildercordBlocks;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.net.WildercordNetworking;
 import dev.wildercord.player.WildercordAttachments;
@@ -28,7 +29,9 @@ public final class Wildercord implements ModInitializer {
 	public void onInitialize() {
 		WildercordComponents.init();
 		WildercordEffects.init();
+		WildercordBlocks.init();
 		WildercordItems.init();
+		dev.wildercord.content.WildercordParticles.init();
 		WildercordLoot.init();
 		WildercordEntities.init();
 		WildercordAttachments.init();
@@ -38,6 +41,15 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.Wards.init();
 		dev.wildercord.cast.HeartCircles.init();
 		dev.wildercord.cast.PassiveCaster.init();
+		dev.wildercord.cast.SecretSpells.init();
+		dev.wildercord.cast.BlockFx.init();
+		dev.wildercord.cast.Innates.init();
+		dev.wildercord.cast.Unison.init();
+		dev.wildercord.cast.Runebound.init();
+		dev.wildercord.cast.LeyWalker.init();
+		dev.wildercord.cast.DomainClash.init();
+		dev.wildercord.cast.SpellChat.init();
+		dev.wildercord.world.WildercordWorldgen.init();
 		SpellCaster.init();
 		WildercordCommand.init();
 		LOGGER.info("Wildercord initialized");

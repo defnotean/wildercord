@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "element=fire,lit=false": {
+      "model": "wildercord:block/rune_seal_fire"
+    },
+    "element=fire,lit=true": {
+      "model": "wildercord:block/rune_seal_fire_lit"
+    },
+    "element=frost,lit=false": {
+      "model": "wildercord:block/rune_seal_frost"
+    },
+    "element=frost,lit=true": {
+      "model": "wildercord:block/rune_seal_frost_lit"
+    },
+    "element=storm,lit=false": {
+      "model": "wildercord:block/rune_seal_storm"
+    },
+    "element=storm,lit=true": {
+      "model": "wildercord:block/rune_seal_storm_lit"
+    },
+    "element=wind,lit=false": {
+      "model": "wildercord:block/rune_seal_wind"
+    },
+    "element=wind,lit=true": {
+      "model": "wildercord:block/rune_seal_wind_lit"
+    },
+    "element=earth,lit=false": {
+      "model": "wildercord:block/rune_seal_earth"
+    },
+    "element=earth,lit=true": {
+      "model": "wildercord:block/rune_seal_earth_lit"
+    },
+    "element=life,lit=false": {
+      "model": "wildercord:block/rune_seal_life"
+    },
+    "element=life,lit=true": {
+      "model": "wildercord:block/rune_seal_life_lit"
+    },
+    "element=void,lit=false": {
+      "model": "wildercord:block/rune_seal_void"
+    },
+    "element=void,lit=true": {
+      "model": "wildercord:block/rune_seal_void_lit"
+    },
+    "element=arcane,lit=false": {
+      "model": "wildercord:block/rune_seal_arcane"
+    },
+    "element=arcane,lit=true": {
+      "model": "wildercord:block/rune_seal_arcane_lit"
+    },
+    "element=time,lit=false": {
+      "model": "wildercord:block/rune_seal_time"
+    },
+    "element=time,lit=true": {
+      "model": "wildercord:block/rune_seal_time_lit"
+    },
+    "element=blood,lit=false": {
+      "model": "wildercord:block/rune_seal_blood"
+    },
+    "element=blood,lit=true": {
+      "model": "wildercord:block/rune_seal_blood_lit"
+    }
+  }
+}

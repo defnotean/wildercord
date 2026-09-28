@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.Enchantment;
 
+import java.util.List;
+
 /**
  * A player's heart: how many circles it holds, how much mana has condensed toward the next,
  * and what the Cord's spell enchantments add. Both sides use it, so the HUD, the Cord screen
@@ -24,6 +26,43 @@ public final class Heart {
 
 	public static int circles(Player player) {
 		return player.getAttachedOrElse(WildercordAttachments.CIRCLES, 0);
+	}
+
+	/**
+	 * Circles that are working right now: overcasting cracks the outermost ones for a while,
+	 * and a cracked circle gives nothing (mana, regeneration, power, perks or passive slots).
+	 */
+	public static int active(Player player) {
+		return Math.max(0, circles(player) - cracked(player));
+	}
+
+	public static int cracked(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.CRACKS, WildercordAttachments.Cracks.NONE).active(player.level().getGameTime());
+	}
+
+	public static List<String> grimoire(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.GRIMOIRE, List.of());
+	}
+
+	public static boolean discovered(Player player, String key) {
+		return grimoire(player).contains(key);
+	}
+
+	public static String innate(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.INNATE, "");
+	}
+
+	public static int runeboundSlain(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.RUNEBOUND_SLAIN, 0);
+	}
+
+	public static java.util.Map<String, Integer> elementCasts(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.ELEMENT_CASTS, java.util.Map.of());
+	}
+
+	/** The element this player's magic leans toward, or "". */
+	public static String leaning(Player player) {
+		return dev.wildercord.spell.Leaning.of(elementCasts(player));
 	}
 
 	public static int condensed(Player player) {
@@ -46,6 +85,10 @@ public final class Heart {
 			case CORD -> tier == null ? -1 : tier.ordinal();
 			case KILLS -> spellKills(player);
 			case BOSS -> bossSlain(player) ? 1 : 0;
+			case REACTIONS -> dev.wildercord.spell.Feats.count(grimoire(player), "reaction:");
+			case RUNEBOUND -> runeboundSlain(player);
+			case SECRETS -> dev.wildercord.spell.Feats.count(grimoire(player), "secret:");
+			case FEAT -> discovered(player, "feat:" + requirement.feat()) ? 1 : 0;
 		};
 		return Math.min(have, requirement.amount());
 	}
@@ -76,6 +119,10 @@ public final class Heart {
 	/** How a player's circles and Cord enchantments change their spells. */
 	public record Bonuses(double power, double duration, double cost, double cooldown) {
 		public static final Bonuses NONE = new Bonuses(1, 1, 1, 1);
+
+		public Bonuses withPower(double power) {
+			return new Bonuses(power, duration, cost, cooldown);
+		}
 	}
 
 	public static Bonuses bonuses(Player player) {
@@ -84,7 +131,7 @@ public final class Heart {
 
 	/** @param overflow the spell is cast at full mana (7th Circle: Overflow) */
 	public static Bonuses bonuses(Player player, boolean overflow) {
-		int circles = circles(player);
+		int circles = active(player);
 		return new Bonuses(
 			Circles.power(Mana.enchantLevel(player, POTENCY), circles, overflow),
 			Circles.duration(Mana.enchantLevel(player, PERSISTENCE)),

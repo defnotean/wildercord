@@ -8,7 +8,12 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.item.ItemStack;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Per-player state. Saved with the player and synced only to that player. */
 public final class WildercordAttachments {
@@ -119,6 +124,121 @@ public final class WildercordAttachments {
 	public static final AttachmentType<Long> FROZEN_UNTIL = AttachmentRegistry.create(
 		Wildercord.id("frozen_until"),
 		builder -> builder.persistent(Codec.LONG)
+	);
+
+	/** The Grimoire: every reaction, secret spell, feat and hint discovered (see {@code spell.Feats}). Kept through death. */
+	public static final AttachmentType<List<String>> GRIMOIRE = AttachmentRegistry.create(
+		Wildercord.id("grimoire"),
+		builder -> builder
+			.initializer(List::of)
+			.persistent(Codec.STRING.listOf())
+			.syncWith(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/** The innate rune awakened at the 1st Circle (a rune id), or empty before then. Kept through death. */
+	public static final AttachmentType<String> INNATE = AttachmentRegistry.create(
+		Wildercord.id("innate"),
+		builder -> builder
+			.initializer(() -> "")
+			.persistent(Codec.STRING)
+			.syncWith(ByteBufCodecs.STRING_UTF8, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/** Casts per element, for elemental leaning. Kept through death. */
+	public static final AttachmentType<Map<String, Integer>> ELEMENT_CASTS = AttachmentRegistry.create(
+		Wildercord.id("element_casts"),
+		builder -> builder
+			.initializer(Map::of)
+			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/** Runebound slain (a breakthrough for the 6th Circle). Kept through death. */
+	public static final AttachmentType<Integer> RUNEBOUND_SLAIN = AttachmentRegistry.create(
+		Wildercord.id("runebound_slain"),
+		builder -> builder
+			.initializer(() -> 0)
+			.persistent(Codec.INT)
+			.syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/** Circles cracked by overcasting, and the game time they mend. Kept through death. */
+	public record Cracks(int count, long until) {
+		public static final Cracks NONE = new Cracks(0, 0);
+		public static final Codec<Cracks> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.create(i -> i.group(
+			Codec.INT.fieldOf("count").forGetter(Cracks::count),
+			Codec.LONG.fieldOf("until").forGetter(Cracks::until)
+		).apply(i, Cracks::new));
+		public static final StreamCodec<ByteBuf, Cracks> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, Cracks::count, ByteBufCodecs.VAR_LONG, Cracks::until, Cracks::new);
+
+		public int active(long now) {
+			return now < until ? count : 0;
+		}
+	}
+
+	public static final AttachmentType<Cracks> CRACKS = AttachmentRegistry.create(
+		Wildercord.id("cracks"),
+		builder -> builder
+			.initializer(() -> Cracks.NONE)
+			.persistent(Cracks.CODEC)
+			.syncWith(Cracks.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/** Rhythm: casts chained on the beat, and the window in which the next one counts. */
+	public record Rhythm(int stacks, long windowStart, long windowEnd) {
+		public static final Rhythm NONE = new Rhythm(0, 0, 0);
+		public static final StreamCodec<ByteBuf, Rhythm> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, Rhythm::stacks, ByteBufCodecs.VAR_LONG, Rhythm::windowStart, ByteBufCodecs.VAR_LONG, Rhythm::windowEnd, Rhythm::new);
+	}
+
+	public static final AttachmentType<Rhythm> RHYTHM = AttachmentRegistry.create(
+		Wildercord.id("rhythm"),
+		builder -> builder
+			.initializer(() -> Rhythm.NONE)
+			.syncWith(Rhythm.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+	);
+
+	/**
+	 * A spell being charged: which one, when charging began, and its runes' ids in order. Synced to
+	 * everyone nearby, who draw the spell's readable circle growing in front of the caster.
+	 */
+	public record Charge(int spell, long start, List<String> runes) {
+		public static final StreamCodec<ByteBuf, Charge> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, Charge::spell, ByteBufCodecs.VAR_LONG, Charge::start,
+			ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), Charge::runes, Charge::new);
+	}
+
+	public static final AttachmentType<Charge> CHARGE = AttachmentRegistry.create(
+		Wildercord.id("charge"),
+		builder -> builder.syncWith(Charge.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
+	/** Standing on a ley line right now (worked out by the server every few ticks). */
+	public static final AttachmentType<Boolean> ON_LEY = AttachmentRegistry.create(
+		Wildercord.id("on_ley"),
+		builder -> builder
+			.initializer(() -> false)
+			.syncWith(ByteBufCodecs.BOOL, AttachmentSyncPredicate.targetOnly())
+	);
+
+	/** Near an awake Wellstone: the game time that stops counting unless it's renewed. */
+	public static final AttachmentType<Long> WELL_UNTIL = AttachmentRegistry.create(
+		Wildercord.id("well_until"),
+		builder -> builder
+			.initializer(() -> 0L)
+			.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly())
+	);
+
+	/** On a Runebound monster: the runes of the spell it casts. Saved with the monster. */
+	public static final AttachmentType<List<String>> RUNEBOUND = AttachmentRegistry.create(
+		Wildercord.id("runebound"),
+		builder -> builder.persistent(Codec.STRING.listOf())
 	);
 
 	public static void init() {}

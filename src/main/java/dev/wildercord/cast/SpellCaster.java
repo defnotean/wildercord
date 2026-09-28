@@ -2,11 +2,13 @@ package dev.wildercord.cast;
 
 import dev.wildercord.content.CordTier;
 import dev.wildercord.content.RuneItem;
+import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.Secrets;
 import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.ChatFormatting;
@@ -60,6 +62,16 @@ public final class SpellCaster {
 	}
 
 	public static void cast(ServerPlayer player, int requested) {
+		cast(player, requested, 0.0);
+	}
+
+	/**
+	 * Casts a spell.
+	 *
+	 * @param charge how charged it was when released, 0 (a tap) to 1 (full): up to
+	 *               {@link Charging#POWER} more power
+	 */
+	public static void cast(ServerPlayer player, int requested, double charge) {
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {
 			fail(player, Component.translatable("message.wildercord.no_cord"));
@@ -77,6 +89,7 @@ public final class SpellCaster {
 			fail(player, Component.translatable("message.wildercord.spell_empty", spell + 1));
 			return;
 		}
+		Optional<Secrets.Secret> secret = Secrets.match(runes);
 		long now = player.level().getGameTime();
 		long readyAt = Spellbooks.readyAt(player, spell);
 		if (now < readyAt) {
@@ -85,11 +98,11 @@ public final class SpellCaster {
 		}
 		float manaNow = Spellbooks.mana(player);
 		boolean overflow = manaNow >= Mana.max(player) - 0.5F;
-		dev.wildercord.player.Heart.Bonuses bonuses = dev.wildercord.player.Heart.bonuses(player, overflow);
+		Heart.Bonuses bonuses = Heart.bonuses(player, overflow);
 		int spent;
 		if (compiled.paysInHealth()) {
 			// Blood Price: paid in health, and never enough to kill you.
-			int blood = dev.wildercord.player.Heart.healthCost(player, compiled);
+			int blood = Heart.healthCost(player, compiled);
 			spent = blood * 5;
 			if (!player.isCreative() && player.getHealth() <= blood) {
 				fail(player, Component.translatable("message.wildercord.no_health", blood));
@@ -101,24 +114,108 @@ public final class SpellCaster {
 				Vfx.emit(player.level(), net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, player.getBoundingBox().getCenter(), 4, 0.3, 0.1);
 			}
 		} else {
-			int cost = dev.wildercord.player.Heart.manaCost(player, compiled);
+			int cost = (int) Math.ceil(Heart.manaCost(player, compiled) * secret.map(Secrets.Secret::power).orElse(1.0) - 1e-9);
 			spent = cost;
 			float mana = Spellbooks.mana(player);
 			if (!player.isCreative() && mana < cost) {
-				fail(player, Component.translatable("message.wildercord.no_mana", (int) mana, cost));
-				return;
-			}
-			if (!player.isCreative()) {
+				// Not enough: a second press within two seconds overcasts, cracking a circle to pay.
+				if (!Overcast.confirm(player, spell, (int) mana, cost)) {
+					return;
+				}
+				spent = (int) mana;
+				Spellbooks.setMana(player, 0);
+			} else if (!player.isCreative()) {
 				Spellbooks.setMana(player, mana - cost);
 			}
 		}
-		Spellbooks.setReadyAt(player, spell, now + dev.wildercord.player.Heart.cooldownTicks(player, compiled));
+		int cooldown = Heart.cooldownTicks(player, compiled);
+		if (secret.isPresent()) {
+			cooldown = cooldown * 3 / 2;
+		}
+		Spellbooks.setReadyAt(player, spell, now + cooldown);
 		HeartCircles.condense(player, spent);
+		double rhythm = Rhythm.onCast(player, now, cooldown);
+		double charged = 1 + Charging.POWER * Math.max(0, Math.min(1, charge));
+		bonuses = bonuses.withPower(bonuses.power() * rhythm * charged);
+		if (charge >= 1.0) {
+			Grimoire.feat(player, dev.wildercord.spell.Feats.CHARGED);
+		}
+		String leaning = countElements(player, runes);
 		int castNumber = COMBO.computeIfAbsent(player.getUUID(), k -> new int[CordTier.MAX_SPELLS])[spell] += 1;
 		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
-		Vfx.castCircle(player, compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()));
+		Vfx.Theme theme = secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()));
+		Vfx.castCircle(player, theme, runes);
 		HeartCircles.onCast(player);
-		CastEngine.cast(player, compiled.root(), castNumber, bonuses, false, null);
+		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
+		Cast cast = new Cast(player, castNumber, bonuses, false, null, info);
+		if (secret.isPresent()) {
+			SecretSpells.discover(player, secret.get());
+			SecretSpells.cast(cast, secret.get());
+		} else {
+			CastEngine.cast(cast, compiled.root());
+		}
+		// Twin Star: the next spell goes off a second time, a moment later.
+		if (Innates.consumeTwin(player)) {
+			Heart.Bonuses twin = bonuses;
+			Scheduler.later(8, () -> {
+				if (!player.isRemoved() && player.isAlive()) {
+					TechniqueVfx.twinStar(player.level(), player);
+					Cast again = new Cast(player, castNumber, twin, false, null, info);
+					if (secret.isPresent()) {
+						SecretSpells.cast(again, secret.get());
+					} else {
+						CastEngine.cast(again, compiled.root());
+					}
+				}
+			});
+		}
+	}
+
+	/**
+	 * Counts this cast toward each element in it, for elemental leaning, and returns the element
+	 * the caster now leans toward ("" for none). Tells the player when a leaning first appears.
+	 */
+	private static String countElements(ServerPlayer player, List<RuneDef> runes) {
+		java.util.Set<String> elements = new java.util.HashSet<>();
+		for (RuneDef rune : runes) {
+			if (rune.family() == dev.wildercord.spell.RuneFamily.EFFECT && !rune.element().isEmpty()) {
+				elements.add(rune.element());
+			}
+		}
+		String before = Heart.leaning(player);
+		if (elements.isEmpty()) {
+			return before;
+		}
+		java.util.Map<String, Integer> counts = new java.util.HashMap<>(Heart.elementCasts(player));
+		for (String element : elements) {
+			counts.merge(element, 1, Integer::sum);
+		}
+		player.setAttached(dev.wildercord.player.WildercordAttachments.ELEMENT_CASTS, java.util.Map.copyOf(counts));
+		String after = dev.wildercord.spell.Leaning.of(counts);
+		if (!after.isEmpty() && !after.equals(before)) {
+			player.sendSystemMessage(Component.translatable("message.wildercord.leaning", Component.translatable("element.wildercord." + after))
+				.withColor(dev.wildercord.spell.RuneColors.element(after)));
+			Grimoire.feat(player, dev.wildercord.spell.Feats.LEANING);
+		}
+		return after;
+	}
+
+	/** Gives a spell a custom name, or clears it back to the automatic one. */
+	public static void rename(ServerPlayer player, int spell, String name) {
+		if (spell < 0 || spell >= CordTier.MAX_SPELLS) {
+			return;
+		}
+		Spellbooks.set(player, Spellbooks.get(player).withName(spell, dev.wildercord.spell.SpellNames.clean(name)));
+	}
+
+	/** A spell's name: the custom one, or one made from its runes. */
+	public static String nameOf(Spellbook book, int spell, List<RuneDef> runes) {
+		String custom = book.name(spell);
+		if (!custom.isEmpty()) {
+			return custom;
+		}
+		Optional<Secrets.Secret> secret = Secrets.match(runes);
+		return secret.map(Secrets.Secret::name).orElseGet(() -> dev.wildercord.spell.SpellNames.auto(runes));
 	}
 
 	/** Casts of each spell so far this session, per player, for Combo. */
@@ -187,7 +284,7 @@ public final class SpellCaster {
 
 	/**
 	 * Saves an edited passive. New runes must be learned, held by the Cord, allowed in passives
-	 * and fit its passive sockets; the slot must be open (1st, 3rd and 5th Circle).
+	 * and fit its passive sockets; the slot must be open (the 1st Circle opens one, the 5th a second).
 	 *
 	 * @return null if everything was accepted, otherwise why something was left out
 	 */
@@ -196,7 +293,7 @@ public final class SpellCaster {
 		if (tier == null) {
 			return Component.translatable("message.wildercord.no_cord");
 		}
-		int slots = dev.wildercord.spell.Passives.slots(dev.wildercord.player.Heart.circles(player));
+		int slots = dev.wildercord.spell.Passives.slots(dev.wildercord.player.Heart.active(player));
 		if (slot < 0 || slot >= dev.wildercord.spell.Passives.MAX || slot >= slots) {
 			return Component.translatable("message.wildercord.passive_locked", dev.wildercord.spell.Circles.ordinal(
 				dev.wildercord.spell.Passives.circleFor(Math.max(0, Math.min(slot, dev.wildercord.spell.Passives.MAX - 1)))));
@@ -269,6 +366,14 @@ public final class SpellCaster {
 		}
 		HeartCircles.tick(player, player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.MEDITATING, false));
 		PassiveCaster.tick(player, tickCount);
+		Overcast.tick(player);
+		Rhythm.tick(player);
+		Charging.tick(player);
+		LeyWalker.tick(player);
+		if (Heart.circles(player) > 0 && Heart.innate(player).isEmpty()) {
+			// Casters who formed their 1st Circle before innate runes existed get theirs now.
+			Innates.awaken(player);
+		}
 		Spellbook book = Spellbooks.get(player);
 		if (!book.starterGiven()) {
 			Spellbook next = book;

@@ -25,7 +25,7 @@ class HeartAndPassivesTest {
 
 	@Test
 	void onlySustainableRunesCanBePassives() {
-		for (RuneDef ok : runes(SELF, ORBIT, STAND, SWIFT, STONESKIN, INFINITY, REFLECT, SHOCK, DISMANTLE, AMPLIFY, FRUGAL_MOD, QUICKEN)) {
+		for (RuneDef ok : runes(SELF, ORBIT, SWIFT, STONESKIN, INFINITY, REFLECT, SHOCK, DISMANTLE, AMPLIFY, FRUGAL_MOD, QUICKEN)) {
 			assertTrue(Passives.allowed(ok), ok.name());
 		}
 		for (RuneDef no : runes(BOLT, BEAM, DOMAIN, HEAL, REVERSAL, FORESIGHT, STASIS, LIGHTNING, HOLLOW, SUMMON, SHIELD, VEIL, SPLIT_MOD,
@@ -35,13 +35,13 @@ class HeartAndPassivesTest {
 	}
 
 	@Test
-	void damageNeedsAnOrbitOrStandAndOneShapeAtMost() {
+	void damageNeedsAnOrbitAndOneShapeAtMost() {
 		assertNull(Passives.problem(runes(SWIFT)));
 		assertNull(Passives.problem(runes(SELF, STONESKIN, AMPLIFY)));
 		assertNull(Passives.problem(runes(ORBIT, SHOCK)));
-		assertNull(Passives.problem(runes(STAND, DISMANTLE, FIRE)));
-		assertTrue(Passives.problem(runes(SELF, SHOCK)).contains("Orbit or a Stand"));
-		assertTrue(Passives.problem(runes(ORBIT, SWIFT, STAND)).contains("one shape"));
+		assertNull(Passives.problem(runes(ORBIT, DISMANTLE, FIRE)));
+		assertTrue(Passives.problem(runes(SELF, SHOCK)).contains("needs an Orbit"));
+		assertTrue(Passives.problem(runes(ORBIT, SWIFT, SELF)).contains("one shape"));
 		assertTrue(Passives.problem(runes(BOLT, HARM)).contains("can't be sustained"));
 	}
 
@@ -50,8 +50,7 @@ class HeartAndPassivesTest {
 		assertEquals(1.2, Passives.upkeep(10), 1e-9);
 		assertEquals(Passives.SELF_INTERVAL, Passives.interval(SpellCompiler.compile(runes(SWIFT)).root()));
 		assertEquals(160, Passives.interval(SpellCompiler.compile(runes(ORBIT, SHOCK)).root()));
-		assertEquals(160, Passives.interval(SpellCompiler.compile(runes(STAND, HARM)).root()));
-		assertEquals(320, Passives.interval(SpellCompiler.compile(runes(STAND, EXTEND, HARM)).root()));
+		assertEquals(320, Passives.interval(SpellCompiler.compile(runes(ORBIT, EXTEND, SHOCK)).root()));
 	}
 
 	@Test

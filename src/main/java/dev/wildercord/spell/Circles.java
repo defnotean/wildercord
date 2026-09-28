@@ -46,22 +46,42 @@ public final class Circles {
 		CORD,
 		/** Have defeated this many monsters with spells. */
 		KILLS,
-		/** Have helped slay a boss: the Wither, the Warden, an Elder Guardian or the Ender Dragon. */
-		BOSS
+		/** Have helped slay a boss: the Wither, the Warden, an Elder Guardian, the Ender Dragon or the Archivist. */
+		BOSS,
+		/** Have set off this many different element reactions (there are five). */
+		REACTIONS,
+		/** Have slain this many Runebound, the monsters that cast spells. */
+		RUNEBOUND,
+		/** Have found this many secret spells. */
+		SECRETS,
+		/** Have done one particular feat (see {@link Feats}). */
+		FEAT
 	}
 
-	public record Requirement(Need need, int amount) {}
+	/** @param feat for {@link Need#FEAT}: which one (a {@link Feats} id); otherwise empty */
+	public record Requirement(Need need, int amount, String feat) {
+		public Requirement(Need need, int amount) {
+			this(need, amount, "");
+		}
 
-	/** Every circle after the 1st needs a breakthrough (or several) as well as condensed mana. */
+		public static Requirement feat(String feat) {
+			return new Requirement(Need.FEAT, 1, feat);
+		}
+	}
+
+	/**
+	 * Every circle after the 1st needs a breakthrough as well as condensed mana. Early ones ask
+	 * for knowledge; later ones for things you've actually done with magic.
+	 */
 	public static List<Requirement> requirements(int circle) {
 		return switch (circle) {
 			case 2 -> List.of(new Requirement(Need.RUNES, 10));
-			case 3 -> List.of(new Requirement(Need.RUNES, 20), new Requirement(Need.CORD, 1));
-			case 4 -> List.of(new Requirement(Need.KILLS, 50));
-			case 5 -> List.of(new Requirement(Need.RUNES, 40), new Requirement(Need.CORD, 2));
-			case 6 -> List.of(new Requirement(Need.KILLS, 200));
-			case 7 -> List.of(new Requirement(Need.BOSS, 1), new Requirement(Need.KILLS, 350));
-			case 8 -> List.of(new Requirement(Need.RUNES, 100), new Requirement(Need.CORD, 3), new Requirement(Need.KILLS, 500));
+			case 3 -> List.of(new Requirement(Need.CORD, 1), new Requirement(Need.REACTIONS, 1));
+			case 4 -> List.of(new Requirement(Need.KILLS, 40), new Requirement(Need.REACTIONS, 3));
+			case 5 -> List.of(new Requirement(Need.RUNES, 35), new Requirement(Need.CORD, 2), Requirement.feat(Feats.LONG_SPELL_KILL));
+			case 6 -> List.of(new Requirement(Need.KILLS, 150), new Requirement(Need.RUNEBOUND, 8), new Requirement(Need.REACTIONS, 5));
+			case 7 -> List.of(new Requirement(Need.BOSS, 1), new Requirement(Need.SECRETS, 2), Requirement.feat(Feats.RHYTHM));
+			case 8 -> List.of(new Requirement(Need.CORD, 3), new Requirement(Need.SECRETS, 4), Requirement.feat(Feats.ARCHIVIST));
 			default -> List.of();
 		};
 	}

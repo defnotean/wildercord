@@ -68,7 +68,9 @@ public final class Spirits {
 	}
 
 	private static void spawnSpirits(Cast cast, Vec3 around, int wanted, double power, double duration, boolean shadow) {
-		ServerPlayer caster = cast.caster;
+		if (!(cast.caster instanceof ServerPlayer caster)) {
+			return;
+		}
 		ServerLevel level = cast.level;
 		int existing = level.getEntities(EntityTypes.WOLF, caster.getBoundingBox().inflate(64.0),
 			w -> w.hasAttached(WildercordAttachments.SPIRIT_UNTIL) && w.getOwner() == caster).size();
@@ -133,7 +135,8 @@ public final class Spirits {
 	/** Bosses are only ever slowed: stopping their AI or moving them could break their fight logic. */
 	public static boolean isBoss(Entity target) {
 		return target.getType() == EntityTypes.ENDER_DRAGON || target.getType() == EntityTypes.WITHER
-			|| target.getType() == EntityTypes.WARDEN || target.getType() == EntityTypes.ELDER_GUARDIAN;
+			|| target.getType() == EntityTypes.WARDEN || target.getType() == EntityTypes.ELDER_GUARDIAN
+			|| target.getType() == WildercordEntities.ARCHIVIST;
 	}
 
 	/** Freeze: {@link #hold} plus ice, which sets up Shatter. */

@@ -313,10 +313,10 @@ final class Techniques {
 		if (harmed.isEmpty()) {
 			return;
 		}
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		if (cast.once("decree")) {
 			TechniqueVfx.decreeSpoken(cast.level, caster);
-			if (!caster.isCreative()) {
+			if (!Casters.creative(caster)) {
 				caster.setHealth(Math.max(1.0F, caster.getHealth() - 2.0F));
 				Fx.sound(cast.level, caster.position(), SoundEvents.PLAYER_HURT, 0.6F, 0.8F);
 			}
@@ -506,7 +506,7 @@ final class Techniques {
 
 	/** Swap: you and the target trade places. */
 	static void swap(Cast cast, Cast.Hit hit) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		LivingEntity target = partner(cast, hit);
 		if (target == null) {
 			return;
@@ -514,7 +514,7 @@ final class Techniques {
 		Vec3 a = caster.position();
 		Vec3 b = target.position();
 		if (!fits(cast.level, caster, b) || !fits(cast.level, target, a)) {
-			caster.sendOverlayMessage(Component.translatable("message.wildercord.swap_blocked"));
+			Casters.tell(caster, Component.translatable("message.wildercord.swap_blocked"));
 			return;
 		}
 		teleport(caster, cast.level, b, caster.getYRot(), caster.getXRot());
@@ -524,7 +524,7 @@ final class Techniques {
 
 	/** Zipper: steps you through the wall you're facing (up to 6 blocks thick). */
 	static void zipper(Cast cast) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		ServerLevel level = cast.level;
 		Vec3 eye = caster.getEyePosition();
 		Vec3 dir = caster.getLookAngle();
@@ -534,7 +534,7 @@ final class Techniques {
 			BlockState state = level.getBlockState(p);
 			if (!state.getCollisionShape(level, p).isEmpty()) {
 				if (state.getDestroySpeed(level, p) < 0) {
-					caster.sendOverlayMessage(Component.translatable("message.wildercord.zipper_unbreakable"));
+					Casters.tell(caster, Component.translatable("message.wildercord.zipper_unbreakable"));
 					return;
 				}
 				wall = d;
@@ -542,7 +542,7 @@ final class Techniques {
 			}
 		}
 		if (wall < 0) {
-			caster.sendOverlayMessage(Component.translatable("message.wildercord.zipper_no_wall"));
+			Casters.tell(caster, Component.translatable("message.wildercord.zipper_no_wall"));
 			return;
 		}
 		Vec3 entry = eye.add(dir.scale(wall));
@@ -552,7 +552,7 @@ final class Techniques {
 			BlockPos bp = BlockPos.containing(p);
 			BlockState state = level.getBlockState(bp);
 			if (!state.getCollisionShape(level, bp).isEmpty() && state.getDestroySpeed(level, bp) < 0) {
-				caster.sendOverlayMessage(Component.translatable("message.wildercord.zipper_unbreakable"));
+				Casters.tell(caster, Component.translatable("message.wildercord.zipper_unbreakable"));
 				return;
 			}
 			for (double drop : new double[] {eyeHeight, eyeHeight * 0.5, 0.1}) {
@@ -567,12 +567,12 @@ final class Techniques {
 				}
 			}
 		}
-		caster.sendOverlayMessage(Component.translatable("message.wildercord.zipper_thick"));
+		Casters.tell(caster, Component.translatable("message.wildercord.zipper_thick"));
 	}
 
 	/** Shadowstep: you reappear right behind the target, facing its back. */
 	static void shadowstep(Cast cast, Cast.Hit hit) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		LivingEntity target = partner(cast, hit);
 		if (target == null) {
 			return;
@@ -598,7 +598,7 @@ final class Techniques {
 
 	/** Time Skip: you vanish, reappear up to 8 blocks ahead, and nearby monsters lose you. */
 	static void timeSkip(Cast cast) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		ServerLevel level = cast.level;
 		Vec3 dir = Effects.horizontal(caster.getLookAngle(), caster.getLookAngle());
 		Vec3 start = caster.position();
@@ -633,7 +633,7 @@ final class Techniques {
 
 	/** Rampart: a temporary earth wall across your aim at the point. */
 	static void rampart(Cast cast, Cast.Hit hit, double radiusScale, int ticks) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		ServerLevel level = cast.level;
 		Vec3 base = hit.block() != null && hit.face() != null
 			? Vec3.atBottomCenterOf(hit.block().relative(hit.face()))
@@ -659,7 +659,7 @@ final class Techniques {
 					if (!state.canBeReplaced() || !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()) {
 						continue;
 					}
-					if (!caster.mayBuild() || !level.mayInteract(caster, p) || !cast.takeBlock()) {
+					if (!Casters.mayBuild(caster) || !level.mayInteract(caster, p) || !cast.takeBlock()) {
 						continue;
 					}
 					RAMPART.put(GlobalPos.of(level.dimension(), p.immutable()), state);
@@ -702,10 +702,10 @@ final class Techniques {
 
 	/** Thunderbird: a storm bird circles overhead and strikes the nearest enemy every 1.5 seconds. */
 	static void thunderbird(Cast cast, double power, int ticks) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		UUID id = caster.getUUID();
 		if (BIRDS.getOrDefault(id, 0) >= MAX_BIRDS) {
-			caster.sendOverlayMessage(Component.translatable("message.wildercord.too_many_birds", MAX_BIRDS));
+			Casters.tell(caster, Component.translatable("message.wildercord.too_many_birds", MAX_BIRDS));
 			return;
 		}
 		BIRDS.merge(id, 1, Integer::sum);

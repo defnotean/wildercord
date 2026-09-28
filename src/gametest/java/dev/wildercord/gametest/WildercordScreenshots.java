@@ -27,6 +27,10 @@ public class WildercordScreenshots implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		// WILDERCORD_TOUR_ONLY=1 skips these and runs only the feature tour, for quick visual checks.
+		if (System.getenv("WILDERCORD_TOUR_ONLY") != null) {
+			return;
+		}
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			world.getServer().runOnServer(server -> {
@@ -164,7 +168,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		context.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.THIRD_PERSON_BACK));
 		context.waitTicks(5);
 		Object[][] casts = {
-			{"fx_stand", 24, new RuneDef[] {Runes.STAND, Runes.DISMANTLE, Runes.EXECUTE_MOD}},
+			{null, 24, new RuneDef[] {Runes.CONE, Runes.DISMANTLE, Runes.EXECUTE_MOD}},
 			{null, 60, new RuneDef[] {Runes.CRESCENT, Runes.CLEAVE}},
 			{"fx_barrage_stasis", 14, new RuneDef[] {Runes.BARRAGE, Runes.STASIS, Runes.HARM}},
 			{null, 70, new RuneDef[] {Runes.BEAM, Runes.BLACKSPARK}},
@@ -216,7 +220,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				context.waitTicks(40);
 			}
 		}
-		// Let every lingering effect (Domain, Stand, Thunderbird, Rampart) run out.
+		// Let every lingering effect (Domain, Thunderbird, Rampart) run out.
 		context.waitTicks(260);
 		context.runOnClient(mc -> mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON));
 	}
@@ -455,13 +459,13 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		context.takeScreenshot(TestScreenshotOptions.of("fx_circles").disableCounterPrefix());
 		context.waitTicks(20);
 
-		// Passives: a Self buff and a Stand at once (the 8th Circle opens both slots).
+		// Passives: a Self buff and an Orbit at once (the 8th Circle opens both slots).
 		server.runOnServer(s -> {
 			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
 			check(SpellCaster.editPassive(player, 0, ids(Runes.SELF, Runes.REVERSAL)) != null, "Reversal must not be allowed as a passive");
 			check(SpellCaster.editPassive(player, 2, ids(Runes.ORBIT, Runes.SHOCK)) != null, "There are only two passive slots");
 			check(SpellCaster.editPassive(player, 0, ids(Runes.SELF, Runes.SWIFT)) == null, "Self · Swift should be a valid passive");
-			check(SpellCaster.editPassive(player, 1, ids(Runes.STAND, Runes.DISMANTLE)) == null, "Stand · Dismantle should be a valid passive");
+			check(SpellCaster.editPassive(player, 1, ids(Runes.ORBIT, Runes.DISMANTLE)) == null, "Orbit · Dismantle should be a valid passive");
 			player.removeAllEffects();
 			Spellbooks.setMana(player, 100);
 		});

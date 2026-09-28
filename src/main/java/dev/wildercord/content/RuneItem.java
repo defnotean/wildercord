@@ -117,6 +117,10 @@ public class RuneItem extends Item {
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			RuneDef def = rune.get();
+			if (Runes.innate(def) && !serverPlayer.isCreative()) {
+				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.innate_item").withStyle(ChatFormatting.GRAY));
+				return InteractionResult.FAIL;
+			}
 			if (Spellbooks.knows(serverPlayer, def.id())) {
 				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.already_known", runeName(def)).withStyle(ChatFormatting.GRAY));
 				return InteractionResult.FAIL;

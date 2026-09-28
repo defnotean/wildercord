@@ -111,10 +111,16 @@ public class CordScreen extends Screen {
 
 	private final List<List<String>> spells = new ArrayList<>();
 	private int editing;
-	/** The Passives page: the same rows, but for the (up to) three always-on passives. */
+	/** The Passives page: the same rows, but for the (up to) two always-on passives. */
 	private final List<List<String>> passives = new ArrayList<>();
 	private boolean passivePage;
+	/** The Grimoire page: everything discovered, in place of the rows, Codex and readout. */
+	private boolean grimoirePage;
+	private int grimoireScroll;
 	private int editingPassive;
+	/** Renaming the selected spell: the name as typed so far. */
+	private boolean renaming;
+	private String renameText = "";
 	private RuneFamily filter;
 	private String category;
 	private String query = "";
@@ -243,7 +249,7 @@ public class CordScreen extends Screen {
 
 	/** Rows that can be edited: the Cord's spells, or the passive slots the heart has opened. */
 	private int openRows() {
-		return passivePage ? Passives.slots(Heart.circles(minecraft.player)) : spellCount();
+		return passivePage ? Passives.slots(Heart.active(minecraft.player)) : spellCount();
 	}
 
 	private int current() {
@@ -494,12 +500,12 @@ public class CordScreen extends Screen {
 		if (inside(mx, my, 13, 8, font.width(name), 10)) {
 			tooltip = List.of(name.copy().withColor(GOLD), stats.copy().withStyle(ChatFormatting.GRAY));
 		}
-		// Spells | Passives
+		// Spells | Passives | Grimoire
 		int pageX = 13 + font.width(name) + 8;
-		for (int page = 0; page < 2; page++) {
-			Component label = Component.translatable(page == 0 ? "screen.wildercord.page.spells" : "screen.wildercord.page.passives");
+		for (int page = 0; page < 3; page++) {
+			Component label = Component.translatable(PAGE_KEYS[page]);
 			int w = font.width(label) + 10;
-			boolean active = passivePage == (page == 1);
+			boolean active = page() == page;
 			sprite(g, active ? SPR_TAB_ACTIVE : SPR_TAB, pageX, 7, w, 13);
 			g.text(font, label, pageX + 5, 10, active ? GOLD : inside(mx, my, pageX, 7, w, 13) ? TEXT : DIM, false);
 			pageX += w + 2;
@@ -510,6 +516,10 @@ public class CordScreen extends Screen {
 			g.text(font, stats, statsRight - statsW, 10, DIM, false);
 		}
 
+		if (grimoirePage) {
+			List<Component> tip = drawGrimoire(g, mx, my);
+			return tip != null ? tip : tooltip;
+		}
 		if (passivePage) {
 			for (int s = 0; s < Passives.MAX; s++) {
 				List<Component> rowTip = drawPassiveRow(g, s, SPELL_TOP + s * SPELL_ROW, mx, my, tier);
@@ -602,6 +612,12 @@ public class CordScreen extends Screen {
 		}
 
 		drawReadout(g, tier);
+		if (!passivePage) {
+			List<Component> toolTip = drawSpellTools(g, mx, my);
+			if (toolTip != null) {
+				tooltip = toolTip;
+			}
+		}
 		return tooltip;
 	}
 
@@ -870,7 +886,7 @@ public class CordScreen extends Screen {
 		}
 		Spellbook book = Spellbooks.get(player);
 		float total = 0;
-		for (int s = 0; s < Passives.slots(Heart.circles(player)); s++) {
+		for (int s = 0; s < Passives.slots(Heart.active(player)); s++) {
 			if (!book.passiveOn(s)) {
 				continue;
 			}
@@ -948,6 +964,16 @@ public class CordScreen extends Screen {
 			return out;
 		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+		// The name line, with room left for the tool buttons on its right.
+		java.util.Optional<dev.wildercord.spell.Secrets.Secret> secret = dev.wildercord.spell.Secrets.match(runes);
+		boolean knownSecret = secret.isPresent() && Heart.discovered(minecraft.player, secret.get().key());
+		String spellName = renaming ? renameText + ((System.currentTimeMillis() / 500) % 2 == 0 ? "_" : " ")
+			: knownSecret || !book().name(editing).isEmpty() ? SpellCaster.nameOf(book(), editing, runes) : dev.wildercord.spell.SpellNames.auto(runes);
+		int nameColor = renaming ? TEXT : knownSecret ? 0xFF000000 | secret.get().color() : GOLD;
+		out.add(new ReadoutLine(Component.literal(font.plainSubstrByWidth(spellName, width - TOOLS_W - 6)).getVisualOrderText(), TEXT_X, nameColor));
+		if (knownSecret && !renaming) {
+			wrap(out, Component.translatable("screen.wildercord.secret_line", secret.get().description()), 0, width, 0xFF000000 | secret.get().color());
+		}
 		int maxMana = Mana.max(minecraft.player);
 		int manaCost = Heart.manaCost(minecraft.player, compiled);
 		int healthCost = Heart.healthCost(minecraft.player, compiled);
@@ -1001,9 +1027,6 @@ public class CordScreen extends Screen {
 				spaces++;
 			}
 			wrap(out, Component.literal(text.substring(spaces)), font.width(text.substring(0, spaces)), width, TEXT);
-		}
-		if (runes.stream().anyMatch(r -> r.is(Runes.STAND.id()))) {
-			wrap(out, Component.translatable("screen.wildercord.passive.stand_slow", Passives.STAND_SLOWDOWN), 0, width, DIM);
 		}
 		if (problem != null) {
 			wrap(out, Component.literal("! " + problem), 0, width, WARN);
@@ -1063,6 +1086,12 @@ public class CordScreen extends Screen {
 		if (stats.meditating()) {
 			lines.add(Component.translatable("screen.wildercord.mana.regen_meditation", Math.round(Mana.MEDITATION_BONUS * 100)).withStyle(ChatFormatting.GRAY));
 		}
+		if (stats.ley()) {
+			lines.add(Component.translatable("screen.wildercord.mana.regen_ley", Math.round(Mana.LEY_BONUS * 100)).withColor(0xB8A0FF));
+		}
+		if (stats.well()) {
+			lines.add(Component.translatable("screen.wildercord.mana.regen_well", Math.round(Mana.WELL_BONUS * 100)).withColor(0xB8A0FF));
+		}
 		if (stats.siphon() > 0) {
 			lines.add(Component.translatable("screen.wildercord.mana.siphon", RuneItem.roman(stats.siphon()), stats.siphon() * Mana.SIPHON_MANA).withStyle(ChatFormatting.WHITE));
 		}
@@ -1073,6 +1102,7 @@ public class CordScreen extends Screen {
 		lines.add(Component.translatable("screen.wildercord.mana.way.potions").withStyle(ChatFormatting.GRAY));
 		lines.add(Component.translatable("screen.wildercord.mana.way.meditate").withStyle(ChatFormatting.GRAY));
 		lines.add(Component.translatable("screen.wildercord.mana.way.circles").withStyle(ChatFormatting.GRAY));
+		lines.add(Component.translatable("screen.wildercord.mana.way.ley").withStyle(ChatFormatting.GRAY));
 		return lines;
 	}
 
@@ -1088,7 +1118,22 @@ public class CordScreen extends Screen {
 			lines.add(Component.translatable("screen.wildercord.heart.bonus", circles * Circles.MANA_PER_CIRCLE,
 				String.format(Locale.ROOT, "%.1f", circles * Circles.REGEN_PER_CIRCLE), Math.round(circles * Circles.POWER_PER_CIRCLE * 100)).withStyle(ChatFormatting.GRAY));
 		}
-		lines.add(Component.translatable("screen.wildercord.heart.passives", Passives.slots(circles), Passives.MAX).withStyle(ChatFormatting.GRAY));
+		lines.add(Component.translatable("screen.wildercord.heart.passives", Passives.slots(Heart.active(player)), Passives.MAX).withStyle(ChatFormatting.GRAY));
+		int cracked = Heart.cracked(player);
+		if (cracked > 0) {
+			long left = player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.CRACKS, dev.wildercord.player.WildercordAttachments.Cracks.NONE).until()
+				- player.level().getGameTime();
+			lines.add(Component.translatable("screen.wildercord.heart.cracked", cracked, String.format(Locale.ROOT, "%d:%02d", left / 1200, left / 20 % 60))
+				.withStyle(ChatFormatting.RED));
+		}
+		Optional<RuneDef> innate = Runes.get(Heart.innate(player));
+		innate.ifPresent(def -> lines.add(Component.translatable("screen.wildercord.heart.innate", RuneItem.runeName(def).withColor(RuneColors.of(def)),
+			Math.round(dev.wildercord.cast.Innates.POWER_PER_CIRCLE * 100 * circles)).withStyle(ChatFormatting.GRAY)));
+		String leaning = Heart.leaning(player);
+		if (!leaning.isEmpty()) {
+			lines.add(Component.translatable("screen.wildercord.heart.leaning", Component.translatable("element.wildercord." + leaning).withColor(RuneColors.element(leaning)),
+				Math.round(dev.wildercord.spell.Leaning.POWER * 100)).withStyle(ChatFormatting.GRAY));
+		}
 		for (int perk : new int[] {Circles.MANA_SKIN, Circles.FLOW, Circles.OVERFLOW, Circles.ARCHMAGE}) {
 			Component text = Component.translatable("screen.wildercord.heart.perk." + perk, Circles.ordinal(perk));
 			lines.add(circles >= perk ? text.copy().withStyle(ChatFormatting.AQUA) : text.copy().withStyle(ChatFormatting.DARK_GRAY));
@@ -1114,6 +1159,11 @@ public class CordScreen extends Screen {
 					Component.translatable(CordTier.values()[Math.min(CordTier.values().length - 1, requirement.amount())].itemKey()));
 				case KILLS -> Component.translatable("screen.wildercord.heart.need.kills", requirement.amount(), Heart.progress(player, requirement));
 				case BOSS -> Component.translatable("screen.wildercord.heart.need.boss");
+				case REACTIONS -> Component.translatable("screen.wildercord.heart.need.reactions", requirement.amount(), Heart.progress(player, requirement));
+				case RUNEBOUND -> Component.translatable("screen.wildercord.heart.need.runebound", requirement.amount(), Heart.progress(player, requirement));
+				case SECRETS -> Component.translatable("screen.wildercord.heart.need.secrets", requirement.amount(), Heart.progress(player, requirement));
+				case FEAT -> Component.translatable("screen.wildercord.heart.need.feat", dev.wildercord.spell.Feats.feat(requirement.feat()).name(),
+					dev.wildercord.spell.Feats.feat(requirement.feat()).description());
 			};
 			lines.add(Component.literal(met ? "\u2714 " : "\u2718 ").append(text).withStyle(met ? ChatFormatting.GREEN : ChatFormatting.GRAY));
 		}
@@ -1161,6 +1211,15 @@ public class CordScreen extends Screen {
 		if (tier() == null || !event.isAllowedChatCharacter()) {
 			return super.charTyped(event);
 		}
+		if (renaming) {
+			if (renameText.length() < dev.wildercord.spell.SpellNames.MAX_LENGTH) {
+				renameText += event.codepointAsString();
+			}
+			return true;
+		}
+		if (grimoirePage) {
+			return true;
+		}
 		// Typing anywhere starts a search.
 		searchFocused = true;
 		if (query.length() < 40) {
@@ -1172,6 +1231,25 @@ public class CordScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
+		if (renaming) {
+			if (event.key() == InputConstants.KEY_BACKSPACE) {
+				if (!renameText.isEmpty()) {
+					renameText = event.hasControlDown() ? "" : renameText.substring(0, renameText.length() - 1);
+				}
+				return true;
+			}
+			if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
+				ClientPlayNetworking.send(new WildercordNetworking.RenameSpell(editing, renameText));
+				renaming = false;
+				click();
+				return true;
+			}
+			if (event.isEscape()) {
+				renaming = false;
+				return true;
+			}
+			return true;
+		}
 		if (event.hasControlDown() && event.key() == InputConstants.KEY_F) {
 			searchFocused = true;
 			return true;
@@ -1207,19 +1285,27 @@ public class CordScreen extends Screen {
 		if (tier() == null) {
 			return super.mouseClicked(event, doubleClick);
 		}
-		// Spells | Passives
+		// Spells | Passives | Grimoire
 		int pageX = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
-		for (int page = 0; page < 2; page++) {
-			int w = font.width(Component.translatable(page == 0 ? "screen.wildercord.page.spells" : "screen.wildercord.page.passives")) + 10;
+		for (int page = 0; page < 3; page++) {
+			int w = font.width(Component.translatable(PAGE_KEYS[page])) + 10;
 			if (inside(mx, my, pageX, 7, w, 13)) {
-				if (passivePage != (page == 1)) {
+				if (page() != page) {
 					passivePage = page == 1;
+					grimoirePage = page == 2;
 					readoutScroll = 0;
+					renaming = false;
 					click();
 				}
 				return true;
 			}
 			pageX += w + 2;
+		}
+		if (grimoirePage) {
+			return true;
+		}
+		if (!passivePage && clickSpellTools(mx, my)) {
+			return true;
 		}
 		searchFocused = inside(mx, my, searchX(), TABS_TOP, SEARCH_W, 13);
 		if (searchFocused) {
@@ -1409,6 +1495,10 @@ public class CordScreen extends Screen {
 	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
 		double my = localY(y);
 		int step = (int) Math.signum(scrollY);
+		if (grimoirePage) {
+			grimoireScroll = Math.max(0, grimoireScroll - step * LINE * 2);
+			return true;
+		}
 		if (my >= READOUT_TOP - 3) {
 			readoutScroll = Math.max(0, readoutScroll - step);
 		} else {
@@ -1458,6 +1548,191 @@ public class CordScreen extends Screen {
 
 	private static boolean inside(double mx, double my, int x, int y, int w, int h) {
 		return mx >= x && mx < x + w && my >= y && my < y + h;
+	}
+
+	// ------------------------------------------------------------------ pages, spell tools and the Grimoire
+
+	private static final String[] PAGE_KEYS = {"screen.wildercord.page.spells", "screen.wildercord.page.passives", "screen.wildercord.page.grimoire"};
+	private static final int TOOL = 14;
+	private static final String[] TOOL_GLYPHS = {"\u270E", "\u29C9", "\u2398", "\u2709"};
+	private static final String[] TOOL_KEYS = {"rename", "copy", "paste", "scroll"};
+	private static final int TOOLS_W = TOOL_GLYPHS.length * (TOOL + 2);
+
+	private int page() {
+		return grimoirePage ? 2 : passivePage ? 1 : 0;
+	}
+
+	private int toolX(int i) {
+		return W - 16 - TOOLS_W + i * (TOOL + 2);
+	}
+
+	private int toolY() {
+		return READOUT_TOP - 2;
+	}
+
+	/** Rename, copy code, paste code, inscribe a scroll: small buttons at the top right of the readout. */
+	private List<Component> drawSpellTools(GuiGraphicsExtractor g, int mx, int my) {
+		List<Component> tip = null;
+		if (spellCount() == 0) {
+			return null;
+		}
+		for (int i = 0; i < TOOL_GLYPHS.length; i++) {
+			int x = toolX(i);
+			int y = toolY();
+			boolean hover = inside(mx, my, x, y, TOOL, TOOL);
+			boolean active = i == 0 && renaming;
+			sprite(g, active || hover ? SPR_TAB_ACTIVE : SPR_TAB, x, y, TOOL, TOOL);
+			String glyph = TOOL_GLYPHS[i];
+			g.text(font, glyph, x + TOOL / 2 - font.width(glyph) / 2 + 1, y + 3, active ? GOLD : hover ? TEXT : DIM, false);
+			if (hover) {
+				tip = List.of(Component.translatable("screen.wildercord.tool." + TOOL_KEYS[i]).withStyle(ChatFormatting.GOLD),
+					Component.translatable("screen.wildercord.tool." + TOOL_KEYS[i] + ".hint").withStyle(ChatFormatting.GRAY));
+			}
+		}
+		return tip;
+	}
+
+	private boolean clickSpellTools(double mx, double my) {
+		if (spellCount() == 0 || editing >= spells.size()) {
+			return false;
+		}
+		for (int i = 0; i < TOOL_GLYPHS.length; i++) {
+			if (!inside(mx, my, toolX(i), toolY(), TOOL, TOOL)) {
+				continue;
+			}
+			switch (i) {
+				case 0 -> {
+					renaming = !renaming;
+					renameText = book().name(editing);
+					if (renaming) {
+						searchFocused = false;
+					}
+				}
+				case 1 -> {
+					String code = dev.wildercord.spell.SpellCodes.encode(spells.get(editing));
+					minecraft.keyboardHandler.setClipboard(code);
+					minecraft.player.sendOverlayMessage(Component.translatable("message.wildercord.code_copied", code).withColor(0x7FE0F0));
+				}
+				case 2 -> paste();
+				case 3 -> ClientPlayNetworking.send(new WildercordNetworking.InscribeScroll(editing));
+				default -> { }
+			}
+			click();
+			return true;
+		}
+		return false;
+	}
+
+	/** Loads a spell code from the clipboard into the selected spell: runes you know, that the Cord holds. */
+	private void paste() {
+		String code = dev.wildercord.spell.SpellCodes.find(minecraft.keyboardHandler.getClipboard());
+		if (code == null) {
+			minecraft.player.sendOverlayMessage(Component.translatable("message.wildercord.code_none").withColor(0xE06060));
+			return;
+		}
+		List<String> kept = new ArrayList<>();
+		int missing = 0;
+		for (String id : dev.wildercord.spell.SpellCodes.decode(code)) {
+			Optional<RuneDef> rune = Runes.get(id);
+			if (rune.isPresent() && book().knows(id) && holds(rune.get()) && kept.size() < sockets()) {
+				kept.add(id);
+			} else {
+				missing++;
+			}
+		}
+		spells.set(editing, kept);
+		sync(editing);
+		minecraft.player.sendOverlayMessage(missing == 0
+			? Component.translatable("message.wildercord.code_loaded").withColor(0x7FE0F0)
+			: Component.translatable("message.wildercord.code_partial", missing).withColor(0xF0C440));
+	}
+
+	private record GrimoireLine(Component text, int x, int color, List<Component> tooltip) {}
+
+	/** Everything discovered: reactions, secret spells (and riddles), feats, your innate rune and your leaning. */
+	private List<Component> drawGrimoire(GuiGraphicsExtractor g, int mx, int my) {
+		Player player = minecraft.player;
+		List<String> found = Heart.grimoire(player);
+		List<GrimoireLine> lines = new ArrayList<>();
+		int top = SPELL_TOP - 4;
+		int bottom = H - 12;
+		sprite(g, SPR_INSET, 10, top - 3, W - 20, bottom + 3 - (top - 3));
+		// Innate rune and leaning.
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.heart"), 0, GOLD, null));
+		String innate = Heart.innate(player);
+		Optional<RuneDef> innateRune = Runes.get(innate);
+		if (innateRune.isPresent()) {
+			RuneDef def = innateRune.get();
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.innate", RuneItem.runeName(def).withColor(RuneColors.of(def))), 8, TEXT,
+				List.of(RuneItem.runeName(def).withColor(RuneColors.of(def)), RuneItem.runeDescription(def).withStyle(ChatFormatting.GRAY))));
+		} else {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.innate_none"), 8, DIM, null));
+		}
+		String leaning = Heart.leaning(player);
+		lines.add(new GrimoireLine(leaning.isEmpty()
+			? Component.translatable("screen.wildercord.grimoire.leaning_none", dev.wildercord.spell.Leaning.MIN_CASTS)
+			: Component.translatable("screen.wildercord.grimoire.leaning", Component.translatable("element.wildercord." + leaning).withColor(RuneColors.element(leaning)),
+				Math.round(dev.wildercord.spell.Leaning.POWER * 100)), 8, leaning.isEmpty() ? DIM : TEXT, null));
+		// Reactions.
+		int reactions = dev.wildercord.spell.Feats.count(found, "reaction:");
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.reactions", reactions, dev.wildercord.spell.Feats.REACTIONS.size()), 0, GOLD, null));
+		for (String reaction : dev.wildercord.spell.Feats.REACTIONS) {
+			boolean known = found.contains(dev.wildercord.spell.Feats.reactionKey(reaction));
+			lines.add(new GrimoireLine(known ? Component.translatable("reaction.wildercord." + reaction) : Component.literal("???"), 8, known ? CYAN : FAINT,
+				known ? List.of(Component.translatable("reaction.wildercord." + reaction + ".desc").withStyle(ChatFormatting.GRAY)) : null));
+		}
+		// Secret spells: found ones in full, hinted ones as their riddle.
+		int secrets = dev.wildercord.spell.Feats.count(found, "secret:");
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.secrets", secrets, dev.wildercord.spell.Secrets.ALL.size()), 0, GOLD, null));
+		for (dev.wildercord.spell.Secrets.Secret secret : dev.wildercord.spell.Secrets.ALL) {
+			if (found.contains(secret.key())) {
+				StringBuilder runes = new StringBuilder();
+				for (RuneDef rune : secret.runes()) {
+					runes.append(runes.isEmpty() ? "" : " \u00B7 ").append(RuneItem.runeName(rune).getString());
+				}
+				lines.add(new GrimoireLine(Component.literal(secret.name()), 8, 0xFF000000 | secret.color(),
+					List.of(Component.literal(secret.name()).withColor(secret.color()), Component.literal(runes.toString()).withStyle(ChatFormatting.GRAY),
+						Component.literal(secret.description()).withStyle(ChatFormatting.DARK_GRAY))));
+			} else if (found.contains("hint:" + secret.id())) {
+				lines.add(new GrimoireLine(Component.literal("\u201C" + secret.riddle() + "\u201D").withStyle(ChatFormatting.ITALIC), 8, 0xFFC8B89A, null));
+			} else {
+				lines.add(new GrimoireLine(Component.literal("???"), 8, FAINT, List.of(Component.translatable("screen.wildercord.grimoire.secret_unknown").withStyle(ChatFormatting.GRAY))));
+			}
+		}
+		// Feats.
+		int feats = dev.wildercord.spell.Feats.count(found, "feat:");
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.feats", feats, dev.wildercord.spell.Feats.FEATS.size()), 0, GOLD, null));
+		for (dev.wildercord.spell.Feats.Feat feat : dev.wildercord.spell.Feats.FEATS) {
+			boolean done = found.contains(feat.key());
+			lines.add(new GrimoireLine(Component.literal((done ? "\u2714 " : "\u2022 ") + feat.name()), 8, done ? 0xFF9CE08C : DIM,
+				List.of(Component.literal(feat.name()).withStyle(done ? ChatFormatting.GREEN : ChatFormatting.GRAY),
+					Component.literal(feat.description()).withStyle(ChatFormatting.GRAY))));
+		}
+		int visible = (bottom - top) / LINE;
+		grimoireScroll = Math.max(0, Math.min(grimoireScroll, Math.max(0, lines.size() * LINE - visible * LINE)));
+		int first = grimoireScroll / LINE;
+		List<Component> tip = null;
+		g.enableScissor(12, top - 1, W - 12, bottom);
+		for (int i = 0; i < visible + 1 && first + i < lines.size(); i++) {
+			GrimoireLine line = lines.get(first + i);
+			int y = top + i * LINE;
+			int x = TEXT_X + line.x();
+			if (line.x() == 0) {
+				g.fill(TEXT_X - 2, y + 9, W - 20, y + 10, 0x40E8C46A);
+			}
+			fitText(g, line.text(), x, y, W - 24 - x, line.color(), line.x() == 0);
+			if (line.tooltip() != null && inside(mx, my, x, y - 1, Math.min(W - 24 - x, font.width(line.text())), LINE)) {
+				tip = line.tooltip();
+			}
+		}
+		g.disableScissor();
+		if (first > 0) {
+			arrow(g, W - 18, top + 1, true);
+		}
+		if (first + visible < lines.size()) {
+			arrow(g, W - 18, bottom - 4, false);
+		}
+		return tip;
 	}
 
 	/** Used by the HUD to show an item for a rune id. */

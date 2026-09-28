@@ -33,6 +33,18 @@ public final class Fx {
 		}
 	}
 
+	/** To every player except {@code except}: a flourish around someone that only onlookers need to see. */
+	public static void sendOthers(ServerLevel level, ServerPlayer except, ParticleOptions particle, Vec3 at) {
+		if (muted) {
+			return;
+		}
+		for (ServerPlayer player : level.players()) {
+			if (player != except) {
+				level.sendParticles(player, particle, false, false, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			}
+		}
+	}
+
 	/** Like {@link #send}, but also to the player it's around: for effects that sit below the eyes, like Heart Circles. */
 	public static void sendAll(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {
 		if (muted) {

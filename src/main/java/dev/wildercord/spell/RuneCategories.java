@@ -10,7 +10,7 @@ public final class RuneCategories {
 	private RuneCategories() {}
 
 	public static final List<String> SHAPE = List.of("personal", "direct", "projectile", "area", "lingering");
-	public static final List<String> EFFECT = List.of("damage", "control", "support", "movement", "time", "world", "summon");
+	public static final List<String> EFFECT = List.of("damage", "control", "support", "movement", "time", "world", "summon", "innate");
 	public static final List<String> MODIFIER = List.of("power", "area", "timing", "projectile");
 	public static final List<String> LINK = List.of("timing", "trigger", "reactive", "condition");
 
@@ -33,7 +33,7 @@ public final class RuneCategories {
 	static String categoryFor(String path, RuneFamily family) {
 		return switch (family) {
 			case SHAPE -> switch (path) {
-				case "self", "orbit", "stand" -> "personal";
+				case "self", "orbit" -> "personal";
 				case "touch", "beam", "barrage", "blitz" -> "direct";
 				case "bolt", "arc", "wave", "crescent", "orb" -> "projectile";
 				case "burst", "cone", "ring", "pillar", "rain" -> "area";
@@ -48,6 +48,8 @@ public final class RuneCategories {
 				case "stasis", "rewind", "accelerate", "time_skip" -> "time";
 				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart" -> "world";
 				case "summon", "shades", "thunderbird" -> "summon";
+				case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom",
+					"stormheart" -> "innate";
 				default -> "damage";
 			};
 			case MODIFIER -> switch (path) {

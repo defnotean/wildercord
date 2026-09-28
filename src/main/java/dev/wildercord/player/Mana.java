@@ -41,6 +41,10 @@ public final class Mana {
 	public static final float MEDITATION_BONUS = 1.0F;
 	public static final int SIPHON_MANA = 2;
 	public static final int SIPHON_CAP_PER_CAST = 16;
+	/** Standing on a ley line. */
+	public static final float LEY_BONUS = 1.0F;
+	/** Near an awake Wellstone. */
+	public static final float WELL_BONUS = 0.5F;
 
 	public static final ResourceKey<Enchantment> RESERVOIR = ResourceKey.create(Registries.ENCHANTMENT, Wildercord.id("reservoir"));
 	public static final ResourceKey<Enchantment> WELLSPRING = ResourceKey.create(Registries.ENCHANTMENT, Wildercord.id("wellspring"));
@@ -48,8 +52,8 @@ public final class Mana {
 
 	/** A snapshot of where a player's mana comes from. */
 	public record Stats(CordTier tier, int max, float regen, float regenMultiplier,
-						int crystals, int reservoir, int wellspring, int siphon, int clarity, boolean meditating, int circles) {
-		public static final Stats NONE = new Stats(null, 0, 0, 1, 0, 0, 0, 0, 0, false, 0);
+						int crystals, int reservoir, int wellspring, int siphon, int clarity, boolean meditating, int circles, boolean ley, boolean well) {
+		public static final Stats NONE = new Stats(null, 0, 0, 1, 0, 0, 0, 0, 0, false, 0, false, false);
 
 		public boolean boosted() {
 			return regenMultiplier > 1.001F;
@@ -69,11 +73,14 @@ public final class Mana {
 		MobEffectInstance clarityEffect = player.getEffect(WildercordEffects.CLARITY);
 		int clarity = clarityEffect == null ? 0 : clarityEffect.getAmplifier() + 1;
 		boolean meditating = player.getAttachedOrElse(WildercordAttachments.MEDITATING, false);
-		int circles = Heart.circles(player);
+		int circles = Heart.active(player);
 		int max = tier.maxMana + crystals * CRYSTAL_MANA + reservoir * RESERVOIR_MANA + circles * dev.wildercord.spell.Circles.MANA_PER_CIRCLE;
-		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0);
+		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
+		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > player.level().getGameTime();
+		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0)
+			+ (ley ? LEY_BONUS : 0) + (well ? WELL_BONUS : 0);
 		float base = tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE;
-		return new Stats(tier, max, base * multiplier, multiplier, crystals, reservoir, wellspring, siphon, clarity, meditating, circles);
+		return new Stats(tier, max, base * multiplier, multiplier, crystals, reservoir, wellspring, siphon, clarity, meditating, circles, ley, well);
 	}
 
 	public static int max(Player player) {

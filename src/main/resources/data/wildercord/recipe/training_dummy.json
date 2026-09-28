@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": "minecraft:white_wool",
+    "H": "minecraft:hay_block",
+    "S": "minecraft:stick",
+    "B": "minecraft:smooth_stone_slab"
+  },
+  "pattern": [
+    " W ",
+    "SHS",
+    " B "
+  ],
+  "result": {
+    "id": "wildercord:training_dummy"
+  }
+}

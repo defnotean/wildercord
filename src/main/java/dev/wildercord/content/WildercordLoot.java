@@ -43,6 +43,16 @@ public final class WildercordLoot {
 		BuiltInLootTables.WOODLAND_MANSION, 20
 	);
 
+	/** Torn Pages (riddles of secret spells): out of 100, in the old libraries and ruins of the world. */
+	private static final Map<ResourceKey<LootTable>, Integer> PAGE_CHANCE = Map.of(
+		BuiltInLootTables.STRONGHOLD_LIBRARY, 45,
+		BuiltInLootTables.ANCIENT_CITY, 25,
+		BuiltInLootTables.SIMPLE_DUNGEON, 12,
+		BuiltInLootTables.WOODLAND_MANSION, 25,
+		BuiltInLootTables.DESERT_PYRAMID, 12,
+		BuiltInLootTables.TRIAL_CHAMBERS_REWARD_RARE, 15
+	);
+
 	private static final Map<ResourceKey<LootTable>, RunePool> RUNE_POOLS = new HashMap<>();
 
 	static {
@@ -66,19 +76,19 @@ public final class WildercordLoot {
 		RUNE_POOLS.put(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_COMMON, new RunePool(30, uncommon));
 		RUNE_POOLS.put(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_RARE, new RunePool(45,
 			List.of(Runes.ZONE, Runes.SPLIT_MOD, Runes.CHAIN_MOD, Runes.WALL, Runes.ORBIT, Runes.FREEZE, Runes.VOLLEY_MOD, Runes.ON_HURT,
-				Runes.COMBO, Runes.REFLECT, Runes.PRIMER, Runes.STAND)));
+				Runes.COMBO, Runes.REFLECT, Runes.PRIMER)));
 		RUNE_POOLS.put(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE, new RunePool(70,
 			List.of(Runes.ZONE, Runes.SPLIT_MOD, Runes.CHAIN_MOD, Runes.WALL, Runes.ORBIT, Runes.FREEZE, Runes.TREMOR, Runes.GRAVITY_WELL,
 				Runes.TOTEM, Runes.OVERCHARGE_MOD, Runes.ORB, Runes.BLACKSPARK, Runes.VOW_MOD, Runes.INFINITY, Runes.REVERSAL)));
 		RUNE_POOLS.put(BuiltInLootTables.ANCIENT_CITY, new RunePool(45,
 			List.of(Runes.ZONE, Runes.SPLIT_MOD, Runes.CHAIN_MOD, Runes.ECHO, Runes.FREEZE, Runes.GRAVITY_WELL, Runes.VEIL,
-				Runes.ON_LOW_HEALTH, Runes.SMITE, Runes.STAND, Runes.SHADES, Runes.SHADOWSTEP, Runes.DOMAIN, Runes.VOW_MOD, Runes.BLACKFLAME)));
+				Runes.ON_LOW_HEALTH, Runes.SMITE, Runes.SHADES, Runes.SHADOWSTEP, Runes.DOMAIN, Runes.VOW_MOD, Runes.BLACKFLAME)));
 		RUNE_POOLS.put(BuiltInLootTables.END_CITY_TREASURE, new RunePool(45,
 			List.of(Runes.RAIN, Runes.HOMING_MOD, Runes.BLINK, Runes.LEVITATE, Runes.GRAVITY_WELL, Runes.ORBIT, Runes.ORB, Runes.TIME_SKIP,
 				Runes.STASIS, Runes.REWIND)));
 		RUNE_POOLS.put(BuiltInLootTables.STRONGHOLD_LIBRARY, new RunePool(50,
 			List.of(Runes.RAIN, Runes.HOMING_MOD, Runes.WALL, Runes.PULSE, Runes.ECHO, Runes.LINGER_MOD, Runes.SMITE, Runes.TOTEM,
-				Runes.RESONANCE, Runes.FORESIGHT, Runes.RESTORE, Runes.STAND)));
+				Runes.RESONANCE, Runes.FORESIGHT, Runes.RESTORE)));
 		RUNE_POOLS.put(BuiltInLootTables.BASTION_TREASURE, new RunePool(45,
 			List.of(Runes.ON_KILL, Runes.EXPLODE, Runes.METEOR, Runes.TREMOR, Runes.EMPOWER, Runes.INFERNO, Runes.OVERCHARGE_MOD,
 				Runes.CLEAVE, Runes.BLACKSPARK, Runes.BLACKFLAME, Runes.OVERDRIVE, Runes.BLOOD_PRICE_MOD)));
@@ -109,6 +119,10 @@ public final class WildercordLoot {
 		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
 			if (!source.isBuiltin()) {
 				return;
+			}
+			Integer page = PAGE_CHANCE.get(key);
+			if (page != null) {
+				table.withPool(chance(page, LootItem.lootTableItem(WildercordItems.TORN_PAGE)));
 			}
 			Integer crystal = CRYSTAL_CHANCE.get(key);
 			if (crystal != null) {

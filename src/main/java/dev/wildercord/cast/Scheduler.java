@@ -2,7 +2,7 @@ package dev.wildercord.cast;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -25,12 +25,12 @@ public final class Scheduler {
 	}
 
 	private static final class LandWatch {
-		final ServerPlayer player;
+		final LivingEntity player;
 		int ticksLeft;
 		boolean airborne;
 		final Consumer<Vec3> action;
 
-		LandWatch(ServerPlayer player, int ticksLeft, Consumer<Vec3> action) {
+		LandWatch(LivingEntity player, int ticksLeft, Consumer<Vec3> action) {
 			this.player = player;
 			this.ticksLeft = ticksLeft;
 			this.action = action;
@@ -38,13 +38,13 @@ public final class Scheduler {
 	}
 
 	private static final class HurtWatch {
-		final ServerPlayer player;
+		final LivingEntity player;
 		int ticksLeft;
 		final Consumer<net.minecraft.world.entity.LivingEntity> action;
 		/** Only fire once health is below 30%. */
 		final boolean lowHealth;
 
-		HurtWatch(ServerPlayer player, int ticksLeft, Consumer<net.minecraft.world.entity.LivingEntity> action, boolean lowHealth) {
+		HurtWatch(LivingEntity player, int ticksLeft, Consumer<net.minecraft.world.entity.LivingEntity> action, boolean lowHealth) {
 			this.player = player;
 			this.ticksLeft = ticksLeft;
 			this.action = action;
@@ -61,25 +61,25 @@ public final class Scheduler {
 	}
 
 	/** Fires once the player has left the ground and touched it again, within {@code timeout} ticks. */
-	public static void onLand(ServerPlayer player, int timeout, Consumer<Vec3> action) {
+	public static void onLand(LivingEntity player, int timeout, Consumer<Vec3> action) {
 		LandWatch watch = new LandWatch(player, timeout, action);
 		watch.airborne = !player.onGround();
 		LAND.add(watch);
 	}
 
 	/** Fires once, when the player's health first drops below 30% within {@code timeout} ticks. */
-	public static void onLowHealth(ServerPlayer player, int timeout, Runnable action) {
+	public static void onLowHealth(LivingEntity player, int timeout, Runnable action) {
 		HURT.add(new HurtWatch(player, timeout, attacker -> action.run(), true));
 	}
 
 	/** Fires once, the next time the player takes damage within {@code timeout} ticks; gets the attacker (or null). */
-	public static void onHurt(ServerPlayer player, int timeout, Consumer<net.minecraft.world.entity.LivingEntity> action) {
+	public static void onHurt(LivingEntity player, int timeout, Consumer<net.minecraft.world.entity.LivingEntity> action) {
 		HURT.add(new HurtWatch(player, timeout, action, false));
 	}
 
 	public static void init() {
 		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
-			if (HURT.isEmpty() || !(entity instanceof ServerPlayer player)) {
+			if (HURT.isEmpty() || !(entity instanceof LivingEntity player)) {
 				return;
 			}
 			net.minecraft.world.entity.LivingEntity attacker = source.getEntity() instanceof net.minecraft.world.entity.LivingEntity living && living != player ? living : null;

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "wildercord:block/wellstone_side",
+    "top": "wildercord:block/wellstone_top",
+    "bottom": "wildercord:block/wellstone_bottom"
+  }
+}

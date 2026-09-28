@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "awake=false": {
+      "model": "wildercord:block/archive_lectern"
+    },
+    "awake=true": {
+      "model": "wildercord:block/archive_lectern"
+    }
+  }
+}

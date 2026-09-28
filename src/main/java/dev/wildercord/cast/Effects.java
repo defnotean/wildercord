@@ -54,22 +54,30 @@ public final class Effects {
 
 	/** Execute on the effect being applied: extra power against targets under half health (1 = none). */
 	private static double executeBonus = 1.0;
+	/** The element of the effect being applied, for Unison. */
+	private static String currentElement = "";
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		executeBonus = SpellNumbers.executeBonus(node);
+		currentElement = node.effect.element();
 		try {
 			applyEffect(cast, node, hit, groupPower);
 		} finally {
 			executeBonus = 1.0;
+			currentElement = "";
 		}
+		RuneSeals.onSpell(cast, hit, node.effect.element());
 	}
 
 	private static void applyEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		RuneDef rune = node.effect;
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		ServerLevel level = cast.level;
-		double power = SpellNumbers.power(node) * groupPower * cast.power;
+		// Elemental leaning: the element you cast most hits a little harder. Innate runes grow with the heart.
+		double leaning = !rune.element().isEmpty() && rune.element().equals(cast.info.leaning()) ? 1 + dev.wildercord.spell.Leaning.POWER : 1.0;
+		double innate = Runes.innate(rune) ? Innates.scale(caster) : 1.0;
+		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate;
 		double duration = SpellNumbers.duration(node) * cast.duration;
 		int amplify = node.count(Runes.AMPLIFY);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
@@ -355,6 +363,8 @@ public final class Effects {
 			case "rampart" -> Techniques.rampart(cast, hit, SpellNumbers.effectRadius(node), ticks(10, duration));
 			case "shades" -> Spirits.summonShades(cast, caster.position(), 2, power, duration);
 			case "thunderbird" -> Techniques.thunderbird(cast, power, ticks(15, duration));
+			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
+				Innates.apply(cast, rune, helped, harmed, power, duration);
 			default -> { }
 		}
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;
@@ -408,11 +418,14 @@ public final class Effects {
 			amount *= executeBonus;
 			Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, target.getBoundingBox().getCenter(), 4, 0.3, 0.1);
 		}
+		amount *= Innates.fortune(cast, target);
+		amount *= Unison.onHit(cast, target, currentElement);
 		float damage = (float) amount;
 		if (target instanceof Player) {
 			damage *= PVP_DAMAGE;
 		}
-		HeartCircles.hurtBySpell(cast.caster, target);
+		HeartCircles.hurtBySpell(cast, target);
+		Innates.spellHit(cast, target);
 		target.setInvulnerableTime(0);
 		target.hurtServer(cast.level, source, damage);
 	}
@@ -471,11 +484,11 @@ public final class Effects {
 	}
 
 	private static void blink(Cast cast, Cast.Hit hit) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		Vec3 target = hit.point();
 		Vec3 back = hit.dir().lengthSqr() > 1.0E-4 ? hit.dir().normalize().scale(-0.6) : Vec3.ZERO;
 		if (target.distanceTo(caster.position()) > 40) {
-			caster.sendOverlayMessage(Component.translatable("message.wildercord.blink_far"));
+			Casters.tell(caster, Component.translatable("message.wildercord.blink_far"));
 			return;
 		}
 		for (int attempt = 0; attempt < 6; attempt++) {
@@ -546,7 +559,7 @@ public final class Effects {
 
 	/** Grapple: pulls the caster toward the point the spell hit. */
 	private static void grapple(Cast cast, Cast.Hit hit, double power) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		Vec3 to = hit.point().subtract(caster.position());
 		double distance = to.length();
 		if (distance < 1.0 || distance > 48) {
@@ -555,7 +568,9 @@ public final class Effects {
 		Vec3 pull = to.normalize().scale(Math.min(3.2, 0.8 + distance * 0.12) * Math.sqrt(power)).add(0, 0.35, 0);
 		caster.setDeltaMovement(pull);
 		caster.needsSync = true;
-		caster.connection.send(new ClientboundSetEntityMotionPacket(caster));
+		if (caster instanceof ServerPlayer player) {
+			player.connection.send(new ClientboundSetEntityMotionPacket(player));
+		}
 		caster.resetFallDistance();
 		Scheduler.later(30, caster::resetFallDistance);
 		Vfx.grapple(cast.level, caster.getEyePosition().subtract(0, 0.4, 0), hit.point());
@@ -572,7 +587,7 @@ public final class Effects {
 			if (!(state.getBlock() instanceof net.minecraft.world.level.block.CropBlock crop) || !crop.isMaxAge(state)) {
 				continue;
 			}
-			if (!cast.caster.mayBuild() || !cast.level.mayInteract(cast.caster, p) || !cast.takeBlock()) {
+			if (!Casters.mayBuild(cast.caster) || !cast.level.mayInteract(cast.caster, p) || !cast.takeBlock()) {
 				break;
 			}
 			cast.level.destroyBlock(p, true, cast.caster);
@@ -598,7 +613,7 @@ public final class Effects {
 			}
 			BlockState state = cast.level.getBlockState(p);
 			if (state.is(Blocks.WATER) && state.getFluidState().isSource() && cast.level.getBlockState(p.above()).isAir()
-					&& cast.level.mayInteract(cast.caster, p) && cast.caster.mayBuild()) {
+					&& cast.level.mayInteract(cast.caster, p) && Casters.mayBuild(cast.caster)) {
 				cast.level.setBlockAndUpdate(p, ice);
 				cast.level.scheduleTick(p, Blocks.FROSTED_ICE, 60 + cast.level.getRandom().nextInt(60));
 				frozen++;
@@ -611,7 +626,7 @@ public final class Effects {
 
 	/** Collect: items and experience orbs around the point fly to the caster. */
 	private static void collect(Cast cast, Vec3 point, double radius) {
-		ServerPlayer caster = cast.caster;
+		LivingEntity caster = cast.caster;
 		int moved = 0;
 		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius),
 				e -> e instanceof net.minecraft.world.entity.item.ItemEntity || e instanceof net.minecraft.world.entity.ExperienceOrb)) {
@@ -750,7 +765,7 @@ public final class Effects {
 	}
 
 	private static boolean mayEdit(Cast cast, BlockPos pos) {
-		return cast.caster.mayBuild() && cast.level.mayInteract(cast.caster, pos) && cast.takeBlock();
+		return Casters.mayBuild(cast.caster) && cast.level.mayInteract(cast.caster, pos) && cast.takeBlock();
 	}
 
 	private static void light(Cast cast, Cast.Hit hit, double duration) {
@@ -774,7 +789,7 @@ public final class Effects {
 		int times = (int) Math.round(2 * power);
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 			BlockPos p = pos.immutable();
-			if (!cast.caster.mayBuild() || !cast.level.mayInteract(cast.caster, p)) {
+			if (!Casters.mayBuild(cast.caster) || !cast.level.mayInteract(cast.caster, p)) {
 				continue;
 			}
 			boolean grew = false;

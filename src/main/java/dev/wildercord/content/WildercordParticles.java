@@ -1,0 +1,26 @@
+package dev.wildercord.content;
+
+import dev.wildercord.Wildercord;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
+
+/** Wildercord's own particles: magic circles, and a spell's whole circle. Everything else is vanilla. */
+public final class WildercordParticles {
+	private WildercordParticles() {}
+
+	/** Always shown, whatever the particle setting: a circle is one particle and it carries meaning (a telegraph, a charge). */
+	public static final ParticleType<SigilOption> SIGIL = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("sigil"),
+		FabricParticleTypes.complex(true, SigilOption.CODEC, SigilOption.STREAM_CODEC));
+
+	/** A spell's whole magic circle, written out from its runes so it can be read. Always shown, like the circle. */
+	public static final ParticleType<SpellCircleOption> SPELL_CIRCLE = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("spell_circle"),
+		FabricParticleTypes.complex(true, SpellCircleOption.CODEC, SpellCircleOption.STREAM_CODEC));
+
+	/** Shaped light: shockwave rings, beams, crescent slashes and orbs. Always shown: it's what a spell looks like. */
+	public static final ParticleType<LightOption> LIGHT = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("light"),
+		FabricParticleTypes.complex(true, LightOption.CODEC, LightOption.STREAM_CODEC));
+
+	public static void init() {}
+}

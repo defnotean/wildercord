@@ -45,7 +45,7 @@ The game design (what each rune does and why) is in [docs/DESIGN.md](docs/DESIGN
 | Command | When |
 |---|---|
 | `./gradlew test` | Always. Fast, headless unit tests for the spell engine. |
-| `./gradlew runClientGameTest` | Before any PR that changes runtime behaviour or UI. Starts a real client, checks mechanics and saves screenshots to `build/run/clientGameTest/screenshots/`. |
+| `./gradlew runClientGameTest` | Before any PR that changes runtime behaviour or UI. Starts a real client, checks mechanics and saves screenshots to `build/run/clientGameTest/screenshots/`. Set `WILDERCORD_TOUR_ONLY=1` to run only the feature tour (`tour_*.png`), which is quicker when you changed a world feature. |
 
 Add tests with your change:
 
@@ -53,6 +53,8 @@ Add tests with your change:
 - New runes with runtime behaviour get added to the smoke list in `castEverything`
   (`src/gametest/.../WildercordScreenshots.java`), and a real assertion in `mechanicsChecks` if
   the behaviour is subtle (like Stasis holding damage).
+- World features (Runebound, the Archive, ley lines, secret spells...) belong in the tour in
+  `WildercordFeatureTour`: assert what can be asserted, and screenshot the rest.
 - UI changes: look at the screenshots at GUI scale 1-4 and all three window sizes.
 
 **Don't build while a dev client is running.** Loom's client loads classes from `build/`, and
@@ -67,6 +69,8 @@ rebuilding under it crashes the game. Use `./gradlew -PaltBuild compileJava` to 
   for and why. Comments explain *why*, not *what*.
 - **Keep `spell/` free of Minecraft imports.** It's what makes the readout and the tests trustworthy.
 - **Server decides, client draws.** Never trust a packet; validate in `SpellCaster`.
+- **A caster isn't always a player.** Monsters cast spells too: use `Casters` for anything only a
+  player has (messages, building rights, creative mode, reach).
 - **Send particles through `Fx`/`Vfx`**, damage through `Effects.hurt`, and delays through
   `Scheduler` (checking `cast.alive()`).
 - **Numbers modifiers change live in `SpellNumbers`**, so the readout can show them.
@@ -91,8 +95,10 @@ Rune descriptions, tooltips and messages are read in-game, often in a small box:
 ## Balance changes
 
 Balance is a design decision: open an issue with the numbers you'd change and why (a clip or a
-spell that shows the problem helps a lot). Keep all tuning in `SpellNumbers`, `Circles`,
-`Passives` and the rune definitions, never scattered through runtime code.
+spell that shows the problem helps a lot). Keep spell tuning in `SpellNumbers`, `Circles`,
+`Passives`, `Leaning`, `Feats`, `Secrets` and the rune definitions; runtime systems keep theirs
+as named constants at the top of the class (`Charging.POWER`, `Rhythm.POWER_PER_STACK`,
+`Overcast.MEND_TICKS`, `Unison.BONUS`...). Never scatter numbers through runtime code.
 
 ## License
 
