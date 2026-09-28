@@ -19,6 +19,11 @@
 			"dev.wildercord.gametest.WildercordGearTest",
 			"dev.wildercord.gametest.WildercordNewRunesTest",
 			"dev.wildercord.gametest.WildercordDungeonsTest",
+			"dev.wildercord.gametest.WildercordFusedFlameTest",
+			"dev.wildercord.gametest.WildercordFusedFrostTest",
+			"dev.wildercord.gametest.WildercordFusedStormTest",
+			"dev.wildercord.gametest.WildercordFusedLifeTest",
+			"dev.wildercord.gametest.WildercordFusedVoidTest",
 			"dev.wildercord.gametest.WildercordOitTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]

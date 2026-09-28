@@ -31,8 +31,17 @@ import java.util.List;
  * The first twelve live here; the rest are in five classes by theme ({@link FusedFlame}, {@link FusedFrost},
  * {@link FusedStorm}, {@link FusedLife} and {@link FusedVoid}). Numbers match the rune descriptions in {@code Runes}.
  */
-final class FusedEffects {
+public final class FusedEffects {
 	private FusedEffects() {}
+
+	/** Registers what the fused effects listen for: called once at startup. */
+	public static void init() {
+		FusedFlame.init();
+		FusedFrost.init();
+		FusedStorm.init();
+		FusedLife.init();
+		FusedVoid.init();
+	}
 
 	/** At most this many targets get a lingering or spreading part of their own, so one hit can't flood the server. */
 	private static final int MAX_TARGETS = 8;

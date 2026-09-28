@@ -147,6 +147,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 
 			section(context, world, "fusion altar", () -> fusionAltar(context, world));
 			section(context, world, "fused spells", () -> fusedSpells(context, world));
+			section(context, world, "fused chorus", () -> fusedChorus(context, world));
 			section(context, world, "parry", () -> parry(context, world));
 			section(context, world, "wild magic", () -> wildMagic(context, world));
 			section(context, world, "world magic", () -> worldMagic(context, world));
@@ -174,6 +175,11 @@ public class WildercordShowcase implements FabricClientGameTest {
 
 	/** Runs one section; anything it throws is logged and the showcase moves on to the next. */
 	private static void section(ClientGameTestContext context, TestSingleplayerContext world, String name, Runnable body) {
+		// WILDERCORD_SHOWCASE_ONLY=<words> films only the sections whose names contain them.
+		String only = System.getenv("WILDERCORD_SHOWCASE_ONLY");
+		if (only != null && !only.isBlank() && !name.contains(only)) {
+			return;
+		}
 		try {
 			body.run();
 		} catch (Exception | AssertionError | LinkageError e) {
@@ -548,6 +554,18 @@ public class WildercordShowcase implements FabricClientGameTest {
 			new Sample("hail", Runes.BOLT, Runes.HAIL, 8, false),
 			new Sample("surge", Runes.SELF, Runes.SURGE, 5, false),
 			new Sample("nullify", Runes.BEAM, Runes.NULLIFY, 3, false)));
+	}
+
+	/** Every fused rune made after the first twelve, filmed as each group's test says (see {@link FusedSample}). */
+	private static void fusedChorus(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<Sample> samples = new java.util.ArrayList<>();
+		for (List<FusedSample> group : List.of(WildercordFusedFlameTest.SAMPLES, WildercordFusedFrostTest.SAMPLES, WildercordFusedStormTest.SAMPLES,
+				WildercordFusedLifeTest.SAMPLES, WildercordFusedVoidTest.SAMPLES)) {
+			for (FusedSample sample : group) {
+				samples.add(new Sample(sample.rune().path(), sample.shape(), sample.rune(), sample.ticks(), sample.night()));
+			}
+		}
+		gallery(context, world, "fused_", samples);
 	}
 
 	// ------------------------------------------------------------------ parrying

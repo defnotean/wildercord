@@ -13,6 +13,10 @@ import java.util.List;
 final class FusedFrost {
 	private FusedFrost() {}
 
+	/** Registers anything these effects listen for (damage, deaths, ticks); called once at startup. */
+	static void init() {
+	}
+
 	/** Does {@code node}'s effect if it's one of these, and says whether it was. */
 	static boolean apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, List<LivingEntity> helped, List<LivingEntity> harmed,
 			double power, double duration, int amplify) {
