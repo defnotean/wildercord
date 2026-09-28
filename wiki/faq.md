@@ -195,8 +195,8 @@ hold out its magic circle for about a second. They drop runes and Torn Pages. Se
 [Runebound]({{ '/world/runebound/' | relative_url }}).
 
 ### How can I tell what a monster is about to cast?
-Read its circle: the colour is the element, the seal in the middle is the shape, and each little roundel on the
-star is one rune. Area spells also mark the ground where they'll land. See
+Read its circle: the colour is the element, the seal in the middle is the first rune (usually the shape), and
+each little roundel on the star is one rune. Area spells also mark the ground where they'll land. See
 [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}#telegraphs).
 
 ### I can't see ley lines.

@@ -32,7 +32,7 @@ Like every link, it splits the spell in two:
 - **After Imbue**: the part that's **stored**. It isn't cast now. It goes off later, when the item or
   glyph is set off, from wherever that happens.
 
-`Self · Imbue · Fire · Burst` stores `Fire · Burst` in the item in your hand.
+`Self · Imbue · Burst · Fire` stores `Burst · Fire` in the item in your hand.
 
 ## Charges and price
 
@@ -182,7 +182,7 @@ fades. So does a glyph whose last charge is used.
 
 | Spell | What you get |
 |---|---|
-| `Self · Imbue · Fire · Burst` (holding a sword) | Your next three hits burst into flame around what you strike. |
+| `Self · Imbue · Burst · Fire` (holding a sword) | Your next three hits burst into flame around what you strike. |
 | `Self · Imbue · Break · Widen` (holding a pickaxe) | Three blocks you mine each open a wide hole. |
 | `Self · Imbue · Lightning` (holding a bow) | Three arrows that call lightning where they land. |
 | `Self · Imbue · Push` (holding a chestplate, then wear it) | Whatever hits you is thrown back, three times. |

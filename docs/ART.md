@@ -53,10 +53,10 @@ Built like a classic magic circle, from the outside in (`SpellSigil`, sizes as f
 radius): a heavy frame (line 0.03) and a fine one, with rays on the star's points; a band of script
 made of the spell's own rune emblems; a band in the first effect's ring pattern; a star polygon
 {p/q} with a point for every rune and a roundel on each point (that rune's pattern round its
-emblem); an inner ring; and the shape's emblem as the seal. Fine lines are 0.012 of the radius.
-Bands turn in opposite directions, slowly. A circle **opens in stages**: frame, then script and
-star drawing themselves, then roundels one by one in casting order. Secret spells replace the star
-with a centrepiece of their own.
+emblem); an inner ring; and the first rune's emblem as the seal (usually the shape's). Fine lines
+are 0.012 of the radius. Bands turn in opposite directions, slowly. A circle **opens in stages**:
+frame, then script and star drawing themselves, then roundels one by one in casting order. Secret
+spells replace the star with a centrepiece of their own.
 
 Every rune's emblem and ring pattern is unique (`tools/circle_art.py`, checked at generation):
 the pattern's line says the family (Shape double, Effect solid, Modifier dashed, Link chain), its

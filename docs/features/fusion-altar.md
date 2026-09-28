@@ -33,8 +33,10 @@ rank.
 
 Any two effects of the ten elements, with an amethyst shard in the middle, make a new fused effect
 for 3 XP levels, and so do two effects of the same element: every pair has a rune of its own, 55 in
-all. Any effect of an element counts: Ember works as well as Fire. Read the grid by row and column:
-Fire with Wind makes Firestorm, Fire with Fire makes Conflagration.
+all. Any effect of an element counts: Ember works as well as Fire, and so does a fused rune, which
+counts as its own element, the one its tooltip shows (Firestorm is a Fire effect, Magma an Earth
+one), so Firestorm with any Frost effect makes Steam. Read the grid by row and column: Fire with
+Wind makes Firestorm, Fire with Fire makes Conflagration.
 
 Each fused rune wears both of its elements in a spell's magic circle: its ring is a braid of two
 strands, its own element's motif outside and its partner's inside, each in its element's colour, and
@@ -116,9 +118,9 @@ its emblem is split down the middle between the two elements' glyphs.
 <!-- fusions:end -->
 
 Fused runes are Tier III (an Amethyst Cord or better) and can't be crafted or found. They take
-modifiers like any effect, and can themselves be ranked up. The first time you make each one it goes
-into your Grimoire (with a little condensed mana); the Grimoire lists the ones you haven't found as
-`??? + ???` with a hint of one element.
+modifiers like any effect, and can themselves be ranked up, or fused again as effects of their own
+element. The first time you make each one it goes into your Grimoire (with a little condensed
+mana); the Grimoire lists the ones you haven't found as `??? + ???` with a hint of one element.
 
 ## Tie a Knot: a Blank Rune and string
 

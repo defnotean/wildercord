@@ -85,8 +85,10 @@ Server operators can turn duels off with `/gamerule wildercord:allow_duels false
 ## Chorus casting
 
 When two or three allied casters cast spells of the **same shape** and the same kind (both
-harmful, or both helpful) within a second of each other, standing within 12 blocks and aimed at the
-same foe or the same spot (within 5 blocks), they sing a **chorus**:
+harmful, both helpful, or both neither, like two Bolts of Break), they sing a **chorus**. Each
+voice is measured against the voice before it: it must come within a second of it, from a caster
+standing within 12 blocks of that caster, aimed at the same foe or at a spot within 5 blocks of
+where that voice aimed.
 
 - The last voice's spell gains +50% power for each extra voice (a chorus of three is twice as
   strong, and that's the most), and shapes with a size (Burst, Zone, Rain, Domain...) grow by a

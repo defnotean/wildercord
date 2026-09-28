@@ -22,7 +22,7 @@ Two or three casters sing together when **all** of these are true:
 | **The same kind of spell** | Both harmful, both helpful, or both neither. A spell that both harms and heals always sings alone. |
 | **At the same moment** | Each voice comes **within a second** of the voice before it. |
 | **Close together** | Each caster stands **within 12 blocks** of the caster before them. |
-| **At the same target** | Aimed at the **same creature**, or at points **within 5 blocks** of each other. |
+| **At the same target** | Aimed at the **same creature** as the voice before, or at a point **within 5 blocks** of where it aimed. |
 | **Allies** | Every singer is allied with every other (see below). |
 | **Different casters** | You can't sing with yourself, and one caster counts once in a chorus. |
 

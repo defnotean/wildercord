@@ -20,11 +20,13 @@ phase: the damage stops there and the change begins at once, so every phase gets
 bar shows to everyone within 48 blocks of its altar, and goes when you leave.
 
 When it falls, **everyone who hurt it** (and is still within 96 blocks) gets a **Tier IV rune they
-don't know yet**, straight into their pack. Its killer gets the rest, three **Mana Crystals**, a
-Torn Page, runes of its elements and its own **trophy**, the same way. Anything that doesn't fit, or
-has nobody to take it, is left on the altar, where fire, lava and blasts can't touch it. The
-Runebound it called up go with it. It counts as a boss for the 7th Circle, and everyone within 64
-blocks earns its feat (1,500 mana toward your next circle).
+don't know yet**, straight into their pack. Its killer gets the rest, the same way: its own
+**trophy**, its own Tier IV rune of the world (Cinderheart, Starmaw or Tidewrit), three **Mana
+Crystals**, a Torn Page, a Tier II or III rune of its elements, and half the time one of its
+dungeon's runes of the world. Anything that doesn't fit, or has nobody to take it, is left on the
+altar, where fire, lava and blasts can't touch it. The Runebound it called up go with it. It counts
+as a boss for the 7th Circle, and everyone within 64 blocks earns its feat (1,500 mana toward your
+next circle).
 
 ## The Ember Sanctum (the Nether)
 
@@ -115,5 +117,7 @@ inward; every ebb clears all the ice and water from the pit.
   arcane; storm and frost), Torn Pages, Mana Crystals, Blank Runes and a little of the place's own
   treasure (blaze powder and netherite scrap; ender pearls and shulker shells; prismarine and
   hearts of the sea).
-- **The vault (two chests):** a Tier IV rune each, a Tier III rune of the dungeon's elements, Mana
-  Crystals, Torn Pages, diamonds and gold.
+- **The vault (two chests):** each holds a Tier IV rune; one of the dungeon's own runes of the
+  world (Cinderbrand, Ashen Veil or Kindled; Constellation or Eclipse; If Wet or Drowning Word),
+  and a 35% chance of a second; and two to four of Mana Crystals, a Torn Page, diamonds, gold, an
+  echo shard and the place's own treasure.

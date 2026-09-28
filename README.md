@@ -61,7 +61,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 |---|---|
 | **292 runes** | 186 you can craft (33 shapes, 123 effects, 18 modifiers and 12 links across four tiers), **51 runes of the world** found only in their own places, and **55 fused runes**, one for every pair of elements, made at the Fusion Altar. Each has a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
 | **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle opens in front of them, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
-| **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its shape's seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
+| **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its first rune's emblem as the seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
 | **Spells drawn in light** | All magic glows: light adds to what's behind it, and void magic is drawn as darkness. Beams with a white-hot core fired through a magic circle, bolts that glide as comets, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. Every element has its own visual language, from branching lightning to imploding darkness. |
 | **Magic you can feel** | Casters raise their hands to charge and move with each shape when it goes off; big impacts shake the camera, a charged release kicks the view, heavy hits land with a punch, and a Domain tints the edges of your screen. The Cord shows on every player's wrist, a glowing bead for each rune of the spell they have ready. |
 | **Its own sound** | Every cast, impact, circle, beam, shield and Domain has its own synthesised sound, all in one key so they harmonise, and charging hums higher as it builds. |
@@ -86,7 +86,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look and sound. |
 | **Element reactions** | Shatter, Conduct, Wildfire, Implode and Collapse: the right element on the right mark sets off a bonus. |
 | **Heart Circles** | Condense mana by casting, earn breakthroughs (mostly feats: set off every reaction, find secret spells, defeat the Archivist), and meditate to form rings of mana around your heart, from the 1st Circle to the 8th (Archmage). In a pinch, **overcast**: crack a circle to cast beyond your mana. |
-| **Rhythm and leaning** | Cast again right as your last spell comes off cooldown and the chain builds power. The element you cast most slowly colours your magic and strengthens it. |
+| **Rhythm and leaning** | Cast again right as your last spell comes off cooldown and the chain builds power. Cast one element most and your magic leans toward it: its effects hit 10% harder, your Heart Circles are tinted toward its colour, and a spell with no effect of its own charges in it. |
 | **Passive spells** | Up to two always-on spells (a buff, or an Orbit aura) that drain mana every second instead of having a cooldown. |
 | **Mana that grows** | Mana Crystals, Cord enchantments (Reservoir, Wellspring, Siphon), Clarity and Mana potions, meditation, Heart Circles. |
 | **Spell enchantments** | Potency, Celerity, Thrift and Persistence make your spells stronger, faster, cheaper and longer. |
@@ -157,8 +157,10 @@ with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 
 **Reading a spell circle.** The star has a point for every rune, and each point's roundel carries
 that rune's emblem: read them around from the top. This one is Nova, Flashfire, Widen, Shock,
-Amplify, On Hit, Burst (a nova of fire and lightning round the caster that bursts again where it
-hits); the band of script around it repeats them, and the shape's emblem is the seal in the middle.
+Amplify, On Hit, Burst: a nova of fire and lightning round the caster, the Flashfire widened (Widen
+attaches to it, since it has a radius) and the Shock amplified. The Burst after On Hit carries no
+effect, so it would do nothing (the Cord screen warns "Burst has no effect after it"). The band of
+script around it repeats the runes, and the first rune's emblem (Nova's) is the seal in the middle.
 
 <img src="docs/images/spell-circle.jpg" alt="A player holding out a charging magic circle: a frame, a band of script, a seven-pointed star with a coloured roundel on each point, and a seal in the middle" width="760">
 
@@ -191,7 +193,7 @@ hits); the band of script around it repeats them, and the shape's emblem is the 
 **The Grimoire:** your innate rune and leaning, and every reaction, secret spell and feat
 you've found, with the riddles you've read.
 
-<img src="docs/images/grimoire.png" alt="The Grimoire page of the Cord screen beside discovery toasts" width="760">
+<img src="docs/images/grimoire-page.jpg" alt="The Grimoire page of the Cord screen: your heart with the innate rune Gale Mantle, one of five reactions found, and ten secret spells still unknown" width="740">
 
 ### Screens
 

@@ -30,7 +30,7 @@ The power comes from the order you put them in.
    Rarer runes come from structures, bosses and a few world events.
 2. **Learn them.** Right-click a rune to learn it forever. It goes into your
    **Codex** and survives death. Spare copies are for fusion or trading.
-3. **Thread spells.** Open the Cord screen (K) and drag runes into a spell's
+3. **Thread spells.** Open the Cord screen (K) and click or drag runes into a spell's
    sockets. A live readout explains exactly what the spell will do.
 4. **Cast.** R casts your selected spell. Hold V for the spell wheel.
 5. **Grow.** Upgrade your Cord for more sockets and spells. Fuse runes into new
@@ -437,7 +437,8 @@ messages, building rights, reach).
   and again; a band in the first effect's pattern (its element at a glance); a star polygon with a
   point for every rune ({5/2} for five runes, {7/2} for seven, a hexagram or octagram for short
   spells) and on each point a roundel, that rune's own ring pattern around its emblem, in casting
-  order around from the top; an inner ring; and the shape rune's emblem as the seal in the middle.
+  order around from the top; an inner ring; and the first rune's emblem as the seal in the middle
+  (usually the shape's; a spell that starts with an effect, cast on yourself, shows that effect's).
   The bands and the star turn, each its own way.
 - **Every rune has its own emblem and ring pattern**, no two alike. The pattern's line tells the
   family (Shape: a double line, Effect: solid, Modifier: dashed, Link: a chain), its motif tells an
@@ -587,15 +588,18 @@ the Codex's Innate category, so any Cord can hold it.
 
 ### Elemental leaning
 Each cast counts toward the elements in it. Once one element has 40+ casts and 1.25x the
-runner-up, your magic **leans** toward it: its effects hit **10% harder**, and your charging
-circle takes its colour.
+runner-up, your magic **leans** toward it: its effects hit **10% harder**, your Heart Circles'
+rings are tinted toward its colour, and a spell with no effect in it (whose circle would otherwise
+charge in gold) charges in its colour. A spell with an effect always takes its first effect's
+colour.
 
 ### Shields
 **Shield** guards the target (you with Self, allies with Burst or Nova) for 30 seconds (Extend
 doubles it). Raising it opens its magic circles in front of them, then they vanish: a Shield is
-invisible until a harmful spell comes. Its strength is the mana the spell that raised it cost, as the
-Cord screen prices it (`Self · Shield` is 12; anything else threaded onto the same spell, Amplify
-say, makes it stronger because it makes the spell cost more).
+invisible until a harmful spell comes. Its strength is the spell's full price before any discount
+(a staff, Thrift, a heart perk, a mana storm or the server's mana rules never make it weaker), and
+every spell that meets it is weighed the same way. `Self · Shield` is 12; anything else threaded onto
+the same spell, Amplify say, makes it stronger because it makes the spell cost more.
 
 - **The circles.** When a spell comes at them, the Shield's magic circles (the spell that raised it,
   written out like any other) spawn in between the spell and them, facing it, stacked one behind
@@ -680,7 +684,7 @@ Break your own glyph and the block you get back still holds its spell and its ch
 block drops itself); anyone else breaking it, or its charges running out, lets it fade. Each caster
 keeps at most 12.
 
-Examples: `Self · Imbue · Fire · Burst` (a sword whose next three hits explode in flame),
+Examples: `Self · Imbue · Burst · Fire` (a sword whose next three hits burst into flame),
 `Self · Imbue · Break · Widen` (a pickaxe that mines a wide hole three times), `Touch · Imbue ·
 Root · Frost` (a trap that holds whoever walks over it), a door imbued with `Shock` that jolts
 whoever opens it, a pressure plate that heals your friends, a button that throws lightning, a
@@ -869,8 +873,8 @@ Rune, and every rune's tooltip says how to craft it and where it's found. The fu
 from the game's data, is in [RECIPES.md](RECIPES.md).
 
 Chests share out their rune chance by tier: next to each other in a pool, a Tier I rune is 8x as
-likely as a Tier IV one (Tier II 5x, Tier III 2x). The table below is the original plan; RECIPES.md
-is what the game does now.
+likely as a Tier IV one (Tier II 5x, Tier III 2x). The table below covers the first runes;
+RECIPES.md has every one.
 
 | Rune | Where from |
 |---|---|
@@ -902,19 +906,23 @@ is what the game does now.
 | On Hit | Blank + target block |
 | On Land | Blank + hay bale |
 | Echo | Blank + 2 echo shards |
-| Zone, Split, Chain | Found only: trial chamber vaults (ominous vaults more often), ancient cities |
-| Rain, Homing | Found only: end cities, stronghold libraries. Homing also drops from shulkers (5%) |
-| On Kill | Found only: bastions, woodland mansions |
-| Explode | Found in bastions and desert pyramids. Creepers drop it 1% of the time |
-| Blink | Found in end cities. Endermen drop it 2% of the time (Looting helps) |
-| **Lightning** | **World event:** drop a Blank Rune next to a lightning rod in a thunderstorm. When the rod is struck, the blank becomes a Lightning rune. Also found in trail ruins |
+| Zone | Tier III: Blank + redstone block. Also found in trial chamber vaults (ominous vaults more often) and ancient cities |
+| Split | Tier III: Blank + 2 prismarine crystals. Also found in trial chamber vaults and ancient cities |
+| Chain | Tier III: Blank + iron chain + redstone. Also found in trial chamber vaults and ancient cities |
+| Rain | Tier III: Blank + pointed dripstone + water bucket (you keep the bucket). Also found in end cities and stronghold libraries |
+| Homing | Tier III: Blank + compass. Also found in end cities and stronghold libraries, and shulkers drop it 5% of the time |
+| On Kill | Tier III: Blank + bone block. Also found in bastions and woodland mansions |
+| Explode | Tier III: Blank + TNT + fire charge. Also found in bastions and desert pyramids, and creepers drop it 1% of the time |
+| Blink | Tier III: Blank + ender pearl + chorus fruit. Also found in end cities, and endermen drop it 2% of the time |
+| **Lightning** | Tier III: Blank + copper block + glowstone. Or a **world event:** drop a Blank Rune next to a lightning rod in a thunderstorm; when the rod is struck, the blank becomes a Lightning rune. Also found in trail ruins |
 | Sonic Boom | The Warden always drops one |
 | Wither | The Wither always drops one (and Hollow half the time) |
 | Dragon Breath | The Ender Dragon drops one (and an Infinity rune) at the feet of whoever killed it, every kill |
 | Summon | Evokers drop it 15% of the time |
 
-Shipwrecks, buried treasure, dungeons and mineshafts roll the crafted Tier I–II
-runes, so exploring always pays. Wandering traders sometimes sell one.
+Every Tier III recipe above also takes a Mana Crystal and a Diamond. Shipwrecks, buried treasure,
+dungeons and mineshafts roll the crafted Tier I–II runes, so exploring always pays. Wandering
+traders sometimes sell one.
 
 ### Runes of the world
 
@@ -1000,8 +1008,9 @@ and Glacier frost, Lifesteal blood, Warp void, Bloom life and Nullify arcane.
 - **Left:** your Codex. It has filter tabs (All / Shape / Effect / Modifier /
   Link; learned Knots are listed under All) and a search box.
 - **Right:** your spells, one row of sockets each. You can rename them.
-- **Editing:** drag and drop runes, shift-click to add a rune to the end of the
-  selected spell, right-click a socket to empty it.
+- **Editing:** click a rune in the Codex to add it to the end of the selected spell,
+  and click a threaded rune to take it out. Drag a rune onto a socket to insert it
+  there, drag threaded runes to reorder them, or drag one off the Cord to remove it.
 - **Bottom readout:** the plain-English meaning of the spell, its mana cost and
   cooldown, and warnings. For example: "Fires 3 bolts. On hit: lightning. 46 mana
   · 2.3 s", or "Pierce does nothing here — nothing it can change to its left."
