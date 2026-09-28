@@ -168,6 +168,16 @@ public final class Cast {
 		return new Cast(caster, level, depth, new Budget(new Shared()), castNumber, power * multiplier, duration, passive, wanted, info);
 	}
 
+	/**
+	 * The same spell, turned back by a parry: now {@code by}'s, at the same power and weight, with a
+	 * fresh budget (so the Shield that stopped the original doesn't stop it).
+	 */
+	public Cast reflected(LivingEntity by) {
+		Cast turned = new Cast(by, (ServerLevel) by.level(), 0, new Budget(new Shared()), 1, power, duration, false, null, info);
+		turned.budget.shared.weight = weight();
+		return turned;
+	}
+
 	/** Takes up to {@code wanted} creatures from the budget and returns how many may be touched. */
 	public int takeEntities(int wanted) {
 		int granted = Math.min(wanted, budget.entities);

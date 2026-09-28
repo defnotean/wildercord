@@ -95,7 +95,9 @@ public final class SpellCaster {
 		Optional<Secrets.Secret> secret = Secrets.match(runes);
 		long now = player.level().getGameTime();
 		long readyAt = Spellbooks.readyAt(player, spell);
-		if (now < readyAt) {
+		// A wild surge's Free Recast: this one costs nothing and waits for no cooldown.
+		boolean free = WildSurge.freeRecast(player, now);
+		if (now < readyAt && !free) {
 			Rhythm.early(player, now);
 			fail(player, Component.translatable("message.wildercord.cooldown", String.format(java.util.Locale.ROOT, "%.1f", (readyAt - now) / 20.0)));
 			return;
@@ -104,7 +106,13 @@ public final class SpellCaster {
 		boolean overflow = manaNow >= Mana.max(player) - 0.5F;
 		Heart.Bonuses bonuses = Heart.bonuses(player, overflow);
 		int spent;
-		if (compiled.paysInHealth()) {
+		// Set when this cast is an overcast: the mana there was and what it cost, for wild magic.
+		float overcastMana = -1;
+		int overcastCost = -1;
+		if (free) {
+			spent = 0;
+			WildSurge.useFreeRecast(player);
+		} else if (compiled.paysInHealth()) {
 			// Blood Price: paid in health, and never enough to kill you.
 			int blood = Heart.healthCost(player, compiled);
 			spent = blood * 5;
@@ -127,6 +135,8 @@ public final class SpellCaster {
 					return;
 				}
 				spent = (int) mana;
+				overcastMana = mana;
+				overcastCost = cost;
 				Spellbooks.setMana(player, 0);
 			} else if (!player.isCreative()) {
 				Spellbooks.setMana(player, mana - cost);
@@ -156,9 +166,17 @@ public final class SpellCaster {
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
-			SecretSpells.cast(cast, secret.get());
-		} else {
-			CastEngine.cast(cast, compiled.root());
+		}
+		java.util.function.Consumer<Cast> release = c -> {
+			if (secret.isPresent()) {
+				SecretSpells.cast(c, secret.get());
+			} else {
+				CastEngine.cast(c, compiled.root());
+			}
+		};
+		// Wild magic: an overcast spell may twist into something else.
+		if (overcastCost < 0 || !WildSurge.overcast(cast, runes, secret.isPresent(), overcastMana, overcastCost, release)) {
+			release.accept(cast);
 		}
 		// Twin Star: the next spell goes off a second time, a moment later.
 		if (Innates.consumeTwin(player)) {
@@ -357,6 +375,7 @@ public final class SpellCaster {
 			Charging.forget(player);
 			PassiveCaster.forget(id);
 			Overcast.forget(id);
+			WildSurge.forget(id);
 			Meditation.forget(id);
 			HeartCircles.forget(id);
 			SecretSpells.forget(id);
@@ -366,6 +385,7 @@ public final class SpellCaster {
 			COMBO.clear();
 			Charging.clear();
 			Overcast.clear();
+			WildSurge.clear();
 			Meditation.clear();
 			Reactions.clear();
 			RuneBolt.clearLive();

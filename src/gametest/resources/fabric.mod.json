@@ -9,7 +9,8 @@
 			"dev.wildercord.gametest.WildercordScreenshots",
 			"dev.wildercord.gametest.WildercordFeatureTour",
 			"dev.wildercord.gametest.WildercordCordTest",
-			"dev.wildercord.gametest.WildercordWorldMagicTest"
+			"dev.wildercord.gametest.WildercordWorldMagicTest",
+			"dev.wildercord.gametest.WildercordParryTest"
 		]
 	},
 	"depends": {

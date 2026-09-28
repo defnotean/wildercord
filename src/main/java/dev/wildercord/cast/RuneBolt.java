@@ -60,6 +60,8 @@ public class RuneBolt extends Projectile {
 	private int color;
 	private Vfx.Theme theme;
 	private final List<Entity> alreadyHit = new ArrayList<>();
+	/** A parried bolt flies back at the one who cast it, and steers after them. */
+	private LivingEntity quarry;
 
 	public RuneBolt(EntityType<? extends RuneBolt> type, Level level) {
 		super(type, level);
@@ -70,11 +72,23 @@ public class RuneBolt extends Projectile {
 		launch(cast, group, anchored, origin, dir, false);
 	}
 
+	/**
+	 * A spell a Shield parried, flying back at {@code quarry} (its caster) as {@code turned}'s: a bolt
+	 * of the same shape's effects, a little faster, steering after them.
+	 */
+	static void reflect(Cast turned, SpellPlan.Group group, SpellPlan.Link anchored, Vec3 origin, LivingEntity quarry) {
+		Vec3 aim = quarry.getBoundingBox().getCenter().subtract(origin);
+		RuneBolt bolt = launch(turned, group, anchored, origin, aim.lengthSqr() < 1.0E-4 ? turned.caster.getLookAngle() : aim, false);
+		if (bolt != null) {
+			bolt.turnBack(quarry);
+		}
+	}
+
 	/** Launches a bolt, or with {@code arc} a lobbed one that falls and splashes where it lands. */
-	public static void launch(Cast cast, SpellPlan.Group group, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, boolean arc) {
+	public static RuneBolt launch(Cast cast, SpellPlan.Group group, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, boolean arc) {
 		UUID owner = cast.caster.getUUID();
 		if (LIVE.getOrDefault(owner, 0) >= MAX_LIVE_PER_PLAYER) {
-			return;
+			return null;
 		}
 		RuneBolt bolt = new RuneBolt(WildercordEntities.RUNE_BOLT, cast.level);
 		bolt.cast = cast.child();
@@ -96,6 +110,31 @@ public class RuneBolt extends Projectile {
 		LIVE.merge(owner, 1, Integer::sum);
 		cast.level.addFreshEntity(bolt);
 		Fx.sound(cast.level, origin, bolt.theme.cast(), 0.5F, 1.0F);
+		return bolt;
+	}
+
+	/** Parried: the bolt turns round where it met the Shield and flies back at its caster, now {@code defender}'s. */
+	private void reflect(LivingEntity defender, Vec3 at) {
+		LivingEntity back = cast.caster;
+		LIVE.computeIfPresent(back.getUUID(), (k, n) -> n <= 1 ? null : n - 1);
+		LIVE.merge(defender.getUUID(), 1, Integer::sum);
+		cast = cast.reflected(defender);
+		setOwner(defender);
+		setPos(at);
+		Vec3 aim = back.getBoundingBox().getCenter().subtract(at);
+		setDeltaMovement((aim.lengthSqr() < 1.0E-4 ? getDeltaMovement().scale(-1) : aim).normalize().scale(speed));
+		turnBack(back);
+	}
+
+	private void turnBack(LivingEntity back) {
+		quarry = back;
+		alreadyHit.clear();
+		alreadyHit.add(cast.caster);
+		arc = false;
+		bouncesLeft = 0;
+		speed = Math.min(3.0, speed * dev.wildercord.spell.Parry.REFLECT_SPEED);
+		setDeltaMovement(getDeltaMovement().normalize().scale(speed));
+		lifeLeft = (int) Math.ceil(RANGE / speed) + 4;
 	}
 
 	@Override
@@ -114,7 +153,9 @@ public class RuneBolt extends Projectile {
 			fizzle();
 			return;
 		}
-		if (homing) {
+		if (quarry != null) {
+			hunt();
+		} else if (homing) {
 			steer();
 		}
 		if (arc) {
@@ -130,6 +171,12 @@ public class RuneBolt extends Projectile {
 			return;
 		}
 		Shields.Interception shield = Shields.intercept(cast, from, end);
+		if (shield != null && !alreadyHit.contains(shield.target()) && Shields.harmful(group, anchored) && Shields.parries(cast, shield.target())) {
+			// Raised at the last moment, the Shield turns it: back it goes, at whoever cast it.
+			Shields.parry(cast, shield.target(), from, false);
+			reflect(shield.target(), shield.at());
+			return;
+		}
 		if (shield != null && !alreadyHit.contains(shield.target())) {
 			// It strikes the Shield's circle: stopped there, or through it and into what it was aimed at.
 			setPos(shield.at());
@@ -254,6 +301,17 @@ public class RuneBolt extends Projectile {
 			Vec3 now = getDeltaMovement().normalize();
 			setDeltaMovement(now.lerp(want, 0.25).normalize().scale(speed));
 		}
+	}
+
+	/** A parried bolt closes on its caster: it turns hard toward them, wherever they run (until they're gone). */
+	private void hunt() {
+		if (!quarry.isAlive() || quarry.isRemoved() || quarry.level() != level()) {
+			quarry = null;
+			return;
+		}
+		Vec3 want = quarry.getBoundingBox().getCenter().subtract(position()).normalize();
+		Vec3 now = getDeltaMovement().normalize();
+		setDeltaMovement(now.lerp(want, 0.4).normalize().scale(speed));
 	}
 
 	private void trail(ServerLevel server, Vec3 from, Vec3 to) {

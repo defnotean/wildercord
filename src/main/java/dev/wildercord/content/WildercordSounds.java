@@ -55,6 +55,8 @@ public final class WildercordSounds {
 	public static final SoundEvent SHIELD_BREAK = register("shield_break");
 	/** A spell ringing off a Shield: a glassy strike, a bright shimmering ring and a hiss turned aside. */
 	public static final SoundEvent SHIELD_BLOCK = register("shield_block");
+	/** A parry: a hard bright strike ringing up into a clear high chime, with a shimmer flung back. */
+	public static final SoundEvent SHIELD_PARRY = register("shield_parry");
 	/** Magic sinking into an item or a block: a shimmer drawn inward, sealed with a soft chord. */
 	public static final SoundEvent IMBUE = register("imbue");
 	/** A Domain opening: a swelling drone and wash that crest in a great chord of bells, with a long tail. Heard from 32 blocks. */

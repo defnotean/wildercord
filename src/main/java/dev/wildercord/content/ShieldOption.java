@@ -14,8 +14,8 @@ import java.util.List;
 /**
  * A Shield meeting a spell, sent at the shielded creature: {@link #APPEAR} (a spell flying at it is
  * close: its magic circle spawns in, in front of the spell), {@link #BLOCK} (the spell struck the
- * circle and stopped) or {@link #BREAK} (a stronger spell cracked the circle and shattered it like
- * glass, and went through). Each client builds the whole effect from these: the circle opening, its
+ * circle and stopped), {@link #BREAK} (a stronger spell cracked the circle and shattered it like
+ * glass, and went through) or {@link #PARRY} (raised just in time, it turned the spell back). Each client builds the whole effect from these: the circle opening, its
  * ripples, or its cracks and falling shards.
  *
  * @param entity the shielded creature's id (0 if it's gone), so the circle can stay with it
@@ -32,6 +32,8 @@ public record ShieldOption(int kind, int entity, int color, float dx, float dy, 
 	public static final int BLOCK = 0;
 	public static final int BREAK = 1;
 	public static final int APPEAR = 2;
+	/** Raised at the last moment, it parried the spell: the circles hold and ring gold, and the spell is turned back. */
+	public static final int PARRY = 3;
 
 	public static final MapCodec<ShieldOption> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 		Codec.INT.fieldOf("kind").forGetter(ShieldOption::kind),

@@ -820,6 +820,22 @@ def shield_block(v, rng):
     return finish(reverb(x, 1.0, 0.22), "impact")
 
 
+def shield_parry(v, rng):
+    """A spell parried: a hard, bright strike that rings straight up into a clear high chime (three
+    glass notes climbing in a blink, over a bell), and the spell's hiss flung back the way it came."""
+    dur = 1.6
+    strike = shatter(rng, count=6, band=(3000, 7500), spread=0.01, tau=(0.012, 0.04))
+    knock = thump(260, 120, 0.12, 0.02, 1.4)
+    run = ((0.0, (A, 1)), (0.035, (D, 2)), (0.07, (FS, 2)))
+    chime = mix(*[(t, (0.7 + 0.15 * i) * glass(note(*n), dur, 0.55)) for i, (t, n) in enumerate(run)])
+    bell_tone = bell(note(D, 1), dur, 0.7, 2.0, 1.6, attack=0.002)
+    glints = sparkle(0.9, 18, rng, [note(d, 3) for d in (D, FS, A)], tau=(0.04, 0.1), shape=[(0, 1), (0.9, 0)])
+    fling = moving_band(0.4, [(0, 1800), (0.4, 6000)], 0.8, rng) * env(0.4, (0, 0), (0.03, 1), (0.4, 0))
+    x = mix(0.6 * strike, 0.45 * knock, 0.6 * chorus(chime, 2, 0.002, 1.2), (0.01, 0.35 * bell_tone), (0.05, 0.12 * norm(glints)),
+            (0.02, 0.18 * fling))
+    return finish(reverb(x, 1.3, 0.26, damp=8000), "impact")
+
+
 def imbue(v, rng):
     """Magic sinking into an item or a block: a shimmer drawn inward, sealed with a soft struck chord."""
     draw = reverse(mix(*[(0.02 * i, 0.3 * glass(note(d, 2), 0.6, 0.18)) for i, d in enumerate((D, FS, A, B))]))
@@ -979,6 +995,7 @@ def palette():
         ("shield_up", "casting", "shield_up", shield_up, 1, {}),
         ("shield_break", "casting", "shield_break", shield_break, 2, {}),
         ("shield_block", "casting", "shield_block", shield_block, 2, {}),
+        ("shield_parry", "casting", "shield_parry", shield_parry, 1, {}),
         ("imbue", "casting", "imbue", imbue, 1, {}),
         ("domain_open", "casting", "domain_open", domain_open, 1, far),
         ("domain_close", "casting", "domain_close", domain_close, 1, far),
