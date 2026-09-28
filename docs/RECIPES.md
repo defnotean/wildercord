@@ -208,7 +208,8 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 
 ## Fused runes (55, made only at the Fusion Altar)
 
-Two effects of the right elements, an amethyst shard and 3 XP levels. Any effect of an element counts.
+Any two effects of the ten elements (one element with itself too), an amethyst shard and 3 XP levels.
+Any effect of an element counts.
 
 | Rune | Elements | Does |
 |---|---|---|
