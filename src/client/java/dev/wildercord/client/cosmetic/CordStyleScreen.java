@@ -285,7 +285,7 @@ public class CordStyleScreen extends Screen {
 				int have = minecraft.player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), true, 0,
 					minecraft.player.inventoryMenu.getCraftSlots());
 				yield Component.translatable("screen.wildercord.cosmetics.buy", unlock.amount(), item.getName(new ItemStack(item)), have)
-					.withColor(have >= unlock.amount() || minecraft.player.hasInfiniteMaterials() ? GOLD : 0xFFE06060);
+					.withColor(have >= unlock.amount() ? GOLD : 0xFFE06060);
 			}
 			default -> Component.empty();
 		};

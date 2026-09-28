@@ -10,7 +10,8 @@ flies off, but it lets you close if you sneak. Nothing can hurt a wisp.
 
 **Taming.** A wild wisp answers only to its own element. Strike it with a spell of that element
 three times (or feed it its food) within a minute and it chimes, bonds with you and becomes your
-**familiar**. Magic of any other element spooks it and it forgets everything.
+**familiar**. Magic of any other element spooks it and it forgets everything. If you already keep
+12 familiars a wild wisp won't take your magic or your food at all (so no food is wasted).
 
 | Wisp | Food | Its little spell |
 |---|---|---|
@@ -20,7 +21,7 @@ three times (or feed it its food) within a minute and it chimes, bonds with you 
 | Life | Glow Berries | Heals you when you're hurt |
 | Wind | Feather | Jump Boost in a fight, and catches you when you fall |
 | Earth | Clay Ball | Resistance while you're under attack |
-| Void | Ender Pearl | Pulls nearby drops and experience to you |
+| Void | Ender Pearl | Pulls nearby drops nobody dropped (a monster's loot, a broken block's) and experience to you, never anything nearer another player |
 | Arcane | Amethyst Shard | Makes hidden monsters nearby glow |
 
 **Your familiar** floats at your shoulder with your name over it, flies round things, and blinks
@@ -28,11 +29,12 @@ back to you if it falls behind. While it's near it quickens your mana (+10% at l
 +20% at 3) and casts its little spell every 12 seconds (10 at level 2, 8 at level 3), a little
 stronger each level. It gains experience from every monster you slay together: level 2 after 40,
 level 3 after 150 (a boss counts for 20). It never breaks blocks, and it only ever harms another
-player when the two of you are fighting and PvP is on.
+player when the two of you are fighting and PvP is on. Arrows and other projectiles pass through a
+familiar, so it never catches a shot meant for you.
 
 - **Sneak and use it** to tell it to stay, and again to follow. Told to stay near an awake
   Wellstone, it **waits there** instead, and you can take another familiar out.
-- **A name tag** names it.
+- **A name tag** names it. Only you can name your familiar: anyone else's name tag is refused.
 - **The Wisp Lantern** (a lantern, two glass panes and two amethyst shards) keeps the rest. Use it
   to send your familiar home or call it out again; sneak and use it to call the next one. Its
   tooltip lists them all. You can keep 12 familiars, one out at a time.
@@ -68,4 +70,5 @@ that colour (all sixteen dyes).
 | Stars | Help slay a boss |
 
 A trail streams from your Cord hand as you cast, and faintly while you charge. Options bought with
-materials are bought with a click on the Cosmetics page (free in creative) and are yours for good.
+materials are bought with a click on the Cosmetics page and are yours for good, so they cost their
+materials in every game mode, creative included. The page takes at most four clicks a second.

@@ -21,6 +21,33 @@ public final class RuneTrades {
 
 	/** Buyback offers shown at once, at most. */
 	public static final int MAX_BUYBACKS = 6;
+	/** Runes one player may sell back each day, across every Runesmith. */
+	public static final int DAILY_BUYBACKS = 8;
+
+	/**
+	 * Runes the Runesmith never takes in trade: ones the world makes out of a cheap Blank Rune (a
+	 * lightning rod in a storm turns a whole stack of blanks into Lightning runes), so buying them
+	 * back would turn emeralds into more emeralds.
+	 */
+	public static final Set<String> CONJURED = Set.of(Runes.LIGHTNING.id());
+
+	/**
+	 * Whether the Runesmith takes this rune in a buyback or reroll: only the runes it deals in
+	 * itself ({@link #pool}), never a conjured one.
+	 */
+	public static boolean takes(RuneDef rune) {
+		return rune.tier() >= 1 && rune.tier() <= 4 && Runes.common(rune) && !CONJURED.contains(rune.id());
+	}
+
+	/** Whether a rune item of this rank pays in a swap: only a plain rank I rune (no rank, or rank 1). */
+	public static boolean plainRank(Integer rank) {
+		return rank == null || rank <= 1;
+	}
+
+	/** How many buybacks a player has left today, given what they sold on {@code soldDay}. */
+	public static int buybacksLeft(long soldDay, int sold, long today) {
+		return soldDay == today ? Math.max(0, DAILY_BUYBACKS - sold) : DAILY_BUYBACKS;
+	}
 
 	/** Emeralds the Runesmith pays for a rune you already know: 1, 2, 5, 10 by tier. */
 	public static int buybackPrice(int tier) {
@@ -71,7 +98,8 @@ public final class RuneTrades {
 
 	/**
 	 * The reroll each tier can offer, from the known runes in an inventory (rune id to how many):
-	 * a rune held twice pays for itself, otherwise the two most plentiful runes of that tier.
+	 * a rune held twice pays for itself, otherwise the two most plentiful runes of that tier. Only
+	 * runes the Runesmith {@linkplain #takes takes} pay for a reroll.
 	 */
 	public static List<Pair> rerolls(Map<String, Integer> knownHeld) {
 		List<Pair> pairs = new ArrayList<>();
@@ -79,7 +107,7 @@ public final class RuneTrades {
 			List<Map.Entry<String, Integer>> ofTier = new ArrayList<>();
 			for (Map.Entry<String, Integer> held : knownHeld.entrySet()) {
 				int t = tier;
-				if (held.getValue() > 0 && Runes.get(held.getKey()).filter(r -> r.tier() == t && !Runes.innate(r)).isPresent()) {
+				if (held.getValue() > 0 && Runes.get(held.getKey()).filter(r -> r.tier() == t && takes(r)).isPresent()) {
 					ofTier.add(held);
 				}
 			}
@@ -97,12 +125,15 @@ public final class RuneTrades {
 		return pairs;
 	}
 
-	/** The known runes in an inventory the Runesmith offers to buy back: the rarest first, {@link #MAX_BUYBACKS} at most. */
+	/**
+	 * The known runes in an inventory the Runesmith offers to buy back: only ones it {@linkplain #takes takes},
+	 * the rarest first, {@link #MAX_BUYBACKS} at most.
+	 */
 	public static List<String> buybacks(Map<String, Integer> knownHeld) {
 		List<RuneDef> held = new ArrayList<>();
 		for (Map.Entry<String, Integer> entry : knownHeld.entrySet()) {
 			if (entry.getValue() > 0) {
-				Runes.get(entry.getKey()).filter(r -> !Runes.innate(r)).ifPresent(held::add);
+				Runes.get(entry.getKey()).filter(RuneTrades::takes).ifPresent(held::add);
 			}
 		}
 		held.sort(Comparator.comparingInt(RuneDef::tier).reversed().thenComparing(RuneDef::id));

@@ -61,11 +61,14 @@ public final class FamiliarMagic {
 				AABB box = owner.getBoundingBox().inflate(radius);
 				Vec3 to = owner.position().add(0, 0.6, 0);
 				boolean pulled = false;
-				for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, box, i -> i.isAlive() && i.getOwner() != owner && i.getAge() > 10)) {
+				// Only what nobody dropped (a monster's loot, a broken block's), and nothing nearer someone else:
+				// never another player's things, their death drops or their experience.
+				for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, box, i -> i.isAlive() && i.getAge() > 10
+						&& ((dev.wildercord.mixin.ItemEntityAccessor) i).wildercord$thrower() == null && !othersNear(level, owner, i))) {
 					pull(item, to);
 					pulled = true;
 				}
-				for (ExperienceOrb orb : level.getEntitiesOfClass(ExperienceOrb.class, box, ExperienceOrb::isAlive)) {
+				for (ExperienceOrb orb : level.getEntitiesOfClass(ExperienceOrb.class, box, o -> o.isAlive() && !othersNear(level, owner, o))) {
 					pull(orb, to);
 					pulled = true;
 				}
@@ -75,6 +78,19 @@ public final class FamiliarMagic {
 			}
 			default -> { }
 		}
+	}
+
+	/** How near another player must be to something for a Void familiar to leave it to them. */
+	private static final double OTHERS = 8.0;
+
+	/** Whether another player (not the owner, not a spectator) is close to this thing. */
+	private static boolean othersNear(ServerLevel level, ServerPlayer owner, net.minecraft.world.entity.Entity thing) {
+		for (ServerPlayer other : level.players()) {
+			if (other != owner && !other.isSpectator() && other.distanceToSqr(thing) < OTHERS * OTHERS) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static void pull(net.minecraft.world.entity.Entity thing, Vec3 to) {

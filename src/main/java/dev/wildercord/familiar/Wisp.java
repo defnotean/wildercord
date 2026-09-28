@@ -34,6 +34,7 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -244,6 +245,11 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 			}
 			lastCast = cast;
 		}
+		// Someone who keeps all the familiars they can gets nowhere taming another (and their food isn't eaten).
+		if (!WispRules.canBond(Familiars.get(player).bonds().size())) {
+			Familiars.full(player);
+			return WispRules.Outcome.IGNORED;
+		}
 		WispRules.Step step = WispRules.offer(taming, player.getStringUUID(), offered, element(), level().getGameTime());
 		taming = step.taming();
 		switch (step.outcome()) {
@@ -266,6 +272,13 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	@Override
 	protected InteractionResult mobInteract(Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
+		// Only its owner names a familiar: anyone else's name tag is refused (and kept).
+		if (!wild() && !isOwnedBy(player) && stack.is(Items.NAME_TAG)) {
+			if (player instanceof ServerPlayer server) {
+				server.sendOverlayMessage(Component.translatable("message.wildercord.wisp.not_yours").withStyle(net.minecraft.ChatFormatting.GRAY));
+			}
+			return InteractionResult.SUCCESS;
+		}
 		if (!wild() && isOwnedBy(player) && player.isShiftKeyDown()) {
 			if (player instanceof ServerPlayer server) {
 				Familiars.toggleStay(server, this);
@@ -576,6 +589,12 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 	@Override
 	public boolean canBeLeashed() {
 		return false;
+	}
+
+	/** A familiar at its owner's shoulder never catches the arrows meant for them (a wild wisp can still be struck by a spell to tame it). */
+	@Override
+	public boolean canBeHitByProjectile() {
+		return wild() && super.canBeHitByProjectile();
 	}
 
 	@Override

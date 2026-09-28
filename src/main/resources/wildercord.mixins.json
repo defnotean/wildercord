@@ -10,7 +10,11 @@
 		"ProjectileMixin",
 		"BlockItemMixin",
 		"MannequinAccessor",
-		"DuelHarmMixin"
+		"DuelHarmMixin",
+		"RunesmithTradeMixin",
+		"SwapOfferMixin",
+		"MobConversionMixin",
+		"ItemEntityAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

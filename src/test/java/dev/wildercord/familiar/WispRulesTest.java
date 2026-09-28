@@ -27,6 +27,13 @@ class WispRulesTest {
 	}
 
 	@Test
+	void aFullLanternTakesNoMore() {
+		assertTrue(WispRules.canBond(0));
+		assertTrue(WispRules.canBond(WispRules.MAX_BONDS - 1));
+		assertFalse(WispRules.canBond(WispRules.MAX_BONDS), "at the cap, a wisp takes no offering (and no food is eaten)");
+	}
+
+	@Test
 	void oneCastCountsOnce() {
 		Step one = WispRules.offer(Taming.NONE, ALEX, "frost", "frost", 100);
 		// A Zone pulsing, or two effects of one spell, a few ticks apart.

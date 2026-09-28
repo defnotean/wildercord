@@ -165,6 +165,11 @@ public final class Cast {
 		return this;
 	}
 
+	/** The casting gear the caster held (so a cast made from this one, like a chorus, can carry it on). */
+	public dev.wildercord.gear.GearBonuses gear() {
+		return budget.shared.gear;
+	}
+
 	/** Casting gear: the power multiplier on an effect of {@code element}. */
 	public double gearPower(String element) {
 		return budget.shared.gear.power(element);

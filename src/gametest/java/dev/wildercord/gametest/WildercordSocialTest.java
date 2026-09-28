@@ -75,9 +75,9 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			attempt(failures, "Runesmith trades", () -> runesmith(world));
 			attempt(failures, "duplicate swap", () -> duplicateSwap(world));
 			context.waitTicks(2);
-			attempt(failures, "contracts", () -> contracts(world));
+			attempt(failures, "contracts", () -> contracts(context, world));
 			context.waitTicks(2);
-			attempt(failures, "chorus", () -> chorus(world));
+			attempt(failures, "chorus", () -> chorus(context, world));
 			context.waitTicks(40);
 			world.getServer().runCommand("kill @e[tag=wildercord.social]");
 			if (!failures.isEmpty()) {
@@ -171,6 +171,11 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			player.getInventory().add(RuneItem.stack(Runes.BURST));
 			// A rune that isn't known yet is never bought back.
 			player.getInventory().add(RuneItem.stack(Runes.ZONE));
+			// Nor a Lightning rune (a lightning rod makes them from cheap blanks), known or not.
+			Spellbooks.set(player, Spellbooks.get(player).learn(Runes.LIGHTNING.id()));
+			ItemStack lightning = RuneItem.stack(Runes.LIGHTNING);
+			lightning.setCount(8);
+			player.getInventory().add(lightning);
 
 			Villager villager = runesmith(level, player.position().add(0, 0, 3), 1);
 			int vanilla = villager.getOffers().size();
@@ -186,6 +191,12 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			check(healBack.satisfiedBy(RuneItem.stack(Runes.HEAL), ItemStack.EMPTY), "a known Heal rune should pay for its buyback");
 			check(!healBack.satisfiedBy(RuneItem.stack(Runes.HARM), ItemStack.EMPTY), "another rune shouldn't pay for Heal's buyback");
 			check(swaps.stream().noneMatch(o -> Runes.ZONE.id().equals(o.getCostA().get(WildercordComponents.RUNE))), "an unknown rune shouldn't be bought back");
+			check(swaps.stream().noneMatch(o -> Runes.LIGHTNING.id().equals(o.getCostA().get(WildercordComponents.RUNE))
+				|| Runes.LIGHTNING.id().equals(o.getCostB().get(WildercordComponents.RUNE))), "a Lightning rune shouldn't be bought back or rerolled");
+			ItemStack ranked = RuneItem.stack(Runes.HEAL);
+			ranked.set(WildercordComponents.RANK, 3);
+			check(!healBack.satisfiedBy(ranked, ItemStack.EMPTY), "a rank III rune shouldn't pay a rank I's buyback");
+			check(healBack.getXp() == 0, "a buyback shouldn't give experience");
 
 			MerchantOffer reroll = swaps.stream().filter(o -> !o.getCostB().isEmpty() && isRune(o.getResult(), 1)).findFirst()
 				.orElseThrow(() -> new AssertionError("no Tier I reroll for two known Heal runes"));
@@ -203,8 +214,22 @@ public class WildercordSocialTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ contracts
 
-	private static void contracts(TestSingleplayerContext world) {
-		world.getServer().runOnServer(server -> {
+	/** Something for the contracts' spells to land on: a husk (a real creature), or a Training Dummy. */
+	private static net.minecraft.world.entity.LivingEntity mark(ServerLevel level, Vec3 at, boolean dummy) {
+		net.minecraft.world.entity.LivingEntity mark = dummy ? dev.wildercord.cast.WildercordEntities.TRAINING_DUMMY.create(level, EntitySpawnReason.COMMAND)
+			: EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+		check(mark != null, "a target should spawn");
+		mark.snapTo(at.x, at.y, at.z, 0, 0);
+		if (mark instanceof Mob mob) {
+			mob.setNoAi(true);
+		}
+		mark.addTag("wildercord.social");
+		level.addFreshEntity(mark);
+		return mark;
+	}
+
+	private static void contracts(ClientGameTestContext context, TestSingleplayerContext world) {
+		int[] marks = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
 			player.getInventory().clearContent();
@@ -218,15 +243,52 @@ public class WildercordSocialTest implements FabricClientGameTest {
 				new ContractRules.Contract(ContractRules.REACTION, "conduct", 3, 0, false, "blank_rune:6"),
 				new ContractRules.Contract(ContractRules.SPELL_KILLS, "", 10, 0, false, "emerald:6"))));
 			player.setAttached(WildercordAttachments.ON_LEY, true);
-			Contracts.onCast(player, List.of(Runes.SELF, Runes.HEAL));
-			check(Contracts.board(player).contracts().getFirst().progress() == 1, "a cast on a ley line should count toward the contract");
-			Contracts.onCast(player, List.of(Runes.SELF, Runes.HEAL));
-			check(Contracts.board(player).contracts().getFirst().done(), "the second cast should finish the contract");
+			return new int[] {mark(level, player.position().add(4, 0, 4), false).getId(), mark(level, player.position().add(-4, 0, 4), true).getId()};
+		});
+		// Each step in a tick of its own: one spell landing credits one cast.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Contracts.onCast(player, List.of(Runes.BOLT, Runes.HARM));
+			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a cast that hasn't landed on anything shouldn't count yet");
+			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[1]), "");
+			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a spell landing on a Training Dummy shouldn't count");
+		});
+		context.waitTicks(1);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[0]), "");
+			check(Contracts.board(player).contracts().getFirst().progress() == 1, "a cast on a ley line that lands on a creature should count");
+		});
+		context.waitTicks(1);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[0]), "");
+			Contracts.onCast(player, List.of(Runes.SELF, Runes.HARM));
+			check(Contracts.board(player).contracts().getFirst().done(), "a second cast that landed should finish the contract");
 			player.setAttached(WildercordAttachments.ON_LEY, false);
+		});
+		context.waitTicks(1);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Contracts.onReaction(player, "conduct");
+			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[1]), "storm");
+			check(Contracts.board(player).contracts().get(1).progress() == 0, "a reaction on a Training Dummy shouldn't count");
+		});
+		context.waitTicks(1);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			net.minecraft.world.entity.LivingEntity husk = (net.minecraft.world.entity.LivingEntity) level.getEntity(marks[0]);
 			Contracts.onReaction(player, "shatter");
+			Contracts.onSpellHit(player, husk, "fire");
 			check(Contracts.board(player).contracts().get(1).progress() == 0, "the wrong reaction shouldn't count");
 			Contracts.onReaction(player, "conduct");
-			check(Contracts.board(player).contracts().get(1).progress() == 1, "a Conduct reaction should count");
+			check(Contracts.board(player).contracts().get(1).progress() == 1, "a Conduct reaction on a creature should count");
+			for (int id : marks) {
+				if (level.getEntity(id) != null) {
+					level.getEntity(id).discard();
+				}
+			}
 
 			// Handed in at a Scribing Desk: right-clicking it pays out.
 			BlockPos desk = player.blockPosition().offset(2, 0, 2);
@@ -244,31 +306,55 @@ public class WildercordSocialTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ chorus
 
-	private static void chorus(TestSingleplayerContext world) {
+	/** Another caster beside the player: a husk, to sing the same Burst at the same moment. */
+	private static Mob singer(ServerPlayer player) {
+		ServerLevel level = player.level();
+		Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+		check(husk != null, "a husk should spawn");
+		Vec3 beside = player.position().add(3, 0, 0);
+		husk.snapTo(beside.x, beside.y, beside.z, 0, 0);
+		husk.setNoAi(true);
+		husk.addTag("wildercord.social");
+		level.addFreshEntity(husk);
+		return husk;
+	}
+
+	private static void chorus(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<RuneDef> spell = List.of(Runes.BURST, Runes.HARM);
+		// A foe never sings with you: the husk, not an ally, sings alone, and so does the player after it.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
-			List<RuneDef> spell = List.of(Runes.BURST, Runes.HARM);
-			// Another caster beside the player: a husk that sings the same Burst at the same moment.
-			Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
-			check(husk != null, "a husk should spawn");
-			Vec3 beside = player.position().add(3, 0, 0);
-			husk.snapTo(beside.x, beside.y, beside.z, 0, 0);
-			husk.setNoAi(true);
-			husk.addTag("wildercord.social");
-			level.addFreshEntity(husk);
-
+			Mob husk = singer(player);
 			SpellCompiler.Compiled compiled = SpellCompiler.compile(spell);
-			Cast first = new Cast(husk, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), spell.size(), "", spell));
+			Cast foe = new Cast(husk, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), spell.size(), "", spell));
+			check(Chorus.sing(foe, spell, compiled.root()).voices() == 1, "the husk's voice should sing alone");
+			Cast lone = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(compiled.root(), spell.size(), "", spell));
+			check(Chorus.sing(lone, spell, SpellCompiler.compile(spell).root()).voices() == 1, "a caster who isn't an ally shouldn't join (or cut short) a foe's spell");
+			check(foe.alive(), "another caster's spell should never be cut short");
+			husk.discard();
+		});
+		// Past the chorus window, so the two voices above are forgotten.
+		context.waitTicks(dev.wildercord.chorus.ChorusRules.WINDOW + 5);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			// On the same team, a husk is an ally: the two sing together.
+			SpellCompiler.Compiled compiled = SpellCompiler.compile(spell);
+			net.minecraft.world.scores.PlayerTeam team = server.getScoreboard().addPlayerTeam("wildercord_chorus");
+			Mob ally = singer(player);
+			server.getScoreboard().addPlayerToTeam(ally.getScoreboardName(), team);
+			server.getScoreboard().addPlayerToTeam(player.getScoreboardName(), team);
+			Cast first = new Cast(ally, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), spell.size(), "", spell));
 			Chorus.Sung alone = Chorus.sing(first, spell, compiled.root());
 			check(alone.voices() == 1 && alone.cast() == first, "the first voice should sing alone");
 
-			Cast second = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(compiled.root(), spell.size(), "", spell));
+			Cast second = new Cast(player, 2, Heart.bonuses(player), false, null, new Cast.Info(compiled.root(), spell.size(), "", spell));
 			Chorus.Sung sung = Chorus.sing(second, spell, SpellCompiler.compile(spell).root());
-			check(sung.voices() == 2, "the same shape, together and close, should become a chorus of two (got " + sung.voices() + ")");
+			server.getScoreboard().removePlayerTeam(team);
+			check(sung.voices() == 2, "allies casting the same shape, together and close, should become a chorus of two (got " + sung.voices() + ")");
 			check(Math.abs(sung.cast().power - second.power * 1.5) < 1e-6, "a chorus of two should be half again as strong");
+			check(sung.cast().gear() == second.gear(), "a chorus should keep its caster's casting gear");
 			check(sung.root().groups.getFirst().count(Runes.WIDEN) == 1, "a chorus of two should widen the Burst once");
-			check(!first.alive(), "the first voice's spell should fold into the chorus");
+			check(first.alive(), "the first voice's spell should go on as it was");
 			check(Heart.discovered(player, "feat:" + Feats.CHORUS), "singing a chorus should earn the Chorus feat");
 			CastEngine.cast(sung.cast(), sung.root());
 

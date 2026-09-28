@@ -206,7 +206,11 @@ class SocialRulesTest {
 	// ------------------------------------------------------------------ chorus
 
 	private static ChorusRules.Voice voice(UUID caster, String shape, long time, double x, double aimX, UUID target) {
-		return new ChorusRules.Voice(caster, shape, time, "minecraft:overworld", x, 64, 0, aimX, 64, 10, target);
+		return voice(caster, shape, time, x, aimX, target, ChorusRules.HARMFUL);
+	}
+
+	private static ChorusRules.Voice voice(UUID caster, String shape, long time, double x, double aimX, UUID target, String kind) {
+		return new ChorusRules.Voice(caster, shape, time, "minecraft:overworld", x, 64, 0, aimX, 64, 10, target, kind);
 	}
 
 	@Test
@@ -220,7 +224,7 @@ class SocialRulesTest {
 		assertFalse(ChorusRules.joins(first, voice(B, bolt, 5, 3, 8, null)), "aimed somewhere else");
 		assertFalse(ChorusRules.joins(first, voice(A, bolt, 5, 0, 0, null)), "one caster is no chorus");
 		assertFalse(ChorusRules.joins(voice(A, Runes.SELF.id(), 0, 0, 0, null), voice(B, Runes.SELF.id(), 1, 1, 0, null)), "Self is always solo");
-		assertFalse(ChorusRules.joins(first, new ChorusRules.Voice(B, bolt, 5, "minecraft:the_nether", 3, 64, 0, 2, 64, 10, null)));
+		assertFalse(ChorusRules.joins(first, new ChorusRules.Voice(B, bolt, 5, "minecraft:the_nether", 3, 64, 0, 2, 64, 10, null, ChorusRules.HARMFUL)));
 		// The same foe counts even when the aim points drift apart.
 		assertTrue(ChorusRules.joins(voice(A, bolt, 0, 0, 0, D), voice(B, bolt, 5, 3, 9, D)));
 		// Aiming at each other isn't singing together.
@@ -248,5 +252,133 @@ class SocialRulesTest {
 		assertEquals(2.0, ChorusRules.power(6), "capped");
 		assertEquals(0, ChorusRules.extra(1));
 		assertEquals(2, ChorusRules.extra(5));
+	}
+
+	@Test
+	void chorusOnlyJoinsAlliesSingingTheSameKindOfSpell() {
+		String burst = Runes.BURST.id();
+		ChorusRules.Voice harm = voice(A, burst, 0, 0, 0, null, ChorusRules.HARMFUL);
+		assertFalse(ChorusRules.joins(harm, voice(B, burst, 5, 2, 1, null, ChorusRules.HELPFUL)), "a heal doesn't join an attack");
+		assertTrue(ChorusRules.joins(voice(A, burst, 0, 0, 0, null, ChorusRules.HELPFUL), voice(B, burst, 5, 2, 1, null, ChorusRules.HELPFUL)));
+		assertFalse(ChorusRules.joins(voice(A, burst, 0, 0, 0, null, ChorusRules.MIXED), voice(B, burst, 5, 2, 1, null, ChorusRules.MIXED)),
+			"a spell that both harms and heals sings alone");
+		assertEquals(ChorusRules.MIXED, ChorusRules.kind(true, true));
+		assertEquals(ChorusRules.HELPFUL, ChorusRules.kind(false, true));
+		assertEquals(ChorusRules.OTHER, ChorusRules.kind(false, false));
+
+		// Someone who isn't an ally starts a chorus of their own instead of taking over another's.
+		ChorusRules.Choir choir = new ChorusRules.Choir();
+		java.util.function.BiPredicate<UUID, UUID> allies = (x, y) -> !(x.equals(C) || y.equals(C));
+		assertEquals(1, choir.offer(voice(A, burst, 0, 0, 0, null), allies).size());
+		assertEquals(1, choir.offer(voice(C, burst, 5, 2, 1, null), allies).size(), "a rival can't join");
+		assertEquals(2, choir.offer(voice(B, burst, 10, 1, 1, null), allies).size(), "an ally still can");
+		// A chorus with a rival in it can't be joined by the rival's foe either.
+		ChorusRules.Choir other = new ChorusRules.Choir();
+		other.offer(voice(C, burst, 0, 0, 0, null), allies);
+		assertEquals(1, other.offer(voice(A, burst, 5, 2, 1, null), allies).size());
+	}
+
+	// ------------------------------------------------------------------ farming the Runesmith
+
+	@Test
+	void runesmithNeverTakesConjuredRankedOrUncommonRunes() {
+		assertTrue(RuneTrades.pool(3).contains(Runes.LIGHTNING), "the shelf still sells Lightning");
+		assertFalse(RuneTrades.takes(Runes.LIGHTNING), "a lightning rod makes Lightning runes from blanks: never bought back");
+		assertFalse(RuneTrades.takes(Runes.KINDLING), "an innate rune");
+		assertTrue(RuneTrades.takes(Runes.HEAL));
+		for (RuneDef rune : Runes.all()) {
+			if (RuneTrades.takes(rune)) {
+				assertTrue(RuneTrades.pool(rune.tier()).contains(rune), rune.id() + " is taken but never sold");
+			}
+		}
+		Map<String, Integer> held = new LinkedHashMap<>();
+		held.put(Runes.LIGHTNING.id(), 64);
+		held.put(Runes.HEAL.id(), 1);
+		assertEquals(List.of(Runes.HEAL.id()), RuneTrades.buybacks(held), "Lightning is never offered for");
+		assertTrue(RuneTrades.rerolls(Map.of(Runes.LIGHTNING.id(), 64)).isEmpty(), "two Lightning runes don't pay for a reroll");
+
+		assertTrue(RuneTrades.plainRank(null));
+		assertTrue(RuneTrades.plainRank(1));
+		assertFalse(RuneTrades.plainRank(2));
+		assertFalse(RuneTrades.plainRank(3));
+
+		assertEquals(RuneTrades.DAILY_BUYBACKS, RuneTrades.buybacksLeft(Long.MIN_VALUE, 0, 5), "nothing sold yet");
+		assertEquals(RuneTrades.DAILY_BUYBACKS - 3, RuneTrades.buybacksLeft(5, 3, 5));
+		assertEquals(0, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS + 2, 5));
+		assertEquals(RuneTrades.DAILY_BUYBACKS, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS, 6), "a new day, a fresh allowance");
+	}
+
+	@Test
+	void turningTimeBackKeepsTheBoard() {
+		ContractRules.Board board = ContractRules.generate(10, 99);
+		ContractRules.Board claimed = new ContractRules.Board(10, board.contracts().stream()
+			.map(c -> new ContractRules.Contract(c.kind(), c.arg(), c.target(), c.target(), true, c.reward())).toList());
+		assertSame(claimed, ContractRules.today(claimed, 9, 99), "time turned back mustn't bring handed-in contracts back");
+		assertSame(claimed, ContractRules.today(claimed, 0, 99));
+		assertEquals(11, ContractRules.today(claimed, 11, 99).day(), "a later day brings a new board");
+		assertEquals(3, ContractRules.today(ContractRules.Board.EMPTY, 3, 99).day());
+	}
+
+	@Test
+	void castsAndReactionsCountOnlyWhenTheyLandOnSomething() {
+		ContractRules.Credit credit = new ContractRules.Credit();
+		// Casting at nothing: nothing counts, however many times.
+		for (long t = 0; t < 10; t++) {
+			assertTrue(credit.cast(t * 20, Set.of("fire"), true).isEmpty());
+		}
+		// Far later a spell lands: only a cast still in the air could have done it, and those are long gone.
+		assertTrue(credit.hit(1000).casts().isEmpty());
+		assertTrue(credit.cast(1000, Set.of("fire"), false).casts().size() == 1, "an instant spell that hit in its own tick counts at once");
+
+		// A bolt: cast, then it lands a few ticks later. One spell striking three creatures credits one cast.
+		assertTrue(credit.cast(2000, Set.of("frost"), true).isEmpty());
+		ContractRules.Credit.Credited landed = credit.hit(2005);
+		assertEquals(1, landed.casts().size());
+		assertEquals(Set.of("frost"), landed.casts().getFirst().elements());
+		assertTrue(landed.casts().getFirst().ley());
+		assertTrue(credit.hit(2005).isEmpty());
+		assertTrue(credit.hit(2005).isEmpty());
+		// A cast that waits too long for a hit is forgotten.
+		credit.cast(3000, Set.of("storm"), false);
+		assertTrue(credit.hit(3000 + ContractRules.Credit.CAST_WINDOW + 1).casts().isEmpty());
+
+		// Reactions count only when a hit lands in the same tick, before or after.
+		assertTrue(credit.reaction(4000, "conduct").isEmpty());
+		assertEquals(List.of("conduct"), credit.hit(4000).reactions());
+		assertEquals(List.of("shatter"), credit.reaction(4000, "shatter").reactions());
+		assertTrue(credit.reaction(4100, "conduct").isEmpty());
+		assertTrue(credit.hit(4101).reactions().isEmpty(), "a reaction on a dummy, with a hit a tick later, doesn't count");
+		assertTrue(credit.idle(5000));
+	}
+
+	// ------------------------------------------------------------------ duels: no free heal, no immunity
+
+	@Test
+	void duelsNeedCalmAndPutEveryoneBackAsTheyWere() {
+		long now = 10_000;
+		assertEquals(DuelRules.Refusal.NONE, DuelRules.ready(now, DuelRules.NEVER, DuelRules.NEVER, DuelRules.NEVER));
+		assertEquals(DuelRules.Refusal.HURT, DuelRules.ready(now, now - 5, DuelRules.NEVER, DuelRules.NEVER));
+		assertEquals(DuelRules.Refusal.NONE, DuelRules.ready(now, now - DuelRules.HURT_TICKS, DuelRules.NEVER, DuelRules.NEVER));
+		assertEquals(DuelRules.Refusal.PVP, DuelRules.ready(now, now - 5, now - 300, DuelRules.NEVER), "a fight with another player comes first");
+		assertEquals(DuelRules.Refusal.COOLDOWN, DuelRules.ready(now, DuelRules.NEVER, DuelRules.NEVER, now - 100));
+		assertEquals(DuelRules.Refusal.NONE, DuelRules.ready(now, DuelRules.NEVER, DuelRules.NEVER, now - DuelRules.DUEL_COOLDOWN_TICKS));
+		assertFalse(DuelRules.within(now, now + 50, 200), "a clock that went backwards isn't 'recently'");
+
+		// Health and mana go back to what they were, never more; gains made meanwhile are kept.
+		assertEquals(6F, DuelRules.restored(1F, 6F, 20F));
+		assertEquals(9F, DuelRules.restored(9F, 6F, 20F));
+		assertEquals(20F, DuelRules.restored(1F, 30F, 20F), "never over the most");
+		// Effects come back with the time the duel took off them.
+		assertEquals(400, DuelRules.remaining(1000, 600));
+		assertEquals(0, DuelRules.remaining(500, 600));
+		assertEquals(-1, DuelRules.remaining(-1, 600), "an endless effect stays endless");
+
+		DuelRules.Duel duel = new DuelRules.Duel(A, B, 0);
+		duel.tick(DuelRules.COUNTDOWN_TICKS);
+		duel.interrupt();
+		assertEquals(DuelRules.Phase.OVER, duel.phase());
+		assertEquals(DuelRules.Ending.INTERRUPTED, duel.ending());
+		assertNull(duel.winner(), "an interrupted duel counts for nobody");
+		assertNull(duel.loser());
 	}
 }
