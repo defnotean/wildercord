@@ -65,6 +65,7 @@ public final class WildercordClient implements ClientModInitializer {
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.config.Config.Sync.TYPE, (payload, context) -> dev.wildercord.config.Config.receive(payload));
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.runesmith.Contracts.ShowBoard.TYPE, (payload, context) -> context.client().setScreen(new ContractBoardScreen(payload)));
 		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> dev.wildercord.config.Config.receive(null));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

@@ -73,6 +73,7 @@ public final class Contracts {
 	private static final Map<UUID, SpellHit> LAST_HIT = new HashMap<>();
 
 	public static void init() {
+		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.clientboundPlay().register(ShowBoard.TYPE, ShowBoard.CODEC);
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			SpellHit hit = LAST_HIT.remove(entity.getUUID());
 			if (hit == null || !(entity.level() instanceof ServerLevel level) || level.getGameTime() - hit.time() > 100) {
@@ -189,19 +190,42 @@ public final class Contracts {
 			player.level().playSound(null, desk, SoundEvents.VILLAGER_WORK_LIBRARIAN, SoundSource.BLOCKS, 1.0F, 1.0F);
 			player.level().playSound(null, desk, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1.0F, 1.2F);
 		}
-		player.sendSystemMessage(Component.translatable("message.wildercord.contract_board").withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
-		for (ContractRules.Contract contract : claim.board().contracts()) {
-			MutableComponent line = Component.literal(contract.claimed() ? " ✔ " : contract.done() ? " ★ " : " • ")
-				.withStyle(contract.claimed() ? ChatFormatting.DARK_GREEN : contract.done() ? ChatFormatting.GOLD : ChatFormatting.GRAY);
-			line.append(describe(contract).withStyle(contract.claimed() ? ChatFormatting.DARK_GRAY : ChatFormatting.WHITE));
-			if (!contract.claimed()) {
-				line.append(Component.literal("  " + contract.progress() + "/" + contract.target()).withStyle(ChatFormatting.GRAY));
-			}
-			line.append(Component.literal("  ").append(Component.translatable("message.wildercord.contract_reward", rewardName(ContractRules.Reward.parse(contract.reward()))))
-				.withStyle(ChatFormatting.DARK_AQUA));
-			player.sendSystemMessage(line);
+		// The board opens on the player's screen: today's three contracts, and what was just handed in.
+		long clock = player.level().getServer().overworld().getOverworldClockTime();
+		int dawn = (int) (24000L - Math.floorMod(clock, 24000L));
+		List<String> handedIn = claim.rewards().stream().map(r -> r.type() + ":" + r.amount()).toList();
+		net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new ShowBoard(claim.board().contracts(), dawn, handedIn));
+	}
+
+	/** Server to client: open the contract board with these contracts, ticks until the next dawn, and the rewards just handed in ("type:amount"). */
+	public record ShowBoard(List<ContractRules.Contract> contracts, int ticksToDawn, List<String> handedIn)
+			implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
+		public static final Type<ShowBoard> TYPE = new Type<>(dev.wildercord.Wildercord.id("contract_board"));
+		private static final net.minecraft.network.codec.StreamCodec<io.netty.buffer.ByteBuf, ContractRules.Contract> CONTRACT =
+			net.minecraft.network.codec.StreamCodec.composite(
+				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8, ContractRules.Contract::kind,
+				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8, ContractRules.Contract::arg,
+				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, ContractRules.Contract::target,
+				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, ContractRules.Contract::progress,
+				net.minecraft.network.codec.ByteBufCodecs.BOOL, ContractRules.Contract::claimed,
+				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8, ContractRules.Contract::reward,
+				ContractRules.Contract::new);
+		public static final net.minecraft.network.codec.StreamCodec<io.netty.buffer.ByteBuf, ShowBoard> CODEC =
+			net.minecraft.network.codec.StreamCodec.composite(
+				CONTRACT.apply(net.minecraft.network.codec.ByteBufCodecs.list(8)), ShowBoard::contracts,
+				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, ShowBoard::ticksToDawn,
+				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list(8)), ShowBoard::handedIn,
+				ShowBoard::new);
+
+		@Override
+		public Type<ShowBoard> type() {
+			return TYPE;
 		}
-		player.sendSystemMessage(Component.translatable("message.wildercord.contract_refresh").withStyle(ChatFormatting.DARK_GRAY));
+	}
+
+	/** What a reward is called, e.g. "a Tier II rune" or "6 Blank Runes". */
+	public static Component rewardLabel(ContractRules.Reward reward) {
+		return rewardName(reward);
 	}
 
 	/** "Defeat 4 Runebound with Frost spells" and the like. */

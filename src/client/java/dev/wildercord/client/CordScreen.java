@@ -2028,6 +2028,14 @@ public class CordScreen extends Screen {
 				lines.add(new GrimoireLine(Component.literal("???"), 8, FAINT, List.of(Component.translatable("screen.wildercord.grimoire.secret_unknown").withStyle(ChatFormatting.GRAY))));
 			}
 		}
+		// Duels fought (see /duel): wins and losses, once there's been one.
+		dev.wildercord.duel.Duels.Record duels = minecraft.player == null ? dev.wildercord.duel.Duels.Record.NONE
+			: minecraft.player.getAttachedOrElse(dev.wildercord.duel.Duels.RECORD, dev.wildercord.duel.Duels.Record.NONE);
+		if (duels.wins() + duels.losses() > 0) {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.duels"), 0, GOLD, null));
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.duel_record", duels.wins(), duels.losses()), 8, TEXT,
+				List.of(Component.translatable("screen.wildercord.grimoire.duel_hint").withStyle(ChatFormatting.GRAY))));
+		}
 		// Fusions: found ones by name and recipe; the rest as ??? + ???, with a hint of one element.
 		int fusions = dev.wildercord.spell.Feats.count(found, Fusions.KEY_PREFIX);
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.fusions", fusions, Fusions.RECIPES.size()), 0, GOLD, null));

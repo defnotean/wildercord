@@ -192,7 +192,17 @@ def _gem(element: str) -> dict:
     return {"k": fa[0], "-": fa[1], "#": fa[2], "+": fa[3], "*": gl[3]}
 
 
-def _staff(element: str, greater: bool, glow: float = 0.0) -> Canvas:
+# Where a greater staff's sparks can be: a ring round its head, travelled a step a frame.
+ORBIT = [(12, -1), (14, 0), (15, 2), (15, 4), (13, 6), (11, 6), (9, 5), (8, 3), (9, 1), (10, 0)]
+
+
+def _orbit(frame: int) -> list:
+    """Three sparks spaced round the ring, moving on a step each frame."""
+    n = len(ORBIT)
+    return [ORBIT[(frame + k * n // 3) % n] for k in range(3)]
+
+
+def _staff(element: str, greater: bool, glow: float = 0.0, orbit=tuple(SPARKS)) -> Canvas:
     cv = Canvas()
     shaft = SHAFTS["ebony" if greater else "blaze" if element == "fire" else "wood"]
     metal = METALS["gold" if greater else "silver"]
@@ -213,11 +223,24 @@ def _staff(element: str, greater: bool, glow: float = 0.0) -> Canvas:
                 cv.put(10 + x, y, c)
             elif ch in metal:
                 cv.put(10 + x, y, metal[ch])
+    if greater:
+        # A pommel gem at the foot, capped in gold.
+        cv.put(1, 14, gem["#"])
+        cv.put(0, 15, metal["m"])
+        # Gold prongs cupping the head.
+        for (x, y), ch in {(9, 3): "M", (9, 2): "m", (8, 4): "n", (14, 6): "M", (15, 5): "m"}.items():
+            if cv.get(x, y) is None:
+                cv.put(x, y, metal[ch])
     outline(cv)
     if greater:
-        spark = mix(ELEMENT[element]["glow"][2], (255, 255, 255), 0.3 + 0.5 * glow)
-        for x, y in SPARKS:
+        # A soft halo of the element's light round the head, and sparks circling it.
+        halo = ELEMENT[element]["glow"][1]
+        for x, y in [(15, 0), (8, 2), (15, 7)]:
             if cv.get(x, y) is None:
+                cv.put(x, y, mix(halo, (30, 24, 44), 0.55 - 0.25 * glow))
+        spark = mix(ELEMENT[element]["glow"][2], (255, 255, 255), 0.3 + 0.5 * glow)
+        for x, y in orbit:
+            if 0 <= x < 16 and 0 <= y < 16 and cv.get(x, y) is None:
                 cv.put(x, y, spark)
     return cv
 
@@ -229,7 +252,7 @@ def staff_icon(element: str, greater: bool = False) -> list[Image.Image]:
     frames = []
     for f in range(ANIM_FRAMES):
         glow = 0.5 + 0.5 * math.cos(2 * math.pi * f / ANIM_FRAMES)
-        frames.append(_staff(element, True, 0.6 * glow).image())
+        frames.append(_staff(element, True, 0.6 * glow, _orbit(f)).image())
     return frames
 
 

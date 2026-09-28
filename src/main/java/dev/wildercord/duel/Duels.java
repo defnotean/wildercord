@@ -77,12 +77,16 @@ public final class Duels {
 		).apply(i, Record::new));
 	}
 
-	/** Wins and losses. Saved and kept through death. */
+	/** Wins and losses. Saved, kept through death, and sent to its player (for the Grimoire). */
 	public static final AttachmentType<Record> RECORD = AttachmentRegistry.create(
 		Wildercord.id("duel_record"),
 		builder -> builder
 			.initializer(() -> Record.NONE)
 			.persistent(Record.CODEC)
+			.syncWith(net.minecraft.network.codec.StreamCodec.composite(
+				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, Record::wins,
+				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, Record::losses, Record::new),
+				net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate.targetOnly())
 			.copyOnDeath()
 	);
 
