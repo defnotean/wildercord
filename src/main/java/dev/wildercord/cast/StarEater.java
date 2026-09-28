@@ -222,6 +222,10 @@ public class StarEater extends DungeonBoss {
 		List<RuneDef> out = new ArrayList<>();
 		boolean harms = false;
 		for (RuneDef rune : spell) {
+			if (rune == Runes.IMBUE) {
+				// What follows an Imbue is stored, not cast: nothing of it comes back.
+				break;
+			}
 			if (rune.family() == RuneFamily.EFFECT) {
 				if (rune.kind() != EffectKind.HARMFUL) {
 					continue;
@@ -293,8 +297,10 @@ public class StarEater extends DungeonBoss {
 		boolean up = shielded();
 		if (state(GUARDED) && !up) {
 			shieldBroken(level, now);
-		} else if (state(EXPOSED) && now >= openUntil) {
+		} else if (state(EXPOSED) && now >= openUntil || !state(GUARDED) && !state(EXPOSED)) {
+			// Grown back; or never raised since it was loaded (its pose isn't saved, only its shield).
 			raiseShield(level);
+			up = true;
 		}
 		// A volley of star shards: telegraphed, then loosed at its target.
 		if (volleyAt > 0 && now >= volleyAt) {
