@@ -62,7 +62,7 @@ never make your spells lighter against someone else's.
 Some spells for comparison: `Bolt · Harm` and `Bolt · Fire` weigh 11.8, so a plain `Self · Shield`
 stops them. `Bolt · Fire · Amplify` weighs about 17.1, and breaks it.
 
-**Secret spells** weigh more than their runes, as much as they cost you to cast (see
+**Secret spells** weigh more than their runes: their full secret price, even on the cast that finds one (see
 [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }})). The Archivist's great secret spell
 weighs 400: it breaks any Shield unless it's parried.
 

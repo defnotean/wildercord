@@ -76,7 +76,7 @@ Either mouse button works for threading. Full details on [The Cord Screen]({{ '/
 | Hold `V`, point at a spell, let go | Select it |
 | Let go of `V` without pointing | The wheel stays open |
 | Click a spell | Select it |
-| Press a spell's number (`1` to `4`) | Select it |
+| Press a spell's number (`1` to `4`, or `5` for the tome's) | Select it |
 | Point, then press `V` or `Enter` | Select the one you're pointing at |
 | Right-click, or `Esc` | Close without choosing |
 

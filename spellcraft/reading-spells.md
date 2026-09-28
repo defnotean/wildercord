@@ -103,7 +103,9 @@ under the sockets joins each modifier to the rune it found.
 Some more rules:
 
 - **A modifier on an effect** changes just that effect. **A modifier on a shape** changes the whole group
-  (three copies, a wider area, a faster bolt), and multiplies the cost of the whole group.
+  (three copies, a wider area, a faster bolt), and multiplies the cost of the whole group. Rapid, Vow and
+  Blood Price sit on a shape too, but they change the **whole spell**, so they multiply the whole spell's
+  cost, whichever shape they sit on.
 - **Modifiers stack.** `Fire · Amplify · Amplify` is +125% power (1.5 × 1.5), at 1.6 × 1.6 = 2.56 times the
   cost. Most stacks multiply like that; the [limits](#the-limits-on-a-spell) below say where they stop.
 - **A modifier never reaches back past a link.** In `Bolt · Fire · On Hit · Amplify`, Amplify can't reach
@@ -152,7 +154,7 @@ Every rune's page lists exactly which modifiers work on it: see [Shapes]({{ '/ru
 | Frugal | Half the mana; 40% weaker and shorter | 0.5 |
 | Overcharge | +150% power | 3.0 |
 | Execute | Double power against targets under half health | 1.3 |
-| Rapid | Halves the whole spell's cooldown | 1.4 |
+| Rapid | Halves the whole spell's cooldown | 1.4, on the whole spell |
 | Vow | That shape's effects hit twice as hard; the whole spell's cooldown is four times longer | 1.0 |
 | Blood Price | The whole spell is paid for in health, 1 per 5 mana | 1.0 |
 
@@ -167,13 +169,13 @@ beneath it.
 | Delay | I | 2 | fires 1 second later, from you. Extend doubles the wait, Quicken halves it. |
 | On Hit | II | 2 | fires wherever the shape before it hits: at each creature it hits, or at the block if it hit only a block. |
 | On Land | II | 2 | fires the next time you touch the ground (within 10 seconds), where you land. |
-| Pulse | II | 2 | fires three times, a second apart, from you. Quicken halves the gap. The part after it costs three times over. |
+| Pulse | II | 2 | fires three times, a second apart, from you. Quicken halves the gap. The part after it costs three times over. After On Hit or On Kill, it goes off for the first hit or kill only. |
 | On Hurt | II | 2 | fires at whatever next hurts you (within 15 seconds). |
 | If Sneaking | II | 1 | fires only if you're sneaking when you cast. |
 | If Airborne | II | 1 | fires only if you're in the air (not standing, not in water). |
 | Imbue | II | 3 | isn't cast: it's stored, with 3 charges, in an item or block. See [Imbuing]({{ '/spellcraft/imbuing/' | relative_url }}). |
 | On Kill | III | 2 | fires at each creature the shape before it kills, where it died. |
-| Echo | III | 2 | carries straight on, and *everything before the Echo* fires again half a second later, from you. |
+| Echo | III | 2 | carries straight on, and *everything before the Echo* fires again half a second later, from you. After On Hit or On Kill, it goes off for the first hit or kill only. |
 | On Low Health | III | 2 | fires when your health drops below 30% (within 30 seconds). |
 | Combo | III | 2 | fires only on every third cast of this spell. |
 | If Wounded | II | 1 | fires only if you're below half health. |
@@ -190,7 +192,10 @@ Things worth knowing about links:
   needs a shape before it to watch").
 - **On Hit fires once for every hit.** A bolt that pierces three creatures, three split bolts, a Chain's
   every jump or each pulse of a Zone all set it off again, at each creature hit (at most eight from any one
-  hit).
+  hit). On Kill does the same for every kill.
+- **A repeat after On Hit or On Kill goes off once.** An **Echo** or a **Pulse** there is paid for once, so
+  it goes off for the first hit (or kill) only, not for every creature. The readout says so: "(first hit
+  only)". A Pulse's three runs are each paid for, so an Echo after a Pulse goes off in every run.
 - **Shapes after a link start where the link fired.** After On Hit, a Bolt flies on from the point of impact
   the way the first one was going, a Burst goes off around it, and a Zone or a Rain lands on the ground there.
   After Delay, the new Bolt leaves your hands a second later, aimed wherever you're looking then.
@@ -215,9 +220,12 @@ at the same moment carries on with whatever is after it.
 - **Echoes stack by doubling.** Each Echo repeats everything before it, earlier Echoes included, so
   `Bolt · Fire · Echo · Echo` throws four bolts (one, then two together, then one more) and three Echoes
   eight. Only three Echoes count: a fourth costs mana and does nothing.
-- **An Echo after a link is part of that link's segment**, so it happens whenever that segment does. In
-  `Bolt · Fire · Split · On Hit · Burst · Explode · Echo`, the Echo sits under "On hit:" in the readout: every
-  bolt that hits sets off the whole spell again from you, half a second later.
+- **An Echo after a link is part of that link's segment**, so it happens when that segment does. After On
+  Hit or On Kill, which fire for every creature, it goes off only for the first: in
+  `Bolt · Fire · Split · On Hit · Burst · Explode · Echo`, the Echo sits under "On hit:" in the readout
+  ("0.5s later, everything before this fires again (first hit only).") and the first bolt to hit sets off the
+  whole spell again from you, half a second later. Three fireballs that explode, then the whole thing
+  once more, just as it's paid for.
 - Inside an [imbued]({{ '/spellcraft/imbuing/' | relative_url }}) spell, an Echo repeats only what was
   stored.
 
@@ -398,18 +406,20 @@ put On Hit straight after the bolt's group: `Burst · Heal · Bolt · Fire · On
 
 Four fire bolts in all. **54 mana, 2.65 s.** A single Echo (`Bolt · Fire · Echo`) is two bolts for 26 mana.
 
-### 17. Rapid goes on the cheaper shape
+### 17. Rapid pays for the whole spell
 {: .no_toc }
 
 | Spell | Mana | Cooldown |
 |---|---|---|
 | `Bolt · Fire · On Hit · Burst · Explode` | 47 | 2.35 s |
-| `Bolt · Fire · Rapid · On Hit · Burst · Explode` | 52 | 1.3 s |
-| `Bolt · Fire · On Hit · Burst · Explode · Rapid` | 60 | 1.5 s |
+| `Bolt · Fire · Rapid · On Hit · Burst · Explode` | 66 | 1.65 s |
+| `Bolt · Fire · On Hit · Burst · Explode · Rapid` | 66 | 1.65 s |
+| `Self · Rapid · Bolt · Fire · On Hit · Burst · Explode` | 66 | 1.65 s |
 
-Rapid halves the cooldown of the **whole** spell wherever it sits, but it multiplies the cost of only the
-group it's attached to. On the cheap Bolt group it adds 5 mana; on the expensive Burst group it adds 13. And
-since a spell's cooldown comes from its cost, the cheaper spell also recharges faster.
+Rapid halves the cooldown of the **whole** spell, so it multiplies the cost of the whole spell by 1.4: on
+the cheap Bolt group, on the Burst, or on an empty Self, it's the same spell at the same price. (Since a
+cooldown comes from the cost, the dearer spell's cooldown is halved from a longer one: it ends up about
+seven tenths of the plain spell's.)
 
 ### 18. Where stacking stops: `Bolt · Fire · Split · Split`
 {: .no_toc }
@@ -425,7 +435,9 @@ Every rune has a base cost, and the spell's cost is worked out from them in one 
 
 - A **group** costs its **shape's** own cost, plus each **effect's** cost times the **shape's multiplier**.
 - A **modifier on an effect** multiplies that effect's cost. A **modifier on a shape** multiplies the whole
-  group's cost.
+  group's cost, except **Rapid**, **Vow** and **Blood Price**, which change the whole spell and so multiply
+  the **whole spell's** cost, wherever they sit (Rapid by 1.4; Vow and Blood Price by 1, as you pay for them
+  in cooldown and in health).
 - A **link** adds its own cost (times any modifier on it), plus the whole of the spell after it. **Pulse**
   and **Imbue** count what's after them **three times** over; an **Echo** adds the cost of everything it
   repeats.
@@ -506,7 +518,12 @@ A spell's cooldown comes from its **cost**:
 - then shortened by **Celerity** (8% per level) and the **Flow** perk of the 5th Heart Circle (15%),
 - and never under a **quarter of a second** in the end.
 
-A [secret spell]({{ '/spellcraft/secret-spells/' | relative_url }}) takes half as long again to recharge.
+A [secret spell]({{ '/spellcraft/secret-spells/' | relative_url }}) you've found takes half as long again to
+recharge (and costs more: see its page).
+
+**Vow strengthens only its own shape's effects**, but lengthens the whole spell's cooldown, so put it on the
+shape whose effects you want stronger. On a shape with no effects (an empty Self, or a Bolt that's only
+there to set off an On Hit) it's a longer cooldown for nothing, and the readout warns you.
 
 | Spell | Plain cost | Cooldown |
 |---|---|---|
