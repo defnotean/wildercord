@@ -424,6 +424,9 @@ public class Archivist extends SpellcasterIllager {
 		drop(level, RuneItem.stack(fourth.get(level.getRandom().nextInt(fourth.size()))));
 		drop(level, new ItemStack(WildercordItems.TORN_PAGE, 2));
 		drop(level, new ItemStack(WildercordItems.MANA_CRYSTAL, 3));
+		// Now and then a greater staff.
+		dev.wildercord.gear.GearLoot.bossStaff(level.getRandom(), dev.wildercord.gear.GearLoot.ARCHIVIST_CHANCE, dev.wildercord.gear.GearDef.ELEMENTS)
+			.ifPresent(staff -> drop(level, staff));
 		ExperienceOrb.award(level, position(), 200);
 	}
 

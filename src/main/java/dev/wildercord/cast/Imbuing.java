@@ -97,10 +97,20 @@ import java.util.WeakHashMap;
 public final class Imbuing {
 	private Imbuing() {}
 
-	/** Glyphs one caster may keep; making another lets the oldest fade. */
+	/** Glyphs one caster may keep; making another lets the oldest fade. The default: a server sets imbuing.max_glyphs. */
 	public static final int MAX_GLYPHS = 12;
-	/** Imbued items one caster may keep charged; imbuing another lets the oldest fade. */
+	/** Imbued items one caster may keep charged; imbuing another lets the oldest fade. The default: a server sets imbuing.max_items. */
 	public static final int MAX_ITEMS = 6;
+
+	/** Imbued items one caster keeps on this server. */
+	public static int maxItems() {
+		return dev.wildercord.config.Config.get().imbueMaxItems();
+	}
+
+	/** Glyphs one caster keeps on this server. */
+	public static int maxGlyphs() {
+		return dev.wildercord.config.Config.get().imbueMaxGlyphs();
+	}
 	/** The shortest wait between a caster's releases, whatever the spell (a flurry of strikes, all four armour pieces at once). */
 	private static final int ITEM_GAP = 10;
 	/** The shortest time a glyph takes to re-arm, whatever its spell. */
@@ -226,7 +236,7 @@ public final class Imbuing {
 	private static Imbued counted(ServerPlayer maker, List<String> runes, int charges, int color, boolean glint) {
 		long serial = Ledger.of(maker.level()).add(maker.getUUID());
 		if (Ledger.of(maker.level()).trimmed(maker.getUUID())) {
-			maker.sendSystemMessage(Component.translatable("message.wildercord.imbue_oldest_faded", MAX_ITEMS).withStyle(ChatFormatting.GRAY));
+			maker.sendSystemMessage(Component.translatable("message.wildercord.imbue_oldest_faded", maxItems()).withStyle(ChatFormatting.GRAY));
 		}
 		return new Imbued(runes, charges, color, glint, maker.getUUID(), serial);
 	}
@@ -272,7 +282,7 @@ public final class Imbuing {
 		Glyphs glyphs = Glyphs.of(level);
 		long now = level.getGameTime();
 		List<Glyph> mine = glyphs.all().stream().filter(g -> g.owner().equals(player.getUUID())).sorted(java.util.Comparator.comparingLong(Glyph::made)).toList();
-		for (int i = 0; i <= mine.size() - MAX_GLYPHS; i++) {
+		for (int i = 0; i <= mine.size() - maxGlyphs(); i++) {
 			Glyph oldest = mine.get(i);
 			glyphs.remove(oldest.pos());
 			fade(level, oldest);
@@ -432,6 +442,7 @@ public final class Imbuing {
 		if (compiled.isEmpty() || runes.stream().anyMatch(r -> r.is(Runes.IMBUE.id()))) {
 			return;
 		}
+		dev.wildercord.api.WildercordEvents.IMBUE_RELEASED.invoker().onRelease(caster, List.copyOf(runes), at.pos(), at.entity());
 		// Paid for when it was imbued: it can't Siphon that mana back a second time.
 		Cast cast = new Cast(caster, 1, Heart.bonuses(caster), false, null, new Cast.Info(compiled.root(), runes.size(), Heart.leaning(caster), List.copyOf(runes)))
 			.noSiphon();
@@ -796,7 +807,7 @@ public final class Imbuing {
 		boolean trimmed(UUID maker) {
 			List<Long> serials = byMaker.get(maker);
 			boolean any = false;
-			while (serials != null && serials.size() > MAX_ITEMS) {
+			while (serials != null && serials.size() > maxItems()) {
 				serials.removeFirst();
 				any = true;
 			}

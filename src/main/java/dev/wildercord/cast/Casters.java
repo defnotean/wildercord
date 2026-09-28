@@ -28,9 +28,12 @@ public final class Casters {
 		}
 	}
 
-	/** Whether the caster may change blocks. Monsters never do, so a Runebound can't grief. */
+	/**
+	 * Whether the caster may change blocks. Monsters never do, so a Runebound can't grief, and nobody's
+	 * spells do on a server that turned casting.spells_edit_blocks off.
+	 */
 	public static boolean mayBuild(LivingEntity caster) {
-		return caster instanceof ServerPlayer player && player.mayBuild();
+		return caster instanceof ServerPlayer player && player.mayBuild() && dev.wildercord.config.Config.get().spellsEditBlocks();
 	}
 
 	/**
@@ -39,7 +42,7 @@ public final class Casters {
 	 * protection mods agree (the change is offered to them as the player breaking that block).
 	 */
 	public static boolean mayEdit(LivingEntity caster, ServerLevel level, BlockPos pos) {
-		if (!(caster instanceof ServerPlayer player) || !player.mayBuild() || !level.mayInteract(player, pos)) {
+		if (!(caster instanceof ServerPlayer player) || !mayBuild(player) || !level.mayInteract(player, pos)) {
 			return false;
 		}
 		BlockState state = level.getBlockState(pos);

@@ -122,15 +122,19 @@ public final class WildercordLoot {
 			if (!source.isBuiltin()) {
 				return;
 			}
+			// The server's loot multipliers (config/wildercord.json) scale every chance here.
+			dev.wildercord.config.WildercordConfig config = dev.wildercord.config.Config.get();
 			Integer page = PAGE_CHANCE.get(key);
-			if (page != null) {
-				table.withPool(chance(page, LootItem.lootTableItem(WildercordItems.TORN_PAGE)));
+			if (page != null && scaled(page, config.pageLootChance()) > 0) {
+				table.withPool(chance(scaled(page, config.pageLootChance()), LootItem.lootTableItem(WildercordItems.TORN_PAGE)));
 			}
 			Integer crystal = CRYSTAL_CHANCE.get(key);
-			if (crystal != null) {
-				table.withPool(chance(crystal, LootItem.lootTableItem(WildercordItems.MANA_CRYSTAL)));
+			if (crystal != null && scaled(crystal, config.crystalLootChance()) > 0) {
+				table.withPool(chance(scaled(crystal, config.crystalLootChance()), LootItem.lootTableItem(WildercordItems.MANA_CRYSTAL)));
 			}
-			RunePool dig = ARCHAEOLOGY_POOLS.get(key);
+			RunePool found = ARCHAEOLOGY_POOLS.get(key);
+			RunePool dig = found == null || scaled(found.chance(), config.runeLootChance()) <= 0 ? null
+				: new RunePool(Math.min(95, scaled(found.chance(), config.runeLootChance())), found.runes());
 			if (dig != null) {
 				// Brushing gives exactly one find, so the runes join vanilla's own pool (12 finds of weight 1).
 				int total = Math.max(1, Math.round(12.0F * dig.chance() / (100 - dig.chance())));
@@ -141,7 +145,9 @@ public final class WildercordLoot {
 					}
 				});
 			}
-			RunePool pool = RUNE_POOLS.get(key);
+			RunePool listed = RUNE_POOLS.get(key);
+			RunePool pool = listed == null || scaled(listed.chance(), config.runeLootChance()) <= 0 ? null
+				: new RunePool(scaled(listed.chance(), config.runeLootChance()), listed.runes());
 			if (pool != null) {
 				LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
 				// The pool's chance of a rune is shared out by tier: high tiers are much rarer finds.
@@ -150,11 +156,17 @@ public final class WildercordLoot {
 				for (RuneDef rune : pool.runes()) {
 					builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
 				}
-				builder.add(EmptyLootItem.emptyItem().setWeight(Math.max(1, (100 - pool.chance()) * 10)));
+				if (pool.chance() < 100) {
+					builder.add(EmptyLootItem.emptyItem().setWeight((100 - pool.chance()) * 10));
+				}
 				table.withPool(builder);
 			}
 			for (Map.Entry<Integer, RuneDef> drop : mobTables.getOrDefault(key, List.of())) {
-				table.withPool(chance(drop.getKey(), runeEntry(drop.getValue())));
+				// A boss's sure drop stays sure; everything else follows the multiplier.
+				int odds = drop.getKey() >= 100 ? 100 : scaled(drop.getKey(), config.runeLootChance());
+				if (odds > 0) {
+					table.withPool(chance(odds, runeEntry(drop.getValue())));
+				}
 			}
 		});
 
@@ -175,6 +187,10 @@ public final class WildercordLoot {
 				}
 			}
 		});
+	}
+
+	private static int scaled(int chance, double multiplier) {
+		return dev.wildercord.config.WildercordConfig.scaledChance(chance, multiplier);
 	}
 
 	/** How likely a rune of this tier is next to the others in its pool: Tier I 8, II 5, III 2, IV 1. */

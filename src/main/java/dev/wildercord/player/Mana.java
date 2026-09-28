@@ -28,6 +28,7 @@ import java.util.Optional;
  *   <li><b>Meditation</b>: sneak and stand still for a second: +100% regeneration.</li>
  *   <li><b>Siphon</b> (Cord enchantment): each creature your spells hit returns mana.</li>
  *   <li><b>Heart Circles</b>: +15 max mana and +0.5 regeneration per circle (see {@link Heart}).</li>
+ *   <li><b>Focus of the Deep Well</b> (in the off-hand): +50 max mana while held.</li>
  * </ul>
  */
 public final class Mana {
@@ -74,12 +75,15 @@ public final class Mana {
 		int clarity = clarityEffect == null ? 0 : clarityEffect.getAmplifier() + 1;
 		boolean meditating = player.getAttachedOrElse(WildercordAttachments.MEDITATING, false);
 		int circles = Heart.active(player);
-		int max = tier.maxMana + crystals * CRYSTAL_MANA + reservoir * RESERVOIR_MANA + circles * dev.wildercord.spell.Circles.MANA_PER_CIRCLE;
+		int max = tier.maxMana + crystals * CRYSTAL_MANA + reservoir * RESERVOIR_MANA + circles * dev.wildercord.spell.Circles.MANA_PER_CIRCLE
+			+ dev.wildercord.gear.Gear.extraMana(player);
 		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
 		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > player.level().getGameTime();
 		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0)
 			+ (ley ? LEY_BONUS : 0) + (well ? WELL_BONUS : 0);
 		float base = tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE;
+		// The server's mana.regen_multiplier scales all of it (sent to clients, so the HUD matches).
+		base *= (float) dev.wildercord.config.Config.regenMultiplier(player);
 		return new Stats(tier, max, base * multiplier, multiplier, crystals, reservoir, wellspring, siphon, clarity, meditating, circles, ley, well);
 	}
 

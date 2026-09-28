@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:echo_shard",
+    "A": "minecraft:amethyst_shard"
+  },
+  "pattern": [
+    " E ",
+    "ACA",
+    " A "
+  ],
+  "result": {
+    "id": "wildercord:focus_of_echoes"
+  }
+}

@@ -44,7 +44,7 @@ public final class CordLook {
 		}
 		Spellbook book = Spellbooks.get(player);
 		List<Integer> beads = new ArrayList<>();
-		if (book.selected() < tier.spells) {
+		if (dev.wildercord.gear.Gear.spellOpen(player, tier, book.selected())) {
 			for (RuneDef rune : SpellCaster.activeRunes(book, book.selected(), tier)) {
 				if (beads.size() < MAX_BEADS) {
 					beads.add(RuneColors.of(rune));

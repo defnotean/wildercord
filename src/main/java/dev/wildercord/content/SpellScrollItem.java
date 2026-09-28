@@ -56,7 +56,7 @@ public class SpellScrollItem extends Item {
 	/** Inscribes one of the player's spells onto a new scroll. */
 	public static void inscribe(ServerPlayer player, int spell) {
 		CordTier tier = Spellbooks.tier(player);
-		if (tier == null || spell < 0 || spell >= tier.spells) {
+		if (tier == null || !dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
 			return;
 		}
 		Spellbook book = Spellbooks.get(player);

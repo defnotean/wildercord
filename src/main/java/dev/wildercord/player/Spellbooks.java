@@ -60,7 +60,7 @@ public final class Spellbooks {
 
 	public static void setReadyAt(Player player, int spell, long gameTime) {
 		List<Long> cooldowns = new ArrayList<>(player.getAttachedOrElse(WildercordAttachments.COOLDOWNS, List.of()));
-		while (cooldowns.size() < CordTier.MAX_SPELLS) {
+		while (cooldowns.size() < dev.wildercord.gear.SpellSlots.ALL) {
 			cooldowns.add(0L);
 		}
 		cooldowns.set(spell, gameTime);

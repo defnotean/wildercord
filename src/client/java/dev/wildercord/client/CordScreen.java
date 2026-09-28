@@ -57,23 +57,26 @@ import java.util.Optional;
  */
 public class CordScreen extends Screen {
 	private static final int W = 372;
-	private static final int H = 292;
+	private static final int BASE_H = 292;
 	private static final int CELL = 18;
 	private static final int PITCH = 20;
 	private static final int SPELL_TOP = 28;
 	private static final int SPELL_ROW = 22;
 	private static final int SOCKET_X = 34;
-	private static final int TABS_TOP = SPELL_TOP + 4 * SPELL_ROW + 4;
-	private static final int CHIPS_TOP = TABS_TOP + 16;
-	private static final int CODEX_TOP = CHIPS_TOP + 16;
 	private static final int CODEX_HEIGHT = 4 * CELL;
-	private static final int CODEX_BOTTOM = CODEX_TOP + CODEX_HEIGHT;
 	private static final int CODEX_X = 14;
 	/** Width of the category label at the start of each Codex row. */
 	private static final int LABEL_W = 70;
 	private static final int CODEX_COLS = (W - 24 - CODEX_X - LABEL_W) / CELL;
-	private static final int READOUT_TOP = CODEX_BOTTOM + 9;
-	private static final int READOUT_BOTTOM = H - 12;
+	// Everything below the rows moves down a row while the Tome of the Fifth Page is in the off-hand
+	// (its spell gets a row of its own), so these are worked out again by layout() every frame.
+	private int H = BASE_H;
+	private int TABS_TOP = SPELL_TOP + 4 * SPELL_ROW + 4;
+	private int CHIPS_TOP = TABS_TOP + 16;
+	private int CODEX_TOP = CHIPS_TOP + 16;
+	private int CODEX_BOTTOM = CODEX_TOP + CODEX_HEIGHT;
+	private int READOUT_TOP = CODEX_BOTTOM + 9;
+	private int READOUT_BOTTOM = H - 12;
 	private static final int TEXT_X = 16;
 	private static final int TEXT_RIGHT = W - 18;
 	private static final int LINE = 10;
@@ -145,8 +148,26 @@ public class CordScreen extends Screen {
 		super(Component.translatable("screen.wildercord.cord"));
 	}
 
+	/** Lays the window out for the rows showing: a fifth spell row while the tome is held. */
+	private void layout() {
+		int extra = tomeRow() ? SPELL_ROW : 0;
+		H = BASE_H + extra;
+		TABS_TOP = SPELL_TOP + 4 * SPELL_ROW + 4 + extra;
+		CHIPS_TOP = TABS_TOP + 16;
+		CODEX_TOP = CHIPS_TOP + 16;
+		CODEX_BOTTOM = CODEX_TOP + CODEX_HEIGHT;
+		READOUT_TOP = CODEX_BOTTOM + 9;
+		READOUT_BOTTOM = H - 12;
+		if (!passivePage && !spellOpen(editing) && spellCount() > 0) {
+			// The tome left the hand while its spell was being edited.
+			editing = 0;
+			readoutScroll = 0;
+		}
+	}
+
 	@Override
 	protected void init() {
+		layout();
 		// Since 26.x (SDL input) typed characters only arrive while a screen asks for text input.
 		// Typing anywhere searches the Codex, so ask for the whole time the screen is open; the
 		// game turns it off again when the screen closes. The IME window sits by the search box.
@@ -168,7 +189,7 @@ public class CordScreen extends Screen {
 		for (List<String> passive : book.passives()) {
 			passives.add(new ArrayList<>(passive));
 		}
-		editing = Math.max(0, Math.min(book.selected(), spellCount() - 1));
+		editing = spellOpen(book.selected()) ? book.selected() : Math.max(0, Math.min(book.selected(), spellCount() - 1));
 	}
 
 	@Override
@@ -301,6 +322,22 @@ public class CordScreen extends Screen {
 		return tier == null ? 0 : tier.spells;
 	}
 
+	/** Whether the Tome of the Fifth Page is in the off-hand (its spell gets a row). */
+	private boolean tomeRow() {
+		return minecraft.player != null && dev.wildercord.gear.Gear.tome(minecraft.player);
+	}
+
+	/** Whether spell row {@code s} can be used: one of the Cord's, or the tome's while it's held. */
+	private boolean spellOpen(int s) {
+		CordTier tier = tier();
+		return tier != null && dev.wildercord.gear.Gear.spellOpen(minecraft.player, tier, s);
+	}
+
+	/** Whether row {@code s} of the page showing can be edited. */
+	private boolean rowOpen(int s) {
+		return passivePage ? s < openRows() : spellOpen(s);
+	}
+
 	private boolean holds(RuneDef rune) {
 		CordTier tier = tier();
 		return tier != null && tier.holds(rune.tier());
@@ -313,7 +350,7 @@ public class CordScreen extends Screen {
 	}
 
 	private int rowCount() {
-		return passivePage ? Passives.MAX : CordTier.MAX_SPELLS;
+		return passivePage ? Passives.MAX : CordTier.MAX_SPELLS + (tomeRow() ? 1 : 0);
 	}
 
 	/** Rows that can be edited: the Cord's spells, or the passive slots the heart has opened. */
@@ -501,6 +538,7 @@ public class CordScreen extends Screen {
 
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
+		layout();
 		super.extractRenderState(g, mouseX, mouseY, a);
 		drawSideCircle(g, a);
 		float s = scale();
@@ -653,7 +691,7 @@ public class CordScreen extends Screen {
 			}
 			drawPassiveSummary(g, SPELL_TOP + Passives.MAX * SPELL_ROW);
 		} else {
-			for (int s = 0; s < CordTier.MAX_SPELLS; s++) {
+			for (int s = 0; s < rowCount(); s++) {
 				List<Component> rowTip = drawSpellRow(g, s, SPELL_TOP + s * SPELL_ROW, mx, my, tier);
 				if (rowTip != null) {
 					tooltip = rowTip;
@@ -839,10 +877,16 @@ public class CordScreen extends Screen {
 	/** Draws one spell row and returns a tooltip if the mouse is over something in it. */
 	private List<Component> drawSpellRow(GuiGraphicsExtractor g, int s, int ry, int mx, int my, CordTier tier) {
 		List<Component> tooltip = null;
-		boolean unlocked = s < tier.spells;
+		boolean unlocked = spellOpen(s);
 		boolean selected = s == editing && unlocked;
+		// The tome's row wears the tome's violet.
+		boolean tomeSlot = s == dev.wildercord.gear.SpellSlots.TOME;
 		sprite(g, selected ? SPR_ROW_SELECTED : unlocked ? SPR_ROW : SPR_ROW_LOCKED, 10, ry - 2, W - 20, SPELL_ROW);
-		g.text(font, Integer.toString(s + 1), 19, ry + 5, selected ? GOLD : unlocked ? TEXT : 0xFF4A4460, true);
+		g.text(font, Integer.toString(s + 1), 19, ry + 5, selected ? GOLD : unlocked ? tomeSlot ? LAVENDER : TEXT : 0xFF4A4460, true);
+		if (unlocked && tomeSlot && inside(mx, my, 10, ry - 2, SOCKET_X - 12, SPELL_ROW)) {
+			tooltip = List.of(Component.translatable("item.wildercord.tome_of_the_fifth_page").withColor(LAVENDER),
+				Component.translatable("screen.wildercord.tome_row").withStyle(ChatFormatting.GRAY));
+		}
 		List<String> spell = spells.get(s);
 		if (!unlocked) {
 			sprite(g, SPR_LOCK, SOCKET_X + 2, ry + 5, 7, 8);
@@ -1110,6 +1154,7 @@ public class CordScreen extends Screen {
 			? Component.translatable("screen.wildercord.cost_health", healthCost, cooldown)
 			: Component.translatable("screen.wildercord.cost", manaCost, cooldown, maxMana);
 		wrap(out, header, 0, width, tooCostly ? QUIET : CYAN);
+		gearLines(out, compiled, width);
 		for (String text : compiled.lines()) {
 			int spaces = 0;
 			while (spaces < text.length() && text.charAt(spaces) == ' ') {
@@ -1126,6 +1171,24 @@ public class CordScreen extends Screen {
 			wrap(out, Component.literal("! " + warning), 0, width, WARN);
 		}
 		return out;
+	}
+
+	/** Casting gear in hand that changes this spell, and the server's cost multiplier (the cost above includes both). */
+	private void gearLines(List<ReadoutLine> out, SpellCompiler.Compiled compiled, int width) {
+		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.Gear.of(minecraft.player);
+		java.util.Set<String> elements = dev.wildercord.gear.GearBonuses.elements(compiled.root());
+		for (dev.wildercord.gear.GearDef piece : gear.pieces()) {
+			boolean matters = piece.kind().staff() ? elements.contains(piece.element())
+				: piece.cost() != 1 || piece.power() != 1 || piece.echo() > 0 || piece.chargeSpeed() != 1;
+			if (matters) {
+				wrap(out, Component.translatable("screen.wildercord.gear.readout", Component.translatable(dev.wildercord.gear.Gear.itemKey(piece)),
+					dev.wildercord.gear.Gear.effect(piece)), 0, width, LAVENDER);
+			}
+		}
+		double server = dev.wildercord.config.Config.costMultiplier(minecraft.player);
+		if (Math.abs(server - 1) > 1e-6) {
+			wrap(out, Component.translatable("screen.wildercord.server_cost", String.format(Locale.ROOT, "%.2f", server)), 0, width, DIM);
+		}
 	}
 
 	private List<ReadoutLine> passiveReadout(CordTier tier, List<ReadoutLine> out, int width) {
@@ -1202,6 +1265,10 @@ public class CordScreen extends Screen {
 		if (stats.circles() > 0) {
 			lines.add(Component.translatable("screen.wildercord.mana.max_circles", stats.circles() * Circles.MANA_PER_CIRCLE, stats.circles()).withStyle(ChatFormatting.GRAY));
 		}
+		int gearMana = dev.wildercord.gear.Gear.extraMana(minecraft.player);
+		if (gearMana > 0) {
+			lines.add(Component.translatable("screen.wildercord.mana.max_gear", gearMana).withStyle(ChatFormatting.GRAY));
+		}
 		lines.add(Component.translatable("screen.wildercord.mana.regen", String.format(Locale.ROOT, "%.1f", stats.regen())).withStyle(ChatFormatting.WHITE));
 		lines.add(Component.translatable("screen.wildercord.mana.regen_cord", stats.tier().regenPerSecond).withStyle(ChatFormatting.GRAY));
 		if (stats.circles() > 0) {
@@ -1229,6 +1296,15 @@ public class CordScreen extends Screen {
 		if (stats.siphon() > 0) {
 			lines.add(Component.translatable("screen.wildercord.mana.siphon", RuneItem.roman(stats.siphon()), stats.siphon() * Mana.SIPHON_MANA).withStyle(ChatFormatting.WHITE));
 		}
+		double serverRegen = dev.wildercord.config.Config.regenMultiplier(minecraft.player);
+		if (Math.abs(serverRegen - 1) > 1e-6) {
+			lines.add(Component.translatable("screen.wildercord.mana.regen_server", String.format(Locale.ROOT, "%.2f", serverRegen)).withStyle(ChatFormatting.GRAY));
+		}
+		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.Gear.of(minecraft.player);
+		if (!gear.isEmpty()) {
+			lines.add(Component.translatable("screen.wildercord.gear.title").withColor(LAVENDER));
+			lines.addAll(dev.wildercord.gear.Gear.describe(gear));
+		}
 		lines.add(Component.empty());
 		lines.add(Component.translatable("screen.wildercord.mana.ways").withStyle(ChatFormatting.GOLD));
 		lines.add(Component.translatable("screen.wildercord.mana.way.crystals", Mana.CRYSTAL_MANA, Mana.MAX_CRYSTALS).withStyle(ChatFormatting.GRAY));
@@ -1237,6 +1313,7 @@ public class CordScreen extends Screen {
 		lines.add(Component.translatable("screen.wildercord.mana.way.meditate").withStyle(ChatFormatting.GRAY));
 		lines.add(Component.translatable("screen.wildercord.mana.way.circles").withStyle(ChatFormatting.GRAY));
 		lines.add(Component.translatable("screen.wildercord.mana.way.ley").withStyle(ChatFormatting.GRAY));
+		lines.add(Component.translatable("screen.wildercord.mana.way.gear").withStyle(ChatFormatting.GRAY));
 		return lines;
 	}
 
@@ -1508,7 +1585,7 @@ public class CordScreen extends Screen {
 			if (!inside(mx, my, 10, ry - 2, W - 20, SPELL_ROW)) {
 				continue;
 			}
-			if (s >= openRows()) {
+			if (!rowOpen(s)) {
 				deny(locked(s));
 				return true;
 			}
@@ -1587,9 +1664,9 @@ public class CordScreen extends Screen {
 	private void drop(double mx, double my) {
 		int dropSpell = -1;
 		int dropSocket = -1;
-		for (int s = 0; s < openRows(); s++) {
+		for (int s = 0; s < rowCount(); s++) {
 			int ry = SPELL_TOP + s * SPELL_ROW;
-			if (inside(mx, my, 10, ry - 2, W - 20, SPELL_ROW)) {
+			if (rowOpen(s) && inside(mx, my, 10, ry - 2, W - 20, SPELL_ROW)) {
 				dropSpell = s;
 				dropSocket = Math.max(0, socketAt(mx));
 			}
@@ -1629,7 +1706,7 @@ public class CordScreen extends Screen {
 	private void add(int spell, int at, String id) {
 		Optional<RuneDef> rune = Runes.get(id);
 		List<String> target = rows().get(spell);
-		if (spell >= openRows() || rune.isEmpty() || !fitsPage(rune.get()) || target.size() >= rowSockets()) {
+		if (!rowOpen(spell) || rune.isEmpty() || !fitsPage(rune.get()) || target.size() >= rowSockets()) {
 			deny(whyNot(rune, spell));
 			return;
 		}
@@ -1725,12 +1802,15 @@ public class CordScreen extends Screen {
 		if (passivePage) {
 			return Component.translatable("screen.wildercord.passive_locked", Circles.ordinal(Passives.circleFor(row)));
 		}
+		if (row == dev.wildercord.gear.SpellSlots.TOME) {
+			return Component.translatable("message.wildercord.tome_needed");
+		}
 		return Component.translatable("message.wildercord.spell_needs", row + 1, Component.translatable(CordTier.forSpells(row + 1).itemKey()));
 	}
 
 	/** Why {@code rune} can't go on {@code row}. */
 	private Component whyNot(Optional<RuneDef> rune, int row) {
-		if (row >= openRows()) {
+		if (!rowOpen(row)) {
 			return locked(row);
 		}
 		if (rune.isEmpty()) {

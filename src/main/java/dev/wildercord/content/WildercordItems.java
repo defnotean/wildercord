@@ -44,6 +44,7 @@ public final class WildercordItems {
 				output.accept(MANA_CRYSTAL);
 				output.accept(TORN_PAGE);
 				output.accept(TRAINING_DUMMY);
+				dev.wildercord.gear.GearItems.all().forEach(output::accept);
 				output.accept(WildercordBlocks.WELLSTONE);
 				output.accept(WildercordBlocks.RUNE_SEAL);
 				output.accept(WildercordBlocks.ARCHIVE_LECTERN);

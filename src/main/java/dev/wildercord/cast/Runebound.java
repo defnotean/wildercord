@@ -111,6 +111,7 @@ public final class Runebound {
 			if (level.structureManager().getStructureWithPieceAt(mob.blockPosition(), dev.wildercord.world.WildercordWorldgen.ARCHIVES).isValid()) {
 				chance = 0.35;
 			}
+			chance *= dev.wildercord.config.Config.get().runeboundChance();
 			if (level.getDifficulty() != Difficulty.PEACEFUL && level.getRandom().nextDouble() < chance) {
 				bind(mob, level.getRandom().nextInt(6) == 0);
 			}

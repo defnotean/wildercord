@@ -79,7 +79,9 @@ public final class SpellHud {
 		}
 		Font font = mc.font;
 		Spellbook book = Spellbooks.get(player);
-		int spell = Math.min(book.selected(), tier.spells - 1);
+		// The tome's spell while the Tome of the Fifth Page is in the off-hand; otherwise one of the Cord's.
+		boolean tome = dev.wildercord.gear.Gear.tome(player);
+		int spell = dev.wildercord.gear.Gear.spellOpen(player, tier, book.selected()) ? book.selected() : Math.min(book.selected(), tier.spells - 1);
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
 		SpellCompiler.Compiled compiled = runes.isEmpty() ? null : SpellCompiler.compile(runes);
 		Mana.Stats stats = Mana.of(player);
@@ -184,11 +186,13 @@ public final class SpellHud {
 		String number = Integer.toString(spell + 1);
 		int numberColor = compiled == null ? DIM : !affordable ? RED : GOLD;
 		g.text(font, number, bx + 10 - font.width(number) / 2, by + 6, numberColor, true);
-		if (tier.spells > 1) {
-			int dotsW = tier.spells * 4 - 2;
+		List<Integer> open = dev.wildercord.gear.SpellSlots.open(tier.spells, tome);
+		if (open.size() > 1) {
+			int dotsW = open.size() * 4 - 2;
 			int dx = bx + 10 - dotsW / 2;
-			for (int i = 0; i < tier.spells; i++) {
-				g.fill(dx + i * 4, by + 22, dx + i * 4 + 2, by + 24, i == spell ? GOLD : 0xFF4A4060);
+			for (int i = 0; i < open.size(); i++) {
+				boolean tomeDot = open.get(i) == dev.wildercord.gear.SpellSlots.TOME;
+				g.fill(dx + i * 4, by + 22, dx + i * 4 + 2, by + 24, open.get(i) == spell ? GOLD : tomeDot ? 0xFF6A4E8A : 0xFF4A4060);
 			}
 		}
 
@@ -249,7 +253,7 @@ public final class SpellHud {
 		}
 		dev.wildercord.player.WildercordAttachments.Charge charge = player.getAttached(dev.wildercord.player.WildercordAttachments.CHARGE);
 		if (charge != null) {
-			double progress = dev.wildercord.cast.Charging.progress(charge, gameTime);
+			double progress = dev.wildercord.cast.Charging.progress(player, charge, gameTime);
 			String text = progress >= 1 ? "FULL" : Math.round(progress * 100) + "%";
 			int tw = font.width(text);
 			boolean blink = progress >= 1 && (gameTime / 4) % 2 == 0;

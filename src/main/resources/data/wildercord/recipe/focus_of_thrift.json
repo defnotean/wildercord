@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:emerald",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    " E ",
+    "GCG",
+    " G "
+  ],
+  "result": {
+    "id": "wildercord:focus_of_thrift"
+  }
+}

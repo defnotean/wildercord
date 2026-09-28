@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:blaze_powder",
+    "R": "minecraft:blaze_rod"
+  },
+  "pattern": [
+    " EC",
+    " RE",
+    "R  "
+  ],
+  "result": {
+    "id": "wildercord:fire_staff"
+  }
+}

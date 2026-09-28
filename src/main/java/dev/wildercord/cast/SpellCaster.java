@@ -32,7 +32,7 @@ public final class SpellCaster {
 	/** The runes of one spell that will actually fire. */
 	public static List<RuneDef> activeRunes(Spellbook book, int spell, CordTier tier) {
 		List<RuneDef> runes = new ArrayList<>();
-		if (spell < 0 || spell >= CordTier.MAX_SPELLS) {
+		if (spell < 0 || spell >= dev.wildercord.gear.SpellSlots.ALL) {
 			return runes;
 		}
 		List<String> ids = book.spells().get(spell);
@@ -45,11 +45,12 @@ public final class SpellCaster {
 	/**
 	 * Socket positions whose runes will fire: inside the Cord's sockets, learned, loaded, and
 	 * no stronger than the Cord can hold. Everything else stays threaded but quiet: a Silent
-	 * Rune from a missing add-on, a rune past the last socket, or one too strong for this Cord.
+	 * Rune from a missing add-on, a rune past the last socket, or one too strong for this Cord. The
+	 * tome's slot counts whatever the Cord (casting it also needs the tome in hand: see {@link dev.wildercord.gear.Gear#spellOpen}).
 	 */
 	public static List<Integer> activeSockets(List<String> ids, Spellbook book, int spell, CordTier tier) {
 		List<Integer> sockets = new ArrayList<>();
-		if (tier == null || spell < 0 || spell >= tier.spells) {
+		if (tier == null || spell < 0 || spell >= tier.spells && spell != dev.wildercord.gear.SpellSlots.TOME) {
 			return sockets;
 		}
 		for (int i = 0; i < Math.min(ids.size(), tier.sockets); i++) {
@@ -82,8 +83,8 @@ public final class SpellCaster {
 		}
 		Spellbook book = Spellbooks.get(player);
 		int spell = requested < 0 ? book.selected() : requested;
-		if (spell >= tier.spells) {
-			fail(player, Component.translatable("message.wildercord.spell_needs", spell + 1, Component.translatable(CordTier.forSpells(spell + 1).itemKey())));
+		if (!dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
+			fail(player, locked(spell));
 			return;
 		}
 		List<RuneDef> runes = activeRunes(book, spell, tier);
@@ -98,6 +99,11 @@ public final class SpellCaster {
 		if (now < readyAt) {
 			Rhythm.early(player, now);
 			fail(player, Component.translatable("message.wildercord.cooldown", String.format(java.util.Locale.ROOT, "%.1f", (readyAt - now) / 20.0)));
+			return;
+		}
+		// Add-ons may stop a cast here, before anything is spent.
+		int asked = compiled.paysInHealth() ? 0 : (int) Math.ceil(Heart.manaCost(player, compiled) * secret.map(Secrets.Secret::power).orElse(1.0) - 1e-9);
+		if (!dev.wildercord.api.WildercordEvents.BEFORE_CAST.invoker().allow(player, spell, List.copyOf(runes), asked)) {
 			return;
 		}
 		float manaNow = Spellbooks.mana(player);
@@ -145,15 +151,18 @@ public final class SpellCaster {
 			Grimoire.feat(player, dev.wildercord.spell.Feats.CHARGED);
 		}
 		String leaning = countElements(player, runes);
-		int castNumber = COMBO.computeIfAbsent(player.getUUID(), k -> new int[CordTier.MAX_SPELLS])[spell] += 1;
+		int castNumber = COMBO.computeIfAbsent(player.getUUID(), k -> new int[dev.wildercord.gear.SpellSlots.ALL])[spell] += 1;
 		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 		Vfx.Theme theme = secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()));
 		Vfx.castCircle(player, theme, runes);
+		// Casting gear, read from the hands now: a staff's flourish on a charged cast, and its power on every part of the spell.
+		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.Gear.of(player);
+		dev.wildercord.gear.Gear.flourish(player, gear, dev.wildercord.gear.GearBonuses.elements(compiled.root()), charge);
 		// Everyone around sees the casting pose for this spell's shape.
 		player.setAttached(dev.wildercord.player.WildercordAttachments.CAST_POSE, new dev.wildercord.player.WildercordAttachments.CastPose(runes.getFirst().id(), now));
 		HeartCircles.onCast(player);
 		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
-		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
+		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear);
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
 			SecretSpells.cast(cast, secret.get());
@@ -166,7 +175,7 @@ public final class SpellCaster {
 			Scheduler.later(8, () -> {
 				if (!player.isRemoved() && player.isAlive()) {
 					TechniqueVfx.twinStar(player.level(), player);
-					Cast again = new Cast(player, castNumber, twin, false, null, info);
+					Cast again = new Cast(player, castNumber, twin, false, null, info).gear(gear);
 					if (secret.isPresent()) {
 						SecretSpells.cast(again, secret.get());
 					} else {
@@ -175,6 +184,30 @@ public final class SpellCaster {
 				}
 			});
 		}
+		// Focus of Echoes: now and then the spell goes off again, a moment later, at no cost.
+		if (dev.wildercord.gear.Gear.echoes(player, gear)) {
+			Heart.Bonuses echoed = bonuses;
+			Scheduler.later(10, () -> {
+				if (!player.isRemoved() && player.isAlive()) {
+					HeartCircles.onCast(player);
+					Cast again = new Cast(player, castNumber, echoed, false, null, info).gear(gear);
+					if (secret.isPresent()) {
+						SecretSpells.cast(again, secret.get());
+					} else {
+						CastEngine.cast(again, compiled.root());
+					}
+				}
+			});
+		}
+		dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(player, spell, List.copyOf(runes), spent);
+	}
+
+	/** Why a spell slot can't be used: the Cord has too few spells, or the tome's slot without the tome in hand. */
+	private static Component locked(int spell) {
+		if (spell == dev.wildercord.gear.SpellSlots.TOME) {
+			return Component.translatable("message.wildercord.tome_needed");
+		}
+		return Component.translatable("message.wildercord.spell_needs", spell + 1, Component.translatable(CordTier.forSpells(spell + 1).itemKey()));
 	}
 
 	/**
@@ -208,7 +241,7 @@ public final class SpellCaster {
 
 	/** Gives a spell a custom name, or clears it back to the automatic one. */
 	public static void rename(ServerPlayer player, int spell, String name) {
-		if (spell < 0 || spell >= CordTier.MAX_SPELLS) {
+		if (spell < 0 || spell >= dev.wildercord.gear.SpellSlots.ALL) {
 			return;
 		}
 		Spellbooks.set(player, Spellbooks.get(player).withName(spell, dev.wildercord.spell.SpellNames.clean(name)));
@@ -229,8 +262,8 @@ public final class SpellCaster {
 
 	public static void select(ServerPlayer player, int spell) {
 		CordTier tier = Spellbooks.tier(player);
-		int max = tier == null ? 1 : tier.spells;
-		int index = Math.floorMod(spell, max);
+		// Steps through the Cord's spells, and on to the tome's while it's in the off-hand.
+		int index = dev.wildercord.gear.SpellSlots.resolve(tier == null ? 1 : tier.spells, dev.wildercord.gear.Gear.tome(player), spell);
 		Spellbooks.set(player, Spellbooks.get(player).withSelected(index));
 		List<RuneDef> runes = activeRunes(Spellbooks.get(player), index, tier);
 		MutableComponent line = Component.translatable("message.wildercord.selected", index + 1).withStyle(ChatFormatting.AQUA);
@@ -258,8 +291,8 @@ public final class SpellCaster {
 		if (tier == null) {
 			return Component.translatable("message.wildercord.no_cord");
 		}
-		if (spell < 0 || spell >= tier.spells) {
-			return Component.translatable("message.wildercord.spell_needs", spell + 1, Component.translatable(CordTier.forSpells(spell + 1).itemKey()));
+		if (!dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
+			return locked(spell);
 		}
 		Spellbook book = Spellbooks.get(player);
 		List<String> old = book.spells().get(spell);

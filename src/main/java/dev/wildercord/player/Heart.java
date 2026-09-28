@@ -140,11 +140,21 @@ public final class Heart {
 	}
 
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled) {
-		return (int) Math.ceil(compiled.cost() * bonuses(player).cost() - 1e-9);
+		return (int) Math.ceil(compiled.cost() * bonuses(player).cost() * gearCost(player, compiled) * serverCost(player) - 1e-9);
 	}
 
 	public static int healthCost(Player player, SpellCompiler.Compiled compiled) {
-		return dev.wildercord.spell.SpellNumbers.healthCost(compiled.cost() * bonuses(player).cost());
+		return dev.wildercord.spell.SpellNumbers.healthCost(compiled.cost() * bonuses(player).cost() * gearCost(player, compiled) * serverCost(player));
+	}
+
+	/** Casting gear in hand (a staff of the spell's element, a Focus of Thrift): its own factor on a spell's cost. */
+	private static double gearCost(Player player, SpellCompiler.Compiled compiled) {
+		return dev.wildercord.gear.Gear.costFactor(player, compiled.root());
+	}
+
+	/** The server's mana.cost_multiplier (sent to clients, so the readout matches). */
+	private static double serverCost(Player player) {
+		return dev.wildercord.config.Config.costMultiplier(player);
 	}
 
 	public static int cooldownTicks(Player player, SpellCompiler.Compiled compiled) {
@@ -153,6 +163,6 @@ public final class Heart {
 
 	/** Mana per second to keep a passive running. */
 	public static float upkeep(Player player, SpellCompiler.Compiled compiled) {
-		return (float) dev.wildercord.spell.Passives.upkeep(compiled.cost() * bonuses(player).cost());
+		return (float) dev.wildercord.spell.Passives.upkeep(compiled.cost() * bonuses(player).cost() * serverCost(player));
 	}
 }

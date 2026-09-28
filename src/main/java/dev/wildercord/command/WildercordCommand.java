@@ -4,7 +4,6 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import dev.wildercord.cast.SpellCaster;
-import dev.wildercord.content.CordTier;
 import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.RuneDef;
@@ -24,12 +23,13 @@ import java.util.Optional;
  * <ul>
  *   <li>{@code learnall}: learn every rune</li>
  *   <li>{@code learn <rune>}: learn one rune</li>
- *   <li>{@code spell <1-4> <runes...>}: thread a spell, e.g. {@code spell 1 bolt fire split}</li>
+ *   <li>{@code spell <1-5> <runes...>}: thread a spell, e.g. {@code spell 1 bolt fire split} (5 is the tome's)</li>
  *   <li>{@code mana}: refill mana</li>
  *   <li>{@code circles <0-8>}, {@code condense <mana>}: set Heart Circles, add condensed mana</li>
  *   <li>{@code innate <rune>}: choose your innate rune</li>
  *   <li>{@code runebound}: bind the nearest monster to a Cord</li>
  *   <li>{@code reset}: forget everything</li>
+ *   <li>{@code reload}: read {@code config/wildercord.json} again</li>
  * </ul>
  */
 public final class WildercordCommand {
@@ -63,7 +63,7 @@ public final class WildercordCommand {
 						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.learned", rune.get().name()), false);
 						return 1;
 					})))
-				.then(Commands.literal("spell").then(Commands.argument("index", IntegerArgumentType.integer(1, CordTier.MAX_SPELLS))
+				.then(Commands.literal("spell").then(Commands.argument("index", IntegerArgumentType.integer(1, dev.wildercord.gear.SpellSlots.ALL))
 					.then(Commands.argument("runes", StringArgumentType.greedyString()).executes(WildercordCommand::setSpell))))
 				.then(Commands.literal("mana").executes(ctx -> {
 					ServerPlayer player = ctx.getSource().getPlayerOrException();
@@ -119,6 +119,7 @@ public final class WildercordCommand {
 					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.runebound"), false);
 					return 1;
 				}))
+				.then(Commands.literal("reload").executes(WildercordCommand::reload))
 				.then(Commands.literal("reset").executes(ctx -> {
 					ServerPlayer player = ctx.getSource().getPlayerOrException();
 					Spellbooks.set(player, Spellbook.EMPTY);
@@ -155,6 +156,16 @@ public final class WildercordCommand {
 			ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.spell_set", index + 1, threaded), false);
 		}
 		return threaded;
+	}
+
+	/** Reads the config file again, and says what was wrong with it (each already fixed). */
+	private static int reload(CommandContext<CommandSourceStack> ctx) {
+		List<String> warnings = dev.wildercord.config.Config.reload(ctx.getSource().getServer());
+		ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.reloaded", dev.wildercord.config.Config.FILE), true);
+		for (String warning : warnings) {
+			ctx.getSource().sendFailure(Component.translatable("command.wildercord.config_warning", warning));
+		}
+		return warnings.isEmpty() ? 1 : 0;
 	}
 
 	/** Accepts {@code fire}, {@code wildercord:fire} or {@code on_hit}, and an add-on's {@code other:rune}. */

@@ -79,7 +79,7 @@ import java.util.function.Predicate;
 public final class Effects {
 	private Effects() {}
 
-	/** Damage to players from other players' spells is scaled down so PvP stays fair. */
+	/** Damage to players from other players' spells is scaled down so PvP stays fair: the default for casting.pvp_damage_scale. */
 	public static final float PVP_DAMAGE = 0.6F;
 	private static final int MAX_STRIKES_PER_HIT = 8;
 
@@ -139,7 +139,9 @@ public final class Effects {
 		// Elemental leaning: the element you cast most hits a little harder. Innate runes grow with the heart.
 		double leaning = !rune.element().isEmpty() && rune.element().equals(cast.info.leaning()) ? 1 + dev.wildercord.spell.Leaning.POWER : 1.0;
 		double innate = Runes.innate(rune) ? Innates.scale(caster) : 1.0;
-		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate;
+		// Casting gear (a staff of this element, a Focus of Thrift): its own factor, set when the spell was cast.
+		double gear = cast.gearPower(rune.element());
+		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate * gear;
 		double duration = SpellNumbers.duration(node) * cast.duration;
 		int amplify = node.count(Runes.AMPLIFY);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
@@ -502,7 +504,8 @@ public final class Effects {
 			case "cyclone" -> cyclone(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, ticks(2, duration));
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
-			default -> { }
+			// A rune from an add-on (dev.wildercord.api) does what it registered.
+			default -> AddonRunes.effect(cast, node, hit, harmed, helped, power, duration);
 		}
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;
 		if (!hit.self()) {
@@ -562,10 +565,11 @@ public final class Effects {
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);
 		amount *= hexBonus(cast, target);
+		amount *= AddonRunes.react(cast, target, currentElement);
 		float damage = (float) amount;
-		// PvP only: a monster's spell already has its power set by difficulty.
+		// PvP only: a monster's spell already has its power set by difficulty. The server can change the scale.
 		if (target instanceof Player && cast.caster instanceof Player) {
-			damage *= PVP_DAMAGE;
+			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();
 		}
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);

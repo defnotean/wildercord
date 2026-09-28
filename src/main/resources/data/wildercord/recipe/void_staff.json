@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:ender_pearl",
+    "R": "minecraft:stick"
+  },
+  "pattern": [
+    " EC",
+    " RE",
+    "R  "
+  ],
+  "result": {
+    "id": "wildercord:void_staff"
+  }
+}
