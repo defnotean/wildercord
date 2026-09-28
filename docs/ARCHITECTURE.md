@@ -487,6 +487,31 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
 Run `python tools/item_art.py` on its own to render review sheets of every icon into
 `build/art-preview/`.
 
+### Sounds: `sound_art.py`
+
+Every Wildercord sound is synthesised by `python tools/sound_art.py`, which writes mono Ogg Vorbis
+files into `assets/wildercord/sounds/` and writes `sounds.json`. It needs numpy, scipy and ffmpeg
+(with libvorbis), so it is kept apart from `generate_assets.py` and CI doesn't run it: run it by hand
+after changing a sound, and commit the result. Seeds are fixed, so a rerun writes identical files.
+
+The script is a handful of small building blocks (envelopes, FM bells, struck glass, band-passed
+noise that moves, pitch sweeps, grains for crackle and grit, a chorus, a reverb from a synthetic
+impulse) and then one function per sound. Everything tonal is in one key, D major pentatonic, so
+sounds that play together (a cast, its circle, its impact) harmonise: play them at pitch 1. Each
+sound is levelled for its role (the interface quiet, impacts punchy) and checked once encoded: peak,
+loudness, DC offset, clicks at either end, energy above 8 kHz, energy where small speakers can play
+it, and the seam of each loop.
+
+The set is registered in `content/WildercordSounds`, whose `cast(element)` and `impact(element)`
+fall back to Arcane: a cast (2 variants) and an impact (3) for each of the ten elements;
+`charge_loop` (a seamless 2-second hum that `client/fx/ChargeHum` plays for anyone charging, its
+pitch rising from 0.8 to 1.3), `charge_full` and `release` (played by `Charging`), `circle_open`,
+`beam_fire`, `orb_hum` (made to be replayed every 10 ticks), `shield_up`, `shield_break`,
+`domain_open` and `domain_close` (both heard from 32 blocks), `blink` and `magic_break`; the
+interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_select` and
+`discovery`; and the heart's `circle_formed` and `overcast`. Subtitle text lives in
+`generate_assets.py` (`NEW_LANG`) with the rest of `en_us.json`.
+
 ## 9. Testing
 
 - **`src/test`**: JUnit 5 tests for everything in `spell/`: reading rules, attachment, costs,

@@ -38,6 +38,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   numbers and DPS.
 - Operator commands `/wildercord innate <rune>` (choose your innate rune) and
   `/wildercord runebound` (bind the nearest monster to a Cord).
+- **Wildercord's own sounds**, synthesised by `tools/sound_art.py` and all in one key so they
+  harmonise: a cast and an impact for every element, magic circles, beams, orbs, shields, domains,
+  blinks, the Cord screen, the spell wheel, the Grimoire and Heart Circles. Charging now hums,
+  rising in pitch as the charge builds, chimes when it's full and rushes out on release.
 
 ### Changed
 - Heart Circle breakthroughs ask for feats (reactions, secrets, Runebound, the Archivist) instead
