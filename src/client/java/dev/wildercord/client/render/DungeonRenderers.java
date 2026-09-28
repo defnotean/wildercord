@@ -13,5 +13,7 @@ public final class DungeonRenderers {
 		EntityRendererRegistry.register(DungeonEntities.CINDER_WARDEN, CinderWardenRenderer::new);
 		ModelLayerRegistry.registerModelLayer(StarEaterRenderer.LAYER, StarEaterModel::createLayer);
 		EntityRendererRegistry.register(DungeonEntities.STAR_EATER, StarEaterRenderer::new);
+		ModelLayerRegistry.registerModelLayer(TideScribeRenderer.LAYER, TideScribeModel::createLayer);
+		EntityRendererRegistry.register(DungeonEntities.TIDE_SCRIBE, TideScribeRenderer::new);
 	}
 }

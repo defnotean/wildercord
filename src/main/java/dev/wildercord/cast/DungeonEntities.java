@@ -34,8 +34,19 @@ public final class DungeonEntities {
 			.fireImmune()
 			.build(STAR_EATER_KEY));
 
+	private static final ResourceKey<EntityType<?>> TIDE_SCRIBE_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("tide_scribe"));
+
+	/** The Drowned Scriptorium's keeper: a drowned sorcerer trailing ink, who floods its arena and drains it again. */
+	public static final EntityType<TideScribe> TIDE_SCRIBE = Registry.register(BuiltInRegistries.ENTITY_TYPE, TIDE_SCRIBE_KEY,
+		EntityType.Builder.<TideScribe>of(TideScribe::new, MobCategory.MONSTER)
+			.sized(0.9F, 2.3F)
+			.eyeHeight(1.95F)
+			.clientTrackingRange(10)
+			.build(TIDE_SCRIBE_KEY));
+
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(CINDER_WARDEN, CinderWarden.createAttributes());
 		FabricDefaultAttributeRegistry.register(STAR_EATER, StarEater.createAttributes());
+		FabricDefaultAttributeRegistry.register(TIDE_SCRIBE, TideScribe.createAttributes());
 	}
 }

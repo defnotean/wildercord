@@ -46,7 +46,7 @@ public class DungeonStructure extends Structure {
 		return switch (kind) {
 			case EMBER_SANCTUM -> EmberSanctumPiece.locate(context);
 			case ASTRAL_OBSERVATORY -> AstralObservatoryPiece.locate(context);
-			case DROWNED_SCRIPTORIUM -> Optional.empty();
+			case DROWNED_SCRIPTORIUM -> DrownedScriptoriumPiece.locate(context);
 		};
 	}
 

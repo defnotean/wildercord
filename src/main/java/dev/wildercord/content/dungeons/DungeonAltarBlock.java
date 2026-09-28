@@ -52,8 +52,7 @@ public class DungeonAltarBlock extends Block implements EntityBlock {
 			switch (this) {
 				case CINDER -> dev.wildercord.cast.CinderWarden.rise(level, pos);
 				case ASTRAL -> dev.wildercord.cast.StarEater.rise(level, pos);
-				case TIDE -> {
-				}
+				case TIDE -> dev.wildercord.cast.TideScribe.rise(level, pos);
 			}
 		}
 	}

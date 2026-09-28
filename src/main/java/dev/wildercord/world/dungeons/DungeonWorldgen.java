@@ -26,6 +26,8 @@ public final class DungeonWorldgen {
 		(StructurePieceType.ContextlessType) EmberSanctumPiece::new);
 	public static final StructurePieceType ASTRAL_OBSERVATORY_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, Wildercord.id("astral_observatory"),
 		(StructurePieceType.ContextlessType) AstralObservatoryPiece::new);
+	public static final StructurePieceType DROWNED_SCRIPTORIUM_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, Wildercord.id("drowned_scriptorium"),
+		(StructurePieceType.ContextlessType) DrownedScriptoriumPiece::new);
 
 	/** Every dimension dungeon (not the Archive): inside one, a third of the monsters carry Cords. */
 	public static final TagKey<Structure> DUNGEONS = TagKey.create(Registries.STRUCTURE, Wildercord.id("dungeon"));
@@ -34,6 +36,8 @@ public final class DungeonWorldgen {
 	public static final ResourceKey<LootTable> EMBER_VAULT = loot("chests/ember_sanctum_vault");
 	public static final ResourceKey<LootTable> ASTRAL_HALL = loot("chests/astral_observatory_hall");
 	public static final ResourceKey<LootTable> ASTRAL_VAULT = loot("chests/astral_observatory_vault");
+	public static final ResourceKey<LootTable> TIDE_HALL = loot("chests/drowned_scriptorium_hall");
+	public static final ResourceKey<LootTable> TIDE_VAULT = loot("chests/drowned_scriptorium_vault");
 
 	private static ResourceKey<LootTable> loot(String path) {
 		return ResourceKey.create(Registries.LOOT_TABLE, Wildercord.id(path));

@@ -25,7 +25,10 @@ public final class Dungeons {
 		DungeonSounds.init();
 		DungeonEntities.init();
 		DungeonWorldgen.init();
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> landing = 0);
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			landing = 0;
+			TideScribe.clearArenas();
+		});
 	}
 
 	/** Runs a spell's damage: while it runs, {@link #spellLanding()} is true. */
@@ -45,5 +48,8 @@ public final class Dungeons {
 
 	/** Every effect of every spell, where it landed: cheap unless a Tide Scribe's arena is awake. */
 	static void onSpell(Cast cast, Cast.Hit hit, String element) {
+		if (TideScribe.anyAwake() && (element.equals("storm") || element.equals("frost"))) {
+			TideScribe.onSpell(cast, hit, element);
+		}
 	}
 }
