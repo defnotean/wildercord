@@ -30,7 +30,25 @@ class ApiRegistrationTest {
 		// The roster is global: take the test runes out again so other tests see the built-in one.
 		var field = Runes.class.getDeclaredField("ALL");
 		field.setAccessible(true);
-		((Map<String, RuneDef>) field.get(null)).keySet().removeIf(id -> id.startsWith("apitest:"));
+		((Map<String, RuneDef>) field.get(null)).keySet().removeIf(id -> id.startsWith("apitest:") || id.startsWith("example:"));
+	}
+
+	@Test
+	void theExampleAddOnRegistersEverything() {
+		new ExampleAddon().onWildercordInit(API);
+		for (String id : List.of("example:drench", "example:brutal", "example:halo", "example:at_dusk")) {
+			assertTrue(API.rune(id).isPresent(), id);
+		}
+		assertTrue(API.categories(RuneFamily.EFFECT).contains("weather"));
+		RuneDef drench = API.rune("example:drench").orElseThrow();
+		RuneDef brutal = API.rune("example:brutal").orElseThrow();
+		// Brutal needs POWER: Drench has none, so it reaches past it to Harm.
+		SpellCompiler.Compiled c = SpellCompiler.compile(List.of(Runes.BOLT, Runes.HARM, drench, brutal));
+		SpellPlan.EffectNode harm = c.root().groups.getFirst().effects.getFirst();
+		assertEquals(1, harm.count(brutal));
+		assertEquals(1.8, SpellNumbers.power(harm), 1e-9);
+		SpellCompiler.Compiled halo = SpellCompiler.compile(List.of(API.rune("example:halo").orElseThrow(), Runes.HARM, API.rune("example:at_dusk").orElseThrow(), Runes.HEAL));
+		assertTrue(halo.warnings().isEmpty(), halo.warnings().toString());
 	}
 
 	@Test
