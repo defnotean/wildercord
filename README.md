@@ -12,6 +12,8 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
+**[Read the Wildercord Wiki](https://defnotean.github.io/wildercord/)**: every rune, recipe, dungeon, boss and mechanic, for players.
+
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
 <img src="docs/images/cord-screen.png" alt="The Cord screen: four spells threaded with runes, the searchable Codex below, and the spell explained in plain English" width="640">
