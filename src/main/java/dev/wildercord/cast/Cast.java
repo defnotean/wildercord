@@ -108,6 +108,12 @@ public final class Cast {
 	private final java.util.function.BooleanSupplier wanted;
 	private final Budget budget;
 	public final Info info;
+	/**
+	 * The repeats after an On Hit or On Kill (an Echo or a Pulse there) that have gone off in this paid
+	 * run: the whole cast, or one of a Pulse's runs or an Echo's (see {@link #repeat()}). Children and
+	 * pulses share it, so every hit of one run sees the same.
+	 */
+	private final java.util.Set<dev.wildercord.spell.SpellPlan.Link> repeated;
 
 	public Cast(LivingEntity caster) {
 		this(caster, 1, dev.wildercord.player.Heart.Bonuses.NONE, false, null, Info.NONE);
@@ -115,11 +121,12 @@ public final class Cast {
 
 	public Cast(LivingEntity caster, int castNumber, dev.wildercord.player.Heart.Bonuses bonuses, boolean passive, java.util.function.BooleanSupplier wanted,
 			Info info) {
-		this(caster, (ServerLevel) caster.level(), 0, new Budget(new Shared()), castNumber, bonuses.power(), bonuses.duration(), passive, wanted, info);
+		this(caster, (ServerLevel) caster.level(), 0, new Budget(new Shared()), castNumber, bonuses.power(), bonuses.duration(), passive, wanted, info,
+			new java.util.HashSet<>());
 	}
 
 	private Cast(LivingEntity caster, ServerLevel level, int depth, Budget budget, int castNumber, double power, double duration, boolean passive,
-			java.util.function.BooleanSupplier wanted, Info info) {
+			java.util.function.BooleanSupplier wanted, Info info, java.util.Set<dev.wildercord.spell.SpellPlan.Link> repeated) {
 		this.caster = caster;
 		this.level = level;
 		this.depth = depth;
@@ -130,15 +137,33 @@ public final class Cast {
 		this.passive = passive;
 		this.wanted = wanted;
 		this.info = info;
+		this.repeated = repeated;
 	}
 
 	public Cast child() {
-		return new Cast(caster, level, depth + 1, budget, castNumber, power, duration, passive, wanted, info);
+		return new Cast(caster, level, depth + 1, budget, castNumber, power, duration, passive, wanted, info, repeated);
 	}
 
 	/** One strike of a shape that strikes repeatedly: its own creature and block budget. */
 	public Cast pulse() {
-		return new Cast(caster, level, depth + 1, new Budget(budget.shared), castNumber, power, duration, passive, wanted, info);
+		return new Cast(caster, level, depth + 1, new Budget(budget.shared), castNumber, power, duration, passive, wanted, info, repeated);
+	}
+
+	/**
+	 * A part of this cast that was paid for on its own: one of a Pulse's runs, or what an Echo repeats.
+	 * A child, but with its own count of the repeats after On Hit or On Kill (see {@link #firstRepeat}).
+	 */
+	public Cast repeat() {
+		return new Cast(caster, level, depth + 1, budget, castNumber, power, duration, passive, wanted, info, new java.util.HashSet<>());
+	}
+
+	/**
+	 * True the first time this paid run reaches {@code link}, an Echo or a Pulse after an On Hit or On
+	 * Kill ({@link dev.wildercord.spell.SpellPlan.Link#firstOnly}): the rest of the spell fires at every
+	 * creature hit, but the repeat was paid for once, so it goes off once.
+	 */
+	public boolean firstRepeat(dev.wildercord.spell.SpellPlan.Link link) {
+		return repeated.add(link);
 	}
 
 	/**
@@ -215,7 +240,8 @@ public final class Cast {
 	 * its weight and casting gear.
 	 */
 	public Cast again(double multiplier) {
-		return new Cast(caster, level, depth, new Budget(budget.shared.copy(true)), castNumber, power * multiplier, duration, passive, wanted, info);
+		return new Cast(caster, level, depth, new Budget(budget.shared.copy(true)), castNumber, power * multiplier, duration, passive, wanted, info,
+			new java.util.HashSet<>());
 	}
 
 	/** The same cast, stronger or weaker: see {@link #again}. */
@@ -229,7 +255,7 @@ public final class Cast {
 	 */
 	public Cast reflected(LivingEntity by) {
 		weight();
-		return new Cast(by, (ServerLevel) by.level(), 0, new Budget(budget.shared.copy(false)), 1, power, duration, false, null, info);
+		return new Cast(by, (ServerLevel) by.level(), 0, new Budget(budget.shared.copy(false)), 1, power, duration, false, null, info, new java.util.HashSet<>());
 	}
 
 	/** Takes up to {@code wanted} creatures from the budget and returns how many may be touched. */

@@ -217,6 +217,81 @@ class SpellCompilerTest {
 	}
 
 	@Test
+	void rapidIsPricedOnTheWholeSpellWhereverItSits() {
+		double bolt = 3 + 8 * 1.1;
+		// On an empty Self, on the Bolt, after the Fire: the same spell, the same price, the same cooldown.
+		SpellCompiler.Compiled onSelf = compile(SELF, RAPID_MOD, BOLT, FIRE);
+		SpellCompiler.Compiled onBolt = compile(BOLT, RAPID_MOD, FIRE);
+		SpellCompiler.Compiled after = compile(BOLT, FIRE, RAPID_MOD);
+		for (SpellCompiler.Compiled c : List.of(onSelf, onBolt, after)) {
+			assertEquals(bolt * 1.4, c.cost(), 1e-9);
+			assertEquals(SpellNumbers.cooldownTicks(bolt * 1.4, 1), c.cooldownTicks());
+		}
+		// Across a link: the cheap group or the dear one, the whole spell pays.
+		double whole = (bolt + 2 + (6 + 18 * 1.5)) * 1.4;
+		assertEquals(whole, compile(BOLT, FIRE, RAPID_MOD, ON_HIT, BURST, EXPLODE).cost(), 1e-9);
+		assertEquals(whole, compile(BOLT, FIRE, ON_HIT, BURST, EXPLODE, RAPID_MOD).cost(), 1e-9);
+		// Two Rapids pay twice; one repeated by an Echo halves the cooldown once and pays once.
+		assertEquals(bolt * 1.4 * 1.4, compile(SELF, RAPID_MOD, RAPID_MOD, BOLT, FIRE).cost(), 1e-9);
+		SpellCompiler.Compiled echoed = compile(BOLT, RAPID_MOD, FIRE, ECHO);
+		assertEquals((bolt + 2 + bolt) * 1.4, echoed.cost(), 1e-9);
+		assertEquals(SpellNumbers.cooldownTicks(echoed.cost(), 1), echoed.cooldownTicks());
+		assertTrue(SpellCompiler.wholeSpell(RAPID_MOD) && SpellCompiler.wholeSpell(VOW_MOD) && SpellCompiler.wholeSpell(BLOOD_PRICE_MOD));
+		assertFalse(SpellCompiler.wholeSpell(SPLIT_MOD));
+	}
+
+	@Test
+	void vowAndBloodPriceChangeTheWholeSpellWhereverTheySit() {
+		double bolt = 3 + 8 * 1.1;
+		SpellCompiler.Compiled vowOnSelf = compile(SELF, VOW_MOD, BOLT, FIRE);
+		assertEquals(bolt, vowOnSelf.cost(), 1e-9);
+		assertEquals(compile(BOLT, VOW_MOD, FIRE).cooldownTicks(), vowOnSelf.cooldownTicks());
+		// It strengthens only its own shape's effects: on an empty one, it's a longer cooldown for nothing.
+		assertTrue(vowOnSelf.warnings().contains("Vow strengthens only Self's effects, and it has none: the cooldown is 4x longer for nothing."));
+		assertTrue(compile(BOLT, VOW_MOD, ON_HIT, FIRE).warnings().stream().anyMatch(w -> w.startsWith("Vow strengthens only Bolt's")));
+		assertFalse(compile(BOLT, VOW_MOD, FIRE).warnings().stream().anyMatch(w -> w.startsWith("Vow")));
+		// Blood Price pays for the whole spell in health, wherever it sits.
+		SpellCompiler.Compiled blood = compile(SELF, BLOOD_PRICE_MOD, BOLT, FIRE, ON_HIT, BURST, EXPLODE);
+		assertEquals(SpellNumbers.healthCost(blood.cost()), blood.healthCost());
+		assertEquals(compile(BOLT, FIRE, ON_HIT, BURST, BLOOD_PRICE_MOD, EXPLODE).healthCost(), blood.healthCost());
+	}
+
+	@Test
+	void anEchoOrPulseAfterOnHitGoesOffForTheFirstHitOnly() {
+		// Paid for once (the Echo repeats the whole spell once), so it goes off once, not for every bolt that hits.
+		SpellCompiler.Compiled c = compile(BOLT, FIRE, SPLIT_MOD, ON_HIT, BURST, EXPLODE, ECHO);
+		SpellPlan.Link echo = c.root().link.next.link;
+		assertSame(ECHO, echo.link);
+		assertTrue(echo.firstOnly);
+		double once = (3 + 8 * 1.1) * 2.4 + 2 + (6 + 18 * 1.5);
+		assertEquals(once + 2 + once, c.cost(), 1e-9);
+		assertEquals(List.of("3 bolts: Fire", "On hit:", "  Everything within 4 blocks: Explode",
+			"  0.5s later, everything before this fires again (first hit only)."), c.lines());
+		// What it repeats has no Echo of its own.
+		assertNull(echo.echoPrefix.link.next.link);
+
+		// Not after a link that fires once, nor at the start.
+		assertFalse(compile(BOLT, FIRE, ECHO).root().link.firstOnly);
+		assertFalse(compile(PULSE, BOLT, FIRE).root().link.firstOnly);
+		assertFalse(compile(BOLT, FIRE, DELAY, BOLT, ECHO).root().link.next.link.firstOnly);
+
+		// A Pulse after On Kill: the first kill's.
+		SpellCompiler.Compiled pulse = compile(BOLT, SPLIT_MOD, ON_KILL, PULSE, BURST, FIRE);
+		assertTrue(pulse.root().link.next.link.firstOnly);
+		assertEquals("  3 times, every 1s (first kill only):", pulse.lines().get(2));
+		// Still after the hit through a Delay or a condition.
+		assertTrue(compile(BOLT, ON_HIT, DELAY, BURST, FIRE, ECHO).root().link.next.link.next.link.firstOnly);
+		// Each of a Pulse's runs is paid for: an Echo in one goes off every run.
+		SpellPlan.Link inPulse = compile(BOLT, ON_HIT, PULSE, FIRE, ECHO).root().link.next.link.next.link;
+		assertSame(ECHO, inPulse.link);
+		assertFalse(inPulse.firstOnly);
+		// And a stored spell is released on its own, even one stored on a hit.
+		SpellPlan.Link stored = compile(BOLT, ON_HIT, SELF, IMBUE, FIRE, ECHO).root().link.next.link.next.link;
+		assertSame(ECHO, stored.link);
+		assertFalse(stored.firstOnly);
+	}
+
+	@Test
 	void conditionsKeepTheShapeTheyInterrupt() {
 		for (RuneDef condition : List.of(IF_AIRBORNE, COMBO)) {
 			SpellCompiler.Compiled c = compile(condition, HARM);

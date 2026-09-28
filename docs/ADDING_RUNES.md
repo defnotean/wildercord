@@ -121,7 +121,9 @@ Shapes decide *where* and *who*. A new shape needs:
 
 1. **A definition** with `shape(path, name, tier, cost, effectMultiplier, description, traits...)`.
    The multiplier scales the cost of every effect it carries (Touch 1.0, Burst 1.5, Domain 3.0).
-   Every shape gets `COOLDOWN` (for Rapid, Vow and Blood Price).
+   Every shape gets `COOLDOWN` (for Rapid, Vow and Blood Price). A modifier that needs `COOLDOWN`
+   changes the whole spell, so its multiplier prices the whole spell, not the shape's group
+   (`SpellCompiler.wholeSpell`).
 2. **Numbers** in `SpellNumbers` (radius, duration, speed...), reading the group's modifiers with
    `g.count(Runes.WIDEN)` and so on. Put them here, not in the runner, so the readout can use them.
 3. **A readout phrase** in `SpellCompiler.shapePhrase`, e.g. `"A spiral (5 blocks)"`.

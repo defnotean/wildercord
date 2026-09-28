@@ -237,11 +237,11 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			check(today.contracts().size() == ContractRules.COUNT, "the board should hold three contracts");
 			check(Contracts.board(player) == today || Contracts.board(player).equals(today), "reading the board twice in a day should give the same contracts");
 
-			// A board with a ley line contract two casts long.
+			// A board with a ley line contract two casts long, and a fire one.
 			player.setAttached(Contracts.BOARD, new ContractRules.Board(Contracts.day(player), List.of(
 				new ContractRules.Contract(ContractRules.LEY, "", 2, 0, false, "emerald:8"),
 				new ContractRules.Contract(ContractRules.REACTION, "conduct", 3, 0, false, "blank_rune:6"),
-				new ContractRules.Contract(ContractRules.SPELL_KILLS, "", 10, 0, false, "emerald:6"))));
+				new ContractRules.Contract(ContractRules.ELEMENT_CASTS, "fire", 20, 0, false, "blank_rune:4"))));
 			player.setAttached(WildercordAttachments.ON_LEY, true);
 			return new int[] {mark(level, player.position().add(4, 0, 4), false).getId(), mark(level, player.position().add(-4, 0, 4), true).getId()};
 		});
@@ -266,8 +266,11 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[0]), "");
 			// The server works out whether you're on a ley line from where you stand every so often: say so again.
 			player.setAttached(WildercordAttachments.ON_LEY, true);
-			Contracts.onCast(player, List.of(Runes.SELF, Runes.HARM));
+			// Its fire is tied in a Knot: a Knot's runes count as if threaded one by one.
+			RuneDef knot = Runes.get(dev.wildercord.spell.Knots.id(List.of(Runes.BOLT, Runes.FIRE), "")).orElseThrow();
+			Contracts.onCast(player, List.of(knot));
 			check(Contracts.board(player).contracts().getFirst().done(), "a second cast that landed should finish the contract");
+			check(Contracts.board(player).contracts().get(2).progress() == 1, "the Fire inside a Knot should count toward a fire contract");
 			player.setAttached(WildercordAttachments.ON_LEY, false);
 		});
 		context.waitTicks(1);

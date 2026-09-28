@@ -100,7 +100,8 @@ price. The full working is on [Cost]({{ '/spellcraft/reading-spells/' | relative
 ### Why does my spell cost less (or more) than my friend's?
 The price you see is yours: Thrift on your Cord, the 8th Heart Circle's Archmage perk, a staff or Focus of
 Thrift in your hands and a mana storm overhead all make spells cheaper. Your cooldown differs too, with
-Celerity and the 5th Circle's Flow.
+Celerity and the 5th Circle's Flow. And a [secret spell]({{ '/spellcraft/secret-spells/' | relative_url }})
+costs more, and recharges more slowly, for whoever has found it.
 
 ### How long is a cooldown?
 About a second for every 20 mana of the spell's plain cost, never less than half a second and never more than

@@ -11,15 +11,23 @@ import java.util.Optional;
  * into the Grimoire.
  *
  * <p>Every sequence is also a valid ordinary spell, so a half-finished guess never looks broken.</p>
+ *
+ * <p>A secret costs {@link Secret#power} times the ordinary spell's mana and recharges
+ * {@link #COOLDOWN} times as long, but only once the caster has found it: until then its name, price
+ * and cooldown are the ordinary spell's everywhere (anything else would give it away), and the first
+ * cast, which finds it, charges that (see {@code Heart.foundSecret}).</p>
  */
 public final class Secrets {
 	private Secrets() {}
+
+	/** A found secret spell's cooldown, as a multiple of the ordinary spell's. */
+	public static final double COOLDOWN = 1.5;
 
 	/**
 	 * @param id       short id, e.g. {@code glacial_lance} (Grimoire key {@code secret:<id>})
 	 * @param runes    the exact sequence
 	 * @param color    the spell's colour in the readout and its visuals
-	 * @param power    multiplier on the ordinary spell's mana cost
+	 * @param power    multiplier on the ordinary spell's mana cost (once found), and on what it weighs against a Shield
 	 */
 	public record Secret(String id, String name, List<RuneDef> runes, int color, double power, String description, String riddle) {
 		public String key() {

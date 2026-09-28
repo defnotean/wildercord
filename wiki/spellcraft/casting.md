@@ -103,7 +103,7 @@ cooldown, so on a Cord with several spells you can cast one while another rechar
   second and never more than twenty.
 - **Rapid** halves it and **Vow** makes it four times longer; **Celerity** and the 5th Heart Circle's
   **Flow** shorten it. It's never under a quarter of a second.
-- [Secret spells]({{ '/spellcraft/secret-spells/' | relative_url }}) take half as long again.
+- [Secret spells]({{ '/spellcraft/secret-spells/' | relative_url }}) you've found take half as long again.
 - The readout, the spell panel and the spell wheel all show your real cooldown.
 - Cooldowns are **kept** when you log out or die, so leaving the game doesn't reset a long one.
 
@@ -190,16 +190,16 @@ The spell you have selected is the one your wrist beads show.
 
 <img src="{{ '/assets/images/spell-wheel.png' | relative_url }}" alt="The spell wheel: four spells in a ring around a centre showing the pointed spell's mana and cooldown, each with its name and rune icons outside the ring" class="shot">
 
-Hold `V` for a quarter of a second and your spells fan out in a ring (you need a Cord with at least two
-spells). Each shows its number, its name and runes, a coloured bar for its first element, and a dark shade
-while it's still cooling down. The centre shows the pointed spell's mana and cooldown.
+Hold `V` for a quarter of a second and your spells fan out in a ring (you need at least two spells: a Cord
+with two or more, or the Tome of the Fifth Page in your offhand). Each shows its number, its name and runes,
+a coloured bar for its first element, and a dark shade while it's still cooling down. The centre shows the
+pointed spell's mana and cooldown. While the tome is in your offhand, its spell is on the wheel too, as
+spell 5.
 
 - **Point and let go:** move the mouse toward a spell and let go of `V` to select it.
 - **Let go without pointing** and the wheel stays open. Then click a spell, press its **number**, or point
   at one and press `V` or `Enter` again.
 - **Right-click** or press **`Esc`** to close it without choosing.
-
-The wheel shows the Cord's own spells; the tome's fifth spell is reached with `V` taps or its own key.
 
 ## The HUD
 
@@ -215,7 +215,7 @@ corner on a narrow window). It's hidden while you aren't wearing a Cord.
 | **Top row** | The spell's rune icons (with "+2" and so on when there are too many to fit) and, on the right, its cost in mana, or in health with a heart for Blood Price. The cost turns red when you can't afford it. |
 | **The mana bar** | Your mana. A **gold mark** shows how much this spell will take; it turns red when you haven't enough. A soft shine runs along the bar while you're meditating or under Clarity. |
 | **Bottom row** | Your mana ("218/380"). It turns bright, with a small up-arrow, while your regeneration is boosted (violet on a ley line or near a Wellstone). On the right: your **charge** ("60%", "FULL"), or the **cooldown** left ("1.2s"), or, when neither, what your **passives drain** ("-3.4/s", red if you can't keep them up). |
-| **Above the panel** | The spell's **name** in its colour, **♪** notes for your rhythm steps, **✦** and a number in red for Heart Circles cracked by overcasting, and, when you're wearing a Shield, its strength and time left ("Shield 12 · 28s"). |
+| **Above the panel** | The spell's **name** in its colour (a secret spell's own name only once you've found it), **♪** notes for your rhythm steps, **✦** and a number in red for Heart Circles cracked by overcasting, and, when you're wearing a Shield, its strength and time left ("Shield 12 · 28s"). |
 
 If the selected spell is empty, the panel just shows a **K**, a reminder that the Cord screen is where you
 thread it.

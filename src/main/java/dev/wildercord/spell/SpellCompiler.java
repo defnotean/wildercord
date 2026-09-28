@@ -75,10 +75,10 @@ public final class SpellCompiler {
 
 	private static Compiled compile(List<RuneDef> runes, RuneDef implicitShape, Ranks.Lookup ranks) {
 		Reader reader = new Reader(expand(runes), runes.size(), true, implicitShape, ranks);
-		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of());
+		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of(), false);
 		double cost = cost(root);
 		List<String> lines = new ArrayList<>();
-		describe(root, "", lines);
+		describe(root, "", "", lines);
 		for (RuneDef rune : runes) {
 			if (Knots.isKnot(rune)) {
 				lines.add(rune.name() + " is a Knot: " + Knots.flatten(List.of(rune)).size() + " runes in one socket, "
@@ -86,9 +86,10 @@ public final class SpellCompiler {
 			}
 		}
 		checkEmptyGroups(root, reader.warnings);
-		int rapid = countShapeMods(root, Runes.RAPID_MOD);
-		int vows = countShapeMods(root, Runes.VOW_MOD);
-		int healthCost = countShapeMods(root, Runes.BLOOD_PRICE_MOD) > 0 ? SpellNumbers.healthCost(cost) : 0;
+		List<RuneDef> whole = wholeSpellMods(root);
+		int rapid = SpellPlan.count(whole, Runes.RAPID_MOD);
+		int vows = SpellPlan.count(whole, Runes.VOW_MOD);
+		int healthCost = SpellPlan.count(whole, Runes.BLOOD_PRICE_MOD) > 0 ? SpellNumbers.healthCost(cost) : 0;
 		if (healthCost > 0) {
 			lines.add("Costs " + healthCost + " health instead of mana.");
 		}
@@ -161,7 +162,11 @@ public final class SpellCompiler {
 			return baseShape.is(Runes.TRIGGER.id());
 		}
 
-		SpellPlan.Segment segment(int from, RuneDef implicitShape, List<Target> inherited) {
+		/**
+		 * @param afterHits read after an On Hit or On Kill (with no Pulse since): this part fires at
+		 *                  every creature hit or killed, but is paid for once
+		 */
+		SpellPlan.Segment segment(int from, RuneDef implicitShape, List<Target> inherited, boolean afterHits) {
 			SpellPlan.Segment seg = new SpellPlan.Segment(implicitShape);
 			List<Target> targets = new ArrayList<>(inherited);
 			SpellPlan.Group group = null;
@@ -220,12 +225,14 @@ public final class SpellCompiler {
 						}
 						SpellPlan.Link link = new SpellPlan.Link(rune, watchesGroup ? group : null);
 						link.factor = entry.factor();
+						// A repeat is paid for once: after On Hit or On Kill it goes off for the first hit or kill only.
+						link.firstOnly = afterHits && (rune.is(Runes.ECHO.id()) || rune.is(Runes.PULSE.id()));
 						if (rune.is(Runes.ECHO.id())) {
 							echoes++;
 							if (echoes > SpellNumbers.MAX_ECHOES) {
 								warn("Only " + SpellNumbers.MAX_ECHOES + " Echoes count; the rest are ignored.");
 							} else {
-								link.echoPrefix = new Reader(runes.subList(base, i), 0, false, baseShape, ranks).segment(0, baseShape, List.of());
+								link.echoPrefix = new Reader(runes.subList(base, i), 0, false, baseShape, ranks).segment(0, baseShape, List.of(), false);
 							}
 						}
 						RuneDef nextShape;
@@ -248,7 +255,11 @@ public final class SpellCompiler {
 							base = i + 1;
 							baseShape = Runes.TRIGGER;
 						}
-						link.next = segment(i + 1, nextShape, List.of(new Target(i, entry, link.mods)));
+						// On Hit and On Kill fire what follows at every creature; each of a Pulse's runs (and a stored
+						// spell's release) is paid for on its own.
+						boolean nextAfterHits = rune.is(Runes.ON_HIT.id()) || rune.is(Runes.ON_KILL.id())
+							|| afterHits && !rune.is(Runes.PULSE.id()) && !imbue;
+						link.next = segment(i + 1, nextShape, List.of(new Target(i, entry, link.mods)), nextAfterHits);
 						base = outerBase;
 						baseShape = outerShape;
 						if (link.next.isEmpty() && !rune.is(Runes.ECHO.id())) {
@@ -278,15 +289,28 @@ public final class SpellCompiler {
 		}
 	}
 
-	private static int countShapeMods(SpellPlan.Segment seg, RuneDef modifier) {
-		if (seg == null) {
-			return 0;
+	/**
+	 * Whether {@code modifier} changes the whole spell rather than the shape it sits on: one that needs
+	 * {@link Trait#COOLDOWN} (Rapid, Vow, Blood Price). It's priced on the whole spell, so where it
+	 * sits makes no difference to the price.
+	 */
+	public static boolean wholeSpell(RuneDef modifier) {
+		return Trait.COOLDOWN.equals(modifier.needs());
+	}
+
+	/** Every modifier in the spell that changes the whole spell (see {@link #wholeSpell}), links included; an Echo's repeat counts once. */
+	private static List<RuneDef> wholeSpellMods(SpellPlan.Segment root) {
+		List<RuneDef> out = new ArrayList<>();
+		for (SpellPlan.Segment seg = root; seg != null; seg = seg.link == null ? null : seg.link.next) {
+			for (SpellPlan.Group g : seg.groups) {
+				for (RuneDef mod : g.shapeMods) {
+					if (wholeSpell(mod)) {
+						out.add(mod);
+					}
+				}
+			}
 		}
-		int n = 0;
-		for (SpellPlan.Group g : seg.groups) {
-			n += g.count(modifier);
-		}
-		return n + (seg.link == null ? 0 : countShapeMods(seg.link.next, modifier));
+		return out;
 	}
 
 	private static void checkEmptyGroups(SpellPlan.Segment seg, List<String> warnings) {
@@ -301,6 +325,12 @@ public final class SpellCompiler {
 					warnings.add(message);
 				}
 			}
+			if (g.effects.isEmpty() && g.count(Runes.VOW_MOD) > 0) {
+				String message = "Vow strengthens only " + g.shape.name() + "'s effects, and it has none: the cooldown is 4x longer for nothing.";
+				if (!warnings.contains(message)) {
+					warnings.add(message);
+				}
+			}
 		}
 		if (seg.link != null) {
 			checkEmptyGroups(seg.link.next, warnings);
@@ -309,7 +339,16 @@ public final class SpellCompiler {
 
 	// ------------------------------------------------------------------ cost
 
-	public static double cost(SpellPlan.Segment seg) {
+	/**
+	 * A whole spell's mana, before anyone's discounts: every part of it, then each modifier that
+	 * changes the whole spell (Rapid) on the whole of it, wherever it sits. Rapid on an empty Self
+	 * costs what Rapid on the spell's biggest group does.
+	 */
+	public static double cost(SpellPlan.Segment root) {
+		return partCost(root) * product(wholeSpellMods(root));
+	}
+
+	private static double partCost(SpellPlan.Segment seg) {
 		if (seg == null) {
 			return 0;
 		}
@@ -319,8 +358,8 @@ public final class SpellCompiler {
 		}
 		if (seg.link != null) {
 			SpellPlan.Link link = seg.link;
-			double rest = cost(link.next) * (link.link.is(Runes.PULSE.id()) ? SpellNumbers.PULSES : link.link.is(Runes.IMBUE.id()) ? SpellNumbers.IMBUE_CHARGES : 1);
-			total += link.link.cost() * product(link.mods) * link.factor + rest + cost(link.echoPrefix);
+			double rest = partCost(link.next) * (link.link.is(Runes.PULSE.id()) ? SpellNumbers.PULSES : link.link.is(Runes.IMBUE.id()) ? SpellNumbers.IMBUE_CHARGES : 1);
+			total += link.link.cost() * product(link.mods) * link.factor + rest + partCost(link.echoPrefix);
 		}
 		return total;
 	}
@@ -330,7 +369,13 @@ public final class SpellCompiler {
 		for (SpellPlan.EffectNode e : g.effects) {
 			effects += e.effect.cost() * product(e.mods) * e.factor;
 		}
-		return (g.shape.cost() * g.factor + effects * g.shape.multiplier()) * product(g.shapeMods);
+		double mods = 1;
+		for (RuneDef mod : g.shapeMods) {
+			if (!wholeSpell(mod)) {
+				mods *= mod.multiplier();
+			}
+		}
+		return (g.shape.cost() * g.factor + effects * g.shape.multiplier()) * mods;
 	}
 
 	private static double product(List<RuneDef> mods) {
@@ -343,7 +388,8 @@ public final class SpellCompiler {
 
 	// ------------------------------------------------------------------ readout
 
-	private static void describe(SpellPlan.Segment seg, String indent, List<String> lines) {
+	/** @param after "hit" or "kill" under an On Hit or On Kill (the nearest), otherwise "" */
+	private static void describe(SpellPlan.Segment seg, String indent, String after, List<String> lines) {
 		if (seg == null) {
 			return;
 		}
@@ -360,11 +406,13 @@ public final class SpellCompiler {
 		}
 		SpellPlan.Link link = seg.link;
 		String id = link.link.id();
+		// A repeat after On Hit or On Kill goes off for the first hit or kill only (see SpellPlan.Link#firstOnly).
+		String firstOnly = link.firstOnly && !after.isEmpty() ? " (first " + after + " only)" : "";
 		if (id.equals(Runes.ECHO.id())) {
 			if (link.echoPrefix != null) {
-				lines.add(indent + "0.5s later, everything before this fires again.");
+				lines.add(indent + "0.5s later, everything before this fires again" + firstOnly + ".");
 			}
-			describe(link.next, indent, lines);
+			describe(link.next, indent, after, lines);
 			return;
 		}
 		String header;
@@ -377,7 +425,7 @@ public final class SpellCompiler {
 		} else if (id.equals(Runes.DELAY.id())) {
 			header = "After " + seconds(SpellNumbers.delayTicks(link)) + ":";
 		} else if (id.equals(Runes.PULSE.id())) {
-			header = SpellNumbers.PULSES + " times, every " + seconds(SpellNumbers.pulseInterval(link)) + ":";
+			header = SpellNumbers.PULSES + " times, every " + seconds(SpellNumbers.pulseInterval(link)) + firstOnly + ":";
 		} else if (id.equals(Runes.ON_HURT.id())) {
 			header = "When something hurts you:";
 		} else if (id.equals(Runes.IF_SNEAKING.id())) {
@@ -401,7 +449,8 @@ public final class SpellCompiler {
 			header = link.link.name() + ":";
 		}
 		lines.add(indent + header);
-		describe(link.next, indent + "  ", lines);
+		String next = id.equals(Runes.ON_HIT.id()) ? "hit" : id.equals(Runes.ON_KILL.id()) ? "kill" : after;
+		describe(link.next, indent + "  ", next, lines);
 	}
 
 	private static String shapePhrase(SpellPlan.Group g) {

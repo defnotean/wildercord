@@ -221,8 +221,8 @@ public final class Runes {
 	public static final RuneDef ON_HIT = link("on_hit", "On Hit", 2, 2, "The rest fires wherever the shape before it hits.");
 	public static final RuneDef ON_LAND = link("on_land", "On Land", 2, 2, "The rest fires when you next touch the ground.");
 	public static final RuneDef ON_KILL = link("on_kill", "On Kill", 3, 2, "The rest fires at each creature the shape before it kills.");
-	public static final RuneDef ECHO = link("echo", "Echo", 3, 2, "Everything before it fires again 0.5 seconds later.");
-	public static final RuneDef PULSE = link("pulse", "Pulse", 2, 2, "The rest fires three times, one second apart, from you.", SPEED);
+	public static final RuneDef ECHO = link("echo", "Echo", 3, 2, "Everything before it fires again 0.5 seconds later. After On Hit or On Kill, only for the first hit or kill.");
+	public static final RuneDef PULSE = link("pulse", "Pulse", 2, 2, "The rest fires three times, one second apart, from you. After On Hit or On Kill, only for the first hit or kill.", SPEED);
 	public static final RuneDef ON_HURT = link("on_hurt", "On Hurt", 2, 2, "The rest fires at whatever next hurts you (within 15 seconds).");
 	public static final RuneDef IF_SNEAKING = link("if_sneaking", "If Sneaking", 2, 1, "The rest fires only if you're sneaking. Build two spells in one.");
 	public static final RuneDef ON_LOW_HEALTH = link("on_low_health", "On Low Health", 3, 2, "The rest fires when your health drops below 30% (within 30 seconds).");

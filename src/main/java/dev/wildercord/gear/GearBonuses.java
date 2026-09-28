@@ -123,10 +123,10 @@ public record GearBonuses(List<GearDef> pieces) {
 
 	// ------------------------------------------------------------------ what a spell is made of
 
-	/** The elements of every effect in a row of runes. */
+	/** The elements of every effect in a row of runes, a Knot's runes included (for leaning and contracts, what a cast counts toward). */
 	public static Set<String> elements(List<RuneDef> runes) {
 		Set<String> elements = new LinkedHashSet<>();
-		for (RuneDef rune : runes) {
+		for (RuneDef rune : dev.wildercord.spell.Knots.flatten(runes)) {
 			if (rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty()) {
 				elements.add(rune.element());
 			}

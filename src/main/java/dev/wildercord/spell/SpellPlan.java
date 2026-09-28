@@ -10,6 +10,10 @@ import java.util.List;
  * Bolt · Fire · Split · On Hit · Burst · Explode
  * └─ segment: [group Bolt(+Split) → Fire]  link On Hit ─→ segment: [group Burst → Explode]
  * </pre>
+ *
+ * <p>A modifier that needs {@link Trait#COOLDOWN} (Rapid, Vow, Blood Price) sits among a group's
+ * {@link Group#shapeMods} but changes the whole spell, so it's priced on the whole spell
+ * (see {@link SpellCompiler#cost}).</p>
  */
 public final class SpellPlan {
 	private SpellPlan() {}
@@ -77,6 +81,12 @@ public final class SpellPlan {
 		public Segment next;
 		/** Echo only: everything before the Echo, fired again. */
 		public Segment echoPrefix;
+		/**
+		 * An Echo or a Pulse after an On Hit or On Kill. What follows those fires at every creature hit
+		 * or killed, but a repeat is paid for once, so it goes off only the first time: once for each
+		 * time the part holding it was paid for (the cast, or one of an earlier Pulse's runs).
+		 */
+		public boolean firstOnly;
 		/** The share of its mana it costs: less than 1 inside a Knot. */
 		public double factor = 1.0;
 
