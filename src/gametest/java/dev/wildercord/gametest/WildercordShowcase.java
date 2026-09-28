@@ -337,6 +337,20 @@ public class WildercordShowcase implements FabricClientGameTest {
 		return husk;
 	}
 
+	/** A still wolf tamed by {@code owner} (so an ally), wounded to half health so a heal shows, tagged for clearing. */
+	private static void wolf(ServerPlayer owner, Vec3 at, float yaw) {
+		net.minecraft.world.entity.animal.wolf.Wolf wolf = EntityTypes.WOLF.create(owner.level(), EntitySpawnReason.COMMAND);
+		if (wolf == null) {
+			return;
+		}
+		wolf.snapTo(at.x, at.y, at.z, yaw, 0);
+		wolf.setNoAi(true);
+		wolf.tame(owner);
+		wolf.addTag(TAG);
+		owner.level().addFreshEntity(wolf);
+		wolf.setHealth(wolf.getMaxHealth() / 2);
+	}
+
 	/** Threads {@code runes} into spell {@code spell} and casts it at once, with full mana and no cooldown. */
 	private static void castNow(ServerPlayer player, int spell, List<RuneDef> runes) {
 		SpellCaster.edit(player, spell, List.of());
@@ -512,14 +526,22 @@ public class WildercordShowcase implements FabricClientGameTest {
 			attempt(prefix + sample.name(), () -> {
 				world.getServer().runCommand(sample.night() ? "time set 18000" : "time set 6000");
 				boolean self = sample.shape() == Runes.SELF;
+				// A helpful spell is shown on allies (wounded tamed wolves), so it has someone to help or bind.
+				boolean helpful = sample.effect().kind() == dev.wildercord.spell.EffectKind.HELPFUL;
 				world.getServer().runOnServer(server -> {
 					ServerPlayer player = player(server);
 					ServerLevel level = player.level();
 					place(player, lane, 0, 8);
-					if (!self) {
+					if (!self && helpful) {
+						wolf(player, lane.add(0, 0, 6), 180);
+						wolf(player, lane.add(-1.8, 0, 6.6), 180);
+						wolf(player, lane.add(1.8, 0, 7.2), 180);
+					} else if (!self) {
 						husk(level, lane.add(0, 0, 6), 180);
 						husk(level, lane.add(-1.8, 0, 6.6), 180);
 						husk(level, lane.add(1.8, 0, 7.2), 180);
+					} else if (helpful) {
+						wolf(player, lane.add(1.6, 0, 1.2), 200);
 					}
 				});
 				if (self) {
