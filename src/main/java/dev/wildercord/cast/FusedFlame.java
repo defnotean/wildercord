@@ -68,8 +68,6 @@ final class FusedFlame {
 	private static final int MAX_MAGNETS = 6;
 	/** Bloodboil answers at most this many hurts. */
 	static final int BOILS = 5;
-	/** Monolith's throw: the upward speed that carries a creature about 3 blocks up. */
-	static final double MONOLITH_LIFT = 0.69;
 	private static final Identifier SINKHOLE_ID = Wildercord.id("sinkhole");
 
 	/** Registers anything these effects listen for (damage, deaths, ticks); called once at startup. */
@@ -296,7 +294,8 @@ final class FusedFlame {
 			boolean renewed = PYRES.containsKey(id);
 			Object token = new Object();
 			PYRES.put(id, token);
-			if (!renewed || !cast.passive) {
+			// Renewed (a Zone, a passive, a second cast), it carries on from its first beat without unfolding again.
+			if (!renewed) {
 				FusedFlameVfx.phoenixRise(level, t, radius);
 			}
 			every(cast, ticks, 5, age -> {
@@ -401,7 +400,7 @@ final class FusedFlame {
 				Effects.hurt(cast, t, fire(cast), 2 * power * (age == 0 ? Reactions.fire(cast, t) : 1.0));
 			}
 			if (d > 0.35 && !Spirits.isBoss(t) && t.isAlive() && inSight(level, mouth, t)) {
-				drag(t, in.scale(1 / d), Math.min(0.3, 0.06 + d * 0.07));
+				drag(t, in.scale(1 / d), FusedFlameRules.hellmouthDrag(d));
 				Reactions.mark(t, Reactions.Mark.PULLED);
 				if (age % 10 == 0) {
 					FusedFlameVfx.hellmouthPull(level, centre, t);
@@ -469,8 +468,9 @@ final class FusedFlame {
 		}
 		FusedFlameVfx.starfireBurst(level, from);
 		double phase = level.getRandom().nextDouble() * Math.PI * 2;
+		int[] seek = FusedFlameRules.moteMarks(marks.size(), STARFIRE_MOTES);
 		for (int i = 0; i < STARFIRE_MOTES; i++) {
-			LivingEntity mark = marks.isEmpty() ? null : marks.get(i % marks.size());
+			LivingEntity mark = seek[i] < 0 ? null : marks.get(seek[i]);
 			Vec3 launch = ElementFx.tilted(0.8, phase + i * Math.PI * 2 / STARFIRE_MOTES).scale(0.55);
 			mote(cast, from, launch, mark, marks, i, power, duration);
 		}
@@ -572,9 +572,8 @@ final class FusedFlame {
 			int wait = 5;
 			if (fire > 0) {
 				if (now <= window[0]) {
-					// Vanilla fire burns when its ticks left reach a multiple of 20; this burns 11 ticks before that,
-					// clear of the hurt cooldown either way, so both land.
-					int due = Math.floorMod(fire - 11, 20);
+					// On the half beat of the fire's own burn, clear of the hurt cooldown either way, so both land.
+					int due = FusedFlameRules.everburnDue(fire);
 					if (due == 0 && now - last[0] >= 15) {
 						last[0] = now;
 						double react = first[0] ? Reactions.fire(cast, t) : 1.0;
@@ -783,7 +782,7 @@ final class FusedFlame {
 		Vec3 away = Effects.horizontal(t.position().subtract(cast.caster.position()), cast.caster.getLookAngle()).scale(0.1 * (1 - resist));
 		Vec3 v = t.getDeltaMovement();
 		// Set, not added: two columns under one creature in the same moment don't throw it twice as high.
-		setMotion(t, new Vec3(away.x, Math.max(v.y, MONOLITH_LIFT * (1 - resist)), away.z));
+		setMotion(t, new Vec3(away.x, Math.max(v.y, FusedFlameRules.MONOLITH_LIFT * (1 - resist)), away.z));
 		Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 	}
 
@@ -810,7 +809,7 @@ final class FusedFlame {
 		}
 		Magnet magnet = new Magnet(caster, new Object());
 		MAGNETS.put(id, magnet);
-		if (old == null || !cast.passive) {
+		if (old == null) {
 			FusedFlameVfx.magnetize(level, t, radius);
 		}
 		Map<UUID, Long> shocked = new HashMap<>();
@@ -855,7 +854,7 @@ final class FusedFlame {
 			Vec3 in = new Vec3(c.x - oc.x, 0, c.z - oc.z);
 			double d = in.length();
 			if (d > 0.2) {
-				drag(other, in.scale(1 / d), Math.min(0.28, 0.05 + d * 0.05));
+				drag(other, in.scale(1 / d), FusedFlameRules.magnetDraw(d));
 				Reactions.mark(other, Reactions.Mark.PULLED);
 			}
 			if (age % 8 == 0) {
@@ -911,7 +910,7 @@ final class FusedFlame {
 					double d = in.length();
 					if (d > 0.4 && d <= radius + 1.5 && inSight(level, mouth, t)) {
 						// The ground carries it in: quick from the edge, slowing as it nears the middle, never past it.
-						double s = Math.min(0.45, d * 0.3);
+						double s = FusedFlameRules.sinkholeDrag(d);
 						setMotion(t, new Vec3(in.x / d * s, Math.min(t.getDeltaMovement().y, 0.0), in.z / d * s));
 					}
 				}
