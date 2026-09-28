@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "stargazer": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "stargazer"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:starfall"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.stargazer.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.stargazer.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "stargazer"
+    ]
+  ],
+  "rewards": {
+    "experience": 40
+  }
+}

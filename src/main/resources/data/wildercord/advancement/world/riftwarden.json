@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/runebound",
+  "criteria": {
+    "riftwarden": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "riftwarden"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:banish"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.riftwarden.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.riftwarden.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "riftwarden"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

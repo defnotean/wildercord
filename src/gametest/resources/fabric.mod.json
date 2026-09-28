@@ -11,7 +11,8 @@
 			"dev.wildercord.gametest.WildercordCordTest",
 			"dev.wildercord.gametest.WildercordWorldMagicTest",
 			"dev.wildercord.gametest.WildercordParryTest",
-			"dev.wildercord.gametest.WildercordAdvancementTest"
+			"dev.wildercord.gametest.WildercordAdvancementTest",
+			"dev.wildercord.gametest.WildercordEventsTest"
 		]
 	},
 	"depends": {

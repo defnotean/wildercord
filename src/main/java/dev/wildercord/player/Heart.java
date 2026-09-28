@@ -140,7 +140,8 @@ public final class Heart {
 	}
 
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled) {
-		return (int) Math.ceil(compiled.cost() * bonuses(player).cost() - 1e-9);
+		// Under a mana storm spells cost less (see cast.events.ManaStorm).
+		return (int) Math.ceil(compiled.cost() * bonuses(player).cost() * dev.wildercord.cast.events.ManaStorm.costFactor(player) - 1e-9);
 	}
 
 	public static int healthCost(Player player, SpellCompiler.Compiled compiled) {

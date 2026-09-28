@@ -163,6 +163,9 @@ public final class SpellCaster {
 		// Everyone around sees the casting pose for this spell's shape.
 		player.setAttached(dev.wildercord.player.WildercordAttachments.CAST_POSE, new dev.wildercord.player.WildercordAttachments.CastPose(runes.getFirst().id(), now));
 		HeartCircles.onCast(player);
+		// Under a mana storm, a spell may surge (see cast.events.ManaStorm).
+		dev.wildercord.cast.events.EventRules.Surge surge = dev.wildercord.cast.events.ManaStorm.surge(player);
+		bonuses = bonuses.withPower(bonuses.power() * dev.wildercord.cast.events.EventRules.surgePower(surge));
 		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
 		if (secret.isPresent()) {
@@ -179,6 +182,15 @@ public final class SpellCaster {
 		if (overcastCost < 0 || !WildSurge.overcast(cast, runes, secret.isPresent(), overcastMana, overcastCost, release)) {
 			release.accept(cast);
 		}
+		Heart.Bonuses surged = bonuses;
+		dev.wildercord.cast.events.ManaStorm.afterCast(player, surge, runes, () -> {
+			Cast echo = new Cast(player, castNumber, surged, false, null, info);
+			if (secret.isPresent()) {
+				SecretSpells.cast(echo, secret.get());
+			} else {
+				CastEngine.cast(echo, compiled.root());
+			}
+		});
 		// Twin Star: the next spell goes off a second time, a moment later.
 		if (Innates.consumeTwin(player)) {
 			Heart.Bonuses twin = bonuses;

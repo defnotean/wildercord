@@ -282,6 +282,7 @@ def main():
     wear_art.main()
     write_new_content(runes)
     write_advancements(runes)
+    write_world_events()
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -1145,6 +1146,45 @@ NEW_LANG = {
     "screen.wildercord.heart.need.runebound": "Slay %s Runebound (%s)",
     "screen.wildercord.heart.need.secrets": "Find %s secret spells (%s)",
     "screen.wildercord.heart.need.feat": "%s: %s",
+    # World events: mana storms, fallen stars and rift sieges (cast/events)
+    "message.wildercord.storm_start": "A mana storm rages overhead: mana flows twice as fast, spells cost a quarter less, and any may surge",
+    "message.wildercord.storm_left": "You leave the mana storm",
+    "message.wildercord.storm_end": "The mana storm passes",
+    "message.wildercord.surge.bigger": "Surge! Your spell swells with the storm's mana",
+    "message.wildercord.surge.echo": "Surge! Your spell echoes",
+    "message.wildercord.surge.element": "Surge! A stray spark of %s rides along",
+    "message.wildercord.surge.backfire": "Surge! The storm's mana kicks back",
+    "message.wildercord.star_falls": "A star falls to the %s!",
+    "message.wildercord.star_guarded": "Runebound rise to guard the Fallen Star",
+    "message.wildercord.star_held": "The star's guardians still stand (%s)",
+    "message.wildercord.star_looted": "The Fallen Star breaks open and crumbles to dust",
+    "message.wildercord.rift_opens": "A rift tears open to the %s!",
+    "message.wildercord.rift_wave": "Wave %s of %s pours out of the rift",
+    "message.wildercord.rift_last_wave": "The last wave pours out of the rift, and something worse with it",
+    "message.wildercord.riftcaller": "The Riftcaller steps through",
+    "message.wildercord.rift_struck": "%s strikes the rift (%s of %s elements)",
+    "message.wildercord.rift_sealed": "The rift is sealed!",
+    "message.wildercord.rift_won": "The rift collapses: every wave is beaten!",
+    "message.wildercord.rift_fades": "The rift closes on its own, and takes its monsters with it",
+    "boss.wildercord.rift": "Rift siege \u00B7 wave %s of %s",
+    "entity.wildercord.riftcaller": "Riftcaller",
+    "block.wildercord.fallen_star": "Fallen Star",
+    "command.wildercord.event.no_ley": "No ley line within 48 blocks (add 'here' to start one where you stand)",
+    "command.wildercord.event.storm": "A mana storm gathers for %s seconds",
+    "command.wildercord.event.no_room": "There's no room for that nearby",
+    "command.wildercord.event.star": "A star is falling: it lands at %s %s %s",
+    "command.wildercord.event.peaceful": "Rift sieges need a difficulty above Peaceful",
+    "command.wildercord.event.rift_open": "A rift is already open in this world",
+    "command.wildercord.event.rift": "A rift tears open",
+    "subtitles.wildercord.storm_start": "Mana storm gathers",
+    "subtitles.wildercord.storm_end": "Mana storm passes",
+    "subtitles.wildercord.storm_arc": "Ley line crackles",
+    "subtitles.wildercord.surge": "Spell surges",
+    "subtitles.wildercord.star_fall": "Star falls",
+    "subtitles.wildercord.star_impact": "Star lands",
+    "subtitles.wildercord.rift_open": "Rift tears open",
+    "subtitles.wildercord.rift_close": "Rift seals",
+    "subtitles.wildercord.rift_wave": "Monsters pour from a rift",
     # Sound subtitles (the sounds and sounds.json come from tools/sound_art.py)
     "subtitles.wildercord.cast_fire": "Fire spell cast", "subtitles.wildercord.impact_fire": "Fire spell hits",
     "subtitles.wildercord.cast_frost": "Frost spell cast", "subtitles.wildercord.impact_frost": "Frost spell hits",
@@ -1526,6 +1566,9 @@ feat_adv("parry", "shields/spellguard", rune("deflect"), description="Raise a Sh
 feat_adv("wild_surge", "casting/first_cast", rune("resonance"), description="Overcast a spell and watch it twist into something else", xp=25)
 feat_adv("conductor", "discovery/conduct", rune("jolt"), description="Shock five creatures at once through the water they stand in", branch="world", xp=25)
 feat_adv("icebridge", "discovery/shatter", rune("icepath"), description="Walk across water you froze with a spell", branch="world", xp=15)
+feat_adv("stormcaller", "world/ley_line", rune("lightning"), description="Cast 20 spells under a mana storm", xp=30)
+feat_adv("stargazer", "world/ley_line", rune("starfall"), description="Loot a Fallen Star", frame="goal", xp=40)
+feat_adv("riftwarden", "world/runebound", rune("banish"), description="Close a rift", frame="goal", xp=50)
 adv("shields/glyph", "shields/imbue", rune("mine"), "Tripwire", "Have one of your glyphs go off", moment("glyph"), xp=25)
 
 
@@ -1588,6 +1631,22 @@ def write_advancements(runes):
             data["rewards"] = rewards
         write_json(DATA / f"advancement/{a['path']}.json", data)
     save(world_art.advancement_background(), ASSETS / "textures/gui/advancements/backgrounds/wildercord.png")
+def write_world_events():
+    """The Fallen Star (cast/events): its pulsing starstone faces, a squat block model and its blockstate. No item."""
+    import event_art
+    tex = ASSETS / "textures"
+    for key, image in event_art.fallen_star_textures().items():
+        save(image, tex / f"block/{key}.png")
+    face = lambda t, uv: {"texture": f"#{t}", "uv": list(uv)}
+    side = (2, 3, 14, 14)
+    write_json(ASSETS / "models/block/fallen_star.json", {
+        "parent": "minecraft:block/block",
+        "textures": {"particle": "wildercord:block/fallen_star_side", "side": "wildercord:block/fallen_star_side",
+                     "top": "wildercord:block/fallen_star_top", "bottom": "wildercord:block/fallen_star_bottom"},
+        "elements": [{"from": [2, 0, 2], "to": [14, 11, 14], "faces": {
+            "down": face("bottom", (2, 2, 14, 14)), "up": face("top", (2, 2, 14, 14)),
+            "north": face("side", side), "south": face("side", side), "west": face("side", side), "east": face("side", side)}}]})
+    write_json(ASSETS / "blockstates/fallen_star.json", {"variants": {"": {"model": "wildercord:block/fallen_star"}}})
 
 
 if __name__ == "__main__":

@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "stormcaller": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "stormcaller"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:lightning"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.stormcaller.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.stormcaller.description"
+    }
+  },
+  "requirements": [
+    [
+      "stormcaller"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

@@ -11,7 +11,9 @@
 		"CameraMixin",
 		"AvatarRenderStateMixin",
 		"PlayerModelMixin",
-		"LivingEntityRendererMixin"
+		"LivingEntityRendererMixin",
+		"SkyRendererMixin",
+		"FogRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

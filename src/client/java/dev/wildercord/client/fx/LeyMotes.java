@@ -33,6 +33,8 @@ public final class LeyMotes {
 	private static final double RANGE = 30;
 	private static final Glimmer.Budget RIBBONS = new Glimmer.Budget(36);
 	private static final Glimmer.Budget MOTES = new Glimmer.Budget(24);
+	/** Extra ribbons while a mana storm makes the lines surge. */
+	private static final Glimmer.Budget SURGING = new Glimmer.Budget(24);
 	/** Ribbons flow the way of this (roughly east-north-east), so a whole line runs one way. */
 	private static final double FLOW_X = 0.85;
 	private static final double FLOW_Z = 0.53;
@@ -58,27 +60,34 @@ public final class LeyMotes {
 	public static void tick(Minecraft mc) {
 		RIBBONS.tick();
 		MOTES.tick();
+		SURGING.tick();
 		LocalPlayer player = mc.player;
 		ClientLevel level = mc.level;
 		if (!known || player == null || level == null || player.level().dimension() != Level.OVERWORLD || Spellbooks.tier(player) == null) {
 			return;
 		}
 		RandomSource random = player.getRandom();
-		for (int i = 0; i < 24 && RIBBONS.hasRoom(); i++) {
+		// Under a mana storm the lines surge: more ribbons, brighter, wider and quicker.
+		float storm = StormSky.surge();
+		for (int i = 0; i < 24; i++) {
+			Glimmer.Budget budget = RIBBONS.hasRoom() ? RIBBONS : storm > 0.2F && SURGING.hasRoom() ? SURGING : null;
+			if (budget == null) {
+				break;
+			}
 			double x = player.getX() + (random.nextDouble() - 0.5) * RANGE * 2;
 			double z = player.getZ() + (random.nextDouble() - 0.5) * RANGE * 2;
 			double strength = LeyLines.strength(seed, x, z);
-			if (strength < 0.55 || random.nextDouble() > 0.2 * strength) {
+			if (strength < 0.55 || random.nextDouble() > (0.2 + 0.25 * storm) * strength) {
 				continue;
 			}
 			List<Vec3> path = trace(level, x, z, player.getY());
 			if (path == null) {
 				continue;
 			}
-			LeyRibbon ribbon = new LeyRibbon(level, path, 0.05F + (float) strength * 0.03F, 0.55F + (float) strength * 0.4F,
-				0.06F + random.nextFloat() * 0.03F);
+			LeyRibbon ribbon = new LeyRibbon(level, path, (0.05F + (float) strength * 0.03F) * (1 + 0.5F * storm),
+				Math.min(1.0F, (0.55F + (float) strength * 0.4F) * (1 + 0.35F * storm)), (0.06F + random.nextFloat() * 0.03F) * (1 + storm));
 			mc.particleEngine.add(ribbon);
-			RIBBONS.spend(ribbon.getLifetime());
+			budget.spend(ribbon.getLifetime());
 			// Sometimes a mote of mana lifts off the line.
 			if (random.nextInt(4) == 0 && MOTES.hasRoom()) {
 				Vec3 p = path.get(random.nextInt(path.size()));

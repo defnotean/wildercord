@@ -34,6 +34,10 @@ public final class Feats {
 	public static final String ICEBRIDGE = "icebridge";
 	public static final String PARRY = "parry";
 	public static final String WILD_SURGE = "wild_surge";
+	// World events (see cast.events).
+	public static final String STORMCALLER = "stormcaller";
+	public static final String STARGAZER = "stargazer";
+	public static final String RIFTWARDEN = "riftwarden";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -65,7 +69,10 @@ public final class Feats {
 		new Feat(CONDUCTOR, "Conductor", "Shocked five creatures at once through the water they stood in."),
 		new Feat(ICEBRIDGE, "Icebridge", "Walked across water you had frozen with a spell."),
 		new Feat(PARRY, "Parry", "Raised a Shield at the last moment and turned a spell back on its caster."),
-		new Feat(WILD_SURGE, "Wild Magic", "Overcast a spell and watched it twist into something else."));
+		new Feat(WILD_SURGE, "Wild Magic", "Overcast a spell and watched it twist into something else."),
+		new Feat(STORMCALLER, "Stormcaller", "Cast 20 spells under a mana storm."),
+		new Feat(STARGAZER, "Stargazer", "Looted a Fallen Star."),
+		new Feat(RIFTWARDEN, "Riftwarden", "Closed a rift."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");

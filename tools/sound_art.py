@@ -14,6 +14,7 @@ always harmonise. Play them at pitch 1 (a little random spread is fine) and they
     sounds/casting/*.ogg               charging, circles, beams, orbs, shields, domains, blinks
     sounds/ui/*.ogg                    the Cord screen, the spell wheel and the Grimoire
     sounds/heart/*.ogg                 a Heart Circle forming, and one cracking
+    sounds/events/*.ogg                mana storms, falling stars and rifts
     sounds.json                        every event, its variants and its subtitle key
 
 The subtitles' English text lives in generate_assets.py (NEW_LANG), like the rest of en_us.json.
@@ -975,6 +976,118 @@ def overcast(v, rng):
     return finish(reverb(x, 1.0, 0.2), "impact")
 
 
+# ---------------------------------------------------------------- world events: storms, stars and rifts
+
+
+def storm_start(v, rng):
+    """A mana storm gathering: a low violet drone swelling under crackle, and a run of bells rising through it."""
+    dur = 3.4
+    crest = 1.5
+    drone = sine(note(D, -2), dur) + 0.5 * sine(note(A, -2), dur) + 0.3 * sine(note(D, -2) * 1.006, dur) + 0.25 * sine(note(FS, -1), dur)
+    drone = saturate(drone, 1.6) * env(dur, (0, 0), (crest, 1), (dur, 0)) ** 1.5
+    wash = moving_band(dur, [(0, 300), (crest, 2600), (dur, 900)], 1.2, rng) * swell(dur, crest)
+    crackle = norm(bandpass(grains(dur, 45, rng, length=(0.001, 0.004), shape=[(0, 0.2), (crest, 1), (dur, 0.1)]), 1500, 6000))
+    run = ((0.3, (D, 1)), (0.5, (E, 1)), (0.7, (FS, 1)), (0.9, (A, 1)), (1.1, (B, 1)), (1.3, (D, 2)))
+    bells = mix(*[(t, (0.5 + 0.08 * i) * bell(note(*n), 2.0, 0.7, 2.0, 1.4, attack=0.01)) for i, (t, n) in enumerate(run)])
+    x = mix(0.35 * drone, 0.25 * wash, 0.12 * crackle, 0.5 * norm(chorus(bells, 2, 0.004, 0.5)))
+    return finish(reverb(x, 2.6, 0.4, damp=5000, predelay=0.03), "grand")
+
+
+def storm_end(v, rng):
+    """The storm passes: its shimmer drifts down and away over a fading hum."""
+    dur = 2.4
+    steps = ((D, 2), (B, 1), (A, 1), (FS, 1), (D, 1))
+    fall = mix(*[(0.14 * i, (0.7 - 0.08 * i) * glass(note(*n), 1.2, 0.4)) for i, n in enumerate(steps)])
+    hum = (sine(note(D, -1), dur) + 0.5 * sine(note(A, -1), dur)) * env(dur, (0, 0), (0.1, 1), (dur, 0)) ** 2
+    air = moving_band(dur, [(0, 2400), (dur, 500)], 1.0, rng) * env(dur, (0, 0), (0.2, 1), (dur, 0)) ** 2
+    x = mix(0.6 * norm(chorus(fall, 2, 0.003, 0.4)), 0.3 * hum, 0.15 * air)
+    return finish(reverb(x, 2.0, 0.4, damp=5000), "effect")
+
+
+def storm_arc(v, rng):
+    """A violet arc between two points of a ley line: a glassy crackle with a bright ping inside it."""
+    dur = 0.6
+    snap = norm(bandpass(grains(dur, 900, rng, length=(0.0005, 0.003), shape=[(0, 1), (0.08, 0.5), (dur, 0)]), 1200, 6500))
+    buzz = lowpass(soft_saw(note((A, D, FS)[v], 0) * (1 + 0.03 * np.sin(2 * np.pi * 37 * timeline(dur))), harmonics=8), 2800)
+    buzz = buzz * decay(dur, 0.09, 0.001)
+    ping = glass(note((E, A, B)[v], 2), dur, 0.18)
+    x = mix(0.8 * snap, 0.3 * norm(buzz), 0.3 * ping)
+    return finish(reverb(x, 0.6, 0.18), "impact")
+
+
+def surge(v, rng):
+    """A spell surging: a wobbling FM whoop that climbs and blooms into a chord."""
+    dur = 1.1
+    t = timeline(dur)
+    rise = glide(dur, (0, note(D, 0)), (0.35, note(A, 1)), (dur, note(A, 1)))
+    wob = fm(rise * (1 + 0.02 * np.sin(2 * np.pi * 9 * t)), 1.5, 1.8 * decay(dur, 0.4, 0.01)) * env(dur, (0, 0), (0.3, 1), (dur, 0)) ** 1.5
+    bloom = mix(*[(0.33, 0.5 * bell(note(*n), 0.8, 0.4, 2.0, 1.2)) for n in ((D, 1), (FS, 1), (A, 1))])
+    fizz = moving_band(dur, [(0, 900), (0.35, 5000), (dur, 2000)], 0.8, rng) * swell(dur, 0.35)
+    x = mix(0.4 * norm(wob), 0.6 * norm(bloom), 0.15 * fizz)
+    return finish(reverb(x, 0.9, 0.22), "effect")
+
+
+def star_fall(v, rng):
+    """A star falling: a long whistle sliding down over a rushing roar that grows as it nears."""
+    dur = 2.8
+    whistle = sine(sweep(note(A, 2), note(D, 0), dur, 1.3)) * env(dur, (0, 0), (0.4, 0.6), (dur - 0.1, 1), (dur, 0))
+    shimmer = 0.3 * glass(note(A, 2), dur, 1.2)
+    roar = moving_band(dur, [(0, 3000), (dur, 400)], 1.3, rng) * env(dur, (0, 0), (dur - 0.2, 1), (dur, 0)) ** 2
+    rumble = norm(lowpass(brown(dur, rng), 180)) * env(dur, (0, 0), (dur, 1)) ** 3
+    x = mix(0.3 * whistle, shimmer, 0.5 * roar, 0.4 * rumble)
+    return finish(reverb(x, 1.4, 0.2), "grand")
+
+
+def star_impact(v, rng):
+    """A star landing: a deep boom, glass shattering, and a struck bell ringing out over the crater."""
+    dur = 3.2
+    boom = thump(80, 30, 1.4, 0.4, 2.2, knock=0.4)
+    blast = norm(lowpass(noise(1.2, rng), 900)) * decay(1.2, 0.3, 0.004)
+    crack = shatter(rng, count=26, band=(1800, 6000), spread=0.25)
+    toll = mix((0.05, bell(note(D, 0), dur, 1.4, 2.0, 1.8)), (0.07, 0.6 * bell(note(A, 0), dur, 1.2, 2.0, 1.4)))
+    glints = sparkle(2.4, 10, rng, [note(d, 2) for d in (D, FS, A)], tau=(0.1, 0.3), shape=[(0, 1), (2.4, 0)])
+    x = mix(0.9 * boom, 0.5 * blast, 0.35 * crack, 0.5 * norm(toll), (0.1, 0.12 * norm(glints)))
+    return finish(reverb(x, 2.8, 0.35, damp=4500, predelay=0.02), "impact")
+
+
+def rift_open(v, rng):
+    """A rift tearing open: ripping noise, a bell played backwards into it, and a dark drone after."""
+    dur = 3.0
+    tear = 0.6
+    rip = norm(bandpass(grains(tear + 0.4, 1400, rng, length=(0.001, 0.006), shape=[(0, 0.3), (tear, 1), (tear + 0.4, 0)]), 400, 4500))
+    lead = reverse(reverb(bell(note(D, 0), 1.2, 0.5, 2.0, 1.6), 0.8, 0.4))[-samples(tear):]
+    rest = dur - tear
+    drone = sine(note(D, -1), rest) + 0.6 * sine(note(A, -1) * 0.99, rest) + 0.3 * sine(note(D, 0), rest)
+    drone = saturate(drone, 1.8) * env(rest, (0, 0), (0.1, 1), (rest, 0)) ** 1.5
+    whine = sine(sweep(note(A, 1), note(E, 1), rest, 0.8)) * env(rest, (0, 0), (0.3, 1), (rest, 0)) ** 2
+    x = mix(0.6 * rip, 0.5 * norm(lead), (tear, 0.3 * drone), (tear, 0.2 * whine))
+    return finish(reverb(x, 2.2, 0.4, damp=4500, predelay=0.03), "grand")
+
+
+def rift_close(v, rng):
+    """A rift sealing: everything rushes inward to a thud, then a bright chord rings out."""
+    dur = 2.6
+    hit = 0.5
+    rush = reverse(moving_band(hit, [(0, 600), (hit, 3500)], 1.0, rng) * decay(hit, 0.15, 0.002))
+    suck = sine(sweep(note(D, -1), note(D, 1), hit, 1.6)) * env(hit, (0, 0), (hit, 1))
+    thud = thump(110, 40, 0.9, 0.2, 2.0)
+    chord = mix(*[(0.02 * i, bell(note(*n), dur - hit, 1.0, 2.0, 1.4)) for i, n in enumerate(((D, 0), (A, 0), (D, 1), (FS, 1)))])
+    x = mix(0.5 * norm(rush), 0.3 * suck, (hit, 0.8 * thud), (hit, 0.5 * norm(chorus(chord, 2, 0.003, 0.5))))
+    return finish(reverb(x, 2.0, 0.35, damp=5000), "grand")
+
+
+def rift_wave(v, rng):
+    """A wave pouring out of a rift: a low horn swelling through the tear, with a growl under it."""
+    dur = 1.8
+    t = timeline(dur)
+    f = note(D, -1) * (1 + 0.006 * np.sin(2 * np.pi * 5 * t))
+    horn = lowpass(soft_saw(f, harmonics=10) + 0.6 * soft_saw(f * 1.5, harmonics=8), 1600) * env(dur, (0, 0), (0.5, 1), (1.1, 0.8), (dur, 0)) ** 1.5
+    growl = norm(lowpass(brown(dur, rng), 260)) * swell(dur, 0.6)
+    hiss = moving_band(dur, [(0, 500), (0.6, 2400), (dur, 700)], 1.0, rng) * swell(dur, 0.6)
+    x = mix(0.6 * norm(horn), 0.35 * growl, 0.2 * hiss)
+    return finish(reverb(x, 1.6, 0.3, damp=4500), "effect")
+
+
 # ================================================================ writing it all out
 
 
@@ -1009,6 +1122,15 @@ def palette():
         ("discovery", "ui", "discovery", discovery, 1, {}),
         ("circle_formed", "heart", "circle_formed", circle_formed, 1, {}),
         ("overcast", "heart", "overcast", overcast, 1, {}),
+        ("storm_start", "events", "storm_start", storm_start, 1, {"attenuation_distance": 48}),
+        ("storm_end", "events", "storm_end", storm_end, 1, {}),
+        ("storm_arc", "events", "storm_arc", storm_arc, 3, {}),
+        ("surge", "events", "surge", surge, 1, {}),
+        ("star_fall", "events", "star_fall", star_fall, 1, {}),
+        ("star_impact", "events", "star_impact", star_impact, 1, {}),
+        ("rift_open", "events", "rift_open", rift_open, 1, {"attenuation_distance": 48}),
+        ("rift_close", "events", "rift_close", rift_close, 1, far),
+        ("rift_wave", "events", "rift_wave", rift_wave, 1, {"attenuation_distance": 48}),
     ]
     return events
 
