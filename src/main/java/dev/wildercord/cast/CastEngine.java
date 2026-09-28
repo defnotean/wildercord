@@ -74,10 +74,13 @@ public final class CastEngine {
 				runSegment(child, link.next, new Cast.Trigger(pos, caster.getLookAngle(), caster, null, null));
 			});
 		} else if (id.equals(Runes.PULSE.id())) {
-			int interval = SpellNumbers.pulseInterval(link);
-			for (int i = 0; i < SpellNumbers.PULSES; i++) {
-				Cast child = cast.child();
-				Scheduler.later(1 + i * interval, () -> runSegment(child, link.next, Cast.Trigger.self(caster)));
+			// After On Hit or On Kill, only the first hit's Pulse goes off: it was paid for once.
+			if (!link.firstOnly || cast.firstRepeat(link)) {
+				int interval = SpellNumbers.pulseInterval(link);
+				for (int i = 0; i < SpellNumbers.PULSES; i++) {
+					Cast child = cast.repeat();
+					Scheduler.later(1 + i * interval, () -> runSegment(child, link.next, Cast.Trigger.self(caster)));
+				}
 			}
 		} else if (id.equals(Runes.ON_HURT.id())) {
 			Cast child = cast.child();
@@ -118,8 +121,9 @@ public final class CastEngine {
 				runSegment(child, link.next, new Cast.Trigger(caster.position().add(0, 1, 0), caster.getLookAngle(), caster, null, null));
 			});
 		} else if (id.equals(Runes.ECHO.id())) {
-			if (link.echoPrefix != null) {
-				Cast child = cast.child();
+			// After On Hit or On Kill, only the first hit's Echo goes off: it was paid for once.
+			if (link.echoPrefix != null && (!link.firstOnly || cast.firstRepeat(link))) {
+				Cast child = cast.repeat();
 				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, Cast.Trigger.self(caster)));
 			}
 			runSegment(cast, link.next, at);

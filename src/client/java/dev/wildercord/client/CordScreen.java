@@ -1154,10 +1154,10 @@ public class CordScreen extends Screen {
 		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes, RuneRanks.lookup(minecraft.player));
 		// The name line, with room left for the tool buttons on its right.
-		java.util.Optional<dev.wildercord.spell.Secrets.Secret> secret = dev.wildercord.spell.Secrets.match(runes);
-		boolean knownSecret = secret.isPresent() && Heart.discovered(minecraft.player, secret.get().key());
+		java.util.Optional<dev.wildercord.spell.Secrets.Secret> secret = Heart.foundSecret(minecraft.player, runes);
+		boolean knownSecret = secret.isPresent();
 		String spellName = renaming ? renameText + ((System.currentTimeMillis() / 500) % 2 == 0 ? "_" : " ")
-			: knownSecret || !book().name(editing).isEmpty() ? SpellCaster.nameOf(book(), editing, runes) : dev.wildercord.spell.SpellNames.auto(runes);
+			: SpellCaster.nameOf(minecraft.player, book(), editing, runes);
 		int nameColor = renaming ? TEXT : knownSecret ? 0xFF000000 | secret.get().color() : GOLD;
 		out.add(new ReadoutLine(Component.literal(font.plainSubstrByWidth(spellName, width - TOOLS_W - 6)).getVisualOrderText(), TEXT_X, nameColor));
 		refusal(out, width);
@@ -1165,9 +1165,11 @@ public class CordScreen extends Screen {
 			wrap(out, Component.translatable("screen.wildercord.secret_line", secret.get().description()), 0, width, 0xFF000000 | secret.get().color());
 		}
 		int maxMana = Mana.max(minecraft.player);
-		int manaCost = Heart.manaCost(minecraft.player, compiled);
-		int healthCost = Heart.healthCost(minecraft.player, compiled);
-		String cooldown = String.format(Locale.ROOT, "%.1f", Heart.cooldownTicks(minecraft.player, compiled) / 20.0);
+		// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
+		double secretCost = Heart.secretCost(minecraft.player, runes);
+		int manaCost = Heart.manaCost(minecraft.player, compiled, secretCost);
+		int healthCost = Heart.healthCost(minecraft.player, compiled, secretCost);
+		String cooldown = String.format(Locale.ROOT, "%.1f", Heart.cooldownTicks(minecraft.player, compiled, Heart.secretCooldown(minecraft.player, runes)) / 20.0);
 		boolean tooCostly = compiled.paysInHealth() ? healthCost >= minecraft.player.getMaxHealth() : manaCost > maxMana;
 		Component header = compiled.paysInHealth()
 			? Component.translatable("screen.wildercord.cost_health", healthCost, cooldown)

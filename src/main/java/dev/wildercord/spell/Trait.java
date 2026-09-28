@@ -23,6 +23,9 @@ public final class Trait {
 	public static final String FRUGAL = "frugal";
 	/** Projectiles and beams that can fire in quick succession (Volley). */
 	public static final String VOLLEY = "volley";
-	/** Every shape: Rapid shortens the whole spell's cooldown. */
+	/**
+	 * Every shape: Rapid, Vow and Blood Price sit on one but change the whole spell, so a modifier that
+	 * needs this is priced on the whole spell (see {@link SpellCompiler#wholeSpell}).
+	 */
 	public static final String COOLDOWN = "cooldown";
 }

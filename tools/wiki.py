@@ -177,7 +177,7 @@ def entry(r, fused, found, world, modifiers):
                    "RADIUS": "anything with an area", "SPEED": "anything that flies", "PIERCE": "projectiles and beams",
                    "BOUNCE": "projectiles", "SPLIT": "projectiles and beams", "HOMING": "projectiles", "CHAIN": "anything that can jump to a new target",
                    "LINGER": "effects that can land again over time", "FRUGAL": "any effect", "VOLLEY": "projectiles and beams",
-                   "COOLDOWN": "any shape (the whole spell's cooldown)"}.get(r["needs"], "")
+                   "COOLDOWN": "any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits)"}.get(r["needs"], "")
         if targets:
             lines += [f"**Attaches to:** the closest rune on its left that is {targets}.", ""]
     else:

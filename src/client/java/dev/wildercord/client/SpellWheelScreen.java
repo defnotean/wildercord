@@ -4,6 +4,8 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cast.SpellCaster;
 import dev.wildercord.content.CordTier;
 import dev.wildercord.content.RuneItem;
+import dev.wildercord.gear.Gear;
+import dev.wildercord.gear.SpellSlots;
 import dev.wildercord.net.WildercordNetworking;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Spellbook;
@@ -32,7 +34,9 @@ import java.util.Locale;
  * The spell wheel: hold the switch-spell key and your spells fan out in a ring. Point the mouse at
  * one and let go to select it; let go without pointing and the wheel stays open until you click a
  * spell, press the key again, press its number, or press Esc. Each shows its name, its runes and
- * whether it's cooling down. A tap of the key still just moves to the next spell.
+ * whether it's cooling down. A tap of the key still just moves to the next spell. The wheel holds
+ * every spell you can use: the Cord's, and the tome's fifth while the Tome of the Fifth Page is in the
+ * off-hand.
  *
  * <p>Opening a screen releases every key mapping, so the wheel never asks the mapping whether the
  * key is down: it waits for the key's own release event instead.
@@ -49,6 +53,7 @@ public class SpellWheelScreen extends Screen {
 	private static final int DIM = 0xFF8A84A0;
 
 	private final KeyMapping key;
+	/** The pointed node (an index into {@link #slots()}), or -1. */
 	private int hovered = -1;
 	private int opened;
 	/** Whether the mouse has pointed at a spell since the wheel opened. */
@@ -79,6 +84,12 @@ public class SpellWheelScreen extends Screen {
 		return minecraft.player == null ? null : Spellbooks.tier(minecraft.player);
 	}
 
+	/** The spell slots on the wheel, in order: the Cord's, then the tome's while it's held. */
+	private List<Integer> slots() {
+		CordTier tier = tier();
+		return tier == null ? List.of() : SpellSlots.open(tier.spells, Gear.tome(minecraft.player));
+	}
+
 	@Override
 	public void tick() {
 		if (opened == 0) {
@@ -102,9 +113,9 @@ public class SpellWheelScreen extends Screen {
 	}
 
 	private void choose() {
-		CordTier tier = tier();
-		if (tier != null && hovered >= 0 && hovered < tier.spells) {
-			ClientPlayNetworking.send(new WildercordNetworking.SelectSpell(hovered));
+		List<Integer> slots = slots();
+		if (hovered >= 0 && hovered < slots.size()) {
+			ClientPlayNetworking.send(new WildercordNetworking.SelectSpell(slots.get(hovered)));
 			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(dev.wildercord.content.WildercordSounds.WHEEL_SELECT, 1.0F, 1.0F));
 		}
 		onClose();
@@ -140,9 +151,9 @@ public class SpellWheelScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
-		CordTier tier = tier();
-		int number = event.key() - InputConstants.KEY_1;
-		if (tier != null && number >= 0 && number < tier.spells) {
+		// A spell's number picks it: 5 is the tome's, whatever the Cord.
+		int number = slots().indexOf(event.key() - InputConstants.KEY_1);
+		if (number >= 0) {
 			hovered = number;
 			pointed = true;
 			choose();
@@ -163,7 +174,11 @@ public class SpellWheelScreen extends Screen {
 			return;
 		}
 		Spellbook book = Spellbooks.get(minecraft.player);
-		int n = tier.spells;
+		List<Integer> slots = slots();
+		int n = slots.size();
+		if (n == 0) {
+			return;
+		}
 		int cx = width / 2;
 		int cy = height / 2;
 		float open = Math.min(1F, (opened + partial) / 3F);
@@ -186,16 +201,17 @@ public class SpellWheelScreen extends Screen {
 			hovered = now;
 			pointed = true;
 		} else if (!pointed || toggled) {
-			hovered = book.selected() < n ? book.selected() : -1;
+			hovered = slots.indexOf(book.selected());
 		}
 		long now = minecraft.player.level().getGameTime();
 		for (int i = 0; i < n; i++) {
+			int slot = slots.get(i);
 			double a = -Math.PI / 2 + Math.PI * 2 * i / n;
 			int x = cx + (int) Math.round(Math.cos(a) * radius);
 			int y = cy + (int) Math.round(Math.sin(a) * radius);
 			boolean isHovered = i == hovered;
-			boolean isSelected = i == book.selected();
-			List<RuneDef> runes = SpellCaster.activeRunes(book, i, tier);
+			boolean isSelected = slot == book.selected();
+			List<RuneDef> runes = SpellCaster.activeRunes(book, slot, tier);
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, isHovered ? NODE_HOVER : NODE, x - 16, y - 16, 32, 32);
 			// The node's colour: the spell's first element.
 			int color = 0xFF40C8BE;
@@ -206,16 +222,16 @@ public class SpellWheelScreen extends Screen {
 				}
 			}
 			g.fill(x - 9, y + 10, x + 9, y + 11, color);
-			long remaining = Spellbooks.readyAt(minecraft.player, i) - now;
+			long remaining = Spellbooks.readyAt(minecraft.player, slot) - now;
 			if (!runes.isEmpty() && remaining > 0) {
-				int total = Math.max(1, Heart.cooldownTicks(minecraft.player, SpellCompiler.compile(runes)));
+				int total = Math.max(1, Heart.cooldownTicks(minecraft.player, SpellCompiler.compile(runes), Heart.secretCooldown(minecraft.player, runes)));
 				int shade = (int) Math.ceil(24 * Math.min(1.0, remaining / (double) total));
 				g.fill(x - 12, y - 12 + (24 - shade), x + 12, y + 12, 0x90000000);
 			}
-			String number = Integer.toString(i + 1);
+			String number = Integer.toString(slot + 1);
 			g.text(font, number, x - font.width(number) / 2, y - 4, isHovered ? GOLD : isSelected ? TEXT : DIM, true);
 			// Name and runes, just outside the disc, anchored on the side facing away from the centre.
-			String name = runes.isEmpty() ? Component.translatable("screen.wildercord.wheel.empty").getString() : SpellCaster.nameOf(book, i, runes);
+			String name = runes.isEmpty() ? Component.translatable("screen.wildercord.wheel.empty").getString() : SpellCaster.nameOf(minecraft.player, book, slot, runes);
 			int lx = cx + (int) Math.round(Math.cos(a) * LABEL_RADIUS);
 			int ly = cy + (int) Math.round(Math.sin(a) * LABEL_RADIUS);
 			double cos = Math.cos(a);
@@ -239,13 +255,15 @@ public class SpellWheelScreen extends Screen {
 		}
 		// The centre: what you're pointing at.
 		if (hovered >= 0 && hovered < n) {
-			List<RuneDef> runes = SpellCaster.activeRunes(book, hovered, tier);
+			List<RuneDef> runes = SpellCaster.activeRunes(book, slots.get(hovered), tier);
 			if (!runes.isEmpty()) {
 				SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+				// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
+				double secretCost = Heart.secretCost(minecraft.player, runes);
 				String cost = compiled.paysInHealth()
-					? Heart.healthCost(minecraft.player, compiled) + "❤"
-					: Heart.manaCost(minecraft.player, compiled) + " mana";
-				String cooldown = String.format(Locale.ROOT, "%.1fs", Heart.cooldownTicks(minecraft.player, compiled) / 20.0);
+					? Heart.healthCost(minecraft.player, compiled, secretCost) + "❤"
+					: Heart.manaCost(minecraft.player, compiled, secretCost) + " mana";
+				String cooldown = String.format(Locale.ROOT, "%.1fs", Heart.cooldownTicks(minecraft.player, compiled, Heart.secretCooldown(minecraft.player, runes)) / 20.0);
 				g.centeredText(font, Component.literal(cost), cx, cy - 8, 0xFFB8A8FF);
 				g.centeredText(font, Component.literal(cooldown), cx, cy + 2, DIM);
 			}

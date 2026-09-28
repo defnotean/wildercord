@@ -85,14 +85,14 @@ public class SpellScrollItem extends Item {
 			Spellbooks.setMana(player, mana - cost);
 		}
 		ItemStack scroll = new ItemStack(WildercordItems.SPELL_SCROLL);
-		scroll.set(WildercordComponents.SCROLL, new ScrollSpell(runes.stream().map(RuneDef::id).toList(), SpellCaster.nameOf(book, spell, runes),
+		scroll.set(WildercordComponents.SCROLL, new ScrollSpell(runes.stream().map(RuneDef::id).toList(), SpellCaster.nameOf(player, book, spell, runes),
 			player.getGameProfile().name()));
 		if (!player.getInventory().add(scroll)) {
 			player.drop(scroll, false, net.minecraft.util.Prediction.SERVER_ONLY);
 		}
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.0F);
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.PLAYERS, 0.8F, 1.2F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.inscribed", SpellCaster.nameOf(book, spell, runes)).withColor(0xE8D8B0));
+		player.sendOverlayMessage(Component.translatable("message.wildercord.inscribed", SpellCaster.nameOf(player, book, spell, runes)).withColor(0xE8D8B0));
 		Grimoire.feat(player, Feats.SCROLL);
 	}
 

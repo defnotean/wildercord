@@ -135,8 +135,12 @@ other.
   - Self, Touch ×1.0; Bolt ×1.1; Beam ×1.2;
   - Burst ×1.5; Zone ×2.0; Rain ×2.5.
 - Modifiers multiply the cost of what they attach to. A modifier on a *shape*
-  (Split, Pierce, Homing, Chain…) multiplies that shape's whole group.
-- A Link costs 2, and Echo costs as much as everything it repeats.
+  (Split, Pierce, Homing, Chain…) multiplies that shape's whole group. Rapid, Vow and Blood Price
+  sit on a shape but change the whole spell, so they multiply the whole spell's cost wherever they
+  sit (Rapid ×1.4; Vow and Blood Price ×1, their price being the cooldown or the health).
+- A Link costs 2, and Echo costs as much as everything it repeats. After On Hit or On Kill (which
+  fire at every creature), an Echo or a Pulse goes off for the first hit or kill only, as it's paid
+  for once.
 - **Cooldown** = spell cost × 0.05 s, from 0.5 s up to 20 s, per spell. A
   40-mana spell has a 2-second cooldown.
 - If you can't afford a spell you get a clear message ("Not enough mana — 38/46")
@@ -537,7 +541,7 @@ renews stay quiet when they do.
 
 ### The spell wheel, names and codes
 - **Hold `V`** (a tap still selects the next spell): your spells fan out in a ring with their names,
-  runes and cooldowns. Point and let go. Let go without pointing and the wheel stays open: click a
+  runes and cooldowns (the Tome of the Fifth Page's too, while it's held). Point and let go. Let go without pointing and the wheel stays open: click a
   spell, press its number, or point and press `V` again (right-click or Esc closes it).
 - **Every spell has a name**, made from its runes ("Splitting Frost Bolt", "Arcane Bolt › Blasting
   Burst"); rename any spell from the Cord screen. The HUD shows it above the panel.
@@ -553,8 +557,10 @@ The HUD draws a gold ring closing in on the spell badge as the beat comes, and a
 ### Secret spells
 Ten exact sequences become unique spells. They're all valid ordinary spells too, so a guess never
 looks broken; only the exact order, with nothing before or after, counts. The first cast writes
-the secret into the Grimoire with a title. They cost 1.1-1.5x the ordinary spell's mana and have a
-50% longer cooldown. Their names: Glacial Lance, Sunfall, Horizon Cut, Petal Storm, Tempest Step,
+the secret into the Grimoire with a title. Once found, they cost 1.1-1.5x the ordinary spell's mana
+and have a 50% longer cooldown, and the readout, HUD and wheel show that price and their name;
+until then everything shows (and the finding cast charges) the ordinary spell, so nothing gives
+them away. Their names: Glacial Lance, Sunfall, Horizon Cut, Petal Storm, Tempest Step,
 Singularity, Zero Hour, Rebirth, Tectonic Rise and Starlight Cascade. (The sequences are in
 `spell/Secrets.java`, for developers; players find them by experimenting or from **Torn Pages**:
 read one to learn the riddle of a secret you haven't found, and its margin sketches the way to

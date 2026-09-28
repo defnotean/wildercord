@@ -47,7 +47,7 @@ import java.util.Set;
 /**
  * Casting gear and the server config, in a real world: a Fire Staff makes a fire spell hit harder and
  * cost less; the Tome of the Fifth Page opens a fifth spell that can be threaded, selected and cast
- * (and gets a row in the Cord screen); and a config change (spells may not edit blocks) takes effect
+ * (and gets a row in the Cord screen and a place on the spell wheel); and a config change (spells may not edit blocks) takes effect
  * after {@code /wildercord reload}, and is undone by the next.
  *
  * <p>Runs in the full suite; skipped with {@code WILDERCORD_TOUR_ONLY} or {@code WILDERCORD_CORDS_ONLY}.</p>
@@ -257,6 +257,21 @@ public class WildercordGearTest implements FabricClientGameTest {
 		check(context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).rowRunes(SpellSlots.TOME)).equals(ids(Runes.SELF, Runes.HEAL)),
 			"the tome's row should hold the tome's spell");
 		context.runOnClient(mc -> mc.gui.setScreen(null));
+
+		// The spell wheel holds the tome's spell too, even on a one-spell Cord: 5 picks it.
+		world.getServer().runOnServer(server -> Spellbooks.set(player(server), Spellbooks.get(player(server)).withSelected(0)));
+		context.waitTicks(3);
+		context.getInput().holdKey(dev.wildercord.client.WildercordKeys.nextMapping());
+		context.waitTicks(8);
+		check(context.computeOnClient(mc -> mc.gui.screen() instanceof dev.wildercord.client.SpellWheelScreen),
+			"with the tome held, holding the switch key should open the spell wheel on a Twine Cord");
+		context.getInput().releaseKey(dev.wildercord.client.WildercordKeys.nextMapping());
+		context.waitTicks(4);
+		context.getInput().pressKey(com.mojang.blaze3d.platform.InputConstants.KEY_5);
+		context.waitTicks(4);
+		check(context.computeOnClient(mc -> mc.gui.screen() == null), "a number key should choose and close the wheel");
+		check(world.getServer().computeOnServer(server -> Spellbooks.get(player(server)).selected() == SpellSlots.TOME),
+			"pressing 5 on the wheel should select the tome's spell");
 
 		// Put away, the tome closes its spell again.
 		String after = world.getServer().computeOnServer(server -> {

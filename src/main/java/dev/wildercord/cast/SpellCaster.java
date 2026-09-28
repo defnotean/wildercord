@@ -108,7 +108,10 @@ public final class SpellCaster {
 			return;
 		}
 		Optional<Secrets.Secret> secret = Secrets.match(runes);
-		double secretPower = secret.map(Secrets.Secret::power).orElse(1.0);
+		// A secret costs and recharges as one only once it's been found, as every readout shows it: the
+		// first cast, which finds it, costs what the ordinary spell does. Read before it's found below.
+		double secretPower = Heart.secretCost(player, runes);
+		double secretCooldown = Heart.secretCooldown(player, runes);
 		// What it costs, and whether it can be paid, before anything is spent.
 		int blood = 0;
 		int cost = 0;
@@ -163,10 +166,7 @@ public final class SpellCaster {
 				Spellbooks.setMana(player, mana - cost);
 			}
 		}
-		int cooldown = Heart.cooldownTicks(player, compiled);
-		if (secret.isPresent()) {
-			cooldown = cooldown * 3 / 2;
-		}
+		int cooldown = Heart.cooldownTicks(player, compiled, secretCooldown);
 		Spellbooks.setReadyAt(player, spell, now + cooldown);
 		HeartCircles.condense(player, spent);
 		double rhythm = Rhythm.onCast(player, now, cooldown);
@@ -191,7 +191,8 @@ public final class SpellCaster {
 		dev.wildercord.cast.events.EventRules.Surge surge = dev.wildercord.cast.events.ManaStorm.surge(player);
 		bonuses = bonuses.withPower(bonuses.power() * dev.wildercord.cast.events.EventRules.surgePower(surge));
 		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
-		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secretPower).gear(gear);
+		// Against a Shield a secret always weighs its full price, found or not.
+		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear);
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
 		}
@@ -263,13 +264,8 @@ public final class SpellCaster {
 	 * the caster now leans toward ("" for none). Tells the player when a leaning first appears.
 	 */
 	private static String countElements(ServerPlayer player, List<RuneDef> runes) {
-		java.util.Set<String> elements = new java.util.HashSet<>();
 		// A Knot's runes count as if they were threaded one by one.
-		for (RuneDef rune : dev.wildercord.spell.Knots.flatten(runes)) {
-			if (rune.family() == dev.wildercord.spell.RuneFamily.EFFECT && !rune.element().isEmpty()) {
-				elements.add(rune.element());
-			}
-		}
+		java.util.Set<String> elements = dev.wildercord.gear.GearBonuses.elements(runes);
 		String before = Heart.leaning(player);
 		if (elements.isEmpty()) {
 			return before;
@@ -296,14 +292,16 @@ public final class SpellCaster {
 		Spellbooks.set(player, Spellbooks.get(player).withName(spell, dev.wildercord.spell.SpellNames.clean(name)));
 	}
 
-	/** A spell's name: the custom one, or one made from its runes. */
-	public static String nameOf(Spellbook book, int spell, List<RuneDef> runes) {
+	/**
+	 * A spell's name, as {@code player} knows it: the custom one, a secret spell's once they've found it
+	 * (never before: the name would give it away), or one made from its runes.
+	 */
+	public static String nameOf(net.minecraft.world.entity.player.Player player, Spellbook book, int spell, List<RuneDef> runes) {
 		String custom = book.name(spell);
 		if (!custom.isEmpty()) {
 			return custom;
 		}
-		Optional<Secrets.Secret> secret = Secrets.match(runes);
-		return secret.map(Secrets.Secret::name).orElseGet(() -> dev.wildercord.spell.SpellNames.auto(runes));
+		return Heart.foundSecret(player, runes).map(Secrets.Secret::name).orElseGet(() -> dev.wildercord.spell.SpellNames.auto(runes));
 	}
 
 	/** Casts of each spell so far this session, per player, for Combo. */

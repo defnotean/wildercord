@@ -90,8 +90,10 @@ public final class SpellHud {
 		shownMana = shownMana < 0 ? mana : shownMana + (mana - shownMana) * 0.3F;
 		boolean creative = player.isCreative();
 		boolean blood = compiled != null && compiled.paysInHealth();
-		int manaCost = compiled == null ? 0 : dev.wildercord.player.Heart.manaCost(player, compiled);
-		int healthCost = compiled == null ? 0 : dev.wildercord.player.Heart.healthCost(player, compiled);
+		// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
+		double secretCost = dev.wildercord.player.Heart.secretCost(player, runes);
+		int manaCost = compiled == null ? 0 : dev.wildercord.player.Heart.manaCost(player, compiled, secretCost);
+		int healthCost = compiled == null ? 0 : dev.wildercord.player.Heart.healthCost(player, compiled, secretCost);
 		boolean affordable = compiled == null || creative || (blood ? player.getHealth() > healthCost : mana >= manaCost);
 		long remaining = Spellbooks.readyAt(player, spell) - player.level().getGameTime();
 		boolean cooling = compiled != null && remaining > 0;
@@ -156,7 +158,7 @@ public final class SpellHud {
 		}
 		boolean nameRow = rhythm.stacks() > 0 || cracked > 0 || compiled != null;
 		if (compiled != null) {
-			String name = SpellCaster.nameOf(book, spell, runes);
+			String name = SpellCaster.nameOf(player, book, spell, runes);
 			int nameX = Math.max(lx + 3, x0 + BODY_X);
 			String nameShown = font.plainSubstrByWidth(name, Math.max(20, g.guiWidth() - nameX - 4));
 			int nameColor = 0xFF000000 | spellColor(runes);
@@ -168,7 +170,7 @@ public final class SpellHud {
 		int by = y0 + 4;
 		sprite(g, BADGE, bx, by, 20, 20);
 		if (cooling) {
-			int total = Math.max(1, dev.wildercord.player.Heart.cooldownTicks(player, compiled));
+			int total = Math.max(1, dev.wildercord.player.Heart.cooldownTicks(player, compiled, dev.wildercord.player.Heart.secretCooldown(player, runes)));
 			int shade = (int) Math.ceil(14 * Math.min(1.0, remaining / (double) total));
 			g.fill(bx + 3, by + 3 + (14 - shade), bx + 17, by + 17, 0x90000000);
 		}

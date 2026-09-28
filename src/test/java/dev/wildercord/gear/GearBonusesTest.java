@@ -89,6 +89,16 @@ class GearBonusesTest {
 	}
 
 	@Test
+	void aKnotsRunesCountForWhatACastCountsToward() {
+		// Leaning and the contracts count a cast's elements from its runes: a Knot's count as if threaded one by one.
+		RuneDef knot = get(dev.wildercord.spell.Knots.id(List.of(BOLT, FIRE), "")).orElseThrow();
+		assertEquals(Set.of("fire", "frost"), GearBonuses.elements(List.of(knot, FROST)));
+		RuneDef inner = get(dev.wildercord.spell.Knots.id(List.of(SELF, HEAL), "")).orElseThrow();
+		RuneDef outer = get(dev.wildercord.spell.Knots.id(List.of(inner, SHOCK), "")).orElseThrow();
+		assertEquals(Set.of("life", "storm"), GearBonuses.elements(List.of(outer)));
+	}
+
+	@Test
 	void theReadoutMentionsGearOnlyWhenItMatters() {
 		assertTrue(GearBonuses.of(FIRE_STAFF, null).changes(Set.of("fire")));
 		assertFalse(GearBonuses.of(FIRE_STAFF, null).changes(Set.of("frost")));

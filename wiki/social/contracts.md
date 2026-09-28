@@ -57,8 +57,8 @@ The contracts count what your magic actually does, so they can't be finished by 
 - **Element casts:** a spell counts for each element its effects have. A spell with Fire and Frost effects counts
   toward a Fire contract and a Frost contract alike. See the [effects]({{ '/runes/effects/' | relative_url }}) for each
   rune's element.
-- **Knots:** the effects inside a [Knot]({{ '/fusion-altar/knots/' | relative_url }}) don't count toward an element
-  contract. Thread the effect loose for that. (A spell with a Knot still counts toward the ley line contract.)
+- **Knots:** the effects inside a [Knot]({{ '/fusion-altar/knots/' | relative_url }}) count toward element contracts
+  just as if they were threaded one by one, as they do for leaning.
 - **Ley line casts:** you must be standing on a [ley line]({{ '/progression/ley-lines/' | relative_url }}) as you cast.
 - Only spells cast from your Cord count, not scrolls.
 

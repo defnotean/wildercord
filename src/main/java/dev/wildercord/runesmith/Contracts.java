@@ -8,7 +8,6 @@ import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
-import dev.wildercord.spell.RuneFamily;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -29,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -131,16 +129,12 @@ public final class Contracts {
 	}
 
 	/**
-	 * A player cast a spell (ley line casts, and casts of each element in it). It counts once the
-	 * spell lands on a real creature: casting at the air or a Training Dummy earns nothing.
+	 * A player cast a spell (ley line casts, and casts of each element in it, a Knot's runes included,
+	 * as for leaning). It counts once the spell lands on a real creature: casting at the air or a
+	 * Training Dummy earns nothing.
 	 */
 	public static void onCast(ServerPlayer player, List<RuneDef> runes) {
-		Set<String> elements = new HashSet<>();
-		for (RuneDef rune : runes) {
-			if (rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty()) {
-				elements.add(rune.element());
-			}
-		}
+		Set<String> elements = dev.wildercord.gear.GearBonuses.elements(runes);
 		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
 		credit(player, credit(player).cast(now(player), elements, ley));
 	}

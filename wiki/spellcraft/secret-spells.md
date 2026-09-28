@@ -29,8 +29,8 @@ following the riddles on **Torn Pages**.
 - **Every secret is also an ordinary spell.** A guess that's nearly right still casts something
   sensible, so a wrong guess never looks broken, and never tells you how close you were.
 - **Your Cord must be able to hold it**: enough sockets, and a high enough tier for every rune in it.
-- **The Cord screen keeps the secret.** Until you've found it, it names and prices the spell like any
-  ordinary one.
+- **Nothing gives it away.** Until you've found it, the Cord screen, your spell panel and the spell wheel
+  name, price and time it like any ordinary spell, and the cast that finds it costs just that.
 
 ## Finding one
 
@@ -42,8 +42,9 @@ The first time you cast a secret spell:
   another, like plates in a book;
 - it condenses **400 mana** toward your next [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}),
   more than any other discovery but a boss;
-- from then on the Cord screen shows its real name, in its own colour, whenever you thread it, with a
-  line saying what it does.
+- from then on, whenever you thread it, the Cord screen, your spell panel and the spell wheel show its
+  real name and its real price and cooldown (see below); the Cord screen names it in its own colour,
+  with a line saying what it does.
 
 | Milestone | Reward |
 |---|---|
@@ -55,10 +56,12 @@ The first time you cast a secret spell:
 
 ## How they behave
 
-- **They cost more than their runes.** A secret spell costs **1.1 to 1.5 times** the mana of the
-  ordinary spell its runes would make, depending on the secret. The price your HUD and the Cord screen
-  show is the ordinary one, so keep a little mana spare.
-- **Longer cooldown:** half as long again as the ordinary spell's.
+- **They cost more than their runes.** Once you've found it, a secret spell costs **1.1 to 1.5 times**
+  the mana of the ordinary spell its runes would make, depending on the secret, and your spell panel,
+  the spell wheel and the Cord screen show that price. (The cast that finds it costs only the ordinary
+  price.)
+- **Longer cooldown:** once found, half as long again as the ordinary spell's, and that's the cooldown
+  shown too.
 - **They weigh their full price** against a [Shield]({{ '/spellcraft/shields/' | relative_url }}), so
   they break Shields their runes alone wouldn't.
 - **Scaled like any spell** by your Heart Circles, Cord enchantments, charging and rhythm.
@@ -66,7 +69,8 @@ The first time you cast a secret spell:
   secret is its exact runes): those become Twice. See
   [Overcasting and Wild Magic]({{ '/spellcraft/overcasting/' | relative_url }}).
 - **On a Spell Scroll** a secret spell goes off as the secret for whoever reads the scroll, with or
-  without a Cord. Reading someone else's scroll doesn't count as finding it yourself.
+  without a Cord. Reading someone else's scroll doesn't count as finding it yourself. A scroll bears the
+  secret's name only if its writer had found it.
 
 ## Riddles and Torn Pages
 

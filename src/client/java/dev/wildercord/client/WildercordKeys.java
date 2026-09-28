@@ -109,7 +109,9 @@ public final class WildercordKeys {
 			CordTier tier = Spellbooks.tier(client.player);
 			if (next.isDown()) {
 				nextHeld++;
-				if (nextHeld == HOLD && tier != null && tier.spells > 1) {
+				// The wheel needs two spells to choose between: the Cord's, and the tome's while it's held.
+				if (nextHeld == HOLD && tier != null
+						&& dev.wildercord.gear.SpellSlots.open(tier.spells, dev.wildercord.gear.Gear.tome(client.player)).size() > 1) {
 					client.gui.setScreen(new SpellWheelScreen(next));
 					nextHeld = -1;
 				}

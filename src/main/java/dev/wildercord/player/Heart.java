@@ -192,7 +192,33 @@ public final class Heart {
 	}
 
 	public static int cooldownTicks(Player player, SpellCompiler.Compiled compiled) {
-		return (int) Math.max(5, Math.round(compiled.cooldownTicks() * bonuses(player).cooldown()));
+		return cooldownTicks(player, compiled, 1.0);
+	}
+
+	/** @param factor one more factor on the cooldown, e.g. a found secret spell's ({@link #secretCooldown}) */
+	public static int cooldownTicks(Player player, SpellCompiler.Compiled compiled, double factor) {
+		return (int) Math.max(5, Math.round(compiled.cooldownTicks() * bonuses(player).cooldown() * factor));
+	}
+
+	// ------------------------------------------------------------------ secret spells
+
+	/**
+	 * The secret spell {@code runes} spell out, if this player has found it. Only a found secret is
+	 * named, priced and timed as one, here and on the server alike: until then everything shows the
+	 * ordinary spell (anything else would give it away), and the first cast, which finds it, costs that.
+	 */
+	public static java.util.Optional<dev.wildercord.spell.Secrets.Secret> foundSecret(Player player, List<dev.wildercord.spell.RuneDef> runes) {
+		return dev.wildercord.spell.Secrets.match(runes).filter(secret -> discovered(player, secret.key()));
+	}
+
+	/** The factor on a spell's price for this player: a found secret's power, otherwise 1. */
+	public static double secretCost(Player player, List<dev.wildercord.spell.RuneDef> runes) {
+		return foundSecret(player, runes).map(dev.wildercord.spell.Secrets.Secret::power).orElse(1.0);
+	}
+
+	/** The factor on a spell's cooldown for this player: {@link dev.wildercord.spell.Secrets#COOLDOWN} for a found secret, otherwise 1. */
+	public static double secretCooldown(Player player, List<dev.wildercord.spell.RuneDef> runes) {
+		return foundSecret(player, runes).isPresent() ? dev.wildercord.spell.Secrets.COOLDOWN : 1.0;
 	}
 
 	/** Mana per second to keep a passive running. */
