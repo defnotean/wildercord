@@ -226,8 +226,8 @@ at the same moment carries on with whatever is after it.
 Friendly fire is **off**, always:
 
 - **Harmful effects** (damage, control, knockback) never touch **you**, your **tamed pets** or anyone on your
-  **team**. Other players are only harmed if the server allows PvP, and then rune damage to them is scaled
-  down (to 60% unless the server changes it). Players in creative or spectator are never harmed.
+  **team**. Other players and their pets are only harmed if the server allows PvP, and then rune damage to a
+  player is scaled down (to 60% unless the server changes it). Players in creative or spectator are never harmed.
 - **Helpful effects** (healing, buffs, shields) only touch **you and your allies**: your pets and players on
   your team. A player who isn't on your team isn't an ally, so to heal a friend with `Burst · Heal`, join the
   same team (an operator can set one up with the game's team command).

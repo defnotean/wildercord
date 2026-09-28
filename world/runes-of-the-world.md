@@ -169,7 +169,7 @@ of its own. The bosses fight only once per dungeon, so their runes are rare.
 | **[Fallen stars]({{ '/world/world-events/' | relative_url }})** | [Starshard]({{ '/runes/world/#starshard' | relative_url }}) | A star holds a Tier III rune three times in four, and that rune is Starshard about 3 times in 4 (the rest of the time it's a Tier IV rune, or another Tier III) |
 | **[Rift sieges]({{ '/world/world-events/' | relative_url }})** | [Riftcall]({{ '/runes/world/#riftcall' | relative_url }}), [Unstable]({{ '/runes/world/#unstable' | relative_url }}) | A closed rift's runes are Tier III 35% of the time, and a Tier III rune is Riftcall or Unstable about 3 times in 4 |
 | **The Riftcaller** | [Unstable]({{ '/runes/world/#unstable' | relative_url }}), and 50% Riftcall or Unstable | When a player kills it |
-| **Mana storms** | [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}), [Manatide]({{ '/runes/world/#manatide' | relative_url }}) | Listed under mana storms in the Grimoire, but in this version a storm doesn't hand them out, so neither can be found yet |
+| **[Mana storms]({{ '/world/world-events/#the-storms-runes' | relative_url }})** | [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}), [Manatide]({{ '/runes/world/#manatide' | relative_url }}) | From your 10th cast under a storm, each surge has a 1 in 3 chance to crystallise one straight into your pack: Manaburn 5 times in 7, Manatide 2 in 7. One per storm for each player |
 
 ## Now and then elsewhere
 
@@ -208,8 +208,8 @@ of its own. The bosses fight only once per dungeon, so their runes are rare.
 | <img src="{{ '/assets/runes/if_wounded.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [If Wounded]({{ '/runes/world/#if_wounded' | relative_url }}) | II | Link | Stronghold libraries; Archive libraries |
 | <img src="{{ '/assets/runes/infest.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Infest]({{ '/runes/world/#infest' | relative_url }}) | II | Earth effect | Stronghold libraries; Archive libraries |
 | <img src="{{ '/assets/runes/kindled.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Kindled]({{ '/runes/world/#kindled' | relative_url }}) | III | Modifier | Ember Sanctum vault; the Cinder Warden |
-| <img src="{{ '/assets/runes/manaburn.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}) | II | Arcane effect | Listed under mana storms (not handed out yet) |
-| <img src="{{ '/assets/runes/manatide.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manatide]({{ '/runes/world/#manatide' | relative_url }}) | III | Arcane effect | Listed under mana storms (not handed out yet) |
+| <img src="{{ '/assets/runes/manaburn.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}) | II | Arcane effect | Mana storms (a surge after 10 casts) |
+| <img src="{{ '/assets/runes/manatide.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Manatide]({{ '/runes/world/#manatide' | relative_url }}) | III | Arcane effect | Mana storms (a surge after 10 casts) |
 | <img src="{{ '/assets/runes/mire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Mire]({{ '/runes/world/#mire' | relative_url }}) | II | Earth effect | Attunement: swamp |
 | <img src="{{ '/assets/runes/moonpetal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Moonpetal]({{ '/runes/world/#moonpetal' | relative_url }}) | II | Life effect | Attunement: cherry grove |
 | <img src="{{ '/assets/runes/portalfall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Portalfall]({{ '/runes/world/#portalfall' | relative_url }}) | II | Void effect | Ruined portals; Runebound Adepts |

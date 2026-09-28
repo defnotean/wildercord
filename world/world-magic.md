@@ -159,7 +159,8 @@ Each is worth 250 mana toward your next Heart Circle. See [The Grimoire and Feat
 ## Rules and limits
 
 - **Only a player's spells change blocks**, and only where that player may build: spawn protection, land claims and
-  Adventure mode all stop it. Some servers turn off block changes by spells entirely.
+  Adventure mode all stop it. Some servers turn this magic's block changes off in their settings (the steam, the
+  shocks through water and the gusts still happen), or block changes by spells entirely.
 - **A monster's spells never change blocks.** A Runebound's fire won't light your grass. But the changes that aren't
   blocks still happen for monsters: their storm runs through water, their earth heaves the ground, their wind turns your
   arrows, their fire steams and their void draws items.

@@ -181,9 +181,8 @@ it can't be hurt**. The boss bar says *rewriting its Cord*, and everyone within 
 Each time it calls up **two Runebound** from the stacks, about 5 blocks away: a skeleton and a pillager, carrying spells
 from their usual lists. The second time they're **Adepts**. Then it starts its new phase's spells from the first.
 
-{: .note }
-Unlike the three dimension bosses, the Archivist has no floor on a phase. One huge blow can carry it from the first
-phase straight past a third of its health: it then rewrites once and goes straight to its last phase.
+No blow carries it past the start of its next phase: however big the hit, the damage stops there and the rewriting
+begins at once, so you fight all three phases.
 
 ### Strategy
 

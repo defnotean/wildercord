@@ -20,6 +20,8 @@ Now and then the world's magic stirs by itself. Three events come on their own: 
 - **Cooldowns are saved.** When each kind of event may next come, and where a star is lying, is saved with the world,
   so a restart doesn't reset them. (A storm or a rift in progress simply ends with a restart.)
 - Server operators can start any event on the spot; see [Controls]({{ '/controls/' | relative_url }}).
+- **A server can switch world events off** in its settings. Then none of the three ever starts, not even from the
+  command, though one already going runs its course.
 
 ## Mana storms
 
@@ -66,20 +68,33 @@ When a spell surges, a violet ring flashes round you and one of these happens:
 
 A cast surges one way at most.
 
+### The storm's runes
+
+A mana storm keeps two runes of the world, [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}) and
+[Manatide]({{ '/runes/world/#manatide' | relative_url }}), and gives them to those who cast under it:
+
+- **From your 10th cast under a storm**, every surge (of any kind) has a **1 in 3 chance** to crystallise the storm's
+  mana into one of its runes.
+- The rune goes **straight into your pack** (or drops at your feet if it's full). It's **Manaburn** 5 times in 7 and
+  **Manatide** 2 times in 7.
+- You're told in chat, *"The storm's mana crystallises in your hands: Manaburn"*, and a violet ring falls in on your
+  hands with a flash everyone near can see.
+- **One rune per storm** for each player. Your casts count for the whole storm, even if you step out and back in.
+
+With a surge on one cast in ten, that's about one rune for every 30 casts after your 10th, so a caster who keeps
+casting through a whole storm will usually come away with one.
+
 ### Feat
 
 **Stormcaller**: cast 20 spells under a single mana storm. Worth 250 mana toward your next Heart Circle, and the
 advancement *Stormcaller*.
 
-{: .note }
-The Grimoire lists two runes of the world under mana storms, [Manaburn]({{ '/runes/world/#manaburn' | relative_url }})
-and [Manatide]({{ '/runes/world/#manatide' | relative_url }}). In this version a storm doesn't hand them out, so
-neither can be found yet.
-
 ### Tips
 
 - **Cast big.** A quarter off every spell and double regeneration make a storm the best time for your most expensive
   spells, and for the feat.
+- **Keep casting.** The storm's runes and Stormcaller both come from casting under it, and cheap spells count as much as
+  dear ones.
 - **Mind the backfire** in a tight spot: it shoves you back and costs 10 mana.
 - **Sit on the line.** A ley line already doubles your regeneration; the storm's bonus adds on top.
 
