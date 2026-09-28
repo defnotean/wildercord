@@ -372,5 +372,38 @@
         "attenuation_distance": 48
       }
     ]
+  },
+  "wisp_ambient": {
+    "subtitle": "subtitles.wildercord.wisp_ambient",
+    "sounds": [
+      "wildercord:familiar/wisp_ambient_1",
+      "wildercord:familiar/wisp_ambient_2",
+      "wildercord:familiar/wisp_ambient_3"
+    ]
+  },
+  "wisp_chime": {
+    "subtitle": "subtitles.wildercord.wisp_chime",
+    "sounds": [
+      "wildercord:familiar/wisp_chime"
+    ]
+  },
+  "wisp_bond": {
+    "subtitle": "subtitles.wildercord.wisp_bond",
+    "sounds": [
+      "wildercord:familiar/wisp_bond"
+    ]
+  },
+  "wisp_cast": {
+    "subtitle": "subtitles.wildercord.wisp_cast",
+    "sounds": [
+      "wildercord:familiar/wisp_cast_1",
+      "wildercord:familiar/wisp_cast_2"
+    ]
+  },
+  "wisp_level": {
+    "subtitle": "subtitles.wildercord.wisp_level",
+    "sounds": [
+      "wildercord:familiar/wisp_level"
+    ]
   }
 }

@@ -13,7 +13,8 @@
 		"PlayerModelMixin",
 		"LivingEntityRendererMixin",
 		"SkyRendererMixin",
-		"FogRendererMixin"
+		"FogRendererMixin",
+		"AvatarRendererStyleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

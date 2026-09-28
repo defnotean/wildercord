@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "G": "minecraft:glass_pane",
+    "L": "minecraft:lantern"
+  },
+  "pattern": [
+    " A ",
+    "GLG",
+    " A "
+  ],
+  "result": {
+    "id": "wildercord:wisp_lantern"
+  }
+}

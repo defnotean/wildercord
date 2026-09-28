@@ -39,6 +39,8 @@ public final class Feats {
 	public static final String STARGAZER = "stargazer";
 	public static final String RIFTWARDEN = "riftwarden";
 	public static final String CHORUS = "chorus";
+	public static final String KINDRED = "kindred";
+	public static final String MENAGERIE = "menagerie";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -74,7 +76,9 @@ public final class Feats {
 		new Feat(STORMCALLER, "Stormcaller", "Cast 20 spells under a mana storm."),
 		new Feat(STARGAZER, "Stargazer", "Looted a Fallen Star."),
 		new Feat(RIFTWARDEN, "Riftwarden", "Closed a rift."),
-		new Feat(CHORUS, "Chorus", "Cast the same spell as other casters at the same moment, and sang one great spell together."));
+		new Feat(CHORUS, "Chorus", "Cast the same spell as other casters at the same moment, and sang one great spell together."),
+		new Feat(KINDRED, "Kindred", "Bonded with a wisp: your first familiar."),
+		new Feat(MENAGERIE, "Menagerie", "Bonded with a wisp of every element."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");

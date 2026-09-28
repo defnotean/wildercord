@@ -226,7 +226,7 @@ public class CordScreen extends Screen {
 		return onScreen(20, SPELL_TOP + row * SPELL_ROW + SPELL_ROW / 2.0 - 2);
 	}
 
-	/** The middle of page tab {@code page} (0 Spells, 1 Passives, 2 Grimoire), on screen. */
+	/** The middle of page tab {@code page} (0 Spells, 1 Passives, 2 Grimoire, 3 Cosmetics), on screen. */
 	public double[] pagePoint(int page) {
 		int x = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
 		for (int i = 0; i < page; i++) {
@@ -626,7 +626,7 @@ public class CordScreen extends Screen {
 		}
 		// Spells | Passives | Grimoire
 		int pageX = 13 + font.width(name) + 8;
-		for (int page = 0; page < 3; page++) {
+		for (int page = 0; page < PAGE_KEYS.length; page++) {
 			Component label = Component.translatable(PAGE_KEYS[page]);
 			int w = font.width(label) + 10;
 			boolean active = page() == page;
@@ -1437,9 +1437,15 @@ public class CordScreen extends Screen {
 		}
 		// Spells | Passives | Grimoire
 		int pageX = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
-		for (int page = 0; page < 3; page++) {
+		for (int page = 0; page < PAGE_KEYS.length; page++) {
 			int w = font.width(Component.translatable(PAGE_KEYS[page])) + 10;
 			if (inside(mx, my, pageX, 7, w, 13)) {
+				if (page == 3) {
+					// Cosmetics is its own screen, drawn as a page of this one.
+					click();
+					minecraft.gui.setScreen(new dev.wildercord.client.cosmetic.CordStyleScreen(this));
+					return true;
+				}
 				if (page() != page) {
 					passivePage = page == 1;
 					grimoirePage = page == 2;
@@ -1758,7 +1764,8 @@ public class CordScreen extends Screen {
 
 	// ------------------------------------------------------------------ pages, spell tools and the Grimoire
 
-	private static final String[] PAGE_KEYS = {"screen.wildercord.page.spells", "screen.wildercord.page.passives", "screen.wildercord.page.grimoire"};
+	private static final String[] PAGE_KEYS = {"screen.wildercord.page.spells", "screen.wildercord.page.passives", "screen.wildercord.page.grimoire",
+		"screen.wildercord.page.cosmetics"};
 	private static final int TOOL = 14;
 	private static final String[] TOOL_GLYPHS = {"\u270E", "\u29C9", "\u2398", "\u2709"};
 	private static final String[] TOOL_KEYS = {"rename", "copy", "paste", "scroll"};
@@ -1766,6 +1773,14 @@ public class CordScreen extends Screen {
 
 	private int page() {
 		return grimoirePage ? 2 : passivePage ? 1 : 0;
+	}
+
+	/** Shows page {@code page} (0 Spells, 1 Passives, 2 Grimoire): how the Cosmetics page comes back. */
+	public void showPage(int page) {
+		passivePage = page == 1;
+		grimoirePage = page == 2;
+		readoutScroll = 0;
+		renaming = false;
 	}
 
 	private int toolX(int i) {

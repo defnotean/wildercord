@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/kindred",
+  "criteria": {
+    "menagerie": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "menagerie"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:resonance"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.menagerie.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.menagerie.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "menagerie"
+    ]
+  ],
+  "rewards": {
+    "experience": 150
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "kindred": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "kindred"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:glimmer"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.kindred.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.kindred.description"
+    }
+  },
+  "requirements": [
+    [
+      "kindred"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

@@ -13,7 +13,8 @@
 			"dev.wildercord.gametest.WildercordParryTest",
 			"dev.wildercord.gametest.WildercordAdvancementTest",
 			"dev.wildercord.gametest.WildercordEventsTest",
-			"dev.wildercord.gametest.WildercordSocialTest"
+			"dev.wildercord.gametest.WildercordSocialTest",
+			"dev.wildercord.gametest.WildercordFamiliarTest"
 		]
 	},
 	"depends": {

@@ -107,6 +107,7 @@ public final class Effects {
 		RuneSeals.onSpell(cast, hit, node.effect.element());
 		WorldMagic.onSpell(cast, node, hit, groupPower);
 		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
+		dev.wildercord.familiar.Familiars.onSpell(cast, hit, node.effect.element());
 	}
 
 	/**
