@@ -56,7 +56,7 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 		new FusedSample(Runes.CRIMSON_MIST, Runes.BOLT, 24, false),
 		new FusedSample(Runes.SOULBOND, Runes.SELF, 5, false),
 		new FusedSample(Runes.SECOND_WIND, Runes.SELF, 10, false),
-		new FusedSample(Runes.TRANSFUSION, Runes.SELF, 4, false),
+		new FusedSample(Runes.TRANSFUSION, Runes.BOLT, 10, false),
 		new FusedSample(Runes.LIFEBLOOM, Runes.SELF, 9, false),
 		new FusedSample(Runes.BONESPUR, Runes.BOLT, 14, false),
 		new FusedSample(Runes.SANGUINE_RITE, Runes.BEAM, 3, false));
