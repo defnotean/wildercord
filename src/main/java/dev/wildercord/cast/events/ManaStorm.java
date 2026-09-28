@@ -10,13 +10,17 @@ import dev.wildercord.cast.LeyWalker;
 import dev.wildercord.cast.Light;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.Sigils;
+import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.SigilOption;
+import dev.wildercord.content.WildercordLoot;
+import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneFamily;
+import dev.wildercord.spell.RuneSources;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.world.LeyLines;
@@ -29,8 +33,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -47,7 +54,9 @@ import java.util.UUID;
  * A mana storm: for three to five minutes the world's mana boils up over a stretch of ley line.
  * Everyone under it regenerates mana twice as fast and casts for a quarter less, the sky takes a
  * faint violet cast, and violet arcs jump between points of the line; but every spell cast under
- * it has a small chance to surge (see {@link EventRules.Surge}).
+ * it has a small chance to surge (see {@link EventRules.Surge}). Once a caster has cast enough under
+ * it, a surge may crystallise the storm's mana into one of its own runes, Manaburn or Manatide
+ * (see {@link EventRules#stormRune}): once per storm for each player.
  *
  * <p>Who is under a storm travels to their client as {@link #STORM_UNTIL} (renewed every second,
  * like a Wellstone's), which {@code Mana.of} and {@code Heart.manaCost} read on both sides and the
@@ -73,8 +82,10 @@ public final class ManaStorm {
 	long end;
 	/** Players under it at the last check. */
 	private final Set<UUID> inside = new HashSet<>();
-	/** Casts under it per player, toward Stormcaller. */
+	/** Casts under it per player, toward Stormcaller and its runes. */
 	private final Map<UUID, Integer> casts = new HashMap<>();
+	/** Players it has already given a rune. */
+	private final Set<UUID> crystallised = new HashSet<>();
 	private int turn;
 
 	ManaStorm(ServerLevel level, Vec3 centre, long start, int ticks) {
@@ -272,16 +283,17 @@ public final class ManaStorm {
 	}
 
 	/**
-	 * After a cast under a storm: counts it toward Stormcaller and plays out the surge, if any.
-	 * {@code again} casts the same spell again, for an echo.
+	 * After a cast under a storm: counts it toward Stormcaller and plays out the surge, if any (which
+	 * may crystallise one of the storm's runes). {@code again} casts the same spell again, for an echo.
 	 */
 	public static void afterCast(ServerPlayer player, EventRules.Surge surge, List<RuneDef> runes, Runnable again) {
 		if (!inside(player)) {
 			return;
 		}
 		ManaStorm storm = WorldEvents.stormAt(player.level(), player.position());
+		int n = 0;
 		if (storm != null) {
-			int n = storm.casts.merge(player.getUUID(), 1, Integer::sum);
+			n = storm.casts.merge(player.getUUID(), 1, Integer::sum);
 			if (n >= EventRules.STORMCALLER_CASTS) {
 				Grimoire.feat(player, Feats.STORMCALLER);
 			}
@@ -309,6 +321,38 @@ public final class ManaStorm {
 			case BACKFIRE -> backfire(player);
 			default -> { }
 		}
+		if (storm != null && EventRules.stormRune(surge, n, storm.crystallised.contains(player.getUUID()), player.getRandom().nextDouble())) {
+			storm.crystallise(player);
+		}
+	}
+
+	/**
+	 * The storm's mana crystallises into one of its own runes (Manaburn, or more rarely Manatide) in
+	 * {@code player}'s hands, with a flash everyone near can see. At most once per storm for each
+	 * player: false, and nothing given, if this storm already gave them one.
+	 */
+	public boolean crystallise(ServerPlayer player) {
+		if (!crystallised.add(player.getUUID())) {
+			return false;
+		}
+		ItemStack stack = WildercordLoot.foundRune(RuneSources.MANA_STORM.id(), player.getRandom());
+		RuneDef rune = RuneItem.runeOf(stack).orElse(Runes.MANABURN);
+		int color = RuneColors.of(rune);
+		Vec3 look = player.getLookAngle();
+		Vec3 at = player.position().add(look.x * 0.6, 1.2, look.z * 0.6);
+		// The storm's violet falls in on the caster's hands and snaps into a rune.
+		ElementFx.ring(level, at, new Vec3(0, 1, 0), VIOLET, 2.8, 0.15, 0.06, 12);
+		Light.groundRing(level, player.position(), VIOLET, 0.3, 3.2, 0.1, 14);
+		Sigils.flash(level, at, color, 2.0F);
+		Sigils.flash(level, at, CORE, 1.0F);
+		Fx.send(level, ParticleTypes.END_ROD, at.x, at.y, at.z, 16, 0.3, 0.3, 0.3, 0.08);
+		Fx.sound(level, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 1.3F);
+		Fx.sound(level, at, WildercordSounds.DISCOVERY, 1.0F, 1.0F);
+		player.sendSystemMessage(Component.translatable("message.wildercord.storm_rune", RuneItem.runeName(rune).withColor(color)).withColor(VIOLET));
+		if (!player.getInventory().add(stack)) {
+			level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), stack));
+		}
+		return true;
 	}
 
 	/** A stray element rides along: the spell's shape (a bolt for Self or Touch) carrying a random element. */

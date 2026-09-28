@@ -71,7 +71,7 @@ How the item lets its spell go depends on what it is:
 |---|---|---|
 | **Weapons** (swords, maces, tridents...) | When you strike a creature with it in your main hand | At what you struck |
 | **Tools** (pickaxes, axes, shovels, hoes...) | Each block you break with it, and each creature you strike | At the block, or at what you struck |
-| **Bows and crossbows** | The next arrows it fires (from either hand) | Wherever each arrow lands, in a creature or a block |
+| **Bows and crossbows** | The next shots it fires (from either hand) | Where the arrow lands, in a creature or a block |
 | **Armour and shields** | Whenever a creature hurts you (a blocked hit counts) | At whoever hurt you |
 | **Blocks** | When you place it | It becomes a [glyph](#glyphs) holding the magic |
 | **Anything else** (a stick, a bone, a book, a feather...) | When you use it (right-click) | At the creature or block you're looking at (up to 24 blocks away); or, if the stored part starts with a shape, from you like a normal cast |
@@ -79,8 +79,9 @@ How the item lets its spell go depends on what it is:
 - **Helpful magic goes to the holder.** If the stored part only helps (a Heal, a Shield, a Swift), a
   weapon, tool or piece of armour lets it go on **you**, not on the foe you struck or the block you
   broke. A sword imbued with `Heal` heals you as you fight.
-- **Bows:** each arrow that carries the spell uses a charge. A crossbow's triple shot spends one charge,
-  and only one of its three arrows carries the spell. Imbued arrows trail motes of the spell's colour.
+- **Bows:** each shot that carries the spell uses a charge. A crossbow's triple shot (Multishot) spends one
+  charge, and **only one of its three arrows carries the spell**; the other two are plain arrows. Imbued arrows
+  trail motes of the spell's colour.
 - **Armour:** you only need one imbued piece. If you wear several, the first one found (head, chest,
   legs, feet, then your hands) lets go.
 - An item whose stored part starts with an effect, used while you look at nothing, tells you *"Look at

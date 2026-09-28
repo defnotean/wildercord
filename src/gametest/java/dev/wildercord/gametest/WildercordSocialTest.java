@@ -2,6 +2,7 @@ package dev.wildercord.gametest;
 
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.CastEngine;
+import dev.wildercord.cast.Targets;
 import dev.wildercord.chorus.Chorus;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.WildercordComponents;
@@ -21,6 +22,7 @@ import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -31,15 +33,18 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.VillagerTradeTags;
+import net.minecraft.world.entity.EntityReference;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -49,8 +54,10 @@ import java.util.List;
 /**
  * The social magic, checked in a real world: a Runesmith and its trades (novice and master, and
  * the rune on the wandering trader's shelf), the duplicate buyback and reroll, a contract counted
- * up and handed in at a Scribing Desk, and two casters' spells merging into a chorus (the second
- * voice is a husk calling the chorus logic directly, since a test has only one real player).
+ * up and handed in at a Scribing Desk, two casters' spells merging into a chorus (the second
+ * voice is a husk calling the chorus logic directly, since a test has only one real player), and
+ * another player's pets kept as safe from your spells as that player is (the other owner is a
+ * stand-in player, or one who's away).
  *
  * <p>Runs in the full suite; skipped by {@code WILDERCORD_TOUR_ONLY} and {@code WILDERCORD_CORDS_ONLY}.</p>
  */
@@ -78,10 +85,11 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			attempt(failures, "contracts", () -> contracts(context, world));
 			context.waitTicks(2);
 			attempt(failures, "chorus", () -> chorus(context, world));
+			attempt(failures, "pets", () -> pets(world));
 			context.waitTicks(40);
 			world.getServer().runCommand("kill @e[tag=wildercord.social]");
 			if (!failures.isEmpty()) {
-				throw new AssertionError("The Runesmith, contracts or chorus went wrong:\n  " + String.join("\n  ", failures));
+				throw new AssertionError("The Runesmith, contracts, chorus or pets went wrong:\n  " + String.join("\n  ", failures));
 			}
 		}
 	}
@@ -102,6 +110,62 @@ public class WildercordSocialTest implements FabricClientGameTest {
 		if (!ok) {
 			throw new AssertionError(what);
 		}
+	}
+
+	// ------------------------------------------------------------------ pets
+
+	/** A tamed wolf, not put in the world (the rules only ask who owns it). */
+	private static Wolf pet(ServerLevel level) {
+		Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+		check(wolf != null, "a wolf should spawn");
+		wolf.setTame(true, true);
+		return wolf;
+	}
+
+	/**
+	 * With PvP off, another player's pet is as safe from your spells as they are, whether they're on or
+	 * away; with it on, it isn't. Your own pet is always safe (and yours to help), and a monster's
+	 * spells hit any player's pet.
+	 */
+	private static void pets(TestSingleplayerContext world) {
+		String problem = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			boolean pvp = level.getGameRules().get(GameRules.PVP);
+			Wolf theirs = pet(level);
+			theirs.setOwner(FakePlayer.get(level));
+			Wolf away = pet(level);
+			away.setOwnerReference(EntityReference.of(java.util.UUID.randomUUID()));
+			Wolf mine = pet(level);
+			mine.setOwner(player);
+			Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			try {
+				level.getGameRules().set(GameRules.PVP, false, server);
+				if (Targets.canHarm(player, theirs)) {
+					return "with PvP off, another player's pet should be safe from your spells";
+				}
+				if (Targets.canHarm(player, away)) {
+					return "with PvP off, the pet of a player who's away should be safe from your spells";
+				}
+				if (Targets.canHarm(player, mine) || !Targets.canHelp(player, mine)) {
+					return "your own pet should be safe from your spells, and yours to help";
+				}
+				if (husk == null || !Targets.canHarm(husk, theirs) || !Targets.canHarm(husk, away)) {
+					return "a monster's spells should hit a player's pet";
+				}
+				level.getGameRules().set(GameRules.PVP, true, server);
+				if (!Targets.canHarm(player, theirs) || !Targets.canHarm(player, away)) {
+					return "with PvP on, another player's pet should be fair game";
+				}
+				if (Targets.canHarm(player, mine)) {
+					return "your own pet should be safe even with PvP on";
+				}
+				return null;
+			} finally {
+				level.getGameRules().set(GameRules.PVP, pvp, server);
+			}
+		});
+		check(problem == null, problem);
 	}
 
 	private static Villager runesmith(ServerLevel level, Vec3 at, int tradeLevel) {

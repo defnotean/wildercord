@@ -488,7 +488,11 @@ public final class Imbuing {
 		}
 	}
 
-	/** An arrow leaving an imbued bow or crossbow carries the spell (one charge a shot, even a triple one). */
+	/**
+	 * An arrow leaving an imbued bow or crossbow carries the spell: one arrow and one charge a shot. Of a
+	 * crossbow's triple shot only the first arrow carries it (the other two, fired the same tick, are
+	 * plain), so Multishot can't turn one charge into three spells.
+	 */
 	private static void onEntityLoad(Entity entity, ServerLevel level) {
 		if (!(entity instanceof AbstractArrow arrow) || arrow.hasAttached(WildercordAttachments.IMBUED_SHOT) || arrow.tickCount > 0
 				|| !(arrow.getOwner() instanceof ServerPlayer player) || player.distanceToSqr(arrow) > 64) {

@@ -62,7 +62,7 @@ public record Imbued(List<String> runes, int charges, int color, boolean glint, 
 	public enum Release {
 		/** Blocks: placed, the block becomes a glyph that holds it. */
 		PLACE,
-		/** Bows and crossbows: with the next arrows, where each lands. */
+		/** Bows and crossbows: with the next shots, where the arrow lands (one arrow of a crossbow's triple shot). */
 		SHOT,
 		/** Armour and shields: at whatever hurts you. */
 		WORN,

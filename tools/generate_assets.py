@@ -475,15 +475,11 @@ def write_lang(runes):
         "screen.wildercord.heart.complete": "Your heart is complete: an Archmage's eight circles.",
         "screen.wildercord.heart.next": "Next: the %s Circle",
         "screen.wildercord.heart.condense": "Mana condensed from casting: %s / %s",
-        "screen.wildercord.heart.breakthrough.runes_15": "Breakthrough: know 15 runes",
-        "screen.wildercord.heart.breakthrough.amethyst": "Breakthrough: wear an Amethyst Cord or better",
-        "screen.wildercord.heart.breakthrough.boss": "Breakthrough: help slay a boss (Wither, Warden, Elder Guardian or Ender Dragon)",
-        "screen.wildercord.heart.breakthrough.archmage": "Breakthrough: wear an Echo Cord and know 100 runes",
         "screen.wildercord.heart.ready": "Ready! Meditate (sneak and stand still) for 10 seconds without getting hurt to form it.",
         "screen.wildercord.heart.need.runes": "Know %s runes (%s)",
         "screen.wildercord.heart.need.cord": "Wear a %s or better",
         "screen.wildercord.heart.need.kills": "Defeat %s monsters with spells (%s)",
-        "screen.wildercord.heart.need.boss": "Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon or the Archivist)",
+        "screen.wildercord.heart.need.boss": "Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon, the Archivist, the Cinder Warden, the Star-Eater or the Tide Scribe)",
         "message.wildercord.circle_broken": "Your concentration broke: the circle unravels",
         "screen.wildercord.heart.how": "Mana spent casting spells condenses in your heart. Once it's ready, meditate to form the circle.",
         "message.wildercord.circle_ready": "Your heart is ready to form the %s Circle. Meditate (sneak and stand still) for 10 seconds without getting hurt to form it.",
@@ -1051,9 +1047,10 @@ def write_recipes(runes):
     upgrades = [("copper", "twine", ["minecraft:copper_ingot"] * 4 + ["minecraft:amethyst_shard"]),
                 ("amethyst", "copper", ["minecraft:amethyst_shard"] * 4 + ["minecraft:gold_ingot"] * 2),
                 ("echo", "amethyst", ["minecraft:echo_shard"] * 2 + ["minecraft:netherite_scrap"])]
+    # A shapeless recipe that keeps the old Cord's enchantments, name and the rest (CordUpgradeRecipe.java).
     for new, old, extra in upgrades:
         write_json(out / f"{new}_cord.json", {
-            "type": "minecraft:crafting_shapeless", "category": "equipment",
+            "type": "wildercord:cord_upgrade", "category": "equipment",
             "ingredients": [f"wildercord:{old}_cord", *extra], "result": {"id": f"wildercord:{new}_cord"}})
 
 
@@ -1323,6 +1320,7 @@ NEW_LANG = {
     "message.wildercord.surge.echo": "Surge! Your spell echoes",
     "message.wildercord.surge.element": "Surge! A stray spark of %s rides along",
     "message.wildercord.surge.backfire": "Surge! The storm's mana kicks back",
+    "message.wildercord.storm_rune": "The storm's mana crystallises in your hands: %s",
     "message.wildercord.star_falls": "A star falls to the %s!",
     "message.wildercord.star_guarded": "Runebound rise to guard the Fallen Star",
     "message.wildercord.star_held": "The star's guardians still stand (%s)",
@@ -1347,6 +1345,7 @@ NEW_LANG = {
     "command.wildercord.event.peaceful": "Rift sieges and fallen stars need a difficulty above Peaceful",
     "command.wildercord.event.rift_open": "A rift is already open in this world",
     "command.wildercord.event.rift": "A rift tears open",
+    "command.wildercord.event.off": "World events are switched off in the server's config (features.world_events)",
     "subtitles.wildercord.storm_start": "Mana storm gathers",
     "subtitles.wildercord.storm_end": "Mana storm passes",
     "subtitles.wildercord.storm_arc": "Ley line crackles",
@@ -1679,8 +1678,8 @@ WORLD_LANG = {
 
 
 def write_found_loot(runes):
-    """Loot tables for Wildercord's own places (dungeon vaults, their bosses, world events), from RuneSources.java.
-    The dungeon and event features point at these; a rune is picked by tier, like any chest."""
+    """The Riftcaller's loot table, from RuneSources.java: a rune is picked by tier, like any chest. (The dungeons'
+    vaults and bosses are written by dungeon_assets.py; fallen stars, rifts and mana storms pick their runes in code.)"""
     tier = {r["path"]: r["tier"] for r in runes}
     sources = {sid: paths for sid, _, paths in rune_sources()}
 
@@ -1697,8 +1696,6 @@ def write_found_loot(runes):
             chance(found_pool(dungeon), 0.5),
             {"rolls": 1, "entries": [item_entry("wildercord:mana_crystal", 1, 1, 3)]},
         ]})
-    for event in ("starfall", "rift", "mana_storm"):
-        write_json(DATA / f"loot_table/events/{event}.json", {"type": "minecraft:chest", "pools": [found_pool(event)]})
 
 
 def rune_entry(path, weight):

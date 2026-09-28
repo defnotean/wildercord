@@ -8,6 +8,7 @@ import dev.wildercord.cast.events.FallenStars;
 import dev.wildercord.cast.events.ManaStorm;
 import dev.wildercord.cast.events.RiftSiege;
 import dev.wildercord.cast.events.WorldEvents;
+import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
@@ -37,7 +38,8 @@ import java.util.Set;
 
 /**
  * The world events, each started through its API as the command does: a mana storm (the player is
- * under it on both sides, spells cost less, mana flows faster, and twenty casts earn Stormcaller), a
+ * under it on both sides, spells cost less, mana flows faster, twenty casts earn Stormcaller, and it
+ * crystallises one of its runes for the player once and never twice), a
  * fallen star (it lands with a rune inside, its guards rise when the player is near, it won't open
  * while they stand, nor when one is sent away without being killed, then, once they're killed, opens,
  * crumbles and earns Stargazer) and a rift siege (its first wave pours out, it can't be sealed in the
@@ -116,6 +118,19 @@ public class WildercordEventsTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ mana storm
 
+	/** How many of a mana storm's runes the player carries. */
+	private static int stormRunes(ServerPlayer player) {
+		int n = 0;
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			ItemStack stack = player.getInventory().getItem(i);
+			RuneDef rune = RuneItem.runeOf(stack).orElse(null);
+			if (rune != null && (rune.is(Runes.MANABURN.id()) || rune.is(Runes.MANATIDE.id()))) {
+				n += stack.getCount();
+			}
+		}
+		return n;
+	}
+
 	private static void storm(ClientGameTestContext context, TestSingleplayerContext world) {
 		int[] before = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
@@ -157,6 +172,27 @@ public class WildercordEventsTest implements FabricClientGameTest {
 		context.waitTicks(20);
 		boolean feat = world.getServer().computeOnServer(s -> Heart.discovered(player(s), "feat:" + Feats.STORMCALLER));
 		check(feat, "twenty casts under a storm should earn Stormcaller");
+
+		// Its runes: Manaburn or Manatide, once per storm for each player (a surge in those twenty casts may already have given one).
+		String crystal = world.getServer().computeOnServer(s -> {
+			ServerPlayer player = player(s);
+			ManaStorm storm = WorldEvents.stormAt(player.level(), player.position());
+			if (storm == null) {
+				return "the storm should still be over the player";
+			}
+			int had = stormRunes(player);
+			boolean first = storm.crystallise(player);
+			boolean second = storm.crystallise(player);
+			int after = stormRunes(player);
+			if (second) {
+				return "a storm should give each player one of its runes at most";
+			}
+			if (first != (had == 0) || after != 1) {
+				return "the player should hold exactly one of the storm's runes (had " + had + ", has " + after + ")";
+			}
+			return null;
+		});
+		check(crystal == null, crystal);
 
 		world.getServer().runOnServer(s -> WorldEvents.storms().forEach(ManaStorm::stop));
 		context.waitTicks(5);

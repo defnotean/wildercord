@@ -24,7 +24,7 @@ rows need nothing but a Twine Cord and a few runes; the later ones want a strong
 |---|---|---|---|---|
 | 1 | [Runebound monsters]({{ '/world/runebound/' | relative_url }}) | Everywhere monsters spawn, from your first night | A zombie, skeleton, witch or illager that casts a real spell | A rune from its Cord, sometimes a Torn Page |
 | 2 | [Magic that changes the world]({{ '/world/world-magic/' | relative_url }}) | Wherever your spells land | Nothing: it's how fire, frost, storm and the rest meet the ground and water | Frozen bridges, steam cover, arrows knocked away |
-| 3 | [Mana storms]({{ '/world/world-events/' | relative_url }}) | Over ley lines, now and then | Nothing hostile, but your spells may surge | Faster mana and cheaper spells for a few minutes |
+| 3 | [Mana storms]({{ '/world/world-events/' | relative_url }}) | Over ley lines, now and then | Nothing hostile, but your spells may surge | Faster mana and cheaper spells for a few minutes, and now and then a rune (Manaburn or Manatide) |
 | 4 | [Runes of the world]({{ '/world/runes-of-the-world/' | relative_url }}) | Vanilla structures' chests, and biomes by **Attunement** | Whatever guards the structure | 51 runes nobody can craft |
 | 5 | [Fallen stars]({{ '/world/world-events/' | relative_url }}) | At night, 60 to 150 blocks from you | 2 to 4 Runebound guards, one an Adept | A Tier III or IV rune, a Mana Crystal |
 | 6 | [Rift sieges]({{ '/world/world-events/' | relative_url }}) | At night, beside your base or a village | Three waves of Runebound and the Riftcaller | Runes, Blank Runes, a Mana Crystal |
@@ -83,6 +83,8 @@ The four keepers share these rules:
   The Archivist telegraphs for 1.4 seconds; so do the other three.
 - **Three phases.** Each changes at two thirds and one third of its health. While it changes, it can't be hurt.
   It calls up two Runebound each time (Adepts the second time) and starts a new set of spells.
+- **No blow skips a phase.** However hard you hit, the damage stops at the start of the next phase and the change
+  begins at once, so every phase gets fought.
 - **Monsters can't hurt them.** Other monsters' attacks and spells do nothing to a boss, and nor does a fall.
   Effects that hold a creature still (Freeze, for one) don't stop a boss either, though the marks they leave still
   count for reactions.
@@ -92,8 +94,6 @@ The four keepers share these rules:
 
 The three dimension bosses add a few more rules:
 
-- **No blow skips a phase.** However hard you hit, the damage stops at the start of the next phase and the change
-  begins at once, so every phase gets fought.
 - **Everyone who fought gets a Tier IV rune.** When it falls, each player who hurt it and is still alive within 96
   blocks of its altar gets a Tier IV rune they don't know yet, straight into their pack. The killer also gets its loot
   (its trophy, its own Tier IV rune of the world, 3 Mana Crystals, a Torn Page and more). Anything that doesn't fit is
@@ -119,7 +119,7 @@ Three events happen on their own in the Overworld, near players. They're covered
 
 | Event | When | What happens | Reward |
 |---|---|---|---|
-| **Mana storm** | About once every three in-game days over a stretch of ley line near you | 3 to 5 minutes of double mana regeneration, spells 25% cheaper, and a 10% chance for each cast to surge | The *Stormcaller* feat |
+| **Mana storm** | About once every three in-game days over a stretch of ley line near you | 3 to 5 minutes of double mana regeneration, spells 25% cheaper, and a 10% chance for each cast to surge | The *Stormcaller* feat, and for a caster who keeps casting, often Manaburn or Manatide (one per storm) |
 | **Fallen star** | At night, rarely (about once in five nights for each player) | A star crashes 60 to 150 blocks away and leaves a crater; Runebound rise to guard it | A Tier III rune (sometimes Tier IV), a Mana Crystal, 30 experience |
 | **Rift siege** | At night near a base or village, rarely (about once in six nights for each player) | A rift opens and three waves of Runebound pour out, the last led by the Riftcaller | Runes, Blank Runes, a Mana Crystal and experience, more for every wave beaten |
 

@@ -69,9 +69,10 @@ import java.util.WeakHashMap;
  * protection or a claim), take from the cast's block budget and from {@link WorldRules#EDITS_PER_CAST},
  * and are only ever vanilla's own temporary or natural ones: fire (lit only where fire may spread,
  * so it burns out), frosted ice (which melts back, and is thawed after {@link WorldRules#THAW_TICKS}
- * anyway, a thaw saved with the world: see {@link Thaws}), grass and flowers. A passive renewing itself changes no blocks. Everything else (the
- * steam, the shock through water, the gusts, the heaved ground, which is only block displays) works
- * for monsters too.</p>
+ * anyway, a thaw saved with the world: see {@link Thaws}), grass and flowers. A passive renewing itself changes no blocks,
+ * and nor does anything on a server whose config switches {@code features.world_changing_magic} off.
+ * Everything else (the steam, the shock through water, the gusts, the heaved ground, which is only
+ * block displays) works for monsters too, and with that switch off.</p>
  */
 public final class WorldMagic {
 	private WorldMagic() {}
@@ -139,8 +140,10 @@ public final class WorldMagic {
 		if (hit.self()) {
 			return;
 		}
-		// A passive renewing itself (an Orbit of fire, say) never changes blocks as it goes.
-		boolean edits = interaction.editsBlocks() && !cast.passive && Casters.mayBuild(caster);
+		// A passive renewing itself (an Orbit of fire, say) never changes blocks as it goes, and a server
+		// may keep this magic off its blocks altogether (the rest, steam, shocks and gusts, still comes).
+		boolean edits = interaction.editsBlocks() && !cast.passive && Casters.mayBuild(caster)
+			&& dev.wildercord.config.Config.get().worldChangingMagic();
 		Vec3 at = hit.point();
 		switch (interaction) {
 			case IGNITE -> ignite(cast, at, edits);

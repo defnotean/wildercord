@@ -1340,5 +1340,22 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			check(!level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40)).isEmpty(), "the Archivist wakes when a player comes near");
 		});
+		// Like the dimension bosses, one huge blow can't skip a phase: it stops at the start of the next,
+		// and the rewriting begins at once, untouchable.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			List<Archivist> found = level.getEntitiesOfClass(Archivist.class, player.getBoundingBox().inflate(40));
+			if (found.isEmpty()) {
+				return;
+			}
+			Archivist archivist = found.getFirst();
+			float max = archivist.getMaxHealth();
+			archivist.hurtServer(level, level.damageSources().playerAttack(player), max * 10);
+			check(archivist.isAlive() && Math.abs(archivist.getHealth() - max * 2 / 3) < 0.01F,
+				"one huge blow should stop at the start of the Archivist's next phase (health " + archivist.getHealth() + " of " + max + ")");
+			boolean again = archivist.hurtServer(level, level.damageSources().playerAttack(player), max * 10);
+			check(!again && Math.abs(archivist.getHealth() - max * 2 / 3) < 0.01F, "the Archivist shouldn't be hurt while it rewrites its Cord");
+		});
 	}
 }

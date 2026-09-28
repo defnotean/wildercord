@@ -18,7 +18,11 @@ import java.util.List;
 public final class EventRules {
 	private EventRules() {}
 
-	/** Whether the server rolls events on its own at all. The command starts them either way. */
+	/**
+	 * Whether the server rolls events on its own at all (the command starts them either way). The
+	 * server's config can switch every event off as well, the command's included: see
+	 * {@code WorldEvents.enabled}.
+	 */
 	public static final boolean ENABLED = true;
 
 	public static final int DAY = 24000;
@@ -56,6 +60,10 @@ public final class EventRules {
 	public static final double SURGE_POWER = 1.6;
 	/** Casts inside storms for the Stormcaller feat. */
 	public static final int STORMCALLER_CASTS = 20;
+	/** Casts under one storm before its surges may crystallise one of its runes. */
+	public static final int STORM_RUNE_CASTS = 10;
+	/** The chance that a surge, from then on, crystallises one of the storm's runes. */
+	public static final double STORM_RUNE_CHANCE = 1.0 / 3.0;
 
 	// ------------------------------------------------------------------ fallen stars
 
@@ -177,6 +185,15 @@ public final class EventRules {
 		return surge == Surge.BIGGER ? SURGE_POWER : 1.0;
 	}
 
+	/**
+	 * Whether a surge crystallises one of the storm's own runes (Manaburn or Manatide) for its caster:
+	 * only a surge, only once they've cast {@link #STORM_RUNE_CASTS} spells under this storm ({@code
+	 * casts}, this one included), one time in three ({@code roll}), and never twice from one storm.
+	 */
+	public static boolean stormRune(Surge surge, int casts, boolean already, double roll) {
+		return surge != Surge.NONE && !already && casts >= STORM_RUNE_CASTS && roll < STORM_RUNE_CHANCE;
+	}
+
 	// ------------------------------------------------------------------ waves
 
 	/** Monsters in a wave (1 to 3) with this many players near the rift; the Riftcaller comes on top in the last. */
@@ -267,10 +284,10 @@ public final class EventRules {
 	}
 
 	/**
-	 * The runes a world event may give, of one tier. {@code source} is the event ({@code "starfall"},
-	 * {@code "rift"} or {@code "mana_storm"}): its own runes (see {@link dev.wildercord.spell.RuneSources})
-	 * of that tier, weighted three to one over every common rune of that tier, falling back to lower
-	 * tiers if a tier is empty.
+	 * The runes a fallen star or a rift may give, of one tier. {@code source} is the event ({@code
+	 * "starfall"} or {@code "rift"}): its own runes (see {@link dev.wildercord.spell.RuneSources}) of
+	 * that tier, weighted three to one over every common rune of that tier, falling back to lower
+	 * tiers if a tier is empty. (A mana storm gives only its own runes: see {@link #stormRune}.)
 	 */
 	public static List<RuneDef> rewardRunes(String source, int tier) {
 		for (int t = tier; t >= 1; t--) {

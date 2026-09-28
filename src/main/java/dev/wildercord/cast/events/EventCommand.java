@@ -16,7 +16,8 @@ import net.minecraft.world.Difficulty;
  * {@code /wildercord event <mana_storm|starfall|rift> [here]}: starts a world event for testing.
  * Without {@code here} it's placed as the server would place it (a storm over the nearest ley line,
  * a star 60 to 150 blocks off, a rift a little way away); with it, right by you. Joins the
- * {@code /wildercord} command (Brigadier merges the two), operators only.
+ * {@code /wildercord} command (Brigadier merges the two), operators only. Refused while the server's
+ * config switches world events off.
  */
 public final class EventCommand {
 	private EventCommand() {}
@@ -40,6 +41,10 @@ public final class EventCommand {
 	private static int start(CommandContext<CommandSourceStack> ctx, String kind, boolean here) throws CommandSyntaxException {
 		ServerPlayer player = ctx.getSource().getPlayerOrException();
 		ServerLevel level = player.level();
+		if (!WorldEvents.enabled()) {
+			ctx.getSource().sendFailure(Component.translatable("command.wildercord.event.off"));
+			return 0;
+		}
 		switch (kind) {
 			case "mana_storm" -> {
 				ManaStorm storm = WorldEvents.startStorm(level, player, here);

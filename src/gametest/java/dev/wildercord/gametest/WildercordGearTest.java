@@ -1,10 +1,15 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.cast.Cast;
+import dev.wildercord.cast.CastEngine;
 import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.cast.events.WorldEvents;
 import dev.wildercord.client.CordScreen;
 import dev.wildercord.config.Config;
 import dev.wildercord.config.WildercordConfig;
 import dev.wildercord.content.CordTier;
+import dev.wildercord.content.Imbued;
+import dev.wildercord.content.WildercordComponents;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.gear.Gear;
 import dev.wildercord.gear.GearDef;
@@ -18,10 +23,14 @@ import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
+import dev.wildercord.spell.SpellPlan;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,7 +39,12 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.projectile.arrow.Arrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -47,8 +61,10 @@ import java.util.Set;
 /**
  * Casting gear and the server config, in a real world: a Fire Staff makes a fire spell hit harder and
  * cost less; the Tome of the Fifth Page opens a fifth spell that can be threaded, selected and cast
- * (and gets a row in the Cord screen and a place on the spell wheel); and a config change (spells may not edit blocks) takes effect
- * after {@code /wildercord reload}, and is undone by the next.
+ * (and gets a row in the Cord screen and a place on the spell wheel); a Cord crafted from an enchanted, named one keeps its
+ * enchantments and name; an imbued crossbow's triple shot spends one charge and sends the spell with
+ * one arrow; and config changes (spells may not edit blocks; world-changing magic and
+ * world events switched off) take effect after {@code /wildercord reload}, and are undone by the next.
  *
  * <p>Runs in the full suite; skipped with {@code WILDERCORD_TOUR_ONLY} or {@code WILDERCORD_CORDS_ONLY}.</p>
  */
@@ -68,6 +84,8 @@ public class WildercordGearTest implements FabricClientGameTest {
 			for (Runnable check : List.<Runnable>of(
 					() -> fireStaff(context, world),
 					() -> tome(context, world),
+					() -> cordUpgrade(world),
+					() -> imbuedTripleShot(world),
 					() -> configReload(context, world))) {
 				try {
 					check.run();
@@ -291,6 +309,80 @@ public class WildercordGearTest implements FabricClientGameTest {
 		context.waitTicks(3);
 	}
 
+	// ------------------------------------------------------------------ a Cord upgraded, and an imbued crossbow
+
+	/** Crafting the next Cord from an enchanted, named one: the new Cord keeps its enchantments and its name. */
+	private static void cordUpgrade(TestSingleplayerContext world) {
+		String problem = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			var enchantments = server.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+			ItemStack twine = new ItemStack(WildercordItems.TWINE_CORD);
+			twine.enchant(enchantments.getOrThrow(Mana.RESERVOIR), 2);
+			twine.set(DataComponents.CUSTOM_NAME, Component.literal("Old Faithful"));
+			List<ItemStack> grid = new ArrayList<>(List.of(new ItemStack(Items.COPPER_INGOT), twine, new ItemStack(Items.COPPER_INGOT),
+				new ItemStack(Items.AMETHYST_SHARD), new ItemStack(Items.COPPER_INGOT), new ItemStack(Items.COPPER_INGOT)));
+			while (grid.size() < 9) {
+				grid.add(ItemStack.EMPTY);
+			}
+			CraftingInput input = CraftingInput.of(3, 3, grid);
+			var recipe = server.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level);
+			if (recipe.isEmpty()) {
+				return "a Twine Cord, 4 Copper Ingots and an Amethyst Shard should make something";
+			}
+			ItemStack made = recipe.get().value().assemble(input);
+			if (!made.is(WildercordItems.COPPER_CORD)) {
+				return "they should make a Copper Cord (made " + made + ")";
+			}
+			if (EnchantmentHelper.getItemEnchantmentLevel(enchantments.getOrThrow(Mana.RESERVOIR), made) != 2) {
+				return "the Copper Cord should keep the Twine Cord's Reservoir II";
+			}
+			if (!"Old Faithful".equals(made.getHoverName().getString())) {
+				return "the Copper Cord should keep the Twine Cord's name (it's called " + made.getHoverName().getString() + ")";
+			}
+			return null;
+		});
+		check(problem == null, problem);
+	}
+
+	/**
+	 * An imbued crossbow's triple shot (three arrows leaving it in the same tick, as Multishot fires
+	 * them): one charge spent, and only one of the arrows carries the spell.
+	 */
+	private static void imbuedTripleShot(TestSingleplayerContext world) {
+		String problem = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			ready(player, new ItemStack(WildercordItems.ECHO_CORD));
+			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.CROSSBOW));
+			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.FIRE));
+			castFresh(player, 0);
+			ItemStack crossbow = player.getMainHandItem();
+			Imbued imbued = crossbow.get(WildercordComponents.IMBUED);
+			if (imbued == null) {
+				return "Self Imbue Fire should imbue the crossbow in hand";
+			}
+			List<Arrow> arrows = new ArrayList<>();
+			for (int i = -1; i <= 1; i++) {
+				Arrow arrow = new Arrow(level, player, new ItemStack(Items.ARROW), crossbow);
+				arrow.shootFromRotation(player, player.getXRot(), player.getYRot() + i * 10, 0.0F, 3.0F, 0.0F);
+				level.addFreshEntity(arrow);
+				arrows.add(arrow);
+			}
+			long carrying = arrows.stream().filter(a -> a.hasAttached(WildercordAttachments.IMBUED_SHOT)).count();
+			arrows.forEach(Arrow::discard);
+			Imbued after = player.getMainHandItem().get(WildercordComponents.IMBUED);
+			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			if (carrying != 1) {
+				return "one arrow of a triple shot should carry the imbued spell (" + carrying + " did)";
+			}
+			if (after == null || after.charges() != imbued.charges() - 1) {
+				return "a triple shot should spend one charge (" + imbued.charges() + " -> " + (after == null ? 0 : after.charges()) + ")";
+			}
+			return null;
+		});
+		check(problem == null, problem);
+	}
+
 	// ------------------------------------------------------------------ the config, reloaded
 
 	private static void configReload(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -315,12 +407,42 @@ public class WildercordGearTest implements FabricClientGameTest {
 			});
 			check(blocked == null, blocked);
 
+			// World-changing magic and world events switched off: Break still mines (spells may edit blocks),
+			// but frost freezes no water, and no event starts.
+			String quiet = WildercordConfig.DEFAULTS.toJson().replace("\"world_changing_magic\": true", "\"world_changing_magic\": false")
+				.replace("\"world_events\": true", "\"world_events\": false");
+			check(quiet.contains("\"world_changing_magic\": false") && quiet.contains("\"world_events\": false"),
+				"the default file should list world_changing_magic and world_events");
+			write(path, quiet);
+			world.getServer().runCommand("wildercord reload");
+			context.waitTicks(2);
+			String switchedOff = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = player(server);
+				if (Config.get().worldChangingMagic() || Config.get().worldEvents()) {
+					return "/wildercord reload should read world_changing_magic and world_events: false";
+				}
+				if (!breakInFront(player)) {
+					return "with only world-changing magic off, Break should still mine";
+				}
+				if (frostOnWater(player)) {
+					return "with world_changing_magic false, frost shouldn't freeze water";
+				}
+				if (WorldEvents.enabled() || WorldEvents.startStorm(player.level(), player, true) != null) {
+					return "with world_events false, no mana storm should start";
+				}
+				return null;
+			});
+			check(switchedOff == null, switchedOff);
+
 			write(path, WildercordConfig.DEFAULTS.toJson());
 			world.getServer().runCommand("wildercord reload");
 			context.waitTicks(2);
 			String allowed = world.getServer().computeOnServer(server ->
 				breakInFront(player(server)) ? null : "after reloading the defaults, Break should mine again");
 			check(allowed == null, allowed);
+			String freezes = world.getServer().computeOnServer(server ->
+				frostOnWater(player(server)) ? null : "after reloading the defaults, frost should freeze water again");
+			check(freezes == null, freezes);
 		} finally {
 			try {
 				if (original != null) {
@@ -343,6 +465,35 @@ public class WildercordGearTest implements FabricClientGameTest {
 		SpellCaster.edit(player, 0, ids(Runes.TOUCH, Runes.BREAK));
 		castFresh(player, 0);
 		return player.level().getBlockState(stone).isAir();
+	}
+
+	/** Lands Touch · Frost on a small walled pool in front of the player; true if any of its water froze. */
+	private static boolean frostOnWater(ServerPlayer player) {
+		Vec3 at = ready(player, new ItemStack(WildercordItems.COPPER_CORD));
+		ServerLevel level = player.level();
+		// The air just above the water's middle, four blocks ahead.
+		BlockPos centre = BlockPos.containing(at.x, at.y, at.z + 4);
+		for (int dx = -2; dx <= 2; dx++) {
+			for (int dz = -2; dz <= 2; dz++) {
+				boolean rim = Math.abs(dx) == 2 || Math.abs(dz) == 2;
+				level.setBlockAndUpdate(centre.offset(dx, -2, dz), Blocks.STONE.defaultBlockState());
+				level.setBlockAndUpdate(centre.offset(dx, -1, dz), rim ? Blocks.STONE.defaultBlockState() : Blocks.WATER.defaultBlockState());
+				level.setBlockAndUpdate(centre.offset(dx, 0, dz), Blocks.AIR.defaultBlockState());
+				level.setBlockAndUpdate(centre.offset(dx, 1, dz), Blocks.AIR.defaultBlockState());
+			}
+		}
+		SpellPlan.Group group = SpellCompiler.compile(List.of(Runes.TOUCH, Runes.FROST)).root().groups.getFirst();
+		Vec3 hit = Vec3.atCenterOf(centre);
+		CastEngine.onHit(new Cast(player), group, new Cast.Hit(List.of(), hit, new Vec3(0, 0, 1), player.position(), null, null, false), null);
+		boolean froze = false;
+		for (int dx = -1; dx <= 1; dx++) {
+			for (int dz = -1; dz <= 1; dz++) {
+				BlockPos water = centre.offset(dx, -1, dz);
+				froze |= level.getBlockState(water).is(Blocks.FROSTED_ICE);
+				level.setBlockAndUpdate(water, Blocks.STONE.defaultBlockState());
+			}
+		}
+		return froze;
 	}
 
 	private static void write(Path path, String text) {

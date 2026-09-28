@@ -52,12 +52,13 @@ stops a server. Every default is the number the mod used before.
 | `loot.gear_chance_multiplier` | 1.0 | Casting gear in chests and from bosses |
 | `imbuing.max_items` | 6 | Imbued items one caster keeps |
 | `imbuing.max_glyphs` | 12 | Glyphs one caster keeps per world |
-| `features.world_events` | true | Switch for world events |
+| `features.world_events` | true | World events (mana storms, fallen stars, rift sieges). When off, none starts, not even from `/wildercord event`; one already under way runs its course |
 | `features.duels` | true | Switch for duels |
 | `features.wild_magic` | true | Switch for wild magic |
-| `features.world_changing_magic` | true | Switch for world-changing magic |
+| `features.world_changing_magic` | true | Magic that changes the world (fire lighting grass, frost freezing water, life making it bloom...). When off, spells change no blocks this way, though the steam, shocks through water and gusts still come |
 
-The four feature switches are there for those features to read (`Config.get().worldEvents()` and so on).
+`world_events` and `world_changing_magic` take effect at once on `/wildercord reload`. The `duels` and
+`wild_magic` switches are there for those features to read (`Config.get().duels()` and so on).
 Loot chances apply when loot tables load (world start or `/reload`). Structure spacing isn't in the file:
 it's data, in `data/wildercord/worldgen/structure_set/archives.json`, which a datapack can override. The
 cost and regeneration multipliers are sent to each player on joining and after every reload, so what the

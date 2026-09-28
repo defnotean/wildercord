@@ -58,8 +58,9 @@ import java.util.List;
  * The Archivist: keeper of the Archive and its Tier IV runes. It fights with a Cord like any
  * caster: every spell it's about to cast is named on its boss bar and written out in its circle.
  * Twice it rewrites its Cord (at two thirds and one third of its health): a new phase, new
- * spells, and allies summoned from the stacks. In the last phase it opens a Domain of its own
- * (answer it with yours) and it knows at least one secret spell.
+ * spells, and allies summoned from the stacks. Like the dimension bosses, no blow carries it past
+ * the start of its next phase, so every phase is fought. In the last phase it opens a Domain of its
+ * own (answer it with yours) and it knows at least one secret spell.
  */
 public class Archivist extends SpellcasterIllager {
 	private static final int TELEGRAPH = 28;
@@ -185,10 +186,8 @@ public class Archivist extends SpellcasterIllager {
 			}
 			return;
 		}
-		int wanted = getHealth() > getMaxHealth() * 2 / 3 ? 1 : getHealth() > getMaxHealth() / 3 ? 2 : 3;
-		if (wanted > phase) {
-			phase = wanted;
-			rewrite(level);
+		// A blow starts its rewriting at once (see hurtServer); a command setting its health still gets one for each phase.
+		if (shiftIfDue(level)) {
 			return;
 		}
 		LivingEntity target = getTarget();
@@ -268,6 +267,16 @@ public class Archivist extends SpellcasterIllager {
 		if (casting >= 0 && casting < spells.size()) {
 			Runebound.cast(level, this, spells.get(casting), power());
 		}
+	}
+
+	/** Into its next phase, if its health says so: one phase at a time, the rewriting beginning at once. True if it did. */
+	private boolean shiftIfDue(ServerLevel level) {
+		if (rewriting > 0 || isDeadOrDying() || BossRules.phaseFor(getHealth(), getMaxHealth()) <= phase) {
+			return false;
+		}
+		phase++;
+		rewrite(level);
+		return true;
 	}
 
 	private void rewrite(ServerLevel level) {
@@ -381,7 +390,26 @@ public class Archivist extends SpellcasterIllager {
 		if (rewriting > 0 || source.is(DamageTypes.FALL) || source.getEntity() instanceof Mob && !(source.getEntity() instanceof Player)) {
 			return false;
 		}
-		return super.hurtServer(level, source, damage);
+		boolean hurt = super.hurtServer(level, source, damage);
+		// A blow that reached its next phase starts the rewriting now, before anything else can land.
+		shiftIfDue(level);
+		return hurt;
+	}
+
+	/**
+	 * Held at the start of its next phase, like the dimension bosses (see {@link BossRules}): no one
+	 * blow, or burst of them, carries it past a phase or kills it before its last.
+	 */
+	@Override
+	protected void actuallyHurt(ServerLevel level, DamageSource source, float damage) {
+		float before = getHealth();
+		super.actuallyHurt(level, source, damage);
+		if (!source.is(DamageTypes.GENERIC_KILL) && !source.is(DamageTypes.FELL_OUT_OF_WORLD) && rewriting == 0) {
+			float capped = BossRules.capped(phase, getMaxHealth(), before, getHealth());
+			if (capped != getHealth()) {
+				setHealth(capped);
+			}
+		}
 	}
 
 	@Override

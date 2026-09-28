@@ -715,7 +715,8 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **The server decides everything.** Edits and casts are validated in `SpellCaster`; the client
   only draws.
 - **Friendly fire is off.** `Targets.canHarm` / `canHelp` decide every effect's targets, and
-  respect the `pvp` game rule. Damage to players is scaled down (`Effects.PVP_DAMAGE`).
+  respect the `pvp` game rule (for other players and their pets alike). Damage to players is scaled
+  down (`Effects.PVP_DAMAGE`).
 - **Every cast has budgets** (creatures, blocks, link depth), and spirits are capped per player.
 - **Monsters never change blocks.** Every block edit checks `Casters.mayBuild`, which is false for
   anything but a player allowed to build there.

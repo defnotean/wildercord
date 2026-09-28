@@ -2,6 +2,7 @@ package dev.wildercord.cast.events;
 
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.Runebound;
+import dev.wildercord.config.Config;
 import dev.wildercord.spell.RuneDef;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -63,7 +64,9 @@ import java.util.UUID;
  * event is saved but a fallen star (its rune and its crater, so it can be filled back in) and when
  * each kind of event may next come ({@link EventLedger}), and anything an event spawned that
  * outlives it (after a restart, say) is removed as its chunk loads. The hostile ones never roll on
- * Peaceful, and give nothing there: a rift closes, and a star won't open.
+ * Peaceful, and give nothing there: a rift closes, and a star won't open. A server can switch every
+ * event off in its config ({@code features.world_events}): then none starts, not even from the
+ * command, and any already under way runs its course.
  */
 public final class WorldEvents {
 	private WorldEvents() {}
@@ -121,9 +124,14 @@ public final class WorldEvents {
 				}
 			}
 		}
-		if (EventRules.ENABLED && server.getTickCount() % EventRules.CHECK_INTERVAL == 0) {
+		if (EventRules.ENABLED && server.getTickCount() % EventRules.CHECK_INTERVAL == 0 && enabled()) {
 			roll(server);
 		}
+	}
+
+	/** Whether world events may start at all: the server's config can switch them off ({@code features.world_events}). */
+	public static boolean enabled() {
+		return Config.get().worldEvents();
 	}
 
 	// ------------------------------------------------------------------ rolling
@@ -158,9 +166,13 @@ public final class WorldEvents {
 
 	/**
 	 * A mana storm over the ley line nearest {@code player} (or, {@code here}, right over them).
-	 * Null if there's no ley line near enough, or the region had one lately (unless {@code here}).
+	 * Null if there's no ley line near enough, or the region had one lately (unless {@code here}),
+	 * or world events are switched off.
 	 */
 	public static ManaStorm startStorm(ServerLevel level, ServerPlayer player, boolean here) {
+		if (!enabled()) {
+			return null;
+		}
 		Vec3 centre = here ? player.position() : ManaStorm.leyHeart(level, player.blockPosition(), EventRules.STORM_SEARCH);
 		if (centre == null) {
 			return null;
@@ -178,8 +190,11 @@ public final class WorldEvents {
 		return storm;
 	}
 
-	/** A star falls near {@code player} (or, {@code here}, just in front of them). Returns where it lands, or null. */
+	/** A star falls near {@code player} (or, {@code here}, just in front of them). Returns where it lands, or null (world events switched off, say). */
 	public static BlockPos startStar(ServerLevel level, ServerPlayer player, boolean here) {
+		if (!enabled()) {
+			return null;
+		}
 		BlockPos land = FallenStars.fall(level, player, here);
 		if (land != null) {
 			long now = level.getGameTime();
@@ -188,9 +203,9 @@ public final class WorldEvents {
 		return land;
 	}
 
-	/** A rift opens near {@code player} (or, {@code here}, a few blocks in front of them). Null if there was no room, or on Peaceful. */
+	/** A rift opens near {@code player} (or, {@code here}, a few blocks in front of them). Null if there was no room, on Peaceful, or with world events switched off. */
 	public static RiftSiege startRift(ServerLevel level, ServerPlayer player, boolean here) {
-		if (level.getDifficulty() == Difficulty.PEACEFUL) {
+		if (!enabled() || level.getDifficulty() == Difficulty.PEACEFUL) {
 			return null;
 		}
 		Vec3 base = here ? RiftSiege.spotHere(level, player) : RiftSiege.spotNear(level, player);

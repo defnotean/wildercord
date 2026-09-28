@@ -163,15 +163,16 @@ Harmful effects (damage, slowing, pushing and so on) **never** touch:
 - **anyone on your scoreboard team**, and their pets,
 - **players in creative or spectator mode**,
 - **armour stands**,
-- **other players at all while PvP is off** on the server.
+- **other players at all while PvP is off** on the server, **nor their pets**.
 
-Everything else can be harmed: monsters, animals, other players' pets, and other players when PvP is on. Another
-player's pets aren't protected by PvP being off (only by being on your team), so aim with care near your friends'
-wolves.
+Everything else can be harmed: monsters, animals, and other players and their pets when PvP is on. Another player's
+pets are as safe as the player: with PvP off your spells pass by their wolves, cats, parrots, horses and summoned
+spirit wolves, even while their owner is away.
 
 ### Who your spells can help
 
-Helpful effects (healing, shields, buffs) only land on **you**, **your own pets** and **your teammates**.
+Helpful effects (healing, shields, buffs) only land on **you**, **your own pets** and **your teammates** (and their
+pets).
 
 {: .note }
 To heal, shield or buff a friend with your spells, you need to be on the **same team**. On most servers an operator
@@ -201,8 +202,8 @@ PvP is on (or you're duelling).
 
 | | Needs |
 |---|---|
-| Helpful spells land on them | Your team, or your own pet |
-| Harmful spells avoid them | Your team, your own pet, or PvP off (for players) |
+| Helpful spells land on them | Your team (and their pets), or your own pet |
+| Harmful spells avoid them | Your team (and their pets), your own pet, or PvP off (for other players and their pets) |
 | [Chorus]({{ '/social/chorus/' | relative_url }}) together | Your team, or neither of you able to harm the other (PvP off), and not duelling |
 | [Unison](#unison) together | Any two players |
 | [Domain clash](#domain-clashes) | Any two casters, friend or foe |
