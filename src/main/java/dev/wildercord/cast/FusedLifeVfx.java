@@ -245,7 +245,12 @@ final class FusedLifeVfx {
 		int life = flare ? 8 : 12;
 		for (int k = 1; k <= n; k++) {
 			boolean nearA = k <= n / 2;
-			piece(level, core, k, nearA, flare ? 0xFFFFFF : ARCANE.secondary(), flare ? 0.07 : 0.045, life);
+			if (flare) {
+				// Only the core flashes: the strands are still there from the last drawing.
+				piece(level, core, k, nearA, 0xFFFFFF, 0.07, life);
+				continue;
+			}
+			piece(level, core, k, nearA, ARCANE.secondary(), 0.045, life);
 			piece(level, pink, k, nearA, ARCANE.primary(), 0.022, life);
 			piece(level, green, k, nearA, LIFE.primary(), 0.022, life);
 		}
