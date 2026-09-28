@@ -119,6 +119,22 @@ with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Screenshots
 
+### New in 0.3
+
+| The Ember Sanctum: a reaction cracks the Cinder Warden's plates | The Astral Observatory: the Star-Eater throws a spell back |
+|---|---|
+| <img src="docs/images/ember-sanctum.jpg" alt="A domed forge arena of blackstone and magma; the Cinder Warden, a hulk of iron and magma, bursts with fire and frost light as a reaction goes off on it" width="420"> | <img src="docs/images/astral-observatory.jpg" alt="A purpur dome over a floor of starry tiles; the Star-Eater, a knot of void with star shards round it, hangs in the air turning a spell back" width="420"> |
+| The Drowned Scriptorium: storm magic in the Tide Scribe's flood | A mana storm: violet sky, arcs over the ley line |
+| <img src="docs/images/drowned-scriptorium.jpg" alt="A flooded prismarine arena; a ring of lightning spreads across the water round the Tide Scribe" width="420"> | <img src="docs/images/mana-storm.jpg" alt="Open grassland under a violet-tinted sky, branching arcs of light crackling overhead" width="420"> |
+| A fallen star, its beam and its guards | Wild wisps of every element |
+| <img src="docs/images/fallen-star.jpg" alt="At night a column of pale light rises from a star lying in a scorched crater, a guard beside it" width="420"> | <img src="docs/images/wisps.jpg" alt="At night, a row of small glowing orbs of light in different colours drifting over the grass" width="420"> |
+| Attunement: the land's circle and its rune | Frost freezes a pond you can walk on |
+| <img src="docs/images/attunement.jpg" alt="A player meditating on a turning green magic circle while motes of light rise from the ground into the blank rune in their hand" width="420"> | <img src="docs/images/frozen-pond.jpg" alt="A small pond frozen over in frosted ice, a frost seal of light on the ice" width="420"> |
+| Storm through water shocks everything in it | The Fusion Altar at work |
+| <img src="docs/images/storm-water.jpg" alt="Arcs of light skittering across a pond from a strike to each creature standing in the water" width="420"> | <img src="docs/images/fusion-altar.jpg" alt="An amethyst and deepslate altar with a magic circle turning over it, rings of light racing out and sparks rising" width="420"> |
+| The Runesmith at its Scribing Desk | A parry: the Shield's counter-burst |
+| <img src="docs/images/runesmith.jpg" alt="A villager in a violet hooded robe with a gold band standing beside a wooden desk set with a rune" width="420"> | <img src="docs/images/parry.jpg" alt="A golden magic circle held in front of the player and a beam of light striking back at the husk that cast at them" width="420"> |
+
 ### In motion
 
 | A Shield's circles spawn in and stop a bolt | A heavier spell shatters every circle, and hits |

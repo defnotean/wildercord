@@ -590,7 +590,7 @@ def main(g, runes):
         g.write_json(g.ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}})
     # ---- the altar: one model per kind, borrowing the dungeons' own stone
     kinds = {"cinder": ("minecraft:block/polished_blackstone_bricks", "minecraft:block/magma", "minecraft:block/polished_blackstone"),
-             "astral": ("minecraft:block/purpur_pillar", "minecraft:block/end_portal_frame_top", "minecraft:block/end_stone_bricks"),
+             "astral": ("minecraft:block/purpur_pillar_side", "minecraft:block/end_portal_frame_top", "minecraft:block/end_stone_bricks"),
              "tide": ("minecraft:block/prismarine_bricks", "minecraft:block/sea_lantern", "minecraft:block/dark_prismarine")}
     face = lambda t, uv=(2, 2, 14, 14): {"texture": f"#{t}", "uv": list(uv)}
     variants = {}
