@@ -19,6 +19,7 @@
 			"dev.wildercord.gametest.WildercordGearTest",
 			"dev.wildercord.gametest.WildercordNewRunesTest",
 			"dev.wildercord.gametest.WildercordDungeonsTest",
+			"dev.wildercord.gametest.WildercordOitTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

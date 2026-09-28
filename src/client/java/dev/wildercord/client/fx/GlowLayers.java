@@ -9,6 +9,8 @@ import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import dev.wildercord.Wildercord;
 import dev.wildercord.client.mixin.RenderPipelinesAccessor;
 import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.oit.OitPipelineSet;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 
 /**
@@ -34,8 +36,21 @@ public final class GlowLayers {
 		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
 		.build();
 
-	public static final SingleQuadParticle.Layer GLOW = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, GLOW_PIPELINE);
-	public static final SingleQuadParticle.Layer DARK = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, DARK_PIPELINE);
+	/**
+	 * The same added light under Improved Transparency (order-independent transparency), which draws
+	 * translucent particles in its own passes and needs a pipeline for each: without one the game
+	 * stops with "OIT pipeline set for particle layer not specified". Vanilla's lightning does the same.
+	 */
+	public static final OitPipelineSet GLOW_OIT = OitPipelineSet.builder("wildercord_glow_particle",
+		RenderPipeline.builder(RenderPipelines.OIT_PARTICLE_SNIPPET).withShaderDefine("OIT_ADDITIVE")).build();
+
+	public static final SingleQuadParticle.Layer GLOW = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, GLOW_PIPELINE, GLOW_OIT);
+	/**
+	 * Darkness is drawn with the solid particles: Improved Transparency can only add light, never take
+	 * it away, so a translucent darkness layer would have no pipeline there. It writes no depth, so it
+	 * still never hides what's behind it.
+	 */
+	public static final SingleQuadParticle.Layer DARK = new SingleQuadParticle.Layer(false, TextureAtlas.LOCATION_PARTICLES, DARK_PIPELINE);
 
 	/** The colour flag (see {@code Light.DARK}) that marks a light as darkness. */
 	public static final int DARK_FLAG = 0x01000000;

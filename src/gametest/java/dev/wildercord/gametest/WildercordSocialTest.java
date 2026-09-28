@@ -248,6 +248,7 @@ public class WildercordSocialTest implements FabricClientGameTest {
 		// Each step in a tick of its own: one spell landing credits one cast.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
+			player.setAttached(WildercordAttachments.ON_LEY, true);
 			Contracts.onCast(player, List.of(Runes.BOLT, Runes.HARM));
 			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a cast that hasn't landed on anything shouldn't count yet");
 			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[1]), "");
@@ -263,6 +264,8 @@ public class WildercordSocialTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[0]), "");
+			// The server works out whether you're on a ley line from where you stand every so often: say so again.
+			player.setAttached(WildercordAttachments.ON_LEY, true);
 			Contracts.onCast(player, List.of(Runes.SELF, Runes.HARM));
 			check(Contracts.board(player).contracts().getFirst().done(), "a second cast that landed should finish the contract");
 			player.setAttached(WildercordAttachments.ON_LEY, false);
