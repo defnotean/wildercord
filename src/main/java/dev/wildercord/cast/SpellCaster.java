@@ -175,13 +175,16 @@ public final class SpellCaster {
 			if (secret.isPresent()) {
 				SecretSpells.cast(c, secret.get());
 			} else {
-				CastEngine.cast(c, compiled.root());
+				// Cast together with others, the same shape at the same place: one bigger chorus spell.
+				dev.wildercord.chorus.Chorus.Sung sung = dev.wildercord.chorus.Chorus.sing(c, runes, compiled.root());
+				CastEngine.cast(sung.cast(), sung.root());
 			}
 		};
 		// Wild magic: an overcast spell may twist into something else.
 		if (overcastCost < 0 || !WildSurge.overcast(cast, runes, secret.isPresent(), overcastMana, overcastCost, release)) {
 			release.accept(cast);
 		}
+		dev.wildercord.runesmith.Contracts.onCast(player, runes);
 		Heart.Bonuses surged = bonuses;
 		dev.wildercord.cast.events.ManaStorm.afterCast(player, surge, runes, () -> {
 			Cast echo = new Cast(player, castNumber, surged, false, null, info);

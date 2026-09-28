@@ -413,6 +413,7 @@ public final class Imbuing {
 	private static void spend(ServerPlayer player, ItemStack stack, Imbued imbued) {
 		int left = imbued.charges() - 1;
 		if (left <= 0) {
+			dev.wildercord.runesmith.Contracts.onImbueSpent(player, stack);
 			strip(stack, imbued);
 			Ledger.of(player.level()).forget(imbued);
 			player.sendOverlayMessage(Component.translatable("message.wildercord.imbue_spent", stack.getHoverName()).withStyle(ChatFormatting.GRAY));

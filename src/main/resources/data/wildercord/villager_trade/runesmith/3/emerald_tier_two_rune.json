@@ -1,0 +1,17 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 10
+  },
+  "gives": {
+    "id": "wildercord:rune"
+  },
+  "max_uses": 3,
+  "xp": 15,
+  "reputation_discount": 0.05,
+  "given_item_modifier": {
+    "type": "wildercord:random_rune",
+    "min_tier": 2,
+    "max_tier": 2
+  }
+}

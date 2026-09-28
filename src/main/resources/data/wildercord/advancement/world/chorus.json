@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "chorus": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "chorus"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:echo"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.chorus.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.chorus.description"
+    }
+  },
+  "requirements": [
+    [
+      "chorus"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}
