@@ -285,6 +285,12 @@ None of the wards are saved: they last seconds, and a restart simply ends them.
 - **`TrainingDummy`**: a `LivingEntity` that heals back to full after every hit, floats each hit
   up as a text display, and keeps its last 5 seconds of hits for the DPS in its name.
 - **`SpellChat`**: a chat message decorator that turns `wc:` codes into hoverable spell cards.
+- **`advancement.Advancements`** and **`WildercordTriggers`**: the advancement tab's criteria
+  (`wildercord:feat`, `grimoire`, `heart_circle`, `runes_known`, `cord`, `moment`). All but
+  `moment` test the player's current state, so `Advancements.sync` can fire them at any time: on
+  join, after a data pack reload, and from `Grimoire.unlock`, `HeartCircles.form` and
+  `Spellbooks.set`/`setCord`. Moments (a cast, a long cast, a passive, a glyph going off, an Adept
+  slain) are fired where they happen.
 
 ### Visuals: `Vfx`, `TechniqueVfx`, `ExpansionVfx`, `ElementFx`, `Fx`, `Sigils`, `Light`, `BlockFx`, `ScreenFx`
 
@@ -610,6 +616,11 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
 7. **`docs/RECIPES.md`**, including where every rune drops, parsed from `WildercordLoot.java`.
 8. **Batch 5 content** (`write_new_content`): item and block models, blockstates, the Archive's
    loot tables, recipes, the pickaxe tag and the worldgen JSON.
+9. **The advancement tab** (`write_advancements`): every advancement under
+   `data/wildercord/advancement/` (the recipe-book unlocks aside) from the `ADVANCEMENTS` list, their
+   titles, the reward loot tables and the tab's background (`world_art.advancement_background`).
+   Feat advancements take their title and text from `Feats.java` unless given their own. See
+   `docs/features/advancements.md`.
 
 Run `python tools/item_art.py` on its own to render review sheets of every icon into
 `build/art-preview/` (`circle_art.py --preview` does the same for every rune's ring and emblem).
@@ -647,7 +658,9 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **`src/test`**: JUnit 5 tests for everything in `spell/`: reading rules, attachment, costs,
   cooldowns, Blood Price, Vow, passive rules, circle and enchantment maths (`SpellCompilerTest`,
   `HeartAndPassivesTest`); and spell names, spell codes, secret spells, leaning, innate runes, the
-  breakthrough table and `world.LeyLines` (`DiscoveryTest`). Fast and headless.
+  breakthrough table and `world.LeyLines` (`DiscoveryTest`); and the generated advancement tab
+  (`AdvancementTreeTest`: every feat has an advancement, every parent, name, icon and reward
+  exists). Fast and headless.
 - **`src/gametest`**: `WildercordScreenshots` is a Fabric client game test. It builds a world,
   gives the player an Echo Cord and every rune, and:
   - screenshots the HUD and the Cord screen at GUI scales 1-4 and three window sizes;
@@ -663,6 +676,9 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   Spells that fly away from the caster are filmed from the side: `director` spawns an invisible
   text display as the camera and hides the HUD (the local player isn't drawn from another camera,
   so those shots show the spell and its targets only).
+- **`WildercordAdvancementTest`** checks the server loaded the advancement tab, that a feat, a
+  reaction, a secret, a Heart Circle, learning runes, a Cord and a cast each grant theirs, and
+  that revoked ones come back from the player's state as they would on login.
 
 ## 10. Rules that keep it safe
 

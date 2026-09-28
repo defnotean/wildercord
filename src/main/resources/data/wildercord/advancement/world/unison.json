@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/runebound",
+  "criteria": {
+    "unison": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "unison"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:chain"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.unison.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.unison.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "unison"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

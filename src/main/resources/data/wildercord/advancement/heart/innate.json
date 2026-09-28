@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:heart/circle_1",
+  "criteria": {
+    "innate": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "innate"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:twin_star"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.innate.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.innate.description"
+    }
+  },
+  "requirements": [
+    [
+      "innate"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

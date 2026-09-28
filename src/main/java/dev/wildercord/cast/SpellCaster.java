@@ -154,6 +154,7 @@ public final class SpellCaster {
 		if (charge >= 1.0) {
 			Grimoire.feat(player, dev.wildercord.spell.Feats.CHARGED);
 		}
+		dev.wildercord.advancement.Advancements.cast(player, runes.size());
 		String leaning = countElements(player, runes);
 		int castNumber = COMBO.computeIfAbsent(player.getUUID(), k -> new int[CordTier.MAX_SPELLS])[spell] += 1;
 		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);

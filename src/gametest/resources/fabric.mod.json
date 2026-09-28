@@ -10,7 +10,8 @@
 			"dev.wildercord.gametest.WildercordFeatureTour",
 			"dev.wildercord.gametest.WildercordCordTest",
 			"dev.wildercord.gametest.WildercordWorldMagicTest",
-			"dev.wildercord.gametest.WildercordParryTest"
+			"dev.wildercord.gametest.WildercordParryTest",
+			"dev.wildercord.gametest.WildercordAdvancementTest"
 		]
 	},
 	"depends": {

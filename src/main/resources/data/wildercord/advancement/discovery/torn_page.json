@@ -1,0 +1,30 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "torn_page": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "hint:"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:torn_page"
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.torn_page.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.torn_page.description"
+    }
+  },
+  "requirements": [
+    [
+      "torn_page"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

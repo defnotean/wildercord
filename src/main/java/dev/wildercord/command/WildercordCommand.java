@@ -75,6 +75,7 @@ public final class WildercordCommand {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();
 						int count = IntegerArgumentType.getInteger(ctx, "count");
 						player.setAttached(dev.wildercord.player.WildercordAttachments.CIRCLES, count);
+						dev.wildercord.advancement.Advancements.circles(player);
 						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.circles", count), false);
 						return 1;
 					})))

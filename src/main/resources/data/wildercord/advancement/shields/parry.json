@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:shields/spellguard",
+  "criteria": {
+    "parry": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "parry"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:deflect"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.shields.parry.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.shields.parry.description"
+    }
+  },
+  "requirements": [
+    [
+      "parry"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

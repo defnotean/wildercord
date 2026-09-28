@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "runes_10": {
+      "trigger": "wildercord:runes_known",
+      "conditions": {
+        "count": 10
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:light"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.runes_10.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.runes_10.description"
+    }
+  },
+  "requirements": [
+    [
+      "runes_10"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

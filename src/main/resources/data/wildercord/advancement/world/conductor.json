@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/conduct",
+  "criteria": {
+    "conductor": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "conductor"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:jolt"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.conductor.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.conductor.description"
+    }
+  },
+  "requirements": [
+    [
+      "conductor"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:cords/amethyst",
+  "criteria": {
+    "echo": {
+      "trigger": "wildercord:cord",
+      "conditions": {
+        "tier": "echo"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:echo_cord"
+    },
+    "title": {
+      "translate": "advancements.wildercord.cords.echo.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.cords.echo.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "echo"
+    ]
+  ],
+  "rewards": {
+    "experience": 100,
+    "loot": [
+      "wildercord:advancement_reward/blank_runes"
+    ]
+  }
+}

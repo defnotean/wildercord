@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/runebound",
+  "criteria": {
+    "clash": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "clash"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:zone"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.clash.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.clash.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "clash"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

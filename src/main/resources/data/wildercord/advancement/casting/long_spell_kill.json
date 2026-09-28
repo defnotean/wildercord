@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:casting/long_cast",
+  "criteria": {
+    "long_spell_kill": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "long_spell_kill"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:execute"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.long_spell_kill.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.long_spell_kill.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "long_spell_kill"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

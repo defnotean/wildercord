@@ -1,0 +1,31 @@
+{
+  "parent": "wildercord:cords/copper",
+  "criteria": {
+    "amethyst": {
+      "trigger": "wildercord:cord",
+      "conditions": {
+        "tier": "amethyst"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:amethyst_cord"
+    },
+    "title": {
+      "translate": "advancements.wildercord.cords.amethyst.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.cords.amethyst.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "amethyst"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

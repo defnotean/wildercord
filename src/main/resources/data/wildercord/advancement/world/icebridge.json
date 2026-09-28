@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/shatter",
+  "criteria": {
+    "icebridge": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "icebridge"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:icepath"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.icebridge.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.icebridge.description"
+    }
+  },
+  "requirements": [
+    [
+      "icebridge"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

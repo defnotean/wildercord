@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "shatter": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:shatter"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:freeze"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.shatter.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.shatter.description"
+    }
+  },
+  "requirements": [
+    [
+      "shatter"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

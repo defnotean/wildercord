@@ -1,0 +1,30 @@
+{
+  "parent": "wildercord:cords/twine",
+  "criteria": {
+    "copper": {
+      "trigger": "wildercord:cord",
+      "conditions": {
+        "tier": "copper"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:copper_cord"
+    },
+    "title": {
+      "translate": "advancements.wildercord.cords.copper.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.cords.copper.description"
+    }
+  },
+  "requirements": [
+    [
+      "copper"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

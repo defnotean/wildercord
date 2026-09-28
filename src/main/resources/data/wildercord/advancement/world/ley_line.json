@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "ley_line": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "ley_line"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:vein"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.ley_line.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.ley_line.description"
+    }
+  },
+  "requirements": [
+    [
+      "ley_line"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/charged",
+  "criteria": {
+    "rhythm": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "rhythm"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:pulse"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.rhythm.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.rhythm.description"
+    }
+  },
+  "requirements": [
+    [
+      "rhythm"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

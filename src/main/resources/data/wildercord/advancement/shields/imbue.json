@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "imbue": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "imbue"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:imbue"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.shields.imbue.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.shields.imbue.description"
+    }
+  },
+  "requirements": [
+    [
+      "imbue"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

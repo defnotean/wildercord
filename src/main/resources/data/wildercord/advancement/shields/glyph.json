@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:shields/imbue",
+  "criteria": {
+    "glyph": {
+      "trigger": "wildercord:moment",
+      "conditions": {
+        "moment": "glyph"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:mine"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.shields.glyph.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.shields.glyph.description"
+    }
+  },
+  "requirements": [
+    [
+      "glyph"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

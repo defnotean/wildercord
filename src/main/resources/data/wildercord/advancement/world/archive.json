@@ -1,0 +1,38 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "archive": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": {
+          "type": "minecraft:entity_properties",
+          "entity": "this",
+          "predicate": {
+            "minecraft:location": {
+              "structures": "wildercord:archive"
+            }
+          }
+        }
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "minecraft:chiseled_bookshelf"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.archive.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.archive.description"
+    }
+  },
+  "requirements": [
+    [
+      "archive"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

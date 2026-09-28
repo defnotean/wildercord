@@ -1,0 +1,37 @@
+{
+  "parent": "wildercord:discovery/all_secrets",
+  "criteria": {
+    "grimoire": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "prefix": "",
+        "all": true
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:spell_scroll"
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.grimoire.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.grimoire.description"
+    },
+    "frame": "challenge",
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "grimoire"
+    ]
+  ],
+  "rewards": {
+    "experience": 500,
+    "loot": [
+      "wildercord:advancement_reward/mana_crystals",
+      "wildercord:advancement_reward/blank_runes"
+    ]
+  }
+}

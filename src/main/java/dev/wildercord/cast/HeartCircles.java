@@ -150,6 +150,7 @@ public final class HeartCircles {
 	public static void form(ServerPlayer player) {
 		int n = Math.min(Circles.MAX, Heart.circles(player) + 1);
 		player.setAttached(WildercordAttachments.CIRCLES, n);
+		dev.wildercord.advancement.Advancements.circles(player);
 		Spellbooks.setMana(player, Mana.max(player));
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);

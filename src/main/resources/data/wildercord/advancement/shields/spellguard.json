@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "spellguard": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "spellguard"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:shield"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.shields.spellguard.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.shields.spellguard.description"
+    }
+  },
+  "requirements": [
+    [
+      "spellguard"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

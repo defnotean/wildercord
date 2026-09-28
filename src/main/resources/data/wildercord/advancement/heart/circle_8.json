@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:heart/circle_7",
+  "criteria": {
+    "circle_8": {
+      "trigger": "wildercord:heart_circle",
+      "conditions": {
+        "level": 8
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:mana_crystal"
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.circle_8.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.circle_8.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "circle_8"
+    ]
+  ],
+  "rewards": {
+    "experience": 500,
+    "loot": [
+      "wildercord:advancement_reward/mana_crystals"
+    ]
+  }
+}

@@ -432,6 +432,9 @@ public final class Runebound {
 		Grimoire.feat(killer, Feats.RUNEBOUND);
 		List<RuneDef> spell = spellOf(mob);
 		boolean adept = mob.entityTags().contains("wildercord.adept");
+		if (adept) {
+			dev.wildercord.advancement.Advancements.moment(killer, dev.wildercord.advancement.Advancements.RUNEBOUND_ADEPT);
+		}
 		Vec3 at = mob.position().add(0, 0.5, 0);
 		// The Cord it carried breaks: sometimes a rune survives.
 		if (!spell.isEmpty() && level.getRandom().nextFloat() < (adept ? 0.6F : 0.35F)) {

@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "wild_surge": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "wild_surge"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:resonance"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.wild_surge.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.wild_surge.description"
+    }
+  },
+  "requirements": [
+    [
+      "wild_surge"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

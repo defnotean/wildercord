@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "collision": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "collision"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:comet"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.collision.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.collision.description"
+    }
+  },
+  "requirements": [
+    [
+      "collision"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

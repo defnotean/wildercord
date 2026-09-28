@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "conduct": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:conduct"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:lightning"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.conduct.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.conduct.description"
+    }
+  },
+  "requirements": [
+    [
+      "conduct"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

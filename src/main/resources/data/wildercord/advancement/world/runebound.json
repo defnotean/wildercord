@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "runebound": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "runebound"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:rend"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.runebound.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.runebound.description"
+    }
+  },
+  "requirements": [
+    [
+      "runebound"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

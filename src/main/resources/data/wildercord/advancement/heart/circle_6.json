@@ -1,0 +1,37 @@
+{
+  "parent": "wildercord:heart/circle_5",
+  "criteria": {
+    "circle_6": {
+      "trigger": "wildercord:heart_circle",
+      "conditions": {
+        "level": 6
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:prism"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.circle_6.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.circle_6.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "circle_6"
+    ]
+  ],
+  "rewards": {
+    "experience": 100,
+    "loot": [
+      "wildercord:advancement_reward/blank_runes"
+    ]
+  }
+}
