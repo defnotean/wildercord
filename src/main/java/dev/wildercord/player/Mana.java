@@ -78,7 +78,7 @@ public final class Mana {
 		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
 		boolean well = player.getAttachedOrElse(WildercordAttachments.WELL_UNTIL, 0L) > player.level().getGameTime();
 		float multiplier = 1 + wellspring * WELLSPRING_BONUS + clarity * CLARITY_BONUS + (meditating ? MEDITATION_BONUS : 0)
-			+ (ley ? LEY_BONUS : 0) + (well ? WELL_BONUS : 0);
+			+ (ley ? LEY_BONUS : 0) + (well ? WELL_BONUS : 0) + dev.wildercord.cast.events.ManaStorm.regenBonus(player);
 		float base = tier.regenPerSecond + circles * dev.wildercord.spell.Circles.REGEN_PER_CIRCLE;
 		return new Stats(tier, max, base * multiplier, multiplier, crystals, reservoir, wellspring, siphon, clarity, meditating, circles, ley, well);
 	}

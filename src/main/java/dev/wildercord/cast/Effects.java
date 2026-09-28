@@ -105,6 +105,7 @@ public final class Effects {
 			currentElement = outerElement;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
+		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
 	}
 
 	/**
