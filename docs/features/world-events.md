@@ -26,7 +26,8 @@ Under the storm:
   - **Backfire** (least often): the storm's mana kicks back. You take up to 3 damage (never
     enough to kill), get shoved back and lose 10 mana.
 
-**Feat:** *Stormcaller*: cast 20 spells under a mana storm.
+**Feat:** *Stormcaller*: cast 20 spells under one mana storm. Each storm counts your casts afresh:
+casts under an earlier storm don't carry over.
 
 ## Starfall crater
 
@@ -86,7 +87,8 @@ elements**. Before that it's too raw to seal.
 | 3 | 2 | 2 to 4 | yes | 60 |
 
 Runes are mostly Tier II, sometimes III, rarely IV. The **Riftcaller**, killed by a player, also
-drops its own spoils (an Unstable or Riftcall rune and 1 to 3 Mana Crystals).
+drops its own spoils: an **Unstable** rune always, a 50% chance of another rune (Riftcall or
+Unstable, equally), and 1 to 3 Mana Crystals.
 
 If nobody closes the rift, it closes itself 90 seconds after its last wave, or after 30 seconds with
 nobody near. It gives nothing then, and takes its monsters back with it.

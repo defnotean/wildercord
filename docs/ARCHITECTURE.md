@@ -128,7 +128,7 @@ cooldown and duration. Both are pure, so both are unit-tested.
 - **`Secrets`**: the ten secret spells, each an exact rune sequence with a name, colour, cost
   multiplier and riddle. `Secrets.match` only matches the whole spell, nothing before or after.
 - **`Feats`**: the Grimoire's keys (`reaction:shatter`, `secret:sunfall`, `feat:overcast`,
-  `hint:` for a riddle read), the sixteen feats, and how much mana each first discovery condenses.
+  `hint:` for a riddle read), every feat, and how much mana each first discovery condenses.
 - **`Leaning`**: which element a caster leans toward, from their cast counts (40+ casts and 1.25x
   the runner-up), and its 10% bonus.
 - **`SpellNames`**: a readable name made from a spell's runes ("Splitting Frost Bolt"), and
