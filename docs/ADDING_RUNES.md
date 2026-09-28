@@ -186,8 +186,8 @@ Keep it about 7-9 wide and centred. Run `python tools/item_art.py` and look at
 
 ### Recipe
 
-Every Tier I-III rune must have a recipe (the generator asserts this); Tier IV and innate runes
-must not. Add
+Every Tier I-III rune must have a recipe (the generator asserts this); Tier IV runes, innate runes
+and the runes of the world (below) must not. Add
 the themed items to `RUNE_RECIPES` in `tools/generate_assets.py`:
 
 ```python
@@ -202,6 +202,23 @@ ingredients in total.
 Add the rune to a pool in `WildercordLoot.java` (`common`, `uncommon`, or a structure's list), or as
 a mob drop in `MOB_DROPS`. Weights within a pool scale with tier automatically. The tooltip's
 "Found:" line and `docs/RECIPES.md` are generated from this file.
+
+### A rune of the world (found only)
+
+A rune that should never be crafted, whatever its tier, belongs to a place instead:
+
+1. Define it at the end of `Runes.java`, in the "Runes of the world" section (after everything
+   else, so no older rune's magic circle changes).
+2. Put it in a `source(...)` line in `spell/RuneSources.java` (one line each: the asset generator
+   reads them for the tooltip's "Found:" line and `docs/RECIPES.md`). Don't give it a recipe: the
+   generator asserts it has none.
+3. Its behaviour goes in `cast/ExplorerEffects.java` (effects), `cast/ExplorerShapes.java` (shapes
+   and condition links) and `cast/ExplorerVfx.java` (visuals); `Effects` and `CastEngine` hand
+   anything they don't know to these.
+4. Hand it out: a vanilla structure's chest through `sourcePool(...)` in `WildercordLoot`, a biome
+   through a rule in `spell/Attunements.java` (plus its `attunement:<id>` source), or one of
+   Wildercord's own places, whose loot tables the generator writes from the source
+   (`WildercordLoot.foundRune(sourceId, random)` picks one in code).
 
 ### Regenerate
 

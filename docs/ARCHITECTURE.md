@@ -135,6 +135,11 @@ cooldown and duration. Both are pure, so both are unit-tested.
   cleaning of custom names.
 - **`SpellCodes`**: a spell as a `wc:bolt.frost.split` code and back (add-on runes as
   `namespace~path`), and the pattern that finds codes in chat.
+- **`RuneSources`**: where each rune of the world is found (never crafted): a source id
+  (`ancient_city`, `attunement:cherry_grove`, `ember_sanctum`, `starfall`...), how the tooltip names
+  it, and its runes. `forSource(id)` is what dungeons, bosses and events use.
+- **`Attunements`**: the Attunement rules (a biome, a condition over a `Place`, a riddle), matched
+  by `cast.Attunement` every 5 ticks while a player meditates with a Blank Rune in hand.
 - **`SpellSigil`**: the layout of a spell's magic circle, as fractions of its radius: the frame and
   its rays, the script band, the pattern band, the star ({p/q} with `points`/`step`, a point per
   rune), the roundels on its points (`pointOf`, `roundel`), the inner ring and the seal. The size

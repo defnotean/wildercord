@@ -512,7 +512,7 @@ public final class Effects {
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
 			// The runes of the world (found, never crafted) live in their own class.
-			default -> ExplorerEffects.apply(cast, node, hit, helped, harmed, moved, power, duration);
+			default -> ExplorerEffects.apply(cast, node, hit, helped, harmed, power, duration);
 		}
 		// Kindled: whatever the effect struck is set alight too.
 		ExplorerEffects.kindle(cast, node, harmed, duration);

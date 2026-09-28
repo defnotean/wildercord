@@ -66,7 +66,7 @@ public final class ExplorerEffects {
 	private static final int MAX_REVEALED = 32;
 
 	static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, List<LivingEntity> helped, List<LivingEntity> harmed,
-			List<LivingEntity> moved, double power, double duration) {
+			double power, double duration) {
 		RuneDef rune = node.effect;
 		ServerLevel level = cast.level;
 		LivingEntity caster = cast.caster;
@@ -84,7 +84,7 @@ public final class ExplorerEffects {
 			case "fangs" -> harmed.forEach(t -> fangs(cast, t, power));
 			case "undertow" -> harmed.forEach(t -> undertow(cast, t, power, duration));
 			case "treasure_sense" -> helped.forEach(t -> treasureSense(cast, t, Effects.ticks(60, duration)));
-			case "tusk_charge" -> tuskCharge(cast, moved, power);
+			case "tusk_charge" -> tuskCharge(cast, power);
 			case "blazecall" -> harmed.forEach(t -> blazecall(cast, t, power));
 			case "shulkershell" -> helped.forEach(t -> shulkershell(cast, t, Effects.ticks(4, duration)));
 			case "portalfall" -> harmed.forEach(t -> portalfall(cast, t, power));
@@ -472,36 +472,32 @@ public final class ExplorerEffects {
 		}, () -> { });
 	}
 
-	/** Tusk Charge: the caster charges forward like a hoglin, tossing whatever it runs into. */
-	private static void tuskCharge(Cast cast, List<LivingEntity> moved, double power) {
-		for (LivingEntity runner : moved) {
-			if (Spirits.isBoss(runner)) {
-				continue;
+	/** Tusk Charge: the caster charges forward like a hoglin, tossing whatever it runs into. A movement rune: it always moves the caster. */
+	private static void tuskCharge(Cast cast, double power) {
+		LivingEntity runner = cast.caster;
+		Vec3 dir = Effects.horizontal(runner.getLookAngle(), runner.getLookAngle());
+		Effects.push(runner, dir.scale(2.0).add(0, 0.2, 0));
+		runner.resetFallDistance();
+		ExplorerVfx.tuskCharge(cast.level, runner, dir, true);
+		Set<UUID> tossed = new HashSet<>();
+		repeat(cast, 8, 1, tick -> {
+			if (!onHand(cast, runner)) {
+				return;
 			}
-			Vec3 dir = Effects.horizontal(runner.getLookAngle(), cast.caster.getLookAngle());
-			Effects.push(runner, dir.scale(2.0).add(0, 0.2, 0));
-			runner.resetFallDistance();
-			ExplorerVfx.tuskCharge(cast.level, runner, dir, true);
-			Set<UUID> tossed = new HashSet<>();
-			repeat(cast, 8, 1, tick -> {
-				if (!onHand(cast, runner)) {
-					return;
-				}
-				if (tick % 2 == 0) {
-					ExplorerVfx.tuskCharge(cast.level, runner, dir, false);
-				}
-				for (LivingEntity t : enemiesAround(cast, runner.position().add(dir.scale(0.8)).add(0, 1, 0), 1.6)) {
-					if (t != runner && tossed.add(t.getUUID())) {
-						Effects.hurt(cast, t, magic(cast), 5 * power);
-						if (!Spirits.isBoss(t)) {
-							Effects.push(t, dir.scale(0.5).add(0, 0.8, 0));
-							Reactions.mark(t, Reactions.Mark.WINDSWEPT);
-						}
-						ExplorerVfx.tossed(cast.level, t);
+			if (tick % 2 == 0) {
+				ExplorerVfx.tuskCharge(cast.level, runner, dir, false);
+			}
+			for (LivingEntity t : enemiesAround(cast, runner.position().add(dir.scale(0.8)).add(0, 1, 0), 1.6)) {
+				if (t != runner && tossed.add(t.getUUID())) {
+					Effects.hurt(cast, t, magic(cast), 5 * power);
+					if (!Spirits.isBoss(t)) {
+						Effects.push(t, dir.scale(0.5).add(0, 0.8, 0));
+						Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 					}
+					ExplorerVfx.tossed(cast.level, t);
 				}
-			}, runner::resetFallDistance);
-		}
+			}
+		}, runner::resetFallDistance);
 	}
 
 	/** Blazecall: three blaze fireballs fall on the target, a third of a second apart. */
