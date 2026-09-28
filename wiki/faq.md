@@ -147,8 +147,8 @@ in 3 minutes). Or thread **Blood Price** and pay in health instead of mana. See
 [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }}).
 
 ### Can my spells hurt my friends or my pets?
-No. Harmful effects never touch you, your tamed pets or players on your team, and other players only when
-the server allows PvP (and then for 60% damage, unless the server changes it).
+No. Harmful effects never touch you, your tamed pets or players on your team, and other players (and their
+pets) only when the server allows PvP (and then for 60% damage to a player, unless the server changes it).
 
 ### Why won't my Heal heal my friend?
 Helpful spells only reach **you and your allies**, and another player is only your ally when you're on the
@@ -168,8 +168,8 @@ Your Cord, your learned runes, your spells, your Heart Circles and your cooldown
 never dropped. You come back with an empty mana pool, which refills as usual.
 
 ### Do I lose my spells when I change Cords?
-No. Spells and runes are saved on you, not on the Cord. A better Cord just opens more sockets and spell rows
-(enchantments on the old Cord don't carry over, though). A smaller Cord deletes nothing either: runes past its
+No. Spells and runes are saved on you, not on the Cord. A better Cord just opens more sockets and spell rows,
+and one crafted from your old Cord keeps its enchantments and name. A smaller Cord deletes nothing either: runes past its
 sockets, rows it doesn't have and runes too strong for it stay threaded but quiet, and wake again when you put
 the bigger Cord back on. See [Upgrading]({{ '/spellcraft/cords/' | relative_url }}#upgrading).
 

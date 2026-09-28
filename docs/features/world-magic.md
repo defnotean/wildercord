@@ -71,7 +71,8 @@ Bubble or a steam cloud. On a wet creature:
 ## Rules
 
 - Only a player's spells change blocks, and only where they may build: spawn protection, claims and
-  Adventure mode all stop it. A monster's spells never change blocks, but still conduct through
+  Adventure mode all stop it, and so does a server config with `features.world_changing_magic` (or
+  `casting.spells_edit_blocks`) set to false. A monster's spells never change blocks, but still conduct through
   water, heave the ground and blow arrows away.
 - Every change comes out of the cast's block budget (32 per strike), and a whole cast, links and
   echoes included, makes at most **24** world changes.

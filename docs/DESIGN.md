@@ -416,7 +416,7 @@ Casters build rings of condensed mana around their heart, from the 1st Circle to
 | 4th | 10,000 | Defeat 40 monsters with spells, set off 3 different reactions | |
 | 5th | 18,000 | Know 35 runes, wear an Amethyst Cord, *Long Incantation* (slay a monster with a spell of 6+ runes) | Passive slot 2, **Flow**: cooldowns 15% shorter |
 | 6th | 30,000 | Defeat 150 monsters with spells, slay 8 Runebound, set off all 5 reactions | |
-| 7th | 50,000 | Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon or the Archivist; everyone within 96 blocks counts), find 2 secret spells, *In Rhythm* (3 casts on the beat) | **Overflow**: spells cast at full mana hit 30% harder |
+| 7th | 50,000 | Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon, the Archivist or a dimension dungeon's boss; everyone within 96 blocks counts), find 2 secret spells, *In Rhythm* (3 casts on the beat) | **Overflow**: spells cast at full mana hit 30% harder |
 | 8th | 80,000 | Wear an Echo Cord, find 4 secret spells, *The Last Page* (defeat the Archivist) | **Archmage**: spells and passives cost 15% less mana |
 
 Every circle also adds +15 max mana, +0.5 mana/s and +3% spell power (a circle cracked by overcasting gives none of this until it mends). Hover the heart badge (left of the mana badge) for your circles, perks and what the next one needs. `/wildercord circles <n>` and `/wildercord condense <mana>` set them for testing.
@@ -649,7 +649,7 @@ both hands empty, into the block you're looking at. How an item lets it go depen
 |---|---|
 | Weapons (swords, maces, tridents) | At what they strike |
 | Tools (pickaxes, axes, shovels, hoes) | At each block they break, and at what they strike |
-| Bows and crossbows | With the next arrows, wherever each lands (a triple shot spends one charge) |
+| Bows and crossbows | With the next shots, where the arrow lands (a crossbow's triple shot spends one charge, and only one of its arrows carries the spell) |
 | Armour and shields | At whatever hurts you |
 | Blocks | Placed, the block becomes a glyph holding it |
 | Anything else (a stick, a bone, a book) | When used: at what you're looking at, or from you if the stored part starts with a shape |
@@ -785,7 +785,8 @@ telegraph circle: it raises its arms, the tome lifts and riffles and its writing
 away when you get close and never strays from the arena. At two thirds and one third health it
 **rewrites its Cord**: pages tear loose from the tome in a burst, it throws its arms wide with the
 book open over its head and the pages whirling far out, untouchable for a moment, summoning two
-Runebound (Adepts the second time), then a new phase of spells. Slain, it sinks into its robe.
+Runebound (Adepts the second time), then a new phase of spells. Like the dimension bosses, no blow
+carries it past the start of its next phase. Slain, it sinks into its robe.
 
 | Phase | Its spells |
 |---|---|
@@ -1018,7 +1019,7 @@ and Glacier frost, Lifesteal blood, Warp void, Bloom life and Nullify arcane.
 
 - **Friendly fire:** harmful effects never hit you, your scoreboard team or your
   tamed pets.
-- **PvP:** with PvP off, harmful effects never affect players. With PvP on, rune
+- **PvP:** with PvP off, harmful effects never affect other players or their pets. With PvP on, rune
   damage to players is ×0.6. *(Planned: crowd-control such as Frost, Pull and Launch
   lasting half as long on players.)*
 - **Hard caps per cast:** 64 creatures, 32 blocks, 24 live projectiles per player,

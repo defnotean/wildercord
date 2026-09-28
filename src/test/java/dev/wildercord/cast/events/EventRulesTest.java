@@ -1,6 +1,7 @@
 package dev.wildercord.cast.events;
 
 import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.RuneSources;
 import dev.wildercord.spell.Runes;
 import org.junit.jupiter.api.Test;
 
@@ -90,6 +91,23 @@ class EventRulesTest {
 	}
 
 	@Test
+	void aStormsSurgesCrystalliseItsRunesNowAndThen() {
+		// Only a surge, only from the 10th cast under the storm, one time in three, and once per storm.
+		assertTrue(EventRules.stormRune(EventRules.Surge.BIGGER, EventRules.STORM_RUNE_CASTS, false, 0.0));
+		assertTrue(EventRules.stormRune(EventRules.Surge.BACKFIRE, 40, false, 0.33));
+		assertFalse(EventRules.stormRune(EventRules.Surge.NONE, 40, false, 0.0), "not without a surge");
+		assertFalse(EventRules.stormRune(EventRules.Surge.ECHO, EventRules.STORM_RUNE_CASTS - 1, false, 0.0), "not before the 10th cast");
+		assertFalse(EventRules.stormRune(EventRules.Surge.ECHO, 40, true, 0.0), "never twice from one storm");
+		assertFalse(EventRules.stormRune(EventRules.Surge.ELEMENT, 40, false, 0.34), "only one surge in three");
+		// Rare, but a caster who keeps casting gets one more often than not: 40 casts past the 10th.
+		double missed = Math.pow(1 - EventRules.SURGE_CHANCE * EventRules.STORM_RUNE_CHANCE, 40);
+		assertTrue(missed < 0.5 && missed > 0.1, "missed " + missed);
+		// Only its own two runes, and the tooltips and the Grimoire say how.
+		assertEquals(List.of(Runes.MANABURN, Runes.MANATIDE), RuneSources.forSource("mana_storm"));
+		assertTrue(RuneSources.MANA_STORM.where().contains("after " + EventRules.STORM_RUNE_CASTS + " casts"), RuneSources.MANA_STORM.where());
+	}
+
+	@Test
 	void wavesGrowWithTheWaveAndThePlayers() {
 		assertEquals(3, EventRules.waveSize(1, 1));
 		assertEquals(4, EventRules.waveSize(2, 1));
@@ -138,7 +156,7 @@ class EventRulesTest {
 
 	@Test
 	void rewardRunesAreOfTheTierAndNeverInnate() {
-		for (String source : List.of("starfall", "rift", "mana_storm")) {
+		for (String source : List.of("starfall", "rift")) {
 			for (int tier = 1; tier <= 4; tier++) {
 				List<RuneDef> pool = EventRules.rewardRunes(source, tier);
 				assertFalse(pool.isEmpty(), source + " tier " + tier);

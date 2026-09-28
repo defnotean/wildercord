@@ -1,9 +1,10 @@
 package dev.wildercord.cast;
 
 /**
- * The dungeon bosses' pure rules, with no Minecraft types so they're unit-tested: which phase a
- * boss's health puts it in, and how far one blow may take it (never past the start of its next
- * phase, so no burst of damage skips a phase or kills it from its first).
+ * The bosses' pure rules (the three dungeon bosses and the Archivist), with no Minecraft types so
+ * they're unit-tested: which phase a boss's health puts it in, and how far one blow may take it
+ * (never past the start of its next phase, so no burst of damage skips a phase or kills it from its
+ * first).
  */
 public final class BossRules {
 	private BossRules() {}

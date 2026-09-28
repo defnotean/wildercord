@@ -31,6 +31,7 @@ public final class Wildercord implements ModInitializer {
 		WildercordEffects.init();
 		WildercordBlocks.init();
 		WildercordItems.init();
+		dev.wildercord.content.CordUpgradeRecipe.init();
 		dev.wildercord.menu.WildercordMenus.init();
 		dev.wildercord.gear.GearItems.init();
 		dev.wildercord.config.Config.init();

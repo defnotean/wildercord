@@ -77,7 +77,7 @@ public final class RuneSources {
 	public static final Source STARFALL = source("starfall", "Fallen Star craters", Runes.STARSHARD);
 	public static final Source RIFT = source("rift", "Rift sieges", Runes.RIFTCALL, Runes.UNSTABLE);
 	public static final Source RIFTCALLER = source("riftcaller", "the Riftcaller", Runes.UNSTABLE);
-	public static final Source MANA_STORM = source("mana_storm", "Mana storms", Runes.MANABURN, Runes.MANATIDE);
+	public static final Source MANA_STORM = source("mana_storm", "Mana storms (a surge after 10 casts)", Runes.MANABURN, Runes.MANATIDE);
 
 	// ---- Now and then elsewhere, too
 	public static final Source ARCHIVE = source("archive", "Archive libraries", Runes.ECHOLOCATE, Runes.INFEST, Runes.FANGS, Runes.TREASURE_SENSE, Runes.IF_WOUNDED);

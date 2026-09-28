@@ -14,7 +14,9 @@ They come from four kinds of place:
 - **Biomes, by Attunement:** hold a Blank Rune and meditate in the right land at the right moment.
 - **Wildercord's dungeons and their bosses:** the Ember Sanctum, the Astral Observatory and the
   Drowned Scriptorium, and the Cinder Warden, the Star Eater and the Tide Scribe.
-- **World events:** Fallen Star craters, Rift sieges (and their Riftcaller) and mana storms.
+- **World events:** Fallen Star craters, Rift sieges (and their Riftcaller) and mana storms (a
+  surge, once you've cast 10 spells under a storm, now and then crystallises one of its runes: see
+  [World events](world-events.md)).
 
 A few of them also turn up in Archive libraries, and a slain Runebound Adept sometimes drops one
 (8%, times the rune loot multiplier).
@@ -86,7 +88,7 @@ it's ready again.
 | Warp Step | Void | II | Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pulled back, unless you're sneaking. | Attuned in a warped forest |
 | Blood Moss | Blood | II | Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you heal for all of it. | Attuned in a crimson forest |
 | Cinderbrand | Fire | II | Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50% hotter. | The Ember Sanctum |
-| Manaburn | Arcane | II | 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana: 20 times the hit's power (so each of a Barrage's hits takes 7), scaled like PvP damage, and never more than 20 from one player in one cast. | Mana storms |
+| Manaburn | Arcane | II | 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana: 20 times the hit's power (so each of a Barrage's hits takes 7), scaled like PvP damage, and never more than 20 from one player in one cast. | Mana storms (a surge after 10 casts) |
 | Resonant Shriek | Void | III | A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A second later it echoes for half as much. | Ancient cities |
 | Tidecall | Frost | III | The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked. | Ocean monuments (Elder Guardians) |
 | Sandstorm | Earth | III | A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks takes 2 damage a second, can't see and is slowed. | Desert pyramids |
@@ -102,7 +104,7 @@ it's ready again.
 | Drowning Word | Frost | III | For 5 seconds the target's lungs fill with water (no air, 2 damage a second), and it's soaked. | The Drowned Scriptorium |
 | Starshard | Arcane | III | 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks (in sight of the target) for 3. | Fallen Star craters |
 | Riftcall | Void | III | Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6. | Rift sieges |
-| Manatide | Arcane | III | You and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute. | Mana storms |
+| Manatide | Arcane | III | You and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute. | Mana storms (a surge after 10 casts) |
 | Cinderheart | Fire | IV | Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks (and in sight) takes 3 fire damage a second. | The Cinder Warden |
 | Starmaw | Void | IV | 14 damage, and it swallows each of the target's good effects for 3 more damage apiece. | The Star Eater |
 | Tidewrit | Frost | IV | A 7-wide wall of water rolls from you through the point: 10 damage to everything in it, sweeping it 8 blocks on, soaked. | The Tide Scribe |

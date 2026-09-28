@@ -26,6 +26,11 @@ Under the storm:
   - **Backfire** (least often): the storm's mana kicks back. You take up to 3 damage (never
     enough to kill), get shoved back and lose 10 mana.
 
+**Runes:** from your 10th cast under a storm on, one surge in three (of any kind) crystallises the
+storm's mana into one of its own runes, straight into your pack: **Manaburn** (5 times in 7) or
+**Manatide** (2 times in 7). Each storm gives each player one at most. You're told in chat, and
+everyone near sees the flash.
+
 **Feat:** *Stormcaller*: cast 20 spells under a mana storm.
 
 ## Starfall crater
@@ -99,5 +104,7 @@ The rift's boss bar goes as soon as you leave its world.
 ## For operators
 
 `/wildercord event <mana_storm|starfall|rift> [here]` starts an event as the server would place
-it. With `here`, it happens right by you instead. All the frequencies and numbers are in one place,
+it. With `here`, it happens right by you instead. Setting `features.world_events` to false in
+`config/wildercord.json` switches every event off: none starts on its own or from the command, and
+one already under way runs its course. All the frequencies and numbers are in one place,
 `cast/events/EventRules.java`, ready for a config file.

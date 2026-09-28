@@ -289,7 +289,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Fangs | Effect | II | Woodland mansions, Archive libraries |
 | Hush | Effect | II | Attuned in the deep dark |
 | Infest | Effect | II | Stronghold libraries, Archive libraries |
-| Manaburn | Effect | II | Mana storms |
+| Manaburn | Effect | II | Mana storms (a surge after 10 casts) |
 | Mire | Effect | II | Attuned in a swamp |
 | Moonpetal | Effect | II | Attuned in a cherry grove |
 | Portalfall | Effect | II | Ruined portals, Runebound Adepts (8%) |
@@ -307,7 +307,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Drowning Word | Effect | III | The Drowned Scriptorium |
 | Eclipse | Effect | III | The Astral Observatory |
 | Hoarfrost | Effect | III | Attuned among ice spikes |
-| Manatide | Effect | III | Mana storms |
+| Manatide | Effect | III | Mana storms (a surge after 10 casts) |
 | Resonant Shriek | Effect | III | Ancient cities |
 | Riftcall | Effect | III | Rift sieges |
 | Sandstorm | Effect | III | Desert pyramids |

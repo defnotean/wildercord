@@ -118,7 +118,8 @@ with cheats on. They're meant for testing, events and fixing things up.
 | `/wildercord reset` | Forget every rune and spell (you learn the three starter runes again the next time you wear a Cord). Heart Circles and everything else are kept. |
 | `/wildercord reload` | Read the server's Wildercord settings again, and say what, if anything, was wrong with them. |
 
-Fallen stars and rift sieges need a difficulty above Peaceful. Tab completion suggests rune names for
+Fallen stars and rift sieges need a difficulty above Peaceful, and none of the three events starts on a server
+whose settings switch world events off. Tab completion suggests rune names for
 `learn` and `innate`.
 
 The game's own commands work with Wildercord's structures and rules too:
