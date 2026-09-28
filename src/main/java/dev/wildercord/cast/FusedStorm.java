@@ -383,8 +383,9 @@ final class FusedStorm {
 	private static void thunderhead(Cast cast, Cast.Hit hit, List<LivingEntity> harmed, double reach, double power, int ticks) {
 		List<LivingEntity> targets = first(harmed, MAX_SPOTS);
 		if (targets.isEmpty()) {
+			// Over the spot, as high as it would hang over someone standing there.
 			Vec3 ground = ElementFx.floor(cast.level, hit.point(), 6);
-			gather(cast, null, ground != null ? ground : hit.point(), reach, power, ticks);
+			gather(cast, null, (ground != null ? ground : hit.point()).add(0, 1.8, 0), reach, power, ticks);
 		}
 		for (LivingEntity t : targets) {
 			gather(cast, t, t.position().add(0, t.getBbHeight(), 0), reach, power, ticks);
@@ -413,7 +414,7 @@ final class FusedStorm {
 			Cloud old = clouds.removeFirst();
 			old.over = true;
 		}
-		Cloud cloud = new Cloud(t == null ? null : t.getUUID(), sky(level, under, 3.2), now + ticks, power, reach);
+		Cloud cloud = new Cloud(t == null ? null : t.getUUID(), sky(level, under, CLOUD_HEIGHT), now + ticks, power, reach);
 		clouds.add(cloud);
 		FusedStormVfx.cloudGather(level, cloud.centre);
 		every(cast, 2, 2, age -> {
@@ -422,7 +423,7 @@ final class FusedStorm {
 			}
 			// It drifts along over its target; over a spot (or once its target is gone) it stays where it is.
 			if (t != null && onHand(cast, t)) {
-				Vec3 want = sky(level, t.position().add(0, t.getBbHeight(), 0), 3.2);
+				Vec3 want = sky(level, t.position().add(0, t.getBbHeight(), 0), CLOUD_HEIGHT);
 				cloud.centre = cloud.centre.lerp(want, 0.3);
 			}
 			if (age % 4 == 0) {

@@ -56,6 +56,8 @@ final class FusedStormNumbers {
 	static final double CLOUD_STRIKE_DAMAGE = 3;
 	static final double CLOUD_REACH = 4;
 	static final double CLOUD_SECONDS = 4;
+	/** How far over its target's head a cloud hangs (lower under a ceiling). */
+	static final double CLOUD_HEIGHT = 3.0;
 	/** Clouds one caster may have gathered at once; a new one past this takes the place of the oldest. */
 	static final int CLOUDS_MAX = 4;
 

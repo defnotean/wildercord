@@ -274,7 +274,7 @@ final class FusedStormVfx {
 	static void heartstopper(ServerLevel level, Vec3 origin, Entity t) {
 		Vec3 heart = chest(t);
 		Vec3 start = origin.distanceToSqr(heart) > 64 ? heart.add(heart.subtract(origin).normalize().scale(-6)) : origin;
-		ElementFx.bolt(level, start.add(0, 0.8, 0), heart, 0.07, 2, 3, ElementFx.BLOOD.secondary(), ElementFx.BLOOD.accent());
+		ElementFx.bolt(level, start.add(0, 0.8, 0), heart, 0.07, 2, 3, ElementFx.BLOOD.secondary(), ElementFx.BLOOD.primary());
 		Sigils.flash(level, heart, ElementFx.BLOOD.primary(), 1.7F);
 		ElementFx.pulse(level, heart, UP, Math.max(0.9, t.getBbWidth() + 0.5));
 		ElementFx.pulse(level, heart, heart.subtract(start), 0.8);
