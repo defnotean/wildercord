@@ -50,11 +50,7 @@ book.
 
 The plain tablet every rune is made from.
 
-| | | |
-|---|---|---|
-| | Cobblestone | |
-| Cobblestone | Lapis Lazuli | Cobblestone |
-| | Cobblestone | |
+{% include recipe.html id="blank_rune" alt="Crafting grid: top row empty · Cobblestone · empty; middle row Cobblestone · Lapis Lazuli · Cobblestone; bottom row empty · Cobblestone · empty" %}
 
 4 Cobblestone around 1 Lapis Lazuli makes **4 Blank Runes**.
 
@@ -109,24 +105,26 @@ for everything about them.
 
 ### Twine Cord
 
-| | | |
-|---|---|---|
-| String | | String |
-| | String | |
-| | Blank Rune | |
+{% include recipe.html id="twine_cord" alt="Crafting grid: top row String · empty · String; middle row empty · String · empty; bottom row empty · Blank Rune · empty" %}
 
 3 String and 1 Blank Rune. The first time you wear a Cord you learn Self, Bolt and Push, and spell 1 is ready to
 cast. See [Getting Started]({{ '/getting-started/' | relative_url }}).
 
 ### Copper Cord
 
+{% include recipe.html id="copper_cord" alt="Crafting the Copper Cord: the Cord before it and its materials, in any layout" %}
+
 Shapeless: **Twine Cord**, **4 Copper Ingots**, **1 Amethyst Shard**.
 
 ### Amethyst Cord
 
+{% include recipe.html id="amethyst_cord" alt="Crafting the Amethyst Cord: the Cord before it and its materials, in any layout" %}
+
 Shapeless: **Copper Cord**, **4 Amethyst Shards**, **2 Gold Ingots**.
 
 ### Echo Cord
+
+{% include recipe.html id="echo_cord" alt="Crafting the Echo Cord: the Cord before it and its materials, in any layout" %}
 
 Shapeless: **Amethyst Cord**, **2 Echo Shards**, **1 Netherite Scrap**.
 
@@ -137,11 +135,7 @@ Cords can be enchanted with Wildercord's Cord enchantments at an enchanting tabl
 
 ### Mana Crystal
 
-| | | |
-|---|---|---|
-| Lapis Lazuli | Amethyst Shard | Lapis Lazuli |
-| Amethyst Shard | Diamond | Amethyst Shard |
-| Lapis Lazuli | Amethyst Shard | Lapis Lazuli |
+{% include recipe.html id="mana_crystal" alt="Crafting grid: top row Lapis Lazuli · Amethyst Shard · Lapis Lazuli; middle row Amethyst Shard · Diamond · Amethyst Shard; bottom row Lapis Lazuli · Amethyst Shard · Lapis Lazuli" %}
 
 4 Lapis Lazuli, 4 Amethyst Shards and a Diamond make **1 Mana Crystal**. Crystals stack to 16.
 
@@ -174,6 +168,17 @@ that the game tells you your mana can't grow further with crystals, and the crys
 ### Potions
 
 Two potions, brewed in a brewing stand from an **Awkward Potion**:
+
+Brewed in a brewing stand, like any vanilla potion:
+
+<div class="recipe-gallery">
+{% include recipe-card.html id="brewing_potion_awkward_amethyst_shard" name="Awkward Potion + Amethyst Shard: Potion of Clarity" %}
+{% include recipe-card.html id="brewing_potion_awkward_lapis_lazuli" name="Awkward Potion + Lapis Lazuli: Potion of Mana" %}
+{% include recipe-card.html id="brewing_potion_clarity_redstone" name="+ Redstone: lasts longer" %}
+{% include recipe-card.html id="brewing_potion_clarity_glowstone_dust" name="+ Glowstone Dust: stronger" %}
+{% include recipe-card.html id="brewing_potion_clarity_gunpowder" name="+ Gunpowder: splash" %}
+{% include recipe-card.html id="brewing_splash_potion_clarity_dragon_breath" name="Splash + Dragon's Breath: lingering" %}
+</div>
 
 | Potion | Brew | Effect | What it does | Lasts |
 |---|---|---|---|---|
@@ -235,33 +240,21 @@ If there's no riddle left you haven't found or been given, the page says so and 
 
 ### Fusion Altar
 
-| | | |
-|---|---|---|
-| Deepslate Tiles | Block of Amethyst | Deepslate Tiles |
-| Block of Amethyst | Lodestone | Block of Amethyst |
-| Deepslate Tiles | Block of Amethyst | Deepslate Tiles |
+{% include recipe.html id="fusion_altar" alt="Crafting grid: top row Deepslate Tiles · Block of Amethyst · Deepslate Tiles; middle row Block of Amethyst · Lodestone · Block of Amethyst; bottom row Deepslate Tiles · Block of Amethyst · Deepslate Tiles" %}
 
 Ranks runes up, fuses two effects into a new one, and ties spells into Knots. Mine it with a pickaxe. See
 [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 
 ### Scribing Desk
 
-| | | |
-|---|---|---|
-| Wooden Slab | Wooden Slab | Wooden Slab |
-| Blank Rune | Bookshelf | Blank Rune |
-| | Wooden Slab | |
+{% include recipe.html id="scribing_desk" alt="Crafting grid: top row Wooden Slab · Wooden Slab · Wooden Slab; middle row Blank Rune · Bookshelf · Blank Rune; bottom row empty · Wooden Slab · empty" %}
 
 Any wooden slabs. A villager without a job becomes a [Runesmith]({{ '/social/runesmith/' | relative_url }}) at it, and
 right-clicking it opens your [daily contracts]({{ '/social/contracts/' | relative_url }}). Best mined with an axe.
 
 ### Wellstone
 
-| | | |
-|---|---|---|
-| Polished Deepslate | Block of Amethyst | Polished Deepslate |
-| Block of Amethyst | Mana Crystal | Block of Amethyst |
-| Deepslate Tiles | Deepslate Tiles | Deepslate Tiles |
+{% include recipe.html id="wellstone" alt="Crafting grid: top row Polished Deepslate · Block of Amethyst · Polished Deepslate; middle row Block of Amethyst · Mana Crystal · Block of Amethyst; bottom row Deepslate Tiles · Deepslate Tiles · Deepslate Tiles" %}
 
 A mana well. Set it on a **ley line** in the Overworld and it **wakes**: circles turn on the ground around it, and
 everyone within **12 blocks** regenerates mana **50% faster**. Off a ley line it only glows faintly. Wild wisps rise
@@ -270,11 +263,7 @@ out of its mana at any hour, and a familiar told to stay near it waits there. Mi
 
 ### Training Dummy
 
-| | | |
-|---|---|---|
-| | White Wool | |
-| Stick | Hay Bale | Stick |
-| | Smooth Stone Slab | |
+{% include recipe.html id="training_dummy" alt="Crafting grid: top row empty · White Wool · empty; middle row Stick · Hay Bale · Stick; bottom row empty · Smooth Stone Slab · empty" %}
 
 A straw dummy for trying your spells. Use it on a block to set it up facing you. It never dies: every hit floats up as
 a number, and its name shows your damage per second. **Sneak and punch it** to pick it back up. Dummies stack to 16.
@@ -284,11 +273,7 @@ Hits on a dummy don't count for contracts. See [Training Dummy]({{ '/progression
 
 ### Wisp Lantern
 
-| | | |
-|---|---|---|
-| | Amethyst Shard | |
-| Glass Pane | Lantern | Glass Pane |
-| | Amethyst Shard | |
+{% include recipe.html id="wisp_lantern" alt="Crafting grid: top row empty · Amethyst Shard · empty; middle row Glass Pane · Lantern · Glass Pane; bottom row empty · Amethyst Shard · empty" %}
 
 Where your familiars rest. **Use** it to send the familiar that's out home, or to call it out again; **sneak and use**
 it to call the next one. Its tooltip lists every familiar you keep. The familiars belong to you, not to the lantern,
@@ -302,11 +287,18 @@ Held in your hands while you cast. Full details on [Casting Gear]({{ '/gear/' | 
 
 One for each element. Two handles, two of the element's material, and a Mana Crystal:
 
-| | | |
-|---|---|---|
-| | Material | Mana Crystal |
-| | Handle | Material |
-| Handle | | |
+<div class="recipe-gallery">
+{% include recipe-card.html id="fire_staff" name="Fire Staff" %}
+{% include recipe-card.html id="frost_staff" name="Frost Staff" %}
+{% include recipe-card.html id="storm_staff" name="Storm Staff" %}
+{% include recipe-card.html id="wind_staff" name="Wind Staff" %}
+{% include recipe-card.html id="earth_staff" name="Earth Staff" %}
+{% include recipe-card.html id="life_staff" name="Life Staff" %}
+{% include recipe-card.html id="void_staff" name="Void Staff" %}
+{% include recipe-card.html id="arcane_staff" name="Arcane Staff" %}
+{% include recipe-card.html id="time_staff" name="Time Staff" %}
+{% include recipe-card.html id="blood_staff" name="Blood Staff" %}
+</div>
 
 | Staff | Material | Handle |
 |---|---|---|
@@ -340,35 +332,19 @@ Off-hand. Each is a plus shape around a Mana Crystal.
 
 **Focus of Haste** (charged casts fill 40% faster)
 
-| | | |
-|---|---|---|
-| | Feather | |
-| Sugar | Mana Crystal | Sugar |
-| | Gold Ingot | |
+{% include recipe.html id="focus_of_haste" alt="Crafting grid: top row empty · Feather · empty; middle row Sugar · Mana Crystal · Sugar; bottom row empty · Gold Ingot · empty" %}
 
 **Focus of Thrift** (spells cost 15% less mana, but hit 10% softer)
 
-| | | |
-|---|---|---|
-| | Emerald | |
-| Gold Ingot | Mana Crystal | Gold Ingot |
-| | Gold Ingot | |
+{% include recipe.html id="focus_of_thrift" alt="Crafting grid: top row empty · Emerald · empty; middle row Gold Ingot · Mana Crystal · Gold Ingot; bottom row empty · Gold Ingot · empty" %}
 
 **Focus of the Deep Well** (+50 max mana while held)
 
-| | | |
-|---|---|---|
-| | Block of Lapis Lazuli | |
-| Polished Deepslate | Mana Crystal | Polished Deepslate |
-| | Polished Deepslate | |
+{% include recipe.html id="focus_of_the_deep_well" alt="Crafting grid: top row empty · Block of Lapis Lazuli · empty; middle row Polished Deepslate · Mana Crystal · Polished Deepslate; bottom row empty · Polished Deepslate · empty" %}
 
 **Focus of Echoes** (a 10% chance a spell goes off again, free)
 
-| | | |
-|---|---|---|
-| | Echo Shard | |
-| Amethyst Shard | Mana Crystal | Amethyst Shard |
-| | Amethyst Shard | |
+{% include recipe.html id="focus_of_echoes" alt="Crafting grid: top row empty · Echo Shard · empty; middle row Amethyst Shard · Mana Crystal · Amethyst Shard; bottom row empty · Amethyst Shard · empty" %}
 
 Foci are also found in Archive vaults and libraries, stronghold libraries, ancient cities and woodland mansions.
 

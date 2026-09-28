@@ -22,6 +22,8 @@ Life paid for power. Blood cuts, drains, bleeds and turns wounds into strength.
 
 **How to get it:** Craft: a Blank Rune, Spider Eye and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_leech.png' | relative_url }}" alt="Crafting Leech: a Blank Rune and Spider Eye and Redstone Dust" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/rend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rend
@@ -32,6 +34,8 @@ Life paid for power. Blood cuts, drains, bleeds and turns wounds into strength.
 Rends armour: targets lose 4 armour for 10 seconds.
 
 **How to get it:** Craft: a Blank Rune, Iron Nugget and Bone. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_rend.png' | relative_url }}" alt="Crafting Rend: a Blank Rune and Iron Nugget and Bone" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal
 
@@ -44,6 +48,8 @@ Opens a wound: 2 damage, then 1 more every half second for 4 seconds.
 
 **How to get it:** Craft: a Blank Rune, Shears and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_bleed.png' | relative_url }}" alt="Crafting Bleed: a Blank Rune and Shears and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/dismantle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dismantle
@@ -54,6 +60,8 @@ Opens a wound: 2 damage, then 1 more every half second for 4 seconds.
 Three unseen slashes a tenth of a second apart: 3 damage each, straight through armour.
 
 **How to get it:** Craft: a Blank Rune, Shears, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_dismantle.png' | relative_url }}" alt="Crafting Dismantle: a Blank Rune and Shears, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -66,6 +74,8 @@ Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you los
 
 **How to get it:** Craft: a Blank Rune, Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_overdrive.png' | relative_url }}" alt="Crafting Overdrive: a Blank Rune and Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/cleave.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cleave
@@ -76,6 +86,8 @@ Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you los
 Cuts in proportion to the target: 4 damage plus 12% of its max health (up to 30 more).
 
 **How to get it:** Craft: a Blank Rune, Diamond Axe, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_cleave.png' | relative_url }}" alt="Crafting Cleave: a Blank Rune and Diamond Axe, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 

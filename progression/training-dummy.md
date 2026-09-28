@@ -18,11 +18,7 @@ exactly what every hit did.
 
 ## Crafting
 
-|   |   |   |
-|:-:|:-:|:-:|
-|   | White Wool |   |
-| Stick | Hay Bale | Stick |
-|   | Smooth Stone Slab |   |
+{% include recipe.html id="training_dummy" alt="Crafting grid: top row empty · White Wool · empty; middle row Stick · Hay Bale · Stick; bottom row empty · Smooth Stone Slab · empty" %}
 
 A White Wool, 2 Sticks, a Hay Bale and a Smooth Stone Slab make one. Dummies stack to 16.
 

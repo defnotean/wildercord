@@ -22,6 +22,8 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 
 **How to get it:** Craft: a Blank Rune, Glass and Amethyst Shard. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_barrier.png' | relative_url }}" alt="Crafting Barrier: a Blank Rune and Glass and Amethyst Shard" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/harm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Harm
@@ -32,6 +34,8 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 7 magic damage.
 
 **How to get it:** Craft: a Blank Rune, Fermented Spider Eye. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_harm.png' | relative_url }}" alt="Crafting Harm: a Blank Rune and Fermented Spider Eye" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -44,6 +48,8 @@ Haste II for 30 seconds: mine and swing faster.
 
 **How to get it:** Craft: a Blank Rune, Golden Pickaxe. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_haste.png' | relative_url }}" alt="Crafting Haste: a Blank Rune and Golden Pickaxe" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/light.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Light
@@ -54,6 +60,8 @@ Haste II for 30 seconds: mine and swing faster.
 A light source at the point for 60 seconds.
 
 **How to get it:** Craft: a Blank Rune, 2x Torch. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_light.png' | relative_url }}" alt="Crafting Light: a Blank Rune and 2x Torch" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal
 
@@ -66,6 +74,8 @@ Night vision for 60 seconds.
 
 **How to get it:** Craft: a Blank Rune, Glow Berries. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_night_eye.png' | relative_url }}" alt="Crafting Night Eye: a Blank Rune and Glow Berries" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/reveal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reveal
@@ -76,6 +86,8 @@ Night vision for 60 seconds.
 Makes targets glow through walls for 15 seconds.
 
 **How to get it:** Craft: a Blank Rune, Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_reveal.png' | relative_url }}" alt="Crafting Reveal: a Blank Rune and Glow Ink Sac" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal
 
@@ -88,6 +100,8 @@ A spoken command: everything hit is stunned for 2 seconds. Speaking it costs you
 
 **How to get it:** Craft: a Blank Rune, Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_decree.png' | relative_url }}" alt="Crafting Decree: a Blank Rune and Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/empower.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Empower
@@ -98,6 +112,8 @@ A spoken command: everything hit is stunned for 2 seconds. Speaking it costs you
 Strength II for 10 seconds.
 
 **How to get it:** Craft: a Blank Rune, Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_empower.png' | relative_url }}" alt="Crafting Empower: a Blank Rune and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -110,6 +126,8 @@ Monsters forget their target and are weakened for 6 seconds.
 
 **How to get it:** Craft: a Blank Rune, any wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_silence.png' | relative_url }}" alt="Crafting Silence: a Blank Rune and any wool, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/span.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Span
@@ -120,6 +138,8 @@ Monsters forget their target and are weakened for 6 seconds.
 A bridge of glass grows from your feet toward the point, up to 16 blocks, and shatters 30 seconds later.
 
 **How to get it:** Craft: a Blank Rune, 2x Magenta Stained Glass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_span.png' | relative_url }}" alt="Crafting Span: a Blank Rune and 2x Magenta Stained Glass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus
 
@@ -132,6 +152,8 @@ You and the first creature hit trade places, instantly.
 
 **How to get it:** Craft: a Blank Rune, 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_swap.png' | relative_url }}" alt="Crafting Swap: a Blank Rune and 2x Ender Pearl, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/reflect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reflect
@@ -142,6 +164,8 @@ You and the first creature hit trade places, instantly.
 For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 **How to get it:** Craft: a Blank Rune, Shield and Glass Pane, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_reflect.png' | relative_url }}" alt="Crafting Reflect: a Blank Rune and Shield and Glass Pane, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -154,6 +178,8 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 **How to get it:** Craft: a Blank Rune, Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_resonance.png' | relative_url }}" alt="Crafting Resonance: a Blank Rune and Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/smite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Smite
@@ -164,6 +190,8 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 10 holy damage, doubled against undead.
 
 **How to get it:** Craft: a Blank Rune, Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_smite.png' | relative_url }}" alt="Crafting Smite: a Blank Rune and Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 

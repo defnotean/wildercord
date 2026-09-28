@@ -21,11 +21,7 @@ lectern. Runesmiths wear violet robes with a gold band and a hood.
 
 Crafted like a lectern, with Blank Runes:
 
-| | | |
-|---|---|---|
-| Wooden Slab | Wooden Slab | Wooden Slab |
-| Blank Rune | Bookshelf | Blank Rune |
-| | Wooden Slab | |
+{% include recipe.html id="scribing_desk" alt="Crafting grid: top row Wooden Slab · Wooden Slab · Wooden Slab; middle row Blank Rune · Bookshelf · Blank Rune; bottom row empty · Wooden Slab · empty" %}
 
 Any kind of wooden slab works (you can mix them). It makes one desk.
 

@@ -41,11 +41,18 @@ Its tooltip says, for example, *Fire spells: +20% power, 10% less mana* and *Hol
 Every staff is crafted the same way, from two sticks, two of its element's material and a Mana Crystal. The Fire Staff
 uses Blaze Rods in place of the sticks.
 
-| | | |
-|---|---|---|
-| | Material | Mana Crystal |
-| | Stick | Material |
-| Stick | | |
+<div class="recipe-gallery">
+{% include recipe-card.html id="fire_staff" name="Fire Staff" %}
+{% include recipe-card.html id="frost_staff" name="Frost Staff" %}
+{% include recipe-card.html id="storm_staff" name="Storm Staff" %}
+{% include recipe-card.html id="wind_staff" name="Wind Staff" %}
+{% include recipe-card.html id="earth_staff" name="Earth Staff" %}
+{% include recipe-card.html id="life_staff" name="Life Staff" %}
+{% include recipe-card.html id="void_staff" name="Void Staff" %}
+{% include recipe-card.html id="arcane_staff" name="Arcane Staff" %}
+{% include recipe-card.html id="time_staff" name="Time Staff" %}
+{% include recipe-card.html id="blood_staff" name="Blood Staff" %}
+</div>
 
 | Staff | Material (2) | Handle (2) |
 |---|---|---|
@@ -123,13 +130,14 @@ A **focus** goes in your **off-hand** and changes **every** spell you cast while
 | **Focus of the Deep Well** | **+50 max mana** while you hold it | Block of Lapis Lazuli on top; Polished Deepslate, Mana Crystal, Polished Deepslate across the middle; Polished Deepslate below |
 | **Focus of Echoes** | A **10% chance** that a spell **echoes**: it goes off again half a second later, for free | Echo Shard on top; Amethyst Shard, Mana Crystal, Amethyst Shard across the middle; Amethyst Shard below |
 
-Each focus is a plus shape around a Mana Crystal. For example, the Focus of Haste:
+Each focus is a plus shape around a Mana Crystal:
 
-| | | |
-|---|---|---|
-| | Feather | |
-| Sugar | Mana Crystal | Sugar |
-| | Gold Ingot | |
+<div class="recipe-gallery">
+{% include recipe-card.html id="focus_of_haste" name="Focus of Haste" %}
+{% include recipe-card.html id="focus_of_thrift" name="Focus of Thrift" %}
+{% include recipe-card.html id="focus_of_the_deep_well" name="Focus of the Deep Well" %}
+{% include recipe-card.html id="focus_of_echoes" name="Focus of Echoes" %}
+</div>
 
 Foci can also be found (see the table below).
 

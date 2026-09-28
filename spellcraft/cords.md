@@ -52,13 +52,14 @@ Every Cord is crafted, and each one after the first is made from the one before 
 | Amethyst Cord | Copper Cord, 4 Amethyst Shards, 2 Gold Ingots (shapeless) | a Copper Cord |
 | Echo Cord | Amethyst Cord, 2 Echo Shards, 1 Netherite Scrap (shapeless) | an Amethyst Cord |
 
-The Twine Cord's layout:
+Each Cord's recipe, as the crafting table shows it:
 
-| | | |
-|:-:|:-:|:-:|
-| String | | String |
-| | String | |
-| | Blank Rune | |
+<div class="recipe-gallery">
+{% include recipe-card.html id="twine_cord" name="Twine Cord (shaped: this layout)" %}
+{% include recipe-card.html id="copper_cord" name="Copper Cord (any layout)" %}
+{% include recipe-card.html id="amethyst_cord" name="Amethyst Cord (any layout)" %}
+{% include recipe-card.html id="echo_cord" name="Echo Cord (any layout)" %}
+</div>
 
 A **Blank Rune** is 4 Cobblestone around 1 Lapis Lazuli, and makes 4. From scratch, an Echo Cord takes 3
 String, a Blank Rune, 4 Copper Ingots, 5 Amethyst Shards, 2 Gold Ingots, 2 Echo Shards and a Netherite Scrap.

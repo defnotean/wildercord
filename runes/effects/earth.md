@@ -22,6 +22,8 @@ Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 second
 
 **How to get it:** Craft: a Blank Rune, Cobblestone and Iron Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_brace.png' | relative_url }}" alt="Crafting Brace: a Blank Rune and Cobblestone and Iron Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/chisel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chisel
@@ -32,6 +34,8 @@ Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 second
 Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).
 
 **How to get it:** Craft: a Blank Rune, Stone Pickaxe. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_chisel.png' | relative_url }}" alt="Crafting Chisel: a Blank Rune and Stone Pickaxe" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -44,6 +48,8 @@ Pelts targets with stones: 4 damage and a small knockback.
 
 **How to get it:** Craft: a Blank Rune, Gravel and Cobblestone. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_pelt.png' | relative_url }}" alt="Crafting Pelt: a Blank Rune and Gravel and Cobblestone" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/aftershock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Aftershock
@@ -54,6 +60,8 @@ Pelts targets with stones: 4 damage and a small knockback.
 5 damage, then a second impact half a second later for 5 more.
 
 **How to get it:** Craft: a Blank Rune, Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_aftershock.png' | relative_url }}" alt="Crafting Aftershock: a Blank Rune and Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -66,6 +74,8 @@ Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 
 **How to get it:** Craft: a Blank Rune, Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_break.png' | relative_url }}" alt="Crafting Break: a Blank Rune and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/excavate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Excavate
@@ -76,6 +86,8 @@ Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).
 
 **How to get it:** Craft: a Blank Rune, Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_excavate.png' | relative_url }}" alt="Crafting Excavate: a Blank Rune and Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -88,6 +100,8 @@ Fells the tree that was hit: the log and every log joined to it above, up to 32.
 
 **How to get it:** Craft: a Blank Rune, Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_fell.png' | relative_url }}" alt="Crafting Fell: a Blank Rune and Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/rampart.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rampart
@@ -98,6 +112,8 @@ Fells the tree that was hit: the log and every log joined to it above, up to 32.
 Raises a 5-wide, 3-high wall of earth at the point for 10 seconds.
 
 **How to get it:** Craft: a Blank Rune, 2x Packed Mud, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_rampart.png' | relative_url }}" alt="Crafting Rampart: a Blank Rune and 2x Packed Mud, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus
 
@@ -110,6 +126,8 @@ Vines hold targets in place for 3 seconds.
 
 **How to get it:** Craft: a Blank Rune, 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_root.png' | relative_url }}" alt="Crafting Root: a Blank Rune and 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/shackle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shackle
@@ -120,6 +138,8 @@ Vines hold targets in place for 3 seconds.
 Chains each target to the spot for 5 seconds: it's yanked back if it strays more than 2 blocks.
 
 **How to get it:** Craft: a Blank Rune, 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_shackle.png' | relative_url }}" alt="Crafting Shackle: a Blank Rune and 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal
 
@@ -132,6 +152,8 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 
 **How to get it:** Craft: a Blank Rune, Shield, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_shield.png' | relative_url }}" alt="Crafting Shield: a Blank Rune and Shield, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/stoneskin.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stoneskin
@@ -142,6 +164,8 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 Resistance II for 10 seconds.
 
 **How to get it:** Craft: a Blank Rune, Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_stoneskin.png' | relative_url }}" alt="Crafting Stoneskin: a Blank Rune and Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -154,6 +178,8 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 
 **How to get it:** Craft: a Blank Rune, Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_tunnel.png' | relative_url }}" alt="Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/vein.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vein
@@ -164,6 +190,8 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness).
 
 **How to get it:** Craft: a Blank Rune, Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_vein.png' | relative_url }}" alt="Crafting Vein: a Blank Rune and Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -176,6 +204,8 @@ Crushingly heavy for 5 seconds: triple gravity, barely able to move or jump, and
 
 **How to get it:** Craft: a Blank Rune, Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_weigh.png' | relative_url }}" alt="Crafting Weigh: a Blank Rune and Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/tremor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tremor
@@ -186,6 +216,8 @@ Crushingly heavy for 5 seconds: triple gravity, barely able to move or jump, and
 The ground erupts: 8 damage to enemies within 4 blocks, throwing them up.
 
 **How to get it:** Craft: a Blank Rune, Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tremor.png' | relative_url }}" alt="Crafting Tremor: a Blank Rune and Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 

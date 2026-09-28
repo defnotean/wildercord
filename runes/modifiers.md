@@ -21,6 +21,8 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 
 **How to get it:** Craft: a Blank Rune, Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_amplify.png' | relative_url }}" alt="Crafting Amplify: a Blank Rune and Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
 ### <img src="{{ '/assets/runes/extend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Extend
@@ -31,6 +33,8 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 +100% duration.
 
 **How to get it:** Craft: a Blank Rune, 2x Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_extend.png' | relative_url }}" alt="Crafting Extend: a Blank Rune and 2x Redstone Dust" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything that lasts.
 
@@ -43,6 +47,8 @@ Half the mana, but 40% weaker and shorter.
 
 **How to get it:** Craft: a Blank Rune, Emerald. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_frugal.png' | relative_url }}" alt="Crafting Frugal: a Blank Rune and Emerald" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is any effect.
 
 ### <img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bounce
@@ -53,6 +59,8 @@ Half the mana, but 40% weaker and shorter.
 Bounces off blocks up to 3 times.
 
 **How to get it:** Craft: a Blank Rune, Slime Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_bounce.png' | relative_url }}" alt="Crafting Bounce: a Blank Rune and Slime Block, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is projectiles.
 
@@ -65,6 +73,8 @@ Double power against targets under half health.
 
 **How to get it:** Craft: a Blank Rune, Iron Axe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_execute.png' | relative_url }}" alt="Crafting Execute: a Blank Rune and Iron Axe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
 ### <img src="{{ '/assets/runes/focus.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Focus
@@ -75,6 +85,8 @@ Double power against targets under half health.
 Half the radius, +50% power.
 
 **How to get it:** Craft: a Blank Rune, Glass Pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_focus.png' | relative_url }}" alt="Crafting Focus: a Blank Rune and Glass Pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything with an area.
 
@@ -87,6 +99,8 @@ The effect lands twice more, a second apart.
 
 **How to get it:** Craft: a Blank Rune, Honey Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_linger.png' | relative_url }}" alt="Crafting Linger: a Blank Rune and Honey Bottle, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is effects that can land again over time.
 
 ### <img src="{{ '/assets/runes/pierce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pierce
@@ -97,6 +111,8 @@ The effect lands twice more, a second apart.
 Passes through up to 3 targets.
 
 **How to get it:** Craft: a Blank Rune, 2x Arrow, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_pierce.png' | relative_url }}" alt="Crafting Pierce: a Blank Rune and 2x Arrow, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is projectiles and beams.
 
@@ -109,6 +125,8 @@ Bolts fly twice as fast; delays are halved.
 
 **How to get it:** Craft: a Blank Rune, Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_quicken.png' | relative_url }}" alt="Crafting Quicken: a Blank Rune and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is anything that flies.
 
 ### <img src="{{ '/assets/runes/rapid.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rapid
@@ -120,6 +138,8 @@ Halves the whole spell's cooldown.
 
 **How to get it:** Craft: a Blank Rune, Sugar and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_rapid.png' | relative_url }}" alt="Crafting Rapid: a Blank Rune and Sugar and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/volley.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Volley
 {: #volley}
 
@@ -128,6 +148,8 @@ Halves the whole spell's cooldown.
 Fires three times in quick succession.
 
 **How to get it:** Craft: a Blank Rune, Crossbow, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_volley.png' | relative_url }}" alt="Crafting Volley: a Blank Rune and Crossbow, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is projectiles and beams.
 
@@ -140,6 +162,8 @@ Fires three times in quick succession.
 
 **How to get it:** Craft: a Blank Rune, 2x Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_widen.png' | relative_url }}" alt="Crafting Widen: a Blank Rune and 2x Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is anything with an area.
 
 ### <img src="{{ '/assets/runes/blood_price.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blood Price
@@ -151,6 +175,8 @@ Pay for the whole spell in health instead of mana: 1 health per 5 mana. Never le
 
 **How to get it:** Craft: a Blank Rune, Ghast Tear and Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_blood_price.png' | relative_url }}" alt="Crafting Blood Price: a Blank Rune and Ghast Tear and Redstone Dust, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/chain.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chain
 {: #chain}
 
@@ -159,6 +185,8 @@ Pay for the whole spell in health instead of mana: 1 health per 5 mana. Never le
 After a hit, jumps to up to 3 more enemies within 6 blocks.
 
 **How to get it:** Craft: a Blank Rune, Iron Chain and Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_chain.png' | relative_url }}" alt="Crafting Chain: a Blank Rune and Iron Chain and Redstone Dust, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything that can jump to a new target.
 
@@ -171,6 +199,8 @@ Steers toward the nearest enemy within 12 blocks.
 
 **How to get it:** Craft: a Blank Rune, Compass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_homing.png' | relative_url }}" alt="Crafting Homing: a Blank Rune and Compass, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is projectiles.
 
 ### <img src="{{ '/assets/runes/overcharge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Overcharge
@@ -181,6 +211,8 @@ Steers toward the nearest enemy within 12 blocks.
 +150% power, but triple the mana.
 
 **How to get it:** Craft: a Blank Rune, 2x Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_overcharge.png' | relative_url }}" alt="Crafting Overcharge: a Blank Rune and 2x Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
@@ -193,6 +225,8 @@ Three copies of the shape.
 
 **How to get it:** Craft: a Blank Rune, 2x Prismarine Crystals, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_split.png' | relative_url }}" alt="Crafting Split: a Blank Rune and 2x Prismarine Crystals, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 **Attaches to:** the closest rune on its left that is projectiles and beams.
 
 ### <img src="{{ '/assets/runes/vow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vow
@@ -203,4 +237,6 @@ Three copies of the shape.
 A binding vow: the shape's effects hit twice as hard, but the whole spell's cooldown is 4x longer.
 
 **How to get it:** Craft: a Blank Rune, Paper and Block of Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_vow.png' | relative_url }}" alt="Crafting Vow: a Blank Rune and Paper and Block of Gold, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

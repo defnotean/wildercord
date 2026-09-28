@@ -18,11 +18,7 @@ single rune.
 
 The Fusion Altar is crafted, not found. Lay it out like this in a crafting table:
 
-| | | |
-|---|---|---|
-| Deepslate Tiles | Block of Amethyst | Deepslate Tiles |
-| Block of Amethyst | Lodestone | Block of Amethyst |
-| Deepslate Tiles | Block of Amethyst | Deepslate Tiles |
+{% include recipe.html id="fusion_altar" alt="Crafting grid: top row Deepslate Tiles · Block of Amethyst · Deepslate Tiles; middle row Block of Amethyst · Lodestone · Block of Amethyst; bottom row Deepslate Tiles · Block of Amethyst · Deepslate Tiles" %}
 
 That's 4 Deepslate Tiles in the corners, 4 Blocks of Amethyst on the sides and a Lodestone in the middle. It makes one
 altar.

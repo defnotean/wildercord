@@ -22,6 +22,8 @@ Slowness II for 6 seconds and 1 freeze damage.
 
 **How to get it:** Craft: a Blank Rune, Ice. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_chill.png' | relative_url }}" alt="Crafting Chill: a Blank Rune and Ice" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/frostward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostward
@@ -32,6 +34,8 @@ Slowness II for 6 seconds and 1 freeze damage.
 For 60 seconds you can't freeze, not even in powder snow.
 
 **How to get it:** Craft: a Blank Rune, Snowball and Leather. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_frostward.png' | relative_url }}" alt="Crafting Frostward: a Blank Rune and Snowball and Leather" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal
 
@@ -44,6 +48,8 @@ Freezes water within 3 blocks into ice you can walk on.
 
 **How to get it:** Craft: a Blank Rune, Packed Ice. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_icepath.png' | relative_url }}" alt="Crafting Icepath: a Blank Rune and Packed Ice" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/icicle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Icicle
@@ -54,6 +60,8 @@ Freezes water within 3 blocks into ice you can walk on.
 4 freeze damage, or 6 against a target that's already slowed.
 
 **How to get it:** Craft: a Blank Rune, Ice and Pointed Dripstone. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_icicle.png' | relative_url }}" alt="Crafting Icicle: a Blank Rune and Ice and Pointed Dripstone" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -66,6 +74,8 @@ Water breathing and faster swimming for 30 seconds.
 
 **How to get it:** Craft: a Blank Rune, Pufferfish. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_tidebreath.png' | relative_url }}" alt="Crafting Tidebreath: a Blank Rune and Pufferfish" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/bubble.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bubble
@@ -76,6 +86,8 @@ Water breathing and faster swimming for 30 seconds.
 Traps targets in a floating bubble for 3 seconds. It pops for 4 damage and leaves them soaked.
 
 **How to get it:** Craft: a Blank Rune, Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_bubble.png' | relative_url }}" alt="Crafting Bubble: a Blank Rune and Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -88,6 +100,8 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 **How to get it:** Craft: a Blank Rune, Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_coldsnap.png' | relative_url }}" alt="Crafting Coldsnap: a Blank Rune and Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/frost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frost
@@ -99,6 +113,8 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 **How to get it:** Craft: a Blank Rune, Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_frost.png' | relative_url }}" alt="Crafting Frost: a Blank Rune and Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/freeze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Freeze
@@ -109,6 +125,8 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 Freezes targets solid for 2.5 seconds: they can't move or fight back.
 
 **How to get it:** Craft: a Blank Rune, 2x Blue Ice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_freeze.png' | relative_url }}" alt="Crafting Freeze: a Blank Rune and 2x Blue Ice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 

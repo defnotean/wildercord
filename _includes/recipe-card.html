@@ -1,0 +1,7 @@
+{%- comment -%}
+A recipe card for a gallery: {% include recipe-card.html id="fire_staff" name="Fire Staff" %}
+{%- endcomment -%}
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/' | append: include.id | append: '.png' | relative_url }}" alt="{{ include.alt | default: include.name }}" class="recipe-grid" loading="lazy">
+<figcaption>{{ include.name }}</figcaption>
+</figure>

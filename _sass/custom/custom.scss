@@ -26,3 +26,48 @@
 td img.rune-icon {
   margin: 0;
 }
+
+// Crafting grids, drawn as the game draws them: crisp pixels.
+.recipe-grid {
+  image-rendering: pixelated;
+  display: block;
+  max-width: 100%;
+  width: 384px;
+  margin: 0.5rem 0 1rem;
+}
+
+// A gallery of recipe cards.
+.recipe-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.recipe-card {
+  margin: 0;
+  width: 256px;
+}
+
+.recipe-card .recipe-grid {
+  width: 256px;
+  margin: 0 0 0.25rem;
+}
+
+.recipe-card figcaption {
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.recipe-family {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+figure.recipe {
+  margin: 0.5rem 0 1rem;
+}
+
+figure.recipe figcaption {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}

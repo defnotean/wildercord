@@ -1,0 +1,9 @@
+{%- comment -%}
+A recipe drawn as the game draws it (see tools/wiki_recipes.py): {% include recipe.html id="twine_cord" alt="..." caption="..." %}
+{%- endcomment -%}
+<figure class="recipe">
+<img src="{{ '/assets/recipes/' | append: include.id | append: '.png' | relative_url }}" alt="{{ include.alt | default: 'A crafting recipe' }}" class="recipe-grid" loading="lazy">
+{%- if include.caption %}
+<figcaption>{{ include.caption }}</figcaption>
+{%- endif %}
+</figure>

@@ -22,6 +22,8 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.
 
 **How to get it:** Craft: a Blank Rune, Clock and Gunpowder. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_countdown.png' | relative_url }}" alt="Crafting Countdown: a Blank Rune and Clock and Gunpowder" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/accelerate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Accelerate
@@ -32,6 +34,8 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.
 Time runs faster for 10 seconds: Speed III, Haste III, Jump Boost II and Regeneration.
 
 **How to get it:** Craft: a Blank Rune, Clock and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_accelerate.png' | relative_url }}" alt="Crafting Accelerate: a Blank Rune and Clock and Sugar, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -44,6 +48,8 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 
 **How to get it:** Craft: a Blank Rune, Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_foresight.png' | relative_url }}" alt="Crafting Foresight: a Blank Rune and Spyglass, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/time_skip.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Time Skip
@@ -54,6 +60,8 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 Time skips ahead: you vanish, reappear up to 8 blocks forward, and nearby monsters lose track of you.
 
 **How to get it:** Craft: a Blank Rune, Clock and Ender Pearl, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_time_skip.png' | relative_url }}" alt="Crafting Time Skip: a Blank Rune and Clock and Ender Pearl, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Frugal
 
