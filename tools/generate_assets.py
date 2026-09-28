@@ -1157,6 +1157,8 @@ def write_new_content(runes):
     # ---- entity skins
     save(world_art.archivist_texture(), tex / "entity/archivist.png")
     save(world_art.dummy_texture(), tex / "entity/training_dummy.png")
+    for name, image in world_art.creature_textures().items():
+        save(image, tex / f"entity/{name}.png")
 
     # ---- loot
     write_json(DATA / "loot_table/blocks/wellstone.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [

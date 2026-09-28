@@ -15,6 +15,7 @@ import dev.wildercord.spell.SpellSigil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerBossEvent;
@@ -22,6 +23,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -43,6 +45,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.illager.SpellcasterIllager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -89,6 +92,11 @@ public class Archivist extends SpellcasterIllager {
 	private LivingEntity castTarget;
 	private long nextBlink;
 	private int spellIndex;
+	/** How far its arms and tome are into the casting and rewriting poses, 0 to 1 (worked out on the client only). */
+	private float castPose;
+	private float castPoseO;
+	private float rewritePose;
+	private float rewritePoseO;
 
 	public Archivist(EntityType<? extends Archivist> type, Level level) {
 		super(type, level);
@@ -165,6 +173,11 @@ public class Archivist extends SpellcasterIllager {
 			for (int i = 0; i < 6; i++) {
 				double a = rewriting * 0.3 + Math.PI * 2 * i / 6;
 				Vfx.emit(level, ParticleTypes.ENCHANT, c.add(Math.cos(a) * 1.6, Math.sin(rewriting * 0.2 + i) * 0.5, Math.sin(a) * 1.6), 2, 0.05, 0.1);
+			}
+			// Torn pages still whirl about it while the new Cord is written.
+			if (rewriting % 4 == 0) {
+				double a = rewriting * 0.45;
+				Vfx.emit(level, PAGE, c.add(Math.cos(a) * 1.4, 0.4 + Math.sin(rewriting * 0.3) * 0.4, Math.sin(a) * 1.4), 2, 0.1, 0.06);
 			}
 			if (rewriting == 0) {
 				setIsCastingSpell(IllagerSpell.NONE);
@@ -264,6 +277,7 @@ public class Archivist extends SpellcasterIllager {
 		spellCastingTickCount = REWRITE_TICKS;
 		spellIndex = 0;
 		Vec3 c = position();
+		tearPages(level);
 		Sigils.ground(level, c.add(0, 0.05, 0), 0xB8A0FF, 0xF5C46A, 4.0F, REWRITE_TICKS + 10);
 		Sigils.layer(level, c.add(0, 2.6, 0), new Vec3(0, 1, 0), SigilOption.RING, 0xF5C46A, 2.5F, REWRITE_TICKS + 10, 0.12F);
 		Vfx.radial(level, ParticleTypes.ENCHANT, c.add(0, 1.4, 0), 80, 0.9);
@@ -292,6 +306,25 @@ public class Archivist extends SpellcasterIllager {
 		updateName(null);
 	}
 
+	/** Paper, for the pages torn from its tome. */
+	private static final ItemParticleOption PAGE = new ItemParticleOption(ParticleTypes.ITEM, Items.PAPER);
+
+	/** The rewrite tears its tome apart: pages burst from the book and the ring around it, with a flurry of pale light. */
+	private void tearPages(ServerLevel level) {
+		float yaw = yBodyRot * Mth.DEG_TO_RAD;
+		Vec3 tome = position().add(-Mth.sin(yaw) * 0.62, 1.45, Mth.cos(yaw) * 0.62);
+		Vfx.emit(level, PAGE, tome, 36, 0.25, 0.32);
+		for (int i = 0; i < 12; i++) {
+			double a = Math.PI * 2 * i / 12;
+			Vfx.emit(level, PAGE, position().add(Math.cos(a) * 1.0, 1.9, Math.sin(a) * 1.0), 2, 0.15, 0.2);
+		}
+		Vfx.radial(level, new DustParticleOptions(0xF8EDCC, 0.9F), tome, 30, 0.35);
+		Vfx.radial(level, new DustParticleOptions(0xE8DCFF, 0.7F), tome, 24, 0.5);
+		Sigils.flash(level, tome, 0xF5C46A, 2.2F);
+		Fx.sound(level, tome, SoundEvents.BOOK_PUT, 1.2F, 0.6F);
+		Fx.sound(level, tome, SoundEvents.CHISELED_BOOKSHELF_PICKUP_ENCHANTED, 1.0F, 0.7F);
+	}
+
 	private void blink(ServerLevel level, Vec3 to) {
 		Vec3 spot = CastEngine.ground(level, to.add(0, 3, 0));
 		if (!level.noCollision(this, getDimensions(getPose()).makeBoundingBox(spot))) {
@@ -313,6 +346,33 @@ public class Archivist extends SpellcasterIllager {
 			name = Component.translatable("boss.wildercord.archivist_rewriting", name);
 		}
 		bossEvent.setName(name);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		if (level().isClientSide()) {
+			castPoseO = castPose;
+			rewritePoseO = rewritePose;
+			boolean rewrite = isRewriting();
+			castPose = Mth.approach(castPose, isCastingSpell() && !rewrite ? 1 : 0, 0.2F);
+			rewritePose = Mth.approach(rewritePose, rewrite ? 1 : 0, 0.12F);
+		}
+	}
+
+	/** Rewriting its Cord (known on both sides: the spell being cast is synced). */
+	public boolean isRewriting() {
+		return getCurrentSpell() == IllagerSpell.WOLOLO;
+	}
+
+	/** How far into the casting pose (arms raised, tome lifted), 0 to 1; for the renderer. */
+	public float castPose(float partial) {
+		return Mth.lerp(partial, castPoseO, castPose);
+	}
+
+	/** How far into the rewriting pose (arms thrown wide, pages flung out), 0 to 1; for the renderer. */
+	public float rewritePose(float partial) {
+		return Mth.lerp(partial, rewritePoseO, rewritePose);
 	}
 
 	@Override

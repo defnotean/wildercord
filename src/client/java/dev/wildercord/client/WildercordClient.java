@@ -3,12 +3,17 @@ package dev.wildercord.client;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.WildercordEntities;
 import dev.wildercord.client.fx.AimPreview;
+import dev.wildercord.client.fx.ArchiveAmbience;
 import dev.wildercord.client.fx.ChargeCircles;
 import dev.wildercord.client.fx.LeyMotes;
+import dev.wildercord.client.fx.RuneAura;
 import dev.wildercord.client.fx.SigilGroup;
 import dev.wildercord.client.fx.SigilParticle;
+import dev.wildercord.client.fx.WellstoneHalo;
+import dev.wildercord.client.render.ArchivistModel;
 import dev.wildercord.client.render.ArchivistRenderer;
 import dev.wildercord.client.render.DummyModel;
+import dev.wildercord.client.render.RuneMarksLayer;
 import dev.wildercord.client.render.TrainingDummyRenderer;
 import dev.wildercord.content.WildercordParticles;
 import dev.wildercord.net.WildercordNetworking;
@@ -27,6 +32,7 @@ public final class WildercordClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// Bolts are drawn entirely with particles sent from the server.
 		EntityRendererRegistry.register(WildercordEntities.RUNE_BOLT, NoopRenderer::new);
+		ModelLayerRegistry.registerModelLayer(ArchivistRenderer.LAYER, ArchivistModel::createLayer);
 		EntityRendererRegistry.register(WildercordEntities.ARCHIVIST, ArchivistRenderer::new);
 		ModelLayerRegistry.registerModelLayer(TrainingDummyRenderer.LAYER, DummyModel::createLayer);
 		// The Cord on every player's wrist.
@@ -38,6 +44,7 @@ public final class WildercordClient implements ClientModInitializer {
 			}
 		});
 		EntityRendererRegistry.register(WildercordEntities.TRAINING_DUMMY, TrainingDummyRenderer::new);
+		RuneMarksLayer.register();
 
 		ParticleGroupRegistry.register(SigilGroup.TYPE, SigilGroup::new);
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SIGIL, SigilParticle.Provider::new);
@@ -59,6 +66,9 @@ public final class WildercordClient implements ClientModInitializer {
 			dev.wildercord.client.fx.ScreenEffects.tick(client);
 			AimPreview.tick(client);
 			LeyMotes.tick(client);
+			RuneAura.tick(client);
+			ArchiveAmbience.tick(client);
+			WellstoneHalo.tick(client);
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.ChargeHum::tick);
 		WildercordKeys.init();

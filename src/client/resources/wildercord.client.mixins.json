@@ -10,7 +10,8 @@
 		"GameRendererMixin",
 		"CameraMixin",
 		"AvatarRenderStateMixin",
-		"PlayerModelMixin"
+		"PlayerModelMixin",
+		"LivingEntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

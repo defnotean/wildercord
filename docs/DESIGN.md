@@ -70,7 +70,7 @@ Every source stacks. The Cord screen's mana badge shows exactly where your numbe
 | **Potion of Clarity** | +50% regeneration per level for 3 min (8 min long, II for 1.5 min) | Brew: Awkward + amethyst shard; redstone to lengthen, glowstone to strengthen |
 | **Potion of Mana** | Instantly restores 60 mana (II: 120) | Brew: Awkward + lapis lazuli; glowstone to strengthen. Splash and lingering work too |
 | **Meditation** | +100% regeneration | Sneak and stand still for a second while wearing a Cord |
-| **Ley line** | +100% regeneration, and Heart Circles form twice as fast | Walk onto one (Cord-wearers see its violet motes) |
+| **Ley line** | +100% regeneration, and Heart Circles form twice as fast | Walk onto one (Cord-wearers see its ribbons of violet light) |
 | **Wellstone** | +50% regeneration within 12 blocks | Craft one and set it on a ley line |
 
 ## Runes
@@ -494,9 +494,13 @@ is higher, none on Peaceful, and 35% of the monsters inside an Archive), carryin
 suits them; one in six is an **Adept**, whose spell gains a Split or an Amplify. They have 60% more
 health (Adepts 120%).
 - Their **nameplate** is their spell: its rune icons and name, in its colour.
+- Their Cord is written on their bodies: **rune marks** glowing in their spell's colour on the
+  chest, back, arms, legs and brow (Adepts brighter), breathing slowly, with a faint haze of the
+  same colour around them and specks of light drifting up. Everyone sees them, in any light.
 - Before every cast their spell's circle opens for 1.1 s, held out in their right hand so their
-  face stays in view, and the nameplate lights up (`» … «`); Zone, Rain, Mine and Domain spells also
-  mark the ground. Plenty of time to dodge or shoot the bolt down.
+  face stays in view, the nameplate lights up (`» … «`) and their marks flare, running hot toward
+  white, with sparks streaming off them; Zone, Rain, Mine and Domain spells also mark the ground.
+  Plenty of time to dodge or shoot the bolt down.
 - Their spells hit players, pets, golems and whatever they're hunting, never other monsters, and
   never change blocks. Power 0.6/0.8/1.0 by difficulty (Adepts ×1.15).
 - Slain by a player: a 35% chance (Adepts 60%) of a rune from their Cord, a 6% chance (Adepts
@@ -515,10 +519,13 @@ health (Adepts 120%).
 ### Ley lines and the Wellstone
 Ley lines are thin, winding veins of world mana in the Overworld, worked out from the world seed
 (the server sends clients a one-way hash of it, never the seed itself). Players wearing a Cord see
-violet motes rising along them. **On a ley line**, mana regenerates twice as fast (+100%) and Heart
-Circles form twice as quickly. The **Wellstone** (crafted from amethyst blocks, polished deepslate,
-deepslate tiles and a Mana Crystal) wakes when set on a ley line: a slowly turning circle above
-it, and +50% regeneration for everyone within 12 blocks.
+them as ribbons of pale violet light flowing along the ground, following each line's bends (under
+trees, along the forest floor), with now and then a mote lifting off. **On a ley line**, mana
+regenerates twice as fast (+100%) and Heart Circles form twice as quickly. The **Wellstone**
+(crafted from amethyst blocks, polished deepslate, deepslate tiles and a Mana Crystal) wakes when
+set on a ley line: circles turning on the ground around it, a leaning ring of light hanging over
+it and slowly swinging round with beads of light running along it, and +50% regeneration for
+everyone within 12 blocks.
 
 ### Spell Scrolls and the Training Dummy
 - **Spell Scroll:** inscribe any of your spells from the Cord screen (paper, an ink sac and twice the
@@ -553,11 +560,20 @@ around a stairway going down. `/place structure wildercord:archive` builds one.
 5. **The Vault**, behind a door of Arcane and Life off the arena: two chests (a Tier IV rune each,
    Tier III runes, Mana Crystals, Torn Pages) and a Wellstone.
 
-The **Archivist** (400 health, armour 8, immune to fire): every spell it's about to cast is written
-on its boss bar (*The Archivist · casting Shock Rain*), with a telegraph circle. It blinks away
-when you get close and never strays from the arena. At two thirds and one third health it
-**rewrites its Cord**: untouchable for a moment, summoning two Runebound (Adepts the second time),
-then a new phase of spells.
+The Archive is old and not quite asleep: faint shafts of light fall from its lamps with dust
+drifting through them, lit braziers flicker and throw up embers (cold ones only glint), the circle
+inlaid in the arena floor glows softly (its rings and hexagram; brighter while the Archivist is
+abroad), and now and then a page turns among the shelves or something whispers in the dark.
+
+The **Archivist** (400 health, armour 8, immune to fire) is a tall hooded figure in an indigo robe
+trimmed with gold, hovering just above the floor, its face an empty dark with two pale eyes. An
+open tome floats before it, a page turning now and then, and three loose pages circle it. Every
+spell it's about to cast is written on its boss bar (*The Archivist · casting Shock Rain*), with a
+telegraph circle: it raises its arms, the tome lifts and riffles and its writing blazes. It blinks
+away when you get close and never strays from the arena. At two thirds and one third health it
+**rewrites its Cord**: pages tear loose from the tome in a burst, it throws its arms wide with the
+book open over its head and the pages whirling far out, untouchable for a moment, summoning two
+Runebound (Adepts the second time), then a new phase of spells. Slain, it sinks into its robe.
 
 | Phase | Its spells |
 |---|---|

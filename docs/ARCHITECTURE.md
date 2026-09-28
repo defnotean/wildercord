@@ -261,9 +261,14 @@ None of the wards are saved: they last seconds, and a restart simply ends them.
   runs each loaded Runebound: once its target is in range and in sight, it telegraphs (22 ticks,
   a circle held out in the right hand), then casts through `CastEngine`. It also handles their
   drops; guards placed by the Archive are marked at generation and join when their chunk loads.
+  As each one loads (or is bound) it sets the synced `rune_marks` attachment (its spell's colour,
+  Adept or not, and when a telegraphed cast lands), which every client draws as glowing marks on
+  its body and a faint aura.
   **`Archivist`** is an illager with three phase
   spell lists, a boss bar that names the spell being cast, the rewrite at two thirds and one third
-  health, and its own drops; the Archive Lectern's block entity wakes it.
+  health (pages tear from its tome in a burst of paper and pale light), and its own drops; the
+  Archive Lectern's block entity wakes it. On the client it eases its casting and rewriting poses
+  for its model.
 - **`RuneSeals`**: a player's spell of the right element lights every seal of that element in the
   door it touched (found by flood fill); when no seal in the door is unlit, the door dissolves.
   Fire also lights unlit campfires.
@@ -335,6 +340,7 @@ player, synced to that player only, and copied through death where noted.
 | `on_ley`, `well_until` | bool, long | no (not saved) | On a ley line; near an awake Wellstone until |
 | `spirit_until`, `frozen_until` | long | on the mob | End times for summons and frozen mobs |
 | `runebound` | list of string | on the mob | A Runebound's spell |
+| `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
 new instance, which is what makes the attachment save and sync it. Rune ids are kept as strings
@@ -417,15 +423,37 @@ can draw the circle.
   `SpellCircleParticle` (a spell's whole magic circle, built from its runes and opening in stages);
   `LightParticle` (rings, beams, slashes and orbs); `ChargeCircles` (the spell's circle in front of a
   charging caster's hands, opening as the charge builds, read from the synced charge);
-  `AimPreview` (the reticle or dotted line while charging); `LeyMotes` (violet motes along ley
-  lines, worked out on the client from the ley seed).
+  `AimPreview` (the reticle or dotted line while charging); `LeyMotes` (ley lines, worked out on
+  the client from the ley seed: it traces a few blocks of a line's heart over the ground and lays a
+  `LeyRibbon` along it, a streak of pale violet light that flows the length of its path; a few dozen
+  at most). Client-only lights, made straight into the particle engine and never sent:
+  `Glimmer` (a drifting mote, a faint shaft of lamplight, a flickering firelight glow, or a haze that
+  follows an entity), `RingGlow` (rings and lines of soft light in a plane, flat or leaning and
+  swinging round, with beads running along). `RuneAura` gives every Runebound a haze and drifting
+  specks in its colour (thicker while it telegraphs); `ArchiveAmbience` finds an Archive by its
+  lectern's block entity and, inside, reads the halls a slice a tick for lamps, braziers and shelves:
+  shafts of light with dust in them, flickering braziers and embers, the arena's inlaid circle
+  glowing (brighter while the Archivist is abroad), and quiet pages, whispers and chimes;
+  `WellstoneHalo` hangs a turning ring over every awake Wellstone. Each spawner keeps a small
+  budget of lights out at once (`Glimmer.Budget`).
 - **`GrimoireToast`**, and the Grimoire page inside `CordScreen`.
-- **`render/`**: `ArchivistRenderer` (the evoker model, scaled 1.25x, with its own skin) and
-  `TrainingDummyRenderer` with its own `DummyModel`.
+- **`render/`**: `ArchivistRenderer` with its own `ArchivistModel` (a hooded, robed figure hovering
+  over the floor, with long sleeves, a floating open tome with a turning page and three loose pages
+  circling it; the pose comes from `ArchivistRenderState`'s casting and rewriting blends) and two
+  emissive layers (`archivist_eyes`: its eyes and chest gem, always lit; `archivist_runes`: the
+  writing on its pages and the light in its cuffs, blazing while it casts); `TrainingDummyRenderer`
+  with its own `DummyModel`; and `RuneMarksLayer`, added through
+  `LivingEntityRenderLayerRegistrationCallback` to every monster renderer whose model has a marks
+  texture (humanoid, skeleton, parched, zombie villager, illager, witch). It draws the monster's own
+  model again, emissive (`RenderTypes.eyes`), with white marks tinted by the spell's colour; the
+  colour and brightness reach the render state as Fabric render-state data. Babies (their own
+  models in 26.x) and monsters of other shapes get the aura only.
 - **Mixins**: the Cord slot is added to the inventory menu on both sides (`InventoryMenuMixin`,
   menu index 46), synced from creative mode (`ServerGamePacketListenerImplMixin`), drawn in the
   survival inventory (`InventoryScreenMixin`, with `SlotWell` for the slot's frame) and placed in
-  the creative inventory tab (`CreativeModeInventoryScreenMixin`). On the server side,
+  the creative inventory tab (`CreativeModeInventoryScreenMixin`). `LivingEntityRendererMixin`
+  copies a Runebound's rune marks into its render state (a render layer only sees the state, and
+  there is no event for this step). On the server side,
   `LightningRodBlockMixin` turns a Blank Rune by a struck rod into Lightning, and
   `MannequinAccessor` sets up Phantom's afterimage (a mannequin wearing the caster's skin).
 
@@ -472,7 +500,8 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
    Cords, badges; GUI and HUD sprites from `gui_art.py`; magic circles and the wheel, beat ring and
    toast sprites from `sigil_art.py`; every rune's ring pattern and emblem from `circle_art.py`
    (handed out by a stable hash of the rune's id, and checked so no two runes share either); items,
-   blocks and the two entity skins from `world_art.py`.
+   blocks, the two entity skins, the Archivist's two glow layers and the Runebound marks (one sheet
+   per vanilla skin layout, under `textures/entity/runebound/`) from `world_art.py`.
 3. **Item models**: a `select` on the `wildercord:rune` component picks each rune's model.
 4. **Language**: rune names and descriptions from `Runes.java`, UI strings from the `lang` dict,
    and each rune's "Craft:" and "Found:" tooltip lines.
@@ -565,11 +594,18 @@ easy to trip over:
   `setInvulnerableTime`, `teleportTo(level, x, y, z, Set<Relative>, yRot, xRot, false)`.
 - **Particles**: `ServerLevel.sendParticles(player, particle, overrideLimiter, alwaysShow, ...)`;
   without `overrideLimiter` a particle is only sent within 32 blocks.
+- **Entity rendering**: renderers fill a render state (`extractRenderState`) and then `submit` to a
+  `SubmitNodeCollector`; a `RenderLayer` sees only the state. Extra per-entity data travels as
+  Fabric render-state data (`RenderStateDataKey`, `state.setData`). An emissive layer is
+  `collector.order(1).submitModel(model, state, poseStack, RenderTypes.eyes(texture), light,
+  OverlayTexture.NO_OVERLAY, argb, null, state.outlineColor)` (as vanilla `EyesLayer`); the tint's
+  alpha is its strength. Many baby mobs have their own models and skin layouts.
 - **Fabric events used**: `ServerLivingEntityEvents.ALLOW_DAMAGE` / `AFTER_DAMAGE` /
   `ALLOW_DEATH` / `AFTER_DEATH`, `ServerTickEvents`, `ServerEntityEvents.ENTITY_LOAD` /
   `ENTITY_UNLOAD` (Runebound, block-display cleanup), `ServerPlayConnectionEvents.JOIN` (the ley
   seed), `ServerMessageDecoratorEvent` (spell cards in chat), `ServerLifecycleEvents`,
-  `LootTableEvents.MODIFY`, `PlayerBlockBreakEvents.BEFORE`, `HudElementRegistry`.
+  `LootTableEvents.MODIFY`, `PlayerBlockBreakEvents.BEFORE`, `HudElementRegistry`,
+  `LivingEntityRenderLayerRegistrationCallback` (rune marks).
 - **Dev client**: Loom's `runClient` loads classes from `build/`; rebuilding while it runs mixes old
   and new classes. The build supports `-PaltBuild` (outputs to `build-alt/`) for compile checks
   while a client is open.

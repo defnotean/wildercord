@@ -88,6 +88,7 @@ public final class Runebound {
 			}
 			if (mob.hasAttached(WildercordAttachments.RUNEBOUND)) {
 				LOADED.put(mob.getUUID(), mob);
+				showMarks(mob);
 				return;
 			}
 			if (mob.entityTags().contains(ROLLED_TAG) || pool(mob).isEmpty()) {
@@ -178,7 +179,21 @@ public final class Runebound {
 
 	public static void bind(Mob mob, List<RuneDef> spell, boolean adept) {
 		mark(mob, spell, adept);
+		showMarks(mob);
 		LOADED.put(mob.getUUID(), mob);
+	}
+
+	/**
+	 * Writes its Cord on its body: the synced rune marks everyone around draws, glowing in its
+	 * spell's colour. Not done by {@link #mark} (a monster placed during world generation isn't in
+	 * the world yet, so there's nobody to sync to); it happens as it loads instead.
+	 */
+	private static void showMarks(Mob mob) {
+		List<RuneDef> spell = spellOf(mob);
+		if (!spell.isEmpty()) {
+			mob.setAttached(WildercordAttachments.RUNE_MARKS,
+				new WildercordAttachments.RuneMarks(elementColor(spell), mob.entityTags().contains("wildercord.adept"), 0));
+		}
 	}
 
 	private static void mark(Mob mob, List<RuneDef> spell, boolean adept) {
@@ -306,6 +321,11 @@ public final class Runebound {
 		state.castAt = now + TELEGRAPH;
 		telegraph(level, mob, spell, target, TELEGRAPH);
 		mob.setCustomName(nameplate(spell, adept, true));
+		// Its marks flare until the spell leaves its hand.
+		WildercordAttachments.RuneMarks marks = mob.getAttached(WildercordAttachments.RUNE_MARKS);
+		if (marks != null) {
+			mob.setAttached(WildercordAttachments.RUNE_MARKS, marks.casting(state.castAt));
+		}
 	}
 
 	/** Turns a monster to face a point: body, head and look all agree, so the spell flies true. */
