@@ -937,6 +937,8 @@
   "tooltip.wildercord.imbued.weapon": "released at what it strikes",
   "tooltip.wildercord.imbued.use": "use it to release it at what you look at",
   "tooltip.wildercord.imbued.place": "place it and the block becomes a glyph that holds it",
+  "screen.wildercord.refused.passive": "%s can't be a passive",
+  "screen.wildercord.refused.take_out": "Click a rune on the Cord to take it out, or drag it off.",
   "tag.item.wildercord.enchantable.cord": "Enchantable Cords",
   "message.wildercord.overcast_too_costly": "Too costly to overcast: %s mana is more than %s times what your Cord holds",
   "command.wildercord.innate": "Your innate rune is now %s",

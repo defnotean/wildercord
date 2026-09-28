@@ -60,6 +60,10 @@ import java.util.Set;
 public class WildercordFeatureTour implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		// WILDERCORD_CORDS_ONLY=1 runs only the Cord screen test.
+		if (System.getenv("WILDERCORD_CORDS_ONLY") != null) {
+			return;
+		}
 		try (TestSingleplayerContext world = context.worldBuilder().setUseConsistentSettings(false).create()) {
 			context.waitTicks(60);
 			context.runOnClient(mc -> {

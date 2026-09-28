@@ -7,7 +7,8 @@
 	"entrypoints": {
 		"fabric-client-gametest": [
 			"dev.wildercord.gametest.WildercordScreenshots",
-			"dev.wildercord.gametest.WildercordFeatureTour"
+			"dev.wildercord.gametest.WildercordFeatureTour",
+			"dev.wildercord.gametest.WildercordCordTest"
 		]
 	},
 	"depends": {

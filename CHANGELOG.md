@@ -189,7 +189,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   and screen shake, comets and the charge hum reset properly between worlds and dimensions; the
   camera no longer shakes behind the pause menu.
 - Switching page in the Cord screen mid-drag no longer crashes it, and category chips that don't
-  fit are no longer clickable.
+  fit are no longer clickable. Right-clicking a rune (to take it off a spell, or thread it from the
+  Codex) works again, and a click the Cord refuses now says why under the spell's name (a spell the
+  Cord doesn't hold yet, a rune too strong for it, a full spell, a rune that can't be a passive)
+  instead of only playing a low note.
 - The worn Cord fits slim arms and shows over sleeves.
 - Orb rings keep spinning on very old worlds, the Wellstone halo no longer jumps once a day, and
   spell wheel labels stay on screen at small GUI sizes.

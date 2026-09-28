@@ -132,6 +132,11 @@ public class CordScreen extends Screen {
 	private String pressedRune;
 	private int pressedSpell = -1;
 	private int pressedSocket = -1;
+	/** The mouse button that started the press: only letting go of that one ends it. */
+	private int pressButton;
+	/** Why the last click was refused, shown at the top of the readout for a few seconds. */
+	private Component refused;
+	private long refusedUntil;
 	private double pressX;
 	private double pressY;
 	private boolean dragging;
@@ -202,6 +207,70 @@ public class CordScreen extends Screen {
 
 	private int top() {
 		return Math.round((height - H * scale()) / 2);
+	}
+
+	// ------------------------------------------------------------------ for the game tests (read-only, or as typing would)
+
+	/** A point in the screen's own layout, in GUI coordinates. */
+	private double[] onScreen(double lx, double ly) {
+		return new double[] {left() + lx * scale(), top() + ly * scale()};
+	}
+
+	/** The middle of rune socket {@code socket} on row {@code row} (spells or passives), on screen. */
+	public double[] socketPoint(int row, int socket) {
+		return onScreen(SOCKET_X + socket * PITCH + PITCH / 2.0, SPELL_TOP + row * SPELL_ROW + SPELL_ROW / 2.0 - 2);
+	}
+
+	/** A point on row {@code row} left of its sockets: selects the row without touching a rune. */
+	public double[] rowPoint(int row) {
+		return onScreen(20, SPELL_TOP + row * SPELL_ROW + SPELL_ROW / 2.0 - 2);
+	}
+
+	/** The middle of page tab {@code page} (0 Spells, 1 Passives, 2 Grimoire), on screen. */
+	public double[] pagePoint(int page) {
+		int x = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
+		for (int i = 0; i < page; i++) {
+			x += font.width(Component.translatable(PAGE_KEYS[i])) + 10 + 2;
+		}
+		return onScreen(x + (font.width(Component.translatable(PAGE_KEYS[page])) + 10) / 2.0, 7 + 6.5);
+	}
+
+	/** Filters the Codex, as typing would. */
+	public void searchFor(String text) {
+		query = text;
+		codexScroll = 0;
+	}
+
+	/** The middle of {@code runeId}'s cell in the Codex, on screen, or null if it isn't showing. */
+	public double[] codexPoint(String runeId) {
+		int y = CODEX_TOP - codexScroll;
+		for (CodexRow row : codexRows()) {
+			int h = row.height();
+			if (row.runes() != null && y >= CODEX_TOP && y + h <= CODEX_BOTTOM) {
+				for (int i = 0; i < row.runes().size(); i++) {
+					if (row.runes().get(i).id().equals(runeId)) {
+						return onScreen(CODEX_X + LABEL_W + i * CELL + CELL / 2.0, y + h / 2.0);
+					}
+				}
+			}
+			y += h;
+		}
+		return null;
+	}
+
+	/** The row being edited on the page showing. */
+	public int editingRow() {
+		return passivePage ? editingPassive : editing;
+	}
+
+	/** The runes on row {@code row} of the page showing, as the screen has them. */
+	public List<String> rowRunes(int row) {
+		return List.copyOf(rows().get(row));
+	}
+
+	/** Why the last click was refused, while that's still shown (else null). */
+	public Component lastRefusal() {
+		return refused != null && net.minecraft.util.Util.getMillis() < refusedUntil ? refused : null;
 	}
 
 	private double localX(double screenX) {
@@ -1010,12 +1079,14 @@ public class CordScreen extends Screen {
 		List<ReadoutLine> out = new ArrayList<>();
 		int width = TEXT_RIGHT - TEXT_X;
 		if (passivePage) {
+			refusal(out, width);
 			return passiveReadout(tier, out, width);
 		}
 		List<String> spell = spells.get(editing);
 		List<RuneDef> runes = runesAt(spell, SpellCaster.activeSockets(spell, book(), editing, tier));
 		if (runes.isEmpty()) {
 			wrap(out, Component.translatable("screen.wildercord.empty_spell"), 0, width, DIM);
+			refusal(out, width);
 			return out;
 		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
@@ -1026,6 +1097,7 @@ public class CordScreen extends Screen {
 			: knownSecret || !book().name(editing).isEmpty() ? SpellCaster.nameOf(book(), editing, runes) : dev.wildercord.spell.SpellNames.auto(runes);
 		int nameColor = renaming ? TEXT : knownSecret ? 0xFF000000 | secret.get().color() : GOLD;
 		out.add(new ReadoutLine(Component.literal(font.plainSubstrByWidth(spellName, width - TOOLS_W - 6)).getVisualOrderText(), TEXT_X, nameColor));
+		refusal(out, width);
 		if (knownSecret && !renaming) {
 			wrap(out, Component.translatable("screen.wildercord.secret_line", secret.get().description()), 0, width, 0xFF000000 | secret.get().color());
 		}
@@ -1090,6 +1162,13 @@ public class CordScreen extends Screen {
 			wrap(out, Component.literal("! " + warning), 0, width, WARN);
 		}
 		return out;
+	}
+
+	/** Why the last click did nothing, for a few seconds after it (under the spell's name). */
+	private void refusal(List<ReadoutLine> out, int width) {
+		if (refused != null && net.minecraft.util.Util.getMillis() < refusedUntil) {
+			wrap(out, refused, 0, width, WARN);
+		}
 	}
 
 	/** Wraps text into lines; continuation lines are indented a little further. */
@@ -1341,11 +1420,11 @@ public class CordScreen extends Screen {
 			return super.mouseClicked(event, doubleClick);
 		}
 		if (pressedRune != null || pressedSocket >= 0) {
-			if (event.button() != 0) {
-				// Mid-press (or mid-drag) with the left button: other buttons do nothing until it's let go.
+			if (event.button() != pressButton) {
+				// Mid-press (or mid-drag): other buttons do nothing until that one's let go.
 				return true;
 			}
-			// A new left press: the last one's release was missed.
+			// The same button pressed again: its last release was missed.
 			pressedRune = null;
 			pressedSpell = -1;
 			pressedSocket = -1;
@@ -1412,9 +1491,10 @@ public class CordScreen extends Screen {
 		RuneDef rune = codexAt(mx, my);
 		if (rune != null) {
 			if (!fitsPage(rune)) {
-				deny();
+				deny(whyNot(Optional.of(rune), current()));
 				return true;
 			}
+			pressButton = event.button();
 			pressedRune = rune.id();
 			pressedSpell = -1;
 			pressedSocket = -1;
@@ -1429,7 +1509,7 @@ public class CordScreen extends Screen {
 				continue;
 			}
 			if (s >= openRows()) {
-				deny();
+				deny(locked(s));
 				return true;
 			}
 			if (passivePage && inside(mx, my, W - 16 - 28, ry + 2, 28, 13)) {
@@ -1449,6 +1529,7 @@ public class CordScreen extends Screen {
 			}
 			int socket = socketAt(mx);
 			if (socket >= 0 && socket < rows().get(s).size()) {
+				pressButton = event.button();
 				pressedRune = null;
 				pressedSpell = s;
 				pressedSocket = socket;
@@ -1476,7 +1557,7 @@ public class CordScreen extends Screen {
 		if (pressedRune == null && pressedSocket < 0) {
 			return super.mouseReleased(event);
 		}
-		if (event.button() != 0) {
+		if (event.button() != pressButton) {
 			// Only letting go of the button that pressed ends the press.
 			return true;
 		}
@@ -1535,7 +1616,7 @@ public class CordScreen extends Screen {
 			// Moving to another spell counts as a new rune there: it must fit and be allowed.
 			Optional<RuneDef> rune = Runes.get(id);
 			if (rune.isEmpty() || !fitsPage(rune.get()) || rows().get(dropSpell).size() >= rowSockets()) {
-				deny();
+				deny(whyNot(rune, dropSpell));
 				return;
 			}
 			from.remove(pressedSocket);
@@ -1549,7 +1630,7 @@ public class CordScreen extends Screen {
 		Optional<RuneDef> rune = Runes.get(id);
 		List<String> target = rows().get(spell);
 		if (spell >= openRows() || rune.isEmpty() || !fitsPage(rune.get()) || target.size() >= rowSockets()) {
-			deny();
+			deny(whyNot(rune, spell));
 			return;
 		}
 		target.add(Math.min(at, target.size()), id);
@@ -1630,6 +1711,40 @@ public class CordScreen extends Screen {
 
 	private void deny() {
 		minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BASS, 0.6F));
+	}
+
+	/** Refuses a click, and says why at the top of the readout. */
+	private void deny(Component why) {
+		deny();
+		refused = why;
+		refusedUntil = net.minecraft.util.Util.getMillis() + 4000;
+	}
+
+	/** Why a spell (or passive) row can't be used yet. */
+	private Component locked(int row) {
+		if (passivePage) {
+			return Component.translatable("screen.wildercord.passive_locked", Circles.ordinal(Passives.circleFor(row)));
+		}
+		return Component.translatable("message.wildercord.spell_needs", row + 1, Component.translatable(CordTier.forSpells(row + 1).itemKey()));
+	}
+
+	/** Why {@code rune} can't go on {@code row}. */
+	private Component whyNot(Optional<RuneDef> rune, int row) {
+		if (row >= openRows()) {
+			return locked(row);
+		}
+		if (rune.isEmpty()) {
+			return Component.translatable("screen.wildercord.quiet_silent");
+		}
+		if (!holds(rune.get())) {
+			return Component.translatable("message.wildercord.too_strong", RuneItem.runeName(rune.get()),
+				Component.translatable(CordTier.forRuneTier(rune.get().tier()).itemKey()));
+		}
+		if (passivePage && !Passives.allowed(rune.get())) {
+			return Component.translatable("screen.wildercord.refused.passive", RuneItem.runeName(rune.get()));
+		}
+		return Component.translatable("message.wildercord.sockets_full", Component.translatable(tier().itemKey()), rowSockets())
+			.append(" ").append(Component.translatable("screen.wildercord.refused.take_out"));
 	}
 
 	private static boolean inside(double mx, double my, int x, int y, int w, int h) {

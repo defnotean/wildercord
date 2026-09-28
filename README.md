@@ -356,6 +356,11 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
   leaning, innate runes, ley lines and the breakthrough table.
 - **Client game tests** (`./gradlew runClientGameTest`): starts a real client and world, then
   - screenshots the HUD and Cord screen at every GUI scale and three window sizes,
+  - drives the Cord screen with the real mouse for all four Cords: selecting spells, threading and
+    taking off runes with either button, dragging, and being refused (with the reason) for a locked
+    spell, a rune too strong for the Cord, a full spell and a rune that can't be a passive, checking
+    what the server saved each time, and that each Cord casts exactly the spells it holds
+    (`WILDERCORD_CORDS_ONLY=1` runs just this),
   - casts every newer rune at test mobs (any exception fails the run),
   - checks mechanics for real: Stasis holds Sonic Boom, Primer, Meteor and more until time moves
     again; Reflect, Foresight, Reversal, Blood Price and Combo work; passives drain mana; forming a
