@@ -116,7 +116,12 @@ public final class Scheduler {
 			}
 			// Run after the sweep: actions may schedule more tasks.
 			for (Task task : due) {
-				task.action.run();
+				// One failing part of a spell (or an add-on's) mustn't take the whole server tick down.
+				try {
+					task.action.run();
+				} catch (RuntimeException e) {
+					dev.wildercord.Wildercord.LOGGER.error("A scheduled spell part failed", e);
+				}
 			}
 		}
 		if (!LAND.isEmpty()) {

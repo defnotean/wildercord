@@ -42,7 +42,7 @@ public final class WildercordNetworking {
 		public static final Type<EditSpell> TYPE = new Type<>(Wildercord.id("edit_spell"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, EditSpell> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, EditSpell::spell,
-			ByteBufCodecs.stringUtf8(128).apply(ByteBufCodecs.list(32)), EditSpell::runes,
+			ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(32)), EditSpell::runes,
 			EditSpell::new).cast();
 
 		@Override
@@ -55,7 +55,7 @@ public final class WildercordNetworking {
 		public static final Type<EditPassive> TYPE = new Type<>(Wildercord.id("edit_passive"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, EditPassive> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, EditPassive::slot,
-			ByteBufCodecs.stringUtf8(128).apply(ByteBufCodecs.list(16)), EditPassive::runes,
+			ByteBufCodecs.stringUtf8(dev.wildercord.spell.Knots.MAX_ID_LENGTH).apply(ByteBufCodecs.list(16)), EditPassive::runes,
 			EditPassive::new).cast();
 
 		@Override

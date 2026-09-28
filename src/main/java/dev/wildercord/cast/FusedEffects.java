@@ -137,7 +137,7 @@ final class FusedEffects {
 			case "surge" -> helped.forEach(t -> {
 				int extra = boost(power, amplify);
 				t.addEffect(new MobEffectInstance(MobEffects.SPEED, Effects.ticks(8, duration), Math.min(3, extra), false, true));
-				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, Effects.ticks(8, duration), Math.min(3, extra), false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, Effects.ticks(8, duration), Math.min(1, extra), false, true));
 				FusionVfx.surge(level, t);
 			});
 			case "nullify" -> {
@@ -163,11 +163,11 @@ final class FusedEffects {
 	}
 
 	/**
-	 * Levels a buff gains from power beyond its base: none at rank I or II, one with rank III or an
-	 * Amplify, two with both. Amplify already counts in {@code amplify}; power above that is the rest.
+	 * Levels a buff gains beyond its base: one per Amplify (rank III counts as one), like Swift and
+	 * Haste. Charge, gear and circles make it last longer, never stronger, so it can't climb to IV.
 	 */
 	private static int boost(double power, int amplify) {
-		return Math.max(amplify, (int) Math.floor((power - 1) * 2 + 1e-6));
+		return Math.max(0, amplify);
 	}
 
 	private static void strip(LivingEntity t, MobEffectCategory category) {

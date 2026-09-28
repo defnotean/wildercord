@@ -131,21 +131,22 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 		return Fusions.plan(slots, catalyst(inputs.getItem(CATALYST)));
 	}
 
-	/** The runes of one of the player's spells, as a Knot would hold them, or null if one of them isn't loaded. */
+	/**
+	 * The runes of one of the player's spells as a Knot would hold them: the ones their Cord has room
+	 * and tier for right now (what the Cord screen shows as live), or null if one of them isn't loaded.
+	 */
 	public static List<RuneDef> spellRunes(Player player, int spell) {
 		Spellbook book = Spellbooks.get(player);
 		if (spell < 0 || spell >= book.spells().size()) {
 			return List.of();
 		}
-		List<RuneDef> runes = new ArrayList<>();
 		for (String id : book.spells().get(spell)) {
-			Optional<RuneDef> rune = Runes.get(id);
-			if (rune.isEmpty()) {
+			if (Runes.get(id).isEmpty()) {
 				return null;
 			}
-			runes.add(rune.get());
 		}
-		return runes;
+		dev.wildercord.content.CordTier tier = Spellbooks.tier(player);
+		return tier == null ? List.of() : new ArrayList<>(dev.wildercord.cast.SpellCaster.activeRunes(book, spell, tier));
 	}
 
 	/** Whether the result slot has room: fusing never destroys what's already there. */

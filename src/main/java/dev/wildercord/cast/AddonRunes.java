@@ -103,17 +103,35 @@ public final class AddonRunes {
 		double multiplier = 1.0;
 		for (Reaction r : REACTIONS) {
 			if (r.element().equals(element)) {
-				multiplier *= r.reaction().react(cast.caster, target);
+				try {
+					double m = r.reaction().react(cast.caster, target);
+					multiplier *= Double.isFinite(m) && m >= 0 ? m : 1.0;
+				} catch (RuntimeException e) {
+					failed("reaction of " + element, e);
+				}
 			}
 		}
 		return multiplier;
+	}
+
+	/** An add-on threw: log it once for that behaviour, and carry on as if it did nothing. */
+	private static final java.util.Set<String> FAILED = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+	private static void failed(String what, RuntimeException e) {
+		if (FAILED.add(what)) {
+			dev.wildercord.Wildercord.LOGGER.error("A Wildercord add-on's {} threw; it's being skipped", what, e);
+		}
 	}
 
 	/** An effect the engine doesn't know: its add-on behaviour, if any (otherwise it does nothing). */
 	static void effect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, List<LivingEntity> harmed, List<LivingEntity> helped, double power, double duration) {
 		EffectBehaviour behaviour = EFFECTS.get(node.effect.id());
 		if (behaviour != null) {
-			behaviour.apply(new Effect(cast, node, hit, harmed, helped, power, duration));
+			try {
+				behaviour.apply(new Effect(cast, node, hit, harmed, helped, power, duration));
+			} catch (RuntimeException e) {
+				failed("effect " + node.effect.id(), e);
+			}
 		}
 	}
 
@@ -123,7 +141,11 @@ public final class AddonRunes {
 		if (behaviour == null) {
 			return false;
 		}
-		behaviour.deliver(new Shape(cast, g, at, anchored));
+		try {
+			behaviour.deliver(new Shape(cast, g, at, anchored));
+		} catch (RuntimeException e) {
+			failed("shape " + g.shape.id(), e);
+		}
 		return true;
 	}
 
@@ -133,7 +155,11 @@ public final class AddonRunes {
 		if (behaviour == null) {
 			return false;
 		}
-		behaviour.link(new Link(cast.child(), link, at));
+		try {
+			behaviour.link(new Link(cast.child(), link, at));
+		} catch (RuntimeException e) {
+			failed("link " + link.link.id(), e);
+		}
 		return true;
 	}
 

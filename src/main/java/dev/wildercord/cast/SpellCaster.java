@@ -83,6 +83,10 @@ public final class SpellCaster {
 		}
 		Spellbook book = Spellbooks.get(player);
 		int spell = requested < 0 ? book.selected() : requested;
+		if (requested < 0 && !dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
+			// The selected spell went quiet (the Tome put away): the cast key takes the next open one.
+			spell = dev.wildercord.gear.SpellSlots.resolve(tier.spells, dev.wildercord.gear.Gear.tome(player), spell);
+		}
 		if (!dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
 			fail(player, locked(spell));
 			return;

@@ -87,6 +87,12 @@ public final class Knots {
 				return "A spell with Imbue can't be tied into a Knot.";
 			}
 		}
+		// An innate rune is its caster's alone: a Knot mustn't hand it to anyone who learns the Knot.
+		for (RuneDef rune : flatten(runes)) {
+			if (Runes.innate(rune)) {
+				return "An innate rune can't be tied into a Knot: it's yours alone.";
+			}
+		}
 		if (1 + innerDepth(runes) > MAX_DEPTH) {
 			return "Knots can only hold Knots " + MAX_DEPTH + " deep.";
 		}
@@ -129,6 +135,22 @@ public final class Knots {
 		if (!isKnot(knot)) {
 			return List.of();
 		}
+		// Screens ask this every frame: the decoded runes are kept, like the Knot's own rune.
+		List<RuneDef> known = CONTENTS.get(knot.id());
+		if (known != null) {
+			return known;
+		}
+		List<RuneDef> read = List.copyOf(decode(knot));
+		if (CONTENTS.size() >= CACHE_LIMIT) {
+			CONTENTS.clear();
+		}
+		CONTENTS.put(knot.id(), read);
+		return read;
+	}
+
+	private static final Map<String, List<RuneDef>> CONTENTS = new ConcurrentHashMap<>();
+
+	private static List<RuneDef> decode(RuneDef knot) {
 		Parsed parsed = parse(knot.id());
 		if (parsed == null) {
 			return List.of();
@@ -210,7 +232,7 @@ public final class Knots {
 			runes.add(rune.get());
 			tier = Math.max(tier, rune.get().tier());
 		}
-		if (1 + innerDepth(runes) > MAX_DEPTH || runes.stream().anyMatch(r -> r.is(Runes.IMBUE.id()))) {
+		if (1 + innerDepth(runes) > MAX_DEPTH || runes.stream().anyMatch(r -> r.is(Runes.IMBUE.id()) || Runes.innate(r))) {
 			return Optional.empty();
 		}
 		String name = parsed.name().isEmpty() ? SpellNames.auto(runes) : parsed.name();

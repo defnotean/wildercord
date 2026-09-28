@@ -180,7 +180,10 @@ public final class Fusions {
 			if (recipe.isEmpty()) {
 				return Plan.refuse(Kind.COMBINE, a.name() + " and " + b.name() + " don't fuse: fusions join two different elements, like fire and wind.");
 			}
-			return new Plan(Kind.COMBINE, recipe.get().result(), 1, COMBINE_XP, null, recipe.get());
+			// The fused rune keeps the lower of the two ranks put in, so ranking up first isn't wasted.
+			RuneDef made = recipe.get().result();
+			int kept = Ranks.rankable(made) ? Math.min(filled.get(0).rank(), filled.get(1).rank()) : 1;
+			return new Plan(Kind.COMBINE, made, Math.max(1, kept), COMBINE_XP, null, recipe.get());
 		}
 		return Plan.hint("Add two more to rank it up, or a second effect and an amethyst shard to combine them.");
 	}
