@@ -17,6 +17,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import generate_assets as g  # noqa: E402
+import wiki_recipes  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 WIKI = ROOT / "wiki"
@@ -147,6 +148,13 @@ def items_text(path):
     return parts[0] if len(parts) == 1 else ", ".join(parts[:-1]) + " and " + parts[-1]
 
 
+def recipe_img(recipe_id, alt):
+    """A recipe's crafting grid, as the game draws it."""
+    alt = alt.replace('"', "'")
+    src = "{{ '/assets/recipes/" + recipe_id + ".png' | relative_url }}"
+    return f'<img src="{src}" alt="{alt}" class="recipe-grid" loading="lazy">'
+
+
 def works_with(r, modifiers):
     names = [m["name"] for m in modifiers if m["needs"] and m["needs"] in r["traits"]]
     return ", ".join(names)
@@ -172,6 +180,9 @@ def entry(r, fused, found, world, modifiers):
     facts.append(f"needs {CORD_FOR_TIER[r['tier']]}")
     lines += [f"*{' · '.join(facts)}*", "", r["desc"], "",
               f"**How to get it:** {how_to_get(r, fused, found, world)}", ""]
+    if (WIKI / f"assets/recipes/rune_{r['path']}.png").exists() and r["path"] not in fused and r["path"] not in world and r["path"] not in g.INNATE:
+        lines += [recipe_img(f"rune_{r['path']}", f"Crafting {r['name']}: a Blank Rune and {items_text(r['path'])}"
+                             + ("" if r["tier"] == 1 else f", plus {TIER_EXTRAS[r['tier']]}")), ""]
     if r["family"] == "modifier":
         targets = {"POWER": "anything with power (damage, healing, force)", "DURATION": "anything that lasts",
                    "RADIUS": "anything with an area", "SPEED": "anything that flies", "PIERCE": "projectiles and beams",
@@ -202,6 +213,10 @@ def main():
     modifiers = [r for r in runes if r["family"] == "modifier"]
     for r in runes:
         icon(r["path"])
+    recipes_dir = WIKI / "assets/recipes"
+    if recipes_dir.exists():
+        shutil.rmtree(recipes_dir)
+    wiki_recipes.render(recipes_dir)
     out = WIKI / "runes"
     if out.exists():
         for f in out.rglob("*.md"):
@@ -291,13 +306,19 @@ def main():
     rec = []
     for tier in (1, 2, 3):
         rs = [r for r in runes if r["tier"] == tier and r["path"] not in special]
+        extra = "nothing else" if tier == 1 else TIER_EXTRAS[tier]
         rec += [f"## Tier {TIER_NAMES[tier]} ({len(rs)} runes)", "",
-                f"Each needs a Blank Rune and the items below, plus **{TIER_EXTRAS[tier]}**.", "",
-                "| | Rune | Family | Items |", "|---|---|---|---|"]
+                f"Each needs a Blank Rune and its own items, plus **{extra}**.", "",
+                '<div class="recipe-gallery">']
         for r in sorted(rs, key=lambda r: (r["family"], r["name"])):
-            family = r["family"].title() + (f" ({r['element'].title()})" if r["element"] else "")
-            rec.append(f"| {img(r['path'], 24)} | {r['name']} | {family} | {items_text(r['path'])} |")
-        rec.append("")
+            page_url = f"/runes/effects/{r['element']}/" if r["family"] == "effect" else f"/runes/{FAMILY_TITLE[r['family']].lower()}/"
+            family = r["family"].title() + (f", {r['element'].title()}" if r["element"] else "")
+            rec += ['<figure class="recipe-card">',
+                    recipe_img(f"rune_{r['path']}", f"Crafting {r['name']}: a Blank Rune and {items_text(r['path'])}"),
+                    f'<figcaption>{img(r["path"], 24)} <a href="' + "{{ '" + page_url + "' | relative_url }}" + f'#{r["path"]}">{r["name"]}</a>'
+                    f'<br><span class="recipe-family">{family}</span></figcaption>',
+                    '</figure>']
+        rec += ["</div>", ""]
     page(WIKI / "items/rune-recipes.md", {"title": "Rune Recipes", "parent": "Items and Crafting", "nav_order": 2},
          ["# Rune recipes", "",
           "Every rune up to Tier III can be crafted: a **Blank Rune** plus a few items that suit it, in any crafting grid "

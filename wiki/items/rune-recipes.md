@@ -14,187 +14,682 @@ Every rune up to Tier III can be crafted: a **Blank Rune** plus a few items that
 
 ## Tier I (47 runes)
 
-Each needs a Blank Rune and the items below, plus **nothing extra**.
+Each needs a Blank Rune and its own items, plus **nothing else**.
 
-| | Rune | Family | Items |
-|---|---|---|---|
-| <img src="{{ '/assets/runes/anchor.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Anchor | Effect (Void) | Iron Chain and Cobblestone |
-| <img src="{{ '/assets/runes/barrier.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Barrier | Effect (Arcane) | Glass and Amethyst Shard |
-| <img src="{{ '/assets/runes/blind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Blind | Effect (Void) | Ink Sac |
-| <img src="{{ '/assets/runes/brace.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Brace | Effect (Earth) | Cobblestone and Iron Ingot |
-| <img src="{{ '/assets/runes/bramble.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Bramble | Effect (Life) | Sweet Berries and Cactus |
-| <img src="{{ '/assets/runes/chill.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Chill | Effect (Frost) | Ice |
-| <img src="{{ '/assets/runes/chisel.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Chisel | Effect (Earth) | Stone Pickaxe |
-| <img src="{{ '/assets/runes/collect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Collect | Effect (Void) | Hopper |
-| <img src="{{ '/assets/runes/countdown.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Countdown | Effect (Time) | Clock and Gunpowder |
-| <img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Cushion | Effect (Wind) | any wool and Feather |
-| <img src="{{ '/assets/runes/ember.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Ember | Effect (Fire) | Coal and Flint |
-| <img src="{{ '/assets/runes/feather_fall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Feather Fall | Effect (Wind) | 2x Feather |
-| <img src="{{ '/assets/runes/frostward.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Frostward | Effect (Frost) | Snowball and Leather |
-| <img src="{{ '/assets/runes/glimmer.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Glimmer | Effect (Life) | Glow Lichen |
-| <img src="{{ '/assets/runes/grow.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Grow | Effect (Life) | 2x Bone Meal |
-| <img src="{{ '/assets/runes/harm.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Harm | Effect (Arcane) | Fermented Spider Eye |
-| <img src="{{ '/assets/runes/harvest.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Harvest | Effect (Life) | 2x Wheat Crops |
-| <img src="{{ '/assets/runes/haste.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Haste | Effect (Arcane) | Golden Pickaxe |
-| <img src="{{ '/assets/runes/heal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Heal | Effect (Life) | Glistering Melon Slice |
-| <img src="{{ '/assets/runes/hex.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Hex | Effect (Void) | Fermented Spider Eye and Ink Sac |
-| <img src="{{ '/assets/runes/icepath.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Icepath | Effect (Frost) | Packed Ice |
-| <img src="{{ '/assets/runes/icicle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Icicle | Effect (Frost) | Ice and Pointed Dripstone |
-| <img src="{{ '/assets/runes/leap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Leap | Effect (Wind) | Slimeball |
-| <img src="{{ '/assets/runes/leech.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Leech | Effect (Blood) | Spider Eye and Redstone Dust |
-| <img src="{{ '/assets/runes/light.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Light | Effect (Arcane) | 2x Torch |
-| <img src="{{ '/assets/runes/night_eye.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Night Eye | Effect (Arcane) | Glow Berries |
-| <img src="{{ '/assets/runes/nourish.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Nourish | Effect (Life) | Bread |
-| <img src="{{ '/assets/runes/pelt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Pelt | Effect (Earth) | Gravel and Cobblestone |
-| <img src="{{ '/assets/runes/prune.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Prune | Effect (Wind) | Shears and any saplings |
-| <img src="{{ '/assets/runes/push.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Push | Effect (Wind) | Piston |
-| <img src="{{ '/assets/runes/rend.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Rend | Effect (Blood) | Iron Nugget and Bone |
-| <img src="{{ '/assets/runes/reveal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Reveal | Effect (Arcane) | Glow Ink Sac |
-| <img src="{{ '/assets/runes/shock.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Shock | Effect (Storm) | Lightning Rod |
-| <img src="{{ '/assets/runes/swift.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Swift | Effect (Wind) | 2x Sugar |
-| <img src="{{ '/assets/runes/tidebreath.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Tidebreath | Effect (Frost) | Pufferfish |
-| <img src="{{ '/assets/runes/windcut.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Windcut | Effect (Wind) | Feather and Flint |
-| <img src="{{ '/assets/runes/delay.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Delay | Link | Clock |
-| <img src="{{ '/assets/runes/amplify.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Amplify | Modifier | Gold Ingot |
-| <img src="{{ '/assets/runes/extend.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Extend | Modifier | 2x Redstone Dust |
-| <img src="{{ '/assets/runes/frugal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Frugal | Modifier | Emerald |
-| <img src="{{ '/assets/runes/arc.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Arc | Shape | 2x Snowball |
-| <img src="{{ '/assets/runes/bolt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Bolt | Shape | Arrow |
-| <img src="{{ '/assets/runes/nova.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Nova | Shape | Gunpowder and Glowstone Dust |
-| <img src="{{ '/assets/runes/ray.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Ray | Shape | Glass Pane and Glowstone Dust |
-| <img src="{{ '/assets/runes/self.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Self | Shape | Glass Pane |
-| <img src="{{ '/assets/runes/spark.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Spark | Shape | Flint and Glowstone Dust |
-| <img src="{{ '/assets/runes/touch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Touch | Shape | Leather |
+<div class="recipe-gallery">
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_anchor.png' | relative_url }}" alt="Crafting Anchor: a Blank Rune and Iron Chain and Cobblestone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/anchor.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#anchor">Anchor</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_barrier.png' | relative_url }}" alt="Crafting Barrier: a Blank Rune and Glass and Amethyst Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/barrier.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#barrier">Barrier</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_blind.png' | relative_url }}" alt="Crafting Blind: a Blank Rune and Ink Sac" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/blind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#blind">Blind</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_brace.png' | relative_url }}" alt="Crafting Brace: a Blank Rune and Cobblestone and Iron Ingot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/brace.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#brace">Brace</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_bramble.png' | relative_url }}" alt="Crafting Bramble: a Blank Rune and Sweet Berries and Cactus" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/bramble.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#bramble">Bramble</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_chill.png' | relative_url }}" alt="Crafting Chill: a Blank Rune and Ice" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/chill.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#chill">Chill</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_chisel.png' | relative_url }}" alt="Crafting Chisel: a Blank Rune and Stone Pickaxe" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/chisel.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#chisel">Chisel</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_collect.png' | relative_url }}" alt="Crafting Collect: a Blank Rune and Hopper" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/collect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#collect">Collect</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_countdown.png' | relative_url }}" alt="Crafting Countdown: a Blank Rune and Clock and Gunpowder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/countdown.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/time/' | relative_url }}#countdown">Countdown</a><br><span class="recipe-family">Effect, Time</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_cushion.png' | relative_url }}" alt="Crafting Cushion: a Blank Rune and any wool and Feather" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#cushion">Cushion</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_ember.png' | relative_url }}" alt="Crafting Ember: a Blank Rune and Coal and Flint" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/ember.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#ember">Ember</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_feather_fall.png' | relative_url }}" alt="Crafting Feather Fall: a Blank Rune and 2x Feather" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/feather_fall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#feather_fall">Feather Fall</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_frostward.png' | relative_url }}" alt="Crafting Frostward: a Blank Rune and Snowball and Leather" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/frostward.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#frostward">Frostward</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_glimmer.png' | relative_url }}" alt="Crafting Glimmer: a Blank Rune and Glow Lichen" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/glimmer.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#glimmer">Glimmer</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_grow.png' | relative_url }}" alt="Crafting Grow: a Blank Rune and 2x Bone Meal" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/grow.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#grow">Grow</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_harm.png' | relative_url }}" alt="Crafting Harm: a Blank Rune and Fermented Spider Eye" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/harm.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#harm">Harm</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_harvest.png' | relative_url }}" alt="Crafting Harvest: a Blank Rune and 2x Wheat Crops" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/harvest.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#harvest">Harvest</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_haste.png' | relative_url }}" alt="Crafting Haste: a Blank Rune and Golden Pickaxe" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/haste.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#haste">Haste</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_heal.png' | relative_url }}" alt="Crafting Heal: a Blank Rune and Glistering Melon Slice" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/heal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#heal">Heal</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_hex.png' | relative_url }}" alt="Crafting Hex: a Blank Rune and Fermented Spider Eye and Ink Sac" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/hex.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#hex">Hex</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_icepath.png' | relative_url }}" alt="Crafting Icepath: a Blank Rune and Packed Ice" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/icepath.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#icepath">Icepath</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_icicle.png' | relative_url }}" alt="Crafting Icicle: a Blank Rune and Ice and Pointed Dripstone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/icicle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#icicle">Icicle</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_leap.png' | relative_url }}" alt="Crafting Leap: a Blank Rune and Slimeball" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/leap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#leap">Leap</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_leech.png' | relative_url }}" alt="Crafting Leech: a Blank Rune and Spider Eye and Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/leech.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#leech">Leech</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_light.png' | relative_url }}" alt="Crafting Light: a Blank Rune and 2x Torch" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/light.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#light">Light</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_night_eye.png' | relative_url }}" alt="Crafting Night Eye: a Blank Rune and Glow Berries" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/night_eye.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#night_eye">Night Eye</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_nourish.png' | relative_url }}" alt="Crafting Nourish: a Blank Rune and Bread" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/nourish.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#nourish">Nourish</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_pelt.png' | relative_url }}" alt="Crafting Pelt: a Blank Rune and Gravel and Cobblestone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/pelt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#pelt">Pelt</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_prune.png' | relative_url }}" alt="Crafting Prune: a Blank Rune and Shears and any saplings" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/prune.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#prune">Prune</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_push.png' | relative_url }}" alt="Crafting Push: a Blank Rune and Piston" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/push.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#push">Push</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_rend.png' | relative_url }}" alt="Crafting Rend: a Blank Rune and Iron Nugget and Bone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/rend.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#rend">Rend</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_reveal.png' | relative_url }}" alt="Crafting Reveal: a Blank Rune and Glow Ink Sac" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/reveal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#reveal">Reveal</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_shock.png' | relative_url }}" alt="Crafting Shock: a Blank Rune and Lightning Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/shock.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#shock">Shock</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_swift.png' | relative_url }}" alt="Crafting Swift: a Blank Rune and 2x Sugar" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/swift.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#swift">Swift</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_tidebreath.png' | relative_url }}" alt="Crafting Tidebreath: a Blank Rune and Pufferfish" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/tidebreath.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#tidebreath">Tidebreath</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_windcut.png' | relative_url }}" alt="Crafting Windcut: a Blank Rune and Feather and Flint" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/windcut.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#windcut">Windcut</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_delay.png' | relative_url }}" alt="Crafting Delay: a Blank Rune and Clock" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/delay.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#delay">Delay</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_amplify.png' | relative_url }}" alt="Crafting Amplify: a Blank Rune and Gold Ingot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/amplify.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#amplify">Amplify</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_extend.png' | relative_url }}" alt="Crafting Extend: a Blank Rune and 2x Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/extend.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#extend">Extend</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_frugal.png' | relative_url }}" alt="Crafting Frugal: a Blank Rune and Emerald" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/frugal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#frugal">Frugal</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_arc.png' | relative_url }}" alt="Crafting Arc: a Blank Rune and 2x Snowball" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/arc.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#arc">Arc</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_bolt.png' | relative_url }}" alt="Crafting Bolt: a Blank Rune and Arrow" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/bolt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#bolt">Bolt</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_nova.png' | relative_url }}" alt="Crafting Nova: a Blank Rune and Gunpowder and Glowstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/nova.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#nova">Nova</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_ray.png' | relative_url }}" alt="Crafting Ray: a Blank Rune and Glass Pane and Glowstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/ray.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#ray">Ray</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_self.png' | relative_url }}" alt="Crafting Self: a Blank Rune and Glass Pane" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/self.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#self">Self</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_spark.png' | relative_url }}" alt="Crafting Spark: a Blank Rune and Flint and Glowstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/spark.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#spark">Spark</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_touch.png' | relative_url }}" alt="Crafting Touch: a Blank Rune and Leather" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/touch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#touch">Touch</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+</div>
 
 ## Tier II (80 runes)
 
-Each needs a Blank Rune and the items below, plus **2 Lapis Lazuli and a Gold Ingot**.
+Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
-| | Rune | Family | Items |
-|---|---|---|---|
-| <img src="{{ '/assets/runes/aftershock.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Aftershock | Effect (Earth) | Piston and Cobblestone |
-| <img src="{{ '/assets/runes/banish.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Banish | Effect (Void) | Ender Pearl and Popped Chorus Fruit |
-| <img src="{{ '/assets/runes/bleed.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Bleed | Effect (Blood) | Shears and Redstone Dust |
-| <img src="{{ '/assets/runes/break.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Break | Effect (Earth) | Iron Pickaxe |
-| <img src="{{ '/assets/runes/bubble.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Bubble | Effect (Frost) | Water Bucket and Slimeball |
-| <img src="{{ '/assets/runes/cleanse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Cleanse | Effect (Life) | Milk Bucket |
-| <img src="{{ '/assets/runes/coldsnap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Coldsnap | Effect (Frost) | Packed Ice and Snow Block |
-| <img src="{{ '/assets/runes/cyclone.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Cyclone | Effect (Wind) | Wind Charge and Breeze Rod |
-| <img src="{{ '/assets/runes/dash.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Dash | Effect (Wind) | Rabbit's Foot |
-| <img src="{{ '/assets/runes/decree.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Decree | Effect (Arcane) | Book and Quill |
-| <img src="{{ '/assets/runes/deflect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Deflect | Effect (Wind) | Shield and Wind Charge |
-| <img src="{{ '/assets/runes/dismantle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Dismantle | Effect (Blood) | Shears |
-| <img src="{{ '/assets/runes/empower.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Empower | Effect (Arcane) | Iron Sword |
-| <img src="{{ '/assets/runes/excavate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Excavate | Effect (Earth) | Iron Shovel |
-| <img src="{{ '/assets/runes/fell.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Fell | Effect (Earth) | Iron Axe and any logs |
-| <img src="{{ '/assets/runes/fire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Fire | Effect (Fire) | Blaze Powder |
-| <img src="{{ '/assets/runes/fireward.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Fireward | Effect (Fire) | Magma Cream |
-| <img src="{{ '/assets/runes/flashfire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Flashfire | Effect (Fire) | Blaze Powder and Gunpowder |
-| <img src="{{ '/assets/runes/frost.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Frost | Effect (Frost) | Powder Snow Bucket |
-| <img src="{{ '/assets/runes/grapple.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Grapple | Effect (Void) | Lead |
-| <img src="{{ '/assets/runes/haven.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Haven | Effect (Life) | Shield and Glistering Melon Slice |
-| <img src="{{ '/assets/runes/jolt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Jolt | Effect (Storm) | Lightning Rod and Iron Ingot |
-| <img src="{{ '/assets/runes/launch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Launch | Effect (Wind) | Wind Charge |
-| <img src="{{ '/assets/runes/levitate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Levitate | Effect (Wind) | Phantom Membrane |
-| <img src="{{ '/assets/runes/overdrive.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Overdrive | Effect (Blood) | Blaze Powder and Redstone Dust |
-| <img src="{{ '/assets/runes/pull.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Pull | Effect (Void) | Fishing Rod |
-| <img src="{{ '/assets/runes/rampart.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Rampart | Effect (Earth) | 2x Packed Mud |
-| <img src="{{ '/assets/runes/regrowth.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Regrowth | Effect (Life) | Ghast Tear |
-| <img src="{{ '/assets/runes/repel.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Repel | Effect (Wind) | 2x Wind Charge |
-| <img src="{{ '/assets/runes/ripple.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Ripple | Effect (Storm) | Sunflower and Glowstone Dust |
-| <img src="{{ '/assets/runes/root.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Root | Effect (Earth) | 2x Vines |
-| <img src="{{ '/assets/runes/shackle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Shackle | Effect (Earth) | 2x Iron Chain |
-| <img src="{{ '/assets/runes/shield.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Shield | Effect (Earth) | Shield |
-| <img src="{{ '/assets/runes/silence.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Silence | Effect (Arcane) | any wool |
-| <img src="{{ '/assets/runes/smelt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Smelt | Effect (Fire) | Furnace and Blaze Powder |
-| <img src="{{ '/assets/runes/span.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Span | Effect (Arcane) | 2x Magenta Stained Glass |
-| <img src="{{ '/assets/runes/stoneskin.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Stoneskin | Effect (Earth) | Armadillo Scute |
-| <img src="{{ '/assets/runes/swap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Swap | Effect (Arcane) | 2x Ender Pearl |
-| <img src="{{ '/assets/runes/thunderclap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Thunderclap | Effect (Storm) | Goat Horn |
-| <img src="{{ '/assets/runes/tunnel.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Tunnel | Effect (Earth) | Iron Pickaxe and Rail |
-| <img src="{{ '/assets/runes/veil.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Veil | Effect (Void) | Golden Carrot and Fermented Spider Eye |
-| <img src="{{ '/assets/runes/vein.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Vein | Effect (Earth) | Iron Pickaxe and Raw Iron |
-| <img src="{{ '/assets/runes/venom.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Venom | Effect (Life) | Poisonous Potato |
-| <img src="{{ '/assets/runes/weigh.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Weigh | Effect (Earth) | Block of Iron |
-| <img src="{{ '/assets/runes/zipper.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Zipper | Effect (Void) | 2x Iron Nugget and String |
-| <img src="{{ '/assets/runes/if_airborne.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | If Airborne | Link | Feather and Phantom Membrane |
-| <img src="{{ '/assets/runes/if_sneaking.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | If Sneaking | Link | Leather Boots |
-| <img src="{{ '/assets/runes/imbue.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Imbue | Link | Bottle o' Enchanting |
-| <img src="{{ '/assets/runes/on_hit.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | On Hit | Link | Target |
-| <img src="{{ '/assets/runes/on_hurt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | On Hurt | Link | Cactus |
-| <img src="{{ '/assets/runes/on_land.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | On Land | Link | Hay Bale |
-| <img src="{{ '/assets/runes/pulse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Pulse | Link | Redstone Repeater |
-| <img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Bounce | Modifier | Slime Block |
-| <img src="{{ '/assets/runes/execute.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Execute | Modifier | Iron Axe |
-| <img src="{{ '/assets/runes/focus.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Focus | Modifier | Glass Pane and Gold Nugget |
-| <img src="{{ '/assets/runes/linger.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Linger | Modifier | Honey Bottle |
-| <img src="{{ '/assets/runes/pierce.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Pierce | Modifier | 2x Arrow |
-| <img src="{{ '/assets/runes/quicken.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Quicken | Modifier | Breeze Rod |
-| <img src="{{ '/assets/runes/rapid.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Rapid | Modifier | Sugar and Redstone Dust |
-| <img src="{{ '/assets/runes/volley.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Volley | Modifier | Crossbow |
-| <img src="{{ '/assets/runes/widen.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Widen | Modifier | 2x Amethyst Shard |
-| <img src="{{ '/assets/runes/barrage.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Barrage | Shape | Leather and Iron Ingot |
-| <img src="{{ '/assets/runes/beam.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Beam | Shape | Spyglass |
-| <img src="{{ '/assets/runes/blitz.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Blitz | Shape | Rabbit's Foot and Sugar |
-| <img src="{{ '/assets/runes/burst.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Burst | Shape | 2x Gunpowder |
-| <img src="{{ '/assets/runes/cluster.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Cluster | Shape | 2x Gunpowder and Amethyst Shard |
-| <img src="{{ '/assets/runes/comet.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Comet | Shape | Fire Charge and Gunpowder |
-| <img src="{{ '/assets/runes/cone.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Cone | Shape | Fire Charge |
-| <img src="{{ '/assets/runes/crescent.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Crescent | Shape | Iron Sword and Feather |
-| <img src="{{ '/assets/runes/lance.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Lance | Shape | Spyglass and Blaze Rod |
-| <img src="{{ '/assets/runes/mine.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Mine | Shape | Tripwire Hook |
-| <img src="{{ '/assets/runes/pillar.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Pillar | Shape | 2x Pointed Dripstone |
-| <img src="{{ '/assets/runes/prism.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Prism | Shape | Prismarine Crystals and Glass |
-| <img src="{{ '/assets/runes/ricochet.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Ricochet | Shape | Slimeball and Snowball |
-| <img src="{{ '/assets/runes/ring.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Ring | Shape | Bell |
-| <img src="{{ '/assets/runes/stream.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Stream | Shape | Spyglass and Redstone Torch |
-| <img src="{{ '/assets/runes/sweep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Sweep | Shape | Spyglass and String |
-| <img src="{{ '/assets/runes/trail.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Trail | Shape | 2x Glowstone Dust |
-| <img src="{{ '/assets/runes/wave.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Wave | Shape | 2x Kelp |
-| <img src="{{ '/assets/runes/wisp.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Wisp | Shape | Glow Berries and Amethyst Shard |
+<div class="recipe-gallery">
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_aftershock.png' | relative_url }}" alt="Crafting Aftershock: a Blank Rune and Piston and Cobblestone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/aftershock.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#aftershock">Aftershock</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_banish.png' | relative_url }}" alt="Crafting Banish: a Blank Rune and Ender Pearl and Popped Chorus Fruit" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/banish.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#banish">Banish</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_bleed.png' | relative_url }}" alt="Crafting Bleed: a Blank Rune and Shears and Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/bleed.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#bleed">Bleed</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_break.png' | relative_url }}" alt="Crafting Break: a Blank Rune and Iron Pickaxe" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/break.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#break">Break</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_bubble.png' | relative_url }}" alt="Crafting Bubble: a Blank Rune and Water Bucket and Slimeball" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/bubble.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#bubble">Bubble</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_cleanse.png' | relative_url }}" alt="Crafting Cleanse: a Blank Rune and Milk Bucket" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/cleanse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#cleanse">Cleanse</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_coldsnap.png' | relative_url }}" alt="Crafting Coldsnap: a Blank Rune and Packed Ice and Snow Block" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/coldsnap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#coldsnap">Coldsnap</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_cyclone.png' | relative_url }}" alt="Crafting Cyclone: a Blank Rune and Wind Charge and Breeze Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/cyclone.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#cyclone">Cyclone</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_dash.png' | relative_url }}" alt="Crafting Dash: a Blank Rune and Rabbit's Foot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/dash.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#dash">Dash</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_decree.png' | relative_url }}" alt="Crafting Decree: a Blank Rune and Book and Quill" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/decree.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#decree">Decree</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_deflect.png' | relative_url }}" alt="Crafting Deflect: a Blank Rune and Shield and Wind Charge" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/deflect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#deflect">Deflect</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_dismantle.png' | relative_url }}" alt="Crafting Dismantle: a Blank Rune and Shears" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/dismantle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#dismantle">Dismantle</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_empower.png' | relative_url }}" alt="Crafting Empower: a Blank Rune and Iron Sword" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/empower.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#empower">Empower</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_excavate.png' | relative_url }}" alt="Crafting Excavate: a Blank Rune and Iron Shovel" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/excavate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#excavate">Excavate</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_fell.png' | relative_url }}" alt="Crafting Fell: a Blank Rune and Iron Axe and any logs" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/fell.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#fell">Fell</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_fire.png' | relative_url }}" alt="Crafting Fire: a Blank Rune and Blaze Powder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/fire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#fire">Fire</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_fireward.png' | relative_url }}" alt="Crafting Fireward: a Blank Rune and Magma Cream" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/fireward.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#fireward">Fireward</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_flashfire.png' | relative_url }}" alt="Crafting Flashfire: a Blank Rune and Blaze Powder and Gunpowder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/flashfire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#flashfire">Flashfire</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_frost.png' | relative_url }}" alt="Crafting Frost: a Blank Rune and Powder Snow Bucket" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/frost.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#frost">Frost</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_grapple.png' | relative_url }}" alt="Crafting Grapple: a Blank Rune and Lead" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/grapple.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#grapple">Grapple</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_haven.png' | relative_url }}" alt="Crafting Haven: a Blank Rune and Shield and Glistering Melon Slice" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/haven.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#haven">Haven</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_jolt.png' | relative_url }}" alt="Crafting Jolt: a Blank Rune and Lightning Rod and Iron Ingot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/jolt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#jolt">Jolt</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_launch.png' | relative_url }}" alt="Crafting Launch: a Blank Rune and Wind Charge" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/launch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#launch">Launch</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_levitate.png' | relative_url }}" alt="Crafting Levitate: a Blank Rune and Phantom Membrane" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/levitate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#levitate">Levitate</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_overdrive.png' | relative_url }}" alt="Crafting Overdrive: a Blank Rune and Blaze Powder and Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/overdrive.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#overdrive">Overdrive</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_pull.png' | relative_url }}" alt="Crafting Pull: a Blank Rune and Fishing Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/pull.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#pull">Pull</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_rampart.png' | relative_url }}" alt="Crafting Rampart: a Blank Rune and 2x Packed Mud" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/rampart.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#rampart">Rampart</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_regrowth.png' | relative_url }}" alt="Crafting Regrowth: a Blank Rune and Ghast Tear" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/regrowth.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#regrowth">Regrowth</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_repel.png' | relative_url }}" alt="Crafting Repel: a Blank Rune and 2x Wind Charge" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/repel.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#repel">Repel</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_ripple.png' | relative_url }}" alt="Crafting Ripple: a Blank Rune and Sunflower and Glowstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/ripple.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#ripple">Ripple</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_root.png' | relative_url }}" alt="Crafting Root: a Blank Rune and 2x Vines" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/root.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#root">Root</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_shackle.png' | relative_url }}" alt="Crafting Shackle: a Blank Rune and 2x Iron Chain" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/shackle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#shackle">Shackle</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_shield.png' | relative_url }}" alt="Crafting Shield: a Blank Rune and Shield" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/shield.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#shield">Shield</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_silence.png' | relative_url }}" alt="Crafting Silence: a Blank Rune and any wool" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/silence.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#silence">Silence</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_smelt.png' | relative_url }}" alt="Crafting Smelt: a Blank Rune and Furnace and Blaze Powder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/smelt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#smelt">Smelt</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_span.png' | relative_url }}" alt="Crafting Span: a Blank Rune and 2x Magenta Stained Glass" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/span.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#span">Span</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_stoneskin.png' | relative_url }}" alt="Crafting Stoneskin: a Blank Rune and Armadillo Scute" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/stoneskin.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#stoneskin">Stoneskin</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_swap.png' | relative_url }}" alt="Crafting Swap: a Blank Rune and 2x Ender Pearl" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/swap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#swap">Swap</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_thunderclap.png' | relative_url }}" alt="Crafting Thunderclap: a Blank Rune and Goat Horn" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/thunderclap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#thunderclap">Thunderclap</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_tunnel.png' | relative_url }}" alt="Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/tunnel.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#tunnel">Tunnel</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_veil.png' | relative_url }}" alt="Crafting Veil: a Blank Rune and Golden Carrot and Fermented Spider Eye" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/veil.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#veil">Veil</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_vein.png' | relative_url }}" alt="Crafting Vein: a Blank Rune and Iron Pickaxe and Raw Iron" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/vein.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#vein">Vein</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_venom.png' | relative_url }}" alt="Crafting Venom: a Blank Rune and Poisonous Potato" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/venom.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#venom">Venom</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_weigh.png' | relative_url }}" alt="Crafting Weigh: a Blank Rune and Block of Iron" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/weigh.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#weigh">Weigh</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_zipper.png' | relative_url }}" alt="Crafting Zipper: a Blank Rune and 2x Iron Nugget and String" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/zipper.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#zipper">Zipper</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_if_airborne.png' | relative_url }}" alt="Crafting If Airborne: a Blank Rune and Feather and Phantom Membrane" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/if_airborne.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#if_airborne">If Airborne</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_if_sneaking.png' | relative_url }}" alt="Crafting If Sneaking: a Blank Rune and Leather Boots" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/if_sneaking.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#if_sneaking">If Sneaking</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_imbue.png' | relative_url }}" alt="Crafting Imbue: a Blank Rune and Bottle o' Enchanting" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/imbue.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#imbue">Imbue</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_on_hit.png' | relative_url }}" alt="Crafting On Hit: a Blank Rune and Target" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/on_hit.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_hit">On Hit</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_on_hurt.png' | relative_url }}" alt="Crafting On Hurt: a Blank Rune and Cactus" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/on_hurt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_hurt">On Hurt</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_on_land.png' | relative_url }}" alt="Crafting On Land: a Blank Rune and Hay Bale" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/on_land.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_land">On Land</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_pulse.png' | relative_url }}" alt="Crafting Pulse: a Blank Rune and Redstone Repeater" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/pulse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#pulse">Pulse</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_bounce.png' | relative_url }}" alt="Crafting Bounce: a Blank Rune and Slime Block" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#bounce">Bounce</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_execute.png' | relative_url }}" alt="Crafting Execute: a Blank Rune and Iron Axe" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/execute.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#execute">Execute</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_focus.png' | relative_url }}" alt="Crafting Focus: a Blank Rune and Glass Pane and Gold Nugget" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/focus.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#focus">Focus</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_linger.png' | relative_url }}" alt="Crafting Linger: a Blank Rune and Honey Bottle" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/linger.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#linger">Linger</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_pierce.png' | relative_url }}" alt="Crafting Pierce: a Blank Rune and 2x Arrow" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/pierce.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#pierce">Pierce</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_quicken.png' | relative_url }}" alt="Crafting Quicken: a Blank Rune and Breeze Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/quicken.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#quicken">Quicken</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_rapid.png' | relative_url }}" alt="Crafting Rapid: a Blank Rune and Sugar and Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/rapid.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#rapid">Rapid</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_volley.png' | relative_url }}" alt="Crafting Volley: a Blank Rune and Crossbow" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/volley.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#volley">Volley</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_widen.png' | relative_url }}" alt="Crafting Widen: a Blank Rune and 2x Amethyst Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/widen.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#widen">Widen</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_barrage.png' | relative_url }}" alt="Crafting Barrage: a Blank Rune and Leather and Iron Ingot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/barrage.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#barrage">Barrage</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_beam.png' | relative_url }}" alt="Crafting Beam: a Blank Rune and Spyglass" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/beam.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#beam">Beam</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_blitz.png' | relative_url }}" alt="Crafting Blitz: a Blank Rune and Rabbit's Foot and Sugar" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/blitz.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#blitz">Blitz</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_burst.png' | relative_url }}" alt="Crafting Burst: a Blank Rune and 2x Gunpowder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/burst.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#burst">Burst</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_cluster.png' | relative_url }}" alt="Crafting Cluster: a Blank Rune and 2x Gunpowder and Amethyst Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/cluster.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#cluster">Cluster</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_comet.png' | relative_url }}" alt="Crafting Comet: a Blank Rune and Fire Charge and Gunpowder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/comet.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#comet">Comet</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_cone.png' | relative_url }}" alt="Crafting Cone: a Blank Rune and Fire Charge" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/cone.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#cone">Cone</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_crescent.png' | relative_url }}" alt="Crafting Crescent: a Blank Rune and Iron Sword and Feather" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/crescent.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#crescent">Crescent</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_lance.png' | relative_url }}" alt="Crafting Lance: a Blank Rune and Spyglass and Blaze Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/lance.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#lance">Lance</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_mine.png' | relative_url }}" alt="Crafting Mine: a Blank Rune and Tripwire Hook" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/mine.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#mine">Mine</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_pillar.png' | relative_url }}" alt="Crafting Pillar: a Blank Rune and 2x Pointed Dripstone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/pillar.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#pillar">Pillar</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_prism.png' | relative_url }}" alt="Crafting Prism: a Blank Rune and Prismarine Crystals and Glass" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/prism.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#prism">Prism</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_ricochet.png' | relative_url }}" alt="Crafting Ricochet: a Blank Rune and Slimeball and Snowball" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/ricochet.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#ricochet">Ricochet</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_ring.png' | relative_url }}" alt="Crafting Ring: a Blank Rune and Bell" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/ring.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#ring">Ring</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_stream.png' | relative_url }}" alt="Crafting Stream: a Blank Rune and Spyglass and Redstone Torch" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/stream.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#stream">Stream</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_sweep.png' | relative_url }}" alt="Crafting Sweep: a Blank Rune and Spyglass and String" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/sweep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#sweep">Sweep</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_trail.png' | relative_url }}" alt="Crafting Trail: a Blank Rune and 2x Glowstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/trail.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#trail">Trail</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_wave.png' | relative_url }}" alt="Crafting Wave: a Blank Rune and 2x Kelp" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/wave.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#wave">Wave</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_wisp.png' | relative_url }}" alt="Crafting Wisp: a Blank Rune and Glow Berries and Amethyst Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/wisp.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#wisp">Wisp</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+</div>
 
 ## Tier III (38 runes)
 
-Each needs a Blank Rune and the items below, plus **a Mana Crystal and a Diamond**.
+Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**.
 
-| | Rune | Family | Items |
-|---|---|---|---|
-| <img src="{{ '/assets/runes/accelerate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Accelerate | Effect (Time) | Clock and Sugar |
-| <img src="{{ '/assets/runes/blackflame.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Blackflame | Effect (Void) | Soul Campfire and Black Dye |
-| <img src="{{ '/assets/runes/blackspark.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Blackspark | Effect (Void) | Black Dye and Glowstone |
-| <img src="{{ '/assets/runes/blink.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Blink | Effect (Void) | Ender Pearl and Chorus Fruit |
-| <img src="{{ '/assets/runes/cleave.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Cleave | Effect (Blood) | Diamond Axe |
-| <img src="{{ '/assets/runes/explode.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Explode | Effect (Fire) | TNT and Fire Charge |
-| <img src="{{ '/assets/runes/foresight.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Foresight | Effect (Time) | Spyglass |
-| <img src="{{ '/assets/runes/freeze.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Freeze | Effect (Frost) | 2x Blue Ice |
-| <img src="{{ '/assets/runes/gravity_well.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Gravity Well | Effect (Void) | Eye of Ender and Crying Obsidian |
-| <img src="{{ '/assets/runes/inferno.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Inferno | Effect (Fire) | Blaze Rod and Magma Block |
-| <img src="{{ '/assets/runes/lightning.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Lightning | Effect (Storm) | Block of Copper and Glowstone |
-| <img src="{{ '/assets/runes/meteor.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Meteor | Effect (Fire) | Magma Block and Fire Charge |
-| <img src="{{ '/assets/runes/primer.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Primer | Effect (Fire) | TNT and Pink Dye |
-| <img src="{{ '/assets/runes/reflect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Reflect | Effect (Arcane) | Shield and Glass Pane |
-| <img src="{{ '/assets/runes/resonance.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Resonance | Effect (Arcane) | Iron Nugget and Hay Bale |
-| <img src="{{ '/assets/runes/restore.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Restore | Effect (Life) | Iron Ingot and Glistering Melon Slice |
-| <img src="{{ '/assets/runes/shades.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Shades | Effect (Void) | 2x Bone and Black Dye |
-| <img src="{{ '/assets/runes/shadowstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Shadowstep | Effect (Void) | Ender Pearl and Ink Sac |
-| <img src="{{ '/assets/runes/smite.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Smite | Effect (Arcane) | Glowstone and Golden Carrot |
-| <img src="{{ '/assets/runes/thunderbird.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Thunderbird | Effect (Storm) | Feather and Lightning Rod |
-| <img src="{{ '/assets/runes/time_skip.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Time Skip | Effect (Time) | Clock and Ender Pearl |
-| <img src="{{ '/assets/runes/tremor.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Tremor | Effect (Earth) | Deepslate Bricks and TNT |
-| <img src="{{ '/assets/runes/combo.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Combo | Link | 2x Redstone Repeater |
-| <img src="{{ '/assets/runes/echo.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Echo | Link | 2x Echo Shard |
-| <img src="{{ '/assets/runes/on_kill.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | On Kill | Link | Bone Block |
-| <img src="{{ '/assets/runes/on_low_health.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | On Low Health | Link | Golden Apple |
-| <img src="{{ '/assets/runes/blood_price.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Blood Price | Modifier | Ghast Tear and Redstone Dust |
-| <img src="{{ '/assets/runes/chain.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Chain | Modifier | Iron Chain and Redstone Dust |
-| <img src="{{ '/assets/runes/homing.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Homing | Modifier | Compass |
-| <img src="{{ '/assets/runes/overcharge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Overcharge | Modifier | 2x Glowstone |
-| <img src="{{ '/assets/runes/split.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Split | Modifier | 2x Prismarine Crystals |
-| <img src="{{ '/assets/runes/vow.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Vow | Modifier | Paper and Block of Gold |
-| <img src="{{ '/assets/runes/orb.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Orb | Shape | Slime Block |
-| <img src="{{ '/assets/runes/orbit.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Orbit | Shape | Eye of Ender |
-| <img src="{{ '/assets/runes/rain.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Rain | Shape | Pointed Dripstone and Water Bucket |
-| <img src="{{ '/assets/runes/totem.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Totem | Shape | Block of Emerald |
-| <img src="{{ '/assets/runes/wall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Wall | Shape | 2x Obsidian |
-| <img src="{{ '/assets/runes/zone.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | Zone | Shape | Block of Redstone |
+<div class="recipe-gallery">
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_accelerate.png' | relative_url }}" alt="Crafting Accelerate: a Blank Rune and Clock and Sugar" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/accelerate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/time/' | relative_url }}#accelerate">Accelerate</a><br><span class="recipe-family">Effect, Time</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_blackflame.png' | relative_url }}" alt="Crafting Blackflame: a Blank Rune and Soul Campfire and Black Dye" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/blackflame.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#blackflame">Blackflame</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_blackspark.png' | relative_url }}" alt="Crafting Blackspark: a Blank Rune and Black Dye and Glowstone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/blackspark.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#blackspark">Blackspark</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_blink.png' | relative_url }}" alt="Crafting Blink: a Blank Rune and Ender Pearl and Chorus Fruit" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/blink.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#blink">Blink</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_cleave.png' | relative_url }}" alt="Crafting Cleave: a Blank Rune and Diamond Axe" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/cleave.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#cleave">Cleave</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_explode.png' | relative_url }}" alt="Crafting Explode: a Blank Rune and TNT and Fire Charge" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/explode.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#explode">Explode</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_foresight.png' | relative_url }}" alt="Crafting Foresight: a Blank Rune and Spyglass" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/foresight.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/time/' | relative_url }}#foresight">Foresight</a><br><span class="recipe-family">Effect, Time</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_freeze.png' | relative_url }}" alt="Crafting Freeze: a Blank Rune and 2x Blue Ice" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/freeze.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#freeze">Freeze</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_gravity_well.png' | relative_url }}" alt="Crafting Gravity Well: a Blank Rune and Eye of Ender and Crying Obsidian" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/gravity_well.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#gravity_well">Gravity Well</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_inferno.png' | relative_url }}" alt="Crafting Inferno: a Blank Rune and Blaze Rod and Magma Block" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/inferno.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#inferno">Inferno</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_lightning.png' | relative_url }}" alt="Crafting Lightning: a Blank Rune and Block of Copper and Glowstone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/lightning.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#lightning">Lightning</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_meteor.png' | relative_url }}" alt="Crafting Meteor: a Blank Rune and Magma Block and Fire Charge" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/meteor.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#meteor">Meteor</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_primer.png' | relative_url }}" alt="Crafting Primer: a Blank Rune and TNT and Pink Dye" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/primer.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#primer">Primer</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_reflect.png' | relative_url }}" alt="Crafting Reflect: a Blank Rune and Shield and Glass Pane" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/reflect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#reflect">Reflect</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_resonance.png' | relative_url }}" alt="Crafting Resonance: a Blank Rune and Iron Nugget and Hay Bale" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/resonance.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#resonance">Resonance</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_restore.png' | relative_url }}" alt="Crafting Restore: a Blank Rune and Iron Ingot and Glistering Melon Slice" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/restore.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#restore">Restore</a><br><span class="recipe-family">Effect, Life</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_shades.png' | relative_url }}" alt="Crafting Shades: a Blank Rune and 2x Bone and Black Dye" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/shades.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#shades">Shades</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_shadowstep.png' | relative_url }}" alt="Crafting Shadowstep: a Blank Rune and Ender Pearl and Ink Sac" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/shadowstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#shadowstep">Shadowstep</a><br><span class="recipe-family">Effect, Void</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_smite.png' | relative_url }}" alt="Crafting Smite: a Blank Rune and Glowstone and Golden Carrot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/smite.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#smite">Smite</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_thunderbird.png' | relative_url }}" alt="Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/thunderbird.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#thunderbird">Thunderbird</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_time_skip.png' | relative_url }}" alt="Crafting Time Skip: a Blank Rune and Clock and Ender Pearl" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/time_skip.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/time/' | relative_url }}#time_skip">Time Skip</a><br><span class="recipe-family">Effect, Time</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_tremor.png' | relative_url }}" alt="Crafting Tremor: a Blank Rune and Deepslate Bricks and TNT" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/tremor.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#tremor">Tremor</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_combo.png' | relative_url }}" alt="Crafting Combo: a Blank Rune and 2x Redstone Repeater" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/combo.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#combo">Combo</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_echo.png' | relative_url }}" alt="Crafting Echo: a Blank Rune and 2x Echo Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/echo.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#echo">Echo</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_on_kill.png' | relative_url }}" alt="Crafting On Kill: a Blank Rune and Bone Block" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/on_kill.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_kill">On Kill</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_on_low_health.png' | relative_url }}" alt="Crafting On Low Health: a Blank Rune and Golden Apple" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/on_low_health.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_low_health">On Low Health</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_blood_price.png' | relative_url }}" alt="Crafting Blood Price: a Blank Rune and Ghast Tear and Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/blood_price.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#blood_price">Blood Price</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_chain.png' | relative_url }}" alt="Crafting Chain: a Blank Rune and Iron Chain and Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/chain.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#chain">Chain</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_homing.png' | relative_url }}" alt="Crafting Homing: a Blank Rune and Compass" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/homing.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#homing">Homing</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_overcharge.png' | relative_url }}" alt="Crafting Overcharge: a Blank Rune and 2x Glowstone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/overcharge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#overcharge">Overcharge</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_split.png' | relative_url }}" alt="Crafting Split: a Blank Rune and 2x Prismarine Crystals" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/split.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#split">Split</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_vow.png' | relative_url }}" alt="Crafting Vow: a Blank Rune and Paper and Block of Gold" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/vow.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#vow">Vow</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_orb.png' | relative_url }}" alt="Crafting Orb: a Blank Rune and Slime Block" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/orb.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#orb">Orb</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_orbit.png' | relative_url }}" alt="Crafting Orbit: a Blank Rune and Eye of Ender" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/orbit.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#orbit">Orbit</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_rain.png' | relative_url }}" alt="Crafting Rain: a Blank Rune and Pointed Dripstone and Water Bucket" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/rain.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#rain">Rain</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_totem.png' | relative_url }}" alt="Crafting Totem: a Blank Rune and Block of Emerald" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/totem.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#totem">Totem</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_wall.png' | relative_url }}" alt="Crafting Wall: a Blank Rune and 2x Obsidian" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/wall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#wall">Wall</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_zone.png' | relative_url }}" alt="Crafting Zone: a Blank Rune and Block of Redstone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/zone.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#zone">Zone</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+</div>
 

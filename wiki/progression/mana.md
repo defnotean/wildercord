@@ -88,11 +88,7 @@ Crystals belong to you, not your Cord.
 
 ### Crafting one
 
-|   |   |   |
-|:-:|:-:|:-:|
-| Lapis Lazuli | Amethyst Shard | Lapis Lazuli |
-| Amethyst Shard | Diamond | Amethyst Shard |
-| Lapis Lazuli | Amethyst Shard | Lapis Lazuli |
+{% include recipe.html id="mana_crystal" alt="Crafting grid: top row Lapis Lazuli · Amethyst Shard · Lapis Lazuli; middle row Amethyst Shard · Diamond · Amethyst Shard; bottom row Lapis Lazuli · Amethyst Shard · Lapis Lazuli" %}
 
 4 Lapis Lazuli, 4 Amethyst Shards and a Diamond make one.
 
@@ -122,6 +118,15 @@ the Wellstone, Tier III runes and several pieces of casting gear need one.
 ## Potions
 
 Two potions, both brewed from an **Awkward Potion**:
+
+<div class="recipe-gallery">
+{% include recipe-card.html id="brewing_potion_awkward_amethyst_shard" name="Awkward Potion + Amethyst Shard: Potion of Clarity" %}
+{% include recipe-card.html id="brewing_potion_awkward_lapis_lazuli" name="Awkward Potion + Lapis Lazuli: Potion of Mana" %}
+{% include recipe-card.html id="brewing_potion_clarity_redstone" name="+ Redstone: lasts longer" %}
+{% include recipe-card.html id="brewing_potion_clarity_glowstone_dust" name="+ Glowstone Dust: stronger" %}
+{% include recipe-card.html id="brewing_potion_clarity_gunpowder" name="+ Gunpowder: splash" %}
+{% include recipe-card.html id="brewing_splash_potion_clarity_dragon_breath" name="Splash + Dragon's Breath: lingering" %}
+</div>
 
 | Potion | Brew | Effect |
 |---|---|---|

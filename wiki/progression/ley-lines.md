@@ -61,11 +61,7 @@ bar shows a violet up-chevron.
 
 ### Crafting
 
-|   |   |   |
-|:-:|:-:|:-:|
-| Polished Deepslate | Block of Amethyst | Polished Deepslate |
-| Block of Amethyst | Mana Crystal | Block of Amethyst |
-| Deepslate Tiles | Deepslate Tiles | Deepslate Tiles |
+{% include recipe.html id="wellstone" alt="Crafting grid: top row Polished Deepslate · Block of Amethyst · Polished Deepslate; middle row Block of Amethyst · Mana Crystal · Block of Amethyst; bottom row Deepslate Tiles · Deepslate Tiles · Deepslate Tiles" %}
 
 2 Polished Deepslate, 3 Blocks of Amethyst, a Mana Crystal and 3 Deepslate Tiles make one Wellstone.
 

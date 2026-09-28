@@ -35,11 +35,7 @@ many spells as you like. The full rules are on [How a Spell Is Read]({{ '/spellc
 Every rune starts as a **Blank Rune**. Put **4 Cobblestone** around **1 Lapis Lazuli** in a plus shape,
 in any crafting table:
 
-| | | |
-|:-:|:-:|:-:|
-| | Cobblestone | |
-| Cobblestone | Lapis Lazuli | Cobblestone |
-| | Cobblestone | |
+{% include recipe.html id="blank_rune" alt="Crafting grid: top row empty · Cobblestone · empty; middle row Cobblestone · Lapis Lazuli · Cobblestone; bottom row empty · Cobblestone · empty" %}
 
 It makes **4 Blank Runes**. The recipe appears in your recipe book as soon as you pick up lapis lazuli.
 Holding a Blank Rune then unlocks the recipe for the Twine Cord and for every rune you can craft.
@@ -52,11 +48,7 @@ Keep a few spare: Blank Runes are the base of every rune recipe, the Fusion Alta
 
 The **Twine Cord** is the first Cord: **3 String** over a **Blank Rune**.
 
-| | | |
-|:-:|:-:|:-:|
-| String | | String |
-| | String | |
-| | Blank Rune | |
+{% include recipe.html id="twine_cord" alt="Crafting grid: top row String · empty · String; middle row empty · String · empty; bottom row empty · Blank Rune · empty" %}
 
 A Twine Cord holds **one spell** of **3 runes**, only **Tier I** runes, and gives you **100 mana** that
 refills at **5 mana a second**. That's plenty to start. Better Cords come later (see

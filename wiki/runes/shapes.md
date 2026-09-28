@@ -21,6 +21,8 @@ Lobs a bolt that falls and bursts where it lands.
 
 **How to get it:** Craft: a Blank Rune, 2x Snowball. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_arc.png' | relative_url }}" alt="Crafting Arc: a Blank Rune and 2x Snowball" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Quicken, Bounce, Split, Volley
 
 ### <img src="{{ '/assets/runes/bolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bolt
@@ -31,6 +33,8 @@ Lobs a bolt that falls and bursts where it lands.
 Fires a flying bolt, up to 48 blocks.
 
 **How to get it:** Craft: a Blank Rune, Arrow. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_bolt.png' | relative_url }}" alt="Crafting Bolt: a Blank Rune and Arrow" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken, Pierce, Bounce, Split, Homing, Chain, Volley
 
@@ -43,6 +47,8 @@ A small nova bursts from you, hitting everything within 2.5 blocks.
 
 **How to get it:** Craft: a Blank Rune, Gunpowder and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_nova.png' | relative_url }}" alt="Crafting Nova: a Blank Rune and Gunpowder and Glowstone Dust" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/ray.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ray
@@ -53,6 +59,8 @@ A small nova bursts from you, hitting everything within 2.5 blocks.
 An instant, short ray that hits the first thing within 10 blocks.
 
 **How to get it:** Craft: a Blank Rune, Glass Pane and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_ray.png' | relative_url }}" alt="Crafting Ray: a Blank Rune and Glass Pane and Glowstone Dust" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Pierce, Chain
 
@@ -65,6 +73,8 @@ Targets you.
 
 **How to get it:** Craft: a Blank Rune, Glass Pane. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_self.png' | relative_url }}" alt="Crafting Self: a Blank Rune and Glass Pane" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/spark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spark
 {: #spark}
 
@@ -73,6 +83,8 @@ Targets you.
 A quick spark darts up to 16 blocks and hits the first thing in its path, at 75% power.
 
 **How to get it:** Craft: a Blank Rune, Flint and Glowstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_spark.png' | relative_url }}" alt="Crafting Spark: a Blank Rune and Flint and Glowstone Dust" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken, Split, Volley
 
@@ -85,6 +97,8 @@ Targets what you're looking at, within reach.
 
 **How to get it:** Craft: a Blank Rune, Leather. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_touch.png' | relative_url }}" alt="Crafting Touch: a Blank Rune and Leather" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Chain
 
 ### <img src="{{ '/assets/runes/barrage.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barrage
@@ -95,6 +109,8 @@ Targets what you're looking at, within reach.
 A flurry of 8 blows in one second on everything right in front of you, each at 35% power.
 
 **How to get it:** Craft: a Blank Rune, Leather and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_barrage.png' | relative_url }}" alt="Crafting Barrage: a Blank Rune and Leather and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken
 
@@ -107,6 +123,8 @@ An instant line that hits the first thing within 24 blocks.
 
 **How to get it:** Craft: a Blank Rune, Spyglass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_beam.png' | relative_url }}" alt="Crafting Beam: a Blank Rune and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Pierce, Split, Chain, Volley
 
 ### <img src="{{ '/assets/runes/blitz.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blitz
@@ -117,6 +135,8 @@ An instant line that hits the first thing within 24 blocks.
 You flash up to 8 blocks forward in an instant, striking everything you pass through.
 
 **How to get it:** Craft: a Blank Rune, Rabbit's Foot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_blitz.png' | relative_url }}" alt="Crafting Blitz: a Blank Rune and Rabbit's Foot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -129,6 +149,8 @@ Hits everything within 4 blocks.
 
 **How to get it:** Craft: a Blank Rune, 2x Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_burst.png' | relative_url }}" alt="Crafting Burst: a Blank Rune and 2x Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/cluster.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cluster
@@ -139,6 +161,8 @@ Hits everything within 4 blocks.
 A ball of energy that breaks into five shards where it hits; each shard strikes everything within 1.5 blocks of where it lands.
 
 **How to get it:** Craft: a Blank Rune, 2x Gunpowder and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_cluster.png' | relative_url }}" alt="Crafting Cluster: a Blank Rune and 2x Gunpowder and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Quicken, Split, Focus
 
@@ -151,6 +175,8 @@ A heavy ball of energy flies up to 24 blocks and bursts on the first thing it to
 
 **How to get it:** Craft: a Blank Rune, Fire Charge and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_comet.png' | relative_url }}" alt="Crafting Comet: a Blank Rune and Fire Charge and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Quicken, Split, Volley, Focus
 
 ### <img src="{{ '/assets/runes/cone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cone
@@ -161,6 +187,8 @@ A heavy ball of energy flies up to 24 blocks and bursts on the first thing it to
 Sweeps everything in a 60-degree cone up to 6 blocks in front of you.
 
 **How to get it:** Craft: a Blank Rune, Fire Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_cone.png' | relative_url }}" alt="Crafting Cone: a Blank Rune and Fire Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Focus
 
@@ -173,6 +201,8 @@ A crescent slash flies 16 blocks forward, cutting everything in its 5-wide path.
 
 **How to get it:** Craft: a Blank Rune, Iron Sword and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_crescent.png' | relative_url }}" alt="Crafting Crescent: a Blank Rune and Iron Sword and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Quicken, Split, Volley, Focus
 
 ### <img src="{{ '/assets/runes/lance.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lance
@@ -183,6 +213,8 @@ A crescent slash flies 16 blocks forward, cutting everything in its 5-wide path.
 A thick lance of light drives 16 blocks forward, through every creature in its path.
 
 **How to get it:** Craft: a Blank Rune, Spyglass and Blaze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_lance.png' | relative_url }}" alt="Crafting Lance: a Blank Rune and Spyglass and Blaze Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Split, Focus
 
@@ -195,6 +227,8 @@ Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds
 
 **How to get it:** Craft: a Blank Rune, Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_mine.png' | relative_url }}" alt="Crafting Mine: a Blank Rune and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/pillar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pillar
@@ -205,6 +239,8 @@ Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds
 A column erupts where you look: hits everything within 1.5 blocks, 6 high.
 
 **How to get it:** Craft: a Blank Rune, 2x Pointed Dripstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_pillar.png' | relative_url }}" alt="Crafting Pillar: a Blank Rune and 2x Pointed Dripstone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Split, Focus
 
@@ -217,6 +253,8 @@ A beam that splits into three at the first thing it hits, each ray striking the 
 
 **How to get it:** Craft: a Blank Rune, Prismarine Crystals and Glass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_prism.png' | relative_url }}" alt="Crafting Prism: a Blank Rune and Prismarine Crystals and Glass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Split
 
 ### <img src="{{ '/assets/runes/ricochet.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ricochet
@@ -227,6 +265,8 @@ A beam that splits into three at the first thing it hits, each ray striking the 
 An orb that bounces off the ground and walls 4 times, passing through creatures and hitting each once.
 
 **How to get it:** Craft: a Blank Rune, Slimeball and Snowball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_ricochet.png' | relative_url }}" alt="Crafting Ricochet: a Blank Rune and Slimeball and Snowball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken, Bounce, Split
 
@@ -239,6 +279,8 @@ A ring expands from you out to 7 blocks, hitting everything it passes.
 
 **How to get it:** Craft: a Blank Rune, Bell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_ring.png' | relative_url }}" alt="Crafting Ring: a Blank Rune and Bell, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/stream.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stream
@@ -249,6 +291,8 @@ A ring expands from you out to 7 blocks, hitting everything it passes.
 A steady stream of energy follows your aim for a second, striking the first thing within 20 blocks 6 times at 35% power.
 
 **How to get it:** Craft: a Blank Rune, Spyglass and Redstone Torch, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_stream.png' | relative_url }}" alt="Crafting Stream: a Blank Rune and Spyglass and Redstone Torch, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken
 
@@ -261,6 +305,8 @@ A 10-block beam sweeps across in front of you in half a second, hitting everythi
 
 **How to get it:** Craft: a Blank Rune, Spyglass and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_sweep.png' | relative_url }}" alt="Crafting Sweep: a Blank Rune and Spyglass and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Quicken, Focus
 
 ### <img src="{{ '/assets/runes/trail.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trail
@@ -271,6 +317,8 @@ A 10-block beam sweeps across in front of you in half a second, hitting everythi
 For 5 seconds your footsteps leave a path that hits whatever steps on it.
 
 **How to get it:** Craft: a Blank Rune, 2x Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_trail.png' | relative_url }}" alt="Crafting Trail: a Blank Rune and 2x Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend
 
@@ -283,6 +331,8 @@ A 3-wide wave rolls 14 blocks forward along the ground.
 
 **How to get it:** Craft: a Blank Rune, 2x Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_wave.png' | relative_url }}" alt="Crafting Wave: a Blank Rune and 2x Kelp, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Quicken, Focus
 
 ### <img src="{{ '/assets/runes/wisp.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wisp
@@ -293,6 +343,8 @@ A 3-wide wave rolls 14 blocks forward along the ground.
 A wisp drifts out and chases the nearest enemy within 16 blocks for up to 4 seconds, striking the first thing it touches.
 
 **How to get it:** Craft: a Blank Rune, Glow Berries and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_wisp.png' | relative_url }}" alt="Crafting Wisp: a Blank Rune and Glow Berries and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken, Split
 
@@ -305,6 +357,8 @@ A slow, heavy orb drifts 20 blocks forward through creatures, striking everythin
 
 **How to get it:** Craft: a Blank Rune, Slime Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_orb.png' | relative_url }}" alt="Crafting Orb: a Blank Rune and Slime Block, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Quicken, Split, Focus
 
 ### <img src="{{ '/assets/runes/orbit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Orbit
@@ -315,6 +369,8 @@ A slow, heavy orb drifts 20 blocks forward through creatures, striking everythin
 Three orbs circle you for 8 seconds and hit whatever they touch.
 
 **How to get it:** Craft: a Blank Rune, Eye of Ender, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_orbit.png' | relative_url }}" alt="Crafting Orbit: a Blank Rune and Eye of Ender, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Split
 
@@ -327,6 +383,8 @@ Three orbs circle you for 8 seconds and hit whatever they touch.
 
 **How to get it:** Craft: a Blank Rune, Pointed Dripstone and Water Bucket, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_rain.png' | relative_url }}" alt="Crafting Rain: a Blank Rune and Pointed Dripstone and Water Bucket, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/totem.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Totem
@@ -337,6 +395,8 @@ Three orbs circle you for 8 seconds and hit whatever they touch.
 A floating totem where you look pulses every 2 seconds for 10 seconds.
 
 **How to get it:** Craft: a Blank Rune, Block of Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_totem.png' | relative_url }}" alt="Crafting Totem: a Blank Rune and Block of Emerald, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Quicken, Focus
 
@@ -349,6 +409,8 @@ A 7-block wall across where you look. Hits whatever crosses it for 5 seconds.
 
 **How to get it:** Craft: a Blank Rune, 2x Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
+<img src="{{ '/assets/recipes/rune_wall.png' | relative_url }}" alt="Crafting Wall: a Blank Rune and 2x Obsidian, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 **Modifiers that work on it:** Extend, Widen, Quicken, Focus
 
 ### <img src="{{ '/assets/runes/zone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Zone
@@ -359,6 +421,8 @@ A 7-block wall across where you look. Hits whatever crosses it for 5 seconds.
 A 3-block field where you look. Re-applies every second for 6 seconds.
 
 **How to get it:** Craft: a Blank Rune, Block of Redstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_zone.png' | relative_url }}" alt="Crafting Zone: a Blank Rune and Block of Redstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Widen, Quicken, Split, Focus
 

@@ -179,6 +179,8 @@ Only the familiar that's out gains experience, so the others in your lantern wai
 The **Wisp Lantern** keeps the familiars you aren't using. Craft it from a lantern, two glass panes and two amethyst
 shards (see [Items and Crafting]({{ '/items/' | relative_url }}#wisp-lantern)).
 
+{% include recipe.html id="wisp_lantern" alt="Crafting grid: top row empty · Amethyst Shard · empty; middle row Glass Pane · Lantern · Glass Pane; bottom row empty · Amethyst Shard · empty" %}
+
 | Do this | And it... |
 |---|---|
 | **Use** the lantern while a familiar is out | sends it home into the lantern |
