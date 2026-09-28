@@ -158,7 +158,9 @@ public class RuneItem extends Item {
 		if (language.has(base + ".craft")) {
 			builder.accept(Component.translatable(base + ".craft").withStyle(ChatFormatting.DARK_GRAY));
 		} else if (def.id().startsWith("wildercord:") && !Runes.fused(def)) {
-			builder.accept(Component.translatable("tooltip.wildercord.not_craftable").withStyle(ChatFormatting.DARK_GRAY));
+			// A rune of the world is found only in its own places, whatever its tier.
+			String why = dev.wildercord.spell.RuneSources.foundOnly(def) ? "tooltip.wildercord.found_only" : "tooltip.wildercord.not_craftable";
+			builder.accept(Component.translatable(why).withStyle(ChatFormatting.DARK_GRAY));
 		}
 		if (language.has(base + ".found")) {
 			builder.accept(Component.translatable(base + ".found").withStyle(ChatFormatting.DARK_GRAY));

@@ -105,6 +105,12 @@ public final class CastEngine {
 				Reactions.callout(cast, "combo", 0xF0C440);
 				runSegment(cast, link.next, at);
 			}
+		} else if (ExplorerShapes.isCondition(id)) {
+			// If Wounded, If Outnumbered, If Wet: the runes of the world's conditions.
+			if (ExplorerShapes.conditionMet(cast, id)) {
+				ExplorerVfx.condition(cast.level, caster, id);
+				runSegment(cast, link.next, at);
+			}
 		} else if (id.equals(Runes.ON_LOW_HEALTH.id())) {
 			Cast child = cast.child();
 			Scheduler.onLowHealth(caster, 600, () -> {
@@ -307,8 +313,10 @@ public final class CastEngine {
 				});
 			}
 		} else {
-			// A shape from an add-on (dev.wildercord.api) finds its own hits.
-			AddonRunes.shape(cast, g, at, anchored);
+			// A shape from an add-on (dev.wildercord.api) finds its own hits; otherwise the shapes of the world: Vortex, Snare and Constellation.
+			if (!AddonRunes.shape(cast, g, at, anchored)) {
+				ExplorerShapes.deliver(cast, g, at, anchored, theme);
+			}
 		}
 	}
 

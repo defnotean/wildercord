@@ -913,6 +913,19 @@ is what the game does now.
 Shipwrecks, buried treasure, dungeons and mineshafts roll the crafted Tier I–II
 runes, so exploring always pays. Wandering traders sometimes sell one.
 
+### Runes of the world
+
+Fifty-one more runes can't be crafted at all, whatever their tier: each is found only in its own
+places (`spell/RuneSources.java`), so exploring is how a spellbook grows. Vanilla structures' chests
+roll their own (an ancient city's Echolocate and Resonant Shriek, a desert pyramid's Sandstorm, a
+jungle temple's Vinelash and Snare, an ocean monument's Elder Guardians' Tidecall...); biomes give
+theirs by **Attunement** (meditate with a Blank Rune in hand in the right land at the right moment
+for 20 seconds: a cherry grove under a full moon gives Moonpetal, the deep dark beside sculk gives
+Hush; see `spell/Attunements.java`); Wildercord's dungeons, their bosses and world events have
+theirs; and Archive libraries and Runebound Adepts now and then carry a few. The Grimoire lists
+attunements (as riddles until found) and every rune of the world by where it's found. The full
+list is in [features/new-runes.md](features/new-runes.md).
+
 ## Fusion Altar
 
 A crafted block (4 amethyst blocks + 1 lodestone + 4 deepslate tiles). Put runes

@@ -267,10 +267,12 @@ def stable(key):
     return int(hashlib.sha1(key.encode("utf-8")).hexdigest()[:8], 16)
 
 
-def assign(keys, options, render, used):
+def assign(keys, options, render, used, spare=(), spare_render=None):
     """
     Gives each key its own design: its hashed favourite among {@code options}, or the next one
-    along whose picture ({@code render}) nobody has yet ({@code used}, shared across groups).
+    along whose picture ({@code render}) nobody has yet ({@code used}, shared across groups). A group
+    with more runes than designs goes on to {@code spare} (drawn by {@code spare_render}) only once its
+    own are all taken, so adding spares never moves anyone's design.
     """
     chosen = {}
     # In the order the runes are defined, so a rune added after the others never takes a design from
@@ -284,7 +286,14 @@ def assign(keys, options, render, used):
                 chosen[key] = pixels
                 break
         else:
-            raise AssertionError(f"ran out of designs for {key}")
+            for option in spare:
+                pixels = frozenset(spare_render(option))
+                if pixels not in used:
+                    used.add(pixels)
+                    chosen[key] = pixels
+                    break
+            else:
+                raise AssertionError(f"ran out of designs for {key}")
     return chosen
 
 
@@ -303,10 +312,17 @@ def designs(runes):
         family = next(r["family"] for r in runes if r["path"] == paths[0])
         motifs = GROUP_MOTIFS.get(group, GROUP_MOTIFS["arcane"])
         band_options = [(m, p, a) for a in ACCENTS for p in PLACEMENTS for m in motifs]
-        bands.update(assign(paths, band_options, lambda o: band_tile(family, *o), used_bands))
+        # Spares: every other group's motifs, for a group that has outgrown its own.
+        other_motifs = [m for g in sorted(GROUP_MOTIFS) for m in GROUP_MOTIFS[g] if m not in motifs]
+        band_spares = [(m, p, a) for m in other_motifs for a in ACCENTS for p in PLACEMENTS]
+        bands.update(assign(paths, band_options, lambda o: band_tile(family, *o), used_bands,
+            band_spares, lambda o: band_tile(family, *o)))
         glyphs = [GLYPHS[group]] if group in GLYPHS else GENERIC
         mark_options = [(g, v, e, h) for h in (False, True) for e in DECOR for v in VARIANTS for g in range(len(glyphs))]
-        marks.update(assign(paths, mark_options, lambda o: mark_tile(family, glyphs[o[0]], o[1], o[2], o[3]), used_marks))
+        # Spares: the generic emblems, for an element with more runes than its own emblem has designs.
+        mark_spares = [(g, v, e, h) for g in range(len(GENERIC)) for h in (False, True) for e in DECOR for v in VARIANTS] if group in GLYPHS else []
+        marks.update(assign(paths, mark_options, lambda o: mark_tile(family, glyphs[o[0]], o[1], o[2], o[3]), used_marks,
+            mark_spares, lambda o: mark_tile(family, GENERIC[o[0]], o[1], o[2], o[3])))
     return bands, marks
 
 

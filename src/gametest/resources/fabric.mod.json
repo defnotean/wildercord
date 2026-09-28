@@ -16,7 +16,8 @@
 			"dev.wildercord.gametest.WildercordSocialTest",
 			"dev.wildercord.gametest.WildercordFamiliarTest",
 			"dev.wildercord.gametest.WildercordFusionTest",
-			"dev.wildercord.gametest.WildercordGearTest"
+			"dev.wildercord.gametest.WildercordGearTest",
+			"dev.wildercord.gametest.WildercordNewRunesTest"
 		]
 	},
 	"depends": {

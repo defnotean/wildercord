@@ -53,6 +53,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.BlockFx.init();
 		dev.wildercord.cast.CordLook.init();
 		dev.wildercord.cast.Effects.init();
+		dev.wildercord.cast.Attunement.init();
+		dev.wildercord.cast.ExplorerEffects.init();
 		dev.wildercord.cast.Innates.init();
 		dev.wildercord.cast.Unison.init();
 		dev.wildercord.cast.Runebound.init();

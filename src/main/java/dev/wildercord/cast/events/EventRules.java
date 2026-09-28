@@ -233,16 +233,25 @@ public final class EventRules {
 
 	/**
 	 * The runes a world event may give, of one tier. {@code source} is the event ({@code "starfall"},
-	 * {@code "rift"} or {@code "mana_storm"}). Every event reward is picked through here, so runes of
-	 * the events' own can be dropped in later in this one place; for now it's every rune of that tier
-	 * that isn't innate, falling back to lower tiers if a tier is empty.
+	 * {@code "rift"} or {@code "mana_storm"}): its own runes (see {@link dev.wildercord.spell.RuneSources})
+	 * of that tier, weighted three to one over every common rune of that tier, falling back to lower
+	 * tiers if a tier is empty.
 	 */
 	public static List<RuneDef> rewardRunes(String source, int tier) {
 		for (int t = tier; t >= 1; t--) {
+			int of = t;
+			List<RuneDef> own = dev.wildercord.spell.RuneSources.forSource(source).stream().filter(r -> r.tier() == of).toList();
 			List<RuneDef> pool = new ArrayList<>();
 			for (RuneDef rune : Runes.all()) {
-				if (rune.tier() == t && !Runes.innate(rune)) {
+				if (rune.tier() == t && Runes.common(rune)) {
 					pool.add(rune);
+				}
+			}
+			// The event's own runes: as likely, together, as three times everything else.
+			if (!pool.isEmpty() && !own.isEmpty()) {
+				int copies = Math.max(1, 3 * pool.size() / own.size());
+				for (int i = 0; i < copies; i++) {
+					pool.addAll(own);
 				}
 			}
 			if (!pool.isEmpty()) {

@@ -427,6 +427,7 @@ public final class SpellCaster {
 			Overcast.forget(id);
 			WildSurge.forget(id);
 			Meditation.forget(id);
+			Attunement.forget(id);
 			HeartCircles.forget(id);
 			SecretSpells.forget(id);
 			COMBO.remove(id);
@@ -464,6 +465,8 @@ public final class SpellCaster {
 			return;
 		}
 		HeartCircles.tick(player, player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.MEDITATING, false));
+		// A Blank Rune held while meditating in the right place attunes to the land's rune.
+		Attunement.tick(player);
 		PassiveCaster.tick(player, tickCount);
 		Overcast.tick(player);
 		Rhythm.tick(player);

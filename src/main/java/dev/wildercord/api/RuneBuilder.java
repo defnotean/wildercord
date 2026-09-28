@@ -167,12 +167,13 @@ public final class RuneBuilder {
 				}
 			}
 			case LINK -> { }
+			case KNOT -> throw new IllegalArgumentException("Rune " + id + ": Knots are tied at the Fusion Altar, not registered");
 		}
 		String cat = category != null ? category : switch (family) {
 			case EFFECT -> "damage";
 			case SHAPE -> "direct";
 			case MODIFIER -> "power";
-			case LINK -> "trigger";
+			case LINK, KNOT -> "trigger";
 		};
 		return new RuneDef(id, name, family, tier, family == RuneFamily.MODIFIER ? 0 : cost, family == RuneFamily.EFFECT || family == RuneFamily.LINK ? 1.0 : multiplier,
 			family == RuneFamily.EFFECT ? element : "", family == RuneFamily.EFFECT ? kind : EffectKind.NONE, all, family == RuneFamily.MODIFIER ? needs : "",

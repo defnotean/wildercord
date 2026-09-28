@@ -445,6 +445,11 @@ public final class Runebound {
 		if (level.getRandom().nextFloat() < (adept ? 0.2F : 0.06F)) {
 			level.addFreshEntity(new ItemEntity(level, at.x, at.y, at.z, new ItemStack(WildercordItems.TORN_PAGE)));
 		}
+		// Now and then an Adept's Cord was threaded with a rune of the world, found far from here.
+		if (adept && level.getRandom().nextInt(100) < dev.wildercord.content.WildercordLoot.ADEPT_FIND_CHANCE) {
+			level.addFreshEntity(new ItemEntity(level, at.x, at.y, at.z,
+				dev.wildercord.content.WildercordLoot.foundRune(dev.wildercord.spell.RuneSources.RUNEBOUND_ADEPT.id(), level.getRandom())));
+		}
 		ExperienceOrb.award(level, at, adept ? 20 : 10);
 		int color = elementColor(spell);
 		Vfx.radial(level, new DustParticleOptions(color, 1.2F), at.add(0, 0.5, 0), 24, 0.25);

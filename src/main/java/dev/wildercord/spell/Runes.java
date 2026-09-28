@@ -251,6 +251,65 @@ public final class Runes {
 	public static boolean fused(RuneDef rune) {
 		return FUSED.contains(rune);
 	}
+	// ---- Runes of the world: never crafted, only found in particular places (see RuneSources and
+	// Attunements). Defined after everything else, so their magic circles never change an older rune's.
+	// Vanilla structures.
+	public static final RuneDef ECHOLOCATE = effect("echolocate", "Echolocate", 2, 6, "void", EffectKind.HARMFUL, "A sonar pulse from the point: every creature within 16 blocks glows through walls for 10 seconds, and those it hits are dazed (Slowness II) for 3.", DURATION, RADIUS);
+	public static final RuneDef RESONANT_SHRIEK = effect("resonant_shriek", "Resonant Shriek", 3, 18, "void", EffectKind.HARMFUL, "A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A second later it echoes for half as much.", POWER, DURATION, LINGER);
+	public static final RuneDef TIDECALL = effect("tidecall", "Tidecall", 3, 16, "frost", EffectKind.HARMFUL, "The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked.", POWER, RADIUS, LINGER);
+	public static final RuneDef INFEST = effect("infest", "Infest", 2, 9, "earth", EffectKind.HARMFUL, "Silverfish burrow out of the stone around each target: 1 damage every half second for 4 seconds, and Slowness I.", POWER, DURATION);
+	public static final RuneDef SANDSTORM = effect("sandstorm", "Sandstorm", 3, 18, "earth", EffectKind.HARMFUL, "A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks takes 2 damage a second, can't see and is slowed.", POWER, RADIUS, DURATION);
+	public static final RuneDef VINELASH = effect("vinelash", "Vinelash", 2, 9, "life", EffectKind.HARMFUL, "A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you.", POWER, LINGER);
+	public static final RuneDef REMEDY = effect("remedy", "Remedy", 2, 10, "life", EffectKind.HELPFUL, "Cures what ails: washes away harmful effects, heals 4 and gives Regeneration I for 6 seconds. A zombie villager it touches is weakened, ready for a golden apple.", POWER, DURATION);
+	public static final RuneDef WARCRY = effect("warcry", "Warcry", 2, 10, "blood", EffectKind.HELPFUL, "A war horn sounds: you and your allies within 8 blocks of the target gain Strength I and Speed I for 12 seconds.", DURATION, RADIUS);
+	public static final RuneDef FANGS = effect("fangs", "Fangs", 2, 10, "arcane", EffectKind.HARMFUL, "A ring of evoker fangs snaps up around each target: 6 damage from below.", POWER, LINGER);
+	public static final RuneDef UNDERTOW = effect("undertow", "Undertow", 2, 9, "frost", EffectKind.HARMFUL, "Drags each target down: Slowness III for 3 seconds and soaked. In water it's pulled under and takes 5 damage.", POWER, DURATION);
+	public static final RuneDef TREASURE_SENSE = effect("treasure_sense", "Treasure Sense", 1, 4, "arcane", EffectKind.HELPFUL, "For 60 seconds, Luck II, and every chest, barrel and suspicious block within 24 blocks sparkles now and then.", DURATION);
+	public static final RuneDef TUSK_CHARGE = effect("tusk_charge", "Tusk Charge", 2, 9, "earth", EffectKind.MOVEMENT, "You charge like a hoglin, up to 8 blocks the way you look, tossing everything in your path into the air for 5 damage.", POWER);
+	public static final RuneDef BLAZECALL = effect("blazecall", "Blazecall", 2, 11, "fire", EffectKind.HARMFUL, "Three blaze fireballs fall on each target over a second: 2 fire damage each, setting it alight.", POWER, LINGER);
+	public static final RuneDef SHULKERSHELL = effect("shulkershell", "Shulkershell", 3, 14, "void", EffectKind.HELPFUL, "Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knockback, but it can't move. When it opens, enemies within 3 blocks float up for 2 seconds.", DURATION);
+	public static final RuneDef PORTALFALL = effect("portalfall", "Portalfall", 2, 9, "void", EffectKind.HARMFUL, "A portal opens under each target and drops it from 7 blocks up, with 2 damage on the way through.", POWER);
+	public static final RuneDef ANCIENT_SEED = effect("ancient_seed", "Ancient Seed", 1, 4, "life", EffectKind.WORLD, "Plants an ancient seed at the point: a torchflower or pitcher plant blooms, and crops within 4 blocks grow a stage.", RADIUS);
+	public static final RuneDef VORTEX = shape("vortex", "Vortex", 3, 9, 2.2, "A whirling vortex opens where you look for 3 seconds, dragging creatures within 5 blocks into its eye and striking everything in the eye twice a second.", RADIUS, DURATION);
+	public static final RuneDef SNARE = shape("snare", "Snare", 2, 4, 1.4, "Strings an unseen tripwire from your feet to where you look (up to 12 blocks). The first enemy to cross it within 30 seconds springs it on everything within 2.5 blocks.", RADIUS);
+	public static final RuneDef TRIAL_KEY = modifier("trial_key", "Trial Key", 2, 1.3, POWER, "Opens a fight: +60% power against targets at full health.");
+	public static final RuneDef IF_WOUNDED = link("if_wounded", "If Wounded", 2, 1, "The rest fires only if you're below half health. Build a last stand into any spell.");
+	public static final RuneDef IF_OUTNUMBERED = link("if_outnumbered", "If Outnumbered", 3, 1, "The rest fires only if 3 or more enemies are within 8 blocks of you.");
+	// Attuned from a Blank Rune in the right biome (see Attunements).
+	public static final RuneDef MOONPETAL = effect("moonpetal", "Moonpetal", 2, 12, "life", EffectKind.HARMFUL, "A storm of moonlit petals at the point: 4 damage to every enemy within 3 blocks, and 3 health to you and your allies there.", POWER, RADIUS);
+	public static final RuneDef HOARFROST = effect("hoarfrost", "Hoarfrost", 3, 16, "frost", EffectKind.HARMFUL, "Rime creeps over each target for 3 seconds, slowing it more every second; then it freezes solid for 2 seconds and takes 6 damage.", POWER, DURATION);
+	public static final RuneDef HUSH = effect("hush", "Hush", 2, 10, "void", EffectKind.HARMFUL, "A pocket of silence at the point for 6 seconds (4 blocks): enemies inside lose their targets, are weakened and can barely see.", DURATION, RADIUS);
+	public static final RuneDef SPOREBLOOM = effect("sporebloom", "Sporebloom", 2, 10, "life", EffectKind.HARMFUL, "Spores burst from a giant mushroom at the point: Poison I and Nausea for 6 seconds to enemies within 3 blocks, and 4 hunger restored to your allies there.", DURATION, RADIUS);
+	public static final RuneDef SUNSCORCH = effect("sunscorch", "Sunscorch", 3, 16, "fire", EffectKind.HARMFUL, "The noon sun, focused: 8 fire damage and alight for 5 seconds. Under open sky by day it burns 50% hotter.", POWER, DURATION, LINGER);
+	public static final RuneDef MIRE = effect("mire", "Mire", 2, 8, "earth", EffectKind.HARMFUL, "The ground turns to mire under each target for 5 seconds: it sinks (Slowness IV, no jumping) and is soaked.", DURATION, LINGER);
+	public static final RuneDef GLOWVINE = effect("glowvine", "Glowvine", 1, 3, "life", EffectKind.WORLD, "Glowing cave vines heavy with glow berries grow down from the ceiling around the point: a light that stays.", RADIUS);
+	public static final RuneDef ROOTSNARE = effect("rootsnare", "Rootsnare", 2, 11, "life", EffectKind.HARMFUL, "Mangrove roots burst up around the point: every enemy within 3 blocks is held for 2 seconds and takes 3 damage.", POWER, RADIUS, DURATION);
+	public static final RuneDef STALACTITE = effect("stalactite", "Stalactite", 2, 9, "earth", EffectKind.HARMFUL, "A stalactite drops on each target from above: 7 damage, 50% more against a bare head.", POWER, LINGER);
+	public static final RuneDef SUMMIT_WIND = effect("summit_wind", "Summit Wind", 3, 14, "wind", EffectKind.HARMFUL, "A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and away. On Self it carries you 12 blocks up and lets you glide down.", POWER, RADIUS);
+	public static final RuneDef SOULFIRE = effect("soulfire", "Soulfire", 3, 16, "fire", EffectKind.HARMFUL, "Blue soul flames: 3 fire damage a second for 5 seconds, and each burn gives you back 1 mana.", POWER, DURATION);
+	public static final RuneDef WARP_STEP = effect("warp_step", "Warp Step", 2, 8, "void", EffectKind.MOVEMENT, "Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pulled back, unless you're sneaking.");
+	public static final RuneDef BLOOD_MOSS = effect("blood_moss", "Blood Moss", 2, 10, "blood", EffectKind.HARMFUL, "Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you heal for all of it.", POWER, DURATION);
+	public static final RuneDef BASALT_SURGE = effect("basalt_surge", "Basalt Surge", 3, 18, "earth", EffectKind.HARMFUL, "Basalt columns burst up in a line from you to the point: 7 damage and a toss into the air for everything along it.", POWER, RADIUS);
+	public static final RuneDef STARLIGHT_TETHER = effect("starlight_tether", "Starlight Tether", 3, 14, "arcane", EffectKind.HARMFUL, "Tethers each target to the point with a thread of starlight for 6 seconds: it's dragged back if it strays 3 blocks, taking 2 damage each time.", POWER, DURATION);
+	// The Ember Sanctum and the Cinder Warden.
+	public static final RuneDef CINDERBRAND = effect("cinderbrand", "Cinderbrand", 2, 9, "fire", EffectKind.HARMFUL, "Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50% hotter.", POWER, DURATION);
+	public static final RuneDef ASHEN_VEIL = effect("ashen_veil", "Ashen Veil", 3, 14, "fire", EffectKind.HELPFUL, "Wreathes the target in ash for 10 seconds: fire can't hurt it, and whatever strikes it up close is set alight for 4 seconds.", DURATION);
+	public static final RuneDef KINDLED = modifier("kindled", "Kindled", 3, 1.4, POWER, "+20% power, and the effect sets what it hits alight for 4 seconds.");
+	public static final RuneDef CINDERHEART = effect("cinderheart", "Cinderheart", 4, 30, "fire", EffectKind.HELPFUL, "Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks takes 3 fire damage a second.", DURATION, POWER);
+	// The Astral Observatory and the Star Eater.
+	public static final RuneDef CONSTELLATION = shape("constellation", "Constellation", 3, 8, 2.4, "Joins up to 5 enemies within 12 blocks of you in a constellation of light and strikes them all at once.", RADIUS);
+	public static final RuneDef ECLIPSE = effect("eclipse", "Eclipse", 3, 18, "void", EffectKind.HARMFUL, "A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are blinded, take 2 damage a second, and your spells hit them 20% harder.", POWER, DURATION, RADIUS);
+	public static final RuneDef STARMAW = effect("starmaw", "Starmaw", 4, 32, "void", EffectKind.HARMFUL, "Devours the light: 14 damage, and it swallows each of the target's good effects for 3 more damage apiece.", POWER);
+	// The Drowned Scriptorium and the Tide Scribe.
+	public static final RuneDef DROWNING_WORD = effect("drowning_word", "Drowning Word", 3, 16, "frost", EffectKind.HARMFUL, "A drowning word: for 5 seconds the target's lungs fill with water (it loses its air and takes 2 damage a second), and it's soaked.", POWER, DURATION);
+	public static final RuneDef IF_WET = link("if_wet", "If Wet", 2, 1, "The rest fires only if you're in water or rain.");
+	public static final RuneDef TIDEWRIT = effect("tidewrit", "Tidewrit", 4, 30, "frost", EffectKind.HARMFUL, "Writes the tide: a 7-wide wall of water rolls from you through the point, 10 damage to everything in it, sweeping it 8 blocks on, soaked.", POWER, RADIUS);
+	// World events: the Fallen Star, Rift sieges and mana storms.
+	public static final RuneDef STARSHARD = effect("starshard", "Starshard", 3, 16, "arcane", EffectKind.HARMFUL, "A shard of the fallen star: 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks for 3.", POWER, LINGER);
+	public static final RuneDef RIFTCALL = effect("riftcall", "Riftcall", 3, 18, "void", EffectKind.HARMFUL, "Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6.", POWER, RADIUS, DURATION);
+	public static final RuneDef UNSTABLE = modifier("unstable", "Unstable", 3, 1.2, POWER, "Rift-touched: the effect's power swings anywhere from 50% to 200% each time it lands.");
+	public static final RuneDef MANABURN = effect("manaburn", "Manaburn", 2, 10, "arcane", EffectKind.HARMFUL, "Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also loses 20 mana and takes 4 more.", POWER);
+	public static final RuneDef MANATIDE = effect("manatide", "Manatide", 3, 12, "arcane", EffectKind.HELPFUL, "Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute.", DURATION);
 
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());
@@ -261,6 +320,15 @@ public final class Runes {
 
 	public static boolean innate(RuneDef rune) {
 		return INNATE.contains(rune);
+	}
+
+	/**
+	 * Whether a rune may turn up anywhere at random (a chest, a trade, a reward, a boss's drop): not
+	 * innate, not made only at the Fusion Altar, and not one of the runes of the world, which are found
+	 * only in their own places (see {@link RuneSources}).
+	 */
+	public static boolean common(RuneDef rune) {
+		return !innate(rune) && !fused(rune) && !RuneSources.foundOnly(rune);
 	}
 
 	/** A rune by id: one of the roster, or a Knot (which carries its spell in its id, see {@link Knots}). */

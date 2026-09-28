@@ -414,12 +414,12 @@ public class Archivist extends SpellcasterIllager {
 		List<RuneDef> fourth = new ArrayList<>();
 		ServerPlayer killer = source.getEntity() instanceof ServerPlayer p ? p : null;
 		for (RuneDef rune : Runes.all()) {
-			if (rune.tier() == 4 && !Runes.innate(rune) && (killer == null || !Spellbooks.knows(killer, rune.id()))) {
+			if (rune.tier() == 4 && Runes.common(rune) && (killer == null || !Spellbooks.knows(killer, rune.id()))) {
 				fourth.add(rune);
 			}
 		}
 		if (fourth.isEmpty()) {
-			Runes.all().stream().filter(r -> r.tier() == 4 && !Runes.innate(r)).forEach(fourth::add);
+			Runes.all().stream().filter(r -> r.tier() == 4 && Runes.common(r)).forEach(fourth::add);
 		}
 		drop(level, RuneItem.stack(fourth.get(level.getRandom().nextInt(fourth.size()))));
 		drop(level, new ItemStack(WildercordItems.TORN_PAGE, 2));

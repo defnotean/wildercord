@@ -12,7 +12,7 @@ public final class SpellNumbers {
 
 	public static double power(SpellPlan.EffectNode e) {
 		return Math.pow(1.5, e.count(Runes.AMPLIFY)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD))
-			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods);
+			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.2, e.count(Runes.KINDLED));
 	}
 
 	/** Focus and Vow on a shape, times the shape's own strength per hit (Barrage hits often, so softer). */
@@ -35,6 +35,63 @@ public final class SpellNumbers {
 	public static double executeBonus(SpellPlan.EffectNode e) {
 		return Math.pow(2.0, e.count(Runes.EXECUTE_MOD));
 	}
+
+	// ---- runes of the world
+
+	/** Trial Key on an effect: power multiplier against targets at full health (1 = none). */
+	public static double trialKeyBonus(SpellPlan.EffectNode e) {
+		return Math.pow(1.6, e.count(Runes.TRIAL_KEY));
+	}
+
+	/** Kindled on an effect: seconds it sets what it hits alight (0 = none). */
+	public static int kindledSeconds(SpellPlan.EffectNode e) {
+		return e.count(Runes.KINDLED) > 0 ? 4 * e.count(Runes.KINDLED) : 0;
+	}
+
+	/** Unstable on an effect: the lowest and highest power it can swing to. */
+	public static final double UNSTABLE_LOW = 0.5;
+	public static final double UNSTABLE_HIGH = 2.0;
+
+	/** One roll of Unstable's swing, from {@code roll} in [0, 1): as likely to weaken as to strengthen. */
+	public static double unstableSwing(SpellPlan.EffectNode e, double roll) {
+		if (e.count(Runes.UNSTABLE) == 0) {
+			return 1.0;
+		}
+		// Log-uniform between half and double: the average cast is about as strong as a steady one.
+		return Math.exp(Math.log(UNSTABLE_LOW) + roll * (Math.log(UNSTABLE_HIGH) - Math.log(UNSTABLE_LOW)));
+	}
+
+	/** How far a Vortex drags creatures in from. */
+	public static double vortexRadius(SpellPlan.Group g) {
+		return 5.0 * shapeRadius(g);
+	}
+
+	/** The Vortex's eye, where it strikes. */
+	public static double vortexEye(SpellPlan.Group g) {
+		return 1.8 * shapeRadius(g);
+	}
+
+	public static int vortexSeconds(SpellPlan.Group g) {
+		return (int) Math.round(3 * Math.pow(2.0, g.count(Runes.EXTEND)));
+	}
+
+	/** Ticks between a Vortex's strikes. */
+	public static final int VORTEX_INTERVAL = 10;
+
+	/** A Snare's tripwire: how far it reaches, how long it waits, and how wide it springs. */
+	public static final double SNARE_LENGTH = 12.0;
+	public static final int SNARE_SECONDS = 30;
+
+	public static double snareRadius(SpellPlan.Group g) {
+		return 2.5 * shapeRadius(g);
+	}
+
+	/** How far from you a Constellation finds its stars, and how many. */
+	public static double constellationRange(SpellPlan.Group g) {
+		return 12.0 * shapeRadius(g);
+	}
+
+	public static final int CONSTELLATION_STARS = 5;
 
 	/** Domain radius: 9 blocks, widened up to 24 at most (beyond that it can't be seen or kept up). */
 	public static final double MAX_DOMAIN_RADIUS = 24.0;

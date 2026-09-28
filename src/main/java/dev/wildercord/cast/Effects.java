@@ -91,18 +91,23 @@ public final class Effects {
 	private static double executeBonus = 1.0;
 	/** The element of the effect being applied, for Unison. */
 	private static String currentElement = "";
+	/** Trial Key on the effect being applied: extra power against targets at full health (1 = none). */
+	private static double openingBonus = 1.0;
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		double outerBonus = executeBonus;
 		String outerElement = currentElement;
+		double outerOpening = openingBonus;
 		executeBonus = SpellNumbers.executeBonus(node);
 		currentElement = node.effect.element();
+		openingBonus = SpellNumbers.trialKeyBonus(node);
 		try {
 			applyEffect(cast, node, hit, groupPower);
 		} finally {
 			executeBonus = outerBonus;
 			currentElement = outerElement;
+			openingBonus = outerOpening;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
 		WorldMagic.onSpell(cast, node, hit, groupPower);
@@ -116,20 +121,24 @@ public final class Effects {
 	 * Unison.
 	 */
 	static Runnable carryContext(Runnable task) {
-		if (executeBonus == 1.0 && currentElement.isEmpty()) {
+		if (executeBonus == 1.0 && openingBonus == 1.0 && currentElement.isEmpty()) {
 			return task;
 		}
 		double bonus = executeBonus;
+		double opening = openingBonus;
 		String element = currentElement;
 		return () -> {
 			double outerBonus = executeBonus;
+			double outerOpening = openingBonus;
 			String outerElement = currentElement;
 			executeBonus = bonus;
+			openingBonus = opening;
 			currentElement = element;
 			try {
 				task.run();
 			} finally {
 				executeBonus = outerBonus;
+				openingBonus = outerOpening;
 				currentElement = outerElement;
 			}
 		};
@@ -146,7 +155,8 @@ public final class Effects {
 		int rank = dev.wildercord.player.RuneRanks.rank(caster, rune.id());
 		// Casting gear (a staff of this element, a Focus of Thrift): its own factor, set when the spell was cast.
 		double gear = cast.gearPower(rune.element());
-		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate * dev.wildercord.spell.Ranks.power(rank) * gear;
+		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate * dev.wildercord.spell.Ranks.power(rank) * gear
+			* ExplorerEffects.swing(cast, node, hit);
 		double duration = SpellNumbers.duration(node) * cast.duration;
 		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
@@ -511,9 +521,14 @@ public final class Effects {
 				Innates.apply(cast, rune, helped, harmed, power, duration);
 			case "firestorm", "steam", "magma", "tempest", "plasma", "hail", "glacier", "lifesteal", "warp", "bloom", "surge", "nullify" ->
 				FusedEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
-			// A rune from an add-on (dev.wildercord.api) does what it registered.
-			default -> AddonRunes.effect(cast, node, hit, harmed, helped, power, duration);
+			default -> {
+				// The runes of the world (found, never crafted) live in their own class; a rune from an add-on (dev.wildercord.api) does what it registered.
+				ExplorerEffects.apply(cast, node, hit, helped, harmed, power, duration);
+				AddonRunes.effect(cast, node, hit, harmed, helped, power, duration);
+			}
 		}
+		// Kindled: whatever the effect struck is set alight too.
+		ExplorerEffects.kindle(cast, node, harmed, duration);
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;
 		if (!hit.self()) {
 			Vfx.Theme theme = Vfx.theme(rune);
@@ -575,6 +590,11 @@ public final class Effects {
 		// Fire is weaker on the wet.
 		amount *= WorldMagic.wetDamage(target, currentElement);
 		amount *= AddonRunes.react(cast, target, currentElement);
+		amount *= ExplorerEffects.bonus(cast, target, currentElement);
+		// Trial Key: the opening blow on a target still at full health.
+		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {
+			amount *= openingBonus;
+		}
 		float damage = (float) amount;
 		// PvP only: a monster's spell already has its power set by difficulty. The server can change the scale.
 		if (target instanceof Player && cast.caster instanceof Player) {

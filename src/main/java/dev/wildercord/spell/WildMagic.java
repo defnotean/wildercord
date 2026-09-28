@@ -137,7 +137,7 @@ public final class WildMagic {
 	}
 
 	private static boolean swappable(RuneDef rune) {
-		return rune.family() == RuneFamily.EFFECT && rune.kind() == EffectKind.HARMFUL && !rune.element().isEmpty() && !Runes.innate(rune);
+		return rune.family() == RuneFamily.EFFECT && rune.kind() == EffectKind.HARMFUL && !rune.element().isEmpty() && Runes.common(rune);
 	}
 
 	/**

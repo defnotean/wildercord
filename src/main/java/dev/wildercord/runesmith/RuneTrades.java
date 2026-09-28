@@ -32,11 +32,11 @@ public final class RuneTrades {
 		};
 	}
 
-	/** Every rune of a tier that can change hands: never an innate rune. */
+	/** Every rune of a tier a Runesmith deals in: never an innate, fused or found-only rune. */
 	public static List<RuneDef> pool(int tier) {
 		List<RuneDef> pool = new ArrayList<>();
 		for (RuneDef rune : Runes.all()) {
-			if (rune.tier() == tier && !Runes.innate(rune)) {
+			if (rune.tier() == tier && Runes.common(rune)) {
 				pool.add(rune);
 			}
 		}

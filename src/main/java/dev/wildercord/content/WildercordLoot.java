@@ -1,6 +1,7 @@
 package dev.wildercord.content;
 
 import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.RuneSources;
 import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -99,6 +101,84 @@ public final class WildercordLoot {
 		ARCHAEOLOGY_POOLS.put(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE, new RunePool(20, List.of(Runes.LIGHTNING, Runes.SHOCK)));
 	}
 
+	/**
+	 * The runes of the world (see {@link RuneSources}): a chance (out of 100) that a structure's chest
+	 * rolls one of the runes found only there. Its own pool, on top of the ones above.
+	 */
+	private record SourcePool(int chance, RuneSources.Source source) {}
+
+	private static final Map<ResourceKey<LootTable>, List<SourcePool>> SOURCE_POOLS = new HashMap<>();
+	/** The same for archaeology: one find per brush, so the runes join vanilla's own pool. */
+	private static final Map<ResourceKey<LootTable>, SourcePool> SOURCE_DIGS = new HashMap<>();
+
+	private static void sourcePool(ResourceKey<LootTable> table, int chance, RuneSources.Source source) {
+		SOURCE_POOLS.computeIfAbsent(table, k -> new java.util.ArrayList<>()).add(new SourcePool(chance, source));
+	}
+
+	static {
+		sourcePool(BuiltInLootTables.ANCIENT_CITY, 20, RuneSources.ANCIENT_CITY);
+		sourcePool(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_RARE, 12, RuneSources.TRIAL_VAULT);
+		sourcePool(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE, 25, RuneSources.OMINOUS_VAULT);
+		sourcePool(BuiltInLootTables.STRONGHOLD_LIBRARY, 25, RuneSources.STRONGHOLD);
+		sourcePool(BuiltInLootTables.DESERT_PYRAMID, 20, RuneSources.DESERT_PYRAMID);
+		sourcePool(BuiltInLootTables.JUNGLE_TEMPLE, 30, RuneSources.JUNGLE_TEMPLE);
+		sourcePool(BuiltInLootTables.IGLOO_CHEST, 50, RuneSources.IGLOO);
+		sourcePool(BuiltInLootTables.PILLAGER_OUTPOST, 25, RuneSources.PILLAGER_OUTPOST);
+		sourcePool(BuiltInLootTables.WOODLAND_MANSION, 25, RuneSources.WOODLAND_MANSION);
+		sourcePool(BuiltInLootTables.SHIPWRECK_TREASURE, 20, RuneSources.SHIPWRECK);
+		sourcePool(BuiltInLootTables.BURIED_TREASURE, 30, RuneSources.BURIED_TREASURE);
+		sourcePool(BuiltInLootTables.BASTION_TREASURE, 25, RuneSources.BASTION);
+		sourcePool(BuiltInLootTables.BASTION_OTHER, 8, RuneSources.BASTION);
+		sourcePool(BuiltInLootTables.NETHER_BRIDGE, 20, RuneSources.NETHER_FORTRESS);
+		sourcePool(BuiltInLootTables.END_CITY_TREASURE, 20, RuneSources.END_CITY);
+		sourcePool(BuiltInLootTables.RUINED_PORTAL, 15, RuneSources.RUINED_PORTAL);
+		SOURCE_DIGS.put(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_COMMON, new SourcePool(8, RuneSources.TRAIL_RUINS));
+	}
+
+	/** Ocean monuments have no chests: their Elder Guardians carry the monument's runes (chance out of 100). */
+	private static final Map<EntityType<?>, SourcePool> SOURCE_GUARDIANS = Map.of(
+		EntityTypes.ELDER_GUARDIAN, new SourcePool(50, RuneSources.OCEAN_MONUMENT)
+	);
+
+	/** A chance in 100 that a slain Runebound Adept's Cord gives up a rune of the world. */
+	public static final int ADEPT_FIND_CHANCE = 8;
+
+	/**
+	 * One rune found at {@code source} (a {@link RuneSources} id, e.g. {@code ember_sanctum} or
+	 * {@code starfall}), picked by tier like a chest picks, or an empty stack for an unknown source.
+	 * For features that hand out their own runes: a dungeon vault, a boss, a world event.
+	 */
+	public static ItemStack foundRune(String source, net.minecraft.util.RandomSource random) {
+		List<RuneDef> runes = RuneSources.forSource(source);
+		if (runes.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+		int total = runes.stream().mapToInt(r -> tierWeight(r.tier())).sum();
+		int roll = random.nextInt(total);
+		for (RuneDef rune : runes) {
+			roll -= tierWeight(rune.tier());
+			if (roll < 0) {
+				return RuneItem.stack(rune);
+			}
+		}
+		return RuneItem.stack(runes.getLast());
+	}
+
+	/** A loot pool of one rune found at {@code source} (tier-weighted), rolled {@code chance} times in 100. */
+	public static LootPool.Builder foundRunePool(String source, int chance) {
+		LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
+		List<RuneDef> runes = RuneSources.forSource(source);
+		int total = chance * 10;
+		int weights = Math.max(1, runes.stream().mapToInt(r -> tierWeight(r.tier())).sum());
+		for (RuneDef rune : runes) {
+			builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
+		}
+		if (chance < 100) {
+			builder.add(EmptyLootItem.emptyItem().setWeight(Math.max(1, (100 - chance) * 10)));
+		}
+		return builder;
+	}
+
 	/** Mob drops: chance out of 100, and the rune. Bosses always drop their first. */
 	private static final Map<EntityType<?>, List<Map.Entry<Integer, RuneDef>>> MOB_DROPS = Map.ofEntries(
 		Map.entry(EntityTypes.CREEPER, List.of(Map.entry(1, Runes.EXPLODE))),
@@ -117,6 +197,8 @@ public final class WildercordLoot {
 	public static void init() {
 		Map<ResourceKey<LootTable>, List<Map.Entry<Integer, RuneDef>>> mobTables = new HashMap<>();
 		MOB_DROPS.forEach((type, drop) -> type.getDefaultLootTable().ifPresent(key -> mobTables.put(key, drop)));
+		Map<ResourceKey<LootTable>, SourcePool> guardianTables = new HashMap<>();
+		SOURCE_GUARDIANS.forEach((type, pool) -> type.getDefaultLootTable().ifPresent(key -> guardianTables.put(key, pool)));
 
 		LootTableEvents.MODIFY.register((key, table, source, registries) -> {
 			if (!source.isBuiltin()) {
@@ -167,6 +249,25 @@ public final class WildercordLoot {
 				if (odds > 0) {
 					table.withPool(chance(odds, runeEntry(drop.getValue())));
 				}
+			}
+			// The runes of the world: found only in these places.
+			for (SourcePool sourcePool : SOURCE_POOLS.getOrDefault(key, List.of())) {
+				table.withPool(foundRunePool(sourcePool.source().id(), sourcePool.chance()));
+			}
+			SourcePool guardian = guardianTables.get(key);
+			if (guardian != null) {
+				table.withPool(foundRunePool(guardian.source().id(), guardian.chance()));
+			}
+			SourcePool dug = SOURCE_DIGS.get(key);
+			if (dug != null) {
+				int total = Math.max(1, Math.round(12.0F * dug.chance() / (100 - dug.chance())));
+				List<RuneDef> runes = dug.source().runes();
+				int weights = runes.stream().mapToInt(r -> tierWeight(r.tier())).sum();
+				table.modifyPools(builder -> {
+					for (RuneDef rune : runes) {
+						builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
+					}
+				});
 			}
 		});
 
