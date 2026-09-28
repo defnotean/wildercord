@@ -287,22 +287,23 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 			Mob husk = husk(level, 0, 4);
 			husk.addEffect(new MobEffectInstance(MobEffects.SPEED, 1200, 1));
 			husk.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 200, 0));
-			husk.addEffect(new MobEffectInstance(MobEffects.REGENERATION, MobEffectInstance.INFINITE_DURATION, 0));
+			// Resistance, not Regeneration, for the endless one: a husk is undead and can't hold Regeneration at all.
+			husk.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, MobEffectInstance.INFINITE_DURATION, 0));
 			husk.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 400, 0));
 			touch(player, Runes.TIMESTEAL, husk);
-			if (husk.hasEffect(MobEffects.SPEED) || husk.hasEffect(MobEffects.REGENERATION)) {
-				return "the husk's Speed II and endless Regeneration should be taken (it has " + husk.getActiveEffectsMap().keySet() + ")";
+			if (husk.hasEffect(MobEffects.SPEED) || husk.hasEffect(MobEffects.RESISTANCE)) {
+				return "the husk's Speed II and endless Resistance should be taken (it has " + husk.getActiveEffectsMap().keySet() + ")";
 			}
 			if (!husk.hasEffect(MobEffects.STRENGTH) || !husk.hasEffect(MobEffects.SLOWNESS)) {
 				return "only two should be taken, and never a harmful one (it has " + husk.getActiveEffectsMap().keySet() + ")";
 			}
 			MobEffectInstance speed = player.getEffect(MobEffects.SPEED);
-			MobEffectInstance regen = player.getEffect(MobEffects.REGENERATION);
+			MobEffectInstance endless = player.getEffect(MobEffects.RESISTANCE);
 			if (speed == null || speed.getAmplifier() != 1 || speed.getDuration() > 600 || speed.getDuration() < 590) {
 				return "the caster should get Speed II for 30 seconds, the most it may take of 60 (has " + speed + ")";
 			}
-			if (regen == null || regen.isInfiniteDuration() || regen.getDuration() > 600 || regen.getDuration() < 590) {
-				return "an endless Regeneration should come across as 30 seconds (has " + regen + ")";
+			if (endless == null || endless.isInfiniteDuration() || endless.getDuration() > 600 || endless.getDuration() < 590) {
+				return "an endless Resistance should come across as 30 seconds (has " + endless + ")";
 			}
 			if (player.hasEffect(MobEffects.STRENGTH) || player.hasEffect(MobEffects.SLOWNESS)) {
 				return "the caster should get only what was taken (has " + player.getActiveEffectsMap().keySet() + ")";

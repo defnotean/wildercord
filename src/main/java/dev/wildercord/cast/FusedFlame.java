@@ -508,10 +508,12 @@ final class FusedFlame {
 				t.igniteForSeconds((float) (3 * duration));
 				return;
 			}
-			Vec3 v = velocity[0].scale(0.72).add(to.scale(0.5 / d));
+			// A mote bursting from its own mark starts at its very centre: no pull until it's out (dividing by
+			// that zero distance would make it NaN and lose it).
+			Vec3 v = d < 1.0E-3 ? velocity[0] : velocity[0].scale(0.72).add(to.scale(0.5 / d));
 			// Close in, it stops curving and flies straight at its mark: curving alone, a mote that burst from
 			// its own mark circles it about a block and a half out and never lands.
-			if (age[0] >= 6 && d < 3.0) {
+			if (age[0] >= 6 && d < 3.0 && d >= 1.0E-3) {
 				v = to;
 			}
 			v = v.lengthSqr() < 1.0E-6 ? to.scale(speed / d) : v.normalize().scale(speed);

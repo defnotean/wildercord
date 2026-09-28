@@ -337,6 +337,17 @@ public class WildercordShowcase implements FabricClientGameTest {
 		return husk;
 	}
 
+	/**
+	 * A gallery husk that can still be moved: a mob without AI ignores every push, so throws, pulls and
+	 * slams wouldn't show. It keeps its AI but can't walk.
+	 */
+	private static void standing(Mob husk) {
+		if (husk != null) {
+			husk.setNoAi(false);
+			husk.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED).setBaseValue(0);
+		}
+	}
+
 	/** A still wolf tamed by {@code owner} (so an ally), wounded to half health so a heal shows, tagged for clearing. */
 	private static void wolf(ServerPlayer owner, Vec3 at, float yaw) {
 		net.minecraft.world.entity.animal.wolf.Wolf wolf = EntityTypes.WOLF.create(owner.level(), EntitySpawnReason.COMMAND);
@@ -537,9 +548,9 @@ public class WildercordShowcase implements FabricClientGameTest {
 						wolf(player, lane.add(-1.8, 0, 6.6), 180);
 						wolf(player, lane.add(1.8, 0, 7.2), 180);
 					} else if (!self) {
-						husk(level, lane.add(0, 0, 6), 180);
-						husk(level, lane.add(-1.8, 0, 6.6), 180);
-						husk(level, lane.add(1.8, 0, 7.2), 180);
+						standing(husk(level, lane.add(0, 0, 6), 180));
+						standing(husk(level, lane.add(-1.8, 0, 6.6), 180));
+						standing(husk(level, lane.add(1.8, 0, 7.2), 180));
 					} else if (helpful) {
 						wolf(player, lane.add(1.6, 0, 1.2), 200);
 					}
