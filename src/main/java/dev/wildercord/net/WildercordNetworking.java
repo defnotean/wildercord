@@ -162,12 +162,29 @@ public final class WildercordNetworking {
 		}
 	}
 
+	/** Spellbook rewrites (select, edit, rename, a passive's switch): a burst of 20, then 10 a second. */
+	private static final PacketThrottle SPELLBOOK = new PacketThrottle(20, 2);
+
+	/** Whether this spellbook-rewriting packet may be handled: a flood past the allowance is dropped. */
+	private static boolean allowed(ServerPlayNetworking.Context context) {
+		return SPELLBOOK.allow(context.player().getUUID(), context.server().getTickCount());
+	}
+
 	public static void init() {
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SPELLBOOK.forget(handler.player.getUUID()));
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> SPELLBOOK.clear());
 		PayloadTypeRegistry.clientboundPlay().register(ScreenFx.TYPE, ScreenFx.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EditPassive.TYPE, EditPassive.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TogglePassive.TYPE, TogglePassive.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(TogglePassive.TYPE, (payload, context) -> SpellCaster.togglePassive(context.player(), payload.slot()));
+		ServerPlayNetworking.registerGlobalReceiver(TogglePassive.TYPE, (payload, context) -> {
+			if (allowed(context)) {
+				SpellCaster.togglePassive(context.player(), payload.slot());
+			}
+		});
 		ServerPlayNetworking.registerGlobalReceiver(EditPassive.TYPE, (payload, context) -> {
+			if (!allowed(context)) {
+				return;
+			}
 			net.minecraft.network.chat.Component problem = SpellCaster.editPassive(context.player(), payload.slot(), payload.runes());
 			if (problem != null) {
 				context.player().sendOverlayMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED));
@@ -177,16 +194,27 @@ public final class WildercordNetworking {
 		PayloadTypeRegistry.serverboundPlay().register(SelectSpell.TYPE, SelectSpell.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EditSpell.TYPE, EditSpell.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(CastSpell.TYPE, (payload, context) -> SpellCaster.cast(context.player(), payload.spell()));
-		ServerPlayNetworking.registerGlobalReceiver(SelectSpell.TYPE, (payload, context) -> SpellCaster.select(context.player(), payload.spell()));
+		ServerPlayNetworking.registerGlobalReceiver(SelectSpell.TYPE, (payload, context) -> {
+			if (allowed(context)) {
+				SpellCaster.select(context.player(), payload.spell());
+			}
+		});
 		PayloadTypeRegistry.serverboundPlay().register(ChargeSpell.TYPE, ChargeSpell.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(RenameSpell.TYPE, RenameSpell.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(InscribeScroll.TYPE, InscribeScroll.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Discovery.TYPE, Discovery.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(LeySeed.TYPE, LeySeed.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(ChargeSpell.TYPE, (payload, context) -> dev.wildercord.cast.Charging.request(context.player(), payload.spell(), payload.start()));
-		ServerPlayNetworking.registerGlobalReceiver(RenameSpell.TYPE, (payload, context) -> SpellCaster.rename(context.player(), payload.spell(), payload.name()));
+		ServerPlayNetworking.registerGlobalReceiver(RenameSpell.TYPE, (payload, context) -> {
+			if (allowed(context)) {
+				SpellCaster.rename(context.player(), payload.spell(), payload.name());
+			}
+		});
 		ServerPlayNetworking.registerGlobalReceiver(InscribeScroll.TYPE, (payload, context) -> dev.wildercord.content.SpellScrollItem.inscribe(context.player(), payload.spell()));
 		ServerPlayNetworking.registerGlobalReceiver(EditSpell.TYPE, (payload, context) -> {
+			if (!allowed(context)) {
+				return;
+			}
 			net.minecraft.network.chat.Component problem = SpellCaster.edit(context.player(), payload.spell(), payload.runes());
 			if (problem != null) {
 				context.player().sendOverlayMessage(problem.copy().withStyle(net.minecraft.ChatFormatting.RED));

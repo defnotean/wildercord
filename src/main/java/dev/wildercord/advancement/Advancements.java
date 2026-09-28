@@ -42,7 +42,8 @@ public final class Advancements {
 	public static void sync(ServerPlayer player) {
 		grimoire(player);
 		circles(player);
-		spellbook(player);
+		runesKnown(player);
+		cord(player);
 	}
 
 	/** The Grimoire gained an entry (a feat, a reaction, a secret or a riddle). */
@@ -57,9 +58,13 @@ public final class Advancements {
 		WildercordTriggers.HEART_CIRCLE.trigger(player, Heart.circles(player));
 	}
 
-	/** The spellbook or the worn Cord changed. */
-	public static void spellbook(ServerPlayer player) {
-		WildercordTriggers.RUNES_KNOWN.trigger(player, Spellbooks.get(player).learned());
+	/** The runes a player knows changed (not just a spell edited: see {@link Spellbooks#set}). */
+	public static void runesKnown(ServerPlayer player) {
+		WildercordTriggers.RUNES_KNOWN.trigger(player, Spellbooks.get(player).learned(), Heart.innate(player));
+	}
+
+	/** The worn Cord changed. */
+	public static void cord(ServerPlayer player) {
 		WildercordTriggers.CORD.trigger(player, Spellbooks.tier(player));
 	}
 

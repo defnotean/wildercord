@@ -81,8 +81,8 @@ public final class Heart {
 	public static int progress(Player player, Circles.Requirement requirement) {
 		CordTier tier = Spellbooks.tier(player);
 		int have = switch (requirement.need()) {
-			// Knots are spells, not runes: they don't count toward knowing runes.
-			case RUNES -> (int) Spellbooks.get(player).learned().stream().filter(id -> !dev.wildercord.spell.Knots.isKnot(id)).count();
+			// Knots are spells, not runes, and a missing add-on's runes are silent: neither counts (as for the advancements).
+			case RUNES -> dev.wildercord.spell.Runes.countKnown(Spellbooks.get(player).learned());
 			case CORD -> tier == null ? -1 : tier.ordinal();
 			case KILLS -> spellKills(player);
 			case BOSS -> bossSlain(player) ? 1 : 0;
@@ -141,13 +141,35 @@ public final class Heart {
 	}
 
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled) {
-		// Under a mana storm spells cost less (see cast.events.ManaStorm); casting gear and the server's config are their own factors.
-		return (int) Math.ceil(compiled.cost() * bonuses(player).cost() * dev.wildercord.cast.events.ManaStorm.costFactor(player)
-			* gearCost(player, compiled) * serverCost(player) - 1e-9);
+		return manaCost(player, compiled, 1.0);
+	}
+
+	/** @param factor one more factor on the price, e.g. a secret spell's power */
+	public static int manaCost(Player player, SpellCompiler.Compiled compiled, double factor) {
+		return roundCost(rawCost(player, compiled) * factor);
 	}
 
 	public static int healthCost(Player player, SpellCompiler.Compiled compiled) {
-		return dev.wildercord.spell.SpellNumbers.healthCost(compiled.cost() * bonuses(player).cost() * gearCost(player, compiled) * serverCost(player));
+		return healthCost(player, compiled, 1.0);
+	}
+
+	/** Blood Price: the same mana price (every factor the same), paid in health. */
+	public static int healthCost(Player player, SpellCompiler.Compiled compiled, double factor) {
+		return dev.wildercord.spell.SpellNumbers.healthCost(rawCost(player, compiled) * factor);
+	}
+
+	/**
+	 * A spell's price before rounding. Under a mana storm spells cost less (see cast.events.ManaStorm);
+	 * casting gear and the server's config are their own factors. Rounded once, at the very end.
+	 */
+	private static double rawCost(Player player, SpellCompiler.Compiled compiled) {
+		return compiled.cost() * bonuses(player).cost() * dev.wildercord.cast.events.ManaStorm.costFactor(player)
+			* gearCost(player, compiled) * serverCost(player);
+	}
+
+	/** Rounds a price up to whole mana (a hair's float error never adds one). */
+	public static int roundCost(double cost) {
+		return (int) Math.ceil(cost - 1e-9);
 	}
 
 	/** Casting gear in hand (a staff of the spell's element, a Focus of Thrift): its own factor on a spell's cost. */

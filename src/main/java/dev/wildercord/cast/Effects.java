@@ -169,7 +169,8 @@ public final class Effects {
 		// Self always means you: movement effects move you even though they are "harmful" to others.
 		List<LivingEntity> moved = hit.self() ? List.of(caster) : harmed;
 
-		switch (rune.path()) {
+		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
+		switch (builtIn(rune) ? rune.path() : "") {
 			case "feather_fall" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, ticks(12, duration), 0, false, true));
 				t.resetFallDistance();
@@ -538,6 +539,11 @@ public final class Effects {
 	}
 
 	// ------------------------------------------------------------------ helpers
+
+	/** Whether a rune is one of Wildercord's own, run by name here; an add-on's does only what it registered. */
+	static boolean builtIn(RuneDef rune) {
+		return rune.id().startsWith("wildercord:");
+	}
 
 	private static List<LivingEntity> filter(List<Entity> entities, Predicate<Entity> test) {
 		List<LivingEntity> out = new ArrayList<>();

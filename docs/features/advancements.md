@@ -47,12 +47,12 @@ Off the 1st Circle: Awakening (innate rune, feat, 25 XP), then Mirrorfrost (*hid
 | Lettered | Know 10 runes | 10 XP |
 | Well Read (*goal*) | Know 50 runes | 50 XP |
 | Walking Codex (*goal*) | Know 100 runes | 100 XP, Blank Runes |
-| **Every Word** (challenge) | Know every rune but the innate ones (add-ons' included) | 500 XP, Mana Crystals |
+| **Every Word** (challenge) | Know every rune you can find or make (add-ons' and fused ones included) and your own innate one; never the other innate runes | 500 XP, Mana Crystals |
 | Shatter, Conduct, Wildfire, Implode, Collapse | Set off that reaction (each off Lettered) | 15 XP each |
 | Marginalia | Read a riddle (a Torn Page) | 15 XP |
 | Hidden Words (*goal*, *hidden*) | Find a secret spell | 50 XP |
 | **Nothing Left Unsaid** (challenge, *hidden*) | Find every secret spell | 300 XP, Mana Crystals |
-| **Every Page Filled** (challenge, *hidden*) | Every feat, reaction and secret in the Grimoire | 500 XP, Mana Crystals, Blank Runes |
+| **Every Page Filled** (challenge, *hidden*) | Every reaction and secret in the Grimoire, and every feat but Mirrorfrost (only its innate rune earns it) and the ones that need other casters (Unison, Domain Clash, Chorus) | 500 XP, Mana Crystals, Blank Runes |
 
 ### The world (from the root)
 | Advancement | Needs | Reward |
@@ -78,9 +78,9 @@ The mod registers six criteria (`advancement/WildercordTriggers.java`):
 | Criterion | Conditions | Met when |
 |---|---|---|
 | `wildercord:feat` | `feat` | the Grimoire holds `feat:<id>` |
-| `wildercord:grimoire` | `entry`, or `prefix` + `count`, or `prefix` + `all` | the Grimoire holds that entry, that many with the prefix, or all of them |
+| `wildercord:grimoire` | `entry`, or `prefix` + `count`, or `prefix` + `all` | the Grimoire holds that entry, that many with the prefix, or all of them (bar the innate-only and multiplayer-only feats) |
 | `wildercord:heart_circle` | `level` | that many circles formed, or more |
-| `wildercord:runes_known` | `count`, or `all` | that many runes known, or every non-innate rune |
+| `wildercord:runes_known` | `count`, or `all` | that many runes known (Knots and runes of add-ons that aren't loaded don't count, as for the Heart Circles), or every rune you can find or make and your own innate one |
 | `wildercord:cord` | `tier` | wearing that Cord or a better one |
 | `wildercord:moment` | `moment` | just happened: `cast`, `long_cast`, `passive`, `glyph`, `runebound_adept` |
 

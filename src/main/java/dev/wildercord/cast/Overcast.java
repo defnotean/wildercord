@@ -41,7 +41,8 @@ public final class Overcast {
 
 	/**
 	 * Called when a spell costs more than the mana there is. The first press explains; a second
-	 * press of the same spell soon after overcasts. Returns true if the cast should go ahead.
+	 * press of the same spell soon after overcasts. Returns true if the cast should go ahead; the
+	 * caller then pays with {@link #crack(ServerPlayer)}.
 	 */
 	public static boolean confirm(ServerPlayer player, int spell, int mana, int cost) {
 		long now = player.level().getGameTime();
@@ -70,8 +71,15 @@ public final class Overcast {
 			return false;
 		}
 		PROMPTS.remove(player.getUUID());
-		crack(player, active);
 		return true;
+	}
+
+	/** Pays for a confirmed overcast (after add-ons had their say): the outermost working circle cracks. */
+	public static void crack(ServerPlayer player) {
+		int active = Heart.active(player);
+		if (active > 0) {
+			crack(player, active);
+		}
 	}
 
 	/** Cracks the outermost working circle. */

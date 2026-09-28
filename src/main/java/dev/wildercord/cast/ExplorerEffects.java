@@ -71,7 +71,7 @@ public final class ExplorerEffects {
 		ServerLevel level = cast.level;
 		LivingEntity caster = cast.caster;
 		double radius = SpellNumbers.effectRadius(node);
-		switch (rune.path()) {
+		switch (Effects.builtIn(rune) ? rune.path() : "") {
 			// ---- Vanilla structures
 			case "echolocate" -> echolocate(cast, hit, harmed, 16.0 * radius, duration);
 			case "resonant_shriek" -> harmed.forEach(t -> resonantShriek(cast, t, power, duration));

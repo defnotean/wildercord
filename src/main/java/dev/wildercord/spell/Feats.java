@@ -140,10 +140,21 @@ public final class Feats {
 		return List.copyOf(keys);
 	}
 
-	/** Whether a Grimoire holds every entry with this prefix ({@code ""}: the whole Grimoire). */
+	/**
+	 * Feats a full Grimoire doesn't need: Mirrorfrost comes only with that innate rune (and innate runes
+	 * are handed out at random), and Unison, Domain Clash and Chorus need other casters.
+	 */
+	public static final java.util.Set<String> OPTIONAL = java.util.Set.of(MIRROR, UNISON, CLASH, CHORUS);
+
+	/** Whether a full Grimoire needs this entry: every one but the {@link #OPTIONAL} feats. */
+	public static boolean required(String key) {
+		return !(key.startsWith("feat:") && OPTIONAL.contains(key.substring("feat:".length())));
+	}
+
+	/** Whether a Grimoire holds every entry with this prefix ({@code ""}: the whole Grimoire), bar the {@link #OPTIONAL} feats. */
 	public static boolean complete(java.util.Collection<String> entries, String prefix) {
 		for (String key : everyEntry()) {
-			if (key.startsWith(prefix) && !entries.contains(key)) {
+			if (key.startsWith(prefix) && required(key) && !entries.contains(key)) {
 				return false;
 			}
 		}

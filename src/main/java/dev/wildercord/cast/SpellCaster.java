@@ -91,6 +91,16 @@ public final class SpellCaster {
 			fail(player, locked(spell));
 			return;
 		}
+		long now = player.level().getGameTime();
+		long readyAt = Spellbooks.readyAt(player, spell);
+		// A wild surge's Free Recast: this one costs nothing and waits for no cooldown.
+		boolean free = WildSurge.freeRecast(player, now);
+		// The cooldown first: a press while it runs costs the server nothing (no compiling, no secrets).
+		if (now < readyAt && !free) {
+			Rhythm.early(player, now);
+			fail(player, Component.translatable("message.wildercord.cooldown", String.format(java.util.Locale.ROOT, "%.1f", (readyAt - now) / 20.0)));
+			return;
+		}
 		List<RuneDef> runes = activeRunes(book, spell, tier);
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (runes.isEmpty() || compiled.isEmpty()) {
@@ -98,22 +108,34 @@ public final class SpellCaster {
 			return;
 		}
 		Optional<Secrets.Secret> secret = Secrets.match(runes);
-		long now = player.level().getGameTime();
-		long readyAt = Spellbooks.readyAt(player, spell);
-		// A wild surge's Free Recast: this one costs nothing and waits for no cooldown.
-		boolean free = WildSurge.freeRecast(player, now);
-		if (now < readyAt && !free) {
-			Rhythm.early(player, now);
-			fail(player, Component.translatable("message.wildercord.cooldown", String.format(java.util.Locale.ROOT, "%.1f", (readyAt - now) / 20.0)));
+		double secretPower = secret.map(Secrets.Secret::power).orElse(1.0);
+		// What it costs, and whether it can be paid, before anything is spent.
+		int blood = 0;
+		int cost = 0;
+		boolean overcast = false;
+		float mana = Spellbooks.mana(player);
+		if (!free && compiled.paysInHealth()) {
+			// Blood Price: paid in health, and never enough to kill you.
+			blood = Heart.healthCost(player, compiled, secretPower);
+			if (!player.isCreative() && player.getHealth() <= blood) {
+				fail(player, Component.translatable("message.wildercord.no_health", blood));
+				return;
+			}
+		} else if (!free) {
+			cost = Heart.manaCost(player, compiled, secretPower);
+			if (!player.isCreative() && mana < cost) {
+				// Not enough: a second press within two seconds overcasts, cracking a circle to pay.
+				if (!Overcast.confirm(player, spell, (int) mana, cost)) {
+					return;
+				}
+				overcast = true;
+			}
+		}
+		// Add-ons may stop a cast here, before anything is spent (once per cast: an overcast's first press never gets this far).
+		if (!dev.wildercord.api.WildercordEvents.BEFORE_CAST.invoker().allow(player, spell, List.copyOf(runes), cost)) {
 			return;
 		}
-		// Add-ons may stop a cast here, before anything is spent.
-		int asked = compiled.paysInHealth() ? 0 : (int) Math.ceil(Heart.manaCost(player, compiled) * secret.map(Secrets.Secret::power).orElse(1.0) - 1e-9);
-		if (!dev.wildercord.api.WildercordEvents.BEFORE_CAST.invoker().allow(player, spell, List.copyOf(runes), asked)) {
-			return;
-		}
-		float manaNow = Spellbooks.mana(player);
-		boolean overflow = manaNow >= Mana.max(player) - 0.5F;
+		boolean overflow = mana >= Mana.max(player) - 0.5F;
 		Heart.Bonuses bonuses = Heart.bonuses(player, overflow);
 		int spent;
 		// Set when this cast is an overcast: the mana there was and what it cost, for wild magic.
@@ -123,32 +145,21 @@ public final class SpellCaster {
 			spent = 0;
 			WildSurge.useFreeRecast(player);
 		} else if (compiled.paysInHealth()) {
-			// Blood Price: paid in health, and never enough to kill you.
-			int blood = Heart.healthCost(player, compiled);
 			spent = blood * 5;
-			if (!player.isCreative() && player.getHealth() <= blood) {
-				fail(player, Component.translatable("message.wildercord.no_health", blood));
-				return;
-			}
 			if (!player.isCreative()) {
 				player.setHealth(player.getHealth() - blood);
 				Fx.sound(player.level(), player.position(), SoundEvents.PLAYER_HURT, 0.6F, 0.7F);
 				Vfx.emit(player.level(), net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, player.getBoundingBox().getCenter(), 4, 0.3, 0.1);
 			}
+		} else if (overcast) {
+			Overcast.crack(player);
+			spent = (int) mana;
+			overcastMana = mana;
+			overcastCost = cost;
+			Spellbooks.setMana(player, 0);
 		} else {
-			int cost = (int) Math.ceil(Heart.manaCost(player, compiled) * secret.map(Secrets.Secret::power).orElse(1.0) - 1e-9);
 			spent = cost;
-			float mana = Spellbooks.mana(player);
-			if (!player.isCreative() && mana < cost) {
-				// Not enough: a second press within two seconds overcasts, cracking a circle to pay.
-				if (!Overcast.confirm(player, spell, (int) mana, cost)) {
-					return;
-				}
-				spent = (int) mana;
-				overcastMana = mana;
-				overcastCost = cost;
-				Spellbooks.setMana(player, 0);
-			} else if (!player.isCreative()) {
+			if (!player.isCreative()) {
 				Spellbooks.setMana(player, mana - cost);
 			}
 		}
@@ -180,7 +191,7 @@ public final class SpellCaster {
 		dev.wildercord.cast.events.EventRules.Surge surge = dev.wildercord.cast.events.ManaStorm.surge(player);
 		bonuses = bonuses.withPower(bonuses.power() * dev.wildercord.cast.events.EventRules.surgePower(surge));
 		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
-		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear);
+		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secretPower).gear(gear);
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
 		}
@@ -198,9 +209,10 @@ public final class SpellCaster {
 			release.accept(cast);
 		}
 		dev.wildercord.runesmith.Contracts.onCast(player, runes);
-		Heart.Bonuses surged = bonuses;
+		// The copies below go off for the same payment: they share its Siphon cap and once-per-cast
+		// things (a second Imbue would store the spell twice for one price), and its casting gear.
 		dev.wildercord.cast.events.ManaStorm.afterCast(player, surge, runes, () -> {
-			Cast echo = new Cast(player, castNumber, surged, false, null, info);
+			Cast echo = cast.again(1.0);
 			if (secret.isPresent()) {
 				SecretSpells.cast(echo, secret.get());
 			} else {
@@ -209,11 +221,10 @@ public final class SpellCaster {
 		});
 		// Twin Star: the next spell goes off a second time, a moment later.
 		if (Innates.consumeTwin(player)) {
-			Heart.Bonuses twin = bonuses;
 			Scheduler.later(8, () -> {
 				if (!player.isRemoved() && player.isAlive()) {
 					TechniqueVfx.twinStar(player.level(), player);
-					Cast again = new Cast(player, castNumber, twin, false, null, info).gear(gear);
+					Cast again = cast.again(1.0);
 					if (secret.isPresent()) {
 						SecretSpells.cast(again, secret.get());
 					} else {
@@ -224,11 +235,10 @@ public final class SpellCaster {
 		}
 		// Focus of Echoes: now and then the spell goes off again, a moment later, at no cost.
 		if (dev.wildercord.gear.Gear.echoes(player, gear)) {
-			Heart.Bonuses echoed = bonuses;
 			Scheduler.later(10, () -> {
 				if (!player.isRemoved() && player.isAlive()) {
 					HeartCircles.onCast(player);
-					Cast again = new Cast(player, castNumber, echoed, false, null, info).gear(gear);
+					Cast again = cast.again(1.0);
 					if (secret.isPresent()) {
 						SecretSpells.cast(again, secret.get());
 					} else {
@@ -343,11 +353,13 @@ public final class SpellCaster {
 				problem = Component.translatable("message.wildercord.sockets_full", Component.translatable(tier.itemKey()), tier.sockets);
 				break;
 			}
-			boolean alreadyThreaded = old.contains(id);
-			Optional<RuneDef> rune = Runes.get(id);
-			if (alreadyThreaded) {
+			if (old.contains(id)) {
 				kept.add(id);
-			} else if (rune.isEmpty() || !book.knows(id)) {
+				continue;
+			}
+			// Known first: only then is the id looked up (a Knot's id is a whole spell to decode).
+			Optional<RuneDef> rune = book.knows(id) ? Runes.get(id) : Optional.empty();
+			if (rune.isEmpty()) {
 				problem = Component.translatable("message.wildercord.not_learned", id);
 			} else if (!tier.holds(rune.get().tier())) {
 				problem = Component.translatable("message.wildercord.too_strong", RuneItem.runeName(rune.get()),
@@ -386,10 +398,12 @@ public final class SpellCaster {
 				problem = Component.translatable("message.wildercord.passive_full", PassiveCaster.sockets(tier));
 				break;
 			}
-			Optional<RuneDef> rune = Runes.get(id);
 			if (old.contains(id)) {
 				kept.add(id);
-			} else if (rune.isEmpty() || !book.knows(id)) {
+				continue;
+			}
+			Optional<RuneDef> rune = book.knows(id) ? Runes.get(id) : Optional.empty();
+			if (rune.isEmpty()) {
 				problem = Component.translatable("message.wildercord.not_learned", id);
 			} else if (!tier.holds(rune.get().tier())) {
 				problem = Component.translatable("message.wildercord.too_strong", RuneItem.runeName(rune.get()),
