@@ -208,6 +208,9 @@ GENERIC = [
     ["#######", "...#...", "...#...", "...#...", "...#...", "...#...", "#######"],   # I-beam
 ]
 VARIANTS = ["plain", "underbar", "dots", "overdot", "sidebars"]
+# More ways to mark an element's own glyph, for an element with more runes than VARIANTS gives it
+# designs: handed out only after those are all taken, so no existing emblem moves.
+EXTRA_VARIANTS = ["overbar", "underdots", "sidedots", "bars", "overdots"]
 DECOR = ["none", "ticks2", "ticks4", "corners"]
 
 
@@ -258,6 +261,19 @@ def mark_tile(family, glyph, variant, decor, heavy):
         for y in range(6, 10):
             lit.add((2, y))
             lit.add((13, y))
+    elif variant == "overbar":
+        for x in range(5, 11):
+            lit.add((x, 2))
+    elif variant == "underdots":
+        lit.update({(5, 12), (7, 12), (8, 12), (10, 12)})
+    elif variant == "sidedots":
+        lit.update({(2, 7), (2, 8), (13, 7), (13, 8)})
+    elif variant == "bars":
+        for x in range(5, 11):
+            lit.add((x, 2))
+            lit.add((x, 12))
+    elif variant == "overdots":
+        lit.update({(5, 2), (10, 2)})
     return lit
 
 
@@ -319,10 +335,14 @@ def designs(runes):
             band_spares, lambda o: band_tile(family, *o)))
         glyphs = [GLYPHS[group]] if group in GLYPHS else GENERIC
         mark_options = [(g, v, e, h) for h in (False, True) for e in DECOR for v in VARIANTS for g in range(len(glyphs))]
-        # Spares: the generic emblems, for an element with more runes than its own emblem has designs.
-        mark_spares = [(g, v, e, h) for g in range(len(GENERIC)) for h in (False, True) for e in DECOR for v in VARIANTS] if group in GLYPHS else []
+        # Spares, for an element with more runes than its own emblem has designs: its own glyph marked
+        # new ways first (so the emblem still says the element), then the generic emblems.
+        mark_spares = []
+        if group in GLYPHS:
+            mark_spares = [(glyphs[0], v, e, h) for h in (False, True) for e in DECOR for v in EXTRA_VARIANTS]
+            mark_spares += [(GENERIC[g], v, e, h) for g in range(len(GENERIC)) for h in (False, True) for e in DECOR for v in VARIANTS]
         marks.update(assign(paths, mark_options, lambda o: mark_tile(family, glyphs[o[0]], o[1], o[2], o[3]), used_marks,
-            mark_spares, lambda o: mark_tile(family, GENERIC[o[0]], o[1], o[2], o[3])))
+            mark_spares, lambda o: mark_tile(family, *o)))
     return bands, marks
 
 
