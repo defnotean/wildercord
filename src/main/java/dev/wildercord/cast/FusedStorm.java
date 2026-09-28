@@ -93,9 +93,14 @@ final class FusedStorm {
 	/** Creatures the wind is carrying (launched by a glyph, thrown up by an updraft): their next fall doesn't hurt, until this game time. */
 	private static final Map<UUID, Long> CUSHIONED = new HashMap<>();
 
-	/** How fast to throw a creature so it lands where the descriptions say. */
-	private static final double RECOIL_SPEED = throwSpeed(RECOIL_THROW);
-	private static final double GLYPH_THROW_SPEED = throwSpeed(GLYPH_THROW);
+	/** How fast to throw a creature so it lands a whole number of blocks away (0 to 6), worked out once. */
+	private static final double[] THROWS = new double[7];
+
+	static {
+		for (int blocks = 1; blocks < THROWS.length; blocks++) {
+			THROWS[blocks] = throwSpeed(blocks);
+		}
+	}
 
 	private record Snap(Vec3 anchor, double[] damage) {}
 
@@ -685,7 +690,7 @@ final class FusedStorm {
 				FusedStormVfx.glyphLaunch(level, feet, t);
 			} else {
 				Vec3 away = Effects.horizontal(t.position().subtract(feet), t.getLookAngle().scale(-1));
-				fling(t, away.scale(GLYPH_THROW_SPEED).add(0, HOP, 0));
+				throwSafely(level, t, away, (int) GLYPH_THROW);
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 				FusedStormVfx.glyphThrow(level, feet, t, away);
 			}
@@ -705,7 +710,7 @@ final class FusedStorm {
 		boolean moves = movable(t) && !Spirits.isBoss(t);
 		Snap pending = RECOILS.get(key);
 		if (moves) {
-			fling(t, away.scale(RECOIL_SPEED).add(0, HOP, 0));
+			throwSafely(level, t, away, (int) RECOIL_THROW);
 			Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 		}
 		if (pending != null) {
@@ -889,6 +894,23 @@ final class FusedStorm {
 	private static void still(LivingEntity t) {
 		Vec3 v = t.getDeltaMovement();
 		setMotion(t, new Vec3(0, Math.min(0, v.y), 0));
+	}
+
+	/**
+	 * Throws a creature {@code blocks} along the ground the way {@code dir} points, or less if that would land it
+	 * somewhere unsafe (in lava or fire, off a drop of more than 3 blocks, over the void, or behind a wall): the
+	 * furthest safe landing it can reach. Nowhere safe at all, and it isn't thrown.
+	 */
+	private static void throwSafely(ServerLevel level, LivingEntity t, Vec3 dir, int blocks) {
+		Vec3 from = t.position();
+		Vec3 middle = from.add(0, t.getBbHeight() * 0.5, 0);
+		for (int d = Math.min(blocks, THROWS.length - 1); d >= 2; d--) {
+			Vec3 feet = landing(level, from.add(dir.scale(d)).add(0, 1.0, 0), 4.0);
+			if (feet != null && feet.y <= from.y + 1.0 && safe(level, t, feet) && clear(level, t, middle, feet.add(0, t.getBbHeight() * 0.5, 0))) {
+				fling(t, dir.scale(THROWS[d]).add(0, HOP, 0));
+				return;
+			}
+		}
 	}
 
 	/** Throws a creature: its motion becomes {@code motion}, less what a mob's knockback resistance takes (as for Push). */
