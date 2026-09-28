@@ -23,7 +23,8 @@ import java.util.Locale;
 
 /**
  * The altar at the heart of a dimension dungeon's arena, like the Archive's lectern: its boss rises
- * from it the first time a player comes near, and it goes quiet afterwards.
+ * from it the first time a player comes near, and it goes quiet once the boss falls (or, if the boss
+ * is lost without falling, re-arms after a while: see {@link DungeonAltarBlockEntity}).
  */
 public class DungeonAltarBlock extends Block implements EntityBlock {
 	/** Which dungeon's altar, and so which boss wakes. */
@@ -47,13 +48,13 @@ public class DungeonAltarBlock extends Block implements EntityBlock {
 			return name().toLowerCase(Locale.ROOT);
 		}
 
-		/** Wakes this altar's boss. */
-		void wake(ServerLevel level, BlockPos pos) {
-			switch (this) {
+		/** Wakes this altar's boss, and returns it (null if it couldn't). */
+		net.minecraft.world.entity.Entity wake(ServerLevel level, BlockPos pos) {
+			return switch (this) {
 				case CINDER -> dev.wildercord.cast.CinderWarden.rise(level, pos);
 				case ASTRAL -> dev.wildercord.cast.StarEater.rise(level, pos);
 				case TIDE -> dev.wildercord.cast.TideScribe.rise(level, pos);
-			}
+			};
 		}
 	}
 
@@ -79,7 +80,7 @@ public class DungeonAltarBlock extends Block implements EntityBlock {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return level.isClientSide() || type != DungeonBlocks.ALTAR_ENTITY || state.getValue(AWAKE) ? null
+		return level.isClientSide() || type != DungeonBlocks.ALTAR_ENTITY ? null
 			: (BlockEntityTicker<T>) (BlockEntityTicker<DungeonAltarBlockEntity>) DungeonAltarBlockEntity::serverTick;
 	}
 

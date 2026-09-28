@@ -107,10 +107,10 @@ public class StarEater extends DungeonBoss {
 	}
 
 	/** Wakes the Star-Eater over its star-altar: the stars in the floor go dark, and it opens its eye. */
-	public static void rise(ServerLevel level, BlockPos altar) {
+	public static StarEater rise(ServerLevel level, BlockPos altar) {
 		StarEater boss = place(level, DungeonEntities.STAR_EATER, altar, 3.0);
 		if (boss == null) {
-			return;
+			return null;
 		}
 		Vec3 at = Vec3.atBottomCenterOf(altar).add(0, 3.5, 0);
 		Sigils.ground(level, Vec3.atBottomCenterOf(altar).add(0, 1.02, 0), COLOR, ACCENT, 6.0F, 80);
@@ -121,6 +121,7 @@ public class StarEater extends DungeonBoss {
 		Fx.sound(level, at, SoundEvents.END_PORTAL_SPAWN, 0.6F, 1.4F);
 		boss.raiseShield(level);
 		boss.announce(level, "message.wildercord.star_eater_wakes", COLOR);
+		return boss;
 	}
 
 	@Override
@@ -188,12 +189,13 @@ public class StarEater extends DungeonBoss {
 	 * A spell its shield stopped (see {@link Shields}): the shield holds, and the spell comes back out
 	 * of it, a moment later, at whoever cast it.
 	 */
-	void reflect(Cast cast) {
+	void reflect(Cast cast, float strength) {
 		if (!(level() instanceof ServerLevel level) || !isAlive() || cast.caster == this) {
 			return;
 		}
-		// The block spent the Shield: its shard shield doesn't spend.
-		Shields.give(this, STRENGTH[phase], SHIELD_TICKS, SHIELD_RUNES);
+		// The block spent the Shield: its shard shield doesn't spend. It holds at the strength it had,
+		// so shards parried into it before still count.
+		Shields.give(this, strength, SHIELD_TICKS, SHIELD_RUNES);
 		LivingEntity back = cast.caster;
 		List<RuneDef> spell = reflected(cast.info.spell());
 		reflections++;
@@ -505,6 +507,7 @@ public class StarEater extends DungeonBoss {
 			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.SPARK, Runes.HARM) : List.of(Runes.BOLT, Runes.BLIND), phase == 3);
 			level.addFreshEntity(guard);
+			minion(guard);
 			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, spot.add(0, 1, 0), 24, 0.3);
 			Sigils.ground(level, spot, COLOR, ACCENT, 1.2F, 30);
 		}
