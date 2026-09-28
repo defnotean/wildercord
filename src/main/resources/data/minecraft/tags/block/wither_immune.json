@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "wildercord:rune_seal",
-    "wildercord:archive_lectern"
+    "wildercord:archive_lectern",
+    "wildercord:dungeon_altar"
   ]
 }

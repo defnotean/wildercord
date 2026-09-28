@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "awake=false,kind=cinder": {
+      "model": "wildercord:block/dungeon_altar_cinder"
+    },
+    "awake=true,kind=cinder": {
+      "model": "wildercord:block/dungeon_altar_cinder"
+    },
+    "awake=false,kind=astral": {
+      "model": "wildercord:block/dungeon_altar_astral"
+    },
+    "awake=true,kind=astral": {
+      "model": "wildercord:block/dungeon_altar_astral"
+    },
+    "awake=false,kind=tide": {
+      "model": "wildercord:block/dungeon_altar_tide"
+    },
+    "awake=true,kind=tide": {
+      "model": "wildercord:block/dungeon_altar_tide"
+    }
+  }
+}

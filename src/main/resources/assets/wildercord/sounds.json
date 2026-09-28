@@ -423,5 +423,138 @@
     "sounds": [
       "wildercord:altar/altar_knot"
     ]
+  },
+  "boss_phase": {
+    "subtitle": "subtitles.wildercord.boss_phase",
+    "sounds": [
+      {
+        "name": "wildercord:boss/phase",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "boss_rise": {
+    "subtitle": "subtitles.wildercord.boss_rise",
+    "sounds": [
+      {
+        "name": "wildercord:boss/rise",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "warden_ambient": {
+    "subtitle": "subtitles.wildercord.warden_ambient",
+    "sounds": [
+      "wildercord:boss/warden_ambient_1",
+      "wildercord:boss/warden_ambient_2"
+    ]
+  },
+  "warden_hurt": {
+    "subtitle": "subtitles.wildercord.warden_hurt",
+    "sounds": [
+      "wildercord:boss/warden_hurt_1",
+      "wildercord:boss/warden_hurt_2"
+    ]
+  },
+  "warden_death": {
+    "subtitle": "subtitles.wildercord.warden_death",
+    "sounds": [
+      {
+        "name": "wildercord:boss/warden_death",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "warden_slam": {
+    "subtitle": "subtitles.wildercord.warden_slam",
+    "sounds": [
+      "wildercord:boss/warden_slam_1",
+      "wildercord:boss/warden_slam_2"
+    ]
+  },
+  "warden_immune": {
+    "subtitle": "subtitles.wildercord.warden_immune",
+    "sounds": [
+      "wildercord:boss/warden_immune_1",
+      "wildercord:boss/warden_immune_2"
+    ]
+  },
+  "star_eater_ambient": {
+    "subtitle": "subtitles.wildercord.star_eater_ambient",
+    "sounds": [
+      "wildercord:boss/star_eater_ambient_1",
+      "wildercord:boss/star_eater_ambient_2"
+    ]
+  },
+  "star_eater_hurt": {
+    "subtitle": "subtitles.wildercord.star_eater_hurt",
+    "sounds": [
+      "wildercord:boss/star_eater_hurt_1",
+      "wildercord:boss/star_eater_hurt_2"
+    ]
+  },
+  "star_eater_death": {
+    "subtitle": "subtitles.wildercord.star_eater_death",
+    "sounds": [
+      {
+        "name": "wildercord:boss/star_eater_death",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "star_eater_reflect": {
+    "subtitle": "subtitles.wildercord.star_eater_reflect",
+    "sounds": [
+      "wildercord:boss/star_eater_reflect_1",
+      "wildercord:boss/star_eater_reflect_2"
+    ]
+  },
+  "shard_parry": {
+    "subtitle": "subtitles.wildercord.shard_parry",
+    "sounds": [
+      "wildercord:boss/shard_parry_1",
+      "wildercord:boss/shard_parry_2"
+    ]
+  },
+  "tide_scribe_ambient": {
+    "subtitle": "subtitles.wildercord.tide_scribe_ambient",
+    "sounds": [
+      "wildercord:boss/tide_scribe_ambient_1",
+      "wildercord:boss/tide_scribe_ambient_2"
+    ]
+  },
+  "tide_scribe_hurt": {
+    "subtitle": "subtitles.wildercord.tide_scribe_hurt",
+    "sounds": [
+      "wildercord:boss/tide_scribe_hurt_1",
+      "wildercord:boss/tide_scribe_hurt_2"
+    ]
+  },
+  "tide_scribe_death": {
+    "subtitle": "subtitles.wildercord.tide_scribe_death",
+    "sounds": [
+      {
+        "name": "wildercord:boss/tide_scribe_death",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tide_rise": {
+    "subtitle": "subtitles.wildercord.tide_rise",
+    "sounds": [
+      {
+        "name": "wildercord:boss/tide_rise",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "tide_ebb": {
+    "subtitle": "subtitles.wildercord.tide_ebb",
+    "sounds": [
+      {
+        "name": "wildercord:boss/tide_ebb",
+        "attenuation_distance": 40
+      }
+    ]
   }
 }

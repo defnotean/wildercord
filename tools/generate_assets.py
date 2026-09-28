@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 import re
+import sys
 from pathlib import Path
 
 from PIL import Image
@@ -18,6 +19,7 @@ except ImportError:
 
 import sigil_art  # Magic circles and the GUI sprites that came with them.
 import world_art  # Scrolls, pages, the dummy, the Wellstone, Rune Seals, the lectern and the two skins.
+import dungeon_assets  # The dimension dungeons: their bosses' skins, trophies, altar, loot and worldgen.
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "src/main/resources"
@@ -310,6 +312,7 @@ def main():
     runesmith_art.main()
     write_familiar_content()
     write_gear_content()
+    dungeon_assets.main(sys.modules[__name__], runes)
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -582,6 +585,7 @@ def write_lang(runes):
     lang.update(advancement_lang())
     lang.update(familiar_lang())
     lang.update(GEAR_LANG)
+    lang.update(DUNGEON_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -638,7 +642,7 @@ def rune_constants():
 
 def loot_sources():
     found = _loot_sources()
-    # Every Tier IV rune can also come from an Archive: its vault, or the Archivist itself.
+    # Every Tier IV rune can also come from an Archive or a dimension dungeon: their vaults, or their bosses.
     for path in _tier_four_paths():
         found.setdefault(path, []).extend(["Archive vaults", "the Archivist"])
     # The runes of the world: every place RuneSources lists, first (it's where they're really from).
@@ -648,6 +652,12 @@ def loot_sources():
             places = found.setdefault(path, [])
             if text not in places:
                 places.append(text)
+        found.setdefault(path, []).extend(["Archive and dungeon vaults", "the Archivist and dungeon bosses"])
+    # The dimension dungeons' chests hold runes of their elements.
+    for path, places in dungeon_assets.sources(read_runes(), INNATE).items():
+        for place in places:
+            if place not in found.setdefault(path, []):
+                found[path].append(place)
     return found
 
 
@@ -1513,6 +1523,72 @@ def write_familiar_content():
     unlock_advancement("wildercord:wisp_lantern", "minecraft:lantern")
 
 
+# The dimension dungeons (see tools/dungeon_assets.py and docs/features/dungeons.md).
+DUNGEON_LANG = {
+    "block.wildercord.dungeon_altar": "Dungeon Altar",
+    "boss.wildercord.casting": "%s \u00B7 casting %s",
+    "boss.wildercord.status": "%s \u00B7 %s",
+    # The Ember Sanctum and the Cinder Warden
+    "entity.wildercord.cinder_warden": "The Cinder Warden",
+    "item.wildercord.cinder_heart": "Cinder Heart",
+    "item.wildercord.cinder_heart.lore": "Still warm. It beat in the Cinder Warden's chest.",
+    "item.wildercord.cinder_heart.use": "Hold it up: fire can't touch you for 3 minutes (then it rests for 5)",
+    "message.wildercord.cinder_warden_wakes": "The coals stir. The Cinder Warden climbs out of its forge.",
+    "message.wildercord.cinder_warden_phase.2": "The Cinder Warden stokes its forge, and its keepers climb out of the fire.",
+    "message.wildercord.cinder_warden_phase.3": "The Cinder Warden's core roars white-hot. Its keepers return, stronger.",
+    "message.wildercord.cinder_warden_immune": "Its armour turns that aside. Only a reaction breaks through: freeze it, then burn it",
+    "boss.wildercord.shifting.cinder_warden": "%s \u00B7 stoking its forge",
+    "boss.wildercord.cinder_warden_cracked": "cracked open!",
+    # The Astral Observatory and the Star-Eater
+    "entity.wildercord.star_eater": "The Star-Eater",
+    "item.wildercord.astral_lens": "Astral Lens",
+    "item.wildercord.astral_lens.lore": "The Star-Eater grew it round its eye. The dark looks back through it.",
+    "item.wildercord.astral_lens.use": "Hold it up: see in the dark for 3 minutes and fall like starlight for 1 (then it rests for 5)",
+    "message.wildercord.star_eater_wakes": "The stars in the floor go dark. The Star-Eater opens its eye.",
+    "message.wildercord.star_eater_phase.2": "The Star-Eater swallows the light. Its shield grows back stronger.",
+    "message.wildercord.star_eater_phase.3": "The Star-Eater eclipses. Its shield is harder than ever.",
+    "message.wildercord.star_eater_reflects": "Turned back! Its shield stops any spell of %s mana or less: cast one that costs more, or knock its star shards back into it",
+    "message.wildercord.star_eater_open": "The Star-Eater's shield shatters. Strike now!",
+    "boss.wildercord.shifting.star_eater": "%s \u00B7 eclipsing",
+    "boss.wildercord.star_eater_shielded": "shield up (%s mana)",
+    "boss.wildercord.star_eater_open": "shield broken!",
+    "boss.wildercord.star_eater_volley": "loosing star shards",
+    # The Drowned Scriptorium and the Tide Scribe
+    "entity.wildercord.tide_scribe": "The Tide Scribe",
+    "item.wildercord.drowned_quill": "Drowned Quill",
+    "item.wildercord.drowned_quill.lore": "The Tide Scribe's quill. It has never once been dry.",
+    "item.wildercord.drowned_quill.use": "Hold it up: breathe and swim like the drowned for 3 minutes (then it rests for 5)",
+    "message.wildercord.tide_scribe_wakes": "Ink blooms in the water. The Tide Scribe rises from its core.",
+    "message.wildercord.tide_scribe_phase.2": "The Tide Scribe calls the tide, and the drowned answer.",
+    "message.wildercord.tide_scribe_phase.3": "The Tide Scribe writes the deep into the room.",
+    "message.wildercord.tide_scribe_stranded": "The ice closes round the Tide Scribe. It's stranded!",
+    "message.wildercord.tide_rises": "The tide is rising: get up out of the water, or freeze it",
+    "message.wildercord.tide_conducts": "The water carries your storm to everything in it (you too, if you're wading)",
+    "boss.wildercord.shifting.tide_scribe": "%s \u00B7 calling the tide",
+    "boss.wildercord.tide_rising": "the tide is rising",
+    "boss.wildercord.tide_high": "the arena is flooded",
+    "boss.wildercord.tide_ebbing": "the tide is going out",
+    "boss.wildercord.tide_scribe_stranded": "stranded in the ice!",
+    # Sound subtitles
+    "subtitles.wildercord.boss_phase": "A boss gathers its power",
+    "subtitles.wildercord.boss_rise": "A boss wakes",
+    "subtitles.wildercord.warden_ambient": "Cinder Warden rumbles",
+    "subtitles.wildercord.warden_hurt": "Cinder Warden cracks",
+    "subtitles.wildercord.warden_death": "Cinder Warden goes cold",
+    "subtitles.wildercord.warden_slam": "Cinder Warden slams the floor",
+    "subtitles.wildercord.warden_immune": "Spell glances off armour",
+    "subtitles.wildercord.star_eater_ambient": "Star-Eater hums",
+    "subtitles.wildercord.star_eater_hurt": "Star-Eater cracks",
+    "subtitles.wildercord.star_eater_death": "Star-Eater collapses",
+    "subtitles.wildercord.star_eater_reflect": "Spell turned back",
+    "subtitles.wildercord.shard_parry": "Star shard parried",
+    "subtitles.wildercord.tide_scribe_ambient": "Tide Scribe murmurs",
+    "subtitles.wildercord.tide_scribe_hurt": "Tide Scribe hurts",
+    "subtitles.wildercord.tide_scribe_death": "Tide Scribe sinks",
+    "subtitles.wildercord.tide_rise": "The tide rises",
+    "subtitles.wildercord.tide_ebb": "The tide ebbs",
+}
+
 ARCHIVE_LAND = ["#minecraft:is_taiga", "#minecraft:is_jungle", "#minecraft:is_forest", "#minecraft:is_savanna", "#minecraft:is_badlands",
                 "minecraft:plains", "minecraft:sunflower_plains", "minecraft:snowy_plains", "minecraft:desert", "minecraft:meadow",
                 "minecraft:cherry_grove", "minecraft:snowy_taiga", "minecraft:grove"]
@@ -1554,18 +1630,8 @@ def write_found_loot(runes):
     def chance(pool, odds):
         return dict(pool, conditions=[{"condition": "minecraft:random_chance", "chance": odds}])
 
-    for dungeon, extras in (("ember_sanctum", [item_entry("minecraft:blaze_rod", 3, 1, 3), item_entry("minecraft:magma_cream", 3, 1, 4)]),
-                            ("astral_observatory", [item_entry("minecraft:ender_pearl", 3, 1, 3), item_entry("minecraft:amethyst_shard", 3, 2, 6)]),
-                            ("drowned_scriptorium", [item_entry("minecraft:prismarine_crystals", 3, 2, 6), item_entry("minecraft:book", 3, 1, 3)])):
-        write_json(DATA / f"loot_table/chests/{dungeon}_vault.json", {"type": "minecraft:chest", "pools": [
-            found_pool(dungeon),
-            chance(found_pool(dungeon), 0.35),
-            {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 3}, "entries": [
-                item_entry("wildercord:mana_crystal", 3, 1, 2), item_entry("wildercord:torn_page", 3), item_entry("minecraft:diamond", 2, 1, 2),
-                item_entry("wildercord:blank_rune", 3, 2, 4)] + extras},
-        ]})
-    for boss, dungeon in (("cinder_warden", "ember_sanctum"), ("star_eater", "astral_observatory"), ("tide_scribe", "drowned_scriptorium"),
-                          ("riftcaller", "rift")):
+    # The dungeons' vaults and bosses are written by dungeon_assets.py, with these same pools of their own runes.
+    for boss, dungeon in (("riftcaller", "rift"),):
         write_json(DATA / f"loot_table/entities/{boss}.json", {"type": "minecraft:entity", "pools": [
             found_pool(boss),
             chance(found_pool(dungeon), 0.5),
@@ -1717,7 +1783,7 @@ def write_new_content(runes):
     # ---- mining
     write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
-    write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": ["wildercord:rune_seal", "wildercord:archive_lectern"]})
+    write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": ["wildercord:rune_seal", "wildercord:archive_lectern", "wildercord:dungeon_altar"]})
 
     # ---- the Archive in the world
     write_json(DATA / "worldgen/structure/archive.json", {
@@ -1938,6 +2004,9 @@ feat_adv("menagerie", "world/kindred", rune("resonance"), description="Bond with
 feat_adv("upgrade", "discovery/runes_10", rune("amplify"), description="Rank up a rune at the Fusion Altar", branch="altar", xp=20)
 feat_adv("combine", "altar/upgrade", rune("prism"), description="Fuse two effects into a new one at the Fusion Altar", xp=25)
 feat_adv("knot", "altar/combine", rune("chain"), description="Tie a whole spell into one rune", frame="goal", xp=50)
+feat_adv("cinder_warden", "world/archivist", rune("inferno"), description="Defeat the Cinder Warden in its Ember Sanctum", frame="challenge", xp=300)
+feat_adv("star_eater", "world/archivist", rune("eclipse"), description="Defeat the Star-Eater in its Astral Observatory", frame="challenge", xp=300)
+feat_adv("tide_scribe", "world/archivist", rune("tidecall"), description="Defeat the Tide Scribe in its Drowned Scriptorium", frame="challenge", xp=300)
 adv("shields/glyph", "shields/imbue", rune("mine"), "Tripwire", "Have one of your glyphs go off", moment("glyph"), xp=25)
 
 

@@ -16,6 +16,7 @@ always harmonise. Play them at pitch 1 (a little random spread is fine) and they
     sounds/heart/*.ogg                 a Heart Circle forming, and one cracking
     sounds/events/*.ogg                mana storms, falling stars and rifts
     sounds/familiar/*.ogg              wisps drifting, drinking magic, bonding, casting and growing
+    sounds/boss/*.ogg                  the dungeon bosses: their cries, blows and phases, and the tide
     sounds.json                        every event, its variants and its subtitle key
 
 The subtitles' English text lives in generate_assets.py (NEW_LANG), like the rest of en_us.json.
@@ -1174,6 +1175,190 @@ def altar_knot(v, rng):
     bells = mix((0.0, 0.6 * bell(note(A, 0), 1.2, 0.6, 2.0, 1.2)), (0.12, 0.5 * bell(note(D, 1), 1.2, 0.6, 2.0, 1.2)))
     x = mix(0.35 * pull, 0.2 * creak, (0.35, 0.6 * cinch), (0.38, bells))
     return finish(reverb(x, 1.1, 0.25), "effect")
+# ================================================================ the dungeon bosses
+
+
+def boss_phase(v, rng):
+    """A boss gathering itself: a low, straining chord swells, sharpens, and breaks into a boom."""
+    build = 2.2
+    t = timeline(build)
+    strain = 1 + 0.02 * (t / build) ** 2
+    chord = sum(soft_saw(note(*n) * strain * (1 + 0.004 * np.sin(2 * np.pi * (4.5 + i) * t)), harmonics=8)
+                for i, n in enumerate(((D, -1), (A, -1), (D, 0), (E, 0))))
+    chord = lowpass(chord, 2400) * env(build, (0, 0), (build - 0.15, 1), (build, 0.5)) ** 2
+    rush = moving_band(build, [(0, 400), (build, 2400)], 1.0, rng) * env(build, (0, 0), (build, 1)) ** 3
+    boom = thump(85, 34, 1.4, 0.4, 2.2, knock=0.3)
+    crash = norm(bandpass(noise(1.2, rng), 250, 2800)) * decay(1.2, 0.3, 0.004)
+    x = mix(0.6 * norm(chord), 0.4 * rush, (build, 0.35 * boom), (build, 0.6 * crash))
+    return finish(reverb(x, 2.2, 0.35, damp=3500), "grand")
+
+
+def boss_rise(v, rng):
+    """A boss waking: a deep toll, a rising swell and a crown of low bells."""
+    dur = 3.2
+    toll = clock_bell(note(D, -1), dur, 1.4, attack=0.004)
+    rise = soft_saw(glide(dur, (0, note(D, -2)), (1.6, note(A, -1)), (dur, note(A, -1))), harmonics=6) * swell(dur, 1.6)
+    breath = moving_band(dur, [(0, 400), (1.6, 1600), (dur, 800)], 1.0, rng) * swell(dur, 1.5)
+    crown = mix(*[(1.2 + 0.12 * i, 0.35 * bell(note(d, 0), 1.8, 0.7, 2.0, 1.0, attack=0.01)) for i, d in enumerate((D, A, D + 5))])
+    x = mix(0.7 * toll, 0.3 * lowpass(rise, 2000), 0.3 * breath, 1.6 * crown)
+    return finish(reverb(x, 2.6, 0.4, damp=4000, predelay=0.03), "grand")
+
+
+# ---------------------------------------------------------------- the Cinder Warden: iron, coals and chain
+
+
+def warden_ambient(v, rng):
+    dur = 1.8
+    coals = norm(bandpass(brown(dur, rng), 180, 900)) * swell(dur, 0.7)
+    crackle = norm(bandpass(grains(dur, 30 + 15 * v, rng, length=(0.001, 0.004), shape=[(0, 0.4), (0.8, 1), (dur, 0.2)]), 900, 5000))
+    creak = soft_saw(glide(0.5, (0, 360 + 60 * v), (0.5, 280)), 0.5, harmonics=6) * chopper(0.5, rng, (40, 70), 0.2) * swell(0.5, 0.15)
+    links = mix(*[(0.9 + 0.11 * i, 0.4 * tick(2200 + 300 * i, rng)) for i in range(3)])
+    x = mix(0.5 * coals, 0.6 * crackle, (0.3, 0.4 * lowpass(creak, 1800)), 0.5 * links)
+    return finish(reverb(x, 1.0, 0.15, damp=2500), "effect")
+
+
+def warden_hurt(v, rng):
+    dur = 1.4
+    clang = partials(note(A, 0) * (1 + 0.03 * v), dur, ((1.0, 1.0, 1.0), (2.41, 0.5, 0.5), (3.98, 0.3, 0.3), (5.3, 0.15, 0.2)), 0.35)
+    knock = thump(160, 60, 0.3, 0.05, 2.2)
+    hiss = norm(bandpass(noise(dur, rng), 1500, 6000)) * env(dur, (0, 0), (0.08, 1), (dur, 0)) ** 2
+    x = mix(0.8 * clang, 0.3 * knock, (0.05, 0.35 * hiss))
+    return finish(reverb(x, 0.9, 0.18, damp=3000), "impact")
+
+
+def warden_death(v, rng):
+    dur = 4.0
+    hiss = norm(bandpass(noise(dur, rng), 1200, 5000)) * env(dur, (0, 0), (0.2, 1), (2.5, 0.5), (dur, 0)) ** 1.5
+    slump = mix(thump(110, 40, 1.0, 0.25, 2.4), (0.9, 0.9 * thump(90, 34, 1.2, 0.3, 2.4, knock=0.3)))
+    groan = soft_saw(glide(2.4, (0, 220), (2.4, 110)), 2.4, harmonics=8) * swell(2.4, 0.4)
+    ember = bell(note(D, 0), 2.0, 0.9, 2.0, 0.8, attack=0.02)
+    x = mix(0.5 * hiss, 0.35 * slump, 0.35 * lowpass(groan, 900), (2.2, 0.4 * ember))
+    return finish(reverb(x, 2.0, 0.3, damp=2500), "grand")
+
+
+def warden_slam(v, rng):
+    dur = 1.5
+    thud = thump(95, 32, 1.1, 0.25, 3.0, knock=0.35)
+    roar = moving_band(dur, [(0, 500), (0.1, 1800), (dur, 600)], 1.2, rng) * decay(dur, 0.4, 0.01)
+    debris = norm(bandpass(grains(dur, 500, rng, length=(0.002, 0.01), shape=[(0, 1), (0.3, 0.4), (dur, 0)]), 200, 3000))
+    x = mix(0.35 * thud, 0.8 * roar, 0.8 * debris)
+    return finish(reverb(x, 1.0, 0.18, damp=2500), "impact")
+
+
+def warden_immune(v, rng):
+    dur = 0.7
+    dead = partials(note(E, 0) * (1 + 0.05 * v), dur, ((1.0, 1.0, 1.0), (1.47, 0.6, 0.6), (2.09, 0.3, 0.4)), 0.05)
+    knock = norm(bandpass(noise(0.12, rng), 300, 2200)) * decay(0.12, 0.02, 0.0005)
+    x = mix(0.6 * lowpass(dead, 2500), 0.7 * knock)
+    return finish(reverb(x, 0.4, 0.08, damp=2000), "effect")
+
+
+# ---------------------------------------------------------------- the Star-Eater: hollow void and glass
+
+
+def star_eater_ambient(v, rng):
+    dur = 2.4
+    t = timeline(dur)
+    hum = (soft_saw(note(A, -1) * (1 + 0.01 * np.sin(2 * np.pi * 0.7 * t)), harmonics=5) + 0.5 * sine(note(D, 0) * 1.003, dur)) * swell(dur, 1.0)
+    glitter = sparkle(dur, 6 + 2 * v, rng, [note(d, 2) for d in (D, FS, A, B)], tau=(0.1, 0.3), shape=[(0, 0.2), (1.0, 1), (dur, 0)])
+    x = mix(0.6 * lowpass(hum, 1500), 0.4 * norm(glitter))
+    return finish(reverb(x, 2.0, 0.4, damp=3500), "effect")
+
+
+def star_eater_hurt(v, rng):
+    dur = 1.2
+    crack = shatter(rng, count=8, band=(1500, 5000), spread=0.05)
+    groan = saturate(sine(glide(0.8, (0, note(D, -2) * (1 + 0.05 * v)), (0.8, note(A, -3)))), 1.8) * decay(0.8, 0.3, 0.01)
+    ring = glass(note(FS, 1), dur, 0.25)
+    x = mix(0.7 * crack, 0.5 * lowpass(groan, 1000), 0.25 * ring)
+    return finish(reverb(x, 1.0, 0.25, damp=3000), "impact")
+
+
+def star_eater_death(v, rng):
+    pre = 2.2
+    tone = bell(note(D, -1), 2.0, 0.6, 1.41, 3.0, attack=0.002) + norm(bandpass(noise(2.0, rng), 300, 1500)) * decay(2.0, 0.4)
+    inward = norm(reverse(reverb(tone, 1.8, 0.6, damp=1800))[-samples(pre):])
+    suck = moving_band(pre, [(0, 2000), (pre, 200)], 1.0, rng) * env(pre, (0, 0), (pre * 0.9, 1), (pre, 0)) ** 2
+    boom = thump(70, 28, 2.0, 0.6, 2.4, knock=0.25)
+    glints = sparkle(1.6, 16, rng, [note(d, 2) for d in (D, E, FS, A)], tau=(0.08, 0.2), shape=[(0, 1), (1.6, 0)])
+    x = mix(0.8 * inward, 0.6 * suck, (pre, 0.35 * boom), (pre + 0.05, 0.35 * norm(glints)))
+    return finish(reverb(x, 2.4, 0.4, damp=2500), "grand")
+
+
+def star_eater_reflect(v, rng):
+    pre = 0.28
+    ping = glass(note(A, 1) * (1 + 0.02 * v), 0.6, 0.2)
+    back = norm(reverse(reverb(ping, 0.5, 0.5))[-samples(pre):])
+    snap = mix(glass(note(D, 2), 0.5, 0.08), 0.6 * norm(bandpass(noise(0.08, rng), 1500, 6000)) * decay(0.08, 0.012, 0.0005))
+    x = mix(0.7 * back, (pre, 0.8 * snap))
+    return finish(reverb(x, 0.7, 0.2), "effect")
+
+
+def shard_parry(v, rng):
+    dur = 1.0
+    clang = partials(note(FS, 1) * (1 + 0.03 * v), dur, ((1.0, 1.0, 1.0), (2.76, 0.5, 0.45), (5.4, 0.25, 0.3)), 0.3)
+    hit = norm(bandpass(noise(0.06, rng), 1200, 5000)) * decay(0.06, 0.01, 0.0003)
+    x = mix(0.7 * clang, 0.6 * hit)
+    return finish(reverb(x, 0.8, 0.2), "impact")
+
+
+# ---------------------------------------------------------------- the Tide Scribe: water, bubbles and ink
+
+
+def bubbles(seconds, rate, rng, low=300.0, high=900.0):
+    """Little rising blips: each bubble a short sine sweeping up."""
+    out = np.zeros(samples(seconds))
+    for start in moments(seconds, rate, rng):
+        f0 = rng.uniform(low, high)
+        blip = sine(sweep(f0, f0 * 1.8, 0.05)) * decay(0.05, 0.015, 0.002)
+        i = samples(start)
+        out[i:i + len(blip)] += blip[:len(out) - i]
+    return out
+
+
+def tide_scribe_ambient(v, rng):
+    dur = 2.0
+    murmur = moving_band(dur, [(0, 350), (0.6, 600), (1.2, 400), (dur, 500)], 0.6, rng) * chopper(dur, rng, (4, 9), 0.2) * swell(dur, 0.8)
+    pops = norm(bubbles(dur, 10 + 4 * v, rng))
+    scratch = norm(bandpass(grains(0.5, 300, rng, length=(0.0005, 0.002)), 2000, 6000))[:samples(0.5)] * swell(0.5, 0.2)
+    x = mix(0.6 * lowpass(murmur, 1500), 0.35 * pops, (1.2, 0.15 * scratch))
+    return finish(reverb(x, 1.2, 0.25, damp=2500), "effect")
+
+
+def tide_scribe_hurt(v, rng):
+    dur = 0.9
+    cry = saturate(sine(glide(0.6, (0, 380 + 40 * v), (0.6, 220))), 1.6) * chopper(0.6, rng, (18, 30), 0.3) * decay(0.6, 0.2, 0.01)
+    splash = norm(bandpass(noise(dur, rng), 600, 4000)) * decay(dur, 0.15, 0.003)
+    x = mix(0.6 * lowpass(cry, 1800), 0.4 * splash, 0.3 * norm(bubbles(0.6, 20, rng)))
+    return finish(reverb(x, 0.8, 0.2, damp=2500), "impact")
+
+
+def tide_scribe_death(v, rng):
+    dur = 3.4
+    sigh = saturate(sine(glide(2.6, (0, 300), (2.6, 110))), 1.5) * chopper(2.6, rng, (6, 12), 0.4) * swell(2.6, 0.3)
+    fizz = norm(bubbles(dur, 30, rng, 200, 700)) * env(dur, (0, 1), (dur, 0))
+    sink = thump(90, 30, 1.2, 0.4, 1.8)
+    x = mix(0.5 * lowpass(sigh, 1500), 0.4 * fizz, (2.2, 0.6 * sink))
+    return finish(reverb(x, 2.0, 0.35, damp=2200), "grand")
+
+
+def tide_rise(v, rng):
+    dur = 3.0
+    rush = moving_band(dur, [(0, 250), (dur * 0.7, 1300), (dur, 900)], 1.4, rng) * swell(dur, dur * 0.75, 1.0)
+    swash = norm(lowpass(brown(dur, rng), 400)) * swell(dur, dur * 0.7)
+    pops = norm(bubbles(dur, 18, rng, 250, 800)) * env(dur, (0, 0.2), (dur, 1))
+    tone = sine(glide(dur, (0, note(D, -2)), (dur, note(A, -2)))) * swell(dur, dur * 0.8)
+    x = mix(0.7 * rush, 0.5 * swash, 0.25 * pops, 0.25 * tone)
+    return finish(reverb(x, 1.8, 0.3, damp=2500), "grand")
+
+
+def tide_ebb(v, rng):
+    dur = 2.6
+    drain = moving_band(dur, [(0, 1100), (dur, 250)], 1.2, rng) * swell(dur, 0.4, 1.2)
+    gurgle = norm(bubbles(dur, 24, rng, 150, 500)) * env(dur, (0, 0.5), (1.5, 1), (dur, 0))
+    tone = sine(glide(dur, (0, note(A, -2)), (dur, note(D, -2)))) * swell(dur, 0.5)
+    x = mix(0.7 * drain, 0.45 * gurgle, 0.2 * tone)
+    return finish(reverb(x, 1.6, 0.3, damp=2500), "grand")
 
 
 # ================================================================ writing it all out
@@ -1227,6 +1412,27 @@ def palette():
         ("altar_open", "altar", "altar_open", altar_open, 1, {}),
         ("altar_fuse", "altar", "altar_fuse", altar_fuse, 1, {}),
         ("altar_knot", "altar", "altar_knot", altar_knot, 1, {}),
+    ]
+    boss = {"attenuation_distance": 48}
+    tide = {"attenuation_distance": 40}
+    events += [
+        ("boss_phase", "boss", "phase", boss_phase, 1, boss),
+        ("boss_rise", "boss", "rise", boss_rise, 1, boss),
+        ("warden_ambient", "boss", "warden_ambient", warden_ambient, 2, {}),
+        ("warden_hurt", "boss", "warden_hurt", warden_hurt, 2, {}),
+        ("warden_death", "boss", "warden_death", warden_death, 1, boss),
+        ("warden_slam", "boss", "warden_slam", warden_slam, 2, {}),
+        ("warden_immune", "boss", "warden_immune", warden_immune, 2, {}),
+        ("star_eater_ambient", "boss", "star_eater_ambient", star_eater_ambient, 2, {}),
+        ("star_eater_hurt", "boss", "star_eater_hurt", star_eater_hurt, 2, {}),
+        ("star_eater_death", "boss", "star_eater_death", star_eater_death, 1, boss),
+        ("star_eater_reflect", "boss", "star_eater_reflect", star_eater_reflect, 2, {}),
+        ("shard_parry", "boss", "shard_parry", shard_parry, 2, {}),
+        ("tide_scribe_ambient", "boss", "tide_scribe_ambient", tide_scribe_ambient, 2, {}),
+        ("tide_scribe_hurt", "boss", "tide_scribe_hurt", tide_scribe_hurt, 2, {}),
+        ("tide_scribe_death", "boss", "tide_scribe_death", tide_scribe_death, 1, boss),
+        ("tide_rise", "boss", "tide_rise", tide_rise, 1, tide),
+        ("tide_ebb", "boss", "tide_ebb", tide_ebb, 1, tide),
     ]
     return events
 

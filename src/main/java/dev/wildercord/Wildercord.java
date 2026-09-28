@@ -69,6 +69,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cosmetic.CordCosmetics.init();
 		dev.wildercord.familiar.FamiliarContent.init();
 		dev.wildercord.familiar.Familiars.init();
+		dev.wildercord.cast.Dungeons.init();
 		SpellCaster.init();
 		WildercordCommand.init();
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.

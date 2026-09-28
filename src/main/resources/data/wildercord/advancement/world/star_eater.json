@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/archivist",
+  "criteria": {
+    "star_eater": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "star_eater"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:eclipse"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.star_eater.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.star_eater.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "star_eater"
+    ]
+  ],
+  "rewards": {
+    "experience": 300
+  }
+}

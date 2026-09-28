@@ -44,6 +44,9 @@ public final class Feats {
 	public static final String UPGRADE = "upgrade";
 	public static final String COMBINE = "combine";
 	public static final String KNOT = "knot";
+	public static final String CINDER_WARDEN = "cinder_warden";
+	public static final String STAR_EATER = "star_eater";
+	public static final String TIDE_SCRIBE = "tide_scribe";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -84,7 +87,10 @@ public final class Feats {
 		new Feat(MENAGERIE, "Menagerie", "Bonded with a wisp of every element."),
 		new Feat(UPGRADE, "Honed", "Ranked up a rune at the Fusion Altar."),
 		new Feat(COMBINE, "Fusion", "Fused two effects into a new one at the Fusion Altar."),
-		new Feat(KNOT, "Knotted", "Tied a whole spell into one rune at the Fusion Altar."));
+		new Feat(KNOT, "Knotted", "Tied a whole spell into one rune at the Fusion Altar."),
+		new Feat(CINDER_WARDEN, "Tempered", "Broke the Cinder Warden's armour with reactions and brought it down."),
+		new Feat(STAR_EATER, "Starbreaker", "Shattered the Star-Eater's shield and brought it down."),
+		new Feat(TIDE_SCRIBE, "Low Tide", "Turned the Tide Scribe's own flood against it and brought it down."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");
@@ -103,6 +109,9 @@ public final class Feats {
 		}
 		if (key.equals("feat:" + ARCHIVIST)) {
 			return 2000;
+		}
+		if (key.equals("feat:" + CINDER_WARDEN) || key.equals("feat:" + STAR_EATER) || key.equals("feat:" + TIDE_SCRIBE)) {
+			return 1500;
 		}
 		return 250;
 	}
