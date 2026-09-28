@@ -207,7 +207,19 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 		travel(world, dimension, Vec3.atCenterOf(at).add(0, 20, 0));
 		world.getServer().runCommand("execute in " + dim + " run forceload add " + (at.getX() - 96) + " " + (at.getZ() - 96) + " "
 			+ (at.getX() + 96) + " " + (at.getZ() + 96));
-		context.waitTicks(100);
+		// Every chunk it could reach must be there before the command will build into them.
+		world.getServer().waitFor(server -> {
+			ServerLevel level = server.getLevel(dimension);
+			for (int cx = (at.getX() - 96) >> 4; cx <= (at.getX() + 96) >> 4; cx++) {
+				for (int cz = (at.getZ() - 96) >> 4; cz <= (at.getZ() + 96) >> 4; cz++) {
+					if (!level.hasChunk(cx, cz)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}, 2400);
+		context.waitTicks(20);
 		world.getServer().runCommand("execute in " + dim + " run place structure wildercord:" + id + " " + at.getX() + " " + at.getY() + " " + at.getZ());
 		context.waitTicks(40);
 		BlockPos altar = world.getServer().computeOnServer(server -> findAltar(server.getLevel(dimension), at, 112, kind));

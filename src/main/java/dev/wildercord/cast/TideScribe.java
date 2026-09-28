@@ -181,9 +181,6 @@ public class TideScribe extends DungeonBoss {
 					}
 				}
 			}
-			// The low layer first, and each from the rim in, so the water seems to pour in from the walls.
-			cells.sort((a, b) -> a.getY() != b.getY() ? Integer.compare(a.getY(), b.getY())
-				: Double.compare(b.distSqr(home), a.distSqr(home)));
 		}
 		return cells;
 	}
@@ -240,13 +237,28 @@ public class TideScribe extends DungeonBoss {
 		updateName(null);
 	}
 
-	/** One tick's share of filling (or draining) the pit. */
+	/**
+	 * One tick of filling (or draining) the pit. Each layer comes (or goes) all at once, the low one
+	 * first as it rises and last as it ebbs: water left beside a gap for even a moment would flow into
+	 * it, and water between two sources becomes a source itself, and the pit would never drain.
+	 */
 	private void fillStep(ServerLevel level, int index, int of, boolean fill) {
-		List<BlockPos> all = cells(level);
-		int per = (all.size() + of - 1) / of;
-		int from = index * per;
-		for (int i = from; i < Math.min(all.size(), from + per); i++) {
-			setCell(level, all.get(i), fill);
+		int layer;
+		if (index == 0) {
+			layer = fill ? 0 : 1;
+		} else if (index == of / 2) {
+			layer = fill ? 1 : 0;
+		} else {
+			if (fill && level.getRandom().nextInt(3) == 0) {
+				Vfx.emit(level, ParticleTypes.SPLASH, Vec3.atBottomCenterOf(home).add(0, 1.2 + (index > of / 2 ? 1 : 0), 0), 8, PIT_RADIUS * 0.5, 0.05);
+			}
+			return;
+		}
+		int y = home.getY() + layer;
+		for (BlockPos pos : cells(level)) {
+			if (pos.getY() == y) {
+				setCell(level, pos, fill);
+			}
 		}
 	}
 
@@ -255,7 +267,8 @@ public class TideScribe extends DungeonBoss {
 		if (fill) {
 			// Only into open air, over something solid (or over water it just poured).
 			BlockState below = level.getBlockState(pos.below());
-			if (state.isAir() && (below.isFaceSturdy(level, pos.below(), net.minecraft.core.Direction.UP) || below.getFluidState().is(FluidTags.WATER))) {
+			boolean open = state.isAir() || state.is(Blocks.WATER) && !state.getFluidState().isSource();
+			if (open && (below.isFaceSturdy(level, pos.below(), net.minecraft.core.Direction.UP) || below.getFluidState().is(FluidTags.WATER))) {
 				level.setBlock(pos, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
 				if (level.getRandom().nextInt(8) == 0) {
 					Vfx.emit(level, ParticleTypes.SPLASH, Vec3.atCenterOf(pos).add(0, 0.5, 0), 3, 0.3, 0.05);
@@ -272,9 +285,8 @@ public class TideScribe extends DungeonBoss {
 		if (!(level() instanceof ServerLevel level) || !hasArena(level)) {
 			return;
 		}
-		for (BlockPos pos : cells(level)) {
-			setCell(level, pos, high);
-		}
+		fillStep(level, 0, 2, high);
+		fillStep(level, 1, 2, high);
 		tide = high ? Tide.HIGH : Tide.LOW;
 		step = high ? FILL_TICKS : DRAIN_TICKS;
 		tideUntil = level.getGameTime() + (high ? HIGH_TICKS[phase] : LOW_TICKS[phase]);
