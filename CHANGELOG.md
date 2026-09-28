@@ -4,6 +4,28 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.4.0-alpha] - 2026-09-28
+
+### Added
+- **A fused rune for every pair of elements.** The Fusion Altar now fuses any two effects of the ten
+  elements, and two of the same element too: 55 fused runes in all, 43 of them new. See the grid in
+  the [Fusion Altar guide](docs/features/fusion-altar.md). A few of the new ones:
+  - **Phoenix Pyre** wreathes allies in healing flame.
+  - **Singularity** opens a black hole that bursts.
+  - **Second Wind** saves an ally from a killing blow.
+  - **Reckoning** makes every wound come due twice.
+  - **Chronoshift** turns an ally's cooldowns forward.
+
+### Changed
+- **Fused runes wear both of their elements.** In a spell's magic circle, a fused rune's ring is a
+  braid of two strands, each element's motif in its own colour. Its emblem is split down the middle
+  between the two elements' glyphs, and a fusion of one element with itself shows that element's
+  glyph widened.
+
+### Fixed
+- The Astral Observatory's altar drew as a magenta-and-black missing texture. A test now checks that
+  every texture the mod's models use exists.
+
 ## [0.3.0-alpha] - 2026-09-28
 
 The big one: three new dungeons with bosses, 51 runes you can only find out in the world, a Fusion

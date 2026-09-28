@@ -74,8 +74,12 @@ class WorldRunesTest {
 
 	@Test
 	void theirNamesAreTheirOwn() {
-		// The Fusion Altar's runes, being added alongside these.
-		Set<String> fusion = Set.of("firestorm", "steam", "magma", "tempest", "plasma", "hail", "glacier", "lifesteal", "warp", "bloom", "surge", "nullify");
+		// The Fusion Altar's runes.
+		Set<String> fusion = new HashSet<>();
+		for (RuneDef rune : Runes.FUSED) {
+			fusion.add(rune.path());
+			fusion.add(rune.name().toLowerCase(Locale.ROOT));
+		}
 		Set<String> names = new HashSet<>();
 		for (RuneDef rune : Runes.all()) {
 			assertTrue(names.add(rune.name().toLowerCase(Locale.ROOT)), "two runes are called " + rune.name());

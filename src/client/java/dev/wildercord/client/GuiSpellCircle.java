@@ -32,6 +32,11 @@ public final class GuiSpellCircle {
 		return Wildercord.id("textures/particle/circle/" + art(rune) + "_band.png");
 	}
 
+	/** A fused rune's second half ({@code band2} or {@code mark2}), shown in {@link RuneColors#second}. */
+	private static Identifier second(RuneDef rune, String part) {
+		return Wildercord.id("textures/particle/circle/" + rune.path() + "_" + part + ".png");
+	}
+
 	/** Whose ring and emblem a rune wears: its own, or for a Knot (a spell tied up, like a link) the links' shared ones. */
 	private static String art(RuneDef rune) {
 		return rune.family() == RuneFamily.KNOT ? "_link" : rune.path();
@@ -93,6 +98,10 @@ public final class GuiSpellCircle {
 			float a = -spin * 0.7F + Mth.TWO_PI * i / tiles;
 			quad(g, band(pattern), cx + Mth.cos(a) * patternR, cy + Mth.sin(a) * patternR, a + Mth.HALF_PI, Mth.TWO_PI * patternR / tiles, tile,
 				argb(writing, RuneColors.of(pattern)));
+			if (RuneColors.second(pattern) >= 0) {
+				quad(g, second(pattern, "band2"), cx + Mth.cos(a) * patternR, cy + Mth.sin(a) * patternR, a + Mth.HALF_PI, Mth.TWO_PI * patternR / tiles, tile,
+					argb(writing, RuneColors.second(pattern)));
+			}
 		}
 		// The star, drawing itself.
 		float drawn = part(open, 0.2F, 0.35F);
@@ -113,6 +122,9 @@ public final class GuiSpellCircle {
 		ring(g, cx, cy, r * SpellSigil.MEDALLION, fine, argb(middle, lighter(color, 0.3F)));
 		float seal = r * SpellSigil.SEAL * (0.6F + 0.4F * middle);
 		quad(g, mark(runes.getFirst()), cx, cy, -spin * 0.4F, seal, seal, argb(middle, RuneColors.of(runes.getFirst())));
+		if (RuneColors.second(runes.getFirst()) >= 0) {
+			quad(g, second(runes.getFirst(), "mark2"), cx, cy, -spin * 0.4F, seal, seal, argb(middle, RuneColors.second(runes.getFirst())));
+		}
 		// The roundels, one by one.
 		float s = r * SpellSigil.roundel(n);
 		for (int i = 0; i < n; i++) {
@@ -129,6 +141,11 @@ public final class GuiSpellCircle {
 			quad(g, GLOW, u, v, 0, rs * 2.4F, rs * 2.4F, argb(0.3F * shown, rc));
 			ring(g, u, v, rs, fine, argb(shown, rc));
 			quad(g, mark(rune), u, v, a + Mth.HALF_PI, rs, rs, argb(shown, lighter(rc, 0.15F)));
+			int second = RuneColors.second(rune);
+			if (second >= 0) {
+				// A fused rune: its partner element's half, in that element's colour.
+				quad(g, second(rune, "mark2"), u, v, a + Mth.HALF_PI, rs, rs, argb(shown, lighter(second, 0.15F)));
+			}
 		}
 	}
 

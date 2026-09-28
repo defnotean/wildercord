@@ -1391,6 +1391,307 @@
         }
       },
       {
+        "when": "wildercord:phoenix_pyre",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/phoenix_pyre"
+        }
+      },
+      {
+        "when": "wildercord:hellmouth",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hellmouth"
+        }
+      },
+      {
+        "when": "wildercord:starfire",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/starfire"
+        }
+      },
+      {
+        "when": "wildercord:everburn",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/everburn"
+        }
+      },
+      {
+        "when": "wildercord:bloodboil",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bloodboil"
+        }
+      },
+      {
+        "when": "wildercord:conflagration",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/conflagration"
+        }
+      },
+      {
+        "when": "wildercord:blizzard",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/blizzard"
+        }
+      },
+      {
+        "when": "wildercord:frostbloom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/frostbloom"
+        }
+      },
+      {
+        "when": "wildercord:black_ice",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/black_ice"
+        }
+      },
+      {
+        "when": "wildercord:rime_seal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rime_seal"
+        }
+      },
+      {
+        "when": "wildercord:cryostasis",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cryostasis"
+        }
+      },
+      {
+        "when": "wildercord:frostbite",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/frostbite"
+        }
+      },
+      {
+        "when": "wildercord:absolute_zero",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/absolute_zero"
+        }
+      },
+      {
+        "when": "wildercord:magnetize",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/magnetize"
+        }
+      },
+      {
+        "when": "wildercord:riftbolt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/riftbolt"
+        }
+      },
+      {
+        "when": "wildercord:stormweave",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stormweave"
+        }
+      },
+      {
+        "when": "wildercord:stormclock",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stormclock"
+        }
+      },
+      {
+        "when": "wildercord:heartstopper",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/heartstopper"
+        }
+      },
+      {
+        "when": "wildercord:thunderhead",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thunderhead"
+        }
+      },
+      {
+        "when": "wildercord:downdraft",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/downdraft"
+        }
+      },
+      {
+        "when": "wildercord:updraft",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/updraft"
+        }
+      },
+      {
+        "when": "wildercord:skyglyph",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/skyglyph"
+        }
+      },
+      {
+        "when": "wildercord:recoil",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/recoil"
+        }
+      },
+      {
+        "when": "wildercord:zephyr",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/zephyr"
+        }
+      },
+      {
+        "when": "wildercord:crimson_mist",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/crimson_mist"
+        }
+      },
+      {
+        "when": "wildercord:sinkhole",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sinkhole"
+        }
+      },
+      {
+        "when": "wildercord:geode",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/geode"
+        }
+      },
+      {
+        "when": "wildercord:fossilize",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fossilize"
+        }
+      },
+      {
+        "when": "wildercord:bonespur",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bonespur"
+        }
+      },
+      {
+        "when": "wildercord:monolith",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/monolith"
+        }
+      },
+      {
+        "when": "wildercord:soulbond",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/soulbond"
+        }
+      },
+      {
+        "when": "wildercord:second_wind",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/second_wind"
+        }
+      },
+      {
+        "when": "wildercord:transfusion",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/transfusion"
+        }
+      },
+      {
+        "when": "wildercord:lifebloom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lifebloom"
+        }
+      },
+      {
+        "when": "wildercord:sanguine_rite",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sanguine_rite"
+        }
+      },
+      {
+        "when": "wildercord:entropy",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/entropy"
+        }
+      },
+      {
+        "when": "wildercord:devour",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/devour"
+        }
+      },
+      {
+        "when": "wildercord:timesteal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/timesteal"
+        }
+      },
+      {
+        "when": "wildercord:hemomancy",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hemomancy"
+        }
+      },
+      {
+        "when": "wildercord:reckoning",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/reckoning"
+        }
+      },
+      {
+        "when": "wildercord:singularity",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/singularity"
+        }
+      },
+      {
+        "when": "wildercord:prismatic_burst",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/prismatic_burst"
+        }
+      },
+      {
+        "when": "wildercord:chronoshift",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/chronoshift"
+        }
+      },
+      {
         "when": "wildercord:echolocate",
         "model": {
           "type": "minecraft:model",

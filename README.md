@@ -57,7 +57,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **249 runes** | 186 you can craft (33 shapes, 123 effects, 18 modifiers and 12 links across four tiers), **51 runes of the world** found only in their own places, and 12 fused at the Fusion Altar, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **292 runes** | 186 you can craft (33 shapes, 123 effects, 18 modifiers and 12 links across four tiers), **51 runes of the world** found only in their own places, and **55 fused runes**, one for every pair of elements, made at the Fusion Altar. Each has a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
 | **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle opens in front of them, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
 | **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its shape's seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
 | **Spells drawn in light** | All magic glows: light adds to what's behind it, and void magic is drawn as darkness. Beams with a white-hot core fired through a magic circle, bolts that glide as comets, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. Every element has its own visual language, from branching lightning to imploding darkness. |
@@ -72,7 +72,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Dimension dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor, each with seal doors, Runebound halls, a domed arena and a vault. Their keepers fight in three phases, and each has one trick to learn: an armour only a reaction breaks, a shield that throws spells back, and a pit that floods, where storm magic shocks everyone in the water. See [docs/features/dungeons.md](docs/features/dungeons.md). |
 | **World events** | Mana storms over the ley lines (faster mana, cheaper spells, wild surges), fallen stars that leave a guarded crater, and rift sieges that end with the Riftcaller. See [docs/features/world-events.md](docs/features/world-events.md). |
 | **Magic that changes the world** | Fire lights the grass and boils water into blinding steam, frost freezes a pond you can walk on, storm arcs through water to everyone in it, wind knocks arrows back, earth heaves the ground and life makes flowers bloom. See [docs/features/world-magic.md](docs/features/world-magic.md). |
-| **The Fusion Altar** | Three of a rune make its next rank, two effects fuse into a new one, and a Blank Rune and string tie a whole spell into one **Knot** that takes a single socket. See [docs/features/fusion-altar.md](docs/features/fusion-altar.md). |
+| **The Fusion Altar** | Three of a rune make its next rank, any two elemental effects fuse into one of 55 fused runes (every pair of elements, and each element with itself), and a Blank Rune and string tie a whole spell into one **Knot** that takes a single socket. See [docs/features/fusion-altar.md](docs/features/fusion-altar.md). |
 | **Familiars** | Wisps of light rise from the ley lines at night. Tame one with its own element and it floats at your shoulder, quickens your mana, casts a little spell of its own and levels up as you fight together. Dress your Cord in beads and glow colours on the Cosmetics page. See [docs/features/familiars-and-cosmetics.md](docs/features/familiars-and-cosmetics.md). |
 | **Parry and wild magic** | A Shield raised at the last moment turns a flying spell back at its caster. An overcast may surge into something wild. See [docs/features/parry-and-wild-magic.md](docs/features/parry-and-wild-magic.md). |
 | **The Runesmith, duels and chorus** | A villager who sells runes, buys your duplicates or swaps them for runes you don't know, and posts daily contracts; formal duels that put everything back afterwards; and allies casting together in a chorus. See [docs/features/runesmith-duels-chorus.md](docs/features/runesmith-duels-chorus.md). |
@@ -118,6 +118,14 @@ modifiers on them. Cooldown is one tick per mana, between 0.5 and 20 seconds. Th
 with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Screenshots
+
+### New in 0.4: a fused rune for every pair of elements
+
+| Singularity (Void + Void): a black hole that bursts | Stormclock (Storm + Time): lightning on the hour |
+|---|---|
+| <img src="docs/images/fused-singularity.jpg" alt="At night, a black sphere inside a tilted disk of white and violet rings, pulling husks into it" width="420"> | <img src="docs/images/fused-stormclock.jpg" alt="A gold clock face hanging in the sky over a husk, lightning falling from it onto a target mark" width="420"> |
+| Riftbolt (Storm + Void): a black bolt that tears its target away | Cryostasis (Frost + Time): an ally sealed safe in ice |
+| <img src="docs/images/fused-riftbolt.jpg" alt="A black bolt with a violet core striking a husk, jagged cracks torn in the air at both ends" width="420"> | <img src="docs/images/fused-cryostasis.jpg" alt="A clear cocoon of ice standing over the caster, a tamed wolf beside it" width="420"> |
 
 ### New in 0.3
 

@@ -15,6 +15,14 @@ effects, its glyph the element. Designs are handed out by a stable hash of the r
 order runes are defined in Runes.java (so a rune added after the others never changes an existing
 rune's design), and no two runes share a ring or an emblem.
 
+A fused rune (made at the Fusion Altar from two elements) wears both: its ring is a braid of two
+strands, one per element, with the first element's motif outside and the second's inside, and its
+emblem is split down the middle, the first element's glyph on the left and the second's on the
+right (a fusion of one element with itself shows that element's glyph widened). Each half goes in
+its own texture so the game can tint it in its own element's colour:
+    textures/particle/circle/<rune>_band.png, _mark.png     the rune's own element's half
+    textures/particle/circle/<rune>_band2.png, _mark2.png   its partner element's half
+
 Also writes circle/_<family>_band.png and _mark.png, used for add-on runes.
 Run from the project root:  python tools/circle_art.py [--preview]
 """
@@ -26,7 +34,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_assets import read_runes, ELEMENT_COLOR, FAMILY_COLOR  # noqa: E402
+from generate_assets import read_runes, read_fusions, ELEMENT_COLOR, FAMILY_COLOR  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src/main/resources/assets/wildercord/textures/particle/circle"
@@ -277,6 +285,94 @@ def mark_tile(family, glyph, variant, decor, heavy):
     return lit
 
 
+# ---------------------------------------------------------------- fused runes
+
+# The motif each element shows in a fused rune's braid (a fusion of one element with itself shows two of its own).
+FUSED_MOTIF = {"fire": "tooth", "frost": "diamond", "storm": "bolt", "wind": "wave", "earth": "block", "life": "bud",
+               "void": "crescent", "arcane": "star", "time": "hourglass", "blood": "drop"}
+# The first twelve fused runes wore single-element designs before fused runes had their own; they still
+# hold those designs in the handing out, so no other rune's design moves.
+LEGACY_FUSED = {"firestorm", "steam", "magma", "tempest", "plasma", "hail", "glacier", "lifesteal", "warp", "bloom", "surge", "nullify"}
+
+
+def fused_pair(rune, fusions):
+    """A fused rune's (own, partner) elements: its own element first if it's one of the two it was fused from."""
+    a, b = fusions[rune["path"]]
+    own = rune["element"] if rune["element"] in (a, b) else a
+    return own, (b if own == a else a)
+
+
+def braid_strands():
+    """The fused ring's line: two strands crossing twice a tile, each a pixel thick and unbroken."""
+    first, second = set(), set()
+    prev = None
+    for x in range(N):
+        wave = 1.5 * math.sin(2 * math.pi * (x + 0.5) / N)
+        y1, y2 = round(7.5 - wave - 0.01), round(7.5 + wave + 0.01)
+        first.add((x, y1))
+        second.add((x, y2))
+        if prev is not None:
+            # Fill a step of two rows so the strand never breaks.
+            for y in range(min(prev[0], y1) + 1, max(prev[0], y1)):
+                first.add((x, y))
+            for y in range(min(prev[1], y2) + 1, max(prev[1], y2)):
+                second.add((x, y))
+        prev = (y1, y2)
+    return first, second
+
+
+def fused_band(own, partner):
+    """(own half, partner half) of a fused rune's ring: a strand and a motif each, one outside, one inside."""
+    first, second = braid_strands()
+    rows = [y for _, y in first | second]
+    outer, inner = min(rows) - 1, max(rows) + 1
+    same = own == partner
+    outside = FUSED_MOTIF[own]
+    inside = GROUP_MOTIFS[own][1] if same else FUSED_MOTIF[partner]
+
+    def stamp(lit, motif, cx, flip):
+        sprite = MOTIFS[motif]
+        h, w = len(sprite), len(sprite[0])
+        for j, row in enumerate(sprite):
+            for i, ch in enumerate(row):
+                if ch == "#":
+                    y = outer - (h - 1 - j) if not flip else inner + (h - 1 - j)
+                    if 0 <= y < N:
+                        lit.add(((cx - w // 2 + i) % N, y))
+
+    stamp(first, outside, 4, False)
+    stamp(second, inside, 12, True)
+    return first, second
+
+
+def half(glyph):
+    """A glyph's fuller half and its middle column, as four columns reading outward-in (the middle last)."""
+    left = [row[:4] for row in glyph]
+    right = [row[3:][::-1] for row in glyph]
+    lit = lambda rows: sum(row.count("#") for row in rows)
+    return left if lit(left) >= lit(right) else right
+
+
+def fused_mark(own, partner):
+    """(own half, partner half) of a fused rune's emblem: a heavy ring round a glyph split down the middle."""
+    left, right = frame_pixels("effect", heavy=True), set()
+    # Each element shows the fuller half of its glyph (with its middle column), turned to face the seam
+    # if need be, so a lopsided glyph like void's crescent isn't cut down to a sliver: the own element
+    # on the left, the partner on the right, eight columns in all, centred in the tile.
+    for j, row in enumerate(half(GLYPHS[own])):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                left.add((4 + i, 4 + j))
+    for j, row in enumerate(half(GLYPHS[partner])):
+        for i, ch in enumerate(row):
+            if ch == "#":
+                right.add((11 - i, 4 + j))
+    # A seam where the halves meet, above and below the glyph.
+    left.update({(7, 2), (7, 12)})
+    right.update({(8, 2), (8, 12)})
+    return left, right
+
+
 # ---------------------------------------------------------------- handing out designs
 
 def stable(key):
@@ -317,10 +413,12 @@ def group_of(rune):
     return rune["element"] if rune["family"] == "effect" and rune["element"] else rune["family"]
 
 
-def designs(runes):
+def designs(runes, skip=frozenset()):
+    """Every rune's ring and emblem from its element or family group, bar those in {@code skip}."""
     groups = {}
     for r in runes:
-        groups.setdefault(group_of(r), []).append(r["path"])
+        if r["path"] not in skip:
+            groups.setdefault(group_of(r), []).append(r["path"])
     bands, marks = {}, {}
     used_bands, used_marks = set(), set()
     for group in sorted(groups):
@@ -355,8 +453,9 @@ def image(lit):
 
 # ---------------------------------------------------------------- preview
 
-def ring_preview(band, mark, color, size=150):
-    """A rune's ring drawn as a full circle (the band unwrapped around it), with its emblem on three spokes."""
+def ring_preview(band, mark, color, size=150, band2=(), mark2=(), color2=None):
+    """A rune's ring drawn as a full circle (the band unwrapped around it), with its emblem on three spokes;
+    a fused rune's second half ({@code band2}, {@code mark2}) in {@code color2}."""
     img = Image.new("RGBA", (size, size), (20, 16, 30, 255))
     px = img.load()
     c = size / 2
@@ -372,9 +471,13 @@ def ring_preview(band, mark, color, size=150):
                 u = (a * tiles) % 1.0
                 if (int(u * N), int(v * N)) in band:
                     px[x, y] = color + (255,)
-    m = image(mark).resize((int(height * 1.4), int(height * 1.4)), Image.NEAREST)
-    tint = Image.new("RGBA", m.size, color + (255,))
-    m = Image.composite(tint, Image.new("RGBA", m.size, (0, 0, 0, 0)), m.split()[3])
+                elif (int(u * N), int(v * N)) in band2:
+                    px[x, y] = color2 + (255,)
+    m = Image.new("RGBA", (int(height * 1.4), int(height * 1.4)), (0, 0, 0, 0))
+    for lit, col in ((mark, color), (mark2, color2)):
+        if lit:
+            layer = image(lit).resize(m.size, Image.NEAREST)
+            m.alpha_composite(Image.composite(Image.new("RGBA", m.size, col + (255,)), Image.new("RGBA", m.size, (0, 0, 0, 0)), layer.split()[3]))
     for k in range(3):
         a = -math.pi / 2 + k * 2 * math.pi / 3
         rot = m.rotate(-math.degrees(a + math.pi / 2), expand=True)
@@ -388,21 +491,45 @@ def color_of(rune):
     return FAMILY_COLOR[rune["family"]]
 
 
+def second_color(own, partner):
+    """A fused rune's second colour: its partner element's, or for one element with itself, its own lightened."""
+    base = ELEMENT_COLOR[partner]
+    return tuple(round(c + (255 - c) * 0.45) for c in base) if own == partner else base
+
+
 def main(preview=False):
     # No two motifs may look alike: they are what tells the elements apart.
     sprites = [tuple(v) for v in MOTIFS.values()]
     assert len(set(sprites)) == len(sprites), "two motifs are the same picture"
     runes = read_runes()
-    bands, marks = designs(runes)
-    # Every rune's ring and emblem must be its own.
-    band_keys = {frozenset(v) for v in bands.values()}
-    mark_keys = {frozenset(v) for v in marks.values()}
+    fusions = read_fusions()
+    fused = [r for r in runes if r["path"] in fusions]
+    bands, marks = designs(runes, skip=frozenset(r["path"] for r in fused if r["path"] not in LEGACY_FUSED))
+    # Fused runes wear their two elements instead (the legacy twelve's old designs stay held, unused).
+    second = {}
+    for r in fused:
+        own, partner = fused_pair(r, fusions)
+        band, band2 = fused_band(own, partner)
+        mark, mark2 = fused_mark(own, partner)
+        bands[r["path"]], marks[r["path"]] = band, mark
+        second[r["path"]] = (band2, mark2, second_color(own, partner))
+    # Every rune's ring and emblem must be its own (a fused rune's counted with both halves).
+    def whole(table, path, index):
+        return frozenset(table[path]) | (frozenset(second[path][index]) if path in second else frozenset())
+    band_keys = {whole(bands, path, 0) for path in bands}
+    mark_keys = {whole(marks, path, 1) for path in marks}
     assert len(band_keys) == len(bands), "two runes share a ring"
     assert len(mark_keys) == len(marks), "two runes share an emblem"
     OUT.mkdir(parents=True, exist_ok=True)
     for path in bands:
         image(bands[path]).save(OUT / f"{path}_band.png")
         image(marks[path]).save(OUT / f"{path}_mark.png")
+        for part in ("band2", "mark2"):
+            extra = OUT / f"{path}_{part}.png"
+            if path in second:
+                image(second[path][0 if part == "band2" else 1]).save(extra)
+            elif extra.exists():
+                extra.unlink()
     for family, motif, glyph in (("shape", "spoke", GENERIC[2]), ("effect", "cross", GENERIC[6]), ("modifier", "dot", GENERIC[1]), ("link", "knot", GENERIC[4])):
         image(band_tile(family, motif, "out", "none")).save(OUT / f"_{family}_band.png")
         image(mark_tile(family, glyph, "plain", "none", False)).save(OUT / f"_{family}_mark.png")
@@ -415,10 +542,11 @@ def main(preview=False):
         draw = ImageDraw.Draw(sheet)
         for i, r in enumerate(runes):
             x, y = (i % cols) * cell, (i // cols) * (cell + 14)
-            sheet.alpha_composite(ring_preview(bands[r["path"]], marks[r["path"]], color_of(r), cell), (x, y + 14))
+            band2, mark2, color2 = second.get(r["path"], ((), (), None))
+            sheet.alpha_composite(ring_preview(bands[r["path"]], marks[r["path"]], color_of(r), cell, band2, mark2, color2), (x, y + 14))
             draw.text((x + 4, y + 1), r["name"], fill=(230, 225, 245))
         sheet.save(out / "rune_circles.png")
-    print(f"{len(bands)} rune rings and emblems written")
+    print(f"{len(bands)} rune rings and emblems written ({len(fused)} fused, in two halves)")
 
 
 if __name__ == "__main__":

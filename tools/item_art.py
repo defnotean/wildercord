@@ -3069,6 +3069,12 @@ GLYPHS: dict[str, str] = {
     """,
 }
 
+# The fused effects of the Fusion Altar's full chorus, drawn in their own files (one per theme).
+import fused_art_flame, fused_art_frost, fused_art_storm, fused_art_life, fused_art_void  # noqa: E402
+
+for _fused in (fused_art_flame, fused_art_frost, fused_art_storm, fused_art_life, fused_art_void):
+    GLYPHS.update(_fused.GLYPHS)
+
 FALLBACK_GLYPH = """
     ...#...
     ..#+#..

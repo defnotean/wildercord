@@ -227,9 +227,17 @@ public class WildercordFusionTest implements FabricClientGameTest {
 			failures.add("the first Firestorm should be recorded in the Grimoire, with its feat");
 		}
 		menu.getSlot(FusionAltarMenu.RESULT).set(ItemStack.EMPTY);
-		load(menu, new ItemStack(Items.AMETHYST_SHARD), RuneItem.stack(Runes.FIRE), RuneItem.stack(Runes.FIRE));
+		// Two effects of one element fuse too: that element at its purest.
+		load(menu, new ItemStack(Items.AMETHYST_SHARD), RuneItem.stack(Runes.FIRE), RuneItem.stack(Runes.EMBER));
+		if (!menu.clickMenuButton(player, FusionAltarMenu.BUTTON_FUSE)
+				|| !RuneItem.runeOf(result(menu)).map(r -> r.is(Runes.CONFLAGRATION.id())).orElse(false)) {
+			failures.add("Fire and Ember with a shard should make Conflagration (made " + result(menu) + ", " + menu.plan().problem() + ")");
+		}
+		menu.getSlot(FusionAltarMenu.RESULT).set(ItemStack.EMPTY);
+		// A shape isn't an effect: nothing fuses with it.
+		load(menu, new ItemStack(Items.AMETHYST_SHARD), RuneItem.stack(Runes.FIRE), RuneItem.stack(Runes.BOLT));
 		if (menu.clickMenuButton(player, FusionAltarMenu.BUTTON_FUSE) || !result(menu).isEmpty()) {
-			failures.add("two fire runes shouldn't fuse");
+			failures.add("a fire rune and a shape shouldn't fuse");
 		}
 
 		// ---- Too little XP: refused, nothing used up.
@@ -299,21 +307,30 @@ public class WildercordFusionTest implements FabricClientGameTest {
 		}
 
 		// ---- Every fused effect at a husk: nothing may throw.
+		net.minecraft.world.phys.Vec3 home = player.position();
 		for (RuneDef fused : Runes.FUSED) {
 			try {
 				Mob husk = husk(player, 3);
 				SpellCompiler.Compiled compiled = SpellCompiler.compile(List.of(Runes.TOUCH, fused));
 				Effects.apply(new Cast(player), compiled.root().groups.getFirst().effects.getFirst(),
 					new Cast.Hit(List.<Entity>of(husk), husk.position(), player.getLookAngle(), player.position(), null, null, false));
-				SpellCompiler.Compiled self = SpellCompiler.compile(List.of(Runes.SELF, fused));
-				Effects.apply(new Cast(player), self.root().groups.getFirst().effects.getFirst(),
-					new Cast.Hit(List.<Entity>of(player), player.position(), player.getLookAngle(), player.position(), null, null, true));
+				// On Self too, bar the ones written on the ground (a Skyglyph under the player would launch them away).
+				if (fused.kind() != dev.wildercord.spell.EffectKind.WORLD) {
+					SpellCompiler.Compiled self = SpellCompiler.compile(List.of(Runes.SELF, fused));
+					Effects.apply(new Cast(player), self.root().groups.getFirst().effects.getFirst(),
+						new Cast.Hit(List.<Entity>of(player), player.position(), player.getLookAngle(), player.position(), null, null, true));
+				}
 			} catch (RuntimeException e) {
 				failures.add(fused.name() + " threw " + e);
 			}
 		}
 		player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(20), m -> m.entityTags().contains("wildercord.fusion"))
 			.forEach(Mob::discard);
+		// Put the player back as they were: the fused effects on Self may have moved, slowed or sealed them.
+		player.removeAllEffects();
+		player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
+		player.teleportTo(home.x, home.y, home.z);
+		player.setHealth(player.getMaxHealth());
 		return failures;
 	}
 }

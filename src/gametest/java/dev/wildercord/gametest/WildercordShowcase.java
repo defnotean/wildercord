@@ -147,6 +147,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 
 			section(context, world, "fusion altar", () -> fusionAltar(context, world));
 			section(context, world, "fused spells", () -> fusedSpells(context, world));
+			section(context, world, "fused chorus", () -> fusedChorus(context, world));
 			section(context, world, "parry", () -> parry(context, world));
 			section(context, world, "wild magic", () -> wildMagic(context, world));
 			section(context, world, "world magic", () -> worldMagic(context, world));
@@ -174,6 +175,11 @@ public class WildercordShowcase implements FabricClientGameTest {
 
 	/** Runs one section; anything it throws is logged and the showcase moves on to the next. */
 	private static void section(ClientGameTestContext context, TestSingleplayerContext world, String name, Runnable body) {
+		// WILDERCORD_SHOWCASE_ONLY=<words> films only the sections whose names contain them.
+		String only = System.getenv("WILDERCORD_SHOWCASE_ONLY");
+		if (only != null && !only.isBlank() && !name.contains(only)) {
+			return;
+		}
 		try {
 			body.run();
 		} catch (Exception | AssertionError | LinkageError e) {
@@ -329,6 +335,31 @@ public class WildercordShowcase implements FabricClientGameTest {
 		husk.addTag("wildercord.rolled");
 		level.addFreshEntity(husk);
 		return husk;
+	}
+
+	/**
+	 * A gallery husk that can still be moved: a mob without AI ignores every push, so throws, pulls and
+	 * slams wouldn't show. It keeps its AI but can't walk.
+	 */
+	private static void standing(Mob husk) {
+		if (husk != null) {
+			husk.setNoAi(false);
+			husk.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED).setBaseValue(0);
+		}
+	}
+
+	/** A still wolf tamed by {@code owner} (so an ally), wounded to half health so a heal shows, tagged for clearing. */
+	private static void wolf(ServerPlayer owner, Vec3 at, float yaw) {
+		net.minecraft.world.entity.animal.wolf.Wolf wolf = EntityTypes.WOLF.create(owner.level(), EntitySpawnReason.COMMAND);
+		if (wolf == null) {
+			return;
+		}
+		wolf.snapTo(at.x, at.y, at.z, yaw, 0);
+		wolf.setNoAi(true);
+		wolf.tame(owner);
+		wolf.addTag(TAG);
+		owner.level().addFreshEntity(wolf);
+		wolf.setHealth(wolf.getMaxHealth() / 2);
 	}
 
 	/** Threads {@code runes} into spell {@code spell} and casts it at once, with full mana and no cooldown. */
@@ -506,14 +537,22 @@ public class WildercordShowcase implements FabricClientGameTest {
 			attempt(prefix + sample.name(), () -> {
 				world.getServer().runCommand(sample.night() ? "time set 18000" : "time set 6000");
 				boolean self = sample.shape() == Runes.SELF;
+				// A helpful spell is shown on allies (wounded tamed wolves), so it has someone to help or bind.
+				boolean helpful = sample.effect().kind() == dev.wildercord.spell.EffectKind.HELPFUL;
 				world.getServer().runOnServer(server -> {
 					ServerPlayer player = player(server);
 					ServerLevel level = player.level();
 					place(player, lane, 0, 8);
-					if (!self) {
-						husk(level, lane.add(0, 0, 6), 180);
-						husk(level, lane.add(-1.8, 0, 6.6), 180);
-						husk(level, lane.add(1.8, 0, 7.2), 180);
+					if (!self && helpful) {
+						wolf(player, lane.add(0, 0, 6), 180);
+						wolf(player, lane.add(-1.8, 0, 6.6), 180);
+						wolf(player, lane.add(1.8, 0, 7.2), 180);
+					} else if (!self) {
+						standing(husk(level, lane.add(0, 0, 6), 180));
+						standing(husk(level, lane.add(-1.8, 0, 6.6), 180));
+						standing(husk(level, lane.add(1.8, 0, 7.2), 180));
+					} else if (helpful) {
+						wolf(player, lane.add(1.6, 0, 1.2), 200);
 					}
 				});
 				if (self) {
@@ -548,6 +587,18 @@ public class WildercordShowcase implements FabricClientGameTest {
 			new Sample("hail", Runes.BOLT, Runes.HAIL, 8, false),
 			new Sample("surge", Runes.SELF, Runes.SURGE, 5, false),
 			new Sample("nullify", Runes.BEAM, Runes.NULLIFY, 3, false)));
+	}
+
+	/** Every fused rune made after the first twelve, filmed as each group's test says (see {@link FusedSample}). */
+	private static void fusedChorus(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<Sample> samples = new java.util.ArrayList<>();
+		for (List<FusedSample> group : List.of(WildercordFusedFlameTest.SAMPLES, WildercordFusedFrostTest.SAMPLES, WildercordFusedStormTest.SAMPLES,
+				WildercordFusedLifeTest.SAMPLES, WildercordFusedVoidTest.SAMPLES)) {
+			for (FusedSample sample : group) {
+				samples.add(new Sample(sample.rune().path(), sample.shape(), sample.rune(), sample.ticks(), sample.night()));
+			}
+		}
+		gallery(context, world, "fused_", samples);
 	}
 
 	// ------------------------------------------------------------------ parrying
