@@ -279,57 +279,57 @@ in the right biome, under the right conditions, for 20 seconds.
 
 | Rune | Family | Tier | Found |
 |---|---|---|---|
-| Ancient Seed | Effect | I | Trail ruins (brushing), Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Glowvine | Effect | I | Attuned in lush caves, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Treasure Sense | Effect | I | Buried treasure, Archive and dungeon vaults, the Archivist and dungeon bosses, Archive libraries |
-| Blazecall | Effect | II | Nether fortresses, Archive and dungeon vaults, the Archivist and dungeon bosses, Runebound Adepts (8%), Ember Sanctum |
-| Blood Moss | Effect | II | Attuned in a crimson forest, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Cinderbrand | Effect | II | The Ember Sanctum, Ember Sanctum |
-| Echolocate | Effect | II | Ancient cities, Archive libraries, Astral Observatory |
-| Fangs | Effect | II | Woodland mansions, Archive libraries, Astral Observatory |
-| Hush | Effect | II | Attuned in the deep dark, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Infest | Effect | II | Stronghold libraries, Archive libraries, Ember Sanctum |
-| Manaburn | Effect | II | Mana storms, Astral Observatory |
-| Mire | Effect | II | Attuned in a swamp, Archive and dungeon vaults, the Archivist and dungeon bosses, Ember Sanctum |
-| Moonpetal | Effect | II | Attuned in a cherry grove, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Portalfall | Effect | II | Ruined portals, Archive and dungeon vaults, the Archivist and dungeon bosses, Runebound Adepts (8%), Astral Observatory |
-| Remedy | Effect | II | Igloo basements, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Rootsnare | Effect | II | Attuned in a mangrove swamp, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Sporebloom | Effect | II | Attuned in mushroom fields, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Stalactite | Effect | II | Attuned in dripstone caves, Archive and dungeon vaults, the Archivist and dungeon bosses, Ember Sanctum |
-| Tusk Charge | Effect | II | Bastions, Archive and dungeon vaults, the Archivist and dungeon bosses, Ember Sanctum |
-| Undertow | Effect | II | Shipwrecks, Archive and dungeon vaults, the Archivist and dungeon bosses, Runebound Adepts (8%), Drowned Scriptorium |
+| Ancient Seed | Effect | I | Trail ruins (brushing) |
+| Glowvine | Effect | I | Attuned in lush caves |
+| Treasure Sense | Effect | I | Buried treasure, Archive libraries |
+| Blazecall | Effect | II | Nether fortresses, Runebound Adepts (8%) |
+| Blood Moss | Effect | II | Attuned in a crimson forest |
+| Cinderbrand | Effect | II | The Ember Sanctum |
+| Echolocate | Effect | II | Ancient cities, Archive libraries |
+| Fangs | Effect | II | Woodland mansions, Archive libraries |
+| Hush | Effect | II | Attuned in the deep dark |
+| Infest | Effect | II | Stronghold libraries, Archive libraries |
+| Manaburn | Effect | II | Mana storms |
+| Mire | Effect | II | Attuned in a swamp |
+| Moonpetal | Effect | II | Attuned in a cherry grove |
+| Portalfall | Effect | II | Ruined portals, Runebound Adepts (8%) |
+| Remedy | Effect | II | Igloo basements |
+| Rootsnare | Effect | II | Attuned in a mangrove swamp |
+| Sporebloom | Effect | II | Attuned in mushroom fields |
+| Stalactite | Effect | II | Attuned in dripstone caves |
+| Tusk Charge | Effect | II | Bastions |
+| Undertow | Effect | II | Shipwrecks, Runebound Adepts (8%) |
 | Vinelash | Effect | II | Jungle temples, Runebound Adepts (8%) |
-| Warcry | Effect | II | Pillager outposts, Archive and dungeon vaults, the Archivist and dungeon bosses, Runebound Adepts (8%), Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Warp Step | Effect | II | Attuned in a warped forest, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Ashen Veil | Effect | III | The Ember Sanctum, Ember Sanctum |
-| Basalt Surge | Effect | III | Attuned in the basalt deltas, Archive and dungeon vaults, the Archivist and dungeon bosses, Ember Sanctum |
-| Drowning Word | Effect | III | The Drowned Scriptorium, Drowned Scriptorium |
-| Eclipse | Effect | III | The Astral Observatory, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Hoarfrost | Effect | III | Attuned among ice spikes, Archive and dungeon vaults, the Archivist and dungeon bosses, Drowned Scriptorium |
-| Manatide | Effect | III | Mana storms, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Resonant Shriek | Effect | III | Ancient cities, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Riftcall | Effect | III | Rift sieges, Astral Observatory |
-| Sandstorm | Effect | III | Desert pyramids, Archive and dungeon vaults, the Archivist and dungeon bosses, Ember Sanctum |
-| Shulkershell | Effect | III | End cities, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Soulfire | Effect | III | Attuned in a soul sand valley, Archive and dungeon vaults, the Archivist and dungeon bosses, Ember Sanctum |
-| Starlight Tether | Effect | III | Attuned on the End's outer islands, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Starshard | Effect | III | Fallen Star craters, Archive and dungeon vaults, the Archivist and dungeon bosses, Astral Observatory |
-| Summit Wind | Effect | III | Attuned on a mountain peak, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Sunscorch | Effect | III | Attuned in the badlands, Archive and dungeon vaults, the Archivist and dungeon bosses, Ember Sanctum |
-| Tidecall | Effect | III | Ocean monuments (Elder Guardians), Archive and dungeon vaults, the Archivist and dungeon bosses, Drowned Scriptorium |
-| Cinderheart | Effect | IV | the Cinder Warden, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Starmaw | Effect | IV | the Star Eater, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Tidewrit | Effect | IV | the Tide Scribe, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| If Wet | Link | II | The Drowned Scriptorium, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| If Wounded | Link | II | Stronghold libraries, Archive and dungeon vaults, the Archivist and dungeon bosses, Archive libraries, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| If Outnumbered | Link | III | Woodland mansions, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Trial Key | Modifier | II | Trial vaults, Archive and dungeon vaults, the Archivist and dungeon bosses, Ominous vaults |
-| Kindled | Modifier | III | The Ember Sanctum, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Unstable | Modifier | III | Rift sieges, Archive and dungeon vaults, the Archivist and dungeon bosses, the Riftcaller, Archive and dungeon vaults, the Archivist and dungeon bosses |
-| Snare | Shape | II | Jungle temples, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Warcry | Effect | II | Pillager outposts, Runebound Adepts (8%) |
+| Warp Step | Effect | II | Attuned in a warped forest |
+| Ashen Veil | Effect | III | The Ember Sanctum |
+| Basalt Surge | Effect | III | Attuned in the basalt deltas |
+| Drowning Word | Effect | III | The Drowned Scriptorium |
+| Eclipse | Effect | III | The Astral Observatory |
+| Hoarfrost | Effect | III | Attuned among ice spikes |
+| Manatide | Effect | III | Mana storms |
+| Resonant Shriek | Effect | III | Ancient cities |
+| Riftcall | Effect | III | Rift sieges |
+| Sandstorm | Effect | III | Desert pyramids |
+| Shulkershell | Effect | III | End cities |
+| Soulfire | Effect | III | Attuned in a soul sand valley |
+| Starlight Tether | Effect | III | Attuned on the End's outer islands |
+| Starshard | Effect | III | Fallen Star craters |
+| Summit Wind | Effect | III | Attuned on a mountain peak |
+| Sunscorch | Effect | III | Attuned in the badlands |
+| Tidecall | Effect | III | Ocean monuments (Elder Guardians) |
+| Cinderheart | Effect | IV | the Cinder Warden |
+| Starmaw | Effect | IV | the Star Eater |
+| Tidewrit | Effect | IV | the Tide Scribe |
+| If Wet | Link | II | The Drowned Scriptorium |
+| If Wounded | Link | II | Stronghold libraries, Archive libraries |
+| If Outnumbered | Link | III | Woodland mansions |
+| Trial Key | Modifier | II | Trial vaults, Ominous vaults |
+| Kindled | Modifier | III | The Ember Sanctum |
+| Unstable | Modifier | III | Rift sieges, the Riftcaller |
+| Snare | Shape | II | Jungle temples |
 | Constellation | Shape | III | The Astral Observatory |
-| Vortex | Shape | III | Ominous vaults, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Vortex | Shape | III | Ominous vaults |
 
 ## Innate runes (10, never crafted or found)
 

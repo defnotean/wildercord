@@ -13,6 +13,7 @@ A **link** ends a segment of the spell: everything after it happens *later*, or 
 12 links, by tier.
 
 ### <img src="{{ '/assets/runes/delay.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Delay
+{: #delay}
 
 *Tier I · 2 mana · needs any Cord*
 
@@ -23,6 +24,7 @@ The rest fires 1 second later, from you.
 **Modifiers that work on it:** Extend, Quicken
 
 ### <img src="{{ '/assets/runes/if_airborne.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Airborne
+{: #if_airborne}
 
 *Tier II · 1 mana · needs a Copper Cord or better*
 
@@ -31,6 +33,7 @@ The rest fires only if you're in the air. Build aerial finishers.
 **How to get it:** Craft: a Blank Rune, Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/if_sneaking.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Sneaking
+{: #if_sneaking}
 
 *Tier II · 1 mana · needs a Copper Cord or better*
 
@@ -39,14 +42,16 @@ The rest fires only if you're sneaking. Build two spells in one.
 **How to get it:** Craft: a Blank Rune, Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/imbue.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Imbue
+{: #imbue}
 
 *Tier II · 3 mana · needs a Copper Cord or better*
 
 The rest isn't cast: it's stored, with 3 charges, in what the shape before it touches. With Self, the item in your hand (a weapon's hits, a bow's arrows, a tool's blocks, armour when you're hurt, a block where it's placed, anything else when used), or with empty hands the block you're looking at. Any block becomes a glyph that goes off at whoever steps on, uses, shoots or breaks it, or when it's powered. The stored part costs 3 times as much; releasing it costs no mana, but everything you've imbued shares one cooldown as long as the stored spell's, and you keep up to 6 imbued items.
 
-**How to get it:** Craft: a Blank Rune, Experience Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Bottle o' Enchanting, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/on_hit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Hit
+{: #on_hit}
 
 *Tier II · 2 mana · needs a Copper Cord or better*
 
@@ -55,6 +60,7 @@ The rest fires wherever the shape before it hits.
 **How to get it:** Craft: a Blank Rune, Target, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/on_hurt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Hurt
+{: #on_hurt}
 
 *Tier II · 2 mana · needs a Copper Cord or better*
 
@@ -63,32 +69,36 @@ The rest fires at whatever next hurts you (within 15 seconds).
 **How to get it:** Craft: a Blank Rune, Cactus, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/on_land.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Land
+{: #on_land}
 
 *Tier II · 2 mana · needs a Copper Cord or better*
 
 The rest fires when you next touch the ground.
 
-**How to get it:** Craft: a Blank Rune, Hay Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/pulse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pulse
+{: #pulse}
 
 *Tier II · 2 mana · needs a Copper Cord or better*
 
 The rest fires three times, one second apart, from you.
 
-**How to get it:** Craft: a Blank Rune, Repeater, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Redstone Repeater, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Quicken
 
 ### <img src="{{ '/assets/runes/combo.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Combo
+{: #combo}
 
 *Tier III · 2 mana · needs an Amethyst Cord or better*
 
 The rest fires only on every third cast of this spell: a finisher.
 
-**How to get it:** Craft: a Blank Rune, 2x Repeater, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Redstone Repeater, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/echo.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Echo
+{: #echo}
 
 *Tier III · 2 mana · needs an Amethyst Cord or better*
 
@@ -97,6 +107,7 @@ Everything before it fires again 0.5 seconds later.
 **How to get it:** Craft: a Blank Rune, 2x Echo Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/on_kill.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Kill
+{: #on_kill}
 
 *Tier III · 2 mana · needs an Amethyst Cord or better*
 
@@ -105,6 +116,7 @@ The rest fires at each creature the shape before it kills.
 **How to get it:** Craft: a Blank Rune, Bone Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/on_low_health.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Low Health
+{: #on_low_health}
 
 *Tier III · 2 mana · needs an Amethyst Cord or better*
 

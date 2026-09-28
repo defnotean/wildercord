@@ -14,6 +14,7 @@ Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 12 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/bramble.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bramble
+{: #bramble}
 
 *Tier I · Life · Helps you and your allies · 6 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ Thorns for 10 seconds: whatever hurts you from within 4 blocks takes 3 damage an
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/glimmer.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glimmer
+{: #glimmer}
 
 *Tier I · Life · Works on the world · 2 mana · needs any Cord*
 
@@ -34,6 +36,7 @@ Grows glowing lichen over the block that was hit and up to 4 around it: a light 
 **Modifiers that work on it:** Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/grow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Grow
+{: #grow}
 
 *Tier I · Life · Works on the world · 4 mana · needs any Cord*
 
@@ -44,16 +47,18 @@ Bone-meals the block that was hit and everything around it.
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/harvest.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Harvest
+{: #harvest}
 
 *Tier I · Life · Works on the world · 3 mana · needs any Cord*
 
 Harvests grown crops around the block hit, and replants them.
 
-**How to get it:** Craft: a Blank Rune, 2x Wheat. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Wheat Crops. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/heal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Heal
+{: #heal}
 
 *Tier I · Life · Helps you and your allies · 12 mana · needs any Cord*
 
@@ -64,6 +69,7 @@ Restores 8 health (4 hearts).
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/nourish.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nourish
+{: #nourish}
 
 *Tier I · Life · Helps you and your allies · 6 mana · needs any Cord*
 
@@ -74,6 +80,7 @@ Restores 6 hunger and some saturation.
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/cleanse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cleanse
+{: #cleanse}
 
 *Tier II · Life · Helps you and your allies · 8 mana · needs a Copper Cord or better*
 
@@ -84,6 +91,7 @@ Washes away harmful effects and fire.
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/haven.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Haven
+{: #haven}
 
 *Tier II · Life · Helps you and your allies · 14 mana · needs a Copper Cord or better*
 
@@ -94,6 +102,7 @@ Raises a 4-block dome of light for 8 seconds: you and your allies inside take 20
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/regrowth.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Regrowth
+{: #regrowth}
 
 *Tier II · Life · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
@@ -104,6 +113,7 @@ Regeneration II for 8 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/venom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Venom
+{: #venom}
 
 *Tier II · Life · Harms enemies · 8 mana · needs a Copper Cord or better*
 
@@ -114,6 +124,7 @@ Poison II for 6 seconds and 2 damage.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/restore.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Restore
+{: #restore}
 
 *Tier III · Life · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
@@ -124,6 +135,7 @@ Puts things back: heals 6, puts out fire, and mends 5% of every worn and held it
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/reversal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reversal
+{: #reversal}
 
 *Tier IV · Life · Helps you and your allies · 28 mana · needs an Echo Cord*
 

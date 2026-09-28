@@ -13,6 +13,7 @@ A **shape** decides *where* a spell goes and *who* it touches: yourself, a bolt 
 33 shapes, by tier.
 
 ### <img src="{{ '/assets/runes/arc.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Arc
+{: #arc}
 
 *Tier I · 3 mana · its effects cost x1.1 · needs any Cord*
 
@@ -23,6 +24,7 @@ Lobs a bolt that falls and bursts where it lands.
 **Modifiers that work on it:** Quicken, Bounce, Split, Volley
 
 ### <img src="{{ '/assets/runes/bolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bolt
+{: #bolt}
 
 *Tier I · 3 mana · its effects cost x1.1 · needs any Cord*
 
@@ -33,6 +35,7 @@ Fires a flying bolt, up to 48 blocks.
 **Modifiers that work on it:** Quicken, Pierce, Bounce, Split, Homing, Chain, Volley
 
 ### <img src="{{ '/assets/runes/nova.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nova
+{: #nova}
 
 *Tier I · 3 mana · its effects cost x1.3 · needs any Cord*
 
@@ -43,6 +46,7 @@ A small nova bursts from you, hitting everything within 2.5 blocks.
 **Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/ray.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ray
+{: #ray}
 
 *Tier I · 2 mana · needs any Cord*
 
@@ -53,6 +57,7 @@ An instant, short ray that hits the first thing within 10 blocks.
 **Modifiers that work on it:** Pierce, Chain
 
 ### <img src="{{ '/assets/runes/self.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Self
+{: #self}
 
 *Tier I · 0 mana · needs any Cord*
 
@@ -61,6 +66,7 @@ Targets you.
 **How to get it:** Craft: a Blank Rune, Glass Pane. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/spark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spark
+{: #spark}
 
 *Tier I · 1 mana · needs any Cord*
 
@@ -71,6 +77,7 @@ A quick spark darts up to 16 blocks and hits the first thing in its path, at 75%
 **Modifiers that work on it:** Quicken, Split, Volley
 
 ### <img src="{{ '/assets/runes/touch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Touch
+{: #touch}
 
 *Tier I · 1 mana · needs any Cord*
 
@@ -81,6 +88,7 @@ Targets what you're looking at, within reach.
 **Modifiers that work on it:** Chain
 
 ### <img src="{{ '/assets/runes/barrage.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barrage
+{: #barrage}
 
 *Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
 
@@ -91,6 +99,7 @@ A flurry of 8 blows in one second on everything right in front of you, each at 3
 **Modifiers that work on it:** Quicken
 
 ### <img src="{{ '/assets/runes/beam.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Beam
+{: #beam}
 
 *Tier II · 4 mana · its effects cost x1.2 · needs a Copper Cord or better*
 
@@ -101,16 +110,18 @@ An instant line that hits the first thing within 24 blocks.
 **Modifiers that work on it:** Pierce, Split, Chain, Volley
 
 ### <img src="{{ '/assets/runes/blitz.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blitz
+{: #blitz}
 
 *Tier II · 6 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
 You flash up to 8 blocks forward in an instant, striking everything you pass through.
 
-**How to get it:** Craft: a Blank Rune, Rabbit Foot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/burst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Burst
+{: #burst}
 
 *Tier II · 6 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
@@ -121,6 +132,7 @@ Hits everything within 4 blocks.
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/cluster.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cluster
+{: #cluster}
 
 *Tier II · 6 mana · its effects cost x1.7 · needs a Copper Cord or better*
 
@@ -131,6 +143,7 @@ A ball of energy that breaks into five shards where it hits; each shard strikes 
 **Modifiers that work on it:** Widen, Quicken, Split, Focus
 
 ### <img src="{{ '/assets/runes/comet.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Comet
+{: #comet}
 
 *Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
 
@@ -141,6 +154,7 @@ A heavy ball of energy flies up to 24 blocks and bursts on the first thing it to
 **Modifiers that work on it:** Widen, Quicken, Split, Volley, Focus
 
 ### <img src="{{ '/assets/runes/cone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cone
+{: #cone}
 
 *Tier II · 5 mana · its effects cost x1.4 · needs a Copper Cord or better*
 
@@ -151,6 +165,7 @@ Sweeps everything in a 60-degree cone up to 6 blocks in front of you.
 **Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/crescent.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Crescent
+{: #crescent}
 
 *Tier II · 5 mana · its effects cost x1.4 · needs a Copper Cord or better*
 
@@ -161,6 +176,7 @@ A crescent slash flies 16 blocks forward, cutting everything in its 5-wide path.
 **Modifiers that work on it:** Widen, Quicken, Split, Volley, Focus
 
 ### <img src="{{ '/assets/runes/lance.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lance
+{: #lance}
 
 *Tier II · 5 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
@@ -171,6 +187,7 @@ A thick lance of light drives 16 blocks forward, through every creature in its p
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/mine.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mine
+{: #mine}
 
 *Tier II · 5 mana · its effects cost x1.3 · needs a Copper Cord or better*
 
@@ -181,6 +198,7 @@ Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/pillar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pillar
+{: #pillar}
 
 *Tier II · 5 mana · its effects cost x1.4 · needs a Copper Cord or better*
 
@@ -191,6 +209,7 @@ A column erupts where you look: hits everything within 1.5 blocks, 6 high.
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/prism.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prism
+{: #prism}
 
 *Tier II · 5 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
@@ -201,16 +220,18 @@ A beam that splits into three at the first thing it hits, each ray striking the 
 **Modifiers that work on it:** Split
 
 ### <img src="{{ '/assets/runes/ricochet.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ricochet
+{: #ricochet}
 
 *Tier II · 5 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
 An orb that bounces off the ground and walls 4 times, passing through creatures and hitting each once.
 
-**How to get it:** Craft: a Blank Rune, Slime Ball and Snowball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Slimeball and Snowball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Quicken, Bounce, Split
 
 ### <img src="{{ '/assets/runes/ring.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ring
+{: #ring}
 
 *Tier II · 6 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
@@ -221,6 +242,7 @@ A ring expands from you out to 7 blocks, hitting everything it passes.
 **Modifiers that work on it:** Widen, Focus
 
 ### <img src="{{ '/assets/runes/stream.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stream
+{: #stream}
 
 *Tier II · 5 mana · its effects cost x1.8 · needs a Copper Cord or better*
 
@@ -231,6 +253,7 @@ A steady stream of energy follows your aim for a second, striking the first thin
 **Modifiers that work on it:** Quicken
 
 ### <img src="{{ '/assets/runes/sweep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sweep
+{: #sweep}
 
 *Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
 
@@ -241,6 +264,7 @@ A 10-block beam sweeps across in front of you in half a second, hitting everythi
 **Modifiers that work on it:** Widen, Quicken, Focus
 
 ### <img src="{{ '/assets/runes/trail.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trail
+{: #trail}
 
 *Tier II · 7 mana · its effects cost x1.8 · needs a Copper Cord or better*
 
@@ -251,6 +275,7 @@ For 5 seconds your footsteps leave a path that hits whatever steps on it.
 **Modifiers that work on it:** Extend
 
 ### <img src="{{ '/assets/runes/wave.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wave
+{: #wave}
 
 *Tier II · 6 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
@@ -261,6 +286,7 @@ A 3-wide wave rolls 14 blocks forward along the ground.
 **Modifiers that work on it:** Widen, Quicken, Focus
 
 ### <img src="{{ '/assets/runes/wisp.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wisp
+{: #wisp}
 
 *Tier II · 4 mana · its effects cost x1.3 · needs a Copper Cord or better*
 
@@ -271,6 +297,7 @@ A wisp drifts out and chases the nearest enemy within 16 blocks for up to 4 seco
 **Modifiers that work on it:** Quicken, Split
 
 ### <img src="{{ '/assets/runes/orb.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Orb
+{: #orb}
 
 *Tier III · 9 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
 
@@ -281,16 +308,18 @@ A slow, heavy orb drifts 20 blocks forward through creatures, striking everythin
 **Modifiers that work on it:** Widen, Quicken, Split, Focus
 
 ### <img src="{{ '/assets/runes/orbit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Orbit
+{: #orbit}
 
 *Tier III · 9 mana · its effects cost x2 · needs an Amethyst Cord or better*
 
 Three orbs circle you for 8 seconds and hit whatever they touch.
 
-**How to get it:** Craft: a Blank Rune, Ender Eye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Eye of Ender, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Extend, Split
 
 ### <img src="{{ '/assets/runes/rain.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rain
+{: #rain}
 
 *Tier III · 10 mana · its effects cost x2.5 · needs an Amethyst Cord or better*
 
@@ -301,16 +330,18 @@ Three orbs circle you for 8 seconds and hit whatever they touch.
 **Modifiers that work on it:** Widen, Split, Focus
 
 ### <img src="{{ '/assets/runes/totem.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Totem
+{: #totem}
 
 *Tier III · 10 mana · its effects cost x2.4 · needs an Amethyst Cord or better*
 
 A floating totem where you look pulses every 2 seconds for 10 seconds.
 
-**How to get it:** Craft: a Blank Rune, Emerald Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Extend, Widen, Quicken, Focus
 
 ### <img src="{{ '/assets/runes/wall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wall
+{: #wall}
 
 *Tier III · 10 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
 
@@ -321,16 +352,18 @@ A 7-block wall across where you look. Hits whatever crosses it for 5 seconds.
 **Modifiers that work on it:** Extend, Widen, Quicken, Focus
 
 ### <img src="{{ '/assets/runes/zone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Zone
+{: #zone}
 
 *Tier III · 8 mana · its effects cost x2 · needs an Amethyst Cord or better*
 
 A 3-block field where you look. Re-applies every second for 6 seconds.
 
-**How to get it:** Craft: a Blank Rune, Redstone Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Redstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Extend, Widen, Quicken, Split, Focus
 
 ### <img src="{{ '/assets/runes/domain.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Domain
+{: #domain}
 
 *Tier IV · 20 mana · its effects cost x3 · needs an Echo Cord*
 

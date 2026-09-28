@@ -11,6 +11,7 @@ nav_order: 7
 10 runes that nobody can craft, find or trade. When you form your 1st Heart Circle, one of them wakes in your heart, chosen at random, and it's yours alone. It grows stronger with every Heart Circle you form. Your Grimoire shows which one you have.
 
 ### <img src="{{ '/assets/runes/blood_thread.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blood Thread
+{: #blood_thread}
 
 *Tier I · Blood · Harms enemies · 10 mana · needs any Cord*
 
@@ -21,6 +22,7 @@ Threads everything hit together for 8 seconds: half of any damage one of them ta
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/borrowed_time.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Borrowed Time
+{: #borrowed_time}
 
 *Tier I · Time · Helps you and your allies · 14 mana · needs any Cord*
 
@@ -31,6 +33,7 @@ Heals every bit of damage you took in the last 5 seconds. Over the next 10 secon
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/fortune.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fortune
+{: #fortune}
 
 *Tier I · Life · Helps you and your allies · 10 mana · needs any Cord*
 
@@ -41,6 +44,7 @@ For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/gale_mantle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gale Mantle
+{: #gale_mantle}
 
 *Tier I · Wind · Helps you and your allies · 10 mana · needs any Cord*
 
@@ -51,6 +55,7 @@ For 12 seconds, jump again in midair to dash forward (up to 3 dashes).
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/kindling.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Kindling
+{: #kindling}
 
 *Tier I · Fire · Harms enemies · 7 mana · needs any Cord*
 
@@ -61,6 +66,7 @@ For 12 seconds, jump again in midair to dash forward (up to 3 dashes).
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/mirrorfrost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mirrorfrost
+{: #mirrorfrost}
 
 *Tier I · Frost · Helps you and your allies · 12 mana · needs any Cord*
 
@@ -71,6 +77,7 @@ Casts back the last spell that hit you in the past 30 seconds, as your own.
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/phantom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Phantom
+{: #phantom}
 
 *Tier I · Void · Helps you and your allies · 12 mana · needs any Cord*
 
@@ -81,6 +88,7 @@ Leaves an afterimage of you that every monster within 16 blocks turns on for 4 s
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/stoneform.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stoneform
+{: #stoneform}
 
 *Tier I · Earth · Helps you and your allies · 12 mana · needs any Cord*
 
@@ -91,6 +99,7 @@ For 8 seconds: no knockback, 20% less damage, and every hit you take sends out a
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/stormheart.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stormheart
+{: #stormheart}
 
 *Tier I · Storm · Helps you and your allies · 12 mana · needs any Cord*
 
@@ -101,6 +110,7 @@ For 10 seconds, whatever hits you is struck by lightning (at most once a second)
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/twin_star.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Twin Star
+{: #twin_star}
 
 *Tier I · Arcane · Helps you and your allies · 12 mana · needs any Cord*
 

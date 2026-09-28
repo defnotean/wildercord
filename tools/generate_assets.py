@@ -322,7 +322,7 @@ def main():
 
 
 # Magic that changes the world (cast/WorldMagic, spell/WorldRules): each interaction's line in a rune's tooltip.
-WORLD_LANG = {
+WORLD_MAGIC_LANG = {
     "tooltip.wildercord.world.ignite": "Where it lands: sets grass and leaves alight, melts snow and ice, boils water into blinding steam",
     "tooltip.wildercord.world.freeze": "Where it lands: freezes water into ice you can walk on, puts out fires and campfires",
     "tooltip.wildercord.world.conduct": "Where it lands: in water, shocks every foe in the same water",
@@ -582,6 +582,7 @@ def write_lang(runes):
         lang[f"rune.wildercord.{r['path']}.desc"] = r["desc"]
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
+    lang.update(WORLD_MAGIC_LANG)
     lang.update(WORLD_LANG)
     lang.update(PARRY_AND_WILD_LANG)
     lang.update(advancement_lang())
@@ -655,9 +656,9 @@ def loot_sources():
             places = found.setdefault(path, [])
             if text not in places:
                 places.append(text)
-        found.setdefault(path, []).extend(["Archive and dungeon vaults", "the Archivist and dungeon bosses"])
     # The dimension dungeons' chests hold runes of their elements.
-    for path, places in dungeon_assets.sources(read_runes(), INNATE).items():
+    # (Only their common runes: never an innate, fused or found-only one, as the chests' own pools.)
+    for path, places in dungeon_assets.sources(read_runes(), set(INNATE) | found_only() | set(FUSED)).items():
         for place in places:
             if place not in found.setdefault(path, []):
                 found[path].append(place)

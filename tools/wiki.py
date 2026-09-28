@@ -23,6 +23,33 @@ WIKI = ROOT / "wiki"
 RUNES_JAVA = ROOT / "src/main/java/dev/wildercord/spell/Runes.java"
 TEXTURES = ROOT / "src/main/resources/assets/wildercord/textures/item/rune"
 
+def _vanilla_names():
+    """Vanilla items' English names from the game jar (so the wiki says "Hay Bale", as the game does), if it's there."""
+    import json
+    import zipfile
+    jars = sorted((Path.home() / ".gradle/caches/fabric-loom/minecraftMaven/net/minecraft").glob("minecraft-clientonly-deobf/*/minecraft-clientonly-deobf-*.jar"))
+    if not jars:
+        return {}
+    with zipfile.ZipFile(jars[-1]) as jar:
+        lang = json.loads(jar.read("assets/minecraft/lang/en_us.json").decode("utf-8"))
+    names = {}
+    for key, value in lang.items():
+        parts = key.split(".")
+        if len(parts) == 3 and parts[0] in ("item", "block") and parts[1] == "minecraft":
+            names.setdefault("minecraft:" + parts[2], value)
+    return names
+
+
+_VANILLA = _vanilla_names()
+_item_name = g.item_name
+
+
+def _named(item_id):
+    return _VANILLA.get(item_id) or _item_name(item_id)
+
+
+g.item_name = _named
+
 ELEMENTS = ["fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood"]
 ELEMENT_BLURB = {
     "fire": "Burning, blasts and heat. Fire lights what it touches and boils water into steam.",
@@ -126,7 +153,8 @@ def works_with(r, modifiers):
 
 
 def entry(r, fused, found, world, modifiers):
-    lines = [f"### {img(r['path'])} {r['name']}", ""]
+    # An explicit anchor (the rune's id), so other pages can link straight to the entry.
+    lines = [f"### {img(r['path'])} {r['name']}", f"{{: #{r['path']}}}", ""]
     facts = [f"Tier {TIER_NAMES[r['tier']]}"]
     if r["family"] == "effect":
         facts.append(r["element"].title())

@@ -14,6 +14,7 @@ Stone and ground. Earth shields, roots, heaves the ground and breaks blocks.
 16 earth effects you can craft or find in the usual way. Earth also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/brace.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Brace
+{: #brace}
 
 *Tier I · Earth · Helps you and your allies · 4 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 second
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/chisel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chisel
+{: #chisel}
 
 *Tier I · Earth · Works on the world · 2 mana · needs any Cord*
 
@@ -34,6 +36,7 @@ Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/pelt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pelt
+{: #pelt}
 
 *Tier I · Earth · Harms enemies · 5 mana · needs any Cord*
 
@@ -44,6 +47,7 @@ Pelts targets with stones: 4 damage and a small knockback.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/aftershock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Aftershock
+{: #aftershock}
 
 *Tier II · Earth · Harms enemies · 9 mana · needs a Copper Cord or better*
 
@@ -54,6 +58,7 @@ Pelts targets with stones: 4 damage and a small knockback.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/break.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Break
+{: #break}
 
 *Tier II · Earth · Works on the world · 4 mana · needs a Copper Cord or better*
 
@@ -64,6 +69,7 @@ Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/excavate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Excavate
+{: #excavate}
 
 *Tier II · Earth · Works on the world · 10 mana · needs a Copper Cord or better*
 
@@ -74,6 +80,7 @@ Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/fell.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fell
+{: #fell}
 
 *Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
 
@@ -84,6 +91,7 @@ Fells the tree that was hit: the log and every log joined to it above, up to 32.
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/rampart.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rampart
+{: #rampart}
 
 *Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
 
@@ -94,16 +102,18 @@ Raises a 5-wide, 3-high wall of earth at the point for 10 seconds.
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/root.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Root
+{: #root}
 
 *Tier II · Earth · Harms enemies · 9 mana · needs a Copper Cord or better*
 
 Vines hold targets in place for 3 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Vine, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/shackle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shackle
+{: #shackle}
 
 *Tier II · Earth · Harms enemies · 9 mana · needs a Copper Cord or better*
 
@@ -114,6 +124,7 @@ Chains each target to the spot for 5 seconds: it's yanked back if it strays more
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/shield.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shield
+{: #shield}
 
 *Tier II · Earth · Helps you and your allies · 12 mana · needs a Copper Cord or better*
 
@@ -124,6 +135,7 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/stoneskin.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stoneskin
+{: #stoneskin}
 
 *Tier II · Earth · Helps you and your allies · 12 mana · needs a Copper Cord or better*
 
@@ -134,6 +146,7 @@ Resistance II for 10 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/tunnel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tunnel
+{: #tunnel}
 
 *Tier II · Earth · Works on the world · 8 mana · needs a Copper Cord or better*
 
@@ -144,6 +157,7 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/vein.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vein
+{: #vein}
 
 *Tier II · Earth · Works on the world · 10 mana · needs a Copper Cord or better*
 
@@ -154,16 +168,18 @@ Mines the block that was hit and, if it's an ore, every matching ore joined to i
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/weigh.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Weigh
+{: #weigh}
 
 *Tier II · Earth · Harms enemies · 8 mana · needs a Copper Cord or better*
 
 Crushingly heavy for 5 seconds: triple gravity, barely able to move or jump, and fliers are dragged down.
 
-**How to get it:** Craft: a Blank Rune, Iron Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/tremor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tremor
+{: #tremor}
 
 *Tier III · Earth · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 

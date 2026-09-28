@@ -24,6 +24,7 @@ nav_order: 6
 | **Blood** | Bloodboil | Frostbite | Heartstopper | Crimson Mist | Bonespur | Transfusion | Devour | Hemomancy | Reckoning | Sanguine Rite |
 
 ### <img src="{{ '/assets/runes/absolute_zero.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Absolute Zero
+{: #absolute_zero}
 
 *Tier III · Frost · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
@@ -34,6 +35,7 @@ Slowness IV for 3 seconds. A target that was already slowed or frozen freezes so
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/black_ice.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Black Ice
+{: #black_ice}
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -44,6 +46,7 @@ Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/blizzard.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blizzard
+{: #blizzard}
 
 *Tier III · Frost · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -54,6 +57,7 @@ A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/bloodboil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloodboil
+{: #bloodboil}
 
 *Tier III · Blood · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -64,6 +68,7 @@ A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/bloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloom
+{: #bloom}
 
 *Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
@@ -74,6 +79,7 @@ Regeneration II for 6 seconds, and plants grow around every ally it touches.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/bonespur.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bonespur
+{: #bonespur}
 
 *Tier III · Earth · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -84,6 +90,7 @@ Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 dam
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/chronoshift.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chronoshift
+{: #chronoshift}
 
 *Tier III · Time · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
@@ -94,6 +101,7 @@ Turns an ally's clock forward: their other spells come off cooldown 3 seconds so
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/conflagration.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Conflagration
+{: #conflagration}
 
 *Tier III · Fire · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
@@ -104,6 +112,7 @@ Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flare
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/crimson_mist.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Crimson Mist
+{: #crimson_mist}
 
 *Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -114,6 +123,7 @@ A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/cryostasis.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cryostasis
+{: #cryostasis}
 
 *Tier III · Frost · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
@@ -124,6 +134,7 @@ Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 healt
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/devour.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Devour
+{: #devour}
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -134,6 +145,7 @@ Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 healt
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/downdraft.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Downdraft
+{: #downdraft}
 
 *Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
@@ -144,6 +156,7 @@ Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more f
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/entropy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Entropy
+{: #entropy}
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -154,6 +167,7 @@ The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight thro
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/everburn.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Everburn
+{: #everburn}
 
 *Tier III · Fire · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -164,6 +178,7 @@ Sets targets alight for 5 seconds with a fire that burns twice as fast (1 more d
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/firestorm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Firestorm
+{: #firestorm}
 
 *Tier III · Fire · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -174,6 +189,7 @@ Sets targets alight for 6 seconds and deals 4 damage, and the fire leaps to ever
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/fossilize.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fossilize
+{: #fossilize}
 
 *Tier III · Earth · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -184,6 +200,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/frostbite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostbite
+{: #frostbite}
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -194,6 +211,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/frostbloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostbloom
+{: #frostbloom}
 
 *Tier III · Frost · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
@@ -204,6 +222,7 @@ Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/geode.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Geode
+{: #geode}
 
 *Tier III · Earth · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
@@ -214,6 +233,7 @@ Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/glacier.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glacier
+{: #glacier}
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -224,6 +244,7 @@ Freezes targets in place for 2 seconds (1 second on players).
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/hail.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hail
+{: #hail}
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -234,6 +255,7 @@ Three hailstones of 2 damage each, and Slowness II for 4 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/heartstopper.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Heartstopper
+{: #heartstopper}
 
 *Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -244,6 +266,7 @@ Three hailstones of 2 damage each, and Slowness II for 4 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/hellmouth.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hellmouth
+{: #hellmouth}
 
 *Tier III · Fire · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
@@ -254,6 +277,7 @@ Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks towar
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/hemomancy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hemomancy
+{: #hemomancy}
 
 *Tier III · Blood · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -264,6 +288,7 @@ Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks towar
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/lifebloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lifebloom
+{: #lifebloom}
 
 *Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
@@ -274,6 +299,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/lifesteal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lifesteal
+{: #lifesteal}
 
 *Tier III · Blood · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -284,6 +310,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/magma.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Magma
+{: #magma}
 
 *Tier III · Earth · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -294,6 +321,7 @@ The ground under the target turns to magma for 4 seconds: 2 damage a second to e
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/magnetize.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Magnetize
+{: #magnetize}
 
 *Tier III · Storm · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -304,6 +332,7 @@ Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/monolith.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Monolith
+{: #monolith}
 
 *Tier III · Earth · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
@@ -314,6 +343,7 @@ A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/nullify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nullify
+{: #nullify}
 
 *Tier III · Arcane · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
@@ -324,6 +354,7 @@ Strips an enemy's good effects, or an ally's bad effects.
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/phoenix_pyre.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Phoenix Pyre
+{: #phoenix_pyre}
 
 *Tier III · Fire · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
@@ -334,6 +365,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/plasma.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Plasma
+{: #plasma}
 
 *Tier III · Storm · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
@@ -344,6 +376,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/prismatic_burst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prismatic Burst
+{: #prismatic_burst}
 
 *Tier III · Arcane · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -354,6 +387,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/reckoning.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reckoning
+{: #reckoning}
 
 *Tier III · Time · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -364,6 +398,7 @@ For 4 seconds, every wound the target takes is counted; then half of it comes du
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/recoil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Recoil
+{: #recoil}
 
 *Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
@@ -374,6 +409,7 @@ Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where t
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/riftbolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Riftbolt
+{: #riftbolt}
 
 *Tier III · Storm · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -384,6 +420,7 @@ A black bolt for 6 damage that tears the target through a rift up to 5 blocks aw
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/rime_seal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rime Seal
+{: #rime_seal}
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -394,6 +431,7 @@ Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that s
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/sanguine_rite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sanguine Rite
+{: #sanguine_rite}
 
 *Tier III · Blood · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
@@ -404,6 +442,7 @@ You pay 3 of your own health (never your last) for 12 damage that ignores armour
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/second_wind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Second Wind
+{: #second_wind}
 
 *Tier III · Life · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
 
@@ -414,6 +453,7 @@ For 20 seconds, the first blow that would kill the ally leaves them at 4 health 
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/singularity.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Singularity
+{: #singularity}
 
 *Tier III · Void · Harms enemies · 22 mana · needs an Amethyst Cord or better*
 
@@ -424,6 +464,7 @@ A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 b
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/sinkhole.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sinkhole
+{: #sinkhole}
 
 *Tier III · Earth · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -434,6 +475,7 @@ The ground gives way: enemies within 3 blocks are dragged to its middle and pinn
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/skyglyph.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Skyglyph
+{: #skyglyph}
 
 *Tier III · Wind · Works on the world · 12 mana · needs an Amethyst Cord or better*
 
@@ -444,6 +486,7 @@ Writes a wind glyph where it lands for 10 seconds: an ally who steps on it is la
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/soulbond.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Soulbond
+{: #soulbond}
 
 *Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
@@ -454,6 +497,7 @@ Binds you and an ally for 10 seconds: any damage either of you takes is split be
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/starfire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Starfire
+{: #starfire}
 
 *Tier III · Fire · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -464,6 +508,7 @@ Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, a
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/steam.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Steam
+{: #steam}
 
 *Tier III · Fire · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
@@ -474,6 +519,7 @@ A scalding burst of steam: 4 damage and Blindness for 3 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/stormclock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stormclock
+{: #stormclock}
 
 *Tier III · Storm · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -484,6 +530,7 @@ A scalding burst of steam: 4 damage and Blindness for 3 seconds.
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/stormweave.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stormweave
+{: #stormweave}
 
 *Tier III · Storm · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -494,6 +541,7 @@ Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between t
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/surge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Surge
+{: #surge}
 
 *Tier III · Storm · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
@@ -504,6 +552,7 @@ Speed I and Strength I for 8 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/tempest.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tempest
+{: #tempest}
 
 *Tier III · Storm · Harms enemies · 22 mana · needs an Amethyst Cord or better*
 
@@ -514,6 +563,7 @@ A lightning strike for 8 damage, and a gale that hurls targets far away.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/thunderhead.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderhead
+{: #thunderhead}
 
 *Tier III · Storm · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
@@ -524,6 +574,7 @@ A thundercloud gathers over the target for 4 seconds and strikes an enemy within
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/timesteal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Timesteal
+{: #timesteal}
 
 *Tier III · Time · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -534,6 +585,7 @@ Steals up to 2 of the target's good effects, with the time they had left (at mos
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/transfusion.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Transfusion
+{: #transfusion}
 
 *Tier III · Blood · Helps you and your allies · 12 mana · needs an Amethyst Cord or better*
 
@@ -544,6 +596,7 @@ You give up to 4 of your own health (never below 2), and the ally heals twice wh
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/updraft.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Updraft
+{: #updraft}
 
 *Tier III · Wind · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -554,6 +607,7 @@ Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft sm
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/warp.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Warp
+{: #warp}
 
 *Tier III · Void · Moves you · 12 mana · needs an Amethyst Cord or better*
 
@@ -564,6 +618,7 @@ You and the first creature hit swap places through the void. An enemy is left re
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/zephyr.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Zephyr
+{: #zephyr}
 
 *Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 

@@ -14,6 +14,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 9 fire effects you can craft or find in the usual way. Fire also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/ember.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ember
+{: #ember}
 
 *Tier I · Fire · Harms enemies · 6 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/fire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fire
+{: #fire}
 
 *Tier II · Fire · Harms enemies · 8 mana · needs a Copper Cord or better*
 
@@ -34,6 +36,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/fireward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fireward
+{: #fireward}
 
 *Tier II · Fire · Helps you and your allies · 8 mana · needs a Copper Cord or better*
 
@@ -44,6 +47,7 @@ Fire resistance for 30 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/flashfire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Flashfire
+{: #flashfire}
 
 *Tier II · Fire · Harms enemies · 11 mana · needs a Copper Cord or better*
 
@@ -54,6 +58,7 @@ A flash of heat: 4 fire damage to every enemy within 3 blocks, setting them alig
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/smelt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Smelt
+{: #smelt}
 
 *Tier II · Fire · Works on the world · 6 mana · needs a Copper Cord or better*
 
@@ -64,6 +69,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/explode.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Explode
+{: #explode}
 
 *Tier III · Fire · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -74,6 +80,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/inferno.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Inferno
+{: #inferno}
 
 *Tier III · Fire · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
@@ -84,6 +91,7 @@ Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/meteor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Meteor
+{: #meteor}
 
 *Tier III · Fire · Harms enemies · 24 mana · needs an Amethyst Cord or better*
 
@@ -94,6 +102,7 @@ A burning meteor falls on each target: 10 damage in a 3-block blast.
 **Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/primer.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Primer
+{: #primer}
 
 *Tier III · Fire · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 

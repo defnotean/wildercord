@@ -13,6 +13,7 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 18 modifiers, by tier.
 
 ### <img src="{{ '/assets/runes/amplify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Amplify
+{: #amplify}
 
 *Tier I · cost x1.6 · needs any Cord*
 
@@ -23,16 +24,18 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
 ### <img src="{{ '/assets/runes/extend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Extend
+{: #extend}
 
 *Tier I · cost x1.4 · needs any Cord*
 
 +100% duration.
 
-**How to get it:** Craft: a Blank Rune, 2x Redstone. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
 **Attaches to:** the closest rune on its left that is anything that lasts.
 
 ### <img src="{{ '/assets/runes/frugal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frugal
+{: #frugal}
 
 *Tier I · cost x0.5 · needs any Cord*
 
@@ -43,6 +46,7 @@ Half the mana, but 40% weaker and shorter.
 **Attaches to:** the closest rune on its left that is any effect.
 
 ### <img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bounce
+{: #bounce}
 
 *Tier II · cost x1.3 · needs a Copper Cord or better*
 
@@ -53,6 +57,7 @@ Bounces off blocks up to 3 times.
 **Attaches to:** the closest rune on its left that is projectiles.
 
 ### <img src="{{ '/assets/runes/execute.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Execute
+{: #execute}
 
 *Tier II · cost x1.3 · needs a Copper Cord or better*
 
@@ -63,6 +68,7 @@ Double power against targets under half health.
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
 ### <img src="{{ '/assets/runes/focus.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Focus
+{: #focus}
 
 *Tier II · cost x1.2 · needs a Copper Cord or better*
 
@@ -73,6 +79,7 @@ Half the radius, +50% power.
 **Attaches to:** the closest rune on its left that is anything with an area.
 
 ### <img src="{{ '/assets/runes/linger.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Linger
+{: #linger}
 
 *Tier II · cost x1.8 · needs a Copper Cord or better*
 
@@ -83,6 +90,7 @@ The effect lands twice more, a second apart.
 **Attaches to:** the closest rune on its left that is effects that can land again over time.
 
 ### <img src="{{ '/assets/runes/pierce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pierce
+{: #pierce}
 
 *Tier II · cost x1.3 · needs a Copper Cord or better*
 
@@ -93,6 +101,7 @@ Passes through up to 3 targets.
 **Attaches to:** the closest rune on its left that is projectiles and beams.
 
 ### <img src="{{ '/assets/runes/quicken.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Quicken
+{: #quicken}
 
 *Tier II · cost x1.2 · needs a Copper Cord or better*
 
@@ -103,14 +112,16 @@ Bolts fly twice as fast; delays are halved.
 **Attaches to:** the closest rune on its left that is anything that flies.
 
 ### <img src="{{ '/assets/runes/rapid.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rapid
+{: #rapid}
 
 *Tier II · cost x1.4 · needs a Copper Cord or better*
 
 Halves the whole spell's cooldown.
 
-**How to get it:** Craft: a Blank Rune, Sugar and Redstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Sugar and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/volley.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Volley
+{: #volley}
 
 *Tier II · cost x2.4 · needs a Copper Cord or better*
 
@@ -121,6 +132,7 @@ Fires three times in quick succession.
 **Attaches to:** the closest rune on its left that is projectiles and beams.
 
 ### <img src="{{ '/assets/runes/widen.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Widen
+{: #widen}
 
 *Tier II · cost x1.5 · needs a Copper Cord or better*
 
@@ -131,24 +143,27 @@ Fires three times in quick succession.
 **Attaches to:** the closest rune on its left that is anything with an area.
 
 ### <img src="{{ '/assets/runes/blood_price.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blood Price
+{: #blood_price}
 
 *Tier III · cost x1 · needs an Amethyst Cord or better*
 
 Pay for the whole spell in health instead of mana: 1 health per 5 mana. Never lethal.
 
-**How to get it:** Craft: a Blank Rune, Ghast Tear and Redstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ghast Tear and Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 ### <img src="{{ '/assets/runes/chain.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chain
+{: #chain}
 
 *Tier III · cost x1.8 · needs an Amethyst Cord or better*
 
 After a hit, jumps to up to 3 more enemies within 6 blocks.
 
-**How to get it:** Craft: a Blank Rune, Iron Chain and Redstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Chain and Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 **Attaches to:** the closest rune on its left that is anything that can jump to a new target.
 
 ### <img src="{{ '/assets/runes/homing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Homing
+{: #homing}
 
 *Tier III · cost x1.4 · needs an Amethyst Cord or better*
 
@@ -159,6 +174,7 @@ Steers toward the nearest enemy within 12 blocks.
 **Attaches to:** the closest rune on its left that is projectiles.
 
 ### <img src="{{ '/assets/runes/overcharge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Overcharge
+{: #overcharge}
 
 *Tier III · cost x3 · needs an Amethyst Cord or better*
 
@@ -169,6 +185,7 @@ Steers toward the nearest enemy within 12 blocks.
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
 ### <img src="{{ '/assets/runes/split.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Split
+{: #split}
 
 *Tier III · cost x2.4 · needs an Amethyst Cord or better*
 
@@ -179,10 +196,11 @@ Three copies of the shape.
 **Attaches to:** the closest rune on its left that is projectiles and beams.
 
 ### <img src="{{ '/assets/runes/vow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vow
+{: #vow}
 
 *Tier III · cost x1 · needs an Amethyst Cord or better*
 
 A binding vow: the shape's effects hit twice as hard, but the whole spell's cooldown is 4x longer.
 
-**How to get it:** Craft: a Blank Rune, Paper and Gold Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Paper and Block of Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
