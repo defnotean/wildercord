@@ -4,6 +4,14 @@ import dev.wildercord.Wildercord;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.CastEngine;
 import dev.wildercord.cast.Charging;
+import dev.wildercord.cast.CinderWarden;
+import dev.wildercord.cast.DungeonBoss;
+import dev.wildercord.cast.Reactions;
+import dev.wildercord.cast.Shields;
+import dev.wildercord.cast.StarEater;
+import dev.wildercord.cast.TideScribe;
+import dev.wildercord.content.dungeons.DungeonAltarBlock;
+import dev.wildercord.content.dungeons.DungeonAltarBlockEntity;
 import dev.wildercord.cast.RuneBolt;
 import dev.wildercord.cast.SpellCaster;
 import dev.wildercord.cast.WildSurge;
@@ -54,6 +62,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,6 +73,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.npc.villager.Villager;
@@ -72,9 +82,13 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
@@ -149,6 +163,9 @@ public class WildercordShowcase implements FabricClientGameTest {
 			section(context, world, "advancements", () -> advancements(context, world));
 			section(context, world, "screens", () -> screens(context, world));
 			section(context, world, "creative tab", () -> creativeTab(context, world));
+			section(context, world, "ember sanctum", () -> emberSanctum(context, world));
+			section(context, world, "astral observatory", () -> astralObservatory(context, world));
+			section(context, world, "drowned scriptorium", () -> drownedScriptorium(context, world));
 			LOG.info("Showcase done: {} screenshots{}", TAKEN.size(), SKIPPED.isEmpty() ? "" : ", skipped: " + String.join("; ", SKIPPED));
 		}
 	}
@@ -841,6 +858,18 @@ public class WildercordShowcase implements FabricClientGameTest {
 		director(context, world, stage.add(-22, 9, -26), stage.add(0, 6, 4));
 		context.waitTicks(20);
 		shot(context, "event_mana_storm_wide");
+		// Its violet lightning, across the sky and between points of the ground, caught as it strikes.
+		context.runOnClient(mc -> {
+			dev.wildercord.client.fx.StormSky.strike(mc, stage.add(-16, 26, 22), stage.add(14, 30, 30), true);
+			dev.wildercord.client.fx.StormSky.strike(mc, stage.add(-4, 0.6, -4), stage.add(3, 1.4, 0), false);
+		});
+		context.waitTicks(2);
+		shot(context, "event_mana_storm_arcs");
+		director(context, world, stage.add(0, 1.8, -20), stage.add(0, 14, 10));
+		context.runOnClient(mc -> dev.wildercord.client.fx.StormSky.strike(mc, stage.add(-18, 24, 12), stage.add(10, 30, 20), true));
+		context.waitTicks(2);
+		shot(context, "event_mana_storm_sky");
+		director(context, world, stage.add(-22, 9, -26), stage.add(0, 6, 4));
 		// A cast under the storm (it may surge).
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
@@ -1534,5 +1563,389 @@ public class WildercordShowcase implements FabricClientGameTest {
 			mc.gui.setScreen(null);
 		});
 		context.waitTicks(3);
+	}
+
+	// ------------------------------------------------------------------ the dungeons
+
+	/**
+	 * Where a dungeon was built and which way it faces: its piece is laid out in its own frame (x
+	 * across, y up, z inward from the entrance) and turned a random way, so the frame is worked out
+	 * from where its altar and chests landed. {@link #at} turns a spot in the piece's frame into the world.
+	 */
+	private record Dungeon(ResourceKey<Level> dimension, BlockPos altar, int ax, int ay, int az, int inX, int inZ, int acrossX, int acrossZ,
+			int stand) {
+		Vec3 at(double x, double y, double z) {
+			double dx = (x - ax) * acrossX + (z - az) * inX;
+			double dz = (x - ax) * acrossZ + (z - az) * inZ;
+			return new Vec3(altar.getX() + 0.5 + dx, altar.getY() + (y - ay), altar.getZ() + 0.5 + dz);
+		}
+
+		/** The yaw that looks inward, along the piece's +z. */
+		float inwardYaw() {
+			return (float) Math.toDegrees(Math.atan2(-inX, inZ));
+		}
+	}
+
+	/** Each dungeon's layout in its own frame (see the pieces' notes): the altar's height and depth, where you stand, two chests. */
+	private record Layout(String id, DungeonAltarBlock.Kind kind, int altarY, int arenaZ, int stand, int[] hallChest, int[] vaultChest) {}
+
+	private static final Layout EMBER = new Layout("ember_sanctum", DungeonAltarBlock.Kind.CINDER, 2, 62, 2, new int[] {32, 2, 34},
+		new int[] {39, 2, 58});
+	private static final Layout ASTRAL = new Layout("astral_observatory", DungeonAltarBlock.Kind.ASTRAL, 13, 60, 13, new int[] {30, 13, 32},
+		new int[] {38, 13, 56});
+	private static final Layout TIDE = new Layout("drowned_scriptorium", DungeonAltarBlock.Kind.TIDE, 6, 63, 9, new int[] {30, 9, 40},
+		new int[] {39, 9, 59});
+
+	/** Sends the player somewhere, hovering in creative flight, and waits for the ground to arrive. */
+	private static void travel(ClientGameTestContext context, TestSingleplayerContext world, ResourceKey<Level> dimension, Vec3 at) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.setGameMode(GameType.CREATIVE);
+			player.getAbilities().flying = true;
+			player.onUpdateAbilities();
+			player.teleportTo(server.getLevel(dimension), at.x, at.y, at.z, Set.<Relative>of(), 0, 0, false);
+			player.setDeltaMovement(Vec3.ZERO);
+		});
+		context.waitTicks(40);
+		settle(world);
+	}
+
+	/** Waits for the chunks round the player to reach the client and be drawn. */
+	private static void settle(TestSingleplayerContext world) {
+		try {
+			world.getConnection().waitForChunksRender();
+		} catch (RuntimeException e) {
+			LOG.warn("Chunks were slow to arrive", e);
+		}
+	}
+
+	/** Back to the stage in the Overworld, for whatever is filmed next. */
+	private static void home(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runCommand("execute in minecraft:the_nether run forceload remove all");
+		world.getServer().runCommand("execute in minecraft:the_end run forceload remove all");
+		world.getServer().runCommand("execute in minecraft:overworld run forceload remove 500 500 720 720");
+		travel(context, world, Level.OVERWORLD, stage);
+		world.getServer().runOnServer(server -> {
+			player(server).getAbilities().flying = false;
+			player(server).onUpdateAbilities();
+		});
+	}
+
+	/** Builds a dungeon with /place in its own dimension (as the dungeons test does) and works out which way it faces. */
+	private static Dungeon buildDungeon(ClientGameTestContext context, TestSingleplayerContext world, ResourceKey<Level> dimension, Layout layout,
+			BlockPos at) {
+		String dim = dimension.identifier().toString();
+		travel(context, world, dimension, Vec3.atCenterOf(at).add(0, 24, 0));
+		world.getServer().runCommand("execute in " + dim + " run forceload add " + (at.getX() - 96) + " " + (at.getZ() - 96) + " "
+			+ (at.getX() + 96) + " " + (at.getZ() + 96));
+		world.getServer().waitFor(server -> {
+			ServerLevel level = server.getLevel(dimension);
+			for (int cx = (at.getX() - 96) >> 4; cx <= (at.getX() + 96) >> 4; cx++) {
+				for (int cz = (at.getZ() - 96) >> 4; cz <= (at.getZ() + 96) >> 4; cz++) {
+					if (!level.hasChunk(cx, cz)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}, 2400);
+		context.waitTicks(20);
+		world.getServer().runCommand("execute in " + dim + " run place structure wildercord:" + layout.id() + " " + at.getX() + " " + at.getY() + " "
+			+ at.getZ());
+		context.waitTicks(40);
+		Dungeon dungeon = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.getLevel(dimension);
+			BlockPos altar = findAltar(level, at, 112, layout.kind());
+			if (altar == null) {
+				return null;
+			}
+			// The boss is woken by hand, so the altar mustn't wake it when the player comes near.
+			level.setBlock(altar, level.getBlockState(altar).setValue(DungeonAltarBlock.AWAKE, true), Block.UPDATE_ALL);
+			// Which of the eight ways of laying the piece down puts chests where its hall chest and a vault chest go?
+			int[][] ways = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+			for (int[] in : ways) {
+				for (int sign : new int[] {1, -1}) {
+					Dungeon d = new Dungeon(dimension, altar, 20, layout.altarY(), layout.arenaZ(), in[0], in[1], -in[1] * sign, in[0] * sign,
+						layout.stand());
+					int[] h = layout.hallChest();
+					int[] v = layout.vaultChest();
+					if (level.getBlockState(BlockPos.containing(d.at(h[0], h[1], h[2]))).is(Blocks.CHEST)
+						&& level.getBlockState(BlockPos.containing(d.at(v[0], v[1], v[2]))).is(Blocks.CHEST)) {
+						return d;
+					}
+				}
+			}
+			LOG.warn("Couldn't work out which way the {} faces", layout.id());
+			return new Dungeon(dimension, altar, 20, layout.altarY(), layout.arenaZ(), 0, 1, -1, 0, layout.stand());
+		});
+		if (dungeon == null) {
+			throw new IllegalStateException("/place structure wildercord:" + layout.id() + " built no altar");
+		}
+		// The player hovers, unseen, over the hall, so the client has all of it while the cameras look round.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Vec3 over = dungeon.at(20, layout.stand() + 1, layout.arenaZ() - 24);
+			player.teleportTo(server.getLevel(dimension), over.x, over.y, over.z, Set.<Relative>of(), dungeon.inwardYaw(), 0, false);
+			player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 20 * 600, 0, false, false));
+		});
+		context.waitTicks(20);
+		settle(world);
+		return dungeon;
+	}
+
+	/** The dungeon altar of {@code kind} within {@code radius} blocks of {@code around}, found by its block entity. */
+	private static BlockPos findAltar(ServerLevel level, BlockPos around, int radius, DungeonAltarBlock.Kind kind) {
+		for (int cx = (around.getX() - radius) >> 4; cx <= (around.getX() + radius) >> 4; cx++) {
+			for (int cz = (around.getZ() - radius) >> 4; cz <= (around.getZ() + radius) >> 4; cz++) {
+				if (!level.hasChunk(cx, cz)) {
+					continue;
+				}
+				for (BlockEntity entity : level.getChunk(cx, cz).getBlockEntities().values()) {
+					if (entity instanceof DungeonAltarBlockEntity && entity.getBlockState().getValue(DungeonAltarBlock.KIND) == kind) {
+						return entity.getBlockPos();
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Films from a spot in the dungeon's frame toward another; if the spot is inside a wall, the
+	 * camera slides toward what it's looking at until it's in the open.
+	 */
+	private static void film(ClientGameTestContext context, TestSingleplayerContext world, Dungeon d, double[] eye, double[] target) {
+		Vec3 from = d.at(eye[0], eye[1], eye[2]);
+		Vec3 to = d.at(target[0], target[1], target[2]);
+		Vec3 clear = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.getLevel(d.dimension());
+			Vec3 step = to.subtract(from).normalize().scale(0.5);
+			Vec3 p = from;
+			for (int i = 0; i < 24; i++) {
+				BlockPos pos = BlockPos.containing(p);
+				if (level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()) {
+					return p;
+				}
+				p = p.add(step);
+			}
+			return from;
+		});
+		director(context, world, clear, to);
+	}
+
+	/** The places every dungeon has, in order: its approach, its puzzle door, its hall, its arena and its vault. */
+	private static void tour(ClientGameTestContext context, TestSingleplayerContext world, Dungeon d, String name, double hallFrom, double hallTo,
+			double arenaEyeY) {
+		int s = d.stand();
+		int a = d.az();
+		String prefix = "dungeon_" + name + "_";
+		attempt(prefix + "approach", () -> {
+			film(context, world, d, new double[] {23.5, s + 3.5, -7}, new double[] {20, s + 2, 10});
+			context.waitTicks(10);
+			shot(context, prefix + "approach");
+		});
+		attempt(prefix + "door", () -> {
+			film(context, world, d, new double[] {21.5, s + 1.7, 5}, new double[] {20, s + 2, 10});
+			context.waitTicks(6);
+			shot(context, prefix + "door");
+		});
+		attempt(prefix + "hall", () -> {
+			film(context, world, d, new double[] {20, s + 3.2, hallFrom}, new double[] {20, s + 1.2, hallTo});
+			context.waitTicks(6);
+			shot(context, prefix + "hall");
+		});
+		attempt(prefix + "arena", () -> {
+			film(context, world, d, new double[] {20, arenaEyeY, a - 12}, new double[] {20, d.ay(), a + 1});
+			context.waitTicks(6);
+			shot(context, prefix + "arena");
+		});
+		attempt(prefix + "vault", () -> {
+			film(context, world, d, new double[] {35.5, s + 2.3, a}, new double[] {39.5, s + 0.4, a});
+			context.waitTicks(6);
+			shot(context, prefix + "vault");
+		});
+	}
+
+	/** Its boss: idle over its altar, then telegraphing a spell at a decoy (its circle on the ground), filmed from the arena's edge. */
+	private static int bossIdleAndCasting(ClientGameTestContext context, TestSingleplayerContext world, Dungeon d, String name,
+			Class<? extends DungeonBoss> type, java.util.function.BiConsumer<ServerLevel, BlockPos> rise, double eyeY) {
+		String prefix = "dungeon_" + name + "_boss_";
+		world.getServer().runOnServer(server -> rise.accept(server.getLevel(d.dimension()), d.altar()));
+		context.waitTicks(30);
+		int id = world.getServer().computeOnServer(server -> {
+			List<? extends DungeonBoss> found = server.getLevel(d.dimension()).getEntitiesOfClass(type, new AABB(d.altar()).inflate(12));
+			if (found.isEmpty()) {
+				return -1;
+			}
+			DungeonBoss boss = found.getFirst();
+			boss.setNoAi(true);
+			return boss.getId();
+		});
+		if (id < 0) {
+			throw new IllegalStateException("the " + name + " boss didn't rise");
+		}
+		Vec3 bossAt = world.getServer().computeOnServer(server -> server.getLevel(d.dimension()).getEntity(id).position());
+		attempt(prefix + "idle", () -> {
+			director(context, world, d.at(24, eyeY, d.az() - 8), bossAt.add(0, 1.4, 0));
+			context.waitTicks(12);
+			shot(context, prefix + "idle");
+		});
+		attempt(prefix + "casting", () -> {
+			// A decoy to aim at: the boss wakes, turns on it and telegraphs a spell.
+			Vec3 decoyAt = d.at(20, d.stand(), d.az() - 7);
+			world.getServer().runOnServer(server -> {
+				ServerLevel level = server.getLevel(d.dimension());
+				Mob decoy = husk(level, decoyAt, d.inwardYaw());
+				if (decoy != null) {
+					decoy.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 1200, 4, false, false));
+				}
+				DungeonBoss boss = (DungeonBoss) level.getEntity(id);
+				boss.setNoAi(false);
+				boss.setTarget(decoy);
+			});
+			world.getServer().waitFor(server -> server.getLevel(d.dimension()).getEntity(id) instanceof DungeonBoss boss
+				&& boss.state(DungeonBoss.CASTING), 160);
+			context.waitTicks(10);
+			Vec3 now = world.getServer().computeOnServer(server -> server.getLevel(d.dimension()).getEntity(id).position());
+			director(context, world, d.at(13, eyeY + 1.5, d.az() - 11), now.lerp(decoyAt, 0.35));
+			context.waitTicks(2);
+			shot(context, prefix + "casting");
+			world.getServer().runOnServer(server -> {
+				if (server.getLevel(d.dimension()).getEntity(id) instanceof DungeonBoss boss) {
+					boss.setNoAi(true);
+					boss.setTarget(null);
+				}
+			});
+			world.getServer().runCommand("kill @e[type=minecraft:husk,tag=" + TAG + "]");
+			context.waitTicks(40);
+		});
+		return id;
+	}
+
+	/** Stands the player (seen now, on their feet) at {@code feet}, looking at an entity's middle. */
+	private static void aimAt(ServerPlayer player, ServerLevel level, Vec3 feet, Entity target) {
+		player.removeEffect(MobEffects.INVISIBILITY);
+		player.getAbilities().flying = false;
+		player.onUpdateAbilities();
+		Vec3 eye = feet.add(0, player.getEyeHeight(), 0);
+		Vec3 d = target.getBoundingBox().getCenter().subtract(eye);
+		float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
+		float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
+		player.teleportTo(level, feet.x, feet.y, feet.z, Set.<Relative>of(), yaw, pitch, false);
+		player.setDeltaMovement(Vec3.ZERO);
+	}
+
+	private static void emberSanctum(ClientGameTestContext context, TestSingleplayerContext world) {
+		try {
+			Dungeon d = buildDungeon(context, world, Level.NETHER, EMBER, new BlockPos(8, 64, 8));
+			tour(context, world, d, "ember", 12, 34, d.stand() + 8);
+			int id = bossIdleAndCasting(context, world, d, "ember", CinderWarden.class, CinderWarden::rise, d.stand() + 3);
+			// Plain blows and single spells glance off it; a reaction breaks through. Frozen, then burnt: Shatter.
+			attempt("dungeon_ember_boss_reaction", () -> {
+				float before = world.getServer().computeOnServer(server -> {
+					ServerLevel level = server.getLevel(d.dimension());
+					LivingEntity warden = (LivingEntity) level.getEntity(id);
+					aimAt(player(server), level, d.at(17, d.stand(), d.az() - 7), warden);
+					Reactions.mark(warden, Reactions.Mark.FROZEN);
+					return warden.getHealth();
+				});
+				Vec3 at = world.getServer().computeOnServer(server -> server.getLevel(d.dimension()).getEntity(id).position());
+				director(context, world, d.at(27, d.stand() + 2.5, d.az() - 6), at.add(0, 1.2, 0).lerp(d.at(17, d.stand() + 1, d.az() - 7), 0.3));
+				context.waitTicks(4);
+				shot(context, "dungeon_ember_boss_frozen");
+				world.getServer().runOnServer(server -> castNow(player(server), 0, List.of(Runes.BOLT, Runes.FIRE)));
+				world.getServer().waitFor(server -> server.getLevel(d.dimension()).getEntity(id) instanceof LivingEntity w && w.getHealth() < before, 60);
+				context.waitTicks(1);
+				shot(context, "dungeon_ember_boss_reaction");
+				context.waitTicks(4);
+				shot(context, "dungeon_ember_boss_reaction_b");
+			});
+		} finally {
+			world.getServer().runCommand("execute in minecraft:the_nether run kill @e[type=!player,x=8,y=64,z=8,distance=..160]");
+			home(context, world);
+		}
+	}
+
+	private static void astralObservatory(ClientGameTestContext context, TestSingleplayerContext world) {
+		try {
+			Dungeon d = buildDungeon(context, world, Level.END, ASTRAL, new BlockPos(8, 64, 8));
+			world.getServer().runCommand("execute in minecraft:the_end run kill @e[type=minecraft:ender_dragon]");
+			tour(context, world, d, "astral", 12, 32, d.stand() + 9);
+			int id = bossIdleAndCasting(context, world, d, "astral", StarEater.class, StarEater::rise, d.stand() + 3);
+			// Its shard shield turns a light spell back on whoever cast it.
+			attempt("dungeon_astral_boss_reflect", () -> {
+				world.getServer().runOnServer(server -> {
+					ServerLevel level = server.getLevel(d.dimension());
+					StarEater eater = (StarEater) level.getEntity(id);
+					if (!eater.shielded()) {
+						Shields.give(eater, 20, 20 * 60, List.of(Runes.SHIELD.id()));
+					}
+					ServerPlayer player = player(server);
+					aimAt(player, level, d.at(17, d.stand(), d.az() - 8), eater);
+					player.setGameMode(GameType.SURVIVAL);
+					player.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 600, 4, false, false));
+					player.setHealth(player.getMaxHealth());
+				});
+				Vec3 at = world.getServer().computeOnServer(server -> server.getLevel(d.dimension()).getEntity(id).position());
+				director(context, world, d.at(27, d.stand() + 3, d.az() - 7), at.add(0, 1.0, 0).lerp(d.at(17, d.stand() + 1, d.az() - 8), 0.4));
+				context.waitTicks(4);
+				shot(context, "dungeon_astral_boss_shield");
+				world.getServer().runOnServer(server -> castNow(player(server), 0, List.of(Runes.BOLT, Runes.HARM)));
+				world.getServer().waitFor(server -> ((StarEater) server.getLevel(d.dimension()).getEntity(id)).reflections() > 0, 60);
+				context.waitTicks(1);
+				shot(context, "dungeon_astral_boss_reflect");
+				context.waitTicks(4);
+				shot(context, "dungeon_astral_boss_reflect_b");
+				world.getServer().runOnServer(server -> player(server).setGameMode(GameType.CREATIVE));
+			});
+		} finally {
+			world.getServer().runCommand("execute in minecraft:the_end run kill @e[type=!player,x=8,y=64,z=8,distance=..160]");
+			home(context, world);
+		}
+	}
+
+	private static void drownedScriptorium(ClientGameTestContext context, TestSingleplayerContext world) {
+		try {
+			Dungeon d = buildDungeon(context, world, Level.OVERWORLD, TIDE, new BlockPos(608, 64, 608));
+			world.getServer().runCommand("time set 6000");
+			tour(context, world, d, "tide", 26, 41, d.stand() + 7);
+			int id = bossIdleAndCasting(context, world, d, "tide", TideScribe.class, TideScribe::rise, d.stand() + 3);
+			// Its tide floods the pit; a storm sent into the water then reaches everything wading in it.
+			attempt("dungeon_tide_boss_flood", () -> {
+				world.getServer().runOnServer(server -> ((TideScribe) server.getLevel(d.dimension()).getEntity(id)).forceTide(true));
+				context.waitTicks(30);
+				film(context, world, d, new double[] {28, d.stand() + 6, d.az() - 13}, new double[] {20, d.ay(), d.az()});
+				context.waitTicks(6);
+				shot(context, "dungeon_tide_boss_flood");
+				world.getServer().runOnServer(server -> {
+					ServerLevel level = server.getLevel(d.dimension());
+					TideScribe scribe = (TideScribe) level.getEntity(id);
+					BlockPos pedestal = null;
+					for (BlockPos pos : BlockPos.betweenClosed(d.altar().offset(-9, 2, -9), d.altar().offset(9, 2, 9))) {
+						if (level.getBlockState(pos).is(Blocks.SEA_LANTERN) && level.getBlockState(pos.above()).isAir() && pos.distSqr(d.altar()) > 36) {
+							pedestal = pos.immutable();
+							break;
+						}
+					}
+					Vec3 feet = pedestal != null ? Vec3.atBottomCenterOf(pedestal.above()) : d.at(20, d.stand(), d.az() - 13);
+					aimAt(player(server), level, feet, scribe);
+				});
+				context.waitTicks(4);
+				world.getServer().runOnServer(server -> castNow(player(server), 0, List.of(Runes.BOLT, Runes.SHOCK)));
+				world.getServer().waitFor(server -> ((TideScribe) server.getLevel(d.dimension()).getEntity(id)).conductions() > 0, 60);
+				context.waitTicks(1);
+				shot(context, "dungeon_tide_boss_conduct");
+				context.waitTicks(4);
+				shot(context, "dungeon_tide_boss_conduct_b");
+				world.getServer().runOnServer(server -> {
+					if (server.getLevel(d.dimension()).getEntity(id) instanceof TideScribe scribe) {
+						scribe.forceTide(false);
+					}
+				});
+			});
+		} finally {
+			world.getServer().runCommand("execute in minecraft:overworld run kill @e[type=!player,x=608,y=64,z=608,distance=..128]");
+			home(context, world);
+		}
 	}
 }

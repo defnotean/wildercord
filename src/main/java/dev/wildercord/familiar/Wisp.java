@@ -4,7 +4,6 @@ import dev.wildercord.cast.LeyWalker;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.world.LeyLines;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -316,13 +315,8 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		Familiars.tickFamiliar(level, this);
 	}
 
-	/** A trail of motes in its colour, and now and then a particle of its element. */
+	/** Now and then a particle of its element (its trail of light is drawn by its renderer). */
 	private void sparkle() {
-		if (tickCount % 2 == 0) {
-			Vec3 back = getDeltaMovement().scale(-2.0);
-			level().addParticle(new DustParticleOptions(color(), 0.55F), getX() + back.x + (random.nextDouble() - 0.5) * 0.15,
-				getY() + 0.22 + back.y + (random.nextDouble() - 0.5) * 0.15, getZ() + back.z + (random.nextDouble() - 0.5) * 0.15, 0, 0, 0);
-		}
 		if (random.nextInt(wild() ? 10 : 7) == 0) {
 			level().addParticle(elementParticle(element()), getX() + (random.nextDouble() - 0.5) * 0.4, getY() + 0.2 + (random.nextDouble() - 0.5) * 0.4,
 				getZ() + (random.nextDouble() - 0.5) * 0.4, 0, 0.01, 0);

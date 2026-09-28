@@ -12,8 +12,7 @@
 		"AvatarRenderStateMixin",
 		"PlayerModelMixin",
 		"LivingEntityRendererMixin",
-		"SkyRendererMixin",
-		"FogRendererMixin",
+		"ClientLevelMixin",
 		"AvatarRendererStyleMixin"
 	],
 	"injectors": {

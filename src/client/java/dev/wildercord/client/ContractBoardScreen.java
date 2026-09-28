@@ -12,7 +12,10 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -27,13 +30,16 @@ import java.util.List;
  * ones stamped, finished ones glowing gold. What was just handed in rises along the top for a moment.
  */
 public class ContractBoardScreen extends Screen {
-	private static final int W = 248;
-	private static final int H = 176;
+	private static final int W = 300;
 	private static final int CARD_X = 10;
-	private static final int CARD_Y = 36;
+	private static final int CARD_Y = 34;
 	private static final int CARD_W = W - 20;
-	private static final int CARD_H = 40;
+	private static final int CARD_H = 46;
 	private static final int CARD_GAP = 4;
+	/** Room for three cards and the line along the bottom. */
+	private static final int H = CARD_Y + 3 * (CARD_H + CARD_GAP) - CARD_GAP + 30;
+	/** How wide a card's description may run before it wraps (two lines at most). */
+	private static final int TEXT_W = CARD_W - 32 - 34;
 
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int TEXT = 0xFFE8E4F4;
@@ -125,7 +131,7 @@ public class ContractBoardScreen extends Screen {
 			int rise = Math.round(Math.min(t, 0.6F) / 0.6F * 6);
 			Component got = Component.translatable("screen.wildercord.contracts.handed_in");
 			int gx = 12;
-			int gy = H - 18 - rise;
+			int gy = H - 26 - rise;
 			g.text(font, got, gx, gy + 4, (alpha << 24) | (GOLD & 0xFFFFFF), true);
 			gx += font.width(got) + 6;
 			for (ContractRules.Reward reward : handedIn) {
@@ -135,7 +141,7 @@ public class ContractBoardScreen extends Screen {
 			}
 		} else {
 			Component hint = Component.translatable("screen.wildercord.contracts.hint");
-			g.text(font, hint, 12, H - 14, FAINT, false);
+			drawClipped(g, hint, 12, H - 21, W - 24, FAINT);
 		}
 		g.pose().popMatrix();
 		if (tooltip != null) {
@@ -152,15 +158,16 @@ public class ContractBoardScreen extends Screen {
 		int stripe = done ? pulse(GOLD, now) : c.claimed() ? 0xFF3C5A44 : accent;
 		g.fill(x + 2, y + 3, x + 4, y + CARD_H - 3, stripe);
 		// What it's about.
-		sprite(g, SPR_SOCKET, x + 8, y + 11, 18, 18);
-		g.item(kindIcon(c), x + 9, y + 12);
+		int middle = y + (CARD_H - 18) / 2;
+		sprite(g, SPR_SOCKET, x + 8, middle, 18, 18);
+		g.item(kindIcon(c), x + 9, middle + 1);
 		int textX = x + 32;
 		int textColor = c.claimed() ? FAINT : TEXT;
 		Component what = Contracts.describe(c);
-		drawClipped(g, what, textX, y + 7, CARD_W - 32 - 34, textColor);
+		drawWrapped(g, what, textX, y + 5, TEXT_W, textColor);
 		// Progress: a bar in the contract's colour, then gold once it's done.
 		int barX = textX;
-		int barY = y + 22;
+		int barY = y + 27;
 		int barW = CARD_W - 32 - 70;
 		g.fill(barX, barY, barX + barW, barY + 5, 0xFF1A1526);
 		g.fill(barX, barY, barX + barW, barY + 1, 0xFF0C0A12);
@@ -176,12 +183,12 @@ public class ContractBoardScreen extends Screen {
 		// Its status, under the bar.
 		Component status = c.claimed() ? Component.translatable("screen.wildercord.contracts.claimed")
 			: done ? Component.translatable("screen.wildercord.contracts.ready") : Component.empty();
-		g.text(font, status, textX, y + 30, c.claimed() ? DONE : GOLD, false);
+		g.text(font, status, textX, y + 35, c.claimed() ? DONE : GOLD, false);
 		// The reward, in its own socket on the right.
 		ContractRules.Reward reward = ContractRules.Reward.parse(c.reward());
 		ItemStack stack = icon(reward);
 		int rx = x + CARD_W - 28;
-		int ry = y + 11;
+		int ry = middle;
 		if (done) {
 			g.fill(rx - 3, ry - 3, rx + 21, ry + 21, (pulse(GOLD, now) & 0x00FFFFFF) | 0x50000000);
 		}
@@ -196,6 +203,24 @@ public class ContractBoardScreen extends Screen {
 			return List.of(Component.translatable("screen.wildercord.contracts.reward").withColor(GOLD), Contracts.rewardLabel(reward));
 		}
 		return null;
+	}
+
+	/**
+	 * A description on up to two lines: one line sits in the middle of the two, a longer one wraps,
+	 * and anything past the second line ends in an ellipsis.
+	 */
+	private void drawWrapped(GuiGraphicsExtractor g, Component text, int x, int y, int maxWidth, int color) {
+		List<FormattedText> lines = font.getSplitter().splitLines(text, maxWidth, Style.EMPTY);
+		if (lines.size() <= 1) {
+			g.text(font, text, x, y + 5, color, false);
+			return;
+		}
+		g.text(font, Language.getInstance().getVisualOrder(lines.get(0)), x, y, color, false);
+		FormattedText second = lines.get(1);
+		if (lines.size() > 2) {
+			second = FormattedText.composite(font.substrByWidth(second, maxWidth - font.width("…")), FormattedText.of("…"));
+		}
+		g.text(font, Language.getInstance().getVisualOrder(second), x, y + 10, color, false);
 	}
 
 	private void drawClipped(GuiGraphicsExtractor g, Component text, int x, int y, int maxWidth, int color) {
