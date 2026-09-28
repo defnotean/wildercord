@@ -98,8 +98,8 @@ same moment. They're separate bonuses.
 
 ### Chorus casting
 
-Cast the same shape at the same target as your allies, within a second of each other, and the last spell sings for
-all of you: up to twice as strong. See [Chorus Casting]({{ '/social/chorus/' | relative_url }}).
+Cast the same shape at the same target as your allies, each within a second of the one before, and the last spell
+sings for all of you: up to twice as strong. See [Chorus Casting]({{ '/social/chorus/' | relative_url }}).
 
 ## Casters against casters
 

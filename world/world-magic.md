@@ -28,6 +28,10 @@ The effect does its world change wherever it lands, on a creature or on the grou
 strikes every second changes the world every second, within the limits below). A spell cast on yourself with Self
 changes nothing round you.
 
+You can tell from a rune's tooltip in the Cord screen: a rune that changes the world has a dark green line starting
+*"Where it lands:"*, such as *"Where it lands: freezes water into ice you can walk on, puts out fires and campfires"*
+on a frost rune.
+
 ## What each element does
 
 ### Fire
@@ -62,8 +66,11 @@ Conflagration).
 Word and Tidewrit; and the fused runes of frost (Hail, Glacier, Blizzard, Black Ice, Rime Seal, Frostbite, Absolute Zero).
 
 - **Freezes water.** The surface of still water within **2.5 blocks** of where it lands turns into **frosted ice** you
-  can walk on, **16 blocks** at most. (If Widen widens the frost effect itself, it reaches up to twice as far.) It works even when the spell sank to the bottom (bolts fly on
-  through water): it freezes the top, up to 4 blocks above.
+  can walk on, **16 blocks** at most. It works even when the spell sank to the bottom (bolts fly on through water):
+  it freezes the top, up to 4 blocks above.
+- **Widen reaches further only on the frost effect itself.** A Widen that attaches to the frost effect makes the
+  freeze reach up to twice as far, but only frost effects with a radius (Coldsnap, Blizzard, Rime Seal, Tidecall,
+  Tidewrit) take one. A Widen on the spell's shape (a wider Burst of Frost, say) leaves the freeze as it is.
 - **The ice always melts.** It melts in the light like Frost Walker's ice, and anything still standing after about
   **30 seconds** melts back anyway, even in the dark. If the server stops, or nobody is near when the time comes, the
   ice melts as soon as its ground is loaded again, so frozen water always comes back.
@@ -145,7 +152,7 @@ On a wet creature:
 |---|---|
 | **Storm** | It **conducts**: the Conduct reaction, +50% damage, arcing to two more enemies |
 | **Fire** | It hits **25% softer**, and dries the creature (unless it's standing in water) |
-| **Frost** | It **freezes solid** at once, 3 seconds longer, even from a light Chill: ready for fire to Shatter |
+| **Frost** | It **freezes solid** at once, for at least 3 seconds, even from a light Chill: ready for fire to Shatter |
 
 More on reactions: [Reactions]({{ '/spellcraft/reactions/' | relative_url }}).
 

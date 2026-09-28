@@ -127,7 +127,7 @@ ring and emblem wear **both**:
 - A fusion of an element **with itself** (Conflagration is Fire and Fire, Singularity Void and Void) shows
   that element's glyph widened across both halves, its second half in a lighter shade of the same colour.
 
-A fused rune counts as one of its two elements (Firestorm, Fire and Wind, counts as Fire), and that's the
+A fused rune counts as an element of its own (Firestorm, Fire and Wind, counts as Fire), and that's the
 colour its roundel and the rest of the circle take when it's the spell's first effect.
 
 ### Knots and secret spells
@@ -158,7 +158,8 @@ spell's weak spots too. The script band round the edge repeats the same seven em
 A quicker way to read a circle in a hurry:
 
 1. **Colour** tells you the element (orange: fire; pale blue: frost; yellow: storm).
-2. **The seal** tells you the shape: where it's going.
+2. **The seal** is the first rune, usually the shape: where it's going. (A spell that starts with an effect is
+   cast on its caster.)
 3. **Count the roundels** for how long the spell is: a long spell usually does more than one thing.
 4. **Look for violet chain rings** among the roundels: a link means something happens later (on hit, after a
    delay, when hurt).
