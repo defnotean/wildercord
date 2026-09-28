@@ -4,6 +4,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.4.0-alpha] - 2026-09-28
+
 ### Added
 - **A fused rune for every pair of elements.** The Fusion Altar now fuses any two effects of the ten
   elements, and two of the same element too: 55 fused runes in all, 43 of them new. See the grid in
