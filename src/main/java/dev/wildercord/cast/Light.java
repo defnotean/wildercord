@@ -8,10 +8,14 @@ import org.joml.Vector3f;
 
 /**
  * Shaped light for spells (see {@link LightOption}): shockwaves, beams, crescent slashes and orbs,
- * sent to everyone within 128 blocks like a magic circle. Colours are 0xRRGGBB.
+ * sent to everyone within 128 blocks like a magic circle. Colours are 0xRRGGBB; add {@link #DARK}
+ * to a colour and it darkens what's behind it instead of lighting it (void magic).
  */
 public final class Light {
 	private Light() {}
+
+	/** Or'd into a colour: the light is drawn as darkness, taking light away instead of adding it. */
+	public static final int DARK = 0x01000000;
 
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 

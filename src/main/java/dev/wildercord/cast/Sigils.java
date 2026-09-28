@@ -56,7 +56,7 @@ public final class Sigils {
 	public static void spell(ServerLevel level, Vec3 at, Vec3 normal, List<RuneDef> runes, int color, float radius, int lifetime) {
 		Vec3 n = normal.normalize();
 		List<String> ids = runes.stream().limit(SpellSigil.MAX_RUNES).map(RuneDef::id).toList();
-		send(level, new SpellCircleOption(ids, color & 0xFFFFFF, radius, yaw(n), pitch(n), lifetime), at);
+		send(level, new SpellCircleOption(ids, color & 0x01FFFFFF, radius, yaw(n), pitch(n), lifetime), at);
 	}
 
 	/** A full magic circle lying on the ground. */

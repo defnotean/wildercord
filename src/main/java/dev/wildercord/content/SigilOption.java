@@ -36,7 +36,7 @@ public record SigilOption(int style, int color, float size, float yaw, float pit
 
 	/** A flash of light {@code size} blocks across at its brightest (see {@link #GLOW}). */
 	public static SigilOption glow(int color, float size) {
-		return new SigilOption(GLOW, color & 0xFFFFFF, size / 2, 0, 0, 7, 0);
+		return new SigilOption(GLOW, color & 0x01FFFFFF, size / 2, 0, 0, 7, 0);
 	}
 
 	public static final MapCodec<SigilOption> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
