@@ -1328,6 +1328,11 @@ public class CordScreen extends Screen {
 			lines.add(RuneItem.runeName(def).withColor(RuneColors.of(def)));
 			lines.add(RuneItem.familyLine(def).append(Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY)).append(categoryName(def).copy().withStyle(ChatFormatting.GRAY)));
 			lines.add(RuneItem.runeDescription(def).withStyle(ChatFormatting.GRAY));
+			// What it does to the ground it lands on: burns grass, freezes water...
+			dev.wildercord.spell.WorldRules.Interaction world = dev.wildercord.spell.WorldRules.of(def);
+			if (world != dev.wildercord.spell.WorldRules.Interaction.NONE) {
+				lines.add(Component.translatable(world.tooltipKey()).withStyle(ChatFormatting.DARK_GREEN));
+			}
 			if (def.family() == RuneFamily.MODIFIER) {
 				lines.add(Component.translatable("screen.wildercord.modifier_hint").withStyle(ChatFormatting.DARK_GRAY));
 			}
