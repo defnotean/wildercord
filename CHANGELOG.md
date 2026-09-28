@@ -38,6 +38,19 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   numbers and DPS.
 - Operator commands `/wildercord innate <rune>` (choose your innate rune) and
   `/wildercord runebound` (bind the nearest monster to a Cord).
+- **41 new Tier I and II runes**, all craftable:
+  - Energy balls and beams: **Spark**, **Ray** and **Nova** (Tier I); **Wisp**, **Comet**,
+    **Ricochet**, **Cluster**, **Lance**, **Sweep**, **Prism** and **Stream** (Tier II), drawn as
+    glowing orbs and beams of light.
+  - Protection: **Barrier**, **Brace**, **Anchor**, **Bramble**, **Frostward** and **Cushion**
+    (Tier I); **Deflect** and **Haven** (Tier II). Anchor, Frostward and Cushion can be passives.
+  - Mining and building: **Chisel**, **Glimmer** and **Prune** (Tier I); **Tunnel**, **Vein**,
+    **Smelt**, **Fell** and **Span** (Tier II). They break blocks as a pickaxe of their strength
+    would, and only where you may build.
+  - A simple spell for every element: **Ember**, **Icicle**, **Pelt**, **Windcut**, **Leech**,
+    **Hex**, **Rend** and **Countdown** (Tier I); **Jolt**, **Bleed**, **Coldsnap**,
+    **Flashfire**, **Banish** and **Cyclone** (Tier II). An Orbit passive can carry Ember,
+    Icicle, Pelt and Windcut.
 - **Wildercord's own sounds**, synthesised by `tools/sound_art.py` and all in one key so they
   harmonise: a cast and an impact for every element, magic circles, beams, orbs, shields, domains,
   blinks, the Cord screen, the spell wheel, the Grimoire and Heart Circles. Charging now hums,

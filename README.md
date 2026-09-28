@@ -55,7 +55,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **144 runes** | 22 shapes, 93 effects, 18 modifiers and 11 links across four tiers, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **185 runes** | 33 shapes, 123 effects, 18 modifiers and 11 links across four tiers, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
 | **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle opens in front of them, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
 | **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its shape's seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
 | **Spells drawn in light** | Beams with a white-hot core fired through a magic circle, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. |

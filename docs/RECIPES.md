@@ -10,55 +10,84 @@ a **Blank Rune** plus the items below, plus a cost that grows with the tier:
 Recipes appear in the crafting recipe book once you hold a Blank Rune
 (Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.
 
-## Tier I (27 runes, + nothing extra)
+## Tier I (47 runes, + nothing extra)
 
 | Rune | Family | Items |
 |---|---|---|
+| Anchor | Effect | Iron Chain, Cobblestone |
+| Barrier | Effect | Glass, Amethyst Shard |
 | Blind | Effect | Ink Sac |
+| Brace | Effect | Cobblestone, Iron Ingot |
+| Bramble | Effect | Sweet Berries, Cactus |
 | Chill | Effect | Ice |
+| Chisel | Effect | Stone Pickaxe |
 | Collect | Effect | Hopper |
+| Countdown | Effect | Clock, Gunpowder |
+| Cushion | Effect | any wool, Feather |
+| Ember | Effect | Coal, Flint |
 | Feather Fall | Effect | 2x Feather |
+| Frostward | Effect | Snowball, Leather |
+| Glimmer | Effect | Glow Lichen |
 | Grow | Effect | 2x Bone Meal |
 | Harm | Effect | Fermented Spider Eye |
 | Harvest | Effect | 2x Wheat |
 | Haste | Effect | Golden Pickaxe |
 | Heal | Effect | Glistering Melon Slice |
+| Hex | Effect | Fermented Spider Eye, Ink Sac |
 | Icepath | Effect | Packed Ice |
+| Icicle | Effect | Ice, Pointed Dripstone |
 | Leap | Effect | Slime Ball |
+| Leech | Effect | Spider Eye, Redstone |
 | Light | Effect | 2x Torch |
 | Night Eye | Effect | Glow Berries |
 | Nourish | Effect | Bread |
+| Pelt | Effect | Gravel, Cobblestone |
+| Prune | Effect | Shears, any saplings |
 | Push | Effect | Piston |
+| Rend | Effect | Iron Nugget, Bone |
 | Reveal | Effect | Glow Ink Sac |
 | Shock | Effect | Lightning Rod |
 | Swift | Effect | 2x Sugar |
 | Tidebreath | Effect | Pufferfish |
+| Windcut | Effect | Feather, Flint |
 | Delay | Link | Clock |
 | Amplify | Modifier | Gold Ingot |
 | Extend | Modifier | 2x Redstone |
 | Frugal | Modifier | Emerald |
 | Arc | Shape | 2x Snowball |
 | Bolt | Shape | Arrow |
+| Nova | Shape | Gunpowder, Glowstone Dust |
+| Ray | Shape | Glass Pane, Glowstone Dust |
 | Self | Shape | Glass Pane |
+| Spark | Shape | Flint, Glowstone Dust |
 | Touch | Shape | Leather |
 
-## Tier II (58 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (79 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
 | Aftershock | Effect | Piston, Cobblestone |
+| Banish | Effect | Ender Pearl, Popped Chorus Fruit |
+| Bleed | Effect | Shears, Redstone |
 | Break | Effect | Iron Pickaxe |
 | Bubble | Effect | Water Bucket, Slime Ball |
 | Cleanse | Effect | Milk Bucket |
+| Coldsnap | Effect | Packed Ice, Snow Block |
+| Cyclone | Effect | Wind Charge, Breeze Rod |
 | Dash | Effect | Rabbit Foot |
 | Decree | Effect | Writable Book |
+| Deflect | Effect | Shield, Wind Charge |
 | Dismantle | Effect | Shears |
 | Empower | Effect | Iron Sword |
 | Excavate | Effect | Iron Shovel |
+| Fell | Effect | Iron Axe, any logs |
 | Fire | Effect | Blaze Powder |
 | Fireward | Effect | Magma Cream |
+| Flashfire | Effect | Blaze Powder, Gunpowder |
 | Frost | Effect | Powder Snow Bucket |
 | Grapple | Effect | Lead |
+| Haven | Effect | Shield, Glistering Melon Slice |
+| Jolt | Effect | Lightning Rod, Iron Ingot |
 | Launch | Effect | Wind Charge |
 | Levitate | Effect | Phantom Membrane |
 | Overdrive | Effect | Blaze Powder, Redstone |
@@ -71,10 +100,14 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Shackle | Effect | 2x Iron Chain |
 | Shield | Effect | Shield |
 | Silence | Effect | any wool |
+| Smelt | Effect | Furnace, Blaze Powder |
+| Span | Effect | 2x Magenta Stained Glass |
 | Stoneskin | Effect | Armadillo Scute |
 | Swap | Effect | 2x Ender Pearl |
 | Thunderclap | Effect | Goat Horn |
+| Tunnel | Effect | Iron Pickaxe, Rail |
 | Veil | Effect | Golden Carrot, Fermented Spider Eye |
+| Vein | Effect | Iron Pickaxe, Raw Iron |
 | Venom | Effect | Poisonous Potato |
 | Weigh | Effect | Iron Block |
 | Zipper | Effect | 2x Iron Nugget, String |
@@ -97,13 +130,21 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Beam | Shape | Spyglass |
 | Blitz | Shape | Rabbit Foot, Sugar |
 | Burst | Shape | 2x Gunpowder |
+| Cluster | Shape | 2x Gunpowder, Amethyst Shard |
+| Comet | Shape | Fire Charge, Gunpowder |
 | Cone | Shape | Fire Charge |
 | Crescent | Shape | Iron Sword |
+| Lance | Shape | Spyglass, Blaze Rod |
 | Mine | Shape | Tripwire Hook |
 | Pillar | Shape | 2x Pointed Dripstone |
+| Prism | Shape | Prismarine Crystals, Glass |
+| Ricochet | Shape | Slime Ball, Snowball |
 | Ring | Shape | Bell |
+| Stream | Shape | Spyglass, Redstone Torch |
+| Sweep | Shape | Spyglass, String |
 | Trail | Shape | 2x Glowstone Dust |
 | Wave | Shape | 2x Kelp |
+| Wisp | Shape | Glow Berries, Amethyst Shard |
 
 ## Tier III (38 runes, + a Mana Crystal and a Diamond)
 

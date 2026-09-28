@@ -154,7 +154,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	}
 
 	/**
-	 * Casts every batch 4 rune at a few husks, so any error in the new spell code fails the
+	 * Casts every batch 4 and batch 6 rune at a few husks, so any error in the new spell code fails the
 	 * test instead of a play session. A handful of screenshots show the effects in flight.
 	 */
 	private static void castEverything(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -201,6 +201,37 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.SWIFT, Runes.COMBO, Runes.BLITZ, Runes.CLEAVE}},
 			{null, 30, new RuneDef[] {Runes.SELF, Runes.SWIFT, Runes.COMBO, Runes.BLITZ, Runes.CLEAVE}},
 			{"fx_domain", 30, new RuneDef[] {Runes.DOMAIN, Runes.HARM}},
+			// Batch 6: sparks, energy balls and beams.
+			{null, 30, new RuneDef[] {Runes.SPARK, Runes.HARM}},
+			{null, 30, new RuneDef[] {Runes.SPARK, Runes.VOLLEY_MOD, Runes.EMBER}},
+			{null, 30, new RuneDef[] {Runes.RAY, Runes.SHOCK}},
+			{"fx_nova", 6, new RuneDef[] {Runes.NOVA, Runes.PUSH}},
+			{null, 60, new RuneDef[] {Runes.WISP, Runes.ICICLE}},
+			{"fx_comet", 8, new RuneDef[] {Runes.COMET, Runes.FLASHFIRE}},
+			{null, 60, new RuneDef[] {Runes.RICOCHET, Runes.PELT}},
+			{null, 50, new RuneDef[] {Runes.CLUSTER, Runes.WINDCUT}},
+			{"fx_lance", 4, new RuneDef[] {Runes.LANCE, Runes.HARM}},
+			{"fx_sweep", 6, new RuneDef[] {Runes.SWEEP, Runes.JOLT}},
+			{"fx_prism", 3, new RuneDef[] {Runes.PRISM, Runes.LEECH}},
+			{null, 40, new RuneDef[] {Runes.STREAM, Runes.BLEED}},
+			// Batch 6: protection.
+			{null, 30, new RuneDef[] {Runes.SELF, Runes.BARRIER, Runes.BRACE, Runes.ANCHOR, Runes.BRAMBLE}},
+			{null, 30, new RuneDef[] {Runes.SELF, Runes.FROSTWARD, Runes.CUSHION, Runes.DEFLECT}},
+			{"fx_haven", 20, new RuneDef[] {Runes.SELF, Runes.HAVEN}},
+			// Batch 6: mining and building, against the wall in front of the stage.
+			{null, 20, new RuneDef[] {Runes.RAY, Runes.CHISEL}},
+			{null, 30, new RuneDef[] {Runes.RAY, Runes.TUNNEL}},
+			{null, 30, new RuneDef[] {Runes.RAY, Runes.VEIN}},
+			{null, 20, new RuneDef[] {Runes.RAY, Runes.SMELT}},
+			{null, 30, new RuneDef[] {Runes.RAY, Runes.FELL}},
+			{null, 20, new RuneDef[] {Runes.RAY, Runes.GLIMMER}},
+			{null, 20, new RuneDef[] {Runes.SELF, Runes.PRUNE}},
+			{null, 12, new RuneDef[] {Runes.SELF, Runes.SPAN}},
+			// Batch 6: a simple spell for every element.
+			{null, 50, new RuneDef[] {Runes.BOLT, Runes.HEX, Runes.REND, Runes.COUNTDOWN}},
+			{null, 40, new RuneDef[] {Runes.BEAM, Runes.COLDSNAP}},
+			{null, 30, new RuneDef[] {Runes.BEAM, Runes.BANISH}},
+			{"fx_cyclone", 20, new RuneDef[] {Runes.BEAM, Runes.CYCLONE}},
 		};
 		for (Object[] step : casts) {
 			String shot = (String) step[0];
@@ -209,7 +240,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				resetStage(player);
-				wall(player, java.util.Arrays.asList(runes).contains(Runes.ZIPPER));
+				wall(player, wallFor(java.util.Arrays.asList(runes)));
 				SpellCaster.edit(player, 3, ids(runes));
 				Spellbooks.setReadyAt(player, 3, 0);
 				SpellCaster.cast(player, 3);
@@ -250,15 +281,36 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		}
 	}
 
-	/** A 2-thick stone wall right in front of the stage, for Zipper to step through. */
-	private static void wall(ServerPlayer player, boolean build) {
+	/**
+	 * What the wall in front of the stage is made of for these runes: stone for Zipper and the
+	 * mining runes, iron ore for Vein, logs under living leaves for Fell, or nothing (null).
+	 */
+	private static net.minecraft.world.level.block.state.BlockState wallFor(List<RuneDef> runes) {
+		if (runes.contains(Runes.VEIN)) {
+			return net.minecraft.world.level.block.Blocks.IRON_ORE.defaultBlockState();
+		}
+		if (runes.contains(Runes.FELL)) {
+			return net.minecraft.world.level.block.Blocks.OAK_LOG.defaultBlockState();
+		}
+		for (RuneDef rune : List.of(Runes.ZIPPER, Runes.CHISEL, Runes.TUNNEL, Runes.SMELT, Runes.GLIMMER)) {
+			if (runes.contains(rune)) {
+				return net.minecraft.world.level.block.Blocks.STONE.defaultBlockState();
+			}
+		}
+		return null;
+	}
+
+	/** A 2-thick wall right in front of the stage (for Zipper to step through, or to mine), or clears it; logs get leaves on top. */
+	private static void wall(ServerPlayer player, net.minecraft.world.level.block.state.BlockState block) {
 		net.minecraft.server.level.ServerLevel level = player.level();
+		var air = net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();
+		boolean logs = block != null && block.is(net.minecraft.tags.BlockTags.LOGS);
 		for (int dx = 2; dx <= 3; dx++) {
-			for (int dy = 0; dy <= 2; dy++) {
+			for (int dy = 0; dy <= 3; dy++) {
 				for (int dz = -1; dz <= 1; dz++) {
 					var pos = net.minecraft.core.BlockPos.containing(STAGE[0] + dx, STAGE[1] + dy, STAGE[2] + dz);
-					level.setBlockAndUpdate(pos, build ? net.minecraft.world.level.block.Blocks.STONE.defaultBlockState()
-						: net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+					var leaves = net.minecraft.world.level.block.Blocks.OAK_LEAVES.defaultBlockState();
+					level.setBlockAndUpdate(pos, block == null ? air : dy < 3 ? block : logs ? leaves : air);
 				}
 			}
 		}

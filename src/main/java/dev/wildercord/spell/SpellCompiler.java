@@ -358,6 +358,42 @@ public final class SpellCompiler {
 		if (id.equals(Runes.BLITZ.id())) {
 			return "Everything you flash through";
 		}
+		if (id.equals(Runes.SPARK.id())) {
+			return (copies > 1 ? copies + " sparks" : "A spark") + times + " (75% power)";
+		}
+		if (id.equals(Runes.RAY.id())) {
+			StringJoiner adj = new StringJoiner(", ", ", ", "").setEmptyValue("");
+			if (SpellNumbers.pierce(g) > 0) adj.add("pierces " + SpellNumbers.pierce(g));
+			if (SpellNumbers.chainJumps(g) > 0) adj.add("chains " + SpellNumbers.chainJumps(g));
+			return "A ray (" + blocks(SpellNumbers.RAY_RANGE) + adj + ")";
+		}
+		if (id.equals(Runes.NOVA.id())) {
+			return "A nova (" + blocks(SpellNumbers.novaRadius(g)) + ")";
+		}
+		if (id.equals(Runes.WISP.id())) {
+			return copies > 1 ? copies + " seeking wisps" : "A seeking wisp";
+		}
+		if (id.equals(Runes.COMET.id())) {
+			return (copies > 1 ? copies + " comets" : "A comet") + times + " (bursts " + blocks(SpellNumbers.cometRadius(g)) + ")";
+		}
+		if (id.equals(Runes.RICOCHET.id())) {
+			return (copies > 1 ? copies + " ricocheting orbs" : "A ricocheting orb") + " (" + SpellNumbers.ricochetBounces(g) + " bounces)";
+		}
+		if (id.equals(Runes.CLUSTER.id())) {
+			return (copies > 1 ? copies + " clusters" : "A cluster") + " (" + SpellNumbers.CLUSTER_SHARDS + " shards, " + blocks(SpellNumbers.clusterRadius(g)) + ")";
+		}
+		if (id.equals(Runes.LANCE.id())) {
+			return (copies > 1 ? copies + " lances" : "A lance") + " through everything in " + blocks(SpellNumbers.LANCE_RANGE);
+		}
+		if (id.equals(Runes.SWEEP.id())) {
+			return "A " + blocks(SpellNumbers.sweepLength(g)).replace(" blocks", "-block") + " sweeping beam";
+		}
+		if (id.equals(Runes.PRISM.id())) {
+			return (copies > 1 ? copies + " prism beams" : "A prism beam") + " (splits in 3)";
+		}
+		if (id.equals(Runes.STREAM.id())) {
+			return "A stream of " + SpellNumbers.streamStrikes(g) + " strikes (35% power each)";
+		}
 		return g.shape.name();
 	}
 
