@@ -120,7 +120,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	/** A husk 5 blocks ahead is struck (6), left in Darkness, and torn through a rift 2 to 5 blocks on, onto the floor. */
 	private static String riftbolt(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = spawn(world, EntityTypes.HUSK, 0, 5, 0, false);
-		String cast = cast(world, Runes.BEAM, Runes.RIFTBOLT);
+		String cast = cast(context, world, Runes.BEAM, Runes.RIFTBOLT);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -151,7 +151,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 		int z = STAGE.getZ();
 		world.getServer().runCommand("fill " + (x - 6) + " " + y + " " + (z + 7) + " " + (x + 6) + " " + (y + 4) + " " + (z + 7) + " minecraft:stone");
 		int husk = spawn(world, EntityTypes.HUSK, 0, 5, 0, false);
-		String cast = cast(world, Runes.BEAM, Runes.RIFTBOLT);
+		String cast = cast(context, world, Runes.BEAM, Runes.RIFTBOLT);
 		context.waitTicks(5);
 		String result = cast != null ? cast : world.getServer().computeOnServer(server -> {
 			Mob h = mob(server, husk);
@@ -173,7 +173,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	/** A boss is struck but never torn anywhere. */
 	private static String riftboltBoss(ClientGameTestContext context, TestSingleplayerContext world) {
 		int warden = spawn(world, EntityTypes.WARDEN, 0, 5, 0, false);
-		String cast = cast(world, Runes.BEAM, Runes.RIFTBOLT);
+		String cast = cast(context, world, Runes.BEAM, Runes.RIFTBOLT);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -203,7 +203,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			spawn(world, EntityTypes.HUSK, 0, 7.8, 0, false)};
 		int fifth = spawn(world, EntityTypes.HUSK, -3.2, 8.6, 0, false);
 		int far = spawn(world, EntityTypes.HUSK, 8.5, 5, 0, false);
-		String cast = cast(world, Runes.BEAM, Runes.STORMWEAVE);
+		String cast = cast(context, world, Runes.BEAM, Runes.STORMWEAVE);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -244,7 +244,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 		int struck = spawn(world, EntityTypes.HUSK, 0, 5, 0, false);
 		int near = spawn(world, EntityTypes.HUSK, 1.0, 5, 0, false);
 		int away = spawn(world, EntityTypes.HUSK, -3.0, 5, 0, false);
-		String cast = cast(world, Runes.BEAM, Runes.STORMCLOCK);
+		String cast = cast(context, world, Runes.BEAM, Runes.STORMCLOCK);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -278,7 +278,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	/** 5 at once; then every 2 seconds the husk is stunned for half a second (held: Slowness VII), and free in between. */
 	private static String heartstopper(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = spawn(world, EntityTypes.HUSK, 0, 5, 0, false);
-		String cast = cast(world, Runes.BEAM, Runes.HEARTSTOPPER);
+		String cast = cast(context, world, Runes.BEAM, Runes.HEARTSTOPPER);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -321,7 +321,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	private static String thunderhead(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = spawn(world, EntityTypes.HUSK, 0, 5, 0, false);
 		int far = spawn(world, EntityTypes.HUSK, 0, 13, 0, false);
-		String cast = cast(world, Runes.BEAM, Runes.THUNDERHEAD);
+		String cast = cast(context, world, Runes.BEAM, Runes.THUNDERHEAD);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -354,7 +354,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	private static String downdraft(ClientGameTestContext context, TestSingleplayerContext world) {
 		int flying = spawn(world, EntityTypes.HUSK, 0, 3, 3, false);
 		int grounded = spawn(world, EntityTypes.HUSK, 2.5, 3, 0, false);
-		String cast = cast(world, Runes.SELF, Runes.DOWNDRAFT);
+		String cast = cast(context, world, Runes.SELF, Runes.DOWNDRAFT);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -395,7 +395,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			return w.getId();
 		});
 		context.waitTicks(3);
-		String cast = cast(world, Runes.BEAM, Runes.UPDRAFT);
+		String cast = cast(context, world, Runes.BEAM, Runes.UPDRAFT);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -430,7 +430,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	/** A husk is hurled about 5 blocks back; 2 seconds later it's snapped back to where it stood, for 3. */
 	private static String recoil(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = spawn(world, EntityTypes.HUSK, 0, 5, 0, true);
-		String cast = cast(world, Runes.BEAM, Runes.RECOIL);
+		String cast = cast(context, world, Runes.BEAM, Runes.RECOIL);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -466,7 +466,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	/** Written under a husk (an enemy), the glyph throws it back about 4 blocks, and doesn't hurt it. */
 	private static String skyglyphEnemy(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = spawn(world, EntityTypes.HUSK, 0, 5, 0, true);
-		String cast = cast(world, Runes.BEAM, Runes.SKYGLYPH);
+		String cast = cast(context, world, Runes.BEAM, Runes.SKYGLYPH);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -489,7 +489,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	 * corner of the platform, facing out of it, clear of the glyph the last test left.
 	 */
 	private static String skyglyphAlly(ClientGameTestContext context, TestSingleplayerContext world) {
-		String cast = cast(world, Runes.SELF, Runes.SKYGLYPH, -10, -8, 180.0F);
+		String cast = cast(context, world, Runes.SELF, Runes.SKYGLYPH, -10, -8, 180.0F);
 		if (cast != null) {
 			return done(context, world, cast);
 		}
@@ -585,15 +585,18 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 	}
 
 	/** Threads {@code shape} and {@code effect} into spell 1 and casts it, from the middle of the platform. Returns what went wrong, or null. */
-	private static String cast(TestSingleplayerContext world, RuneDef shape, RuneDef effect) {
-		return cast(world, shape, effect, 0, 0, 0.0F);
+	private static String cast(ClientGameTestContext context, TestSingleplayerContext world, RuneDef shape, RuneDef effect) {
+		return cast(context, world, shape, effect, 0, 0, 0.0F);
 	}
 
 	/** The same, cast standing {@code dx}, {@code dz} from the middle of the platform and facing {@code yaw}. */
-	private static String cast(TestSingleplayerContext world, RuneDef shape, RuneDef effect, double dx, double dz, float yaw) {
+	private static String cast(ClientGameTestContext context, TestSingleplayerContext world, RuneDef shape, RuneDef effect, double dx, double dz,
+			float yaw) {
+		world.getServer().runOnServer(server -> stand(player(server), dx, dz, yaw));
+		// The teleport settles, and whatever was just spawned finds its feet.
+		context.waitTicks(3);
 		return world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
-			stand(player, dx, dz, yaw);
 			List<String> ids = List.of(shape.id(), effect.id());
 			SpellCaster.edit(player, 0, List.of());
 			SpellCaster.edit(player, 0, ids);
