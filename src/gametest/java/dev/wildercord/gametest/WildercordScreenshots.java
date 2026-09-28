@@ -28,7 +28,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		// WILDERCORD_TOUR_ONLY=1 skips these and runs only the feature tour, for quick visual checks.
-		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null) {
+		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null || System.getenv("WILDERCORD_SHOWCASE") != null) {
 			return;
 		}
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {

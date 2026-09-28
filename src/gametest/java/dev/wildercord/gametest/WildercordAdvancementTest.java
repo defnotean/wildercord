@@ -37,7 +37,7 @@ import java.util.List;
 public class WildercordAdvancementTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
-		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null) {
+		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null || System.getenv("WILDERCORD_SHOWCASE") != null) {
 			return;
 		}
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
