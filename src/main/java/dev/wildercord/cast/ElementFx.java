@@ -167,12 +167,12 @@ public final class ElementFx {
 	/** A magic circle layer facing {@code normal}. */
 	public static void sigil(ServerLevel level, Vec3 at, Vec3 normal, int style, int color, double size, int lifetime, double spin) {
 		Vec3 n = safe(normal);
-		send(level, new SigilOption(style, color & 0xFFFFFF, (float) size, Sigils.yaw(n), Sigils.pitch(n), lifetime, (float) spin), at);
+		send(level, new SigilOption(style, SigilOption.tint(color), (float) size, Sigils.yaw(n), Sigils.pitch(n), lifetime, (float) spin), at);
 	}
 
 	/** A circle lying on the ground at {@code feet}. */
 	public static void flatSigil(ServerLevel level, Vec3 feet, int style, int color, double size, int lifetime, double spin) {
-		send(level, SigilOption.flat(style, color & 0xFFFFFF, (float) size, lifetime, (float) spin), feet.add(0, 0.07, 0));
+		send(level, SigilOption.flat(style, SigilOption.tint(color), (float) size, lifetime, (float) spin), feet.add(0, 0.07, 0));
 	}
 
 	private static void send(ServerLevel level, ParticleOptions light, Vec3 at) {
@@ -379,6 +379,16 @@ public final class ElementFx {
 			ray(level, start, mid, forkColor, width * 0.6, lifetime - 1);
 			ray(level, mid, end, forkColor, width * 0.45, lifetime - 1);
 		}
+	}
+
+	/**
+	 * A crackling arc of lightning from {@code from} to {@code to}, drawn on each client (one particle:
+	 * a fresh jagged path every tick, {@code forks} branching off it, for {@code lifetime} ticks). A
+	 * {@code flat} one only jags sideways, skittering over water or ground without dipping under it.
+	 */
+	public static void arc(ServerLevel level, Vec3 from, Vec3 to, int color, double width, int forks, boolean flat, int lifetime) {
+		Vec3 d = to.subtract(from);
+		send(level, new LightOption(LightOption.ARC, color, (float) d.x, (float) d.y, (float) d.z, (float) width, forks, flat ? 1 : 0, 0, lifetime), from);
 	}
 
 	public static void sparks(ServerLevel level, Vec3 at, int count, double speed) {

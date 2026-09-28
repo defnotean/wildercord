@@ -17,6 +17,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -232,7 +233,7 @@ public final class WorldMagic {
 			} else {
 				level.removeBlock(pos, false);
 			}
-			Vfx.emit(level, ParticleTypes.CLOUD, Vec3.atCenterOf(pos), 3, 0.3, 0.02);
+			Motes.clouds(level, Vec3.atCenterOf(pos), 2, 0.25, Motes.STEAM, 0.9, 30, new Vec3(0, 0.03, 0), 0.01, 0.35);
 			Vfx.emit(level, ParticleTypes.FALLING_WATER, Vec3.atCenterOf(pos), 3, 0.35, 0.0);
 			melted++;
 		}
@@ -324,9 +325,9 @@ public final class WorldMagic {
 	}
 
 	/**
-	 * A cloud of steam hangs where fire met water for {@link WorldRules#STEAM_TICKS}: thick white
-	 * billows that hide what's behind them, and anyone in it the caster may harm is blinded and left
-	 * wet each second.
+	 * A cloud of steam hangs where fire met water for {@link WorldRules#STEAM_TICKS}: soft white
+	 * billows that swell as they rise, drift off on the air and thin away, thick enough to hide what's
+	 * behind them, and anyone in it the caster may harm is blinded and left wet each second.
 	 */
 	private static void steam(Cast cast, Vec3 at) {
 		ServerLevel level = cast.level;
@@ -335,13 +336,18 @@ public final class WorldMagic {
 		Fx.sound(level, at, SoundEvents.LAVA_EXTINGUISH, 0.6F, 1.3F);
 		ElementFx.ring(level, at, UP, 0xF2F6FF, 0.3, r + 0.6, 0.08, 12);
 		Vfx.emit(level, ParticleTypes.SPLASH, at, 16, r * 0.5, 0.1);
+		// The first gout: a burst of billows off the water, low and thick.
+		Motes.clouds(level, at.add(0, 0.4, 0), 7, r * 0.35, Motes.STEAM, 2.2, 70, new Vec3(0, 0.05, 0), 0.03, 0.62);
+		// The whole cloud drifts off one way on the air as it rises.
+		double a = level.getRandom().nextDouble() * Math.PI * 2;
+		Vec3 air = new Vec3(Math.cos(a) * 0.012, 0.035, Math.sin(a) * 0.012);
 		for (int t = 0; t < WorldRules.STEAM_TICKS; t += 5) {
 			int tick = t;
 			Runnable billow = () -> {
 				double k = 1 - tick / (double) WorldRules.STEAM_TICKS;
-				Vec3 c = at.add(0, 0.6 + tick * 0.01, 0);
-				Vfx.emit(level, ParticleTypes.CLOUD, c, (int) Math.round(10 * k) + 3, r * 0.55, 0.015);
-				Vfx.emit(level, ParticleTypes.WHITE_SMOKE, c, (int) Math.round(6 * k) + 2, r * 0.5, 0.01);
+				Vec3 c = at.add(0, 0.35 + tick * 0.006, 0);
+				Motes.clouds(level, c, (int) Math.round(3 * k) + 2, r * 0.45, Motes.STEAM, 1.7 + 0.7 * k, 55 + (int) (25 * k), air, 0.012,
+					0.3 + 0.3 * k);
 				if (tick % 20 == 0) {
 					AABB box = new AABB(at, at).inflate(r, 1.8, r).move(0, 0.8, 0);
 					for (Entity e : level.getEntities((Entity) null, box, e -> Targets.canHarm(cast.caster, e))) {
@@ -438,7 +444,8 @@ public final class WorldMagic {
 				return false;
 			}
 			level.removeBlock(pos, false);
-			Vfx.emit(level, ParticleTypes.SMOKE, Vec3.atCenterOf(pos), 5, 0.25, 0.02);
+			Motes.smoke(level, Vec3.atCenterOf(pos), 2, 0.25);
+			Vfx.emit(level, ParticleTypes.SNOWFLAKE, Vec3.atCenterOf(pos), 3, 0.25, 0.02);
 			return true;
 		}
 		if (CampfireBlock.isLitCampfire(state)) {
@@ -447,7 +454,7 @@ public final class WorldMagic {
 			}
 			CampfireBlock.douse(cast.caster, level, pos, state);
 			level.setBlockAndUpdate(pos, state.setValue(CampfireBlock.LIT, false));
-			Vfx.emit(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, Vec3.atCenterOf(pos), 4, 0.2, 0.02);
+			Motes.smoke(level, Vec3.atCenterOf(pos).add(0, 0.3, 0), 3, 0.2);
 			return true;
 		}
 		return false;
@@ -517,10 +524,12 @@ public final class WorldMagic {
 			return;
 		}
 		BlockPos seed = waterAt(level, hit.point());
+		Vec3 landed = hit.point();
 		for (int i = 0; seed == null && i < hit.entities().size(); i++) {
 			Entity e = hit.entities().get(i);
 			if (e.isInWater()) {
 				seed = waterAt(level, e.position().add(0, 0.2, 0));
+				landed = e.position();
 			}
 		}
 		if (seed == null) {
@@ -544,16 +553,13 @@ public final class WorldMagic {
 		if (struck.size() > WorldRules.CONDUCT_TARGETS) {
 			struck = struck.subList(0, WorldRules.CONDUCT_TARGETS);
 		}
-		Vec3 top = Vec3.atBottomCenterOf(surface(level, seed).above());
-		ElementFx.ring(level, top, UP, 0x4AA8FF, 0.3, 3.5, 0.06, 10);
-		ElementFx.ring(level, top, UP, ElementFx.STORM.primary(), 0.2, 2.4, 0.04, 8);
-		ElementFx.sparks(level, top, 10, 0.35);
-		Vfx.emit(level, ParticleTypes.BUBBLE, origin, 12, 1.2, 0.05);
-		Fx.sound(level, top, WildercordSounds.impact("storm"), 0.6F, 1.3F);
-		for (LivingEntity t : struck) {
-			Vec3 c = t.getBoundingBox().getCenter();
-			Vfx.shockArc(level, top, c);
-			ElementFx.ring(level, c, UP, ElementFx.STORM.secondary(), 0.2, 1.2, 0.04, 6);
+		BlockPos surface = surface(level, seed);
+		double waterY = surface.getY() + level.getFluidState(surface).getHeight(level, surface);
+		Vec3 strike = new Vec3(landed.x, waterY + 0.1, landed.z);
+		conductFlash(level, strike, water);
+		for (int i = 0; i < struck.size(); i++) {
+			LivingEntity t = struck.get(i);
+			shockThrough(level, strike, t, waterY, i);
 			double amount = WorldRules.conductDamage(Math.sqrt(t.distanceToSqr(origin))) * power;
 			Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), amount);
 		}
@@ -563,6 +569,63 @@ public final class WorldMagic {
 		if (struck.size() >= WorldRules.CONDUCTOR_FEAT) {
 			Grimoire.feat(cast.caster, Feats.CONDUCTOR);
 		}
+	}
+
+	/** Arcs and the water's glow: pale blue-white, like lightning seen through water. */
+	private static final int SHOCK = 0x9AD8FF;
+
+	/**
+	 * Where storm meets water: a flash on the surface, rings racing out over it and a few arcs
+	 * skittering off across it (only over the water that's joined up), whether or not anything is in
+	 * it to be struck.
+	 */
+	private static void conductFlash(ServerLevel level, Vec3 strike, Set<BlockPos> water) {
+		Sigils.flash(level, strike.add(0, 0.25, 0), 0xEAF6FF, 2.6F);
+		Sigils.flash(level, strike.add(0, 0.2, 0), ElementFx.STORM.primary(), 1.4F);
+		ElementFx.ring(level, strike, UP, 0x4AA8FF, 0.3, 3.8, 0.07, 11);
+		ElementFx.ring(level, strike, UP, ElementFx.STORM.primary(), 0.2, 2.6, 0.045, 8);
+		ElementFx.ring(level, strike, UP, SHOCK, 0.1, 1.4, 0.03, 6);
+		RandomSource random = level.getRandom();
+		double phase = random.nextDouble() * Math.PI * 2;
+		for (int i = 0; i < 5; i++) {
+			double a = phase + Math.PI * 2 * i / 5 + (random.nextDouble() - 0.5) * 0.7;
+			double reach = 1.2 + random.nextDouble() * 1.6;
+			Vec3 end = strike.add(Math.cos(a) * reach, 0, Math.sin(a) * reach);
+			// Only as far as the water goes: never out over the bank.
+			if (!water.contains(BlockPos.containing(end.x, strike.y - 0.3, end.z))) {
+				end = strike.add(Math.cos(a) * reach * 0.45, 0, Math.sin(a) * reach * 0.45);
+				if (!water.contains(BlockPos.containing(end.x, strike.y - 0.3, end.z))) {
+					continue;
+				}
+			}
+			ElementFx.arc(level, strike, end, i % 2 == 0 ? SHOCK : ElementFx.STORM.primary(), 0.04, 1, true, 5 + random.nextInt(3));
+		}
+		ElementFx.sparks(level, strike.add(0, 0.2, 0), 12, 0.35);
+		Vfx.emit(level, ParticleTypes.BUBBLE, strike.add(0, -0.6, 0), 12, 1.2, 0.05);
+		Fx.sound(level, strike, WildercordSounds.impact("storm"), 0.6F, 1.3F);
+	}
+
+	/**
+	 * The shock reaching one creature in the water, a tick after the one before it: branching arcs
+	 * skitter over the surface from where it struck to the creature, jump up it, and sparks burst off it.
+	 */
+	private static void shockThrough(ServerLevel level, Vec3 strike, LivingEntity t, double waterY, int order) {
+		Vec3 centre = t.getBoundingBox().getCenter();
+		Vec3 onWater = new Vec3(t.getX(), waterY + 0.1, t.getZ());
+		// Somewhere on it that shows above the water.
+		Vec3 above = new Vec3(centre.x, Math.max(centre.y, waterY + Math.min(0.5, t.getBbHeight() * 0.5)), centre.z);
+		double width = t.getBbWidth();
+		Scheduler.later(1 + order, () -> {
+			ElementFx.arc(level, strike, onWater, SHOCK, 0.07, 2, true, 9);
+			ElementFx.arc(level, strike, onWater, ElementFx.STORM.primary(), 0.035, 1, true, 6);
+			ElementFx.arc(level, onWater, above, ElementFx.STORM.secondary(), 0.04, 1, false, 7);
+			ElementFx.ring(level, onWater, UP, SHOCK, 0.2, width + 1.0, 0.04, 7);
+			Sigils.flash(level, above, ElementFx.STORM.secondary(), (float) (0.8 + width * 0.6));
+			ElementFx.sparks(level, above, 8, 0.3);
+			if (order < 4) {
+				Fx.sound(level, above, SoundEvents.TRIDENT_THUNDER.value(), 0.25F, 1.9F);
+			}
+		});
 	}
 
 	/** The water joined to {@code seed} (source, flowing or waterlogged), within reach and a fixed number of blocks. */
@@ -640,7 +703,7 @@ public final class WorldMagic {
 			}
 			if (level.getBlockState(pos).is(BlockTags.FIRE) && edit(cast, pos.immutable())) {
 				level.removeBlock(pos, false);
-				Vfx.emit(level, ParticleTypes.SMOKE, Vec3.atCenterOf(pos), 6, 0.3, 0.05);
+				Motes.smoke(level, Vec3.atCenterOf(pos), 2, 0.3);
 				out++;
 			}
 		}

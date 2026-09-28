@@ -2,7 +2,6 @@ package dev.wildercord.cast;
 
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -49,15 +48,14 @@ public final class Meditation {
 		}
 	}
 
-	/** A slow ring of glyphs drifting in toward the player. */
+	/** A slow ring of soft lights turning round the player's feet, and glyphs drifting in toward them. */
 	private static void show(ServerPlayer player) {
 		ServerLevel level = player.level();
-		Vec3 feet = player.position().add(0, 0.1, 0);
+		Vec3 feet = player.position().add(0, 0.12, 0);
 		double spin = level.getGameTime() * 0.05;
-		DustParticleOptions dust = new DustParticleOptions(0xB8A8FF, 0.9F);
-		for (int i = 0; i < 8; i++) {
-			double a = spin + Math.PI * 2 * i / 8;
-			Fx.send(level, dust, feet.x + Math.cos(a) * 1.1, feet.y, feet.z + Math.sin(a) * 1.1, 1, 0, 0, 0, 0);
+		for (int i = 0; i < 5; i++) {
+			double a = spin + Math.PI * 2 * i / 5;
+			Motes.glow(level, feet.add(Math.cos(a) * 1.1, 0, Math.sin(a) * 1.1), i % 2 == 0 ? 0xB8A8FF : 0xE4DCFF, 0.13, 14, new Vec3(0, 0.012, 0), 0.0);
 		}
 		for (int i = 0; i < 2; i++) {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;

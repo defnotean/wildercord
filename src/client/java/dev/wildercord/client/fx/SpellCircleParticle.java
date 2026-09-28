@@ -60,6 +60,8 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	private final Rune pattern;
 	protected final TextureAtlasSprite line;
 	protected final TextureAtlasSprite glow;
+	/** A smooth round glow, for the big soft light behind the whole circle (the other has a sparkle and steps). */
+	protected final TextureAtlasSprite soft;
 	private final TextureAtlasSprite[] script;
 
 	/** How far each part has turned: the script band, the pattern band (the other way) and the star. */
@@ -109,6 +111,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		this.roundel = SpellSigil.roundel(runes.size());
 		this.line = particleSprite("sigil_band");
 		this.glow = particleSprite("sigil_glow");
+		this.soft = particleSprite("sigil_soft");
 		this.script = runes.stream().map(Rune::mark).toArray(TextureAtlasSprite[]::new);
 		this.starTurn = 0;
 		this.scriptTurn = level.getRandom().nextFloat() * Mth.TWO_PI;
@@ -222,7 +225,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		float star = Mth.lerp(partial, oStarTurn, starTurn);
 
 		// The glow behind it all.
-		piece(glow, 0, 0, 0, r * 1.3F, argb(a * 0.28F * (0.4F + 0.6F * open), color), 0);
+		piece(soft, 0, 0, 0, r * 1.25F, argb(a * 0.3F * (0.4F + 0.6F * open), color), 0);
 
 		// The frame, and rays on the star's points.
 		float frame = part(open, 0, 0.2F);
@@ -443,7 +446,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	}
 
 	/** An arc of a circle around (u, v) from angle {@code from} to {@code to}. */
-	private void arc(float u, float v, float rad, float from, float to, float width, int argb, float depth) {
+	protected void arc(float u, float v, float rad, float from, float to, float width, int argb, float depth) {
 		if ((argb >>> 24) < 3 || rad <= 0) {
 			return;
 		}
@@ -537,7 +540,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	 * A band of tiles around (u, v), {@code height} tall, top edge outward, cycling through
 	 * {@code sprites}; with {@code whole}, always a whole number of cycles, so the order reads true.
 	 */
-	private void tiles(TextureAtlasSprite[] sprites, float u, float v, float rad, float height, float angle, int argb, float depth, boolean whole) {
+	protected void tiles(TextureAtlasSprite[] sprites, float u, float v, float rad, float height, float angle, int argb, float depth, boolean whole) {
 		if ((argb >>> 24) < 3 || rad <= 0 || height <= 0) {
 			return;
 		}

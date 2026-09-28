@@ -36,7 +36,16 @@ public record SigilOption(int style, int color, float size, float yaw, float pit
 
 	/** A flash of light {@code size} blocks across at its brightest (see {@link #GLOW}). */
 	public static SigilOption glow(int color, float size) {
-		return new SigilOption(GLOW, color & 0x01FFFFFF, size / 2, 0, 0, 7, 0);
+		return new SigilOption(GLOW, tint(color), size / 2, 0, 0, 7, 0);
+	}
+
+	/**
+	 * A colour ready to send: 0xRRGGBB, keeping the darkness flag ({@code Light.DARK}, 0x01000000) if
+	 * it's set. A colour written with a full alpha byte (0xFFRRGGBB) is plain light: the flag's bit
+	 * happens to be in that byte, and such a flash used to come out as darkness.
+	 */
+	public static int tint(int color) {
+		return (color >>> 24) == 0xFF ? color & 0xFFFFFF : color & 0x01FFFFFF;
 	}
 
 	public static final MapCodec<SigilOption> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(

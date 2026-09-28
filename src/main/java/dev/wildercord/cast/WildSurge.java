@@ -14,7 +14,6 @@ import dev.wildercord.spell.WildMagic.Surge;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -221,8 +220,9 @@ public final class WildSurge {
 				if (damage > 0 && !player.isCreative()) {
 					player.hurtServer(level, level.damageSources().magic(), damage);
 				}
-				Vfx.radial(level, ParticleTypes.SMOKE, heart, 16, 0.12);
-				Vfx.radial(level, new DustParticleOptions(surge.color, 1.3F), heart, 14, 0.25);
+				Motes.clouds(level, heart, 5, 0.35, Motes.SMOKE, 1.1, 34, new Vec3(0, 0.03, 0), 0.06, 0.45);
+				Motes.burst(level, heart, 14, surge.color, 0.16, 18, 0.22);
+				Sigils.flash(level, heart, surge.color, 1.6F);
 				Fx.sound(level, heart, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.6F);
 			}
 			case FREE_RECAST -> {
@@ -277,24 +277,37 @@ public final class WildSurge {
 		}
 	}
 
-	/** A harmless shower: butterflies of light fluttering up and away, and fireworks bursting overhead. */
+	/**
+	 * A harmless shower: waves of butterflies of light in every colour fluttering up and away from the
+	 * caster, and little fireworks bursting overhead, their sparks drifting down.
+	 */
 	private static void butterflies(ServerLevel level, Vec3 heart, RandomSource random) {
-		int[] colors = {0xFFA8E8, 0x9AE0FF, 0xFFE08A, 0xB8FFB0, 0xD0A8FF};
+		int[] colors = {0xFFA8E8, 0x9AE0FF, 0xFFE08A, 0xB8FFB0, 0xD0A8FF, 0xFFB890};
+		Sigils.flash(level, heart, Surge.BUTTERFLIES.color, 1.8F);
 		for (int wave = 0; wave < 6; wave++) {
 			int w = wave;
 			Scheduler.later(1 + wave * 4, () -> {
-				for (int i = 0; i < 5; i++) {
-					int color = colors[(w + i) % colors.length];
-					Vec3 dir = new Vec3(random.nextDouble() - 0.5, 0.6 + random.nextDouble() * 0.5, random.nextDouble() - 0.5).normalize();
-					Vec3 at = heart.add(dir.scale(0.4 + w * 0.25));
-					// Two wings of light, and the glow of the body between them.
-					Light.orb(level, at, color, 0.07, 14);
-					Vfx.fling(level, new DustParticleOptions(color, 0.9F), at.add(dir.cross(UP).normalize().scale(0.12)), dir, 0.12);
-					Vfx.fling(level, new DustParticleOptions(color, 0.9F), at.subtract(dir.cross(UP).normalize().scale(0.12)), dir, 0.12);
+				for (int i = 0; i < 7; i++) {
+					int color = colors[(w * 7 + i) % colors.length];
+					double a = random.nextDouble() * Math.PI * 2;
+					Vec3 out = new Vec3(Math.cos(a), 0, Math.sin(a));
+					// Off round the caster's middle, not in front of their eyes: they see the shower too.
+					Vec3 at = heart.add(out.scale(1.0 + random.nextDouble() * 0.6)).add(0, -0.75 + random.nextDouble() * 0.8, 0);
+					Vec3 flight = out.scale(0.035 + random.nextDouble() * 0.03).add(0, 0.025 + random.nextDouble() * 0.03, 0);
+					Motes.butterfly(level, at, color, 0.42 + random.nextDouble() * 0.2, 55 + random.nextInt(30), flight);
 				}
-				Vec3 burst = heart.add((random.nextDouble() - 0.5) * 3, 2.5 + random.nextDouble() * 1.5, (random.nextDouble() - 0.5) * 3);
-				Vfx.radial(level, ParticleTypes.FIREWORK, burst, 18, 0.18);
-				Sigils.flash(level, burst, 0xFF000000 | colors[w % colors.length], 1.0F);
+				// A little firework overhead: a flash, sparks of every colour and vanilla's twinkle.
+				Vec3 burst = heart.add((random.nextDouble() - 0.5) * 3.5, 2.4 + random.nextDouble() * 1.6, (random.nextDouble() - 0.5) * 3.5);
+				int color = colors[w % colors.length];
+				Sigils.flash(level, burst, color, 1.3F);
+				for (int k = 0; k < 12; k++) {
+					double y = 1 - (k + 0.5) * 2.0 / 12;
+					double s = Math.sqrt(Math.max(0, 1 - y * y));
+					double b = k * 2.39996323;
+					Motes.fling(level, burst, new Vec3(Math.cos(b) * s, y, Math.sin(b) * s), 0.16 + random.nextDouble() * 0.06,
+						k % 3 == 0 ? 0xFFFFFF : colors[(w + k) % colors.length], 0.14, 22 + random.nextInt(10), new Vec3(0, -0.012, 0));
+				}
+				Vfx.radial(level, ParticleTypes.FIREWORK, burst, 8, 0.14);
 				Fx.sound(level, burst, w % 2 == 0 ? SoundEvents.FIREWORK_ROCKET_BLAST : SoundEvents.FIREWORK_ROCKET_TWINKLE, 0.7F, 1.0F + 0.1F * w);
 			});
 		}
@@ -310,16 +323,45 @@ public final class WildSurge {
 		return found;
 	}
 
+	/**
+	 * A surge's swirl: two strands of its colour winding up round the caster, broad and bright, and
+	 * motes spiralling up off the ground into a flash over their head.
+	 */
+	private static void swirl(ServerPlayer player, Vec3 feet, int color) {
+		ServerLevel level = player.level();
+		double phase = level.getRandom().nextDouble() * Math.PI * 2;
+		int arcs = 9;
+		for (int i = 0; i < arcs; i++) {
+			double k = i / (double) (arcs - 1);
+			for (int strand = 0; strand < 2; strand++) {
+				double a = phase + i * 0.85 + strand * Math.PI;
+				ElementFx.slash(level, feet.add(0, 0.15 + 2.6 * k, 0), ElementFx.tilted(0.3, a + Math.PI / 2), ElementFx.flatDir(a),
+					strand == 0 ? color : 0xFFFFFF, 1.5 * (1 - 0.35 * k), 2.1, strand == 0 ? 0.12 : 0.07, 1 + i / 2, 9 + i / 2);
+			}
+		}
+		Vec3 crown = feet.add(0, 2.9, 0);
+		for (int i = 0; i < 12; i++) {
+			double a = phase + Math.PI * 2 * i / 12;
+			Vec3 from = feet.add(Math.cos(a) * 1.3, 0.1, Math.sin(a) * 1.3);
+			// Only onlookers see these: they'd fly up past the caster's own face.
+			Fx.sendOthers(level, player, Motes.seekOption(from, crown, i % 3 == 0 ? 0xFFFFFF : color, 0.16, 14 + i % 4 * 2, 0.8), from);
+		}
+		Scheduler.later(18, () -> Sigils.flash(level, crown, color, 1.2F));
+	}
+
 	/** The swirl of its colour round the caster, and (a moment later, after the crack's own line) what it became. */
 	private static void announce(ServerPlayer player, Surge surge, Object... args) {
 		ServerLevel level = player.level();
 		Vec3 feet = player.position();
 		Vec3 heart = feet.add(0, 1.1, 0);
-		ElementFx.swirl(level, feet.add(0, 0.1, 0), 1.4, 2.4, 7, surge.color, 0xFFFFFF);
+		swirl(player, feet, surge.color);
 		ElementFx.flatSigil(level, feet.add(0, 0.05, 0), SigilOption.STAR, surge.color, 2.8, 30, 0.3);
-		ElementFx.ring(level, heart, UP, surge.color, 0.3, 2.6, 0.06, 10);
-		Vfx.radial(level, new DustParticleOptions(surge.color, 1.2F), heart, 18, 0.3);
-		Vfx.radial(level, ParticleTypes.WITCH, heart, 10, 0.2);
+		ElementFx.flatSigil(level, feet.add(0, 0.06, 0), SigilOption.RING, surge.color, 3.4, 30, -0.12);
+		ElementFx.ring(level, heart, UP, surge.color, 0.3, 2.6, 0.08, 10);
+		ElementFx.ring(level, heart, UP, 0xFFFFFF, 0.2, 1.8, 0.035, 8);
+		Sigils.flash(level, heart, surge.color, 1.5F);
+		Motes.burst(level, heart, 12, surge.color, 0.15, 20, 0.2);
+		Vfx.radial(level, ParticleTypes.WITCH, heart, 6, 0.2);
 		Fx.sound(level, heart, WildercordSounds.CIRCLE_OPEN, 0.9F, 1.4F);
 		Fx.sound(level, heart, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.9F, 1.5F);
 		Component line = Component.translatable("message.wildercord.wild_surge", Component.translatable(surge.key(), args)).withColor(surge.color);

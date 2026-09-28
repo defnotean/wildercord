@@ -314,7 +314,11 @@ everything inside it (passive renewals).
 Magic circles are the mod's own particle, `wildercord:sigil` (`SigilOption`: a style, colour,
 size, facing, lifetime and spin). The styles are `CIRCLE`, `RING`, `STAR`, `TARGET`, `CRACKED`,
 `GLOW` and `BAND` (a thin plain ring, drawn in straight pieces so its line is the same width at any
-radius). A spell's whole circle is one particle, `wildercord:spell_circle` (`SpellCircleOption`: the
+radius). From 0.7 blocks up, `CIRCLE`, `RING`, `STAR`, `CRACKED` and `TARGET` are drawn the same way
+(`SigilParticle.extractDrawn`): rings, strokes and little glyphs laid down as pieces of the thin-line
+texture over a smooth glow (`sigil_soft`), so a seal twenty blocks across keeps fine, crisp lines
+instead of stretching a 64-pixel texture into fat blocky strokes; they draw themselves in as they
+open, and a dark one is a band of darkness with a thin rim of its tint. A spell's whole circle is one particle, `wildercord:spell_circle` (`SpellCircleOption`: the
 spell's rune ids, a colour, a radius, a facing and a lifetime); each client builds it from the runes
 (see `SpellSigil`), using every rune's own emblem and ring pattern
 (`textures/particle/circle/<rune>_mark.png` and `_band.png`, drawn by `tools/circle_art.py`; add-on
@@ -347,10 +351,21 @@ as their maker.
 
 A third particle, `wildercord:light` (`LightOption`), is shaped light: a `RING` (a shockwave
 racing out), a `RAY` (a beam, its pieces turned to face the viewer), a `SLASH` (a tapered crescent
-sweeping across) and an `ORB` (a glow wrapped in turning rings), each a soft halo (`sigil_beam`)
-under a hot core. `Light` sends them; every shape's visuals in `Vfx` and `TechniqueVfx` are built
+sweeping across), an `ORB` (a glow wrapped in turning rings) and an `ARC` (a lightning arc that
+each client redraws with a fresh jagged, forking path every tick; a flat one only jags sideways, so
+it skitters over water or ground), each a soft halo (`sigil_beam`) under a hot core. `Light` sends them; every shape's visuals in `Vfx` and `TechniqueVfx` are built
 from them, the circles and glows. `SigilOption.glow` is a camera-facing flash; it replaced vanilla's firework flash, which
 showed up close as a pale square.
+
+`wildercord:mote` (`MoteOption`, sent by `Motes`) is the small stuff: a glowing speck that drifts
+and twinkles, one that spirals in to a point trailing light, a butterfly of light beating its wings,
+and a soft billow of steam or smoke that swells, rises, drifts and thins (`mote_cloud_*`, lit like
+the world). The mod's own smoke is these pale billows, never vanilla's black squares. Unlike the
+other particles it respects the particles setting. `wildercord:ritual` (`RitualOption`) is an
+attunement in progress, sent every check: each client (`client.fx.RitualCircles`) keeps one ritual
+per player from them, the land's rune circle turning under them, motes rising into the blank and a
+light gathering in the hand, building through the stages, bursting into the rune's emblem at the
+finish and fading if they stop coming. The soft textures are drawn by `tools/mote_art.py`.
 
 `ElementFx` holds the element visual languages that every effect (in `Vfx`, `TechniqueVfx`,
 `Reactions`, `Innates` and `SecretSpells`) is drawn from: each element's `Palette` (its rune
@@ -571,9 +586,11 @@ can draw the circle.
 - **Entities** (`cast.WildercordEntities`): the bolt (`RuneBolt`, drawn by nothing but its
   particles), the Archivist and the Training Dummy.
 - **Particles** (`WildercordParticles`): `wildercord:sigil` (a `SigilOption`),
-  `wildercord:spell_circle` (a `SpellCircleOption`), `wildercord:light` (a `LightOption`) and
+  `wildercord:spell_circle` (a `SpellCircleOption`), `wildercord:light` (a `LightOption`),
   `wildercord:shield` (a `ShieldOption`: a Shield blocking a spell or shattering, which each client
-  turns into the ripple, or the cracks and falling shards, in `client.fx.ShieldBreak`).
+  turns into the ripple, or the cracks and falling shards, in `client.fx.ShieldBreak`),
+  `wildercord:mote` (a `MoteOption`: specks, butterflies of light, steam and smoke) and
+  `wildercord:ritual` (a `RitualOption`: an attunement as it goes).
 - **Imbued items** carry the `wildercord:imbued` component (`Imbued`: the stored runes, charges
   left, colour); `Imbued.release` says how each kind of item lets its spell go. Glyphs (spells
   imbued into blocks) are kept per dimension in `Imbuing.Glyphs`, a saved data file.

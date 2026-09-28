@@ -833,7 +833,7 @@ final class ExpansionVfx {
 		shell(level, point, FIRE, 0xFFD060, 0.3, radius, 0.07, 9);
 		Light.groundRing(level, CastEngine.ground(level, point.add(0, 0.5, 0)), FIRE, 0.4, radius * 1.1, 0.1, 11);
 		Vfx.radial(level, ParticleTypes.FLAME, point, 24, 0.3);
-		Vfx.radial(level, ParticleTypes.LARGE_SMOKE, point, 8, 0.1);
+		Motes.clouds(level, point, 6, radius * 0.3, Motes.SMOKE, 1.3, 40, new Vec3(0, 0.03, 0), 0.07, 0.4);
 		Fx.sound(level, point, SoundEvents.FIRECHARGE_USE, 1.0F, 0.8F);
 		Fx.sound(level, point, SoundEvents.BLAZE_SHOOT, 0.6F, 0.7F);
 	}

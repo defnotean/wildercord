@@ -4,7 +4,30 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Changed
+- **Crisper magic circles.** Big ground seals (Sandstorm, Vortex, Riftcall, Moonpetal, Hush, Eclipse,
+  Magma, reticles and the rest) are drawn in thin lines of light with little glyphs, like a spell's
+  own circle, instead of a stretched low-resolution texture with fat pixel strokes. They draw
+  themselves in as they open, and the zone seals now sit on the edge of the area they cover.
+- **Attunement is a ritual.** The land's own rune circle opens under you and slowly turns, motes of
+  its colour rise off the ground and spiral into the Blank Rune, and it builds through the four
+  stages (a rune band, then rays, then an outer ring). It finishes in a flash, rings racing out and
+  the rune's emblem shining over your hand. Meditation's ring is soft light instead of squares.
+- **Storm through water** now shows: branching arcs skitter over the surface from the strike to
+  every creature shocked, the water flashes and sparks burst off each one.
+- **Steam** is a soft white cloud that swells, rises, drifts off and lingers instead of vanilla
+  puffs; a Steam fusion and a Shatter boil off the same way.
+- **Wild magic**: the butterflies are bigger, brighter, many-coloured and actually flutter, with
+  little fireworks overhead; every surge's swirl is broader, with motes spiralling up into a flash.
+- The mod's own smoke (explosions, burning, snuffed fires, bosses, fallen stars) is soft grey
+  billows instead of big black squares.
+
 ### Fixed
+- Many flashes came out as darkness instead of light (a parry, a Shield blocking, a bolt's hit, a
+  Heart Circle cracking, Chorus and Unison, Fortune, Phantom, several secret spells and the wild
+  butterflies' fireworks): a colour written with a full alpha byte carried the darkness flag. They
+  shine again. Void's own dark seals (Hush, Eclipse, Riftcall, Portalfall) are darkness again too,
+  with a violet rim, where they had come out as faint light.
 - A storm's echo, Twin Star, a Focus of Echoes or a wild surge's second go could Imbue again (a
   second imbued item or glyph for one payment) and Siphon past the per-cast cap. Every copy of one
   cast now shares its payment's limits, and keeps its casting gear (the storm's echo lost it, and
