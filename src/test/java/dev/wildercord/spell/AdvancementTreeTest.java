@@ -163,4 +163,27 @@ class AdvancementTreeTest {
 		// Riddles read don't fill it.
 		assertFalse(Feats.complete(List.of("hint:sunfall"), "secret:"));
 	}
+
+	@Test
+	void aFullGrimoireNeedsNoInnateOrMultiplayerFeat() {
+		List<String> alone = new ArrayList<>(Feats.everyEntry());
+		for (String feat : Feats.OPTIONAL) {
+			assertTrue(alone.remove("feat:" + feat), feat + " should be a feat");
+		}
+		assertTrue(Feats.complete(alone, ""), "Mirrorfrost's, Unison, Domain Clash and Chorus shouldn't be needed");
+		alone.remove("feat:" + Feats.PARRY);
+		assertFalse(Feats.complete(alone, ""));
+	}
+
+	@Test
+	void runesKnownCountOnlyRealRunes() {
+		String knot = Knots.id(List.of(Runes.BOLT, Runes.HARM), "");
+		assertTrue(Knots.isKnot(knot));
+		assertEquals(2, Runes.countKnown(List.of(Runes.BOLT.id(), Runes.HARM.id(), knot, "gone_addon:bleed")));
+		// Every rune you can find or make: never another caster's innate one.
+		assertFalse(Runes.obtainable(Runes.MIRRORFROST));
+		assertTrue(Runes.obtainable(Runes.FIRESTORM), "a fused rune is made at the altar");
+		assertTrue(Runes.obtainable(Runes.CINDERBRAND), "a rune of the world is found in its place");
+		assertTrue(Runes.obtainable(Runes.BOLT));
+	}
 }

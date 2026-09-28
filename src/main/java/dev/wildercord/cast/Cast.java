@@ -29,11 +29,20 @@ public final class Cast {
 	 */
 	public static final int MAX_SEGMENTS = 128;
 
-	/** Limits for the whole cast, pulses included. */
-	private static final class Shared {
+	/**
+	 * Limits for one payment: every copy of a spell that was paid for once (a storm's echo, Twin Star,
+	 * a Focus of Echoes, a wild surge's second go) shares them, so a copy can't Siphon past the cap
+	 * again or do a once-per-cast thing (Imbue) a second time.
+	 */
+	private static final class Paid {
 		int siphon = dev.wildercord.player.Mana.SIPHON_CAP_PER_CAST;
 		int siphonLevel = -1;
 		final java.util.Set<String> once = new java.util.HashSet<>();
+	}
+
+	/** Limits for the whole cast, pulses included. */
+	private static final class Shared {
+		final Paid paid;
 		/** Set when the whole cast is cut short, e.g. a Domain shattered in a clash. */
 		boolean cancelled;
 		int segments = MAX_SEGMENTS;
@@ -41,6 +50,22 @@ public final class Cast {
 		double weight = -1;
 		/** The casting gear in the caster's hands when it was cast (staffs and foci). */
 		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.GearBonuses.NONE;
+
+		Shared() {
+			this(new Paid());
+		}
+
+		Shared(Paid paid) {
+			this.paid = paid;
+		}
+
+		/** A fresh cast's limits keeping this one's weight and gear, and its payment ({@code samePayment}) or a new one. */
+		Shared copy(boolean samePayment) {
+			Shared copy = new Shared(samePayment ? paid : new Paid());
+			copy.weight = weight;
+			copy.gear = gear;
+			return copy;
+		}
 	}
 
 	/** What a spell with no plan to price weighs (a flourish of an innate rune, say): a small spell. */
@@ -147,7 +172,7 @@ public final class Cast {
 
 	/** No Siphon for this cast: for one that was paid for earlier (an imbued release), so it can't earn its mana back again. */
 	public Cast noSiphon() {
-		budget.shared.siphon = 0;
+		budget.shared.paid.siphon = 0;
 		return this;
 	}
 
@@ -163,7 +188,7 @@ public final class Cast {
 
 	/** True the first time {@code key} is asked for in this whole cast (links and echoes included). */
 	public boolean once(String key) {
-		return budget.shared.once.add(key);
+		return budget.shared.paid.once.add(key);
 	}
 
 	/** False once the caster has left, died or changed dimension: pending parts then fizzle. */
@@ -177,19 +202,29 @@ public final class Cast {
 		budget.shared.cancelled = true;
 	}
 
-	/** The same cast, stronger: for the second copy of a Twin Star cast. */
+	/**
+	 * The same spell going off again for the same payment, {@code multiplier} times as strong: a storm's
+	 * echo, Twin Star, a Focus of Echoes, a wild surge. It gets its own creature, block and segment
+	 * budgets (so a Shield that stopped the first doesn't stop it), but shares the first's Siphon cap
+	 * and once-per-cast things (a second Imbue would store the spell twice for one price), and keeps
+	 * its weight and casting gear.
+	 */
+	public Cast again(double multiplier) {
+		return new Cast(caster, level, depth, new Budget(budget.shared.copy(true)), castNumber, power * multiplier, duration, passive, wanted, info);
+	}
+
+	/** The same cast, stronger or weaker: see {@link #again}. */
 	public Cast withPower(double multiplier) {
-		return new Cast(caster, level, depth, new Budget(new Shared()), castNumber, power * multiplier, duration, passive, wanted, info);
+		return again(multiplier);
 	}
 
 	/**
-	 * The same spell, turned back by a parry: now {@code by}'s, at the same power and weight, with a
-	 * fresh budget (so the Shield that stopped the original doesn't stop it).
+	 * The same spell, turned back by a parry: now {@code by}'s, at the same power (casting gear
+	 * included) and weight, with a fresh budget (so the Shield that stopped the original doesn't stop it).
 	 */
 	public Cast reflected(LivingEntity by) {
-		Cast turned = new Cast(by, (ServerLevel) by.level(), 0, new Budget(new Shared()), 1, power, duration, false, null, info);
-		turned.budget.shared.weight = weight();
-		return turned;
+		weight();
+		return new Cast(by, (ServerLevel) by.level(), 0, new Budget(budget.shared.copy(false)), 1, power, duration, false, null, info);
 	}
 
 	/** Takes up to {@code wanted} creatures from the budget and returns how many may be touched. */
@@ -204,7 +239,7 @@ public final class Cast {
 	 * Siphon level is read once, when the first creature is hit.
 	 */
 	public void siphon(long creatures) {
-		Shared shared = budget.shared;
+		Paid shared = budget.shared.paid;
 		if (creatures <= 0 || shared.siphon <= 0 || !(caster instanceof ServerPlayer player)) {
 			return;
 		}

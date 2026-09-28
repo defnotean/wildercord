@@ -31,7 +31,8 @@ import java.util.Optional;
  *   <li>{@code wildercord:grimoire} {@code {"entry": "reaction:shatter"}}, {@code {"prefix": "secret:", "count": 1}}
  *       or {@code {"prefix": "secret:", "all": true}} (every entry with the prefix; no prefix: the whole Grimoire)</li>
  *   <li>{@code wildercord:heart_circle} {@code {"level": 4}}: has formed at least that many circles</li>
- *   <li>{@code wildercord:runes_known} {@code {"count": 50}} or {@code {"all": true}} (every rune but the innate ones)</li>
+ *   <li>{@code wildercord:runes_known} {@code {"count": 50}} or {@code {"all": true}} (every rune you can find or make, and your own innate one;
+ *       counted like the Heart Circles count them: Knots and runes of add-ons that aren't loaded don't count)</li>
  *   <li>{@code wildercord:cord} {@code {"tier": "copper"}}: wears that Cord or a better one</li>
  *   <li>{@code wildercord:moment} {@code {"moment": "glyph"}}: something just happened (see {@link Advancements})</li>
  * </ul>
@@ -135,14 +136,21 @@ public final class WildercordTriggers {
 			return Instance.CODEC;
 		}
 
-		public void trigger(ServerPlayer player, List<String> learned) {
-			trigger(player, instance -> instance.all() ? knowsEveryRune(learned) : learned.size() >= instance.count());
+		/** @param innate the player's own innate rune's id ("" before it wakes) */
+		public void trigger(ServerPlayer player, List<String> learned, String innate) {
+			java.util.Set<String> known = new java.util.HashSet<>(learned);
+			int count = Runes.countKnown(known);
+			trigger(player, instance -> instance.all() ? knowsEveryRune(known, innate) : count >= instance.count());
 		}
 
-		/** Every rune there is (add-ons' included), except the innate ones: a caster only ever has their own. */
-		public static boolean knowsEveryRune(Collection<String> learned) {
+		/**
+		 * Every rune you can find or make (add-ons' included, fused ones too), and your own innate rune:
+		 * never the other innate runes (a caster only ever has their own) nor one with no way to get it.
+		 */
+		public static boolean knowsEveryRune(java.util.Set<String> learned, String innate) {
 			for (RuneDef rune : Runes.all()) {
-				if (!Runes.innate(rune) && !learned.contains(rune.id())) {
+				boolean wanted = Runes.innate(rune) ? rune.id().equals(innate) : Runes.obtainable(rune);
+				if (wanted && !learned.contains(rune.id())) {
 					return false;
 				}
 			}

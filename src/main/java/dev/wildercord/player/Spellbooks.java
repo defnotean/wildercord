@@ -16,9 +16,16 @@ public final class Spellbooks {
 		return player.getAttachedOrElse(WildercordAttachments.SPELLBOOK, Spellbook.EMPTY);
 	}
 
+	/** Saves the spellbook (and syncs it) only if something changed; the runes-known advancements only if the runes did. */
 	public static void set(Player player, Spellbook book) {
+		Spellbook old = get(player);
+		if (old.equals(book)) {
+			return;
+		}
 		player.setAttached(WildercordAttachments.SPELLBOOK, book);
-		changed(player);
+		if (!old.learned().equals(book.learned()) && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+			dev.wildercord.advancement.Advancements.runesKnown(serverPlayer);
+		}
 	}
 
 	public static boolean knows(Player player, String runeId) {
@@ -35,13 +42,8 @@ public final class Spellbooks {
 
 	public static void setCord(Player player, ItemStack stack) {
 		player.setAttached(WildercordAttachments.CORD, stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
-		changed(player);
-	}
-
-	/** Runes learned or a Cord put on: the advancements for them (on the server). */
-	private static void changed(Player player) {
 		if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
-			dev.wildercord.advancement.Advancements.spellbook(serverPlayer);
+			dev.wildercord.advancement.Advancements.cord(serverPlayer);
 		}
 	}
 

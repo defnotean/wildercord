@@ -40,7 +40,7 @@ final class FusedEffects {
 			double power, double duration, int amplify) {
 		ServerLevel level = cast.level;
 		LivingEntity caster = cast.caster;
-		switch (node.effect.path()) {
+		switch (Effects.builtIn(node.effect) ? node.effect.path() : "") {
 			case "firestorm" -> {
 				double radius = 2.0 * SpellNumbers.effectRadius(node);
 				for (LivingEntity t : first(harmed)) {

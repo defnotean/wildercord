@@ -180,10 +180,10 @@ All on the server thread, in `WildercordEvents`:
 
 | Event | When | Can stop it |
 |---|---|---|
-| `BEFORE_CAST` | a player's spell passed every check, before anything is spent | return false |
+| `BEFORE_CAST` | a player's spell passed every check, before anything is spent (once per cast: after an overcast's confirming second press; `cost` is 0 for a free recast or a Blood Price spell) | return false |
 | `AFTER_CAST` | a player's spell was paid for and is on its way | |
 | `SPELL_HIT` | a shape hit something, just before its effects apply (players' and monsters' spells) | |
-| `SPELL_BLOCKED` | a Shield stopped a spell | |
+| `SPELL_BLOCKED` | a Shield stopped a spell (a parry too) | |
 | `IMBUE_RELEASED` | an imbued weapon, tool, armour, arrow or glyph let its spell go | |
 
 ```java

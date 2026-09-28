@@ -671,6 +671,9 @@ a flower; full on a floor). A glyph goes off at:
 
 It re-arms no faster than its spell could be cast again (at least a second), and a creature that
 stays on it is caught once: it goes off at that creature again only after it steps off and back on.
+Glyphs share their maker's imbued cooldown with everything else they've imbued, so a dozen glyphs
+on one redstone line go off one at a time, not all at once; picking a glyph up and putting it down
+again doesn't reset its re-arm.
 
 Glyphs are kept with the world and cast as their maker (so they sleep while their maker is away).
 Break your own glyph and the block you get back still holds its spell and its charges left (if the

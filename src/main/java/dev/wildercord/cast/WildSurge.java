@@ -244,7 +244,8 @@ public final class WildSurge {
 		Scheduler.later(8, () -> {
 			if (player.isAlive() && !player.isRemoved()) {
 				TechniqueVfx.twinStar(player.level(), player);
-				release.accept(cast.withPower(1.0));
+				// The same payment: the second go can't Imbue again or Siphon past the first's cap.
+				release.accept(cast.again(1.0));
 			}
 		});
 	}

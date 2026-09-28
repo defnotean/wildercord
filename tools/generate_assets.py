@@ -1959,7 +1959,7 @@ feat_adv("mirror", "heart/innate", rune("mirrorfrost"), description="Turn an ene
 adv("discovery/runes_10", "root", rune("light"), "Lettered", "Know 10 runes", runes_known(10), xp=10)
 adv("discovery/runes_50", "discovery/runes_10", rune("reveal"), "Well Read", "Know 50 runes", runes_known(50), frame="goal", xp=50)
 adv("discovery/runes_100", "discovery/runes_50", rune("foresight"), "Walking Codex", "Know 100 runes", runes_known(100), frame="goal", xp=100, loot=["blank_runes"])
-adv("discovery/runes_all", "discovery/runes_100", rune("decree"), "Every Word", "Know every rune there is (innate runes aside)", runes_known(), frame="challenge", xp=500, loot=["mana_crystals"])
+adv("discovery/runes_all", "discovery/runes_100", rune("decree"), "Every Word", "Know every rune you can find or make, and your own innate one", runes_known(), frame="challenge", xp=500, loot=["mana_crystals"])
 REACTION_ADVANCEMENTS = {  # reaction -> (title, icon rune, description)
     "shatter": ("Shatter", "freeze", "Hit a frozen foe with fire and shatter the ice"),
     "conduct": ("Conduct", "lightning", "Strike a wet foe with storm magic"),
@@ -1973,7 +1973,7 @@ adv("discovery/torn_page", "discovery/runes_10", item("torn_page"), "Marginalia"
 adv("discovery/secret", "discovery/torn_page", rune("veil"), "Hidden Words", "Find a secret spell", grimoire(prefix="secret:"), frame="goal", xp=50, hidden=True)
 adv("discovery/all_secrets", "discovery/secret", rune("echo"), "Nothing Left Unsaid", "Find every secret spell",
     grimoire(prefix="secret:", every=True), frame="challenge", xp=300, loot=["mana_crystals"], hidden=True)
-adv("discovery/grimoire", "discovery/all_secrets", item("spell_scroll"), "Every Page Filled", "Fill the Grimoire: every feat, reaction and secret spell",
+adv("discovery/grimoire", "discovery/all_secrets", item("spell_scroll"), "Every Page Filled", "Fill the Grimoire: every reaction and secret spell, and every feat any caster can earn alone",
     grimoire(prefix="", every=True), frame="challenge", xp=500, loot=["mana_crystals", "blank_runes"], hidden=True)
 
 # ---- the World

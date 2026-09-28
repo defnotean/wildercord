@@ -371,6 +371,8 @@ public final class Shields {
 			Grimoire.feat(defender, dev.wildercord.spell.Feats.PARRY);
 		}
 		Casters.tell(cast.caster, net.minecraft.network.chat.Component.translatable("message.wildercord.parried_you").withColor(0xFF8A6A));
+		// A parry stops the spell too, whatever it weighs: add-ons hear of it like any block.
+		dev.wildercord.api.WildercordEvents.SPELL_BLOCKED.invoker().onBlocked(cast.caster, target, cast.weight(), shield.strength());
 		if (counter) {
 			counter(cast, target, at, shield);
 		}

@@ -71,7 +71,7 @@ public final class WildercordEvents {
 		}
 	});
 
-	/** A Shield stopped a spell. */
+	/** A Shield stopped a spell (a parry, which turns it back, counts too). */
 	public static final Event<SpellBlocked> SPELL_BLOCKED = EventFactory.createArrayBacked(SpellBlocked.class, listeners -> (caster, shielded, weight, shield) -> {
 		for (SpellBlocked listener : listeners) {
 			guard(listener, () -> listener.onBlocked(caster, shielded, weight, shield));
@@ -90,7 +90,8 @@ public final class WildercordEvents {
 		/**
 		 * @param spell the spell slot (0-3 the Cord's, 4 the Tome of the Fifth Page's)
 		 * @param runes the runes that will fire
-		 * @param cost  the mana it's about to cost (0 for one paid in health)
+		 * @param cost  the mana it's about to cost (0 for one paid in health or a wild surge's free recast;
+		 *              an overcast's full price, asked once, after its confirming second press)
 		 * @return false to stop the cast
 		 */
 		boolean allow(ServerPlayer player, int spell, List<RuneDef> runes, int cost);

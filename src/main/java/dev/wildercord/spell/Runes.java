@@ -331,6 +331,32 @@ public final class Runes {
 		return !innate(rune) && !fused(rune) && !RuneSources.foundOnly(rune);
 	}
 
+	/**
+	 * Whether a caster can come by {@code rune} at all: found at random (tiers 1 to 4), found in its
+	 * own places, or made at the Fusion Altar. Never an innate one (one per caster, never found).
+	 */
+	public static boolean obtainable(RuneDef rune) {
+		if (innate(rune)) {
+			return false;
+		}
+		return fused(rune) || RuneSources.foundOnly(rune) || rune.tier() >= 1 && rune.tier() <= 4;
+	}
+
+	/**
+	 * How many runes a spellbook knows, as the Heart Circles and the advancements count them: runes of
+	 * the roster only, so a Knot (a spell tied into one rune) or a rune of an add-on that isn't loaded
+	 * doesn't count.
+	 */
+	public static int countKnown(Collection<String> learned) {
+		int n = 0;
+		for (String id : learned) {
+			if (ALL.containsKey(id)) {
+				n++;
+			}
+		}
+		return n;
+	}
+
 	/** A rune by id: one of the roster, or a Knot (which carries its spell in its id, see {@link Knots}). */
 	public static Optional<RuneDef> get(String id) {
 		RuneDef rune = ALL.get(id);

@@ -4,6 +4,27 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Fixed
+- A storm's echo, Twin Star, a Focus of Echoes or a wild surge's second go could Imbue again (a
+  second imbued item or glyph for one payment) and Siphon past the per-cast cap. Every copy of one
+  cast now shares its payment's limits, and keeps its casting gear (the storm's echo lost it, and
+  so did a wild surge's copies and a parried spell).
+- Glyphs now share their maker's imbued cooldown: a dozen on one redstone line no longer go off
+  together. Breaking your own glyph and putting it down again no longer resets its re-arm.
+- A glyph on a block from a mod that's since been removed could lose every glyph in that dimension;
+  now only that glyph is dropped.
+- Add-on effects named like a built-in rune (`example:bleed`) ran the built-in one as well.
+- `BEFORE_CAST` fired on both presses of an overcast (and a circle cracked even if an add-on then
+  stopped it), and asked a non-zero cost for a wild surge's free recast.
+- A Blood Price spell ignored a mana storm's discount, and a secret spell's price was rounded twice.
+- A parry now fires `SPELL_BLOCKED`, like any other block.
+- Advancements: "know N runes" counted Knots and missing add-ons' runes (the Heart Circles don't);
+  Every Word asked for runes nobody can get, and Every Page Filled for Mirrorfrost's feat (only that
+  innate rune earns it) and feats that need other players (Unison, Domain Clash, Chorus).
+- The server now drops floods of spellbook packets past a generous allowance, skips saving a
+  spellbook that didn't change, checks a spell's cooldown before compiling it, and only rechecks
+  the runes-known advancements when the runes known change.
+
 ## [0.2.1-alpha] - 2026-09-28
 
 ### Changed

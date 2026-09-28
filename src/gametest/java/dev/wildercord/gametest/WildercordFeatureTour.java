@@ -956,6 +956,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 		});
 		world.getServer().runCommand("kill @e[type=item]");
+		// Glyphs share their maker's imbued cooldown: the Heal sword's release runs out first.
+		context.waitTicks(40);
 		// A glyph: Touch Imbue Frost on the ground ahead, then a husk steps onto it.
 		Vec3 glyphAt = stage.add(-10, 0, -20);
 		world.getServer().runOnServer(server -> {

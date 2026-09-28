@@ -88,10 +88,12 @@ import java.util.WeakHashMap;
  *       back still holds what's left of it.</li>
  * </ul>
  * The stored part was paid for up front (three times over), so releasing it costs no mana. It
- * isn't free of time, though: everything a caster has imbued shares one cooldown, as long as the
- * stored spell's own (so a sword, a bow and a helmet can't take turns to cast it faster than the
- * Cord could, and Vow's longer cooldown still counts), and a glyph re-arms only as fast as its spell
- * could be cast. A caster keeps at most {@link #MAX_ITEMS} imbued items (the oldest fades), so mana
+ * isn't free of time, though: everything a caster has imbued, glyphs included, shares one cooldown,
+ * as long as the stored spell's own (so a sword, a bow, a helmet and a row of glyphs on one redstone
+ * line can't take turns to cast it faster than the Cord could, and Vow's longer cooldown still
+ * counts), and a glyph re-arms only as fast as its spell could be cast (picking it up and putting it
+ * down again doesn't reset that). A spell cast once can Imbue once: a storm's echo or Twin Star's
+ * second go doesn't store it a second time. A caster keeps at most {@link #MAX_ITEMS} imbued items (the oldest fades), so mana
  * can't be banked into a chest of charged swords, and a release never Siphons mana back.
  */
 public final class Imbuing {
@@ -123,6 +125,8 @@ public final class Imbuing {
 	/** When each player's imbued things may next release (they share one cooldown), and when they last fired an imbued shot. */
 	private static final Map<UUID, Long> READY_AT = new HashMap<>();
 	private static final Map<UUID, Long> LAST_SHOT = new HashMap<>();
+	/** Glyphs broken by their makers while re-arming: when each may go off again, by the serial of the block item it went into. */
+	private static final Map<Long, Long> CARRIED = new HashMap<>();
 	/** Imbued arrows in flight, for their trail. */
 	private static final Set<Projectile> SHOTS = Collections.newSetFromMap(new WeakHashMap<>());
 
@@ -141,6 +145,7 @@ public final class Imbuing {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			READY_AT.clear();
 			LAST_SHOT.clear();
+			CARRIED.clear();
 			SHOTS.clear();
 		});
 	}
@@ -311,6 +316,11 @@ public final class Imbuing {
 		}
 		ledger.forget(imbued);
 		write(player, level, pos.immutable(), face, imbued.runes(), imbued.color(), imbued.charges());
+		// A glyph picked up and put down again is still re-arming: breaking it doesn't reset the wait.
+		Long rearm = imbued.counted() ? CARRIED.remove(imbued.serial()) : null;
+		if (rearm != null && rearm > level.getGameTime()) {
+			Glyphs.of(level).rearm.put(pos.immutable(), rearm);
+		}
 		player.sendOverlayMessage(Component.translatable("message.wildercord.imbued_block",
 			Component.literal(SpellNames.auto(runesOf(imbued.runes()))).withColor(imbued.color()), imbued.charges()).withColor(0xE8E0FF));
 	}
@@ -551,7 +561,7 @@ public final class Imbuing {
 			return false;
 		}
 		ServerPlayer owner = level.getServer().getPlayerList().getPlayer(glyph.owner());
-		if (owner == null || owner.level() != level || !owner.isAlive() || level.getGameTime() < glyphs.rearm.getOrDefault(pos, 0L)) {
+		if (owner == null || owner.level() != level || !owner.isAlive() || level.getGameTime() < glyphs.rearm.getOrDefault(pos, 0L) || !ready(owner)) {
 			return false;
 		}
 		if (by != null) {
@@ -599,6 +609,7 @@ public final class Imbuing {
 		if (glyph == null) {
 			return;
 		}
+		long rearm = glyphs.rearm.getOrDefault(pos, 0L);
 		glyphs.remove(pos);
 		if (!glyph.owner().equals(player.getUUID())) {
 			fade(level, glyph);
@@ -615,6 +626,7 @@ public final class Imbuing {
 					? counted(maker, glyph.runes(), glyph.charges(), glyph.color(), true)
 					: new Imbued(glyph.runes(), glyph.charges(), glyph.color(), true, glyph.owner(), 0L));
 				one.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+				carry(level, one.get(WildercordComponents.IMBUED), rearm);
 				if (one != stack) {
 					level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, drop.getX(), drop.getY(), drop.getZ(), one));
 				} else {
@@ -625,6 +637,15 @@ public final class Imbuing {
 			}
 			fade(level, glyph);
 		});
+	}
+
+	/** Remembers a broken glyph's re-arm for the block it went back into (by its serial), until that's placed again. */
+	private static void carry(ServerLevel level, Imbued imbued, long rearm) {
+		long now = level.getGameTime();
+		CARRIED.values().removeIf(at -> at <= now);
+		if (imbued != null && imbued.counted() && rearm > now) {
+			CARRIED.put(imbued.serial(), rearm);
+		}
 	}
 
 	/** A block broken with an imbued tool. */
@@ -718,7 +739,12 @@ public final class Imbuing {
 
 	/** The glyphs of one dimension, saved with it. */
 	public static final class Glyphs extends SavedData {
-		static final Codec<Glyphs> CODEC = Glyph.CODEC.listOf().xmap(Glyphs::new, Glyphs::all);
+		/**
+		 * Read one glyph at a time: one that no longer reads (its block came from a mod that's gone) is
+		 * dropped on its own, never the whole dimension's glyphs with it.
+		 */
+		static final Codec<Glyphs> CODEC = Glyph.CODEC.xmap(Optional::of, Optional::get).orElse(Optional.empty()).listOf()
+			.xmap(read -> new Glyphs(read.stream().flatMap(Optional::stream).toList()), glyphs -> glyphs.all().stream().map(Optional::of).toList());
 		static final SavedDataType<Glyphs> TYPE = new SavedDataType<>(Wildercord.id("glyphs"), Glyphs::new, CODEC, null);
 
 		private final Map<BlockPos, Glyph> byPos = new LinkedHashMap<>();
@@ -884,7 +910,8 @@ public final class Imbuing {
 				} else {
 					glyphs.powered.remove(glyph.pos());
 				}
-				if (!awake || now < glyphs.rearm.getOrDefault(glyph.pos(), 0L)) {
+				// A glyph shares its maker's imbued cooldown too: a dozen on one redstone line can't all go off at once.
+				if (!awake || now < glyphs.rearm.getOrDefault(glyph.pos(), 0L) || !ready(owner)) {
 					continue;
 				}
 				LivingEntity stepper = null;
@@ -925,6 +952,10 @@ public final class Imbuing {
 	}
 
 	private static void fire(ServerLevel level, Glyphs glyphs, Glyph glyph, ServerPlayer owner, LivingEntity stepper) {
+		if (!ready(owner)) {
+			return;
+		}
+		cool(owner, glyph.runes());
 		Vec3 at = faceCentre(level, glyph);
 		Vec3 n = Vec3.atLowerCornerOf(glyph.face().getUnitVec3i());
 		Cast.Trigger trigger;

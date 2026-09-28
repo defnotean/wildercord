@@ -215,7 +215,7 @@ public final class Innates {
 	static void apply(Cast cast, RuneDef rune, List<LivingEntity> helped, List<LivingEntity> harmed, double power, double duration) {
 		LivingEntity caster = cast.caster;
 		boolean onSelf = helped.contains(caster);
-		switch (rune.path()) {
+		switch (Effects.builtIn(rune) ? rune.path() : "") {
 			case "blood_thread" -> bloodThread(cast, harmed, Effects.ticks(8, duration));
 			case "kindling" -> harmed.forEach(t -> kindle(cast, t, power));
 			case "twin_star" -> {
