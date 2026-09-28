@@ -39,8 +39,10 @@ import java.util.Set;
  * The world events, each started through its API as the command does: a mana storm (the player is
  * under it on both sides, spells cost less, mana flows faster, and twenty casts earn Stormcaller), a
  * fallen star (it lands with a rune inside, its guards rise when the player is near, it won't open
- * while they stand, then opens, crumbles and earns Stargazer) and a rift siege (its first wave pours
- * out, and three spells of different elements seal it, earning Riftwarden).
+ * while they stand, nor when one is sent away without being killed, then, once they're killed, opens,
+ * crumbles and earns Stargazer) and a rift siege (its first wave pours out, it can't be sealed in the
+ * first wave, and once the second has come three spells of different elements seal it, earning
+ * Riftwarden).
  *
  * <p>Runs in the full suite; skipped by {@code WILDERCORD_TOUR_ONLY} and {@code WILDERCORD_CORDS_ONLY}.</p>
  */
@@ -197,10 +199,16 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			if (!level.getBlockState(star).is(EventContent.FALLEN_STAR)) {
 				return "the star shouldn't open while its guards stand";
 			}
-			guards.forEach(Mob::discard);
+			// One sent away without being killed is no way in: another takes its place.
+			guards.getFirst().discard();
+			FallenStars.open(level, star, player(server));
+			if (!level.getBlockState(star).is(EventContent.FALLEN_STAR)) {
+				return "a guard sent away (not killed) shouldn't let the star open";
+			}
+			FallenStars.guards(level, star).forEach(guard -> guard.kill(level));
 			FallenStars.open(level, star, player(server));
 			if (level.getBlockState(star).is(EventContent.FALLEN_STAR)) {
-				return "with its guards gone the star should open and crumble";
+				return "with its guards dead the star should open and crumble";
 			}
 			if (!Heart.discovered(player(server), "feat:" + Feats.STARGAZER)) {
 				return "looting a star should earn Stargazer";
@@ -244,9 +252,17 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			if (rift.alive() < 1) {
 				return "the first wave's monsters should be out";
 			}
-			return null;
+			// Too raw to seal in its first wave.
+			rift.strike(player(server), "fire");
+			if (!rift.elements().isEmpty()) {
+				return "a spell shouldn't count toward sealing the rift in its first wave";
+			}
+			// On to the second.
+			rift.nextWave();
+			return rift.wave() == 2 ? null : "the second wave should come (wave " + rift.wave() + ")";
 		});
 		check(wave == null, wave);
+		context.waitTicks(40);
 
 		// Three spells of different elements, bursting against the tear, seal it.
 		world.getServer().runOnServer(server -> {

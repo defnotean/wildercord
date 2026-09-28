@@ -47,6 +47,8 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -59,9 +61,16 @@ import java.util.UUID;
  * Mana Crystal, and a column of light marks it for five minutes so players can race to it. When
  * someone comes close, two to four Runebound (one an Adept) rise to guard it.
  *
+ * <p>It opens only once every guard is dead: one led far off, or out of loaded ground, still stands;
+ * one that went without being killed (sent away by Peaceful, say) is replaced by a fresh one the
+ * next time someone comes near, and it won't open on Peaceful at all. Nor does a restart let anyone
+ * loot it: its guards are sent away as they load, so a star found guarded after one wakes new ones.</p>
+ *
  * <p>Everything is temporary: once looted (or after twenty minutes) the star crumbles, its guards
  * go, and the crater fills back in, block for block. The crater's blocks are saved with the star,
- * so a restart can't leave it behind; guards and scorch marks are removed as their chunks load.</p>
+ * so a restart can't leave it behind; guards and scorch marks are removed as their chunks load.
+ * Where it lies is noted in {@link EventLedger} too, so no second star falls in its world while it
+ * lies there, even across a restart.</p>
  */
 public final class FallenStars {
 	private FallenStars() {}
@@ -73,10 +82,12 @@ public final class FallenStars {
 
 	private record Key(ResourceKey<Level> level, BlockPos pos) {}
 
-	/** Stars falling or fallen this session, with their guards and scorch marks. */
+	/** Stars falling or fallen this session, with their guards (and where each was last seen) and scorch marks. */
 	private static final class Star {
-		final List<UUID> guards = new ArrayList<>();
+		final Map<UUID, BlockPos> guards = new LinkedHashMap<>();
 		final List<Display> scorch = new ArrayList<>();
+		/** Guards that went without being killed, to be replaced the next time someone comes near. */
+		int owed;
 	}
 
 	private static final Map<Key, Star> STARS = new HashMap<>();
@@ -85,14 +96,21 @@ public final class FallenStars {
 		STARS.clear();
 	}
 
-	/** Whether a star is falling or lying in this world right now (this session). */
+	/** Whether a star is falling or lying in this world right now (one from before a restart too). */
 	public static boolean any(ServerLevel level) {
 		for (Key key : STARS.keySet()) {
 			if (key.level() == level.dimension()) {
 				return true;
 			}
 		}
-		return false;
+		return EventLedger.of(level.getServer()).starLying(level.dimension(), level.getGameTime());
+	}
+
+	/** One of an event's monsters was killed: if it guarded a star, it no longer stands. */
+	static void guardKilled(UUID id) {
+		for (Star star : STARS.values()) {
+			star.guards.remove(id);
+		}
 	}
 
 	/** The guards of the star at {@code pos} (for the tests). */
@@ -100,7 +118,7 @@ public final class FallenStars {
 		List<Mob> mobs = new ArrayList<>();
 		Star star = STARS.get(new Key(level.dimension(), pos));
 		if (star != null) {
-			for (UUID id : star.guards) {
+			for (UUID id : star.guards.keySet()) {
 				if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
 					mobs.add(mob);
 				}
@@ -122,6 +140,7 @@ public final class FallenStars {
 			return null;
 		}
 		STARS.put(new Key(level.dimension(), land), new Star());
+		EventLedger.of(level.getServer()).starFell(level.dimension(), land, level.getGameTime() + FALL_TICKS + EventRules.STAR_LIFETIME + 100);
 		RandomSource random = level.getRandom();
 		Vec3 ground = Vec3.atBottomCenterOf(land);
 		double a = random.nextDouble() * Math.PI * 2;
@@ -185,7 +204,8 @@ public final class FallenStars {
 	/** The cell a star would lie in at (x, z), or null if it can't land there. */
 	private static BlockPos fit(ServerLevel level, ServerPlayer by, int x, int z) {
 		BlockPos column = new BlockPos(x, level.getSeaLevel(), z);
-		if (!level.isLoaded(column) || !level.isLoaded(column.offset(8, 0, 8)) || !level.isLoaded(column.offset(-8, 0, -8))) {
+		if (!level.isLoaded(column) || !level.isLoaded(column.offset(8, 0, 8)) || !level.isLoaded(column.offset(-8, 0, -8))
+				|| !level.isLoaded(column.offset(8, 0, -8)) || !level.isLoaded(column.offset(-8, 0, 8))) {
 			return null;
 		}
 		int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
@@ -211,6 +231,7 @@ public final class FallenStars {
 		if (star == null || !level.isLoaded(cell)) {
 			// Its ground went unloaded while it fell: it burns up instead.
 			STARS.remove(key);
+			EventLedger.of(level.getServer()).starGone(level.dimension(), cell);
 			return;
 		}
 		Vec3 ground = Vec3.atBottomCenterOf(cell);
@@ -238,6 +259,9 @@ public final class FallenStars {
 			STARS.remove(key);
 			key = new Key(level.dimension(), at);
 			STARS.put(key, star);
+			EventLedger ledger = EventLedger.of(level.getServer());
+			ledger.starGone(level.dimension(), cell);
+			ledger.starFell(level.dimension(), at, level.getGameTime() + EventRules.STAR_LIFETIME + 100);
 		}
 		level.setBlock(at, EventContent.FALLEN_STAR.defaultBlockState(), Block.UPDATE_ALL);
 		if (level.getBlockEntity(at) instanceof FallenStarBlockEntity entity) {
@@ -352,8 +376,46 @@ public final class FallenStars {
 
 	// ------------------------------------------------------------------ lying there
 
+	/**
+	 * The star's memory this session. A star lying since before a restart has none: its guards were
+	 * sent away as they loaded, so if it was guarded, new ones wake when someone comes near.
+	 */
+	private static Star star(ServerLevel level, BlockPos pos, FallenStarBlockEntity entity) {
+		Key key = new Key(level.dimension(), pos);
+		Star star = STARS.get(key);
+		if (star == null) {
+			star = new Star();
+			STARS.put(key, star);
+			if (entity.guarded) {
+				entity.guarded = false;
+				entity.setChanged();
+			}
+		}
+		return star;
+	}
+
+	/**
+	 * Keeps track of its guards: where each was last seen, and which went without being killed (not
+	 * there, though the ground where it was last seen is loaded), to be replaced.
+	 */
+	private static void countGuards(ServerLevel level, Star star) {
+		for (Iterator<Map.Entry<UUID, BlockPos>> it = star.guards.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<UUID, BlockPos> guard = it.next();
+			if (level.getEntity(guard.getKey()) instanceof Mob mob && mob.isAlive()) {
+				guard.setValue(mob.blockPosition());
+			} else if (level.isPositionEntityTicking(guard.getValue())) {
+				// Not killed (that would have been heard), and not in unloaded ground: sent away somehow.
+				WorldEvents.forget(guard.getKey());
+				it.remove();
+				star.owed++;
+			}
+		}
+	}
+
 	/** Once a second, from the star's block entity: the beacon, and its guards waking when someone comes near. */
 	static void tickStar(ServerLevel level, BlockPos pos, FallenStarBlockEntity entity, long now) {
+		Star star = star(level, pos, entity);
+		countGuards(level, star);
 		Vec3 base = Vec3.atBottomCenterOf(pos);
 		if (now < entity.beaconUntil) {
 			// A column of starlight, seen from far off.
@@ -368,19 +430,25 @@ public final class FallenStars {
 			entity.guarded = true;
 			entity.setChanged();
 			if (level.getDifficulty() != Difficulty.PEACEFUL) {
-				wakeGuards(level, pos, near);
+				wakeGuards(level, pos, near, EventRules.guards(level.getRandom().nextDouble()));
 			}
+		} else if (entity.guarded && star.owed > 0 && level.getDifficulty() != Difficulty.PEACEFUL
+				&& level.getNearestPlayer(base.x, base.y, base.z, EventRules.STAR_GUARD_WAKE, false) instanceof ServerPlayer near && !near.isSpectator()) {
+			// Guards that went without being killed are replaced.
+			int owed = star.owed;
+			star.owed = 0;
+			wakeGuards(level, pos, near, owed);
 		}
 	}
 
 	private static final List<EntityType<? extends Mob>> GUARDS = List.of(EntityTypes.SKELETON, EntityTypes.ZOMBIE, EntityTypes.SKELETON, EntityTypes.ZOMBIE);
 
-	/** Two to four Runebound rise round the star, the first an Adept illager. */
-	private static void wakeGuards(ServerLevel level, BlockPos pos, ServerPlayer near) {
+	/** {@code count} Runebound (two to four, at first) rise round the star, the first an Adept illager. */
+	private static void wakeGuards(ServerLevel level, BlockPos pos, ServerPlayer near, int count) {
 		Star star = STARS.computeIfAbsent(new Key(level.dimension(), pos), k -> new Star());
 		RandomSource random = level.getRandom();
-		int count = EventRules.guards(random.nextDouble());
 		double a0 = random.nextDouble() * Math.PI * 2;
+		int risen = 0;
 		for (int i = 0; i < count; i++) {
 			double a = a0 + Math.PI * 2 * i / count;
 			Vec3 at = WorldEvents.standingSpot(level, Vec3.atBottomCenterOf(pos).add(Math.cos(a) * 5, 0, Math.sin(a) * 5));
@@ -390,10 +458,15 @@ public final class FallenStars {
 			boolean adept = i == 0;
 			Mob guard = WorldEvents.spawnRunebound(level, adept ? EntityTypes.VINDICATOR : GUARDS.get(i % GUARDS.size()), at, adept, near);
 			if (guard != null) {
-				star.guards.add(guard.getUUID());
+				risen++;
+				star.guards.put(guard.getUUID(), guard.blockPosition());
 				Sigils.ground(level, at, STAR_GLOW, STAR_LIGHT, 1.4F, 30);
 				Fx.send(level, ParticleTypes.END_ROD, at.x, at.y + 1, at.z, 10, 0.3, 0.6, 0.3, 0.06);
 			}
+		}
+		// Any that found nowhere to stand come the next time someone is near (unless none could: then it lies unguarded).
+		if (risen > 0) {
+			star.owed += count - risen;
 		}
 		Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.EVOKER_PREPARE_SUMMON, 1.2F, 1.2F);
 		near.sendOverlayMessage(Component.translatable("message.wildercord.star_guarded").withColor(STAR_LIGHT));
@@ -401,17 +474,32 @@ public final class FallenStars {
 
 	// ------------------------------------------------------------------ looting
 
-	/** A player uses the star: refused while its guards stand; otherwise it breaks open and crumbles. */
+	/**
+	 * A player uses the star: refused on Peaceful, and while any of its guards stands (however far off,
+	 * or not yet risen); otherwise it breaks open and crumbles.
+	 */
 	public static void open(ServerLevel level, BlockPos pos, ServerPlayer player) {
 		if (!(level.getBlockEntity(pos) instanceof FallenStarBlockEntity entity)) {
 			return;
 		}
-		int standing = 0;
-		for (Mob guard : guards(level, pos)) {
-			if (guard.distanceToSqr(Vec3.atCenterOf(pos)) < 48 * 48) {
-				standing++;
-			}
+		if (level.getDifficulty() == Difficulty.PEACEFUL) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.star_peaceful").withColor(0xB8A8D8));
+			Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
+			return;
 		}
+		Star star = star(level, pos, entity);
+		countGuards(level, star);
+		if (!entity.guarded) {
+			// Nobody came near it before (or its guards were lost to a restart): they rise now.
+			entity.guarded = true;
+			entity.setChanged();
+			wakeGuards(level, pos, player, EventRules.guards(level.getRandom().nextDouble()));
+		} else if (star.owed > 0) {
+			int owed = star.owed;
+			star.owed = 0;
+			wakeGuards(level, pos, player, owed);
+		}
+		int standing = star.guards.size() + star.owed;
 		if (standing > 0) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.star_held", standing).withColor(0xFF9C9C));
 			Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
@@ -443,8 +531,9 @@ public final class FallenStars {
 		List<FallenStarBlockEntity.Changed> crater = new ArrayList<>(entity.crater);
 		level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 		Star star = STARS.remove(new Key(level.dimension(), pos));
+		EventLedger.of(level.getServer()).starGone(level.dimension(), pos);
 		if (star != null) {
-			for (UUID id : star.guards) {
+			for (UUID id : star.guards.keySet()) {
 				if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
 					WorldEvents.vanish(level, mob);
 				}
