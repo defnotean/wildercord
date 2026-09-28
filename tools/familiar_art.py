@@ -8,8 +8,8 @@ transparency and drawn emissive.
 
 Public API (imported by generate_assets.py):
     main()     writes every texture below and the lantern's item model
-        textures/entity/wisp.png                     (64x32, WispModel layout)
-        textures/entity/wisp_glow.png                (64x32, the part that glows)
+        textures/entity/wisp.png                     (128x16, the body's eight frames)
+        textures/entity/wisp_glow.png                (64x32, its halo, spark and tail puff)
         textures/entity/cord/bead_<material>.png     (8x8, the beads' own colours)
         textures/entity/cord/bead_core.png           (8x8, the light inside a coloured bead)
         textures/item/wisp_lantern.png               (16x16)
@@ -36,77 +36,118 @@ TEX = ASSETS / "textures"
 MATERIALS = ("gold", "obsidian", "amethyst", "bone", "prismarine")
 TRAILS = ("none", "sparks", "petals", "snow", "embers", "stars")
 
-# ============================================================== the wisp (WispModel layout, 64x32)
+# ============================================================== the wisp (drawn as light, see WispRenderer)
 #
-#   core (0,0) 5x5x5      shell (0,10) 7x7x7      tail (30,0) 3x3x3, (30,6) 2x2x2, (30,10) 1x1x2
-#
-# Box UVs: for a box w x h x d at (u, v), the top is at (u+d, v), the bottom at (u+d+w, v), and the
-# side row at v+d holds east (d wide), north (the front, w), west (d) and south (w).
+# A wisp isn't a model: it's a few camera-facing sprites. wisp.png (128x16) is its body, eight 16x16
+# frames of a small pale orb with two eyes, drawn over the light: the eyes looking far left, left,
+# ahead, right and far right (so it seems to turn as it flies), its back (no eyes), a blink, and a
+# happy squint for when it flares. wisp_glow.png (64x32) is the light around it, added to the
+# world: a halo (0,0 32x32), a four-point spark (32,0 16x16) and a soft puff for its tail (48,0 16x16).
+# Everything is pale: the element tints it in game.
 
-EYE = (38, 26, 52)
-
-
-def _box_faces(u, v, w, h, d):
-    """(x0, y0, width, height, face) for each face of a box's UV layout."""
-    return [
-        (u + d, v, w, d, "up"), (u + d + w, v, w, d, "down"),
-        (u, v + d, d, h, "east"), (u + d, v + d, w, h, "north"),
-        (u + d + w, v + d, d, h, "west"), (u + 2 * d + w, v + d, w, h, "south"),
-    ]
+EYE = (40, 28, 62)
+EYE_GLINT = (236, 236, 255)
+WISP_FRAMES = ("far_left", "left", "ahead", "right", "far_right", "back", "blink", "happy")
 
 
-def _paint_box(img, u, v, w, h, d, shade):
-    """Fills every face of a box, `shade(fx, fy, fw, fh, face)` giving (r, g, b, a)."""
+def _step(a: float, levels: int = 6) -> float:
+    """Stepped, like pixel art, rather than a smooth gradient."""
+    return math.floor(max(0.0, min(1.0, a)) * levels + 0.35) / levels
+
+
+def _orb(px, ox: int):
+    """The body: a round orb of pale light, brightest up and to the left, its rim soft."""
+    c = 7.5
+    for y in range(16):
+        for x in range(16):
+            d = math.hypot(x - c, y - c)
+            if d > 7.1:
+                continue
+            lit = max(0.0, 1 - math.hypot(x - 5.6, y - 5.4) / 9.0)
+            g = 200 + round(55 * _step(lit, 5))
+            rim = d > 6.2
+            a = 150 if rim else 255
+            if rim:
+                g -= 18
+            px[ox + x, y] = (g, g, min(255, g + 6), a)
+    # A glint of light high on the left.
+    for (x, y) in ((4, 4), (5, 4), (4, 5)):
+        px[ox + x, y] = (255, 255, 255, 255)
+
+
+def _eye(px, ox: int, x: int, y: int = 7):
+    """One eye: a little upright bean, a glint in its top."""
+    px[ox + x, y] = EYE_GLINT + (255,)
+    px[ox + x, y + 1] = EYE + (255,)
+    px[ox + x, y + 2] = EYE + (255,)
+
+
+def wisp_texture() -> Image.Image:
+    img = Image.new("RGBA", (16 * len(WISP_FRAMES), 16), (0, 0, 0, 0))
     px = img.load()
-    for x0, y0, fw, fh, face in _box_faces(u, v, w, h, d):
-        for y in range(fh):
-            for x in range(fw):
-                px[x0 + x, y0 + y] = shade(x, y, fw, fh, face)
+    for i, frame in enumerate(WISP_FRAMES):
+        ox = 16 * i
+        _orb(px, ox)
+        if frame == "far_left":
+            _eye(px, ox, 3)
+            _eye(px, ox, 6)
+        elif frame == "left":
+            _eye(px, ox, 5)
+            _eye(px, ox, 8)
+        elif frame == "ahead":
+            _eye(px, ox, 6)
+            _eye(px, ox, 9)
+        elif frame == "right":
+            _eye(px, ox, 7)
+            _eye(px, ox, 10)
+        elif frame == "far_right":
+            _eye(px, ox, 9)
+            _eye(px, ox, 12)
+        elif frame == "blink":
+            for x in (6, 9):
+                px[ox + x, 9] = EYE + (255,)
+        elif frame == "happy":
+            # ^ ^: each eye a little arch.
+            for x in (5, 9):
+                px[ox + x, 9] = EYE + (255,)
+                px[ox + x + 1, 8] = EYE + (255,)
+                px[ox + x + 2, 9] = EYE + (255,)
+    return img
 
 
-def _soft(x, y, w, h):
-    """0 at a face's edge, 1 in its middle."""
-    cx, cy = (w - 1) / 2, (h - 1) / 2
-    d = math.hypot((x - cx) / max(cx, 0.5), (y - cy) / max(cy, 0.5)) / math.sqrt(2)
-    return max(0.0, 1 - d)
-
-
-def wisp_texture(glow: bool = False) -> Image.Image:
-    """The wisp: a bright core with two small eyes, a soft shell of light round it, and a tail that thins
-    and fades. Pale, so the element's colour tints it; the glow layer is the same, lit, with the eyes left dark."""
+def wisp_glow_texture() -> Image.Image:
+    """The light round a wisp, white on transparency (its alpha is how much light it adds)."""
     img = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
-
-    def core(x, y, w, h, face):
-        t = _soft(x, y, w, h)
-        g = round(214 + 41 * t)
-        return (g, g, g, 255) if not glow else (round(170 + 85 * t),) * 3 + (255,)
-
-    _paint_box(img, 0, 0, 5, 5, 5, core)
     px = img.load()
-    # The eyes, on the front face (north, at (5, 5)): two dark pixels with a space between.
-    for ex in (1, 3):
-        px[5 + ex, 5 + 2] = (0, 0, 0, 255) if glow else EYE + (255,)
-    # A glint in each eye catches the light (only on the lit skin).
-    if not glow:
-        for ex in (1, 3):
-            px[5 + ex, 5 + 1] = (250, 250, 255, 255)
-
-    def shell(x, y, w, h, face):
-        t = _soft(x, y, w, h)
-        if glow:
-            g = round(60 + 90 * t)
-            return (g, g, g, 255)
-        return (255, 255, 255, round(38 + 70 * t))
-
-    _paint_box(img, 0, 10, 7, 7, 7, shell)
-    for (u, v, w, h, d, a) in ((30, 0, 3, 3, 3, 200), (30, 6, 2, 2, 2, 150), (30, 10, 1, 1, 2, 100)):
-        def tail(x, y, fw, fh, face, a=a):
-            t = 0.6 + 0.4 * _soft(x, y, fw, fh)
-            if glow:
-                g = round(a * 0.8 * t)
-                return (g, g, g, 255)
-            return (240, 240, 250, round(a * t))
-        _paint_box(img, u, v, w, h, d, tail)
+    # The halo: stepped rings of light, with a faint four-point shimmer through it.
+    c = 15.5
+    for y in range(32):
+        for x in range(32):
+            dx, dy = x - c, y - c
+            r = math.hypot(dx, dy)
+            body = max(0.0, 1 - r / 15.5) ** 1.7
+            ray = 0.4 * max(0.0, 1 - r / 15.5) ** 0.9 * max(0.0, 1 - min(abs(dx), abs(dy)) / 1.2)
+            a = _step(max(body, ray), 7)
+            if a > 0:
+                px[x, y] = (255, 255, 255, round(255 * a))
+    # The spark: a four-point star, bright in the middle.
+    c = 7.5
+    for y in range(16):
+        for x in range(16):
+            dx, dy = x - c, y - c
+            r = math.hypot(dx, dy)
+            core = max(0.0, 1 - r / 3.2) ** 1.2
+            ray = max(0.0, 1 - r / 7.6) * max(0.0, 1 - min(abs(dx), abs(dy)) / 0.9)
+            a = _step(max(core, ray), 5)
+            if a > 0:
+                px[32 + x, y] = (255, 255, 255, round(255 * a))
+    # The puff: a small soft round light for the beads of its tail.
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - c, y - c)
+            a = _step(max(0.0, 1 - r / 7.6) ** 1.3, 5)
+            if a > 0:
+                px[48 + x, y] = (255, 255, 255, round(255 * a))
     return img
 
 
@@ -348,7 +389,7 @@ def _save(img: Image.Image, path: Path):
 
 def main():
     _save(wisp_texture(), TEX / "entity/wisp.png")
-    _save(wisp_texture(glow=True), TEX / "entity/wisp_glow.png")
+    _save(wisp_glow_texture(), TEX / "entity/wisp_glow.png")
     for material in MATERIALS:
         _save(bead_texture(material), TEX / f"entity/cord/bead_{material}.png")
     _save(bead_core(), TEX / "entity/cord/bead_core.png")

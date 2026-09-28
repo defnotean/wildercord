@@ -15,7 +15,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from item_art import Canvas, hexc, mix  # noqa: E402
-from world_art import AM, DO, DS, GLOW, Sheet, box, noise, sprite  # noqa: E402
+from world_art import AM, DO, DS, GLOW, Sheet, box, face, noise, sprite  # noqa: E402
 from generate_assets import ASSETS, DATA, RES, save, unlock_advancement, write_json  # noqa: E402
 
 # ============================================================== the Scribing Desk
@@ -155,93 +155,262 @@ def scribing_desk_textures() -> dict:
 
 
 # ============================================================== the Runesmith's outfit
+#
+# A villager profession layer (64x64, vanilla's villager layout), drawn over the villager and its
+# biome's clothes. Like the librarian's and the cleric's, it leaves the face, the nose and the
+# folded hands bare: the hood (the hat box) covers the crown, the back and the sides of the head
+# and frames the face with a gold edge; the robe (the jacket box) is violet with a gold band down
+# the front, a belt, a hem of gold with runes stitched between its lines, a great rune sigil sewn
+# on its back, and a satchel of scrolls and rune stones on the left hip on a strap over the right
+# shoulder; the sleeves (the arm boxes) end in gold cuffs; the hands (the middle bar) are left alone.
 
-ROBE = [hexc("#1E1034"), hexc("#2C1850"), hexc("#3B2268"), hexc("#4C2E84"), hexc("#6040A0")]
-TRIM = [hexc("#8A6420"), hexc("#C8962E"), hexc("#F2CE6A")]
-RUNE = [GLOW[3], GLOW[5], GLOW[6]]
+OUTFIT_PAL = {
+    # violet robe, darkest to lightest
+    "K": hexc("#1F1236"), "k": hexc("#2E1B50"), "r": hexc("#41286E"), "R": hexc("#56378E"),
+    "m": hexc("#6E4AAE"), "M": hexc("#8C6ACC"),
+    # gold
+    "g": hexc("#7A5418"), "G": hexc("#B8862A"), "Y": hexc("#E8C060"), "W": hexc("#FFF0B0"),
+    # runes stitched in glowing thread
+    "v": GLOW[4], "u": GLOW[5], "V": GLOW[6],
+    # the satchel's leather and its scrolls
+    "l": hexc("#3E2616"), "L": hexc("#6A4028"), "n": hexc("#8E5C36"),
+    "p": hexc("#C8B88A"), "P": hexc("#EADFBE"),
+    # the hood's shadow inside the brim
+    "x": hexc("#150A26"),
+}
 
-# A villager's head overlay (the hood), and its robe: 64x64, vanilla's villager layout.
 HOOD = box(32, 0, 8, 10, 8)
 ROBE_BOX = box(0, 38, 8, 20, 6)
 ARMS = box(44, 22, 4, 8, 4)
-ARMS_MID = box(40, 38, 8, 4, 4)
 
+# The hood's crown (its bottom row meets the brow): a gold rune sewn on it.
+HOOD_TOP = """
+    KkkrrkkK
+    krRRRRrk
+    krRuVRrk
+    kRuYYuRk
+    kRuYYuRk
+    krRuVRrk
+    kRmmmmRk
+    gGYYYYGg
+"""
+# The front: the brim over the forehead, edged in gold, its shadow; the face below is bare.
+HOOD_FRONT = """
+    kRmMMmRk
+    kRmmmmRk
+    GYYWWYYG
+    Gxxxxxxg
+    G......g
+    G......g
+    g......g
+    g......g
+    k......k
+    K......K
+"""
+# The right side (its last column meets the front): folds darkening toward the back, a stitched rune.
+HOOD_SIDE = """
+    KkkrrRRG
+    KkrrRmMY
+    KkrRRmmY
+    KkrRumMY
+    KkruVumY
+    KkrRumMG
+    KkrRRmmG
+    KkrrRRmG
+    KKkrrRRg
+    KKkkkrrg
+"""
+# The back: a long fold down the middle to a gold-tipped point, a rune in it.
+HOOD_BACK = """
+    KkrRRrkK
+    krRmmRrk
+    krRmmRrk
+    kkrRRrkk
+    krRuVRrk
+    kruYYurk
+    krRuVRrk
+    KkrRRrkK
+    KkkrrkkK
+    KKgYYgKK
+"""
 
-def _cloth(sheet: Sheet, area, seed: int, lo=1, hi=3):
-    """Robe cloth: the middle tone in soft vertical folds (a shadow line, a lit line), a rare fleck."""
-    x0, y0, w, h = area
-    mid = (lo + hi) // 2
-    for y in range(y0, y0 + h):
-        for x in range(x0, x0 + w):
-            fold = (x - x0) % 4
-            tone = lo if fold == 0 else hi if fold == 2 and (y - y0) % 7 != 3 else mid
-            if noise(x, y, seed) > 0.94:
-                tone = max(lo, tone - 1)
-            sheet.put(x, y, ROBE[tone])
-
-
-def _glyphs(sheet: Sheet, area, seed: int, every: int = 5):
-    """Small glowing rune marks stitched into the cloth."""
-    x0, y0, w, h = area
-    for y in range(y0 + 1, y0 + h - 1, every):
-        for x in range(x0 + 1, x0 + w - 1):
-            if noise(x, y, seed) > 0.8:
-                sheet.put(x, y, RUNE[1])
-                sheet.put(x, y + 1, RUNE[0])
+ROBE_TOP = """
+    kRRmmRRk
+    kRmmmmRk
+    kRmMMmRk
+    kRmMMmRk
+    kRmmmmRk
+    kRmGYmRk
+"""
+ROBE_BOTTOM = """
+    KKKKKKKK
+    KkkkkkkK
+    KkkkkkkK
+    KkkkkkkK
+    KkkkkkkK
+    KKKKKKKK
+"""
+# The front: a gold band from collar to hem, the satchel's strap across the chest from the right
+# shoulder, a belt with a gold buckle, and the hem: two gold lines with runes stitched between.
+ROBE_FRONT = """
+    kRmGYmRk
+    LRmGYmRk
+    lLRGYRrk
+    klLGYRrk
+    krlLYRrk
+    krRlLRrk
+    krRGlLrk
+    krRGYlLk
+    krRGYRlL
+    krRGYRrl
+    lllYWlll
+    kRmGYmRk
+    krRGYRrk
+    kRmGYmRk
+    krRGYRrk
+    kRmGYmRk
+    GGGYYGGG
+    KvKuVKuK
+    GGGYYGGG
+    gggggggg
+"""
+# The right side: plain folds, a small rune stitched on the breast, the belt and the hem.
+ROBE_RIGHT = """
+    kRmRRk
+    krRRrk
+    kRmRRk
+    krRvrk
+    krVuRk
+    krRvrk
+    kRmRRk
+    krRRrk
+    kRmRRk
+    krRRrk
+    llllll
+    kRmRRk
+    krRRrk
+    kRmRRk
+    krRRrk
+    kRmRRk
+    GGGGGG
+    uKvKVK
+    GGGGGG
+    gggggg
+"""
+# The left side: the strap comes down from front and back to the satchel on the hip, scrolls
+# poking out of it, a gold clasp and a glowing rune stone tied to its flap.
+ROBE_LEFT = """
+    kRmRRk
+    krRRrk
+    kRmRRk
+    krRRrk
+    kRmRRk
+    krRRrk
+    kRmRRk
+    krRRrk
+    LlRRlL
+    lLrrLl
+    llllll
+    kPpPPk
+    nLLLLl
+    nLYYLl
+    nLLvLl
+    lnnVnl
+    GGGGGG
+    KvKuKv
+    GGGGGG
+    gggggg
+"""
+# The back: the strap from the right shoulder, the belt, and a great rune sigil sewn above the hem.
+ROBE_BACK = """
+    kRmRRmRk
+    krRRRRrL
+    kRmRRmLl
+    krRRRLlk
+    kRmRLlRk
+    krRLlRrk
+    kRLlRmRk
+    kLlRRRrk
+    LlRmmRrk
+    lRRRRRrk
+    llllllll
+    kRRGGRRk
+    kRGuuGRk
+    kGuVVuGk
+    kGuVVuGk
+    kRGuuGRk
+    GGGYYGGG
+    KuKvVKvK
+    GGGYYGGG
+    gggggggg
+"""
+# A sleeve (both arms share it): violet with a gold cuff at the wrist; the hands stay bare.
+SLEEVE = """
+    RmmR
+    RmmR
+    rRRr
+    rRmr
+    rRRr
+    krrk
+    GYYG
+    gGGg
+"""
+SLEEVE_TOP = """
+    RmmR
+    RMmR
+    RmmR
+    rRRr
+"""
 
 
 def runesmith_outfit(zombie: bool = False) -> Image.Image:
     sheet = Sheet(64, 64)
-    # The hood: closed over the top, sides and back; the front only frames the brow.
-    for face in ("top", "right", "left", "back"):
-        _cloth(sheet, HOOD[face], 41 if face != "back" else 42, 0, 2)
-    fx, fy, fw, fh = HOOD["front"]
-    for x in range(fx, fx + fw):
-        sheet.put(x, fy, ROBE[2])
-        sheet.put(x, fy + 1, TRIM[1] if x % 2 == 0 else TRIM[2])
-    for y in range(fy, fy + fh):
-        sheet.put(fx, y, ROBE[1])
-        sheet.put(fx + fw - 1, y, ROBE[1])
-    # A single rune sewn on the hood's crown.
-    tx, ty, _, _ = HOOD["top"]
-    for dx, dy in ((3, 3), (4, 3), (3, 4), (4, 4), (2, 3), (5, 4)):
-        sheet.put(tx + dx, ty + dy, RUNE[2] if (dx, dy) in ((3, 3), (4, 4)) else RUNE[1])
-
-    # The robe: violet, a gold band down the front and round the hem, runes on the cloth.
-    for face in ("top", "bottom", "right", "front", "left", "back"):
-        _cloth(sheet, ROBE_BOX[face], 50 + len(face), 1, 3)
-    for face in ("right", "front", "left", "back"):
-        x0, y0, w, h = ROBE_BOX[face]
-        _glyphs(sheet, ROBE_BOX[face], 60 + len(face))
-        for x in range(x0, x0 + w):
-            sheet.put(x, y0 + h - 1, TRIM[0])
-            sheet.put(x, y0 + h - 2, TRIM[1])
-            # A belt, with a rune pouch hanging from it at the front.
-            sheet.put(x, y0 + 6, TRIM[0])
-    x0, y0, w, h = ROBE_BOX["front"]
-    for y in range(y0, y0 + h - 2):
-        sheet.put(x0 + 3, y, TRIM[1])
-        sheet.put(x0 + 4, y, TRIM[2] if y % 3 else TRIM[1])
-    for dx, dy, c in ((1, 7, ROBE[0]), (2, 7, ROBE[0]), (1, 8, AM[3]), (2, 8, RUNE[2]), (1, 9, ROBE[0]), (2, 9, ROBE[0])):
-        sheet.put(x0 + dx, y0 + dy, c)
-    # Sleeves: violet with gold cuffs, over the folded arms.
-    for area in (ARMS, ARMS_MID):
-        for face in ("top", "bottom", "right", "front", "left", "back"):
-            _cloth(sheet, area[face], 70 + len(face), 1, 3)
-    for face in ("right", "front", "left", "back"):
-        x0, y0, w, h = ARMS[face]
-        for x in range(x0, x0 + w):
-            sheet.put(x, y0 + h - 2, TRIM[1])
+    face(sheet, HOOD["top"], HOOD_TOP, OUTFIT_PAL)
+    face(sheet, HOOD["front"], HOOD_FRONT, OUTFIT_PAL)
+    face(sheet, HOOD["right"], HOOD_SIDE, OUTFIT_PAL)
+    face(sheet, HOOD["left"], HOOD_SIDE, OUTFIT_PAL, mirror=True)
+    face(sheet, HOOD["back"], HOOD_BACK, OUTFIT_PAL)
+    face(sheet, ROBE_BOX["top"], ROBE_TOP, OUTFIT_PAL)
+    face(sheet, ROBE_BOX["bottom"], ROBE_BOTTOM, OUTFIT_PAL)
+    face(sheet, ROBE_BOX["front"], ROBE_FRONT, OUTFIT_PAL)
+    face(sheet, ROBE_BOX["right"], ROBE_RIGHT, OUTFIT_PAL)
+    face(sheet, ROBE_BOX["left"], ROBE_LEFT, OUTFIT_PAL)
+    face(sheet, ROBE_BOX["back"], ROBE_BACK, OUTFIT_PAL)
+    for side in ("right", "front", "left", "back"):
+        face(sheet, ARMS[side], SLEEVE, OUTFIT_PAL)
+    face(sheet, ARMS["top"], SLEEVE_TOP, OUTFIT_PAL)
+    # A little wear in the cloth: a rare darker fleck on the plain violet.
+    violet = {OUTFIT_PAL[c] for c in "rRm"}
+    for y in range(64):
+        for x in range(64):
+            c = sheet.get(x, y)
+            if c in violet and noise(x, y, 44) > 0.93:
+                sheet.put(x, y, mix(c, (0, 0, 0), 0.22))
     img = sheet.image()
     if zombie:
-        # Faded and grimy: the same robe after a long while in the dark.
+        # Faded, grimy and torn: the same robe after a long while in the dark. Its runes have gone out.
         px = img.load()
+        lit = {tuple(GLOW[4]), tuple(GLOW[5]), tuple(GLOW[6])}
         for y in range(img.height):
             for x in range(img.width):
                 r, g, b, a = px[x, y]
-                if a:
-                    grey = (r + g + b) // 3
-                    px[x, y] = (round(r * 0.6 + grey * 0.25), round(g * 0.65 + grey * 0.25 + 6), round(b * 0.6 + grey * 0.2), a)
+                if not a:
+                    continue
+                if (r, g, b) in lit:
+                    r, g, b = GLOW[2]
+                grey = (r + g + b) // 3
+                r, g, b = round(r * 0.55 + grey * 0.25), round(g * 0.6 + grey * 0.25 + 8), round(b * 0.55 + grey * 0.2)
+                if noise(x, y, 45) > 0.9:
+                    r, g, b = round(r * 0.7), round(g * 0.75), round(b * 0.7)
+                px[x, y] = (r, g, b, a)
+        # Rags: the hem is torn away here and there.
+        for area in (ROBE_BOX["front"], ROBE_BOX["back"], ROBE_BOX["right"], ROBE_BOX["left"]):
+            x0, y0, w, h = area
+            for x in range(x0, x0 + w):
+                if noise(x, 0, 46) > 0.55:
+                    px[x, y0 + h - 1] = (0, 0, 0, 0)
+                    if noise(x, 1, 46) > 0.6:
+                        px[x, y0 + h - 2] = (0, 0, 0, 0)
     return img
 
 

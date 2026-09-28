@@ -74,6 +74,7 @@ public final class WildercordClient implements ClientModInitializer {
 				// Out of the world: these let go of everything they remembered about it.
 				ArchiveAmbience.tick(client);
 				WellstoneHalo.tick(client);
+				dev.wildercord.client.fx.StormSky.tick(client);
 				dev.wildercord.client.fx.BoltComets.tick(client);
 				dev.wildercord.client.fx.ScreenEffects.tick(client);
 				dev.wildercord.client.fx.ShieldCircles.tick(client);
@@ -87,6 +88,7 @@ public final class WildercordClient implements ClientModInitializer {
 			dev.wildercord.client.fx.BoltComets.tick(client);
 			dev.wildercord.client.fx.ScreenEffects.tick(client);
 			AimPreview.tick(client);
+			dev.wildercord.client.fx.StormSky.tick(client);
 			LeyMotes.tick(client);
 			RuneAura.tick(client);
 			ArchiveAmbience.tick(client);
