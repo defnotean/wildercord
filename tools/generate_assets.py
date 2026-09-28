@@ -746,7 +746,7 @@ RUNE_RECIPES = {
     "rapid": ["minecraft:sugar", "minecraft:redstone"],
     "if_sneaking": ["minecraft:leather_boots"],
     # Batch 4.
-    "crescent": ["minecraft:iron_sword"],
+    "crescent": ["minecraft:iron_sword", "minecraft:feather"],
     "barrage": ["minecraft:leather", "minecraft:iron_ingot"],
     "blitz": ["minecraft:rabbit_foot", "minecraft:sugar"],
     "dismantle": ["minecraft:shears"],

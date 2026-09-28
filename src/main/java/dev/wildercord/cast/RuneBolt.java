@@ -90,7 +90,7 @@ public class RuneBolt extends Projectile {
 		bolt.setDeltaMovement(dir.normalize().scale(bolt.speed));
 		LIVE.merge(owner, 1, Integer::sum);
 		cast.level.addFreshEntity(bolt);
-		Fx.sound(cast.level, origin, bolt.theme.cast(), 0.5F, 1.5F);
+		Fx.sound(cast.level, origin, bolt.theme.cast(), 0.5F, 1.0F);
 	}
 
 	@Override

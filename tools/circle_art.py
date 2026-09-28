@@ -11,8 +11,9 @@ A ring's line says the rune's family (Shape: a double line, Effect: solid, Modif
 a chain); its motif says the element (flame teeth for fire, crystals for frost, zig-zags for storm,
 waves for wind...), and each rune has its own mix of motif, placement and accent. The emblem's
 frame says the family (Shape: square, Effect: circle, Modifier: diamond, Link: octagon) and, for
-effects, its glyph the element. Designs are handed out by a stable hash of the rune's id, so adding
-a rune never reshuffles the others, and no two runes share a ring or an emblem.
+effects, its glyph the element. Designs are handed out by a stable hash of the rune's id, in the
+order runes are defined in Runes.java (so a rune added after the others never changes an existing
+rune's design), and no two runes share a ring or an emblem.
 
 Also writes circle/_<family>_band.png and _mark.png, used for add-on runes.
 Run from the project root:  python tools/circle_art.py [--preview]
@@ -272,7 +273,9 @@ def assign(keys, options, render, used):
     along whose picture ({@code render}) nobody has yet ({@code used}, shared across groups).
     """
     chosen = {}
-    for key in sorted(keys):
+    # In the order the runes are defined, so a rune added after the others never takes a design from
+    # one that came before it: the emblems players have learned stay put.
+    for key in keys:
         start = stable(key) % len(options)
         for step in range(len(options)):
             pixels = frozenset(render(options[(start + step) % len(options)]))

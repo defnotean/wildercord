@@ -22,6 +22,11 @@ public final class Fx {
 	/** While true, nothing is sent: passives renew their buffs quietly after the first time. */
 	private static boolean muted;
 
+	/** Whether particles and sounds are being left out right now (a passive renewing quietly). */
+	public static boolean muted() {
+		return muted;
+	}
+
 	/** Runs {@code action} with every particle and sound left out. */
 	public static void quietly(Runnable action) {
 		boolean was = muted;

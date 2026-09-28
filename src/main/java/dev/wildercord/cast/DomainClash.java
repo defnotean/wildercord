@@ -141,8 +141,7 @@ public final class DomainClash {
 		}
 		Sigils.send(level, dev.wildercord.content.SigilOption.flat(dev.wildercord.content.SigilOption.CRACKED, domain.color(), (float) Math.min(r, 12), 40, 0.0F),
 			CastEngine.ground(level, c).add(0, 0.08, 0));
-		Fx.sound(level, c, SoundEvents.GLASS_BREAK, 2.0F, 0.5F);
-		Fx.sound(level, c, SoundEvents.AMETHYST_CLUSTER_BREAK, 2.0F, 0.4F);
-		Fx.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 1.5F, 0.6F);
+		Fx.sound(level, c, dev.wildercord.content.WildercordSounds.SHIELD_BREAK, 2.0F, 1.0F);
+		Fx.sound(level, c, dev.wildercord.content.WildercordSounds.DOMAIN_CLOSE, 1.5F, 1.0F);
 	}
 }

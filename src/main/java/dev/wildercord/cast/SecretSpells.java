@@ -255,6 +255,7 @@ public final class SecretSpells {
 				return;
 			}
 			Vec3 c = point.add(0, 1.0, 0);
+			ScreenFx.shake(level, c, 1.0F, 48);
 			Effects.explode(cast, c, 7.0, power * 2.2);
 			Sigils.flash(level, c, 0xFFFFD080, 3.0F);
 			Vfx.shockwave(level, point, 8.0, Vfx.theme("fire"), 8);

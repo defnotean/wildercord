@@ -133,7 +133,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Cluster | Shape | 2x Gunpowder, Amethyst Shard |
 | Comet | Shape | Fire Charge, Gunpowder |
 | Cone | Shape | Fire Charge |
-| Crescent | Shape | Iron Sword |
+| Crescent | Shape | Iron Sword, Feather |
 | Lance | Shape | Spyglass, Blaze Rod |
 | Mine | Shape | Tripwire Hook |
 | Pillar | Shape | 2x Pointed Dripstone |

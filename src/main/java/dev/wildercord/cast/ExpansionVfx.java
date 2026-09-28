@@ -74,7 +74,7 @@ final class ExpansionVfx {
 	static void sparkLaunch(ServerLevel level, Vec3 origin, Vec3 aim, Vfx.Theme theme) {
 		glow(level, theme.primary(), origin.add(aim.scale(0.6)), 0.5);
 		Fx.sound(level, origin, SoundEvents.AMETHYST_BLOCK_HIT, 0.6F, 1.8F);
-		Fx.sound(level, origin, theme.cast(), 0.3F, 1.9F);
+		Fx.sound(level, origin, theme.cast(), 0.3F, 1.0F);
 	}
 
 	/** A spark in flight: a bright mote and a thin streak of light behind it. */
@@ -91,7 +91,7 @@ final class ExpansionVfx {
 		Sigils.flash(level, at, theme.primary(), 0.9F);
 		Light.ring(level, at, UP, theme.primary(), 0.1, 0.75, 0.03, 6);
 		Vfx.radial(level, theme.spark(), at, 5, 0.12);
-		Fx.sound(level, at, theme.impact(), 0.4F, 1.7F);
+		Fx.sound(level, at, theme.impact(), 0.4F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Ray
@@ -111,7 +111,7 @@ final class ExpansionVfx {
 		Sigils.flash(level, at, theme.primary(), 1.0F);
 		Light.ring(level, at, UP, theme.secondary(), 0.1, 0.9, 0.035, 7);
 		Vfx.radial(level, theme.spark(), at, 6, 0.15);
-		Fx.sound(level, at, theme.impact(), 0.5F, 1.4F);
+		Fx.sound(level, at, theme.impact(), 0.5F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Nova
@@ -125,7 +125,7 @@ final class ExpansionVfx {
 		Sigils.send(level, SigilOption.flat(SigilOption.STAR, theme.secondary(), (float) (radius * 0.7), 12, 0.25F), feet.add(0, 0.07, 0));
 		Vfx.radial(level, theme.mote(), center, 14, 0.2);
 		Fx.sound(level, center, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.8F, 1.3F);
-		Fx.sound(level, center, theme.impact(), 0.6F, 1.1F);
+		Fx.sound(level, center, theme.impact(), 0.6F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Wisp
@@ -163,7 +163,7 @@ final class ExpansionVfx {
 		Light.ring(level, at, UP, theme.primary(), 0.1, 1.0, 0.04, 7);
 		Light.ring(level, at, new Vec3(0.7, 0.3, 0.6).normalize(), theme.secondary(), 0.1, 0.7, 0.03, 6);
 		Vfx.radial(level, theme.spark(), at, 8, 0.15);
-		Fx.sound(level, at, theme.impact(), 0.6F, 1.5F);
+		Fx.sound(level, at, theme.impact(), 0.6F, 1.0F);
 	}
 
 	static void wispFade(ServerLevel level, Vec3 at, Vfx.Theme theme) {
@@ -177,7 +177,7 @@ final class ExpansionVfx {
 		Sigils.layer(level, origin, aim, SigilOption.CIRCLE, theme.primary(), 0.5F, 10, 0.25F);
 		Sigils.layer(level, origin.add(aim.scale(0.03)), aim, SigilOption.RING, theme.secondary(), 0.7F, 10, -0.3F);
 		Fx.sound(level, origin, SoundEvents.ILLUSIONER_CAST_SPELL, 0.7F, 0.8F);
-		Fx.sound(level, origin, theme.cast(), 0.6F, 0.9F);
+		Fx.sound(level, origin, theme.cast(), 0.6F, 1.0F);
 	}
 
 	/** A comet in flight: a heavy orb of light wrapped in rings, burning a thick streak behind it. */
@@ -203,14 +203,14 @@ final class ExpansionVfx {
 		Vfx.radial(level, theme.mote(), at, 18, 0.2);
 		Vfx.emit(level, theme.sparkle(), at, 6, radius * 0.3, 0.0);
 		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.5F);
-		Fx.sound(level, at, theme.impact(), 0.8F, 0.9F);
+		Fx.sound(level, at, theme.impact(), 0.8F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Ricochet
 
 	static void ricochetLaunch(ServerLevel level, Vec3 origin, Vfx.Theme theme) {
 		Fx.sound(level, origin, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.2F);
-		Fx.sound(level, origin, theme.cast(), 0.4F, 1.6F);
+		Fx.sound(level, origin, theme.cast(), 0.4F, 1.0F);
 	}
 
 	static void ricochetTick(ServerLevel level, Vec3 from, Vec3 to, Vfx.Theme theme, int tick) {
@@ -233,7 +233,7 @@ final class ExpansionVfx {
 	static void ricochetHit(ServerLevel level, Vec3 at, Vfx.Theme theme) {
 		Sigils.flash(level, at, theme.primary(), 1.0F);
 		Vfx.radial(level, theme.spark(), at, 6, 0.15);
-		Fx.sound(level, at, theme.impact(), 0.5F, 1.4F);
+		Fx.sound(level, at, theme.impact(), 0.5F, 1.0F);
 	}
 
 	static void ricochetEnd(ServerLevel level, Vec3 at, Vfx.Theme theme) {
@@ -276,7 +276,7 @@ final class ExpansionVfx {
 		Sigils.flash(level, at, theme.primary(), (float) (radius * 0.9));
 		Light.groundRing(level, at, theme.secondary(), 0.1, radius, 0.05, 8);
 		Vfx.radial(level, theme.spark(), at, 4, 0.12);
-		Fx.sound(level, at, theme.impact(), 0.35F, 1.6F);
+		Fx.sound(level, at, theme.impact(), 0.35F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Lance
@@ -355,7 +355,7 @@ final class ExpansionVfx {
 
 	static void streamStart(ServerLevel level, Vec3 at, Vfx.Theme theme) {
 		Fx.sound(level, at, SoundEvents.BEACON_ACTIVATE, 0.6F, 1.9F);
-		Fx.sound(level, at, theme.cast(), 0.5F, 1.2F);
+		Fx.sound(level, at, theme.cast(), 0.5F, 1.0F);
 	}
 
 	/** One tick of a Stream: the beam as it is now, thicker on a strike, and a spray where it lands. */
@@ -365,7 +365,7 @@ final class ExpansionVfx {
 			Light.ray(level, from, to, WHITE, 0.05, 2);
 			Sigils.flash(level, to, theme.primary(), 0.9F);
 			Vfx.radial(level, theme.spark(), to, 3, 0.12);
-			Fx.sound(level, to, theme.impact(), 0.3F, 1.6F);
+			Fx.sound(level, to, theme.impact(), 0.3F, 1.0F);
 		}
 		// The circle only as it opens: held in the middle of the view for a whole second, it would hide the target.
 		if (tick == 0) {

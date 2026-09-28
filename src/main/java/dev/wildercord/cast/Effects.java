@@ -535,6 +535,10 @@ public final class Effects {
 		Innates.spellHit(cast, target);
 		target.setInvulnerableTime(0);
 		target.hurtServer(cast.level, source, damage);
+		// A heavy hit lands with a punch for whoever cast it.
+		if (damage >= 8) {
+			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));
+		}
 	}
 
 	private static void lightning(Cast cast, Vec3 at, double power) {
@@ -770,6 +774,7 @@ public final class Effects {
 				}
 				if (mayEdit(cast, p)) {
 					cast.level.destroyBlock(p, true, cast.caster);
+					magicBreak(cast.level, p);
 				}
 			}
 		}
@@ -872,7 +877,14 @@ public final class Effects {
 	}
 
 	private static boolean mayEdit(Cast cast, BlockPos pos) {
-		return Casters.mayBuild(cast.caster) && cast.level.mayInteract(cast.caster, pos) && cast.takeBlock();
+		// A Rampart's wall is only there for a while: spells don't mine it (it would drop packed mud).
+		return Casters.mayBuild(cast.caster) && !Techniques.isRampart(cast.level, pos) && cast.level.mayInteract(cast.caster, pos)
+			&& cast.takeBlock();
+	}
+
+	/** Hooks the effects need from the start (Span's rules). */
+	public static void init() {
+		SpanRules.ready();
 	}
 
 	private static void light(Cast cast, Cast.Hit hit, double duration) {
@@ -924,6 +936,17 @@ public final class Effects {
 		}
 		if (mayEdit(cast, pos)) {
 			cast.level.destroyBlock(pos, true, cast.caster);
+			magicBreak(cast.level, pos);
+		}
+	}
+
+	/** The crunch of a block broken by magic: once a tick at most, however many blocks a spell takes. */
+	private static long lastBreakSound = Long.MIN_VALUE;
+
+	private static void magicBreak(net.minecraft.server.level.ServerLevel level, BlockPos pos) {
+		if (level.getGameTime() != lastBreakSound) {
+			lastBreakSound = level.getGameTime();
+			Fx.sound(level, Vec3.atCenterOf(pos), dev.wildercord.content.WildercordSounds.MAGIC_BREAK, 0.8F, 1.0F);
 		}
 	}
 
@@ -1227,6 +1250,7 @@ public final class Effects {
 		boolean harvest = !state.requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(state);
 		List<ItemStack> loot = harvest ? Block.getDrops(state, level, pos, blockEntity, cast.caster, tool) : List.of();
 		level.destroyBlock(pos, false, cast.caster);
+		magicBreak(level, pos);
 		if (harvest) {
 			state.spawnAfterBreak(level, pos, tool, true);
 		}
@@ -1521,8 +1545,9 @@ public final class Effects {
 	private static final BlockState SPAN_BLOCK = Blocks.STAINED_GLASS.magenta().defaultBlockState();
 
 	/**
-	 * Registered the first time a Span is cast: glass broken by hand drops nothing and puts back
-	 * what it replaced, and every bridge still standing is taken down when the server stops.
+	 * Registered when the mod starts (see {@link #init()}): a Span's glass broken by hand drops
+	 * nothing and puts back what it replaced, and every bridge still standing is taken down when the
+	 * server stops.
 	 */
 	private static final class SpanRules {
 		static {
@@ -1569,7 +1594,6 @@ public final class Effects {
 		if (!Casters.mayBuild(caster)) {
 			return;
 		}
-		SpanRules.ready();
 		Vec3 feet = caster.position();
 		Vec3 toward = hit.point().subtract(feet);
 		double reach = Math.hypot(toward.x, toward.z);

@@ -61,6 +61,7 @@ public final class Charging {
 		// The spell went off if its cooldown started (not if it lacked mana, or is waiting to overcast).
 		if (progress >= RELEASE_FROM && Spellbooks.readyAt(player, charge.spell()) != readyAt) {
 			Fx.sound(player.level(), player.position(), WildercordSounds.RELEASE, 0.5F + 0.5F * (float) progress, 1.0F);
+			ScreenFx.kick(player, (float) progress);
 		}
 	}
 

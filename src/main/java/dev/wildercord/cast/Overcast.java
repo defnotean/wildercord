@@ -88,8 +88,7 @@ public final class Overcast {
 		ElementFx.groundRing(level, player.position(), CRACK, 0.3, 1.9, 0.06, 10);
 		Vfx.radial(level, ParticleTypes.CRIT, heart, 10, 0.4);
 		Sigils.send(level, SigilOption.flat(SigilOption.CRACKED, 0xFF5A3A, 1.6F, 30, 0.0F), player.position().add(0, 0.07, 0));
-		Fx.sound(level, heart, SoundEvents.GLASS_BREAK, 1.0F, 0.6F);
-		Fx.sound(level, heart, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 0.5F);
+		Fx.sound(level, heart, dev.wildercord.content.WildercordSounds.OVERCAST, 1.0F, 1.0F);
 		player.sendOverlayMessage(Component.translatable("message.wildercord.overcast", Circles.ordinal(active), MEND_TICKS / 1200)
 			.withColor(0xFF6A4A));
 		Grimoire.feat(player, Feats.OVERCAST);

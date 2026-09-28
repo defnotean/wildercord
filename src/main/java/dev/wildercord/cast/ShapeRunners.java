@@ -159,7 +159,7 @@ final class ShapeRunners {
 				}
 			});
 		}
-		Fx.sound(cast.level, caster.position(), net.minecraft.sounds.SoundEvents.BEACON_ACTIVATE, 0.5F, 1.8F);
+		Fx.sound(cast.level, caster.position(), dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
 	}
 
 	/** Ring: a circle expanding from the origin; each creature is hit once, as the ring passes it. */
@@ -286,7 +286,7 @@ final class ShapeRunners {
 				}
 			});
 		}
-		Fx.sound(cast.level, base, net.minecraft.sounds.SoundEvents.BEACON_ACTIVATE, 0.7F, 1.4F);
+		Fx.sound(cast.level, base, dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.7F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ batch 4
@@ -326,6 +326,12 @@ final class ShapeRunners {
 					return;
 				}
 				TechniqueVfx.domainShell(cast.level, center, radius, theme, tick);
+				// Everyone inside sees the edges of their view take on the Domain's colour.
+				for (net.minecraft.server.level.ServerPlayer player : cast.level.players()) {
+					if (player.position().distanceTo(center) <= radius) {
+						ScreenFx.tint(player, theme.primary(), 12);
+					}
+				}
 				if ((tick - 10) % interval >= 5) {
 					return;
 				}
@@ -389,7 +395,7 @@ final class ShapeRunners {
 			});
 		}
 		Fx.sound(cast.level, origin, net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 0.7F);
-		Fx.sound(cast.level, origin, theme.cast(), 0.6F, 1.3F);
+		Fx.sound(cast.level, origin, theme.cast(), 0.6F, 1.0F);
 	}
 
 	/** Barrage: a flurry of blows over one second on whatever is right in front of you. */
@@ -485,7 +491,7 @@ final class ShapeRunners {
 				}
 			});
 		}
-		Fx.sound(cast.level, origin, net.minecraft.sounds.SoundEvents.BEACON_ACTIVATE, 0.8F, 0.6F);
+		Fx.sound(cast.level, origin, dev.wildercord.content.WildercordSounds.ORB_HUM, 0.8F, 1.0F);
 		Fx.sound(cast.level, origin, net.minecraft.sounds.SoundEvents.WARDEN_SONIC_CHARGE, 0.5F, 1.6F);
 	}
 

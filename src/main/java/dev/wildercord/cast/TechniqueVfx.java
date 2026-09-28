@@ -90,6 +90,7 @@ final class TechniqueVfx {
 	 * any other), a flare, and the dome rising in rings.
 	 */
 	static void domainOpen(ServerLevel level, Vec3 c, double radius, Vfx.Theme theme, java.util.List<dev.wildercord.spell.RuneDef> spell, int lifetime) {
+		ScreenFx.shake(level, c, 0.45F, radius * 2.5);
 		if (!spell.isEmpty()) {
 			Sigils.spell(level, c.add(0, 0.07, 0), UP, spell, theme.primary(), (float) radius, lifetime);
 		} else {
@@ -101,8 +102,7 @@ final class TechniqueVfx {
 			Scheduler.later(2 + t * 2, () -> Light.ring(level, c.add(0, radius * Math.sin(lat * Math.PI / 2), 0), UP, theme.primary(),
 				radius * Math.cos(lat * Math.PI / 2) * 0.6, radius * Math.cos(lat * Math.PI / 2), domainLine(radius), 14));
 		}
-		Fx.sound(level, c, SoundEvents.END_PORTAL_SPAWN, 0.45F, 1.3F);
-		Fx.sound(level, c, SoundEvents.BEACON_ACTIVATE, 1.0F, 0.7F);
+		Fx.sound(level, c, dev.wildercord.content.WildercordSounds.DOMAIN_OPEN, 1.0F, 1.0F);
 	}
 
 	/** How wide a domain's lines are: wider for bigger domains, so the far side still reads. */
@@ -145,7 +145,7 @@ final class TechniqueVfx {
 		Light.ray(level, c.add(0, radius, 0), c.add(0, 0.2, 0), theme.secondary(), 0.12 + radius * 0.01, 8);
 		Sigils.flash(level, c.add(0, radius, 0), theme.primary(), 2.5F);
 		Vfx.emit(level, theme.sparkle(), c.add(0, 1.5, 0), 8, radius * 0.4, 0.0);
-		Fx.sound(level, c, theme.impact(), 0.8F, 0.7F);
+		Fx.sound(level, c, theme.impact(), 0.8F, 1.0F);
 	}
 
 	/** Domain closes: the dome falls in on itself and the floor cracks. */
@@ -158,7 +158,7 @@ final class TechniqueVfx {
 		Light.groundRing(level, c, theme.secondary(), radius, radius * 0.05, w * 1.5, 10);
 		Sigils.send(level, SigilOption.flat(SigilOption.CRACKED, theme.primary(), (float) radius * 0.8F, 30, 0.0F), c.add(0, 0.09, 0));
 		Sigils.flash(level, c.add(0, 1, 0), theme.primary(), (float) Math.min(8, radius));
-		Fx.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 1.0F, 0.8F);
+		Fx.sound(level, c, dev.wildercord.content.WildercordSounds.DOMAIN_CLOSE, 1.0F, 1.0F);
 	}
 
 	/** Crescent: a blade of light, white at its edge, sweeping forward with a paler echo behind it. */
@@ -207,7 +207,7 @@ final class TechniqueVfx {
 			Vfx.emit(level, theme.mote(), pos, 2, radius * 0.4, 0.02);
 		}
 		if (tick % 10 == 0) {
-			Fx.sound(level, pos, SoundEvents.BEACON_AMBIENT, 0.8F, 1.4F);
+			Fx.sound(level, pos, dev.wildercord.content.WildercordSounds.ORB_HUM, 0.7F, 1.0F);
 		}
 	}
 
@@ -234,7 +234,7 @@ final class TechniqueVfx {
 		}
 		Sigils.flash(level, b, theme.primary(), 1.8F);
 		Fx.sound(level, a, SoundEvents.TRIDENT_RIPTIDE_1, 1.0F, 1.4F);
-		Fx.sound(level, b, theme.cast(), 0.5F, 1.4F);
+		Fx.sound(level, b, theme.cast(), 0.5F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ damage

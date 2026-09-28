@@ -21,6 +21,9 @@ public final class Sigils {
 	private static final double RANGE = 128.0;
 
 	public static void send(ServerLevel level, net.minecraft.core.particles.ParticleOptions sigil, Vec3 at) {
+		if (Fx.muted()) {
+			return;
+		}
 		for (ServerPlayer player : level.players()) {
 			if (player.position().distanceToSqr(at) <= RANGE * RANGE) {
 				level.sendParticles(player, sigil, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);

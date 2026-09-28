@@ -631,6 +631,11 @@ final class Techniques {
 
 	// ------------------------------------------------------------------ world
 
+	/** Whether {@code pos} is part of a Rampart's temporary wall. */
+	static boolean isRampart(ServerLevel level, BlockPos pos) {
+		return !RAMPART.isEmpty() && RAMPART.containsKey(GlobalPos.of(level.dimension(), pos));
+	}
+
 	/** Rampart: a temporary earth wall across your aim at the point. */
 	static void rampart(Cast cast, Cast.Hit hit, double radiusScale, int ticks) {
 		LivingEntity caster = cast.caster;

@@ -162,8 +162,7 @@ public final class HeartCircles {
 			int tick = t;
 			Scheduler.later(t + 1, () -> rings(player, n, tick * 0.6, 0.5F + (10 - tick) * 0.05F, true));
 		}
-		Fx.sound(level, heart, SoundEvents.BEACON_POWER_SELECT, 1.0F, 0.8F);
-		Fx.sound(level, heart, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 0.6F, 1.2F);
+		Fx.sound(level, heart, dev.wildercord.content.WildercordSounds.CIRCLE_FORMED, 1.0F, 1.0F);
 		Component title = Component.translatable("title.wildercord.circle", Circles.ordinal(n)).withColor(COLORS[n - 1]);
 		Component subtitle = Component.translatable("title.wildercord.circle." + n);
 		player.connection.send(new ClientboundSetTitlesAnimationPacket(10, 50, 20));
