@@ -109,6 +109,14 @@ with every rune's numbers, is in [docs/DESIGN.md](docs/DESIGN.md).
 
 ## Screenshots
 
+### In motion
+
+| A Shield's circles spawn in and stop a bolt | A heavier spell shatters every circle, and hits |
+|---|---|
+| <img src="docs/images/shield-block.gif" alt="Animated: a bolt flies at a husk; amber magic circles open one behind another in front of it, the front one breaks and the next stops the bolt in a flare" width="420"> | <img src="docs/images/shield-shatter.gif" alt="Animated: a heavy bolt hits a husk's stacked circles and they burst into glinting glass shards, and the husk falls" width="420"> |
+| A Frost glyph going off under a husk | Ten shapes, one after another |
+| <img src="docs/images/glyph.gif" alt="Animated: a glyph's magic circle on the ground flares as a husk steps onto it, and rings of frost light rise round the husk" width="420"> | <img src="docs/images/spells.gif" alt="Animated: beam, crescent, burst, pillar, rain, nova, prism, comet, lance and a Domain, each fading into the next" width="420"> |
+
 ### In the world
 
 **Reading a spell circle.** The star has a point for every rune, and each point's roundel carries

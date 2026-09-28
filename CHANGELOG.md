@@ -4,6 +4,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.2.0-alpha] - 2026-09-28
+
 ### Added
 - **Shield is a spell shield now**: a one-time spell block, invisible until a harmful spell comes
   at you. Then its magic circles spawn in front of the spell, stacked one behind another (one for

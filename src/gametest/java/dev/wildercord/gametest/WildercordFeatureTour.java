@@ -25,6 +25,7 @@ import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.Secrets;
 import dev.wildercord.spell.SpellCompiler;
+import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.world.LeyLines;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
@@ -700,6 +701,21 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		});
 	}
 
+	/** A shielded husk, a spell cast at it, and a frame every tick of what follows. */
+	private static void film(ClientGameTestContext context, TestSingleplayerContext world, float strength, int spell, String name, int frames) {
+		shieldedHusk(world, strength);
+		context.waitTicks(8);
+		world.getServer().runOnServer(server -> {
+			Spellbooks.setReadyAt(player(server), spell, 0);
+			SpellCaster.cast(player(server), spell);
+		});
+		for (int i = 0; i < frames; i++) {
+			context.waitTicks(1);
+			shot(context, String.format(java.util.Locale.ROOT, "%s_%02d", name, i));
+		}
+		context.waitTicks(20);
+	}
+
 	private static Mob tourHusk(MinecraftServer server) {
 		List<Mob> mobs = player(server).level().getEntitiesOfClass(Mob.class, player(server).getBoundingBox().inflate(30), m -> m.entityTags().contains("wildercord.tour"));
 		return mobs.isEmpty() ? null : mobs.getFirst();
@@ -770,6 +786,10 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		shot(context, "shield_shatter");
 		context.waitTicks(8);
 		shot(context, "shield_shards");
+		// Frames for the moving pictures (tools/make_gif.py): a strong Shield stopping a bolt, then one shattering.
+		context.waitTicks(30);
+		film(context, world, 50, 0, "gif_shield_block", 30);
+		film(context, world, (float) big - 1, 3, "gif_shield_break", 44);
 		cut(context);
 		world.getServer().runOnServer(server -> {
 			Mob mob = tourHusk(server);
@@ -891,14 +911,21 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			husk.addTag("wildercord.tour");
 			level.addFreshEntity(husk);
 		});
-		context.waitTicks(5);
-		shot(context, "imbue_glyph_fires");
+		// A frame every tick as it goes off (for tools/make_gif.py), the fifth kept as the still.
+		for (int i = 0; i < 18; i++) {
+			context.waitTicks(1);
+			shot(context, String.format(java.util.Locale.ROOT, "gif_glyph_%02d", i));
+			if (i == 4) {
+				shot(context, "imbue_glyph_fires");
+			}
+		}
 		cut(context);
 		world.getServer().runOnServer(server -> {
 			Mob husk = tourHusk(server);
 			check(husk != null && husk.getHealth() < husk.getMaxHealth() && husk.getTicksFrozen() > 0, "a husk stepping on a Frost glyph should be frozen");
 			int charges = Imbuing.Glyphs.of(player(server).level()).at(glyph).map(Imbuing.Glyph::charges).orElse(0);
-			check(charges == 2, "the glyph should have spent one charge, has " + charges);
+			// It re-arms after a second, so a husk left standing on it through the burst may spend more than one.
+			check(charges < SpellNumbers.IMBUE_CHARGES, "the glyph should have spent a charge, has " + charges);
 		});
 		world.getServer().runCommand("kill @e[tag=wildercord.tour]");
 		world.getServer().runCommand("setblock " + glyph.getX() + " " + glyph.getY() + " " + glyph.getZ() + " grass_block");
