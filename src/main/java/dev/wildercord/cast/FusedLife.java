@@ -151,12 +151,12 @@ final class FusedLife {
 	/** Zephyr: a warm breeze. Every ally around the point runs, leaps and mends a little better. */
 	private static void zephyr(Cast cast, Cast.Hit hit, List<LivingEntity> helped, double radius, int ticks, int amplify) {
 		ServerLevel level = cast.level;
-		Vec3 centre = CastEngine.ground(level, centreOf(cast, hit).add(0, 0.5, 0));
+		Vec3 point = centreOf(cast, hit);
 		Set<LivingEntity> blessed = new LinkedHashSet<>(first(helped));
-		blessed.addAll(alliesAround(cast, centre, radius));
+		blessed.addAll(alliesAround(cast, point, radius));
 		// Like Surge: Amplify adds a level (rank III counts as one); charge and circles make it last longer, never stronger.
 		int level2 = Math.min(2, Math.max(0, amplify));
-		FusedLifeVfx.zephyr(level, centre, radius);
+		FusedLifeVfx.zephyr(level, CastEngine.ground(level, point.add(0, 0.5, 0)), radius);
 		int n = 0;
 		for (LivingEntity t : blessed) {
 			if (n++ >= MAX_TARGETS) {
@@ -404,11 +404,18 @@ final class FusedLife {
 				return;
 			}
 			long time = level.getGameTime();
-			boolean dead = !bond.a.isAlive() || !bond.b.isAlive() || !bond.cast.alive();
-			if (dead || !bond.holds(time)) {
-				// A bond stretched too far, or carried off to another world, snaps; one that ran its time fades.
-				boolean snapped = !dead && time <= bond.until && !bond.a.isRemoved() && !bond.b.isRemoved();
-				end(bond, snapped ? 1 : dead ? 0 : 2);
+			if (!bond.a.isAlive() || !bond.b.isAlive() || !bond.cast.alive() || bond.a.level() != level || bond.b.level() != level) {
+				// One of them died, left or went to another world: it just ends.
+				end(bond, 0);
+				return;
+			}
+			if (time > bond.until) {
+				end(bond, 2);
+				return;
+			}
+			if (!bond.holds(time)) {
+				// Stretched too far: it snaps.
+				end(bond, 1);
 				return;
 			}
 			if (age[0] % 10 == 0) {
