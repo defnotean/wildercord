@@ -31,8 +31,8 @@ public final class Grimoire {
 		player.setAttached(WildercordAttachments.GRIMOIRE, List.copyOf(next));
 		if (!key.startsWith("hint:")) {
 			player.setAttached(WildercordAttachments.CONDENSED, Heart.condensed(player) + Feats.reward(key));
-			Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 1.0F, 1.1F);
-			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.9F, 1.4F);
+			Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F);
+			Fx.sound(player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.9F, 1.0F);
 		}
 		ServerPlayNetworking.send(player, new WildercordNetworking.Discovery(key));
 		return true;

@@ -1468,7 +1468,7 @@ public class CordScreen extends Screen {
 		} else {
 			rows().get(pressedSpell).remove(pressedSocket);
 			sync(pressedSpell);
-			click();
+			ui(dev.wildercord.content.WildercordSounds.RUNE_UNTHREAD);
 		}
 		pressedRune = null;
 		pressedSpell = -1;
@@ -1499,12 +1499,12 @@ public class CordScreen extends Screen {
 			// Dragged a threaded rune off the Cord: take it out.
 			from.remove(pressedSocket);
 			sync(pressedSpell);
-			click();
+			ui(dev.wildercord.content.WildercordSounds.RUNE_UNTHREAD);
 		} else if (dropSpell == pressedSpell) {
 			from.remove(pressedSocket);
 			from.add(Math.min(dropSocket, from.size()), id);
 			sync(dropSpell);
-			click();
+			ui(dev.wildercord.content.WildercordSounds.RUNE_THREAD);
 		} else {
 			// Moving to another spell counts as a new rune there: it must fit and be allowed.
 			Optional<RuneDef> rune = Runes.get(id);
@@ -1533,7 +1533,7 @@ public class CordScreen extends Screen {
 			editing = spell;
 		}
 		sync(spell);
-		click();
+		ui(dev.wildercord.content.WildercordSounds.RUNE_THREAD);
 	}
 
 	private String draggedId() {
@@ -1595,6 +1595,11 @@ public class CordScreen extends Screen {
 
 	private void click() {
 		minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+	}
+
+	/** One of the mod's own UI sounds, at full volume (they're made quiet already). */
+	private void ui(net.minecraft.sounds.SoundEvent sound) {
+		minecraft.getSoundManager().play(SimpleSoundInstance.forUI(sound, 1.0F, 1.0F));
 	}
 
 	private void deny() {

@@ -81,6 +81,9 @@ public class SpellWheelScreen extends Screen {
 
 	@Override
 	public void tick() {
+		if (opened == 0) {
+			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(dev.wildercord.content.WildercordSounds.WHEEL_OPEN, 1.0F, 1.0F));
+		}
 		opened++;
 	}
 
@@ -102,7 +105,7 @@ public class SpellWheelScreen extends Screen {
 		CordTier tier = tier();
 		if (tier != null && hovered >= 0 && hovered < tier.spells) {
 			ClientPlayNetworking.send(new WildercordNetworking.SelectSpell(hovered));
-			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.AMETHYST_BLOCK_CHIME, 1.6F));
+			minecraft.getSoundManager().play(SimpleSoundInstance.forUI(dev.wildercord.content.WildercordSounds.WHEEL_SELECT, 1.0F, 1.0F));
 		}
 		onClose();
 	}
@@ -176,7 +179,11 @@ public class SpellWheelScreen extends Screen {
 		if (moved && dx * dx + dy * dy > 14 * 14) {
 			double angle = Math.atan2(dy, dx) + Math.PI / 2;
 			double step = Math.PI * 2 / n;
-			hovered = (int) Math.floorMod(Math.round(angle / step), n);
+			int now = (int) Math.floorMod(Math.round(angle / step), n);
+			if (now != hovered && pointed) {
+				minecraft.getSoundManager().play(SimpleSoundInstance.forUI(dev.wildercord.content.WildercordSounds.WHEEL_HOVER, 1.0F, 0.6F));
+			}
+			hovered = now;
 			pointed = true;
 		} else if (!pointed || toggled) {
 			hovered = book.selected() < n ? book.selected() : -1;

@@ -177,7 +177,7 @@ public class RuneBolt extends Projectile {
 			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(color, 1.3F), at, 16, 0.3);
 			Vfx.radial(server, new net.minecraft.core.particles.DustParticleOptions(other.color, 1.3F), at, 16, 0.3);
 			Vfx.radial(server, ParticleTypes.ELECTRIC_SPARK, at, 12, 0.4);
-			Fx.sound(server, at, SoundEvents.AMETHYST_BLOCK_BREAK, 1.2F, 0.7F);
+			Fx.sound(server, at, dev.wildercord.content.WildercordSounds.SHIELD_BREAK, 1.2F, 1.0F);
 			Fx.sound(server, at, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.6F);
 			if (damage > 0) {
 				for (Entity victim : CastEngine.inRadius(owner, at, radius)) {
