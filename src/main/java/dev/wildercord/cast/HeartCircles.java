@@ -44,6 +44,8 @@ public final class HeartCircles {
 	private static final Map<UUID, SpellHit> LAST_SPELL_HIT = new HashMap<>();
 	private static final Map<UUID, Integer> NOTIFIED = new HashMap<>();
 	private static final Map<UUID, Float> CONDENSING = new HashMap<>();
+	/** Players whose innate rune wakes in a moment, after the 1st Circle's title has been read. */
+	private static final java.util.Set<UUID> AWAKENING = new java.util.HashSet<>();
 
 	public static void init() {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
@@ -77,7 +79,7 @@ public final class HeartCircles {
 				return;
 			}
 			for (ServerPlayer player : level.players()) {
-				if (player.distanceTo(entity) <= 96 && !Heart.bossSlain(player)) {
+				if (player.isAlive() && !player.isSpectator() && player.distanceTo(entity) <= 96 && !Heart.bossSlain(player)) {
 					player.setAttached(WildercordAttachments.BOSS_SLAIN, true);
 					player.sendSystemMessage(Component.translatable("message.wildercord.boss_breakthrough").withStyle(ChatFormatting.GOLD));
 				}
@@ -88,6 +90,7 @@ public final class HeartCircles {
 			LAST_SPELL_HIT.clear();
 			NOTIFIED.clear();
 			CONDENSING.clear();
+			AWAKENING.clear();
 		});
 	}
 
@@ -182,7 +185,9 @@ public final class HeartCircles {
 		}
 		if (n == 1) {
 			// The heart's first ring wakes something only this caster has.
+			AWAKENING.add(player.getUUID());
 			Scheduler.later(60, () -> {
+				AWAKENING.remove(player.getUUID());
 				if (!player.isRemoved()) {
 					Innates.awaken(player);
 				}
@@ -326,8 +331,15 @@ public final class HeartCircles {
 		}
 	}
 
+	/** Whether this player's innate rune is about to wake (so nothing else should wake it first). */
+	public static boolean awakening(ServerPlayer player) {
+		return AWAKENING.contains(player.getUUID());
+	}
+
 	public static void forget(UUID player) {
 		FORMING.remove(player);
 		CONDENSING.remove(player);
+		NOTIFIED.remove(player);
+		AWAKENING.remove(player);
 	}
 }

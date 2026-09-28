@@ -32,6 +32,9 @@ public final class Overcast {
 	/** How long the second press has to come. */
 	private static final int CONFIRM_TICKS = 40;
 
+	/** An overcast can pay for a spell of at most this many times your full mana. */
+	public static final int MAX_COST_MULTIPLE = 2;
+
 	private record Prompt(int spell, long until) {}
 
 	private static final Map<UUID, Prompt> PROMPTS = new HashMap<>();
@@ -47,12 +50,23 @@ public final class Overcast {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.no_mana", mana, cost).withStyle(ChatFormatting.RED));
 			return false;
 		}
+		// A circle pays for a spell, not for anything: past twice your full mana, it can't.
+		if (cost > MAX_COST_MULTIPLE * dev.wildercord.player.Mana.max(player)) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.overcast_too_costly", cost, MAX_COST_MULTIPLE).withStyle(ChatFormatting.RED));
+			return false;
+		}
 		Prompt prompt = PROMPTS.get(player.getUUID());
-		if (prompt == null || prompt.spell() != spell || now > prompt.until()) {
+		// A prompt from a later game time was left over from another world: it doesn't count.
+		boolean stale = prompt != null && prompt.until() > now + CONFIRM_TICKS;
+		if (prompt == null || stale || prompt.spell() != spell || now > prompt.until()) {
+			boolean recent = prompt != null && !stale && now <= prompt.until() && prompt.until() - now > CONFIRM_TICKS - 10;
 			PROMPTS.put(player.getUUID(), new Prompt(spell, now + CONFIRM_TICKS));
 			player.sendOverlayMessage(Component.translatable("message.wildercord.overcast_prompt", mana, cost, Circles.ordinal(active))
 				.withColor(0xFF8A5A));
-			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.7F, 0.5F);
+			// Not again for a prompt made moments ago (switching spells back and forth).
+			if (!recent) {
+				Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.7F, 0.5F);
+			}
 			return false;
 		}
 		PROMPTS.remove(player.getUUID());
@@ -108,5 +122,9 @@ public final class Overcast {
 
 	public static void forget(UUID player) {
 		PROMPTS.remove(player);
+	}
+
+	static void clear() {
+		PROMPTS.clear();
 	}
 }

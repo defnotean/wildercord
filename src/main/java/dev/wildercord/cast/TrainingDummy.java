@@ -54,8 +54,9 @@ public class TrainingDummy extends LivingEntity {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+		// A sneaking punch picks it up; a sneaking caster's spell still hits it (for If Sneaking).
 		if (source.getDirectEntity() instanceof ServerPlayer player && source.getEntity() == player && player.isShiftKeyDown()
-				&& !source.is(DamageTypeTags.IS_PROJECTILE)) {
+				&& source.is(DamageTypes.PLAYER_ATTACK)) {
 			pickUp(level, player);
 			return true;
 		}
@@ -138,6 +139,7 @@ public class TrainingDummy extends LivingEntity {
 		float scale = (float) Math.min(1.8, 0.8 + amount / 25.0);
 		text.setTransformation(new Transformation(new Vector3f(), new Quaternionf(), new Vector3f(scale, scale, scale), new Quaternionf()));
 		text.setPosRotInterpolationDuration(14);
+		BlockFx.fresh(text);
 		level.addFreshEntity(text);
 		Scheduler.later(2, () -> {
 			if (!text.isRemoved()) {
@@ -188,10 +190,13 @@ public class TrainingDummy extends LivingEntity {
 	@Override
 	protected void addAdditionalSaveData(ValueOutput output) {
 		super.addAdditionalSaveData(output);
+		// So a DPS nameplate saved mid-fight still clears once the dummy loads again.
+		output.putLong("last_hit", lastHit);
 	}
 
 	@Override
 	protected void readAdditionalSaveData(ValueInput input) {
 		super.readAdditionalSaveData(input);
+		lastHit = input.getLongOr("last_hit", 0L);
 	}
 }

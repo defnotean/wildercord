@@ -191,7 +191,7 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 |---|---|---|---|---|
 | Amplify | I | effect | +50% power (damage, healing, force, blast) | 1.6 |
 | Extend | I | effect, Zone, Delay | +100% duration | 1.4 |
-| Widen | II | Burst, Zone, Rain, Explode | +50% radius | 1.5 |
+| Widen | II | Burst, Zone, Rain, Explode | +50% radius (an effect grows at most 8 times, five Widens) | 1.5 |
 | Quicken | II | Bolt, Delay, Zone | Projectiles twice as fast, delays halved | 1.2 |
 | Pierce | II | Bolt, Beam | Passes through up to 3 targets | 1.3 |
 | Bounce | II | Bolt | Bounces off blocks up to 3 times | 1.3 |
@@ -273,7 +273,7 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Grapple | Effect · Movement | II | Pulls you to where the spell hit |
 | Harvest | Effect · World | I | Harvests grown crops around the block hit and replants them |
 | Icepath | Effect · World | I | Freezes water within 3 blocks into walkable ice |
-| Collect | Effect · World | I | Pulls items and experience within 8 blocks to you |
+| Collect | Effect · World | I | Pulls items and experience within 8 blocks to you (Widen reaches up to 24), never out of land you can't build on |
 | Excavate | Effect · World | II | Mines a 3x3 area of blocks |
 | Focus | Modifier · Area | II | Half the radius, +50% power |
 | Overcharge | Modifier · Power | III | +150% power, triple the mana |
@@ -592,7 +592,8 @@ circle takes its colour.
 ### Overcasting
 Short on mana? The first press says so; cast the same spell again within 2 s and you
 **overcast**: your outermost working Heart Circle cracks to pay for it (mana goes to 0). With no
-working circle there's nothing to crack, and the spell simply fails. A cracked circle gives
+working circle there's nothing to crack, and the spell simply fails; nor can a circle pay for a
+spell costing more than twice your full mana. A cracked circle gives
 nothing (mana, regeneration, power, its perk, a passive slot) until it mends **3 minutes** later;
 overcasting again cracks the next one in and resets the clock. The HUD shows ✦ and the number
 cracked.
@@ -798,8 +799,8 @@ is what the game does now.
 | Blink | Found in end cities. Endermen drop it 2% of the time (Looting helps) |
 | **Lightning** | **World event:** drop a Blank Rune next to a lightning rod in a thunderstorm. When the rod is struck, the blank becomes a Lightning rune. Also found in trail ruins |
 | Sonic Boom | The Warden always drops one |
-| Wither | The Wither drops one for each player who fought it |
-| Dragon Breath | The Ender Dragon drops one for each player who fought it, every kill |
+| Wither | The Wither always drops one (and Hollow half the time) |
+| Dragon Breath | The Ender Dragon drops one (and an Infinity rune) at the feet of whoever killed it, every kill |
 | Summon | Evokers drop it 15% of the time |
 
 Shipwrecks, buried treasure, dungeons and mineshafts roll the crafted Tier I–II

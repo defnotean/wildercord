@@ -117,6 +117,64 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Span's rules (its glass drops nothing, bridges come down when the server stops) are in force from
   the start, not only after the first Span is cast.
 - The HUD's charge readout no longer overlaps the mana count.
+- A spell of linked repeating shapes (Zone On Hit Zone On Hit ...) could multiply into hundreds of
+  thousands of casts and stop the server; a whole cast now runs at most 128 parts.
+- Overcasting can't pay for a spell costing more than twice your full mana (Overcharge stacks
+  could one-shot bosses or freeze the server for the price of one cracked circle), and a prompt
+  left over from another world no longer overcasts on the first press.
+- Widen is capped at eight times the radius, so a heavily widened Prune, Icepath or Collect can't
+  scan hundreds of blocks and load chunks; Icepath counts against the block budget, and Collect
+  reaches at most 24 blocks and never out of land you can't build on.
+- Spells that change blocks respect claim and protection mods (a spell's break is offered to them
+  as the caster's own), as the Break rune always promised.
+- Something held by Stasis or Infinity no longer floats forever when it's saved held (a player
+  logging out in Stasis, arrows frozen when the server stops).
+- Spectators and dead players can't cast, run passives or share a boss kill; Rebirth cast from the
+  death screen no longer arms a free death save.
+- A charged spell no longer fires when you open a screen (the spell wheel, chat, the pause menu):
+  it waits, like a drawn bow, and dying drops it. A charge that fizzled no longer casts when you let
+  go.
+- Mashing the cast key no longer keeps the rhythm chain at full: a press before the beat starts it
+  over, as it should.
+- Spell cooldowns are saved, so logging out and back in doesn't reset them.
+- Monsters' spells hit players at full power; only damage between players is scaled down.
+- Execute and Unison apply to damage that lands later (Meteor, Countdown, Starfall, the second and
+  third Dismantle slashes, Aftershock and Bleed after the first hit, and more).
+- Zero Hour follows the PvP rule and leaves creative and spectator players alone.
+- Shackle only slows bosses instead of chaining them in place.
+- Stoneform on a pet no longer hurts its owner, and its knockback resistance comes off.
+- Phantom's afterimages, Light's light blocks and wards no longer outlive a server stop, and state
+  from one singleplayer world (wards, reaction marks, bolts in flight, overcast prompts) no longer
+  leaks into the next.
+- Pistons can't move a Span's glass or a Rampart's wall somewhere it would never be taken down.
+- An Orbit passive is cast again straight away after a dimension change, instead of charging upkeep
+  with nothing orbiting.
+- The 1st Circle's title is no longer cut off by the innate rune waking in the same moment.
+- The server forgets a player's charge, passives, prompts and meditation when they leave.
+- `/wildercord learn` and `/wildercord innate` accept namespaced ids (`wildercord:fire`, an
+  add-on's runes).
+- A Spell Scroll made by command with more than 16 runes no longer disconnects everyone it's sent to.
+- A charge whose Cord was taken off now fizzles.
+- **The Archive:** its first two seal doors (Frost and Storm, Fire and Wind) are generated instead of
+  being walled over, its stairway steps face the right way, and the vault chests turn with the
+  structure.
+- Runebound keep their extra health through a reload (Archive guards never had it), don't take over
+  a named mob's name, keep their Cord when they turn into another monster (and lose the nameplate
+  when they turn into something that can't carry one), and the Archivist's guards are bound once.
+- The Wither can't destroy Rune Seals or the Archive Lectern.
+- A sneaking caster's spell hits the Training Dummy instead of picking it up; its damage numbers and
+  DPS nameplate no longer stay behind after a save.
+- Brushing trail ruins can actually find Lightning and Shock runes.
+- The Ender Dragon's runes land at the feet of whoever killed it, not over the void.
+- The previous world is let go when you quit to the title screen (some effects held it in memory),
+  and screen shake, comets and the charge hum reset properly between worlds and dimensions; the
+  camera no longer shakes behind the pause menu.
+- Switching page in the Cord screen mid-drag no longer crashes it, and category chips that don't
+  fit are no longer clickable.
+- The worn Cord fits slim arms and shows over sleeves.
+- Orb rings keep spinning on very old worlds, the Wellstone halo no longer jumps once a day, and
+  spell wheel labels stay on screen at small GUI sizes.
+- The Cord enchantment tag has a name in recipe viewers.
 
 ### Removed
 - The Stand shape. Cords that still hold a Stand rune keep it threaded, but it stays quiet.

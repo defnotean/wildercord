@@ -561,7 +561,7 @@ public final class SecretSpells {
 		Light.slash(level, face.add(0, 0.06, 0), new Vec3(0, 1, 0), new Vec3(1, 0, 0), 0xC8962E, 11, Math.PI / 6, 0.5, ticks, ticks + 10);
 		for (Entity e : level.getEntities(caster, new AABB(c, c).inflate(20), e -> e instanceof LivingEntity && e.isAlive() && e != caster)) {
 			LivingEntity t = (LivingEntity) e;
-			if (t.distanceTo(caster) <= 20 && !Targets.isAlly(caster, t)) {
+			if (t.distanceTo(caster) <= 20 && Targets.canHarm(caster, t)) {
 				Wards.stasis(cast, t, ticks);
 			}
 		}

@@ -79,7 +79,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **A readable Cord screen** | Type-to-search Codex, family tabs and category chips, drag and drop, a live plain-English readout, the spell's magic circle opening beside the window as you build it, spell names you can change, and a spell wheel (hold `V`). |
 | **A practice dummy** | Place a Training Dummy to try spells on: every hit floats up as a number, and it shows your damage per second. |
 | **Crafting and loot** | Every Tier I-III rune is craftable (costlier by tier) and shows in the recipe book; Tier IV runes come from bosses and rare structures. |
-| **Server-authoritative** | The client only asks; the server validates every edit and cast. Friendly fire is off, and every cast has hard budgets. |
+| **Server-authoritative** | The client only asks; the server validates every edit and cast. Friendly fire is off, every cast has hard budgets, and spells that change blocks respect spawn protection and claim mods. |
 | **Built to extend** | Runes are plain data with traits, so new runes slot into the reading rules without special cases. |
 
 ## How spells are read
@@ -130,11 +130,13 @@ hits); the band of script around it repeats them, and the shape's emblem is the 
 | **Glacial Lance**, a secret spell | **Tectonic Rise**, a secret spell |
 | <img src="docs/images/glacial-lance.jpg" alt="A lance of ice pierces a line of husks and closes each one in a block of ice" width="420"> | <img src="docs/images/tectonic-rise.jpg" alt="A line of stone spires bursts out of the ground toward a group of husks" width="420"> |
 | A domain clash | The Training Dummy |
-| <img src="docs/images/domain-clash.jpg" alt="Two domains meet: facing magic circles where the player's domain presses against a witch's" width="420"> | <img src="docs/images/training-dummy.jpg" alt="Arcane bolts striking a training dummy, a damage number rising over its DPS readout" width="420"> |
+| <img src="docs/images/domain-clash.jpg" alt="Two domains meet: the player's dome of light pressing against a witch's, their floor circles overlapping" width="420"> | <img src="docs/images/training-dummy.jpg" alt="Arcane bolts striking a training dummy, a damage number rising over its DPS readout" width="420"> |
 | The mouth of an Archive | The Archivist |
 | <img src="docs/images/archive.jpg" alt="Broken deepslate pillars crowned with amethyst around a stairway leading underground" width="420"> | <img src="docs/images/archivist.jpg" alt="The Archivist up close: a hooded robed figure with glowing eyes, arms raised, a floating open tome and pages circling it, holding out its spell's circle" width="420"> |
+| A Rune Seal door: only Frost and Storm spells open it | The Archivist's arena |
+| <img src="docs/images/seal-door.jpg" alt="A door of Rune Seal blocks in a deepslate hall, each seal marked with a snowflake or a lightning bolt" width="420"> | <img src="docs/images/archive-arena.jpg" alt="The domed arena under the Archive: the Archivist rising from its lectern at the centre of a glowing floor circle" width="420"> |
 | A Wellstone on a ley line | The spell wheel |
-| <img src="docs/images/wellstone.jpg" alt="A Wellstone block with a slow magic circle around it and ley motes drifting along the line" width="420"> | <img src="docs/images/spell-wheel.png" alt="The radial spell wheel: four spells around a centre showing cost and cooldown" width="420"> |
+| <img src="docs/images/wellstone.jpg" alt="A Wellstone block on a ley line, rings of light turning around it" width="420"> | <img src="docs/images/spell-wheel.png" alt="The radial spell wheel: four spells around a centre showing cost and cooldown" width="420"> |
 
 **The Grimoire:** your innate rune and leaning, and every reaction, secret spell and feat
 you've found, with the riddles you've read.
@@ -202,14 +204,14 @@ small buttons over the readout rename the spell, copy or paste its spell code, a
 onto a scroll. The **Grimoire** tab lists everything you've discovered.
 
 Out of mana? Cast the same spell again within two seconds to **overcast**: your outermost Heart
-Circle cracks for three minutes to pay for it.
+Circle cracks for three minutes to pay for it (for a spell costing up to twice your full mana).
 
 Commands (operators, permission level 2):
 
 | Command | Does |
 |---|---|
 | `/wildercord learnall` | Learn every rune |
-| `/wildercord learn <rune>` | Learn one rune, e.g. `wildercord:stasis` |
+| `/wildercord learn <rune>` | Learn one rune, e.g. `stasis` or `wildercord:stasis` (an add-on's runes by their full id) |
 | `/wildercord spell <1-4> <runes...>` | Thread a spell directly |
 | `/wildercord mana` | Refill your mana |
 | `/wildercord circles <0-8>` | Set your Heart Circles |
@@ -267,7 +269,7 @@ src/
 │   ├── world/      The Archive structure, and ley lines (pure maths shared by both sides)
 │   ├── menu/       The Cord slot
 │   ├── mixin/      Cord slot in the inventory menu, creative sync, lightning rods,
-│   │                 Phantom's afterimage
+│   │                 Phantom's afterimage, pistons (temporary blocks stay put)
 │   ├── net/        Packets: cast, charge, select, edit, rename, passives, scrolls; and the
 │   │                 notices the server sends (discoveries, the ley seed, screen effects)
 │   └── command/    /wildercord
@@ -322,7 +324,7 @@ docs/
   touches Minecraft, the readout the player sees and the spell the server runs can never disagree,
   and it's all unit-tested.
 - **`cast/` runs a plan in the world.** A `Cast` carries hard budgets (64 creatures, 32 blocks,
-  8 link depth) shared by everything it chains into, so no spell can run away. Its caster can be
+  8 link depth, 128 parts in all) shared by everything it chains into, so no spell can run away. Its caster can be
   any living thing, so Runebound monsters and the Archivist cast through the same engine.
 - **Player state lives in Fabric data attachments**: saved, synced to the owner, and kept
   through death where it should be.

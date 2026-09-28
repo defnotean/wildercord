@@ -1340,6 +1340,17 @@ public class CordScreen extends Screen {
 		if (tier() == null) {
 			return super.mouseClicked(event, doubleClick);
 		}
+		if (pressedRune != null || pressedSocket >= 0) {
+			if (event.button() != 0) {
+				// Mid-press (or mid-drag) with the left button: other buttons do nothing until it's let go.
+				return true;
+			}
+			// A new left press: the last one's release was missed.
+			pressedRune = null;
+			pressedSpell = -1;
+			pressedSocket = -1;
+			dragging = false;
+		}
 		// Spells | Passives | Grimoire
 		int pageX = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
 		for (int page = 0; page < 3; page++) {
@@ -1385,6 +1396,10 @@ public class CordScreen extends Screen {
 		if (filter != null && my >= CHIPS_TOP && my < CHIPS_TOP + 12) {
 			int x = 12;
 			for (Chip chip : chips()) {
+				if (x + chip.width() > W - 14) {
+					// Past the edge: not drawn, so not clickable.
+					break;
+				}
 				if (inside(mx, my, x, CHIPS_TOP, chip.width(), 12)) {
 					category = chip.key();
 					codexScroll = 0;
@@ -1460,6 +1475,17 @@ public class CordScreen extends Screen {
 	public boolean mouseReleased(MouseButtonEvent event) {
 		if (pressedRune == null && pressedSocket < 0) {
 			return super.mouseReleased(event);
+		}
+		if (event.button() != 0) {
+			// Only letting go of the button that pressed ends the press.
+			return true;
+		}
+		if (pressedSocket >= 0 && (pressedSpell < 0 || pressedSpell >= rows().size() || pressedSocket >= rows().get(pressedSpell).size())) {
+			// What was pressed isn't there any more (the Cord changed under it): nothing to move.
+			pressedSpell = -1;
+			pressedSocket = -1;
+			dragging = false;
+			return true;
 		}
 		if (dragging) {
 			drop(localX(event.x()), localY(event.y()));

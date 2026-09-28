@@ -6,6 +6,7 @@
 		"InventoryMenuMixin",
 		"ServerGamePacketListenerImplMixin",
 		"LightningRodBlockMixin",
+		"PistonBaseBlockMixin",
 		"MannequinAccessor"
 	],
 	"injectors": {

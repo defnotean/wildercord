@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -100,6 +101,21 @@ public final class Wards {
 		ServerLivingEntityEvents.ALLOW_DEATH.register(Wards::allowDeath);
 		ServerTickEvents.END_SERVER_TICK.register(Wards::tick);
 		Techniques.init();
+		// Held things let go before the world is saved, and anything saved while held (a player who
+		// logged out in Stasis) gets its gravity back when it loads.
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			for (Stasis held : new ArrayList<>(STASIS.values())) {
+				unhold(held.target, held.hadNoGravity);
+			}
+			for (Held held : new ArrayList<>(HELD.values())) {
+				letGo(held.holder());
+			}
+		});
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+			if (entity.hasAttached(WildercordAttachments.HELD_GRAVITY) && !STASIS.containsKey(entity.getUUID()) && !HELD.containsKey(entity.getUUID())) {
+				unhold(entity, false);
+			}
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			STASIS.clear();
 			REVERSAL.clear();
@@ -132,7 +148,7 @@ public final class Wards {
 			return;
 		}
 		STASIS.put(t.getUUID(), new Stasis(t, cast.caster, now + ticks));
-		t.setNoGravity(true);
+		hold(t);
 		t.setDeltaMovement(Vec3.ZERO);
 		Spirits.hold(t, ticks);
 	}
@@ -335,7 +351,7 @@ public final class Wards {
 			LivingEntity t = held.target;
 			if (t.isRemoved() || !t.isAlive() || !(t.level() instanceof ServerLevel level)) {
 				it.remove();
-				t.setNoGravity(held.hadNoGravity);
+				unhold(t, held.hadNoGravity);
 				continue;
 			}
 			long now = level.getGameTime();
@@ -361,7 +377,7 @@ public final class Wards {
 
 	private static void release(Stasis held) {
 		LivingEntity t = held.target;
-		t.setNoGravity(held.hadNoGravity);
+		unhold(t, held.hadNoGravity);
 		Spirits.thawNow(t);
 		if (!(t.level() instanceof ServerLevel level)) {
 			return;
@@ -407,7 +423,7 @@ public final class Wards {
 					TechniqueVfx.infinityHalt(level, p.position());
 				}
 				p.setDeltaMovement(p.getDeltaMovement().scale(distance < 2.4 ? 0.0 : 0.35));
-				p.setNoGravity(true);
+				hold(p);
 				p.needsSync = true;
 			}
 			if (now % 4 == 0) {
@@ -423,6 +439,20 @@ public final class Wards {
 		HELD.values().removeIf(held -> held.projectile().isRemoved());
 	}
 
+	/** Stops gravity for something a spell holds, remembering (in a saved attachment) what it was. */
+	private static void hold(Entity e) {
+		if (!e.hasAttached(WildercordAttachments.HELD_GRAVITY)) {
+			e.setAttached(WildercordAttachments.HELD_GRAVITY, e.isNoGravity());
+		}
+		e.setNoGravity(true);
+	}
+
+	/** Gives back the gravity it had before it was held ({@code fallback} if that wasn't recorded). */
+	private static void unhold(Entity e, boolean fallback) {
+		Boolean had = e.removeAttached(WildercordAttachments.HELD_GRAVITY);
+		e.setNoGravity(had != null ? had : fallback);
+	}
+
 	/** Drops every projectile an Infinity was holding: they fall as they would have. */
 	private static void letGo(UUID holder) {
 		for (Iterator<Held> it = HELD.values().iterator(); it.hasNext(); ) {
@@ -430,7 +460,7 @@ public final class Wards {
 			if (held.holder().equals(holder)) {
 				it.remove();
 				if (!held.projectile().isRemoved()) {
-					held.projectile().setNoGravity(held.hadNoGravity());
+					unhold(held.projectile(), held.hadNoGravity());
 					held.projectile().setDeltaMovement(0, -0.05, 0);
 					held.projectile().needsSync = true;
 				}

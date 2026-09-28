@@ -216,12 +216,14 @@ public class SpellWheelScreen extends Screen {
 			g.text(font, number, x - font.width(number) / 2, y - 4, isHovered ? GOLD : isSelected ? TEXT : DIM, true);
 			// Name and runes, just outside the disc, anchored on the side facing away from the centre.
 			String name = runes.isEmpty() ? Component.translatable("screen.wildercord.wheel.empty").getString() : SpellCaster.nameOf(book, i, runes);
-			String shown = font.plainSubstrByWidth(name, 150);
-			int icons = Math.min(runes.size(), 8);
 			int lx = cx + (int) Math.round(Math.cos(a) * LABEL_RADIUS);
 			int ly = cy + (int) Math.round(Math.sin(a) * LABEL_RADIUS);
 			double cos = Math.cos(a);
 			double sin = Math.sin(a);
+			// As wide as there's room for before the edge of the screen, on the side the label grows toward.
+			int room = cos > 0.3 ? width - lx - 4 : cos < -0.3 ? lx - 4 : 2 * Math.min(lx, width - lx) - 8;
+			String shown = font.plainSubstrByWidth(name, Math.max(24, Math.min(150, room)));
+			int icons = Math.min(runes.size(), Math.max(1, Math.min(8, room / 9)));
 			int blockW = Math.max(font.width(shown), icons * 9);
 			int nx = cos > 0.3 ? lx : cos < -0.3 ? lx - blockW : lx - font.width(shown) / 2;
 			int ny = sin > 0.3 ? ly : sin < -0.3 ? ly - 20 : ly - 10;

@@ -45,7 +45,8 @@ public final class ChargeHum extends AbstractTickableSoundInstance {
 			return;
 		}
 		// A hum that is fading out keeps playing on its own; forgetting it lets a new charge start its own.
-		PLAYING.values().removeIf(hum -> hum.isStopped() || !hum.charging());
+		// So does one left behind in another dimension (its caster there is never updated again).
+		PLAYING.values().removeIf(hum -> hum.isStopped() || !hum.charging() || hum.caster.level() != level);
 		for (Player player : level.players()) {
 			WildercordAttachments.Charge charge = player.getAttached(WildercordAttachments.CHARGE);
 			if (charge == null || PLAYING.containsKey(player.getId())) {

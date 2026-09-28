@@ -49,11 +49,9 @@ public final class WildercordCommand {
 					ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.learnall", Runes.all().size()), false);
 					return Runes.all().size();
 				}))
-				.then(Commands.literal("learn").then(Commands.argument("rune", StringArgumentType.word())
-					.suggests((ctx, builder) -> {
-						Runes.all().forEach(r -> builder.suggest(r.path()));
-						return builder.buildFuture();
-					})
+				.then(Commands.literal("learn").then(Commands.argument("rune", StringArgumentType.greedyString())
+					.suggests((ctx, builder) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
+						Runes.all().stream().map(WildercordCommand::shortId), builder))
 					.executes(ctx -> {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();
 						Optional<RuneDef> rune = find(StringArgumentType.getString(ctx, "rune"));
@@ -88,11 +86,9 @@ public final class WildercordCommand {
 						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.condensed", mana), false);
 						return 1;
 					})))
-				.then(Commands.literal("innate").then(Commands.argument("rune", StringArgumentType.word())
-					.suggests((ctx, builder) -> {
-						Runes.INNATE.forEach(r -> builder.suggest(r.path()));
-						return builder.buildFuture();
-					})
+				.then(Commands.literal("innate").then(Commands.argument("rune", StringArgumentType.greedyString())
+					.suggests((ctx, builder) -> net.minecraft.commands.SharedSuggestionProvider.suggest(
+						Runes.INNATE.stream().map(WildercordCommand::shortId), builder))
 					.executes(ctx -> {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();
 						Optional<RuneDef> rune = find(StringArgumentType.getString(ctx, "rune"));
@@ -161,9 +157,15 @@ public final class WildercordCommand {
 		return threaded;
 	}
 
-	/** Accepts {@code fire}, {@code wildercord:fire} or {@code on_hit}. */
+	/** Accepts {@code fire}, {@code wildercord:fire} or {@code on_hit}, and an add-on's {@code other:rune}. */
 	private static Optional<RuneDef> find(String word) {
-		String id = word.contains(":") ? word : "wildercord:" + word;
+		String trimmed = word.trim();
+		String id = trimmed.contains(":") ? trimmed : "wildercord:" + trimmed;
 		return Runes.get(id);
+	}
+
+	/** How a rune is suggested: Wildercord's own by name alone, an add-on's with its namespace. */
+	private static String shortId(RuneDef rune) {
+		return rune.id().startsWith("wildercord:") ? rune.path() : rune.id();
 	}
 }

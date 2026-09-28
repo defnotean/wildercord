@@ -32,6 +32,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -80,6 +81,7 @@ public final class Runebound {
 	private static final Map<UUID, State> STATES = new HashMap<>();
 	/** Monsters already rolled for, so a reload never rolls again. */
 	private static final String ROLLED_TAG = "wildercord.rolled";
+	private static final String ADEPT_TAG = "wildercord.adept";
 
 	public static void init() {
 		ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
@@ -87,6 +89,11 @@ public final class Runebound {
 				return;
 			}
 			if (mob.hasAttached(WildercordAttachments.RUNEBOUND)) {
+				// Its extra health, for a Runebound saved before that was kept.
+				AttributeInstance health = mob.getAttribute(Attributes.MAX_HEALTH);
+				if (health != null && !health.hasModifier(HEALTH)) {
+					health.addPermanentModifier(healthBonus(mob.entityTags().contains(ADEPT_TAG)));
+				}
 				LOADED.put(mob.getUUID(), mob);
 				showMarks(mob);
 				return;
@@ -95,6 +102,10 @@ public final class Runebound {
 				return;
 			}
 			mob.addTag(ROLLED_TAG);
+			if (mob.hasCustomName()) {
+				// Someone named it: its name isn't ours to write over.
+				return;
+			}
 			double chance = 0.02 + 0.006 * level.getCurrentDifficultyAt(mob.blockPosition()).getEffectiveDifficulty();
 			// Inside an Archive, the monsters are the Archive's: a third of them carry Cords.
 			if (level.structureManager().getStructureWithPieceAt(mob.blockPosition(), dev.wildercord.world.WildercordWorldgen.ARCHIVES).isValid()) {
@@ -109,6 +120,27 @@ public final class Runebound {
 			STATES.remove(entity.getUUID());
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(Runebound::onDeath);
+		// A Runebound that turns into something else (a zombie drowning, a skeleton freezing) keeps its
+		// Cord if the new creature could carry one, and loses the nameplate if it couldn't.
+		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, params) -> {
+			List<RuneDef> spell = spellOf(previous);
+			if (spell.isEmpty()) {
+				return;
+			}
+			if (!pool(converted).isEmpty()) {
+				bind(converted, spell, previous.entityTags().contains(ADEPT_TAG));
+			} else {
+				converted.removeAttached(WildercordAttachments.RUNEBOUND);
+				converted.removeAttached(WildercordAttachments.RUNE_MARKS);
+				converted.removeTag(ADEPT_TAG);
+				AttributeInstance health = converted.getAttribute(Attributes.MAX_HEALTH);
+				if (health != null) {
+					health.removeModifier(HEALTH);
+				}
+				converted.setCustomName(null);
+				converted.setCustomNameVisible(false);
+			}
+		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (LOADED.isEmpty()) {
 				return;
@@ -192,7 +224,7 @@ public final class Runebound {
 		List<RuneDef> spell = spellOf(mob);
 		if (!spell.isEmpty()) {
 			mob.setAttached(WildercordAttachments.RUNE_MARKS,
-				new WildercordAttachments.RuneMarks(elementColor(spell), mob.entityTags().contains("wildercord.adept"), 0));
+				new WildercordAttachments.RuneMarks(elementColor(spell), mob.entityTags().contains(ADEPT_TAG), 0));
 		}
 	}
 
@@ -200,13 +232,19 @@ public final class Runebound {
 		mob.setAttached(WildercordAttachments.RUNEBOUND, spell.stream().map(RuneDef::id).toList());
 		mob.addTag(ROLLED_TAG);
 		if (adept) {
-			mob.addTag("wildercord.adept");
+			mob.addTag(ADEPT_TAG);
+		} else {
+			mob.removeTag(ADEPT_TAG);
 		}
-		double bonus = adept ? 1.2 : 0.6;
-		mob.getAttribute(Attributes.MAX_HEALTH).addOrUpdateTransientModifier(new AttributeModifier(HEALTH, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+		// Permanent, so it's saved: a guard placed with the Archive keeps it once its chunk loads.
+		mob.getAttribute(Attributes.MAX_HEALTH).addOrReplacePermanentModifier(healthBonus(adept));
 		mob.setHealth(mob.getMaxHealth());
 		mob.setCustomName(nameplate(spell, adept, false));
 		mob.setCustomNameVisible(true);
+	}
+
+	private static AttributeModifier healthBonus(boolean adept) {
+		return new AttributeModifier(HEALTH, adept ? 1.2 : 0.6, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 	}
 
 	public static List<RuneDef> spellOf(Mob mob) {

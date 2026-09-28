@@ -37,6 +37,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ModelLayerRegistry.registerModelLayer(TrainingDummyRenderer.LAYER, DummyModel::createLayer);
 		// The Cord on every player's wrist.
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BAND, dev.wildercord.client.render.CordModel::createBand);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.SLIM_BAND, dev.wildercord.client.render.CordModel::createSlimBand);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BEAD, dev.wildercord.client.render.CordModel::createBead);
 		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
 			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
@@ -58,7 +59,15 @@ public final class WildercordClient implements ClientModInitializer {
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (client.level == null || client.isPaused()) {
+			if (client.level == null) {
+				// Out of the world: these let go of everything they remembered about it.
+				ArchiveAmbience.tick(client);
+				WellstoneHalo.tick(client);
+				dev.wildercord.client.fx.BoltComets.tick(client);
+				dev.wildercord.client.fx.ScreenEffects.tick(client);
+				return;
+			}
+			if (client.isPaused()) {
 				return;
 			}
 			ChargeCircles.tick(client);

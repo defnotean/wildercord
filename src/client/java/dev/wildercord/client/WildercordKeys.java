@@ -61,15 +61,26 @@ public final class WildercordKeys {
 	}
 
 	private static void tick(Minecraft client) {
-		boolean playing = client.player != null && client.gui.screen() == null;
+		if (client.player == null || !client.player.isAlive()) {
+			// Dead or out of the world: whatever was held is dropped, and nothing is cast.
+			castHeld = -1;
+			charging = false;
+			nextHeld = -1;
+			while (cast.consumeClick()) {
+				// Discarded.
+			}
+		}
+		boolean playing = client.player != null && client.player.isAlive() && client.gui.screen() == null;
 		// The cast key: a tap casts at once; held, the spell charges until it's let go.
 		while (cast.consumeClick()) {
 			if (castHeld < 0 && playing) {
 				castHeld = 0;
 			}
 		}
-		if (castHeld >= 0) {
-			if (cast.isDown() && playing) {
+		// While a screen is open (the spell wheel, chat, the pause menu) a held cast just waits, like a
+		// drawn bow: opening one lets go of every key, which mustn't count as letting go of the spell.
+		if (castHeld >= 0 && playing) {
+			if (cast.isDown()) {
 				castHeld++;
 				if (castHeld == HOLD && !charging) {
 					charging = true;
@@ -93,9 +104,9 @@ public final class WildercordKeys {
 				nextHeld = 0;
 			}
 		}
-		if (nextHeld >= 0) {
-			CordTier tier = client.player == null ? null : Spellbooks.tier(client.player);
-			if (next.isDown() && playing) {
+		if (nextHeld >= 0 && playing) {
+			CordTier tier = Spellbooks.tier(client.player);
+			if (next.isDown()) {
 				nextHeld++;
 				if (nextHeld == HOLD && tier != null && tier.spells > 1) {
 					client.gui.setScreen(new SpellWheelScreen(next));

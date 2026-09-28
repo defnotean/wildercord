@@ -372,6 +372,12 @@ final class Techniques {
 
 	/** Shackle: the target is chained to where it stood, and yanked back if it strays. */
 	static void shackle(Cast cast, LivingEntity t, int ticks) {
+		if (Spirits.isBoss(t)) {
+			// Bosses can't be held in place, only slowed.
+			t.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, ticks, 1, false, true));
+			TechniqueVfx.chain(cast.level, t.position(), t, true);
+			return;
+		}
 		Vec3 anchor = t.position();
 		TechniqueVfx.chain(cast.level, anchor, t, true);
 		for (int i = 2; i <= ticks; i += 2) {
@@ -664,7 +670,7 @@ final class Techniques {
 					if (!state.canBeReplaced() || !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()) {
 						continue;
 					}
-					if (!Casters.mayBuild(caster) || !level.mayInteract(caster, p) || !cast.takeBlock()) {
+					if (!Casters.mayEdit(caster, level, p) || !cast.takeBlock()) {
 						continue;
 					}
 					RAMPART.put(GlobalPos.of(level.dimension(), p.immutable()), state);

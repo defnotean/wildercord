@@ -8,8 +8,11 @@ import net.minecraft.network.codec.StreamCodec;
 
 import java.util.List;
 
-/** The spell written on a Spell Scroll: its runes, its name and who inscribed it. */
+/** The spell written on a Spell Scroll: its runes (at most {@link #MAX_RUNES}), its name and who inscribed it. */
 public record ScrollSpell(List<String> runes, String name, String author) {
+	/** As many runes as a spell can hold; the network codec can't carry more. */
+	public static final int MAX_RUNES = 16;
+
 	public static final Codec<ScrollSpell> CODEC = RecordCodecBuilder.create(i -> i.group(
 		Codec.STRING.listOf().fieldOf("runes").forGetter(ScrollSpell::runes),
 		Codec.STRING.optionalFieldOf("name", "").forGetter(ScrollSpell::name),
@@ -17,12 +20,13 @@ public record ScrollSpell(List<String> runes, String name, String author) {
 	).apply(i, ScrollSpell::new));
 
 	public static final StreamCodec<ByteBuf, ScrollSpell> STREAM_CODEC = StreamCodec.composite(
-		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), ScrollSpell::runes,
+		ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(MAX_RUNES)), ScrollSpell::runes,
 		ByteBufCodecs.STRING_UTF8, ScrollSpell::name,
 		ByteBufCodecs.STRING_UTF8, ScrollSpell::author,
 		ScrollSpell::new);
 
 	public ScrollSpell {
-		runes = List.copyOf(runes);
+		// A scroll made by command with more runes would disconnect everyone it was sent to.
+		runes = List.copyOf(runes.size() > MAX_RUNES ? runes.subList(0, MAX_RUNES) : runes);
 	}
 }

@@ -145,6 +145,8 @@ public final class Innates {
 	private static final Map<UUID, SpellHit> LAST_SPELL_ON = new HashMap<>();
 	private static final Map<UUID, Long> FORTUNE = new HashMap<>();
 	private static final List<Afterimage> AFTERIMAGES = new ArrayList<>();
+	/** On every afterimage, so one left over from before a restart can be recognised and removed. */
+	private static final String AFTERIMAGE_TAG = "wildercord.afterimage";
 	private static final Map<UUID, Long> STORMHEART = new HashMap<>();
 	private static final Map<UUID, Long> STORM_LAST = new HashMap<>();
 	private static final Identifier STONE_KNOCKBACK = Wildercord.id("stoneform");
@@ -179,6 +181,17 @@ public final class Innates {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Innates::tick);
+		// Afterimages go before the world is saved; one saved anyway (its chunk unloaded) is gone when it loads.
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			AFTERIMAGES.forEach(a -> a.body().discard());
+			AFTERIMAGES.clear();
+		});
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
+			if (entity instanceof Mannequin && entity.entityTags().contains(AFTERIMAGE_TAG)
+					&& AFTERIMAGES.stream().noneMatch(a -> a.body() == entity)) {
+				entity.discard();
+			}
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			THREADS.clear();
 			THREAD_MEMBERS.clear();
@@ -192,7 +205,6 @@ public final class Innates {
 			STONE_LAST.clear();
 			LAST_SPELL_ON.clear();
 			FORTUNE.clear();
-			AFTERIMAGES.forEach(a -> a.body().discard());
 			AFTERIMAGES.clear();
 			STORMHEART.clear();
 			STORM_LAST.clear();
@@ -497,8 +509,9 @@ public final class Innates {
 		body.addEffect(new MobEffectInstance(MobEffects.GLOWING, ticks, 0, false, false));
 		body.getAttribute(Attributes.MAX_HEALTH).setBaseValue(60);
 		body.setHealth(60);
-		level.addFreshEntity(body);
+		body.addTag(AFTERIMAGE_TAG);
 		AFTERIMAGES.add(new Afterimage(body, player, level.getGameTime() + ticks, power));
+		level.addFreshEntity(body);
 		// You step out of it, briefly unseen.
 		player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
 		ElementFx.implode(level, body.getBoundingBox().getCenter(), 1.4, 8);
@@ -543,9 +556,11 @@ public final class Innates {
 		Vfx.shockwave(level, entity.position(), 3.0, Vfx.theme("earth"), 4);
 		ElementFx.crack(level, entity.position(), 1.4, 16);
 		Fx.sound(level, entity.position(), SoundEvents.MACE_SMASH_GROUND_HEAVY, 0.6F, 1.1F);
+		// A pet in Stoneform fights for its owner: its aftershock spares them and hits what they'd hit.
+		LivingEntity side = entity instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : entity;
 		echoing = true;
 		try {
-			for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> Targets.canHarm(entity, e))) {
+			for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> e != side && Targets.canHarm(side, e))) {
 				LivingEntity t = (LivingEntity) e;
 				Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3 * power);
 				Vec3 away = t.position().subtract(entity.position());
@@ -656,9 +671,11 @@ public final class Innates {
 				Map.Entry<UUID, Long> entry = it.next();
 				if (now > entry.getValue()) {
 					it.remove();
-					ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
-					if (player != null) {
-						player.getAttribute(Attributes.KNOCKBACK_RESISTANCE).removeModifier(STONE_KNOCKBACK);
+					for (ServerLevel level : server.getAllLevels()) {
+						if (level.getEntity(entry.getKey()) instanceof LivingEntity stone && stone.getAttribute(Attributes.KNOCKBACK_RESISTANCE) != null) {
+							stone.getAttribute(Attributes.KNOCKBACK_RESISTANCE).removeModifier(STONE_KNOCKBACK);
+							break;
+						}
 					}
 				}
 			}

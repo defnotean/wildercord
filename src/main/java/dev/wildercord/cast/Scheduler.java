@@ -57,7 +57,7 @@ public final class Scheduler {
 	private static final List<LandWatch> LAND = new ArrayList<>();
 
 	public static void later(int ticks, Runnable action) {
-		TASKS.add(new Task(Math.max(1, ticks), action));
+		TASKS.add(new Task(Math.max(1, ticks), Effects.carryContext(action)));
 	}
 
 	/** Fires once the player has left the ground and touched it again, within {@code timeout} ticks. */

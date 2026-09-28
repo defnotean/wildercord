@@ -247,5 +247,11 @@ public final class Reactions {
 			marks.values().removeIf(until -> until < gameTime);
 			return marks.isEmpty();
 		});
+		LAST_CALLOUT.values().removeIf(last -> gameTime - last > 100 || last > gameTime);
+	}
+
+	static void clear() {
+		MARKS.clear();
+		LAST_CALLOUT.clear();
 	}
 }

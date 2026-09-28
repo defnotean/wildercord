@@ -54,6 +54,8 @@ public final class WildercordLoot {
 	);
 
 	private static final Map<ResourceKey<LootTable>, RunePool> RUNE_POOLS = new HashMap<>();
+	/** Archaeology tables give one find per brush: their runes are added to vanilla's pool instead of a pool of their own. */
+	private static final Map<ResourceKey<LootTable>, RunePool> ARCHAEOLOGY_POOLS = new HashMap<>();
 
 	static {
 		List<RuneDef> common = List.of(Runes.TOUCH, Runes.FEATHER_FALL, Runes.SWIFT, Runes.NIGHT_EYE, Runes.HEAL, Runes.HARM, Runes.LIGHT, Runes.GROW,
@@ -94,7 +96,7 @@ public final class WildercordLoot {
 				Runes.CLEAVE, Runes.BLACKSPARK, Runes.BLACKFLAME, Runes.OVERDRIVE, Runes.BLOOD_PRICE_MOD)));
 		RUNE_POOLS.put(BuiltInLootTables.WOODLAND_MANSION, new RunePool(40,
 			List.of(Runes.ON_KILL, Runes.VEIL, Runes.PULSE, Runes.ORBIT, Runes.CLEAVE, Runes.RESONANCE, Runes.SHADOWSTEP, Runes.BLOOD_PRICE_MOD)));
-		RUNE_POOLS.put(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE, new RunePool(20, List.of(Runes.LIGHTNING, Runes.SHOCK)));
+		ARCHAEOLOGY_POOLS.put(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_RARE, new RunePool(20, List.of(Runes.LIGHTNING, Runes.SHOCK)));
 	}
 
 	/** Mob drops: chance out of 100, and the rune. Bosses always drop their first. */
@@ -128,6 +130,17 @@ public final class WildercordLoot {
 			if (crystal != null) {
 				table.withPool(chance(crystal, LootItem.lootTableItem(WildercordItems.MANA_CRYSTAL)));
 			}
+			RunePool dig = ARCHAEOLOGY_POOLS.get(key);
+			if (dig != null) {
+				// Brushing gives exactly one find, so the runes join vanilla's own pool (12 finds of weight 1).
+				int total = Math.max(1, Math.round(12.0F * dig.chance() / (100 - dig.chance())));
+				int weights = dig.runes().stream().mapToInt(r -> tierWeight(r.tier())).sum();
+				table.modifyPools(builder -> {
+					for (RuneDef rune : dig.runes()) {
+						builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
+					}
+				});
+			}
 			RunePool pool = RUNE_POOLS.get(key);
 			if (pool != null) {
 				LootPool.Builder builder = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
@@ -145,11 +158,17 @@ public final class WildercordLoot {
 			}
 		});
 
-		// The Ender Dragon has no loot table: its runes are dropped where it dies.
+		// The Ender Dragon has no loot table: its runes fall at the feet of whoever killed it (or the
+		// nearest player), not where it dies, which is often over the void or the exit portal.
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof EnderDragon && entity.level() instanceof ServerLevel level) {
+				net.minecraft.world.entity.Entity at = source.getEntity() instanceof net.minecraft.world.entity.player.Player killer && killer.level() == level
+					? killer : level.getNearestPlayer(entity, 256);
+				if (at == null) {
+					at = entity;
+				}
 				for (RuneDef rune : List.of(Runes.DRAGON_BREATH, Runes.INFINITY)) {
-					ItemEntity drop = new ItemEntity(level, entity.getX(), entity.getY(), entity.getZ(), RuneItem.stack(rune));
+					ItemEntity drop = new ItemEntity(level, at.getX(), at.getY() + 0.5, at.getZ(), RuneItem.stack(rune));
 					drop.setGlowingTag(true);
 					drop.setUnlimitedLifetime();
 					level.addFreshEntity(drop);

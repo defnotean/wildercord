@@ -987,6 +987,9 @@ def write_mana_data():
 # ---------------------------------------------------------------- the Archive, the Grimoire and friends
 
 NEW_LANG = {
+    # Tags, named for recipe viewers.
+    "tag.item.wildercord.enchantable.cord": "Enchantable Cords",
+    "message.wildercord.overcast_too_costly": "Too costly to overcast: %s mana is more than %s times what your Cord holds",
     "command.wildercord.innate": "Your innate rune is now %s",
     "command.wildercord.runebound": "Bound a Cord to the nearest monster",
     "command.wildercord.no_monster": "No monster within 16 blocks",
@@ -1240,6 +1243,8 @@ def write_new_content(runes):
 
     # ---- mining
     write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone"]})
+    # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
+    write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": ["wildercord:rune_seal", "wildercord:archive_lectern"]})
 
     # ---- the Archive in the world
     write_json(DATA / "worldgen/structure/archive.json", {

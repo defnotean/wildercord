@@ -3,7 +3,7 @@
 	"id": "wildercord",
 	"version": "${version}",
 	"name": "Wildercord",
-	"description": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key. 144 runes, secret spells, spellcasting monsters, a dungeon with a boss, Heart Circles and passive spells.",
+	"description": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key. 185 runes, secret spells, spellcasting monsters, a dungeon with a boss, Heart Circles and passive spells.",
 	"authors": [
 		"defnotean"
 	],

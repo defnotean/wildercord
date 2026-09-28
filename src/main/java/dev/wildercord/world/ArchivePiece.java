@@ -85,10 +85,11 @@ public class ArchivePiece extends ScatteredFeaturePiece {
 		stairway(level, bb);
 		shrine(level, bb);
 		library(level, bb);
-		sealDoor(level, bb, 48, RuneSealBlock.Element.FROST, RuneSealBlock.Element.STORM);
 		braziers(level, bb);
-		sealDoor(level, bb, 60, RuneSealBlock.Element.FIRE, RuneSealBlock.Element.WIND);
 		corridor(level, bb);
+		// The doors go in after the rooms: each room's box writes its end walls, which would wall them up.
+		sealDoor(level, bb, 48, RuneSealBlock.Element.FROST, RuneSealBlock.Element.STORM);
+		sealDoor(level, bb, 60, RuneSealBlock.Element.FIRE, RuneSealBlock.Element.WIND);
 		arena(level, bb);
 		vault(level, bb);
 		guards(level, bb);
@@ -124,7 +125,8 @@ public class ArchivePiece extends ScatteredFeaturePiece {
 	// ------------------------------------------------------------------ the entrance and the stairway
 
 	private void stairway(WorldGenLevel level, BoundingBox bb) {
-		BlockState stair = Blocks.DEEPSLATE_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.NORTH);
+		// In a piece's own frame NORTH points down the stairway (+z), so steps climbing back up face SOUTH.
+		BlockState stair = Blocks.DEEPSLATE_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.SOUTH);
 		for (int z = STAIR_START; z <= STAIR_START + 23; z++) {
 			int step = SURFACE - 1 - (z - STAIR_START);
 			// Walls, the step, headroom and (once underground) a roof.
@@ -378,7 +380,8 @@ public class ArchivePiece extends ScatteredFeaturePiece {
 
 	private boolean createChest(WorldGenLevel level, BoundingBox bb, RandomSource random, int x, int y, int z,
 			net.minecraft.resources.ResourceKey<net.minecraft.world.level.storage.loot.LootTable> loot, BlockState state) {
-		return createChest(level, bb, random, getWorldPos(x, y, z), loot, state);
+		// Turned with the piece, as every other block is (a chest given a state isn't, otherwise).
+		return createChest(level, bb, random, getWorldPos(x, y, z), loot, state.mirror(getMirror()).rotate(getRotation()));
 	}
 
 	// ------------------------------------------------------------------ guards

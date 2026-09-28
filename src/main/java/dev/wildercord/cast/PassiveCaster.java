@@ -32,6 +32,9 @@ public final class PassiveCaster {
 		long nextCast;
 		boolean shown;
 		boolean faltering;
+		/** The player and world it was cast in: after a dimension change the passive is cast afresh. */
+		ServerPlayer caster;
+		net.minecraft.world.level.Level level;
 	}
 
 	private static final Map<UUID, State[]> STATES = new HashMap<>();
@@ -75,7 +78,7 @@ public final class PassiveCaster {
 		boolean second = tickCount % 20 == 0;
 		for (int slot = 0; slot < Passives.MAX; slot++) {
 			State state = states[slot];
-			List<RuneDef> runes = slot < slots && tier != null && book.passiveOn(slot) && player.isAlive()
+			List<RuneDef> runes = slot < slots && tier != null && book.passiveOn(slot) && player.isAlive() && !player.isSpectator()
 				? activeRunes(book.passives().get(slot), book, tier) : List.of();
 			SpellCompiler.Compiled compiled = runes.isEmpty() || Passives.problem(runes) != null ? null : SpellCompiler.compile(runes);
 			if (compiled == null || compiled.isEmpty()) {
@@ -83,10 +86,13 @@ public final class PassiveCaster {
 				continue;
 			}
 			String key = String.join(",", runes.stream().map(RuneDef::id).toList());
-			if (!key.equals(state.key)) {
+			if (!key.equals(state.key) || state.caster != player || state.level != player.level()) {
+				// A new passive, or its Orbit ended with the old world: cast it again now.
 				state.key = key;
 				state.nextCast = 0;
 				state.shown = false;
+				state.caster = player;
+				state.level = player.level();
 			}
 			if (second && !player.isCreative()) {
 				float upkeep = Heart.upkeep(player, compiled);

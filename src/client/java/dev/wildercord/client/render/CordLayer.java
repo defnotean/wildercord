@@ -25,21 +25,29 @@ import net.minecraft.util.Unit;
  */
 public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation BAND = new ModelLayerLocation(Wildercord.id("cord"), "band");
+	public static final ModelLayerLocation SLIM_BAND = new ModelLayerLocation(Wildercord.id("cord"), "slim_band");
 	public static final ModelLayerLocation BEAD = new ModelLayerLocation(Wildercord.id("cord"), "bead");
 	private static final Identifier BEAD_TEXTURE = Wildercord.id("textures/entity/cord/bead.png");
 
 	/** Where the beads sit on the band, in the right arm's space (x, y, z in pixels). */
 	private static final float[][] SPOTS = {
-		{-1.0F, 8.25F, -2.3F}, {0.5F, 8.25F, -2.3F}, {-2.5F, 8.25F, -2.3F}, {-3.3F, 8.25F, -0.9F},
-		{-3.3F, 8.25F, 0.9F}, {-1.0F, 8.25F, 2.3F}, {0.5F, 8.25F, 2.3F}, {-2.5F, 8.25F, 2.3F},
+		{-1.0F, 8.25F, -2.45F}, {0.5F, 8.25F, -2.45F}, {-2.5F, 8.25F, -2.45F}, {-3.45F, 8.25F, -0.9F},
+		{-3.45F, 8.25F, 0.9F}, {-1.0F, 8.25F, 2.45F}, {0.5F, 8.25F, 2.45F}, {-2.5F, 8.25F, 2.45F},
+	};
+	/** The same on a slim arm, which is a pixel narrower on the outside. */
+	private static final float[][] SLIM_SPOTS = {
+		{-0.5F, 8.25F, -2.45F}, {0.6F, 8.25F, -2.45F}, {-1.6F, 8.25F, -2.45F}, {-2.45F, 8.25F, -0.9F},
+		{-2.45F, 8.25F, 0.9F}, {-0.5F, 8.25F, 2.45F}, {0.6F, 8.25F, 2.45F}, {-1.6F, 8.25F, 2.45F},
 	};
 
 	private final CordModel band;
+	private final CordModel slimBand;
 	private final CordModel bead;
 
 	public CordLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
 		super(parent);
 		this.band = CordModel.band(context.bakeLayer(BAND));
+		this.slimBand = CordModel.band(context.bakeLayer(SLIM_BAND));
 		this.bead = CordModel.bead(context.bakeLayer(BEAD));
 	}
 
@@ -52,13 +60,15 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.pushPose();
 		getParentModel().rightArm.translateAndRotate(pose);
 		Identifier texture = Wildercord.id("textures/entity/cord/" + cord.tier() + ".png");
-		nodes.submitModel(band, Unit.INSTANCE, pose, RenderTypes.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1);
+		boolean slim = state.skin != null && state.skin.model() == net.minecraft.world.entity.player.PlayerModelType.SLIM;
+		float[][] spots = slim ? SLIM_SPOTS : SPOTS;
+		nodes.submitModel(slim ? slimBand : band, Unit.INSTANCE, pose, RenderTypes.entityCutout(texture), light, OverlayTexture.NO_OVERLAY, -1);
 		float glow = ((CastingPose) state).wildercord$glow();
 		// A slow pulse, so the beads look alive.
 		float pulse = 0.85F + 0.15F * Mth.sin(state.ageInTicks * 0.12F);
 		int alpha = Mth.clamp(Math.round(255 * Math.min(1, 0.55F * glow * pulse)), 0, 255);
-		for (int i = 0; i < cord.beads().size() && i < SPOTS.length; i++) {
-			float[] spot = SPOTS[i];
+		for (int i = 0; i < cord.beads().size() && i < spots.length; i++) {
+			float[] spot = spots[i];
 			pose.pushPose();
 			pose.translate(spot[0] / 16F, spot[1] / 16F, spot[2] / 16F);
 			int color = (alpha << 24) | (cord.beads().get(i) & 0xFFFFFF);

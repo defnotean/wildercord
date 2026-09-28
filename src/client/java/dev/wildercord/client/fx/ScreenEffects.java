@@ -59,7 +59,17 @@ public final class ScreenEffects {
 		return total <= 0 ? 0 : strength * ticks / total;
 	}
 
+	/** The world these effects began in: they stop when you leave it. */
+	private static net.minecraft.client.multiplayer.ClientLevel seen;
+
 	public static void tick(Minecraft mc) {
+		if (mc.level != seen) {
+			seen = mc.level;
+			shakeTicks = 0;
+			kickTicks = 0;
+			tintTicks = 0;
+			tintAlpha = 0;
+		}
 		if (shakeTicks > 0) {
 			shakeTicks--;
 		}
@@ -80,7 +90,8 @@ public final class ScreenEffects {
 
 	/** The camera's shake right now, as a small rotation to multiply into the view. */
 	public static void applyShake(Matrix4f pose, float partial) {
-		if (shakeTicks <= 0 || shakeTotal <= 0) {
+		// Paused, the world behind the menu holds still.
+		if (shakeTicks <= 0 || shakeTotal <= 0 || Minecraft.getInstance().isPaused()) {
 			return;
 		}
 		float t = (shakeTicks - partial) / shakeTotal;

@@ -878,6 +878,18 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			return null;
 		});
 		check(lectern != null, "the Archive should generate, with its lectern");
+		// All three seal doors are there (the first two were once walled over by their rooms).
+		int seals = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			int n = 0;
+			for (BlockPos pos : BlockPos.betweenClosed(lectern.offset(-96, -8, -96), lectern.offset(96, 8, 96))) {
+				if (level.getBlockState(pos).is(WildercordBlocks.RUNE_SEAL)) {
+					n++;
+				}
+			}
+			return n;
+		});
+		check(seals >= 60, "the Archive should have all three seal doors (found " + seals + " seal blocks)");
 		// A seal door, from a few steps back.
 		BlockPos seal = world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();

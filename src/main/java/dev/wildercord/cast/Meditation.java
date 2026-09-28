@@ -70,4 +70,8 @@ public final class Meditation {
 	public static void forget(UUID player) {
 		STATES.remove(player);
 	}
+
+	static void clear() {
+		STATES.clear();
+	}
 }

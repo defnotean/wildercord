@@ -37,6 +37,12 @@ public final class BlockFx {
 	/** Displays spawned this session: the load event lets these through and removes leftovers. */
 	private static final java.util.Set<Entity> FRESH = java.util.Collections.newSetFromMap(new java.util.WeakHashMap<>());
 
+	/** Marks a short-lived display (call before adding it), so one left behind by a restart is removed when it loads. */
+	public static void fresh(Display display) {
+		display.addTag(TAG);
+		FRESH.add(display);
+	}
+
 	private static Display.BlockDisplay display(ServerLevel level, Vec3 at, BlockState state, Transformation start) {
 		Display.BlockDisplay display = EntityTypes.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
 		if (display == null) {

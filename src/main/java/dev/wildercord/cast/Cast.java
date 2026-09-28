@@ -21,6 +21,12 @@ public final class Cast {
 	public static final int MAX_ENTITIES = 64;
 	public static final int MAX_BLOCKS = 32;
 	public static final int MAX_DEPTH = 8;
+	/**
+	 * Segments a whole cast may run, links, pulses and echoes included. Repeating shapes give each
+	 * strike a fresh creature budget, so without this a chain of linked repeating shapes would grow
+	 * exponentially (six pulses × eight hits × ... per level). A Zone with On Hit Burst uses 49.
+	 */
+	public static final int MAX_SEGMENTS = 128;
 
 	/** Limits for the whole cast, pulses included. */
 	private static final class Shared {
@@ -29,6 +35,7 @@ public final class Cast {
 		final java.util.Set<String> once = new java.util.HashSet<>();
 		/** Set when the whole cast is cut short, e.g. a Domain shattered in a clash. */
 		boolean cancelled;
+		int segments = MAX_SEGMENTS;
 	}
 
 	/**
@@ -99,6 +106,11 @@ public final class Cast {
 	/** One strike of a shape that strikes repeatedly: its own creature and block budget. */
 	public Cast pulse() {
 		return new Cast(caster, level, depth + 1, new Budget(budget.shared), castNumber, power, duration, passive, wanted, info);
+	}
+
+	/** Takes one segment from the whole cast's allowance; false once it's spent. */
+	public boolean takeSegment() {
+		return budget.shared.segments-- > 0;
 	}
 
 	/** True the first time {@code key} is asked for in this whole cast (links and echoes included). */

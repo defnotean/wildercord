@@ -1,8 +1,12 @@
 package dev.wildercord.cast;
 
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Spells are cast by players and by Runebound monsters alike. What only makes sense for a
@@ -27,6 +31,19 @@ public final class Casters {
 	/** Whether the caster may change blocks. Monsters never do, so a Runebound can't grief. */
 	public static boolean mayBuild(LivingEntity caster) {
 		return caster instanceof ServerPlayer player && player.mayBuild();
+	}
+
+	/**
+	 * Whether a spell of the caster's may change the block at {@code pos}: they may build, it isn't
+	 * spawn-protected or past the world border, and, when it takes something away, claim and
+	 * protection mods agree (the change is offered to them as the player breaking that block).
+	 */
+	public static boolean mayEdit(LivingEntity caster, ServerLevel level, BlockPos pos) {
+		if (!(caster instanceof ServerPlayer player) || !player.mayBuild() || !level.mayInteract(player, pos)) {
+			return false;
+		}
+		BlockState state = level.getBlockState(pos);
+		return state.isAir() || PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
 	}
 
 	public static boolean creative(LivingEntity caster) {

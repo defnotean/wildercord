@@ -72,6 +72,9 @@ public final class SpellCaster {
 	 *               {@link Charging#POWER} more power
 	 */
 	public static void cast(ServerPlayer player, int requested, double charge) {
+		if (!player.isAlive() || player.isSpectator()) {
+			return;
+		}
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {
 			fail(player, Component.translatable("message.wildercord.no_cord"));
@@ -93,6 +96,7 @@ public final class SpellCaster {
 		long now = player.level().getGameTime();
 		long readyAt = Spellbooks.readyAt(player, spell);
 		if (now < readyAt) {
+			Rhythm.early(player, now);
 			fail(player, Component.translatable("message.wildercord.cooldown", String.format(java.util.Locale.ROOT, "%.1f", (readyAt - now) / 20.0)));
 			return;
 		}
@@ -346,6 +350,27 @@ public final class SpellCaster {
 
 	/** Mana regeneration and the starter runes, checked every few ticks. */
 	public static void init() {
+		// What the server remembers about a player goes when they leave, and about anything when it stops.
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			ServerPlayer player = handler.player;
+			java.util.UUID id = player.getUUID();
+			Charging.forget(player);
+			PassiveCaster.forget(id);
+			Overcast.forget(id);
+			Meditation.forget(id);
+			HeartCircles.forget(id);
+			SecretSpells.forget(id);
+			COMBO.remove(id);
+		});
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			COMBO.clear();
+			Charging.clear();
+			Overcast.clear();
+			Meditation.clear();
+			Reactions.clear();
+			RuneBolt.clearLive();
+			Effects.clearWards();
+		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (server.getTickCount() % 5 != 0) {
 				return;
@@ -362,6 +387,8 @@ public final class SpellCaster {
 
 	private static void tickPlayer(ServerPlayer player, int tickCount) {
 		Meditation.tick(player);
+		// Before the Cord check: a charge whose Cord came off fizzles.
+		Charging.tick(player);
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {
 			return;
@@ -370,9 +397,8 @@ public final class SpellCaster {
 		PassiveCaster.tick(player, tickCount);
 		Overcast.tick(player);
 		Rhythm.tick(player);
-		Charging.tick(player);
 		LeyWalker.tick(player);
-		if (Heart.circles(player) > 0 && Heart.innate(player).isEmpty()) {
+		if (Heart.circles(player) > 0 && Heart.innate(player).isEmpty() && !HeartCircles.awakening(player)) {
 			// Casters who formed their 1st Circle before innate runes existed get theirs now.
 			Innates.awaken(player);
 		}

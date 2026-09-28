@@ -298,8 +298,9 @@ public class Archivist extends SpellcasterIllager {
 			Vec3 spot = CastEngine.ground(level, c.add(Math.cos(a) * 5, 2, Math.sin(a) * 5));
 			guard.snapTo(spot.x, spot.y, spot.z, 0, 0);
 			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
-			level.addFreshEntity(guard);
+			// Bound before it enters the world, so the Archive's own roll doesn't bind it a second time.
 			Runebound.bind(guard, phase == 3);
+			level.addFreshEntity(guard);
 			Sigils.ground(level, spot, 0x9A6AD0, 0xE8E0FF, 1.2F, 30);
 			Vfx.emit(level, ParticleTypes.SOUL, spot.add(0, 1, 0), 12, 0.3, 0.03);
 		}

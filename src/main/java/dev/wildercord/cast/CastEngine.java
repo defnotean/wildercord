@@ -50,7 +50,7 @@ public final class CastEngine {
 	}
 
 	static void runSegment(Cast cast, SpellPlan.Segment seg, Cast.Trigger at) {
-		if (seg == null || !cast.alive()) {
+		if (seg == null || !cast.alive() || !cast.takeSegment()) {
 			return;
 		}
 		for (SpellPlan.Group group : seg.groups) {

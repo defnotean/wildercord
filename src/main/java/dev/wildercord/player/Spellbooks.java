@@ -49,9 +49,13 @@ public final class Spellbooks {
 		player.setAttached(WildercordAttachments.MANA, mana);
 	}
 
+	/** No cooldown is longer than this: a saved one further off came from another world's clock. */
+	private static final long MAX_COOLDOWN = 20L * 60 * 10;
+
 	public static long readyAt(Player player, int spell) {
 		List<Long> cooldowns = player.getAttachedOrElse(WildercordAttachments.COOLDOWNS, List.of());
-		return spell >= 0 && spell < cooldowns.size() ? cooldowns.get(spell) : 0L;
+		long readyAt = spell >= 0 && spell < cooldowns.size() ? cooldowns.get(spell) : 0L;
+		return readyAt - player.level().getGameTime() > MAX_COOLDOWN ? 0L : readyAt;
 	}
 
 	public static void setReadyAt(Player player, int spell, long gameTime) {

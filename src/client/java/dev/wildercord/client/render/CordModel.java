@@ -27,12 +27,21 @@ public final class CordModel extends Model<Unit> {
 		return new CordModel(root);
 	}
 
-	/** Two turns of cord round the wrist, just proud of the arm, like a bracelet. */
+	/** Two turns of cord round the wrist, just proud of the arm (and its sleeve), like a bracelet. */
 	public static LayerDefinition createBand() {
+		return band(-3.0F, 4.0F);
+	}
+
+	/** The same, round a slim (three-pixel) arm. */
+	public static LayerDefinition createSlimBand() {
+		return band(-2.0F, 3.0F);
+	}
+
+	private static LayerDefinition band(float x, float width) {
 		MeshDefinition mesh = new MeshDefinition();
 		mesh.getRoot().addOrReplaceChild("band", CubeListBuilder.create()
-				.texOffs(0, 0).addBox(-3.0F, 7.9F, -2.0F, 4.0F, 0.7F, 4.0F, new CubeDeformation(0.14F))
-				.texOffs(0, 6).addBox(-3.0F, 8.9F, -2.0F, 4.0F, 0.5F, 4.0F, new CubeDeformation(0.12F)),
+				.texOffs(0, 0).addBox(x, 7.9F, -2.0F, width, 0.7F, 4.0F, new CubeDeformation(0.3F))
+				.texOffs(0, 6).addBox(x, 8.9F, -2.0F, width, 0.5F, 4.0F, new CubeDeformation(0.28F)),
 			PartPose.ZERO);
 		return LayerDefinition.create(mesh, 32, 16);
 	}

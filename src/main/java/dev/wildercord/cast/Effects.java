@@ -79,7 +79,7 @@ import java.util.function.Predicate;
 public final class Effects {
 	private Effects() {}
 
-	/** Damage to players is scaled down so PvP stays fair. */
+	/** Damage to players from other players' spells is scaled down so PvP stays fair. */
 	public static final float PVP_DAMAGE = 0.6F;
 	private static final int MAX_STRIKES_PER_HIT = 8;
 
@@ -94,15 +94,42 @@ public final class Effects {
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
+		double outerBonus = executeBonus;
+		String outerElement = currentElement;
 		executeBonus = SpellNumbers.executeBonus(node);
 		currentElement = node.effect.element();
 		try {
 			applyEffect(cast, node, hit, groupPower);
 		} finally {
-			executeBonus = 1.0;
-			currentElement = "";
+			executeBonus = outerBonus;
+			currentElement = outerElement;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
+	}
+
+	/**
+	 * Wraps a task scheduled while an effect is being applied, so the damage it deals later (a
+	 * meteor landing, a countdown going off, the next slash) still gets that effect's Execute and
+	 * Unison.
+	 */
+	static Runnable carryContext(Runnable task) {
+		if (executeBonus == 1.0 && currentElement.isEmpty()) {
+			return task;
+		}
+		double bonus = executeBonus;
+		String element = currentElement;
+		return () -> {
+			double outerBonus = executeBonus;
+			String outerElement = currentElement;
+			executeBonus = bonus;
+			currentElement = element;
+			try {
+				task.run();
+			} finally {
+				executeBonus = outerBonus;
+				currentElement = outerElement;
+			}
+		};
 	}
 
 	private static void applyEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
@@ -528,7 +555,8 @@ public final class Effects {
 		amount *= Unison.onHit(cast, target, currentElement);
 		amount *= hexBonus(cast, target);
 		float damage = (float) amount;
-		if (target instanceof Player) {
+		// PvP only: a monster's spell already has its power set by difficulty.
+		if (target instanceof Player && cast.caster instanceof Player) {
 			damage *= PVP_DAMAGE;
 		}
 		HeartCircles.hurtBySpell(cast, target);
@@ -698,7 +726,7 @@ public final class Effects {
 			if (!(state.getBlock() instanceof net.minecraft.world.level.block.CropBlock crop) || !crop.isMaxAge(state)) {
 				continue;
 			}
-			if (!Casters.mayBuild(cast.caster) || !cast.level.mayInteract(cast.caster, p) || !cast.takeBlock()) {
+			if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p) || !cast.takeBlock()) {
 				break;
 			}
 			cast.level.destroyBlock(p, true, cast.caster);
@@ -724,7 +752,10 @@ public final class Effects {
 			}
 			BlockState state = cast.level.getBlockState(p);
 			if (state.is(Blocks.WATER) && state.getFluidState().isSource() && cast.level.getBlockState(p.above()).isAir()
-					&& cast.level.mayInteract(cast.caster, p) && Casters.mayBuild(cast.caster)) {
+					&& Casters.mayEdit(cast.caster, cast.level, p)) {
+				if (!cast.takeBlock()) {
+					break;
+				}
 				cast.level.setBlockAndUpdate(p, ice);
 				cast.level.scheduleTick(p, Blocks.FROSTED_ICE, 60 + cast.level.getRandom().nextInt(60));
 				frozen++;
@@ -735,12 +766,17 @@ public final class Effects {
 		}
 	}
 
-	/** Collect: items and experience orbs around the point fly to the caster. */
+	/** Collect reaches this far at most, however widened. */
+	private static final double MAX_COLLECT = 24.0;
+
+	/** Collect: items and experience orbs around the point fly to the caster (not off ground they couldn't build on: a claim, spawn). */
 	private static void collect(Cast cast, Vec3 point, double radius) {
 		LivingEntity caster = cast.caster;
+		double reach = Math.min(MAX_COLLECT, radius);
 		int moved = 0;
-		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius),
-				e -> e instanceof net.minecraft.world.entity.item.ItemEntity || e instanceof net.minecraft.world.entity.ExperienceOrb)) {
+		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(reach),
+				e -> (e instanceof net.minecraft.world.entity.item.ItemEntity || e instanceof net.minecraft.world.entity.ExperienceOrb)
+					&& e.distanceToSqr(point) <= reach * reach && Casters.mayEdit(caster, cast.level, BlockPos.containing(e.position()).below()))) {
 			Vfx.stream(cast.level, e.position(), caster.position().add(0, 1, 0), Vfx.theme("void"), 1);
 			e.teleportTo(caster.getX(), caster.getY() + 0.5, caster.getZ());
 			if (e instanceof net.minecraft.world.entity.item.ItemEntity item) {
@@ -878,7 +914,7 @@ public final class Effects {
 
 	private static boolean mayEdit(Cast cast, BlockPos pos) {
 		// A Rampart's wall is only there for a while: spells don't mine it (it would drop packed mud).
-		return Casters.mayBuild(cast.caster) && !Techniques.isRampart(cast.level, pos) && cast.level.mayInteract(cast.caster, pos)
+		return Casters.mayBuild(cast.caster) && !Techniques.isRampart(cast.level, pos) && Casters.mayEdit(cast.caster, cast.level, pos)
 			&& cast.takeBlock();
 	}
 
@@ -894,8 +930,11 @@ public final class Effects {
 			return;
 		}
 		level.setBlockAndUpdate(pos, Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 15));
+		GlobalPos lit = GlobalPos.of(level.dimension(), pos.immutable());
+		LIGHTS.add(lit);
 		Vfx.light(level, Vec3.atCenterOf(pos));
 		Scheduler.later(ticks(60, duration), () -> {
+			LIGHTS.remove(lit);
 			if (level.getBlockState(pos).is(Blocks.LIGHT)) {
 				level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
 			}
@@ -908,7 +947,7 @@ public final class Effects {
 		int times = (int) Math.round(2 * power);
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 			BlockPos p = pos.immutable();
-			if (!Casters.mayBuild(cast.caster) || !cast.level.mayInteract(cast.caster, p)) {
+			if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
 				continue;
 			}
 			boolean grew = false;
@@ -968,6 +1007,10 @@ public final class Effects {
 
 	private static final Map<String, Ward> WARDS = new HashMap<>();
 
+	static void clearWards() {
+		WARDS.clear();
+	}
+
 	/**
 	 * Puts a ward on {@code t}, or renews the one it has. {@code tick} runs every {@code every} ticks
 	 * while it lasts, {@code end} once it's over (or the cast is). Returns the new ward, or null when
@@ -977,7 +1020,7 @@ public final class Effects {
 		String key = kind + ":" + t.getUUID();
 		long now = cast.level.getGameTime();
 		Ward old = WARDS.get(key);
-		if (old != null && now - old.beat <= 2) {
+		if (old != null && old.beat <= now && now - old.beat <= 2) {
 			old.until = Math.max(old.until, now + ticks);
 			old.power = power;
 			old.cast = cast;
@@ -1487,7 +1530,7 @@ public final class Effects {
 			if (!(there.isAir() || (lichen && !there.getValue(side))) || !MultifaceBlock.canAttachTo(level, back, s, level.getBlockState(s))) {
 				continue;
 			}
-			if (!level.mayInteract(cast.caster, cell)) {
+			if (!Casters.mayEdit(cast.caster, level, cell)) {
 				continue;
 			}
 			if (!cast.takeBlock()) {
@@ -1528,7 +1571,7 @@ public final class Effects {
 		int cleared = 0;
 		for (BlockPos p : plants) {
 			// The other half of a tall plant may already be gone.
-			if (!prunable(level.getBlockState(p)) || !level.mayInteract(cast.caster, p)) {
+			if (!prunable(level.getBlockState(p)) || !Casters.mayEdit(cast.caster, level, p)) {
 				continue;
 			}
 			if (!cast.takeBlock()) {
@@ -1538,6 +1581,14 @@ public final class Effects {
 			cleared++;
 		}
 		ExpansionVfx.prune(level, point, radius, cleared > 0);
+	}
+
+	/** Light's invisible light blocks still lit, so they go out when the server stops. */
+	private static final java.util.Set<GlobalPos> LIGHTS = new java.util.HashSet<>();
+
+	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall): pistons can't move it. */
+	public static boolean isTemporary(ServerLevel level, BlockPos pos) {
+		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos);
 	}
 
 	/** Span bridges still standing, and what each of their blocks replaced. */
@@ -1562,6 +1613,13 @@ public final class Effects {
 					}
 				}
 				SPAN.clear();
+				for (GlobalPos lit : LIGHTS) {
+					ServerLevel level = server.getLevel(lit.dimension());
+					if (level != null && level.getBlockState(lit.pos()).is(Blocks.LIGHT)) {
+						level.setBlockAndUpdate(lit.pos(), Blocks.AIR.defaultBlockState());
+					}
+				}
+				LIGHTS.clear();
 			});
 		}
 
@@ -1628,7 +1686,7 @@ public final class Effects {
 				}
 				BlockState state = level.getBlockState(p);
 				if (!state.canBeReplaced() || !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()
-						|| !level.mayInteract(caster, p) || !cast.takeBlock()) {
+						|| !Casters.mayEdit(caster, level, p) || !cast.takeBlock()) {
 					return;
 				}
 				SPAN.put(GlobalPos.of(level.dimension(), p.immutable()), state);

@@ -32,11 +32,16 @@ public final class BoltComets {
 
 	/** Bolts that already have their comet, by entity id. */
 	private static final Set<Integer> DRAWN = new HashSet<>();
+	/** The world those ids belong to: a new one (another dimension, another server) starts afresh. */
+	private static ClientLevel seen;
 
 	public static void tick(Minecraft mc) {
 		ClientLevel level = mc.level;
-		if (level == null) {
+		if (level != seen) {
+			seen = level;
 			DRAWN.clear();
+		}
+		if (level == null) {
 			return;
 		}
 		for (Entity e : level.entitiesForRendering()) {

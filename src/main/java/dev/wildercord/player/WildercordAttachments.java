@@ -48,11 +48,16 @@ public final class WildercordAttachments {
 			.syncWith(ByteBufCodecs.FLOAT, AttachmentSyncPredicate.targetOnly())
 	);
 
-	/** Game time at which each spell is ready again. Synced for the HUD's cooldown ring. */
+	/**
+	 * Game time at which each spell is ready again. Synced for the HUD's cooldown ring. Saved and
+	 * kept through death, so logging out and back in doesn't reset a long cooldown.
+	 */
 	public static final AttachmentType<List<Long>> COOLDOWNS = AttachmentRegistry.create(
 		Wildercord.id("cooldowns"),
 		builder -> builder
 			.initializer(() -> List.of(0L, 0L, 0L, 0L))
+			.persistent(Codec.LONG.listOf())
+			.copyOnDeath()
 			.syncWith(ByteBufCodecs.VAR_LONG.apply(ByteBufCodecs.list()), AttachmentSyncPredicate.targetOnly())
 	);
 
@@ -232,6 +237,16 @@ public final class WildercordAttachments {
 	public static final AttachmentType<CordLook> CORD_LOOK = AttachmentRegistry.create(
 		Wildercord.id("cord_look"),
 		builder -> builder.syncWith(CordLook.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
+	/**
+	 * On anything a spell holds still (Stasis, Infinity's frozen projectiles): whether it had no
+	 * gravity before. Saved, so something held when it was saved (a player logging out, a server
+	 * stopping) gets its gravity back when it loads, instead of floating forever.
+	 */
+	public static final AttachmentType<Boolean> HELD_GRAVITY = AttachmentRegistry.create(
+		Wildercord.id("held_gravity"),
+		builder -> builder.persistent(Codec.BOOL)
 	);
 
 	/** The spell just cast, for its casting pose: the shape's id and the game time it went off. Synced to everyone nearby. */

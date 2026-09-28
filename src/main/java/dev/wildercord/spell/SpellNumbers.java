@@ -217,8 +217,11 @@ public final class SpellNumbers {
 		return Math.max(5, (int) Math.round(20 / Math.pow(2.0, link.count(Runes.QUICKEN))));
 	}
 
+	/** Widen grows an effect at most this many times over (five Widens), so no spell scans half a world of blocks. */
+	public static final double MAX_WIDEN = 8.0;
+
 	public static double effectRadius(SpellPlan.EffectNode e) {
-		return Math.pow(1.5, e.count(Runes.WIDEN)) * Math.pow(0.5, e.count(Runes.FOCUS_MOD));
+		return Math.min(MAX_WIDEN, Math.pow(1.5, e.count(Runes.WIDEN))) * Math.pow(0.5, e.count(Runes.FOCUS_MOD));
 	}
 
 	public static int copies(SpellPlan.Group g) {

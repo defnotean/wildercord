@@ -43,6 +43,11 @@ public class RuneBolt extends Projectile {
 	private static final double RANGE = 48.0;
 	private static final Map<UUID, Integer> LIVE = new ConcurrentHashMap<>();
 
+	/** When the server stops: bolts saved in flight never report their removal. */
+	static void clearLive() {
+		LIVE.clear();
+	}
+
 	private Cast cast;
 	private SpellPlan.Group group;
 	private SpellPlan.Link anchored;

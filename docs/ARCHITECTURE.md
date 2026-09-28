@@ -356,7 +356,7 @@ player, synced to that player only, and copied through death where noted.
 | `cord` | ItemStack | yes | The worn Cord |
 | `spellbook` | `Spellbook` | yes | Learned runes, the four spells and their custom names, passives and their switches |
 | `mana` | float | no | Current mana |
-| `cooldowns` | list of long | no (not saved) | When each spell is ready |
+| `cooldowns` | list of long | yes (kept on death) | When each spell is ready, as a game time; one more than 10 minutes off (from another world's clock) is ignored |
 | `crystals` | int | yes | Mana Crystals used |
 | `circles`, `condensed` | int | yes | Heart Circles and mana condensed |
 | `spell_kills`, `boss_slain` | int, bool | yes | Heart Circle breakthroughs |

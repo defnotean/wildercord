@@ -66,7 +66,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		this.glow = SpellCircleParticle.particleSprite("sigil_glow");
 		this.lifetime = Math.max(2, option.lifetime());
 		// From the world's clock, so an orb redrawn every tick (a moving one) turns smoothly instead of jumping.
-		this.spin = level.getGameTime() * 0.15F;
+		this.spin = (float) (level.getGameTime() * 0.15 % Mth.TWO_PI);
 		this.oSpin = spin;
 		this.gravity = 0;
 		this.hasPhysics = false;
@@ -82,6 +82,11 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		zo = z;
 		oSpin = spin;
 		spin += 0.15F;
+		if (spin > Mth.TWO_PI) {
+			// Wrapped (both, so the frame between still turns smoothly): a float this small stays exact.
+			spin -= Mth.TWO_PI;
+			oSpin -= Mth.TWO_PI;
+		}
 		if (age++ >= lifetime) {
 			remove();
 		}

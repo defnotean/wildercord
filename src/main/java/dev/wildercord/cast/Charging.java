@@ -38,6 +38,13 @@ public final class Charging {
 	/** A charge held this long fizzles. */
 	private static final int MAX_HOLD = 20 * 12;
 	private static final Identifier SLOW = Wildercord.id("charging");
+	/** A charge can start at most this often (a modified client could otherwise flood everyone nearby with circles). */
+	private static final int MIN_BEGIN_GAP = 4;
+
+	/** When each player last started a charge. */
+	private static final java.util.Map<java.util.UUID, Long> LAST_BEGIN = new java.util.HashMap<>();
+	/** Players whose charge fizzled: the release that follows does nothing. */
+	private static final java.util.Set<java.util.UUID> FIZZLED = new java.util.HashSet<>();
 
 	public static double progress(WildercordAttachments.Charge charge, long now) {
 		return Math.max(0, Math.min(1, (now - charge.start()) / (double) FULL));
@@ -50,6 +57,10 @@ public final class Charging {
 		}
 		WildercordAttachments.Charge charge = player.getAttached(WildercordAttachments.CHARGE);
 		if (charge == null) {
+			if (FIZZLED.remove(player.getUUID())) {
+				// It fizzled while held: letting go does nothing.
+				return;
+			}
 			// The charge never started (cooling down, an empty spell...): cast normally, which says why.
 			SpellCaster.cast(player, requested, 0);
 			return;
@@ -66,8 +77,9 @@ public final class Charging {
 	}
 
 	private static void begin(ServerPlayer player, int requested) {
+		FIZZLED.remove(player.getUUID());
 		CordTier tier = Spellbooks.tier(player);
-		if (tier == null) {
+		if (tier == null || !player.isAlive() || player.isSpectator() || player.hasAttached(WildercordAttachments.CHARGE)) {
 			return;
 		}
 		Spellbook book = Spellbooks.get(player);
@@ -81,9 +93,15 @@ public final class Charging {
 		}
 		long now = player.level().getGameTime();
 		if (now < Spellbooks.readyAt(player, spell)) {
-			// Still cooling down: the release will say so.
+			// Still cooling down: the release will say so. Early, so any rhythm starts over.
+			Rhythm.early(player, now);
 			return;
 		}
+		Long last = LAST_BEGIN.get(player.getUUID());
+		if (last != null && now >= last && now - last < MIN_BEGIN_GAP) {
+			return;
+		}
+		LAST_BEGIN.put(player.getUUID(), now);
 		List<String> ids = new ArrayList<>();
 		for (RuneDef rune : runes.subList(0, Math.min(runes.size(), dev.wildercord.spell.SpellSigil.MAX_RUNES))) {
 			ids.add(rune.id());
@@ -109,8 +127,9 @@ public final class Charging {
 		if (held >= FULL && held < FULL + 5) {
 			Fx.sound(player.level(), player.position(), WildercordSounds.CHARGE_FULL, 0.8F, 1.0F);
 		}
-		if (held > MAX_HOLD || Spellbooks.tier(player) == null || !player.isAlive()) {
+		if (held > MAX_HOLD || Spellbooks.tier(player) == null || !player.isAlive() || player.isSpectator()) {
 			stop(player);
+			FIZZLED.add(player.getUUID());
 			player.sendOverlayMessage(Component.translatable("message.wildercord.charge_fizzled").withStyle(ChatFormatting.GRAY));
 			Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
 		}
@@ -120,5 +139,12 @@ public final class Charging {
 		if (player.hasAttached(WildercordAttachments.CHARGE)) {
 			stop(player);
 		}
+		LAST_BEGIN.remove(player.getUUID());
+		FIZZLED.remove(player.getUUID());
+	}
+
+	static void clear() {
+		LAST_BEGIN.clear();
+		FIZZLED.clear();
 	}
 }

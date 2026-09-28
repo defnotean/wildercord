@@ -45,6 +45,17 @@ public final class Rhythm {
 		return 1 + stacks * POWER_PER_STACK;
 	}
 
+	/**
+	 * A press that came before the beat (the spell was still cooling down): early, so the chain starts
+	 * over, and the cast that finally gets through isn't on the beat either.
+	 */
+	public static void early(ServerPlayer player, long now) {
+		WildercordAttachments.Rhythm rhythm = player.getAttachedOrElse(WildercordAttachments.RHYTHM, WildercordAttachments.Rhythm.NONE);
+		if (rhythm.windowEnd() > 0 && now < rhythm.windowStart()) {
+			player.setAttached(WildercordAttachments.RHYTHM, WildercordAttachments.Rhythm.NONE);
+		}
+	}
+
 	/** Drops the chain once its beat has passed unanswered. */
 	public static void tick(ServerPlayer player) {
 		WildercordAttachments.Rhythm rhythm = player.getAttachedOrElse(WildercordAttachments.RHYTHM, WildercordAttachments.Rhythm.NONE);

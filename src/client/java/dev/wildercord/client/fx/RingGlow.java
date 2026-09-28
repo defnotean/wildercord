@@ -122,8 +122,8 @@ public class RingGlow extends SingleQuadParticle implements SigilGroup.Extent {
 		cz = (float) (z - cam.z);
 		// Turning by the world's clock, so a glow that takes over from another carries on from where it was.
 		// A still one keeps its lines where they were put: (u, v) in the plane is (x, z) in the world.
-		float clock = level.getGameTime() % 24000L + partial;
-		plane.rotationY(clock * swing).rotateX(tilt).rotateX(Mth.HALF_PI);
+		double clock = level.getGameTime() + (double) partial;
+		plane.rotationY((float) (clock * swing % Mth.TWO_PI)).rotateX(tilt).rotateX(Mth.HALF_PI);
 		for (Ring ring : rings) {
 			circle(ring.radius, ring.width, argb(ring.alpha * breath, ring.color));
 		}
@@ -133,7 +133,7 @@ public class RingGlow extends SingleQuadParticle implements SigilGroup.Extent {
 		if (beads > 0 && !rings.isEmpty()) {
 			Ring first = rings.getFirst();
 			for (int i = 0; i < beads; i++) {
-				float a = clock * beadSpeed + Mth.TWO_PI * i / beads;
+				float a = (float) (clock * beadSpeed % Mth.TWO_PI) + Mth.TWO_PI * i / beads;
 				plane.transform(at.set(Mth.cos(a) * first.radius, Mth.sin(a) * first.radius, 0));
 				billboard(cx + at.x, cy + at.y, cz + at.z, first.width * 2.2F, argb(Math.min(1, first.alpha * 1.4F) * breath, beadColor));
 			}
