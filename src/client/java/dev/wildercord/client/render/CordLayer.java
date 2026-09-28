@@ -30,8 +30,8 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
 	/** Where the beads sit on the band, in the right arm's space (x, y, z in pixels). */
 	private static final float[][] SPOTS = {
-		{-1.0F, 8.05F, -2.45F}, {0.55F, 8.05F, -2.45F}, {-2.55F, 8.05F, -2.45F}, {-3.45F, 8.05F, -0.9F},
-		{-3.45F, 8.05F, 0.9F}, {-1.0F, 8.05F, 2.45F}, {0.55F, 8.05F, 2.45F}, {-2.55F, 8.05F, 2.45F},
+		{-1.0F, 8.25F, -2.3F}, {0.5F, 8.25F, -2.3F}, {-2.5F, 8.25F, -2.3F}, {-3.3F, 8.25F, -0.9F},
+		{-3.3F, 8.25F, 0.9F}, {-1.0F, 8.25F, 2.3F}, {0.5F, 8.25F, 2.3F}, {-2.5F, 8.25F, 2.3F},
 	};
 
 	private final CordModel band;

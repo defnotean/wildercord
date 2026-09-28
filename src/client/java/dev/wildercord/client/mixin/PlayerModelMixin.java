@@ -26,10 +26,12 @@ public abstract class PlayerModelMixin {
 		ModelPart left = model.leftArm;
 		float pitch = model.head.xRot;
 		float forward = pitch - Mth.HALF_PI;
+		// Arms that point where you're looking follow the head's turn, like drawing a bow.
+		float turn = model.head.yRot;
 		if (pose.wildercord$charging()) {
 			float breathe = Mth.sin(state.ageInTicks * 0.3F) * 0.03F;
-			set(right, forward + breathe, -0.32F, 0, 1);
-			set(left, forward - breathe, 0.32F, 0, 1);
+			set(right, forward + breathe, turn - 0.32F, 0, 1);
+			set(left, forward - breathe, turn + 0.32F, 0, 1);
 			return;
 		}
 		float p = pose.wildercord$progress();
@@ -43,12 +45,12 @@ public abstract class PlayerModelMixin {
 		String path = shape.substring(shape.indexOf(':') + 1);
 		switch (path) {
 			case "crescent" -> {
-				set(right, forward, Mth.lerp(e, 1.3F, -1.2F), -0.3F, w);
+				set(right, forward, turn + Mth.lerp(e, 1.3F, -1.2F), -0.3F, w);
 				set(left, 0.3F, 0, 0, w);
 			}
 			case "barrage" -> {
 				boolean rightTurn = ((int) (p * 8)) % 2 == 0;
-				set(rightTurn ? right : left, forward, rightTurn ? -0.15F : 0.15F, 0, w);
+				set(rightTurn ? right : left, forward, turn + (rightTurn ? -0.15F : 0.15F), 0, w);
 				set(rightTurn ? left : right, 0.35F, 0, 0, w);
 			}
 			case "zone", "rain", "ring", "burst", "totem", "mine" -> {
@@ -60,8 +62,8 @@ public abstract class PlayerModelMixin {
 					set(right, -0.2F, 0, 1.7F, w);
 					set(left, -0.2F, 0, -1.7F, w);
 				} else {
-					set(right, forward, -0.5F, 0, w);
-					set(left, forward, 0.5F, 0, w);
+					set(right, forward, turn - 0.5F, 0, w);
+					set(left, forward, turn + 0.5F, 0, w);
 				}
 			}
 			case "pillar" -> {
@@ -70,8 +72,8 @@ public abstract class PlayerModelMixin {
 				set(left, lift, 0.2F, 0, w);
 			}
 			case "wall", "wave", "orb" -> {
-				set(right, forward, -0.2F, 0, w);
-				set(left, forward, 0.2F, 0, w);
+				set(right, forward, turn - 0.2F, 0, w);
+				set(left, forward, turn + 0.2F, 0, w);
 			}
 			case "blitz" -> {
 				set(right, 0.9F, 0, 0.3F, w);
@@ -83,7 +85,7 @@ public abstract class PlayerModelMixin {
 			}
 			default -> {
 				// Bolt, Beam, Arc, Touch, Cone and anything new: a thrust of the casting hand.
-				set(right, forward, -0.1F, 0, w);
+				set(right, forward, turn - 0.1F, 0, w);
 				set(left, 0.35F, 0, 0, w);
 			}
 		}

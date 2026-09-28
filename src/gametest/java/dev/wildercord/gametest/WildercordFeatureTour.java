@@ -76,6 +76,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			overcast(context, world);
 			innate(context, world);
 			leyAndWellstone(context, world);
+			hero(context, world);
 			archive(context, world);
 		}
 	}
@@ -317,7 +318,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.waitTicks(10);
 		shot(context, "toast");
 		context.setScreen(CordScreen::new);
-		context.waitTicks(3);
+		// Long enough for the spell's circle beside the window to open fully.
+		context.waitTicks(18);
 		context.getInput().setCursorPos(4, 4);
 		shot(context, "cord_named_spell");
 		context.runOnClient(mc -> {
@@ -461,6 +463,86 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		}
 		// Let the Domain and Zone finish before the next scene.
 		context.waitTicks(160);
+	}
+
+	// ------------------------------------------------------------------ the README's moving header
+
+	/**
+	 * Frames for the moving header at the top of the README (stitched by tools/make_gif.py): a spell
+	 * charged and fired, facing the camera, then a Domain unfolding, seen from above.
+	 */
+	private static void hero(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runCommand("kill @e[type=item]");
+		camera(context, CameraType.THIRD_PERSON_FRONT);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.setGameMode(GameType.CREATIVE);
+			player.removeAllEffects();
+			place(player, stage, 180, 8);
+			SpellCaster.edit(player, 0, List.of());
+			SpellCaster.edit(player, 0, ids(Runes.BEAM, Runes.FIRE, Runes.AMPLIFY, Runes.ON_HIT, Runes.BURST, Runes.SHOCK, Runes.WIDEN));
+			Spellbooks.set(player, Spellbooks.get(player).withSelected(0));
+			Spellbooks.setMana(player, 400);
+			Spellbooks.setReadyAt(player, 0, 0);
+		});
+		context.waitTicks(10);
+		world.getServer().runOnServer(server -> Charging.request(player(server), 0, true));
+		int frame = 0;
+		for (int i = 0; i < 18; i++) {
+			context.waitTicks(2);
+			shot(context, String.format(java.util.Locale.ROOT, "hero_%03d", frame++));
+		}
+		// The release, from behind: the beam flies away into a line of husks.
+		camera(context, CameraType.THIRD_PERSON_BACK);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			for (int i = 0; i < 3; i++) {
+				Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+				if (husk != null) {
+					husk.snapTo(stage.x + (i - 1) * 0.8, stage.y, stage.z - 7 - i * 2.5, 0, 0);
+					husk.setNoAi(true);
+					husk.addTag("wildercord.tour");
+					level.addFreshEntity(husk);
+				}
+			}
+		});
+		context.waitTicks(1);
+		world.getServer().runOnServer(server -> Charging.request(player(server), 0, false));
+		for (int i = 0; i < 8; i++) {
+			context.waitTicks(2);
+			shot(context, String.format(java.util.Locale.ROOT, "hero_%03d", frame++));
+		}
+		context.waitTicks(40);
+		world.getServer().runCommand("kill @e[tag=wildercord.tour]");
+		// A Domain unfolding over three husks, from above and to the side.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			place(player, stage.add(0, 0, -8), 0, 20);
+			for (int i = 0; i < 3; i++) {
+				Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+				if (husk != null) {
+					husk.snapTo(stage.x + (i - 1) * 2.2, stage.y, stage.z - 2 + (i % 2) * 2, 180, 0);
+					husk.setNoAi(true);
+					husk.addTag("wildercord.tour");
+					level.addFreshEntity(husk);
+				}
+			}
+			SpellCaster.edit(player, 0, List.of());
+			SpellCaster.edit(player, 0, ids(Runes.DOMAIN, Runes.FROST, Runes.SHOCK));
+			Spellbooks.setReadyAt(player, 0, 0);
+		});
+		director(context, world, stage.add(-11, 7, -9), stage.add(0, 0.5, -2));
+		world.getServer().runOnServer(server -> SpellCaster.cast(player(server), 0));
+		for (int i = 0; i < 16; i++) {
+			context.waitTicks(3);
+			shot(context, String.format(java.util.Locale.ROOT, "hero_%03d", frame++));
+		}
+		cut(context);
+		context.waitTicks(200);
+		world.getServer().runCommand("kill @e[tag=wildercord.tour]");
+		camera(context, CameraType.FIRST_PERSON);
 	}
 
 	// ------------------------------------------------------------------ Runebound

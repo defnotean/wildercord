@@ -27,12 +27,12 @@ public final class CordModel extends Model<Unit> {
 		return new CordModel(root);
 	}
 
-	/** Two turns of cord round the wrist, a little proud of the sleeve. */
+	/** Two turns of cord round the wrist, just proud of the arm, like a bracelet. */
 	public static LayerDefinition createBand() {
 		MeshDefinition mesh = new MeshDefinition();
 		mesh.getRoot().addOrReplaceChild("band", CubeListBuilder.create()
-				.texOffs(0, 0).addBox(-3.0F, 7.6F, -2.0F, 4.0F, 0.9F, 4.0F, new CubeDeformation(0.32F))
-				.texOffs(0, 6).addBox(-3.0F, 8.9F, -2.0F, 4.0F, 0.7F, 4.0F, new CubeDeformation(0.28F)),
+				.texOffs(0, 0).addBox(-3.0F, 7.9F, -2.0F, 4.0F, 0.7F, 4.0F, new CubeDeformation(0.14F))
+				.texOffs(0, 6).addBox(-3.0F, 8.9F, -2.0F, 4.0F, 0.5F, 4.0F, new CubeDeformation(0.12F)),
 			PartPose.ZERO);
 		return LayerDefinition.create(mesh, 32, 16);
 	}
@@ -41,7 +41,7 @@ public final class CordModel extends Model<Unit> {
 	public static LayerDefinition createBead() {
 		MeshDefinition mesh = new MeshDefinition();
 		mesh.getRoot().addOrReplaceChild("bead", CubeListBuilder.create()
-				.texOffs(0, 0).addBox(-0.65F, -0.65F, -0.65F, 1.3F, 1.3F, 1.3F),
+				.texOffs(0, 0).addBox(-0.5F, -0.5F, -0.5F, 1.0F, 1.0F, 1.0F),
 			PartPose.ZERO);
 		return LayerDefinition.create(mesh, 8, 8);
 	}
