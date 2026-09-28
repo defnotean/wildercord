@@ -287,6 +287,18 @@ def main():
 # ---------------------------------------------------------------- text
 
 
+# Magic that changes the world (cast/WorldMagic, spell/WorldRules): each interaction's line in a rune's tooltip.
+WORLD_LANG = {
+    "tooltip.wildercord.world.ignite": "Where it lands: sets grass and leaves alight, melts snow and ice, boils water into blinding steam",
+    "tooltip.wildercord.world.freeze": "Where it lands: freezes water into ice you can walk on, puts out fires and campfires",
+    "tooltip.wildercord.world.conduct": "Where it lands: in water, shocks every foe in the same water",
+    "tooltip.wildercord.world.gust": "Where it lands: knocks arrows and fireballs away, blows out small fires, scatters loose items",
+    "tooltip.wildercord.world.heave": "Where it lands: the ground heaves up, throwing foes standing on it",
+    "tooltip.wildercord.world.bloom": "Where it lands: grass and flowers bloom, crops grow",
+    "tooltip.wildercord.world.draw": "Where it lands: draws loose items and experience in",
+}
+
+
 def write_lang(runes):
     lang = {
         "itemGroup.wildercord": "Wildercord",
@@ -536,6 +548,7 @@ def write_lang(runes):
         lang[f"rune.wildercord.{r['path']}.desc"] = r["desc"]
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
+    lang.update(WORLD_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1062,7 +1075,7 @@ NEW_LANG = {
     "reaction.wildercord.collision": "Collision!",
     "reaction.wildercord.unison": "Unison!",
     "reaction.wildercord.shatter.desc": "Fire on a frozen target: +60% damage, and the ice bursts.",
-    "reaction.wildercord.conduct.desc": "Storm on a wet or soaked target: +50% damage, arcing to two more.",
+    "reaction.wildercord.conduct.desc": "Storm on a wet target (in water or rain, or still dripping): +50% damage, arcing to two more.",
     "reaction.wildercord.wildfire.desc": "Fire on a target just thrown by wind: flames spread to everything around it.",
     "reaction.wildercord.implode.desc": "A blast where enemies were just pulled together: 50% wider, 30% harder.",
     "reaction.wildercord.collapse.desc": "Repel on enemies just pulled in: double damage.",

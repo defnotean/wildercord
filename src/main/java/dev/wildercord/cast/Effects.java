@@ -105,6 +105,7 @@ public final class Effects {
 			currentElement = outerElement;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
+		WorldMagic.onSpell(cast, node, hit, groupPower);
 	}
 
 	/**
@@ -562,6 +563,8 @@ public final class Effects {
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);
 		amount *= hexBonus(cast, target);
+		// Fire is weaker on the wet.
+		amount *= WorldMagic.wetDamage(target, currentElement);
 		float damage = (float) amount;
 		// PvP only: a monster's spell already has its power set by difficulty.
 		if (target instanceof Player && cast.caster instanceof Player) {

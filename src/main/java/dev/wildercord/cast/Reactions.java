@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * the right element that meets a mark sets off a bonus.
  * <ul>
  *   <li><b>Shatter</b>: fire damage on a frozen target deals +60% and bursts the ice.</li>
- *   <li><b>Conduct</b>: storm damage on a wet target (water or rain) deals +50% and arcs to two more enemies.</li>
+ *   <li><b>Conduct</b>: storm damage on a wet target (water, rain, or dripping: see {@link WorldMagic#wet}) deals +50% and arcs to two more enemies.</li>
  *   <li><b>Wildfire</b>: fire on a target just thrown by wind spreads flames to enemies around it.</li>
  *   <li><b>Implode</b>: a blast where enemies were just pulled together grows 50% wider and hits 30% harder.</li>
  * </ul>
@@ -40,7 +40,9 @@ public final class Reactions {
 		/** Left by a popped Bubble: counts as wet for Conduct. */
 		SOAKED(100),
 		/** Resonance's cursed mark. */
-		RESONANT(200);
+		RESONANT(200),
+		/** Wet from Tidebreath or steam: counts as wet for Conduct, dulls fire and speeds frost (see {@link WorldMagic}). */
+		WET(100);
 
 		final int ticks;
 
@@ -106,7 +108,7 @@ public final class Reactions {
 
 	/** Called for storm-element damage: returns the damage multiplier after Conduct. */
 	public static double storm(Cast cast, LivingEntity target) {
-		if (!target.isInWaterOrRain() && !has(target, Mark.SOAKED)) {
+		if (!WorldMagic.wet(target)) {
 			return 1.0;
 		}
 		ServerLevel level = cast.level;

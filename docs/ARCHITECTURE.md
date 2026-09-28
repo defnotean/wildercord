@@ -233,8 +233,15 @@ hit for spell-kill counting and the innate runes that react to hits. After each 
 
 - **`Scheduler`**: delayed tasks, On Land watchers, and On Hurt / On Low Health watchers. Ticked
   once per server tick; cleared when the server stops.
-- **`Reactions`**: short-lived marks (FROZEN, WINDSWEPT, PULLED, SOAKED, RESONANT) and the bonuses
+- **`Reactions`**: short-lived marks (FROZEN, WINDSWEPT, PULLED, SOAKED, RESONANT, WET) and the bonuses
   they set off (Shatter, Conduct, Wildfire, Implode, Collapse).
+- **`WorldMagic`**: what an effect's element does to the world where it lands, called by
+  `Effects.apply` after every effect (fire lights grass and boils puddles into steam, frost freezes
+  water and puts fires out, storm conducts through water, wind turns projectiles, earth heaves block
+  displays, life blooms, void draws items in), and being wet (`WorldMagic.wet`, read by Conduct and by
+  `Effects.hurt` to dull fire). Which rune does what, and every cap, is pure data in
+  `spell.WorldRules`. Block changes go through `Casters.mayEdit` and the cast's block budget, plus
+  a per-cast allowance kept against `Cast.identity()`.
 - **`Wards`**: magic that answers what happens to a creature: Stasis (holds damage via
   `ALLOW_DAMAGE`), Reversal (`ALLOW_DEATH`), Reflect and Foresight, Infinity (holds projectiles),
   and the position history Rewind reads.

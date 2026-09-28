@@ -563,7 +563,7 @@ Archive; Runebound and the Archivist drop them too.
 
 ### The Grimoire
 A third page of the Cord screen: your innate rune and leaning, the five reactions, the secret
-spells (found ones in full, hinted ones as riddles), and sixteen feats. Every first discovery
+spells (found ones in full, hinted ones as riddles), and the feats. Every first discovery
 shows a toast, and each new reaction, feat and secret condenses mana toward your next circle: 150
 for a reaction, 250 for a feat, 400 for a secret, 2,000 for defeating the Archivist.
 
@@ -830,12 +830,21 @@ Effects leave short marks on what they hit. A later effect of the right element 
 | Reaction | Needs | Result |
 |---|---|---|
 | **Shatter** | Fire damage (Fire, Explode, Meteor) on a target frozen by Frost or Freeze | +60% damage, the ice bursts |
-| **Conduct** | Storm damage (Shock, Lightning, Ripple, Thunderbird) on a target in water or rain, or soaked by Bubble | +50% damage, arcs to two more enemies |
+| **Conduct** | Storm damage (Shock, Lightning, Ripple, Thunderbird) on a wet target: in water or rain, or still dripping from Bubble, Tidebreath or steam | +50% damage, arcs to two more enemies |
 | **Wildfire** | Fire on a target just thrown by wind (Push, Launch, Dash, Levitate, Tremor) | Flames spread to every enemy within 3 blocks |
 | **Implode** | Explode or Meteor where enemies were just pulled (Pull, Gravity Well) | Blast 50% wider and 30% stronger |
 | **Collapse** | Repel on enemies just pulled (Pull, Gravity Well, Hollow) | Double damage, a violent burst |
 
 Try `Bolt · Frost · Delay · Bolt · Fire` for Shatter, or `Zone · Gravity Well · Delay · Burst · Explode` for Implode.
+
+**Wet.** Being wet (in water or rain, or for 5 s after Tidebreath, steam or a popped Bubble) makes storm
+conduct (above), fire hit 25% softer (and dries you), and frost freeze you solid at once.
+
+**The world reacts too.** Harmful spells also change the ground they land on: fire lights grass and
+leaves and boils puddles into blinding steam, frost freezes water to walk on and puts fires out, storm
+runs through water to every foe in it, wind knocks arrows out of the air, earth heaves the ground,
+life makes it bloom and void draws loose items in. The numbers are in
+[features/world-magic.md](features/world-magic.md).
 
 ## Getting runes
 
@@ -979,10 +988,14 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
 - **Hard caps per cast:** 64 creatures, 32 blocks, 24 live projectiles per player,
   8 links deep (and, once Knots exist, Knots 2 deep). Nobody can crash a server with
   `Split · Split · Echo · Echo · Echo`.
-- **Blocks:** only World effects (Break, Excavate, Grow, Harvest, Icepath, Light,
-  Rampart, Chisel, Glimmer, Prune, Tunnel, Vein, Smelt, Fell, Span) change blocks, and only
-  where the caster may build (spawn protection and claims are respected). Monsters' spells
-  never change blocks.
+- **Blocks:** World effects (Break, Excavate, Grow, Harvest, Icepath, Light,
+  Rampart, Chisel, Glimmer, Prune, Tunnel, Vein, Smelt, Fell, Span) change blocks, and so do
+  the elements where they land (see [world-magic.md](features/world-magic.md)), but only in
+  vanilla's own temporary or natural ways: fire (only where fire spreads, so it burns out),
+  frosted ice (melts back), grass and flowers. Every change needs the caster to be allowed to
+  build there (spawn protection and claims are respected) and comes out of the cast's block
+  budget, 24 world changes a cast at most. Monsters' spells never change blocks (they still
+  shock through water, heave the ground as block displays and blow arrows away).
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
 - **Config file (planned):** `config/wildercord.json` will hold all of the above, plus
