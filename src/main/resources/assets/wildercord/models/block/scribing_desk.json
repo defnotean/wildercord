@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/lectern",
+  "textures": {
+    "particle": "wildercord:block/scribing_desk_sides",
+    "bottom": "wildercord:block/scribing_desk_bottom",
+    "base": "wildercord:block/scribing_desk_base",
+    "front": "wildercord:block/scribing_desk_front",
+    "sides": "wildercord:block/scribing_desk_sides",
+    "top": "wildercord:block/scribing_desk_top"
+  }
+}

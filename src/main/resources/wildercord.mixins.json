@@ -9,7 +9,8 @@
 		"PistonBaseBlockMixin",
 		"ProjectileMixin",
 		"BlockItemMixin",
-		"MannequinAccessor"
+		"MannequinAccessor",
+		"DuelHarmMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

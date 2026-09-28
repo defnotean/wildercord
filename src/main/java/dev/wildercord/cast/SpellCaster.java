@@ -158,8 +158,11 @@ public final class SpellCaster {
 			SecretSpells.discover(player, secret.get());
 			SecretSpells.cast(cast, secret.get());
 		} else {
-			CastEngine.cast(cast, compiled.root());
+			// Cast together with others, the same shape at the same place: one bigger chorus spell.
+			dev.wildercord.chorus.Chorus.Sung sung = dev.wildercord.chorus.Chorus.sing(cast, runes, compiled.root());
+			CastEngine.cast(sung.cast(), sung.root());
 		}
+		dev.wildercord.runesmith.Contracts.onCast(player, runes);
 		// Twin Star: the next spell goes off a second time, a moment later.
 		if (Innates.consumeTwin(player)) {
 			Heart.Bonuses twin = bonuses;

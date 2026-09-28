@@ -1,0 +1,16 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 22
+  },
+  "gives": {
+    "id": "wildercord:mana_crystal"
+  },
+  "max_uses": 3,
+  "xp": 20,
+  "reputation_discount": 0.05,
+  "additional_wants": {
+    "id": "minecraft:amethyst_shard",
+    "count": 4
+  }
+}

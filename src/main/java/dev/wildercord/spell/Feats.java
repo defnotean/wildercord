@@ -30,6 +30,7 @@ public final class Feats {
 	public static final String SHIELDBREAKER = "shieldbreaker";
 	public static final String SPELLGUARD = "spellguard";
 	public static final String IMBUE = "imbue";
+	public static final String CHORUS = "chorus";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -57,7 +58,8 @@ public final class Feats {
 		new Feat(SCROLL, "Scribe", "Inscribed a spell onto a scroll."),
 		new Feat(SPELLGUARD, "Spellguard", "Your Shield stopped a spell cast at you."),
 		new Feat(SHIELDBREAKER, "Shieldbreaker", "Shattered a Shield with a stronger spell."),
-		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."));
+		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."),
+		new Feat(CHORUS, "Chorus", "Cast the same spell as other casters at the same moment, and sang one great spell together."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");

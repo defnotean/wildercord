@@ -232,6 +232,7 @@ public final class Reactions {
 	static void callout(Cast cast, String reaction, int color) {
 		LivingEntity caster = cast.caster;
 		Grimoire.reaction(caster, reaction);
+		dev.wildercord.runesmith.Contracts.onReaction(caster, reaction);
 		long now = cast.level.getGameTime();
 		Long last = LAST_CALLOUT.get(caster.getUUID());
 		if (last != null && now - last < 20) {

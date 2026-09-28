@@ -36,6 +36,11 @@ public final class Targets {
 		if (!(entity instanceof LivingEntity living) || !living.isAlive() || entity instanceof ArmorStand) {
 			return false;
 		}
+		// A duel overrides the rest: the two duellists may hurt each other, and nobody else may hurt either.
+		Boolean duel = dev.wildercord.duel.Duels.canHarm(caster, entity);
+		if (duel != null) {
+			return duel;
+		}
 		if (isAlly(caster, entity)) {
 			return false;
 		}

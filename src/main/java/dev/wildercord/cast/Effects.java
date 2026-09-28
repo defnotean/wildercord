@@ -569,6 +569,7 @@ public final class Effects {
 		}
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);
+		dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
 		target.setInvulnerableTime(0);
 		target.hurtServer(cast.level, source, damage);
 		// A heavy hit lands with a punch for whoever cast it.
