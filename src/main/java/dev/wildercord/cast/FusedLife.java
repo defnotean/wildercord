@@ -86,7 +86,7 @@ final class FusedLife {
 			case "lifebloom" -> {
 				double radius = 3.0 * SpellNumbers.effectRadius(node);
 				for (LivingEntity t : first(helped)) {
-					lifebloom(cast, t, power, Effects.ticks(5, duration), radius, duration);
+					lifebloom(cast, t, power, Effects.ticks(5, duration), radius);
 				}
 			}
 			case "bonespur" -> bonespur(cast, hit, 4.0 * SpellNumbers.effectRadius(node), power, Effects.ticks(3, duration));
@@ -756,15 +756,16 @@ final class FusedLife {
 	private static final class Bloom {
 		final LivingEntity who;
 		Cast cast;
-		long until;
+		/** Seconds of it still to come: one heal each, and the burst with the last. */
+		int beats;
 		double power;
 		double radius;
 		boolean over;
 
-		Bloom(LivingEntity who, Cast cast, long until, double power, double radius) {
+		Bloom(LivingEntity who, Cast cast, int beats, double power, double radius) {
 			this.who = who;
 			this.cast = cast;
-			this.until = until;
+			this.beats = beats;
 			this.power = power;
 			this.radius = radius;
 		}
@@ -776,20 +777,21 @@ final class FusedLife {
 	 * Lifebloom: heals at once, then a little every second; when it fades it bursts, healing every ally
 	 * around. Cast again on a blooming ally, it heals at once and the bloom starts over (one burst, not two).
 	 */
-	private static void lifebloom(Cast cast, LivingEntity t, double power, int ticks, double radius, double duration) {
+	private static void lifebloom(Cast cast, LivingEntity t, double power, int ticks, double radius) {
 		ServerLevel level = cast.level;
 		t.heal((float) (4 * power));
 		FusedLifeVfx.lifebloomOpen(level, t);
-		long now = level.getGameTime();
+		// Counted in whole seconds, so it's always exactly that many heals, however the ticks fall.
+		int beats = Math.max(1, (int) Math.round(ticks / 20.0));
 		Bloom old = BLOOMS.get(t.getUUID());
 		if (old != null && old.who == t && !old.over) {
-			old.until = now + ticks;
+			old.beats = beats;
 			old.power = power;
 			old.radius = radius;
 			old.cast = cast;
 			return;
 		}
-		Bloom bloom = new Bloom(t, cast, now + ticks, power, radius);
+		Bloom bloom = new Bloom(t, cast, beats, power, radius);
 		BLOOMS.put(t.getUUID(), bloom);
 		int[] beat = {0};
 		Runnable[] next = new Runnable[1];
@@ -797,7 +799,6 @@ final class FusedLife {
 			if (bloom.over) {
 				return;
 			}
-			long time = level.getGameTime();
 			if (!bloom.cast.alive() || !t.isAlive() || t.isRemoved() || t.level() != level) {
 				bloom.over = true;
 				BLOOMS.remove(t.getUUID(), bloom);
@@ -805,7 +806,7 @@ final class FusedLife {
 			}
 			t.heal((float) (1 * bloom.power));
 			FusedLifeVfx.lifebloomPulse(level, t, beat[0]++);
-			if (time >= bloom.until) {
+			if (--bloom.beats <= 0) {
 				bloom.over = true;
 				BLOOMS.remove(t.getUUID(), bloom);
 				burst(bloom);
