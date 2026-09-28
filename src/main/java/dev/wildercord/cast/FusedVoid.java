@@ -134,6 +134,7 @@ final class FusedVoid {
 
 	/** One creature unravelling: which wound it's on, and the wound it ends with. */
 	private static final class Unravel {
+		LivingEntity target;
 		Cast cast;
 		double power;
 		int step;
@@ -150,7 +151,7 @@ final class FusedVoid {
 	private static void entropy(Cast cast, LivingEntity t, double power, double duration) {
 		int steps = FusedVoidRules.entropyWounds(duration);
 		Unravel running = UNRAVELLING.get(t.getUUID());
-		if (running != null) {
+		if (running != null && running.target == t) {
 			running.last = Math.max(running.last, running.step + steps);
 			running.power = Math.max(running.power, power);
 			running.cast = cast;
@@ -158,6 +159,7 @@ final class FusedVoid {
 			return;
 		}
 		Unravel unravel = new Unravel();
+		unravel.target = t;
 		unravel.cast = cast;
 		unravel.power = power;
 		unravel.last = steps;
@@ -580,6 +582,10 @@ final class FusedVoid {
 	 * while their clock is still turned forward. Returns how many spells it turned.
 	 */
 	private static int turnClock(Cast cast, ServerPlayer player, double power, int window) {
+		if (cast.passive) {
+			// A spell that renews itself would keep every cooldown running fast for good.
+			return 0;
+		}
 		long now = cast.level.getGameTime();
 		Long until = SHIFTED.get(player.getUUID());
 		if (until != null && now < until && until - now <= window * 4L) {

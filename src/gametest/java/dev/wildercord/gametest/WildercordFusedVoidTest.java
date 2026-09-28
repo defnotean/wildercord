@@ -542,8 +542,9 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 			Spellbooks.setReadyAt(player, 2, now + 200);
 			Spellbooks.setReadyAt(player, 3, 0);
 			Spellbooks.setMana(player, Mana.max(player));
-			SpellCaster.cast(player, 0);
+			// Its cooldown as the cast will work it out (before the cast's own mana is condensed into the heart).
 			int cooldown = Heart.cooldownTicks(player, SpellCompiler.compile(List.of(Runes.SELF, Runes.CHRONOSHIFT)));
+			SpellCaster.cast(player, 0);
 			return new long[] {now, cooldown};
 		});
 		context.waitTicks(3);
