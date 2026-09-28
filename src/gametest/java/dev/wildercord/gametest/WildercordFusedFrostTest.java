@@ -123,7 +123,8 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 	/**
 	 * Cryostasis on yourself: a cocoon of ice, held where you stand, nothing hurts you, 6 health back over
 	 * the two seconds; casting it again while it holds doesn't make it last longer; afterwards blows land
-	 * again and the ice is gone.
+	 * again and the ice is gone; cast again straight away it fizzles, and only 10 seconds after the last
+	 * one asked for does it seal again.
 	 */
 	private static List<String> cryostasis(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = on(world, player -> {
@@ -181,7 +182,42 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 			}
 			return null;
 		});
-		return found(untouchable, held, opened);
+		context.waitTicks(4);
+		// Straight after: the same creature can't be sealed again for 10 seconds (and asking starts the wait over).
+		String locked = on(world, player -> {
+			String again = cast(player, Runes.SELF, Runes.CRYOSTASIS);
+			if (again != null) {
+				return again;
+			}
+			if (has(player, MobEffects.SLOWNESS, 6)) {
+				return "a seal cast within 10 seconds of the last should fizzle, not hold the ally";
+			}
+			float before = player.getHealth();
+			Effects.readyToHurt(player);
+			player.hurtServer(player.level(), player.level().damageSources().mobAttack(mob(player, husk)), 2.0F);
+			return player.getHealth() < before ? null : "a seal cast within 10 seconds of the last should fizzle: blows still land";
+		});
+		context.waitTicks(4);
+		String noIce = on(world, player -> {
+			int ice = player.level().getEntitiesOfClass(Display.BlockDisplay.class, player.getBoundingBox().inflate(2)).size();
+			return ice == 0 ? null : "a seal that fizzled shouldn't close anyone in ice (" + ice + " blocks)";
+		});
+		// Ten seconds on from the last one asked for, it seals again.
+		context.waitTicks(206);
+		String after = on(world, player -> {
+			String again = cast(player, Runes.SELF, Runes.CRYOSTASIS);
+			if (again != null) {
+				return again;
+			}
+			float before = player.getHealth();
+			Effects.readyToHurt(player);
+			player.hurtServer(player.level(), player.level().damageSources().mobAttack(mob(player, husk)), 2.0F);
+			return player.getHealth() >= before && has(player, MobEffects.SLOWNESS, 6) ? null
+				: "10 seconds after the last, a seal should hold again";
+		});
+		// Let it open before the next rune.
+		context.waitTicks(45);
+		return found(untouchable, held, opened, locked, noIce, after);
 	}
 
 	/** Blizzard on a husk: for 4 seconds it's slowed (Slowness II) and bitten once a second; one 4.5 blocks off is left alone. */

@@ -36,7 +36,7 @@ import java.util.function.IntConsumer;
  *   <li><b>Frostbloom</b> (frost and life): regeneration, and whatever strikes the ally is frozen stiff.</li>
  *   <li><b>Black Ice</b> (frost and void): frozen and weakened, and brittle: one that dies shatters.</li>
  *   <li><b>Rime Seal</b> (frost and arcane): a seal on the ground that freezes whoever stands on it.</li>
- *   <li><b>Cryostasis</b> (frost and time): an ally sealed in ice, untouchable, healing.</li>
+ *   <li><b>Cryostasis</b> (frost and time): an ally sealed in ice, untouchable, healing; not again for 10 seconds.</li>
  *   <li><b>Frostbite</b> (frost and blood): a bite, and cold that sets in beat by beat until it freezes.</li>
  *   <li><b>Absolute Zero</b> (frost and frost): slowed to a crawl, or frozen solid if already cold.</li>
  *   <li><b>Fossilize</b> (earth and time): slowed more each second, then stone, then cracked.</li>

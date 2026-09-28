@@ -44,4 +44,25 @@ public final class FusedFrostRules {
 	public static boolean stoodLongEnough(int since, int now) {
 		return now - since >= SEAL_STAND_TICKS;
 	}
+
+	/** After a Cryostasis ends (or is refused), the same creature can't be sealed again for this many ticks: 10 seconds. */
+	public static final int SEAL_LOCKOUT_TICKS = 200;
+
+	/**
+	 * Until when a creature can't be sealed, after a Cryostasis on it ended (or was refused) at {@code at},
+	 * given the wait it already had ({@code current}): 10 seconds from then, never shortening it.
+	 */
+	public static long lockedUntil(long current, long at) {
+		return Math.max(current, at + SEAL_LOCKOUT_TICKS);
+	}
+
+	/** Whether a creature locked out until {@code lockedUntil} may be sealed at {@code now}. */
+	public static boolean maySeal(long lockedUntil, long now) {
+		return now >= lockedUntil;
+	}
+
+	/** Whole seconds left (rounded up) until {@code lockedUntil}, for telling the caster. */
+	public static int secondsLeft(long lockedUntil, long now) {
+		return (int) Math.max(0, (lockedUntil - now + 19) / 20);
+	}
 }

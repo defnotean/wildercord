@@ -49,6 +49,28 @@ class FusedFrostRulesTest {
 	}
 
 	@Test
+	void cryostasisCantBeChained() {
+		// Ends at tick 1000: nothing more until 1200.
+		long locked = FusedFrostRules.lockedUntil(Long.MIN_VALUE, 1000);
+		assertEquals(1200, locked);
+		assertFalse(FusedFrostRules.maySeal(locked, 1000));
+		assertFalse(FusedFrostRules.maySeal(locked, 1199));
+		assertTrue(FusedFrostRules.maySeal(locked, 1200));
+		// A seal asked for in the wait is refused and the wait starts over from then...
+		locked = FusedFrostRules.lockedUntil(locked, 1100);
+		assertEquals(1300, locked);
+		// ...but a refusal never shortens a longer wait (one refused while a seal still holds waits out that seal).
+		assertEquals(1300, FusedFrostRules.lockedUntil(1300, 1050));
+		// Nothing locked: free to seal.
+		assertTrue(FusedFrostRules.maySeal(Long.MIN_VALUE, 0));
+		// The caster is told the whole seconds left, rounded up.
+		assertEquals(10, FusedFrostRules.secondsLeft(1200, 1000));
+		assertEquals(1, FusedFrostRules.secondsLeft(1200, 1199));
+		assertEquals(0, FusedFrostRules.secondsLeft(1200, 1200));
+		assertEquals(0, FusedFrostRules.secondsLeft(1200, 5000));
+	}
+
+	@Test
 	void theSealWaitsASecond() {
 		assertFalse(FusedFrostRules.stoodLongEnough(10, 25));
 		assertTrue(FusedFrostRules.stoodLongEnough(10, 30));

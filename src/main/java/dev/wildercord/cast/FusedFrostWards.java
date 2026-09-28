@@ -3,6 +3,7 @@ package dev.wildercord.cast;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -31,7 +32,8 @@ import java.util.function.Consumer;
 /**
  * The fused effects of frost that stay on a creature and answer what happens to it: Frostbloom (whatever
  * strikes the ally is frozen stiff), Geode (whatever strikes the ally is cut by crystal), Black Ice (one
- * that dies while brittle shatters) and Cryostasis (an ally sealed in ice, untouchable). Each is kept by
+ * that dies while brittle shatters) and Cryostasis (an ally sealed in ice, untouchable, and not again for
+ * 10 seconds after). Each is kept by
  * the creature's UUID with the game time it ends, so a lost task, a death, a logout or a restart can't
  * leave one behind, and the listeners cost a map lookup while none are in play.
  */
@@ -96,6 +98,11 @@ final class FusedFrostWards {
 	private static final Map<UUID, Answer> GEODES = new HashMap<>();
 	private static final Map<UUID, Brittle> BRITTLE = new HashMap<>();
 	private static final Map<UUID, Seal> SEALS = new HashMap<>();
+	/**
+	 * When each creature may be sealed in a Cryostasis again: 10 seconds after its last one ended (or a
+	 * seal was refused it), so no caster can keep anyone untouchable by casting it over and over.
+	 */
+	private static final Map<UUID, Long> THAWING = new HashMap<>();
 	/** Set while an answer is being dealt, so an answer never sets off another (two Geodes can't trade shards forever). */
 	private static boolean answering;
 
@@ -116,6 +123,7 @@ final class FusedFrostWards {
 			GEODES.clear();
 			BRITTLE.clear();
 			SEALS.clear();
+			THAWING.clear();
 			answering = false;
 		});
 	}
@@ -167,15 +175,27 @@ final class FusedFrostWards {
 
 	/**
 	 * Cryostasis: {@code ally} sealed in ice for {@code ticks}, unable to move or be hurt, healing
-	 * {@code heal} over the time. One still running on the same ally can't be renewed or stacked: the new
-	 * one fizzles, so it lasts only as long as the first.
+	 * {@code heal} over the time. One still running on the same ally can't be renewed or stacked, and once
+	 * it ends the same creature can't be sealed again for 10 seconds: a seal asked for meanwhile fizzles
+	 * (and the wait starts over from then), so it can't be chained into lasting invulnerability.
 	 */
 	static void cryostasis(Cast cast, LivingEntity ally, int ticks, double heal) {
 		ServerLevel level = cast.level;
 		long now = level.getGameTime();
-		Seal running = SEALS.get(ally.getUUID());
-		if (running != null && running.ally == ally && now < running.until) {
+		UUID id = ally.getUUID();
+		Seal running = SEALS.get(id);
+		boolean holding = running != null && running.ally == ally && now < running.until;
+		long thawing = THAWING.getOrDefault(id, Long.MIN_VALUE);
+		if (holding || !FusedFrostRules.maySeal(thawing, now)) {
+			long until = FusedFrostRules.lockedUntil(holding ? FusedFrostRules.lockedUntil(thawing, running.until) : thawing, now);
+			THAWING.put(id, until);
 			FusedFrostVfx.cryostasisRefused(level, ally);
+			int seconds = FusedFrostRules.secondsLeft(until, now);
+			Casters.tell(cast.caster, ally == cast.caster
+				? Component.translatableWithFallback("message.wildercord.cryostasis_wait_self", "Too soon to seal yourself in ice again (%ss)", seconds)
+					.withColor(0x8CDCFF)
+				: Component.translatableWithFallback("message.wildercord.cryostasis_wait", "Too soon to seal %s in ice again (%ss)", ally.getDisplayName(),
+					seconds).withColor(0x8CDCFF));
 			return;
 		}
 		Seal seal = new Seal(ally, cast, now, ticks, heal);
@@ -335,6 +355,15 @@ final class FusedFrostWards {
 				tickBrittle();
 			}
 		}
+		if (count % 100 == 0 && !THAWING.isEmpty()) {
+			long now = server.overworld().getGameTime();
+			THAWING.values().removeIf(until -> FusedFrostRules.maySeal(until, now));
+		}
+	}
+
+	/** A seal is over (however it ended): the same creature can't be sealed again for 10 seconds from {@code now}. */
+	private static void thaw(Seal seal, long now) {
+		THAWING.merge(seal.ally.getUUID(), FusedFrostRules.lockedUntil(Long.MIN_VALUE, now), Math::max);
 	}
 
 	/** Once a second: each ward's glimmer, and the ended ones dropped. */
@@ -374,12 +403,14 @@ final class FusedFrostWards {
 			LivingEntity ally = seal.ally;
 			if (ally.isRemoved() || !ally.isAlive() || !(ally.level() instanceof ServerLevel level)) {
 				it.remove();
+				thaw(seal, ally.level().getGameTime());
 				seal.shell.forEach(Entity::discard);
 				continue;
 			}
 			long now = level.getGameTime();
 			if (now >= seal.until || !seal.cast.alive()) {
 				it.remove();
+				thaw(seal, now);
 				opened.add(seal);
 				continue;
 			}

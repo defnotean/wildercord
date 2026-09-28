@@ -234,7 +234,7 @@ Two effects of the right elements, an amethyst shard and 3 XP levels. Any effect
 | Frostbloom | Frost + Life | Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds). |
 | Black Ice | Frost + Void | Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II for 5 seconds). One that dies in the next 5 seconds shatters: 4 damage to enemies within 3 blocks. |
 | Rime Seal | Frost + Arcane | Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that stands in it for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each. |
-| Cryostasis | Frost + Time | Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 health while they wait. |
+| Cryostasis | Frost + Time | Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds. |
 | Frostbite | Frost + Blood | 3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second. |
 | Absolute Zero | Frost + Frost | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage. |
 | Magnetize | Storm + Earth | Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second). |

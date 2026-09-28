@@ -667,7 +667,7 @@
   "rune.wildercord.rime_seal": "Rime Seal",
   "rune.wildercord.rime_seal.desc": "Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that stands in it for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each.",
   "rune.wildercord.cryostasis": "Cryostasis",
-  "rune.wildercord.cryostasis.desc": "Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 health while they wait.",
+  "rune.wildercord.cryostasis.desc": "Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds.",
   "rune.wildercord.frostbite": "Frostbite",
   "rune.wildercord.frostbite.desc": "3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second.",
   "rune.wildercord.absolute_zero": "Absolute Zero",
