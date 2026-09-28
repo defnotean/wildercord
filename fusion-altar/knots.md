@@ -64,9 +64,9 @@ than **2 levels**. Creative mode is free.
   Cord or better, just as the runes inside would. Its tooltip says which Cord it needs.
 - **Ranks come from the caster.** A Knot holds runes, not ranks. Whoever casts it uses their own
   [ranks]({{ '/fusion-altar/ranks/' | relative_url }}) for the runes inside.
-- **Its elements count for leaning and staffs.** The effects inside count toward your elemental leaning, and a
-  [staff]({{ '/gear/' | relative_url }}) of their element boosts them, just as if they were threaded one by one. They
-  don't count toward the element [contracts]({{ '/social/contracts/' | relative_url }}), though.
+- **Its elements count for leaning, staffs and contracts.** The effects inside count toward your elemental leaning
+  and the element [contracts]({{ '/social/contracts/' | relative_url }}), and a [staff]({{ '/gear/' | relative_url }})
+  of their element boosts them, just as if they were threaded one by one.
 
 ## Knots inside Knots
 

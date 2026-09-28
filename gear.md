@@ -97,8 +97,10 @@ The **Tome of the Fifth Page** gives you a **fifth spell**, whatever your Cord.
 - **Hold it in your off-hand** and a fifth row appears on the Cord screen: *The tome's spell: it casts while the tome
   is in your off-hand*. Thread it like any other spell. It has as many sockets as your Cord's other rows, and holds the
   same tiers.
-- **Select it** by tapping **V** to step on past your Cord's own spells. (The spell wheel shows only your Cord's
-  spells.) You can also bind a key to **Cast spell 5 (the tome's)** in Minecraft's controls.
+- **Select it** by tapping **V** to step on past your Cord's own spells, or on the spell wheel (hold **V**), where it
+  shows as spell 5 while you hold the tome (press **5** there to pick it). The wheel opens even on a Twine Cord then,
+  with the Cord's spell and the tome's. You can also bind a key to **Cast spell 5 (the tome's)** in Minecraft's
+  controls.
 - **Put the tome away** and spell 5 locks, but its runes are kept for next time. Trying to cast it says *Spell 5 is the
   tome's: hold the Tome of the Fifth Page in your off-hand*.
 - The fifth spell can be inscribed onto a [Spell Scroll]({{ '/social/playing-together/' | relative_url }}#spell-scrolls)

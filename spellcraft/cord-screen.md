@@ -167,9 +167,10 @@ The box at the bottom explains the selected spell, line by line:
    found, its true name in its own colour (with a line saying what the secret does).
 2. **Its price**, in cyan: "64 mana · 3.2s cooldown · Cord holds 225". This is what the spell costs *you*,
    with every discount you have (Thrift, the Archmage perk, a staff or focus in hand, a mana storm, the
-   server's rules) and every cooldown change (Rapid, Vow, Celerity, Flow). The one exception is a
-   [secret spell]({{ '/spellcraft/secret-spells/' | relative_url }}): once its runes become a secret, it costs
-   more and recharges more slowly than an ordinary spell of the same runes. If the spell costs more than your whole mana pool,
+   server's rules) and every cooldown change (Rapid, Vow, Celerity, Flow). A
+   [secret spell]({{ '/spellcraft/secret-spells/' | relative_url }}) you've found shows its own, higher price
+   and longer cooldown; one you haven't found shows the ordinary spell's, and the cast that finds it costs
+   just that. If the spell costs more than your whole mana pool,
    the line turns red and a warning says it "can't be cast" (you'd have to
    [overcast]({{ '/spellcraft/overcasting/' | relative_url }})). A spell with Blood Price shows its price in
    health instead.
@@ -193,6 +194,7 @@ The warnings you'll see:
 | On Hit has nothing after it. | A link with nothing after it. |
 | On Hit needs a shape before it to watch. | On Hit, On Kill and Imbue need a shape in front of them. |
 | Only 3 Echoes count; the rest are ignored. | A fourth Echo costs mana and does nothing. |
+| Vow strengthens only Bolt's effects, and it has none: the cooldown is 4x longer for nothing. | Vow doubles only its own shape's effects. Put it on the shape whose effects you want stronger. |
 | An Imbue can't store another Imbue. | See [Imbuing]({{ '/spellcraft/imbuing/' | relative_url }}). |
 | Combo never fires in an imbued spell: every release counts as a first cast. | See [Imbuing]({{ '/spellcraft/imbuing/' | relative_url }}). |
 | Costs more than this Cord's 100 mana, so it can't be cast. | Trim the spell, or grow your mana. |
