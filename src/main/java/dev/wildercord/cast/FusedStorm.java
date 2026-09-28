@@ -194,7 +194,7 @@ final class FusedStorm {
 		ServerLevel level = cast.level;
 		if (targets.isEmpty()) {
 			if (!hit.self()) {
-				FusedStormVfx.riftFizzle(level, hit.point());
+				FusedStormVfx.riftFizzle(level, point(cast, hit));
 			}
 			return;
 		}
@@ -203,8 +203,8 @@ final class FusedStorm {
 			// Only the first few get the whole show; a crowd still gets every part of the spell.
 			boolean full = drawn++ < 4;
 			Vec3 from = t.position();
-			Vec3 dir = Effects.horizontal(hit.dir(), from.subtract(hit.origin()));
-			FusedStormVfx.riftbolt(level, hit.origin(), t, full);
+			Vec3 dir = Effects.horizontal(heading(cast, hit), from.subtract(origin(cast, hit)));
+			FusedStormVfx.riftbolt(level, origin(cast, hit), t, full);
 			Effects.hurt(cast, t, lightning(cast), RIFTBOLT_DAMAGE * power * Reactions.storm(cast, t));
 			if (!onHand(cast, t)) {
 				continue;
@@ -251,7 +251,7 @@ final class FusedStorm {
 	/** Stormweave: the struck and the nearest enemies around (up to four) are marked, then lightning weaves between them all. */
 	private static void stormweave(Cast cast, Cast.Hit hit, List<LivingEntity> harmed, double radius, double power) {
 		ServerLevel level = cast.level;
-		Vec3 point = hit.point();
+		Vec3 point = point(cast, hit);
 		List<LivingEntity> web = new ArrayList<>();
 		for (LivingEntity t : harmed) {
 			if (web.size() < WEAVE_MAX && !web.contains(t)) {
@@ -310,8 +310,8 @@ final class FusedStorm {
 			}
 		}
 		if (spots.isEmpty()) {
-			Vec3 ground = ElementFx.floor(level, hit.point(), 6);
-			spots.add(ground != null ? ground : hit.point());
+			Vec3 ground = ElementFx.floor(level, point(cast, hit), 6);
+			spots.add(ground != null ? ground : point(cast, hit));
 		}
 		for (Vec3 spot : spots) {
 			clock(cast, spot, radius, power);
@@ -374,7 +374,7 @@ final class FusedStorm {
 	/** Heartstopper: a shock to the heart, and for a while every second beat is skipped: a short stun. */
 	private static void heartstopper(Cast cast, Cast.Hit hit, LivingEntity t, double power, double duration) {
 		ServerLevel level = cast.level;
-		FusedStormVfx.heartstopper(level, hit.origin(), t);
+		FusedStormVfx.heartstopper(level, origin(cast, hit), t);
 		Effects.hurt(cast, t, lightning(cast), HEART_DAMAGE * power * Reactions.storm(cast, t));
 		if (!onHand(cast, t)) {
 			return;
@@ -409,8 +409,8 @@ final class FusedStorm {
 		List<LivingEntity> targets = first(harmed, MAX_SPOTS);
 		if (targets.isEmpty()) {
 			// Over the spot, as high as it would hang over someone standing there.
-			Vec3 ground = ElementFx.floor(cast.level, hit.point(), 6);
-			gather(cast, null, (ground != null ? ground : hit.point()).add(0, 1.8, 0), reach, power, ticks);
+			Vec3 ground = ElementFx.floor(cast.level, point(cast, hit), 6);
+			gather(cast, null, (ground != null ? ground : point(cast, hit)).add(0, 1.8, 0), reach, power, ticks);
 		}
 		for (LivingEntity t : targets) {
 			gather(cast, t, t.position().add(0, t.getBbHeight(), 0), reach, power, ticks);
@@ -498,7 +498,7 @@ final class FusedStorm {
 	/** Downdraft: a downburst over the point slams every airborne enemy around it into the ground. */
 	private static void downdraft(Cast cast, Cast.Hit hit, double radius, double power) {
 		ServerLevel level = cast.level;
-		Vec3 point = hit.point();
+		Vec3 point = point(cast, hit);
 		FusedStormVfx.downburst(level, point, radius);
 		int slammed = 0;
 		for (Entity e : level.getEntities((Entity) null, new AABB(point, point).inflate(radius + 1), e -> Targets.canHarm(cast.caster, e))) {
@@ -574,8 +574,8 @@ final class FusedStorm {
 	/** Updraft: a column of wind throws the enemies in it high, and a moment later a downdraft smashes them down. */
 	private static void updraft(Cast cast, Cast.Hit hit, List<LivingEntity> harmed, double radius, double power) {
 		ServerLevel level = cast.level;
-		Vec3 ground = ElementFx.floor(level, hit.point(), 4);
-		Vec3 base = ground != null ? ground : hit.point();
+		Vec3 ground = ElementFx.floor(level, point(cast, hit), 4);
+		Vec3 base = ground != null ? ground : point(cast, hit);
 		FusedStormVfx.updraft(level, base, radius);
 		List<LivingEntity> caught = new ArrayList<>();
 		for (LivingEntity t : harmed) {
@@ -640,7 +640,7 @@ final class FusedStorm {
 	/** Skyglyph: a wind glyph on the ground where it lands, launching allies who step on it and throwing enemies off. */
 	private static void skyglyph(Cast cast, Cast.Hit hit, double power, int ticks) {
 		ServerLevel level = cast.level;
-		Vec3 at = hit.self() ? cast.caster.position() : hit.point();
+		Vec3 at = hit.self() ? cast.caster.position() : point(cast, hit);
 		Vec3 feet = ElementFx.floor(level, at, 6);
 		if (feet == null || ticks <= 0) {
 			FusedStormVfx.glyphFizzle(level, at);
@@ -726,7 +726,7 @@ final class FusedStorm {
 	private static void recoil(Cast cast, Cast.Hit hit, LivingEntity t, double power) {
 		ServerLevel level = cast.level;
 		Key key = new Key(t.getUUID(), cast.caster.getUUID());
-		Vec3 away = Effects.horizontal(t.position().subtract(hit.origin()), hit.dir());
+		Vec3 away = Effects.horizontal(t.position().subtract(origin(cast, hit)), heading(cast, hit));
 		boolean moves = movable(t) && !Spirits.isBoss(t);
 		Snap pending = RECOILS.get(key);
 		if (moves) {
@@ -833,6 +833,21 @@ final class FusedStorm {
 		double dx = a.x - b.x;
 		double dz = a.z - b.z;
 		return Math.sqrt(dx * dx + dz * dz);
+	}
+
+	/** Where it landed: the caster, if the shape didn't say. */
+	private static Vec3 point(Cast cast, Cast.Hit hit) {
+		return hit.point() != null ? hit.point() : cast.caster.position();
+	}
+
+	/** Where the hit came from (push and pull measure from here): the caster, if the shape didn't say. */
+	private static Vec3 origin(Cast cast, Cast.Hit hit) {
+		return hit.origin() != null ? hit.origin() : cast.caster.position();
+	}
+
+	/** Which way the hit was going: the way the caster looks, if the shape didn't say. */
+	private static Vec3 heading(Cast cast, Cast.Hit hit) {
+		return hit.dir() != null ? hit.dir() : cast.caster.getLookAngle();
 	}
 
 	private static boolean onHand(Cast cast, LivingEntity t) {
