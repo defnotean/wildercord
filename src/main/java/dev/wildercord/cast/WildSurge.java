@@ -103,7 +103,8 @@ public final class WildSurge {
 		RandomSource random = player.getRandom();
 		Surge surge = FORCED.remove(player.getUUID());
 		if (surge == null) {
-			if (random.nextDouble() >= WildMagic.chance(mana, cost, Mana.max(player))) {
+			// A server can switch wild magic off (features.wild_magic): overcasts then go off as written.
+			if (!dev.wildercord.config.Config.get().wildMagic() || random.nextDouble() >= WildMagic.chance(mana, cost, Mana.max(player))) {
 				return false;
 			}
 			surge = WildMagic.pick(random.nextDouble(), !secret);

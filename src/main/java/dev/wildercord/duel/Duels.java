@@ -65,8 +65,10 @@ import java.util.UUID;
 public final class Duels {
 	private Duels() {}
 
-	/** Flip to false to take duels out of the game entirely; the {@code wildercord:allow_duels} game rule turns them off per world. */
-	public static final boolean ENABLED = true;
+	/** Duels are on unless the server's config switches them off (features.duels); the {@code wildercord:allow_duels} game rule turns them off per world. */
+	private static boolean enabled() {
+		return dev.wildercord.config.Config.get().duels();
+	}
 
 	public static final GameRule<Boolean> ALLOW_DUELS = GameRuleBuilder.forBoolean(true)
 		.category(GameRuleCategory.PLAYER)
@@ -274,7 +276,7 @@ public final class Duels {
 	// ------------------------------------------------------------------ challenges
 
 	private static boolean allowed(ServerLevel level) {
-		return ENABLED && level.getGameRules().get(ALLOW_DUELS);
+		return enabled() && level.getGameRules().get(ALLOW_DUELS);
 	}
 
 	private static int challenge(ServerPlayer from, ServerPlayer to) {
