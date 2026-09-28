@@ -60,6 +60,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Casting monsters hold their telegraph circle out in the right hand, so their face stays in view.
 - Tectonic Rise raises real stone spires and Glacial Lance closes its targets in ice (block
   displays, never real blocks). Starfall and Starlight Cascade mark where each star will land.
+- Creatures and places look the part: Runebound glow with rune marks in their spell's colour (and
+  a faint aura) that flare as they telegraph; the Archivist is a hooded, hovering figure with a
+  floating tome and circling pages that tear loose when it rewrites its Cord; ley lines flow as
+  ribbons of pale violet light; the Archive has shafts of light and dust, flickering braziers, a
+  glowing inlaid circle and quiet whispers; an awake Wellstone wears a turning halo.
 
 ### Removed
 - The Stand shape. Cords that still hold a Stand rune keep it threaded, but it stays quiet.

@@ -241,5 +241,27 @@ public final class WildercordAttachments {
 		builder -> builder.persistent(Codec.STRING.listOf())
 	);
 
+	/**
+	 * How a Runebound's rune marks look: its spell's colour, whether it's an Adept, and the game
+	 * time its telegraphed cast lands (0 when none is coming), so the marks flare while it telegraphs.
+	 */
+	public record RuneMarks(int color, boolean adept, long castAt) {
+		public static final StreamCodec<ByteBuf, RuneMarks> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.INT, RuneMarks::color, ByteBufCodecs.BOOL, RuneMarks::adept, ByteBufCodecs.VAR_LONG, RuneMarks::castAt, RuneMarks::new);
+
+		public RuneMarks casting(long at) {
+			return new RuneMarks(color, adept, at);
+		}
+	}
+
+	/**
+	 * On a Runebound monster: its rune marks. Not saved (worked out again from its spell as it
+	 * loads); synced to everyone tracking it, who draw the glowing marks on its body.
+	 */
+	public static final AttachmentType<RuneMarks> RUNE_MARKS = AttachmentRegistry.create(
+		Wildercord.id("rune_marks"),
+		builder -> builder.syncWith(RuneMarks.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
 	public static void init() {}
 }

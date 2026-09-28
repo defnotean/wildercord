@@ -1,9 +1,11 @@
 """Hand-tuned art for Wildercord's world content: the Spell Scroll, Torn Page and Training
-Dummy items, the Wellstone, the Rune Seals, the Archive Lectern and the two entity skins.
+Dummy items, the Wellstone, the Rune Seals, the Archive Lectern, the two entity skins, the
+Archivist's glow layers and the Runebound rune marks.
 
 Same house style as item_art.py: ASCII pictograms for the 16x16 items, ramps lit from the
 top-left, no anti-aliasing. Block faces are built from small deterministic rules so they
-tile cleanly; the 64x64 skins are painted face by face on the vanilla box-UV layout.
+tile cleanly; the skins are painted face by face on their models' box-UV layouts. Glow and mark
+layers are pale on transparency, some of it soft-edged: they're drawn emissive and tinted in game.
 
 Public API (imported by generate_assets.py):
     spell_scroll_icon() -> Image                (16x16 item)
@@ -12,8 +14,10 @@ Public API (imported by generate_assets.py):
     wellstone_textures() -> dict                (16x16 faces; the "_active" ones are 8-frame lists)
     rune_seal_textures() -> dict                (element -> (unlit, lit), 16x16 each)
     archive_lectern_textures() -> dict          ("top", "side", "front", "bottom")
-    archivist_texture() -> Image                (64x64, vanilla illager layout)
+    archivist_texture() -> Image                (128x64, ArchivistModel layout)
     dummy_texture() -> Image                    (64x64, DummyModel layout)
+    creature_textures() -> dict                 (path under textures/entity/ -> Image: the Archivist's
+                                                 two glow layers and the Runebound rune marks)
 
 Run this file directly to render a review contact sheet into build/art-preview/world_art.png.
 """
@@ -727,339 +731,557 @@ def face(cv: Canvas, area, text: str, pal: dict, mirror: bool = False):
                 cv.put(x0 + x, y0 + y, pal[ch])
 
 
-# ============================================================== the Archivist (illager layout)
+class Sheet:
+    """A grid of any width and height for skins that aren't square (None = transparent).
+    Colours are RGB, or RGBA for the glow and mark layers, which are drawn translucent."""
+
+    def __init__(self, w: int, h: int):
+        self.w, self.h = w, h
+        self.px: list[list] = [[None] * w for _ in range(h)]
+
+    def get(self, x, y):
+        return self.px[y][x] if 0 <= x < self.w and 0 <= y < self.h else None
+
+    def put(self, x, y, c):
+        if 0 <= x < self.w and 0 <= y < self.h:
+            self.px[y][x] = c
+
+    def image(self) -> Image.Image:
+        img = Image.new("RGBA", (self.w, self.h), (0, 0, 0, 0))
+        p = img.load()
+        for y in range(self.h):
+            for x in range(self.w):
+                c = self.px[y][x]
+                if c is not None:
+                    p[x, y] = c if len(c) == 4 else (c[0], c[1], c[2], 255)
+        return img
+
+
+def fill(cv, area, col):
+    x0, y0, w, h = area
+    rect(cv, x0, y0, w, h, col)
+
+
+# ============================================================== Runebound rune marks
+
+# White marks on transparency, tinted in game with the spell's colour and drawn at full brightness
+# over the monster's own model (RuneMarksLayer). '#' is a bright stroke, '+' a dim one; every bright
+# stroke gets a faint halo inside its face. One sheet per skin layout.
+MARK = (255, 255, 255, 255)
+MARK_DIM = (255, 255, 255, 150)
+MARK_HALO = (255, 255, 255, 56)
+
+# a bind-rune on the chest: arms raised over a knot on a spine
+M_CHEST = """
+    ........
+    .#....#.
+    ..#..#..
+    ...##...
+    ..####..
+    .#.##.#.
+    ...##...
+    ...##...
+    ..#..#..
+    .+....+.
+    ........
+    ........
+"""
+# between the shoulder blades: a ring over a crossed spine
+M_BACK = """
+    ........
+    ...##...
+    ..#..#..
+    ..#..#..
+    ...##...
+    .######.
+    ...##...
+    ...##...
+    ..+##+..
+    ...##...
+    ...++...
+    ........
+"""
+# down the outside of an arm, and a short rune on its front
+M_ARM_SIDE = """
+    ....
+    .#..
+    .##.
+    .#..
+    .#..
+    ..#.
+    .##.
+    ..#.
+    ..#.
+    .+..
+    ....
+    ....
+"""
+M_ARM_FRONT = """
+    ....
+    ....
+    .##.
+    .#..
+    .##.
+    ..#.
+    .##.
+    ....
+    .+..
+    ....
+    ....
+    ....
+"""
+M_LEG = """
+    ....
+    ....
+    .#..
+    .##.
+    .#..
+    .#+.
+    ....
+"""
+# a mark on the brow, above the eyes
+M_HEAD = """
+    ........
+    ...##...
+    ..#..#..
+"""
+# thin limbs: a zigzag of light
+M_THIN_ARM = """
+    ..
+    #.
+    .#
+    #.
+    .#
+    ..
+    #.
+    .#
+    ..
+    +.
+"""
+M_THIN_LEG = """
+    ..
+    ..
+    #.
+    .#
+    #.
+"""
+M_MID_ARM = """
+    ...
+    .#.
+    .#.
+    #..
+    .#.
+    ..#
+    .#.
+    .#.
+    ...
+    .+.
+"""
+# folded forearms (illagers, witches)
+M_BAR = """
+    ........
+    .#.##.#.
+    ..+..+..
+"""
+
+
+def _marks(cv, area, text: str, mirror: bool = False):
+    """Paint marks into a face, padding the design with nothing to the face's size."""
+    x0, y0, w, h = area
+    rows = grid(text)
+    assert len(rows) <= h and len(rows[0]) <= w, f"marks {area}: design is {len(rows[0])}x{len(rows)}"
+    bright = []
+    for y, row in enumerate(rows):
+        row = row.ljust(w, ".")
+        for x, ch in enumerate(row[::-1] if mirror else row):
+            if ch == "#":
+                cv.put(x0 + x, y0 + y, MARK)
+                bright.append((x, y))
+            elif ch == "+":
+                cv.put(x0 + x, y0 + y, MARK_DIM)
+    for x, y in bright:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < w and 0 <= ny < h and cv.get(x0 + nx, y0 + ny) is None:
+                cv.put(x0 + nx, y0 + ny, MARK_HALO)
+
+
+def _torso(cv, b):
+    _marks(cv, b["front"], M_CHEST)
+    _marks(cv, b["back"], M_BACK)
+
+
+def _limb(cv, b, side: str, front: str, outer: str, mirror: bool = False):
+    _marks(cv, b[outer], side, mirror)
+    _marks(cv, b["front"], front, mirror)
+
+
+def runebound_marks_textures() -> dict:
+    """Rune marks for each monster skin layout a Runebound can wear, keyed by layout name:
+    humanoid (zombies, husks, drowned, zombified piglins; 64x64, with the overlay layer too),
+    skeleton (64x32), parched (its second body over the first; 64x64), zombie_villager and
+    illager (64x64) and witch (64x128). Robed layouts carry the marks on the robe (the outer
+    layer) as well as the body beneath, so they show whichever is drawn on top."""
+    out = {}
+
+    cv = Sheet(64, 64)
+    _marks(cv, box(0, 0, 8, 8, 8)["front"], M_HEAD)
+    for u, v in ((16, 16), (16, 32)):
+        _torso(cv, box(u, v, 8, 12, 4))
+    for u, v in ((40, 16), (40, 32)):
+        _limb(cv, box(u, v, 4, 12, 4), M_ARM_SIDE, M_ARM_FRONT, "right")
+    for u, v in ((32, 48), (48, 48)):
+        _limb(cv, box(u, v, 4, 12, 4), M_ARM_SIDE, M_ARM_FRONT, "left", mirror=True)
+    for u, v in ((0, 16), (0, 32)):
+        _marks(cv, box(u, v, 4, 12, 4)["front"], M_LEG)
+    for u, v in ((16, 48), (0, 48)):
+        _marks(cv, box(u, v, 4, 12, 4)["front"], M_LEG, mirror=True)
+    out["humanoid"] = cv.image()
+
+    cv = Sheet(64, 32)
+    _marks(cv, box(0, 0, 8, 8, 8)["front"], M_HEAD)
+    _torso(cv, box(16, 16, 8, 12, 4))
+    _limb(cv, box(40, 16, 2, 12, 2), M_THIN_ARM, M_THIN_ARM, "right")
+    _marks(cv, box(0, 16, 2, 12, 2)["front"], M_THIN_LEG)
+    out["skeleton"] = cv.image()
+
+    cv = Sheet(64, 64)
+    for u, v in ((0, 0), (0, 32)):
+        _marks(cv, box(u, v, 8, 8, 8)["front"], M_HEAD)
+    for u, v in ((16, 16), (16, 48)):
+        _torso(cv, box(u, v, 8, 12, 4))
+    _limb(cv, box(40, 16, 2, 12, 2), M_THIN_ARM, M_THIN_ARM, "right")
+    _limb(cv, box(56, 16, 2, 12, 2), M_THIN_ARM, M_THIN_ARM, "left", mirror=True)
+    _limb(cv, box(42, 33, 3, 12, 3), M_MID_ARM, M_MID_ARM, "right")
+    _limb(cv, box(40, 48, 3, 12, 3), M_MID_ARM, M_MID_ARM, "left", mirror=True)
+    _marks(cv, box(0, 16, 2, 12, 2)["front"], M_THIN_LEG)
+    out["parched"] = cv.image()
+
+    def villager_body(cv):
+        _marks(cv, box(0, 0, 8, 10, 8)["front"], M_HEAD)
+        _torso(cv, box(16, 20, 8, 12, 6))
+        _torso(cv, box(0, 38, 8, 20, 6))
+        _marks(cv, box(0, 22, 4, 12, 4)["front"], M_LEG)
+
+    def folded_arms(cv):
+        arms = box(44, 22, 4, 8, 4)
+        _marks(cv, arms["right"], "\n".join(grid(M_ARM_SIDE)[:8]))
+        _marks(cv, arms["left"], "\n".join(grid(M_ARM_SIDE)[:8]), mirror=True)
+        _marks(cv, arms["front"], "\n".join(grid(M_ARM_FRONT)[:8]))
+        _marks(cv, box(40, 38, 8, 4, 4)["front"], M_BAR)
+
+    cv = Sheet(64, 64)
+    villager_body(cv)
+    _limb(cv, box(44, 22, 4, 12, 4), M_ARM_SIDE, M_ARM_FRONT, "right")
+    out["zombie_villager"] = cv.image()
+
+    cv = Sheet(64, 64)
+    villager_body(cv)
+    folded_arms(cv)
+    _limb(cv, box(40, 46, 4, 12, 4), M_ARM_SIDE, M_ARM_FRONT, "right")
+    out["illager"] = cv.image()
+
+    cv = Sheet(64, 128)
+    villager_body(cv)
+    folded_arms(cv)
+    out["witch"] = cv.image()
+    return out
+
+
+# ============================================================== the Archivist (ArchivistModel layout, 128x64)
 
 ARCHIVIST_PAL = {
     # deep indigo robe, darkest..lightest
     "a": hexc("#0F0A20"), "b": hexc("#191232"), "c": hexc("#221946"), "d": hexc("#2E2358"),
     "e": hexc("#3B2E6C"), "f": hexc("#4B3D84"),
+    # the dark under the hood
+    "0": hexc("#06040C"),
     # gold trim
     "z": hexc("#4E340C"), "J": hexc("#86601C"), "j": hexc("#B48C2C"), "g": hexc("#DEB84A"),
     "G": hexc("#F8E08A"),
-    # dark sleeves
-    "m": hexc("#0C0914"), "n": hexc("#140F20"), "N": hexc("#1D162E"), "M": hexc("#291F40"),
-    # grey-blue skin, darkest..lightest
-    "1": hexc("#3A4250"), "2": hexc("#4C5666"), "3": hexc("#5E6A7C"), "4": hexc("#717E90"),
-    "5": hexc("#8894A6"), "6": hexc("#A2AEBE"),
-    # glowing amber eyes
-    "O": hexc("#E0901C"), "E": hexc("#FFC43C"), "F": hexc("#FFF4B0"),
-    # dark hair and brow
-    "k": hexc("#110E17"), "K": hexc("#1C1726"), "L": hexc("#2C2538"),
-    # violet gem
+    # pale eyes and violet gems
     "v": hexc("#6E38C4"), "V": hexc("#B48AFF"), "W": hexc("#EADCFF"),
-    # boots
-    "x": hexc("#16110C"), "X": hexc("#241C14"), "y": hexc("#3A2E20"), "Y": hexc("#54432E"),
+    # parchment and violet ink
+    "p": hexc("#E9DDB8"), "q": hexc("#D2C08E"), "r": hexc("#A8925E"), "!": hexc("#4A2E86"),
 }
+ROBE = [ARCHIVIST_PAL[k] for k in "abcdef"]
+GOLD_BAND = "jgjGjgj"
 
-# ---- head (0,0) 8x10x8 and nose (24,0) 2x4x2
-A_HEAD_TOP = """
-    KKKKKKKK
-    KKLKKKKK
-    KKKKKLKK
-    KLKKKKKK
-    KKKKKKLK
-    KKKLKKKK
-    KKKKKKKK
-    kKKKKKKk
+# ---- hood front (0,0)+(8,8), 10x11: only columns 2-7 of rows 3-10 show, between the cheeks and
+# under the brim; the rest is hidden but painted as cloth. Two eyes burn in the dark.
+A_FACE = """
+    dddddddddd
+    dccccccccd
+    cbbbbbbbbc
+    cbaaaaaabc
+    cba0000abc
+    cba0000abc
+    cbaW00Wabc
+    cbaV00Vabc
+    cba0000abc
+    cbaa00aabc
+    cbaaaaaabc
 """
-A_HEAD_BOTTOM = """
-    12222221
-    22333322
-    23333332
-    23333332
-    23333332
-    23333332
-    22333322
-    12222221
-"""
-A_HEAD_FRONT = """
-    KKKKKKKK
-    K455554K
-    jgjvVjgj
-    44555544
-    3kkkkkk3
-    4EF44FE4
-    43344334
-    34455443
-    3k4444k3
-    23444432
-"""
-# the head's right side: column 0 meets the back, column 7 meets the face
-A_HEAD_RIGHT = """
-    KKKKKKKK
-    KKKKKKKK
-    JJjjjjjj
-    KKKK3344
-    KKK33334
-    KKK35334
-    KKK32434
-    KK333344
-    KK233343
-    K1222232
-"""
-A_HEAD_BACK = """
-    KKKKKKKK
-    KKLKKKLK
-    jjjGGjjJ
-    KKKKKKKK
-    KLKKKKLK
-    KKKKKKKK
-    KKKLKKKK
-    KKKKKKKK
-    kKKKKKKk
-    k222222k
-"""
-A_NOSE = {
-    "top": "55\n55", "bottom": "21\n12",
-    "right": "44\n34\n34\n23", "front": "56\n45\n45\n21", "left": "44\n43\n43\n32", "back": "33\n33\n33\n22",
-}
-
-# ---- robe (0,38) 8x20x6: a V collar, a gold sigil on the chest, a belt, a gold hem
+# ---- robe front (36,0)+(43,7), 10x9: a gold collar, a ringed gem on the chest, the robe's opening
 A_ROBE_FRONT = """
-    dgaaaagc
-    ddgaagdc
-    dddggddc
-    dddccddc
-    ddcggcdc
-    dcgccgcc
-    dgcvVcgb
-    dcgccgcb
-    ddcggccb
-    ddccccbb
-    JjgGGgjJ
-    ddcgjcbb
-    dbcgjcbb
-    dbcgjcbb
-    dbcgjcab
-    dbcgjcab
-    dbcgjcab
-    dccgjcbb
-    eddgjddc
-    jgggjjjJ
+    ddcgjjgcdd
+    dcgcbbcgcd
+    dgcbvVbcgd
+    dgcbVWbcgd
+    dcgcbbcgcd
+    ddccjJccdd
+    edccjJccde
+    ddccjJccdd
+    dcccjJcccd
 """
-# column 0 meets the back, column 5 meets the front
-A_ROBE_RIGHT = """
-    cdddde
-    cccddd
-    ccccdd
-    cbccdd
-    cbccdd
-    cbccdd
-    cbccdd
-    cbcccd
-    cbcccd
-    ccccdd
-    JJjjjj
-    cbccdd
-    cbcbdd
-    cbcbdd
-    cbcbcd
-    cbcbcd
-    cbcbcd
-    ccccdd
-    cdddde
-    JJjjjg
+A_MANTLE_FRONT = """
+    ddedgGGgdedd
+    dddcgvVgcddd
+    jjgjjGGjjgjj
 """
-A_ROBE_BACK = """
-    cjbbbbjc
-    cjbaabjc
-    ccjbbjcc
-    cccjjccc
-    cccccccc
-    cdccccbc
-    cdccccbc
-    cdccccbc
-    cdccccbc
-    cccccccc
-    JjjjjjjJ
-    ccbccbcc
-    cdbcdbcc
-    cdbcdbcb
-    cdbcdbcb
-    cdbcdbcb
-    cdbcdbcb
-    ccbccbcc
-    cddddddc
-    JjjjjjjJ
+# ---- skirt front (0,19)+(8,27), 11x7: a belt, then a pale panel edged in gold
+A_SKIRT_FRONT = """
+    JjgjjGjjgjJ
+    dcdjeeejdcd
+    dcdjefejdcd
+    cddjeeejddc
+    dcdjefejdcd
+    dccjeeejccd
+    cdcjeeejcdc
 """
-A_ROBE_TOP = """
-    cddddddc
-    djggggjd
-    dgaaaajd
-    dgaaaajd
-    djjjjjjd
-    cddddddc
+# ---- hem front (38,19)+(48,29), 13x7: the panel runs on down to a band of gold script
+A_HEM_FRONT = """
+    dcdcjeeejcdcd
+    cdcdjefejdcdc
+    dcdcjeeejcdcd
+    dcddjefejddcd
+    cdcdjeeejdcdc
+    GjgGjgGjgGjgG
+    JJjJJjJJjJJjJ
 """
-A_ROBE_BOTTOM = """
-    JjjjjjjJ
-    jaaaaaaj
-    jaaaaaaj
-    jaaaaaaj
-    jaaaaaaj
-    JjjjjjjJ
+# ---- the tome: its cover (outside, facing the Archivist), its pages, a turning page and a loose one
+A_COVER = """
+    gjjjjjg
+    jdcccdj
+    jcdddcj
+    jcdvdcj
+    jcvVvcj
+    jcdvdcj
+    jcdddcj
+    jcdcdcj
+    jdcccdj
+    gjjjjjg
+"""
+A_PAGES = """
+    pppppq
+    p!!p!q
+    pp!!pq
+    pppppq
+    p!p!!q
+    p!!p!q
+    pppppq
+    p!!!pq
+    pp!ppq
+"""
+A_TURNING = """
+    pppppp
+    p!!p!p
+    pppppp
+    p!p!!p
+    pp!ppp
+    pppppp
+    p!!p!p
+    p!pp!p
+    pppppp
+"""
+A_LOOSE = """
+    .ppq
+    p!!p
+    pp!p
+    p!pp
+    qpp.
 """
 
-# ---- legs (0,22) 4x12x4: dark hose under the robe, boots below its hem
-A_LEG_SIDE = """
-    NNNn
-    NNNn
-    NNnn
-    NNNn
-    NNNn
-    NNnn
-    NNNn
-    NNNn
-    YyyX
-    yXXX
-    yXXx
-    xxxx
-"""
-A_LEG_FRONT = """
-    MNNn
-    MNNn
-    NNNn
-    MNNn
-    MNNn
-    NNnn
-    MNNn
-    MNNn
-    YYyX
-    yyXX
-    YyyX
-    xxxx
-"""
+# ArchivistModel's boxes: texture offset and size (w, h, d)
+A_HOOD = box(0, 0, 10, 11, 8)
+A_BRIM = box(70, 11, 10, 3, 3)
+A_CHEEK = box(110, 0, 2, 8, 2)
+A_MANTLE = box(70, 0, 12, 3, 8)
+A_ROBE = box(36, 0, 10, 9, 7)
+A_SKIRT = box(0, 19, 11, 7, 8)
+A_HEM = box(38, 19, 13, 7, 10)
+A_SLEEVE = box(84, 19, 4, 11, 4)
+A_CUFF = box(100, 19, 5, 5, 5)
+A_TOME_COVER = box(0, 36, 7, 10, 1)
+A_TOME_PAGES = box(16, 36, 6, 9, 1)
+A_TURNING_PAGE = (30, 36, 6, 9)
+A_LOOSE_PAGE = (42, 36, 4, 5)
 
-# ---- crossed arms: upper arms (44,22) 4x8x4 and the folded forearms (40,38) 8x4x4
-A_ARM_SIDE = """
-    MNNN
-    MNNn
-    NNNn
-    MNNn
-    NNNn
-    MNnn
-    jggj
-    mmmm
-"""
-A_ARM_FRONT = """
-    MMNN
-    MNNn
-    MNNn
-    NNNn
-    MNNn
-    NNnn
-    gGgj
-    mmmm
-"""
-A_BAR_FRONT = """
-    MNNg65gN
-    NNNj54jN
-    NNNj45jn
-    nnnj34jn
-"""
-A_BAR_TOP = """
-    MMMg66gM
-    MNNg55gN
-    NNNg55gN
-    NNNj44jN
-"""
-A_BAR_BOTTOM = """
-    nnnj33jn
-    nnnj33jn
-    nnnj22jn
-    mmmJ22Jm
-"""
 
-# ---- casting arms (40,46) 4x12x4: sleeve, gold cuff, grey hand at the far (bottom) end
-A_CAST_FRONT = """
-    MMNN
-    MNNn
-    MNNn
-    NNNn
-    MNNn
-    MNNn
-    NNnn
-    MNNn
-    gGgj
-    5654
-    4543
-    4343
-"""
-A_CAST_SIDE = """
-    MNNN
-    MNNn
-    NNNn
-    MNNn
-    NNNn
-    MNnn
-    NNNn
-    NNnn
-    jggJ
-    4543
-    4432
-    3432
-"""
+def _cloth(cv, area, seed: int, base: int = 2, period: int = 3):
+    """Heavy robe cloth: vertical folds (a lit ridge, a shadowed crease), a little weave noise,
+    lit from above and darkening toward the bottom."""
+    x0, y0, w, h = area
+    edge = max(1, h // 6)
+    for y in range(h):
+        for x in range(w):
+            k = (x + seed) % period
+            t = base + (1 if k == 0 else -1 if k == period - 1 else 0)
+            if y < edge:
+                t += 1
+            elif y >= h - edge:
+                t -= 1
+            n = noise(x0 + x, y0 + y, seed)
+            if n < 0.12:
+                t -= 1
+            elif n > 0.9:
+                t += 1
+            cv.put(x0 + x, y0 + y, ROBE[max(0, min(5, t))])
+
+
+def _band(cv, area, row: int, pattern: str = GOLD_BAND):
+    """A row of gold trim across a face, `row` counted from the top (negative from the bottom)."""
+    x0, y0, w, h = area
+    y = y0 + (row if row >= 0 else h + row)
+    for x in range(w):
+        cv.put(x0 + x, y, ARCHIVIST_PAL[pattern[x % len(pattern)]])
 
 
 def archivist_texture() -> Image.Image:
-    """64x64 skin on the vanilla illager layout: a spell-keeper in an indigo robe with gold
-    trim and a chest sigil, dark sleeves with gold cuffs, grey-blue skin, glowing amber eyes
-    and a gold circlet. The hat layer (32,0) stays transparent."""
-    cv = Canvas(64)
+    """128x64 skin for ArchivistModel: a hooded keeper in a deep indigo robe that flares to a
+    gold-scripted hem, a gold-trimmed mantle with a clasp, a ringed gem on the chest, long sleeves
+    with gold cuffs, an empty dark under the hood with two pale eyes, and a tome bound in indigo
+    and gold with violet-inked pages."""
+    cv = Sheet(128, 64)
     P = ARCHIVIST_PAL
-    h = box(0, 0, 8, 10, 8)
-    face(cv, h["top"], A_HEAD_TOP, P)
-    face(cv, h["bottom"], A_HEAD_BOTTOM, P)
-    face(cv, h["front"], A_HEAD_FRONT, P)
-    face(cv, h["right"], A_HEAD_RIGHT, P)
-    face(cv, h["left"], A_HEAD_RIGHT, P, mirror=True)
-    face(cv, h["back"], A_HEAD_BACK, P)
-    for k, r in box(24, 0, 2, 4, 2).items():
-        face(cv, r, A_NOSE[k], P)
-    # (32,0) is the hat layer: left transparent
-    robe = box(0, 38, 8, 20, 6)
-    face(cv, robe["front"], A_ROBE_FRONT, P)
-    face(cv, robe["right"], A_ROBE_RIGHT, P)
-    face(cv, robe["left"], A_ROBE_RIGHT, P, mirror=True)
-    face(cv, robe["back"], A_ROBE_BACK, P)
-    face(cv, robe["top"], A_ROBE_TOP, P)
-    face(cv, robe["bottom"], A_ROBE_BOTTOM, P)
-    # the body under the robe wears the robe's upper half, in case any of it shows
-    body = box(16, 20, 8, 12, 6)
-    face(cv, body["front"], "\n".join(grid(A_ROBE_FRONT)[:12]), P)
-    face(cv, body["right"], "\n".join(grid(A_ROBE_RIGHT)[:12]), P)
-    face(cv, body["left"], "\n".join(grid(A_ROBE_RIGHT)[:12]), P, mirror=True)
-    face(cv, body["back"], "\n".join(grid(A_ROBE_BACK)[:12]), P)
-    face(cv, body["top"], A_ROBE_TOP, P)
-    face(cv, body["bottom"], A_ROBE_BOTTOM.replace("J", "a").replace("j", "a"), P)
-    legs = box(0, 22, 4, 12, 4)
-    face(cv, legs["front"], A_LEG_FRONT, P)
-    face(cv, legs["right"], A_LEG_SIDE, P)
-    face(cv, legs["left"], A_LEG_SIDE, P, mirror=True)
-    face(cv, legs["back"], A_LEG_SIDE, P, mirror=True)
-    face(cv, legs["top"], "NNNN\nNNNN\nNNNN\nNNNN", P)
-    face(cv, legs["bottom"], "xxxx\nxXXx\nxXXx\nxxxx", P)
-    arm = box(44, 22, 4, 8, 4)
-    face(cv, arm["front"], A_ARM_FRONT, P)
-    face(cv, arm["right"], A_ARM_SIDE, P)
-    face(cv, arm["left"], A_ARM_SIDE, P, mirror=True)
-    face(cv, arm["back"], A_ARM_SIDE, P, mirror=True)
-    face(cv, arm["top"], "MMMN\nMNNN\nNNNn\nNNnn", P)
-    face(cv, arm["bottom"], "mmmm\nmnnm\nmnnm\nmmmm", P)
-    bar = box(40, 38, 8, 4, 4)
-    face(cv, bar["front"], A_BAR_FRONT, P)
-    face(cv, bar["top"], A_BAR_TOP, P)
-    face(cv, bar["bottom"], A_BAR_BOTTOM, P)
-    face(cv, bar["back"], "NNNNNNNN\nNNNNNNNN\nNnNNNNnN\nnnnnnnnn", P)
-    face(cv, bar["right"], "MNNn\nNNNn\nNNnn\nnnnn", P)
-    face(cv, bar["left"], "MNNn\nNNNn\nNNnn\nnnnn", P, mirror=True)
-    cast = box(40, 46, 4, 12, 4)
-    face(cv, cast["front"], A_CAST_FRONT, P)
-    face(cv, cast["right"], A_CAST_SIDE, P)
-    face(cv, cast["left"], A_CAST_SIDE, P, mirror=True)
-    face(cv, cast["back"], A_CAST_SIDE, P, mirror=True)
-    face(cv, cast["top"], "MMMN\nMNNN\nNNNn\nNNnn", P)
-    face(cv, cast["bottom"], "4543\n5434\n4343\n3432", P)
+    # ---- the hood, its brim and cheeks
+    _cloth(cv, A_HOOD["top"], 1, base=2)
+    fill(cv, A_HOOD["bottom"], P["a"])
+    _cloth(cv, A_HOOD["right"], 2)
+    _cloth(cv, A_HOOD["left"], 3)
+    _cloth(cv, A_HOOD["back"], 4, base=2, period=5)
+    for side in ("right", "left", "back"):
+        _band(cv, A_HOOD[side], -1, "jJ")
+    face(cv, A_HOOD["front"], A_FACE, P)
+    _cloth(cv, A_BRIM["top"], 5, base=3)
+    fill(cv, A_BRIM["bottom"], P["0"])
+    for side, seed in (("front", 6), ("right", 7), ("left", 8), ("back", 9)):
+        _cloth(cv, A_BRIM[side], seed, base=3)
+        _band(cv, A_BRIM[side], -1, "jgjGGjgj" if side == "front" else "jJ")
+    _cloth(cv, A_CHEEK["right"], 10)
+    fill(cv, A_CHEEK["left"], P["a"])
+    face(cv, A_CHEEK["front"], "dj\ndj\ndg\ndj\ndj\ndg\ndj\njG", P)
+    fill(cv, A_CHEEK["top"], P["c"])
+    fill(cv, A_CHEEK["bottom"], P["a"])
+    _cloth(cv, A_CHEEK["back"], 11)
+    # ---- the mantle: gold-rimmed shoulders and a clasp
+    x0, y0, w, h = A_MANTLE["top"]
+    _cloth(cv, A_MANTLE["top"], 12, base=3, period=4)
+    for x in range(w):
+        for y in range(h):
+            if x in (0, w - 1) or y in (0, h - 1):
+                cv.put(x0 + x, y0 + y, P["j"] if (x + y) % 3 else P["g"])
+    for side, seed in (("right", 13), ("left", 14), ("back", 15)):
+        _cloth(cv, A_MANTLE[side], seed, base=3)
+        _band(cv, A_MANTLE[side], -1)
+    face(cv, A_MANTLE["front"], A_MANTLE_FRONT, P)
+    fill(cv, A_MANTLE["bottom"], P["b"])
+    # ---- the robe, skirt and hem
+    face(cv, A_ROBE["front"], A_ROBE_FRONT, P)
+    for side, seed in (("right", 16), ("left", 17), ("back", 18)):
+        _cloth(cv, A_ROBE[side], seed)
+    fill(cv, A_ROBE["top"], P["c"])
+    fill(cv, A_ROBE["bottom"], P["b"])
+    face(cv, A_SKIRT["front"], A_SKIRT_FRONT, P)
+    for side, seed in (("right", 19), ("left", 20), ("back", 21)):
+        _cloth(cv, A_SKIRT[side], seed)
+        _band(cv, A_SKIRT[side], 0, "JjgjjGjjgj")
+    fill(cv, A_SKIRT["top"], P["c"])
+    fill(cv, A_SKIRT["bottom"], P["b"])
+    face(cv, A_HEM["front"], A_HEM_FRONT, P)
+    for side, seed in (("right", 22), ("left", 23), ("back", 24)):
+        _cloth(cv, A_HEM[side], seed, period=4)
+        _band(cv, A_HEM[side], -2, "GjgGjg")
+        _band(cv, A_HEM[side], -1, "JJj")
+    fill(cv, A_HEM["top"], P["c"])
+    fill(cv, A_HEM["bottom"], P["a"])
+    # ---- sleeves and cuffs
+    for side, seed in (("right", 25), ("front", 26), ("left", 27), ("back", 28)):
+        _cloth(cv, A_SLEEVE[side], seed, base=1)
+        _cloth(cv, A_CUFF[side], seed, base=3)
+        _band(cv, A_CUFF[side], 0, "jJ")
+        _band(cv, A_CUFF[side], -1, "gjGjg")
+    fill(cv, A_SLEEVE["top"], P["b"])
+    fill(cv, A_SLEEVE["bottom"], P["a"])
+    fill(cv, A_CUFF["top"], P["c"])
+    face(cv, A_CUFF["bottom"], "aaaaa\nabbba\nab0ba\nabbba\naaaaa", P)
+    # ---- the tome
+    face(cv, A_TOME_COVER["back"], A_COVER, P)
+    fill(cv, A_TOME_COVER["front"], P["b"])
+    for side in ("right", "left", "top", "bottom"):
+        fill(cv, A_TOME_COVER[side], P["c"])
+    face(cv, A_TOME_PAGES["front"], A_PAGES, P)
+    face(cv, A_TOME_PAGES["back"], "\n".join(["pppppp"] * 9), P)
+    for side in ("right", "left"):
+        face(cv, A_TOME_PAGES[side], "p\nq\np\nr\np\nq\np\nr\np", P)
+    face(cv, A_TOME_PAGES["top"], "pqprpq", P)
+    face(cv, A_TOME_PAGES["bottom"], "qprpqp", P)
+    face(cv, A_TURNING_PAGE, A_TURNING, P)
+    face(cv, A_LOOSE_PAGE, A_LOOSE, P)
     return cv.image()
+
+
+def _glow(cv, area, text: str, colours: dict, halo=None, mirror: bool = False):
+    """Paint glowing pixels (RGBA) from an ASCII face; `halo` (RGBA) rings the brightest inside the face."""
+    x0, y0, w, h = area
+    rows = grid(text)
+    assert len(rows) == h and len(rows[0]) == w, f"glow {area}: got {len(rows[0])}x{len(rows)}"
+    hot = []
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row[::-1] if mirror else row):
+            if ch in colours:
+                cv.put(x0 + x, y0 + y, colours[ch])
+                hot.append((x, y))
+    if halo:
+        for x, y in hot:
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < w and 0 <= ny < h and cv.get(x0 + nx, y0 + ny) is None:
+                    cv.put(x0 + nx, y0 + ny, halo)
+
+
+def archivist_eyes_texture() -> Image.Image:
+    """128x64: what always glows on the Archivist, drawn over its skin at full brightness: its two
+    eyes (with a faint violet haze and a drip of light under each) and the ringed gem on its chest."""
+    cv = Sheet(128, 64)
+    _glow(cv, A_HOOD["front"], A_FACE, {"W": (250, 244, 255, 255), "V": (196, 160, 255, 150)}, halo=(170, 130, 255, 90))
+    chest = "\n".join(grid(A_ROBE_FRONT)[:5] + ["." * 10] * 4)
+    _glow(cv, A_ROBE["front"], chest, {"g": (248, 214, 120, 150), "v": (170, 120, 255, 200), "V": (214, 186, 255, 230),
+                                       "W": (246, 238, 255, 255)})
+    return cv.image()
+
+
+def archivist_runes_texture() -> Image.Image:
+    """128x64: the writing on the Archivist's pages, the gem on its tome and the light in its cuffs,
+    drawn over its skin at full brightness: dim at rest, blazing while it casts."""
+    cv = Sheet(128, 64)
+    ink = {"!": (186, 144, 255, 255)}
+    halo = (150, 108, 255, 40)
+    _glow(cv, A_TOME_PAGES["front"], A_PAGES, ink, halo)
+    _glow(cv, A_TURNING_PAGE, A_TURNING, ink, halo)
+    _glow(cv, A_LOOSE_PAGE, A_LOOSE, ink, halo)
+    _glow(cv, A_TOME_COVER["back"], A_COVER, {"v": (170, 120, 255, 170), "V": (220, 196, 255, 230)})
+    _glow(cv, A_CUFF["bottom"], ".....\n.bbb.\n.bWb.\n.bbb.\n.....", {"b": (180, 150, 255, 120), "W": (236, 226, 255, 220)})
+    return cv.image()
+
+
+def creature_textures() -> dict:
+    """Entity textures beyond the two skins, keyed by their path under textures/entity/:
+    the Archivist's glow layers and every Runebound marks sheet."""
+    out = {"archivist_eyes": archivist_eyes_texture(), "archivist_runes": archivist_runes_texture()}
+    for layout, image in runebound_marks_textures().items():
+        out[f"runebound/{layout}"] = image
+    return out
 
 
 # ============================================================== the Training Dummy (DummyModel layout)
@@ -1268,24 +1490,47 @@ def _assemble(size, placements) -> Image.Image:
     return im
 
 
-def archivist_views(skin) -> list:
-    """Flat front / casting / back / side views of the illager model, for checking seams."""
-    head, nose, robe = box(0, 0, 8, 10, 8), box(24, 0, 2, 4, 2), box(0, 38, 8, 20, 6)
-    legs, arm, bar, cast = box(0, 22, 4, 12, 4), box(44, 22, 4, 8, 4), box(40, 38, 8, 4, 4), box(40, 46, 4, 12, 4)
-    P = lambda r, m=False, f=False: _part(skin, r, m, f)
-    body = [(P(legs["front"]), (4, 22)), (P(legs["front"], True), (8, 22)), (P(robe["front"]), (4, 10)),
-            (P(head["front"]), (4, 0)), (P(nose["front"]), (7, 7))]
-    front = _assemble((16, 34), body + [(P(arm["front"]), (0, 11)), (P(arm["front"], True), (12, 11)),
-                                        (P(bar["front"]), (4, 15))])
-    casting = _assemble((16, 34), body + [(P(cast["front"], f=True), (0, 0)), (P(cast["front"], True, True), (12, 0))])
-    back = _assemble((16, 34), [(P(legs["back"]), (4, 22)), (P(legs["back"], True), (8, 22)), (P(robe["back"]), (4, 10)),
-                                (P(head["back"]), (4, 0)), (P(arm["back"]), (0, 11)), (P(arm["back"], True), (12, 11))])
-    right = _assemble((12, 34), [(P(legs["right"]), (3, 22)), (P(robe["right"]), (3, 10)), (P(head["right"]), (2, 0)),
-                                 (P(nose["right"]), (10, 7)), (P(arm["right"]), (4, 11))])
-    left = _assemble((12, 34), [(P(legs["left"]), (5, 22)), (P(robe["left"]), (3, 10)), (P(head["left"]), (2, 0)),
-                                (P(nose["left"]), (0, 7)), (P(arm["left"]), (4, 11))])
-    return [("front", front), ("casting", casting), ("back", back), ("right", right), ("left", left),
-            ("head top", P(head["top"]))]
+def archivist_views(skin, eyes, runes) -> list:
+    """Flat front views of ArchivistModel at rest (lit, and in the dark with only its glow), and
+    its open tome, for checking seams and where the glow falls."""
+    P = lambda im, r, m=False: _part(im, r, m)
+
+    def front(im):
+        # (x, y) are the model's pixels from the top of the hood, x from its right side (the viewer's left)
+        return [(P(im, A_SLEEVE["front"]), (3, 12)), (P(im, A_CUFF["front"]), (2, 22)),
+                (P(im, A_SLEEVE["front"], True), (17, 12)), (P(im, A_CUFF["front"], True), (17, 22)),
+                (P(im, A_HOOD["front"]), (7, 1)), (P(im, A_BRIM["front"]), (7, 1)),
+                (P(im, A_CHEEK["front"]), (7, 4)), (P(im, A_CHEEK["front"], True), (15, 4)),
+                (P(im, A_MANTLE["front"]), (6, 12)), (P(im, A_ROBE["front"]), (7, 15)),
+                (P(im, A_SKIRT["front"]), (6, 24)), (P(im, A_HEM["front"]), (5, 31))]
+
+    lit = _assemble((24, 39), front(skin))
+    dark = Image.eval(lit, lambda v: v)
+    r, g, b, a = dark.split()
+    dark = Image.merge("RGBA", (r.point(lambda v: v // 5), g.point(lambda v: v // 5), b.point(lambda v: v // 5), a))
+    dark.alpha_composite(_assemble((24, 39), front(eyes)))
+    dark = _on((10, 8, 16), dark)
+
+    def book(im):
+        return [(P(im, A_TOME_PAGES["front"]), (1, 1)), (P(im, A_TOME_PAGES["front"], True), (7, 1))]
+
+    cover = _assemble((14, 11), [(P(skin, A_TOME_COVER["front"]), (0, 0)), (P(skin, A_TOME_COVER["front"], True), (7, 0))])
+    tome = cover.copy()
+    for part, at in book(skin):
+        tome.alpha_composite(part, at)
+    glowing = cover.copy()
+    for part, at in book(skin) + book(runes):
+        glowing.alpha_composite(part, at)
+    return [("front", lit), ("front, dark", dark), ("tome, open", tome), ("tome, casting", glowing),
+            ("cover", P(skin, A_TOME_COVER["back"])), ("pages", _assemble((12, 9), [(P(skin, A_TURNING_PAGE), (0, 0)),
+                                                                                    (P(skin, A_LOOSE_PAGE), (7, 2))]))]
+
+
+def _on(rgb, im) -> Image.Image:
+    """An image over a solid background, for layers that are pale on transparency."""
+    bg = Image.new("RGBA", im.size, (*rgb, 255))
+    bg.alpha_composite(im)
+    return bg
 
 
 def dummy_views(skin) -> list:
@@ -1349,9 +1594,15 @@ def preview(out_dir: str) -> str:
         _check([im], n)
     rows.append(("Archive Lectern", list(lectern.items()) + lectern_views(lectern)))
 
-    arch = archivist_texture()
-    _check([arch], "archivist", size=64, allow_alpha=True)
-    rows.append(("Archivist (64x64, illager layout)", [("skin", arch)] + archivist_views(arch)))
+    arch, eyes, runes = archivist_texture(), archivist_eyes_texture(), archivist_runes_texture()
+    for n, im in (("archivist", arch), ("archivist_eyes", eyes), ("archivist_runes", runes)):
+        assert im.size == (128, 64) and im.mode == "RGBA", n
+    assert set(arch.getchannel("A").tobytes()) <= {0, 255}, "archivist: partial alpha"
+    rows.append(("Archivist (128x64, ArchivistModel layout)", [("skin", arch), ("eyes", _on((10, 8, 16), eyes)),
+                                                               ("runes", _on((10, 8, 16), runes))]))
+    rows.append(("Archivist views", archivist_views(arch, eyes, runes)))
+    marks = runebound_marks_textures()
+    rows.append(("Runebound marks (white, tinted in game)", [(n, _on((40, 36, 48), im)) for n, im in marks.items()]))
     dummy = dummy_texture()
     _check([dummy], "dummy", size=64, allow_alpha=True)
     rows.append(("Training Dummy (64x64)", [("skin", dummy)] + dummy_views(dummy)))
