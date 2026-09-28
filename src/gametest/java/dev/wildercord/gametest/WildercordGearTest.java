@@ -185,7 +185,8 @@ public class WildercordGearTest implements FabricClientGameTest {
 			if (ratio < 1.15 || ratio > 1.25) {
 				return "a Fire Staff should make fire hit 20% harder (" + plainDamage + " -> " + staffDamage + ")";
 			}
-			if (staffCost != (int) Math.ceil(compiled.cost() * GearDef.STAFF_COST - 1e-9) || staffCost >= plainCost) {
+			// 10% off, rounded up, and always at least one mana saved.
+			if (staffCost != Math.min((int) Math.ceil(compiled.cost() * GearDef.STAFF_COST - 1e-9), plainCost - 1) || staffCost >= plainCost) {
 				return "a Fire Staff should take 10% off a fire spell's cost (" + plainCost + " -> " + staffCost + ")";
 			}
 			if (Math.round(plainSpent) != plainCost || Math.round(staffSpent) != staffCost) {

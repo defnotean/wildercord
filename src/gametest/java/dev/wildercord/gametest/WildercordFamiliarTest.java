@@ -213,6 +213,8 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 		int husk = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
+			// A monster can't hunt a player in creative (vanilla drops the target), so this part is played in survival.
+			player.setGameMode(GameType.SURVIVAL);
 			Husk mob = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 			Vec3 at = player.position().add(0, 0, 5);
 			mob.snapTo(at.x, at.y, at.z, 180, 0);
@@ -240,6 +242,7 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 			check(after > before, "slaying a monster together should teach the familiar (xp " + before + " -> " + after + ")");
 		});
 		world.getServer().runCommand("kill @e[type=husk]");
+		world.getServer().runOnServer(server -> player(server).setGameMode(GameType.CREATIVE));
 	}
 
 	// ------------------------------------------------------------------ stay, follow, and the lantern

@@ -327,7 +327,9 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 		fill(level, bb, 18, F + 1, 47, 22, F + 5, 50, AIR);
 		// The core: the altar on the pit floor, and a conduit hanging high over it.
 		altar(level, bb, DungeonAltarBlock.Kind.TIDE, CX, PIT + 1, ARENA_Z);
-		set(level, bb, Blocks.CONDUIT.defaultBlockState(), CX, F + 5, ARENA_Z);
+		// Dry: a conduit is waterlogged by default, and would pour onto the altar before the tide ever rose.
+		set(level, bb, Blocks.CONDUIT.defaultBlockState().setValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED, false),
+			CX, F + 5, ARENA_Z);
 	}
 
 	/** The pit's floor: dark prismarine, two rings of bricks, a ring of sea lanterns round the core. */

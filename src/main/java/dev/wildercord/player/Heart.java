@@ -146,7 +146,16 @@ public final class Heart {
 
 	/** @param factor one more factor on the price, e.g. a secret spell's power */
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled, double factor) {
-		return roundCost(rawCost(player, compiled) * factor);
+		double raw = rawCost(player, compiled) * factor;
+		int paid = roundCost(raw);
+		// A discount (a staff, Thrift, a mana storm, a heart perk) always saves at least one mana, even
+		// where rounding up would swallow it (10% off 9 is still 9 rounded up).
+		double undiscounted = compiled.cost() * serverCost(player) * factor;
+		int full = roundCost(undiscounted);
+		if (raw < undiscounted - 1e-9 && paid >= full && full > 1) {
+			paid = full - 1;
+		}
+		return paid;
 	}
 
 	public static int healthCost(Player player, SpellCompiler.Compiled compiled) {

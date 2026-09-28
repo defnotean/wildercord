@@ -112,6 +112,15 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		builder.define(DATA_FLARE, 0L);
 	}
 
+	/**
+	 * How hard it pushes through the air: in step with the speed its movement asks for. (A mob's
+	 * default is a fixed crawl, which left a familiar trailing far behind its owner.)
+	 */
+	@Override
+	protected float getFlyingSpeed() {
+		return getSpeed() * 0.05F;
+	}
+
 	@Override
 	protected PathNavigation createNavigation(Level level) {
 		FlyingPathNavigation navigation = new FlyingPathNavigation(this, level);

@@ -399,7 +399,7 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 			check(has(census, Blocks.SEA_LANTERN), "it should be lit with sea lanterns");
 			check(has(census, Blocks.CONDUIT), "a conduit should hang over its core");
 			check(has(census, Blocks.KELP) || has(census, Blocks.KELP_PLANT), "its shelves should hold kelp");
-			check(pitWater(level, altar) == 0, "the arena should start dry (found " + pitWater(level, altar) + " water)");
+			check(pitWater(level, altar) == 0, "the arena should start dry (found " + pitWater(level, altar) + " water: " + pitWaterWhere(level, altar) + ")");
 		});
 		world.getServer().runOnServer(server -> TideScribe.rise(server.getLevel(overworld), altar));
 		context.waitTicks(10);
@@ -464,13 +464,34 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 		done(world, overworld);
 	}
 
+	/** Where the water in the pit is, relative to the altar, and what holds it (for a failure message). */
+	private static String pitWaterWhere(ServerLevel level, BlockPos altar) {
+		StringBuilder out = new StringBuilder();
+		int r = (int) Math.ceil(TideScribe.PIT_RADIUS);
+		for (BlockPos pos : BlockPos.betweenClosed(altar.offset(-r, 0, -r), altar.offset(r, 1, r))) {
+			BlockState state = level.getBlockState(pos);
+			if (inPit(pos, altar) && (state.getFluidState().is(FluidTags.WATER) || state.is(Blocks.ICE))) {
+				BlockPos d = pos.subtract(altar);
+				out.append(String.format("[%d,%d,%d %s] ", d.getX(), d.getY(), d.getZ(), state.getBlock().getName().getString()));
+			}
+		}
+		return out.toString().trim();
+	}
+
+	/** Inside the round pit (the square around it takes in the wall, and the sea past it). */
+	private static boolean inPit(BlockPos pos, BlockPos altar) {
+		double dx = pos.getX() - altar.getX();
+		double dz = pos.getZ() - altar.getZ();
+		return dx * dx + dz * dz <= TideScribe.PIT_RADIUS * TideScribe.PIT_RADIUS;
+	}
+
 	/** Water (and ice) in the pit's two flood layers. */
 	private static int pitWater(ServerLevel level, BlockPos altar) {
 		int n = 0;
 		int r = (int) Math.ceil(TideScribe.PIT_RADIUS);
 		for (BlockPos pos : BlockPos.betweenClosed(altar.offset(-r, 0, -r), altar.offset(r, 1, r))) {
 			BlockState state = level.getBlockState(pos);
-			if (state.getFluidState().is(FluidTags.WATER) || state.is(Blocks.ICE)) {
+			if (inPit(pos, altar) && (state.getFluidState().is(FluidTags.WATER) || state.is(Blocks.ICE))) {
 				n++;
 			}
 		}

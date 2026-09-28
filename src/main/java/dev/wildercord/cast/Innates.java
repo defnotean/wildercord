@@ -337,7 +337,7 @@ public final class Innates {
 			DamageSource source = level.damageSources().indirectMagic(thread.caster(), thread.caster());
 			for (LivingEntity other : members) {
 				if (other != entity && other.isAlive() && other.level() == level && other.distanceTo(entity) < 32) {
-					other.setInvulnerableTime(0);
+					Effects.readyToHurt(other);
 					other.hurtServer(level, source, damage * 0.5F);
 					TechniqueVfx.chain(level, entity.getBoundingBox().getCenter(), other, false);
 				}
@@ -472,7 +472,7 @@ public final class Innates {
 		lucky(level, entity);
 		echoing = true;
 		try {
-			entity.setInvulnerableTime(0);
+			Effects.readyToHurt(entity);
 			entity.hurtServer(level, level.damageSources().playerAttack(player), damage * 2);
 		} finally {
 			echoing = false;
@@ -587,7 +587,7 @@ public final class Innates {
 		Vfx.shockArc(level, entity.getBoundingBox().getCenter(), attacker.getBoundingBox().getCenter());
 		echoing = true;
 		try {
-			attacker.setInvulnerableTime(0);
+			Effects.readyToHurt(attacker);
 			attacker.hurtServer(level, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, entity), (float) (6 * scale(entity)));
 		} finally {
 			echoing = false;
@@ -652,7 +652,7 @@ public final class Innates {
 					entry.setValue(new Debt(debt.left() - pay, debt.perSecond(), debt.until()));
 					echoing = true;
 					try {
-						player.setInvulnerableTime(0);
+						Effects.readyToHurt(player);
 						player.hurtServer(player.level(), player.level().damageSources().magic(), pay);
 					} finally {
 						echoing = false;

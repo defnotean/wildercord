@@ -293,7 +293,7 @@ public final class Wards {
 		}
 		reflecting = true;
 		try {
-			attacker.setInvulnerableTime(0);
+			Effects.readyToHurt(attacker);
 			attacker.hurtServer(level, level.damageSources().thorns(entity), (float) (damage * ward.fraction()));
 			TechniqueVfx.reflect(level, entity, attacker);
 		} finally {
@@ -388,7 +388,7 @@ public final class Wards {
 		TechniqueVfx.timeResumes(level, t, held.stored);
 		if (held.stored > 0) {
 			DamageSource source = held.source != null ? held.source : level.damageSources().indirectMagic(held.caster, held.caster);
-			t.setInvulnerableTime(0);
+			Effects.readyToHurt(t);
 			t.hurtServer(level, source, held.stored);
 			// Everything held lands at once, and it hits like it.
 			Vec3 away = Effects.horizontal(t.position().subtract(held.caster.position()), held.caster.getLookAngle());

@@ -578,6 +578,18 @@ public final class Effects {
 		}
 	}
 
+	/**
+	 * Lets the next hit land in full: clears the target's hurt cooldown, so several spells striking it at
+	 * once (Split, Volley, Hail, an echo) each deal their own damage. In 26.3 the cooldown a hit checks is
+	 * the living entity's {@code damageCooldownTime}; {@code invulnerableTime} alone no longer covers it.
+	 */
+	public static void readyToHurt(net.minecraft.world.entity.Entity target) {
+		target.setInvulnerableTime(0);
+		if (target instanceof LivingEntity living) {
+			living.damageCooldownTime = 0;
+		}
+	}
+
 	/** Set while lingering damage (a burn's later ticks, a zone's pulses) is dealt: a Shield blocks it but can't parry it. */
 	private static boolean lingering;
 
@@ -629,7 +641,7 @@ public final class Effects {
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);
 		dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
-		target.setInvulnerableTime(0);
+		readyToHurt(target);
 		float dealt = damage;
 		Dungeons.spellHit(() -> target.hurtServer(cast.level, source, dealt));
 		// A heavy hit lands with a punch for whoever cast it.

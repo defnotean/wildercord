@@ -154,6 +154,7 @@ public final class SpellHud {
 			g.text(font, crack, lx + 1, above, RED, true);
 			lx += font.width(crack) + 3;
 		}
+		boolean nameRow = rhythm.stacks() > 0 || cracked > 0 || compiled != null;
 		if (compiled != null) {
 			String name = SpellCaster.nameOf(book, spell, runes);
 			int nameX = Math.max(lx + 3, x0 + BODY_X);
@@ -279,7 +280,8 @@ public final class SpellHud {
 		dev.wildercord.player.WildercordAttachments.SpellShield shield = player.getAttached(dev.wildercord.player.WildercordAttachments.SPELL_SHIELD);
 		if (shield != null && shield.until() > gameTime) {
 			int color = 0xFF000000 | shield.color();
-			int sy = y0 - 11;
+			// A line above the spell's name when there is one, so the two don't write over each other.
+			int sy = nameRow ? y0 - 21 : y0 - 11;
 			String text = net.minecraft.network.chat.Component.translatable("hud.wildercord.shield", Math.round(shield.strength()),
 				(shield.until() - gameTime + 19) / 20).getString();
 			hexagon(g, x0 + 2, sy + 1, color);

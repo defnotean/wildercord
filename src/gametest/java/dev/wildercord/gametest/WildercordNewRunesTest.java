@@ -201,6 +201,10 @@ public class WildercordNewRunesTest implements FabricClientGameTest {
 			}
 			Spellbooks.setReadyAt(player, 0, 0);
 			Spellbooks.setMana(player, Mana.max(player));
+			if (sample.runes().getFirst() == Runes.VORTEX) {
+				// A vortex opens on the ground where you look: look down at the husk 5 blocks ahead.
+				player.setXRot(18.0F);
+			}
 			long now = player.level().getGameTime();
 			SpellCaster.cast(player, 0);
 			return Spellbooks.readyAt(player, 0) > now ? null : "it didn't cast";

@@ -216,7 +216,8 @@ public class WildercordFusionTest implements FabricClientGameTest {
 		if (!RuneItem.runeOf(result(menu)).map(r -> r.is(Runes.FIRESTORM.id())).orElse(false)) {
 			failures.add("Fire and Push should make Firestorm (made " + result(menu) + ")");
 		}
-		if (player.experienceLevel != levels - 3) {
+		// (Its first time also earns an advancement, whose experience can give a level back.)
+		if (player.experienceLevel < levels - 3 || player.experienceLevel > levels - 2) {
 			failures.add("combining should cost 3 levels");
 		}
 		if (!menu.getSlot(FusionAltarMenu.CATALYST).getItem().isEmpty()) {
@@ -254,7 +255,8 @@ public class WildercordFusionTest implements FabricClientGameTest {
 		if (!Knots.contents(knot.get()).equals(List.of(Runes.BOLT, Runes.FIRE, Runes.AMPLIFY))) {
 			failures.add("the Knot should hold Bolt, Fire and Amplify (holds " + Knots.contents(knot.get()) + ")");
 		}
-		if (player.experienceLevel != levels - 3) {
+		// The first Knot also earns its advancement, whose experience can lift the player back up a level.
+		if (Knots.xpCost(Knots.contents(knot.get())) != 3 || player.experienceLevel < levels - 3 || player.experienceLevel > levels - 2) {
 			failures.add("a Knot of 3 runes should cost 3 levels (paid " + (levels - player.experienceLevel) + ")");
 		}
 		if (!Heart.discovered(player, "feat:" + Feats.KNOT)) {
