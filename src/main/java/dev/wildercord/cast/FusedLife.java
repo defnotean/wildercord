@@ -472,7 +472,13 @@ final class FusedLife {
 			return true;
 		}
 		bond.health[side] = Float.NaN;
-		if (splitting || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || !bond.holds(bond.level.getGameTime())) {
+		long now = bond.level.getGameTime();
+		if (now > bond.until + 40) {
+			// Long over and somehow never ended (its ticking lost): let it go now.
+			end(bond, 0);
+			return true;
+		}
+		if (splitting || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || !bond.holds(now)) {
 			return true;
 		}
 		if (e.damageCooldownTime > 10 && !source.is(DamageTypeTags.BYPASSES_COOLDOWN)) {
