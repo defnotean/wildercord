@@ -41,6 +41,15 @@ public final class Parry {
 	}
 
 	/**
+	 * Whether damage can be parried at all: only a spell arriving can. Lingering damage (a burn or a
+	 * zone ticking on after the spell landed) is never parried, or any Shield timed to a tick would
+	 * turn it; it meets the Shield like any other spell, blocked or breaking through by weight.
+	 */
+	public static boolean parriable(boolean lingering) {
+		return !lingering;
+	}
+
+	/**
 	 * What a counter-burst deals, before the parried caster's own power: half of what a spell of this
 	 * mana weight is roughly worth (4 plus 0.4 per mana), and never more than {@link #MAX_COUNTER}.
 	 */

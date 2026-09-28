@@ -231,7 +231,10 @@ public final class WildSurge {
 			}
 			case WARD -> {
 				release.accept(cast);
-				Shields.give(player, 16, 200, List.of(Runes.SHIELD.id()));
+				// Never trades a stronger Shield already up for this one.
+				if (Shields.strength(player) < WildMagic.WARD_STRENGTH) {
+					Shields.give(player, WildMagic.WARD_STRENGTH, WildMagic.WARD_TICKS, List.of(Runes.SHIELD.id()));
+				}
 				Fx.sound(level, heart, WildercordSounds.SHIELD_UP, 0.8F, 1.2F);
 			}
 		}

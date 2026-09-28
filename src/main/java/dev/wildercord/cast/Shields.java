@@ -175,7 +175,8 @@ public final class Shields {
 		if (shield == null) {
 			return false;
 		}
-		if (shield.until() >= now && parries(cast, target, shield)) {
+		// Only a spell arriving can be parried: lingering damage (a burn ticking on) meets the Shield as a block.
+		if (shield.until() >= now && Parry.parriable(Effects.isLingering()) && parries(cast, target, shield)) {
 			// Raised at the last moment: whatever it weighs, it's turned, and answered with a counter-burst.
 			parry(cast, target, from, shield, true);
 			return true;

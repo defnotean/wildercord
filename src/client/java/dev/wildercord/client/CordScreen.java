@@ -2102,9 +2102,16 @@ public class CordScreen extends Screen {
 			if (found.contains(rule.key())) {
 				String biome = rule.biomes().stream().sorted().findFirst().orElse("");
 				Component land = Component.translatable("biome." + biome.replace(':', '.'));
+				// A land gives its rune once a day: when it's ready again.
+				Long last = minecraft.player == null ? null
+					: minecraft.player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.ATTUNED_AT, java.util.Map.<String, Long>of()).get(rule.id());
+				long rest = minecraft.level == null ? 0 : dev.wildercord.spell.ExplorerNumbers.attuneRestLeft(last, minecraft.level.getGameTime());
+				Component ready = rest > 0
+					? Component.translatable("screen.wildercord.grimoire.attune_resting", Math.max(1, (rest + 1199) / 1200)).withStyle(ChatFormatting.DARK_GRAY)
+					: Component.translatable("screen.wildercord.grimoire.attune_ready").withStyle(ChatFormatting.DARK_GRAY);
 				lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.attunement", land, RuneItem.runeName(rune).withColor(RuneColors.of(rune))),
 					8, TEXT, List.of(RuneItem.runeName(rune).withColor(RuneColors.of(rune)), RuneItem.runeDescription(rune).withStyle(ChatFormatting.GRAY),
-						Component.literal(land.getString() + ", " + rule.needs()).withStyle(ChatFormatting.DARK_GRAY))));
+						Component.literal(land.getString() + ", " + rule.needs()).withStyle(ChatFormatting.DARK_GRAY), ready)));
 			} else {
 				lines.add(new GrimoireLine(Component.literal("“" + rule.riddle() + "”").withStyle(ChatFormatting.ITALIC), 8, 0xFFB8C8A0,
 					List.of(Component.translatable("screen.wildercord.grimoire.attune_hint").withStyle(ChatFormatting.GRAY))));

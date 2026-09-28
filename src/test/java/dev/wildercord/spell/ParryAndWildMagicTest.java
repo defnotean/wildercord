@@ -40,6 +40,12 @@ class ParryAndWildMagicTest {
 	}
 
 	@Test
+	void onlyAnArrivingSpellCanBeParriedNotLingeringDamage() {
+		assertTrue(Parry.parriable(false));
+		assertFalse(Parry.parriable(true), "a burn ticking on is blocked, never parried");
+	}
+
+	@Test
 	void surgeChanceGrowsWithHowFarPastYourManaItWent() {
 		assertEquals(WildMagic.BASE_CHANCE, WildMagic.chance(40, 41, 100), 0.01);
 		assertEquals(WildMagic.BASE_CHANCE + 0.15, WildMagic.chance(0, 100, 100), 1e-9);

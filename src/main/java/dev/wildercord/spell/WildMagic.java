@@ -29,6 +29,9 @@ public final class WildMagic {
 	public static final double NEAR = 8.0;
 	/** A Backfire hurts you for this much, but never below half a heart. */
 	public static final float BACKFIRE = 4.0F;
+	/** The Shield a Ward surge puts on you (the mana a spell must cost to break it), and for how long. A stronger one already up stays. */
+	public static final float WARD_STRENGTH = 16.0F;
+	public static final int WARD_TICKS = 200;
 
 	/**
 	 * What an overcast spell can twist into. {@code weight} is how often (out of the total), {@code color}

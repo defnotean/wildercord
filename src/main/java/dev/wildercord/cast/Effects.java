@@ -578,6 +578,25 @@ public final class Effects {
 		}
 	}
 
+	/** Set while lingering damage (a burn's later ticks, a zone's pulses) is dealt: a Shield blocks it but can't parry it. */
+	private static boolean lingering;
+
+	/** Runs {@code task} as lingering damage over time: see {@link Shields#stops}. */
+	static void lingering(Runnable task) {
+		boolean outer = lingering;
+		lingering = true;
+		try {
+			task.run();
+		} finally {
+			lingering = outer;
+		}
+	}
+
+	/** Whether the damage being dealt right now lingers on from an earlier hit, rather than a spell arriving. */
+	static boolean isLingering() {
+		return lingering;
+	}
+
 	/**
 	 * Damages with invulnerability frames skipped, so stacked effects in one spell all land.
 	 * Execute on the current effect doubles it against targets under half health.

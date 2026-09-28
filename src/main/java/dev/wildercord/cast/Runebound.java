@@ -452,7 +452,7 @@ public final class Runebound {
 			level.addFreshEntity(new ItemEntity(level, at.x, at.y, at.z, new ItemStack(WildercordItems.TORN_PAGE)));
 		}
 		// Now and then an Adept's Cord was threaded with a rune of the world, found far from here.
-		if (adept && level.getRandom().nextInt(100) < dev.wildercord.content.WildercordLoot.ADEPT_FIND_CHANCE) {
+		if (adept && level.getRandom().nextInt(100) < dev.wildercord.content.WildercordLoot.adeptFindChance()) {
 			level.addFreshEntity(new ItemEntity(level, at.x, at.y, at.z,
 				dev.wildercord.content.WildercordLoot.foundRune(dev.wildercord.spell.RuneSources.RUNEBOUND_ADEPT.id(), level.getRandom())));
 		}

@@ -254,7 +254,7 @@ public final class Runes {
 	// ---- Runes of the world: never crafted, only found in particular places (see RuneSources and
 	// Attunements). Defined after everything else, so their magic circles never change an older rune's.
 	// Vanilla structures.
-	public static final RuneDef ECHOLOCATE = effect("echolocate", "Echolocate", 2, 6, "void", EffectKind.HARMFUL, "A sonar pulse from the point: every creature within 16 blocks glows through walls for 10 seconds, and those it hits are dazed (Slowness II) for 3.", DURATION, RADIUS);
+	public static final RuneDef ECHOLOCATE = effect("echolocate", "Echolocate", 2, 6, "void", EffectKind.HARMFUL, "A sonar pulse from the point: every enemy within 16 blocks glows through walls for 10 seconds, and those it hits are dazed (Slowness II) for 3.", DURATION, RADIUS);
 	public static final RuneDef RESONANT_SHRIEK = effect("resonant_shriek", "Resonant Shriek", 3, 18, "void", EffectKind.HARMFUL, "A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A second later it echoes for half as much.", POWER, DURATION, LINGER);
 	public static final RuneDef TIDECALL = effect("tidecall", "Tidecall", 3, 16, "frost", EffectKind.HARMFUL, "The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked.", POWER, RADIUS, LINGER);
 	public static final RuneDef INFEST = effect("infest", "Infest", 2, 9, "earth", EffectKind.HARMFUL, "Silverfish burrow out of the stone around each target: 1 damage every half second for 4 seconds, and Slowness I.", POWER, DURATION);
@@ -286,7 +286,7 @@ public final class Runes {
 	public static final RuneDef ROOTSNARE = effect("rootsnare", "Rootsnare", 2, 11, "life", EffectKind.HARMFUL, "Mangrove roots burst up around the point: every enemy within 3 blocks is held for 2 seconds and takes 3 damage.", POWER, RADIUS, DURATION);
 	public static final RuneDef STALACTITE = effect("stalactite", "Stalactite", 2, 9, "earth", EffectKind.HARMFUL, "A stalactite drops on each target from above: 7 damage, 50% more against a bare head.", POWER, LINGER);
 	public static final RuneDef SUMMIT_WIND = effect("summit_wind", "Summit Wind", 3, 14, "wind", EffectKind.HARMFUL, "A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and away. On Self it carries you 12 blocks up and lets you glide down.", POWER, RADIUS);
-	public static final RuneDef SOULFIRE = effect("soulfire", "Soulfire", 3, 16, "fire", EffectKind.HARMFUL, "Blue soul flames: 3 fire damage a second for 5 seconds, and each burn gives you back 1 mana.", POWER, DURATION);
+	public static final RuneDef SOULFIRE = effect("soulfire", "Soulfire", 3, 16, "fire", EffectKind.HARMFUL, "Blue soul flames: 3 fire damage a second for 5 seconds, and the damage they deal gives you back a little mana (up to 5 a cast).", POWER, DURATION);
 	public static final RuneDef WARP_STEP = effect("warp_step", "Warp Step", 2, 8, "void", EffectKind.MOVEMENT, "Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pulled back, unless you're sneaking.");
 	public static final RuneDef BLOOD_MOSS = effect("blood_moss", "Blood Moss", 2, 10, "blood", EffectKind.HARMFUL, "Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you heal for all of it.", POWER, DURATION);
 	public static final RuneDef BASALT_SURGE = effect("basalt_surge", "Basalt Surge", 3, 18, "earth", EffectKind.HARMFUL, "Basalt columns burst up in a line from you to the point: 7 damage and a toss into the air for everything along it.", POWER, RADIUS);
@@ -308,7 +308,7 @@ public final class Runes {
 	public static final RuneDef STARSHARD = effect("starshard", "Starshard", 3, 16, "arcane", EffectKind.HARMFUL, "A shard of the fallen star: 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks for 3.", POWER, LINGER);
 	public static final RuneDef RIFTCALL = effect("riftcall", "Riftcall", 3, 18, "void", EffectKind.HARMFUL, "Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6.", POWER, RADIUS, DURATION);
 	public static final RuneDef UNSTABLE = modifier("unstable", "Unstable", 3, 1.2, POWER, "Rift-touched: the effect's power swings anywhere from 50% to 200% each time it lands.");
-	public static final RuneDef MANABURN = effect("manaburn", "Manaburn", 2, 10, "arcane", EffectKind.HARMFUL, "Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also loses 20 mana and takes 4 more.", POWER);
+	public static final RuneDef MANABURN = effect("manaburn", "Manaburn", 2, 10, "arcane", EffectKind.HARMFUL, "Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana (less from a weaker hit).", POWER);
 	public static final RuneDef MANATIDE = effect("manatide", "Manatide", 3, 12, "arcane", EffectKind.HELPFUL, "Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute.", DURATION);
 
 	/** Runes you learn the first time you wear a Cord. */

@@ -26,7 +26,9 @@ Weigh, Shackle and Kindling.
 - Freezes the surface of water within **2.5 blocks** (up to 5 with Widen) into frosted ice, **16
   blocks** at most, even when the spell sank to the bottom (up to 4 blocks deep). You can walk on
   it. It melts in the light like Frost Walker's ice, and anything still standing after **30 seconds**
-  melts back anyway. Never around a creature swimming there.
+  melts back anyway, even in the dark or at night. The thaw is saved with the world: if the server
+  stops, or nobody is near when the time comes, the ice melts as soon as its chunk is loaded again,
+  so frozen water always comes back. Never around a creature swimming there.
 - Puts out up to **6** fires and lit campfires nearby.
 - Lava is left alone.
 

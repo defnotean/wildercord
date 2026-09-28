@@ -6,6 +6,7 @@ import dev.wildercord.content.WildercordItems;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.Attunements;
+import dev.wildercord.spell.ExplorerNumbers;
 import dev.wildercord.spell.RuneColors;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,8 +36,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * for which and when) and it drinks the land in over twenty seconds. A circle opens under the
  * caster in the rune's colour, motes rise from the ground into the blank, and it brightens through
  * four stages, each with a chime, until the Blank Rune becomes the biome's rune and the Grimoire
- * records the attunement. Moving, standing up or letting go of the blank breaks it off. Checked
- * every 5 ticks from {@link SpellCaster}, straight after {@link Meditation}.
+ * records the attunement. Moving, standing up or letting go of the blank breaks it off. A land then
+ * rests: it gives each player its rune once an in-game day ({@link ExplorerNumbers#ATTUNE_REST}), and
+ * says so (and the Grimoire shows when it's ready again). Checked every 5 ticks from
+ * {@link SpellCaster}, straight after {@link Meditation}.
  */
 public final class Attunement {
 	private Attunement() {}
@@ -80,6 +84,17 @@ public final class Attunement {
 			return;
 		}
 		Attunements.Rule rule = match.get();
+		long rest = restLeft(player, rule, now);
+		if (rest > 0) {
+			// This land already gave this player its rune today: say so (at most every half minute), and don't start.
+			long quiet = state == null ? 0 : state.quietUntil();
+			if (now >= quiet) {
+				player.sendOverlayMessage(Component.translatable("message.wildercord.attune_resting", minutes(rest)).withStyle(ChatFormatting.GRAY));
+				quiet = now + 600;
+			}
+			STATES.put(player.getUUID(), new State("", 0, quiet));
+			return;
+		}
 		int checks = state != null && state.rule().equals(rule.id()) ? state.checks() + 1 : 1;
 		STATES.put(player.getUUID(), new State(rule.id(), checks, state == null ? 0 : state.quietUntil()));
 		int color = RuneColors.of(rule.rune());
@@ -98,6 +113,16 @@ public final class Attunement {
 			complete(player, hand, rule, color);
 			STATES.put(player.getUUID(), new State("", 0, now + 200));
 		}
+	}
+
+	/** How long (in ticks) before {@code rule}'s land gives this player its rune again: 0 when it's ready. */
+	public static long restLeft(ServerPlayer player, Attunements.Rule rule, long now) {
+		return ExplorerNumbers.attuneRestLeft(player.getAttachedOrElse(WildercordAttachments.ATTUNED_AT, Map.of()).get(rule.id()), now);
+	}
+
+	/** Whole minutes, rounded up (at least 1). */
+	private static long minutes(long ticks) {
+		return Math.max(1, (ticks + 1199) / 1200);
 	}
 
 	/** The hand holding a Blank Rune (the main hand first), or null. */
@@ -185,6 +210,10 @@ public final class Attunement {
 		Fx.sound(level, at, WildercordSounds.DISCOVERY, 1.0F, 1.0F);
 		player.sendOverlayMessage(Component.translatable("message.wildercord.attuned", RuneItem.runeName(rule.rune()).withColor(color)));
 		Grimoire.unlock(player, rule.key());
+		// The land rests now: once a day for each player.
+		Map<String, Long> attuned = new HashMap<>(player.getAttachedOrElse(WildercordAttachments.ATTUNED_AT, Map.of()));
+		attuned.put(rule.id(), level.getGameTime());
+		player.setAttached(WildercordAttachments.ATTUNED_AT, attuned);
 	}
 
 	private static void broken(ServerPlayer player) {

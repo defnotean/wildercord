@@ -143,6 +143,11 @@ public final class WildercordLoot {
 	/** A chance in 100 that a slain Runebound Adept's Cord gives up a rune of the world. */
 	public static final int ADEPT_FIND_CHANCE = 8;
 
+	/** {@link #ADEPT_FIND_CHANCE} times the server's rune loot multiplier. */
+	public static int adeptFindChance() {
+		return scaled(ADEPT_FIND_CHANCE, dev.wildercord.config.Config.get().runeLootChance());
+	}
+
 	/**
 	 * One rune found at {@code source} (a {@link RuneSources} id, e.g. {@code ember_sanctum} or
 	 * {@code starfall}), picked by tier like a chest picks, or an empty stack for an unknown source.
@@ -250,17 +255,22 @@ public final class WildercordLoot {
 					table.withPool(chance(odds, runeEntry(drop.getValue())));
 				}
 			}
-			// The runes of the world: found only in these places.
+			// The runes of the world: found only in these places, as often as the rune multiplier says.
 			for (SourcePool sourcePool : SOURCE_POOLS.getOrDefault(key, List.of())) {
-				table.withPool(foundRunePool(sourcePool.source().id(), sourcePool.chance()));
+				int odds = scaled(sourcePool.chance(), config.runeLootChance());
+				if (odds > 0) {
+					table.withPool(foundRunePool(sourcePool.source().id(), odds));
+				}
 			}
 			SourcePool guardian = guardianTables.get(key);
-			if (guardian != null) {
-				table.withPool(foundRunePool(guardian.source().id(), guardian.chance()));
+			int guardianOdds = guardian == null ? 0 : scaled(guardian.chance(), config.runeLootChance());
+			if (guardianOdds > 0) {
+				table.withPool(foundRunePool(guardian.source().id(), guardianOdds));
 			}
 			SourcePool dug = SOURCE_DIGS.get(key);
-			if (dug != null) {
-				int total = Math.max(1, Math.round(12.0F * dug.chance() / (100 - dug.chance())));
+			int dugOdds = dug == null ? 0 : Math.min(95, scaled(dug.chance(), config.runeLootChance()));
+			if (dugOdds > 0) {
+				int total = Math.max(1, Math.round(12.0F * dugOdds / (100 - dugOdds)));
 				List<RuneDef> runes = dug.source().runes();
 				int weights = runes.stream().mapToInt(r -> tierWeight(r.tier())).sum();
 				table.modifyPools(builder -> {

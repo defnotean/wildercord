@@ -3,6 +3,7 @@ package dev.wildercord.cast;
 import dev.wildercord.Wildercord;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.Spellbooks;
+import dev.wildercord.spell.ExplorerNumbers;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellNumbers;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.function.IntConsumer;
 
 /**
@@ -189,24 +191,53 @@ public final class ExplorerEffects {
 		BRANDED.clear();
 		ECLIPSED.clear();
 		DRANK.clear();
+		LINGERING.clear();
 	}
+
+	/**
+	 * A lingering effect on a creature: whose it is (null when anyone's refreshes it, as for a
+	 * shared attribute modifier) and of which rune. A new one from the same source refreshes the
+	 * old instead of stacking another copy on top.
+	 */
+	private record Linger(UUID target, UUID caster, String rune) {}
+
+	private static final Map<Linger, Object> LINGERING = new HashMap<>();
+
+	/** Starts (or restarts) a lingering effect; the token stays current until a newer one replaces it. */
+	private static Object linger(Linger key) {
+		Object token = new Object();
+		LINGERING.put(key, token);
+		return token;
+	}
+
+	private static boolean current(Linger key, Object token) {
+		return LINGERING.get(key) == token;
+	}
+
+	private static void release(Linger key, Object token) {
+		LINGERING.remove(key, token);
+	}
+
+	/** Soulfire's mana given back so far, and Manaburn's mana taken from each target so far, per cast. */
+	private static final Map<Object, double[]> REFUNDED = java.util.Collections.synchronizedMap(new WeakHashMap<>());
+	private static final Map<Object, Map<UUID, double[]>> BURNED = java.util.Collections.synchronizedMap(new WeakHashMap<>());
 
 	// ------------------------------------------------------------------ helpers
 
 	/**
-	 * Runs {@code step} every {@code every} ticks for {@code ticks} ticks (the first at once), while the
-	 * cast lasts, then {@code end}.
+	 * Runs {@code step} every {@code every} ticks for {@code ticks} ticks (the first at once, the last
+	 * before the time is up: see {@link ExplorerNumbers#pulses}), while the cast lasts, then {@code end}.
+	 * What they deal is lingering damage, which a Shield can block but not parry.
 	 */
 	private static void repeat(Cast cast, int ticks, int every, IntConsumer step, Runnable end) {
-		for (int t = 0; t <= ticks; t += every) {
-			int tick = t;
+		for (int tick : ExplorerNumbers.pulses(ticks, every)) {
 			Scheduler.later(Math.max(1, tick), Effects.carryContext(() -> {
 				if (cast.alive()) {
-					step.accept(tick);
+					Effects.lingering(() -> step.accept(tick));
 				}
 			}));
 		}
-		Scheduler.later(ticks + 1, end);
+		Scheduler.later(ticks + 1, Effects.carryContext(() -> Effects.lingering(end)));
 	}
 
 	/** Every enemy within {@code radius} of the point (by the middle of its body). */
@@ -272,12 +303,16 @@ public final class ExplorerEffects {
 
 	// ------------------------------------------------------------------ vanilla structures
 
-	/** Echolocate: a sonar pulse that lights up everything around the point, and dazes what it hit. */
+	/**
+	 * Echolocate: a sonar pulse that lights up every creature around the point the caster could harm
+	 * (never allies or bystanders, so an invisible player only shows when they're a PvP enemy), and
+	 * dazes what it hit.
+	 */
 	private static void echolocate(Cast cast, Cast.Hit hit, List<LivingEntity> harmed, double radius, double duration) {
 		Vec3 point = hit.point();
 		ExplorerVfx.echolocate(cast.level, point, radius);
 		int seen = 0;
-		for (Entity e : cast.level.getEntities(cast.caster, new AABB(point, point).inflate(radius), e -> e instanceof LivingEntity && e.isAlive())) {
+		for (Entity e : cast.level.getEntities(cast.caster, new AABB(point, point).inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
 			if (seen++ >= MAX_REVEALED || e.position().distanceTo(point) > radius) {
 				continue;
 			}
@@ -319,17 +354,19 @@ public final class ExplorerEffects {
 		}
 	}
 
-	/** Infest: silverfish chew at the target from the stone around it. */
+	/** Infest: silverfish chew at the target from the stone around it. Infesting it again starts the chewing over. */
 	private static void infest(Cast cast, LivingEntity t, double power, double duration) {
 		int ticks = Effects.ticks(4, duration);
 		effect(t, MobEffects.SLOWNESS, ticks, 0, cast);
 		ExplorerVfx.infest(cast.level, t, true);
+		Linger key = new Linger(t.getUUID(), cast.caster.getUUID(), "infest");
+		Object token = linger(key);
 		repeat(cast, ticks, 10, tick -> {
-			if (tick > 0 && onHand(cast, t)) {
+			if (current(key, token) && onHand(cast, t)) {
 				ExplorerVfx.infest(cast.level, t, false);
 				Effects.hurt(cast, t, magic(cast), 1 * power);
 			}
-		}, () -> { });
+		}, () -> release(key, token));
 	}
 
 	/** Sandstorm: a whirl of sand that blinds, slows and scours whatever is in it. */
@@ -528,11 +565,18 @@ public final class ExplorerEffects {
 		}
 		t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
 		ExplorerVfx.shellClose(cast.level, t);
+		// One shell at a time: a newer one (anyone's) takes over, and only the last to close lets go of the modifier.
+		Linger key = new Linger(t.getUUID(), null, "shulkershell");
+		Object token = linger(key);
 		repeat(cast, ticks, 10, tick -> {
-			if (onHand(cast, t) && tick > 0) {
+			if (current(key, token) && onHand(cast, t) && tick > 0) {
 				ExplorerVfx.shellHold(cast.level, t, tick);
 			}
 		}, () -> {
+			if (!current(key, token)) {
+				return;
+			}
+			release(key, token);
 			if (knockback != null) {
 				knockback.removeModifier(SHELL_ID);
 			}
@@ -691,11 +735,18 @@ public final class ExplorerEffects {
 		if (jump != null) {
 			jump.addOrUpdateTransientModifier(new AttributeModifier(MIRE_ID, -0.9, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 		}
+		// One mire at a time: a newer one (anyone's) takes over, and only the last to dry lets go of the modifier.
+		Linger key = new Linger(t.getUUID(), null, "mire");
+		Object token = linger(key);
 		repeat(cast, ticks, 10, tick -> {
-			if (onHand(cast, t)) {
+			if (current(key, token) && onHand(cast, t)) {
 				ExplorerVfx.mire(cast.level, t, tick == 0);
 			}
 		}, () -> {
+			if (!current(key, token)) {
+				return;
+			}
+			release(key, token);
 			if (jump != null) {
 				jump.removeModifier(MIRE_ID);
 			}
@@ -812,20 +863,33 @@ public final class ExplorerEffects {
 		}
 	}
 
-	/** Soulfire: blue flames that burn on through water, and feed their caster a little mana each time. */
+	/**
+	 * Soulfire: blue flames that burn on through water, and feed their caster a little of the damage
+	 * they really deal back as mana (see {@link ExplorerNumbers#soulfireRefund}; a blocked burn, or one
+	 * the target shrugs off, gives nothing). Lighting it again refreshes the burn rather than adding one.
+	 */
 	private static void soulfire(Cast cast, LivingEntity t, double power, int ticks) {
 		ExplorerVfx.soulfire(cast.level, t, true);
+		Linger key = new Linger(t.getUUID(), cast.caster.getUUID(), "soulfire");
+		Object token = linger(key);
 		repeat(cast, ticks, 20, tick -> {
-			if (!onHand(cast, t)) {
+			if (!current(key, token) || !onHand(cast, t)) {
 				return;
 			}
 			ExplorerVfx.soulfire(cast.level, t, false);
 			double react = tick == 0 ? Reactions.fire(cast, t) : 1.0;
+			float before = t.getHealth() + t.getAbsorptionAmount();
 			Effects.hurt(cast, t, fire(cast), 3 * power * react);
+			float dealt = Math.max(0.0F, before - (t.getHealth() + t.getAbsorptionAmount()));
 			if (cast.caster instanceof ServerPlayer player) {
-				Mana.restore(player, 1);
+				double[] refunded = REFUNDED.computeIfAbsent(cast.identity(), k -> new double[1]);
+				double back = ExplorerNumbers.soulfireRefund(dealt, refunded[0]);
+				if (back > 0) {
+					refunded[0] += back;
+					Mana.restore(player, (float) back);
+				}
 			}
-		}, () -> { });
+		}, () -> release(key, token));
 	}
 
 	/** Warp Step: a step to the point, and back again a moment later unless the caster is sneaking. */
@@ -868,11 +932,13 @@ public final class ExplorerEffects {
 		});
 	}
 
-	/** Blood Moss: moss that drinks the target and gives the caster what it takes. */
+	/** Blood Moss: moss that drinks the target and gives the caster what it takes. Spreading it again starts it over. */
 	private static void bloodMoss(Cast cast, LivingEntity t, double power, int ticks) {
 		ExplorerVfx.bloodMoss(cast.level, t, cast.caster, true);
+		Linger key = new Linger(t.getUUID(), cast.caster.getUUID(), "blood_moss");
+		Object token = linger(key);
 		repeat(cast, ticks, 20, tick -> {
-			if (tick == 0 || !onHand(cast, t)) {
+			if (!current(key, token) || !onHand(cast, t)) {
 				return;
 			}
 			float before = t.getHealth();
@@ -882,7 +948,7 @@ public final class ExplorerEffects {
 				cast.caster.heal(taken);
 			}
 			ExplorerVfx.bloodMoss(cast.level, t, cast.caster, false);
-		}, () -> { });
+		}, () -> release(key, token));
 	}
 
 	/** Basalt Surge: columns of basalt burst up in a line from the caster to the point. */
@@ -995,7 +1061,8 @@ public final class ExplorerEffects {
 			}
 			ExplorerVfx.cinderheart(cast.level, t, false);
 			for (LivingEntity near : enemiesAround(cast, t.getBoundingBox().getCenter(), 4.0)) {
-				if (near != t) {
+				// The heat doesn't go through walls.
+				if (near != t && t.hasLineOfSight(near)) {
 					Effects.hurt(cast, near, fire(cast), 3 * power);
 					near.igniteForSeconds(2);
 				}
@@ -1012,9 +1079,7 @@ public final class ExplorerEffects {
 			for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
 				mark(ECLIPSED, cast, t, 25);
 				effect(t, MobEffects.BLINDNESS, 30, 0, cast);
-				if (tick > 0) {
-					Effects.hurt(cast, t, magic(cast), 2 * power);
-				}
+				Effects.hurt(cast, t, magic(cast), 2 * power);
 			}
 		}, () -> { });
 	}
@@ -1032,20 +1097,22 @@ public final class ExplorerEffects {
 		Effects.hurt(cast, t, magic(cast), (14 + 3 * good.size()) * power);
 	}
 
-	/** Drowning Word: water fills the target's lungs wherever it stands. */
+	/** Drowning Word: water fills the target's lungs wherever it stands. Speaking it again starts it over. */
 	private static void drowningWord(Cast cast, LivingEntity t, double power, int ticks) {
 		Reactions.mark(t, Reactions.Mark.SOAKED, ticks + 40);
 		ExplorerVfx.drowningWord(cast.level, t, true);
+		Linger key = new Linger(t.getUUID(), cast.caster.getUUID(), "drowning_word");
+		Object token = linger(key);
 		repeat(cast, ticks, 10, tick -> {
-			if (!onHand(cast, t)) {
+			if (!current(key, token) || !onHand(cast, t)) {
 				return;
 			}
 			t.setAirSupply(Math.min(t.getAirSupply(), 0));
 			ExplorerVfx.drowningWord(cast.level, t, false);
-			if (tick > 0 && tick % 20 == 0) {
+			if (tick % 20 == 0) {
 				Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.DROWN, cast.caster), 2 * power);
 			}
-		}, () -> { });
+		}, () -> release(key, token));
 	}
 
 	/** Tidewrit: a wall of water rolls out from the caster through the point, sweeping everything on. */
@@ -1090,6 +1157,8 @@ public final class ExplorerEffects {
 		Effects.hurt(cast, t, magic(cast), 9 * power);
 		List<LivingEntity> near = enemiesAround(cast, t.getBoundingBox().getCenter(), 8.0);
 		near.remove(t);
+		// Sparks only leap to what the shard can see.
+		near.removeIf(other -> !t.hasLineOfSight(other));
 		near.sort(java.util.Comparator.comparingDouble(e -> e.distanceToSqr(t)));
 		Vec3 from = t.getBoundingBox().getCenter();
 		for (int i = 0; i < Math.min(3, near.size()); i++) {
@@ -1118,7 +1187,7 @@ public final class ExplorerEffects {
 						Effects.push(t, in.normalize().scale(Math.min(0.5, 0.12 + d * 0.06)));
 					}
 				}
-				if (tick > 0 && tick % 20 == 0) {
+				if (tick % 20 == 0) {
 					Effects.hurt(cast, t, magic(cast), 2 * power);
 				}
 			}
@@ -1133,11 +1202,21 @@ public final class ExplorerEffects {
 		}));
 	}
 
-	/** Manaburn: arcane fire that burns hotter in anything that carries magic. */
+	/**
+	 * Manaburn: arcane fire that burns hotter in anything that carries magic. What it takes from a
+	 * player's mana scales with the hit's power (so with the shape's strength) and PvP's scale, and one
+	 * cast never takes more than {@link ExplorerNumbers#MANABURN_DRAIN_MAX} from anyone.
+	 */
 	private static void manaburn(Cast cast, LivingEntity t, double power) {
 		boolean caster = false;
 		if (t instanceof ServerPlayer player && Spellbooks.tier(player) != null) {
-			Spellbooks.setMana(player, Math.max(0, Spellbooks.mana(player) - 20));
+			double scale = cast.caster instanceof Player ? dev.wildercord.config.Config.get().pvpDamageScale() : 1.0;
+			double[] taken = BURNED.computeIfAbsent(cast.identity(), k -> new HashMap<>()).computeIfAbsent(player.getUUID(), k -> new double[1]);
+			double drain = ExplorerNumbers.manaburnDrain(power, scale, taken[0]);
+			if (drain > 0) {
+				taken[0] += drain;
+				Spellbooks.setMana(player, (float) Math.max(0, Spellbooks.mana(player) - drain));
+			}
 			caster = true;
 		} else if (t instanceof Mob mob && !Runebound.spellOf(mob).isEmpty()) {
 			caster = true;
@@ -1166,7 +1245,7 @@ public final class ExplorerEffects {
 		DRANK.put(player.getUUID(), now);
 		ExplorerVfx.manatide(cast.level, player, true);
 		repeat(cast, ticks, 20, tick -> {
-			if (tick > 0 && onHand(cast, player)) {
+			if (onHand(cast, player)) {
 				Mana.restore(player, 3);
 				ExplorerVfx.manatide(cast.level, player, false);
 			}
