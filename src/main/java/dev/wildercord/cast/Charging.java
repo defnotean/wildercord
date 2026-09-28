@@ -2,6 +2,7 @@ package dev.wildercord.cast;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.CordTier;
+import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
@@ -32,6 +33,8 @@ public final class Charging {
 	public static final int FULL = 30;
 	/** Extra power at a full charge. */
 	public static final double POWER = 0.4;
+	/** A release from at least this far into the charge is a charged spell, and leaves with a rush of air. */
+	private static final double RELEASE_FROM = 0.2;
 	/** A charge held this long fizzles. */
 	private static final int MAX_HOLD = 20 * 12;
 	private static final Identifier SLOW = Wildercord.id("charging");
@@ -53,7 +56,12 @@ public final class Charging {
 		}
 		double progress = progress(charge, player.level().getGameTime());
 		stop(player);
+		long readyAt = Spellbooks.readyAt(player, charge.spell());
 		SpellCaster.cast(player, charge.spell(), progress);
+		// The spell went off if its cooldown started (not if it lacked mana, or is waiting to overcast).
+		if (progress >= RELEASE_FROM && Spellbooks.readyAt(player, charge.spell()) != readyAt) {
+			Fx.sound(player.level(), player.position(), WildercordSounds.RELEASE, 0.5F + 0.5F * (float) progress, 1.0F);
+		}
 	}
 
 	private static void begin(ServerPlayer player, int requested) {
@@ -82,7 +90,7 @@ public final class Charging {
 		player.setAttached(WildercordAttachments.CHARGE, new WildercordAttachments.Charge(spell, now, List.copyOf(ids)));
 		player.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(
 			new AttributeModifier(SLOW, -0.4, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 1.5F);
+		Fx.sound(player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
 	}
 
 	private static void stop(ServerPlayer player) {
@@ -98,8 +106,7 @@ public final class Charging {
 		}
 		long held = player.level().getGameTime() - charge.start();
 		if (held >= FULL && held < FULL + 5) {
-			Fx.sound(player.level(), player.position(), SoundEvents.BEACON_POWER_SELECT, 0.5F, 1.8F);
-			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.9F);
+			Fx.sound(player.level(), player.position(), WildercordSounds.CHARGE_FULL, 0.8F, 1.0F);
 		}
 		if (held > MAX_HOLD || Spellbooks.tier(player) == null || !player.isAlive()) {
 			stop(player);

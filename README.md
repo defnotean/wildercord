@@ -276,7 +276,8 @@ tools/
 ├── gui_art.py           GUI and HUD sprites
 ├── sigil_art.py         Magic circles, and the wheel, beat ring and toast sprites
 ├── circle_art.py        Every rune's own ring pattern and emblem for magic circles
-└── world_art.py         Scroll, page, dummy, Wellstone, seals, lectern and entity skins
+├── world_art.py         Scroll, page, dummy, Wellstone, seals, lectern and entity skins
+└── sound_art.py         Every sound, synthesised: casts, impacts, charging, circles and the UI
 docs/
 ├── DESIGN.md            The full design: every rune, number and rule
 ├── ARCHITECTURE.md      How the code fits together, for developers
