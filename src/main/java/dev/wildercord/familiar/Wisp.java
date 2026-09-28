@@ -359,6 +359,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 		private int repath;
 		private int stuck;
 		private double best;
+		private boolean far;
 
 		FollowGoal() {
 			setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
@@ -389,7 +390,17 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 				return;
 			}
 			if (distance > 4) {
-				if (--repath <= 0) {
+				if (!far) {
+					// Just fell behind: progress is measured from here.
+					far = true;
+					best = distance;
+					stuck = 0;
+				}
+				if (hasLineOfSight(owner)) {
+					// Nothing in the way: it flies straight to its owner.
+					getNavigation().stop();
+					getMoveControl().setWantedPosition(target.x, target.y, target.z, 1.8);
+				} else if (--repath <= 0) {
 					repath = 10;
 					getNavigation().moveTo(target.x, target.y, target.z, 1.8);
 				}
@@ -402,6 +413,7 @@ public class Wisp extends PathfinderMob implements OwnableEntity {
 					stuck = 0;
 				}
 			} else {
+				far = false;
 				getNavigation().stop();
 				getMoveControl().setWantedPosition(target.x, target.y, target.z, Math.min(1.4, 0.4 + distance));
 				best = distance;
