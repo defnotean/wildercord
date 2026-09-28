@@ -105,6 +105,7 @@ public final class Effects {
 			currentElement = outerElement;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
+		Dungeons.onSpell(cast, hit, node.effect.element());
 	}
 
 	/**
@@ -570,7 +571,8 @@ public final class Effects {
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);
 		target.setInvulnerableTime(0);
-		target.hurtServer(cast.level, source, damage);
+		float dealt = damage;
+		Dungeons.spellHit(() -> target.hurtServer(cast.level, source, dealt));
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));

@@ -108,7 +108,8 @@ public final class Runebound {
 			}
 			double chance = 0.02 + 0.006 * level.getCurrentDifficultyAt(mob.blockPosition()).getEffectiveDifficulty();
 			// Inside an Archive, the monsters are the Archive's: a third of them carry Cords.
-			if (level.structureManager().getStructureWithPieceAt(mob.blockPosition(), dev.wildercord.world.WildercordWorldgen.ARCHIVES).isValid()) {
+			if (level.structureManager().getStructureWithPieceAt(mob.blockPosition(), dev.wildercord.world.WildercordWorldgen.ARCHIVES).isValid()
+					|| level.structureManager().getStructureWithPieceAt(mob.blockPosition(), dev.wildercord.world.dungeons.DungeonWorldgen.DUNGEONS).isValid()) {
 				chance = 0.35;
 			}
 			if (level.getDifficulty() != Difficulty.PEACEFUL && level.getRandom().nextDouble() < chance) {
@@ -194,6 +195,11 @@ public final class Runebound {
 	 */
 	public static void bindAtGeneration(Mob mob, boolean adept) {
 		mark(mob, pick(mob, adept), adept);
+	}
+
+	/** As {@link #bindAtGeneration(Mob, boolean)}, with a spell chosen for it (a dungeon's guards carry spells that suit it). */
+	public static void bindAtGeneration(Mob mob, List<RuneDef> spell, boolean adept) {
+		mark(mob, spell, adept);
 	}
 
 	private static List<RuneDef> pick(Mob mob, boolean adept) {

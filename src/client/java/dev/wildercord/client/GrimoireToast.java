@@ -69,6 +69,9 @@ public class GrimoireToast implements Toast {
 	private static ItemStack featIcon(String id) {
 		return switch (id) {
 			case Feats.ARCHIVIST -> new ItemStack(Items.ENCHANTED_BOOK);
+			case Feats.CINDER_WARDEN -> new ItemStack(dev.wildercord.content.dungeons.DungeonItems.CINDER_HEART);
+			case Feats.STAR_EATER -> new ItemStack(dev.wildercord.content.dungeons.DungeonItems.ASTRAL_LENS);
+			case Feats.TIDE_SCRIBE -> new ItemStack(dev.wildercord.content.dungeons.DungeonItems.DROWNED_QUILL);
 			case Feats.RUNEBOUND -> RuneItem.stack(Runes.HARM);
 			case Feats.LEY_LINE, Feats.WELLSTONE -> new ItemStack(dev.wildercord.content.WildercordBlocks.WELLSTONE);
 			case Feats.SEAL -> new ItemStack(dev.wildercord.content.WildercordBlocks.RUNE_SEAL);

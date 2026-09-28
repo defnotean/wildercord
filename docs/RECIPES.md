@@ -194,17 +194,17 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 
 | Rune | Family | Found |
 |---|---|---|
-| Dragon Breath | Effect | the Ender Dragon, Archive vaults, the Archivist |
-| Hollow | Effect | the Wither (50%), Archive vaults, the Archivist |
-| Infinity | Effect | Ominous vaults, the Ender Dragon, Archive vaults, the Archivist |
-| Reversal | Effect | Ominous vaults, Archive vaults, the Archivist |
-| Rewind | Effect | End cities, Archive vaults, the Archivist |
-| Sonic Boom | Effect | the Warden, Archive vaults, the Archivist |
-| Starfall | Effect | the Elder Guardian, Archive vaults, the Archivist |
-| Stasis | Effect | End cities, the Elder Guardian (25%), Archive vaults, the Archivist |
-| Summon | Effect | Evokers (15%), Archive vaults, the Archivist |
-| Wither | Effect | the Wither, Archive vaults, the Archivist |
-| Domain | Shape | Ancient cities, the Warden (35%), Archive vaults, the Archivist |
+| Dragon Breath | Effect | the Ender Dragon, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Hollow | Effect | the Wither (50%), Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Infinity | Effect | Ominous vaults, the Ender Dragon, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Reversal | Effect | Ominous vaults, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Rewind | Effect | End cities, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Sonic Boom | Effect | the Warden, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Starfall | Effect | the Elder Guardian, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Stasis | Effect | End cities, the Elder Guardian (25%), Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Summon | Effect | Evokers (15%), Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Wither | Effect | the Wither, Archive and dungeon vaults, the Archivist and dungeon bosses |
+| Domain | Shape | Ancient cities, the Warden (35%), Archive and dungeon vaults, the Archivist and dungeon bosses |
 
 ## Innate runes (10, never crafted or found)
 

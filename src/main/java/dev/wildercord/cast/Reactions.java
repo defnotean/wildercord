@@ -51,6 +51,8 @@ public final class Reactions {
 
 	private static final Map<UUID, Map<Mark, Long>> MARKS = new ConcurrentHashMap<>();
 	private static final Map<UUID, Long> LAST_CALLOUT = new ConcurrentHashMap<>();
+	/** When a reaction last went off on each creature (the Cinder Warden only yields to reactions). */
+	private static final Map<UUID, Long> REACTED = new ConcurrentHashMap<>();
 
 	public static void mark(Entity target, Mark mark) {
 		mark(target, mark, mark.ticks);
@@ -70,6 +72,16 @@ public final class Reactions {
 		return until != null && until >= target.level().getGameTime();
 	}
 
+	/** Whether a reaction went off on {@code target} within the last {@code ticks} ticks (0: this tick). */
+	public static boolean reactedWithin(Entity target, int ticks) {
+		Long at = REACTED.get(target.getUUID());
+		return at != null && target.level().getGameTime() - at <= ticks;
+	}
+
+	private static void reacted(Entity target) {
+		REACTED.put(target.getUUID(), target.level().getGameTime());
+	}
+
 	public static void clear(Entity target, Mark mark) {
 		Map<Mark, Long> marks = MARKS.get(target.getUUID());
 		if (marks != null) {
@@ -85,6 +97,7 @@ public final class Reactions {
 			clear(target, Mark.FROZEN);
 			target.setTicksFrozen(0);
 			multiplier *= 1.6;
+			reacted(target);
 			Vec3 c = target.getBoundingBox().getCenter();
 			shatterFx(level, target);
 			Fx.sound(level, c, SoundEvents.GLASS_BREAK, 1.0F, 0.7F);
@@ -92,8 +105,10 @@ public final class Reactions {
 		}
 		if (has(target, Mark.WINDSWEPT)) {
 			clear(target, Mark.WINDSWEPT);
+			reacted(target);
 			for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(3.0), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
+				reacted(other);
 				other.igniteForSeconds(4);
 				Effects.hurt(cast, other, level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3);
 				wildfireLeap(level, target, other);
@@ -110,6 +125,7 @@ public final class Reactions {
 			return 1.0;
 		}
 		ServerLevel level = cast.level;
+		reacted(target);
 		int arcs = 0;
 		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> Targets.canHarm(cast.caster, e))) {
 			if (arcs++ >= 2) {
@@ -136,6 +152,9 @@ public final class Reactions {
 		if (!pulled) {
 			return 1.0;
 		}
+		for (Entity e : cast.level.getEntities((Entity) null, new AABB(center, center).inflate(radius * 1.5), e -> Targets.canHarm(cast.caster, e))) {
+			reacted(e);
+		}
 		implodeFx(cast.level, center, radius);
 		callout(cast, "implode", 0xB45AF0);
 		return 1.5;
@@ -150,6 +169,7 @@ public final class Reactions {
 			return 1.0;
 		}
 		clear(target, Mark.PULLED);
+		reacted(target);
 		TechniqueVfx.collapse(cast.level, target.getBoundingBox().getCenter());
 		callout(cast, "collapse", 0xB45AF0);
 		return 2.0;
@@ -248,10 +268,12 @@ public final class Reactions {
 			return marks.isEmpty();
 		});
 		LAST_CALLOUT.values().removeIf(last -> gameTime - last > 100 || last > gameTime);
+		REACTED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 	}
 
 	static void clear() {
 		MARKS.clear();
 		LAST_CALLOUT.clear();
+		REACTED.clear();
 	}
 }

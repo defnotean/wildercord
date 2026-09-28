@@ -30,6 +30,9 @@ public final class Feats {
 	public static final String SHIELDBREAKER = "shieldbreaker";
 	public static final String SPELLGUARD = "spellguard";
 	public static final String IMBUE = "imbue";
+	public static final String CINDER_WARDEN = "cinder_warden";
+	public static final String STAR_EATER = "star_eater";
+	public static final String TIDE_SCRIBE = "tide_scribe";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -57,7 +60,10 @@ public final class Feats {
 		new Feat(SCROLL, "Scribe", "Inscribed a spell onto a scroll."),
 		new Feat(SPELLGUARD, "Spellguard", "Your Shield stopped a spell cast at you."),
 		new Feat(SHIELDBREAKER, "Shieldbreaker", "Shattered a Shield with a stronger spell."),
-		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."));
+		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."),
+		new Feat(CINDER_WARDEN, "Tempered", "Broke the Cinder Warden's armour with reactions and brought it down."),
+		new Feat(STAR_EATER, "Starbreaker", "Shattered the Star-Eater's shield and brought it down."),
+		new Feat(TIDE_SCRIBE, "Low Tide", "Turned the Tide Scribe's own flood against it and brought it down."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");
@@ -76,6 +82,9 @@ public final class Feats {
 		}
 		if (key.equals("feat:" + ARCHIVIST)) {
 			return 2000;
+		}
+		if (key.equals("feat:" + CINDER_WARDEN) || key.equals("feat:" + STAR_EATER) || key.equals("feat:" + TIDE_SCRIBE)) {
+			return 1500;
 		}
 		return 250;
 	}
