@@ -509,6 +509,11 @@ final class FusedFlame {
 				return;
 			}
 			Vec3 v = velocity[0].scale(0.72).add(to.scale(0.5 / d));
+			// Close in, it stops curving and flies straight at its mark: curving alone, a mote that burst from
+			// its own mark circles it about a block and a half out and never lands.
+			if (age[0] >= 6 && d < 3.0) {
+				v = to;
+			}
 			v = v.lengthSqr() < 1.0E-6 ? to.scale(speed / d) : v.normalize().scale(speed);
 			Vec3 moved = pos[0].add(v);
 			FusedFlameVfx.starfireMote(level, pos[0], moved, index, age[0]);

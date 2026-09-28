@@ -6,26 +6,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"fabric-client-gametest": [
-			"dev.wildercord.gametest.WildercordScreenshots",
-			"dev.wildercord.gametest.WildercordFeatureTour",
-			"dev.wildercord.gametest.WildercordCordTest",
-			"dev.wildercord.gametest.WildercordWorldMagicTest",
-			"dev.wildercord.gametest.WildercordParryTest",
-			"dev.wildercord.gametest.WildercordAdvancementTest",
-			"dev.wildercord.gametest.WildercordEventsTest",
-			"dev.wildercord.gametest.WildercordSocialTest",
-			"dev.wildercord.gametest.WildercordFamiliarTest",
-			"dev.wildercord.gametest.WildercordFusionTest",
-			"dev.wildercord.gametest.WildercordGearTest",
-			"dev.wildercord.gametest.WildercordNewRunesTest",
-			"dev.wildercord.gametest.WildercordDungeonsTest",
 			"dev.wildercord.gametest.WildercordFusedFlameTest",
 			"dev.wildercord.gametest.WildercordFusedFrostTest",
-			"dev.wildercord.gametest.WildercordFusedStormTest",
 			"dev.wildercord.gametest.WildercordFusedLifeTest",
-			"dev.wildercord.gametest.WildercordFusedVoidTest",
-			"dev.wildercord.gametest.WildercordOitTest",
-			"dev.wildercord.gametest.WildercordShowcase"
+			"dev.wildercord.gametest.WildercordFusedVoidTest"
 		]
 	},
 	"depends": {
