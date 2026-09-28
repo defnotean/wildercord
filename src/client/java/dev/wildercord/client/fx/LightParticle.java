@@ -18,7 +18,8 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 /**
- * Shaped light (see {@link LightOption}): shockwave rings, beams, crescent slashes and orbs, each a
+ * Shaped light (see {@link LightOption}): shockwave rings, beams, crescent slashes, orbs and
+ * crackling lightning arcs, each a
  * soft coloured halo under a bright, nearly white core, at full brightness. Lines are laid down as
  * short pieces of a band texture, so they keep their width at any size; a beam's pieces turn to
  * face the viewer.
@@ -41,6 +42,12 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 	private final TextureAtlasSprite glow;
 	private float spin;
 	private float oSpin;
+	/** An arc's own dice: each tick of its life draws a fresh path from them. */
+	private final long seed;
+	/** An arc's forks, whether it keeps flat, and how far it jags (0 for the usual). */
+	private final int forks;
+	private final boolean flat;
+	private final float jag;
 
 	// While drawing.
 	private QuadParticleRenderState state;
@@ -60,6 +67,9 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		this.c = option.c();
 		this.width = option.width();
 		this.roll = option.roll();
+		this.forks = kind == LightOption.ARC ? Math.max(0, Math.min(6, Math.round(option.yaw()))) : 0;
+		this.flat = kind == LightOption.ARC && option.pitch() >= 0.5F;
+		this.jag = kind == LightOption.ARC ? option.roll() : 0;
 		this.plane = new Quaternionf().rotationYXZ((float) Math.toRadians(-option.yaw()), (float) Math.toRadians(option.pitch()), 0);
 		this.line = SpellCircleParticle.particleSprite("sigil_band");
 		this.soft = SpellCircleParticle.particleSprite("sigil_beam");
@@ -68,6 +78,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		// From the world's clock, so an orb redrawn every tick (a moving one) turns smoothly instead of jumping.
 		this.spin = (float) (level.getGameTime() * 0.15 % Mth.TWO_PI);
 		this.oSpin = spin;
+		this.seed = random.nextLong();
 		this.gravity = 0;
 		this.hasPhysics = false;
 		this.xd = 0;
@@ -130,6 +141,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 			case LightOption.RAY -> ray(t, f);
 			case LightOption.SLASH -> slash(t);
 			case LightOption.ORB -> orb(camera, t, f, partial);
+			case LightOption.ARC -> arc(t, f);
 			default -> { }
 		}
 		this.state = null;
@@ -203,6 +215,81 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 			circle(a * 1.2F, Math.max(0.012F, width), line, core(0.9F * fade, hot(color, 0.45F)));
 			plane.set(saved);
 		}
+	}
+
+	/**
+	 * A lightning arc: a jagged run from here to its end with forks branching off, a fresh path every
+	 * tick (so it crackles), flickering, then guttering out. A flat one jags only sideways, so it
+	 * skitters over a surface instead of dipping into it.
+	 */
+	private void arc(float t, float f) {
+		int step = (int) t;
+		long dice = seed + step * 0x9E3779B97F4A7C15L;
+		float flicker = 0.55F + 0.45F * unit(dice, 0);
+		float fade = f < 0.35F ? 1 : 1 - (f - 0.35F) / 0.65F;
+		float alpha = fade * flicker;
+		if (alpha < 0.02F) {
+			return;
+		}
+		Vector3f from = new Vector3f(cx, cy, cz);
+		Vector3f d = new Vector3f(a, b, c);
+		float length = d.length();
+		if (length < 0.05F) {
+			return;
+		}
+		Vector3f dir = new Vector3f(d).div(length);
+		Vector3f side = new Vector3f(dir).cross(0, 1, 0);
+		if (side.lengthSquared() < 1.0E-4F) {
+			side.set(1, 0, 0);
+		}
+		side.normalize();
+		Vector3f lift = flat ? new Vector3f(0, 1, 0) : new Vector3f(dir).cross(side).normalize();
+		float jag = Math.min(0.45F, 0.08F + length * 0.07F) * (this.jag > 0 ? this.jag : 1);
+		int segments = Mth.clamp(Math.round(length / 0.45F), 3, 14);
+		Vector3f[] points = new Vector3f[segments + 1];
+		points[0] = from;
+		int n = 1;
+		for (int i = 1; i <= segments; i++) {
+			Vector3f p = new Vector3f(from).add(new Vector3f(d).mul(i / (float) segments));
+			if (i < segments) {
+				p.add(new Vector3f(side).mul((unit(dice, n++) * 2 - 1) * jag));
+				p.add(new Vector3f(lift).mul(flat ? unit(dice, n++) * 0.04F : (unit(dice, n++) * 2 - 1) * jag));
+			}
+			points[i] = p;
+		}
+		float w = width * (0.6F + 0.4F * fade);
+		for (int i = 1; i <= segments; i++) {
+			ribbon(new Vector3f(points[i - 1]), new Vector3f(points[i]), w * 2.8F, halo(0.5F * alpha, color));
+			ribbon(new Vector3f(points[i - 1]), new Vector3f(points[i]), w, core(alpha, hot(color, 0.75F)));
+		}
+		for (int k = 0; k < forks && segments > 2; k++) {
+			Vector3f start = points[1 + (int) (unit(dice, n++) * (segments - 2))];
+			float sign = unit(dice, n++) < 0.5F ? -1 : 1;
+			Vector3f way = new Vector3f(dir).mul(0.55F).add(new Vector3f(side).mul(sign * (0.6F + 0.4F * unit(dice, n++))));
+			if (!flat) {
+				way.add(new Vector3f(lift).mul(unit(dice, n++) - 0.5F));
+			}
+			way.normalize();
+			float reach = length * (0.15F + 0.2F * unit(dice, n++));
+			Vector3f bend = new Vector3f(start).add(new Vector3f(way).mul(reach * 0.5F))
+				.add(new Vector3f(side).mul((unit(dice, n++) - 0.5F) * jag));
+			Vector3f end = new Vector3f(start).add(new Vector3f(way).mul(reach));
+			ribbon(new Vector3f(start), new Vector3f(bend), w * 1.6F, halo(0.35F * alpha, color));
+			ribbon(new Vector3f(start), new Vector3f(bend), w * 0.6F, core(alpha * 0.9F, hot(color, 0.6F)));
+			ribbon(new Vector3f(bend), new Vector3f(end), w * 1.2F, halo(0.3F * alpha, color));
+			ribbon(new Vector3f(bend), new Vector3f(end), w * 0.45F, core(alpha * 0.8F, hot(color, 0.6F)));
+		}
+		// A spark where it strikes.
+		billboard(points[segments], w * 3.5F, halo(0.75F * alpha, hot(color, 0.4F)));
+	}
+
+	/** A number from 0 to 1, the same every time for the same dice and index. */
+	private static float unit(long dice, int index) {
+		long z = dice + index * 0xBF58476D1CE4E5B9L;
+		z = (z ^ (z >>> 30)) * 0xBF58476D1CE4E5B9L;
+		z = (z ^ (z >>> 27)) * 0x94D049BB133111EBL;
+		z ^= z >>> 31;
+		return (z >>> 40) / (float) (1L << 24);
 	}
 
 	/** A ring in this light's plane, of line {@code w}, made of pieces of {@code sprite}. */
@@ -297,23 +384,24 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 
 	@Override
 	public double centreX() {
-		return kind == LightOption.RAY ? x + a / 2 : x;
+		return kind == LightOption.RAY || kind == LightOption.ARC ? x + a / 2 : x;
 	}
 
 	@Override
 	public double centreY() {
-		return kind == LightOption.RAY ? y + b / 2 : y;
+		return kind == LightOption.RAY || kind == LightOption.ARC ? y + b / 2 : y;
 	}
 
 	@Override
 	public double centreZ() {
-		return kind == LightOption.RAY ? z + c / 2 : z;
+		return kind == LightOption.RAY || kind == LightOption.ARC ? z + c / 2 : z;
 	}
 
 	@Override
 	public double reach() {
 		return switch (kind) {
 			case LightOption.RAY -> Math.sqrt(a * a + b * b + c * c) / 2 + width * 3 + 0.5;
+			case LightOption.ARC -> Math.sqrt(a * a + b * b + c * c) * 0.75 + width * 3 + 0.8;
 			case LightOption.RING -> Math.max(a, b) + width * 3 + 0.5;
 			default -> a * 1.3 + width * 3 + 0.5;
 		};

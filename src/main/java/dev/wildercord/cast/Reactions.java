@@ -195,7 +195,7 @@ public final class Reactions {
 		ElementFx.ring(level, c, ElementFx.tilted(0.9, tilt + Math.PI), ElementFx.FIRE.primary(), 0.2, 1.6 + w, 0.05, 10);
 		ElementFx.flatSigil(level, target.position(), SigilOption.CRACKED, ElementFx.FROST.primary(), 1.2 + w, 24, 0.0);
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), c, 18, 0.35);
-		Vfx.emit(level, ParticleTypes.WHITE_SMOKE, c, 8, 0.4, 0.04);
+		Motes.clouds(level, c, 4, 0.4, Motes.STEAM, 1.3, 40, new Vec3(0, 0.04, 0), 0.05, 0.45);
 	}
 
 	/** Wildfire leaps: a streak of flame from the burning target to another, flames catching on it. */

@@ -7,6 +7,7 @@ import dev.wildercord.cast.ElementFx;
 import dev.wildercord.cast.Fx;
 import dev.wildercord.cast.Grimoire;
 import dev.wildercord.cast.Light;
+import dev.wildercord.cast.Motes;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.ScreenFx;
 import dev.wildercord.cast.Sigils;
@@ -242,7 +243,7 @@ public final class FallenStars {
 		Light.groundRing(level, ground, STAR_LIGHT, 0.3, 7.0, 0.18, 12);
 		Fx.send(level, ParticleTypes.EXPLOSION_EMITTER, ground.x, ground.y + 0.5, ground.z, 1, 0, 0, 0, 0);
 		Fx.send(level, ParticleTypes.END_ROD, ground.x, ground.y + 1, ground.z, 30, 1.2, 1.0, 1.2, 0.25);
-		Fx.send(level, ParticleTypes.LARGE_SMOKE, ground.x, ground.y + 0.5, ground.z, 20, 2.0, 0.6, 2.0, 0.04);
+		Motes.clouds(level, ground.add(0, 0.6, 0), 12, 1.4, 0x9A948C, 2.4, 60, new Vec3(0, 0.03, 0), 0.05, 0.4);
 		boolean dig = by != null && !by.isRemoved() && level.getGameRules().get(GameRules.MOB_GRIEFING);
 		List<FallenStarBlockEntity.Changed> changed = dig ? carve(level, cell, by) : List.of();
 		BlockPos at = cell;

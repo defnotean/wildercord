@@ -468,7 +468,7 @@ public abstract class DungeonBoss extends Monster {
 		// Its keepers go with it.
 		for (UUID id : minions) {
 			if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
-				Vfx.radial(level, net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, mob.position().add(0, mob.getBbHeight() / 2, 0), 12, 0.1);
+				Motes.clouds(level, mob.position().add(0, mob.getBbHeight() / 2, 0), 5, 0.3, Motes.SMOKE, 1.0, 30, new Vec3(0, 0.03, 0), 0.08, 0.45);
 				mob.discard();
 			}
 		}

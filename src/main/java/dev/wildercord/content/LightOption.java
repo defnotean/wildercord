@@ -19,7 +19,11 @@ import net.minecraft.network.codec.StreamCodec;
  *   <li>{@link #SLASH}: a crescent of radius {@code a} spanning {@code b} radians, centred on angle
  *       {@code roll} in the plane facing {@code yaw}/{@code pitch}; it sweeps across in {@code c}
  *       ticks, tapered at both ends, then fades as it widens;</li>
- *   <li>{@link #ORB}: a glowing orb of radius {@code a} wrapped in three turning rings.</li>
+ *   <li>{@link #ORB}: a glowing orb of radius {@code a} wrapped in three turning rings;</li>
+ *   <li>{@link #ARC}: a lightning arc from here to here + ({@code a}, {@code b}, {@code c}), jagged,
+ *       with {@code yaw} forks branching off it, that crackles (a fresh path every tick) and gutters
+ *       out; a {@code pitch} of 1 keeps it flat, jagging only sideways (skittering over water or
+ *       ground), and {@code roll} scales how far it jags (0 for the usual).</li>
  * </ul>
  *
  * @param width    line width in blocks (the halo is wider)
@@ -31,6 +35,7 @@ public record LightOption(int kind, int color, float a, float b, float c, float 
 	public static final int RAY = 1;
 	public static final int SLASH = 2;
 	public static final int ORB = 3;
+	public static final int ARC = 4;
 
 	public static final MapCodec<LightOption> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 		Codec.INT.fieldOf("kind").forGetter(LightOption::kind),

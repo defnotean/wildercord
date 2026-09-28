@@ -1,7 +1,7 @@
 package dev.wildercord.cast;
 
 import dev.wildercord.content.RuneItem;
-import dev.wildercord.content.SigilOption;
+import dev.wildercord.content.RitualOption;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.player.WildercordAttachments;
@@ -11,8 +11,6 @@ import dev.wildercord.spell.RuneColors;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,9 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Attunement: meditate with a Blank Rune in hand where a biome holds a rune (see {@link Attunements}
- * for which and when) and it drinks the land in over twenty seconds. A circle opens under the
- * caster in the rune's colour, motes rise from the ground into the blank, and it brightens through
- * four stages, each with a chime, until the Blank Rune becomes the biome's rune and the Grimoire
+ * for which and when) and it drinks the land in over twenty seconds. The land's magic circle opens
+ * under the caster and slowly turns, motes of its colour rise off the ground and spiral into the
+ * blank, and it builds through four stages, each with a chime and a flare, until it bursts, the
+ * rune's emblem shines over the hand, the Blank Rune becomes the biome's rune and the Grimoire
  * records the attunement. Moving, standing up or letting go of the blank breaks it off. A land then
  * rests: it gives each player its rune once an in-game day ({@link ExplorerNumbers#ATTUNE_REST}), and
  * says so (and the Grimoire shows when it's ready again). Checked every 5 ticks from
@@ -98,7 +97,9 @@ public final class Attunement {
 		int checks = state != null && state.rule().equals(rule.id()) ? state.checks() + 1 : 1;
 		STATES.put(player.getUUID(), new State(rule.id(), checks, state == null ? 0 : state.quietUntil()));
 		int color = RuneColors.of(rule.rune());
-		show(player, color, checks);
+		if (checks < CHECKS) {
+			show(player, rule, color, checks / (float) CHECKS);
+		}
 		int perStage = CHECKS / STAGES;
 		if (checks == 1) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.attune_begin").withColor(color));
@@ -108,6 +109,8 @@ public final class Attunement {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.attune_stage." + stage).withColor(color));
 			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.8F + stage * 0.25F);
 			Sigils.flash(player.level(), hold(player), color, 0.6F + stage * 0.3F);
+			// A pulse runs out from the circle's rim, stronger each stage.
+			Light.groundRing(player.level(), player.position(), color, 1.5, 2.4 + stage * 0.5, 0.04 + stage * 0.015, 12);
 		}
 		if (checks >= CHECKS) {
 			complete(player, hand, rule, color);
@@ -169,27 +172,15 @@ public final class Attunement {
 		return player.position().add(look.x * 0.5, 1.0, look.z * 0.5);
 	}
 
-	/** The ritual as it goes: the circle under the caster, motes of the land rising into the blank, a growing glow. */
-	private static void show(ServerPlayer player, int color, int checks) {
-		ServerLevel level = player.level();
+	/**
+	 * The ritual as it goes, drawn by each client from one particle every check (see
+	 * {@code RitualCircles}): the land's circle turning under the caster, motes of its colour rising
+	 * off the ground and spiralling into the blank, and a light gathering there, all building with
+	 * {@code progress}. When these stop coming (the meditation broke), it fades.
+	 */
+	private static void show(ServerPlayer player, Attunements.Rule rule, int color, float progress) {
 		Vec3 feet = player.position();
-		if (checks % 6 == 1) {
-			Sigils.ground(level, feet, color, 0xFFFFFF, 1.6F + 0.4F * checks / CHECKS, 34);
-		}
-		double spin = level.getGameTime() * 0.12;
-		double progress = checks / (double) CHECKS;
-		DustParticleOptions dust = new DustParticleOptions(color, 0.9F);
-		Vec3 hand = hold(player);
-		for (int i = 0; i < 3; i++) {
-			double a = spin + Math.PI * 2 * i / 3;
-			Vec3 from = feet.add(Math.cos(a) * 1.6, 0.1, Math.sin(a) * 1.6);
-			Fx.send(level, dust, from.x, from.y, from.z, 1, 0, 0, 0, 0);
-			Vec3 dir = hand.subtract(from);
-			Fx.send(level, ParticleTypes.ENCHANT, from.x, from.y, from.z, 0, dir.x, dir.y, dir.z, 0.8);
-		}
-		if (checks % 2 == 0) {
-			Fx.send(level, SigilOption.glow(color, (float) (0.25 + 0.5 * progress)), hand.x, hand.y, hand.z, 1, 0, 0, 0, 0);
-		}
+		Fx.sendAll(player.level(), new RitualOption(player.getId(), rule.rune().id(), color & 0xFFFFFF, progress), feet, 1, 0, 0);
 	}
 
 	private static void complete(ServerPlayer player, InteractionHand hand, Attunements.Rule rule, int color) {
@@ -203,9 +194,12 @@ public final class Attunement {
 			level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, player.getX(), player.getY() + 0.5, player.getZ(), rune));
 		}
 		Vec3 at = hold(player);
+		// The finish: every client flares the circle, bursts the gathered light and shows the rune's emblem.
+		show(player, rule, color, 1F);
 		Sigils.flash(level, at, color, 2.2F);
-		Light.groundRing(level, player.position(), color, 0.3, 3.0, 0.1, 12);
-		Vfx.radial(level, new DustParticleOptions(color, 1.2F), at, 20, 0.2);
+		Sigils.flash(level, at, 0xFFFFFF, 1.1F);
+		Light.groundRing(level, player.position(), color, 0.3, 3.4, 0.1, 14);
+		Light.groundRing(level, player.position(), 0xFFFFFF, 0.2, 2.2, 0.04, 10);
 		Fx.sound(level, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 1.2F);
 		Fx.sound(level, at, WildercordSounds.DISCOVERY, 1.0F, 1.0F);
 		player.sendOverlayMessage(Component.translatable("message.wildercord.attuned", RuneItem.runeName(rule.rune()).withColor(color)));

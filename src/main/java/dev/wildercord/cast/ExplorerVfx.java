@@ -156,7 +156,8 @@ final class ExplorerVfx {
 
 	/** Sandstorm opens: a cracked seal of sand and a column of dust. */
 	static void sandstormOpen(ServerLevel level, Vec3 centre, double radius, int ticks) {
-		ElementFx.flatSigil(level, centre, SigilOption.CRACKED, SAND, radius * 2.0, ticks + 10, 0.02);
+		ElementFx.flatSigil(level, centre, SigilOption.CRACKED, SAND, radius * 1.1, ticks + 10, 0.02);
+		ElementFx.flatSigil(level, centre, SigilOption.RING, 0xC8A060, radius * 0.62, ticks + 10, -0.03);
 		ElementFx.earthImpact(level, centre.add(0, 0.2, 0), radius * 0.4);
 		sound(level, centre, SoundEvents.SAND_BREAK, 1.0F, 0.6F);
 		sound(level, centre, WildercordSounds.cast("earth"), 0.7F, 0.9F);
@@ -175,6 +176,16 @@ final class ExplorerVfx {
 			Vfx.emit(level, ParticleTypes.DUST_PLUME, at, 1, 0.1, 0.02);
 		}
 		ElementFx.slash(level, centre.add(0, 0.8 + (tick % 3) * 0.6, 0), UP, ElementFx.flatDir(spin), SAND, radius * 0.8, 1.6, 0.08, 6, 8);
+		if (tick % 10 == 0) {
+			// Billows of sand blown round the storm: each sets off along the whirl and drifts on.
+			for (int i = 0; i < 2; i++) {
+				double a = spin * 0.7 + Math.PI * i + r.nextDouble() * 0.6;
+				double rr = radius * (0.5 + r.nextDouble() * 0.4);
+				Vec3 at = centre.add(Math.cos(a) * rr, 0.6 + r.nextDouble() * 1.4, Math.sin(a) * rr);
+				Vec3 along = new Vec3(-Math.sin(a), 0.1, Math.cos(a));
+				Motes.clouds(level, at, 1, 0.2, SAND, 1.8 + r.nextDouble() * 0.8, 36, along.scale(0.07), 0.01, 0.32);
+			}
+		}
 		if (tick % 20 == 0) {
 			sound(level, centre, SoundEvents.SAND_FALL, 0.8F, 0.7F);
 		}
@@ -197,7 +208,7 @@ final class ExplorerVfx {
 	/** Remedy: a cure's glow, the bad lifted off as grey motes and a flower seal below. */
 	static void remedy(ServerLevel level, LivingEntity t) {
 		ElementFx.bloom(level, centre(t), t.position(), 0.9);
-		Vfx.emit(level, ParticleTypes.WHITE_SMOKE, centre(t), 6, 0.3, 0.03);
+		Motes.clouds(level, centre(t), 3, 0.3, 0xB8B4C0, 0.8, 26, new Vec3(0, 0.04, 0), 0.02, 0.35);
 		Vfx.emit(level, ParticleTypes.HAPPY_VILLAGER, centre(t), 5, 0.4, 0.0);
 		sound(level, centre(t), SoundEvents.ZOMBIE_VILLAGER_CURE, 0.35F, 1.6F);
 	}
@@ -332,7 +343,7 @@ final class ExplorerVfx {
 	static void moonpetal(ServerLevel level, Vec3 point, double radius) {
 		Vec3 feet = CastEngine.ground(level, point.add(0, 0.5, 0));
 		ElementFx.sigil(level, feet.add(0, 3.2, 0), UP, SigilOption.CIRCLE, MOON, radius * 0.8, 20, 0.02);
-		ElementFx.flatSigil(level, feet, SigilOption.STAR, PETAL, radius * 1.6, 18, 0.1);
+		ElementFx.flatSigil(level, feet, SigilOption.STAR, PETAL, radius * 1.05, 24, 0.06);
 		ElementFx.leafSpiral(level, feet, radius * 0.7, 2.0, 12);
 		Vfx.emit(level, ParticleTypes.CHERRY_LEAVES, feet.add(0, 1.4, 0), 30, radius * 0.6, 0.05);
 		ElementFx.groundRing(level, feet, PETAL, 0.3, radius, 0.08, 12);
@@ -362,7 +373,7 @@ final class ExplorerVfx {
 
 	/** Hush opens: a ring of darkness falling in around the point. */
 	static void hushOpen(ServerLevel level, Vec3 centre, double radius, int ticks) {
-		ElementFx.flatSigil(level, centre, SigilOption.RING, ElementFx.dark(ElementFx.VOID.accent()), radius * 2.1, ticks + 10, 0.01);
+		ElementFx.flatSigil(level, centre, SigilOption.RING, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.05, ticks + 10, 0.01);
 		ElementFx.implode(level, centre.add(0, 1, 0), radius * 0.6, 14);
 		sound(level, centre, SoundEvents.SCULK_CLICKING, 0.6F, 0.5F);
 	}
@@ -493,7 +504,7 @@ final class ExplorerVfx {
 	}
 
 	static void warpFizzle(ServerLevel level, Vec3 at) {
-		Vfx.emit(level, ParticleTypes.SMOKE, at, 6, 0.2, 0.02);
+		Motes.smoke(level, at, 2, 0.2);
 		sound(level, at, SoundEvents.FIRE_EXTINGUISH, 0.4F, 1.6F);
 	}
 
@@ -576,7 +587,7 @@ final class ExplorerVfx {
 		Vec3 sky = centre.add(0, 4.5, 0);
 		ElementFx.sigil(level, sky, UP, SigilOption.CIRCLE, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.4, ticks + 10, 0.01);
 		ElementFx.ring(level, sky, UP, WHITE, radius * 0.7, radius * 0.72, 0.06, ticks + 10);
-		ElementFx.flatSigil(level, centre, SigilOption.RING, ElementFx.dark(ElementFx.VOID.accent()), radius * 2.0, ticks + 10, 0.01);
+		ElementFx.flatSigil(level, centre, SigilOption.RING, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.05, ticks + 10, 0.01);
 		sound(level, centre, SoundEvents.BEACON_DEACTIVATE, 1.0F, 0.6F);
 		sound(level, centre, WildercordSounds.cast("void"), 0.8F, 0.7F);
 	}
@@ -647,7 +658,7 @@ final class ExplorerVfx {
 	/** Riftcall opens: a tear of darkness in the air, violet rimmed. */
 	static void riftOpen(ServerLevel level, Vec3 centre, double radius, int ticks) {
 		ElementFx.sigil(level, centre, UP, SigilOption.CRACKED, ElementFx.dark(ElementFx.VOID.accent()), 1.8, ticks + 10, 0.2);
-		ElementFx.flatSigil(level, CastEngine.ground(level, centre), SigilOption.RING, ElementFx.VOID.primary(), radius * 2.0, ticks + 10, -0.03);
+		ElementFx.flatSigil(level, CastEngine.ground(level, centre), SigilOption.RING, ElementFx.VOID.primary(), radius * 1.05, ticks + 10, -0.03);
 		sound(level, centre, SoundEvents.PORTAL_TRIGGER, 0.6F, 0.6F);
 		sound(level, centre, WildercordSounds.cast("void"), 0.9F, 0.6F);
 	}
@@ -688,7 +699,7 @@ final class ExplorerVfx {
 	}
 
 	static void manatideSpent(ServerLevel level, LivingEntity t) {
-		Vfx.emit(level, ParticleTypes.SMOKE, centre(t), 4, 0.2, 0.02);
+		Motes.smoke(level, centre(t), 2, 0.2);
 	}
 
 	// ------------------------------------------------------------------ shapes

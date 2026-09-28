@@ -340,7 +340,7 @@ public final class Vfx {
 		Scheduler.later(2, () -> ElementFx.flames(level, target.position(), w, h, 3));
 		ElementFx.groundRing(level, base, ElementFx.FIRE.primary(), 0.2, w + 0.9, 0.05, 8);
 		ElementFx.embers(level, base.add(0, h * 0.4, 0), w, 8);
-		emit(level, ParticleTypes.LARGE_SMOKE, c.add(0, h * 0.3, 0), 2, 0.25, 0.02);
+		Motes.smoke(level, c.add(0, h * 0.3, 0), 1, 0.25);
 		Fx.sound(level, base, SoundEvents.GENERIC_BURN, 0.5F, 1.2F);
 	}
 
@@ -392,7 +392,7 @@ public final class Vfx {
 			Scheduler.later(2, () -> ElementFx.groundRing(level, floor, ElementFx.FIRE.accent(), 0.3, radius * 0.9, 0.06, 10));
 		}
 		radial(level, ParticleTypes.FLAME, center, 18, 0.3);
-		radial(level, ParticleTypes.LARGE_SMOKE, center, 8, 0.12);
+		Motes.clouds(level, center, 7, radius * 0.3, Motes.SMOKE, 1.2 + radius * 0.25, 45, new Vec3(0, 0.035, 0), 0.08, 0.45);
 		radial(level, ParticleTypes.LAVA, center, 4, 0.1);
 		Fx.sound(level, center, SoundEvents.GENERIC_EXPLODE, 1.2F, 1.0F);
 	}
@@ -587,7 +587,7 @@ public final class Vfx {
 		double w = Math.max(0.5, target.getBbWidth());
 		ElementFx.implode(level, c, 0.9 + w * 0.6, 9);
 		ElementFx.blackCore(level, c, 0.14 + w * 0.06, 10);
-		emit(level, ParticleTypes.LARGE_SMOKE, c, 4, 0.3, 0.01);
+		Motes.clouds(level, c, 3, 0.3, 0x3A3438, 0.9, 30, new Vec3(0, 0.02, 0), 0.02, 0.4);
 		radial(level, ParticleTypes.SOUL, c, 4, 0.06);
 		Fx.sound(level, c, SoundEvents.WITHER_SHOOT, 0.7F, 1.2F);
 	}
@@ -778,7 +778,7 @@ public final class Vfx {
 		double r = Math.max(0.8, target.getBbWidth() + 0.4);
 		ElementFx.implode(level, c, r * 1.2, 10);
 		ElementFx.groundRing(level, target.position(), ElementFx.dark(ElementFx.VOID.accent()), r * 1.4, 0.2, 0.1, 12);
-		emit(level, ParticleTypes.LARGE_SMOKE, c, 5, 0.35, 0.02);
+		Motes.clouds(level, c, 4, 0.35, 0x4A4450, 1.0, 30, new Vec3(0, 0.02, 0), 0.03, 0.4);
 		radial(level, ParticleTypes.REVERSE_PORTAL, c, 8, 0.08);
 		Fx.sound(level, target.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.8F, 1.1F);
 	}
@@ -846,7 +846,7 @@ public final class Vfx {
 				emit(level, SigilOption.glow(ElementFx.FIRE.primary(), 1.8F), p, 1, 0.0, 0.0);
 				ElementFx.ray(level, back, p, ElementFx.FIRE.primary(), 0.32, 7);
 				emit(level, ParticleTypes.FLAME, p, 4, 0.3, 0.02);
-				emit(level, ParticleTypes.LARGE_SMOKE, back, 2, 0.3, 0.01);
+				Motes.smoke(level, back, 1, 0.3);
 			});
 		}
 		Fx.sound(level, ground, SoundEvents.BLAZE_SHOOT, 1.2F, 0.5F);
@@ -1035,8 +1035,9 @@ public final class Vfx {
 		for (int i = 0; i < (int) (radius * 4); i++) {
 			double a = random.nextDouble() * Math.PI * 2;
 			double r = Math.sqrt(random.nextDouble()) * radius;
-			fling(level, i % 3 == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.FLAME, point.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), UP, 0.08);
+			fling(level, ParticleTypes.FLAME, point.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), UP, 0.08);
 		}
+		Motes.smoke(level, point.add(0, 0.6, 0), 2, radius * 0.4);
 		Fx.sound(level, point, SoundEvents.GENERIC_BURN, 0.7F, 0.8F);
 	}
 

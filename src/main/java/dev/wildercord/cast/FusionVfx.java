@@ -54,8 +54,8 @@ public final class FusionVfx {
 		Vec3 c = centre(t);
 		ElementFx.shatterRing(level, c, Math.max(0.8, t.getBbWidth() + 0.3));
 		ElementFx.heatFlare(level, c, 0.9);
-		Vfx.emit(level, ParticleTypes.CLOUD, c, 16, Math.max(0.4, t.getBbWidth() * 0.6), 0.03);
-		Vfx.emit(level, ParticleTypes.WHITE_SMOKE, c.add(0, 0.4, 0), 10, 0.35, 0.02);
+		Motes.clouds(level, c, 6, Math.max(0.35, t.getBbWidth() * 0.5), Motes.STEAM, 1.5, 50, new Vec3(0, 0.04, 0), 0.04, 0.55);
+		Motes.clouds(level, c.add(0, 0.5, 0), 3, 0.3, Motes.STEAM, 1.0, 34, new Vec3(0, 0.06, 0), 0.03, 0.4);
 		Light.ring(level, c, UP, 0xE6FAFF, 0.1, Math.max(1.0, t.getBbWidth() + 0.8), 0.06, 9);
 		Fx.sound(level, c, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.9F);
 	}
@@ -63,7 +63,7 @@ public final class FusionVfx {
 	/** Magma opening: the ground cracks, glowing orange from below. */
 	static void magmaOpen(ServerLevel level, Vec3 at, double radius) {
 		ElementFx.crack(level, at.add(0, 0.05, 0), radius, 80);
-		ElementFx.flatSigil(level, at.add(0, 0.07, 0), SigilOption.CRACKED, ElementFx.FIRE.accent(), (float) (radius * 2.2), 84, 0.01);
+		ElementFx.flatSigil(level, at.add(0, 0.07, 0), SigilOption.CRACKED, ElementFx.FIRE.accent(), (float) (radius * 1.1), 84, 0.01);
 		ElementFx.stoneShards(level, at.add(0, 0.3, 0), Blocks.MAGMA_BLOCK.defaultBlockState(), 10, 0.25);
 		Fx.sound(level, at, SoundEvents.BASALT_BREAK, 1.0F, 0.6F);
 		Fx.sound(level, at, WildercordSounds.impact("earth"), 0.7F, 1.0F);
@@ -76,7 +76,7 @@ public final class FusionVfx {
 		ElementFx.groundRing(level, at.add(0, 0.06, 0), ElementFx.FIRE.primary(), radius * 0.3, radius, 0.05, 12);
 		Fx.sound(level, at, SoundEvents.LAVA_POP, 0.8F, 0.9F);
 		if (last) {
-			Vfx.emit(level, ParticleTypes.LARGE_SMOKE, at.add(0, 0.3, 0), 8, radius * 0.4, 0.02);
+			Motes.smoke(level, at.add(0, 0.3, 0), 4, radius * 0.4);
 			Fx.sound(level, at, SoundEvents.FIRE_EXTINGUISH, 0.6F, 0.8F);
 		}
 	}

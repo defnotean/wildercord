@@ -6,7 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-/** Wildercord's own particles: magic circles, and a spell's whole circle. Everything else is vanilla. */
+/** Wildercord's own particles: magic circles, a spell's whole circle, shaped light, motes and vapours. Everything else is vanilla. */
 public final class WildercordParticles {
 	private WildercordParticles() {}
 
@@ -25,6 +25,14 @@ public final class WildercordParticles {
 	/** A Shield blocking a spell or shattering: one particle each client turns into the whole effect. Always shown. */
 	public static final ParticleType<ShieldOption> SHIELD = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("shield"),
 		FabricParticleTypes.complex(true, ShieldOption.CODEC, ShieldOption.STREAM_CODEC));
+
+	/** Motes, butterflies of light, steam and smoke. Left out like vanilla's particles when particles are turned down. */
+	public static final ParticleType<MoteOption> MOTE = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("mote"),
+		FabricParticleTypes.complex(false, MoteOption.CODEC, MoteOption.STREAM_CODEC));
+
+	/** An attunement's ritual: one particle every few ticks keeps each client's going. Always shown. */
+	public static final ParticleType<RitualOption> RITUAL = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("ritual"),
+		FabricParticleTypes.complex(true, RitualOption.CODEC, RitualOption.STREAM_CODEC));
 
 	public static void init() {}
 }

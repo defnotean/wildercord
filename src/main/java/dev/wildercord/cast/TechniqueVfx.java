@@ -379,7 +379,7 @@ final class TechniqueVfx {
 			Vfx.fling(level, ParticleTypes.SQUID_INK, base.add(Math.cos(a) * w, 0.2 + level.getRandom().nextDouble() * target.getBbHeight(), Math.sin(a) * w), UP,
 				0.08);
 		}
-		Vfx.emit(level, ParticleTypes.LARGE_SMOKE, target.getBoundingBox().getCenter(), 2, w, 0.02);
+		Motes.smoke(level, target.getBoundingBox().getCenter(), 1, w);
 		Fx.sound(level, base, SoundEvents.FIRE_AMBIENT, 0.6F, 0.6F);
 	}
 
@@ -827,7 +827,7 @@ final class TechniqueVfx {
 		ElementFx.flatSigil(level, at, SigilOption.CIRCLE, ElementFx.VOID.primary(), 0.9, 20, -0.06);
 		ElementFx.implode(level, at.add(0, 0.5, 0), 1.0, 8);
 		Vfx.radial(level, ParticleTypes.SQUID_INK, at.add(0, 0.4, 0), 10, 0.15);
-		Vfx.emit(level, ParticleTypes.LARGE_SMOKE, at.add(0, 0.5, 0), 4, 0.3, 0.02);
+		Motes.clouds(level, at.add(0, 0.5, 0), 3, 0.3, 0x3A3040, 1.0, 30, new Vec3(0, 0.02, 0), 0.03, 0.4);
 	}
 
 	static void shadeAura(ServerLevel level, Entity wolf) {

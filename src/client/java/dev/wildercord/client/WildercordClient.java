@@ -55,6 +55,8 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SPELL_CIRCLE, new dev.wildercord.client.fx.SpellCircleParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
+		ParticleProviderRegistry.getInstance().register(WildercordParticles.MOTE, new dev.wildercord.client.fx.MoteParticle.Provider());
+		ParticleProviderRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
 		ImbuedTooltip.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		BlankRuneTooltip.init();
@@ -78,6 +80,7 @@ public final class WildercordClient implements ClientModInitializer {
 				dev.wildercord.client.fx.BoltComets.tick(client);
 				dev.wildercord.client.fx.ScreenEffects.tick(client);
 				dev.wildercord.client.fx.ShieldCircles.tick(client);
+				dev.wildercord.client.fx.RitualCircles.tick(client);
 				return;
 			}
 			if (client.isPaused()) {
@@ -85,6 +88,7 @@ public final class WildercordClient implements ClientModInitializer {
 			}
 			ChargeCircles.tick(client);
 			dev.wildercord.client.fx.ShieldCircles.tick(client);
+			dev.wildercord.client.fx.RitualCircles.tick(client);
 			dev.wildercord.client.fx.BoltComets.tick(client);
 			dev.wildercord.client.fx.ScreenEffects.tick(client);
 			AimPreview.tick(client);

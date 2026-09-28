@@ -94,7 +94,7 @@ public class CinderWarden extends DungeonBoss {
 		ElementFx.flameBurst(level, at.add(0, 1.2, 0), 2.5, 16);
 		ElementFx.heatFlare(level, at.add(0, 1.5, 0), 2.5);
 		Vfx.emit(level, ParticleTypes.LAVA, at.add(0, 1, 0), 30, 1.2, 0.3);
-		Vfx.emit(level, ParticleTypes.LARGE_SMOKE, at.add(0, 2, 0), 24, 1.0, 0.05);
+		Motes.clouds(level, at.add(0, 2, 0), 10, 1.0, Motes.SMOKE, 2.0, 50, new Vec3(0, 0.04, 0), 0.04, 0.45);
 		Fx.sound(level, at, DungeonSounds.BOSS_RISE, 2.0F, 1.0F);
 		Fx.sound(level, at, SoundEvents.BLAZE_SHOOT, 1.2F, 0.5F);
 		boss.announce(level, "message.wildercord.cinder_warden_wakes", COLOR);
@@ -308,7 +308,7 @@ public class CinderWarden extends DungeonBoss {
 	protected void dying(ServerLevel level, int tick) {
 		Vec3 c = position().add(0, getBbHeight() * 0.5 * (1 - tick / (float) DEATH_TICKS), 0);
 		if (tick % 2 == 0) {
-			Vfx.emit(level, ParticleTypes.LARGE_SMOKE, c, 3, 0.6, 0.03);
+			Motes.smoke(level, c, 2, 0.6);
 			Vfx.emit(level, ParticleTypes.LAVA, c, tick < DEATH_TICKS / 2 ? 2 : 0, 0.5, 0.2);
 		}
 		if (tick == 1) {
@@ -322,8 +322,8 @@ public class CinderWarden extends DungeonBoss {
 	@Override
 	protected void vanish(ServerLevel level) {
 		Vec3 c = position().add(0, 0.6, 0);
-		Vfx.radial(level, ParticleTypes.LARGE_SMOKE, c, 40, 0.15);
-		Vfx.radial(level, new DustParticleOptions(0x3A3030, 1.6F), c, 30, 0.3);
+		Motes.clouds(level, c, 14, 0.7, 0x5A5250, 1.6, 45, new Vec3(0, 0.035, 0), 0.1, 0.5);
+		Motes.burst(level, c, 16, 0xFF6A2A, 0.14, 24, 0.25);
 		ElementFx.embers(level, c, 1.5, 30);
 	}
 

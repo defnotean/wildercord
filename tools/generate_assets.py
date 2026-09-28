@@ -301,6 +301,8 @@ def main():
     sigil_art.main()
     import shield_art  # The Shield's cells, shards and cracks.
     shield_art.main()
+    import mote_art  # Soft lights and vapours: motes, butterflies of light, steam and smoke.
+    mote_art.main()
     import circle_art  # Every rune's own ring and emblem for magic circles (imported here: it reads the runes from this file).
     circle_art.main()
     import wear_art  # The Cord players wear on the wrist.
