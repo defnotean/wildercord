@@ -3,14 +3,13 @@ package dev.wildercord.cast;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -19,9 +18,10 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 
 /**
- * Visuals for the batch 4 runes, built from the same vanilla-particle primitives as {@link Vfx}.
- * Colours: time is pale gold, blood is crimson, and the black of Blackspark and Blackflame is a
- * near-black dust edged with its element's glow so it still reads at night.
+ * Visuals for the batch 4 runes: their shapes in shaped light, like {@link Vfx}'s, and their
+ * effects in their element's language ({@link ElementFx}). Time is pale gold clock faces, blood is
+ * crimson cuts and heartbeats, and the black of Blackspark and Blackflame is darkness edged with
+ * crimson or violet light, so it still reads at night.
  */
 final class TechniqueVfx {
 	private TechniqueVfx() {}
@@ -46,26 +46,6 @@ final class TechniqueVfx {
 	private static Vec3 flat(Vec3 v) {
 		Vec3 f = new Vec3(v.x, 0, v.z);
 		return f.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : f.normalize();
-	}
-
-	/** Dots along a line, {@code step} blocks apart (at most 60). */
-	private static void line(ServerLevel level, ParticleOptions p, Vec3 a, Vec3 b, double step) {
-		Vec3 d = b.subtract(a);
-		double length = d.length();
-		int n = (int) Math.min(60, Math.max(1, length / step));
-		for (int i = 0; i <= n; i++) {
-			dot(level, p, a.add(d.scale(i / (double) n)));
-		}
-	}
-
-	/** Points spread evenly over a sphere (or its upper half), turned by {@code spin}. */
-	private static void sphere(ServerLevel level, ParticleOptions p, Vec3 c, double r, int points, double spin, boolean upperHalf) {
-		for (int i = 0; i < points; i++) {
-			double y = upperHalf ? 1 - (i + 0.5) / points : 1 - (i + 0.5) * 2.0 / points;
-			double rr = Math.sqrt(Math.max(0, 1 - y * y));
-			double a = i * 2.39996323 + spin;
-			dot(level, p, c.add(Math.cos(a) * rr * r, y * r, Math.sin(a) * rr * r));
-		}
 	}
 
 	/** A small standing silhouette (head, shoulders, body) facing {@code forward}. */
@@ -259,406 +239,521 @@ final class TechniqueVfx {
 
 	// ------------------------------------------------------------------ damage
 
+	/** Cleave: a great crimson cut swept down across the target, a heartbeat pulsing out of it and blood falling. */
 	static void cleave(ServerLevel level, Entity target, Vec3 look) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		Vec3 side = flat(look).cross(UP).normalize();
+		Vec3 fwd = flat(look);
+		Vec3 side = fwd.cross(UP).normalize();
 		double size = Math.max(0.9, target.getBbHeight() * 0.6);
-		for (int i = -10; i <= 10; i++) {
-			double s = i / 10.0;
-			Vec3 p = c.add(side.scale(s * size)).add(0, -s * size * 0.8, 0);
-			dot(level, dust(BLOOD, 1.5F - 0.8F * (float) Math.abs(s)), p);
-		}
+		// In the plane facing the caster, bulging up and to one side: a diagonal cut through the middle.
+		Vec3 bulge = side.add(0, 1, 0).normalize();
+		double r = size * 1.4;
+		ElementFx.cut(level, c.subtract(bulge.scale(r)), fwd, bulge, r, 0.32);
+		ElementFx.pulse(level, c, fwd, 1.0 + size * 0.5);
+		Sigils.flash(level, c, BLOOD, 1.6F);
 		dot(level, ParticleTypes.SWEEP_ATTACK, c);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.REDSTONE), c, 4, 0.15);
+		ElementFx.drip(level, c, 0.3, 6);
 		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 0.6F);
 		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 0.8F, 0.7F);
 	}
 
+	/** Dismantle: an unseen slash, a hairline of white light over crimson, straight through the target on a new tilt each time. */
 	static void dismantle(ServerLevel level, Entity target, int slash) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		double a = level.getRandom().nextDouble() * Math.PI;
-		Vec3 dir = new Vec3(Math.cos(a), Math.sin(a) * 0.8, Math.sin(a + 1.3)).normalize();
-		double size = Math.max(0.7, target.getBbHeight() * 0.55);
-		line(level, dust(0xFFE0E4, 0.6F), c.subtract(dir.scale(size)), c.add(dir.scale(size)), 0.12);
-		line(level, dust(BLOOD, 0.8F), c.subtract(dir.scale(size * 0.7)), c.add(dir.scale(size * 0.7)), 0.2);
-		Vfx.emit(level, dust(0x8A0A1A, 0.9F), c, 3, 0.2, 0.0);
+		RandomSource random = level.getRandom();
+		Vec3 normal = ElementFx.randomDir(random);
+		Vec3 bulge = ElementFx.inPlane(normal, random.nextDouble() * Math.PI * 2);
+		double r = Math.max(0.7, target.getBbHeight() * 0.55) * 1.6;
+		ElementFx.slash(level, c.subtract(bulge.scale(r * 0.97)), normal, bulge, BLOOD, r, 1.1, 0.13, 1, 5);
+		ElementFx.slash(level, c.subtract(bulge.scale(r)), normal, bulge, 0xFFE0E4, r, 1.3, 0.06, 1, 4);
+		ElementFx.drip(level, c, 0.2, 2);
 		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_SWEEP, 0.7F, 1.6F + slash * 0.15F);
 	}
 
-	/** Blackspark: on a true hit, black lightning edged in crimson strikes into the target. */
+	/** Blackspark: on a true hit, black lightning edged in crimson strikes into the target and the air falls in on it. */
 	static void blackspark(ServerLevel level, Entity target, boolean spark) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		if (!spark) {
-			Vfx.radial(level, ParticleTypes.CRIT, c, 8, 0.25);
-			Vfx.emit(level, dust(0x3A1060, 1.2F), c, 6, 0.25, 0.0);
+			ElementFx.ring(level, c, ElementFx.tilted(0.8, level.getRandom().nextDouble() * Math.PI * 2), ElementFx.dark(ElementFx.VOID.accent()), 0.9, 0.1,
+				0.07, 6);
+			Vfx.radial(level, ParticleTypes.CRIT, c, 6, 0.25);
 			Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_STRONG, 0.8F, 0.8F);
 			return;
 		}
 		dot(level, flash(BLOOD), c);
+		RandomSource random = level.getRandom();
 		for (int bolt = 0; bolt < 3; bolt++) {
-			Vec3 p = c.add((level.getRandom().nextDouble() - 0.5) * 2.4, 1.6 + level.getRandom().nextDouble(), (level.getRandom().nextDouble() - 0.5) * 2.4);
-			for (int seg = 0; seg < 5; seg++) {
-				Vec3 next = seg == 4 ? c : p.add(c.subtract(p).scale(0.3)).add((level.getRandom().nextDouble() - 0.5) * 0.5, 0,
-					(level.getRandom().nextDouble() - 0.5) * 0.5);
-				line(level, dust(BLACK, 1.3F), p, next, 0.12);
-				line(level, dust(BLOOD, 0.6F), p.add(0.06, 0.06, 0), next.add(0.06, 0.06, 0), 0.25);
-				p = next;
-			}
+			Vec3 from = c.add((random.nextDouble() - 0.5) * 2.4, 1.6 + random.nextDouble(), (random.nextDouble() - 0.5) * 2.4);
+			ElementFx.bolt(level, from, c, 0.035, 1, 2, BLOOD, ElementFx.dark(BLACK));
 		}
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 24, 0.5);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.REDSTONE), c, 4, 0.25);
+		ElementFx.implode(level, c, 1.4, 7);
+		ElementFx.pulse(level, c, UP, 1.6);
+		ElementFx.sparks(level, c, 12, 0.5);
+		ElementFx.drip(level, c, 0.25, 4);
 		Fx.sound(level, c, SoundEvents.TRIDENT_THUNDER, 0.6F, 1.7F);
 		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 0.6F);
 	}
 
+	/** Aftershock: a hit, and half a second later the ground under the target cracks and heaves. */
 	static void aftershock(ServerLevel level, Entity target, boolean second) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		Vfx.Theme earth = Vfx.theme("earth");
 		if (!second) {
-			dot(level, earth.flash(), c);
-			Vfx.radial(level, ParticleTypes.CRIT, c, 10, 0.3);
+			ElementFx.earthImpact(level, c, 0.8);
 			Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_STRONG, 0.9F, 0.7F);
 			return;
 		}
 		dot(level, flash(0xFFE0B0), c);
+		ElementFx.crack(level, target.position(), 1.6, 20);
 		Vfx.shockwave(level, target.position(), 1.8, earth, 4);
 		Scheduler.later(2, () -> Vfx.shockwave(level, target.position(), 2.6, earth, 4));
-		Vfx.radial(level, earth.spark(), c, 14, 0.3);
+		ElementFx.stoneShards(level, c, ElementFx.groundBlock(level, target.position()), 10, 0.3);
 		Fx.sound(level, c, SoundEvents.MACE_SMASH_GROUND, 1.0F, 1.1F);
 	}
 
-	/** Resonance: a nail rings out and threads of cursed energy run to every marked enemy. */
+	private static final int CURSE = 0xC0306A;
+
+	/** Resonance: a nail rings out and threads of cursed light run to every marked enemy. */
 	static void resonance(ServerLevel level, Entity target, List<? extends Entity> linked) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		Vfx.Theme arcane = Vfx.theme("arcane");
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.IRON_NUGGET), c, 8, 0.15);
-		Vfx.ring(level, arcane.dust(1.1F), c, 0.6, 12);
+		ItemParticleOption nail = new ItemParticleOption(ParticleTypes.ITEM, Items.IRON_NUGGET);
+		Sigils.flash(level, c, CURSE, 1.4F);
+		ElementFx.ring(level, c, UP, ElementFx.ARCANE.primary(), 0.2, 1.1, 0.045, 9);
+		ElementFx.ring(level, c, ElementFx.tilted(1.2, level.getRandom().nextDouble() * Math.PI * 2), CURSE, 0.15, 0.8, 0.035, 11);
+		Vfx.radial(level, nail, c, 6, 0.15);
 		for (Entity other : linked) {
 			Vec3 o = other.getBoundingBox().getCenter();
-			line(level, dust(0x8A1848, 0.6F), c, o, 0.4);
-			dot(level, arcane.flash(), o);
-			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.IRON_NUGGET), o, 5, 0.12);
+			ElementFx.ray(level, c, o, CURSE, 0.035, 10);
+			dot(level, SigilOption.glow(ElementFx.ARCANE.primary(), 1.2F), o);
+			ElementFx.ring(level, o, UP, CURSE, 0.15, 0.7, 0.035, 8);
+			Vfx.radial(level, nail, o, 3, 0.12);
 		}
 		Fx.sound(level, c, SoundEvents.ANVIL_LAND, 0.3F, 1.9F);
 		Fx.sound(level, c, SoundEvents.BELL_RESONATE, 0.5F, 1.6F);
 	}
 
-	/** Ripple: golden rings of sunlight run out across the target. */
+	/** Ripple: rings of golden sunlight run out through the target, each on its own tilt. */
 	static void ripple(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
+		double a = level.getRandom().nextDouble() * Math.PI * 2;
+		dot(level, SigilOption.glow(0xFFD050, 1.4F), c);
 		for (int t = 0; t < 3; t++) {
-			double r = 0.4 + t * 0.35;
-			Scheduler.later(t + 1, () -> Vfx.ring(level, new DustColorTransitionOptions(0xFFD050, 0xFF7A20, 1.2F), c, r, 14));
+			int k = t;
+			Scheduler.later(t + 1, () -> ElementFx.ring(level, target.getBoundingBox().getCenter(), ElementFx.tilted(0.5, a + k * 2.1),
+				k % 2 == 0 ? 0xFFD050 : 0xFF9A30, 0.2, 0.8 + k * 0.35, 0.05, 7));
 		}
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.3);
-		Vfx.emit(level, ParticleTypes.WAX_ON, c, 8, 0.4, 0.0);
+		ElementFx.sparks(level, c, 10, 0.3);
+		Vfx.emit(level, ParticleTypes.WAX_ON, c, 6, 0.4, 0.0);
 		Fx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.8F);
 	}
 
+	private static final int FUSE = 0xFF6EC7;
+
+	/** Primer: the target flares pink and a ring closes on it: it's a bomb now. */
 	static void primed(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		dot(level, flash(0xFF6EC7), c);
-		Vfx.ring(level, dust(0xFF6EC7, 1.2F), c, 0.7, 14);
-		Vfx.emit(level, ParticleTypes.SMOKE, c, 6, 0.3, 0.01);
+		double w = Math.max(0.5, target.getBbWidth());
+		dot(level, flash(FUSE), c);
+		ElementFx.ring(level, c, UP, FUSE, w + 1.2, w * 0.5, 0.05, 12);
+		ElementFx.ring(level, c, ElementFx.tilted(1.2, level.getRandom().nextDouble() * Math.PI * 2), ElementFx.FIRE.secondary(), w + 0.9, w * 0.5, 0.035, 14);
+		Vfx.emit(level, ParticleTypes.SMOKE, c, 4, 0.3, 0.01);
 	}
 
+	/** A tick of the fuse: a ring pulsing out of the target and a spark fizzing over its head. */
 	static void primerTick(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		Vfx.emit(level, dust(0xFF6EC7, 0.9F), c, 4, 0.35, 0.0);
-		Vfx.emit(level, ParticleTypes.SMOKE, target.position().add(0, target.getBbHeight() + 0.2, 0), 2, 0.05, 0.01);
+		Vec3 top = target.position().add(0, target.getBbHeight() + 0.2, 0);
+		ElementFx.ring(level, c, UP, FUSE, 0.2, Math.max(0.5, target.getBbWidth()) + 0.5, 0.035, 5);
+		dot(level, SigilOption.glow(ElementFx.FIRE.secondary(), 0.45F), top);
+		Vfx.emit(level, ParticleTypes.SMOKE, top, 2, 0.05, 0.01);
 		Fx.sound(level, c, SoundEvents.TRIPWIRE_CLICK_ON, 0.6F, 2.0F);
 	}
 
-	/** Blackflame: black fire licking up the target, edged with violet. */
+	/** Blackflame: tongues of black fire licking up the target, a few of them violet at the edge. */
 	static void blackflame(ServerLevel level, Entity target) {
 		Vec3 base = target.position();
-		double w = target.getBbWidth() * 0.6;
-		for (int i = 0; i < 8; i++) {
-			double a = Math.PI * 2 * i / 8 + level.getRandom().nextDouble();
-			Vec3 p = base.add(Math.cos(a) * w, 0.1 + level.getRandom().nextDouble() * target.getBbHeight(), Math.sin(a) * w);
-			dot(level, dust(BLACK, 1.6F), p);
-			Vfx.fling(level, ParticleTypes.SQUID_INK, p, UP, 0.08);
+		double w = Math.max(0.35, target.getBbWidth() * 0.6);
+		ElementFx.tongues(level, base, w, target.getBbHeight(), 5, ElementFx.dark(BLACK), ElementFx.VOID.primary(), 2, 9);
+		for (int i = 0; i < 3; i++) {
+			double a = Math.PI * 2 * i / 3 + level.getRandom().nextDouble();
+			Vfx.fling(level, ParticleTypes.SQUID_INK, base.add(Math.cos(a) * w, 0.2 + level.getRandom().nextDouble() * target.getBbHeight(), Math.sin(a) * w), UP,
+				0.08);
 		}
-		Vfx.emit(level, dust(0x5A1A8A, 0.9F), target.getBoundingBox().getCenter(), 4, w, 0.0);
 		Vfx.emit(level, ParticleTypes.LARGE_SMOKE, target.getBoundingBox().getCenter(), 2, w, 0.02);
 		Fx.sound(level, base, SoundEvents.FIRE_AMBIENT, 0.6F, 0.6F);
 	}
 
-	/** Hollow: a red and a blue orb spiral together, then the gap collapses in a violet flash. */
+	private static final int RED = 0xFF3030;
+	private static final int BLUE = 0x3050FF;
+
+	/** Hollow: a red and a blue orb spiral together, then the gap collapses into a hole in the world that bursts violet. */
 	static void hollow(ServerLevel level, Vec3 c, double radius) {
 		Vec3 side = new Vec3(1, 0, 0);
 		for (int t = 0; t < 6; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
 				double k = 1 - (tick + 1) / 6.0;
-				double a = tick * 0.6;
-				Vec3 offset = side.yRot((float) a).scale(1.8 * k).add(0, 0.2 * k, 0);
-				Vfx.emit(level, dust(0xFF3030, 2.0F), c.add(offset), 5, 0.12, 0.0);
-				Vfx.emit(level, dust(0x3050FF, 2.0F), c.subtract(offset), 5, 0.12, 0.0);
+				double before = 1 - tick / 6.0;
+				Vec3 offset = side.yRot((float) (tick * 0.6)).scale(1.8 * k).add(0, 0.2 * k, 0);
+				Vec3 last = side.yRot((float) ((tick - 1) * 0.6)).scale(1.8 * before).add(0, 0.2 * before, 0);
+				ElementFx.orb(level, c.add(offset), RED, 0.3, 2);
+				ElementFx.orb(level, c.subtract(offset), BLUE, 0.3, 2);
+				ElementFx.ray(level, c.add(last), c.add(offset), RED, 0.12, 5);
+				ElementFx.ray(level, c.subtract(last), c.subtract(offset), BLUE, 0.12, 5);
 			});
 		}
 		Scheduler.later(7, () -> {
 			dot(level, flash(0xB45AF0), c);
 			dot(level, ParticleTypes.SONIC_BOOM, c);
-			sphere(level, dust(0x9A3AF0, 1.8F), c, radius * 0.6, 40, 0.0, false);
-			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 30, 0.6);
+			ElementFx.blackCore(level, c, 0.6, 14);
+			ElementFx.implode(level, c, radius, 8);
+			for (int i = 0; i < 3; i++) {
+				ElementFx.ring(level, c, ElementFx.tilted(1.2, i * Math.PI / 3), i == 1 ? ElementFx.VOID.secondary() : ElementFx.VOID.primary(), 0.4, radius * 0.9,
+					0.06, 10);
+			}
+			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 20, 0.6);
 			Vfx.shockwave(level, c.subtract(0, 0.8, 0), radius, Vfx.theme("void"), 5);
 		});
 		Fx.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 1.0F, 0.5F);
 		Scheduler.later(7, () -> Fx.sound(level, c, SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 0.6F));
 	}
 
-	/** Repel: a red shell bursting outward with gusts. */
+	private static final int REPEL = 0xFF5050;
+	private static final int REPEL_LIGHT = 0xFFB0A0;
+
+	/** Repel: a red shell of wind bursting outward, blades of air whirling out with it. */
 	static void repel(ServerLevel level, Vec3 c, double radius) {
-		dot(level, flash(0xFF5050), c);
-		for (int t = 0; t < 3; t++) {
-			double r = radius * (t + 1) / 3;
-			Scheduler.later(t + 1, () -> sphere(level, new DustColorTransitionOptions(0xFF4040, 0xFFB0A0, 1.3F), c, r, (int) Math.max(20, r * r * 3), 0.0, false));
+		dot(level, flash(REPEL), c);
+		RandomSource random = level.getRandom();
+		double spin = random.nextDouble() * Math.PI;
+		for (int i = 0; i < 3; i++) {
+			Vec3 normal = i == 2 ? UP : new Vec3(Math.cos(spin + i * Math.PI / 2), 0, Math.sin(spin + i * Math.PI / 2));
+			ElementFx.ring(level, c, normal, i == 1 ? REPEL_LIGHT : REPEL, 0.3, radius, 0.07, 9);
 		}
-		Vfx.radial(level, ParticleTypes.GUST, c, 6, 0.3);
-		Vfx.radial(level, ParticleTypes.SMALL_GUST, c, 14, 0.5);
+		for (int i = 0; i < 4; i++) {
+			Vec3 normal = ElementFx.randomDir(random);
+			ElementFx.slash(level, c, normal, ElementFx.inPlane(normal, random.nextDouble() * Math.PI * 2), i % 2 == 0 ? REPEL : ElementFx.WIND.secondary(),
+				radius * 0.7, 2.4, 0.1, 2, 7);
+		}
+		Vec3 floor = ElementFx.floor(level, c, radius);
+		if (floor != null) {
+			ElementFx.groundRing(level, floor, REPEL, 0.3, radius * 1.2, 0.08, 10);
+		}
+		Vfx.radial(level, ParticleTypes.GUST, c, 3, 0.3);
+		Vfx.radial(level, ParticleTypes.SMALL_GUST, c, 8, 0.5);
 		Fx.sound(level, c, SoundEvents.BREEZE_WIND_CHARGE_BURST, 1.0F, 0.7F);
 		Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.4F);
 	}
 
-	/** Collapse (Repel meeting a pull): the two forces annihilate in a violet burst. */
+	/** Collapse (Repel meeting a pull): the two forces annihilate, darkness falling in as violet light bursts out. */
 	static void collapse(ServerLevel level, Vec3 c) {
 		dot(level, flash(0xB45AF0), c);
 		dot(level, ParticleTypes.SONIC_BOOM, c);
-		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 24, 0.5);
-		sphere(level, dust(0x9A3AF0, 1.5F), c, 1.2, 24, 0.0, false);
+		ElementFx.implode(level, c, 2.2, 6);
+		ElementFx.blackCore(level, c, 0.4, 10);
+		for (int i = 0; i < 3; i++) {
+			ElementFx.ring(level, c, ElementFx.tilted(i == 0 ? 0 : 1.2, i * Math.PI * 2 / 3), i == 0 ? ElementFx.VOID.secondary() : ElementFx.VOID.primary(), 0.3,
+				2.6, 0.07, 9);
+		}
+		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 20, 0.5);
 		Fx.sound(level, c, SoundEvents.WARDEN_SONIC_BOOM, 0.6F, 1.2F);
 	}
 
 	// ------------------------------------------------------------------ control
 
-	/** Decree: the words leave the caster's mouth as rings of force. */
+	private static final int DECREE = 0x8A1030;
+
+	/** Decree: the words leave the caster's mouth as rings of force, from a little way out so they clear the caster's own view. */
 	static void decreeSpoken(ServerLevel level, LivingEntity caster) {
 		Vec3 mouth = caster.getEyePosition().subtract(0, 0.15, 0);
 		Vec3 f = caster.getLookAngle();
 		for (int t = 0; t < 3; t++) {
 			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				Vec3 at = mouth.add(f.scale(0.8 + tick * 0.6));
-				Vec3 r = flat(f).cross(UP).normalize();
-				for (int i = 0; i < 10; i++) {
-					double a = Math.PI * 2 * i / 10;
-					double rad = 0.25 + tick * 0.15;
-					dot(level, dust(0x8A1030, 0.8F), at.add(r.scale(Math.cos(a) * rad)).add(0, Math.sin(a) * rad, 0));
-				}
-			});
+			Scheduler.later(t + 1, () -> ElementFx.ring(level, mouth.add(f.scale(1.6 + tick * 0.8)), f, tick == 1 ? CURSE : DECREE, 0.15, 0.4 + tick * 0.2, 0.03, 6));
 		}
 		Fx.sound(level, mouth, SoundEvents.ELDER_GUARDIAN_CURSE, 0.35F, 1.8F);
 	}
 
+	/** The command lands: a thread of crimson to the target, and a seal hanging over its head while it's held. */
 	static void decree(ServerLevel level, Vec3 from, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		Fx.send(level, Vfx.theme("arcane").trail(c, 8), from.x, from.y, from.z, 4, 0.1, 0.1, 0.1, 0);
-		Vfx.ring(level, dust(0x8A1030, 1.0F), target.position().add(0, target.getBbHeight() + 0.3, 0), 0.4, 12);
-		Vfx.emit(level, ParticleTypes.ENCHANT, c, 12, 0.4, 0.3);
+		Vec3 d = c.subtract(from);
+		double length = d.length();
+		if (length > 2.0) {
+			ElementFx.ray(level, from.add(d.scale(1.5 / length)), c, DECREE, 0.035, 8);
+		}
+		Vec3 head = target.position().add(0, target.getBbHeight() + 0.3, 0);
+		ElementFx.ring(level, head, UP, CURSE, 0.8, 0.4, 0.04, 10);
+		ElementFx.sigil(level, head, UP, SigilOption.CIRCLE, DECREE, 0.35, 40, 0.1);
+		ElementFx.shimmer(level, c, 0.3, 8);
 	}
 
-	/** Weigh: dust raining down on the target and a heavy ring at its feet. */
+	/** Weigh: dust raining down on the target and the ground pressed in round its feet. */
 	static void weigh(ServerLevel level, Entity target, boolean start) {
 		Vec3 top = target.position().add(0, target.getBbHeight() + 0.4, 0);
-		Vfx.emit(level, new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.ANVIL.defaultBlockState()), top, 4, target.getBbWidth() * 0.5, 0.0);
-		Vfx.ring(level, dust(0x4A3A2A, 1.2F), target.position().add(0, 0.1, 0), 0.6, 10);
+		Vfx.emit(level, new BlockParticleOption(ParticleTypes.FALLING_DUST, Blocks.ANVIL.defaultBlockState()), top, 3, target.getBbWidth() * 0.5, 0.0);
+		ElementFx.groundRing(level, target.position(), ElementFx.EARTH.primary(), 0.9, 0.45, 0.05, 6);
 		if (start) {
-			Vfx.shockwave(level, target.position(), 1.4, Vfx.theme("earth"), 3);
+			ElementFx.crack(level, target.position(), 0.9, 30);
+			ElementFx.ring(level, top, UP, ElementFx.EARTH.secondary(), 1.0, 0.3, 0.05, 8);
 			Fx.sound(level, target.position(), SoundEvents.ANVIL_LAND, 0.5F, 0.6F);
 		}
 	}
 
-	/** Shackle: a chain from where the target stood to where it is now. */
+	private static final int STEEL = 0xA8A8B4;
+
+	/** Shackle: a chain of grey light from where the target stood to where it is now. */
 	static void chain(ServerLevel level, Vec3 anchor, Entity target, boolean bind) {
 		Vec3 end = target.getBoundingBox().getCenter();
-		Vec3 d = end.subtract(anchor.add(0, 0.1, 0));
-		int n = (int) Math.min(30, Math.max(3, d.length() / 0.25));
-		for (int i = 0; i <= n; i++) {
-			dot(level, dust(i % 2 == 0 ? 0x5A5A64 : 0xA8A8B4, 0.7F), anchor.add(0, 0.1, 0).add(d.scale(i / (double) n)));
+		Vec3 start = anchor.add(0, 0.1, 0);
+		ElementFx.ray(level, start, end, STEEL, 0.035, 3);
+		Vec3 d = end.subtract(start);
+		int n = (int) Math.min(12, Math.max(2, d.length() / 0.5));
+		for (int i = 1; i < n; i++) {
+			dot(level, dust(i % 2 == 0 ? 0x5A5A64 : 0xC8C8D4, 0.7F), start.add(d.scale(i / (double) n)));
 		}
 		if (bind) {
-			Vfx.ring(level, dust(0x7A7A86, 1.0F), anchor.add(0, 0.08, 0), 0.5, 10);
+			ElementFx.groundRing(level, anchor, STEEL, 0.9, 0.5, 0.05, 10);
+			ElementFx.flatSigil(level, anchor, SigilOption.CIRCLE, STEEL, 0.5, 20, 0.05);
 			Fx.sound(level, end, SoundEvents.CHAIN_PLACE, 1.0F, 0.8F);
 		}
 	}
 
+	private static final int BUBBLE = 0xCFEFFF;
+
+	/** Bubble: a shimmering sphere of water round the target, two great circles turning over it and a glint on top. */
 	static void bubble(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		double r = Math.max(target.getBbWidth(), target.getBbHeight()) * 0.65 + 0.15;
-		sphere(level, dust(0xCFEFFF, 0.7F), c, r, 18, level.getGameTime() * 0.2, false);
+		double spin = level.getGameTime() * 0.2;
+		ElementFx.ring(level, c, ElementFx.tilted(1.1, spin), BUBBLE, r, r, 0.025, 4);
+		ElementFx.ring(level, c, ElementFx.tilted(0.5, -spin * 1.3), BUBBLE, r, r, 0.02, 4);
 		dot(level, dust(0xFFFFFF, 0.9F), c.add(-r * 0.4, r * 0.5, -r * 0.4));
 	}
 
 	static void bubblePop(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		Vfx.radial(level, ParticleTypes.SPLASH, c, 20, 0.3);
-		Vfx.emit(level, ParticleTypes.BUBBLE_POP, c, 12, 0.5, 0.05);
+		double r = Math.max(target.getBbWidth(), target.getBbHeight()) * 0.65 + 0.15;
+		dot(level, SigilOption.glow(BUBBLE, (float) (r * 1.8)), c);
+		for (int i = 0; i < 3; i++) {
+			ElementFx.ring(level, c, ElementFx.tilted(i == 0 ? 0 : 1.2, i * 2.1), i == 0 ? 0xFFFFFF : BUBBLE, r, r * 2.2, 0.04, 7);
+		}
+		Vfx.radial(level, ParticleTypes.SPLASH, c, 16, 0.3);
+		Vfx.emit(level, ParticleTypes.BUBBLE_POP, c, 10, 0.5, 0.05);
 		Fx.sound(level, c, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1.0F, 1.0F);
 		Fx.sound(level, c, SoundEvents.PLAYER_SPLASH, 0.5F, 1.6F);
 	}
 
 	// ------------------------------------------------------------------ support
 
+	private static final int INFINITY = 0xE8E0FF;
+
+	/** Infinity forms: a sphere of pale light settles round the target, three great circles on their own tilts. */
 	static void infinityStart(ServerLevel level, Entity target) {
-		sphere(level, dust(0xE8E0FF, 0.8F), target.getBoundingBox().getCenter(), 1.7, 30, 0.0, false);
+		Vec3 c = target.getBoundingBox().getCenter();
+		for (int i = 0; i < 3; i++) {
+			ElementFx.ring(level, c, ElementFx.tilted(i == 0 ? 0 : 1.1, i * Math.PI * 2 / 3), i == 1 ? ElementFx.VOID.secondary() : INFINITY, 2.4, 1.7, 0.03, 16);
+		}
+		// Under its feet too, where one warding themselves sees it.
+		ElementFx.groundRing(level, target.position(), INFINITY, 2.4, 1.7, 0.04, 16);
+		dot(level, SigilOption.glow(INFINITY, 1.6F), c);
 		Fx.sound(level, target.position(), SoundEvents.BEACON_ACTIVATE, 0.6F, 1.9F);
 	}
 
+	/** Infinity holds: two faint great circles breathing round the target. */
 	static void infinityShell(ServerLevel level, Vec3 c) {
-		sphere(level, dust(0xE8E0FF, 0.55F), c, 1.7, 14, level.getGameTime() * 0.1, false);
+		double spin = level.getGameTime() * 0.05;
+		ElementFx.ring(level, c, ElementFx.tilted(1.1, spin), INFINITY, 1.7, 1.7, 0.02, 10);
+		ElementFx.ring(level, c, ElementFx.tilted(1.1, spin + Math.PI / 2), ElementFx.VOID.secondary(), 1.7, 1.7, 0.015, 10);
 	}
 
-	/** Where Infinity catches a projectile: a small ring in the air. */
+	/** Where Infinity catches a projectile: a small ring of light closing on it. */
 	static void infinityHalt(ServerLevel level, Vec3 at) {
-		Vfx.ring(level, dust(0xE8E0FF, 0.7F), at, 0.3, 8);
+		ElementFx.ring(level, at, ElementFx.randomDir(level.getRandom()), INFINITY, 0.5, 0.15, 0.03, 8);
+		dot(level, SigilOption.glow(INFINITY, 0.5F), at);
 		Fx.sound(level, at, SoundEvents.AMETHYST_BLOCK_HIT, 0.6F, 1.8F);
 	}
 
 	static void reversalMark(ServerLevel level, Entity target) {
-		Vfx.helix(level, target.position(), 0.5, target.getBbHeight() + 0.3, Vfx.theme("life"), 8);
-		Vfx.emit(level, ParticleTypes.TOTEM_OF_UNDYING, target.getBoundingBox().getCenter(), 8, 0.3, 0.1);
+		Vec3 base = target.position();
+		ElementFx.leafSpiral(level, base, 0.55, target.getBbHeight() + 0.3, 5);
+		ElementFx.flatSigil(level, base, SigilOption.STAR, ElementFx.LIFE.primary(), 0.8, 24, 0.06);
+		Vfx.emit(level, ParticleTypes.TOTEM_OF_UNDYING, target.getBoundingBox().getCenter(), 6, 0.3, 0.1);
 		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.2F);
 	}
 
+	private static final int TOTEM = 0xF5D86A;
+
+	/** A killing blow reversed: a great green bloom, rings of life rising, a leaf spiral and a burst of totem light. */
 	static void reversal(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
+		Vec3 base = target.position();
 		dot(level, flash(0x6EDC64), c);
-		Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, c, 40, 0.5);
-		Vfx.helix(level, target.position(), 0.7, target.getBbHeight() + 0.6, Vfx.theme("life"), 10);
+		ElementFx.bloom(level, c, base, 2.0);
+		ElementFx.leafSpiral(level, base, 0.8, target.getBbHeight() + 0.8, 6);
+		for (int i = 0; i < 3; i++) {
+			ElementFx.ring(level, base.add(0, 0.2 + i * 0.7, 0), UP, i == 1 ? ElementFx.LIFE.secondary() : TOTEM, 0.3, 1.6 - i * 0.3, 0.05, 10 + i * 2);
+		}
+		Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, c, 30, 0.5);
 		Fx.sound(level, c, SoundEvents.TOTEM_USE, 0.9F, 1.1F);
 	}
 
+	/** Reflect: a faceted shell of mirror light round the target and a star seal under it. */
 	static void reflectMark(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), c, 10, 0.15);
-		Vfx.ring(level, Vfx.theme("arcane").dust(1.0F), c, 0.8, 14);
+		double r = Math.max(0.8, target.getBbHeight() * 0.55);
+		double a = level.getRandom().nextDouble() * Math.PI;
+		for (int i = 0; i < 3; i++) {
+			double b = a + i * Math.PI / 3;
+			ElementFx.ring(level, c, new Vec3(Math.cos(b), 0, Math.sin(b)), i == 1 ? ElementFx.ARCANE.secondary() : ElementFx.ARCANE.accent(), r * 1.3, r, 0.03, 12);
+		}
+		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, 0.7, 14);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), c, 8, 0.15);
 		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.4F);
 	}
 
+	/** The hurt thrown back: a beam of light to the attacker and glass breaking round it. */
 	static void reflect(ServerLevel level, Entity from, Entity attacker) {
 		Vec3 a = from.getBoundingBox().getCenter();
 		Vec3 b = attacker.getBoundingBox().getCenter();
-		Fx.send(level, Vfx.theme("arcane").trail(b, 6), a.x, a.y, a.z, 4, 0.1, 0.1, 0.1, 0);
+		Vec3 d = b.subtract(a);
+		double length = d.length();
+		// From a little way out, so the one reflecting sees it leave.
+		Vec3 start = length > 1.8 ? a.add(d.scale(1.2 / length)) : a;
+		ElementFx.ray(level, start, b, ElementFx.ARCANE.primary(), 0.06, 8);
+		ElementFx.ray(level, start, b, ElementFx.ARCANE.secondary(), 0.025, 7);
+		dot(level, SigilOption.glow(ElementFx.ARCANE.primary(), 1.4F), b);
+		ElementFx.ring(level, b, d, ElementFx.ARCANE.secondary(), 0.2, 1.0, 0.04, 7);
 		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), b, 6, 0.3, 0.1);
 		Fx.sound(level, b, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.6F);
 	}
 
+	/** Overdrive: a heartbeat pulses out of the target and crimson crescents surge up round it; later beats as it pays. */
 	static void overdrive(ServerLevel level, Entity target, boolean start) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		if (start) {
-			Vfx.shockwave(level, target.position(), 1.3, Vfx.theme("blood"), 3);
-			Vfx.emit(level, dust(BLOOD, 1.2F), c, 10, 0.4, 0.0);
+			ElementFx.pulse(level, c, UP, 1.6);
+			ElementFx.groundRing(level, target.position(), BLOOD, 0.3, 1.8, 0.07, 9);
+			ElementFx.tongues(level, target.position(), Math.max(0.4, target.getBbWidth() * 0.6), target.getBbHeight(), 4, BLOOD, ElementFx.BLOOD.secondary(), 2, 8);
+			Sigils.flash(level, c, BLOOD, 1.5F);
 			Fx.sound(level, c, SoundEvents.WARDEN_HEARTBEAT, 1.0F, 1.4F);
 		} else {
-			Vfx.emit(level, ParticleTypes.DAMAGE_INDICATOR, c, 2, 0.2, 0.05);
-			Vfx.emit(level, dust(BLOOD, 1.0F), c, 4, 0.3, 0.0);
+			ElementFx.pulse(level, c, UP, 1.0);
+			ElementFx.drip(level, c, 0.25, 2);
+			Vfx.emit(level, ParticleTypes.DAMAGE_INDICATOR, c, 1, 0.2, 0.05);
 		}
 	}
 
 	static void foresightMark(ServerLevel level, Entity target) {
 		Vec3 head = target.position().add(0, target.getBbHeight() + 0.25, 0);
-		Vfx.ring(level, dust(TIME, 1.0F), head, 0.45, 14);
-		Vfx.emit(level, ParticleTypes.END_ROD, head, 6, 0.3, 0.02);
+		ElementFx.clock(level, head, UP, 0.5, 8, false);
+		Vfx.emit(level, ParticleTypes.END_ROD, head, 4, 0.3, 0.02);
 		Fx.sound(level, head, SoundEvents.ILLUSIONER_PREPARE_MIRROR, 0.6F, 1.6F);
 	}
 
-	/** Foresight: a golden afterimage where the blow was meant to land. */
+	/** Foresight: a golden afterimage where the blow was meant to land, its clock stopped, and a streak to where you stepped. */
 	static void dodge(ServerLevel level, Entity entity, Vec3 from, Vec3 to) {
 		silhouette(level, dust(TIME, 0.8F), from, entity.getLookAngle(), entity.getBbHeight() / 1.8);
+		ElementFx.stoppedClock(level, from.add(0, entity.getBbHeight() * 0.55, 0), flat(entity.getLookAngle()), 0.5, level.getRandom().nextDouble() * Math.PI * 2, 10);
 		if (from.distanceToSqr(to) > 0.01) {
-			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(to.add(0, 1, 0), TIME, 6), from.x, from.y + 1, from.z, 4, 0.2, 0.3, 0.2, 0);
+			Vec3 a = from.add(0, 1, 0);
+			Vec3 b = to.add(0, 1, 0);
+			double length = b.distanceTo(a);
+			if (length > 0.8) {
+				ElementFx.ray(level, a, b.subtract(b.subtract(a).scale(0.6 / length)), TIME, 0.05, 8);
+			}
+			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(b, TIME, 6), from.x, from.y + 1, from.z, 3, 0.2, 0.3, 0.2, 0);
 		}
 		Fx.sound(level, to, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.8F, 1.4F);
 	}
 
 	static void restore(ServerLevel level, Entity target, boolean mended) {
-		Vfx.helix(level, target.position(), 0.55, target.getBbHeight() + 0.4, Vfx.theme("life"), 8);
-		Vfx.emit(level, ParticleTypes.HEART, target.position().add(0, target.getBbHeight() + 0.3, 0), 2, 0.3, 0.0);
+		Vec3 base = target.position();
+		ElementFx.leafSpiral(level, base, 0.55, target.getBbHeight() + 0.3, 5);
+		ElementFx.bloom(level, target.getBoundingBox().getCenter(), base, 1.0);
+		Vfx.emit(level, ParticleTypes.HEART, base.add(0, target.getBbHeight() + 0.3, 0), 2, 0.3, 0.0);
 		if (mended) {
-			Vfx.emit(level, ParticleTypes.WAX_ON, target.getBoundingBox().getCenter(), 10, 0.4, 0.0);
+			ElementFx.ring(level, target.getBoundingBox().getCenter(), UP, TOTEM, 1.2, 0.5, 0.04, 10);
+			Vfx.emit(level, ParticleTypes.WAX_ON, target.getBoundingBox().getCenter(), 8, 0.4, 0.0);
 			Fx.sound(level, target.position(), SoundEvents.SMITHING_TABLE_USE, 0.6F, 1.4F);
 		}
 		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.2F);
 	}
 
+	/** Accelerate: a clock face round the target with its hands racing, another hand sweeping on a tilt, and gold at its feet. */
 	static void accelerate(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		for (int t = 0; t < 6; t++) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				double a = tick * 1.1;
-				for (int i = 0; i < 12; i++) {
-					double b = a + Math.PI * 2 * i / 12;
-					dot(level, dust(i == 0 ? 0xFFFFFF : TIME, i == 0 ? 1.2F : 0.8F), c.add(Math.cos(b) * 0.8, 0, Math.sin(b) * 0.8));
-				}
-			});
-		}
-		Vfx.emit(level, ParticleTypes.END_ROD, c, 10, 0.5, 0.05);
+		ElementFx.clock(level, c, UP, 0.85, 5, false);
+		Vec3 tilt = ElementFx.tilted(1.0, level.getRandom().nextDouble() * Math.PI * 2);
+		ElementFx.slash(level, c, tilt, ElementFx.inPlane(tilt, 0), ElementFx.TIME.secondary(), 0.6, Math.PI * 1.9, 0.05, 3, 6);
+		ElementFx.groundRing(level, target.position(), TIME, 0.2, 1.5, 0.05, 8);
+		Vfx.emit(level, ParticleTypes.END_ROD, c, 6, 0.5, 0.05);
 		Fx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.7F, 2.0F);
 	}
 
 	// ------------------------------------------------------------------ movement
 
 	static void swap(ServerLevel level, Vec3 a, Vec3 b) {
-		Vfx.Theme arcane = Vfx.theme("arcane");
 		for (Vec3 p : List.of(a, b)) {
-			dot(level, arcane.flash(), p.add(0, 1, 0));
-			Vfx.ring(level, arcane.dust(1.2F), p.add(0, 0.1, 0), 0.7, 14);
-			Vfx.emit(level, arcane.sparkle(), p.add(0, 1, 0), 8, 0.3, 0.0);
+			dot(level, SigilOption.glow(ElementFx.ARCANE.primary(), 1.8F), p.add(0, 1, 0));
+			ElementFx.starSeal(level, p.add(0, 0.07, 0), UP, 0.7, 16);
+			ElementFx.ring(level, p.add(0, 1, 0), UP, ElementFx.ARCANE.secondary(), 1.0, 0.3, 0.04, 8);
+			ElementFx.shimmer(level, p.add(0, 1, 0), 0.3, 5);
+		}
+		Vec3 d = b.subtract(a);
+		double length = d.length();
+		if (length > 2.4) {
+			Vec3 step = d.scale(1.1 / length);
+			ElementFx.ray(level, a.add(0, 1, 0).add(step), b.add(0, 1, 0).subtract(step), ElementFx.ARCANE.primary(), 0.04, 8);
 		}
 		Fx.sound(level, a, SoundEvents.NOTE_BLOCK_SNARE, 1.0F, 1.2F);
 		Fx.sound(level, b, SoundEvents.ENDERMAN_TELEPORT, 0.4F, 1.6F);
 	}
 
-	/** Zipper: two rows of teeth opening on the wall, and closing behind you. */
+	private static final int ZIP = 0xFFE070;
+
+	/** Zipper: a seam of gold light down the wall, two rows of teeth opening either side of it, and closing behind you. */
 	static void zipper(ServerLevel level, Vec3 entry, Vec3 exit, Vec3 dir) {
 		Vec3 side = flat(dir).cross(UP).normalize();
 		for (Vec3 at : List.of(entry, exit)) {
+			ElementFx.ray(level, at.add(0, 0.95, 0), at.add(0, -0.95, 0), ZIP, 0.05, 12);
 			for (int i = -6; i <= 6; i++) {
 				Vec3 p = at.add(0, i * 0.14, 0);
 				double open = 0.08 + (6 - Math.abs(i)) * 0.02;
 				dot(level, dust(i % 2 == 0 ? 0xD8B040 : 0x404048, 0.7F), p.add(side.scale(open)));
 				dot(level, dust(i % 2 == 0 ? 0x404048 : 0xD8B040, 0.7F), p.add(side.scale(-open)));
 			}
-			dot(level, dust(0xFFE070, 1.2F), at.add(0, 0.9, 0));
+			dot(level, SigilOption.glow(ZIP, 0.6F), at.add(0, 0.9, 0));
 		}
 		Fx.sound(level, entry, SoundEvents.CHAIN_BREAK, 0.8F, 1.7F);
 		Fx.sound(level, exit, SoundEvents.CHAIN_PLACE, 0.8F, 1.9F);
 	}
 
+	/** Shadowstep: darkness implodes where you were and where you arrive, and a black afterimage is left behind. */
 	static void shadowstep(ServerLevel level, Vec3 from, Vec3 to) {
 		for (Vec3 p : List.of(from, to)) {
-			Vfx.radial(level, ParticleTypes.SQUID_INK, p.add(0, 1, 0), 14, 0.15);
-			Vfx.emit(level, ParticleTypes.LARGE_SMOKE, p.add(0, 1, 0), 6, 0.3, 0.02);
+			ElementFx.implode(level, p.add(0, 1, 0), 1.2, 7);
+			Vfx.radial(level, ParticleTypes.SQUID_INK, p.add(0, 1, 0), 8, 0.15);
 		}
+		ElementFx.blackCore(level, to.add(0, 1, 0), 0.25, 6);
+		ElementFx.groundRing(level, to, ElementFx.dark(ElementFx.VOID.accent()), 1.4, 0.2, 0.1, 10);
 		silhouette(level, dust(BLACK, 1.0F), from, to.subtract(from), 1.0);
 		Fx.sound(level, to, SoundEvents.ENDERMAN_TELEPORT, 0.6F, 0.5F);
 	}
 
-	/** Stasis: a clock face stops around the target. */
+	/** Stasis: the hands of a clock race round the target and stop; time closes in on it. */
 	static void stasisStart(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
+		double r = Math.max(0.7, target.getBbWidth() * 0.9);
 		dot(level, flash(0xFFFFFF), c);
-		clock(level, c, Math.max(0.7, target.getBbWidth() * 0.9), 0.0);
-	}
-
-	private static void clock(ServerLevel level, Vec3 c, double r, double hand) {
-		Vfx.ring(level, dust(TIME, 0.9F), c, r, 24);
-		for (int i = 0; i < 12; i++) {
-			double a = Math.PI * 2 * i / 12;
-			dot(level, dust(0xFFFFFF, i % 3 == 0 ? 1.2F : 0.7F), c.add(Math.cos(a) * r * 1.15, 0, Math.sin(a) * r * 1.15));
-		}
-		for (double s = 0; s <= 1.0; s += 0.2) {
-			dot(level, dust(0xFFF4D0, 0.8F), c.add(Math.cos(hand) * r * 0.8 * s, 0, Math.sin(hand) * r * 0.8 * s));
-			dot(level, dust(0xFFF4D0, 0.8F), c.add(Math.cos(hand + 2.1) * r * 0.55 * s, 0, Math.sin(hand + 2.1) * r * 0.55 * s));
-		}
+		ElementFx.clock(level, c, UP, r, 4, false);
+		ElementFx.ring(level, c, UP, 0xFFFFFF, r * 2.2, r, 0.05, 8);
 	}
 
 	static void stasisTick(ServerLevel level, Entity target, int ticksLeft) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		clock(level, c, Math.max(0.7, target.getBbWidth() * 0.9), 0.0);
-		Vfx.emit(level, dust(0xB8B8C4, 0.8F), c, 4, target.getBbWidth() * 0.6, 0.0);
+		ElementFx.stoppedClock(level, c, UP, Math.max(0.7, target.getBbWidth() * 0.9), 0.0, 6);
+		Vfx.emit(level, dust(0xB8B8C4, 0.8F), c, 2, target.getBbWidth() * 0.6, 0.0);
 	}
 
 	/**
@@ -672,18 +767,21 @@ final class TechniqueVfx {
 		for (int i = 0; i < 4; i++) {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 dir = new Vec3(Math.cos(a), (level.getRandom().nextDouble() - 0.5) * 1.4, Math.sin(a)).normalize().scale(0.35);
-			line(level, dust(0xFFFFFF, 0.55F), at, at.add(dir), 0.08);
+			ElementFx.ray(level, at, at.add(dir), 0xFFFFFF, 0.025, 30);
 		}
-		dot(level, dust(TIME, 1.2F), at);
-		Vfx.ring(level, dust(0xE8E4FF, 0.7F), c, Math.max(0.5, 1.4 - hits * 0.08), 16);
+		dot(level, SigilOption.glow(TIME, 0.5F), at);
+		double r = Math.max(0.5, 1.4 - hits * 0.08);
+		ElementFx.ring(level, c, UP, 0xE8E4FF, r + 0.3, r, 0.03, 10);
 		Fx.sound(level, target.position(), SoundEvents.PLAYER_ATTACK_NODAMAGE, 0.7F, 1.4F + Math.min(0.6F, hits * 0.05F));
 	}
 
-	/** Time moves again: everything held lands at once. */
+	/** Time moves again: the hands spin once and everything held lands at once. */
 	static void timeResumes(ServerLevel level, Entity target, float stored) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		dot(level, flash(0xFFFFFF), c);
-		Vfx.radial(level, ParticleTypes.CRIT, c, (int) Math.min(40, 8 + stored), 0.5);
+		ElementFx.clock(level, c, UP, 0.9, 3, false);
+		ElementFx.ring(level, c, UP, 0xFFFFFF, 0.3, 2.2, 0.06, 7);
+		Vfx.radial(level, ParticleTypes.CRIT, c, (int) Math.min(30, 6 + stored), 0.5);
 		Vfx.shockwave(level, target.position(), 1.6, Vfx.theme("time"), 4);
 		Fx.sound(level, c, SoundEvents.BELL_BLOCK, 0.8F, 1.4F);
 		if (stored > 0) {
@@ -691,26 +789,33 @@ final class TechniqueVfx {
 		}
 	}
 
-	/** Rewind: golden streaks run backward to where you were, and the clock turns back. */
+	/** Rewind: golden streaks run back to where you were, and a clock's hands turn backward there. */
 	static void rewind(ServerLevel level, Vec3 from, Vec3 to) {
 		Vec3 a = from.add(0, 1, 0);
-		Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(to.add(0, 1, 0), TIME, 12), a.x, a.y, a.z, 14, 0.3, 0.5, 0.3, 0);
-		silhouette(level, dust(TIME, 0.8F), from, to.subtract(from), 1.0);
-		for (int t = 0; t < 8; t++) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> clock(level, to.add(0, 1, 0), 0.8, -tick * 0.8));
+		Vec3 b = to.add(0, 1, 0);
+		double length = b.distanceTo(a);
+		if (length > 0.5) {
+			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(b, TIME, 12), a.x, a.y, a.z, 8, 0.3, 0.5, 0.3, 0);
+			ElementFx.ray(level, a, b.subtract(b.subtract(a).scale(Math.min(0.8, length * 0.5) / length)), TIME, 0.05, 12);
+			silhouette(level, dust(TIME, 0.8F), from, to.subtract(from), 1.0);
 		}
+		ElementFx.clock(level, b, UP, 0.9, 10, true);
+		ElementFx.goldenTicks(level, b, 0.4, 6);
 		Fx.sound(level, to, SoundEvents.TRIDENT_RETURN, 0.9F, 0.8F);
 		Fx.sound(level, to, SoundEvents.BELL_RESONATE, 0.5F, 0.6F);
 	}
 
-	/** Time Skip: a crimson afterimage stays behind for a moment; you're already elsewhere. */
+	private static final int SKIP = 0xB02030;
+
+	/** Time Skip: a crimson afterimage stays behind for a moment with a clock stopped in it; you're already elsewhere. */
 	static void timeSkip(ServerLevel level, Vec3 from, Vec3 to) {
 		for (int t = 0; t < 6; t += 2) {
-			Scheduler.later(t + 1, () -> silhouette(level, dust(0xB02030, 0.9F), from, to.subtract(from), 1.0));
+			Scheduler.later(t + 1, () -> silhouette(level, dust(SKIP, 0.9F), from, to.subtract(from), 1.0));
 		}
-		dot(level, flash(0xB02030), to.add(0, 1, 0));
-		Vfx.emit(level, dust(0xB02030, 1.2F), to.add(0, 1, 0), 10, 0.4, 0.0);
+		ElementFx.stoppedClock(level, from.add(0, 1, 0), flat(to.subtract(from)), 0.7, 0.0, 12);
+		dot(level, flash(SKIP), to.add(0, 1, 0));
+		ElementFx.ring(level, to.add(0, 1, 0), UP, SKIP, 0.2, 1.4, 0.05, 8);
+		ElementFx.groundRing(level, to, TIME, 0.2, 1.2, 0.04, 10);
 		Fx.sound(level, from, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.9F, 0.5F);
 		Fx.sound(level, to, SoundEvents.BELL_BLOCK, 0.4F, 0.5F);
 	}
@@ -718,32 +823,31 @@ final class TechniqueVfx {
 	// ------------------------------------------------------------------ summons and links
 
 	static void shadeRise(ServerLevel level, Vec3 at) {
-		Vfx.radial(level, ParticleTypes.SQUID_INK, at.add(0, 0.4, 0), 16, 0.15);
-		Vfx.emit(level, ParticleTypes.LARGE_SMOKE, at.add(0, 0.5, 0), 8, 0.3, 0.02);
-		Vfx.ring(level, dust(BLACK, 1.4F), at.add(0, 0.08, 0), 0.9, 14);
+		ElementFx.groundRing(level, at, ElementFx.dark(ElementFx.VOID.accent()), 0.2, 1.2, 0.12, 14);
+		ElementFx.flatSigil(level, at, SigilOption.CIRCLE, ElementFx.VOID.primary(), 0.9, 20, -0.06);
+		ElementFx.implode(level, at.add(0, 0.5, 0), 1.0, 8);
+		Vfx.radial(level, ParticleTypes.SQUID_INK, at.add(0, 0.4, 0), 10, 0.15);
+		Vfx.emit(level, ParticleTypes.LARGE_SMOKE, at.add(0, 0.5, 0), 4, 0.3, 0.02);
 	}
 
 	static void shadeAura(ServerLevel level, Entity wolf) {
+		ElementFx.groundRing(level, wolf.position(), ElementFx.dark(ElementFx.VOID.accent()), 0.7, 0.2, 0.08, 10);
 		Vfx.emit(level, ParticleTypes.SQUID_INK, wolf.getBoundingBox().getCenter(), 1, 0.25, 0.01);
-		Vfx.emit(level, dust(0x2A1040, 1.0F), wolf.getBoundingBox().getCenter(), 2, 0.3, 0.0);
 	}
 
-	/** The Thunderbird: a bright body, flapping wings and a tail, heading along its circle. */
+	/** The Thunderbird: a bright body, crescent wings of light beating and a tail, heading round its circle. */
 	static void thunderbird(ServerLevel level, Vec3 bird, double angle, int tick) {
 		Vec3 heading = new Vec3(-Math.sin(angle), 0, Math.cos(angle));
 		Vec3 wing = new Vec3(Math.cos(angle), 0, Math.sin(angle));
-		double flap = Math.sin(tick * 0.9) * 0.3;
-		dot(level, dust(0xFFE650, 1.9F), bird);
-		dot(level, dust(0xFFE650, 1.4F), bird.add(heading.scale(0.22)));
-		dot(level, dust(0xFFFFFF, 1.0F), bird.add(heading.scale(0.42)).add(0, 0.06, 0));
-		for (int side : new int[] {1, -1}) {
-			for (int k = 1; k <= 4; k++) {
-				Vec3 feather = bird.add(wing.scale(side * k * 0.26)).add(0, flap * k / 4.0, 0).subtract(heading.scale(k * 0.05));
-				dot(level, dust(k == 4 ? 0xFFFFFF : 0xFFE650, k == 4 ? 0.9F : 1.2F), feather);
-			}
+		double flap = Math.sin(tick * 0.9);
+		ElementFx.orb(level, bird, ElementFx.STORM.primary(), 0.16, 3);
+		for (int side = -1; side <= 1; side += 2) {
+			// An arch over each wing, in the plane across the heading: its tip rises and falls with the beat.
+			Vec3 shoulder = bird.add(wing.scale(side * 0.3)).add(0, flap * 0.08 - 0.15, 0);
+			Vec3 toward = UP.add(wing.scale(side * flap * 0.5)).normalize();
+			ElementFx.slash(level, shoulder, heading, toward, ElementFx.STORM.primary(), 0.38, 1.8, 0.07, 1, 3);
 		}
-		dot(level, dust(0xE0C030, 1.0F), bird.subtract(heading.scale(0.35)));
-		dot(level, dust(0xFFFFFF, 0.8F), bird.subtract(heading.scale(0.55)).add(0, 0.05, 0));
+		ElementFx.ray(level, bird.subtract(heading.scale(0.1)), bird.subtract(heading.scale(0.6)).add(0, 0.05, 0), ElementFx.STORM.secondary(), 0.05, 3);
 		if (tick % 6 == 0) {
 			Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, bird, 2, 0.2, 0.05);
 		}
@@ -754,60 +858,62 @@ final class TechniqueVfx {
 
 	static void birdStrike(ServerLevel level, Vec3 from, Vec3 to) {
 		Vfx.shockArc(level, from, to);
-		dot(level, flash(0xFFF4C0), to);
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, to, 14, 0.4);
+		ElementFx.stormImpact(level, to, 0.9);
 		Fx.sound(level, to, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.5F, 1.6F);
 	}
 
 	static void birdFade(ServerLevel level, Vec3 at) {
-		Vfx.emit(level, ParticleTypes.POOF, at, 6, 0.2, 0.02);
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, at, 10, 0.3);
+		dot(level, SigilOption.glow(ElementFx.STORM.primary(), 1.4F), at);
+		ElementFx.ring(level, at, UP, ElementFx.STORM.primary(), 0.2, 1.2, 0.04, 8);
+		Vfx.emit(level, ParticleTypes.POOF, at, 4, 0.2, 0.02);
+		ElementFx.sparks(level, at, 10, 0.3);
 	}
 
-	/** If Airborne fired: a gust ring under your feet. */
+	/** If Airborne fired: a ring of wind under your feet. */
 	static void airborne(ServerLevel level, LivingEntity caster) {
-		Vfx.ring(level, Vfx.theme("wind").dust(1.0F), caster.position().add(0, -0.1, 0), 0.8, 12);
-		Vfx.emit(level, ParticleTypes.SMALL_GUST, caster.position(), 3, 0.3, 0.02);
+		ElementFx.ring(level, caster.position().add(0, -0.05, 0), UP, ElementFx.WIND.secondary(), 0.3, 1.2, 0.04, 8);
+		ElementFx.ring(level, caster.position().add(0, -0.05, 0), UP, ElementFx.WIND.accent(), 0.2, 0.8, 0.03, 10);
+		Vfx.emit(level, ParticleTypes.SMALL_GUST, caster.position(), 2, 0.3, 0.02);
 	}
 
-	/** Combo fired: a golden burst around you. */
-	/** Twin Star, armed: two small stars circle the caster for a moment. */
+	/** Twin Star, armed: two stars trace orbits round the caster, and a star seal turns at its feet. */
 	static void twinStarMark(ServerLevel level, LivingEntity caster) {
-		for (int t = 0; t < 12; t++) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				Vec3 c = caster.position().add(0, 1.1, 0);
-				for (int s = 0; s < 2; s++) {
-					double a = tick * 0.55 + s * Math.PI;
-					dot(level, dust(s == 0 ? 0xFFE8FF : 0xE678DC, 1.2F), c.add(Math.cos(a) * 0.8, Math.sin(tick * 0.3) * 0.2, Math.sin(a) * 0.8));
-				}
-			});
-		}
+		ElementFx.orbit(level, caster.position().add(0, 1.1, 0), 0.8, 2, 12, 0xFFE8FF, ElementFx.ARCANE.primary());
+		ElementFx.starSeal(level, caster.position().add(0, 0.07, 0), UP, 0.6, 20);
 		Fx.sound(level, caster.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.8F);
 	}
 
-	/** Twin Star's second cast: a flash of starlight at the hands. */
+	/** Twin Star's second cast: a flash of starlight at the hands and a star under your feet. */
 	static void twinStar(ServerLevel level, LivingEntity caster) {
 		Vec3 hand = caster.getEyePosition().add(caster.getLookAngle().scale(0.8)).add(0, -0.3, 0);
 		dot(level, flash(0xE678DC), hand);
-		Vfx.radial(level, ParticleTypes.END_ROD, hand, 10, 0.12);
+		ElementFx.ring(level, hand, caster.getLookAngle(), ElementFx.ARCANE.secondary(), 0.1, 0.7, 0.03, 7);
+		ElementFx.flatSigil(level, caster.position(), SigilOption.STAR, ElementFx.ARCANE.primary(), 0.6, 14, 0.2);
+		Vfx.radial(level, ParticleTypes.END_ROD, hand, 8, 0.12);
 		Fx.sound(level, hand, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.9F);
 	}
 
-	/** On the beat: notes rise and a gold ring pulses out, one note per step of the chain. */
+	private static final int BEAT = 0xF5D56A;
+
+	/** On the beat: notes rise and a gold ring pulses out along the ground, one note per step of the chain. */
 	static void rhythm(ServerLevel level, LivingEntity caster, int stacks) {
 		Vec3 c = caster.position().add(0, 2.1, 0);
 		for (int i = 0; i < stacks; i++) {
 			double a = Math.PI * 2 * i / stacks;
 			Fx.send(level, ParticleTypes.NOTE, c.x + Math.cos(a) * 0.5, c.y, c.z + Math.sin(a) * 0.5, 0, (0.2 + 0.25 * i) / 1.0, 0, 0, 1.0);
 		}
-		Vfx.ring(level, dust(0xF5D56A, 0.9F), caster.position().add(0, 0.1, 0), 0.9 + 0.3 * stacks, 18 + 4 * stacks);
+		ElementFx.groundRing(level, caster.position(), BEAT, 0.3, 0.9 + 0.3 * stacks, 0.04 + 0.01 * stacks, 10);
 	}
 
+	private static final int GOLD = 0xF0C440;
+
+	/** Combo fired: a golden burst round you. */
 	static void combo(ServerLevel level, LivingEntity caster) {
 		Vec3 c = caster.position().add(0, 1, 0);
-		Vfx.radial(level, ParticleTypes.WAX_ON, c, 16, 0.3);
-		Vfx.ring(level, dust(0xF0C440, 1.3F), caster.position().add(0, 0.1, 0), 1.1, 18);
+		ElementFx.groundRing(level, caster.position(), GOLD, 0.3, 1.6, 0.06, 10);
+		ElementFx.groundRing(level, caster.position(), 0xFFF4C0, 0.2, 1.1, 0.035, 12);
+		dot(level, SigilOption.glow(GOLD, 1.6F), c);
+		Vfx.radial(level, ParticleTypes.WAX_ON, c, 12, 0.3);
 		Fx.sound(level, c, SoundEvents.PLAYER_LEVELUP, 0.35F, 1.8F);
 	}
 }

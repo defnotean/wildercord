@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.content.SigilOption;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -85,8 +86,7 @@ public final class Reactions {
 			target.setTicksFrozen(0);
 			multiplier *= 1.6;
 			Vec3 c = target.getBoundingBox().getCenter();
-			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), c, 26, 0.35);
-			Sigils.flash(level, c, 0xFFBFEFFF, 2.2F);
+			shatterFx(level, target);
 			Fx.sound(level, c, SoundEvents.GLASS_BREAK, 1.0F, 0.7F);
 			callout(cast, "shatter", 0x8CDCFF);
 		}
@@ -96,9 +96,9 @@ public final class Reactions {
 				LivingEntity other = (LivingEntity) e;
 				other.igniteForSeconds(4);
 				Effects.hurt(cast, other, level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3);
-				Vfx.stream(level, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter(), Vfx.theme("fire"), 4);
+				wildfireLeap(level, target, other);
 			}
-			Vfx.radial(level, ParticleTypes.FLAME, target.getBoundingBox().getCenter(), 20, 0.3);
+			wildfireFx(level, target);
 			callout(cast, "wildfire", 0xF06E32);
 		}
 		return multiplier;
@@ -119,8 +119,7 @@ public final class Reactions {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter());
 			Effects.hurt(cast, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4);
 		}
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, target.getBoundingBox().getCenter(), 16, 0.4);
-		Vfx.radial(level, ParticleTypes.SPLASH, target.getBoundingBox().getCenter(), 10, 0.2);
+		conductFx(level, target);
 		callout(cast, "conduct", 0xFFE650);
 		return 1.5;
 	}
@@ -137,8 +136,7 @@ public final class Reactions {
 		if (!pulled) {
 			return 1.0;
 		}
-		Vfx.radial(cast.level, ParticleTypes.REVERSE_PORTAL, center, 30, 0.5);
-		Vfx.shockwave(cast.level, center.subtract(0, 0.8, 0), radius * 1.6, Vfx.theme("void"), 5);
+		implodeFx(cast.level, center, radius);
 		callout(cast, "implode", 0xB45AF0);
 		return 1.5;
 	}
@@ -156,6 +154,79 @@ public final class Reactions {
 		callout(cast, "collapse", 0xB45AF0);
 		return 2.0;
 	}
+
+	// ------------------------------------------------------------------ how they look
+
+	/**
+	 * Shatter: the ice bursts apart in a storm of shards, white rings snapping out through a flare of
+	 * fire, a cracked frost seal on the ground and steam rising.
+	 */
+	private static void shatterFx(ServerLevel level, LivingEntity target) {
+		Vec3 c = target.getBoundingBox().getCenter();
+		double w = Math.max(0.6, target.getBbWidth());
+		double tilt = level.getRandom().nextDouble() * Math.PI * 2;
+		Sigils.flash(level, c, 0xBFEFFF, 2.8F);
+		ElementFx.heatFlare(level, c, 1.3);
+		ElementFx.shards(level, c, 1.2 + w * 0.5, 12);
+		ElementFx.ring(level, c, UP, 0xFFFFFF, 0.3, 2.4 + w, 0.07, 8);
+		ElementFx.ring(level, c, ElementFx.tilted(0.9, tilt), ElementFx.FROST.accent(), 0.2, 1.9 + w, 0.05, 9);
+		ElementFx.ring(level, c, ElementFx.tilted(0.9, tilt + Math.PI), ElementFx.FIRE.primary(), 0.2, 1.6 + w, 0.05, 10);
+		ElementFx.flatSigil(level, target.position(), SigilOption.CRACKED, ElementFx.FROST.primary(), 1.2 + w, 24, 0.0);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), c, 18, 0.35);
+		Vfx.emit(level, ParticleTypes.WHITE_SMOKE, c, 8, 0.4, 0.04);
+	}
+
+	/** Wildfire leaps: a streak of flame from the burning target to another, flames catching on it. */
+	private static void wildfireLeap(ServerLevel level, LivingEntity from, LivingEntity to) {
+		Vec3 a = from.getBoundingBox().getCenter();
+		Vec3 b = to.getBoundingBox().getCenter();
+		ElementFx.ray(level, a, b, ElementFx.FIRE.primary(), 0.09, 8);
+		ElementFx.ray(level, a, b, ElementFx.FIRE.secondary(), 0.035, 7);
+		ElementFx.flames(level, to.position(), Math.max(0.35, to.getBbWidth() * 0.6), to.getBbHeight(), 3);
+		Vfx.stream(level, a, b, Vfx.theme("fire"), 2);
+	}
+
+	/** Wildfire: wind and fire together, a whirl of flame slashes spiralling up out of the target over a ring of fire. */
+	private static void wildfireFx(ServerLevel level, LivingEntity target) {
+		Vec3 base = target.position();
+		Vec3 c = target.getBoundingBox().getCenter();
+		ElementFx.heatFlare(level, c, 1.6);
+		ElementFx.swirl(level, base.add(0, 0.1, 0), 1.1, target.getBbHeight() + 1.2, 5, ElementFx.FIRE.primary(), ElementFx.FIRE.secondary());
+		ElementFx.flameBurst(level, c, 1.3, 5);
+		ElementFx.groundRing(level, base, ElementFx.FIRE.primary(), 0.3, 3.2, 0.1, 12);
+		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 2.4, 0.04, 10);
+		Vfx.radial(level, ParticleTypes.FLAME, c, 14, 0.3);
+	}
+
+	/** Conduct: lightning crawls over the wet target in a cage of short arcs, a ring of water bursting off it. */
+	private static void conductFx(ServerLevel level, LivingEntity target) {
+		Vec3 c = target.getBoundingBox().getCenter();
+		double w = Math.max(0.6, target.getBbWidth());
+		Sigils.flash(level, c, ElementFx.STORM.secondary(), 2.2F);
+		ElementFx.ring(level, c, UP, 0x4AA8FF, 0.2, 2.2 + w, 0.06, 8);
+		ElementFx.ring(level, c, UP, ElementFx.STORM.primary(), 0.2, 1.6 + w, 0.04, 6);
+		for (int i = 0; i < 3; i++) {
+			Vec3 a = c.add(ElementFx.randomDir(level.getRandom()).scale(w * 0.8));
+			Vec3 b = c.add(ElementFx.randomDir(level.getRandom()).scale(w * 0.8));
+			ElementFx.bolt(level, a, b, 0.035, 0, 2);
+		}
+		ElementFx.sparks(level, c, 12, 0.4);
+		Vfx.radial(level, ParticleTypes.SPLASH, c, 10, 0.2);
+	}
+
+	/** Implode: darkness falls in on the blast from far out, round a black core, before it goes off. */
+	private static void implodeFx(ServerLevel level, Vec3 center, double radius) {
+		ElementFx.implode(level, center, radius * 1.6, 7);
+		ElementFx.blackCore(level, center, 0.5, 8);
+		Vec3 floor = ElementFx.floor(level, center, radius + 1);
+		if (floor != null) {
+			ElementFx.groundRing(level, floor, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.8, 0.3, 0.14, 10);
+			ElementFx.groundRing(level, floor, ElementFx.VOID.primary(), radius * 1.9, 0.4, 0.04, 9);
+		}
+		Vfx.emit(level, ParticleTypes.PORTAL, center, 20, 0.1, radius * 0.8);
+	}
+
+	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** Tells the caster what they set off, at most once a second. */
 	static void callout(Cast cast, String reaction, int color) {

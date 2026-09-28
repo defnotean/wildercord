@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.content.SigilOption;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.Spellbooks;
@@ -151,8 +152,12 @@ public final class HeartCircles {
 		Vec3 heart = heartOf(player);
 		// The flash goes through Fx.send, which keeps it out of the player's own face.
 		Sigils.flash(level, heart.add(0, 0.6, 0), 0xFF000000 | COLORS[n - 1], 2.6F);
-		Vfx.radial(level, ParticleTypes.END_ROD, heart, 40, 0.35);
+		Vfx.radial(level, ParticleTypes.END_ROD, heart, 24, 0.35);
 		Vfx.shockwave(level, player.position(), 3.5, Vfx.theme("time"), 6);
+		// The new circle breaks out of the heart in light, a circle opening under it: for everyone, you included.
+		Sigils.ground(level, player.position(), COLORS[n - 1], COLORS[Circles.MAX - 1], 1.6F, 40);
+		ElementFx.groundRing(level, player.position(), COLORS[n - 1], 0.3, 4.2, 0.09, 18);
+		Fx.sendAll(level, ElementFx.ringOption(UP, COLORS[n - 1], 0.3 + 0.09 * (n - 1), 3.0, 0.04, 12), heart, 1, 0.0, 0.0);
 		for (int t = 0; t < 10; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> rings(player, n, tick * 0.6, 0.5F + (10 - tick) * 0.05F, true));
@@ -195,15 +200,31 @@ public final class HeartCircles {
 		if (circles <= 0) {
 			return;
 		}
-		for (int t = 0; t < 3; t++) {
+		for (int t = 0; t < 2; t++) {
 			int tick = t;
-			Scheduler.later(1 + t * 2, () -> {
+			Scheduler.later(1 + t * 3, () -> {
 				if (!player.isRemoved()) {
-					rings(player, circles, player.level().getGameTime() * 0.35 + tick, 0.4F, false);
+					lightRings(player, circles, player.level().getGameTime() * 0.35 + tick, tick == 0 ? 1.6 : 1.25);
 				}
 			});
 		}
 	}
+
+	/**
+	 * The rings in light, shown to everyone but {@code player}: each settles onto its circle from
+	 * {@code from} times its size, on its tilt at {@code spin}, round a small glowing heart.
+	 */
+	private static void lightRings(ServerPlayer player, int circles, double spin, double from) {
+		ServerLevel level = player.level();
+		Vec3 heart = heartOf(player);
+		Fx.sendOthers(level, player, SigilOption.glow(0xFFE0A0, 0.5F), heart);
+		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
+			double r = 0.3 + 0.09 * i;
+			Fx.sendOthers(level, player, ElementFx.ringOption(ringNormal(i, spin), ringColor(player, i), r * from, r, 0.02, 8), heart);
+		}
+	}
+
+	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** 3rd Circle: Mana Skin. A fifth of the damage you take is paid from mana instead. */
 	private static void manaSkin(ServerPlayer player, float damage) {
@@ -217,7 +238,8 @@ public final class HeartCircles {
 		}
 		player.heal(share);
 		Spellbooks.setMana(player, mana - share * Circles.MANA_SKIN_COST);
-		Vfx.emit(player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 6, 0.35, 0.0);
+		Vfx.emit(player.level(), new DustParticleOptions(0x7FB0FF, 0.8F), player.getBoundingBox().getCenter(), 4, 0.35, 0.0);
+		ElementFx.ring(player.level(), player.getBoundingBox().getCenter(), UP, 0x7FB0FF, 0.9, 0.45, 0.03, 7);
 	}
 
 	private static Vec3 heartOf(ServerPlayer player) {
@@ -234,10 +256,7 @@ public final class HeartCircles {
 		ring(level, player, self, new DustParticleOptions(0xFFE0A0, 0.8F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
 			double r = 0.3 + 0.09 * i;
-			double phi = spin * (1 + 0.25 * i) + i * 0.8;
-			double tilt = 0.3 + 0.14 * (i % 3);
-			// The ring's normal: straight up, tipped by `tilt` toward direction `phi`.
-			Vec3 normal = new Vec3(Math.cos(phi) * Math.sin(tilt), Math.cos(tilt), Math.sin(phi) * Math.sin(tilt)).normalize();
+			Vec3 normal = ringNormal(i, spin);
 			Vec3 u = normal.cross(new Vec3(0, 0, 1));
 			u = u.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : u.normalize();
 			Vec3 v = normal.cross(u).normalize();
@@ -249,6 +268,13 @@ public final class HeartCircles {
 				ring(level, player, self, dust, heart.add(u.scale(Math.cos(a) * r)).add(v.scale(Math.sin(a) * r)));
 			}
 		}
+	}
+
+	/** Ring {@code i}'s normal at {@code spin}: straight up, tipped over by its tilt toward a direction that turns with the spin. */
+	private static Vec3 ringNormal(int i, double spin) {
+		double phi = spin * (1 + 0.25 * i) + i * 0.8;
+		double tilt = 0.3 + 0.14 * (i % 3);
+		return new Vec3(Math.cos(phi) * Math.sin(tilt), Math.cos(tilt), Math.sin(phi) * Math.sin(tilt)).normalize();
 	}
 
 	private static void ring(ServerLevel level, ServerPlayer player, boolean self, ParticleOptions particle, Vec3 at) {
@@ -294,6 +320,10 @@ public final class HeartCircles {
 		}
 		if (progress % 20 == 0) {
 			Fx.sound(level, heart, SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 0.6F + (float) t);
+			// Once a second the new ring draws itself in light, as far round as it has come.
+			double mid = Math.PI * t;
+			Fx.sendAll(level, ElementFx.slashOption(UP, new Vec3(Math.cos(mid), 0, Math.sin(mid)), COLORS[Math.min(Circles.MAX - 1, circles)], r,
+				Math.PI * 2 * t, 0.02, 6, 12), heart, 1, 0.0, 0.0);
 		}
 	}
 

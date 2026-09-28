@@ -423,6 +423,36 @@ brightest at the leading edge) and orbs wrapped in turning rings.
   Mine / Trail:** glowing cores, orbs and seals.
 - **Self:** rings of light close in as they climb you.
 
+### Element visual languages
+Every effect is drawn in its element's own language, so a hit reads as fire or frost at a glance,
+whatever shape carried it: a few strong shapes of light and a handful of particles.
+- **Fire:** embers rising, a heat flare (a gold core in an orange bloom) and flame tongues, short
+  crescents of light licking upward; big hits burst into whirling flame slashes.
+- **Frost:** crystal shards (short spikes of light), a hard white shatter ring, and frost creeping
+  over the ground as a glowing frost seal. Freeze closes a frozen creature in ice.
+- **Storm:** branching lightning built from short beams, jagged and forking, flickering over two or
+  three ticks; strikes throw forks out over the ground.
+- **Wind:** crescents swirling on their own tilts, spiralling up round what they touch, and rings of
+  air running out along the ground.
+- **Earth:** the ground cracking (a cracked seal and a ring of dust), chips of the ground itself
+  thrown up, and stone spires jutting up and sinking back.
+- **Life:** petals and leaves, a leaf spiral of soft green arcs and a bloom: a gentle glow, a flower
+  seal and a slow ring.
+- **Void:** darkness instead of light: rings of it imploding and a black core, each edged with a thin
+  violet rim, so void reads as a hole in the world.
+- **Arcane:** star seals, comets of pink light tracing tilted orbits, and a shimmer of glyphs drawn in.
+- **Time:** clock faces of light whose hands are crescents sweeping round, the quarter hours ticked in
+  white, and golden flecks. Stasis stops the hands; Rewind turns them backward.
+- **Blood:** crimson cuts, heartbeat rings pulsing in pairs, and drops falling.
+
+Reactions are moments of both elements at once: Shatter bursts the ice through a flare of fire,
+Wildfire whirls up as a fire tornado, Conduct cages the target in lightning and Implode falls in as
+darkness before the blast. The secret spells are the grandest of all (a lance of ice that lightning
+runs along, a sun that sinks and bursts into a pillar of fire, a crescent cut out to the horizon, a
+black star with rings of light, a clock face across the whole of Zero Hour's circle). An effect on
+yourself stays out of your own view (you see what reaches your feet), and the buffs a passive
+renews stay quiet when they do.
+
 ### The spell wheel, names and codes
 - **Hold `V`** (a tap still selects the next spell): your spells fan out in a ring with their names,
   runes and cooldowns. Point and let go. Let go without pointing and the wheel stays open: click a

@@ -67,14 +67,26 @@ public final class Overcast {
 		player.setAttached(WildercordAttachments.CRACKS, new WildercordAttachments.Cracks(cracked, now + MEND_TICKS));
 		ServerLevel level = player.level();
 		Vec3 heart = player.position().add(0, 1.2, 0);
-		// The ring bursts: shards fly out, the circle flashes red and breaks on the ground.
+		// The ring bursts: it snaps outward in red light and breaks into shards, and the circle breaks on the ground.
 		double r = 0.3 + 0.09 * (active - 1);
-		for (int k = 0; k < 24; k++) {
-			double a = Math.PI * 2 * k / 24;
-			Vec3 dir = new Vec3(Math.cos(a), 0.15, Math.sin(a));
-			Vfx.fling(level, new DustParticleOptions(k % 2 == 0 ? 0xFF6A4A : 0xFFE0C0, 1.1F), heart.add(dir.scale(r)), dir, 0.25);
+		Vec3 up = new Vec3(0, 1, 0);
+		ElementFx.ring(level, heart, up, CRACK, r, r + 1.6, 0.05, 7);
+		ElementFx.ring(level, heart, up, 0xFFE0C0, r, r + 1.1, 0.03, 9);
+		double turn = level.getRandom().nextDouble() * Math.PI;
+		for (int k = 0; k < 8; k++) {
+			double a = turn + Math.PI * 2 * k / 8;
+			Vec3 dir = new Vec3(Math.cos(a), k % 2 == 0 ? 0.15 : -0.15, Math.sin(a));
+			ElementFx.ray(level, heart.add(dir.scale(r)), heart.add(dir.scale(r + 0.5 + level.getRandom().nextDouble() * 0.4)), k % 2 == 0 ? CRACK : 0xFFE0C0,
+				0.035, 6);
 		}
-		Vfx.radial(level, ParticleTypes.CRIT, heart, 16, 0.4);
+		for (int k = 0; k < 12; k++) {
+			double a = Math.PI * 2 * k / 12;
+			Vec3 dir = new Vec3(Math.cos(a), 0.15, Math.sin(a));
+			Vfx.fling(level, new DustParticleOptions(k % 2 == 0 ? CRACK : 0xFFE0C0, 1.1F), heart.add(dir.scale(r)), dir, 0.25);
+		}
+		// Under your feet, where you'll see it too.
+		ElementFx.groundRing(level, player.position(), CRACK, 0.3, 1.9, 0.06, 10);
+		Vfx.radial(level, ParticleTypes.CRIT, heart, 10, 0.4);
 		Sigils.send(level, SigilOption.flat(SigilOption.CRACKED, 0xFF5A3A, 1.6F, 30, 0.0F), player.position().add(0, 0.07, 0));
 		Fx.sound(level, heart, SoundEvents.GLASS_BREAK, 1.0F, 0.6F);
 		Fx.sound(level, heart, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 0.5F);
@@ -82,6 +94,8 @@ public final class Overcast {
 			.withColor(0xFF6A4A));
 		Grimoire.feat(player, Feats.OVERCAST);
 	}
+
+	private static final int CRACK = 0xFF6A4A;
 
 	/** Every few ticks: mends the circles once their time is up. */
 	public static void tick(ServerPlayer player) {
