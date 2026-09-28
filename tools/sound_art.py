@@ -14,6 +14,7 @@ always harmonise. Play them at pitch 1 (a little random spread is fine) and they
     sounds/casting/*.ogg               charging, circles, beams, orbs, shields, domains, blinks
     sounds/ui/*.ogg                    the Cord screen, the spell wheel and the Grimoire
     sounds/heart/*.ogg                 a Heart Circle forming, and one cracking
+    sounds/familiar/*.ogg              wisps drifting, drinking magic, bonding, casting and growing
     sounds.json                        every event, its variants and its subtitle key
 
 The subtitles' English text lives in generate_assets.py (NEW_LANG), like the rest of en_us.json.
@@ -959,6 +960,59 @@ def overcast(v, rng):
     return finish(reverb(x, 1.0, 0.2), "impact")
 
 
+# ---------------------------------------------------------------- wisps and familiars
+
+
+def wisp_ambient(v, rng):
+    """A wisp drifting: a breath of air and two soft glass notes, like a chime stirred by the wind."""
+    dur = 1.4
+    air = moving_band(dur, [(0, 900), (0.6, 2200 + 300 * v), (dur, 1400)], 0.8, rng) * swell(dur, 0.5)
+    first, second = (((A, 2), (D, 3)), ((FS, 2), (B, 2)), ((E, 2), (A, 2)))[v]
+    notes = mix((0.15, 0.5 * glass(note(*first), 1.0, 0.35, attack=0.02)), (0.45, 0.4 * glass(note(*second), 0.9, 0.3, attack=0.02)))
+    x = mix(0.15 * norm(air), chorus(notes, 2, 0.002, 0.6))
+    return finish(reverb(x, 1.2, 0.35), "ui")
+
+
+def wisp_chime(v, rng):
+    """A wild wisp drinking a spell: one bright note and a little glitter (played higher with each offering)."""
+    dur = 0.9
+    tone = bell(note(D, 2), dur, 0.35, 2.0, 1.2, attack=0.005)
+    glints = sparkle(0.4, 18, rng, [note(d, 3) for d in (D, FS, A)], tau=(0.05, 0.12))
+    x = mix(0.8 * tone, (0.02, 0.2 * norm(glints)))
+    return finish(reverb(x, 0.9, 0.25), "effect")
+
+
+def wisp_bond(v, rng):
+    """A wisp bonding: a chord blooming upward over a warm swell, crowned with glitter."""
+    dur = 2.4
+    run = ((0.0, (D, 1)), (0.08, (FS, 1)), (0.16, (A, 1)), (0.26, (D, 2)), (0.4, (FS, 2)))
+    bloom = mix(*[(t, 0.7 * glass(note(*n), dur - t, 0.7, attack=0.01)) for t, n in run])
+    pad = sum(bell(note(*n), dur, 1.0, 2.0, 0.5, attack=0.25) for n in ((D, 0), (A, 0), (FS, 1)))
+    glints = sparkle(1.6, 16, rng, [note(d, 3) for d in range(5)], tau=(0.06, 0.16), shape=[(0, 0), (0.3, 1), (1.6, 0)], rising=True)
+    x = mix(chorus(bloom, 2, 0.003, 0.5), 0.35 * norm(pad), (0.25, 0.2 * norm(glints)))
+    return finish(reverb(x, 1.8, 0.35), "effect")
+
+
+def wisp_cast(v, rng):
+    """A familiar's little spell: a quick bright chirp and a ping where it leaves."""
+    dur = 0.35
+    chirp = sine(sweep(note((A, FS)[v], 1), note((A, FS)[v], 3), 0.12, 0.6)) * decay(0.12, 0.05, 0.002)
+    ping = glass(note((D, A)[v], 2), dur, 0.1)
+    puff = norm(bandpass(noise(0.1, rng), 1500, 5000)) * decay(0.1, 0.025, 0.002)
+    x = mix(0.5 * chirp, (0.02, 0.5 * ping), 0.15 * puff)
+    return finish(reverb(x, 0.5, 0.15), "cast")
+
+
+def wisp_level(v, rng):
+    """A familiar growing stronger: a quick climbing arpeggio that rings out."""
+    dur = 1.6
+    run = ((0.0, (A, 1)), (0.07, (D, 2)), (0.14, (FS, 2)), (0.21, (A, 2)), (0.3, (D, 3)))
+    arpeggio = mix(*[(t, 0.6 * bell(note(*n), dur - t, 0.5, 2.0, 1.0, attack=0.004)) for t, n in run])
+    glints = sparkle(1.0, 14, rng, [note(d, 3) for d in (D, FS, A, B)], tau=(0.05, 0.14), rising=True)
+    x = mix(arpeggio, (0.3, 0.15 * norm(glints)))
+    return finish(reverb(x, 1.3, 0.3), "effect")
+
+
 # ================================================================ writing it all out
 
 
@@ -992,6 +1046,11 @@ def palette():
         ("discovery", "ui", "discovery", discovery, 1, {}),
         ("circle_formed", "heart", "circle_formed", circle_formed, 1, {}),
         ("overcast", "heart", "overcast", overcast, 1, {}),
+        ("wisp_ambient", "familiar", "wisp_ambient", wisp_ambient, 3, {}),
+        ("wisp_chime", "familiar", "wisp_chime", wisp_chime, 1, {}),
+        ("wisp_bond", "familiar", "wisp_bond", wisp_bond, 1, {}),
+        ("wisp_cast", "familiar", "wisp_cast", wisp_cast, 2, {}),
+        ("wisp_level", "familiar", "wisp_level", wisp_level, 1, {}),
     ]
     return events
 

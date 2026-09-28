@@ -281,6 +281,7 @@ def main():
     import wear_art  # The Cord players wear on the wrist.
     wear_art.main()
     write_new_content(runes)
+    write_familiar_content()
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -536,6 +537,7 @@ def write_lang(runes):
         lang[f"rune.wildercord.{r['path']}.desc"] = r["desc"]
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
+    lang.update(familiar_lang())
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1163,6 +1165,106 @@ NEW_LANG = {
     "subtitles.wildercord.circle_formed": "Heart Circle forms",
     "subtitles.wildercord.overcast": "Heart Circle cracks",
 }
+
+# ---------------------------------------------------------------- familiars and Cord cosmetics
+
+FAMILIAR_LANG = {
+    "entity.wildercord.wisp": "Wisp",
+    "entity.wildercord.wisp.familiar": "%s's %s Wisp",
+    "entity.wildercord.wisp.of": "%s Wisp",
+    "item.wildercord.wisp_lantern": "Wisp Lantern",
+    "tooltip.wildercord.wisp_lantern": "Use: send your familiar home, or call it out again. Sneak-use: call the next",
+    "tooltip.wildercord.wisp_lantern.empty": "No familiars yet: strike a wild wisp with magic of its own element to bond with it",
+    "tooltip.wildercord.wisp_lantern.bond": "%s (%s, %s): %s",
+    "tooltip.wildercord.wisp_lantern.level": "level %s, %s/%s",
+    "tooltip.wildercord.wisp_lantern.level_max": "level %s",
+    "tooltip.wildercord.wisp_lantern.out": "out with you",
+    "tooltip.wildercord.wisp_lantern.waiting": "waiting at a Wellstone",
+    "tooltip.wildercord.wisp_lantern.resting": "in the lantern",
+    "message.wildercord.wisp.drinks": "The %s Wisp drinks your magic (%s of %s)",
+    "message.wildercord.wisp.spooked": "The wisp shies from %s magic: it answers only to %s",
+    "message.wildercord.wisp.full": "You already keep %s familiars",
+    "message.wildercord.wisp.bonded": "A %s Wisp bonds with you: it's your familiar now",
+    "message.wildercord.wisp.bonded_hint": "It floats at your shoulder, quickens your mana and helps in its own small way. Sneak and use it to tell it to stay or follow (near an awake Wellstone it will wait there); a Wisp Lantern calls out your others. A name tag names it.",
+    "message.wildercord.wisp.home": "%s returns to your lantern",
+    "message.wildercord.wisp.out": "%s comes out (level %s)",
+    "message.wildercord.wisp.waiting": "%s will wait at the Wellstone",
+    "message.wildercord.wisp.stay": "%s stays here",
+    "message.wildercord.wisp.follow": "%s follows you",
+    "message.wildercord.wisp.level": "%s grows to level %s: +%s%% mana regeneration, a spell every %s seconds",
+    "message.wildercord.wisp.lantern_empty": "Your lantern is empty: bond with a wild wisp first",
+    "message.wildercord.cosmetic.locked": "That style isn't yours yet",
+    "message.wildercord.cosmetic.need": "Needs %s %s",
+    "message.wildercord.cosmetic.bought": "Unlocked: %s",
+    "screen.wildercord.page.cosmetics": "Cosmetics",
+    "screen.wildercord.cosmetics.material": "Beads",
+    "screen.wildercord.cosmetics.glow": "Glow",
+    "screen.wildercord.cosmetics.trail": "Cast trail",
+    "screen.wildercord.cosmetics.unlocked": "Yours: click to wear it",
+    "screen.wildercord.cosmetics.need_circle": "Unlocks at the %s Heart Circle",
+    "screen.wildercord.cosmetics.need_feat": "Unlocks with the feat %s: %s",
+    "screen.wildercord.cosmetics.need_boss": "Unlocks when you help slay a boss",
+    "screen.wildercord.cosmetics.buy": "Click to buy: %s %s (you have %s)",
+    "screen.wildercord.cosmetics.wearing": "Your Cord",
+    "screen.wildercord.cosmetics.worn.material": "Beads: %s",
+    "screen.wildercord.cosmetics.worn.glow": "Glow: %s",
+    "screen.wildercord.cosmetics.worn.trail": "Cast trail: %s",
+    "screen.wildercord.cosmetics.hint": "Point at an option to see it on your wrist. Everyone near you sees your Cord as you style it.",
+    "cosmetic.wildercord.material.glass": "Glass",
+    "cosmetic.wildercord.material.glass.desc": "Clear glass beads, lit through by each rune's colour.",
+    "cosmetic.wildercord.material.gold": "Gold",
+    "cosmetic.wildercord.material.gold.desc": "Polished gold beads with a warm light at their hearts.",
+    "cosmetic.wildercord.material.obsidian": "Obsidian",
+    "cosmetic.wildercord.material.obsidian.desc": "Beads of volcanic glass, dark as night, their light burning brightest against it.",
+    "cosmetic.wildercord.material.amethyst": "Amethyst",
+    "cosmetic.wildercord.material.amethyst.desc": "Faceted amethyst beads that catch the light.",
+    "cosmetic.wildercord.material.bone": "Bone",
+    "cosmetic.wildercord.material.bone.desc": "Carved bone beads, a trophy from a Runebound.",
+    "cosmetic.wildercord.material.prismarine": "Prismarine",
+    "cosmetic.wildercord.material.prismarine.desc": "Sea-green prismarine beads, glowing like deep water.",
+    "cosmetic.wildercord.trail.none": "None",
+    "cosmetic.wildercord.trail.none.desc": "Your casts leave nothing behind.",
+    "cosmetic.wildercord.trail.sparks": "Sparks",
+    "cosmetic.wildercord.trail.sparks.desc": "Crackling sparks leap from your hand as you cast.",
+    "cosmetic.wildercord.trail.petals": "Petals",
+    "cosmetic.wildercord.trail.petals.desc": "Blossom petals drift from your hand as you cast.",
+    "cosmetic.wildercord.trail.snow": "Snow",
+    "cosmetic.wildercord.trail.snow.desc": "Snowflakes swirl from your hand as you cast.",
+    "cosmetic.wildercord.trail.embers": "Embers",
+    "cosmetic.wildercord.trail.embers.desc": "Embers rise from your hand as you cast.",
+    "cosmetic.wildercord.trail.stars": "Stars",
+    "cosmetic.wildercord.trail.stars.desc": "Motes of starlight stream from your hand as you cast.",
+    "cosmetic.wildercord.glow.spell": "Your spells' colours",
+    "cosmetic.wildercord.glow.spell.desc": "Each bead glows in the colour of its rune.",
+    "subtitles.wildercord.wisp_ambient": "Wisp chimes",
+    "subtitles.wildercord.wisp_chime": "Wisp drinks magic",
+    "subtitles.wildercord.wisp_bond": "Wisp bonds",
+    "subtitles.wildercord.wisp_cast": "Familiar casts",
+    "subtitles.wildercord.wisp_level": "Familiar grows stronger",
+}
+
+GLOW_DYES = ["white", "orange", "magenta", "light_blue", "yellow", "lime", "pink", "gray", "light_gray", "cyan", "purple", "blue",
+             "brown", "green", "red", "black"]
+
+
+def familiar_lang():
+    lang = dict(FAMILIAR_LANG)
+    for dye in GLOW_DYES:
+        name = dye.replace("_", " ")
+        lang[f"cosmetic.wildercord.glow.{dye}"] = name.capitalize()
+        lang[f"cosmetic.wildercord.glow.{dye}.desc"] = f"Every bead glows {name}, whatever its rune."
+    return lang
+
+
+def write_familiar_content():
+    import familiar_art  # The wisp, the Wisp Lantern, the beads' materials and the Cosmetics page's icons.
+    familiar_art.main()
+    write_json(DATA / "recipe/wisp_lantern.json", {
+        "type": "minecraft:crafting_shaped", "category": "misc",
+        "key": {"A": "minecraft:amethyst_shard", "G": "minecraft:glass_pane", "L": "minecraft:lantern"},
+        "pattern": [" A ", "GLG", " A "], "result": {"id": "wildercord:wisp_lantern"}})
+    unlock_advancement("wildercord:wisp_lantern", "minecraft:lantern")
+
 
 ARCHIVE_LAND = ["#minecraft:is_taiga", "#minecraft:is_jungle", "#minecraft:is_forest", "#minecraft:is_savanna", "#minecraft:is_badlands",
                 "minecraft:plains", "minecraft:sunflower_plains", "minecraft:snowy_plains", "minecraft:desert", "minecraft:meadow",

@@ -46,6 +46,8 @@ public final class WildercordClient implements ClientModInitializer {
 		});
 		EntityRendererRegistry.register(WildercordEntities.TRAINING_DUMMY, TrainingDummyRenderer::new);
 		RuneMarksLayer.register();
+		dev.wildercord.client.familiar.FamiliarClient.init();
+		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.cosmetic.CordTrails::tick);
 
 		ParticleGroupRegistry.register(SigilGroup.TYPE, SigilGroup::new);
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SIGIL, SigilParticle.Provider::new);

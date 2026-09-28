@@ -55,6 +55,9 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.DomainClash.init();
 		dev.wildercord.cast.SpellChat.init();
 		dev.wildercord.world.WildercordWorldgen.init();
+		dev.wildercord.cosmetic.CordCosmetics.init();
+		dev.wildercord.familiar.FamiliarContent.init();
+		dev.wildercord.familiar.Familiars.init();
 		SpellCaster.init();
 		WildercordCommand.init();
 		LOGGER.info("Wildercord initialized");

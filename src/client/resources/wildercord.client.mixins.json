@@ -11,7 +11,8 @@
 		"CameraMixin",
 		"AvatarRenderStateMixin",
 		"PlayerModelMixin",
-		"LivingEntityRendererMixin"
+		"LivingEntityRendererMixin",
+		"AvatarRendererStyleMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
