@@ -661,11 +661,11 @@ def main(g, runes):
     g.write_json(data / "tags/worldgen/structure/dungeon.json", {"values": [f"wildercord:{k}" for k in DUNGEONS]})
 
 
-def sources(runes, innate):
-    """Rune path -> the dungeons whose chests hold it, for the tooltips' 'Found:' line."""
+def sources(runes, excluded):
+    """Rune path -> the dungeons whose chests hold it, for the tooltips' 'Found:' line ({@code excluded}: runes the chests never hold)."""
     found = {}
     for key, d in DUNGEONS.items():
         name = d["name"][4:] if d["name"].startswith("the ") else d["name"]
-        for path in elements_runes(runes, d["elements"], (2, 3), innate):
+        for path in elements_runes(runes, d["elements"], (2, 3), excluded):
             found.setdefault(path, []).append(name)
     return found

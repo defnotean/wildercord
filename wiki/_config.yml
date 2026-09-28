@@ -1,0 +1,28 @@
+title: Wildercord Wiki
+description: Everything about Wildercord, the rune-threading magic mod for Minecraft Java.
+remote_theme: just-the-docs/just-the-docs@v0.10.1
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+permalink: pretty
+color_scheme: dark
+logo: "/assets/images/logo.png"
+search_enabled: true
+search:
+  heading_level: 3
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  button: true
+heading_anchors: true
+back_to_top: true
+back_to_top_text: "Back to top"
+aux_links:
+  "Download on CurseForge":
+    - "https://www.curseforge.com/minecraft/mc-mods/wildercord"
+  "GitHub":
+    - "https://github.com/defnotean/wildercord"
+aux_links_new_tab: true
+footer_content: "Wildercord is open source under the MIT License. Not an official Minecraft product; not approved by or associated with Mojang or Microsoft."
+exclude:
+  - README.md
