@@ -1,0 +1,186 @@
+---
+title: Passive Spells
+parent: Spellcraft
+nav_order: 6
+description: "Up to two always-on spells: how to unlock them, what they can hold, what they cost every second, faltering, renewal, and good passives to try."
+---
+
+# Passive Spells
+{: .no_toc }
+
+A **passive spell** is always on. Instead of a cost and a cooldown, it costs a little mana **every second**,
+and keeps itself going: a buff that never runs out, or a ring of orbs that guards you. You can have up to
+**two**.
+
+1. TOC
+{:toc}
+
+---
+
+## Unlocking passive slots
+
+Passive slots come from your [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}):
+
+| Slot | Opens with |
+|---|---|
+| Passive 1 | the **1st** Heart Circle |
+| Passive 2 | the **5th** Heart Circle |
+
+When a slot opens you're told "Passive slots open" and where to thread them. A circle cracked by
+[overcasting]({{ '/spellcraft/overcasting/' | relative_url }}) gives nothing until it mends, and that includes
+its passive slot: crack your only circle and your passive stops until it heals.
+
+## Threading a passive
+
+Open the Cord screen (`K`) and click the **Passives** tab. You thread a passive exactly like a spell (click or
+drag runes from the Codex), with a few differences:
+
+- There are two rows. A row that isn't open yet says which circle opens it.
+- Each passive holds up to **5 runes** (3 on a Twine Cord, whose spells only have 3 sockets).
+- Runes that can never be part of a passive are dimmed with a lock in the Codex, and trying to thread one is
+  refused ("Heal can't be a passive").
+- Each row has its **upkeep** ("0.7/s") and an **On/Off** switch.
+- Your Cord's tier still applies: a Tier III rune needs an Amethyst Cord here too.
+
+<img src="{{ '/assets/images/passives.png' | relative_url }}" alt="The Passives page: two passive rows, one with Self and Swift at 0.6 mana a second and one with an Orbit aura at 3.4, both switched On, and a line saying passives drain 4.0 mana a second while you regenerate 15.0" class="shot">
+<span class="caption">Two passives running: their upkeep, their switches, and the total drain against your regeneration.</span>
+
+A new passive starts **on** as soon as it holds runes that make a valid passive.
+
+## What a passive can hold
+
+Passives are for things that make sense to keep up all the time: lasting buffs, and guardian auras. They
+can't be a machine gun, a free heal every two seconds or an endless death save.
+
+### Shapes
+
+**Self** or **Orbit**, and only one shape. A passive that starts with an effect is on Self, like any spell.
+
+| Shape | What it does as a passive |
+|---|---|
+| Self | Keeps its buffs on you. Renewed every 2 seconds. |
+| <img src="{{ '/assets/runes/orbit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Orbit | Three orbs circle you and strike whatever they touch. When they run out (after 8 seconds) a new ring starts. Orbit is Tier III: it needs an Amethyst Cord. |
+
+### Buffs (Self or Orbit)
+
+| Rune | Tier | As a passive |
+|---|---|---|
+| Feather Fall | I | Never take fall damage |
+| Swift | I | Speed III |
+| Night Eye | I | Night vision |
+| Haste | I | Haste II |
+| Tidebreath | I | Water breathing and faster swimming |
+| Leap | I | Jump Boost III |
+| Anchor | I | No knockback, and 4 more armour |
+| Frostward | I | You can't freeze, not even in powder snow |
+| Cushion | I | Falls can't hurt you, and a hard landing throws out a gust |
+| Regrowth | II | Regeneration II |
+| Stoneskin | II | Resistance II |
+| Empower | II | Strength II |
+| Fireward | II | Fire resistance |
+| Overdrive | II | Strength II, Speed II and Haste II, but you lose 1 health every 2 seconds, all the time |
+| Reflect | III | Attackers take 60% of their damage back |
+| Accelerate | III | Speed III, Haste III, Jump Boost II and Regeneration |
+| Infinity | IV | Projectiles stop in the air around you, and enemies that come too close are pushed back |
+
+### Auras (only with Orbit)
+
+Damage and control effects can only be carried by an **Orbit**: its orbs deal them to whatever they touch.
+
+Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt and
+Windcut.
+
+`Shock` on its own (on Self) is refused with "Shock needs an Orbit to carry it in a passive."
+
+### Modifiers
+
+**Amplify**, **Extend**, **Frugal**, **Widen**, **Focus** and **Quicken**, following the usual rule: each
+changes the closest rune on its left that it can change.
+
+### Never in a passive
+
+**Links** of any kind, **Knots**, and any rune not listed above: heals, Shield, Barrier, Brace, Reversal,
+Foresight, summons, big area damage, Stasis, and every other shape. Runes from add-on mods can't be passives
+either. The Cord screen tells you exactly what's wrong:
+
+| Message | Means |
+|---|---|
+| Heal can't be sustained as a passive. | That rune isn't allowed in passives. |
+| A passive has one shape at most. | Take all but one shape off. |
+| Shock needs an Orbit to carry it in a passive. | Damage and control need an Orbit. |
+
+## Upkeep
+
+A passive costs **12% of its cost as a spell, every second**. `Self · Swift` would cost 6 mana as a spell, so
+as a passive it costs 0.72 mana a second (shown as 0.7/s).
+
+| Passive | As a spell | Upkeep a second |
+|---|---|---|
+| `Self · Night Eye` | 3 | 0.36 |
+| `Self · Swift` | 6 | 0.72 |
+| `Self · Feather Fall` | 6 | 0.72 |
+| `Self · Regrowth` | 10 | 1.2 |
+| `Self · Stoneskin · Empower` | 24 | 2.88 |
+| `Orbit · Shock` | 23 | 2.76 |
+| `Orbit · Dismantle` | 29 | 3.48 |
+| `Orbit · Shock · Amplify` | 31.4 | 3.77 |
+| `Self · Infinity` | 32 | 3.84 |
+
+- **Thrift** on your Cord and the **Archmage** perk lower the upkeep, like they lower a spell's cost (and
+  so does the server's own cost setting, if it has one).
+- Upkeep is taken **once a second**, for every passive that's on, in its open slot, with valid runes.
+- **In creative**, passives cost nothing.
+- Under the passive rows the Cord screen compares your total drain with your regeneration ("Passives drain
+  4.0 mana/s · you regenerate 15.0/s"), and turns yellow when the drain is bigger. On your spell panel, the
+  drain shows as "-4.0/s" beside your mana when no cooldown or charge is showing, red when your mana can't
+  cover the next second.
+- Upkeep doesn't **condense** toward your next Heart Circle; only mana spent casting spells does.
+
+### Faltering
+
+If you don't have the mana for a second's upkeep, that passive **falters**: it stops renewing (an Orbit's
+orbs vanish) and takes no mana, until you have enough again. Then it picks up by itself. What it already gave
+you (the rest of a Swift, say) wears off as usual.
+
+With two passives running, keep an eye on the drain line: casting a big spell can leave too little for the
+next second's upkeep.
+
+## Renewal
+
+- A **Self** passive is cast again every **2 seconds**, so its buffs never run out. Only the first cast shows
+  its light and sound; the renewals after that are quiet.
+- An **Orbit** passive starts a new ring of orbs whenever the old one runs out (after 8 seconds; Extend on the
+  Orbit makes it 16). Switch it off and its orbs vanish at once.
+- A passive is cast afresh after you change dimension, or when you change its runes.
+- Passives stop renewing when you take your Cord off, and while you're dead.
+
+Because a Self passive is renewed every 2 seconds anyway, **Extend on a Self passive only raises its upkeep**.
+**Frugal** halves the upkeep, at 40% less strength.
+
+## Switching passives on and off
+
+Click the **On/Off** switch on a passive's row. You're told "Passive 1 on" or "Passive 1 off". A passive that's
+off costs nothing and keeps its runes; its readout starts "Passive (off)" and shows what it would cost.
+
+## How passives count
+
+- Passives are cast with your Heart Circles' power and your Cord's Potency and Persistence.
+- They don't use a cooldown, don't count toward rhythm or leaning, and don't condense mana.
+- Their buffs are the same effects as the runes' own: `Self · Swift` as a passive gives exactly the Speed
+  that `Self · Swift` gives as a spell, kept up forever.
+
+## Passives to try
+
+| Passive | Needs | Why |
+|---|---|---|
+| `Self · Night Eye` | 1st Circle, any Cord | Never need a torch to see. Almost free. |
+| `Self · Swift` | 1st Circle, any Cord | Speed everywhere, for less than a mana a second. |
+| `Self · Feather Fall` | 1st Circle, any Cord | Never die to a fall again. |
+| `Self · Tidebreath` | 1st Circle, any Cord | Breathe and swim freely under water. |
+| `Self · Stoneskin · Empower` | 1st Circle, a Copper Cord | Tougher and stronger in every fight. |
+| `Orbit · Shock · Amplify` | an Amethyst Cord | A crackling guard that hits whatever comes close. |
+| `Orbit · Dismantle` | an Amethyst Cord | Orbs that cut straight through armour. |
+| `Self · Infinity` | an Echo Cord | Arrows and projectiles stop in the air around you, all the time. |
+
+{: .warning }
+**Overdrive** is allowed as a passive, but it keeps costing you 1 health every 2 seconds for as long as it runs.
