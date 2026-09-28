@@ -199,7 +199,7 @@ public final class Shields {
 		dev.wildercord.api.WildercordEvents.SPELL_BLOCKED.invoker().onBlocked(cast.caster, target, cast.weight(), shield.strength());
 		// The Star-Eater's shard shield holds, and turns the spell back on its caster.
 		if (target instanceof StarEater eater) {
-			eater.reflect(cast);
+			eater.reflect(cast, shield.strength());
 		}
 		if (target instanceof ServerPlayer wearer) {
 			Grimoire.feat(wearer, dev.wildercord.spell.Feats.SPELLGUARD);

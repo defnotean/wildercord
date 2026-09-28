@@ -6,16 +6,25 @@ way the Archive is: a way in you can read from a distance, a Rune Seal door, a h
 guards with a chest, a second door, a domed arena with its boss's altar, and a vault behind a
 third door off the arena. Seal doors open the Archive's way: strike them with a spell of each of
 their elements within 10 seconds. The boss rises when you come within 12 to 14 blocks of its altar.
+Once it falls the altar stays quiet. If it's lost without falling (removed some other way), the
+altar re-arms after players have spent 3 minutes in the arena without finding it, and wakes a boss
+again.
 
 `/place structure wildercord:ember_sanctum` (or `astral_observatory`, `drowned_scriptorium`)
 builds one where you stand.
 
 Every boss has a boss bar that names the spell it's casting, telegraphs each spell with its own
 circle, fights in three phases (it changes at two thirds and one third of its health, and can't be
-hurt while it changes), and dies slowly. Each drops a **Tier IV rune its killer doesn't know yet**,
-three **Mana Crystals**, a Torn Page, runes of its elements and its own **trophy**. It counts as a
-boss for the 7th Circle, and everyone within 64 blocks earns its feat (1,500 mana toward your next
-circle).
+hurt while it changes), and dies slowly. No blow, however big, takes it past the start of its next
+phase: the damage stops there and the change begins at once, so every phase gets fought. The boss
+bar shows to everyone within 48 blocks of its altar, and goes when you leave.
+
+When it falls, **everyone who hurt it** (and is still within 96 blocks) gets a **Tier IV rune they
+don't know yet**, straight into their pack. Its killer gets the rest, three **Mana Crystals**, a
+Torn Page, runes of its elements and its own **trophy**, the same way. Anything that doesn't fit, or
+has nobody to take it, is left on the altar, where fire, lava and blasts can't touch it. The
+Runebound it called up go with it. It counts as a boss for the 7th Circle, and everyone within 64
+blocks earns its feat (1,500 mana toward your next circle).
 
 ## The Ember Sanctum (the Nether)
 
@@ -56,7 +65,8 @@ shield works like your own Shield, in reverse: a spell that costs **more mana th
 strong** breaks it (20 mana in the first phase, 28 in the second, 36 in the third; the boss bar
 shows it). So does one of its own **star shards knocked back into it**: parry a shard with a swing
 of your weapon (or fist) just as it arrives, shoot it with a bolt of your own, or let a Shield of
-yours turn it. Each parried shard takes 16 off the shield. Broken, the shield leaves it sagging and
+yours turn it. Each parried shard takes 16 off the shield, and a spell it turns back doesn't mend
+that. Broken, the shield leaves it sagging and
 open (it takes a quarter more damage) for a few seconds, then grows back. Arrows and blades glance
 off it while the shield is up.
 
@@ -86,13 +96,15 @@ conducts:**
   five times the shock and staggers, but anyone else in the water is hit too, you included if you're
   standing in it when you cast.
 - A **frost** spell freezes the top of the flood where it lands into **ice you can stand on**. Ice
-  closing round the Scribe **strands** it: it can't cast, and takes half as much again.
+  closing round the Scribe **strands** it: it can't cast, and takes half as much again. Once it
+  breaks free, frost can't strand it again for 5 seconds.
 - While the pit is flooded and it swims, the water wraps it: it takes half damage from anything
   but a shock. Dry, it's only a sorcerer.
 
 Its own storms find you in the water just the same, so use the tide: stand on the pedestals or the
 balcony, freeze the water, or shock it. Between phases it calls the tide in early, and two drowned
-Runebound answer it.
+Runebound answer it. The water rises a ring at a time from the core outward, and ebbs from the rim
+inward; every ebb clears all the ice and water from the pit.
 
 **Trophy:** the **Drowned Quill**. Hold it up to breathe and swim like the drowned for 3 minutes
 (it rests for 5).

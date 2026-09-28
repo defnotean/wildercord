@@ -892,7 +892,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			if (star != null) {
 				ServerLevel level = player(server).level();
-				FallenStars.guards(level, star).forEach(Mob::discard);
+				FallenStars.guards(level, star).forEach(guard -> guard.kill(level));
 				FallenStars.open(level, star, player(server));
 			}
 		});

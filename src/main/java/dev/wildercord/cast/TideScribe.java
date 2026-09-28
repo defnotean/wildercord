@@ -53,6 +53,11 @@ import java.util.WeakHashMap;
  * round the Scribe strands it, open to harm. While the arena is flooded and it swims, the water wraps
  * it (half damage from anything but a shock); while it's dry, it's only a sorcerer. Its own storms
  * find you in the water just the same, so use the tide: get out of it, freeze it, or shock it.
+ *
+ * <p>Once it breaks free of the ice it can't be stranded again for a few seconds. The flood comes in
+ * and goes out a ring at a time over a few ticks, quietly (no block updates but at its rim, so the
+ * water never flows on its own), and every ebb clears all the ice and water from its pit, whoever
+ * froze it and whenever (the ice isn't remembered across a restart, so it's found, not recalled).</p>
  */
 public class TideScribe extends DungeonBoss {
 	private static final int COLOR = 0x3A8CFF;
@@ -89,8 +94,12 @@ public class TideScribe extends DungeonBoss {
 	private long tideUntil;
 	private int step;
 	private List<BlockPos> cells;
+	/** The pit's cells by layer (0, 1) and ring (0 at the core, out to {@link #PIT_RADIUS}). */
+	private List<BlockPos>[][] rings;
 	private final Set<BlockPos> iced = new HashSet<>();
 	private long strandedUntil;
+	/** Until when frost can't strand it again (it has just broken free). */
+	private long strandImmuneUntil;
 	private boolean shocking;
 	private int conductions;
 	/** Casts that already conducted or froze here, so a spell striking again and again does it once a second. */
@@ -113,10 +122,10 @@ public class TideScribe extends DungeonBoss {
 	}
 
 	/** Wakes the Scribe over its core: the water in the conduit stirs, and it rises out of a pool of ink. */
-	public static void rise(ServerLevel level, BlockPos altar) {
+	public static TideScribe rise(ServerLevel level, BlockPos altar) {
 		TideScribe boss = place(level, DungeonEntities.TIDE_SCRIBE, altar, 1.2);
 		if (boss == null) {
-			return;
+			return null;
 		}
 		Vec3 at = Vec3.atBottomCenterOf(altar).add(0, 1.2, 0);
 		Sigils.ground(level, Vec3.atBottomCenterOf(altar).add(0, 0.05, 0), COLOR, ACCENT, 5.0F, 80);
@@ -127,6 +136,7 @@ public class TideScribe extends DungeonBoss {
 		Fx.sound(level, at, SoundEvents.ELDER_GUARDIAN_CURSE, 0.5F, 1.4F);
 		boss.tideUntil = level.getGameTime() + 100;
 		boss.announce(level, "message.wildercord.tide_scribe_wakes", COLOR);
+		return boss;
 	}
 
 	@Override
@@ -167,20 +177,35 @@ public class TideScribe extends DungeonBoss {
 		return altar.is(DungeonBlocks.ALTAR) && altar.getValue(DungeonAltarBlock.KIND) == DungeonAltarBlock.Kind.TIDE;
 	}
 
+	/** How many rings each layer of the pit pours (or drains) in, one a tick. */
+	private static final int RINGS = (int) Math.floor(PIT_RADIUS) + 1;
+	/** Block changes in the pit: seen by players, but no neighbour updates, so the water never flows or spreads. */
+	private static final int QUIET = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE | Block.UPDATE_SKIP_ON_PLACE;
+
 	/** The cells that flood: two layers over the pit floor, within {@link #PIT_RADIUS} of the core. */
 	private List<BlockPos> cells(ServerLevel level) {
 		if (cells == null) {
 			cells = new ArrayList<>();
+			@SuppressWarnings("unchecked")
+			List<BlockPos>[][] byRing = new List[2][RINGS];
+			for (int layer = 0; layer < 2; layer++) {
+				for (int ring = 0; ring < RINGS; ring++) {
+					byRing[layer][ring] = new ArrayList<>();
+				}
+			}
 			int r = (int) Math.ceil(PIT_RADIUS);
 			for (int dy = 0; dy <= 1; dy++) {
 				for (int dx = -r; dx <= r; dx++) {
 					for (int dz = -r; dz <= r; dz++) {
 						if (dx * dx + dz * dz <= PIT_RADIUS * PIT_RADIUS) {
-							cells.add(home.offset(dx, dy, dz));
+							BlockPos pos = home.offset(dx, dy, dz);
+							cells.add(pos);
+							byRing[dy][Math.min(RINGS - 1, (int) Math.floor(Math.sqrt(dx * dx + dz * dz)))].add(pos);
 						}
 					}
 				}
 			}
+			rings = byRing;
 		}
 		return cells;
 	}
@@ -238,26 +263,38 @@ public class TideScribe extends DungeonBoss {
 	}
 
 	/**
-	 * One tick of filling (or draining) the pit. Each layer comes (or goes) all at once, the low one
-	 * first as it rises and last as it ebbs: water left beside a gap for even a moment would flow into
-	 * it, and water between two sources becomes a source itself, and the pit would never drain.
+	 * One tick of filling (or draining) the pit: a ring of one layer. The low layer rises first, from
+	 * the core outward, then the high one; it ebbs from the top, from the rim inward. The blocks change
+	 * quietly (see {@link #QUIET}), so water never flows into the gaps between rings (water between two
+	 * sources would become a source itself, and the pit would never drain); once the last ring is
+	 * done, the blocks round the pit's rim are told.
 	 */
 	private void fillStep(ServerLevel level, int index, int of, boolean fill) {
-		int layer;
-		if (index == 0) {
-			layer = fill ? 0 : 1;
-		} else if (index == of / 2) {
-			layer = fill ? 1 : 0;
-		} else {
+		cells(level);
+		int half = of / 2;
+		boolean second = index >= half;
+		int layer = fill ? (second ? 1 : 0) : (second ? 0 : 1);
+		int ring = second ? index - half : index;
+		if (ring >= RINGS) {
 			if (fill && level.getRandom().nextInt(3) == 0) {
-				Vfx.emit(level, ParticleTypes.SPLASH, Vec3.atBottomCenterOf(home).add(0, 1.2 + (index > of / 2 ? 1 : 0), 0), 8, PIT_RADIUS * 0.5, 0.05);
+				Vfx.emit(level, ParticleTypes.SPLASH, Vec3.atBottomCenterOf(home).add(0, 1.2 + layer, 0), 8, PIT_RADIUS * 0.5, 0.05);
+			}
+			if (second && ring == RINGS) {
+				rimUpdates(level);
 			}
 			return;
 		}
-		int y = home.getY() + layer;
-		for (BlockPos pos : cells(level)) {
-			if (pos.getY() == y) {
-				setCell(level, pos, fill);
+		// Rising, from the core out; ebbing, from the rim in.
+		for (BlockPos pos : rings[layer][fill ? ring : RINGS - 1 - ring]) {
+			setCell(level, pos, fill);
+		}
+	}
+
+	/** The blocks round the pit's rim hear the flood came (or went), all at once, once the whole pit is done. */
+	private void rimUpdates(ServerLevel level) {
+		for (int layer = 0; layer < 2; layer++) {
+			for (BlockPos pos : rings[layer][RINGS - 1]) {
+				level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
 			}
 		}
 	}
@@ -269,14 +306,15 @@ public class TideScribe extends DungeonBoss {
 			BlockState below = level.getBlockState(pos.below());
 			boolean open = state.isAir() || state.is(Blocks.WATER) && !state.getFluidState().isSource();
 			if (open && (below.isFaceSturdy(level, pos.below(), net.minecraft.core.Direction.UP) || below.getFluidState().is(FluidTags.WATER))) {
-				level.setBlock(pos, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL);
+				level.setBlock(pos, Blocks.WATER.defaultBlockState(), QUIET);
 				if (level.getRandom().nextInt(8) == 0) {
 					Vfx.emit(level, ParticleTypes.SPLASH, Vec3.atCenterOf(pos).add(0, 0.5, 0), 3, 0.3, 0.05);
 				}
 			}
 		} else if (state.getFluidState().is(FluidTags.WATER) && !state.hasProperty(net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED)
-				|| iced.contains(pos) && (state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE))) {
-			level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+				|| state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE)) {
+			// All the water and ice in the pit goes, whoever froze it and whenever (even before a restart).
+			level.setBlock(pos, Blocks.AIR.defaultBlockState(), QUIET);
 		}
 	}
 
@@ -285,8 +323,15 @@ public class TideScribe extends DungeonBoss {
 		if (!(level() instanceof ServerLevel level) || !hasArena(level)) {
 			return;
 		}
-		fillStep(level, 0, 2, high);
-		fillStep(level, 1, 2, high);
+		cells(level);
+		for (int layer = 0; layer < 2; layer++) {
+			for (List<BlockPos> ring : rings[high ? layer : 1 - layer]) {
+				for (BlockPos pos : ring) {
+					setCell(level, pos, high);
+				}
+			}
+		}
+		rimUpdates(level);
 		tide = high ? Tide.HIGH : Tide.LOW;
 		step = high ? FILL_TICKS : DRAIN_TICKS;
 		tideUntil = level.getGameTime() + (high ? HIGH_TICKS[phase] : LOW_TICKS[phase]);
@@ -434,7 +479,7 @@ public class TideScribe extends DungeonBoss {
 				BlockPos pos = new BlockPos((int) Math.floor(at.x) + dx, top, (int) Math.floor(at.z) + dz);
 				BlockState state = level.getBlockState(pos);
 				if (state.is(Blocks.WATER) && pos.distSqr(home) <= (PIT_RADIUS + 1) * (PIT_RADIUS + 1)) {
-					level.setBlock(pos, Blocks.ICE.defaultBlockState(), Block.UPDATE_ALL);
+					level.setBlock(pos, Blocks.ICE.defaultBlockState(), QUIET);
 					iced.add(pos.immutable());
 					count++;
 				}
@@ -446,9 +491,11 @@ public class TideScribe extends DungeonBoss {
 		ElementFx.frostCreep(level, new Vec3(at.x, top + 1.0, at.z), 3.0, 30);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, new Vec3(at.x, top + 1.0, at.z), 20, 1.5, 0.02);
 		Fx.sound(level, at, SoundEvents.GLASS_PLACE, 1.0F, 0.6F);
-		// Ice closing round the Scribe strands it.
-		if (isInWater() && new Vec3(getX() - at.x, 0, getZ() - at.z).length() < 3.5) {
-			strandedUntil = level.getGameTime() + STRAND_TICKS;
+		// Ice closing round the Scribe strands it (unless it has only just broken free).
+		long now = level.getGameTime();
+		if (isInWater() && new Vec3(getX() - at.x, 0, getZ() - at.z).length() < 3.5 && now >= strandImmuneUntil) {
+			strandedUntil = now + STRAND_TICKS;
+			strandImmuneUntil = strandedUntil + BossRules.STRAND_IMMUNE_TICKS;
 			interrupt();
 			ElementFx.frostImpact(level, getBoundingBox().getCenter(), 1.5);
 			announce(level, "message.wildercord.tide_scribe_stranded", ACCENT);
@@ -545,6 +592,7 @@ public class TideScribe extends DungeonBoss {
 			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.BOLT, Runes.SHOCK) : List.of(Runes.TOUCH, Runes.FROST), phase == 3);
 			level.addFreshEntity(guard);
+			minion(guard);
 			Vfx.emit(level, ParticleTypes.SQUID_INK, spot.add(0, 1, 0), 16, 0.4, 0.05);
 			Sigils.ground(level, spot, COLOR, ACCENT, 1.2F, 30);
 		}

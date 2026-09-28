@@ -3,9 +3,11 @@ package dev.wildercord.cast.events;
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.Runebound;
 import dev.wildercord.spell.RuneDef;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -18,11 +20,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.zombie.Zombie;
 import net.minecraft.world.level.Level;
@@ -40,11 +45,9 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -57,9 +60,10 @@ import java.util.UUID;
  *   <li>{@link RiftSiege}: rarely, at night near a settled place; three waves of Runebound.</li>
  * </ul>
  * Every number is in {@link EventRules}. Everything is server-side and temporary: nothing about an
- * event is saved but a fallen star's crater (so it can be filled back in), and anything an event
- * spawned that outlives it (after a restart, say) is removed as its chunk loads. The hostile ones
- * never roll on Peaceful.
+ * event is saved but a fallen star (its rune and its crater, so it can be filled back in) and when
+ * each kind of event may next come ({@link EventLedger}), and anything an event spawned that
+ * outlives it (after a restart, say) is removed as its chunk loads. The hostile ones never roll on
+ * Peaceful, and give nothing there: a rift closes, and a star won't open.
  */
 public final class WorldEvents {
 	private WorldEvents() {}
@@ -71,11 +75,6 @@ public final class WorldEvents {
 	static final List<RiftSiege> RIFTS = new ArrayList<>();
 	/** Entities spawned by events still running, this session. */
 	private static final Set<UUID> LIVE = new HashSet<>();
-	/** When each region may next have a storm. */
-	private static final Map<Long, Long> STORM_REGIONS = new HashMap<>();
-	/** When each world may next see a star fall, or a rift open. */
-	private static final Map<ResourceKey<Level>, Long> NEXT_STAR = new HashMap<>();
-	private static final Map<ResourceKey<Level>, Long> NEXT_RIFT = new HashMap<>();
 
 	public static void init() {
 		EventSounds.init();
@@ -89,6 +88,16 @@ public final class WorldEvents {
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(WorldEvents::tick);
+		// Who fought an event's monsters (hurt one, or was hurt by one), and which of them were killed.
+		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
+			if (!RIFTS.isEmpty() && damage > 0) {
+				fought(entity, source);
+			}
+		});
+		ServerLivingEntityEvents.AFTER_DEATH.register(WorldEvents::died);
+		// Nothing may be hung on (or taken from) a rift's invisible stand.
+		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) ->
+			entity.entityTags().contains(RiftSiege.ANCHOR_TAG) ? InteractionResult.FAIL : InteractionResult.PASS);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			for (RiftSiege rift : RIFTS) {
 				rift.forget();
@@ -96,9 +105,6 @@ public final class WorldEvents {
 			STORMS.clear();
 			RIFTS.clear();
 			LIVE.clear();
-			STORM_REGIONS.clear();
-			NEXT_STAR.clear();
-			NEXT_RIFT.clear();
 			FallenStars.clear();
 		});
 	}
@@ -129,6 +135,7 @@ public final class WorldEvents {
 		long now = level.getGameTime();
 		boolean night = EventRules.night(level.getOverworldClockTime());
 		boolean hostile = level.getDifficulty() != Difficulty.PEACEFUL;
+		EventLedger ledger = EventLedger.of(server);
 		for (ServerPlayer player : new ArrayList<>(level.players())) {
 			if (player.isSpectator()) {
 				continue;
@@ -136,11 +143,11 @@ public final class WorldEvents {
 			if (STORMS.size() < EventRules.MAX_STORMS && stormAt(level, player.position()) == null && random.nextDouble() < EventRules.stormChance()) {
 				startStorm(level, player, false);
 			}
-			if (night && hostile && !FallenStars.any(level) && now >= NEXT_STAR.getOrDefault(level.dimension(), 0L)
+			if (night && hostile && !FallenStars.any(level) && now >= ledger.next(EventLedger.star(level.dimension()))
 					&& random.nextDouble() < EventRules.starChance()) {
 				startStar(level, player, false);
 			}
-			if (night && hostile && riftIn(level) == null && now >= NEXT_RIFT.getOrDefault(level.dimension(), 0L)
+			if (night && hostile && riftIn(level) == null && now >= ledger.next(EventLedger.rift(level.dimension()))
 					&& random.nextDouble() < EventRules.riftChance() && settled(level, player.blockPosition())) {
 				startRift(level, player, false);
 			}
@@ -159,11 +166,12 @@ public final class WorldEvents {
 			return null;
 		}
 		long now = level.getGameTime();
-		long region = EventRules.region((int) Math.floor(centre.x), (int) Math.floor(centre.z));
-		if (!here && now < STORM_REGIONS.getOrDefault(region, 0L)) {
+		EventLedger ledger = EventLedger.of(level.getServer());
+		String region = EventLedger.storm(EventRules.region((int) Math.floor(centre.x), (int) Math.floor(centre.z)));
+		if (!here && now < ledger.next(region)) {
 			return null;
 		}
-		STORM_REGIONS.put(region, now + EventRules.STORM_REGION_COOLDOWN);
+		ledger.setNext(region, now + EventRules.STORM_REGION_COOLDOWN, now);
 		ManaStorm storm = new ManaStorm(level, centre, now, EventRules.stormTicks(level.getRandom().nextDouble()));
 		STORMS.add(storm);
 		storm.begin();
@@ -174,18 +182,23 @@ public final class WorldEvents {
 	public static BlockPos startStar(ServerLevel level, ServerPlayer player, boolean here) {
 		BlockPos land = FallenStars.fall(level, player, here);
 		if (land != null) {
-			NEXT_STAR.put(level.dimension(), level.getGameTime() + EventRules.STAR_COOLDOWN);
+			long now = level.getGameTime();
+			EventLedger.of(level.getServer()).setNext(EventLedger.star(level.dimension()), now + EventRules.STAR_COOLDOWN, now);
 		}
 		return land;
 	}
 
-	/** A rift opens near {@code player} (or, {@code here}, a few blocks in front of them). Null if there was no room. */
+	/** A rift opens near {@code player} (or, {@code here}, a few blocks in front of them). Null if there was no room, or on Peaceful. */
 	public static RiftSiege startRift(ServerLevel level, ServerPlayer player, boolean here) {
+		if (level.getDifficulty() == Difficulty.PEACEFUL) {
+			return null;
+		}
 		Vec3 base = here ? RiftSiege.spotHere(level, player) : RiftSiege.spotNear(level, player);
 		if (base == null) {
 			return null;
 		}
-		NEXT_RIFT.put(level.dimension(), level.getGameTime() + EventRules.RIFT_COOLDOWN);
+		long now = level.getGameTime();
+		EventLedger.of(level.getServer()).setNext(EventLedger.rift(level.dimension()), now + EventRules.RIFT_COOLDOWN, now);
 		RiftSiege rift = new RiftSiege(level, base, player.position());
 		RIFTS.add(rift);
 		rift.begin();
@@ -234,6 +247,36 @@ public final class WorldEvents {
 			if (rift.level == cast.level && rift.struckBy(hit)) {
 				rift.strike(player, element);
 			}
+		}
+	}
+
+	/** Something was hurt: if an event's monster and a player were on either end of it, the player fought. */
+	private static void fought(LivingEntity victim, DamageSource source) {
+		Entity attacker = source.getEntity();
+		if (victim instanceof ServerPlayer player) {
+			if (attacker != null && attacker.entityTags().contains(TAG)) {
+				for (RiftSiege rift : RIFTS) {
+					rift.fought(player, attacker.getUUID());
+				}
+			}
+		} else if (attacker instanceof ServerPlayer player && victim.entityTags().contains(TAG)) {
+			for (RiftSiege rift : RIFTS) {
+				rift.fought(player, victim.getUUID());
+			}
+		}
+	}
+
+	/** Something died: an event's monster was killed (not sent away, not lost), and a Riftcaller leaves its spoils. */
+	private static void died(LivingEntity entity, DamageSource source) {
+		if (!entity.entityTags().contains(TAG) || !(entity.level() instanceof ServerLevel level)) {
+			return;
+		}
+		for (RiftSiege rift : RIFTS) {
+			rift.killed(entity.getUUID());
+		}
+		FallenStars.guardKilled(entity.getUUID());
+		if (entity.entityTags().contains(RiftSiege.RIFTCALLER_TAG)) {
+			RiftSiege.riftcallerLoot(level, entity, source);
 		}
 	}
 

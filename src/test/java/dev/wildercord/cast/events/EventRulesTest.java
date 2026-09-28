@@ -154,4 +154,29 @@ class EventRulesTest {
 			assertTrue(fours.contains(EventRules.rewardRune(source, 4, 1.0)));
 		}
 	}
+
+	@Test
+	void riftRewardsGrowWithTheWavesBeaten() {
+		// Sealed early, with no wave beaten: a token; every wave beaten, the lot.
+		assertEquals(0, EventRules.riftRunes(0));
+		assertEquals(1, EventRules.riftRunes(1));
+		assertEquals(EventRules.RIFT_RUNES, EventRules.riftRunes(EventRules.WAVES));
+		assertEquals(EventRules.RIFT_RUNES, EventRules.riftRunes(EventRules.WAVES + 5));
+		assertEquals(1.0, EventRules.riftShare(EventRules.WAVES), 1e-9);
+		assertEquals(EventRules.RIFT_XP, EventRules.riftXp(EventRules.WAVES));
+		assertFalse(EventRules.riftCrystal(0));
+		assertTrue(EventRules.riftCrystal(1));
+		for (int cleared = 0; cleared < EventRules.WAVES; cleared++) {
+			assertTrue(EventRules.riftShare(cleared) < EventRules.riftShare(cleared + 1));
+			assertTrue(EventRules.riftRunes(cleared) <= EventRules.riftRunes(cleared + 1));
+			assertTrue(EventRules.riftXp(cleared) < EventRules.riftXp(cleared + 1));
+			for (double roll : new double[] {0.0, 0.5, 0.99}) {
+				assertTrue(EventRules.riftBlanks(roll, cleared) >= 1);
+				assertTrue(EventRules.riftBlanks(roll, cleared) <= EventRules.riftBlanks(roll, cleared + 1));
+			}
+		}
+		assertEquals(EventRules.riftBlanks(0.99), EventRules.riftBlanks(0.99, EventRules.WAVES));
+		// It can't be sealed in its first wave.
+		assertTrue(EventRules.RIFT_SEAL_FROM_WAVE > 1 && EventRules.RIFT_SEAL_FROM_WAVE <= EventRules.WAVES);
+	}
 }

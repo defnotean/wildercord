@@ -1,8 +1,10 @@
 # World events
 
 Now and then the world's magic stirs by itself. The events below happen only in the Overworld, only
-near players and only in ground that's already loaded. Monsters never come on Peaceful. Nothing an
-event does is permanent.
+near players and only in ground that's already loaded. Monsters never come on Peaceful, and the
+events give nothing there: an open rift closes, and a fallen star won't open. Nothing an event does
+is permanent. When each kind of event may next come, and where a star is lying, is saved with the
+world, so a restart doesn't reset the cooldowns.
 
 ## Mana storm
 
@@ -38,7 +40,9 @@ ground. Otherwise it only leaves scorch marks. A **Fallen Star** lies in the mid
 starlight marks it for five minutes so you can race to it.
 
 When someone comes within 40 blocks, **2 to 4 Runebound** (one of them an Adept) rise to guard it.
-The star won't open while they stand.
+The star won't open until every guard is **killed**: one you lead far off (or out of loaded ground)
+still stands, and one that goes without being killed (sent away by Peaceful, say) is replaced when
+someone next comes near. After a restart a guarded star wakes fresh guards.
 
 **Rewards:** use the star to break it open for:
 - a **Tier III rune** (one time in four a **Tier IV** rune)
@@ -68,18 +72,29 @@ next comes sooner.
 A wave holds at most 8 monsters. The **Riftcaller** is a Runebound illager with about four times a
 vindicator's health and a boss bar.
 
-**Closing it:** beat every wave, or strike the tear with spells of **three different elements**.
+**Closing it:** beat every wave (every monster killed; one that wanders off or is sent away doesn't
+count), or, once the **second wave** has come, strike the tear with spells of **three different
+elements**. Before that it's too raw to seal.
 
-**Rewards:**
-- **2 runes** (mostly Tier II, sometimes III, rarely IV)
-- **2 to 4 Blank Runes**
-- a **Mana Crystal**
-- 60 experience
+**Rewards**, for every wave beaten (all its monsters killed):
+
+| Waves beaten | Runes | Blank Runes | Mana Crystal | Experience |
+|---|---|---|---|---|
+| 0 (sealed early) | none | 1 | no | 15 |
+| 1 | 1 | 1 to 2 | yes | 30 |
+| 2 | 1 | 1 to 3 | yes | 45 |
+| 3 | 2 | 2 to 4 | yes | 60 |
+
+Runes are mostly Tier II, sometimes III, rarely IV. The **Riftcaller**, killed by a player, also
+drops its own spoils (an Unstable or Riftcall rune and 1 to 3 Mana Crystals).
 
 If nobody closes the rift, it closes itself 90 seconds after its last wave, or after 30 seconds with
 nobody near. It gives nothing then, and takes its monsters back with it.
 
-**Feat:** *Riftwarden*: close a rift (everyone who stood against it gets it).
+**Feat:** *Riftwarden*: close a rift. Everyone who fought it gets it: who hurt one of its monsters,
+was hurt by one, or struck the tear with a spell. Standing by isn't enough.
+
+The rift's boss bar goes as soon as you leave its world.
 
 ## For operators
 

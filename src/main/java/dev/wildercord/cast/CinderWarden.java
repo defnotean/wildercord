@@ -84,10 +84,10 @@ public class CinderWarden extends DungeonBoss {
 	}
 
 	/** Wakes the Warden at its forge-altar: the altar spits fire and it climbs out of the coals. */
-	public static void rise(ServerLevel level, BlockPos altar) {
+	public static CinderWarden rise(ServerLevel level, BlockPos altar) {
 		CinderWarden boss = place(level, DungeonEntities.CINDER_WARDEN, altar, 1.0);
 		if (boss == null) {
-			return;
+			return null;
 		}
 		Vec3 at = Vec3.atBottomCenterOf(altar).add(0, 1, 0);
 		Sigils.ground(level, at, COLOR, ACCENT, 5.0F, 80);
@@ -98,6 +98,7 @@ public class CinderWarden extends DungeonBoss {
 		Fx.sound(level, at, DungeonSounds.BOSS_RISE, 2.0F, 1.0F);
 		Fx.sound(level, at, SoundEvents.BLAZE_SHOOT, 1.2F, 0.5F);
 		boss.announce(level, "message.wildercord.cinder_warden_wakes", COLOR);
+		return boss;
 	}
 
 	@Override
@@ -263,6 +264,7 @@ public class CinderWarden extends DungeonBoss {
 			guard.finalizeSpawn(level, level.getCurrentDifficultyAt(guard.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
 			Runebound.bind(guard, i == 0 ? List.of(Runes.BOLT, Runes.FIRE) : List.of(Runes.ARC, Runes.FROST), phase == 3);
 			level.addFreshEntity(guard);
+			minion(guard);
 			ElementFx.flameBurst(level, spot.add(0, 1, 0), 1.2, 8);
 			Sigils.ground(level, spot, COLOR, ACCENT, 1.2F, 30);
 		}

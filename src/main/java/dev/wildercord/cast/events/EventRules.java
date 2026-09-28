@@ -96,6 +96,8 @@ public final class EventRules {
 	public static final int RIFT_ABANDONED = 30 * 20;
 	/** How many different elements of spell, striking the rift, seal it. */
 	public static final int RIFT_SEAL_ELEMENTS = 3;
+	/** A rift can only be sealed once this wave has come: before that it's too raw to close. */
+	public static final int RIFT_SEAL_FROM_WAVE = 2;
 	/** The most monsters in one wave (the Riftcaller comes on top). */
 	public static final int MAX_WAVE = 8;
 	public static final int RIFT_XP = 60;
@@ -223,12 +225,45 @@ public final class EventRules {
 		return roll < 0.40 ? 3 : 2;
 	}
 
-	/** Runes a sealed rift gives. */
+	/** Runes a rift gives with every wave beaten. */
 	public static final int RIFT_RUNES = 2;
 
-	/** Blank Runes a sealed rift gives: 2 to 4. */
+	/** Blank Runes a rift gives with every wave beaten: 2 to 4. */
 	public static int riftBlanks(double roll) {
 		return 2 + Math.min(2, (int) Math.floor(clamp(roll) * 3));
+	}
+
+	/**
+	 * How much of a rift's full reward it gives with {@code cleared} of its waves beaten (every monster
+	 * of the wave killed): a quarter for none (sealed early), then a quarter more for each wave.
+	 */
+	public static double riftShare(int cleared) {
+		int c = Math.max(0, Math.min(WAVES, cleared));
+		return (1.0 + c) / (1.0 + WAVES);
+	}
+
+	/** Runes a closed rift gives with {@code cleared} waves beaten: none for none, then one, and all of them for every wave. */
+	public static int riftRunes(int cleared) {
+		int c = Math.max(0, Math.min(WAVES, cleared));
+		if (c == 0) {
+			return 0;
+		}
+		return Math.max(1, RIFT_RUNES * c / WAVES);
+	}
+
+	/** Blank Runes a closed rift gives for a roll, with {@code cleared} waves beaten (at least one). */
+	public static int riftBlanks(double roll, int cleared) {
+		return Math.max(1, (int) Math.floor(riftBlanks(roll) * riftShare(cleared)));
+	}
+
+	/** Experience a closed rift gives with {@code cleared} waves beaten. */
+	public static int riftXp(int cleared) {
+		return (int) Math.round(RIFT_XP * riftShare(cleared));
+	}
+
+	/** Whether a closed rift gives a Mana Crystal: once at least one wave was beaten. */
+	public static boolean riftCrystal(int cleared) {
+		return cleared >= 1;
 	}
 
 	/**

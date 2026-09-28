@@ -51,6 +51,11 @@ public final class EventCommand {
 				return 1;
 			}
 			case "starfall" -> {
+				if (level.getDifficulty() == Difficulty.PEACEFUL) {
+					// Its guards couldn't rise, and it wouldn't open: nothing to test.
+					ctx.getSource().sendFailure(Component.translatable("command.wildercord.event.peaceful"));
+					return 0;
+				}
 				BlockPos land = WorldEvents.startStar(level, player, here);
 				if (land == null) {
 					ctx.getSource().sendFailure(Component.translatable("command.wildercord.event.no_room"));

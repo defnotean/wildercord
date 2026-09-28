@@ -17,18 +17,23 @@ import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -36,9 +41,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,14 +56,16 @@ import java.util.UUID;
  * A rift siege. A tear of violet light opens beside a settled place, a spell circle turning on
  * either face, and three waves of Runebound pour out of it over about two minutes: more with more
  * players near, Adepts in the later waves, and in the last a Riftcaller, a Runebound illager with a
- * boss bar. Players close it by beating every wave, or by striking the tear with spells of three
- * different elements; either way it gives runes, Blank Runes, a Mana Crystal, experience and the
- * Riftwarden feat. Left alone, it closes itself a while after its last wave and takes its monsters
- * back with it.
+ * boss bar. Players close it by beating every wave, or, once the second wave has come, by striking
+ * the tear with spells of three different elements; either way it gives runes, Blank Runes, a Mana
+ * Crystal and experience, more for every wave beaten (every one of its monsters killed, not merely
+ * gone), and the Riftwarden feat to everyone who fought (hurt one of its monsters, was hurt by one,
+ * or struck the tear). Left alone, it closes itself a while after its last wave and takes its
+ * monsters back with it; on Peaceful it closes at once, giving nothing.
  *
  * <p>Spells find the tear through an invisible, unbreakable armour stand standing in it (bolts stop
- * on it and area spells hit it); nothing here is saved, and the stand and any monster left over
- * are removed as their chunks load after a restart.</p>
+ * on it and area spells hit it; nothing can be hung on it); nothing here is saved, and the stand and
+ * any monster left over are removed as their chunks load after a restart.</p>
  */
 public final class RiftSiege {
 	private static final int TEAR = 0xA060FF;
@@ -64,6 +74,10 @@ public final class RiftSiege {
 	private static final Identifier RIFTCALLER_HEALTH = Wildercord.id("riftcaller_health");
 	/** On the Riftcaller, so anything can tell it from the rest. */
 	public static final String RIFTCALLER_TAG = "wildercord.riftcaller";
+	/** On the tear's invisible stand, so nobody can use it. */
+	public static final String ANCHOR_TAG = "wildercord.rift_anchor";
+	/** The Riftcaller's own spoils, on top of the rift's. */
+	private static final ResourceKey<LootTable> RIFTCALLER_LOOT = ResourceKey.create(Registries.LOOT_TABLE, Wildercord.id("entities/riftcaller"));
 
 	private static final List<List<EntityType<? extends Mob>>> WAVE_TYPES = List.of(
 		List.of(EntityTypes.ZOMBIE, EntityTypes.SKELETON, EntityTypes.ZOMBIE, EntityTypes.HUSK, EntityTypes.SKELETON),
@@ -87,6 +101,9 @@ public final class RiftSiege {
 	private long lastNear;
 	private boolean closed;
 	private final List<UUID> mobs = new ArrayList<>();
+	/** Each wave's monsters (index 0 is the first wave), and those of them killed. */
+	private final List<List<UUID>> waveMobs = new ArrayList<>();
+	private final Set<UUID> killed = new HashSet<>();
 	private UUID riftcaller;
 	private ArmorStand anchor;
 	private final Set<String> elements = new LinkedHashSet<>();
@@ -185,6 +202,7 @@ public final class RiftSiege {
 		stand.setPermanentlyInvulnerable(true);
 		stand.setSilent(true);
 		stand.setNoBasePlate(true);
+		stand.addTag(ANCHOR_TAG);
 		AttributeInstance scale = stand.getAttribute(Attributes.SCALE);
 		if (scale != null) {
 			scale.setBaseValue(1.7);
@@ -206,6 +224,11 @@ public final class RiftSiege {
 			close(false, null);
 			return false;
 		}
+		if (level.getDifficulty() == Difficulty.PEACEFUL) {
+			// Peaceful sends its monsters away, and the rift with them: nothing was beaten, so nothing is given.
+			close(false, null);
+			return false;
+		}
 		if (anchor == null || anchor.isRemoved()) {
 			placeAnchor();
 		}
@@ -214,13 +237,18 @@ public final class RiftSiege {
 		}
 		int alive = alive();
 		if (now % 20 == 0) {
+			// Anyone who has left (the world, or the game) loses its bar.
+			for (ServerPlayer player : new ArrayList<>(bar.getPlayers())) {
+				if (player.isRemoved() || player.level() != level) {
+					bar.removePlayer(player);
+				}
+			}
 			boolean near = false;
 			for (ServerPlayer player : level.players()) {
 				double d = player.position().distanceTo(centre);
 				if (d <= 48 && !player.isSpectator()) {
 					bar.addPlayer(player);
 					near = true;
-					fighters.add(player.getUUID());
 				} else if (d > 64) {
 					bar.removePlayer(player);
 				}
@@ -230,7 +258,8 @@ public final class RiftSiege {
 			}
 			updateBar(alive);
 		}
-		boolean beaten = wave >= 1 && pending == 0 && alive == 0;
+		// Beaten: every monster out of it so far killed (one that wandered off, or was sent away, isn't).
+		boolean beaten = wave >= 1 && pending == 0 && allKilled();
 		if (beaten && wave < EventRules.WAVES) {
 			// A wave beaten early brings the next one sooner.
 			nextWaveAt = Math.min(nextWaveAt, now + EventRules.WAVE_EARLY);
@@ -256,6 +285,56 @@ public final class RiftSiege {
 			}
 		}
 		return n;
+	}
+
+	/** Whether every monster that has come out of it was killed. */
+	private boolean allKilled() {
+		for (UUID id : mobs) {
+			if (!killed.contains(id)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/** How many of its waves were beaten: every monster of the wave out, and killed. */
+	public int cleared() {
+		int n = 0;
+		for (int w = 0; w < waveMobs.size(); w++) {
+			if (w == waveMobs.size() - 1 && pending > 0) {
+				break;
+			}
+			if (killed.containsAll(waveMobs.get(w))) {
+				n++;
+			}
+		}
+		return n;
+	}
+
+	/** One of its monsters was killed (from {@link WorldEvents}). */
+	void killed(UUID id) {
+		if (mobs.contains(id)) {
+			killed.add(id);
+		}
+	}
+
+	/** {@code player} hurt one of its monsters, or was hurt by one (from {@link WorldEvents}). */
+	void fought(ServerPlayer player, UUID mob) {
+		if (!closed && player.level() == level && mobs.contains(mob)) {
+			fighters.add(player.getUUID());
+		}
+	}
+
+	/** Who has fought it so far (for the tests). */
+	public Set<UUID> fighters() {
+		return Set.copyOf(fighters);
+	}
+
+	/** For the tests: its next wave comes now. */
+	public void nextWave() {
+		if (!closed && wave < EventRules.WAVES) {
+			spawnWave(wave + 1, level.getGameTime());
+		}
 	}
 
 	/** The ground at the tear's foot. */
@@ -330,6 +409,9 @@ public final class RiftSiege {
 	private void spawnWave(int n, long now) {
 		wave = n;
 		lastWaveAt = now;
+		while (waveMobs.size() < n) {
+			waveMobs.add(new ArrayList<>());
+		}
 		if (n < EventRules.WAVES) {
 			nextWaveAt = opened + EventRules.waveAt(n + 1);
 		}
@@ -361,15 +443,15 @@ public final class RiftSiege {
 		for (int i = 0; i < size; i++) {
 			boolean adept = i < adepts;
 			EntityType<? extends Mob> type = types.get(i % types.size());
-			Scheduler.later(1 + i * 6, () -> emerge(type, adept, target, null));
+			Scheduler.later(1 + i * 6, () -> emerge(n, type, adept, target, null));
 		}
 		if (n == EventRules.WAVES) {
-			Scheduler.later(12 + size * 6, () -> emerge(EntityTypes.VINDICATOR, true, target, List.of(Runes.BOLT, Runes.BLACKFLAME, Runes.SPLIT_MOD)));
+			Scheduler.later(12 + size * 6, () -> emerge(n, EntityTypes.VINDICATOR, true, target, List.of(Runes.BOLT, Runes.BLACKFLAME, Runes.SPLIT_MOD)));
 		}
 	}
 
 	/** One monster steps out of the tear, onto one side or the other; {@code riftcaller} is the Riftcaller's spell. */
-	private void emerge(EntityType<? extends Mob> type, boolean adept, ServerPlayer target, List<RuneDef> riftcallerSpell) {
+	private void emerge(int ofWave, EntityType<? extends Mob> type, boolean adept, ServerPlayer target, List<RuneDef> riftcallerSpell) {
 		pending = Math.max(0, pending - 1);
 		if (closed) {
 			return;
@@ -389,6 +471,7 @@ public final class RiftSiege {
 			return;
 		}
 		mobs.add(mob.getUUID());
+		waveMobs.get(ofWave - 1).add(mob.getUUID());
 		if (riftcallerSpell != null) {
 			riftcaller = mob.getUUID();
 			mob.addTag(RIFTCALLER_TAG);
@@ -430,12 +513,20 @@ public final class RiftSiege {
 		return dx * dx + dz * dz <= 3.0 * 3.0 && p.y >= base.y - 1 && p.y <= base.y + HEIGHT + 1;
 	}
 
-	/** A player's spell of {@code element} strikes the tear: three different elements seal it. */
+	/** A player's spell of {@code element} strikes the tear: three different elements seal it (from the second wave on). */
 	public void strike(ServerPlayer player, String element) {
-		if (closed || !elements.add(element)) {
+		if (closed) {
+			return;
+		}
+		if (wave < EventRules.RIFT_SEAL_FROM_WAVE) {
+			// Too raw yet: it shrugs the spell off.
+			player.sendOverlayMessage(Component.translatable("message.wildercord.rift_raw").withColor(0xB8A8D8));
 			return;
 		}
 		fighters.add(player.getUUID());
+		if (!elements.add(element)) {
+			return;
+		}
 		int color = RuneColors.element(element);
 		Sigils.flash(level, centre, color, 2.4F);
 		Light.ring(level, centre, facing, color, 0.3, 2.4, 0.1, 10);
@@ -494,22 +585,36 @@ public final class RiftSiege {
 		bar.removeAllPlayers();
 	}
 
-	/** Runes, Blank Runes, a Mana Crystal and experience where the tear was, and Riftwarden for everyone who stood against it. */
+	/**
+	 * Runes, Blank Runes, a Mana Crystal and experience where the tear was, as many as the waves
+	 * beaten earned, and Riftwarden for everyone who fought it.
+	 */
 	private void reward() {
 		RandomSource random = level.getRandom();
 		Vec3 at = base.add(0, 0.8, 0);
-		for (int i = 0; i < EventRules.RIFT_RUNES; i++) {
+		int cleared = cleared();
+		for (int i = 0; i < EventRules.riftRunes(cleared); i++) {
 			RuneDef rune = EventRules.rewardRune("rift", EventRules.riftRuneTier(random.nextDouble()), random.nextDouble());
 			drop(at, RuneItem.stack(rune));
 		}
-		drop(at, new ItemStack(WildercordItems.BLANK_RUNE, EventRules.riftBlanks(random.nextDouble())));
-		drop(at, new ItemStack(WildercordItems.MANA_CRYSTAL));
-		ExperienceOrb.award(level, at, EventRules.RIFT_XP);
+		drop(at, new ItemStack(WildercordItems.BLANK_RUNE, EventRules.riftBlanks(random.nextDouble(), cleared)));
+		if (EventRules.riftCrystal(cleared)) {
+			drop(at, new ItemStack(WildercordItems.MANA_CRYSTAL));
+		}
+		ExperienceOrb.award(level, at, EventRules.riftXp(cleared));
 		for (ServerPlayer player : level.players()) {
 			if (fighters.contains(player.getUUID()) && player.position().distanceTo(centre) <= 64) {
 				Grimoire.feat(player, Feats.RIFTWARDEN);
 			}
 		}
+	}
+
+	/** The Riftcaller killed by a player: its own spoils ({@code wildercord:entities/riftcaller}), on top of the rift's. */
+	static void riftcallerLoot(ServerLevel level, LivingEntity riftcaller, DamageSource source) {
+		if (riftcaller.getLastHurtByPlayer() == null || riftcaller.getLastHurtByPlayerMemoryTime() <= 0 || !level.getGameRules().get(GameRules.MOB_DROPS)) {
+			return;
+		}
+		riftcaller.dropFromLootTable(level, source, true, RIFTCALLER_LOOT);
 	}
 
 	private void drop(Vec3 at, ItemStack stack) {

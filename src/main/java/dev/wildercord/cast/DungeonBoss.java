@@ -1,16 +1,19 @@
 package dev.wildercord.cast;
 
 import dev.wildercord.content.RuneItem;
+import dev.wildercord.content.dungeons.DungeonAltarBlockEntity;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellNames;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -32,21 +35,28 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * What the dimension dungeons' bosses share, after the Archivist: a Cord of spells that changes
  * with each of three phases (at two thirds and one third of its health), every spell named on the
  * boss bar and telegraphed with its own circle, a pause between phases while it gathers itself
- * (untouchable), a keeper's leash to its arena, a slow death, and its loot: a Tier IV rune its
- * killer doesn't know yet (in code) and the rest from its loot table
- * ({@code wildercord:entities/<id>}). Each boss adds one mechanic that teaches something about
- * magic: see {@link CinderWarden}.
+ * (untouchable), a keeper's leash to its arena, a slow death, and its loot: a Tier IV rune each
+ * player who fought it doesn't know yet (in code, handed straight to them) and the rest from its
+ * loot table ({@code wildercord:entities/<id>}, given to its killer, or left on its altar). No blow
+ * carries it past the start of its next phase, so a burst of damage can't skip one. Its boss bar
+ * shows to whoever is in its arena (within {@link #BAR_RANGE} of its altar), not to everyone who
+ * can see it. Each boss adds one mechanic that teaches something about magic: see {@link CinderWarden}.
  *
  * <p>The client only needs a few bits of its state for poses and glows; they're synced in one byte
  * ({@link #CASTING} and friends) and eased on the client like the Archivist's.</p>
@@ -69,6 +79,10 @@ public abstract class DungeonBoss extends Monster {
 	protected static final int SHIFT_TICKS = 60;
 	/** How long it takes to die. */
 	public static final int DEATH_TICKS = 60;
+	/** Its boss bar shows to players this near its altar. */
+	public static final double BAR_RANGE = 48.0;
+	/** Players this near its altar when it falls, who fought it, get their rune. */
+	private static final double REWARD_RANGE = 96.0;
 
 	protected final ServerBossEvent bossEvent;
 	protected BlockPos home;
@@ -80,6 +94,10 @@ public abstract class DungeonBoss extends Monster {
 	protected LivingEntity castTarget;
 	private int spellIndex;
 	private Component shownName;
+	/** Every player who has hurt it (saved), for their share of its loot. */
+	private final Set<UUID> fighters = new LinkedHashSet<>();
+	/** The keepers it called up (saved), sent away when it falls. */
+	private final List<UUID> minions = new ArrayList<>();
 
 	private float castPose;
 	private float castPoseO;
@@ -242,6 +260,9 @@ public abstract class DungeonBoss extends Monster {
 		if (home == null) {
 			home = blockPosition();
 		}
+		if (now % 10 == 0) {
+			updateViewers(level);
+		}
 		if (shifting > 0) {
 			shifting--;
 			getNavigation().stop();
@@ -253,17 +274,7 @@ public abstract class DungeonBoss extends Monster {
 			updateName(null);
 			return;
 		}
-		int wanted = getHealth() > getMaxHealth() * 2 / 3 ? 1 : getHealth() > getMaxHealth() / 3 ? 2 : 3;
-		if (wanted > phase) {
-			phase = wanted;
-			shifting = SHIFT_TICKS;
-			castAt = 0;
-			casting = null;
-			spellIndex = 0;
-			setState(CASTING, false);
-			setState(SHIFTING, true);
-			onPhase(level, phase);
-			updateName(null);
+		if (shiftIfDue(level)) {
 			return;
 		}
 		if (position().distanceTo(Vec3.atCenterOf(home)) > leash()) {
@@ -301,6 +312,40 @@ public abstract class DungeonBoss extends Monster {
 		setState(CASTING, true);
 		updateName(SpellNames.auto(casting));
 		Runebound.telegraph(level, this, casting, target, TELEGRAPH);
+	}
+
+	/** Into its next phase, if its health says so: the pause begins at once. True if it did. */
+	private boolean shiftIfDue(ServerLevel level) {
+		int wanted = BossRules.phaseFor(getHealth(), getMaxHealth());
+		if (wanted <= phase || shifting > 0 || isDeadOrDying()) {
+			return false;
+		}
+		// One phase at a time: a blow is held at the start of the next (a command setting its health is not).
+		phase++;
+		shifting = SHIFT_TICKS;
+		castAt = 0;
+		casting = null;
+		spellIndex = 0;
+		setState(CASTING, false);
+		setState(SHIFTING, true);
+		onPhase(level, phase);
+		updateName(null);
+		return true;
+	}
+
+	/** Its boss bar: shown to everyone in its arena, taken from anyone who has left it (or its world). */
+	private void updateViewers(ServerLevel level) {
+		Vec3 heart = home != null ? Vec3.atCenterOf(home) : position();
+		for (ServerPlayer player : new ArrayList<>(bossEvent.getPlayers())) {
+			if (player.isRemoved() || player.level() != level || player.position().distanceTo(heart) > BAR_RANGE + 8) {
+				bossEvent.removePlayer(player);
+			}
+		}
+		for (ServerPlayer player : level.players()) {
+			if (player.position().distanceTo(heart) <= BAR_RANGE) {
+				bossEvent.addPlayer(player);
+			}
+		}
 	}
 
 	private void fire(ServerLevel level) {
@@ -369,7 +414,31 @@ public abstract class DungeonBoss extends Monster {
 		if (taken <= 0) {
 			return false;
 		}
-		return super.hurtServer(level, source, taken);
+		if (source.getEntity() instanceof ServerPlayer player) {
+			fighters.add(player.getUUID());
+		}
+		boolean hurt = super.hurtServer(level, source, taken);
+		// A blow that reached its next phase starts it now, before anything else can land.
+		shiftIfDue(level);
+		return hurt;
+	}
+
+	/** Held at the start of its next phase: no one blow (or burst of them) takes it further. */
+	@Override
+	protected void actuallyHurt(ServerLevel level, DamageSource source, float damage) {
+		float before = getHealth();
+		super.actuallyHurt(level, source, damage);
+		if (!source.is(DamageTypes.GENERIC_KILL) && !source.is(DamageTypes.FELL_OUT_OF_WORLD) && shifting == 0) {
+			float capped = BossRules.capped(phase, getMaxHealth(), before, getHealth());
+			if (capped != getHealth()) {
+				setHealth(capped);
+			}
+		}
+	}
+
+	/** Registers a keeper it called up, so it goes when the boss falls. */
+	protected void minion(Mob mob) {
+		minions.add(mob.getUUID());
 	}
 
 	@Override
@@ -396,6 +465,18 @@ public abstract class DungeonBoss extends Monster {
 			return;
 		}
 		bossEvent.setProgress(0);
+		// Its keepers go with it.
+		for (UUID id : minions) {
+			if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
+				Vfx.radial(level, net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, mob.position().add(0, mob.getBbHeight() / 2, 0), 12, 0.1);
+				mob.discard();
+			}
+		}
+		minions.clear();
+		// Its altar goes quiet for good.
+		if (home != null && level.getBlockEntity(home) instanceof DungeonAltarBlockEntity altar) {
+			altar.slain();
+		}
 		Vec3 c = position().add(0, getBbHeight() / 2, 0);
 		Sigils.ground(level, position().add(0, 0.05, 0), color(), 0xFFFFFF, 6.0F, DEATH_TICKS + 20);
 		Fx.sound(level, c, net.minecraft.sounds.SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 0.8F);
@@ -419,46 +500,102 @@ public abstract class DungeonBoss extends Monster {
 		}
 	}
 
+	/** Its loot table's drops (trophies and all) go to its killer, or onto its altar if there's nobody to take them. */
+	@Override
+	protected void dropFromLootTable(ServerLevel level, DamageSource source, boolean playerKilled) {
+		Optional<ResourceKey<LootTable>> table = getLootTable();
+		if (table.isEmpty()) {
+			return;
+		}
+		ServerPlayer killer = killer(level, source);
+		dropFromLootTable(level, source, playerKilled, table.get(), stack -> give(level, killer, stack));
+	}
+
 	@Override
 	protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean killedByPlayer) {
 		super.dropCustomDeathLoot(level, source, killedByPlayer);
-		// A Tier IV rune the killer doesn't know yet, if there is one (the rest comes from its loot table).
-		ServerPlayer killer = source.getEntity() instanceof ServerPlayer p ? p : null;
+		// A Tier IV rune for each player who fought it (one they don't know yet, if there is one), in hand;
+		// the rest comes from its loot table.
+		List<ServerPlayer> earned = new ArrayList<>();
+		Vec3 heart = home != null ? Vec3.atCenterOf(home) : position();
+		for (UUID id : fighters) {
+			if (level.getEntity(id) instanceof ServerPlayer player && player.isAlive() && player.position().distanceTo(heart) <= REWARD_RANGE) {
+				earned.add(player);
+			}
+		}
+		ServerPlayer killer = killer(level, source);
+		if (killer != null && !earned.contains(killer)) {
+			earned.add(killer);
+		}
+		if (earned.isEmpty()) {
+			give(level, null, RuneItem.stack(fourthFor(level, null)));
+		}
+		for (ServerPlayer player : earned) {
+			give(level, player, RuneItem.stack(fourthFor(level, player)));
+		}
+		// Exclusive runes: this boss's own rune (from the location-exclusive rune set) is meant to drop here too; its
+		// loot table's "exclusive runes" pool carries it, so nothing extra is dropped in code for now.
+		ExperienceOrb.award(level, lootSpot(), 220);
+	}
+
+	/** A common Tier IV rune {@code player} doesn't know yet (any, if they know them all). */
+	private static RuneDef fourthFor(ServerLevel level, ServerPlayer player) {
 		List<RuneDef> fourth = new ArrayList<>();
 		for (RuneDef rune : Runes.all()) {
-			if (rune.tier() == 4 && Runes.common(rune) && (killer == null || !Spellbooks.knows(killer, rune.id()))) {
+			if (rune.tier() == 4 && Runes.common(rune) && (player == null || !Spellbooks.knows(player, rune.id()))) {
 				fourth.add(rune);
 			}
 		}
 		if (fourth.isEmpty()) {
 			Runes.all().stream().filter(r -> r.tier() == 4 && Runes.common(r)).forEach(fourth::add);
 		}
-		if (!fourth.isEmpty()) {
-			drop(level, RuneItem.stack(fourth.get(level.getRandom().nextInt(fourth.size()))));
+		return fourth.isEmpty() ? Runes.BOLT : fourth.get(level.getRandom().nextInt(fourth.size()));
+	}
+
+	/** Who struck the last blow (or, for a death by burning and the like, who hurt it last), if they're still here. */
+	private ServerPlayer killer(ServerLevel level, DamageSource source) {
+		ServerPlayer killer = source.getEntity() instanceof ServerPlayer p ? p : getLastHurtByPlayer() instanceof ServerPlayer q ? q : null;
+		return killer != null && killer.isAlive() && killer.level() == level ? killer : null;
+	}
+
+	/** Into {@code player}'s pack; what doesn't fit (or has nobody to take it) is left on its altar. */
+	private void give(ServerLevel level, ServerPlayer player, ItemStack stack) {
+		if (player != null) {
+			player.getInventory().add(stack);
 		}
-		// Exclusive runes: this boss's own rune (from the location-exclusive rune set) is meant to drop here too; its
-		// loot table's "exclusive runes" pool carries it, so nothing extra is dropped in code for now.
-		ExperienceOrb.award(level, position(), 220);
+		if (!stack.isEmpty()) {
+			drop(level, stack);
+		}
+	}
+
+	/** Where its loot lands: on its altar, clear of the lava and the drops its arena may hold. */
+	protected Vec3 lootSpot() {
+		return home != null ? Vec3.atBottomCenterOf(home).add(0, 1.2, 0) : position().add(0, 1, 0);
 	}
 
 	protected void drop(ServerLevel level, ItemStack stack) {
-		ItemEntity item = new ItemEntity(level, getX(), getY() + 1, getZ(), stack);
-		item.setDeltaMovement(level.getRandom().nextGaussian() * 0.1, 0.35, level.getRandom().nextGaussian() * 0.1);
+		Vec3 at = lootSpot();
+		ItemEntity item = new ItemEntity(level, at.x, at.y, at.z, stack);
+		item.setDeltaMovement(level.getRandom().nextGaussian() * 0.02, 0.2, level.getRandom().nextGaussian() * 0.02);
+		// Nothing in the arena may take it: no fire, no lava, no blast.
+		item.setPermanentlyInvulnerable(true);
+		item.setUnlimitedLifetime();
+		item.setGlowingTag(true);
 		level.addFreshEntity(item);
 	}
 
 	// ------------------------------------------------------------------ seen, saved
 
 	@Override
-	public void startSeenByPlayer(ServerPlayer player) {
-		super.startSeenByPlayer(player);
-		bossEvent.addPlayer(player);
-	}
-
-	@Override
 	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
 		bossEvent.removePlayer(player);
+	}
+
+	@Override
+	public void remove(RemovalReason reason) {
+		bossEvent.removeAllPlayers();
+		super.remove(reason);
 	}
 
 	@Override
@@ -468,6 +605,8 @@ public abstract class DungeonBoss extends Monster {
 			output.store("home", BlockPos.CODEC, home);
 		}
 		output.putInt("phase", phase);
+		output.store("fighters", UUIDUtil.CODEC.listOf(), List.copyOf(fighters));
+		output.store("minions", UUIDUtil.CODEC.listOf(), List.copyOf(minions));
 	}
 
 	@Override
@@ -475,6 +614,10 @@ public abstract class DungeonBoss extends Monster {
 		super.readAdditionalSaveData(input);
 		home = input.read("home", BlockPos.CODEC).orElse(null);
 		phase = input.getIntOr("phase", 1);
+		fighters.clear();
+		input.read("fighters", UUIDUtil.CODEC.listOf()).ifPresent(fighters::addAll);
+		minions.clear();
+		input.read("minions", UUIDUtil.CODEC.listOf()).ifPresent(minions::addAll);
 	}
 
 	// ------------------------------------------------------------------ poses (client)
