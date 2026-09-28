@@ -8,14 +8,16 @@ for the ones you haven't learned yet.
 They come from four kinds of place:
 
 - **Vanilla structures:** their chests have a chance of one of the structure's own runes, on top of
-  their usual loot. Ocean monuments have no chests, so their Elder Guardians carry theirs.
+  their usual loot. Ocean monuments have no chests, so their Elder Guardians carry theirs. The
+  server's rune loot multiplier (`loot.rune_chance_multiplier`) scales these chances like every
+  other rune's.
 - **Biomes, by Attunement:** hold a Blank Rune and meditate in the right land at the right moment.
 - **Wildercord's dungeons and their bosses:** the Ember Sanctum, the Astral Observatory and the
   Drowned Scriptorium, and the Cinder Warden, the Star Eater and the Tide Scribe.
 - **World events:** Fallen Star craters, Rift sieges (and their Riftcaller) and mana storms.
 
 A few of them also turn up in Archive libraries, and a slain Runebound Adept sometimes drops one
-(8%).
+(8%, times the rune loot multiplier).
 
 ## Attunement
 
@@ -25,6 +27,10 @@ of the land rise into the blank. Keep still for **20 seconds**: the blank bright
 stages, each with a chime, and then becomes the land's rune. Moving, standing up or letting go of
 the blank breaks it off. Each land's rune is written into your Grimoire the first time; until then
 the Grimoire shows its riddle. A land that holds a rune, but not right now, tells you so.
+
+A land gives each player its rune **once an in-game day** (20 minutes of play): meditate there again
+sooner and it tells you how long it still rests, and the Grimoire's line for that land shows when
+it's ready again.
 
 | Land | Moment | Rune |
 |---|---|---|
@@ -52,7 +58,7 @@ the Grimoire shows its riddle. A land that holds a rune, but not right now, tell
 |---|---|---|---|
 | Snare | II | Strings an unseen tripwire from your feet to where you look (up to 12 blocks). The first enemy to cross it within 30 seconds springs it on everything within 2.5 blocks. | Jungle temples |
 | Vortex | III | A whirling vortex opens where you look for 3 seconds, dragging creatures within 5 blocks into its eye and striking everything in the eye twice a second. | Ominous vaults |
-| Constellation | III | Joins up to 5 enemies within 12 blocks of you in a constellation of light and strikes them all at once. | The Astral Observatory |
+| Constellation | III | Joins up to 5 enemies within 12 blocks of you (that you can see: never through a wall) in a constellation of light and strikes them all at once. | The Astral Observatory |
 
 ### Effects
 
@@ -61,7 +67,7 @@ the Grimoire shows its riddle. A land that holds a rune, but not right now, tell
 | Treasure Sense | Arcane | I | For 60 seconds, Luck II, and every chest, barrel and suspicious block within 24 blocks sparkles now and then. | Buried treasure, Archive libraries |
 | Ancient Seed | Life | I | Plants an ancient seed at the point: a torchflower or pitcher plant blooms, and crops within 4 blocks grow a stage. | Trail ruins (brushing) |
 | Glowvine | Life | I | Glowing cave vines heavy with glow berries grow down from the ceiling around the point: a light that stays. | Attuned in lush caves |
-| Echolocate | Void | II | A sonar pulse from the point: every creature within 16 blocks glows through walls for 10 seconds, and those it hits are dazed for 3. | Ancient cities, Archive libraries |
+| Echolocate | Void | II | A sonar pulse from the point: every enemy within 16 blocks glows through walls for 10 seconds, and those it hits are dazed for 3. Only what you could harm glows: never your allies or bystanders, and an invisible player only when they're your enemy in PvP. | Ancient cities, Archive libraries |
 | Infest | Earth | II | Silverfish burrow out of the stone around each target: 1 damage every half second for 4 seconds, and Slowness I. | Stronghold libraries, Archive libraries |
 | Vinelash | Life | II | A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you. | Jungle temples, Runebound Adepts |
 | Remedy | Life | II | Washes away harmful effects, heals 4 and gives Regeneration I for 6 seconds. A zombie villager it touches is weakened, ready for a golden apple. | Igloo basements |
@@ -80,7 +86,7 @@ the Grimoire shows its riddle. A land that holds a rune, but not right now, tell
 | Warp Step | Void | II | Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pulled back, unless you're sneaking. | Attuned in a warped forest |
 | Blood Moss | Blood | II | Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you heal for all of it. | Attuned in a crimson forest |
 | Cinderbrand | Fire | II | Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50% hotter. | The Ember Sanctum |
-| Manaburn | Arcane | II | 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also loses 20 mana and takes 4 more. | Mana storms |
+| Manaburn | Arcane | II | 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana: 20 times the hit's power (so each of a Barrage's hits takes 7), scaled like PvP damage, and never more than 20 from one player in one cast. | Mana storms |
 | Resonant Shriek | Void | III | A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A second later it echoes for half as much. | Ancient cities |
 | Tidecall | Frost | III | The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked. | Ocean monuments (Elder Guardians) |
 | Sandstorm | Earth | III | A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks takes 2 damage a second, can't see and is slowed. | Desert pyramids |
@@ -88,16 +94,16 @@ the Grimoire shows its riddle. A land that holds a rune, but not right now, tell
 | Hoarfrost | Frost | III | Rime creeps over each target for 3 seconds, slowing it more every second; then it freezes solid for 2 seconds and takes 6 damage. | Attuned among ice spikes |
 | Sunscorch | Fire | III | 8 fire damage and alight for 5 seconds. Under open sky by day it burns 50% hotter. | Attuned in the badlands |
 | Summit Wind | Wind | III | 5 damage and hurls every enemy within 3 blocks up and away. On Self it carries you 12 blocks up and lets you glide down. | Attuned on a mountain peak |
-| Soulfire | Fire | III | Blue soul flames: 3 fire damage a second for 5 seconds, and each burn gives you back 1 mana. | Attuned in a soul sand valley |
+| Soulfire | Fire | III | Blue soul flames: 3 fire damage a second for 5 seconds, and the damage they deal gives you back a little mana: 0.35 per point of damage that really landed (nothing for a burn a Shield blocked or a fire-proof target ignored), at most 5 a cast. | Attuned in a soul sand valley |
 | Basalt Surge | Earth | III | Basalt columns burst up in a line from you to the point: 7 damage and a toss into the air for everything along it. | Attuned in the basalt deltas |
 | Starlight Tether | Arcane | III | Tethers each target to the point with starlight for 6 seconds: it's dragged back if it strays 3 blocks, taking 2 damage each time. | Attuned on the End's outer islands |
 | Ashen Veil | Fire | III | Wreathes the target in ash for 10 seconds: fire can't hurt it, and whatever strikes it up close is set alight. | The Ember Sanctum |
 | Eclipse | Void | III | A dark disc eclipses the point for 5 seconds: enemies beneath it are blinded, take 2 damage a second, and your spells hit them 20% harder. | The Astral Observatory |
 | Drowning Word | Frost | III | For 5 seconds the target's lungs fill with water (no air, 2 damage a second), and it's soaked. | The Drowned Scriptorium |
-| Starshard | Arcane | III | 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks for 3. | Fallen Star craters |
+| Starshard | Arcane | III | 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks (in sight of the target) for 3. | Fallen Star craters |
 | Riftcall | Void | III | Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6. | Rift sieges |
 | Manatide | Arcane | III | You and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute. | Mana storms |
-| Cinderheart | Fire | IV | Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks takes 3 fire damage a second. | The Cinder Warden |
+| Cinderheart | Fire | IV | Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks (and in sight) takes 3 fire damage a second. | The Cinder Warden |
 | Starmaw | Void | IV | 14 damage, and it swallows each of the target's good effects for 3 more damage apiece. | The Star Eater |
 | Tidewrit | Frost | IV | A 7-wide wall of water rolls from you through the point: 10 damage to everything in it, sweeping it 8 blocks on, soaked. | The Tide Scribe |
 
@@ -115,7 +121,16 @@ the Grimoire shows its riddle. A land that holds a rune, but not right now, tell
 |---|---|---|---|
 | If Wounded | II | The rest fires only if you're below half health: a last stand in any spell. | Stronghold libraries, Archive libraries |
 | If Wet | II | The rest fires only if you're in water or rain. | The Drowned Scriptorium |
-| If Outnumbered | III | The rest fires only if 3 or more enemies are within 8 blocks of you. | Woodland mansions |
+| If Outnumbered | III | The rest fires only if 3 or more enemies are within 8 blocks of you: monsters, players you may harm, whatever you're fighting or whatever is hunting you (not cows or villagers). | Woodland mansions |
+
+## Lingering effects
+
+Soulfire, Blood Moss, Infest and Drowning Word linger on their target. Hitting it again with the
+same rune refreshes the effect (it starts over) instead of stacking another copy, so a Barrage or a
+Zone doesn't pile up a burn per hit. Mire and Shulkershell on a creature that already has one take
+over from it, and it lasts until the newest ends. A lingering effect pulses once per second of its
+length (Soulfire 5 times in 5 seconds, Cinderheart 12 in 12, Sandstorm 4 in 4), and its later ticks
+can be blocked by a Shield but not parried.
 
 ## Reactions they set up
 

@@ -68,7 +68,7 @@ import java.util.WeakHashMap;
  * protection or a claim), take from the cast's block budget and from {@link WorldRules#EDITS_PER_CAST},
  * and are only ever vanilla's own temporary or natural ones: fire (lit only where fire may spread,
  * so it burns out), frosted ice (which melts back, and is thawed after {@link WorldRules#THAW_TICKS}
- * anyway), grass and flowers. A passive renewing itself changes no blocks. Everything else (the
+ * anyway, a thaw saved with the world: see {@link Thaws}), grass and flowers. A passive renewing itself changes no blocks. Everything else (the
  * steam, the shock through water, the gusts, the heaved ground, which is only block displays) works
  * for monsters too.</p>
  */
@@ -453,16 +453,13 @@ public final class WorldMagic {
 		return false;
 	}
 
-	/** Frosted ice melts by itself in the light; this makes sure ice frozen in the dark melts back too. */
+	/**
+	 * Frosted ice melts by itself in the light; this makes sure ice frozen in the dark melts back too.
+	 * The thaw is saved with the world ({@link Thaws}), so it happens even across a restart, or when the
+	 * chunk next loads if nobody was near when its time came.
+	 */
 	private static void thawLater(ServerLevel level, List<BlockPos> frozen) {
-		List<BlockPos> ice = List.copyOf(frozen);
-		Scheduler.later(WorldRules.THAW_TICKS + level.getRandom().nextInt(60), () -> {
-			for (BlockPos pos : ice) {
-				if (level.isLoaded(pos) && level.getBlockState(pos).is(Blocks.FROSTED_ICE)) {
-					level.setBlockAndUpdate(pos, Blocks.WATER.defaultBlockState());
-				}
-			}
-		});
+		Thaws.schedule(level, frozen, level.getGameTime() + WorldRules.THAW_TICKS + level.getRandom().nextInt(60));
 	}
 
 	/** Ice each player froze, for Icebridge: walk on it before it thaws. */

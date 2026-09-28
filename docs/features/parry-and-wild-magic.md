@@ -22,6 +22,10 @@ A Shield raised at the last moment doesn't just stop a spell: it **parries** it.
   rings, your view kicks, and **"Parried!"** shows above the hotbar. The caster is told their spell
   was parried. Your first parry is the **Parry** feat.
 - It works against Runebound, the Archivist and other players alike.
+- **Only a spell arriving is parried.** Damage that lingers on after a spell landed (a Soulfire or
+  Blood Moss burn ticking on, a Sandstorm's or Eclipse's pulses, a Cinderheart's heat) meets a
+  Shield like any other spell, blocked or breaking through by weight, but is never parried: a Shield
+  timed to a burn's tick doesn't turn it.
 
 ## Wild magic on an overcast
 
@@ -44,7 +48,7 @@ a coloured line above the hotbar. Your first surge is the **Wild Magic** feat.
 | Slow Time | 6 | The spell goes off; everything within 8 blocks, you included, is slowed (Slowness III) for 2 s. |
 | Backfire | 6 | Nothing is cast, and you take up to 4 damage (never below half a heart). |
 | Free Recast | 7 | The spell goes off, and your next cast within 3 s costs no mana and ignores its cooldown. |
-| Ward | 6 | The spell goes off, and a 16-mana Shield settles on you for 10 s. |
+| Ward | 6 | The spell goes off, and a 16-mana Shield settles on you for 10 s (unless a stronger Shield is already up, which stays). |
 
 Secret spells never get the outcomes that rewrite runes (Element, Grand). Wild magic never changes a
 block itself (the spell's own effects still ask permission for every block, as always) and never

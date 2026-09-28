@@ -174,6 +174,19 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/**
+	 * When the player last attuned in each land (attunement id to game time), so a land gives its rune
+	 * once a day. Synced so the Grimoire can show when each land is ready again. Kept through death.
+	 */
+	public static final AttachmentType<Map<String, Long>> ATTUNED_AT = AttachmentRegistry.create(
+		Wildercord.id("attuned_at"),
+		builder -> builder
+			.initializer(Map::of)
+			.persistent(Codec.unboundedMap(Codec.STRING, Codec.LONG))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_LONG), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Runebound slain (a breakthrough for the 6th Circle). Kept through death. */
 	public static final AttachmentType<Integer> RUNEBOUND_SLAIN = AttachmentRegistry.create(
 		Wildercord.id("runebound_slain"),

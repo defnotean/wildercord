@@ -127,14 +127,15 @@ final class ExplorerShapes {
 
 	// ------------------------------------------------------------------ Constellation
 
-	/** Up to five enemies near the caster, joined in a constellation and struck together. */
+	/** Up to five enemies near the caster (that it can see: never through a wall), joined in a constellation and struck together. */
 	private static void constellation(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Cast.Trigger at, Vfx.Theme theme) {
 		LivingEntity caster = cast.caster;
-		Vec3 centre = at.fromCaster(caster) ? caster.getEyePosition() : at.pos();
+		boolean fromCaster = at.fromCaster(caster);
+		Vec3 centre = fromCaster ? caster.getEyePosition() : at.pos();
 		double range = SpellNumbers.constellationRange(g);
 		List<LivingEntity> stars = new ArrayList<>();
 		for (Entity e : cast.level.getEntities((Entity) null, new AABB(centre, centre).inflate(range), e -> Targets.canHarm(caster, e))) {
-			if (e.getBoundingBox().getCenter().distanceTo(centre) <= range) {
+			if (e.getBoundingBox().getCenter().distanceTo(centre) <= range && (fromCaster ? caster.hasLineOfSight(e) : inSight(cast, centre, e))) {
 				stars.add((LivingEntity) e);
 			}
 		}
@@ -153,6 +154,16 @@ final class ExplorerShapes {
 		CastEngine.onHit(cast, g, new Cast.Hit(hit, points.getFirst(), at.dir(), centre, null, null, false), anchored);
 	}
 
+	/** Whether nothing solid stands between {@code from} and {@code e}'s eyes or middle. */
+	private static boolean inSight(Cast cast, Vec3 from, Entity e) {
+		for (Vec3 to : new Vec3[] {e.getEyePosition(), e.getBoundingBox().getCenter()}) {
+			if (cast.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, e)).getType() == HitResult.Type.MISS) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// ------------------------------------------------------------------ conditions
 
 	static boolean isCondition(String id) {
@@ -169,8 +180,21 @@ final class ExplorerShapes {
 		}
 		if (id.equals(Runes.IF_OUTNUMBERED.id())) {
 			Vec3 at = caster.position();
-			return cast.level.getEntities(caster, new AABB(at, at).inflate(8.0), e -> Targets.canHarm(caster, e) && e.distanceTo(caster) <= 8.0).size() >= 3;
+			return cast.level.getEntities(caster, new AABB(at, at).inflate(8.0),
+				e -> Targets.canHarm(caster, e) && e.distanceTo(caster) <= 8.0 && foe(caster, e)).size() >= 3;
 		}
 		return false;
+	}
+
+	/**
+	 * Who counts toward If Outnumbered: a monster, another player (one the caster may harm), whatever
+	 * the caster is fighting, or anything hunting the caster. A field of cows or villagers doesn't.
+	 */
+	private static boolean foe(LivingEntity caster, Entity e) {
+		return e instanceof net.minecraft.world.entity.monster.Enemy
+			|| e instanceof net.minecraft.world.entity.player.Player
+			|| caster instanceof net.minecraft.world.entity.Mob mob && mob.getTarget() == e
+			|| caster.getLastHurtMob() == e
+			|| e instanceof net.minecraft.world.entity.Mob hunter && hunter.getTarget() == caster;
 	}
 }
