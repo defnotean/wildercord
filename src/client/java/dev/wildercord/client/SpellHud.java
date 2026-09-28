@@ -57,6 +57,9 @@ public final class SpellHud {
 
 	public static void init() {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("spell_hud"), SpellHud::extract);
+		// A Domain's tint goes under everything else on the HUD.
+		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
+			(g, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(g));
 	}
 
 	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {

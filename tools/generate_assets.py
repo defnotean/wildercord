@@ -276,6 +276,8 @@ def main():
     sigil_art.main()
     import circle_art  # Every rune's own ring and emblem for magic circles (imported here: it reads the runes from this file).
     circle_art.main()
+    import wear_art  # The Cord players wear on the wrist.
+    wear_art.main()
     write_new_content(runes)
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 

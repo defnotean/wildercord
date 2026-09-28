@@ -29,6 +29,14 @@ public final class WildercordClient implements ClientModInitializer {
 		EntityRendererRegistry.register(WildercordEntities.RUNE_BOLT, NoopRenderer::new);
 		EntityRendererRegistry.register(WildercordEntities.ARCHIVIST, ArchivistRenderer::new);
 		ModelLayerRegistry.registerModelLayer(TrainingDummyRenderer.LAYER, DummyModel::createLayer);
+		// The Cord on every player's wrist.
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BAND, dev.wildercord.client.render.CordModel::createBand);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BEAD, dev.wildercord.client.render.CordModel::createBead);
+		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
+			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
+				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
+			}
+		});
 		EntityRendererRegistry.register(WildercordEntities.TRAINING_DUMMY, TrainingDummyRenderer::new);
 
 		ParticleGroupRegistry.register(SigilGroup.TYPE, SigilGroup::new);
@@ -39,12 +47,16 @@ public final class WildercordClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
+		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.ScreenFx.TYPE,
+			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.level == null || client.isPaused()) {
 				return;
 			}
 			ChargeCircles.tick(client);
+			dev.wildercord.client.fx.BoltComets.tick(client);
+			dev.wildercord.client.fx.ScreenEffects.tick(client);
 			AimPreview.tick(client);
 			LeyMotes.tick(client);
 		});

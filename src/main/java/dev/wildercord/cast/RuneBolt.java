@@ -4,6 +4,8 @@ import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -28,12 +30,16 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The Bolt shape: a gravity-free spell projectile drawn entirely with particles. It carries
- * its spell in memory only and is never saved, so a bolt left over after a restart simply
- * vanishes.
+ * The Bolt shape: a gravity-free spell projectile. Each client draws it as a glowing comet with a
+ * trail (following the entity's smoothed position, from the colours synced here); the server adds
+ * only a few motes. It carries its spell in memory only and is never saved, so a bolt left over
+ * after a restart simply vanishes.
  */
 public class RuneBolt extends Projectile {
 	public static final int MAX_LIVE_PER_PLAYER = 24;
+	/** The bolt's colours, for the comet each client draws. */
+	public static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.INT);
+	public static final EntityDataAccessor<Integer> DATA_SECONDARY = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.INT);
 	private static final double RANGE = 48.0;
 	private static final Map<UUID, Integer> LIVE = new ConcurrentHashMap<>();
 
@@ -77,6 +83,8 @@ public class RuneBolt extends Projectile {
 		bolt.lifeLeft = arc ? 120 : (int) Math.ceil(RANGE / bolt.speed) + 4;
 		bolt.color = CastEngine.colorOf(group);
 		bolt.theme = Vfx.theme(group);
+		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());
+		bolt.getEntityData().set(DATA_SECONDARY, bolt.theme.secondary());
 		bolt.setOwner(cast.caster);
 		bolt.setPos(origin);
 		bolt.setDeltaMovement(dir.normalize().scale(bolt.speed));
@@ -87,6 +95,8 @@ public class RuneBolt extends Projectile {
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		builder.define(DATA_COLOR, 0xFFFFFF);
+		builder.define(DATA_SECONDARY, 0xFFFFFF);
 	}
 
 	@Override
@@ -237,7 +247,10 @@ public class RuneBolt extends Projectile {
 		if (owner != null && to.distanceToSqr(owner.getEyePosition()) < 2.25) {
 			return;
 		}
-		Vfx.boltTick(server, from, to, theme, tickCount);
+		// The comet itself is drawn by each client; here just a few of the element's motes.
+		if (tickCount % 2 == 0) {
+			Vfx.emit(server, theme.mote(), to, 1, 0.05, 0.01);
+		}
 	}
 
 	private void fizzle() {

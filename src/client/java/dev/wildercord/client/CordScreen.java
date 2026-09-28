@@ -433,6 +433,7 @@ public class CordScreen extends Screen {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float a) {
 		super.extractRenderState(g, mouseX, mouseY, a);
+		drawSideCircle(g, a);
 		float s = scale();
 		int mx = (int) Math.floor(localX(mouseX));
 		int my = (int) Math.floor(localY(mouseY));
@@ -450,6 +451,60 @@ public class CordScreen extends Screen {
 		}
 		if (tooltip != null) {
 			g.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+		}
+	}
+
+	/** The spell whose circle is showing beside the window, and when it started opening. */
+	private List<String> circleShown = List.of();
+	private long circleOpened;
+
+	/**
+	 * Beside the window, when there's room: the magic circle of the spell being edited, opening again
+	 * whenever it changes. On the Grimoire page, the circles of the secret spells found so far, one
+	 * after another, each with its name like a plate in a book.
+	 */
+	private void drawSideCircle(GuiGraphicsExtractor g, float partial) {
+		CordTier tier = tier();
+		float room = Math.min(left() - 12, height * 0.36F * 2);
+		if (tier == null || minecraft.player == null || room < 90) {
+			return;
+		}
+		float radius = Math.min(room / 2 - 6, 78);
+		float cx = left() + W * scale() + 8 + radius;
+		float cy = top() + H * scale() / 2;
+		if (cx + radius > width - 4) {
+			return;
+		}
+		long now = minecraft.player.level().getGameTime();
+		List<String> ids;
+		Component caption = null;
+		if (grimoirePage) {
+			List<dev.wildercord.spell.Secrets.Secret> found = dev.wildercord.spell.Secrets.ALL.stream()
+				.filter(s -> Heart.discovered(minecraft.player, s.key())).toList();
+			if (found.isEmpty()) {
+				return;
+			}
+			dev.wildercord.spell.Secrets.Secret plate = found.get((int) ((now / 100) % found.size()));
+			ids = plate.runes().stream().map(RuneDef::id).toList();
+			caption = Component.literal(plate.name()).withColor(0xFF000000 | plate.color());
+		} else if (!passivePage && editing < spells.size()) {
+			ids = spells.get(editing);
+		} else {
+			return;
+		}
+		if (!ids.equals(circleShown)) {
+			circleShown = List.copyOf(ids);
+			circleOpened = now;
+		}
+		List<RuneDef> runes = new ArrayList<>();
+		for (String id : ids) {
+			dev.wildercord.spell.Runes.get(id).ifPresent(runes::add);
+		}
+		float time = (now + partial) / 20F;
+		float open = Math.min(1, (now - circleOpened + partial) / 14F);
+		GuiSpellCircle.draw(g, cx, cy, radius, runes, time, open);
+		if (caption != null) {
+			g.centeredText(font, caption, Math.round(cx), Math.round(cy + radius + 8), 0xFFFFFFFF);
 		}
 	}
 

@@ -5,6 +5,7 @@ import dev.wildercord.content.SpellCircleOption;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneFamily;
+import dev.wildercord.spell.Secrets;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellSigil;
 import net.minecraft.client.Camera;
@@ -53,6 +54,8 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	protected final float pitch;
 	private final int points;
 	private final int step;
+	/** A secret spell's id: its circle gets a centrepiece of its own instead of the star. */
+	private final String secret;
 	private final float roundel;
 	private final Rune pattern;
 	private final TextureAtlasSprite line;
@@ -84,8 +87,12 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		this.yaw = option.yaw();
 		this.pitch = option.pitch();
 		Rune firstEffect = null;
+		List<RuneDef> defs = new ArrayList<>();
 		for (String id : option.runes().subList(0, Math.min(option.runes().size(), SpellSigil.MAX_RUNES))) {
 			RuneDef def = Runes.get(id).orElse(null);
+			if (def != null) {
+				defs.add(def);
+			}
 			Rune rune = new Rune(runeSprite(id, def, "band"), runeSprite(id, def, "mark"), def == null ? 0xFFFFFF : RuneColors.of(def));
 			runes.add(rune);
 			if (firstEffect == null && def != null && def.family() == RuneFamily.EFFECT) {
@@ -96,6 +103,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 			runes.add(new Rune(particleSprite("circle/_shape_band"), particleSprite("circle/_shape_mark"), 0xFFFFFF));
 		}
 		this.pattern = firstEffect != null ? firstEffect : runes.getFirst();
+		this.secret = defs.size() == option.runes().size() ? Secrets.match(defs).map(Secrets.Secret::id).orElse(null) : null;
 		this.points = SpellSigil.points(runes.size());
 		this.step = SpellSigil.step(points);
 		this.roundel = SpellSigil.roundel(runes.size());
@@ -238,6 +246,15 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 
 		// The star: its circle, then its lines drawing themselves from every point.
 		float drawn = part(open, 0.2F, 0.35F);
+		if (secret != null) {
+			// A secret spell: its own centrepiece, and its seal; no roundels.
+			secretCentre(secret, r, drawn, a, fine, heavy, star, partial);
+			float middle = part(open, 0.3F, 0.3F);
+			Rune first = runes.getFirst();
+			piece(first.mark, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, lighter(color, 0.2F)), 0.008F);
+			this.state = null;
+			return;
+		}
 		ring(0, 0, r * SpellSigil.STAR, fine, argb(a * drawn * 0.7F, color), 0.004F);
 		int starColor = argb(a * Math.min(1, drawn * 1.5F), lighter(color, 0.35F));
 		for (int k = 0; k < points; k++) {
@@ -279,12 +296,192 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		this.state = null;
 	}
 
+	/**
+	 * The centrepiece of a secret spell's circle, drawn inside the script and pattern bands in place
+	 * of the star and roundels: every secret has a design no ordinary spell can make.
+	 */
+	private void secretCentre(String id, float r, float drawn, float a, float fine, float heavy, float star, float partial) {
+		int main = argb(a * Math.min(1, drawn * 1.5F), lighter(color, 0.35F));
+		int soft = argb(a * drawn * 0.7F, color);
+		float inner = r * SpellSigil.STAR;
+		switch (id) {
+			case "sunfall" -> {
+				// A sun: a burning disc, and long and short rays all round.
+				ring(0, 0, r * 0.28F, heavy, main, 0.004F);
+				ring(0, 0, r * 0.36F, fine, soft, 0.004F);
+				for (int k = 0; k < 24; k++) {
+					float ang = star * 2 + Mth.TWO_PI * k / 24;
+					// Long and short rays grow out from the disc as the circle opens.
+					float end = 0.4F + ((k % 2 == 0 ? 0.74F : 0.56F) - 0.4F) * drawn;
+					line(Mth.cos(ang) * r * 0.4F, Mth.sin(ang) * r * 0.4F, Mth.cos(ang) * r * end, Mth.sin(ang) * r * end,
+						k % 2 == 0 ? heavy * 0.7F : fine, main, 0.004F);
+				}
+			}
+			case "glacial_lance" -> {
+				// A snowflake: six spokes, each with branches, inside a hexagon.
+				polygon(6, inner, star, fine, soft, 1);
+				for (int k = 0; k < 6; k++) {
+					float ang = star + Mth.TWO_PI * k / 6;
+					float cx = Mth.cos(ang);
+					float cy = Mth.sin(ang);
+					line(0, 0, cx * inner * drawn, cy * inner * drawn, heavy * 0.6F, main, 0.004F);
+					for (float along : new float[] {0.45F, 0.72F}) {
+						float bx = cx * inner * along;
+						float by = cy * inner * along;
+						float len = inner * (0.9F - along) * 0.6F * drawn;
+						for (int side = -1; side <= 1; side += 2) {
+							float ba = ang + side * Mth.PI / 3;
+							line(bx, by, bx + Mth.cos(ba) * len, by + Mth.sin(ba) * len, fine, main, 0.004F);
+						}
+					}
+				}
+			}
+			case "horizon_cut" -> {
+				// A horizon: one straight cut across the whole circle, and two crescents facing it.
+				float w = inner * 1.35F * drawn;
+				line(-w, 0, w, 0, heavy, main, 0.004F);
+				arc(0, inner * 0.2F, inner * 0.62F, Mth.PI * 1.15F, Mth.PI * 1.85F, fine, main, 0.004F);
+				arc(0, -inner * 0.2F, inner * 0.62F, Mth.PI * 0.15F, Mth.PI * 0.85F, fine, main, 0.004F);
+				ring(0, 0, inner, fine, soft, 0.004F);
+			}
+			case "petal_storm" -> {
+				// A flower: six overlapping circles around a seventh, turning slowly.
+				float pr = inner * 0.5F;
+				ring(0, 0, pr * drawn, fine, main, 0.004F);
+				for (int k = 0; k < 6; k++) {
+					float ang = star * 3 + Mth.TWO_PI * k / 6;
+					ring(Mth.cos(ang) * pr, Mth.sin(ang) * pr, pr * drawn, fine, main, 0.004F);
+				}
+				ring(0, 0, inner, fine, soft, 0.004F);
+			}
+			case "tempest_step" -> {
+				// A storm: jagged bolts from the centre out to five points, a chain of lightning round them.
+				for (int k = 0; k < 5; k++) {
+					float ang = star * 2 + Mth.TWO_PI * k / 5 + Mth.HALF_PI;
+					zigzag(0, 0, Mth.cos(ang) * inner * drawn, Mth.sin(ang) * inner * drawn, 4, inner * 0.09F, fine * 1.4F, main);
+				}
+				for (int k = 0; k < 5; k++) {
+					float a0 = star * 2 + Mth.TWO_PI * k / 5 + Mth.HALF_PI;
+					float a1 = star * 2 + Mth.TWO_PI * (k + 1) / 5 + Mth.HALF_PI;
+					zigzag(Mth.cos(a0) * inner, Mth.sin(a0) * inner, Mth.cos(a1) * inner, Mth.sin(a1) * inner, 3, inner * 0.06F, fine, soft);
+				}
+			}
+			case "singularity" -> {
+				// A black star: rings spiralling into a centre that swallows the light.
+				for (int k = 0; k < 5; k++) {
+					float rad = inner * (1 - k * 0.18F) * drawn;
+					arc(0, 0, rad, star * (3 + k) + k, star * (3 + k) + k + Mth.PI * 1.5F, fine, main, 0.004F);
+				}
+				piece(glow, 0, 0, 0, inner * 0.55F, argb(a * drawn * 0.9F, 0x000000), 0.005F, GlowLayers.DARK, GlowLayers.darkColor(color));
+			}
+			case "zero_hour" -> {
+				// A clock: twelve hour marks, and two hands that do not move.
+				ring(0, 0, inner, fine, soft, 0.004F);
+				for (int k = 0; k < 12; k++) {
+					float ang = Mth.HALF_PI - Mth.TWO_PI * k / 12;
+					float from = k % 3 == 0 ? 0.78F : 0.86F;
+					line(Mth.cos(ang) * inner * from, Mth.sin(ang) * inner * from, Mth.cos(ang) * inner * 0.96F, Mth.sin(ang) * inner * 0.96F,
+						k % 3 == 0 ? heavy * 0.7F : fine, main, 0.004F);
+				}
+				line(0, 0, 0, inner * 0.7F * drawn, heavy * 0.8F, main, 0.005F);
+				line(0, 0, inner * 0.45F * drawn, 0, heavy * 0.8F, main, 0.005F);
+			}
+			case "rebirth" -> {
+				// Wings: two great feathered arcs rising from the centre, a flame between them.
+				for (int side = -1; side <= 1; side += 2) {
+					for (int f = 0; f < 5; f++) {
+						float rad = inner * (0.45F + f * 0.12F) * drawn;
+						float base = side < 0 ? Mth.PI * 0.55F : Mth.PI * 0.45F;
+						float span = 0.9F - f * 0.08F;
+						arc(side * inner * 0.1F, -inner * 0.2F, rad, side < 0 ? base : base - span, side < 0 ? base + span : base, fine, main, 0.004F);
+					}
+				}
+				line(0, -inner * 0.35F, 0, inner * 0.55F * drawn, heavy * 0.7F, main, 0.005F);
+			}
+			case "tectonic_rise" -> {
+				// Stone: nested squares, each turned against the last.
+				for (int k = 0; k < 4; k++) {
+					polygon(4, inner * (1 - k * 0.2F) * drawn, star * (k % 2 == 0 ? 1 : -1) + k * Mth.PI / 8, k == 0 ? heavy * 0.6F : fine, main, 1);
+				}
+			}
+			case "starlight_cascade" -> {
+				// A constellation: stars joined by lines, falling across the circle.
+				float[][] stars = {{-0.7F, 0.55F}, {-0.35F, 0.7F}, {0.05F, 0.45F}, {0.4F, 0.62F}, {0.25F, 0.1F}, {-0.15F, -0.25F}, {0.3F, -0.6F}};
+				for (int k = 0; k < stars.length; k++) {
+					float u = stars[k][0] * inner;
+					float v = stars[k][1] * inner;
+					if (k + 1 < stars.length && drawn * stars.length > k + 1) {
+						line(u, v, stars[k + 1][0] * inner, stars[k + 1][1] * inner, fine, soft, 0.004F);
+					}
+					if (drawn * stars.length > k) {
+						piece(glow, u, v, 0, inner * 0.14F, argb(a, lighter(color, 0.5F)), 0.006F);
+					}
+				}
+				ring(0, 0, inner, fine, soft, 0.004F);
+			}
+			default -> ring(0, 0, inner, fine, main, 0.004F);
+		}
+	}
+
+	/** A regular polygon of {@code sides} with corners on radius {@code rad}, turned by {@code turn}. */
+	private void polygon(int sides, float rad, float turn, float width, int argb, int step) {
+		for (int k = 0; k < sides; k++) {
+			float a0 = turn + Mth.HALF_PI - Mth.TWO_PI * k / sides;
+			float a1 = turn + Mth.HALF_PI - Mth.TWO_PI * (k + step) / sides;
+			line(Mth.cos(a0) * rad, Mth.sin(a0) * rad, Mth.cos(a1) * rad, Mth.sin(a1) * rad, width, argb, 0.004F);
+		}
+	}
+
+	/** An arc of a circle around (u, v) from angle {@code from} to {@code to}. */
+	private void arc(float u, float v, float rad, float from, float to, float width, int argb, float depth) {
+		if ((argb >>> 24) < 3 || rad <= 0) {
+			return;
+		}
+		float length = Math.abs(to - from) * rad;
+		int n = Math.max(3, (int) Math.ceil(length / (width * 3.2F)));
+		float half = length / n / 2 * 1.08F;
+		for (int i = 0; i < n; i++) {
+			float ang = from + (to - from) * (i + 0.5F) / n;
+			piece(line, u + Mth.cos(ang) * rad, v + Mth.sin(ang) * rad, ang + Mth.HALF_PI, half, argb, depth);
+		}
+	}
+
+	/** A jagged line from (u0, v0) to (u1, v1): {@code kinks} sharp turns, each up to {@code jag} off the straight. */
+	private void zigzag(float u0, float v0, float u1, float v1, int kinks, float jag, float width, int argb) {
+		float du = u1 - u0;
+		float dv = v1 - v0;
+		float length = Mth.sqrt(du * du + dv * dv);
+		if (length < 1.0E-4F) {
+			return;
+		}
+		float nu = -dv / length;
+		float nv = du / length;
+		float pu = u0;
+		float pv = v0;
+		for (int i = 1; i <= kinks + 1; i++) {
+			float t = i / (float) (kinks + 1);
+			float off = i <= kinks ? (i % 2 == 0 ? jag : -jag) : 0;
+			float qu = u0 + du * t + nu * off;
+			float qv = v0 + dv * t + nv * off;
+			line(pu, pv, qu, qv, width, argb, 0.004F);
+			pu = qu;
+			pv = qv;
+		}
+	}
+
 	/** One square piece of {@code sprite} at ({@code u}, {@code v}) in the circle's plane, drawn from both sides. */
+	private void piece(TextureAtlasSprite sprite, float u, float v, float rot, float half, int argb, float depth, Layer layer, int rgb) {
+		piece(sprite, u, v, rot, half, (argb & 0xFF000000) | (rgb & 0xFFFFFF), depth, layer);
+	}
+
 	private void piece(TextureAtlasSprite sprite, float u, float v, float rot, float half, int argb, float depth) {
+		piece(sprite, u, v, rot, half, argb, depth, getLayer());
+	}
+
+	private void piece(TextureAtlasSprite sprite, float u, float v, float rot, float half, int argb, float depth, Layer layer) {
 		if ((argb >>> 24) < 3 || half <= 0) {
 			return;
 		}
-		Layer layer = getLayer();
 		plane.transform(at.set(u, v, depth));
 		turn.set(plane).rotateZ(rot);
 		state.add(layer, cx + at.x, cy + at.y, cz + at.z, turn.x, turn.y, turn.z, turn.w, half,
@@ -352,7 +549,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 
 	@Override
 	protected Layer getLayer() {
-		return Layer.TRANSLUCENT;
+		return GlowLayers.GLOW;
 	}
 
 	@Override

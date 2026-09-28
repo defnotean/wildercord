@@ -138,7 +138,32 @@ public final class WildercordNetworking {
 		}
 	}
 
+	/**
+	 * A screen effect for one player: a camera shake, a field-of-view kick (a charged spell leaving
+	 * the hands), an impact punch (a heavy hit landing), or the tint of a Domain around them.
+	 *
+	 * @param kind     {@link #SHAKE}, {@link #KICK}, {@link #PUNCH} or {@link #TINT}
+	 * @param strength 0 to 1 (for TINT, the colour in the low 24 bits)
+	 * @param ticks    how long it lasts
+	 */
+	public record ScreenFx(int kind, float strength, int ticks) implements CustomPacketPayload {
+		public static final int SHAKE = 0;
+		public static final int KICK = 1;
+		public static final int PUNCH = 2;
+		public static final int TINT = 3;
+		public static final Type<ScreenFx> TYPE = new Type<>(Wildercord.id("screen_fx"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, ScreenFx> CODEC =
+			StreamCodec.composite(ByteBufCodecs.VAR_INT, ScreenFx::kind, ByteBufCodecs.FLOAT, ScreenFx::strength, ByteBufCodecs.VAR_INT, ScreenFx::ticks,
+				ScreenFx::new).cast();
+
+		@Override
+		public Type<ScreenFx> type() {
+			return TYPE;
+		}
+	}
+
 	public static void init() {
+		PayloadTypeRegistry.clientboundPlay().register(ScreenFx.TYPE, ScreenFx.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EditPassive.TYPE, EditPassive.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TogglePassive.TYPE, TogglePassive.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(TogglePassive.TYPE, (payload, context) -> SpellCaster.togglePassive(context.player(), payload.slot()));

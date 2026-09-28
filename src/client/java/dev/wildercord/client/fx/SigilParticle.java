@@ -33,6 +33,8 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 	protected float size;
 	/** Steady sigils (aim previews) skip the grow and fade: they're replaced every few ticks. */
 	protected boolean steady;
+	/** Drawn as darkness (void). */
+	protected boolean dark;
 	/** A glow faces the camera and bursts: full at once, then fading over its whole life. */
 	protected final boolean glow;
 	/** While drawing a glow's white-hot core, a smaller second quad over the tinted one. */
@@ -60,6 +62,10 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		this.roll = random.nextFloat() * Mth.TWO_PI;
 		this.oRoll = roll;
 		int color = option.color();
+		this.dark = (color & GlowLayers.DARK_FLAG) != 0;
+		if (dark) {
+			color = GlowLayers.darkColor(color);
+		}
 		setColor(((color >> 16) & 0xFF) / 255F, ((color >> 8) & 0xFF) / 255F, (color & 0xFF) / 255F);
 		setAlpha(0);
 	}
@@ -185,7 +191,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 
 	@Override
 	protected Layer getLayer() {
-		return Layer.TRANSLUCENT;
+		return dark ? GlowLayers.DARK : GlowLayers.GLOW;
 	}
 
 	@Override

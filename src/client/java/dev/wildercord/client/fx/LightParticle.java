@@ -26,6 +26,10 @@ import org.joml.Vector3f;
 public class LightParticle extends SingleQuadParticle implements SigilGroup.Extent {
 	private final int kind;
 	private final int color;
+	/** Drawn as darkness (void): its halo takes light away, under a thin glowing rim. */
+	private final boolean dark;
+	/** The layer the next pieces go on: glow, or darkness for a dark light's halo. */
+	private Layer drawing = GlowLayers.GLOW;
 	private final float a;
 	private final float b;
 	private final float c;
@@ -50,6 +54,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		super(level, x, y, z, SpellCircleParticle.particleSprite("sigil_beam"));
 		this.kind = option.kind();
 		this.color = option.color() & 0xFFFFFF;
+		this.dark = (option.color() & GlowLayers.DARK_FLAG) != 0;
 		this.a = option.a();
 		this.b = option.b();
 		this.c = option.c();
@@ -80,6 +85,18 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		if (age++ >= lifetime) {
 			remove();
 		}
+	}
+
+	/** A halo's colour: the light itself, or for a dark light what to take away (and it goes on the dark layer). */
+	private int halo(float alpha, int rgb) {
+		drawing = dark ? GlowLayers.DARK : GlowLayers.GLOW;
+		return argb(dark ? Math.min(1, alpha * 1.6F) : alpha, dark ? GlowLayers.darkColor(rgb) : rgb);
+	}
+
+	/** A core's colour: always light (for a dark light, a thinner, dimmer rim). */
+	private int core(float alpha, int rgb) {
+		drawing = GlowLayers.GLOW;
+		return argb(dark ? alpha * 0.55F : alpha, rgb);
 	}
 
 	private static int argb(float alpha, int rgb) {
@@ -119,8 +136,8 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		float r = a + (b - a) * ease;
 		float fade = (float) Math.pow(1 - f, 1.3);
 		float w = width * (1 - 0.6F * f);
-		circle(r, w * 3.2F, soft, argb(0.55F * fade, color));
-		circle(r, w, line, argb(fade, hot(color, 0.6F)));
+		circle(r, w * 3.2F, soft, halo(0.55F * fade, color));
+		circle(r, w, line, core(fade, hot(color, 0.6F)));
 	}
 
 	/** A beam: shoots out in two ticks, holds, then thins away. */
@@ -130,10 +147,10 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		float w = width * (0.35F + 0.65F * fade);
 		Vector3f from = new Vector3f(cx, cy, cz);
 		Vector3f to = new Vector3f(cx + a * reach, cy + b * reach, cz + c * reach);
-		ribbon(from, to, w * 2.8F, argb(0.5F * fade, color));
-		ribbon(from, to, w, argb(fade, hot(color, 0.75F)));
-		billboard(from, w * 2.2F, argb(0.8F * fade, hot(color, 0.3F)));
-		billboard(to, w * 2.6F * reach, argb(0.8F * fade * reach, hot(color, 0.3F)));
+		ribbon(from, to, w * 2.8F, halo(0.5F * fade, color));
+		ribbon(from, to, w, core(fade, hot(color, 0.75F)));
+		billboard(from, w * 2.2F, halo(0.8F * fade, hot(color, 0.3F)));
+		billboard(to, w * 2.6F * reach, halo(0.8F * fade * reach, hot(color, 0.3F)));
 	}
 
 	/** A crescent: sweeps across, brightest at its leading edge, then widens and fades. */
@@ -155,8 +172,8 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 			float ang = start + s + step / 2;
 			float u = Mth.cos(ang) * r;
 			float v = Mth.sin(ang) * r;
-			inPlane(soft, u, v, ang + Mth.HALF_PI, step * r / 2 * 2.4F, argb(0.5F * fade * lead, color));
-			inPlane(soft, u, v, ang + Mth.HALF_PI, step * r / 2 * 0.95F, argb(fade * lead, hot(color, 0.7F)));
+			inPlane(soft, u, v, ang + Mth.HALF_PI, step * r / 2 * 2.4F, halo(0.5F * fade * lead, color));
+			inPlane(soft, u, v, ang + Mth.HALF_PI, step * r / 2 * 0.95F, core(fade * lead, hot(color, 0.7F)));
 			s += step;
 		}
 	}
@@ -166,14 +183,19 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		// A moving orb is redrawn every tick with a short life: no fade for those.
 		float fade = lifetime <= 4 ? 1 : Math.min(Mth.clamp(t / 3F, 0, 1), Mth.clamp((1 - f) / 0.3F, 0, 1));
 		Vector3f centre = new Vector3f(cx, cy, cz);
-		billboard(centre, a * 1.9F, argb(0.55F * fade, color));
-		billboard(centre, a * 0.9F, argb(0.9F * fade, hot(color, 0.7F)));
+		billboard(centre, a * 1.9F, halo(0.55F * fade, color));
+		if (dark) {
+			// A black heart: the centre darkest of all.
+			billboard(centre, a * 0.9F, halo(0.9F * fade, color));
+		} else {
+			billboard(centre, a * 0.9F, core(0.9F * fade, hot(color, 0.7F)));
+		}
 		float sp = Mth.lerp(partial, oSpin, spin);
 		for (int i = 0; i < 3; i++) {
 			Quaternionf q = new Quaternionf().rotationYXZ(sp * (0.6F + 0.35F * i) + i * 2.1F, 1.1F * i + sp * 0.4F, 0);
 			Quaternionf saved = new Quaternionf(plane);
 			plane.set(q);
-			circle(a * 1.2F, Math.max(0.012F, width), line, argb(0.9F * fade, hot(color, 0.45F)));
+			circle(a * 1.2F, Math.max(0.012F, width), line, core(0.9F * fade, hot(color, 0.45F)));
 			plane.set(saved);
 		}
 	}
@@ -249,7 +271,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 	}
 
 	private void quad(TextureAtlasSprite sprite, float x, float y, float z, Quaternionf q, float half, int argb) {
-		state.add(getLayer(), x, y, z, q.x, q.y, q.z, q.w, half, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb,
+		state.add(drawing, x, y, z, q.x, q.y, q.z, q.w, half, sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb,
 			LightCoordsUtil.FULL_BRIGHT);
 	}
 
@@ -260,7 +282,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 
 	@Override
 	protected Layer getLayer() {
-		return Layer.TRANSLUCENT;
+		return GlowLayers.GLOW;
 	}
 
 	@Override

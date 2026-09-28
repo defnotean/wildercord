@@ -219,6 +219,34 @@ public final class WildercordAttachments {
 		builder -> builder.syncWith(Charge.STREAM_CODEC, AttachmentSyncPredicate.all())
 	);
 
+	/**
+	 * How a player's worn Cord looks to others: its tier ("" for none) and a colour per rune of the
+	 * selected spell, for the beads. Kept up to date by {@code cast.CordLook}; synced to everyone nearby.
+	 */
+	public record CordLook(String tier, List<Integer> beads) {
+		public static final CordLook NONE = new CordLook("", List.of());
+		public static final StreamCodec<ByteBuf, CordLook> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.STRING_UTF8, CordLook::tier, ByteBufCodecs.INT.apply(ByteBufCodecs.list(12)), CordLook::beads, CordLook::new);
+	}
+
+	public static final AttachmentType<CordLook> CORD_LOOK = AttachmentRegistry.create(
+		Wildercord.id("cord_look"),
+		builder -> builder.syncWith(CordLook.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
+	/** The spell just cast, for its casting pose: the shape's id and the game time it went off. Synced to everyone nearby. */
+	public record CastPose(String shape, long start) {
+		public static final StreamCodec<ByteBuf, CastPose> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.STRING_UTF8, CastPose::shape, ByteBufCodecs.VAR_LONG, CastPose::start, CastPose::new);
+		/** How long a casting pose lasts, in ticks. */
+		public static final int TICKS = 12;
+	}
+
+	public static final AttachmentType<CastPose> CAST_POSE = AttachmentRegistry.create(
+		Wildercord.id("cast_pose"),
+		builder -> builder.syncWith(CastPose.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
 	/** Standing on a ley line right now (worked out by the server every few ticks). */
 	public static final AttachmentType<Boolean> ON_LEY = AttachmentRegistry.create(
 		Wildercord.id("on_ley"),

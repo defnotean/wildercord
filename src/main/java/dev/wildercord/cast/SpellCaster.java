@@ -145,6 +145,8 @@ public final class SpellCaster {
 		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 		Vfx.Theme theme = secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()));
 		Vfx.castCircle(player, theme, runes);
+		// Everyone around sees the casting pose for this spell's shape.
+		player.setAttached(dev.wildercord.player.WildercordAttachments.CAST_POSE, new dev.wildercord.player.WildercordAttachments.CastPose(runes.getFirst().id(), now));
 		HeartCircles.onCast(player);
 		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info);

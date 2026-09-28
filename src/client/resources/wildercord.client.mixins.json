@@ -5,7 +5,12 @@
 	"client": [
 		"InventoryScreenMixin",
 		"CreativeModeInventoryScreenMixin",
-		"AvatarRendererMixin"
+		"AvatarRendererMixin",
+		"RenderPipelinesAccessor",
+		"GameRendererMixin",
+		"CameraMixin",
+		"AvatarRenderStateMixin",
+		"PlayerModelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
