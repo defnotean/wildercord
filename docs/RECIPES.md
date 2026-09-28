@@ -206,6 +206,66 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Wither | Effect | the Wither, Archive vaults, the Archivist |
 | Domain | Shape | Ancient cities, the Warden (35%), Archive vaults, the Archivist |
 
+## Runes of the world (51 runes, found only)
+
+Never crafted, whatever their tier: each is found only in its own places (vanilla structures, a biome by
+Attunement, Wildercord's dungeons and bosses, world events). Attunement: meditate with a Blank Rune in hand
+in the right biome, under the right conditions, for 20 seconds.
+
+| Rune | Family | Tier | Found |
+|---|---|---|---|
+| Ancient Seed | Effect | I | Trail ruins (brushing) |
+| Glowvine | Effect | I | Attuned in lush caves |
+| Treasure Sense | Effect | I | Buried treasure, Archive libraries |
+| Blazecall | Effect | II | Nether fortresses, Runebound Adepts (8%) |
+| Blood Moss | Effect | II | Attuned in a crimson forest |
+| Cinderbrand | Effect | II | The Ember Sanctum |
+| Echolocate | Effect | II | Ancient cities, Archive libraries |
+| Fangs | Effect | II | Woodland mansions, Archive libraries |
+| Hush | Effect | II | Attuned in the deep dark |
+| Infest | Effect | II | Stronghold libraries, Archive libraries |
+| Manaburn | Effect | II | Mana storms |
+| Mire | Effect | II | Attuned in a swamp |
+| Moonpetal | Effect | II | Attuned in a cherry grove |
+| Portalfall | Effect | II | Ruined portals, Runebound Adepts (8%) |
+| Remedy | Effect | II | Igloo basements |
+| Rootsnare | Effect | II | Attuned in a mangrove swamp |
+| Sporebloom | Effect | II | Attuned in mushroom fields |
+| Stalactite | Effect | II | Attuned in dripstone caves |
+| Tusk Charge | Effect | II | Bastions |
+| Undertow | Effect | II | Shipwrecks, Runebound Adepts (8%) |
+| Vinelash | Effect | II | Jungle temples, Runebound Adepts (8%) |
+| Warcry | Effect | II | Pillager outposts, Runebound Adepts (8%) |
+| Warp Step | Effect | II | Attuned in a warped forest |
+| Ashen Veil | Effect | III | The Ember Sanctum |
+| Basalt Surge | Effect | III | Attuned in the basalt deltas |
+| Drowning Word | Effect | III | The Drowned Scriptorium |
+| Eclipse | Effect | III | The Astral Observatory |
+| Hoarfrost | Effect | III | Attuned among ice spikes |
+| Manatide | Effect | III | Mana storms |
+| Resonant Shriek | Effect | III | Ancient cities |
+| Riftcall | Effect | III | Rift sieges |
+| Sandstorm | Effect | III | Desert pyramids |
+| Shulkershell | Effect | III | End cities |
+| Soulfire | Effect | III | Attuned in a soul sand valley |
+| Starlight Tether | Effect | III | Attuned on the End's outer islands |
+| Starshard | Effect | III | Fallen Star craters |
+| Summit Wind | Effect | III | Attuned on a mountain peak |
+| Sunscorch | Effect | III | Attuned in the badlands |
+| Tidecall | Effect | III | Ocean monuments (Elder Guardians) |
+| Cinderheart | Effect | IV | the Cinder Warden |
+| Starmaw | Effect | IV | the Star Eater |
+| Tidewrit | Effect | IV | the Tide Scribe |
+| If Wet | Link | II | The Drowned Scriptorium |
+| If Wounded | Link | II | Stronghold libraries, Archive libraries |
+| If Outnumbered | Link | III | Woodland mansions |
+| Trial Key | Modifier | II | Trial vaults, Ominous vaults |
+| Kindled | Modifier | III | The Ember Sanctum |
+| Unstable | Modifier | III | Rift sieges, the Riftcaller |
+| Snare | Shape | II | Jungle temples |
+| Constellation | Shape | III | The Astral Observatory |
+| Vortex | Shape | III | Ominous vaults |
+
 ## Innate runes (10, never crafted or found)
 
 One wakes in each caster's heart at the 1st Circle, chosen at random, and grows with every circle.

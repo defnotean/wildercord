@@ -37,6 +37,21 @@ ELEMENT_COLOR = {
 INNATE = {"blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart"}
 
 
+def rune_sources():
+    """Parses RuneSources.java: [(source id, where it is, [rune paths])], in the order they're listed."""
+    src = (ROOT / "src/main/java/dev/wildercord/spell/RuneSources.java").read_text(encoding="utf-8")
+    consts = rune_constants()
+    out = []
+    for sid, where, body in re.findall(r'= source\("([\w:]+)", "([^"]+)", ([^\n]*)\);', src):
+        out.append((sid, where, [consts[c] for c in re.findall(r"Runes\.(\w+)", body)]))
+    return out
+
+
+def found_only():
+    """The runes of the world: found in particular places, never crafted."""
+    return {path for _, _, paths in rune_sources() for path in paths}
+
+
 def read_runes():
     src = (ROOT / "src/main/java/dev/wildercord/spell/Runes.java").read_text(encoding="utf-8")
     runes = []
@@ -536,6 +551,7 @@ def write_lang(runes):
         lang[f"rune.wildercord.{r['path']}.desc"] = r["desc"]
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
+    lang.update(WORLD_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -592,11 +608,28 @@ def loot_sources():
     # Every Tier IV rune can also come from an Archive: its vault, or the Archivist itself.
     for path in _tier_four_paths():
         found.setdefault(path, []).extend(["Archive vaults", "the Archivist"])
+    # The runes of the world: every place RuneSources lists, first (it's where they're really from).
+    for sid, where, paths in rune_sources():
+        text = f"{where} ({ADEPT_FIND_CHANCE}%)" if sid == "runebound_adept" else where
+        for path in paths:
+            places = found.setdefault(path, [])
+            if text not in places:
+                places.append(text)
     return found
 
 
 def _tier_four_paths():
-    return [r["path"] for r in read_runes() if r["tier"] == 4]
+    world = found_only()
+    return [r["path"] for r in read_runes() if r["tier"] == 4 and r["path"] not in world]
+
+
+def _adept_find_chance():
+    src = (ROOT / "src/main/java/dev/wildercord/content/WildercordLoot.java").read_text(encoding="utf-8")
+    m = re.search(r"ADEPT_FIND_CHANCE = (\d+);", src)
+    return int(m.group(1)) if m else 0
+
+
+ADEPT_FIND_CHANCE = _adept_find_chance()
 
 
 def _loot_sources():
@@ -638,18 +671,27 @@ def write_recipe_doc(runes):
         lines.append(f"- Tier {'I' * tier if tier < 4 else 'IV'}: {extras[tier]}")
     lines += ["", "Recipes appear in the crafting recipe book once you hold a Blank Rune",
               "(Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.", ""]
+    world = found_only()
     for tier in (1, 2, 3):
-        rs = [r for r in runes if r["tier"] == tier and r["path"] not in INNATE]
+        rs = [r for r in runes if r["tier"] == tier and r["path"] not in INNATE and r["path"] not in world]
         lines += [f"## Tier {['I', 'II', 'III'][tier - 1]} ({len(rs)} runes, + {extras[tier]})", "",
                   "| Rune | Family | Items |", "|---|---|---|"]
         for r in sorted(rs, key=lambda r: (r["family"], r["name"])):
             items = recipe_text(["wildercord:blank_rune", *RUNE_RECIPES[r["path"]]])
             lines.append(f"| {r['name']} | {r['family'].title()} | {items} |")
         lines.append("")
-    t4 = [r for r in runes if r["tier"] == 4]
+    t4 = [r for r in runes if r["tier"] == 4 and r["path"] not in world]
     lines += [f"## Tier IV ({len(t4)} runes, found only)", "", "| Rune | Family | Found |", "|---|---|---|"]
     for r in sorted(t4, key=lambda r: (r["family"], r["name"])):
         lines.append(f"| {r['name']} | {r['family'].title()} | {', '.join(found.get(r['path'], ['?']))} |")
+    worldly = [r for r in runes if r["path"] in world]
+    lines += ["", f"## Runes of the world ({len(worldly)} runes, found only)", "",
+              "Never crafted, whatever their tier: each is found only in its own places (vanilla structures, a biome by",
+              "Attunement, Wildercord's dungeons and bosses, world events). Attunement: meditate with a Blank Rune in hand",
+              "in the right biome, under the right conditions, for 20 seconds.", "",
+              "| Rune | Family | Tier | Found |", "|---|---|---|---|"]
+    for r in sorted(worldly, key=lambda r: (r["family"], r["tier"], r["name"])):
+        lines.append(f"| {r['name']} | {r['family'].title()} | {['I', 'II', 'III', 'IV'][r['tier'] - 1]} | {', '.join(found.get(r['path'], ['?']))} |")
     innate = sorted((r for r in runes if r["path"] in INNATE), key=lambda r: r["name"])
     lines += ["", f"## Innate runes ({len(innate)}, never crafted or found)", "",
               "One wakes in each caster's heart at the 1st Circle, chosen at random, and grows with every circle.", "",
@@ -890,11 +932,13 @@ def unlock_advancement(recipe_id, trigger_item):
 def write_recipes(runes):
     out = DATA / "recipe"
     by_path = {r["path"]: r for r in runes}
+    # The runes of the world are found only in their own places (RuneSources.java): never crafted.
+    world = found_only()
     for path in RUNE_RECIPES:
         assert path in by_path, path
     for r in runes:
         # Every Tier I-III rune can be crafted; Tier IV is found only (bosses and rare chests).
-        assert (r["path"] in RUNE_RECIPES) == (r["tier"] <= 3 and r["path"] not in INNATE), f"{r['path']} (tier {r['tier']})"
+        assert (r["path"] in RUNE_RECIPES) == (r["tier"] <= 3 and r["path"] not in INNATE and r["path"] not in world), f"{r['path']} (tier {r['tier']})"
     for path in RUNE_RECIPES:
         ingredients = rune_ingredients(by_path[path])
         assert len(ingredients) <= 9, path
@@ -1169,6 +1213,63 @@ ARCHIVE_LAND = ["#minecraft:is_taiga", "#minecraft:is_jungle", "#minecraft:is_fo
                 "minecraft:cherry_grove", "minecraft:snowy_taiga", "minecraft:grove"]
 
 
+# The runes of the world: tooltips, the Grimoire, Attunement and the Blank Rune.
+WORLD_LANG = {
+    "tooltip.wildercord.found_only": "Can't be crafted: a rune of the world, found only in its own places",
+    "tooltip.wildercord.blank_rune.attune": "Some lands hold a rune of their own. Meditate there with a Blank Rune in hand",
+    "tooltip.wildercord.blank_rune.attuned": "Attuned so far: %s of %s (see the Grimoire)",
+    "message.wildercord.attune_begin": "The Blank Rune stirs: the land here holds a rune. Keep still...",
+    "message.wildercord.attune_stage.1": "The blank drinks in the land",
+    "message.wildercord.attune_stage.2": "A shape rises in the stone",
+    "message.wildercord.attune_stage.3": "The rune brightens: almost there",
+    "message.wildercord.attuned": "Attuned! The Blank Rune became %s",
+    "message.wildercord.attune_broken": "The attunement breaks off",
+    "message.wildercord.attune_quiet": "The Blank Rune stays quiet here",
+    "message.wildercord.attune_not_now": "The land here holds a rune, but it isn't the time for it",
+    "message.wildercord.manatide_wait": "The storm in you hasn't settled: drink again in %ss",
+    "screen.wildercord.grimoire.attunements": "Attunements (%s of %s)",
+    "screen.wildercord.grimoire.attunement": "%s: %s",
+    "screen.wildercord.grimoire.attune_hint": "Meditate with a Blank Rune in hand where this riddle points",
+    "screen.wildercord.grimoire.world": "Runes of the world (%s of %s known)",
+    "screen.wildercord.grimoire.world_hint": "Found only here, never crafted",
+    "screen.wildercord.grimoire.world_unknown": "??? (a Tier %s %s)",
+    "toast.wildercord.attuned": "A rune of the land",
+}
+
+
+def write_found_loot(runes):
+    """Loot tables for Wildercord's own places (dungeon vaults, their bosses, world events), from RuneSources.java.
+    The dungeon and event features point at these; a rune is picked by tier, like any chest."""
+    tier = {r["path"]: r["tier"] for r in runes}
+    sources = {sid: paths for sid, _, paths in rune_sources()}
+
+    def found_pool(sid, rolls=1):
+        return {"rolls": rolls, "entries": [rune_entry(p, {1: 8, 2: 5, 3: 2}.get(tier[p], 1)) for p in sources[sid]]}
+
+    def chance(pool, odds):
+        return dict(pool, conditions=[{"condition": "minecraft:random_chance", "chance": odds}])
+
+    for dungeon, extras in (("ember_sanctum", [item_entry("minecraft:blaze_rod", 3, 1, 3), item_entry("minecraft:magma_cream", 3, 1, 4)]),
+                            ("astral_observatory", [item_entry("minecraft:ender_pearl", 3, 1, 3), item_entry("minecraft:amethyst_shard", 3, 2, 6)]),
+                            ("drowned_scriptorium", [item_entry("minecraft:prismarine_crystals", 3, 2, 6), item_entry("minecraft:book", 3, 1, 3)])):
+        write_json(DATA / f"loot_table/chests/{dungeon}_vault.json", {"type": "minecraft:chest", "pools": [
+            found_pool(dungeon),
+            chance(found_pool(dungeon), 0.35),
+            {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 3}, "entries": [
+                item_entry("wildercord:mana_crystal", 3, 1, 2), item_entry("wildercord:torn_page", 3), item_entry("minecraft:diamond", 2, 1, 2),
+                item_entry("wildercord:blank_rune", 3, 2, 4)] + extras},
+        ]})
+    for boss, dungeon in (("cinder_warden", "ember_sanctum"), ("star_eater", "astral_observatory"), ("tide_scribe", "drowned_scriptorium"),
+                          ("riftcaller", "rift")):
+        write_json(DATA / f"loot_table/entities/{boss}.json", {"type": "minecraft:entity", "pools": [
+            found_pool(boss),
+            chance(found_pool(dungeon), 0.5),
+            {"rolls": 1, "entries": [item_entry("wildercord:mana_crystal", 1, 1, 3)]},
+        ]})
+    for event in ("starfall", "rift", "mana_storm"):
+        write_json(DATA / f"loot_table/events/{event}.json", {"type": "minecraft:chest", "pools": [found_pool(event)]})
+
+
 def rune_entry(path, weight):
     return {"type": "minecraft:item", "name": "wildercord:rune", "weight": weight,
             "functions": [{"function": "minecraft:set_components", "components": {"wildercord:rune": f"wildercord:{path}"}}]}
@@ -1243,12 +1344,15 @@ def write_new_content(runes):
     # ---- loot
     write_json(DATA / "loot_table/blocks/wellstone.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
         {"type": "minecraft:item", "name": "wildercord:wellstone"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
-    rollable = [r for r in runes if r["path"] not in INNATE]
+    world = found_only()
+    rollable = [r for r in runes if r["path"] not in INNATE and r["path"] not in world]
+    archive_finds = next(paths for sid, _, paths in rune_sources() if sid == "archive")
     third = [r["path"] for r in rollable if r["tier"] == 3]
     second = [r["path"] for r in rollable if r["tier"] == 2]
     fourth = [r["path"] for r in rollable if r["tier"] == 4]
     write_json(DATA / "loot_table/chests/archive_library.json", {"type": "minecraft:chest", "pools": [
-        {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 3}, "entries": [rune_entry(p, 3) for p in second] + [rune_entry(p, 2) for p in third]},
+        {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 3}, "entries": [rune_entry(p, 3) for p in second] + [rune_entry(p, 2) for p in third]
+            + [rune_entry(p, 1) for p in archive_finds]},
         {"rolls": {"type": "minecraft:uniform", "min": 1, "max": 2}, "entries": [
             item_entry("wildercord:torn_page", 6), item_entry("wildercord:mana_crystal", 3), item_entry("wildercord:blank_rune", 4, 2, 5),
             item_entry("minecraft:book", 4, 1, 3), item_entry("minecraft:lapis_lazuli", 4, 3, 9), item_entry("minecraft:amethyst_shard", 3, 2, 6)]},
@@ -1260,6 +1364,8 @@ def write_new_content(runes):
             item_entry("wildercord:mana_crystal", 4, 1, 2), item_entry("wildercord:torn_page", 4), item_entry("minecraft:diamond", 2, 1, 3),
             item_entry("minecraft:gold_ingot", 3, 2, 6), item_entry("minecraft:echo_shard", 1)]},
     ]})
+
+    write_found_loot(runes)
 
     # ---- recipes
     write_json(DATA / "recipe/wellstone.json", {

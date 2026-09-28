@@ -36,26 +36,28 @@ public final class RuneCategories {
 				case "self", "orbit" -> "personal";
 				case "touch", "beam", "barrage", "blitz", "ray", "lance", "sweep", "prism", "stream" -> "direct";
 				case "bolt", "arc", "wave", "crescent", "orb", "spark", "wisp", "comet", "ricochet", "cluster" -> "projectile";
-				case "burst", "cone", "ring", "pillar", "rain", "nova" -> "area";
+				case "burst", "cone", "ring", "pillar", "rain", "nova", "constellation" -> "area";
 				default -> "lingering";
 			};
 			case EFFECT -> switch (path) {
 				case "push", "pull", "launch", "root", "freeze", "levitate", "gravity_well", "blind", "chill", "silence", "reveal",
-					"decree", "weigh", "shackle", "bubble", "hex", "rend", "jolt", "banish", "cyclone" -> "control";
+					"decree", "weigh", "shackle", "bubble", "hex", "rend", "jolt", "banish", "cyclone",
+					"echolocate", "undertow", "portalfall", "hush", "mire", "rootsnare", "starlight_tether", "sporebloom" -> "control";
 				case "heal", "shield", "regrowth", "cleanse", "stoneskin", "empower", "haste", "swift", "night_eye", "feather_fall", "veil",
 					"fireward", "nourish", "tidebreath", "leap", "infinity", "reversal", "reflect", "overdrive", "foresight", "restore",
-					"barrier", "brace", "anchor", "bramble", "frostward", "cushion", "deflect", "haven" -> "support";
-				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep" -> "movement";
+					"barrier", "brace", "anchor", "bramble", "frostward", "cushion", "deflect", "haven",
+					"remedy", "warcry", "treasure_sense", "shulkershell", "ashen_veil", "cinderheart", "manatide" -> "support";
+				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep", "tusk_charge", "warp_step" -> "movement";
 				case "stasis", "rewind", "accelerate", "time_skip" -> "time";
 				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
-					"vein", "smelt", "fell", "span" -> "world";
+					"vein", "smelt", "fell", "span", "ancient_seed", "glowvine" -> "world";
 				case "summon", "shades", "thunderbird" -> "summon";
 				case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom",
 					"stormheart" -> "innate";
 				default -> "damage";
 			};
 			case MODIFIER -> switch (path) {
-				case "amplify", "overcharge", "frugal", "vow", "blood_price", "execute" -> "power";
+				case "amplify", "overcharge", "frugal", "vow", "blood_price", "execute", "trial_key", "kindled", "unstable" -> "power";
 				case "widen", "focus", "split" -> "area";
 				case "extend", "linger", "rapid" -> "timing";
 				default -> "projectile";
@@ -63,7 +65,7 @@ public final class RuneCategories {
 			case LINK -> switch (path) {
 				case "delay", "pulse", "echo" -> "timing";
 				case "on_hurt", "on_low_health" -> "reactive";
-				case "if_sneaking", "if_airborne", "combo" -> "condition";
+				case "if_sneaking", "if_airborne", "combo", "if_wounded", "if_outnumbered", "if_wet" -> "condition";
 				default -> "trigger";
 			};
 		};

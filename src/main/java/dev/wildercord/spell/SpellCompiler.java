@@ -170,7 +170,7 @@ public final class SpellCompiler {
 						if (rune.is(Runes.DELAY.id()) || rune.is(Runes.PULSE.id())) {
 							nextShape = Runes.SELF;
 						} else if (rune.is(Runes.ECHO.id()) || rune.is(Runes.IF_SNEAKING.id()) || rune.is(Runes.IF_AIRBORNE.id())
-								|| rune.is(Runes.COMBO.id())) {
+								|| rune.is(Runes.COMBO.id()) || rune.is(Runes.IF_WOUNDED.id()) || rune.is(Runes.IF_OUTNUMBERED.id()) || rune.is(Runes.IF_WET.id())) {
 							nextShape = implicitShape;
 						} else {
 							nextShape = Runes.TRIGGER;
@@ -326,6 +326,12 @@ public final class SpellCompiler {
 			header = "If you're in the air:";
 		} else if (id.equals(Runes.COMBO.id())) {
 			header = "Every 3rd cast:";
+		} else if (id.equals(Runes.IF_WOUNDED.id())) {
+			header = "If you're below half health:";
+		} else if (id.equals(Runes.IF_OUTNUMBERED.id())) {
+			header = "If 3 or more enemies are within 8 blocks:";
+		} else if (id.equals(Runes.IF_WET.id())) {
+			header = "If you're in water or rain:";
 		} else if (id.equals(Runes.IMBUE.id())) {
 			boolean self = link.anchor != null && link.anchor.shape.is(Runes.SELF.id());
 			header = "Stored in " + (self ? "the item in your hand" : "the block it touches") + " (" + SpellNumbers.IMBUE_CHARGES + " charges), then:";
@@ -451,6 +457,16 @@ public final class SpellCompiler {
 		if (id.equals(Runes.STREAM.id())) {
 			return "A stream of " + SpellNumbers.streamStrikes(g) + " strikes (35% power each)";
 		}
+		if (id.equals(Runes.VORTEX.id())) {
+			return "A vortex's eye (" + blocks(SpellNumbers.vortexEye(g)) + ", drags in from " + blocks(SpellNumbers.vortexRadius(g)) + ", "
+				+ SpellNumbers.vortexSeconds(g) + "s)";
+		}
+		if (id.equals(Runes.SNARE.id())) {
+			return "A tripwire (up to " + blocks(SpellNumbers.SNARE_LENGTH) + ", springs " + blocks(SpellNumbers.snareRadius(g)) + ")";
+		}
+		if (id.equals(Runes.CONSTELLATION.id())) {
+			return "Up to " + SpellNumbers.CONSTELLATION_STARS + " enemies within " + blocks(SpellNumbers.constellationRange(g));
+		}
 		return g.shape.name();
 	}
 
@@ -471,6 +487,9 @@ public final class SpellCompiler {
 			if (e.count(Runes.OVERCHARGE_MOD) > 0) mods.add("overcharged");
 			if (e.count(Runes.FOCUS_MOD) > 0) mods.add("focused");
 			if (e.count(Runes.EXECUTE_MOD) > 0) mods.add("x" + trim(SpellNumbers.executeBonus(e)) + " under half health");
+			if (e.count(Runes.TRIAL_KEY) > 0) mods.add("x" + trim(SpellNumbers.trialKeyBonus(e)) + " at full health");
+			if (e.count(Runes.KINDLED) > 0) mods.add("sets alight " + SpellNumbers.kindledSeconds(e) + "s");
+			if (e.count(Runes.UNSTABLE) > 0) mods.add("unstable: 50-200% power");
 			if (SpellNumbers.lingerHits(e) > 0) mods.add("+" + SpellNumbers.lingerHits(e) + " hits");
 			if (e.effect.is(Runes.SHIELD.id())) mods.add(seconds(SpellNumbers.shieldTicks(e)));
 			joiner.add(e.effect.name() + mods);

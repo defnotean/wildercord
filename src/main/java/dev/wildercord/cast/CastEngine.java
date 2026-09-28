@@ -105,6 +105,12 @@ public final class CastEngine {
 				Reactions.callout(cast, "combo", 0xF0C440);
 				runSegment(cast, link.next, at);
 			}
+		} else if (ExplorerShapes.isCondition(id)) {
+			// If Wounded, If Outnumbered, If Wet: the runes of the world's conditions.
+			if (ExplorerShapes.conditionMet(cast, id)) {
+				ExplorerVfx.condition(cast.level, caster, id);
+				runSegment(cast, link.next, at);
+			}
 		} else if (id.equals(Runes.ON_LOW_HEALTH.id())) {
 			Cast child = cast.child();
 			Scheduler.onLowHealth(caster, 600, () -> {
@@ -303,6 +309,9 @@ public final class CastEngine {
 					onHit(child, g, new Cast.Hit(inRadius(child, target.add(0, 1, 0), 1.6), target, new Vec3(0, -1, 0), target, below, net.minecraft.core.Direction.UP, false), anchored);
 				});
 			}
+		} else {
+			// The shapes of the world: Vortex, Snare and Constellation.
+			ExplorerShapes.deliver(cast, g, at, anchored, theme);
 		}
 	}
 
