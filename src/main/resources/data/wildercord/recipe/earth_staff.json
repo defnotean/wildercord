@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:mossy_cobblestone",
+    "R": "minecraft:stick"
+  },
+  "pattern": [
+    " EC",
+    " RE",
+    "R  "
+  ],
+  "result": {
+    "id": "wildercord:earth_staff"
+  }
+}

@@ -62,6 +62,9 @@ public final class WildercordClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.ScreenFx.TYPE,
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
+		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.config.Config.Sync.TYPE, (payload, context) -> dev.wildercord.config.Config.receive(payload));
+		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> dev.wildercord.config.Config.receive(null));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.level == null) {

@@ -3,6 +3,7 @@ package dev.wildercord.player;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.content.CordTier;
+import dev.wildercord.gear.SpellSlots;
 import dev.wildercord.spell.Passives;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -28,12 +29,13 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 
 	public Spellbook {
 		learned = List.copyOf(learned);
-		spells = sized(spells, CordTier.MAX_SPELLS, CordTier.MAX_SOCKETS);
+		// Four spells for the Cord, and a fifth for the Tome of the Fifth Page.
+		spells = sized(spells, SpellSlots.ALL, CordTier.MAX_SOCKETS);
 		passives = sized(passives, Passives.MAX, Passives.SOCKETS);
-		selected = Math.floorMod(selected, CordTier.MAX_SPELLS);
+		selected = Math.floorMod(selected, SpellSlots.ALL);
 		passivesOff &= (1 << Passives.MAX) - 1;
-		List<String> sizedNames = new ArrayList<>(CordTier.MAX_SPELLS);
-		for (int i = 0; i < CordTier.MAX_SPELLS; i++) {
+		List<String> sizedNames = new ArrayList<>(SpellSlots.ALL);
+		for (int i = 0; i < SpellSlots.ALL; i++) {
 			sizedNames.add(i < names.size() ? dev.wildercord.spell.SpellNames.clean(names.get(i)) : "");
 		}
 		names = List.copyOf(sizedNames);

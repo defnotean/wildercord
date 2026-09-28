@@ -276,6 +276,17 @@ public final class Runes {
 		return Collections.unmodifiableCollection(ALL.values());
 	}
 
+	/**
+	 * Adds an add-on's rune to the roster (the add-on API's way in: see {@code dev.wildercord.api}). Its
+	 * id must be in the add-on's own namespace, and its category one its family lists.
+	 */
+	public static synchronized RuneDef registerAddon(RuneDef def) {
+		if (def.id().startsWith("wildercord:") || def.id().indexOf(':') <= 0) {
+			throw new IllegalArgumentException("An add-on rune needs its own namespace: " + def.id());
+		}
+		return register(def);
+	}
+
 	private static RuneDef register(RuneDef def) {
 		if (ALL.put(def.id(), def) != null) {
 			throw new IllegalStateException("Duplicate rune " + def.id());

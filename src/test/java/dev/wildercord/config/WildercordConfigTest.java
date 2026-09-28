@@ -1,0 +1,84 @@
+package dev.wildercord.config;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class WildercordConfigTest {
+	private static final WildercordConfig D = WildercordConfig.DEFAULTS;
+
+	@Test
+	void defaultsAreTheNumbersFromBeforeTheConfig() {
+		assertEquals(64, D.maxCreatures());
+		assertEquals(32, D.maxBlocks());
+		assertTrue(D.spellsEditBlocks());
+		assertEquals(0.6, D.pvpDamageScale(), 1e-9);
+		assertEquals(1.0, D.manaRegenMultiplier(), 1e-9);
+		assertEquals(1.0, D.manaCostMultiplier(), 1e-9);
+		assertEquals(1.0, D.runeboundChance(), 1e-9);
+		assertEquals(1.0, D.runeLootChance(), 1e-9);
+		assertEquals(6, D.imbueMaxItems());
+		assertEquals(12, D.imbueMaxGlyphs());
+		assertTrue(D.worldEvents() && D.duels() && D.wildMagic() && D.worldChangingMagic());
+	}
+
+	@Test
+	void theWrittenFileReadsBackAsTheDefaults() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(D.toJson());
+		assertEquals(D, parsed.config());
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+	}
+
+	@Test
+	void missingFieldsKeepTheirDefaults() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"casting\": {\"spells_edit_blocks\": false}, \"mana\": {\"cost_multiplier\": 1.5}}");
+		assertFalse(parsed.config().spellsEditBlocks());
+		assertEquals(1.5, parsed.config().manaCostMultiplier(), 1e-9);
+		assertEquals(64, parsed.config().maxCreatures());
+		assertEquals(6, parsed.config().imbueMaxItems());
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(D, WildercordConfig.parse("{}").config());
+	}
+
+	@Test
+	void outOfRangeValuesAreClampedWithAWarning() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(
+			"{\"casting\": {\"max_creatures_per_cast\": 100000, \"pvp_damage_scale\": -2}, \"imbuing\": {\"max_items\": 0}}");
+		assertEquals(1024, parsed.config().maxCreatures());
+		assertEquals(0.0, parsed.config().pvpDamageScale(), 1e-9);
+		assertEquals(1, parsed.config().imbueMaxItems());
+		assertEquals(3, parsed.warnings().size(), parsed.warnings().toString());
+	}
+
+	@Test
+	void wrongTypesFallBackToTheDefault() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(
+			"{\"casting\": {\"max_blocks_per_cast\": 2.5, \"spells_edit_blocks\": \"no\"}, \"mana\": {\"regen_multiplier\": \"fast\"}, \"loot\": 7}");
+		assertEquals(32, parsed.config().maxBlocks());
+		assertTrue(parsed.config().spellsEditBlocks());
+		assertEquals(1.0, parsed.config().manaRegenMultiplier(), 1e-9);
+		assertEquals(1.0, parsed.config().runeLootChance(), 1e-9);
+		assertEquals(4, parsed.warnings().size(), parsed.warnings().toString());
+	}
+
+	@Test
+	void brokenFilesAndTyposAreReported() {
+		WildercordConfig.Parsed broken = WildercordConfig.parse("{ this isn't json");
+		assertEquals(D, broken.config());
+		assertEquals(1, broken.warnings().size());
+		assertEquals(D, WildercordConfig.parse("[1, 2]").config());
+		WildercordConfig.Parsed typo = WildercordConfig.parse("{\"casting\": {\"max_creature_per_cast\": 5}, \"cheats\": {}}");
+		assertEquals(64, typo.config().maxCreatures());
+		assertEquals(2, typo.warnings().size(), typo.warnings().toString());
+		assertTrue(typo.warnings().getFirst().contains("max_creature_per_cast"));
+	}
+
+	@Test
+	void chancesScaleAndStayWithinAHundred() {
+		assertEquals(35, WildercordConfig.scaledChance(35, 1.0));
+		assertEquals(70, WildercordConfig.scaledChance(35, 2.0));
+		assertEquals(100, WildercordConfig.scaledChance(35, 10.0));
+		assertEquals(0, WildercordConfig.scaledChance(35, 0.0));
+		assertEquals(18, WildercordConfig.scaledChance(35, 0.5));
+	}
+}

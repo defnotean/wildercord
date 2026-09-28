@@ -25,7 +25,8 @@ public final class WildercordKeys {
 	private static KeyMapping cast;
 	private static KeyMapping next;
 	private static KeyMapping open;
-	private static final KeyMapping[] CAST_N = new KeyMapping[4];
+	/** "Cast spell N": the Cord's four, and the tome's fifth. */
+	private static final KeyMapping[] CAST_N = new KeyMapping[dev.wildercord.gear.SpellSlots.ALL];
 
 	private static int castHeld = -1;
 	private static boolean charging;

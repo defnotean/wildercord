@@ -86,7 +86,7 @@ public final class ChargeHum extends AbstractTickableSoundInstance {
 				return;
 			}
 		}
-		double progress = Mth.clamp((caster.level().getGameTime() - start) / (double) Charging.FULL, 0, 1);
+		double progress = Mth.clamp((caster.level().getGameTime() - start) / (double) Charging.fullTicks(caster), 0, 1);
 		// Eased out: a quick climb at first that settles as the charge nears full.
 		float eased = (float) (1 - (1 - progress) * (1 - progress));
 		pitch = LOW + (HIGH - LOW) * eased;

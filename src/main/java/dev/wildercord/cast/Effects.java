@@ -79,7 +79,7 @@ import java.util.function.Predicate;
 public final class Effects {
 	private Effects() {}
 
-	/** Damage to players from other players' spells is scaled down so PvP stays fair. */
+	/** Damage to players from other players' spells is scaled down so PvP stays fair: the default for casting.pvp_damage_scale. */
 	public static final float PVP_DAMAGE = 0.6F;
 	private static final int MAX_STRIKES_PER_HIT = 8;
 
@@ -144,7 +144,9 @@ public final class Effects {
 		double innate = Runes.innate(rune) ? Innates.scale(caster) : 1.0;
 		// A rune ranked up at the Fusion Altar hits harder wherever it's threaded; rank III counts as one Amplify for levels.
 		int rank = dev.wildercord.player.RuneRanks.rank(caster, rune.id());
-		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate * dev.wildercord.spell.Ranks.power(rank);
+		// Casting gear (a staff of this element, a Focus of Thrift): its own factor, set when the spell was cast.
+		double gear = cast.gearPower(rune.element());
+		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate * dev.wildercord.spell.Ranks.power(rank) * gear;
 		double duration = SpellNumbers.duration(node) * cast.duration;
 		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
@@ -509,7 +511,8 @@ public final class Effects {
 				Innates.apply(cast, rune, helped, harmed, power, duration);
 			case "firestorm", "steam", "magma", "tempest", "plasma", "hail", "glacier", "lifesteal", "warp", "bloom", "surge", "nullify" ->
 				FusedEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
-			default -> { }
+			// A rune from an add-on (dev.wildercord.api) does what it registered.
+			default -> AddonRunes.effect(cast, node, hit, harmed, helped, power, duration);
 		}
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;
 		if (!hit.self()) {
@@ -571,10 +574,11 @@ public final class Effects {
 		amount *= hexBonus(cast, target);
 		// Fire is weaker on the wet.
 		amount *= WorldMagic.wetDamage(target, currentElement);
+		amount *= AddonRunes.react(cast, target, currentElement);
 		float damage = (float) amount;
-		// PvP only: a monster's spell already has its power set by difficulty.
+		// PvP only: a monster's spell already has its power set by difficulty. The server can change the scale.
 		if (target instanceof Player && cast.caster instanceof Player) {
-			damage *= PVP_DAMAGE;
+			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();
 		}
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);

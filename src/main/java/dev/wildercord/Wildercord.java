@@ -32,9 +32,12 @@ public final class Wildercord implements ModInitializer {
 		WildercordBlocks.init();
 		WildercordItems.init();
 		dev.wildercord.menu.WildercordMenus.init();
+		dev.wildercord.gear.GearItems.init();
+		dev.wildercord.config.Config.init();
 		dev.wildercord.content.WildercordParticles.init();
 		dev.wildercord.content.WildercordSounds.init();
 		WildercordLoot.init();
+		dev.wildercord.gear.GearLoot.init();
 		WildercordEntities.init();
 		WildercordAttachments.init();
 		dev.wildercord.advancement.Advancements.init();
@@ -66,6 +69,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.familiar.Familiars.init();
 		SpellCaster.init();
 		WildercordCommand.init();
+		// Last: add-ons (the "wildercord" entrypoint) extend everything above.
+		dev.wildercord.api.WildercordApi.loadAddons();
 		LOGGER.info("Wildercord initialized");
 	}
 }

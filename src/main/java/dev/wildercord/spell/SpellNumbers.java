@@ -12,7 +12,7 @@ public final class SpellNumbers {
 
 	public static double power(SpellPlan.EffectNode e) {
 		return Math.pow(1.5, e.count(Runes.AMPLIFY)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD))
-			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD));
+			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods);
 	}
 
 	/** Focus and Vow on a shape, times the shape's own strength per hit (Barrage hits often, so softer). */
@@ -157,13 +157,13 @@ public final class SpellNumbers {
 		return (int) Math.min(12, 6 * Math.pow(2.0, g.count(Runes.QUICKEN)));
 	}
 
-	/** Radius factor on a shape from Widen and Focus. */
-	private static double shapeRadius(SpellPlan.Group g) {
-		return Math.pow(1.5, g.count(Runes.WIDEN)) * Math.pow(0.5, g.count(Runes.FOCUS_MOD));
+	/** Radius factor on a shape from Widen and Focus (and add-on radius modifiers). */
+	public static double shapeRadius(SpellPlan.Group g) {
+		return Math.pow(1.5, g.count(Runes.WIDEN)) * Math.pow(0.5, g.count(Runes.FOCUS_MOD)) * RuneNumbers.radius(g.shapeMods);
 	}
 
 	public static double duration(SpellPlan.EffectNode e) {
-		return Math.pow(2.0, e.count(Runes.EXTEND)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD));
+		return Math.pow(2.0, e.count(Runes.EXTEND)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD)) * RuneNumbers.duration(e.mods);
 	}
 
 	/** Extra times a lingering effect lands, one second apart. */
@@ -229,7 +229,7 @@ public final class SpellNumbers {
 	public static final double MAX_WIDEN = 8.0;
 
 	public static double effectRadius(SpellPlan.EffectNode e) {
-		return Math.min(MAX_WIDEN, Math.pow(1.5, e.count(Runes.WIDEN))) * Math.pow(0.5, e.count(Runes.FOCUS_MOD));
+		return Math.min(MAX_WIDEN, Math.pow(1.5, e.count(Runes.WIDEN))) * Math.pow(0.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.radius(e.mods);
 	}
 
 	public static int copies(SpellPlan.Group g) {

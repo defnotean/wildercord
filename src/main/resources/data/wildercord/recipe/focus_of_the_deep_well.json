@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "L": "minecraft:lapis_block",
+    "D": "minecraft:polished_deepslate"
+  },
+  "pattern": [
+    " L ",
+    "DCD",
+    " D "
+  ],
+  "result": {
+    "id": "wildercord:focus_of_the_deep_well"
+  }
+}

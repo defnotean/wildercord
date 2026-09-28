@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:packed_ice",
+    "R": "minecraft:stick"
+  },
+  "pattern": [
+    " EC",
+    " RE",
+    "R  "
+  ],
+  "result": {
+    "id": "wildercord:frost_staff"
+  }
+}

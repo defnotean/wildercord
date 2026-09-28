@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "E": "minecraft:lightning_rod",
+    "R": "minecraft:stick"
+  },
+  "pattern": [
+    " EC",
+    " RE",
+    "R  "
+  ],
+  "result": {
+    "id": "wildercord:storm_staff"
+  }
+}

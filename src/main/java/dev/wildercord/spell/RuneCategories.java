@@ -15,14 +15,34 @@ public final class RuneCategories {
 	public static final List<String> LINK = List.of("timing", "trigger", "reactive", "condition");
 	public static final List<String> KNOT = List.of("knot");
 
+	/** Categories add-ons added (see {@code dev.wildercord.api}), shown after the built-in ones. */
+	private static final java.util.Map<RuneFamily, List<String>> ADDED = new java.util.concurrent.ConcurrentHashMap<>();
+
 	public static List<String> of(RuneFamily family) {
-		return switch (family) {
+		List<String> builtIn = switch (family) {
 			case SHAPE -> SHAPE;
 			case EFFECT -> EFFECT;
 			case MODIFIER -> MODIFIER;
 			case LINK -> LINK;
 			case KNOT -> KNOT;
 		};
+		List<String> added = ADDED.get(family);
+		if (added == null) {
+			return builtIn;
+		}
+		List<String> all = new java.util.ArrayList<>(builtIn);
+		all.addAll(added);
+		return List.copyOf(all);
+	}
+
+	/** Adds a category to a family (a no-op if it's already there). Its Codex label is the lang key {@code category.wildercord.<family>.<category>}. */
+	public static synchronized void add(RuneFamily family, String category) {
+		if (of(family).contains(category)) {
+			return;
+		}
+		List<String> added = new java.util.ArrayList<>(ADDED.getOrDefault(family, List.of()));
+		added.add(category);
+		ADDED.put(family, List.copyOf(added));
 	}
 
 	/** Sort position of a category within its family (unknown categories sort last). */

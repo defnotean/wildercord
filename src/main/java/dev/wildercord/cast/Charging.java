@@ -50,6 +50,17 @@ public final class Charging {
 		return Math.max(0, Math.min(1, (now - charge.start()) / (double) FULL));
 	}
 
+	/** Ticks to a full charge for this caster: a Focus of Haste in the off-hand fills it faster. */
+	public static int fullTicks(net.minecraft.world.entity.Entity caster) {
+		double speed = caster instanceof net.minecraft.world.entity.LivingEntity living ? dev.wildercord.gear.Gear.chargeSpeed(living) : 1.0;
+		return Math.max(1, (int) Math.round(FULL / speed));
+	}
+
+	/** How far along a caster's charge is, 0 to 1, with their casting gear. */
+	public static double progress(net.minecraft.world.entity.Entity caster, WildercordAttachments.Charge charge, long now) {
+		return Math.max(0, Math.min(1, (now - charge.start()) / (double) fullTicks(caster)));
+	}
+
 	public static void request(ServerPlayer player, int requested, boolean start) {
 		if (start) {
 			begin(player, requested);
@@ -65,7 +76,7 @@ public final class Charging {
 			SpellCaster.cast(player, requested, 0);
 			return;
 		}
-		double progress = progress(charge, player.level().getGameTime());
+		double progress = progress(player, charge, player.level().getGameTime());
 		stop(player);
 		long readyAt = Spellbooks.readyAt(player, charge.spell());
 		SpellCaster.cast(player, charge.spell(), progress);
@@ -84,7 +95,7 @@ public final class Charging {
 		}
 		Spellbook book = Spellbooks.get(player);
 		int spell = requested < 0 ? book.selected() : requested;
-		if (spell >= tier.spells) {
+		if (!dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
 			return;
 		}
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
@@ -124,7 +135,8 @@ public final class Charging {
 			return;
 		}
 		long held = player.level().getGameTime() - charge.start();
-		if (held >= FULL && held < FULL + 5) {
+		int full = fullTicks(player);
+		if (held >= full && held < full + 5) {
 			Fx.sound(player.level(), player.position(), WildercordSounds.CHARGE_FULL, 0.8F, 1.0F);
 		}
 		if (held > MAX_HOLD || Spellbooks.tier(player) == null || !player.isAlive() || player.isSpectator()) {

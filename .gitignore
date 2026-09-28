@@ -17,8 +17,9 @@ bin/
 .classpath
 .project
 
-# fabric dev runs
+# fabric dev runs (and the log unit tests write when they load Fabric's event classes)
 run/
+logs/
 
 # os / java
 *.DS_Store

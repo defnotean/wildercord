@@ -117,6 +117,9 @@ public final class CastEngine {
 				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, Cast.Trigger.self(caster)));
 			}
 			runSegment(cast, link.next, at);
+		} else {
+			// A link from an add-on (dev.wildercord.api) decides when the rest fires.
+			AddonRunes.link(cast, link, at);
 		}
 		// On Hit and On Kill fire from onHit(), through their anchor group.
 	}
@@ -303,6 +306,9 @@ public final class CastEngine {
 					onHit(child, g, new Cast.Hit(inRadius(child, target.add(0, 1, 0), 1.6), target, new Vec3(0, -1, 0), target, below, net.minecraft.core.Direction.UP, false), anchored);
 				});
 			}
+		} else {
+			// A shape from an add-on (dev.wildercord.api) finds its own hits.
+			AddonRunes.shape(cast, g, at, anchored);
 		}
 	}
 
@@ -404,6 +410,9 @@ public final class CastEngine {
 			if (e instanceof LivingEntity living && living.isAlive() && e != cast.caster) {
 				aliveBefore.add(living);
 			}
+		}
+		if (!g.effects.isEmpty()) {
+			dev.wildercord.api.WildercordEvents.SPELL_HIT.invoker().onHit(cast.caster, entities, hit.point(), g.effects.stream().map(e -> e.effect).toList());
 		}
 		double groupPower = SpellNumbers.groupPower(g);
 		for (SpellPlan.EffectNode effect : stasisFirst(g.effects)) {

@@ -18,6 +18,7 @@ import java.util.List;
  * end; the Siphon cap and once-per-cast costs still count for the whole cast.
  */
 public final class Cast {
+	/** The default caps; a server sets its own in {@code config/wildercord.json} (casting.max_creatures_per_cast, max_blocks_per_cast). */
 	public static final int MAX_ENTITIES = 64;
 	public static final int MAX_BLOCKS = 32;
 	public static final int MAX_DEPTH = 8;
@@ -38,6 +39,8 @@ public final class Cast {
 		int segments = MAX_SEGMENTS;
 		/** The mana the spell asks, as a Shield weighs it; worked out from the plan when nobody set it. */
 		double weight = -1;
+		/** The casting gear in the caster's hands when it was cast (staffs and foci). */
+		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.GearBonuses.NONE;
 	}
 
 	/** What a spell with no plan to price weighs (a flourish of an innate rune, say): a small spell. */
@@ -57,8 +60,8 @@ public final class Cast {
 	}
 
 	private static final class Budget {
-		int entities = MAX_ENTITIES;
-		int blocks = MAX_BLOCKS;
+		int entities = dev.wildercord.config.Config.get().maxCreatures();
+		int blocks = dev.wildercord.config.Config.get().maxBlocks();
 		final Shared shared;
 
 		Budget(Shared shared) {
@@ -129,6 +132,17 @@ public final class Cast {
 	public Cast weigh(double weight) {
 		budget.shared.weight = weight;
 		return this;
+	}
+
+	/** Sets the casting gear the caster held (see {@link dev.wildercord.gear.Gear}); read by every part of the cast. */
+	public Cast gear(dev.wildercord.gear.GearBonuses gear) {
+		budget.shared.gear = gear;
+		return this;
+	}
+
+	/** Casting gear: the power multiplier on an effect of {@code element}. */
+	public double gearPower(String element) {
+		return budget.shared.gear.power(element);
 	}
 
 	/** No Siphon for this cast: for one that was paid for earlier (an imbued release), so it can't earn its mana back again. */

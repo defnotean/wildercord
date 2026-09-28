@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "F": "minecraft:feather",
+    "S": "minecraft:sugar",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    " F ",
+    "SCS",
+    " G "
+  ],
+  "result": {
+    "id": "wildercord:focus_of_haste"
+  }
+}

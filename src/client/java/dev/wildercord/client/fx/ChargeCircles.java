@@ -93,7 +93,7 @@ public final class ChargeCircles {
 		}
 
 		private double progress(float partial) {
-			return Mth.clamp((caster.level().getGameTime() - start + partial) / (double) Charging.FULL, 0, 1);
+			return Mth.clamp((caster.level().getGameTime() - start + partial) / (double) Charging.fullTicks(caster), 0, 1);
 		}
 
 		/**

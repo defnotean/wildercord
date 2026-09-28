@@ -195,6 +195,7 @@ public final class Shields {
 		}
 		BLOCKED.computeIfAbsent(target.getUUID(), k -> new ArrayList<>()).add(new Blocked(cast.identity(), now + BLOCK_MEMORY));
 		block(cast.level, target, dir, shield, punched(shield.strength(), cast.weight()));
+		dev.wildercord.api.WildercordEvents.SPELL_BLOCKED.invoker().onBlocked(cast.caster, target, cast.weight(), shield.strength());
 		if (target instanceof ServerPlayer wearer) {
 			Grimoire.feat(wearer, dev.wildercord.spell.Feats.SPELLGUARD);
 		}

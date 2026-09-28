@@ -296,6 +296,7 @@ def main():
     import runesmith_art  # The Runesmith: its desk, its outfit and its trades.
     runesmith_art.main()
     write_familiar_content()
+    write_gear_content()
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -567,6 +568,7 @@ def write_lang(runes):
     lang.update(PARRY_AND_WILD_LANG)
     lang.update(advancement_lang())
     lang.update(familiar_lang())
+    lang.update(GEAR_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1900,6 +1902,91 @@ def write_world_events():
             "down": face("bottom", (2, 2, 14, 14)), "up": face("top", (2, 2, 14, 14)),
             "north": face("side", side), "south": face("side", side), "west": face("side", side), "east": face("side", side)}}]})
     write_json(ASSETS / "blockstates/fallen_star.json", {"variants": {"": {"model": "wildercord:block/fallen_star"}}})
+# ---------------------------------------------------------------- casting gear: staffs, the tome and foci
+# (the numbers live in src/main/java/dev/wildercord/gear/GearDef.java; the art in gear_art.py)
+
+GEAR_ELEMENTS = ["fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood"]
+FOCI = ["haste", "thrift", "the_deep_well", "echoes"]
+
+# A staff: its core (two of it, up the diagonal), two of its element's material, and a Mana Crystal at the head.
+STAFF_MATERIALS = {
+    "fire": "minecraft:blaze_powder", "frost": "minecraft:packed_ice", "storm": "minecraft:lightning_rod",
+    "wind": "minecraft:wind_charge", "earth": "minecraft:mossy_cobblestone", "life": "minecraft:glistering_melon_slice",
+    "void": "minecraft:ender_pearl", "arcane": "minecraft:amethyst_shard", "time": "minecraft:clock", "blood": "minecraft:nether_wart",
+}
+STAFF_CORES = {"fire": "minecraft:blaze_rod"}
+
+# Foci: a Mana Crystal set in what the focus is for. The tome and greater staffs are found, never made.
+FOCUS_RECIPES = {
+    "haste": ({"F": "minecraft:feather", "S": "minecraft:sugar", "G": "minecraft:gold_ingot"}, [" F ", "SCS", " G "]),
+    "thrift": ({"E": "minecraft:emerald", "G": "minecraft:gold_ingot"}, [" E ", "GCG", " G "]),
+    "the_deep_well": ({"L": "minecraft:lapis_block", "D": "minecraft:polished_deepslate"}, [" L ", "DCD", " D "]),
+    "echoes": ({"E": "minecraft:echo_shard", "A": "minecraft:amethyst_shard"}, [" E ", "ACA", " A "]),
+}
+
+GEAR_LANG = {
+    "item.wildercord.tome_of_the_fifth_page": "Tome of the Fifth Page",
+    "item.wildercord.focus_of_haste": "Focus of Haste",
+    "item.wildercord.focus_of_thrift": "Focus of Thrift",
+    "item.wildercord.focus_of_the_deep_well": "Focus of the Deep Well",
+    "item.wildercord.focus_of_echoes": "Focus of Echoes",
+    "tooltip.wildercord.gear.staff": "%s spells: +%s%% power, %s%% less mana",
+    "tooltip.wildercord.gear.tome": "A fifth spell, to thread and cast while it's in your off-hand",
+    "tooltip.wildercord.gear.haste": "Charged casts fill %s%% faster",
+    "tooltip.wildercord.gear.thrift": "Spells cost %s%% less mana, but hit %s%% softer",
+    "tooltip.wildercord.gear.deep_well": "+%s max mana while it's held",
+    "tooltip.wildercord.gear.echoes": "A %s%% chance that a spell echoes: it goes off again, free",
+    "tooltip.wildercord.gear.flourish": "A charged spell of its element leaves it with a flourish",
+    "tooltip.wildercord.gear.either_hand": "Hold it in either hand while you cast",
+    "tooltip.wildercord.gear.off_hand": "Hold it in your off-hand while you cast",
+    "screen.wildercord.gear.title": "Casting gear in hand",
+    "screen.wildercord.gear.piece": "  %s: %s",
+    "screen.wildercord.gear.readout": "%s: %s",
+    "screen.wildercord.server_cost": "This server's rules: spells cost x%s mana",
+    "screen.wildercord.mana.max_gear": "  +%s from a Focus of the Deep Well",
+    "screen.wildercord.mana.regen_server": "  x%s from this server's rules",
+    "screen.wildercord.mana.way.gear": "Hold a Focus of the Deep Well in your off-hand: +50 max mana",
+    "screen.wildercord.tome_row": "The tome's spell: it casts while the tome is in your off-hand",
+    "message.wildercord.tome_needed": "Spell 5 is the tome's: hold the Tome of the Fifth Page in your off-hand",
+    "command.wildercord.reloaded": "Reloaded %s",
+    "command.wildercord.config_warning": "Config: %s",
+    "key.wildercord.cast_5": "Cast spell 5 (the tome's)",
+}
+for _element in GEAR_ELEMENTS:
+    GEAR_LANG[f"item.wildercord.{_element}_staff"] = f"{_element.capitalize()} Staff"
+    GEAR_LANG[f"item.wildercord.greater_{_element}_staff"] = f"Greater {_element.capitalize()} Staff"
+
+
+def write_gear_content():
+    import gear_art
+    tex = ASSETS / "textures/item"
+    pieces = []
+    for element in GEAR_ELEMENTS:
+        pieces.append((f"{element}_staff", gear_art.staff_icon(element)))
+        pieces.append((f"greater_{element}_staff", gear_art.staff_icon(element, True)))
+    pieces.append(("tome_of_the_fifth_page", gear_art.tome_icon()))
+    for focus in FOCI:
+        pieces.append((f"focus_of_{focus}", gear_art.focus_icon(focus.replace("the_", ""))))
+    for path, art in pieces:
+        save(art if len(art) > 1 else art[0], tex / f"{path}.png")
+        # Staffs are held like tools (angled in the hand); the tome and foci like any other item.
+        parent = "minecraft:item/handheld" if path.endswith("_staff") else "minecraft:item/generated"
+        write_json(ASSETS / f"models/item/{path}.json", {"parent": parent, "textures": {"layer0": f"wildercord:item/{path}"}})
+        write_json(ASSETS / f"items/{path}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{path}"}})
+
+    for element in GEAR_ELEMENTS:
+        recipe_id = f"wildercord:{element}_staff"
+        write_json(DATA / f"recipe/{element}_staff.json", {
+            "type": "minecraft:crafting_shaped", "category": "equipment",
+            "key": {"C": "wildercord:mana_crystal", "E": STAFF_MATERIALS[element], "R": STAFF_CORES.get(element, "minecraft:stick")},
+            "pattern": [" EC", " RE", "R  "], "result": {"id": recipe_id}})
+        unlock_advancement(recipe_id, "wildercord:mana_crystal")
+    for focus, (key, pattern) in FOCUS_RECIPES.items():
+        recipe_id = f"wildercord:focus_of_{focus}"
+        write_json(DATA / f"recipe/focus_of_{focus}.json", {
+            "type": "minecraft:crafting_shaped", "category": "equipment",
+            "key": {"C": "wildercord:mana_crystal", **key}, "pattern": pattern, "result": {"id": recipe_id}})
+        unlock_advancement(recipe_id, "wildercord:mana_crystal")
 
 
 if __name__ == "__main__":
