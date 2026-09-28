@@ -60,6 +60,7 @@ final class FusedLife {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			BONDS.clear();
 			WINDS.clear();
+			SPENT.clear();
 			BLOOMS.clear();
 			MISTS.clear();
 			MIST_TOUCHED.clear();
@@ -635,8 +636,17 @@ final class FusedLife {
 	}
 
 	private static final Map<UUID, Wind> WINDS = new HashMap<>();
+	/**
+	 * When a Second Wind last saved each creature (game time), for the lockout ({@link FusedLifeRules#lockedOut}).
+	 * Kept through logout and death, so neither clears it; old entries are let go as new ones come.
+	 */
+	private static final Map<UUID, Long> SPENT = new HashMap<>();
 
-	/** Second Wind: for a while, the first blow that would kill the ally leaves it standing instead. Cast again, it lasts longer. */
+	/**
+	 * Second Wind: for a while, the first blow that would kill the ally leaves it standing instead. Cast again
+	 * on a ward not yet spent, it only lasts longer (never two saves). Once one has saved a creature, a new one
+	 * won't take on it for a minute, so recasting can't chain it into near-immortality.
+	 */
 	private static void secondWind(Cast cast, LivingEntity t, int ticks, double power, double duration) {
 		ServerLevel level = cast.level;
 		if (Spirits.isBoss(t)) {
@@ -644,6 +654,15 @@ final class FusedLife {
 			return;
 		}
 		long now = level.getGameTime();
+		Long saved = SPENT.get(t.getUUID());
+		if (saved != null && FusedLifeRules.lockedOut(saved, now)) {
+			FusedLifeVfx.secondWindSpent(level, t);
+			if (cast.once("second_wind_spent")) {
+				Casters.tell(cast.caster, Component.translatableWithFallback("message.wildercord.second_wind_spent",
+					"Second Wind has saved them already: again in %s s", FusedLifeRules.lockoutSecondsLeft(saved, now)).withColor(0xF2D98A));
+			}
+			return;
+		}
 		Wind old = WINDS.get(t.getUUID());
 		if (old != null && old.who == t && !old.over) {
 			old.until = Math.max(old.until, now + ticks);
@@ -691,10 +710,15 @@ final class FusedLife {
 		}
 		wind.over = true;
 		WINDS.remove(e.getUUID(), wind);
-		if (level.getGameTime() > wind.until) {
+		long now = level.getGameTime();
+		if (now > wind.until) {
 			return false;
 		}
-		e.setHealth((float) Math.max(1.0, Math.min(e.getMaxHealth(), 4 * wind.power)));
+		if (SPENT.size() > 64) {
+			SPENT.values().removeIf(saved -> !FusedLifeRules.lockedOut(saved, now));
+		}
+		SPENT.put(e.getUUID(), now);
+		e.setHealth(FusedLifeRules.secondWindHealth(wind.power, e.getMaxHealth()));
 		e.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(4, wind.duration), 1, false, true));
 		FusedLifeVfx.secondWindSaved(level, e);
 		if (e instanceof ServerPlayer player) {
@@ -732,13 +756,11 @@ final class FusedLife {
 		boolean gave = false;
 		boolean weak = false;
 		for (LivingEntity t : allies) {
-			double need = (t.getMaxHealth() - t.getHealth()) / 2.0;
-			double spare = free ? Double.MAX_VALUE : caster.getHealth() - 2.0;
-			double give = Math.min(4 * power, Math.min(need, spare));
-			if (spare < 0.25) {
+			if (!free && caster.getHealth() - FusedLifeRules.TRANSFUSION_FLOOR < 0.25) {
 				weak = true;
 			}
-			if (give < 0.25) {
+			double give = FusedLifeRules.transfusionGift(power, caster.getHealth(), t.getMaxHealth() - t.getHealth(), free);
+			if (give <= 0) {
 				continue;
 			}
 			if (!free) {
@@ -911,7 +933,7 @@ final class FusedLife {
 		if (caster instanceof Player player && player.isCreative()) {
 			return true;
 		}
-		if (caster.getHealth() <= cost) {
+		if (!FusedLifeRules.canPayBlood(caster.getHealth(), cost)) {
 			return false;
 		}
 		caster.setHealth(caster.getHealth() - cost);

@@ -280,7 +280,8 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 
 	/**
 	 * Second Wind: a small hit doesn't use it; the first killing blow leaves the ally at 4 health with
-	 * Regeneration II; the next one kills.
+	 * Regeneration II; cast twice before it's spent it still saves only once; and once it has saved someone, a
+	 * new one cast on them (at once, as a recast off cooldown would) doesn't take, so the next blow kills.
 	 */
 	private static void secondWind(ClientGameTestContext context, TestSingleplayerContext world, List<String> failures) {
 		world.getServer().runOnServer(server -> {
@@ -307,6 +308,8 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			Mob a = husk(level, -3, 4);
 			Mob b = husk(level, 3, 4);
+			// Twice before it's spent: it lasts longer, it doesn't save twice.
+			land(a, Runes.TOUCH, Runes.SECOND_WIND, List.of(b), b.position(), false);
 			land(a, Runes.TOUCH, Runes.SECOND_WIND, List.of(b), b.position(), false);
 			return new int[] {a.getId(), b.getId()};
 		});
@@ -318,7 +321,28 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			near(out, "a husk after its first killing blow", b, 4);
 			hit(b, 100);
 			if (b.isAlive()) {
-				out.add("a Second Wind should save only once");
+				out.add("a Second Wind cast twice before it was spent should still save only once");
+			}
+			return out;
+		}));
+		int wolf = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			Wolf w = wolf(player, 2, 3);
+			land(player, Runes.TOUCH, Runes.SECOND_WIND, List.of(w), w.position(), false);
+			return w.getId();
+		});
+		context.waitTicks(2);
+		failures.addAll(world.getServer().computeOnServer(server -> {
+			List<String> out = new ArrayList<>();
+			ServerPlayer player = player(server);
+			LivingEntity w = get(server, wolf);
+			hit(w, 100);
+			near(out, "a wolf after its first killing blow", w, 4);
+			// Recast at once, as soon as the cooldown allows: it won't take for a minute.
+			land(player, Runes.TOUCH, Runes.SECOND_WIND, List.of(w), w.position(), false);
+			hit(w, 100);
+			if (w.isAlive()) {
+				out.add("a Second Wind recast on a wolf it saved moments ago shouldn't take (it lived through a second killing blow)");
 			}
 			return out;
 		}));

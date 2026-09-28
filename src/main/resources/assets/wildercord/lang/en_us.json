@@ -709,7 +709,7 @@
   "rune.wildercord.soulbond": "Soulbond",
   "rune.wildercord.soulbond.desc": "Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks.",
   "rune.wildercord.second_wind": "Second Wind",
-  "rune.wildercord.second_wind.desc": "For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds.",
+  "rune.wildercord.second_wind.desc": "For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once it has saved someone, not again on them for a minute.",
   "rune.wildercord.transfusion": "Transfusion",
   "rune.wildercord.transfusion.desc": "You give up to 4 of your own health (never below 2), and the ally heals twice what you gave.",
   "rune.wildercord.lifebloom": "Lifebloom",

@@ -416,6 +416,19 @@ final class FusedLifeVfx {
 		}
 	}
 
+	/**
+	 * A Second Wind that won't take (this one was saved by one not long ago): a small cracked hourglass
+	 * over them, its sand spilling out, and a dull tick.
+	 */
+	static void secondWindSpent(ServerLevel level, LivingEntity t) {
+		Vec3 feet = t.position().add(0, t.getBbHeight() + 0.3, 0);
+		hourglass(level, feet, 0.42, 0.16, 0, 2, 10, false);
+		ElementFx.ray(level, feet.add(0.12, 0.34, 0), feet.add(-0.1, 0.1, 0), BLOOD.secondary(), 0.02, 10);
+		Motes.glows(level, feet.add(0, 0.2, 0), 3, 0.08, TIME.secondary(), 0.06, 18, new Vec3(0, -0.04, 0), 0.02);
+		Fx.sound(level, t.position(), SoundEvents.GLASS_HIT, 0.6F, 0.6F);
+		Fx.sound(level, t.position(), WildercordSounds.impact("time"), 0.25F, 0.6F);
+	}
+
 	/** A Second Wind running out unused: the sand runs out, a gold ring closing in. */
 	static void secondWindFade(ServerLevel level, LivingEntity t) {
 		Vec3 c = centre(t);
