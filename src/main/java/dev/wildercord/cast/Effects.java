@@ -679,13 +679,22 @@ public final class Effects {
 		int pulses = (int) Math.round(5 * duration);
 		Fx.sound(cast.level, center, net.minecraft.sounds.SoundEvents.ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
 		for (int i = 0; i < pulses; i++) {
+			boolean later = i > 0;
 			Scheduler.later(1 + i * 20, () -> {
 				if (!cast.alive()) {
 					return;
 				}
 				Vfx.dragonBreath(cast.level, center, radius);
-				for (Entity e : cast.level.getEntities((Entity) null, new AABB(center, center).inflate(radius, 2.0, radius), e -> Targets.canHarm(cast.caster, e))) {
-					hurt(cast, (LivingEntity) e, cast.level.damageSources().source(DamageTypes.DRAGON_BREATH, cast.caster), 5 * power);
+				// After the first, the pulses linger: a Shield blocks them but can't parry them.
+				Runnable pulse = () -> {
+					for (Entity e : cast.level.getEntities((Entity) null, new AABB(center, center).inflate(radius, 2.0, radius), e -> Targets.canHarm(cast.caster, e))) {
+						hurt(cast, (LivingEntity) e, cast.level.damageSources().source(DamageTypes.DRAGON_BREATH, cast.caster), 5 * power);
+					}
+				};
+				if (later) {
+					lingering(pulse);
+				} else {
+					pulse.run();
 				}
 			});
 		}
@@ -718,15 +727,24 @@ public final class Effects {
 		int pulses = (int) Math.round(4 * duration);
 		Fx.sound(cast.level, point, net.minecraft.sounds.SoundEvents.FIRECHARGE_USE, 1.0F, 0.6F);
 		for (int i = 0; i < pulses; i++) {
+			boolean later = i > 0;
 			Scheduler.later(1 + i * 20, () -> {
 				if (!cast.alive()) {
 					return;
 				}
 				Vfx.inferno(cast.level, point, radius);
-				for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius, 2.0, radius), e -> Targets.canHarm(cast.caster, e))) {
-					LivingEntity t = (LivingEntity) e;
-					t.igniteForSeconds(3);
-					hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
+				// After the first, the pulses linger: a Shield blocks them but can't parry them.
+				Runnable pulse = () -> {
+					for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius, 2.0, radius), e -> Targets.canHarm(cast.caster, e))) {
+						LivingEntity t = (LivingEntity) e;
+						t.igniteForSeconds(3);
+						hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
+					}
+				};
+				if (later) {
+					lingering(pulse);
+				} else {
+					pulse.run();
 				}
 			});
 		}
