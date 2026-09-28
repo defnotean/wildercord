@@ -441,7 +441,7 @@ final class FusedFlame {
 			from = harmed.getFirst().getBoundingBox().getCenter();
 		} else {
 			// Off the face of whatever it hit, so a wall doesn't hide everything from it.
-			Vec3 back = hit.dir().lengthSqr() > 1.0E-6 ? hit.dir().normalize().scale(-0.4) : Vec3.ZERO;
+			Vec3 back = hit.dir() != null && hit.dir().lengthSqr() > 1.0E-6 ? hit.dir().normalize().scale(-0.4) : Vec3.ZERO;
 			from = hit.point().add(back).add(0, 0.3, 0);
 		}
 		List<LivingEntity> marks = new ArrayList<>();
@@ -500,7 +500,8 @@ final class FusedFlame {
 			Vec3 to = goal.subtract(pos[0]);
 			double d = to.length();
 			double speed = Math.min(1.2, 0.4 + age[0] * 0.06);
-			if (d <= speed + 0.35) {
+			// It flies out a few ticks before it can land, so one bound for the creature it burst from still arcs to it.
+			if (age[0] >= 4 && d <= speed + 0.35) {
 				FusedFlameVfx.starfireMote(level, pos[0], goal, index, age[0]);
 				FusedFlameVfx.starfireStrike(level, goal, index);
 				Effects.hurt(cast, t, fire(cast), 2 * power * Reactions.fire(cast, t));
