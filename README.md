@@ -57,7 +57,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **186 runes** | 33 shapes, 123 effects, 18 modifiers and 12 links across four tiers, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **249 runes** | 186 you can craft (33 shapes, 123 effects, 18 modifiers and 12 links across four tiers), **51 runes of the world** found only in their own places, and 12 fused at the Fusion Altar, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
 | **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle opens in front of them, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
 | **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its shape's seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
 | **Spells drawn in light** | All magic glows: light adds to what's behind it, and void magic is drawn as darkness. Beams with a white-hot core fired through a magic circle, bolts that glide as comets, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. Every element has its own visual language, from branching lightning to imploding darkness. |
@@ -68,6 +68,16 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Secret spells** | Ten exact rune sequences become something new (a sun that falls from the sky, a lance of ice, a black star that swallows everything). Nothing lists them: experiment, or read the riddles on Torn Pages. |
 | **The Grimoire** | Every reaction, secret, feat and riddle you discover, written into a page of the Cord screen. Each new reaction, secret and feat condenses mana toward your next Heart Circle. |
 | **Runebound and the Archive** | Some monsters carry Cords and cast real spells, glowing with rune marks in their spell's colour and telegraphed by the spell's own circle and a readable nameplate. Deep underground, the Archive holds Rune Seal doors, the Archivist (a hooded, hovering three-phase boss with a floating tome, who rewrites its Cord) and a vault of Tier IV runes. |
+| **Runes of the world** | Fifty-one runes nobody can craft: in vanilla structures' chests, on bosses, in fallen-star craters and rift sieges, or taken from the land itself by **Attunement** (meditate with a Blank Rune in the right biome at the right moment). The Grimoire lists where each is found, with a riddle for the ones you haven't learned. See [docs/features/new-runes.md](docs/features/new-runes.md). |
+| **Dimension dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor, each with seal doors, Runebound halls, a domed arena and a vault. Their keepers fight in three phases, and each has one trick to learn: an armour only a reaction breaks, a shield that throws spells back, and a pit that floods, where storm magic shocks everyone in the water. See [docs/features/dungeons.md](docs/features/dungeons.md). |
+| **World events** | Mana storms over the ley lines (faster mana, cheaper spells, wild surges), fallen stars that leave a guarded crater, and rift sieges that end with the Riftcaller. See [docs/features/world-events.md](docs/features/world-events.md). |
+| **Magic that changes the world** | Fire lights the grass and boils water into blinding steam, frost freezes a pond you can walk on, storm arcs through water to everyone in it, wind knocks arrows back, earth heaves the ground and life makes flowers bloom. See [docs/features/world-magic.md](docs/features/world-magic.md). |
+| **The Fusion Altar** | Three of a rune make its next rank, two effects fuse into a new one, and a Blank Rune and string tie a whole spell into one **Knot** that takes a single socket. See [docs/features/fusion-altar.md](docs/features/fusion-altar.md). |
+| **Familiars** | Wisps of light rise from the ley lines at night. Tame one with its own element and it floats at your shoulder, quickens your mana, casts a little spell of its own and levels up as you fight together. Dress your Cord in beads and glow colours on the Cosmetics page. See [docs/features/familiars-and-cosmetics.md](docs/features/familiars-and-cosmetics.md). |
+| **Parry and wild magic** | A Shield raised at the last moment turns a flying spell back at its caster. An overcast may surge into something wild. See [docs/features/parry-and-wild-magic.md](docs/features/parry-and-wild-magic.md). |
+| **The Runesmith, duels and chorus** | A villager who sells runes, buys your duplicates or swaps them for runes you don't know, and posts daily contracts; formal duels that put everything back afterwards; and allies casting together in a chorus. See [docs/features/runesmith-duels-chorus.md](docs/features/runesmith-duels-chorus.md). |
+| **Casting gear** | Elemental and greater staffs, the Tome of the Fifth Page (a fifth spell) and four off-hand foci. See [docs/features/gear-config-api.md](docs/features/gear-config-api.md). |
+| **Advancements** | A Wildercord tab from your first Blank Rune to the 8th Heart Circle. See [docs/features/advancements.md](docs/features/advancements.md). |
 | **Ley lines** | Veins of world mana, visible to Cord-wearers as flowing ribbons of violet light: mana flows twice as fast on them. A Wellstone set on one becomes a well for everyone nearby. |
 | **Play together** | Paste a spell code (`wc:bolt.frost.split`) in chat and it becomes a readable spell card; inscribe spells onto scrolls anyone can cast; hit the foe another player just hit, with a different element, for **Unison**; win **domain clashes**; shoot enemy bolts out of the air. |
 | **Four Cords** | Twine → Copper → Amethyst → Echo: more sockets, more spells, higher rune tiers, more mana. |
@@ -82,7 +92,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **A practice dummy** | Place a Training Dummy to try spells on: every hit floats up as a number, and it shows your damage per second. |
 | **Crafting and loot** | Every Tier I-III rune is craftable (costlier by tier) and shows in the recipe book; Tier IV runes come from bosses and rare structures. |
 | **Server-authoritative** | The client only asks; the server validates every edit and cast. Friendly fire is off, every cast has hard budgets, and spells that change blocks respect spawn protection and claim mods. |
-| **Built to extend** | Runes are plain data with traits, so new runes slot into the reading rules without special cases. |
+| **Built to extend** | Runes are plain data with traits, so new runes slot into the reading rules without special cases. Server owners get a config file (`config/wildercord.json`, `/wildercord reload`), and other mods get an add-on API for runes, effects and cast events ([docs/API.md](docs/API.md)). |
 
 ## How spells are read
 
@@ -177,7 +187,7 @@ you've found, with the riddles you've read.
 Learn these and you can read any spell being cast. Each rune's emblem (on its roundel, in the band
 of script and as a seal) and ring pattern, generated by `tools/circle_art.py`.
 
-<img src="docs/images/rune-rings.png" alt="All 186 runes' emblems and ring patterns, each drawn as a ring with its emblem, labelled with the rune's name" width="900">
+<img src="docs/images/rune-rings.png" alt="The craftable runes' emblems and ring patterns, each drawn as a ring with its emblem, labelled with the rune's name" width="900">
 
 </details>
 
@@ -386,10 +396,9 @@ every push.
 
 ## Roadmap
 
-- **Fusion Altar:** upgrade three of a rune into a stronger one, combine two effects into a new
-  one, and tie a finished spell into a single Knot rune you can share (see DESIGN.md).
-- An add-on API so other mods can register runes, categories and reactions.
-- Config for server owners (budgets, PvP scaling, loot chances).
+- More dungeons, bosses and runes of the world.
+- More reactions and secret spells.
+- Balance passes from what players find on real servers.
 
 ## Contributing
 

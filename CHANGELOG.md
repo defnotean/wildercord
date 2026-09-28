@@ -4,6 +4,78 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.3.0-alpha] - 2026-09-28
+
+The big one: three new dungeons with bosses, 51 runes you can only find out in the world, a Fusion
+Altar, familiars, world events, a Runesmith villager, duels, casting gear, parries, wild magic and
+an advancement tab. Player guides for each are in [`docs/features/`](docs/features/).
+
+### Added
+- **Dimension dungeons.** Each dimension has a dungeon and a keeper that fights like a caster, with
+  one trick to learn:
+  - the **Ember Sanctum** in the Nether: the Cinder Warden's armour turns everything except a
+    reaction (Shatter, Conduct, Wildfire...)
+  - the **Astral Observatory** in the End: the Star-Eater turns spells back until a heavy enough
+    spell, or its own parried shard, breaks its shield
+  - the **Drowned Scriptorium** on the deep sea floor: the Tide Scribe floods and drains its pit,
+    and storm magic in the flood shocks everyone wading in it
+
+  Each has Rune Seal doors, Runebound guards, a domed arena and a vault. Boss fights run in three
+  phases, with a boss bar that names the spell being cast. Everyone who hurt the boss gets a Tier IV
+  rune they don't know yet.
+- **51 runes of the world** that can't be crafted:
+  - found in vanilla structures' chests (Elder Guardians carry the ocean monument's)
+  - found in Wildercord's dungeons and on their bosses
+  - found in fallen-star craters, rift sieges and mana storms
+  - found by **Attunement**: hold a Blank Rune and meditate in the right land at the right moment,
+    and the land's rune slowly fills it
+
+  The Grimoire lists every one by where it's found, with a riddle for the ones you haven't learned.
+- **The Fusion Altar.**
+  - Three of a rune make its next rank (up to III, +50% power).
+  - Pairs fuse into new effects.
+  - A Blank Rune and string tie a whole spell into one **Knot** that takes a single socket and costs
+    10% less.
+- **Familiars.** Wild **wisps** rise from ley lines at night, one per element. Tame one with its own
+  element's magic or its favourite food. Your familiar floats at your shoulder, quickens your mana,
+  casts a little spell of its own every few seconds and levels up as you fight together.
+- **Cord cosmetics:** a Cosmetics page for your Cord's beads and glow colour. Some are bought with
+  materials, some are earned (the 4th Heart Circle, slaying a Runebound), and everyone near you sees
+  them.
+- **World events** in the Overworld:
+  - **Mana storms** over ley lines: mana flows twice as fast, spells cost 25% less and casts
+    sometimes surge.
+  - **Fallen stars** leave a guarded crater with a star to crack open.
+  - **Rift sieges** send waves of monsters and end with the Riftcaller.
+- **Magic that changes the world.**
+  - Fire lights grass and boils water into blinding steam.
+  - Frost freezes water you can walk on (it always thaws).
+  - Storm arcs through water to everything standing in it.
+  - Life makes flowers spring up and crops grow.
+  - Wind knocks arrows back and blows fires out.
+  - Earth heaves the ground and throws foes up.
+  - Void draws loose items in.
+- **Parrying.** A Shield raised at the last moment turns a flying spell back at its caster, or
+  answers anything else with a counter-burst.
+- **Wild magic.** Overcasting may surge into something unexpected.
+- **The Runesmith**, a villager who works at the new Scribing Desk:
+  - sells runes, Torn Pages and Mana Crystals
+  - buys duplicate runes, or swaps two known runes for one you haven't learned
+  - posts **daily contracts** on a contract board
+- **Duels:** a formal one-on-one fight that puts everyone's health, mana and effects back afterwards.
+  Your record shows in the Grimoire.
+- **Chorus casting:** two or three allies casting the same shape at the same target within a second
+  sing a chorus: the last spell gains +50% power per extra voice, and grows wider.
+- **Casting gear:** held items that shape your spells.
+  - Elemental and greater **staffs** (+20% / +35% power for their element, and cheaper spells).
+  - The **Tome of the Fifth Page**, which gives you a fifth spell.
+  - Four off-hand **foci**: Haste, Thrift, the Deep Well and Echoes.
+- **A Wildercord advancement tab**, from your first Blank Rune to the 8th Heart Circle.
+- **A server config** (`config/wildercord.json`) for cast budgets, loot, PvP scaling and events,
+  reloadable in game.
+- **An add-on API** for other mods: custom runes and effects, plus events before a cast, after a
+  cast and when a spell is blocked.
+
 ### Changed
 - **Crisper magic circles.** Big ground seals (Sandstorm, Vortex, Riftcall, Moonpetal, Hush, Eclipse,
   Magma, reticles and the rest) are drawn in thin lines of light with little glyphs, like a spell's
@@ -23,6 +95,48 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   billows instead of big black squares.
 
 ### Fixed
+- **Multi-hit spells now land every hit.** On Minecraft 26.3, a creature hit twice in the same moment
+  shrugged off the second hit, so Inferno, Wards, innate runes and chained effects did far less
+  than intended. Every hit counts now.
+- **The game no longer crashes with Improved Transparency (Fabulous-style) graphics** turned on: the
+  glowing spell particles now have the rendering pass it needs.
+- A discount too small to survive rounding (a staff's 10% on a cheap spell) now still takes at least
+  1 mana off.
+- Very long Knot names no longer disconnect you. An add-on that throws an error can't crash the
+  server. Innate runes can't be tied into Knots. The Surge fusion's Strength stops at II, and fused buffs
+  get stronger only from Amplify and rank, not from charge or gear.
+- Combining ranked runes keeps the lower rank, not the higher. A quiet selected spell 5 falls back
+  to the next spell instead of doing nothing.
+- The Runesmith's buyback and swaps can't be farmed:
+  - only plain rank I runes it sells
+  - 8 buybacks a day
+  - no XP from them
+- Duels:
+  - they restore a snapshot rather than healing anyone
+  - they can't be started mid-fight
+  - an outsider's blow calls the duel off
+- Chorus only joins allies' voices, and never cancels the earlier cast.
+- Contracts only count spells that land on a real creature (not Training Dummies).
+- Familiars:
+  - only their owner can name them
+  - projectiles pass through them
+  - the Void wisp only pulls drops nobody owns
+- Cosmetics cost materials in creative too.
+- Dungeon bosses:
+  - no single blow can skip a phase
+  - loot goes to the fighters
+  - boss bars show to anyone near the altar
+  - a boss lost without falling re-arms its altar
+- The Tide Scribe's pit starts dry and drains completely after every ebb.
+- Fallen-star guards stay guarded. A rift can only be sealed once you've beaten its waves, and
+  rewards scale with the waves beaten. Event cooldowns survive a restart.
+- Soulfire refunds mana only for damage that landed. Lingering burns refresh instead of stacking.
+- Manaburn is capped. Constellation, Starshard and Cinderheart need line of sight.
+- Attunement gives each land's rune once a day.
+- Frosted ice always thaws, even after a restart.
+- Inferno and Dragon Breath's later pulses can be blocked by a Shield but not parried.
+- Familiars no longer trail far behind you in the air.
+- The HUD's Shield readout no longer writes over the spell's name.
 - Many flashes came out as darkness instead of light (a parry, a Shield blocking, a bolt's hit, a
   Heart Circle cracking, Chorus and Unison, Fortune, Phantom, several secret spells and the wild
   butterflies' fireworks): a colour written with a full alpha byte carried the darkness flag. They
