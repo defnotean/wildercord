@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "upgrade": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "upgrade"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:amplify"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.altar.upgrade.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.altar.upgrade.description"
+    }
+  },
+  "requirements": [
+    [
+      "upgrade"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

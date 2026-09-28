@@ -9,9 +9,13 @@ import dev.wildercord.content.RuneItem;
 import dev.wildercord.net.WildercordNetworking;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Mana;
+import dev.wildercord.player.RuneRanks;
 import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.Circles;
+import dev.wildercord.spell.Fusions;
+import dev.wildercord.spell.Knots;
+import dev.wildercord.spell.Ranks;
 import dev.wildercord.spell.Passives;
 import dev.wildercord.spell.RuneCategories;
 import dev.wildercord.spell.RuneColors;
@@ -411,14 +415,30 @@ public class CordScreen extends Screen {
 		}
 	}
 
+	/** Every rune the player knows: the roster's, then the Knots they've learned. */
+	private List<RuneDef> known() {
+		List<RuneDef> runes = new ArrayList<>();
+		Spellbook book = book();
+		for (RuneDef rune : Runes.all()) {
+			if (book.knows(rune.id())) {
+				runes.add(rune);
+			}
+		}
+		for (String id : book.learned()) {
+			if (Knots.isKnot(id)) {
+				Runes.get(id).ifPresent(runes::add);
+			}
+		}
+		return runes;
+	}
+
 	private List<CodexRow> codexRows() {
 		List<RuneDef> runes = new ArrayList<>();
 		if (minecraft.player == null) {
 			return List.of();
 		}
-		Spellbook book = book();
-		for (RuneDef rune : Runes.all()) {
-			if (book.knows(rune.id()) && matches(rune)) {
+		for (RuneDef rune : known()) {
+			if (matches(rune)) {
 				runes.add(rune);
 			}
 		}
@@ -461,10 +481,9 @@ public class CordScreen extends Screen {
 		if (minecraft.player == null) {
 			return 0;
 		}
-		Spellbook book = book();
 		int n = 0;
-		for (RuneDef rune : Runes.all()) {
-			if (book.knows(rune.id()) && matches(rune)) {
+		for (RuneDef rune : known()) {
+			if (matches(rune)) {
 				n++;
 			}
 		}
@@ -477,6 +496,7 @@ public class CordScreen extends Screen {
 			case EFFECT -> 0xF06E32;
 			case MODIFIER -> RuneColors.MODIFIER;
 			case LINK -> RuneColors.LINK;
+			case KNOT -> RuneColors.KNOT;
 		};
 	}
 
@@ -816,9 +836,8 @@ public class CordScreen extends Screen {
 		// Only categories you have learned something in: no empty Summon chip before your first summon.
 		java.util.Set<String> learned = new java.util.HashSet<>();
 		if (minecraft.player != null) {
-			Spellbook book = book();
-			for (RuneDef rune : Runes.all()) {
-				if (rune.family() == filter && book.knows(rune.id())) {
+			for (RuneDef rune : known()) {
+				if (rune.family() == filter) {
 					learned.add(rune.category());
 				}
 			}
@@ -1089,7 +1108,7 @@ public class CordScreen extends Screen {
 			refusal(out, width);
 			return out;
 		}
-		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes, RuneRanks.lookup(minecraft.player));
 		// The name line, with room left for the tool buttons on its right.
 		java.util.Optional<dev.wildercord.spell.Secrets.Secret> secret = dev.wildercord.spell.Secrets.match(runes);
 		boolean knownSecret = secret.isPresent() && Heart.discovered(minecraft.player, secret.get().key());
@@ -1141,7 +1160,7 @@ public class CordScreen extends Screen {
 			wrap(out, Component.translatable("screen.wildercord.passive.rules"), 0, width, FAINT);
 			return out;
 		}
-		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes, RuneRanks.lookup(minecraft.player));
 		String problem = Passives.problem(runes);
 		boolean on = book().passiveOn(editingPassive);
 		Component header = Component.translatable(on ? "screen.wildercord.passive.header" : "screen.wildercord.passive.header_off",
@@ -1325,9 +1344,18 @@ public class CordScreen extends Screen {
 			lines.add(Component.translatable("tooltip.wildercord.silent", id).withStyle(ChatFormatting.DARK_GRAY));
 		} else {
 			RuneDef def = rune.get();
-			lines.add(RuneItem.runeName(def).withColor(RuneColors.of(def)));
+			int rank = RuneRanks.rank(minecraft.player, def.id());
+			lines.add(RuneItem.runeName(def).append(Ranks.suffix(rank)).withColor(RuneColors.of(def)));
 			lines.add(RuneItem.familyLine(def).append(Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY)).append(categoryName(def).copy().withStyle(ChatFormatting.GRAY)));
-			lines.add(RuneItem.runeDescription(def).withStyle(ChatFormatting.GRAY));
+			if (Knots.isKnot(def)) {
+				lines.add(Component.translatable("screen.wildercord.knot_holds", def.description()).withStyle(ChatFormatting.GRAY));
+				lines.add(Component.translatable("tooltip.wildercord.knot.rules", Math.round((1 - Knots.DISCOUNT) * 100)).withStyle(ChatFormatting.DARK_GRAY));
+			} else {
+				lines.add(RuneItem.runeDescription(def).withStyle(ChatFormatting.GRAY));
+			}
+			if (rank > 1) {
+				lines.add(Component.translatable("tooltip.wildercord.rank", RuneItem.roman(rank), Math.round((Ranks.power(rank) - 1) * 100)).withColor(GOLD));
+			}
 			// What it does to the ground it lands on: burns grass, freezes water...
 			dev.wildercord.spell.WorldRules.Interaction world = dev.wildercord.spell.WorldRules.of(def);
 			if (world != dev.wildercord.spell.WorldRules.Interaction.NONE) {
@@ -1918,6 +1946,23 @@ public class CordScreen extends Screen {
 				lines.add(new GrimoireLine(Component.literal("\u201C" + secret.riddle() + "\u201D").withStyle(ChatFormatting.ITALIC), 8, 0xFFC8B89A, null));
 			} else {
 				lines.add(new GrimoireLine(Component.literal("???"), 8, FAINT, List.of(Component.translatable("screen.wildercord.grimoire.secret_unknown").withStyle(ChatFormatting.GRAY))));
+			}
+		}
+		// Fusions: found ones by name and recipe; the rest as ??? + ???, with a hint of one element.
+		int fusions = dev.wildercord.spell.Feats.count(found, Fusions.KEY_PREFIX);
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.fusions", fusions, Fusions.RECIPES.size()), 0, GOLD, null));
+		for (Fusions.Recipe recipe : Fusions.RECIPES) {
+			RuneDef made = recipe.result();
+			Component first = Component.translatable("element.wildercord." + recipe.first()).withColor(RuneColors.element(recipe.first()));
+			Component second = Component.translatable("element.wildercord." + recipe.second()).withColor(RuneColors.element(recipe.second()));
+			if (found.contains(recipe.key())) {
+				lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.fusion", RuneItem.runeName(made).withColor(RuneColors.of(made)), first, second), 8, TEXT,
+					List.of(RuneItem.runeName(made).withColor(RuneColors.of(made)), RuneItem.runeDescription(made).withStyle(ChatFormatting.GRAY),
+						Component.translatable("screen.wildercord.grimoire.fusion_how", first, second).withStyle(ChatFormatting.DARK_GRAY))));
+			} else {
+				Component hint = Component.translatable("screen.wildercord.grimoire.fusion_hint", first.copy().withStyle(ChatFormatting.DARK_GRAY));
+				lines.add(new GrimoireLine(Component.literal("??? + ???  ").append(hint), 8, FAINT,
+					List.of(Component.translatable("screen.wildercord.grimoire.fusion_unknown").withStyle(ChatFormatting.GRAY))));
 			}
 		}
 		// Feats.

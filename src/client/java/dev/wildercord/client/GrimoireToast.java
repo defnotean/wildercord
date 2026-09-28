@@ -55,6 +55,11 @@ public class GrimoireToast implements Toast {
 			this.name = Component.literal(secret == null ? id : secret.name());
 			this.icon = new ItemStack(Items.KNOWLEDGE_BOOK);
 			this.color = secret == null ? 0xF5C46A : secret.color();
+		} else if (key.startsWith(dev.wildercord.spell.Fusions.KEY_PREFIX)) {
+			dev.wildercord.spell.RuneDef made = Runes.get("wildercord:" + id).orElse(Runes.HARM);
+			this.name = Component.translatable("toast.wildercord.fusion", RuneItem.runeName(made));
+			this.icon = RuneItem.stack(made);
+			this.color = RuneColors.of(made);
 		} else if (key.startsWith("hint:")) {
 			this.name = Component.translatable("toast.wildercord.riddle_hint");
 			this.icon = new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE);
@@ -79,6 +84,8 @@ public class GrimoireToast implements Toast {
 			case Feats.UNISON -> RuneItem.stack(Runes.RESONANCE);
 			case Feats.COLLISION -> RuneItem.stack(Runes.BOLT);
 			case Feats.INNATE -> new ItemStack(Items.HEART_OF_THE_SEA);
+			case Feats.UPGRADE, Feats.COMBINE -> new ItemStack(dev.wildercord.content.WildercordBlocks.FUSION_ALTAR);
+			case Feats.KNOT -> new ItemStack(Items.STRING);
 			default -> new ItemStack(dev.wildercord.content.WildercordItems.MANA_CRYSTAL);
 		};
 	}

@@ -161,6 +161,19 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/**
+	 * The rank each rune has reached at the Fusion Altar (rune id to 2 or 3; a rune not listed is rank I).
+	 * Synced so the Cord screen and tooltips can show it. Kept through death.
+	 */
+	public static final AttachmentType<Map<String, Integer>> RUNE_RANKS = AttachmentRegistry.create(
+		Wildercord.id("rune_ranks"),
+		builder -> builder
+			.initializer(Map::of)
+			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
 	/** Runebound slain (a breakthrough for the 6th Circle). Kept through death. */
 	public static final AttachmentType<Integer> RUNEBOUND_SLAIN = AttachmentRegistry.create(
 		Wildercord.id("runebound_slain"),

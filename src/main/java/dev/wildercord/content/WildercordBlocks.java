@@ -49,6 +49,15 @@ public final class WildercordBlocks {
 		.noOcclusion()
 		.lightLevel(state -> state.getValue(ArchiveLecternBlock.AWAKE) ? 4 : 10), Rarity.EPIC);
 
+	public static final FusionAltarBlock FUSION_ALTAR = register("fusion_altar", FusionAltarBlock::new, BlockBehaviour.Properties.of()
+		.mapColor(MapColor.COLOR_PURPLE)
+		.instrument(NoteBlockInstrument.BASEDRUM)
+		.sound(SoundType.AMETHYST)
+		.strength(3.5F, 9.0F)
+		.requiresCorrectToolForDrops()
+		.noOcclusion()
+		.lightLevel(state -> 7), Rarity.UNCOMMON);
+
 	public static final BlockEntityType<WellstoneBlockEntity> WELLSTONE_ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
 		Wildercord.id("wellstone"), FabricBlockEntityTypeBuilder.create(WellstoneBlockEntity::new, WELLSTONE).build());
 

@@ -924,6 +924,9 @@ what you put in.
 - Ranks I → II → III give +25% and then +50% power, at the same mana cost.
 - The fusion costs 2 XP levels for rank II and 5 for rank III.
 - Learning a higher-rank rune upgrades that rune everywhere in your spells.
+- Only effects with power have ranks. For effects measured in levels (Swift's
+  Speed, Haste, Regrowth...) and mining tiers, rank III counts as one Amplify.
+- Three copies at the same rank make the next one, so rank III takes nine runes.
 
 ### 2. Combine — two effects of the right elements → a new effect
 
@@ -936,18 +939,21 @@ element hints.
 | fire + wind | **Firestorm** | Sets alight for 6 s, deals 4 damage, and the fire spreads to enemies within 2 blocks |
 | fire + frost | **Steam** | 4 damage and Blindness for 3 s |
 | fire + earth | **Magma** | The ground under the target burns: 2 damage per second for 4 s to enemies standing on it |
-| storm + wind | **Tempest** | A lightning strike plus a huge knockback |
+| storm + wind | **Tempest** | A lightning strike (8 damage) plus a huge knockback |
 | storm + fire | **Plasma** | 9 damage that ignores half of the target's armour |
 | storm + frost | **Hail** | Three 2-damage hits and Slowness II |
 | frost + earth | **Glacier** | Frozen in place for 2 s (1 s on players) |
 | life + void | **Lifesteal** | 5 damage, and you heal for what it dealt |
-| wind + void | **Warp** | Swaps places with the target |
+| wind + void | **Warp** | Swaps places with the target; an enemy is left with Slowness II for 2 s |
 | life + earth | **Bloom** | Regeneration II for 6 s to allies, and plants grow around them |
 | life + storm | **Surge** | Allies get Speed I and Strength I for 8 s |
 | arcane + void | **Nullify** | Strips an enemy's good effects, or an ally's bad effects |
 
 Recipes match on **element tags**, not specific runes. If an add-on adds a
 "Magma Bolt" effect tagged `fire`, it automatically works in every fire fusion.
+Fused runes are Tier III effects that can't be crafted or found. Their elements:
+Firestorm and Steam are fire, Magma earth, Tempest, Plasma and Surge storm, Hail
+and Glacier frost, Lifesteal blood, Warp void, Bloom life and Nullify arcane.
 
 ### 3. Tie a Knot — a whole spell → one rune
 
@@ -959,6 +965,10 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
 - **Anyone can learn a Knot,** even without knowing the runes inside. Knots are
   how players share and trade signature spells.
 - The tooltip shows the whole sequence inside.
+- A Knot is sealed: modifiers inside it change only its own runes, and modifiers
+  outside can't reach in. Its tier is the highest tier inside, so a Cord's tier
+  limit still applies. A Knot inside a Knot is discounted twice (19% in all).
+- A spell with Imbue can't be tied, and Knots can't be passives.
 
 ## Controls
 
@@ -972,7 +982,7 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
 ### Cord screen
 
 - **Left:** your Codex. It has filter tabs (All / Shape / Effect / Modifier /
-  Link / Knot) and a search box.
+  Link; learned Knots are listed under All) and a search box.
 - **Right:** your spells, one row of sockets each. You can rename them.
 - **Editing:** drag and drop runes, shift-click to add a rune to the end of the
   selected spell, right-click a socket to empty it.
@@ -996,7 +1006,7 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
   damage to players is ×0.6. *(Planned: crowd-control such as Frost, Pull and Launch
   lasting half as long on players.)*
 - **Hard caps per cast:** 64 creatures, 32 blocks, 24 live projectiles per player,
-  8 links deep (and, once Knots exist, Knots 2 deep). Nobody can crash a server with
+  8 links deep, and Knots 2 deep. Nobody can crash a server with
   `Split · Split · Echo · Echo · Echo`.
 - **Blocks:** World effects (Break, Excavate, Grow, Harvest, Icepath, Light,
   Rampart, Chisel, Glimmer, Prune, Tunnel, Vein, Smelt, Fell, Span) change blocks, and so do

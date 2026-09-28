@@ -217,7 +217,8 @@ public final class SpellCaster {
 	 */
 	private static String countElements(ServerPlayer player, List<RuneDef> runes) {
 		java.util.Set<String> elements = new java.util.HashSet<>();
-		for (RuneDef rune : runes) {
+		// A Knot's runes count as if they were threaded one by one.
+		for (RuneDef rune : dev.wildercord.spell.Knots.flatten(runes)) {
 			if (rune.family() == dev.wildercord.spell.RuneFamily.EFFECT && !rune.element().isEmpty()) {
 				elements.add(rune.element());
 			}

@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:altar/combine",
+  "criteria": {
+    "knot": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "knot"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:chain"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.altar.knot.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.altar.knot.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "knot"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

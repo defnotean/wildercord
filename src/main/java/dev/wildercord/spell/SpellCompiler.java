@@ -47,7 +47,12 @@ public final class SpellCompiler {
 	}
 
 	public static Compiled compile(List<RuneDef> runes) {
-		return compile(runes, Runes.SELF);
+		return compile(runes, Runes.SELF, Ranks.Lookup.NONE);
+	}
+
+	/** Reads a spell for one caster: the readout names each effect at the rank they know it (e.g. "Fire II"). */
+	public static Compiled compile(List<RuneDef> runes, Ranks.Lookup ranks) {
+		return compile(runes, Runes.SELF, ranks);
 	}
 
 	/**
@@ -55,7 +60,7 @@ public final class SpellCompiler {
 	 * with no shape of its own lands on whatever set it off.
 	 */
 	public static Compiled compileStored(List<RuneDef> runes) {
-		return compile(runes, Runes.TRIGGER);
+		return compile(runes, Runes.TRIGGER, Ranks.Lookup.NONE);
 	}
 
 	/** The runes an Imbue in {@code spell} would store: everything after the first Imbue (empty if there's none). */
@@ -68,12 +73,18 @@ public final class SpellCompiler {
 		return List.of();
 	}
 
-	private static Compiled compile(List<RuneDef> runes, RuneDef implicitShape) {
-		Reader reader = new Reader(runes, true, implicitShape);
+	private static Compiled compile(List<RuneDef> runes, RuneDef implicitShape, Ranks.Lookup ranks) {
+		Reader reader = new Reader(expand(runes), runes.size(), true, implicitShape, ranks);
 		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of());
 		double cost = cost(root);
 		List<String> lines = new ArrayList<>();
 		describe(root, "", lines);
+		for (RuneDef rune : runes) {
+			if (Knots.isKnot(rune)) {
+				lines.add(rune.name() + " is a Knot: " + Knots.flatten(List.of(rune)).size() + " runes in one socket, "
+					+ Math.round((1 - Knots.DISCOUNT) * 100) + "% less mana.");
+			}
+		}
 		checkEmptyGroups(root, reader.warnings);
 		int rapid = countShapeMods(root, Runes.RAPID_MOD);
 		int vows = countShapeMods(root, Runes.VOW_MOD);
@@ -87,12 +98,46 @@ public final class SpellCompiler {
 
 	// ------------------------------------------------------------------ reading
 
-	private record Target(int index, RuneDef def, List<RuneDef> mods) {}
+	/**
+	 * One rune as the reader sees it, once Knots are untied into their runes.
+	 *
+	 * @param outer  its socket in the spell as written (a Knot's runes all share the Knot's)
+	 * @param scope  0 for a rune written in the spell; each Knot's runes share a number of their own
+	 * @param factor the share of its mana it costs: {@link Knots#DISCOUNT} for each Knot around it
+	 */
+	private record Entry(RuneDef rune, int outer, int scope, double factor) {}
+
+	/** The spell with every Knot replaced by the runes it holds (Knots in Knots too, up to {@link Knots#MAX_DEPTH}). */
+	private static List<Entry> expand(List<RuneDef> runes) {
+		List<Entry> out = new ArrayList<>();
+		int[] scopes = {0};
+		for (int i = 0; i < runes.size(); i++) {
+			expand(runes.get(i), i, 0, 1.0, 0, out, scopes);
+		}
+		return out;
+	}
+
+	private static void expand(RuneDef rune, int outer, int scope, double factor, int depth, List<Entry> out, int[] scopes) {
+		if (!Knots.isKnot(rune)) {
+			out.add(new Entry(rune, outer, scope, factor));
+			return;
+		}
+		if (depth >= Knots.MAX_DEPTH) {
+			return;
+		}
+		int inner = ++scopes[0];
+		for (RuneDef held : Knots.contents(rune)) {
+			expand(held, outer, inner, factor * Knots.DISCOUNT, depth + 1, out, scopes);
+		}
+	}
+
+	private record Target(int index, Entry entry, List<RuneDef> mods) {}
 
 	private static final class Reader {
-		final List<RuneDef> runes;
+		final List<Entry> runes;
 		final boolean record;
 		final int[] attachedTo;
+		final Ranks.Lookup ranks;
 		final List<String> warnings = new ArrayList<>();
 		int echoes;
 		/**
@@ -102,10 +147,11 @@ public final class SpellCompiler {
 		int base;
 		RuneDef baseShape;
 
-		Reader(List<RuneDef> runes, boolean record, RuneDef rootShape) {
+		Reader(List<Entry> runes, int written, boolean record, RuneDef rootShape, Ranks.Lookup ranks) {
 			this.runes = runes;
 			this.record = record;
-			this.attachedTo = new int[runes.size()];
+			this.attachedTo = new int[written];
+			this.ranks = ranks;
 			Arrays.fill(attachedTo, NOT_A_MODIFIER);
 			this.baseShape = rootShape;
 		}
@@ -120,12 +166,14 @@ public final class SpellCompiler {
 			List<Target> targets = new ArrayList<>(inherited);
 			SpellPlan.Group group = null;
 			for (int i = from; i < runes.size(); i++) {
-				RuneDef rune = runes.get(i);
+				Entry entry = runes.get(i);
+				RuneDef rune = entry.rune();
 				switch (rune.family()) {
 					case SHAPE -> {
 						group = new SpellPlan.Group(rune, false);
+						group.factor = entry.factor();
 						seg.groups.add(group);
-						targets.add(new Target(i, rune, group.shapeMods));
+						targets.add(new Target(i, entry, group.shapeMods));
 					}
 					case EFFECT -> {
 						if (group == null) {
@@ -133,24 +181,37 @@ public final class SpellCompiler {
 							seg.groups.add(group);
 						}
 						SpellPlan.EffectNode node = new SpellPlan.EffectNode(rune);
+						node.factor = entry.factor();
+						node.rank = Ranks.clamp(ranks.rank(rune.id()));
 						group.effects.add(node);
-						targets.add(new Target(i, rune, node.mods));
+						targets.add(new Target(i, entry, node.mods));
 					}
 					case MODIFIER -> {
+						// A Knot is sealed: a modifier inside one only changes the Knot's own runes, and one
+						// outside never reaches in.
 						Target target = null;
 						for (int t = targets.size() - 1; t >= 0; t--) {
-							if (targets.get(t).def().has(rune.needs())) {
-								target = targets.get(t);
+							Target candidate = targets.get(t);
+							if (candidate.entry().scope() == entry.scope() && candidate.entry().rune().has(rune.needs())) {
+								target = candidate;
 								break;
 							}
 						}
 						if (target == null) {
 							warn(rune.name() + " does nothing here: nothing on its left that it can change.");
-							mark(i, UNATTACHED);
+							if (entry.scope() == 0) {
+								mark(entry.outer(), UNATTACHED);
+							}
 						} else {
 							target.mods().add(rune);
-							mark(i, target.index());
+							if (entry.scope() == 0) {
+								mark(entry.outer(), target.entry().outer());
+							}
 						}
+					}
+					case KNOT -> {
+						// Only a Knot too deep to untie is still a Knot here: it does nothing.
+						warn(rune.name() + " holds Knots too deep to untie (" + Knots.MAX_DEPTH + " at most).");
 					}
 					case LINK -> {
 						boolean watchesGroup = rune.is(Runes.ON_HIT.id()) || rune.is(Runes.ON_KILL.id()) || rune.is(Runes.IMBUE.id());
@@ -158,12 +219,13 @@ public final class SpellCompiler {
 							warn(rune.name() + " needs a shape before it to watch.");
 						}
 						SpellPlan.Link link = new SpellPlan.Link(rune, watchesGroup ? group : null);
+						link.factor = entry.factor();
 						if (rune.is(Runes.ECHO.id())) {
 							echoes++;
 							if (echoes > SpellNumbers.MAX_ECHOES) {
 								warn("Only " + SpellNumbers.MAX_ECHOES + " Echoes count; the rest are ignored.");
 							} else {
-								link.echoPrefix = new Reader(runes.subList(base, i), false, baseShape).segment(0, baseShape, List.of());
+								link.echoPrefix = new Reader(runes.subList(base, i), 0, false, baseShape, ranks).segment(0, baseShape, List.of());
 							}
 						}
 						RuneDef nextShape;
@@ -186,13 +248,13 @@ public final class SpellCompiler {
 							base = i + 1;
 							baseShape = Runes.TRIGGER;
 						}
-						link.next = segment(i + 1, nextShape, List.of(new Target(i, rune, link.mods)));
+						link.next = segment(i + 1, nextShape, List.of(new Target(i, entry, link.mods)));
 						base = outerBase;
 						baseShape = outerShape;
 						if (link.next.isEmpty() && !rune.is(Runes.ECHO.id())) {
 							warn(rune.name() + " has nothing after it.");
 						}
-						if (rune.is(Runes.IMBUE.id()) && runes.subList(i + 1, runes.size()).stream().anyMatch(r -> r.is(Runes.IMBUE.id()))) {
+						if (rune.is(Runes.IMBUE.id()) && runes.subList(i + 1, runes.size()).stream().anyMatch(r -> r.rune().is(Runes.IMBUE.id()))) {
 							warn("An Imbue can't store another Imbue.");
 						}
 						seg.link = link;
@@ -258,7 +320,7 @@ public final class SpellCompiler {
 		if (seg.link != null) {
 			SpellPlan.Link link = seg.link;
 			double rest = cost(link.next) * (link.link.is(Runes.PULSE.id()) ? SpellNumbers.PULSES : link.link.is(Runes.IMBUE.id()) ? SpellNumbers.IMBUE_CHARGES : 1);
-			total += link.link.cost() * product(link.mods) + rest + cost(link.echoPrefix);
+			total += link.link.cost() * product(link.mods) * link.factor + rest + cost(link.echoPrefix);
 		}
 		return total;
 	}
@@ -266,9 +328,9 @@ public final class SpellCompiler {
 	private static double groupCost(SpellPlan.Group g) {
 		double effects = 0;
 		for (SpellPlan.EffectNode e : g.effects) {
-			effects += e.effect.cost() * product(e.mods);
+			effects += e.effect.cost() * product(e.mods) * e.factor;
 		}
-		return (g.shape.cost() + effects * g.shape.multiplier()) * product(g.shapeMods);
+		return (g.shape.cost() * g.factor + effects * g.shape.multiplier()) * product(g.shapeMods);
 	}
 
 	private static double product(List<RuneDef> mods) {
@@ -464,7 +526,10 @@ public final class SpellCompiler {
 			int amp = e.count(Runes.AMPLIFY);
 			int ext = e.count(Runes.EXTEND);
 			int wid = e.count(Runes.WIDEN);
-			if (amp > 0) mods.add("+" + Math.round((SpellNumbers.power(e) - 1) * 100) + "% power");
+			if (amp > 0 || e.rank > 1) {
+				long percent = Math.round((SpellNumbers.power(e) * Ranks.power(e.rank) - 1) * 100);
+				mods.add((percent >= 0 ? "+" : "") + percent + "% power");
+			}
 			if (ext > 0) mods.add(trim(SpellNumbers.duration(e)) + "x duration");
 			if (wid > 0) mods.add("+" + Math.round((SpellNumbers.effectRadius(e) - 1) * 100) + "% radius");
 			if (e.count(Runes.FRUGAL_MOD) > 0) mods.add("frugal");
@@ -473,7 +538,7 @@ public final class SpellCompiler {
 			if (e.count(Runes.EXECUTE_MOD) > 0) mods.add("x" + trim(SpellNumbers.executeBonus(e)) + " under half health");
 			if (SpellNumbers.lingerHits(e) > 0) mods.add("+" + SpellNumbers.lingerHits(e) + " hits");
 			if (e.effect.is(Runes.SHIELD.id())) mods.add(seconds(SpellNumbers.shieldTicks(e)));
-			joiner.add(e.effect.name() + mods);
+			joiner.add(e.effect.name() + Ranks.suffix(e.rank) + mods);
 		}
 		return joiner.toString();
 	}

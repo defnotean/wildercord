@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:altar/upgrade",
+  "criteria": {
+    "combine": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "combine"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:prism"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.altar.combine.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.altar.combine.description"
+    }
+  },
+  "requirements": [
+    [
+      "combine"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

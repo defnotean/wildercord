@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "wildercord:wellstone"
+    "wildercord:wellstone",
+    "wildercord:fusion_altar"
   ]
 }

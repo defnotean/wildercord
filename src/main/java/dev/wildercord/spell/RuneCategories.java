@@ -13,6 +13,7 @@ public final class RuneCategories {
 	public static final List<String> EFFECT = List.of("damage", "control", "support", "movement", "time", "world", "summon", "innate");
 	public static final List<String> MODIFIER = List.of("power", "area", "timing", "projectile");
 	public static final List<String> LINK = List.of("timing", "trigger", "reactive", "condition");
+	public static final List<String> KNOT = List.of("knot");
 
 	public static List<String> of(RuneFamily family) {
 		return switch (family) {
@@ -20,6 +21,7 @@ public final class RuneCategories {
 			case EFFECT -> EFFECT;
 			case MODIFIER -> MODIFIER;
 			case LINK -> LINK;
+			case KNOT -> KNOT;
 		};
 	}
 
@@ -50,6 +52,9 @@ public final class RuneCategories {
 				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
 					"vein", "smelt", "fell", "span" -> "world";
 				case "summon", "shades", "thunderbird" -> "summon";
+				case "glacier", "nullify" -> "control";
+				case "bloom", "surge" -> "support";
+				case "warp" -> "movement";
 				case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom",
 					"stormheart" -> "innate";
 				default -> "damage";
@@ -66,6 +71,7 @@ public final class RuneCategories {
 				case "if_sneaking", "if_airborne", "combo" -> "condition";
 				default -> "trigger";
 			};
+			case KNOT -> "knot";
 		};
 	}
 }

@@ -7,6 +7,7 @@ public final class RuneColors {
 	public static final int SHAPE = 0x40C8BE;
 	public static final int MODIFIER = 0xF0C440;
 	public static final int LINK = 0xA064F0;
+	public static final int KNOT = 0xF08CB4;
 	public static final int NEUTRAL = 0xC8C8D2;
 
 	public static int element(String element) {
@@ -31,6 +32,7 @@ public final class RuneColors {
 			case EFFECT -> element(rune.element());
 			case MODIFIER -> MODIFIER;
 			case LINK -> LINK;
+			case KNOT -> KNOT;
 		};
 	}
 }

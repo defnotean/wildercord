@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:amethyst_block",
+    "L": "minecraft:lodestone",
+    "T": "minecraft:deepslate_tiles"
+  },
+  "pattern": [
+    "TAT",
+    "ALA",
+    "TAT"
+  ],
+  "result": {
+    "id": "wildercord:fusion_altar"
+  }
+}

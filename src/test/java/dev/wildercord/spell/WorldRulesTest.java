@@ -20,7 +20,7 @@ class WorldRulesTest {
 		assertEquals(CONDUCT, WorldRules.of(SHOCK));
 		assertEquals(GUST, WorldRules.of(PUSH));
 		assertEquals(HEAVE, WorldRules.of(TREMOR));
-		assertEquals(BLOOM, WorldRules.of(HEAL));
+		assertEquals(WorldRules.Interaction.BLOOM, WorldRules.of(HEAL));
 		assertEquals(DRAW, WorldRules.of(PULL));
 	}
 
@@ -62,7 +62,7 @@ class WorldRulesTest {
 		// These need building rights and never happen for a monster's spell.
 		assertTrue(IGNITE.editsBlocks());
 		assertTrue(WorldRules.Interaction.FREEZE.editsBlocks());
-		assertTrue(BLOOM.editsBlocks());
+		assertTrue(WorldRules.Interaction.BLOOM.editsBlocks());
 		assertTrue(GUST.editsBlocks());
 		// These work for monsters too: a shock through water, heaved ground (block displays), items drawn in.
 		assertFalse(CONDUCT.editsBlocks());

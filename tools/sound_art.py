@@ -1138,6 +1138,42 @@ def wisp_level(v, rng):
     glints = sparkle(1.0, 14, rng, [note(d, 3) for d in (D, FS, A, B)], tau=(0.05, 0.14), rising=True)
     x = mix(arpeggio, (0.3, 0.15 * norm(glints)))
     return finish(reverb(x, 1.3, 0.3), "effect")
+# ---------------------------------------------------------------- the Fusion Altar
+
+
+def altar_open(v, rng):
+    """The altar wakes: a low amethyst hum rising under a soft open chord."""
+    dur = 1.6
+    hum = (sine(note(D, -1), dur) + 0.5 * sine(note(A, -1), dur) + 0.2 * sine(note(D, -1) * 1.003, dur)) * swell(dur, 0.45)
+    chord = mix(*[(0.15 + 0.06 * i, 0.5 * bell(note(*n), 1.3, 0.7, 2.0, 1.1, attack=0.03)) for i, n in enumerate(((D, 0), (A, 0), (E, 1)))])
+    shimmer = sparkle(1.2, 8, rng, [note(d, 2) for d in (D, FS, A)], tau=(0.08, 0.2), shape=[(0, 0), (0.4, 1), (1.2, 0)])
+    x = mix(0.35 * hum, chord, (0.2, 0.12 * norm(shimmer)))
+    return finish(reverb(x, 1.4, 0.3), "ui")
+
+
+def altar_fuse(v, rng):
+    """Runes fuse: three glass notes drawn together into a swelling chord that blooms into bells."""
+    dur = 2.4
+    gather = reverse(mix(*[(0.05 * i, 0.4 * glass(note(d, 2), 0.7, 0.2)) for i, d in enumerate((A, FS, D))]))
+    gather = gather[-samples(0.7):]
+    swell_chord = sum(soft_saw(note(*n), dur, harmonics=6) for n in ((D, 0), (A, 0), (FS, 1)))
+    swell_chord = lowpass(swell_chord, 2200) * env(dur, (0, 0), (0.7, 1), (1.0, 0.3), (dur, 0)) ** 2
+    bloom = mix(*[(0.7 + 0.03 * i, (0.9 - 0.1 * i) * bell(note(*n), 1.7, 0.9, 2.0, 1.8, attack=0.004))
+                  for i, n in enumerate(((D, 1), (FS, 1), (A, 1), (D, 2)))])
+    thud = thump(150, 60, 0.4, 0.07, 1.4)
+    glints = sparkle(1.4, 16, rng, [note(d, 3) for d in (D, E, FS, A)], tau=(0.05, 0.14), shape=[(0, 1), (1.4, 0)])
+    x = mix(0.5 * norm(gather), 0.18 * norm(swell_chord), chorus(bloom, 2, 0.003, 0.5), (0.7, 0.45 * thud), (0.75, 0.15 * norm(glints)))
+    return finish(reverb(x, 1.8, 0.32), "effect")
+
+
+def altar_knot(v, rng):
+    """A spell tied up: a thread pulled tight, a knot cinching, and a warm two-note bell."""
+    pull = moving_band(0.35, [(0, 900), (0.35, 3200)], 0.6, rng) * env(0.35, (0, 0), (0.3, 1), (0.35, 0)) ** 2
+    creak = norm(bandpass(grains(0.35, 60, rng, length=(0.003, 0.01), shape=[(0, 0.2), (0.35, 1)]), 400, 2500))
+    cinch = thump(220, 90, 0.2, 0.03, 1.4)
+    bells = mix((0.0, 0.6 * bell(note(A, 0), 1.2, 0.6, 2.0, 1.2)), (0.12, 0.5 * bell(note(D, 1), 1.2, 0.6, 2.0, 1.2)))
+    x = mix(0.35 * pull, 0.2 * creak, (0.35, 0.6 * cinch), (0.38, bells))
+    return finish(reverb(x, 1.1, 0.25), "effect")
 
 
 # ================================================================ writing it all out
@@ -1188,6 +1224,9 @@ def palette():
         ("wisp_bond", "familiar", "wisp_bond", wisp_bond, 1, {}),
         ("wisp_cast", "familiar", "wisp_cast", wisp_cast, 2, {}),
         ("wisp_level", "familiar", "wisp_level", wisp_level, 1, {}),
+        ("altar_open", "altar", "altar_open", altar_open, 1, {}),
+        ("altar_fuse", "altar", "altar_fuse", altar_fuse, 1, {}),
+        ("altar_knot", "altar", "altar_knot", altar_knot, 1, {}),
     ]
     return events
 

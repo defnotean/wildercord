@@ -9,5 +9,7 @@ public enum RuneFamily {
 	/** Changes the closest rune to its left that it can affect. */
 	MODIFIER,
 	/** When the rest of the spell fires. */
-	LINK
+	LINK,
+	/** A whole spell tied into one rune at the Fusion Altar (see {@link Knots}). */
+	KNOT
 }

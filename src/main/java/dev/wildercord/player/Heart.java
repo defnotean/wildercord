@@ -81,7 +81,8 @@ public final class Heart {
 	public static int progress(Player player, Circles.Requirement requirement) {
 		CordTier tier = Spellbooks.tier(player);
 		int have = switch (requirement.need()) {
-			case RUNES -> Spellbooks.get(player).learned().size();
+			// Knots are spells, not runes: they don't count toward knowing runes.
+			case RUNES -> (int) Spellbooks.get(player).learned().stream().filter(id -> !dev.wildercord.spell.Knots.isKnot(id)).count();
 			case CORD -> tier == null ? -1 : tier.ordinal();
 			case KILLS -> spellKills(player);
 			case BOSS -> bossSlain(player) ? 1 : 0;

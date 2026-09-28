@@ -230,6 +230,28 @@ public final class Runes {
 	public static final RuneDef COMBO = link("combo", "Combo", 3, 2, "The rest fires only on every third cast of this spell: a finisher.");
 	public static final RuneDef IMBUE = link("imbue", "Imbue", 2, 3, "The rest isn't cast: it's stored, with 3 charges, in what the shape before it touches. With Self, the item in your hand (a weapon's hits, a bow's arrows, a tool's blocks, armour when you're hurt, a block where it's placed, anything else when used), or with empty hands the block you're looking at. Any block becomes a glyph that goes off at whoever steps on, uses, shoots or breaks it, or when it's powered. The stored part costs 3 times as much; releasing it costs no mana, but everything you've imbued shares one cooldown as long as the stored spell's, and you keep up to 6 imbued items.");
 
+	// ---- Fused effects: made only at the Fusion Altar, from two effects of the right elements (see Fusions). Never crafted or found.
+	public static final RuneDef FIRESTORM = effect("firestorm", "Firestorm", 3, 18, "fire", EffectKind.HARMFUL, "Sets targets alight for 6 seconds and deals 4 damage, and the fire leaps to every enemy within 2 blocks of them.", POWER, DURATION, RADIUS, LINGER);
+	public static final RuneDef STEAM = effect("steam", "Steam", 3, 14, "fire", EffectKind.HARMFUL, "A scalding burst of steam: 4 damage and Blindness for 3 seconds.", POWER, DURATION, LINGER);
+	public static final RuneDef MAGMA = effect("magma", "Magma", 3, 16, "earth", EffectKind.HARMFUL, "The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it.", POWER, DURATION, RADIUS);
+	public static final RuneDef TEMPEST = effect("tempest", "Tempest", 3, 22, "storm", EffectKind.HARMFUL, "A lightning strike for 8 damage, and a gale that hurls targets far away.", POWER, LINGER);
+	public static final RuneDef PLASMA = effect("plasma", "Plasma", 3, 20, "storm", EffectKind.HARMFUL, "9 damage that ignores half of the target's armour.", POWER, LINGER);
+	public static final RuneDef HAIL = effect("hail", "Hail", 3, 16, "frost", EffectKind.HARMFUL, "Three hailstones of 2 damage each, and Slowness II for 4 seconds.", POWER, DURATION, LINGER);
+	public static final RuneDef GLACIER = effect("glacier", "Glacier", 3, 16, "frost", EffectKind.HARMFUL, "Freezes targets in place for 2 seconds (1 second on players).", DURATION, LINGER);
+	public static final RuneDef LIFESTEAL = effect("lifesteal", "Lifesteal", 3, 16, "blood", EffectKind.HARMFUL, "5 damage, and you heal for what it dealt.", POWER, LINGER);
+	public static final RuneDef WARP = effect("warp", "Warp", 3, 12, "void", EffectKind.MOVEMENT, "You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds.", DURATION);
+	public static final RuneDef BLOOM = effect("bloom", "Bloom", 3, 16, "life", EffectKind.HELPFUL, "Regeneration II for 6 seconds, and plants grow around every ally it touches.", POWER, DURATION);
+	public static final RuneDef SURGE = effect("surge", "Surge", 3, 16, "storm", EffectKind.HELPFUL, "Speed I and Strength I for 8 seconds.", POWER, DURATION);
+	public static final RuneDef NULLIFY = effect("nullify", "Nullify", 3, 14, "arcane", EffectKind.HARMFUL, "Strips an enemy's good effects, or an ally's bad effects.");
+
+	/** Fused effects: made only by combining two effects at the Fusion Altar. */
+	public static final java.util.List<RuneDef> FUSED = java.util.List.of(FIRESTORM, STEAM, MAGMA, TEMPEST, PLASMA, HAIL, GLACIER, LIFESTEAL, WARP,
+		BLOOM, SURGE, NULLIFY);
+
+	public static boolean fused(RuneDef rune) {
+		return FUSED.contains(rune);
+	}
+
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());
 
@@ -241,8 +263,13 @@ public final class Runes {
 		return INNATE.contains(rune);
 	}
 
+	/** A rune by id: one of the roster, or a Knot (which carries its spell in its id, see {@link Knots}). */
 	public static Optional<RuneDef> get(String id) {
-		return Optional.ofNullable(ALL.get(id));
+		RuneDef rune = ALL.get(id);
+		if (rune != null) {
+			return Optional.of(rune);
+		}
+		return Knots.isKnot(id) ? Knots.def(id) : Optional.empty();
 	}
 
 	public static Collection<RuneDef> all() {
