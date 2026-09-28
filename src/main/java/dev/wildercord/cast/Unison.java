@@ -63,14 +63,33 @@ public final class Unison {
 		return BONUS;
 	}
 
+	/**
+	 * Both colours at once: two shells of light racing out on crossed tilts, a cross of crescents
+	 * (one of each colour) cut through the target, rings of both over the ground and the two
+	 * circles turning against each other under it.
+	 */
 	private static void burst(ServerLevel level, LivingEntity target, int a, int b) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		for (int i = 0; i < 24; i++) {
-			double angle = Math.PI * 2 * i / 24;
+		double w = Math.max(0.6, target.getBbWidth());
+		double spin = level.getRandom().nextDouble() * Math.PI;
+		Vec3 facing = ElementFx.flatDir(spin);
+		Vec3 side = facing.cross(new Vec3(0, 1, 0));
+		for (int i = 0; i < 2; i++) {
+			int color = i == 0 ? a : b;
+			double yaw = spin + i * Math.PI / 2;
+			ElementFx.ring(level, c, new Vec3(Math.cos(yaw), 0, Math.sin(yaw)), color, 0.3, 2.2 + w, 0.07, 10);
+			Vec3 bulge = side.scale(i == 0 ? 1 : -1).add(0, 1, 0).normalize();
+			double r = 1.2 + w * 0.3;
+			ElementFx.slash(level, c.subtract(bulge.scale(r)), facing, bulge, color, r, 2.2, 0.22, 2, 8);
+			ElementFx.groundRing(level, target.position(), color, 0.3, (i == 0 ? 2.8 : 2.2) + w, i == 0 ? 0.09 : 0.05, 12 + i * 2);
+		}
+		for (int i = 0; i < 12; i++) {
+			double angle = Math.PI * 2 * i / 12;
 			Vec3 dir = new Vec3(Math.cos(angle), 0.2 * Math.sin(angle * 3), Math.sin(angle));
 			Vfx.fling(level, new DustParticleOptions(i % 2 == 0 ? a : b, 1.3F), c, dir, 0.3);
 		}
 		Vfx.emit(level, SigilOption.glow(0xFF000000 | a, 2.2F), c, 1, 0.0, 0.0);
+		Vfx.emit(level, SigilOption.glow(0xFF000000 | b, 1.2F), c, 1, 0.0, 0.0);
 		Sigils.send(level, SigilOption.flat(SigilOption.CIRCLE, a, 1.4F, 24, 0.12F), target.position().add(0, 0.07, 0));
 		Sigils.send(level, SigilOption.flat(SigilOption.RING, b, 1.8F, 24, -0.12F), target.position().add(0, 0.08, 0));
 		Fx.sound(level, c, SoundEvents.BELL_RESONATE, 1.0F, 1.6F);

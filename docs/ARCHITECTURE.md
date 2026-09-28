@@ -34,8 +34,8 @@ asset pipeline and testing. For *what* each rune does and why, see [DESIGN.md](D
                                      runSegment ─▶ deliver(group)   shapes find hits
                                                     └▶ onHit        effects apply, links fire
                                             ▼
-                                   Vfx / TechniqueVfx ──▶ Fx.send ──▶ particles for every player
-                                   Sigils ──▶ sigil, spell circle and light particles
+                                   Vfx / TechniqueVfx / ElementFx ──▶ Fx.send ──▶ particles for every player
+                                   Sigils / Light ──▶ sigil, spell circle and light particles
 ```
 
 Three layers, each only knowing about the ones below it:
@@ -274,11 +274,12 @@ None of the wards are saved: they last seconds, and a restart simply ends them.
   up as a text display, and keeps its last 5 seconds of hits for the DPS in its name.
 - **`SpellChat`**: a chat message decorator that turns `wc:` codes into hoverable spell cards.
 
-### Visuals: `Vfx`, `TechniqueVfx`, `Fx`, `Sigils`, `BlockFx`
+### Visuals: `Vfx`, `TechniqueVfx`, `ElementFx`, `Fx`, `Sigils`, `Light`, `BlockFx`
 
-Visuals are sent from the server, so everyone sees the same show. Most are vanilla particles and
-sounds. `Vfx.Theme` gives each element two colours, a mote, a spark and two sounds; shapes and
-effects are built from primitives (`ring`, `radial`, `helix`, `stream`, `shockwave`).
+Visuals are sent from the server, so everyone sees the same show. `Vfx.Theme` gives each element
+two colours, a mote, a spark and two sounds; shapes are built from shaped light and magic circles
+(below), effects from their element's visual language in `ElementFx`, with a few vanilla particles
+and primitives (`radial`, `helix`, `stream`, `shockwave`) on top.
 
 `Fx.send` is the one place ordinary particles leave the server. It **skips any particle that would
 appear right in front of a player's own eyes**, which keeps your own spells from blocking your
@@ -302,7 +303,19 @@ racing out), a `RAY` (a beam, its pieces turned to face the viewer), a `SLASH` (
 sweeping across) and an `ORB` (a glow wrapped in turning rings), each a soft halo (`sigil_beam`)
 under a hot core. `Light` sends them; every shape's visuals in `Vfx` and `TechniqueVfx` are built
 from them, the circles and glows. `SigilOption.glow` is a camera-facing flash; it replaced vanilla's firework flash, which
-showed up close as a pale square. The circle under every cast (`Vfx.castCircle`) is the spell's own
+showed up close as a pale square.
+
+`ElementFx` holds the element visual languages that every effect (in `Vfx`, `TechniqueVfx`,
+`Reactions`, `Innates` and `SecretSpells`) is drawn from: each element's `Palette` (its rune
+colour, a highlight and a contrast), its motifs (embers and flame tongues, ice shards and frost
+seals, lightning built from short rays, swirling crescents, ground cracks, leaf spirals, imploding
+darkness and black cores, star seals and orbiting comets, clock faces, cuts and heartbeats) and its
+signature impact (`ElementFx.impact`). Its light and circles go through `Fx.send`, so unlike
+`Light` (128 blocks, for shapes) they keep out of a player's own eyes and stay silent inside
+`Fx.quietly`; buffs a passive renews send everything at once for the same reason, never through
+the `Scheduler`. `ElementFx.DARK` or'd into a colour draws a light as darkness (void's language);
+`ringOption` and `slashOption` build the particle for another sender (Heart Circles send their
+per-cast spin with `Fx.sendOthers`). The circle under every cast (`Vfx.castCircle`) is the spell's own
 circle, flat on the ground, with enchanting glyphs rising from it and nothing flying outward; a Runebound's
 telegraph is the same circle held out in its right hand.
 

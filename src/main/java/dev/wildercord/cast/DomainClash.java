@@ -79,17 +79,26 @@ public final class DomainClash {
 		Sigils.layer(level, front, dir, dev.wildercord.content.SigilOption.RING, 0xFFF4D0, size * 1.3F, 34, 0.2F);
 		Fx.sound(level, front, SoundEvents.WARDEN_SONIC_CHARGE, 1.4F, 1.2F);
 		Fx.sound(level, front, SoundEvents.BELL_RESONATE, 1.2F, 0.6F);
+		double width = Math.min(a.radius(), b.radius()) * 0.9;
 		for (int t = 0; t < 30; t += 2) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
-				double width = Math.min(a.radius(), b.radius()) * 0.9;
-				for (int i = -12; i <= 12; i++) {
-					double s = i / 12.0;
-					double y = Math.sin(tick * 0.4 + i) * 2.5;
-					Vec3 p = front.add(side.scale(s * width)).add(0, y, 0);
-					Fx.sendFar(level, new DustParticleOptions(i % 2 == 0 ? a.color() : b.color(), 1.8F), p);
+				// Where the shells grind: lightning of both colours crackling up and down the front, a band of
+				// light sweeping it, and each side's rings shoving at the other.
+				for (int k = 0; k < 2; k++) {
+					double s = level.getRandom().nextDouble() * 2 - 1;
+					double drift = (level.getRandom().nextDouble() - 0.5) * 0.3;
+					ElementFx.bolt(level, front.add(side.scale(s * width)).add(0, 2.5, 0), front.add(side.scale((s + drift) * width)).add(0, -1.4, 0), 0.06, 1, 1,
+						k == 0 ? a.color() : b.color(), 0);
 				}
-				Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, front, 10, 1.2, 0.2);
+				double y = Math.sin(tick * 0.4) * 2.2;
+				Light.ray(level, front.subtract(side.scale(width)).add(0, y, 0), front.add(side.scale(width)).add(0, y, 0), tick % 4 == 0 ? a.color() : b.color(),
+					0.08, 4);
+				if (tick % 6 == 0) {
+					Light.ring(level, front.subtract(dir.scale(0.3)), dir, a.color(), 0.5, size * 1.3, 0.07, 8);
+					Light.ring(level, front.add(dir.scale(0.3)), dir, b.color(), 0.5, size * 1.3, 0.07, 8);
+				}
+				Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, front, 6, 1.2, 0.2);
 				if (tick % 6 == 0) {
 					Fx.sound(level, front, SoundEvents.AMETHYST_BLOCK_HIT, 1.2F, 0.5F + tick / 40F);
 				}
@@ -112,7 +121,18 @@ public final class DomainClash {
 		Vec3 c = domain.center();
 		double r = domain.radius();
 		ItemParticleOption glass = new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE);
-		for (int i = 0; i < 160; i++) {
+		// The dome falls in on itself in light: its meridians and parallels collapse to the middle.
+		double line = 0.08 + r * 0.006;
+		for (int m = 0; m < 4; m++) {
+			double a = Math.PI * m / 4;
+			Light.ring(level, c, new Vec3(Math.cos(a), 0, Math.sin(a)), domain.color(), r, r * 0.05, line, 12);
+		}
+		for (double lat : new double[] {0.3, 0.6}) {
+			double rr = r * Math.cos(lat * Math.PI / 2);
+			Light.ring(level, c.add(0, r * Math.sin(lat * Math.PI / 2), 0), new Vec3(0, 1, 0), 0xFFFFFF, rr, rr * 0.05, line, 12);
+		}
+		Sigils.flash(level, c.add(0, 1.5, 0), domain.color(), (float) Math.min(8, r));
+		for (int i = 0; i < 100; i++) {
 			double y = level.getRandom().nextDouble();
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			double rr = Math.sqrt(1 - y * y) * r;

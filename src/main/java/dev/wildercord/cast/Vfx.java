@@ -17,15 +17,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Spell visuals. Every element has a theme (two colours, a mote, a spark, a cast sound and an
- * impact sound); shapes and effects are built from animated primitives on top of it. All of it
- * is vanilla particles sent from the server, so every player sees the same show and no
- * resource pack is needed.
+ * impact sound); shapes are drawn in shaped light ({@link Light}) and magic circles on top of it,
+ * and effects in their element's visual language ({@link ElementFx}). All of it is sent from the
+ * server, so every player sees the same show.
  */
 public final class Vfx {
 	private Vfx() {}
@@ -125,15 +129,17 @@ public final class Vfx {
 		}
 	}
 
-	/** An expanding ring on the ground, drawn over {@code ticks} ticks. */
+	/**
+	 * An expanding ring on the ground, racing out over about {@code ticks} ticks: a band of light,
+	 * finer for a small ring (a bolt's impact) and heavier for a big one (an explosion), and a
+	 * paler one behind it.
+	 */
 	public static void shockwave(ServerLevel level, Vec3 center, double radius, Theme theme, int ticks) {
-		for (int t = 0; t < ticks; t++) {
-			double r = radius * (t + 1) / ticks;
-			// Fine dust for a small ring (a bolt's impact), heavier for a big one (an explosion).
-			float scale = (float) (Math.min(1.6, 0.7 + radius * 0.35) * (1 - 0.55 * t / ticks));
-			int points = (int) Math.max(12, r * 9);
-			Scheduler.later(t + 1, () -> ring(level, new DustColorTransitionOptions(theme.primary, theme.secondary, scale), center.add(0, 0.12, 0), r, points));
-		}
+		ElementFx.Palette palette = ElementFx.palette(theme);
+		double width = Math.min(0.14, 0.04 + radius * 0.025);
+		Vec3 c = center.add(0, 0.04, 0);
+		ElementFx.groundRing(level, c, palette.primary(), Math.min(0.3, radius * 0.2), radius, width, ticks + 6);
+		ElementFx.groundRing(level, c, palette.secondary(), Math.min(0.2, radius * 0.1), radius * 0.75, width * 0.6, ticks + 9);
 	}
 
 	/** Two strands spiralling up around a point over {@code ticks} ticks. */
@@ -318,184 +324,307 @@ public final class Vfx {
 	}
 
 	// ------------------------------------------------------------------ effects
+	// Each effect is drawn in its element's language (see ElementFx): a few strong shapes of light
+	// and a handful of particles. The buffs a passive can renew (Feather Fall, Swift, Night Eye,
+	// Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap) send everything at once and
+	// let the light itself do the moving, never the Scheduler, so a quiet renewal stays quiet.
 
+	/** Fire: flame tongues licking up the target over a heat flare, a ring of fire at its feet, embers rising off it. */
 	public static void fire(ServerLevel level, Entity target) {
 		Vec3 base = target.position();
-		for (int i = 0; i < 12; i++) {
-			double a = Math.PI * 2 * i / 12;
-			fling(level, ParticleTypes.FLAME, base.add(Math.cos(a) * 0.5, 0.1, Math.sin(a) * 0.5), new Vec3(-Math.cos(a) * 0.3, 1, -Math.sin(a) * 0.3), 0.12);
-		}
-		emit(level, ParticleTypes.LAVA, target.getBoundingBox().getCenter(), 4, 0.3, 0.0);
-		emit(level, ParticleTypes.LARGE_SMOKE, target.getBoundingBox().getCenter(), 3, 0.3, 0.02);
+		Vec3 c = target.getBoundingBox().getCenter();
+		double w = Math.max(0.35, target.getBbWidth() * 0.6);
+		double h = target.getBbHeight();
+		ElementFx.heatFlare(level, c, 1.2);
+		ElementFx.flames(level, base, w, h, 5);
+		Scheduler.later(2, () -> ElementFx.flames(level, target.position(), w, h, 3));
+		ElementFx.groundRing(level, base, ElementFx.FIRE.primary(), 0.2, w + 0.9, 0.05, 8);
+		ElementFx.embers(level, base.add(0, h * 0.4, 0), w, 8);
+		emit(level, ParticleTypes.LARGE_SMOKE, c.add(0, h * 0.3, 0), 2, 0.25, 0.02);
 		Fx.sound(level, base, SoundEvents.GENERIC_BURN, 0.5F, 1.2F);
 	}
 
+	/** Frost: crystal shards burst out of the target, a shatter ring snaps round it and frost creeps over the ground. */
 	public static void frost(ServerLevel level, Entity target) {
 		Vec3 center = target.getBoundingBox().getCenter();
-		radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), center, 14, 0.18);
-		radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), center, 8, 0.12);
-		helix(level, target.position(), 0.6, target.getBbHeight() + 0.3, FROST, 6);
+		double w = Math.max(0.5, target.getBbWidth());
+		Sigils.flash(level, center, ElementFx.FROST.primary(), 1.2F);
+		ElementFx.shards(level, center, 0.6 + w * 0.5, 7);
+		ElementFx.shatterRing(level, center, 0.8 + w);
+		ElementFx.frostCreep(level, target.position(), 0.6 + w * 0.6, 24);
 		Fx.sound(level, center, SoundEvents.GLASS_BREAK, 0.6F, 1.6F);
 		Fx.sound(level, center, SoundEvents.POWDER_SNOW_BREAK, 0.8F, 0.8F);
 	}
 
+	/** Lightning lands (the bolt itself is vanilla's): a white flare, forks racing out over the ground, rings of light and a scorch. */
 	public static void lightning(ServerLevel level, Vec3 at) {
-		emit(level, SigilOption.glow(0xFFFFF4C0, 2.2F), at.add(0, 1, 0), 1, 0.0, 0.0);
-		radial(level, ParticleTypes.ELECTRIC_SPARK, at.add(0, 0.3, 0), 30, 0.6);
-		radial(level, ParticleTypes.END_ROD, at.add(0, 0.3, 0), 10, 0.25);
-		shockwave(level, at, 2.2, STORM, 4);
-		ring(level, new DustParticleOptions(0x2A2418, 1.8F), at.add(0, 0.06, 0), 0.9, 16);
+		Vec3 ground = at.add(0, 0.2, 0);
+		Sigils.flash(level, at.add(0, 1, 0), ElementFx.STORM.secondary(), 2.6F);
+		RandomSource random = level.getRandom();
+		double phase = random.nextDouble() * Math.PI * 2;
+		for (int i = 0; i < 3; i++) {
+			double a = phase + Math.PI * 2 * i / 3 + (random.nextDouble() - 0.5) * 0.8;
+			double reach = 1.5 + random.nextDouble();
+			ElementFx.bolt(level, ground, ground.add(Math.cos(a) * reach, 0, Math.sin(a) * reach), 0.05, i == 0 ? 1 : 0, 2);
+		}
+		ElementFx.groundRing(level, at, ElementFx.STORM.primary(), 0.3, 2.6, 0.07, 7);
+		ElementFx.groundRing(level, at, ElementFx.STORM.accent(), 0.2, 1.8, 0.04, 9);
+		ElementFx.sparks(level, at.add(0, 0.3, 0), 14, 0.5);
+		emit(level, new DustParticleOptions(0x2A2418, 1.8F), at.add(0, 0.08, 0), 6, 0.45, 0.0);
 		Fx.sound(level, at, SoundEvents.LIGHTNING_BOLT_IMPACT, 1.4F, 1.0F);
 	}
 
+	/** An explosion: a great heat flare, a shell of flame slashes and fire rings racing out, a shockwave over the ground, embers and smoke. */
 	public static void explosion(ServerLevel level, Vec3 center, double radius) {
-		emit(level, radius > 3.5 ? ParticleTypes.EXPLOSION_EMITTER : ParticleTypes.EXPLOSION, center, radius > 3.5 ? 1 : 3, 0.3, 0.0);
-		emit(level, SigilOption.glow(0xFFFFB060, 2.2F), center, 1, 0.0, 0.0);
-		radial(level, ParticleTypes.FLAME, center, 28, 0.35);
-		radial(level, ParticleTypes.LARGE_SMOKE, center, 14, 0.15);
-		radial(level, ParticleTypes.LAVA, center, 6, 0.1);
-		shockwave(level, center.subtract(0, 0.8, 0), radius * 1.2, FIRE, 5);
+		emit(level, radius > 3.5 ? ParticleTypes.EXPLOSION_EMITTER : ParticleTypes.EXPLOSION, center, 1, 0.3, 0.0);
+		ElementFx.heatFlare(level, center, Math.min(3.5, 1.0 + radius * 0.5));
+		ElementFx.flameBurst(level, center, radius * 0.55, (int) Math.min(8, 3 + radius));
+		double spin = level.getRandom().nextDouble() * Math.PI;
+		for (int i = 0; i < 2; i++) {
+			double a = spin + i * Math.PI / 2;
+			ElementFx.ring(level, center, new Vec3(Math.cos(a), 0, Math.sin(a)), i == 0 ? ElementFx.FIRE.primary() : ElementFx.FIRE.secondary(), 0.3, radius,
+				0.08, 9);
+		}
+		Vec3 floor = ElementFx.floor(level, center, radius + 1);
+		if (floor != null) {
+			ElementFx.groundRing(level, floor, ElementFx.FIRE.primary(), 0.4, radius * 1.2, 0.12, 12);
+			Scheduler.later(2, () -> ElementFx.groundRing(level, floor, ElementFx.FIRE.accent(), 0.3, radius * 0.9, 0.06, 10));
+		}
+		radial(level, ParticleTypes.FLAME, center, 18, 0.3);
+		radial(level, ParticleTypes.LARGE_SMOKE, center, 8, 0.12);
+		radial(level, ParticleTypes.LAVA, center, 4, 0.1);
 		Fx.sound(level, center, SoundEvents.GENERIC_EXPLODE, 1.2F, 1.0F);
 	}
 
+	/** Heal: a soft green bloom, a leaf spiral climbing the target, petals and hearts. */
 	public static void heal(ServerLevel level, Entity target) {
-		emit(level, ParticleTypes.HEART, target.position().add(0, target.getBbHeight() + 0.3, 0), 4, 0.35, 0.0);
-		helix(level, target.position(), 0.55, target.getBbHeight() + 0.4, LIFE, 8);
-		radial(level, ParticleTypes.TOTEM_OF_UNDYING, target.getBoundingBox().getCenter(), 10, 0.25);
+		Vec3 base = target.position();
+		double h = target.getBbHeight();
+		double w = Math.max(0.45, target.getBbWidth() * 0.75);
+		ElementFx.bloom(level, target.getBoundingBox().getCenter(), base, 1.0 + w * 0.5);
+		ElementFx.leafSpiral(level, base, w, h + 0.2, 5);
+		ElementFx.petals(level, base.add(0, h + 0.3, 0), 0.4, 4);
+		emit(level, ParticleTypes.HEART, base.add(0, h + 0.3, 0), 3, 0.35, 0.0);
 		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.5F);
 	}
 
+	private static final int AMBER = 0xF0C440;
+
+	/** Shield: rings of amber light close in and lock round the target into a cage, chips of stone at its feet. */
 	public static void shield(ServerLevel level, Entity target) {
+		Vec3 base = target.position();
+		Vec3 c = target.getBoundingBox().getCenter();
+		double h = target.getBbHeight();
 		double r = Math.max(0.7, target.getBbWidth() * 0.9);
-		for (int layer = 0; layer < 3; layer++) {
-			int l = layer;
-			Scheduler.later(1 + layer * 2, () -> {
-				Vec3 c = target.position().add(0, 0.3 + l * target.getBbHeight() * 0.4, 0);
-				for (int i = 0; i < 6; i++) {
-					double a0 = Math.PI * 2 * i / 6 + l * 0.5;
-					double a1 = Math.PI * 2 * (i + 1) / 6 + l * 0.5;
-					for (int s = 0; s <= 3; s++) {
-						double a = a0 + (a1 - a0) * s / 3;
-						emit(level, new DustParticleOptions(0xF0C440, 1.0F), c.add(Math.cos(a) * r, 0, Math.sin(a) * r), 1, 0.0, 0.0);
-					}
-				}
-			});
+		for (int i = 0; i < 3; i++) {
+			ElementFx.ring(level, base.add(0, 0.15 + i * h * 0.4, 0), UP, i == 1 ? ElementFx.EARTH.secondary() : AMBER, r * 1.8, r, 0.06, 12 + i * 2);
 		}
-		emit(level, ParticleTypes.WAX_ON, target.getBoundingBox().getCenter(), 10, 0.4, 0.05);
+		double cage = Math.max(r, h * 0.55) * 1.05;
+		double a = level.getRandom().nextDouble() * Math.PI;
+		ElementFx.ring(level, c, new Vec3(Math.cos(a), 0, Math.sin(a)), AMBER, cage * 1.2, cage, 0.035, 16);
+		ElementFx.ring(level, c, new Vec3(-Math.sin(a), 0, Math.cos(a)), AMBER, cage * 1.2, cage, 0.035, 16);
+		Sigils.flash(level, c, AMBER, 1.4F);
+		ElementFx.stoneShards(level, base.add(0, 0.2, 0), ElementFx.groundBlock(level, base), 6, 0.12);
+		emit(level, ParticleTypes.WAX_ON, c, 5, 0.4, 0.05);
 		Fx.sound(level, target.position(), SoundEvents.ARMOR_EQUIP_GOLD, 0.9F, 1.2F);
 	}
 
+	/** Harm: a star seal flares under the target, comets of pink light whirl round it and glyphs shimmer in. */
 	public static void harm(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		radial(level, ParticleTypes.ENCHANTED_HIT, c, 14, 0.3);
-		emit(level, ParticleTypes.WITCH, c, 6, 0.3, 0.0);
-		emit(level, SigilOption.glow(0xFFE678DC, 2.2F), c, 1, 0.0, 0.0);
+		double w = Math.max(0.5, target.getBbWidth());
+		Sigils.flash(level, c, ElementFx.ARCANE.primary(), 1.8F);
+		Sigils.flash(level, c, ElementFx.ARCANE.secondary(), 0.8F);
+		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, 0.5 + w * 0.4, 16);
+		ElementFx.orbit(level, c, 0.5 + w * 0.5, 3, 5);
+		radial(level, ParticleTypes.ENCHANTED_HIT, c, 8, 0.3);
+		ElementFx.shimmer(level, c, 0.35, 4);
 		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 0.8F, 1.3F);
 	}
 
+	/** Push: gust crescents slam into the target the way it's thrown and a ring of wind blows out past it. */
 	public static void push(ServerLevel level, Entity target, Vec3 direction) {
 		Vec3 c = target.getBoundingBox().getCenter();
+		Vec3 dir = direction.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : direction.normalize();
+		double r = Math.max(0.8, target.getBbWidth() + 0.4);
+		for (int i = 0; i < 2; i++) {
+			// Round a point behind the target, so the crescent bulges through it along the push.
+			Vec3 at = c.add(0, (i - 0.5) * 0.5, 0).subtract(dir.scale(r * 0.9));
+			ElementFx.slash(level, at, UP, dir, i == 0 ? ElementFx.WIND.primary() : ElementFx.WIND.secondary(), r, 1.7, 0.13, 1 + i, 6);
+		}
+		ElementFx.ring(level, c, dir, ElementFx.WIND.secondary(), 0.3, r * 1.4, 0.05, 7);
 		emit(level, ParticleTypes.GUST, c, 1, 0.0, 0.0);
-		for (int i = 0; i < 8; i++) {
-			fling(level, ParticleTypes.CLOUD, c, direction.add((i - 4) * 0.06, 0.1, (i % 3 - 1) * 0.06), 0.35);
+		for (int i = 0; i < 5; i++) {
+			fling(level, ParticleTypes.CLOUD, c, dir.add((i - 2) * 0.12, 0.08, ((i * 7) % 3 - 1) * 0.12), 0.3);
 		}
 		Fx.sound(level, c, SoundEvents.WIND_CHARGE_BURST, 0.7F, 1.1F);
 	}
 
+	/** Pull: darkness implodes round the target toward the pull, light streaming off it to where it's pulled. */
 	public static void pull(ServerLevel level, Entity target, Vec3 towards) {
-		stream(level, target.getBoundingBox().getCenter(), towards, VOID, 8);
-		emit(level, ParticleTypes.REVERSE_PORTAL, target.getBoundingBox().getCenter(), 14, 0.3, 0.05);
+		Vec3 c = target.getBoundingBox().getCenter();
+		Vec3 to = towards.subtract(c);
+		Vec3 n = to.lengthSqr() < 1.0E-4 ? UP : to.normalize();
+		double r = Math.max(0.8, target.getBbWidth() + 0.5);
+		ElementFx.ring(level, c, n, ElementFx.dark(ElementFx.VOID.accent()), r * 1.4, 0.15, 0.09, 8);
+		ElementFx.ring(level, c.add(n.scale(0.3)), n, ElementFx.VOID.primary(), r * 1.6, 0.2, 0.03, 8);
+		stream(level, c, towards, VOID, 4);
+		emit(level, ParticleTypes.PORTAL, c, 8, 0.1, 0.6);
 		Fx.sound(level, target.position(), SoundEvents.ENDER_EYE_DEATH, 0.6F, 0.8F);
 	}
 
+	/** Launch: a ring of wind bursts out along the ground and a spiral of gusts throws the target skyward. */
 	public static void launch(ServerLevel level, Entity target) {
-		emit(level, ParticleTypes.GUST_EMITTER_SMALL, target.position(), 1, 0.0, 0.0);
-		for (int i = 0; i < 16; i++) {
-			double a = Math.PI * 2 * i / 16;
-			fling(level, ParticleTypes.CLOUD, target.position().add(0, 0.1, 0), new Vec3(Math.cos(a), 0.15, Math.sin(a)), 0.25);
+		Vec3 base = target.position();
+		double w = Math.max(0.5, target.getBbWidth());
+		ElementFx.gustRing(level, base, 1.6 + w);
+		ElementFx.swirl(level, base.add(0, 0.1, 0), 0.5 + w * 0.4, 1.6, 4);
+		emit(level, ParticleTypes.GUST_EMITTER_SMALL, base, 1, 0.0, 0.0);
+		for (int i = 0; i < 8; i++) {
+			double a = Math.PI * 2 * i / 8;
+			fling(level, ParticleTypes.CLOUD, base.add(0, 0.1, 0), new Vec3(Math.cos(a), 0.15, Math.sin(a)), 0.22);
 		}
 		Fx.sound(level, target.position(), SoundEvents.BREEZE_JUMP, 0.9F, 1.0F);
 	}
 
+	/** Dash: rings of air burst out behind the target, and streaks of wind trail it as it goes. */
 	public static void dash(ServerLevel level, Entity target, Vec3 direction) {
+		Vec3 dir = direction.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : direction.normalize();
 		Vec3 c = target.position().add(0, 1, 0);
-		for (int t = 0; t < 6; t++) {
+		ElementFx.ring(level, c.subtract(dir.scale(0.6)), dir, ElementFx.WIND.secondary(), 0.3, 1.5, 0.05, 7);
+		ElementFx.ring(level, c.subtract(dir.scale(1.1)), dir, ElementFx.WIND.accent(), 0.2, 1.0, 0.035, 9);
+		Vec3[] last = {target.position()};
+		for (int t = 0; t < 5; t++) {
 			Scheduler.later(t + 1, () -> {
-				emit(level, ParticleTypes.SMALL_GUST, target.position().add(0, 0.6, 0), 2, 0.2, 0.0);
-				emit(level, WIND.fade(1.2F), target.position().add(0, 1, 0).subtract(direction.normalize().scale(0.6)), 3, 0.2, 0.0);
+				Vec3 now = target.position();
+				Vec3 step = now.subtract(last[0]);
+				double length = step.length();
+				if (length > 0.2) {
+					Vec3 along = step.scale(1 / length);
+					Vec3 side = ElementFx.perp(along);
+					for (int s = -1; s <= 1; s += 2) {
+						// Low and to the sides: they stream past a dashing caster's view, never through it.
+						Vec3 off = side.scale(s * 0.4).add(0, s < 0 ? 0.35 : 0.8, 0);
+						ElementFx.ray(level, last[0].add(off), now.add(off).subtract(along.scale(Math.min(0.3, length * 0.4))), ElementFx.WIND.primary(), 0.04, 6);
+					}
+				}
+				emit(level, ParticleTypes.SMALL_GUST, now.add(0, 0.4, 0), 1, 0.2, 0.0);
+				last[0] = now;
 			});
 		}
 		emit(level, ParticleTypes.GUST, c, 1, 0.0, 0.0);
 		Fx.sound(level, c, SoundEvents.BREEZE_SHOOT, 0.8F, 1.4F);
 	}
 
+	/** Feather Fall: feathers drift down round the target, a slow crescent of air circles its feet and a ring opens under it. */
 	public static void featherFall(ServerLevel level, Entity target) {
-		for (int i = 0; i < 6; i++) {
-			double a = Math.PI * 2 * i / 6;
-			fling(level, new ItemParticleOption(ParticleTypes.ITEM, Items.FEATHER), target.position().add(Math.cos(a) * 0.6, 1.8, Math.sin(a) * 0.6), new Vec3(0, -0.2, 0), 0.05);
+		Vec3 base = target.position();
+		for (int i = 0; i < 5; i++) {
+			double a = Math.PI * 2 * i / 5;
+			fling(level, new ItemParticleOption(ParticleTypes.ITEM, Items.FEATHER), base.add(Math.cos(a) * 0.7, target.getBbHeight() + 0.1, Math.sin(a) * 0.7),
+				new Vec3(0, -0.2, 0), 0.04);
 		}
-		emit(level, ParticleTypes.CLOUD, target.position().add(0, 0.2, 0), 10, 0.4, 0.02);
+		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 1.3, 0.04, 16);
+		ElementFx.slash(level, base.add(0, 0.25, 0), UP, ElementFx.flatDir(level.getRandom().nextDouble() * Math.PI * 2), ElementFx.WIND.primary(), 0.8,
+			Math.PI * 1.6, 0.05, 8, 14);
+		emit(level, ParticleTypes.CLOUD, base.add(0, 0.15, 0), 4, 0.35, 0.01);
 		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, 1.9F);
 	}
 
+	/** Swift: gusts swirl round the target's legs and a ring of wind runs out along the ground. */
 	public static void swift(ServerLevel level, Entity target) {
-		helix(level, target.position(), 0.5, 0.8, WIND, 6);
-		emit(level, ParticleTypes.SMALL_GUST, target.position().add(0, 0.3, 0), 6, 0.3, 0.0);
+		Vec3 base = target.position();
+		ElementFx.swirl(level, base.add(0, 0.1, 0), Math.max(0.45, target.getBbWidth() * 0.8), 0.8, 3);
+		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 1.4, 0.04, 8);
+		emit(level, ParticleTypes.SMALL_GUST, base.add(0, 0.3, 0), 3, 0.3, 0.0);
 		Fx.sound(level, target.position(), SoundEvents.BREEZE_JUMP, 0.5F, 1.8F);
 	}
 
+	/** Night Eye: a violet ring closes round the eyes and a spark of light kindles in each (not for your own eyes). */
 	public static void nightEye(ServerLevel level, Entity target) {
 		Vec3 eyes = target.getEyePosition();
-		ring(level, ARCANE.dust(0.8F), eyes, 0.45, 12);
-		emit(level, ParticleTypes.GLOW, eyes, 8, 0.3, 0.02);
+		Vec3 look = target.getLookAngle();
+		Vec3 ahead = new Vec3(look.x, 0, look.z).lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : new Vec3(look.x, 0, look.z).normalize();
+		Vec3 side = ahead.cross(UP);
+		ElementFx.ring(level, eyes, UP, ElementFx.ARCANE.accent(), 0.8, 0.35, 0.03, 10);
+		for (int s = -1; s <= 1; s += 2) {
+			emit(level, SigilOption.glow(ElementFx.ARCANE.secondary(), 0.35F), eyes.add(side.scale(s * 0.12)).add(ahead.scale(0.3)), 1, 0.0, 0.0);
+		}
+		emit(level, ParticleTypes.GLOW, eyes, 4, 0.3, 0.02);
 		Fx.sound(level, eyes, SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.8F);
 	}
 
+	/** Light: an orb of light kindles at the point, a ring running out from it and motes drifting off. */
 	public static void light(ServerLevel level, Vec3 at) {
-		emit(level, SigilOption.glow(0xFFFFF0B0, 2.2F), at, 1, 0.0, 0.0);
-		radial(level, ParticleTypes.END_ROD, at, 12, 0.08);
-		emit(level, ParticleTypes.GLOW, at, 6, 0.3, 0.0);
+		Sigils.flash(level, at, HOLY, 1.8F);
+		ElementFx.orb(level, at, HOLY, 0.2, 24);
+		ElementFx.ring(level, at, UP, ElementFx.ARCANE.secondary(), 0.1, 1.2, 0.04, 9);
+		radial(level, ParticleTypes.END_ROD, at, 8, 0.07);
 		Fx.sound(level, at, SoundEvents.AMETHYST_CLUSTER_PLACE, 0.8F, 1.6F);
 	}
 
+	/** Blink: darkness implodes where you were, a dark streak runs to where you arrive, and a black core snaps open there. */
 	public static void blink(ServerLevel level, Vec3 from, Vec3 to) {
-		// Implode where you were, burst where you arrive, and a streak between them.
-		stream(level, from.add(0, 1, 0).add(1.2, 0.5, 1.2), from.add(0, 1, 0), VOID, 6);
-		emit(level, ParticleTypes.PORTAL, from.add(0, 1, 0), 40, 0.4, 0.6);
-		Fx.send(level, VOID.trail(to.add(0, 1, 0), 10), from.x, from.y + 1, from.z, 10, 0.2, 0.4, 0.2, 0);
-		emit(level, VOID.flash(), to.add(0, 1, 0), 1, 0.0, 0.0);
-		radial(level, ParticleTypes.REVERSE_PORTAL, to.add(0, 1, 0), 24, 0.2);
-		shockwave(level, to, 1.4, VOID, 3);
+		Vec3 a = from.add(0, 1, 0);
+		Vec3 b = to.add(0, 1, 0);
+		ElementFx.implode(level, a, 1.3, 8);
+		Vec3 d = b.subtract(a);
+		double length = d.length();
+		if (length > 2.2) {
+			// It stops short of where you land, so its end never glows under your own eyes.
+			Vec3 end = b.subtract(d.scale(1.2 / length));
+			ElementFx.ray(level, a, end, ElementFx.dark(ElementFx.VOID.accent()), 0.16, 7);
+			ElementFx.ray(level, a, end, ElementFx.VOID.primary(), 0.05, 8);
+		}
+		ElementFx.blackCore(level, b, 0.3, 7);
+		ElementFx.ring(level, b, UP, ElementFx.VOID.primary(), 0.2, 1.6, 0.04, 8);
+		ElementFx.groundRing(level, to, ElementFx.VOID.secondary(), 0.2, 1.4, 0.04, 9);
+		radial(level, ParticleTypes.REVERSE_PORTAL, b, 12, 0.18);
 		Fx.sound(level, from, SoundEvents.ENDERMAN_TELEPORT, 0.8F, 1.2F);
 		Fx.sound(level, to, SoundEvents.CHORUS_FRUIT_TELEPORT, 0.8F, 1.0F);
 	}
 
+	/** Sonic Boom: a beam of darkness round a violet core, the warden's rings and void shockwaves racing down it. */
 	public static void sonicBoom(ServerLevel level, Vec3 from, Vec3 to) {
 		Vec3 delta = to.subtract(from);
-		int steps = (int) Math.max(2, delta.length() / 1.2);
-		for (int i = 1; i <= steps; i++) {
-			Vec3 p = from.add(delta.scale(i / (double) steps));
+		double length = delta.length();
+		Vec3 dir = length > 1.0E-4 ? delta.scale(1 / length) : new Vec3(0, 0, 1);
+		ElementFx.ray(level, from, to, ElementFx.dark(ElementFx.VOID.accent()), 0.22, 10);
+		ElementFx.ray(level, from, to, ElementFx.VOID.primary(), 0.05, 9);
+		// Nothing within a couple of blocks of where it starts: that's often the caster's own face.
+		for (double s = 2.5; s < length; s += 2.5) {
+			Vec3 p = from.add(dir.scale(s));
+			Scheduler.later(1 + (int) (s / 8), () -> ElementFx.ring(level, p, dir, ElementFx.VOID.secondary(), 0.2, 1.1, 0.04, 8));
 			emit(level, ParticleTypes.SONIC_BOOM, p, 1, 0.0, 0.0);
 		}
+		ElementFx.voidImpact(level, to, 1.0);
 		Fx.sound(level, from, SoundEvents.WARDEN_SONIC_BOOM, 1.2F, 1.0F);
 	}
 
+	/** Wither: darkness falls in on the target round a small black core, smoke and souls rising off it. */
 	public static void wither(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		emit(level, ParticleTypes.LARGE_SMOKE, c, 12, 0.35, 0.02);
-		radial(level, ParticleTypes.SOUL, c, 8, 0.08);
-		emit(level, new DustParticleOptions(0x1A1A1A, 1.6F), c, 14, 0.4, 0.0);
+		double w = Math.max(0.5, target.getBbWidth());
+		ElementFx.implode(level, c, 0.9 + w * 0.6, 9);
+		ElementFx.blackCore(level, c, 0.14 + w * 0.06, 10);
+		emit(level, ParticleTypes.LARGE_SMOKE, c, 4, 0.3, 0.01);
+		radial(level, ParticleTypes.SOUL, c, 4, 0.06);
 		Fx.sound(level, c, SoundEvents.WITHER_SHOOT, 0.7F, 1.2F);
 	}
 
+	/** One pulse of Dragon Breath: violet breath over the ground, a rim of light round it and darkness drawing in. */
 	public static void dragonBreath(ServerLevel level, Vec3 center, double radius) {
-		emit(level, PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), center.add(0, 0.4, 0), 40, radius / 2, 0.02);
-		ring(level, VOID.dust(1.4F), center.add(0, 0.1, 0), radius, (int) Math.max(18, radius * 10));
+		emit(level, PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), center.add(0, 0.4, 0), 22, radius / 2, 0.02);
+		ElementFx.groundRing(level, center, ElementFx.VOID.primary(), radius * 0.85, radius, 0.06, 20);
+		ElementFx.groundRing(level, center, ElementFx.dark(ElementFx.VOID.accent()), radius, radius * 0.25, 0.12, 18);
 	}
 
+	/** Grow: a small bloom on the block, leaves and sparkles. */
 	public static void grow(ServerLevel level, Vec3 at) {
-		radial(level, ParticleTypes.HAPPY_VILLAGER, at, 10, 0.1);
-		emit(level, ParticleTypes.COMPOSTER, at, 8, 0.4, 0.0);
+		Sigils.flash(level, at, ElementFx.LIFE.secondary(), 1.0F);
+		ElementFx.groundRing(level, at.subtract(0, 0.1, 0), ElementFx.LIFE.primary(), 0.2, 1.4, 0.04, 12);
+		ElementFx.petals(level, at, 0.4, 4);
+		radial(level, ParticleTypes.HAPPY_VILLAGER, at, 6, 0.08);
 	}
 
 	// ------------------------------------------------------------------ expansion shapes
@@ -572,185 +701,227 @@ public final class Vfx {
 
 	// ------------------------------------------------------------------ expansion effects
 
-	/** A jagged little lightning arc between two points. */
+	/** A jagged little lightning arc between two points, forking and flickering. */
 	public static void shockArc(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 delta = to.subtract(from);
-		int steps = (int) Math.max(4, delta.length() * 3);
-		Vec3 prev = from;
-		for (int i = 1; i <= steps; i++) {
-			Vec3 p = from.add(delta.scale(i / (double) steps));
-			if (i < steps) {
-				p = p.add((level.getRandom().nextDouble() - 0.5) * 0.35, (level.getRandom().nextDouble() - 0.5) * 0.35, (level.getRandom().nextDouble() - 0.5) * 0.35);
-			}
-			Vec3 mid = prev.add(p).scale(0.5);
-			emit(level, new DustParticleOptions(0xFFF6A0, 0.9F), mid, 1, 0.0, 0.0);
-			emit(level, ParticleTypes.ELECTRIC_SPARK, p, 1, 0.02, 0.02);
-			prev = p;
-		}
+		ElementFx.bolt(level, from, to, 0.045, from.distanceTo(to) > 2.5 ? 1 : 0, 2);
+		emit(level, ParticleTypes.ELECTRIC_SPARK, to, 4, 0.1, 0.1);
 		Fx.sound(level, to, SoundEvents.TRIDENT_THUNDER.value(), 0.25F, 1.9F);
 	}
 
+	/** Haste: two comets of pink light whirl fast round the target's arms and a star seal flickers at its feet. */
 	public static void haste(ServerLevel level, Entity target) {
-		helix(level, target.position(), 0.5, 1.4, ARCANE, 6);
-		emit(level, ParticleTypes.CRIT, target.getBoundingBox().getCenter(), 8, 0.35, 0.1);
+		Vec3 c = target.getBoundingBox().getCenter();
+		ElementFx.orbit(level, c.add(0, 0.1, 0), Math.max(0.6, target.getBbWidth() * 0.8), 2, 3);
+		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, 0.55, 12);
+		emit(level, ParticleTypes.CRIT, c, 5, 0.35, 0.1);
 	}
 
+	/** Reveal: a ring of light scans up the target over a star seal marking the ground under it. */
 	public static void reveal(ServerLevel level, Entity target) {
-		ring(level, ARCANE.dust(1.0F), target.position().add(0, 0.1, 0), Math.max(0.6, target.getBbWidth()), 14);
-		emit(level, ParticleTypes.GLOW, target.getBoundingBox().getCenter(), 6, 0.3, 0.0);
+		double r = Math.max(0.6, target.getBbWidth() * 0.9);
+		double h = target.getBbHeight();
+		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, r, 18);
+		for (int i = 0; i < 4; i++) {
+			double y = h * (i + 0.5) / 4;
+			Scheduler.later(1 + i * 2, () -> ElementFx.ring(level, target.position().add(0, y, 0), UP, ElementFx.ARCANE.secondary(), r * 1.15, r, 0.035, 6));
+		}
+		emit(level, ParticleTypes.GLOW, target.getBoundingBox().getCenter(), 4, 0.3, 0.0);
 		Fx.sound(level, target.position(), SoundEvents.AMETHYST_CLUSTER_PLACE, 0.4F, 2.0F);
 	}
 
+	/** Regrowth: a leaf spiral winds up the target, a ring of green opens under it and leaves drift down. */
 	public static void regrowth(ServerLevel level, Entity target) {
-		helix(level, target.position(), 0.6, target.getBbHeight() + 0.3, LIFE, 10);
-		emit(level, ParticleTypes.COMPOSTER, target.getBoundingBox().getCenter(), 8, 0.4, 0.0);
+		Vec3 base = target.position();
+		ElementFx.leafSpiral(level, base, Math.max(0.45, target.getBbWidth() * 0.75), target.getBbHeight() + 0.2, 6);
+		ElementFx.groundRing(level, base, ElementFx.LIFE.primary(), 0.2, 1.2, 0.04, 14);
+		ElementFx.petals(level, base.add(0, target.getBbHeight() * 0.6, 0), 0.4, 4);
 		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 1.7F);
 	}
 
+	/** Cleanse: rings of clear light wash down the target from above its head, water falling with them. */
 	public static void cleanse(ServerLevel level, Entity target) {
-		Vec3 top = target.position().add(0, target.getBbHeight() + 0.4, 0);
-		for (int i = 0; i < 10; i++) {
-			double a = Math.PI * 2 * i / 10;
+		double h = target.getBbHeight();
+		double r = Math.max(0.55, target.getBbWidth() * 0.8);
+		for (int i = 0; i < 4; i++) {
+			int k = i;
+			double y = h + 0.3 - (h + 0.2) * i / 3;
+			Scheduler.later(1 + i * 2, () -> ElementFx.ring(level, target.position().add(0, y, 0), UP, k % 2 == 0 ? 0xDFFFF4 : ElementFx.LIFE.secondary(),
+				r * 1.25, r * 0.9, 0.04, 6));
+		}
+		Scheduler.later(8, () -> ElementFx.groundRing(level, target.position(), ElementFx.LIFE.primary(), 0.2, 1.3, 0.05, 10));
+		Vec3 top = target.position().add(0, h + 0.4, 0);
+		for (int i = 0; i < 8; i++) {
+			double a = Math.PI * 2 * i / 8;
 			fling(level, ParticleTypes.SPLASH, top.add(Math.cos(a) * 0.4, 0, Math.sin(a) * 0.4), new Vec3(0, -1, 0), 0.2);
 		}
-		emit(level, LIFE.sparkle(), target.getBoundingBox().getCenter(), 10, 0.35, 0.0);
-		emit(level, ParticleTypes.BUBBLE_POP, target.getBoundingBox().getCenter(), 8, 0.35, 0.0);
+		emit(level, ParticleTypes.BUBBLE_POP, target.getBoundingBox().getCenter(), 5, 0.35, 0.0);
 		Fx.sound(level, target.position(), SoundEvents.BREWING_STAND_BREW, 0.6F, 1.6F);
 	}
 
+	/** Stoneskin: the ground cracks under the target and rings of sandstone light close hard round it. */
 	public static void stoneskin(ServerLevel level, Entity target) {
-		radial(level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState()),
-			target.getBoundingBox().getCenter(), 14, 0.15);
-		shockwave(level, target.position(), 1.2, EARTH, 3);
+		Vec3 base = target.position();
+		double r = Math.max(0.6, target.getBbWidth() * 0.9);
+		double h = target.getBbHeight();
+		ElementFx.crack(level, base, 1.2, 20);
+		for (int i = 0; i < 2; i++) {
+			ElementFx.ring(level, base.add(0, 0.3 + i * h * 0.45, 0), UP, i == 0 ? ElementFx.EARTH.primary() : ElementFx.EARTH.secondary(), r * 1.7, r, 0.07,
+				10 + i * 3);
+		}
+		Sigils.flash(level, target.getBoundingBox().getCenter(), ElementFx.EARTH.secondary(), 1.2F);
 		Fx.sound(level, target.position(), SoundEvents.ARMOR_EQUIP_NETHERITE, 0.9F, 0.9F);
 	}
 
+	private static final int VINE = 0x3E8A34;
+
+	/** Root: the ground cracks and vines of green light twist up round the target's legs and hold it. */
 	public static void root(ServerLevel level, Entity target) {
 		Vec3 base = target.position();
-		for (int i = 0; i < 4; i++) {
-			double a0 = Math.PI * 2 * i / 4;
-			for (int s = 0; s < 8; s++) {
-				double a = a0 + s * 0.45;
-				double y = s * 0.2;
-				double r = 0.55 - s * 0.03;
-				emit(level, new DustParticleOptions(s % 3 == 0 ? 0x6EDC64 : 0x3E7A34, 1.2F), base.add(Math.cos(a) * r, y, Math.sin(a) * r), 1, 0.0, 0.0);
+		double r = Math.max(0.45, target.getBbWidth() * 0.7);
+		ElementFx.crack(level, base, 0.9 + r, 30);
+		double phase = level.getRandom().nextDouble() * Math.PI * 2;
+		for (int vine = 0; vine < 4; vine++) {
+			for (int s = 0; s < 3; s++) {
+				double a = phase + vine * Math.PI / 2 + s * 0.9;
+				ElementFx.slash(level, base.add(0, 0.15 + s * 0.35, 0), ElementFx.tilted(0.5, a + Math.PI / 2), ElementFx.flatDir(a),
+					s == 2 ? ElementFx.LIFE.primary() : VINE, r * (1 - s * 0.15), 1.0, 0.09, 2 + s * 2, 30);
 			}
 		}
 		emit(level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, net.minecraft.world.level.block.Blocks.MOSS_BLOCK.defaultBlockState()),
-			base.add(0, 0.2, 0), 12, 0.3, 0.05);
+			base.add(0, 0.2, 0), 8, 0.3, 0.05);
 		Fx.sound(level, base, SoundEvents.AZALEA_LEAVES_PLACE, 0.9F, 0.8F);
 	}
 
+	/** Veil: darkness falls in on the target as it fades from sight, a wisp of smoke left behind. */
 	public static void veil(ServerLevel level, Entity target) {
-		emit(level, ParticleTypes.LARGE_SMOKE, target.getBoundingBox().getCenter(), 14, 0.4, 0.02);
-		radial(level, ParticleTypes.REVERSE_PORTAL, target.getBoundingBox().getCenter(), 16, 0.12);
+		Vec3 c = target.getBoundingBox().getCenter();
+		double r = Math.max(0.8, target.getBbWidth() + 0.4);
+		ElementFx.implode(level, c, r * 1.2, 10);
+		ElementFx.groundRing(level, target.position(), ElementFx.dark(ElementFx.VOID.accent()), r * 1.4, 0.2, 0.1, 12);
+		emit(level, ParticleTypes.LARGE_SMOKE, c, 5, 0.35, 0.02);
+		radial(level, ParticleTypes.REVERSE_PORTAL, c, 8, 0.08);
 		Fx.sound(level, target.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.8F, 1.1F);
 	}
 
+	private static final int EMPOWER = 0xE04040;
+
+	/** Empower: a star seal blazes under the target and crescents of power surge up round it. */
 	public static void empower(ServerLevel level, Entity target) {
-		shockwave(level, target.position(), 1.4, Theme_EMPOWER, 3);
-		emit(level, ParticleTypes.ANGRY_VILLAGER, target.position().add(0, target.getBbHeight() + 0.2, 0), 1, 0.0, 0.0);
-		radial(level, ParticleTypes.CRIT, target.getBoundingBox().getCenter(), 12, 0.3);
+		Vec3 base = target.position();
+		ElementFx.starSeal(level, base.add(0, 0.07, 0), UP, 0.9, 16);
+		ElementFx.groundRing(level, base, EMPOWER, 0.3, 1.6, 0.06, 8);
+		ElementFx.tongues(level, base, Math.max(0.4, target.getBbWidth() * 0.6), target.getBbHeight(), 4, EMPOWER, 0xFFB060, 2, 8);
+		emit(level, ParticleTypes.ANGRY_VILLAGER, base.add(0, target.getBbHeight() + 0.2, 0), 1, 0.0, 0.0);
+		radial(level, ParticleTypes.CRIT, target.getBoundingBox().getCenter(), 8, 0.3);
 		Fx.sound(level, target.position(), SoundEvents.PLAYER_ATTACK_STRONG, 0.8F, 0.8F);
 	}
 
-	private static final Theme Theme_EMPOWER = new Theme(0xE04040, 0xFFB060, ParticleTypes.CRIT, ParticleTypes.CRIT, SoundEvents.PLAYER_ATTACK_STRONG, SoundEvents.PLAYER_ATTACK_STRONG);
-
+	/** Levitate: rings of air rise under the target and lift it, motes of light drifting up with it. */
 	public static void levitate(ServerLevel level, Entity target) {
-		for (int i = 0; i < 12; i++) {
-			double a = Math.PI * 2 * i / 12;
-			fling(level, ParticleTypes.END_ROD, target.position().add(Math.cos(a) * 0.6, 0.1, Math.sin(a) * 0.6), new Vec3(0, 1, 0), 0.12);
+		double r = Math.max(0.55, target.getBbWidth() * 0.8);
+		for (int i = 0; i < 3; i++) {
+			int k = i;
+			Scheduler.later(1 + i * 3, () -> ElementFx.ring(level, target.position().add(0, 0.05, 0), UP, k == 1 ? ElementFx.WIND.accent() : ElementFx.WIND.secondary(),
+				r * 1.5, r * 0.8, 0.045, 8));
 		}
-		emit(level, ParticleTypes.CLOUD, target.position(), 8, 0.3, 0.02);
+		for (int i = 0; i < 8; i++) {
+			double a = Math.PI * 2 * i / 8;
+			fling(level, ParticleTypes.END_ROD, target.position().add(Math.cos(a) * 0.6, 0.1, Math.sin(a) * 0.6), UP, 0.1);
+		}
+		emit(level, ParticleTypes.CLOUD, target.position(), 3, 0.3, 0.02);
 		Fx.sound(level, target.position(), SoundEvents.SHULKER_SHOOT, 0.6F, 1.5F);
 	}
 
+	/** Freeze: ice closes round the target for as long as it's held, a ring of frost clamps in and frost creeps over the ground. */
 	public static void freeze(ServerLevel level, Entity target) {
-		AABB_OUTLINE(level, target, new DustParticleOptions(0xCFF4FF, 1.1F));
-		radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.PACKED_ICE), target.getBoundingBox().getCenter(), 12, 0.15);
-		emit(level, ParticleTypes.SNOWFLAKE, target.getBoundingBox().getCenter(), 14, 0.4, 0.02);
+		Vec3 c = target.getBoundingBox().getCenter();
+		double w = Math.max(0.5, target.getBbWidth());
+		// Only a mob frozen solid is closed in ice: players and bosses are just slowed, and keep moving.
+		if (target instanceof Mob mob && mob.isAlive() && mob.isNoAi()) {
+			MobEffectInstance held = mob.getEffect(MobEffects.SLOWNESS);
+			BlockFx.encase(level, mob, held != null ? Math.max(10, held.getDuration() - 4) : 46);
+		}
+		Sigils.flash(level, c, ElementFx.FROST.secondary(), 1.4F);
+		ElementFx.ring(level, c, UP, ElementFx.FROST.secondary(), w + 1.2, w * 0.6, 0.06, 9);
+		ElementFx.ring(level, c.add(0, target.getBbHeight() * 0.35, 0), UP, ElementFx.FROST.accent(), w + 0.9, w * 0.55, 0.04, 10);
+		ElementFx.shards(level, c, 0.5 + w * 0.5, 5);
+		ElementFx.frostCreep(level, target.position(), 0.8 + w * 0.5, 40);
+		emit(level, ParticleTypes.SNOWFLAKE, c, 6, 0.4, 0.02);
 		Fx.sound(level, target.position(), SoundEvents.GLASS_PLACE, 1.0F, 0.6F);
 		Fx.sound(level, target.position(), SoundEvents.POWDER_SNOW_BREAK, 1.0F, 0.6F);
 	}
 
-	/** Dots along the edges of an entity's box: an "ice block" around it. */
-	private static void AABB_OUTLINE(ServerLevel level, Entity target, ParticleOptions p) {
-		var box = target.getBoundingBox().inflate(0.15);
-		double[] xs = {box.minX, box.maxX};
-		double[] ys = {box.minY, box.maxY};
-		double[] zs = {box.minZ, box.maxZ};
-		for (int k = 0; k <= 4; k++) {
-			double t = k / 4.0;
-			for (double y : ys) {
-				for (double z : zs) {
-					emit(level, p, new Vec3(box.minX + (box.maxX - box.minX) * t, y, z), 1, 0.0, 0.0);
-				}
-				for (double x : xs) {
-					emit(level, p, new Vec3(x, y, box.minZ + (box.maxZ - box.minZ) * t), 1, 0.0, 0.0);
-				}
-			}
-			for (double x : xs) {
-				for (double z : zs) {
-					emit(level, p, new Vec3(x, box.minY + (box.maxY - box.minY) * t, z), 1, 0.0, 0.0);
-				}
-			}
-		}
-	}
-
-	/** A burning rock streaking down from the sky onto a point, over 12 ticks. */
+	/** A burning rock streaking down out of the sky onto a point over 12 ticks, a reticle marking where it will land. */
 	public static void meteorFall(ServerLevel level, Vec3 ground) {
 		Vec3 start = ground.add(-6, 18, -3);
+		Vec3 path = ground.subtract(start);
+		Sigils.target(level, ground, ElementFx.FIRE.primary(), 1.8F, 16);
 		for (int t = 0; t < 12; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
-				Vec3 p = start.add(ground.subtract(start).scale((tick + 1) / 12.0));
-				emit(level, new DustParticleOptions(0x3A2418, 3.0F), p, 3, 0.2, 0.0);
-				emit(level, ParticleTypes.FLAME, p, 8, 0.35, 0.02);
-				emit(level, ParticleTypes.LARGE_SMOKE, p, 3, 0.3, 0.01);
-				emit(level, ParticleTypes.LAVA, p, 1, 0.1, 0.0);
+				Vec3 p = start.add(path.scale((tick + 1) / 12.0));
+				Vec3 back = start.add(path.scale(Math.max(0, tick - 2) / 12.0));
+				ElementFx.orb(level, p, ElementFx.FIRE.secondary(), 0.4, 2);
+				emit(level, SigilOption.glow(ElementFx.FIRE.primary(), 1.8F), p, 1, 0.0, 0.0);
+				ElementFx.ray(level, back, p, ElementFx.FIRE.primary(), 0.32, 7);
+				emit(level, ParticleTypes.FLAME, p, 4, 0.3, 0.02);
+				emit(level, ParticleTypes.LARGE_SMOKE, back, 2, 0.3, 0.01);
 			});
 		}
-		ring(level, new DustParticleOptions(0xF06E32, 1.4F), ground.add(0, 0.1, 0), 1.6, 20);
 		Fx.sound(level, ground, SoundEvents.BLAZE_SHOOT, 1.2F, 0.5F);
 	}
 
+	/** Tremor: the ground cracks open, shockwaves of dust race out over it and spires of stone jut up and sink. */
 	public static void tremor(ServerLevel level, Vec3 ground, double radius) {
-		net.minecraft.core.BlockPos below = net.minecraft.core.BlockPos.containing(ground.x, ground.y - 0.5, ground.z);
-		net.minecraft.world.level.block.state.BlockState state = level.getBlockState(below);
-		if (state.isAir()) {
-			state = net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState();
+		ElementFx.crack(level, ground, radius * 0.8, 30);
+		ElementFx.groundRing(level, ground, ElementFx.EARTH.secondary(), 0.4, radius * 1.1, 0.14, 12);
+		Scheduler.later(3, () -> ElementFx.groundRing(level, ground, ElementFx.EARTH.primary(), 0.3, radius * 0.8, 0.08, 10));
+		if (radius >= 2.5) {
+			RandomSource random = level.getRandom();
+			int spires = (int) Math.min(6, radius);
+			for (int i = 0; i < spires; i++) {
+				double a = Math.PI * 2 * i / spires + random.nextDouble() * 0.6;
+				double r = radius * (0.35 + 0.45 * random.nextDouble());
+				Vec3 p = CastEngine.ground(level, ground.add(Math.cos(a) * r, 1, Math.sin(a) * r));
+				if (Math.abs(p.y - ground.y) < 1.5) {
+					float height = 0.8F + (i % 3) * 0.3F;
+					Scheduler.later(1 + i % 3, () -> BlockFx.spire(level, p, height, 0.4F, 4));
+				}
+			}
 		}
-		var block = new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, state);
-		for (int i = 0; i < 24; i++) {
-			double a = Math.PI * 2 * i / 24;
-			double r = radius * (0.3 + level.getRandom().nextDouble() * 0.7);
-			fling(level, block, ground.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), new Vec3(0, 1, 0), 0.35);
-		}
-		emit(level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.DUST_PILLAR, state), ground.add(0, 0.1, 0), 30, radius / 2, 0.1);
-		shockwave(level, ground, radius, EARTH, 5);
 		Fx.sound(level, ground, SoundEvents.MACE_SMASH_GROUND_HEAVY, 1.2F, 0.8F);
 	}
 
-	/** One frame of a gravity well: a dark core and particles spiralling inward. */
+	/** One frame of a gravity well (every other tick): a black core, light spiralling into it, darkness and a violet rim falling in. */
 	public static void gravityWell(ServerLevel level, Vec3 point, double radius, int tick) {
-		emit(level, new DustParticleOptions(0x140820, 2.4F), point.add(0, 0.8, 0), 3, 0.1, 0.0);
-		emit(level, ParticleTypes.REVERSE_PORTAL, point.add(0, 0.8, 0), 2, 0.1, 0.0);
-		for (int i = 0; i < 4; i++) {
-			double a = tick * 0.35 + Math.PI * 2 * i / 4;
+		Vec3 core = point.add(0, 0.8, 0);
+		ElementFx.orb(level, core, ElementFx.dark(ElementFx.VOID.accent()), 0.35, 3);
+		for (int i = 0; i < 3; i++) {
+			double a = tick * 0.35 + Math.PI * 2 * i / 3;
 			double r = radius * (0.9 - (tick % 10) * 0.07);
 			Vec3 from = point.add(Math.cos(a) * r, 0.5 + (i % 2) * 0.6, Math.sin(a) * r);
-			Fx.send(level, VOID.trail(point.add(0, 0.8, 0), 12), from.x, from.y, from.z, 1, 0, 0, 0, 0);
+			Fx.send(level, VOID.trail(core, 12), from.x, from.y, from.z, 1, 0, 0, 0, 0);
+		}
+		if (tick % 10 == 0) {
+			double tilt = tick * 0.3;
+			ElementFx.ring(level, core, ElementFx.tilted(1.2, tilt), ElementFx.VOID.primary(), 0.5, 0.48, 0.02, 12);
+			ElementFx.ring(level, core, ElementFx.tilted(1.2, tilt + Math.PI / 2), ElementFx.VOID.secondary(), 0.5, 0.48, 0.02, 12);
+			ElementFx.groundRing(level, point, ElementFx.VOID.primary(), radius, 0.4, 0.05, 14);
+			ElementFx.ring(level, core, ElementFx.tilted(0.9, -tilt), ElementFx.dark(ElementFx.VOID.accent()), radius * 0.7, 0.3, 0.1, 12);
 		}
 		if (tick % 6 == 0) {
-			ring(level, VOID.dust(1.1F), point.add(0, 0.1, 0), radius * (1 - (tick % 30) / 30.0), (int) Math.max(12, radius * 6));
+			emit(level, ParticleTypes.PORTAL, core, 3, 0.1, 1.2);
 		}
 	}
 
+	/** Summon: a star seal opens on the ground, a column of light rises from it and souls stream up. */
 	public static void summon(ServerLevel level, Vec3 at) {
-		emit(level, ParticleTypes.SOUL, at.add(0, 0.5, 0), 14, 0.3, 0.05);
-		emit(level, SigilOption.glow(0xFFE678DC, 2.2F), at.add(0, 0.6, 0), 1, 0.0, 0.0);
-		radial(level, ParticleTypes.ENCHANT, at.add(0, 0.6, 0), 16, 0.6);
-		shockwave(level, at, 1.2, ARCANE, 3);
+		ElementFx.starSeal(level, at.add(0, 0.07, 0), UP, 1.0, 24);
+		ElementFx.ray(level, at, at.add(0, 1.8, 0), ElementFx.ARCANE.primary(), 0.2, 10);
+		Sigils.flash(level, at.add(0, 0.6, 0), ElementFx.ARCANE.primary(), 2.0F);
+		ElementFx.groundRing(level, at, ElementFx.ARCANE.accent(), 0.3, 1.8, 0.05, 10);
+		emit(level, ParticleTypes.SOUL, at.add(0, 0.5, 0), 6, 0.3, 0.05);
+		ElementFx.shimmer(level, at.add(0, 0.6, 0), 0.4, 8);
 	}
 
 	// ------------------------------------------------------------------ batch 3 shapes
@@ -834,132 +1005,206 @@ public final class Vfx {
 
 	// ------------------------------------------------------------------ batch 3 effects
 
+	private static final int VENOM = 0x86D23A;
+
+	/** Venom: two fangs of sickly green light bite into the target, a pulse of poison spreading and dripping off it. */
 	public static void venom(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		emit(level, new DustParticleOptions(0x5A9C2A, 1.3F), c, 12, 0.35, 0.0);
-		emit(level, ParticleTypes.ITEM_SLIME, c, 8, 0.3, 0.05);
+		double r = Math.max(0.5, target.getBbWidth() * 0.7);
+		Vec3 across = ElementFx.flatDir(level.getRandom().nextDouble() * Math.PI * 2);
+		// Upright jaws: one crescent dips from above, one rises from below, and they meet in the target.
+		ElementFx.slash(level, c.add(0, r * 0.9, 0), across, new Vec3(0, -1, 0), VENOM, r, 1.3, 0.1, 1, 6);
+		ElementFx.slash(level, c.subtract(0, r * 0.9, 0), across, UP, VENOM, r, 1.3, 0.1, 1, 6);
+		ElementFx.ring(level, c, UP, VENOM, 0.15, 1.0 + r, 0.05, 8);
+		ElementFx.ring(level, c, UP, 0x4E8A22, 0.1, 0.7 + r, 0.04, 11);
+		emit(level, ParticleTypes.ITEM_SLIME, c, 5, 0.3, 0.05);
+		emit(level, new DustParticleOptions(VENOM, 1.0F), c, 4, 0.35, 0.0);
 		Fx.sound(level, c, SoundEvents.SPIDER_HURT, 0.6F, 1.4F);
 	}
 
+	private static final int HOLY = 0xFFF0B0;
+
+	/** Smite: a lance of holy light drives down onto the target, a star flares under it and light bursts out. */
 	public static void smite(ServerLevel level, Entity target) {
-		Vec3 top = target.position().add(0, target.getBbHeight() + 3, 0);
-		Fx.send(level, new TrailParticleOption(target.getBoundingBox().getCenter(), 0xFFF6C8, 5), top.x, top.y, top.z, 6, 0.1, 0.1, 0.1, 0);
-		emit(level, SigilOption.glow(0xFFFFF6C8, 2.2F), target.getBoundingBox().getCenter(), 1, 0.0, 0.0);
-		radial(level, ParticleTypes.END_ROD, target.getBoundingBox().getCenter(), 14, 0.2);
-		ring(level, new DustParticleOptions(0xFFE890, 1.2F), target.position().add(0, 0.1, 0), 0.9, 14);
+		Vec3 base = target.position();
+		Vec3 c = target.getBoundingBox().getCenter();
+		Vec3 top = base.add(0, target.getBbHeight() + 5, 0);
+		ElementFx.ray(level, top, base, HOLY, 0.28, 10);
+		ElementFx.ray(level, top, base, 0xFFFFFF, 0.08, 8);
+		Sigils.flash(level, c, HOLY, 2.2F);
+		ElementFx.flatSigil(level, base, SigilOption.STAR, HOLY, 1.1, 18, 0.1);
+		ElementFx.groundRing(level, base, HOLY, 0.2, 2.0, 0.07, 9);
+		radial(level, ParticleTypes.END_ROD, c, 10, 0.18);
 		Fx.sound(level, target.position(), SoundEvents.BELL_RESONATE, 0.8F, 1.6F);
 	}
 
+	/** One pulse of Inferno: a ring of fire round the area, flame tongues leaping up inside it, embers and smoke. */
 	public static void inferno(ServerLevel level, Vec3 point, double radius) {
-		for (int i = 0; i < (int) (radius * 8); i++) {
-			double a = level.getRandom().nextDouble() * Math.PI * 2;
-			double r = Math.sqrt(level.getRandom().nextDouble()) * radius;
-			fling(level, i % 3 == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.FLAME, point.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), new Vec3(0, 1, 0), 0.08);
+		RandomSource random = level.getRandom();
+		ElementFx.groundRing(level, point, ElementFx.FIRE.primary(), radius * 0.9, radius, 0.08, 20);
+		ElementFx.groundRing(level, point, ElementFx.FIRE.accent(), radius * 0.4, radius * 0.95, 0.05, 14);
+		int tongues = (int) Math.min(8, 2 + radius);
+		for (int i = 0; i < tongues; i++) {
+			double a = random.nextDouble() * Math.PI * 2;
+			double r = Math.sqrt(random.nextDouble()) * radius * 0.85;
+			ElementFx.flames(level, point.add(Math.cos(a) * r, 0, Math.sin(a) * r), 0.25, 0.8, 1);
 		}
-		ring(level, FIRE.dust(1.3F), point.add(0, 0.1, 0), radius, (int) Math.max(16, radius * 8));
+		for (int i = 0; i < (int) (radius * 4); i++) {
+			double a = random.nextDouble() * Math.PI * 2;
+			double r = Math.sqrt(random.nextDouble()) * radius;
+			fling(level, i % 3 == 0 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.FLAME, point.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), UP, 0.08);
+		}
 		Fx.sound(level, point, SoundEvents.GENERIC_BURN, 0.7F, 0.8F);
 	}
 
+	/** Thunderclap: a white flare, a shockwave of light and forks of lightning ripping out over the ground, a puff of thundercloud. */
 	public static void thunderclap(ServerLevel level, Vec3 point, double radius) {
-		emit(level, SigilOption.glow(0xFFFFF4C0, 2.2F), point.add(0, 1, 0), 1, 0.0, 0.0);
-		radial(level, ParticleTypes.ELECTRIC_SPARK, point.add(0, 1, 0), 24, 0.5);
-		radial(level, ParticleTypes.CLOUD, point.add(0, 0.5, 0), 16, 0.3);
-		shockwave(level, point, radius * 1.3, STORM, 4);
+		Vec3 ground = point.add(0, 0.2, 0);
+		Sigils.flash(level, point.add(0, 1, 0), ElementFx.STORM.secondary(), 2.6F);
+		ElementFx.groundRing(level, point, ElementFx.STORM.primary(), 0.3, radius * 1.3, 0.1, 8);
+		ElementFx.ring(level, point.add(0, 1, 0), UP, ElementFx.STORM.accent(), 0.3, radius, 0.05, 7);
+		RandomSource random = level.getRandom();
+		double phase = random.nextDouble() * Math.PI * 2;
+		for (int i = 0; i < 4; i++) {
+			double a = phase + Math.PI / 2 * i + (random.nextDouble() - 0.5) * 0.7;
+			ElementFx.bolt(level, ground, ground.add(Math.cos(a) * radius, 0, Math.sin(a) * radius), 0.05, i % 2, 2);
+		}
+		radial(level, ParticleTypes.CLOUD, point.add(0, 0.5, 0), 10, 0.3);
+		ElementFx.sparks(level, point.add(0, 1, 0), 12, 0.5);
 		Fx.sound(level, point, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.6F, 1.6F);
 	}
 
-	/** A falling star streaking down onto a point, then a bright burst. */
+	private static final int STARLIGHT = 0xFFF0FF;
+
+	/** A falling star streaking down onto a point, then a burst of starlight shaped like a star. */
 	public static void star(ServerLevel level, Vec3 target) {
 		Vec3 top = target.add(2.5, 12, 1.5);
-		// A star mark on the ground where it will land, then the streak falling onto it.
+		// A star mark on the ground where it will land, then the star falling onto it.
 		Sigils.send(level, SigilOption.flat(SigilOption.STAR, 0xE8E0FF, 0.8F, 16, 0.18F), target.add(0, 0.07, 0));
-		Fx.send(level, new TrailParticleOption(target, 0xFFF0FF, 6), top.x, top.y, top.z, 14, 0.08, 0.08, 0.08, 0);
-		Fx.send(level, new TrailParticleOption(target, 0xB8C8FF, 7), top.x, top.y, top.z, 6, 0.25, 0.25, 0.25, 0);
-		// The streak it leaves, lower half only, thinning toward the ground.
-		for (int i = 0; i < 4; i++) {
-			int step = i;
-			Scheduler.later(2 + i, () -> {
-				for (int k = 0; k < 3; k++) {
-					double f = 0.35 + (step * 3 + k) * 0.05;
-					emit(level, new DustParticleOptions(0xF4F0FF, (float) (1.3 - f * 0.6)), top.lerp(target, f), 1, 0.0, 0.0);
-				}
+		for (int t = 0; t < 5; t++) {
+			int tick = t;
+			Scheduler.later(t + 1, () -> {
+				Vec3 p = top.lerp(target, (tick + 1) / 6.0);
+				Vec3 back = top.lerp(target, Math.max(0, tick - 1) / 6.0);
+				ElementFx.orb(level, p, STARLIGHT, 0.16, 2);
+				ElementFx.ray(level, back, p, 0xB8C8FF, 0.1, 6);
 			});
 		}
 		Scheduler.later(6, () -> {
-			emit(level, SigilOption.glow(0xFFF0B0FF, 2.2F), target.add(0, 0.5, 0), 1, 0.0, 0.0);
-			radial(level, ParticleTypes.END_ROD, target.add(0, 0.3, 0), 12, 0.2);
-			radial(level, ParticleTypes.FIREWORK, target.add(0, 0.3, 0), 10, 0.15);
+			Vec3 at = target.add(0, 0.4, 0);
+			Sigils.flash(level, at, 0xF0B0FF, 2.2F);
+			ElementFx.groundRing(level, target, ElementFx.ARCANE.primary(), 0.2, 1.8, 0.06, 9);
+			// Five points of light flung out flat: a star.
+			double a0 = level.getRandom().nextDouble() * Math.PI * 2;
+			for (int i = 0; i < 5; i++) {
+				double a = a0 + Math.PI * 2 * i / 5;
+				ElementFx.ray(level, at, at.add(Math.cos(a) * 1.1, 0.1, Math.sin(a) * 1.1), i % 2 == 0 ? STARLIGHT : ElementFx.ARCANE.primary(), 0.05, 7);
+			}
+			radial(level, ParticleTypes.END_ROD, at, 8, 0.18);
+			radial(level, ParticleTypes.FIREWORK, at, 6, 0.14);
 			Fx.sound(level, target, SoundEvents.FIREWORK_ROCKET_TWINKLE, 0.6F, 1.4F);
 		});
 	}
 
+	/** Blind: darkness closes over the target's eyes and hangs there, ink dripping from it. */
 	public static void blind(ServerLevel level, Entity target) {
-		emit(level, ParticleTypes.SQUID_INK, target.getEyePosition(), 12, 0.3, 0.02);
-		emit(level, new DustParticleOptions(0x100818, 1.5F), target.getEyePosition(), 10, 0.3, 0.0);
+		Vec3 eyes = target.getEyePosition();
+		ElementFx.ring(level, eyes, UP, ElementFx.dark(ElementFx.VOID.accent()), 0.9, 0.2, 0.1, 10);
+		ElementFx.orb(level, eyes, ElementFx.dark(ElementFx.VOID.accent()), 0.28, 14);
+		ElementFx.ring(level, eyes, UP, ElementFx.VOID.primary(), 1.0, 0.3, 0.025, 9);
+		emit(level, ParticleTypes.SQUID_INK, eyes, 6, 0.25, 0.02);
 		Fx.sound(level, target.position(), SoundEvents.SQUID_SQUIRT, 0.7F, 1.2F);
 	}
 
+	/** Chill: frost creeps out under the target and a thin ring of cold closes on it. */
 	public static void chill(ServerLevel level, Entity target) {
-		emit(level, ParticleTypes.SNOWFLAKE, target.getBoundingBox().getCenter(), 10, 0.35, 0.01);
-		ring(level, FROST.dust(0.9F), target.position().add(0, 0.1, 0), 0.7, 12);
+		double w = Math.max(0.5, target.getBbWidth());
+		ElementFx.frostCreep(level, target.position(), 0.5 + w * 0.4, 16);
+		ElementFx.ring(level, target.getBoundingBox().getCenter(), UP, ElementFx.FROST.primary(), w + 0.6, w * 0.5, 0.035, 8);
+		emit(level, ParticleTypes.SNOWFLAKE, target.getBoundingBox().getCenter(), 5, 0.35, 0.01);
 		Fx.sound(level, target.position(), SoundEvents.POWDER_SNOW_STEP, 0.8F, 1.2F);
 	}
 
+	/** Silence: a ring of light closes over the target's head and seals there. */
 	public static void silence(ServerLevel level, Entity target) {
 		Vec3 head = target.position().add(0, target.getBbHeight() + 0.4, 0);
-		ring(level, ARCANE.dust(1.0F), head, 0.4, 10);
-		emit(level, ParticleTypes.WITCH, head, 6, 0.2, 0.0);
+		ElementFx.ring(level, head, UP, ElementFx.ARCANE.primary(), 0.8, 0.35, 0.04, 8);
+		ElementFx.ring(level, head, UP, ElementFx.ARCANE.accent(), 0.36, 0.34, 0.03, 20);
+		ElementFx.sigil(level, head, UP, SigilOption.CIRCLE, ElementFx.ARCANE.primary(), 0.3, 20, 0.08);
+		emit(level, ParticleTypes.WITCH, head, 4, 0.2, 0.0);
 		Fx.sound(level, target.position(), SoundEvents.ILLUSIONER_PREPARE_BLINDNESS, 0.5F, 1.4F);
 	}
 
+	/** Fireward: flame tongues curl round the target and fold into warm rings that close on it. */
 	public static void fireward(ServerLevel level, Entity target) {
-		helix(level, target.position(), 0.6, target.getBbHeight() + 0.2, FIRE, 8);
-		emit(level, ParticleTypes.SMALL_FLAME, target.getBoundingBox().getCenter(), 10, 0.4, 0.01);
+		Vec3 base = target.position();
+		double w = Math.max(0.4, target.getBbWidth() * 0.65);
+		double h = target.getBbHeight();
+		ElementFx.flames(level, base, w, h, 4);
+		ElementFx.ring(level, base.add(0, 0.2, 0), UP, ElementFx.FIRE.secondary(), w + 1.1, w + 0.1, 0.05, 12);
+		ElementFx.ring(level, base.add(0, h * 0.6, 0), UP, ElementFx.FIRE.primary(), w + 0.9, w + 0.1, 0.04, 14);
+		emit(level, ParticleTypes.SMALL_FLAME, target.getBoundingBox().getCenter(), 6, 0.4, 0.01);
 		Fx.sound(level, target.position(), SoundEvents.FIRE_EXTINGUISH, 0.6F, 1.4F);
 	}
 
+	/** Nourish: crumbs and a small green bloom. */
 	public static void nourish(ServerLevel level, Entity target) {
-		emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BREAD), target.getEyePosition().subtract(0, 0.3, 0), 8, 0.2, 0.05);
-		emit(level, ParticleTypes.HAPPY_VILLAGER, target.getBoundingBox().getCenter(), 6, 0.35, 0.0);
+		emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BREAD), target.getEyePosition().subtract(0, 0.3, 0), 6, 0.2, 0.05);
+		ElementFx.bloom(level, target.getBoundingBox().getCenter(), target.position(), 0.9);
+		emit(level, ParticleTypes.HAPPY_VILLAGER, target.getBoundingBox().getCenter(), 4, 0.35, 0.0);
 		Fx.sound(level, target.position(), SoundEvents.GENERIC_EAT.value(), 0.7F, 1.1F);
 	}
 
+	private static final int TIDE = 0x4AA8FF;
+
+	/** Tidebreath: water swirls up round the target in crescents of blue light, bubbles rising with it. */
 	public static void tidebreath(ServerLevel level, Entity target) {
-		for (int i = 0; i < 10; i++) {
-			fling(level, ParticleTypes.BUBBLE_POP, target.position().add((i % 5 - 2) * 0.15, 0.2, (i / 5 - 0.5) * 0.3), new Vec3(0, 1, 0), 0.1);
+		Vec3 base = target.position();
+		ElementFx.swirl(level, base.add(0, 0.2, 0), Math.max(0.45, target.getBbWidth() * 0.75), target.getBbHeight() * 0.8, 4, TIDE, ElementFx.FROST.primary());
+		ElementFx.groundRing(level, base, TIDE, 0.2, 1.3, 0.05, 10);
+		for (int i = 0; i < 8; i++) {
+			fling(level, ParticleTypes.BUBBLE_POP, base.add((i % 4 - 1.5) * 0.2, 0.2, (i / 4 - 0.5) * 0.4), UP, 0.1);
 		}
-		emit(level, ParticleTypes.SPLASH, target.getBoundingBox().getCenter(), 10, 0.35, 0.05);
+		emit(level, ParticleTypes.SPLASH, target.getBoundingBox().getCenter(), 6, 0.35, 0.05);
 		Fx.sound(level, target.position(), SoundEvents.CONDUIT_ACTIVATE, 0.5F, 1.6F);
 	}
 
+	/** Leap: rings of air spring out along the ground and a pair of gusts curl up the legs. */
 	public static void leap(ServerLevel level, Entity target) {
-		emit(level, ParticleTypes.CLOUD, target.position().add(0, 0.1, 0), 10, 0.35, 0.02);
-		ring(level, WIND.dust(1.0F), target.position().add(0, 0.1, 0), 0.8, 14);
+		Vec3 base = target.position();
+		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 1.1, 0.05, 8);
+		ElementFx.groundRing(level, base, ElementFx.WIND.accent(), 0.1, 0.7, 0.035, 11);
+		ElementFx.swirl(level, base.add(0, 0.1, 0), 0.6, 0.5, 2);
+		emit(level, ParticleTypes.CLOUD, base.add(0, 0.1, 0), 5, 0.35, 0.02);
 		Fx.sound(level, target.position(), SoundEvents.RABBIT_JUMP, 0.8F, 1.0F);
 	}
 
-	/** A rope of particles from the caster to the anchor point. */
+	/** Grapple: a line of violet light from the caster to the anchor, and a black core where it bites. */
 	public static void grapple(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 delta = to.subtract(from);
-		int steps = (int) Math.min(80, Math.max(4, delta.length() * 3));
-		for (int i = 0; i <= steps; i++) {
-			Vec3 p = from.add(delta.scale(i / (double) steps));
-			emit(level, new DustParticleOptions(i % 2 == 0 ? 0xB45AF0 : 0xE0D0FF, 0.8F), p, 1, 0.0, 0.0);
-		}
-		emit(level, VOID.flash(), to, 1, 0.0, 0.0);
-		radial(level, ParticleTypes.REVERSE_PORTAL, to, 10, 0.15);
+		Vec3 d = to.subtract(from);
+		double length = d.length();
+		// It starts a little way out, so it never begins in the caster's own face.
+		Vec3 near = length > 2.6 ? from.add(d.scale(1.3 / length)) : from;
+		ElementFx.ray(level, near, to, ElementFx.VOID.primary(), 0.06, 12);
+		ElementFx.ray(level, near, to, ElementFx.VOID.secondary(), 0.025, 12);
+		ElementFx.blackCore(level, to, 0.2, 10);
+		ElementFx.ring(level, to, d, ElementFx.VOID.primary(), 0.1, 0.9, 0.04, 8);
+		radial(level, ParticleTypes.REVERSE_PORTAL, to, 8, 0.15);
 		Fx.sound(level, from, SoundEvents.FISHING_BOBBER_THROW, 0.8F, 0.7F);
 	}
 
+	/** Icepath: frost creeps out over the water, shards of ice glinting up from it. */
 	public static void icepath(ServerLevel level, Vec3 center, double radius) {
-		ring(level, FROST.fade(1.2F), center.add(0, 0.6, 0), radius, (int) Math.max(14, radius * 8));
-		emit(level, ParticleTypes.SNOWFLAKE, center.add(0, 0.8, 0), 16, radius / 2, 0.01);
+		ElementFx.frostCreep(level, center.add(0, 0.5, 0), radius, 30);
+		ElementFx.shards(level, center.add(0, 0.8, 0), 0.7, 4);
+		emit(level, ParticleTypes.SNOWFLAKE, center.add(0, 0.8, 0), 10, radius / 2, 0.01);
 		Fx.sound(level, center, SoundEvents.GLASS_PLACE, 0.8F, 1.4F);
 	}
 
-	/** The small pop of light on a creature any effect touches, so every hit reads clearly. */
+	/** The small pop of light on a creature any effect touches, so every hit reads clearly: a glow and a few of its element's motes. */
 	public static void touched(ServerLevel level, Entity target, Theme theme) {
-		emit(level, SigilOption.glow(theme.primary, 0.9F), target.getBoundingBox().getCenter(), 1, 0.0, 0.0);
-		emit(level, theme.sparkle(), target.getBoundingBox().getCenter(), 4, 0.3, 0.0);
+		Vec3 c = target.getBoundingBox().getCenter();
+		emit(level, SigilOption.glow(theme.primary, 0.9F), c, 1, 0.0, 0.0);
+		emit(level, theme.mote, c, 3, 0.3, 0.02);
 	}
 }

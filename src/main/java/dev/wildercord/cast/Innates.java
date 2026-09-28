@@ -87,10 +87,27 @@ public final class Innates {
 		player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("title.wildercord.innate").withColor(0xE8E0FF)));
 		player.sendSystemMessage(Component.translatable("message.wildercord.innate", Component.literal(rune.name()).withColor(color)).withColor(0xE8E0FF));
 		Sigils.ground(player.level(), player.position(), color, 0xFFFFFF, 2.2F, 50);
-		Vfx.radial(player.level(), new DustParticleOptions(color, 1.4F), player.position().add(0, 1.2, 0), 40, 0.3);
+		awakenFx(player, color);
 		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 0.8F);
 		Grimoire.feat(player, Feats.INNATE);
 	}
+
+	/** The rune wakes: rings of its colour race out over the ground and round the heart, and columns of light rise round you. */
+	private static void awakenFx(ServerPlayer player, int color) {
+		ServerLevel level = player.level();
+		Vec3 feet = player.position();
+		ElementFx.groundRing(level, feet, color, 0.3, 3.4, 0.09, 18);
+		ElementFx.groundRing(level, feet, 0xFFFFFF, 0.2, 2.4, 0.04, 22);
+		ElementFx.ring(level, feet.add(0, 1.2, 0), UP, color, 0.3, 2.6, 0.05, 12);
+		for (int i = 0; i < 6; i++) {
+			double a = Math.PI * 2 * i / 6;
+			Vec3 base = feet.add(Math.cos(a) * 1.5, 0.05, Math.sin(a) * 1.5);
+			ElementFx.ray(level, base, base.add(0, 2.4, 0), i % 2 == 0 ? color : 0xFFFFFF, 0.06, 18);
+		}
+		Vfx.radial(level, ParticleTypes.END_ROD, feet.add(0, 1.2, 0), 16, 0.25);
+	}
+
+	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	// ------------------------------------------------------------------ state
 
@@ -204,7 +221,8 @@ public final class Innates {
 			case "gale_mantle" -> helped.forEach(t -> {
 				GALES.put(t.getUUID(), new Gale(cast.level.getGameTime() + Effects.ticks(12, duration), 3));
 				Vfx.emit(cast.level, ParticleTypes.GUST, t.position().add(0, 0.5, 0), 1, 0.0, 0.0);
-				Vfx.radial(cast.level, ParticleTypes.SMALL_GUST, t.position().add(0, 1, 0), 14, 0.2);
+				ElementFx.gustRing(cast.level, t.position(), 2.0);
+				ElementFx.swirl(cast.level, t.position().add(0, 0.1, 0), 0.7, t.getBbHeight() + 0.2, 4);
 				Fx.sound(cast.level, t.position(), SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 1.3F);
 			});
 			case "stoneform" -> helped.forEach(t -> {
@@ -215,7 +233,7 @@ public final class Innates {
 					new AttributeModifier(STONE_KNOCKBACK, 1.0, AttributeModifier.Operation.ADD_VALUE));
 				Vfx.stoneskin(cast.level, t);
 				Vfx.emit(cast.level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
-					net.minecraft.world.level.block.Blocks.DEEPSLATE.defaultBlockState()), t.position().add(0, 1, 0), 24, 0.4, 0.1);
+					net.minecraft.world.level.block.Blocks.DEEPSLATE.defaultBlockState()), t.position().add(0, 1, 0), 12, 0.4, 0.1);
 				Fx.sound(cast.level, t.position(), SoundEvents.DEEPSLATE_PLACE, 1.0F, 0.6F);
 			});
 			case "mirrorfrost" -> {
@@ -225,8 +243,9 @@ public final class Innates {
 			}
 			case "fortune" -> helped.forEach(t -> {
 				FORTUNE.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
-				Vfx.emit(cast.level, ParticleTypes.HAPPY_VILLAGER, t.getBoundingBox().getCenter(), 12, 0.4, 0.0);
-				Vfx.emit(cast.level, new DustParticleOptions(0x6EDC64, 1.2F), t.getBoundingBox().getCenter(), 10, 0.5, 0.0);
+				ElementFx.bloom(cast.level, t.getBoundingBox().getCenter(), t.position(), 1.3);
+				ElementFx.flatSigil(cast.level, t.position(), SigilOption.STAR, LUCK, 0.9, 24, 0.1);
+				Vfx.emit(cast.level, ParticleTypes.HAPPY_VILLAGER, t.getBoundingBox().getCenter(), 6, 0.4, 0.0);
 				Fx.sound(cast.level, t.position(), SoundEvents.PLAYER_LEVELUP, 0.5F, 1.8F);
 			});
 			case "phantom" -> {
@@ -236,7 +255,11 @@ public final class Innates {
 			}
 			case "stormheart" -> helped.forEach(t -> {
 				STORMHEART.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
-				Vfx.emit(cast.level, ParticleTypes.ELECTRIC_SPARK, t.getBoundingBox().getCenter(), 20, 0.5, 0.05);
+				Vec3 c = t.getBoundingBox().getCenter();
+				ElementFx.bolt(cast.level, c.add(0.6, 2.4, 0.3), c, 0.05, 1, 2);
+				ElementFx.ring(cast.level, c, UP, ElementFx.STORM.primary(), 1.4, 0.5, 0.04, 8);
+				ElementFx.groundRing(cast.level, t.position(), ElementFx.STORM.accent(), 0.3, 1.6, 0.05, 9);
+				Vfx.emit(cast.level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.5, 0.05);
 				Fx.sound(cast.level, t.position(), SoundEvents.TRIDENT_THUNDER, 0.4F, 1.8F);
 			});
 			default -> { }
@@ -277,11 +300,13 @@ public final class Innates {
 			Vec3 a = alive.get(i).getBoundingBox().getCenter();
 			Vec3 b = alive.get(i + 1).getBoundingBox().getCenter();
 			Vec3 d = b.subtract(a);
-			int n = (int) Math.min(30, d.length() / 0.4);
-			for (int k = 0; k <= n; k++) {
-				double s = k / (double) Math.max(1, n);
-				double sag = Math.sin(s * Math.PI) * 0.35;
-				Vfx.emit(level, new DustParticleOptions(k % 3 == 0 ? 0xFF5060 : 0xB01830, 0.7F), a.add(d.scale(s)).add(0, -sag, 0), 1, 0.0, 0.0);
+			// A sagging thread of crimson light, in four pieces, drawn fresh as the last fades.
+			Vec3 prev = a;
+			for (int k = 1; k <= 4; k++) {
+				double s = k / 4.0;
+				Vec3 p = a.add(d.scale(s)).add(0, -Math.sin(s * Math.PI) * 0.35, 0);
+				ElementFx.ray(level, prev, p, k % 2 == 0 ? 0xFF5060 : ElementFx.BLOOD.primary(), 0.03, 11);
+				prev = p;
 			}
 		}
 	}
@@ -318,6 +343,8 @@ public final class Innates {
 		int stacks = k == null || now - k.last() > 120 ? 1 : k.stacks() + 1;
 		Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
 		Vec3 c = t.getBoundingBox().getCenter();
+		// One flame tongue and one ember in the ring over its head for every stack.
+		ElementFx.flames(cast.level, t.position(), Math.max(0.35, t.getBbWidth() * 0.6), t.getBbHeight(), stacks);
 		for (int i = 0; i < stacks; i++) {
 			double a = Math.PI * 2 * i / 5;
 			Vfx.emit(cast.level, ParticleTypes.SMALL_FLAME, c.add(Math.cos(a) * 0.6, 0.6, Math.sin(a) * 0.6), 2, 0.02, 0.0);
@@ -325,8 +352,9 @@ public final class Innates {
 		Fx.sound(cast.level, c, SoundEvents.FIRECHARGE_USE, 0.4F, 1.2F + stacks * 0.15F);
 		if (stacks >= 5) {
 			KINDLING.remove(t.getUUID());
-			Vfx.emit(cast.level, SigilOption.glow(0xFFFF9040, 2.2F), c, 1, 0.0, 0.0);
-			Vfx.radial(cast.level, ParticleTypes.FLAME, c, 40, 0.35);
+			ElementFx.fireImpact(cast.level, c, 2.2);
+			ElementFx.flames(cast.level, t.position(), Math.max(0.4, t.getBbWidth() * 0.7), t.getBbHeight() + 0.5, 6);
+			Vfx.radial(cast.level, ParticleTypes.FLAME, c, 20, 0.35);
 			Vfx.shockwave(cast.level, t.position(), 3.0, Vfx.theme("fire"), 4);
 			Fx.sound(cast.level, c, SoundEvents.GENERIC_EXPLODE, 0.7F, 1.4F);
 			for (Entity e : cast.level.getEntities((Entity) null, new AABB(c, c).inflate(3), e -> Targets.canHarm(cast.caster, e))) {
@@ -376,7 +404,8 @@ public final class Innates {
 		player.heal(owed);
 		DEBTS.put(player.getUUID(), new Debt(owed, owed / 10F, now + 200));
 		TechniqueVfx.rewind(player.level(), player.position(), player.position());
-		Vfx.emit(player.level(), new DustParticleOptions(0xF2D98A, 1.3F), player.getBoundingBox().getCenter(), 20, 0.5, 0.0);
+		ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
+		ElementFx.groundRing(player.level(), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
 		Fx.sound(player.level(), player.position(), SoundEvents.BELL_BLOCK, 0.8F, 1.5F);
 		player.sendOverlayMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A));
 	}
@@ -398,7 +427,9 @@ public final class Innates {
 		}
 		Vec3 hand = player.getEyePosition().add(player.getLookAngle().scale(1.0));
 		Sigils.telegraph(cast.level, hand, player.getLookAngle(), 0x8CDCFF, 0.8F, 16);
-		Vfx.radial(cast.level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.GLASS_PANE), hand, 16, 0.2);
+		Vfx.radial(cast.level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.GLASS_PANE), hand, 10, 0.2);
+		ElementFx.shatterRing(cast.level, hand, 1.4);
+		ElementFx.shards(cast.level, hand, 0.9, 5);
 		Fx.sound(cast.level, hand, SoundEvents.GLASS_BREAK, 0.8F, 1.6F);
 		Fx.sound(cast.level, hand, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
 		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), 0, Heart.leaning(player)));
@@ -439,11 +470,15 @@ public final class Innates {
 	private static void lucky(ServerLevel level, LivingEntity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		Sigils.flash(level, c, 0xFF9CFF7A, 2.0F);
-		Vfx.radial(level, ParticleTypes.HAPPY_VILLAGER, c, 14, 0.25);
-		Vfx.radial(level, ParticleTypes.CRIT, c, 10, 0.4);
+		ElementFx.ring(level, c, UP, LUCK, 0.2, 1.6, 0.05, 8);
+		ElementFx.orbit(level, c, 0.7, 2, 4, LUCK, 0xFFF4B0);
+		Vfx.radial(level, ParticleTypes.HAPPY_VILLAGER, c, 8, 0.25);
+		Vfx.radial(level, ParticleTypes.CRIT, c, 8, 0.4);
 		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 2.0F);
 		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 1.2F);
 	}
+
+	private static final int LUCK = 0x9CFF7A;
 
 	// ------------------------------------------------------------------ Phantom
 
@@ -466,8 +501,9 @@ public final class Innates {
 		AFTERIMAGES.add(new Afterimage(body, player, level.getGameTime() + ticks, power));
 		// You step out of it, briefly unseen.
 		player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
-		Vfx.emit(level, ParticleTypes.SOUL, body.getBoundingBox().getCenter(), 16, 0.3, 0.03);
-		Vfx.emit(level, new DustParticleOptions(0xB45AF0, 1.2F), body.getBoundingBox().getCenter(), 20, 0.4, 0.0);
+		ElementFx.implode(level, body.getBoundingBox().getCenter(), 1.4, 8);
+		ElementFx.groundRing(level, body.position(), ElementFx.VOID.primary(), 0.2, 1.6, 0.05, 12);
+		Vfx.emit(level, ParticleTypes.SOUL, body.getBoundingBox().getCenter(), 8, 0.3, 0.03);
 		Fx.sound(level, body.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
 		taunt(level, body);
 	}
@@ -485,8 +521,10 @@ public final class Innates {
 			Effects.hurt(cast, (LivingEntity) e, level.damageSources().indirectMagic(image.caster(), image.caster()), 8 * image.power());
 		}
 		Sigils.flash(level, c, 0xFFB45AF0, 2.0F);
-		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 40, 0.5);
-		Vfx.radial(level, ParticleTypes.SOUL, c, 16, 0.2);
+		ElementFx.voidImpact(level, c, 2.0);
+		ElementFx.blackCore(level, c, 0.35, 8);
+		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 20, 0.5);
+		Vfx.radial(level, ParticleTypes.SOUL, c, 10, 0.2);
 		Fx.sound(level, c, SoundEvents.ENDER_EYE_DEATH, 1.0F, 0.7F);
 		Fx.sound(level, c, SoundEvents.GLASS_BREAK, 0.7F, 0.6F);
 		image.body().discard();
@@ -503,6 +541,7 @@ public final class Innates {
 		Cast cast = new Cast(entity);
 		double power = scale(entity);
 		Vfx.shockwave(level, entity.position(), 3.0, Vfx.theme("earth"), 4);
+		ElementFx.crack(level, entity.position(), 1.4, 16);
 		Fx.sound(level, entity.position(), SoundEvents.MACE_SMASH_GROUND_HEAVY, 0.6F, 1.1F);
 		echoing = true;
 		try {
@@ -578,7 +617,8 @@ public final class Innates {
 				}
 				if (level.getGameTime() % 10 == 0) {
 					taunt(level, body);
-					Vfx.emit(level, new DustParticleOptions(0xB45AF0, 0.9F), body.getBoundingBox().getCenter(), 6, 0.35, 0.0);
+					ElementFx.groundRing(level, body.position(), ElementFx.VOID.primary(), 0.9, 0.5, 0.035, 11);
+					Vfx.emit(level, new DustParticleOptions(0xB45AF0, 0.9F), body.getBoundingBox().getCenter(), 3, 0.35, 0.0);
 					Vfx.emit(level, ParticleTypes.SOUL_FIRE_FLAME, body.position().add(0, 0.1, 0), 2, 0.3, 0.0);
 				}
 			}
@@ -602,7 +642,7 @@ public final class Innates {
 					} finally {
 						echoing = false;
 					}
-					Vfx.emit(player.level(), new DustParticleOptions(0xC8A050, 0.8F), player.getBoundingBox().getCenter(), 5, 0.4, 0.0);
+					ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.4, 3);
 				}
 			}
 			THREADS.values().removeIf(t -> now > t.until());
@@ -635,7 +675,8 @@ public final class Innates {
 		player.resetFallDistance();
 		ServerLevel level = player.level();
 		Vfx.emit(level, ParticleTypes.GUST, player.position(), 1, 0.0, 0.0);
-		Vfx.ring(level, ParticleTypes.SMALL_GUST, player.position().add(0, 0.2, 0), 0.8, 10);
+		ElementFx.gustRing(level, player.position(), 1.4);
+		ElementFx.ring(level, player.position().add(0, 0.9, 0).subtract(flat.scale(0.9)), flat, ElementFx.WIND.secondary(), 0.3, 1.3, 0.04, 7);
 		Fx.sound(level, player.position(), SoundEvents.BREEZE_JUMP, 0.8F, 1.3F);
 	}
 }

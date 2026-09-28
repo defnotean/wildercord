@@ -60,6 +60,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Casting monsters hold their telegraph circle out in the right hand, so their face stays in view.
 - Tectonic Rise raises real stone spires and Glacial Lance closes its targets in ice (block
   displays, never real blocks). Starfall and Starlight Cascade mark where each star will land.
+- Every effect is drawn in its element's own visual language instead of dust puffs: fire licks and
+  flares, frost shatters and creeps, storm forks into branching lightning, wind swirls, earth
+  cracks, life blooms, void is darkness imploding round a black core, arcane draws star seals and
+  orbiting comets, time turns clock hands and blood cuts and pulses. Reactions, Heart Circles,
+  innate runes, Unison, domain clashes, overcasting and the secret spells got the same treatment.
 
 ### Removed
 - The Stand shape. Cords that still hold a Stand rune keep it threaded, but it stays quiet.

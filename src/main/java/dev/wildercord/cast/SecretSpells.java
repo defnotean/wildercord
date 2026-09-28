@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -22,6 +23,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
@@ -103,23 +105,6 @@ public final class SecretSpells {
 		Vfx.emit(level, p, at, 1, 0.0, 0.0);
 	}
 
-	private static void line(ServerLevel level, ParticleOptions p, Vec3 a, Vec3 b, double step) {
-		Vec3 d = b.subtract(a);
-		int n = (int) Math.min(90, Math.max(1, d.length() / step));
-		for (int i = 0; i <= n; i++) {
-			dot(level, p, a.add(d.scale(i / (double) n)));
-		}
-	}
-
-	private static void sphere(ServerLevel level, ParticleOptions p, Vec3 c, double r, int points, double spin) {
-		for (int i = 0; i < points; i++) {
-			double y = 1 - (i + 0.5) * 2.0 / points;
-			double rr = Math.sqrt(Math.max(0, 1 - y * y));
-			double a = i * 2.39996323 + spin;
-			dot(level, p, c.add(Math.cos(a) * rr * r, y * r, Math.sin(a) * rr * r));
-		}
-	}
-
 	private static DamageSource magic(Cast cast) {
 		return cast.level.damageSources().indirectMagic(cast.caster, cast.caster);
 	}
@@ -170,12 +155,25 @@ public final class SecretSpells {
 			Scheduler.later(t + 1, () -> {
 				double a = length * tick / flight;
 				double b = length * (tick + 1) / flight;
-				line(level, dust(0xE8FAFF, 1.4F), from.add(dir.scale(a)), from.add(dir.scale(b)), 0.3);
-				line(level, dust(0x7FD0FF, 0.9F), from.add(dir.scale(Math.max(0, a - 2))), from.add(dir.scale(b)), 0.5);
-				Vfx.emit(level, ParticleTypes.SNOWFLAKE, from.add(dir.scale(b)), 6, 0.2, 0.02);
+				Vec3 head = from.add(dir.scale(b));
+				// The lance: a white-hot core in a halo of frost, its trail hanging behind it, shards glancing off its tip.
+				if (b > LANCE_START + 0.1) {
+					Light.ray(level, from.add(dir.scale(Math.max(LANCE_START, a - 0.5))), head, 0xE8FAFF, 0.14, 6);
+					Light.ray(level, from.add(dir.scale(Math.max(LANCE_START, a - 2))), head, ElementFx.FROST.primary(), 0.3, 12);
+				}
+				ElementFx.ring(level, head, dir, ElementFx.FROST.secondary(), 0.1, 0.8, 0.04, 6);
+				ElementFx.shards(level, head, 0.7, 2);
+				Vfx.emit(level, ParticleTypes.SNOWFLAKE, head, 4, 0.2, 0.02);
 				Fx.sound(level, from.add(dir.scale(b)), SoundEvents.GLASS_HIT, 0.6F, 1.6F);
 			});
 		}
+		// It hangs in the air, frozen, and bursts into frost where it ends.
+		Scheduler.later(flight, () -> {
+			if (length > LANCE_START + 0.5) {
+				Light.ray(level, from.add(dir.scale(LANCE_START)), end, 0xCFF4FF, 0.07, 12);
+			}
+			ElementFx.frostImpact(level, end, 1.5);
+		});
 		for (LivingEntity t : pierced) {
 			int delay = 1 + (int) Math.floor(flight * t.distanceTo(caster) / Math.max(1.0, length));
 			Scheduler.later(delay, () -> {
@@ -192,6 +190,15 @@ public final class SecretSpells {
 		}
 		// The spark wakes the ice: lightning jumps from target to target along the lance.
 		Scheduler.later(flight + 6, () -> {
+			// Lightning runs the whole length of the frozen lance, and it shatters.
+			if (length > LANCE_START + 0.5) {
+				ElementFx.bolt(level, from.add(dir.scale(LANCE_START)), end, 0.06, 2, 3);
+			}
+			for (int k = 1; k <= 4; k++) {
+				Vec3 p = from.add(dir.scale(length * k / 5));
+				ElementFx.shatterRing(level, p, 1.2);
+				Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), p, 5, 0.15);
+			}
 			Vec3 prev = from;
 			for (LivingEntity t : pierced) {
 				if (!t.isAlive()) {
@@ -207,6 +214,9 @@ public final class SecretSpells {
 		Fx.sound(level, from, SoundEvents.TRIDENT_THROW, 1.0F, 0.6F);
 		Fx.sound(level, from, SoundEvents.GLASS_BREAK, 0.8F, 1.8F);
 	}
+
+	/** How far out along the aim Glacial Lance's light begins: clear of the caster's own view. */
+	private static final double LANCE_START = 1.2;
 
 	/** A small sun sinks onto the point, then bursts; the ground burns. */
 	private static void sunfall(Cast cast, double power) {
@@ -224,8 +234,15 @@ public final class SecretSpells {
 				double k = tick / (double) fall;
 				Vec3 sun = point.add(0, 16 * (1 - k * k) + 1.4, 0);
 				double r = 1.2 + 0.6 * k;
-				sphere(level, dust(0xFFE070, 2.0F), sun, r, 26, tick * 0.3);
-				sphere(level, dust(0xFF7A20, 1.6F), sun, r * 0.7, 14, -tick * 0.4);
+				// A small sun: a white-gold core in an orange bloom, rings of fire turning round it and a shaft of
+				// heat reaching down to where it will land.
+				Light.orb(level, sun, 0xFFE070, r * 0.55, 3);
+				Vfx.emit(level, SigilOption.glow(0xFF8A30, (float) (r * 3.2)), sun, 1, 0.0, 0.0);
+				Light.ring(level, sun, ElementFx.tilted(1.1, tick * 0.3), 0xFF9A40, r * 1.15, r * 1.15, 0.06, 3);
+				Light.ring(level, sun, ElementFx.tilted(0.5, -tick * 0.4), 0xFFD060, r * 1.35, r * 1.35, 0.04, 3);
+				if (tick % 4 == 0) {
+					Light.ray(level, sun, point.add(0, 0.2, 0), 0xFF8A30, 0.08 + 0.12 * k, 5);
+				}
 				Vfx.emit(level, ParticleTypes.FLAME, sun, 6, r * 0.6, 0.02);
 				Vfx.emit(level, ParticleTypes.LAVA, sun, 1, r * 0.4, 0.0);
 				if (tick % 8 == 0) {
@@ -241,7 +258,19 @@ public final class SecretSpells {
 			Effects.explode(cast, c, 7.0, power * 2.2);
 			Sigils.flash(level, c, 0xFFFFD080, 3.0F);
 			Vfx.shockwave(level, point, 8.0, Vfx.theme("fire"), 8);
-			Vfx.radial(level, ParticleTypes.FLAME, c, 60, 0.5);
+			// A pillar of fire out of the blast (not if it lands on the caster), rings of it climbing, and a
+			// great burst of flame slashes.
+			if (cast.caster.position().distanceTo(point) > 3) {
+				Light.ray(level, point, point.add(0, 12, 0), ElementFx.FIRE.primary(), 1.1, 16);
+				Light.ray(level, point, point.add(0, 12, 0), ElementFx.FIRE.secondary(), 0.4, 14);
+			}
+			for (int i = 0; i < 4; i++) {
+				int k = i;
+				Scheduler.later(1 + i * 2, () -> Light.ring(level, point.add(0, 1 + k * 2.5, 0), new Vec3(0, 1, 0), k % 2 == 0 ? ElementFx.FIRE.primary()
+					: ElementFx.FIRE.secondary(), 1.0, 3.6 - k * 0.5, 0.1, 10));
+			}
+			ElementFx.flameBurst(level, c, 3.5, 8);
+			Vfx.radial(level, ParticleTypes.FLAME, c, 36, 0.5);
 			Vfx.radial(level, ParticleTypes.LAVA, c, 12, 0.3);
 			Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE, 1.4F, 0.6F);
 			Fx.sound(level, c, SoundEvents.FIRECHARGE_USE, 1.0F, 0.5F);
@@ -252,10 +281,17 @@ public final class SecretSpells {
 					if (!pulse.alive()) {
 						return;
 					}
-					for (int i = 0; i < 26; i++) {
+					for (int i = 0; i < 14; i++) {
 						double a = level.getRandom().nextDouble() * Math.PI * 2;
 						double rr = Math.sqrt(level.getRandom().nextDouble()) * 5.5;
 						Vfx.emit(level, ParticleTypes.FLAME, point.add(Math.cos(a) * rr, 0.15, Math.sin(a) * rr), 1, 0.05, 0.02);
+					}
+					// The burning ground: a ring of fire round it and flame tongues leaping up inside.
+					ElementFx.groundRing(level, point, ElementFx.FIRE.primary(), 5.0, 5.5, 0.1, 20);
+					for (int i = 0; i < 5; i++) {
+						double a = level.getRandom().nextDouble() * Math.PI * 2;
+						double rr = Math.sqrt(level.getRandom().nextDouble()) * 5.0;
+						ElementFx.flames(level, point.add(Math.cos(a) * rr, 0, Math.sin(a) * rr), 0.3, 1.0, 1);
 					}
 					for (LivingEntity t : enemiesNear(pulse, point.add(0, 1, 0), 5.5)) {
 						t.igniteForSeconds(3);
@@ -284,16 +320,14 @@ public final class SecretSpells {
 				}
 				double reach = 3 + tick * 2.6;
 				double half = 2 + tick * 2.6;
-				int points = (int) (half * 5);
-				for (int i = -points; i <= points; i++) {
-					double s = i / (double) points;
-					double bow = (1 - s * s) * 2.2;
-					Vec3 p = eye.add(fwd.scale(reach - 2.2 + bow)).add(side.scale(s * half));
-					dot(level, dust(i % 3 == 0 ? 0xFFFFFF : 0xF0C0D0, 1.3F), p);
-					if (i % 4 == 0) {
-						dot(level, dust(0xB01830, 0.9F), p.add(fwd.scale(-0.4)));
-					}
-				}
+				// One crescent of light cut out to the horizon: the circle through its tip, reach ahead, and its
+				// two ends, half either side and 2.2 blocks further back. White at the edge, crimson behind.
+				double radius = (half * half + 2.2 * 2.2) / (2 * 2.2);
+				double span = 2 * Math.asin(Math.min(1, half / radius));
+				Vec3 centre = eye.add(fwd.scale(reach - radius));
+				Light.slash(level, centre, new Vec3(0, 1, 0), fwd, 0xFFFFFF, radius, span, 0.3 + tick * 0.06, 1, 5);
+				Light.slash(level, centre.subtract(fwd.scale(0.35)), new Vec3(0, 1, 0), fwd, 0xF0C0D0, radius, span * 0.97, 0.18, 1, 6);
+				Light.slash(level, centre.subtract(fwd.scale(0.7)), new Vec3(0, 1, 0), fwd, 0xB01830, radius, span * 0.92, 0.12, 1, 7);
 				Vfx.emit(level, ParticleTypes.SWEEP_ATTACK, eye.add(fwd.scale(reach)), 3, half * 0.3, 0.0);
 				for (Entity e : level.getEntities(caster, new AABB(eye, eye).inflate(half + 2, 3.0, half + 2), e -> Targets.canHarm(caster, e))) {
 					Vec3 rel = e.getBoundingBox().getCenter().subtract(eye);
@@ -324,8 +358,18 @@ public final class SecretSpells {
 					return;
 				}
 				Vec3 c = caster.position().add(0, 1.0, 0);
-				// Three spiral arms of petals, turning around the caster.
-				for (int i = 0; i < 24; i++) {
+				// Three arms of petal light whirling round the caster, an inner and an outer crescent each.
+				for (int arm = 0; arm < 3; arm++) {
+					double a = tick * 0.2 + Math.PI * 2 * arm / 3;
+					for (int ring = 0; ring < 2; ring++) {
+						double r = ring == 0 ? 2.6 : 5.2;
+						double y = Math.sin(tick * 0.15 + arm * 2 + ring) * 0.6 - 0.2;
+						Light.slash(level, c.add(0, y, 0), ElementFx.tilted(0.15, a + ring), ElementFx.flatDir(a + ring * 0.8), ring == 0 ? 0xFFB0DC : 0xFFE0F0,
+							r, ring == 0 ? 1.1 : 0.8, 0.1, 1, 4);
+					}
+				}
+				// And petals along the arms.
+				for (int i = 0; i < 24; i += 2) {
 					double arm = Math.PI * 2 * (i % 3) / 3;
 					double along = (i / 3) / 8.0;
 					double r = 1.5 + 5.5 * along;
@@ -350,7 +394,10 @@ public final class SecretSpells {
 						} else if (Targets.canHarm(caster, target)) {
 							target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 1, false, true));
 							Effects.hurt(pulse, target, magic(pulse), 2 * power);
-							Vfx.emit(level, dust(0xE060A0, 1.0F), target.getBoundingBox().getCenter(), 6, 0.3, 0.0);
+							Vec3 hit = target.getBoundingBox().getCenter();
+							Vec3 bulge = ElementFx.flatDir(level.getRandom().nextDouble() * Math.PI * 2).add(0, 0.6, 0).normalize();
+							ElementFx.slash(level, hit.subtract(bulge.scale(0.7)), bulge.cross(new Vec3(0, 1, 0)), bulge, 0xF080C0, 0.7, 1.8, 0.1, 1, 5);
+							Vfx.emit(level, dust(0xE060A0, 1.0F), hit, 3, 0.3, 0.0);
 						}
 					}
 					Fx.sound(level, c, SoundEvents.CHERRY_LEAVES_STEP, 0.8F, 1.2F);
@@ -399,6 +446,10 @@ public final class SecretSpells {
 				Vfx.shockArc(level, before, c);
 				Vfx.shockArc(level, before.add(0, 0.4, 0), c.add(0, 0.3, 0));
 				Sigils.flash(level, c, 0xFFFFF4A0, 3.0F);
+				// And a bolt out of the sky onto each one as you arrive.
+				ElementFx.bolt(level, c.add(0.4, 7, -0.3), c, 0.07, 2, 2);
+				ElementFx.stormImpact(level, c, 1.2);
+				ElementFx.groundRing(level, target.position(), ElementFx.STORM.primary(), 0.3, 2.4, 0.08, 8);
 				Effects.hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 8 * power * Reactions.storm(cast, target));
 				Effects.push(target, away.scale(0.6).add(0, 0.3, 0));
 				Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.6F, 1.8F);
@@ -421,8 +472,9 @@ public final class SecretSpells {
 			Scheduler.later(t + 1, () -> {
 				if (cast.alive()) {
 					Vec3 p = start.add(stop.subtract(start).scale(tick / (double) drift));
-					sphere(level, dust(0x100818, 1.8F), p, 0.5, 14, tick * 0.5);
-					Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, p, 4, 0.3, 0.02);
+					ElementFx.orb(level, p, ElementFx.dark(ElementFx.VOID.accent()), 0.35, 2);
+					ElementFx.ring(level, p, ElementFx.tilted(1.2, tick * 0.5), ElementFx.VOID.primary(), 0.5, 0.5, 0.025, 2);
+					Vfx.emit(level, ParticleTypes.PORTAL, p, 3, 0.1, 0.5);
 				}
 			});
 		}
@@ -436,15 +488,22 @@ public final class SecretSpells {
 					return;
 				}
 				double spin = tick * 0.25;
-				sphere(level, dust(0x05020A, 2.2F), stop, 0.9, 20, spin);
+				// The black star: a hole in the world, rings of violet light turning round it, light spiralling in,
+				// and every so often darkness falling in on it from the edge of its reach.
+				ElementFx.orb(level, stop, ElementFx.dark(ElementFx.VOID.accent()), 0.9, 3);
 				for (int ring = 0; ring < 3; ring++) {
 					double r = 2.0 + ring * 1.6;
-					for (int k = 0; k < 14; k++) {
-						double a = spin * (1.4 - ring * 0.3) + Math.PI * 2 * k / 14;
-						dot(level, dust(ring == 0 ? 0xE0B0FF : 0x9A5AF0, 1.0F), stop.add(Math.cos(a) * r, Math.sin(a * 2) * 0.15, Math.sin(a) * r));
-					}
+					Light.ring(level, stop, ElementFx.tilted(0.25 + ring * 0.08, spin * (0.6 - ring * 0.15)), ring == 0 ? 0xE0B0FF : 0x9A5AF0, r, r, 0.05 - ring * 0.01, 3);
 				}
-				Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, stop, 10, 4.0, 0.0);
+				for (int k = 0; k < 2; k++) {
+					Light.slash(level, stop, ElementFx.tilted(0.25, spin * 0.6), ElementFx.flatDir(spin * 1.6 + k * Math.PI), k == 0 ? 0x9A5AF0 : 0xE0B0FF,
+						3.2 - (tick % 10) * 0.2, 1.6, 0.08, 2, 4);
+				}
+				if (tick % 6 == 0) {
+					Light.ring(level, stop, new Vec3(0, 1, 0), ElementFx.dark(ElementFx.VOID.accent()), 9, 1, 0.14, 12);
+					Light.ring(level, stop, new Vec3(0, 1, 0), 0x9A5AF0, 9.5, 1.2, 0.04, 11);
+				}
+				Vfx.emit(level, ParticleTypes.PORTAL, stop, 8, 0.1, 4.0);
 				for (LivingEntity t2 : enemiesNear(pulse, stop, 9)) {
 					Vec3 pull = stop.subtract(t2.getBoundingBox().getCenter());
 					double d = Math.max(0.5, pull.length());
@@ -464,7 +523,12 @@ public final class SecretSpells {
 				return;
 			}
 			Effects.explode(cast, stop, 5.0, power * 1.5);
-			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, stop, 50, 0.7);
+			// It collapses: a last black core, and shells of violet light bursting out through the blast.
+			ElementFx.blackCore(level, stop, 0.9, 8);
+			for (int i = 0; i < 3; i++) {
+				Light.ring(level, stop, ElementFx.tilted(i == 0 ? 0 : 1.2, i * Math.PI * 2 / 3), i == 1 ? 0xE0B0FF : 0x9A5AF0, 0.5, 7.0, 0.1, 12);
+			}
+			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, stop, 30, 0.7);
 			Sigils.flash(level, stop, 0xFFB080FF, 3.0F);
 			Fx.sound(level, stop, SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 0.7F);
 		});
@@ -480,6 +544,20 @@ public final class SecretSpells {
 		Sigils.layer(level, c.add(0, 0.1, 0), new Vec3(0, 1, 0), SigilOption.RING, 0xF2D98A, 20.0F, ticks, 0.01F);
 		Fx.sound(level, c, SoundEvents.BELL_BLOCK, 1.5F, 0.4F);
 		Fx.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 1.2F, 0.5F);
+		// Time stops: a white shockwave races out to the edge, and the whole circle becomes a clock face, the
+		// hours marked round its rim, its hands sweeping round it once over the stop.
+		Sigils.flash(level, c.add(0, 1, 0), 0xFFFFFF, 3.0F);
+		Light.groundRing(level, c, 0xFFFFFF, 0.5, 20, 0.14, 16);
+		Light.groundRing(level, c, 0xF2D98A, 0.4, 19, 0.08, 20);
+		Vec3 face = c.add(0, 0.12, 0);
+		for (int h = 0; h < 12; h++) {
+			double a = Math.PI * 2 * h / 12;
+			Vec3 out = new Vec3(Math.cos(a), 0, Math.sin(a));
+			Light.ray(level, face.add(out.scale(h % 3 == 0 ? 16.5 : 17.5)), face.add(out.scale(19.5)), h % 3 == 0 ? 0xFFFFFF : 0xF2D98A, h % 3 == 0 ? 0.16 : 0.1,
+				ticks);
+		}
+		Light.slash(level, face.add(0, 0.03, 0), new Vec3(0, 1, 0), new Vec3(0, 0, 1), 0xFFF8E0, 18.5, Math.PI * 1.96, 0.35, ticks, ticks + 10);
+		Light.slash(level, face.add(0, 0.06, 0), new Vec3(0, 1, 0), new Vec3(1, 0, 0), 0xC8962E, 11, Math.PI / 6, 0.5, ticks, ticks + 10);
 		for (Entity e : level.getEntities(caster, new AABB(c, c).inflate(20), e -> e instanceof LivingEntity && e.isAlive() && e != caster)) {
 			LivingEntity t = (LivingEntity) e;
 			if (t.distanceTo(caster) <= 20 && !Targets.isAlly(caster, t)) {
@@ -490,10 +568,10 @@ public final class SecretSpells {
 		for (int t = 0; t < ticks; t += 10) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
-				double r = 20;
-				for (int k = 0; k < 64; k++) {
-					double a = Math.PI * 2 * k / 64 + tick * 0.01;
-					Fx.sendFar(level, dust(0xF2D98A, 2.2F), c.add(Math.cos(a) * r, 0.3, Math.sin(a) * r));
+				Light.groundRing(level, c.add(0, 0.2, 0), 0xF2D98A, 20, 20, 0.12, 12);
+				for (int k = 0; k < 16; k++) {
+					double a = Math.PI * 2 * k / 16 + tick * 0.01;
+					Fx.sendFar(level, dust(0xF2D98A, 2.2F), c.add(Math.cos(a) * 20, 0.3, Math.sin(a) * 20));
 				}
 			});
 		}
@@ -510,13 +588,18 @@ public final class SecretSpells {
 		for (int t = 0; t < 20; t += 2) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
-				Vec3 back = caster.position().add(0, 1.3, 0);
-				Vec3 side = flat(caster.getLookAngle()).cross(new Vec3(0, 1, 0));
-				for (int k = 1; k <= 8; k++) {
-					double s = k * 0.22;
-					double lift = Math.sin(k * 0.35) * 0.6 + tick * 0.02;
-					dot(cast.level, ParticleTypes.FLAME, back.add(side.scale(s)).add(0, lift, 0).subtract(flat(caster.getLookAngle()).scale(0.3)));
-					dot(cast.level, ParticleTypes.FLAME, back.add(side.scale(-s)).add(0, lift, 0).subtract(flat(caster.getLookAngle()).scale(0.3)));
+				Vec3 fwd = flat(caster.getLookAngle());
+				Vec3 back = caster.position().add(0, 1.3, 0).subtract(fwd.scale(0.3));
+				Vec3 side = fwd.cross(new Vec3(0, 1, 0));
+				double lift = tick * 0.02;
+				// Wings of flame: three feathers of fire a side, spreading and lifting.
+				for (int s = -1; s <= 1; s += 2) {
+					for (int f = 0; f < 3; f++) {
+						Vec3 toward = side.scale(s).add(0, 0.5 - f * 0.35 + lift, 0);
+						ElementFx.slash(cast.level, back.add(side.scale(s * 0.2)), fwd, toward, f == 0 ? ElementFx.FIRE.secondary() : ElementFx.FIRE.primary(),
+							0.7 + f * 0.35, 0.8, 0.12 - f * 0.02, 2, 5);
+					}
+					dot(cast.level, ParticleTypes.FLAME, back.add(side.scale(s * 1.2)).add(0, 0.5 + lift, 0));
 				}
 			});
 		}
@@ -543,8 +626,23 @@ public final class SecretSpells {
 		}
 		Sigils.ground(level, entity.position(), 0xFF7040, 0xFFE0A0, 3.0F, 30);
 		Sigils.flash(level, c, 0xFFFFA040, 3.0F);
-		Vfx.radial(level, ParticleTypes.FLAME, c, 70, 0.45);
-		Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, c, 30, 0.5);
+		// Burning back to life: a great heat flare, flame slashes whirling out, fire licking up round you, rings of
+		// it climbing and columns of it rising all round.
+		ElementFx.heatFlare(level, c, 3.0);
+		ElementFx.flameBurst(level, c, 2.2, 8);
+		ElementFx.flames(level, entity.position(), 0.8, 2.6, 8);
+		for (int i = 0; i < 3; i++) {
+			int k = i;
+			Scheduler.later(1 + i * 3, () -> ElementFx.ring(level, entity.position().add(0, 0.3 + k * 0.9, 0), new Vec3(0, 1, 0), k == 1 ? ElementFx.FIRE.secondary()
+				: ElementFx.FIRE.primary(), 0.4, 3.5 - k * 0.6, 0.08, 10));
+		}
+		for (int i = 0; i < 5; i++) {
+			double a = Math.PI * 2 * i / 5;
+			Vec3 foot = entity.position().add(Math.cos(a) * 1.4, 0.05, Math.sin(a) * 1.4);
+			ElementFx.ray(level, foot, foot.add(0, 2.8, 0), i % 2 == 0 ? ElementFx.FIRE.primary() : ElementFx.FIRE.secondary(), 0.12, 14);
+		}
+		Vfx.radial(level, ParticleTypes.FLAME, c, 36, 0.45);
+		Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, c, 24, 0.5);
 		Vfx.shockwave(level, entity.position(), 6.0, Vfx.theme("fire"), 6);
 		Fx.sound(level, c, SoundEvents.TOTEM_USE, 1.0F, 0.9F);
 		Fx.sound(level, c, SoundEvents.BLAZE_SHOOT, 1.0F, 0.5F);
@@ -572,9 +670,14 @@ public final class SecretSpells {
 				float height = 2.0F + (step % 3) * 0.6F + (step % 2) * 0.3F;
 				Vec3 side = fwd.cross(new Vec3(0, 1, 0)).normalize().scale(((step * 7) % 5 - 2) * 0.18);
 				BlockFx.spire(level, p.add(side), height, 0.75F + (step % 2) * 0.15F, 12);
-				Vfx.emit(level, stone, p.add(0, 0.5, 0), 14, 0.4, 0.15);
-				Vfx.emit(level, deep, p.add(0, 0.2, 0), 8, 0.6, 0.1);
+				Vfx.emit(level, stone, p.add(0, 0.5, 0), 8, 0.4, 0.15);
+				Vfx.emit(level, deep, p.add(0, 0.2, 0), 4, 0.6, 0.1);
+				// The ground splits open along the line, cracking round every spire.
+				Vec3 last = CastEngine.ground(level, base.add(fwd.scale(step - 1)).add(0, 2, 0));
+				ElementFx.ray(level, last.add(0, 0.1, 0), p.add(0, 0.1, 0), ElementFx.EARTH.secondary(), 0.12, 24);
+				ElementFx.groundRing(level, p, ElementFx.EARTH.primary(), 0.3, 1.6, 0.08, 10);
 				if (step % 2 == 0) {
+					ElementFx.flatSigil(level, p, SigilOption.CRACKED, ElementFx.EARTH.secondary(), 1.3, 30, 0.0);
 					Fx.sound(level, p, SoundEvents.POINTED_DRIPSTONE_LAND, 1.0F, 0.6F);
 					Fx.sound(level, p, SoundEvents.MACE_SMASH_GROUND, 0.6F, 0.8F);
 				}
@@ -596,7 +699,8 @@ public final class SecretSpells {
 		Vec3 end = aim(cast, 24);
 		Vec3 dir = end.subtract(from);
 		Vfx.beam(level, from.add(caster.getLookAngle().scale(0.8)), end, Vfx.theme("arcane"));
-		line(level, dust(0xE8F0FF, 1.2F), from.add(dir.scale(0.05)), end, 0.4);
+		Light.ray(level, from.add(dir.scale(0.06)), end, 0xE8F0FF, 0.05, 16);
+		ElementFx.starSeal(level, end.add(0, 0.2, 0), new Vec3(0, 1, 0), 1.2, 60);
 		Fx.sound(level, from, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.2F, 1.8F);
 		Fx.sound(level, from, SoundEvents.BEACON_ACTIVATE, 1.0F, 1.6F);
 		Vec3 side = flat(dir).cross(new Vec3(0, 1, 0)).normalize();
