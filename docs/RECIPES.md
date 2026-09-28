@@ -206,6 +206,27 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Wither | Effect | the Wither, Archive vaults, the Archivist |
 | Domain | Shape | Ancient cities, the Warden (35%), Archive vaults, the Archivist |
 
+## Fused runes (12, made only at the Fusion Altar)
+
+Two effects of the right elements, an amethyst shard and 3 XP levels. Any effect of an element counts.
+
+| Rune | Elements | Does |
+|---|---|---|
+| Firestorm | Fire + Wind | Sets targets alight for 6 seconds and deals 4 damage, and the fire leaps to every enemy within 2 blocks of them. |
+| Steam | Fire + Frost | A scalding burst of steam: 4 damage and Blindness for 3 seconds. |
+| Magma | Fire + Earth | The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it. |
+| Tempest | Storm + Wind | A lightning strike for 8 damage, and a gale that hurls targets far away. |
+| Plasma | Storm + Fire | 9 damage that ignores half of the target's armour. |
+| Hail | Storm + Frost | Three hailstones of 2 damage each, and Slowness II for 4 seconds. |
+| Glacier | Frost + Earth | Freezes targets in place for 2 seconds (1 second on players). |
+| Lifesteal | Life + Void | 5 damage, and you heal for what it dealt. |
+| Warp | Wind + Void | You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds. |
+| Bloom | Life + Earth | Regeneration II for 6 seconds, and plants grow around every ally it touches. |
+| Surge | Life + Storm | Speed I and Strength I for 8 seconds. |
+| Nullify | Arcane + Void | Strips an enemy's good effects, or an ally's bad effects. |
+
+The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
+
 ## Innate runes (10, never crafted or found)
 
 One wakes in each caster's heart at the 1st Circle, chosen at random, and grows with every circle.

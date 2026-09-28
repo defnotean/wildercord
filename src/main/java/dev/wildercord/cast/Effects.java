@@ -139,9 +139,11 @@ public final class Effects {
 		// Elemental leaning: the element you cast most hits a little harder. Innate runes grow with the heart.
 		double leaning = !rune.element().isEmpty() && rune.element().equals(cast.info.leaning()) ? 1 + dev.wildercord.spell.Leaning.POWER : 1.0;
 		double innate = Runes.innate(rune) ? Innates.scale(caster) : 1.0;
-		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate;
+		// A rune ranked up at the Fusion Altar hits harder wherever it's threaded; rank III counts as one Amplify for levels.
+		int rank = dev.wildercord.player.RuneRanks.rank(caster, rune.id());
+		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate * dev.wildercord.spell.Ranks.power(rank);
 		double duration = SpellNumbers.duration(node) * cast.duration;
-		int amplify = node.count(Runes.AMPLIFY);
+		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
 		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e));
 		if (!harmed.isEmpty() && (rune.kind() == dev.wildercord.spell.EffectKind.HARMFUL || rune.kind() == dev.wildercord.spell.EffectKind.MOVEMENT && !hit.self())) {
@@ -502,6 +504,8 @@ public final class Effects {
 			case "cyclone" -> cyclone(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, ticks(2, duration));
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
+			case "firestorm", "steam", "magma", "tempest", "plasma", "hail", "glacier", "lifesteal", "warp", "bloom", "surge", "nullify" ->
+				FusedEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
 			default -> { }
 		}
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;

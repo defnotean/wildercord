@@ -54,7 +54,7 @@ public final class Passives {
 			case SHAPE -> SHAPES.contains(path);
 			case EFFECT -> BUFFS.contains(path) || AURA.contains(path);
 			case MODIFIER -> MODIFIERS.contains(path);
-			case LINK -> false;
+			case LINK, KNOT -> false;
 		};
 	}
 

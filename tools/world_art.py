@@ -14,6 +14,7 @@ Public API (imported by generate_assets.py):
     wellstone_textures() -> dict                (16x16 faces; the "_active" ones are 8-frame lists)
     rune_seal_textures() -> dict                (element -> (unlit, lit), 16x16 each)
     archive_lectern_textures() -> dict          ("top", "side", "front", "bottom")
+    fusion_altar_textures() -> dict             ("top", an 8-frame list; "side"; "bottom")
     archivist_texture() -> Image                (128x64, ArchivistModel layout)
     dummy_texture() -> Image                    (64x64, DummyModel layout)
     creature_textures() -> dict                 (path under textures/entity/ -> Image: the Archivist's
@@ -1557,6 +1558,118 @@ def lectern_views(faces: dict) -> list:
             ("side (in game)", faces["side"].crop((2, 2, 14, 16)))]
 
 
+# ============================================================== the Fusion Altar
+# An amethyst table on a deepslate-tile plinth (the model: a 14x3 foot, a 10x7 pillar, a 16x4 table
+# top). Its faces take their natural uv, so the side texture reads top to bottom as the table's rim
+# (rows 2-5), the pillar (rows 6-12) and the foot (rows 13-15). The top is an 8-frame loop: light
+# runs round the amethyst ring and pools in the three rune sockets and the lodestone heart.
+
+ALTAR_FRAMES = 8
+# the lodestone at the altar's heart: dark iron with a bright core
+LODE = ramp("#1A1B20", "#2A2C33", "#3D4049", "#5A5E6A", "#8A8FA0", "#C4C8D4")
+
+
+def _tiles(cv: Canvas, seed: int, size: int = 8):
+    """Deepslate tiles, as the Rune Seals lay them: seams, lit top/left edges, shaded bottom/right."""
+    stone_fill(cv, DT, seed, 3, 5)
+    for y in range(16):
+        for x in range(16):
+            tx, ty = x % size, y % size
+            if tx == 0 or ty == 0:
+                cv.put(x, y, DT[0])
+            elif tx == 1 or ty == 1:
+                cv.put(x, y, mix(cv.get(x, y), DT[6], 0.35))
+            elif tx == size - 1 or ty == size - 1:
+                cv.put(x, y, mix(cv.get(x, y), DT[1], 0.5))
+
+
+def _altar_top(frame: int | None) -> Canvas:
+    cv = Canvas()
+    stone_fill(cv, DS, 41, 3, 5)
+    bevel(cv, DS, light=6, dark=1)
+    c = 7.5
+    ring = {}
+    for y in range(16):
+        for x in range(16):
+            r = math.hypot(x - c, y - c)
+            if 5.0 <= r <= 6.2:
+                ring[(x, y)] = (math.atan2(y - c, x - c) / (2 * math.pi)) % 1.0
+    # three sockets on the ring, where the runes lie, and the lodestone in the middle
+    sockets = [(7, 3), (8, 3), (3, 10), (4, 10), (11, 10), (12, 10)]
+    heart = [(7, 7), (8, 7), (7, 8), (8, 8)]
+    heart_rim = [(6, 7), (6, 8), (9, 7), (9, 8), (7, 6), (8, 6), (7, 9), (8, 9)]
+    # the triangle joining the sockets, cut shallow
+    lines = set()
+    pts = [(7.5, 3.5), (3.5, 10.5), (11.5, 10.5)]
+    for i in range(3):
+        (x0, y0), (x1, y1) = pts[i], pts[(i + 1) % 3]
+        for k in range(24):
+            t = k / 23
+            lines.add((int(round(x0 + (x1 - x0) * t - 0.5)), int(round(y0 + (y1 - y0) * t - 0.5))))
+    for p in lines:
+        if p not in ring and cv.inside(*p):
+            cv.put(*p, DS[2])
+    for p in heart_rim:
+        cv.put(*p, LODE[2])
+    for p, a in ring.items():
+        if frame is None:
+            cv.put(*p, AM[3] if (p[0] + p[1]) % 3 else AM[4])
+        else:
+            # a bright crest running round the ring
+            d = min(abs(a - frame / ALTAR_FRAMES), 1 - abs(a - frame / ALTAR_FRAMES))
+            cv.put(*p, glow_at(0.55 + 0.45 * max(0.0, 1 - d * 5)) if d < 0.2 else AM[3 + (p[0] + p[1]) % 2])
+    beat = 0.5 if frame is None else pulse(0, frame, width=5)
+    for p in sockets:
+        cv.put(*p, mix(hexc("#120C1E"), GLOW[4], 0.5 * beat))
+    for p in heart:
+        cv.put(*p, LODE[4] if p == (7, 7) else LODE[3])
+    cv.put(8, 8, glow_at(0.7 + 0.3 * beat))
+    for (x, y) in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        cv.put(x, y, AM[5])
+    return cv
+
+
+def _altar_side() -> Canvas:
+    cv = Canvas()
+    _tiles(cv, 53)
+    # the table's rim: an amethyst band framed in polished deepslate
+    for x in range(16):
+        cv.put(x, 2, DS[6])
+        cv.put(x, 3, AM[4] if x % 4 else AM[5])
+        cv.put(x, 4, AM[2] if x % 4 else AM[3])
+        cv.put(x, 5, DS[1])
+    # the pillar: polished deepslate with a glowing channel running down it
+    for y in range(6, 13):
+        for x in range(3, 13):
+            cv.put(x, y, DS[4] if noise(x, y, 61) > 0.12 else DS[3])
+        cv.put(3, y, DS[6])
+        cv.put(12, y, DS[1])
+    for y in range(6, 13):
+        cv.put(7, y, GLOW_DIM if y % 3 else GLOW[3])
+        cv.put(8, y, GLOW[2] if y % 3 else GLOW[3])
+    for (x, y) in ((5, 8), (10, 8), (5, 10), (10, 10)):
+        cv.put(x, y, AM[3])
+    # the foot: a lip of lit tile
+    for x in range(1, 15):
+        cv.put(x, 13, DT[6])
+    return cv
+
+
+def _altar_bottom() -> Canvas:
+    cv = Canvas()
+    _tiles(cv, 67)
+    return cv
+
+
+def fusion_altar_textures() -> dict:
+    """16x16 faces: "top" (an 8-frame list), "side" and "bottom"."""
+    return {
+        "top": [_altar_top(f).image() for f in range(ALTAR_FRAMES)],
+        "side": _altar_side().image(),
+        "bottom": _altar_bottom().image(),
+    }
+
+
 def preview(out_dir: str) -> str:
     """Write a labelled contact sheet of everything above, 8x nearest-neighbour."""
     from PIL import ImageDraw
@@ -1593,6 +1706,11 @@ def preview(out_dir: str) -> str:
     for n, im in lectern.items():
         _check([im], n)
     rows.append(("Archive Lectern", list(lectern.items()) + lectern_views(lectern)))
+
+    altar = fusion_altar_textures()
+    _check(altar["top"] + [altar["side"], altar["bottom"]], "fusion_altar")
+    rows.append(("Fusion Altar", [("side", altar["side"]), ("bottom", altar["bottom"])]
+                 + [(f"top f{i}", im) for i, im in enumerate(altar["top"])]))
 
     arch, eyes, runes = archivist_texture(), archivist_eyes_texture(), archivist_runes_texture()
     for n, im in (("archivist", arch), ("archivist_eyes", eyes), ("archivist_runes", runes)):

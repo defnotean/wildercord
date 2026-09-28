@@ -1305,6 +1305,90 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/imbue"
         }
+      },
+      {
+        "when": "wildercord:firestorm",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/firestorm"
+        }
+      },
+      {
+        "when": "wildercord:steam",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/steam"
+        }
+      },
+      {
+        "when": "wildercord:magma",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/magma"
+        }
+      },
+      {
+        "when": "wildercord:tempest",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tempest"
+        }
+      },
+      {
+        "when": "wildercord:plasma",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/plasma"
+        }
+      },
+      {
+        "when": "wildercord:hail",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hail"
+        }
+      },
+      {
+        "when": "wildercord:glacier",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/glacier"
+        }
+      },
+      {
+        "when": "wildercord:lifesteal",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lifesteal"
+        }
+      },
+      {
+        "when": "wildercord:warp",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/warp"
+        }
+      },
+      {
+        "when": "wildercord:bloom",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bloom"
+        }
+      },
+      {
+        "when": "wildercord:surge",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/surge"
+        }
+      },
+      {
+        "when": "wildercord:nullify",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nullify"
+        }
       }
     ],
     "fallback": {

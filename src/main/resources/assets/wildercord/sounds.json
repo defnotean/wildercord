@@ -298,5 +298,23 @@
     "sounds": [
       "wildercord:heart/overcast"
     ]
+  },
+  "altar_open": {
+    "subtitle": "subtitles.wildercord.altar_open",
+    "sounds": [
+      "wildercord:altar/altar_open"
+    ]
+  },
+  "altar_fuse": {
+    "subtitle": "subtitles.wildercord.altar_fuse",
+    "sounds": [
+      "wildercord:altar/altar_fuse"
+    ]
+  },
+  "altar_knot": {
+    "subtitle": "subtitles.wildercord.altar_knot",
+    "sounds": [
+      "wildercord:altar/altar_knot"
+    ]
   }
 }

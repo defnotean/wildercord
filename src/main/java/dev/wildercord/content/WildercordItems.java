@@ -19,6 +19,8 @@ public final class WildercordItems {
 	private WildercordItems() {}
 
 	public static final Item RUNE = register("rune", RuneItem::new, new Item.Properties().stacksTo(16));
+	/** A Knot: a whole spell tied into one rune at the Fusion Altar. The same {@code wildercord:rune} component says which. */
+	public static final Item KNOT = register("knot", RuneItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
 	public static final Item BLANK_RUNE = register("blank_rune", Item::new, new Item.Properties());
 	public static final Item MANA_CRYSTAL = register("mana_crystal", ManaCrystalItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
 	public static final CordItem TWINE_CORD = cord(CordTier.TWINE, Rarity.COMMON);
@@ -47,6 +49,7 @@ public final class WildercordItems {
 				output.accept(WildercordBlocks.WELLSTONE);
 				output.accept(WildercordBlocks.RUNE_SEAL);
 				output.accept(WildercordBlocks.ARCHIVE_LECTERN);
+				output.accept(WildercordBlocks.FUSION_ALTAR);
 				for (var potion : java.util.List.of(WildercordEffects.CLARITY_POTION, WildercordEffects.LONG_CLARITY_POTION, WildercordEffects.STRONG_CLARITY_POTION,
 						WildercordEffects.MANA_POTION, WildercordEffects.STRONG_MANA_POTION)) {
 					output.accept(net.minecraft.world.item.alchemy.PotionContents.createItemStack(net.minecraft.world.item.Items.POTION, potion));

@@ -37,6 +37,8 @@ public final class SpellPlan {
 		public final boolean implicit;
 		public final List<RuneDef> shapeMods = new ArrayList<>();
 		public final List<EffectNode> effects = new ArrayList<>();
+		/** The share of its shape's mana it costs: less than 1 when the shape was tied into a Knot. */
+		public double factor = 1.0;
 
 		Group(RuneDef shape, boolean implicit) {
 			this.shape = shape;
@@ -52,6 +54,10 @@ public final class SpellPlan {
 	public static final class EffectNode {
 		public final RuneDef effect;
 		public final List<RuneDef> mods = new ArrayList<>();
+		/** The share of its mana it costs: less than 1 inside a Knot. */
+		public double factor = 1.0;
+		/** The caster's rank for this effect (see {@link Ranks}), for the readout; 1 when nobody's ranks were given. */
+		public int rank = 1;
 
 		EffectNode(RuneDef effect) {
 			this.effect = effect;
@@ -71,6 +77,8 @@ public final class SpellPlan {
 		public Segment next;
 		/** Echo only: everything before the Echo, fired again. */
 		public Segment echoPrefix;
+		/** The share of its mana it costs: less than 1 inside a Knot. */
+		public double factor = 1.0;
 
 		Link(RuneDef link, Group anchor) {
 			this.link = link;

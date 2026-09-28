@@ -81,6 +81,15 @@ public final class WildercordSounds {
 	/** A short fanfare of bells: something new in the Grimoire. */
 	public static final SoundEvent DISCOVERY = register("discovery");
 
+	// ------------------------------------------------------------------ the Fusion Altar
+
+	/** A low amethyst hum under a soft chord: the Fusion Altar's screen opens. */
+	public static final SoundEvent ALTAR_OPEN = register("altar_open");
+	/** Three glass notes drawn together into a swelling chord that blooms into bells: runes fuse. */
+	public static final SoundEvent ALTAR_FUSE = register("altar_fuse");
+	/** A thread pulled tight, a knot cinching, and a warm two-note bell: a spell is tied into a Knot. */
+	public static final SoundEvent ALTAR_KNOT = register("altar_knot");
+
 	// ------------------------------------------------------------------ the heart
 
 	/** A Heart Circle forming: a great bell, a swelling choir and a crown of chimes. */

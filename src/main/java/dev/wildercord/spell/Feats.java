@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * The Grimoire: everything a caster has discovered. Entries are plain string keys, grouped by
- * a prefix: {@code reaction:shatter}, {@code secret:sunfall}, {@code feat:overcast}. Each first
+ * a prefix: {@code reaction:shatter}, {@code secret:sunfall}, {@code feat:overcast}, {@code fusion:firestorm}. Each first
  * discovery condenses a little mana toward the next Heart Circle. Pure data, shared by the
  * server (which grants entries) and the Grimoire page (which lists them).
  */
@@ -30,6 +30,9 @@ public final class Feats {
 	public static final String SHIELDBREAKER = "shieldbreaker";
 	public static final String SPELLGUARD = "spellguard";
 	public static final String IMBUE = "imbue";
+	public static final String UPGRADE = "upgrade";
+	public static final String COMBINE = "combine";
+	public static final String KNOT = "knot";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -57,7 +60,10 @@ public final class Feats {
 		new Feat(SCROLL, "Scribe", "Inscribed a spell onto a scroll."),
 		new Feat(SPELLGUARD, "Spellguard", "Your Shield stopped a spell cast at you."),
 		new Feat(SHIELDBREAKER, "Shieldbreaker", "Shattered a Shield with a stronger spell."),
-		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."));
+		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."),
+		new Feat(UPGRADE, "Honed", "Ranked up a rune at the Fusion Altar."),
+		new Feat(COMBINE, "Fusion", "Fused two effects into a new one at the Fusion Altar."),
+		new Feat(KNOT, "Knotted", "Tied a whole spell into one rune at the Fusion Altar."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");
@@ -71,7 +77,7 @@ public final class Feats {
 		if (key.startsWith("secret:")) {
 			return 400;
 		}
-		if (key.startsWith("reaction:")) {
+		if (key.startsWith("reaction:") || key.startsWith(Fusions.KEY_PREFIX)) {
 			return 150;
 		}
 		if (key.equals("feat:" + ARCHIVIST)) {

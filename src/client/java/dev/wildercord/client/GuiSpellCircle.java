@@ -25,11 +25,16 @@ public final class GuiSpellCircle {
 	private static final Identifier GLOW = Wildercord.id("textures/particle/sigil_glow.png");
 
 	private static Identifier mark(RuneDef rune) {
-		return Wildercord.id("textures/particle/circle/" + rune.path() + "_mark.png");
+		return Wildercord.id("textures/particle/circle/" + art(rune) + "_mark.png");
 	}
 
 	private static Identifier band(RuneDef rune) {
-		return Wildercord.id("textures/particle/circle/" + rune.path() + "_band.png");
+		return Wildercord.id("textures/particle/circle/" + art(rune) + "_band.png");
+	}
+
+	/** Whose ring and emblem a rune wears: its own, or for a Knot (a spell tied up, like a link) the links' shared ones. */
+	private static String art(RuneDef rune) {
+		return rune.family() == RuneFamily.KNOT ? "_link" : rune.path();
 	}
 
 	/**
@@ -147,7 +152,7 @@ public final class GuiSpellCircle {
 	}
 
 	/** A ring of line {@code width}, made of short straight pieces. */
-	private static void ring(GuiGraphicsExtractor g, float cx, float cy, float rad, float width, int argb) {
+	public static void ring(GuiGraphicsExtractor g, float cx, float cy, float rad, float width, int argb) {
 		if ((argb >>> 24) < 3 || rad <= 0) {
 			return;
 		}
@@ -159,7 +164,8 @@ public final class GuiSpellCircle {
 		}
 	}
 
-	private static void line(GuiGraphicsExtractor g, float x0, float y0, float x1, float y1, float width, int argb) {
+	/** A straight line of light from (x0, y0) to (x1, y1). */
+	public static void line(GuiGraphicsExtractor g, float x0, float y0, float x1, float y1, float width, int argb) {
 		float dx = x1 - x0;
 		float dy = y1 - y0;
 		float length = Mth.sqrt(dx * dx + dy * dy);

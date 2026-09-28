@@ -21,6 +21,13 @@ public final class WildercordComponents {
 		DataComponentType.<String>builder().persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).build()
 	);
 
+	/** A rune item's rank (2 or 3), made at the Fusion Altar; missing means rank I. Learning it ranks the rune up. */
+	public static final DataComponentType<Integer> RANK = Registry.register(
+		BuiltInRegistries.DATA_COMPONENT_TYPE,
+		Wildercord.id("rank"),
+		DataComponentType.<Integer>builder().persistent(Codec.intRange(1, 3)).networkSynchronized(ByteBufCodecs.VAR_INT).build()
+	);
+
 	/** The spell inscribed on a Spell Scroll. */
 	public static final DataComponentType<ScrollSpell> SCROLL = Registry.register(
 		BuiltInRegistries.DATA_COMPONENT_TYPE,

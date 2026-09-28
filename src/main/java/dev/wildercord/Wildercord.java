@@ -31,6 +31,7 @@ public final class Wildercord implements ModInitializer {
 		WildercordEffects.init();
 		WildercordBlocks.init();
 		WildercordItems.init();
+		dev.wildercord.menu.WildercordMenus.init();
 		dev.wildercord.content.WildercordParticles.init();
 		dev.wildercord.content.WildercordSounds.init();
 		WildercordLoot.init();

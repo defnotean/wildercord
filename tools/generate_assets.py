@@ -37,6 +37,16 @@ ELEMENT_COLOR = {
 INNATE = {"blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart"}
 
 
+def read_fusions():
+    """Fused runes, from Fusions.java: path -> (element, element). Never crafted or found, only fused at the altar."""
+    src = (ROOT / "src/main/java/dev/wildercord/spell/Fusions.java").read_text(encoding="utf-8")
+    consts = dict(re.findall(r'public static final RuneDef (\w+) = \w+\("(\w+)"', (ROOT / "src/main/java/dev/wildercord/spell/Runes.java").read_text(encoding="utf-8")))
+    return {consts[c]: (a, b) for a, b, c in re.findall(r'new Recipe\("(\w+)", "(\w+)", Runes\.(\w+)\)', src)}
+
+
+FUSED = read_fusions()
+
+
 def read_runes():
     src = (ROOT / "src/main/java/dev/wildercord/spell/Runes.java").read_text(encoding="utf-8")
     runes = []
@@ -540,6 +550,9 @@ def write_lang(runes):
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
         lang.pop(f"rune.wildercord.{path}.craft", None)
+    for path in (r["path"] for r in runes if r["path"] in FUSED):
+        a, b = FUSED[path]
+        lang[f"rune.wildercord.{path}.found"] = f"Fused at a Fusion Altar: any {a.title()} effect + any {b.title()} effect"
     write_recipe_doc(runes)
     write_json(ASSETS / "lang/en_us.json", lang)
 
@@ -639,7 +652,7 @@ def write_recipe_doc(runes):
     lines += ["", "Recipes appear in the crafting recipe book once you hold a Blank Rune",
               "(Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.", ""]
     for tier in (1, 2, 3):
-        rs = [r for r in runes if r["tier"] == tier and r["path"] not in INNATE]
+        rs = [r for r in runes if r["tier"] == tier and r["path"] not in INNATE and r["path"] not in FUSED]
         lines += [f"## Tier {['I', 'II', 'III'][tier - 1]} ({len(rs)} runes, + {extras[tier]})", "",
                   "| Rune | Family | Items |", "|---|---|---|"]
         for r in sorted(rs, key=lambda r: (r["family"], r["name"])):
@@ -650,6 +663,15 @@ def write_recipe_doc(runes):
     lines += [f"## Tier IV ({len(t4)} runes, found only)", "", "| Rune | Family | Found |", "|---|---|---|"]
     for r in sorted(t4, key=lambda r: (r["family"], r["name"])):
         lines.append(f"| {r['name']} | {r['family'].title()} | {', '.join(found.get(r['path'], ['?']))} |")
+    fused = [r for r in runes if r["path"] in FUSED]
+    lines += ["", f"## Fused runes ({len(fused)}, made only at the Fusion Altar)", "",
+              "Two effects of the right elements, an amethyst shard and 3 XP levels. Any effect of an element counts.", "",
+              "| Rune | Elements | Does |", "|---|---|---|"]
+    for r in fused:
+        a, b = FUSED[r["path"]]
+        lines.append(f"| {r['name']} | {a.title()} + {b.title()} | {r['desc']} |")
+    lines += ["", "The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone "
+              "(tiles in the corners, the lodestone in the middle)."]
     innate = sorted((r for r in runes if r["path"] in INNATE), key=lambda r: r["name"])
     lines += ["", f"## Innate runes ({len(innate)}, never crafted or found)", "",
               "One wakes in each caster's heart at the 1st Circle, chosen at random, and grows with every circle.", "",
@@ -894,7 +916,7 @@ def write_recipes(runes):
         assert path in by_path, path
     for r in runes:
         # Every Tier I-III rune can be crafted; Tier IV is found only (bosses and rare chests).
-        assert (r["path"] in RUNE_RECIPES) == (r["tier"] <= 3 and r["path"] not in INNATE), f"{r['path']} (tier {r['tier']})"
+        assert (r["path"] in RUNE_RECIPES) == (r["tier"] <= 3 and r["path"] not in INNATE and r["path"] not in FUSED), f"{r['path']} (tier {r['tier']})"
     for path in RUNE_RECIPES:
         ingredients = rune_ingredients(by_path[path])
         assert len(ingredients) <= 9, path
@@ -1017,6 +1039,48 @@ NEW_LANG = {
     "tooltip.wildercord.imbued.place": "place it and the block becomes a glyph that holds it",
     "screen.wildercord.refused.passive": "%s can't be a passive",
     "screen.wildercord.refused.take_out": "Click a rune on the Cord to take it out, or drag it off.",
+    # The Fusion Altar, rune ranks and Knots
+    "block.wildercord.fusion_altar": "Fusion Altar",
+    "container.wildercord.fusion_altar": "Fusion Altar",
+    "item.wildercord.knot": "Knot",
+    "item.wildercord.knot.named": "Knot: %s",
+    "item.wildercord.rune.ranked": "%s Rune %s",
+    "family.wildercord.knot": "Knot",
+    "category.wildercord.knot.knot": "Knots",
+    "screen.wildercord.tab.knot": "Knots",
+    "tooltip.wildercord.rank": "Rank %s: +%s%% power, at the same mana",
+    "tooltip.wildercord.knot.holds": "A whole spell tied into one rune (%s runes):",
+    "tooltip.wildercord.knot.rules": "Takes one socket and costs %s%% less mana than the runes inside",
+    "tooltip.wildercord.knot.learn": "Right-click to learn it: anyone can, even without knowing the runes inside",
+    "screen.wildercord.knot_holds": "Holds: %s",
+    "message.wildercord.ranked_up": "%s is now rank %s, in every spell it's threaded in",
+    "message.wildercord.learned_ranked": "Learned %s at rank %s! Press K to thread it into a spell",
+    "message.wildercord.altar_xp": "That takes %s XP levels",
+    "screen.wildercord.altar.levels": "%s levels",
+    "screen.wildercord.altar.fuse": "Fuse",
+    "screen.wildercord.altar.tie": "Tie Knot",
+    "screen.wildercord.altar.kind.none": "The altar waits",
+    "screen.wildercord.altar.kind.upgrade": "Upgrade",
+    "screen.wildercord.altar.kind.combine": "Combine",
+    "screen.wildercord.altar.kind.knot": "Tie a Knot: pick a spell",
+    "screen.wildercord.altar.how.1": "Three of a rune: rank it up",
+    "screen.wildercord.altar.how.2": "Two effects and an amethyst shard: combine them",
+    "screen.wildercord.altar.how.3": "A Blank Rune and string: tie a spell into a Knot",
+    "screen.wildercord.altar.upgrade_line": "+%s%% power at the same mana, in every spell it's threaded in",
+    "screen.wildercord.altar.combine_line": "A new effect, born of %s and %s",
+    "screen.wildercord.altar.cost": "Costs %s XP levels",
+    "screen.wildercord.altar.need_xp": "Needs %s XP levels",
+    "screen.wildercord.altar.take_result": "Take the last result out first",
+    "screen.wildercord.altar.no_spell": "None of your spells can be tied yet",
+    "screen.wildercord.grimoire.fusions": "Fusions (%s of %s)",
+    "screen.wildercord.grimoire.fusion": "%s (%s + %s)",
+    "screen.wildercord.grimoire.fusion_how": "Any %s effect and any %s effect, with an amethyst shard, at a Fusion Altar",
+    "screen.wildercord.grimoire.fusion_hint": "(one is %s)",
+    "screen.wildercord.grimoire.fusion_unknown": "Not found yet. Try two effects of different elements at a Fusion Altar.",
+    "toast.wildercord.fusion": "Fusion: %s",
+    "subtitles.wildercord.altar_open": "Fusion Altar hums",
+    "subtitles.wildercord.altar_fuse": "Runes fuse",
+    "subtitles.wildercord.altar_knot": "Knot is tied",
     # Tags, named for recipe viewers.
     "tag.item.wildercord.enchantable.cord": "Enchantable Cords",
     "message.wildercord.overcast_too_costly": "Too costly to overcast: %s mana is more than %s times what your Cord holds",
@@ -1234,6 +1298,36 @@ def write_new_content(runes):
         "awake=false": {"model": "wildercord:block/archive_lectern"}, "awake=true": {"model": "wildercord:block/archive_lectern"}}})
     write_json(ASSETS / "items/archive_lectern.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/archive_lectern"}})
 
+    # ---- the Fusion Altar: a deepslate foot, a pillar and an amethyst table top (faces take their natural uv)
+    altar = world_art.fusion_altar_textures()
+    for key, image in altar.items():
+        save(image, tex / f"block/fusion_altar_{key}.png")
+    write_json(ASSETS / "models/block/fusion_altar.json", {
+        "parent": "minecraft:block/block",
+        "textures": {"particle": "wildercord:block/fusion_altar_side", "top": "wildercord:block/fusion_altar_top",
+                     "side": "wildercord:block/fusion_altar_side", "bottom": "wildercord:block/fusion_altar_bottom"},
+        "elements": [
+            {"from": [1, 0, 1], "to": [15, 3, 15], "faces": {d: {"texture": "#bottom" if d in ("down", "up") else "#side"}
+                                                          for d in ("down", "up", "north", "south", "west", "east")}},
+            {"from": [3, 3, 3], "to": [13, 10, 13], "faces": {d: {"texture": "#side"} for d in ("north", "south", "west", "east")}},
+            {"from": [0, 10, 0], "to": [16, 14, 16], "faces": {"down": {"texture": "#bottom"}, "up": {"texture": "#top"},
+                                                            **{d: {"texture": "#side"} for d in ("north", "south", "west", "east")}}},
+        ]})
+    write_json(ASSETS / "blockstates/fusion_altar.json", {"variants": {"": {"model": "wildercord:block/fusion_altar"}}})
+    write_json(ASSETS / "items/fusion_altar.json", {"model": {"type": "minecraft:model", "model": "wildercord:block/fusion_altar"}})
+    write_json(DATA / "loot_table/blocks/fusion_altar.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": "wildercord:fusion_altar"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    write_json(DATA / "recipe/fusion_altar.json", {
+        "type": "minecraft:crafting_shaped", "category": "misc",
+        "key": {"A": "minecraft:amethyst_block", "L": "minecraft:lodestone", "T": "minecraft:deepslate_tiles"},
+        "pattern": ["TAT", "ALA", "TAT"], "result": {"id": "wildercord:fusion_altar"}})
+    unlock_advancement("wildercord:fusion_altar", "wildercord:blank_rune")
+
+    # ---- the Knot: a whole spell tied into one rune
+    save(item_art.knot_icon(), tex / "item/knot.png")
+    item_model("knot", "knot")
+    write_json(ASSETS / "items/knot.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/knot"}})
+
     # ---- entity skins
     save(world_art.archivist_texture(), tex / "entity/archivist.png")
     save(world_art.dummy_texture(), tex / "entity/training_dummy.png")
@@ -1243,7 +1337,7 @@ def write_new_content(runes):
     # ---- loot
     write_json(DATA / "loot_table/blocks/wellstone.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
         {"type": "minecraft:item", "name": "wildercord:wellstone"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
-    rollable = [r for r in runes if r["path"] not in INNATE]
+    rollable = [r for r in runes if r["path"] not in INNATE and r["path"] not in FUSED]
     third = [r["path"] for r in rollable if r["tier"] == 3]
     second = [r["path"] for r in rollable if r["tier"] == 2]
     fourth = [r["path"] for r in rollable if r["tier"] == 4]
@@ -1274,7 +1368,7 @@ def write_new_content(runes):
     unlock_advancement("wildercord:training_dummy", "wildercord:twine_cord")
 
     # ---- mining
-    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone"]})
+    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
     write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": ["wildercord:rune_seal", "wildercord:archive_lectern"]})
 

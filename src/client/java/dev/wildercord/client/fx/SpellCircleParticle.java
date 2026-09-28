@@ -136,7 +136,8 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 				return own;
 			}
 		}
-		String family = def == null ? "effect" : def.family().name().toLowerCase(Locale.ROOT);
+		// A Knot is a spell tied up: it wears the links' ring and emblem.
+		String family = def == null ? "effect" : def.family() == RuneFamily.KNOT ? "link" : def.family().name().toLowerCase(Locale.ROOT);
 		return atlas.getSprite(Wildercord.id("circle/_" + family + "_" + part));
 	}
 
