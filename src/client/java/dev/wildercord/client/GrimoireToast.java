@@ -55,6 +55,12 @@ public class GrimoireToast implements Toast {
 			this.name = Component.literal(secret == null ? id : secret.name());
 			this.icon = new ItemStack(Items.KNOWLEDGE_BOOK);
 			this.color = secret == null ? 0xF5C46A : secret.color();
+		} else if (key.startsWith("attune:")) {
+			// A Blank Rune attuned to a land: the rune it became.
+			dev.wildercord.spell.RuneDef rune = dev.wildercord.spell.Attunements.byId(id).map(dev.wildercord.spell.Attunements.Rule::rune).orElse(Runes.GROW);
+			this.name = Component.translatable("toast.wildercord.attuned").append(": ").append(RuneItem.runeName(rune));
+			this.icon = RuneItem.stack(rune);
+			this.color = RuneColors.of(rune);
 		} else if (key.startsWith("hint:")) {
 			this.name = Component.translatable("toast.wildercord.riddle_hint");
 			this.icon = new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE);

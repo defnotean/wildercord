@@ -1900,6 +1900,10 @@ public class CordScreen extends Screen {
 				lines.add(new GrimoireLine(Component.literal("???"), 8, FAINT, List.of(Component.translatable("screen.wildercord.grimoire.secret_unknown").withStyle(ChatFormatting.GRAY))));
 			}
 		}
+		// Attunements: found ones by their land and rune, the rest as riddles.
+		addAttunements(lines, found);
+		// The runes of the world, by where they're found: known ones by name, the rest as a hint.
+		addWorldRunes(lines);
 		// Feats.
 		int feats = dev.wildercord.spell.Feats.count(found, "feat:");
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.feats", feats, dev.wildercord.spell.Feats.FEATS.size()), 0, GOLD, null));
@@ -1934,6 +1938,51 @@ public class CordScreen extends Screen {
 			arrow(g, W - 18, bottom - 4, false);
 		}
 		return tip;
+	}
+
+	private void addAttunements(List<GrimoireLine> lines, List<String> found) {
+		List<dev.wildercord.spell.Attunements.Rule> rules = dev.wildercord.spell.Attunements.RULES;
+		int attuned = dev.wildercord.spell.Feats.count(found, "attune:");
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.attunements", attuned, rules.size()), 0, GOLD, null));
+		for (dev.wildercord.spell.Attunements.Rule rule : rules) {
+			RuneDef rune = rule.rune();
+			if (found.contains(rule.key())) {
+				String biome = rule.biomes().stream().sorted().findFirst().orElse("");
+				Component land = Component.translatable("biome." + biome.replace(':', '.'));
+				lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.attunement", land, RuneItem.runeName(rune).withColor(RuneColors.of(rune))),
+					8, TEXT, List.of(RuneItem.runeName(rune).withColor(RuneColors.of(rune)), RuneItem.runeDescription(rune).withStyle(ChatFormatting.GRAY),
+						Component.literal(land.getString() + ", " + rule.needs()).withStyle(ChatFormatting.DARK_GRAY))));
+			} else {
+				lines.add(new GrimoireLine(Component.literal("“" + rule.riddle() + "”").withStyle(ChatFormatting.ITALIC), 8, 0xFFB8C8A0,
+					List.of(Component.translatable("screen.wildercord.grimoire.attune_hint").withStyle(ChatFormatting.GRAY))));
+			}
+		}
+	}
+
+	private void addWorldRunes(List<GrimoireLine> lines) {
+		Spellbook book = book();
+		List<RuneDef> world = dev.wildercord.spell.RuneSources.runes();
+		long known = world.stream().filter(r -> book.knows(r.id())).count();
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.world", known, world.size()), 0, GOLD, null));
+		for (dev.wildercord.spell.RuneSources.Source source : dev.wildercord.spell.RuneSources.all()) {
+			if (source.id().startsWith("attunement:")) {
+				// Attunements have their own section above.
+				continue;
+			}
+			StringBuilder names = new StringBuilder();
+			List<Component> tip = new ArrayList<>();
+			tip.add(Component.literal(source.where()).withStyle(ChatFormatting.GOLD));
+			tip.add(Component.translatable("screen.wildercord.grimoire.world_hint").withStyle(ChatFormatting.DARK_GRAY));
+			for (RuneDef rune : source.runes()) {
+				boolean knows = book.knows(rune.id());
+				names.append(names.isEmpty() ? "" : ", ").append(knows ? RuneItem.runeName(rune).getString() : "???");
+				tip.add(knows ? RuneItem.runeName(rune).withColor(RuneColors.of(rune))
+					: Component.translatable("screen.wildercord.grimoire.world_unknown", RuneItem.roman(rune.tier()),
+						Component.translatable("family.wildercord." + familyKey(rune.family())).getString().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.GRAY));
+			}
+			boolean all = source.runes().stream().allMatch(r -> book.knows(r.id()));
+			lines.add(new GrimoireLine(Component.literal(source.where() + ": " + names), 8, all ? 0xFF9CE08C : DIM, tip));
+		}
 	}
 
 	/** Used by the HUD to show an item for a rune id. */
