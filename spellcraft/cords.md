@@ -72,8 +72,9 @@ To upgrade, craft the next Cord from the one you have and put it on. That's all:
   starts with every spell you had. The extra sockets and spell rows simply open up.
 - **Your mana pool grows** the moment you put the better Cord on. Your current mana doesn't jump up; it
   refills toward the new maximum at the new rate.
-- **Enchantments don't carry over.** The new Cord is crafted fresh, so any enchantments on the old one are
-  left behind with it. It's worth waiting until your last Cord before spending much on enchanting.
+- **Enchantments carry over.** The new Cord keeps everything on the old one: its enchantments, a name you gave
+  it at an anvil, and its anvil history (so the next anvil job costs what it would have). Enchanting an early Cord
+  isn't wasted.
 
 Three [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) also ask for a better Cord before
 they'll form: the 3rd needs a Copper Cord or better, the 5th an Amethyst Cord or better and the 8th an Echo

@@ -38,10 +38,10 @@ Any combination can go on one Cord: none of them rule each other out.
 Reservoir and Wellspring are the most common and the cheapest on an anvil. Potency, Celerity, Thrift and
 Persistence turn up about half as often, and Siphon is the rarest of all.
 
-{: .warning }
-Upgrading a Cord at a crafting table gives you a **fresh** Cord: the old one's enchantments don't come
-with it. Your spells, runes, mana and circles are saved on you and carry over, but enchantments live on
-the Cord item. Save your best books for the Cord you mean to keep.
+{: .note }
+Upgrading a Cord at a crafting table **keeps its enchantments**: the new Cord comes out with everything the
+old one had (its enchantments, its name and its anvil history). Your spells, runes, mana and circles are
+saved on you and carry over too, so nothing spent on an early Cord is lost.
 
 ## Mana enchantments
 
