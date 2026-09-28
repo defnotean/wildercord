@@ -206,7 +206,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Wither | Effect | the Wither, Archive vaults, the Archivist |
 | Domain | Shape | Ancient cities, the Warden (35%), Archive vaults, the Archivist |
 
-## Fused runes (12, made only at the Fusion Altar)
+## Fused runes (55, made only at the Fusion Altar)
 
 Two effects of the right elements, an amethyst shard and 3 XP levels. Any effect of an element counts.
 
@@ -224,6 +224,49 @@ Two effects of the right elements, an amethyst shard and 3 XP levels. Any effect
 | Bloom | Life + Earth | Regeneration II for 6 seconds, and plants grow around every ally it touches. |
 | Surge | Life + Storm | Speed I and Strength I for 8 seconds. |
 | Nullify | Arcane + Void | Strips an enemy's good effects, or an ally's bad effects. |
+| Phoenix Pyre | Fire + Life | Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. |
+| Hellmouth | Fire + Void | Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks toward it and burns those at its core for 2 damage a second, then caves in for 4 damage. |
+| Starfire | Fire + Arcane | Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, and they burn for 3 seconds. |
+| Everburn | Fire + Time | Sets targets alight for 5 seconds with a fire that burns twice as fast (1 more damage a second), and rekindles once for 3 more when it goes out. |
+| Bloodboil | Fire + Blood | 3 damage, and for 5 seconds the target's blood boils: each time it's hurt it takes 2 more fire damage (up to 5 times). |
+| Conflagration | Fire + Fire | Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flares up for 3 damage and burns 2 seconds longer. |
+| Blizzard | Frost + Wind | A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are slowed (Slowness II), chilled and take 1 damage a second. |
+| Frostbloom | Frost + Life | Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds). |
+| Black Ice | Frost + Void | Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II for 5 seconds). One that dies in the next 5 seconds shatters: 4 damage to enemies within 3 blocks. |
+| Rime Seal | Frost + Arcane | Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that stands in it for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each. |
+| Cryostasis | Frost + Time | Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 health while they wait. |
+| Frostbite | Frost + Blood | 3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second. |
+| Absolute Zero | Frost + Frost | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage. |
+| Magnetize | Storm + Earth | Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second). |
+| Riftbolt | Storm + Void | A black bolt for 6 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds. |
+| Stormweave | Storm + Arcane | Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 3 damage each, and 1 more for every other one caught in the web. |
+| Stormclock | Storm + Time | 4 damage, and lightning strikes the same spot again 2 and 4 seconds later: 3 damage to enemies within 1.5 blocks each time. |
+| Heartstopper | Storm + Blood | 5 damage, and for 6 seconds the target's heart skips: every 2 seconds it's stunned for half a second. |
+| Thunderhead | Storm + Storm | A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 3 damage. |
+| Downdraft | Wind + Earth | Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more for every block it fell (up to 6). Flyers lose their lift. |
+| Updraft | Wind + Wind | Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft smashes them back down for 4 damage. |
+| Skyglyph | Wind + Arcane | Writes a wind glyph where it lands for 10 seconds: an ally who steps on it is launched high and forward, an enemy thrown back 4 blocks. |
+| Recoil | Wind + Time | Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where they stood, for 3 damage. |
+| Zephyr | Wind + Life | A warm breeze: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 6 seconds. |
+| Crimson Mist | Wind + Blood | A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for 1 damage a second, allies in it heal half a heart a second. |
+| Sinkhole | Earth + Void | The ground gives way: enemies within 3 blocks are dragged to its middle and pinned for 2 seconds (Slowness IV, no jumping), then crushed for 5 damage. |
+| Geode | Earth + Arcane | Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally is cut by crystal shards for 2 damage. |
+| Fossilize | Earth + Time | The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then it's stone, held for 2 seconds (1 on players) and cracked for 6 damage. |
+| Bonespur | Earth + Blood | Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 damage each, and they bleed for 3 seconds. |
+| Monolith | Earth + Earth | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |
+| Soulbond | Life + Arcane | Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks. |
+| Second Wind | Life + Time | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. |
+| Transfusion | Life + Blood | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
+| Lifebloom | Life + Life | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
+| Sanguine Rite | Blood + Blood | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
+| Entropy | Void + Time | The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour. |
+| Devour | Void + Blood | 5 damage. If it kills, you feed: 10 mana and 4 absorption. |
+| Timesteal | Arcane + Time | Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you. |
+| Hemomancy | Arcane + Blood | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
+| Reckoning | Time + Blood | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |
+| Singularity | Void + Void | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |
+| Prismatic Burst | Arcane + Arcane | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked or wet), each used up. |
+| Chronoshift | Time + Time | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
 

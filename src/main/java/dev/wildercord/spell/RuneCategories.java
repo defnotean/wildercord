@@ -74,9 +74,12 @@ public final class RuneCategories {
 				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
 					"vein", "smelt", "fell", "span", "ancient_seed", "glowvine" -> "world";
 				case "summon", "shades", "thunderbird" -> "summon";
-				case "glacier", "nullify" -> "control";
-				case "bloom", "surge" -> "support";
-				case "warp" -> "movement";
+				case "glacier", "nullify", "blizzard", "black_ice", "rime_seal", "absolute_zero", "magnetize", "heartstopper", "updraft", "recoil",
+					"sinkhole", "fossilize", "timesteal" -> "control";
+				case "bloom", "surge", "phoenix_pyre", "frostbloom", "cryostasis", "zephyr", "geode", "soulbond", "second_wind", "transfusion",
+					"lifebloom" -> "support";
+				case "warp", "skyglyph" -> "movement";
+				case "chronoshift" -> "time";
 				case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom",
 					"stormheart" -> "innate";
 				default -> "damage";

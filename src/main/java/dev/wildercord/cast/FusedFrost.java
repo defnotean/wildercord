@@ -1,0 +1,30 @@
+package dev.wildercord.cast;
+
+import dev.wildercord.spell.SpellPlan;
+import net.minecraft.world.entity.LivingEntity;
+
+import java.util.List;
+
+/**
+ * Fused effects of frost, made only at the Fusion Altar (see {@code spell.Fusions}); {@link FusedEffects}
+ * hands each of them here. Their look is in {@link FusedFrostVfx}. Numbers match the rune descriptions in
+ * {@code Runes}.
+ */
+final class FusedFrost {
+	private FusedFrost() {}
+
+	/** Does {@code node}'s effect if it's one of these, and says whether it was. */
+	static boolean apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, List<LivingEntity> helped, List<LivingEntity> harmed,
+			double power, double duration, int amplify) {
+		switch (node.effect.path()) {
+			case "blizzard", "frostbloom", "black_ice", "rime_seal", "cryostasis",
+				"frostbite", "absolute_zero", "fossilize", "geode" -> {
+				// Not written yet.
+				return true;
+			}
+			default -> {
+				return false;
+			}
+		}
+	}
+}

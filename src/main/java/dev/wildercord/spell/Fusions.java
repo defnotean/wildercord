@@ -35,7 +35,10 @@ public final class Fusions {
 		}
 	}
 
-	/** Every fusion, in the order the Grimoire lists them. */
+	/**
+	 * Every fusion, in the order the Grimoire lists them: one for every pair of the ten elements, and
+	 * one for each element with itself, so any two elemental effects fuse into something.
+	 */
 	public static final List<Recipe> RECIPES = List.of(
 		new Recipe("fire", "wind", Runes.FIRESTORM),
 		new Recipe("fire", "frost", Runes.STEAM),
@@ -48,7 +51,51 @@ public final class Fusions {
 		new Recipe("wind", "void", Runes.WARP),
 		new Recipe("life", "earth", Runes.BLOOM),
 		new Recipe("life", "storm", Runes.SURGE),
-		new Recipe("arcane", "void", Runes.NULLIFY));
+		new Recipe("arcane", "void", Runes.NULLIFY),
+		new Recipe("fire", "life", Runes.PHOENIX_PYRE),
+		new Recipe("fire", "void", Runes.HELLMOUTH),
+		new Recipe("fire", "arcane", Runes.STARFIRE),
+		new Recipe("fire", "time", Runes.EVERBURN),
+		new Recipe("fire", "blood", Runes.BLOODBOIL),
+		new Recipe("frost", "wind", Runes.BLIZZARD),
+		new Recipe("frost", "life", Runes.FROSTBLOOM),
+		new Recipe("frost", "void", Runes.BLACK_ICE),
+		new Recipe("frost", "arcane", Runes.RIME_SEAL),
+		new Recipe("frost", "time", Runes.CRYOSTASIS),
+		new Recipe("frost", "blood", Runes.FROSTBITE),
+		new Recipe("storm", "earth", Runes.MAGNETIZE),
+		new Recipe("storm", "void", Runes.RIFTBOLT),
+		new Recipe("storm", "arcane", Runes.STORMWEAVE),
+		new Recipe("storm", "time", Runes.STORMCLOCK),
+		new Recipe("storm", "blood", Runes.HEARTSTOPPER),
+		new Recipe("wind", "earth", Runes.DOWNDRAFT),
+		new Recipe("wind", "life", Runes.ZEPHYR),
+		new Recipe("wind", "arcane", Runes.SKYGLYPH),
+		new Recipe("wind", "time", Runes.RECOIL),
+		new Recipe("wind", "blood", Runes.CRIMSON_MIST),
+		new Recipe("earth", "void", Runes.SINKHOLE),
+		new Recipe("earth", "arcane", Runes.GEODE),
+		new Recipe("earth", "time", Runes.FOSSILIZE),
+		new Recipe("earth", "blood", Runes.BONESPUR),
+		new Recipe("life", "arcane", Runes.SOULBOND),
+		new Recipe("life", "time", Runes.SECOND_WIND),
+		new Recipe("life", "blood", Runes.TRANSFUSION),
+		new Recipe("void", "time", Runes.ENTROPY),
+		new Recipe("void", "blood", Runes.DEVOUR),
+		new Recipe("arcane", "time", Runes.TIMESTEAL),
+		new Recipe("arcane", "blood", Runes.HEMOMANCY),
+		new Recipe("time", "blood", Runes.RECKONING),
+		// Two effects of the same element: that element at its purest.
+		new Recipe("fire", "fire", Runes.CONFLAGRATION),
+		new Recipe("frost", "frost", Runes.ABSOLUTE_ZERO),
+		new Recipe("storm", "storm", Runes.THUNDERHEAD),
+		new Recipe("wind", "wind", Runes.UPDRAFT),
+		new Recipe("earth", "earth", Runes.MONOLITH),
+		new Recipe("life", "life", Runes.LIFEBLOOM),
+		new Recipe("void", "void", Runes.SINGULARITY),
+		new Recipe("arcane", "arcane", Runes.PRISMATIC_BURST),
+		new Recipe("time", "time", Runes.CHRONOSHIFT),
+		new Recipe("blood", "blood", Runes.SANGUINE_RITE));
 
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {
@@ -178,7 +225,7 @@ public final class Fusions {
 			}
 			Optional<Recipe> recipe = recipe(a, b);
 			if (recipe.isEmpty()) {
-				return Plan.refuse(Kind.COMBINE, a.name() + " and " + b.name() + " don't fuse: fusions join two different elements, like fire and wind.");
+				return Plan.refuse(Kind.COMBINE, a.name() + " and " + b.name() + " don't fuse: only effects of the ten elements do.");
 			}
 			// The fused rune keeps the lower of the two ranks put in, so ranking up first isn't wasted.
 			RuneDef made = recipe.get().result();

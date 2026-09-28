@@ -74,16 +74,29 @@ class FusionTest {
 		assertSame(BLOOM, Fusions.recipe(REGROWTH, STONESKIN).orElseThrow().result());
 		assertSame(SURGE, Fusions.recipe(HEAL, SHOCK).orElseThrow().result());
 		assertSame(NULLIFY, Fusions.recipe(HARM, HEX).orElseThrow().result());
-		assertTrue(Fusions.recipe(FIRE, EMBER).isEmpty(), "one element doesn't fuse with itself");
-		assertTrue(Fusions.recipe(FIRE, BLEED).isEmpty(), "blood has no fusions");
+		// Every pair fuses now, one element with itself too.
+		assertSame(Runes.CONFLAGRATION, Fusions.recipe(FIRE, EMBER).orElseThrow().result());
+		assertSame(Runes.BLOODBOIL, Fusions.recipe(FIRE, BLEED).orElseThrow().result());
+		assertSame(Runes.BLOODBOIL, Fusions.recipe(BLEED, EMBER).orElseThrow().result());
+		assertSame(Runes.RECKONING, Fusions.recipe(Runes.STASIS, BLEED).orElseThrow().result());
+		assertSame(Runes.SINGULARITY, Fusions.recipe(PULL, Runes.WITHER).orElseThrow().result());
 		assertTrue(Fusions.recipe(FIRE, BOLT).isEmpty(), "only effects fuse");
 		assertTrue(Fusions.recipe(KINDLING, PUSH).isEmpty(), "innate runes never fuse");
 	}
 
 	@Test
 	void everyFusedRuneIsATierThreeEffectMadeOnlyOneWay() {
-		assertEquals(12, Fusions.RECIPES.size());
+		// One fusion for every pair of the ten elements (45), and one for each element with itself (10).
+		assertEquals(55, Fusions.RECIPES.size());
 		assertEquals(Runes.FUSED.size(), Fusions.RECIPES.size());
+		List<String> elements = List.of("fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood");
+		for (int i = 0; i < elements.size(); i++) {
+			for (int j = i; j < elements.size(); j++) {
+				String a = elements.get(i);
+				String b = elements.get(j);
+				assertEquals(1, Fusions.RECIPES.stream().filter(r -> r.takes(a, b)).count(), a + " + " + b + " should make exactly one rune");
+			}
+		}
 		for (Fusions.Recipe recipe : Fusions.RECIPES) {
 			RuneDef made = recipe.result();
 			assertEquals(RuneFamily.EFFECT, made.family(), made.name());
@@ -91,7 +104,9 @@ class FusionTest {
 			assertTrue(Runes.fused(made), made.name());
 			assertEquals(recipe, Fusions.recipeFor(made).orElseThrow());
 			assertEquals("fusion:" + made.path(), recipe.key());
-			assertNotEquals(recipe.first(), recipe.second());
+			// A fused rune counts as one of the two elements it was made from.
+			assertTrue(made.element().equals(recipe.first()) || made.element().equals(recipe.second())
+				|| made == LIFESTEAL, made.name() + " should be of " + recipe.first() + " or " + recipe.second());
 		}
 		assertEquals(Fusions.RECIPES.size(), Fusions.RECIPES.stream().map(r -> r.result().id()).distinct().count());
 	}
@@ -127,7 +142,10 @@ class FusionTest {
 		Fusions.Plan noShard = plan(Fusions.Catalyst.NONE, Fusions.Slot.of(FIRE, 1), Fusions.Slot.of(PUSH, 1), Fusions.Slot.EMPTY);
 		assertEquals(Fusions.Kind.COMBINE, noShard.kind());
 		assertNotNull(noShard.problem());
-		assertNotNull(plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(FIRE, 1), Fusions.Slot.of(EMBER, 1), Fusions.Slot.EMPTY).problem());
+		assertNotNull(plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(FIRE, 1), Fusions.Slot.of(BOLT, 1), Fusions.Slot.EMPTY).problem(), "only effects fuse");
+		Fusions.Plan pure = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(FIRE, 1), Fusions.Slot.of(EMBER, 1), Fusions.Slot.EMPTY);
+		assertTrue(pure.ready(), String.valueOf(pure.problem()));
+		assertSame(Runes.CONFLAGRATION, pure.result(), "two effects of one element make that element at its purest");
 	}
 
 	@Test

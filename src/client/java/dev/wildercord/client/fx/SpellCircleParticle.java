@@ -45,7 +45,21 @@ import java.util.Locale;
  */
 public class SpellCircleParticle extends SingleQuadParticle implements SigilGroup.Extent {
 	/** One rune on the circle: its ring pattern, its emblem and its colour. */
-	protected record Rune(TextureAtlasSprite band, TextureAtlasSprite mark, int color) {}
+	/** A rune's ring and emblem in its colour, and a fused rune's second half ({@code band2}, {@code mark2}, null for others) in its partner's. */
+	protected record Rune(TextureAtlasSprite band, TextureAtlasSprite mark, int color, TextureAtlasSprite band2, TextureAtlasSprite mark2, int color2) {
+		Rune(TextureAtlasSprite band, TextureAtlasSprite mark, int color) {
+			this(band, mark, color, null, null, 0);
+		}
+
+		static Rune of(String id, RuneDef def) {
+			int color = def == null ? 0xFFFFFF : RuneColors.of(def);
+			int second = def == null ? -1 : RuneColors.second(def);
+			if (second < 0) {
+				return new Rune(runeSprite(id, def, "band"), runeSprite(id, def, "mark"), color);
+			}
+			return new Rune(runeSprite(id, def, "band"), runeSprite(id, def, "mark"), color, runeSprite(id, def, "band2"), runeSprite(id, def, "mark2"), second);
+		}
+	}
 
 	protected final List<Rune> runes = new ArrayList<>();
 	protected final int color;
@@ -95,7 +109,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 			if (def != null) {
 				defs.add(def);
 			}
-			Rune rune = new Rune(runeSprite(id, def, "band"), runeSprite(id, def, "mark"), def == null ? 0xFFFFFF : RuneColors.of(def));
+			Rune rune = Rune.of(id, def);
 			runes.add(rune);
 			if (firstEffect == null && def != null && def.family() == RuneFamily.EFFECT) {
 				firstEffect = rune;
@@ -247,6 +261,10 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		// The pattern band, in the first effect's own ring pattern.
 		tiles(new TextureAtlasSprite[] {pattern.band}, 0, 0, r * SpellSigil.PATTERN, r * SpellSigil.PATTERN_HEIGHT,
 			Mth.lerp(partial, oPatternTurn, patternTurn), argb(a * writing, pattern.color), 0.003F, false);
+		if (pattern.band2 != null) {
+			tiles(new TextureAtlasSprite[] {pattern.band2}, 0, 0, r * SpellSigil.PATTERN, r * SpellSigil.PATTERN_HEIGHT,
+				Mth.lerp(partial, oPatternTurn, patternTurn), argb(a * writing, pattern.color2), 0.0031F, false);
+		}
 
 		// The star: its circle, then its lines drawing themselves from every point.
 		float drawn = part(open, 0.2F, 0.35F);
@@ -256,6 +274,9 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 			float middle = part(open, 0.3F, 0.3F);
 			Rune first = runes.getFirst();
 			piece(first.mark, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, lighter(color, 0.2F)), 0.008F);
+			if (first.mark2 != null) {
+				piece(first.mark2, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, lighter(first.color2, 0.2F)), 0.0081F);
+			}
 			this.state = null;
 			return;
 		}
@@ -277,6 +298,9 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		ring(0, 0, r * SpellSigil.MEDALLION, fine, argb(a * middle, lighter(color, 0.3F)), 0.004F);
 		Rune first = runes.getFirst();
 		piece(first.mark, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, first.color), 0.007F);
+		if (first.mark2 != null) {
+			piece(first.mark2, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, first.color2), 0.0071F);
+		}
 
 		// The roundels, one by one: a rune's pattern around its emblem, on its star point.
 		int n = runes.size();
@@ -296,6 +320,11 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 			ring(u, v, rs, fine, argb(a * shown, rune.color), 0.005F);
 			tiles(new TextureAtlasSprite[] {rune.band}, u, v, rs * 0.72F, rs * 0.4F, -star * 3, argb(a * shown * 0.9F, rune.color), 0.006F, false);
 			piece(rune.mark, u, v, ang - Mth.HALF_PI, rs * 0.5F, argb(a * shown, lighter(rune.color, 0.15F)), 0.007F);
+			if (rune.band2 != null) {
+				// A fused rune: its partner element's half, in that element's colour.
+				tiles(new TextureAtlasSprite[] {rune.band2}, u, v, rs * 0.72F, rs * 0.4F, -star * 3, argb(a * shown * 0.9F, rune.color2), 0.0061F, false);
+				piece(rune.mark2, u, v, ang - Mth.HALF_PI, rs * 0.5F, argb(a * shown, lighter(rune.color2, 0.15F)), 0.0071F);
+			}
 		}
 		extras(r, a, fine, partial);
 		this.state = null;

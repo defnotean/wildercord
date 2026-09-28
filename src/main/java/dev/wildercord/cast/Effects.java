@@ -521,12 +521,15 @@ public final class Effects {
 			case "cyclone" -> cyclone(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, ticks(2, duration));
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
-			case "firestorm", "steam", "magma", "tempest", "plasma", "hail", "glacier", "lifesteal", "warp", "bloom", "surge", "nullify" ->
-				FusedEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
 			default -> {
-				// The runes of the world (found, never crafted) live in their own class; a rune from an add-on (dev.wildercord.api) does what it registered.
-				ExplorerEffects.apply(cast, node, hit, helped, harmed, power, duration);
-				AddonRunes.effect(cast, node, hit, harmed, helped, power, duration);
+				if (Runes.fused(rune)) {
+					// The fused effects, made only at the Fusion Altar.
+					FusedEffects.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+				} else {
+					// The runes of the world (found, never crafted) live in their own class; a rune from an add-on (dev.wildercord.api) does what it registered.
+					ExplorerEffects.apply(cast, node, hit, helped, harmed, power, duration);
+					AddonRunes.effect(cast, node, hit, harmed, helped, power, duration);
+				}
 			}
 		}
 		// Kindled: whatever the effect struck is set alight too.

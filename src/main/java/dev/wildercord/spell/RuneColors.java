@@ -26,6 +26,26 @@ public final class RuneColors {
 		};
 	}
 
+	/**
+	 * A fused rune's second colour, for the half of its ring and emblem that shows its partner element
+	 * (see tools/circle_art.py): that element's colour, or for a fusion of one element with itself, its
+	 * own lightened. -1 for any other rune.
+	 */
+	public static int second(RuneDef rune) {
+		return Fusions.recipeFor(rune).map(recipe -> {
+			String own = recipe.first().equals(rune.element()) || !recipe.second().equals(rune.element()) ? recipe.first() : recipe.second();
+			String partner = own.equals(recipe.first()) ? recipe.second() : recipe.first();
+			return own.equals(partner) ? lighten(element(partner), 0.45F) : element(partner);
+		}).orElse(-1);
+	}
+
+	private static int lighten(int rgb, float t) {
+		int r = (rgb >> 16) & 0xFF;
+		int g = (rgb >> 8) & 0xFF;
+		int b = rgb & 0xFF;
+		return Math.round(r + (255 - r) * t) << 16 | Math.round(g + (255 - g) * t) << 8 | Math.round(b + (255 - b) * t);
+	}
+
 	public static int of(RuneDef rune) {
 		return switch (rune.family()) {
 			case SHAPE -> SHAPE;
