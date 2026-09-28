@@ -4,6 +4,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.2.1-alpha] - 2026-09-28
+
 ### Changed
 - **Imbue balance.** Releasing still costs no mana, but it's no longer a way around cooldowns or a
   mana bank:
