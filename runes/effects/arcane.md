@@ -14,6 +14,7 @@ Pure magic. Arcane strikes, reveals, silences, summons and bends the rules.
 16 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/barrier.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barrier
+{: #barrier}
 
 *Tier I · Arcane · Helps you and your allies · 6 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/harm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Harm
+{: #harm}
 
 *Tier I · Arcane · Harms enemies · 8 mana · needs any Cord*
 
@@ -34,6 +36,7 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/haste.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Haste
+{: #haste}
 
 *Tier I · Arcane · Helps you and your allies · 4 mana · needs any Cord*
 
@@ -44,6 +47,7 @@ Haste II for 30 seconds: mine and swing faster.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/light.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Light
+{: #light}
 
 *Tier I · Arcane · Works on the world · 2 mana · needs any Cord*
 
@@ -54,6 +58,7 @@ A light source at the point for 60 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/night_eye.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Night Eye
+{: #night_eye}
 
 *Tier I · Arcane · Helps you and your allies · 3 mana · needs any Cord*
 
@@ -64,6 +69,7 @@ Night vision for 60 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/reveal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reveal
+{: #reveal}
 
 *Tier I · Arcane · Harms enemies · 3 mana · needs any Cord*
 
@@ -74,16 +80,18 @@ Makes targets glow through walls for 15 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/decree.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Decree
+{: #decree}
 
 *Tier II · Arcane · Harms enemies · 10 mana · needs a Copper Cord or better*
 
 A spoken command: everything hit is stunned for 2 seconds. Speaking it costs you 2 health per cast.
 
-**How to get it:** Craft: a Blank Rune, Writable Book, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/empower.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Empower
+{: #empower}
 
 *Tier II · Arcane · Helps you and your allies · 12 mana · needs a Copper Cord or better*
 
@@ -94,6 +102,7 @@ Strength II for 10 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/silence.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Silence
+{: #silence}
 
 *Tier II · Arcane · Harms enemies · 9 mana · needs a Copper Cord or better*
 
@@ -104,6 +113,7 @@ Monsters forget their target and are weakened for 6 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/span.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Span
+{: #span}
 
 *Tier II · Arcane · Works on the world · 8 mana · needs a Copper Cord or better*
 
@@ -114,6 +124,7 @@ A bridge of glass grows from your feet toward the point, up to 16 blocks, and sh
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/swap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Swap
+{: #swap}
 
 *Tier II · Arcane · Moves you · 6 mana · needs a Copper Cord or better*
 
@@ -124,6 +135,7 @@ You and the first creature hit trade places, instantly.
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/reflect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reflect
+{: #reflect}
 
 *Tier III · Arcane · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
@@ -134,16 +146,18 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/resonance.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Resonance
+{: #resonance}
 
 *Tier III · Arcane · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
 4 damage and a cursed mark for 10 seconds. Every other marked enemy within 16 blocks takes half of it too.
 
-**How to get it:** Craft: a Blank Rune, Iron Nugget and Hay Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/smite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Smite
+{: #smite}
 
 *Tier III · Arcane · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -154,6 +168,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/starfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Starfall
+{: #starfall}
 
 *Tier IV · Arcane · Harms enemies · 32 mana · needs an Echo Cord*
 
@@ -164,6 +179,7 @@ Eight falling stars around the point over 2 seconds: 6 damage each.
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/summon.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Summon
+{: #summon}
 
 *Tier IV · Arcane · Helps you and your allies · 30 mana · needs an Echo Cord*
 

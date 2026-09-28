@@ -7,7 +7,7 @@ permalink: /runes/
 
 # Runes
 
-<img src="{{ '/assets/images/rune-icons.png' | relative_url }}" alt="A grid of rune icons: round shapes, diamond effects, square modifiers and hexagonal links" class="shot">
+<img src="{{ '/assets/images/rune-icons.png' | relative_url }}" alt="A grid of rune icons: round shapes, eight-sided gem effects, square modifiers and hexagonal links" class="shot">
 
 A **rune** is a small tablet you thread onto your Cord. Each one does one simple thing, and a spell is simply the
 runes in its sockets, read from left to right. There are **292** of them.
@@ -19,8 +19,8 @@ Every rune belongs to a family, and you can tell the family from the tablet's sh
 | Family | Tablet | What it does | Examples |
 |---|---|---|---|
 | [Shape]({{ '/runes/shapes/' | relative_url }}) | Round | Decides *where* the spell goes and *who* it touches. Starts a new group. | Self, Bolt, Beam, Burst, Zone, Orbit, Domain |
-| [Effect]({{ '/runes/effects/' | relative_url }}) | Diamond | Decides *what happens* to whatever the shape hit. | Fire, Heal, Freeze, Blink, Stasis, Swap |
-| [Modifier]({{ '/runes/modifiers/' | relative_url }}) | Square | Changes the closest rune on its left that it can change. | Amplify, Extend, Widen, Split, Homing, Rapid |
+| [Effect]({{ '/runes/effects/' | relative_url }}) | Eight-sided gem | Decides *what happens* to whatever the shape hit. | Fire, Heal, Freeze, Blink, Stasis, Swap |
+| [Modifier]({{ '/runes/modifiers/' | relative_url }}) | Rounded square | Changes the closest rune on its left that it can change. | Amplify, Extend, Widen, Split, Homing, Rapid |
 | [Link]({{ '/runes/links/' | relative_url }}) | Hexagon | Ends a segment: everything after it happens later or somewhere else. | On Hit, Delay, Echo, Pulse, On Hurt, Combo |
 
 A rune's colour tells you more: shapes are teal, modifiers gold, links violet, and each effect wears its element's

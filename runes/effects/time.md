@@ -14,6 +14,7 @@ Slowing, speeding and rewinding. Time stops foes and turns back the clock.
 6 time effects you can craft or find in the usual way. Time also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/countdown.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Countdown
+{: #countdown}
 
 *Tier I · Time · Harms enemies · 7 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/accelerate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Accelerate
+{: #accelerate}
 
 *Tier III · Time · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
@@ -34,6 +36,7 @@ Time runs faster for 10 seconds: Speed III, Haste III, Jump Boost II and Regener
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/foresight.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Foresight
+{: #foresight}
 
 *Tier III · Time · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
@@ -44,6 +47,7 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/time_skip.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Time Skip
+{: #time_skip}
 
 *Tier III · Time · Moves you · 14 mana · needs an Amethyst Cord or better*
 
@@ -54,6 +58,7 @@ Time skips ahead: you vanish, reappear up to 8 blocks forward, and nearby monste
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/rewind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rewind
+{: #rewind}
 
 *Tier IV · Time · Helps you and your allies · 26 mana · needs an Echo Cord*
 
@@ -64,6 +69,7 @@ Turns back the clock: return to where you were 5 seconds ago, with the health yo
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/stasis.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stasis
+{: #stasis}
 
 *Tier IV · Time · Harms enemies · 34 mana · needs an Echo Cord*
 

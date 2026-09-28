@@ -14,6 +14,7 @@ Air and motion. Wind throws, lifts, dashes and turns arrows aside.
 13 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cushion
+{: #cushion}
 
 *Tier I · Wind · Helps you and your allies · 5 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ For 30 seconds falls can't hurt you, and a hard landing throws out a gust that k
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/feather_fall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Feather Fall
+{: #feather_fall}
 
 *Tier I · Wind · Helps you and your allies · 6 mana · needs any Cord*
 
@@ -34,16 +36,18 @@ Slow falling and no fall damage for 12 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/leap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Leap
+{: #leap}
 
 *Tier I · Wind · Helps you and your allies · 4 mana · needs any Cord*
 
 Jump Boost III for 15 seconds.
 
-**How to get it:** Craft: a Blank Rune, Slime Ball. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Slimeball. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/prune.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prune
+{: #prune}
 
 *Tier I · Wind · Works on the world · 2 mana · needs any Cord*
 
@@ -54,6 +58,7 @@ A gust clears leaves, grass, flowers, vines and cobwebs within 3 blocks.
 **Modifiers that work on it:** Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/push.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Push
+{: #push}
 
 *Tier I · Wind · Harms enemies · 4 mana · needs any Cord*
 
@@ -64,6 +69,7 @@ Hurls targets away from the spell.
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/swift.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Swift
+{: #swift}
 
 *Tier I · Wind · Helps you and your allies · 6 mana · needs any Cord*
 
@@ -74,6 +80,7 @@ Speed III for 10 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/windcut.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Windcut
+{: #windcut}
 
 *Tier I · Wind · Harms enemies · 6 mana · needs any Cord*
 
@@ -84,6 +91,7 @@ A cutting wind: 4 damage and a light shove.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/cyclone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cyclone
+{: #cyclone}
 
 *Tier II · Wind · Harms enemies · 10 mana · needs a Copper Cord or better*
 
@@ -94,16 +102,18 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/dash.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dash
+{: #dash}
 
 *Tier II · Wind · Harms enemies · 6 mana · needs a Copper Cord or better*
 
 Shoves targets hard the way you're facing. On Self it's a long dash.
 
-**How to get it:** Craft: a Blank Rune, Rabbit Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/deflect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Deflect
+{: #deflect}
 
 *Tier II · Wind · Helps you and your allies · 9 mana · needs a Copper Cord or better*
 
@@ -114,6 +124,7 @@ For 8 seconds a whirl of wind turns aside arrows and other projectiles coming at
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/launch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Launch
+{: #launch}
 
 *Tier II · Wind · Harms enemies · 8 mana · needs a Copper Cord or better*
 
@@ -124,6 +135,7 @@ Flings targets high into the air. On Self it rockets you up and forward.
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/levitate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Levitate
+{: #levitate}
 
 *Tier II · Wind · Harms enemies · 8 mana · needs a Copper Cord or better*
 
@@ -134,6 +146,7 @@ Targets float helplessly upward for 3 seconds. On Self you float.
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/repel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Repel
+{: #repel}
 
 *Tier II · Wind · Harms enemies · 9 mana · needs a Copper Cord or better*
 

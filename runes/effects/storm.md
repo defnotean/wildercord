@@ -14,6 +14,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 6 storm effects you can craft or find in the usual way. Storm also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/shock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shock
+{: #shock}
 
 *Tier I · Storm · Harms enemies · 7 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/jolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Jolt
+{: #jolt}
 
 *Tier II · Storm · Harms enemies · 9 mana · needs a Copper Cord or better*
 
@@ -34,6 +36,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/ripple.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ripple
+{: #ripple}
 
 *Tier II · Storm · Harms enemies · 10 mana · needs a Copper Cord or better*
 
@@ -44,6 +47,7 @@ Sunlight through the body: 6 damage, tripled against undead, and heals you for a
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/thunderclap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderclap
+{: #thunderclap}
 
 *Tier II · Storm · Harms enemies · 12 mana · needs a Copper Cord or better*
 
@@ -54,16 +58,18 @@ A crack of thunder: 5 damage and a heavy knockback within 3 blocks.
 **Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/lightning.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lightning
+{: #lightning}
 
 *Tier III · Storm · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
 A 12-damage lightning strike on each target that stuns and burns. You and your allies are immune.
 
-**How to get it:** Craft: a Blank Rune, Copper Block and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Copper and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/thunderbird.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderbird
+{: #thunderbird}
 
 *Tier III · Storm · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
 

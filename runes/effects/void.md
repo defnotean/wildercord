@@ -14,6 +14,7 @@ Darkness, gravity and space. Void pulls, blinks, withers and swallows light.
 20 void effects you can craft or find in the usual way. Void also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/anchor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Anchor
+{: #anchor}
 
 *Tier I · Void · Helps you and your allies · 4 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ Holds you fast for 15 seconds: blows and blasts can't knock you back, and 4 more
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/blind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blind
+{: #blind}
 
 *Tier I · Void · Harms enemies · 5 mana · needs any Cord*
 
@@ -34,6 +36,7 @@ Blindness and darkness for 5 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/collect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Collect
+{: #collect}
 
 *Tier I · Void · Works on the world · 3 mana · needs any Cord*
 
@@ -44,6 +47,7 @@ Pulls items and experience within 8 blocks to you.
 **Modifiers that work on it:** Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/hex.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hex
+{: #hex}
 
 *Tier I · Void · Harms enemies · 5 mana · needs any Cord*
 
@@ -54,6 +58,7 @@ Hexes targets for 8 seconds: your spells hit them 25% harder.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/banish.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Banish
+{: #banish}
 
 *Tier II · Void · Harms enemies · 8 mana · needs a Copper Cord or better*
 
@@ -64,6 +69,7 @@ Banishes targets: they vanish and reappear up to 8 blocks further away from you.
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/grapple.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Grapple
+{: #grapple}
 
 *Tier II · Void · Moves you · 8 mana · needs a Copper Cord or better*
 
@@ -74,6 +80,7 @@ Pulls you to where the spell hit.
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/pull.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pull
+{: #pull}
 
 *Tier II · Void · Harms enemies · 5 mana · needs a Copper Cord or better*
 
@@ -84,6 +91,7 @@ Pulls targets toward the spell.
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/veil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Veil
+{: #veil}
 
 *Tier II · Void · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
@@ -94,6 +102,7 @@ Invisibility for 12 seconds, and nearby monsters lose track of you.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/zipper.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Zipper
+{: #zipper}
 
 *Tier II · Void · Moves you · 7 mana · needs a Copper Cord or better*
 
@@ -104,6 +113,7 @@ Unzips the wall in front of you and steps you through up to 6 blocks of solid wa
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/blackflame.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blackflame
+{: #blackflame}
 
 *Tier III · Void · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
@@ -114,6 +124,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/blackspark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blackspark
+{: #blackspark}
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
@@ -124,6 +135,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/blink.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blink
+{: #blink}
 
 *Tier III · Void · Moves you · 15 mana · needs an Amethyst Cord or better*
 
@@ -134,16 +146,18 @@ Teleports you to where the spell landed (max 40 blocks).
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/gravity_well.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gravity Well
+{: #gravity_well}
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
 Drags every enemy within 7 blocks into the point for 2 seconds.
 
-**How to get it:** Craft: a Blank Rune, Ender Eye and Crying Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Eye of Ender and Crying Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/shades.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shades
+{: #shades}
 
 *Tier III · Void · Helps you and your allies · 22 mana · needs an Amethyst Cord or better*
 
@@ -154,6 +168,7 @@ Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/shadowstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shadowstep
+{: #shadowstep}
 
 *Tier III · Void · Moves you · 12 mana · needs an Amethyst Cord or better*
 
@@ -164,6 +179,7 @@ You vanish and reappear right behind the first creature hit, facing its back.
 **Modifiers that work on it:** Frugal
 
 ### <img src="{{ '/assets/runes/dragon_breath.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dragon Breath
+{: #dragon_breath}
 
 *Tier IV · Void · Harms enemies · 30 mana · needs an Echo Cord*
 
@@ -174,6 +190,7 @@ A lingering 3-block cloud: 5 damage per second for 5 seconds.
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/hollow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hollow
+{: #hollow}
 
 *Tier IV · Void · Harms enemies · 36 mana · needs an Echo Cord*
 
@@ -184,6 +201,7 @@ Erases what it touches: 20 damage, and everything within 4 blocks is dragged int
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/infinity.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Infinity
+{: #infinity}
 
 *Tier IV · Void · Helps you and your allies · 32 mana · needs an Echo Cord*
 
@@ -194,6 +212,7 @@ For 6 seconds nothing reaches you: projectiles slow to a stop in the air and ene
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/sonic_boom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sonic Boom
+{: #sonic_boom}
 
 *Tier IV · Void · Harms enemies · 35 mana · needs an Echo Cord*
 
@@ -204,6 +223,7 @@ For 6 seconds nothing reaches you: projectiles slow to a stop in the air and ene
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/wither.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wither
+{: #wither}
 
 *Tier IV · Void · Harms enemies · 25 mana · needs an Echo Cord*
 

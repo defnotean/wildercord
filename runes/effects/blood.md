@@ -14,16 +14,18 @@ Life paid for power. Blood cuts, drains, bleeds and turns wounds into strength.
 6 blood effects you can craft or find in the usual way. Blood also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/leech.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Leech
+{: #leech}
 
 *Tier I · Blood · Harms enemies · 8 mana · needs any Cord*
 
 3 damage, and you heal for what it takes.
 
-**How to get it:** Craft: a Blank Rune, Spider Eye and Redstone. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Spider Eye and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/rend.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rend
+{: #rend}
 
 *Tier I · Blood · Harms enemies · 5 mana · needs any Cord*
 
@@ -34,16 +36,18 @@ Rends armour: targets lose 4 armour for 10 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/bleed.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bleed
+{: #bleed}
 
 *Tier II · Blood · Harms enemies · 8 mana · needs a Copper Cord or better*
 
 Opens a wound: 2 damage, then 1 more every half second for 4 seconds.
 
-**How to get it:** Craft: a Blank Rune, Shears and Redstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Shears and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/dismantle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dismantle
+{: #dismantle}
 
 *Tier II · Blood · Harms enemies · 10 mana · needs a Copper Cord or better*
 
@@ -54,16 +58,18 @@ Three unseen slashes a tenth of a second apart: 3 damage each, straight through 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/overdrive.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Overdrive
+{: #overdrive}
 
 *Tier II · Blood · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
 Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you lose 1 health every 2 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Powder and Redstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/cleave.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cleave
+{: #cleave}
 
 *Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 

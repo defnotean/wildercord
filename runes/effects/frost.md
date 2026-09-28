@@ -14,6 +14,7 @@ Cold, ice and water. Frost slows, freezes and shatters, and freezes water you ca
 9 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/chill.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chill
+{: #chill}
 
 *Tier I · Frost · Harms enemies · 4 mana · needs any Cord*
 
@@ -24,6 +25,7 @@ Slowness II for 6 seconds and 1 freeze damage.
 **Modifiers that work on it:** Extend, Frugal, Linger
 
 ### <img src="{{ '/assets/runes/frostward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostward
+{: #frostward}
 
 *Tier I · Frost · Helps you and your allies · 3 mana · needs any Cord*
 
@@ -34,6 +36,7 @@ For 60 seconds you can't freeze, not even in powder snow.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/icepath.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Icepath
+{: #icepath}
 
 *Tier I · Frost · Works on the world · 3 mana · needs any Cord*
 
@@ -44,6 +47,7 @@ Freezes water within 3 blocks into ice you can walk on.
 **Modifiers that work on it:** Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/icicle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Icicle
+{: #icicle}
 
 *Tier I · Frost · Harms enemies · 6 mana · needs any Cord*
 
@@ -54,6 +58,7 @@ Freezes water within 3 blocks into ice you can walk on.
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/tidebreath.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidebreath
+{: #tidebreath}
 
 *Tier I · Frost · Helps you and your allies · 4 mana · needs any Cord*
 
@@ -64,16 +69,18 @@ Water breathing and faster swimming for 30 seconds.
 **Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/bubble.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bubble
+{: #bubble}
 
 *Tier II · Frost · Harms enemies · 8 mana · needs a Copper Cord or better*
 
 Traps targets in a floating bubble for 3 seconds. It pops for 4 damage and leaves them soaked.
 
-**How to get it:** Craft: a Blank Rune, Water Bucket and Slime Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/coldsnap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Coldsnap
+{: #coldsnap}
 
 *Tier II · Frost · Harms enemies · 11 mana · needs a Copper Cord or better*
 
@@ -84,6 +91,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/frost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frost
+{: #frost}
 
 *Tier II · Frost · Harms enemies · 8 mana · needs a Copper Cord or better*
 
@@ -94,6 +102,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/freeze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Freeze
+{: #freeze}
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
