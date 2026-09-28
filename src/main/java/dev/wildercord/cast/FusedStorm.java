@@ -962,12 +962,19 @@ final class FusedStorm {
 		}
 	}
 
-	/** The wind carries {@code t}: its next fall (within {@code ticks}) doesn't hurt it. */
+	/**
+	 * The wind carries {@code t}: the fall that ends this flight doesn't hurt it. The cushion goes once it lands (so
+	 * a soft landing doesn't leave it immune to the next fall), or after {@code ticks} at the latest.
+	 */
 	private static void cushion(LivingEntity t, int ticks) {
 		long now = t.level().getGameTime();
-		CUSHIONED.merge(t.getUUID(), now + ticks, Math::max);
+		UUID id = t.getUUID();
+		long until = now + ticks;
+		CUSHIONED.merge(id, until, Math::max);
 		if (CUSHIONED.size() > 64) {
-			CUSHIONED.values().removeIf(until -> until < now);
+			CUSHIONED.values().removeIf(at -> at < now);
 		}
+		// Only this flight's cushion: a newer one (a second launch) outlasts it and stays.
+		Scheduler.onLand(t, ticks, at -> Scheduler.later(2, () -> CUSHIONED.remove(id, until)));
 	}
 }
