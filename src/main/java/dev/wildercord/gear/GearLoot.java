@@ -1,7 +1,6 @@
 package dev.wildercord.gear;
 
 import dev.wildercord.config.Config;
-import dev.wildercord.world.WildercordWorldgen;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.resources.ResourceKey;
@@ -40,6 +39,12 @@ public final class GearLoot {
 	/** Bosses: the chance (out of 100) of a greater staff, and its elements. */
 	private static final Map<EntityType<?>, Pool> BOSSES = new HashMap<>();
 
+	/** The Archive's chests (as in WildercordWorldgen, named here so loading this class doesn't set up worldgen early). */
+	private static final ResourceKey<LootTable> ARCHIVE_VAULT = ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+		dev.wildercord.Wildercord.id("chests/archive_vault"));
+	private static final ResourceKey<LootTable> ARCHIVE_LIBRARY = ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+		dev.wildercord.Wildercord.id("chests/archive_library"));
+
 	/** The Archivist's chance of a greater staff (out of 100). */
 	public static final int ARCHIVIST_CHANCE = 50;
 
@@ -48,8 +53,8 @@ public final class GearLoot {
 		List<GearDef> tomeAndFoci = List.of(GearDef.TOME, GearDef.HASTE, GearDef.THRIFT, GearDef.DEEP_WELL, GearDef.ECHOES);
 		java.util.ArrayList<GearDef> vault = new java.util.ArrayList<>(tomeAndFoci);
 		GearDef.ELEMENTS.forEach(e -> vault.add(GearDef.greaterStaff(e)));
-		CHESTS.put(WildercordWorldgen.VAULT_LOOT, new Pool(45, List.copyOf(vault)));
-		CHESTS.put(WildercordWorldgen.LIBRARY_LOOT, new Pool(20, tomeAndFoci));
+		CHESTS.put(ARCHIVE_VAULT, new Pool(45, List.copyOf(vault)));
+		CHESTS.put(ARCHIVE_LIBRARY, new Pool(20, tomeAndFoci));
 		CHESTS.put(BuiltInLootTables.STRONGHOLD_LIBRARY, new Pool(10, tomeAndFoci));
 		CHESTS.put(BuiltInLootTables.ANCIENT_CITY, new Pool(12, foci));
 		CHESTS.put(BuiltInLootTables.WOODLAND_MANSION, new Pool(8, foci));

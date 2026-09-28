@@ -3,6 +3,9 @@
 Runes are data plus a little behaviour, so most new runes touch the same handful of places. This
 guide walks through each family with a real example, then lists the checklist to finish with.
 
+This guide is for runes built into Wildercord. **Adding runes from another mod?** Use the add-on API
+instead: no changes to Wildercord at all. See [API.md](API.md) and [From another mod](#from-another-mod).
+
 Before starting, read [ARCHITECTURE.md](ARCHITECTURE.md) sections 1 and 2; they explain the reading
 rules and how a cast runs.
 
@@ -14,6 +17,7 @@ rules and how a cast runs.
 - [An innate rune](#an-innate-rune)
 - [Art, recipes and loot](#art-recipes-and-loot)
 - [Checklist](#checklist)
+- [From another mod](#from-another-mod)
 
 ## Where things go
 
@@ -226,3 +230,22 @@ This writes the texture, item model, language entries, recipe, recipe-book unloc
 - [ ] `./gradlew build` passes; `./gradlew runClientGameTest` passes
 - [ ] A line in `docs/DESIGN.md` and in `CHANGELOG.md`
 - [ ] If it could be sustained safely, consider `Passives` (and say why in the PR)
+
+## From another mod
+
+An add-on registers its runes through `dev.wildercord.api` ([API.md](API.md)) from a `WildercordAddon`
+listed under the `wildercord` entrypoint. The same rules apply, only the places differ:
+
+| Built-in rune | Add-on rune |
+|---|---|
+| A `RuneDef` line in `Runes.java` | `api.effect(...)` / `shape` / `modifier` / `link`, then `.register()` |
+| A case in `Effects.applyEffect` | `.onApply(ctx -> ...)`, with `ctx.hurt` for damage and `ctx.mayEdit` for blocks |
+| A branch in `CastEngine.deliver` | `.onDeliver(ctx -> ...)`, calling `ctx.hit(...)` (and `ctx.pulse()` per repeated strike) |
+| Numbers in `SpellNumbers` | `.numbers(power, duration, radius)` on a modifier |
+| A branch in `CastEngine.runSegment` | `.onLink(ctx -> ...)`, calling `ctx.fire()` or `ctx.fireAt(...)` |
+| `RuneCategories.categoryFor` | `.category(...)` (a new one is added to the family) |
+| A reaction in `Reactions` | `api.registerReaction(id, element, ...)`, with `api.mark` / `hasMark` |
+
+Unknown runes reach the engine's default branches (`Effects.applyEffect`, `CastEngine.deliver`,
+`CastEngine.runSegment`), which hand them to `cast.AddonRunes`. Built-in runes never go that way, so a new
+built-in rune still needs its own case.

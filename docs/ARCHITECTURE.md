@@ -570,6 +570,14 @@ can draw the circle.
 - **More items**: Spell Scroll (a `wildercord:scroll` component holds the spell, its name and
   author; casting it builds a `Cast` with base bonuses), Torn Page (a riddle from
   `Grimoire.hint`, and the distance and direction to the nearest Archive), Training Dummy.
+- **Casting gear** (`gear/`): `GearDef` (pure: every staff, the tome and the foci, with their numbers),
+  `GearBonuses` (pure: what the pieces in two hands do to a spell), `SpellSlots` (pure: which of the five
+  spell slots are open), `Gear` (reads the hands; the charged-cast flourishes), `GearItems` and
+  `GearLoot`. The server reads the hands when casting and stores the result on the `Cast` (`cast.gear`),
+  so the whole spell uses the gear it was cast with. Server settings live in `config/` (`WildercordConfig`
+  is pure and unit-tested; `Config` loads, reloads and syncs it), and the add-on API in `api/`, with its
+  runtime side in `cast.AddonRunes`. See [features/gear-config-api.md](features/gear-config-api.md) and
+  [API.md](API.md).
 - **The Archive** (`world/`): `ArchiveStructure` finds a spot and sinks the piece so its stairway
   meets the ground; `ArchivePiece` builds the whole dungeon in its own coordinates (every
   terrain-dependent part is worked out per column, so chunks can generate in any order) and places

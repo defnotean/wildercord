@@ -985,8 +985,10 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
   never change blocks.
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
-- **Config file (planned):** `config/wildercord.json` will hold all of the above, plus
-  mana-regen and cost multipliers.
+- **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
+  blocks, the PvP scale, mana-regen and cost multipliers, Runebound and loot chances, imbue
+  limits and feature switches; `/wildercord reload` reads it again (see
+  [features/gear-config-api.md](features/gear-config-api.md)).
 
 ## Add-on compatibility contract
 
@@ -1005,7 +1007,8 @@ practice:
      make a *composite* rune that is a preset sequence (for example "Meteor" =
      `Rain · Fire · Explode`).
    - **Java API.** Register brand-new rune types in the `dev.wildercord.api`
-     package.
+     package (see [API.md](API.md)): runes of every family with their behaviour,
+     categories, element reactions and events, from a `wildercord` entrypoint.
 4. **Element tags drive fusion.** Fusion recipes are datapack recipes that match
    tags such as `#wildercord:element/fire`, so new runes join old fusions for free.
 5. **One rune item.** Every rune is the same `wildercord:rune` item carrying a
