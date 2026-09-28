@@ -185,7 +185,7 @@ passive renewing itself, and a **budget**:
 
 - at most **64 creatures** and **32 blocks** touched, and **8 links** deep, shared by the whole
   cast through `child()`, so no chain of links can run away;
-- shapes that strike repeatedly (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb) take a fresh creature/block budget per strike with `pulse()`, while the Siphon cap and
+- shapes that strike repeatedly (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb, Stream) take a fresh creature/block budget per strike with `pulse()`, while the Siphon cap and
   `once(...)` costs still count for the whole cast.
 
 `Cast.alive()` is false once the caster leaves, dies or changes dimension (or, for a passive, once
@@ -279,7 +279,7 @@ None of the wards are saved: they last seconds, and a restart simply ends them.
   up as a text display, and keeps its last 5 seconds of hits for the DPS in its name.
 - **`SpellChat`**: a chat message decorator that turns `wc:` codes into hoverable spell cards.
 
-### Visuals: `Vfx`, `TechniqueVfx`, `ElementFx`, `Fx`, `Sigils`, `Light`, `BlockFx`
+### Visuals: `Vfx`, `TechniqueVfx`, `ExpansionVfx`, `ElementFx`, `Fx`, `Sigils`, `Light`, `BlockFx`, `ScreenFx`
 
 Visuals are sent from the server, so everyone sees the same show. `Vfx.Theme` gives each element
 two colours, a mote, a spark and two sounds; shapes are built from shaped light and magic circles
@@ -324,6 +324,24 @@ per-cast spin with `Fx.sendOthers`). The circle under every cast (`Vfx.castCircl
 circle, flat on the ground, with enchanting glyphs rising from it and nothing flying outward; a Runebound's
 telegraph is the same circle held out in its right hand.
 
+`Sigils.send` (which carries circles and shaped light) follows the same two rules as `Fx.send`: it
+sends nothing inside `Fx.quietly`, and it leaves a circle or light out for a player whose eyes it
+would open right in front of (within 1.25 blocks), so a beam's hand circle never fills its own
+caster's screen. Beams (`RAY`) are the exception: you should see your beam leave your hand. The
+circle under your own feet is further than that and still shows.
+
+The runes added in batch 6 (Spark, Ray, Nova, Wisp, Comet and the other energy balls and beams, and
+the new protection, mining and element runes) have their visuals in `ExpansionVfx`, built the same
+way. A bolt in flight is drawn by each client, not the server: `RuneBolt` syncs its two colours
+(`DATA_COLOR`, `DATA_SECONDARY`) and the client's `BoltComets` draws it as a comet that follows the
+entity's smoothed position every frame; the server only adds a few motes.
+
+`ScreenFx` sends screen effects to players (the `ScreenFx` payload): a camera shake to everyone
+near something huge (explosions, bursts, pillars, Domains opening, meteors, tremors, thunderclaps,
+Sunfall), a field-of-view kick to a caster whose charged spell leaves their hands, a short punch
+when one of their spells lands a hit of 8 or more, and a tint on the edges of the screen of
+everyone inside a Domain. The client scales shake and kicks by vanilla's "Screen Effect Scale".
+
 `BlockFx` builds visuals from block displays that grow, hold and shrink away: Tectonic Rise's
 dripstone spires and the ice Glacial Lance closes around its targets. They never touch the world's
 blocks, and any left behind by a restart are removed as their chunk loads.
@@ -349,7 +367,9 @@ player, synced to that player only, and copied through death where noted.
 | `cracks` | count, mend time | yes | Circles cracked by overcasting, and when they mend |
 | `meditating` | bool | no (not saved) | Worked out by the server each tick |
 | `rhythm` | stacks, window | no (not saved) | The rhythm chain and the next beat |
-| `charge` | spell, start, colours | no (not saved) | A spell being charged; synced to **everyone** nearby, who draw its circle |
+| `charge` | spell, start, rune ids | no (not saved) | A spell being charged; synced to **everyone** nearby, who draw its circle (and hear its hum) |
+| `cast_pose` | shape, time | no (not saved) | The spell just cast, for its casting pose; synced to **everyone** nearby |
+| `cord_look` | tier, bead colours | no (not saved) | How the worn Cord looks on the wrist (kept up to date by `CordLook`); synced to **everyone** nearby |
 | `on_ley`, `well_until` | bool, long | no (not saved) | On a ley line; near an awake Wellstone until |
 | `spirit_until`, `frozen_until` | long | on the mob | End times for summons and frozen mobs |
 | `runebound` | list of string | on the mob | A Runebound's spell |
@@ -409,8 +429,10 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 | `RenameSpell(spell, name)` | `SpellCaster.rename` |
 | `InscribeScroll(spell)` | `SpellScrollItem.inscribe` |
 
-Two notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast)
-and `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from).
+Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
+`LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
+`ScreenFx(kind, strength, ticks)` (a camera shake, field-of-view kick, punch or Domain tint; see
+`cast.ScreenFx`).
 Everything else travels through synced attachments; `CHARGE` is synced to everyone nearby so they
 can draw the circle.
 
@@ -422,7 +444,10 @@ can draw the circle.
   for categories you've learned something in), the Codex, and the plain-English readout, whose
   small tool buttons rename the spell (`RenameSpell`), copy or paste its spell code, and inscribe
   a scroll (`InscribeScroll`). It edits a local copy of the spells and sends `EditSpell` /
-  `EditPassive` after each change. The Grimoire page replaces the rows, Codex and readout with
+  `EditPassive` after each change. Beside the window, when there's room, `GuiSpellCircle` draws
+  the edited spell's magic circle (laid out exactly as in the world), opening again whenever the
+  spell changes; on the Grimoire page it shows the secret spells found so far, one after another,
+  each named like a plate in a book. The Grimoire page replaces the rows, Codex and readout with
   everything discovered. It turns on SDL text input while open (see the 26.x notes).
 - **`SpellHud`**: the panel beside the hotbar: selected spell, its runes and cost, the mana bar
   with a cost mark, cooldown, and passive drain (or the charge, while charging); above it the
@@ -430,10 +455,18 @@ can draw the circle.
   the beat comes. Laid out by measuring, and shrinks to fit.
 - **`WildercordKeys`**: R (tap casts, hold charges), V (tap selects, hold opens the
   **`SpellWheelScreen`**), K and four unbound "cast spell N" keys.
-- **`fx/`**: `SigilParticle` (the magic circle: a flat, tinted, double-sided quad at full
+- **`fx/`**: everything magical is blended by `GlowLayers`: `GLOW` adds light to what's behind it
+  (overlapping light burns brighter, and it never hides anything), `DARK` takes light away (void,
+  for any colour carrying the `Light.DARK` flag). Both are vanilla's particle pipeline (reached
+  through `RenderPipelinesAccessor`) with a different blend and no depth writes.
+  `SigilParticle` (the magic circle: a flat, tinted, double-sided quad at full
   brightness) drawn in its own `SigilGroup`, which culls anything implementing `SigilGroup.Extent`
   by its whole extent;
-  `SpellCircleParticle` (a spell's whole magic circle, built from its runes and opening in stages);
+  `SpellCircleParticle` (a spell's whole magic circle, built from its runes and opening in stages;
+  a secret spell's circle gets its own centrepiece instead of the star: a sun, a snowflake, a
+  horizon, a flower, lightning, a black star, a clock, wings, nested stones or a constellation);
+  `BoltComets` (every bolt in flight as a comet with a tapering trail); `ScreenEffects` (the
+  client side of `ScreenFx`); `ChargeHum` (the rising hum of anyone charging);
   `LightParticle` (rings, beams, slashes and orbs); `ChargeCircles` (the spell's circle in front of a
   charging caster's hands, opening as the charge builds, read from the synced charge);
   `AimPreview` (the reticle or dotted line while charging); `LeyMotes` (ley lines, worked out on
@@ -450,7 +483,17 @@ can draw the circle.
   `WellstoneHalo` hangs a turning ring over every awake Wellstone. Each spawner keeps a small
   budget of lights out at once (`Glimmer.Budget`).
 - **`GrimoireToast`**, and the Grimoire page inside `CordScreen`.
-- **`render/`**: `ArchivistRenderer` with its own `ArchivistModel` (a hooded, robed figure hovering
+- **Casting poses**: a cast sets the synced `cast_pose`; `AvatarRendererMixin` reads it (and the
+  charge, and the Cord's look) into the render state through the `CastingPose` interface that
+  `AvatarRenderStateMixin` adds, and `PlayerModelMixin` moves the arms: both hands held out while
+  charging, then a motion for the shape (a thrust, a Crescent's sweep, a Barrage's alternating blows,
+  arms flung up for the great circles, a push, arms swept back for a Blitz). Arms that point where
+  you look follow the head's turn, as vanilla's bow pose does.
+- **`render/`**: `CordLayer` (added to every player renderer through
+  `LivingEntityRenderLayerRegistrationCallback`) draws the worn Cord on the right wrist from the
+  synced `cord_look`: a band in its tier's material (`CordModel.band`, textures from `wear_art.py`)
+  and a glowing bead (`CordModel.bead`, drawn cutout and again emissive) for each rune of the ready
+  spell, burning brighter while charging and flaring after a cast. `ArchivistRenderer` with its own `ArchivistModel` (a hooded, robed figure hovering
   over the floor, with long sleeves, a floating open tome with a turning page and three loose pages
   circling it; the pose comes from `ArchivistRenderState`'s casting and rewriting blends) and two
   emissive layers (`archivist_eyes`: its eyes and chest gem, always lit; `archivist_runes`: the
@@ -466,7 +509,8 @@ can draw the circle.
   survival inventory (`InventoryScreenMixin`, with `SlotWell` for the slot's frame) and placed in
   the creative inventory tab (`CreativeModeInventoryScreenMixin`). `LivingEntityRendererMixin`
   copies a Runebound's rune marks into its render state (a render layer only sees the state, and
-  there is no event for this step). On the server side,
+  there is no event for this step). `GameRendererMixin` applies camera shake where the view bobs
+  when you're hurt, and `CameraMixin` the field-of-view kicks. On the server side,
   `LightningRodBlockMixin` turns a Blank Rune by a struck rod into Lightning, and
   `MannequinAccessor` sets up Phantom's afterimage (a mannequin wearing the caster's skin).
 
@@ -514,7 +558,10 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
    toast sprites from `sigil_art.py`; every rune's ring pattern and emblem from `circle_art.py`
    (handed out by a stable hash of the rune's id, and checked so no two runes share either); items,
    blocks, the two entity skins, the Archivist's two glow layers and the Runebound marks (one sheet
-   per vanilla skin layout, under `textures/entity/runebound/`) from `world_art.py`.
+   per vanilla skin layout, under `textures/entity/runebound/`) from `world_art.py`; the worn
+   Cord's band (one per tier) and bead from `wear_art.py`. `circle_art.py` hands designs out in the
+   order runes are defined, so add new runes after the existing ones and no existing rune's emblem
+   changes.
 3. **Item models**: a `select` on the `wildercord:rune` component picks each rune's model.
 4. **Language**: rune names and descriptions from `Runes.java`, UI strings from the `lang` dict,
    and each rune's "Craft:" and "Found:" tooltip lines.
@@ -527,7 +574,10 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
    loot tables, recipes, the pickaxe tag and the worldgen JSON.
 
 Run `python tools/item_art.py` on its own to render review sheets of every icon into
-`build/art-preview/`.
+`build/art-preview/` (`circle_art.py --preview` does the same for every rune's ring and emblem).
+
+`python tools/make_gif.py` builds the README's moving header (`docs/images/hero.gif`) from the
+feature tour's `tour_hero_*` frames: run the tour first.
 
 ### Sounds: `sound_art.py`
 

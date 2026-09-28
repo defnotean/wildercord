@@ -15,8 +15,8 @@ SIZE = (640, 360)
 # The three parts of the clip, by frame number: how much of the screen to keep (centred), where the
 # middle of the crop sits vertically, and how long each frame shows (ms).
 PARTS = [
-    (range(0, 18), 0.42, 0.5, 90),     # charging, close on the circle and the caster's hands
-    (range(18, 26), 0.72, 0.45, 70),   # the release, from behind
+    (range(0, 18), 0.46, 0.6, 90),    # charging, close on the caster, the circle and their hands
+    (range(18, 26), 0.62, 0.9, 70),    # the release: a nova bursting round them
     (range(26, 999), 0.72, 0.45, 110),  # a Domain unfolding
 ]
 

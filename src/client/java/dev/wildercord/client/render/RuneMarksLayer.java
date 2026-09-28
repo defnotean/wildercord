@@ -73,7 +73,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 		}
 		float t = entity.tickCount + partial;
 		// A slow breath, out of step between monsters.
-		float glow = (marks.adept() ? 0.62F : 0.5F) + 0.16F * Mth.sin(t * 0.07F + entity.getId() * 1.7F);
+		float glow = (marks.adept() ? 0.92F : 0.82F) + 0.12F * Mth.sin(t * 0.07F + entity.getId() * 1.7F);
 		float flare = 0;
 		if (marks.castAt() > 0) {
 			float left = marks.castAt() - (entity.level().getGameTime() + partial);
@@ -88,7 +88,7 @@ public class RuneMarksLayer<S extends LivingEntityRenderState, M extends EntityM
 			glow *= Math.max(0, 1 - state.deathTime / 16F);
 		}
 		// Flaring, the colour runs hot toward white.
-		int rgb = hot(marks.color(), 0.18F + flare * 0.4F);
+		int rgb = hot(marks.color(), 0.04F + flare * 0.5F);
 		state.setData(MARKS, (Mth.clamp((int) (glow * 255), 0, 255) << 24) | rgb);
 	}
 

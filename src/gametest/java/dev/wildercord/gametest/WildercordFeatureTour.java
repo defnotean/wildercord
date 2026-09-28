@@ -185,6 +185,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			}
 		}
 		world.getServer().runCommand("kill @e[type=item]");
+		// No cows wandering into the shots.
+		world.getServer().runCommand("kill @e[type=!player,type=!text_display]");
 	}
 
 	private static void setup(TestSingleplayerContext world) {
@@ -408,6 +410,10 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			{Runes.BEAM, Runes.SHOCK, 3, 1}, {Runes.CONE, Runes.FROST, 3, 1}, {Runes.CRESCENT, Runes.FIRE, 4, 1}, {Runes.BARRAGE, Runes.HARM, 7, 0},
 			{Runes.BLITZ, Runes.SHOCK, 3, 1}, {Runes.ORB, Runes.WITHER, 10, 1}, {Runes.BURST, Runes.FIRE, 3, 1}, {Runes.RING, Runes.SHOCK, 6, 1},
 			{Runes.PILLAR, Runes.HARM, 5, 1}, {Runes.WAVE, Runes.PUSH, 8, 1}, {Runes.WALL, Runes.FIRE, 12, 1}, {Runes.ORBIT, Runes.HARM, 14, 1},
+			{Runes.SPARK, Runes.EMBER, 3, 1}, {Runes.RAY, Runes.JOLT, 2, 1}, {Runes.NOVA, Runes.COLDSNAP, 3, 0}, {Runes.WISP, Runes.HEX, 12, 1},
+			{Runes.COMET, Runes.FLASHFIRE, 9, 1}, {Runes.RICOCHET, Runes.PELT, 12, 1}, {Runes.CLUSTER, Runes.ICICLE, 9, 1},
+			{Runes.LANCE, Runes.WINDCUT, 3, 1}, {Runes.SWEEP, Runes.FLASHFIRE, 6, 1}, {Runes.PRISM, Runes.JOLT, 3, 1},
+			{Runes.STREAM, Runes.LEECH, 12, 1}, {Runes.SELF, Runes.HAVEN, 8, 1}, {Runes.SELF, Runes.BARRIER, 5, 0},
 			{Runes.RAIN, Runes.FROST, 16, 3}, {Runes.MINE, Runes.FIRE, 12, 1}, {Runes.TOTEM, Runes.HEAL, 24, 1}, {Runes.ZONE, Runes.FIRE, 22, 2},
 			{Runes.DOMAIN, Runes.FROST, 34, 2},
 		};
@@ -451,7 +457,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				director(context, world, at.add(-14, 4, 1), at.add(0, 5.5, 7.5));
 			}
 			context.waitTicks(Math.max(1, wait - 3));
-			shot(context, "shape_" + shape.path());
+			shot(context, "shape_" + shape.path() + (shape == Runes.SELF ? "_" + effect.path() : ""));
 			cut(context);
 			// The ones that stay a while get time to go, so they don't turn up in the next shot.
 			boolean lingers = shape == Runes.WALL || shape == Runes.ORBIT || shape == Runes.TOTEM || shape == Runes.TRAIL;
@@ -480,7 +486,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			player.removeAllEffects();
 			place(player, stage, 180, 8);
 			SpellCaster.edit(player, 0, List.of());
-			SpellCaster.edit(player, 0, ids(Runes.BEAM, Runes.FIRE, Runes.AMPLIFY, Runes.ON_HIT, Runes.BURST, Runes.SHOCK, Runes.WIDEN));
+			SpellCaster.edit(player, 0, ids(Runes.NOVA, Runes.FLASHFIRE, Runes.WIDEN, Runes.SHOCK, Runes.AMPLIFY, Runes.ON_HIT, Runes.BURST));
 			Spellbooks.set(player, Spellbooks.get(player).withSelected(0));
 			Spellbooks.setMana(player, 400);
 			Spellbooks.setReadyAt(player, 0, 0);
@@ -492,15 +498,16 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			context.waitTicks(2);
 			shot(context, String.format(java.util.Locale.ROOT, "hero_%03d", frame++));
 		}
-		// The release, from behind: the beam flies away into a line of husks.
-		camera(context, CameraType.THIRD_PERSON_BACK);
+		// The release, still facing the camera: a nova of fire bursting out round the caster, over husks.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
 			for (int i = 0; i < 3; i++) {
 				Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 				if (husk != null) {
-					husk.snapTo(stage.x + (i - 1) * 0.8, stage.y, stage.z - 7 - i * 2.5, 0, 0);
+					// Beside and behind the caster (who faces the camera), never between them and it.
+					double a = Math.PI * (0.12 + 0.38 * i);
+					husk.snapTo(stage.x + Math.cos(a) * 2.2, stage.y, stage.z + Math.sin(a) * 2.2, 180, 0);
 					husk.setNoAi(true);
 					husk.addTag("wildercord.tour");
 					level.addFreshEntity(husk);
@@ -548,6 +555,27 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 	// ------------------------------------------------------------------ Runebound
 
 	private static void runebound(ClientGameTestContext context, TestSingleplayerContext world) {
+		// First, a close look at a Runebound's glowing marks, at night.
+		world.getServer().runCommand("time set 18000");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			place(player, stage.add(0, 0, -10), 0, 0);
+			Mob zombie = EntityTypes.ZOMBIE.create(level, EntitySpawnReason.COMMAND);
+			if (zombie != null) {
+				zombie.snapTo(stage.x, stage.y, stage.z, 200, 0);
+				zombie.setNoAi(true);
+				zombie.addTag("wildercord.tour");
+				level.addFreshEntity(zombie);
+				Runebound.bind(zombie, List.of(Runes.BOLT, Runes.FIRE, Runes.SPLIT_MOD), true);
+			}
+		});
+		director(context, world, stage.add(-1.4, 1.7, 2.6), stage.add(0, 1.1, 0));
+		context.waitTicks(10);
+		shot(context, "runebound_marks");
+		cut(context);
+		world.getServer().runCommand("kill @e[tag=wildercord.tour]");
+		world.getServer().runCommand("time set 6000");
 		camera(context, CameraType.FIRST_PERSON);
 		world.getServer().runOnServer(server -> {
 			server.setDifficulty(net.minecraft.world.Difficulty.NORMAL, true);
@@ -761,10 +789,14 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 					break;
 				}
 			}
+			// The player always stands on the line's heart; with no strong spot close by, the Wellstone
+			// goes a few blocks off instead (moving the player could take them off the line).
+			if (well.equals(BlockPos.containing(heart))) {
+				well = well.offset(3, 0, 0);
+			}
 			level.setBlockAndUpdate(well, WildercordBlocks.WELLSTONE.defaultBlockState());
 			Vec3 w = Vec3.atBottomCenterOf(well);
-			Vec3 away = heart.subtract(w);
-			Vec3 standAt = away.lengthSqr() < 0.5 ? heart.add(0, 0, -4) : heart;
+			Vec3 standAt = heart;
 			Vec3 look = w.subtract(standAt);
 			float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
 			place(player, standAt, yaw, 25);
@@ -913,6 +945,18 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		}, 400);
 		context.waitTicks(12);
 		shot(context, "archivist");
+		Vec3 boss = world.getServer().computeOnServer(server -> {
+			List<Archivist> found = player(server).level().getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40));
+			return found.isEmpty() ? null : found.getFirst().position();
+		});
+		if (boss != null) {
+			Vec3 player = world.getServer().computeOnServer(server -> player(server).position());
+			Vec3 toward = player.subtract(boss).multiply(1, 0, 1).normalize();
+			director(context, world, boss.add(toward.scale(4.2)).add(0, 2.4, 0), boss.add(0, 1.6, 0));
+			context.waitTicks(4);
+			shot(context, "archivist_close");
+			cut(context);
+		}
 		world.getServer().runOnServer(server -> {
 			ServerLevel level = player(server).level();
 			check(!level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40)).isEmpty(), "the Archivist wakes when a player comes near");

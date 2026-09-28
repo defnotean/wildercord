@@ -24,12 +24,19 @@ public final class Sigils {
 		if (Fx.muted()) {
 			return;
 		}
+		// Nothing but a beam may open right in front of someone's eyes: a circle there fills the whole
+		// screen in first person. (A circle under your own feet is further than this, and still shows.)
+		boolean beam = sigil instanceof dev.wildercord.content.LightOption light && light.kind() == dev.wildercord.content.LightOption.RAY;
 		for (ServerPlayer player : level.players()) {
-			if (player.position().distanceToSqr(at) <= RANGE * RANGE) {
+			if (player.position().distanceToSqr(at) <= RANGE * RANGE
+					&& (beam || player.getEyePosition().distanceToSqr(at) > EYE_CLEARANCE * EYE_CLEARANCE)) {
 				level.sendParticles(player, sigil, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 			}
 		}
 	}
+
+	/** How close to a player's eyes a circle or shaped light may open before it's left out for them. */
+	private static final double EYE_CLEARANCE = 1.25;
 
 	/** The yaw and pitch that make a sigil face along {@code normal}. */
 	static float yaw(Vec3 normal) {

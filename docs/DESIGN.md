@@ -483,6 +483,26 @@ brightest at the leading edge) and orbs wrapped in turning rings.
   Mine / Trail:** glowing cores, orbs and seals.
 - **Self:** rings of light close in as they climb you.
 
+### How magic feels
+- **Glow:** all magic is drawn with additive light, so overlapping light burns brighter; void is
+  drawn as darkness (it takes light away) with a thin violet rim. Nothing opens right in front of a
+  player's own eyes except a beam leaving their hand.
+- **Casting poses:** a caster raises both hands while charging; when a spell goes off they move
+  with its shape: a thrust (Bolt, Beam and most shapes), a sweep (Crescent), alternating blows
+  (Barrage), arms flung up (Zone, Rain, Ring, Burst, Totem, Mine), spread then clasped (Domain),
+  raised and brought down (Pillar), a push (Wall, Wave, Orb), swept back (Blitz), open hands (Self).
+- **Screen effects:** a camera shake for everyone near something huge (explosions, bursts, pillars,
+  Domains, meteors, tremors, thunderclaps, Sunfall), a field-of-view kick when a charged spell leaves
+  your hands, a punch when one of your spells lands a hit of 8 or more, and a tint on the edges of
+  the screen inside a Domain. All follow vanilla's Screen Effect Scale.
+- **The worn Cord:** everyone sees your Cord on your right wrist, a band in its tier's material with
+  a glowing bead for each rune of your ready spell; the beads burn brighter while you charge and
+  flare when you cast.
+- **Sound:** every cast, impact, circle, beam, orb, shield and Domain has its own synthesised sound,
+  all in one key; charging hums, rising as the charge builds.
+
+See [ART.md](ART.md) for the style guide behind all of this.
+
 ### Element visual languages
 Every effect is drawn in its element's own language, so a hit reads as fire or frost at a glance,
 whatever shape carried it: a few strong shapes of light and a handful of particles.

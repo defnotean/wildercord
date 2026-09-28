@@ -101,9 +101,12 @@ lights Rune Seals of its element, and (for fire) lights campfires.
 
 ### 4. Give it a look
 
-Add a method to `Vfx` or `TechniqueVfx` and call it from your case. Use `Vfx.theme("wind")` for the
-element's colours and sounds, and the primitives (`Vfx.radial`, `Vfx.ring`, `Vfx.helix`,
-`Vfx.stream`, `Vfx.shockwave`). Always send particles through these helpers or `Fx`, never
+Add a method to `Vfx`, `TechniqueVfx` or `ExpansionVfx` (where the batch 6 runes live) and call it
+from your case. Use `Vfx.theme("wind")` for the element's colours and sounds, `ElementFx` for its
+visual language (its palette, motifs and signature impact), shaped light from `Light` (rings, beams,
+slashes, orbs) and the primitives (`Vfx.radial`, `Vfx.ring`, `Vfx.helix`, `Vfx.stream`,
+`Vfx.shockwave`). Something big can shake the camera of everyone nearby with `ScreenFx.shake`.
+[ART.md](ART.md) has the colours, sizes and timings to match. Always send particles through these helpers or `Fx`, never
 `level.sendParticles` directly: `Fx.send` keeps particles out of the caster's face. For a flash,
 emit a `SigilOption.glow` with `Vfx.emit` (so it goes through `Fx.send` too), not vanilla's
 firework flash; magic circles go through `Sigils`.

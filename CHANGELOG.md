@@ -56,6 +56,23 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   blinks, the Cord screen, the spell wheel, the Grimoire and Heart Circles. Charging now hums,
   rising in pitch as the charge builds, chimes when it's full and rushes out on release.
 
+- **Magic glows.** Every circle, beam and effect is drawn with additive light, so overlapping
+  light burns brighter, and void magic is drawn as darkness with a thin violet rim.
+- Bolts glide as **comets** with tapering trails, drawn by each player's game from the bolt's
+  smoothed position.
+- **Secret spell circles:** each secret spell's circle has a centrepiece of its own (a sun, a
+  snowflake, a horizon, a flower, lightning, a black star, a clock, wings, nested stones, a
+  constellation).
+- **Casting poses:** you raise both hands while charging and move with each shape when it goes off
+  (a thrust, a sweep, alternating blows, arms flung up for the great circles).
+- **Screen effects:** big impacts shake the camera, a charged release kicks the view, heavy hits
+  land with a punch, and a Domain tints the edges of the screen of everyone inside it. They follow
+  vanilla's Screen Effect Scale.
+- **The worn Cord** shows on every player's wrist: a band in its tier's material and a glowing
+  bead for each rune of the spell they have ready, brighter while charging.
+- The Cord screen shows the edited spell's **magic circle** beside the window, opening as you build
+  it; on the Grimoire page it shows the secret spells you've found, like plates in a book.
+
 ### Changed
 - Heart Circle breakthroughs ask for feats (reactions, secrets, Runebound, the Archivist) instead
   of ever-bigger kill counts.
@@ -87,6 +104,19 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   cracks, life blooms, void is darkness imploding round a black core, arcane draws star seals and
   orbiting comets, time turns clock hands and blood cuts and pulses. Reactions, Heart Circles,
   innate runes, Unison, domain clashes, overcasting and the secret spells got the same treatment.
+
+- Circles and shaped light never open right in front of a player's own eyes (a beam's hand circle
+  used to fill its caster's screen), and stay silent while a passive renews itself quietly.
+- Crescent's recipe gains a feather, so it no longer clashes with Empower's.
+- Rune emblems are handed out in the order runes are defined, so adding runes no longer changes
+  existing emblems. (This reshuffled some emblems once.)
+
+### Fixed
+- Two same-element bolts colliding no longer throws an error.
+- Spells no longer mine a Rampart's temporary wall (which dropped packed mud).
+- Span's rules (its glass drops nothing, bridges come down when the server stops) are in force from
+  the start, not only after the first Span is cast.
+- The HUD's charge readout no longer overlaps the mana count.
 
 ### Removed
 - The Stand shape. Cords that still hold a Stand rune keep it threaded, but it stays quiet.
