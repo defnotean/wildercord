@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "long_cast": {
+      "trigger": "wildercord:moment",
+      "conditions": {
+        "moment": "long_cast"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:extend"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.long_cast.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.long_cast.description"
+    }
+  },
+  "requirements": [
+    [
+      "long_cast"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

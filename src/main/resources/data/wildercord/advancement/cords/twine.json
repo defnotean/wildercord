@@ -1,0 +1,30 @@
+{
+  "parent": "wildercord:root",
+  "criteria": {
+    "twine": {
+      "trigger": "wildercord:cord",
+      "conditions": {
+        "tier": "twine"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:twine_cord"
+    },
+    "title": {
+      "translate": "advancements.wildercord.cords.twine.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.cords.twine.description"
+    }
+  },
+  "requirements": [
+    [
+      "twine"
+    ]
+  ],
+  "rewards": {
+    "experience": 10
+  }
+}

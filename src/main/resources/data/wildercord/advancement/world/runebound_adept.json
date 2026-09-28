@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/runebound",
+  "criteria": {
+    "runebound_adept": {
+      "trigger": "wildercord:moment",
+      "conditions": {
+        "moment": "runebound_adept"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:cleave"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.runebound_adept.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.runebound_adept.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "runebound_adept"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

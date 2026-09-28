@@ -111,6 +111,7 @@ public final class PassiveCaster {
 				Fx.quietly(cast);
 			} else {
 				cast.run();
+				dev.wildercord.advancement.Advancements.moment(player, dev.wildercord.advancement.Advancements.PASSIVE);
 			}
 			state.shown = true;
 			state.nextCast = now + Passives.interval(compiled.root());

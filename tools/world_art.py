@@ -18,6 +18,7 @@ Public API (imported by generate_assets.py):
     dummy_texture() -> Image                    (64x64, DummyModel layout)
     creature_textures() -> dict                 (path under textures/entity/ -> Image: the Archivist's
                                                  two glow layers and the Runebound rune marks)
+    advancement_background() -> Image           (16x16 tile behind the Wildercord advancement tab)
 
 Run this file directly to render a review contact sheet into build/art-preview/world_art.png.
 """
@@ -1457,6 +1458,47 @@ def dummy_texture() -> Image.Image:
         cv.put(x1 + w1 - 2, y1 + 1, DARK_WOOD[0])
     x1, y1, w1, h1 = base["bottom"]
     rect(cv, x1, y1, w1, h1, DARK_WOOD[1])
+    return cv.image()
+
+
+# ============================================================== the advancement tab's background
+# Tiled 16x16 behind the whole Wildercord tab, so it stays dim and quiet: dark indigo ashlar
+# (courses 4 px high, joints staggered) with a line of faint rune script cut into a few stones,
+# only just violet, like the Archive's walls with the lamps low.
+
+IN = ramp("#0D0A17", "#120E1F", "#161226", "#1B162E", "#211B37", "#282141", "#30284D")
+SCRIPT = mix(IN[3], hexc("#6B4FB0"), 0.42)      # a groove with a little light left in it
+SCRIPT_LIT = mix(IN[4], hexc("#9C7CE0"), 0.40)
+
+# Glyphs cut into the stones, clear of the joints: (x, y) of the top-left cell, then its two rows
+# ('#' groove, '+' groove catching the light).
+BACKGROUND_SCRIPT = [
+    (2, 1, ("#.+#", "+#.#")),
+    (6, 5, ("+.#", "##.")),
+    (3, 9, ("#+#", "#..")),
+    (8, 13, ("+#.#", "#.#.")),
+]
+
+
+def advancement_background() -> Image.Image:
+    cv = Canvas()
+    stone_fill(cv, IN, 71, 2, 4)
+    for y in range(16):
+        course, row = divmod(y, 4)
+        shift = 0 if course % 2 == 0 else 4
+        for x in range(16):
+            joint = (x + shift) % 8 == 0
+            if row == 3 or joint:
+                cv.put(x, y, IN[0])                                     # mortar
+            elif row == 0:
+                cv.put(x, y, mix(cv.get(x, y), IN[6], 0.35))            # lit top edge
+            elif (x + shift) % 8 == 1:
+                cv.put(x, y, mix(cv.get(x, y), IN[5], 0.2))             # lit left edge
+            elif (x + shift) % 8 == 7 or row == 2:
+                cv.put(x, y, mix(cv.get(x, y), IN[1], 0.4))             # shaded bottom/right
+    for x0, y0, rows in BACKGROUND_SCRIPT:
+        groove = {(x0 + i, y0 + j): ch for j, row in enumerate(rows) for i, ch in enumerate(row) if ch != "."}
+        carve(cv, groove, lambda p, ch: SCRIPT_LIT if ch == "+" else SCRIPT)
     return cv.image()
 
 

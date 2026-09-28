@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "charged": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "charged"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:overcharge"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.charged.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.charged.description"
+    }
+  },
+  "requirements": [
+    [
+      "charged"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

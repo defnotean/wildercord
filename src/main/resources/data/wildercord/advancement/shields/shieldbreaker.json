@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:shields/spellguard",
+  "criteria": {
+    "shieldbreaker": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "shieldbreaker"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:break"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.shields.shieldbreaker.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.shields.shieldbreaker.description"
+    }
+  },
+  "requirements": [
+    [
+      "shieldbreaker"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

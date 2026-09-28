@@ -89,6 +89,31 @@ public final class Feats {
 		return new Feat(id, id, "");
 	}
 
+	/** Every entry a full Grimoire holds: each feat, reaction and secret spell (riddles don't count). */
+	public static List<String> everyEntry() {
+		java.util.List<String> keys = new java.util.ArrayList<>();
+		for (Feat feat : FEATS) {
+			keys.add(feat.key());
+		}
+		for (String reaction : REACTIONS) {
+			keys.add(reactionKey(reaction));
+		}
+		for (Secrets.Secret secret : Secrets.ALL) {
+			keys.add(secret.key());
+		}
+		return List.copyOf(keys);
+	}
+
+	/** Whether a Grimoire holds every entry with this prefix ({@code ""}: the whole Grimoire). */
+	public static boolean complete(java.util.Collection<String> entries, String prefix) {
+		for (String key : everyEntry()) {
+			if (key.startsWith(prefix) && !entries.contains(key)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	/** How many entries a Grimoire holds with this prefix, e.g. {@code "reaction:"}. */
 	public static int count(java.util.Collection<String> entries, String prefix) {
 		int n = 0;

@@ -1,0 +1,37 @@
+{
+  "parent": "wildercord:discovery/runes_100",
+  "criteria": {
+    "runes_all": {
+      "trigger": "wildercord:runes_known",
+      "conditions": {
+        "all": true
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:decree"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.runes_all.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.runes_all.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "runes_all"
+    ]
+  ],
+  "rewards": {
+    "experience": 500,
+    "loot": [
+      "wildercord:advancement_reward/mana_crystals"
+    ]
+  }
+}

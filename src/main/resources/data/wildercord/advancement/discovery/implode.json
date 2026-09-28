@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "implode": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:implode"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:gravity_well"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.implode.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.implode.description"
+    }
+  },
+  "requirements": [
+    [
+      "implode"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

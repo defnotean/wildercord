@@ -18,6 +18,7 @@ public final class Spellbooks {
 
 	public static void set(Player player, Spellbook book) {
 		player.setAttached(WildercordAttachments.SPELLBOOK, book);
+		changed(player);
 	}
 
 	public static boolean knows(Player player, String runeId) {
@@ -34,6 +35,14 @@ public final class Spellbooks {
 
 	public static void setCord(Player player, ItemStack stack) {
 		player.setAttached(WildercordAttachments.CORD, stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
+		changed(player);
+	}
+
+	/** Runes learned or a Cord put on: the advancements for them (on the server). */
+	private static void changed(Player player) {
+		if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+			dev.wildercord.advancement.Advancements.spellbook(serverPlayer);
+		}
 	}
 
 	/** The worn Cord's tier, or null when no Cord is worn. */

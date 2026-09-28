@@ -938,6 +938,7 @@ public final class Imbuing {
 		Sigils.flash(level, at.add(n.scale(0.2)), glyph.color(), 1.4F);
 		Light.groundRing(level, at, glyph.color(), 0.2, 1.6, 0.06, 10);
 		cast(owner, glyph.runes(), trigger);
+		dev.wildercord.advancement.Advancements.moment(owner, dev.wildercord.advancement.Advancements.GLYPH);
 		if (left <= 0) {
 			fade(level, glyph);
 		}

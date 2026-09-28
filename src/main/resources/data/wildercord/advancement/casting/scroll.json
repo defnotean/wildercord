@@ -1,0 +1,30 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "scroll": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "scroll"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:spell_scroll"
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.scroll.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.scroll.description"
+    }
+  },
+  "requirements": [
+    [
+      "scroll"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

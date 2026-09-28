@@ -1,0 +1,30 @@
+{
+  "parent": "wildercord:world/archive",
+  "criteria": {
+    "seal": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "seal"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune_seal"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.seal.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.seal.description"
+    }
+  },
+  "requirements": [
+    [
+      "seal"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

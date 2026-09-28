@@ -1,0 +1,40 @@
+{
+  "criteria": {
+    "blank_rune": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "wildercord:blank_rune"
+          }
+        ]
+      }
+    },
+    "cord": {
+      "trigger": "wildercord:cord",
+      "conditions": {
+        "tier": "twine"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:blank_rune"
+    },
+    "title": {
+      "translate": "advancements.wildercord.root.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.root.description"
+    },
+    "background": "wildercord:gui/advancements/backgrounds/wildercord",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "requirements": [
+    [
+      "blank_rune",
+      "cord"
+    ]
+  ]
+}

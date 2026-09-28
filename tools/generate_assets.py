@@ -281,6 +281,7 @@ def main():
     import wear_art  # The Cord players wear on the wrist.
     wear_art.main()
     write_new_content(runes)
+    write_advancements(runes)
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -536,6 +537,7 @@ def write_lang(runes):
         lang[f"rune.wildercord.{r['path']}.desc"] = r["desc"]
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
+    lang.update(advancement_lang())
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1293,6 +1295,259 @@ def write_new_content(runes):
         "structures": [{"structure": "wildercord:archive", "weight": 1}]})
     write_json(DATA / "tags/worldgen/biome/has_structure/archive.json", {"values": ARCHIVE_LAND})
     write_json(DATA / "tags/worldgen/structure/archive.json", {"values": ["wildercord:archive"]})
+
+
+# ---------------------------------------------------------------- the advancement tab
+#
+# One Wildercord tab, from a first Blank Rune to Archmage. The criteria are the mod's own
+# (registered in advancement/WildercordTriggers.java):
+#   wildercord:feat {"feat": id}                     the Grimoire holds feat:<id>
+#   wildercord:grimoire {"entry": key} | {"prefix": p, "count": n} | {"prefix": p, "all": true}
+#   wildercord:heart_circle {"level": n}             n circles formed, or more
+#   wildercord:runes_known {"count": n} | {"all": true}
+#   wildercord:cord {"tier": "copper"}               wearing that Cord or a better one
+#   wildercord:moment {"moment": id}                 something just happened (Advancements.java)
+# All but moments are checked against the player's state, and again whenever a player joins, so
+# players who were already there get the advancements too.
+#
+# A new feat needs one line in ADVANCEMENTS below: feat_adv("<id>", "<parent>", <icon>). Its title and
+# description default to the feat's name and text in Feats.java.
+
+ADVANCEMENT_BACKGROUND = "wildercord:gui/advancements/backgrounds/wildercord"
+
+
+def read_feats():
+    """Feats.java: feat id -> (name, description), so feat advancements never drift from the Grimoire."""
+    src = (ROOT / "src/main/java/dev/wildercord/spell/Feats.java").read_text(encoding="utf-8")
+    ids = dict(re.findall(r'public static final String (\w+) = "(\w+)";', src))
+    feats = {}
+    for const, name, desc in re.findall(r'new Feat\((\w+), "((?:[^"\\]|\\.)*)", "((?:[^"\\]|\\.)*)"\)', src):
+        feats[ids[const]] = (name, desc)
+    assert len(feats) >= 19, f"parsed only {len(feats)} feats"
+    return feats
+
+
+def rune(path):
+    return {"id": "wildercord:rune", "components": {"wildercord:rune": f"wildercord:{path}"}}
+
+
+def item(item_id):
+    return {"id": item_id if ":" in item_id else f"wildercord:{item_id}"}
+
+
+# Criteria.
+def feat(feat_id):
+    return {"trigger": "wildercord:feat", "conditions": {"feat": feat_id}}
+
+
+def moment(name):
+    return {"trigger": "wildercord:moment", "conditions": {"moment": name}}
+
+
+def circle(level):
+    return {"trigger": "wildercord:heart_circle", "conditions": {"level": level}}
+
+
+def runes_known(count=None):
+    return {"trigger": "wildercord:runes_known", "conditions": {"all": True} if count is None else {"count": count}}
+
+
+def cord(tier):
+    return {"trigger": "wildercord:cord", "conditions": {"tier": tier}}
+
+
+def grimoire(entry=None, prefix=None, count=None, every=False):
+    conditions = {}
+    if entry:
+        conditions["entry"] = entry
+    if prefix is not None:
+        conditions["prefix"] = prefix
+    if count is not None:
+        conditions["count"] = count
+    if every:
+        conditions["all"] = True
+    return {"trigger": "wildercord:grimoire", "conditions": conditions}
+
+
+def has_item(item_id):
+    return {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": item_id}]}}
+
+
+def in_structure(structure):
+    return {"trigger": "minecraft:location", "conditions": {"player": {
+        "type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:location": {"structures": structure}}}}}
+
+
+# Rewards: experience always; the big ones add a loot table from ADVANCEMENT_REWARDS.
+ADVANCEMENT_REWARDS = {
+    "blank_runes": ("wildercord:blank_rune", 8),
+    "mana_crystal": ("wildercord:mana_crystal", 1),
+    "mana_crystals": ("wildercord:mana_crystal", 3),
+}
+
+ADVANCEMENTS = []   # (id, parent, icon, title, description, criteria, options), in tree order
+
+
+def adv(path, parent, icon, title, description, criteria, frame="task", xp=0, loot=(), hidden=False, any_of=False, **extra):
+    """One advancement. criteria is one criterion (named after the advancement) or a dict of them;
+    they're all needed unless any_of."""
+    ADVANCEMENTS.append({"path": path, "parent": parent, "icon": icon, "title": title, "description": description,
+                         "criteria": criteria, "frame": frame, "xp": xp, "loot": list(loot), "hidden": hidden,
+                         "any_of": any_of, **extra})
+
+
+def feat_adv(feat_id, parent, icon, title=None, description=None, branch=None, **options):
+    """An advancement for a Grimoire feat, in its parent's branch unless another is named; the title
+    and description default to Feats.java's."""
+    name, text = FEATS[feat_id] if feat_id in FEATS else (feat_id.replace("_", " ").title(), "")
+    path = f"{branch or parent.split('/')[0]}/{feat_id}"
+    adv(path, parent, icon, title or name, description or text.rstrip("."), feat(feat_id), **options)
+
+
+FEATS = read_feats()
+
+# ---- the root
+adv("root", None, item("blank_rune"), "Wildercord", "Craft a Blank Rune, or wear a Cord",
+    {"blank_rune": has_item("wildercord:blank_rune"), "cord": cord("twine")}, any_of=True,
+    background=ADVANCEMENT_BACKGROUND, show_toast=False, announce_to_chat=False)
+
+# ---- Cords
+adv("cords/twine", "root", item("twine_cord"), "Tied On", "Wear a Twine Cord in the slot above your offhand", cord("twine"), xp=10)
+adv("cords/copper", "cords/twine", item("copper_cord"), "Copper Wire", "Wear a Copper Cord", cord("copper"), xp=20)
+adv("cords/amethyst", "cords/copper", item("amethyst_cord"), "Singing Stone", "Wear an Amethyst Cord", cord("amethyst"), frame="goal", xp=50)
+adv("cords/echo", "cords/amethyst", item("echo_cord"), "Echoes of the Deep", "Wear an Echo Cord", cord("echo"), frame="goal", xp=100, loot=["blank_runes"])
+
+# ---- Casting
+adv("casting/first_cast", "cords/twine", rune("bolt"), "First Words", "Cast a spell from your Cord", moment("cast"), xp=10)
+feat_adv("charged", "casting/first_cast", rune("overcharge"), description="Hold the cast key until a spell is fully charged, then let it go", xp=15)
+feat_adv("rhythm", "casting/charged", rune("pulse"), description="Chain three casts, each just as the last comes off cooldown", xp=25)
+adv("casting/long_cast", "casting/first_cast", rune("extend"), "Mouthful", "Cast a spell of six runes or more", moment("long_cast"), xp=15)
+feat_adv("long_spell_kill", "casting/long_cast", rune("execute"), description="Slay a monster with a spell of six runes or more", frame="goal", xp=50)
+feat_adv("overcast", "casting/first_cast", rune("overdrive"), description="Crack a Heart Circle to cast a spell you can't pay for", xp=25)
+adv("casting/passive", "casting/first_cast", rune("swift"), "Second Nature", "Keep a passive spell running", moment("passive"), xp=25)
+feat_adv("collision", "casting/first_cast", rune("comet"), description="Shoot an enemy's spell out of the air with your own", xp=25)
+feat_adv("leaning", "casting/first_cast", rune("ember"), description="Cast one element so often that your magic leans toward it", xp=25)
+feat_adv("scroll", "casting/first_cast", item("spell_scroll"), description="Inscribe a spell onto a scroll from the Cord screen", xp=15)
+
+# ---- Heart Circles
+CIRCLE_ORDINALS = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"]
+CIRCLE_ADVANCEMENTS = [  # title, icon, frame, experience, reward
+    ("Heartbeat", rune("spark"), "task", 20, ()),
+    ("Deeper Wells", rune("focus"), "task", 30, ()),
+    ("Mana Skin", rune("stoneskin"), "task", 40, ()),
+    ("Turning as One", rune("orbit"), "task", 50, ()),
+    ("Flow", rune("quicken"), "goal", 75, ()),
+    ("Brighter Still", rune("prism"), "goal", 100, ["blank_runes"]),
+    ("Overflow", rune("amplify"), "goal", 150, ["mana_crystal"]),
+    ("Archmage", item("mana_crystal"), "challenge", 500, ["mana_crystals"]),
+]
+for n, (title, icon, frame, xp, loot) in enumerate(CIRCLE_ADVANCEMENTS, start=1):
+    parent = "casting/first_cast" if n == 1 else f"heart/circle_{n - 1}"
+    description = f"Form your {CIRCLE_ORDINALS[n - 1]} Heart Circle" + (": meditate once your heart is ready" if n == 1 else "")
+    if n == 8:
+        description = "Form your 8th Heart Circle and become an Archmage"
+    adv(f"heart/circle_{n}", parent, icon, title, description, circle(n), frame=frame, xp=xp, loot=loot)
+feat_adv("innate", "heart/circle_1", rune("twin_star"), description="Awaken your innate rune at the 1st Circle", xp=25)
+feat_adv("mirror", "heart/innate", rune("mirrorfrost"), description="Turn an enemy's own spell back on them", hidden=True, xp=50)
+
+# ---- Discovery
+adv("discovery/runes_10", "root", rune("light"), "Lettered", "Know 10 runes", runes_known(10), xp=10)
+adv("discovery/runes_50", "discovery/runes_10", rune("reveal"), "Well Read", "Know 50 runes", runes_known(50), frame="goal", xp=50)
+adv("discovery/runes_100", "discovery/runes_50", rune("foresight"), "Walking Codex", "Know 100 runes", runes_known(100), frame="goal", xp=100, loot=["blank_runes"])
+adv("discovery/runes_all", "discovery/runes_100", rune("decree"), "Every Word", "Know every rune there is (innate runes aside)", runes_known(), frame="challenge", xp=500, loot=["mana_crystals"])
+REACTION_ADVANCEMENTS = {  # reaction -> (title, icon rune, description)
+    "shatter": ("Shatter", "freeze", "Hit a frozen foe with fire and shatter the ice"),
+    "conduct": ("Conduct", "lightning", "Strike a wet foe with storm magic"),
+    "wildfire": ("Wildfire", "inferno", "Set fire to a foe the wind has just thrown"),
+    "implode": ("Implode", "gravity_well", "Blast enemies that have just been pulled together"),
+    "collapse": ("Collapse", "repel", "Repel enemies that have just been pulled in"),
+}
+for reaction, (title, icon, description) in REACTION_ADVANCEMENTS.items():
+    adv(f"discovery/{reaction}", "discovery/runes_10", rune(icon), title, description, grimoire(entry=f"reaction:{reaction}"), xp=15)
+adv("discovery/torn_page", "discovery/runes_10", item("torn_page"), "Marginalia", "Read the riddle on a Torn Page", grimoire(prefix="hint:"), xp=15)
+adv("discovery/secret", "discovery/torn_page", rune("veil"), "Hidden Words", "Find a secret spell", grimoire(prefix="secret:"), frame="goal", xp=50, hidden=True)
+adv("discovery/all_secrets", "discovery/secret", rune("echo"), "Nothing Left Unsaid", "Find every secret spell",
+    grimoire(prefix="secret:", every=True), frame="challenge", xp=300, loot=["mana_crystals"], hidden=True)
+adv("discovery/grimoire", "discovery/all_secrets", item("spell_scroll"), "Every Page Filled", "Fill the Grimoire: every feat, reaction and secret spell",
+    grimoire(prefix="", every=True), frame="challenge", xp=500, loot=["mana_crystals", "blank_runes"], hidden=True)
+
+# ---- the World
+feat_adv("ley_line", "root", rune("vein"), description="Stand on a ley line, where the world's mana runs close to the surface", branch="world", xp=10)
+feat_adv("wellstone", "world/ley_line", item("wellstone"), description="Wake a Wellstone by setting it on a ley line", xp=30)
+adv("world/archive", "world/ley_line", item("minecraft:chiseled_bookshelf"), "The Buried Library", "Find an Archive", in_structure("wildercord:archive"), xp=25)
+feat_adv("seal", "world/archive", item("rune_seal"), description="Open a Rune Seal door in an Archive", xp=30)
+feat_adv("archivist", "world/seal", item("archive_lectern"), description="Defeat the Archivist", frame="challenge", xp=500, loot=["mana_crystals"])
+feat_adv("runebound", "root", rune("rend"), description="Slay a Runebound, a monster that casts spells", branch="world", xp=15)
+adv("world/runebound_adept", "world/runebound", rune("cleave"), "Adept's End", "Slay a Runebound Adept", moment("runebound_adept"), frame="goal", xp=50)
+feat_adv("clash", "world/runebound", rune("zone"), description="Shatter another caster's Domain with your own", frame="goal", xp=50)
+feat_adv("unison", "world/runebound", rune("chain"), description="Strike a foe with another element at the same moment as another caster", frame="goal", xp=50)
+
+# ---- Shields and imbuing
+feat_adv("spellguard", "casting/first_cast", rune("shield"), description="Stop a spell with your Shield", branch="shields", xp=20)
+feat_adv("shieldbreaker", "shields/spellguard", rune("break"), description="Shatter a Shield with a stronger spell", xp=25)
+feat_adv("imbue", "casting/first_cast", rune("imbue"), description="Imbue a spell into an item or a block", branch="shields", xp=20)
+adv("shields/glyph", "shields/imbue", rune("mine"), "Tripwire", "Have one of your glyphs go off", moment("glyph"), xp=25)
+
+
+def advancement_lang():
+    lang = {}
+    for a in ADVANCEMENTS:
+        key = "advancements.wildercord." + a["path"].replace("/", ".")
+        lang[key + ".title"] = a["title"]
+        lang[key + ".description"] = a["description"]
+    return lang
+
+
+def write_advancements(runes):
+    known = {r["path"] for r in runes}
+    paths = [a["path"] for a in ADVANCEMENTS]
+    assert len(paths) == len(set(paths)), "two advancements share an id"
+    for a in ADVANCEMENTS:
+        assert a["parent"] is None or a["parent"] in paths, f"{a['path']}: no parent {a['parent']}"
+        component = a["icon"].get("components", {}).get("wildercord:rune")
+        assert component is None or component.split(":")[1] in known, f"{a['path']}: no rune {component}"
+    # Every feat in the Grimoire should have an advancement (AdvancementTreeTest fails the build without one).
+    granted = {c["conditions"]["feat"] for a in ADVANCEMENTS
+               for c in (a["criteria"].values() if "trigger" not in a["criteria"] else [a["criteria"]]) if c["trigger"] == "wildercord:feat"}
+    for missing in sorted(set(FEATS) - granted):
+        print(f"warning: the feat {missing} has no advancement: add a feat_adv line to ADVANCEMENTS")
+
+    # Advancements this tool wrote before that no longer exist go (the recipe-book unlocks stay).
+    for old in (DATA / "advancement").rglob("*.json"):
+        if "recipes" not in old.relative_to(DATA / "advancement").parts:
+            old.unlink()
+    for name, (item_id, count) in ADVANCEMENT_REWARDS.items():
+        entry = {"type": "minecraft:item", "name": item_id}
+        if count > 1:
+            entry["functions"] = [{"function": "minecraft:set_count", "count": count}]
+        write_json(DATA / f"loot_table/advancement_reward/{name}.json", {"type": "minecraft:advancement_reward", "pools": [{"rolls": 1, "entries": [entry]}]})
+
+    for a in ADVANCEMENTS:
+        key = "advancements.wildercord." + a["path"].replace("/", ".")
+        criteria = a["criteria"] if "trigger" not in a["criteria"] else {a["path"].split("/")[-1]: a["criteria"]}
+        display = {"icon": a["icon"], "title": {"translate": key + ".title"}, "description": {"translate": key + ".description"}}
+        if a["frame"] != "task":
+            display["frame"] = a["frame"]
+        for option in ("background", "show_toast", "announce_to_chat"):
+            if option in a:
+                display[option] = a[option]
+        if a["hidden"]:
+            display["hidden"] = True
+        data = {}
+        if a["parent"]:
+            data["parent"] = f"wildercord:{a['parent']}"
+        data["criteria"] = criteria
+        data["display"] = display
+        data["requirements"] = [list(criteria)] if a["any_of"] else [[name] for name in criteria]
+        rewards = {}
+        if a["xp"]:
+            rewards["experience"] = a["xp"]
+        if a["loot"]:
+            rewards["loot"] = [f"wildercord:advancement_reward/{name}" for name in a["loot"]]
+        if rewards:
+            data["rewards"] = rewards
+        write_json(DATA / f"advancement/{a['path']}.json", data)
+    save(world_art.advancement_background(), ASSETS / "textures/gui/advancements/backgrounds/wildercord.png")
 
 
 if __name__ == "__main__":

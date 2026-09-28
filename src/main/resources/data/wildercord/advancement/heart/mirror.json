@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:heart/innate",
+  "criteria": {
+    "mirror": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "mirror"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:mirrorfrost"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.heart.mirror.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.heart.mirror.description"
+    },
+    "hidden": true
+  },
+  "requirements": [
+    [
+      "mirror"
+    ]
+  ],
+  "rewards": {
+    "experience": 50
+  }
+}

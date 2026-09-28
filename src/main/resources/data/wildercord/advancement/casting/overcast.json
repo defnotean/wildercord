@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "overcast": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "overcast"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:overdrive"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.overcast.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.overcast.description"
+    }
+  },
+  "requirements": [
+    [
+      "overcast"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

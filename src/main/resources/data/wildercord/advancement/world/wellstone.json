@@ -1,0 +1,30 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "wellstone": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "wellstone"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:wellstone"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.wellstone.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.wellstone.description"
+    }
+  },
+  "requirements": [
+    [
+      "wellstone"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

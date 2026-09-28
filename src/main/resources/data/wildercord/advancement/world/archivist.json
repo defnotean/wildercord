@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/seal",
+  "criteria": {
+    "archivist": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "archivist"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:archive_lectern"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.archivist.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.archivist.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "archivist"
+    ]
+  ],
+  "rewards": {
+    "experience": 500,
+    "loot": [
+      "wildercord:advancement_reward/mana_crystals"
+    ]
+  }
+}

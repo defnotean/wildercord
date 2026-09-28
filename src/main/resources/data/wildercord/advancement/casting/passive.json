@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:casting/first_cast",
+  "criteria": {
+    "passive": {
+      "trigger": "wildercord:moment",
+      "conditions": {
+        "moment": "passive"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:swift"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.casting.passive.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.casting.passive.description"
+    }
+  },
+  "requirements": [
+    [
+      "passive"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

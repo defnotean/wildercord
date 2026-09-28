@@ -1,0 +1,37 @@
+{
+  "parent": "wildercord:discovery/runes_50",
+  "criteria": {
+    "runes_100": {
+      "trigger": "wildercord:runes_known",
+      "conditions": {
+        "count": 100
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:foresight"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.runes_100.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.runes_100.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "runes_100"
+    ]
+  ],
+  "rewards": {
+    "experience": 100,
+    "loot": [
+      "wildercord:advancement_reward/blank_runes"
+    ]
+  }
+}

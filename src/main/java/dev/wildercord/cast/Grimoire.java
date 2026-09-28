@@ -29,6 +29,7 @@ public final class Grimoire {
 		List<String> next = new ArrayList<>(entries);
 		next.add(key);
 		player.setAttached(WildercordAttachments.GRIMOIRE, List.copyOf(next));
+		dev.wildercord.advancement.Advancements.grimoire(player);
 		if (!key.startsWith("hint:")) {
 			player.setAttached(WildercordAttachments.CONDENSED, Heart.condensed(player) + Feats.reward(key));
 			Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F);
