@@ -338,6 +338,66 @@ Combos worth trying:
 - `Barrage · Stasis · Harm`: every blow is held, then lands at once when time moves again.
 - `Self · Swift · Combo · Blitz · Cleave`: every third cast ends in a dash that cuts through a line of enemies.
 
+### Batch 6: sparks, shields and pickaxes
+More simple spells for the early and middle game: energy balls and beams to carry any effect,
+protection, mining and building, and a cheap spell for every element. Every one is Tier I or II
+and craftable.
+
+| Rune | Family · category | Tier | Does |
+|---|---|---|---|
+| Spark | Shape · Projectile | I | A quick spark darts 16 blocks to the first thing in its path; cheap (cost 1, effects ×1.0) and quick to recover, but its effects land at 75% power |
+| Ray | Shape · Direct | I | An instant 10-block line to the first thing it meets (Pierce and Chain work on it) |
+| Nova | Shape · Area | I | Everything within 2.5 blocks of you |
+| Wisp | Shape · Projectile | II | A slow wisp that chases the nearest enemy within 16 blocks for up to 4 s |
+| Comet | Shape · Projectile | II | A heavy ball that flies 24 blocks and bursts on the first thing it touches: everything within 3 blocks |
+| Ricochet | Shape · Projectile | II | An orb that falls, bounces 4 times (Bounce adds 3) and passes through creatures, hitting each once |
+| Cluster | Shape · Projectile | II | A ball that breaks into 5 shards where it hits; each strikes everything within 1.5 blocks of where it lands, nothing twice |
+| Lance | Shape · Direct | II | A 16-block line of light through every creature in it (Widen makes it wider) |
+| Sweep | Shape · Direct | II | A 10-block beam swung across 100° in half a second, hitting each creature once |
+| Prism | Shape · Direct | II | A beam that splits into three rays at the first creature it hits; each ray strikes the next creature behind |
+| Stream | Shape · Direct | II | A beam that follows your aim for a second: 6 strikes at 35% power (Quicken: 12) on the first thing within 20 blocks |
+| Barrier | Effect · Support | I | 2 absorption hearts for 20 s |
+| Brace | Effect · Support | I | 80% less damage for 2 s; bracing again takes 6 s |
+| Anchor | Effect · Support | I | 15 s: no knockback from blows or blasts, and 4 armour |
+| Bramble | Effect · Support | I | 10 s: whatever hurts you from within 4 blocks takes 3 damage and is shoved away |
+| Frostward | Effect · Support | I | 60 s: you can't freeze, not even in powder snow, and frost can't leave you brittle for Shatter |
+| Cushion | Effect · Support | I | 30 s: no fall damage, and a hard landing throws a gust at the enemies around you |
+| Deflect | Effect · Support | II | 8 s: projectiles coming at the target are turned aside |
+| Haven | Effect · Support | II | A 4-block dome for 8 s: allies inside take 20% less damage, projectiles from outside glance off it |
+| Chisel | Effect · World | I | Mines one block at stone-pickaxe strength (Amplify: iron) |
+| Glimmer | Effect · World | I | Glow lichen over the block hit and up to 4 around it: light that stays |
+| Prune | Effect · World | I | Clears leaves (never ones placed by hand), grass, flowers, vines and cobwebs within 3 blocks |
+| Tunnel | Effect · World | II | A 2-high, 4-deep passage into a wall (a 4-deep shaft into a floor or ceiling), iron-pickaxe strength (Amplify: diamond) |
+| Vein | Effect · World | II | Mines the block hit and, for an ore, every matching ore touching it (up to 16) |
+| Smelt | Effect · World | II | Mines the block hit and drops what a furnace would make of it, with the furnace's experience |
+| Fell | Effect · World | II | Fells a tree: the log hit and every log joined to it at its height or above (up to 32). A log with no living leaves around it (a build) comes down alone |
+| Span | Effect · World | II | A 1-wide glass bridge from your feet toward the point (up to 16 blocks; Widen: 3 wide) for 30 s. It puts back whatever it replaced, drops nothing when broken, and is taken down if the server stops |
+| Ember | Effect · Damage | I | 3 fire damage, alight for 3 s |
+| Icicle | Effect · Damage | I | 4 freeze damage, 6 against a slowed target |
+| Pelt | Effect · Damage | I | 4 damage and a small knockback |
+| Windcut | Effect · Damage | I | 4 damage and a light shove (sets up Wildfire) |
+| Leech | Effect · Damage | I | 3 damage; you heal what it took |
+| Hex | Effect · Control | I | 8 s: your spells hit the target 25% harder |
+| Rend | Effect · Control | I | 10 s: 4 less armour |
+| Countdown | Effect · Damage | I | 1.5 s later: 6 damage |
+| Jolt | Effect · Control | II | 4 lightning damage and a 1 s stun (bosses and players are slowed instead) |
+| Bleed | Effect · Damage | II | 2 damage, then 1 every half second for 4 s |
+| Coldsnap | Effect · Damage | II | 3 freeze damage and Slowness II for 4 s to every enemy within 3 blocks; they're left brittle for Shatter |
+| Flashfire | Effect · Damage | II | 4 fire damage to every enemy within 3 blocks, alight for 3 s |
+| Banish | Effect · Control | II | The target reappears up to 8 blocks further from you, somewhere it fits and can see back to (never a boss) |
+| Cyclone | Effect · Control | II | Enemies within 3 blocks whirl around the point for 2 s, then are flung out for 3 damage (bosses are struck, never moved) |
+
+Mining runes break blocks as a player holding a pickaxe of their strength would: nothing
+unbreakable, no fluids, drops as that tool would give them (a container spills its contents), and
+only where you may build, within the cast's 32-block budget. Monsters' spells never change blocks.
+
+Combos worth trying:
+- `Stream · Chisel`: a drill that bores along your aim for a second.
+- `Bolt · Hex · Delay · Comet · Flashfire`: the hex makes the burst land 25% harder.
+- `Ricochet · Bounce · Pelt`: a stone that skips through a crowd.
+- `Self · Brace · On Hurt · Jolt`: take the blow, then stun whatever dealt it.
+- `Spark · Volley · Ember`: three quick embers in a row.
+
 ## Heart Circles
 
 Casters build rings of condensed mana around their heart, from the 1st Circle to the 8th (the Archmage).
@@ -579,10 +639,10 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
 - **Each passive has an on/off switch.** Up to 5 runes each (fewer on small Cords).
 - **Only sustainable runes, so it isn't broken:**
   - Shapes: Self or Orbit.
-  - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive.
-  - Auras (only with Orbit): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push.
+  - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive, Anchor, Frostward, Cushion.
+  - Auras (only with Orbit): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt, Windcut.
   - Modifiers: Amplify, Extend, Frugal, Widen, Focus, Quicken.
-  - Never: heals, Shield (absorption), Reversal, Foresight, summons, links, big area damage, Stasis.
+  - Never: heals, Shield and Barrier (absorption), Brace, Reversal, Foresight, summons, links, big area damage, Stasis.
 
 Examples: `Self · Infinity` (projectiles always stop around you, about 3.8 mana/s), `Orbit · Shock · Amplify` (a crackling guard), `Orbit · Dismantle` (orbs that cut whatever comes near).
 
@@ -765,8 +825,9 @@ Recipes match on **element tags**, not specific runes. If an add-on adds a
   8 links deep (and, once Knots exist, Knots 2 deep). Nobody can crash a server with
   `Split · Split · Echo · Echo · Echo`.
 - **Blocks:** only World effects (Break, Excavate, Grow, Harvest, Icepath, Light,
-  Rampart) change blocks, and only where the caster may build (spawn protection and
-  claims are respected). Monsters' spells never change blocks.
+  Rampart, Chisel, Glimmer, Prune, Tunnel, Vein, Smelt, Fell, Span) change blocks, and only
+  where the caster may build (spawn protection and claims are respected). Monsters' spells
+  never change blocks.
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
 - **Config file (planned):** `config/wildercord.json` will hold all of the above, plus

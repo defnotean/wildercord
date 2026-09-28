@@ -34,19 +34,21 @@ public final class RuneCategories {
 		return switch (family) {
 			case SHAPE -> switch (path) {
 				case "self", "orbit" -> "personal";
-				case "touch", "beam", "barrage", "blitz" -> "direct";
-				case "bolt", "arc", "wave", "crescent", "orb" -> "projectile";
-				case "burst", "cone", "ring", "pillar", "rain" -> "area";
+				case "touch", "beam", "barrage", "blitz", "ray", "lance", "sweep", "prism", "stream" -> "direct";
+				case "bolt", "arc", "wave", "crescent", "orb", "spark", "wisp", "comet", "ricochet", "cluster" -> "projectile";
+				case "burst", "cone", "ring", "pillar", "rain", "nova" -> "area";
 				default -> "lingering";
 			};
 			case EFFECT -> switch (path) {
 				case "push", "pull", "launch", "root", "freeze", "levitate", "gravity_well", "blind", "chill", "silence", "reveal",
-					"decree", "weigh", "shackle", "bubble" -> "control";
+					"decree", "weigh", "shackle", "bubble", "hex", "rend", "jolt", "banish", "cyclone" -> "control";
 				case "heal", "shield", "regrowth", "cleanse", "stoneskin", "empower", "haste", "swift", "night_eye", "feather_fall", "veil",
-					"fireward", "nourish", "tidebreath", "leap", "infinity", "reversal", "reflect", "overdrive", "foresight", "restore" -> "support";
+					"fireward", "nourish", "tidebreath", "leap", "infinity", "reversal", "reflect", "overdrive", "foresight", "restore",
+					"barrier", "brace", "anchor", "bramble", "frostward", "cushion", "deflect", "haven" -> "support";
 				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep" -> "movement";
 				case "stasis", "rewind", "accelerate", "time_skip" -> "time";
-				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart" -> "world";
+				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
+					"vein", "smelt", "fell", "span" -> "world";
 				case "summon", "shades", "thunderbird" -> "summon";
 				case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom",
 					"stormheart" -> "innate";

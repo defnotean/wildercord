@@ -523,6 +523,432 @@ final class ShapeRunners {
 		CastEngine.onHit(cast, g, new Cast.Hit(hits, b, dir, a, null, null, false), anchored);
 	}
 
+	// ------------------------------------------------------------------ batch 6: sparks, energy balls and beams
+
+	/** Runs {@code step} once a tick (with tick 0, 1, 2...) up to {@code ticks} times, until it returns false or the cast ends. */
+	static void each(Cast cast, int ticks, java.util.function.IntPredicate step) {
+		int[] tick = {0};
+		Runnable[] next = new Runnable[1];
+		next[0] = () -> {
+			if (!cast.alive() || tick[0] >= ticks) {
+				return;
+			}
+			if (step.test(tick[0]++)) {
+				Scheduler.later(1, next[0]);
+			}
+		};
+		Scheduler.later(1, next[0]);
+	}
+
+	/** Every living creature (never the caster) within {@code width} of the segment, nearest first, skipping {@code skip}. */
+	static List<Entity> along(Cast cast, Vec3 from, Vec3 to, double width, Set<UUID> skip) {
+		List<Entity> hits = new ArrayList<>();
+		for (Entity e : cast.level.getEntities(cast.caster, new AABB(from, to).inflate(width + 1.0),
+				e -> e instanceof LivingEntity && e.isAlive() && !skip.contains(e.getUUID()))) {
+			AABB box = e.getBoundingBox().inflate(width);
+			if (box.contains(from) || box.clip(from, to).isPresent()) {
+				hits.add(e);
+			}
+		}
+		hits.sort(java.util.Comparator.comparingDouble(e -> e.distanceToSqr(from)));
+		return hits;
+	}
+
+	/** Where a line from {@code from} stops: the first solid block, or its end. */
+	static net.minecraft.world.phys.BlockHitResult clip(Cast cast, Vec3 from, Vec3 to) {
+		return cast.level.clip(new net.minecraft.world.level.ClipContext(from, to, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+			net.minecraft.world.level.ClipContext.Fluid.NONE, cast.caster));
+	}
+
+	private static boolean missed(net.minecraft.world.phys.BlockHitResult block) {
+		return block.getType() == net.minecraft.world.phys.HitResult.Type.MISS;
+	}
+
+	/** What something flying from {@code from} to {@code to} meets first: a creature, then a block, or nothing (null). */
+	private record Contact(Entity entity, net.minecraft.world.phys.BlockHitResult block, Vec3 at) {}
+
+	private static Contact contact(Cast cast, Vec3 from, Vec3 to, double width, Set<UUID> skip) {
+		net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
+		Vec3 end = missed(block) ? to : block.getLocation();
+		List<Entity> hits = along(cast, from, end, width, skip);
+		if (!hits.isEmpty()) {
+			Entity e = hits.getFirst();
+			Vec3 at = e.getBoundingBox().inflate(width).clip(from, end).orElse(e.getBoundingBox().getCenter());
+			return new Contact(e, null, at);
+		}
+		return missed(block) ? null : new Contact(null, block, block.getLocation());
+	}
+
+	/** A single-target shape arrives: the creature it touched, or the block it struck. */
+	private static void land(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Contact c, Vec3 dir) {
+		if (c.entity() != null) {
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(c.entity()), c.at(), dir, cast.caster.position(), null, null, false), anchored);
+		} else {
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(), c.at(), dir, c.at(), c.block().getBlockPos(), c.block().getDirection(), false), anchored);
+		}
+	}
+
+	/** Not right in front of the caster's own eyes, where a first-person view would see it as a smear. */
+	private static boolean nearEyes(Cast cast, Vec3 at) {
+		return at.distanceToSqr(cast.caster.getEyePosition()) < 2.25;
+	}
+
+	/** Whether a step of a flying shape is far enough from the caster's eyes to draw. */
+	private static boolean visible(Cast cast, Vec3 from, Vec3 to) {
+		return !nearEyes(cast, from) && !nearEyes(cast, to);
+	}
+
+	/** Spark: a small, fast mote of energy that hits the first thing in its path. */
+	static void spark(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, Vfx.Theme theme) {
+		double speed = SpellNumbers.sparkSpeed(g);
+		Vec3 aim = dir.normalize();
+		Vec3[] pos = {origin};
+		ExpansionVfx.sparkLaunch(cast.level, origin, aim, theme);
+		each(cast, (int) Math.ceil(SpellNumbers.SPARK_RANGE / speed), tick -> {
+			Vec3 from = pos[0];
+			Vec3 to = from.add(aim.scale(speed));
+			Contact c = contact(cast, from, to, 0.25, Set.of());
+			Vec3 end = c == null ? to : c.at();
+			if (visible(cast, from, end)) {
+				ExpansionVfx.sparkTick(cast.level, from, end, theme, tick);
+			}
+			if (c != null) {
+				ExpansionVfx.sparkHit(cast.level, c.at(), theme);
+				land(cast, g, anchored, c, aim);
+				return false;
+			}
+			pos[0] = to;
+			return true;
+		});
+	}
+
+	/** Ray: an instant short line, like a Beam that reaches only 10 blocks. */
+	static void ray(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 from, Vec3 dir, Vfx.Theme theme) {
+		Vec3 aim = dir.normalize();
+		net.minecraft.world.phys.BlockHitResult block = clip(cast, from, from.add(aim.scale(SpellNumbers.RAY_RANGE)));
+		Vec3 end = missed(block) ? from.add(aim.scale(SpellNumbers.RAY_RANGE)) : block.getLocation();
+		List<Entity> hits = along(cast, from, end, 0.3, Set.of());
+		int max = 1 + SpellNumbers.pierce(g);
+		if (hits.size() > max) {
+			hits = new ArrayList<>(hits.subList(0, max));
+		}
+		Vec3 stop = !hits.isEmpty() && SpellNumbers.pierce(g) == 0 ? hits.getFirst().getBoundingBox().getCenter() : end;
+		ExpansionVfx.ray(cast.level, from.add(aim.scale(0.7)), stop, theme);
+		if (!hits.isEmpty()) {
+			for (Entity e : hits) {
+				ExpansionVfx.rayHit(cast.level, e.getBoundingBox().getCenter(), theme);
+				CastEngine.onHit(cast, g, new Cast.Hit(List.of(e), e.getBoundingBox().getCenter(), aim, from, null, null, false), anchored);
+			}
+			CastEngine.chain(cast, g, anchored, hits.getFirst(), theme);
+		} else if (!missed(block)) {
+			ExpansionVfx.rayHit(cast.level, end, theme);
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, aim, from, block.getBlockPos(), block.getDirection(), false), anchored);
+		}
+	}
+
+	/** Wisp: a slow mote that chases the nearest enemy, then strikes whatever it touches first. */
+	static void wisp(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, Vfx.Theme theme) {
+		double speed = SpellNumbers.wispSpeed(g);
+		Vec3[] pos = {origin};
+		Vec3[] velocity = {dir.normalize().scale(speed)};
+		LivingEntity[] prey = {null};
+		ExpansionVfx.wispRelease(cast.level, origin, theme);
+		each(cast, SpellNumbers.WISP_TICKS, tick -> {
+			if (prey[0] == null || !prey[0].isAlive() || tick % 10 == 0) {
+				LivingEntity found = nearestEnemy(cast, pos[0], SpellNumbers.WISP_SEEK, prey[0]);
+				if (found != null && found != prey[0]) {
+					ExpansionVfx.wispSeek(cast.level, pos[0], found, theme);
+				}
+				prey[0] = found;
+			}
+			if (prey[0] != null) {
+				Vec3 want = prey[0].getBoundingBox().getCenter().subtract(pos[0]).normalize();
+				velocity[0] = velocity[0].normalize().lerp(want, 0.22).normalize().scale(speed);
+			}
+			Vec3 from = pos[0];
+			Vec3 to = from.add(velocity[0]);
+			Contact c = contact(cast, from, to, 0.35, Set.of());
+			if (c != null) {
+				ExpansionVfx.wispStrike(cast.level, c.at(), theme);
+				land(cast, g, anchored, c, velocity[0].normalize());
+				return false;
+			}
+			pos[0] = to;
+			if (visible(cast, from, to)) {
+				ExpansionVfx.wispTick(cast.level, from, to, theme, tick);
+			}
+			if (tick == SpellNumbers.WISP_TICKS - 1) {
+				ExpansionVfx.wispFade(cast.level, to, theme);
+			}
+			return true;
+		});
+	}
+
+	/** Comet: a heavy ball that bursts on the first thing it touches (or at the end of its flight). */
+	static void comet(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, Vfx.Theme theme) {
+		double speed = SpellNumbers.cometSpeed(g);
+		double radius = SpellNumbers.cometRadius(g);
+		Vec3 aim = dir.normalize();
+		Vec3[] pos = {origin};
+		int steps = (int) Math.ceil(SpellNumbers.COMET_RANGE / speed);
+		ExpansionVfx.cometLaunch(cast.level, origin, aim, theme);
+		each(cast, steps, tick -> {
+			Vec3 from = pos[0];
+			Vec3 to = from.add(aim.scale(speed));
+			Contact c = contact(cast, from, to, 0.45, Set.of());
+			if (c == null && tick < steps - 1) {
+				if (visible(cast, from, to)) {
+					ExpansionVfx.cometTick(cast.level, from, to, theme, tick);
+				}
+				pos[0] = to;
+				return true;
+			}
+			// It bursts a little short of a wall, so the blast isn't half inside it.
+			Vec3 at = c == null ? to : c.block() != null ? c.at().subtract(aim.scale(0.4)) : c.at();
+			ExpansionVfx.cometBurst(cast.level, at, radius, theme);
+			net.minecraft.core.BlockPos block = c != null && c.block() != null ? c.block().getBlockPos() : null;
+			net.minecraft.core.Direction face = c != null && c.block() != null ? c.block().getDirection() : null;
+			CastEngine.onHit(cast, g, new Cast.Hit(CastEngine.inRadius(cast, at, radius), at, aim, at, block, face, false), anchored);
+			return false;
+		});
+	}
+
+	/**
+	 * Ricochet: an orb thrown with a little lift that falls, bounces off whatever it meets and
+	 * passes through creatures, hitting each once. It stops after its last bounce.
+	 */
+	static void ricochet(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, Vfx.Theme theme) {
+		Vec3[] pos = {origin};
+		Vec3[] velocity = {dir.normalize().scale(SpellNumbers.ricochetSpeed(g)).add(0, 0.12, 0)};
+		int[] bounces = {SpellNumbers.ricochetBounces(g)};
+		Set<UUID> hit = new java.util.HashSet<>();
+		ExpansionVfx.ricochetLaunch(cast.level, origin, theme);
+		each(cast, 140, tick -> {
+			velocity[0] = velocity[0].add(0, -0.06, 0);
+			Vec3 from = pos[0];
+			Vec3 to = from.add(velocity[0]);
+			net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
+			Vec3 end = missed(block) ? to : block.getLocation();
+			List<Entity> passed = along(cast, from, end, 0.45, hit);
+			if (!passed.isEmpty()) {
+				passed.forEach(e -> hit.add(e.getUUID()));
+				Vec3 at = passed.getFirst().getBoundingBox().getCenter();
+				ExpansionVfx.ricochetHit(cast.level, at, theme);
+				CastEngine.onHit(cast.child(), g, new Cast.Hit(passed, at, velocity[0].normalize(), from, null, null, false), anchored);
+			}
+			if (visible(cast, from, end)) {
+				ExpansionVfx.ricochetTick(cast.level, from, end, theme, tick);
+			}
+			if (missed(block)) {
+				pos[0] = to;
+				return true;
+			}
+			Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getUnitVec3i());
+			if (bounces[0]-- <= 0 || velocity[0].length() < 0.2) {
+				ExpansionVfx.ricochetEnd(cast.level, end, theme);
+				CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false), anchored);
+				return false;
+			}
+			velocity[0] = velocity[0].subtract(normal.scale(2 * velocity[0].dot(normal))).scale(0.82);
+			pos[0] = end.add(normal.scale(0.05));
+			ExpansionVfx.ricochetBounce(cast.level, end, normal, theme);
+			return true;
+		});
+	}
+
+	/**
+	 * Cluster: a ball of energy that strikes what it touches, then breaks into shards that fly out
+	 * and strike everything near where each one lands. Nothing is struck twice.
+	 */
+	static void cluster(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 origin, Vec3 dir, Vfx.Theme theme) {
+		double speed = SpellNumbers.clusterSpeed(g);
+		Vec3 aim = dir.normalize();
+		Vec3[] pos = {origin};
+		int steps = (int) Math.ceil(SpellNumbers.COMET_RANGE / speed);
+		each(cast, steps, tick -> {
+			Vec3 from = pos[0];
+			Vec3 to = from.add(aim.scale(speed));
+			Contact c = contact(cast, from, to, 0.4, Set.of());
+			if (c == null && tick < steps - 1) {
+				if (visible(cast, from, to)) {
+					ExpansionVfx.clusterTick(cast.level, from, to, theme, tick);
+				}
+				pos[0] = to;
+				return true;
+			}
+			Set<UUID> struck = new java.util.HashSet<>();
+			Vec3 at = c == null ? to : c.at();
+			Vec3 normal = aim.scale(-1);
+			if (c != null && c.entity() != null) {
+				struck.add(c.entity().getUUID());
+				land(cast, g, anchored, c, aim);
+			} else if (c != null) {
+				normal = Vec3.atLowerCornerOf(c.block().getDirection().getUnitVec3i());
+				at = at.add(normal.scale(0.3));
+				land(cast, g, anchored, c, aim);
+			}
+			ExpansionVfx.clusterBreak(cast.level, at, theme);
+			shards(cast, g, anchored, at, normal, theme, struck);
+			return false;
+		});
+	}
+
+	/** A Cluster's shards: thrown out around {@code normal}, each falling until it lands and strikes. */
+	private static void shards(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 at, Vec3 normal, Vfx.Theme theme, Set<UUID> struck) {
+		double radius = SpellNumbers.clusterRadius(g);
+		Vec3 n = normal.lengthSqr() < 1.0E-4 ? new Vec3(0, 1, 0) : normal.normalize();
+		Vec3 side = Math.abs(n.y) > 0.9 ? new Vec3(1, 0, 0) : n.cross(new Vec3(0, 1, 0)).normalize();
+		Vec3 up = side.cross(n).normalize();
+		double spin = cast.level.getRandom().nextDouble() * Math.PI * 2;
+		for (int i = 0; i < SpellNumbers.CLUSTER_SHARDS; i++) {
+			double a = spin + Math.PI * 2 * i / SpellNumbers.CLUSTER_SHARDS;
+			Vec3 out = n.scale(0.55).add(side.scale(Math.cos(a))).add(up.scale(Math.sin(a))).normalize();
+			Vec3[] pos = {at};
+			Vec3[] velocity = {out.scale(0.42).add(0, 0.28, 0)};
+			each(cast, 30, tick -> {
+				velocity[0] = velocity[0].add(0, -0.07, 0);
+				Vec3 from = pos[0];
+				Vec3 to = from.add(velocity[0]);
+				Contact c = contact(cast, from, to, 0.3, struck);
+				if (c == null && tick < 29) {
+					ExpansionVfx.shardTick(cast.level, from, to, theme);
+					pos[0] = to;
+					return true;
+				}
+				Vec3 land = c == null ? to : c.at();
+				List<Entity> hits = new ArrayList<>();
+				for (Entity e : CastEngine.inRadius(cast, land, radius)) {
+					if (struck.add(e.getUUID())) {
+						hits.add(e);
+					}
+				}
+				ExpansionVfx.shardLand(cast.level, land, radius, theme);
+				if (!hits.isEmpty()) {
+					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, land, velocity[0].normalize(), land, null, null, false), anchored);
+				}
+				return false;
+			});
+		}
+	}
+
+	/** Lance: a thick line of light, 16 blocks, through every creature in it. */
+	static void lance(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 from, Vec3 dir, Vfx.Theme theme) {
+		Vec3 aim = dir.normalize();
+		Vec3 to = from.add(aim.scale(SpellNumbers.LANCE_RANGE));
+		net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
+		Vec3 end = missed(block) ? to : block.getLocation();
+		double width = SpellNumbers.lanceWidth(g);
+		List<Entity> hits = along(cast, from, end, width, Set.of());
+		ExpansionVfx.lance(cast.level, from.add(aim.scale(0.8)), end, width, theme);
+		for (Entity e : hits) {
+			CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(e), e.getBoundingBox().getCenter(), aim, from, null, null, false), anchored);
+		}
+		if (hits.isEmpty() && !missed(block)) {
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, aim, from, block.getBlockPos(), block.getDirection(), false), anchored);
+		}
+	}
+
+	/** Sweep: a beam swung across in front of the caster like a searchlight, hitting each creature once. */
+	static void sweep(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Cast.Trigger at, Vfx.Theme theme) {
+		LivingEntity caster = cast.caster;
+		boolean fromCaster = at.fromCaster(caster);
+		Vec3 base = (fromCaster ? caster.getLookAngle() : at.dir()).normalize();
+		double length = SpellNumbers.sweepLength(g);
+		int ticks = SpellNumbers.sweepTicks(g);
+		Set<UUID> hit = new java.util.HashSet<>();
+		ExpansionVfx.sweepStart(cast.level, fromCaster ? caster.getEyePosition().subtract(0, 0.25, 0) : at.pos(), base, length, ticks, theme);
+		for (int i = 0; i <= ticks; i++) {
+			int step = i;
+			Scheduler.later(1 + i, () -> {
+				if (!cast.alive()) {
+					return;
+				}
+				// From 50 degrees to one side across to 50 degrees to the other.
+				Vec3 dir = base.yRot((float) Math.toRadians(50 - 100.0 * step / ticks));
+				Vec3 origin = fromCaster ? caster.getEyePosition().subtract(0, 0.25, 0) : at.pos();
+				net.minecraft.world.phys.BlockHitResult block = clip(cast, origin, origin.add(dir.scale(length)));
+				Vec3 end = missed(block) ? origin.add(dir.scale(length)) : block.getLocation();
+				ExpansionVfx.sweepTick(cast.level, origin.add(dir.scale(0.8)), end, theme, step);
+				List<Entity> hits = along(cast, origin, end, 0.5, hit);
+				if (!hits.isEmpty()) {
+					hits.forEach(e -> hit.add(e.getUUID()));
+					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, hits.getFirst().getBoundingBox().getCenter(), dir, origin, null, null, false), anchored);
+				}
+			});
+		}
+	}
+
+	/** Prism: a beam that splits into three rays at the first creature it hits (or where it ends). */
+	static void prism(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 from, Vec3 dir, Vfx.Theme theme) {
+		Vec3 aim = dir.normalize();
+		Vec3 to = from.add(aim.scale(SpellNumbers.PRISM_RANGE));
+		net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
+		Vec3 end = missed(block) ? to : block.getLocation();
+		List<Entity> first = along(cast, from, end, 0.3, Set.of());
+		Set<UUID> struck = new java.util.HashSet<>();
+		Vec3 split;
+		if (!first.isEmpty()) {
+			Entity target = first.getFirst();
+			struck.add(target.getUUID());
+			split = target.getBoundingBox().getCenter();
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(target), split, aim, from, null, null, false), anchored);
+		} else if (!missed(block)) {
+			// Against a wall there's nothing to split into: it lands like a beam.
+			ExpansionVfx.prism(cast.level, from.add(aim.scale(0.8)), end, aim, List.of(), theme);
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, aim, from, block.getBlockPos(), block.getDirection(), false), anchored);
+			return;
+		} else {
+			split = end;
+		}
+		List<Vec3> ends = new ArrayList<>();
+		for (int k = -1; k <= 1; k++) {
+			Vec3 rayDir = aim.yRot((float) Math.toRadians(25 * k));
+			Vec3 rayTo = split.add(rayDir.scale(SpellNumbers.PRISM_RAY_RANGE));
+			net.minecraft.world.phys.BlockHitResult rayBlock = clip(cast, split, rayTo);
+			Vec3 rayEnd = missed(rayBlock) ? rayTo : rayBlock.getLocation();
+			List<Entity> hits = along(cast, split, rayEnd, 0.3, struck);
+			if (!hits.isEmpty()) {
+				Entity e = hits.getFirst();
+				struck.add(e.getUUID());
+				rayEnd = e.getBoundingBox().getCenter();
+				CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(e), rayEnd, rayDir, split, null, null, false), anchored);
+			}
+			ends.add(rayEnd);
+		}
+		ExpansionVfx.prism(cast.level, from.add(aim.scale(0.8)), split, aim, ends, theme);
+	}
+
+	/** Stream: a steady beam that follows the caster's aim for a second, striking again and again. */
+	static void stream(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Cast.Trigger at, Vfx.Theme theme) {
+		LivingEntity caster = cast.caster;
+		boolean fromCaster = at.fromCaster(caster);
+		int strikes = SpellNumbers.streamStrikes(g);
+		int total = SpellNumbers.STREAM_TICKS;
+		Set<Integer> strikeTicks = new java.util.HashSet<>();
+		for (int i = 0; i < strikes; i++) {
+			strikeTicks.add((int) Math.round(i * (double) total / strikes));
+		}
+		ExpansionVfx.streamStart(cast.level, fromCaster ? caster.position() : at.pos(), theme);
+		each(cast, total, tick -> {
+			Vec3 origin = fromCaster ? caster.getEyePosition().subtract(0, 0.2, 0) : at.pos();
+			Vec3 aim = (fromCaster ? caster.getLookAngle() : at.dir()).normalize();
+			net.minecraft.world.phys.BlockHitResult block = clip(cast, origin, origin.add(aim.scale(SpellNumbers.STREAM_RANGE)));
+			Vec3 end = missed(block) ? origin.add(aim.scale(SpellNumbers.STREAM_RANGE)) : block.getLocation();
+			List<Entity> hits = along(cast, origin, end, 0.3, Set.of());
+			Vec3 stop = hits.isEmpty() ? end : hits.getFirst().getBoundingBox().getCenter();
+			boolean strike = strikeTicks.contains(tick);
+			ExpansionVfx.streamTick(cast.level, origin.add(aim.scale(0.8)), stop, aim, theme, tick, strike);
+			if (strike) {
+				if (!hits.isEmpty()) {
+					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(List.of(hits.getFirst()), stop, aim, origin, null, null, false), anchored);
+				} else if (!missed(block)) {
+					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(List.of(), end, aim, origin, block.getBlockPos(), block.getDirection(), false), anchored);
+				}
+			}
+			return true;
+		});
+	}
+
 	/** Distance from a point to the segment a-b, in 3D. */
 	private static double distanceToLine(Vec3 p, Vec3 a, Vec3 b) {
 		Vec3 ab = b.subtract(a);

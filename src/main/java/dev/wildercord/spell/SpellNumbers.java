@@ -20,10 +20,13 @@ public final class SpellNumbers {
 		return Math.pow(1.5, g.count(Runes.FOCUS_MOD)) * Math.pow(2.0, g.count(Runes.VOW_MOD)) * shapeStrength(g.shape);
 	}
 
-	/** Power per hit for shapes that hit many times. */
+	/** Power per hit for shapes that hit many times (Barrage, Stream), and for the cheap Spark. */
 	public static double shapeStrength(RuneDef shape) {
-		if (shape.is(Runes.BARRAGE.id())) {
+		if (shape.is(Runes.BARRAGE.id()) || shape.is(Runes.STREAM.id())) {
 			return 0.35;
+		}
+		if (shape.is(Runes.SPARK.id())) {
+			return 0.75;
 		}
 		return 1.0;
 	}
@@ -73,6 +76,85 @@ public final class SpellNumbers {
 
 	public static double blitzWidth(SpellPlan.Group g) {
 		return 1.2 * shapeRadius(g);
+	}
+
+	// ---- batch 6: sparks, energy balls and beams
+
+	public static final double SPARK_RANGE = 16.0;
+	public static final double RAY_RANGE = 10.0;
+	public static final double LANCE_RANGE = 16.0;
+	public static final double PRISM_RANGE = 16.0;
+	/** How far each of a Prism's three rays reaches beyond where it split. */
+	public static final double PRISM_RAY_RANGE = 10.0;
+	public static final double STREAM_RANGE = 20.0;
+	public static final double COMET_RANGE = 24.0;
+	/** How far a Wisp looks for an enemy to chase, and how long it flies. */
+	public static final double WISP_SEEK = 16.0;
+	public static final int WISP_TICKS = 80;
+	public static final int CLUSTER_SHARDS = 5;
+	/** A Stream strikes over this many ticks. */
+	public static final int STREAM_TICKS = 20;
+
+	/** Spark speed in blocks per tick. */
+	public static double sparkSpeed(SpellPlan.Group g) {
+		return 2.4 * Math.pow(2.0, g.count(Runes.QUICKEN));
+	}
+
+	public static double novaRadius(SpellPlan.Group g) {
+		return 2.5 * shapeRadius(g);
+	}
+
+	/** Wisp speed in blocks per tick. */
+	public static double wispSpeed(SpellPlan.Group g) {
+		return 0.7 * Math.pow(1.5, g.count(Runes.QUICKEN));
+	}
+
+	/** Comet speed in blocks per tick. */
+	public static double cometSpeed(SpellPlan.Group g) {
+		return 1.1 * Math.pow(1.6, g.count(Runes.QUICKEN));
+	}
+
+	public static double cometRadius(SpellPlan.Group g) {
+		return 3.0 * shapeRadius(g);
+	}
+
+	/** Ricochet speed in blocks per tick, as it leaves the hand. */
+	public static double ricochetSpeed(SpellPlan.Group g) {
+		return 1.2 * Math.pow(1.5, g.count(Runes.QUICKEN));
+	}
+
+	/** Bounces before a Ricochet stops: 4, and each Bounce adds 3. */
+	public static int ricochetBounces(SpellPlan.Group g) {
+		return 4 + bounces(g);
+	}
+
+	/** Cluster speed in blocks per tick. */
+	public static double clusterSpeed(SpellPlan.Group g) {
+		return 1.2 * Math.pow(1.6, g.count(Runes.QUICKEN));
+	}
+
+	/** How far around each of a Cluster's shards it strikes. */
+	public static double clusterRadius(SpellPlan.Group g) {
+		return 1.5 * shapeRadius(g);
+	}
+
+	/** How close to a Lance's line a creature must be to be run through. */
+	public static double lanceWidth(SpellPlan.Group g) {
+		return 0.7 * shapeRadius(g);
+	}
+
+	public static double sweepLength(SpellPlan.Group g) {
+		return 10.0 * shapeRadius(g);
+	}
+
+	/** Ticks a Sweep takes to cross from one side to the other: 10, halved by each Quicken. */
+	public static int sweepTicks(SpellPlan.Group g) {
+		return Math.max(3, (int) Math.round(10 / Math.pow(2.0, g.count(Runes.QUICKEN))));
+	}
+
+	/** Strikes in a Stream's second: 6, doubled by each Quicken (12 at most). */
+	public static int streamStrikes(SpellPlan.Group g) {
+		return (int) Math.min(12, 6 * Math.pow(2.0, g.count(Runes.QUICKEN)));
 	}
 
 	/** Radius factor on a shape from Widen and Focus. */

@@ -204,6 +204,55 @@ public final class CastEngine {
 			}
 		} else if (shape.equals(Runes.BLITZ.id())) {
 			ShapeRunners.blitz(cast, g, anchored, theme);
+		} else if (shape.equals(Runes.SPARK.id()) || shape.equals(Runes.COMET.id())) {
+			boolean comet = shape.equals(Runes.COMET.id());
+			volley(cast, g, () -> {
+				boolean fromCaster = at.fromCaster(caster);
+				Vec3 origin = fromCaster ? caster.getEyePosition().add(caster.getLookAngle().scale(comet ? 1.2 : 0.6)) : at.pos();
+				Vec3 aim = fromCaster ? caster.getLookAngle() : at.dir();
+				for (Vec3 dir : fan(aim, copies)) {
+					if (comet) {
+						ShapeRunners.comet(cast, g, anchored, origin, dir, theme);
+					} else {
+						ShapeRunners.spark(cast, g, anchored, origin, dir, theme);
+					}
+				}
+			});
+		} else if (shape.equals(Runes.WISP.id()) || shape.equals(Runes.RICOCHET.id()) || shape.equals(Runes.CLUSTER.id())) {
+			boolean fromCaster = at.fromCaster(caster);
+			Vec3 origin = fromCaster ? caster.getEyePosition().add(caster.getLookAngle().scale(1.0)).subtract(0, 0.2, 0) : at.pos();
+			Vec3 aim = fromCaster ? caster.getLookAngle() : at.dir();
+			for (Vec3 dir : fan(aim, copies)) {
+				if (shape.equals(Runes.WISP.id())) {
+					ShapeRunners.wisp(cast, g, anchored, origin, dir, theme);
+				} else if (shape.equals(Runes.RICOCHET.id())) {
+					ShapeRunners.ricochet(cast, g, anchored, origin, dir, theme);
+				} else {
+					ShapeRunners.cluster(cast, g, anchored, origin, dir, theme);
+				}
+			}
+		} else if (shape.equals(Runes.RAY.id()) || shape.equals(Runes.LANCE.id()) || shape.equals(Runes.PRISM.id())) {
+			boolean fromCaster = at.fromCaster(caster);
+			Vec3 origin = fromCaster ? caster.getEyePosition() : at.pos();
+			Vec3 aim = fromCaster ? caster.getLookAngle() : at.dir();
+			for (Vec3 dir : fan(aim, copies)) {
+				if (shape.equals(Runes.RAY.id())) {
+					ShapeRunners.ray(cast, g, anchored, origin, dir, theme);
+				} else if (shape.equals(Runes.LANCE.id())) {
+					ShapeRunners.lance(cast, g, anchored, origin, dir, theme);
+				} else {
+					ShapeRunners.prism(cast, g, anchored, origin, dir, theme);
+				}
+			}
+		} else if (shape.equals(Runes.SWEEP.id())) {
+			ShapeRunners.sweep(cast, g, anchored, at, theme);
+		} else if (shape.equals(Runes.STREAM.id())) {
+			ShapeRunners.stream(cast, g, anchored, at, theme);
+		} else if (shape.equals(Runes.NOVA.id())) {
+			double radius = SpellNumbers.novaRadius(g);
+			Vec3 center = at.fromCaster(caster) ? caster.position().add(0, 1, 0) : at.pos();
+			ExpansionVfx.nova(cast.level, center, radius, theme);
+			onHit(cast, g, new Cast.Hit(inRadius(cast, center, radius), center, at.dir(), center, null, null, false), anchored);
 		} else if (shape.equals(Runes.BURST.id())) {
 			double radius = SpellNumbers.burstRadius(g);
 			Vec3 base = at.fromCaster(caster) ? caster.position().add(0, 1, 0) : at.pos();

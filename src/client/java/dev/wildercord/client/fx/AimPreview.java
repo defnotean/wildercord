@@ -23,8 +23,8 @@ import java.util.List;
 /**
  * While you charge a spell, where it will go: a reticle on the ground for spells that land where
  * you look (Zone, Rain, Pillar, Totem, Mine), a ring around you for ones centred on you (Burst,
- * Ring, Domain), and a faint dotted line for ones that fly (Bolt, Beam, Crescent, Orb). Only you
- * see it.
+ * Ring, Domain, Nova), and a faint dotted line as far as the ones that fly or reach can go (Bolt,
+ * Beam, Crescent, Orb, Spark, Comet, Ray, Lance, Stream...). Only you see it.
  */
 public final class AimPreview {
 	private AimPreview() {}
@@ -60,8 +60,16 @@ public final class AimPreview {
 			case "burst" -> reticle(mc, player.position(), SpellNumbers.burstRadius(g), color);
 			case "ring" -> reticle(mc, player.position(), SpellNumbers.ringRadius(g), color);
 			case "domain" -> reticle(mc, player.position(), SpellNumbers.domainRadius(g), color);
-			case "bolt", "arc", "crescent", "orb", "wave" -> line(mc, player, 32, color);
+			case "nova" -> reticle(mc, player.position(), SpellNumbers.novaRadius(g), color);
+			case "bolt", "arc", "crescent", "orb", "wave", "wisp", "ricochet" -> line(mc, player, 32, color);
+			case "comet", "cluster" -> line(mc, player, SpellNumbers.COMET_RANGE, color);
 			case "beam" -> line(mc, player, CastEngine.BEAM_RANGE, color);
+			case "spark" -> line(mc, player, SpellNumbers.SPARK_RANGE, color);
+			case "ray" -> line(mc, player, SpellNumbers.RAY_RANGE, color);
+			case "lance" -> line(mc, player, SpellNumbers.LANCE_RANGE, color);
+			case "prism" -> line(mc, player, SpellNumbers.PRISM_RANGE, color);
+			case "sweep" -> line(mc, player, SpellNumbers.sweepLength(g), color);
+			case "stream" -> line(mc, player, SpellNumbers.STREAM_RANGE, color);
 			default -> { }
 		}
 	}

@@ -49,6 +49,18 @@ public final class Runes {
 	public static final RuneDef BARRAGE = shape("barrage", "Barrage", 2, 5, 1.6, "A flurry of 8 blows in one second on everything right in front of you, each at 35% power.", SPEED);
 	public static final RuneDef ORB = shape("orb", "Orb", 3, 9, 2.2, "A slow, heavy orb drifts 20 blocks forward through creatures, striking everything within 2 blocks of it once a second.", RADIUS, SPEED, SPLIT);
 	public static final RuneDef BLITZ = shape("blitz", "Blitz", 2, 6, 1.5, "You flash up to 8 blocks forward in an instant, striking everything you pass through.", RADIUS);
+	// Batch 6: sparks, energy balls and beams.
+	public static final RuneDef SPARK = shape("spark", "Spark", 1, 1, 1.0, "A quick spark darts up to 16 blocks and hits the first thing in its path, at 75% power.", SPEED, SPLIT, VOLLEY);
+	public static final RuneDef RAY = shape("ray", "Ray", 1, 2, 1.0, "An instant, short ray that hits the first thing within 10 blocks.", PIERCE, CHAIN);
+	public static final RuneDef NOVA = shape("nova", "Nova", 1, 3, 1.3, "A small nova bursts from you, hitting everything within 2.5 blocks.", RADIUS);
+	public static final RuneDef WISP = shape("wisp", "Wisp", 2, 4, 1.3, "A wisp drifts out and chases the nearest enemy within 16 blocks for up to 4 seconds, striking the first thing it touches.", SPEED, SPLIT);
+	public static final RuneDef COMET = shape("comet", "Comet", 2, 5, 1.6, "A heavy ball of energy flies up to 24 blocks and bursts on the first thing it touches, hitting everything within 3 blocks.", RADIUS, SPEED, SPLIT, VOLLEY);
+	public static final RuneDef RICOCHET = shape("ricochet", "Ricochet", 2, 5, 1.5, "An orb that bounces off the ground and walls 4 times, passing through creatures and hitting each once.", BOUNCE, SPEED, SPLIT);
+	public static final RuneDef CLUSTER = shape("cluster", "Cluster", 2, 6, 1.7, "A ball of energy that breaks into five shards where it hits; each shard strikes everything within 1.5 blocks of where it lands.", RADIUS, SPEED, SPLIT);
+	public static final RuneDef LANCE = shape("lance", "Lance", 2, 5, 1.5, "A thick lance of light drives 16 blocks forward, through every creature in its path.", RADIUS, SPLIT);
+	public static final RuneDef SWEEP = shape("sweep", "Sweep", 2, 5, 1.6, "A 10-block beam sweeps across in front of you in half a second, hitting everything it crosses once.", RADIUS, SPEED);
+	public static final RuneDef PRISM = shape("prism", "Prism", 2, 5, 1.5, "A beam that splits into three at the first thing it hits, each ray striking the next creature behind it.", SPLIT);
+	public static final RuneDef STREAM = shape("stream", "Stream", 2, 5, 1.8, "A steady stream of energy follows your aim for a second, striking the first thing within 20 blocks 6 times at 35% power.", SPEED);
 
 	/** Not a real rune: the implicit shape after a link, meaning "whatever triggered it". */
 	public static final RuneDef TRIGGER = new RuneDef("wildercord:trigger", "Target", RuneFamily.SHAPE, 0, 0, 1.0, "", EffectKind.NONE, Set.of(), "", "Whatever triggered the link.", "personal");
@@ -137,6 +149,39 @@ public final class Runes {
 	public static final RuneDef RAMPART = effect("rampart", "Rampart", 2, 8, "earth", EffectKind.WORLD, "Raises a 5-wide, 3-high wall of earth at the point for 10 seconds.", DURATION, RADIUS);
 	public static final RuneDef SHADES = effect("shades", "Shades", 3, 22, "void", EffectKind.HELPFUL, "Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.", DURATION, POWER);
 	public static final RuneDef THUNDERBIRD = effect("thunderbird", "Thunderbird", 3, 20, "storm", EffectKind.HELPFUL, "A storm bird circles above you for 15 seconds, striking the nearest enemy within 12 blocks every 1.5 seconds.", DURATION, POWER);
+	// Batch 6: protection.
+	public static final RuneDef BARRIER = effect("barrier", "Barrier", 1, 6, "arcane", EffectKind.HELPFUL, "A thin barrier of light: 2 absorption hearts for 20 seconds.", POWER, DURATION);
+	public static final RuneDef BRACE = effect("brace", "Brace", 1, 4, "earth", EffectKind.HELPFUL, "Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 seconds.", DURATION);
+	public static final RuneDef ANCHOR = effect("anchor", "Anchor", 1, 4, "void", EffectKind.HELPFUL, "Holds you fast for 15 seconds: blows and blasts can't knock you back, and 4 more armour.", DURATION);
+	public static final RuneDef BRAMBLE = effect("bramble", "Bramble", 1, 6, "life", EffectKind.HELPFUL, "Thorns for 10 seconds: whatever hurts you from within 4 blocks takes 3 damage and is shoved away.", POWER, DURATION);
+	public static final RuneDef FROSTWARD = effect("frostward", "Frostward", 1, 3, "frost", EffectKind.HELPFUL, "For 60 seconds you can't freeze, not even in powder snow.", DURATION);
+	public static final RuneDef CUSHION = effect("cushion", "Cushion", 1, 5, "wind", EffectKind.HELPFUL, "For 30 seconds falls can't hurt you, and a hard landing throws out a gust that knocks enemies back.", DURATION);
+	public static final RuneDef DEFLECT = effect("deflect", "Deflect", 2, 9, "wind", EffectKind.HELPFUL, "For 8 seconds a whirl of wind turns aside arrows and other projectiles coming at the target.", DURATION);
+	public static final RuneDef HAVEN = effect("haven", "Haven", 2, 14, "life", EffectKind.HELPFUL, "Raises a 4-block dome of light for 8 seconds: you and your allies inside take 20% less damage, and enemy projectiles glance off it.", DURATION, RADIUS);
+	// Batch 6: mining and building.
+	public static final RuneDef CHISEL = effect("chisel", "Chisel", 1, 2, "earth", EffectKind.WORLD, "Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).", POWER);
+	public static final RuneDef GLIMMER = effect("glimmer", "Glimmer", 1, 2, "life", EffectKind.WORLD, "Grows glowing lichen over the block that was hit and up to 4 around it: a light that stays.", RADIUS);
+	public static final RuneDef PRUNE = effect("prune", "Prune", 1, 2, "wind", EffectKind.WORLD, "A gust clears leaves, grass, flowers, vines and cobwebs within 3 blocks.", RADIUS);
+	public static final RuneDef TUNNEL = effect("tunnel", "Tunnel", 2, 8, "earth", EffectKind.WORLD, "Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe hardness; Amplify for diamond).", POWER);
+	public static final RuneDef VEIN = effect("vein", "Vein", 2, 10, "earth", EffectKind.WORLD, "Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness).", POWER);
+	public static final RuneDef SMELT = effect("smelt", "Smelt", 2, 6, "fire", EffectKind.WORLD, "Mines the block that was hit and drops it smelted, as a furnace would (iron-pickaxe hardness; Amplify for diamond).", POWER);
+	public static final RuneDef FELL = effect("fell", "Fell", 2, 8, "earth", EffectKind.WORLD, "Fells the tree that was hit: the log and every log joined to it above, up to 32.");
+	public static final RuneDef SPAN = effect("span", "Span", 2, 8, "arcane", EffectKind.WORLD, "A bridge of glass grows from your feet toward the point, up to 16 blocks, and shatters 30 seconds later.", DURATION, RADIUS);
+	// Batch 6: a simple spell for every element.
+	public static final RuneDef EMBER = effect("ember", "Ember", 1, 6, "fire", EffectKind.HARMFUL, "3 fire damage and sets alight for 3 seconds.", POWER, DURATION, LINGER);
+	public static final RuneDef ICICLE = effect("icicle", "Icicle", 1, 6, "frost", EffectKind.HARMFUL, "4 freeze damage, or 6 against a target that's already slowed.", POWER, LINGER);
+	public static final RuneDef PELT = effect("pelt", "Pelt", 1, 5, "earth", EffectKind.HARMFUL, "Pelts targets with stones: 4 damage and a small knockback.", POWER, LINGER);
+	public static final RuneDef WINDCUT = effect("windcut", "Windcut", 1, 6, "wind", EffectKind.HARMFUL, "A cutting wind: 4 damage and a light shove.", POWER, LINGER);
+	public static final RuneDef LEECH = effect("leech", "Leech", 1, 8, "blood", EffectKind.HARMFUL, "3 damage, and you heal for what it takes.", POWER, LINGER);
+	public static final RuneDef HEX = effect("hex", "Hex", 1, 5, "void", EffectKind.HARMFUL, "Hexes targets for 8 seconds: your spells hit them 25% harder.", DURATION);
+	public static final RuneDef REND = effect("rend", "Rend", 1, 5, "blood", EffectKind.HARMFUL, "Rends armour: targets lose 4 armour for 10 seconds.", DURATION);
+	public static final RuneDef COUNTDOWN = effect("countdown", "Countdown", 1, 7, "time", EffectKind.HARMFUL, "Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.", POWER, LINGER);
+	public static final RuneDef JOLT = effect("jolt", "Jolt", 2, 9, "storm", EffectKind.HARMFUL, "4 lightning damage that stuns for 1 second: no moving or fighting back.", POWER, DURATION, LINGER);
+	public static final RuneDef BLEED = effect("bleed", "Bleed", 2, 8, "blood", EffectKind.HARMFUL, "Opens a wound: 2 damage, then 1 more every half second for 4 seconds.", POWER, DURATION);
+	public static final RuneDef COLDSNAP = effect("coldsnap", "Coldsnap", 2, 11, "frost", EffectKind.HARMFUL, "A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy within 3 blocks.", POWER, RADIUS, DURATION);
+	public static final RuneDef FLASHFIRE = effect("flashfire", "Flashfire", 2, 11, "fire", EffectKind.HARMFUL, "A flash of heat: 4 fire damage to every enemy within 3 blocks, setting them alight for 3 seconds.", POWER, RADIUS);
+	public static final RuneDef BANISH = effect("banish", "Banish", 2, 8, "void", EffectKind.HARMFUL, "Banishes targets: they vanish and reappear up to 8 blocks further away from you.", POWER);
+	public static final RuneDef CYCLONE = effect("cyclone", "Cyclone", 2, 10, "wind", EffectKind.HARMFUL, "A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, then flings them out for 3 damage.", POWER, RADIUS, DURATION);
 
 	// ---- Innate runes: one is awakened in each caster's heart at the 1st Circle. They can't be
 	// crafted, found or taught, and they grow stronger with every circle.

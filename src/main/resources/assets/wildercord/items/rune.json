@@ -159,6 +159,83 @@
         }
       },
       {
+        "when": "wildercord:spark",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spark"
+        }
+      },
+      {
+        "when": "wildercord:ray",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ray"
+        }
+      },
+      {
+        "when": "wildercord:nova",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/nova"
+        }
+      },
+      {
+        "when": "wildercord:wisp",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/wisp"
+        }
+      },
+      {
+        "when": "wildercord:comet",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/comet"
+        }
+      },
+      {
+        "when": "wildercord:ricochet",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ricochet"
+        }
+      },
+      {
+        "when": "wildercord:cluster",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cluster"
+        }
+      },
+      {
+        "when": "wildercord:lance",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/lance"
+        }
+      },
+      {
+        "when": "wildercord:sweep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/sweep"
+        }
+      },
+      {
+        "when": "wildercord:prism",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/prism"
+        }
+      },
+      {
+        "when": "wildercord:stream",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stream"
+        }
+      },
+      {
         "when": "wildercord:feather_fall",
         "model": {
           "type": "minecraft:model",
@@ -737,6 +814,216 @@
         "model": {
           "type": "minecraft:model",
           "model": "wildercord:item/rune/thunderbird"
+        }
+      },
+      {
+        "when": "wildercord:barrier",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/barrier"
+        }
+      },
+      {
+        "when": "wildercord:brace",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/brace"
+        }
+      },
+      {
+        "when": "wildercord:anchor",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/anchor"
+        }
+      },
+      {
+        "when": "wildercord:bramble",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bramble"
+        }
+      },
+      {
+        "when": "wildercord:frostward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/frostward"
+        }
+      },
+      {
+        "when": "wildercord:cushion",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cushion"
+        }
+      },
+      {
+        "when": "wildercord:deflect",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/deflect"
+        }
+      },
+      {
+        "when": "wildercord:haven",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/haven"
+        }
+      },
+      {
+        "when": "wildercord:chisel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/chisel"
+        }
+      },
+      {
+        "when": "wildercord:glimmer",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/glimmer"
+        }
+      },
+      {
+        "when": "wildercord:prune",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/prune"
+        }
+      },
+      {
+        "when": "wildercord:tunnel",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tunnel"
+        }
+      },
+      {
+        "when": "wildercord:vein",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/vein"
+        }
+      },
+      {
+        "when": "wildercord:smelt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/smelt"
+        }
+      },
+      {
+        "when": "wildercord:fell",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/fell"
+        }
+      },
+      {
+        "when": "wildercord:span",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/span"
+        }
+      },
+      {
+        "when": "wildercord:ember",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/ember"
+        }
+      },
+      {
+        "when": "wildercord:icicle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/icicle"
+        }
+      },
+      {
+        "when": "wildercord:pelt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pelt"
+        }
+      },
+      {
+        "when": "wildercord:windcut",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/windcut"
+        }
+      },
+      {
+        "when": "wildercord:leech",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/leech"
+        }
+      },
+      {
+        "when": "wildercord:hex",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/hex"
+        }
+      },
+      {
+        "when": "wildercord:rend",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rend"
+        }
+      },
+      {
+        "when": "wildercord:countdown",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/countdown"
+        }
+      },
+      {
+        "when": "wildercord:jolt",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/jolt"
+        }
+      },
+      {
+        "when": "wildercord:bleed",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bleed"
+        }
+      },
+      {
+        "when": "wildercord:coldsnap",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/coldsnap"
+        }
+      },
+      {
+        "when": "wildercord:flashfire",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/flashfire"
+        }
+      },
+      {
+        "when": "wildercord:banish",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/banish"
+        }
+      },
+      {
+        "when": "wildercord:cyclone",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cyclone"
         }
       },
       {

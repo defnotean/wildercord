@@ -1,16 +1,26 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.Wildercord;
 import dev.wildercord.spell.EffectKind;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,23 +28,48 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.LightBlock;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.MultifaceBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -363,6 +398,77 @@ public final class Effects {
 			case "rampart" -> Techniques.rampart(cast, hit, SpellNumbers.effectRadius(node), ticks(10, duration));
 			case "shades" -> Spirits.summonShades(cast, caster.position(), 2, power, duration);
 			case "thunderbird" -> Techniques.thunderbird(cast, power, ticks(15, duration));
+			// Batch 6: protection.
+			case "barrier" -> helped.forEach(t -> {
+				t.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, ticks(20, duration), Math.min(4, amplify), false, true));
+				ExpansionVfx.barrier(level, t, Vfx.theme(rune));
+			});
+			case "brace" -> helped.forEach(t -> brace(cast, t, ticks(2, duration)));
+			case "anchor" -> helped.forEach(t -> anchor(cast, t, ticks(15, duration)));
+			case "bramble" -> helped.forEach(t -> bramble(cast, t, ticks(10, duration), power));
+			case "frostward" -> helped.forEach(t -> frostward(cast, t, ticks(60, duration)));
+			case "cushion" -> helped.forEach(t -> cushion(cast, t, ticks(30, duration), power));
+			case "deflect" -> helped.forEach(t -> deflect(cast, t, ticks(8, duration)));
+			case "haven" -> haven(cast, hit.self() ? caster.position() : CastEngine.ground(level, hit.point().add(0, 0.5, 0)),
+				4.0 * SpellNumbers.effectRadius(node), ticks(8, duration));
+			// Batch 6: mining and building.
+			case "chisel" -> chisel(cast, hit, amplify > 0 ? 2 : 1);
+			case "glimmer" -> glimmer(cast, hit, SpellNumbers.effectRadius(node));
+			case "prune" -> prune(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node));
+			case "tunnel" -> tunnel(cast, hit, amplify > 0 ? 3 : 2);
+			case "vein" -> vein(cast, hit, amplify > 0 ? 3 : 2);
+			case "smelt" -> smelt(cast, hit, amplify > 0 ? 3 : 2);
+			case "fell" -> fell(cast, hit);
+			case "span" -> span(cast, hit, SpellNumbers.effectRadius(node), ticks(30, duration));
+			// Batch 6: a simple spell for every element.
+			case "ember" -> harmed.forEach(t -> {
+				double react = Reactions.fire(cast, t);
+				t.igniteForSeconds((float) (3 * duration));
+				hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 3 * power * react);
+				ExpansionVfx.ember(level, t);
+			});
+			case "icicle" -> harmed.forEach(t -> {
+				boolean slowed = t.hasEffect(MobEffects.SLOWNESS) || Reactions.has(t, Reactions.Mark.FROZEN);
+				ExpansionVfx.icicle(level, t, slowed);
+				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), (slowed ? 6 : 4) * power);
+				// A touch of frost on the skin, well short of frozen solid.
+				t.setTicksFrozen(Math.min(t.getTicksRequiredToFreeze() - 1, t.getTicksFrozen() + 40));
+			});
+			case "pelt" -> harmed.forEach(t -> {
+				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
+				ExpansionVfx.pelt(level, t, away);
+				hurt(cast, t, level.damageSources().source(DamageTypes.FALLING_BLOCK, caster), 4 * power);
+				push(t, away.scale(0.6 * Math.sqrt(power)).add(0, 0.25, 0));
+			});
+			case "windcut" -> harmed.forEach(t -> {
+				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
+				hurt(cast, t, level.damageSources().source(DamageTypes.WIND_CHARGE, caster), 4 * power);
+				push(t, away.scale(0.7).add(0, 0.2, 0));
+				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+				ExpansionVfx.windcut(level, t, away);
+			});
+			case "leech" -> harmed.forEach(t -> {
+				float before = t.getHealth();
+				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 3 * power);
+				float taken = Math.max(0.0F, before - t.getHealth());
+				if (taken > 0 && caster.isAlive()) {
+					caster.heal(taken);
+				}
+				ExpansionVfx.leech(level, t, caster);
+			});
+			case "hex" -> harmed.forEach(t -> hex(cast, t, ticks(8, duration)));
+			case "rend" -> harmed.forEach(t -> rend(cast, t, ticks(10, duration)));
+			case "countdown" -> harmed.forEach(t -> countdown(cast, t, power));
+			case "jolt" -> harmed.forEach(t -> {
+				ExpansionVfx.jolt(level, t);
+				hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 4 * power * Reactions.storm(cast, t));
+				Spirits.hold(t, ticks(1, duration));
+			});
+			case "bleed" -> harmed.forEach(t -> bleed(cast, t, power, (int) Math.round(8 * duration)));
+			case "coldsnap" -> coldsnap(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, duration);
+			case "flashfire" -> flashfire(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power);
+			case "banish" -> harmed.forEach(t -> banish(cast, t, Math.min(16.0, 8.0 * power)));
+			case "cyclone" -> cyclone(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, ticks(2, duration));
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
 			default -> { }
@@ -420,6 +526,7 @@ public final class Effects {
 		}
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);
+		amount *= hexBonus(cast, target);
 		float damage = (float) amount;
 		if (target instanceof Player) {
 			damage *= PVP_DAMAGE;
@@ -818,5 +925,892 @@ public final class Effects {
 		if (mayEdit(cast, pos)) {
 			cast.level.destroyBlock(pos, true, cast.caster);
 		}
+	}
+
+	// ------------------------------------------------------------------ batch 6: wards
+
+	/**
+	 * A lasting ward on one creature, ticked by a single task. Casting it again (or a passive
+	 * renewing it) only pushes back its end and takes the newer cast's power, so wards never stack.
+	 */
+	private static final class Ward {
+		Cast cast;
+		double power;
+		long until;
+		/** The last game tick its task ran: a ward whose task was lost (the server stopped) is started afresh. */
+		long beat;
+		/** What the ward remembers between ticks. */
+		double memory;
+	}
+
+	private static final Map<String, Ward> WARDS = new HashMap<>();
+
+	/**
+	 * Puts a ward on {@code t}, or renews the one it has. {@code tick} runs every {@code every} ticks
+	 * while it lasts, {@code end} once it's over (or the cast is). Returns the new ward, or null when
+	 * an existing one was only renewed.
+	 */
+	private static Ward ward(Cast cast, LivingEntity t, String kind, int ticks, double power, int every, Consumer<Ward> tick, Runnable end) {
+		String key = kind + ":" + t.getUUID();
+		long now = cast.level.getGameTime();
+		Ward old = WARDS.get(key);
+		if (old != null && now - old.beat <= 2) {
+			old.until = Math.max(old.until, now + ticks);
+			old.power = power;
+			old.cast = cast;
+			return null;
+		}
+		Ward ward = new Ward();
+		ward.cast = cast;
+		ward.power = power;
+		ward.until = now + ticks;
+		ward.beat = now;
+		WARDS.put(key, ward);
+		int[] age = {0};
+		Runnable[] next = new Runnable[1];
+		next[0] = () -> {
+			long time = ward.cast.level.getGameTime();
+			if (WARDS.get(key) != ward || !ward.cast.alive() || !t.isAlive() || t.level() != ward.cast.level || time > ward.until) {
+				WARDS.remove(key, ward);
+				end.run();
+				return;
+			}
+			ward.beat = time;
+			if (age[0]++ % every == 0) {
+				tick.accept(ward);
+			}
+			Scheduler.later(1, next[0]);
+		};
+		Scheduler.later(1, next[0]);
+		return ward;
+	}
+
+	private static void modifier(LivingEntity t, Holder<Attribute> attribute, Identifier id, double amount, AttributeModifier.Operation operation) {
+		AttributeInstance instance = t.getAttribute(attribute);
+		if (instance != null) {
+			instance.addOrUpdateTransientModifier(new AttributeModifier(id, amount, operation));
+		}
+	}
+
+	private static void unmodify(LivingEntity t, Identifier id, List<Holder<Attribute>> attributes) {
+		for (Holder<Attribute> attribute : attributes) {
+			AttributeInstance instance = t.getAttribute(attribute);
+			if (instance != null) {
+				instance.removeModifier(id);
+			}
+		}
+	}
+
+	private static void setMotion(LivingEntity target, Vec3 motion) {
+		target.setDeltaMovement(motion);
+		target.needsSync = true;
+		if (target instanceof ServerPlayer player) {
+			player.connection.send(new ClientboundSetEntityMotionPacket(player));
+		}
+	}
+
+	/** When each creature may brace again. */
+	private static final Map<UUID, Long> BRACED = new HashMap<>();
+
+	/** Brace: 80% less damage for a moment, and a while before it can be done again. */
+	private static void brace(Cast cast, LivingEntity t, int ticks) {
+		long now = cast.level.getGameTime();
+		Long ready = BRACED.get(t.getUUID());
+		if (ready != null && now < ready && ready - now < 1200) {
+			ExpansionVfx.braceSpent(cast.level, t);
+			return;
+		}
+		BRACED.put(t.getUUID(), now + ticks + 120);
+		if (BRACED.size() > 256) {
+			BRACED.values().removeIf(until -> until < now);
+		}
+		t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 3, false, true));
+		ExpansionVfx.brace(cast.level, t, Vfx.theme("earth"));
+	}
+
+	private static final Identifier ANCHOR_ID = Wildercord.id("anchor");
+	private static final List<Holder<Attribute>> ANCHORED = List.of(Attributes.KNOCKBACK_RESISTANCE, Attributes.EXPLOSION_KNOCKBACK_RESISTANCE, Attributes.ARMOR);
+
+	/** Anchor: no knockback from blows or blasts, and a little armour, for a while. */
+	private static void anchor(Cast cast, LivingEntity t, int ticks) {
+		modifier(t, Attributes.KNOCKBACK_RESISTANCE, ANCHOR_ID, 1.0, AttributeModifier.Operation.ADD_VALUE);
+		modifier(t, Attributes.EXPLOSION_KNOCKBACK_RESISTANCE, ANCHOR_ID, 1.0, AttributeModifier.Operation.ADD_VALUE);
+		modifier(t, Attributes.ARMOR, ANCHOR_ID, 4.0, AttributeModifier.Operation.ADD_VALUE);
+		Ward fresh = ward(cast, t, "anchor", ticks, 1.0, 20, w -> { }, () -> unmodify(t, ANCHOR_ID, ANCHORED));
+		if (fresh != null || !cast.passive) {
+			ExpansionVfx.anchor(cast.level, t, Vfx.theme("void"));
+		}
+	}
+
+	/** Bramble: whatever hurts the target from close by takes damage back and is shoved away. */
+	private static void bramble(Cast cast, LivingEntity t, int ticks, double power) {
+		Ward fresh = ward(cast, t, "bramble", ticks, power, 2, w -> {
+			int stamp = t.getLastHurtByMobTimestamp();
+			if (stamp == (int) w.memory) {
+				return;
+			}
+			w.memory = stamp;
+			LivingEntity attacker = t.getLastHurtByMob();
+			DamageSource last = t.getLastDamageSource();
+			// Thorns never answer thorns, so two brambled casters can't trade blows forever.
+			if (attacker == null || attacker == t || !attacker.isAlive() || attacker.distanceTo(t) > 4.5
+					|| (last != null && last.is(DamageTypes.THORNS)) || !Targets.canHarm(w.cast.caster, attacker)) {
+				return;
+			}
+			ExpansionVfx.brambleStrike(w.cast.level, t, attacker);
+			hurt(w.cast, attacker, w.cast.level.damageSources().thorns(t), 3 * w.power);
+			Vec3 away = horizontal(attacker.position().subtract(t.position()), t.getLookAngle());
+			push(attacker, away.scale(0.9).add(0, 0.3, 0));
+		}, () -> { });
+		if (fresh != null) {
+			// Only hits from now on count.
+			fresh.memory = t.getLastHurtByMobTimestamp();
+		}
+		ExpansionVfx.bramble(cast.level, t);
+	}
+
+	/** Frostward: the target can't freeze, and frost can't leave it brittle for Shatter. */
+	private static void frostward(Cast cast, LivingEntity t, int ticks) {
+		t.setTicksFrozen(0);
+		Reactions.clear(t, Reactions.Mark.FROZEN);
+		Ward fresh = ward(cast, t, "frostward", ticks, 1.0, 5, w -> {
+			if (t.getTicksFrozen() > 0) {
+				t.setTicksFrozen(0);
+			}
+			Reactions.clear(t, Reactions.Mark.FROZEN);
+		}, () -> { });
+		if (fresh != null || !cast.passive) {
+			ExpansionVfx.frostward(cast.level, t, Vfx.theme("frost"));
+		}
+	}
+
+	private static final Identifier CUSHION_ID = Wildercord.id("cushion");
+
+	/** Cushion: no fall damage, and every hard landing throws a gust at the enemies around. */
+	private static void cushion(Cast cast, LivingEntity t, int ticks, double power) {
+		modifier(t, Attributes.FALL_DAMAGE_MULTIPLIER, CUSHION_ID, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+		t.resetFallDistance();
+		Ward fresh = ward(cast, t, "cushion", ticks, power, 1, w -> {
+			// Remembers how far this fall has come; it lands on the tick the ground is found again.
+			if (!t.onGround()) {
+				w.memory = Math.max(w.memory, t.fallDistance);
+				return;
+			}
+			if (w.memory > 4) {
+				cushionLanding(w.cast, t, w.power);
+			}
+			w.memory = 0;
+		}, () -> unmodify(t, CUSHION_ID, List.of(Attributes.FALL_DAMAGE_MULTIPLIER)));
+		if (fresh != null || !cast.passive) {
+			ExpansionVfx.cushion(cast.level, t, Vfx.theme("wind"));
+		}
+	}
+
+	private static void cushionLanding(Cast cast, LivingEntity t, double power) {
+		ExpansionVfx.cushionLand(cast.level, t.position(), 3.0, Vfx.theme("wind"));
+		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(3.0, 1.0, 3.0), e -> Targets.canHarm(cast.caster, e))) {
+			Vec3 away = horizontal(e.position().subtract(t.position()), t.getLookAngle());
+			push((LivingEntity) e, away.scale(1.1 * Math.sqrt(power)).add(0, 0.35, 0));
+			Reactions.mark(e, Reactions.Mark.WINDSWEPT);
+		}
+	}
+
+	/** Deflect: projectiles coming at the target are turned aside by the wind around it. */
+	private static void deflect(Cast cast, LivingEntity t, int ticks) {
+		Vfx.Theme theme = Vfx.theme("wind");
+		Ward fresh = ward(cast, t, "deflect", ticks, 1.0, 1, w -> {
+			ServerLevel level = w.cast.level;
+			Vec3 centre = t.getBoundingBox().getCenter();
+			for (Projectile p : level.getEntitiesOfClass(Projectile.class, t.getBoundingBox().inflate(3.0))) {
+				Entity owner = p.getOwner();
+				if (owner == t || (owner != null && Targets.isAlly(w.cast.caster, owner))) {
+					continue;
+				}
+				Vec3 v = p.getDeltaMovement();
+				if (v.lengthSqr() < 0.01 || v.dot(centre.subtract(p.position())) <= 0) {
+					continue;
+				}
+				Vec3 away = horizontal(p.position().subtract(centre), v.scale(-1));
+				p.setDeltaMovement(away.scale(Math.max(0.4, v.length() * 0.6)).add(0, 0.2, 0));
+				p.needsSync = true;
+				ExpansionVfx.deflectHit(level, p.position(), away, theme);
+			}
+			if (level.getGameTime() % 5 == 0) {
+				ExpansionVfx.deflectSpin(level, t, theme, level.getGameTime());
+			}
+		}, () -> { });
+		if (fresh != null || !cast.passive) {
+			ExpansionVfx.deflect(cast.level, t, theme);
+		}
+	}
+
+	/**
+	 * Haven: a dome over the point for a while. Allies inside are kept under Resistance, and
+	 * projectiles fired from outside by anyone but an ally glance off its shell.
+	 */
+	private static void haven(Cast cast, Vec3 centre, double radius, int ticks) {
+		ServerLevel level = cast.level;
+		Vfx.Theme theme = Vfx.theme("life");
+		ExpansionVfx.havenOpen(level, centre, radius, theme, ticks);
+		ShapeRunners.each(cast, ticks, tick -> {
+			for (Projectile p : level.getEntitiesOfClass(Projectile.class, new AABB(centre, centre).inflate(radius + 1.5))) {
+				Entity owner = p.getOwner();
+				if (p.position().distanceTo(centre) > radius + 1.0
+						|| (owner != null && (Targets.isAlly(cast.caster, owner) || owner.position().distanceTo(centre) <= radius))) {
+					continue;
+				}
+				Vec3 v = p.getDeltaMovement();
+				Vec3 normal = p.position().subtract(centre).normalize();
+				if (v.lengthSqr() < 0.01 || v.dot(normal) >= 0) {
+					continue;
+				}
+				p.setDeltaMovement(v.subtract(normal.scale(2 * v.dot(normal))).scale(0.6));
+				p.needsSync = true;
+				ExpansionVfx.havenGlance(level, p.position(), normal, theme);
+			}
+			if (tick % 10 == 0) {
+				for (Entity e : level.getEntities((Entity) null, new AABB(centre, centre).inflate(radius),
+						e -> Targets.canHelp(cast.caster, e) && e.position().distanceTo(centre) <= radius)) {
+					((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 25, 0, false, true));
+				}
+			}
+			if (tick % 20 == 0) {
+				ExpansionVfx.havenShell(level, centre, radius, theme, tick);
+			}
+			if (tick == ticks - 1) {
+				ExpansionVfx.havenClose(level, centre, radius, theme);
+			}
+			return true;
+		});
+	}
+
+	// ------------------------------------------------------------------ batch 6: mining and building
+
+	/** The blocks a mining spell of each tier can't break: I stone, II iron, III diamond. */
+	private static TagKey<Block> tooHard(int tier) {
+		return switch (tier) {
+			case 1 -> BlockTags.INCORRECT_FOR_STONE_TOOL;
+			case 2 -> BlockTags.INCORRECT_FOR_IRON_TOOL;
+			default -> BlockTags.INCORRECT_FOR_DIAMOND_TOOL;
+		};
+	}
+
+	/** The pickaxe a mining spell of each tier breaks blocks with, so drops come out as they would for a player holding it. */
+	private static ItemStack pickaxe(int tier) {
+		return new ItemStack(tier <= 1 ? Items.STONE_PICKAXE : tier == 2 ? Items.IRON_PICKAXE : Items.DIAMOND_PICKAXE);
+	}
+
+	private static Consumer<ItemStack> dropAt(ServerLevel level, BlockPos pos) {
+		return stack -> Block.popResource(level, pos, stack);
+	}
+
+	/**
+	 * Mines one block as a player holding {@code tool} would: never an unbreakable block, a fluid or
+	 * one in {@code tooHard}, only where the caster may build and within the cast's block budget. It
+	 * drops what that tool would (a container spills its contents too), each drop going to
+	 * {@code drops}. Returns whether the block was mined.
+	 */
+	private static boolean mine(Cast cast, BlockPos pos, ItemStack tool, TagKey<Block> tooHard, Consumer<ItemStack> drops) {
+		ServerLevel level = cast.level;
+		BlockState state = level.getBlockState(pos);
+		if (state.isAir() || state.getBlock() instanceof LiquidBlock || state.getDestroySpeed(level, pos) < 0 || state.is(tooHard)) {
+			return false;
+		}
+		if (!mayEdit(cast, pos)) {
+			return false;
+		}
+		if (unspan(level, pos)) {
+			// A Span's glass just shatters.
+			return true;
+		}
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		boolean harvest = !state.requiresCorrectToolForDrops() || tool.isCorrectToolForDrops(state);
+		List<ItemStack> loot = harvest ? Block.getDrops(state, level, pos, blockEntity, cast.caster, tool) : List.of();
+		level.destroyBlock(pos, false, cast.caster);
+		if (harvest) {
+			state.spawnAfterBreak(level, pos, tool, true);
+		}
+		loot.forEach(drops);
+		return true;
+	}
+
+	/** Chisel: one block, at stone-pickaxe strength. */
+	private static void chisel(Cast cast, Cast.Hit hit, int tier) {
+		if (hit.block() == null) {
+			return;
+		}
+		BlockPos pos = hit.block();
+		BlockState state = cast.level.getBlockState(pos);
+		if (mine(cast, pos, pickaxe(tier), tooHard(tier), dropAt(cast.level, pos))) {
+			ExpansionVfx.chisel(cast.level, pos, state, hit.face());
+		}
+	}
+
+	/** Tunnel: a walkable passage bored into a wall (or a shaft into a floor or ceiling), a little deeper each tick. */
+	private static void tunnel(Cast cast, Cast.Hit hit, int tier) {
+		if (hit.block() == null || hit.face() == null) {
+			return;
+		}
+		ServerLevel level = cast.level;
+		Direction into = hit.face().getOpposite();
+		BlockPos start = hit.block();
+		List<BlockPos> cells = new ArrayList<>();
+		if (into.getAxis().isHorizontal()) {
+			// Two high, starting at the caster's feet when they aim at the block at head height.
+			BlockPos base = start.getY() > cast.caster.getBlockY() ? start.below() : start;
+			for (int d = 0; d < 4; d++) {
+				cells.add(base.relative(into, d));
+				cells.add(base.relative(into, d).above());
+			}
+		} else {
+			for (int d = 0; d < 4; d++) {
+				cells.add(start.relative(into, d));
+			}
+		}
+		ExpansionVfx.tunnel(level, Vec3.atCenterOf(start), into, Vfx.theme("earth"));
+		for (int i = 0; i < cells.size(); i++) {
+			BlockPos p = cells.get(i);
+			Scheduler.later(1 + i / 2 * 2, () -> {
+				if (!cast.alive()) {
+					return;
+				}
+				BlockState state = level.getBlockState(p);
+				if (mine(cast, p, pickaxe(tier), tooHard(tier), dropAt(level, p))) {
+					ExpansionVfx.bore(level, p, state, into);
+				}
+			});
+		}
+	}
+
+	private static boolean isOre(BlockState state) {
+		return state.is(BlockTags.ORES) || state.is(ConventionalBlockTags.ORES);
+	}
+
+	/** The same ore: the same block, its deepslate twin, or a metal sharing one of vanilla's ore tags. */
+	private static boolean sameOre(BlockState a, BlockState b) {
+		if (!isOre(b)) {
+			return false;
+		}
+		if (a.getBlock() == b.getBlock()) {
+			return true;
+		}
+		for (TagKey<Block> tag : List.of(BlockTags.IRON_ORES, BlockTags.GOLD_ORES, BlockTags.COPPER_ORES)) {
+			if (a.is(tag) && b.is(tag)) {
+				return true;
+			}
+		}
+		return oreName(a).equals(oreName(b));
+	}
+
+	private static String oreName(BlockState state) {
+		return BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath().replace("deepslate_", "");
+	}
+
+	/** Vein: the block hit and, for an ore, every matching ore touching it, one after another. */
+	private static void vein(Cast cast, Cast.Hit hit, int tier) {
+		if (hit.block() == null) {
+			return;
+		}
+		ServerLevel level = cast.level;
+		BlockPos start = hit.block();
+		BlockState first = level.getBlockState(start);
+		List<BlockPos> ores = new ArrayList<>(List.of(start));
+		if (isOre(first)) {
+			Set<BlockPos> seen = new HashSet<>(ores);
+			Deque<BlockPos> queue = new ArrayDeque<>(ores);
+			while (!queue.isEmpty() && ores.size() < 16) {
+				BlockPos p = queue.poll();
+				for (BlockPos n : BlockPos.betweenClosed(p.offset(-1, -1, -1), p.offset(1, 1, 1))) {
+					BlockPos q = n.immutable();
+					if (ores.size() < 16 && seen.add(q) && sameOre(first, level.getBlockState(q))) {
+						ores.add(q);
+						queue.add(q);
+					}
+				}
+			}
+		}
+		for (int i = 0; i < ores.size(); i++) {
+			BlockPos p = ores.get(i);
+			BlockPos from = ores.get(Math.max(0, i - 1));
+			Scheduler.later(1 + i, () -> {
+				if (!cast.alive()) {
+					return;
+				}
+				BlockState state = level.getBlockState(p);
+				if (mine(cast, p, pickaxe(tier), tooHard(tier), dropAt(level, p))) {
+					ExpansionVfx.vein(level, from, p, state);
+				}
+			});
+		}
+	}
+
+	/** Smelt: mines the block and drops what a furnace would make of it, with the furnace's experience. */
+	private static void smelt(Cast cast, Cast.Hit hit, int tier) {
+		if (hit.block() == null) {
+			return;
+		}
+		ServerLevel level = cast.level;
+		BlockPos pos = hit.block();
+		BlockState state = level.getBlockState(pos);
+		double[] xp = {0};
+		if (!mine(cast, pos, pickaxe(tier), tooHard(tier), stack -> Block.popResource(level, pos, smelted(level, stack, xp)))) {
+			return;
+		}
+		int whole = (int) xp[0];
+		if (level.getRandom().nextDouble() < xp[0] - whole) {
+			whole++;
+		}
+		if (whole > 0) {
+			ExperienceOrb.award(level, Vec3.atCenterOf(pos), whole);
+		}
+		ExpansionVfx.smelt(level, pos, state);
+	}
+
+	/** What a furnace would make of a stack (or the stack itself), adding the experience it gives to {@code xp}. */
+	private static ItemStack smelted(ServerLevel level, ItemStack stack, double[] xp) {
+		SingleRecipeInput input = new SingleRecipeInput(stack);
+		var recipe = level.recipeAccess().getRecipeFor(RecipeType.SMELTING, input, level);
+		if (recipe.isEmpty()) {
+			return stack;
+		}
+		ItemStack out = recipe.get().value().assemble(input);
+		if (out.isEmpty()) {
+			return stack;
+		}
+		out.setCount(Math.min(out.getMaxStackSize(), out.getCount() * stack.getCount()));
+		xp[0] += recipe.get().value().experience() * stack.getCount();
+		return out;
+	}
+
+	/**
+	 * Fell: the log hit and every log joined to it at its level or above. A log without living
+	 * leaves around it is part of a build, not a tree, so only that one comes down.
+	 */
+	private static void fell(Cast cast, Cast.Hit hit) {
+		if (hit.block() == null) {
+			return;
+		}
+		ServerLevel level = cast.level;
+		BlockPos start = hit.block();
+		if (!level.getBlockState(start).is(BlockTags.LOGS)) {
+			return;
+		}
+		List<BlockPos> logs = new ArrayList<>(List.of(start));
+		Set<BlockPos> seen = new HashSet<>(logs);
+		boolean tree = false;
+		for (int i = 0; i < logs.size(); i++) {
+			BlockPos p = logs.get(i);
+			for (BlockPos n : BlockPos.betweenClosed(p.offset(-1, 0, -1), p.offset(1, 1, 1))) {
+				BlockPos q = n.immutable();
+				BlockState state = level.getBlockState(q);
+				if (state.is(BlockTags.LEAVES) && state.hasProperty(LeavesBlock.PERSISTENT) && !state.getValue(LeavesBlock.PERSISTENT)) {
+					tree = true;
+				}
+				if (logs.size() < Cast.MAX_BLOCKS && seen.add(q) && state.is(BlockTags.LOGS)) {
+					logs.add(q);
+				}
+			}
+		}
+		if (!tree) {
+			logs = List.of(start);
+		}
+		ItemStack axe = new ItemStack(Items.IRON_AXE);
+		ExpansionVfx.fellStart(level, start, Vfx.theme("earth"));
+		for (int i = 0; i < logs.size(); i++) {
+			BlockPos p = logs.get(i);
+			Scheduler.later(1 + i / 2, () -> {
+				if (!cast.alive()) {
+					return;
+				}
+				BlockState state = level.getBlockState(p);
+				if (mine(cast, p, axe, BlockTags.INCORRECT_FOR_IRON_TOOL, dropAt(level, p))) {
+					ExpansionVfx.fell(level, p, state);
+				}
+			});
+		}
+	}
+
+	/** Glimmer: glow lichen over the face that was hit and the faces around it, nearest first. */
+	private static void glimmer(Cast cast, Cast.Hit hit, double radiusScale) {
+		ServerLevel level = cast.level;
+		if (!Casters.mayBuild(cast.caster)) {
+			return;
+		}
+		BlockPos support = targetBlock(hit);
+		Direction face = hit.block() != null && hit.face() != null ? hit.face() : Direction.UP;
+		Direction back = face.getOpposite();
+		BooleanProperty side = MultifaceBlock.getFaceProperty(back);
+		int want = (int) Math.round(5 * radiusScale);
+		List<BlockPos> around = new ArrayList<>();
+		for (int a = -2; a <= 2; a++) {
+			for (int b = -2; b <= 2; b++) {
+				around.add(switch (face.getAxis()) {
+					case X -> support.offset(0, a, b);
+					case Y -> support.offset(a, 0, b);
+					case Z -> support.offset(a, b, 0);
+				});
+			}
+		}
+		around.sort(Comparator.comparingDouble(p -> p.distSqr(support)));
+		List<BlockPos> grown = new ArrayList<>();
+		for (BlockPos s : around) {
+			if (grown.size() >= want) {
+				break;
+			}
+			BlockPos cell = s.relative(face);
+			BlockState there = level.getBlockState(cell);
+			boolean lichen = there.is(Blocks.GLOW_LICHEN);
+			if (!(there.isAir() || (lichen && !there.getValue(side))) || !MultifaceBlock.canAttachTo(level, back, s, level.getBlockState(s))) {
+				continue;
+			}
+			if (!level.mayInteract(cast.caster, cell)) {
+				continue;
+			}
+			if (!cast.takeBlock()) {
+				break;
+			}
+			level.setBlockAndUpdate(cell, (lichen ? there : Blocks.GLOW_LICHEN.defaultBlockState()).setValue(side, true));
+			grown.add(cell);
+		}
+		ExpansionVfx.glimmer(level, grown, face);
+	}
+
+	private static boolean prunable(BlockState state) {
+		if (state.is(BlockTags.LEAVES)) {
+			// Leaves placed by hand are part of a build.
+			return state.hasProperty(LeavesBlock.PERSISTENT) && !state.getValue(LeavesBlock.PERSISTENT);
+		}
+		if (!state.getFluidState().isEmpty() || state.is(Blocks.GLOW_LICHEN)) {
+			return false;
+		}
+		return state.is(BlockTags.REPLACEABLE_BY_TREES) || state.is(BlockTags.SMALL_FLOWERS) || state.is(Blocks.COBWEB);
+	}
+
+	/** Prune: leaves, grass, flowers, vines and cobwebs around the point are cleared, nearest first, dropping what they would by hand. */
+	private static void prune(Cast cast, Vec3 point, double radius) {
+		ServerLevel level = cast.level;
+		if (!Casters.mayBuild(cast.caster)) {
+			return;
+		}
+		BlockPos centre = BlockPos.containing(point);
+		int r = (int) Math.ceil(radius);
+		List<BlockPos> plants = new ArrayList<>();
+		for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-r, -r, -r), centre.offset(r, r, r))) {
+			if (pos.distSqr(centre) <= radius * radius && prunable(level.getBlockState(pos))) {
+				plants.add(pos.immutable());
+			}
+		}
+		plants.sort(Comparator.comparingDouble(p -> p.distSqr(centre)));
+		int cleared = 0;
+		for (BlockPos p : plants) {
+			// The other half of a tall plant may already be gone.
+			if (!prunable(level.getBlockState(p)) || !level.mayInteract(cast.caster, p)) {
+				continue;
+			}
+			if (!cast.takeBlock()) {
+				break;
+			}
+			level.destroyBlock(p, true, cast.caster);
+			cleared++;
+		}
+		ExpansionVfx.prune(level, point, radius, cleared > 0);
+	}
+
+	/** Span bridges still standing, and what each of their blocks replaced. */
+	private static final Map<GlobalPos, BlockState> SPAN = new HashMap<>();
+	private static final BlockState SPAN_BLOCK = Blocks.STAINED_GLASS.magenta().defaultBlockState();
+
+	/**
+	 * Registered the first time a Span is cast: glass broken by hand drops nothing and puts back
+	 * what it replaced, and every bridge still standing is taken down when the server stops.
+	 */
+	private static final class SpanRules {
+		static {
+			PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
+				!(world instanceof ServerLevel server) || !state.is(SPAN_BLOCK.getBlock()) || !unspan(server, pos));
+			ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+				for (Map.Entry<GlobalPos, BlockState> entry : new ArrayList<>(SPAN.entrySet())) {
+					ServerLevel level = server.getLevel(entry.getKey().dimension());
+					BlockPos pos = entry.getKey().pos();
+					if (level != null && level.getBlockState(pos).is(SPAN_BLOCK.getBlock())) {
+						level.setBlockAndUpdate(pos, entry.getValue());
+					}
+				}
+				SPAN.clear();
+			});
+		}
+
+		private SpanRules() {}
+
+		static void ready() {
+		}
+	}
+
+	/** Takes a Span's glass away (if it stands there), putting back what it replaced. Returns whether it was a Span's. */
+	private static boolean unspan(ServerLevel level, BlockPos pos) {
+		if (SPAN.isEmpty()) {
+			return false;
+		}
+		BlockState replaced = SPAN.remove(GlobalPos.of(level.dimension(), pos.immutable()));
+		if (replaced == null) {
+			return false;
+		}
+		if (level.getBlockState(pos).is(SPAN_BLOCK.getBlock())) {
+			level.levelEvent(2001, pos, Block.getId(SPAN_BLOCK));
+			level.setBlockAndUpdate(pos, replaced);
+		}
+		return true;
+	}
+
+	/** Span: a bridge of glass grows out from under the caster's feet toward the point, then shatters. */
+	private static void span(Cast cast, Cast.Hit hit, double radiusScale, int ticks) {
+		LivingEntity caster = cast.caster;
+		ServerLevel level = cast.level;
+		if (!Casters.mayBuild(caster)) {
+			return;
+		}
+		SpanRules.ready();
+		Vec3 feet = caster.position();
+		Vec3 toward = hit.point().subtract(feet);
+		double reach = Math.hypot(toward.x, toward.z);
+		boolean aimed = !hit.self() && reach >= 2;
+		Vec3 dir = horizontal(aimed ? toward : caster.getLookAngle(), caster.getLookAngle());
+		double length = aimed ? Math.min(16, reach + 1) : 10;
+		Vec3 side = new Vec3(-dir.z, 0, dir.x);
+		int half = Math.max(0, (int) Math.round((radiusScale - 1) * 2));
+		int y = BlockPos.containing(feet.x, feet.y - 0.2, feet.z).getY();
+		Set<BlockPos> cells = new LinkedHashSet<>();
+		BlockPos prev = null;
+		for (double d = 0.8; d <= length; d += 0.25) {
+			Vec3 c = feet.add(dir.scale(d));
+			BlockPos p = BlockPos.containing(c.x, y, c.z);
+			if (prev != null && p.getX() != prev.getX() && p.getZ() != prev.getZ()) {
+				// Never a diagonal gap to fall through.
+				cells.add(new BlockPos(prev.getX(), y, p.getZ()));
+			}
+			for (int w = -half; w <= half; w++) {
+				cells.add(BlockPos.containing(c.x + side.x * w, y, c.z + side.z * w));
+			}
+			prev = p;
+		}
+		List<BlockPos> order = new ArrayList<>(cells);
+		Vfx.Theme theme = Vfx.theme("arcane");
+		ExpansionVfx.spanStart(level, feet, dir, theme);
+		for (int i = 0; i < order.size(); i++) {
+			BlockPos p = order.get(i);
+			Scheduler.later(1 + i / 3, () -> {
+				if (!cast.alive()) {
+					return;
+				}
+				BlockState state = level.getBlockState(p);
+				if (!state.canBeReplaced() || !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()
+						|| !level.mayInteract(caster, p) || !cast.takeBlock()) {
+					return;
+				}
+				SPAN.put(GlobalPos.of(level.dimension(), p.immutable()), state);
+				level.setBlockAndUpdate(p, SPAN_BLOCK);
+				ExpansionVfx.spanBlock(level, p, theme);
+			});
+		}
+		// It always comes down, even if its caster is gone.
+		Scheduler.later(ticks, () -> order.forEach(p -> {
+			if (unspan(level, p)) {
+				ExpansionVfx.spanShatter(level, p, theme);
+			}
+		}));
+	}
+
+	// ------------------------------------------------------------------ batch 6: damage and control
+
+	private record Hexed(UUID caster, long until) {}
+
+	private static final Map<UUID, Hexed> HEXED = new HashMap<>();
+	/** How much harder a hexer's spells hit what they hexed. */
+	public static final double HEX_BONUS = 1.25;
+
+	private static void hex(Cast cast, LivingEntity t, int ticks) {
+		long now = cast.level.getGameTime();
+		HEXED.put(t.getUUID(), new Hexed(cast.caster.getUUID(), now + ticks));
+		if (HEXED.size() > 256) {
+			HEXED.values().removeIf(h -> h.until() < now);
+		}
+		ExpansionVfx.hex(cast.level, t, ticks);
+	}
+
+	/** Hex: its caster's spells hit the hexed creature harder. */
+	private static double hexBonus(Cast cast, LivingEntity target) {
+		if (HEXED.isEmpty()) {
+			return 1.0;
+		}
+		Hexed hexed = HEXED.get(target.getUUID());
+		if (hexed == null) {
+			return 1.0;
+		}
+		if (hexed.until() < cast.level.getGameTime()) {
+			HEXED.remove(target.getUUID());
+			return 1.0;
+		}
+		if (!hexed.caster().equals(cast.caster.getUUID())) {
+			return 1.0;
+		}
+		ExpansionVfx.hexBite(cast.level, target);
+		return HEX_BONUS;
+	}
+
+	private static final Identifier REND_ID = Wildercord.id("rend");
+
+	/** Rend: less armour for a while. */
+	private static void rend(Cast cast, LivingEntity t, int ticks) {
+		if (t.getAttribute(Attributes.ARMOR) == null) {
+			return;
+		}
+		modifier(t, Attributes.ARMOR, REND_ID, -4.0, AttributeModifier.Operation.ADD_VALUE);
+		ward(cast, t, "rend", ticks, 1.0, 20, w -> { }, () -> unmodify(t, REND_ID, List.of(Attributes.ARMOR)));
+		ExpansionVfx.rend(cast.level, t);
+	}
+
+	/** Countdown: a mark that ticks twice, then strikes. */
+	private static void countdown(Cast cast, LivingEntity t, double power) {
+		ExpansionVfx.countdown(cast.level, t, 0);
+		for (int beat = 1; beat <= 2; beat++) {
+			int b = beat;
+			Scheduler.later(beat * 10, () -> {
+				if (cast.alive() && t.isAlive()) {
+					ExpansionVfx.countdown(cast.level, t, b);
+				}
+			});
+		}
+		Scheduler.later(30, () -> {
+			if (!cast.alive() || !t.isAlive() || t.level() != cast.level) {
+				return;
+			}
+			ExpansionVfx.countdownStrike(cast.level, t);
+			hurt(cast, t, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), 6 * power);
+		});
+	}
+
+	/** Bleed: a cut, then more damage every half second. */
+	private static void bleed(Cast cast, LivingEntity t, double power, int wounds) {
+		DamageSource source = cast.level.damageSources().indirectMagic(cast.caster, cast.caster);
+		ExpansionVfx.bleed(cast.level, t, true);
+		hurt(cast, t, source, 2 * power);
+		for (int i = 1; i <= wounds; i++) {
+			Scheduler.later(i * 10, () -> {
+				if (!cast.alive() || !t.isAlive() || t.level() != cast.level) {
+					return;
+				}
+				ExpansionVfx.bleed(cast.level, t, false);
+				hurt(cast, t, source, power);
+			});
+		}
+	}
+
+	/** Every enemy within {@code radius} of the point (by the middle of its body). */
+	private static List<LivingEntity> enemiesAround(Cast cast, Vec3 point, double radius) {
+		List<LivingEntity> out = new ArrayList<>();
+		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius + 1), e -> Targets.canHarm(cast.caster, e))) {
+			if (e.getBoundingBox().getCenter().distanceTo(point) <= radius + e.getBbWidth() / 2) {
+				out.add((LivingEntity) e);
+			}
+		}
+		return out;
+	}
+
+	/** Coldsnap: frost bites everything around the point, slowing it and leaving it brittle for Shatter. */
+	private static void coldsnap(Cast cast, Vec3 point, double radius, double power, double duration) {
+		ExpansionVfx.coldsnap(cast.level, point, radius);
+		for (LivingEntity t : enemiesAround(cast, point, radius)) {
+			hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 3 * power);
+			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 1, false, true));
+			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
+			ExpansionVfx.chilled(cast.level, t);
+		}
+	}
+
+	/** Flashfire: a flash of heat that burns everything around the point. */
+	private static void flashfire(Cast cast, Vec3 point, double radius, double power) {
+		ExpansionVfx.flashfire(cast.level, point, radius);
+		for (LivingEntity t : enemiesAround(cast, point, radius)) {
+			double react = Reactions.fire(cast, t);
+			t.igniteForSeconds(3);
+			hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 4 * power * react);
+			ExpansionVfx.ember(cast.level, t);
+		}
+	}
+
+	/** Banish: the target reappears further away from the caster, somewhere it fits and can see back to. Bosses stay put. */
+	private static void banish(Cast cast, LivingEntity t, double distance) {
+		ServerLevel level = cast.level;
+		if (Spirits.isBoss(t)) {
+			ExpansionVfx.banishResisted(level, t);
+			return;
+		}
+		Vec3 away = horizontal(t.position().subtract(cast.caster.position()), cast.caster.getLookAngle());
+		Vec3 from = t.position();
+		for (double d = distance; d >= 2; d -= 1) {
+			Vec3 spot = CastEngine.ground(level, from.add(away.scale(d)).add(0, 1.0, 0));
+			if (Math.abs(spot.y - from.y) > 4 || !level.noCollision(t, t.getDimensions(t.getPose()).makeBoundingBox(spot))) {
+				continue;
+			}
+			if (level.clip(new ClipContext(from.add(0, 1, 0), spot.add(0, 1, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, t)).getType()
+					!= HitResult.Type.MISS) {
+				continue;
+			}
+			ExpansionVfx.banish(level, t, from, spot);
+			t.teleportTo(level, spot.x, spot.y, spot.z, Set.<Relative>of(), t.getYRot(), t.getXRot(), false);
+			t.resetFallDistance();
+			if (t instanceof Mob mob) {
+				mob.getNavigation().stop();
+			}
+			return;
+		}
+		ExpansionVfx.banishResisted(level, t);
+	}
+
+	/** Cyclone: enemies around the point are whirled around it for a while, then flung out. Bosses are struck but never moved. */
+	private static void cyclone(Cast cast, Vec3 point, double radius, double power, int ticks) {
+		ServerLevel level = cast.level;
+		Vec3 centre = CastEngine.ground(level, point.add(0, 0.5, 0));
+		Set<LivingEntity> caught = new LinkedHashSet<>();
+		ExpansionVfx.cycloneRise(level, centre, radius);
+		ShapeRunners.each(cast, ticks + 1, tick -> {
+			if (tick < ticks) {
+				ExpansionVfx.cyclone(level, centre, radius, tick);
+				if (tick % 2 != 0) {
+					return true;
+				}
+				for (Entity e : level.getEntities((Entity) null, new AABB(centre, centre).inflate(radius, 3.0, radius), e -> Targets.canHarm(cast.caster, e))) {
+					LivingEntity v = (LivingEntity) e;
+					Vec3 rel = new Vec3(v.getX() - centre.x, 0, v.getZ() - centre.z);
+					double d = rel.length();
+					if (d > radius + 0.5) {
+						continue;
+					}
+					caught.add(v);
+					Reactions.mark(v, Reactions.Mark.WINDSWEPT);
+					if (Spirits.isBoss(v)) {
+						continue;
+					}
+					Vec3 around = d < 0.3 ? new Vec3(1, 0, 0) : new Vec3(-rel.z, 0, rel.x).normalize();
+					Vec3 in = d < 0.3 ? Vec3.ZERO : rel.normalize().scale(-(d - 1.2) * 0.15);
+					double lift = v.getY() - centre.y < 1.5 ? 0.14 : -0.02;
+					setMotion(v, around.scale(0.45).add(in).add(0, lift, 0));
+					v.resetFallDistance();
+				}
+				return true;
+			}
+			ExpansionVfx.cycloneFling(level, centre, radius);
+			for (LivingEntity v : caught) {
+				if (!v.isAlive() || v.level() != level) {
+					continue;
+				}
+				if (!Spirits.isBoss(v)) {
+					Vec3 away = horizontal(v.position().subtract(centre), cast.caster.getLookAngle());
+					push(v, away.scale(1.4 * Math.sqrt(power)).add(0, 0.5, 0));
+				}
+				hurt(cast, v, level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), 3 * power);
+			}
+			return false;
+		});
 	}
 }
