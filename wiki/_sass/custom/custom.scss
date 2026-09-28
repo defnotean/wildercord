@@ -1,0 +1,28 @@
+// Rune icons are 16x16 pixel art: keep them crisp when enlarged.
+.rune-icon {
+  image-rendering: pixelated;
+  vertical-align: middle;
+  margin-right: 0.25rem;
+}
+
+// Screenshots: full width of the text, rounded a little.
+.shot {
+  display: block;
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 0.5rem 0 1rem;
+}
+
+// A small caption under a screenshot.
+.caption {
+  display: block;
+  margin-top: -0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+// Tables of runes and recipes: icons line up.
+td img.rune-icon {
+  margin: 0;
+}
