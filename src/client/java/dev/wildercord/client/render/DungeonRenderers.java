@@ -11,5 +11,7 @@ public final class DungeonRenderers {
 	public static void register() {
 		ModelLayerRegistry.registerModelLayer(CinderWardenRenderer.LAYER, CinderWardenModel::createLayer);
 		EntityRendererRegistry.register(DungeonEntities.CINDER_WARDEN, CinderWardenRenderer::new);
+		ModelLayerRegistry.registerModelLayer(StarEaterRenderer.LAYER, StarEaterModel::createLayer);
+		EntityRendererRegistry.register(DungeonEntities.STAR_EATER, StarEaterRenderer::new);
 	}
 }

@@ -160,6 +160,10 @@ public final class Shields {
 		}
 		BLOCKED.computeIfAbsent(target.getUUID(), k -> new ArrayList<>()).add(new Blocked(cast.identity(), now + BLOCK_MEMORY));
 		block(cast.level, target, dir, shield, punched(shield.strength(), cast.weight()));
+		// The Star-Eater's shard shield holds, and turns the spell back on its caster.
+		if (target instanceof StarEater eater) {
+			eater.reflect(cast);
+		}
 		if (target instanceof ServerPlayer wearer) {
 			Grimoire.feat(wearer, dev.wildercord.spell.Feats.SPELLGUARD);
 		}

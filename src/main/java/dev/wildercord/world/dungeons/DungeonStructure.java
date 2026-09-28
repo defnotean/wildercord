@@ -45,7 +45,8 @@ public class DungeonStructure extends Structure {
 	protected Optional<Structure.GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
 		return switch (kind) {
 			case EMBER_SANCTUM -> EmberSanctumPiece.locate(context);
-			case ASTRAL_OBSERVATORY, DROWNED_SCRIPTORIUM -> Optional.empty();
+			case ASTRAL_OBSERVATORY -> AstralObservatoryPiece.locate(context);
+			case DROWNED_SCRIPTORIUM -> Optional.empty();
 		};
 	}
 

@@ -23,7 +23,19 @@ public final class DungeonEntities {
 			.clientTrackingRange(10)
 			.build(CINDER_WARDEN_KEY));
 
+	private static final ResourceKey<EntityType<?>> STAR_EATER_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("star_eater"));
+
+	/** The Astral Observatory's keeper: a floating knot of void, its eye ringed with star shards. */
+	public static final EntityType<StarEater> STAR_EATER = Registry.register(BuiltInRegistries.ENTITY_TYPE, STAR_EATER_KEY,
+		EntityType.Builder.<StarEater>of(StarEater::new, MobCategory.MONSTER)
+			.sized(1.4F, 1.6F)
+			.eyeHeight(0.8F)
+			.clientTrackingRange(10)
+			.fireImmune()
+			.build(STAR_EATER_KEY));
+
 	public static void init() {
 		FabricDefaultAttributeRegistry.register(CINDER_WARDEN, CinderWarden.createAttributes());
+		FabricDefaultAttributeRegistry.register(STAR_EATER, StarEater.createAttributes());
 	}
 }

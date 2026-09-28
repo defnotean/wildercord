@@ -205,6 +205,112 @@ def cinder_warden_eyes_texture():
     return cv.image()
 
 
+# ============================================================== the Star-Eater (StarEaterModel, 64x64)
+
+VOID = ramp("#07040E", "#0E0819", "#170D2A", "#22133C", "#321C56", "#472878", "#6440A0")
+CRYSTAL = ramp("#3C2462", "#6A48A8", "#9C7CDA", "#C8B4F2", "#EDE4FF")
+S_CORE = box(0, 0, 12, 12, 12)
+S_SHARD = box(48, 0, 3, 6, 3)
+S_SPIKE = box(48, 10, 2, 6, 2)
+S_TENDRIL = box(0, 24, 2, 8, 2)
+S_TIP = box(8, 24, 2, 7, 2)
+S_EYE = (5.5, 5.5, 4.6)        # on the core's front: centre x, y and radius
+S_VEINS = [(S_CORE[n], 100 + i, 3, 8) for i, n in enumerate(("front", "back", "right", "left", "top", "bottom"))]
+
+
+def void_face(cv, area, seed, base=2):
+    """Void: a deep, uneven dark with far stars scattered through it."""
+    x0, y0, w, h = area
+    for y in range(h):
+        for x in range(w):
+            n = noise(x0 + x, y0 + y, seed)
+            t = base + (1 if n > 0.8 else -1 if n < 0.2 else 0)
+            if y == 0:
+                t += 1
+            cv.put(x0 + x, y0 + y, shade(VOID, t))
+            if n > 0.975:
+                cv.put(x0 + x, y0 + y, hexc("#E8D8FF") if n > 0.99 else hexc("#9C7CDA"))
+
+
+def star_eater_texture():
+    cv = Sheet(64, 64)
+    for name, area in S_CORE.items():
+        void_face(cv, area, 90 + len(name))
+    for area, seed, count, length in S_VEINS:
+        paint_set(cv, area, crack_paths(area, seed, count, length), VOID[5])
+    # The eye: a violet iris round a black slit, on the front.
+    ex, ey, _, _ = S_CORE["front"]
+    cx, cy, r = S_EYE
+    for (x, y) in disc(cx, cy, r):
+        d = math.hypot(x - cx, y - cy) / r
+        cv.put(ex + x, ey + y, mix(hexc("#E0C8FF"), hexc("#5A2E9A"), d))
+    for (x, y) in disc(cx, cy, r + 1.0) - disc(cx, cy, r):
+        if 0 <= x < 12 and 0 <= y < 12:
+            cv.put(ex + x, ey + y, VOID[0])
+    for y in range(int(cy - r + 1), int(cy + r)):
+        cv.put(ex + int(cx), ey + y, VOID[0])
+    cv.put(ex + int(cx) - 1, ey + int(cy) - 2, hexc("#FFFFFF"))
+    # Shards: pale crystal, lit from the top.
+    for name, area in S_SHARD.items():
+        x0, y0, w, h = area
+        for y in range(h):
+            for x in range(w):
+                t = 3 - (y * 3) // max(1, h) + (1 if x == 0 else 0)
+                cv.put(x0 + x, y0 + y, shade(CRYSTAL, t))
+    for name, area in S_SPIKE.items():
+        x0, y0, w, h = area
+        for y in range(h):
+            for x in range(w):
+                cv.put(x0 + x, y0 + y, shade(VOID, 5 - y if y < 3 else 3))
+    for part in (S_TENDRIL, S_TIP):
+        for name, area in part.items():
+            void_face(cv, area, 120 + len(name), base=3)
+            x0, y0, w, h = area
+            for y in range(0, h, 3):
+                for x in range(w):
+                    cv.put(x0 + x, y0 + y, VOID[5])
+    return cv.image()
+
+
+def star_eater_eye_texture():
+    """What always glows: its eye and the veins across it."""
+    cv = Sheet(64, 64)
+    for area, seed, count, length in S_VEINS:
+        paths = crack_paths(area, seed, count, length)
+        paint_set(cv, area, paths, (190, 130, 255, 210))
+        halo(cv, area, paths, (150, 90, 240, 60))
+    ex, ey, _, _ = S_CORE["front"]
+    cx, cy, r = S_EYE
+    iris = disc(cx, cy, r)
+    for (x, y) in iris:
+        d = math.hypot(x - cx, y - cy) / r
+        if abs(x - int(cx)) >= 1 or d > 0.95:
+            cv.put(ex + x, ey + y, (235, int(215 - 90 * d), 255, int(255 - 80 * d)))
+    cv.put(ex + int(cx) - 1, ey + int(cy) - 2, (255, 255, 255, 255))
+    for part in (S_TIP,):
+        x0, y0, w, h = part["front"]
+        for x in range(w):
+            cv.put(x0 + x, y0 + h - 1, (220, 180, 255, 230))
+            cv.put(x0 + x, y0 + h - 2, (200, 150, 255, 120))
+    return cv.image()
+
+
+def star_eater_shards_texture():
+    """The edges of its shards, bright while its shield is up (and the tips of its crown)."""
+    cv = Sheet(64, 64)
+    for name, area in S_SHARD.items():
+        x0, y0, w, h = area
+        for y in range(h):
+            for x in range(w):
+                edge = x in (0, w - 1) or y in (0, h - 1)
+                cv.put(x0 + x, y0 + y, (240, 230, 255, 255) if edge else (200, 170, 255, 110))
+    for name in ("front", "right", "left", "back", "top"):
+        x0, y0, w, h = S_SPIKE[name]
+        for x in range(w):
+            cv.put(x0 + x, y0, (230, 210, 255, 200))
+    return cv.image()
+
+
 # ============================================================== trophies (16x16)
 
 CINDER_HEART = """
@@ -227,6 +333,28 @@ CINDER_HEART = """
 """
 CINDER_HEART_PAL = {"o": hexc("#1E1A1C"), "M": hexc("#C8400E"), "m": hexc("#8A2A0A"), "H": hexc("#FF9A3A"),
                     "W": hexc("#FFE6A0"), "C": hexc("#74747E")}
+
+
+ASTRAL_LENS = """
+    ................
+    .....gGGGg......
+    ...gGpppppGg....
+    ..gppvvvvvppg...
+    ..Gpvv*vvvvpG...
+    .gpvv***vvvvpg..
+    .Gpvvv*vvvsvpG..
+    .Gpvvvvvvv*vpG..
+    .GpvsvvvvvvvpG..
+    .gpvvvvvvsvvpg..
+    ..Gpvvvvvvvpg...
+    ..gGpvvvvvpGg...
+    ....gGpppGg.....
+    ......gGg.......
+    ................
+    ................
+"""
+ASTRAL_LENS_PAL = {"g": hexc("#8A6A1E"), "G": hexc("#E8C25A"), "p": hexc("#6A48A8"), "v": hexc("#22133C"),
+                   "*": hexc("#FFFFFF"), "s": hexc("#C8B4F2")}
 
 
 def trophy_icon(text, pal):
@@ -252,6 +380,14 @@ DUNGEONS = {
         "extras": [("minecraft:blaze_powder", 4, 2, 6), ("minecraft:magma_cream", 3, 1, 4), ("minecraft:gold_ingot", 3, 2, 6),
                    ("minecraft:netherite_scrap", 1, 1, 1)],
     },
+    "astral_observatory": {
+        "boss": "star_eater", "trophy": "astral_lens", "elements": ("void", "arcane"), "name": "the Astral Observatory",
+        "step": "surface_structures", "biomes": ["minecraft:end_highlands", "minecraft:end_midlands"],
+        "spacing": 32, "separation": 10, "salt": 20260929,
+        "spawns": [],
+        "extras": [("minecraft:ender_pearl", 4, 1, 4), ("minecraft:chorus_fruit", 3, 2, 6), ("minecraft:amethyst_shard", 3, 2, 6),
+                   ("minecraft:shulker_shell", 1, 1, 1)],
+    },
 }
 
 
@@ -263,8 +399,11 @@ def main(g, runes):
     g.save(cinder_warden_texture(), tex / "entity/cinder_warden.png")
     g.save(cinder_warden_glow_texture(), tex / "entity/cinder_warden_glow.png")
     g.save(cinder_warden_eyes_texture(), tex / "entity/cinder_warden_eyes.png")
+    g.save(star_eater_texture(), tex / "entity/star_eater.png")
+    g.save(star_eater_eye_texture(), tex / "entity/star_eater_eye.png")
+    g.save(star_eater_shards_texture(), tex / "entity/star_eater_shards.png")
     # ---- trophies
-    icons = {"cinder_heart": trophy_icon(CINDER_HEART, CINDER_HEART_PAL)}
+    icons = {"cinder_heart": trophy_icon(CINDER_HEART, CINDER_HEART_PAL), "astral_lens": trophy_icon(ASTRAL_LENS, ASTRAL_LENS_PAL)}
     for name, image in icons.items():
         g.save(image, tex / f"item/{name}.png")
         g.item_model(name, name)
