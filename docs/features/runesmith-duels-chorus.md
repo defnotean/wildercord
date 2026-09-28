@@ -27,7 +27,15 @@ When you trade with a Runesmith it also looks at the runes you're carrying that 
 - **Reroll:** two known runes of the same tier (the same rune twice, or two different ones) swap
   for one rune of that tier you haven't learned yet. The trade shows which rune you'll get.
 
-These offers are made for you alone and disappear when you close the trade.
+These offers are made for you alone and disappear when you close the trade. So they can't be
+farmed:
+
+- Only runes a Runesmith sells itself are taken, never Lightning (a lightning rod turns a stack of
+  Blank Runes into Lightning runes) and never an innate, fused or found-only rune.
+- Only plain rank I runes pay; a ranked rune from the Fusion Altar is refused.
+- You can sell back 8 runes a day (across every Runesmith); after that the buybacks close until
+  tomorrow. Rerolls aren't limited.
+- Neither trade gives you or the Runesmith any experience.
 
 ### Daily contracts
 
@@ -44,17 +52,30 @@ Progress shows above your hotbar as you go, and you're told when one is done. Ri
 Scribing Desk to hand finished contracts in for their reward: emeralds, Blank Runes, a Mana
 Crystal or a random Tier II rune.
 
+A cast only counts (for a ley line or an element contract) once the spell lands on a real creature,
+and a reaction only when it's set off on one: casting at nothing or at a Training Dummy earns
+nothing. Turning time back doesn't bring a new board (and can't make contracts pay twice); the
+board changes only when a later day comes. With the daylight cycle off the board just says new
+contracts come at the next dawn.
+
 ## Duels
 
 `/duel <player>` challenges someone; they click **[Accept]** or **[Decline]** in chat (a challenge
-lasts 30 seconds, and you must be within 40 blocks of each other).
+lasts 30 seconds, and you must be within 40 blocks of each other, in the same world, both when you
+challenge and when they accept). You can challenge again after 10 seconds.
 
-- Both duellists are healed to full health and mana, and a 3-second countdown runs in a circle
-  of light.
-- Then only the two of you can hurt each other, even with PvP or friendly fire off, and nobody
-  else's blows or spells land on either of you.
-- **Nobody dies.** Brought down by your opponent, you're knocked out at 1 health: the duel ends and
-  both of you are restored.
+- A duel can't start while either of you was hurt in the last 10 seconds, fought another player in
+  the last 30, or finished a duel in the last 30.
+- A 3-second countdown runs in a circle of light. Nothing about you changes as it starts.
+- Then the two of you can hurt each other, even with PvP or friendly fire off. While it lasts
+  neither of you can harm any other player (or their pets).
+- If anyone else strikes either duellist, the duel is called off (it counts for nobody) and the
+  blow lands as usual.
+- **Nobody dies.** Brought down by your opponent, you're knocked out at 1 health.
+- When the duel ends, however it ends, both of you are put back as you were when it began: the
+  health and mana you had (or what you have now, if that's more), no harmful effects or fire the
+  duel left on you, and the effects you had, less the time the duel took. A duel is never a free
+  heal.
 - Walking more than 40 blocks from where the duel began, logging off or dying to something else
   forfeits. A duel with no winner after 5 minutes is a draw.
 - Everyone nearby hears the result. `/duel stats [player]` shows wins and losses.
@@ -63,13 +84,17 @@ Server operators can turn duels off with `/gamerule wildercord:allow_duels false
 
 ## Chorus casting
 
-When two or three casters cast spells of the **same shape** within a second of each other,
-standing within 12 blocks and aimed at the same foe or the same spot (within 5 blocks), their
-spells merge into one **chorus spell**:
+When two or three allied casters cast spells of the **same shape** and the same kind (both
+harmful, or both helpful) within a second of each other, standing within 12 blocks and aimed at the
+same foe or the same spot (within 5 blocks), they sing a **chorus**:
 
-- +50% power for each extra voice (a chorus of three is twice as strong, and that's the most),
-  and shapes with a size (Burst, Zone, Rain, Domain...) grow by a Widen for each extra voice.
+- The last voice's spell gains +50% power for each extra voice (a chorus of three is twice as
+  strong, and that's the most), and shapes with a size (Burst, Zone, Rain, Domain...) grow by a
+  Widen for each extra voice. It keeps its caster's casting gear.
 - Everyone's colours braid together over the target and everyone sees *Chorus!*
-- Every caster still pays for their own spell. What's left of the earlier spells in the air folds
-  into the chorus.
+- Every caster still pays for their own spell, and the earlier spells go on untouched: nobody can
+  cut your spell short or steal its kill by casting after you.
+- Allies are casters on the same team, or two who couldn't harm each other anyway (with PvP off,
+  for instance). Two players who could fight each other, or two duelling, never sing together, and
+  a spell that both harms and heals always sings alone.
 - Singing one earns the new **Chorus** feat in the Grimoire.

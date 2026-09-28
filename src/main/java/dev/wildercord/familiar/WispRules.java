@@ -29,6 +29,11 @@ public final class WispRules {
 	/** Familiars one player can keep bonded at once (out, in the lantern, or waiting at a Wellstone). */
 	public static final int MAX_BONDS = 12;
 
+	/** Whether a player who keeps {@code bonds} familiars may tame another. Checked before a wisp takes an offering, so food isn't wasted. */
+	public static boolean canBond(int bonds) {
+		return bonds < MAX_BONDS;
+	}
+
 	/** Experience a familiar needs for each level: level 1 from the start, then 40 and 150. */
 	private static final int[] LEVEL_XP = {0, 40, 150};
 	public static final int MAX_LEVEL = LEVEL_XP.length;

@@ -18,11 +18,64 @@ public final class DuelRules {
 	public static final double ARENA_RADIUS = 40.0;
 	/** A duel nobody wins in 5 minutes is a draw. */
 	public static final int MAX_FIGHT_TICKS = 6000;
+	/** How long a challenger waits before challenging again: 10 seconds. */
+	public static final int CHALLENGE_COOLDOWN_TICKS = 200;
+	/** Hurt by anything this recently (10 seconds), a player can't start a duel. */
+	public static final int HURT_TICKS = 200;
+	/** In a fight with another player this recently (30 seconds), a player can't start a duel. */
+	public static final int PVP_TICKS = 600;
+	/** After a duel ends, how long before either of its duellists can start another: 30 seconds. */
+	public static final int DUEL_COOLDOWN_TICKS = 600;
+	/** When something never happened. */
+	public static final long NEVER = Long.MIN_VALUE;
 
 	public enum Phase { COUNTDOWN, FIGHTING, OVER }
 
-	/** How a duel ended. Every ending but a draw has a winner and a loser. */
-	public enum Ending { KNOCKOUT, LEFT_AREA, LOGGED_OFF, DIED, DRAW }
+	/**
+	 * How a duel ended. Every ending but a draw and an interruption has a winner and a loser. An
+	 * interrupted duel (someone else struck one of the duellists) counts for nobody.
+	 */
+	public enum Ending { KNOCKOUT, LEFT_AREA, LOGGED_OFF, DIED, DRAW, INTERRUPTED }
+
+	/** Why a player can't start a duel right now, or {@link #NONE}. */
+	public enum Refusal { NONE, HURT, PVP, COOLDOWN }
+
+	/**
+	 * Whether a player may start a duel: not hurt in the last {@link #HURT_TICKS}, not fighting another
+	 * player in the last {@link #PVP_TICKS}, and not in a duel that ended in the last
+	 * {@link #DUEL_COOLDOWN_TICKS}. Times are server ticks, {@link #NEVER} for never.
+	 */
+	public static Refusal ready(long now, long lastHurt, long lastPvp, long lastDuel) {
+		if (within(now, lastPvp, PVP_TICKS)) {
+			return Refusal.PVP;
+		}
+		if (within(now, lastHurt, HURT_TICKS)) {
+			return Refusal.HURT;
+		}
+		if (within(now, lastDuel, DUEL_COOLDOWN_TICKS)) {
+			return Refusal.COOLDOWN;
+		}
+		return Refusal.NONE;
+	}
+
+	/** Whether {@code then} was less than {@code ticks} before {@code now}. */
+	public static boolean within(long now, long then, int ticks) {
+		return then != NEVER && now >= then && now - then < ticks;
+	}
+
+	/**
+	 * What a duellist's health (or mana) is put back to when the duel ends: what they had when it
+	 * began, never more than now if they've gained since, and never over the most they can have.
+	 * A duel never heals past where it found you.
+	 */
+	public static float restored(float now, float before, float max) {
+		return Math.min(max, Math.max(now, before));
+	}
+
+	/** An effect a duellist had when the duel began, put back with the time the duel took off it (-1 lasts forever). */
+	public static int remaining(int duration, long elapsed) {
+		return duration < 0 ? duration : (int) Math.max(0, duration - elapsed);
+	}
 
 	/** A challenge from one player to another, made at {@code made} (game time). */
 	public record Challenge(UUID from, UUID to, long made) {
@@ -93,6 +146,13 @@ public final class DuelRules {
 		public void knockout(UUID loser) {
 			if (phase == Phase.FIGHTING && involves(loser)) {
 				end(opponent(loser), loser, Ending.KNOCKOUT);
+			}
+		}
+
+		/** Someone else struck one of the duellists: the duel is off, and counts for nobody. */
+		public void interrupt() {
+			if (phase != Phase.OVER) {
+				end(null, null, Ending.INTERRUPTED);
 			}
 		}
 

@@ -34,7 +34,8 @@ import java.util.List;
  * Cord cosmetics on the server: each player's chosen style (saved, and synced to everyone nearby
  * so they see it on the wrist), the options they've bought, and the two requests the Cosmetics
  * page sends. Every request is checked against {@link CordStyles}: nothing locked can be worn, and
- * buying takes the materials from the player's inventory (free in creative).
+ * buying takes the materials from the player's inventory, in creative too (an unlock is kept for
+ * good, so it's never free). A player's requests are limited to {@link #REQUESTS_PER_SECOND} a second.
  */
 public final class CordCosmetics {
 	private CordCosmetics() {}
@@ -91,13 +92,30 @@ public final class CordCosmetics {
 		}
 	}
 
+	/** Requests (to wear or to buy) a player may send each second; the rest are dropped. */
+	public static final int REQUESTS_PER_SECOND = 4;
+	private static final RequestLimit LIMIT = new RequestLimit(REQUESTS_PER_SECOND, 20);
+
 	public static void init() {
 		PayloadTypeRegistry.serverboundPlay().register(SetStyle.TYPE, SetStyle.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(BuyStyle.TYPE, BuyStyle.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(SetStyle.TYPE, (payload, context) ->
-			wear(context.player(), new Style(payload.material(), payload.glow(), payload.trail())));
-		ServerPlayNetworking.registerGlobalReceiver(BuyStyle.TYPE, (payload, context) -> buy(context.player(), payload.key()));
+		ServerPlayNetworking.registerGlobalReceiver(SetStyle.TYPE, (payload, context) -> {
+			if (allowed(context.player())) {
+				wear(context.player(), new Style(payload.material(), payload.glow(), payload.trail()));
+			}
+		});
+		ServerPlayNetworking.registerGlobalReceiver(BuyStyle.TYPE, (payload, context) -> {
+			if (allowed(context.player())) {
+				buy(context.player(), payload.key());
+			}
+		});
 		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> tidy(handler.player));
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> LIMIT.forget(handler.player.getUUID()));
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> LIMIT.clear());
+	}
+
+	private static boolean allowed(ServerPlayer player) {
+		return LIMIT.allow(player.getUUID(), player.level().getServer().getTickCount());
 	}
 
 	/** The style a player wears (the default if they never chose one). Works on both sides. */
@@ -123,7 +141,7 @@ public final class CordCosmetics {
 		return true;
 	}
 
-	/** Buys an option with its materials (free in creative), then wears it. Returns whether it was bought. */
+	/** Buys an option with its materials (in any game mode: an unlock is for good), then wears it. Returns whether it was bought. */
 	public static boolean buy(ServerPlayer player, String key) {
 		Option option = CordStyles.option(key);
 		if (option == null || !CordStyles.buyable(option)) {
@@ -133,15 +151,13 @@ public final class CordCosmetics {
 		if (!CordStyles.unlocked(option, progress)) {
 			Item item = BuiltInRegistries.ITEM.getValue(Identifier.parse(option.unlock().what()));
 			int need = option.unlock().amount();
-			if (!player.hasInfiniteMaterials()) {
-				int have = player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), true, 0, player.inventoryMenu.getCraftSlots());
-				if (have < need) {
-					player.sendOverlayMessage(Component.translatable("message.wildercord.cosmetic.need", need, item.getName(new net.minecraft.world.item.ItemStack(item))).withStyle(ChatFormatting.RED));
-					return false;
-				}
-				player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), false, need, player.inventoryMenu.getCraftSlots());
-				player.inventoryMenu.broadcastChanges();
+			int have = player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), true, 0, player.inventoryMenu.getCraftSlots());
+			if (have < need) {
+				player.sendOverlayMessage(Component.translatable("message.wildercord.cosmetic.need", need, item.getName(new net.minecraft.world.item.ItemStack(item))).withStyle(ChatFormatting.RED));
+				return false;
 			}
+			player.getInventory().clearOrCountMatchingItems(stack -> stack.is(item), false, need, player.inventoryMenu.getCraftSlots());
+			player.inventoryMenu.broadcastChanges();
 			List<String> bought = new ArrayList<>(player.getAttachedOrElse(BOUGHT, List.of()));
 			bought.add(option.key());
 			player.setAttached(BOUGHT, List.copyOf(bought));

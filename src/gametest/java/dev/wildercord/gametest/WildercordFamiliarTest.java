@@ -177,6 +177,7 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 			check(bonds.bonds().size() == 1 && bonds.out().equals(wisp.bondId()), "the bond should be saved on the player, and out (has " + bonds + ")");
 			check(Heart.discovered(player, "feat:" + Feats.KINDRED), "a first familiar should earn Kindred");
 			check(wisp.hasCustomName() && wisp.getCustomName().getString().contains(player.getGameProfile().name()), "a familiar should show its owner's name");
+			check(!wisp.canBeHitByProjectile(), "a familiar shouldn't catch arrows meant for its owner");
 			wisp.setNoAi(false);
 		});
 		// The client sees the bond too (it's synced to the owner for the lantern's tooltip).
@@ -276,7 +277,14 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			check(!CordCosmetics.wear(player, new CordStyles.Style("gold", "spell", "none")), "a style not bought yet can't be worn");
-			check(CordCosmetics.buy(player, "material:gold"), "gold beads should be bought (free in creative)");
+			// An unlock is for good, so it costs its materials even in creative.
+			player.getInventory().clearContent();
+			check(!CordCosmetics.buy(player, "material:gold"), "gold beads shouldn't be free in creative");
+			check(!CordCosmetics.progress(player).bought().contains("material:gold"), "a failed purchase shouldn't unlock anything");
+			player.getInventory().add(new ItemStack(net.minecraft.world.item.Items.GOLD_INGOT, 4));
+			player.getInventory().add(new ItemStack(net.minecraft.world.item.Items.DYE.cyan()));
+			check(CordCosmetics.buy(player, "material:gold"), "gold beads should be bought with four gold ingots");
+			check(player.getInventory().countItem(net.minecraft.world.item.Items.GOLD_INGOT) == 0, "buying gold beads should take the ingots, in creative too");
 			check(CordCosmetics.buy(player, "glow:cyan"), "a cyan glow should be bought");
 			player.setAttached(WildercordAttachments.CIRCLES, 1);
 			check(CordCosmetics.wear(player, CordCosmetics.style(player).withTrail("sparks")), "the 1st Circle should unlock the sparks trail");

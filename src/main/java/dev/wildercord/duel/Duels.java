@@ -52,11 +52,15 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Duels: {@code /duel <player>} challenges someone (they accept or decline from chat). On accept,
- * a 3-second countdown in a circle of light, both at full health and mana; then only the two of them
- * can hurt each other (even with PvP or friendly fire off) and nobody else's blows count. Nobody dies:
- * brought down by the other, the loser is knocked out at 1 health and both are restored. Leaving the
- * area, logging off or dying to anything else forfeits. The rules live in {@link DuelRules}.
+ * Duels: {@code /duel <player>} challenges someone nearby (they accept or decline from chat). On
+ * accept, a 3-second countdown in a circle of light; then the two of them can hurt each other (even
+ * with PvP or friendly fire off), and neither can harm anyone else. Nobody dies: brought down by the
+ * other, the loser is knocked out at 1 health. When it ends, both are put back as they were when it
+ * began (their health, mana, effects and fire as they had them, never better), so a duel is never a
+ * free heal. Leaving the area, logging off or dying to anything else forfeits; another player
+ * striking either duellist calls the duel off (and the blow lands). Nobody hurt in the last few
+ * seconds, or fresh from a fight with another player or a duel, can start one. The rules live in
+ * {@link DuelRules}.
  */
 public final class Duels {
 	private Duels() {}
@@ -90,11 +94,23 @@ public final class Duels {
 			.copyOnDeath()
 	);
 
-	/** A duel under way: its rules, where it's fought, and the countdown second last shown. */
+	/** How a duellist was when the duel began, to put them back that way when it ends. */
+	private record Snapshot(float health, float mana, List<MobEffectInstance> effects, boolean burning) {
+		static Snapshot of(ServerPlayer player) {
+			List<MobEffectInstance> effects = new ArrayList<>();
+			for (MobEffectInstance effect : player.getActiveEffects()) {
+				effects.add(new MobEffectInstance(effect));
+			}
+			return new Snapshot(player.getHealth(), Spellbooks.mana(player), List.copyOf(effects), player.getRemainingFireTicks() > 0);
+		}
+	}
+
+	/** A duel under way: its rules, where it's fought, the countdown second last shown, and how each duellist began. */
 	private static final class Active {
 		final DuelRules.Duel duel;
 		final ServerLevel level;
 		final Vec3 centre;
+		final Map<UUID, Snapshot> before = new HashMap<>();
 		int shown = -1;
 
 		Active(DuelRules.Duel duel, ServerLevel level, Vec3 centre) {
@@ -106,6 +122,11 @@ public final class Duels {
 
 	private static final Map<UUID, Active> BY_PLAYER = new HashMap<>();
 	private static final List<DuelRules.Challenge> CHALLENGES = new ArrayList<>();
+	/** Server ticks of each player's last hurt, last fight with another player, last duel's end and last challenge sent. */
+	private static final Map<UUID, Long> LAST_HURT = new HashMap<>();
+	private static final Map<UUID, Long> LAST_PVP = new HashMap<>();
+	private static final Map<UUID, Long> LAST_DUEL = new HashMap<>();
+	private static final Map<UUID, Long> LAST_CHALLENGE = new HashMap<>();
 
 	private static final int GOLD = 0xFFD870;
 
@@ -119,17 +140,47 @@ public final class Duels {
 					.executes(ctx -> stats(ctx.getSource(), ctx.getSource().getPlayerOrException()))
 					.then(Commands.argument("player", EntityArgument.player()).executes(ctx -> stats(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))))));
 
-		// Only the two duellists can hurt each other, and not before the countdown ends.
+		// The two duellists hurt each other only once the countdown ends. Anyone else striking either calls the duel off, and the blow lands.
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
-			if (!(entity instanceof ServerPlayer victim)) {
+			if (BY_PLAYER.isEmpty()) {
+				return true;
+			}
+			Player attacker = playerBehind(source);
+			if (attacker == null) {
+				return true;
+			}
+			// A duellist harms nobody but their opponent: no other player, and no other player's pet.
+			Player owner = entity instanceof Player p ? p : entity instanceof OwnableEntity ownable && ownable.getOwner() instanceof Player o ? o : null;
+			Active mine = BY_PLAYER.get(attacker.getUUID());
+			if (mine != null && owner != null && owner != attacker && (entity != owner || !mine.duel.involves(owner.getUUID()))) {
+				return false;
+			}
+			if (!(entity instanceof ServerPlayer victim) || attacker == victim) {
 				return true;
 			}
 			Active active = BY_PLAYER.get(victim.getUUID());
-			Player attacker = playerBehind(source);
-			if (active == null || attacker == null || attacker == victim) {
+			if (active == null) {
 				return true;
 			}
-			return active.duel.involves(attacker.getUUID()) && active.duel.fighting();
+			if (active.duel.involves(attacker.getUUID())) {
+				return active.duel.fighting();
+			}
+			active.duel.interrupt();
+			finish(active, victim.level().getServer());
+			return true;
+		});
+		// Who was hurt, and who fought another player, lately: neither may start a duel for a while.
+		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
+			if (!(entity instanceof ServerPlayer victim) || damage <= 0) {
+				return;
+			}
+			long now = victim.level().getServer().getTickCount();
+			LAST_HURT.put(victim.getUUID(), now);
+			Player attacker = playerBehind(source);
+			if (attacker != null && attacker != victim && !opponents(attacker.getUUID(), victim.getUUID())) {
+				LAST_PVP.put(victim.getUUID(), now);
+				LAST_PVP.put(attacker.getUUID(), now);
+			}
 		});
 		// Brought down by the other duellist: knocked out, not killed.
 		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
@@ -165,6 +216,10 @@ public final class Duels {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			BY_PLAYER.clear();
 			CHALLENGES.clear();
+			LAST_HURT.clear();
+			LAST_PVP.clear();
+			LAST_DUEL.clear();
+			LAST_CHALLENGE.clear();
 		});
 	}
 
@@ -181,19 +236,39 @@ public final class Duels {
 	}
 
 	/**
-	 * For spells: whether {@code caster} may harm {@code target} because of a duel. True for the two
-	 * duellists once the fight is on, false for anyone else's spell on a duellist (and for the two
-	 * during the countdown), null when no duel is involved and the usual rules decide.
+	 * Between two players, either way round: whether they may harm each other because they're
+	 * duelling each other (only once the fight is on), or null when they aren't and the usual rules
+	 * decide. What a duellist may do to anyone else is settled where the harm lands.
+	 */
+	public static Boolean between(Player one, Player other) {
+		if (BY_PLAYER.isEmpty() || one == other) {
+			return null;
+		}
+		Active active = BY_PLAYER.get(one.getUUID());
+		return active != null && other.getUUID().equals(active.duel.opponent(one.getUUID())) ? active.duel.fighting() : null;
+	}
+
+	/**
+	 * For spells and blows: whether {@code caster} may harm {@code target} because of a duel. The two
+	 * duellists may harm each other once the fight is on (not in the countdown); a duellist may harm
+	 * no other player (nor another player's pet) while it lasts. Null when no duel decides it and the
+	 * usual rules do: someone else harming a duellist is left to them, and calls the duel off when
+	 * the blow lands.
 	 */
 	public static Boolean canHarm(LivingEntity caster, Entity target) {
-		if (BY_PLAYER.isEmpty() || !(target instanceof ServerPlayer victim) || caster == target || !(caster instanceof Player player)) {
+		if (BY_PLAYER.isEmpty() || caster == target || !(caster instanceof Player player)) {
 			return null;
 		}
-		Active active = BY_PLAYER.get(victim.getUUID());
-		if (active == null) {
+		Player victim = target instanceof Player p ? p
+			: target instanceof OwnableEntity ownable && ownable.getOwner() instanceof Player owner ? owner : null;
+		if (victim == null || victim == player) {
 			return null;
 		}
-		return active.duel.involves(player.getUUID()) && active.duel.fighting() && victim.isAlive();
+		Active mine = BY_PLAYER.get(player.getUUID());
+		if (mine != null) {
+			return target == victim && mine.duel.opponent(player.getUUID()).equals(victim.getUUID()) && mine.duel.fighting() && victim.isAlive();
+		}
+		return null;
 	}
 
 	// ------------------------------------------------------------------ challenges
@@ -215,8 +290,22 @@ public final class Duels {
 			from.sendSystemMessage(Component.translatable("message.wildercord.duel_busy").withStyle(ChatFormatting.RED));
 			return 0;
 		}
+		// Only someone close by, and not over and over.
+		if (from.level() != to.level() || from.distanceTo(to) > DuelRules.ARENA_RADIUS) {
+			from.sendSystemMessage(Component.translatable("message.wildercord.duel_too_far", to.getDisplayName()).withStyle(ChatFormatting.RED));
+			return 0;
+		}
+		long tick = from.level().getServer().getTickCount();
+		if (DuelRules.within(tick, LAST_CHALLENGE.getOrDefault(from.getUUID(), DuelRules.NEVER), DuelRules.CHALLENGE_COOLDOWN_TICKS)) {
+			from.sendSystemMessage(Component.translatable("message.wildercord.duel_wait").withStyle(ChatFormatting.RED));
+			return 0;
+		}
+		if (!ready(from, from) || !ready(from, to)) {
+			return 0;
+		}
+		LAST_CHALLENGE.put(from.getUUID(), tick);
 		long now = from.level().getGameTime();
-		CHALLENGES.removeIf(c -> c.from().equals(from.getUUID()) && c.to().equals(to.getUUID()));
+		boolean renewed = CHALLENGES.removeIf(c -> c.from().equals(from.getUUID()) && c.to().equals(to.getUUID()));
 		CHALLENGES.add(new DuelRules.Challenge(from.getUUID(), to.getUUID(), now));
 		String name = from.getGameProfile().name();
 		MutableComponent accept = Component.translatable("message.wildercord.duel_accept").withStyle(style -> style.withColor(ChatFormatting.GREEN).withBold(true)
@@ -227,7 +316,10 @@ public final class Duels {
 			.withHoverEvent(new HoverEvent.ShowText(Component.translatable("message.wildercord.duel_decline_hover"))));
 		to.sendSystemMessage(Component.translatable("message.wildercord.duel_challenged", from.getDisplayName()).withStyle(ChatFormatting.GOLD)
 			.append(Component.literal("  ")).append(accept).append(Component.literal(" ")).append(decline));
-		to.level().playSound(null, to.blockPosition(), SoundEvents.BELL_BLOCK, net.minecraft.sounds.SoundSource.PLAYERS, 0.6F, 1.4F);
+		if (!renewed) {
+			// Only the first time: a renewed challenge doesn't ring again.
+			to.level().playSound(null, to.blockPosition(), SoundEvents.BELL_BLOCK, net.minecraft.sounds.SoundSource.PLAYERS, 0.6F, 1.4F);
+		}
 		from.sendSystemMessage(Component.translatable("message.wildercord.duel_sent", to.getDisplayName()).withStyle(ChatFormatting.GRAY));
 		return 1;
 	}
@@ -260,11 +352,31 @@ public final class Duels {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_too_far", from.getDisplayName()).withStyle(ChatFormatting.RED));
 			return 0;
 		}
+		if (!ready(to, from) || !ready(to, to)) {
+			return 0;
+		}
 		start(from, to);
 		return 1;
 	}
 
-	/** Starts a duel between two players standing in the same world: restored, and counting down. */
+	/** Whether {@code player} may start a duel now; if not, {@code told} hears why. */
+	private static boolean ready(ServerPlayer told, ServerPlayer player) {
+		long now = player.level().getServer().getTickCount();
+		UUID id = player.getUUID();
+		DuelRules.Refusal refusal = DuelRules.ready(now, LAST_HURT.getOrDefault(id, DuelRules.NEVER), LAST_PVP.getOrDefault(id, DuelRules.NEVER),
+			LAST_DUEL.getOrDefault(id, DuelRules.NEVER));
+		if (refusal == DuelRules.Refusal.NONE) {
+			return true;
+		}
+		told.sendSystemMessage(Component.translatable("message.wildercord.duel_" + refusal.name().toLowerCase(java.util.Locale.ROOT), player.getDisplayName())
+			.withStyle(ChatFormatting.RED));
+		return false;
+	}
+
+	/**
+	 * Starts a duel between two players standing in the same world, counting down. Nothing about
+	 * them changes: how they are is noted, to put them back that way when it ends.
+	 */
 	public static void start(ServerPlayer a, ServerPlayer b) {
 		ServerLevel level = a.level();
 		Vec3 centre = a.position().add(b.position()).scale(0.5);
@@ -272,7 +384,7 @@ public final class Duels {
 		BY_PLAYER.put(a.getUUID(), active);
 		BY_PLAYER.put(b.getUUID(), active);
 		for (ServerPlayer player : List.of(a, b)) {
-			restore(player);
+			active.before.put(player.getUUID(), Snapshot.of(player));
 			player.sendSystemMessage(Component.translatable("message.wildercord.duel_begins", (player == a ? b : a).getDisplayName()).withStyle(ChatFormatting.GOLD));
 		}
 	}
@@ -370,21 +482,30 @@ public final class Duels {
 		finish(active, server, null);
 	}
 
-	/** Ends a duel: both restored, the result announced nearby and written into their records. */
+	/** Ends a duel: both put back as they began, the result announced nearby and written into their records. */
 	private static void finish(Active active, MinecraftServer server, ServerPlayer leaving) {
 		DuelRules.Duel duel = active.duel;
-		BY_PLAYER.remove(duel.a, active);
-		BY_PLAYER.remove(duel.b, active);
+		if (!BY_PLAYER.remove(duel.a, active) & !BY_PLAYER.remove(duel.b, active)) {
+			// Already finished (an interruption and a knockout in the same blow).
+			return;
+		}
+		long tick = server.getTickCount();
+		LAST_DUEL.put(duel.a, tick);
+		LAST_DUEL.put(duel.b, tick);
 		ServerPlayer winner = duel.winner() == null ? null : online(server, duel.winner(), leaving);
 		ServerPlayer loser = duel.loser() == null ? null : online(server, duel.loser(), leaving);
+		long elapsed = active.level.getGameTime() - duel.start;
 		for (UUID id : List.of(duel.a, duel.b)) {
 			ServerPlayer player = online(server, id, leaving);
-			if (player != null && player != leaving && player.isAlive()) {
-				restore(player);
+			Snapshot before = active.before.get(id);
+			if (player != null && player != leaving && player.isAlive() && before != null) {
+				restore(player, before, elapsed);
 			}
 		}
 		Component result;
-		if (duel.ending() == DuelRules.Ending.DRAW || winner == null && loser == null) {
+		if (duel.ending() == DuelRules.Ending.INTERRUPTED) {
+			result = Component.translatable("message.wildercord.duel_interrupted").withStyle(ChatFormatting.GOLD);
+		} else if (duel.ending() == DuelRules.Ending.DRAW || winner == null && loser == null) {
 			result = Component.translatable("message.wildercord.duel_draw").withStyle(ChatFormatting.GOLD);
 		} else {
 			Component winnerName = winner != null ? winner.getDisplayName() : Component.literal("?");
@@ -422,14 +543,27 @@ public final class Duels {
 		return server.getPlayerList().getPlayer(id);
 	}
 
-	/** Full health and mana, no fire, no harmful effects. */
-	private static void restore(ServerPlayer player) {
-		player.setHealth(player.getMaxHealth());
-		player.clearFire();
-		Spellbooks.setMana(player, Mana.max(player));
+	/**
+	 * Puts a duellist back as they were when the duel began: the health and mana they had (or what
+	 * they have now, if that's more), no harm the duel left on them (a harmful effect or fire they
+	 * didn't have before), and the effects they had then, less the time the duel took.
+	 */
+	private static void restore(ServerPlayer player, Snapshot before, long elapsed) {
+		player.setHealth(DuelRules.restored(player.getHealth(), before.health(), player.getMaxHealth()));
+		Spellbooks.setMana(player, DuelRules.restored(Spellbooks.mana(player), before.mana(), Mana.max(player)));
+		if (!before.burning()) {
+			player.clearFire();
+		}
 		for (MobEffectInstance effect : List.copyOf(player.getActiveEffects())) {
-			if (effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+			boolean had = before.effects().stream().anyMatch(e -> e.getEffect().equals(effect.getEffect()));
+			if (!had && effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
 				player.removeEffect(effect.getEffect());
+			}
+		}
+		for (MobEffectInstance effect : before.effects()) {
+			int left = DuelRules.remaining(effect.getDuration(), elapsed);
+			if (left != 0 && !player.hasEffect(effect.getEffect())) {
+				player.addEffect(new MobEffectInstance(effect.getEffect(), left, effect.getAmplifier(), effect.isAmbient(), effect.isVisible(), effect.showIcon()));
 			}
 		}
 	}

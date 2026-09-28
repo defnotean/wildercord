@@ -63,7 +63,12 @@ public final class Familiars {
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
 			Wisp wisp = live(handler.player);
 			if (wisp != null) {
-				wisp.discard();
+				// The world's entity list may only change on the server thread: a disconnect handled anywhere else waits for it.
+				if (server.isSameThread()) {
+					wisp.discard();
+				} else {
+					server.execute(wisp::discard);
+				}
 			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LIVE.clear());
@@ -132,11 +137,16 @@ public final class Familiars {
 			.withStyle(ChatFormatting.GRAY));
 	}
 
+	/** Tells a player they keep all the familiars they can. */
+	static void full(ServerPlayer player) {
+		player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.full", WispRules.MAX_BONDS).withStyle(ChatFormatting.RED));
+	}
+
 	/** A wild wisp becomes the player's familiar, and comes out at once (the one out before goes back into the lantern). */
 	static void bond(ServerPlayer player, Wisp wisp) {
 		Bonds bonds = get(player);
-		if (bonds.bonds().size() >= WispRules.MAX_BONDS) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.wisp.full", WispRules.MAX_BONDS).withStyle(ChatFormatting.RED));
+		if (!WispRules.canBond(bonds.bonds().size())) {
+			full(player);
 			return;
 		}
 		recall(player, true);

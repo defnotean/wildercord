@@ -2,9 +2,11 @@ package dev.wildercord.runesmith;
 
 import dev.wildercord.spell.Feats;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * The Runesmith's daily contracts, as plain rules (no Minecraft types, so they're unit-tested):
@@ -105,9 +107,12 @@ public final class ContractRules {
 		return options.get(random.nextInt(options.size()));
 	}
 
-	/** Today's board: the one held if it's still today's, otherwise a fresh one. */
+	/**
+	 * Today's board: the one held, until a later day comes. Time turned back (an operator's
+	 * {@code /time set}) keeps the board as it is, so its contracts can't be handed in twice.
+	 */
 	public static Board today(Board held, long day, long seed) {
-		return held.day() == day ? held : generate(day, seed);
+		return day > held.day() ? generate(day, seed) : held;
 	}
 
 	/** What {@link #progress} changed: the new board, and which contracts moved and which were finished by it. */
@@ -135,6 +140,103 @@ public final class ContractRules {
 			}
 		}
 		return new Progress(advanced.isEmpty() ? board : new Board(board.day(), next), advanced, finished);
+	}
+
+	/**
+	 * What counts toward the casting contracts, for one player: a cast (for its elements, and a ley
+	 * line under it) and a reaction count only once a spell of theirs lands on a real creature (a
+	 * living thing that isn't a Training Dummy), so casting at nothing or at a dummy earns nothing.
+	 *
+	 * <p>A cast waits up to {@link #CAST_WINDOW} ticks for its spell to land (a bolt is in the air a
+	 * while); a reaction must land in the same tick. However many creatures one spell strikes at
+	 * once, it credits one cast. Not thread-safe; the server keeps one per player.</p>
+	 */
+	public static final class Credit {
+		/** How long a cast waits for its spell to land on something. */
+		public static final int CAST_WINDOW = 100;
+
+		/** A cast waiting to land: its elements, whether it was cast on a ley line, and when. */
+		public record Cast(Set<String> elements, boolean ley, long time) {}
+
+		/** What a call made count: casts, and reactions. */
+		public record Credited(List<Cast> casts, List<String> reactions) {
+			public static final Credited NONE = new Credited(List.of(), List.of());
+
+			public boolean isEmpty() {
+				return casts.isEmpty() && reactions.isEmpty();
+			}
+		}
+
+		private final ArrayDeque<Cast> casts = new ArrayDeque<>();
+		private final List<String> reactions = new ArrayList<>();
+		private long reactionTick = Long.MIN_VALUE;
+		/** The tick of the last real hit, whether a cast was credited in it, and whether it's a hit no cast has used yet. */
+		private long hitTick = Long.MIN_VALUE;
+		private boolean creditedThisTick;
+		private boolean spareHit;
+
+		/** A spell was cast. Counts at once when a hit already landed this tick (an instant spell), otherwise waits. */
+		public Credited cast(long now, Set<String> elements, boolean ley) {
+			trim(now);
+			Cast cast = new Cast(Set.copyOf(elements), ley, now);
+			if (hitTick == now && spareHit && !creditedThisTick) {
+				spareHit = false;
+				creditedThisTick = true;
+				return new Credited(List.of(cast), List.of());
+			}
+			casts.addLast(cast);
+			return Credited.NONE;
+		}
+
+		/** A reaction was set off. Counts when a real hit lands this same tick (before or after). */
+		public Credited reaction(long now, String reaction) {
+			if (hitTick == now) {
+				return new Credited(List.of(), List.of(reaction));
+			}
+			if (reactionTick != now) {
+				reactions.clear();
+				reactionTick = now;
+			}
+			reactions.add(reaction);
+			return Credited.NONE;
+		}
+
+		/** A spell of the player's landed on a real creature. */
+		public Credited hit(long now) {
+			trim(now);
+			if (hitTick != now) {
+				hitTick = now;
+				creditedThisTick = false;
+				spareHit = false;
+			}
+			List<String> reacted = List.of();
+			if (reactionTick == now && !reactions.isEmpty()) {
+				reacted = List.copyOf(reactions);
+				reactions.clear();
+			}
+			List<Cast> landed = List.of();
+			if (!creditedThisTick) {
+				if (casts.isEmpty()) {
+					spareHit = true;
+				} else {
+					landed = List.of(casts.pollFirst());
+					creditedThisTick = true;
+				}
+			}
+			return landed.isEmpty() && reacted.isEmpty() ? Credited.NONE : new Credited(landed, reacted);
+		}
+
+		/** Whether nothing is waiting any more (so the server can let this go). */
+		public boolean idle(long now) {
+			trim(now);
+			return casts.isEmpty() && now - hitTick > 1 && now - reactionTick > 1;
+		}
+
+		private void trim(long now) {
+			while (!casts.isEmpty() && now - casts.peekFirst().time() > CAST_WINDOW) {
+				casts.pollFirst();
+			}
+		}
 	}
 
 	/** Hands in every finished contract: the board with them marked claimed, and what they pay. */

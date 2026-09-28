@@ -91,7 +91,9 @@ public class ContractBoardScreen extends Screen {
 		sprite(g, SPR_PANEL, 0, 0, W, H);
 		// The title, and a quill line under it.
 		g.text(font, title, 12, 10, GOLD, true);
-		String refresh = Component.translatable("screen.wildercord.contracts.refresh", minutes(ticksToDawn)).getString();
+		// No countdown while time stands still: the board changes at the next dawn, whenever that comes.
+		String refresh = (ticksToDawn < 0 ? Component.translatable("screen.wildercord.contracts.refresh_still")
+			: Component.translatable("screen.wildercord.contracts.refresh", minutes(ticksToDawn))).getString();
 		g.text(font, refresh, W - 12 - font.width(refresh), 10, DIM, false);
 		g.fill(12, 22, W - 12, 23, 0x40E8C46A);
 		g.fill(12, 23, W - 12, 24, 0x20000000);

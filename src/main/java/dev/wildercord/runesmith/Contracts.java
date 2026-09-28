@@ -71,6 +71,8 @@ public final class Contracts {
 	private record SpellHit(UUID caster, String element, long time) {}
 
 	private static final Map<UUID, SpellHit> LAST_HIT = new HashMap<>();
+	/** Casts and reactions waiting for a spell to land on a real creature before they count (see {@link ContractRules.Credit}). */
+	private static final Map<UUID, ContractRules.Credit> CREDIT = new HashMap<>();
 
 	public static void init() {
 		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.clientboundPlay().register(ShowBoard.TYPE, ShowBoard.CODEC);
@@ -95,39 +97,80 @@ public final class Contracts {
 				long now = server.overworld().getGameTime();
 				LAST_HIT.values().removeIf(hit -> now - hit.time() > 200);
 			}
+			if (server.getTickCount() % 200 == 0 && !CREDIT.isEmpty()) {
+				long now = server.getTickCount();
+				CREDIT.values().removeIf(credit -> credit.idle(now));
+			}
 		});
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LAST_HIT.clear());
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> CREDIT.remove(handler.player.getUUID()));
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			LAST_HIT.clear();
+			CREDIT.clear();
+		});
 	}
 
 	// ------------------------------------------------------------------ hooks
 
-	/** A player's spell hurt a creature with an element ("" for none). */
+	/**
+	 * A player's spell hurt a creature with an element ("" for none). A real creature (not a
+	 * Training Dummy or a mannequin) is what makes the player's casts and reactions count.
+	 */
 	public static void onSpellHit(LivingEntity caster, LivingEntity target, String element) {
-		if (caster instanceof ServerPlayer player && target != player) {
-			LAST_HIT.put(target.getUUID(), new SpellHit(player.getUUID(), element == null ? "" : element, player.level().getGameTime()));
+		if (!(caster instanceof ServerPlayer player) || target == player || !real(target)) {
+			return;
 		}
+		LAST_HIT.put(target.getUUID(), new SpellHit(player.getUUID(), element == null ? "" : element, player.level().getGameTime()));
+		credit(player, credit(player).hit(now(player)));
 	}
 
-	/** A caster set off an element reaction. */
+	/** A caster set off an element reaction: it counts once the spell lands on a real creature. */
 	public static void onReaction(LivingEntity caster, String reaction) {
 		if (caster instanceof ServerPlayer player) {
-			progress(player, ContractRules.REACTION, reaction, 1);
+			credit(player, credit(player).reaction(now(player), reaction));
 		}
 	}
 
-	/** A player cast a spell (ley line casts, and casts of each element in it). */
+	/**
+	 * A player cast a spell (ley line casts, and casts of each element in it). It counts once the
+	 * spell lands on a real creature: casting at the air or a Training Dummy earns nothing.
+	 */
 	public static void onCast(ServerPlayer player, List<RuneDef> runes) {
-		if (player.getAttachedOrElse(WildercordAttachments.ON_LEY, false)) {
-			progress(player, ContractRules.LEY, "", 1);
-		}
 		Set<String> elements = new HashSet<>();
 		for (RuneDef rune : runes) {
 			if (rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty()) {
 				elements.add(rune.element());
 			}
 		}
-		for (String element : elements) {
-			progress(player, ContractRules.ELEMENT_CASTS, element, 1);
+		boolean ley = player.getAttachedOrElse(WildercordAttachments.ON_LEY, false);
+		credit(player, credit(player).cast(now(player), elements, ley));
+	}
+
+	/** Whether a creature counts for the contracts: alive in the world, and not something set up to be hit. */
+	private static boolean real(LivingEntity target) {
+		return !(target instanceof dev.wildercord.cast.TrainingDummy) && !(target instanceof net.minecraft.world.entity.decoration.Mannequin)
+			&& !(target instanceof net.minecraft.world.entity.decoration.ArmorStand);
+	}
+
+	private static long now(ServerPlayer player) {
+		return player.level().getServer().getTickCount();
+	}
+
+	private static ContractRules.Credit credit(ServerPlayer player) {
+		return CREDIT.computeIfAbsent(player.getUUID(), id -> new ContractRules.Credit());
+	}
+
+	/** Counts whatever just landed toward the player's contracts. */
+	private static void credit(ServerPlayer player, ContractRules.Credit.Credited credited) {
+		for (ContractRules.Credit.Cast cast : credited.casts()) {
+			if (cast.ley()) {
+				progress(player, ContractRules.LEY, "", 1);
+			}
+			for (String element : cast.elements()) {
+				progress(player, ContractRules.ELEMENT_CASTS, element, 1);
+			}
+		}
+		for (String reaction : credited.reactions()) {
+			progress(player, ContractRules.REACTION, reaction, 1);
 		}
 	}
 
@@ -192,12 +235,18 @@ public final class Contracts {
 		}
 		// The board opens on the player's screen: today's three contracts, and what was just handed in.
 		long clock = player.level().getServer().overworld().getOverworldClockTime();
-		int dawn = (int) (24000L - Math.floorMod(clock, 24000L));
+		// With time standing still (or the board kept from a later day after time was turned back), there's no countdown to show.
+		boolean turning = player.level().getServer().overworld().getGameRules().get(net.minecraft.world.level.gamerules.GameRules.ADVANCE_TIME)
+			&& claim.board().day() <= day(player);
+		int dawn = turning ? (int) (24000L - Math.floorMod(clock, 24000L)) : -1;
 		List<String> handedIn = claim.rewards().stream().map(r -> r.type() + ":" + r.amount()).toList();
 		net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new ShowBoard(claim.board().contracts(), dawn, handedIn));
 	}
 
-	/** Server to client: open the contract board with these contracts, ticks until the next dawn, and the rewards just handed in ("type:amount"). */
+	/**
+	 * Server to client: open the contract board with these contracts, ticks until the next dawn (-1
+	 * when time isn't moving toward it), and the rewards just handed in ("type:amount").
+	 */
 	public record ShowBoard(List<ContractRules.Contract> contracts, int ticksToDawn, List<String> handedIn)
 			implements net.minecraft.network.protocol.common.custom.CustomPacketPayload {
 		public static final Type<ShowBoard> TYPE = new Type<>(dev.wildercord.Wildercord.id("contract_board"));
@@ -213,7 +262,7 @@ public final class Contracts {
 		public static final net.minecraft.network.codec.StreamCodec<io.netty.buffer.ByteBuf, ShowBoard> CODEC =
 			net.minecraft.network.codec.StreamCodec.composite(
 				CONTRACT.apply(net.minecraft.network.codec.ByteBufCodecs.list(8)), ShowBoard::contracts,
-				net.minecraft.network.codec.ByteBufCodecs.VAR_INT, ShowBoard::ticksToDawn,
+				net.minecraft.network.codec.ByteBufCodecs.INT, ShowBoard::ticksToDawn,
 				net.minecraft.network.codec.ByteBufCodecs.STRING_UTF8.apply(net.minecraft.network.codec.ByteBufCodecs.list(8)), ShowBoard::handedIn,
 				ShowBoard::new);
 

@@ -5,9 +5,11 @@ import dev.wildercord.cast.Fx;
 import dev.wildercord.cast.Grimoire;
 import dev.wildercord.cast.Light;
 import dev.wildercord.cast.Sigils;
+import dev.wildercord.cast.Targets;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.duel.Duels;
 import dev.wildercord.player.Heart;
+import dev.wildercord.spell.EffectKind;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
@@ -40,11 +42,15 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * Chorus casting (rules in {@link ChorusRules}): when casters cast the same shape together, the
- * later voice's spell is cast once, bigger (+50% power and a Widen per extra voice, up to three),
- * and the earlier voices' spells fold into it (whatever of them is still in the air stops). Each
- * caster has paid for their own spell. Everyone singing sees <i>Chorus!</i>, both colours braid
- * together over the target, and each earns the Chorus feat.
+ * Chorus casting (rules in {@link ChorusRules}): when allies cast the same kind of spell in the same
+ * shape together, the later voice's spell is cast bigger (+50% power and a Widen per extra voice, up
+ * to three, with its caster's own casting gear still behind it). The earlier voices' spells are left
+ * alone: nobody can cut another caster's spell short, or take the kill from it. Each caster has paid
+ * for their own spell. Everyone singing sees <i>Chorus!</i>, their colours braid together over the
+ * target, and each earns the Chorus feat.
+ *
+ * <p>Allies are casters on the same team, or ones who couldn't harm each other anyway (PvP off);
+ * two duelling each other never sing together.</p>
  */
 public final class Chorus {
 	private Chorus() {}
@@ -52,8 +58,8 @@ public final class Chorus {
 	/** What to cast: the caster's own spell, or the chorus it became. */
 	public record Sung(Cast cast, SpellPlan.Segment root, int voices) {}
 
-	/** The last spell each voice cast and its colour, so a later voice can fold it in. */
-	private record Voiced(Cast cast, int color, long time) {}
+	/** The colour of the last spell each voice cast, for the braid when a later voice joins it. */
+	private record Voiced(int color, long time) {}
 
 	/** Shapes centred on their caster: their "aim" is where the caster stands. */
 	private static final Set<String> CENTRED = Set.of(Runes.BURST.id(), Runes.NOVA.id(), Runes.RING.id(), Runes.DOMAIN.id(), Runes.ORBIT.id(),
@@ -108,11 +114,10 @@ public final class Chorus {
 			aim = entity == null ? end : entity.getLocation();
 		}
 		ChorusRules.Voice voice = new ChorusRules.Voice(caster.getUUID(), shape, now, level.dimension().identifier().toString(),
-			caster.getX(), caster.getY(), caster.getZ(), aim.x, aim.y, aim.z, target == null ? null : target.getUUID());
-		List<ChorusRules.Voice> choir = CHOIR.offer(voice);
-		boolean rivals = choir.stream().anyMatch(v -> Duels.opponents(v.caster(), caster.getUUID()));
-		if (choir.size() < 2 || rivals) {
-			LIVE.put(caster.getUUID(), new Voiced(cast, color, now));
+			caster.getX(), caster.getY(), caster.getZ(), aim.x, aim.y, aim.z, target == null ? null : target.getUUID(), kind(first));
+		List<ChorusRules.Voice> choir = CHOIR.offer(voice, (a, b) -> allied(level, a, b));
+		if (choir.size() < 2) {
+			LIVE.put(caster.getUUID(), new Voiced(color, now));
 			return new Sung(cast, root, 1);
 		}
 
@@ -120,10 +125,9 @@ public final class Chorus {
 		List<Integer> colors = new ArrayList<>();
 		List<LivingEntity> singers = new ArrayList<>();
 		for (ChorusRules.Voice earlier : choir.subList(0, voices - 1)) {
-			Voiced sung = LIVE.remove(earlier.caster());
+			// The earlier spells go on as they were: the chorus only makes this one bigger.
+			Voiced sung = LIVE.get(earlier.caster());
 			if (sung != null) {
-				// Its spell folds into the chorus: whatever of it is still in the air stops here.
-				sung.cast().cancel();
 				colors.add(sung.color());
 			}
 			if (level.getEntity(earlier.caster()) instanceof LivingEntity singer) {
@@ -142,9 +146,11 @@ public final class Chorus {
 			}
 		}
 		double power = ChorusRules.power(voices);
+		// Cost and cooldown were settled when the spell was cast (a Cast doesn't carry them); the power, duration and gear go on.
 		Cast chorus = new Cast(caster, cast.castNumber, new Heart.Bonuses(cast.power * power, cast.duration, 1, 1), cast.passive, null, cast.info)
-			.weigh(cast.weight() * power);
-		LIVE.put(caster.getUUID(), new Voiced(chorus, color, now));
+			.weigh(cast.weight() * power)
+			.gear(cast.gear());
+		LIVE.put(caster.getUUID(), new Voiced(color, now));
 
 		braid(level, singers, aim, colors);
 		Component message = Component.translatable("reaction.wildercord.chorus").withColor(0xFFF0C0).withStyle(ChatFormatting.BOLD);
@@ -155,6 +161,28 @@ public final class Chorus {
 			}
 		}
 		return new Sung(chorus, chorusRoot, voices);
+	}
+
+	/** What kind of spell a group is, for matching voices: harmful, helpful, both or neither. */
+	private static String kind(SpellPlan.Group group) {
+		boolean harmful = false;
+		boolean helpful = false;
+		for (SpellPlan.EffectNode node : group.effects) {
+			harmful |= node.effect.kind() == EffectKind.HARMFUL;
+			helpful |= node.effect.kind() == EffectKind.HELPFUL;
+		}
+		return ChorusRules.kind(harmful, helpful);
+	}
+
+	/**
+	 * Whether two casters may sing together: never two duelling each other; otherwise teammates, or
+	 * two who couldn't harm each other either way (PvP off, say). Two who could fight never do.
+	 */
+	private static boolean allied(ServerLevel level, UUID a, UUID b) {
+		if (Duels.opponents(a, b) || !(level.getEntity(a) instanceof LivingEntity one) || !(level.getEntity(b) instanceof LivingEntity other)) {
+			return false;
+		}
+		return one.isAlliedTo(other) || !Targets.canHarm(one, other) && !Targets.canHarm(other, one);
 	}
 
 	/**

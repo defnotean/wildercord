@@ -5,12 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 
 /**
  * Chorus casting, as plain rules (no Minecraft types, so they're unit-tested): casters who cast
  * the same shape within a second of each other, close together and at the same place or foe,
  * sing one spell between them. Each voice after the first adds half again to its power (and a
- * Widen to a shape with a size), up to three voices.
+ * Widen to a shape with a size), up to three voices. Only allies sing together, and only spells of
+ * the same kind (harmful with harmful, helpful with helpful).
  */
 public final class ChorusRules {
 	private ChorusRules() {}
@@ -29,12 +31,24 @@ public final class ChorusRules {
 	/** Shapes that can't be sung together: they only ever touch their own caster, or what set them off. */
 	public static final Set<String> SOLO = Set.of("wildercord:self", "wildercord:trigger");
 
+	/** What a spell's effects do, for matching voices: {@link #HARMFUL}, {@link #HELPFUL}, {@link #MIXED} or {@link #OTHER}. */
+	public static final String HARMFUL = "harmful";
+	public static final String HELPFUL = "helpful";
+	public static final String MIXED = "mixed";
+	public static final String OTHER = "other";
+
+	/** The kind of a spell with harmful and/or helpful effects in it. */
+	public static String kind(boolean harmful, boolean helpful) {
+		return harmful && helpful ? MIXED : harmful ? HARMFUL : helpful ? HELPFUL : OTHER;
+	}
+
 	/**
 	 * One cast offered to the choir: who, which shape, when, where the caster stood, where they
-	 * aimed (or the foe they aimed at, null for none) and in which dimension.
+	 * aimed (or the foe they aimed at, null for none), in which dimension, and what kind of spell it
+	 * is ({@link #kind}).
 	 */
 	public record Voice(UUID caster, String shape, long time, String dimension, double x, double y, double z,
-			double aimX, double aimY, double aimZ, UUID target) {
+			double aimX, double aimY, double aimZ, UUID target, String kind) {
 		double distanceTo(Voice other) {
 			return Math.sqrt(square(x - other.x) + square(y - other.y) + square(z - other.z));
 		}
@@ -64,6 +78,10 @@ public final class ChorusRules {
 				|| !earlier.dimension().equals(later.dimension())) {
 			return false;
 		}
+		// A harmful spell and a healing one don't sing together, nor two that do both.
+		if (!earlier.kind().equals(later.kind()) || MIXED.equals(later.kind())) {
+			return false;
+		}
 		long gap = later.time() - earlier.time();
 		if (gap < 0 || gap > WINDOW || earlier.distanceTo(later) > RANGE) {
 			return false;
@@ -85,16 +103,22 @@ public final class ChorusRules {
 	public static final class Choir {
 		private final List<List<Voice>> groups = new ArrayList<>();
 
+		/** {@link #offer(Voice, BiPredicate)} with everyone allied. */
+		public List<Voice> offer(Voice voice) {
+			return offer(voice, (a, b) -> true);
+		}
+
 		/**
 		 * Adds a voice. Returns everyone now singing together, this voice last: just this voice
-		 * when it starts a new chorus, or the chorus it joined.
+		 * when it starts a new chorus, or the chorus it joined. A voice only joins a chorus whose
+		 * every singer is {@code allied} with it.
 		 */
-		public List<Voice> offer(Voice voice) {
+		public List<Voice> offer(Voice voice, BiPredicate<UUID, UUID> allied) {
 			forget(voice.time());
 			for (List<Voice> group : groups) {
 				Voice last = group.getLast();
 				boolean already = group.stream().anyMatch(v -> v.caster().equals(voice.caster()));
-				if (!already && joins(last, voice)) {
+				if (!already && joins(last, voice) && group.stream().allMatch(v -> allied.test(v.caster(), voice.caster()))) {
 					group.add(voice);
 					return List.copyOf(group);
 				}
