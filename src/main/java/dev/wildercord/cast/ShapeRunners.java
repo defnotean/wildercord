@@ -571,13 +571,27 @@ final class ShapeRunners {
 	}
 
 	/** What something flying from {@code from} to {@code to} meets first: a creature, then a block, or nothing (null). */
-	private record Contact(Entity entity, net.minecraft.world.phys.BlockHitResult block, Vec3 at) {}
+	private record Contact(Entity entity, net.minecraft.world.phys.BlockHitResult block, Vec3 at, boolean parried) {
+		Contact(Entity entity, net.minecraft.world.phys.BlockHitResult block, Vec3 at) {
+			this(entity, block, at, false);
+		}
+	}
 
-	private static Contact contact(Cast cast, Vec3 from, Vec3 to, double width, Set<UUID> skip) {
+	/**
+	 * What {@code g}, flying from {@code from} to {@code to}, meets first. A Shield raised at the last
+	 * moment parries it: it's turned back at its caster as a bolt, and the contact says so ({@code
+	 * parried}), so the shape ends there without landing.
+	 */
+	private static Contact contact(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 from, Vec3 to, double width, Set<UUID> skip) {
 		net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
 		Vec3 end = missed(block) ? to : block.getLocation();
 		Shields.Interception shield = Shields.intercept(cast, from, end);
 		if (shield != null && !skip.contains(shield.target().getUUID())) {
+			if (Shields.harmful(g, anchored) && Shields.parries(cast, shield.target())) {
+				Shields.parry(cast, shield.target(), from, false);
+				RuneBolt.reflect(cast.reflected(shield.target()), g, anchored, shield.at(), cast.caster);
+				return new Contact(shield.target(), null, shield.at(), true);
+			}
 			// It meets a Shield's circle first.
 			return new Contact(shield.target(), null, shield.at());
 		}
@@ -618,7 +632,10 @@ final class ShapeRunners {
 		each(cast, (int) Math.ceil(SpellNumbers.SPARK_RANGE / speed), tick -> {
 			Vec3 from = pos[0];
 			Vec3 to = from.add(aim.scale(speed));
-			Contact c = contact(cast, from, to, 0.25, Set.of());
+			Contact c = contact(cast, g, anchored, from, to, 0.25, Set.of());
+			if (c != null && c.parried()) {
+				return false;
+			}
 			Vec3 end = c == null ? to : c.at();
 			if (visible(cast, from, end)) {
 				ExpansionVfx.sparkTick(cast.level, from, end, theme, tick);
@@ -678,7 +695,10 @@ final class ShapeRunners {
 			}
 			Vec3 from = pos[0];
 			Vec3 to = from.add(velocity[0]);
-			Contact c = contact(cast, from, to, 0.35, Set.of());
+			Contact c = contact(cast, g, anchored, from, to, 0.35, Set.of());
+			if (c != null && c.parried()) {
+				return false;
+			}
 			if (c != null) {
 				ExpansionVfx.wispStrike(cast.level, c.at(), theme);
 				land(cast, g, anchored, c, velocity[0].normalize());
@@ -706,7 +726,10 @@ final class ShapeRunners {
 		each(cast, steps, tick -> {
 			Vec3 from = pos[0];
 			Vec3 to = from.add(aim.scale(speed));
-			Contact c = contact(cast, from, to, 0.45, Set.of());
+			Contact c = contact(cast, g, anchored, from, to, 0.45, Set.of());
+			if (c != null && c.parried()) {
+				return false;
+			}
 			if (c == null && tick < steps - 1) {
 				if (visible(cast, from, to)) {
 					ExpansionVfx.cometTick(cast.level, from, to, theme, tick);
@@ -779,7 +802,10 @@ final class ShapeRunners {
 		each(cast, steps, tick -> {
 			Vec3 from = pos[0];
 			Vec3 to = from.add(aim.scale(speed));
-			Contact c = contact(cast, from, to, 0.4, Set.of());
+			Contact c = contact(cast, g, anchored, from, to, 0.4, Set.of());
+			if (c != null && c.parried()) {
+				return false;
+			}
 			if (c == null && tick < steps - 1) {
 				if (visible(cast, from, to)) {
 					ExpansionVfx.clusterTick(cast.level, from, to, theme, tick);
@@ -820,7 +846,10 @@ final class ShapeRunners {
 				velocity[0] = velocity[0].add(0, -0.07, 0);
 				Vec3 from = pos[0];
 				Vec3 to = from.add(velocity[0]);
-				Contact c = contact(cast, from, to, 0.3, struck);
+				Contact c = contact(cast, g, anchored, from, to, 0.3, struck);
+				if (c != null && c.parried()) {
+					return false;
+				}
 				if (c == null && tick < 29) {
 					ExpansionVfx.shardTick(cast.level, from, to, theme);
 					pos[0] = to;

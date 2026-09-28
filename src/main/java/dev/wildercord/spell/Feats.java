@@ -30,6 +30,8 @@ public final class Feats {
 	public static final String SHIELDBREAKER = "shieldbreaker";
 	public static final String SPELLGUARD = "spellguard";
 	public static final String IMBUE = "imbue";
+	public static final String PARRY = "parry";
+	public static final String WILD_SURGE = "wild_surge";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -57,7 +59,9 @@ public final class Feats {
 		new Feat(SCROLL, "Scribe", "Inscribed a spell onto a scroll."),
 		new Feat(SPELLGUARD, "Spellguard", "Your Shield stopped a spell cast at you."),
 		new Feat(SHIELDBREAKER, "Shieldbreaker", "Shattered a Shield with a stronger spell."),
-		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."));
+		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."),
+		new Feat(PARRY, "Parry", "Raised a Shield at the last moment and turned a spell back on its caster."),
+		new Feat(WILD_SURGE, "Wild Magic", "Overcast a spell and watched it twist into something else."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");

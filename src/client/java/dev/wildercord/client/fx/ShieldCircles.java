@@ -33,6 +33,8 @@ import java.util.Map;
  *       shoot out from the heart across the circle, and a moment later it bursts, the rim breaking into
  *       curved slivers and the rest into shards (small near the heart, larger further out) that fly on
  *       the way the spell was going, tumble, fall and glint.</li>
+ *   <li>A spell it parries (raised at the last moment) breaks nothing: every circle flushes gold, the
+ *       front one flashing at its heart as bright rings race out past its rim.</li>
  * </ul>
  * A spell flying at them makes the stack spawn in, back to front, a moment before it arrives
  * ({@link ShieldOption#APPEAR}); one that lands at once (a beam, a blast) makes it snap open as it lands.
@@ -97,6 +99,8 @@ public final class ShieldCircles {
 		final boolean early;
 		final RandomSource random;
 		final List<ShieldCircle> layers = new ArrayList<>();
+		/** Raised just in time: it parried, and the circles ring gold instead of breaking. */
+		boolean parry;
 
 		Stack(ClientLevel level, LivingEntity entity, Vec3 origin, Vector3f dir, ShieldOption option, RandomSource random) {
 			this.level = level;
@@ -130,11 +134,15 @@ public final class ShieldCircles {
 				Mth.lerp(partial, entity.zo, entity.getZ()));
 		}
 
-		/** The spell arrives: {@code broken} circles from the front shatter; if that isn't all of them, the next one holds. */
+		/**
+		 * The spell arrives: {@code broken} circles from the front shatter; if that isn't all of them, the
+		 * next one holds. A parry breaks none: the front one holds and every one rings gold.
+		 */
 		void meet(int kind, int broken, Vector3f dir) {
 			this.dir.set(dir);
 			int n = layers.size();
-			int stop = kind == ShieldOption.BREAK ? -1 : Math.min(broken, n - 1);
+			parry = kind == ShieldOption.PARRY;
+			int stop = kind == ShieldOption.BREAK ? -1 : parry ? 0 : Math.min(broken, n - 1);
 			int shattered = kind == ShieldOption.BREAK ? n : stop;
 			for (int i = 0; i < n; i++) {
 				ShieldCircle layer = layers.get(i);
@@ -158,6 +166,8 @@ public final class ShieldCircles {
 		/** Ticks a stack that spawned in waits for its spell before it gives up and fades. */
 		private static final int WAIT = 40;
 		private static final int FADE = 10;
+		/** A parry's gold. */
+		private static final int PARRY = 0xFFD54A;
 
 		private final Stack stack;
 		private final int index;
@@ -305,6 +315,10 @@ public final class ShieldCircles {
 			if (t < 0) {
 				return;
 			}
+			if (stack.parry && (role == STOP || role == BEHIND)) {
+				parried(r, a, fine, t);
+				return;
+			}
 			if (role == STOP) {
 				// The spell's light spent against its heart, and ripples racing out across it.
 				float flare = Math.max(0, 1 - t / 7F);
@@ -334,6 +348,30 @@ public final class ShieldCircles {
 				float flare = Math.max(0, 1 - t / 3F);
 				if (flare > 0) {
 					piece(glow, 0, 0, 0, r * 0.45F, argb(a * flare, 0xFFFFFF), 0.012F);
+				}
+			}
+		}
+
+		/**
+		 * A parry: the whole circle flushes gold, a white-gold flash bursts at its heart, and a bright ring
+		 * races out past its rim, then a second, softer one. The front circle rings loudest; the ones
+		 * behind it echo, a beat later.
+		 */
+		private void parried(float r, float a, float fine, float t) {
+			float echo = role == STOP ? 1 : 0.6F;
+			float flush = Math.max(0, 1 - t / 12F);
+			if (flush > 0) {
+				piece(glow, 0, 0, 0, r * 1.05F, argb(a * flush * 0.7F * echo, PARRY), 0.002F);
+			}
+			float flare = Math.max(0, 1 - t / 5F);
+			if (flare > 0 && role == STOP) {
+				piece(glow, 0, 0, 0, r * (0.5F + 0.5F * flare), argb(a * flare, 0xFFF6D8), 0.012F);
+			}
+			for (int k = 0; k < 2; k++) {
+				float f = (t - k * 3F) / 9F;
+				if (f > 0 && f < 1) {
+					float out = r * (0.2F + 1.5F * (float) Math.sqrt(f));
+					ring(0, 0, out, fine * (3.4F - 2F * f) * echo, argb(a * (1 - f) * echo, k == 0 ? lighter(PARRY, 0.35F) : PARRY), 0.013F);
 				}
 			}
 		}

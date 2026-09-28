@@ -536,6 +536,7 @@ def write_lang(runes):
         lang[f"rune.wildercord.{r['path']}.desc"] = r["desc"]
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
+    lang.update(PARRY_AND_WILD_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1162,6 +1163,28 @@ NEW_LANG = {
     "subtitles.wildercord.discovery": "Grimoire discovery",
     "subtitles.wildercord.circle_formed": "Heart Circle forms",
     "subtitles.wildercord.overcast": "Heart Circle cracks",
+}
+
+# Parrying with a Shield, and wild magic on an overcast (cast/Shields, cast/WildSurge, spell/WildMagic).
+PARRY_AND_WILD_LANG = {
+    "message.wildercord.parried": "Parried!",
+    "message.wildercord.parried_you": "Your spell was parried!",
+    "subtitles.wildercord.shield_parry": "Spell parried",
+    "message.wildercord.wild_surge": "Wild magic! %s",
+    "message.wildercord.surge.twice": "The spell goes off twice",
+    "message.wildercord.surge.element": "The spell turns to %s",
+    "message.wildercord.surge.grand": "The spell swells to twice its size",
+    "message.wildercord.surge.butterflies": "The spell bursts into butterflies of light",
+    "message.wildercord.surge.heal_all": "The spell heals everyone near instead",
+    "message.wildercord.surge.blink": "The spell flings you aside",
+    "message.wildercord.surge.wisps": "Wisps pour out with the spell",
+    "message.wildercord.surge.levitate": "Gravity flips around you",
+    "message.wildercord.surge.stray": "The spell goes off at %s",
+    "message.wildercord.surge.slow_time": "Time slows around you",
+    "message.wildercord.surge.backfire": "The spell backfires",
+    "message.wildercord.surge.free_recast": "Your next spell within 3 seconds is free",
+    "message.wildercord.surge.free_used": "Free recast!",
+    "message.wildercord.surge.ward": "A Shield of light settles on you",
 }
 
 ARCHIVE_LAND = ["#minecraft:is_taiga", "#minecraft:is_jungle", "#minecraft:is_forest", "#minecraft:is_savanna", "#minecraft:is_badlands",

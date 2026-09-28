@@ -611,8 +611,14 @@ say, makes it stronger because it makes the spell cost more).
   goes: cracks shoot out from the heart across the circle, then it bursts, the rim into curved
   slivers and the rest into shards that fly on the way the spell was going, tumble, fall and glint.
   The spell goes on through and hits what it was aimed at.
+- **Parried.** A Shield you raise at the last moment (within **7 ticks** of the spell reaching it, or
+  while that spell is already flying at you within 7 blocks) turns the spell whatever it weighs: the
+  circles ring gold, a flying spell turns round and flies back at its caster as yours, and anything
+  else is negated and answered with a counter-burst (see
+  [features/parry-and-wild-magic.md](features/parry-and-wild-magic.md)). The Shield is spent.
 - Only spells: arrows, blades and falls pass as if it weren't there. Secret spells weigh what the
-  Cord screen shows (more than their runes), and the Archivist's Sunfall breaks any Shield.
+  Cord screen shows (more than their runes), and the Archivist's Sunfall breaks any Shield (unless
+  it's parried).
 - The HUD shows your own Shield's strength and time left above the spell panel.
 
 ### Imbuing
@@ -685,6 +691,10 @@ spell costing more than twice your full mana. A cracked circle gives
 nothing (mana, regeneration, power, its perk, a passive slot) until it mends **3 minutes** later;
 overcasting again cracks the next one in and resets the clock. The HUD shows ✦ and the number
 cracked.
+
+An overcast spell may also surge into **wild magic** (20%, up to 50% the further past your mana it
+went): it goes off twice, turns to another element, blinks you aside, bursts into butterflies of
+light, and more (see [features/parry-and-wild-magic.md](features/parry-and-wild-magic.md)).
 
 ### Runebound
 About 2-6% of zombies and skeletons of every kind (husks, drowned, zombie villagers, strays,

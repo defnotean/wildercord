@@ -207,6 +207,12 @@
       "wildercord:casting/shield_block_2"
     ]
   },
+  "shield_parry": {
+    "subtitle": "subtitles.wildercord.shield_parry",
+    "sounds": [
+      "wildercord:casting/shield_parry"
+    ]
+  },
   "imbue": {
     "subtitle": "subtitles.wildercord.imbue",
     "sounds": [

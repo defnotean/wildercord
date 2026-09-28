@@ -4,6 +4,7 @@ import dev.wildercord.content.ShieldOption;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.player.WildercordAttachments.SpellShield;
+import dev.wildercord.spell.Parry;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +36,12 @@ import java.util.WeakHashMap;
  * <p>The Shield is a synced attachment that every nearby client draws the little circle from; a
  * block or a shatter is sent as one {@link ShieldOption} particle that each client turns into the
  * whole effect.</p>
+ *
+ * <p><b>Parrying.</b> A Shield a player raises at the last moment (see {@link Parry}: within 7 ticks of
+ * the spell arriving, or while it's already on its way and close) turns the spell back instead,
+ * whatever it weighs: its circles flash gold, a flying spell turns round and flies back at its caster
+ * as the defender's, and anything else is negated and answered with a counter-burst of the Shield's
+ * light. The Shield is spent.</p>
  */
 public final class Shields {
 	private Shields() {}
@@ -63,12 +70,30 @@ public final class Shields {
 	/** Creatures wearing a shield, so each ends when its time is up. */
 	private static final Set<LivingEntity> WEARING = Collections.newSetFromMap(new WeakHashMap<>());
 
+	/** A parry's colour: bright gold. */
+	public static final int PARRY_COLOR = 0xFFD54A;
+	/** When each creature's Shield last went up by a player's cast (a passive renewing it doesn't count), for parries. */
+	private static final Map<UUID, Long> RAISED = new HashMap<>();
+
+	/** A flying spell's step, remembered for a couple of ticks: a Shield raised now looks for spells already on their way. */
+	private record Flight(Object cast, LivingEntity caster, ServerLevel level, Vec3 from, Vec3 to, long tick) {}
+
+	private static final List<Flight> FLIGHTS = new ArrayList<>();
+
+	/** A spell a Shield went up against while it was already on its way: it's parried when it arrives. */
+	private record Primed(Object cast, UUID target, long until) {}
+
+	private static final List<Primed> PRIMED = new ArrayList<>();
+
 	public static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(Shields::tick);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			BLOCKED.clear();
 			WEARING.clear();
 			SEEN.clear();
+			RAISED.clear();
+			FLIGHTS.clear();
+			PRIMED.clear();
 		});
 	}
 
@@ -83,6 +108,11 @@ public final class Shields {
 		List<String> runes = cast.info.spell().isEmpty() ? List.of(dev.wildercord.spell.Runes.SHIELD.id())
 			: cast.info.spell().stream().map(dev.wildercord.spell.RuneDef::id).toList();
 		give(t, strength, ticks, runes);
+		if (cast.caster instanceof ServerPlayer && !cast.passive) {
+			// Raised by hand: for the next moment it can parry, and so it can a spell already on its way.
+			RAISED.put(t.getUUID(), now);
+			prime(cast.level, t, now);
+		}
 		raised(cast.level, t, runes);
 		Casters.tell(t, net.minecraft.network.chat.Component.translatable("message.wildercord.shield_up", Math.round(strength)).withColor(COLOR));
 	}
@@ -145,6 +175,11 @@ public final class Shields {
 		if (shield == null) {
 			return false;
 		}
+		if (shield.until() >= now && parries(cast, target, shield)) {
+			// Raised at the last moment: whatever it weighs, it's turned, and answered with a counter-burst.
+			parry(cast, target, from, shield, true);
+			return true;
+		}
 		target.removeAttached(WildercordAttachments.SPELL_SHIELD);
 		WEARING.remove(target);
 		if (shield.until() < now) {
@@ -173,9 +208,6 @@ public final class Shields {
 	 * in, on course, makes the circle appear in front of it. A spell that would miss passes by.
 	 */
 	public static Interception intercept(Cast cast, Vec3 from, Vec3 to) {
-		if (WEARING.isEmpty()) {
-			return null;
-		}
 		Vec3 motion = to.subtract(from);
 		double length = motion.length();
 		if (length < 1.0E-4) {
@@ -183,6 +215,13 @@ public final class Shields {
 		}
 		Vec3 dir = motion.scale(1 / length);
 		long now = cast.level.getGameTime();
+		// Remembered briefly, so a Shield raised in the next moment knows this spell is on its way.
+		if (FLIGHTS.size() < 1024) {
+			FLIGHTS.add(new Flight(cast.identity(), cast.caster, cast.level, from, to, now));
+		}
+		if (WEARING.isEmpty()) {
+			return null;
+		}
 		Interception found = null;
 		double nearest = Double.MAX_VALUE;
 		for (LivingEntity t : WEARING) {
@@ -199,9 +238,7 @@ public final class Shields {
 			if (distance > APPROACH + off + length) {
 				continue;
 			}
-			// On course: the spell's line runs into the creature itself.
-			net.minecraft.world.phys.AABB body = t.getBoundingBox().inflate(0.15);
-			if (!body.contains(from) && body.clip(from, from.add(dir.scale(distance + 2))).isEmpty()) {
+			if (!onCourse(t, from, dir, distance)) {
 				continue;
 			}
 			if (distance <= APPROACH + off) {
@@ -223,6 +260,133 @@ public final class Shields {
 			}
 		}
 		return found;
+	}
+
+	/** On course: a spell at {@code from} going {@code dir} runs into the creature itself. */
+	private static boolean onCourse(LivingEntity t, Vec3 from, Vec3 dir, double distance) {
+		net.minecraft.world.phys.AABB body = t.getBoundingBox().inflate(0.15);
+		return body.contains(from) || body.clip(from, from.add(dir.scale(distance + 2))).isPresent();
+	}
+
+	// ------------------------------------------------------------------ parrying
+
+	/**
+	 * A Shield just raised by hand: every spell already flying at {@code t}, close enough that its
+	 * circles would be showing, is parried when it arrives, however long it takes to get there.
+	 */
+	private static void prime(ServerLevel level, LivingEntity t, long now) {
+		double reach = APPROACH + front(t, strength(t));
+		Vec3 c = t.getBoundingBox().getCenter();
+		for (Flight f : FLIGHTS) {
+			if (f.level() != level || f.tick() < now - 2 || f.caster() == t || !Targets.canHarm(f.caster(), t)) {
+				continue;
+			}
+			Vec3 motion = f.to().subtract(f.from());
+			double distance = f.to().distanceTo(c);
+			if (motion.lengthSqr() < 1.0E-8 || distance > reach) {
+				continue;
+			}
+			if (onCourse(t, f.to(), motion.normalize(), distance)) {
+				PRIMED.add(new Primed(f.cast(), t.getUUID(), now + 100));
+			}
+		}
+	}
+
+	/** Whether this cast reaching {@code t} now is parried: {@code t}'s Shield went up by hand just before, or against it. */
+	static boolean parries(Cast cast, LivingEntity t) {
+		SpellShield shield = t.getAttached(WildercordAttachments.SPELL_SHIELD);
+		return shield != null && shield.until() >= t.level().getGameTime() && parries(cast, t, shield);
+	}
+
+	private static boolean parries(Cast cast, LivingEntity t, SpellShield shield) {
+		if (t == cast.caster) {
+			return false;
+		}
+		long now = cast.level.getGameTime();
+		Long raised = RAISED.get(t.getUUID());
+		boolean primed = false;
+		for (Primed p : PRIMED) {
+			if (p.cast() == cast.identity() && p.target().equals(t.getUUID()) && p.until() >= now) {
+				primed = true;
+				break;
+			}
+		}
+		return Parry.parries(raised == null ? -1 : raised, now, primed);
+	}
+
+	/** Whether a shape carries anything a Shield should turn: a harmful or moving effect, or a link that fires on its hit. */
+	static boolean harmful(dev.wildercord.spell.SpellPlan.Group g, dev.wildercord.spell.SpellPlan.Link anchored) {
+		if (anchored != null) {
+			return true;
+		}
+		for (dev.wildercord.spell.SpellPlan.EffectNode node : g.effects) {
+			if (node.effect.kind() == dev.wildercord.spell.EffectKind.HARMFUL || node.effect.kind() == dev.wildercord.spell.EffectKind.MOVEMENT) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Parries this cast at {@code target}: the Shield is spent, its circles flash gold, and the rest of
+	 * the spell is stopped there. A flying spell's shape turns it back itself ({@code counter} false);
+	 * anything else is answered with a counter-burst of the Shield's light at the spell's caster.
+	 */
+	static void parry(Cast cast, LivingEntity target, Vec3 from, boolean counter) {
+		SpellShield shield = target.getAttached(WildercordAttachments.SPELL_SHIELD);
+		if (shield != null) {
+			parry(cast, target, from, shield, counter);
+		}
+	}
+
+	private static void parry(Cast cast, LivingEntity target, Vec3 from, SpellShield shield, boolean counter) {
+		ServerLevel level = cast.level;
+		long now = level.getGameTime();
+		target.removeAttached(WildercordAttachments.SPELL_SHIELD);
+		WEARING.remove(target);
+		RAISED.remove(target.getUUID());
+		PRIMED.removeIf(p -> p.target().equals(target.getUUID()));
+		BLOCKED.computeIfAbsent(target.getUUID(), k -> new ArrayList<>()).add(new Blocked(cast.identity(), now + BLOCK_MEMORY));
+		Vec3 dir = impact(target, from);
+		Vec3 at = circleAt(target, dir, shield);
+		// The circles ring gold: a flash at the heart, rings of light racing out across them, a bright chime.
+		send(level, option(ShieldOption.PARRY, target, dir, shield, 0), target.getBoundingBox().getCenter());
+		Sigils.flash(level, at, 0xFF000000 | PARRY_COLOR, 1.8F);
+		Light.ring(level, at, dir, PARRY_COLOR, radius(target) * 0.4, radius(target) * 2.6, 0.08, 9);
+		Light.ring(level, at, dir, 0xFFF4C0, radius(target) * 0.2, radius(target) * 1.7, 0.05, 7);
+		Fx.send(level, ParticleTypes.WAX_OFF, at, 14, 0.3, 0.4);
+		Fx.send(level, ParticleTypes.END_ROD, at, 8, 0.2, 0.15);
+		Fx.sound(level, at, WildercordSounds.SHIELD_PARRY, 1.2F, 1.0F);
+		Fx.sound(level, at, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.6F);
+		if (target instanceof ServerPlayer defender) {
+			// A beat of weight as the spell is turned: the view kicks and punches.
+			ScreenFx.kick(defender, 0.45F);
+			ScreenFx.punch(defender, 0.5F);
+			defender.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.parried").withColor(PARRY_COLOR));
+			Grimoire.feat(defender, dev.wildercord.spell.Feats.PARRY);
+		}
+		Casters.tell(cast.caster, net.minecraft.network.chat.Component.translatable("message.wildercord.parried_you").withColor(0xFF8A6A));
+		if (counter) {
+			counter(cast, target, at, shield);
+		}
+	}
+
+	/** A spell that doesn't fly (a beam, a blast) is answered instead: a lance of the Shield's light strikes its caster. */
+	private static void counter(Cast cast, LivingEntity defender, Vec3 at, SpellShield shield) {
+		LivingEntity caster = cast.caster;
+		if (!caster.isAlive() || caster.level() != cast.level || caster.distanceTo(defender) > Parry.COUNTER_RANGE
+			|| !Targets.canHarm(defender, caster)) {
+			return;
+		}
+		Cast turned = cast.reflected(defender);
+		Vec3 hit = caster.getBoundingBox().getCenter();
+		int color = shield.color();
+		Light.ray(cast.level, at, hit, color, 0.16, 8);
+		Light.ray(cast.level, at, hit, PARRY_COLOR, 0.07, 6);
+		Sigils.flash(cast.level, hit, 0xFF000000 | color, 1.4F);
+		Fx.send(cast.level, ParticleTypes.ELECTRIC_SPARK, hit, 10, 0.3, 0.3);
+		Fx.sound(cast.level, hit, WildercordSounds.SHIELD_BLOCK, 0.9F, 1.3F);
+		Effects.hurt(turned, caster, cast.level.damageSources().indirectMagic(defender, defender), Parry.counter(cast.weight()) * cast.power);
 	}
 
 	/** A spell is closing in: the circle spawns in, in front of it (once per spell and creature). */
@@ -372,8 +536,16 @@ public final class Shields {
 	}
 
 	private static void tick(MinecraftServer server) {
+		if (!FLIGHTS.isEmpty()) {
+			FLIGHTS.removeIf(f -> f.tick() < f.level().getGameTime() - 2);
+		}
 		if (server.getTickCount() % 10 != 0) {
 			return;
+		}
+		if (!RAISED.isEmpty() || !PRIMED.isEmpty()) {
+			long now = server.overworld().getGameTime();
+			RAISED.values().removeIf(at -> at < now - 40 || at > now + 40);
+			PRIMED.removeIf(p -> p.until() < now || p.until() - now > 100);
 		}
 		if (!WEARING.isEmpty()) {
 			for (Iterator<LivingEntity> it = WEARING.iterator(); it.hasNext(); ) {
