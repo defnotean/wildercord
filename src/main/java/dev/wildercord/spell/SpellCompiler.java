@@ -69,7 +69,7 @@ public final class SpellCompiler {
 	}
 
 	private static Compiled compile(List<RuneDef> runes, RuneDef implicitShape) {
-		Reader reader = new Reader(runes, true);
+		Reader reader = new Reader(runes, true, implicitShape);
 		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of());
 		double cost = cost(root);
 		List<String> lines = new ArrayList<>();
@@ -95,12 +95,24 @@ public final class SpellCompiler {
 		final int[] attachedTo;
 		final List<String> warnings = new ArrayList<>();
 		int echoes;
+		/**
+		 * Where the spell an Echo repeats starts, and what an effect with no shape lands on there: the
+		 * whole spell from you, or (inside an Imbue) only what was stored, at whatever set it off.
+		 */
+		int base;
+		RuneDef baseShape;
 
-		Reader(List<RuneDef> runes, boolean record) {
+		Reader(List<RuneDef> runes, boolean record, RuneDef rootShape) {
 			this.runes = runes;
 			this.record = record;
 			this.attachedTo = new int[runes.size()];
 			Arrays.fill(attachedTo, NOT_A_MODIFIER);
+			this.baseShape = rootShape;
+		}
+
+		/** Whether this is part of a stored (imbued) spell, released later from an item or a glyph. */
+		boolean stored() {
+			return baseShape.is(Runes.TRIGGER.id());
 		}
 
 		SpellPlan.Segment segment(int from, RuneDef implicitShape, List<Target> inherited) {
@@ -151,7 +163,7 @@ public final class SpellCompiler {
 							if (echoes > SpellNumbers.MAX_ECHOES) {
 								warn("Only " + SpellNumbers.MAX_ECHOES + " Echoes count; the rest are ignored.");
 							} else {
-								link.echoPrefix = new Reader(runes.subList(0, i), false).segment(0, Runes.SELF, List.of());
+								link.echoPrefix = new Reader(runes.subList(base, i), false, baseShape).segment(0, baseShape, List.of());
 							}
 						}
 						RuneDef nextShape;
@@ -163,7 +175,20 @@ public final class SpellCompiler {
 						} else {
 							nextShape = Runes.TRIGGER;
 						}
+						if (rune.is(Runes.COMBO.id()) && stored()) {
+							warn("Combo never fires in an imbued spell: every release counts as a first cast.");
+						}
+						boolean imbue = rune.is(Runes.IMBUE.id());
+						int outerBase = base;
+						RuneDef outerShape = baseShape;
+						if (imbue) {
+							// What follows is stored and released on its own: an Echo in it repeats only that.
+							base = i + 1;
+							baseShape = Runes.TRIGGER;
+						}
 						link.next = segment(i + 1, nextShape, List.of(new Target(i, rune, link.mods)));
+						base = outerBase;
+						baseShape = outerShape;
 						if (link.next.isEmpty() && !rune.is(Runes.ECHO.id())) {
 							warn(rune.name() + " has nothing after it.");
 						}

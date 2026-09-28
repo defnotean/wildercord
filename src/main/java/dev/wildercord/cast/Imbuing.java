@@ -87,22 +87,31 @@ import java.util.WeakHashMap;
  *       be imbued too, and becomes a glyph where it's placed; break your own glyph and the block you get
  *       back still holds what's left of it.</li>
  * </ul>
- * The stored part was paid for up front (three times over), so releasing it costs nothing.
+ * The stored part was paid for up front (three times over), so releasing it costs no mana. It
+ * isn't free of time, though: everything a caster has imbued shares one cooldown, as long as the
+ * stored spell's own (so a sword, a bow and a helmet can't take turns to cast it faster than the
+ * Cord could, and Vow's longer cooldown still counts), and a glyph re-arms only as fast as its spell
+ * could be cast. A caster keeps at most {@link #MAX_ITEMS} imbued items (the oldest fades), so mana
+ * can't be banked into a chest of charged swords, and a release never Siphons mana back.
  */
 public final class Imbuing {
 	private Imbuing() {}
 
 	/** Glyphs one caster may keep; making another lets the oldest fade. */
 	public static final int MAX_GLYPHS = 12;
-	/** One item releases at most this often (a flurry of strikes, all four armour pieces at once). */
+	/** Imbued items one caster may keep charged; imbuing another lets the oldest fade. */
+	public static final int MAX_ITEMS = 6;
+	/** The shortest wait between a caster's releases, whatever the spell (a flurry of strikes, all four armour pieces at once). */
 	private static final int ITEM_GAP = 10;
-	/** A glyph goes off at most this often. */
+	/** The shortest time a glyph takes to re-arm, whatever its spell. */
 	private static final int GLYPH_REARM = 20;
+	/** How long a server-time jump may leave a stale cooldown before it's ignored (longer than any spell's). */
+	private static final int STALE = 1300;
 	/** Players see glyphs from this far. */
 	private static final double GLYPH_SEEN = 24.0;
 
-	/** When each player's imbued things last released, and fired an imbued shot. */
-	private static final Map<UUID, Long> LAST_RELEASE = new HashMap<>();
+	/** When each player's imbued things may next release (they share one cooldown), and when they last fired an imbued shot. */
+	private static final Map<UUID, Long> READY_AT = new HashMap<>();
 	private static final Map<UUID, Long> LAST_SHOT = new HashMap<>();
 	/** Imbued arrows in flight, for their trail. */
 	private static final Set<Projectile> SHOTS = Collections.newSetFromMap(new WeakHashMap<>());
@@ -116,11 +125,11 @@ public final class Imbuing {
 		UseItemCallback.EVENT.register(Imbuing::onUse);
 		ServerTickEvents.END_SERVER_TICK.register(Imbuing::tick);
 		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-			LAST_RELEASE.remove(handler.player.getUUID());
+			READY_AT.remove(handler.player.getUUID());
 			LAST_SHOT.remove(handler.player.getUUID());
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			LAST_RELEASE.clear();
+			READY_AT.clear();
 			LAST_SHOT.clear();
 			SHOTS.clear();
 		});
@@ -187,7 +196,10 @@ public final class Imbuing {
 		ItemStack target = held.getCount() > 1 ? held.split(1) : held;
 		Imbued old = target.get(WildercordComponents.IMBUED);
 		boolean glint = old != null ? old.glint() : !target.has(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
-		target.set(WildercordComponents.IMBUED, new Imbued(stored.stream().map(RuneDef::id).toList(), SpellNumbers.IMBUE_CHARGES, color, glint));
+		if (old != null) {
+			Ledger.of(player.level()).forget(old);
+		}
+		target.set(WildercordComponents.IMBUED, counted(player, stored.stream().map(RuneDef::id).toList(), SpellNumbers.IMBUE_CHARGES, color, glint));
 		if (glint) {
 			target.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 		}
@@ -205,6 +217,39 @@ public final class Imbuing {
 			Component.literal(SpellNames.auto(stored)).withColor(color), SpellNumbers.IMBUE_CHARGES,
 			Component.translatable("tooltip.wildercord.imbued." + release.name().toLowerCase(java.util.Locale.ROOT))).withColor(0xE8E0FF));
 		Grimoire.feat(player, dev.wildercord.spell.Feats.IMBUE);
+	}
+
+	/**
+	 * A new imbued item's spell, counted among its maker's: if that makes too many, the oldest one's
+	 * magic fades (the next time it would release), and the maker is told.
+	 */
+	private static Imbued counted(ServerPlayer maker, List<String> runes, int charges, int color, boolean glint) {
+		long serial = Ledger.of(maker.level()).add(maker.getUUID());
+		if (Ledger.of(maker.level()).trimmed(maker.getUUID())) {
+			maker.sendSystemMessage(Component.translatable("message.wildercord.imbue_oldest_faded", MAX_ITEMS).withStyle(ChatFormatting.GRAY));
+		}
+		return new Imbued(runes, charges, color, glint, maker.getUUID(), serial);
+	}
+
+	/**
+	 * Whether an imbued item's magic still holds: false (and the magic is gone from it, and whoever
+	 * holds it is told) if its maker has imbued {@link #MAX_ITEMS} newer things since.
+	 */
+	private static boolean holds(ServerPlayer holder, ItemStack stack, Imbued imbued) {
+		if (!imbued.counted() || Ledger.of(holder.level()).has(imbued)) {
+			return true;
+		}
+		strip(stack, imbued);
+		holder.sendOverlayMessage(Component.translatable("message.wildercord.imbue_faded", stack.getHoverName()).withStyle(ChatFormatting.GRAY));
+		Fx.sound(holder.level(), holder.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
+		return false;
+	}
+
+	private static void strip(ItemStack stack, Imbued imbued) {
+		stack.remove(WildercordComponents.IMBUED);
+		if (imbued.glint()) {
+			stack.remove(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
+		}
 	}
 
 	private static void imbueBlock(ServerPlayer player, ServerLevel level, BlockPos pos, Direction face, List<RuneDef> stored, int color, int charges) {
@@ -249,6 +294,12 @@ public final class Imbuing {
 		if (imbued == null || imbued.charges() <= 0 || level.getBlockState(pos).isAir()) {
 			return;
 		}
+		Ledger ledger = Ledger.of(level);
+		if (imbued.counted() && !ledger.has(imbued)) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.imbue_faded", level.getBlockState(pos).getBlock().getName()).withStyle(ChatFormatting.GRAY));
+			return;
+		}
+		ledger.forget(imbued);
 		write(player, level, pos.immutable(), face, imbued.runes(), imbued.color(), imbued.charges());
 		player.sendOverlayMessage(Component.translatable("message.wildercord.imbued_block",
 			Component.literal(SpellNames.auto(runesOf(imbued.runes()))).withColor(imbued.color()), imbued.charges()).withColor(0xE8E0FF));
@@ -314,17 +365,41 @@ public final class Imbuing {
 
 	// ------------------------------------------------------------------ releasing from items
 
-	/** Whether this player's imbued things may release now (see {@link #ITEM_GAP}). */
-	private static boolean ready(ServerPlayer player) {
-		Long last = LAST_RELEASE.get(player.getUUID());
+	/** Ticks until this player's imbued things may release again (0 = now): they share one cooldown. */
+	private static long waiting(ServerPlayer player) {
+		Long at = READY_AT.get(player.getUUID());
 		long now = player.level().getGameTime();
-		return last == null || now - last >= ITEM_GAP || last > now;
+		return at == null || at - now > STALE ? 0 : Math.max(0, at - now);
+	}
+
+	private static boolean ready(ServerPlayer player) {
+		return waiting(player) == 0;
+	}
+
+	/** Starts the shared cooldown: as long as the stored spell's own would be for this player, and never under {@link #ITEM_GAP}. */
+	private static void cool(ServerPlayer player, List<String> runes) {
+		READY_AT.put(player.getUUID(), player.level().getGameTime() + cooldown(player, runes, ITEM_GAP));
+	}
+
+	/** The stored spell's cooldown as {@code caster} would cast it (Rapid, Vow and heart perks counted), at least {@code floor}. */
+	private static int cooldown(ServerPlayer caster, List<String> ids, int floor) {
+		SpellCompiler.Compiled compiled = SpellCompiler.compileStored(runesOf(ids));
+		return compiled.isEmpty() ? floor : Math.max(floor, Heart.cooldownTicks(caster, compiled));
+	}
+
+	/**
+	 * Where an item's spell lets go when its trigger is a creature or block: there, unless the spell
+	 * only helps (a Heal in a sword or a helmet), which would be wasted on a foe or a stone, so it
+	 * goes to whoever holds the item instead.
+	 */
+	private static Cast.Trigger aimed(ServerPlayer holder, List<String> runes, Cast.Trigger at) {
+		return kinds(runes)[0] ? at : Cast.Trigger.self(holder);
 	}
 
 	/** Spends a charge of {@code stack} and releases its spell next tick (after whatever set it off has settled). */
 	private static void release(ServerPlayer player, ItemStack stack, Imbued imbued, Cast.Trigger at) {
 		spend(player, stack, imbued);
-		LAST_RELEASE.put(player.getUUID(), player.level().getGameTime());
+		cool(player, imbued.runes());
 		List<String> runes = imbued.runes();
 		int color = imbued.color();
 		Scheduler.later(1, () -> {
@@ -338,10 +413,8 @@ public final class Imbuing {
 	private static void spend(ServerPlayer player, ItemStack stack, Imbued imbued) {
 		int left = imbued.charges() - 1;
 		if (left <= 0) {
-			stack.remove(WildercordComponents.IMBUED);
-			if (imbued.glint()) {
-				stack.remove(DataComponents.ENCHANTMENT_GLINT_OVERRIDE);
-			}
+			strip(stack, imbued);
+			Ledger.of(player.level()).forget(imbued);
 			player.sendOverlayMessage(Component.translatable("message.wildercord.imbue_spent", stack.getHoverName()).withStyle(ChatFormatting.GRAY));
 			Fx.sound(player.level(), player.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_BREAK, 0.5F, 1.4F);
 		} else {
@@ -359,7 +432,9 @@ public final class Imbuing {
 		if (compiled.isEmpty() || runes.stream().anyMatch(r -> r.is(Runes.IMBUE.id()))) {
 			return;
 		}
-		Cast cast = new Cast(caster, 1, Heart.bonuses(caster), false, null, new Cast.Info(compiled.root(), runes.size(), Heart.leaning(caster), List.copyOf(runes)));
+		// Paid for when it was imbued: it can't Siphon that mana back a second time.
+		Cast cast = new Cast(caster, 1, Heart.bonuses(caster), false, null, new Cast.Info(compiled.root(), runes.size(), Heart.leaning(caster), List.copyOf(runes)))
+			.noSiphon();
 		CastEngine.runSegment(cast, compiled.root(), at);
 	}
 
@@ -369,8 +444,9 @@ public final class Imbuing {
 			ItemStack weapon = player.getMainHandItem();
 			Imbued imbued = weapon.get(WildercordComponents.IMBUED);
 			Imbued.Release kind = imbued == null ? null : Imbued.release(weapon);
-			if ((kind == Imbued.Release.WEAPON || kind == Imbued.Release.TOOL) && ready(player)) {
-				release(player, weapon, imbued, new Cast.Trigger(entity.getBoundingBox().getCenter(), player.getLookAngle(), entity, null, null));
+			if ((kind == Imbued.Release.WEAPON || kind == Imbued.Release.TOOL) && ready(player) && holds(player, weapon, imbued)) {
+				release(player, weapon, imbued, aimed(player, imbued.runes(),
+					new Cast.Trigger(entity.getBoundingBox().getCenter(), player.getLookAngle(), entity, null, null)));
 			}
 		}
 		if (entity instanceof ServerPlayer wearer && source.getEntity() instanceof LivingEntity attacker && attacker != wearer && (damage > 0 || blocked)) {
@@ -381,9 +457,9 @@ public final class Imbuing {
 				if (imbued == null || Imbued.release(worn) != Imbued.Release.WORN) {
 					continue;
 				}
-				if (ready(wearer)) {
+				if (ready(wearer) && holds(wearer, worn, imbued)) {
 					Vec3 c = attacker.getBoundingBox().getCenter();
-					release(wearer, worn, imbued, new Cast.Trigger(c, c.subtract(wearer.getEyePosition()).normalize(), attacker, null, null));
+					release(wearer, worn, imbued, aimed(wearer, imbued.runes(), new Cast.Trigger(c, c.subtract(wearer.getEyePosition()).normalize(), attacker, null, null)));
 				}
 				break;
 			}
@@ -416,9 +492,14 @@ public final class Imbuing {
 		if (last != null && last == now) {
 			return;
 		}
-		LAST_SHOT.put(player.getUUID(), now);
 		Imbued imbued = bow.get(WildercordComponents.IMBUED);
+		// While the shared cooldown runs, a shot is only an arrow (and keeps its charge).
+		if (!ready(player) || !holds(player, bow, imbued)) {
+			return;
+		}
+		LAST_SHOT.put(player.getUUID(), now);
 		spend(player, bow, imbued);
+		cool(player, imbued.runes());
 		arrow.setAttached(WildercordAttachments.IMBUED_SHOT, new WildercordAttachments.ImbuedShot(imbued.runes(), imbued.color()));
 		SHOTS.add(arrow);
 	}
@@ -518,7 +599,9 @@ public final class Imbuing {
 					new AABB(pos).inflate(1.5), e -> e.getAge() <= 3 && e.getItem().is(item) && !e.getItem().has(WildercordComponents.IMBUED))) {
 				ItemStack stack = drop.getItem();
 				ItemStack one = stack.getCount() > 1 ? stack.split(1) : stack;
-				one.set(WildercordComponents.IMBUED, new Imbued(glyph.runes(), glyph.charges(), glyph.color(), true));
+				one.set(WildercordComponents.IMBUED, player instanceof ServerPlayer maker
+					? counted(maker, glyph.runes(), glyph.charges(), glyph.color(), true)
+					: new Imbued(glyph.runes(), glyph.charges(), glyph.color(), true, glyph.owner(), 0L));
 				one.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 				if (one != stack) {
 					level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(level, drop.getX(), drop.getY(), drop.getZ(), one));
@@ -540,8 +623,9 @@ public final class Imbuing {
 		keep(server.level(), player, pos, state);
 		ItemStack tool = server.getMainHandItem();
 		Imbued imbued = tool.get(WildercordComponents.IMBUED);
-		if (imbued != null && Imbued.release(tool) == Imbued.Release.TOOL && ready(server)) {
-			release(server, tool, imbued, new Cast.Trigger(Vec3.atCenterOf(pos), server.getLookAngle(), null, pos.immutable(), Direction.UP));
+		if (imbued != null && Imbued.release(tool) == Imbued.Release.TOOL && ready(server) && holds(server, tool, imbued)) {
+			release(server, tool, imbued, aimed(server, imbued.runes(),
+				new Cast.Trigger(Vec3.atCenterOf(pos), server.getLookAngle(), null, pos.immutable(), Direction.UP)));
 		}
 	}
 
@@ -555,7 +639,12 @@ public final class Imbuing {
 		if (!(player instanceof ServerPlayer server)) {
 			return InteractionResult.SUCCESS;
 		}
+		if (!holds(server, stack, imbued)) {
+			return InteractionResult.FAIL;
+		}
 		if (!ready(server)) {
+			server.sendOverlayMessage(Component.translatable("message.wildercord.imbue_cooling",
+				String.format(java.util.Locale.ROOT, "%.1f", waiting(server) / 20.0)).withStyle(ChatFormatting.GRAY));
 			return InteractionResult.FAIL;
 		}
 		Cast.Trigger at = aim(server, imbued.runes());
@@ -621,9 +710,10 @@ public final class Imbuing {
 		static final SavedDataType<Glyphs> TYPE = new SavedDataType<>(Wildercord.id("glyphs"), Glyphs::new, CODEC, null);
 
 		private final Map<BlockPos, Glyph> byPos = new LinkedHashMap<>();
-		/** Not saved: when each last went off, and whether it was powered last time it was looked at. */
+		/** Not saved: when each last went off, whether it was powered last time it was looked at, and whom it last went off at. */
 		private final Map<BlockPos, Long> rearm = new HashMap<>();
 		private final Set<BlockPos> powered = new java.util.HashSet<>();
+		private final Map<BlockPos, UUID> victim = new HashMap<>();
 
 		public Glyphs() {
 		}
@@ -653,12 +743,88 @@ public final class Imbuing {
 			if (byPos.remove(pos) != null) {
 				rearm.remove(pos);
 				powered.remove(pos);
+				victim.remove(pos);
 				setDirty();
 			}
 		}
 
 		boolean isEmpty() {
 			return byPos.isEmpty();
+		}
+	}
+
+	/**
+	 * Each caster's imbued items, by serial, oldest first (kept with the overworld, so it holds
+	 * whichever world the items are in). Only the newest {@link #MAX_ITEMS} of anyone's still hold
+	 * their magic; an item whose serial has dropped off fades the next time it would release.
+	 */
+	public static final class Ledger extends SavedData {
+		// The last serial handed out is saved too, so a faded item's serial is never handed out again.
+		static final Codec<Ledger> CODEC = RecordCodecBuilder.create(i -> i.group(
+			Codec.LONG.optionalFieldOf("next", 0L).forGetter(ledger -> ledger.next),
+			Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.LONG.listOf()).optionalFieldOf("makers", Map.of()).forGetter(ledger -> ledger.byMaker)
+		).apply(i, Ledger::new));
+		static final SavedDataType<Ledger> TYPE = new SavedDataType<>(Wildercord.id("imbued_items"), Ledger::new, CODEC, null);
+
+		private final Map<UUID, List<Long>> byMaker = new HashMap<>();
+		private long next;
+
+		public Ledger() {
+		}
+
+		private Ledger(long next, Map<UUID, List<Long>> saved) {
+			this.next = next;
+			saved.forEach((maker, serials) -> {
+				byMaker.put(maker, new ArrayList<>(serials));
+				serials.forEach(s -> this.next = Math.max(this.next, s));
+			});
+		}
+
+		public static Ledger of(ServerLevel level) {
+			return level.getServer().overworld().getDataStorage().computeIfAbsent(TYPE);
+		}
+
+		/** Counts a new imbued item of {@code maker}'s and returns its serial. */
+		long add(UUID maker) {
+			long serial = ++next;
+			byMaker.computeIfAbsent(maker, k -> new ArrayList<>()).add(serial);
+			setDirty();
+			return serial;
+		}
+
+		/** Lets the oldest of {@code maker}'s items fade until they have no more than {@link #MAX_ITEMS}; true if any did. */
+		boolean trimmed(UUID maker) {
+			List<Long> serials = byMaker.get(maker);
+			boolean any = false;
+			while (serials != null && serials.size() > MAX_ITEMS) {
+				serials.removeFirst();
+				any = true;
+			}
+			if (any) {
+				setDirty();
+			}
+			return any;
+		}
+
+		public boolean has(Imbued imbued) {
+			List<Long> serials = byMaker.get(imbued.maker());
+			return serials != null && serials.contains(imbued.serial());
+		}
+
+		/** An item that's spent, re-imbued or became a glyph stops counting. */
+		void forget(Imbued imbued) {
+			List<Long> serials = imbued.counted() ? byMaker.get(imbued.maker()) : null;
+			if (serials != null && serials.remove(imbued.serial())) {
+				if (serials.isEmpty()) {
+					byMaker.remove(imbued.maker());
+				}
+				setDirty();
+			}
+		}
+
+		/** How many of {@code maker}'s imbued items still hold their magic. */
+		public int count(UUID maker) {
+			return byMaker.getOrDefault(maker, List.of()).size();
 		}
 	}
 
@@ -714,10 +880,17 @@ public final class Imbuing {
 					boolean[] kind = kinds(glyph.runes());
 					List<LivingEntity> near = level.getEntitiesOfClass(LivingEntity.class, zone(level, glyph),
 						e -> e.isAlive() && !e.isSpectator() && (kind[0] && Targets.canHarm(owner, e) || kind[1] && Targets.canHelp(owner, e)));
-					if (near.isEmpty()) {
+					// A creature that stays on a glyph is caught once: it goes off at it again only after it steps off and back on.
+					UUID last = glyphs.victim.get(glyph.pos());
+					boolean stillOn = last != null && near.stream().anyMatch(e -> e.getUUID().equals(last));
+					if (last != null && !stillOn) {
+						glyphs.victim.remove(glyph.pos());
+					}
+					UUID caught = stillOn ? last : null;
+					stepper = near.stream().filter(e -> !e.getUUID().equals(caught)).findFirst().orElse(null);
+					if (stepper == null) {
 						continue;
 					}
-					stepper = near.getFirst();
 				}
 				fire(level, glyphs, glyph, owner, stepper);
 			}
@@ -755,7 +928,11 @@ public final class Imbuing {
 			glyphs.remove(glyph.pos());
 		} else {
 			glyphs.put(glyph.withCharges(left));
-			glyphs.rearm.put(glyph.pos(), level.getGameTime() + GLYPH_REARM);
+			// It re-arms no faster than its spell could be cast again (so a Vowed glyph waits its Vow out).
+			glyphs.rearm.put(glyph.pos(), level.getGameTime() + cooldown(owner, glyph.runes(), GLYPH_REARM));
+			if (stepper != null) {
+				glyphs.victim.put(glyph.pos(), stepper.getUUID());
+			}
 		}
 		Sigils.spell(level, at.add(n.scale(0.04)), n, runesOf(glyph.runes()), glyph.color(), Math.max(0.3F, circleSize(level, glyph) * 1.4F), 18);
 		Sigils.flash(level, at.add(n.scale(0.2)), glyph.color(), 1.4F);

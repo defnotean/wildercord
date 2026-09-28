@@ -43,6 +43,26 @@ class SpellCompilerTest {
 	}
 
 	@Test
+	void anEchoInAStoredSpellRepeatsOnlyWhatWasStoredAtItsTarget() {
+		SpellCompiler.Compiled released = SpellCompiler.compileStored(List.of(FIRE, ECHO));
+		SpellPlan.Segment prefix = released.root().link.echoPrefix;
+		assertSame(TRIGGER, prefix.groups.getFirst().shape);
+		// Priced the same inside the whole spell as when it's released on its own: never with Self and Imbue again.
+		SpellCompiler.Compiled whole = compile(SELF, IMBUE, FIRE, ECHO);
+		assertEquals(IMBUE.cost() + released.cost() * SpellNumbers.IMBUE_CHARGES, whole.cost(), 1e-9);
+		SpellPlan.Segment inWhole = whole.root().link.next.link.echoPrefix;
+		assertEquals(List.of(FIRE), inWhole.groups.getFirst().effects.stream().map(e -> e.effect).toList());
+		assertSame(TRIGGER, inWhole.groups.getFirst().shape);
+	}
+
+	@Test
+	void comboInAStoredSpellIsFlagged() {
+		String warning = "Combo never fires in an imbued spell: every release counts as a first cast.";
+		assertTrue(compile(SELF, IMBUE, COMBO, FIRE).warnings().contains(warning));
+		assertFalse(compile(COMBO, SWIFT).warnings().contains(warning));
+	}
+
+	@Test
 	void shieldShowsHowLongItHolds() {
 		assertEquals(List.of("You: Shield (30s)"), compile(SHIELD).lines());
 		assertEquals(List.of("You: Shield (2x duration, 60s)"), compile(SHIELD, EXTEND).lines());

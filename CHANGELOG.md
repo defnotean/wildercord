@@ -4,6 +4,26 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Changed
+- **Imbue balance.** Releasing still costs no mana, but it's no longer a way around cooldowns or a
+  mana bank:
+  - Everything you've imbued shares one cooldown, as long as the stored spell's own (Rapid, Vow and
+    heart perks counted, at least half a second). Swapping between imbued swords, bows and armour
+    can't release a spell faster than the Cord could cast it, and Vow in a stored spell (twice the
+    power) now waits out its four-times cooldown. Bows follow it too: a shot while it cools is a
+    plain arrow and keeps its charge.
+  - You keep at most **6 imbued items**: imbuing a seventh lets the oldest one's magic fade.
+  - Releases no longer Siphon mana back (they were paid for when imbued).
+  - A glyph re-arms no faster than its spell's cooldown (at least a second), and catches a creature
+    standing on it once, not every second until its charges are gone.
+
+### Fixed
+- A stored spell that only helps (a Heal in a sword, a Shield in a chestplate) went off at the foe
+  you struck or the block you broke, and did nothing. It now goes to whoever holds the item.
+- An Echo inside a stored spell repeated the whole spell from you (and was priced that way); it now
+  repeats only what was stored, at the same target. Combo in a stored spell never fires, and the
+  Cord screen now says so.
+
 ## [0.2.0-alpha] - 2026-09-28
 
 ### Added

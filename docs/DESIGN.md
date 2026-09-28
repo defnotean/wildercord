@@ -618,7 +618,23 @@ say, makes it stronger because it makes the spell cost more).
 ### Imbuing
 **Imbue** is a link: everything after it isn't cast but *stored*, with **3 charges**, in what the
 shape before it touched. The stored part is paid for three times over when you cast, so releasing
-it costs nothing. An Imbue can't store another Imbue.
+it costs no mana. An Imbue can't store another Imbue.
+
+Releasing isn't free of time, though, and mana can't be banked:
+
+- **One shared cooldown.** Everything you've imbued (swords, bows, armour, sticks) shares one
+  cooldown, as long as the stored spell's own would be for you (Rapid, Vow and heart perks count),
+  and never under half a second. A sword, a bow and a helmet can't take turns to release a spell
+  faster than your Cord could cast it, and a Vowed spell still waits out its Vow. A bow shot while
+  it's cooling is just an arrow, and keeps its charge.
+- **Six imbued items at a time.** Imbuing a seventh lets your oldest one's magic fade (the next time
+  it would release, it's a plain item again). An item whose charges run out, that you imbue again, or
+  that you place as a glyph stops counting. Glyphs are counted separately (twelve).
+- **No Siphon.** A release was paid for when it was imbued, so it can't Siphon that mana back.
+- **Helpful spells go to the holder.** A stored spell that only helps (a Heal, a Shield) lets go on
+  whoever holds the weapon, tool or armour, not on the foe it struck or the block it broke.
+- **Inside a stored spell,** an Echo repeats only what was stored, at the same target, and Combo
+  never fires (every release counts as a first cast; the Cord screen warns about it).
 
 With **Self** it goes into the item in your hand (one item: from a stack, one is taken off), or, with
 both hands empty, into the block you're looking at. How an item lets it go depends on what it is:
@@ -637,7 +653,7 @@ Imbued items glint and say what they hold. Cords, runes and scrolls can't be imb
 **Any block** can hold magic. Aimed at one (Touch, Bolt, any shape that hits it), placed from an
 imbued block item, or looked at with empty hands, a block becomes a **glyph**: a faint copy of the
 stored spell's circle on the face that was struck, sized to the block (small on a button, a torch or
-a flower; full on a floor). A glyph goes off at most once a second at:
+a flower; full on a floor). A glyph goes off at:
 
 - a creature that steps on it or touches it, that the spell is for (enemies for harmful spells, you
   and your allies for helpful ones);
@@ -646,6 +662,9 @@ a flower; full on a floor). A glyph goes off at most once a second at:
 - anything that **shoots** the block;
 - someone else **breaking** it (it goes off at them first);
 - the block being **powered** by redstone.
+
+It re-arms no faster than its spell could be cast again (at least a second), and a creature that
+stays on it is caught once: it goes off at that creature again only after it steps off and back on.
 
 Glyphs are kept with the world and cast as their maker (so they sleep while their maker is away).
 Break your own glyph and the block you get back still holds its spell and its charges left (if the

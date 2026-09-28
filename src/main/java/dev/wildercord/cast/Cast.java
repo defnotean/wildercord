@@ -131,6 +131,12 @@ public final class Cast {
 		return this;
 	}
 
+	/** No Siphon for this cast: for one that was paid for earlier (an imbued release), so it can't earn its mana back again. */
+	public Cast noSiphon() {
+		budget.shared.siphon = 0;
+		return this;
+	}
+
 	/** The same for every part of one cast (links, pulses, echoes): so a Shield that stopped it stops all of it. */
 	public Object identity() {
 		return budget.shared;

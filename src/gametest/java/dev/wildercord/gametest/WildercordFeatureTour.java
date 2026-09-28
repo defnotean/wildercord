@@ -805,6 +805,78 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ Imbue: a spell stored in a sword, and in a block
 
+	/** Imbuing's limits: one shared cooldown, a spell that only helps goes to the holder, and only the newest few imbued items hold. */
+	private static void imbueRules(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<ItemStack> sticks = new java.util.ArrayList<>();
+		// The sword's release cools first.
+		context.waitTicks(20);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			SpellCaster.edit(player, 0, List.of());
+			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.BOLT, Runes.HARM));
+			for (int i = 0; i <= Imbuing.MAX_ITEMS; i++) {
+				player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STICK));
+				Spellbooks.setReadyAt(player, 0, 0);
+				SpellCaster.cast(player, 0);
+				sticks.add(player.getMainHandItem());
+				player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			}
+			check(sticks.stream().allMatch(s -> s.has(WildercordComponents.IMBUED)), "every stick should take the spell");
+			check(Imbuing.Ledger.of(level).count(player.getUUID()) == Imbuing.MAX_ITEMS, "only the newest " + Imbuing.MAX_ITEMS + " imbued items should count");
+			// The first one's magic has faded: using it releases nothing and leaves a plain stick.
+			player.setItemInHand(InteractionHand.MAIN_HAND, sticks.getFirst());
+			player.gameMode.useItem(player, level, player.getMainHandItem(), InteractionHand.MAIN_HAND);
+			check(!sticks.getFirst().has(WildercordComponents.IMBUED), "the oldest imbued item should fade once there are too many");
+			// The newest releases, and then everything imbued waits out the spell's cooldown.
+			ItemStack newest = sticks.getLast();
+			player.setItemInHand(InteractionHand.MAIN_HAND, newest);
+			player.gameMode.useItem(player, level, newest, InteractionHand.MAIN_HAND);
+			check(newest.get(WildercordComponents.IMBUED).charges() == 2, "using an imbued item should release it");
+			ItemStack other = sticks.get(sticks.size() - 2);
+			player.setItemInHand(InteractionHand.MAIN_HAND, other);
+			player.gameMode.useItem(player, level, other, InteractionHand.MAIN_HAND);
+			check(other.get(WildercordComponents.IMBUED).charges() == 3, "another imbued item shouldn't release during the shared cooldown");
+			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+		});
+		// A sword that holds only a Heal heals its wielder when it strikes, instead of the foe.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+			SpellCaster.edit(player, 0, List.of());
+			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.HEAL));
+			Spellbooks.setReadyAt(player, 0, 0);
+			SpellCaster.cast(player, 0);
+			Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			Vec3 spot = player.position().add(player.getLookAngle().multiply(1, 0, 1).normalize().scale(1.6));
+			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
+			husk.setNoAi(true);
+			husk.addTag("wildercord.tour");
+			level.addFreshEntity(husk);
+			player.setHealth(8);
+		});
+		// The shared cooldown from the sticks runs out first.
+		context.waitTicks(60);
+		world.getServer().runOnServer(server -> {
+			Mob husk = tourHusk(server);
+			if (husk != null) {
+				player(server).attack(husk);
+			}
+		});
+		context.waitTicks(4);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			check(player.getHealth() > 8, "a sword holding only a Heal should heal its wielder on a strike, has " + player.getHealth());
+			player.setHealth(player.getMaxHealth());
+			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			Mob husk = tourHusk(server);
+			if (husk != null) {
+				husk.discard();
+			}
+		});
+	}
+
 	private static void imbuing(ClientGameTestContext context, TestSingleplayerContext world) {
 		Vec3 at = stage.add(-16, 0, -12);
 		world.getServer().runOnServer(server -> {
@@ -850,6 +922,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			husk.discard();
 			player(server).setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 		});
+		imbueRules(context, world);
 		// Any block holds magic: a plank imbued in hand, placed, is a glyph; broken by its maker, it comes back still imbued.
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
