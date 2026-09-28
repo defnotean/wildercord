@@ -38,6 +38,8 @@ final class FusedStormNumbers {
 	static final int[] CLOCK_STRIKES = {40, 80};
 	/** The clock's hand takes this many steps between strikes. */
 	static final int CLOCK_STEPS = 8;
+	/** Clocks one caster may have ticking at once; a new one past this stops the oldest. */
+	static final int CLOCKS_MAX = 6;
 
 	// ---- Heartstopper
 	static final double HEART_DAMAGE = 5;

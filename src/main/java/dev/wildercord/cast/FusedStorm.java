@@ -84,6 +84,8 @@ final class FusedStorm {
 	private static final Map<Key, Snap> RECOILS = new HashMap<>();
 	/** Updraft: the smash each thrown creature has coming (more updrafts before it only add to it). */
 	private static final Map<Key, double[]> UPDRAFTS = new HashMap<>();
+	/** Stormclock: each caster's clocks still ticking, oldest first (each one is only a flag: set, it stops). */
+	private static final Map<UUID, Deque<boolean[]>> CLOCKS = new HashMap<>();
 	/** Thunderhead: each caster's clouds, oldest first. */
 	private static final Map<UUID, List<Cloud>> CLOUDS = new HashMap<>();
 	/** Skyglyph: each caster's glyphs, oldest first. */
@@ -157,6 +159,7 @@ final class FusedStorm {
 		HEARTS.clear();
 		RECOILS.clear();
 		UPDRAFTS.clear();
+		CLOCKS.clear();
 		CLOUDS.clear();
 		GLYPHS.clear();
 		SPRUNG.clear();
@@ -326,10 +329,21 @@ final class FusedStorm {
 		// Hung facing down, tipped a little toward whoever cast it, so they can read it.
 		Vec3 normal = new Vec3(toCaster.x * 0.45, -1, toCaster.z * 0.45).normalize();
 		double size = Math.max(1.2, radius * 1.15);
+		// A caster keeps a few clocks going at once; one more stops the oldest.
+		UUID owner = cast.caster.getUUID();
+		Deque<boolean[]> clocks = CLOCKS.computeIfAbsent(owner, k -> new ArrayDeque<>());
+		while (clocks.size() >= CLOCKS_MAX) {
+			clocks.pollFirst()[0] = true;
+		}
+		boolean[] stopped = {false};
+		clocks.addLast(stopped);
 		FusedStormVfx.clockOpen(level, face, normal, spot, size);
 		int step = CLOCK_STRIKES[0] / CLOCK_STEPS;
 		int last = CLOCK_STRIKES[CLOCK_STRIKES.length - 1];
 		every(cast, step, step, age -> {
+			if (stopped[0]) {
+				return false;
+			}
 			boolean strike = false;
 			for (int at : CLOCK_STRIKES) {
 				strike |= age == at;
@@ -346,7 +360,13 @@ final class FusedStorm {
 				}
 			});
 			return age < last;
-		}, () -> { });
+		}, () -> {
+			stopped[0] = true;
+			clocks.remove(stopped);
+			if (clocks.isEmpty()) {
+				CLOCKS.remove(owner, clocks);
+			}
+		});
 	}
 
 	// ------------------------------------------------------------------ Heartstopper
