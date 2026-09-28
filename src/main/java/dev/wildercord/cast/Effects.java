@@ -144,6 +144,10 @@ public final class Effects {
 		int amplify = node.count(Runes.AMPLIFY);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
 		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e));
+		if (!harmed.isEmpty() && (rune.kind() == dev.wildercord.spell.EffectKind.HARMFUL || rune.kind() == dev.wildercord.spell.EffectKind.MOVEMENT && !hit.self())) {
+			// A Shield stops a spell that costs no more than the one that raised it; a costlier one breaks it and goes through.
+			harmed = Shields.screen(cast, harmed, hit);
+		}
 		// Self always means you: movement effects move you even though they are "harmful" to others.
 		List<LivingEntity> moved = hit.self() ? List.of(caster) : harmed;
 
@@ -165,10 +169,10 @@ public final class Effects {
 				t.heal((float) (8 * power));
 				Vfx.heal(level, t);
 			});
-			case "shield" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, ticks(12, duration), Math.min(5, 2 + amplify), false, true));
-				Vfx.shield(level, t);
-			});
+			case "shield" -> {
+				int ticks = (int) Math.round(SpellNumbers.shieldTicks(node) * cast.duration);
+				helped.forEach(t -> Shields.raise(cast, t, ticks));
+			}
 			case "harm" -> harmed.forEach(t -> {
 				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 7 * power);
 				Vfx.harm(level, t);
@@ -547,6 +551,10 @@ public final class Effects {
 	 * Execute on the current effect doubles it against targets under half health.
 	 */
 	static void hurt(Cast cast, LivingEntity target, DamageSource source, double amount) {
+		// Damage that didn't come through a shape's hit (a meteor landing, a secret spell's blast) meets a Shield here.
+		if (Shields.stops(cast, target, cast.caster.getEyePosition())) {
+			return;
+		}
 		if (executeBonus > 1.0 && target.getHealth() < target.getMaxHealth() * 0.5F) {
 			amount *= executeBonus;
 			Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, target.getBoundingBox().getCenter(), 4, 0.3, 0.1);

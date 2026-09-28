@@ -129,6 +129,16 @@ public class RuneBolt extends Projectile {
 		if (collide(server, from, end)) {
 			return;
 		}
+		Shields.Interception shield = Shields.intercept(cast, from, end);
+		if (shield != null && !alreadyHit.contains(shield.target())) {
+			// It strikes the Shield's circle: stopped there, or through it and into what it was aimed at.
+			setPos(shield.at());
+			hitEntity(new EntityHitResult(shield.target(), shield.at()));
+			if (!isRemoved() && Shields.blocked(cast, shield.target())) {
+				fizzle();
+			}
+			return;
+		}
 		EntityHitResult entity = ProjectileUtil.getEntityHitResult(server, this, from, end,
 			getBoundingBox().expandTowards(motion).inflate(1.0), this::canHitEntity);
 		if (entity != null) {

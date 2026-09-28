@@ -131,6 +131,9 @@ public final class Wards {
 
 	/** Stasis: holds the target still in time. Bosses are only slowed. */
 	static void stasis(Cast cast, LivingEntity t, int ticks) {
+		if (Shields.stops(cast, t, cast.caster.getEyePosition())) {
+			return;
+		}
 		long now = cast.level.getGameTime();
 		if (cast.once("stasis")) {
 			Fx.sound(cast.level, cast.caster.position(), SoundEvents.BELL_BLOCK, 1.0F, 0.5F);

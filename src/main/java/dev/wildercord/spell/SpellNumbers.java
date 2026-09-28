@@ -212,6 +212,14 @@ public final class SpellNumbers {
 
 	public static final int PULSES = 3;
 
+	/** How many times something imbued can release what it holds (the stored part is paid for this many times). */
+	public static final int IMBUE_CHARGES = 3;
+
+	/** How long a Shield holds, in ticks: 30 s, doubled by each Extend. */
+	public static int shieldTicks(SpellPlan.EffectNode e) {
+		return (int) Math.round(600 * duration(e));
+	}
+
 	/** Ticks between Pulse firings: 20, halved by each Quicken. */
 	public static int pulseInterval(SpellPlan.Link link) {
 		return Math.max(5, (int) Math.round(20 / Math.pow(2.0, link.count(Runes.QUICKEN))));

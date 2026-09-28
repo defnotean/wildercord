@@ -1038,6 +1038,19 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "wildercord:rune": "wildercord:imbue"
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
           "weight": 2,
           "functions": [
             {

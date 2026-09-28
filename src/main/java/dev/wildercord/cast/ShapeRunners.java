@@ -576,6 +576,11 @@ final class ShapeRunners {
 	private static Contact contact(Cast cast, Vec3 from, Vec3 to, double width, Set<UUID> skip) {
 		net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
 		Vec3 end = missed(block) ? to : block.getLocation();
+		Shields.Interception shield = Shields.intercept(cast, from, end);
+		if (shield != null && !skip.contains(shield.target().getUUID())) {
+			// It meets a Shield's circle first.
+			return new Contact(shield.target(), null, shield.at());
+		}
 		List<Entity> hits = along(cast, from, end, width, skip);
 		if (!hits.isEmpty()) {
 			Entity e = hits.getFirst();

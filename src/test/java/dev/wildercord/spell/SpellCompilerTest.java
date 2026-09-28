@@ -13,6 +13,42 @@ class SpellCompilerTest {
 	}
 
 	@Test
+	void imbueStoresTheRestForThreeChargesAndPaysForThem() {
+		SpellCompiler.Compiled c = compile(SELF, IMBUE, FIRE);
+		SpellPlan.Link link = c.root().link;
+		assertNotNull(link);
+		assertSame(c.root().groups.getFirst(), link.anchor);
+		assertSame(TRIGGER, link.next.groups.getFirst().shape);
+		// Self (0) + Imbue (3) + Fire (8) three times over.
+		assertEquals(3 + 8 * 3, c.cost(), 1e-9);
+		assertEquals(List.of("Stored in the item in your hand (3 charges), then:", "  The target: Fire"), c.lines());
+		assertTrue(c.warnings().isEmpty(), c.warnings().toString());
+		assertEquals(List.of(FIRE), SpellCompiler.stored(List.of(SELF, IMBUE, FIRE)));
+	}
+
+	@Test
+	void storedRunesAreReadAsAfterALink() {
+		SpellCompiler.Compiled stored = SpellCompiler.compileStored(List.of(FIRE, EXTEND));
+		SpellPlan.Group g = stored.root().groups.getFirst();
+		assertTrue(g.implicit);
+		assertSame(TRIGGER, g.shape);
+		SpellCompiler.Compiled bolt = SpellCompiler.compileStored(List.of(BOLT, FROST));
+		assertSame(BOLT, bolt.root().groups.getFirst().shape);
+	}
+
+	@Test
+	void anImbueCantStoreAnother() {
+		SpellCompiler.Compiled c = compile(SELF, IMBUE, BOLT, IMBUE, FIRE);
+		assertTrue(c.warnings().contains("An Imbue can't store another Imbue."));
+	}
+
+	@Test
+	void shieldShowsHowLongItHolds() {
+		assertEquals(List.of("You: Shield (30s)"), compile(SHIELD).lines());
+		assertEquals(List.of("You: Shield (2x duration, 60s)"), compile(SHIELD, EXTEND).lines());
+	}
+
+	@Test
 	void effectsWithoutAShapeTargetYou() {
 		SpellCompiler.Compiled c = compile(FEATHER_FALL, EXTEND);
 		SpellPlan.Group g = c.root().groups.getFirst();

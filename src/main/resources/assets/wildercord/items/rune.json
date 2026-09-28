@@ -1298,6 +1298,13 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/combo"
         }
+      },
+      {
+        "when": "wildercord:imbue",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/imbue"
+        }
       }
     ],
     "fallback": {

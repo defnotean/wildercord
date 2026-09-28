@@ -426,7 +426,10 @@ public final class CastEngine {
 			return;
 		}
 		String id = anchored.link.id();
-		if (id.equals(Runes.ON_HIT.id())) {
+		if (id.equals(Runes.IMBUE.id())) {
+			// The rest isn't cast: it's stored in the item in hand (Self) or the block this touched.
+			Imbuing.imbue(cast, hit);
+		} else if (id.equals(Runes.ON_HIT.id())) {
 			if (!entities.isEmpty()) {
 				int n = 0;
 				for (Entity e : entities) {

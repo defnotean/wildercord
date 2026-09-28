@@ -255,7 +255,7 @@ public class Archivist extends SpellcasterIllager {
 		Runebound.aimAt(this, target);
 		if (casting == DOMAIN_SECRET) {
 			// A secret spell: everyone who sees it learns its riddle.
-			Cast cast = new Cast(this, 1, new Heart.Bonuses(power() * 0.75, 1, 1, 1), false, null, Cast.Info.NONE);
+			Cast cast = new Cast(this, 1, new Heart.Bonuses(power() * 0.75, 1, 1, 1), false, null, Cast.Info.NONE).weigh(400);
 			SecretSpells.cast(cast, Secrets.SUNFALL);
 			for (ServerPlayer player : level.players()) {
 				if (player.distanceTo(this) < 40) {

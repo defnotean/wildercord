@@ -36,7 +36,12 @@ public final class Cast {
 		/** Set when the whole cast is cut short, e.g. a Domain shattered in a clash. */
 		boolean cancelled;
 		int segments = MAX_SEGMENTS;
+		/** The mana the spell asks, as a Shield weighs it; worked out from the plan when nobody set it. */
+		double weight = -1;
 	}
+
+	/** What a spell with no plan to price weighs (a flourish of an innate rune, say): a small spell. */
+	public static final double DEFAULT_WEIGHT = 8.0;
 
 	/**
 	 * What was cast: the spell itself (so Mirrorfrost can cast it back), how many runes it has
@@ -106,6 +111,29 @@ public final class Cast {
 	/** One strike of a shape that strikes repeatedly: its own creature and block budget. */
 	public Cast pulse() {
 		return new Cast(caster, level, depth + 1, new Budget(budget.shared), castNumber, power, duration, passive, wanted, info);
+	}
+
+	/**
+	 * How much mana the spell asks, as its list price (not what a discount made the caster pay): a
+	 * Shield stops a spell that weighs no more than the one that raised it.
+	 */
+	public double weight() {
+		Shared shared = budget.shared;
+		if (shared.weight < 0) {
+			shared.weight = info.root() != null ? dev.wildercord.spell.SpellCompiler.cost(info.root()) : DEFAULT_WEIGHT;
+		}
+		return shared.weight;
+	}
+
+	/** Sets what the whole cast weighs (see {@link #weight()}). */
+	public Cast weigh(double weight) {
+		budget.shared.weight = weight;
+		return this;
+	}
+
+	/** The same for every part of one cast (links, pulses, echoes): so a Shield that stopped it stops all of it. */
+	public Object identity() {
+		return budget.shared;
 	}
 
 	/** Takes one segment from the whole cast's allowance; false once it's spent. */

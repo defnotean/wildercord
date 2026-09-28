@@ -200,6 +200,19 @@
       "wildercord:casting/shield_break_2"
     ]
   },
+  "shield_block": {
+    "subtitle": "subtitles.wildercord.shield_block",
+    "sounds": [
+      "wildercord:casting/shield_block_1",
+      "wildercord:casting/shield_block_2"
+    ]
+  },
+  "imbue": {
+    "subtitle": "subtitles.wildercord.imbue",
+    "sounds": [
+      "wildercord:casting/imbue"
+    ]
+  },
   "domain_open": {
     "subtitle": "subtitles.wildercord.domain_open",
     "sounds": [

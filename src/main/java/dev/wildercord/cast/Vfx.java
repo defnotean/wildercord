@@ -409,27 +409,6 @@ public final class Vfx {
 		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.5F);
 	}
 
-	private static final int AMBER = 0xF0C440;
-
-	/** Shield: rings of amber light close in and lock round the target into a cage, chips of stone at its feet. */
-	public static void shield(ServerLevel level, Entity target) {
-		Vec3 base = target.position();
-		Vec3 c = target.getBoundingBox().getCenter();
-		double h = target.getBbHeight();
-		double r = Math.max(0.7, target.getBbWidth() * 0.9);
-		for (int i = 0; i < 3; i++) {
-			ElementFx.ring(level, base.add(0, 0.15 + i * h * 0.4, 0), UP, i == 1 ? ElementFx.EARTH.secondary() : AMBER, r * 1.8, r, 0.06, 12 + i * 2);
-		}
-		double cage = Math.max(r, h * 0.55) * 1.05;
-		double a = level.getRandom().nextDouble() * Math.PI;
-		ElementFx.ring(level, c, new Vec3(Math.cos(a), 0, Math.sin(a)), AMBER, cage * 1.2, cage, 0.035, 16);
-		ElementFx.ring(level, c, new Vec3(-Math.sin(a), 0, Math.cos(a)), AMBER, cage * 1.2, cage, 0.035, 16);
-		Sigils.flash(level, c, AMBER, 1.4F);
-		ElementFx.stoneShards(level, base.add(0, 0.2, 0), ElementFx.groundBlock(level, base), 6, 0.12);
-		emit(level, ParticleTypes.WAX_ON, c, 5, 0.4, 0.05);
-		Fx.sound(level, target.position(), dev.wildercord.content.WildercordSounds.SHIELD_UP, 0.8F, 1.0F);
-	}
-
 	/** Harm: a star seal flares under the target, comets of pink light whirl round it and glyphs shimmer in. */
 	public static void harm(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();

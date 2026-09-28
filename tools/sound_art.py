@@ -799,11 +799,34 @@ def shield_up(v, rng):
 
 def shield_break(v, rng):
     shards = shatter(rng, count=26 + 4 * v, band=(1200, 5200), spread=0.16 + 0.03 * v)
+    # Then the pieces coming down: small bright ticks, thinning out, as shards land and skitter.
+    rain = shatter(rng, count=16 + 2 * v, band=(3200, 8000), spread=0.55, tau=(0.008, 0.035))
     fall = sine(sweep(note(A, 0), note(A, -1) * 0.94, 0.7, 0.8)) + 0.7 * sine(sweep(note(D, 0), note(D, -1) * 0.94, 0.7, 0.8))
     fall *= decay(0.7, 0.22, 0.002)
     thud = thump(160, 55, 0.4, 0.06, 1.6)
-    x = mix(0.8 * shards, 0.35 * fall, 0.6 * thud)
+    x = mix(0.8 * shards, (0.14, 0.3 * rain), 0.35 * fall, 0.6 * thud)
     return finish(reverb(lowpass(x, 9500), 1.1, 0.22), "impact")
+
+
+def shield_block(v, rng):
+    """A spell rings off a shield: a hard glassy strike, a bright ring shimmering out over the low hum
+    of the shell holding, and the hiss of the spell turned aside."""
+    dur = 1.3
+    strike = shatter(rng, count=5 + 2 * v, band=(2800, 7000), spread=0.012, tau=(0.015, 0.05))
+    ring = mix((0.0, glass(note((A, FS)[v], 1), dur, 0.42)), (0.004, 0.6 * glass(note((D, A)[v], 2), dur, 0.3)))
+    hum = sine(note(D, 0), 0.5) * decay(0.5, 0.18, 0.004)
+    hiss = moving_band(0.35, [(0, 5000), (0.35, 1800)], 0.8, rng) * env(0.35, (0, 0), (0.02, 1), (0.35, 0))
+    x = mix(0.7 * strike, 0.55 * chorus(ring, 2, 0.002, 1.1), 0.25 * hum, 0.18 * hiss)
+    return finish(reverb(x, 1.0, 0.22), "impact")
+
+
+def imbue(v, rng):
+    """Magic sinking into an item or a block: a shimmer drawn inward, sealed with a soft struck chord."""
+    draw = reverse(mix(*[(0.02 * i, 0.3 * glass(note(d, 2), 0.6, 0.18)) for i, d in enumerate((D, FS, A, B))]))
+    seal = mix((0.0, 0.5 * bell(note(D, 0), 0.9, 0.4, 2.0, 1.2)), (0.0, 0.35 * bell(note(A, 0), 0.9, 0.35, 2.0, 1.2)))
+    thud = thump(140, 70, 0.3, 0.05, 1.2)
+    x = mix(0.5 * draw, (0.6, seal), (0.6, 0.4 * thud))
+    return finish(reverb(x, 1.0, 0.25), "effect")
 
 
 def domain_open(v, rng):
@@ -955,6 +978,8 @@ def palette():
         ("orb_hum", "casting", "orb_hum", orb_hum, 1, {}),
         ("shield_up", "casting", "shield_up", shield_up, 1, {}),
         ("shield_break", "casting", "shield_break", shield_break, 2, {}),
+        ("shield_block", "casting", "shield_block", shield_block, 2, {}),
+        ("imbue", "casting", "imbue", imbue, 1, {}),
         ("domain_open", "casting", "domain_open", domain_open, 1, far),
         ("domain_close", "casting", "domain_close", domain_close, 1, far),
         ("blink", "casting", "blink", blink, 2, {}),

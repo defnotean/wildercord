@@ -5,6 +5,25 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ## [Unreleased]
 
 ### Added
+- **Shield is a spell shield now**: a one-time spell block, invisible until a harmful spell comes
+  at you. Then its magic circles spawn in front of the spell, stacked one behind another (one for
+  every 8 mana of the spell that raised it, up to 7). A spell that cost as much or less punches
+  through as many circles as its mana pays for, and the next one stops it in a flare of light and
+  ripples; one that cost more cracks every circle and shatters them like glass, front to back (the
+  rims into curved slivers, the rest into tumbling, glinting shards), and goes through. Flying
+  spells make the circles appear a moment before they arrive, and strike the front circle. The HUD
+  shows your Shield's strength and time left. (It used to give absorption hearts; Barrier and
+  Stoneskin still do.)
+- **Imbue**, a new Tier II link: the rest of the spell is stored, with 3 charges, instead of cast.
+  With Self it goes into the item in your hand: weapons release it at what they strike, tools at
+  the blocks they break, bows with their arrows, armour and shields at whatever hurts you, and
+  anything else when used. **Any block** can hold magic too: aimed at a block, cast with empty hands
+  at the block you're looking at, or placed from an imbued block item, it becomes a glyph that goes
+  off at whoever steps on, uses (doors, chests, buttons), shoots or breaks it, or when it's powered
+  by redstone. Break your own glyph and the block comes back still imbued. Imbued items glint and
+  say what they hold.
+- Three feats: Spellguard, Shieldbreaker and Imbuer. New sounds for a spell ringing off a shield
+  and for imbuing; the shield's shatter now ends with shards pattering down.
 - Monsters can cast spells: the engine now takes any living caster. **Runebound** zombies,
   skeletons, witches and illagers carry Cords, telegraph every cast with a magic circle and show
   their spell as their nameplate.

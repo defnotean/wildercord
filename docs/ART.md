@@ -73,6 +73,21 @@ motif says the element, the emblem's frame says the family again (square, circle
 - **Bodies move too**: a caster raises both hands while charging and moves with the shape when it
   goes off; the beads on their Cord burn brighter as the charge builds.
 
+## Shields and glass
+
+A Shield is invisible until a spell comes. Then its magic circles (`ShieldCircles`: the spell that
+raised it, drawn like any spell circle) spawn in between the spell and the creature, facing the
+spell, stacked one behind another 0.24 blocks apart (one per 8 mana of strength, up to 7), the back
+one first, each a little dimmer than the one in front. The one that holds a spell flares white at
+its heart and sends ripples out across itself; the ones behind it ripple once, softly. A circle that
+breaks goes like real glass (`ShieldBreak`): cracks shoot out from the heart in two ticks (long
+radial cracks that wander and fork, joined by rings of short ones), then it bursts, its rim into
+curved slivers of its frame line and its face into flat shards of glassy light, small near the heart
+and larger further out, flung on the way the spell was going, tumbling, falling, skittering over the
+ground and glinting when a face turns to the light. A stack breaks front to back, a circle every two
+ticks, each with its own ring of breaking glass. The shard and crack textures are drawn by
+`tools/shield_art.py`.
+
 ## Icons and textures
 
 16×16 pixel art, drawn by code (`tools/item_art.py`): rune stones built from ASCII silhouettes,

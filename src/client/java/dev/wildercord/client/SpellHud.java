@@ -271,6 +271,29 @@ public final class SpellHud {
 				}
 			}
 		}
+		// ---- above the panel: the Shield you wear, if any: the mana a spell must cost to break it, and time left.
+		dev.wildercord.player.WildercordAttachments.SpellShield shield = player.getAttached(dev.wildercord.player.WildercordAttachments.SPELL_SHIELD);
+		if (shield != null && shield.until() > gameTime) {
+			int color = 0xFF000000 | shield.color();
+			int sy = y0 - 11;
+			String text = net.minecraft.network.chat.Component.translatable("hud.wildercord.shield", Math.round(shield.strength()),
+				(shield.until() - gameTime + 19) / 20).getString();
+			hexagon(g, x0 + 2, sy + 1, color);
+			g.text(font, text, x0 + 11, sy, color, true);
+		}
+	}
+
+	/** A small hexagon outline, 7 pixels across: the Shield's mark. */
+	private static void hexagon(GuiGraphicsExtractor g, int x, int y, int color) {
+		g.fill(x + 2, y, x + 5, y + 1, color);
+		g.fill(x + 1, y + 1, x + 2, y + 2, color);
+		g.fill(x + 5, y + 1, x + 6, y + 2, color);
+		g.fill(x, y + 2, x + 1, y + 5, color);
+		g.fill(x + 6, y + 2, x + 7, y + 5, color);
+		g.fill(x + 1, y + 5, x + 2, y + 6, color);
+		g.fill(x + 5, y + 5, x + 6, y + 6, color);
+		g.fill(x + 2, y + 6, x + 5, y + 7, color);
+		g.fill(x + 2, y + 2, x + 5, y + 5, (color & 0xFFFFFF) | 0x40000000);
 	}
 
 	private static int spellColor(List<RuneDef> runes) {

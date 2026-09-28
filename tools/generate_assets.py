@@ -274,6 +274,8 @@ def main():
     write_recipes(runes)
     write_mana_data()
     sigil_art.main()
+    import shield_art  # The Shield's cells, shards and cracks.
+    shield_art.main()
     import circle_art  # Every rune's own ring and emblem for magic circles (imported here: it reads the runes from this file).
     circle_art.main()
     import wear_art  # The Cord players wear on the wrist.
@@ -802,6 +804,7 @@ RUNE_RECIPES = {
     "on_kill": ["minecraft:bone_block"],
     "on_low_health": ["minecraft:golden_apple"],
     "combo": ["minecraft:repeater", "minecraft:repeater"],
+    "imbue": ["minecraft:experience_bottle"],
     # Batch 6: sparks, energy balls and beams.
     "spark": ["minecraft:flint", "minecraft:glowstone_dust"],
     "ray": ["minecraft:glass_pane", "minecraft:glowstone_dust"],
@@ -987,6 +990,28 @@ def write_mana_data():
 # ---------------------------------------------------------------- the Archive, the Grimoire and friends
 
 NEW_LANG = {
+    # Shield and Imbue.
+    "message.wildercord.shield_up": "Shield up: it stops any spell of %s mana or less",
+    "message.wildercord.shield_blocked": "Your Shield stopped a spell",
+    "message.wildercord.shield_shattered": "Your Shield shattered!",
+    "hud.wildercord.shield": "Shield %s · %ss",
+    "message.wildercord.imbue_nothing": "Nothing after Imbue to store",
+    "message.wildercord.imbue_no_target": "Imbue needs a block to touch, or Self for the item in your hand (or, empty-handed, the block you look at)",
+    "message.wildercord.imbue_empty_hand": "Hold an item to imbue",
+    "message.wildercord.imbue_cannot": "That can't hold a spell",
+    "message.wildercord.imbue_protected": "You can't imbue a block here",
+    "message.wildercord.imbued_item": "%s holds %s (%s charges), %s",
+    "message.wildercord.imbued_block": "Glyph written: %s (%s charges)",
+    "message.wildercord.imbue_spent": "The magic in your %s is spent",
+    "message.wildercord.imbue_no_aim": "Look at something to release it at",
+    "tooltip.wildercord.imbued": "Imbued: %s",
+    "tooltip.wildercord.imbued_charges": "%s charges, %s",
+    "tooltip.wildercord.imbued.shot": "released where its arrows land",
+    "tooltip.wildercord.imbued.worn": "released at whatever hurts you",
+    "tooltip.wildercord.imbued.tool": "released at each block it breaks and what it strikes",
+    "tooltip.wildercord.imbued.weapon": "released at what it strikes",
+    "tooltip.wildercord.imbued.use": "use it to release it at what you look at",
+    "tooltip.wildercord.imbued.place": "place it and the block becomes a glyph that holds it",
     # Tags, named for recipe viewers.
     "tag.item.wildercord.enchantable.cord": "Enchantable Cords",
     "message.wildercord.overcast_too_costly": "Too costly to overcast: %s mana is more than %s times what your Cord holds",
@@ -1118,6 +1143,8 @@ NEW_LANG = {
     "subtitles.wildercord.orb_hum": "Orb hums",
     "subtitles.wildercord.shield_up": "Shield rises",
     "subtitles.wildercord.shield_break": "Shield shatters",
+    "subtitles.wildercord.shield_block": "Spell rings off a shield",
+    "subtitles.wildercord.imbue": "Magic is imbued",
     "subtitles.wildercord.domain_open": "Domain opens",
     "subtitles.wildercord.domain_close": "Domain collapses",
     "subtitles.wildercord.blink": "Caster blinks",

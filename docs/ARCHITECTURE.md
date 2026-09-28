@@ -303,6 +303,30 @@ spell's rune ids, a colour, a radius, a facing and a lifetime); each client buil
 runes without art fall back to their family's). `Sigils` builds full circles, ground reticles and
 spell circles (`Sigils.spell`) and sends them to players within 128 blocks.
 
+**Shields** (`Shields`) are one attachment and one particle. Raising one sets `spell_shield` on
+the target (strength, end time, and the runes of the spell that raised it, for its circles). Nothing
+is drawn until a spell comes. Flying shapes (`RuneBolt`, and the sparks, wisps, comets and others
+that move through `ShapeRunners.contact`) ask `Shields.intercept` each step: a spell on course for a
+shielded creature within 7 blocks sends `APPEAR`, and one reaching the front circle strikes it there.
+Every harmful touch of a spell then meets the Shield in `Effects.apply` (and in `Effects.hurt` and
+`Wards.stasis` for damage that didn't come through a shape): the first touch of a cast compares the
+cast's `weight()` (its list price, set by `SpellCaster` so secrets count what they cost) with the
+Shield's strength, then blocks the whole cast at that creature (`BLOCK`, with how many circles it
+still broke) or shatters them all and lets it through (`BREAK`). Each client builds the stack of
+circles and their shattering from those `ShieldOption` particles (`client.fx.ShieldCircles`,
+`ShieldBreak`). `Cast.identity()` is shared by every part of one cast, so a blocked Zone stays
+blocked on later pulses.
+
+**Imbue** (`Imbuing`) is a link watched like On Hit: when its shape hits, the runes after it are
+stored in the held item (Self), the looked-at block (Self with empty hands) or as a glyph on the
+block it touched, instead of being cast. Items let go through ordinary events (a player's strike, an
+arrow leaving the bow and `ProjectileMixin` when it lands, a block broken, being hurt, being used,
+and `BlockItemMixin` when an imbued block is placed); glyphs are checked every other tick for a
+creature on them or a rising redstone signal, and go off when their block is used, shot or broken
+by someone else. Their circle and trigger zone follow the block's own outline. Either way `Imbuing.cast` compiles the stored runes with
+`SpellCompiler.compileStored` (an effect with no shape lands on whatever set it off) and runs them
+as their maker.
+
 A third particle, `wildercord:light` (`LightOption`), is shaped light: a `RING` (a shockwave
 racing out), a `RAY` (a beam, its pieces turned to face the viewer), a `SLASH` (a tapered crescent
 sweeping across) and an `ORB` (a glow wrapped in turning rings), each a soft halo (`sigil_beam`)
@@ -368,6 +392,8 @@ player, synced to that player only, and copied through death where noted.
 | `meditating` | bool | no (not saved) | Worked out by the server each tick |
 | `rhythm` | stacks, window | no (not saved) | The rhythm chain and the next beat |
 | `charge` | spell, start, rune ids | no (not saved) | A spell being charged; synced to **everyone** nearby, who draw its circle (and hear its hum) |
+| `spell_shield` | strength, until, colour | no (not saved) | A Shield on any creature; synced to **everyone** nearby, who draw its shell |
+| `imbued_shot` | rune ids, colour | on the arrow (not saved) | An arrow fired from an imbued bow: the spell it releases where it lands (server only) |
 | `cast_pose` | shape, time | no (not saved) | The spell just cast, for its casting pose; synced to **everyone** nearby |
 | `cord_look` | tier, bead colours | no (not saved) | How the worn Cord looks on the wrist (kept up to date by `CordLook`); synced to **everyone** nearby |
 | `on_ley`, `well_until` | bool, long | no (not saved) | On a ley line; near an awake Wellstone until |
@@ -527,7 +553,12 @@ can draw the circle.
 - **Entities** (`cast.WildercordEntities`): the bolt (`RuneBolt`, drawn by nothing but its
   particles), the Archivist and the Training Dummy.
 - **Particles** (`WildercordParticles`): `wildercord:sigil` (a `SigilOption`),
-  `wildercord:spell_circle` (a `SpellCircleOption`) and `wildercord:light` (a `LightOption`).
+  `wildercord:spell_circle` (a `SpellCircleOption`), `wildercord:light` (a `LightOption`) and
+  `wildercord:shield` (a `ShieldOption`: a Shield blocking a spell or shattering, which each client
+  turns into the ripple, or the cracks and falling shards, in `client.fx.ShieldBreak`).
+- **Imbued items** carry the `wildercord:imbued` component (`Imbued`: the stored runes, charges
+  left, colour); `Imbued.release` says how each kind of item lets its spell go. Glyphs (spells
+  imbued into blocks) are kept per dimension in `Imbuing.Glyphs`, a saved data file.
 - **`mixin/AvatarRendererMixin`**: a player charging a spell raises both hands (the bow-drawing
   pose), pushing the circle open.
 - **Effects and potions** (`WildercordEffects`): Clarity and Mana.

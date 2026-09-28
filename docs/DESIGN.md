@@ -170,7 +170,7 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 | Push | I | wind | harmful | Knocks targets away from the spell | 4 |
 | Light | I | arcane | world | A light source at the point for 60 s | 2 |
 | Grow | I | life | world | Bone-meals the block hit and everything around it (3×3×3) | 4 |
-| Shield | II | earth | helpful | 6 extra absorption hearts for 12 s (Amplify adds more) | 12 |
+| Shield | II | earth | helpful | A one-time spell shield for 30 s: magic circles spawn in front of the next harmful spell and stop it, unless it cost more mana than the one that raised it (then they shatter and it goes through). More strength, more circles. See [Shields](#shields) | 12 |
 | Launch | II | wind | harmful | Flings targets upward. On Self it flings *you* up and forward | 8 |
 | Dash | II | wind | harmful | Shoves targets 8 blocks the way you're facing. On Self it's a dash | 6 |
 | Pull | II | void | harmful | Pulls targets toward the spell | 5 |
@@ -326,6 +326,7 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Execute | Modifier · Power | II | On an effect: double power against targets under half health |
 | If Airborne | Link · Condition | II | The rest fires only while you're in the air |
 | Combo | Link · Condition | III | The rest fires only on every third cast of this spell |
+| Imbue | Link · Trigger | II | The rest is stored, with 3 charges, in the item in your hand (Self; empty-handed, the block you look at) or any block the shape touches, and paid for three times over. See [Imbuing](#imbuing) |
 
 Shapes that strike again and again (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb) get a fresh 64-creature budget for every strike, so a big one keeps working to the end. The Siphon cap still counts for the whole cast.
 
@@ -589,6 +590,74 @@ Each cast counts toward the elements in it. Once one element has 40+ casts and 1
 runner-up, your magic **leans** toward it: its effects hit **10% harder**, and your charging
 circle takes its colour.
 
+### Shields
+**Shield** guards the target (you with Self, allies with Burst or Nova) for 30 seconds (Extend
+doubles it). Raising it opens its magic circles in front of them, then they vanish: a Shield is
+invisible until a harmful spell comes. Its strength is the mana the spell that raised it cost, as the
+Cord screen prices it (`Self · Shield` is 12; anything else threaded onto the same spell, Amplify
+say, makes it stronger because it makes the spell cost more).
+
+- **The circles.** When a spell comes at them, the Shield's magic circles (the spell that raised it,
+  written out like any other) spawn in between the spell and them, facing it, stacked one behind
+  another: **one circle for every 8 mana** of strength, up to 7. A spell flying at them (a bolt, a
+  spark, a comet) makes them appear a moment before it arrives, and strikes the front circle, not the
+  creature behind it; a spell that lands at once (a beam, a blast) makes them snap open as it lands.
+  A spell that would miss passes by.
+- **Stopped.** A harmful spell that cost **as much or less** is stopped. It still shatters as many
+  circles from the front as its mana pays for (one circle's worth at a time); the next one holds,
+  light flaring at its heart and ripples racing out across it, and the Shield is spent. The rest of
+  that spell (its other effects, a Zone's later pulses) is stopped too, at that creature.
+- **Broken.** A spell that cost **more** shatters every circle, front to back, the way real glass
+  goes: cracks shoot out from the heart across the circle, then it bursts, the rim into curved
+  slivers and the rest into shards that fly on the way the spell was going, tumble, fall and glint.
+  The spell goes on through and hits what it was aimed at.
+- Only spells: arrows, blades and falls pass as if it weren't there. Secret spells weigh what the
+  Cord screen shows (more than their runes), and the Archivist's Sunfall breaks any Shield.
+- The HUD shows your own Shield's strength and time left above the spell panel.
+
+### Imbuing
+**Imbue** is a link: everything after it isn't cast but *stored*, with **3 charges**, in what the
+shape before it touched. The stored part is paid for three times over when you cast, so releasing
+it costs nothing. An Imbue can't store another Imbue.
+
+With **Self** it goes into the item in your hand (one item: from a stack, one is taken off), or, with
+both hands empty, into the block you're looking at. How an item lets it go depends on what it is:
+
+| Item | Released |
+|---|---|
+| Weapons (swords, maces, tridents) | At what they strike |
+| Tools (pickaxes, axes, shovels, hoes) | At each block they break, and at what they strike |
+| Bows and crossbows | With the next arrows, wherever each lands (a triple shot spends one charge) |
+| Armour and shields | At whatever hurts you |
+| Blocks | Placed, the block becomes a glyph holding it |
+| Anything else (a stick, a bone, a book) | When used: at what you're looking at, or from you if the stored part starts with a shape |
+
+Imbued items glint and say what they hold. Cords, runes and scrolls can't be imbued.
+
+**Any block** can hold magic. Aimed at one (Touch, Bolt, any shape that hits it), placed from an
+imbued block item, or looked at with empty hands, a block becomes a **glyph**: a faint copy of the
+stored spell's circle on the face that was struck, sized to the block (small on a button, a torch or
+a flower; full on a floor). A glyph goes off at most once a second at:
+
+- a creature that steps on it or touches it, that the spell is for (enemies for harmful spells, you
+  and your allies for helpful ones);
+- someone the spell is for **using** the block: opening the door, the chest, the trapdoor, pressing
+  the button, pulling the lever;
+- anything that **shoots** the block;
+- someone else **breaking** it (it goes off at them first);
+- the block being **powered** by redstone.
+
+Glyphs are kept with the world and cast as their maker (so they sleep while their maker is away).
+Break your own glyph and the block you get back still holds its spell and its charges left (if the
+block drops itself); anyone else breaking it, or its charges running out, lets it fade. Each caster
+keeps at most 12.
+
+Examples: `Self · Imbue · Fire · Burst` (a sword whose next three hits explode in flame),
+`Self · Imbue · Break · Widen` (a pickaxe that mines a wide hole three times), `Touch · Imbue ·
+Root · Frost` (a trap that holds whoever walks over it), a door imbued with `Shock` that jolts
+whoever opens it, a pressure plate that heals your friends, a button that throws lightning, a
+plank you carry around and place wherever you need a trap.
+
 ### Overcasting
 Short on mana? The first press says so; cast the same spell again within 2 s and you
 **overcast**: your outermost working Heart Circle cracks to pay for it (mana goes to 0). With no
@@ -709,7 +778,7 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
   - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive, Anchor, Frostward, Cushion.
   - Auras (only with Orbit): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt, Windcut.
   - Modifiers: Amplify, Extend, Frugal, Widen, Focus, Quicken.
-  - Never: heals, Shield and Barrier (absorption), Brace, Reversal, Foresight, summons, links, big area damage, Stasis.
+  - Never: heals, Shield, Barrier (absorption), Brace, Reversal, Foresight, summons, links, big area damage, Stasis.
 
 Examples: `Self · Infinity` (projectiles always stop around you, about 3.8 mana/s), `Orbit · Shock · Amplify` (a crackling guard), `Orbit · Dismantle` (orbs that cut whatever comes near).
 

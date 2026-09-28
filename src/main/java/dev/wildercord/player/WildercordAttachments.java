@@ -219,6 +219,31 @@ public final class WildercordAttachments {
 			ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), Charge::runes, Charge::new);
 	}
 
+	/**
+	 * A Shield: the mana a spell must cost to break it, the game time it ends, its colour, and the runes
+	 * of the spell that raised it (its magic circle is that spell's). Synced to everyone nearby, who
+	 * draw its circle; not saved (it lasts seconds).
+	 */
+	public record SpellShield(float strength, long until, int color, List<String> runes) {
+		public static final StreamCodec<ByteBuf, SpellShield> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.FLOAT, SpellShield::strength, ByteBufCodecs.VAR_LONG, SpellShield::until, ByteBufCodecs.INT, SpellShield::color,
+			ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), SpellShield::runes, SpellShield::new);
+
+		public SpellShield {
+			runes = List.copyOf(runes.size() > 16 ? runes.subList(0, 16) : runes);
+		}
+	}
+
+	public static final AttachmentType<SpellShield> SPELL_SHIELD = AttachmentRegistry.create(
+		Wildercord.id("spell_shield"),
+		builder -> builder.syncWith(SpellShield.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
+	/** On an arrow fired from an imbued bow: the spell it releases where it lands, and its colour. Server only. */
+	public record ImbuedShot(List<String> runes, int color) {}
+
+	public static final AttachmentType<ImbuedShot> IMBUED_SHOT = AttachmentRegistry.create(Wildercord.id("imbued_shot"), builder -> {});
+
 	public static final AttachmentType<Charge> CHARGE = AttachmentRegistry.create(
 		Wildercord.id("charge"),
 		builder -> builder.syncWith(Charge.STREAM_CODEC, AttachmentSyncPredicate.all())

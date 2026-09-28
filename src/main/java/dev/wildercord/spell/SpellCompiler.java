@@ -47,8 +47,30 @@ public final class SpellCompiler {
 	}
 
 	public static Compiled compile(List<RuneDef> runes) {
+		return compile(runes, Runes.SELF);
+	}
+
+	/**
+	 * Reads what an Imbue stored: the runes after it, read as they were after the link, so an effect
+	 * with no shape of its own lands on whatever set it off.
+	 */
+	public static Compiled compileStored(List<RuneDef> runes) {
+		return compile(runes, Runes.TRIGGER);
+	}
+
+	/** The runes an Imbue in {@code spell} would store: everything after the first Imbue (empty if there's none). */
+	public static List<RuneDef> stored(List<RuneDef> spell) {
+		for (int i = 0; i < spell.size(); i++) {
+			if (spell.get(i).is(Runes.IMBUE.id())) {
+				return List.copyOf(spell.subList(i + 1, spell.size()));
+			}
+		}
+		return List.of();
+	}
+
+	private static Compiled compile(List<RuneDef> runes, RuneDef implicitShape) {
 		Reader reader = new Reader(runes, true);
-		SpellPlan.Segment root = reader.segment(0, Runes.SELF, List.of());
+		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of());
 		double cost = cost(root);
 		List<String> lines = new ArrayList<>();
 		describe(root, "", lines);
@@ -119,7 +141,7 @@ public final class SpellCompiler {
 						}
 					}
 					case LINK -> {
-						boolean watchesGroup = rune.is(Runes.ON_HIT.id()) || rune.is(Runes.ON_KILL.id());
+						boolean watchesGroup = rune.is(Runes.ON_HIT.id()) || rune.is(Runes.ON_KILL.id()) || rune.is(Runes.IMBUE.id());
 						if (watchesGroup && group == null) {
 							warn(rune.name() + " needs a shape before it to watch.");
 						}
@@ -144,6 +166,9 @@ public final class SpellCompiler {
 						link.next = segment(i + 1, nextShape, List.of(new Target(i, rune, link.mods)));
 						if (link.next.isEmpty() && !rune.is(Runes.ECHO.id())) {
 							warn(rune.name() + " has nothing after it.");
+						}
+						if (rune.is(Runes.IMBUE.id()) && runes.subList(i + 1, runes.size()).stream().anyMatch(r -> r.is(Runes.IMBUE.id()))) {
+							warn("An Imbue can't store another Imbue.");
 						}
 						seg.link = link;
 						return seg;
@@ -207,7 +232,7 @@ public final class SpellCompiler {
 		}
 		if (seg.link != null) {
 			SpellPlan.Link link = seg.link;
-			double rest = cost(link.next) * (link.link.is(Runes.PULSE.id()) ? SpellNumbers.PULSES : 1);
+			double rest = cost(link.next) * (link.link.is(Runes.PULSE.id()) ? SpellNumbers.PULSES : link.link.is(Runes.IMBUE.id()) ? SpellNumbers.IMBUE_CHARGES : 1);
 			total += link.link.cost() * product(link.mods) + rest + cost(link.echoPrefix);
 		}
 		return total;
@@ -236,6 +261,10 @@ public final class SpellCompiler {
 			return;
 		}
 		for (SpellPlan.Group g : seg.groups) {
+			if (g.effects.isEmpty() && seg.link != null && seg.link.anchor == g && seg.link.link.is(Runes.IMBUE.id())) {
+				// Only there to say where the Imbue goes: the header says it.
+				continue;
+			}
 			String vow = g.count(Runes.VOW_MOD) > 0 ? " (vowed: x" + trim(Math.pow(2.0, g.count(Runes.VOW_MOD))) + " power)" : "";
 			lines.add(indent + shapePhrase(g) + vow + ": " + effectsPhrase(g));
 		}
@@ -272,6 +301,9 @@ public final class SpellCompiler {
 			header = "If you're in the air:";
 		} else if (id.equals(Runes.COMBO.id())) {
 			header = "Every 3rd cast:";
+		} else if (id.equals(Runes.IMBUE.id())) {
+			boolean self = link.anchor != null && link.anchor.shape.is(Runes.SELF.id());
+			header = "Stored in " + (self ? "the item in your hand" : "the block it touches") + " (" + SpellNumbers.IMBUE_CHARGES + " charges), then:";
 		} else {
 			header = link.link.name() + ":";
 		}
@@ -415,6 +447,7 @@ public final class SpellCompiler {
 			if (e.count(Runes.FOCUS_MOD) > 0) mods.add("focused");
 			if (e.count(Runes.EXECUTE_MOD) > 0) mods.add("x" + trim(SpellNumbers.executeBonus(e)) + " under half health");
 			if (SpellNumbers.lingerHits(e) > 0) mods.add("+" + SpellNumbers.lingerHits(e) + " hits");
+			if (e.effect.is(Runes.SHIELD.id())) mods.add(seconds(SpellNumbers.shieldTicks(e)));
 			joiner.add(e.effect.name() + mods);
 		}
 		return joiner.toString();

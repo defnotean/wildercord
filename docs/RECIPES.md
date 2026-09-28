@@ -62,7 +62,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Spark | Shape | Flint, Glowstone Dust |
 | Touch | Shape | Leather |
 
-## Tier II (79 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (80 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -113,6 +113,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Zipper | Effect | 2x Iron Nugget, String |
 | If Airborne | Link | Feather, Phantom Membrane |
 | If Sneaking | Link | Leather Boots |
+| Imbue | Link | Experience Bottle |
 | On Hit | Link | Target |
 | On Hurt | Link | Cactus |
 | On Land | Link | Hay Block |

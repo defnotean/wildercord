@@ -153,7 +153,7 @@ public final class SpellCaster {
 		player.setAttached(dev.wildercord.player.WildercordAttachments.CAST_POSE, new dev.wildercord.player.WildercordAttachments.CastPose(runes.getFirst().id(), now));
 		HeartCircles.onCast(player);
 		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
-		Cast cast = new Cast(player, castNumber, bonuses, false, null, info);
+		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
 			SecretSpells.cast(cast, secret.get());

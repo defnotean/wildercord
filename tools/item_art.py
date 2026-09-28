@@ -1870,6 +1870,17 @@ GLYPHS: dict[str, str] = {
         ..---..
         #######
     """,
+    # sparks drawn in from above into a gem: magic sinking into a thing
+    "imbue": """
+        +.....+
+        .+...+.
+        ..+.+..
+        ...*...
+        ..#*#..
+        .#*+*#.
+        ..#*#..
+        ...#...
+    """,
     "combo": """
         .....+*
         .....#+
@@ -3000,7 +3011,7 @@ reversal effect life 4|reflect effect arcane 3|overdrive effect blood 2|foresigh
 restore effect life 3|swap effect arcane 2|zipper effect void 2|shadowstep effect void 3
 stasis effect time 4|rewind effect time 4|accelerate effect time 3|time_skip effect time 3
 rampart effect earth 2|shades effect void 3|thunderbird effect storm 3|vow modifier - 3
-blood_price modifier - 3|execute modifier - 2|if_airborne link - 2|combo link - 3
+blood_price modifier - 3|execute modifier - 2|if_airborne link - 2|combo link - 3|imbue link - 2
 """
 
 

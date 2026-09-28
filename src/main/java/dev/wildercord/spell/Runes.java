@@ -74,7 +74,7 @@ public final class Runes {
 	public static final RuneDef PUSH = effect("push", "Push", 1, 4, "wind", EffectKind.HARMFUL, "Hurls targets away from the spell.", POWER);
 	public static final RuneDef LIGHT = effect("light", "Light", 1, 2, "arcane", EffectKind.WORLD, "A light source at the point for 60 seconds.", DURATION);
 	public static final RuneDef GROW = effect("grow", "Grow", 1, 4, "life", EffectKind.WORLD, "Bone-meals the block that was hit and everything around it.", POWER);
-	public static final RuneDef SHIELD = effect("shield", "Shield", 2, 12, "earth", EffectKind.HELPFUL, "6 extra absorption hearts for 12 seconds.", POWER, DURATION);
+	public static final RuneDef SHIELD = effect("shield", "Shield", 2, 12, "earth", EffectKind.HELPFUL, "For 30 seconds, the next harmful spell cast at the target meets magic circles that spawn in front of it and stop it. A spell that cost more mana than the one that raised the Shield shatters them and goes through. The stronger the Shield, the more circles stack.", POWER, DURATION);
 	public static final RuneDef LAUNCH = effect("launch", "Launch", 2, 8, "wind", EffectKind.HARMFUL, "Flings targets high into the air. On Self it rockets you up and forward.", POWER);
 	public static final RuneDef DASH = effect("dash", "Dash", 2, 6, "wind", EffectKind.HARMFUL, "Shoves targets hard the way you're facing. On Self it's a long dash.", POWER);
 	public static final RuneDef PULL = effect("pull", "Pull", 2, 5, "void", EffectKind.HARMFUL, "Pulls targets toward the spell.", POWER);
@@ -228,6 +228,7 @@ public final class Runes {
 	public static final RuneDef ON_LOW_HEALTH = link("on_low_health", "On Low Health", 3, 2, "The rest fires when your health drops below 30% (within 30 seconds).");
 	public static final RuneDef IF_AIRBORNE = link("if_airborne", "If Airborne", 2, 1, "The rest fires only if you're in the air. Build aerial finishers.");
 	public static final RuneDef COMBO = link("combo", "Combo", 3, 2, "The rest fires only on every third cast of this spell: a finisher.");
+	public static final RuneDef IMBUE = link("imbue", "Imbue", 2, 3, "The rest isn't cast: it's stored, with 3 charges, in what the shape before it touches. With Self, the item in your hand (a weapon's hits, a bow's arrows, a tool's blocks, armour when you're hurt, a block where it's placed, anything else when used), or with empty hands the block you're looking at. Any block becomes a glyph that goes off at whoever steps on, uses, shoots or breaks it, or when it's powered. The stored part costs 3 times as much.");
 
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());

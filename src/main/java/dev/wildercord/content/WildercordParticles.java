@@ -22,5 +22,9 @@ public final class WildercordParticles {
 	public static final ParticleType<LightOption> LIGHT = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("light"),
 		FabricParticleTypes.complex(true, LightOption.CODEC, LightOption.STREAM_CODEC));
 
+	/** A Shield blocking a spell or shattering: one particle each client turns into the whole effect. Always shown. */
+	public static final ParticleType<ShieldOption> SHIELD = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("shield"),
+		FabricParticleTypes.complex(true, ShieldOption.CODEC, ShieldOption.STREAM_CODEC));
+
 	public static void init() {}
 }

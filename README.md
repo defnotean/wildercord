@@ -57,12 +57,14 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **185 runes** | 33 shapes, 123 effects, 18 modifiers and 11 links across four tiers, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **186 runes** | 33 shapes, 123 effects, 18 modifiers and 12 links across four tiers, each with a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
 | **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle opens in front of them, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
 | **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its shape's seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
 | **Spells drawn in light** | All magic glows: light adds to what's behind it, and void magic is drawn as darkness. Beams with a white-hot core fired through a magic circle, bolts that glide as comets, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. Every element has its own visual language, from branching lightning to imploding darkness. |
 | **Magic you can feel** | Casters raise their hands to charge and move with each shape when it goes off; big impacts shake the camera, a charged release kicks the view, heavy hits land with a punch, and a Domain tints the edges of your screen. The Cord shows on every player's wrist, a glowing bead for each rune of the spell they have ready. |
 | **Its own sound** | Every cast, impact, circle, beam, shield and Domain has its own synthesised sound, all in one key so they harmonise, and charging hums higher as it builds. |
+| **Spell shields** | Shield is invisible until a spell comes at you; then its magic circles spawn in front of the spell, stacked one behind another (the stronger the Shield, the more circles), and stop it. A spell that cost more mana than yours cracks them and shatters them like glass, front to back, and goes through. |
+| **Imbue items and blocks** | Store a spell in your sword (it goes off at what you strike), your pickaxe (at each block it breaks), your bow (with its arrows), your armour (at whatever hurts you) or any item you use, with three charges. Or put it into any block as a glyph that fires at whoever steps on, opens, shoots or breaks it, or on a redstone signal; carry an imbued block and place it where you want the trap. |
 | **Secret spells** | Ten exact rune sequences become something new (a sun that falls from the sky, a lance of ice, a black star that swallows everything). Nothing lists them: experiment, or read the riddles on Torn Pages. |
 | **The Grimoire** | Every reaction, secret, feat and riddle you discover, written into a page of the Cord screen. Each new reaction, secret and feat condenses mana toward your next Heart Circle. |
 | **Runebound and the Archive** | Some monsters carry Cords and cast real spells, glowing with rune marks in their spell's colour and telegraphed by the spell's own circle and a readable nameplate. Deep underground, the Archive holds Rune Seal doors, the Archivist (a hooded, hovering three-phase boss with a floating tome, who rewrites its Cord) and a vault of Tier IV runes. |
@@ -119,6 +121,10 @@ hits); the band of script around it repeats them, and the shape's emblem is the 
 | A Domain: the spell's circle as its floor | Beam |
 |---|---|
 | <img src="docs/images/domain.jpg" alt="A Domain seen from the side: the spell's magic circle spread across the ground under a dome of light, light pouring down from its crown" width="420"> | <img src="docs/images/beam.jpg" alt="A beam with a hot core fired through a small magic circle into a line of husks, rings of light along it" width="420"> |
+| A Shield: its circles spawn in, stacked, and stop the spell | A stronger spell shatters them like glass, and goes through |
+| <img src="docs/images/shield-block.jpg" alt="Seven amber magic circles stacked one behind another in front of a husk, a bolt flaring white against the front one" width="420"> | <img src="docs/images/shield-shatter.jpg" alt="The circles bursting into glinting shards and curved slivers of their rims as the spell hits the husk" width="420"> |
+| Imbue: a sword that holds Fire for three strikes | A Frost glyph going off under a husk that stepped on it |
+| <img src="docs/images/imbue-sword.jpg" alt="A player holding a glinting iron sword over the magic circle of the Imbue spell, a message saying the sword holds Fire" width="420"> | <img src="docs/images/imbue-glyph.jpg" alt="A glyph's magic circle on the ground flaring as a husk stands on it, rings of frost light rising round the husk" width="420"> |
 | Crescent | Burst |
 | <img src="docs/images/crescent.jpg" alt="Blades of fiery light sweeping forward into a group of husks" width="420"> | <img src="docs/images/burst.jpg" alt="A shell of light, crossed rings racing out over a shockwave on the ground" width="420"> |
 | Pillar | Rain |
@@ -163,7 +169,7 @@ you've found, with the riddles you've read.
 Learn these and you can read any spell being cast. Each rune's emblem (on its roundel, in the band
 of script and as a seal) and ring pattern, generated by `tools/circle_art.py`.
 
-<img src="docs/images/rune-rings.png" alt="All 185 runes' emblems and ring patterns, each drawn as a ring with its emblem, labelled with the rune's name" width="900">
+<img src="docs/images/rune-rings.png" alt="All 186 runes' emblems and ring patterns, each drawn as a ring with its emblem, labelled with the rune's name" width="900">
 
 </details>
 
@@ -259,6 +265,7 @@ src/
 │   │                 Casters, Targets, ShapeRunners, Effects, Techniques, Wards, Reactions,
 │   │                 Scheduler, Spirits, RuneBolt, HeartCircles, PassiveCaster, Charging,
 │   │                 Rhythm, Overcast, Unison, DomainClash, SecretSpells, Innates, Grimoire,
+│   │                 Shields, Imbuing,
 │   │                 Runebound, Archivist, RuneSeals, LeyWalker, TrainingDummy, SpellChat,
 │   │                 CordLook, ScreenFx, Vfx, TechniqueVfx, ExpansionVfx, ElementFx, Light,
 │   │                 Sigils, BlockFx, Fx
@@ -269,7 +276,8 @@ src/
 │   ├── world/      The Archive structure, and ley lines (pure maths shared by both sides)
 │   ├── menu/       The Cord slot
 │   ├── mixin/      Cord slot in the inventory menu, creative sync, lightning rods,
-│   │                 Phantom's afterimage, pistons (temporary blocks stay put)
+│   │                 Phantom's afterimage, pistons (temporary blocks stay put), imbued arrows
+│   │                 and placed imbued blocks
 │   ├── net/        Packets: cast, charge, select, edit, rename, passives, scrolls; and the
 │   │                 notices the server sends (discoveries, the ley seed, screen effects)
 │   └── command/    /wildercord
@@ -278,7 +286,8 @@ src/
 │                   SpellWheelScreen, GrimoireToast, key bindings; mixins (inventory screens,
 │                   casting poses, camera shake, the glow pipelines);
 │                   fx/ (glow blending, magic circles, shaped light, comets, charging, aim
-│                   preview, screen effects, ley ribbons, Archive ambience) and
+│                   preview, screen effects, ley ribbons, Archive ambience, shield circles and
+│                   their shattering) and
 │                   render/ (the worn Cord, Runebound marks, the Archivist, the Training Dummy)
 ├── main/resources/ Generated assets and data (textures, models, lang, recipes, ...)
 ├── test/           JUnit tests for the spell engine (and ley lines)
@@ -288,6 +297,7 @@ tools/
 ├── item_art.py          Hand-tuned pixel art for runes, cords and badges
 ├── gui_art.py           GUI and HUD sprites
 ├── sigil_art.py         Magic circles, and the wheel, beat ring and toast sprites
+├── shield_art.py        The glass shards and crack lines of a Shield's breaking circles
 ├── circle_art.py        Every rune's own ring pattern and emblem for magic circles
 ├── world_art.py         Scroll, page, dummy, Wellstone, seals, lectern, entity skins, rune marks
 ├── wear_art.py          The Cord players wear on the wrist
@@ -349,7 +359,9 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
   - casts every newer rune at test mobs (any exception fails the run),
   - checks mechanics for real: Stasis holds Sonic Boom, Primer, Meteor and more until time moves
     again; Reflect, Foresight, Reversal, Blood Price and Combo work; passives drain mana; forming a
-    Heart Circle raises max mana; the Cord screen turns on text input for its search box;
+    Heart Circle raises max mana; the Cord screen turns on text input for its search box; a Shield
+    stops a spell that costs no more than it and breaks under one that costs more; an imbued sword,
+    a glyph and a placed imbued block release what they hold, and a broken glyph comes back imbued;
   - tours the world features on a cleared stage (charging, the wheel, every secret spell,
     Runebound, the dummy, a domain clash, overcasting, a ley line, and a placed Archive with its
     Archivist), asserting what it can and screenshotting the rest. Set `WILDERCORD_TOUR_ONLY=1` to

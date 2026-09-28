@@ -28,5 +28,12 @@ public final class WildercordComponents {
 		DataComponentType.<ScrollSpell>builder().persistent(ScrollSpell.CODEC).networkSynchronized(ScrollSpell.STREAM_CODEC).build()
 	);
 
+	/** A spell imbued into an item, with the charges it has left (see {@link Imbued}). */
+	public static final DataComponentType<Imbued> IMBUED = Registry.register(
+		BuiltInRegistries.DATA_COMPONENT_TYPE,
+		Wildercord.id("imbued"),
+		DataComponentType.<Imbued>builder().persistent(Imbued.CODEC).networkSynchronized(Imbued.STREAM_CODEC).build()
+	);
+
 	public static void init() {}
 }

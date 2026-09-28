@@ -51,6 +51,8 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SIGIL, SigilParticle.Provider::new);
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SPELL_CIRCLE, new dev.wildercord.client.fx.SpellCircleParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());
+		ParticleProviderRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
+		ImbuedTooltip.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
@@ -65,12 +67,14 @@ public final class WildercordClient implements ClientModInitializer {
 				WellstoneHalo.tick(client);
 				dev.wildercord.client.fx.BoltComets.tick(client);
 				dev.wildercord.client.fx.ScreenEffects.tick(client);
+				dev.wildercord.client.fx.ShieldCircles.tick(client);
 				return;
 			}
 			if (client.isPaused()) {
 				return;
 			}
 			ChargeCircles.tick(client);
+			dev.wildercord.client.fx.ShieldCircles.tick(client);
 			dev.wildercord.client.fx.BoltComets.tick(client);
 			dev.wildercord.client.fx.ScreenEffects.tick(client);
 			AimPreview.tick(client);

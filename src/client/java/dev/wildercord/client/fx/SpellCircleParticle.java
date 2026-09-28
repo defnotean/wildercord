@@ -58,8 +58,8 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	private final String secret;
 	private final float roundel;
 	private final Rune pattern;
-	private final TextureAtlasSprite line;
-	private final TextureAtlasSprite glow;
+	protected final TextureAtlasSprite line;
+	protected final TextureAtlasSprite glow;
 	private final TextureAtlasSprite[] script;
 
 	/** How far each part has turned: the script band, the pattern band (the other way) and the star. */
@@ -185,11 +185,11 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		return Mth.clamp((open - from) / length, 0, 1);
 	}
 
-	private static int argb(float alpha, int rgb) {
+	protected static int argb(float alpha, int rgb) {
 		return (Mth.clamp((int) (alpha * 255), 0, 255) << 24) | (rgb & 0xFFFFFF);
 	}
 
-	private static int lighter(int rgb, float t) {
+	protected static int lighter(int rgb, float t) {
 		int r = (rgb >> 16) & 0xFF;
 		int g = (rgb >> 8) & 0xFF;
 		int b = rgb & 0xFF;
@@ -293,7 +293,16 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 			tiles(new TextureAtlasSprite[] {rune.band}, u, v, rs * 0.72F, rs * 0.4F, -star * 3, argb(a * shown * 0.9F, rune.color), 0.006F, false);
 			piece(rune.mark, u, v, ang - Mth.HALF_PI, rs * 0.5F, argb(a * shown, lighter(rune.color, 0.15F)), 0.007F);
 		}
+		extras(r, a, fine, partial);
 		this.state = null;
+	}
+
+	/**
+	 * Anything a kind of circle draws over the ordinary one (a Shield's ripples and cracks), in the
+	 * circle's own plane: {@code r} is its radius right now, {@code a} its brightness, {@code fine}
+	 * its fine line width.
+	 */
+	protected void extras(float r, float a, float fine, float partial) {
 	}
 
 	/**
@@ -474,7 +483,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		piece(sprite, u, v, rot, half, (argb & 0xFF000000) | (rgb & 0xFFFFFF), depth, layer);
 	}
 
-	private void piece(TextureAtlasSprite sprite, float u, float v, float rot, float half, int argb, float depth) {
+	protected void piece(TextureAtlasSprite sprite, float u, float v, float rot, float half, int argb, float depth) {
 		piece(sprite, u, v, rot, half, argb, depth, getLayer());
 	}
 
@@ -493,7 +502,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	}
 
 	/** A thin ring of {@code width} around (u, v): short pieces of line laid end to end. */
-	private void ring(float u, float v, float rad, float width, int argb, float depth) {
+	protected void ring(float u, float v, float rad, float width, int argb, float depth) {
 		if ((argb >>> 24) < 3 || rad <= 0) {
 			return;
 		}
@@ -507,7 +516,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	}
 
 	/** A straight line of {@code width} from (u0, v0) to (u1, v1). */
-	private void line(float u0, float v0, float u1, float v1, float width, int argb, float depth) {
+	protected void line(float u0, float v0, float u1, float v1, float width, int argb, float depth) {
 		float du = u1 - u0;
 		float dv = v1 - v0;
 		float length = Mth.sqrt(du * du + dv * dv);

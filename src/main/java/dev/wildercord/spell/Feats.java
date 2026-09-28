@@ -27,6 +27,9 @@ public final class Feats {
 	public static final String SCROLL = "scroll";
 	public static final String CHARGED = "charged";
 	public static final String MIRROR = "mirror";
+	public static final String SHIELDBREAKER = "shieldbreaker";
+	public static final String SPELLGUARD = "spellguard";
+	public static final String IMBUE = "imbue";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -51,7 +54,10 @@ public final class Feats {
 		new Feat(ARCHIVIST, "The Last Page", "Defeated the Archivist."),
 		new Feat(LEANING, "Leaning", "Cast one element so often that your magic leans toward it."),
 		new Feat(INNATE, "Awakening", "Awakened your innate rune at the 1st Circle."),
-		new Feat(SCROLL, "Scribe", "Inscribed a spell onto a scroll."));
+		new Feat(SCROLL, "Scribe", "Inscribed a spell onto a scroll."),
+		new Feat(SPELLGUARD, "Spellguard", "Your Shield stopped a spell cast at you."),
+		new Feat(SHIELDBREAKER, "Shieldbreaker", "Shattered a Shield with a stronger spell."),
+		new Feat(IMBUE, "Imbuer", "Imbued a spell into an item or a block."));
 
 	/** The five element reactions, in the order the Grimoire lists them. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");

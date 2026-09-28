@@ -40,6 +40,8 @@ public final class Wildercord implements ModInitializer {
 		Scheduler.init();
 		dev.wildercord.cast.Spirits.init();
 		dev.wildercord.cast.Wards.init();
+		dev.wildercord.cast.Shields.init();
+		dev.wildercord.cast.Imbuing.init();
 		dev.wildercord.cast.HeartCircles.init();
 		dev.wildercord.cast.PassiveCaster.init();
 		dev.wildercord.cast.SecretSpells.init();
