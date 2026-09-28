@@ -145,7 +145,7 @@ Silverfish burrow out of the stone around each target: 1 damage every half secon
 
 Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana (less from a weaker hit).
 
-**How to get it:** Found only, never crafted: Mana storms.
+**How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
 
 **Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
@@ -396,7 +396,7 @@ The rest fires only if 3 or more enemies are within 8 blocks of you.
 
 Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute.
 
-**How to get it:** Found only, never crafted: Mana storms.
+**How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
 
 **Modifiers that work on it:** Extend, Frugal
 

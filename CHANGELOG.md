@@ -4,6 +4,37 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.4.1-alpha] - 2026-09-28
+
+A player wiki, and the bugs found while writing it.
+
+### Added
+- **The Wildercord Wiki**, at [defnotean.github.io/wildercord](https://defnotean.github.io/wildercord/). It covers
+  every rune (its icon, what it does, how to get it and which modifiers work on it), every recipe, every dungeon
+  and boss with strategy, and every mechanic from your first Cord to the 8th Heart Circle.
+- Mana storms now give their runes: from your 10th cast under a storm, a surge can crystallise **Manaburn** or
+  **Manatide** straight into your pack, one per storm.
+
+### Changed
+- **Rapid pays for the whole spell** wherever it sits, so putting it on an empty shape no longer halves a
+  spell's cooldown for free.
+- An **Echo or Pulse after On Hit or On Kill** repeats for the first hit or kill only (it was charged once but
+  fired for every hit). The readout says so.
+- **Secret spells** show their real price and longer cooldown once you've found them. Until then, the HUD,
+  spell wheel and scrolls keep their names hidden, as the Cord screen always did.
+- The **spell wheel** shows the Tome of the Fifth Page's spell while the tome is held.
+
+### Fixed
+- Manaburn and Manatide couldn't be obtained at all.
+- Upgrading a Cord lost its enchantments and name. It now keeps them.
+- With PvP off, your spells could hurt other players' pets and familiars. They're as safe as their owners now.
+- One huge hit could skip a phase of the Archivist, unlike the other bosses.
+- The server config's `world_events`, `world_changing_magic`, `duels` and `wild_magic` switches did nothing.
+- The Heart Circle boss breakthrough left out the Cinder Warden, the Star-Eater and the Tide Scribe.
+- Effects inside a Knot didn't count toward element contracts.
+- The "Where it lands" lines were missing from rune tooltips.
+- Runes of the world listed dungeon vaults and bosses among their sources, though those never give them.
+
 ## [0.4.0-alpha] - 2026-09-28
 
 ### Added

@@ -82,7 +82,7 @@ The rest fires when you next touch the ground.
 
 *Tier II · 2 mana · needs a Copper Cord or better*
 
-The rest fires three times, one second apart, from you.
+The rest fires three times, one second apart, from you. After On Hit or On Kill, only for the first hit or kill.
 
 **How to get it:** Craft: a Blank Rune, Redstone Repeater, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -102,7 +102,7 @@ The rest fires only on every third cast of this spell: a finisher.
 
 *Tier III · 2 mana · needs an Amethyst Cord or better*
 
-Everything before it fires again 0.5 seconds later.
+Everything before it fires again 0.5 seconds later. After On Hit or On Kill, only for the first hit or kill.
 
 **How to get it:** Craft: a Blank Rune, 2x Echo Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
