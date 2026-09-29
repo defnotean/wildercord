@@ -101,8 +101,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   only its runes' mana).
 - **Singularity no longer holds a boss at its black star.** It still strikes them, but bosses are only ever slowed.
 - **Stormheart's lightning is spell damage.** It struck whoever hurt you in full, even a player (spell damage to players
-  is scaled down by the server's PvP setting) and even a friend whose blow landed; it now spares friends, a Shield
-  meets it, and players take it at the PvP scale.
+  is scaled down by the server's PvP setting) and even a friend whose blow landed; it now spares friends, counts as
+  storm damage (a creature weak to storm feels it), a Shield meets it, and players take it at the PvP scale.
 - **A widened Rain or Sweep no longer loads the world far away.** Shapes keep growing with every Widen, and a Rain's
   strikes or a Sweep's beam could reach hundreds of blocks past what was loaded, loading (even generating) the land as
   they felt for the ground or a wall. They now stop at the edge of the loaded world.
