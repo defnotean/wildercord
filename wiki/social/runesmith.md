@@ -135,7 +135,7 @@ These offers can't be farmed:
   is refused. Knots are never taken either.
 - **Only runes you already know** count, and only ones in your main inventory and hotbar.
 - **8 buybacks a day** per player, across every Runesmith. Once they're used, the buyback offers close until the next
-  day. Rerolls have no daily limit.
+  day. Turning the time back doesn't bring a fresh day of buybacks: only a later day does. Rerolls have no daily limit.
 - **No experience.** Neither kind of trade gives you or the Runesmith any experience, so they don't level a Runesmith up.
 - **They're yours alone.** Nobody else sees your offers, and they disappear when you close the trading screen.
 
