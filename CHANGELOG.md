@@ -46,6 +46,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **A creature immune to an element counted toward contracts.** Frost cast at a snow golem, which frost can't hurt,
   counted as a frost cast landing on a real creature, making it a target for the Runesmith's contracts that never ran
   out. A spell has to hurt what it lands on to count now.
+- Elapse no longer counts fire that couldn't hurt its target: a burning creature with Fire Resistance had at least 3
+  damage land on it, and its flames put out, for a burn that was dealing nothing.
 
 ## [0.4.2-alpha] - 2026-09-28
 

@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -486,7 +487,12 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 			burning.igniteForSeconds(6);
 			plain.igniteForSeconds(6);
 			cast(player, List.of(Runes.COUNTDOWN), burning);
-			return new int[] {burning.getId(), plain.getId()};
+			// Burning, but Fire Resistance means the fire has nothing to deal: no Elapse, and it's left burning.
+			Mob resistant = husk(level, 9, 8);
+			resistant.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 400, 0));
+			resistant.igniteForSeconds(6);
+			cast(player, List.of(Runes.COUNTDOWN), resistant);
+			return new int[] {burning.getId(), plain.getId(), resistant.getId()};
 		});
 		context.waitTicks(40);
 		String failure = onServer(world, server -> {
@@ -507,6 +513,9 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 			}
 			if (!found(player, ReactionRules.ELAPSE)) {
 				return "Elapse should go in the Grimoire";
+			}
+			if (player.level().getEntity(ids[2]) instanceof LivingEntity resistant && !resistant.isOnFire()) {
+				return "fire on a husk with Fire Resistance can't hurt it, so time damage shouldn't set off Elapse and put it out";
 			}
 			return null;
 		});

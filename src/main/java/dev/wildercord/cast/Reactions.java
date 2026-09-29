@@ -351,7 +351,8 @@ public final class Reactions {
 	private static double elapse(Cast cast, LivingEntity target) {
 		MobEffectInstance poison = target.getEffect(MobEffects.POISON);
 		MobEffectInstance wither = target.getEffect(MobEffects.WITHER);
-		int fire = target.isOnFire() ? target.getRemainingFireTicks() : 0;
+		// Fire that can't hurt it (Fire Resistance) had nothing left to deal.
+		int fire = target.isOnFire() && !target.hasEffect(MobEffects.FIRE_RESISTANCE) ? target.getRemainingFireTicks() : 0;
 		double damage = ReactionRules.elapse(ReactionRules.lingering(fire, ticksLeft(poison), poison == null ? 0 : poison.getAmplifier(),
 			ticksLeft(wither), wither == null ? 0 : wither.getAmplifier()));
 		if (damage <= 0) {
