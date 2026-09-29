@@ -204,6 +204,10 @@ public class RuneItem extends Item {
 				return InteractionResult.FAIL;
 			}
 			Spellbooks.learn(serverPlayer, def.id());
+			if (!known) {
+				// Learning something new is an arcane thing.
+				dev.wildercord.cast.PlayerAffinities.learnedRune(serverPlayer);
+			}
 			// A higher rank upgrades the rune everywhere it's threaded: every spell reads it from here.
 			RuneRanks.raise(serverPlayer, def.id(), rank);
 			stack.consume(1, player);

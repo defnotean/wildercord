@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * A player's heart: how many circles it holds, how much mana has condensed toward the next,
- * and what the Cord's spell enchantments add. Both sides use it, so the HUD, the Cord screen
+ * what the Cord's spell enchantments add, and the player's affinities with the elements. Both sides use it, so the HUD, the Cord screen
  * and the server always show and charge the same numbers.
  */
 public final class Heart {
@@ -56,13 +56,24 @@ public final class Heart {
 		return player.getAttachedOrElse(WildercordAttachments.RUNEBOUND_SLAIN, 0);
 	}
 
+	/** Casts per element as counted before affinities existed (read once, to give a caster's affinities a start). */
 	public static java.util.Map<String, Integer> elementCasts(Player player) {
 		return player.getAttachedOrElse(WildercordAttachments.ELEMENT_CASTS, java.util.Map.of());
 	}
 
-	/** The element this player's magic leans toward, or "". */
+	/** This player's affinity points with each element (see {@link dev.wildercord.spell.PlayerAffinity}). */
+	public static java.util.Map<String, Integer> affinity(Player player) {
+		return player.getAttachedOrElse(WildercordAttachments.AFFINITY, java.util.Map.of());
+	}
+
+	/** This player's affinity level with {@code element}, 0 (none yet) to 5. */
+	public static int affinityLevel(Player player, String element) {
+		return dev.wildercord.spell.PlayerAffinity.level(affinity(player).getOrDefault(element, 0));
+	}
+
+	/** The element this player's magic leans toward (their deepest affinity, clearly ahead), or "". */
 	public static String leaning(Player player) {
-		return dev.wildercord.spell.Leaning.of(elementCasts(player));
+		return dev.wildercord.spell.Leaning.of(affinity(player));
 	}
 
 	public static int condensed(Player player) {
@@ -173,7 +184,19 @@ public final class Heart {
 	 */
 	private static double rawCost(Player player, SpellCompiler.Compiled compiled) {
 		return compiled.cost() * bonuses(player).cost() * dev.wildercord.cast.events.ManaStorm.costFactor(player)
-			* gearCost(player, compiled) * serverCost(player);
+			* gearCost(player, compiled) * serverCost(player) * affinityCost(player, compiled);
+	}
+
+	/**
+	 * An affinity at level V: the share of the spell that element's effects make up costs 10% less (a spell
+	 * of that element alone, 10% less). Read from the synced attachment, so the readout and HUD match.
+	 */
+	private static double affinityCost(Player player, SpellCompiler.Compiled compiled) {
+		java.util.Map<String, Integer> points = affinity(player);
+		if (!dev.wildercord.spell.PlayerAffinity.anyMastered(points) || !dev.wildercord.config.Config.playerAffinity(player)) {
+			return 1.0;
+		}
+		return dev.wildercord.spell.PlayerAffinity.costFactor(SpellCompiler.elementShares(compiled.root()), points);
 	}
 
 	/** Rounds a price up to whole mana (a hair's float error never adds one). */

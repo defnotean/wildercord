@@ -19,7 +19,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Drop a Blank Rune next to a lightning rod in a storm: when the rod is struck, the blank becomes a Lightning rune. */
+/**
+ * Drop a Blank Rune next to a lightning rod in a storm: when the rod is struck, the blank becomes a Lightning
+ * rune. Players near the rod feel the strike too: it feeds their storm affinity.
+ */
 @Mixin(LightningRodBlock.class)
 public abstract class LightningRodBlockMixin {
 	@Inject(method = "onLightningStrike", at = @At("TAIL"))
@@ -27,6 +30,8 @@ public abstract class LightningRodBlockMixin {
 		if (!(level instanceof ServerLevel server)) {
 			return;
 		}
+		// Everyone near a struck rod feels the storm (their storm affinity grows).
+		dev.wildercord.cast.PlayerAffinities.rodStruck(server, pos);
 		for (ItemEntity item : server.getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(2.5), e -> e.getItem().is(WildercordItems.BLANK_RUNE))) {
 			ItemStack charged = RuneItem.stack(Runes.LIGHTNING);
 			charged.setCount(item.getItem().getCount());

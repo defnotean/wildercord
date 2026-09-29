@@ -189,14 +189,14 @@ public final class Effects {
 		RuneDef rune = node.effect;
 		LivingEntity caster = cast.caster;
 		ServerLevel level = cast.level;
-		// Elemental leaning: the element you cast most hits a little harder. Innate runes grow with the heart.
-		double leaning = !rune.element().isEmpty() && rune.element().equals(cast.info.leaning()) ? 1 + dev.wildercord.spell.Leaning.POWER : 1.0;
+		// The caster's affinity with this element (+3% a level: heals, shields and pushes grow with it too). Innate runes grow with the heart.
+		double affinity = PlayerAffinities.power(caster, rune.element());
 		double innate = Runes.innate(rune) ? Innates.scale(caster) : 1.0;
 		// A rune ranked up at the Fusion Altar hits harder wherever it's threaded; rank III counts as one Amplify for levels.
 		int rank = dev.wildercord.player.RuneRanks.rank(caster, rune.id());
 		// Casting gear (a staff of this element, a Focus of Thrift): its own factor, set when the spell was cast.
 		double gear = cast.gearPower(rune.element());
-		double power = SpellNumbers.power(node) * groupPower * cast.power * leaning * innate * dev.wildercord.spell.Ranks.power(rank) * gear
+		double power = SpellNumbers.power(node) * groupPower * cast.power * affinity * innate * dev.wildercord.spell.Ranks.power(rank) * gear
 			* ExplorerEffects.swing(cast, node, hit);
 		double duration = SpellNumbers.duration(node) * cast.duration;
 		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);

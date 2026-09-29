@@ -151,13 +151,58 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
-	/** Casts per element, for elemental leaning. Kept through death. */
+	/**
+	 * Casts per element, as leaning counted them before affinities existed. No longer counted: read once,
+	 * when a caster first gets affinities, to give them a start (see {@code cast.PlayerAffinities}).
+	 */
 	public static final AttachmentType<Map<String, Integer>> ELEMENT_CASTS = AttachmentRegistry.create(
 		Wildercord.id("element_casts"),
 		builder -> builder
 			.initializer(Map::of)
 			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
 			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/**
+	 * A player's affinity points with each element (element to points; see {@code spell.PlayerAffinity}).
+	 * Synced for the Grimoire page, the readout and the cost the HUD shows. Kept through death.
+	 */
+	public static final AttachmentType<Map<String, Integer>> AFFINITY = AttachmentRegistry.create(
+		Wildercord.id("affinity"),
+		builder -> builder
+			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/** The points each way of earning affinity has offered today, and which in-game day that is: its daily allowance. */
+	public record AffinityTally(long day, Map<String, Double> earned) {
+		public static final AffinityTally NONE = new AffinityTally(Long.MIN_VALUE, Map.of());
+		public static final Codec<AffinityTally> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.create(i -> i.group(
+			Codec.LONG.fieldOf("day").forGetter(AffinityTally::day),
+			Codec.unboundedMap(Codec.STRING, Codec.DOUBLE).fieldOf("earned").forGetter(AffinityTally::earned)
+		).apply(i, AffinityTally::new));
+
+		/** What {@code key} has offered on {@code today} (nothing, if this tally is from another day). */
+		public double earned(long today, String key) {
+			return day == today ? earned.getOrDefault(key, 0.0) : 0.0;
+		}
+
+		/** This tally with {@code key} at {@code value} on {@code today}, starting afresh on a new day. */
+		public AffinityTally with(long today, String key, double value) {
+			Map<String, Double> next = new HashMap<>(day == today ? earned : Map.of());
+			next.put(key, value);
+			return new AffinityTally(today, Map.copyOf(next));
+		}
+	}
+
+	/** The day's affinity allowances (server only: nobody else needs them). Saved and kept through death, so neither resets them. */
+	public static final AttachmentType<AffinityTally> AFFINITY_TALLY = AttachmentRegistry.create(
+		Wildercord.id("affinity_tally"),
+		builder -> builder
+			.initializer(() -> AffinityTally.NONE)
+			.persistent(AffinityTally.CODEC)
 			.copyOnDeath()
 	);
 

@@ -174,6 +174,8 @@ public final class SpellCaster {
 		int cooldown = Heart.cooldownTicks(player, compiled, secretCooldown);
 		Spellbooks.setReadyAt(player, spell, now + cooldown);
 		HeartCircles.condense(player, spent);
+		// Each element in the spell grows its affinity by the mana it made up; a Blood Price's health feeds blood.
+		PlayerAffinities.onCast(player, compiled.root(), spent, blood);
 		double rhythm = Rhythm.onCast(player, now, cooldown);
 		double charged = 1 + Charging.POWER * Math.max(0, Math.min(1, charge));
 		bonuses = bonuses.withPower(bonuses.power() * rhythm * charged);
@@ -181,7 +183,8 @@ public final class SpellCaster {
 			Grimoire.feat(player, dev.wildercord.spell.Feats.CHARGED);
 		}
 		dev.wildercord.advancement.Advancements.cast(player, runes.size());
-		String leaning = countElements(player, runes);
+		// The element the caster's magic leans toward (their deepest affinity), for the record of what was cast.
+		String leaning = Heart.leaning(player);
 		int castNumber = COMBO.computeIfAbsent(player.getUUID(), k -> new int[dev.wildercord.gear.SpellSlots.ALL])[spell] += 1;
 		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 		Vfx.Theme theme = secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()));
@@ -267,31 +270,6 @@ public final class SpellCaster {
 			return Component.translatable("message.wildercord.tome_needed");
 		}
 		return Component.translatable("message.wildercord.spell_needs", spell + 1, Component.translatable(CordTier.forSpells(spell + 1).itemKey()));
-	}
-
-	/**
-	 * Counts this cast toward each element in it, for elemental leaning, and returns the element
-	 * the caster now leans toward ("" for none). Tells the player when a leaning first appears.
-	 */
-	private static String countElements(ServerPlayer player, List<RuneDef> runes) {
-		// A Knot's runes count as if they were threaded one by one.
-		java.util.Set<String> elements = dev.wildercord.gear.GearBonuses.elements(runes);
-		String before = Heart.leaning(player);
-		if (elements.isEmpty()) {
-			return before;
-		}
-		java.util.Map<String, Integer> counts = new java.util.HashMap<>(Heart.elementCasts(player));
-		for (String element : elements) {
-			counts.merge(element, 1, Integer::sum);
-		}
-		player.setAttached(dev.wildercord.player.WildercordAttachments.ELEMENT_CASTS, java.util.Map.copyOf(counts));
-		String after = dev.wildercord.spell.Leaning.of(counts);
-		if (!after.isEmpty() && !after.equals(before)) {
-			player.sendSystemMessage(Component.translatable("message.wildercord.leaning", Component.translatable("element.wildercord." + after))
-				.withColor(dev.wildercord.spell.RuneColors.element(after)));
-			Grimoire.feat(player, dev.wildercord.spell.Feats.LEANING);
-		}
-		return after;
 	}
 
 	/** Gives a spell a custom name, or clears it back to the automatic one. */
