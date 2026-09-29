@@ -12,6 +12,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Shock`) renewed every two seconds like a Self passive, so up to four rings of orbs (eight with Extend) struck at
   once for one upkeep. The effect before the Orbit counts as Self, so that passive now has two shapes and is refused,
   as the Passives page says; keep the buff and the aura in two passives.
+- **Long-lasting shapes no longer weigh on the server.** An Orbit, Zone, Trail, Wall, Totem, Domain, Vortex, Mine or
+  Snare booked every one of its steps up front, and the server walked through all of them every tick: an Orbit that
+  Extend made last hours booked hundreds of thousands, kept even after its caster had left. Each now keeps one step
+  waiting at a time and stops once its caster is gone, and the scheduler takes finished steps out in one pass.
 
 ## [0.4.2-alpha] - 2026-09-28
 

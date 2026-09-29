@@ -290,17 +290,14 @@ public final class CastEngine {
 			int interval = SpellNumbers.zoneInterval(g);
 			for (Vec3 center : spread(aimPoint(cast, at), copies, radius)) {
 				Vfx.zoneOpen(cast.level, center, radius, theme, pulses * interval + 12);
-				for (int i = 0; i < pulses; i++) {
+				ShapeRunners.steps(cast, 1, interval, (pulses - 1) * interval, t -> {
 					Cast child = cast.pulse();
-					int pulse = i;
-					Scheduler.later(1 + i * interval, () -> {
-						if (!child.alive()) {
-							return;
-						}
-						Vfx.zonePulse(child.level, center, radius, theme, pulse);
-						onHit(child, g, new Cast.Hit(inRadius(child, center.add(0, 1, 0), radius), center, at.dir(), center, null, null, false), anchored);
-					});
-				}
+					if (!child.alive()) {
+						return;
+					}
+					Vfx.zonePulse(child.level, center, radius, theme, t / interval);
+					onHit(child, g, new Cast.Hit(inRadius(child, center.add(0, 1, 0), radius), center, at.dir(), center, null, null, false), anchored);
+				});
 			}
 		} else if (shape.equals(Runes.RAIN.id())) {
 			double radius = SpellNumbers.rainRadius(g);

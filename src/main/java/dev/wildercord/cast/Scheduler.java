@@ -60,6 +60,11 @@ public final class Scheduler {
 		TASKS.add(new Task(Math.max(1, ticks), Effects.carryContext(action)));
 	}
 
+	/** Spell parts waiting to run, for the tests: a lasting shape keeps one waiting at a time, however long it lasts. */
+	public static int pending() {
+		return TASKS.size();
+	}
+
 	/** Fires once the player has left the ground and touched it again, within {@code timeout} ticks. */
 	public static void onLand(LivingEntity player, int timeout, Consumer<Vec3> action) {
 		LandWatch watch = new LandWatch(player, timeout, action);
@@ -107,13 +112,14 @@ public final class Scheduler {
 		HURT.removeIf(watch -> watch.player.isRemoved() || !watch.player.isAlive() || --watch.ticksLeft <= 0);
 		if (!TASKS.isEmpty()) {
 			List<Task> due = new ArrayList<>();
-			for (Iterator<Task> it = TASKS.iterator(); it.hasNext(); ) {
-				Task task = it.next();
+			// One pass that compacts the list once: taking the due tasks out one at a time shifted the whole list for each.
+			TASKS.removeIf(task -> {
 				if (--task.ticksLeft <= 0) {
-					it.remove();
 					due.add(task);
+					return true;
 				}
-			}
+				return false;
+			});
 			// Run after the sweep: actions may schedule more tasks.
 			for (Task task : due) {
 				// One failing part of a spell (or an add-on's) mustn't take the whole server tick down.

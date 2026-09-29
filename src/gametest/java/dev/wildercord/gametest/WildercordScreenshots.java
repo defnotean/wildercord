@@ -571,6 +571,25 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				check(fast == (i == 3), "Combo cast " + i + ": expected Speed " + (i == 3) + " but was " + fast);
 			}
 		});
+
+		// A lasting shape keeps one part waiting in the scheduler, however long Extend makes it last (a four-minute
+		// Orbit used to book all 5,000 of its ticks up front), and stops once its caster is gone.
+		server.runOnServer(s -> {
+			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			net.minecraft.server.level.ServerLevel level = player.level();
+			var husk = net.minecraft.world.entity.EntityTypes.HUSK.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+			husk.snapTo(STAGE[0] + 20, STAGE[1], STAGE[2], 90.0F, 0.0F);
+			husk.setNoAi(true);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
+			level.addFreshEntity(husk);
+			int before = dev.wildercord.cast.Scheduler.pending();
+			dev.wildercord.cast.CastEngine.cast(husk, dev.wildercord.spell.SpellCompiler.compile(List.of(Runes.ORBIT, Runes.EXTEND, Runes.EXTEND,
+				Runes.EXTEND, Runes.EXTEND, Runes.EXTEND)).root());
+			int booked = dev.wildercord.cast.Scheduler.pending() - before;
+			husk.discard();
+			check(booked < 20, "A four-minute Orbit should keep one part waiting in the scheduler, not " + booked);
+		});
 		server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setGameMode(GameType.CREATIVE));
 	}
 

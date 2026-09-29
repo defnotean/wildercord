@@ -307,9 +307,7 @@ public final class Innates {
 			THREADS.put(t.getUUID(), new Thread(id, until, cast.caster));
 		}
 		Fx.sound(cast.level, harmed.getFirst().position(), SoundEvents.CHAIN_PLACE, 1.0F, 0.6F);
-		for (int t = 0; t < ticks; t += 10) {
-			Scheduler.later(t + 1, () -> drawThread(cast.level, members));
-		}
+		ShapeRunners.steps(cast, 1, 10, ticks - 1, t -> drawThread(cast.level, members));
 	}
 
 	private static void drawThread(ServerLevel level, Set<LivingEntity> members) {
