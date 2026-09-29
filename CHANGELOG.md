@@ -21,6 +21,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   they now bite only what your spells may harm, and nothing at all once you've gone.
 - **A creature held in Stasis (or an arrow held by Infinity) that's carried through a portal falls again** as soon as
   it arrives, instead of floating until its ground was next loaded.
+- **The glyph limit counts all your glyphs**, in every dimension together (12 by default), rather than 12 in each:
+  writing one more lets your oldest fade wherever it is.
 
 ## [0.4.2-alpha] - 2026-09-28
 

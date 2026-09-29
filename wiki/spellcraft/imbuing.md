@@ -149,7 +149,8 @@ your friends walk over it.
 
 ### Twelve glyphs, kept with the world
 
-- Each caster keeps at most **12 glyphs**. Writing a 13th lets your oldest fade.
+- Each caster keeps at most **12 glyphs**, counted over every dimension together. Writing a 13th lets your oldest
+  fade, wherever it is.
 - Glyphs are saved with the world and cast **as you**: your power, your allies. So they **sleep while
   you're away**: offline, dead, spectating or in another dimension. Everyone within 24 blocks sees a
   glyph's faint circle, fainter still while it sleeps.
