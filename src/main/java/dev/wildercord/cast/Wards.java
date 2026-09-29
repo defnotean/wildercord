@@ -99,6 +99,12 @@ public final class Wards {
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register(Wards::allowDamage);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> reflect(entity, source, damage));
 		ServerLivingEntityEvents.ALLOW_DEATH.register(Wards::allowDeath);
+		// Rewind never reaches back past a death (a quick respawn could land between two snapshots).
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (entity instanceof ServerPlayer) {
+				HISTORY.remove(entity.getUUID());
+			}
+		});
 		ServerTickEvents.END_SERVER_TICK.register(Wards::tick);
 		Techniques.init();
 		// Held things let go before the world is saved, and anything saved while held (a player who
@@ -473,6 +479,11 @@ public final class Wards {
 
 	private static void record(MinecraftServer server) {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			if (!player.isAlive()) {
+				// Dead: nothing from before the death is kept, so Rewind can't carry the respawned back to it.
+				HISTORY.remove(player.getUUID());
+				continue;
+			}
 			ArrayDeque<Snapshot> history = HISTORY.computeIfAbsent(player.getUUID(), k -> new ArrayDeque<>());
 			history.addLast(new Snapshot(player.level().dimension(), player.position(), player.getHealth(), player.getYRot(), player.getXRot(),
 				player.level().getGameTime()));
