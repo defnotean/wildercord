@@ -1422,6 +1422,7 @@ NEW_LANG = {
     "command.wildercord.event.rift_open": "A rift is already open in this world",
     "command.wildercord.event.rift": "A rift tears open",
     "command.wildercord.event.off": "World events are switched off in the server's config (features.world_events)",
+    "command.wildercord.event.overworld": "World events only happen in the Overworld",
     "subtitles.wildercord.storm_start": "Mana storm gathers",
     "subtitles.wildercord.storm_end": "Mana storm passes",
     "subtitles.wildercord.storm_arc": "Ley line crackles",
@@ -1511,7 +1512,8 @@ NEW_LANG = {
     "message.wildercord.duel_declined": "%s declined your duel",
     "message.wildercord.duel_you_declined": "You declined %s's duel",
     "message.wildercord.duel_too_far": "You must be within 40 blocks of %s to duel",
-    "message.wildercord.duel_begins": "Duel with %s! Nobody dies, and afterwards you're both as you were before it. Stay within 40 blocks",
+    "message.wildercord.duel_not_alive": "%s can't duel right now",
+    "message.wildercord.duel_begins": "Duel with %s! Nobody dies, and afterwards the harm you did each other is undone. Stay within 40 blocks",
     "message.wildercord.duel_hurt": "%s was hurt too recently to start a duel",
     "message.wildercord.duel_pvp": "%s was fighting another player too recently to start a duel",
     "message.wildercord.duel_cooldown": "%s duelled too recently: wait a little before the next one",
@@ -2018,7 +2020,8 @@ def write_new_content(runes):
     # ---- mining
     write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
-    write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": ["wildercord:rune_seal", "wildercord:archive_lectern", "wildercord:dungeon_altar"]})
+    write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": [
+        "wildercord:rune_seal", "wildercord:archive_lectern", "wildercord:dungeon_altar", "wildercord:fallen_star"]})
 
     # ---- the Archive in the world
     write_json(DATA / "worldgen/structure/archive.json", {

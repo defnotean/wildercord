@@ -106,7 +106,8 @@ The rift's boss bar goes as soon as you leave its world.
 ## For operators
 
 `/wildercord event <mana_storm|starfall|rift> [here]` starts an event as the server would place
-it. With `here`, it happens right by you instead. Setting `features.world_events` to false in
+it. With `here`, it happens right by you instead. Like the events themselves, it works only in the
+Overworld. Setting `features.world_events` to false in
 `config/wildercord.json` switches every event off: none starts on its own or from the command, and
 one already under way runs its course. All the frequencies and numbers are in one place,
 `cast/events/EventRules.java`, ready for a config file.

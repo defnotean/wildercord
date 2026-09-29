@@ -32,6 +32,7 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.animal.pig.Pig;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -294,6 +295,30 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 			check(Heart.discovered(player(server), "reaction:shatter"), "setting off Shatter on it should go in the Grimoire");
 			player(server).setGameMode(GameType.CREATIVE);
 		});
+		// Nothing leads it out of its arena: no boat, no portal (one that left would be missing, and its altar would wake another).
+		world.getServer().runOnServer(server -> {
+			ServerLevel level = server.getLevel(nether);
+			CinderWarden warden = (CinderWarden) level.getEntity(wardenId);
+			Entity boat = EntityTypes.OAK_BOAT.create(level, EntitySpawnReason.COMMAND);
+			check(boat != null, "a boat should spawn");
+			boat.snapTo(warden.getX(), warden.getY(), warden.getZ(), 0, 0);
+			level.addFreshEntity(boat);
+			check(!warden.startRiding(boat) && !warden.isPassenger(), "the Cinder Warden shouldn't be caught in a boat");
+			check(!warden.canUsePortal(false), "the Cinder Warden shouldn't go through a portal");
+			boat.discard();
+			// Into its next phase: it gathers itself, untouchable...
+			warden.setNoAi(false);
+			warden.setHealth(warden.getMaxHealth() / 2);
+		});
+		world.getServer().waitFor(server -> ((CinderWarden) server.getLevel(nether).getEntity(wardenId)).state(CinderWarden.SHIFTING), 20);
+		world.getServer().runOnServer(server -> {
+			ServerLevel level = server.getLevel(nether);
+			CinderWarden warden = (CinderWarden) level.getEntity(wardenId);
+			check(warden.state(CinderWarden.SHIFTING), "the Cinder Warden should gather itself as it enters its second phase");
+			// ...but a command's kill still goes through.
+			warden.kill(level);
+			check(warden.isDeadOrDying(), "a command's kill should go through while a boss gathers itself between phases");
+		});
 		done(world, nether);
 	}
 
@@ -420,7 +445,15 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
 			pig.addTag("wildercord.rolled");
 			level.addFreshEntity(pig);
-			return new int[] {scribe.getId(), pig.getId()};
+			// And the player's own wolf, which their shock must spare.
+			Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+			check(wolf != null, "a wolf should spawn");
+			wolf.snapTo(altar.getX() + 0.5, altar.getY() + 0.2, altar.getZ() - 3.5, 0, 0);
+			wolf.tame(player(server));
+			wolf.setNoAi(true);
+			wolf.addTag("wildercord.rolled");
+			level.addFreshEntity(wolf);
+			return new int[] {scribe.getId(), pig.getId(), wolf.getId()};
 		});
 		context.waitTicks(10);
 		// Stand dry, on a pedestal, and send a storm into the water.
@@ -440,11 +473,13 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 		});
 		float scribeBefore = health(world, overworld, ids[0]);
 		float pigBefore = health(world, overworld, ids[1]);
+		float wolfBefore = health(world, overworld, ids[2]);
 		world.getServer().runOnServer(server -> cast(player(server), Runes.BOLT, Runes.SHOCK));
 		int conducted = world.getServer().waitFor(server -> ((TideScribe) server.getLevel(overworld).getEntity(ids[0])).conductions() > 0, 60);
 		context.waitTicks(5);
 		check(conducted >= 0, "a Shock Bolt into the flooded arena should be carried by the water");
 		check(health(world, overworld, ids[1]) < pigBefore, "the shock should reach the pig wading in the flood too");
+		check(health(world, overworld, ids[2]) >= wolfBefore, "the shock mustn't hurt the caster's own wolf wading in the flood");
 		float lost = scribeBefore - health(world, overworld, ids[0]);
 		check(lost >= 10, "the Tide Scribe should take the brunt of a shock through its own water (it lost " + lost + ")");
 		// Frost freezes the flood, and strands the Scribe if the ice closes round it (once it's over the shock's stagger).

@@ -311,6 +311,21 @@ public final class RiftSiege {
 		return n;
 	}
 
+	/** One of its monsters turned into another (a zombie drowning...): the new one is in the wave in its place. */
+	void converted(UUID from, UUID to) {
+		int at = mobs.indexOf(from);
+		if (at < 0) {
+			return;
+		}
+		mobs.set(at, to);
+		for (List<UUID> wave : waveMobs) {
+			wave.replaceAll(id -> id.equals(from) ? to : id);
+		}
+		if (from.equals(riftcaller)) {
+			riftcaller = to;
+		}
+	}
+
 	/** One of its monsters was killed (from {@link WorldEvents}). */
 	void killed(UUID id) {
 		if (mobs.contains(id)) {

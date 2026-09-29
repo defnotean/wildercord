@@ -2,6 +2,8 @@ package dev.wildercord.gametest;
 
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.CastEngine;
+import dev.wildercord.cast.TemporaryBlocks;
+import dev.wildercord.cast.Thaws;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
@@ -35,7 +37,9 @@ import java.util.UUID;
  * Magic that changes the world, checked in a real world: frost on water makes frosted ice, fire by
  * grass lights fire (with fire spreading on), storm into water shocks a husk standing in that water,
  * wind knocks an arrow out of the air, a Grow beside a Rampart leaves the wall standing, and a spell where
- * the caster may not build changes nothing.
+ * the caster may not build changes nothing. Icepath's ice is written down to thaw (it never melts in the
+ * dark), a Rampart never rises over a Light spell's light, its blocks are written down to come down even
+ * after a crash, and one left past its time is taken down as soon as its ground is loaded.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
@@ -85,6 +89,20 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				return state.is(Blocks.FROSTED_ICE) ? null : "frost on water should freeze it into frosted ice (found " + state + ")";
 			});
 			note(failures, frost);
+
+			// Icepath: its frosted ice is written down to thaw, since in the dark it would never melt.
+			String icepath = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				BlockPos pool = site(player, 24, 0);
+				pool(player.level(), pool, 1);
+				apply(player, List.of(Runes.TOUCH, Runes.ICEPATH), Vec3.atCenterOf(pool), List.of());
+				BlockPos ice = pool.below();
+				if (!player.level().getBlockState(ice).is(Blocks.FROSTED_ICE)) {
+					return "Icepath should freeze the pool into frosted ice (found " + player.level().getBlockState(ice) + ")";
+				}
+				return Thaws.waiting(player.level(), ice) ? null : "Icepath's frosted ice should be written down to thaw";
+			});
+			note(failures, icepath);
 
 			// Fire by grass, with fire spreading on: the grass catches.
 			String fire = server.computeOnServer(s -> {
@@ -158,10 +176,12 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 
 			// A Grow beside a Rampart leaves the wall standing: a spell only asking whether it may change a block
 			// (offered to claims as a break) must never set off the handler that takes a Rampart down.
+			// A light (as a Light spell leaves) where the wall will rise: the wall goes round it, never over it.
 			BlockPos wallSite = server.computeOnServer(s -> {
 				ServerPlayer player = player(s);
 				BlockPos site = site(player, 0, 24);
 				meadow(player.level(), site);
+				player.level().setBlockAndUpdate(site.above(), Blocks.LIGHT.defaultBlockState());
 				apply(player, List.of(Runes.TOUCH, Runes.RAMPART), Vec3.atBottomCenterOf(site), List.of());
 				return site;
 			});
@@ -175,9 +195,37 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				if (before == 0) {
 					return "a Rampart should raise a wall of packed mud";
 				}
+				if (!level.getBlockState(wallSite.above()).is(Blocks.LIGHT)) {
+					return "a Rampart shouldn't rise over a light (found " + level.getBlockState(wallSite.above()) + "): when it crumbled it would leave the light for good";
+				}
+				for (BlockPos pos : BlockPos.betweenClosed(wallSite.offset(-3, -3, -3), wallSite.offset(3, 3, 3))) {
+					if (level.getBlockState(pos).is(Blocks.PACKED_MUD) && !TemporaryBlocks.recorded(level, pos)) {
+						return "every Rampart block should be written down, to come down even if the server doesn't stop cleanly";
+					}
+				}
+				level.setBlockAndUpdate(wallSite.above(), Blocks.AIR.defaultBlockState());
 				return after == before ? null : "a Grow beside a Rampart shouldn't take the wall down (" + before + " blocks, then " + after + ")";
 			});
 			note(failures, rampart);
+
+			// A spell's block left past its time (by a server that stopped without warning, say) comes down once its ground is loaded.
+			BlockPos leftover = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos at = site(player, -24, 0);
+				level.setBlockAndUpdate(at, Blocks.PACKED_MUD.defaultBlockState());
+				TemporaryBlocks.put(level, at, Blocks.PACKED_MUD.defaultBlockState(), Blocks.AIR.defaultBlockState(), level.getGameTime() - 200);
+				return at;
+			});
+			context.waitTicks(30);
+			String safetyNet = server.computeOnServer(s -> {
+				ServerLevel level = player(s).level();
+				if (!level.getBlockState(leftover).isAir()) {
+					return "a spell's block left past its time should be taken down (found " + level.getBlockState(leftover) + ")";
+				}
+				return TemporaryBlocks.recorded(level, leftover) ? "a block taken down should be crossed off" : null;
+			});
+			note(failures, safetyNet);
 
 			// Protected ground: frost in a claim freezes nothing, fire from a caster who can't build lights nothing,
 			// and a monster's frost never changes blocks.

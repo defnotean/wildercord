@@ -30,6 +30,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -193,6 +194,9 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			return null;
 		});
 		check(crystal == null, crystal);
+		// No second storm rolls in over the first (its region's wait aside).
+		boolean overlapped = world.getServer().computeOnServer(s -> WorldEvents.startStorm(player(s).level(), player(s), false) != null);
+		check(!overlapped, "a storm shouldn't start where it would overlap one already raging");
 
 		world.getServer().runOnServer(s -> WorldEvents.storms().forEach(ManaStorm::stop));
 		context.waitTicks(5);
@@ -229,6 +233,9 @@ public class WildercordEventsTest implements FabricClientGameTest {
 				if (Runebound.spellOf(guard).isEmpty()) {
 					return "every guard should be Runebound";
 				}
+				if (guard.canPickUpLoot()) {
+					return "an event's monster shouldn't pick things up (it goes with its event, and what it carried would go too)";
+				}
 			}
 			// Guarded: it won't open.
 			FallenStars.open(level, star, player(server));
@@ -249,11 +256,62 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			if (!Heart.discovered(player(server), "feat:" + Feats.STARGAZER)) {
 				return "looting a star should earn Stargazer";
 			}
+			if (FallenStars.any(level)) {
+				return "with the star gone, the world should be free for another to fall";
+			}
 			return null;
 		});
 		check(held == null, held);
 		world.getServer().runCommand("kill @e[type=item]");
 		world.getServer().runCommand("kill @e[type=experience_orb]");
+		// Something built where a star is to land, while it falls: the star burns up rather than crush it.
+		BlockPos second = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			BlockPos at = WorldEvents.startStar(player.level(), player, true);
+			if (at != null) {
+				player.level().setBlockAndUpdate(at, Blocks.GOLD_BLOCK.defaultBlockState());
+			}
+			return at;
+		});
+		check(second != null, "a second star should find somewhere to land");
+		context.waitTicks(80);
+		String built = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			boolean kept = level.getBlockState(second).is(Blocks.GOLD_BLOCK);
+			boolean lies = find(level, second) != null;
+			level.setBlockAndUpdate(second, Blocks.AIR.defaultBlockState());
+			if (!kept || lies) {
+				return "a star landing where something was built while it fell should burn up and leave it be";
+			}
+			return FallenStars.any(level) ? "a star that burnt up shouldn't count as lying in its world" : null;
+		});
+		check(built == null, built);
+		// A star taken away some other way (a command here; a Wither can't) still takes its guards with it.
+		BlockPos third = world.getServer().computeOnServer(server -> WorldEvents.startStar(player(server).level(), player(server), true));
+		check(third != null, "a third star should find somewhere to land");
+		context.waitTicks(100);
+		String removed = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			BlockPos at = find(level, third);
+			if (at == null) {
+				return "the third star should lie where it landed";
+			}
+			if (!level.getBlockState(at).is(net.minecraft.tags.BlockTags.WITHER_IMMUNE)) {
+				return "a Fallen Star should be safe from the Wither";
+			}
+			List<Mob> guards = FallenStars.guards(level, at);
+			if (guards.isEmpty()) {
+				return "guards should have risen round the third star";
+			}
+			level.setBlockAndUpdate(at, Blocks.AIR.defaultBlockState());
+			for (Mob guard : guards) {
+				if (!guard.isRemoved()) {
+					return "a star taken away should take its guards with it";
+				}
+			}
+			return FallenStars.any(level) ? "a star taken away shouldn't count as lying in its world" : null;
+		});
+		check(removed == null, removed);
 	}
 
 	/** The star near where it was meant to land: in its cell, or sunk to its crater's floor. */
@@ -287,6 +345,21 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			}
 			if (rift.alive() < 1) {
 				return "the first wave's monsters should be out";
+			}
+			// One of them turning into another (a zombie drowning, a skeleton freezing) is still one of its monsters.
+			ServerLevel level = player(server).level();
+			List<Mob> out = level.getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(rift.base(), rift.base()).inflate(48),
+				m -> m.isAlive() && m.entityTags().contains(WorldEvents.TAG));
+			if (!out.isEmpty()) {
+				int before = rift.alive();
+				Mob converted = out.getFirst().convertTo(net.minecraft.world.entity.EntityTypes.DROWNED,
+					net.minecraft.world.entity.ConversionParams.single(out.getFirst(), true, false), mob -> {});
+				if (converted == null || converted.isRemoved()) {
+					return "a rift's monster turned into another should stay in the world, still the rift's";
+				}
+				if (rift.alive() != before) {
+					return "a rift's monster turned into another should still count as one of its monsters (" + before + " out, then " + rift.alive() + ")";
+				}
 			}
 			// Too raw to seal in its first wave.
 			rift.strike(player(server), "fire");

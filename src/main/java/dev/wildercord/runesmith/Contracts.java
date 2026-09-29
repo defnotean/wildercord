@@ -139,10 +139,10 @@ public final class Contracts {
 		credit(player, credit(player).cast(now(player), elements, ley));
 	}
 
-	/** Whether a creature counts for the contracts: alive in the world, and not something set up to be hit. */
+	/** Whether a creature counts for the contracts: alive in the world, and not something set up to be hit (nor a wisp, which nothing hurts). */
 	private static boolean real(LivingEntity target) {
 		return !(target instanceof dev.wildercord.cast.TrainingDummy) && !(target instanceof net.minecraft.world.entity.decoration.Mannequin)
-			&& !(target instanceof net.minecraft.world.entity.decoration.ArmorStand);
+			&& !(target instanceof net.minecraft.world.entity.decoration.ArmorStand) && !(target instanceof dev.wildercord.familiar.Wisp);
 	}
 
 	private static long now(ServerPlayer player) {

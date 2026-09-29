@@ -33,6 +33,7 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -42,6 +43,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -97,14 +99,46 @@ public final class FallenStars {
 		STARS.clear();
 	}
 
-	/** Whether a star is falling or lying in this world right now (one from before a restart too). */
+	/**
+	 * Whether a star is falling or lying in this world right now (one from before a restart too), by
+	 * the ledger, which knows when each fades: a star left alone in ground nobody loads again never
+	 * ticks to crumble, and mustn't keep every other star from falling. Its memory here is let go too.
+	 */
 	public static boolean any(ServerLevel level) {
-		for (Key key : STARS.keySet()) {
-			if (key.level() == level.dimension()) {
-				return true;
+		EventLedger ledger = EventLedger.of(level.getServer());
+		long now = level.getGameTime();
+		for (Iterator<Map.Entry<Key, Star>> it = STARS.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<Key, Star> entry = it.next();
+			if (entry.getKey().level() == level.dimension() && !ledger.starLyingAt(entry.getKey().level(), entry.getKey().pos(), now)) {
+				// Its guards go too: now, if they're about, or as their ground loads.
+				letGuardsGo(level, entry.getValue());
+				it.remove();
 			}
 		}
-		return EventLedger.of(level.getServer()).starLying(level.dimension(), level.getGameTime());
+		return ledger.starLying(level.dimension(), now);
+	}
+
+	/**
+	 * A star's guards are let go: any about now go back where they came from, and the rest (in ground
+	 * that isn't loaded) are forgotten, so they're removed as their chunks load.
+	 */
+	private static void letGuardsGo(ServerLevel level, Star star) {
+		for (UUID id : star.guards.keySet()) {
+			if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
+				WorldEvents.vanish(level, mob);
+			}
+			WorldEvents.forget(id);
+		}
+		star.guards.clear();
+	}
+
+	/** One of an event's monsters turned into another: if it guarded a star, the new one guards it in its place. */
+	static void guardConverted(UUID from, UUID to, BlockPos at) {
+		for (Star star : STARS.values()) {
+			if (star.guards.remove(from) != null) {
+				star.guards.put(to, at.immutable());
+			}
+		}
 	}
 
 	/** One of an event's monsters was killed: if it guarded a star, it no longer stands. */
@@ -209,6 +243,10 @@ public final class FallenStars {
 				|| !level.isLoaded(column.offset(8, 0, -8)) || !level.isLoaded(column.offset(-8, 0, 8))) {
 			return null;
 		}
+		// Only where the world is running: in loaded ground that doesn't tick, it would never fade, nor its guards rise.
+		if (!level.isPositionEntityTicking(column)) {
+			return null;
+		}
 		int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
 		BlockPos surface = new BlockPos(x, h - 1, z);
 		BlockState ground = level.getBlockState(surface);
@@ -231,6 +269,12 @@ public final class FallenStars {
 		Star star = STARS.get(key);
 		if (star == null || !level.isLoaded(cell)) {
 			// Its ground went unloaded while it fell: it burns up instead.
+			STARS.remove(key);
+			EventLedger.of(level.getServer()).starGone(level.dimension(), cell);
+			return;
+		}
+		if (!level.getBlockState(cell).canBeReplaced()) {
+			// Something was built where it was to land while it fell: it burns up rather than crush it (or dig round it).
 			STARS.remove(key);
 			EventLedger.of(level.getServer()).starGone(level.dimension(), cell);
 			return;
@@ -516,6 +560,46 @@ public final class FallenStars {
 		crumble(level, pos, entity, true);
 	}
 
+	/**
+	 * What goes with a star, however it goes (crumbling, or taken away by a command or the like): its
+	 * guards (every one, loaded or not: see {@link #letGuardsGo}) and scorch marks, its place in the
+	 * ledger, and its crater, filled back in from the bottom up, putting back only blocks nobody has
+	 * built over since. Anyone standing in the bowl is lifted clear of the ground coming back.
+	 */
+	static void cleanUp(ServerLevel level, BlockPos pos, FallenStarBlockEntity entity) {
+		Vec3 at = Vec3.atCenterOf(pos);
+		List<FallenStarBlockEntity.Changed> crater = new ArrayList<>(entity.crater);
+		entity.crater.clear();
+		Star star = STARS.remove(new Key(level.dimension(), pos));
+		EventLedger.of(level.getServer()).starGone(level.dimension(), pos);
+		if (star != null) {
+			letGuardsGo(level, star);
+			star.scorch.forEach(Display::discard);
+		}
+		if (crater.isEmpty()) {
+			return;
+		}
+		crater.sort((a, b) -> Integer.compare(a.pos().getY(), b.pos().getY()));
+		AABB bowl = new AABB(pos);
+		for (FallenStarBlockEntity.Changed c : crater) {
+			bowl = bowl.minmax(new AABB(c.pos()));
+			// Never a chunk loaded just for this (the crater's own are, around the star).
+			if (!level.isLoaded(c.pos())) {
+				continue;
+			}
+			BlockState now = level.getBlockState(c.pos());
+			if (now.isAir() || now.is(Blocks.BLACKSTONE) || now.is(Blocks.SMOOTH_BASALT)) {
+				level.setBlock(c.pos(), c.was(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
+			}
+		}
+		for (LivingEntity standing : level.getEntitiesOfClass(LivingEntity.class, bowl.inflate(0.5, 1, 0.5), e -> e.isAlive() && !e.isSpectator())) {
+			for (int up = 0; up <= 4 && !level.noCollision(standing); up++) {
+				standing.teleportTo(standing.getX(), Math.floor(standing.getY()) + 1, standing.getZ());
+			}
+		}
+		Fx.send(level, ParticleTypes.HAPPY_VILLAGER, at.x, at.y, at.z, 16, 2.0, 0.5, 2.0, 0);
+	}
+
 	private static void drop(ServerLevel level, Vec3 at, ItemStack stack) {
 		ItemEntity item = new ItemEntity(level, at.x, at.y + 0.3, at.z, stack);
 		item.setDeltaMovement(level.getRandom().nextGaussian() * 0.05, 0.25, level.getRandom().nextGaussian() * 0.05);
@@ -529,29 +613,9 @@ public final class FallenStars {
 	 */
 	static void crumble(ServerLevel level, BlockPos pos, FallenStarBlockEntity entity, boolean looted) {
 		Vec3 at = Vec3.atCenterOf(pos);
-		List<FallenStarBlockEntity.Changed> crater = new ArrayList<>(entity.crater);
+		entity.gone = true;
 		level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-		Star star = STARS.remove(new Key(level.dimension(), pos));
-		EventLedger.of(level.getServer()).starGone(level.dimension(), pos);
-		if (star != null) {
-			for (UUID id : star.guards.keySet()) {
-				if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
-					WorldEvents.vanish(level, mob);
-				}
-			}
-			star.scorch.forEach(Display::discard);
-		}
-		// The land knits back together, from the bottom up.
-		crater.sort((a, b) -> Integer.compare(a.pos().getY(), b.pos().getY()));
-		for (FallenStarBlockEntity.Changed c : crater) {
-			BlockState now = level.getBlockState(c.pos());
-			if (level.isLoaded(c.pos()) && (now.isAir() || now.is(Blocks.BLACKSTONE) || now.is(Blocks.SMOOTH_BASALT))) {
-				level.setBlock(c.pos(), c.was(), Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE);
-			}
-		}
-		if (!crater.isEmpty()) {
-			Fx.send(level, ParticleTypes.HAPPY_VILLAGER, at.x, at.y, at.z, 16, 2.0, 0.5, 2.0, 0);
-		}
+		cleanUp(level, pos, entity);
 		Sigils.flash(level, at, STAR_LIGHT, looted ? 3.0F : 1.6F);
 		ElementFx.groundRing(level, Vec3.atBottomCenterOf(pos), STAR_GLOW, 0.2, 3.0, 0.08, 10);
 		Fx.send(level, ParticleTypes.END_ROD, at.x, at.y, at.z, looted ? 24 : 10, 0.4, 0.4, 0.4, 0.12);

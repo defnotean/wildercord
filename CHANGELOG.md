@@ -110,6 +110,59 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   another spell now drops the name being typed.
 - After leaving a world, the next one could show the last world's ley lines until it sent its own (on a server
   that never does, for good).
+- **A finished contract you hadn't handed in yet vanished at dawn**, reward and all. It now stays on the
+  Scribing Desk's board, in place of one of the new day's contracts, until you hand it in.
+- **Bosses could be led out of their arenas**: any of them through a Nether portal (its altar or lectern then
+  woke another, loot and all), and the Archivist in a boat or minecart. They stay where they belong now.
+- A boss's bar could stay stuck on screen after its chunk unloaded, and the Archivist's showed to anyone who
+  could see it from far off. Like the dungeon bosses', the Archivist's bar now shows only in its arena.
+- `/kill` and the void couldn't kill a boss while it gathered itself between phases.
+- **An Archivist lost without being killed never came back**: its lectern stayed dark for good. Like a dungeon's
+  altar, the lectern now wakes a new one if its Archivist has been missing for a few minutes while players are
+  there, and stays quiet only once it has truly fallen.
+- The allies the Archivist calls up as it rewrites its Cord now go when it falls, as the dungeon bosses' do.
+- Spectators watching a boss fall no longer earn its feat.
+- A storm spell shocking the Tide Scribe's flooded arena also shocked your friends, your pets and any villager
+  wading in it. It now spares everyone your spells can't harm (you still get a jolt if you're in the water).
+- **A duel was a free heal**: when it ended, both duellists got back all the health and mana they'd had, whatever
+  had taken it (a fall, a monster, spells cast at anything). Now only the harm your opponent did you is undone,
+  and mana you spent stays spent.
+- A duellist who logged off mid-duel was saved as the duel left them, and a server shutting down during a duel
+  gave one of the two a loss. The one logging off is now put back as they began, and a shutdown ends the duel
+  for nobody.
+- Accepting a duel that couldn't start yet (too far apart, hurt too recently) used up the challenge, and the
+  reason given when one of you was dead was that you were too far apart. The challenge now stands until it
+  runs out, and the message says who can't duel.
+- Turning the time back with `/time set` gave you a fresh day of rune buybacks at the Runesmith. It now counts
+  as the same day, as the contract board already did.
+- Any villager's trade asking for a rune (from a data pack, say) was taken for one of the Runesmith's swaps: it
+  gave no experience and refused ranked runes. Only the Runesmith's own swaps are treated that way now.
+- Casting at a wild wisp (which nothing can hurt) counted toward the casting and reaction contracts, as if it
+  were a real foe. Like a Training Dummy, it no longer does.
+- New Ember Sanctums are no longer overgrown by basalt columns and lava sheets in basalt deltas, and no longer
+  generate through fortresses and bastions.
+- **A server that crashed or was killed could leave a Rampart's packed mud, a Span's magenta glass or a Light
+  spell's invisible light in the world for good.** They're now written down with the world and taken down as
+  soon as their ground loads again. Taking them down no longer loads far-off chunks either.
+- A Rampart or Span raised over a Light spell's light put the light back when it came down, leaving it lit
+  forever. They now leave such a light alone.
+- **Stars could stop falling in a world until the server restarted**: one that landed where nobody went
+  afterwards (so it never faded) kept counting as the world's star. Stars now also land only where the world is
+  running, and one landing on something built while it fell burns up instead of crushing it.
+- When a Fallen Star went, its crater filled back in over anyone standing in it, and guards that had wandered
+  out of loaded ground stayed in the world for good. Anyone in the bowl is now lifted clear, and every guard
+  goes. A Wither could also break a star, leaving its crater open and its guards behind; stars are now safe
+  from the Wither, and one taken away any other way (by a command, say) still cleans up after itself.
+- **A rift's or star's monsters could pick up a fallen player's gear and take it with them when they went.**
+  They no longer pick anything up, and one sent away drops whatever it was carrying.
+- A rift's monster that turned into another (a zombie drowning, a skeleton freezing in powder snow) vanished on
+  the spot, and its wave could then never be beaten. It now stays, still one of the rift's (or the star's) own.
+- Two mana storms could roll in on top of each other from neighbouring regions. A storm no longer starts where
+  it would overlap one already raging.
+- `/wildercord event` worked in any dimension (a star would land on the Nether's roof). Like the events the
+  server rolls, it now works only in the Overworld.
+- Icepath's frosted ice never melted in the dark (in caves, or at night). Like frost's, it now thaws back into
+  water after half a minute wherever it is.
 
 ## [0.4.1-alpha] - 2026-09-28
 

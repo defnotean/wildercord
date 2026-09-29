@@ -749,8 +749,10 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **Monsters never change blocks.** Every block edit checks `Casters.mayBuild`, which is false for
   anything but a player allowed to build there.
 - **Nothing temporary is permanent.** Summons and frozen mobs carry saved end times; Rampart
-  blocks crumble when the server stops and drop nothing when broken; block-display visuals are
-  removed as their chunk loads; wards aren't saved at all.
+  blocks crumble when the server stops and drop nothing when broken; Rampart, Span and Light blocks
+  are also written down with their world (`cast.TemporaryBlocks`, as frozen water is in `Thaws`),
+  so one left by a crash, or out of loaded ground when its time came, goes as its chunk loads;
+  block-display visuals are removed as their chunk loads; wards aren't saved at all.
 - **Bosses are only ever slowed**, never frozen, swapped or held in place, so their fights can't
   break.
 

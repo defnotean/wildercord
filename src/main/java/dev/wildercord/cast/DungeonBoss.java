@@ -403,12 +403,13 @@ public abstract class DungeonBoss extends Monster {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+		// A command's kill and the void always go through, even between phases.
+		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+			return super.hurtServer(level, source, damage);
+		}
 		if (shifting > 0 || source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL)
 				|| source.getEntity() instanceof Mob && !(source.getEntity() instanceof Player) && source.getEntity() != this) {
 			return false;
-		}
-		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
-			return super.hurtServer(level, source, damage);
 		}
 		float taken = resist(level, source, damage);
 		if (taken <= 0) {
@@ -451,6 +452,18 @@ public abstract class DungeonBoss extends Monster {
 		return false;
 	}
 
+	/** Never led off in a boat or a minecart: it stays in its arena. */
+	@Override
+	protected boolean canRide(Entity vehicle) {
+		return false;
+	}
+
+	/** Never through a portal: one that left would be missing from its arena, and its altar would wake another. */
+	@Override
+	public boolean canUsePortal(boolean ignorePassenger) {
+		return false;
+	}
+
 	@Override
 	public boolean removeWhenFarAway(double distSqr) {
 		return false;
@@ -481,7 +494,7 @@ public abstract class DungeonBoss extends Monster {
 		Sigils.ground(level, position().add(0, 0.05, 0), color(), 0xFFFFFF, 6.0F, DEATH_TICKS + 20);
 		Fx.sound(level, c, net.minecraft.sounds.SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 0.8F);
 		for (ServerPlayer player : level.players()) {
-			if (player.distanceTo(this) <= 64) {
+			if (player.distanceTo(this) <= 64 && !player.isSpectator()) {
 				Grimoire.feat(player, feat());
 			}
 		}
@@ -592,10 +605,11 @@ public abstract class DungeonBoss extends Monster {
 		bossEvent.removePlayer(player);
 	}
 
+	/** Its bar goes from every screen however it leaves: killed, discarded, unloaded with its chunk or taken to another world. */
 	@Override
-	public void remove(RemovalReason reason) {
+	public void onRemoval(RemovalReason reason) {
 		bossEvent.removeAllPlayers();
-		super.remove(reason);
+		super.onRemoval(reason);
 	}
 
 	@Override

@@ -11,13 +11,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.level.Level;
 
 /**
  * {@code /wildercord event <mana_storm|starfall|rift> [here]}: starts a world event for testing.
  * Without {@code here} it's placed as the server would place it (a storm over the nearest ley line,
  * a star 60 to 150 blocks off, a rift a little way away); with it, right by you. Joins the
  * {@code /wildercord} command (Brigadier merges the two), operators only. Refused while the server's
- * config switches world events off.
+ * config switches world events off, and outside the Overworld, where the server never rolls them.
  */
 public final class EventCommand {
 	private EventCommand() {}
@@ -43,6 +44,11 @@ public final class EventCommand {
 		ServerLevel level = player.level();
 		if (!WorldEvents.enabled()) {
 			ctx.getSource().sendFailure(Component.translatable("command.wildercord.event.off"));
+			return 0;
+		}
+		// As the server rolls them: only in the Overworld (a star would land on the Nether's roof, a storm follow no ley line).
+		if (level.dimension() != Level.OVERWORLD) {
+			ctx.getSource().sendFailure(Component.translatable("command.wildercord.event.overworld"));
 			return 0;
 		}
 		switch (kind) {

@@ -109,10 +109,31 @@ public final class ContractRules {
 
 	/**
 	 * Today's board: the one held, until a later day comes. Time turned back (an operator's
-	 * {@code /time set}) keeps the board as it is, so its contracts can't be handed in twice.
+	 * {@code /time set}) keeps the board as it is, so its contracts can't be handed in twice. A
+	 * contract finished but not yet handed in stays on the new board, in place of one of the new
+	 * ones, until it's handed in: a reward earned is never lost to the dawn.
 	 */
 	public static Board today(Board held, long day, long seed) {
-		return day > held.day() ? generate(day, seed) : held;
+		if (day <= held.day()) {
+			return held;
+		}
+		Board fresh = generate(day, seed);
+		List<Contract> contracts = new ArrayList<>();
+		for (Contract contract : held.contracts()) {
+			if (contract.done() && !contract.claimed() && contracts.size() < COUNT) {
+				contracts.add(contract);
+			}
+		}
+		if (contracts.isEmpty()) {
+			return fresh;
+		}
+		// The new ones fill the rest, each of a kind not already on the board.
+		for (Contract contract : fresh.contracts()) {
+			if (contracts.size() < COUNT && contracts.stream().noneMatch(c -> c.kind().equals(contract.kind()))) {
+				contracts.add(contract);
+			}
+		}
+		return new Board(day, contracts);
 	}
 
 	/** What {@link #progress} changed: the new board, and which contracts moved and which were finished by it. */

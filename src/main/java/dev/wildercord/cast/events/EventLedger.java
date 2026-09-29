@@ -92,6 +92,17 @@ public final class EventLedger extends SavedData {
 		return false;
 	}
 
+	/** Whether the star at {@code pos} in this world is still lying there (not yet faded, looted or gone). */
+	boolean starLyingAt(ResourceKey<Level> level, BlockPos pos, long now) {
+		String w = world(level);
+		for (Star star : stars) {
+			if (star.level().equals(w) && star.pos().equals(pos) && star.until() > now) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void starFell(ResourceKey<Level> level, BlockPos pos, long until) {
 		stars.removeIf(s -> s.until() < until - EventRules.STAR_LIFETIME * 2L);
 		stars.add(new Star(world(level), pos.immutable(), until));

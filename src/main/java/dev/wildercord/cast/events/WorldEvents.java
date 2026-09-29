@@ -98,6 +98,17 @@ public final class WorldEvents {
 			}
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(WorldEvents::died);
+		// An event's monster that turns into another (a zombie drowning, a husk soaking, a skeleton freezing) is still
+		// the event's: the new one carries its tag, so it's taken in its place (before it's added, or it would be removed).
+		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, params) -> {
+			if (previous.entityTags().contains(TAG) && LIVE.remove(previous.getUUID())) {
+				LIVE.add(converted.getUUID());
+				for (RiftSiege rift : RIFTS) {
+					rift.converted(previous.getUUID(), converted.getUUID());
+				}
+				FallenStars.guardConverted(previous.getUUID(), converted.getUUID(), converted.blockPosition());
+			}
+		});
 		// Nothing may be hung on (or taken from) a rift's invisible stand.
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) ->
 			entity.entityTags().contains(RiftSiege.ANCHOR_TAG) ? InteractionResult.FAIL : InteractionResult.PASS);
@@ -166,15 +177,15 @@ public final class WorldEvents {
 
 	/**
 	 * A mana storm over the ley line nearest {@code player} (or, {@code here}, right over them).
-	 * Null if there's no ley line near enough, or the region had one lately (unless {@code here}),
-	 * or world events are switched off.
+	 * Null if there's no ley line near enough, or the region had one lately, or another storm is so
+	 * near the two would overlap (neither unless {@code here}), or world events are switched off.
 	 */
 	public static ManaStorm startStorm(ServerLevel level, ServerPlayer player, boolean here) {
 		if (!enabled()) {
 			return null;
 		}
 		Vec3 centre = here ? player.position() : ManaStorm.leyHeart(level, player.blockPosition(), EventRules.STORM_SEARCH);
-		if (centre == null) {
+		if (centre == null || !here && overlapsStorm(level, centre)) {
 			return null;
 		}
 		long now = level.getGameTime();
@@ -221,6 +232,16 @@ public final class WorldEvents {
 	}
 
 	// ------------------------------------------------------------------ what's going on
+
+	/** Whether a storm centred at {@code centre} would overlap one already raging in this world. */
+	private static boolean overlapsStorm(ServerLevel level, Vec3 centre) {
+		for (ManaStorm storm : STORMS) {
+			if (storm.level == level && Math.hypot(storm.centre.x - centre.x, storm.centre.z - centre.z) < 2 * EventRules.STORM_RADIUS) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/** The storm over this point, or null. */
 	public static ManaStorm stormAt(Level level, Vec3 at) {
@@ -293,6 +314,8 @@ public final class WorldEvents {
 		if (entity.entityTags().contains(RiftSiege.RIFTCALLER_TAG)) {
 			RiftSiege.riftcallerLoot(level, entity, source);
 		}
+		// Dead, it will never load again: nothing need remember it.
+		LIVE.remove(entity.getUUID());
 	}
 
 	/**
@@ -342,6 +365,8 @@ public final class WorldEvents {
 		float yaw = target == null ? level.getRandom().nextFloat() * 360 : (float) Math.toDegrees(Math.atan2(-(target.getX() - at.x), target.getZ() - at.z));
 		mob.snapTo(at.x, at.y, at.z, yaw, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.EVENT, mob instanceof Zombie ? new Zombie.ZombieGroupData(false, false) : null);
+		// It never picks anything up: it goes when its event does, and whatever it carried (a fallen player's gear) would go with it.
+		mob.setCanPickUpLoot(false);
 		if (spell == null) {
 			Runebound.bind(mob, adept);
 		} else {
@@ -366,11 +391,14 @@ public final class WorldEvents {
 		LIVE.add(entity.getUUID());
 	}
 
-	/** An event's monster goes back where it came from, in a puff of violet. */
+	/** An event's monster goes back where it came from, in a puff of violet, leaving anything it picked up. */
 	static void vanish(ServerLevel level, Entity entity) {
 		Vec3 at = entity.position().add(0, entity.getBbHeight() * 0.5, 0);
 		level.sendParticles(ParticleTypes.REVERSE_PORTAL, at.x, at.y, at.z, 20, 0.3, 0.5, 0.3, 0.05);
 		level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 6, 0.3, 0.5, 0.3, 0.03);
+		if (entity instanceof Mob mob) {
+			mob.dropPreservedEquipment(level);
+		}
 		LIVE.remove(entity.getUUID());
 		entity.discard();
 	}

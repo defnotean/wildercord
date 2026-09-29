@@ -41,6 +41,7 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.GameType;
@@ -263,6 +264,9 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			ranked.set(WildercordComponents.RANK, 3);
 			check(!healBack.satisfiedBy(ranked, ItemStack.EMPTY), "a rank III rune shouldn't pay a rank I's buyback");
 			check(healBack.getXp() == 0, "a buyback shouldn't give experience");
+			// Someone else's trade that happens to want a rune (a data pack's, say) is never taken for a swap.
+			MerchantOffer packTrade = new MerchantOffer(new ItemCost(WildercordItems.RUNE), new ItemStack(Items.EMERALD, 3), 12, 5, 0.05F);
+			check(!DuplicateSwap.isSwap(packTrade), "a trade that wants a rune and gives experience isn't a Runesmith swap");
 
 			MerchantOffer reroll = swaps.stream().filter(o -> !o.getCostB().isEmpty() && isRune(o.getResult(), 1)).findFirst()
 				.orElseThrow(() -> new AssertionError("no Tier I reroll for two known Heal runes"));
@@ -321,6 +325,21 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a cast that hasn't landed on anything shouldn't count yet");
 			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[1]), "");
 			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a spell landing on a Training Dummy shouldn't count");
+		});
+		context.waitTicks(1);
+		// Nor on a wild wisp, which no spell can hurt.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			dev.wildercord.familiar.Wisp wisp = dev.wildercord.familiar.FamiliarContent.WISP.create(level, EntitySpawnReason.COMMAND);
+			check(wisp != null, "a wisp should spawn");
+			wisp.snapTo(player.getX() + 2, player.getY() + 1, player.getZ() - 3, 0, 0);
+			wisp.setNoAi(true);
+			wisp.addTag("wildercord.social");
+			level.addFreshEntity(wisp);
+			Contracts.onSpellHit(player, wisp, "");
+			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a spell landing on a wisp shouldn't count");
+			wisp.discard();
 		});
 		context.waitTicks(1);
 		world.getServer().runOnServer(server -> {

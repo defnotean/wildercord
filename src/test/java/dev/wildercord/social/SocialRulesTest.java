@@ -148,6 +148,36 @@ class SocialRulesTest {
 		assertEquals(new ContractRules.Reward("mana_crystal", 1), ContractRules.Reward.parse("mana_crystal"));
 	}
 
+	@Test
+	void finishedContractsWaitThroughTheDawnUntilHandedIn() {
+		ContractRules.Contract finished = new ContractRules.Contract(ContractRules.RUNEBOUND, "frost", 2, 2, false, "rune:2");
+		ContractRules.Board yesterday = new ContractRules.Board(3, List.of(
+			finished,
+			new ContractRules.Contract(ContractRules.LEY, "", 3, 3, true, "emerald:8"),
+			new ContractRules.Contract(ContractRules.REACTION, "conduct", 2, 1, false, "blank_rune:6")));
+		for (long seed = 0; seed < 50; seed++) {
+			ContractRules.Board today = ContractRules.today(yesterday, 4, seed);
+			assertEquals(4, today.day());
+			assertEquals(ContractRules.COUNT, today.contracts().size());
+			assertEquals(finished, today.contracts().getFirst(), "a finished contract not handed in stays on the board");
+			assertEquals(ContractRules.COUNT, today.contracts().stream().map(ContractRules.Contract::kind).distinct().count());
+			assertTrue(today.contracts().stream().noneMatch(ContractRules.Contract::claimed), "handed-in contracts go at dawn");
+			assertEquals(List.of(new ContractRules.Reward("rune", 2)), ContractRules.claim(today).rewards());
+			// Once handed in, the next dawn brings a whole new board.
+			ContractRules.Board next = ContractRules.today(ContractRules.claim(today).board(), 5, seed);
+			assertEquals(ContractRules.generate(5, seed), next);
+		}
+		// A board of nothing but finished contracts is kept whole, never grown past three.
+		ContractRules.Board full = ContractRules.generate(7, 1);
+		List<ContractRules.Contract> done = new java.util.ArrayList<>();
+		for (ContractRules.Contract c : full.contracts()) {
+			done.add(c.advance(c.target()));
+		}
+		ContractRules.Board kept = ContractRules.today(new ContractRules.Board(7, done), 8, 1);
+		assertEquals(done, kept.contracts());
+		assertEquals(8, kept.day());
+	}
+
 	// ------------------------------------------------------------------ duels
 
 	@Test
@@ -306,6 +336,7 @@ class SocialRulesTest {
 		assertEquals(RuneTrades.DAILY_BUYBACKS - 3, RuneTrades.buybacksLeft(5, 3, 5));
 		assertEquals(0, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS + 2, 5));
 		assertEquals(RuneTrades.DAILY_BUYBACKS, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS, 6), "a new day, a fresh allowance");
+		assertEquals(0, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS, 4), "time turned back doesn't bring buybacks back");
 	}
 
 	@Test
@@ -364,10 +395,14 @@ class SocialRulesTest {
 		assertEquals(DuelRules.Refusal.NONE, DuelRules.ready(now, DuelRules.NEVER, DuelRules.NEVER, now - DuelRules.DUEL_COOLDOWN_TICKS));
 		assertFalse(DuelRules.within(now, now + 50, 200), "a clock that went backwards isn't 'recently'");
 
-		// Health and mana go back to what they were, never more; gains made meanwhile are kept.
-		assertEquals(6F, DuelRules.restored(1F, 6F, 20F));
-		assertEquals(9F, DuelRules.restored(9F, 6F, 20F));
-		assertEquals(20F, DuelRules.restored(1F, 30F, 20F), "never over the most");
+		// What the opponent took goes back, never past what it was; gains made meanwhile are kept.
+		assertEquals(6F, DuelRules.restored(1F, 6F, 20F, 5F));
+		assertEquals(6F, DuelRules.restored(1F, 6F, 20F, 9F), "never past what it was");
+		assertEquals(9F, DuelRules.restored(9F, 6F, 20F, 0F));
+		assertEquals(20F, DuelRules.restored(1F, 30F, 20F, 29F), "never over the most");
+		// Harm from anything else (a fall, a monster, lava) isn't undone: a duel is never a free heal.
+		assertEquals(3F, DuelRules.restored(1F, 6F, 20F, 2F));
+		assertEquals(1F, DuelRules.restored(1F, 20F, 20F, 0F), "hurt only by the world, nothing comes back");
 		// Effects come back with the time the duel took off them.
 		assertEquals(400, DuelRules.remaining(1000, 600));
 		assertEquals(0, DuelRules.remaining(500, 600));

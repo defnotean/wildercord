@@ -6,6 +6,7 @@ import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
+import dev.wildercord.spell.WorldRules;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
@@ -846,12 +847,15 @@ public final class Effects {
 		}
 	}
 
-	/** Icepath: water near the point freezes into frosted ice that melts on its own. */
+	/**
+	 * Icepath: water near the point freezes into frosted ice that melts on its own in the light, and
+	 * is thawed after {@link WorldRules#THAW_TICKS} wherever it is (frosted ice never melts in the dark).
+	 */
 	private static void icepath(Cast cast, Cast.Hit hit, double radius) {
 		BlockPos center = BlockPos.containing(hit.point().x, hit.point().y - 0.5, hit.point().z);
 		int r = (int) Math.ceil(radius);
 		BlockState ice = Blocks.FROSTED_ICE.defaultBlockState();
-		int frozen = 0;
+		List<BlockPos> frozen = new ArrayList<>();
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-r, -2, -r), center.offset(r, 1, r))) {
 			BlockPos p = pos.immutable();
 			if (p.distSqr(center) > radius * radius) {
@@ -865,10 +869,11 @@ public final class Effects {
 				}
 				cast.level.setBlockAndUpdate(p, ice);
 				cast.level.scheduleTick(p, Blocks.FROSTED_ICE, 60 + cast.level.getRandom().nextInt(60));
-				frozen++;
+				frozen.add(p);
 			}
 		}
-		if (frozen > 0) {
+		if (!frozen.isEmpty()) {
+			Thaws.schedule(cast.level, frozen, cast.level.getGameTime() + WorldRules.THAW_TICKS + cast.level.getRandom().nextInt(60));
 			Vfx.icepath(cast.level, Vec3.atCenterOf(center), radius);
 		}
 	}
@@ -1036,14 +1041,21 @@ public final class Effects {
 		if (!level.getBlockState(pos).isAir() || !mayEdit(cast, pos)) {
 			return;
 		}
-		level.setBlockAndUpdate(pos, Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 15));
+		BlockState light = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 15);
+		level.setBlockAndUpdate(pos, light);
 		GlobalPos lit = GlobalPos.of(level.dimension(), pos.immutable());
 		LIGHTS.add(lit);
+		int ticks = ticks(60, duration);
+		TemporaryBlocks.put(level, pos, light, Blocks.AIR.defaultBlockState(), level.getGameTime() + ticks);
 		Vfx.light(level, Vec3.atCenterOf(pos));
-		Scheduler.later(ticks(60, duration), () -> {
+		Scheduler.later(ticks, () -> {
 			LIGHTS.remove(lit);
-			if (level.getBlockState(pos).is(Blocks.LIGHT)) {
-				level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+			// Out of loaded ground now: it goes out as its chunk loads (see TemporaryBlocks), never loaded just for this.
+			if (level.isLoaded(pos)) {
+				if (level.getBlockState(pos).is(Blocks.LIGHT)) {
+					level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+				}
+				TemporaryBlocks.remove(level, pos);
 			}
 		});
 	}
@@ -1700,7 +1712,7 @@ public final class Effects {
 		ExpansionVfx.prune(level, point, radius, cleared > 0);
 	}
 
-	/** Light's invisible light blocks still lit, so they go out when the server stops. */
+	/** Light's invisible light blocks still lit, so they go out when the server stops (and, saved in {@link TemporaryBlocks}, even if it doesn't stop cleanly). */
 	private static final java.util.Set<GlobalPos> LIGHTS = new java.util.HashSet<>();
 
 	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall): pistons can't move it. */
@@ -1721,20 +1733,29 @@ public final class Effects {
 		static {
 			PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
 				!(world instanceof ServerLevel server) || !state.is(SPAN_BLOCK.getBlock()) || !unspan(server, pos));
+			// Only in loaded ground: the rest are saved in TemporaryBlocks, and go as their chunks load.
 			ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 				for (Map.Entry<GlobalPos, BlockState> entry : new ArrayList<>(SPAN.entrySet())) {
 					ServerLevel level = server.getLevel(entry.getKey().dimension());
 					BlockPos pos = entry.getKey().pos();
-					if (level != null && level.getBlockState(pos).is(SPAN_BLOCK.getBlock())) {
+					if (level == null || !level.isLoaded(pos)) {
+						continue;
+					}
+					if (level.getBlockState(pos).is(SPAN_BLOCK.getBlock())) {
 						level.setBlockAndUpdate(pos, entry.getValue());
 					}
+					TemporaryBlocks.remove(level, pos);
 				}
 				SPAN.clear();
 				for (GlobalPos lit : LIGHTS) {
 					ServerLevel level = server.getLevel(lit.dimension());
-					if (level != null && level.getBlockState(lit.pos()).is(Blocks.LIGHT)) {
+					if (level == null || !level.isLoaded(lit.pos())) {
+						continue;
+					}
+					if (level.getBlockState(lit.pos()).is(Blocks.LIGHT)) {
 						level.setBlockAndUpdate(lit.pos(), Blocks.AIR.defaultBlockState());
 					}
+					TemporaryBlocks.remove(level, lit.pos());
 				}
 				LIGHTS.clear();
 			});
@@ -1755,9 +1776,13 @@ public final class Effects {
 		if (replaced == null) {
 			return false;
 		}
-		if (level.getBlockState(pos).is(SPAN_BLOCK.getBlock())) {
-			level.levelEvent(2001, pos, Block.getId(SPAN_BLOCK));
-			level.setBlockAndUpdate(pos, replaced);
+		// Out of loaded ground now: it's put back as its chunk loads (see TemporaryBlocks), never loaded just for this.
+		if (level.isLoaded(pos)) {
+			if (level.getBlockState(pos).is(SPAN_BLOCK.getBlock())) {
+				level.levelEvent(2001, pos, Block.getId(SPAN_BLOCK));
+				level.setBlockAndUpdate(pos, replaced);
+			}
+			TemporaryBlocks.remove(level, pos);
 		}
 		return true;
 	}
@@ -1795,6 +1820,7 @@ public final class Effects {
 		List<BlockPos> order = new ArrayList<>(cells);
 		Vfx.Theme theme = Vfx.theme("arcane");
 		ExpansionVfx.spanStart(level, feet, dir, theme);
+		long due = level.getGameTime() + ticks;
 		for (int i = 0; i < order.size(); i++) {
 			BlockPos p = order.get(i);
 			Scheduler.later(1 + i / 3, () -> {
@@ -1802,11 +1828,13 @@ public final class Effects {
 					return;
 				}
 				BlockState state = level.getBlockState(p);
-				if (!state.canBeReplaced() || !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()
+				// Never over a Light spell's light: put back when the bridge shattered, it would stay lit for good.
+				if (!state.canBeReplaced() || state.is(Blocks.LIGHT) || !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()
 						|| !Casters.mayEdit(caster, level, p) || !cast.takeBlock()) {
 					return;
 				}
 				SPAN.put(GlobalPos.of(level.dimension(), p.immutable()), state);
+				TemporaryBlocks.put(level, p, SPAN_BLOCK, state, due);
 				level.setBlockAndUpdate(p, SPAN_BLOCK);
 				ExpansionVfx.spanBlock(level, p, theme);
 			});

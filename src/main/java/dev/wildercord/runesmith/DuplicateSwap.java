@@ -140,8 +140,12 @@ public final class DuplicateSwap {
 		villager.getOffers().removeIf(DuplicateSwap::isSwap);
 	}
 
+	/**
+	 * Whether an offer is one of these swaps: it asks for a rune, and like every swap gives no
+	 * experience and ignores prices (so a data pack's trade asking for a rune isn't taken for one).
+	 */
 	public static boolean isSwap(MerchantOffer offer) {
-		return offer.getItemCostA().item().value() == WildercordItems.RUNE;
+		return offer.getItemCostA().item().value() == WildercordItems.RUNE && offer.getXp() == 0 && offer.getPriceMultiplier() == 0.0F;
 	}
 
 	/** A buyback (a rune for emeralds), as opposed to a reroll (two runes for one). */
@@ -173,7 +177,8 @@ public final class DuplicateSwap {
 		}
 		long today = Contracts.day(player);
 		Sold sold = player.getAttachedOrElse(SOLD, Sold.NONE);
-		Sold next = new Sold(today, (sold.day() == today ? sold.count() : 0) + 1);
+		// Time turned back doesn't make a new day: the count carries on until a later day comes.
+		Sold next = sold.day() >= today ? new Sold(sold.day(), sold.count() + 1) : new Sold(today, 1);
 		player.setAttached(SOLD, next);
 		if (RuneTrades.buybacksLeft(next.day(), next.count(), today) > 0) {
 			return;

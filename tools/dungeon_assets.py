@@ -541,8 +541,10 @@ def elements_runes(runes, elements, tiers, innate):
 DUNGEONS = {
     "ember_sanctum": {
         "boss": "cinder_warden", "trophy": "cinder_heart", "elements": ("fire", "earth"), "name": "the Ember Sanctum",
-        "step": "underground_structures", "biomes": ["minecraft:nether_wastes", "minecraft:basalt_deltas", "minecraft:crimson_forest"],
-        "spacing": 36, "separation": 12, "salt": 20260928,
+        # Built after the basalt deltas' columns and lava sheets (surface_structures), which would otherwise grow inside
+        # its halls, as a fortress is; and kept clear of fortresses and bastions, which would carve through it.
+        "step": "underground_decoration", "biomes": ["minecraft:nether_wastes", "minecraft:basalt_deltas", "minecraft:crimson_forest"],
+        "spacing": 36, "separation": 12, "salt": 20260928, "exclusion": ("minecraft:nether_complexes", 5),
         "spawns": [("minecraft:wither_skeleton", 3), ("minecraft:blaze", 1), ("minecraft:magma_cube", 1)],
         "extras": [("minecraft:blaze_powder", 4, 2, 6), ("minecraft:magma_cream", 3, 1, 4), ("minecraft:gold_ingot", 3, 2, 6),
                    ("minecraft:netherite_scrap", 1, 1, 1)],
@@ -654,9 +656,11 @@ def main(g, runes):
             "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": [
                 {"type": t, "weight": w, "count": 1} for t, w in d["spawns"]]}} if d["spawns"] else {},
             "step": d["step"], "terrain_adaptation": "none"})
+        placement = {"type": "minecraft:random_spread", "salt": d["salt"], "separation": d["separation"], "spacing": d["spacing"]}
+        if "exclusion" in d:
+            placement["exclusion_zone"] = {"other_set": d["exclusion"][0], "chunk_count": d["exclusion"][1]}
         g.write_json(data / f"worldgen/structure_set/{key}.json", {
-            "placement": {"type": "minecraft:random_spread", "salt": d["salt"], "separation": d["separation"], "spacing": d["spacing"]},
-            "structures": [{"structure": f"wildercord:{key}", "weight": 1}]})
+            "placement": placement, "structures": [{"structure": f"wildercord:{key}", "weight": 1}]})
         g.write_json(data / f"tags/worldgen/biome/has_structure/{key}.json", {"values": d["biomes"]})
     g.write_json(data / "tags/worldgen/structure/dungeon.json", {"values": [f"wildercord:{k}" for k in DUNGEONS]})
 

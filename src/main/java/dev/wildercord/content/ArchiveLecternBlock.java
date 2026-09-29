@@ -18,7 +18,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The Archive Lectern, at the heart of the Archive: the Archivist rises from it the first time a
- * player comes near, and it goes quiet afterwards.
+ * player comes near, and it goes quiet afterwards (unless the Archivist goes missing without falling:
+ * see {@link ArchiveLecternBlockEntity}).
  */
 public class ArchiveLecternBlock extends Block implements EntityBlock {
 	public static final BooleanProperty AWAKE = BooleanProperty.create("awake");
@@ -42,7 +43,7 @@ public class ArchiveLecternBlock extends Block implements EntityBlock {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return level.isClientSide() || type != WildercordBlocks.ARCHIVE_LECTERN_ENTITY || state.getValue(AWAKE) ? null
+		return level.isClientSide() || type != WildercordBlocks.ARCHIVE_LECTERN_ENTITY ? null
 			: (BlockEntityTicker<T>) (BlockEntityTicker<ArchiveLecternBlockEntity>) ArchiveLecternBlockEntity::serverTick;
 	}
 

@@ -477,6 +477,14 @@ public final class WorldMagic {
 	/** Until when each player's ice is being watched (game time). */
 	private static final Map<UUID, Long> WATCHED = new HashMap<>();
 
+	/** The ice being watched goes with the server (its watchers are scheduled, and the schedule is cleared too). */
+	public static void init() {
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			BRIDGES.clear();
+			WATCHED.clear();
+		});
+	}
+
 	private static void watchBridge(Cast cast, List<BlockPos> frozen) {
 		if (!(cast.caster instanceof ServerPlayer player) || Heart.discovered(player, "feat:" + Feats.ICEBRIDGE)) {
 			return;

@@ -68,6 +68,13 @@ public final class Thaws extends SavedData {
 		ServerTickEvents.END_SERVER_TICK.register(Thaws::tick);
 	}
 
+	/** Whether the block at {@code pos} is written down to thaw (for the tests). */
+	public static boolean waiting(ServerLevel level, BlockPos pos) {
+		Thaws thaws = level.getDataStorage().get(TYPE);
+		List<Pending> inChunk = thaws == null ? null : thaws.byChunk.get(chunk(pos));
+		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos));
+	}
+
 	/** Writes down {@code ice} (just frozen) to thaw at game time {@code due}. */
 	static void schedule(ServerLevel level, List<BlockPos> ice, long due) {
 		if (ice.isEmpty()) {
