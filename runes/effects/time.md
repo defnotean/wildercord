@@ -57,7 +57,7 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 
 *Tier III · Time · Moves you · 14 mana · needs an Amethyst Cord or better*
 
-Time skips ahead: you vanish, reappear up to 8 blocks forward, and nearby monsters lose track of you.
+Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, and nearby monsters lose track of you.
 
 **How to get it:** Craft: a Blank Rune, Clock and Ender Pearl, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 
