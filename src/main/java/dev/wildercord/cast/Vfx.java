@@ -119,7 +119,7 @@ public final class Vfx {
 	}
 
 	/** One particle flying in {@code dir} (count 0 makes the offset a velocity). */
-	static void fling(ServerLevel level, ParticleOptions p, Vec3 at, Vec3 dir, double speed) {
+	public static void fling(ServerLevel level, ParticleOptions p, Vec3 at, Vec3 dir, double speed) {
 		Fx.send(level, p, at.x, at.y, at.z, 0, dir.x, dir.y, dir.z, speed);
 	}
 
@@ -190,10 +190,12 @@ public final class Vfx {
 	public static void castCircle(LivingEntity caster, Theme theme, java.util.List<dev.wildercord.spell.RuneDef> runes) {
 		ServerLevel level = (ServerLevel) caster.level();
 		Vec3 feet = caster.position();
-		Sigils.spell(level, feet.add(0, 0.06, 0), new Vec3(0, 1, 0), runes, theme.primary, 1.0F, 28 + runes.size());
+		// The circle's size follows the spell's scale: a Spark opens a small one, a charged ten-rune spell a great one (band M is 1.0).
+		float r = theme.feel() == null ? 1.0F : (float) dev.wildercord.cast.feel.Feels.circleRadius(theme.feel());
+		Sigils.spell(level, feet.add(0, 0.06, 0), new Vec3(0, 1, 0), runes, theme.primary, r, 28 + runes.size());
 		for (int i = 0; i < 6; i++) {
 			double a = Math.PI * 2 * i / 6;
-			fling(level, ParticleTypes.ENCHANT, feet.add(Math.cos(a) * 1.0, 0.1, Math.sin(a) * 1.0), new Vec3(0, 1, 0), 0.6);
+			fling(level, ParticleTypes.ENCHANT, feet.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), new Vec3(0, 1, 0), 0.6);
 		}
 		Vec3 hand = caster.getEyePosition().add(caster.getLookAngle().scale(0.9)).add(0, -0.3, 0);
 		emit(level, SigilOption.glow(theme.primary, 0.3F), hand, 1, 0.0, 0.0);
@@ -959,7 +961,6 @@ public final class Vfx {
 		Light.groundRing(level, base, theme.primary, 0.3, radius, 0.08, 12);
 		Light.ray(level, base.add(0, 1.6, 0), base, theme.secondary, 0.1, 6);
 		Sigils.flash(level, base.add(0, 1.6, 0), theme.primary, 1.8F);
-		Fx.sound(level, base, SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 1.2F);
 	}
 
 	// ------------------------------------------------------------------ batch 3 effects
