@@ -81,7 +81,7 @@ inventory is full, it drops at your feet.
 | (Rune) has no power to rank up: only effects with power have ranks. | That rune can't be ranked. See [which runes can rank]({{ '/fusion-altar/ranks/' | relative_url }}#which-runes-can-rank). |
 | (Rune) is already at its highest rank. | Rank III is the top. |
 | Combining two effects takes an amethyst shard. | Put an Amethyst Shard in the middle socket. |
-| Only effects with an element fuse. | Shapes, modifiers, links and innate runes can't be combined. |
+| Only effects with an element fuse. | Shapes, modifiers, links, Knots and innate runes can't be combined. |
 | A Knot takes only the Blank Rune: take the other runes out. | Leave just the Blank Rune in the rune sockets. |
 | Tying a Knot takes string too. | Put String in the middle socket. |
 | None of your spells can be tied yet | Each of your spells is empty or breaks one of the [Knot rules]({{ '/fusion-altar/knots/' | relative_url }}#limits). |

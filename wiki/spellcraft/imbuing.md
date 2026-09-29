@@ -55,6 +55,7 @@ Stored magic isn't a way around cooldowns:
   of them can let go again until the stored spell's own cooldown has passed, as long as it would be
   for you to cast (Rapid, Vow, Celerity and the Flow perk all count), and never less than **half a
   second**. A sword, a bow and a helmet can't take turns to cast faster than your Cord could.
+- The shared cooldown is **kept when you log out**: logging back in doesn't reset it.
 - A bow shot while the magic is recharging is just an arrow, and keeps its charge.
 - Using an imbued "anything else" item while it recharges tells you how long is left
   (*"Your imbued magic is still recharging"*).
@@ -174,7 +175,8 @@ fades. So does a glyph whose last charge is used.
   you.
 - An Imbue can't store another Imbue (*"An Imbue can't store another Imbue"*).
 - A spell cast once can Imbue once: a mana storm's echo, Twin Star's second go, a Focus of Echoes or a
-  wild surge's second go never imbues a second item for the same price.
+  wild surge's second go never imbues a second item for the same price, and nor does a spell that grew
+  into a [chorus]({{ '/social/chorus/' | relative_url }}).
 - A stored part that starts with an **effect** lands on whatever set it off. One that starts with a
   **shape** is cast from there like a new spell: `Self · Imbue · Burst · Explode` in a sword bursts
   around the creature you struck.
