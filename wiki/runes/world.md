@@ -394,7 +394,7 @@ The rest fires only if 3 or more enemies are within 8 blocks of you.
 
 *Tier III · Arcane · Helps you and your allies · 12 mana · needs an Amethyst Cord or better*
 
-Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute.
+Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds (30 at most, however extended). Each player can drink only once a minute.
 
 **How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
 

@@ -831,7 +831,7 @@
   "rune.wildercord.manaburn": "Manaburn",
   "rune.wildercord.manaburn.desc": "Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana (less from a weaker hit).",
   "rune.wildercord.manatide": "Manatide",
-  "rune.wildercord.manatide.desc": "Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute.",
+  "rune.wildercord.manatide.desc": "Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds (30 at most, however extended). Each player can drink only once a minute.",
   "rune.wildercord.self.craft": "Craft: Blank Rune, Glass Pane",
   "rune.wildercord.touch.craft": "Craft: Blank Rune, Leather",
   "rune.wildercord.touch.found": "Found: Dungeons, Mineshafts",

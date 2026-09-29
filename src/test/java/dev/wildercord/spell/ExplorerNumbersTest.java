@@ -53,6 +53,18 @@ class ExplorerNumbersTest {
 	}
 
 	@Test
+	void manatideGivesThirtyManaADrinkAtMostHoweverExtended() {
+		assertEquals(200, ExplorerNumbers.manatideTicks(200));
+		// Four Extends made it 160 seconds: it still flows 10.
+		assertEquals(ExplorerNumbers.MANATIDE_MOST_TICKS, ExplorerNumbers.manatideTicks(3200));
+		assertEquals(10, ExplorerNumbers.manatideTicks(10));
+		int most = ExplorerNumbers.pulses(ExplorerNumbers.manatideTicks(3200), 20).size() * ExplorerNumbers.MANATIDE_PER_SECOND;
+		assertEquals(30, most);
+		// A drink is over long before the next is allowed, so two never flow at once.
+		assertTrue(ExplorerNumbers.MANATIDE_MOST_TICKS < ExplorerNumbers.MANATIDE_WAIT);
+	}
+
+	@Test
 	void aLandRestsForADayAfterGivingItsRune() {
 		assertEquals(0, ExplorerNumbers.attuneRestLeft(null, 5000));
 		assertEquals(ExplorerNumbers.ATTUNE_REST, ExplorerNumbers.attuneRestLeft(1000L, 1000));

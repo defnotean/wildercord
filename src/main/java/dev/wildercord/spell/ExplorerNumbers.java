@@ -63,6 +63,22 @@ public final class ExplorerNumbers {
 		return out;
 	}
 
+	/** Manatide: mana a second while it flows. */
+	public static final int MANATIDE_PER_SECOND = 3;
+	/** Manatide: the longest one drink flows, however Extend lengthens it: 10 seconds, so 30 mana at most. */
+	public static final int MANATIDE_MOST_TICKS = 200;
+	/** Manatide: how long a player waits between drinks (from the start of one to the next): a minute. */
+	public static final int MANATIDE_WAIT = 1200;
+
+	/**
+	 * How long a Manatide of {@code ticks} really flows: never past {@link #MANATIDE_MOST_TICKS}. With four
+	 * Extends it ran 160 seconds, nearly 500 mana for 46, and outlasted the minute between drinks, so streams
+	 * overlapped.
+	 */
+	public static int manatideTicks(int ticks) {
+		return Math.max(1, Math.min(ticks, MANATIDE_MOST_TICKS));
+	}
+
 	/** Attunement: a land gives each player its rune once an in-game day (in game ticks). */
 	public static final long ATTUNE_REST = 24000L;
 

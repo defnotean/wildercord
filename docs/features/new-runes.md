@@ -104,7 +104,7 @@ it's ready again.
 | Drowning Word | Frost | III | For 5 seconds the target's lungs fill with water (no air, 2 damage a second), and it's soaked. | The Drowned Scriptorium |
 | Starshard | Arcane | III | 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks (in sight of the target) for 3. | Fallen Star craters |
 | Riftcall | Void | III | Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6. | Rift sieges |
-| Manatide | Arcane | III | You and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute. | Mana storms (a surge after 10 casts) |
+| Manatide | Arcane | III | You and your allies hit regain 3 mana a second for 10 seconds (30 at most, however extended). Each player can drink only once a minute, one drink flowing at a time. | Mana storms (a surge after 10 casts) |
 | Cinderheart | Fire | IV | Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks (and in sight) takes 3 fire damage a second. | The Cinder Warden |
 | Starmaw | Void | IV | 14 damage, and it swallows each of the target's good effects for 3 more damage apiece. | The Star Eater |
 | Tidewrit | Frost | IV | A 7-wide wall of water rolls from you through the point: 10 damage to everything in it, sweeping it 8 blocks on, soaked. | The Tide Scribe |

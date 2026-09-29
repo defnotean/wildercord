@@ -1286,11 +1286,14 @@ public final class ExplorerEffects {
 		Effects.hurt(cast, t, magic(cast), (caster ? 9 : 5) * power);
 	}
 
-	/** When each caster last drank from a Manatide (game time), so it's once a minute. */
+	/** When each player last drank from a Manatide (game time), so it's once a minute, and only the newest drink flows. */
 	private static final Map<UUID, Long> DRANK = new HashMap<>();
-	private static final int MANATIDE_WAIT = 1200;
+	private static final int MANATIDE_WAIT = ExplorerNumbers.MANATIDE_WAIT;
 
-	/** Manatide: mana flows back into the target for a while. Only players have mana to fill. */
+	/**
+	 * Manatide: mana flows back into the target for a while (10 seconds at most, however extended). Only players
+	 * have mana to fill, each once a minute, and never from two drinks at once.
+	 */
 	private static void manatide(Cast cast, LivingEntity t, int ticks) {
 		if (!(t instanceof ServerPlayer player) || Spellbooks.tier(player) == null) {
 			return;
@@ -1305,9 +1308,10 @@ public final class ExplorerEffects {
 		}
 		DRANK.put(player.getUUID(), now);
 		ExplorerVfx.manatide(cast.level, player, true);
-		repeat(cast, ticks, 20, tick -> {
-			if (onHand(cast, player)) {
-				Mana.restore(player, 3);
+		repeat(cast, ExplorerNumbers.manatideTicks(ticks), 20, tick -> {
+			// Only the newest drink flows: a later one (a minute on) takes over from this one.
+			if (onHand(cast, player) && java.util.Objects.equals(DRANK.get(player.getUUID()), now)) {
+				Mana.restore(player, ExplorerNumbers.MANATIDE_PER_SECOND);
 				ExplorerVfx.manatide(cast.level, player, false);
 			}
 		}, () -> { });
