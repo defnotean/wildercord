@@ -166,6 +166,7 @@ public class CordScreen extends Screen {
 			// The tome left the hand while its spell was being edited.
 			editing = 0;
 			readoutScroll = 0;
+			renaming = false;
 		}
 	}
 
@@ -258,6 +259,11 @@ public class CordScreen extends Screen {
 			x += font.width(Component.translatable(PAGE_KEYS[i])) + 10 + 2;
 		}
 		return onScreen(x + (font.width(Component.translatable(PAGE_KEYS[page])) + 10) / 2.0, 7 + 6.5);
+	}
+
+	/** The middle of spell tool {@code tool} (0 rename, 1 copy, 2 paste, 3 scroll) above the readout, on screen. */
+	public double[] toolPoint(int tool) {
+		return onScreen(toolX(tool) + TOOL / 2.0, toolY() + TOOL / 2.0);
 	}
 
 	/** Filters the Codex, as typing would. */
@@ -1641,6 +1647,8 @@ public class CordScreen extends Screen {
 					editingPassive = s;
 				} else {
 					editing = s;
+					// A name being typed was for the spell left behind: Enter mustn't give it to this one.
+					renaming = false;
 					ClientPlayNetworking.send(new WildercordNetworking.SelectSpell(s));
 				}
 				click();
@@ -1755,6 +1763,7 @@ public class CordScreen extends Screen {
 		if (passivePage) {
 			editingPassive = spell;
 		} else {
+			renaming &= editing == spell;
 			editing = spell;
 		}
 		sync(spell);
