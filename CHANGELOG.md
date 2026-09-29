@@ -28,6 +28,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Blink never lands you in lava.** Aimed at a lava pool (or a creature dying in one), it put you on the ground at
   the bottom of it, and it could also put you past the world border. It still only lands where there's room to
   stand, and now never in lava or fire or outside the border: with nowhere safe, you stay where you are.
+- **Blackflame spreads only from a death.** A burning creature that simply went away (its ground unloaded, it
+  despawned, or it went through a portal) passed its black flames on as if it had died. Blackflame, Dismantle's
+  later slashes, Aftershock's second impact and a Bubble's pop also no longer follow a player through a portal.
 
 ## [0.4.2-alpha] - 2026-09-28
 
