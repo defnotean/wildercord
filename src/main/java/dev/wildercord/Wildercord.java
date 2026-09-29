@@ -43,6 +43,7 @@ public final class Wildercord implements ModInitializer {
 		WildercordAttachments.init();
 		dev.wildercord.advancement.Advancements.init();
 		WildercordNetworking.init();
+		dev.wildercord.net.VersionCheck.init();
 		Scheduler.init();
 		dev.wildercord.cast.Spirits.init();
 		dev.wildercord.cast.Wards.init();

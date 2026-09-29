@@ -23,6 +23,11 @@ A player wiki, and the bugs found while writing it.
 - **Secret spells** show their real price and longer cooldown once you've found them. Until then, the HUD,
   spell wheel and scrolls keep their names hidden, as the Cord screen always did.
 - The **spell wheel** shows the Tome of the Fifth Page's spell while the tome is held.
+- **The Cord's beads glow only when there's a reason:** for a couple of seconds after you put the Cord on,
+  while you charge, and in a flare after you cast. The rest of the time they show their material, instead of
+  glowing all the time.
+- **Joining a server with a different Wildercord version** now tells you in chat which version to install.
+  Runes one version knows and the other doesn't show as Silent Runes, and their tooltip now says why.
 
 ### Fixed
 - Manaburn and Manatide couldn't be obtained at all.

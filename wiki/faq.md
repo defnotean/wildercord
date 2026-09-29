@@ -28,6 +28,16 @@ Cord and it goes there by itself. In creative it's in the Survival Inventory tab
 ### Does the mod need to be on the server too?
 Yes. Wildercord has to be installed on the server and on every player's game, with Fabric API.
 
+### What's a Silent Rune?
+
+A rune your game doesn't know. Every rune has a name the game looks up; a **Silent Rune** is one whose name
+isn't in the Wildercord you have installed, so it can't show what it is or do anything. It almost always means
+**your Wildercord is a different version from the server's** (the server has runes your version doesn't, or the
+other way round), or the rune came from an add-on mod that isn't installed. Nothing is lost: a Silent Rune keeps
+its rune safe, threaded runes stay in their sockets, and they all wake up as soon as you install the matching
+version. When you join a server whose Wildercord differs from yours, a message in chat says which version to
+install.
+
 ### I pressed `R` and nothing happened.
 Look just above your hotbar: the game always says why.
 

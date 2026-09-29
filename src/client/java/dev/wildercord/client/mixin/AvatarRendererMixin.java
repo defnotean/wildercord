@@ -1,6 +1,7 @@
 package dev.wildercord.client.mixin;
 
 import dev.wildercord.client.CastingPose;
+import dev.wildercord.client.CordGlow;
 import dev.wildercord.player.WildercordAttachments;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
@@ -12,7 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
  * Hands a player's casting pose to the model (see PlayerModelMixin): while charging, both hands
- * held out pushing the circle open; for a moment after a cast, the shape's own motion.
+ * held out pushing the circle open; for a moment after a cast, the shape's own motion. Also how
+ * brightly the Cord's beads glow: only for a moment after it's put on (see CordGlow), brighter as a
+ * charge builds, and in a flare that fades after a cast.
  */
 @Mixin(AvatarRenderer.class)
 public abstract class AvatarRendererMixin {
@@ -20,8 +23,11 @@ public abstract class AvatarRendererMixin {
 		at = @At("TAIL"))
 	private void wildercord$castingPose(Avatar avatar, AvatarRenderState state, float partial, CallbackInfo ci) {
 		CastingPose pose = (CastingPose) state;
-		pose.wildercord$setCord(avatar.getAttachedOrElse(WildercordAttachments.CORD_LOOK, WildercordAttachments.CordLook.NONE));
-		pose.wildercord$setGlow(1);
+		WildercordAttachments.CordLook cord = avatar.getAttachedOrElse(WildercordAttachments.CORD_LOOK, WildercordAttachments.CordLook.NONE);
+		pose.wildercord$setCord(cord);
+		// At rest the beads glow only for a moment after the Cord goes on.
+		float idle = CordGlow.idle(avatar, cord.tier(), partial);
+		pose.wildercord$setGlow(idle);
 		WildercordAttachments.Charge charge = avatar.getAttached(WildercordAttachments.CHARGE);
 		if (charge != null) {
 			pose.wildercord$setPose(charge.runes().isEmpty() ? "" : charge.runes().getFirst(), 0, true);
@@ -34,7 +40,8 @@ public abstract class AvatarRendererMixin {
 			float t = (avatar.level().getGameTime() - cast.start() + partial) / WildercordAttachments.CastPose.TICKS;
 			if (t >= 0 && t < 1) {
 				pose.wildercord$setPose(cast.shape(), t, false);
-				pose.wildercord$setGlow(1 + 2 * (1 - t));
+				// A flare that fades back to the resting glow.
+				pose.wildercord$setGlow(Math.max(idle, 3 * (1 - t)));
 				return;
 			}
 		}

@@ -502,8 +502,9 @@ brightest at the leading edge) and orbs wrapped in turning rings.
   your hands, a punch when one of your spells lands a hit of 8 or more, and a tint on the edges of
   the screen inside a Domain. All follow vanilla's Screen Effect Scale.
 - **The worn Cord:** everyone sees your Cord on your right wrist, a band in its tier's material with
-  a glowing bead for each rune of your ready spell; the beads burn brighter while you charge and
-  flare when you cast.
+  a bead for each rune of your ready spell. The beads glow for a couple of seconds after you put
+  the Cord on, burn brighter while you charge and flare when you cast; the rest of the time they
+  show their material without glowing.
 - **Sound:** every cast, impact, circle, beam, orb, shield and Domain has its own synthesised sound,
   all in one key; charging hums, rising as the charge builds.
 

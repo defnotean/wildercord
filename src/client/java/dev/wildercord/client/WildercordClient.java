@@ -64,12 +64,22 @@ public final class WildercordClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
+		// The server's Wildercord version: a word in chat if it isn't ours (runes one of us doesn't know go silent).
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.net.VersionCheck.ServerVersion.TYPE, (payload, context) -> {
+			net.minecraft.network.chat.Component warning = dev.wildercord.net.VersionCheck.mismatch(payload.version(), dev.wildercord.net.VersionCheck.version());
+			if (warning != null && context.player() != null) {
+				context.player().sendSystemMessage(warning);
+			}
+		});
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.ScreenFx.TYPE,
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.config.Config.Sync.TYPE, (payload, context) -> dev.wildercord.config.Config.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.runesmith.Contracts.ShowBoard.TYPE, (payload, context) -> context.client().gui.setScreen(new ContractBoardScreen(payload)));
-		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> dev.wildercord.config.Config.receive(null));
+		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+			dev.wildercord.config.Config.receive(null);
+			CordGlow.clear();
+		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.level == null) {

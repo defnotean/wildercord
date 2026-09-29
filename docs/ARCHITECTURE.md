@@ -551,7 +551,7 @@ can draw the circle.
 - **`render/`**: `CordLayer` (added to every player renderer through
   `LivingEntityRenderLayerRegistrationCallback`) draws the worn Cord on the right wrist from the
   synced `cord_look`: a band in its tier's material (`CordModel.band`, textures from `wear_art.py`)
-  and a glowing bead (`CordModel.bead`, drawn cutout and again emissive) for each rune of the ready
+  and a bead (`CordModel.bead`, drawn cutout and, when it glows (see `CordGlow`), again emissive) for each rune of the ready
   spell, burning brighter while charging and flaring after a cast. `ArchivistRenderer` with its own `ArchivistModel` (a hooded, robed figure hovering
   over the floor, with long sleeves, a floating open tome with a turning page and three loose pages
   circling it; the pose comes from `ArchivistRenderState`'s casting and rewriting blends) and two

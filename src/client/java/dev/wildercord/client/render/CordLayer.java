@@ -20,8 +20,9 @@ import net.minecraft.util.Unit;
 
 /**
  * The Cord on a player's wrist, seen by everyone: a band of cord in its tier's material, and a
- * glowing bead for each rune of the spell they have ready, in the rune's colour. The beads burn
- * brighter while the player charges, and flare for a moment after a cast.
+ * bead for each rune of the spell they have ready, in the rune's colour. The beads glow for a moment
+ * after the Cord is put on, burn brighter while the player charges, and flare after a cast; the rest
+ * of the time they show their material without glowing.
  */
 public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation BAND = new ModelLayerLocation(Wildercord.id("cord"), "band");
@@ -80,7 +81,9 @@ public class CordLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			int rgb = dev.wildercord.client.cosmetic.CordStyleLook.glowColor(style, cord.beads().get(i)) & 0xFFFFFF;
 			int color = (alpha << 24) | rgb;
 			nodes.submitModel(bead, Unit.INSTANCE, pose, RenderTypes.entityCutout(beadTexture), light, OverlayTexture.NO_OVERLAY, tinted ? 0xFF000000 | rgb : -1);
-			nodes.submitModel(bead, Unit.INSTANCE, pose, RenderTypes.eyes(glowTexture), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
+			if (alpha > 0) {
+				nodes.submitModel(bead, Unit.INSTANCE, pose, RenderTypes.eyes(glowTexture), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
+			}
 			pose.popPose();
 		}
 		pose.popPose();
