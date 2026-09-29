@@ -97,14 +97,37 @@ public final class FallenStars {
 		STARS.clear();
 	}
 
-	/** Whether a star is falling or lying in this world right now (one from before a restart too). */
+	/**
+	 * Whether a star is falling or lying in this world right now (one from before a restart too), by
+	 * the ledger, which knows when each fades: a star left alone in ground nobody loads again never
+	 * ticks to crumble, and mustn't keep every other star from falling. Its memory here is let go too.
+	 */
 	public static boolean any(ServerLevel level) {
-		for (Key key : STARS.keySet()) {
-			if (key.level() == level.dimension()) {
-				return true;
+		EventLedger ledger = EventLedger.of(level.getServer());
+		long now = level.getGameTime();
+		for (Iterator<Map.Entry<Key, Star>> it = STARS.entrySet().iterator(); it.hasNext(); ) {
+			Map.Entry<Key, Star> entry = it.next();
+			if (entry.getKey().level() == level.dimension() && !ledger.starLyingAt(entry.getKey().level(), entry.getKey().pos(), now)) {
+				// Its guards go too: now, if they're about, or as their ground loads.
+				letGuardsGo(level, entry.getValue());
+				it.remove();
 			}
 		}
-		return EventLedger.of(level.getServer()).starLying(level.dimension(), level.getGameTime());
+		return ledger.starLying(level.dimension(), now);
+	}
+
+	/**
+	 * A star's guards are let go: any about now go back where they came from, and the rest (in ground
+	 * that isn't loaded) are forgotten, so they're removed as their chunks load.
+	 */
+	private static void letGuardsGo(ServerLevel level, Star star) {
+		for (UUID id : star.guards.keySet()) {
+			if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
+				WorldEvents.vanish(level, mob);
+			}
+			WorldEvents.forget(id);
+		}
+		star.guards.clear();
 	}
 
 	/** One of an event's monsters was killed: if it guarded a star, it no longer stands. */
@@ -209,6 +232,10 @@ public final class FallenStars {
 				|| !level.isLoaded(column.offset(8, 0, -8)) || !level.isLoaded(column.offset(-8, 0, 8))) {
 			return null;
 		}
+		// Only where the world is running: in loaded ground that doesn't tick, it would never fade, nor its guards rise.
+		if (!level.isPositionEntityTicking(column)) {
+			return null;
+		}
 		int h = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
 		BlockPos surface = new BlockPos(x, h - 1, z);
 		BlockState ground = level.getBlockState(surface);
@@ -231,6 +258,12 @@ public final class FallenStars {
 		Star star = STARS.get(key);
 		if (star == null || !level.isLoaded(cell)) {
 			// Its ground went unloaded while it fell: it burns up instead.
+			STARS.remove(key);
+			EventLedger.of(level.getServer()).starGone(level.dimension(), cell);
+			return;
+		}
+		if (!level.getBlockState(cell).canBeReplaced()) {
+			// Something was built where it was to land while it fell: it burns up rather than crush it (or dig round it).
 			STARS.remove(key);
 			EventLedger.of(level.getServer()).starGone(level.dimension(), cell);
 			return;

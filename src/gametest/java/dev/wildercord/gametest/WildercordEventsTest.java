@@ -30,6 +30,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -249,11 +250,36 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			if (!Heart.discovered(player(server), "feat:" + Feats.STARGAZER)) {
 				return "looting a star should earn Stargazer";
 			}
+			if (FallenStars.any(level)) {
+				return "with the star gone, the world should be free for another to fall";
+			}
 			return null;
 		});
 		check(held == null, held);
 		world.getServer().runCommand("kill @e[type=item]");
 		world.getServer().runCommand("kill @e[type=experience_orb]");
+		// Something built where a star is to land, while it falls: the star burns up rather than crush it.
+		BlockPos second = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			BlockPos at = WorldEvents.startStar(player.level(), player, true);
+			if (at != null) {
+				player.level().setBlockAndUpdate(at, Blocks.GOLD_BLOCK.defaultBlockState());
+			}
+			return at;
+		});
+		check(second != null, "a second star should find somewhere to land");
+		context.waitTicks(80);
+		String built = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			boolean kept = level.getBlockState(second).is(Blocks.GOLD_BLOCK);
+			boolean lies = find(level, second) != null;
+			level.setBlockAndUpdate(second, Blocks.AIR.defaultBlockState());
+			if (!kept || lies) {
+				return "a star landing where something was built while it fell should burn up and leave it be";
+			}
+			return FallenStars.any(level) ? "a star that burnt up shouldn't count as lying in its world" : null;
+		});
+		check(built == null, built);
 	}
 
 	/** The star near where it was meant to land: in its cell, or sunk to its crater's floor. */

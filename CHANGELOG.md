@@ -144,6 +144,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   soon as their ground loads again. Taking them down no longer loads far-off chunks either.
 - A Rampart or Span raised over a Light spell's light put the light back when it came down, leaving it lit
   forever. They now leave such a light alone.
+- **Stars could stop falling in a world until the server restarted**: one that landed where nobody went
+  afterwards (so it never faded) kept counting as the world's star. Stars now also land only where the world is
+  running, and one landing on something built while it fell burns up instead of crushing it.
 - Icepath's frosted ice never melted in the dark (in caves, or at night). Like frost's, it now thaws back into
   water after half a minute wherever it is.
 
