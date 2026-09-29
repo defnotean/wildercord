@@ -242,6 +242,17 @@ class CraftedRunesTest {
 	}
 
 	@Test
+	void theWikisWorkedExamplesAddUp() {
+		SpellCompiler.Compiled reaction = compile(BEAM, FROST, FIRE, ON_REACTION, BURST, EXPLODE);
+		assertEquals(59, reaction.manaCost());
+		assertEquals(58, reaction.cooldownTicks());
+		assertEquals(List.of("A beam: Frost, Fire", "On a reaction:", "  Everything within 4 blocks: Explode"), reaction.lines());
+		SpellCompiler.Compiled shared = compile(SELF, HEAL, KINDRED);
+		assertEquals(17, shared.manaCost());
+		assertEquals(17, shared.cooldownTicks());
+	}
+
+	@Test
 	void newSpellsGetReadableNames() {
 		assertEquals("Umbra Glaive", SpellNames.auto(List.of(GLAIVE, UMBRA)));
 		assertEquals("Belated Gash Latch", SpellNames.auto(List.of(LATCH, GASH, BELATED)));

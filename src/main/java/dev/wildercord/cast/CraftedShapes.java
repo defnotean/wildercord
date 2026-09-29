@@ -169,11 +169,12 @@ final class CraftedShapes {
 	// ------------------------------------------------------------------ Latch
 
 	/**
-	 * A thread from the caster's hand (or, after a link, from where it was set off) to the first creature
-	 * along the aim, or to the creature that set the link off; it strikes that creature again and again,
-	 * each strike with its own budget, until its strikes are spent or the thread snaps (the creature dies,
-	 * leaves, strays past {@link SpellNumbers#LATCH_HOLD} or out of sight). With nothing to hold, it lands
-	 * on the block it reached, as a beam would.
+	 * A thread from the caster's hand to the first creature along the aim; after a link, from where the link
+	 * was set off to the creature that set it off (or the first one along from there), so it tethers that
+	 * creature to the spot it was struck. It strikes again and again, each strike with its own budget,
+	 * until its strikes are spent or the thread snaps (the creature dies, leaves, strays past
+	 * {@link SpellNumbers#LATCH_HOLD} or out of sight). With nothing to hold, it lands on the block it
+	 * reached, as a beam would.
 	 */
 	private static void latch(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Cast.Trigger at, Vfx.Theme theme) {
 		LivingEntity caster = cast.caster;
