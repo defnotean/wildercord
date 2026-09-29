@@ -779,7 +779,7 @@ final class FusedFlame {
 		Vec3 floor = ElementFx.floor(level, t.position().add(0, 0.1, 0), 3.0);
 		double width = Math.max(0.8, Math.min(1.6, t.getBbWidth() + 0.3));
 		FusedFlameVfx.monolith(level, t, floor == null ? t.position() : floor, width, column && floor != null);
-		Effects.hurt(cast, t, magic(cast), 6 * power);
+		Effects.hurt(cast, t, magic(cast), 8 * power);
 		if (Spirits.isBoss(t) || !t.isAlive()) {
 			return;
 		}
@@ -792,6 +792,16 @@ final class FusedFlame {
 		// Set, not added: two columns under one creature in the same moment don't throw it twice as high.
 		setMotion(t, new Vec3(away.x, Math.max(v.y, FusedFlameRules.MONOLITH_LIFT * (1 - resist)), away.z));
 		Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+		// It comes down hard: 3 more to whatever is at the landing (the creature itself, or the crowd it fell into), once each.
+		Landings.after(cast, t, Landings.MAX_TICKS, down -> {
+			for (Entity e : cast.level.getEntities((Entity) null, new AABB(down, down).inflate(1.5, 1.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
+				LivingEntity hit = (LivingEntity) e;
+				double slam = FusedEffects.unstacked(cast, hit, "monolith_slam", 20, 3 * power);
+				if (slam > 0) {
+					Effects.lingering(() -> Effects.hurt(cast, hit, magic(cast), slam));
+				}
+			}
+		});
 	}
 
 	// ------------------------------------------------------------------ Magnetize
@@ -937,7 +947,7 @@ final class FusedFlame {
 				for (LivingEntity t : caught) {
 					if (onHand(cast, t) && flat(t.position(), centre) <= radius + 1.0 && Math.abs(t.getY() - centre.y) < 3.0) {
 						FusedFlameVfx.sinkholeCrushed(level, t);
-						Effects.hurt(cast, t, magic(cast), 5 * power);
+						Effects.hurt(cast, t, magic(cast), 6 * power);
 					}
 				}
 			});

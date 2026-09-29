@@ -208,11 +208,11 @@ class SpellCompilerTest {
 	}
 
 	@Test
-	void vowDoublesPowerAndQuadruplesCooldown() {
+	void vowDoublesPowerAndMakesTheCooldownFiveTimesLonger() {
 		SpellCompiler.Compiled plain = compile(BOLT, HARM);
 		SpellCompiler.Compiled vowed = compile(BOLT, VOW_MOD, HARM);
 		assertEquals(2.0, SpellNumbers.groupPower(vowed.root().groups.getFirst()), 1e-9);
-		assertEquals(plain.cooldownTicks() * 4, vowed.cooldownTicks());
+		assertEquals(plain.cooldownTicks() * 5, vowed.cooldownTicks());
 		assertTrue(vowed.lines().getFirst().contains("vowed"));
 	}
 
@@ -247,7 +247,7 @@ class SpellCompilerTest {
 		assertEquals(bolt, vowOnSelf.cost(), 1e-9);
 		assertEquals(compile(BOLT, VOW_MOD, FIRE).cooldownTicks(), vowOnSelf.cooldownTicks());
 		// It strengthens only its own shape's effects: on an empty one, it's a longer cooldown for nothing.
-		assertTrue(vowOnSelf.warnings().contains("Vow strengthens only Self's effects, and it has none: the cooldown is 4x longer for nothing."));
+		assertTrue(vowOnSelf.warnings().contains("Vow strengthens only Self's effects, and it has none: the cooldown is 5x longer for nothing."));
 		assertTrue(compile(BOLT, VOW_MOD, ON_HIT, FIRE).warnings().stream().anyMatch(w -> w.startsWith("Vow strengthens only Bolt's")));
 		assertFalse(compile(BOLT, VOW_MOD, FIRE).warnings().stream().anyMatch(w -> w.startsWith("Vow")));
 		// Blood Price pays for the whole spell in health, wherever it sits.
@@ -304,17 +304,21 @@ class SpellCompilerTest {
 	void manyHitShapesAreSofterPerHit() {
 		assertEquals(1.0, SpellNumbers.groupPower(compile(BOLT, HARM).root().groups.getFirst()), 1e-9);
 		assertEquals(0.35, SpellNumbers.groupPower(compile(BARRAGE, HARM).root().groups.getFirst()), 1e-9);
-		assertEquals(12, SpellNumbers.barrageBlows(compile(BARRAGE, QUICKEN, HARM).root().groups.getFirst()));
+		// Quicken makes a Barrage's eight blows come faster, not more of them.
+		assertEquals(8, SpellNumbers.barrageBlows(compile(BARRAGE, QUICKEN, HARM).root().groups.getFirst()));
+		assertEquals(20, SpellNumbers.barrageTicks(compile(BARRAGE, HARM).root().groups.getFirst()));
+		assertEquals(10, SpellNumbers.barrageTicks(compile(BARRAGE, QUICKEN, HARM).root().groups.getFirst()));
 		assertEquals(2.0, SpellNumbers.executeBonus(compile(BOLT, HARM, EXECUTE_MOD).root().groups.getFirst().effects.getFirst()), 1e-9);
 	}
 
 	@Test
-	void quickenMakesAWallStrikeTwiceAsOften() {
+	void quickenMakesAWallStrikeTwiceAsOftenAndEndSooner() {
 		assertEquals(20, SpellNumbers.wallInterval(compile(WALL, HARM).root().groups.getFirst()));
 		assertEquals(10, SpellNumbers.wallInterval(compile(WALL, QUICKEN, HARM).root().groups.getFirst()));
 		assertEquals(5, SpellNumbers.wallInterval(compile(WALL, QUICKEN, QUICKEN, HARM).root().groups.getFirst()));
 		assertEquals("A 7-block wall (5s, every 1s): Harm", compile(WALL, HARM).lines().getFirst());
-		assertEquals("A 7-block wall (5s, every 0.5s): Harm", compile(WALL, QUICKEN, HARM).lines().getFirst());
+		// The same strikes twice as often, so the wall is gone in half the time.
+		assertEquals("A 7-block wall (2.5s, every 0.5s): Harm", compile(WALL, QUICKEN, HARM).lines().getFirst());
 	}
 
 	@Test

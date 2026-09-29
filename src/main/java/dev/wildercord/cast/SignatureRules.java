@@ -15,8 +15,8 @@ final class SignatureRules {
 	static final double FROSTWIRE_REACH = 6.0;
 	/** Enemies one current runs through, the one it starts from among them. */
 	static final int FROSTWIRE_CHAIN = 6;
-	static final double FROSTWIRE_DAMAGE = 4.0;
-	static final double FROSTWIRE_FROZEN = 6.0;
+	static final double FROSTWIRE_DAMAGE = 5.0;
+	static final double FROSTWIRE_FROZEN = 7.0;
 	/** At most this many targets of one hit start a current of their own. */
 	static final int FROSTWIRE_ORIGINS = 4;
 

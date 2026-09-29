@@ -181,7 +181,7 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 | Fire | II | fire | harmful | 5 fire damage and sets alight for 6 s | 8 |
 | Frost | II | frost | harmful | 5 freeze damage, freezes solid, Slowness III for 4 s | 8 |
 | Break | II | earth | world | Mines the block (up to iron-pickaxe hardness; Amplify raises it to diamond). Respects claims and spawn protection | 4 |
-| Lightning | III | storm | harmful | A 12-damage strike on each target that stuns and burns. You and your allies are immune | 20 |
+| Lightning | III | storm | harmful | A 12-damage strike on each target that slows and burns (an enemy takes a cast's strongest strike once, however many land beside it). You and your allies are immune | 20 |
 | Blink | III | void | movement | Teleports you to where the spell landed (max 40 blocks, always to a safe spot) | 15 |
 | Explode | III | fire | harmful | 12 damage in a 3.5-block blast. Never breaks blocks | 18 |
 | Sonic Boom | IV | void | harmful | 16 damage that ignores armour, and 8 to everything else on the line to the target, through walls | 35 |
@@ -229,12 +229,12 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 ### New effects
 | Rune | Tier | Element | Does |
 |---|---|---|---|
-| Shock | I | storm | 4 damage that arcs to one more enemy |
+| Shock | I | storm | 4 damage that arcs to one more enemy (a wet or metal-armoured one first) |
 | Haste | I | arcane | Haste II for 30 s |
 | Reveal | I | arcane | Targets glow through walls for 15 s |
 | Regrowth | II | life | Regeneration II for 8 s |
 | Cleanse | II | life | Removes harmful effects, fire and freezing |
-| Stoneskin | II | earth | Resistance II for 10 s |
+| Stoneskin | II | earth | Resistance II for 10 s, and Slowness I |
 | Root | II | earth | Vines hold targets in place for 3 s |
 | Veil | II | void | Invisibility for 12 s; nearby monsters lose track of you; the first damage you deal from it is +50% and ends it |
 | Empower | II | arcane | Strength II for 10 s |
@@ -265,7 +265,7 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Venom | Effect · Damage | II | Poison II for 6 s and 2 damage |
 | Smite | Effect · Damage | III | 10 holy damage, doubled against undead |
 | Inferno | Effect · Damage | III | Everything within 4 blocks burns: 3 damage/s for 4 s |
-| Thunderclap | Effect · Damage | II | 5 damage and a heavy knockback within 3 blocks |
+| Thunderclap | Effect · Damage | II | A flash, then a crack: 5 damage within 3 blocks, half a second's stun and a forgotten target |
 | Starfall | Effect · Damage | IV | Eight falling stars, 6 damage each (Elder Guardian drop) |
 | Blind | Effect · Control | I | Blindness and darkness for 5 s (3 on players); a blinded monster lashes out at the creature beside it |
 | Chill | Effect · Control | I | Slowness II for 6 s and 1 freeze damage |
@@ -298,16 +298,16 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Cleave | Effect · Damage | III | 4 damage + 12% of the target's max health (up to 30 more) |
 | Dismantle | Effect · Damage | II | Three slashes 0.1 s apart, 3 damage each, through armour |
 | Blackspark | Effect · Damage | III | 8 damage; 1 in 4 hits deal 2.5x and give you Strength and Speed for 6 s |
-| Aftershock | Effect · Damage | II | 5 damage, then 5 more half a second later |
+| Aftershock | Effect · Damage | II | 5 damage, then the same spot struck again half a second later for 5 |
 | Resonance | Effect · Damage | III | 4 damage and a 10 s mark; every other marked enemy within 16 blocks takes half |
-| Ripple | Effect · Damage | II | 6 damage (x3 on undead), heals you for a third |
+| Ripple | Effect · Damage | II | 6 damage (x2 on undead), heals you a quarter of what it took; a ripple 0.4 s later hits its neighbours |
 | Primer | Effect · Damage | III | The target explodes 2 s later: 10 damage within 3 blocks, no block damage |
 | Blackflame | Effect · Damage | III | 3 damage a second for 6 s, water can't stop it, spreads if the target dies burning |
 | Hollow | Effect · Damage | IV | 20 damage to the creature hit (it is gone for the wind-up), and everything within 4 blocks is dragged in for 8 more (Wither drop, 50%) |
 | Repel | Effect · Damage | II | 5 damage and a violent outward blast within 3 blocks (Breeze drop) |
 | Decree | Effect · Control | II | Stuns everything hit for 2 s; costs you 2 health per cast (Evoker drop) |
 | Weigh | Effect · Control | II | Triple gravity, crippled legs and jumps for 5 s; fliers are dragged down |
-| Shackle | Effect · Control | II | Chained to the spot for 5 s: yanked back past 2 blocks |
+| Shackle | Effect · Control | II | Chained to the spot for 5 s: yanked back past 2 blocks, and the chain bites for 2 |
 | Bubble | Effect · Control | II | Floats helplessly for 3 s, pops for 4 damage and leaves the target soaked (Witch drop) |
 | Infinity | Effect · Support | IV | 6 s: projectiles stop in the air around you, and hostile things are slowed harder the closer they come (Ender Dragon drop) |
 | Reversal | Effect · Support | IV | 30 s: one killing blow leaves you at half health instead |
@@ -324,9 +324,9 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Time Skip | Effect · Time | III | You vanish, reappear up to 8 blocks ahead, monsters lose track of you, and nothing can hurt you for a moment (not again for 5 s) |
 | Rampart | Effect · World | II | A 5-wide, 3-high earth wall for 10 s; broken by hand it crumbles, and however it's broken (an explosion too) it drops nothing |
 | Shades | Effect · Summon | III | Two frail shadow hounds for 15 s that bite hard only in dim light, each bite leaving a shadow |
-| Thunderbird | Effect · Summon | III | A storm bird circles overhead for 15 s, striking the nearest enemy every 1.5 s (3 at most) |
-| Vow | Modifier · Power | III | On a shape: its effects hit twice as hard, the whole spell's cooldown is 4x longer (up to 60 s) |
-| Blood Price | Modifier · Power | III | On a shape: the whole spell costs 1 health per 5 mana instead of mana, never lethal |
+| Thunderbird | Effect · Summon | III | A storm bird circles overhead for 12 s; every 2 s it marks the enemy you last hit and dives on that spot for 4.5 (2 at most) |
+| Vow | Modifier · Power | III | On a shape: its effects hit twice as hard, the whole spell's cooldown is 5x longer (up to 60 s) |
+| Blood Price | Modifier · Power | III | On a shape: the whole spell costs 1 health per 4 mana instead of mana, never lethal |
 | Execute | Modifier · Power | II | On an effect: double power against targets under half health |
 | If Airborne | Link · Condition | II | The rest fires only while you're in the air |
 | Combo | Link · Condition | III | The rest fires only on every third cast of this spell |
@@ -379,7 +379,7 @@ and craftable.
 | Span | Effect · World | II | A 1-wide glass bridge from your feet toward the point (up to 16 blocks; Widen: 3 wide) for 30 s. It puts back whatever it replaced, drops nothing when broken, and is taken down if the server stops |
 | Ember | Effect · Damage | I | 3 fire damage, alight for 3 s |
 | Icicle | Effect · Damage | I | 4 freeze damage, 6 against a slowed target |
-| Pelt | Effect · Damage | I | 4 damage and a small knockback |
+| Pelt | Effect · Damage | I | 4 damage and a hard shove |
 | Windcut | Effect · Damage | I | 4 damage and a light shove (sets up Wildfire) |
 | Leech | Effect · Damage | I | 3 damage; you heal what it took |
 | Hex | Effect · Control | I | 6 s: your spells hit the target 25% harder, and it fixes on you |
@@ -416,7 +416,7 @@ and On Reaction also turn up in ancient city, end city and trial chamber chests.
 | Latch | Shape · Direct | II | 6, effects ×1.9 | A thread latches onto the first creature within 16 blocks of your aim (after a link, the creature that set it off) and strikes it 4 times a second apart at 70% power, snapping if it strays past 24 blocks or out of sight. Extend: 8 strikes; Quicken: 8 in the same time |
 | Kindred | Modifier · Area | II | ×1.4 | A helpful effect also lands on you and on the nearest ally within 8 blocks that it missed, at half power. Needs the new share trait: every helpful effect that lands per creature, not summons, domes, horns, death saves, Soulbond, Transfusion, Cryostasis, Shulkershell, Rewind, Overdrive or innate runes |
 | Thirst | Modifier · Power | II | ×1.4 | You heal for a quarter of the damage the effect really deals (a half with two, three quarters at most) |
-| Belated | Modifier · Timing | II | ×1.25 | The effect, and any Linger after it, lands 1.5 s late on whatever it struck that's still there, 40% stronger (three count: 4.5 s, ×2.74). A Belated kill is too late for On Kill |
+| Belated | Modifier · Timing | II | ×1.25 | The effect, and any Linger after it, lands 1.5 s late on whatever it struck that's still there, 25% stronger (three count: 4.5 s, ×1.95). A Belated kill is too late for On Kill |
 | On Reaction | Link · Trigger | III | 2 | Watches the group before it; fires the rest at each creature that group set an element reaction off on as it landed |
 | On Weakness | Link · Trigger | II | 2 | Watches the group before it; fires the rest at each creature that group struck with an element it's weak to (creature affinities: players have none) |
 | Spellbrand | Effect · Damage (arcane) | II | 8 | Brands each target for 8 s; the next spell damage you deal it, from the next tick on, bursts the brand for 6 arcane |
@@ -1074,14 +1074,14 @@ element hints.
 | fire + wind | **Firestorm** | Sets alight for 6 s, deals 4 damage, and the fire spreads to enemies within 2 blocks |
 | fire + frost | **Steam** | 4 damage and Blindness for 3 s |
 | fire + earth | **Magma** | The ground under the target burns: 2 damage per second for 4 s to enemies standing on it |
-| storm + wind | **Tempest** | A lightning strike (8 damage) plus a huge knockback |
-| storm + fire | **Plasma** | 9 damage that ignores half of the target's armour |
+| storm + wind | **Tempest** | A lightning strike (8 damage) plus a huge knockback, and a second bolt (4) where it lands |
+| storm + fire | **Plasma** | 10 damage, half of it ignoring armour, and the target is ionised (conducts as if wet) |
 | storm + frost | **Hail** | Three 2-damage hits and Slowness II |
 | frost + earth | **Glacier** | Frozen in place for 2 s (1 s on players) |
 | life + void | **Lifesteal** | 5 damage, and you heal for what it dealt |
 | wind + void | **Warp** | Swaps places with the target; an enemy is left with Slowness II for 2 s |
 | life + earth | **Bloom** | Regeneration II for 6 s to allies, and plants grow around the first 3 of them |
-| life + storm | **Surge** | Allies get Speed I and Strength I for 8 s |
+| life + storm | **Surge** | Allies get Speed I and Strength I for 8 s, and their blows arc on to a neighbour (4 times) |
 | arcane + void | **Nullify** | Strips an enemy's good effects, or an ally's bad effects |
 
 Recipes match on **element tags**, not specific runes. If an add-on adds a

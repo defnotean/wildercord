@@ -233,15 +233,15 @@ Any effect of an element counts.
 |---|---|---|
 | Firestorm | Fire + Wind | Sets targets alight for 6 seconds and deals 4 damage, and the fire leaps to every enemy within 2 blocks of them. |
 | Steam | Fire + Frost | A scalding burst of steam: 4 damage and Blindness for 3 seconds. |
-| Magma | Fire + Earth | The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it. |
-| Tempest | Storm + Wind | A lightning strike for 8 damage, and a gale that hurls targets far away. |
-| Plasma | Storm + Fire | 9 damage that ignores half of the target's armour. |
+| Magma | Fire + Earth | The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it, and the pool widens as it burns. |
+| Tempest | Storm + Wind | A lightning strike for 8 damage, and a gale that hurls targets far away; where they come down a second bolt strikes for 4. |
+| Plasma | Storm + Fire | 10 damage, half of it ignoring armour, and the target is ionised for 5 seconds: the next storm damage it takes conducts as if it were wet. |
 | Hail | Storm + Frost | Three hailstones of 2 damage each, and Slowness II for 4 seconds. |
 | Glacier | Frost + Earth | Freezes targets in place for 2 seconds (1 second on players). |
 | Lifesteal | Life + Void | 5 damage, and you heal for what it dealt. |
 | Warp | Wind + Void | You and the first creature hit swap places through the void, and you come out unseen for a second. An enemy is left pulled and reeling: Slowness II and Nausea for 2 seconds. |
 | Bloom | Life + Earth | Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches. |
-| Surge | Life + Storm | Speed I and Strength I for 8 seconds. |
+| Surge | Life + Storm | Speed I and Strength I for 8 seconds; the blows you land in that time arc on to a nearby enemy for 2 (four arcs at most). |
 | Nullify | Arcane + Void | Strips an enemy's good effects, or an ally's bad effects. |
 | Phoenix Pyre | Fire + Life | Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. |
 | Hellmouth | Fire + Void | Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks toward it and burns those at its core for 2 damage a second, then caves in for 4 damage. |
@@ -257,22 +257,22 @@ Any effect of an element counts.
 | Frostbite | Frost + Blood | 3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second. |
 | Absolute Zero | Frost + Frost | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws. |
 | Magnetize | Storm + Earth | Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second). |
-| Riftbolt | Storm + Void | A black bolt for 6 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds. |
-| Stormweave | Storm + Arcane | Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 3 damage each, and 1 more for every other one caught in the web. |
+| Riftbolt | Storm + Void | A black bolt for 7 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds. |
+| Stormweave | Storm + Arcane | Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 4 damage each, and 1 more for every other one caught in the web; a target alone takes 2 more. |
 | Stormclock | Storm + Time | 4 damage, and lightning strikes the same spot again 2 and 4 seconds later: 3 damage to enemies within 1.5 blocks each time. |
 | Heartstopper | Storm + Blood | 5 damage, and for 6 seconds the target's heart skips: every 2 seconds it's stunned for half a second. |
-| Thunderhead | Storm + Storm | A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 3 damage. |
+| Thunderhead | Storm + Storm | A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 2 damage, and the rain soaks it so the bolt conducts. |
 | Downdraft | Wind + Earth | Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more for every block it fell (up to 6). Flyers lose their lift. |
 | Updraft | Wind + Wind | Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft smashes them back down for 4 damage. |
 | Skyglyph | Wind + Arcane | Writes a wind glyph where it lands for 10 seconds: an ally who steps on it is launched high and forward, an enemy thrown back 4 blocks. |
 | Recoil | Wind + Time | Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where they stood, for 3 damage. |
 | Zephyr | Wind + Life | A warm breeze: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 6 seconds. |
 | Crimson Mist | Wind + Blood | A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for 1 damage a second, allies in it heal half a heart a second. |
-| Sinkhole | Earth + Void | The ground gives way: enemies within 3 blocks are dragged to its middle and pinned for 2 seconds (Slowness IV, no jumping), then crushed for 5 damage. |
-| Geode | Earth + Arcane | Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally is cut by crystal shards for 2 damage. |
-| Fossilize | Earth + Time | The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then it's stone, held for 2 seconds (1 on players) and cracked for 6 damage. |
+| Sinkhole | Earth + Void | The ground gives way: enemies within 3 blocks are dragged to its middle and pinned for 2 seconds (Slowness IV, no jumping), then crushed for 6 damage. |
+| Geode | Earth + Arcane | Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally is cut by crystal shards for 2 damage and left cracked (every spell hits it 20% harder for 5 seconds). |
+| Fossilize | Earth + Time | The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then it's stone, held for 2 seconds (1 on players), brittle while it stands (every spell hits it 20% harder), and cracked for 6 damage. |
 | Bonespur | Earth + Blood | Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 damage each, and they bleed for 3 seconds. |
-| Monolith | Earth + Earth | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |
+| Monolith | Earth + Earth | A pillar of stone bursts up under the target: 8 damage, and it's thrown 3 blocks into the air; where it lands, 3 more to whatever is there. The pillar crumbles after 4 seconds. |
 | Soulbond | Life + Arcane | Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks. |
 | Second Wind | Life + Time | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute. |
 | Transfusion | Life + Blood | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
@@ -293,7 +293,7 @@ Two particular effects, an amethyst shard and 3 XP levels. The pair makes its si
 
 | Runes | Makes | Counts as | Tier | Mana | Does | In place of |
 |---|---|---|---|---|---|---|
-| Chill + Shock | **Frostwire** | Storm | III | 18 | Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 4 damage each, 6 to one frozen solid. | Hail |
+| Chill + Shock | **Frostwire** | Storm | III | 18 | Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 5 damage each, 7 to one frozen solid. | Hail |
 | Bubble + Fire | **Seethe** | Fire | III | 16 | Traps each target in a bubble of boiling water for 2 seconds (1 fire damage every half second), then it bursts into scalding steam: 4 damage to every enemy within 2.5 blocks, blinded for 2 seconds and left soaked. | Steam |
 | Grow + Blink | **Bloomstep** | Life | III | 14 | Steps you through a door of blossoms to where the spell landed (up to 32 blocks). Grass and flowers spring up where you left and where you arrive, and you and your allies within 3 blocks of where you arrive get Regeneration I for 5 seconds. | Lifesteal |
 | Launch + Explode | **Skyburst** | Fire | III | 20 | Flings each target high into the air (3 at most); at the top of its flight it explodes and rains fire down: 7 damage to it and every enemy within 3 blocks of it or beneath it, setting them alight, and the wind that carried it fans the flames (Wildfire). Never breaks blocks. | Firestorm |
@@ -387,8 +387,8 @@ One wakes in each caster's heart at the 1st Circle, chosen at random, and grows 
 | Kindling | Fire | 3 fire damage and a stack of Kindling. The fifth stack ignites: 10 damage in a 3-block burst. |
 | Mirrorfrost | Frost | Casts back the last spell that hit you in the past 30 seconds, as your own. |
 | Phantom | Void | Leaves an afterimage of you that every monster within 16 blocks turns on for 4 seconds, then it bursts for 8 damage, and 1 more for every 6 it took. |
-| Stoneform | Earth | For 8 seconds: no knockback, 20% less damage, and every hit you take sends out an aftershock. |
-| Stormheart | Storm | For 10 seconds, whatever hits you is struck by lightning (at most once a second). |
+| Stoneform | Earth | For 8 seconds: no knockback, 20% less damage, and every blow you take from an attacker sends out an aftershock (at most once a second). |
+| Stormheart | Storm | For 10 seconds, whatever hurts you (a blow of 2 or more) is struck by lightning (at most once a second). |
 | Twin Star | Arcane | Your next spell within 6 seconds is cast twice. |
 
 Chests favour low tiers: next to each other in a pool, Tier I runes are 8x as likely as Tier IV,

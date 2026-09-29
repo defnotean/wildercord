@@ -157,15 +157,35 @@ public final class Fx {
 		send(level, particle, pos, count, spread, speed);
 	}
 
+	/** The most times one sound event may play in a level in one tick: a Burst on thirty mobs plays a few of each sound, not thirty. */
+	public static final int VOICES_PER_TICK = 3;
+	private static final java.util.Map<SoundEvent, Integer> VOICES = new java.util.IdentityHashMap<>();
+	private static long voiceTick = Long.MIN_VALUE;
+	private static ServerLevel voiceLevel;
+
+	/**
+	 * The per-tick voice limit: false once {@code sound} has already played {@link #VOICES_PER_TICK} times in this level this tick.
+	 * Only the server thread plays spell sounds.
+	 */
+	static boolean voiceFree(ServerLevel level, SoundEvent sound) {
+		long now = level.getGameTime();
+		if (now != voiceTick || level != voiceLevel) {
+			VOICES.clear();
+			voiceTick = now;
+			voiceLevel = level;
+		}
+		return VOICES.merge(sound, 1, Integer::sum) <= VOICES_PER_TICK;
+	}
+
 	public static void sound(ServerLevel level, Vec3 pos, SoundEvent sound, float volume, float pitch) {
-		if (muted) {
+		if (muted || !voiceFree(level, sound)) {
 			return;
 		}
 		level.playSound(null, pos.x, pos.y, pos.z, sound, SoundSource.PLAYERS, volume, pitch);
 	}
 
 	public static void sound(ServerLevel level, Vec3 pos, Holder<SoundEvent> sound, float volume, float pitch) {
-		if (muted) {
+		if (muted || !voiceFree(level, sound.value())) {
 			return;
 		}
 		level.playSound(null, pos.x, pos.y, pos.z, sound, SoundSource.PLAYERS, volume, pitch);

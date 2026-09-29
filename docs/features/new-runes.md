@@ -213,7 +213,7 @@ runes at random (the dimension dungeons' chests take the effects of their elemen
 |---|---|---|---|---|
 | Kindred | II | ×1.4 | A helpful effect also lands on you and on the nearest ally within 8 blocks that it missed, at half power. It works on every helpful effect that lands on each creature it touches, but not on summons, Haven, Warcry, Zephyr, the death saves, Soulbond, Transfusion, Cryostasis, Shulkershell, Rewind, Overdrive or innate runes | Cake |
 | Thirst | II | ×1.4 | You heal for a quarter of the damage the effect really deals (half with two, three quarters at most) | Spider Eye, Glass Bottle |
-| Belated | II | ×1.25 | The effect lands 1.5 seconds late, 40% stronger, on whatever it struck that's still there (three count at most). Lingering landings wait too, and a Belated kill comes too late for On Kill | Clock, Cobweb |
+| Belated | II | ×1.25 | The effect lands 1.5 seconds late, 25% stronger, on whatever it struck that's still there (three count at most). Lingering landings wait too, and a Belated kill comes too late for On Kill | Clock, Cobweb |
 
 ## Links
 

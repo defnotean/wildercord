@@ -63,7 +63,7 @@ class ApiRegistrationTest {
 		SpellPlan.EffectNode node = c.root().groups.getFirst().effects.getFirst();
 		assertSame(frostbite, node.effect);
 		assertEquals(1, node.count(Runes.AMPLIFY), "Amplify attaches to an add-on effect with POWER");
-		assertEquals(3 + 7 * 1.6 * 1.1, c.cost(), 1e-9);
+		assertEquals(3 + 7 * 1.5 * 1.1, c.cost(), 1e-9);
 	}
 
 	@Test

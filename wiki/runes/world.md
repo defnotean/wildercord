@@ -220,7 +220,7 @@ Mangrove roots burst up around the point: every enemy within 3 blocks is held fo
 
 *Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
 
-Strings an unseen tripwire from your feet to where you look (up to 12 blocks). The first enemy to cross it within 30 seconds springs it on everything within 2.5 blocks.
+Strings an unseen tripwire from your feet to where you look (up to 12 blocks). The first enemy to cross it within 30 seconds springs it on everything within 2.5 blocks, and whoever it catches stumbles for a second.
 
 **How to get it:** Found only, never crafted: Jungle temples.
 
@@ -242,7 +242,7 @@ Spores burst from a giant mushroom at the point: Poison I and Nausea for 6 secon
 
 *Tier II · Earth · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A stalactite drops on each target from above: 7 damage, 50% more against a bare head.
+A stalactite drops on the spot each target stands on: 7 damage, 30% more against a bare head. Step aside and it misses.
 
 **How to get it:** Found only, never crafted: Attuned in dripstone caves.
 
@@ -275,7 +275,7 @@ Opens a fight: +60% power against targets at full health.
 
 *Tier II · Earth · Moves you · 9 mana · needs a Copper Cord or better*
 
-You charge like a hoglin, up to 8 blocks the way you look, tossing everything in your path into the air for 5 damage.
+You charge like a hoglin, up to 8 blocks the way you look, tossing everything in your path into the air: 3 damage, and 0.8 more for every block you ran up (9 at most).
 
 **How to get it:** Found only, never crafted: Bastions.
 
@@ -405,7 +405,7 @@ The rest fires only if 3 or more enemies are within 8 blocks of you.
 
 *Tier III · cost x1.4 · needs an Amethyst Cord or better*
 
-+20% power, and the effect sets what it hits alight for 4 seconds.
++30% power, and the effect sets what it hits alight for 4 seconds.
 
 **How to get it:** Found only, never crafted: The Ember Sanctum.
 
@@ -546,7 +546,7 @@ Rift-touched: the effect's power swings anywhere from 50% to 200% each time it l
 ### <img src="{{ '/assets/runes/vortex.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vortex
 {: #vortex}
 
-*Tier III · 9 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
+*Tier III · 9 mana · its effects cost x2.8 · needs an Amethyst Cord or better*
 
 A whirling vortex opens where you look for 3 seconds, dragging creatures within 5 blocks into its eye and striking everything in the eye twice a second.
 
