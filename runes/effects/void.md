@@ -18,7 +18,7 @@ Darkness, gravity and space. Void pulls, blinks, withers and swallows light.
 
 *Tier I · Void · Helps you and your allies · 4 mana · needs any Cord*
 
-Holds you fast for 15 seconds: blows and blasts can't knock you back, and 4 more armour.
+Holds you fast for 15 seconds: blows and blasts can't knock you back, no spell can move you, and 4 more armour (8 once you've stood still a second).
 
 **How to get it:** Craft: a Blank Rune, Iron Chain and Cobblestone. The recipe is shapeless: any layout, any crafting grid.
 
@@ -31,7 +31,7 @@ Holds you fast for 15 seconds: blows and blasts can't knock you back, and 4 more
 
 *Tier I · Void · Harms enemies · 5 mana · needs any Cord*
 
-Blindness and darkness for 5 seconds.
+Blindness and darkness for 5 seconds (3 on players). A blinded monster lashes out at whatever stands next to it.
 
 **How to get it:** Craft: a Blank Rune, Ink Sac. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
@@ -44,7 +44,7 @@ Blindness and darkness for 5 seconds.
 
 *Tier I · Void · Works on the world · 3 mana · needs any Cord*
 
-Pulls items and experience within 8 blocks to you.
+Pulls up to 48 items and experience within 8 blocks to you.
 
 **How to get it:** Craft: a Blank Rune, Hopper. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
@@ -57,7 +57,7 @@ Pulls items and experience within 8 blocks to you.
 
 *Tier I · Void · Harms enemies · 5 mana · needs any Cord*
 
-Hexes targets for 8 seconds: your spells hit them 25% harder.
+Hexes targets for 6 seconds: your spells hit them 25% harder, and they fix on you.
 
 **How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Ink Sac. The recipe is shapeless: any layout, any crafting grid.
 
@@ -70,7 +70,7 @@ Hexes targets for 8 seconds: your spells hit them 25% harder.
 
 *Tier I · Void · Harms enemies · 6 mana · needs any Cord*
 
-The dark bites: 4 damage, doubled where the light is dim (level 7 or less), and it leaves the target shadowed.
+The dark bites: 4 damage, doubled where the light is dim (level 7 or less, or under an Eclipse), and it leaves the target shadowed.
 
 **How to get it:** Craft: a Blank Rune, Ink Sac and Flint. The recipe is shapeless: any layout, any crafting grid.
 
@@ -83,7 +83,7 @@ The dark bites: 4 damage, doubled where the light is dim (level 7 or less), and 
 
 *Tier II · Void · Harms enemies · 8 mana · needs a Copper Cord or better*
 
-Banishes targets: they vanish and reappear up to 8 blocks further away from you.
+Banishes targets: they vanish and reappear up to 8 blocks further away from you, dazed.
 
 **How to get it:** Craft: a Blank Rune, Ender Pearl and Popped Chorus Fruit, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
 
@@ -96,7 +96,7 @@ Banishes targets: they vanish and reappear up to 8 blocks further away from you.
 
 *Tier II · Void · Moves you · 8 mana · needs a Copper Cord or better*
 
-Pulls you to where the spell hit.
+Pulls you to where the spell hit, and stops you there.
 
 **How to get it:** Craft: a Blank Rune, Lead, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Astral Observatory.
 
@@ -109,7 +109,7 @@ Pulls you to where the spell hit.
 
 *Tier II · Void · Harms enemies · 5 mana · needs a Copper Cord or better*
 
-Pulls targets toward the spell.
+Pulls targets toward the spell, leaving them staggered and marked as pulled for 4 seconds.
 
 **How to get it:** Craft: a Blank Rune, Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Astral Observatory.
 
@@ -122,7 +122,7 @@ Pulls targets toward the spell.
 
 *Tier II · Void · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
-Invisibility for 12 seconds, and nearby monsters lose track of you.
+Invisibility for 12 seconds, and nearby monsters lose track of you. The first damage you deal from it lands half again as hard, and ends it.
 
 **How to get it:** Craft: a Blank Rune, Golden Carrot and Fermented Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ancient cities; Woodland mansions; Astral Observatory.
 
@@ -135,7 +135,7 @@ Invisibility for 12 seconds, and nearby monsters lose track of you.
 
 *Tier II · Void · Moves you · 7 mana · needs a Copper Cord or better*
 
-Unzips the wall in front of you and steps you through up to 6 blocks of solid wall.
+Unzips the wall in front of you and steps you through up to 6 blocks of solid wall (never one that isn't yours to open).
 
 **How to get it:** Craft: a Blank Rune, 2x Iron Nugget and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Astral Observatory.
 
@@ -161,7 +161,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-8 damage. One hit in four sparks black: 2.5x damage, and you're in the zone (Strength and Speed) for 6 seconds.
+8 damage. One hit in four sparks black: 2.5x damage, an arc of 8 to the nearest other enemy, and you're in the zone (Strength and Speed) for 6 seconds.
 
 **How to get it:** Craft: a Blank Rune, Black Dye and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Bastions; Astral Observatory.
 
@@ -187,7 +187,7 @@ Teleports you to where the spell landed (max 40 blocks).
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Drags every enemy within 7 blocks into the point for 2 seconds.
+Drags every enemy within 7 blocks into the point for 2 seconds and pulls what hovers over it down; they're left pulled.
 
 **How to get it:** Craft: a Blank Rune, Eye of Ender and Crying Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Ancient cities; End cities; Astral Observatory.
 
@@ -200,7 +200,7 @@ Drags every enemy within 7 blocks into the point for 2 seconds.
 
 *Tier III · Void · Helps you and your allies · 22 mana · needs an Amethyst Cord or better*
 
-Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.
+Two shadow hounds rise from your shadow and hunt at your side for 15 seconds. They are frail (20 health) and bite hard only where the light is dim (level 7 or less); each bite leaves its target shadowed.
 
 **How to get it:** Craft: a Blank Rune, 2x Bone and Black Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Astral Observatory.
 
@@ -213,7 +213,7 @@ Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.
 
 *Tier III · Void · Moves you · 12 mana · needs an Amethyst Cord or better*
 
-You vanish and reappear right behind the first creature hit, facing its back.
+You vanish and reappear right behind the first creature hit, facing its back. Your next blow on it within 3 seconds lands half again as hard.
 
 **How to get it:** Craft: a Blank Rune, Ender Pearl and Ink Sac, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Woodland mansions; Astral Observatory.
 
@@ -226,7 +226,7 @@ You vanish and reappear right behind the first creature hit, facing its back.
 
 *Tier IV · Void · Harms enemies · 30 mana · needs an Echo Cord*
 
-A lingering 3-block cloud: 5 damage per second for 5 seconds.
+A 3-block cloud that rolls on along the way you blew it: 5 damage per second for 5 seconds.
 
 **How to get it:** Found only, never crafted: the Ender Dragon; Archive vaults; the Archivist.
 
@@ -237,7 +237,7 @@ A lingering 3-block cloud: 5 damage per second for 5 seconds.
 
 *Tier IV · Void · Harms enemies · 36 mana · needs an Echo Cord*
 
-Erases what it touches: 20 damage, and everything within 4 blocks is dragged into the gap for 8 more.
+Erases what it hits: it vanishes for a moment and returns for 20 damage, and everything within 4 blocks is dragged into the gap for 8 more.
 
 **How to get it:** Found only, never crafted: the Wither (50%); Archive vaults; the Archivist.
 
@@ -248,7 +248,7 @@ Erases what it touches: 20 damage, and everything within 4 blocks is dragged int
 
 *Tier IV · Void · Helps you and your allies · 32 mana · needs an Echo Cord*
 
-For 6 seconds nothing reaches you: projectiles slow to a stop in the air and enemies that come too close are pushed back.
+For 6 seconds the closer a hostile thing comes the slower it moves: enemies within 5 blocks are slowed harder the nearer they are, and projectiles slow to a stop in the air.
 
 **How to get it:** Found only, never crafted: Ominous vaults; the Ender Dragon; Archive vaults; the Archivist.
 
@@ -259,7 +259,7 @@ For 6 seconds nothing reaches you: projectiles slow to a stop in the air and ene
 
 *Tier IV · Void · Harms enemies · 35 mana · needs an Echo Cord*
 
-16 damage that ignores armour.
+16 damage that ignores armour, and everything else on the line between you and the target takes 8, through walls.
 
 **How to get it:** Found only, never crafted: the Warden; Archive vaults; the Archivist.
 
@@ -270,7 +270,7 @@ For 6 seconds nothing reaches you: projectiles slow to a stop in the air and ene
 
 *Tier IV · Void · Harms enemies · 25 mana · needs an Echo Cord*
 
-Wither III for 8 seconds.
+Wither IV for 6 seconds: it spreads to whoever strikes it in melee, and the withered can't heal.
 
 **How to get it:** Found only, never crafted: the Wither; Archive vaults; the Archivist.
 
