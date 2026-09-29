@@ -490,11 +490,16 @@ public class CordScreen extends Screen {
 				runes.add(rune);
 			}
 		}
+		// Each rune's name looked up once, not at every comparison (this runs every frame).
+		java.util.Map<RuneDef, String> names = new java.util.IdentityHashMap<>();
+		for (RuneDef rune : runes) {
+			names.put(rune, RuneItem.runeName(rune).getString());
+		}
 		runes.sort(Comparator.<RuneDef>comparingInt(r -> r.family().ordinal())
 			.thenComparingInt(RuneCategories::order)
 			.thenComparing(r -> !holds(r))
 			.thenComparingInt(RuneDef::tier)
-			.thenComparing(r -> RuneItem.runeName(r).getString()));
+			.thenComparing(names::get));
 		List<CodexRow> rows = new ArrayList<>();
 		RuneFamily groupFamily = null;
 		String groupCategory = null;
