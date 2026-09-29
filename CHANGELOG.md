@@ -18,6 +18,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Icepath no longer freezes a swimmer into the ice.** It froze the water a creature (or a player, or you) was
   swimming in, leaving it stuck in a block of ice to choke. Like a frost spell's freezing, it now leaves the water
   round a swimmer alone.
+- **Harvest replants with a seed from the crop it cut.** It dropped everything the crop gave and then replanted it
+  for free, a seed out of nothing every time. Now one of the crop's own seeds goes back into the ground (a crop
+  that dropped none isn't replanted), and a crop you may not touch (in a claim) no longer stops it harvesting the
+  rest of the field.
 
 ## [0.4.2-alpha] - 2026-09-28
 

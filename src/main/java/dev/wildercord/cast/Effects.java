@@ -826,8 +826,11 @@ public final class Effects {
 		Vfx.grapple(cast.level, caster.getEyePosition().subtract(0, 0.4, 0), hit.point());
 	}
 
-	/** Harvest: breaks grown crops around the block hit and replants them from their drops. */
+	/** Harvest: breaks grown crops around the block hit and replants them from their drops (a seed each, never a free one). */
 	private static void harvest(Cast cast, Cast.Hit hit, double radiusScale) {
+		if (!Casters.mayBuild(cast.caster)) {
+			return;
+		}
 		BlockPos center = targetBlock(hit);
 		int r = (int) Math.round(1 * radiusScale) + 1;
 		int harvested = 0;
@@ -837,11 +840,33 @@ public final class Effects {
 			if (!(state.getBlock() instanceof net.minecraft.world.level.block.CropBlock crop) || !crop.isMaxAge(state)) {
 				continue;
 			}
-			if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p) || !cast.takeBlock()) {
+			// A crop in a claim is left alone; the rest of the field is still harvested.
+			if (!Casters.mayEdit(cast.caster, cast.level, p)) {
+				continue;
+			}
+			if (!cast.takeBlock()) {
 				break;
 			}
-			cast.level.destroyBlock(p, true, cast.caster);
-			cast.level.setBlockAndUpdate(p, crop.getStateForAge(0));
+			// Replanted from its own drops, as a farmer would: one seed goes back into the ground (none, and it isn't).
+			List<ItemStack> drops = Block.getDrops(state, cast.level, p, null, cast.caster, ItemStack.EMPTY);
+			ItemStack seed = state.getCloneItemStack(cast.level, p, false);
+			boolean replant = false;
+			for (ItemStack drop : drops) {
+				if (!replant && !seed.isEmpty() && ItemStack.isSameItem(drop, seed)) {
+					drop.shrink(1);
+					replant = true;
+				}
+			}
+			cast.level.destroyBlock(p, false, cast.caster);
+			for (ItemStack drop : drops) {
+				if (!drop.isEmpty()) {
+					Block.popResource(cast.level, p, drop);
+				}
+			}
+			state.spawnAfterBreak(cast.level, p, ItemStack.EMPTY, true);
+			if (replant) {
+				cast.level.setBlockAndUpdate(p, crop.getStateForAge(0));
+			}
 			harvested++;
 		}
 		if (harvested > 0) {
