@@ -23,13 +23,13 @@ public final class ElementGlyphs {
 	private static String[] shape(String element) {
 		return switch (element) {
 			case "fire" -> new String[] {
-				"...#...",
-				"...##..",
-				"..###..",
+				"..#....",
+				"..##.#.",
+				".####..",
 				".#####.",
-				".##.##.",
-				".#...#.",
-				"..###.."};
+				"##.####",
+				"##..###",
+				".#####."};
 			case "frost" -> new String[] {
 				"...#...",
 				".#.#.#.",
@@ -55,13 +55,13 @@ public final class ElementGlyphs {
 				"####...",
 				"....#.."};
 			case "earth" -> new String[] {
-				".......",
 				"...#...",
 				"..###..",
-				".##.##.",
-				".#####.",
+				"..###.#",
+				".######",
 				"#######",
-				"#######"};
+				"#######",
+				"......."};
 			case "life" -> new String[] {
 				"....###",
 				"..#####",
