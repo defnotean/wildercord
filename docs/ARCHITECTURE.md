@@ -248,12 +248,17 @@ hit for spell-kill counting and the innate runes that react to hits. After each 
   bleeding, and which runes' damage sets each off (for the Cord screen's tooltip line) are pure data in
   `spell.ReactionRules`; how every reaction looks is in `ReactionVfx`.
 - **`WorldMagic`**: what an effect's element does to the world where it lands, called by
-  `Effects.apply` after every effect (fire lights grass and boils puddles into steam, frost freezes
-  water and puts fires out, storm conducts through water, wind turns projectiles, earth heaves block
-  displays, life blooms, void draws items in), and being wet (`WorldMagic.wet`, read by Conduct and by
-  `Effects.hurt` to dull fire). Which rune does what, and every cap, is pure data in
-  `spell.WorldRules`. Block changes go through `Casters.mayEdit` and the cast's block budget, plus
-  a per-cast allowance kept against `Cast.identity()`.
+  `Effects.apply` after every effect (fire lights grass, candles and TNT and boils puddles into steam,
+  frost freezes water, crusts lava over and puts fires out, storm conducts through water, scrapes copper,
+  pulses rods and may charge creepers, wind turns projectiles, earth heaves block displays, life blooms
+  and cures weakened zombie villagers, void draws items in and anchors endermen, time ages crops,
+  copper, babies and furnaces, arcane shows the invisible, blood feeds nether wart), and being wet
+  (`WorldMagic.wet`, read by Conduct and by `Effects.hurt` to dull fire). Which rune does what, and
+  every cap, is pure data in `spell.WorldRules`. Block changes go through `Casters.mayEdit` and the
+  cast's block budget, plus a per-cast allowance kept against `Cast.identity()`. Frost's crust on lava
+  is written down in `TemporaryBlocks` and counts as one of `Effects.isTemporary`'s blocks. The
+  creature side reaches into vanilla through small mixins: `EndermanMixin` (an anchored enderman's
+  teleports fail), `CreeperAccessor`, `ZombieVillagerAccessor` and `AbstractFurnaceBlockEntityAccessor`.
 - **`Wards`**: magic that answers what happens to a creature: Stasis (holds damage via
   `ALLOW_DAMAGE`), Reversal (`ALLOW_DEATH`), Reflect and Foresight, Infinity (holds projectiles),
   and the position history Rewind reads.
@@ -756,9 +761,10 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **Monsters never change blocks.** Every block edit checks `Casters.mayBuild`, which is false for
   anything but a player allowed to build there.
 - **Nothing temporary is permanent.** Summons and frozen mobs carry saved end times; Rampart
-  blocks crumble when the server stops and drop nothing when broken; Rampart, Span and Light blocks
-  are also written down with their world (`cast.TemporaryBlocks`, as frozen water is in `Thaws`),
-  so one left by a crash, or out of loaded ground when its time came, goes as its chunk loads;
+  blocks crumble when the server stops and drop nothing when broken; Rampart, Span and Light blocks,
+  and frost's crust on lava (which also drops nothing when broken), are written down with their world
+  (`cast.TemporaryBlocks`, as frozen water is in `Thaws`), so one left by a crash, or out of loaded
+  ground when its time came, goes as its chunk loads;
   block-display visuals are removed as their chunk loads; wards aren't saved at all.
 - **Bosses are only ever slowed**, never frozen, swapped or held in place, so their fights can't
   break.

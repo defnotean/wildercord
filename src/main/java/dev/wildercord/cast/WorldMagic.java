@@ -2,12 +2,16 @@ package dev.wildercord.cast;
 
 import com.mojang.math.Transformation;
 import dev.wildercord.content.WildercordSounds;
+import dev.wildercord.mixin.AbstractFurnaceBlockEntityAccessor;
+import dev.wildercord.mixin.CreeperAccessor;
+import dev.wildercord.mixin.ZombieVillagerAccessor;
 import dev.wildercord.player.Heart;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
 import dev.wildercord.spell.WorldRules;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -22,6 +26,7 @@ import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -29,16 +34,37 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Enderman;
+import net.minecraft.world.entity.monster.zombie.ZombieVillager;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BoneMealItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.AbstractCandleBlock;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealSource;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.CandleBlock;
+import net.minecraft.world.level.block.CandleCakeBlock;
+import net.minecraft.world.level.block.CocoaBlock;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.LightningRodBlock;
+import net.minecraft.world.level.block.NetherWartBlock;
+import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.SweetBerryBushBlock;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.WeatheringCopper;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.redstone.ExperimentalRedstoneUtils;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -59,20 +85,27 @@ import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**
- * Magic that changes the world where it lands, so terrain matters: fire burns the grass and boils
- * puddles into steam, frost freezes water to walk on and puts fires out, storm runs through water,
- * wind knocks arrows out of the air, earth heaves the ground, life makes it bloom and void draws
- * loose things in. What each element does, and how far and how much, is in {@link WorldRules}.
+ * Magic that changes the world where it lands, so terrain matters: fire burns the grass, lights
+ * candles and TNT and boils puddles into steam, frost freezes water to walk on, crusts lava over and
+ * puts fires out, storm runs through water, scrapes copper and pulses rods, wind knocks arrows out of
+ * the air, earth heaves the ground, life makes it bloom, void draws loose things in and pins endermen,
+ * time ages crops, copper, babies and furnaces, arcane makes bookshelves shimmer and shows the
+ * invisible, and blood feeds nether wart. What each element does, and how far and how much, is in
+ * {@link WorldRules}.
  *
  * <p>Called once for every effect a shape applies ({@link Effects#apply}), after the effect itself.
  * Block changes go through {@link Casters#mayEdit} (so never for a monster, and never inside spawn
  * protection or a claim), take from the cast's block budget and from {@link WorldRules#EDITS_PER_CAST},
  * and are only ever vanilla's own temporary or natural ones: fire (lit only where fire may spread,
  * so it burns out), frosted ice (which melts back, and is thawed after {@link WorldRules#THAW_TICKS}
- * anyway, a thaw saved with the world: see {@link Thaws}), grass and flowers. A passive renewing itself changes no blocks,
- * and nor does anything on a server whose config switches {@code features.world_changing_magic} off.
+ * anyway, a thaw saved with the world: see {@link Thaws}), a crust on lava (melted back on time, saved
+ * with the world in {@link TemporaryBlocks}), grass and flowers, growth and copper's weathering. A
+ * passive renewing itself changes no blocks, and nor does anything on a server whose config switches
+ * {@code features.world_changing_magic} off. Changes to creatures that outlast the spell (a creeper
+ * charged, a cure begun, a baby grown) come only from a player's spell, and not with that switch off.
  * Everything else (the steam, the shock through water, the gusts, the heaved ground, which is only
- * block displays) works for monsters too, and with that switch off.</p>
+ * block displays, an enderman anchored, the invisible shown) works for monsters too, and with that
+ * switch off.</p>
  */
 public final class WorldMagic {
 	private WorldMagic() {}
@@ -144,19 +177,38 @@ public final class WorldMagic {
 		// may keep this magic off its blocks altogether (the rest, steam, shocks and gusts, still comes).
 		boolean edits = interaction.editsBlocks() && !cast.passive && Casters.mayBuild(caster)
 			&& dev.wildercord.config.Config.get().worldChangingMagic();
+		// Changes to creatures that outlast the spell (a creeper charged, a cure begun, a baby grown) come
+		// only from a player's spell, and only where the server keeps this magic on.
+		boolean lasting = caster instanceof ServerPlayer && dev.wildercord.config.Config.get().worldChangingMagic();
 		Vec3 at = hit.point();
 		switch (interaction) {
 			case IGNITE -> ignite(cast, at, edits);
 			case FREEZE -> freeze(cast, at, Math.min(2.0, SpellNumbers.effectRadius(node)), edits);
-			case CONDUCT -> conduct(cast, hit, power);
+			case CONDUCT -> {
+				conduct(cast, hit, power);
+				strike(cast, rune, hit, edits, lasting);
+			}
 			case GUST -> gust(cast, hit, edits);
 			case HEAVE -> heave(cast, at, power);
 			case BLOOM -> {
 				if (edits) {
 					bloom(cast, hit);
 				}
+				if (lasting) {
+					cure(cast, hit);
+				}
 			}
-			case DRAW -> draw(cast, at);
+			case DRAW -> {
+				draw(cast, at);
+				anchor(cast, hit);
+			}
+			case AGE -> age(cast, hit, edits, lasting);
+			case SHIMMER -> shimmer(cast, at);
+			case FEED -> {
+				if (edits) {
+					feed(cast, hit);
+				}
+			}
 			default -> { }
 		}
 	}
@@ -209,6 +261,7 @@ public final class WorldMagic {
 		BlockPos centre = BlockPos.containing(at);
 		double r = WorldRules.IGNITE_RADIUS;
 		List<BlockPos> melt = new ArrayList<>();
+		List<BlockPos> kindle = new ArrayList<>();
 		List<BlockPos> burn = new ArrayList<>();
 		for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-2, -1, -2), centre.offset(2, 1, 2))) {
 			if (pos.distToCenterSqr(at) > (r + 0.5) * (r + 0.5)) {
@@ -217,12 +270,15 @@ public final class WorldMagic {
 			BlockState state = level.getBlockState(pos);
 			if (state.is(Blocks.SNOW) || state.is(Blocks.POWDER_SNOW) || state.is(Blocks.ICE) || state.is(Blocks.FROSTED_ICE)) {
 				melt.add(pos.immutable());
+			} else if (kindling(state)) {
+				kindle.add(pos.immutable());
 			} else if (flammableSpot(level, pos, state)) {
 				burn.add(pos.immutable());
 			}
 		}
 		Comparator<BlockPos> nearest = Comparator.comparingDouble(p -> p.distToCenterSqr(at));
 		melt.sort(nearest);
+		kindle.sort(nearest);
 		burn.sort(nearest);
 		int melted = 0;
 		for (BlockPos pos : melt) {
@@ -242,6 +298,15 @@ public final class WorldMagic {
 		}
 		if (melted > 0) {
 			Fx.sound(level, at, SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
+		}
+		int kindled = 0;
+		for (BlockPos pos : kindle) {
+			if (kindled >= WorldRules.KINDLE_MAX) {
+				break;
+			}
+			if (kindling(level.getBlockState(pos)) && edit(cast, pos) && light(cast, pos)) {
+				kindled++;
+			}
 		}
 		int lit = 0;
 		for (BlockPos pos : burn) {
@@ -289,6 +354,33 @@ public final class WorldMagic {
 			}
 		}
 		return false;
+	}
+
+	/** Something fire lights rather than burns: an unlit candle, candle cake or campfire (dry ones), or TNT. */
+	private static boolean kindling(BlockState state) {
+		return CandleBlock.canLight(state) || CandleCakeBlock.canLight(state) || CampfireBlock.canLight(state) || state.is(Blocks.TNT);
+	}
+
+	/**
+	 * Lights a candle, candle cake or campfire, as flint and steel would; TNT is primed, its blast the
+	 * caster's own (the game's {@code tnt_explodes} rule still has the last word). True if it caught.
+	 */
+	private static boolean light(Cast cast, BlockPos pos) {
+		ServerLevel level = cast.level;
+		BlockState state = level.getBlockState(pos);
+		if (state.is(Blocks.TNT)) {
+			if (!TntBlock.prime(level, pos, cast.caster, ItemStack.EMPTY)) {
+				return false;
+			}
+			level.removeBlock(pos, false);
+			ElementFx.embers(level, Vec3.atCenterOf(pos), 0.4, 6);
+			return true;
+		}
+		level.setBlock(pos, state.setValue(BlockStateProperties.LIT, true), Block.UPDATE_ALL_IMMEDIATE);
+		level.gameEvent(cast.caster, GameEvent.BLOCK_CHANGE, pos);
+		ElementFx.flames(level, Vec3.atBottomCenterOf(pos).add(0, 0.3, 0), 0.2, 0.5, 1);
+		Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.FIRECHARGE_USE, 0.5F, 1.3F);
+		return true;
 	}
 
 	/** Boils a puddle away: {@link WorldRules#PUDDLE_MAX} connected source blocks or fewer. A pond only steams. */
@@ -370,7 +462,10 @@ public final class WorldMagic {
 
 	// ------------------------------------------------------------------ frost
 
-	/** Frost: puts out fire and campfires, then freezes the water's surface into frosted ice you can walk on. */
+	/**
+	 * Frost: puts out fire, campfires and candles, then freezes the water's surface into frosted ice you
+	 * can walk on, and cools the lava's into a crust.
+	 */
 	private static void freeze(Cast cast, Vec3 at, double widen, boolean edits) {
 		if (!edits) {
 			return;
@@ -422,6 +517,7 @@ public final class WorldMagic {
 				break;
 			}
 		}
+		crust(cast, at, columns);
 		if (frozen.isEmpty()) {
 			return;
 		}
@@ -438,7 +534,7 @@ public final class WorldMagic {
 		watchBridge(cast, frozen);
 	}
 
-	/** Puts out a fire, or snuffs a lit campfire; true if it did. */
+	/** Puts out a fire, or snuffs a lit campfire or candle; true if it did. */
 	private static boolean snuff(Cast cast, BlockPos pos) {
 		ServerLevel level = cast.level;
 		BlockState state = level.getBlockState(pos);
@@ -460,7 +556,16 @@ public final class WorldMagic {
 			Motes.smoke(level, Vec3.atCenterOf(pos).add(0, 0.3, 0), 3, 0.2);
 			return true;
 		}
-		return false;
+		return blowOut(cast, pos, state);
+	}
+
+	/** Snuffs a lit candle or candle cake (frost and wind both do); true if it did. */
+	private static boolean blowOut(Cast cast, BlockPos pos, BlockState state) {
+		if (!AbstractCandleBlock.isLit(state) || !edit(cast, pos)) {
+			return false;
+		}
+		AbstractCandleBlock.extinguish(null, state, cast.level, pos);
+		return true;
 	}
 
 	/**
@@ -477,12 +582,19 @@ public final class WorldMagic {
 	/** Until when each player's ice is being watched (game time). */
 	private static final Map<UUID, Long> WATCHED = new HashMap<>();
 
-	/** The ice being watched goes with the server (its watchers are scheduled, and the schedule is cleared too). */
+	/**
+	 * The ice being watched and the endermen anchored go with the server (their watchers are scheduled,
+	 * and the schedule is cleared too). A block of frost's crust on lava broken by hand drops nothing:
+	 * the lava it was comes back.
+	 */
 	public static void init() {
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			BRIDGES.clear();
 			WATCHED.clear();
+			ANCHORED.clear();
 		});
+		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
+			!(world instanceof ServerLevel server) || !meltCrust(server, pos.immutable(), -1, true));
 	}
 
 	private static void watchBridge(Cast cast, List<BlockPos> frozen) {
@@ -520,6 +632,144 @@ public final class WorldMagic {
 			return;
 		}
 		Scheduler.later(5, () -> watch(player, level));
+	}
+
+	// ------------------------------------------------------------------ frost on lava
+
+	/** What lava cools into under frost, and what that crust turns into for its last seconds (it glows, cracks and burns). */
+	private static final BlockState CRUST = Blocks.BASALT.defaultBlockState();
+	private static final BlockState CRUST_MELTING = Blocks.MAGMA_BLOCK.defaultBlockState();
+
+	/**
+	 * Frost on lava: the surface within reach cools into a crust of basalt you can walk across, never
+	 * round a creature in the lava (it would be stuck in the rock). Every block is written down with its
+	 * world ({@link TemporaryBlocks}), so it melts back even after a crash, or as soon as its ground loads
+	 * if nobody was near when its time came; for its last seconds it turns to magma and cracks, a warning,
+	 * and broken it drops nothing.
+	 */
+	private static void crust(Cast cast, Vec3 at, List<BlockPos> columns) {
+		ServerLevel level = cast.level;
+		long due = level.getGameTime() + WorldRules.CRUST_TICKS + level.getRandom().nextInt(20);
+		List<BlockPos> crust = new ArrayList<>();
+		for (BlockPos column : columns) {
+			if (crust.size() >= WorldRules.CRUST_MAX) {
+				break;
+			}
+			for (int dy = 4; dy >= -2; dy--) {
+				BlockPos pos = column.above(dy);
+				BlockState lava = level.getBlockState(pos);
+				if (!lava.is(Blocks.LAVA) || !lava.getFluidState().isSource() || !level.getBlockState(pos.above()).isAir()) {
+					continue;
+				}
+				if (level.getEntities((Entity) null, new AABB(pos), e -> e instanceof LivingEntity).isEmpty() && edit(cast, pos)) {
+					level.setBlockAndUpdate(pos, CRUST);
+					TemporaryBlocks.put(level, pos, CRUST, lava, due);
+					crust.add(pos.immutable());
+				}
+				break;
+			}
+		}
+		if (crust.isEmpty()) {
+			return;
+		}
+		for (int i = 0; i < Math.min(6, crust.size()); i++) {
+			Vec3 top = Vec3.atCenterOf(crust.get(i)).add(0, 0.6, 0);
+			Motes.clouds(level, top, 2, 0.3, Motes.STEAM, 1.1, 40, new Vec3(0, 0.04, 0), 0.01, 0.4);
+			Vfx.emit(level, ParticleTypes.SNOWFLAKE, top, 2, 0.3, 0.01);
+		}
+		Vec3 top = new Vec3(at.x, crust.getFirst().getY() + 1.02, at.z);
+		ElementFx.groundRing(level, top, ElementFx.FROST.primary(), 0.3, 2.8, 0.06, 12);
+		Fx.sound(level, top, SoundEvents.LAVA_EXTINGUISH, 1.0F, 0.8F);
+		Fx.sound(level, top, SoundEvents.BASALT_PLACE, 0.9F, 0.7F);
+		int left = (int) (due - level.getGameTime());
+		Scheduler.later(left - WorldRules.CRUST_WARN_TICKS, () -> crustWarns(level, crust, due));
+		Scheduler.later(left, () -> crust.forEach(pos -> meltCrust(level, pos, due, false)));
+	}
+
+	/** The crust about to melt glows and cracks: its basalt turns to magma, and cracks spread over it until it goes. */
+	private static void crustWarns(ServerLevel level, List<BlockPos> crust, long due) {
+		List<BlockPos> glowing = new ArrayList<>();
+		for (BlockPos pos : crust) {
+			TemporaryBlocks.Placed placed = crustAt(level, pos, due);
+			if (placed == null || !placed.placed().is(CRUST.getBlock())) {
+				continue;
+			}
+			level.setBlockAndUpdate(pos, CRUST_MELTING);
+			// Written down again as magma, so a crash from now on still melts it back.
+			TemporaryBlocks.put(level, pos, CRUST_MELTING, placed.replaced(), due);
+			glowing.add(pos);
+		}
+		if (glowing.isEmpty()) {
+			return;
+		}
+		Fx.sound(level, Vec3.atCenterOf(glowing.getFirst()), SoundEvents.LAVA_POP, 1.0F, 0.7F);
+		for (int t = 0; t < WorldRules.CRUST_WARN_TICKS; t += 20) {
+			int stage = 3 + 6 * t / WorldRules.CRUST_WARN_TICKS;
+			Runnable crack = () -> {
+				for (BlockPos pos : glowing) {
+					if (crustAt(level, pos, due) != null) {
+						level.destroyBlockProgress(crackId(pos), pos, stage);
+						if (level.getRandom().nextInt(3) == 0) {
+							Vfx.emit(level, ParticleTypes.LAVA, Vec3.atCenterOf(pos).add(0, 0.5, 0), 1, 0.3, 0.0);
+						}
+					}
+				}
+				Fx.sound(level, Vec3.atCenterOf(glowing.getFirst()), SoundEvents.LAVA_POP, 0.6F, 0.9F);
+			};
+			if (t == 0) {
+				crack.run();
+			} else {
+				Scheduler.later(t, crack);
+			}
+		}
+	}
+
+	/**
+	 * A block of crust melts back into the lava it was (if it's still there), and is crossed off. One whose
+	 * ground isn't loaded is left to {@link TemporaryBlocks}, which melts it as its chunk loads. Only the
+	 * crust due at {@code due}, so a spell's melting never takes a later spell's crust in the same place
+	 * early; any crust at all for {@code due} below zero (a block broken). True if it melted.
+	 */
+	private static boolean meltCrust(ServerLevel level, BlockPos pos, long due, boolean broken) {
+		TemporaryBlocks.Placed placed = crustAt(level, pos, due);
+		if (placed == null) {
+			return false;
+		}
+		BlockState state = level.getBlockState(pos);
+		level.destroyBlockProgress(crackId(pos), pos, -1);
+		if (broken) {
+			level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
+		}
+		level.setBlockAndUpdate(pos, placed.replaced());
+		TemporaryBlocks.remove(level, pos);
+		Vfx.emit(level, ParticleTypes.LAVA, Vec3.atCenterOf(pos).add(0, 0.5, 0), 1, 0.3, 0.0);
+		return true;
+	}
+
+	/**
+	 * How the crust standing at {@code pos} (loaded, and still basalt or magma) is written down, if it's
+	 * the one due at {@code due} (or any, for {@code due} below zero); null if there's no such crust.
+	 */
+	private static TemporaryBlocks.Placed crustAt(ServerLevel level, BlockPos pos, long due) {
+		if (!level.isLoaded(pos)) {
+			return null;
+		}
+		BlockState state = level.getBlockState(pos);
+		if (!state.is(CRUST.getBlock()) && !state.is(CRUST_MELTING.getBlock())) {
+			return null;
+		}
+		TemporaryBlocks.Placed placed = TemporaryBlocks.find(level, pos, state.getBlock());
+		return placed != null && (due < 0 || placed.due() == due) ? placed : null;
+	}
+
+	/** Whether the block at {@code pos} is frost's crust on lava, still to melt: it can't be pushed, mined for itself or changed by another spell. */
+	public static boolean isCrust(ServerLevel level, BlockPos pos) {
+		return crustAt(level, pos, -1) != null;
+	}
+
+	/** A crack overlay's own number for each block of crust (never a player's, so everyone sees it). */
+	private static int crackId(BlockPos pos) {
+		return Integer.MIN_VALUE | (Long.hashCode(pos.asLong()) & 0x3FFFFFFF);
 	}
 
 	// ------------------------------------------------------------------ storm
@@ -664,11 +914,104 @@ public final class WorldMagic {
 		return water;
 	}
 
+	/**
+	 * Storm on what it strikes: a creeper may be charged, as lightning would charge it (the caster's
+	 * risk); by where it lands, oxidised copper is scraped a stage cleaner and lightning rods pulse
+	 * redstone, as a real strike does. Runes that call down their own lightning leave copper and rods
+	 * to vanilla's strike.
+	 */
+	private static void strike(Cast cast, RuneDef rune, Cast.Hit hit, boolean edits, boolean lasting) {
+		ServerLevel level = cast.level;
+		if (lasting) {
+			for (Entity e : hit.entities()) {
+				if (e instanceof Creeper creeper && creeper.isAlive() && !creeper.isPowered() && Targets.canHarm(cast.caster, e)
+						&& level.getRandom().nextDouble() < WorldRules.CREEPER_CHARGE_CHANCE) {
+					charge(level, creeper);
+				}
+			}
+		}
+		if (!edits || WorldRules.callsLightning(rune)) {
+			return;
+		}
+		Vec3 at = hit.point();
+		BlockPos centre = hit.block() != null ? hit.block() : BlockPos.containing(at);
+		int reach = WorldRules.STORM_REACH;
+		List<BlockPos> copper = new ArrayList<>();
+		List<BlockPos> rods = new ArrayList<>();
+		for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-reach, -reach, -reach), centre.offset(reach, reach, reach))) {
+			BlockState state = level.getBlockState(pos);
+			if (state.getBlock() instanceof WeatheringCopper && WeatheringCopper.getPrevious(state).isPresent()) {
+				copper.add(pos.immutable());
+			}
+			if (state.getBlock() instanceof LightningRodBlock && !state.getValue(LightningRodBlock.POWERED)) {
+				rods.add(pos.immutable());
+			}
+		}
+		Comparator<BlockPos> nearest = Comparator.comparingDouble(p -> p.distToCenterSqr(at));
+		copper.sort(nearest);
+		rods.sort(nearest);
+		int scraped = 0;
+		for (BlockPos pos : copper) {
+			if (scraped >= WorldRules.COPPER_MAX) {
+				break;
+			}
+			if (!edit(cast, pos)) {
+				continue;
+			}
+			// Copper first: a rod scraped clean keeps its charge, and schedules its own switch-off as it's placed.
+			WeatheringCopper.getPrevious(level.getBlockState(pos)).ifPresent(clean -> level.setBlockAndUpdate(pos, clean));
+			level.levelEvent(LevelEvent.PARTICLES_ELECTRIC_SPARK, pos, -1);
+			scraped++;
+		}
+		int pulsed = 0;
+		for (BlockPos pos : rods) {
+			if (pulsed >= WorldRules.RODS_MAX) {
+				break;
+			}
+			BlockState state = level.getBlockState(pos);
+			if (state.getBlock() instanceof LightningRodBlock && !state.getValue(LightningRodBlock.POWERED) && edit(cast, pos)) {
+				pulse(level, pos, state);
+				pulsed++;
+			}
+		}
+		if (scraped + pulsed > 0) {
+			ElementFx.sparks(level, at, 10, 0.3);
+			Fx.sound(level, at, SoundEvents.AXE_SCRAPE, 0.7F, 1.4F);
+		}
+	}
+
+	/**
+	 * A lightning rod pulses redstone for 8 ticks, just as when lightning strikes it. Done by hand rather
+	 * than through the rod's own strike, which would also turn Blank Runes lying by it into Lightning:
+	 * that takes a real storm.
+	 */
+	private static void pulse(ServerLevel level, BlockPos pos, BlockState rod) {
+		level.setBlockAndUpdate(pos, rod.setValue(LightningRodBlock.POWERED, true));
+		Direction front = rod.getValue(BlockStateProperties.FACING).getOpposite();
+		level.updateNeighborsAt(pos.relative(front), rod.getBlock(), ExperimentalRedstoneUtils.initialOrientation(level, front, null));
+		level.scheduleTick(pos, rod.getBlock(), 8);
+		level.levelEvent(LevelEvent.PARTICLES_ELECTRIC_SPARK, pos, rod.getValue(BlockStateProperties.FACING).getAxis().ordinal());
+		ElementFx.arc(level, Vec3.atCenterOf(pos).add(0, 0.6, 0), Vec3.atCenterOf(pos).add(0, -0.4, 0), SHOCK, 0.05, 1, false, 6);
+	}
+
+	/** A creeper charged by storm, as by lightning: it blows up twice as big. */
+	private static void charge(ServerLevel level, Creeper creeper) {
+		creeper.getEntityData().set(CreeperAccessor.wildercord$powered(), true);
+		Vec3 centre = creeper.getBoundingBox().getCenter();
+		ElementFx.sparks(level, centre, 12, 0.35);
+		Sigils.flash(level, centre, SHOCK, 1.4F);
+		for (int i = 0; i < 3; i++) {
+			double a = Math.PI * 2 * i / 3;
+			ElementFx.arc(level, centre, centre.add(Math.cos(a) * 0.8, 0.6, Math.sin(a) * 0.8), SHOCK, 0.04, 1, false, 6);
+		}
+		Fx.sound(level, centre, SoundEvents.TRIDENT_THUNDER.value(), 0.5F, 1.6F);
+	}
+
 	// ------------------------------------------------------------------ wind
 
 	/**
 	 * Wind: arrows, tridents, fireballs and enemy bolts near where it lands are flung back the way
-	 * the wind blows; small fires blow out; loose items and experience scatter.
+	 * the wind blows; small fires and candles blow out; loose items and experience scatter.
 	 */
 	private static void gust(Cast cast, Cast.Hit hit, boolean edits) {
 		ServerLevel level = cast.level;
@@ -712,9 +1055,12 @@ public final class WorldMagic {
 			if (out >= WorldRules.GUST_FIRES) {
 				break;
 			}
-			if (level.getBlockState(pos).is(BlockTags.FIRE) && edit(cast, pos.immutable())) {
+			BlockState state = level.getBlockState(pos);
+			if (state.is(BlockTags.FIRE) && edit(cast, pos.immutable())) {
 				level.removeBlock(pos, false);
 				Motes.smoke(level, Vec3.atCenterOf(pos), 2, 0.3);
+				out++;
+			} else if (blowOut(cast, pos.immutable(), state)) {
 				out++;
 			}
 		}
@@ -869,6 +1215,22 @@ public final class WorldMagic {
 		}
 	}
 
+	/**
+	 * Life on a zombie villager that's weakened starts its cure, as a golden apple would: it shakes, and
+	 * a few minutes later it's a villager again, grateful to whoever cured it.
+	 */
+	private static void cure(Cast cast, Cast.Hit hit) {
+		for (Entity e : hit.entities()) {
+			if (e instanceof ZombieVillager zombie && zombie.isAlive() && !zombie.isConverting() && zombie.hasEffect(MobEffects.WEAKNESS)) {
+				int ticks = WorldRules.CURE_MIN_TICKS + zombie.getRandom().nextInt(WorldRules.CURE_MAX_TICKS - WorldRules.CURE_MIN_TICKS + 1);
+				((ZombieVillagerAccessor) zombie).wildercord$startConverting(cast.caster.getUUID(), ticks);
+				Vec3 centre = zombie.getBoundingBox().getCenter();
+				ElementFx.petals(cast.level, centre, 0.4, 6);
+				Vfx.emit(cast.level, ParticleTypes.HAPPY_VILLAGER, centre, 6, 0.4, 0.0);
+			}
+		}
+	}
+
 	// ------------------------------------------------------------------ void
 
 	/** Void: loose items and experience nearby are drawn in toward where it lands, into a little knot of darkness. */
@@ -893,6 +1255,258 @@ public final class WorldMagic {
 			ElementFx.implode(level, at.add(0, 0.3, 0), 1.6, 8);
 			ElementFx.blackCore(level, at.add(0, 0.3, 0), 0.25, 8);
 		}
+	}
+
+	/** Endermen void anchored, and until when (game time): they can't teleport (see {@code EndermanMixin}). */
+	private static final Map<UUID, Long> ANCHORED = new HashMap<>();
+
+	/** Whether {@code entity} is anchored by void and can't teleport. */
+	public static boolean anchored(Entity entity) {
+		if (ANCHORED.isEmpty()) {
+			return false;
+		}
+		Long until = ANCHORED.get(entity.getUUID());
+		return until != null && entity.level().getGameTime() < until;
+	}
+
+	/**
+	 * Void on an enderman anchors it where it stands for {@link WorldRules#ANCHOR_TICKS}: it can't
+	 * teleport away (from a spell, the rain or an arrow), and a ring of darkness turns at its feet.
+	 */
+	private static void anchor(Cast cast, Cast.Hit hit) {
+		ServerLevel level = cast.level;
+		for (Entity e : hit.entities()) {
+			if (!(e instanceof Enderman enderman) || !enderman.isAlive() || !Targets.canHarm(cast.caster, e)) {
+				continue;
+			}
+			// An enderman still in the list has its ring going already (the ring crosses it off when the anchor lets go).
+			boolean ringing = ANCHORED.containsKey(enderman.getUUID());
+			ANCHORED.put(enderman.getUUID(), level.getGameTime() + WorldRules.ANCHOR_TICKS);
+			Fx.sound(level, enderman.position(), SoundEvents.RESPAWN_ANCHOR_CHARGE, 0.7F, 0.6F);
+			if (!ringing) {
+				anchorRing(level, enderman);
+			}
+		}
+	}
+
+	/** The ring of darkness round an anchored enderman's feet, renewed while the anchor holds. */
+	private static void anchorRing(ServerLevel level, Enderman enderman) {
+		if (!anchored(enderman) || enderman.isRemoved() || !enderman.isAlive() || enderman.level() != level) {
+			ANCHORED.remove(enderman.getUUID());
+			return;
+		}
+		Vec3 feet = enderman.position();
+		ElementFx.groundRing(level, feet, ElementFx.dark(ElementFx.VOID.primary()), 0.9, 0.7, 0.08, 12);
+		ElementFx.groundRing(level, feet, ElementFx.VOID.secondary(), 1.0, 1.0, 0.03, 12);
+		Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, feet.add(0, 0.2, 0), 3, 0.4, 0.02);
+		Scheduler.later(10, () -> anchorRing(level, enderman));
+	}
+
+	// ------------------------------------------------------------------ time
+
+	/**
+	 * Time: the world ages where it lands. Young animals nearby grow up a little, crops and saplings
+	 * grow a stage and copper weathers one (a few blocks a hit), and a furnace, smoker or blast furnace
+	 * it lands on jumps ahead in its smelting.
+	 */
+	private static void age(Cast cast, Cast.Hit hit, boolean edits, boolean lasting) {
+		ServerLevel level = cast.level;
+		Vec3 at = hit.point();
+		int grownUp = 0;
+		if (lasting && !cast.passive) {
+			AABB box = new AABB(at, at).inflate(WorldRules.AGE_BABY_RADIUS);
+			for (AgeableMob baby : level.getEntitiesOfClass(AgeableMob.class, box, m -> m.isAlive() && m.canAgeUp())) {
+				if (grownUp >= WorldRules.AGE_BABIES || left(cast, EDITS) <= 0) {
+					break;
+				}
+				spend(cast, EDITS, 1);
+				baby.setAge(WorldRules.agedBaby(baby.getAge()));
+				Vec3 centre = baby.getBoundingBox().getCenter();
+				ElementFx.goldenTicks(level, centre, 0.3, 4);
+				Vfx.emit(level, ParticleTypes.HAPPY_VILLAGER, centre, 3, 0.3, 0.0);
+				grownUp++;
+			}
+		}
+		if (!edits) {
+			if (grownUp > 0) {
+				ElementFx.clock(level, at.add(0, 0.1, 0), UP, 1.0, 10, false);
+			}
+			return;
+		}
+		BlockPos centre = hit.block() != null ? hit.block() : BlockPos.containing(at);
+		double r = WorldRules.AGE_RADIUS;
+		List<BlockPos> growing = new ArrayList<>();
+		for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-2, -1, -2), centre.offset(2, 1, 2))) {
+			if (pos.distToCenterSqr(at) <= (r + 0.5) * (r + 0.5) && ages(level, pos, level.getBlockState(pos))) {
+				growing.add(pos.immutable());
+			}
+		}
+		growing.sort(Comparator.comparingDouble(p -> p.distToCenterSqr(at)));
+		int aged = 0;
+		for (BlockPos pos : growing) {
+			if (aged >= WorldRules.AGE_MAX) {
+				break;
+			}
+			// Re-checked: a tree just grown next door may have changed what's here.
+			if (!ages(level, pos, level.getBlockState(pos)) || !edit(cast, pos)) {
+				continue;
+			}
+			ageBlock(level, pos, level.getBlockState(pos));
+			ElementFx.goldenTicks(level, Vec3.atCenterOf(pos), 0.3, 3);
+			aged++;
+		}
+		int smelted = 0;
+		for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-1, -1, -1), centre.offset(1, 1, 1))) {
+			if (smelted >= WorldRules.FURNACE_MAX) {
+				break;
+			}
+			if (level.getBlockEntity(pos) instanceof AbstractFurnaceBlockEntity furnace && smeltSkip(furnace) > 0 && edit(cast, pos.immutable())) {
+				AbstractFurnaceBlockEntityAccessor smelting = (AbstractFurnaceBlockEntityAccessor) furnace;
+				int skip = smeltSkip(furnace);
+				smelting.wildercord$setCookingTimer(smelting.wildercord$cookingTimer() + skip);
+				smelting.wildercord$setLitTimeRemaining(smelting.wildercord$litTimeRemaining() - skip);
+				furnace.setChanged();
+				Vec3 front = Vec3.atCenterOf(pos);
+				ElementFx.clock(level, front, UP, 0.5, 8, false);
+				Vfx.emit(level, ParticleTypes.FLAME, front, 4, 0.3, 0.02);
+				Fx.sound(level, front, SoundEvents.FURNACE_FIRE_CRACKLE, 1.0F, 1.4F);
+				smelted++;
+			}
+		}
+		if (grownUp + aged + smelted > 0) {
+			ElementFx.clock(level, at.add(0, 0.1, 0), UP, 1.0, 10, false);
+			Fx.sound(level, at, SoundEvents.BONE_MEAL_USE, 0.6F, 0.8F);
+		}
+	}
+
+	/**
+	 * Whether time ages this block: a crop not yet ripe, a sapling (or a sweet berry bush, cocoa, a stem)
+	 * that bone meal would grow, or copper that hasn't weathered all the way.
+	 */
+	private static boolean ages(ServerLevel level, BlockPos pos, BlockState state) {
+		Block block = state.getBlock();
+		if (block instanceof CropBlock crop) {
+			return !crop.isMaxAge(state);
+		}
+		if ((block instanceof SaplingBlock || block instanceof SweetBerryBushBlock || block instanceof CocoaBlock || state.is(BlockTags.CROPS))
+				&& block instanceof BonemealableBlock plant) {
+			return plant.isValidBonemealTarget(level, pos, state, BonemealSource.INTERACTION);
+		}
+		return block instanceof WeatheringCopper copper && copper.getNext(state).isPresent();
+	}
+
+	/** Ages a block {@link #ages} said yes to: a crop one stage riper, a sapling a stage on (or into a tree), copper a stage greener. */
+	private static void ageBlock(ServerLevel level, BlockPos pos, BlockState state) {
+		Block block = state.getBlock();
+		if (block instanceof WeatheringCopper copper) {
+			copper.getNext(state).ifPresent(older -> level.setBlockAndUpdate(pos, older));
+			level.levelEvent(LevelEvent.PARTICLES_WAX_OFF, pos, 0);
+			return;
+		}
+		if (block instanceof CropBlock crop) {
+			level.setBlock(pos, crop.getStateForAge(crop.getAge(state) + 1), Block.UPDATE_CLIENTS);
+		} else if (block instanceof SaplingBlock sapling) {
+			sapling.advanceTree(level, pos, state, level.getRandom());
+		} else if (block instanceof BonemealableBlock plant) {
+			plant.performBonemeal(level, level.getRandom(), pos, state, BonemealSource.INTERACTION);
+		}
+		level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 8);
+	}
+
+	/** How far time may jump a furnace's smelting on: nothing unless it's burning and partway through smelting something. */
+	private static int smeltSkip(AbstractFurnaceBlockEntity furnace) {
+		AbstractFurnaceBlockEntityAccessor smelting = (AbstractFurnaceBlockEntityAccessor) furnace;
+		int timer = smelting.wildercord$cookingTimer();
+		int total = smelting.wildercord$cookingTotalTime();
+		int fuel = smelting.wildercord$litTimeRemaining();
+		if (timer <= 0 || fuel <= 0 || total <= 0 || furnace.getItem(0).isEmpty()) {
+			return 0;
+		}
+		return WorldRules.furnaceSkip(timer, total, fuel);
+	}
+
+	// ------------------------------------------------------------------ arcane
+
+	/**
+	 * Arcane: bookshelves and enchanting tables nearby shimmer with glyphs, and invisible creatures the
+	 * caster could harm show for a moment (they glow through walls). Nothing is changed.
+	 */
+	private static void shimmer(Cast cast, Vec3 at) {
+		ServerLevel level = cast.level;
+		int shown = 0;
+		AABB near = new AABB(at, at).inflate(WorldRules.REVEAL_RADIUS);
+		for (Entity e : level.getEntities((Entity) null, near, e -> e instanceof LivingEntity living && living.isInvisible() && Targets.canHarm(cast.caster, e))) {
+			if (shown >= WorldRules.REVEAL_MAX) {
+				break;
+			}
+			LivingEntity living = (LivingEntity) e;
+			living.addEffect(new MobEffectInstance(MobEffects.GLOWING, WorldRules.REVEAL_TICKS, 0, false, false));
+			ElementFx.shimmer(level, living.getBoundingBox().getCenter(), 0.4, 8);
+			shown++;
+		}
+		BlockPos centre = BlockPos.containing(at);
+		int reach = WorldRules.SHIMMER_REACH;
+		int shelves = 0;
+		for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-reach, -reach / 2 - 1, -reach), centre.offset(reach, reach / 2 + 1, reach))) {
+			if (shelves >= WorldRules.SHIMMER_MAX) {
+				break;
+			}
+			BlockState state = level.getBlockState(pos);
+			if (state.is(BlockTags.ENCHANTMENT_POWER_PROVIDER) || state.is(Blocks.CHISELED_BOOKSHELF) || state.is(Blocks.ENCHANTING_TABLE)) {
+				ElementFx.shimmer(level, Vec3.atCenterOf(pos), 0.5, state.is(Blocks.ENCHANTING_TABLE) ? 12 : 5);
+				shelves++;
+			}
+		}
+		if (shown + shelves > 0) {
+			Fx.sound(level, at, SoundEvents.ENCHANTMENT_TABLE_USE, 0.5F, 1.3F);
+		}
+	}
+
+	// ------------------------------------------------------------------ blood
+
+	/** Blood feeds the Nether's growth: nether wart ripens a stage, and crimson fungus grows as bone meal would grow it. */
+	private static void feed(Cast cast, Cast.Hit hit) {
+		ServerLevel level = cast.level;
+		Vec3 at = hit.point();
+		BlockPos centre = hit.block() != null ? hit.block() : BlockPos.containing(at);
+		double r = WorldRules.FEED_RADIUS;
+		List<BlockPos> growing = new ArrayList<>();
+		for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-2, -1, -2), centre.offset(2, 1, 2))) {
+			if (pos.distToCenterSqr(at) <= (r + 0.5) * (r + 0.5) && feeds(level, pos, level.getBlockState(pos))) {
+				growing.add(pos.immutable());
+			}
+		}
+		growing.sort(Comparator.comparingDouble(p -> p.distToCenterSqr(at)));
+		int fed = 0;
+		for (BlockPos pos : growing) {
+			if (fed >= WorldRules.FEED_MAX) {
+				break;
+			}
+			BlockState state = level.getBlockState(pos);
+			if (!feeds(level, pos, state) || !edit(cast, pos)) {
+				continue;
+			}
+			if (state.is(Blocks.NETHER_WART)) {
+				level.setBlock(pos, state.setValue(NetherWartBlock.AGE, state.getValue(NetherWartBlock.AGE) + 1), Block.UPDATE_CLIENTS);
+			} else {
+				BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), level, pos);
+			}
+			ElementFx.drip(level, Vec3.atCenterOf(pos).add(0, 0.4, 0), 0.25, 3);
+			Vfx.emit(level, ParticleTypes.CRIMSON_SPORE, Vec3.atCenterOf(pos), 4, 0.3, 0.0);
+			fed++;
+		}
+		if (fed > 0) {
+			Fx.sound(level, at, SoundEvents.NETHER_WART_PLANTED, 0.8F, 0.8F);
+		}
+	}
+
+	/** Whether blood feeds this block: nether wart not yet ripe, or crimson fungus that bone meal would grow. */
+	private static boolean feeds(ServerLevel level, BlockPos pos, BlockState state) {
+		if (state.is(Blocks.NETHER_WART)) {
+			return state.getValue(NetherWartBlock.AGE) < NetherWartBlock.MAX_AGE;
+		}
+		return state.is(Blocks.CRIMSON_FUNGUS) && state.getBlock() instanceof BonemealableBlock fungus
+			&& fungus.isValidBonemealTarget(level, pos, state, BonemealSource.INTERACTION);
 	}
 
 	// ------------------------------------------------------------------ helpers

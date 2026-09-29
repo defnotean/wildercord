@@ -171,7 +171,8 @@ Helpful spells only reach **you and your allies**, and another player is only yo
 ### Will spells break blocks or grief my base?
 Spells only change blocks where you're allowed to build: spawn protection and claim mods are respected, and a
 server can turn block-changing spells off entirely. Monsters' spells never change blocks. Fire from a spell
-only spreads where fire spreads anyway, and frozen water always thaws. See
+only spreads where fire spreads anyway, frozen water always thaws, and a crust a frost spell lays over lava always
+melts back. Two things to mind: a fire spell lights TNT, and a storm spell can charge a creeper. See
 [World Magic]({{ '/world/world-magic/' | relative_url }}).
 
 ## Cords and progress
