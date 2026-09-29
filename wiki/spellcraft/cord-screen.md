@@ -293,7 +293,7 @@ every second instead of having a cooldown. It works like the Spells page, with a
 
 - There are two rows. The first opens with your **1st Heart Circle**, the second with your **5th**; until
   then a row says "Opens with the 1st Heart Circle".
-- Each row holds up to **5 runes** (3 on a Twine Cord).
+- Each row holds **2 runes**, on any Cord.
 - Each row has its upkeep ("0.7/s") and an **On/Off** switch. Click the switch to turn that passive on or off.
   If the runes break a passive rule, a yellow **!** takes the upkeep's place; hover it to see why.
 - Under the rows, a line compares what your passives drain with what you regenerate, and turns yellow when

@@ -38,7 +38,7 @@ runes up to Tier II".
   adds to them (Mana Crystals, Heart Circles, enchantments, potions, ley lines) is added on top: see
   [Mana]({{ '/progression/mana/' | relative_url }}).
 
-A **passive spell** holds as many runes as your Cord's sockets, up to 5: 3 on a Twine Cord, 5 on any other.
+A **passive spell** holds **two runes** on any Cord: a lasting buff or a guard, not a whole spell.
 See [Passive Spells]({{ '/spellcraft/passives/' | relative_url }}).
 
 ## Recipes

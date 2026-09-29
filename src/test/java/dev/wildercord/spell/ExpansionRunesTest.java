@@ -127,7 +127,7 @@ class ExpansionRunesTest {
 			assertFalse(Passives.allowed(no), no.name());
 		}
 		assertNull(Passives.problem(List.of(ORBIT, EMBER)));
-		assertNull(Passives.problem(List.of(SELF, ANCHOR, CUSHION)));
+		assertNull(Passives.problem(List.of(ANCHOR, CUSHION)));
 		assertTrue(Passives.problem(List.of(SELF, WINDCUT)).contains("needs an Orbit"));
 	}
 

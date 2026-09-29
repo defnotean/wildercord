@@ -1,5 +1,6 @@
 package dev.wildercord.spell;
 
+import dev.wildercord.player.Spellbook;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -37,9 +38,9 @@ class HeartAndPassivesTest {
 	@Test
 	void damageNeedsAnOrbitAndOneShapeAtMost() {
 		assertNull(Passives.problem(runes(SWIFT)));
-		assertNull(Passives.problem(runes(SELF, STONESKIN, AMPLIFY)));
+		assertNull(Passives.problem(runes(STONESKIN, AMPLIFY)));
 		assertNull(Passives.problem(runes(ORBIT, SHOCK)));
-		assertNull(Passives.problem(runes(ORBIT, DISMANTLE, FIRE)));
+		assertNull(Passives.problem(runes(ORBIT, DISMANTLE)));
 		assertTrue(Passives.problem(runes(SELF, SHOCK)).contains("needs an Orbit"));
 		assertTrue(Passives.problem(runes(ORBIT, SWIFT, SELF)).contains("one shape"));
 		assertTrue(Passives.problem(runes(BOLT, HARM)).contains("can't be sustained"));
@@ -47,8 +48,21 @@ class HeartAndPassivesTest {
 		// renew every two seconds, as Self does, and stack its orbits).
 		assertTrue(Passives.problem(runes(SWIFT, ORBIT, SHOCK)).contains("one shape"));
 		assertTrue(Passives.problem(runes(SWIFT, EXTEND, ORBIT, SHOCK)).contains("one shape"));
-		assertNull(Passives.problem(runes(SWIFT, AMPLIFY, STONESKIN)));
-		assertNull(Passives.problem(runes(ORBIT, SHOCK, SWIFT)));
+	}
+
+	@Test
+	void aPassiveHoldsTwoRunesAtMost() {
+		assertEquals(2, Passives.SOCKETS);
+		assertNull(Passives.problem(runes(SWIFT, AMPLIFY)));
+		assertNull(Passives.problem(runes(ORBIT, SHOCK)));
+		assertTrue(Passives.problem(runes(SWIFT, AMPLIFY, STONESKIN)).contains("2 runes"));
+		assertTrue(Passives.problem(runes(ORBIT, SHOCK, SWIFT)).contains("2 runes"));
+		// A passive saved when they held five is trimmed to its first two on load (the runes themselves are never lost).
+		Spellbook old = new Spellbook(List.of(), List.of(), 0, false,
+			List.of(List.of("wildercord:swift", "wildercord:haste", "wildercord:stoneskin", "wildercord:amplify", "wildercord:extend"), List.of("wildercord:orbit")),
+			0, List.of());
+		assertEquals(List.of("wildercord:swift", "wildercord:haste"), old.passives().get(0));
+		assertEquals(List.of("wildercord:orbit"), old.passives().get(1));
 	}
 
 	@Test
