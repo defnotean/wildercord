@@ -15,6 +15,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   harvested used to drop every seed and replant as well. A crop that drops no seed is left unplanted.
 - **A spell's blocks never drop anything.** A Rampart blown up by an explosion dropped its packed mud (a free packed
   mud farm); a Rampart's wall, a Span's glass and Light's light now drop nothing however they're broken.
+- **Servers ignore a flood of cast requests**, as they already did for spell edits: a modified client can send at
+  most a burst of 20 casts (or charges), then 20 a second, far more than any hand on the cast keys.
 
 ## [0.4.2-alpha] - 2026-09-28
 

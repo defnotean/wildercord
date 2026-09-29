@@ -165,14 +165,23 @@ public final class WildercordNetworking {
 	/** Spellbook rewrites (select, edit, rename, a passive's switch) and inscribing: a burst of 20, then 10 a second. */
 	private static final PacketThrottle SPELLBOOK = new PacketThrottle(20, 2);
 
+	/** Casting (a cast, or a charge started or let go), each of which reads the spell afresh: see {@link PacketThrottle#casting()}. */
+	private static final PacketThrottle CASTING = PacketThrottle.casting();
+
 	/** Whether this spellbook-rewriting packet may be handled: a flood past the allowance is dropped. */
 	private static boolean allowed(ServerPlayNetworking.Context context) {
 		return SPELLBOOK.allow(context.player().getUUID(), context.server().getTickCount());
 	}
 
 	public static void init() {
-		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> SPELLBOOK.forget(handler.player.getUUID()));
-		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> SPELLBOOK.clear());
+		net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			SPELLBOOK.forget(handler.player.getUUID());
+			CASTING.forget(handler.player.getUUID());
+		});
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			SPELLBOOK.clear();
+			CASTING.clear();
+		});
 		PayloadTypeRegistry.clientboundPlay().register(ScreenFx.TYPE, ScreenFx.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EditPassive.TYPE, EditPassive.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TogglePassive.TYPE, TogglePassive.CODEC);
@@ -193,7 +202,11 @@ public final class WildercordNetworking {
 		PayloadTypeRegistry.serverboundPlay().register(CastSpell.TYPE, CastSpell.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(SelectSpell.TYPE, SelectSpell.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EditSpell.TYPE, EditSpell.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(CastSpell.TYPE, (payload, context) -> SpellCaster.cast(context.player(), payload.spell()));
+		ServerPlayNetworking.registerGlobalReceiver(CastSpell.TYPE, (payload, context) -> {
+			if (CASTING.allow(context.player().getUUID(), context.server().getTickCount())) {
+				SpellCaster.cast(context.player(), payload.spell());
+			}
+		});
 		ServerPlayNetworking.registerGlobalReceiver(SelectSpell.TYPE, (payload, context) -> {
 			if (allowed(context)) {
 				SpellCaster.select(context.player(), payload.spell());
@@ -204,7 +217,11 @@ public final class WildercordNetworking {
 		PayloadTypeRegistry.serverboundPlay().register(InscribeScroll.TYPE, InscribeScroll.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Discovery.TYPE, Discovery.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(LeySeed.TYPE, LeySeed.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(ChargeSpell.TYPE, (payload, context) -> dev.wildercord.cast.Charging.request(context.player(), payload.spell(), payload.start()));
+		ServerPlayNetworking.registerGlobalReceiver(ChargeSpell.TYPE, (payload, context) -> {
+			if (CASTING.allow(context.player().getUUID(), context.server().getTickCount())) {
+				dev.wildercord.cast.Charging.request(context.player(), payload.spell(), payload.start());
+			}
+		});
 		ServerPlayNetworking.registerGlobalReceiver(RenameSpell.TYPE, (payload, context) -> {
 			if (allowed(context)) {
 				SpellCaster.rename(context.player(), payload.spell(), payload.name());
