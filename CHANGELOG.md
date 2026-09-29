@@ -38,8 +38,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   standing on the ground now always reappears on ground, or not at all.
 - **A Bubble popping, or a Stasis ending, no longer thaws a longer Freeze.** Either one let the creature go the
   moment it ended, even if a Freeze (or another hold) cast on it had seconds still to run.
-- In a big crowd, Echolocate lit up every enemy in range it could (up to 32): enemies just out of its range were
-  using up the count.
+- Echolocate now lights up every enemy in range (up to 32) in a big crowd too: enemies just outside its range were
+  using up the count, leaving some in range dark.
 - **Blackflame spreads only from a death.** A burning creature that simply went away (its ground unloaded, it
   despawned, or it went through a portal) passed its black flames on as if it had died. Blackflame, Dismantle's
   later slashes, Aftershock's second impact and a Bubble's pop also no longer follow a player through a portal.
