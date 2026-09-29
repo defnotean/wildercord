@@ -154,15 +154,17 @@ public final class FusionVfx {
 		Fx.sound(level, b, WildercordSounds.BLINK, 0.9F, 0.8F);
 	}
 
+	private static final int PETAL_POLLEN = 0xFFE39A;
+
 	/** Bloom: a flower seal under the ally and a spiral of leaves and petals. */
 	static void bloom(ServerLevel level, Entity t) {
 		Vec3 feet = t.position();
 		ElementFx.bloom(level, centre(t), feet, 1.2);
 		ElementFx.leafSpiral(level, feet, Math.max(0.6, t.getBbWidth()), t.getBbHeight() + 0.4, 10);
 		ElementFx.petals(level, centre(t), 0.8, 12);
-		ElementFx.crack(level, feet.add(0, 0.05, 0), 1.4, 20);
-		Fx.sound(level, feet, SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 0.9F);
-		Fx.sound(level, feet, WildercordSounds.impact("life"), 0.6F, 1.0F);
+		ElementFx.groundRing(level, feet, PETAL_POLLEN, 0.4, 4.0, 0.05, 14);
+		Motes.glows(level, feet.add(0, 0.6, 0), 6, 0.6, PETAL_POLLEN, 0.12, 26, new Vec3(0.02, 0.03, 0), 0.01);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "life_pollen", 1.0F, 1.0F);
 	}
 
 	/** Surge: lightning running up the ally in green and gold. */
@@ -179,7 +181,7 @@ public final class FusionVfx {
 	/** Nullify: a star seal snuffs out the effects, drawn into a small void. */
 	static void nullify(ServerLevel level, Entity t, boolean ally) {
 		Vec3 c = centre(t);
-		ElementFx.starSeal(level, c, UP, Math.max(1.0, t.getBbWidth() + 0.6), 14);
+		ElementFx.ring(level, c, UP, ElementFx.ARCANE.secondary(), Math.max(1.6, t.getBbWidth() + 1.2), 0.3, 0.06, 12);
 		if (ally) {
 			ElementFx.shimmer(level, c, 0.6, 10);
 			Light.ring(level, c, UP, ElementFx.ARCANE.secondary(), 0.2, Math.max(1.0, t.getBbWidth() + 0.6), 0.05, 10);
@@ -187,7 +189,7 @@ public final class FusionVfx {
 			ElementFx.implode(level, c, Math.max(1.0, t.getBbWidth() + 0.5), 12);
 			Vfx.emit(level, ParticleTypes.WITCH, c, 8, 0.3, 0.02);
 		}
-		Fx.sound(level, c, SoundEvents.ILLUSIONER_CAST_SPELL, 0.8F, ally ? 1.4F : 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "arcane_snuff", 0.9F, ally ? 1.2F : 1.0F);
 	}
 
 	// ------------------------------------------------------------------ the Fusion Altar

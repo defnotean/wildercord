@@ -603,6 +603,7 @@ public final class ExplorerEffects {
 		repeat(cast, ticks, 40, tick -> {
 			if (onHand(cast, t)) {
 				finds.forEach(pos -> ExplorerVfx.treasureGlint(level, pos));
+				dev.wildercord.cast.feel.Feels.sound(level, t.position(), "arcane_glint_ping", 0.4F, 1.0F);
 			}
 		}, () -> { });
 	}
@@ -758,6 +759,7 @@ public final class ExplorerEffects {
 	/** Every unripe crop within {@code reach} of {@code ground} grows a stage (32 at most). */
 	private static void growField(Cast cast, BlockPos ground, int reach) {
 		ServerLevel level = cast.level;
+		LifeArcaneFx.seedPulse(level, ground, reach);
 		int grown = 0;
 		for (BlockPos pos : BlockPos.betweenClosed(ground.offset(-reach, -1, -reach), ground.offset(reach, 2, reach))) {
 			BlockState state = level.getBlockState(pos);
@@ -862,6 +864,7 @@ public final class ExplorerEffects {
 			if (nearest != null) {
 				mob.setTarget(nearest);
 			}
+			LifeArcaneFx.confused(cast.level, mob);
 		}, () -> { });
 	}
 

@@ -205,9 +205,7 @@ final class FusedLifeVfx {
 		soulbondTether(level, a, b, 0, false);
 		Motes.seek(level, anchor(a), anchor(b), ARCANE.secondary(), 0.16, 10, 1.5);
 		Motes.seek(level, anchor(b), anchor(a), LIFE.secondary(), 0.16, 10, 1.5);
-		Fx.sound(level, a.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 0.8F);
-		Fx.sound(level, b.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.1F);
-		Fx.sound(level, a.position(), SoundEvents.BEACON_POWER_SELECT, 0.5F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, a.position(), "life_bond", 1.0F, 1.0F);
 	}
 
 	/**
@@ -305,8 +303,7 @@ final class FusedLifeVfx {
 		ElementFx.ray(level, pb.subtract(dir.scale(1.6)), pb.subtract(dir.scale(0.4)), LIFE.primary(), 0.03, 6);
 		ElementFx.shimmer(level, pa.add(dir.scale(1.2)), 0.2, 3);
 		ElementFx.shimmer(level, pb.subtract(dir.scale(1.2)), 0.2, 3);
-		Fx.sound(level, a.position(), SoundEvents.AMETHYST_BLOCK_BREAK, 0.8F, 1.2F);
-		Fx.sound(level, b.position(), SoundEvents.CHAIN_BREAK, 0.5F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, a.position(), "life_bond_snap", 0.9F, 1.0F);
 	}
 
 	/** The bond running its time: a last shimmer at either end. */
@@ -408,9 +405,8 @@ final class FusedLifeVfx {
 		ElementFx.ring(level, c, ElementFx.tilted(0.7, r.nextDouble() * Math.PI * 2), LIFE.primary(), 0.2, 1.8, 0.04, 12);
 		Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, c, 24, 0.45);
 		ElementFx.leafSpiral(level, t.position(), Math.max(0.5, t.getBbWidth() * 0.8), height + 0.2, 6);
-		Fx.sound(level, c, SoundEvents.GLASS_BREAK, 1.0F, 1.2F);
-		Fx.sound(level, c, SoundEvents.BELL_BLOCK, 0.7F, 1.8F);
-		Fx.sound(level, c, SoundEvents.TOTEM_USE, 0.35F, 1.5F);
+		ElementFx.gustRing(level, t.position(), 3.0);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_gasp", 1.0F, 1.0F);
 		if (t instanceof ServerPlayer player) {
 			ScreenFx.tint(player, LIFE.primary(), 12);
 		}
@@ -519,11 +515,14 @@ final class FusedLifeVfx {
 	}
 
 	/** Each second of it: a small flower pulsing at the ally's feet (turning a little each time) and a mote of green rising. */
+	/** One step of the scale higher on each beat of a Lifebloom. */
+	private static final float[] BEAT_PITCH = {1.0F, 1.122F, 1.26F, 1.498F, 1.682F};
+
 	static void lifebloomPulse(ServerLevel level, LivingEntity t, int beat) {
 		double size = Math.max(0.8, t.getBbWidth() + 0.4);
 		flower(level, t.position().add(0, 0.02, 0), size * 0.7, 6, beat * 0.3, beat % 2 == 0 ? LIFE.primary() : LIFE.accent(), 14);
 		Motes.glows(level, centre(t), 2, 0.3, LIFE.secondary(), 0.1, 22, new Vec3(0, 0.03, 0), 0.01);
-		Fx.sound(level, t.position(), SoundEvents.CHERRY_LEAVES_STEP, 0.4F, 1.3F);
+		dev.wildercord.cast.feel.Feels.sound(level, t.position(), "life_ripen", 0.6F, BEAT_PITCH[Math.floorMod(beat, BEAT_PITCH.length)]);
 	}
 
 	/** The bloom fading: the flower bursts wide open, petals thrown out to everyone it heals. */
@@ -537,9 +536,7 @@ final class FusedLifeVfx {
 		Motes.burst(level, c, 14, PETAL, 0.12, 30, 0.25);
 		Vfx.emit(level, ParticleTypes.CHERRY_LEAVES, c.add(0, 0.6, 0), 10, radius * 0.4, 0.0);
 		Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, c, 10, 0.3);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
-		Fx.sound(level, c, SoundEvents.CHERRY_LEAVES_BREAK, 1.0F, 1.0F);
-		Fx.sound(level, c, WildercordSounds.impact("life"), 0.7F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_ripen_burst", 1.0F, 1.0F);
 	}
 
 	/** An ally the burst heals. */

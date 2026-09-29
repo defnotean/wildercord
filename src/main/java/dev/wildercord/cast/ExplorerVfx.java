@@ -201,16 +201,16 @@ final class ExplorerVfx {
 		ElementFx.slash(level, to, dir.cross(UP).lengthSqr() < 1e-4 ? UP : dir.cross(UP), dir, ElementFx.LIFE.primary(), 0.9, 2.2, 0.07, 3, 7);
 		ElementFx.petals(level, to, 0.4, 6);
 		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.VINE), to, 6, 0.3, 0.1);
-		sound(level, to, SoundEvents.MANGROVE_ROOTS_BREAK, 1.0F, 1.3F);
-		sound(level, to, WildercordSounds.impact("life"), 0.6F, 1.1F);
+		dev.wildercord.cast.feel.Feels.sound(level, to, "life_whip", 0.9F, 1.0F);
 	}
 
 	/** Remedy: a cure's glow, the bad lifted off as grey motes and a flower seal below. */
 	static void remedy(ServerLevel level, LivingEntity t) {
 		ElementFx.bloom(level, centre(t), t.position(), 0.9);
 		Motes.clouds(level, centre(t), 3, 0.3, 0xB8B4C0, 0.8, 26, new Vec3(0, 0.04, 0), 0.02, 0.35);
-		Vfx.emit(level, ParticleTypes.HAPPY_VILLAGER, centre(t), 5, 0.4, 0.0);
-		sound(level, centre(t), SoundEvents.ZOMBIE_VILLAGER_CURE, 0.35F, 1.6F);
+		// The grey turns green as it rises: what was cured is made good.
+		Scheduler.later(8, () -> Motes.glows(level, centre(t).add(0, 0.5, 0), 6, 0.35, ElementFx.LIFE.primary(), 0.14, 26, new Vec3(0, 0.05, 0), 0.01));
+		dev.wildercord.cast.feel.Feels.sound(level, centre(t), "life_transmute", 0.9F, 1.0F);
 	}
 
 	/** Warcry: a horn's blast, crimson rings pulsing out along the ground. */
@@ -228,9 +228,10 @@ final class ExplorerVfx {
 
 	/** Fangs: an arcane seal under the target as the fangs rise. */
 	static void fangs(ServerLevel level, LivingEntity t) {
-		ElementFx.flatSigil(level, t.position(), SigilOption.STAR, ElementFx.ARCANE.primary(), 2.6, 16, 0.15);
+		ElementFx.flatSigil(level, t.position(), SigilOption.TARGET, ElementFx.ARCANE.primary(), 2.6, 16, 0.15);
 		ElementFx.shimmer(level, t.position().add(0, 0.3, 0), 1.0, 6);
 		sound(level, t.position(), SoundEvents.EVOKER_PREPARE_ATTACK, 0.8F, 1.3F);
+		Scheduler.later(8, () -> dev.wildercord.cast.feel.Feels.sound(level, t.position(), "arcane_fangs", 0.9F, 1.0F));
 	}
 
 	/** Undertow: water dragging at the target, bubbles pulled downward. */
@@ -245,9 +246,9 @@ final class ExplorerVfx {
 
 	/** Treasure Sense: a coin-gold glint round the caster. */
 	static void treasureSense(ServerLevel level, LivingEntity t) {
-		ElementFx.starSeal(level, t.position().add(0, 0.08, 0), UP, 1.6, 16);
+		ElementFx.groundRing(level, t.position().add(0, 0.08, 0), 0xF5C84A, 0.3, 1.6, 0.05, 14);
 		Vfx.emit(level, new DustParticleOptions(0xF5C84A, 1.0F), centre(t), 10, 0.5, 0.0);
-		sound(level, centre(t), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre(t), "arcane_glint", 0.8F, 1.0F);
 	}
 
 	/** A glint over a container or suspicious block Treasure Sense found. */
@@ -330,7 +331,7 @@ final class ExplorerVfx {
 		ElementFx.bloom(level, at.add(0, 0.4, 0), at, 1.0);
 		ElementFx.leafSpiral(level, at, 0.6, 1.4, 8);
 		Vfx.emit(level, ParticleTypes.EGG_CRACK, at.add(0, 0.2, 0), 6, 0.2, 0.02);
-		sound(level, at, SoundEvents.SNIFFER_EGG_CRACK, 0.9F, 1.1F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "life_crack", 0.9F, 1.0F);
 	}
 
 	static void sprout(ServerLevel level, BlockPos pos) {
@@ -347,8 +348,7 @@ final class ExplorerVfx {
 		ElementFx.leafSpiral(level, feet, radius * 0.7, 2.0, 12);
 		Vfx.emit(level, ParticleTypes.CHERRY_LEAVES, feet.add(0, 1.4, 0), 30, radius * 0.6, 0.05);
 		ElementFx.groundRing(level, feet, PETAL, 0.3, radius, 0.08, 12);
-		sound(level, feet, SoundEvents.CHERRY_LEAVES_BREAK, 1.0F, 0.8F);
-		sound(level, feet, SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "life_petals", 1.0F, 1.0F);
 	}
 
 	static void petalMend(ServerLevel level, LivingEntity t) {
@@ -392,8 +392,7 @@ final class ExplorerVfx {
 		Vfx.emit(level, ParticleTypes.SPORE_BLOSSOM_AIR, centre.add(0, 1.2, 0), 30, radius * 0.5, 0.01);
 		Vfx.emit(level, ParticleTypes.MYCELIUM, centre.add(0, 0.3, 0), 20, radius * 0.5, 0.0);
 		ElementFx.groundRing(level, centre, 0xC8506A, 0.3, radius, 0.08, 14);
-		sound(level, centre, SoundEvents.FUNGUS_BREAK, 1.0F, 0.7F);
-		sound(level, centre, WildercordSounds.impact("life"), 0.6F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "life_spore", 1.0F, 1.0F);
 	}
 
 	/** Sunscorch: a beam of sunlight burning down onto the target; brighter under the open sky. */
@@ -423,7 +422,9 @@ final class ExplorerVfx {
 	static void glowvine(ServerLevel level, Vec3 at) {
 		glow(level, 0xFFC04A, at, 0.8);
 		ElementFx.petals(level, at, 0.4, 4);
-		sound(level, at, SoundEvents.CAVE_VINES_PLACE, 1.0F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "life_plip", 0.9F, 1.0F);
+		// Amber berry-light dripping down the vine.
+		Motes.glows(level, at, 3, 0.15, 0xFFC04A, 0.1, 20, new Vec3(0, -0.04, 0), 0.005);
 	}
 
 	static void glowvineFizzle(ServerLevel level, Vec3 at) {
@@ -441,8 +442,7 @@ final class ExplorerVfx {
 			ElementFx.ray(level, edge, edge.add(0, 1.4, 0).lerp(centre.add(0, 1.4, 0), 0.4), 0x6B4A2E, 0.09, 12);
 		}
 		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.MANGROVE_ROOTS.defaultBlockState()), centre.add(0, 0.3, 0), 20, radius * 0.5, 0.1);
-		sound(level, centre, SoundEvents.ROOTS_BREAK, 1.0F, 0.7F);
-		sound(level, centre, WildercordSounds.impact("life"), 0.6F, 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "life_grip", 1.0F, 1.0F);
 	}
 
 	static void rooted(ServerLevel level, LivingEntity t) {
@@ -543,8 +543,7 @@ final class ExplorerVfx {
 		if (strong) {
 			ElementFx.starSeal(level, anchor.add(0, 0.08, 0), UP, 1.1, 20);
 			glow(level, STAR, at, 0.8);
-			sound(level, at, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.4F);
-			sound(level, at, WildercordSounds.impact("arcane"), 0.5F, 1.2F);
+			dev.wildercord.cast.feel.Feels.sound(level, at, "arcane_pluck", 0.8F, 1.0F);
 		}
 	}
 
@@ -650,9 +649,7 @@ final class ExplorerVfx {
 		ElementFx.ray(level, at.add(1.5, 8, 0.5), at, STAR, 0.18, 5);
 		ElementFx.ray(level, at.add(1.5, 8, 0.5), at, WHITE, 0.06, 4);
 		ElementFx.arcaneImpact(level, at, 1.1);
-		ElementFx.starSeal(level, t.position().add(0, 0.08, 0), UP, 1.6, 14);
-		sound(level, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 1.2F);
-		sound(level, at, WildercordSounds.impact("arcane"), 0.8F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "arcane_split", 1.0F, 1.0F);
 	}
 
 	static void starSpark(ServerLevel level, Vec3 from, LivingEntity to) {
@@ -687,7 +684,7 @@ final class ExplorerVfx {
 		ElementFx.tongues(level, t.position(), t.getBbWidth() * 0.6, t.getBbHeight(), caster ? 6 : 3, ElementFx.ARCANE.primary(), 0x9A7CFF, 5, 10);
 		ElementFx.arcaneImpact(level, at, caster ? 1.1 : 0.7);
 		Vfx.emit(level, ParticleTypes.ENCHANT, at, caster ? 20 : 8, 0.5, 0.4);
-		sound(level, at, WildercordSounds.impact("arcane"), 0.8F, caster ? 0.7F : 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "arcane_scorch", 0.9F, caster ? 0.85F : 1.0F);
 	}
 
 	/** Manatide: mana flowing into the target as motes drawn in from all round. */
@@ -699,8 +696,10 @@ final class ExplorerVfx {
 		}
 		if (first) {
 			ElementFx.orbit(level, at, 0.9, 3, 30);
-			ElementFx.starSeal(level, t.position().add(0, 0.08, 0), UP, 1.4, 20);
-			sound(level, at, SoundEvents.BEACON_POWER_SELECT, 0.7F, 1.6F);
+			ElementFx.groundRing(level, t.position().add(0, 0.08, 0), ElementFx.ARCANE.primary(), 1.6, 0.3, 0.05, 16);
+			dev.wildercord.cast.feel.Feels.sound(level, at, "arcane_inhale", 0.8F, 1.0F);
+		} else {
+			dev.wildercord.cast.feel.Feels.sound(level, at, "arcane_inhale_tick", 0.5F, 1.0F);
 		}
 	}
 

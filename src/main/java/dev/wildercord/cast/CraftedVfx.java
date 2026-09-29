@@ -186,7 +186,7 @@ final class CraftedVfx {
 		Sigils.layer(level, head(t), UP, SigilOption.STAR, ARCANE, 0.55F, Math.min(ticks, 160), 0.1F);
 		Light.ring(level, t.getBoundingBox().getCenter(), UP, ARCANE, 0.2, Math.max(0.9, t.getBbWidth() + 0.5), 0.05, 9);
 		Vfx.emit(level, ParticleTypes.ENCHANT, head(t), 10, 0.3, 0.2);
-		Fx.sound(level, t.position(), SoundEvents.ENCHANTMENT_TABLE_USE, 0.6F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, t.position(), "arcane_stamp", 0.9F, 1.0F);
 	}
 
 	static void spellbrandBurst(ServerLevel level, Entity t) {
@@ -195,7 +195,7 @@ final class CraftedVfx {
 		Light.ring(level, c, UP, ARCANE, 0.2, 1.8, 0.07, 9);
 		Light.ring(level, c, new Vec3(0.3, 0.2, 0.9).normalize(), 0xFFD8FA, 0.2, 1.4, 0.05, 8);
 		Vfx.radial(level, ParticleTypes.ENCHANTED_HIT, c, 14, 0.3);
-		Fx.sound(level, c, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.9F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "arcane_stamp_burst", 0.9F, 1.0F);
 	}
 
 	/** Gash: a ragged cut and the first drops. */
@@ -296,7 +296,7 @@ final class CraftedVfx {
 		Vec3 c = t.getBoundingBox().getCenter();
 		Motes.clouds(level, c, 4, 0.4, 0xF7C6E8, 0.8, 30, new Vec3(0, 0.01, 0), 0.02, 0.35);
 		ElementFx.petals(level, c, 0.5, 8);
-		Fx.sound(level, c, SoundEvents.AZALEA_LEAVES_BREAK, 0.8F, 0.7F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_lull", 0.9F, 1.0F);
 	}
 
 	/** While it sleeps: pale motes drifting up off its head. */

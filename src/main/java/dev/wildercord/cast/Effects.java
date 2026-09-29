@@ -357,7 +357,7 @@ public final class Effects {
 				t.addEffect(new MobEffectInstance(MobEffects.GLOWING, ticks(15, duration), 0, false, false));
 				t.removeEffect(MobEffects.INVISIBILITY);
 				Exposed.mark(t, ticks(15, duration));
-				Vfx.reveal(level, t);
+				LifeArcaneFx.reveal(level, t, ticks(15, duration));
 			});
 			case "regrowth" -> helped.forEach(t -> {
 				if (passiveEffect) {
@@ -428,6 +428,7 @@ public final class Effects {
 					Scheduler.later(strength, () -> {
 						if (t.isAlive() && t.level() == level) {
 							t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, EMPOWER_COMEDOWN, 0, false, true));
+							LifeArcaneFx.comedown(level, t);
 						}
 					});
 				}
@@ -475,6 +476,7 @@ public final class Effects {
 			case "smite" -> harmed.forEach(t -> {
 				// A verdict, not a flick: a ring closes at its feet for 0.7 s (it can step out), then the column falls on where it stands.
 				Sigils.target(level, t.position(), 0xFFF0B0, 1.6F, SMITE_DELAY);
+				LifeArcaneFx.smiteWindUp(level, t);
 				Scheduler.later(SMITE_DELAY, carryContext(() -> {
 					if (!cast.alive() || !t.isAlive() || t.level() != level || !Targets.canHarm(caster, t)) {
 						return;
@@ -1034,6 +1036,7 @@ public final class Effects {
 			if (e instanceof LivingEntity other && other.distanceTo(from) <= VENOM_SPREAD_REACH && cast.once("venom-spread:" + other.getUUID())) {
 				other.addEffect(new MobEffectInstance(MobEffects.POISON, seconds * 20, 0, false, true), cast.caster);
 				venomDot(cast, other, power * 0.5, seconds);
+				LifeArcaneFx.venomHop(cast.level, from, other);
 				passed++;
 			}
 		}
@@ -1052,11 +1055,16 @@ public final class Effects {
 	private static void starfall(Cast cast, Vec3 point, double radius, double power) {
 		// The first stars go to exposed enemies in the rain; the rest fall where they will.
 		List<LivingEntity> exposed = enemiesAround(cast, point, radius).stream().filter(Exposed::has).limit(4).toList();
+		List<Vec3> marks = new ArrayList<>();
 		for (int i = 0; i < 8; i++) {
 			double a = cast.level.getRandom().nextDouble() * Math.PI * 2;
 			double r = Math.sqrt(cast.level.getRandom().nextDouble()) * radius;
 			Vec3 target = i < exposed.size() ? CastEngine.ground(cast.level, exposed.get(i).position().add(0, 2, 0))
 				: CastEngine.ground(cast.level, point.add(Math.cos(a) * r, 2, Math.sin(a) * r));
+			marks.add(target);
+			if (i == 7) {
+				LifeArcaneFx.starfallPattern(cast.level, marks);
+			}
 			Scheduler.later(1 + i * 5, () -> {
 				if (!cast.alive()) {
 					return;
@@ -1134,8 +1142,7 @@ public final class Effects {
 			harvested++;
 		}
 		if (harvested > 0) {
-			Vfx.grow(cast.level, Vec3.atCenterOf(center).add(0, 0.6, 0));
-			Fx.sound(cast.level, Vec3.atCenterOf(center), net.minecraft.sounds.SoundEvents.CROP_BREAK, 0.8F, 1.2F);
+			LifeArcaneFx.reap(cast.level, Vec3.atCenterOf(center));
 		}
 	}
 
@@ -1426,7 +1433,7 @@ public final class Effects {
 		for (net.minecraft.world.entity.AgeableMob baby : cast.level.getEntitiesOfClass(net.minecraft.world.entity.AgeableMob.class, new AABB(center).inflate(1.5), m -> m.getAge() < 0)) {
 			baby.setAge(0);
 		}
-		Vfx.grow(cast.level, Vec3.atCenterOf(center).add(0, 0.6, 0));
+		LifeArcaneFx.growRipple(cast.level, Vec3.atCenterOf(center).add(0, 0.6, 0));
 	}
 
 	private static void breakBlock(Cast cast, Cast.Hit hit, boolean amplified) {

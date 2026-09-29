@@ -424,28 +424,11 @@ public final class Vfx {
 
 	/** Heal: a soft green bloom, a leaf spiral climbing the target, petals and hearts. */
 	public static void heal(ServerLevel level, Entity target) {
-		Vec3 base = target.position();
-		double h = target.getBbHeight();
-		double w = Math.max(0.45, target.getBbWidth() * 0.75);
-		ElementFx.bloom(level, target.getBoundingBox().getCenter(), base, 1.0 + w * 0.5);
-		ElementFx.leafSpiral(level, base, w, h + 0.2, 5);
-		ElementFx.petals(level, base.add(0, h + 0.3, 0), 0.4, 4);
-		emit(level, ParticleTypes.HEART, base.add(0, h + 0.3, 0), 3, 0.35, 0.0);
-		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.5F);
-	}
+		LifeArcaneFx.heal(level, target);	}
 
 	/** Harm: a star seal flares under the target, comets of pink light whirl round it and glyphs shimmer in. */
 	public static void harm(ServerLevel level, Entity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		double w = Math.max(0.5, target.getBbWidth());
-		Sigils.flash(level, c, ElementFx.ARCANE.primary(), 1.8F);
-		Sigils.flash(level, c, ElementFx.ARCANE.secondary(), 0.8F);
-		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, 0.5 + w * 0.4, 16);
-		ElementFx.orbit(level, c, 0.5 + w * 0.5, 3, 5);
-		radial(level, ParticleTypes.ENCHANTED_HIT, c, 8, 0.3);
-		ElementFx.shimmer(level, c, 0.35, 4);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 0.8F, 1.3F);
-	}
+		LifeArcaneFx.harm(level, target, Effects.applying());	}
 
 	/** Push: gust crescents slam into the target the way it's thrown and a ring of wind blows out past it. */
 	public static void push(ServerLevel level, Entity target, Vec3 direction) {
@@ -556,7 +539,7 @@ public final class Vfx {
 			emit(level, SigilOption.glow(ElementFx.ARCANE.secondary(), 0.35F), eyes.add(side.scale(s * 0.12)).add(ahead.scale(0.3)), 1, 0.0, 0.0);
 		}
 		emit(level, ParticleTypes.GLOW, eyes, 4, 0.3, 0.02);
-		Fx.sound(level, eyes, SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, eyes, "arcane_open", 0.7F, 1.0F);
 	}
 
 	/** Light: an orb of light kindles at the point, a ring running out from it and motes drifting off. */
@@ -565,7 +548,7 @@ public final class Vfx {
 		ElementFx.orb(level, at, HOLY, 0.2, 24);
 		ElementFx.ring(level, at, UP, ElementFx.ARCANE.secondary(), 0.1, 1.2, 0.04, 9);
 		radial(level, ParticleTypes.END_ROD, at, 8, 0.07);
-		Fx.sound(level, at, SoundEvents.AMETHYST_CLUSTER_PLACE, 0.8F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "arcane_kindle", 0.8F, 1.0F);
 	}
 
 	/** Blink: darkness implodes where you were, a dark streak runs to where you arrive, and a black core snaps open there. */
@@ -714,33 +697,15 @@ public final class Vfx {
 
 	/** Haste: two comets of pink light whirl fast round the target's arms and a star seal flickers at its feet. */
 	public static void haste(ServerLevel level, Entity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		ElementFx.orbit(level, c.add(0, 0.1, 0), Math.max(0.6, target.getBbWidth() * 0.8), 2, 3);
-		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, 0.55, 12);
-		emit(level, ParticleTypes.CRIT, c, 5, 0.35, 0.1);
-	}
+		LifeArcaneFx.haste(level, target);	}
 
 	/** Reveal: a ring of light scans up the target over a star seal marking the ground under it. */
 	public static void reveal(ServerLevel level, Entity target) {
-		double r = Math.max(0.6, target.getBbWidth() * 0.9);
-		double h = target.getBbHeight();
-		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, r, 18);
-		for (int i = 0; i < 4; i++) {
-			double y = h * (i + 0.5) / 4;
-			Scheduler.later(1 + i * 2, () -> ElementFx.ring(level, target.position().add(0, y, 0), UP, ElementFx.ARCANE.secondary(), r * 1.15, r, 0.035, 6));
-		}
-		emit(level, ParticleTypes.GLOW, target.getBoundingBox().getCenter(), 4, 0.3, 0.0);
-		Fx.sound(level, target.position(), SoundEvents.AMETHYST_CLUSTER_PLACE, 0.4F, 2.0F);
-	}
+		LifeArcaneFx.reveal(level, target, 300);	}
 
 	/** Regrowth: a leaf spiral winds up the target, a ring of green opens under it and leaves drift down. */
 	public static void regrowth(ServerLevel level, Entity target) {
-		Vec3 base = target.position();
-		ElementFx.leafSpiral(level, base, Math.max(0.45, target.getBbWidth() * 0.75), target.getBbHeight() + 0.2, 6);
-		ElementFx.groundRing(level, base, ElementFx.LIFE.primary(), 0.2, 1.2, 0.04, 14);
-		ElementFx.petals(level, base.add(0, target.getBbHeight() * 0.6, 0), 0.4, 4);
-		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 1.7F);
-	}
+		LifeArcaneFx.regrowth(level, target);	}
 
 	/** Cleanse: rings of clear light wash down the target from above its head, water falling with them. */
 	public static void cleanse(ServerLevel level, Entity target) {
@@ -759,7 +724,7 @@ public final class Vfx {
 			fling(level, ParticleTypes.SPLASH, top.add(Math.cos(a) * 0.4, 0, Math.sin(a) * 0.4), new Vec3(0, -1, 0), 0.2);
 		}
 		emit(level, ParticleTypes.BUBBLE_POP, target.getBoundingBox().getCenter(), 5, 0.35, 0.0);
-		Fx.sound(level, target.position(), SoundEvents.BREWING_STAND_BREW, 0.6F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position(), "life_purge", 0.8F, 1.0F);
 	}
 
 	/** Stoneskin: the ground cracks under the target and rings of sandstone light close hard round it. */
@@ -811,14 +776,7 @@ public final class Vfx {
 
 	/** Empower: a star seal blazes under the target and crescents of power surge up round it. */
 	public static void empower(ServerLevel level, Entity target) {
-		Vec3 base = target.position();
-		ElementFx.starSeal(level, base.add(0, 0.07, 0), UP, 0.9, 16);
-		ElementFx.groundRing(level, base, EMPOWER, 0.3, 1.6, 0.06, 8);
-		ElementFx.tongues(level, base, Math.max(0.4, target.getBbWidth() * 0.6), target.getBbHeight(), 4, EMPOWER, 0xFFB060, 2, 8);
-		emit(level, ParticleTypes.ANGRY_VILLAGER, base.add(0, target.getBbHeight() + 0.2, 0), 1, 0.0, 0.0);
-		radial(level, ParticleTypes.CRIT, target.getBoundingBox().getCenter(), 8, 0.3);
-		Fx.sound(level, target.position(), SoundEvents.PLAYER_ATTACK_STRONG, 0.8F, 0.8F);
-	}
+		LifeArcaneFx.empower(level, target);	}
 
 	/** Levitate: rings of air rise under the target and lift it, motes of light drifting up with it. */
 	public static void levitate(ServerLevel level, Entity target) {
@@ -922,13 +880,7 @@ public final class Vfx {
 
 	/** Summon: a star seal opens on the ground, a column of light rises from it and souls stream up. */
 	public static void summon(ServerLevel level, Vec3 at) {
-		ElementFx.starSeal(level, at.add(0, 0.07, 0), UP, 1.0, 24);
-		ElementFx.ray(level, at, at.add(0, 1.8, 0), ElementFx.ARCANE.primary(), 0.2, 10);
-		Sigils.flash(level, at.add(0, 0.6, 0), ElementFx.ARCANE.primary(), 2.0F);
-		ElementFx.groundRing(level, at, ElementFx.ARCANE.accent(), 0.3, 1.8, 0.05, 10);
-		emit(level, ParticleTypes.SOUL, at.add(0, 0.5, 0), 6, 0.3, 0.05);
-		ElementFx.shimmer(level, at.add(0, 0.6, 0), 0.4, 8);
-	}
+		LifeArcaneFx.summonWolf(level, at);	}
 
 	// ------------------------------------------------------------------ batch 3 shapes
 
@@ -1026,24 +978,14 @@ public final class Vfx {
 		ElementFx.ring(level, c, UP, 0x4E8A22, 0.1, 0.7 + r, 0.04, 11);
 		emit(level, ParticleTypes.ITEM_SLIME, c, 5, 0.3, 0.05);
 		emit(level, new DustParticleOptions(VENOM, 1.0F), c, 4, 0.35, 0.0);
-		Fx.sound(level, c, SoundEvents.SPIDER_HURT, 0.6F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_fang", 0.8F, 1.0F);
 	}
 
 	private static final int HOLY = 0xFFF0B0;
 
 	/** Smite: a lance of holy light drives down onto the target, a star flares under it and light bursts out. */
 	public static void smite(ServerLevel level, Entity target) {
-		Vec3 base = target.position();
-		Vec3 c = target.getBoundingBox().getCenter();
-		Vec3 top = base.add(0, target.getBbHeight() + 5, 0);
-		ElementFx.ray(level, top, base, HOLY, 0.28, 10);
-		ElementFx.ray(level, top, base, 0xFFFFFF, 0.08, 8);
-		Sigils.flash(level, c, HOLY, 2.2F);
-		ElementFx.flatSigil(level, base, SigilOption.STAR, HOLY, 1.1, 18, 0.1);
-		ElementFx.groundRing(level, base, HOLY, 0.2, 2.0, 0.07, 9);
-		radial(level, ParticleTypes.END_ROD, c, 10, 0.18);
-		Fx.sound(level, target.position(), SoundEvents.BELL_RESONATE, 0.8F, 1.6F);
-	}
+		LifeArcaneFx.smite(level, target);	}
 
 	/** One pulse of Inferno: a ring of fire round the area, flame tongues leaping up inside it, embers and smoke. */
 	public static void inferno(ServerLevel level, Vec3 point, double radius) {
@@ -1096,7 +1038,7 @@ public final class Vfx {
 	public static void star(ServerLevel level, Vec3 target) {
 		Vec3 top = target.add(2.5, 12, 1.5);
 		// A star mark on the ground where it will land, then the star falling onto it.
-		Sigils.send(level, SigilOption.flat(SigilOption.STAR, 0xE8E0FF, 0.8F, 16, 0.18F), target.add(0, 0.07, 0));
+		ElementFx.groundRing(level, target.add(0, 0.07, 0), 0xE8E0FF, 0.7, 0.2, 0.04, 8);
 		for (int t = 0; t < 5; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -1118,7 +1060,7 @@ public final class Vfx {
 			}
 			radial(level, ParticleTypes.END_ROD, at, 8, 0.18);
 			radial(level, ParticleTypes.FIREWORK, at, 6, 0.14);
-			Fx.sound(level, target, SoundEvents.FIREWORK_ROCKET_TWINKLE, 0.6F, 1.4F);
+			LifeArcaneFx.starLand(level, target, level.getRandom().nextInt(6));
 		});
 	}
 
@@ -1143,13 +1085,7 @@ public final class Vfx {
 
 	/** Silence: a ring of light closes over the target's head and seals there. */
 	public static void silence(ServerLevel level, Entity target) {
-		Vec3 head = target.position().add(0, target.getBbHeight() + 0.4, 0);
-		ElementFx.ring(level, head, UP, ElementFx.ARCANE.primary(), 0.8, 0.35, 0.04, 8);
-		ElementFx.ring(level, head, UP, ElementFx.ARCANE.accent(), 0.36, 0.34, 0.03, 20);
-		ElementFx.sigil(level, head, UP, SigilOption.CIRCLE, ElementFx.ARCANE.primary(), 0.3, 20, 0.08);
-		emit(level, ParticleTypes.WITCH, head, 4, 0.2, 0.0);
-		Fx.sound(level, target.position(), SoundEvents.ILLUSIONER_PREPARE_BLINDNESS, 0.5F, 1.4F);
-	}
+		LifeArcaneFx.silence(level, target);	}
 
 	/** Fireward: flame tongues curl round the target and fold into warm rings that close on it. */
 	public static void fireward(ServerLevel level, Entity target) {
@@ -1165,11 +1101,7 @@ public final class Vfx {
 
 	/** Nourish: crumbs and a small green bloom. */
 	public static void nourish(ServerLevel level, Entity target) {
-		emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BREAD), target.getEyePosition().subtract(0, 0.3, 0), 6, 0.2, 0.05);
-		ElementFx.bloom(level, target.getBoundingBox().getCenter(), target.position(), 0.9);
-		emit(level, ParticleTypes.HAPPY_VILLAGER, target.getBoundingBox().getCenter(), 4, 0.35, 0.0);
-		Fx.sound(level, target.position(), SoundEvents.GENERIC_EAT.value(), 0.7F, 1.1F);
-	}
+		LifeArcaneFx.nourish(level, target);	}
 
 	private static final int TIDE = 0x4AA8FF;
 

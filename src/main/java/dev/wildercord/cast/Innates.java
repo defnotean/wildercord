@@ -273,9 +273,11 @@ public final class Innates {
 			case "fortune" -> helped.forEach(t -> {
 				FORTUNE.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
 				ElementFx.bloom(cast.level, t.getBoundingBox().getCenter(), t.position(), 1.3);
-				ElementFx.flatSigil(cast.level, t.position(), SigilOption.STAR, LUCK, 0.9, 24, 0.1);
+				ElementFx.groundRing(cast.level, t.position(), 0xF5D86A, 0.2, 1.1, 0.05, 14);
+				// A gold coin spinning over the head for as long as the luck lasts.
+				ElementFx.orbit(cast.level, t.position().add(0, t.getBbHeight() + 0.5, 0), 0.25, 1, Effects.ticks(10, duration), 0xF5D86A, 0xFFF4B0);
 				Vfx.emit(cast.level, ParticleTypes.HAPPY_VILLAGER, t.getBoundingBox().getCenter(), 6, 0.4, 0.0);
-				Fx.sound(cast.level, t.position(), SoundEvents.PLAYER_LEVELUP, 0.5F, 1.8F);
+				dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "life_coin", 0.9F, 1.0F);
 			});
 			case "phantom" -> {
 				if (onSelf && caster instanceof ServerPlayer player) {
@@ -519,8 +521,7 @@ public final class Innates {
 		ElementFx.orbit(level, c, 0.7, 2, 4, LUCK, 0xFFF4B0);
 		Vfx.radial(level, ParticleTypes.HAPPY_VILLAGER, c, 8, 0.25);
 		Vfx.radial(level, ParticleTypes.CRIT, c, 8, 0.4);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 2.0F);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_coin_proc", 1.0F, 1.0F);
 	}
 
 	private static final int LUCK = 0x9CFF7A;

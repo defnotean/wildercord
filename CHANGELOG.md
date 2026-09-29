@@ -3,6 +3,7 @@
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+- **Life and arcane look and sound like themselves.** Arcane's star seal now means a lasting mark on someone (Exposed, a brand, a reflecting shell); instant strikes are needles, columns and comets (Harm is a thin needle of light, Smite a tall column after its ring, Starfall drops along a star of light threads with a different note per star), wards are glass, and Swap is two crossing arcs. Life's bloom means restoration; Bramble shows its four thorns, Regrowth winds a vine up in three stages, Remedy's grey motes turn green, Harvest sweeps a golden crescent, Grow ripples out, Reversal raises a sun-disc, and Fortune spins a coin. Every life and arcane rune has its own synthesised sound (about 75 new ones) and a role stinger under its cast sound, replacing the borrowed vanilla ones (Harm's melee crit, Venom's spider, Reversal's Totem of Undying).
 
 ### Fixed
 - **Lightning no longer multiplies on a crowd.** Every strike hurt everything near it, so enemies packed together took a

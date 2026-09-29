@@ -13,6 +13,7 @@ import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -86,6 +87,9 @@ public class WildercordLifeArcaneTest implements FabricClientGameTest {
 				if (failure != null) {
 					failures.add(check[0] + ": " + failure);
 				}
+			}
+			if (System.getenv("WILDERCORD_LA_SHEET") != null) {
+				sheet(context, world);
 			}
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The life and arcane pass went wrong:\n  " + String.join("\n  ", failures));
@@ -397,5 +401,84 @@ public class WildercordLifeArcaneTest implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			return player.getAbsorptionAmount() >= 3.5F ? null : "a heal on a whole player should become a shield of 2 hearts (has " + player.getAbsorptionAmount() + ")";
 		});
+	}
+
+	// ------------------------------------------------------------------ the contact sheet (WILDERCORD_LA_SHEET)
+
+	/** Casts one spell at what stands ahead, waits, and takes a screenshot named after it. */
+	private static void shot(ClientGameTestContext context, TestSingleplayerContext world, String name, int wait, boolean wolf, boolean crowd, RuneDef... runes) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			stand(player);
+			player.setGameMode(GameType.CREATIVE);
+			ServerLevel level = player.level();
+			if (wolf) {
+				Wolf pet = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+				pet.snapTo(STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 4.0, 180, 0);
+				pet.tame(player);
+				pet.addTag(TAG);
+				pet.setNoAi(true);
+				pet.setHealth(10.0F);
+				level.addFreshEntity(pet);
+			} else {
+				husk(level, 0, 4).setHealth(20.0F);
+				if (crowd) {
+					husk(level, -2, 5);
+					husk(level, 2, 5);
+					husk(level, 0, 6);
+				}
+			}
+			String failed = cast(player, runes);
+			if (failed != null) {
+				throw new AssertionError(name + ": " + failed);
+			}
+		});
+		context.waitTicks(wait);
+		context.takeScreenshot(TestScreenshotOptions.of("la_" + name).disableCounterPrefix());
+		cleanup(context, world);
+	}
+
+	private static void sheet(ClientGameTestContext context, TestSingleplayerContext world) {
+		shot(context, world, "harm", 3, false, false, Runes.BEAM, Runes.HARM);
+		shot(context, world, "heal", 4, true, false, Runes.BURST, Runes.HEAL);
+		shot(context, world, "haste", 3, true, false, Runes.BURST, Runes.HASTE);
+		shot(context, world, "reveal", 6, false, false, Runes.BEAM, Runes.REVEAL);
+		shot(context, world, "silence", 5, false, false, Runes.BEAM, Runes.SILENCE);
+		shot(context, world, "smite", 16, false, false, Runes.BEAM, Runes.SMITE);
+		shot(context, world, "starfall", 14, false, true, Runes.ZONE, Runes.STARFALL);
+		shot(context, world, "venom", 24, false, true, Runes.BURST, Runes.VENOM);
+		shot(context, world, "sporebloom", 8, false, true, Runes.BEAM, Runes.SPOREBLOOM);
+		shot(context, world, "bramble", 4, true, false, Runes.BURST, Runes.BRAMBLE);
+		shot(context, world, "haven", 12, true, false, Runes.BEAM, Runes.HAVEN);
+		shot(context, world, "empower", 4, true, false, Runes.BURST, Runes.EMPOWER);
+		shot(context, world, "restore", 6, true, false, Runes.BURST, Runes.RESTORE);
+		shot(context, world, "regrowth", 8, true, false, Runes.BURST, Runes.REGROWTH);
+		shot(context, world, "cleanse", 6, true, false, Runes.BURST, Runes.CLEANSE);
+		shot(context, world, "nourish", 4, true, false, Runes.BURST, Runes.NOURISH);
+		shot(context, world, "summon", 8, false, false, Runes.SELF, Runes.SUMMON);
+		shot(context, world, "prismatic", 5, false, true, Runes.BEAM, Runes.FIRE, Runes.PUSH, Runes.PRISMATIC_BURST);
+		shot(context, world, "resonance", 5, false, true, Runes.BURST, Runes.RESONANCE);
+		shot(context, world, "fangs", 6, false, false, Runes.BEAM, Runes.FANGS);
+		shot(context, world, "starshard", 5, false, true, Runes.BEAM, Runes.STARSHARD);
+		shot(context, world, "cometfall", 28, false, true, Runes.BEAM, Runes.COMETFALL);
+		shot(context, world, "bloom", 5, true, false, Runes.BURST, Runes.BLOOM);
+		shot(context, world, "soulbond", 8, true, false, Runes.BURST, Runes.SOULBOND);
+		shot(context, world, "vinelash", 4, false, false, Runes.BEAM, Runes.VINELASH);
+		shot(context, world, "nullify", 4, false, false, Runes.BEAM, Runes.NULLIFY);
+		shot(context, world, "decree", 5, false, false, Runes.BEAM, Runes.DECREE);
+		shot(context, world, "drowse", 6, false, false, Runes.BEAM, Runes.DROWSE);
+		shot(context, world, "rootsnare", 5, false, true, Runes.BEAM, Runes.ROOTSNARE);
+		shot(context, world, "moonpetal", 5, false, true, Runes.BEAM, Runes.MOONPETAL);
+		shot(context, world, "manaburn", 4, false, false, Runes.BEAM, Runes.MANABURN);
+		shot(context, world, "spellbrand", 5, false, false, Runes.BEAM, Runes.SPELLBRAND);
+		shot(context, world, "reflect", 4, true, false, Runes.BURST, Runes.REFLECT);
+		shot(context, world, "barrier", 4, true, false, Runes.BURST, Runes.BARRIER);
+		shot(context, world, "halo", 20, true, false, Runes.BURST, Runes.HALO);
+		shot(context, world, "lifebloom", 24, true, false, Runes.BURST, Runes.LIFEBLOOM);
+		shot(context, world, "reversal", 4, true, false, Runes.BURST, Runes.REVERSAL);
+		shot(context, world, "secondwind", 4, true, false, Runes.BURST, Runes.SECOND_WIND);
+		shot(context, world, "stitchtime", 4, true, false, Runes.BURST, Runes.STITCHTIME);
+		shot(context, world, "light", 4, false, false, Runes.BEAM, Runes.LIGHT);
+		shot(context, world, "grow", 4, false, false, Runes.BEAM, Runes.GROW);
 	}
 }

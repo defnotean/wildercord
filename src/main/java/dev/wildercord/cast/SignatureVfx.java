@@ -171,14 +171,13 @@ final class SignatureVfx {
 		ElementFx.petals(level, from.add(0, 1.0, 0), 0.6, 12);
 		Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, from.add(0, 1, 0), 16, 0.3, 0.05);
 		bloomDoor(level, to);
-		Fx.sound(level, from, WildercordSounds.BLINK, 0.8F, 1.3F);
-		Fx.sound(level, to, SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, from, "life_step", 1.0F, 1.0F);
 	}
 
 	/** Bloomstep on Self: the door of blossom opens where you stand. */
 	static void bloomstepHere(ServerLevel level, Vec3 at) {
 		bloomDoor(level, at);
-		Fx.sound(level, at, SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "life_step", 1.0F, 1.0F);
 	}
 
 	private static void bloomDoor(ServerLevel level, Vec3 feet) {
@@ -258,8 +257,7 @@ final class SignatureVfx {
 		ElementFx.clock(level, ally.position().add(0, 0.05, 0), UP, w * 0.6 + 0.6, 40, false);
 		ElementFx.bloom(level, c, ally.position(), 0.8);
 		ElementFx.goldenTicks(level, c, w * 0.5, 6);
-		Fx.sound(level, c, SoundEvents.ENCHANTMENT_TABLE_USE, 0.6F, 1.6F);
-		Fx.sound(level, c, WildercordSounds.impact("life"), 0.5F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_stitch", 0.9F, 1.0F);
 	}
 
 	/** A stitch renewed on an ally already stitched: a flick of the thread and a tick of gold. */
@@ -437,8 +435,7 @@ final class SignatureVfx {
 		ElementFx.starSeal(level, top, UP, 0.5, 16);
 		ElementFx.petals(level, top, 0.4, 6);
 		Motes.glows(level, top, 4, 0.3, HALO, 0.1, 30, new Vec3(0, -0.02, 0), 0.01);
-		Fx.sound(level, top, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.6F);
-		Fx.sound(level, top, WildercordSounds.impact("arcane"), 0.5F, 1.3F);
+		dev.wildercord.cast.feel.Feels.sound(level, top, "arcane_halo", 1.0F, 1.0F);
 	}
 
 	/** While it lasts: the halo glowing over the ally. */
@@ -457,8 +454,7 @@ final class SignatureVfx {
 		ElementFx.arcaneImpact(level, c, 0.8 + width(foe) * 0.3);
 		ElementFx.ring(level, foe.position().add(0, 0.05, 0), UP, ElementFx.LIFE.secondary(), 0.2, width(foe) + 0.6, 0.04, 10);
 		Vfx.emit(level, ParticleTypes.END_ROD, c, 5, 0.25, 0.04);
-		Fx.sound(level, c, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.8F, 1.6F);
-		Fx.sound(level, top, SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "arcane_halo_zap", 0.9F, 1.0F);
 	}
 
 	/** The halo fades: its ring widening and thinning away. */
@@ -510,7 +506,7 @@ final class SignatureVfx {
 		ElementFx.flatSigil(level, at, SigilOption.STAR, ElementFx.ARCANE.primary(), radius, ticks + 6, 0.06);
 		ElementFx.flatSigil(level, at.add(0, 0.01, 0), SigilOption.TARGET, ElementFx.FIRE.primary(), radius * 0.6, ticks + 6, -0.04);
 		Light.groundRing(level, at, ElementFx.ARCANE.secondary(), radius * 1.3, radius * 0.9, 0.06, ticks);
-		Fx.sound(level, at, SoundEvents.BEACON_ACTIVATE, 0.8F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "arcane_comet", 1.2F, 1.0F);
 	}
 
 	/** The comet on its way down ({@code fall}: how far, 0 to 1): a ball of pink fire high overhead, its tail streaming back. */
@@ -539,8 +535,7 @@ final class SignatureVfx {
 		Sigils.flash(level, c, COMET, (float) Math.min(5, radius * 1.2));
 		Motes.smoke(level, c, 6, radius * 0.4);
 		ScreenFx.shake(level, at, 0.9F, 24);
-		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 1.4F, 0.7F);
-		Fx.sound(level, at, SoundEvents.AMETHYST_BLOCK_BREAK, 1.2F, 0.6F);
+		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 0.8F);
 	}
 
 	/** A shard of it arcs out into an enemy (or the ground): a streak of pink light and a spark of star where it strikes. */

@@ -76,7 +76,7 @@ public final class Spirits {
 
 	public static void summonWolves(Cast cast, Vec3 around, int count, double power, double duration) {
 		spawnSpirits(cast, around, count, power, duration, false);
-		Fx.sound(cast.level, around, SoundEvents.EVOKER_CAST_SPELL, 1.0F, 1.2F);
+		LifeArcaneFx.summonCircle(cast.level, around);
 	}
 
 	/** Shades: black shadow hounds that trail darkness instead of glowing. */
