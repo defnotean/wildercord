@@ -188,6 +188,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Fire spells no longer light campfires where they may not change blocks.** Lighting a campfire (as the Archive's
   braziers are lit) skipped the rules the rest of world magic keeps: now it doesn't happen in a claim or spawn
   protection, for a player who can't build there, or on a server that keeps spells off its blocks.
+- **Spells that grow something ask a claim first.** Protection and claim mods were only asked when a spell took a block
+  away, so Glimmer's lichen, Glowvine's vines and an Ancient Seed's flower could be put into the air inside someone
+  else's claim for good. Putting a block into the air now asks them too.
 - **Fangs never bite your friends.** Its evoker fangs bit anything that walked onto them, your own pets included, and
   their bites went past Shields and the server's PvP damage scale. They now bite as the spell does (6, once for each
   creature however many fangs it stands on), only what your spells may harm, and nothing once the spell has ended.

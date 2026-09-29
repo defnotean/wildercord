@@ -442,6 +442,39 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 			});
 			note(failures, protectedGround);
 
+			// Putting something into the air of a claim is asked of it too, not only taking something away: Glimmer's
+			// lichen grows on a bare stone outside the claim, and not on one inside it.
+			String placing = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos open = site(player, 18, 18);
+				BlockPos claimed = site(player, -18, 18);
+				level.setBlockAndUpdate(open, Blocks.STONE.defaultBlockState());
+				level.setBlockAndUpdate(claimed, Blocks.STONE.defaultBlockState());
+				apply(player, List.of(Runes.TOUCH, Runes.GLIMMER), Vec3.atBottomCenterOf(open.above()), List.of());
+				claim = new AABB(claimed).inflate(4);
+				try {
+					apply(player, List.of(Runes.TOUCH, Runes.GLIMMER), Vec3.atBottomCenterOf(claimed.above()), List.of());
+				} finally {
+					claim = null;
+				}
+				int outside = count(level, open, 2, state -> state.is(Blocks.GLOW_LICHEN));
+				int inside = count(level, claimed, 2, state -> state.is(Blocks.GLOW_LICHEN));
+				for (BlockPos stone : List.of(open, claimed)) {
+					for (BlockPos pos : BlockPos.betweenClosed(stone.offset(-2, -2, -2), stone.offset(2, 2, 2))) {
+						if (level.getBlockState(pos).is(Blocks.GLOW_LICHEN)) {
+							level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						}
+					}
+					level.setBlockAndUpdate(stone, Blocks.AIR.defaultBlockState());
+				}
+				if (outside == 0) {
+					return "Glimmer should grow lichen on a bare stone outside a claim";
+				}
+				return inside == 0 ? null : "Glimmer shouldn't grow lichen into the air inside a claim (" + inside + " grew)";
+			});
+			note(failures, placing);
+
 			if (!failures.isEmpty()) {
 				throw new AssertionError("Magic that changes the world went wrong:\n  " + String.join("\n  ", failures));
 			}

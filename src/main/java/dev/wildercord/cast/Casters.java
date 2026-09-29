@@ -38,8 +38,10 @@ public final class Casters {
 
 	/**
 	 * Whether a spell of the caster's may change the block at {@code pos}: they may build, it isn't
-	 * spawn-protected or past the world border, and, when it takes something away, claim and
-	 * protection mods agree (the change is offered to them as the player breaking that block).
+	 * spawn-protected or past the world border, and claim and protection mods agree, whether it takes
+	 * something away or puts something into the air there (a Glimmer's lichen, a Glowvine, an Ancient
+	 * Seed's flower). The change is offered to them as the player breaking that block: there's no event
+	 * for placing to ask, and claim mods answer a break by where it is.
 	 */
 	public static boolean mayEdit(LivingEntity caster, ServerLevel level, BlockPos pos) {
 		if (!(caster instanceof ServerPlayer player) || !mayBuild(player) || !level.mayInteract(player, pos)) {
@@ -51,7 +53,7 @@ public final class Casters {
 			return false;
 		}
 		BlockState state = level.getBlockState(pos);
-		return state.isAir() || PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
+		return PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
 	}
 
 	public static boolean creative(LivingEntity caster) {
