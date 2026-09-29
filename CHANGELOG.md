@@ -42,6 +42,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Absolute Zero freezes the same creature solid at most once every few seconds.** Its first hit leaves a target
   slowed, so with Linger, a Zone or a second copy every later hit was a certain freeze for 7 damage. Frozen solid, a
   creature can't be again until 3 seconds after it thaws (it's still slowed meanwhile).
+- **Magma's pools and Tempest's strikes don't stack on one enemy.** Each lays one under (or on) every target, so an
+  enemy bunched with others took every overlapping one: up to four burns a second from Magma, eight strikes from
+  Tempest. Now each enemy takes your strongest one once (Magma once a second, Tempest once per strike).
 
 ### Fixed
 - A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up

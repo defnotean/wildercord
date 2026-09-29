@@ -101,6 +101,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			run(failures, "Updraft", () -> updraft(context, world));
 			run(failures, "Recoil", () -> recoil(context, world));
 			run(failures, "A crowd of ten", () -> crowd(context, world));
+			run(failures, "Tempest on a bunch", () -> tempestBunch(context, world));
 			// Last: a glyph stays on the platform for 10 seconds.
 			run(failures, "Skyglyph (enemy)", () -> skyglyphEnemy(context, world));
 			run(failures, "Skyglyph (ally)", () -> skyglyphAlly(context, world));
@@ -514,6 +515,37 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 		// Stormclock's later strikes (2 and 4 seconds on) mustn't land on the next check's husk.
 		context.waitTicks(90);
 		return done(context, world, null);
+	}
+
+	/**
+	 * Tempest on three husks standing together: a strike lands on each, but where they overlap each husk takes one
+	 * (8), not one for every strike round it.
+	 */
+	private static String tempestBunch(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<Integer> ids = List.of(spawn(world, EntityTypes.HUSK, 0, 6, 0, false), spawn(world, EntityTypes.HUSK, 0.8, 6, 0, false),
+			spawn(world, EntityTypes.HUSK, -0.8, 6, 0, false));
+		context.waitTicks(3);
+		String found = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			List<Entity> bunch = new ArrayList<>();
+			for (int id : ids) {
+				Mob h = mob(server, id);
+				if (h == null) {
+					return "a husk of the bunch is gone";
+				}
+				bunch.add(h);
+			}
+			SpellPlan.EffectNode node = SpellCompiler.compile(List.of(Runes.BURST, Runes.TEMPEST)).root().groups.getFirst().effects.getFirst();
+			Effects.apply(new Cast(player), node, new Cast.Hit(bunch, at(0, 6), new Vec3(0, 0, 1), player.position(), null, null, false));
+			for (int i = 0; i < bunch.size(); i++) {
+				LivingEntity h = (LivingEntity) bunch.get(i);
+				if (!h.isAlive() || !took(h, 8)) {
+					return "husk " + (i + 1) + " of three should take one strike (8), not one for each strike round it (took " + f(taken(h)) + ")";
+				}
+			}
+			return null;
+		});
+		return done(context, world, found);
 	}
 
 	/** Written under a husk (an enemy), the glyph throws it back about 4 blocks, and doesn't hurt it. */
