@@ -71,9 +71,9 @@ public final class Heart {
 		return dev.wildercord.spell.PlayerAffinity.level(affinity(player).getOrDefault(element, 0));
 	}
 
-	/** The element this player's magic leans toward (their deepest affinity, clearly ahead), or "". */
+	/** The element this player's magic leans toward (their deepest affinity, clearly ahead), or "" (always, with affinities off). */
 	public static String leaning(Player player) {
-		return dev.wildercord.spell.Leaning.of(affinity(player));
+		return dev.wildercord.config.Config.playerAffinity(player) ? dev.wildercord.spell.Leaning.of(affinity(player)) : "";
 	}
 
 	public static int condensed(Player player) {
