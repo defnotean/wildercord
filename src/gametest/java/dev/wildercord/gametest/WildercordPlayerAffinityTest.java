@@ -61,8 +61,9 @@ import java.util.function.Function;
  * else; mining stone grows earth until the day's allowance for stone is full, and ores still count past it;
  * reaching level I writes the Grimoire entry, condenses its mana and shows the toast; the power bonus lands
  * on that element's effects only; from level III a Runebound's fire lands softer on the player (though not
- * through a reaction); and {@code features.player_affinity} switches all of it off. Then the Grimoire page
- * with a spread of affinities is filmed ({@code affinity_grimoire}).
+ * through a reaction); a scroll's spell stays at its plain strength; and {@code features.player_affinity}
+ * switches all of it off. Then the Grimoire page with a spread of affinities is filmed
+ * ({@code affinity_grimoire}).
  *
  * <p>The player is in survival (creative players earn nothing), with 200 health so no hit ends the test.
  * Every creature has 200 health too and never rolls as a random Runebound. Runs in the full suite;
@@ -224,8 +225,6 @@ public class WildercordPlayerAffinityTest implements FabricClientGameTest {
 			out.add("reaching fire I should show its toast");
 		}
 		context.takeScreenshot(TestScreenshotOptions.of("affinity_toast").disableCounterPrefix());
-		// A second gain of the same size is nothing new: no second entry.
-		on(world, player -> PlayerAffinities.gain(player, PlayerAffinity.Source.CAST, "fire", 20));
 		return out;
 	}
 
@@ -242,12 +241,21 @@ public class WildercordPlayerAffinityTest implements FabricClientGameTest {
 		fresh(player, Map.of("fire", PlayerAffinity.threshold(3)));
 		float fireIII = hit(player, spawn(level, EntityTypes.HUSK, base.add(1, 0, 3)), Runes.FIRE);
 		float frostNow = hit(player, spawn(level, EntityTypes.HUSK, base.add(3, 0, 3)), Runes.FROST);
+		// A scroll's spell goes off at its plain strength: the reader's affinity doesn't count on it.
+		LivingEntity scrollTarget = spawn(level, EntityTypes.HUSK, base.add(0, 0, 6));
+		float before = scrollTarget.getHealth();
+		Effects.apply(new Cast(player), SpellCompiler.compile(List.of(Runes.TOUCH, Runes.FIRE)).root().groups.getFirst().effects.getFirst(),
+			new Cast.Hit(List.<Entity>of(scrollTarget), scrollTarget.getBoundingBox().getCenter(), player.getLookAngle(), player.getEyePosition(), null, null, false));
+		float plainCast = before - scrollTarget.getHealth();
 		double wanted = PlayerAffinity.power(3);
 		if (fire <= 0 || Math.abs(fireIII / fire - wanted) > 0.02) {
 			out.add("fire III should make fire hit x" + wanted + " (" + fireIII + " against " + fire + ")");
 		}
 		if (frost <= 0 || Math.abs(frostNow / frost - 1.0) > 0.01) {
 			out.add("fire's affinity shouldn't touch frost (" + frostNow + " against " + frost + ")");
+		}
+		if (Math.abs(plainCast / fire - 1.0) > 0.01) {
+			out.add("a cast the affinity doesn't count on (a scroll's) should hit at its plain strength (" + plainCast + " against " + fire + ")");
 		}
 		return out;
 	}
@@ -421,7 +429,8 @@ public class WildercordPlayerAffinityTest implements FabricClientGameTest {
 	private static float hit(ServerPlayer player, LivingEntity target, RuneDef effect) {
 		SpellPlan.EffectNode node = SpellCompiler.compile(List.of(Runes.TOUCH, effect)).root().groups.getFirst().effects.getFirst();
 		float before = target.getHealth();
-		Effects.apply(new Cast(player), node, new Cast.Hit(List.<Entity>of(target), target.getBoundingBox().getCenter(), player.getLookAngle(),
+		// As a spell from the Cord: the player's affinities count on it.
+		Effects.apply(new Cast(player).withAffinity(), node, new Cast.Hit(List.<Entity>of(target), target.getBoundingBox().getCenter(), player.getLookAngle(),
 			player.getEyePosition(), null, null, false));
 		return before - target.getHealth();
 	}

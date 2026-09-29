@@ -74,7 +74,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *       (taming), {@code LivingEntityHealMixin} (a spell healing someone else), {@code LightningRodBlockMixin},
  *       {@code RuneItem} (a rune learned) and {@code WorldMagic} (time aging the world).</li>
  * </ul>
- * What they give is read where it applies: {@link #power} in {@code Effects} (every effect's power),
+ * What they give is read where it applies: {@link #power} in {@code Effects} (every effect's power, on a
+ * spell the caster's affinities count on: see {@link Cast#withAffinity}),
  * {@link #resistance} in {@link Affinities} (others' spells landing on a player), and the price at V in
  * {@code Heart}. Creative and spectating players earn nothing; with {@code features.player_affinity} off,
  * nobody earns anything and nothing gives anything.
@@ -126,9 +127,13 @@ public final class PlayerAffinities {
 
 	// ------------------------------------------------------------------ what affinities give
 
-	/** The power on an effect of {@code element} its caster's affinity gives: 1 for monsters, and with affinities off. */
-	public static double power(LivingEntity caster, String element) {
-		if (element.isEmpty() || !(caster instanceof ServerPlayer player) || !Config.get().playerAffinity()) {
+	/**
+	 * The power the caster's affinity gives an effect of {@code element} in this cast: 1 for monsters, for a
+	 * cast their affinities don't count on (a scroll, a passive: see {@link Cast#withAffinity}), and with
+	 * affinities off.
+	 */
+	public static double power(Cast cast, String element) {
+		if (element.isEmpty() || !cast.affinity() || !(cast.caster instanceof ServerPlayer player) || !Config.get().playerAffinity()) {
 			return 1.0;
 		}
 		return PlayerAffinity.power(Heart.affinityLevel(player, element));

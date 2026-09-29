@@ -464,7 +464,7 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 
 	/**
 	 * Bloodboil at a husk: 3 damage, then each blow it takes brings 2 more fire damage (measured against the first hit,
-	 * so a caster's leaning doesn't matter), never setting itself off again, and only five times; a boil 5 seconds old
+	 * so a caster's affinity doesn't matter), never setting itself off again, and only five times; a boil 5 seconds old
 	 * answers nothing.
 	 */
 	private static List<String> bloodboil(ClientGameTestContext context, TestSingleplayerContext world) {

@@ -54,6 +54,8 @@ public final class Cast {
 		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.GearBonuses.NONE;
 		/** A stored (imbued) spell's release: where it was set off (see {@link #origin()}); null for a spell cast from a Cord. */
 		Trigger origin;
+		/** Whether the caster's affinities count on this spell (see {@link #withAffinity}). */
+		boolean affinity;
 
 		Shared() {
 			this(new Paid());
@@ -69,6 +71,7 @@ public final class Cast {
 			copy.weight = weight;
 			copy.gear = gear;
 			copy.origin = origin;
+			copy.affinity = affinity;
 			return copy;
 		}
 	}
@@ -206,6 +209,21 @@ public final class Cast {
 	/** Casting gear: the power multiplier on an effect of {@code element}. */
 	public double gearPower(String element) {
 		return budget.shared.gear.power(element);
+	}
+
+	/**
+	 * Lets the caster's affinities with the elements add their power to this spell: a spell cast from their
+	 * Cord, an imbued spell letting go, a spell turned back by Mirrorfrost. Scrolls, passives and the like go
+	 * off at their plain strength, as they always did for leaning. Copies of the cast keep it.
+	 */
+	public Cast withAffinity() {
+		budget.shared.affinity = true;
+		return this;
+	}
+
+	/** Whether the caster's affinities count on this spell: see {@link #withAffinity}. */
+	public boolean affinity() {
+		return budget.shared.affinity;
 	}
 
 	/**

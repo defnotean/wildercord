@@ -200,7 +200,8 @@ public final class SpellCaster {
 		bonuses = bonuses.withPower(bonuses.power() * dev.wildercord.cast.events.EventRules.surgePower(surge));
 		Cast.Info info = new Cast.Info(compiled.root(), runes.size(), leaning, List.copyOf(runes));
 		// Against a Shield a secret always weighs its full price, found or not.
-		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear);
+		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear)
+			.withAffinity();
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
 		}

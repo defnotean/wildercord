@@ -190,7 +190,7 @@ public final class Effects {
 		LivingEntity caster = cast.caster;
 		ServerLevel level = cast.level;
 		// The caster's affinity with this element (+3% a level: heals, shields and pushes grow with it too). Innate runes grow with the heart.
-		double affinity = PlayerAffinities.power(caster, rune.element());
+		double affinity = PlayerAffinities.power(cast, rune.element());
 		double innate = Runes.innate(rune) ? Innates.scale(caster) : 1.0;
 		// A rune ranked up at the Fusion Altar hits harder wherever it's threaded; rank III counts as one Amplify for levels.
 		int rank = dev.wildercord.player.RuneRanks.rank(caster, rune.id());
