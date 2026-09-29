@@ -676,6 +676,7 @@ public class TideScribe extends DungeonBoss {
 	protected void addAdditionalSaveData(ValueOutput output) {
 		super.addAdditionalSaveData(output);
 		output.putString("tide", tide.name());
+		output.putLong("tide_until", tideUntil);
 	}
 
 	@Override
@@ -688,6 +689,14 @@ public class TideScribe extends DungeonBoss {
 		}
 		// Mid-flood when it was saved: the pour (or the drain) picks up from the start, which is harmless.
 		step = 0;
+		// When the tide next turns, so a reload doesn't turn it at once; never further off than the longest wait (a clock that jumped).
+		long now = level().getGameTime();
+		tideUntil = Math.min(input.getLongOr("tide_until", now), now + Math.max(LOW_TICKS[1], HIGH_TICKS[1]));
+	}
+
+	/** The game time the tide next turns (low to rising, high to ebbing), for the tests. */
+	public long tideTurnsAt() {
+		return tideUntil;
 	}
 
 	@Override

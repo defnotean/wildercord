@@ -497,6 +497,17 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 			check(scribe.stranded(), "ice closing round the Tide Scribe should strand it");
 			scribe.forceTide(false);
 			check(pitWater(level, altar) == 0, "the ebb should drain the pit, ice and all (found " + pitWater(level, altar) + " water)");
+			// Saved and loaded again (a restart, its ground unloading), it remembers when its tide next turns, instead of turning at once.
+			net.minecraft.world.level.storage.TagValueOutput saved = net.minecraft.world.level.storage.TagValueOutput.createWithContext(
+				net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess());
+			scribe.saveWithoutId(saved);
+			TideScribe loaded = dev.wildercord.cast.DungeonEntities.TIDE_SCRIBE.create(level, EntitySpawnReason.LOAD);
+			check(loaded != null, "a Tide Scribe should load");
+			loaded.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(),
+				saved.buildResult()));
+			check(loaded.tideTurnsAt() == scribe.tideTurnsAt() && loaded.tideTurnsAt() > level.getGameTime(),
+				"a reloaded Tide Scribe should keep when its tide turns (" + scribe.tideTurnsAt() + ", loaded " + loaded.tideTurnsAt() + ", now " + level.getGameTime() + ")");
+			loaded.discard();
 		});
 		done(world, overworld);
 	}

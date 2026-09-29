@@ -28,6 +28,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **A duel's end only undoes what your opponent did.** It took away every harmful effect and fire gained during the
   duel, from anything: a monster's poison or lava's fire now stay, and only your opponent's (their spells, a tipped
   arrow, a flaming blade) are taken off.
+- **The Tide Scribe remembers its tide.** Reloaded (a restart, or its dungeon unloading and loading again), it
+  turned the tide at once; it now keeps to when the tide was due to turn.
 
 ## [0.4.2-alpha] - 2026-09-28
 
