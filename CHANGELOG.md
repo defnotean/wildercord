@@ -100,6 +100,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   they're broken, and a crust blown up (or taken any way but melting) gives its lava back at once.
 - **Servers ignore a flood of cast requests**, as they already did for spell edits: a modified client can send at
   most a burst of 20 casts (or charges), then 20 a second, far more than any hand on the cast keys.
+- **Fire spells no longer light campfires where they may not change blocks.** Lighting a campfire (as the Archive's
+  braziers are lit) skipped the rules the rest of world magic keeps: now it doesn't happen in a claim or spawn
+  protection, for a player who can't build there, or on a server that keeps spells off its blocks.
 - **Fangs never bite your friends.** Its evoker fangs bit anything that walked onto them, your own pets included;
   they now bite only what your spells may harm, and nothing at all once you've gone.
 - **A creature held in Stasis (or an arrow held by Infinity) that's carried through a portal falls again** as soon as

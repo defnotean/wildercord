@@ -267,6 +267,8 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				}
 				BlockPos patch = site(player, -12, 12);
 				meadow(level, patch);
+				// An unlit campfire too: Rune Seals' campfire lighting keeps to the same rules.
+				level.setBlockAndUpdate(patch, Blocks.CAMPFIRE.defaultBlockState().setValue(net.minecraft.world.level.block.CampfireBlock.LIT, false));
 				player.setGameMode(GameType.ADVENTURE);
 				try {
 					apply(player, List.of(Runes.TOUCH, Runes.FIRE), Vec3.atBottomCenterOf(patch), List.of());
@@ -274,9 +276,14 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 					player.setGameMode(GameType.SURVIVAL);
 				}
 				int fires = count(level, patch, 2, state -> state.is(BlockTags.FIRE));
+				boolean campfire = level.getBlockState(patch).getOptionalValue(net.minecraft.world.level.block.CampfireBlock.LIT).orElse(false);
 				douse(level, patch, 3);
+				level.setBlockAndUpdate(patch, Blocks.AIR.defaultBlockState());
 				if (fires > 0) {
 					return "fire from a caster who can't build there shouldn't light anything";
+				}
+				if (campfire) {
+					return "fire from a caster who can't build there shouldn't light a campfire";
 				}
 				Mob mob = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 				mob.snapTo(pool.getX() - 3.5, pool.getY() + 1, pool.getZ() + 0.5, 0.0F, 0.0F);
