@@ -368,6 +368,6 @@ three appear in the creative menu for builders.
 | Block | Where | What it does |
 |---|---|---|
 | **Rune Seal** | The Archive's doors | Each is carved with an element's glyph. Strike it with a spell of that element and every block of that element in the door lights up. Light every element in the door within ten seconds and the door dissolves. See [The Archive]({{ '/world/archive/' | relative_url }}). |
-| **Archive Lectern** | The heart of the Archive | The Archivist rises from it the first time a player comes near, and it goes quiet after. |
+| **Archive Lectern** | The heart of the Archive | The Archivist rises from it the first time a player comes near. It goes quiet once the Archivist falls (if its Archivist is lost without being killed, it wakes a new one a few minutes later). |
 | **Dungeon Altar** | The heart of each dimension dungeon's arena | The dungeon's boss rises from it the first time a player comes near: the Cinder Warden, the Star-Eater or the Tide Scribe. It goes quiet once the boss falls. |
-| **Fallen Star** | Where a star comes down in a [starfall]({{ '/world/world-events/' | relative_url }}) | A glowing lump of starstone that can't be mined. Once its guards are beaten, use it to break it open for a rune and a Mana Crystal. It crumbles once looted, or fades after twenty minutes. It has no item at all. |
+| **Fallen Star** | Where a star comes down in a [starfall]({{ '/world/world-events/' | relative_url }}) | A glowing lump of starstone that can't be mined, and that even the Wither can't break. Once its guards are beaten, use it to break it open for a rune and a Mana Crystal. It crumbles once looted, or fades after twenty minutes. It has no item at all. |

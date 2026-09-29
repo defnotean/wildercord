@@ -121,8 +121,9 @@ through the rise to halfway through the ebb.
 **Water conducts.** While the pit is flooded:
 
 - **Storm in the flood shocks everything wading in it.** A storm spell that lands in the water (on it, or just over
-  it, or striking something standing in it) sends a shock through the whole pit: **everyone in the water takes 5
-  damage times the spell's power**, you included if you're wading. The Scribe takes **five times that**, straight
+  it, or striking something standing in it) sends a shock through the whole pit: **everything in the water that your
+  spells can harm takes 5 damage times the spell's power**, and so do you if you're wading. Your friends, your pets and
+  any villager in the water are spared. The Scribe takes **five times that**, straight
   through its water armour, and **staggers for 2 seconds**: it can't cast, breaks off any spell it was telegraphing,
   and takes 50% more from other hits. Each spell shocks the pit at most once a second (a Zone sitting in the water
   shocks once a second, not every moment). *"The water carries your storm to everything in it (you too, if you're

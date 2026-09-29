@@ -116,6 +116,9 @@ The Archivist rises from the Archive Lectern the first time a player comes withi
 sheds enchanting glyphs while it waits, and goes dim once the Archivist is awake. Its first spell comes about 3
 seconds after it rises, and it starts blinking after about 10.
 
+Once the Archivist has fallen, the lectern stays quiet for good. But if it's lost some other way, never killed, and
+players spend about 3 minutes in the Archive without finding it, the lectern wakes a new one.
+
 ### What it is
 
 | | |
@@ -125,7 +128,7 @@ seconds after it rises, and it starts blinking after about 10.
 | **Knockback** | Barely moves (80% resistance) |
 | **Immune to** | Fire (fire spells' burning damage does nothing; a blast such as Explode still lands), falls, and other monsters |
 | **Can't be hurt** | While it rewrites its Cord (2.5 seconds, twice a fight) |
-| **Boss bar** | Purple, darkens the sky, and names the spell it's casting: *The Archivist · casting Shock Rain* |
+| **Boss bar** | Purple, darkens the sky, and names the spell it's casting: *The Archivist · casting Shock Rain*. It shows to everyone within 48 blocks of the lectern, and goes when you leave |
 | **Spell power** | 10% more than a Runebound's: 66% of normal on Easy, 88% on Normal, 110% on Hard |
 | **Affinities** | Weak to **void** (+50%), resists **arcane** (half). See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |
 
@@ -134,7 +137,8 @@ seconds after it rises, and it starts blinking after about 10.
 - **It floats and keeps its distance.** If you're more than 16 blocks away it drifts toward you. Every 8 to 14 seconds
   it may **blink**: always if you're within 6 blocks, otherwise half the time. It reappears about 10 blocks from you,
   roughly on the side it was already on, with a purple flash and a small circle where it lands.
-- **It never leaves its arena.** If it ends up more than 22 blocks from its lectern, it blinks back.
+- **It never leaves its arena.** If it ends up more than 22 blocks from its lectern, it blinks back. It can't be led
+  through a portal, or pushed into a boat or minecart and dragged away.
 - **It needs to see you to start a spell.** Then it raises its arms, its tome lifts and riffles and its writing
   blazes, the spell's circle opens in its hand, and **1.4 seconds** later the spell goes off.
 - **Spells in turn.** In each phase it casts its spells in a fixed order, round and round, 2.75 to 4.25 seconds apart
@@ -180,7 +184,8 @@ it can't be hurt**. The boss bar says *rewriting its Cord*, and everyone within 
 - the second time: *"The Archivist burns its last pages. Its Cord blazes with new runes."*
 
 Each time it calls up **two Runebound** from the stacks, about 5 blocks away: a skeleton and a pillager, carrying spells
-from their usual lists. The second time they're **Adepts**. Then it starts its new phase's spells from the first.
+from their usual lists. The second time they're **Adepts**. They vanish when the Archivist falls. Then it starts its
+new phase's spells from the first.
 
 No blow carries it past the start of its next phase: however big the hit, the damage stops there and the rewriting
 begins at once, so you fight all three phases.
@@ -218,8 +223,8 @@ Slain, the Archivist sinks into its robe with a flash of gold. It drops, where i
 
 And for the players around it:
 
-- **The Last Page**: everyone within 64 blocks earns this feat, worth **2,000 mana** toward the next Heart Circle. It's
-  also the feat the **8th Heart Circle** asks for. See [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}).
+- **The Last Page**: everyone within 64 blocks (spectators aside) earns this feat, worth **2,000 mana** toward the
+  next Heart Circle. It's also the feat the **8th Heart Circle** asks for. See [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}).
 - **The 7th Heart Circle's boss breakthrough**, for everyone nearby: *"A boss has fallen. Your heart can now break
   through to the 7th Circle."*
 - The advancement *The Last Page* (500 experience and 3 Mana Crystals).
