@@ -22,6 +22,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   fit.
 - An add-on's rune drew black-and-magenta squares in the magic circle beside the Cord screen and on the Fusion
   Altar. It now wears its family's art there, as its circle in the world always did.
+- When the spell HUD had too little room beside the hotbar (a small window with the attack indicator or the
+  off-hand slot on its side), it hid all but one of the spell's runes behind a "+2" even though they fitted.
 
 ## [0.4.1-alpha] - 2026-09-28
 

@@ -108,6 +108,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				}
 			}
 			longTooltip(context);
+			narrowHud(context, world);
 			batch4Screens(context, world);
 			castEverything(context, world);
 			mechanicsChecks(context, world);
@@ -137,6 +138,34 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		context.waitTicks(3);
 		context.takeScreenshot(TestScreenshotOptions.of("tooltip_long_854x480").disableCounterPrefix());
 		context.setScreen(() -> null);
+		context.waitTicks(2);
+	}
+
+	/**
+	 * The HUD with too little room right of the hotbar (the attack indicator beside it, on the smallest
+	 * window): it's tucked into the corner, and a short spell keeps all its runes instead of one and a "+2".
+	 */
+	private static void narrowHud(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			Spellbooks.set(player, Spellbooks.get(player).withSelected(2));
+		});
+		net.minecraft.client.AttackIndicatorStatus[] before = new net.minecraft.client.AttackIndicatorStatus[1];
+		context.runOnClient(mc -> {
+			before[0] = mc.options.attackIndicator().get();
+			mc.options.attackIndicator().set(net.minecraft.client.AttackIndicatorStatus.HOTBAR);
+			mc.getWindow().setWindowed(854, 480);
+			mc.options.guiScale().set(2);
+			mc.resizeGui();
+		});
+		context.getInput().setCursorPos(2, 2);
+		context.waitTicks(5);
+		context.takeScreenshot(TestScreenshotOptions.of("hud_narrow_indicator").disableCounterPrefix());
+		context.runOnClient(mc -> mc.options.attackIndicator().set(before[0]));
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			Spellbooks.set(player, Spellbooks.get(player).withSelected(0));
+		});
 		context.waitTicks(2);
 	}
 

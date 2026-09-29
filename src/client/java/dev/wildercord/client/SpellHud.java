@@ -139,12 +139,14 @@ public final class SpellHud {
 		int row3 = font.width(maxMana + "/" + maxMana) + 6 + 4
 			+ Math.max(font.width("100%"), Math.max(font.width("FULL"), font.width("20.0s")));
 		int bodyW = Math.max(row3, bodyWidth(shown, iconSize, costW, font));
-		if (BODY_X + bodyW + 4 > avail) {
+		// Smaller icons, then fewer, only while the runes are what makes the panel too wide: once the
+		// bottom row sets its width, hiding runes wins nothing (the panel is tucked aside below instead).
+		if (BODY_X + bodyW + 4 > avail && bodyW > row3) {
 			iconSize = 8;
 			bodyW = Math.max(row3, bodyWidth(shown, iconSize, costW, font));
 		}
 		String more = "";
-		while (shown > 1 && BODY_X + bodyW + 4 > avail) {
+		while (shown > 1 && BODY_X + bodyW + 4 > avail && bodyW > row3) {
 			shown--;
 			more = "+" + (runes.size() - shown);
 			bodyW = Math.max(row3, Math.max(MIN_BODY, shown * iconSize + 2 + font.width(more) + 4 + costW));
