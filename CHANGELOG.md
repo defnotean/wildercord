@@ -34,6 +34,24 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Bolts of the right elements colliding in the air set off the new reactions too (fire and storm,
   earth and frost, life and void, blood and wind, fire and time).
 - **Chain Reaction**, an advancement for setting off every reaction.
+- **Creature affinities.** Creatures can be **weak** to an element (it hits them 50% harder), **resist** one
+  (half) or, now and then, be **immune**. The Nether's creatures resist fire and fear frost, the cold's the
+  reverse, the undead burn under life magic, golems conduct storm, arthropods are blown about by wind, the End's
+  creatures resist void and fear time, and each boss has its own (the Cinder Warden is weak to frost, the
+  Star-Eater and the Tide Scribe to life, the Archivist to void). A Runebound resists the element on its Cord.
+  **A reaction breaks through a resistance**, so a Shatter still lands in full. A weakness struck floats
+  **Weak!** over the creature in the element's colour, a resistance **Resisted**. The table is entity type tags,
+  so a datapack can change it: see the [wiki](https://defnotean.github.io/wildercord/spellcraft/affinities/) and
+  [docs/features/affinities.md](docs/features/affinities.md).
+- **The Bestiary**, a new part of the Grimoire: every kind of creature your spells have struck, with the
+  weaknesses and resistances you've found and a **?** for each still to find. Each weakness found condenses 25
+  mana toward your next Heart Circle.
+- **Elemental climate.** Where you fight nudges the elements: fire +20% and frost -25% in the Nether, void +20% in
+  the End, storm +25% under a thunderstorm, frost in the snow, fire in hot dry lands (and less in the rain), void
+  at night, life in sunlight, earth deep underground and arcane on a ley line or under a mana storm. A small mark
+  after your spell's name on the HUD shows each element favoured (▲) or hindered (▼) where you stand, and the
+  Grimoire lists it under *Where you stand*.
+- Server config switches `features.creature_affinities` and `features.elemental_climate` (both on).
 
 ### Changed
 - Joining a server whose Wildercord is **older** than yours (from before the version check) now says so in chat too,
