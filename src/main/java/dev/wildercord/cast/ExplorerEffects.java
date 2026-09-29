@@ -586,6 +586,10 @@ public final class ExplorerEffects {
 			if (cast.alive() && onHand(cast, t)) {
 				ExplorerVfx.shellOpen(cast.level, t);
 				for (LivingEntity near : enemiesAround(cast, t.getBoundingBox().getCenter(), 3.0)) {
+					// Never a boss: lifted, it could be dropped out of its own fight.
+					if (Spirits.isBoss(near)) {
+						continue;
+					}
 					near.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 40, 0, false, true), cast.caster);
 					Reactions.mark(near, Reactions.Mark.WINDSWEPT, 60);
 				}

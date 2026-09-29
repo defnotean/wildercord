@@ -328,7 +328,9 @@ public final class Effects {
 				Vfx.empower(level, t);
 			});
 			case "levitate" -> moved.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks(3, duration), 1, false, true));
+				// Bosses are only ever slowed: lifted out of reach, a fight could be won by the fall.
+				boolean boss = t != caster && Spirits.isBoss(t);
+				t.addEffect(new MobEffectInstance(boss ? MobEffects.SLOWNESS : MobEffects.LEVITATION, ticks(3, duration), 1, false, true));
 				if (t != caster) {
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT, ticks(3, duration) + 20);
 				}
@@ -1002,10 +1004,13 @@ public final class Effects {
 					if (distance > radius || distance < 0.4) {
 						continue;
 					}
-					victim.setDeltaMovement(victim.getDeltaMovement().scale(0.5).add(towards.normalize().scale(Math.min(0.6, 0.12 + distance * 0.05))));
-					victim.needsSync = true;
-					if (victim instanceof ServerPlayer player) {
-						player.connection.send(new ClientboundSetEntityMotionPacket(player));
+					// Bosses feel the pull (and the crush) but are never dragged: a boss held in the well is out of its fight.
+					if (!Spirits.isBoss(victim)) {
+						victim.setDeltaMovement(victim.getDeltaMovement().scale(0.5).add(towards.normalize().scale(Math.min(0.6, 0.12 + distance * 0.05))));
+						victim.needsSync = true;
+						if (victim instanceof ServerPlayer player) {
+							player.connection.send(new ClientboundSetEntityMotionPacket(player));
+						}
 					}
 					Reactions.mark(victim, Reactions.Mark.PULLED);
 					if (tick >= total - 1) {

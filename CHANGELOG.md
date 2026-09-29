@@ -8,6 +8,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **Bosses can't be lifted or dragged any more.** Levitate floated the Warden, the Wither, the Archivist and the
+  dungeon bosses up out of their fights (Extended, high enough for the fall to hurt), Gravity Well held them in
+  its pull straight through their knockback resistance, and Shulkershell's opening lifted them too. Bosses are
+  only ever slowed: Levitate now gives them Slowness II instead, and Gravity Well still marks them pulled and
+  crushes them, but no longer moves them.
 
 ## [0.4.2-alpha] - 2026-09-28
 
