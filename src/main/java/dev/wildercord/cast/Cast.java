@@ -148,6 +148,11 @@ public final class Cast {
 		this.repeated = repeated;
 	}
 
+	/** Which press this belongs to: children, pulses and echoes of one cast share it (a new press has another). */
+	public int id() {
+		return System.identityHashCode(budget.shared);
+	}
+
 	public Cast child() {
 		return new Cast(caster, level, depth + 1, budget, castNumber, power, duration, passive, wanted, info, repeated);
 	}

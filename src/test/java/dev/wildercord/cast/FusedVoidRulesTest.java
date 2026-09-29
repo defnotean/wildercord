@@ -8,19 +8,36 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /** The numbers of the fused effects of void, arcane and time, against their rune descriptions. */
 class FusedVoidRulesTest {
 	@Test
-	void entropyClimbsByHalfAPointToTwoAndAHalf() {
+	void entropyClimbsByHalfAPointFromOneToThree() {
 		assertEquals(5, FusedVoidRules.entropyWounds(1.0));
-		double[] expected = {0.5, 1.0, 1.5, 2.0, 2.5};
+		double[] expected = {1.0, 1.5, 2.0, 2.5, 3.0};
 		double total = 0;
 		for (int step = 1; step <= 5; step++) {
 			assertEquals(expected[step - 1], FusedVoidRules.entropyWound(step), 1e-9);
 			total += FusedVoidRules.entropyWound(step);
 		}
-		assertEquals(7.5, total, 1e-9);
+		assertEquals(10.0, total, 1e-9);
 		// Wound on (or Extended), it stays at its peak.
-		assertEquals(2.5, FusedVoidRules.entropyWound(9), 1e-9);
+		assertEquals(3.0, FusedVoidRules.entropyWound(9), 1e-9);
 		assertEquals(10, FusedVoidRules.entropyWounds(2.0));
 		assertEquals(1, FusedVoidRules.entropyWounds(0.01));
+	}
+
+	@Test
+	void devourBitesHarderTheEmptierItsPrey() {
+		assertEquals(5, FusedVoidRules.devourDamage(20, 20), 1e-9);
+		assertEquals(5, FusedVoidRules.devourDamage(19, 20), 1e-9);
+		assertEquals(8, FusedVoidRules.devourDamage(14, 20), 1e-9);
+		assertEquals(10, FusedVoidRules.devourDamage(1, 20), 1e-9);
+		assertEquals(10, FusedVoidRules.devourDamage(0, 20), 1e-9);
+	}
+
+	@Test
+	void reckoningHealsHalfOfWhatComesDueUpToSix() {
+		assertEquals(0, FusedVoidRules.reckoningHeal(0), 1e-9);
+		assertEquals(3, FusedVoidRules.reckoningHeal(6), 1e-9);
+		assertEquals(6, FusedVoidRules.reckoningHeal(12), 1e-9);
+		assertEquals(6, FusedVoidRules.reckoningHeal(40), 1e-9);
 	}
 
 	@Test

@@ -612,7 +612,7 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 		return found(waits, landed);
 	}
 
-	/** Riposte on yourself: the husk's next two blows are sidestepped and answered for 6; the third lands. */
+	/** Riposte on yourself: the husk's next two blows are sidestepped and answered with the blow's own damage (6 here); the third lands. */
 	private static List<String> riposte(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = on(world, player -> husk(player, 0, 2));
 		String cast = on(world, player -> cast(player, Runes.SELF, Runes.RIPOSTE));
@@ -631,14 +631,14 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 				float before = player.getHealth();
 				float struck = taken(striker);
 				Effects.readyToHurt(player);
-				player.hurtServer(player.level(), player.level().damageSources().mobAttack(striker), 3.0F);
+				player.hurtServer(player.level(), player.level().damageSources().mobAttack(striker), 6.0F);
 				boolean dodged = player.getHealth() >= before;
 				float answered = taken(striker) - struck;
 				if (b <= 2) {
 					if (!dodged) {
 						return "blow " + b + " should be sidestepped (" + before + " to " + player.getHealth() + ")";
 					}
-					return between(answered, 4.5, 7.5) ? null : "blow " + b + " should be answered for 6 (it took " + answered + ")";
+					return between(answered, 4.5, 7.5) ? null : "blow " + b + " should be answered with the blow's own 6 (it took " + answered + ")";
 				}
 				return dodged ? "the third blow should land: only two are seen coming" : null;
 			});
@@ -692,8 +692,8 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 		context.waitTicks(3);
 		String cursed = on(world, player -> {
 			Mob target = mob(player, ids[0]);
-			if (target == null || !between(taken(target), 2, 4.5)) {
-				return "the husk hit should take 3 (took " + (target == null ? -1 : taken(target)) + ")";
+			if (target == null || !between(taken(target), 3, 5)) {
+				return "the husk hit should take 4 (took " + (target == null ? -1 : taken(target)) + ")";
 			}
 			if (!Reactions.has(target, Reactions.Mark.SHADOWED)) {
 				return "the husk hit should be cursed (shadowed)";

@@ -26,7 +26,7 @@ Threads everything hit together for 8 seconds: half of any damage one of them ta
 
 *Tier I · Time · Helps you and your allies · 14 mana · needs any Cord*
 
-Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay a monster.
+Heals the damage you took in the last 5 seconds, as much as you're missing. Over the next 10 seconds it comes back with a fifth on top, but never kills you, unless you slay a monster.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
@@ -81,7 +81,7 @@ Casts back the last spell that hit you in the past 30 seconds, as your own.
 
 *Tier I · Void · Helps you and your allies · 12 mana · needs any Cord*
 
-Leaves an afterimage of you that every monster within 16 blocks turns on for 4 seconds, then it bursts for 8 damage.
+Leaves an afterimage of you that every monster within 16 blocks turns on for 4 seconds, then it bursts for 8 damage, and 1 more for every 6 it took.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 

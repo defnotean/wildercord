@@ -114,7 +114,7 @@ it's ready again.
 | Undertow | Frost | II | Drags each target down: Slowness III for 3 seconds and soaked. In water it's pulled under and takes 5 damage. | Shipwrecks, Runebound Adepts |
 | Tusk Charge | Earth | II | You charge like a hoglin, up to 8 blocks the way you look, tossing everything in your path into the air for 5 damage. | Bastions |
 | Blazecall | Fire | II | Three blaze fireballs fall on each target over a second: 2 fire damage each, setting it alight. | Nether fortresses, Runebound Adepts |
-| Portalfall | Void | II | A portal opens under each target and drops it from 7 blocks up, with 2 damage on the way through. | Ruined portals, Runebound Adepts |
+| Portalfall | Void | II | A portal opens under each target and drops it from up to 7 blocks up, with 2 damage on the way through; where it lands, enemies within 2 blocks take 3 and stagger. | Ruined portals, Runebound Adepts |
 | Moonpetal | Life | II | A storm of moonlit petals at the point: 4 damage to every enemy within 3 blocks, and 3 health to you and your allies there. | Attuned in a cherry grove |
 | Hush | Void | II | A pocket of silence at the point for 6 seconds: enemies inside lose their targets, are weakened and can barely see. | Attuned in the deep dark |
 | Sporebloom | Life | II | Spores burst at the point: Poison I and Nausea for 6 seconds to enemies within 3 blocks, and 4 hunger restored to your allies there. | Attuned in mushroom fields |
@@ -127,7 +127,7 @@ it's ready again.
 | Tidehook | Frost | II | A hook of water snags each target and reels it in to your feet in three tugs (each pulls harder the further out it is, and takes over its drift, so its own steps and the hit's knockback don't undo it): 4 damage, and it's left soaked. A boss is struck and soaked, never moved. It soaks rather than freezes, so it never ices over the water it lands in. | Fishing in open water |
 | Current | Frost | II | Only in water or rain (as a trident's riptide): a current holds you at speed the way you look for 6 ticks, then the water or the air carries you on, about 15 blocks in all (Amplify further, by the square root of its power). Fall damage is off until you land. On dry land it fizzles with a hiss and a line above the hotbar, and the mana is spent. | Fishing in open water |
 | Manaburn | Arcane | II | 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana: 20 times the hit's power (so each of a Barrage's hits takes 7), scaled like PvP damage, and never more than 20 from one player in one cast. | Mana storms (a surge after 10 casts) |
-| Resonant Shriek | Void | III | A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A second later it echoes for half as much. | Ancient cities |
+| Resonant Shriek | Void | III | A sculk shriek: 8 damage that ignores armour, a stagger, and Darkness for 6 seconds. A second later it echoes for half as much. | Ancient cities |
 | Tidecall | Frost | III | The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked. | Ocean monuments (Elder Guardians) |
 | Sandstorm | Earth | III | A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks takes 2 damage a second, can't see and is slowed. | Desert pyramids |
 | Shulkershell | Void | III | Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knockback, but it can't move. When it opens, enemies within 3 blocks float up. | End cities |
@@ -141,7 +141,7 @@ it's ready again.
 | Eclipse | Void | III | A dark disc eclipses the point for 5 seconds: enemies beneath it are blinded, take 2 damage a second, and your spells hit them 20% harder. | The Astral Observatory |
 | Drowning Word | Frost | III | For 5 seconds the target's lungs fill with water (no air, 2 damage a second), and it's soaked. | The Drowned Scriptorium |
 | Starshard | Arcane | III | 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks (in sight of the target) for 3. | Fallen Star craters |
-| Riftcall | Void | III | Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6. | Rift sieges |
+| Riftcall | Void | III | Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6. It gapes wider for every creature it holds (up to 5): half a block of reach and 1 more damage each. | Rift sieges |
 | Manatide | Arcane | III | You and your allies hit regain 3 mana a second for 10 seconds (30 at most, however extended). Each player can drink only once a minute, one drink flowing at a time. | Mana storms (a surge after 10 casts) |
 | Cinderheart | Fire | IV | Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks (and in sight) takes 3 fire damage a second. | The Cinder Warden |
 | Starmaw | Void | IV | 14 damage, and it swallows each of the target's good effects for 3 more damage apiece. | The Star Eater |

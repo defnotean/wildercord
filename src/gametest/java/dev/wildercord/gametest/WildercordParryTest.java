@@ -378,19 +378,19 @@ public class WildercordParryTest implements FabricClientGameTest {
 			dev.wildercord.cast.Effects.readyToHurt(player);
 			player.hurtServer(player.level(), player.level().damageSources().magic(), 10);
 			CastEngine.cast(player, borrow);
-			check(dev.wildercord.cast.Innates.owed(player) > 9, "Borrowed Time should heal the 10 just taken and owe it (owes " + dev.wildercord.cast.Innates.owed(player) + ")");
+			check(dev.wildercord.cast.Innates.owed(player) > 11, "Borrowed Time should heal the 10 just taken and owe it with a fifth on top (owes " + dev.wildercord.cast.Innates.owed(player) + ")");
 		});
 		// Long enough for a payment or two.
 		context.waitTicks(45);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			float before = dev.wildercord.cast.Innates.owed(player);
-			check(before > 0 && before < 10, "the debt should be paid a little each second (owes " + before + ")");
+			check(before > 0 && before < 12, "the debt should be paid a little each second (owes " + before + ")");
 			dev.wildercord.cast.Effects.readyToHurt(player);
 			player.hurtServer(player.level(), player.level().damageSources().magic(), 4);
 			CastEngine.cast(player, borrow);
 			float after = dev.wildercord.cast.Innates.owed(player);
-			check(after > before + 3.5 && after < before + 4.5, "borrowing again should add the 4 just taken to what's owed, and never the payments ("
+			check(after > before + 4.3 && after < before + 5.3, "borrowing again should add the 4 just taken (and a fifth) to what's owed, and never the payments ("
 				+ before + " owed, then " + after + ")");
 			player.setAttached(WildercordAttachments.INNATE, "");
 		});

@@ -11,7 +11,9 @@ final class FusedVoidRules {
 	// ---- Entropy: 0.5, 1, 1.5, 2 and 2.5 over five seconds.
 	static final int ENTROPY_SECONDS = 5;
 	static final double ENTROPY_STEP = 0.5;
-	static final double ENTROPY_PEAK = 2.5;
+	static final double ENTROPY_PEAK = 3.0;
+	/** Armour it strips a wound, up to this many points, until it ends. */
+	static final int ENTROPY_ARMOUR_MAX = 5;
 
 	/** How many wounds (a second apart) an Entropy lasts at {@code duration}: five, longer with Extend, never none. */
 	static int entropyWounds(double duration) {
@@ -20,11 +22,19 @@ final class FusedVoidRules {
 
 	/** The {@code step}th wound (1 = the first), at power 1: half a point more each second, up to 2.5. */
 	static double entropyWound(int step) {
-		return Math.min(ENTROPY_PEAK, ENTROPY_STEP * Math.max(1, step));
+		return Math.min(ENTROPY_PEAK, ENTROPY_STEP * (Math.max(1, step) + 1));
 	}
 
 	// ---- Devour: 5 damage; a kill feeds 10 mana and 4 absorption.
 	static final double DEVOUR_DAMAGE = 5.0;
+	/** Devour bites 1 harder for each tenth of its prey's health that is gone, up to this much more. */
+	static final double DEVOUR_EXTRA_MAX = 5.0;
+
+	/** Devour's damage on prey with {@code health} of {@code max}: 5, and 1 more for every 10% it is missing (up to 5 more). */
+	static double devourDamage(float health, float max) {
+		double missing = max <= 0 ? 0 : Math.max(0.0, 1.0 - health / max);
+		return DEVOUR_DAMAGE + Math.min(DEVOUR_EXTRA_MAX, Math.floor(missing * 10 + 1.0E-6));
+	}
 	static final float DEVOUR_MANA = 10.0F;
 	static final float DEVOUR_ABSORPTION = 4.0F;
 	/** How long the absorption lasts (the Absorption effect it rides on). */
@@ -66,6 +76,13 @@ final class FusedVoidRules {
 	static final double RECKONING_SECONDS = 4.0;
 	static final double RECKONING_SHARE = 0.5;
 	static final double RECKONING_CAP = 12.0;
+	/** The share of what comes due that heals whoever opened the ledger, and the most it heals. */
+	static final double RECKONING_HEAL_SHARE = 0.5;
+	static final float RECKONING_HEAL_MAX = 6.0F;
+
+	static float reckoningHeal(double due) {
+		return (float) Math.min(RECKONING_HEAL_MAX, Math.max(0.0, due) * RECKONING_HEAL_SHARE);
+	}
 
 	/** What a ledger of {@code owed} comes to at {@code power}: half of it, at most 12 (both scaled by power). */
 	static double reckoningDue(double owed, double power) {
@@ -80,6 +97,8 @@ final class FusedVoidRules {
 	static final int SINGULARITY_CAUGHT = 12;
 	/** Black holes one caster may have open at once (Split, Volley and Echo can't open a dozen). */
 	static final int SINGULARITY_OPEN = 3;
+	/** Projectiles one hole can swallow, each adding 1 damage to its burst. */
+	static final int SINGULARITY_SWALLOW_MAX = 5;
 
 	/**
 	 * How hard a creature is flung out of the burst: less toward a wall close behind it ({@code room}
@@ -103,6 +122,10 @@ final class FusedVoidRules {
 	// ---- Chronoshift: other spells 3 seconds sooner; Haste I and Speed I for 5 seconds.
 	static final double CHRONOSHIFT_SECONDS = 3.0;
 	static final double CHRONOSHIFT_BUFF_SECONDS = 5.0;
+	/** Mana an ally spent in the last 5 seconds that Chronoshift gives back: this share, at most that much. */
+	static final double CHRONOSHIFT_REFUND_SHARE = 0.3;
+	static final float CHRONOSHIFT_REFUND_MAX = 30.0F;
+	static final int CHRONOSHIFT_REFUND_WINDOW = 100;
 
 	/** Ticks Chronoshift takes off a spell's cooldown at {@code power}: 3 seconds, more with power, never under half or over twice that. */
 	static int chronoshiftTicks(double power) {

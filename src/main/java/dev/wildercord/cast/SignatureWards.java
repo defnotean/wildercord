@@ -102,7 +102,7 @@ final class SignatureWards {
 	}
 
 	/** Malison's curse on a creature: whose, until when, and how far it reaches when it passes on. */
-	private record Curse(LivingEntity target, Cast cast, long until, double reach, Consumer<Runnable> context) {}
+	private record Curse(LivingEntity target, Cast cast, long until, double reach, Consumer<Runnable> context, double bonus) {}
 
 	private static final Map<UUID, Stitch> STITCHES = new HashMap<>();
 	private static final Map<UUID, Clock> CLOCKS = new HashMap<>();
@@ -184,14 +184,24 @@ final class SignatureWards {
 		SignatureVfx.riposte(cast.level, ally);
 	}
 
+	/** Starmaw eats a Riposte on {@code t}; whether there was one to eat. */
+	static boolean devourGuard(LivingEntity t) {
+		Guard guard = GUARDS.get(t.getUUID());
+		return guard != null && GUARDS.remove(t.getUUID(), guard) && guard.blows > 0;
+	}
+
 	/** Malison's curse on {@code target} until {@code ticks} from now: if it dies cursed, the curse passes on within {@code reach}. */
 	static void curse(Cast cast, LivingEntity target, int ticks, double reach) {
+		curse(cast, target, ticks, reach, Effects.HEX_BONUS);
+	}
+
+	static void curse(Cast cast, LivingEntity target, int ticks, double reach, double bonus) {
 		long until = cast.level.getGameTime() + ticks;
 		Curse old = CURSES.get(target.getUUID());
 		if (old != null && old.target() == target) {
 			until = Math.max(until, old.until());
 		}
-		CURSES.put(target.getUUID(), new Curse(target, cast, until, reach, FusedFrost.context()));
+		CURSES.put(target.getUUID(), new Curse(target, cast, until, reach, FusedFrost.context(), bonus));
 	}
 
 	// ------------------------------------------------------------------ events
@@ -220,7 +230,8 @@ final class SignatureWards {
 		if (striker.level() == level && striker.distanceToSqr(entity) <= SignatureRules.RIPOSTE_REACH * SignatureRules.RIPOSTE_REACH) {
 			answering = true;
 			try {
-				guard.context.accept(() -> Effects.hurt(guard.cast, striker, SignatureFusions.magic(guard.cast), SignatureRules.RIPOSTE_DAMAGE * guard.power));
+				guard.context.accept(() -> Effects.hurt(guard.cast, striker, SignatureFusions.magic(guard.cast),
+					Math.max(SignatureRules.RIPOSTE_MIN, Math.min(SignatureRules.RIPOSTE_MAX, amount)) * guard.power));
 			} finally {
 				answering = false;
 			}
@@ -301,8 +312,13 @@ final class SignatureWards {
 			return;
 		}
 		SignatureVfx.malisonPass(level, at, heirs);
+		// Each hand-me-down is a little stronger, up to 45%; a curse at its strongest is the last to pass.
+		double bonus = Math.min(SignatureRules.MALISON_MAX, curse.bonus() + SignatureRules.MALISON_GROWTH);
 		for (LivingEntity t : heirs) {
-			Effects.hex(cast, t, ticks);
+			Effects.hex(cast, t, ticks, bonus, false);
+			if (bonus < SignatureRules.MALISON_MAX) {
+				curse(cast, t, ticks, curse.reach(), bonus);
+			}
 		}
 	}
 
@@ -398,6 +414,10 @@ final class SignatureWards {
 		bursting = true;
 		try {
 			for (LivingEntity t : SignatureFusions.take(cast, SignatureFusions.nearest(cast, clock.at, clock.radius, SignatureFusions.MAX_IN_AREA), clock.touched)) {
+				// Three clocks in one pack do not burst the same enemy three times: it takes the first one of the cast.
+				if (!VoidTime.once(cast, "doomclock", t, 200)) {
+					continue;
+				}
 				Effects.hurt(cast, t, SignatureFusions.magic(cast), damage);
 				Vec3 away = t.getBoundingBox().getCenter().subtract(clock.at);
 				if (!Spirits.isBoss(t)) {

@@ -114,7 +114,7 @@ A ring of evoker fangs snaps up around each target: 6 damage from below.
 
 *Tier II · Void · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-A pocket of silence at the point for 6 seconds (4 blocks): enemies inside lose their targets, are weakened and can barely see.
+A pocket of silence at the point for 6 seconds (4 blocks): monsters inside lose their targets and are weakened, and enemy casters can't cast.
 
 **How to get it:** Found only, never crafted: Attuned in the deep dark.
 
@@ -187,7 +187,7 @@ A storm of moonlit petals at the point: 4 damage to every enemy within 3 blocks,
 
 *Tier II · Void · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A portal opens under each target and drops it from 7 blocks up, with 2 damage on the way through.
+A portal opens under each target and drops it from up to 7 blocks up, with 2 damage on the way through; where it lands, enemies within 2 blocks take 3 and stagger.
 
 **How to get it:** Found only, never crafted: Ruined portals; Runebound Adepts (8%).
 
@@ -374,7 +374,7 @@ A drowning word: for 5 seconds the target's lungs fill with water (it loses its 
 
 *Tier III · Void · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are blinded, take 2 damage a second, and your spells hit them 20% harder.
+A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are blinded, take 2 damage a second, and your spells hit them 20% harder. Under it the light counts as dim.
 
 **How to get it:** Found only, never crafted: The Astral Observatory.
 
@@ -427,7 +427,7 @@ Drinks in the storm: you and your allies hit regain 3 mana a second for 10 secon
 
 *Tier III · Void · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A second later it echoes for half as much.
+A sculk shriek: 8 damage that ignores armour, a stagger, and Darkness for 6 seconds. A second later it echoes for half as much.
 
 **How to get it:** Found only, never crafted: Ancient cities.
 
@@ -438,7 +438,7 @@ A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A seco
 
 *Tier III · Void · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6.
+Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6. It gapes wider for every creature it holds (up to 5): half a block of reach and 1 more damage each.
 
 **How to get it:** Found only, never crafted: Rift sieges.
 
@@ -460,7 +460,7 @@ A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks tak
 
 *Tier III · Void · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knockback, but it can't move. When it opens, enemies within 3 blocks float up for 2 seconds.
+Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knockback, but it can't move. When it opens, what it turned aside leaves as up to 3 bullets that seek the nearest enemies (6 damage each at most, and they float), and enemies within 3 blocks float up for 2 seconds.
 
 **How to get it:** Found only, never crafted: End cities.
 
@@ -570,7 +570,7 @@ Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every ene
 
 *Tier IV · Void · Harms enemies · 32 mana · needs an Echo Cord*
 
-Devours the light: 14 damage, and it swallows each of the target's good effects for 3 more damage apiece.
+Devours the light: 14 damage, and it swallows each of the target's good effects and wards (Foresight, Riposte, Reflect, Reversal, Infinity, Anchor) for 4 more damage apiece, and its absorption for 1 per heart.
 
 **How to get it:** Found only, never crafted: the Star Eater.
 

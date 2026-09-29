@@ -94,7 +94,7 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Storm + Frost | **Hail** | Three hailstones of 2 damage each, and Slowness II for 4 seconds. |
 | Frost + Earth | **Glacier** | Freezes targets in place for 2 seconds (1 second on players). |
 | Life + Void | **Lifesteal** | 5 damage, and you heal for what it dealt. |
-| Wind + Void | **Warp** | You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds. |
+| Wind + Void | **Warp** | You and the first creature hit swap places through the void, and you come out unseen for a second. An enemy is left pulled and reeling: Slowness II and Nausea for 2 seconds. |
 | Life + Earth | **Bloom** | Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches. |
 | Life + Storm | **Surge** | Speed I and Strength I for 8 seconds. |
 | Arcane + Void | **Nullify** | Strips an enemy's good effects, or an ally's bad effects. |
@@ -126,20 +126,20 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Life + Arcane | **Soulbond** | Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks. |
 | Life + Time | **Second Wind** | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute. |
 | Life + Blood | **Transfusion** | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
-| Void + Time | **Entropy** | The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour. |
-| Void + Blood | **Devour** | 5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most). |
-| Arcane + Time | **Timesteal** | Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you. |
+| Void + Time | **Entropy** | The target unravels: 1, 1.5, 2, 2.5 and 3 damage over 5 seconds, straight through armour, and each wound strips a point of its armour until it ends. |
+| Void + Blood | **Devour** | 5 damage, and 1 more for every tenth of its health the target is missing (up to 10). If it kills, you feed: 10 mana and 4 absorption (twice a cast at most). |
+| Arcane + Time | **Timesteal** | Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you. With nothing to steal it steals a moment: the target drags, and you are quickened, for 2 seconds. |
 | Arcane + Blood | **Hemomancy** | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
-| Time + Blood | **Reckoning** | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |
+| Time + Blood | **Reckoning** | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12), and half of what comes due heals you (at most 6). |
 | Fire | **Conflagration** | Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flares up for 3 damage and burns 2 seconds longer. |
 | Frost | **Absolute Zero** | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws. |
 | Storm | **Thunderhead** | A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 3 damage. |
 | Wind | **Updraft** | Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft smashes them back down for 4 damage. |
 | Earth | **Monolith** | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |
 | Life | **Lifebloom** | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
-| Void | **Singularity** | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |
+| Void | **Singularity** | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks and swallowing arrows and bolts, then bursts: 6 damage (1 more for each thing swallowed, up to 5), and they're flung outward. |
 | Arcane | **Prismatic Burst** | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22. |
-| Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
+| Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
 | Blood | **Sanguine Rite** | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
 
 ### Signature fusions (16)
@@ -155,14 +155,14 @@ Each of these pairs of particular runes makes its own rune, in place of the elem
 | Heal + Countdown | **Stitchtime** | Life | III | 16 | Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhile is counted, and when the time is up it all heals back at once (12 at most). | Second Wind |
 | Venom + Leech | **Parasite** | Blood | III | 16 | Plants a parasite in each target for 6 seconds: Poison I, and every second it drains 1 health from it into you. If its host dies with it inside, it leaps to the nearest enemy within 6 blocks for the time it had left (once). | Transfusion |
 | Windcut + Bleed | **Razorgale** | Wind | III | 18 | A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2 and left bleeding; half a second later the gale comes back round for 2 more, tearing every wound open (Rupture). | Crimson Mist |
-| Primer + Stasis | **Doomclock** | Time | IV | 28 | Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks. Never breaks blocks. | Everburn |
+| Primer + Stasis | **Doomclock** | Time | IV | 28 | Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks (an enemy takes one burst a cast). Never breaks blocks. | Everburn |
 | Shadowstep + Lightning | **Thunderstep** | Storm | III | 18 | You come down as a bolt of lightning where the spell landed (up to 24 blocks), right behind the first enemy it hit: 8 damage to every enemy within 2.5 blocks of you, stunned for half a second. On Self it strikes where you stand. | Riftbolt |
 | Smite + Regrowth | **Halo** | Arcane | III | 18 | A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time. | Soulbond |
 | Thunderclap + Tremor | **Thunderquake** | Earth | III | 20 | The ground booms like thunder: three shockwaves roll out from where it lands over a second, reaching 2, 4 and 6 blocks. Each strikes every enemy it reaches for 4 and tosses it up, so the nearer, the harder: 12 at the heart. | Magnetize |
 | Starfall + Meteor | **Cometfall** | Arcane | IV | 32 | A comet streaks down on the point a second later: 16 damage to every enemy within 4 blocks, setting them alight, and five shards of it scatter into the nearest other enemies within 10 blocks for 4 each. Never breaks blocks. | Starfire |
-| Reflect + Foresight | **Riposte** | Time | III | 16 | For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with 6 damage to whoever struck. | Timesteal |
+| Reflect + Foresight | **Riposte** | Time | III | 16 | For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with the blow's own damage (4 to 12) to whoever struck. | Timesteal |
 | Summit Wind + Sandstorm | **Dust Devil** | Wind | IV | 26 | A dust devil touches down where it lands and chases the nearest enemy for 5 seconds. Enemies within 2 blocks of it are caught up and whirled round it, blinded and scoured for 3 damage a second; when it blows out it flings them high. | Downdraft |
-| Hex + Resonance | **Malison** | Void | III | 16 | 3 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, for the time it had left, to up to 3 enemies within 6 blocks of it. | Nullify |
+| Hex + Resonance | **Malison** | Void | III | 16 | 4 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, 5% stronger each time (up to 45%), for the time it had left, to up to 3 enemies within 6 blocks of it. | Nullify |
 | Coldsnap + Stalactite | **Avalanche** | Frost | III | 18 | Snow and ice crash down round where it lands: 6 damage to every enemy within 3 blocks (half again on a bare head), buried in snow (Slowness III for 3 seconds). Drifts of snow lie where it fell for 10 seconds. | Glacier |
 
 <!-- fusions:end -->

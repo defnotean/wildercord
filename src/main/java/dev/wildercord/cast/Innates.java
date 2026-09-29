@@ -128,6 +128,11 @@ public final class Innates {
 
 	private record Debt(float left, float perSecond, long until) {}
 
+	/** What Borrowed Time is repaid with: the sum borrowed, and a fifth again. */
+	private static final float BORROW_INTEREST = 1.2F;
+	/** What each afterimage has soaked so far, by its body: it bursts harder for it. */
+	private static final Map<UUID, Float> SOAKED = new HashMap<>();
+
 	private record SpellHit(SpellPlan.Segment root, long time) {}
 
 	private record Afterimage(Mannequin body, LivingEntity caster, long until, double power) {}
@@ -159,6 +164,9 @@ public final class Innates {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (damage <= 0 || !(entity.level() instanceof ServerLevel level)) {
 				return;
+			}
+			if (entity instanceof Mannequin && entity.entityTags().contains(AFTERIMAGE_TAG)) {
+				SOAKED.merge(entity.getUUID(), damage, Float::sum);
 			}
 			long now = level.getGameTime();
 			if (!repaying && entity instanceof ServerPlayer player && player.getAttachedOrElse(WildercordAttachments.INNATE, "").equals(Runes.BORROWED_TIME.id())) {
@@ -212,6 +220,7 @@ public final class Innates {
 			LAST_SPELL_ON.clear();
 			FORTUNE.clear();
 			AFTERIMAGES.clear();
+			SOAKED.clear();
 			STORMHEART.clear();
 			STORM_LAST.clear();
 		});
@@ -411,16 +420,20 @@ public final class Innates {
 					owed += hurt[1];
 				}
 			}
-			history.clear();
 		}
+		// Only what can really be mended is borrowed: health that has already come back is nothing to repay.
+		owed = Math.min(owed, Math.max(0.0F, player.getMaxHealth() - player.getHealth()));
 		if (owed < 0.5F) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.nothing_borrowed"));
 			return;
 		}
+		if (history != null) {
+			history.clear();
+		}
 		player.heal(owed);
-		// Borrowing again adds to what's still owed (it never wipes it), and the whole of it is paid over the next ten seconds.
+		// Borrowing again adds to what's still owed (it never wipes it), and the whole of it, with a fifth on top, is paid over the next ten seconds.
 		Debt old = DEBTS.get(player.getUUID());
-		float total = owed + (old == null ? 0 : old.left());
+		float total = owed * BORROW_INTEREST + (old == null ? 0 : old.left());
 		DEBTS.put(player.getUUID(), new Debt(total, total / 10F, now + 200));
 		TechniqueVfx.rewind(player.level(), player.position(), player.position());
 		ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
@@ -544,8 +557,11 @@ public final class Innates {
 	private static void burst(ServerLevel level, Afterimage image) {
 		Vec3 c = image.body().getBoundingBox().getCenter();
 		Cast cast = new Cast(image.caster());
+		// Bait and revenge: it pays back 1 for every 6 it soaked (up to 8 more).
+		double soaked = Math.min(8.0, Math.floor(SOAKED.getOrDefault(image.body().getUUID(), 0.0F) / 6.0F));
+		SOAKED.remove(image.body().getUUID());
 		for (Entity e : level.getEntities(image.body(), new AABB(c, c).inflate(3), e -> Targets.canHarm(image.caster(), e))) {
-			Effects.hurt(cast, (LivingEntity) e, level.damageSources().indirectMagic(image.caster(), image.caster()), 8 * image.power());
+			Effects.hurt(cast, (LivingEntity) e, level.damageSources().indirectMagic(image.caster(), image.caster()), (8 + soaked) * image.power());
 		}
 		Sigils.flash(level, c, 0xFFB45AF0, 2.0F);
 		ElementFx.voidImpact(level, c, 2.0);
@@ -678,9 +694,12 @@ public final class Innates {
 						it.remove();
 						continue;
 					}
-					float pay = Math.min(debt.left(), debt.perSecond());
+					// A payment never kills: it stops a heart short and waits.
+					float pay = Math.min(Math.min(debt.left(), debt.perSecond()), Math.max(0.0F, player.getHealth() - 1.0F));
 					entry.setValue(new Debt(debt.left() - pay, debt.perSecond(), debt.until()));
-					payments.put(player, pay);
+					if (pay > 0) {
+						payments.put(player, pay);
+					}
 				}
 				// Paid after the sweep: a payment can kill, and a death (or a monster Rebirth's blast slays) changes the debts.
 				payments.forEach((player, pay) -> {

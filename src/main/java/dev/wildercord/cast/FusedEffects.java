@@ -333,7 +333,10 @@ public final class FusedEffects {
 			return;
 		}
 		FusionVfx.warp(cast.level, from, to);
+		// Through the void: you come out unseen for a second, and an enemy is left pulled (a blast now implodes on it).
+		cast.caster.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 20, 0, false, false));
 		if (Targets.canHarm(cast.caster, partner)) {
+			Reactions.mark(partner, Reactions.Mark.PULLED, 80);
 			partner.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(2, duration), 1, false, true));
 			partner.addEffect(new MobEffectInstance(MobEffects.NAUSEA, Effects.ticks(2, duration), 0, false, false));
 		}

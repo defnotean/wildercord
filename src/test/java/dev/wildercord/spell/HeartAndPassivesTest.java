@@ -26,10 +26,10 @@ class HeartAndPassivesTest {
 
 	@Test
 	void onlySustainableRunesCanBePassives() {
-		for (RuneDef ok : runes(SELF, ORBIT, SWIFT, STONESKIN, INFINITY, REFLECT, SHOCK, DISMANTLE, AMPLIFY, FRUGAL_MOD, QUICKEN)) {
+		for (RuneDef ok : runes(SELF, ORBIT, SWIFT, STONESKIN, REFLECT, SHOCK, DISMANTLE, AMPLIFY, FRUGAL_MOD, QUICKEN)) {
 			assertTrue(Passives.allowed(ok), ok.name());
 		}
-		for (RuneDef no : runes(BOLT, BEAM, DOMAIN, HEAL, REVERSAL, FORESIGHT, STASIS, LIGHTNING, HOLLOW, SUMMON, SHIELD, VEIL, SPLIT_MOD,
+		for (RuneDef no : runes(BOLT, BEAM, DOMAIN, HEAL, REVERSAL, FORESIGHT, STASIS, LIGHTNING, HOLLOW, SUMMON, SHIELD, VEIL, INFINITY, ACCELERATE, SPLIT_MOD,
 				VOLLEY_MOD, VOW_MOD, BLOOD_PRICE_MOD, DELAY, ON_HIT, COMBO)) {
 			assertFalse(Passives.allowed(no), no.name());
 		}

@@ -34,6 +34,43 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Gear in a slot **drops when you die**, like the rest of your inventory (Curse of Vanishing destroys its own), and
   stays with you when `keepInventory` is on. It never duplicates through death, respawning or changing dimension.
 - The tooltips and Cord screen texts about holding the tome or a Focus of the Deep Well now mention the slot.
+- **Void and time runes, each with a verb of its own** (the spell-feel pass; see the rune pages for the numbers):
+  - **Hex** now costs you attention: hexed monsters fix on you, and the curse lasts 6 seconds. **Blind**: a blinded monster
+    lashes out at whatever stands next to it (a player is blacked out for 3 seconds, not 5). **Veil**: the first damage
+    you deal from it lands half again as hard, and ends it. **Shadowstep**: the next blow on the creature you appear
+    behind lands half again as hard. **Time Skip**: you come out of it with a moment where nothing can hurt you (not
+    again for 5 seconds). **Anchor**: no spell can move you, and it doubles its armour once you stand still.
+  - **Hush** is now an anti-magic pocket: enemy casters inside cannot cast (and it no longer blinds). **Infinity**
+    slows hostile things harder the closer they come, and stops projectiles; it is no longer a passive. **Shulkershell**
+    turns the blows it takes into bullets when it opens. **Singularity** swallows arrows and bolts and bursts harder for
+    them. **Riftcall** gapes wider for every creature it holds. **Gravity Well** pulls fliers down and leaves creatures
+    pulled. **Dragon Breath** rolls on along the way you blew it. **Hollow** erases one creature and drags the rest; it
+    no longer hits a whole pack for 20 each. **Sonic Boom** pierces everything on its line, through walls.
+  - **Wither** is Wither IV for 6 seconds, spreads to whoever strikes it in melee, and the withered cannot heal.
+    **Entropy** climbs 1 to 3 and strips a point of armour a wound. **Devour** bites harder the emptier its prey.
+    **Malison** hits for 4 and grows 5% stronger each time it passes on. **Starmaw** also devours wards (Foresight,
+    Riposte, Reflect, Reversal, Infinity, Anchor) and absorption. **Blackspark** arcs to a second enemy. **Resonant
+    Shriek** staggers. **Banish** leaves its target dazed. **Pull** leaves it staggered and pulled for 4 seconds.
+    **Portalfall** slams where it lands. **Warp** leaves the enemy pulled and you unseen for a second. **Umbra** also
+    counts an Eclipse as dim light. **Shades** are frail, live 15 seconds and bite hard only where the light is dim;
+    each bite leaves a target shadowed. **Countdown**: if its mark dies first, the moment finds the nearest enemy.
+    **Reckoning** heals you a share of what it collects. **Foresight** turns away at most 12 damage a dodge.
+    **Riposte** answers with the blow's own damage (4 to 12). **Timesteal** always steals something. **Chronoshift**
+    also gives back a third of the mana an ally spent in the last 5 seconds. **Accelerate** is Speed II with faster
+    charging and faster bolts (it is no longer a passive). **Borrowed Time** repays with a fifth on top and never kills
+    you. **Phantom** bursts harder for every blow its decoy soaked. **Grapple** stops you where it lands you.
+  - The secret spell **Singularity** is now **Black Star**, so the fused rune keeps its name.
+
+### Fixed
+- **Borrowed Time** no longer repays health it never healed: only what you were missing is borrowed.
+- **Foresight** no longer refills its dodges when the same spell lands again (a Zone, a Pulse or an Echo of it).
+- **Hollow, Doomclock, Dragon Breath, Gravity Well, Riftcall and Eclipse** no longer stack on crowds or under a repeating
+  shape: a creature takes each once per cast, so a pack no longer takes 180 damage from one Hollow.
+- **Collect** takes 48 things at most, and makes a small fizzle when there is nothing to take.
+- **Rewind** will not put you into lava, a wall or thin air.
+- **Zipper** will not open a wall you may not build in (a claim, spawn protection).
+- **Malison** no longer plays its cast sound twice; Umbra's ring uses the dark tint like the rest of void.
+- **Warp's** description now mentions the Nausea it causes.
 
 ## [0.5.0-alpha] - 2026-09-29
 

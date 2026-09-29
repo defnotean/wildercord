@@ -79,7 +79,7 @@ public final class Spirits {
 			Vfx.emit(level, ParticleTypes.POOF, around.add(0, 1, 0), 8, 0.3, 0.02);
 			return;
 		}
-		int lifetime = (int) Math.round(20 * 20 * duration);
+		int lifetime = (int) Math.round((shadow ? 15 : 20) * 20 * duration);
 		LivingEntity target = caster.getLastHurtMob() != null && caster.getLastHurtMob().isAlive() ? caster.getLastHurtMob() : null;
 		for (int i = 0; i < count; i++) {
 			Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.MOB_SUMMONED);
@@ -94,12 +94,18 @@ public final class Spirits {
 				level.registryAccess().lookupOrThrow(Registries.WOLF_VARIANT).get(WolfVariants.BLACK)
 					.ifPresent(variant -> wolf.setComponent(DataComponents.WOLF_VARIANT, variant));
 				wolf.setCustomName(Component.translatable("entity.wildercord.shadow_hound").withColor(0x9A6AD0));
+				// Frail and only strong in the dark: 20 health, and Strength only where the light is 7 or less (see the aura below).
+				wolf.addTag(VoidTime.SHADE_TAG);
+				wolf.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(20.0);
+				wolf.setHealth(20.0F);
 			} else {
 				wolf.setCustomName(Component.translatable("entity.wildercord.spirit_wolf").withColor(0xE678DC));
 				wolf.addEffect(new MobEffectInstance(MobEffects.GLOWING, lifetime, 0, false, false));
 			}
 			wolf.addEffect(new MobEffectInstance(MobEffects.SPEED, lifetime, 1, false, false));
-			wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, (int) Math.max(0, Math.round(power) - (shadow ? 0 : 1)), false, false));
+			if (!shadow) {
+				wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, (int) Math.max(0, Math.round(power) - 1), false, false));
+			}
 			wolf.setAttached(WildercordAttachments.SPIRIT_UNTIL, level.getGameTime() + lifetime);
 			if (target != null && Targets.canHarm(caster, target)) {
 				wolf.setTarget(target);
@@ -111,6 +117,9 @@ public final class Spirits {
 					Scheduler.later(t, () -> {
 						if (!wolf.isRemoved()) {
 							TechniqueVfx.shadeAura(level, wolf);
+							if (level.getMaxLocalRawBrightness(wolf.blockPosition()) <= 7 || VoidTime.darkened(wolf)) {
+								wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 25, (int) Math.max(0, Math.round(power) - 1), false, false));
+							}
 						}
 					});
 				}

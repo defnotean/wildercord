@@ -101,7 +101,7 @@ public class RuneBolt extends Projectile {
 		bolt.bouncesLeft = SpellNumbers.bounces(group);
 		bolt.homing = SpellNumbers.homing(group);
 		bolt.arc = arc;
-		bolt.speed = arc ? SpellNumbers.arcSpeed(group) : SpellNumbers.boltSpeed(group);
+		bolt.speed = (arc ? SpellNumbers.arcSpeed(group) : SpellNumbers.boltSpeed(group)) * (VoidTime.hurried(cast.caster) ? VoidTime.HURRY_BOLT : 1.0);
 		bolt.lifeLeft = arc ? 120 : (int) Math.ceil(RANGE / bolt.speed) + 4;
 		bolt.travelLeft = RANGE;
 		bolt.color = CastEngine.colorOf(group);

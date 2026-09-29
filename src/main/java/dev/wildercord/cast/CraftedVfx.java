@@ -339,7 +339,7 @@ final class CraftedVfx {
 	static void umbra(ServerLevel level, Entity t, boolean dim) {
 		Vec3 c = t.getBoundingBox().getCenter();
 		ElementFx.blackCore(level, c, dim ? 0.8 : 0.5, 8);
-		Light.ring(level, c, UP, VOID | Light.DARK, Math.max(1.0, t.getBbWidth() + 0.8), 0.2, 0.08, 8);
+		Light.ring(level, c, UP, ElementFx.dark(0x1A0830), Math.max(1.0, t.getBbWidth() + 0.8), 0.2, 0.08, 8);
 		Vfx.emit(level, ParticleTypes.SQUID_INK, c, dim ? 8 : 4, 0.25, 0.02);
 		Fx.sound(level, c, SoundEvents.SCULK_CATALYST_BLOOM, 0.7F, dim ? 0.6F : 0.9F);
 	}

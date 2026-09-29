@@ -188,7 +188,7 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ Entropy
 
-	/** 0.5, 1, 1.5, 2 and 2.5 over five seconds, straight through diamond armour; struck twice, it's still one. */
+	/** 1, 1.5, 2, 2.5 and 3 over five seconds, straight through diamond armour; struck twice, it's still one. */
 	private static String entropy(ClientGameTestContext context, TestSingleplayerContext world) {
 		int id = onServer(world, server -> {
 			ServerPlayer player = player(server);
@@ -210,10 +210,10 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 		float after = health(world, id);
 		if (!near(early, 20)) {
 			failure = "it should do nothing the moment it lands (health " + early + " after 5 ticks)";
-		} else if (!near(first, 19.5)) {
-			failure = "the first wound, a second in, should be 0.5 through the armour, and only one of them though it was cast twice (health " + first + ")";
-		} else if (!near(end, 12.5)) {
-			failure = "five wounds of 0.5, 1, 1.5, 2 and 2.5 should take 7.5 through the armour (health " + end + ")";
+		} else if (!near(first, 19)) {
+			failure = "the first wound, a second in, should be 1 through the armour, and only one of them though it was cast twice (health " + first + ")";
+		} else if (!near(end, 10)) {
+			failure = "five wounds of 1, 1.5, 2, 2.5 and 3 should take 10 through the armour (health " + end + ")";
 		} else if (!near(after, end)) {
 			failure = "it should stop after five seconds (health " + end + " then " + after + ")";
 		}

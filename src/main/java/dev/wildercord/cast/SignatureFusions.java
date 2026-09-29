@@ -920,7 +920,7 @@ final class SignatureFusions {
 	private static void malison(Cast cast, LivingEntity t, double power, int ticks, double reach, boolean passes) {
 		// The damage first, so the curse doesn't sharpen its own blow.
 		Effects.hurt(cast, t, magic(cast), SignatureRules.MALISON_DAMAGE * power);
-		Effects.hex(cast, t, ticks);
+		Effects.hex(cast, t, ticks, Effects.HEX_BONUS, false);
 		SignatureVfx.malison(cast.level, t);
 		if (passes) {
 			SignatureWards.curse(cast, t, ticks, reach);

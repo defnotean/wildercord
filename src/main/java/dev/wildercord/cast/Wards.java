@@ -69,6 +69,8 @@ public final class Wards {
 	private static final class Sight {
 		long until;
 		int charges;
+		/** The press that put it up: a Zone, Pulse or Echo of the same cast only lengthens it, never refills it. */
+		int cast;
 	}
 
 	private static final class Infinity {
@@ -97,6 +99,15 @@ public final class Wards {
 	/** Snapshots every half second, kept for 7 seconds. */
 	private static final int HISTORY_SIZE = 14;
 	private static boolean reflecting;
+	/** The most damage one Foresight dodge turns away. */
+	static final float FORESIGHT_CAP = 12.0F;
+	/** How far Infinity's slowing reaches, and how hard it slows at a distance (amplifier: 1 is Slowness II, 5 is VI). */
+	static final double ZENO_REACH = 5.0;
+
+	static int zenoLevel(double distance) {
+		return distance <= 2.0 ? 5 : distance <= 3.0 ? 4 : distance <= 4.0 ? 3 : 1;
+	}
+	private static boolean softening;
 
 	public static void init() {
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register(Wards::allowDamage);
@@ -110,6 +121,7 @@ public final class Wards {
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Wards::tick);
 		Techniques.init();
+		VoidTime.init();
 		// Held things let go before the world is saved, and anything saved while held (a player who
 		// logged out in Stasis) gets its gravity back when it loads. So does the copy of a held creature or
 		// arrow carried to another world (a portal): it's a new entity there, which nothing holds.
@@ -197,15 +209,38 @@ public final class Wards {
 		TechniqueVfx.reversalMark(cast.level, t);
 	}
 
+	/** Starmaw eats the wards on {@code t} (Foresight, Reflect, Reversal, Infinity, Riposte, Anchor); how many it took. */
+	static int devourWards(LivingEntity t) {
+		int taken = 0;
+		UUID id = t.getUUID();
+		taken += FORESIGHT.remove(id) != null ? 1 : 0;
+		taken += REFLECT.remove(id) != null ? 1 : 0;
+		taken += REVERSAL.remove(id) != null ? 1 : 0;
+		if (INFINITY.remove(id) != null) {
+			letGo(id);
+			taken++;
+		}
+		taken += SignatureWards.devourGuard(t) ? 1 : 0;
+		taken += VoidTime.unanchor(t) ? 1 : 0;
+		return taken;
+	}
+
 	static void reflect(Cast cast, LivingEntity t, int ticks, double fraction) {
 		REFLECT.put(t.getUUID(), new Reflect(cast.level.getGameTime() + ticks, fraction));
 		TechniqueVfx.reflectMark(cast.level, t);
 	}
 
 	static void foresight(Cast cast, LivingEntity t, int ticks, int charges) {
+		Sight old = FORESIGHT.get(t.getUUID());
+		long until = cast.level.getGameTime() + ticks;
+		if (old != null && old.cast == cast.id() && old.until >= cast.level.getGameTime() - 1) {
+			old.until = Math.max(old.until, until);
+			return;
+		}
 		Sight sight = new Sight();
-		sight.until = cast.level.getGameTime() + ticks;
+		sight.until = until;
 		sight.charges = charges;
+		sight.cast = cast.id();
 		FORESIGHT.put(t.getUUID(), sight);
 		TechniqueVfx.foresightMark(cast.level, t);
 	}
@@ -249,6 +284,11 @@ public final class Wards {
 			history.pollLast();
 		}
 		Vec3 from = player.position();
+		// Never back into lava, a wall or thin air: time will not put you somewhere that would kill you.
+		if (!Effects.safeSpot(player.level(), player, pick.pos())) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.rewind_unsafe"));
+			return;
+		}
 		player.teleportTo(player.level(), pick.pos().x, pick.pos().y, pick.pos().z, Set.<Relative>of(), pick.yRot(), pick.xRot(), false);
 		player.setDeltaMovement(Vec3.ZERO);
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
@@ -278,15 +318,25 @@ public final class Wards {
 			}
 			return false;
 		}
-		Sight sight = FORESIGHT.get(entity.getUUID());
-		if (sight != null && source.getEntity() != null && source.getEntity() != entity) {
+		Sight sight = softening ? null : FORESIGHT.get(entity.getUUID());
+		if (sight != null && sight.charges > 0 && source.getEntity() != null && source.getEntity() != entity) {
 			if (sight.until < level.getGameTime()) {
 				FORESIGHT.remove(entity.getUUID());
 				return true;
 			}
 			dodge(level, entity, source);
 			if (--sight.charges <= 0) {
-				FORESIGHT.remove(entity.getUUID());
+				// Spent, it stays (resting) until its time is up so the same cast cannot put it up again.
+				sight.until = Math.min(sight.until, level.getGameTime() + 5);
+			}
+			// A step aside stops a blow of up to 12; a bigger one only loses that much.
+			if (amount > FORESIGHT_CAP && !softening) {
+				softening = true;
+				try {
+					entity.hurtServer(level, source, amount - FORESIGHT_CAP);
+				} finally {
+					softening = false;
+				}
 			}
 			return false;
 		}
@@ -470,9 +520,12 @@ public final class Wards {
 				p.needsSync = true;
 			}
 			if (now % 4 == 0) {
-				for (Entity e : level.getEntities(who, who.getBoundingBox().inflate(1.6), e -> Targets.canHarm(ward.caster, e))) {
-					Vec3 away = Effects.horizontal(e.position().subtract(who.position()), who.getLookAngle());
-					Effects.push((LivingEntity) e, away.scale(0.45).add(0, 0.1, 0));
+				// Zeno's bubble: the closer a hostile thing comes, the slower it moves (Slowness II at 5 blocks up to VI within 2).
+				for (Entity e : level.getEntities(who, who.getBoundingBox().inflate(ZENO_REACH), e -> e instanceof LivingEntity && Targets.canHarm(ward.caster, e))) {
+					double d = e.getBoundingBox().getCenter().distanceTo(centre);
+					if (d <= ZENO_REACH) {
+						((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 8, zenoLevel(d), false, false), ward.caster);
+					}
 				}
 			}
 			if (now % 8 == 0) {

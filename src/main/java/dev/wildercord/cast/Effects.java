@@ -220,6 +220,7 @@ public final class Effects {
 		}
 		// Self always means you: movement effects move you even though they are "harmful" to others.
 		List<LivingEntity> moved = hit.self() ? List.of(caster) : harmed;
+		List<LivingEntity> targetsHit = harmed;
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
 		switch (builtIn(rune) ? rune.path() : "") {
@@ -258,7 +259,9 @@ public final class Effects {
 				Vec3 towards = hit.origin().subtract(t.position());
 				double distance = towards.length();
 				Vfx.pull(level, t, hit.origin());
-				Reactions.mark(t, Reactions.Mark.PULLED);
+				// Left staggered where it lands, and marked long enough to follow with a blast.
+				Reactions.mark(t, Reactions.Mark.PULLED, 80);
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 2, false, false));
 				push(t, towards.normalize().scale(Math.min(2.6, 0.5 + distance * 0.22) * power).add(0, 0.3, 0));
 			});
 			case "launch" -> moved.forEach(t -> {
@@ -325,13 +328,22 @@ public final class Effects {
 			case "sonic_boom" -> harmed.forEach(t -> {
 				Vfx.sonicBoom(level, hit.origin(), t.getBoundingBox().getCenter());
 				hurt(cast, t, level.damageSources().sonicBoom(caster), 16 * power);
+				sonicLine(cast, hit.origin(), t, targetsHit, level.damageSources().sonicBoom(caster), 8 * power);
 			});
 			case "wither" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.WITHER, ticks(8, duration), 2, false, true), caster);
-				Reactions.mark(t, Reactions.Mark.SHADOWED, ticks(8, duration));
+				// Wither IV for 6 s: the rot spreads to whoever strikes it and the wound will not close.
+				t.addEffect(new MobEffectInstance(MobEffects.WITHER, ticks(6, duration), 3, false, true), caster);
+				Reactions.mark(t, Reactions.Mark.SHADOWED, ticks(6, duration));
+				CraftedRunes.noHeal(t, ticks(6, duration));
+				VoidTime.withered(t, ticks(6, duration));
 				Vfx.wither(level, t);
 			});
-			case "dragon_breath" -> dragonBreath(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, duration);
+			case "dragon_breath" -> {
+				// A breath laid again by a repeating shape on the same place does not stack.
+				if (VoidTime.onceAt(cast, "dragon_breath", hit.point(), (int) Math.round(100 * duration) - 5)) {
+					dragonBreath(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, duration, hit.self() ? caster.getLookAngle() : hit.dir());
+				}
+			}
 			case "shock" -> harmed.forEach(t -> shock(cast, t, power));
 			case "haste" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.HASTE, ticks(30, duration), Math.min(3, 1 + amplify), false, true));
@@ -369,6 +381,7 @@ public final class Effects {
 			});
 			case "veil" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks(12, duration), 0, false, true));
+				VoidTime.veiled(t, ticks(12, duration));
 				for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(16.0), e -> e instanceof net.minecraft.world.entity.Mob)) {
 					net.minecraft.world.entity.Mob mob = (net.minecraft.world.entity.Mob) e;
 					if (mob.getTarget() == t) {
@@ -407,7 +420,11 @@ public final class Effects {
 				}
 			}
 			case "tremor" -> tremor(cast, hit.point(), 4.0 * SpellNumbers.effectRadius(node), power);
-			case "gravity_well" -> gravityWell(cast, hit.point(), 7.0 * SpellNumbers.effectRadius(node), power, duration);
+			case "gravity_well" -> {
+				if (VoidTime.onceAt(cast, "gravity_well", hit.point(), (int) Math.round(40 * duration))) {
+					gravityWell(cast, hit.point(), 7.0 * SpellNumbers.effectRadius(node), power, duration);
+				}
+			}
 			case "summon" -> Spirits.summonWolves(cast, caster.position(), 3, power, duration);
 			case "venom" -> harmed.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.POISON, ticks(6, duration), Math.min(3, 1 + amplify), false, true), caster);
@@ -423,12 +440,14 @@ public final class Effects {
 			case "thunderclap" -> thunderclap(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power);
 			case "starfall" -> starfall(cast, hit.point(), 4.0 * SpellNumbers.effectRadius(node), power);
 			case "blind" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, ticks(5, duration), 0, false, true));
-				t.addEffect(new MobEffectInstance(MobEffects.DARKNESS, ticks(5, duration), 0, false, true));
+				// Players are blacked out for 3 s, not 5; a monster is blind for 5 and lashes out at what stands next to it.
+				int dark = t instanceof Player ? ticks(3, duration) : ticks(5, duration);
+				t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, dark, 0, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.DARKNESS, dark, 0, false, true));
 				if (t instanceof net.minecraft.world.entity.Mob mob) {
-					mob.setTarget(null);
+					VoidTime.lashOut(cast, mob, dark);
 				}
-				Reactions.mark(t, Reactions.Mark.SHADOWED, ticks(5, duration));
+				Reactions.mark(t, Reactions.Mark.SHADOWED, dark);
 				Vfx.blind(level, t);
 			});
 			case "chill" -> harmed.forEach(t -> {
@@ -565,7 +584,13 @@ public final class Effects {
 				}
 				ExpansionVfx.leech(level, t, caster);
 			});
-			case "hex" -> harmed.forEach(t -> hex(cast, t, ticks(8, duration)));
+			case "hex" -> harmed.forEach(t -> {
+				hex(cast, t, ticks(6, duration));
+				// The price of the curse: the hexed creature fixes on whoever hexed it.
+				if (t instanceof net.minecraft.world.entity.Mob mob) {
+					VoidTime.fixate(cast, mob, ticks(6, duration));
+				}
+			});
 			case "rend" -> harmed.forEach(t -> rend(cast, t, ticks(10, duration)));
 			case "countdown" -> harmed.forEach(t -> countdown(cast, t, power));
 			case "jolt" -> harmed.forEach(t -> {
@@ -640,6 +665,10 @@ public final class Effects {
 	}
 
 	static void push(LivingEntity target, Vec3 impulse) {
+		// Anchor: nothing a spell does moves it.
+		if (VoidTime.anchored(target)) {
+			return;
+		}
 		double resist = target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 		Vec3 scaled = target instanceof Player ? impulse : impulse.scale(Math.max(0.0, 1.0 - resist));
 		target.setDeltaMovement(target.getDeltaMovement().add(scaled));
@@ -696,6 +725,8 @@ public final class Effects {
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);
 		amount *= hexBonus(cast, target);
+		// Veil's ambush and Shadowstep's backstab: the first blow from the dark lands half again as hard.
+		amount *= VoidTime.opener(cast, target);
 		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
 		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
 		amount *= Reactions.hit(cast, target, currentElement);
@@ -775,11 +806,14 @@ public final class Effects {
 		}
 	}
 
-	private static void dragonBreath(Cast cast, Vec3 center, double radius, double power, double duration) {
+	private static void dragonBreath(Cast cast, Vec3 start, double radius, double power, double duration, Vec3 along) {
 		int pulses = (int) Math.round(5 * duration);
-		Fx.sound(cast.level, center, net.minecraft.sounds.SoundEvents.ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
+		Fx.sound(cast.level, start, net.minecraft.sounds.SoundEvents.ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
+		// The breath rolls on along the way it was blown, a block and a bit each second: a lane, not a spot.
+		Vec3 drift = horizontal(along, along).scale(DRAGON_DRIFT);
 		for (int i = 0; i < pulses; i++) {
 			boolean later = i > 0;
+			Vec3 center = i == 0 ? start : CastEngine.ground(cast.level, start.add(drift.scale(i)).add(0, 1.0, 0));
 			Scheduler.later(1 + i * 20, () -> {
 				if (!cast.alive()) {
 					return;
@@ -847,6 +881,9 @@ public final class Effects {
 		return footing(level, feet) && level.noCollision(entity, box) && level.getWorldBorder().isWithinBounds(feet.x, feet.z)
 			&& !scorching(level, box);
 	}
+
+	/** How far Dragon Breath's cloud rolls on each second. */
+	private static final double DRAGON_DRIFT = 1.2;
 
 	/** Inferno: everything around the point burns for a few seconds. */
 	private static void inferno(Cast cast, Vec3 point, double radius, double power, double duration) {
@@ -925,6 +962,19 @@ public final class Effects {
 		}
 		caster.resetFallDistance();
 		Scheduler.later(30, caster::resetFallDistance);
+		// It reels you in, not past: within 2 blocks of the point the momentum dies (you arrive, you do not overshoot).
+		Vec3 point = hit.point();
+		ShapeRunners.each(cast, 30, tick -> {
+			if (tick > 2 && caster.position().add(0, 1, 0).distanceTo(point) < 2.0) {
+				caster.setDeltaMovement(caster.getDeltaMovement().scale(0.2));
+				caster.needsSync = true;
+				if (caster instanceof ServerPlayer player) {
+					player.connection.send(new ClientboundSetEntityMotionPacket(player));
+				}
+				return false;
+			}
+			return true;
+		});
 		Vfx.grapple(cast.level, caster.getEyePosition().subtract(0, 0.4, 0), hit.point());
 	}
 
@@ -1011,6 +1061,8 @@ public final class Effects {
 
 	/** Collect reaches this far at most, however widened. */
 	private static final double MAX_COLLECT = 24.0;
+	/** Collect takes at most this many things at once (each is a streak of light). */
+	private static final int MAX_COLLECT_ITEMS = 48;
 
 	/** Collect: items and experience orbs around the point fly to the caster (not off ground they couldn't build on: a claim, spawn). */
 	private static void collect(Cast cast, Vec3 point, double radius) {
@@ -1020,6 +1072,9 @@ public final class Effects {
 		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(reach),
 				e -> (e instanceof net.minecraft.world.entity.item.ItemEntity || e instanceof net.minecraft.world.entity.ExperienceOrb)
 					&& e.distanceToSqr(point) <= reach * reach && onOpenGround(cast, BlockPos.containing(e.position()).below()))) {
+			if (moved >= MAX_COLLECT_ITEMS) {
+				break;
+			}
 			Vfx.stream(cast.level, e.position(), caster.position().add(0, 1, 0), Vfx.theme("void"), 1);
 			e.teleportTo(caster.getX(), caster.getY() + 0.5, caster.getZ());
 			if (e instanceof net.minecraft.world.entity.item.ItemEntity item) {
@@ -1027,9 +1082,7 @@ public final class Effects {
 			}
 			moved++;
 		}
-		if (moved > 0) {
-			Fx.sound(cast.level, caster.position(), net.minecraft.sounds.SoundEvents.ITEM_PICKUP, 0.8F, 0.8F);
-		}
+		Fx.sound(cast.level, caster.position(), moved > 0 ? net.minecraft.sounds.SoundEvents.ITEM_PICKUP : net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, 0.8F, moved > 0 ? 0.8F : 1.6F);
 	}
 
 	/** Excavate: mines a 3x3 face of blocks around the block hit. */
@@ -1134,14 +1187,19 @@ public final class Effects {
 						continue;
 					}
 					// Bosses feel the pull (and the crush) but are never dragged: a boss held in the well is out of its fight.
-					if (!Spirits.isBoss(victim)) {
+					if (!Spirits.isBoss(victim) && !VoidTime.anchored(victim)) {
 						victim.setDeltaMovement(victim.getDeltaMovement().scale(0.5).add(towards.normalize().scale(Math.min(0.6, 0.12 + distance * 0.05))));
 						victim.needsSync = true;
 						if (victim instanceof ServerPlayer player) {
 							player.connection.send(new ClientboundSetEntityMotionPacket(player));
 						}
 					}
-					Reactions.mark(victim, Reactions.Mark.PULLED);
+					// It has weight: whatever hangs above the point is dragged down with the rest, and the mark outlasts the well.
+					Reactions.mark(victim, Reactions.Mark.PULLED, tick >= total - 1 ? 60 : 50);
+					if (!Spirits.isBoss(victim) && !VoidTime.anchored(victim) && victim.getY() > point.y + 0.6 && !victim.onGround()) {
+						victim.setDeltaMovement(victim.getDeltaMovement().x, Math.min(victim.getDeltaMovement().y, -0.35), victim.getDeltaMovement().z);
+						victim.needsSync = true;
+					}
 					if (tick >= total - 1) {
 						hurt(cast, victim, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), 4 * power);
 					}
@@ -1369,7 +1427,15 @@ public final class Effects {
 		modifier(t, Attributes.KNOCKBACK_RESISTANCE, ANCHOR_ID, 1.0, AttributeModifier.Operation.ADD_VALUE);
 		modifier(t, Attributes.EXPLOSION_KNOCKBACK_RESISTANCE, ANCHOR_ID, 1.0, AttributeModifier.Operation.ADD_VALUE);
 		modifier(t, Attributes.ARMOR, ANCHOR_ID, 4.0, AttributeModifier.Operation.ADD_VALUE);
-		Ward fresh = ward(cast, t, "anchor", ticks, 1.0, 20, w -> { }, () -> unmodify(t, ANCHOR_ID, ANCHORED));
+		VoidTime.anchor(t, ticks);
+		// Dug in: standing still for a second doubles the armour it gives.
+		Vec3[] last = {t.position()};
+		Ward fresh = ward(cast, t, "anchor", ticks, 1.0, 10, w -> {
+			boolean still = t.position().distanceToSqr(last[0]) < 0.04;
+			last[0] = t.position();
+			w.memory = still ? Math.min(2, w.memory + 1) : 0;
+			modifier(t, Attributes.ARMOR, ANCHOR_ID, w.memory >= 1 ? 8.0 : 4.0, AttributeModifier.Operation.ADD_VALUE);
+		}, () -> unmodify(t, ANCHOR_ID, ANCHORED));
 		if (fresh != null || !cast.passive) {
 			ExpansionVfx.anchor(cast.level, t, Vfx.theme("void"));
 		}
@@ -1988,7 +2054,7 @@ public final class Effects {
 
 	// ------------------------------------------------------------------ batch 6: damage and control
 
-	private record Hexed(UUID caster, long until) {}
+	private record Hexed(UUID caster, long until, double bonus) {}
 
 	private static final Map<UUID, Hexed> HEXED = new HashMap<>();
 	/** How much harder a hexer's spells hit what they hexed. */
@@ -1996,14 +2062,19 @@ public final class Effects {
 
 	/** Hex (and Malison's curse, see {@link SignatureFusions}): its caster's spells hit {@code t} harder for {@code ticks}, and it's shadowed. */
 	static void hex(Cast cast, LivingEntity t, int ticks) {
+		hex(cast, t, ticks, HEX_BONUS, true);
+	}
+
+	/** A curse of {@code bonus} (1.25 = +25%); {@code sound} false when the caller has its own cast sound (Malison). */
+	static void hex(Cast cast, LivingEntity t, int ticks, double bonus, boolean sound) {
 		long now = cast.level.getGameTime();
-		HEXED.put(t.getUUID(), new Hexed(cast.caster.getUUID(), now + ticks));
+		HEXED.put(t.getUUID(), new Hexed(cast.caster.getUUID(), now + ticks, bonus));
 		if (HEXED.size() > 256) {
 			HEXED.values().removeIf(h -> h.until() < now);
 		}
 		// A curse leaves it shadowed as long as it lasts: life damage then sets off Blight.
 		Reactions.mark(t, Reactions.Mark.SHADOWED, ticks);
-		ExpansionVfx.hex(cast.level, t, ticks);
+		ExpansionVfx.hex(cast.level, t, ticks, sound);
 	}
 
 	/** Hex: its caster's spells hit the hexed creature harder. */
@@ -2023,7 +2094,7 @@ public final class Effects {
 			return 1.0;
 		}
 		ExpansionVfx.hexBite(cast.level, target);
-		return HEX_BONUS;
+		return hexed.bonus();
 	}
 
 	private static final Identifier REND_ID = Wildercord.id("rend");
@@ -2042,21 +2113,50 @@ public final class Effects {
 	/** Countdown: a mark that ticks twice, then strikes. */
 	private static void countdown(Cast cast, LivingEntity t, double power) {
 		ExpansionVfx.countdown(cast.level, t, 0);
+		Vec3[] last = {t.getBoundingBox().getCenter()};
 		for (int beat = 1; beat <= 2; beat++) {
 			int b = beat;
 			Scheduler.later(beat * 10, () -> {
 				if (cast.alive() && t.isAlive()) {
+					last[0] = t.getBoundingBox().getCenter();
 					ExpansionVfx.countdown(cast.level, t, b);
 				}
 			});
 		}
 		Scheduler.later(30, () -> {
-			if (!cast.alive() || !t.isAlive() || t.level() != cast.level) {
+			if (!cast.alive() || t.level() != cast.level) {
 				return;
 			}
-			ExpansionVfx.countdownStrike(cast.level, t);
-			hurt(cast, t, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), 6 * power);
+			LivingEntity mark = t;
+			if (!t.isAlive()) {
+				// The mark died first: the moment finds whoever stands nearest where it fell.
+				mark = ShapeRunners.nearestEnemy(cast, last[0], 6.0, null);
+				if (mark == null) {
+					return;
+				}
+			}
+			ExpansionVfx.countdownStrike(cast.level, mark);
+			hurt(cast, mark, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), 6 * power);
 		});
+	}
+
+	/** Sonic Boom passes through everything on its line, walls and armour alike: half as hard as the blow itself. */
+	private static void sonicLine(Cast cast, Vec3 from, LivingEntity target, List<LivingEntity> already, DamageSource source, double amount) {
+		Vec3 to = target.getBoundingBox().getCenter();
+		int struck = 0;
+		for (Entity e : cast.level.getEntities((Entity) null, new AABB(from, to).inflate(1.5), e -> e != target && e instanceof LivingEntity && Targets.canHarm(cast.caster, e))) {
+			LivingEntity v = (LivingEntity) e;
+			if (already.contains(v) || struck >= 8 || !VoidTime.once(cast, "sonic_line", v, 20)) {
+				continue;
+			}
+			Vec3 c = v.getBoundingBox().getCenter();
+			Vec3 ab = to.subtract(from);
+			double t = Math.max(0, Math.min(1, c.subtract(from).dot(ab) / Math.max(1.0E-4, ab.lengthSqr())));
+			if (from.add(ab.scale(t)).distanceTo(c) <= 1.2 + v.getBbWidth() / 2) {
+				struck++;
+				hurt(cast, v, source, amount);
+			}
+		}
 	}
 
 	/** Bleed: a cut, then more damage every half second. */
@@ -2113,7 +2213,7 @@ public final class Effects {
 	/** Banish: the target reappears further away from the caster, somewhere it fits and can see back to. Bosses stay put. */
 	private static void banish(Cast cast, LivingEntity t, double distance) {
 		ServerLevel level = cast.level;
-		if (Spirits.isBoss(t)) {
+		if (Spirits.isBoss(t) || VoidTime.anchored(t)) {
 			ExpansionVfx.banishResisted(level, t);
 			return;
 		}
@@ -2136,10 +2236,13 @@ public final class Effects {
 			t.resetFallDistance();
 			if (t instanceof Mob mob) {
 				mob.getNavigation().stop();
+				mob.setTarget(null);
 			}
+			// It comes out of the void dazed.
+			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, true));
 			return;
-		}
-		ExpansionVfx.banishResisted(level, t);
+			}
+			ExpansionVfx.banishResisted(level, t);
 	}
 
 	/** Cyclone: enemies around the point are whirled around it for a while, then flung out. Bosses are struck but never moved. */

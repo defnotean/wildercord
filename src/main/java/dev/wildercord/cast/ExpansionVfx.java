@@ -738,11 +738,17 @@ final class ExpansionVfx {
 
 	/** Hex: a turning star of void light over the target's head, and a ring binding its body. */
 	static void hex(ServerLevel level, Entity t, int ticks) {
+		hex(level, t, ticks, true);
+	}
+
+	static void hex(ServerLevel level, Entity t, int ticks, boolean sound) {
 		Vec3 head = t.position().add(0, t.getBbHeight() + 0.45, 0);
 		Sigils.layer(level, head, UP, SigilOption.STAR, VOID, 0.45F, Math.min(ticks, 60), 0.12F);
 		Light.ring(level, t.getBoundingBox().getCenter(), UP, VOID, Math.max(0.9, t.getBbWidth() + 0.5), 0.3, 0.05, 10);
 		Vfx.emit(level, ParticleTypes.WITCH, head, 6, 0.2, 0.0);
-		Fx.sound(level, head, SoundEvents.EVOKER_CAST_SPELL, 0.6F, 1.4F);
+		if (sound) {
+			Fx.sound(level, head, SoundEvents.EVOKER_CAST_SPELL, 0.6F, 1.4F);
+		}
 	}
 
 	/** A hexed target takes its hexer's spell: a little bite of violet. */
