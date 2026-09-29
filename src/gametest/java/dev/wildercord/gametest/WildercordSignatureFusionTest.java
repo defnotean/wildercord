@@ -327,7 +327,7 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 
 	/** Skyburst at a husk: flung up, then its blast rains fire on it and the husk beneath beside it. */
 	private static List<String> skyburst(ClientGameTestContext context, TestSingleplayerContext world) {
-		int[] ids = on(world, player -> new int[] {husk(player, 0, 5), husk(player, 1.5, 5)});
+		int[] ids = on(world, player -> new int[] {looseHusk(player, 0, 5), husk(player, 1.5, 5)});
 		String cast = on(world, player -> cast(player, Runes.BEAM, Runes.SKYBURST));
 		if (cast != null) {
 			return List.of(cast);
@@ -358,6 +358,8 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 		float[] healed = new float[1];
 		String cast = on(world, player -> {
 			player.setHealth(8.0F);
+			// Too hungry to heal by itself, which would add to what the stitch gives back.
+			player.getFoodData().setFoodLevel(6);
 			String c = cast(player, Runes.SELF, Runes.STITCHTIME);
 			healed[0] = player.getHealth();
 			return c;
@@ -543,6 +545,8 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 			Mob target = mob(player, husk);
 			return target == null || taken(target) >= 16 ? null : "it should smite again 2 seconds later (took " + taken(target) + ")";
 		});
+		// A halo shines for 8 seconds and smites whatever comes near meanwhile: the next tests wait for it to go out.
+		context.waitTicks(100);
 		return found(first, second);
 	}
 
@@ -559,7 +563,7 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 			Mob mid = mob(player, ids[1]);
 			Mob far = mob(player, ids[2]);
 			if (heart == null || mid == null || far == null) {
-				return "the husks should still be there";
+				return "the husks should still be there (" + tally(player, ids) + ")";
 			}
 			if (!between(taken(heart), 10, 14.5)) {
 				return "every wave should reach the husk at the heart: 12 (took " + taken(heart) + ")";
@@ -582,7 +586,7 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 		context.waitTicks(10);
 		String waits = on(world, player -> {
 			Mob target = mob(player, ids[0]);
-			return target != null && taken(target) == 0 ? null : "the comet should take a second to fall";
+			return target != null && taken(target) == 0 ? null : "the comet should take a second to fall (" + tally(player, ids) + ")";
 		});
 		context.waitTicks(25);
 		String landed = on(world, player -> {
@@ -590,7 +594,7 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 			for (int id : ids) {
 				Mob m = mob(player, id);
 				if (m == null) {
-					return "the husks should still be there";
+					return "the husks should still be there (" + tally(player, ids) + ")";
 				}
 				husks.add(m);
 			}
@@ -648,7 +652,7 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 
 	/** Dust Devil at a husk: it's caught up, blinded and scoured each second, and flung high when the devil blows out. */
 	private static List<String> dustDevil(ClientGameTestContext context, TestSingleplayerContext world) {
-		int husk = on(world, player -> husk(player, 0, 5));
+		int husk = on(world, player -> looseHusk(player, 0, 5));
 		String cast = on(world, player -> cast(player, Runes.BEAM, Runes.DUST_DEVIL));
 		if (cast != null) {
 			return List.of(cast);
@@ -866,6 +870,35 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 	/** A husk (no AI, so it stands still) {@code dx}, {@code dz} from the middle of the platform, facing the caster. */
 	private static int husk(ServerPlayer player, double dx, double dz) {
 		return mob(player, EntityTypes.HUSK, dx, dz);
+	}
+
+	/**
+	 * A husk that stays put but can still be thrown: one with no AI gets no physics at all (a shove does nothing), so
+	 * a husk to be flung keeps its AI and is given nothing to do.
+	 */
+	private static int looseHusk(ServerPlayer player, double dx, double dz) {
+		int id = husk(player, dx, dz);
+		Mob husk = mob(player, id);
+		husk.setNoAi(false);
+		try {
+			for (String selector : List.of("goalSelector", "targetSelector")) {
+				java.lang.reflect.Field field = Mob.class.getDeclaredField(selector);
+				field.setAccessible(true);
+				((net.minecraft.world.entity.ai.goal.GoalSelector) field.get(husk)).removeAllGoals(goal -> true);
+			}
+		} catch (ReflectiveOperationException e) {
+			throw new AssertionError("couldn't idle a husk", e);
+		}
+		return id;
+	}
+
+	/** How each of {@code ids} fared, for a failure message: what it took, or that it's dead or gone. */
+	private static String tally(ServerPlayer player, int... ids) {
+		StringBuilder out = new StringBuilder();
+		for (int id : ids) {
+			out.append(player.level().getEntity(id) instanceof LivingEntity e ? e.isAlive() ? "took " + taken(e) : "dead" : "gone").append("; ");
+		}
+		return out.toString();
 	}
 
 	private static int mob(ServerPlayer player, EntityType<? extends Mob> type, double dx, double dz) {
