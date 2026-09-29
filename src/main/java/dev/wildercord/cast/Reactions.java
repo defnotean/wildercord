@@ -55,7 +55,9 @@ public final class Reactions {
 		/** Left by void's curses and darkness (Hex, Blind, Wither...): life damage on it sets off Blight. */
 		SHADOWED(ReactionRules.SHADOWED_TICKS),
 		/** Left by blood's cuts (Bleed, Rend, Cleave...): wind damage on it sets off Rupture. */
-		BLEEDING(ReactionRules.BLEEDING_TICKS);
+		BLEEDING(ReactionRules.BLEEDING_TICKS),
+		/** Left by Launch, Levitate, Updraft and Cyclone: any spell hits it harder while it's off the ground (see {@link Statuses#airborne}). */
+		AIRBORNE(40);
 
 		final int ticks;
 
@@ -130,6 +132,8 @@ public final class Reactions {
 		if (has(target, Mark.FROZEN)) {
 			clear(target, Mark.FROZEN);
 			target.setTicksFrozen(0);
+			// The ice bursts: a Freeze, Glacier or Black Ice hold ends with it.
+			Spirits.thawNow(target);
 			multiplier *= 1.6;
 			reacted(target);
 			Vec3 c = target.getBoundingBox().getCenter();
@@ -259,7 +263,7 @@ public final class Reactions {
 	 * multiplier.
 	 */
 	public static double hit(Cast cast, LivingEntity target, String element) {
-		double multiplier = 1.0;
+		double multiplier = Statuses.airborneFactor(target);
 		if (has(target, Mark.CRACKED)) {
 			multiplier *= ReactionRules.CRACKED_BONUS;
 			ReactionVfx.crackedBite(cast.level, target);
@@ -290,6 +294,8 @@ public final class Reactions {
 		}
 		clear(target, Mark.FROZEN);
 		target.setTicksFrozen(0);
+		// The ice cracks through: a Freeze, Glacier or Black Ice hold ends with it.
+		Spirits.thawNow(target);
 		mark(target, Mark.CRACKED);
 		reacted(target);
 		ReactionVfx.fracture(cast.level, target);
@@ -479,6 +485,7 @@ public final class Reactions {
 		SET_OFF.keySet().retainAll(REACTED.keySet());
 		HEALED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 		THROWN.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
+		Statuses.sweep(gameTime);
 	}
 
 	static void clear() {
@@ -488,6 +495,7 @@ public final class Reactions {
 		SET_OFF.clear();
 		HEALED.clear();
 		THROWN.clear();
+		Statuses.clear();
 		reacting = false;
 	}
 }

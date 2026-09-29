@@ -307,10 +307,10 @@ final class Techniques {
 				continue;
 			}
 			double react = Reactions.collapse(cast, t);
-			Effects.hurt(cast, t, magic(cast), 5 * power * react);
+			Effects.hurt(cast, t, magic(cast), 4 * power * react);
 			Vec3 away = Effects.horizontal(t.position().subtract(c), cast.caster.getLookAngle());
 			double falloff = 1.0 - 0.4 * Math.min(1.0, d / Math.max(0.5, radius));
-			Effects.push(t, away.scale(2.4 * power * falloff).add(0, 0.5, 0));
+			Statuses.windPush(t, away.scale(2.4 * power * falloff).add(0, 0.5, 0));
 			Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 		}
 	}
@@ -414,6 +414,11 @@ final class Techniques {
 
 	/** Bubble: floats the target helplessly, then pops for damage and leaves it soaked. */
 	static void bubble(Cast cast, LivingEntity t, int ticks, double power) {
+		// One bubble at a time on a creature: a Zone's next pulse or a Linger doesn't stack pops.
+		if (!Statuses.claim(t, "bubble", ticks + 10)) {
+			return;
+		}
+		double lift = 2.5 / Math.max(1, ticks / 2);
 		if (t instanceof Mob) {
 			Spirits.hold(t, ticks);
 		} else {
@@ -427,8 +432,8 @@ final class Techniques {
 				if (!t.isAlive() || t.level() != cast.level) {
 					return;
 				}
-				if (t instanceof Mob && !Spirits.isBoss(t) && fits(cast.level, t, t.position().add(0, 0.06, 0))) {
-					teleport(t, cast.level, t.position().add(0, 0.06, 0), t.getYRot(), t.getXRot());
+				if (t instanceof Mob && !Spirits.isBoss(t) && fits(cast.level, t, t.position().add(0, lift, 0))) {
+					teleport(t, cast.level, t.position().add(0, lift, 0), t.getYRot(), t.getXRot());
 				}
 				if (tick % 4 == 0) {
 					TechniqueVfx.bubble(cast.level, t);

@@ -1374,6 +1374,7 @@ NEW_LANG = {
     "message.wildercord.cryostasis_wait": "Too soon to seal %s in ice again (%ss)",
     "message.wildercord.cryostasis_wait_self": "Too soon to seal yourself in ice again (%ss)",
     "message.wildercord.cryostasis_sealed": "You can't cast from inside the ice",
+    "message.wildercord.silenced": "Your voice is gone: you can't cast",
     "message.wildercord.second_wind": "Second Wind!",
     "message.wildercord.second_wind_spent": "Second Wind has saved them already: again in %s s",
     "message.wildercord.soulbond_alone": "Soulbond needs an ally to bind you to",

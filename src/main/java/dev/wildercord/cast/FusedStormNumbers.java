@@ -72,6 +72,9 @@ final class FusedStormNumbers {
 	static final double DOWNDRAFT_RADIUS = 6;
 	static final double SLAM_DAMAGE = 4;
 	static final int SLAM_BONUS_MAX = 6;
+	/** With nothing airborne, the downburst pins what's under it: Slowness III for a second and this much damage. */
+	static final int DOWNDRAFT_PIN_TICKS = 20;
+	static final double DOWNDRAFT_PIN_DAMAGE = 2;
 
 	/** A slam's damage: 4, and 1 more for every whole block fallen, up to 6 more. */
 	static double slamDamage(double fallen) {
@@ -103,7 +106,7 @@ final class FusedStormNumbers {
 	// ---- Recoil
 	static final double RECOIL_THROW = 5;
 	static final int RECOIL_DELAY = 40;
-	static final double RECOIL_DAMAGE = 3;
+	static final double RECOIL_DAMAGE = 5;
 	/** A creature further than this from where it stood isn't pulled back (it's a snap, not a leash across the world). */
 	static final double RECOIL_LEASH = 24;
 

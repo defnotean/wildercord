@@ -529,6 +529,22 @@ final class FusedStorm {
 			slammed++;
 			slam(cast, t, power);
 		}
+		if (slammed == 0) {
+			// Nothing in the air to swat: the downburst pins whoever stands under it (Slowness III 1 s, 2 damage).
+			int pinned = 0;
+			for (Entity e : level.getEntities((Entity) null, new AABB(point, point).inflate(radius + 1), e -> Targets.canHarm(cast.caster, e))) {
+				LivingEntity t = (LivingEntity) e;
+				if (pinned >= MAX_TARGETS) {
+					break;
+				}
+				if (t.getBoundingBox().getCenter().distanceTo(point) > radius + t.getBbWidth() / 2) {
+					continue;
+				}
+				pinned++;
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, DOWNDRAFT_PIN_TICKS, 2, false, true), cast.caster);
+				Effects.hurt(cast, t, wind(cast), DOWNDRAFT_PIN_DAMAGE * power);
+			}
+		}
 	}
 
 	/** Slams one creature straight down onto the ground under it, and takes its lift if it flies. */
@@ -625,6 +641,8 @@ final class FusedStorm {
 				fling(t, new Vec3(v.x * 0.2, UPDRAFT_LIFT, v.z * 0.2));
 				cushion(t, UPDRAFT_SMASH + 60);
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+				// Every spell hits it harder while it's in the air.
+				Statuses.airborne(t, UPDRAFT_SMASH + 5);
 				FusedStormVfx.hurled(level, t);
 			}
 			Scheduler.later(UPDRAFT_SMASH, () -> {

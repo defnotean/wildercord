@@ -87,8 +87,25 @@ public final class Charging {
 		}
 	}
 
+	/**
+	 * Breaks a player's charge (a Windcut, a silence): the circle closes and the release that follows does nothing.
+	 * Returns whether there was a charge.
+	 */
+	public static boolean interrupt(ServerPlayer player) {
+		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
+			return false;
+		}
+		stop(player);
+		FIZZLED.add(player.getUUID());
+		Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
+		return true;
+	}
+
 	private static void begin(ServerPlayer player, int requested) {
 		FIZZLED.remove(player.getUUID());
+		if (Statuses.silenced(player)) {
+			return;
+		}
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null || !player.isAlive() || player.isSpectator() || player.hasAttached(WildercordAttachments.CHARGE)) {
 			return;

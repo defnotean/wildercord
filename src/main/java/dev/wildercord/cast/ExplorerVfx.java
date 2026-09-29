@@ -624,7 +624,7 @@ final class ExplorerVfx {
 	}
 
 	/** Tidewrit: the crest of a wall of water rolling forward. */
-	static void tidewrit(ServerLevel level, Vec3 front, Vec3 side, double width) {
+	static void tidewrit(ServerLevel level, Vec3 front, Vec3 side, double width, boolean sound) {
 		Vec3 base = CastEngine.ground(level, front.add(0, 0.5, 0));
 		Vec3 a = base.add(side.scale(width / 2));
 		Vec3 b = base.subtract(side.scale(width / 2));
@@ -635,7 +635,9 @@ final class ExplorerVfx {
 			Vfx.emit(level, ParticleTypes.SPLASH, p.add(0, 1.8, 0), 4, 0.2, 0.2);
 			Vfx.emit(level, ParticleTypes.BUBBLE_COLUMN_UP, p.add(0, 0.3, 0), 2, 0.2, 0.1);
 		}
-		Fx.sound(level, base, SoundEvents.TRIDENT_RIPTIDE_3, 0.5F, 1.0F);
+		if (sound) {
+			Fx.sound(level, base, SoundEvents.TRIDENT_RIPTIDE_3, 0.5F, 1.0F);
+		}
 	}
 
 	/** Starshard: a falling shard of starlight striking the target. */

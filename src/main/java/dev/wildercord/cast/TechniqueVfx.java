@@ -418,10 +418,10 @@ final class TechniqueVfx {
 		Scheduler.later(7, () -> Fx.sound(level, c, SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 0.6F));
 	}
 
-	private static final int REPEL = 0xFF5050;
-	private static final int REPEL_LIGHT = 0xFFB0A0;
+	private static final int REPEL = ElementFx.WIND.accent();
+	private static final int REPEL_LIGHT = ElementFx.WIND.secondary();
 
-	/** Repel: a red shell of wind bursting outward, blades of air whirling out with it. */
+	/** Repel: a shell of wind bursting outward, blades of air whirling out with it. */
 	static void repel(ServerLevel level, Vec3 c, double radius) {
 		dot(level, flash(REPEL), c);
 		RandomSource random = level.getRandom();

@@ -141,15 +141,33 @@ public final class Spirits {
 
 	/** Freeze: {@link #hold} plus ice, which sets up Shatter. */
 	public static void freeze(LivingEntity target, int ticks) {
+		// A Frostward makes a frost hold last a second at most.
+		if (Effects.warded(target, "frostward")) {
+			ticks = Math.min(ticks, FROSTWARD_CAP);
+		}
 		hold(target, ticks);
 		target.setTicksFrozen(Math.max(target.getTicksFrozen(), target.getTicksRequiredToFreeze() + ticks));
 		Reactions.mark(target, Reactions.Mark.FROZEN, ticks + 20);
 	}
 
-	/** Ends a hold early (Stasis and Bubble end on their own schedule). */
+	/** The longest a frost hold lasts on a creature under Frostward: one second. */
+	public static final int FROSTWARD_CAP = 20;
+
+	/**
+	 * Ends a hold early (Stasis and Bubble end on their own schedule): a mob's AI comes back, and what holds a player
+	 * or a boss (Slowness VII and Weakness V) is taken off.
+	 */
 	public static void thawNow(LivingEntity target) {
 		if (target instanceof Mob mob) {
 			thaw(mob);
+		}
+		MobEffectInstance slow = target.getEffect(MobEffects.SLOWNESS);
+		if (slow != null && slow.getAmplifier() >= 6) {
+			target.removeEffect(MobEffects.SLOWNESS);
+		}
+		MobEffectInstance weak = target.getEffect(MobEffects.WEAKNESS);
+		if (weak != null && weak.getAmplifier() >= 4) {
+			target.removeEffect(MobEffects.WEAKNESS);
 		}
 	}
 

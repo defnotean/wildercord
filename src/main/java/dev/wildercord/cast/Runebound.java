@@ -340,6 +340,11 @@ public final class Runebound {
 			Vfx.ring(level, new DustParticleOptions(color, 0.7F), mob.position().add(0, 0.08, 0), 0.7, 10);
 			Vfx.emit(level, ParticleTypes.ENCHANT, mob.position().add(0, mob.getBbHeight() + 0.3, 0), 2, 0.2, 0.3);
 		}
+		if (Statuses.silenced(mob)) {
+			// A silenced monster loses its spell: what it was winding up goes out, and it can't begin another.
+			interrupt(mob);
+			return;
+		}
 		if (state.castAt > 0) {
 			LivingEntity target = state.target;
 			mob.getNavigation().stop();
@@ -374,6 +379,25 @@ public final class Runebound {
 		if (marks != null) {
 			mob.setAttached(WildercordAttachments.RUNE_MARKS, marks.casting(state.castAt));
 		}
+	}
+
+	/** Breaks the cast a Runebound is telegraphing (its next comes a little later). Returns whether it had one. */
+	public static boolean interrupt(Mob mob) {
+		State state = STATES.get(mob.getUUID());
+		if (state == null || state.castAt <= 0) {
+			return false;
+		}
+		state.castAt = 0;
+		state.readyAt = mob.level().getGameTime() + 40;
+		List<RuneDef> spell = spellOf(mob);
+		if (!spell.isEmpty()) {
+			mob.setCustomName(nameplate(spell, mob.entityTags().contains("wildercord.adept"), false));
+		}
+		WildercordAttachments.RuneMarks marks = mob.getAttached(WildercordAttachments.RUNE_MARKS);
+		if (marks != null) {
+			mob.setAttached(WildercordAttachments.RUNE_MARKS, marks.casting(0));
+		}
+		return true;
 	}
 
 	/** Turns a monster to face a point: body, head and look all agree, so the spell flies true. */

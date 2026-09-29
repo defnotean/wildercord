@@ -55,6 +55,8 @@ final class FusedFrostWards {
 		int slowTicks;
 		/** Geode: how hard the shards cut. */
 		double damage;
+		/** Frostbloom: how many strikers have healed the ally so far (at most {@link FusedFrostRules#BLOOM_HEALS}). */
+		int healed;
 
 		Answer(LivingEntity ally, Cast cast, long until) {
 			this.ally = ally;
@@ -265,6 +267,11 @@ final class FusedFrostWards {
 			if (bloom != null && live(BLOOMS, bloom, entity, now) && punishable(bloom, attacker)) {
 				attacker.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, bloom.slowTicks, 2, false, true), bloom.cast.caster);
 				FusedFrostVfx.frostbloomStrike(level, entity, attacker);
+				// Being struck is rewarded: each striker frozen heals the ally a point, up to four a cast.
+				if (bloom.healed < FusedFrostRules.BLOOM_HEALS) {
+					bloom.healed++;
+					entity.heal(FusedFrostRules.BLOOM_HEAL);
+				}
 			}
 			if (geode != null && live(GEODES, geode, entity, now) && punishable(geode, attacker)) {
 				FusedFrostVfx.geodeShards(level, entity, attacker);
@@ -337,10 +344,17 @@ final class FusedFrostWards {
 			if (e == brittle.target() || e.getBoundingBox().getCenter().distanceTo(at) > SHATTER_RADIUS + e.getBbWidth() / 2) {
 				continue;
 			}
-			struck++;
 			LivingEntity t = (LivingEntity) e;
+			if (!Statuses.claim(t, "shatter", 20)) {
+				continue;
+			}
+			struck++;
 			FusedFrostVfx.blackIceShard(level, at, t);
 			Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), 4 * brittle.power());
+			// The cold runs on: the survivors are brittle in their turn, so a chain of kills cascades.
+			if (t.isAlive()) {
+				brittle(cast, t, FusedFrostRules.CASCADE_TICKS, brittle.power());
+			}
 		}
 	}
 
@@ -457,5 +471,31 @@ final class FusedFrostWards {
 		Spirits.thawNow(ally);
 		ally.resetFallDistance();
 		FusedFrostVfx.cryostasisRelease(level, ally, seal.shell);
+		if (level.getGameTime() >= seal.until && seal.cast.alive()) {
+			burst(seal, level);
+		}
+	}
+
+	/** The ice bursts outward: enemies within 3 blocks are thrown back, take 3, are slowed and left brittle. */
+	private static void burst(Seal seal, ServerLevel level) {
+		LivingEntity ally = seal.ally;
+		Cast cast = seal.cast;
+		Effects.asElement("frost", () -> {
+			int struck = 0;
+			for (Entity e : level.getEntities(ally, ally.getBoundingBox().inflate(FusedFrostRules.BURST_RADIUS), e -> Targets.canHarm(cast.caster, e))) {
+				if (struck >= FusedFrost.MAX_IN_AREA || e.distanceTo(ally) > FusedFrostRules.BURST_RADIUS + e.getBbWidth() / 2) {
+					continue;
+				}
+				struck++;
+				LivingEntity t = (LivingEntity) e;
+				if (!Spirits.isBoss(t)) {
+					Vec3 away = Effects.horizontal(t.position().subtract(ally.position()), ally.getLookAngle());
+					Effects.push(t, away.scale(FusedFrostRules.BURST_KNOCK).add(0, 0.3, 0));
+				}
+				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, cast.caster), FusedFrostRules.BURST_DAMAGE);
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, FusedFrostRules.BURST_SLOW_TICKS, 1, false, true), cast.caster);
+				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
+			}
+		});
 	}
 }

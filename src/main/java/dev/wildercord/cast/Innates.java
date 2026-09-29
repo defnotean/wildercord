@@ -437,9 +437,14 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Mirrorfrost
 
+	/** What Mirrorfrost returns: 70% of the power, and marked (a negative rune count) so it can't be mirrored back. */
+	static final double MIRROR_POWER = 0.7;
+	static final int MIRRORED = -1;
+
 	/** Remembers the last spell that hit a player, for Mirrorfrost. */
 	static void spellHit(Cast cast, LivingEntity target) {
-		if (target instanceof ServerPlayer player && cast.caster != player && cast.info.root() != null) {
+		// A mirrored spell (marked by its negative rune count) is never itself mirrored.
+		if (target instanceof ServerPlayer player && cast.caster != player && cast.info.root() != null && cast.info.runes() >= 0) {
 			LAST_SPELL_ON.put(player.getUUID(), new SpellHit(cast.info.root(), cast.level.getGameTime()));
 		}
 	}
@@ -457,7 +462,8 @@ public final class Innates {
 		ElementFx.shards(cast.level, hand, 0.9, 5);
 		Fx.sound(cast.level, hand, SoundEvents.GLASS_BREAK, 0.8F, 1.6F);
 		Fx.sound(cast.level, hand, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
-		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), 0, Heart.leaning(player))).withAffinity();
+		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), MIRRORED, Heart.leaning(player))).withAffinity()
+			.withPower(MIRROR_POWER);
 		CastEngine.cast(mirrored, hit.root());
 		Grimoire.feat(player, Feats.MIRROR);
 	}
@@ -726,6 +732,23 @@ public final class Innates {
 		Vec3 look = player.getLookAngle();
 		Vec3 flat = new Vec3(look.x, 0, look.z);
 		flat = flat.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flat.normalize();
+		// Steered: the dash goes where you're pushing (forward, back, left, right), not only where you look.
+		net.minecraft.world.entity.player.Input input = player.getLastClientInput();
+		int ahead = (input.forward() ? 1 : 0) - (input.backward() ? 1 : 0);
+		int aside = (input.left() ? 1 : 0) - (input.right() ? 1 : 0);
+		if (ahead != 0 || aside != 0) {
+			Vec3 left = new Vec3(flat.z, 0, -flat.x);
+			flat = flat.scale(ahead).add(left.scale(aside)).normalize();
+		}
+		// It shoves aside whoever it passes through the moment it leaves.
+		int shoved = 0;
+		for (Entity e : player.level().getEntities(player, player.getBoundingBox().inflate(1.5), e -> e instanceof LivingEntity && Targets.canHarm(player, e))) {
+			if (shoved++ >= 8) {
+				break;
+			}
+			Vec3 away = Effects.horizontal(e.position().subtract(player.position()), flat);
+			Statuses.windPush((LivingEntity) e, away.scale(0.6).add(0, 0.2, 0));
+		}
 		player.setDeltaMovement(flat.scale(1.25).add(0, 0.42, 0));
 		player.needsSync = true;
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));

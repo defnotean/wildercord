@@ -81,6 +81,10 @@ public final class SpellCaster {
 			fail(player, Component.translatable("message.wildercord.no_cord"));
 			return;
 		}
+		if (Statuses.silenced(player)) {
+			fail(player, Component.translatable("message.wildercord.silenced"));
+			return;
+		}
 		if (FusedFrostWards.sealed(player)) {
 			// Untouchable in the ice, so it can't be a fortress to cast from.
 			fail(player, Component.translatable("message.wildercord.cryostasis_sealed"));

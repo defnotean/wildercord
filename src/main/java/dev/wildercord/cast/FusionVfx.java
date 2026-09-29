@@ -118,6 +118,10 @@ public final class FusionVfx {
 
 	/** Glacier: frost creeps out and closes round the target in a shell of ice and stone. */
 	static void glacier(ServerLevel level, Entity t, int ticks) {
+		// A mob held solid is closed in ice, as Freeze does it.
+		if (t instanceof net.minecraft.world.entity.Mob mob && mob.isAlive() && mob.isNoAi()) {
+			BlockFx.encase(level, mob, Math.max(10, ticks - 4));
+		}
 		Vec3 feet = t.position();
 		ElementFx.frostCreep(level, feet.add(0, 0.05, 0), Math.max(1.0, t.getBbWidth() + 0.8), ticks + 10);
 		ElementFx.crack(level, feet.add(0, 0.05, 0), Math.max(0.8, t.getBbWidth() + 0.4), ticks);

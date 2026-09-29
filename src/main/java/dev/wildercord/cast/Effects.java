@@ -227,8 +227,12 @@ public final class Effects {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, ticks(12, duration), 0, false, true));
 				t.resetFallDistance();
 				Vfx.featherFall(level, t);
+				if (!cast.passive) {
+					featherglide(cast, t, ticks(12, duration));
+				}
 			});
 			case "swift" -> helped.forEach(t -> {
+				shakeOffCold(t);
 				t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(10, duration), Math.min(4, 2 + amplify), false, true));
 				Vfx.swift(level, t);
 			});
@@ -250,9 +254,10 @@ public final class Effects {
 			});
 			case "push" -> harmed.forEach(t -> {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
-				push(t, away.scale(2.2 * power).add(0, 0.45, 0));
+				Statuses.windPush(t, away.scale(2.2 * power).add(0, 0.45, 0));
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 				Vfx.push(level, t, away);
+				wallSlam(cast, t, power);
 			});
 			case "pull" -> harmed.forEach(t -> {
 				Vec3 towards = hit.origin().subtract(t.position());
@@ -268,19 +273,23 @@ public final class Effects {
 					kick = kick.add(horizontal(caster.getLookAngle(), caster.getLookAngle()).scale(0.7));
 					caster.resetFallDistance();
 				}
-				push(t, new Vec3(v.x, Math.max(0, v.y), v.z).add(kick).subtract(v));
-				if (t != caster) {
+				Vec3 lift = new Vec3(v.x, Math.max(0, v.y), v.z).add(kick).subtract(v);
+				if (t == caster) {
+					push(t, lift);
+				} else {
+					Statuses.windPush(t, lift);
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+					Statuses.airborne(t, AIRBORNE_LAUNCH_TICKS);
 				}
 				Vfx.launch(level, t);
 			});
 			case "dash" -> moved.forEach(t -> {
-				Vec3 look = caster.getLookAngle();
-				Vec3 dir = new Vec3(look.x, Math.max(-0.2, Math.min(0.45, look.y)) + 0.12, look.z).normalize();
-				push(t, dir.scale(2.6 * power));
+				Vec3 flat = horizontal(caster.getLookAngle(), caster.getLookAngle());
+				Vec3 dir = flat.add(0, 0.12, 0).normalize();
 				if (t == caster) {
-					caster.resetFallDistance();
+					dashSelf(cast, caster, flat, power);
 				} else {
+					Statuses.windPush(t, flat.scale(DASH_SHOVE * power).add(0, 0.2, 0));
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 				}
 				Vfx.dash(level, t, dir);
@@ -384,9 +393,14 @@ public final class Effects {
 			case "levitate" -> moved.forEach(t -> {
 				// Bosses are only ever slowed: lifted out of reach, a fight could be won by the fall.
 				boolean boss = t != caster && Spirits.isBoss(t);
-				t.addEffect(new MobEffectInstance(boss ? MobEffects.SLOWNESS : MobEffects.LEVITATION, ticks(3, duration), 1, false, true));
+				t.addEffect(new MobEffectInstance(boss ? MobEffects.SLOWNESS : MobEffects.LEVITATION, ticks(3, duration), boss ? 1 : 0, false, true));
 				if (t != caster) {
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT, ticks(3, duration) + 20);
+					if (!boss) {
+						// Suspended: it hangs where it was lifted, and every spell hits it harder while it's off the ground.
+						Statuses.airborne(t, ticks(3, duration) + 10);
+						suspend(cast, t, ticks(3, duration));
+					}
 				}
 				Vfx.levitate(level, t);
 			});
@@ -432,7 +446,7 @@ public final class Effects {
 				Vfx.blind(level, t);
 			});
 			case "chill" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(6, duration), 1, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(6, duration), chillLevel(t, ticks(6, duration)), false, true));
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 1 * power);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 				Vfx.chill(level, t);
@@ -458,6 +472,8 @@ public final class Effects {
 			case "tidebreath" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, ticks(30, duration), 0, false, true));
 				t.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, ticks(30, duration), 0, false, true));
+				// It douses: the fire on them goes out (and fire hits are dulled while they drip).
+				t.clearFire();
 				Vfx.tidebreath(level, t);
 			});
 			case "leap" -> helped.forEach(t -> {
@@ -466,7 +482,13 @@ public final class Effects {
 			});
 			case "grapple" -> grapple(cast, hit, power);
 			case "harvest" -> harvest(cast, hit, SpellNumbers.effectRadius(node));
-			case "icepath" -> icepath(cast, hit, 3.0 * SpellNumbers.effectRadius(node));
+			case "icepath" -> {
+				if (hit.self()) {
+					icepathStrip(cast, 1.5 * SpellNumbers.effectRadius(node));
+				} else {
+					icepath(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node));
+				}
+			}
 			case "collect" -> collect(cast, hit.point(), 8.0 * SpellNumbers.effectRadius(node));
 			case "excavate" -> excavate(cast, hit, amplify > 0);
 			case "blink" -> blink(cast, hit);
@@ -490,7 +512,7 @@ public final class Effects {
 			case "decree" -> Techniques.decree(cast, harmed, ticks(2, duration));
 			case "weigh" -> harmed.forEach(t -> Techniques.weigh(cast, t, ticks(5, duration)));
 			case "shackle" -> harmed.forEach(t -> Techniques.shackle(cast, t, ticks(5, duration)));
-			case "bubble" -> harmed.forEach(t -> Techniques.bubble(cast, t, ticks(3, duration), power));
+			case "bubble" -> harmed.forEach(t -> Techniques.bubble(cast, t, ticks(bubbleSeconds(t), duration), power));
 			case "infinity" -> helped.forEach(t -> Wards.infinity(cast, t, ticks(6, duration)));
 			case "reversal" -> helped.forEach(t -> Wards.reversal(cast, t, ticks(30, duration)));
 			case "reflect" -> helped.forEach(t -> Wards.reflect(cast, t, ticks(10, duration), Math.min(1.5, 0.6 * power)));
@@ -542,6 +564,7 @@ public final class Effects {
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), (slowed ? 6 : 4) * power);
 				// A touch of frost on the skin, well short of frozen solid.
 				t.setTicksFrozen(Math.min(t.getTicksRequiredToFreeze() - 1, t.getTicksFrozen() + 40));
+				melt(cast, t);
 			});
 			case "pelt" -> harmed.forEach(t -> {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
@@ -552,9 +575,13 @@ public final class Effects {
 			case "windcut" -> harmed.forEach(t -> {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
 				hurt(cast, t, level.damageSources().source(DamageTypes.WIND_CHARGE, caster), 4 * power);
-				push(t, away.scale(0.7).add(0, 0.2, 0));
+				Statuses.windPush(t, away.scale(0.7).add(0, 0.2, 0));
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 				ExpansionVfx.windcut(level, t, away);
+				// The cut breaks what it was winding up: a charge, a draw, a fuse, a telegraphed spell.
+				if (t.isAlive()) {
+					Statuses.interrupt(t);
+				}
 			});
 			case "leech" -> harmed.forEach(t -> {
 				float before = t.getHealth();
@@ -981,8 +1008,8 @@ public final class Effects {
 	 * Icepath: water near the point freezes into frosted ice that melts on its own in the light, and
 	 * is thawed after {@link WorldRules#THAW_TICKS} wherever it is (frosted ice never melts in the dark).
 	 */
-	private static void icepath(Cast cast, Cast.Hit hit, double radius) {
-		BlockPos center = BlockPos.containing(hit.point().x, hit.point().y - 0.5, hit.point().z);
+	private static void icepath(Cast cast, Vec3 point, double radius) {
+		BlockPos center = BlockPos.containing(point.x, point.y - 0.5, point.z);
 		int r = (int) Math.ceil(radius);
 		BlockState ice = Blocks.FROSTED_ICE.defaultBlockState();
 		List<BlockPos> frozen = new ArrayList<>();
@@ -1006,6 +1033,24 @@ public final class Effects {
 		if (!frozen.isEmpty()) {
 			Thaws.schedule(cast.level, frozen, cast.level.getGameTime() + WorldRules.THAW_TICKS + cast.level.getRandom().nextInt(60));
 			Vfx.icepath(cast.level, Vec3.atCenterOf(center), radius);
+		}
+	}
+
+	/** How far an Icepath strip runs from the caster (blocks). */
+	private static final int ICEPATH_LENGTH = 10;
+
+	/** A path, literally: on Self it freezes a strip {@code halfWidth} either side of the way you look, an ice front growing a block a tick. */
+	private static void icepathStrip(Cast cast, double halfWidth) {
+		LivingEntity caster = cast.caster;
+		Vec3 flat = horizontal(caster.getLookAngle(), caster.getLookAngle());
+		Vec3 from = caster.position();
+		for (int i = 1; i <= ICEPATH_LENGTH; i++) {
+			Vec3 at = from.add(flat.scale(i)).add(0, 0.5, 0);
+			Scheduler.later(i, () -> {
+				if (cast.alive()) {
+					icepath(cast, at, halfWidth);
+				}
+			});
 		}
 	}
 
@@ -1402,6 +1447,175 @@ public final class Effects {
 		ExpansionVfx.bramble(cast.level, t);
 	}
 
+	// ------------------------------------------------------------------ frost and wind mechanics
+
+	/** How long an Airborne mark from Launch lasts (the flight of a throw). */
+	private static final int AIRBORNE_LAUNCH_TICKS = 40;
+	/** Dash: the impulse it shoves others with, and the speed (blocks a tick) it holds you at for five ticks. */
+	private static final double DASH_SHOVE = 1.4;
+	private static final double DASH_SPEED = 2.0;
+	private static final int DASH_TICKS = 5;
+
+	/** Whether {@code t} carries a ward of this kind right now. */
+	static boolean warded(Entity t, String kind) {
+		Ward ward = WARDS.get(kind + ":" + t.getUUID());
+		return ward != null && ward.until >= t.level().getGameTime();
+	}
+
+	/** Push: a creature thrown hard into a block takes 2 and a flinch, once. Watches for about 0.7 s. */
+	private static void wallSlam(Cast cast, LivingEntity t, double power) {
+		if (Spirits.isBoss(t) || !Statuses.claim(t, "slam", 40)) {
+			return;
+		}
+		Vec3[] last = {t.getDeltaMovement()};
+		for (int i = 1; i <= 14; i++) {
+			Scheduler.later(i, () -> {
+				if (last[0] == null || !t.isAlive() || t.level() != cast.level) {
+					return;
+				}
+				double before = Math.sqrt(last[0].x * last[0].x + last[0].z * last[0].z);
+				if (t.horizontalCollision && before > 0.5) {
+					last[0] = null;
+					hurt(cast, t, cast.level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), 2 * power);
+					Statuses.stagger(t, 10);
+					Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.CRIT, t.getBoundingBox().getCenter(), 6, 0.3, 0.2);
+					return;
+				}
+				last[0] = t.getDeltaMovement();
+			});
+		}
+	}
+
+	/** Dash on yourself: held level at speed for five ticks, then braked, so it goes about ten blocks and never up or off anything. */
+	private static void dashSelf(Cast cast, LivingEntity caster, Vec3 flat, double power) {
+		double speed = DASH_SPEED * Math.sqrt(Math.max(0.25, power));
+		caster.resetFallDistance();
+		for (int i = 0; i < DASH_TICKS; i++) {
+			Runnable step = () -> {
+				if (caster.isAlive() && caster.level() == cast.level) {
+					Vec3 v = caster.getDeltaMovement();
+					setMotion(caster, new Vec3(flat.x * speed, Math.min(0, v.y), flat.z * speed));
+					caster.resetFallDistance();
+				}
+			};
+			if (i == 0) {
+				step.run();
+			} else {
+				Scheduler.later(i, step);
+			}
+		}
+		Scheduler.later(DASH_TICKS, () -> {
+			if (caster.isAlive() && caster.level() == cast.level) {
+				Vec3 v = caster.getDeltaMovement();
+				setMotion(caster, new Vec3(flat.x * 0.25, v.y, flat.z * 0.25));
+			}
+		});
+	}
+
+	/** Levitate: the lifted creature hangs where it is, its drift stopped, for {@code ticks}. */
+	private static void suspend(Cast cast, LivingEntity t, int ticks) {
+		for (int i = 2; i < ticks; i += 2) {
+			Scheduler.later(i, () -> {
+				if (t.isAlive() && t.level() == cast.level && !t.onGround()) {
+					Vec3 v = t.getDeltaMovement();
+					setMotion(t, new Vec3(0, v.y, 0));
+				}
+			});
+		}
+	}
+
+	/** Feather Fall: while it lasts, a creature that's falling drifts the way it looks (sneaking stops the drift). */
+	private static void featherglide(Cast cast, LivingEntity t, int ticks) {
+		String key = "featherglide:" + t.getUUID();
+		Object token = new Object();
+		GLIDES.put(key, token);
+		for (int i = 2; i < ticks; i += 2) {
+			Scheduler.later(i, () -> {
+				if (GLIDES.get(key) != token || !t.isAlive() || t.level() != cast.level) {
+					return;
+				}
+				if (t.onGround() || t.isShiftKeyDown() || t.isInWater() || t.isFallFlying()) {
+					return;
+				}
+				Vec3 v = t.getDeltaMovement();
+				Vec3 look = horizontal(t.getLookAngle(), t.getLookAngle());
+				double sx = v.x + look.x * GLIDE_PUSH * 2;
+				double sz = v.z + look.z * GLIDE_PUSH * 2;
+				double speed = Math.sqrt(sx * sx + sz * sz);
+				if (speed > GLIDE_MAX) {
+					sx *= GLIDE_MAX / speed;
+					sz *= GLIDE_MAX / speed;
+				}
+				setMotion(t, new Vec3(sx, v.y, sz));
+			});
+		}
+	}
+
+	private static final Map<String, Object> GLIDES = new HashMap<>();
+	private static final double GLIDE_PUSH = 0.03;
+	private static final double GLIDE_MAX = 0.35;
+
+	/** Swift: it shakes off the cold: Slowness (not a hold) and frozen skin are gone. */
+	private static void shakeOffCold(LivingEntity t) {
+		MobEffectInstance slow = t.getEffect(MobEffects.SLOWNESS);
+		if (slow != null && slow.getAmplifier() < 6) {
+			t.removeEffect(MobEffects.SLOWNESS);
+		}
+		t.setTicksFrozen(0);
+		Reactions.clear(t, Reactions.Mark.FROZEN);
+	}
+
+	// ---- Chill stacks: each Chill within 6 s of the last deepens the slow one level (II, III, IV)
+
+	/** By creature: when its chill runs out, its stacks so far, and when the last stack was added. */
+	private static final Map<UUID, long[]> CHILLS = new HashMap<>();
+	private static final int CHILL_MEMORY = 120;
+	/** The soonest one creature takes another stack (a Zone's every pulse can't run it up to IV). */
+	private static final int CHILL_GAP = 20;
+
+	/** The Slowness amplifier a chill of {@code ticks} gives {@code t} now: 1 (II), 2 (III) or 3 (IV). */
+	static int chillLevel(LivingEntity t, int ticks) {
+		long now = t.level().getGameTime();
+		if (CHILLS.size() > 256) {
+			CHILLS.values().removeIf(c -> c[0] < now);
+		}
+		long[] c = CHILLS.get(t.getUUID());
+		if (c == null || c[0] < now) {
+			c = new long[] {now + ticks, 0, now};
+			CHILLS.put(t.getUUID(), c);
+		} else {
+			c[0] = Math.max(c[0], now + ticks);
+			if (now - c[2] >= CHILL_GAP && c[1] < 2) {
+				c[1]++;
+				c[2] = now;
+			}
+		}
+		return 1 + (int) c[1];
+	}
+
+	// ---- Icicle melts into a soak
+
+	/** The icicle stays lodged for 2 s, then melts and leaves its target soaked for 5 s. One melt at a time on a creature. */
+	private static void melt(Cast cast, LivingEntity t) {
+		if (!Statuses.claim(t, "melt", 40)) {
+			return;
+		}
+		Scheduler.later(40, () -> {
+			if (t.isAlive() && t.level() == cast.level) {
+				Reactions.mark(t, Reactions.Mark.SOAKED, 100);
+				Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.DRIPPING_WATER, t.getBoundingBox().getCenter(), 6, 0.3, 0.0);
+			}
+		});
+	}
+
+	// ---- Bubble: a bubble holds small things longest
+
+	/** Seconds a bubble holds a creature of this size: 2.5 up to 0.8 wide, 2 up to 1.4, 1.5 above. */
+	static double bubbleSeconds(Entity t) {
+		double w = t.getBbWidth();
+		return w <= 0.8 ? 2.5 : w <= 1.4 ? 2.0 : 1.5;
+	}
+
 	/** Frostward: the target can't freeze, and frost can't leave it brittle for Shatter. */
 	private static void frostward(Cast cast, LivingEntity t, int ticks) {
 		t.setTicksFrozen(0);
@@ -1430,7 +1644,7 @@ public final class Effects {
 				return;
 			}
 			if (w.memory > 4) {
-				cushionLanding(w.cast, t, w.power);
+				cushionLanding(w.cast, t, w.power, w.memory);
 			}
 			w.memory = 0;
 		}, () -> unmodify(t, CUSHION_ID, List.of(Attributes.FALL_DAMAGE_MULTIPLIER)));
@@ -1439,16 +1653,32 @@ public final class Effects {
 		}
 	}
 
-	private static void cushionLanding(Cast cast, LivingEntity t, double power) {
+	/** Cushion's landing: the gust deals this much per block fallen past 4, up to 6. */
+	private static final double CUSHION_PER_BLOCK = 0.75;
+	private static final double CUSHION_MAX = 6.0;
+
+	private static void cushionLanding(Cast cast, LivingEntity t, double power, double fallen) {
 		ExpansionVfx.cushionLand(cast.level, t.position(), 3.0, Vfx.theme("wind"));
+		double damage = Math.min(CUSHION_MAX, CUSHION_PER_BLOCK * Math.max(0, fallen - 4)) * power;
+		int struck = 0;
 		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(3.0, 1.0, 3.0), e -> Targets.canHarm(cast.caster, e))) {
+			if (struck++ >= 16) {
+				break;
+			}
+			LivingEntity v = (LivingEntity) e;
 			Vec3 away = horizontal(e.position().subtract(t.position()), t.getLookAngle());
-			push((LivingEntity) e, away.scale(1.1 * Math.sqrt(power)).add(0, 0.35, 0));
+			Statuses.windPush(v, away.scale(1.1 * Math.sqrt(power)).add(0, 0.35, 0));
 			Reactions.mark(e, Reactions.Mark.WINDSWEPT);
+			if (damage > 0.5 && Statuses.claim(v, "cushion", 20)) {
+				hurt(cast, v, cast.level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), damage);
+			}
 		}
 	}
 
-	/** Deflect: projectiles coming at the target are turned aside by the wind around it. */
+	/** Tags a projectile Deflect has already sent back (a second deflection only turns it aside). */
+	private static final String DEFLECTED_TAG = "wildercord.deflected";
+
+	/** Deflect: projectiles coming at the target are sent back at their shooter, or turned aside if they've been already. */
 	private static void deflect(Cast cast, LivingEntity t, int ticks) {
 		Vfx.Theme theme = Vfx.theme("wind");
 		Ward fresh = ward(cast, t, "deflect", ticks, 1.0, 1, w -> {
@@ -1464,6 +1694,16 @@ public final class Effects {
 					continue;
 				}
 				Vec3 away = horizontal(p.position().subtract(centre), v.scale(-1));
+				if (owner instanceof LivingEntity shooter && shooter.isAlive() && !p.entityTags().contains(DEFLECTED_TAG)) {
+					// Returned to sender, once: it flies back at its shooter, now the warded creature's.
+					p.addTag(DEFLECTED_TAG);
+					Vec3 back = shooter.getBoundingBox().getCenter().subtract(p.position());
+					p.setOwner(t);
+					p.setDeltaMovement(back.normalize().scale(Math.max(0.6, v.length() * 0.8)));
+					p.needsSync = true;
+					ExpansionVfx.deflectHit(level, p.position(), back.normalize(), theme);
+					continue;
+				}
 				p.setDeltaMovement(away.scale(Math.max(0.4, v.length() * 0.6)).add(0, 0.2, 0));
 				p.needsSync = true;
 				ExpansionVfx.deflectHit(level, p.position(), away, theme);
@@ -1844,7 +2084,15 @@ public final class Effects {
 			if (!cast.takeBlock()) {
 				break;
 			}
-			level.destroyBlock(p, true, cast.caster);
+			// As shears would: leaves, webs and vines drop as themselves.
+			BlockState state = level.getBlockState(p);
+			List<ItemStack> drops = Block.getDrops(state, level, p, level.getBlockEntity(p), cast.caster, new ItemStack(Items.SHEARS));
+			level.destroyBlock(p, false, cast.caster);
+			for (ItemStack drop : drops) {
+				if (!drop.isEmpty()) {
+					Block.popResource(level, p, drop);
+				}
+			}
 			cleared++;
 		}
 		ExpansionVfx.prune(level, point, radius, cleared > 0);
@@ -2088,14 +2336,30 @@ public final class Effects {
 		return out;
 	}
 
+	/** How long Coldsnap leaves everything it strikes brittle for Shatter and Fracture (4 s: the whole crowd primed). */
+	private static final int COLDSNAP_WINDOW = 80;
+
 	/** Coldsnap: frost bites everything around the point, slowing it and leaving it brittle for Shatter. */
 	private static void coldsnap(Cast cast, Vec3 point, double radius, double power, double duration) {
 		ExpansionVfx.coldsnap(cast.level, point, radius);
+		int slow = ticks(4, duration);
 		for (LivingEntity t : enemiesAround(cast, point, radius)) {
-			hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 3 * power);
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 1, false, true));
-			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
-			ExpansionVfx.chilled(cast.level, t);
+			// The ring travels: the nearest are struck at once, the farthest six ticks later.
+			int delay = (int) Math.round(6 * Math.min(1.0, t.getBoundingBox().getCenter().distanceTo(point) / Math.max(0.5, radius)));
+			Runnable strike = () -> {
+				if (!t.isAlive() || t.level() != cast.level) {
+					return;
+				}
+				hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 4 * power);
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, slow, 1, false, true));
+				Reactions.mark(t, Reactions.Mark.FROZEN, COLDSNAP_WINDOW);
+				ExpansionVfx.chilled(cast.level, t);
+			};
+			if (delay <= 0) {
+				strike.run();
+			} else {
+				Scheduler.later(delay, strike);
+			}
 		}
 	}
 
@@ -2163,6 +2427,7 @@ public final class Effects {
 					}
 					caught.add(v);
 					Reactions.mark(v, Reactions.Mark.WINDSWEPT);
+					Statuses.airborne(v, 12);
 					if (Spirits.isBoss(v)) {
 						continue;
 					}
@@ -2180,8 +2445,9 @@ public final class Effects {
 					continue;
 				}
 				if (!Spirits.isBoss(v)) {
-					Vec3 away = horizontal(v.position().subtract(centre), cast.caster.getLookAngle());
-					push(v, away.scale(1.4 * Math.sqrt(power)).add(0, 0.5, 0));
+					// Bowling: the crowd is flung the way the caster faced, as one, not out in every direction.
+					Vec3 away = horizontal(cast.caster.getLookAngle(), cast.caster.getLookAngle());
+					Statuses.windPush(v, away.scale(1.4 * Math.sqrt(power)).add(0, 0.5, 0));
 				}
 				hurt(cast, v, level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), 3 * power);
 			}

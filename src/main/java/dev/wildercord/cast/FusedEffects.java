@@ -151,24 +151,24 @@ public final class FusedEffects {
 			case "hail" -> harmed.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(4, duration), 1, false, true));
 				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
-				for (int i = 0; i < 3; i++) {
+				// A pummel: each stone staggers it for 5 ticks, so it can't finish a swing, a draw or a cast under the hail.
+				// Only one pummel's flinch at a time on a creature, so a Zone's every pulse can't lock it for ever.
+				boolean flinch = Statuses.claim(t, "hail", HAIL_STONES * HAIL_EVERY + 40);
+				for (int i = 0; i < HAIL_STONES; i++) {
 					int stone = i;
-					Scheduler.later(1 + i * 5, Effects.carryContext(() -> {
+					Scheduler.later(1 + i * HAIL_EVERY, Effects.carryContext(() -> {
 						if (!cast.alive() || !t.isAlive()) {
 							return;
 						}
-						FusionVfx.hailstone(level, t, stone);
+						FusionVfx.hailstone(level, t, stone % 3);
 						Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 2 * power);
+						if (flinch && t.isAlive()) {
+							Statuses.stagger(t, 5);
+						}
 					}));
 				}
 			});
-			case "glacier" -> harmed.forEach(t -> {
-				int ticks = Effects.ticks(t instanceof Player ? 1 : 2, duration);
-				Spirits.freeze(t, ticks);
-				t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-				t.needsSync = true;
-				FusionVfx.glacier(level, t, ticks);
-			});
+			case "glacier" -> glacier(cast, harmed, duration);
 			case "lifesteal" -> harmed.forEach(t -> {
 				float before = t.getHealth();
 				Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 5 * power);
@@ -244,6 +244,52 @@ public final class FusedEffects {
 			Reactions.clear(t, Reactions.Mark.FROZEN);
 		}
 	}
+
+	/** Hail: five stones of 2, one every 4 ticks. */
+	private static final int HAIL_STONES = 5;
+	private static final int HAIL_EVERY = 4;
+
+	/**
+	 * Glacier: holds each target 2 seconds (1 on players) and calves: up to 3 other enemies within 2.5 blocks of a held one
+	 * are held 1 second (half a second on players), and when the ice cracks everything held takes 2, once.
+	 */
+	private static void glacier(Cast cast, List<LivingEntity> harmed, double duration) {
+		ServerLevel level = cast.level;
+		java.util.Set<LivingEntity> held = new java.util.LinkedHashSet<>(harmed);
+		List<LivingEntity> calved = new ArrayList<>();
+		for (LivingEntity t : first(harmed)) {
+			for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(GLACIER_CALVE), e -> Targets.canHarm(cast.caster, e))) {
+				if (calved.size() >= GLACIER_CALVES) {
+					break;
+				}
+				LivingEntity other = (LivingEntity) e;
+				if (!held.contains(other) && other.distanceTo(t) <= GLACIER_CALVE) {
+					held.add(other);
+					calved.add(other);
+				}
+			}
+		}
+		for (LivingEntity t : held) {
+			boolean main = !calved.contains(t);
+			int ticks = Effects.ticks((main ? 2.0 : 1.0) * (t instanceof Player ? 0.5 : 1.0), duration);
+			Spirits.freeze(t, ticks);
+			t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
+			t.needsSync = true;
+			FusionVfx.glacier(level, t, ticks);
+			// The ice cracks for 2 when its hold is over: one crack a creature however often it's frozen.
+			if (Statuses.claim(t, "glacier", ticks + 20)) {
+				Scheduler.later(ticks, Effects.carryContext(() -> {
+					if (cast.alive() && t.isAlive() && t.level() == level) {
+						Effects.hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, cast.caster), GLACIER_CRACK);
+					}
+				}));
+			}
+		}
+	}
+
+	private static final double GLACIER_CALVE = 2.5;
+	private static final int GLACIER_CALVES = 3;
+	private static final double GLACIER_CRACK = 2.0;
 
 	/** Magma: the ground at {@code at} burns every enemy standing on it once a second. */
 	private static void magma(Cast cast, Vec3 at, double radius, double power, int seconds) {
