@@ -2,7 +2,10 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.4.2-alpha] - 2026-09-28
+
+Travel commands for servers, six new element reactions, creature affinities and elemental climate, and a bug
+hunt through every part of the mod (more than 70 fixes).
 
 ### Added
 - **Travel commands for servers**: `/sethome`, `/home`, `/delhome` and `/homes` (3 homes each); public warps
