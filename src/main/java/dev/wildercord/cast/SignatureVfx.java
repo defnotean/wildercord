@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -340,8 +341,7 @@ final class SignatureVfx {
 		}
 		ElementFx.gustRing(level, centre, radius * 1.1);
 		ElementFx.groundRing(level, centre.add(0, 0.05, 0), ElementFx.BLOOD.accent(), radius * 0.2, radius, 0.04, 10);
-		Fx.sound(level, centre, SoundEvents.BREEZE_SHOOT, 0.9F, second ? 1.3F : 1.0F);
-		Fx.sound(level, centre, SoundEvents.PLAYER_ATTACK_SWEEP, 0.8F, second ? 1.2F : 0.9F);
+		Feels.sound(level, centre, "wind_slash", 0.9F, second ? 1.3F : 1.0F);
 	}
 
 	/** A blade finds its mark: a crimson cut across the target (a deeper one as the gale tears the wound). */
@@ -555,7 +555,7 @@ final class SignatureVfx {
 		ElementFx.gustRing(level, at, reach * 1.4);
 		Motes.clouds(level, at.add(0, 0.5, 0), 6, reach * 0.5, SAND, 1.4, 36, new Vec3(0, 0.03, 0), 0.08, 0.45);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.SAND.defaultBlockState()), at.add(0, 0.3, 0), 18, 0.25);
-		Fx.sound(level, at, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.9F, 0.6F);
+		Feels.sound(level, at, "wind_whirl", 0.9F, 0.7F);
 	}
 
 	/** A quarter second of the devil: a funnel of wind rings, wider as they climb and wobbling, sand whirling round it. */
@@ -590,7 +590,7 @@ final class SignatureVfx {
 		ElementFx.gustRing(level, at, reach * 1.8);
 		ElementFx.swirl(level, at, reach * 0.5, 3.0, 4, SAND, ElementFx.WIND.primary());
 		Motes.clouds(level, at.add(0, 1.0, 0), 6, reach * 0.6, SAND, 1.3, 30, new Vec3(0, 0.05, 0), 0.1, 0.35);
-		Fx.sound(level, at, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.0F, 0.9F);
+		Feels.sound(level, at, "wind_thump", 1.0F, 0.9F);
 	}
 
 	/** Someone flung out of it: a streak of wind under them. */
@@ -643,9 +643,7 @@ final class SignatureVfx {
 		Motes.clouds(level, at.add(0, 0.5, 0), 8, radius * 0.5, 0xF4FAFF, 1.5, 40, new Vec3(0, 0.02, 0), 0.1, 0.45);
 		Vfx.radial(level, ParticleTypes.SNOWFLAKE, at.add(0, 1, 0), 20, 0.3);
 		ScreenFx.shake(level, at, 0.5F, 14);
-		Fx.sound(level, at, SoundEvents.POINTED_DRIPSTONE_LAND, 1.0F, 0.7F);
-		Fx.sound(level, at, SoundEvents.POWDER_SNOW_BREAK, 1.2F, 0.6F);
-		Fx.sound(level, at, WildercordSounds.impact("frost"), 0.7F, 0.9F);
+		Feels.sound(level, at, "frost_whump", 1.2F, 0.8F);
 	}
 
 	/** An enemy buried: snow heaped on it, and a crack of ice on a bare head. */
@@ -655,7 +653,7 @@ final class SignatureVfx {
 		ElementFx.ring(level, t.position().add(0, 0.1, 0), UP, ElementFx.FROST.secondary(), width(t) + 0.5, 0.2, 0.05, 8);
 		if (bare) {
 			ElementFx.shards(level, top, 0.4, 4);
-			Fx.sound(level, top, SoundEvents.GLASS_BREAK, 0.6F, 1.4F);
+			Feels.sound(level, top, "frost_break", 0.4F, 1.5F);
 		}
 	}
 

@@ -60,6 +60,7 @@ public final class MarkHalos {
 			case SHADOWED -> 0x3A1060;
 			case BLEEDING -> ElementFx.BLOOD.primary();
 			case IONISED -> ElementFx.STORM.primary();
+			case AIRBORNE -> 0xBFE3FF;
 			case EXPOSED -> ElementFx.ARCANE.secondary();
 		};
 	}
@@ -70,7 +71,7 @@ public final class MarkHalos {
 			case FROZEN, RESONANT, EXPOSED -> Style.CROWN;
 			case WINDSWEPT, PULLED -> Style.ORBIT;
 			case SOAKED, WET, BLEEDING -> Style.DRIP;
-			case SHADOWED, IONISED -> Style.MOTES;
+			case SHADOWED, IONISED, AIRBORNE -> Style.MOTES;
 			case CRACKED -> Style.CRACKS;
 		};
 	}

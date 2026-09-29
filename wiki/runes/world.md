@@ -81,7 +81,7 @@ Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50
 
 *Tier II · Frost · Moves you · 6 mana · needs a Copper Cord or better*
 
-Only in water or rain: a current sweeps you about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.
+Only in water or rain: a current sweeps you and the allies within 2 blocks about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.
 
 **How to get it:** Found only, never crafted: Fished from open water.
 
@@ -253,7 +253,7 @@ A stalactite drops on the spot each target stands on: 7 damage, 30% more against
 
 *Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A hook of water snags each target and reels it in to your feet in three tugs: 4 damage, and it's left soaked.
+A hook of water snags each target and reels it in to your feet in three tugs (a flyer is reeled down): 4 damage, it's left soaked and gasping for half a second when it lands.
 
 **How to get it:** Found only, never crafted: Fished from open water.
 
@@ -286,7 +286,7 @@ You charge like a hoglin, up to 8 blocks the way you look, tossing everything in
 
 *Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-Drags each target down: Slowness III for 3 seconds and soaked. In water it's pulled under and takes 5 damage.
+Drags each target down: Slowness III for 3 seconds and soaked. Out of the water it hauls the target toward the nearest water within 6 blocks (with none near, the ground turns to slurry for 3 damage); in water it's pulled under and takes 5.
 
 **How to get it:** Found only, never crafted: Shipwrecks; Runebound Adepts (8%).
 
@@ -363,7 +363,7 @@ Joins up to 5 enemies within 12 blocks of you in a constellation of light and st
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-A drowning word: for 5 seconds the target's lungs fill with water (it loses its air and takes 2 damage a second), and it's soaked.
+A drowning word: for 5 seconds the target's lungs fill with water (it loses its air, takes 2 damage a second and can't cast), and it's soaked.
 
 **How to get it:** Found only, never crafted: The Drowned Scriptorium.
 
@@ -385,7 +385,7 @@ A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are 
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Rime creeps over each target for 3 seconds, slowing it more every second; then it freezes solid for 2 seconds and takes 6 damage.
+Rime creeps over each target for 3 seconds, slowing it more every second; then it freezes solid for 2 seconds and takes 6 damage, and the frost blooms: enemies within 2 blocks take 3 and are slowed. Cast again on a creeping target, it starts nothing new.
 
 **How to get it:** Found only, never crafted: Attuned among ice spikes.
 
@@ -504,7 +504,7 @@ A shard of the fallen star: 11 damage, then it splinters into 3 sparks that stri
 
 *Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and away. On Self it carries you 12 blocks up and lets you glide down.
+A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and away, holding them aloft so they glide down out of the fight (a fifth stronger above y=120). On Self it carries you 12 blocks up and lets you glide down.
 
 **How to get it:** Found only, never crafted: Attuned on a mountain peak.
 
@@ -526,7 +526,7 @@ The noon sun, focused: 8 fire damage and alight for 5 seconds. Under open sky by
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked.
+The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle (as a Pull does) and leaving them soaked. A crowd it bunches takes 1 more for each neighbour (4 at most).
 
 **How to get it:** Found only, never crafted: Ocean monuments (Elder Guardians).
 
@@ -581,7 +581,7 @@ Devours the light: 14 damage, and it swallows each of the target's good effects 
 
 *Tier IV · Frost · Harms enemies · 30 mana · needs an Echo Cord*
 
-Writes the tide: a 7-wide wall of water rolls from you through the point, 10 damage to everything in it, sweeping it 8 blocks on, soaked.
+Writes the tide: a 7-wide wall of water rolls from you through the point, 10 damage to everything in it, sweeping it about 11 blocks on, soaked.
 
 **How to get it:** Found only, never crafted: the Tide Scribe.
 

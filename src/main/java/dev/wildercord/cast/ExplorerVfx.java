@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.spell.Runes;
@@ -135,10 +136,8 @@ final class ExplorerVfx {
 		Scheduler.later(6, () -> {
 			Vfx.emit(level, ParticleTypes.SPLASH, centre.add(0, 0.5, 0), 40, radius * 0.4, 0.3);
 			ElementFx.shards(level, centre.add(0, 0.6, 0), 1.5, 6);
-			sound(level, centre, SoundEvents.PLAYER_SPLASH_HIGH_SPEED, 1.0F, 0.8F);
+			Feels.sound(level, centre, "frost_surge", 1.0F, 1.0F);
 		});
-		sound(level, centre, SoundEvents.CONDUIT_ACTIVATE, 0.8F, 1.2F);
-		sound(level, centre, WildercordSounds.impact("frost"), 0.7F, 0.8F);
 	}
 
 	/** Infest: chips of stone and silverfish scuttling round the target's feet. */
@@ -237,11 +236,19 @@ final class ExplorerVfx {
 	/** Undertow: water dragging at the target, bubbles pulled downward. */
 	static void undertow(ServerLevel level, LivingEntity t) {
 		Vec3 feet = t.position();
-		ElementFx.ring(level, feet.add(0, t.getBbHeight() * 0.6, 0), UP, WATER, 1.3, 0.2, 0.08, 10);
+		// A downward corkscrew: bubbles spiralling from over its head into the ground, drawn a couple of steps a tick.
+		double h = t.getBbHeight() + 0.5;
+		for (int k = 0; k < 10; k++) {
+			int step = k;
+			Scheduler.later(step / 2, () -> {
+				double a = step * 0.95;
+				double rr = 0.7 - step * 0.03;
+				Vfx.emit(level, ParticleTypes.BUBBLE, feet.add(Math.cos(a) * rr, h - step * h / 10.0, Math.sin(a) * rr), 2, 0.05, 0.0);
+			});
+		}
 		ElementFx.groundRing(level, feet, ElementFx.FROST.accent(), 0.2, 1.2, 0.06, 10);
-		Vfx.emit(level, ParticleTypes.CURRENT_DOWN, feet.add(0, 0.8, 0), 12, 0.4, 0.05);
-		Vfx.emit(level, ParticleTypes.SPLASH, feet.add(0, 0.4, 0), 10, 0.4, 0.1);
-		sound(level, feet, SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_INSIDE, 0.9F, 0.9F);
+		Vfx.emit(level, ParticleTypes.CURRENT_DOWN, feet.add(0, 0.8, 0), 6, 0.4, 0.05);
+		Feels.sound(level, feet, "frost_drag", 1.0F, 1.0F);
 	}
 
 	/** Treasure Sense: a coin-gold glint round the caster. */
@@ -365,10 +372,17 @@ final class ExplorerVfx {
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, feet.add(0, height, 0), 4 + stage * 2, 0.3, 0.01);
 		if (stage >= 3) {
 			ElementFx.frostImpact(level, centre(t), 1.1);
-			sound(level, feet, SoundEvents.GLASS_BREAK, 0.8F, 1.4F);
+			Feels.sound(level, feet, "frost_break", 0.8F, 1.0F);
 		} else {
-			sound(level, feet, SoundEvents.POWDER_SNOW_STEP, 0.8F, 0.8F + stage * 0.2F);
+			Feels.sound(level, feet, "frost_creep", 0.8F, 1.0F + stage * 0.12F);
 		}
+	}
+
+	/** Hoarfrost about to close: the rime flares white and draws in tight. */
+	static void hoarfrostFlash(ServerLevel level, LivingEntity t) {
+		Sigils.flash(level, centre(t), 0xFFFFFF, 1.1F);
+		ElementFx.ring(level, centre(t), UP, ElementFx.FROST.secondary(), t.getBbWidth() + 0.9, t.getBbWidth() * 0.5, 0.05, 6);
+		Feels.sound(level, t.position(), "frost_tick", 0.5F, 1.4F);
 	}
 
 	/** Hush opens: a ring of darkness falling in around the point. */
@@ -477,8 +491,7 @@ final class ExplorerVfx {
 		ElementFx.gustRing(level, CastEngine.ground(level, at.add(0, 0.5, 0)), radius * 1.3);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, at.add(0, 1.5, 0), 16, radius * 0.5, 0.2);
 		Vfx.emit(level, ParticleTypes.GUST, at.add(0, 0.6, 0), 2, radius * 0.3, 0.0);
-		sound(level, at, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.0F, 0.6F);
-		sound(level, at, WildercordSounds.impact("wind"), 0.7F, 0.8F);
+		Feels.sound(level, at, "wind_rise", 1.0F, 0.6F);
 	}
 
 	/** Soulfire: blue flames licking up the target. */
@@ -624,23 +637,27 @@ final class ExplorerVfx {
 		if (first) {
 			ElementFx.sigil(level, eyes.add(0, 0.8, 0), UP, SigilOption.BAND, WATER, 1.1, 30, 0.1);
 			ElementFx.ring(level, eyes, UP, ElementFx.FROST.primary(), 1.2, 0.2, 0.06, 10);
-			sound(level, eyes, SoundEvents.DROWNED_AMBIENT_WATER, 1.0F, 0.8F);
+			Feels.sound(level, eyes, "frost_drag", 0.6F, 1.0F);
 		}
 	}
 
 	/** Tidewrit: the crest of a wall of water rolling forward. */
-	static void tidewrit(ServerLevel level, Vec3 front, Vec3 side, double width) {
+	static void tidewrit(ServerLevel level, Vec3 front, Vec3 side, double width, boolean sound) {
 		Vec3 base = CastEngine.ground(level, front.add(0, 0.5, 0));
 		Vec3 a = base.add(side.scale(width / 2));
 		Vec3 b = base.subtract(side.scale(width / 2));
-		ElementFx.ray(level, a.add(0, 1.6, 0), b.add(0, 1.6, 0), WATER, 0.25, 4);
-		ElementFx.ray(level, a.add(0, 2.2, 0), b.add(0, 2.2, 0), ElementFx.FROST.secondary(), 0.08, 3);
+		// A wall: a curtain of upright rays, one a block, with a crest along the top and a little spray.
+		ElementFx.ray(level, a.add(0, 2.2, 0), b.add(0, 2.2, 0), ElementFx.FROST.secondary(), 0.1, 3);
 		for (int i = 0; i <= 6; i++) {
 			Vec3 p = a.lerp(b, i / 6.0);
-			Vfx.emit(level, ParticleTypes.SPLASH, p.add(0, 1.8, 0), 4, 0.2, 0.2);
-			Vfx.emit(level, ParticleTypes.BUBBLE_COLUMN_UP, p.add(0, 0.3, 0), 2, 0.2, 0.1);
+			ElementFx.ray(level, p.add(0, 0.2, 0), p.add(0, 2.2, 0), WATER, 0.14, 4);
+			if (i % 2 == 0) {
+				Vfx.emit(level, ParticleTypes.SPLASH, p.add(0, 2.0, 0), 3, 0.2, 0.15);
+			}
 		}
-		Fx.sound(level, base, SoundEvents.TRIDENT_RIPTIDE_3, 0.5F, 1.0F);
+		if (sound) {
+			Feels.sound(level, base, "frost_surge", 0.9F, 0.8F);
+		}
 	}
 
 	/** Starshard: a falling shard of starlight striking the target. */
@@ -793,9 +810,7 @@ final class ExplorerVfx {
 		ElementFx.ring(level, to, dir, WATER, 0.2, t.getBbWidth() + 0.5, 0.05, 8);
 		Vfx.emit(level, ParticleTypes.SPLASH, to, 16, 0.35, 0.15);
 		Vfx.emit(level, ParticleTypes.BUBBLE_POP, to, 6, 0.3, 0.05);
-		sound(level, from, SoundEvents.FISHING_BOBBER_THROW, 0.8F, 0.8F);
-		sound(level, to, SoundEvents.FISHING_BOBBER_SPLASH, 1.0F, 1.1F);
-		sound(level, to, WildercordSounds.impact("frost"), 0.5F, 1.2F);
+		Feels.sound(level, from, "frost_hook", 0.9F, 1.0F);
 	}
 
 	/** One of Tidehook's tugs: the line pulled taut back to the caster, water shaken off the catch. */
@@ -806,7 +821,7 @@ final class ExplorerVfx {
 		ElementFx.ray(level, from, to, ElementFx.FROST.secondary(), 0.02, 3);
 		Vfx.emit(level, ParticleTypes.SPLASH, to, 10, 0.3, 0.1);
 		Vfx.emit(level, ParticleTypes.DRIPPING_WATER, to.add(0, 0.3, 0), 4, 0.3, 0.0);
-		sound(level, from, SoundEvents.FISHING_BOBBER_RETRIEVE, 0.9F, 0.9F + tug * 0.15F);
+		Feels.sound(level, from, "frost_hook", 0.5F, 1.0F + tug * 0.12F);
 	}
 
 	/** Current: a ring of water round the rider as it takes hold, then spray and bubbles streaming off behind them. */
@@ -817,8 +832,7 @@ final class ExplorerVfx {
 			ElementFx.ring(level, at, dir, WATER, 0.3, 1.6, 0.1, 8);
 			ElementFx.ring(level, behind, dir, ElementFx.FROST.secondary(), 0.2, 1.1, 0.05, 6);
 			Vfx.emit(level, ParticleTypes.SPLASH, rider.position().add(0, 0.2, 0), 24, 0.6, 0.2);
-			Fx.sound(level, at, SoundEvents.TRIDENT_RIPTIDE_2, 1.0F, 1.1F);
-			sound(level, at, WildercordSounds.cast("frost"), 0.6F, 1.2F);
+			Feels.sound(level, at, "frost_surge", 0.7F, 1.2F);
 		} else {
 			ElementFx.ring(level, behind, dir, WATER, 0.9, 0.3, 0.06, 5);
 		}

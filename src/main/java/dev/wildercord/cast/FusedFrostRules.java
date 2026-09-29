@@ -16,6 +16,34 @@ public final class FusedFrostRules {
 	/** The longest a Cryostasis holds, however it's extended: 4 seconds, so untouchable never lasts long. */
 	public static final int SEAL_MAX_TICKS = 80;
 
+	/** Frostbloom: each striker it freezes heals the ally this much, up to this many times a cast. */
+	public static final float BLOOM_HEAL = 1.0F;
+	public static final int BLOOM_HEALS = 4;
+	/** Black Ice: the survivors of a shatter are brittle for this long (3 seconds). */
+	public static final int CASCADE_TICKS = 60;
+	/** Cryostasis: the burst as the ice opens: how far, how hard it throws, what it deals and how long it slows. */
+	public static final double BURST_RADIUS = 3.0;
+	public static final double BURST_KNOCK = 1.2;
+	public static final double BURST_DAMAGE = 3.0;
+	public static final int BURST_SLOW_TICKS = 60;
+
+	/** Frostbite's closing freeze, in seconds. */
+	public static final double FROSTBITE_HOLD_SECONDS = 1.5;
+	/** Blizzard: how far its whiteout walks each second, and what it bites for each second. */
+	public static final double BLIZZARD_WALK = 1.5;
+	public static final double BLIZZARD_BITE = 1.5;
+
+	/** Absolute Zero on a creature showing {@code n} signs of cold (0 to 4): 2 damage and 2.5 for each (4.5, 7, 9.5, 12). */
+	public static double zeroDamage(int n) {
+		return 2.0 + 2.5 * Math.max(0, Math.min(4, n));
+	}
+
+	/** How long it holds a creature showing {@code n} signs of cold: 1 second and half a second for each (half as long on a player). */
+	public static double zeroHoldSeconds(int n, boolean player) {
+		double seconds = 1.0 + 0.5 * Math.max(0, Math.min(4, n));
+		return player ? seconds / 2 : seconds;
+	}
+
 	/** Frostbite's beats: one a second for five seconds, times the duration (always at least one). */
 	public static int frostbiteBeats(double duration) {
 		return (int) Math.max(1, Math.round(5 * duration));

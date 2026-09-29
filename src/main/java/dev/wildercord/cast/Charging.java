@@ -91,6 +91,21 @@ public final class Charging {
 		}
 	}
 
+	/**
+	 * Breaks a player's charge (a Windcut, a silence, Manaburn): the circle closes and the release that follows does nothing.
+	 * Returns whether there was a charge.
+	 */
+	public static boolean interrupt(ServerPlayer player) {
+		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
+			return false;
+		}
+		stop(player);
+		FIZZLED.add(player.getUUID());
+		player.sendOverlayMessage(Component.translatable("message.wildercord.charge_interrupted").withStyle(ChatFormatting.GRAY));
+		Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
+		return true;
+	}
+
 	private static void begin(ServerPlayer player, int requested) {
 		FIZZLED.remove(player.getUUID());
 		CordTier tier = Spellbooks.tier(player);
@@ -129,17 +144,6 @@ public final class Charging {
 		player.getAttribute(Attributes.MOVEMENT_SPEED).addOrUpdateTransientModifier(
 			new AttributeModifier(SLOW, -0.4, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 		Fx.sound(player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
-	}
-
-	/** Cuts a charge in hand short (Silence, Manaburn): the release that follows does nothing. */
-	public static void interrupt(ServerPlayer player) {
-		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
-			return;
-		}
-		stop(player);
-		FIZZLED.add(player.getUUID());
-		player.sendOverlayMessage(Component.translatable("message.wildercord.charge_interrupted").withStyle(ChatFormatting.GRAY));
-		Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
 	}
 
 	private static void stop(ServerPlayer player) {

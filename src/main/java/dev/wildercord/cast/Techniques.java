@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
@@ -354,10 +355,10 @@ final class Techniques {
 				continue;
 			}
 			double react = Reactions.collapse(cast, t);
-			Effects.hurt(cast, t, magic(cast), 5 * power * react);
+			Effects.hurt(cast, t, magic(cast), 4 * power * react);
 			Vec3 away = Effects.horizontal(t.position().subtract(c), cast.caster.getLookAngle());
 			double falloff = 1.0 - 0.4 * Math.min(1.0, d / Math.max(0.5, radius));
-			Effects.push(t, away.scale(2.4 * power * falloff).add(0, 0.5, 0));
+			Statuses.windPush(t, away.scale(2.4 * power * falloff).add(0, 0.5, 0));
 			Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 		}
 	}
@@ -512,24 +513,29 @@ final class Techniques {
 
 	/** Bubble: floats the target helplessly, then pops for damage and leaves it soaked. */
 	static void bubble(Cast cast, LivingEntity t, int ticks, double power) {
+		// One bubble at a time on a creature: a Zone's next pulse or a Linger doesn't stack pops.
+		if (!Statuses.claim(t, "bubble", ticks + 10)) {
+			return;
+		}
+		double lift = 2.5 / Math.max(1, ticks / 2);
 		if (t instanceof Mob) {
 			Spirits.hold(t, ticks);
 		} else {
 			t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks, 0, false, false));
 			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, false));
 		}
-		Fx.sound(cast.level, t.position(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 0.8F, 0.6F);
+		Feels.sound(cast.level, t.position(), "frost_bubble_in", 0.9F, 1.0F);
 		for (int i = 0; i < ticks; i += 2) {
 			int tick = i;
 			Scheduler.later(i + 1, () -> {
 				if (!t.isAlive() || t.level() != cast.level) {
 					return;
 				}
-				if (t instanceof Mob && !Spirits.isBoss(t) && fits(cast.level, t, t.position().add(0, 0.06, 0))) {
-					teleport(t, cast.level, t.position().add(0, 0.06, 0), t.getYRot(), t.getXRot());
+				if (t instanceof Mob && !Spirits.isBoss(t) && fits(cast.level, t, t.position().add(0, lift, 0))) {
+					teleport(t, cast.level, t.position().add(0, lift, 0), t.getYRot(), t.getXRot());
 				}
-				if (tick % 4 == 0) {
-					TechniqueVfx.bubble(cast.level, t);
+				if (tick % 4 == 0 || tick > ticks - 12) {
+					TechniqueVfx.bubble(cast.level, t, tick > ticks - 12);
 				}
 			});
 		}
