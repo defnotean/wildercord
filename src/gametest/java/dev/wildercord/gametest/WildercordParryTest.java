@@ -46,6 +46,7 @@ import java.util.Set;
  *   <li>the same bolt at a Shield raised a second earlier isn't turned (the husk is unhurt);</li>
  *   <li>a husk's Beam (a spell that doesn't fly) parried at the last moment is negated and answered
  *       with a counter-burst that hurts the husk;</li>
+ *   <li>a parried spell keeps its payment (its Siphon cap) but gets its own budget;</li>
  *   <li>a Shield the player raises over their wolf blocks a bolt at it, but never parries it;</li>
  *   <li>an overcast forced into every wild magic outcome in turn goes off without error, never kills
  *       the caster, and the outcomes that leave a mark leave the right one;</li>
@@ -77,6 +78,7 @@ public class WildercordParryTest implements FabricClientGameTest {
 			run(failures, "parrying a bolt", () -> parryBolt(context, world));
 			run(failures, "a Shield raised too early", () -> earlyShield(context, world));
 			run(failures, "parrying a beam", () -> parryBeam(context, world));
+			run(failures, "a parried spell's payment", () -> parriedPayment(world));
 			run(failures, "a pet's Shield", () -> petShield(context, world));
 			run(failures, "wild magic", () -> wildMagic(context, world));
 			// Last: the debt it leaves is still being paid when the world closes.
@@ -251,6 +253,23 @@ public class WildercordParryTest implements FabricClientGameTest {
 		});
 		context.waitTicks(5);
 		clearHusks(world);
+	}
+
+	/**
+	 * A parried spell changes hands but not its payment: it shares the original's Siphon cap (so a spell parried
+	 * back and forth never earns mana afresh), while its budget is its own (so the Shield that stopped it doesn't).
+	 */
+	private static void parriedPayment(TestSingleplayerContext world) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Mob husk = husk(player.level(), 6, 0);
+			Cast original = new Cast(husk);
+			Cast turned = original.reflected(player);
+			Cast back = turned.reflected(husk);
+			check(turned.payment() == original.payment() && back.payment() == original.payment(), "a parried spell should share its payment (and Siphon cap)");
+			check(turned.identity() != original.identity(), "a parried spell should have its own budget");
+			husk.discard();
+		});
 	}
 
 	/**

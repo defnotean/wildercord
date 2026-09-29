@@ -23,6 +23,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   it arrives, instead of floating until its ground was next loaded.
 - **The glyph limit counts all your glyphs**, in every dimension together (12 by default), rather than 12 in each:
   writing one more lets your oldest fade wherever it is.
+- **A parried spell doesn't earn Siphon mana afresh.** Turned back, it's still the one spell paid for once, so it
+  shares the original's Siphon cap however many times it's parried back and forth.
 
 ## [0.4.2-alpha] - 2026-09-28
 
