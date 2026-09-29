@@ -1079,7 +1079,7 @@ public class CordScreen extends Screen {
 			}
 			List<RuneDef> runes = PassiveCaster.activeRunes(book.passives().get(s), book, tier);
 			if (!runes.isEmpty() && Passives.problem(runes) == null) {
-				SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+				SpellCompiler.Compiled compiled = SpellHud.read(runes);
 				if (!compiled.isEmpty()) {
 					total += Heart.upkeep(player, compiled);
 				}

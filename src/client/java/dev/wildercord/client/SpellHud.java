@@ -20,8 +20,10 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * The spell panel right of the hotbar, bottom-aligned with it:
@@ -54,12 +56,27 @@ public final class SpellHud {
 
 	/** Smoothed mana so the bar glides instead of jumping in quarter-second steps. */
 	private static float shownMana = -1;
+	/** Spells already read, by their runes: reading one writes out its whole readout, too much to redo every frame. */
+	private static final Map<List<RuneDef>, SpellCompiler.Compiled> READ = new HashMap<>();
 
 	public static void init() {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("spell_hud"), SpellHud::extract);
 		// A Domain's tint goes under everything else on the HUD.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
 			(g, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(g));
+	}
+
+	/** {@code runes} read as a spell, remembered while they stay the same (the HUD and the wheel draw every frame). */
+	static SpellCompiler.Compiled read(List<RuneDef> runes) {
+		SpellCompiler.Compiled compiled = READ.get(runes);
+		if (compiled == null) {
+			if (READ.size() >= 32) {
+				READ.clear();
+			}
+			compiled = SpellCompiler.compile(runes);
+			READ.put(List.copyOf(runes), compiled);
+		}
+		return compiled;
 	}
 
 	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
@@ -83,7 +100,7 @@ public final class SpellHud {
 		boolean tome = dev.wildercord.gear.Gear.tome(player);
 		int spell = dev.wildercord.gear.Gear.spellOpen(player, tier, book.selected()) ? book.selected() : Math.min(book.selected(), tier.spells - 1);
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
-		SpellCompiler.Compiled compiled = runes.isEmpty() ? null : SpellCompiler.compile(runes);
+		SpellCompiler.Compiled compiled = runes.isEmpty() ? null : read(runes);
 		Mana.Stats stats = Mana.of(player);
 		int maxMana = Math.max(1, stats.max());
 		float mana = Spellbooks.mana(player);
