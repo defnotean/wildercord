@@ -203,7 +203,7 @@ One of your spells, written on paper, that **anyone** can cast **once**, with or
 know its runes.
 
 - **Made:** on the Cord screen, press **Inscribe a scroll** with the spell selected. It takes a sheet of **Paper**, an
-  **Ink Sac** (or Glow Ink Sac) and **twice the spell's mana**.
+  **Ink Sac** (or Glow Ink Sac) and **twice what the spell costs you to cast**.
 - **Named** after its spell (*Scroll of Splitting Frost Bolt*); it shimmers, and its tooltip shows the spell's
   readout and who inscribed it.
 - **Used:** right-click to cast it; the scroll is used up.

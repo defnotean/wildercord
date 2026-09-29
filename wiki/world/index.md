@@ -82,7 +82,8 @@ The four keepers share these rules:
 - **They stay in their arenas.** No boss can be led through a portal, or carried off in a boat or minecart.
 - **Every spell is announced.** The boss bar names the spell it's casting, and its circle opens in its hand first.
   The Archivist telegraphs for 1.4 seconds; so do the other three.
-- **Three phases.** Each changes at two thirds and one third of its health. While it changes, it can't be hurt.
+- **Three phases.** Each changes at two thirds and one third of its health. While it changes, it can't be hurt
+  (though the void, or an operator's `/kill`, still ends it).
   It calls up two Runebound each time (Adepts the second time) and starts a new set of spells.
 - **No blow skips a phase.** However hard you hit, the damage stops at the start of the next phase and the change
   begins at once, so every phase gets fought.
