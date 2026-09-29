@@ -117,6 +117,11 @@ public class CordScreen extends Screen {
 	private static final RuneFamily[] TAB_FAMILIES = {null, RuneFamily.SHAPE, RuneFamily.EFFECT, RuneFamily.MODIFIER, RuneFamily.LINK};
 
 	private final List<List<String>> spells = new ArrayList<>();
+	/**
+	 * Whether the rows have been copied from the spellbook: only when the screen opens. A resize lays it out again,
+	 * and copying then would undo an edit the server hasn't sent back yet.
+	 */
+	private boolean copied;
 	private int editing;
 	/** The Passives page: the same rows, but for the (up to) two always-on passives. */
 	private final List<List<String>> passives = new ArrayList<>();
@@ -182,9 +187,10 @@ public class CordScreen extends Screen {
 		int sy = Math.round(top() + TABS_TOP * s);
 		minecraft.textInputManager().setTextInputArea(sx, sy, sx + Math.round(SEARCH_W * s), sy + Math.round(13 * s));
 		Player player = minecraft.player;
-		if (player == null) {
+		if (player == null || copied) {
 			return;
 		}
+		copied = true;
 		Spellbook book = Spellbooks.get(player);
 		spells.clear();
 		for (List<String> spell : book.spells()) {

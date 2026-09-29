@@ -38,6 +38,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   them.
 - **A possible crash opening creative search**: the Blank Rune's and Wisp Lantern's tooltips read your own data while
   the search index was built in the background; they now read it only on the game's own thread.
+- **Resizing the window no longer undoes a spell edit** made a moment before (the Cord screen copied your spells from
+  the server again, before your edit had come back).
 
 ## [0.4.2-alpha] - 2026-09-28
 

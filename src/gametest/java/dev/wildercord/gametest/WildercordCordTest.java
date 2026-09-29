@@ -159,6 +159,24 @@ public class WildercordCordTest implements FabricClientGameTest {
 		check(clientRow(context, 0).equals(ids(Runes.BOLT, Runes.HARM)), "a left click on a Codex rune should thread it (has " + clientRow(context, 0) + ")");
 		check(serverSpell(world, 0).equals(ids(Runes.BOLT, Runes.HARM)), "threading a rune should be saved (server has " + serverSpell(world, 0) + ")");
 
+		// A resize straight after an edit, before the server has sent the spellbook back, keeps the edit.
+		String resized = context.computeOnClient(mc -> {
+			CordScreen cord = (CordScreen) mc.gui.screen();
+			double[] at = cord.socketPoint(0, 1);
+			net.minecraft.client.input.MouseButtonEvent press = new net.minecraft.client.input.MouseButtonEvent(at[0], at[1],
+				new net.minecraft.client.input.MouseButtonInfo(LEFT, 0));
+			cord.mouseClicked(press, false);
+			cord.mouseReleased(press);
+			List<String> edited = cord.rowRunes(0);
+			cord.resize(cord.width, cord.height);
+			return edited.equals(ids(Runes.BOLT)) && cord.rowRunes(0).equals(edited) ? null : "took " + edited + ", then after a resize " + cord.rowRunes(0);
+		});
+		check(resized == null, "a resize straight after an edit should keep it (" + resized + ")");
+		context.waitTicks(3);
+		check(serverSpell(world, 0).equals(ids(Runes.BOLT)), "the edit made before the resize should be saved (server has " + serverSpell(world, 0) + ")");
+		click(context, screen(context).codexPoint(Runes.HARM.id()), LEFT);
+		check(clientRow(context, 0).equals(ids(Runes.BOLT, Runes.HARM)), "Harm should thread again (has " + clientRow(context, 0) + ")");
+
 		// The same with the right button.
 		click(context, screen(context).socketPoint(0, 1), RIGHT);
 		check(clientRow(context, 0).equals(ids(Runes.BOLT)), "a right click on a threaded rune should take it off (has " + clientRow(context, 0) + ")");
