@@ -640,6 +640,7 @@ def write_lang(runes):
         "message.wildercord.reversal": "Reversal! Death turned back",
         "message.wildercord.deaths_door": "Death was cheated too recently: nothing turns it back again for %s s",
         "message.wildercord.rebirth_resting": "Too soon to be reborn again (%s s)",
+        "message.wildercord.time_skip_nowhere": "Nowhere safe ahead to skip to",
         "entity.wildercord.shadow_hound": "Shadow Hound",
         "modmenu.descriptionTranslation.wildercord": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key.",
     }
