@@ -3,7 +3,7 @@ title: Spellcraft
 nav_order: 3
 has_children: true
 permalink: /spellcraft/
-description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, creature affinities and climate, imbuing, overcasting and secret spells."
+description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, creature affinities and climate, imbuing, overcasting, secret spells and loadouts."
 ---
 
 # Spellcraft
@@ -31,6 +31,7 @@ wrist to the magic circle in front of your hands.
 | [Imbuing and glyphs]({{ '/spellcraft/imbuing/' | relative_url }}) | Storing a spell in a sword, a bow, armour or any block. |
 | [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }}) | Casting past your mana by cracking a Heart Circle, and what a surge can do. |
 | [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}) | Ten exact rune sequences that become something grander, and how to find them. |
+| [Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}) | Your whole Cord saved under a name: swap between up to six setups from the Cord screen, a key or `/loadout`. |
 
 ## The rules at a glance
 
@@ -60,3 +61,4 @@ wrist to the magic circle in front of your hands.
 | **Power** | How hard an effect lands: damage, healing, force. Amplify, charging and Heart Circles raise it. |
 | **Cooldown** | How long a spell takes to be ready again after you cast it. Every spell has its own. |
 | **Upkeep** | What a passive spell costs in mana every second. |
+| **Loadout** | Your whole Cord (spells, names, passives and the selected spell) saved under a name, to load again later. |

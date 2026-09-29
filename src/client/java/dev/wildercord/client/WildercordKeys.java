@@ -13,7 +13,8 @@ import net.minecraft.client.Minecraft;
 
 /**
  * R casts (tap) or charges (hold, then let go); V moves to the next spell (tap) or opens the spell
- * wheel (hold); K opens the Cord screen. Casting spells 1-4 directly is unbound by default.
+ * wheel (hold); K opens the Cord screen. Casting spells 1-4 directly, and loading the next loadout,
+ * are unbound by default.
  */
 public final class WildercordKeys {
 	private WildercordKeys() {}
@@ -25,6 +26,8 @@ public final class WildercordKeys {
 	private static KeyMapping cast;
 	private static KeyMapping next;
 	private static KeyMapping open;
+	/** Loads the next saved loadout (the server checks it may, and names it above the hotbar). */
+	private static KeyMapping nextLoadout;
 	/** "Cast spell N": the Cord's four, and the tome's fifth. */
 	private static final KeyMapping[] CAST_N = new KeyMapping[dev.wildercord.gear.SpellSlots.ALL];
 
@@ -50,6 +53,10 @@ public final class WildercordKeys {
 		return open.getTranslatedKeyMessage();
 	}
 
+	public static net.minecraft.network.chat.Component nextLoadoutKey() {
+		return nextLoadout.getTranslatedKeyMessage();
+	}
+
 	public static void init() {
 		cast = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast", InputConstants.KEY_R, CATEGORY));
 		next = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_spell", InputConstants.KEY_V, CATEGORY));
@@ -58,6 +65,8 @@ public final class WildercordKeys {
 			CAST_N[i] = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast_" + (i + 1),
 				InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
 		}
+		nextLoadout = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_loadout",
+			InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
 		ClientTickEvents.END_CLIENT_TICK.register(WildercordKeys::tick);
 	}
 
@@ -125,6 +134,11 @@ public final class WildercordKeys {
 		while (open.consumeClick()) {
 			if (client.player != null && client.gui.screen() == null) {
 				client.gui.setScreen(new CordScreen());
+			}
+		}
+		while (nextLoadout.consumeClick()) {
+			if (playing) {
+				ClientPlayNetworking.send(new WildercordNetworking.LoadoutRequest(dev.wildercord.loadout.Loadouts.NEXT, -1, ""));
 			}
 		}
 		for (int i = 0; i < CAST_N.length; i++) {

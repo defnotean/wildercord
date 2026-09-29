@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -31,6 +32,8 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
@@ -261,7 +264,51 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 		if (!found(player, ReactionRules.OVERLOAD)) {
 			return "Overload should go in the Grimoire";
 		}
+		// A crowd of burning husks, all jolted at once: each blows apart, but each is thrown once, not once per neighbour.
+		List<Mob> crowd = new ArrayList<>();
+		for (int i = 0; i < 4; i++) {
+			Mob husk = sturdy(husk(level, -8 + i * 0.75, 12));
+			husk.igniteForSeconds(5);
+			crowd.add(husk);
+		}
+		castAt(player, List.of(Runes.JOLT), crowd);
+		for (Mob husk : crowd) {
+			if (husk.getDeltaMovement().y > 1.0) {
+				return "a crowd's Overloads should throw each husk once (one was sent up at " + husk.getDeltaMovement().y + " a tick)";
+			}
+		}
+		// Lightning's strikes land together: the fire the first sets can't let the next set off Overload.
+		stand(player);
+		Mob one = sturdy(husk(level, 4, 12));
+		Mob two = sturdy(husk(level, 5, 12));
+		castAt(player, List.of(Runes.LIGHTNING), List.of(one, two));
+		if (found(player, ReactionRules.OVERLOAD)) {
+			return "Lightning on two husks that weren't burning shouldn't set off Overload with its own fire";
+		}
+		if (!one.isOnFire() || !two.isOnFire()) {
+			return "Lightning should still set its targets alight";
+		}
 		return null;
+	}
+
+	/** A monster with 200 health, so a check can hit it hard without killing it. */
+	private static Mob sturdy(Mob mob) {
+		AttributeInstance health = mob.getAttribute(Attributes.MAX_HEALTH);
+		if (health != null) {
+			health.setBaseValue(200);
+		}
+		mob.setHealth(mob.getMaxHealth());
+		return mob;
+	}
+
+	/** Like {@link #cast}, but one hit landing on every one of {@code targets} at once, as a Burst's does. */
+	private static void castAt(ServerPlayer player, List<RuneDef> effects, List<? extends Entity> targets) {
+		List<RuneDef> runes = new ArrayList<>();
+		runes.add(Runes.TOUCH);
+		runes.addAll(effects);
+		SpellPlan.Group group = SpellCompiler.compile(runes).root().groups.getFirst();
+		Entity first = targets.getFirst();
+		CastEngine.onHit(new Cast(player), group, new Cast.Hit(List.copyOf(targets), first.position(), new Vec3(0, 0, 1), player.position(), null, null, false), null);
 	}
 
 	// ------------------------------------------------------------------ Fracture
@@ -294,6 +341,20 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 		float cracked = before - frozen.getHealth();
 		if (!near(cracked, pelt * ReactionRules.CRACKED_BONUS)) {
 			return "while it's cracked, a Pelt should hit 20% harder (took " + cracked + ", a plain one " + pelt + ")";
+		}
+		// An iron golem resists earth, but a Fracture breaks through that, as a Shatter does through a resistance to fire.
+		Mob resisting = mob(level, EntityTypes.IRON_GOLEM, 6, 4);
+		cast(player, List.of(Runes.PELT), resisting);
+		float halved = resisting.getMaxHealth() - resisting.getHealth();
+		Mob chilled = mob(level, EntityTypes.IRON_GOLEM, 6, 8);
+		cast(player, List.of(Runes.CHILL), chilled);
+		float chill = chilled.getMaxHealth() - chilled.getHealth();
+		Mob cracking = mob(level, EntityTypes.IRON_GOLEM, 6, 12);
+		cast(player, List.of(Runes.CHILL, Runes.PELT), cracking);
+		float through = cracking.getMaxHealth() - cracking.getHealth();
+		if (halved <= 0 || !near(through, chill + 2 * halved * ReactionRules.FRACTURE_BONUS)) {
+			return "a Fracture on an iron golem should break through its resistance to earth (took " + through + " in all; Chill is " + chill
+				+ " and a resisted Pelt " + halved + ")";
 		}
 		return null;
 	}
@@ -426,7 +487,12 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 			burning.igniteForSeconds(6);
 			plain.igniteForSeconds(6);
 			cast(player, List.of(Runes.COUNTDOWN), burning);
-			return new int[] {burning.getId(), plain.getId()};
+			// Burning, but Fire Resistance means the fire has nothing to deal: no Elapse, and it's left burning.
+			Mob resistant = husk(level, 9, 8);
+			resistant.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 400, 0));
+			resistant.igniteForSeconds(6);
+			cast(player, List.of(Runes.COUNTDOWN), resistant);
+			return new int[] {burning.getId(), plain.getId(), resistant.getId()};
 		});
 		context.waitTicks(40);
 		String failure = onServer(world, server -> {
@@ -447,6 +513,9 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 			}
 			if (!found(player, ReactionRules.ELAPSE)) {
 				return "Elapse should go in the Grimoire";
+			}
+			if (player.level().getEntity(ids[2]) instanceof LivingEntity resistant && !resistant.isOnFire()) {
+				return "fire on a husk with Fire Resistance can't hurt it, so time damage shouldn't set off Elapse and put it out";
 			}
 			return null;
 		});

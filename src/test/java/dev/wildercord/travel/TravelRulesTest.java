@@ -67,6 +67,25 @@ class TravelRulesTest {
 	}
 
 	@Test
+	void randomSpotsAreSearchedForAtMostEveryFewSeconds() {
+		long wait = (long) TravelRules.RTP_SEARCH_SECONDS * TravelRules.TICKS_PER_SECOND;
+		assertTrue(wait > 0);
+		assertEquals(wait, TravelRules.searchWait(1000, 1000));
+		assertEquals(wait - 5, TravelRules.searchWait(1005, 1000));
+		assertEquals(0, TravelRules.searchWait(1000 + wait, 1000));
+		assertEquals(0, TravelRules.searchWait(5000, 1000));
+	}
+
+	@Test
+	void waypointsAreSharedWithTheSamePlayerAtMostEveryFewSeconds() {
+		long wait = (long) TravelRules.SHARE_SECONDS * TravelRules.TICKS_PER_SECOND;
+		assertTrue(wait > 0);
+		assertEquals(wait, TravelRules.shareWait(200, 200));
+		assertEquals(wait - 1, TravelRules.shareWait(201, 200));
+		assertEquals(0, TravelRules.shareWait(200 + wait, 200));
+	}
+
+	@Test
 	void theArrowTurnsTowardTheWaypoint() {
 		// Facing south (yaw 0): straight ahead is south, west is on the right, east on the left.
 		assertEquals(0, TravelRules.bearing(0, 10, 0), 1e-9);

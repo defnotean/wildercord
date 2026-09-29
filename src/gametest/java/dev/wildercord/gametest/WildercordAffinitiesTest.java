@@ -12,6 +12,8 @@ import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
+import dev.wildercord.runesmith.ContractRules;
+import dev.wildercord.runesmith.Contracts;
 import dev.wildercord.spell.Bestiary;
 import dev.wildercord.spell.ClimateRules;
 import dev.wildercord.spell.RuneDef;
@@ -89,6 +91,8 @@ public class WildercordAffinitiesTest implements FabricClientGameTest {
 			List<String> failures = new ArrayList<>();
 			failures.addAll(on(world, WildercordAffinitiesTest::weakness));
 			cleanup(context, world);
+			failures.addAll(immuneContracts(context, world));
+			cleanup(context, world);
 			failures.addAll(on(world, WildercordAffinitiesTest::resistance));
 			cleanup(context, world);
 			failures.addAll(climate(context, world));
@@ -140,6 +144,44 @@ public class WildercordAffinitiesTest implements FabricClientGameTest {
 		if (!Heart.discovered(player, Bestiary.key("minecraft:snow_golem", Bestiary.Kind.IMMUNE, "frost"))) {
 			out.add("the snow golem's immunity should go in the Bestiary");
 		}
+		return out;
+	}
+
+	/**
+	 * Frost can't hurt a snow golem, so frost cast at one doesn't count toward a frost contract (it would be a
+	 * target that never runs out); cast at a husk, it does. Each in a tick of its own, as casts are credited.
+	 */
+	private static List<String> immuneContracts(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<String> out = new ArrayList<>();
+		int[] ids = on(world, player -> {
+			ServerLevel level = player.level();
+			Vec3 base = Vec3.atBottomCenterOf(STAGE);
+			player.setAttached(Contracts.BOARD, new ContractRules.Board(Contracts.day(player), List.of(
+				new ContractRules.Contract(ContractRules.ELEMENT_CASTS, "frost", 20, 0, false, "blank_rune:4"))));
+			return new int[] {spawn(level, EntityTypes.SNOW_GOLEM, base.add(-2, 0, 4)).getId(), spawn(level, EntityTypes.HUSK, base.add(2, 0, 4)).getId()};
+		});
+		context.waitTicks(1);
+		int onGolem = on(world, player -> {
+			Contracts.onCast(player, List.of(Runes.TOUCH, Runes.FROST));
+			hit(player, (LivingEntity) player.level().getEntity(ids[0]), Runes.FROST);
+			return Contracts.board(player).contracts().getFirst().progress();
+		});
+		if (onGolem != 0) {
+			out.add("frost on a snow golem, which it can't hurt, shouldn't count toward a frost contract");
+		}
+		context.waitTicks(1);
+		int onHusk = on(world, player -> {
+			Contracts.onCast(player, List.of(Runes.TOUCH, Runes.FROST));
+			hit(player, (LivingEntity) player.level().getEntity(ids[1]), Runes.FROST);
+			return Contracts.board(player).contracts().getFirst().progress();
+		});
+		if (onHusk != 1) {
+			out.add("frost on a husk should count toward a frost contract (has " + onHusk + ")");
+		}
+		on(world, player -> {
+			player.removeAttached(Contracts.BOARD);
+			return null;
+		});
 		return out;
 	}
 
