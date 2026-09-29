@@ -26,6 +26,8 @@ import org.joml.Vector3f;
  */
 public class MoteParticle extends SingleQuadParticle implements SigilGroup.Extent {
 	private static final int TRAIL = 5;
+	/** Where a glow's turn is worked out: used and done with before the next (render thread only). */
+	private static final Quaternionf FACING = new Quaternionf();
 
 	private final int kind;
 	private final int color;
@@ -317,15 +319,10 @@ public class MoteParticle extends SingleQuadParticle implements SigilGroup.Exten
 		if ((argb >>> 24) < 2 || half <= 0) {
 			return;
 		}
-		Vector3f z = new Vector3f(-px, -py, -pz);
-		if (z.lengthSquared() < 1.0E-6F) {
+		if (Vector3f.lengthSquared(px, py, pz) < 1.0E-6F) {
 			return;
 		}
-		z.normalize();
-		Vector3f upAxis = Math.abs(z.y) > 0.95F ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
-		Vector3f xAxis = new Vector3f(upAxis).cross(z).normalize();
-		Vector3f yAxis = new Vector3f(z).cross(xAxis).normalize();
-		quad(state, sprite, px, py, pz, new Quaternionf().setFromNormalized(new Matrix3f(xAxis, yAxis, z)), half, argb, false);
+		quad(state, sprite, px, py, pz, Facing.toward(px, py, pz, FACING), half, argb, false);
 	}
 
 	private void quad(QuadParticleRenderState state, TextureAtlasSprite sprite, float x, float y, float z, Quaternionf q, float half, int argb,

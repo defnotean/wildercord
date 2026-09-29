@@ -12,7 +12,6 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -156,30 +155,18 @@ public final class BoltComets {
 			int n = Math.max(1, (int) Math.ceil(length / Math.max(0.02F, w / 0.62F)));
 			float half = length / n / 2;
 			Vector3f mid = new Vector3f();
+			Quaternionf q = new Quaternionf();
 			for (int k = 0; k < n; k++) {
 				from.lerp(to, (k + 0.5F) / n, mid);
-				Vector3f z = new Vector3f(mid).negate();
-				z.sub(new Vector3f(d).mul(z.dot(d)));
-				if (z.lengthSquared() < 1.0E-6F) {
-					z.set(0, 1, 0);
-				}
-				z.normalize();
-				Vector3f y = new Vector3f(z).cross(d).normalize();
-				Quaternionf q = new Quaternionf().setFromNormalized(new Matrix3f(d, y, z));
-				quad(state, soft, mid, q, half, argb);
+				quad(state, soft, mid, Facing.along(d, mid.x, mid.y, mid.z, q), half, argb);
 			}
 		}
 
 		private void billboard(QuadParticleRenderState state, Vector3f p, float half, int argb) {
-			Vector3f z = new Vector3f(p).negate();
-			if ((argb >>> 24) < 3 || z.lengthSquared() < 1.0E-6F) {
+			if ((argb >>> 24) < 3 || Vector3f.lengthSquared(p.x, p.y, p.z) < 1.0E-6F) {
 				return;
 			}
-			z.normalize();
-			Vector3f up = Math.abs(z.y) > 0.95F ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
-			Vector3f xAxis = new Vector3f(up).cross(z).normalize();
-			Vector3f yAxis = new Vector3f(z).cross(xAxis).normalize();
-			quad(state, glow, p, new Quaternionf().setFromNormalized(new Matrix3f(xAxis, yAxis, z)), half, argb);
+			quad(state, glow, p, Facing.toward(p.x, p.y, p.z, new Quaternionf()), half, argb);
 		}
 
 		private void quad(QuadParticleRenderState state, TextureAtlasSprite sprite, Vector3f p, Quaternionf q, float half, int argb) {
