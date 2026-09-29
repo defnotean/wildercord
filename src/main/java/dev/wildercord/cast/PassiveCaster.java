@@ -86,6 +86,7 @@ public final class PassiveCaster {
 				continue;
 			}
 			String key = String.join(",", runes.stream().map(RuneDef::id).toList());
+			boolean fresh = false;
 			if (!key.equals(state.key) || state.caster != player || state.level != player.level()) {
 				// A new passive, or its Orbit ended with the old world: cast it again now.
 				state.key = key;
@@ -93,8 +94,11 @@ public final class PassiveCaster {
 				state.shown = false;
 				state.caster = player;
 				state.level = player.level();
+				fresh = true;
 			}
-			if (second && !player.isCreative()) {
+			// A passive starting up pays its first second straight away: switched on and off between two
+			// seconds, it would otherwise cast its buffs without ever paying (and with no mana at all).
+			if ((second || fresh) && !player.isCreative()) {
 				float upkeep = Heart.upkeep(player, compiled);
 				float mana = Spellbooks.mana(player);
 				state.faltering = mana < upkeep;
