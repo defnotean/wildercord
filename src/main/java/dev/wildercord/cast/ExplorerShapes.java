@@ -65,6 +65,7 @@ final class ExplorerShapes {
 				}
 			}
 			if (strike) {
+				dev.wildercord.cast.feel.Feels.sound(child.level, centre, "field_pulse", 0.4F, 0.841F);
 				CastEngine.onHit(child, g, new Cast.Hit(CastEngine.inRadius(child, heart, eye), heart, dir, centre, null, null, false), anchored);
 			}
 		});
@@ -152,6 +153,12 @@ final class ExplorerShapes {
 		List<Vec3> points = new ArrayList<>();
 		stars.forEach(s -> points.add(s.getBoundingBox().getCenter()));
 		ExplorerVfx.constellation(cast.level, points, theme);
+		// Each star rings a step higher, one after another: you hear how many it found.
+		for (int i = 0; i < points.size(); i++) {
+			Vec3 star = points.get(i);
+			int k = i;
+			Scheduler.later(1 + 2 * i, () -> dev.wildercord.cast.feel.Feels.sound(cast.level, star, "note_effect", 0.4F, dev.wildercord.cast.feel.Feels.step(k)));
+		}
 		List<Entity> hit = new ArrayList<>(stars);
 		CastEngine.onHit(cast, g, new Cast.Hit(hit, points.getFirst(), at.dir(), centre, null, null, false), anchored);
 	}

@@ -699,6 +699,7 @@ public final class Effects {
 		if (executeBonus > 1.0 && target.getHealth() < target.getMaxHealth() * 0.5F) {
 			amount *= executeBonus;
 			Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, target.getBoundingBox().getCenter(), 4, 0.3, 0.1);
+			dev.wildercord.cast.feel.Feels.sound(cast.level, target.getBoundingBox().getCenter(), "tell_crack", 0.5F, 1.0F);
 		}
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);

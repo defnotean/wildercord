@@ -220,6 +220,7 @@ final class CraftedShapes {
 			}
 			if (tick % interval == 0) {
 				struck[0]++;
+				dev.wildercord.cast.feel.Feels.sound(cast.level, c, "note_link", 0.35F, dev.wildercord.cast.feel.Feels.step(struck[0] - 1));
 				CraftedVfx.latchStrike(cast.level, from.add(c.subtract(from).normalize().scale(0.8)), c, theme);
 				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(List.of(held), c, c.subtract(from).normalize(), from, null, null, false), anchored);
 			}
@@ -267,6 +268,7 @@ final class CraftedShapes {
 		}
 		for (Entity e : sprung) {
 			CraftedVfx.linkSprung(cast.level, e, reaction);
+			dev.wildercord.cast.feel.Tells.handoff(cast.level, e.getBoundingBox().getCenter(), sprung.indexOf(e));
 			// A creature that died of it is gone: the rest fires where it fell, as after On Kill.
 			Entity at = e.isAlive() ? e : null;
 			CastEngine.runSegment(cast.child(), anchored.next, new Cast.Trigger(e.getBoundingBox().getCenter(), hit.dir(), at, null, null));

@@ -71,9 +71,11 @@ reaction's colour.
 
 ## Marks
 
-A mark lasts a few seconds. Nothing on screen names it, but you can see most of them: frozen creatures
-are frosted over and slowed, windswept ones are flying through the air, pulled ones are being dragged,
-wet ones are in water or dripping, shadowed ones are blinded or cursed, bleeding ones drip blood.
+A mark lasts a few seconds, and while it lasts it **shows**: a small halo in the mark's colour, and a tiny tick
+when it's first set. Frozen is a pale ring of frost over the head, Resonant a pink one; Windswept (pale green) and
+Pulled (violet) a crescent circling the body; Wet and Soaked (blue) and Bleeding (red) drips; Shadowed (dark violet)
+and Ionised (yellow) motes rising off it; Cracked a cracked seal at its feet. A creature shows two marks at a
+time, taking turns if it has more. So you can see that the frozen husk is ready to Shatter before you hit it.
 
 | Mark | Lasts | Left by | Used by |
 |---|---|---|---|
