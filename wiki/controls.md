@@ -91,9 +91,31 @@ Anyone can use these.
 | `/duel decline <player>` | Turn the challenge down. (Or click **[Decline]**.) |
 | `/duel stats` | Your wins and losses in duels. |
 | `/duel stats <player>` | Another player's. |
+| `/sethome [name]` | Set a home where you stand (called **home** without a name). Setting it again moves it. |
+| `/home [name]` | Teleport to a home. |
+| `/delhome <name>` | Remove a home. |
+| `/homes` | List your homes (click one to go there). |
+| `/warp <name>` | Teleport to a public warp. |
+| `/warps` | List the warps (click one to go there). |
+| `/waypoint add <name> [x y z]` | Mark a waypoint where you stand, or at those coordinates. |
+| `/waypoint remove <name>` | Remove a waypoint. |
+| `/waypoint list` | List your waypoints (click one to track it). |
+| `/waypoint track <name>` | Show the way to a waypoint in the top-left corner, with a beam of light near it. |
+| `/waypoint untrack` | Stop showing it. |
+| `/waypoint share <name> <player>` | Send a waypoint to another player, who adds it with one click. |
+| `/tpa <player>` | Ask to teleport to another player. |
+| `/tpahere <player>` | Ask another player to teleport to you. |
+| `/tpaccept [player]` | Accept a teleport request (the newest, without a name). Or click **[Accept]**. |
+| `/tpdeny [player]` | Turn a teleport request down. Or click **[Deny]**. |
+| `/tpcancel` | Take back the requests you've sent. |
+| `/tptoggle` | Stop (or start again) anyone sending you teleport requests. |
+| `/back` | Return to where you were before your last teleport, or where you died. |
+| `/spawn` | Teleport to the world spawn. |
+| `/rtp` | Teleport somewhere random in the Overworld, on safe ground. |
 
 Nobody dies in a duel, and afterwards both duellists are put back as they were. The rules are on
-[Duels]({{ '/social/duels/' | relative_url }}). Pasting a spell code (`wc:bolt.frost.split`) into chat isn't a
+[Duels]({{ '/social/duels/' | relative_url }}). Every teleport has a short warmup (stand still in the circle) and a
+cooldown, and the server can turn the travel commands off: see [Getting Around]({{ '/social/travel/' | relative_url }}). Pasting a spell code (`wc:bolt.frost.split`) into chat isn't a
 command, but everyone sees it as a spell card: see [Playing Together]({{ '/social/playing-together/' | relative_url }}).
 
 ## Commands for operators
@@ -117,10 +139,14 @@ with cheats on. They're meant for testing, events and fixing things up.
 | `/wildercord event <kind> here` | Start any of the three right where you stand. |
 | `/wildercord reset` | Forget every rune and spell (you learn the three starter runes again the next time you wear a Cord). Heart Circles and everything else are kept. |
 | `/wildercord reload` | Read the server's Wildercord settings again, and say what, if anything, was wrong with them. |
+| `/setwarp <name>` | Set a public warp where you stand (setting it again moves it). |
+| `/delwarp <name>` | Remove a warp. |
+| `/waypoint locator` | Minecraft's own list of locator bar waypoints (Wildercord's `/waypoint` took its place). |
+| `/waypoint modify ...` | Minecraft's own command for how a player looks on the locator bar, unchanged. |
 
 Fallen stars and rift sieges need a difficulty above Peaceful, and none of the three events starts on a server
 whose settings switch world events off. Tab completion suggests rune names for
-`learn` and `innate`.
+`learn` and `innate`. Operators also skip the warmup and cooldowns of every travel command.
 
 The game's own commands work with Wildercord's structures and rules too:
 

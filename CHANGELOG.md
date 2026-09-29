@@ -4,6 +4,17 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+- **Travel commands for servers**: `/sethome`, `/home`, `/delhome` and `/homes` (3 homes each); public warps
+  (`/warp`, `/warps`, and `/setwarp` and `/delwarp` for operators); personal waypoints (`/waypoint add`, `remove`,
+  `list`, `track`, `untrack` and `share`), with an arrow, name and distance in the top-left corner and a faint beam
+  only you can see; teleport requests (`/tpa`, `/tpahere`, `/tpaccept`, `/tpdeny`, `/tpcancel`, `/tptoggle`) with
+  clickable answers; `/back` (to before your last teleport, or where you died), `/spawn` and `/rtp`. Every teleport
+  forms a magic circle at your feet for a 3-second warmup (moving or being hurt cancels it), has a cooldown, lands
+  on safe ground and works across worlds, and none can be used in a duel. Operators skip the warmup and
+  cooldowns. Server owners can change the limits and times, or switch it all off, in the new `travel` section of
+  the config. See [Getting Around](https://defnotean.github.io/wildercord/social/travel/).
+
 ## [0.4.1-alpha] - 2026-09-28
 
 A player wiki, and the bugs found while writing it.
