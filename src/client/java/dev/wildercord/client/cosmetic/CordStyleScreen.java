@@ -185,7 +185,7 @@ public class CordStyleScreen extends Screen {
 			drawPreview(g, partial);
 		}
 		if (tooltip != null) {
-			g.setTooltipForNextFrame(font, dev.wildercord.client.Tooltips.wrap(font, tooltip, dev.wildercord.client.Tooltips.maxWidth(width)), mouseX, mouseY);
+			g.setTooltipForNextFrame(font, dev.wildercord.client.Tooltips.fit(font, tooltip, width, height), mouseX, mouseY);
 		}
 	}
 

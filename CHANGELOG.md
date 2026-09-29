@@ -19,7 +19,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Tooltips ran off the side of the screen.** A tooltip line was never wrapped, so most rune descriptions (and
   Imbue's, several hundred pixels long, on any screen) were cut off unless the window was very wide. Tooltips in
   the Cord screen, the Cosmetics page and the Fusion Altar, and those of the mod's items everywhere, now wrap to
-  fit.
+  fit. One still taller than the window (the mana badge's, on a short window) is cut short at the bottom instead
+  of losing its title and numbers off the top.
 - An add-on's rune drew black-and-magenta squares in the magic circle beside the Cord screen and on the Fusion
   Altar. It now wears its family's art there, as its circle in the world always did.
 - When the spell HUD had too little room beside the hotbar (a small window with the attack indicator or the

@@ -261,6 +261,11 @@ public class CordScreen extends Screen {
 		return onScreen(x + (font.width(Component.translatable(PAGE_KEYS[page])) + 10) / 2.0, 7 + 6.5);
 	}
 
+	/** The middle of the mana badge in the header, on screen. */
+	public double[] manaPoint() {
+		return onScreen(W - 27 - 18 + 7, 7 + 7);
+	}
+
 	/** The middle of spell tool {@code tool} (0 rename, 1 copy, 2 paste, 3 scroll) above the readout, on screen. */
 	public double[] toolPoint(int tool) {
 		return onScreen(toolX(tool) + TOOL / 2.0, toolY() + TOOL / 2.0);
@@ -583,7 +588,7 @@ public class CordScreen extends Screen {
 			}
 		}
 		if (tooltip != null) {
-			g.setTooltipForNextFrame(font, Tooltips.wrap(font, tooltip, Tooltips.maxWidth(width)), mouseX, mouseY);
+			g.setTooltipForNextFrame(font, Tooltips.fit(font, tooltip, width, height), mouseX, mouseY);
 		}
 	}
 

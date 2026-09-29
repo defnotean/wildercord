@@ -66,7 +66,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			context.waitTicks(5);
 			context.setScreen(CordScreen::new);
 			context.waitTicks(3);
-			context.getInput().setCursorPos((320 + 275 + 7) * 2, (144 + 7 + 7) * 2);
+			double[] manaBadge = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).manaPoint());
+			context.getInput().setCursorPos(manaBadge[0] * 2, manaBadge[1] * 2);
 			context.waitTicks(3);
 			context.takeScreenshot(TestScreenshotOptions.of("mana_tooltip").disableCounterPrefix());
 			// Search: type a query and see the grouped, filtered Codex.
@@ -169,6 +170,11 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		context.getInput().setCursorPos(imbue[0] * 2, imbue[1] * 2);
 		context.waitTicks(3);
 		context.takeScreenshot(TestScreenshotOptions.of("tooltip_long_854x480").disableCounterPrefix());
+		// The mana badge's tooltip is taller than this window: it should keep its top (title and numbers) on it.
+		double[] mana = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).manaPoint());
+		context.getInput().setCursorPos(mana[0] * 2, mana[1] * 2);
+		context.waitTicks(3);
+		context.takeScreenshot(TestScreenshotOptions.of("mana_tooltip_854x480").disableCounterPrefix());
 		context.setScreen(() -> null);
 		context.waitTicks(2);
 	}

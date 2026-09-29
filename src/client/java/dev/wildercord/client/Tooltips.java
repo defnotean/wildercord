@@ -3,6 +3,7 @@ package dev.wildercord.client;
 import dev.wildercord.Wildercord;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.event.Event;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,6 +35,22 @@ public final class Tooltips {
 	/** How wide a tooltip may be on a screen {@code screenWidth} wide: never wider than fits on it. */
 	public static int maxWidth(int screenWidth) {
 		return Math.max(100, Math.min(MAX_WIDTH, screenWidth - 8));
+	}
+
+	/**
+	 * A screen's own tooltip, wrapped for a screen {@code screenWidth} by {@code screenHeight}. One taller
+	 * than the screen (the mana badge's, well equipped, on a short window) ends in "…" instead: the game
+	 * would push its top, where its title and main numbers are, off the screen.
+	 */
+	public static List<FormattedCharSequence> fit(Font font, List<Component> lines, int screenWidth, int screenHeight) {
+		List<FormattedCharSequence> wrapped = wrap(font, lines, maxWidth(screenWidth));
+		// Each line is 10 pixels, and the frame takes a few more above and below.
+		int room = Math.max(2, (screenHeight - 8) / 10);
+		if (wrapped.size() > room) {
+			wrapped = new ArrayList<>(wrapped.subList(0, room - 1));
+			wrapped.add(Component.literal("…").withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText());
+		}
+		return wrapped;
 	}
 
 	/** Every line wrapped to {@code width}; lines that fit stay as they are. */
