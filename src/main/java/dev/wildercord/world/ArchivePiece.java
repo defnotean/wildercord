@@ -44,7 +44,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
  *   x 33-39  the Vault (two chests of Tier IV runes)
  * </pre>
  */
-public class ArchivePiece extends ScatteredFeaturePiece {
+public class ArchivePiece extends ScatteredFeaturePiece implements dev.wildercord.world.dungeons.WardedPiece {
 	public static final int WIDTH = 41;
 	public static final int HEIGHT = 34;
 	public static final int DEPTH = 92;
@@ -82,6 +82,7 @@ public class ArchivePiece extends ScatteredFeaturePiece {
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
+		dev.wildercord.world.dungeons.DungeonWards.remember(level, this);
 		stairway(level, bb);
 		shrine(level, bb);
 		library(level, bb);
@@ -278,6 +279,20 @@ public class ArchivePiece extends ScatteredFeaturePiece {
 
 	private int ceiling(double d) {
 		return 13 + (int) Math.floor(Math.sqrt(Math.max(0, ARENA_R * ARENA_R - d * d)) * 0.55);
+	}
+
+	/** The Archivist's arena, from under its floor to over its dome, and the vault off it (with the door between). */
+	@Override
+	public java.util.List<BoundingBox> wardedBoxes() {
+		return java.util.List.of(
+			worldBox(20 - ARENA_R - 3, 0, ARENA_Z - ARENA_R - 3, 20 + ARENA_R + 3, SURFACE - 2, Math.min(DEPTH - 1, ARENA_Z + ARENA_R + 3)),
+			worldBox(30, 0, 71, WIDTH - 1, 11, 83));
+	}
+
+	/** A box given in the piece's own coordinates, turned and placed as the piece is: in the world's. */
+	private BoundingBox worldBox(int x0, int y0, int z0, int x1, int y1, int z1) {
+		return BoundingBox.fromCorners(new net.minecraft.core.Vec3i(getWorldX(x0, z0), getWorldY(y0), getWorldZ(x0, z0)),
+			new net.minecraft.core.Vec3i(getWorldX(x1, z1), getWorldY(y1), getWorldZ(x1, z1)));
 	}
 
 	private void arena(WorldGenLevel level, BoundingBox bb) {
