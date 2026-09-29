@@ -34,7 +34,7 @@ Slowness IV for 3 seconds. A target that was already slowed or frozen freezes so
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Frost effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/black_ice.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Black Ice
 {: #black_ice}
@@ -45,7 +45,7 @@ Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/blizzard.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blizzard
 {: #blizzard}
@@ -56,7 +56,7 @@ A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Wind effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/bloodboil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloodboil
 {: #bloodboil}
@@ -67,7 +67,7 @@ A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/bloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloom
 {: #bloom}
@@ -78,7 +78,7 @@ Regeneration II for 6 seconds, and plants grow around the first 3 allies it touc
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/bonespur.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bonespur
 {: #bonespur}
@@ -89,7 +89,7 @@ Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 dam
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Earth effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/chronoshift.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chronoshift
 {: #chronoshift}
@@ -100,7 +100,7 @@ Turns an ally's clock forward: their other spells come off cooldown 3 seconds so
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Time effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/conflagration.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Conflagration
 {: #conflagration}
@@ -111,7 +111,7 @@ Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flare
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Fire effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/crimson_mist.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Crimson Mist
 {: #crimson_mist}
@@ -122,7 +122,7 @@ A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/cryostasis.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cryostasis
 {: #cryostasis}
@@ -133,7 +133,7 @@ Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can'
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/devour.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Devour
 {: #devour}
@@ -144,7 +144,7 @@ Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can'
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Void effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/downdraft.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Downdraft
 {: #downdraft}
@@ -155,7 +155,7 @@ Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more f
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/entropy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Entropy
 {: #entropy}
@@ -166,7 +166,7 @@ The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight thro
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Void effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/everburn.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Everburn
 {: #everburn}
@@ -177,7 +177,7 @@ Sets targets alight for 5 seconds with a fire that burns twice as fast (1 more d
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/firestorm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Firestorm
 {: #firestorm}
@@ -188,7 +188,7 @@ Sets targets alight for 6 seconds and deals 4 damage, and the fire leaps to ever
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Wind effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/fossilize.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fossilize
 {: #fossilize}
@@ -199,7 +199,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Earth effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/frostbite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostbite
 {: #frostbite}
@@ -210,7 +210,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/frostbloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostbloom
 {: #frostbloom}
@@ -221,7 +221,7 @@ Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally 
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Life effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/geode.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Geode
 {: #geode}
@@ -232,7 +232,7 @@ Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally 
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Earth effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/glacier.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glacier
 {: #glacier}
@@ -254,7 +254,7 @@ Three hailstones of 2 damage each, and Slowness II for 4 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Frost effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/heartstopper.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Heartstopper
 {: #heartstopper}
@@ -265,7 +265,7 @@ Three hailstones of 2 damage each, and Slowness II for 4 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/hellmouth.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hellmouth
 {: #hellmouth}
@@ -276,7 +276,7 @@ Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks towar
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/hemomancy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hemomancy
 {: #hemomancy}
@@ -287,7 +287,7 @@ Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks towar
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Arcane effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/lifebloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lifebloom
 {: #lifebloom}
@@ -298,7 +298,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Life effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/lifesteal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lifesteal
 {: #lifesteal}
@@ -309,7 +309,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/magma.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Magma
 {: #magma}
@@ -320,7 +320,7 @@ The ground under the target turns to magma for 4 seconds: 2 damage a second to e
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/magnetize.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Magnetize
 {: #magnetize}
@@ -331,7 +331,7 @@ Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and 
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Earth effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/monolith.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Monolith
 {: #monolith}
@@ -342,7 +342,7 @@ A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Earth effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/nullify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nullify
 {: #nullify}
@@ -364,7 +364,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Life effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/plasma.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Plasma
 {: #plasma}
@@ -375,7 +375,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Fire effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/prismatic_burst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prismatic Burst
 {: #prismatic_burst}
@@ -386,7 +386,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Arcane effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/reckoning.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reckoning
 {: #reckoning}
@@ -397,7 +397,7 @@ For 4 seconds, every wound the target takes is counted; then half of it comes du
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Time effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/recoil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Recoil
 {: #recoil}
@@ -408,7 +408,7 @@ Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where t
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/riftbolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Riftbolt
 {: #riftbolt}
@@ -419,7 +419,7 @@ A black bolt for 6 damage that tears the target through a rift up to 5 blocks aw
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/rime_seal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rime Seal
 {: #rime_seal}
@@ -430,7 +430,7 @@ Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that s
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/sanguine_rite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sanguine Rite
 {: #sanguine_rite}
@@ -441,7 +441,7 @@ You pay 3 of your own health (never your last) for 12 damage that ignores armour
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Blood effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/second_wind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Second Wind
 {: #second_wind}
@@ -463,7 +463,7 @@ A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 b
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Void effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/sinkhole.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sinkhole
 {: #sinkhole}
@@ -474,7 +474,7 @@ The ground gives way: enemies within 3 blocks are dragged to its middle and pinn
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Earth effect and any Void effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/skyglyph.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Skyglyph
 {: #skyglyph}
@@ -485,7 +485,7 @@ Writes a wind glyph where it lands for 10 seconds: an ally who steps on it is la
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/soulbond.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Soulbond
 {: #soulbond}
@@ -507,7 +507,7 @@ Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, a
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/steam.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Steam
 {: #steam}
@@ -518,7 +518,7 @@ A scalding burst of steam: 4 damage and Blindness for 3 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Frost effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/stormclock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stormclock
 {: #stormclock}
@@ -529,7 +529,7 @@ A scalding burst of steam: 4 damage and Blindness for 3 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Time effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/stormweave.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stormweave
 {: #stormweave}
@@ -540,7 +540,7 @@ Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between t
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/surge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Surge
 {: #surge}
@@ -551,7 +551,7 @@ Speed I and Strength I for 8 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Storm effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/tempest.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tempest
 {: #tempest}
@@ -562,7 +562,7 @@ A lightning strike for 8 damage, and a gale that hurls targets far away.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Wind effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/thunderhead.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderhead
 {: #thunderhead}
@@ -573,7 +573,7 @@ A thundercloud gathers over the target for 4 seconds and strikes an enemy within
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Storm effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/timesteal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Timesteal
 {: #timesteal}
@@ -595,7 +595,7 @@ You give up to 4 of your own health (never below 2), and the ally heals twice wh
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Blood effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/updraft.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Updraft
 {: #updraft}
@@ -606,7 +606,7 @@ Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft sm
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Wind effects and an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/warp.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Warp
 {: #warp}
@@ -628,7 +628,7 @@ A warm breeze: allies within 4 blocks get Speed I, Jump Boost I and Regeneration
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Life effect, with an amethyst shard (3 XP levels).
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ## Signature fusions
 
@@ -662,7 +662,7 @@ Snow and ice crash down round where it lands: 6 damage to every enemy within 3 b
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Coldsnap]({{ '/runes/effects/frost/' | relative_url }}#coldsnap) and [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) themselves, with an amethyst shard (3 XP levels). Any other Frost and Earth effects make Glacier instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloomstep
 {: #bloomstep}
@@ -684,7 +684,7 @@ Chills each target (Slowness II for 4 seconds); a moment later a current races t
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) and [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) themselves, with an amethyst shard (3 XP levels). Any other Frost and Storm effects make Hail instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/halo.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Halo
 {: #halo}
@@ -695,7 +695,7 @@ A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enem
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Smite]({{ '/runes/effects/arcane/' | relative_url }}#smite) and [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Life effects make Soulbond instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/malison.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Malison
 {: #malison}
@@ -706,7 +706,7 @@ A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enem
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Hex]({{ '/runes/effects/void/' | relative_url }}#hex) and [Resonance]({{ '/runes/effects/arcane/' | relative_url }}#resonance) themselves, with an amethyst shard (3 XP levels). Any other Void and Arcane effects make Nullify instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/parasite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Parasite
 {: #parasite}
@@ -717,7 +717,7 @@ Plants a parasite in each target for 6 seconds: Poison I, and every second it dr
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Venom]({{ '/runes/effects/life/' | relative_url }}#venom) and [Leech]({{ '/runes/effects/blood/' | relative_url }}#leech) themselves, with an amethyst shard (3 XP levels). Any other Life and Blood effects make Transfusion instead.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/razorgale.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Razorgale
 {: #razorgale}
@@ -728,7 +728,7 @@ A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) and [Bleed]({{ '/runes/effects/blood/' | relative_url }}#bleed) themselves, with an amethyst shard (3 XP levels). Any other Wind and Blood effects make Crimson Mist instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/riposte.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Riposte
 {: #riposte}
@@ -739,7 +739,7 @@ For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and a
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) and [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Seethe
 {: #seethe}
@@ -750,7 +750,7 @@ Traps each target in a bubble of boiling water for 2 seconds (1 fire damage ever
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) and [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) themselves, with an amethyst shard (3 XP levels). Any other Frost and Fire effects make Steam instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/skyburst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Skyburst
 {: #skyburst}
@@ -761,7 +761,7 @@ Flings each target high into the air (3 at most); at the top of its flight it ex
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Launch]({{ '/runes/effects/wind/' | relative_url }}#launch) and [Explode]({{ '/runes/effects/fire/' | relative_url }}#explode) themselves, with an amethyst shard (3 XP levels). Any other Wind and Fire effects make Firestorm instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/stitchtime.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stitchtime
 {: #stitchtime}
@@ -772,7 +772,7 @@ Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhil
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Heal]({{ '/runes/effects/life/' | relative_url }}#heal) and [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/thunderquake.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderquake
 {: #thunderquake}
@@ -783,7 +783,7 @@ The ground booms like thunder: three shockwaves roll out from where it lands ove
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Thunderclap]({{ '/runes/effects/storm/' | relative_url }}#thunderclap) and [Tremor]({{ '/runes/effects/earth/' | relative_url }}#tremor) themselves, with an amethyst shard (3 XP levels). Any other Storm and Earth effects make Magnetize instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/thunderstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderstep
 {: #thunderstep}
@@ -794,7 +794,7 @@ You come down as a bolt of lightning where the spell landed (up to 24 blocks), r
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Shadowstep]({{ '/runes/effects/void/' | relative_url }}#shadowstep) and [Lightning]({{ '/runes/effects/storm/' | relative_url }}#lightning) themselves, with an amethyst shard (3 XP levels). Any other Void and Storm effects make Riftbolt instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/cometfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cometfall
 {: #cometfall}
@@ -805,7 +805,7 @@ A comet streaks down on the point a second later: 16 damage to every enemy withi
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Starfall]({{ '/runes/effects/arcane/' | relative_url }}#starfall) and [Meteor]({{ '/runes/effects/fire/' | relative_url }}#meteor) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Fire effects make Starfire instead.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/doomclock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Doomclock
 {: #doomclock}
@@ -816,7 +816,7 @@ Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it tak
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Primer]({{ '/runes/effects/fire/' | relative_url }}#primer) and [Stasis]({{ '/runes/effects/time/' | relative_url }}#stasis) themselves, with an amethyst shard (3 XP levels). Any other Fire and Time effects make Everburn instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/dust_devil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dust Devil
 {: #dust_devil}
@@ -827,5 +827,5 @@ A dust devil touches down where it lands and chases the nearest enemy for 5 seco
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Summit Wind]({{ '/runes/world/' | relative_url }}#summit_wind) and [Sandstorm]({{ '/runes/world/' | relative_url }}#sandstorm) themselves, with an amethyst shard (3 XP levels). Any other Wind and Earth effects make Downdraft instead.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

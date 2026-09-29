@@ -11,7 +11,7 @@ nav_order: 6
 
 Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 
-12 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
+13 life effects you can craft or find in the usual way. Life also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/bramble.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bramble
 {: #bramble}
@@ -24,7 +24,7 @@ Thorns for 10 seconds: whatever hurts you from within 4 blocks takes 3 damage an
 
 <img src="{{ '/assets/recipes/rune_bramble.png' | relative_url }}" alt="Crafting Bramble: a Blank Rune and Sweet Berries and Cactus" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/glimmer.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glimmer
 {: #glimmer}
@@ -50,7 +50,7 @@ Bone-meals the block that was hit and everything around it.
 
 <img src="{{ '/assets/recipes/rune_grow.png' | relative_url }}" alt="Crafting Grow: a Blank Rune and 2x Bone Meal" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/harvest.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Harvest
 {: #harvest}
@@ -76,7 +76,7 @@ Restores 8 health (4 hearts).
 
 <img src="{{ '/assets/recipes/rune_heal.png' | relative_url }}" alt="Crafting Heal: a Blank Rune and Glistering Melon Slice" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/nourish.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nourish
 {: #nourish}
@@ -89,7 +89,7 @@ Restores 6 hunger and some saturation.
 
 <img src="{{ '/assets/recipes/rune_nourish.png' | relative_url }}" alt="Crafting Nourish: a Blank Rune and Bread" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/cleanse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cleanse
 {: #cleanse}
@@ -102,7 +102,7 @@ Washes away harmful effects and fire.
 
 <img src="{{ '/assets/recipes/rune_cleanse.png' | relative_url }}" alt="Crafting Cleanse: a Blank Rune and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Frugal
+**Modifiers that work on it:** Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/haven.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Haven
 {: #haven}
@@ -128,7 +128,7 @@ Regeneration II for 8 seconds.
 
 <img src="{{ '/assets/recipes/rune_regrowth.png' | relative_url }}" alt="Crafting Regrowth: a Blank Rune and Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/venom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Venom
 {: #venom}
@@ -141,7 +141,20 @@ Poison II for 6 seconds and 2 damage.
 
 <img src="{{ '/assets/recipes/rune_venom.png' | relative_url }}" alt="Crafting Venom: a Blank Rune and Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/drowse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Drowse
+{: #drowse}
+
+*Tier III · Life · Harms enemies · 14 mana · needs an Amethyst Cord or better*
+
+Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't move or fight back, but any damage wakes it. Bosses only grow drowsy.
+
+**How to get it:** Craft: a Blank Rune, Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities.
+
+<img src="{{ '/assets/recipes/rune_drowse.png' | relative_url }}" alt="Crafting Drowse: a Blank Rune and Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/restore.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Restore
 {: #restore}
@@ -154,7 +167,7 @@ Puts things back: heals 6, puts out fire, and mends 5% of every worn and held it
 
 <img src="{{ '/assets/recipes/rune_restore.png' | relative_url }}" alt="Crafting Restore: a Blank Rune and Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/reversal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reversal
 {: #reversal}

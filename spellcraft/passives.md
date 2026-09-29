@@ -81,6 +81,7 @@ aura in two passives (`Self · Swift` and `Orbit · Shock`).
 | Empower | II | Strength II |
 | Fireward | II | Fire resistance |
 | Overdrive | II | Strength II, Speed II and Haste II, but you lose 1 health every 2 seconds, all the time |
+| Searing Edge | II | Every melee hit you land sets the foe alight and deals 2 more fire damage |
 | Reflect | III | Attackers take 60% of their damage back |
 | Accelerate | III | Speed III, Haste III, Jump Boost II and Regeneration |
 | Infinity | IV | Projectiles stop in the air around you, and enemies that come too close are pushed back |
@@ -89,8 +90,8 @@ aura in two passives (`Self · Swift` and `Orbit · Shock`).
 
 Damage and control effects can only be carried by an **Orbit**: its orbs deal them to whatever they touch.
 
-Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt and
-Windcut.
+Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt, Windcut and
+Umbra.
 
 `Shock` on its own (on Self) is refused with "Shock needs an Orbit to carry it in a passive."
 

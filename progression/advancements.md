@@ -125,7 +125,7 @@ Mirrorfrost can only be earned with the innate rune of the same name. See
 
 - **Knowing runes** means runes learned into your Codex. Knots don't count.
 - **Every Word** wants every rune there is except the innate runes that aren't yours: every craftable
-  rune, every rune of the world and every fused rune, signature fusions included (300 in all), plus your own innate rune. Runes
+  rune, every rune of the world and every fused rune, signature fusions included (318 in all), plus your own innate rune. Runes
   added by other mods count too, if you have them installed.
 - **Chain Reaction** wants all eleven reactions in your Grimoire.
 - **Every Page Filled** wants all 11 reactions, all 10 secret spells and every feat except Mirrorfrost,

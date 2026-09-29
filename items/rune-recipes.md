@@ -12,7 +12,7 @@ Every rune up to Tier III can be crafted: a **Blank Rune** plus a few items that
 
 **Blank Rune:** 4 Cobblestone around 1 Lapis Lazuli, makes 4.
 
-## Tier I (47 runes)
+## Tier I (51 runes)
 
 Each needs a Blank Rune and its own items, plus **nothing else**.
 
@@ -68,6 +68,10 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_frostward.png' | relative_url }}" alt="Crafting Frostward: a Blank Rune and Snowball and Leather" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/frostward.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#frostward">Frostward</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_galvanize.png' | relative_url }}" alt="Crafting Galvanize: a Blank Rune and Lightning Rod and Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/galvanize.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#galvanize">Galvanize</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_glimmer.png' | relative_url }}" alt="Crafting Glimmer: a Blank Rune and Glow Lichen" class="recipe-grid" loading="lazy">
@@ -130,6 +134,10 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption><img src="{{ '/assets/runes/pelt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#pelt">Pelt</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_prospect.png' | relative_url }}" alt="Crafting Prospect: a Blank Rune and Stone Pickaxe and Amethyst Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/prospect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#prospect">Prospect</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_prune.png' | relative_url }}" alt="Crafting Prune: a Blank Rune and Shears and any saplings" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/prune.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#prune">Prune</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
 </figure>
@@ -156,6 +164,10 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_tidebreath.png' | relative_url }}" alt="Crafting Tidebreath: a Blank Rune and Pufferfish" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/tidebreath.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#tidebreath">Tidebreath</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_umbra.png' | relative_url }}" alt="Crafting Umbra: a Blank Rune and Ink Sac and Flint" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/umbra.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/void/' | relative_url }}#umbra">Umbra</a><br><span class="recipe-family">Effect, Void</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_windcut.png' | relative_url }}" alt="Crafting Windcut: a Blank Rune and Feather and Flint" class="recipe-grid" loading="lazy">
@@ -186,6 +198,10 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption><img src="{{ '/assets/runes/bolt.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#bolt">Bolt</a><br><span class="recipe-family">Shape</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_imprint.png' | relative_url }}" alt="Crafting Imprint: a Blank Rune and Clay Ball and Gunpowder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/imprint.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#imprint">Imprint</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_nova.png' | relative_url }}" alt="Crafting Nova: a Blank Rune and Gunpowder and Glowstone Dust" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/nova.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#nova">Nova</a><br><span class="recipe-family">Shape</span></figcaption>
 </figure>
@@ -207,7 +223,7 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 </figure>
 </div>
 
-## Tier II (80 runes)
+## Tier II (91 runes)
 
 Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
@@ -257,6 +273,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/deflect.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#deflect">Deflect</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_disarm.png' | relative_url }}" alt="Crafting Disarm: a Blank Rune and Wind Charge and Fishing Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/disarm.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#disarm">Disarm</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_dismantle.png' | relative_url }}" alt="Crafting Dismantle: a Blank Rune and Shears" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/dismantle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#dismantle">Dismantle</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
 </figure>
@@ -281,12 +301,20 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/fireward.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#fireward">Fireward</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_flash_freeze.png' | relative_url }}" alt="Crafting Flash Freeze: a Blank Rune and Packed Ice and Water Bucket" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/flash_freeze.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#flash_freeze">Flash Freeze</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_flashfire.png' | relative_url }}" alt="Crafting Flashfire: a Blank Rune and Blaze Powder and Gunpowder" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/flashfire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#flashfire">Flashfire</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_frost.png' | relative_url }}" alt="Crafting Frost: a Blank Rune and Powder Snow Bucket" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/frost.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#frost">Frost</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_gash.png' | relative_url }}" alt="Crafting Gash: a Blank Rune and Flint and Rotten Flesh" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/gash.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#gash">Gash</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_grapple.png' | relative_url }}" alt="Crafting Grapple: a Blank Rune and Lead" class="recipe-grid" loading="lazy">
@@ -337,6 +365,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/root.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#root">Root</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_searing_edge.png' | relative_url }}" alt="Crafting Searing Edge: a Blank Rune and Iron Sword and Blaze Powder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/searing_edge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#searing_edge">Searing Edge</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_shackle.png' | relative_url }}" alt="Crafting Shackle: a Blank Rune and 2x Iron Chain" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/shackle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#shackle">Shackle</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
 </figure>
@@ -355,6 +387,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_span.png' | relative_url }}" alt="Crafting Span: a Blank Rune and 2x Magenta Stained Glass" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/span.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#span">Span</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_spellbrand.png' | relative_url }}" alt="Crafting Spellbrand: a Blank Rune and Book and Gunpowder" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/spellbrand.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#spellbrand">Spellbrand</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_stoneskin.png' | relative_url }}" alt="Crafting Stoneskin: a Blank Rune and Armadillo Scute" class="recipe-grid" loading="lazy">
@@ -417,8 +453,16 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/on_land.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_land">On Land</a><br><span class="recipe-family">Link</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_on_weakness.png' | relative_url }}" alt="Crafting On Weakness: a Blank Rune and Fermented Spider Eye and Target" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/on_weakness.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_weakness">On Weakness</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_pulse.png' | relative_url }}" alt="Crafting Pulse: a Blank Rune and Redstone Repeater" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/pulse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#pulse">Pulse</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_belated.png' | relative_url }}" alt="Crafting Belated: a Blank Rune and Clock and Cobweb" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/belated.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#belated">Belated</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_bounce.png' | relative_url }}" alt="Crafting Bounce: a Blank Rune and Slime Block" class="recipe-grid" loading="lazy">
@@ -431,6 +475,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_focus.png' | relative_url }}" alt="Crafting Focus: a Blank Rune and Glass Pane and Gold Nugget" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/focus.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#focus">Focus</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_kindred.png' | relative_url }}" alt="Crafting Kindred: a Blank Rune and Cake" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/kindred.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#kindred">Kindred</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_linger.png' | relative_url }}" alt="Crafting Linger: a Blank Rune and Honey Bottle" class="recipe-grid" loading="lazy">
@@ -447,6 +495,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_rapid.png' | relative_url }}" alt="Crafting Rapid: a Blank Rune and Sugar and Redstone Dust" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/rapid.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#rapid">Rapid</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_thirst.png' | relative_url }}" alt="Crafting Thirst: a Blank Rune and Spider Eye and Glass Bottle" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/thirst.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#thirst">Thirst</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_volley.png' | relative_url }}" alt="Crafting Volley: a Blank Rune and Crossbow" class="recipe-grid" loading="lazy">
@@ -489,8 +541,16 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/crescent.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#crescent">Crescent</a><br><span class="recipe-family">Shape</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_glaive.png' | relative_url }}" alt="Crafting Glaive: a Blank Rune and Iron Axe and String" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/glaive.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#glaive">Glaive</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_lance.png' | relative_url }}" alt="Crafting Lance: a Blank Rune and Spyglass and Blaze Rod" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/lance.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#lance">Lance</a><br><span class="recipe-family">Shape</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_latch.png' | relative_url }}" alt="Crafting Latch: a Blank Rune and Lead and Amethyst Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/latch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#latch">Latch</a><br><span class="recipe-family">Shape</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_mine.png' | relative_url }}" alt="Crafting Mine: a Blank Rune and Tripwire Hook" class="recipe-grid" loading="lazy">
@@ -534,7 +594,7 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 </figure>
 </div>
 
-## Tier III (38 runes)
+## Tier III (41 runes)
 
 Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**.
 
@@ -558,6 +618,10 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_cleave.png' | relative_url }}" alt="Crafting Cleave: a Blank Rune and Diamond Axe" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/cleave.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/blood/' | relative_url }}#cleave">Cleave</a><br><span class="recipe-family">Effect, Blood</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_drowse.png' | relative_url }}" alt="Crafting Drowse: a Blank Rune and Spore Blossom and Honey Bottle" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/drowse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/life/' | relative_url }}#drowse">Drowse</a><br><span class="recipe-family">Effect, Life</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_explode.png' | relative_url }}" alt="Crafting Explode: a Blank Rune and TNT and Fire Charge" class="recipe-grid" loading="lazy">
@@ -590,6 +654,10 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_primer.png' | relative_url }}" alt="Crafting Primer: a Blank Rune and TNT and Pink Dye" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/primer.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/fire/' | relative_url }}#primer">Primer</a><br><span class="recipe-family">Effect, Fire</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_prolong.png' | relative_url }}" alt="Crafting Prolong: a Blank Rune and Clock and 2x Redstone Dust" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/prolong.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/time/' | relative_url }}#prolong">Prolong</a><br><span class="recipe-family">Effect, Time</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_reflect.png' | relative_url }}" alt="Crafting Reflect: a Blank Rune and Shield and Glass Pane" class="recipe-grid" loading="lazy">
@@ -642,6 +710,10 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_on_low_health.png' | relative_url }}" alt="Crafting On Low Health: a Blank Rune and Golden Apple" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/on_low_health.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_low_health">On Low Health</a><br><span class="recipe-family">Link</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_on_reaction.png' | relative_url }}" alt="Crafting On Reaction: a Blank Rune and Brewing Stand" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/on_reaction.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#on_reaction">On Reaction</a><br><span class="recipe-family">Link</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_blood_price.png' | relative_url }}" alt="Crafting Blood Price: a Blank Rune and Ghast Tear and Redstone Dust" class="recipe-grid" loading="lazy">
