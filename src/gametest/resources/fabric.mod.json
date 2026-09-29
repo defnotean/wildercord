@@ -26,6 +26,7 @@
 			"dev.wildercord.gametest.WildercordFusedLifeTest",
 			"dev.wildercord.gametest.WildercordFusedVoidTest",
 			"dev.wildercord.gametest.WildercordOitTest",
+			"dev.wildercord.gametest.WildercordAffinitiesTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},
