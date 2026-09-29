@@ -319,7 +319,7 @@ def main():
     signature_lines = []
     if ss:
         by_pair = {frozenset(pair): path for path, pair in fused.items()}
-        signature_lines = ["", "## Signature fusions", "",
+        signature_lines = ["## Signature fusions", "",
                            f"{len(ss)} more fused runes, each made from two *particular* effects rather than any two of their elements. "
                            "The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' "
                            "fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and "
@@ -337,7 +337,7 @@ def main():
           "elements, and one for each element with itself. Put any effect of one element and any effect of the other in "
           "the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm."
           + (f" A few particular pairs of effects make [signature fusions](#signature-fusions) instead ({len(ss)} more)." if ss else ""), ""] + grid,
-         (["", "## Element fusions", ""] if ss else []) + body_of(fs) + signature_lines)
+         (["## Element fusions", ""] if ss else []) + body_of(fs) + signature_lines)
 
     # Innate runes.
     ins = [r for r in runes if r["path"] in g.INNATE]

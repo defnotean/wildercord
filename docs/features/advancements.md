@@ -64,6 +64,8 @@ Off the 1st Circle: Awakening (innate rune, feat, 25 XP), then Mirrorfrost (*hid
 | Honed | Rank up a rune at the Fusion Altar (feat) | 20 XP |
 | Fusion | Fuse two effects into a new one (feat, after Honed) | 25 XP |
 | Knotted (*goal*) | Tie a whole spell into one rune (feat, after Fusion) | 50 XP |
+| Signature | Fuse two particular effects into a signature rune of their own (grimoire `{"signatures": 1}`, after Fusion) | 30 XP |
+| Hallmarks (*goal*) | Find 5 signature fusions (grimoire `{"signatures": 5}`, after Signature) | 75 XP, Blank Runes |
 
 ### The world (from the root)
 | Advancement | Needs | Reward |
@@ -104,7 +106,7 @@ The mod registers six criteria (`advancement/WildercordTriggers.java`):
 | Criterion | Conditions | Met when |
 |---|---|---|
 | `wildercord:feat` | `feat` | the Grimoire holds `feat:<id>` |
-| `wildercord:grimoire` | `entry`, or `prefix` + `count`, or `prefix` + `all` | the Grimoire holds that entry, that many with the prefix, or all of them (bar the innate-only and multiplayer-only feats) |
+| `wildercord:grimoire` | `entry`, or `prefix` + `count`, or `prefix` + `all`, or `signatures` | the Grimoire holds that entry, that many with the prefix, or all of them (bar the innate-only and multiplayer-only feats), or that many signature fusions (they share the element fusions' `fusion:` prefix, so they're counted by `Fusions.SIGNATURES`) |
 | `wildercord:heart_circle` | `level` | that many circles formed, or more |
 | `wildercord:runes_known` | `count`, or `all` | that many runes known (Knots and runes of add-ons that aren't loaded don't count, as for the Heart Circles), or every rune you can find or make and your own innate one |
 | `wildercord:cord` | `tier` | wearing that Cord or a better one |

@@ -7,8 +7,9 @@ nav_order: 2
 # Combining effects into fused runes
 
 Two effects and an amethyst shard make a **fused rune**: a new Tier III effect born of both elements. There's one for
-every pair of the ten elements and one for each element on its own, **55** in all, and the only way to get any of them
-is to make it at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
+every pair of the ten elements and one for each element on its own, **55** in all, and on top of those **16 signature
+fusions**, each made from two *particular* runes (see [Signature fusions](#signature-fusions)). The only way to get any
+of them is to make it at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 
 <img src="{{ '/assets/images/d-altar-combine.jpg' | relative_url }}" alt="The Fusion Altar screen with a Fire effect and a Wind effect on the circle and an amethyst shard in the middle; the panel reads Combine, Firestorm, a new effect born of Fire and Wind, costs 3 XP levels" class="shot">
 <span class="caption">A Fire effect and a Wind effect, with an amethyst shard: Firestorm, for 3 XP levels</span>
@@ -25,8 +26,10 @@ result socket; right-click it to learn it.
 
 ## The rules
 
-- **Only the elements matter.** The altar looks at the two effects' elements, never at which effects they are. Ember
-  and Fire are both Fire, so either one makes the same fused rune. Use your cheapest spares.
+- **Only the elements matter**, with one exception. The altar looks at the two effects' elements, never at which
+  effects they are. Ember and Fire are both Fire, so either one makes the same fused rune. Use your cheapest spares.
+  The exception: sixteen particular pairs of runes have a [signature fusion](#signature-fusions) of their own, and the
+  altar asks for that first.
 - **Order doesn't matter.** Fire with Wind and Wind with Fire both make Firestorm.
 - **Two of the same element** make that element's own fused rune: Fire with Fire makes Conflagration, Frost with
   Frost makes Absolute Zero. The two can even be two copies of the same rune.
@@ -38,7 +41,8 @@ result socket; right-click it to learn it.
 
 ### What fused runes are like
 
-- **Tier III.** Every fused rune needs an **Amethyst Cord or better**.
+- **Tier III.** Every fused rune needs an **Amethyst Cord or better**, bar three signature fusions (Doomclock, Cometfall
+  and Dust Devil), which are Tier IV and need an **Echo Cord**.
 - **Made, never found.** No recipe crafts them, no chest holds them, no monster drops them, and a Runesmith never sells,
   buys or rerolls them. The altar is the only way.
 - **One element each.** Each fused rune counts as one of its two elements (the **Counts as** column below). That's the
@@ -62,7 +66,52 @@ So ranking your effects up first is never wasted. You can also rank the fused ru
 make rank II, three rank II copies make rank III.
 
 Six fused runes have no ranks at all and always come out plain, whatever you put in: **Glacier**, **Nullify**,
-**Second Wind**, **Soulbond**, **Timesteal** and **Warp**. The **Ranks** column below shows which is which.
+**Second Wind**, **Soulbond**, **Timesteal** and **Warp**, and one signature, **Bloomstep**. The **Ranks** column below
+shows which is which.
+
+## Signature fusions
+
+Sixteen pairs of **particular** runes don't make their elements' fusion: they make a rune of their own, a **signature
+fusion**. Chill with Shock makes **Frostwire**, not Hail. Every other Frost and Storm pair still makes Hail: Chill with
+Jolt, Icicle with Shock, Frost with Lightning.
+
+- **The same as any combine.** Two effects in two rune sockets, an amethyst shard in the middle, **3 XP levels**. The
+  panel reads **Signature fusion** instead of *Combine* and names the two runes, and the altar flares with a star as it
+  makes one.
+- **Only those two runes.** A signature needs its own pair, in either order; nothing else of their elements will do.
+- **Ranks carry over the same way:** the lower of the two you put in.
+- **Each is both of its runes at once.** Frostwire chills like Chill, then shocks like Shock, through every cold enemy
+  near. Seethe is a Bubble that boils. Doomclock is a Primer that holds its blows like Stasis.
+- **A fused rune like the rest.** It counts as one of its two runes' elements (the **Counts as** column), takes
+  modifiers, ranks up (all but Bloomstep) and fuses again as an effect of that element.
+- **Its circle wears a star.** In a spell's magic circle a signature braids its two runes' elements like any fused rune,
+  with a small star in each half of its ring and the points of one behind its emblem, so you can tell it from the
+  element fusion at a glance.
+- **Where the runes come from.** Most signatures take crafted runes. Three take rarer ones for a grander result:
+  Stasis and Starfall (Tier IV, found only) and three [runes of the world]({{ '/runes/world/' | relative_url }}):
+  Summit Wind, Sandstorm and Stalactite.
+
+The wiki lists them all below. In the game your Grimoire keeps each one hidden until you make it, with only the elements
+of its two runes as a hint.
+
+| | Rune | Made from | Counts as | Tier | Mana | Ranks | Instead of | What it does |
+|---|---|---|---|---|---|---|---|---|
+| <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Frostwire]({{ '/runes/fused/' | relative_url }}#frostwire) | [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | Storm | III | 18 | yes | [Hail]({{ '/runes/fused/' | relative_url }}#hail) | Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 4 damage each, 6 to one frozen solid. |
+| <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Seethe]({{ '/runes/fused/' | relative_url }}#seethe) | [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) + [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) | Fire | III | 16 | yes | [Steam]({{ '/runes/fused/' | relative_url }}#steam) | Traps each target in a bubble of boiling water for 2 seconds (1 fire damage every half second), then it bursts into scalding steam: 4 damage to every enemy within 2.5 blocks, blinded for 2 seconds and left soaked. |
+| <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Bloomstep]({{ '/runes/fused/' | relative_url }}#bloomstep) | [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) + [Blink]({{ '/runes/effects/void/' | relative_url }}#blink) | Life | III | 14 | no | [Lifesteal]({{ '/runes/fused/' | relative_url }}#lifesteal) | Steps you through a door of blossoms to where the spell landed (up to 32 blocks). Grass and flowers spring up where you left and where you arrive, and you and your allies within 3 blocks of where you arrive get Regeneration I for 5 seconds. |
+| <img src="{{ '/assets/runes/skyburst.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Skyburst]({{ '/runes/fused/' | relative_url }}#skyburst) | [Launch]({{ '/runes/effects/wind/' | relative_url }}#launch) + [Explode]({{ '/runes/effects/fire/' | relative_url }}#explode) | Fire | III | 20 | yes | [Firestorm]({{ '/runes/fused/' | relative_url }}#firestorm) | Flings each target high into the air (3 at most); at the top of its flight it explodes and rains fire down: 7 damage to it and every enemy within 3 blocks of it or beneath it, setting them alight, and the wind that carried it fans the flames (Wildfire). Never breaks blocks. |
+| <img src="{{ '/assets/runes/stitchtime.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Stitchtime]({{ '/runes/fused/' | relative_url }}#stitchtime) | [Heal]({{ '/runes/effects/life/' | relative_url }}#heal) + [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) | Life | III | 16 | yes | [Second Wind]({{ '/runes/fused/' | relative_url }}#second_wind) | Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhile is counted, and when the time is up it all heals back at once (12 at most). |
+| <img src="{{ '/assets/runes/parasite.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Parasite]({{ '/runes/fused/' | relative_url }}#parasite) | [Venom]({{ '/runes/effects/life/' | relative_url }}#venom) + [Leech]({{ '/runes/effects/blood/' | relative_url }}#leech) | Blood | III | 16 | yes | [Transfusion]({{ '/runes/fused/' | relative_url }}#transfusion) | Plants a parasite in each target for 6 seconds: Poison I, and every second it drains 1 health from it into you. If its host dies with it inside, it leaps to the nearest enemy within 6 blocks for the time it had left (once). |
+| <img src="{{ '/assets/runes/razorgale.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Razorgale]({{ '/runes/fused/' | relative_url }}#razorgale) | [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) + [Bleed]({{ '/runes/effects/blood/' | relative_url }}#bleed) | Wind | III | 18 | yes | [Crimson Mist]({{ '/runes/fused/' | relative_url }}#crimson_mist) | A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2 and left bleeding; half a second later the gale comes back round for 2 more, tearing every wound open (Rupture). |
+| <img src="{{ '/assets/runes/doomclock.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Doomclock]({{ '/runes/fused/' | relative_url }}#doomclock) | [Primer]({{ '/runes/effects/fire/' | relative_url }}#primer) + [Stasis]({{ '/runes/effects/time/' | relative_url }}#stasis) | Time | IV | 28 | yes | [Everburn]({{ '/runes/fused/' | relative_url }}#everburn) | Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks. Never breaks blocks. |
+| <img src="{{ '/assets/runes/thunderstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Thunderstep]({{ '/runes/fused/' | relative_url }}#thunderstep) | [Shadowstep]({{ '/runes/effects/void/' | relative_url }}#shadowstep) + [Lightning]({{ '/runes/effects/storm/' | relative_url }}#lightning) | Storm | III | 18 | yes | [Riftbolt]({{ '/runes/fused/' | relative_url }}#riftbolt) | You come down as a bolt of lightning where the spell landed (up to 24 blocks), right behind the first enemy it hit: 8 damage to every enemy within 2.5 blocks of you, stunned for half a second. On Self it strikes where you stand. |
+| <img src="{{ '/assets/runes/halo.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Halo]({{ '/runes/fused/' | relative_url }}#halo) | [Smite]({{ '/runes/effects/arcane/' | relative_url }}#smite) + [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) | Arcane | III | 18 | yes | [Soulbond]({{ '/runes/fused/' | relative_url }}#soulbond) | A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time. |
+| <img src="{{ '/assets/runes/thunderquake.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Thunderquake]({{ '/runes/fused/' | relative_url }}#thunderquake) | [Thunderclap]({{ '/runes/effects/storm/' | relative_url }}#thunderclap) + [Tremor]({{ '/runes/effects/earth/' | relative_url }}#tremor) | Earth | III | 20 | yes | [Magnetize]({{ '/runes/fused/' | relative_url }}#magnetize) | The ground booms like thunder: three shockwaves roll out from where it lands over a second, reaching 2, 4 and 6 blocks. Each strikes every enemy it reaches for 4 and tosses it up, so the nearer, the harder: 12 at the heart. |
+| <img src="{{ '/assets/runes/cometfall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Cometfall]({{ '/runes/fused/' | relative_url }}#cometfall) | [Starfall]({{ '/runes/effects/arcane/' | relative_url }}#starfall) + [Meteor]({{ '/runes/effects/fire/' | relative_url }}#meteor) | Arcane | IV | 32 | yes | [Starfire]({{ '/runes/fused/' | relative_url }}#starfire) | A comet streaks down on the point a second later: 16 damage to every enemy within 4 blocks, setting them alight, and five shards of it scatter into the nearest other enemies within 10 blocks for 4 each. Never breaks blocks. |
+| <img src="{{ '/assets/runes/riposte.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Riposte]({{ '/runes/fused/' | relative_url }}#riposte) | [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) + [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) | Time | III | 16 | yes | [Timesteal]({{ '/runes/fused/' | relative_url }}#timesteal) | For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with 6 damage to whoever struck. |
+| <img src="{{ '/assets/runes/dust_devil.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Dust Devil]({{ '/runes/fused/' | relative_url }}#dust_devil) | [Summit Wind]({{ '/runes/world/' | relative_url }}#summit_wind) + [Sandstorm]({{ '/runes/world/' | relative_url }}#sandstorm) | Wind | IV | 26 | yes | [Downdraft]({{ '/runes/fused/' | relative_url }}#downdraft) | A dust devil touches down where it lands and chases the nearest enemy for 5 seconds. Enemies within 2 blocks of it are caught up and whirled round it, blinded and scoured for 3 damage a second; when it blows out it flings them high. |
+| <img src="{{ '/assets/runes/malison.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Malison]({{ '/runes/fused/' | relative_url }}#malison) | [Hex]({{ '/runes/effects/void/' | relative_url }}#hex) + [Resonance]({{ '/runes/effects/arcane/' | relative_url }}#resonance) | Void | III | 16 | yes | [Nullify]({{ '/runes/fused/' | relative_url }}#nullify) | 3 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, for the time it had left, to up to 3 enemies within 6 blocks of it. |
+| <img src="{{ '/assets/runes/avalanche.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Avalanche]({{ '/runes/fused/' | relative_url }}#avalanche) | [Coldsnap]({{ '/runes/effects/frost/' | relative_url }}#coldsnap) + [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) | Frost | III | 18 | yes | [Glacier]({{ '/runes/fused/' | relative_url }}#glacier) | Snow and ice crash down round where it lands: 6 damage to every enemy within 3 blocks (half again on a bare head), buried in snow (Slowness III for 3 seconds). Drifts of snow lie where it fell for 10 seconds. |
 
 ## The Grimoire
 
@@ -76,7 +125,17 @@ so on), in the order of the table below.
   *Any Fire effect and any Wind effect, with an amethyst shard, at a Fusion Altar*.
 - **Fusions you haven't made** show as **??? + ???** with a hint of one of the two elements, such as *(one is
   Fire)*. Hover one and it says *Not found yet. Try two effects of different elements at a Fusion Altar.*
-- Your first fusion of all earns the **Fusion** feat.
+- Your first fusion of all earns the **Fusion** feat (a signature fusion counts).
+
+Under them comes a second list, **Signature fusions** (*Signature fusions (3 of 16)*), which the count of 55 leaves out:
+
+- **Signatures you haven't made** show as **??? + ???** with the elements of both runes, such as *(a rune of Frost, and
+  one of Storm)*: which two runes is for you to find.
+- **Found ones** name the rune and its two runes, *Frostwire (Chill + Shock)*. Hover one to read what it does, how to
+  make it, and which element fusion the pair makes it instead of.
+- A signature condenses as much mana as any fusion, and says so on its toast: *Signature fusion: Frostwire*.
+- Two [advancements]({{ '/progression/advancements/' | relative_url }}#the-fusion-altar) count them: **Signature** for
+  your first, **Hallmarks** for five.
 
 ## All 55 fused runes
 

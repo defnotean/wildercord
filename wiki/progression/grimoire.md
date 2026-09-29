@@ -35,6 +35,7 @@ From top to bottom:
 | **Secret spells** (of 10) | Each found secret by name, in its colour (hover it for its runes and what it does). A secret you have the riddle for shows the **riddle**, in italics. The rest are **???**. See [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}). |
 | **Duels** | Your duels won and lost, once you've fought one. See [Duels]({{ '/social/duels/' | relative_url }}). |
 | **Fusions** (of 55) | Each fusion you've made at the Fusion Altar, as *"Firestorm (Fire + Wind)"*. The rest show as **??? + ???** with one of their elements as a hint. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}). |
+| **Signature fusions** (of 16) | Each signature fusion you've made, as *"Frostwire (Chill + Shock)"*. The rest show as **??? + ???** with the elements of their two runes as a hint. See [Signature fusions]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions). |
 | **Attunements** (of 15) | Each rune of the land you've attuned, with its land, and whether the land is resting or ready to give it again. The rest show as riddles pointing to where they wait. See [Runes of the World]({{ '/world/runes-of-the-world/' | relative_url }}). |
 | **Runes of the world** (of 51) | Every place with runes found only there, and which of its runes you know. Unknown ones show as **???** with their tier and family. |
 | **Where you stand** | What the [elemental climate]({{ '/spellcraft/affinities/' | relative_url }}#elemental-climate) is doing where you are right now: *"The Nether: Fire +20%, Frost -25%"*, or that nothing here favours or hinders an element. |
@@ -53,6 +54,7 @@ condenses mana toward your next Heart Circle:
 |---|---|---|
 | A reaction | *New in your Grimoire: Shatter!* | 150 |
 | A fusion | *New in your Grimoire: Fusion: Firestorm* | 150 |
+| A signature fusion | *New in your Grimoire: Signature fusion: Frostwire* | 150 |
 | A feat | *New in your Grimoire:* the feat | 250 |
 | A rune of the land, attuned | *New in your Grimoire: A rune of the land: ...* | 250 |
 | A secret spell | *New in your Grimoire:* its name (and its name fills your screen) | 400 |

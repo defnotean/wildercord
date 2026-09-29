@@ -125,7 +125,7 @@ Mirrorfrost can only be earned with the innate rune of the same name. See
 
 - **Knowing runes** means runes learned into your Codex. Knots don't count.
 - **Every Word** wants every rune there is except the innate runes that aren't yours: every craftable
-  rune, every rune of the world and every fused rune (282 in all), plus your own innate rune. Runes
+  rune, every rune of the world and every fused rune, signature fusions included (300 in all), plus your own innate rune. Runes
   added by other mods count too, if you have them installed.
 - **Chain Reaction** wants all eleven reactions in your Grimoire.
 - **Every Page Filled** wants all 11 reactions, all 10 secret spells and every feat except Mirrorfrost,
@@ -141,8 +141,11 @@ See [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}) and
 | **Honed** | task | Lettered | Rank up a rune at the Fusion Altar | 20 XP |
 | **Fusion** | task | Honed | Fuse two effects into a new one at the Fusion Altar | 25 XP |
 | **Knotted** | goal | Fusion | Tie a whole spell into one rune | 50 XP |
+| **Signature** | task | Fusion | Fuse two particular effects into a signature rune of their own | 30 XP |
+| **Hallmarks** | goal | Signature | Find 5 signature fusions | 75 XP, 8 Blank Runes |
 
-See [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
+See [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}) and
+[Signature fusions]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
 
 ## The world
 

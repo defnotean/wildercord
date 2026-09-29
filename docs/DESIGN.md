@@ -1043,6 +1043,20 @@ Fused runes are Tier III effects that can't be crafted or found. Their elements:
 Firestorm and Steam are fire, Magma earth, Tempest, Plasma and Surge storm, Hail
 and Glacier frost, Lifesteal blood, Warp void, Bloom life and Nullify arcane.
 
+#### Signature fusions — two particular effects → a rune of their own
+
+Sixteen pairs of *particular* runes have a signature fusion, checked before the
+element recipes: Chill with Shock makes **Frostwire**, while any other frost and
+storm effects still make Hail. Same shard, same 3 XP levels, same rank rule (the
+lower of the two). Each is what its two runes do at once, and each pair has
+elements no other signature shares, so every signature's circle braids its own
+pairing (with a star added, to tell it from the element fusion). The ingredients
+are always runes a caster can come by: crafted ones mostly, three pairs with runes
+of the world or Tier IV runes for grander results (Doomclock, Cometfall and Dust
+Devil are Tier IV). The Grimoire lists them apart, as `??? + ???` with their two
+runes' elements until found, and two advancements count them (the first, and
+five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
+
 ### 3. Tie a Knot — a whole spell → one rune
 
 - Put in 1 Blank Rune + 1 string, pick one of your spells, and it becomes a

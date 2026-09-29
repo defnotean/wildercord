@@ -5,6 +5,46 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ## [Unreleased]
 
 ### Added
+- **Signature fusions: sixteen new fused runes.** At the Fusion Altar, sixteen pairs of *particular* effects now fuse
+  into a rune of their own instead of their elements' fusion: Chill with Shock makes Frostwire, while any other Frost
+  and Storm effects still make Hail. Same shard, same 3 XP levels, the lower of the two ranks. The altar's panel says
+  **Signature fusion**, and it flares with a star as it makes one. See
+  [Signature fusions](https://defnotean.github.io/wildercord/fusion-altar/combining/#signature-fusions).
+  - **Frostwire** (Chill + Shock, storm): chills each target, then a current races through every chilled or frozen
+    enemy within 6 blocks, 4 damage each (6 to one frozen solid).
+  - **Seethe** (Bubble + Fire, fire): a bubble of boiling water scalds for 2 seconds, then bursts into steam: 4 damage
+    around it, blinded and soaked.
+  - **Bloomstep** (Grow + Blink, life, moves you): step up to 32 blocks through a door of blossoms; grass and flowers
+    grow at both ends, and Regeneration where you arrive.
+  - **Skyburst** (Launch + Explode, fire): flings up to 3 targets high; each explodes at the top of its flight, raining
+    fire down for 7 (and fanning Wildfire).
+  - **Stitchtime** (Heal + Countdown, life): heals 4, then heals back every wound of the next 4 seconds (up to 12).
+  - **Parasite** (Venom + Leech, blood): poisons and drains 1 a second into you for 6 seconds, and leaps to the next
+    enemy when its host dies.
+  - **Razorgale** (Windcut + Bleed, wind): blades cut everything within 3 blocks and leave it bleeding, then come back
+    round and tear the wounds open (Rupture).
+  - **Doomclock** (Primer + Stasis, time, Tier IV): a 3-second clock every blow winds 2 tighter; it bursts for 8 and
+    all it was wound (up to 20) around its bearer.
+  - **Thunderstep** (Shadowstep + Lightning, storm, moves you): come down as lightning behind the first enemy hit, 8
+    damage and a stun around you.
+  - **Halo** (Smite + Regrowth, arcane): a halo over an ally smites the nearest enemy every 2 seconds for 3 (tripled on
+    undead) and heals the ally 1 each time.
+  - **Thunderquake** (Thunderclap + Tremor, earth): three shockwaves to 2, 4 and 6 blocks, 4 each: 12 at the heart.
+  - **Cometfall** (Starfall + Meteor, arcane, Tier IV): a comet falls a second later for 16 within 4 blocks, setting
+    them alight, and five shards strike the enemies around for 4.
+  - **Riposte** (Reflect + Foresight, time): the ally's next 2 blows within 10 seconds are sidestepped and answered
+    for 6.
+  - **Dust Devil** (Summit Wind + Sandstorm, wind, Tier IV): a wandering dust devil catches enemies up, blinds and
+    scours them for 3 a second, and flings them high when it blows out.
+  - **Malison** (Hex + Resonance, void): 3 damage and a curse (your spells hit 25% harder); when its bearer dies the
+    curse passes to up to 3 enemies near it.
+  - **Avalanche** (Coldsnap + Stalactite, frost): 6 damage in 3 blocks (9 on a bare head), Slowness III, and drifts of
+    snow that melt 10 seconds later.
+  - Each wears its two runes' elements in a spell's circle, with a star to tell it from the element fusion, and has a
+    hand-drawn icon in both elements' colours.
+  - The Grimoire lists them apart, *Signature fusions (n of 16)*, hidden as ??? + ??? with both runes' elements as the
+    hint until found. Each condenses as much mana as any fusion; the element fusions are still counted out of 55.
+  - Two new advancements: **Signature** (make your first) and **Hallmarks** (find five).
 - **Runes from fishing.** A rod in open water (vanilla's rule for treasure) now brings up magic. See
   [Fishing](https://defnotean.github.io/wildercord/world/runes-of-the-world/#fishing).
   - **Treasure catches can be runes.** About 4 treasure catches in 11 are a rune and 1 in 11 a Torn Page, beside the
