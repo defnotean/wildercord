@@ -25,6 +25,18 @@ In your inventory (`E`), **just above the offhand slot**, with the faint outline
 Cord and it goes there by itself. In creative it's in the Survival Inventory tab, beside your armour. See
 [Cords]({{ '/spellcraft/cords/' | relative_url }}#the-cord-slot).
 
+### Do I have to hold my staff and focus to cast?
+No. Your inventory (`E`) has three **gear slots**: Staff, Focus and Tome. A piece in its slot works with nothing in your
+hands, and shows on your character. A piece in a slot takes the place of held pieces of its kind; with a slot empty, that
+kind still works held as before. See [Casting Gear]({{ '/gear/' | relative_url }}).
+
+### Where are the gear slots?
+In your inventory, in a small tray on top of the window, above your armour (in creative, beside the Cord slot in the
+Survival Inventory tab). Shift-click a staff, focus or the tome and it goes to its slot by itself.
+
+### Do I lose my gear when I die?
+What's in your gear slots drops with the rest of your inventory (and stays with you if the server keeps inventory).
+
 ### Does the mod need to be on the server too?
 Yes. Wildercord has to be installed on the server and on every player's game, with Fabric API.
 
