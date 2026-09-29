@@ -47,10 +47,10 @@ public final class Scheduler {
 	private static final List<HurtWatch> HURT = new ArrayList<>();
 	/**
 	 * Tasks by the tick they're due on the scheduler's own clock, each tick's in the order they were
-	 * added. A lasting spell schedules every one of its pulses up front (an Orbit one per tick of its
-	 * life, a Mine over a hundred), so thousands can be waiting: kept by due tick, a server tick only
-	 * touches the ones due now, where a single list was walked (and shifted, for every task taken out
-	 * of it) in full every tick.
+	 * added. Spells schedule many of their parts ahead (an effect's every pulse; a lasting shape books
+	 * one step at a time, see {@code ShapeRunners.steps}), so thousands can be waiting: kept by due tick,
+	 * a server tick only touches the ones due now, where a single list was walked (and shifted, for every
+	 * task taken out of it) in full every tick.
 	 */
 	private static final Map<Long, List<Runnable>> TASKS = new HashMap<>();
 	/** Ticks the scheduler has run: {@link #later} counts from here. */
@@ -59,6 +59,15 @@ public final class Scheduler {
 
 	public static void later(int ticks, Runnable action) {
 		TASKS.computeIfAbsent(clock + Math.max(1, ticks), k -> new ArrayList<>()).add(Effects.carryContext(action));
+	}
+
+	/** Spell parts waiting to run, for the tests: a lasting shape keeps one waiting at a time, however long it lasts. */
+	public static int pending() {
+		int n = 0;
+		for (List<Runnable> due : TASKS.values()) {
+			n += due.size();
+		}
+		return n;
 	}
 
 	/** Fires once the player has left the ground and touched it again, within {@code timeout} ticks. */

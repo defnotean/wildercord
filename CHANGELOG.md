@@ -90,6 +90,47 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Orbit looks for creatures once a tick instead of once per orb. On your side, the spell panel no longer reads your
   whole spell again every frame just to write its name, and ley lines, beams, motes, glows and magic circles are drawn
   without making new objects for every little piece. Nothing looks, sounds or plays any differently.
+- **A passive can't stack its Orbits.** A passive that started with an effect and then held an Orbit (`Swift · Orbit ·
+  Shock`) renewed every two seconds like a Self passive, so up to four rings of orbs (eight with Extend) struck at
+  once for one upkeep. The effect before the Orbit counts as Self, so that passive now has two shapes and is refused,
+  as the Passives page says; keep the buff and the aura in two passives.
+- **Switching an Orbit passive off and on no longer doubles its orbs.** The old ring came back beside the fresh one it
+  started, so every switch within its 8 seconds added another ring for one second's upkeep. Only the latest ring flies.
+- **Long-lasting shapes no longer pile up waiting steps.** An Orbit, Zone, Trail, Wall, Totem, Domain, Vortex, Mine or
+  Snare booked every one of its steps up front: an Orbit that Extend made last hours held hundreds of thousands of
+  them, kept even after its caster had left. Each now keeps one step waiting at a time and stops once its caster is
+  gone.
+- **Quicken makes a Wall strike twice as often.** A Wall struck once a second, and one Quicken left it at that (two
+  jumped it to five times a second). It still strikes once a second, now twice with one Quicken and four times with
+  two, and the readout says how often: "A 7-block wall (5s, every 1s)".
+- **A cast really goes eight links deep.** A bolt in flight, each strike of a Zone, Orbit or Domain, a Lance's or a
+  Ring's hits and a Linger's second landing all used up one of the cast's eight links, so `Bolt · On Hit` four times
+  over and then `Bolt · Fire` never threw its last bolt, and a Linger deep in a chain never landed again. Only links
+  count now.
+- **Quicken can't fling a spell across the world.** Quicken stacked without limit on flying shapes, so a spark or bolt
+  with a pile of Quickens crossed thousands of blocks in one step and loaded (even generated) the world along its
+  way, a cheap way to lag a server. A flying shape is now at most 8 times as fast (three Quickens on a bolt), a Wisp
+  or a Ricochet stops where the loaded world ends, and a bolt flies its 48 blocks and no further (its spare ticks
+  used to carry a quickened bolt 70 blocks and more), a wave its 14.
+- **An Arc bursts where it lands, even on a creature.** An Arc that came down on the ground splashed everything within
+  2 blocks, but one that landed on a creature struck only that creature. It bursts there too now.
+- **An Echo in an imbued spell repeats it at its target.** The Echo went off from the caster instead, so a sword or a
+  glyph holding `Fire · Echo` burned what it struck once and then "burned" its own maker, which did nothing. It now
+  repeats what was stored where the release was set off, as the Imbuing page says.
+- **A secret spell read from a scroll weighs its full price against a Shield**, as it does cast from a Cord (it counted
+  only its runes' mana).
+- **Singularity no longer holds a boss at its black star.** It still strikes them, but bosses are only ever slowed.
+- **Stormheart's lightning is spell damage.** It struck whoever hurt you in full, even a player (spell damage to players
+  is scaled down by the server's PvP setting) and even a friend whose blow landed; it now spares friends, counts as
+  storm damage (a creature weak to storm feels it), a Shield meets it, and players take it at the PvP scale.
+- **A widened Rain or Sweep no longer loads the world far away.** Shapes keep growing with every Widen, and a Rain's
+  strikes or a Sweep's beam could reach hundreds of blocks past what was loaded, loading (even generating) the land as
+  they felt for the ground or a wall. They now stop at the edge of the loaded world.
+
+### Changed
+- Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
+- Borrowed Time says its debt is forgiven when you slay a monster, as it always was (it said "something": killing an
+  animal never forgave it).
 
 ## [0.4.2-alpha] - 2026-09-28
 

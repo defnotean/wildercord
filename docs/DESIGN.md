@@ -588,7 +588,7 @@ the Codex's Innate category, so any Cord can hold it.
 | Blood Thread | Blood | Threads everything hit together for 8 s: half of any damage one takes is dealt to the rest |
 | Kindling | Fire | 3 fire damage and a stack; the fifth stack ignites for 10 in 3 blocks |
 | Twin Star | Arcane | Your next spell within 6 s is cast twice |
-| Borrowed Time | Time | Heals the damage you took in the last 5 s; it comes back over 10 s unless you slay something |
+| Borrowed Time | Time | Heals the damage you took in the last 5 s; it comes back over 10 s unless you slay a monster |
 | Gale Mantle | Wind | 12 s: jump in midair to dash forward (3 dashes) |
 | Stoneform | Earth | 8 s: no knockback, Resistance, and each hit you take sends out an aftershock |
 | Mirrorfrost | Frost | Casts back the last spell that hit you in the past 30 s, as your own |

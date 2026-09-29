@@ -43,34 +43,31 @@ final class ExplorerShapes {
 		int ticks = SpellNumbers.vortexSeconds(g) * 20;
 		Vec3 centre = point;
 		ExplorerVfx.vortexOpen(cast.level, centre, radius, theme, ticks);
-		for (int t = 0; t < ticks; t += 2) {
-			int tick = t;
+		ShapeRunners.steps(cast, 1, 2, ticks - 1, tick -> {
 			boolean strike = tick % SpellNumbers.VORTEX_INTERVAL == 0 && tick > 0;
 			Cast child = strike ? cast.pulse() : cast;
-			Scheduler.later(1 + tick, () -> {
-				if (!child.alive()) {
-					return;
+			if (!child.alive()) {
+				return;
+			}
+			ExplorerVfx.vortex(child.level, centre, radius, eye, theme, tick);
+			Vec3 heart = centre.add(0, 1.0, 0);
+			// Drag: only what the caster may harm, and never a boss.
+			for (Entity e : child.level.getEntities((Entity) null, new AABB(heart, heart).inflate(radius), e -> Targets.canHarm(child.caster, e))) {
+				if (Spirits.isBoss(e)) {
+					continue;
 				}
-				ExplorerVfx.vortex(child.level, centre, radius, eye, theme, tick);
-				Vec3 heart = centre.add(0, 1.0, 0);
-				// Drag: only what the caster may harm, and never a boss.
-				for (Entity e : child.level.getEntities((Entity) null, new AABB(heart, heart).inflate(radius), e -> Targets.canHarm(child.caster, e))) {
-					if (Spirits.isBoss(e)) {
-						continue;
-					}
-					Vec3 in = heart.subtract(e.getBoundingBox().getCenter());
-					double d = in.length();
-					if (d <= radius && d > eye * 0.5) {
-						Vec3 swirl = new Vec3(-in.z, 0, in.x).normalize().scale(0.12);
-						Effects.push((LivingEntity) e, in.normalize().scale(Math.min(0.35, 0.08 + d * 0.04)).add(swirl).add(0, 0.04, 0));
-						Reactions.mark(e, Reactions.Mark.PULLED);
-					}
+				Vec3 in = heart.subtract(e.getBoundingBox().getCenter());
+				double d = in.length();
+				if (d <= radius && d > eye * 0.5) {
+					Vec3 swirl = new Vec3(-in.z, 0, in.x).normalize().scale(0.12);
+					Effects.push((LivingEntity) e, in.normalize().scale(Math.min(0.35, 0.08 + d * 0.04)).add(swirl).add(0, 0.04, 0));
+					Reactions.mark(e, Reactions.Mark.PULLED);
 				}
-				if (strike) {
-					CastEngine.onHit(child, g, new Cast.Hit(CastEngine.inRadius(child, heart, eye), heart, dir, centre, null, null, false), anchored);
-				}
-			});
-		}
+			}
+			if (strike) {
+				CastEngine.onHit(child, g, new Cast.Hit(CastEngine.inRadius(child, heart, eye), heart, dir, centre, null, null, false), anchored);
+			}
+		});
 	}
 
 	// ------------------------------------------------------------------ Snare
@@ -89,25 +86,23 @@ final class ExplorerShapes {
 		ExplorerVfx.snareSet(cast.level, a, b, theme);
 		int ticks = SpellNumbers.SNARE_SECONDS * 20;
 		boolean[] sprung = {false};
-		for (int t = 4; t < ticks; t += 4) {
-			int tick = t;
-			Scheduler.later(tick, () -> {
-				if (sprung[0] || !cast.alive()) {
-					return;
-				}
-				if (tick % 40 == 0) {
-					ExplorerVfx.snareIdle(cast.level, a, b, theme);
-				}
-				LivingEntity crossing = crossing(cast, a, b);
-				if (crossing == null) {
-					return;
-				}
-				sprung[0] = true;
-				Vec3 spot = crossing.getBoundingBox().getCenter();
-				ExplorerVfx.snareSpring(cast.level, a, b, spot, radius, theme);
-				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(CastEngine.inRadius(cast, spot, radius), spot, flat, a, null, null, false), anchored);
-			});
-		}
+		ShapeRunners.steps(cast, 4, 4, ticks - 5, t -> {
+			int tick = t + 4;
+			if (sprung[0] || !cast.alive()) {
+				return;
+			}
+			if (tick % 40 == 0) {
+				ExplorerVfx.snareIdle(cast.level, a, b, theme);
+			}
+			LivingEntity crossing = crossing(cast, a, b);
+			if (crossing == null) {
+				return;
+			}
+			sprung[0] = true;
+			Vec3 spot = crossing.getBoundingBox().getCenter();
+			ExplorerVfx.snareSpring(cast.level, a, b, spot, radius, theme);
+			CastEngine.onHit(cast.pulse(), g, new Cast.Hit(CastEngine.inRadius(cast, spot, radius), spot, flat, a, null, null, false), anchored);
+		});
 	}
 
 	/** The first enemy whose feet are within half a block of the wire, or null. */

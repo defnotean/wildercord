@@ -50,44 +50,41 @@ final class ShapeRunners {
 		Deque<Long> laid = new ArrayDeque<>();
 		Map<UUID, Long> lastHit = new HashMap<>();
 		LivingEntity caster = cast.caster;
-		for (int t = 0; t <= total + 60; t += 2) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				if (!cast.alive()) {
-					return;
-				}
-				long now = cast.level.getGameTime();
-				while (!laid.isEmpty() && now - laid.peekFirst() > 60) {
-					laid.pollFirst();
-					patches.pollFirst();
-				}
-				if (tick <= total && caster.onGround() && (patches.isEmpty() || patches.peekLast().distanceToSqr(caster.position()) > 0.5)) {
-					patches.addLast(caster.position());
-					laid.addLast(now);
-				}
-				for (Vec3 patch : patches) {
-					Vfx.trailPatch(cast.level, patch, theme, tick);
-				}
-				if (tick % 10 != 0 || patches.isEmpty()) {
-					return;
-				}
-				Set<Entity> hits = new LinkedHashSet<>();
-				for (Vec3 patch : patches) {
-					for (Entity e : cast.level.getEntities((Entity) null, new AABB(patch, patch).inflate(0.9, 1.2, 0.9),
-							e -> e instanceof LivingEntity && e.isAlive())) {
-						Long last = lastHit.get(e.getUUID());
-						if (last == null || now - last >= 10) {
-							hits.add(e);
-						}
+		steps(cast, 1, 2, total + 60, tick -> {
+			if (!cast.alive()) {
+				return;
+			}
+			long now = cast.level.getGameTime();
+			while (!laid.isEmpty() && now - laid.peekFirst() > 60) {
+				laid.pollFirst();
+				patches.pollFirst();
+			}
+			if (tick <= total && caster.onGround() && (patches.isEmpty() || patches.peekLast().distanceToSqr(caster.position()) > 0.5)) {
+				patches.addLast(caster.position());
+				laid.addLast(now);
+			}
+			for (Vec3 patch : patches) {
+				Vfx.trailPatch(cast.level, patch, theme, tick);
+			}
+			if (tick % 10 != 0 || patches.isEmpty()) {
+				return;
+			}
+			Set<Entity> hits = new LinkedHashSet<>();
+			for (Vec3 patch : patches) {
+				for (Entity e : cast.level.getEntities((Entity) null, new AABB(patch, patch).inflate(0.9, 1.2, 0.9),
+						e -> e instanceof LivingEntity && e.isAlive())) {
+					Long last = lastHit.get(e.getUUID());
+					if (last == null || now - last >= 10) {
+						hits.add(e);
 					}
 				}
-				hits.forEach(e -> lastHit.put(e.getUUID(), now));
-				if (!hits.isEmpty()) {
-					Vec3 at = hits.iterator().next().position();
-					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(new ArrayList<>(hits), at, caster.getLookAngle(), at, null, null, false), anchored);
-				}
-			});
-		}
+			}
+			hits.forEach(e -> lastHit.put(e.getUUID(), now));
+			if (!hits.isEmpty()) {
+				Vec3 at = hits.iterator().next().position();
+				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(new ArrayList<>(hits), at, caster.getLookAngle(), at, null, null, false), anchored);
+			}
+		});
 		Fx.sound(cast.level, caster.position(), net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_RESONATE, 0.6F, 1.4F);
 	}
 
@@ -101,28 +98,29 @@ final class ShapeRunners {
 		Vec3 a = center.add(side.scale(-width / 2));
 		Vec3 b = center.add(side.scale(width / 2));
 		AABB box = new AABB(a, b.add(0, 3.0, 0)).inflate(0.6, 0.0, 0.6);
-		for (int t = 0; t <= total; t += 4) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				if (!cast.alive()) {
-					return;
-				}
+		// Every tick, so the strikes fall on their own interval (stepping by the shimmer's 4 ticks, a 10-tick interval
+		// only ever struck every 20, and one Quicken changed nothing).
+		steps(cast, 1, 1, total, tick -> {
+			if (!cast.alive()) {
+				return;
+			}
+			if (tick % 4 == 0) {
 				Vfx.wall(cast.level, a, b, theme, tick);
-				if (tick % interval != 0) {
-					return;
+			}
+			if (tick % interval != 0) {
+				return;
+			}
+			List<Entity> hits = new ArrayList<>();
+			for (Entity e : cast.level.getEntities((Entity) null, box, e -> e instanceof LivingEntity && e.isAlive())) {
+				// Only what is actually close to the line, not the whole box around a diagonal wall.
+				if (distanceToSegment(e.position(), a, b) <= 1.0) {
+					hits.add(e);
 				}
-				List<Entity> hits = new ArrayList<>();
-				for (Entity e : cast.level.getEntities((Entity) null, box, e -> e instanceof LivingEntity && e.isAlive())) {
-					// Only what is actually close to the line, not the whole box around a diagonal wall.
-					if (distanceToSegment(e.position(), a, b) <= 1.0) {
-						hits.add(e);
-					}
-				}
-				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, center, look, center, null, null, false), anchored);
-				}
-			});
-		}
+			}
+			if (!hits.isEmpty()) {
+				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, center, look, center, null, null, false), anchored);
+			}
+		});
 		Fx.sound(cast.level, center, net.minecraft.sounds.SoundEvents.MACE_SMASH_GROUND, 0.7F, 1.4F);
 	}
 
@@ -132,45 +130,42 @@ final class ShapeRunners {
 		int total = SpellNumbers.orbitSeconds(g) * 20;
 		Map<UUID, Long> lastHit = new HashMap<>();
 		LivingEntity caster = cast.caster;
-		for (int t = 0; t <= total; t++) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				if (!cast.alive()) {
-					return;
-				}
-				long now = cast.level.getGameTime();
-				List<Entity> hits = new ArrayList<>();
-				Vec3 lastOrb = caster.position();
-				AABB[] boxes = new AABB[orbs];
-				AABB around = null;
-				for (int i = 0; i < orbs; i++) {
-					double angle = tick * 0.22 + Math.PI * 2 * i / orbs;
-					Vec3 orb = caster.position().add(Math.cos(angle) * 2.2, 1.0 + Math.sin(tick * 0.1 + i) * 0.25, Math.sin(angle) * 2.2);
-					lastOrb = orb;
-					Vfx.orb(cast.level, orb, theme, tick);
-					boxes[i] = new AABB(orb, orb).inflate(0.8);
-					around = around == null ? boxes[i] : around.minmax(boxes[i]);
-				}
-				// One look round all the orbs instead of one per orb (a passive Orbit does this every tick, for good),
-				// then each orb takes what its own box touches: the same creatures, in the same order, as asking per orb.
-				List<Entity> near = around == null ? List.of() : cast.level.getEntities(caster, around, e -> e instanceof LivingEntity && e.isAlive());
-				for (AABB box : boxes) {
-					for (Entity e : near) {
-						if (!e.getBoundingBox().intersects(box)) {
-							continue;
-						}
-						Long last = lastHit.get(e.getUUID());
-						if (!hits.contains(e) && (last == null || now - last >= 20)) {
-							hits.add(e);
-							lastHit.put(e.getUUID(), now);
-						}
+		steps(cast, 1, 1, total, tick -> {
+			if (!cast.alive()) {
+				return;
+			}
+			long now = cast.level.getGameTime();
+			List<Entity> hits = new ArrayList<>();
+			Vec3 lastOrb = caster.position();
+			AABB[] boxes = new AABB[orbs];
+			AABB around = null;
+			for (int i = 0; i < orbs; i++) {
+				double angle = tick * 0.22 + Math.PI * 2 * i / orbs;
+				Vec3 orb = caster.position().add(Math.cos(angle) * 2.2, 1.0 + Math.sin(tick * 0.1 + i) * 0.25, Math.sin(angle) * 2.2);
+				lastOrb = orb;
+				Vfx.orb(cast.level, orb, theme, tick);
+				boxes[i] = new AABB(orb, orb).inflate(0.8);
+				around = around == null ? boxes[i] : around.minmax(boxes[i]);
+			}
+			// One look round all the orbs instead of one per orb (a passive Orbit does this every tick, for good),
+			// then each orb takes what its own box touches: the same creatures, in the same order, as asking per orb.
+			List<Entity> near = around == null ? List.of() : cast.level.getEntities(caster, around, e -> e instanceof LivingEntity && e.isAlive());
+			for (AABB box : boxes) {
+				for (Entity e : near) {
+					if (!e.getBoundingBox().intersects(box)) {
+						continue;
+					}
+					Long last = lastHit.get(e.getUUID());
+					if (!hits.contains(e) && (last == null || now - last >= 20)) {
+						hits.add(e);
+						lastHit.put(e.getUUID(), now);
 					}
 				}
-				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, lastOrb, caster.getLookAngle(), caster.position(), null, null, false), anchored);
-				}
-			});
-		}
+			}
+			if (!hits.isEmpty()) {
+				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, lastOrb, caster.getLookAngle(), caster.position(), null, null, false), anchored);
+			}
+		});
 		Fx.sound(cast.level, caster.position(), dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
 	}
 
@@ -197,7 +192,7 @@ final class ShapeRunners {
 					}
 				}
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, origin, cast.caster.getLookAngle(), origin, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, origin, cast.caster.getLookAngle(), origin, null, null, false), anchored);
 				}
 			});
 		}
@@ -228,7 +223,8 @@ final class ShapeRunners {
 		int steps = (int) Math.ceil(14 / speed);
 		Set<UUID> hit = new java.util.HashSet<>();
 		for (int t = 0; t < steps; t++) {
-			double d = 1.0 + speed * (t + 1);
+			// 14 blocks and no further, however quick: the last step used to overshoot by up to a whole step.
+			double d = 1.0 + Math.min(14.0, speed * (t + 1));
 			Scheduler.later(t + 1, () -> {
 				if (!cast.alive()) {
 					return;
@@ -242,7 +238,7 @@ final class ShapeRunners {
 					hit.add(e.getUUID());
 				}
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, front, dir, front.subtract(dir), null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, front, dir, front.subtract(dir), null, null, false), anchored);
 				}
 			});
 		}
@@ -254,25 +250,22 @@ final class ShapeRunners {
 		double radius = SpellNumbers.mineRadius(g);
 		boolean[] fired = {false};
 		Vfx.mineArm(cast.level, point, theme);
-		for (int t = 0; t <= 600; t += 5) {
-			int tick = t;
-			Scheduler.later(t + 5, () -> {
-				if (fired[0] || !cast.alive()) {
-					return;
-				}
-				if (tick % 40 == 0) {
-					Vfx.mineIdle(cast.level, point, theme);
-				}
-				boolean enemyNear = !cast.level.getEntities(cast.caster, new AABB(point, point).inflate(1.8, 2.0, 1.8),
-					e -> Targets.canHarm(cast.caster, e)).isEmpty();
-				if (!enemyNear) {
-					return;
-				}
-				fired[0] = true;
-				Vfx.burst(cast.level, point.add(0, 0.5, 0), radius, theme);
-				CastEngine.onHit(cast.child(), g, new Cast.Hit(CastEngine.inRadius(cast, point.add(0, 0.5, 0), radius), point, new Vec3(0, 1, 0), point, null, null, false), anchored);
-			});
-		}
+		steps(cast, 5, 5, 600, tick -> {
+			if (fired[0] || !cast.alive()) {
+				return;
+			}
+			if (tick % 40 == 0) {
+				Vfx.mineIdle(cast.level, point, theme);
+			}
+			boolean enemyNear = !cast.level.getEntities(cast.caster, new AABB(point, point).inflate(1.8, 2.0, 1.8),
+				e -> Targets.canHarm(cast.caster, e)).isEmpty();
+			if (!enemyNear) {
+				return;
+			}
+			fired[0] = true;
+			Vfx.burst(cast.level, point.add(0, 0.5, 0), radius, theme);
+			CastEngine.onHit(cast, g, new Cast.Hit(CastEngine.inRadius(cast, point.add(0, 0.5, 0), radius), point, new Vec3(0, 1, 0), point, null, null, false), anchored);
+		});
 	}
 
 	/** Totem: a floating totem that pulses its effects on everything nearby for a while. */
@@ -281,23 +274,20 @@ final class ShapeRunners {
 		int total = SpellNumbers.totemSeconds(g) * 20;
 		int interval = SpellNumbers.totemInterval(g);
 		Vec3 top = base.add(0, 1.6, 0);
-		for (int t = 0; t <= total; t += 5) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				if (!cast.alive()) {
-					return;
-				}
-				Vfx.totem(cast.level, top, theme, tick);
-				if (tick % interval != 0) {
-					return;
-				}
-				Vfx.totemPulse(cast.level, base, radius, theme);
-				List<Entity> hits = CastEngine.inRadius(cast, top, radius);
-				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, top, new Vec3(0, 1, 0), top, null, null, false), anchored);
-				}
-			});
-		}
+		steps(cast, 1, 5, total, tick -> {
+			if (!cast.alive()) {
+				return;
+			}
+			Vfx.totem(cast.level, top, theme, tick);
+			if (tick % interval != 0) {
+				return;
+			}
+			Vfx.totemPulse(cast.level, base, radius, theme);
+			List<Entity> hits = CastEngine.inRadius(cast, top, radius);
+			if (!hits.isEmpty()) {
+				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, top, new Vec3(0, 1, 0), top, null, null, false), anchored);
+			}
+		});
 		Fx.sound(cast.level, base, dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.7F, 1.0F);
 	}
 
@@ -331,34 +321,32 @@ final class ShapeRunners {
 		int interval = SpellNumbers.domainInterval(g);
 		TechniqueVfx.domainOpen(cast.level, center, radius, theme, cast.info.spell(), total + 20);
 		DomainClash.open(cast, g, center, radius, total, theme.primary());
-		for (int t = 10; t <= total + 10; t += 5) {
-			int tick = t;
-			Scheduler.later(t, () -> {
-				if (!cast.alive()) {
-					return;
+		steps(cast, 10, 5, total, t -> {
+			int tick = t + 10;
+			if (!cast.alive()) {
+				return;
+			}
+			TechniqueVfx.domainShell(cast.level, center, radius, theme, tick);
+			// Everyone inside sees the edges of their view take on the Domain's colour.
+			for (net.minecraft.server.level.ServerPlayer player : cast.level.players()) {
+				if (player.position().distanceTo(center) <= radius) {
+					ScreenFx.tint(player, theme.primary(), 12);
 				}
-				TechniqueVfx.domainShell(cast.level, center, radius, theme, tick);
-				// Everyone inside sees the edges of their view take on the Domain's colour.
-				for (net.minecraft.server.level.ServerPlayer player : cast.level.players()) {
-					if (player.position().distanceTo(center) <= radius) {
-						ScreenFx.tint(player, theme.primary(), 12);
-					}
+			}
+			if ((tick - 10) % interval >= 5) {
+				return;
+			}
+			List<Entity> inside = CastEngine.inRadius(cast, center.add(0, 1, 0), radius);
+			for (Entity e : inside) {
+				if (Targets.canHarm(cast.caster, e)) {
+					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, interval + 10, 1, false, false));
 				}
-				if ((tick - 10) % interval >= 5) {
-					return;
-				}
-				List<Entity> inside = CastEngine.inRadius(cast, center.add(0, 1, 0), radius);
-				for (Entity e : inside) {
-					if (Targets.canHarm(cast.caster, e)) {
-						((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, interval + 10, 1, false, false));
-					}
-				}
-				TechniqueVfx.domainStrike(cast.level, center, radius, theme);
-				if (!inside.isEmpty()) {
-					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(inside, center, new Vec3(0, 1, 0), center, null, null, false), anchored);
-				}
-			});
-		}
+			}
+			TechniqueVfx.domainStrike(cast.level, center, radius, theme);
+			if (!inside.isEmpty()) {
+				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(inside, center, new Vec3(0, 1, 0), center, null, null, false), anchored);
+			}
+		});
 		Scheduler.later(total + 16, () -> {
 			if (cast.alive()) {
 				TechniqueVfx.domainClose(cast.level, center, radius, theme);
@@ -402,7 +390,7 @@ final class ShapeRunners {
 					}
 				}
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, front, aim, front.subtract(aim), null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, front, aim, front.subtract(aim), null, null, false), anchored);
 				}
 			});
 		}
@@ -482,7 +470,7 @@ final class ShapeRunners {
 				if (wall || tick == steps) {
 					done[0] = true;
 					Vfx.burst(cast.level, pos, radius * 1.2, theme);
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(CastEngine.inRadius(cast, pos, radius * 1.2), pos, aim, pos, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(CastEngine.inRadius(cast, pos, radius * 1.2), pos, aim, pos, null, null, false), anchored);
 					return;
 				}
 				TechniqueVfx.orb(cast.level, pos, radius, theme, tick);
@@ -558,6 +546,31 @@ final class ShapeRunners {
 		Scheduler.later(1, next[0]);
 	}
 
+	/**
+	 * Runs {@code step} with t = 0, {@code stride}, 2 × {@code stride}... up to {@code last}: the first {@code delay}
+	 * ticks from now, then every {@code stride} ticks. One task waits at a time, never one for every step up front
+	 * (a shape that Extend has made last an hour would fill the scheduler, which every tick walks through), and none
+	 * once the caster is gone for good. Each step checks {@link Cast#alive()} itself, so a caster back from another
+	 * world, or a passive picking up again, carries on as before.
+	 */
+	static void steps(Cast cast, int delay, int stride, int last, java.util.function.IntConsumer step) {
+		int[] t = {0};
+		Runnable[] next = new Runnable[1];
+		next[0] = () -> {
+			if (cast.caster.isRemoved()) {
+				return;
+			}
+			int now = t[0];
+			t[0] = now + stride;
+			// The next step is booked first, so one that fails doesn't end the rest.
+			if (t[0] <= last) {
+				Scheduler.later(stride, next[0]);
+			}
+			step.accept(now);
+		};
+		Scheduler.later(delay, next[0]);
+	}
+
 	/** Every living creature (never the caster) within {@code width} of the segment, nearest first, skipping {@code skip}. */
 	static List<Entity> along(Cast cast, Vec3 from, Vec3 to, double width, Set<UUID> skip) {
 		List<Entity> hits = new ArrayList<>();
@@ -576,6 +589,25 @@ final class ShapeRunners {
 	static net.minecraft.world.phys.BlockHitResult clip(Cast cast, Vec3 from, Vec3 to) {
 		return cast.level.clip(new net.minecraft.world.level.ClipContext(from, to, net.minecraft.world.level.ClipContext.Block.COLLIDER,
 			net.minecraft.world.level.ClipContext.Fluid.NONE, cast.caster));
+	}
+
+	/** Whether the ground at {@code at} is loaded: a flight that goes on for seconds stops at its edge rather than load more. */
+	private static boolean loaded(Cast cast, Vec3 at) {
+		return cast.level.hasChunkAt(net.minecraft.core.BlockPos.containing(at));
+	}
+
+	/**
+	 * How far a line from {@code from} along {@code dir} reaches, up to {@code length}, before it would leave the loaded
+	 * world: a Sweep widened again and again is hundreds of blocks long, and tracing it there loaded the land it crossed.
+	 */
+	private static double loadedReach(Cast cast, Vec3 from, Vec3 dir, double length) {
+		for (double d = 4.0; d < length + 4.0; d += 4.0) {
+			double at = Math.min(d, length);
+			if (!loaded(cast, from.add(dir.scale(at)))) {
+				return Math.max(0.0, d - 4.0);
+			}
+		}
+		return length;
 	}
 
 	private static boolean missed(net.minecraft.world.phys.BlockHitResult block) {
@@ -707,6 +739,11 @@ final class ShapeRunners {
 			}
 			Vec3 from = pos[0];
 			Vec3 to = from.add(velocity[0]);
+			if (!loaded(cast, to)) {
+				// Never on into ground that isn't loaded: following it there would load the world as it went.
+				ExpansionVfx.wispFade(cast.level, from, theme);
+				return false;
+			}
 			Contact c = contact(cast, g, anchored, from, to, 0.35, Set.of());
 			if (c != null && c.parried()) {
 				return false;
@@ -773,6 +810,11 @@ final class ShapeRunners {
 			velocity[0] = velocity[0].add(0, -0.06, 0);
 			Vec3 from = pos[0];
 			Vec3 to = from.add(velocity[0]);
+			if (!loaded(cast, to)) {
+				// As a wisp: it stops where the loaded world does.
+				ExpansionVfx.ricochetEnd(cast.level, from, theme);
+				return false;
+			}
 			net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
 			Vec3 end = missed(block) ? to : block.getLocation();
 			List<Entity> passed = along(cast, from, end, 0.45, hit);
@@ -780,7 +822,7 @@ final class ShapeRunners {
 				passed.forEach(e -> hit.add(e.getUUID()));
 				Vec3 at = passed.getFirst().getBoundingBox().getCenter();
 				ExpansionVfx.ricochetHit(cast.level, at, theme);
-				CastEngine.onHit(cast.child(), g, new Cast.Hit(passed, at, velocity[0].normalize(), from, null, null, false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(passed, at, velocity[0].normalize(), from, null, null, false), anchored);
 			}
 			if (visible(cast, from, end)) {
 				ExpansionVfx.ricochetTick(cast.level, from, end, theme, tick);
@@ -792,7 +834,7 @@ final class ShapeRunners {
 			Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getUnitVec3i());
 			if (bounces[0]-- <= 0 || velocity[0].length() < 0.2) {
 				ExpansionVfx.ricochetEnd(cast.level, end, theme);
-				CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false), anchored);
 				return false;
 			}
 			velocity[0] = velocity[0].subtract(normal.scale(2 * velocity[0].dot(normal))).scale(0.82);
@@ -876,7 +918,7 @@ final class ShapeRunners {
 				}
 				ExpansionVfx.shardLand(cast.level, land, radius, theme);
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, land, velocity[0].normalize(), land, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, land, velocity[0].normalize(), land, null, null, false), anchored);
 				}
 				return false;
 			});
@@ -893,7 +935,7 @@ final class ShapeRunners {
 		List<Entity> hits = along(cast, from, end, width, Set.of());
 		ExpansionVfx.lance(cast.level, from.add(aim.scale(0.8)), end, width, theme);
 		for (Entity e : hits) {
-			CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(e), e.getBoundingBox().getCenter(), aim, from, null, null, false), anchored);
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(e), e.getBoundingBox().getCenter(), aim, from, null, null, false), anchored);
 		}
 		if (hits.isEmpty() && !missed(block)) {
 			CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, aim, from, block.getBlockPos(), block.getDirection(), false), anchored);
@@ -918,13 +960,14 @@ final class ShapeRunners {
 				// From 50 degrees to one side across to 50 degrees to the other.
 				Vec3 dir = base.yRot((float) Math.toRadians(50 - 100.0 * step / ticks));
 				Vec3 origin = fromCaster ? caster.getEyePosition().subtract(0, 0.25, 0) : at.pos();
-				net.minecraft.world.phys.BlockHitResult block = clip(cast, origin, origin.add(dir.scale(length)));
-				Vec3 end = missed(block) ? origin.add(dir.scale(length)) : block.getLocation();
+				double reach = loadedReach(cast, origin, dir, length);
+				net.minecraft.world.phys.BlockHitResult block = clip(cast, origin, origin.add(dir.scale(reach)));
+				Vec3 end = missed(block) ? origin.add(dir.scale(reach)) : block.getLocation();
 				ExpansionVfx.sweepTick(cast.level, origin.add(dir.scale(0.8)), end, theme, step);
 				List<Entity> hits = along(cast, origin, end, 0.5, hit);
 				if (!hits.isEmpty()) {
 					hits.forEach(e -> hit.add(e.getUUID()));
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, hits.getFirst().getBoundingBox().getCenter(), dir, origin, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, hits.getFirst().getBoundingBox().getCenter(), dir, origin, null, null, false), anchored);
 				}
 			});
 		}
@@ -963,7 +1006,7 @@ final class ShapeRunners {
 				Entity e = hits.getFirst();
 				struck.add(e.getUUID());
 				rayEnd = e.getBoundingBox().getCenter();
-				CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(e), rayEnd, rayDir, split, null, null, false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(List.of(e), rayEnd, rayDir, split, null, null, false), anchored);
 			}
 			ends.add(rayEnd);
 		}

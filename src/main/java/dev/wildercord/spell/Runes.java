@@ -37,7 +37,7 @@ public final class Runes {
 	public static final RuneDef ARC = shape("arc", "Arc", 1, 3, 1.1, "Lobs a bolt that falls and bursts where it lands.", SPEED, BOUNCE, SPLIT, VOLLEY);
 	public static final RuneDef CONE = shape("cone", "Cone", 2, 5, 1.4, "Sweeps everything in a 60-degree cone up to 6 blocks in front of you.", RADIUS);
 	public static final RuneDef TRAIL = shape("trail", "Trail", 2, 7, 1.8, "For 5 seconds your footsteps leave a path that hits whatever steps on it.", DURATION);
-	public static final RuneDef WALL = shape("wall", "Wall", 3, 10, 2.2, "A 7-block wall across where you look. Hits whatever crosses it for 5 seconds.", RADIUS, DURATION, SPEED);
+	public static final RuneDef WALL = shape("wall", "Wall", 3, 10, 2.2, "A 7-block wall across where you look. Hits whatever crosses it every second for 5 seconds.", RADIUS, DURATION, SPEED);
 	public static final RuneDef ORBIT = shape("orbit", "Orbit", 3, 9, 2.0, "Three orbs circle you for 8 seconds and hit whatever they touch.", DURATION, SPLIT);
 	public static final RuneDef RING = shape("ring", "Ring", 2, 6, 1.5, "A ring expands from you out to 7 blocks, hitting everything it passes.", RADIUS);
 	public static final RuneDef PILLAR = shape("pillar", "Pillar", 2, 5, 1.4, "A column erupts where you look: hits everything within 1.5 blocks, 6 high.", RADIUS, SPLIT);
@@ -188,7 +188,7 @@ public final class Runes {
 	public static final RuneDef BLOOD_THREAD = effect("blood_thread", "Blood Thread", 1, 10, "blood", EffectKind.HARMFUL, "Threads everything hit together for 8 seconds: half of any damage one of them takes is dealt to the rest.", DURATION);
 	public static final RuneDef KINDLING = effect("kindling", "Kindling", 1, 7, "fire", EffectKind.HARMFUL, "3 fire damage and a stack of Kindling. The fifth stack ignites: 10 damage in a 3-block burst.", POWER, LINGER);
 	public static final RuneDef TWIN_STAR = effect("twin_star", "Twin Star", 1, 12, "arcane", EffectKind.HELPFUL, "Your next spell within 6 seconds is cast twice.");
-	public static final RuneDef BORROWED_TIME = effect("borrowed_time", "Borrowed Time", 1, 14, "time", EffectKind.HELPFUL, "Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay something.");
+	public static final RuneDef BORROWED_TIME = effect("borrowed_time", "Borrowed Time", 1, 14, "time", EffectKind.HELPFUL, "Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay a monster.");
 	public static final RuneDef GALE_MANTLE = effect("gale_mantle", "Gale Mantle", 1, 10, "wind", EffectKind.HELPFUL, "For 12 seconds, jump again in midair to dash forward (up to 3 dashes).", DURATION);
 	public static final RuneDef STONEFORM = effect("stoneform", "Stoneform", 1, 12, "earth", EffectKind.HELPFUL, "For 8 seconds: no knockback, 20% less damage, and every hit you take sends out an aftershock.", DURATION);
 	public static final RuneDef MIRRORFROST = effect("mirrorfrost", "Mirrorfrost", 1, 12, "frost", EffectKind.HELPFUL, "Casts back the last spell that hit you in the past 30 seconds, as your own.");

@@ -508,10 +508,13 @@ public final class SecretSpells {
 				}
 				Vfx.emit(level, ParticleTypes.PORTAL, stop, 8, 0.1, 4.0);
 				for (LivingEntity t2 : enemiesNear(pulse, stop, 9)) {
-					Vec3 pull = stop.subtract(t2.getBoundingBox().getCenter());
-					double d = Math.max(0.5, pull.length());
-					Effects.push(t2, pull.normalize().scale(Math.min(0.55, 0.12 + 0.9 / d)).subtract(t2.getDeltaMovement().scale(0.4)));
-					Reactions.mark(t2, Reactions.Mark.PULLED);
+					// A boss is struck but never held at the star (bosses are only ever slowed, as the fused Singularity and Vortex keep to).
+					if (!Spirits.isBoss(t2)) {
+						Vec3 pull = stop.subtract(t2.getBoundingBox().getCenter());
+						double d = Math.max(0.5, pull.length());
+						Effects.push(t2, pull.normalize().scale(Math.min(0.55, 0.12 + 0.9 / d)).subtract(t2.getDeltaMovement().scale(0.4)));
+						Reactions.mark(t2, Reactions.Mark.PULLED);
+					}
 					if (tick % 20 == 0) {
 						Effects.hurt(pulse, t2, magic(pulse), 3 * power);
 					}
