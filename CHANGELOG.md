@@ -25,6 +25,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Grow keeps to the spell's block budget.** Every other rune that changes blocks counts each one against the
   blocks a cast may change (32, or the server's `max_blocks_per_cast`), but Grow bone-mealed every block it
   reached, however many times a Zone, a Split or an Echo landed it.
+- **Blink never lands you in lava.** Aimed at a lava pool (or a creature dying in one), it put you on the ground at
+  the bottom of it, and it could also put you past the world border. It still only lands where there's room to
+  stand, and now never in lava or fire or outside the border: with nowhere safe, you stay where you are.
 
 ## [0.4.2-alpha] - 2026-09-28
 

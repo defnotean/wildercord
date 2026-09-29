@@ -21,6 +21,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -736,7 +737,10 @@ public final class Effects {
 			Vec3 spot = target.add(back.scale(1 + attempt * 0.5)).add(0, attempt % 2 == 0 ? 0 : 1, 0);
 			spot = CastEngine.ground(cast.level, spot);
 			AABB box = caster.getDimensions(caster.getPose()).makeBoundingBox(spot);
-			if (cast.level.noCollision(caster, box)) {
+			// Always somewhere safe: room to stand, inside the world border, and never into lava or fire (the ground
+			// under a lava lake is still "where the spell landed").
+			if (cast.level.noCollision(caster, box) && cast.level.getWorldBorder().isWithinBounds(spot.x, spot.z)
+					&& cast.level.getBlockStates(box.inflate(0, 0.5, 0)).noneMatch(s -> s.getFluidState().is(FluidTags.LAVA) || s.is(BlockTags.FIRE))) {
 				Vec3 from = caster.position();
 				caster.teleportTo(cast.level, spot.x, spot.y, spot.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
 				caster.resetFallDistance();
