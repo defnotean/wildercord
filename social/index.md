@@ -8,7 +8,8 @@ permalink: /social/
 # Friends and Rivals
 
 Magic is better with other people. Trade runes with a villager, take on daily contracts, duel a friend without anyone
-dying, sing one great spell together, and share your best spells with a code, a scroll or a Knot.
+dying, sing one great spell together, share your best spells with a code, a scroll or a Knot, and teleport to each
+other.
 
 <img src="{{ '/assets/images/d-chorus.jpg' | relative_url }}" alt="Three burning zombies on the grass, ringed by golden circles of light where several casters' spells braided together" class="shot">
 <span class="caption">A chorus: several casters' spells sung as one</span>
@@ -22,6 +23,7 @@ dying, sing one great spell together, and share your best spells with a code, a 
 | [Duels]({{ '/social/duels/' | relative_url }}) | Challenging another player to a fight where nobody dies and nobody loses anything |
 | [Chorus Casting]({{ '/social/chorus/' | relative_url }}) | Casting the same spell with friends at the same moment for one much stronger spell |
 | [Playing Together]({{ '/social/playing-together/' | relative_url }}) | Spell codes, Spell Scrolls, Unison, Domain clashes, shooting spells out of the air, and the friendly fire and PvP rules |
+| [Getting Around]({{ '/social/travel/' | relative_url }}) | Homes, warps, waypoints, teleport requests, /back, /spawn and /rtp, and the short warmup before every teleport |
 
 ## The short version
 
@@ -35,6 +37,8 @@ dying, sing one great spell together, and share your best spells with a code, a 
   (+50%), or with the same kind of spell in the same shape for a [chorus]({{ '/social/chorus/' | relative_url }}) (up to
   twice as strong).
 - **Settle it with a duel.** Nobody dies, and afterwards you're both put back as you were.
+- **Get around together.** Set homes, visit friends with a teleport request, and track waypoints on your screen. See
+  [Getting Around]({{ '/social/travel/' | relative_url }}).
 
 ## Related
 
