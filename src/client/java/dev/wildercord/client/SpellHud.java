@@ -49,6 +49,8 @@ public final class SpellHud {
 	private static final int HEIGHT = 32;
 	private static final int BODY_X = 28;
 	private static final int MIN_BODY = 58;
+	/** How far the panel is lifted to clear an offhand slot or attack indicator (both at most 24 tall). */
+	private static final int RAISE = 24;
 
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int LAVENDER = 0xFFB8A8FF;
@@ -65,6 +67,25 @@ public final class SpellHud {
 		// A Domain's tint goes under everything else on the HUD.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
 			(g, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(g));
+	}
+
+	/** The panel's left edge, and whether it's lifted by {@link #RAISE}. */
+	record Place(int x, boolean raised) {}
+
+	/**
+	 * Where the panel goes on a screen {@code guiWidth} wide, beside the hotbar and past whatever sits
+	 * on its side ({@code aside} pixels: an offhand slot or attack indicator). Short of room there but
+	 * not beside the hotbar itself, it sits on top of them instead. Shorter still of room, it's tucked
+	 * into the corner once its width is known.
+	 *
+	 * @param narrowest the narrowest the panel can get (its bottom row, with runes left out)
+	 */
+	static Place place(int guiWidth, int aside, int narrowest) {
+		int besideHotbar = guiWidth / 2 + 91 + 5;
+		if (aside > 0 && guiWidth - (besideHotbar + aside) - 2 < narrowest && guiWidth - besideHotbar - 2 >= narrowest) {
+			return new Place(besideHotbar, true);
+		}
+		return new Place(besideHotbar + aside, false);
 	}
 
 	/** On leaving a world: the next one's mana bar starts from its own mana, not glides from this one's. */
@@ -128,23 +149,17 @@ public final class SpellHud {
 		int narrowest = BODY_X + Math.max(row3, MIN_BODY) + 4;
 
 		// ---- where: right of the hotbar, clear of an offhand slot or attack indicator on that side.
-		int center = g.guiWidth() / 2;
-		int besideHotbar = center + 91 + 5;
-		int x0 = besideHotbar;
+		int aside = 0;
 		HumanoidArm offhandSide = player.getMainArm().getOpposite();
 		if (offhandSide == HumanoidArm.RIGHT && !player.getOffhandItem().isEmpty()) {
-			x0 += 29;
+			aside += 29;
 		}
 		if (offhandSide == HumanoidArm.LEFT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) {
-			x0 += 23;
+			aside += 23;
 		}
-		int y0 = g.guiHeight() - HEIGHT;
-		if (g.guiWidth() - x0 - 2 < narrowest && g.guiWidth() - besideHotbar - 2 >= narrowest) {
-			// No room beside the offhand slot or attack indicator, but enough beside the hotbar: sit on
-			// top of them rather than tucked into the corner over them.
-			x0 = besideHotbar;
-			y0 -= 24;
-		}
+		Place place = place(g.guiWidth(), aside, narrowest);
+		int x0 = place.x();
+		int y0 = g.guiHeight() - HEIGHT - (place.raised() ? RAISE : 0);
 		int avail = g.guiWidth() - x0 - 2;
 
 		// ---- how wide: measured, then shrunk to fit.

@@ -37,6 +37,11 @@ public final class Tooltips {
 		return Math.max(100, Math.min(MAX_WIDTH, screenWidth - 8));
 	}
 
+	/** How many tooltip lines fit on a screen {@code screenHeight} tall: each is 10 pixels, and the frame takes a few more. */
+	public static int maxLines(int screenHeight) {
+		return Math.max(2, (screenHeight - 8) / 10);
+	}
+
 	/**
 	 * A screen's own tooltip, wrapped for a screen {@code screenWidth} by {@code screenHeight}. One taller
 	 * than the screen (the mana badge's, well equipped, on a short window) ends in "…" instead: the game
@@ -44,8 +49,7 @@ public final class Tooltips {
 	 */
 	public static List<FormattedCharSequence> fit(Font font, List<Component> lines, int screenWidth, int screenHeight) {
 		List<FormattedCharSequence> wrapped = wrap(font, lines, maxWidth(screenWidth));
-		// Each line is 10 pixels, and the frame takes a few more above and below.
-		int room = Math.max(2, (screenHeight - 8) / 10);
+		int room = maxLines(screenHeight);
 		if (wrapped.size() > room) {
 			wrapped = new ArrayList<>(wrapped.subList(0, room - 1));
 			wrapped.add(Component.literal("…").withStyle(ChatFormatting.DARK_GRAY).getVisualOrderText());
