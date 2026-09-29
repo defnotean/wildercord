@@ -19,6 +19,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   most a burst of 20 casts (or charges), then 20 a second, far more than any hand on the cast keys.
 - **Fangs never bite your friends.** Its evoker fangs bit anything that walked onto them, your own pets included;
   they now bite only what your spells may harm, and nothing at all once you've gone.
+- **A creature held in Stasis (or an arrow held by Infinity) that's carried through a portal falls again** as soon as
+  it arrives, instead of floating until its ground was next loaded.
 
 ## [0.4.2-alpha] - 2026-09-28
 

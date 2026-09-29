@@ -111,7 +111,8 @@ public final class Wards {
 		ServerTickEvents.END_SERVER_TICK.register(Wards::tick);
 		Techniques.init();
 		// Held things let go before the world is saved, and anything saved while held (a player who
-		// logged out in Stasis) gets its gravity back when it loads.
+		// logged out in Stasis) gets its gravity back when it loads. So does the copy of a held creature or
+		// arrow carried to another world (a portal): it's a new entity there, which nothing holds.
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			for (Stasis held : new ArrayList<>(STASIS.values())) {
 				unhold(held.target, held.hadNoGravity);
@@ -121,7 +122,7 @@ public final class Wards {
 			}
 		});
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.ENTITY_LOAD.register((entity, level) -> {
-			if (entity.hasAttached(WildercordAttachments.HELD_GRAVITY) && !STASIS.containsKey(entity.getUUID()) && !HELD.containsKey(entity.getUUID())) {
+			if (entity.hasAttached(WildercordAttachments.HELD_GRAVITY) && !holds(entity)) {
 				unhold(entity, false);
 			}
 		});
@@ -451,6 +452,13 @@ public final class Wards {
 			}
 		}
 		HELD.values().removeIf(held -> held.projectile().isRemoved());
+	}
+
+	/** Whether a spell holds this very entity (not an earlier copy of it with the same id, left in another world). */
+	private static boolean holds(Entity e) {
+		Stasis stasis = STASIS.get(e.getUUID());
+		Held held = HELD.get(e.getUUID());
+		return stasis != null && stasis.target == e || held != null && held.projectile() == e;
 	}
 
 	/** Stops gravity for something a spell holds, remembering (in a saved attachment) what it was. */
