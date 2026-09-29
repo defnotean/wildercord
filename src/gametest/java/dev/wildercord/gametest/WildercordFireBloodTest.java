@@ -69,7 +69,6 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 				new Object[] {"Explode on a crowd", (Check) WildercordFireBloodTest::explodeCrowd},
 				new Object[] {"Meteor on a crowd", (Check) WildercordFireBloodTest::meteorCrowd},
 				new Object[] {"Primer dies primed", (Check) WildercordFireBloodTest::primerDies},
-				new Object[] {"Cinderheart never stacks", (Check) WildercordFireBloodTest::cinderheart},
 				new Object[] {"Blood Thread caps", (Check) WildercordFireBloodTest::bloodThread},
 				new Object[] {"Rend tears resistance", (Check) WildercordFireBloodTest::rend},
 				new Object[] {"Ember feeds", (Check) WildercordFireBloodTest::ember},
@@ -82,7 +81,9 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 				new Object[] {"Transfusion", (Check) WildercordFireBloodTest::transfusion},
 				new Object[] {"Sunscorch dazzle", (Check) WildercordFireBloodTest::sunscorch},
 				new Object[] {"Soulfire on the fire-proof", (Check) WildercordFireBloodTest::soulfire},
-				new Object[] {"Lifesteal siphon", (Check) WildercordFireBloodTest::lifesteal});
+				new Object[] {"Lifesteal siphon", (Check) WildercordFireBloodTest::lifesteal},
+				// Last: its aura burns on for twelve seconds, and would hurt whatever stood near the caster after it.
+				new Object[] {"Cinderheart never stacks", (Check) WildercordFireBloodTest::cinderheart});
 			for (Object[] check : checks) {
 				String failure;
 				try {
@@ -142,6 +143,8 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 		}
 		mob.snapTo(STAGE.getX() + 0.5 + dx, STAGE.getY(), STAGE.getZ() + 0.5 + dz, yaw, 0);
 		mob.setNoAi(true);
+		mob.setYHeadRot(yaw);
+		mob.setYBodyRot(yaw);
 		mob.addTag(TAG);
 		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
 		mob.addTag("wildercord.rolled");
@@ -270,7 +273,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			id[0] = husk(level, 0, 5).getId();
 			id[1] = husk(level, 1.5, 5).getId();
-			return cast(player(server), Runes.TOUCH, Runes.PRIMER);
+			return cast(player(server), Runes.BEAM, Runes.PRIMER);
 		});
 		if (cast != null) {
 			return cast;
@@ -328,7 +331,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 		int[][] ids = new int[1][];
 		String cast = world.getServer().computeOnServer(server -> {
 			ids[0] = pack(server, 6);
-			return cast(player(server), Runes.NOVA, Runes.BLOOD_THREAD);
+			return cast(player(server), Runes.BURST, Runes.BLOOD_THREAD);
 		});
 		if (cast != null) {
 			return cast;
@@ -360,7 +363,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 		int[] id = {0};
 		String cast = world.getServer().computeOnServer(server -> {
 			id[0] = spawn(player(server).level(), EntityTypes.BLAZE, 0, 5, 180).getId();
-			return cast(player(server), Runes.TOUCH, Runes.LEECH);
+			return cast(player(server), Runes.BEAM, Runes.LEECH);
 		});
 		if (cast != null) {
 			return cast;
@@ -371,12 +374,12 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			resisted[0] = lost(living(server, id[0]));
 			living(server, id[0]).setHealth(living(server, id[0]).getMaxHealth());
 		});
-		String rend = world.getServer().computeOnServer(server -> cast(player(server), Runes.TOUCH, Runes.REND));
+		String rend = world.getServer().computeOnServer(server -> cast(player(server), Runes.BEAM, Runes.REND));
 		if (rend != null) {
 			return rend;
 		}
 		context.waitTicks(5);
-		String leech = world.getServer().computeOnServer(server -> cast(player(server), Runes.TOUCH, Runes.LEECH));
+		String leech = world.getServer().computeOnServer(server -> cast(player(server), Runes.BEAM, Runes.LEECH));
 		if (leech != null) {
 			return leech;
 		}
@@ -397,7 +400,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			Mob husk = husk(player(server).level(), 0, 4);
 			husk.setRemainingFireTicks(100);
 			id[0] = husk.getId();
-			return cast(player(server), Runes.TOUCH, Runes.EMBER);
+			return cast(player(server), Runes.BEAM, Runes.EMBER);
 		});
 		if (cast != null) {
 			return cast;
@@ -422,7 +425,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			return cast;
 		}
 		for (int i = 0; i < 5; i++) {
-			String fail = world.getServer().computeOnServer(server -> cast(player(server), Runes.TOUCH, Runes.KINDLING));
+			String fail = world.getServer().computeOnServer(server -> cast(player(server), Runes.BEAM, Runes.KINDLING));
 			if (fail != null) {
 				return fail;
 			}
@@ -437,20 +440,28 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ wounds
 
-	/** Gash: 3 at once, then it weeps 0.4 plus 1% of 20 a second for 8 s. */
+	/** Gash: it weeps 0.4 plus 1% of its bearer's 20 health, about 0.6, every second for 8 s (six weeps in the last 130 ticks). */
 	private static String gash(ClientGameTestContext context, TestSingleplayerContext world) {
-		int[] id = {0};
+		int[] id = new int[2];
 		String cast = world.getServer().computeOnServer(server -> {
 			id[0] = husk(player(server).level(), 0, 4).getId();
-			return cast(player(server), Runes.TOUCH, Runes.GASH);
+			// A husk beside it that nothing touches: whatever the world does to a husk in 8 seconds, it does to this one.
+			id[1] = husk(player(server).level(), 4, 4).getId();
+			return cast(player(server), Runes.BEAM, Runes.GASH);
 		});
 		if (cast != null) {
 			return cast;
 		}
-		context.waitTicks(175);
+		context.waitTicks(48);
+		float[] mid = {0};
+		world.getServer().runOnServer(server -> mid[0] = lost(living(server, id[0])));
+		if (mid[0] < 3) {
+			return "a Gash should hurt at once (" + mid[0] + ")";
+		}
+		context.waitTicks(127);
 		return world.getServer().computeOnServer(server -> {
-			float lost = lost(living(server, id[0]));
-			return lost >= 6.5F && lost <= 9.5F ? null : "a Gash should take 3 and then weep about 5 more over 8 s (" + lost + ")";
+			float weeping = lost(living(server, id[0])) - mid[0];
+			return weeping >= 3.0F && weeping <= 4.4F ? null : "a Gash should weep about 0.6 a second (six weeps in 130 ticks, 3.6): " + weeping;
 		});
 	}
 
@@ -461,7 +472,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			id[0] = husk(level, 0, 4).getId();
 			id[1] = spawn(level, EntityTypes.HUSK, 3.0, 4, 0).getId();
-			return cast(player(server), Runes.TOUCH, Runes.DISMANTLE);
+			return cast(player(server), Runes.BEAM, Runes.DISMANTLE);
 		});
 		if (cast != null) {
 			return cast;
@@ -473,7 +484,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 		String back = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.teleportTo(player.level(), STAGE.getX() + 3.5, STAGE.getY(), STAGE.getZ() + 0.5, Set.<Relative>of(), 0.0F, 8.0F, false);
-			return cast(player, Runes.TOUCH, Runes.DISMANTLE);
+			return cast(player, Runes.BEAM, Runes.DISMANTLE);
 		});
 		if (back != null) {
 			return back;
@@ -495,7 +506,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			id[0] = husk(level, 0, 4).getId();
 			id[1] = husk(level, 1.5, 4).getId();
-			return cast(player(server), Runes.TOUCH, Runes.CLEAVE);
+			return cast(player(server), Runes.BEAM, Runes.CLEAVE);
 		});
 		if (cast != null) {
 			return cast;
@@ -520,7 +531,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			id[0] = husk(level, 0, 5).getId();
 			id[1] = husk(level, 1.2, 5).getId();
-			return cast(player(server), Runes.TOUCH, Runes.STEAM);
+			return cast(player(server), Runes.BEAM, Runes.STEAM);
 		});
 		if (cast != null) {
 			return cast;
@@ -568,7 +579,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			level.addFreshEntity(wolf);
 			wolf.setHealth(10);
 			id[0] = wolf.getId();
-			return cast(player, Runes.TOUCH, Runes.TRANSFUSION);
+			return cast(player, Runes.BEAM, Runes.TRANSFUSION);
 		});
 		if (cast != null) {
 			return cast;
@@ -589,7 +600,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 		int[] id = {0};
 		String cast = world.getServer().computeOnServer(server -> {
 			id[0] = husk(player(server).level(), 0, 5).getId();
-			return cast(player(server), Runes.TOUCH, Runes.SUNSCORCH);
+			return cast(player(server), Runes.BEAM, Runes.SUNSCORCH);
 		});
 		if (cast != null) {
 			return cast;
@@ -606,7 +617,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 		int[] id = {0};
 		String cast = world.getServer().computeOnServer(server -> {
 			id[0] = spawn(player(server).level(), EntityTypes.BLAZE, 0, 5, 180).getId();
-			return cast(player(server), Runes.TOUCH, Runes.SOULFIRE);
+			return cast(player(server), Runes.BEAM, Runes.SOULFIRE);
 		});
 		if (cast != null) {
 			return cast;
@@ -626,7 +637,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 			id[0] = husk(player.level(), 0, 5).getId();
 			player.setHealth(6);
 			player.getFoodData().setFoodLevel(10);
-			return cast(player, Runes.TOUCH, Runes.LIFESTEAL);
+			return cast(player, Runes.BEAM, Runes.LIFESTEAL);
 		});
 		if (cast != null) {
 			return cast;
