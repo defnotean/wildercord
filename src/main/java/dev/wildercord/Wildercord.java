@@ -89,6 +89,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.loadout.Loadouts.init();
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.
 		dev.wildercord.api.WildercordApi.loadAddons();
+		dev.wildercord.cast.feel.Feels.init();
 		LOGGER.info("Wildercord initialized");
 	}
 }

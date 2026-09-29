@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SignatureRulesTest {
 	@Test
 	void frostwireHitsTheFrozenHarder() {
-		assertEquals(4.0, SignatureRules.frostwireDamage(false), 1e-9);
-		assertEquals(6.0, SignatureRules.frostwireDamage(true), 1e-9);
+		assertEquals(5.0, SignatureRules.frostwireDamage(false), 1e-9);
+		assertEquals(7.0, SignatureRules.frostwireDamage(true), 1e-9);
 		assertEquals(6, SignatureRules.FROSTWIRE_CHAIN);
 		assertEquals(6.0, SignatureRules.FROSTWIRE_REACH, 1e-9);
 	}

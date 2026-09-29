@@ -32,6 +32,34 @@ public final class WildercordSounds {
 		}
 	}
 
+	// ------------------------------------------------------------------ the feel kit
+
+	/** Every sound of the feel kit (tools/feel), by name; registered from the generated {@code kit_sounds.json}. */
+	private static final Map<String, SoundEvent> KIT = new HashMap<>();
+
+	static {
+		try (java.io.InputStream in = WildercordSounds.class.getResourceAsStream("/assets/wildercord/kit_sounds.json")) {
+			if (in != null) {
+				com.google.gson.JsonObject root = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+				for (String name : root.getAsJsonObject("events").keySet()) {
+					KIT.put(name, register(name));
+				}
+			}
+		} catch (java.io.IOException | RuntimeException e) {
+			Wildercord.LOGGER.error("Could not read the feel kit's sound manifest", e);
+		}
+	}
+
+	/** A kit sound by name (e.g. {@code "fire_flick"}), or null if the kit has none. Play it through {@code Feels.sound}. */
+	public static SoundEvent kit(String name) {
+		return KIT.get(name);
+	}
+
+	/** Every kit sound name, for tests. */
+	public static java.util.Set<String> kitNames() {
+		return java.util.Collections.unmodifiableSet(KIT.keySet());
+	}
+
 	// ------------------------------------------------------------------ casting
 
 	/** A warm hum whose overtones slowly shift: a seamless 2-second loop, played rising in pitch while a spell charges. */

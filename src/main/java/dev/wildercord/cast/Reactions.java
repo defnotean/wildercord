@@ -57,7 +57,9 @@ public final class Reactions {
 		/** Left by blood's cuts (Bleed, Rend, Cleave...): wind damage on it sets off Rupture. */
 		BLEEDING(ReactionRules.BLEEDING_TICKS),
 		/** Left by arcane's Harm and Reveal (see {@link Exposed}): counts as one mark for Unweave and Prismatic Burst. */
-		EXPOSED(Exposed.HARM_TICKS);
+		EXPOSED(Exposed.HARM_TICKS),
+		/** Left by Plasma: counts as wet for Conduct (and only for Conduct: fire is not dulled, Unweave does not count it). */
+		IONISED(100);
 
 		final int ticks;
 
@@ -162,7 +164,7 @@ public final class Reactions {
 
 	/** Conduct: storm on a wet target arcs on to two more enemies. */
 	private static double conduct(Cast cast, LivingEntity target) {
-		if (!WorldMagic.wet(target)) {
+		if (!WorldMagic.wet(target) && !has(target, Mark.IONISED)) {
 			return 1.0;
 		}
 		ServerLevel level = cast.level;
