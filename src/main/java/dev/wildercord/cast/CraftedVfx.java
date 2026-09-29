@@ -231,12 +231,13 @@ final class CraftedVfx {
 	/**
 	 * One ore Prospect found: the ore itself, a touch smaller, glowing in its own colour through the rock
 	 * around it for {@code ticks}. A block display, which never touches the world's blocks and is gone
-	 * after a restart (see {@link BlockFx#fresh}).
+	 * after a restart (see {@link BlockFx#fresh}). Returns it (null if it couldn't be made), so a newer
+	 * Prospect of the same caster's can put it out early.
 	 */
-	static void oreGlow(ServerLevel level, BlockPos pos, BlockState ore, int color, int ticks) {
+	static Display oreGlow(ServerLevel level, BlockPos pos, BlockState ore, int color, int ticks) {
 		Display.BlockDisplay display = EntityTypes.BLOCK_DISPLAY.create(level, EntitySpawnReason.TRIGGERED);
 		if (display == null) {
-			return;
+			return null;
 		}
 		display.snapTo(pos.getX(), pos.getY(), pos.getZ());
 		display.setBlockState(ore);
@@ -248,6 +249,7 @@ final class CraftedVfx {
 		BlockFx.fresh(display);
 		level.addFreshEntity(display);
 		Scheduler.later(ticks, display::discard);
+		return display;
 	}
 
 	/** Searing Edge: flames run up the target's weapon arm. */

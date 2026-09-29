@@ -116,6 +116,7 @@ public final class CraftedRunes {
 		EDGES.clear();
 		DISARMED.clear();
 		SPARKS.clear();
+		PROSPECTED.clear();
 		sharing = false;
 	}
 
@@ -282,6 +283,9 @@ public final class CraftedRunes {
 
 	// ------------------------------------------------------------------ Prospect
 
+	/** Each caster's ores glowing from their last Prospect: a new one puts the old out, so spamming it never piles glows up. */
+	private static final Map<UUID, List<net.minecraft.world.entity.Display>> PROSPECTED = new ConcurrentHashMap<>();
+
 	/**
 	 * Prospect: every ore within {@code radius} of where it landed (loaded ground only, never loading more),
 	 * nearest first and at most {@link #PROSPECT_MAX_ORES}, glows through the rock for {@code ticks}. It
@@ -304,9 +308,17 @@ public final class CraftedRunes {
 		}
 		ores.sort(Comparator.comparingDouble(p -> p.distSqr(c)));
 		CraftedVfx.prospectRing(level, centre, r, ores.size());
+		List<net.minecraft.world.entity.Display> glows = new ArrayList<>();
 		for (BlockPos p : ores.subList(0, Math.min(PROSPECT_MAX_ORES, ores.size()))) {
 			BlockState ore = level.getBlockState(p);
-			CraftedVfx.oreGlow(level, p, ore, oreColor(ore), ticks);
+			net.minecraft.world.entity.Display glow = CraftedVfx.oreGlow(level, p, ore, oreColor(ore), ticks);
+			if (glow != null) {
+				glows.add(glow);
+			}
+		}
+		List<net.minecraft.world.entity.Display> old = PROSPECTED.put(cast.caster.getUUID(), glows);
+		if (old != null) {
+			old.forEach(net.minecraft.world.entity.Display::discard);
 		}
 	}
 
