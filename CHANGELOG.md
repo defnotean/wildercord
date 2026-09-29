@@ -28,6 +28,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   player's off-hand slot), such as 1280x720 or 2560x1440 at the automatic GUI scale, the HUD was drawn over the
   indicator or slot. It now sits on top of them when there's room beside the hotbar.
 - The spell HUD's hint for an empty spell always said "K", even with the Open Cord key bound to another key.
+- A Cord's beads lit up for three seconds after every respawn, as if it had just been put on (and for a player
+  whose Cord showed up a moment after they came into view).
 - Renaming a spell, then picking another spell before pressing Enter, gave the name to the other spell. Picking
   another spell now drops the name being typed.
 - After leaving a world, the next one could show the last world's ley lines until it sent its own (on a server

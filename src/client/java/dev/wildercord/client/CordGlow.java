@@ -20,6 +20,11 @@ public final class CordGlow {
 	private static final int HOLD = 40;
 	/** Then it fades out over this long. */
 	private static final int FADE = 20;
+	/**
+	 * A body younger than this (respawned, or just come into view) may be drawn before its Cord's look
+	 * arrives: the server sends looks twice a second, and doesn't keep one through a respawn.
+	 */
+	private static final int SETTLE = 20;
 
 	private record Seen(String tier, long since) {}
 
@@ -35,8 +40,10 @@ public final class CordGlow {
 			return 0;
 		}
 		if (!seen.tier().equals(tier)) {
-			// A Cord put on, or swapped for another: it glows from now. Taken off: nothing to glow.
-			seen = new Seen(tier, tier.isEmpty() ? Long.MIN_VALUE / 2 : now);
+			// A Cord put on, or swapped for another: it glows from now. Taken off: nothing to glow. A Cord
+			// that shows up on a body only just made was worn all along, its look just late (see SETTLE).
+			boolean late = seen.tier().isEmpty() && avatar.tickCount < SETTLE;
+			seen = new Seen(tier, tier.isEmpty() || late ? Long.MIN_VALUE / 2 : now);
 			SEEN.put(avatar.getUUID(), seen);
 		}
 		float age = now - seen.since() + partial;

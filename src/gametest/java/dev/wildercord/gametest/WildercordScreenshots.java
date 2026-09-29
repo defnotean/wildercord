@@ -114,7 +114,39 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			mechanicsChecks(context, world);
 			heartAndPassives(context, world);
 			starterChips(context, world);
+			respawnGlow(context, world);
 		}
+	}
+
+	/**
+	 * Respawning with a Cord on (it's kept through death): the new body's Cord look comes from the server
+	 * a few ticks after the body itself, and that mustn't read as the Cord going on, which would light its
+	 * beads for three seconds after every respawn.
+	 */
+	private static void respawnGlow(ClientGameTestContext context, TestSingleplayerContext world) {
+		context.waitTicks(80);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			player.kill(player.level());
+		});
+		context.waitTicks(5);
+		context.runOnClient(mc -> {
+			mc.player.respawn();
+			mc.gui.setScreen(null);
+		});
+		float[] brightest = {0};
+		for (int i = 0; i < 30; i++) {
+			context.waitTicks(1);
+			context.runOnClient(mc -> {
+				if (mc.player != null) {
+					var state = mc.getEntityRenderDispatcher().getRenderer(mc.player).createRenderState(mc.player, 0);
+					brightest[0] = Math.max(brightest[0], ((dev.wildercord.client.CastingPose) state).wildercord$glow());
+				}
+			});
+		}
+		boolean worn = context.computeOnClient(mc -> mc.player != null && Spellbooks.tier(mc.player) != null);
+		check(worn, "the Cord should still be worn after respawning");
+		check(brightest[0] == 0, "the Cord's beads shouldn't light up after a respawn (glowed " + brightest[0] + ")");
 	}
 
 	/**
