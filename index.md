@@ -48,13 +48,13 @@ where to get it, every recipe, the dungeons and their bosses, the world's events
 | | |
 |---|---|
 | **292 runes** | 186 you can craft, 51 found only out in the world, and 55 fused at the Fusion Altar, one for every pair of elements. |
-| **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look, sound and reactions. |
+| **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look and sound. Eleven reactions play them off each other, creatures are weak to some and resist others, and where you stand favours some over the rest. |
 | **Four Cords** | Twine, Copper, Amethyst and Echo: more sockets, more spells, higher rune tiers, more mana. |
 | **Readable magic** | Every spell writes its own magic circle. Learn the emblems and you can read what a monster, or another player, is about to cast. |
 | **Four dungeons** | The Archive under the Overworld, the Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium under the sea, each with a boss. |
 | **A living world** | Mana storms, falling stars, rift sieges, ley lines, and magic that sets grass alight and freezes ponds. |
 | **Growing stronger** | Eight Heart Circles, feats, the Grimoire, Mana Crystals, enchantments, casting gear and familiars. |
-| **Friends and rivals** | Spell codes, scrolls, duels, chorus casting, the Runesmith's trades and daily contracts. |
+| **Friends and rivals** | Spell codes, scrolls, duels, chorus casting, the Runesmith's trades, daily contracts, and homes, warps, waypoints and teleports for servers. |
 
 ## Installing
 
