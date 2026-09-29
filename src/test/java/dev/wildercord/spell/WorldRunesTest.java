@@ -74,9 +74,9 @@ class WorldRunesTest {
 
 	@Test
 	void theirNamesAreTheirOwn() {
-		// The Fusion Altar's runes.
+		// The Fusion Altar's runes, its signature ones included.
 		Set<String> fusion = new HashSet<>();
-		for (RuneDef rune : Runes.FUSED) {
+		for (RuneDef rune : java.util.stream.Stream.concat(Runes.FUSED.stream(), Runes.SIGNATURE.stream()).toList()) {
 			fusion.add(rune.path());
 			fusion.add(rune.name().toLowerCase(Locale.ROOT));
 		}

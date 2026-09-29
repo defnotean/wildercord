@@ -111,6 +111,104 @@ class FusionTest {
 		assertEquals(Fusions.RECIPES.size(), Fusions.RECIPES.stream().map(r -> r.result().id()).distinct().count());
 	}
 
+	// ------------------------------------------------------------------ signature fusions
+
+	@Test
+	void aSignaturePairMakesItsOwnRuneInsteadOfItsElementsFusion() {
+		assertSame(FROSTWIRE, Fusions.recipe(CHILL, SHOCK).orElseThrow().result());
+		assertTrue(Fusions.recipe(CHILL, SHOCK).orElseThrow().signature());
+		// Any other frost and storm effects still make Hail.
+		assertSame(HAIL, Fusions.recipe(CHILL, JOLT).orElseThrow().result());
+		assertSame(HAIL, Fusions.recipe(ICICLE, SHOCK).orElseThrow().result());
+		assertSame(HAIL, Fusions.recipe(FROST, Runes.LIGHTNING).orElseThrow().result());
+		assertFalse(Fusions.recipe(CHILL, JOLT).orElseThrow().signature());
+		// A signature rune with itself, or with the other rune of its pair twice, is no signature: that's its elements' own.
+		assertSame(Runes.ABSOLUTE_ZERO, Fusions.recipe(CHILL, CHILL).orElseThrow().result());
+		assertSame(Runes.THUNDERHEAD, Fusions.recipe(SHOCK, SHOCK).orElseThrow().result());
+		// Runes of the world and Tier IV runes make signatures too.
+		assertSame(Runes.DUST_DEVIL, Fusions.recipe(Runes.SUMMIT_WIND, Runes.SANDSTORM).orElseThrow().result());
+		assertSame(Runes.COMETFALL, Fusions.recipe(Runes.METEOR, Runes.STARFALL).orElseThrow().result());
+		assertSame(Runes.DOWNDRAFT, Fusions.recipe(Runes.SUMMIT_WIND, PELT).orElseThrow().result(), "only the pair itself");
+	}
+
+	@Test
+	void signatureOrderDoesntMatter() {
+		for (Fusions.Signature signature : Fusions.SIGNATURES) {
+			assertSame(signature, Fusions.recipe(signature.a(), signature.b()).orElseThrow(), signature.result().name());
+			assertSame(signature, Fusions.recipe(signature.b(), signature.a()).orElseThrow(), signature.result().name() + ", the other way round");
+			assertSame(signature, Fusions.signature(signature.b(), signature.a()).orElseThrow());
+		}
+	}
+
+	@Test
+	void theAltarPlansASignatureAndKeepsTheLowerRank() {
+		Fusions.Plan plan = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(SHOCK, 3), Fusions.Slot.EMPTY, Fusions.Slot.of(CHILL, 2));
+		assertTrue(plan.ready(), String.valueOf(plan.problem()));
+		assertEquals(Fusions.Kind.COMBINE, plan.kind());
+		assertTrue(plan.signature());
+		assertSame(FROSTWIRE, plan.result());
+		assertEquals(2, plan.rank(), "the lower of the two ranks put in, as any fusion");
+		assertEquals(Fusions.COMBINE_XP, plan.xp(), "the same cost as any fusion");
+		assertEquals("fusion:frostwire", plan.recipe().key());
+		Fusions.Plan three = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(SHOCK, 3), Fusions.Slot.of(CHILL, 3), Fusions.Slot.EMPTY);
+		assertEquals(3, three.rank());
+		// Bloomstep has no power to rank: it always comes out plain.
+		Fusions.Plan plain = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(GROW, 3), Fusions.Slot.of(BLINK, 3), Fusions.Slot.EMPTY);
+		assertSame(Runes.BLOOMSTEP, plain.result());
+		assertEquals(1, plain.rank());
+		// Without a shard it's refused, as any combine.
+		assertNotNull(plan(Fusions.Catalyst.NONE, Fusions.Slot.of(SHOCK, 1), Fusions.Slot.of(CHILL, 1), Fusions.Slot.EMPTY).problem());
+		// The element fusion of the same elements says it isn't a signature.
+		Fusions.Plan hail = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(JOLT, 1), Fusions.Slot.of(CHILL, 1), Fusions.Slot.EMPTY);
+		assertSame(HAIL, hail.result());
+		assertFalse(hail.signature());
+	}
+
+	@Test
+	void everySignatureIsAFusedRuneOfItsOwnFromTwoRunesACasterCanFind() {
+		assertEquals(16, Fusions.SIGNATURES.size());
+		assertEquals(Runes.SIGNATURE.size(), Fusions.SIGNATURES.size());
+		java.util.Set<java.util.Set<String>> pairs = new java.util.HashSet<>();
+		java.util.Map<String, Integer> uses = new java.util.HashMap<>();
+		for (Fusions.Signature signature : Fusions.SIGNATURES) {
+			RuneDef made = signature.result();
+			assertTrue(Runes.SIGNATURE.contains(made), made.name());
+			assertTrue(Runes.fused(made), made.name());
+			assertFalse(Runes.common(made), made.name() + " is never found or sold");
+			assertTrue(Runes.obtainable(made), made.name());
+			assertEquals(RuneFamily.EFFECT, made.family(), made.name());
+			assertTrue(made.tier() == 3 || made.tier() == 4, made.name());
+			assertTrue(Fusions.isSignature(made));
+			assertEquals(signature, Fusions.recipeFor(made).orElseThrow());
+			assertEquals("fusion:" + made.path(), signature.key());
+			assertFalse(Fusions.RECIPES.stream().anyMatch(r -> r.result() == made), made.name() + " is made only by its pair");
+			// It wears its two runes' elements, and counts as one of them.
+			assertTrue(made.element().equals(signature.first()) || made.element().equals(signature.second()), made.name());
+			for (RuneDef rune : List.of(signature.a(), signature.b())) {
+				assertTrue(Fusions.fusible(rune), rune.name());
+				assertFalse(Runes.fused(rune), rune.name() + ": never a fused rune");
+				assertFalse(Runes.innate(rune), rune.name() + ": never an innate rune");
+				assertTrue(Runes.obtainable(rune), rune.name());
+				uses.merge(rune.element(), 1, Integer::sum);
+			}
+			assertNotEquals(signature.a(), signature.b());
+			assertTrue(pairs.add(java.util.Set.of(signature.first(), signature.second())), made.name() + ": two signatures share a pair of elements");
+			assertNotEquals(made, signature.overrides().orElseThrow().result());
+		}
+		assertEquals(Fusions.SIGNATURES.size(), Fusions.SIGNATURES.stream().map(s -> s.result().id()).distinct().count());
+		for (String element : List.of("fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood")) {
+			assertTrue(uses.getOrDefault(element, 0) >= 2, element + " should be in at least two signature pairs");
+		}
+	}
+
+	@Test
+	void theGrimoireCountsElementFusionsAndSignaturesApart() {
+		List<String> found = List.of("fusion:firestorm", "fusion:frostwire", "fusion:seethe", "reaction:shatter");
+		assertEquals(1, Fusions.elementFusionsFound(found));
+		assertEquals(2, Fusions.signaturesFound(found));
+		assertEquals(Feats.reward("fusion:firestorm"), Feats.reward("fusion:frostwire"), "a signature condenses as much as any fusion");
+	}
+
 	// ------------------------------------------------------------------ what the altar works out
 
 	@Test
