@@ -313,6 +313,27 @@ public class WildercordTravelTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ rtp and waypoints
 
 	private static void randomTeleport(ClientGameTestContext context, TestSingleplayerContext world) {
+		if (warmupTicks() > 0) {
+			// Broken and tried again straight away, a /rtp goes to the spot it found, rather than searching (and loading chunks) anew.
+			check(world.getServer().computeOnServer(server -> Teleports.randomly(player(server), false)) == 1, "/rtp should start a warmup");
+			Vec3 spot = world.getServer().computeOnServer(server -> Teleports.lastRandomSpot(player(server)));
+			check(spot != null, "a /rtp search should be remembered for a second try");
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				player.teleportTo(player.level(), player.getX() + 2, player.getY(), player.getZ(), Set.<Relative>of(), 0F, 50F, false);
+			});
+			context.waitTicks(3);
+			check(!world.getServer().computeOnServer(server -> Teleports.pending(player(server))), "moving should break the /rtp warmup");
+			check(world.getServer().computeOnServer(server -> Teleports.randomly(player(server), false)) == 1, "/rtp should start again after a broken warmup");
+			Vec3 again = world.getServer().computeOnServer(server -> Teleports.lastRandomSpot(player(server)));
+			check(spot.equals(again), "a second /rtp straight after the first should reuse its spot, not search again (" + spot + ", then " + again + ")");
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				player.teleportTo(player.level(), player.getX() - 2, player.getY(), player.getZ(), Set.<Relative>of(), 0F, 50F, false);
+			});
+			context.waitTicks(3);
+			world.getServer().runOnServer(server -> Teleports.resetCooldowns(player(server)));
+		}
 		String problem = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			if (Teleports.randomly(player, true) != 1) {
@@ -346,6 +367,14 @@ public class WildercordTravelTest implements FabricClientGameTest {
 		context.waitTicks(5);
 		check(world.getServer().computeOnServer(server -> Waypoints.add(player(server), "camp", null, null)) == 1, "/waypoint add camp should work");
 		check(world.getServer().computeOnServer(server -> Waypoints.track(player(server), "camp")) == 1, "/waypoint track camp should work");
+		String sharing = world.getServer().computeOnServer(server -> {
+			FakePlayer other = FakePlayer.get(server.overworld());
+			if (Waypoints.share(player(server), "camp", other) != 1) {
+				return "/waypoint share should send the waypoint";
+			}
+			return Waypoints.share(player(server), "camp", other) == 0 ? null : "sharing with the same player again straight away should have to wait";
+		});
+		check(sharing == null, sharing);
 		context.waitFor(mc -> WaypointHud.tracked() != null && WaypointHud.tracked().name().equals("camp"), 60);
 		standAt(world, AWAY);
 		context.waitTicks(25);

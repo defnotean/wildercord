@@ -246,4 +246,5 @@ never stops the server.
 ### I updated Wildercord. Do I need a new settings file?
 No. When the server starts (or an operator runs `/wildercord reload`), any setting the file lacks is added to it at
 its default, and everything you've already set is kept. So an older file gains the newer settings, such as the
-`travel` section and the creature affinity and climate switches, by itself.
+`travel` section and the creature affinity and climate switches, by itself. (A file you've written comments in is left
+as it is, so the comments aren't lost; the settings it lacks still run at their defaults.)

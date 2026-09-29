@@ -93,8 +93,13 @@ public final class Config {
 			// A file from an older version gains the settings added since, at their defaults, so they can be seen and changed.
 			java.util.Optional<String> grown = WildercordConfig.addMissing(text);
 			if (grown.isPresent()) {
-				Files.writeString(path, grown.get(), StandardCharsets.UTF_8);
-				Wildercord.LOGGER.info("Added the newer settings to {} at their defaults", path);
+				try {
+					Files.writeString(path, grown.get(), StandardCharsets.UTF_8);
+					Wildercord.LOGGER.info("Added the newer settings to {} at their defaults", path);
+				} catch (IOException e) {
+					// A file that can't be written (a read-only mount, say) still counts as read: the owner's settings hold.
+					Wildercord.LOGGER.warn("Couldn't add the newer settings to {} ({}); they run at their defaults", path, e.toString());
+				}
 			}
 		} catch (IOException e) {
 			Wildercord.LOGGER.warn("Couldn't read {}: {}; using the defaults", path, e.toString());
