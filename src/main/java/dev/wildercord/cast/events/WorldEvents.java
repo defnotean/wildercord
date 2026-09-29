@@ -177,15 +177,15 @@ public final class WorldEvents {
 
 	/**
 	 * A mana storm over the ley line nearest {@code player} (or, {@code here}, right over them).
-	 * Null if there's no ley line near enough, or the region had one lately (unless {@code here}),
-	 * or world events are switched off.
+	 * Null if there's no ley line near enough, or the region had one lately, or another storm is so
+	 * near the two would overlap (neither unless {@code here}), or world events are switched off.
 	 */
 	public static ManaStorm startStorm(ServerLevel level, ServerPlayer player, boolean here) {
 		if (!enabled()) {
 			return null;
 		}
 		Vec3 centre = here ? player.position() : ManaStorm.leyHeart(level, player.blockPosition(), EventRules.STORM_SEARCH);
-		if (centre == null) {
+		if (centre == null || !here && overlapsStorm(level, centre)) {
 			return null;
 		}
 		long now = level.getGameTime();
@@ -232,6 +232,16 @@ public final class WorldEvents {
 	}
 
 	// ------------------------------------------------------------------ what's going on
+
+	/** Whether a storm centred at {@code centre} would overlap one already raging in this world. */
+	private static boolean overlapsStorm(ServerLevel level, Vec3 centre) {
+		for (ManaStorm storm : STORMS) {
+			if (storm.level == level && Math.hypot(storm.centre.x - centre.x, storm.centre.z - centre.z) < 2 * EventRules.STORM_RADIUS) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/** The storm over this point, or null. */
 	public static ManaStorm stormAt(Level level, Vec3 at) {

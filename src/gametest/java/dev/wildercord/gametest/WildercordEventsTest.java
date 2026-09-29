@@ -194,6 +194,9 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			return null;
 		});
 		check(crystal == null, crystal);
+		// No second storm rolls in over the first (its region's wait aside).
+		boolean overlapped = world.getServer().computeOnServer(s -> WorldEvents.startStorm(player(s).level(), player(s), false) != null);
+		check(!overlapped, "a storm shouldn't start where it would overlap one already raging");
 
 		world.getServer().runOnServer(s -> WorldEvents.storms().forEach(ManaStorm::stop));
 		context.waitTicks(5);

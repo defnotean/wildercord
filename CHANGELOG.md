@@ -155,6 +155,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   They no longer pick anything up, and one sent away drops whatever it was carrying.
 - A rift's monster that turned into another (a zombie drowning, a skeleton freezing in powder snow) vanished on
   the spot, and its wave could then never be beaten. It now stays, still one of the rift's (or the star's) own.
+- Two mana storms could roll in on top of each other from neighbouring regions. A storm no longer starts where
+  it would overlap one already raging.
 - Icepath's frosted ice never melted in the dark (in caves, or at night). Like frost's, it now thaws back into
   water after half a minute wherever it is.
 
