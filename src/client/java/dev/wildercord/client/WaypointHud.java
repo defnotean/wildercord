@@ -24,7 +24,8 @@ import net.minecraft.world.phys.Vec3;
  *  ◆ camp  in the Nether       when it's in another world
  * </pre>
  * The server sends which waypoint is tracked ({@link Waypoints.Track}); everything else is worked out
- * here each frame. Hidden while the debug screen is open, since it uses the same corner.
+ * here each frame. Hidden while the debug screen is open, since it uses the same corner; on a GUI too
+ * narrow for it beside the boss bars, it moves down below them ({@link #lineY}).
  */
 public final class WaypointHud {
 	private WaypointHud() {}
@@ -74,9 +75,10 @@ public final class WaypointHud {
 		}
 		String name = track.name();
 		int x = 6;
-		int y = 6;
 		int textX = x + 12;
 		int width = 12 + font.width(name) + 6 + font.width(info);
+		int bosses = ((dev.wildercord.client.mixin.BossHealthOverlayAccessor) mc.gui.hud.getBossOverlay()).wildercord$events().size();
+		int y = lineY(g.guiWidth(), g.guiHeight(), x + width + 3, bosses);
 		g.fill(x - 3, y - 3, x + width + 3, y + font.lineHeight + 1, BACKDROP);
 		if (here && !arrived) {
 			arrow(g, x + 4, y + 4, (float) Math.toRadians(turn));
@@ -85,6 +87,27 @@ public final class WaypointHud {
 		}
 		g.text(font, name, textX, y, NAME, true);
 		g.text(font, info, textX + font.width(name) + 6, y, DIM, true);
+	}
+
+	/**
+	 * Where the line goes on a GUI {@code guiWidth} by {@code guiHeight}, reaching {@code right} across, with
+	 * {@code bosses} boss bars showing: the top-left corner, unless it would run under the bars (182 wide,
+	 * centred); then just below the last bar drawn (one every 19 pixels from 12 down, until a third of the way).
+	 */
+	static int lineY(int guiWidth, int guiHeight, int right, int bosses) {
+		if (bosses <= 0 || right < guiWidth / 2 - 91) {
+			return 6;
+		}
+		int shown = 0;
+		for (int bar = 12; shown < bosses; ) {
+			shown++;
+			bar += 19;
+			if (bar >= guiHeight / 3) {
+				break;
+			}
+		}
+		// The last bar's bottom is 12 + 19 * (shown - 1) + 5; the line's backdrop starts 3 above its text.
+		return 12 + 19 * (shown - 1) + 5 + 5;
 	}
 
 	/** A small arrow centred on {@code cx}, {@code cy}, turned {@code angle} radians clockwise from pointing up. */

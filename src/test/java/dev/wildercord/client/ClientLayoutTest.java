@@ -67,4 +67,30 @@ class ClientLayoutTest {
 		assertEquals(53, Tooltips.maxLines(540));
 		assertEquals(2, Tooltips.maxLines(10));
 	}
+
+	@Test
+	void subtitlesRiseOverTheSpellPanelOnlyWhenTheyMeet() {
+		// 240 tall: the panel's name row at 198 (panel at 208), the lowest subtitle's backdrop down to 210.
+		int top = 240 - 32 - 10;
+		int lift = SpellHud.subtitleLift(240, 300, 400, top);
+		assertEquals(13, lift);
+		assertTrue(240 - 30 - lift < top, "risen clear of the name row");
+		// Raised over an attack indicator, it rises further.
+		assertEquals(37, SpellHud.subtitleLift(240, 300, 400, top - 24));
+		// A narrow subtitle right of the panel, or no panel at all, stays where it is.
+		assertEquals(0, SpellHud.subtitleLift(240, 400, 400, top));
+		assertEquals(0, SpellHud.subtitleLift(240, 300, 400, -1));
+	}
+
+	@Test
+	void theWaypointLineMovesBelowBossBarsItWouldRunUnder() {
+		// Plenty of room beside the bars (from 149 on a GUI 480 across): it stays in the corner.
+		assertEquals(6, WaypointHud.lineY(480, 270, 120, 2));
+		assertEquals(6, WaypointHud.lineY(320, 240, 200, 0));
+		// On a GUI 320 across the bars start at 69: a long line goes below them.
+		assertEquals(22, WaypointHud.lineY(320, 240, 120, 1));
+		assertEquals(41, WaypointHud.lineY(320, 240, 120, 2));
+		// Never lower than the bars the overlay actually draws (it stops a third of the way down).
+		assertEquals(WaypointHud.lineY(320, 240, 120, 4), WaypointHud.lineY(320, 240, 120, 9));
+	}
 }

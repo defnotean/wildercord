@@ -33,6 +33,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Archives woken before lecterns remembered their Archivist can re-arm.** Such a lectern takes the Archivist it finds
   about the Archive as its own, and if none is there for 3 minutes while players are, it wakes a new one for whoever
   comes near, like any other.
+- **Subtitles no longer cover the spell panel's name**: where the two meet in the bottom-right corner, the subtitles
+  move up past it. On a narrow screen, the tracked waypoint's line moves below any boss bars instead of running under
+  them.
 
 ## [0.4.2-alpha] - 2026-09-28
 

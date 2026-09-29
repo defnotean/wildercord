@@ -37,7 +37,7 @@ import java.util.Map;
  * you stand (a mark per element, with a green ▲ or red ▼); the Shield you wear goes a line higher.
  * Everything is laid out from measured text widths and moves aside for (or, short of room, on top
  * of) an offhand slot or attack indicator on the right, so it stays clean at every GUI scale.
- * Hidden without a Cord.
+ * Hidden without a Cord. Subtitles, drawn in the same corner, move up past it ({@link #subtitleLift}).
  */
 public final class SpellHud {
 	private SpellHud() {}
@@ -59,8 +59,15 @@ public final class SpellHud {
 	private static final int DIM = 0xFF8A84A0;
 	private static final int RED = 0xFFE06060;
 
+	/** How far above the bottom the lowest subtitle's backdrop ends (vanilla centres it 35 up, 5 either side). */
+	private static final int SUBTITLE_BOTTOM = 30;
+
 	/** Smoothed mana so the bar glides instead of jumping in quarter-second steps. */
 	private static float shownMana = -1;
+	/** Where the panel was last drawn (the top of its highest line, and its right edge), and when: for {@link #subtitleLift}. */
+	private static int drawnTop = -1;
+	private static int drawnRight;
+	private static long drawnAt;
 	/** Spells already read, by their runes: reading one writes out its whole readout, too much to redo every frame. */
 	private static final Map<List<RuneDef>, SpellCompiler.Compiled> READ = new HashMap<>();
 
@@ -90,6 +97,27 @@ public final class SpellHud {
 		return new Place(besideHotbar + aside, false);
 	}
 
+	/**
+	 * How far the subtitles must rise this frame to clear the panel, for a subtitle backdrop whose left edge is at
+	 * {@code boxLeft}: 0 if they don't meet (or the panel isn't showing).
+	 */
+	public static int subtitleLift(int guiHeight, int boxLeft) {
+		return System.nanoTime() - drawnAt > 100_000_000L ? 0 : subtitleLift(guiHeight, boxLeft, drawnRight, drawnTop);
+	}
+
+	/**
+	 * How far the subtitles must rise to clear a panel reaching {@code hudRight} across and {@code hudTop} up (-1:
+	 * none): the lowest subtitle's backdrop ends {@link #SUBTITLE_BOTTOM} above the bottom and, where the two
+	 * overlap, rises to a pixel above the panel's top.
+	 */
+	static int subtitleLift(int guiHeight, int boxLeft, int hudRight, int hudTop) {
+		if (hudTop < 0 || boxLeft >= hudRight) {
+			return 0;
+		}
+		int bottom = guiHeight - SUBTITLE_BOTTOM;
+		return bottom <= hudTop ? 0 : bottom - hudTop + 1;
+	}
+
 	/** On leaving a world: the next one's mana bar starts from its own mana, not glides from this one's. */
 	static void forget() {
 		shownMana = -1;
@@ -115,6 +143,7 @@ public final class SpellHud {
 	private static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
 		Minecraft mc = Minecraft.getInstance();
 		LocalPlayer player = mc.player;
+		drawnTop = -1;
 		if (player == null || player.isSpectator()) {
 			return;
 		}
@@ -211,6 +240,7 @@ public final class SpellHud {
 		java.util.Map<String, Double> climate = dev.wildercord.spell.ClimateRules.factors(dev.wildercord.cast.Climate.shown());
 		int climateW = ElementGlyphs.rowWidth(climate.size());
 		boolean nameRow = rhythm.stacks() > 0 || cracked > 0 || compiled != null || !climate.isEmpty();
+		int right = Math.max(x0 + width, lx);
 		if (compiled != null) {
 			String name = SpellCaster.nameOf(player, book, spell, runes);
 			int nameX = Math.max(lx + 3, x0 + BODY_X);
@@ -218,13 +248,16 @@ public final class SpellHud {
 			int nameColor = 0xFF000000 | spellColor(runes);
 			g.text(font, nameShown, nameX, above, nameColor, true);
 			lx = nameX + font.width(nameShown) + 2;
+			right = Math.max(right, lx);
 		}
 		if (climateW > 0) {
 			int cx = Math.max(lx + 3, x0 + BODY_X);
 			if (cx + climateW <= g.guiWidth() - 2) {
 				ElementGlyphs.row(g, climate, cx, above);
+				right = Math.max(right, cx + climateW);
 			}
 		}
+		int top = nameRow ? above : y0;
 
 		// ---- badge: spell number, cooldown shade, and one dot per spell.
 		int bx = x0 + 4;
@@ -350,7 +383,12 @@ public final class SpellHud {
 				(shield.until() - gameTime + 19) / 20).getString();
 			hexagon(g, x0 + 2, sy + 1, color);
 			g.text(font, text, x0 + 11, sy, color, true);
+			top = sy;
+			right = Math.max(right, x0 + 11 + font.width(text));
 		}
+		drawnTop = top;
+		drawnRight = right;
+		drawnAt = System.nanoTime();
 	}
 
 	/** A small hexagon outline, 7 pixels across: the Shield's mark. */
