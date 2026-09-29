@@ -272,6 +272,9 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 			float before = warden.getHealth();
 			warden.hurtServer(level, level.damageSources().playerAttack(player), 20);
 			check(warden.getHealth() == before, "a plain blow shouldn't hurt the Cinder Warden (it lost " + (before - warden.getHealth()) + ")");
+			// Nothing sets it alight, even for a moment: a burning Warden would let a storm spell's Overload crack its armour.
+			warden.igniteForSeconds(4);
+			check(!warden.isOnFire(), "nothing should set the Cinder Warden alight");
 			return warden.getId();
 		});
 		float before = health(world, nether, wardenId);

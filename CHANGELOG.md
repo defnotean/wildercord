@@ -30,6 +30,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Overload throws each creature at most once at a time; the damage is unchanged.
 - **Stoneform's aftershock took on the element of the blow it answered.** Hit by a wind spell, its aftershock counted as
   wind (and could set off Rupture on a bleeding creature beside you, writing it in your Grimoire). It's always earth now.
+- **A spell could set the Cinder Warden alight for a moment**, long enough for a storm effect in the same spell to set
+  off Overload and crack its armour. Nothing sets it alight now, as the Ember Sanctum page says.
 
 ## [0.4.2-alpha] - 2026-09-28
 
