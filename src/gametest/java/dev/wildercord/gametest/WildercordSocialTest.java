@@ -429,6 +429,8 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			check(sung.voices() == 2, "allies casting the same shape, together and close, should become a chorus of two (got " + sung.voices() + ")");
 			check(Math.abs(sung.cast().power - second.power * 1.5) < 1e-6, "a chorus of two should be half again as strong");
 			check(sung.cast().gear() == second.gear(), "a chorus should keep its caster's casting gear");
+			// A storm's echo or Twin Star copies the cast that was paid for: the chorus must share its payment (Siphon cap, Imbue once).
+			check(second.once("gametest:chorus") && !sung.cast().once("gametest:chorus"), "a chorus should share its caster's payment");
 			check(sung.root().groups.getFirst().count(Runes.WIDEN) == 1, "a chorus of two should widen the Burst once");
 			check(first.alive(), "the first voice's spell should go on as it was");
 			check(Heart.discovered(player, "feat:" + Feats.CHORUS), "singing a chorus should earn the Chorus feat");
