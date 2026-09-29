@@ -432,6 +432,7 @@ player, synced to that player only, and copied through death where noted.
 | `on_ley`, `well_until` | bool, long | no (not saved) | On a ley line; near an awake Wellstone until |
 | `spirit_until`, `frozen_until` | long | on the mob | End times for summons and frozen mobs |
 | `runebound` | list of string | on the mob | A Runebound's spell |
+| `travel` | `TravelData` | yes | Homes, waypoints, where `/back` goes, teleport requests on or off, the tracked waypoint (server only; see [features/travel.md](features/travel.md)) |
 | `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
@@ -491,7 +492,7 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
 `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
 `ScreenFx(kind, strength, ticks)` (a camera shake, field-of-view kick, punch or Domain tint; see
-`cast.ScreenFx`).
+`cast.ScreenFx`). The travel commands send `Waypoints.Track` (the tracked waypoint, for `WaypointHud`).
 Everything else travels through synced attachments; `CHARGE` is synced to everyone nearby so they
 can draw the circle.
 
