@@ -506,11 +506,14 @@ final class Techniques {
 
 	// ------------------------------------------------------------------ movement
 
-	/** The first creature in a hit that a movement trick may act on: not you, not a boss, and friend or fair game. */
+	/**
+	 * The first creature in a hit that a movement trick may act on: not you, not a boss, and friend or fair game
+	 * (an enemy whose Shield stopped this spell is neither: the spell ended at its circles).
+	 */
 	private static LivingEntity partner(Cast cast, Cast.Hit hit) {
 		for (Entity e : hit.entities()) {
 			if (e instanceof LivingEntity living && e != cast.caster && living.isAlive() && !Spirits.isBoss(e)
-					&& (Targets.canHarm(cast.caster, e) || Targets.isAlly(cast.caster, e))) {
+					&& (Targets.canHarm(cast.caster, e) && !Shields.blocked(cast, living) || Targets.isAlly(cast.caster, e))) {
 				return living;
 			}
 		}

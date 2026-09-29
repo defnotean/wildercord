@@ -13,6 +13,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   its pull straight through their knockback resistance, and Shulkershell's opening lifted them too. Bosses are
   only ever slowed: Levitate now gives them Slowness II instead, and Gravity Well still marks them pulled and
   crushes them, but no longer moves them.
+- **A Shield now stops Swap and Shadowstep.** A Shield that blocked the spell still let Swap trade places with the
+  enemy behind it, and Shadowstep put you at its back, as if the spell had gone through.
 
 ## [0.4.2-alpha] - 2026-09-28
 
