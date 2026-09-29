@@ -844,8 +844,20 @@ public final class Effects {
 			if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p) || !cast.takeBlock()) {
 				break;
 			}
-			cast.level.destroyBlock(p, true, cast.caster);
-			cast.level.setBlockAndUpdate(p, crop.getStateForAge(0));
+			// The seed it's replanted with comes out of what it drops (the block's item is its seed): without one, it isn't replanted.
+			List<ItemStack> drops = Block.getDrops(state, cast.level, p, null, cast.caster, ItemStack.EMPTY);
+			boolean seed = false;
+			for (ItemStack drop : drops) {
+				if (!seed && drop.is(crop.asItem())) {
+					drop.shrink(1);
+					seed = true;
+				}
+			}
+			cast.level.destroyBlock(p, false, cast.caster);
+			drops.forEach(drop -> Block.popResource(cast.level, p, drop));
+			if (seed) {
+				cast.level.setBlockAndUpdate(p, crop.getStateForAge(0));
+			}
 			harvested++;
 		}
 		if (harvested > 0) {

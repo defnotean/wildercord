@@ -39,7 +39,8 @@ import java.util.UUID;
  * wind knocks an arrow out of the air, a Grow beside a Rampart leaves the wall standing, and a spell where
  * the caster may not build changes nothing. Icepath's ice is written down to thaw (it never melts in the
  * dark), a Rampart never rises over a Light spell's light, its blocks are written down to come down even
- * after a crash, and one left past its time is taken down as soon as its ground is loaded.
+ * after a crash, and one left past its time is taken down as soon as its ground is loaded. Harvest replants from the
+ * crops' own drops.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
@@ -273,6 +274,42 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				return null;
 			});
 			note(failures, protectedGround);
+
+			// Harvest replants each crop with one of its own seeds: the seeds it leaves plus the crops it replants are
+			// exactly what the crops dropped (worked out beforehand from the same seeded loot roll), never a seed more.
+			String harvest = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos field = site(player, 24, 24);
+				BlockState ripe = ((net.minecraft.world.level.block.CropBlock) Blocks.WHEAT).getStateForAge(7);
+				for (int dx = -2; dx <= 2; dx++) {
+					for (int dz = -2; dz <= 2; dz++) {
+						level.setBlockAndUpdate(field.offset(dx, -1, dz), Blocks.FARMLAND.defaultBlockState());
+						level.setBlockAndUpdate(field.offset(dx, 0, dz), ripe);
+						level.setBlockAndUpdate(field.offset(dx, 1, dz), Blocks.AIR.defaultBlockState());
+					}
+				}
+				net.minecraft.resources.Identifier roll = net.minecraft.resources.Identifier.withDefaultNamespace("blocks/wheat");
+				s.getRandomSequences().reset(roll, 1234L);
+				int dropped = 0;
+				for (int i = 0; i < 25; i++) {
+					dropped += net.minecraft.world.level.block.Block.getDrops(ripe, level, field, null, player, net.minecraft.world.item.ItemStack.EMPTY).stream()
+						.filter(stack -> stack.is(net.minecraft.world.item.Items.WHEAT_SEEDS)).mapToInt(net.minecraft.world.item.ItemStack::getCount).sum();
+				}
+				s.getRandomSequences().reset(roll, 1234L);
+				apply(player, List.of(Runes.TOUCH, Runes.HARVEST), Vec3.atBottomCenterOf(field), List.of());
+				int left = 0;
+				for (net.minecraft.world.entity.item.ItemEntity item : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(field).inflate(4))) {
+					if (item.getItem().is(net.minecraft.world.item.Items.WHEAT_SEEDS)) {
+						left += item.getItem().getCount();
+					}
+					item.discard();
+				}
+				int replanted = count(level, field, 2, state -> state.is(Blocks.WHEAT));
+				return left + replanted == dropped ? null
+					: "Harvest should replant from what the crops drop (" + dropped + " seeds dropped, but " + left + " left and " + replanted + " crops replanted)";
+			});
+			note(failures, harvest);
 
 			if (!failures.isEmpty()) {
 				throw new AssertionError("Magic that changes the world went wrong:\n  " + String.join("\n  ", failures));

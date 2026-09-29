@@ -11,6 +11,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **A passive's buffs no longer outlast it.** Whatever a passive gives lasts 15 seconds at most (it's renewed every
   2), so switching `Self · Night Eye` on for a second no longer leaves a minute of night vision for a second's
   upkeep. The same effect from a potion keeps its full length.
+- **Harvest replants with one of the crop's own seeds**, as it always said, instead of a free one: each crop it
+  harvested used to drop every seed and replant as well. A crop that drops no seed is left unplanted.
 
 ## [0.4.2-alpha] - 2026-09-28
 
