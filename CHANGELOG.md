@@ -22,6 +22,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   what a creature resists, and Shatter did, but the five set off by any damage of their element still let the
   resistance halve the hit that set them off (a Fracture on an iron golem, an Unweave on the Archivist). Now they land
   in full like the rest.
+- **One Lightning cast could set off Overload again and again.** Each strike set its targets alight at once, so on a
+  crowd every later strike found them burning and blew them apart again, up to seven times over in one cast. Lightning
+  now sets them alight after its last strike.
+- **Overload in a crowd could launch creatures sky-high.** Every burning enemy that blew apart threw all its neighbours,
+  so in a packed crowd each was thrown once for every neighbour, and the throws added up (players too, in PvP). Now an
+  Overload throws each creature at most once at a time; the damage is unchanged.
 
 ## [0.4.2-alpha] - 2026-09-28
 

@@ -253,9 +253,12 @@ public final class Effects {
 				if (strikes.isEmpty()) {
 					strikes.add(hit.point());
 				}
+				// Set alight once every strike has landed: fire from one strike would let the next set off Overload again.
+				Set<LivingEntity> struck = new LinkedHashSet<>();
 				for (int i = 0; i < Math.min(MAX_STRIKES_PER_HIT, strikes.size()); i++) {
-					lightning(cast, strikes.get(i), power);
+					lightning(cast, strikes.get(i), power, struck);
 				}
+				struck.forEach(t -> t.igniteForSeconds(4));
 			}
 			case "explode" -> {
 				double radius = SpellNumbers.explodeRadius(node);
@@ -660,7 +663,8 @@ public final class Effects {
 		}
 	}
 
-	private static void lightning(Cast cast, Vec3 at, double power) {
+	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */
+	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck) {
 		ServerLevel level = cast.level;
 		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
 		if (bolt != null) {
@@ -672,7 +676,7 @@ public final class Effects {
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(2.0, 3.0, 2.0), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity target = (LivingEntity) e;
 			hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 12 * power * Reactions.storm(cast, target));
-			target.igniteForSeconds(4);
+			struck.add(target);
 			target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 3, false, false));
 		}
 	}

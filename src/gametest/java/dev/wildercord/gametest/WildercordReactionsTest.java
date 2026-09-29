@@ -31,6 +31,8 @@ import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.Vec3;
@@ -261,7 +263,51 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 		if (!found(player, ReactionRules.OVERLOAD)) {
 			return "Overload should go in the Grimoire";
 		}
+		// A crowd of burning husks, all jolted at once: each blows apart, but each is thrown once, not once per neighbour.
+		List<Mob> crowd = new ArrayList<>();
+		for (int i = 0; i < 4; i++) {
+			Mob husk = sturdy(husk(level, -8 + i * 0.75, 12));
+			husk.igniteForSeconds(5);
+			crowd.add(husk);
+		}
+		castAt(player, List.of(Runes.JOLT), crowd);
+		for (Mob husk : crowd) {
+			if (husk.getDeltaMovement().y > 1.0) {
+				return "a crowd's Overloads should throw each husk once (one was sent up at " + husk.getDeltaMovement().y + " a tick)";
+			}
+		}
+		// Lightning's strikes land together: the fire the first sets can't let the next set off Overload.
+		stand(player);
+		Mob one = sturdy(husk(level, 4, 12));
+		Mob two = sturdy(husk(level, 5, 12));
+		castAt(player, List.of(Runes.LIGHTNING), List.of(one, two));
+		if (found(player, ReactionRules.OVERLOAD)) {
+			return "Lightning on two husks that weren't burning shouldn't set off Overload with its own fire";
+		}
+		if (!one.isOnFire() || !two.isOnFire()) {
+			return "Lightning should still set its targets alight";
+		}
 		return null;
+	}
+
+	/** A monster with 200 health, so a check can hit it hard without killing it. */
+	private static Mob sturdy(Mob mob) {
+		AttributeInstance health = mob.getAttribute(Attributes.MAX_HEALTH);
+		if (health != null) {
+			health.setBaseValue(200);
+		}
+		mob.setHealth(mob.getMaxHealth());
+		return mob;
+	}
+
+	/** Like {@link #cast}, but one hit landing on every one of {@code targets} at once, as a Burst's does. */
+	private static void castAt(ServerPlayer player, List<RuneDef> effects, List<? extends Entity> targets) {
+		List<RuneDef> runes = new ArrayList<>();
+		runes.add(Runes.TOUCH);
+		runes.addAll(effects);
+		SpellPlan.Group group = SpellCompiler.compile(runes).root().groups.getFirst();
+		Entity first = targets.getFirst();
+		CastEngine.onHit(new Cast(player), group, new Cast.Hit(List.copyOf(targets), first.position(), new Vec3(0, 0, 1), player.position(), null, null, false), null);
 	}
 
 	// ------------------------------------------------------------------ Fracture

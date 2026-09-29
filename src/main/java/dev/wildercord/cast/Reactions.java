@@ -70,6 +70,11 @@ public final class Reactions {
 	private static final Map<String, Long> HEALED = new ConcurrentHashMap<>();
 	/** When a reaction last went off on each creature (the Cinder Warden only yields to reactions). */
 	private static final Map<UUID, Long> REACTED = new ConcurrentHashMap<>();
+	/**
+	 * When an Overload last threw each creature: a crowd of burning foes blowing apart at once throws each
+	 * of them once, not once for every neighbour (which added up to launching them sky-high).
+	 */
+	private static final Map<UUID, Long> THROWN = new ConcurrentHashMap<>();
 
 	public static void mark(Entity target, Mark mark) {
 		mark(target, mark, mark.ticks);
@@ -181,11 +186,15 @@ public final class Reactions {
 			}
 		}
 		ReactionVfx.overload(level, target, struck);
+		long now = level.getGameTime();
 		for (LivingEntity other : struck) {
 			reacted(other);
 			Effects.hurt(cast, other, level.damageSources().explosion(cast.caster, cast.caster), ReactionRules.OVERLOAD_DAMAGE);
-			Vec3 away = Effects.horizontal(other.position().subtract(target.position()), cast.caster.getLookAngle());
-			Effects.push(other, away.scale(1.1).add(0, 0.45, 0));
+			Long thrown = THROWN.put(other.getUUID(), now);
+			if (thrown == null || thrown != now) {
+				Vec3 away = Effects.horizontal(other.position().subtract(target.position()), cast.caster.getLookAngle());
+				Effects.push(other, away.scale(1.1).add(0, 0.45, 0));
+			}
 		}
 		callout(cast, ReactionRules.OVERLOAD, ReactionRules.color(ReactionRules.OVERLOAD));
 		return ReactionRules.OVERLOAD_BONUS;
@@ -455,6 +464,7 @@ public final class Reactions {
 		LAST_CALLOUT.values().removeIf(last -> gameTime - last > 100 || last > gameTime);
 		REACTED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 		HEALED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
+		THROWN.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 	}
 
 	static void clear() {
@@ -462,6 +472,7 @@ public final class Reactions {
 		LAST_CALLOUT.clear();
 		REACTED.clear();
 		HEALED.clear();
+		THROWN.clear();
 		reacting = false;
 	}
 }
