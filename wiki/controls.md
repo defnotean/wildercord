@@ -82,7 +82,7 @@ Either mouse button works for threading. Full details on [The Cord Screen]({{ '/
 
 ## Commands for players
 
-Anyone can use these.
+Anyone can use these (the travel commands, from `/sethome` down, unless the server has switched them off).
 
 | Command | Does |
 |---|---|
@@ -113,7 +113,7 @@ Anyone can use these.
 | `/spawn` | Teleport to the world spawn. |
 | `/rtp` | Teleport somewhere random in the Overworld, on safe ground. |
 
-Nobody dies in a duel, and afterwards both duellists are put back as they were. The rules are on
+Nobody dies in a duel, and afterwards the harm the duellists did each other is undone. The rules are on
 [Duels]({{ '/social/duels/' | relative_url }}). Every teleport has a short warmup (stand still in the circle) and a
 cooldown, and the server can turn the travel commands off: see [Getting Around]({{ '/social/travel/' | relative_url }}). Pasting a spell code (`wc:bolt.frost.split`) into chat isn't a
 command, but everyone sees it as a spell card: see [Playing Together]({{ '/social/playing-together/' | relative_url }}).
@@ -138,15 +138,16 @@ with cheats on. They're meant for testing, events and fixing things up.
 | `/wildercord event rift` | Open a rift siege a little way off. Only one rift can be open in a world at a time. |
 | `/wildercord event <kind> here` | Start any of the three right where you stand. |
 | `/wildercord reset` | Forget every rune and spell (you learn the three starter runes again the next time you wear a Cord). Heart Circles and everything else are kept. |
-| `/wildercord reload` | Read the server's Wildercord settings again, and say what, if anything, was wrong with them. |
+| `/wildercord reload` | Read the server's Wildercord settings again, and say what, if anything, was wrong with them. Any setting the file lacks is added to it, at its default. |
 | `/setwarp <name>` | Set a public warp where you stand (setting it again moves it). |
 | `/delwarp <name>` | Remove a warp. |
 | `/waypoint locator` | Minecraft's own list of locator bar waypoints (Wildercord's `/waypoint` took its place). |
 | `/waypoint modify ...` | Minecraft's own command for how a player looks on the locator bar, unchanged. |
 
-Fallen stars and rift sieges need a difficulty above Peaceful, and none of the three events starts on a server
-whose settings switch world events off. Tab completion suggests rune names for
-`learn` and `innate`. Operators also skip the warmup and cooldowns of every travel command.
+The event commands work only in the Overworld, where the events come by themselves. Fallen stars and rift sieges
+need a difficulty above Peaceful, and none of the three events starts on a server whose settings switch world events
+off. Tab completion suggests rune names for `learn` and `innate`. Operators also skip the warmup and cooldowns of
+every travel command.
 
 The game's own commands work with Wildercord's structures and rules too:
 
