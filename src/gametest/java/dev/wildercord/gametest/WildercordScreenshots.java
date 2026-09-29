@@ -535,7 +535,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			var there = nether.getEntity(carried);
 			check(there != null, "The husk should have been carried to the Nether");
 			check(!there.isNoGravity() && !there.hasAttached(dev.wildercord.player.WildercordAttachments.HELD_GRAVITY),
-				"A husk held in Stasis and carried to another world should get its gravity back there");
+				"A husk held in Stasis and carried to another world should get its gravity back there (no gravity " + there.isNoGravity()
+					+ ", held note " + there.getAttached(dev.wildercord.player.WildercordAttachments.HELD_GRAVITY) + ", at " + there.position() + ")");
 			there.discard();
 			nether.setChunkForced(0, 0, false);
 		});

@@ -138,6 +138,12 @@ public final class Wards {
 			boolean had = noted != null ? noted : stasis != null && stasis.target == original ? stasis.hadNoGravity : held.hadNoGravity();
 			copy.removeAttached(WildercordAttachments.HELD_GRAVITY);
 			copy.setNoGravity(had);
+			// The original's saved attachments may be copied over after this; the note goes once they have been.
+			Scheduler.later(1, () -> {
+				if (!copy.isRemoved() && !holds(copy)) {
+					copy.removeAttached(WildercordAttachments.HELD_GRAVITY);
+				}
+			});
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			STASIS.clear();
