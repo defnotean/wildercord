@@ -2,7 +2,10 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.4.3-alpha] - 2026-09-29
+
+Loadouts, a second layer of world-changing magic (all ten elements now touch the world), and another bug hunt: the
+new travel, reaction and affinity code, every rune, server performance, and the issues earlier audits left open.
 
 ### Added
 - **Loadouts.** Save your whole Cord (every spell's runes and name, your passives and which are on, and the
