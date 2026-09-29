@@ -313,7 +313,8 @@ public final class ExplorerEffects {
 		ExplorerVfx.echolocate(cast.level, point, radius);
 		int seen = 0;
 		for (Entity e : cast.level.getEntities(cast.caster, new AABB(point, point).inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
-			if (seen++ >= MAX_REVEALED || e.position().distanceTo(point) > radius) {
+			// Only what's really in range counts toward the cap (the box's corners are further than the radius).
+			if (e.position().distanceTo(point) > radius || seen++ >= MAX_REVEALED) {
 				continue;
 			}
 			LivingEntity t = (LivingEntity) e;
