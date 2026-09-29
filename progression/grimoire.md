@@ -7,8 +7,8 @@ nav_order: 2
 # The Grimoire and feats
 {: .no_toc }
 
-<img src="{{ '/assets/images/b-grimoire.jpg' | relative_url }}" alt="The Grimoire page of the Cord screen: your heart, with the innate rune Gale Mantle, one of five reactions found, and ten secret spells still unknown" class="shot">
-<span class="caption">A young Grimoire: one reaction found, every secret still a mystery.</span>
+<img src="{{ '/assets/images/a-grimoire-page.jpg' | relative_url }}" alt="The Grimoire page of the Cord screen: your heart, its innate rune still to wake, six of the eleven reactions found, and ten secret spells still unknown" class="shot">
+<span class="caption">A young Grimoire: six reactions found, every secret still a mystery.</span>
 
 Your **Grimoire** is the record of everything you've discovered: reactions, secret spells and their
 riddles, fusions, the runes of the land, and **feats**, the things you've done with magic. Every first

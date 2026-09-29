@@ -61,7 +61,8 @@ Each creature your spells hit gives you back **2 mana per level** (4 at Siphon I
 from one cast**. A creature counts if your spell hits it and it's one you could harm (or it dies to
 the hit).
 
-- One cast shares one limit of 16, even if it echoes, pulses or goes off again from a wild surge.
+- One cast shares one limit of 16, even if it echoes, pulses or goes off again (a wild surge's second go, a mana
+  storm's echo, Twin Star's second cast), and even when it grows into a chorus.
 - **Imbued items and glyphs never Siphon**: their mana was paid when you imbued them.
 
 A Burst that hits eight enemies with Siphon II gives back the full 16.
