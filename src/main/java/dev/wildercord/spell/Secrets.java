@@ -37,7 +37,7 @@ public final class Secrets {
 
 	public static final Secret GLACIAL_LANCE = new Secret("glacial_lance", "Glacial Lance",
 		List.of(Runes.BOLT, Runes.FROST, Runes.FROST, Runes.SHOCK), 0x9FE4FF, 1.2,
-		"A lance of ice flies 40 blocks through everything in its path, freezing each creature solid, then lightning leaps along the frozen line.",
+		"A lance of ice flies 32 blocks through everything in its path, freezing each creature solid, then lightning leaps along the frozen line.",
 		"A bolt dressed twice in winter, and a spark to wake it.");
 	public static final Secret SUNFALL = new Secret("sunfall", "Sunfall",
 		List.of(Runes.RAIN, Runes.FIRE, Runes.EXPLODE, Runes.AMPLIFY), 0xFFA040, 1.3,
