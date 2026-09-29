@@ -36,6 +36,7 @@ import java.util.Set;
  * @param gearLootChance     the chance of casting gear in a structure chest or from a boss, times this
  * @param imbueMaxItems      imbued items one caster keeps before the oldest fades
  * @param imbueMaxGlyphs     glyphs one caster keeps in a world before the oldest fades
+ * @param travel             the travel commands ({@code /home}, {@code /warp}, {@code /tpa}...): see {@link TravelSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -54,10 +55,28 @@ public record WildercordConfig(
 	boolean worldEvents,
 	boolean duels,
 	boolean wildMagic,
-	boolean worldChangingMagic
+	boolean worldChangingMagic,
+	TravelSettings travel
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true);
+		true, true, true, true, TravelSettings.DEFAULTS);
+
+	/**
+	 * The travel commands' settings (the {@code travel} section). A file written before the section
+	 * existed reads as these defaults.
+	 *
+	 * @param enabled            whether the commands exist at all (read when commands are registered: at start and on {@code /reload})
+	 * @param maxHomes           homes one player may set
+	 * @param warmupSeconds      how long a player stands still before a teleport happens (operators and creative players don't wait)
+	 * @param cooldownSeconds    how long before {@code /home}, {@code /warp}, {@code /spawn}, {@code /back} or {@code /tpa} can be used again
+	 * @param rtpCooldownSeconds how long before {@code /rtp} can be used again
+	 * @param rtpRadius          how far from world spawn {@code /rtp} may land, in blocks
+	 * @param tpaTimeoutSeconds  how long a teleport request waits for an answer
+	 */
+	public record TravelSettings(boolean enabled, int maxHomes, int warmupSeconds, int cooldownSeconds, int rtpCooldownSeconds, int rtpRadius,
+			int tpaTimeoutSeconds) {
+		public static final TravelSettings DEFAULTS = new TravelSettings(true, 3, 3, 30, 300, 5000, 60);
+	}
 
 	/** The file's format version, written so later versions can migrate it. */
 	public static final int VERSION = 1;
@@ -102,7 +121,15 @@ public record WildercordConfig(
 			r.bool("features", "world_events", d.worldEvents),
 			r.bool("features", "duels", d.duels),
 			r.bool("features", "wild_magic", d.wildMagic),
-			r.bool("features", "world_changing_magic", d.worldChangingMagic));
+			r.bool("features", "world_changing_magic", d.worldChangingMagic),
+			new TravelSettings(
+				r.bool("travel", "enabled", d.travel.enabled()),
+				r.integer("travel", "max_homes", d.travel.maxHomes(), 0, 1000),
+				r.integer("travel", "warmup_seconds", d.travel.warmupSeconds(), 0, 60),
+				r.integer("travel", "cooldown_seconds", d.travel.cooldownSeconds(), 0, 86400),
+				r.integer("travel", "rtp_cooldown_seconds", d.travel.rtpCooldownSeconds(), 0, 86400),
+				r.integer("travel", "rtp_radius", d.travel.rtpRadius(), 16, 1000000),
+				r.integer("travel", "tpa_timeout_seconds", d.travel.tpaTimeoutSeconds(), 5, 3600)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -117,6 +144,7 @@ public record WildercordConfig(
 		KEYS.put("loot", Set.of("rune_chance_multiplier", "crystal_chance_multiplier", "page_chance_multiplier", "gear_chance_multiplier"));
 		KEYS.put("imbuing", Set.of("max_items", "max_glyphs"));
 		KEYS.put("features", Set.of("world_events", "duels", "wild_magic", "world_changing_magic"));
+		KEYS.put("travel", Set.of("enabled", "max_homes", "warmup_seconds", "cooldown_seconds", "rtp_cooldown_seconds", "rtp_radius", "tpa_timeout_seconds"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
