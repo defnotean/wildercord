@@ -571,7 +571,72 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				check(fast == (i == 3), "Combo cast " + i + ": expected Speed " + (i == 3) + " but was " + fast);
 			}
 		});
+
+		// A Shield that stops a Swap keeps everyone where they are: the spell ended at its circles.
+		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
+		context.waitTicks(3);
+		server.runOnServer(s -> {
+			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			var husk = husk(s, huskId[0]);
+			dev.wildercord.cast.Shields.give(husk, 1000.0F, 600, List.of(Runes.SHIELD.id()));
+			var playerBefore = player.position();
+			var huskBefore = husk.position();
+			land(player, List.of(husk), husk.getBoundingBox().getCenter(), false, Runes.BEAM, Runes.SWAP);
+			check(player.position().distanceTo(playerBefore) < 0.01 && husk.position().distanceTo(huskBefore) < 0.01,
+				"a Shield that stops a Swap should keep both where they were");
+			husk.discard();
+		});
+
+		// Bosses are only ever slowed: Levitate slows one instead of lifting it, Gravity Well pulls at it without
+		// dragging it (straight through its knockback resistance), and a Shulkershell opening beside it doesn't lift it.
+		int[] wardenId = new int[1];
+		server.runOnServer(s -> {
+			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			net.minecraft.server.level.ServerLevel level = player.level();
+			player.teleportTo(level, STAGE[0], STAGE[1], STAGE[2], java.util.Set.of(), -90.0F, 5.0F, false);
+			player.removeAllEffects();
+			var warden = net.minecraft.world.entity.EntityTypes.WARDEN.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+			warden.snapTo(STAGE[0] + 2, STAGE[1], STAGE[2], 90.0F, 0.0F);
+			warden.setNoAi(true);
+			warden.setPersistenceRequired();
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			warden.addTag("wildercord.rolled");
+			level.addFreshEntity(warden);
+			wardenId[0] = warden.getId();
+			land(player, List.of(warden), warden.getBoundingBox().getCenter(), false, Runes.TOUCH, Runes.LEVITATE);
+			check(!warden.hasEffect(net.minecraft.world.effect.MobEffects.LEVITATION) && warden.hasEffect(net.minecraft.world.effect.MobEffects.SLOWNESS),
+				"Levitate should slow a boss, never lift it");
+			land(player, List.of(), warden.position().add(3, 0, 0), false, Runes.TOUCH, Runes.GRAVITY_WELL);
+			land(player, List.of(player), player.position(), true, Runes.SELF, Runes.SHULKERSHELL);
+		});
+		context.waitTicks(6);
+		server.runOnServer(s -> {
+			var warden = s.getPlayerList().getPlayers().getFirst().level().getEntity(wardenId[0]);
+			check(warden != null && warden.getDeltaMovement().horizontalDistance() < 0.01,
+				"Gravity Well shouldn't drag a boss (it's moving at " + (warden == null ? "?" : warden.getDeltaMovement()) + ")");
+		});
+		context.waitTicks(80);
+		server.runOnServer(s -> {
+			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			var warden = player.level().getEntity(wardenId[0]);
+			check(warden instanceof net.minecraft.world.entity.LivingEntity living && !living.hasEffect(net.minecraft.world.effect.MobEffects.LEVITATION),
+				"a Shulkershell opening beside a boss shouldn't lift it");
+			warden.discard();
+			player.removeAllEffects();
+		});
 		server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setGameMode(GameType.CREATIVE));
+	}
+
+	/**
+	 * Lands a spell's first group straight on {@code struck} at {@code at} (on the caster, with {@code self}), as the
+	 * player's: the call every shape ends in, so the check is exact.
+	 */
+	private static void land(ServerPlayer player, List<net.minecraft.world.entity.Entity> struck, net.minecraft.world.phys.Vec3 at, boolean self,
+			RuneDef... runes) {
+		var group = dev.wildercord.spell.SpellCompiler.compile(List.of(runes)).root().groups.getFirst();
+		var dir = at.subtract(player.position()).lengthSqr() < 1.0E-4 ? player.getLookAngle() : at.subtract(player.position()).normalize();
+		dev.wildercord.cast.CastEngine.onHit(new dev.wildercord.cast.Cast(player), group,
+			new dev.wildercord.cast.Cast.Hit(struck, at, dir, player.position(), null, null, self), null);
 	}
 
 	/** Threads a spell into a slot and casts it right away, with the cooldown cleared and mana topped up. */
