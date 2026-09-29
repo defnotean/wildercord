@@ -96,6 +96,7 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 			check(context, world, failures, "Magnetize", () -> magnetize(context, world));
 			check(context, world, failures, "Sinkhole", () -> sinkhole(context, world));
 			check(context, world, failures, "Firestorm on a crowd", () -> firestormCrowd(world));
+			check(context, world, failures, "Magma's later seconds", () -> magmaLingers(context, world));
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The fused runes of flame and stone went wrong:\n  " + String.join("\n  ", failures));
 			}
@@ -737,6 +738,37 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 				if (!burning(t) || lost(t) < 3.5F) {
 					problems.add("husk " + (i + 1) + " of ten should be set alight and take 4 (" + describe(t) + ")");
 				}
+			}
+			return problems;
+		});
+	}
+
+	/**
+	 * Magma a husk opens under the caster: its later seconds are lingering damage, so a Shield the caster raises by
+	 * hand just before one of them blocks it and can't parry it (no counter-burst hurts the husk).
+	 */
+	private static List<String> magmaLingers(ClientGameTestContext context, TestSingleplayerContext world) {
+		long[] opened = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			stand(player);
+			Mob husk = husk(player.level(), 0, 7, false);
+			SpellPlan.EffectNode node = SpellCompiler.compile(List.of(Runes.BEAM, Runes.MAGMA)).root().groups.getFirst().effects.getFirst();
+			Effects.apply(new Cast(husk), node, new Cast.Hit(List.<Entity>of(player), player.position(), new Vec3(0, 0, -1), husk.position(), null, null, false));
+			return new long[] {player.level().getGameTime(), husk.getId()};
+		});
+		// Its first second burns 4 ticks in and the next 20 ticks later: the Shield goes up just before that one.
+		world.getServer().waitFor(server -> player(server).level().getGameTime() >= opened[0] + 20, 60);
+		String raised = world.getServer().computeOnServer(server -> cast(player(server), Runes.SELF, Runes.SHIELD));
+		if (raised != null) {
+			return List.of(raised);
+		}
+		context.waitTicks(15);
+		return world.getServer().computeOnServer(server -> {
+			List<String> problems = new ArrayList<>();
+			LivingEntity husk = get(server, (int) opened[1]);
+			if (husk == null || lost(husk) > 0) {
+				problems.add("a Shield raised against magma's next second should block it, not parry it with a counter-burst at the husk ("
+					+ describe(husk) + ")");
 			}
 			return problems;
 		});

@@ -14,6 +14,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   sealed, the ice kept pulling them back to the spot where they were sealed, but in the new world, so they
   could land inside rock or over lava. The seal now breaks when they leave the world it was cast in, and
   Frostbloom and Geode stop answering blows there too.
+- **Magma's burning ground could be parried.** Raising a Shield while standing in it parried its next second
+  of burning (a counter-burst at its caster, and the Parry feat) as if a spell had just arrived. Like every
+  other burning or freezing ground, its later seconds now only meet a Shield as a block. Its cracked, glowing
+  ground also now lasts as long as the magma does, instead of vanishing after 4 seconds when Extend makes it
+  burn longer.
 
 ## [0.4.1-alpha] - 2026-09-28
 

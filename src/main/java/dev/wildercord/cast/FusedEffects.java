@@ -209,21 +209,30 @@ public final class FusedEffects {
 	/** Magma: the ground at {@code at} burns every enemy standing on it once a second. */
 	private static void magma(Cast cast, Vec3 at, double radius, double power, int seconds) {
 		ServerLevel level = cast.level;
-		FusionVfx.magmaOpen(level, at, radius);
+		FusionVfx.magmaOpen(level, at, radius, 4 + seconds * 20);
 		for (int i = 0; i < seconds; i++) {
 			boolean last = i == seconds - 1;
+			boolean later = i > 0;
 			Scheduler.later(4 + i * 20, Effects.carryContext(() -> {
 				if (!cast.alive()) {
 					return;
 				}
 				FusionVfx.magmaPulse(level, at, radius, last);
-				AABB box = new AABB(at, at).inflate(radius, 0.8, radius).move(0, 0.4, 0);
-				for (Entity e : level.getEntities((Entity) null, box, e -> Targets.canHarm(cast.caster, e))) {
-					LivingEntity t = (LivingEntity) e;
-					if (t.onGround() && horizontal(t.position(), at) <= radius) {
-						t.igniteForSeconds(2);
-						Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), 2 * power);
+				// After the first, the pulses linger: a Shield blocks them but can't parry them.
+				Runnable pulse = () -> {
+					AABB box = new AABB(at, at).inflate(radius, 0.8, radius).move(0, 0.4, 0);
+					for (Entity e : level.getEntities((Entity) null, box, e -> Targets.canHarm(cast.caster, e))) {
+						LivingEntity t = (LivingEntity) e;
+						if (t.onGround() && horizontal(t.position(), at) <= radius) {
+							t.igniteForSeconds(2);
+							Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), 2 * power);
+						}
 					}
+				};
+				if (later) {
+					Effects.lingering(pulse);
+				} else {
+					pulse.run();
 				}
 			}));
 		}
