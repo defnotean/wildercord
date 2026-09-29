@@ -59,6 +59,8 @@ public final class FusedEffects {
 
 	/** One enemy takes a caster's Magma once a second, however many of their pools it stands in. */
 	private static final int MAGMA_EVERY = 20;
+	/** How much wider (blocks) a Magma pool is each second it burns. */
+	static final double MAGMA_GROWTH = 0.4;
 	/** One enemy takes a caster's Tempest once a tick, however many of their strikes land round it. */
 	private static final int TEMPEST_EVERY = 1;
 
@@ -74,7 +76,7 @@ public final class FusedEffects {
 	 * already landed. Magma lays a pool under each of a crowd and Tempest a strike on each, so without this an
 	 * enemy bunched with others took every overlapping one (up to four pools, eight strikes) at once.
 	 */
-	private static double unstacked(Cast cast, LivingEntity t, String rune, int every, double damage) {
+	static double unstacked(Cast cast, LivingEntity t, String rune, int every, double damage) {
 		long now = cast.level.getGameTime();
 		String key = rune + ":" + cast.caster.getUUID() + ":" + t.getUUID();
 		Landed last = LANDED.get(key);
@@ -160,8 +162,10 @@ public final class FusedEffects {
 			case "plasma" -> harmed.forEach(t -> {
 				// Half of it through the armour as usual, half straight past it.
 				double storm = Reactions.storm(cast, t);
-				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 4.5 * power * storm);
-				Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 4.5 * power * storm);
+				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 5 * power * storm);
+				Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 5 * power * storm);
+				// Ionised: the air round it conducts, so the next storm hit on it Conducts even when it is dry.
+				Reactions.mark(t, Reactions.Mark.IONISED);
 				FusionVfx.plasma(level, hit.origin(), t);
 			});
 			case "hail" -> harmed.forEach(t -> {
@@ -211,6 +215,8 @@ public final class FusedEffects {
 				int extra = boost(power, amplify);
 				t.addEffect(new MobEffectInstance(MobEffects.SPEED, Effects.ticks(8, duration), Math.min(3, extra), false, true));
 				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, Effects.ticks(8, duration), Math.min(1, extra), false, true));
+				// Static discharge: for as long as it lasts, the blows it lands arc on to a neighbour (see SurgeArcs).
+				SurgeArcs.charge(cast, t, power, Effects.ticks(8, duration));
 				FusionVfx.surge(level, t);
 			});
 			case "nullify" -> {
@@ -329,6 +335,8 @@ public final class FusedEffects {
 		for (int i = 0; i < seconds; i++) {
 			boolean last = i == seconds - 1;
 			boolean later = i > 0;
+			// The pool swells as it heats: 0.4 blocks wider each second.
+			double reach = radius + MAGMA_GROWTH * i;
 			Scheduler.later(4 + i * 20, Effects.carryContext(() -> {
 				if (!cast.alive()) {
 					return;
@@ -336,13 +344,13 @@ public final class FusedEffects {
 				FusionVfx.magmaPulse(level, at, radius, last);
 				// After the first, the pulses linger: a Shield blocks them but can't parry them.
 				Runnable pulse = () -> {
-					AABB box = new AABB(at, at).inflate(radius, 0.8, radius).move(0, 0.4, 0);
+					AABB box = new AABB(at, at).inflate(reach, 0.8, reach).move(0, 0.4, 0);
 					for (Entity e : level.getEntities((Entity) null, box, e -> Targets.canHarm(cast.caster, e))) {
 						LivingEntity t = (LivingEntity) e;
 						// Pools overlapping (one under each of a crowd) burn an enemy standing in several once. On it means on
 						// the ground or just above it: Magma is earth too, and its own heave throws what it lands on into a hop.
 						boolean onIt = t.onGround() || t.getY() - at.y < 1.0;
-						double burn = onIt && horizontal(t.position(), at) <= radius ? unstacked(cast, t, "magma", MAGMA_EVERY, 2 * power) : 0;
+						double burn = onIt && horizontal(t.position(), at) <= reach ? unstacked(cast, t, "magma", MAGMA_EVERY, 2 * power) : 0;
 						if (burn > 0) {
 							t.igniteForSeconds(2);
 							Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), burn);
@@ -384,8 +392,24 @@ public final class FusedEffects {
 			if (!Spirits.isBoss(t)) {
 				Vec3 away = Effects.horizontal(t.position().subtract(hit.origin()), hit.dir());
 				Effects.push(t, away.scale(2.8 * Math.sqrt(power)).add(0, 0.9, 0));
+				// Strike, fling, strike: a second bolt where it comes down, on it and on whatever it lands among.
+				Landings.after(cast, t, Landings.MAX_TICKS, down -> tempestLanding(cast, down, power));
 			}
 			Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+		}
+	}
+
+	/** Tempest's second bolt: 4 to everything within 2 blocks of where its first victim came down, once each. */
+	private static void tempestLanding(Cast cast, Vec3 at, double power) {
+		ServerLevel level = cast.level;
+		FusionVfx.tempest(level, at);
+		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(2.0, 2.5, 2.0), e -> Targets.canHarm(cast.caster, e))) {
+			LivingEntity t = (LivingEntity) e;
+			double strike = unstacked(cast, t, "tempest_landing", 10, 4 * power);
+			if (strike > 0) {
+				Effects.lingering(() -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster),
+					strike * Reactions.storm(cast, t)));
+			}
 		}
 	}
 

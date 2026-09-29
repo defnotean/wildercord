@@ -105,7 +105,7 @@ public class RuneBolt extends Projectile {
 		bolt.lifeLeft = arc ? 120 : (int) Math.ceil(RANGE / bolt.speed) + 4;
 		bolt.travelLeft = RANGE;
 		bolt.color = CastEngine.colorOf(group);
-		bolt.theme = Vfx.theme(group);
+		bolt.theme = cast.theme(group);
 		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());
 		bolt.getEntityData().set(DATA_SECONDARY, bolt.theme.secondary());
 		bolt.setOwner(cast.caster);
@@ -113,7 +113,10 @@ public class RuneBolt extends Projectile {
 		bolt.setDeltaMovement(dir.normalize().scale(bolt.speed));
 		LIVE.merge(owner, 1, Integer::sum);
 		cast.level.addFreshEntity(bolt);
-		Fx.sound(cast.level, origin, bolt.theme.cast(), 0.5F, 1.0F);
+		if (cast.depth > 0) {
+			// Fired by a link: the cast circle's cast sound is long past. A bolt from the hand has just had it.
+			Fx.sound(cast.level, origin, bolt.theme.cast(), 0.5F, 1.0F);
+		}
 		return bolt;
 	}
 
@@ -349,7 +352,11 @@ public class RuneBolt extends Projectile {
 		if (owner != null && to.distanceToSqr(owner.getEyePosition()) < 2.25) {
 			return;
 		}
-		// The comet itself is drawn by each client; here just a few of the element's motes.
+		// The comet itself is drawn by each client; here just a few of the element's motes (and a signature's own trail).
+		boolean own = dev.wildercord.cast.feel.Feels.travel(server, theme, from, to, tickCount);
+		if (!own) {
+			return;
+		}
 		if (tickCount % 2 == 0) {
 			Vfx.emit(server, theme.mote(), to, 1, 0.05, 0.01);
 		}

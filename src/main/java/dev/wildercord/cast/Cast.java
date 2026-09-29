@@ -48,6 +48,10 @@ public final class Cast {
 		/** Set when the whole cast is cut short, e.g. a Domain shattered in a clash. */
 		boolean cancelled;
 		int segments = MAX_SEGMENTS;
+		/** How charged the spell was when released, 0 to 1 (for its feel). */
+		double charge;
+		/** The feel of each group of the plan, worked out once. */
+		final java.util.Map<dev.wildercord.spell.SpellPlan.Group, dev.wildercord.cast.feel.Feel> feels = new java.util.IdentityHashMap<>();
 		/** The mana the spell asks, as a Shield weighs it; worked out from the plan when nobody set it. */
 		double weight = -1;
 		/** The casting gear in the caster's hands when it was cast (staffs and foci). */
@@ -69,6 +73,7 @@ public final class Cast {
 		Shared copy(boolean samePayment) {
 			Shared copy = new Shared(samePayment ? paid : new Paid());
 			copy.weight = weight;
+			copy.charge = charge;
 			copy.gear = gear;
 			copy.origin = origin;
 			copy.affinity = affinity;
@@ -146,6 +151,33 @@ public final class Cast {
 		this.wanted = wanted;
 		this.info = info;
 		this.repeated = repeated;
+	}
+
+	/** Sets how charged the spell was (0 to 1), for its {@link dev.wildercord.cast.feel.Feel}. */
+	public Cast charge(double charge) {
+		budget.shared.charge = Math.max(0, Math.min(1, charge));
+		return this;
+	}
+
+	/** How charged the spell was when released, 0 to 1. */
+	public double charge() {
+		return budget.shared.charge;
+	}
+
+	/** The feel of a group of this cast's plan (motion, element, role, scale band, modifiers), worked out once and adjusted by signatures. */
+	public dev.wildercord.cast.feel.Feel feel(dev.wildercord.spell.SpellPlan.Group g) {
+		return budget.shared.feels.computeIfAbsent(g,
+			k -> dev.wildercord.cast.feel.Signatures.adjust(dev.wildercord.cast.feel.Feel.of(k, weight(), budget.shared.charge)));
+	}
+
+	/** The theme of a group with its feel attached: its first effect's element look, the signature's accent, and {@link #feel}. */
+	public Vfx.Theme theme(dev.wildercord.spell.SpellPlan.Group g) {
+		return dev.wildercord.cast.feel.Feels.themed(Vfx.theme(g), feel(g));
+	}
+
+	/** A continuation whose power is {@code multiplier} times this one's (the k-th On Hit trigger in a cast, say), sharing every budget. */
+	public Cast child(double multiplier) {
+		return new Cast(caster, level, depth + 1, budget, castNumber, power * multiplier, duration, passive, wanted, info, repeated);
 	}
 
 	public Cast child() {

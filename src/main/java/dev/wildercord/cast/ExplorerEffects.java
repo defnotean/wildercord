@@ -425,6 +425,7 @@ public final class ExplorerEffects {
 		ExplorerVfx.sandstormOpen(cast.level, centre, radius, ticks);
 		repeat(cast, ticks, 5, tick -> {
 			ExplorerVfx.sandstorm(cast.level, centre, radius, tick);
+			choke(cast, centre, radius);
 			if (tick % 20 == 0) {
 				for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
 					Effects.hurt(cast, t, magic(cast), 2 * power);
@@ -433,6 +434,22 @@ public final class ExplorerEffects {
 				}
 			}
 		}, () -> { });
+	}
+
+	/** The sand chokes what flies through it: an enemy's arrows, tridents and spells lose most of their speed and drop. */
+	private static void choke(Cast cast, Vec3 centre, double radius) {
+		for (net.minecraft.world.entity.projectile.Projectile p : cast.level.getEntitiesOfClass(net.minecraft.world.entity.projectile.Projectile.class,
+				new AABB(centre, centre).inflate(radius, 3.0, radius))) {
+			Entity owner = p.getOwner();
+			if (owner != null && (owner == cast.caster || Targets.isAlly(cast.caster, owner)) || p.position().distanceTo(centre) > radius) {
+				continue;
+			}
+			Vec3 v = p.getDeltaMovement();
+			if (v.lengthSqr() > 0.04) {
+				p.setDeltaMovement(v.scale(0.3).add(0, -0.04, 0));
+				p.needsSync = true;
+			}
+		}
 	}
 
 	/** Vinelash: a thorned vine lashes the target and hauls it toward the caster. */
@@ -597,6 +614,7 @@ public final class ExplorerEffects {
 	private static void tuskCharge(Cast cast, double power) {
 		LivingEntity runner = cast.caster;
 		Vec3 dir = Effects.horizontal(runner.getLookAngle(), runner.getLookAngle());
+		Vec3 start = runner.position();
 		Effects.push(runner, dir.scale(2.0).add(0, 0.2, 0));
 		runner.resetFallDistance();
 		ExplorerVfx.tuskCharge(cast.level, runner, dir, true);
@@ -610,7 +628,9 @@ public final class ExplorerEffects {
 			}
 			for (LivingEntity t : enemiesAround(cast, runner.position().add(dir.scale(0.8)).add(0, 1, 0), 1.6)) {
 				if (t != runner && tossed.add(t.getUUID())) {
-					Effects.hurt(cast, t, magic(cast), 5 * power);
+					// Momentum: 3, and 0.8 more for every block run up before the blow (up to 8: 9.4).
+					double run = Math.min(8.0, Math.hypot(runner.getX() - start.x, runner.getZ() - start.z));
+					Effects.hurt(cast, t, magic(cast), (3 + 0.8 * run) * power);
 					if (!Spirits.isBoss(t)) {
 						Effects.push(t, dir.scale(0.5).add(0, 0.8, 0));
 						Reactions.mark(t, Reactions.Mark.WINDSWEPT);
@@ -936,13 +956,19 @@ public final class ExplorerEffects {
 	/** Stalactite: a spike of dripstone drops on the target; worse on a bare head. */
 	private static void stalactite(Cast cast, LivingEntity t, double power) {
 		ExplorerVfx.stalactiteWarn(cast.level, t);
+		// It falls on the spot the warning marked, so stepping out of it is a dodge (a creature that stayed is hit).
+		Vec3 spot = t.position();
 		Scheduler.later(8, Effects.carryContext(() -> {
-			if (!cast.alive() || !onHand(cast, t)) {
+			if (!cast.alive()) {
 				return;
 			}
-			ExplorerVfx.stalactite(cast.level, t);
-			boolean bare = t.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
-			Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.FALLING_STALACTITE, cast.caster), 7 * power * (bare ? 1.5 : 1.0));
+			if (onHand(cast, t) && t.position().distanceTo(spot) <= 1.3 + t.getBbWidth() / 2) {
+				ExplorerVfx.stalactite(cast.level, t);
+				boolean bare = t.getItemBySlot(EquipmentSlot.HEAD).isEmpty();
+				Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.FALLING_STALACTITE, cast.caster), 7 * power * (bare ? 1.3 : 1.0));
+			} else {
+				ExplorerVfx.stalactiteMiss(cast.level, spot);
+			}
 		}));
 	}
 

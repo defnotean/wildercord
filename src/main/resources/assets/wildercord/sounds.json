@@ -556,5 +556,53 @@
         "attenuation_distance": 40
       }
     ]
+  },
+  "fire_flick": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fire/fire_flick_1",
+      "wildercord:kit/fire/fire_flick_2",
+      "wildercord:kit/fire/fire_flick_3"
+    ]
+  },
+  "fire_whump": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/fire/fire_whump_1",
+      "wildercord:kit/fire/fire_whump_2"
+    ]
+  },
+  "blood_slice": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/blood/blood_slice_1",
+      "wildercord:kit/blood/blood_slice_2"
+    ]
+  },
+  "blood_slice_heavy": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/blood/blood_slice_heavy_1",
+      "wildercord:kit/blood/blood_slice_heavy_2"
+    ]
+  },
+  "link_ting": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/link_ting"
+    ]
+  },
+  "ready_ping": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/ready_ping"
+    ]
+  },
+  "tap_release": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/tap_release_1",
+      "wildercord:kit/neutral/tap_release_2"
+    ]
   }
 }

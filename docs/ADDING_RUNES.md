@@ -28,6 +28,7 @@ rules and how a cast runs.
 | Put it in a Codex category | `spell/RuneCategories.java` (`categoryFor`) |
 | What it does | `cast/Effects.java` (effects), `cast/CastEngine.java` + `cast/ShapeRunners.java` (shapes), `spell/SpellNumbers.java` (modifier numbers), `spell/SpellCompiler.java` + `cast/CastEngine.java` (links) |
 | How it looks | `cast/Vfx.java` or `cast/TechniqueVfx.java` (magic circles through `cast/Sigils.java`) |
+| Its own feel (sounds, cue, impact, aftermath) | `cast/feel/<Element>Feels.java` and `tools/feel/<element>.py` (see [Give it its own feel](#give-it-its-own-feel)) |
 | Its icon | `tools/item_art.py` (`GLYPHS`) |
 | Its magic ring (pattern and emblem) | automatic: `tools/circle_art.py` gives every rune its own, run by `generate_assets.py` |
 | Its recipe | `tools/generate_assets.py` (`RUNE_RECIPES`) |
@@ -265,6 +266,83 @@ python tools/generate_assets.py
 
 This writes the texture, item model, language entries, recipe, recipe-book unlock, and updates
 `docs/RECIPES.md`. Commit the generated files along with your code.
+
+## Give it its own feel
+
+Every spell already gets a **feel** from how it is built (see `dev.wildercord.cast.feel`): the shape's *motion* (Flick, Hurl, Beam,
+Slash, Blast, Seal, Call, Aura), the mana-dominant *element* (and an accent element), the first effect's *role* (Strike, Bind, Mend,
+Move, Time, World, Call up), a *band* from cost, charge and tier (S, M, L, XL: band M is the mod's usual sizes), and the modifiers
+on it. It travels inside `Vfx.Theme` (`theme.feel()`), so any shape or effect code that has a theme has the feel. A rune with
+nothing of its own keeps exactly that. To make a rune **signature**, do two things, both in files that are yours alone.
+
+### 1. Its signature (Java)
+
+Each element has one class, `src/main/java/dev/wildercord/cast/feel/<Element>Feels.java` (`FireFeels`, `FrostFeels`... `ShapeFeels`),
+with an empty `register()`. Add a `Signature` per rune there. Everything is optional:
+
+```java
+static void register() {
+    Signature.of("meteor")                                   // a rune path, or "addon:rune"
+        .motion(Motion.CALL)                                 // treat its spells as another motion (pose, cue)
+        .scale(1.4)                                          // read bigger than its cost says (0.6 to 2.2 overall)
+        .accent(0xFFB040)                                    // the theme's second colour for spells led by this rune
+        .sound(Phase.CUE, "fire_flick")                      // a kit sound at the hand when it is cast
+        .sound(Phase.IMPACT, "fire_whump", 1.0F, 1.0F)       // ...at each impact (name, volume, pitch)
+        .replace(Phase.IMPACT)                               // ...instead of the element's impact sound
+        .hook(Phase.AFTERMATH, ctx -> MyFx.crater(ctx))      // your own particles: ctx has level, feel, theme, at, dir, target, cast
+        .register();
+}
+```
+
+- **Phases:** `CUE` (the first 200 ms, once per cast, for the spell's first group), `TRAVEL` (each tick a projectile flies: Bolt and
+  Arc), `IMPACT` (where a Bolt, Beam or Touch lands, every Chain jump and Bounce), `AFTERMATH` (after an impact of band M or bigger),
+  `HIT` (each creature the effect touches; `replace(Phase.HIT)` drops the generic glow).
+- A sound or hook **adds** to the default of its phase; `replace(phase)` makes yours stand alone (for `IMPACT` the shape's flare and
+  rings stay, the element's impact *sound* goes).
+- A signature on an **effect** applies to every group whose *first* effect it is (and to `HIT` for that effect anywhere); on a **shape** id
+  to groups with that shape; the effect's wins.
+- Play kit sounds with `Feels.sound(level, at, "name", volume, pitch)` (or `Feels.sound(level, at, feel, "name", ...)`, which scales
+  the volume by the band). It adds a random pitch spread of about 3%, and an unknown name is skipped and logged once, so you can
+  name a sound before it exists. **Every** `Fx.sound` (yours, vanilla's, the kit's) is capped at 3 of one sound event per level per
+  tick, so a Burst on thirty mobs plays three, not thirty.
+- Timing (wind-ups, delays) stays in your effect's own code: use `Scheduler.later` and `cast.feel(group).band()` for scale.
+- Read the feel in your own effect code with `Vfx.Theme theme` (`theme.feel()`, which is null outside a shape's delivery) or, for a group,
+  `cast.feel(group)`; `feel.mod("widen")` counts a modifier, `feel.element()`, `feel.role()`, `feel.band()`, `feel.scale()`.
+
+### 2. Its sounds (Python)
+
+Sounds are synthesised, never recorded. Each element has one file, **`tools/feel/<element>.py`** (`neutral.py` for the shared ones), which
+lists events. A builder gets the variant number and a seeded random generator, uses the DSP of `tools/sound_art.py` (`sa.`), and ends
+with `sa.finish(x, role)`:
+
+```python
+from feel.core import sa, event
+
+def fire_flick(v, rng):                         # v = 0, 1, 2...
+    ...
+    return sa.finish(x, "impact")               # roles: cast, impact, effect, grand, loop, ui, tick, tell, pulse
+
+EVENTS = [event("fire_flick", fire_flick, variants=3, subtitle="hit")]
+```
+
+- **Names:** lower-case, `<element>_<verb>` (`fire_flick`, `blood_slice_heavy`); a name must start with its file's element (only
+  `neutral.py` has bare names: `tick`, `link_ting`) and be unique across every file and the base palette. The name is the event id
+  (`wildercord:fire_flick`) *and* what you pass to `Feels.sound`.
+- **Subtitle:** one of `cast`, `hit`, `field`, `tell` (four texts already exist; you never touch the language file).
+- **Variants:** 1 to 6; anything that can repeat quickly (a field's pulse, a tick) wants 3 or more; `Feels.sound` picks at random.
+- **Key:** tonal parts in D major pentatonic (`sa.note(sa.D, octave)`, degrees `sa.D sa.E sa.FS sa.A sa.B`). Play tonal sounds at pitch 1.0,
+  0.5 or 2.0; for a scale from one sample use the ratios 1.0, 1.122, 1.26, 1.498, 1.682, 2.0. Noise-like sounds may sit anywhere from 0.7 to 1.4.
+- **Volume:** the role levels it (`finish`); `Feels.sound(..., feel, ...)` scales by band (S 0.7, M 1.0, L 1.15, XL 1.3).
+- **Worked examples to copy:** `fire.py` (`fire_flick`: a short one with a pitch step per variant; `fire_whump`: noise, a body and grains),
+  `blood.py` (`blood_slice`, `blood_slice_heavy`: one recipe from a factory used for two events), `neutral.py` (`tap_release`, `link_ting`, `ready_ping`).
+
+Build with **`python tools/feel/build.py --only fire`** (needs numpy, scipy and ffmpeg, like `sound_art.py`). It writes
+`sounds/kit/<element>/*.ogg`, `tools/feel/manifest/<element>.json`, and **regenerates `sounds.json` and `kit_sounds.json`** (the Java
+registry, `WildercordSounds.kit(name)`, reads the latter): never edit those three by hand. A run is deterministic (seeds come from the
+event name and variant) and idempotent. `--merge` only regenerates the two merged files (what to run after a merge conflict in them),
+`--check` verifies without synthesising. Build only your own part: it never touches another element's files, so two people never
+conflict except in the two merged files, which are regenerated. `python tools/sound_art.py` (the base palette) still works and merges too.
+`SoundKitTest` fails if a manifest, a file or a subtitle is missing.
 
 ## Checklist
 

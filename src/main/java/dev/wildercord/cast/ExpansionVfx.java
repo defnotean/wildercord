@@ -74,7 +74,7 @@ final class ExpansionVfx {
 	static void sparkLaunch(ServerLevel level, Vec3 origin, Vec3 aim, Vfx.Theme theme) {
 		glow(level, theme.primary(), origin.add(aim.scale(0.6)), 0.5);
 		Fx.sound(level, origin, SoundEvents.AMETHYST_BLOCK_HIT, 0.6F, 1.8F);
-		Fx.sound(level, origin, theme.cast(), 0.3F, 1.0F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	/** A spark in flight: a bright mote and a thin streak of light behind it. */
@@ -177,7 +177,7 @@ final class ExpansionVfx {
 		Sigils.layer(level, origin, aim, SigilOption.CIRCLE, theme.primary(), 0.5F, 10, 0.25F);
 		Sigils.layer(level, origin.add(aim.scale(0.03)), aim, SigilOption.RING, theme.secondary(), 0.7F, 10, -0.3F);
 		Fx.sound(level, origin, SoundEvents.ILLUSIONER_CAST_SPELL, 0.7F, 0.8F);
-		Fx.sound(level, origin, theme.cast(), 0.6F, 1.0F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	/** A comet in flight: a heavy orb of light wrapped in rings, burning a thick streak behind it. */
@@ -210,7 +210,7 @@ final class ExpansionVfx {
 
 	static void ricochetLaunch(ServerLevel level, Vec3 origin, Vfx.Theme theme) {
 		Fx.sound(level, origin, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.2F);
-		Fx.sound(level, origin, theme.cast(), 0.4F, 1.0F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	static void ricochetTick(ServerLevel level, Vec3 from, Vec3 to, Vfx.Theme theme, int tick) {
@@ -355,7 +355,7 @@ final class ExpansionVfx {
 
 	static void streamStart(ServerLevel level, Vec3 at, Vfx.Theme theme) {
 		Fx.sound(level, at, SoundEvents.BEACON_ACTIVATE, 0.6F, 1.9F);
-		Fx.sound(level, at, theme.cast(), 0.5F, 1.0F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	/** One tick of a Stream: the beam as it is now, thicker on a strike, and a spray where it lands. */

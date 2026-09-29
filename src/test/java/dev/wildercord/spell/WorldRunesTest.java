@@ -207,7 +207,7 @@ class WorldRunesTest {
 		assertEquals((3 + 8 * 1.1) * 1.0 + 8 * 1.1 * 0.3, keyed.cost(), 1e-9);
 
 		SpellPlan.EffectNode kindled = SpellCompiler.compile(List.of(BOLT, HARM, KINDLED)).root().groups.getFirst().effects.getFirst();
-		assertEquals(1.2, SpellNumbers.power(kindled), 1e-9);
+		assertEquals(1.3, SpellNumbers.power(kindled), 1e-9);
 		assertEquals(4, SpellNumbers.kindledSeconds(kindled));
 		assertEquals(0, SpellNumbers.kindledSeconds(SpellCompiler.compile(List.of(BOLT, HARM)).root().groups.getFirst().effects.getFirst()));
 

@@ -15,7 +15,7 @@ A **modifier** changes the closest rune on its *left* that it can change. Amplif
 ### <img src="{{ '/assets/runes/amplify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Amplify
 {: #amplify}
 
-*Tier I · cost x1.6 · needs any Cord*
+*Tier I · cost x1.5 · needs any Cord*
 
 +50% power (damage, healing, force, blast).
 
@@ -56,7 +56,7 @@ Half the mana, but 40% weaker and shorter.
 
 *Tier II · cost x1.25 · needs a Copper Cord or better*
 
-The effect lands 1.5 seconds late, but 40% stronger.
+The effect lands 1.5 seconds late, but 25% stronger.
 
 **How to get it:** Craft: a Blank Rune, Clock and Cobweb, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -147,7 +147,7 @@ Passes through up to 3 targets.
 
 *Tier II · cost x1.2 · needs a Copper Cord or better*
 
-Bolts fly twice as fast; delays are halved.
+Bolts fly twice as fast; delays are halved. On fields, walls, totems, domains, latches, streams and barrages it makes the same strikes come twice as fast, so the spell ends sooner.
 
 **How to get it:** Craft: a Blank Rune, Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -210,7 +210,7 @@ Fires three times in quick succession.
 
 *Tier III · cost x1 · needs an Amethyst Cord or better*
 
-Pay for the whole spell in health instead of mana: 1 health per 5 mana. Never lethal.
+Pay for the whole spell in health instead of mana: 1 health per 4 mana. Never lethal.
 
 **How to get it:** Craft: a Blank Rune, Ghast Tear and Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Bastions; Woodland mansions.
 
@@ -245,9 +245,9 @@ Steers toward the nearest enemy within 12 blocks.
 ### <img src="{{ '/assets/runes/overcharge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Overcharge
 {: #overcharge}
 
-*Tier III · cost x3 · needs an Amethyst Cord or better*
+*Tier III · cost x2.6 · needs an Amethyst Cord or better*
 
-+150% power, but triple the mana.
++150% power, but 2.6 times the mana.
 
 **How to get it:** Craft: a Blank Rune, 2x Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Bastions.
 
@@ -273,7 +273,7 @@ Three copies of the shape.
 
 *Tier III · cost x1 · needs an Amethyst Cord or better*
 
-A binding vow: the shape's effects hit twice as hard, but the whole spell's cooldown is 4x longer.
+A binding vow: the shape's effects hit twice as hard, but the whole spell's cooldown is 5x longer.
 
 **How to get it:** Craft: a Blank Rune, Paper and Block of Gold, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Ancient cities.
 

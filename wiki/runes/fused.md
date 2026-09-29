@@ -195,7 +195,7 @@ Sets targets alight for 6 seconds and deals 5 damage, and the fire leaps to ever
 
 *Tier III · Earth · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then it's stone, held for 2 seconds (1 on players) and cracked for 6 damage.
+The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then it's stone, held for 2 seconds (1 on players), brittle while it stands (every spell hits it 20% harder), and cracked for 6 damage.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Earth effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -228,7 +228,7 @@ Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally 
 
 *Tier III · Earth · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
-Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally is cut by crystal shards for 2 damage.
+Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally is cut by crystal shards for 2 damage and left cracked (every spell hits it 20% harder for 5 seconds).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Earth effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
@@ -316,7 +316,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 
 *Tier III · Earth · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it.
+The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it, and the pool widens as it burns.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Earth effect, with an amethyst shard (3 XP levels).
 
@@ -338,7 +338,7 @@ Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and 
 
 *Tier III · Earth · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
-A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds.
+A pillar of stone bursts up under the target: 8 damage, and it's thrown 3 blocks into the air; where it lands, 3 more to whatever is there. The pillar crumbles after 4 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Earth effects and an amethyst shard (3 XP levels).
 
@@ -371,7 +371,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 *Tier III · Storm · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
-9 damage that ignores half of the target's armour.
+10 damage, half of it ignoring armour, and the target is ionised for 5 seconds: the next storm damage it takes conducts as if it were wet.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Fire effect, with an amethyst shard (3 XP levels).
 
@@ -415,7 +415,7 @@ Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where t
 
 *Tier III · Storm · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-A black bolt for 6 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds.
+A black bolt for 7 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Void effect, with an amethyst shard (3 XP levels).
 
@@ -470,7 +470,7 @@ A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 b
 
 *Tier III · Earth · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-The ground gives way: enemies within 3 blocks are dragged to its middle and pinned for 2 seconds (Slowness IV, no jumping), then crushed for 5 damage.
+The ground gives way: enemies within 3 blocks are dragged to its middle and pinned for 2 seconds (Slowness IV, no jumping), then crushed for 6 damage.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Earth effect and any Void effect, with an amethyst shard (3 XP levels).
 
@@ -536,7 +536,7 @@ A scalding burst of steam: 5 damage and Blindness for 3 seconds, and a cloud han
 
 *Tier III · Storm · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 3 damage each, and 1 more for every other one caught in the web.
+Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 4 damage each, and 1 more for every other one caught in the web; a target alone takes 2 more.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Arcane effect, with an amethyst shard (3 XP levels).
 
@@ -547,7 +547,7 @@ Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between t
 
 *Tier III · Storm · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
-Speed I and Strength I for 8 seconds.
+Speed I and Strength I for 8 seconds; the blows you land in that time arc on to a nearby enemy for 2 (four arcs at most).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Storm effect, with an amethyst shard (3 XP levels).
 
@@ -558,7 +558,7 @@ Speed I and Strength I for 8 seconds.
 
 *Tier III · Storm · Harms enemies · 22 mana · needs an Amethyst Cord or better*
 
-A lightning strike for 8 damage, and a gale that hurls targets far away.
+A lightning strike for 8 damage, and a gale that hurls targets far away; where they come down a second bolt strikes for 4.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Wind effect, with an amethyst shard (3 XP levels).
 
@@ -569,7 +569,7 @@ A lightning strike for 8 damage, and a gale that hurls targets far away.
 
 *Tier III · Storm · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
-A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 3 damage.
+A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 2 damage, and the rain soaks it so the bolt conducts.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Storm effects and an amethyst shard (3 XP levels).
 
@@ -680,7 +680,7 @@ Steps you through a door of blossoms to where the spell landed (up to 32 blocks)
 
 *Tier III · Storm · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 4 damage each, 6 to one frozen solid.
+Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 5 damage each, 7 to one frozen solid.
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) and [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) themselves, with an amethyst shard (3 XP levels). Any other Frost and Storm effects make Hail instead.
 

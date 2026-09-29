@@ -104,23 +104,31 @@ public final class CastEngine {
 		} else if (id.equals(Runes.IF_SNEAKING.id())) {
 			if (caster.isShiftKeyDown()) {
 				runSegment(cast, link.next, at);
+			} else {
+				refund(cast, link);
 			}
 		} else if (id.equals(Runes.IF_AIRBORNE.id())) {
 			if (!caster.onGround() && !caster.isInWater()) {
 				TechniqueVfx.airborne(cast.level, caster);
 				runSegment(cast, link.next, at);
+			} else {
+				refund(cast, link);
 			}
 		} else if (id.equals(Runes.COMBO.id())) {
 			if (cast.castNumber % 3 == 0) {
 				TechniqueVfx.combo(cast.level, caster);
 				Reactions.callout(cast, "combo", 0xF0C440);
 				runSegment(cast, link.next, at);
+			} else {
+				refund(cast, link);
 			}
 		} else if (ExplorerShapes.isCondition(id)) {
 			// If Wounded, If Outnumbered, If Wet: the runes of the world's conditions.
 			if (ExplorerShapes.conditionMet(cast, id)) {
 				ExplorerVfx.condition(cast.level, caster, id);
 				runSegment(cast, link.next, at);
+			} else {
+				refund(cast, link);
 			}
 		} else if (id.equals(Runes.ON_LOW_HEALTH.id())) {
 			Cast child = cast.child();
@@ -149,6 +157,26 @@ public final class CastEngine {
 		// On Hit, On Kill, On Reaction and On Weakness fire from onHit(), through their anchor group.
 	}
 
+	/**
+	 * A condition that doesn't hold (Combo on its first two casts, If Sneaking while standing...) gives back the mana its branch
+	 * cost: it was paid with the rest of the spell, and a finisher bought three times for one firing was a tax, not a choice.
+	 * Only for a spell cast from a Cord and paid in mana, once per link per payment.
+	 */
+	private static void refund(Cast cast, SpellPlan.Link link) {
+		if (!(cast.caster instanceof ServerPlayer player) || cast.passive || cast.origin() != null || player.isCreative() || link.next == null
+				|| cast.info.root() == null || cast.info.spell().isEmpty()) {
+			return;
+		}
+		dev.wildercord.spell.SpellCompiler.Compiled compiled = dev.wildercord.spell.SpellCompiler.compile(cast.info.spell());
+		if (compiled.paysInHealth() || compiled.cost() <= 0 || !cast.once("refund:" + System.identityHashCode(link))) {
+			return;
+		}
+		double share = dev.wildercord.spell.SpellCompiler.segmentCost(link.next) / compiled.cost();
+		int paid = dev.wildercord.player.Heart.manaCost(player, compiled, 1.0);
+		float back = (float) Math.min(paid, paid * share);
+		dev.wildercord.player.Spellbooks.setMana(player, Math.min(dev.wildercord.player.Mana.max(player), dev.wildercord.player.Spellbooks.mana(player) + back));
+	}
+
 	// ------------------------------------------------------------------ shapes
 
 	private static void deliver(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored) {
@@ -156,7 +184,7 @@ public final class CastEngine {
 		String shape = g.shape.id();
 		int copies = SpellNumbers.copies(g);
 		int color = colorOf(g);
-		Vfx.Theme theme = Vfx.theme(g);
+		Vfx.Theme theme = cast.theme(g);
 
 		if (shape.equals(Runes.SELF.id())) {
 			Vfx.self(caster, theme);
@@ -290,7 +318,7 @@ public final class CastEngine {
 			}
 		} else if (shape.equals(Runes.ZONE.id())) {
 			double radius = SpellNumbers.zoneRadius(g);
-			int pulses = Math.max(1, SpellNumbers.zoneSeconds(g) * 20 / SpellNumbers.zoneInterval(g));
+			int pulses = SpellNumbers.zonePulses(g);
 			int interval = SpellNumbers.zoneInterval(g);
 			for (Vec3 center : spread(aimPoint(cast, at), copies, radius)) {
 				Vfx.zoneOpen(cast.level, center, radius, theme, pulses * interval + 12);
@@ -308,15 +336,21 @@ public final class CastEngine {
 			Vec3 center = aimPoint(cast, at);
 			int strikes = 5 * copies;
 			Vfx.rainCloud(cast.level, center, radius, theme, 56);
+			// The sky looks for enemies: most strikes fall on one in the area (any, at random), the rest at random points.
+			List<Entity> enemies = inRadius(cast, center.add(0, 1, 0), radius).stream().filter(e -> Targets.canHarm(caster, e)).toList();
 			for (int i = 0; i < strikes; i++) {
 				Cast child = cast.pulse();
 				double a = cast.level.getRandom().nextDouble() * Math.PI * 2;
 				double r = Math.sqrt(cast.level.getRandom().nextDouble()) * radius;
 				Vec3 target = ground(cast.level, center.add(Math.cos(a) * r, 2, Math.sin(a) * r));
+				if (!enemies.isEmpty() && cast.level.getRandom().nextFloat() < SpellNumbers.RAIN_SEEK) {
+					target = ground(cast.level, enemies.get(cast.level.getRandom().nextInt(enemies.size())).position().add(0, 2, 0));
+				}
+				Vec3 strike = target;
 				int delay = 1 + i * 40 / strikes;
 				Scheduler.later(delay, () -> {
 					if (child.alive()) {
-						Vfx.rainStrike(child.level, target, theme);
+						Vfx.rainStrike(child.level, strike, theme);
 					}
 				});
 				// The hit lands when the streak does.
@@ -324,8 +358,8 @@ public final class CastEngine {
 					if (!child.alive()) {
 						return;
 					}
-					BlockPos below = BlockPos.containing(target.x, target.y - 0.5, target.z);
-					onHit(child, g, new Cast.Hit(inRadius(child, target.add(0, 1, 0), 1.6), target, new Vec3(0, -1, 0), target, below, net.minecraft.core.Direction.UP, false), anchored);
+					BlockPos below = BlockPos.containing(strike.x, strike.y - 0.5, strike.z);
+					onHit(child, g, new Cast.Hit(inRadius(child, strike.add(0, 1, 0), SpellNumbers.RAIN_STRIKE), strike, new Vec3(0, -1, 0), strike, below, net.minecraft.core.Direction.UP, false), anchored);
 				});
 			}
 		} else if (CraftedShapes.handles(shape)) {
@@ -353,7 +387,7 @@ public final class CastEngine {
 			new AABB(from, entityTo).inflate(1.0), e -> e != caster && e instanceof LivingEntity && e.isAlive(), reach * reach);
 		if (entityHit != null) {
 			Entity target = entityHit.getEntity();
-			Vfx.beam(cast.level, from.add(at.dir().scale(0.5)), entityHit.getLocation(), theme);
+			Vfx.contact(cast.level, from.add(at.dir().scale(0.5)), entityHit.getLocation(), theme);
 			Vfx.impact(cast.level, entityHit.getLocation(), theme, 0.8);
 			onHit(cast, g, new Cast.Hit(List.of(target), entityHit.getLocation(), at.dir(), from, null, null, false), anchored);
 			chain(cast, g, anchored, target, theme);
@@ -466,7 +500,7 @@ public final class CastEngine {
 					if (!cast.alive()) {
 						return;
 					}
-					Effects.apply(cast, effect, still(cast, first), groupPower);
+					Effects.apply(cast, effect, still(cast, first), groupPower * SpellNumbers.LINGER_POWER);
 				});
 			}
 		}
@@ -485,7 +519,8 @@ public final class CastEngine {
 					if (n++ >= MAX_TRIGGERS_PER_HIT) {
 						break;
 					}
-					runSegment(cast.child(), anchored.next, new Cast.Trigger(e.getBoundingBox().getCenter(), hit.dir(), e, null, null));
+					// The payload is paid once however many it fires at: each further one is a little weaker.
+					runSegment(cast.child(Math.pow(SpellNumbers.TRIGGER_FALLOFF, n - 1)), anchored.next, new Cast.Trigger(e.getBoundingBox().getCenter(), hit.dir(), e, null, null));
 				}
 			} else if (hit.block() != null) {
 				runSegment(cast.child(), anchored.next, new Cast.Trigger(hit.point(), hit.dir(), null, hit.block(), hit.face()));

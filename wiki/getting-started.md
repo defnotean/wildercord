@@ -101,7 +101,7 @@ If nothing happens, a line above your hotbar says why:
 
 Tap `R` and the spell goes off at once. **Hold `R`** instead and you raise both hands: the spell's magic
 circle opens in front of them, a ring at a time, a roundel for each rune. Let go to cast. A full charge
-takes a second and a half, flares and chimes when it's ready, and makes the spell **40% stronger**. You walk
+takes a second and a half, flares and chimes when it's ready, and makes the spell **25% stronger**. You walk
 slower while you charge, and while you do, a faint line or ring shows you where the spell will go.
 
 <img src="{{ '/assets/images/charge.jpg' | relative_url }}" alt="A player with raised hands charging a spell, its magic circle open in front of them" class="shot">
