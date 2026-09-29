@@ -378,7 +378,8 @@ public final class CraftedRunes {
 
 	/** A blow landed: if the one who struck it with their own hand carries a seared weapon, the foe burns. */
 	private static void sear(LivingEntity target, DamageSource source, boolean blocked) {
-		if (EDGES.isEmpty() || blocked || !(source.getEntity() instanceof LivingEntity attacker) || source.getDirectEntity() != attacker
+		// Only a blow struck by hand: never a spell's own damage landing (whatever its source says).
+		if (EDGES.isEmpty() || blocked || Dungeons.spellLanding() || !(source.getEntity() instanceof LivingEntity attacker) || source.getDirectEntity() != attacker
 				|| !(source.is(DamageTypes.PLAYER_ATTACK) || source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.MOB_ATTACK_NO_AGGRO))) {
 			return;
 		}
