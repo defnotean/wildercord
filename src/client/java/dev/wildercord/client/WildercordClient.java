@@ -111,6 +111,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.ChargeHum::tick);
 		WildercordKeys.init();
 		SpellHud.init();
+		WaypointHud.init();
 		Wildercord.LOGGER.info("Wildercord client initialized");
 	}
 }
