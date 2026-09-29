@@ -242,7 +242,7 @@ Spores burst from a giant mushroom at the point: Poison I and Nausea for 6 secon
 
 *Tier II · Earth · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A stalactite drops on each target from above: 7 damage, 50% more against a bare head.
+A stalactite drops on the spot each target stands on: 7 damage, 30% more against a bare head. Step aside and it misses.
 
 **How to get it:** Found only, never crafted: Attuned in dripstone caves.
 
@@ -275,7 +275,7 @@ Opens a fight: +60% power against targets at full health.
 
 *Tier II · Earth · Moves you · 9 mana · needs a Copper Cord or better*
 
-You charge like a hoglin, up to 8 blocks the way you look, tossing everything in your path into the air for 5 damage.
+You charge like a hoglin, up to 8 blocks the way you look, tossing everything in your path into the air: 3 damage, and 0.8 more for every block you ran up (9 at most).
 
 **How to get it:** Found only, never crafted: Bastions.
 
