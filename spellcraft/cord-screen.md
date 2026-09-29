@@ -356,4 +356,4 @@ Every option and its price is on [Cosmetics]({{ '/companions/cosmetics/' | relat
 | Renaming | `Enter` / `Esc` | Save the name / cancel |
 | Passives page | Click On/Off | Switch that passive |
 | Spells or Passives page | Click the list badge, or `Ctrl`+`L` | Open the loadouts panel |
-| Loadouts panel | `↑`/`↓`, `Enter`, `F2`, `Delete` | Pick a loadout, load it, rename it, delete it |
+| Loadouts panel | `↑`/`↓`, `Enter`, `Ctrl`+`R`, `Delete` | Pick a loadout, load it, rename it, delete it |
