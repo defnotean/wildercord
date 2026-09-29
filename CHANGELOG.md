@@ -13,6 +13,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   upkeep. The same effect from a potion keeps its full length.
 - **Harvest replants with one of the crop's own seeds**, as it always said, instead of a free one: each crop it
   harvested used to drop every seed and replant as well. A crop that drops no seed is left unplanted.
+- **A spell's blocks never drop anything.** A Rampart blown up by an explosion dropped its packed mud (a free packed
+  mud farm); a Rampart's wall, a Span's glass and Light's light now drop nothing however they're broken.
 
 ## [0.4.2-alpha] - 2026-09-28
 

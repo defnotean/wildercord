@@ -76,6 +76,16 @@ public final class TemporaryBlocks extends SavedData {
 		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos));
 	}
 
+	/**
+	 * Whether {@code state} at {@code pos} is a spell's block, only there for a while: however it goes (an
+	 * explosion, a piston, a player, a Wither), it drops nothing, so a Rampart is never a packed mud farm.
+	 */
+	public static boolean holds(ServerLevel level, BlockPos pos, BlockState state) {
+		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		List<Placed> inChunk = blocks == null || blocks.byChunk.isEmpty() ? null : blocks.byChunk.get(Thaws.chunk(pos));
+		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos) && state.is(p.placed().getBlock()));
+	}
+
 	/** Writes down a block a spell just put at {@code pos} in place of {@code replaced}, to go at game time {@code due}. */
 	public static void put(ServerLevel level, BlockPos pos, BlockState placed, BlockState replaced, long due) {
 		TemporaryBlocks blocks = level.getDataStorage().computeIfAbsent(TYPE);

@@ -14,7 +14,8 @@
 		"RunesmithTradeMixin",
 		"SwapOfferMixin",
 		"MobConversionMixin",
-		"ItemEntityAccessor"
+		"ItemEntityAccessor",
+		"TemporaryBlockDropsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

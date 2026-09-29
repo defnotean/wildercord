@@ -39,8 +39,8 @@ import java.util.UUID;
  * wind knocks an arrow out of the air, a Grow beside a Rampart leaves the wall standing, and a spell where
  * the caster may not build changes nothing. Icepath's ice is written down to thaw (it never melts in the
  * dark), a Rampart never rises over a Light spell's light, its blocks are written down to come down even
- * after a crash, and one left past its time is taken down as soon as its ground is loaded. Harvest replants from the
- * crops' own drops.
+ * after a crash, and one left past its time is taken down as soon as its ground is loaded; blown up, it drops nothing.
+ * Harvest replants from the crops' own drops.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
@@ -208,6 +208,27 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				return after == before ? null : "a Grow beside a Rampart shouldn't take the wall down (" + before + " blocks, then " + after + ")";
 			});
 			note(failures, rampart);
+
+			// An explosion breaks the wall without a block of packed mud to show for it: a spell's blocks drop nothing, however they go.
+			String blast = server.computeOnServer(s -> {
+				ServerLevel level = player(s).level();
+				int standing = count(level, wallSite, 3, state -> state.is(Blocks.PACKED_MUD));
+				// A TNT blast drops every block it breaks (no decay), so each Rampart block would show.
+				level.explode(null, wallSite.getX() + 0.5, wallSite.getY() + 1.0, wallSite.getZ() + 0.5, 4.0F, net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+				int left = count(level, wallSite, 3, state -> state.is(Blocks.PACKED_MUD));
+				int dropped = 0;
+				for (net.minecraft.world.entity.item.ItemEntity item : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(wallSite).inflate(8))) {
+					if (item.getItem().is(net.minecraft.world.item.Items.PACKED_MUD)) {
+						dropped += item.getItem().getCount();
+					}
+					item.discard();
+				}
+				if (left >= standing) {
+					return "the explosion should break some of the Rampart (" + standing + " blocks before, " + left + " after)";
+				}
+				return dropped == 0 ? null : "a Rampart blown up shouldn't drop packed mud (" + dropped + " dropped)";
+			});
+			note(failures, blast);
 
 			// A spell's block left past its time (by a server that stopped without warning, say) comes down once its ground is loaded.
 			BlockPos leftover = server.computeOnServer(s -> {

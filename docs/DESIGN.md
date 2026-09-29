@@ -322,7 +322,7 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Rewind | Effect · Time | IV | You return to where you were 5 s ago, with that health if it was more |
 | Accelerate | Effect · Time | III | Speed III, Haste III, Jump Boost II and Regeneration for 10 s |
 | Time Skip | Effect · Time | III | You vanish, reappear up to 8 blocks ahead, and monsters lose track of you |
-| Rampart | Effect · World | II | A 5-wide, 3-high earth wall for 10 s; broken by hand it crumbles without drops |
+| Rampart | Effect · World | II | A 5-wide, 3-high earth wall for 10 s; broken by hand it crumbles, and however it's broken (an explosion too) it drops nothing |
 | Shades | Effect · Summon | III | Two shadow hounds for 20 s |
 | Thunderbird | Effect · Summon | III | A storm bird circles overhead for 15 s, striking the nearest enemy every 1.5 s (3 at most) |
 | Vow | Modifier · Power | III | On a shape: its effects hit twice as hard, the whole spell's cooldown is 4x longer (up to 60 s) |
