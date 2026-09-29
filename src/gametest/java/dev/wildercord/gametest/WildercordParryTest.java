@@ -46,6 +46,7 @@ import java.util.Set;
  *   <li>the same bolt at a Shield raised a second earlier isn't turned (the husk is unhurt);</li>
  *   <li>a husk's Beam (a spell that doesn't fly) parried at the last moment is negated and answered
  *       with a counter-burst that hurts the husk;</li>
+ *   <li>a Shield the player raises over their wolf blocks a bolt at it, but never parries it;</li>
  *   <li>an overcast forced into every wild magic outcome in turn goes off without error, never kills
  *       the caster, and the outcomes that leave a mark leave the right one;</li>
  *   <li>Borrowed Time cast again adds to the debt still owed, without borrowing back what was paid.</li>
@@ -76,6 +77,7 @@ public class WildercordParryTest implements FabricClientGameTest {
 			run(failures, "parrying a bolt", () -> parryBolt(context, world));
 			run(failures, "a Shield raised too early", () -> earlyShield(context, world));
 			run(failures, "parrying a beam", () -> parryBeam(context, world));
+			run(failures, "a pet's Shield", () -> petShield(context, world));
 			run(failures, "wild magic", () -> wildMagic(context, world));
 			// Last: the debt it leaves is still being paid when the world closes.
 			run(failures, "Borrowed Time", () -> borrowedTime(context, world));
@@ -248,6 +250,44 @@ public class WildercordParryTest implements FabricClientGameTest {
 			check(!player.hasAttached(WildercordAttachments.SPELL_SHIELD), "a parry should spend the Shield");
 		});
 		context.waitTicks(5);
+		clearHusks(world);
+	}
+
+	/**
+	 * A Shield a player raises over their wolf too blocks a bolt at the wolf, but never parries it: a turned
+	 * spell becomes its parrier's, and a wolf's would spare monsters and hit players.
+	 */
+	private static void petShield(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			stand(player);
+			ServerLevel level = player.level();
+			net.minecraft.world.entity.animal.wolf.Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+			wolf.snapTo(spot.x + 2, spot.y, spot.z, 0, 0);
+			wolf.tame(player);
+			wolf.setNoAi(true);
+			wolf.addTag(TAG);
+			wolf.addTag("wildercord.rolled");
+			level.addFreshEntity(wolf);
+			Mob husk = husk(level, 6, 2);
+			CastEngine.cast(player, SpellCompiler.compile(List.of(Runes.BURST, Runes.SHIELD)).root());
+			check(wolf.hasAttached(WildercordAttachments.SPELL_SHIELD), "a Burst of Shield should shield the player's wolf too");
+			// Straight at the wolf, fired as the Shield goes up.
+			SpellPlan.Group group = SpellCompiler.compile(List.of(Runes.BOLT, Runes.HARM)).root().groups.getFirst();
+			Vec3 at = wolf.getBoundingBox().getCenter();
+			Vec3 from = husk.getEyePosition().add(at.subtract(husk.getEyePosition()).normalize().scale(0.8));
+			RuneBolt.launch(new Cast(husk), group, null, from, at.subtract(from), false);
+		});
+		boolean turned;
+		try {
+			world.getServer().waitFor(server -> !player(server).level().getEntitiesOfClass(RuneBolt.class, player(server).getBoundingBox().inflate(32),
+				bolt -> bolt.getOwner() instanceof net.minecraft.world.entity.animal.wolf.Wolf).isEmpty(), 20);
+			turned = true;
+		} catch (AssertionError timedOut) {
+			turned = false;
+		}
+		check(!turned, "a wolf's Shield shouldn't parry a spell (it would turn it into the wolf's, hostile to players)");
+		context.waitTicks(10);
 		clearHusks(world);
 	}
 
