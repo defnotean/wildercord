@@ -84,7 +84,7 @@ public class CordScreen extends Screen {
 	private static final int TEXT_X = 16;
 	private static final int TEXT_RIGHT = W - 18;
 	private static final int LINE = 10;
-	private static final int SEARCH_W = 90;
+	private static final int SEARCH_W = 74;
 
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int TEXT = 0xFFE8E4F4;
@@ -147,6 +147,8 @@ public class CordScreen extends Screen {
 	private double pressX;
 	private double pressY;
 	private boolean dragging;
+	/** The loadouts panel, opened from the list badge at the end of the tabs row (or Ctrl+L). */
+	private final LoadoutPanel loadouts = new LoadoutPanel();
 
 	public CordScreen() {
 		super(Component.translatable("screen.wildercord.cord"));
@@ -181,6 +183,11 @@ public class CordScreen extends Screen {
 		int sx = Math.round(left() + searchX() * s);
 		int sy = Math.round(top() + TABS_TOP * s);
 		minecraft.textInputManager().setTextInputArea(sx, sy, sx + Math.round(SEARCH_W * s), sy + Math.round(13 * s));
+		readBook();
+	}
+
+	/** Copies the spells and passives to edit from the synced spellbook: on opening, and after a loadout is loaded. */
+	private void readBook() {
 		Player player = minecraft.player;
 		if (player == null) {
 			return;
@@ -195,6 +202,17 @@ public class CordScreen extends Screen {
 			passives.add(new ArrayList<>(passive));
 		}
 		editing = spellOpen(book.selected()) ? book.selected() : Math.max(0, Math.min(book.selected(), spellCount() - 1));
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		// A loadout loaded from the panel: once its spellbook arrives, edit that one.
+		if (minecraft.player != null && loadouts.loaded(book())) {
+			readBook();
+			readoutScroll = 0;
+			renaming = false;
+		}
 	}
 
 	@Override
@@ -269,6 +287,28 @@ public class CordScreen extends Screen {
 	/** The middle of spell tool {@code tool} (0 rename, 1 copy, 2 paste, 3 scroll) above the readout, on screen. */
 	public double[] toolPoint(int tool) {
 		return onScreen(toolX(tool) + TOOL / 2.0, toolY() + TOOL / 2.0);
+	}
+
+	/** The middle of the loadouts badge at the end of the tabs row, on screen. */
+	public double[] loadoutsPoint() {
+		return onScreen(loadoutsX() + 7, TABS_TOP - 1 + 7);
+	}
+
+	/** Whether the loadouts panel is open. */
+	public boolean loadoutsOpen() {
+		return loadouts.isOpen();
+	}
+
+	/** The middle of button {@code button} (0 load, 1 save here, 2 rename, 3 delete) on loadout {@code row} in the open panel, on screen; null if there's no such loadout. */
+	public double[] loadoutPoint(int row, int button) {
+		double[] local = loadouts.buttonPoint(row, button, W);
+		return local == null ? null : onScreen(local[0], local[1]);
+	}
+
+	/** The middle of the panel's "Save current as new" button, on screen; null when every place is taken. */
+	public double[] saveNewLoadoutPoint() {
+		double[] local = loadouts.saveNewPoint();
+		return local == null ? null : onScreen(local[0], local[1]);
 	}
 
 	/** Filters the Codex, as typing would. */
@@ -653,6 +693,25 @@ public class CordScreen extends Screen {
 
 	/** Draws the window in local coordinates and returns the tooltip under the mouse, if any. */
 	private List<Component> draw(GuiGraphicsExtractor g, int mx, int my) {
+		if (!loadouts.isOpen()) {
+			return drawWindow(g, mx, my);
+		}
+		if (tier() == null) {
+			loadouts.close();
+			return drawWindow(g, mx, my);
+		}
+		// The panel is over everything: nothing behind it answers the mouse.
+		drawWindow(g, Integer.MIN_VALUE / 2, Integer.MIN_VALUE / 2);
+		return loadouts.draw(g, mx, my, W, H);
+	}
+
+	/** The loadouts badge's x: the end of the tabs row, right under the help badge. */
+	private static int loadoutsX() {
+		return W - 27;
+	}
+
+	/** Draws the window itself (everything but the loadouts panel). */
+	private List<Component> drawWindow(GuiGraphicsExtractor g, int mx, int my) {
 		sprite(g, SPR_PANEL, 0, 0, W, H);
 		CordTier tier = tier();
 		if (tier == null) {
@@ -747,6 +806,20 @@ public class CordScreen extends Screen {
 			tx += w + 2;
 		}
 		drawSearch(g, searchX(), TABS_TOP);
+		// Loadouts: a little list at the end of the row, under the help badge; lit while its panel is open.
+		int loadoutX = loadoutsX();
+		int loadoutY = TABS_TOP - 1;
+		sprite(g, SPR_BADGE, loadoutX, loadoutY, 14, 14);
+		boolean listHover = inside(mx, my, loadoutX, loadoutY, 14, 14);
+		int bars = loadouts.isOpen() || listHover ? GOLD : 0xFFD8C8A0;
+		for (int row = 0; row < 3; row++) {
+			int ly = loadoutY + 4 + row * 3;
+			g.fill(loadoutX + 3, ly, loadoutX + 5, ly + 2, bars);
+			g.fill(loadoutX + 6, ly, loadoutX + 11, ly + 1, bars);
+		}
+		if (listHover) {
+			tooltip = loadoutsTooltip();
+		}
 
 		// Category chips for the chosen family, and the match count.
 		drawChips(g, mx, my);
@@ -820,7 +893,7 @@ public class CordScreen extends Screen {
 	}
 
 	private int searchX() {
-		return W - 12 - SEARCH_W;
+		return loadoutsX() - 2 - SEARCH_W;
 	}
 
 	private void drawSearch(GuiGraphicsExtractor g, int x, int y) {
@@ -1420,6 +1493,15 @@ public class CordScreen extends Screen {
 		return lines;
 	}
 
+	/** The loadouts badge: what loadouts are, how many are saved, and the keys. */
+	private List<Component> loadoutsTooltip() {
+		int saved = dev.wildercord.loadout.Loadouts.data(minecraft.player).size();
+		return List.of(Component.translatable("screen.wildercord.loadouts.badge").withStyle(ChatFormatting.GOLD),
+			Component.translatable("screen.wildercord.loadouts.badge.hint").withStyle(ChatFormatting.GRAY),
+			Component.translatable("screen.wildercord.loadouts.badge.count", saved, dev.wildercord.loadout.LoadoutRules.MAX).withStyle(ChatFormatting.GRAY),
+			Component.translatable("screen.wildercord.loadouts.badge.keys", WildercordKeys.nextLoadoutKey()).withStyle(ChatFormatting.DARK_AQUA));
+	}
+
 	private List<Component> helpTooltip() {
 		List<Component> lines = new ArrayList<>();
 		lines.add(Component.translatable("screen.wildercord.help.title").withStyle(ChatFormatting.GOLD));
@@ -1483,6 +1565,10 @@ public class CordScreen extends Screen {
 		if (tier() == null || !event.isAllowedChatCharacter()) {
 			return super.charTyped(event);
 		}
+		if (loadouts.isOpen()) {
+			loadouts.charTyped(event);
+			return true;
+		}
 		if (renaming) {
 			if (renameText.length() < dev.wildercord.spell.SpellNames.MAX_LENGTH) {
 				renameText += event.codepointAsString();
@@ -1503,6 +1589,14 @@ public class CordScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(KeyEvent event) {
+		if (loadouts.isOpen()) {
+			loadouts.key(event);
+			return true;
+		}
+		if (tier() != null && event.hasControlDown() && event.key() == InputConstants.KEY_L) {
+			openLoadouts();
+			return true;
+		}
 		if (renaming) {
 			if (event.key() == InputConstants.KEY_BACKSPACE) {
 				if (!renameText.isEmpty()) {
@@ -1567,6 +1661,16 @@ public class CordScreen extends Screen {
 			pressedSpell = -1;
 			pressedSocket = -1;
 			dragging = false;
+		}
+		if (loadouts.isOpen()) {
+			// Over everything: a click outside it (the badge included) closes it.
+			loadouts.click(mx, my, W);
+			return true;
+		}
+		if (!grimoirePage && inside(mx, my, loadoutsX(), TABS_TOP - 1, 14, 14)) {
+			openLoadouts();
+			click();
+			return true;
 		}
 		// Spells | Passives | Grimoire
 		int pageX = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
@@ -1804,6 +1908,9 @@ public class CordScreen extends Screen {
 	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
 		double my = localY(y);
 		int step = (int) Math.signum(scrollY);
+		if (loadouts.isOpen()) {
+			return true;
+		}
 		if (grimoirePage) {
 			grimoireScroll = Math.max(0, grimoireScroll - step * LINE * 2);
 			return true;
@@ -1912,6 +2019,19 @@ public class CordScreen extends Screen {
 
 	private int page() {
 		return grimoirePage ? 2 : passivePage ? 1 : 0;
+	}
+
+	/** Opens the loadouts panel: a name being typed for a spell, the search box and any rune being dragged, let go. */
+	private void openLoadouts() {
+		renaming = false;
+		searchFocused = false;
+		pressedRune = null;
+		pressedSpell = -1;
+		pressedSocket = -1;
+		dragging = false;
+		if (!loadouts.isOpen()) {
+			loadouts.toggle();
+		}
 	}
 
 	/** Shows page {@code page} (0 Spells, 1 Passives, 2 Grimoire): how the Cosmetics page comes back. */

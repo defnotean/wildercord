@@ -4,6 +4,20 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+- **Loadouts.** Save your whole Cord (every spell's runes and name, your passives and which are on, and the
+  selected spell) under a name, and swap between up to six setups: one for fighting, one for mining, one for
+  exploring. Open them from the new list badge at the end of the Cord screen's tabs row (or `Ctrl`+`L`): each
+  loadout shows its name and first runes, with **Load**, **Save current here**, **Rename** and **Delete** (saving
+  over and deleting ask twice), plus **Save current as new**. The arrow keys, `Enter`, `Ctrl`+`R` and `Delete` work too.
+  Loading never teaches a rune: runes you don't know or your Cord can't hold, and sockets and spells it doesn't
+  have, stay threaded but quiet, as on a smaller Cord. Every spell that changes starts its cooldown unless it's
+  cooling already, so swapping mid-fight is no cooldown reset, and loading is refused while you charge a spell,
+  duel or are sealed in a Cryostasis. See [Loadouts](https://defnotean.github.io/wildercord/spellcraft/loadouts/).
+- A **Next loadout** key (unbound at first, under Wildercord in the controls) loads your next loadout and names
+  it above the hotbar.
+- `/loadout save <name>`, `/loadout load <name>`, `/loadout delete <name>` and `/loadout list` for every player.
+
 ### Fixed
 - A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up
   and casts at you from there.
