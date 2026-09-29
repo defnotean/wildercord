@@ -127,7 +127,7 @@ players spend about 3 minutes in the Archive without finding it, the lectern wak
 | **Armour** | 8 |
 | **Knockback** | Barely moves (80% resistance) |
 | **Immune to** | Fire (fire spells' burning damage does nothing; a blast such as Explode still lands), falls, and other monsters |
-| **Can't be hurt** | While it rewrites its Cord (2.5 seconds, twice a fight) |
+| **Can't be hurt** | While it rewrites its Cord (2.5 seconds, twice a fight), except by the void or an operator's `/kill` |
 | **Boss bar** | Purple, darkens the sky, and names the spell it's casting: *The Archivist · casting Shock Rain*. It shows to everyone within 48 blocks of the lectern, and goes when you leave |
 | **Spell power** | 10% more than a Runebound's: 66% of normal on Easy, 88% on Normal, 110% on Hard |
 | **Affinities** | Weak to **void** (+50%), resists **arcane** (half). See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |
