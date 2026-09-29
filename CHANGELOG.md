@@ -3,6 +3,7 @@
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+- **Life and arcane look and sound like themselves.** Arcane's star seal now means a lasting mark on someone (Exposed, a brand, a reflecting shell); instant strikes are needles, columns and comets (Harm is a thin needle of light, Smite a tall column after its ring, Starfall drops along a star of light threads with a different note per star), wards are glass, and Swap is two crossing arcs. Life's bloom means restoration; Bramble shows its four thorns, Regrowth winds a vine up in three stages, Remedy's grey motes turn green, Harvest sweeps a golden crescent, Grow ripples out, Reversal raises a sun-disc, and Fortune spins a coin. Every life and arcane rune has its own synthesised sound (about 75 new ones) and a role stinger under its cast sound, replacing the borrowed vanilla ones (Harm's melee crit, Venom's spider, Reversal's Totem of Undying).
 
 ### Fixed
 - **Lightning no longer multiplies on a crowd.** Every strike hurt everything near it, so enemies packed together took a
@@ -117,8 +118,40 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Tidecall, Undertow, Tidehook, Tidewrit, Current, Disarm and Tidebreath got small mechanic tweaks (Tidecall pulls and
   soaks, Undertow drags toward the nearest water, Tidehook leaves a gasp, Current carries allies, Disarm's player
   version stops them using what they hold for 3 seconds).
+- **Life and arcane runes each have their own verb, and the outliers are tuned.** The numbers now sit near their
+  tier's yardstick, and every repeater is guarded (a Zone, Linger or Echo no longer multiplies a rune without limit).
+  - **Exposed**, a new arcane mark: **Harm** leaves its target exposed for 3 seconds and **Reveal** for as long as it
+    glows (and strips invisibility). Exposed counts as a mark for **Unweave** and **Prismatic Burst**, and **Starfall**
+    and **Cometfall** send their stars and shards to exposed enemies first.
+  - **Silence** does what it says: a caster can't cast for 4 seconds (3 on players) and a charge or a Runebound's
+    telegraphed cast in hand is cut short; monsters get Weakness I. **Manaburn** cuts a caster's charge or cast short.
+  - **Smite** is a verdict: a ring closes at the target's feet for 0.7 seconds, then a column of light deals 13 (26
+    against undead) and strips Absorption. **Prismatic Burst** is 5 damage and 4 per mark (five at most) and passes each
+    mark it eats to up to 3 enemies nearby. **Resonance** rings each enemy once per cast (up to 4 at a time) instead of
+    growing with the square of the crowd. **Spellbrand** bursts for 7 damage of the element of the spell that sets it
+    off. **Decree** condemns what it holds (your next 2 spells hurt it 40% more) and is free on a crowd of 3 or more.
+    **Reflect** returns arcane damage that ignores armour and cracks with each reflection (6 at most). **Halo** smites
+    every 1.5 seconds and answers whoever hurt its ally. **Starshard** (11, sparks of 4), **Starlight Tether** (1 damage
+    a pull, 5 seconds), **Twin Star** (the twin casts at 75%), **Empower** (a Weakness comedown; a passive carries only
+    Strength I), **Summon** (spirit wolves bite for a wolf's 4, and your mana regenerates a quarter slower while they
+    live), **Manatide** (10 mana; a quarter of every spell you cast under it comes back) and **Haste** (charge fills
+    30% sooner).
+  - **Heal**'s overheal becomes a shield of up to 2 hearts, and repeats within one cast heal 100%, 60%, then 40%.
+    **Regrowth** ramps (I, II, III). **Cleanse** washes elemental marks off too. **Remedy** turns what it cures to good
+    (poison to Regeneration, slowness to Speed...). **Venom** is its own lethal poison (2 now, 0.75 a second for 4
+    seconds, Poison I as a marker) that works on undead and spiders and spreads once to 3 enemies nearby.
+    **Sporebloom** makes monsters fight each other for 5 seconds. **Drowse** makes the blow that wakes a sleeper deal 75%
+    more. **Rootsnare** holds for 1.5 seconds and then taxes each block of movement. **Haven** shoves enemies out of
+    the dome instead of giving Resistance. **Vinelash** marks its target Pulled and trips it. **Moonpetal** waxes and
+    wanes with the moon (5 damage, 4 healing). **Bramble** has 4 thorns. **Fortune** strikes for double (1 in 4) and
+    a fortunate kill drops extra experience. **Bloom** costs 14 and spreads Regeneration to allies near the ones it
+    touches. **Second Wind** also gives Speed II and a gust that shoves enemies away. **Restore** heals 4 and mends 8%,
+    an item once a minute. **Nourish** feeds pets (they heal and are ready to breed). **Grow** ages baby animals up.
+    **Ancient Seed** keeps growing its field for 12 more seconds. **Glowvine** re-ripens vines. **Nullify** dissolves
+    vexes and spirit wolves and shades that aren't yours.
 
 ### Fixed
+- **Silence** now stops casting (it only ever made monsters forget their target for a moment). **Treasure Sense** shows only unopened treasure, nearest first, not every player chest, hopper and dispenser. **Restore** can no longer repair without limit through a Zone or Linger. **Venom** hurts undead and spiders. **Nourish** no longer wastes mana on a pet. **Light** says when there is no room for it.
 - Shatter and Fracture now end a freeze hold instead of leaving the target frozen.
 - Repel was drawn in red; it now uses the wind palette. Glacier's shell no longer lingers after the ice cracks.
 - Tidewrit no longer repeats its sound for every target it sweeps.

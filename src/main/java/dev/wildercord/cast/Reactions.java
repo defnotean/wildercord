@@ -58,6 +58,8 @@ public final class Reactions {
 		BLEEDING(ReactionRules.BLEEDING_TICKS),
 		/** Left by Launch, Levitate, Updraft and Cyclone: any spell hits it harder while it's off the ground (see {@link Statuses#airborne}). */
 		AIRBORNE(40),
+		/** Left by arcane's Harm and Reveal (see {@link Exposed}): counts as one mark for Unweave and Prismatic Burst. */
+		EXPOSED(Exposed.HARM_TICKS),
 		/** Left by Plasma: counts as wet for Conduct (and only for Conduct: fire is not dulled, Unweave does not count it). */
 		IONISED(100);
 
@@ -452,7 +454,7 @@ public final class Reactions {
 
 	/** The marks Unweave counts and undoes (Resonance's own mark aside), after burning. */
 	private static final List<Mark> WOVEN = List.of(Mark.FROZEN, Mark.WINDSWEPT, Mark.PULLED, Mark.SOAKED, Mark.WET, Mark.CRACKED, Mark.SHADOWED,
-		Mark.BLEEDING);
+		Mark.BLEEDING, Mark.EXPOSED);
 
 	/** Uses up every mark on {@code t} and says which, as their element's colours in that order. */
 	private static List<Integer> useMarks(LivingEntity t) {
@@ -477,6 +479,7 @@ public final class Reactions {
 				case WET -> 0x7CCBF2;
 				case CRACKED -> ElementFx.EARTH.primary();
 				case SHADOWED -> ElementFx.VOID.secondary();
+				case EXPOSED -> ElementFx.ARCANE.primary();
 				default -> ElementFx.BLOOD.primary();
 			});
 		}

@@ -53,7 +53,7 @@ public final class CraftedRunes {
 	private CraftedRunes() {}
 
 	/** Spellbrand: the burst when your magic next hurts a branded creature. */
-	private static final double BRAND_BURST = 6.0;
+	private static final double BRAND_BURST = 7.0;
 	/** Gash: the cut itself. */
 	private static final double GASH_DAMAGE = 3.0;
 	/** Prospect: the farthest it listens for ore, however widened, and the most ores it shows. */
@@ -242,12 +242,17 @@ public final class CraftedRunes {
 			return;
 		}
 		Cast owner = brand.cast();
+		// The burst is an echo of whatever spell set it off: fire's ignites, storm's can overload, arcane's unweaves.
+		String trigger = Effects.currentElementNow().isEmpty() ? "arcane" : Effects.currentElementNow();
 		Scheduler.later(2, () -> {
 			if (!owner.alive() || !target.isAlive() || target.level() != owner.level) {
 				return;
 			}
 			CraftedVfx.spellbrandBurst(owner.level, target);
-			Effects.asElement("arcane", () -> Effects.hurt(owner, target, magic(owner), BRAND_BURST * brand.power()));
+			Effects.asElement(trigger, () -> Effects.hurt(owner, target, magic(owner), BRAND_BURST * brand.power()));
+			if (trigger.equals("fire") && target.isAlive()) {
+				target.igniteForSeconds(3);
+			}
 		});
 	}
 
@@ -515,6 +520,13 @@ public final class CraftedRunes {
 			t.removeEffect(MobEffects.WEAKNESS);
 		}
 		CraftedVfx.wake(level, t);
+	}
+
+	/** The damage multiplier for a blow on a sleeper: 1.75 (Drowse's backstab). */
+	public static final double BACKSTAB = 1.75;
+
+	static double backstab(LivingEntity t) {
+		return ASLEEP.isEmpty() || !asleep(t) ? 1.0 : BACKSTAB;
 	}
 
 	/** Whether {@code t} is asleep under Drowse (for the tests). */

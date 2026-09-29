@@ -734,6 +734,13 @@ final class FusedLife {
 		SPENT.put(e.getUUID(), now);
 		e.setHealth(FusedLifeRules.secondWindHealth(wind.power, e.getMaxHealth()));
 		e.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(4, wind.duration), 1, false, true));
+		// The way out: a burst of speed and a gust that clears the enemies round them (a creature gets out, it doesn't stand and fight: that is Reversal).
+		e.addEffect(new MobEffectInstance(MobEffects.SPEED, Effects.ticks(4, wind.duration), 1, false, true));
+		for (Entity near : level.getEntities(e, e.getBoundingBox().inflate(3.0), x -> Targets.canHarm(wind.cast.caster, x) && x instanceof LivingEntity)) {
+			if (!Spirits.isBoss(near) && near.distanceTo(e) <= 3.0) {
+				Effects.push((LivingEntity) near, Effects.horizontal(near.position().subtract(e.position()), e.getLookAngle()).scale(1.6).add(0, 0.35, 0));
+			}
+		}
 		FusedLifeVfx.secondWindSaved(level, e);
 		if (e instanceof ServerPlayer player) {
 			player.sendOverlayMessage(Component.translatableWithFallback("message.wildercord.second_wind", "Second Wind!").withColor(0x6EDC64));

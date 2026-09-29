@@ -34,16 +34,17 @@ public final class Statuses {
 	/** The soonest the same creature can be interrupted again (8 seconds). */
 	public static final int INTERRUPT_GAP = 160;
 
-	private static final Map<UUID, Long> SILENCED = new ConcurrentHashMap<>();
 	private static final Map<UUID, Long> INTERRUPTED = new ConcurrentHashMap<>();
 
 	// ------------------------------------------------------------------ silenced
 
-	/** Silences a creature for {@code ticks}; a longer silence already on it stays. */
+	/**
+	 * Silences a creature for {@code ticks}; a longer silence already on it stays. The state itself lives in {@link CastLock}
+	 * (which Silence and Manaburn use too): this adds what wind's silence looks like.
+	 */
 	public static void silence(LivingEntity target, int ticks) {
-		boolean fresh = !silenced(target);
-		long until = target.level().getGameTime() + Math.max(1, ticks);
-		SILENCED.merge(target.getUUID(), until, Math::max);
+		boolean fresh = !CastLock.locked(target);
+		CastLock.lock(target, Math.max(1, ticks));
 		if (fresh && target.level() instanceof ServerLevel level) {
 			StatusVfx.silenced(level, target);
 			// A crown halo every halo period while it lasts, so the state can be read on the creature (at most 16 beats).
@@ -55,24 +56,11 @@ public final class Statuses {
 				});
 			}
 		}
-		if (target instanceof ServerPlayer player) {
-			Charging.interrupt(player);
-		} else if (target instanceof Mob mob) {
-			Runebound.interrupt(mob);
-		}
 	}
 
-	/** Whether {@code entity} can't cast right now. */
+	/** Whether {@code entity} can't cast right now (see {@link CastLock#locked}). */
 	public static boolean silenced(Entity entity) {
-		Long until = SILENCED.get(entity.getUUID());
-		if (until == null) {
-			return false;
-		}
-		if (until < entity.level().getGameTime()) {
-			SILENCED.remove(entity.getUUID(), until);
-			return false;
-		}
-		return true;
+		return entity instanceof LivingEntity living && CastLock.locked(living);
 	}
 
 	// ------------------------------------------------------------------ airborne
@@ -179,14 +167,12 @@ public final class Statuses {
 
 	/** Forgets everything (the server stopped). */
 	static void clear() {
-		SILENCED.clear();
 		INTERRUPTED.clear();
 		CLAIMS.clear();
 	}
 
 	/** Drops finished entries so the tables can't grow for ever. */
 	static void sweep(long now) {
-		SILENCED.values().removeIf(until -> until < now);
 		INTERRUPTED.values().removeIf(at -> now - at > INTERRUPT_GAP || at > now);
 		CLAIMS.values().removeIf(at -> now - at > 600 || at > now);
 	}

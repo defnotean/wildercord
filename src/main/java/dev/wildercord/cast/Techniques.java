@@ -81,6 +81,8 @@ final class Techniques {
 			BLACKFLAME.clear();
 			OVERDRIVE.clear();
 			BIRDS.clear();
+			CONDEMNED.clear();
+			RESTORED.clear();
 		});
 	}
 
@@ -173,12 +175,16 @@ final class Techniques {
 	}
 
 	/** Resonance: marks the target; every other marked enemy nearby feels half the hit. */
+	/** The most enemies one Resonance hit rings. */
+	public static final int RESONANCE_LINKS = 4;
+
 	static void resonance(Cast cast, LivingEntity t, double power, int markTicks) {
-		double amount = 4 * power;
+		double amount = 5 * power;
 		List<LivingEntity> linked = new ArrayList<>();
 		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(16.0),
 				e -> Targets.canHarm(cast.caster, e) && Reactions.has(e, Reactions.Mark.RESONANT))) {
-			if (linked.size() < 8) {
+			// An enemy rings once per cast, however many pulses or hits follow, so a crowd is linear, not quadratic.
+			if (linked.size() < RESONANCE_LINKS && cast.once("resonance:" + e.getUUID())) {
 				linked.add((LivingEntity) e);
 			}
 		}
@@ -359,6 +365,50 @@ final class Techniques {
 
 	// ------------------------------------------------------------------ control
 
+	/** Decree's verdict: the caster's next {@link #DECREE_HITS} spell hits on a held creature within 4 s deal 40% more; a decree on this many or more costs nothing. */
+	public static final int DECREE_HITS = 2;
+	public static final int DECREE_CONDEMNED_TICKS = 80;
+	public static final double DECREE_BONUS = 1.4;
+	public static final int DECREE_FREE_AT = 3;
+
+	private static final class Condemned {
+		final java.util.UUID by;
+		final long until;
+		int hits;
+
+		Condemned(java.util.UUID by, long until, int hits) {
+			this.by = by;
+			this.until = until;
+			this.hits = hits;
+		}
+	}
+
+	private static final java.util.Map<java.util.UUID, Condemned> CONDEMNED = new java.util.concurrent.ConcurrentHashMap<>();
+
+	/** The damage multiplier for a hit on a creature its caster decreed (1 when it isn't): called for every spell hit. */
+	static double condemned(Cast cast, LivingEntity target) {
+		if (CONDEMNED.isEmpty()) {
+			return 1.0;
+		}
+		Condemned c = CONDEMNED.get(target.getUUID());
+		if (c == null) {
+			return 1.0;
+		}
+		if (c.until < cast.level.getGameTime() || c.hits <= 0) {
+			CONDEMNED.remove(target.getUUID(), c);
+			return 1.0;
+		}
+		if (!c.by.equals(cast.caster.getUUID())) {
+			return 1.0;
+		}
+		c.hits--;
+		return DECREE_BONUS;
+	}
+
+	static void clearCondemned() {
+		CONDEMNED.clear();
+	}
+
 	/** Decree: everything hit is stunned; speaking it costs the caster 2 health, once per cast. */
 	static void decree(Cast cast, List<LivingEntity> harmed, int ticks) {
 		if (harmed.isEmpty()) {
@@ -367,12 +417,15 @@ final class Techniques {
 		LivingEntity caster = cast.caster;
 		if (cast.once("decree")) {
 			TechniqueVfx.decreeSpoken(cast.level, caster);
-			if (!Casters.creative(caster)) {
+			// Speaking to a crowd is free: the cost is for a single command.
+			if (!Casters.creative(caster) && harmed.size() < DECREE_FREE_AT) {
 				caster.setHealth(Math.max(1.0F, caster.getHealth() - 2.0F));
 				Fx.sound(cast.level, caster.position(), SoundEvents.PLAYER_HURT, 0.6F, 0.8F);
 			}
 		}
+		long until = cast.level.getGameTime() + DECREE_CONDEMNED_TICKS;
 		for (LivingEntity t : harmed) {
+			CONDEMNED.put(t.getUUID(), new Condemned(caster.getUUID(), until, DECREE_HITS));
 			Spirits.hold(t, ticks);
 			if (t instanceof Mob mob) {
 				mob.setTarget(null);
@@ -532,16 +585,32 @@ final class Techniques {
 		});
 	}
 
+	/** Restore: heals 4, mends 8% of each item, and an item can be mended by it once a minute (so Zone, Linger and Pulse can't repair without limit). */
+	public static final double RESTORE_HEAL = 4.0;
+	public static final double RESTORE_MEND = 0.08;
+	public static final int RESTORE_REST = 1200;
+	private static final java.util.Map<String, Long> RESTORED = new java.util.concurrent.ConcurrentHashMap<>();
+
 	/** Restore: heals, puts out fire and mends worn and held gear a little. */
 	static void restore(Cast cast, LivingEntity t, double power) {
-		t.heal((float) (6 * power));
+		t.heal((float) (RESTORE_HEAL * power));
 		t.clearFire();
 		boolean mended = false;
+		long now = cast.level.getGameTime();
+		if (RESTORED.size() > 512) {
+			RESTORED.values().removeIf(at -> now - at >= RESTORE_REST || at > now);
+		}
 		for (EquipmentSlot slot : List.of(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST,
 				EquipmentSlot.LEGS, EquipmentSlot.FEET)) {
 			ItemStack stack = t.getItemBySlot(slot);
+			String key = t.getUUID() + ":" + slot.getName();
+			Long last = RESTORED.get(key);
+			if (last != null && last <= now && now - last < RESTORE_REST) {
+				continue;
+			}
 			if (!stack.isEmpty() && stack.isDamageableItem() && stack.getDamageValue() > 0) {
-				int fix = (int) Math.ceil(stack.getMaxDamage() * 0.05 * power);
+				RESTORED.put(key, now);
+				int fix = (int) Math.ceil(stack.getMaxDamage() * RESTORE_MEND * power);
 				stack.setDamageValue(Math.max(0, stack.getDamageValue() - fix));
 				mended = true;
 			}
