@@ -938,7 +938,7 @@ public class CordScreen extends Screen {
 		}
 
 		List<Integer> active = SpellCaster.activeSockets(spell, book(), s, tier);
-		SpellCompiler.Compiled compiled = selected ? SpellCompiler.compile(runesAt(spell, active)) : null;
+		SpellCompiler.Compiled compiled = selected ? SpellHud.read(runesAt(spell, active)) : null;
 		int shown = Math.min(CordTier.MAX_SOCKETS, Math.max(tier.sockets, spell.size()));
 		// The cord itself, threaded through every socket.
 		sprite(g, SPR_THREAD, 28, ry + 7, SOCKET_X - 28 + (shown - 1) * PITCH + CELL / 2, 4);
@@ -992,7 +992,7 @@ public class CordScreen extends Screen {
 		}
 		int sockets = PassiveCaster.sockets(tier);
 		List<Integer> active = passiveSockets(passive, tier);
-		SpellCompiler.Compiled compiled = active.isEmpty() ? null : SpellCompiler.compile(runesAt(passive, active));
+		SpellCompiler.Compiled compiled = active.isEmpty() ? null : SpellHud.read(runesAt(passive, active));
 		int shown = Math.min(Passives.SOCKETS, Math.max(sockets, passive.size()));
 		sprite(g, SPR_THREAD, 28, ry + 7, SOCKET_X - 28 + (shown - 1) * PITCH + CELL / 2, 4);
 		for (int i = 0; i < shown; i++) {
@@ -1173,7 +1173,7 @@ public class CordScreen extends Screen {
 		java.util.Optional<dev.wildercord.spell.Secrets.Secret> secret = Heart.foundSecret(minecraft.player, runes);
 		boolean knownSecret = secret.isPresent();
 		String spellName = renaming ? renameText + ((System.currentTimeMillis() / 500) % 2 == 0 ? "_" : " ")
-			: SpellCaster.nameOf(minecraft.player, book(), editing, runes);
+			: SpellCaster.nameOf(minecraft.player, book(), editing, runes, SpellHud.read(runes));
 		int nameColor = renaming ? TEXT : knownSecret ? 0xFF000000 | secret.get().color() : GOLD;
 		out.add(new ReadoutLine(Component.literal(font.plainSubstrByWidth(spellName, width - TOOLS_W - 6)).getVisualOrderText(), TEXT_X, nameColor));
 		refusal(out, width);

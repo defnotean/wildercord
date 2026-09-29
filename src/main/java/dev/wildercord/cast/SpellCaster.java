@@ -302,11 +302,26 @@ public final class SpellCaster {
 	 * (never before: the name would give it away), or one made from its runes.
 	 */
 	public static String nameOf(net.minecraft.world.entity.player.Player player, Spellbook book, int spell, List<RuneDef> runes) {
+		return nameOf(player, book, spell, runes, () -> dev.wildercord.spell.SpellNames.auto(runes));
+	}
+
+	/**
+	 * As {@link #nameOf(net.minecraft.world.entity.player.Player, Spellbook, int, List)}, for {@code runes}
+	 * already read as {@code compiled}: the HUD and the wheel draw the name every frame, and a name made
+	 * from the runes would otherwise read the whole spell again each time.
+	 */
+	public static String nameOf(net.minecraft.world.entity.player.Player player, Spellbook book, int spell, List<RuneDef> runes,
+			SpellCompiler.Compiled compiled) {
+		return nameOf(player, book, spell, runes, () -> dev.wildercord.spell.SpellNames.auto(compiled.root()));
+	}
+
+	private static String nameOf(net.minecraft.world.entity.player.Player player, Spellbook book, int spell, List<RuneDef> runes,
+			java.util.function.Supplier<String> auto) {
 		String custom = book.name(spell);
 		if (!custom.isEmpty()) {
 			return custom;
 		}
-		return Heart.foundSecret(player, runes).map(Secrets.Secret::name).orElseGet(() -> dev.wildercord.spell.SpellNames.auto(runes));
+		return Heart.foundSecret(player, runes).map(Secrets.Secret::name).orElseGet(auto);
 	}
 
 	/** Casts of each spell so far this session, per player, for Combo. */
