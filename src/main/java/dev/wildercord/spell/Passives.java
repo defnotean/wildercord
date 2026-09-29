@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Passive spells: up to two short spells that stay on all the time, paid for with mana every
+ * Passive spells: up to two tiny spells (two runes each) that stay on all the time, paid for with mana every
  * second instead of a cost and a cooldown. Only runes that make sense sustained are allowed, so
  * a passive can be a lasting buff or a guardian aura but never a machine gun or a free death save.
  *
@@ -19,8 +19,8 @@ public final class Passives {
 	private Passives() {}
 
 	public static final int MAX = 2;
-	/** Runes per passive, at most (and never more than the Cord's sockets). */
-	public static final int SOCKETS = 5;
+	/** Runes per passive, at most (and never more than the Cord's sockets): a passive is a lasting buff or an aura, not a whole spell. */
+	public static final int SOCKETS = 2;
 	/** Mana per second for each point of the passive's cost. */
 	public static final double UPKEEP_PER_COST = 0.12;
 	/** How often a Self passive is renewed, in ticks. */
@@ -94,6 +94,9 @@ public final class Passives {
 			if (needsAura(rune) && !aura) {
 				return rune.name() + " needs an Orbit to carry it in a passive.";
 			}
+		}
+		if (runes.size() > SOCKETS) {
+			return "A passive holds " + SOCKETS + " runes at most.";
 		}
 		return null;
 	}

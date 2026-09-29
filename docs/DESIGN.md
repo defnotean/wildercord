@@ -868,7 +868,7 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
 - **Faltering:** without the mana for a second's upkeep, a passive stops renewing until you have it again.
 - **Renewal:** a Self passive re-applies every 2 seconds, quietly (no particles after the first time). An Orbit passive restarts whenever its orbs run out, and stops the moment it's switched off.
 - **Nothing outlasts it:** whatever a passive's cast sets lasts 15 seconds at most (`Passives.EFFECT_TICKS`, above Night Vision's 10 seconds of flicker), so switching one on for a second can't bank a minute of its buff. The same effect from anywhere else keeps its own length.
-- **Each passive has an on/off switch.** Up to 5 runes each (fewer on small Cords).
+- **Each passive has an on/off switch.** Two runes each, on any Cord (a passive is a lasting buff or an aura, not a whole spell); so at most four runes are ever active.
 - **Only sustainable runes, so it isn't broken:**
   - Shapes: Self or Orbit.
   - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive, Anchor, Frostward, Cushion, Searing Edge.
@@ -876,7 +876,7 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
   - Modifiers: Amplify, Extend, Frugal, Widen, Focus, Quicken.
   - Never: heals, Shield, Barrier (absorption), Brace, Reversal, Foresight, summons, links, big area damage, Stasis.
 
-Examples: `Self · Infinity` (projectiles always stop around you, about 3.8 mana/s), `Orbit · Shock · Amplify` (a crackling guard), `Orbit · Dismantle` (orbs that cut whatever comes near).
+Examples: `Self · Infinity` (projectiles always stop around you, about 3.8 mana/s), `Orbit · Shock` (a crackling guard), `Orbit · Dismantle` (orbs that cut whatever comes near).
 
 ## Spell enchantments
 

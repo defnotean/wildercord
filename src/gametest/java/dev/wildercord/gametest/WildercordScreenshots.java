@@ -838,6 +838,9 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			check(SpellCaster.editPassive(player, 2, ids(Runes.ORBIT, Runes.SHOCK)) != null, "There are only two passive slots");
 			check(SpellCaster.editPassive(player, 0, ids(Runes.SELF, Runes.SWIFT)) == null, "Self · Swift should be a valid passive");
 			check(SpellCaster.editPassive(player, 1, ids(Runes.ORBIT, Runes.DISMANTLE)) == null, "Orbit · Dismantle should be a valid passive");
+			// A passive holds two runes at most: a third is refused, and the first two stay.
+			check(SpellCaster.editPassive(player, 0, ids(Runes.SELF, Runes.SWIFT, Runes.HASTE)) != null, "A passive should refuse a third rune");
+			check(Spellbooks.get(player).passives().get(0).equals(ids(Runes.SELF, Runes.SWIFT)), "A refused third rune should leave the passive as it was");
 			player.removeAllEffects();
 			Spellbooks.setMana(player, 100);
 		});

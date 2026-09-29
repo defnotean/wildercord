@@ -21,6 +21,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - For add-on makers: `api.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` (API 1.1).
 
 ### Changed
+- **Passives hold two runes.** A passive used to hold up to five, so two of them could keep ten runes running at once,
+  which was a lot of free power. Each passive now holds **two runes**, whatever your Cord, and you still have the two
+  slots (1st and 5th Heart Circle): at most four runes are ever active. An effect before any shape is on Self already,
+  so `Stoneskin · Empower` needs no Self rune, and a modifier takes one of the two sockets (`Swift · Amplify`). A
+  passive or loadout saved with more keeps its first two runes (nothing else is lost); threading a third is refused
+  ("Passives hold 2 runes"). See [Passive Spells](https://defnotean.github.io/wildercord/spellcraft/passives/).
 - **A piece in its slot takes the place of held pieces of its kind:** a staff in the Staff slot and staffs in your
   hands, only the slotted one counts; the same for a focus and for the tome. A slot that is empty lets held gear work
   exactly as before (staffs in either hand, foci and the tome in the off-hand), so nothing stops working. The slots

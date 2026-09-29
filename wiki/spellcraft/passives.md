@@ -10,7 +10,7 @@ description: "Up to two always-on spells: how to unlock them, what they can hold
 
 A **passive spell** is always on. Instead of a cost and a cooldown, it costs a little mana **every second**,
 and keeps itself going: a buff that never runs out, or a ring of orbs that guards you. You can have up to
-**two**.
+**two**, and each holds **two runes**.
 
 1. TOC
 {:toc}
@@ -36,7 +36,10 @@ Open the Cord screen (`K`) and click the **Passives** tab. You thread a passive 
 drag runes from the Codex), with a few differences:
 
 - There are two rows. A row that isn't open yet says which circle opens it.
-- Each passive holds up to **5 runes** (3 on a Twine Cord, whose spells only have 3 sockets).
+- Each passive holds **two runes**, whatever your Cord. A passive is a lasting buff or a guard, not a whole spell, so
+  make the two count: an effect before any shape is on Self already, so `Stoneskin · Empower` needs no Self rune,
+  and a modifier such as Amplify takes one of the two sockets (`Swift · Amplify`). Trying to thread a third is refused
+  ("Passives hold 2 runes").
 - Runes that can never be part of a passive are dimmed with a lock in the Codex, and trying to thread one is
   refused ("Heal can't be a passive").
 - Each row has its **upkeep** ("0.7/s") and an **On/Off** switch.
@@ -111,6 +114,7 @@ either. The Cord screen tells you exactly what's wrong:
 | Heal can't be sustained as a passive. | That rune isn't allowed in passives. |
 | A passive has one shape at most. | Take all but one shape off (an effect before any shape counts as Self). |
 | Shock needs an Orbit to carry it in a passive. | Damage and control need an Orbit. |
+| Passives hold 2 runes | A passive is full: take one rune off before you thread another. |
 
 ## Upkeep
 
@@ -123,10 +127,9 @@ as a passive it costs 0.72 mana a second (shown as 0.7/s).
 | `Self · Swift` | 6 | 0.72 |
 | `Self · Feather Fall` | 6 | 0.72 |
 | `Self · Regrowth` | 10 | 1.2 |
-| `Self · Stoneskin · Empower` | 24 | 2.88 |
+| `Stoneskin · Empower` | 24 | 2.88 |
 | `Orbit · Shock` | 23 | 2.76 |
 | `Orbit · Dismantle` | 29 | 3.48 |
-| `Orbit · Shock · Amplify` | 31.4 | 3.77 |
 | `Self · Infinity` | 32 | 3.84 |
 
 - **Thrift** on your Cord and the **Archmage** perk lower the upkeep, like they lower a spell's cost (and
@@ -188,8 +191,8 @@ off costs nothing and keeps its runes; its readout starts "Passive (off)" and sh
 | `Self · Swift` | 1st Circle, any Cord | Speed everywhere, for less than a mana a second. |
 | `Self · Feather Fall` | 1st Circle, any Cord | Never die to a fall again. |
 | `Self · Tidebreath` | 1st Circle, any Cord | Breathe and swim freely under water. |
-| `Self · Stoneskin · Empower` | 1st Circle, a Copper Cord | Tougher and stronger in every fight. |
-| `Orbit · Shock · Amplify` | an Amethyst Cord | A crackling guard that hits whatever comes close. |
+| `Stoneskin · Empower` | 1st Circle, a Copper Cord | Tougher and stronger in every fight, in one passive. |
+| `Orbit · Shock` | an Amethyst Cord | A crackling guard that hits whatever comes close. |
 | `Orbit · Dismantle` | an Amethyst Cord | Orbs that cut straight through armour. |
 | `Self · Infinity` | an Echo Cord | Arrows and projectiles stop in the air around you, all the time. |
 
