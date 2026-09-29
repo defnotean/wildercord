@@ -201,8 +201,17 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				ServerLevel level = player.level();
 				BlockPos pit = site(player, 12, 24);
 				pool(level, pit, 1);
+				// The water out first: lava poured in beside it would turn to obsidian, solid ground Blink may land on.
+				for (BlockPos pos : BlockPos.betweenClosed(pit.offset(-2, -1, -2), pit.offset(2, -1, 2))) {
+					level.setBlock(pos, Blocks.AIR.defaultBlockState(), net.minecraft.world.level.block.Block.UPDATE_CLIENTS);
+				}
 				for (BlockPos pos : BlockPos.betweenClosed(pit.offset(-2, -1, -2), pit.offset(2, -1, 2))) {
 					level.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
+				}
+				for (BlockPos pos : BlockPos.betweenClosed(pit.offset(-2, -1, -2), pit.offset(2, -1, 2))) {
+					if (!level.getFluidState(pos).is(net.minecraft.tags.FluidTags.LAVA)) {
+						return "the test's lava pool should be lava (" + pos + " is " + level.getBlockState(pos) + ")";
+					}
 				}
 				Vec3 before = player.position();
 				apply(player, List.of(Runes.TOUCH, Runes.BLINK), Vec3.atCenterOf(pit.below()), List.of());

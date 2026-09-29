@@ -72,13 +72,15 @@ public final class Tooltips {
 
 	public static void init() {
 		ItemTooltipCallback.EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, WRAP_PHASE);
+		// The game's own thread (mods start on it).
+		Thread game = Thread.currentThread();
 		ItemTooltipCallback.EVENT.register(WRAP_PHASE, (stack, context, flag, lines) -> {
-			Minecraft mc = Minecraft.getInstance();
-			// Creative search reads tooltips on other threads, where the font mustn't be touched (and
-			// wrapping doesn't matter to a search).
-			if (!mc.isSameThread() || !BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(Wildercord.MOD_ID)) {
+			// Creative search reads tooltips on other threads, where the game (and its font) mustn't be touched,
+			// and wrapping doesn't matter to a search.
+			if (Thread.currentThread() != game || !BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(Wildercord.MOD_ID)) {
 				return;
 			}
+			Minecraft mc = Minecraft.getInstance();
 			int width = maxWidth(mc.getWindow().getGuiScaledWidth());
 			for (int i = 0; i < lines.size(); i++) {
 				Component line = lines.get(i);

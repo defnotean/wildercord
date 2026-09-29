@@ -20,8 +20,9 @@ public final class FamiliarClient {
 		EntityRendererRegistry.register(FamiliarContent.WISP, WispRenderer::new);
 		// Only on the game's thread: creative search builds its index from tooltips in the background, and the
 		// player's familiars aren't safe to read from there.
+		Thread game = Thread.currentThread();
 		ItemTooltipCallback.EVENT.register((stack, context, flag, lines) -> {
-			if (!stack.is(FamiliarContent.WISP_LANTERN) || Minecraft.getInstance().player == null || !Minecraft.getInstance().isSameThread()) {
+			if (!stack.is(FamiliarContent.WISP_LANTERN) || Thread.currentThread() != game || Minecraft.getInstance().player == null) {
 				return;
 			}
 			Bonds bonds = Familiars.get(Minecraft.getInstance().player);

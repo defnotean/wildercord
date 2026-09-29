@@ -126,6 +126,19 @@ public final class Wards {
 				unhold(entity, false);
 			}
 		});
+		// The copy made in the other world keeps the held one's "no gravity" but not always the note of what it had
+		// before, so it's given back from the original, which knows.
+		net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_ENTITY_CHANGE_LEVEL.register((original, copy, from, to) -> {
+			Stasis stasis = STASIS.get(original.getUUID());
+			Held held = HELD.get(original.getUUID());
+			Boolean noted = original.getAttached(WildercordAttachments.HELD_GRAVITY);
+			if (noted == null && (stasis == null || stasis.target != original) && (held == null || held.projectile() != original)) {
+				return;
+			}
+			boolean had = noted != null ? noted : stasis != null && stasis.target == original ? stasis.hadNoGravity : held.hadNoGravity();
+			copy.removeAttached(WildercordAttachments.HELD_GRAVITY);
+			copy.setNoGravity(had);
+		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			STASIS.clear();
 			REVERSAL.clear();

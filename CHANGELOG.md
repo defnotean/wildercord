@@ -63,6 +63,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   diamond-pickaxe strength.
 
 ### Fixed
+- **Magma burns what it lands on from its first second.** Magma is earth too, and its own heave threw the creatures
+  it landed on into a little hop, so its first burn (which only reached what stood on the ground) missed them.
 - **Warp Step, Time Skip and Zipper set you down safely**, as Blink now does: never into lava or fire, and Warp Step and
   Time Skip never over a drop or the void (Time Skip takes the farthest safe spot on its way, and says so when there's none).
 - A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up

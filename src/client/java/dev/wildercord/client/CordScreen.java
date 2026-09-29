@@ -188,13 +188,16 @@ public class CordScreen extends Screen {
 		int sx = Math.round(left() + searchX() * s);
 		int sy = Math.round(top() + TABS_TOP * s);
 		minecraft.textInputManager().setTextInputArea(sx, sy, sx + Math.round(SEARCH_W * s), sy + Math.round(13 * s));
-		readBook();
+		// A resize runs this again: reading the book then would undo an edit the server hasn't sent back yet.
+		if (!copied) {
+			readBook();
+		}
 	}
 
 	/** Copies the spells and passives to edit from the synced spellbook: on opening, and after a loadout is loaded. */
 	private void readBook() {
 		Player player = minecraft.player;
-		if (player == null || copied) {
+		if (player == null) {
 			return;
 		}
 		copied = true;

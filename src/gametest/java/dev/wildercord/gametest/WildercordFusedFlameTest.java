@@ -238,8 +238,12 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 		if (e == null) {
 			return "gone";
 		}
-		return String.format("%.1f/%.0f health, fire %d, at %.2f %.2f %.2f, effects %s", e.getHealth(), e.getMaxHealth(), e.getRemainingFireTicks(),
-			e.getX(), e.getY(), e.getZ(), e.getActiveEffectsMap().keySet());
+		return String.format("%.1f/%.0f health, fire %d, at %.3f %.3f %.3f%s on %s, effects %s", e.getHealth(), e.getMaxHealth(), e.getRemainingFireTicks(),
+			e.getX(), e.getY(), e.getZ(), (e.onGround() ? " on the ground" : " in the air") + (e.isNoGravity() ? " (no gravity)" : "") + " moving " + e.getDeltaMovement()
+				+ (e instanceof net.minecraft.world.entity.Mob m && m.isNoAi() ? " (no AI)" : "") + " in " + e.level().getBlockState(e.blockPosition()).getBlock()
+				+ (e.level().noCollision(e) ? "" : " (stuck)") + " near " + e.level().getEntities(e, e.getBoundingBox().inflate(0.3)).stream().map(o -> o.getType().toShortString()).toList(),
+				e.level().getBlockState(e.blockPosition().below()).getBlock(),
+			e.getActiveEffectsMap().keySet());
 	}
 
 	private static void cleanup(ClientGameTestContext context, TestSingleplayerContext world) {

@@ -259,8 +259,10 @@ public final class FusedEffects {
 					AABB box = new AABB(at, at).inflate(radius, 0.8, radius).move(0, 0.4, 0);
 					for (Entity e : level.getEntities((Entity) null, box, e -> Targets.canHarm(cast.caster, e))) {
 						LivingEntity t = (LivingEntity) e;
-						// Pools overlapping (one under each of a crowd) burn an enemy standing in several once.
-						double burn = t.onGround() && horizontal(t.position(), at) <= radius ? unstacked(cast, t, "magma", MAGMA_EVERY, 2 * power) : 0;
+						// Pools overlapping (one under each of a crowd) burn an enemy standing in several once. On it means on
+						// the ground or just above it: Magma is earth too, and its own heave throws what it lands on into a hop.
+						boolean onIt = t.onGround() || t.getY() - at.y < 1.0;
+						double burn = onIt && horizontal(t.position(), at) <= radius ? unstacked(cast, t, "magma", MAGMA_EVERY, 2 * power) : 0;
 						if (burn > 0) {
 							t.igniteForSeconds(2);
 							Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), burn);
