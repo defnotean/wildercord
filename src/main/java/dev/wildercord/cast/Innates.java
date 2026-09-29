@@ -66,9 +66,9 @@ public final class Innates {
 
 	public static final double POWER_PER_CIRCLE = 0.06;
 
-	/** Innate power: stronger with every circle the caster holds. */
+	/** Innate power: stronger with every circle the caster holds (a cracked one gives nothing, as for everything a circle grants). */
 	public static double scale(LivingEntity caster) {
-		return caster instanceof ServerPlayer player ? 1 + POWER_PER_CIRCLE * Heart.circles(player) : 1.0;
+		return caster instanceof ServerPlayer player ? 1 + POWER_PER_CIRCLE * Heart.active(player) : 1.0;
 	}
 
 	// ------------------------------------------------------------------ awakening
