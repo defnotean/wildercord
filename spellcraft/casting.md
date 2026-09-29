@@ -216,6 +216,7 @@ corner on a narrow window). It's hidden while you aren't wearing a Cord.
 | **The mana bar** | Your mana. A **gold mark** shows how much this spell will take; it turns red when you haven't enough. A soft shine runs along the bar while you're meditating or under Clarity. |
 | **Bottom row** | Your mana ("218/380"). It turns bright, with a small up-arrow, while your regeneration is boosted (violet on a ley line or near a Wellstone). On the right: your **charge** ("60%", "FULL"), or the **cooldown** left ("1.2s"), or, when neither, what your **passives drain** ("-3.4/s", red if you can't keep them up). |
 | **Above the panel** | The spell's **name** in its colour (a secret spell's own name only once you've found it), **♪** notes for your rhythm steps, **✦** and a number in red for Heart Circles cracked by overcasting, and, when you're wearing a Shield, its strength and time left ("Shield 12 · 28s"). |
+| **After the name** | The **elemental climate** where you stand: a small mark for each element it changes (a flame for fire, a snowflake for frost, a bolt for storm...), with a green **▲** if that element hits harder here or a red **▼** if it hits softer. In the Nether you'll see fire ▲ and frost ▼. See [Creature Affinities and Climate]({{ '/spellcraft/affinities/' | relative_url }}#elemental-climate). |
 
 If the selected spell is empty, the panel just shows a **K**, a reminder that the Cord screen is where you
 thread it.

@@ -13,6 +13,10 @@ flash up in bold (at most once a second, however many go off). Reactions are the
 in the game: learn to set them up and a cheap spell hits like an expensive one. There are eleven, and every
 one of the ten elements takes part in at least one.
 
+Reactions go hand in hand with [creature affinities]({{ '/spellcraft/affinities/' | relative_url }}): many creatures
+are weak to an element or resist one, and **a reaction breaks through a resistance**, so a Shatter lands in full on
+a creature that shrugs off plain fire.
+
 1. TOC
 {:toc}
 

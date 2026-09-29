@@ -123,6 +123,15 @@ the left; an Adept's version is on the right.
 
 A zombie with *Swift & Empower* casts it on itself: Speed and Strength, then it comes for you.
 
+### Their own element
+
+A Runebound **resists the element of its spell**: your spells of that element do **half** to it (you'll see
+*Resisted* float over it). A skeleton with *Frost Bolt* shrugs off half your frost; a vindicator with *Fire Cone* half
+your fire. This is on top of what its kind already resists or is weak to (skeletons and zombies are undead,
+weak to life): see [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}). When its kind is weak to
+its own element (a stray, weak to fire, carrying *Fire Arc*), the two cancel out. A reaction set off on it breaks
+through the resistance, as on any creature.
+
 The guards placed in the three dimension dungeons, the Runebound their bosses call up, and the Riftcaller carry fixed
 spells instead; they're listed on those pages. Those Adepts don't gain Split or Amplify: they're Adepts in health,
 power and loot. (The Archive's guards, and the Runebound the Archivist calls up, use the lists above.)
@@ -193,6 +202,8 @@ If it dies some other way (burning after you set it alight, a fall, another mons
 
 - **Read the nameplate before you engage.** A *Venom Touch* zombie has to reach you; a *Shock Rain* witch can hit you
   from 18 blocks behind a crowd.
+- **Answer with another element.** The nameplate's colour is its element, and it resists that one. Most Runebound
+  are undead: life magic hits them 50% harder.
 - **Break line of sight** when the nameplate lights up. The cast is wasted, and the next one is 3.5 to 6 seconds away.
 - **Shoot bolts down.** Your own bolt meeting theirs in the air bursts them both. See
   [Playing Together]({{ '/social/playing-together/' | relative_url }}).
