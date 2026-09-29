@@ -50,6 +50,8 @@ bar shows a violet up-chevron.
 ### What else gathers there
 
 - **Mana storms** gather over ley lines. See [World Events]({{ '/world/world-events/' | relative_url }}).
+- **Runes in the water.** Fish in open water on or near a ley line and 1 catch in 20 brings up a rune tangled in the
+  line, on top of the catch. See [Fishing]({{ '/world/runes-of-the-world/' | relative_url }}#fishing).
 - **Wild wisps** rise from ley lines at night. See [Familiars]({{ '/companions/familiars/' | relative_url }}).
 - The Runesmith's [contracts]({{ '/social/contracts/' | relative_url }}) sometimes ask you to cast
   spells on a ley line.

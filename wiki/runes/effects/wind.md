@@ -33,7 +33,7 @@ For 30 seconds falls can't hurt you, and a hard landing throws out a gust that k
 
 Slow falling and no fall damage for 12 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Feather. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Feather. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_feather_fall.png' | relative_url }}" alt="Crafting Feather Fall: a Blank Rune and 2x Feather" class="recipe-grid" loading="lazy">
 
@@ -46,7 +46,7 @@ Slow falling and no fall damage for 12 seconds.
 
 Jump Boost III for 15 seconds.
 
-**How to get it:** Craft: a Blank Rune, Slimeball. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Slimeball. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_leap.png' | relative_url }}" alt="Crafting Leap: a Blank Rune and Slimeball" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ Hurls targets away from the spell.
 
 Speed III for 10 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Sugar. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Sugar. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_swift.png' | relative_url }}" alt="Crafting Swift: a Blank Rune and 2x Sugar" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 
 Shoves targets hard the way you're facing. On Self it's a long dash.
 
-**How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_dash.png' | relative_url }}" alt="Crafting Dash: a Blank Rune and Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -150,7 +150,7 @@ For 8 seconds a whirl of wind turns aside arrows and other projectiles coming at
 
 Flings targets high into the air. On Self it rockets you up and forward.
 
-**How to get it:** Craft: a Blank Rune, Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_launch.png' | relative_url }}" alt="Crafting Launch: a Blank Rune and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -163,7 +163,7 @@ Flings targets high into the air. On Self it rockets you up and forward.
 
 Targets float helplessly upward for 3 seconds. On Self you float.
 
-**How to get it:** Craft: a Blank Rune, Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; End cities.
 
 <img src="{{ '/assets/recipes/rune_levitate.png' | relative_url }}" alt="Crafting Levitate: a Blank Rune and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -176,7 +176,7 @@ Targets float helplessly upward for 3 seconds. On Self you float.
 
 A violent outward blast: 5 damage and hurls everything within 3 blocks away. On enemies just pulled in, it sets off Collapse.
 
-**How to get it:** Craft: a Blank Rune, 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Breezes (8%).
 
 <img src="{{ '/assets/recipes/rune_repel.png' | relative_url }}" alt="Crafting Repel: a Blank Rune and 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 

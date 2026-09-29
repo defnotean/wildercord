@@ -46,7 +46,7 @@ Grows glowing lichen over the block that was hit and up to 4 around it: a light 
 
 Bone-meals the block that was hit and everything around it.
 
-**How to get it:** Craft: a Blank Rune, 2x Bone Meal. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Bone Meal. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_grow.png' | relative_url }}" alt="Crafting Grow: a Blank Rune and 2x Bone Meal" class="recipe-grid" loading="lazy">
 
@@ -59,7 +59,7 @@ Bone-meals the block that was hit and everything around it.
 
 Harvests grown crops around the block hit, and replants them.
 
-**How to get it:** Craft: a Blank Rune, 2x Wheat Crops. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Wheat Crops. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_harvest.png' | relative_url }}" alt="Crafting Harvest: a Blank Rune and 2x Wheat Crops" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ Harvests grown crops around the block hit, and replants them.
 
 Restores 8 health (4 hearts).
 
-**How to get it:** Craft: a Blank Rune, Glistering Melon Slice. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Glistering Melon Slice. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_heal.png' | relative_url }}" alt="Crafting Heal: a Blank Rune and Glistering Melon Slice" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ Restores 8 health (4 hearts).
 
 Restores 6 hunger and some saturation.
 
-**How to get it:** Craft: a Blank Rune, Bread. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Bread. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_nourish.png' | relative_url }}" alt="Crafting Nourish: a Blank Rune and Bread" class="recipe-grid" loading="lazy">
 
@@ -98,7 +98,7 @@ Restores 6 hunger and some saturation.
 
 Washes away harmful effects and fire.
 
-**How to get it:** Craft: a Blank Rune, Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_cleanse.png' | relative_url }}" alt="Crafting Cleanse: a Blank Rune and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ Raises a 4-block dome of light for 8 seconds: you and your allies inside take 20
 
 Regeneration II for 8 seconds.
 
-**How to get it:** Craft: a Blank Rune, Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_regrowth.png' | relative_url }}" alt="Crafting Regrowth: a Blank Rune and Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -137,7 +137,7 @@ Regeneration II for 8 seconds.
 
 Poison II for 6 seconds and 2 damage.
 
-**How to get it:** Craft: a Blank Rune, Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_venom.png' | relative_url }}" alt="Crafting Venom: a Blank Rune and Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -150,7 +150,7 @@ Poison II for 6 seconds and 2 damage.
 
 Puts things back: heals 6, puts out fire, and mends 5% of every worn and held item's durability.
 
-**How to get it:** Craft: a Blank Rune, Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Stronghold libraries.
 
 <img src="{{ '/assets/recipes/rune_restore.png' | relative_url }}" alt="Crafting Restore: a Blank Rune and Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

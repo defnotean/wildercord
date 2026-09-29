@@ -33,7 +33,7 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.
 
 Time runs faster for 10 seconds: Speed III, Haste III, Jump Boost II and Regeneration.
 
-**How to get it:** Craft: a Blank Rune, Clock and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Clock and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_accelerate.png' | relative_url }}" alt="Crafting Accelerate: a Blank Rune and Clock and Sugar, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -46,7 +46,7 @@ Time runs faster for 10 seconds: Speed III, Haste III, Jump Boost II and Regener
 
 Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 
-**How to get it:** Craft: a Blank Rune, Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Stronghold libraries.
 
 <img src="{{ '/assets/recipes/rune_foresight.png' | relative_url }}" alt="Crafting Foresight: a Blank Rune and Spyglass, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -59,7 +59,7 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 
 Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, and nearby monsters lose track of you.
 
-**How to get it:** Craft: a Blank Rune, Clock and Ender Pearl, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Clock and Ender Pearl, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities; Endermen (1%).
 
 <img src="{{ '/assets/recipes/rune_time_skip.png' | relative_url }}" alt="Crafting Time Skip: a Blank Rune and Clock and Ender Pearl, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

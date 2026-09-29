@@ -20,7 +20,7 @@ Cold, ice and water. Frost slows, freezes and shatters, and freezes water you ca
 
 Slowness II for 6 seconds and 1 freeze damage.
 
-**How to get it:** Craft: a Blank Rune, Ice. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ice. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_chill.png' | relative_url }}" alt="Crafting Chill: a Blank Rune and Ice" class="recipe-grid" loading="lazy">
 
@@ -46,7 +46,7 @@ For 60 seconds you can't freeze, not even in powder snow.
 
 Freezes water within 3 blocks into ice you can walk on.
 
-**How to get it:** Craft: a Blank Rune, Packed Ice. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Packed Ice. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_icepath.png' | relative_url }}" alt="Crafting Icepath: a Blank Rune and Packed Ice" class="recipe-grid" loading="lazy">
 
@@ -59,7 +59,7 @@ Freezes water within 3 blocks into ice you can walk on.
 
 4 freeze damage, or 6 against a target that's already slowed.
 
-**How to get it:** Craft: a Blank Rune, Ice and Pointed Dripstone. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ice and Pointed Dripstone. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
 
 <img src="{{ '/assets/recipes/rune_icicle.png' | relative_url }}" alt="Crafting Icicle: a Blank Rune and Ice and Pointed Dripstone" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ Freezes water within 3 blocks into ice you can walk on.
 
 Water breathing and faster swimming for 30 seconds.
 
-**How to get it:** Craft: a Blank Rune, Pufferfish. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Pufferfish. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_tidebreath.png' | relative_url }}" alt="Crafting Tidebreath: a Blank Rune and Pufferfish" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ Water breathing and faster swimming for 30 seconds.
 
 Traps targets in a floating bubble for 3 seconds. It pops for 4 damage and leaves them soaked.
 
-**How to get it:** Craft: a Blank Rune, Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Witches (5%); Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_bubble.png' | relative_url }}" alt="Crafting Bubble: a Blank Rune and Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -98,7 +98,7 @@ Traps targets in a floating bubble for 3 seconds. It pops for 4 damage and leave
 
 A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy within 3 blocks.
 
-**How to get it:** Craft: a Blank Rune, Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_coldsnap.png' | relative_url }}" alt="Crafting Coldsnap: a Blank Rune and Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -111,7 +111,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 5 freeze damage, freezes solid and Slowness III for 4 seconds.
 
-**How to get it:** Craft: a Blank Rune, Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_frost.png' | relative_url }}" alt="Crafting Frost: a Blank Rune and Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 Freezes targets solid for 2.5 seconds: they can't move or fight back.
 
-**How to get it:** Craft: a Blank Rune, 2x Blue Ice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Blue Ice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Trial vaults; Ominous vaults; Ancient cities; Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_freeze.png' | relative_url }}" alt="Crafting Freeze: a Blank Rune and 2x Blue Ice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

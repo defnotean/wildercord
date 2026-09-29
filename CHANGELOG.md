@@ -2,6 +2,30 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- **Runes from fishing.** A rod in open water (vanilla's rule for treasure) now brings up magic. See
+  [Fishing](https://defnotean.github.io/wildercord/world/runes-of-the-world/#fishing).
+  - **Treasure catches can be runes.** About 4 treasure catches in 11 are a rune and 1 in 11 a Torn Page, beside the
+    name tags, saddles and enchanted books (Luck of the Sea makes treasure likelier: about 1 catch in 55 is a
+    rune with a plain rod, 1 in 24 with Luck of the Sea III). The runes are 21 crafted runes of water, frost and storm
+    and a few a fisher is glad of (Tidebreath, Chill, Icicle, Icepath, Shock, Feather Fall, Night Eye, Swift, Heal,
+    Collect, Leap, Bubble, Frost, Thunderclap, Jolt, Pull, Grapple, Levitate and Wave, and now and then Freeze or
+    Lightning), lower tiers more often, and the two runes below.
+  - **Magic waters.** Where magic runs strong at the bobber, a rune comes up tangled in the line **on top of** the
+    catch: 12% a catch under a mana storm, 5% on or near a ley line, 5% in a thunderstorm with the rain on the bobber,
+    adding up to 20% at most. *"Something magical was tangled in your line!"*, and a glint on the water.
+  - **Two new runes of the world, found only by fishing:**
+    - **Tidehook** (Tier II frost, 9 mana): a hook of water snags each target and reels it in to your feet in three
+      tugs, 4 damage, and leaves it soaked (storm then sets off Conduct). Amplify and Linger work on it.
+    - **Current** (Tier II frost, moves you, 6 mana): only in water or rain, a current sweeps you about 15 blocks the
+      way you look, and you land without fall damage. On dry land it fizzles. Amplify carries you further.
+  - A new feat and advancement, **Reeled In**: fish a rune out of open water (250 mana toward your next circle).
+  - The server's rune and page loot multipliers scale all of it, as they do chests (0 turns it off).
+- Craftable runes' wiki entries now say where else they're found, and Lightning's and Shock's tooltips name trail
+  ruins (brushing), where they've been found all along.
+
 ## [0.4.4-alpha] - 2026-09-29
 
 ### Fixed
