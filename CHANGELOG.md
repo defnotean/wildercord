@@ -28,6 +28,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Overload in a crowd could launch creatures sky-high.** Every burning enemy that blew apart threw all its neighbours,
   so in a packed crowd each was thrown once for every neighbour, and the throws added up (players too, in PvP). Now an
   Overload throws each creature at most once at a time; the damage is unchanged.
+- **Stoneform's aftershock took on the element of the blow it answered.** Hit by a wind spell, its aftershock counted as
+  wind (and could set off Rupture on a bleeding creature beside you, writing it in your Grimoire). It's always earth now.
 
 ## [0.4.2-alpha] - 2026-09-28
 

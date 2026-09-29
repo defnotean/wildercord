@@ -576,12 +576,15 @@ public final class Innates {
 		LivingEntity side = entity instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : entity;
 		echoing = true;
 		try {
-			for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> e != side && Targets.canHarm(side, e))) {
-				LivingEntity t = (LivingEntity) e;
-				Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3 * power);
-				Vec3 away = t.position().subtract(entity.position());
-				Effects.push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : away.normalize()).scale(0.8).add(0, 0.35, 0));
-			}
+			// Earth damage, whatever the blow it answers was: it's the Stoneform's own aftershock, not the attacker's spell.
+			Effects.asElement("earth", () -> {
+				for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> e != side && Targets.canHarm(side, e))) {
+					LivingEntity t = (LivingEntity) e;
+					Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3 * power);
+					Vec3 away = t.position().subtract(entity.position());
+					Effects.push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : away.normalize()).scale(0.8).add(0, 0.35, 0));
+				}
+			});
 		} finally {
 			echoing = false;
 		}

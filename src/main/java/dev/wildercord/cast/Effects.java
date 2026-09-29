@@ -146,6 +146,28 @@ public final class Effects {
 		};
 	}
 
+	/**
+	 * Runs {@code task} as damage of {@code element} alone, without the Execute, Trial Key or element of
+	 * whatever effect is being applied right now: for damage dealt in answer to someone else's spell
+	 * (Stoneform's aftershock answering a blow), which would otherwise borrow that spell's, and set off
+	 * that element's reactions for the wrong caster.
+	 */
+	static void asElement(String element, Runnable task) {
+		double outerBonus = executeBonus;
+		double outerOpening = openingBonus;
+		String outerElement = currentElement;
+		executeBonus = 1.0;
+		openingBonus = 1.0;
+		currentElement = element;
+		try {
+			task.run();
+		} finally {
+			executeBonus = outerBonus;
+			openingBonus = outerOpening;
+			currentElement = outerElement;
+		}
+	}
+
 	private static void applyEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		RuneDef rune = node.effect;
 		LivingEntity caster = cast.caster;
