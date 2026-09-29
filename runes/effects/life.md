@@ -18,7 +18,7 @@ Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 
 *Tier I · Life · Helps you and your allies · 6 mana · needs any Cord*
 
-Thorns for 10 seconds: whatever hurts you from within 4 blocks takes 3 damage and is shoved away.
+Thorns for 10 seconds: the next 4 things that hurt you from within 4 blocks take 3 damage and are shoved away.
 
 **How to get it:** Craft: a Blank Rune, Sweet Berries and Cactus. The recipe is shapeless: any layout, any crafting grid.
 
@@ -44,7 +44,7 @@ Grows glowing lichen over the block that was hit and up to 4 around it: a light 
 
 *Tier I · Life · Works on the world · 4 mana · needs any Cord*
 
-Bone-meals the block that was hit and everything around it.
+Bone-meals the block that was hit and everything around it, and young animals there grow up.
 
 **How to get it:** Craft: a Blank Rune, 2x Bone Meal. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
@@ -70,7 +70,7 @@ Harvests grown crops around the block hit, and replants them.
 
 *Tier I · Life · Helps you and your allies · 12 mana · needs any Cord*
 
-Restores 8 health (4 hearts).
+Restores 8 health (4 hearts; repeats within one cast heal less). What the target can't use becomes a shield of up to 2 hearts for 10 seconds.
 
 **How to get it:** Craft: a Blank Rune, Glistering Melon Slice. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
@@ -83,7 +83,7 @@ Restores 8 health (4 hearts).
 
 *Tier I · Life · Helps you and your allies · 6 mana · needs any Cord*
 
-Restores 6 hunger and some saturation.
+Restores 6 hunger and some saturation, and ends Hunger. Fed pets heal 6 and are ready to breed.
 
 **How to get it:** Craft: a Blank Rune, Bread. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
@@ -96,7 +96,7 @@ Restores 6 hunger and some saturation.
 
 *Tier II · Life · Helps you and your allies · 8 mana · needs a Copper Cord or better*
 
-Washes away harmful effects and fire.
+Washes away harmful effects, fire and every elemental mark.
 
 **How to get it:** Craft: a Blank Rune, Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -109,7 +109,7 @@ Washes away harmful effects and fire.
 
 *Tier II · Life · Helps you and your allies · 14 mana · needs a Copper Cord or better*
 
-Raises a 4-block dome of light for 8 seconds: you and your allies inside take 20% less damage, and enemy projectiles glance off it.
+Raises a 4-block dome of light for 8 seconds: enemies inside are shoved out once a second, and enemy projectiles glance off it.
 
 **How to get it:** Craft: a Blank Rune, Shield and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -122,7 +122,7 @@ Raises a 4-block dome of light for 8 seconds: you and your allies inside take 20
 
 *Tier II · Life · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
-Regeneration II for 8 seconds.
+Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 health).
 
 **How to get it:** Craft: a Blank Rune, Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -135,7 +135,7 @@ Regeneration II for 8 seconds.
 
 *Tier II · Life · Harms enemies · 8 mana · needs a Copper Cord or better*
 
-Poison II for 6 seconds and 2 damage.
+2 damage now and 0.75 a second for 4 seconds, with Poison I: it can kill and works on undead and spiders. The poisoned pass it on, once, to up to 3 enemies within 2.5 blocks.
 
 **How to get it:** Craft: a Blank Rune, Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -148,7 +148,7 @@ Poison II for 6 seconds and 2 damage.
 
 *Tier III · Life · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't move or fight back, but any damage wakes it. Bosses only grow drowsy.
+Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't move or fight back, but any damage wakes it, and the blow that does deals 75% more. Bosses only grow drowsy.
 
 **How to get it:** Craft: a Blank Rune, Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities.
 
@@ -161,7 +161,7 @@ Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't 
 
 *Tier III · Life · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Puts things back: heals 6, puts out fire, and mends 5% of every worn and held item's durability.
+Puts things back: heals 4, puts out fire, and mends 8% of every worn and held item's durability (an item once a minute).
 
 **How to get it:** Craft: a Blank Rune, Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Stronghold libraries.
 
