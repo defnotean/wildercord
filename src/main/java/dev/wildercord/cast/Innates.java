@@ -692,6 +692,10 @@ public final class Innates {
 			THREAD_MEMBERS.keySet().removeIf(id -> THREADS.values().stream().noneMatch(t -> t.id().equals(id)));
 			KINDLING.values().removeIf(k -> now - k.last() > 200);
 			TWIN.values().removeIf(until -> now > until);
+			// These only matter for a moment, and would otherwise grow with every creature that ever had them on a long-running server.
+			TWIN_ARMED.keySet().removeIf(id -> !TWIN.containsKey(id));
+			STONE_LAST.values().removeIf(last -> now - last > 20);
+			STORM_LAST.values().removeIf(last -> now - last > 20);
 			FORTUNE.values().removeIf(until -> now > until);
 			STORMHEART.values().removeIf(until -> now > until);
 			LAST_SPELL_ON.values().removeIf(h -> now - h.time() > 600);
