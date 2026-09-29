@@ -79,6 +79,49 @@ public final class ExplorerNumbers {
 		return Math.max(1, Math.min(ticks, MANATIDE_MOST_TICKS));
 	}
 
+	/** Tidehook: the tugs that reel a target in, and the ticks between them. */
+	public static final int TIDEHOOK_TUGS = 3;
+	public static final int TIDEHOOK_TUG_EVERY = 7;
+	/** Tidehook: how close to the caster (in blocks, across the ground) the reel stops pulling. */
+	public static final double TIDEHOOK_REST = 2.0;
+	/** Tidehook: each tug's hop, so a target on the ground leaves it (and its friction) like a fish flapping on a line. */
+	public static final double TIDEHOOK_LIFT = 0.3;
+	/** Tidehook: the hardest one tug pulls (blocks a tick across the ground). */
+	public static final double TIDEHOOK_TUG_MAX = 1.0;
+
+	/**
+	 * How hard one Tidehook tug pulls a target {@code distance} blocks from the caster (across the ground): nothing
+	 * once it's within {@link #TIDEHOOK_REST}, harder the further out it is, never past {@link #TIDEHOOK_TUG_MAX}. A
+	 * target ten blocks out comes in about five, then three, then the last one or two.
+	 */
+	public static double tidehookTug(double distance) {
+		if (!(distance > TIDEHOOK_REST)) {
+			return 0;
+		}
+		return Math.min(TIDEHOOK_TUG_MAX, 0.2 + (distance - TIDEHOOK_REST) * 0.13);
+	}
+
+	/** Current: how long the current holds its rider at speed, in ticks. */
+	public static final int CURRENT_TICKS = 6;
+	/** Current: the rider's speed while it holds them, in blocks a tick, at normal power. */
+	public static final double CURRENT_SPEED = 1.5;
+	/** Current: the longest the rider is kept from fall damage waiting to land, in ticks. */
+	public static final int CURRENT_GUARD_TICKS = 100;
+	/**
+	 * Current: how long the rider must stay in water to count as come down, in ticks: long enough that a surge up out
+	 * of the sea has left it (and would otherwise land on the shore with its fall damage back).
+	 */
+	public static final int CURRENT_SETTLE_TICKS = 10;
+
+	/**
+	 * Current's speed at {@code power}: the square root of the power (so Amplify carries further, but not half as
+	 * far again), between 0.6 and 1.6 times {@link #CURRENT_SPEED}. At normal power it carries about 15 blocks: 9
+	 * while it holds, and the rest as the water or the air slows the rider.
+	 */
+	public static double currentSpeed(double power) {
+		return CURRENT_SPEED * Math.max(0.6, Math.min(1.6, Math.sqrt(Math.max(0, power))));
+	}
+
 	/** Attunement: a land gives each player its rune once an in-game day (in game ticks). */
 	public static final long ATTUNE_REST = 24000L;
 

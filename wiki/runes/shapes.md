@@ -19,7 +19,7 @@ A **shape** decides *where* a spell goes and *who* it touches: yourself, a bolt 
 
 Lobs a bolt that falls and bursts where it lands.
 
-**How to get it:** Craft: a Blank Rune, 2x Snowball. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Snowball. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_arc.png' | relative_url }}" alt="Crafting Arc: a Blank Rune and 2x Snowball" class="recipe-grid" loading="lazy">
 
@@ -95,7 +95,7 @@ A quick spark darts up to 16 blocks and hits the first thing in its path, at 75%
 
 Targets what you're looking at, within reach.
 
-**How to get it:** Craft: a Blank Rune, Leather. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Leather. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_touch.png' | relative_url }}" alt="Crafting Touch: a Blank Rune and Leather" class="recipe-grid" loading="lazy">
 
@@ -108,7 +108,7 @@ Targets what you're looking at, within reach.
 
 A flurry of 8 blows in one second on everything right in front of you, each at 35% power.
 
-**How to get it:** Craft: a Blank Rune, Leather and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Leather and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_barrage.png' | relative_url }}" alt="Crafting Barrage: a Blank Rune and Leather and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -121,7 +121,7 @@ A flurry of 8 blows in one second on everything right in front of you, each at 3
 
 An instant line that hits the first thing within 24 blocks.
 
-**How to get it:** Craft: a Blank Rune, Spyglass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Spyglass, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_beam.png' | relative_url }}" alt="Crafting Beam: a Blank Rune and Spyglass, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -134,7 +134,7 @@ An instant line that hits the first thing within 24 blocks.
 
 You flash up to 8 blocks forward in an instant, striking everything you pass through.
 
-**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_blitz.png' | relative_url }}" alt="Crafting Blitz: a Blank Rune and Rabbit's Foot and Sugar, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -147,7 +147,7 @@ You flash up to 8 blocks forward in an instant, striking everything you pass thr
 
 Hits everything within 4 blocks.
 
-**How to get it:** Craft: a Blank Rune, 2x Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Desert pyramids; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_burst.png' | relative_url }}" alt="Crafting Burst: a Blank Rune and 2x Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -186,7 +186,7 @@ A heavy ball of energy flies up to 24 blocks and bursts on the first thing it to
 
 Sweeps everything in a 60-degree cone up to 6 blocks in front of you.
 
-**How to get it:** Craft: a Blank Rune, Fire Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Fire Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Desert pyramids; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_cone.png' | relative_url }}" alt="Crafting Cone: a Blank Rune and Fire Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -199,7 +199,7 @@ Sweeps everything in a 60-degree cone up to 6 blocks in front of you.
 
 A crescent slash flies 16 blocks forward, cutting everything in its 5-wide path.
 
-**How to get it:** Craft: a Blank Rune, Iron Sword and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Sword and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_crescent.png' | relative_url }}" alt="Crafting Crescent: a Blank Rune and Iron Sword and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -225,7 +225,7 @@ A thick lance of light drives 16 blocks forward, through every creature in its p
 
 Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds).
 
-**How to get it:** Craft: a Blank Rune, Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_mine.png' | relative_url }}" alt="Crafting Mine: a Blank Rune and Tripwire Hook, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -238,7 +238,7 @@ Hides a rune where you look. It fires when an enemy steps near (lasts 30 seconds
 
 A column erupts where you look: hits everything within 1.5 blocks, 6 high.
 
-**How to get it:** Craft: a Blank Rune, 2x Pointed Dripstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Pointed Dripstone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_pillar.png' | relative_url }}" alt="Crafting Pillar: a Blank Rune and 2x Pointed Dripstone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -277,7 +277,7 @@ An orb that bounces off the ground and walls 4 times, passing through creatures 
 
 A ring expands from you out to 7 blocks, hitting everything it passes.
 
-**How to get it:** Craft: a Blank Rune, Bell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Bell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_ring.png' | relative_url }}" alt="Crafting Ring: a Blank Rune and Bell, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -316,7 +316,7 @@ A 10-block beam sweeps across in front of you in half a second, hitting everythi
 
 For 5 seconds your footsteps leave a path that hits whatever steps on it.
 
-**How to get it:** Craft: a Blank Rune, 2x Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_trail.png' | relative_url }}" alt="Crafting Trail: a Blank Rune and 2x Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -329,7 +329,7 @@ For 5 seconds your footsteps leave a path that hits whatever steps on it.
 
 A 3-wide wave rolls 14 blocks forward along the ground.
 
-**How to get it:** Craft: a Blank Rune, 2x Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Kelp, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_wave.png' | relative_url }}" alt="Crafting Wave: a Blank Rune and 2x Kelp, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -355,7 +355,7 @@ A wisp drifts out and chases the nearest enemy within 16 blocks for up to 4 seco
 
 A slow, heavy orb drifts 20 blocks forward through creatures, striking everything within 2 blocks of it once a second.
 
-**How to get it:** Craft: a Blank Rune, Slime Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Slime Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; End cities.
 
 <img src="{{ '/assets/recipes/rune_orb.png' | relative_url }}" alt="Crafting Orb: a Blank Rune and Slime Block, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -368,7 +368,7 @@ A slow, heavy orb drifts 20 blocks forward through creatures, striking everythin
 
 Three orbs circle you for 8 seconds and hit whatever they touch.
 
-**How to get it:** Craft: a Blank Rune, Eye of Ender, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Eye of Ender, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; Ominous vaults; End cities; Woodland mansions.
 
 <img src="{{ '/assets/recipes/rune_orbit.png' | relative_url }}" alt="Crafting Orbit: a Blank Rune and Eye of Ender, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -381,7 +381,7 @@ Three orbs circle you for 8 seconds and hit whatever they touch.
 
 5 strikes from the sky over 2 seconds, around where you look.
 
-**How to get it:** Craft: a Blank Rune, Pointed Dripstone and Water Bucket, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Pointed Dripstone and Water Bucket, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities; Stronghold libraries.
 
 <img src="{{ '/assets/recipes/rune_rain.png' | relative_url }}" alt="Crafting Rain: a Blank Rune and Pointed Dripstone and Water Bucket, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -394,7 +394,7 @@ Three orbs circle you for 8 seconds and hit whatever they touch.
 
 A floating totem where you look pulses every 2 seconds for 10 seconds.
 
-**How to get it:** Craft: a Blank Rune, Block of Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Emerald, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Stronghold libraries.
 
 <img src="{{ '/assets/recipes/rune_totem.png' | relative_url }}" alt="Crafting Totem: a Blank Rune and Block of Emerald, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -407,7 +407,7 @@ A floating totem where you look pulses every 2 seconds for 10 seconds.
 
 A 7-block wall across where you look. Hits whatever crosses it every second for 5 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; Ominous vaults; Stronghold libraries.
 
 <img src="{{ '/assets/recipes/rune_wall.png' | relative_url }}" alt="Crafting Wall: a Blank Rune and 2x Obsidian, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -420,7 +420,7 @@ A 7-block wall across where you look. Hits whatever crosses it every second for 
 
 A 3-block field where you look. Re-applies every second for 6 seconds.
 
-**How to get it:** Craft: a Blank Rune, Block of Redstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Redstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; Ominous vaults; Ancient cities.
 
 <img src="{{ '/assets/recipes/rune_zone.png' | relative_url }}" alt="Crafting Zone: a Blank Rune and Block of Redstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

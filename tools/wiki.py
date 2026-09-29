@@ -139,7 +139,9 @@ def how_to_get(r, fused, found, world):
         places = found.get(path, ["?"])
         return "Found only, never crafted: " + "; ".join(places) + "."
     extra = "" if r["tier"] == 1 else f", plus {TIER_EXTRAS[r['tier']]}"
-    return f"Craft: a Blank Rune, {items_text(path)}{extra}. The recipe is shapeless: any layout, any crafting grid."
+    also = found.get(path, [])
+    also_text = f" Also found: {'; '.join(also)}." if also else ""
+    return f"Craft: a Blank Rune, {items_text(path)}{extra}. The recipe is shapeless: any layout, any crafting grid.{also_text}"
 
 
 def items_text(path):

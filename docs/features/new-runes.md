@@ -1,11 +1,11 @@
 # Runes of the world
 
-Fifty-one new runes that can't be crafted at all: each is found only in its own places. Go and
+Fifty-three new runes that can't be crafted at all: each is found only in its own places. Go and
 explore, and your spellbook grows. A rune of the world says where it comes from in its tooltip, and
 the Grimoire (the third page of the Cord screen) lists every one by where it's found, with a hint
 for the ones you haven't learned yet.
 
-They come from four kinds of place:
+They come from five kinds of place:
 
 - **Vanilla structures:** their chests have a chance of one of the structure's own runes, on top of
   their usual loot. Ocean monuments have no chests, so their Elder Guardians carry theirs. The
@@ -17,9 +17,45 @@ They come from four kinds of place:
 - **World events:** Fallen Star craters, Rift sieges (and their Riftcaller) and mana storms (a
   surge, once you've cast 10 spells under a storm, now and then crystallises one of its runes: see
   [World events](world-events.md)).
+- **Fishing:** Tidehook and Current come up only on a fishing line in open water (see
+  [Fishing](#fishing) below).
 
 A few of them also turn up in Archive libraries, and a slain Runebound Adept sometimes drops one
 (8%, times the rune loot multiplier).
+
+## Fishing
+
+Fishing in open water brings up runes, in two ways. Both need **open water** (vanilla's rule for
+treasure: a clear stretch at least 5 blocks across with nothing in or just above the water round the
+bobber), and both draw from the same list: the two runes found only by fishing, **Tidehook** and
+**Current**, and 21 crafted runes that fit the water: Tidebreath, Chill, Icicle, Icepath, Shock,
+Feather Fall, Night Eye, Swift, Heal, Collect and Leap (Tier I), Bubble, Frost, Thunderclap, Jolt,
+Pull, Grapple, Levitate and Wave (Tier II), and Freeze and Lightning (Tier III, rare). Within the
+list, tiers weigh 8, 5 and 2 as in a chest.
+
+- **Treasure catches.** Vanilla's treasure pool (six treasures of weight 1) gains a rune (weight 4)
+  and a Torn Page (weight 1): about **4 treasure catches in 11 are a rune** and **1 in 11 a Torn
+  Page**. Treasure is 5% of open-water catches, about 11% with Luck of the Sea III, so a rune comes
+  up about once in 55 catches with a plain rod and once in 24 with Luck of the Sea III. Tidehook and
+  Current weigh three times a sea rune of their tier here: each is about 1 in 11 of the runes.
+- **Magic waters.** Where magic runs strong at the bobber, a rune comes up **as well as** the catch:
+  12% a catch under a mana storm, 5% on or near a ley line (a little wider than where you count as
+  standing on one), 5% in a thunderstorm with its rain (or snow) falling on the bobber. They add up, to at
+  most 20%. Tidehook and Current weigh six times a sea rune of their tier here (each about 1 in 6).
+  The angler reads *"Something magical was tangled in your line!"*, and the bobber flashes with a
+  glint and a ring of pale light.
+
+The server's rune and page loot multipliers (`loot.rune_chance_multiplier`,
+`loot.page_chance_multiplier`) scale these chances like every other (0 turns them off). The first
+rune a player fishes up earns the feat **Reeled In** (250 mana toward the next circle, and its
+advancement).
+
+In code: `WildercordLoot` adds the rune (an inline table, tier-weighted) and the page into
+`gameplay/fishing/treasure`'s own pool, and a conditional pool to `gameplay/fishing` for magic
+waters, gated by the loot condition `wildercord:magic_waters` (`MagicWatersCondition`, reading the
+bobber and where it floats); `wildercord:fished_rune` (`FishedRuneFunction`) on both grants the feat
+and shows the cue. The odds are pure data in `content/FishingRules`; `cast/Fishing` reads the storm,
+the ley line and the weather at the bobber.
 
 ## Attunement
 
@@ -88,6 +124,8 @@ it's ready again.
 | Warp Step | Void | II | Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pulled back, unless you're sneaking. | Attuned in a warped forest |
 | Blood Moss | Blood | II | Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you heal for all of it. | Attuned in a crimson forest |
 | Cinderbrand | Fire | II | Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50% hotter. | The Ember Sanctum |
+| Tidehook | Frost | II | A hook of water snags each target and reels it in to your feet in three tugs (each pulls harder the further out it is, and takes over its drift, so its own steps and the hit's knockback don't undo it): 4 damage, and it's left soaked. A boss is struck and soaked, never moved. It soaks rather than freezes, so it never ices over the water it lands in. | Fishing in open water |
+| Current | Frost | II | Only in water or rain (as a trident's riptide): a current holds you at speed the way you look for 6 ticks, then the water or the air carries you on, about 15 blocks in all (Amplify further, by the square root of its power). Fall damage is off until you land. On dry land it fizzles with a hiss and a line above the hotbar, and the mana is spent. | Fishing in open water |
 | Manaburn | Arcane | II | 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana: 20 times the hit's power (so each of a Barrage's hits takes 7), scaled like PvP damage, and never more than 20 from one player in one cast. | Mana storms (a surge after 10 casts) |
 | Resonant Shriek | Void | III | A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A second later it echoes for half as much. | Ancient cities |
 | Tidecall | Frost | III | The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked. | Ocean monuments (Elder Guardians) |
@@ -138,7 +176,7 @@ can be blocked by a Shield but not parried.
 
 Several of them leave the marks the element reactions look for:
 
-- **Soaked** (Tidecall, Undertow, Mire, Drowning Word, Tidewrit): storm on them sets off **Conduct**.
+- **Soaked** (Tidecall, Undertow, Mire, Drowning Word, Tidewrit, Tidehook): storm on them sets off **Conduct**.
   Try `Beam · Mire · Delay · Beam · Shock`.
 - **Frozen** (Hoarfrost's final freeze): fire on them sets off **Shatter**.
 - **Thrown by wind** (Summit Wind, Tusk Charge, Basalt Surge, Shulkershell's lift): fire sets off

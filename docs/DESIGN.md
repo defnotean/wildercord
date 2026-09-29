@@ -977,7 +977,7 @@ traders sometimes sell one.
 
 ### Runes of the world
 
-Fifty-one more runes can't be crafted at all, whatever their tier: each is found only in its own
+Fifty-three more runes can't be crafted at all, whatever their tier: each is found only in its own
 places (`spell/RuneSources.java`), so exploring is how a spellbook grows. Vanilla structures' chests
 roll their own (an ancient city's Echolocate and Resonant Shriek, a desert pyramid's Sandstorm, a
 jungle temple's Vinelash and Snare, an ocean monument's Elder Guardians' Tidecall...); biomes give
@@ -987,6 +987,29 @@ Hush; see `spell/Attunements.java`); Wildercord's dungeons, their bosses and wor
 theirs; and Archive libraries and Runebound Adepts now and then carry a few. The Grimoire lists
 attunements (as riddles until found) and every rune of the world by where it's found. The full
 list is in [features/new-runes.md](features/new-runes.md).
+
+### Fishing
+
+A rod finds runes too, always in open water (vanilla's rule for treasure), so fishing is a quiet way
+to fill a spellbook between adventures:
+
+- **Treasure.** About 4 treasure catches in 11 are a rune, 1 in 11 a Torn Page (they join vanilla's
+  single-item treasure pool; Luck of the Sea makes treasure likelier). The runes: 21 crafted runes of
+  water, frost and storm and a few a fisher is glad of (Tier I-III, weighted by tier), and two runes
+  found nowhere else, at three times the weight of their tier.
+- **Magic waters.** A rune tangled in the line on top of the catch: 12% under a mana storm, 5% on or
+  near a ley line, 5% in a thunderstorm at the bobber, adding up to 20% at most. The two fishing runes
+  weigh six times their tier here, so storms are the time to hunt them.
+- **Tidehook** (Tier II frost, 9 mana; Amplify, Linger): a hook of water reels each target in to your
+  feet in three tugs, 4 damage, soaked (storm then Conducts). A pull that brings the enemy to you,
+  where Pull and Tidecall drag toward the spell. It soaks rather than freezes (no ice where it lands).
+- **Current** (Tier II frost movement, 6 mana; Amplify): only in water or rain, a surge of about 15
+  blocks the way you look, and no fall damage until you land; dry, it fizzles. Dash works anywhere,
+  but water drags it to nothing: Current is the water mage's way to cross a lake, leap a waterfall or
+  ride a storm.
+- The first rune fished up earns the feat **Reeled In**.
+
+The numbers are in `content/FishingRules.java` and [features/new-runes.md](features/new-runes.md#fishing).
 
 ## Fusion Altar
 

@@ -769,10 +769,17 @@ def _loot_sources():
         if where not in found.setdefault(path, []):
             found[path].append(where)
 
-    for table, chance, body in re.findall(r"RUNE_POOLS\.put\(BuiltInLootTables\.(\w+), new RunePool\((\d+),\s*(.*?)\)\);", src, re.S):
+    for table, chance, body in re.findall(r"(?:RUNE|ARCHAEOLOGY)_POOLS\.put\(BuiltInLootTables\.(\w+), new RunePool\((\d+),\s*(.*?)\)\);", src, re.S):
         consts_in = named_lists.get(body.strip(), None) or re.findall(r"Runes\.(\w+)", body)
         for c in consts_in:
             add(c, LOOT_TABLE_NAMES.get(table, table.replace("_", " ").title()))
+    # Fishing: the sea list comes up in treasure catches and magic waters, as the runes found only by fishing do (same
+    # words as their source). Named first, so it shows even when a rune drops in more places than a tooltip lists.
+    fishing = next((where for sid, where, _ in rune_sources() if sid == "fishing"), "Fishing")
+    for c in named_lists.get("SEA", []):
+        places = found.setdefault(consts[c], [])
+        if fishing not in places:
+            places.insert(0, fishing)
     for mob, drops in re.findall(r"Map\.entry\(EntityTypes\.(\w+), List\.of\((.*?)\)\)(?=,\s*\n|\s*\n\s*\);)", src, re.S):
         for chance, c in re.findall(r"Map\.entry\((\d+), Runes\.(\w+)\)", drops):
             add(c, mob_source(mob, int(chance)))
@@ -1982,6 +1989,8 @@ WORLD_LANG = {
     "message.wildercord.attune_not_now": "The land here holds a rune, but it isn't the time for it",
     "message.wildercord.attune_resting": "This land gave you its rune today: it rests for about %s more minutes",
     "message.wildercord.manatide_wait": "The storm in you hasn't settled: drink again in %ss",
+    "message.wildercord.current_dry": "The current needs water or rain to carry you",
+    "message.wildercord.fishing_magic": "Something magical was tangled in your line!",
     "screen.wildercord.grimoire.attunements": "Attunements (%s of %s)",
     "screen.wildercord.grimoire.attunement": "%s: %s",
     "screen.wildercord.grimoire.attune_hint": "Meditate with a Blank Rune in hand where this riddle points",
@@ -2380,6 +2389,7 @@ feat_adv("conductor", "discovery/conduct", rune("jolt"), description="Shock five
 feat_adv("icebridge", "discovery/shatter", rune("icepath"), description="Walk across water you froze with a spell", branch="world", xp=15)
 feat_adv("stormcaller", "world/ley_line", rune("lightning"), description="Cast 20 spells under a mana storm", xp=30)
 feat_adv("stargazer", "world/ley_line", rune("starfall"), description="Loot a Fallen Star", frame="goal", xp=40)
+feat_adv("reeled_in", "world/ley_line", rune("tidehook"), description="Fish a rune out of open water", xp=20)
 feat_adv("riftwarden", "world/runebound", rune("banish"), description="Close a rift", frame="goal", xp=50)
 feat_adv("chorus", "casting/first_cast", rune("echo"), description="Cast the same spell with other casters at the same moment", branch="world", xp=30)
 feat_adv("kindred", "world/ley_line", rune("glimmer"), description="Bond with a wisp", xp=25)

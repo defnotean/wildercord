@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "reeled_in": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "reeled_in"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:tidehook"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.reeled_in.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.reeled_in.description"
+    }
+  },
+  "requirements": [
+    [
+      "reeled_in"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

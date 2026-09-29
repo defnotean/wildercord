@@ -110,6 +110,22 @@ class WorldRunesTest {
 	}
 
 	@Test
+	void fishingHasTwoRunesOfItsOwn() {
+		assertEquals(List.of(TIDEHOOK, CURRENT), RuneSources.forSource("fishing"));
+		assertEquals(List.of(RuneSources.FISHING), RuneSources.sourcesOf(TIDEHOOK), "Tidehook is found nowhere else");
+		assertEquals(List.of(RuneSources.FISHING), RuneSources.sourcesOf(CURRENT), "nor is Current");
+		assertEquals(EffectKind.HARMFUL, TIDEHOOK.kind());
+		assertEquals(EffectKind.MOVEMENT, CURRENT.kind(), "Current always moves its caster");
+		assertEquals("control", TIDEHOOK.category());
+		assertEquals("movement", CURRENT.category());
+		// A hook of water soaks what it reels in: it never ices over the water it lands in.
+		assertEquals(WorldRules.Interaction.NONE, WorldRules.of(TIDEHOOK));
+		assertEquals(WorldRules.Interaction.NONE, WorldRules.of(CURRENT));
+		assertTrue(TIDEHOOK.traits().contains(Trait.POWER) && TIDEHOOK.traits().contains(Trait.LINGER));
+		assertTrue(CURRENT.traits().contains(Trait.POWER));
+	}
+
+	@Test
 	void everyAttunementIsASource() {
 		Set<String> ids = new HashSet<>();
 		for (Attunements.Rule rule : Attunements.RULES) {

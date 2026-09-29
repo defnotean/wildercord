@@ -641,8 +641,14 @@ can draw the circle.
 - **Cord tiers** (`CordTier`): sockets, spell slots, highest rune tier, base mana and regeneration.
 - **Loot** (`WildercordLoot`): extra pools on vanilla chest tables, weighted by tier (a Tier I rune
   is 8x as likely as a Tier IV one in the same pool), Torn Pages in old libraries and ruins, plus
-  mob and boss drops. Only vanilla's own tables are touched, so a datapack that replaces a table
-  keeps full control of it. Runebound and the Archivist drop their loot in code.
+  mob and boss drops. Fishing: a rune (an inline table of the sea list and the fishing runes of the
+  world) and a Torn Page join vanilla's single-item treasure pool, and an extra pool on the main
+  fishing table, gated by the loot condition `wildercord:magic_waters` (`MagicWatersCondition`, which
+  asks `cast.Fishing` about a mana storm, a ley line or a thunderstorm at the bobber), adds a rune
+  tangled in the line; `wildercord:fished_rune` (`FishedRuneFunction`) on both grants Reeled In and
+  shows the cue. The odds are pure data in `content.FishingRules`. Only vanilla's own tables are
+  touched, so a datapack that replaces a table keeps full control of it. Runebound and the Archivist
+  drop their loot in code.
 - **Entities** (`cast.WildercordEntities`): the bolt (`RuneBolt`, drawn by nothing but its
   particles), the Archivist and the Training Dummy.
 - **Particles** (`WildercordParticles`): `wildercord:sigil` (a `SigilOption`),
@@ -781,6 +787,11 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **`WildercordAdvancementTest`** checks the server loaded the advancement tab, that a feat, a
   reaction, a secret, a Heart Circle, learning runes, a Cord and a cast each grant theirs, and
   that revoked ones come back from the player's state as they would on login.
+- **`WildercordFishingTest`** rolls the fishing tables thousands of times through the server's loot
+  API with a real bobber (treasure runes and Torn Pages at their rates; a tangled rune never in plain
+  water or out of open water, and at its rate under a mana storm, on a ley line and in a
+  thunderstorm; Reeled In), then casts Tidehook at a husk and Current in water, in the rain and on
+  dry land.
 
 ## 10. Rules that keep it safe
 

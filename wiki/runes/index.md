@@ -10,7 +10,7 @@ permalink: /runes/
 <img src="{{ '/assets/images/rune-icons.png' | relative_url }}" alt="A grid of rune icons: round shapes, eight-sided gem effects, square modifiers and hexagonal links" class="shot">
 
 A **rune** is a small tablet you thread onto your Cord. Each one does one simple thing, and a spell is simply the
-runes in its sockets, read from left to right. There are **292** of them.
+runes in its sockets, read from left to right. There are **294** of them.
 
 ## The four families
 
@@ -44,9 +44,18 @@ Once learned, it's yours for good, and you can thread it into as many spells as 
 useful: trade it to a [Runesmith]({{ '/social/runesmith/' | relative_url }}), or rank it up at the
 [Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 
+## Fishing for runes
+
+Runes come up on a fishing line too. In **open water**, about 4 treasure catches in 11 are a rune (Luck of the Sea
+makes treasure likelier), mostly runes of water, frost and storm, and now and then
+[Tidehook]({{ '/runes/world/#tidehook' | relative_url }}) or [Current]({{ '/runes/world/#current' | relative_url }}),
+two runes found nowhere else. Where magic runs strong at the bobber (under a mana storm, on a ley line, in a
+thunderstorm) a rune can come up tangled in the line on top of your catch. The whole guide, with every chance:
+[Fishing]({{ '/world/runes-of-the-world/' | relative_url }}#fishing).
+
 ## Special runes
 
-- **[Runes of the World]({{ '/runes/world/' | relative_url }})**: 51 runes that can't be crafted, each found only in its own places.
+- **[Runes of the World]({{ '/runes/world/' | relative_url }})**: 53 runes that can't be crafted, each found only in its own places.
 - **[Fused Runes]({{ '/runes/fused/' | relative_url }})**: 55 runes made at the Fusion Altar, one for every pair of elements.
 - **[Innate Runes]({{ '/runes/innate/' | relative_url }})**: 10 runes that wake in a caster's heart; you get exactly one.
 - **Knots**: a whole spell tied into a single rune at the Fusion Altar. See [Knots]({{ '/fusion-altar/knots/' | relative_url }}).
