@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Changed
+- Vein's description now says what Amplify does to it: like Break, Tunnel and Smelt, an Amplified Vein mines at
+  diamond-pickaxe strength.
+
 ### Fixed
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the

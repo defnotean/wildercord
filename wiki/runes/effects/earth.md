@@ -187,7 +187,7 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 
 *Tier II · Earth · Works on the world · 10 mana · needs a Copper Cord or better*
 
-Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness).
+Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness; Amplify for diamond).
 
 **How to get it:** Craft: a Blank Rune, Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
