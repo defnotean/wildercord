@@ -12,7 +12,8 @@ public final class SpellNumbers {
 
 	public static double power(SpellPlan.EffectNode e) {
 		return Math.pow(1.5, e.count(Runes.AMPLIFY)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD))
-			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.2, e.count(Runes.KINDLED));
+			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.2, e.count(Runes.KINDLED))
+			* belatedPower(e);
 	}
 
 	/** Focus and Vow on a shape, times the shape's own strength per hit (Barrage hits often, so softer). */
@@ -27,6 +28,9 @@ public final class SpellNumbers {
 		}
 		if (shape.is(Runes.SPARK.id())) {
 			return 0.75;
+		}
+		if (shape.is(Runes.LATCH.id())) {
+			return LATCH_STRENGTH;
 		}
 		return 1.0;
 	}
@@ -407,5 +411,71 @@ public final class SpellNumbers {
 	/** Blood Price: health paid instead of mana, 1 per 5 mana, at least 1. */
 	public static int healthCost(double cost) {
 		return (int) Math.max(1, Math.ceil(cost / 5.0 - 1e-9));
+	}
+
+	// ---- new runes (batch 2): Glaive, Imprint and Latch; Kindred, Thirst and Belated
+
+	/** How far a Glaive flies out before it turns back (sooner at a wall). */
+	public static final double GLAIVE_RANGE = 12.0;
+	/** The longest a Glaive's way back may take, in ticks, however far its caster ran meanwhile. */
+	public static final int GLAIVE_RETURN_TICKS = 60;
+
+	/** How close to a Glaive's spinning blade a creature must be to be struck. */
+	public static double glaiveWidth(SpellPlan.Group g) {
+		return 1.0 * shapeRadius(g);
+	}
+
+	/** Glaive speed in blocks per tick, out and back. */
+	public static double glaiveSpeed(SpellPlan.Group g) {
+		return 1.0 * quickened(g, 1.5);
+	}
+
+	/** How far around an Imprint it erupts. */
+	public static double imprintRadius(SpellPlan.Group g) {
+		return 3.0 * shapeRadius(g);
+	}
+
+	/** Ticks before an Imprint erupts: 40, halved by each Quicken. */
+	public static int imprintDelay(SpellPlan.Group g) {
+		return Math.max(10, (int) Math.round(40 / Math.pow(2.0, g.count(Runes.QUICKEN))));
+	}
+
+	/** How far from the aim a Latch finds its creature, and how far it may then stray before the thread snaps. */
+	public static final double LATCH_RANGE = 16.0;
+	public static final double LATCH_HOLD = 24.0;
+	/** A Latch's power per strike: it strikes often, and never misses. */
+	public static final double LATCH_STRENGTH = 0.7;
+
+	/** Ticks between a Latch's strikes: 20, halved by each Quicken. */
+	public static int latchInterval(SpellPlan.Group g) {
+		return Math.max(5, (int) Math.round(20 / Math.pow(2.0, g.count(Runes.QUICKEN))));
+	}
+
+	/** A Latch's strikes: 4, doubled by each Extend (longer) and each Quicken (as long, twice as often), 16 at most. */
+	public static int latchStrikes(SpellPlan.Group g) {
+		return (int) Math.min(16, 4 * Math.pow(2.0, g.count(Runes.EXTEND)) * Math.pow(2.0, g.count(Runes.QUICKEN)));
+	}
+
+	/** Kindred: the share of the effect's power that you and the ally it missed get, and how far it looks for that ally. */
+	public static final double KINDRED_SHARE = 0.5;
+	public static final double KINDRED_REACH = 8.0;
+
+	/** Thirst: the share of the damage an effect deals that heals its caster (a quarter each, three quarters at most). */
+	public static double thirstShare(SpellPlan.EffectNode e) {
+		return Math.min(0.75, 0.25 * e.count(Runes.THIRST));
+	}
+
+	/** Belated: each one counted (three at most) makes the effect this much stronger and this many ticks later. */
+	public static final double BELATED_POWER = 1.4;
+	public static final int BELATED_TICKS = 30;
+	private static final int MAX_BELATED = 3;
+
+	public static double belatedPower(SpellPlan.EffectNode e) {
+		return Math.pow(BELATED_POWER, Math.min(MAX_BELATED, e.count(Runes.BELATED)));
+	}
+
+	/** Ticks a Belated effect waits before it lands (0 = at once). */
+	public static int belatedTicks(SpellPlan.EffectNode e) {
+		return BELATED_TICKS * Math.min(MAX_BELATED, e.count(Runes.BELATED));
 	}
 }

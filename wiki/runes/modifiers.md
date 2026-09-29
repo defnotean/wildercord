@@ -10,7 +10,7 @@ nav_order: 3
 
 A **modifier** changes the closest rune on its *left* that it can change. Amplify needs something with power, so in `Bolt · Fire · Amplify` it strengthens Fire; Split needs something that can split, so in `Bolt · Fire · Split` it skips Fire and doubles the Bolt. A modifier never reaches back past a link. Modifiers multiply the cost of what they change.
 
-18 modifiers, by tier.
+21 modifiers, by tier.
 
 ### <img src="{{ '/assets/runes/amplify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Amplify
 {: #amplify}
@@ -51,6 +51,19 @@ Half the mana, but 40% weaker and shorter.
 
 **Attaches to:** the closest rune on its left that is any effect.
 
+### <img src="{{ '/assets/runes/belated.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Belated
+{: #belated}
+
+*Tier II · cost x1.25 · needs a Copper Cord or better*
+
+The effect lands 1.5 seconds late, but 40% stronger.
+
+**How to get it:** Craft: a Blank Rune, Clock and Cobweb, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_belated.png' | relative_url }}" alt="Crafting Belated: a Blank Rune and Clock and Cobweb, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
+
 ### <img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bounce
 {: #bounce}
 
@@ -89,6 +102,19 @@ Half the radius, +50% power.
 <img src="{{ '/assets/recipes/rune_focus.png' | relative_url }}" alt="Crafting Focus: a Blank Rune and Glass Pane and Gold Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything with an area.
+
+### <img src="{{ '/assets/runes/kindred.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Kindred
+{: #kindred}
+
+*Tier II · cost x1.4 · needs a Copper Cord or better*
+
+Shares a helpful effect: it also lands on you and on the nearest ally it missed within 8 blocks, at half power.
+
+**How to get it:** Craft: a Blank Rune, Cake, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_kindred.png' | relative_url }}" alt="Crafting Kindred: a Blank Rune and Cake, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is a helpful effect that lands on each creature it touches (healing, a buff, a ward).
 
 ### <img src="{{ '/assets/runes/linger.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Linger
 {: #linger}
@@ -139,6 +165,19 @@ Halves the whole spell's cooldown.
 **How to get it:** Craft: a Blank Rune, Sugar and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_rapid.png' | relative_url }}" alt="Crafting Rapid: a Blank Rune and Sugar and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/thirst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thirst
+{: #thirst}
+
+*Tier II · cost x1.4 · needs a Copper Cord or better*
+
+You heal for a quarter of the damage the effect deals.
+
+**How to get it:** Craft: a Blank Rune, Spider Eye and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_thirst.png' | relative_url }}" alt="Crafting Thirst: a Blank Rune and Spider Eye and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
 ### <img src="{{ '/assets/runes/volley.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Volley
 {: #volley}

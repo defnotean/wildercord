@@ -10,7 +10,7 @@ nav_order: 1
 
 A **shape** decides *where* a spell goes and *who* it touches: yourself, a bolt that flies, a beam, a burst around you, a zone on the ground. Every shape starts a new group in the spell, and the effects after it act on whatever it hits. Its mana is added to the spell's cost, and some shapes make the effects after them cost more (or less).
 
-33 shapes, by tier.
+36 shapes, by tier.
 
 ### <img src="{{ '/assets/runes/arc.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Arc
 {: #arc}
@@ -37,6 +37,19 @@ Fires a flying bolt, up to 48 blocks.
 <img src="{{ '/assets/recipes/rune_bolt.png' | relative_url }}" alt="Crafting Bolt: a Blank Rune and Arrow" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Quicken, Pierce, Bounce, Split, Homing, Chain, Volley
+
+### <img src="{{ '/assets/runes/imprint.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Imprint
+{: #imprint}
+
+*Tier I · 3 mana · its effects cost x1.3 · needs any Cord*
+
+Leaves an imprint of the spell where you stand. 2 seconds later it erupts, striking everything within 3 blocks of it.
+
+**How to get it:** Craft: a Blank Rune, Clay Ball and Gunpowder. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_imprint.png' | relative_url }}" alt="Crafting Imprint: a Blank Rune and Clay Ball and Gunpowder" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Quicken, Split, Focus
 
 ### <img src="{{ '/assets/runes/nova.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Nova
 {: #nova}
@@ -205,6 +218,19 @@ A crescent slash flies 16 blocks forward, cutting everything in its 5-wide path.
 
 **Modifiers that work on it:** Widen, Quicken, Split, Volley, Focus
 
+### <img src="{{ '/assets/runes/glaive.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Glaive
+{: #glaive}
+
+*Tier II · 5 mana · its effects cost x1.8 · needs a Copper Cord or better*
+
+A spinning glaive flies out up to 12 blocks and curves back to you, striking everything it passes on the way out and again on the way back.
+
+**How to get it:** Craft: a Blank Rune, Iron Axe and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_glaive.png' | relative_url }}" alt="Crafting Glaive: a Blank Rune and Iron Axe and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Widen, Quicken, Split, Focus
+
 ### <img src="{{ '/assets/runes/lance.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lance
 {: #lance}
 
@@ -217,6 +243,19 @@ A thick lance of light drives 16 blocks forward, through every creature in its p
 <img src="{{ '/assets/recipes/rune_lance.png' | relative_url }}" alt="Crafting Lance: a Blank Rune and Spyglass and Blaze Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Widen, Split, Focus
+
+### <img src="{{ '/assets/runes/latch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Latch
+{: #latch}
+
+*Tier II · 6 mana · its effects cost x1.9 · needs a Copper Cord or better*
+
+A thread of light latches onto the first creature within 16 blocks of your aim and strikes it 4 times, a second apart, at 70% power, while it stays within 24 blocks and in sight.
+
+**How to get it:** Craft: a Blank Rune, Lead and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_latch.png' | relative_url }}" alt="Crafting Latch: a Blank Rune and Lead and Amethyst Shard, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Quicken
 
 ### <img src="{{ '/assets/runes/mine.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mine
 {: #mine}

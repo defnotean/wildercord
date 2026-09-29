@@ -219,7 +219,7 @@ public final class SpellCompiler {
 						warn(rune.name() + " holds Knots too deep to untie (" + Knots.MAX_DEPTH + " at most).");
 					}
 					case LINK -> {
-						boolean watchesGroup = rune.is(Runes.ON_HIT.id()) || rune.is(Runes.ON_KILL.id()) || rune.is(Runes.IMBUE.id());
+						boolean watchesGroup = firesAtHits(rune) || rune.is(Runes.IMBUE.id());
 						if (watchesGroup && group == null) {
 							warn(rune.name() + " needs a shape before it to watch.");
 						}
@@ -257,8 +257,7 @@ public final class SpellCompiler {
 						}
 						// On Hit and On Kill fire what follows at every creature; each of a Pulse's runs (and a stored
 						// spell's release) is paid for on its own.
-						boolean nextAfterHits = rune.is(Runes.ON_HIT.id()) || rune.is(Runes.ON_KILL.id())
-							|| afterHits && !rune.is(Runes.PULSE.id()) && !imbue;
+						boolean nextAfterHits = firesAtHits(rune) || afterHits && !rune.is(Runes.PULSE.id()) && !imbue;
 						link.next = segment(i + 1, nextShape, List.of(new Target(i, entry, link.mods)), nextAfterHits);
 						base = outerBase;
 						baseShape = outerShape;
@@ -287,6 +286,16 @@ public final class SpellCompiler {
 				attachedTo[index] = value;
 			}
 		}
+	}
+
+	/**
+	 * Whether {@code link} watches the group before it and fires the rest at the creatures that group
+	 * hit: On Hit, On Kill, and (new runes, batch 2) On Reaction and On Weakness, which fire at those a
+	 * reaction went off on or a weakness was struck on. What follows is paid for once however many it
+	 * fires at, so a repeat after one goes off for the first only.
+	 */
+	public static boolean firesAtHits(RuneDef link) {
+		return link.is(Runes.ON_HIT.id()) || link.is(Runes.ON_KILL.id()) || link.is(Runes.ON_REACTION.id()) || link.is(Runes.ON_WEAKNESS.id());
 	}
 
 	/**
@@ -495,11 +504,16 @@ public final class SpellCompiler {
 		} else if (id.equals(Runes.IMBUE.id())) {
 			boolean self = link.anchor != null && link.anchor.shape.is(Runes.SELF.id());
 			header = "Stored in " + (self ? "the item in your hand" : "the block it touches") + " (" + SpellNumbers.IMBUE_CHARGES + " charges), then:";
+		} else if (id.equals(Runes.ON_REACTION.id())) {
+			header = "On a reaction:";
+		} else if (id.equals(Runes.ON_WEAKNESS.id())) {
+			header = "On a weakness struck:";
 		} else {
 			header = link.link.name() + ":";
 		}
 		lines.add(indent + header);
-		String next = id.equals(Runes.ON_HIT.id()) ? "hit" : id.equals(Runes.ON_KILL.id()) ? "kill" : after;
+		String next = id.equals(Runes.ON_HIT.id()) || id.equals(Runes.ON_WEAKNESS.id()) ? "hit" : id.equals(Runes.ON_KILL.id()) ? "kill"
+			: id.equals(Runes.ON_REACTION.id()) ? "reaction" : after;
 		describe(link.next, indent + "  ", next, lines);
 	}
 
@@ -628,6 +642,18 @@ public final class SpellCompiler {
 		if (id.equals(Runes.CONSTELLATION.id())) {
 			return "Up to " + SpellNumbers.CONSTELLATION_STARS + " enemies within " + blocks(SpellNumbers.constellationRange(g));
 		}
+		// New runes (batch 2).
+		if (id.equals(Runes.GLAIVE.id())) {
+			return (copies > 1 ? copies + " glaives" : "A glaive") + " (out " + blocks(SpellNumbers.GLAIVE_RANGE) + " and back)";
+		}
+		if (id.equals(Runes.IMPRINT.id())) {
+			return (copies > 1 ? copies + " imprints" : "An imprint") + " (" + blocks(SpellNumbers.imprintRadius(g)) + ", erupts after "
+				+ seconds(SpellNumbers.imprintDelay(g)) + ")";
+		}
+		if (id.equals(Runes.LATCH.id())) {
+			return "A latch (" + SpellNumbers.latchStrikes(g) + " strikes, every " + seconds(SpellNumbers.latchInterval(g)) + ", "
+				+ Math.round(SpellNumbers.LATCH_STRENGTH * 100) + "% power each)";
+		}
 		return g.shape.name();
 	}
 
@@ -641,10 +667,12 @@ public final class SpellCompiler {
 			int amp = e.count(Runes.AMPLIFY);
 			int ext = e.count(Runes.EXTEND);
 			int wid = e.count(Runes.WIDEN);
-			if (amp > 0 || e.rank > 1) {
+			int late = SpellNumbers.belatedTicks(e);
+			if (amp > 0 || e.rank > 1 || late > 0) {
 				long percent = Math.round((SpellNumbers.power(e) * Ranks.power(e.rank) - 1) * 100);
 				mods.add((percent >= 0 ? "+" : "") + percent + "% power");
 			}
+			if (late > 0) mods.add("lands " + seconds(late) + " late");
 			if (ext > 0) mods.add(trim(SpellNumbers.duration(e)) + "x duration");
 			if (wid > 0) mods.add("+" + Math.round((SpellNumbers.effectRadius(e) - 1) * 100) + "% radius");
 			if (e.count(Runes.FRUGAL_MOD) > 0) mods.add("frugal");
@@ -654,6 +682,8 @@ public final class SpellCompiler {
 			if (e.count(Runes.TRIAL_KEY) > 0) mods.add("x" + trim(SpellNumbers.trialKeyBonus(e)) + " at full health");
 			if (e.count(Runes.KINDLED) > 0) mods.add("sets alight " + SpellNumbers.kindledSeconds(e) + "s");
 			if (e.count(Runes.UNSTABLE) > 0) mods.add("unstable: 50-200% power");
+			if (e.count(Runes.KINDRED) > 0) mods.add("shared at " + Math.round(SpellNumbers.KINDRED_SHARE * 100) + "% power");
+			if (e.count(Runes.THIRST) > 0) mods.add("heals you " + Math.round(SpellNumbers.thirstShare(e) * 100) + "% of its damage");
 			if (SpellNumbers.lingerHits(e) > 0) mods.add("+" + SpellNumbers.lingerHits(e) + " hits");
 			if (e.effect.is(Runes.SHIELD.id())) mods.add(seconds(SpellNumbers.shieldTicks(e)));
 			joiner.add(e.effect.name() + Ranks.suffix(e.rank) + mods);

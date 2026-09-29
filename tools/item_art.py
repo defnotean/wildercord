@@ -3096,6 +3096,11 @@ import fused_art_flame, fused_art_frost, fused_art_storm, fused_art_life, fused_
 for _fused in (fused_art_flame, fused_art_frost, fused_art_storm, fused_art_life, fused_art_void):
     GLYPHS.update(_fused.GLYPHS)
 
+# The second batch of new runes, drawn in a file of their own too.
+import new_rune_art  # noqa: E402
+
+GLYPHS.update(new_rune_art.GLYPHS)
+
 FALLBACK_GLYPH = """
     ...#...
     ..#+#..

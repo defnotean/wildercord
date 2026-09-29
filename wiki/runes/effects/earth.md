@@ -11,7 +11,7 @@ nav_order: 5
 
 Stone and ground. Earth shields, roots, heaves the ground and breaks blocks.
 
-16 earth effects you can craft or find in the usual way. Earth also has runes of the world, fused runes and innate runes: see their own pages.
+17 earth effects you can craft or find in the usual way. Earth also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/brace.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Brace
 {: #brace}
@@ -24,7 +24,7 @@ Braces for the blow: 80% less damage for 2 seconds. Bracing again takes 6 second
 
 <img src="{{ '/assets/recipes/rune_brace.png' | relative_url }}" alt="Crafting Brace: a Blank Rune and Cobblestone and Iron Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/chisel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chisel
 {: #chisel}
@@ -37,7 +37,7 @@ Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).
 
 <img src="{{ '/assets/recipes/rune_chisel.png' | relative_url }}" alt="Crafting Chisel: a Blank Rune and Stone Pickaxe" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/pelt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pelt
 {: #pelt}
@@ -50,7 +50,20 @@ Pelts targets with stones: 4 damage and a small knockback.
 
 <img src="{{ '/assets/recipes/rune_pelt.png' | relative_url }}" alt="Crafting Pelt: a Blank Rune and Gravel and Cobblestone" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/prospect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prospect
+{: #prospect}
+
+*Tier I · Earth · Works on the world · 3 mana · needs any Cord*
+
+The ground rings out: every ore within 12 blocks of where it lands glows through the rock for 20 seconds.
+
+**How to get it:** Craft: a Blank Rune, Stone Pickaxe and Amethyst Shard. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_prospect.png' | relative_url }}" alt="Crafting Prospect: a Blank Rune and Stone Pickaxe and Amethyst Shard" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus
 
 ### <img src="{{ '/assets/runes/aftershock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Aftershock
 {: #aftershock}
@@ -63,7 +76,7 @@ Pelts targets with stones: 4 damage and a small knockback.
 
 <img src="{{ '/assets/recipes/rune_aftershock.png' | relative_url }}" alt="Crafting Aftershock: a Blank Rune and Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/break.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Break
 {: #break}
@@ -76,7 +89,7 @@ Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 
 <img src="{{ '/assets/recipes/rune_break.png' | relative_url }}" alt="Crafting Break: a Blank Rune and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/excavate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Excavate
 {: #excavate}
@@ -89,7 +102,7 @@ Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).
 
 <img src="{{ '/assets/recipes/rune_excavate.png' | relative_url }}" alt="Crafting Excavate: a Blank Rune and Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/fell.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fell
 {: #fell}
@@ -154,7 +167,7 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 
 <img src="{{ '/assets/recipes/rune_shield.png' | relative_url }}" alt="Crafting Shield: a Blank Rune and Shield, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/stoneskin.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stoneskin
 {: #stoneskin}
@@ -167,7 +180,7 @@ Resistance II for 10 seconds.
 
 <img src="{{ '/assets/recipes/rune_stoneskin.png' | relative_url }}" alt="Crafting Stoneskin: a Blank Rune and Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/tunnel.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tunnel
 {: #tunnel}
@@ -180,7 +193,7 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 
 <img src="{{ '/assets/recipes/rune_tunnel.png' | relative_url }}" alt="Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/vein.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vein
 {: #vein}
@@ -193,7 +206,7 @@ Mines the block that was hit and, if it's an ore, every matching ore joined to i
 
 <img src="{{ '/assets/recipes/rune_vein.png' | relative_url }}" alt="Crafting Vein: a Blank Rune and Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/weigh.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Weigh
 {: #weigh}
@@ -219,5 +232,5 @@ The ground erupts: 8 damage to enemies within 4 blocks, throwing them up.
 
 <img src="{{ '/assets/recipes/rune_tremor.png' | relative_url }}" alt="Crafting Tremor: a Blank Rune and Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

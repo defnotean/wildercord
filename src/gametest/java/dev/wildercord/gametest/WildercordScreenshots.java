@@ -376,6 +376,19 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			// Fished from open water (on the dry stage, Current only fizzles).
 			{"fx_tidehook", 16, new RuneDef[] {Runes.BEAM, Runes.TIDEHOOK}},
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.CURRENT}},
+			// New runes (batch 2): every one of them, the modifiers and links on the new effects.
+			{"fx_glaive", 9, new RuneDef[] {Runes.GLAIVE, Runes.HARM}},
+			{null, 40, new RuneDef[] {Runes.GLAIVE, Runes.SPLIT_MOD, Runes.UMBRA}},
+			{"fx_imprint", 42, new RuneDef[] {Runes.IMPRINT, Runes.HARM}},
+			{"fx_latch", 25, new RuneDef[] {Runes.LATCH, Runes.GASH, Runes.BELATED}},
+			{null, 20, new RuneDef[] {Runes.SELF, Runes.HEAL, Runes.KINDRED}},
+			{null, 20, new RuneDef[] {Runes.BEAM, Runes.HARM, Runes.THIRST}},
+			{null, 30, new RuneDef[] {Runes.BEAM, Runes.FROST, Runes.FIRE, Runes.ON_REACTION, Runes.SPELLBRAND, Runes.DELAY, Runes.BEAM, Runes.HARM}},
+			{null, 30, new RuneDef[] {Runes.BEAM, Runes.VENOM, Runes.ON_WEAKNESS, Runes.FLASH_FREEZE}},
+			{null, 30, new RuneDef[] {Runes.BEAM, Runes.DROWSE, Runes.DISARM}},
+			{"fx_prospect", 12, new RuneDef[] {Runes.RAY, Runes.PROSPECT}},
+			{null, 20, new RuneDef[] {Runes.RAY, Runes.GALVANIZE}},
+			{null, 20, new RuneDef[] {Runes.SELF, Runes.SEARING_EDGE, Runes.SWIFT, Runes.PROLONG}},
 		};
 		for (Object[] step : casts) {
 			String shot = (String) step[0];
@@ -432,13 +445,13 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	 * mining runes, iron ore for Vein, logs under living leaves for Fell, or nothing (null).
 	 */
 	private static net.minecraft.world.level.block.state.BlockState wallFor(List<RuneDef> runes) {
-		if (runes.contains(Runes.VEIN)) {
+		if (runes.contains(Runes.VEIN) || runes.contains(Runes.PROSPECT)) {
 			return net.minecraft.world.level.block.Blocks.IRON_ORE.defaultBlockState();
 		}
 		if (runes.contains(Runes.FELL)) {
 			return net.minecraft.world.level.block.Blocks.OAK_LOG.defaultBlockState();
 		}
-		for (RuneDef rune : List.of(Runes.ZIPPER, Runes.CHISEL, Runes.TUNNEL, Runes.SMELT, Runes.GLIMMER)) {
+		for (RuneDef rune : List.of(Runes.ZIPPER, Runes.CHISEL, Runes.TUNNEL, Runes.SMELT, Runes.GLIMMER, Runes.GALVANIZE)) {
 			if (runes.contains(rune)) {
 				return net.minecraft.world.level.block.Blocks.STONE.defaultBlockState();
 			}

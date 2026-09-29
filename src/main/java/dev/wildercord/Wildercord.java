@@ -59,6 +59,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.Attunement.init();
 		dev.wildercord.cast.ExplorerEffects.init();
 		dev.wildercord.cast.FusedEffects.init();
+		dev.wildercord.cast.CraftedRunes.init();
 		dev.wildercord.cast.Thaws.init();
 		dev.wildercord.cast.TemporaryBlocks.init();
 		dev.wildercord.cast.WorldMagic.init();

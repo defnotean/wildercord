@@ -25,7 +25,8 @@ public final class SpellNames {
 		Map.entry("frugal", "Lesser"), Map.entry("linger", "Lingering"), Map.entry("volley", "Volleying"),
 		Map.entry("focus", "Focused"), Map.entry("overcharge", "Overcharged"), Map.entry("rapid", "Rapid"),
 		Map.entry("vow", "Vowed"), Map.entry("blood_price", "Blood-Bought"), Map.entry("execute", "Executing"),
-		Map.entry("trial_key", "Opening"), Map.entry("kindled", "Kindled"), Map.entry("unstable", "Unstable"));
+		Map.entry("trial_key", "Opening"), Map.entry("kindled", "Kindled"), Map.entry("unstable", "Unstable"),
+		Map.entry("kindred", "Kindred"), Map.entry("thirst", "Thirsting"), Map.entry("belated", "Belated"));
 
 	/** A few effects read better as an element word before a shape. */
 	private static final Map<String, String> EFFECT_WORDS = Map.ofEntries(

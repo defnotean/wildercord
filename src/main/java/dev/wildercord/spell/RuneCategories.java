@@ -58,6 +58,9 @@ public final class RuneCategories {
 				case "self", "orbit" -> "personal";
 				case "touch", "beam", "barrage", "blitz", "ray", "lance", "sweep", "prism", "stream" -> "direct";
 				case "bolt", "arc", "wave", "crescent", "orb", "spark", "wisp", "comet", "ricochet", "cluster" -> "projectile";
+				// New runes (batch 2); Imprint waits where you stood, as a Mine does, so it's lingering.
+				case "latch" -> "direct";
+				case "glaive" -> "projectile";
 				case "burst", "cone", "ring", "pillar", "rain", "nova", "constellation" -> "area";
 				default -> "lingering";
 			};
@@ -80,6 +83,11 @@ public final class RuneCategories {
 					"lifebloom" -> "support";
 				case "warp", "skyglyph" -> "movement";
 				case "chronoshift" -> "time";
+				// New runes (batch 2); Spellbrand and Umbra are damage.
+				case "gash", "flash_freeze", "drowse", "disarm" -> "control";
+				case "searing_edge" -> "support";
+				case "prospect", "galvanize" -> "world";
+				case "prolong" -> "time";
 				case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom",
 					"stormheart" -> "innate";
 				default -> "damage";
@@ -88,6 +96,10 @@ public final class RuneCategories {
 				case "amplify", "overcharge", "frugal", "vow", "blood_price", "execute", "trial_key", "kindled", "unstable" -> "power";
 				case "widen", "focus", "split" -> "area";
 				case "extend", "linger", "rapid" -> "timing";
+				// New runes (batch 2): Kindred spreads an effect to more creatures.
+				case "thirst" -> "power";
+				case "kindred" -> "area";
+				case "belated" -> "timing";
 				default -> "projectile";
 			};
 			case LINK -> switch (path) {

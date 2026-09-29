@@ -35,10 +35,10 @@ public final class Passives {
 
 	private static final Set<String> SHAPES = Set.of("self", "orbit");
 	private static final Set<String> BUFFS = Set.of("feather_fall", "swift", "night_eye", "haste", "regrowth", "stoneskin", "empower",
-		"fireward", "tidebreath", "leap", "infinity", "reflect", "accelerate", "overdrive", "anchor", "frostward", "cushion");
+		"fireward", "tidebreath", "leap", "infinity", "reflect", "accelerate", "overdrive", "anchor", "frostward", "cushion", "searing_edge");
 	/** Damage and control that an Orbit may carry. */
 	private static final Set<String> AURA = Set.of("harm", "shock", "fire", "frost", "chill", "venom", "dismantle", "ripple", "aftershock", "push",
-		"ember", "icicle", "pelt", "windcut");
+		"ember", "icicle", "pelt", "windcut", "umbra");
 	private static final Set<String> MODIFIERS = Set.of("amplify", "extend", "frugal", "widen", "focus", "quicken");
 
 	/** Circles needed for each passive slot: the 1st and the 5th. */

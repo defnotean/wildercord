@@ -102,6 +102,18 @@ public final class Reactions {
 
 	private static void reacted(Entity target) {
 		REACTED.put(target.getUUID(), target.level().getGameTime());
+		SET_OFF.merge(target.getUUID(), 1, Integer::sum);
+	}
+
+	/**
+	 * How many reactions have gone off on each creature lately, counting up: On Reaction compares it before
+	 * and after the group it watches lands, so only what that group set off counts. Dropped with {@link #REACTED}.
+	 */
+	private static final Map<UUID, Integer> SET_OFF = new ConcurrentHashMap<>();
+
+	/** How many reactions have gone off on {@code target} lately (see {@link #SET_OFF}). */
+	public static int count(Entity target) {
+		return SET_OFF.getOrDefault(target.getUUID(), 0);
 	}
 
 	public static void clear(Entity target, Mark mark) {
@@ -464,6 +476,7 @@ public final class Reactions {
 		});
 		LAST_CALLOUT.values().removeIf(last -> gameTime - last > 100 || last > gameTime);
 		REACTED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
+		SET_OFF.keySet().retainAll(REACTED.keySet());
 		HEALED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 		THROWN.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 	}
@@ -472,6 +485,7 @@ public final class Reactions {
 		MARKS.clear();
 		LAST_CALLOUT.clear();
 		REACTED.clear();
+		SET_OFF.clear();
 		HEALED.clear();
 		THROWN.clear();
 		reacting = false;

@@ -20,6 +20,7 @@
 			"dev.wildercord.gametest.WildercordGearTest",
 			"dev.wildercord.gametest.WildercordPricesTest",
 			"dev.wildercord.gametest.WildercordNewRunesTest",
+			"dev.wildercord.gametest.WildercordNewRunes2Test",
 			"dev.wildercord.gametest.WildercordDungeonsTest",
 			"dev.wildercord.gametest.WildercordFusedFlameTest",
 			"dev.wildercord.gametest.WildercordFusedFrostTest",
