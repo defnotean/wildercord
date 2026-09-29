@@ -153,6 +153,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   from the Wither, and one taken away any other way (by a command, say) still cleans up after itself.
 - **A rift's or star's monsters could pick up a fallen player's gear and take it with them when they went.**
   They no longer pick anything up, and one sent away drops whatever it was carrying.
+- A rift's monster that turned into another (a zombie drowning, a skeleton freezing in powder snow) vanished on
+  the spot, and its wave could then never be beaten. It now stays, still one of the rift's (or the star's) own.
 - Icepath's frosted ice never melted in the dark (in caves, or at night). Like frost's, it now thaws back into
   water after half a minute wherever it is.
 

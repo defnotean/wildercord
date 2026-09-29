@@ -132,6 +132,15 @@ public final class FallenStars {
 		star.guards.clear();
 	}
 
+	/** One of an event's monsters turned into another: if it guarded a star, the new one guards it in its place. */
+	static void guardConverted(UUID from, UUID to, BlockPos at) {
+		for (Star star : STARS.values()) {
+			if (star.guards.remove(from) != null) {
+				star.guards.put(to, at.immutable());
+			}
+		}
+	}
+
 	/** One of an event's monsters was killed: if it guarded a star, it no longer stands. */
 	static void guardKilled(UUID id) {
 		for (Star star : STARS.values()) {

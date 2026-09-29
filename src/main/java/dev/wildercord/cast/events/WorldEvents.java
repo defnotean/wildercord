@@ -98,6 +98,17 @@ public final class WorldEvents {
 			}
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register(WorldEvents::died);
+		// An event's monster that turns into another (a zombie drowning, a husk soaking, a skeleton freezing) is still
+		// the event's: the new one carries its tag, so it's taken in its place (before it's added, or it would be removed).
+		ServerLivingEntityEvents.MOB_CONVERSION.register((previous, converted, params) -> {
+			if (previous.entityTags().contains(TAG) && LIVE.remove(previous.getUUID())) {
+				LIVE.add(converted.getUUID());
+				for (RiftSiege rift : RIFTS) {
+					rift.converted(previous.getUUID(), converted.getUUID());
+				}
+				FallenStars.guardConverted(previous.getUUID(), converted.getUUID(), converted.blockPosition());
+			}
+		});
 		// Nothing may be hung on (or taken from) a rift's invisible stand.
 		UseEntityCallback.EVENT.register((player, level, hand, entity, hit) ->
 			entity.entityTags().contains(RiftSiege.ANCHOR_TAG) ? InteractionResult.FAIL : InteractionResult.PASS);

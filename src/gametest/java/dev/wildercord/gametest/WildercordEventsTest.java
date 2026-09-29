@@ -343,6 +343,21 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			if (rift.alive() < 1) {
 				return "the first wave's monsters should be out";
 			}
+			// One of them turning into another (a zombie drowning, a skeleton freezing) is still one of its monsters.
+			ServerLevel level = player(server).level();
+			List<Mob> out = level.getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(rift.base(), rift.base()).inflate(48),
+				m -> m.isAlive() && m.entityTags().contains(WorldEvents.TAG));
+			if (!out.isEmpty()) {
+				int before = rift.alive();
+				Mob converted = out.getFirst().convertTo(net.minecraft.world.entity.EntityTypes.DROWNED,
+					net.minecraft.world.entity.ConversionParams.single(out.getFirst(), true, false), mob -> {});
+				if (converted == null || converted.isRemoved()) {
+					return "a rift's monster turned into another should stay in the world, still the rift's";
+				}
+				if (rift.alive() != before) {
+					return "a rift's monster turned into another should still count as one of its monsters (" + before + " out, then " + rift.alive() + ")";
+				}
+			}
 			// Too raw to seal in its first wave.
 			rift.strike(player(server), "fire");
 			if (!rift.elements().isEmpty()) {
