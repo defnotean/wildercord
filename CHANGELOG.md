@@ -19,6 +19,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Spectators watching a boss fall no longer earn its feat.
 - A storm spell shocking the Tide Scribe's flooded arena also shocked your friends, your pets and any villager
   wading in it. It now spares everyone your spells can't harm (you still get a jolt if you're in the water).
+- **A duel was a free heal**: when it ended, both duellists got back all the health and mana they'd had, whatever
+  had taken it (a fall, a monster, spells cast at anything). Now only the harm your opponent did you is undone,
+  and mana you spent stays spent.
+- A duellist who logged off mid-duel was saved as the duel left them, and a server shutting down during a duel
+  gave one of the two a loss. The one logging off is now put back as they began, and a shutdown ends the duel
+  for nobody.
 - New Ember Sanctums are no longer overgrown by basalt columns and lava sheets in basalt deltas, and no longer
   generate through fortresses and bastions.
 

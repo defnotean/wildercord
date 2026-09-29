@@ -64,12 +64,13 @@ public final class DuelRules {
 	}
 
 	/**
-	 * What a duellist's health (or mana) is put back to when the duel ends: what they had when it
-	 * began, never more than now if they've gained since, and never over the most they can have.
-	 * A duel never heals past where it found you.
+	 * What a duellist's health is put back to when the duel ends: the harm their opponent did them
+	 * ({@code taken}) is given back, never past what they had when it began, and never over the most
+	 * they can have; anything else that hurt them meanwhile stays, and gains made meanwhile are kept.
+	 * A duel never heals past where it found you, and never heals what it didn't do.
 	 */
-	public static float restored(float now, float before, float max) {
-		return Math.min(max, Math.max(now, before));
+	public static float restored(float now, float before, float max, float taken) {
+		return Math.min(max, Math.max(now, Math.min(before, now + taken)));
 	}
 
 	/** An effect a duellist had when the duel began, put back with the time the duel took off it (-1 lasts forever). */

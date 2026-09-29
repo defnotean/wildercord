@@ -9,8 +9,6 @@ import dev.wildercord.cast.Fx;
 import dev.wildercord.cast.Light;
 import dev.wildercord.cast.Sigils;
 import dev.wildercord.content.SigilOption;
-import dev.wildercord.player.Mana;
-import dev.wildercord.player.Spellbooks;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -56,11 +54,12 @@ import java.util.UUID;
  * accept, a 3-second countdown in a circle of light; then the two of them can hurt each other (even
  * with PvP or friendly fire off), and neither can harm anyone else. Nobody dies: brought down by the
  * other, the loser is knocked out at 1 health. When it ends, both are put back as they were when it
- * began (their health, mana, effects and fire as they had them, never better), so a duel is never a
- * free heal. Leaving the area, logging off or dying to anything else forfeits; another player
- * striking either duellist calls the duel off (and the blow lands). Nobody hurt in the last few
- * seconds, or fresh from a fight with another player or a duel, can start one. The rules live in
- * {@link DuelRules}.
+ * began: the health their opponent took is given back (never more than they had, and never what
+ * anything else took), and their effects and fire are as they had them, so a duel is never a free
+ * heal. Mana spent isn't given back. Leaving the area, logging off or dying to anything else
+ * forfeits; another player striking either duellist calls the duel off (and the blow lands). Nobody
+ * hurt in the last few seconds, or fresh from a fight with another player or a duel, can start one.
+ * The rules live in {@link DuelRules}.
  */
 public final class Duels {
 	private Duels() {}
@@ -96,14 +95,17 @@ public final class Duels {
 			.copyOnDeath()
 	);
 
-	/** How a duellist was when the duel began, to put them back that way when it ends. */
-	private record Snapshot(float health, float mana, List<MobEffectInstance> effects, boolean burning) {
+	/**
+	 * How a duellist was when the duel began, to put them back that way when it ends. Mana isn't kept:
+	 * giving back mana spent on anything at all would refill it (and condense it again) for free.
+	 */
+	private record Snapshot(float health, List<MobEffectInstance> effects, boolean burning) {
 		static Snapshot of(ServerPlayer player) {
 			List<MobEffectInstance> effects = new ArrayList<>();
 			for (MobEffectInstance effect : player.getActiveEffects()) {
 				effects.add(new MobEffectInstance(effect));
 			}
-			return new Snapshot(player.getHealth(), Spellbooks.mana(player), List.copyOf(effects), player.getRemainingFireTicks() > 0);
+			return new Snapshot(player.getHealth(), List.copyOf(effects), player.getRemainingFireTicks() > 0);
 		}
 	}
 
@@ -113,6 +115,8 @@ public final class Duels {
 		final ServerLevel level;
 		final Vec3 centre;
 		final Map<UUID, Snapshot> before = new HashMap<>();
+		/** The health each duellist lost to the other's blows and spells, to be given back. */
+		final Map<UUID, Float> taken = new HashMap<>();
 		int shown = -1;
 
 		Active(DuelRules.Duel duel, ServerLevel level, Vec3 centre) {
@@ -179,6 +183,9 @@ public final class Duels {
 			long now = victim.level().getServer().getTickCount();
 			LAST_HURT.put(victim.getUUID(), now);
 			Player attacker = playerBehind(source);
+			if (attacker != null && BY_PLAYER.get(victim.getUUID()) instanceof Active active && attacker.getUUID().equals(active.duel.opponent(victim.getUUID()))) {
+				active.taken.merge(victim.getUUID(), damage, Float::sum);
+			}
 			if (attacker != null && attacker != victim && !opponents(attacker.getUUID(), victim.getUUID())) {
 				LAST_PVP.put(victim.getUUID(), now);
 				LAST_PVP.put(attacker.getUUID(), now);
@@ -194,6 +201,8 @@ public final class Duels {
 				return true;
 			}
 			victim.setHealth(1.0F);
+			// The last blow is given back with the rest (the duel ends before it's counted after the damage).
+			active.taken.merge(victim.getUUID(), amount, Float::sum);
 			active.duel.knockout(victim.getUUID());
 			finish(active, victim.level().getServer());
 			return false;
@@ -210,8 +219,22 @@ public final class Duels {
 			CHALLENGES.removeIf(c -> c.from().equals(player.getUUID()) || c.to().equals(player.getUUID()));
 			if (BY_PLAYER.get(player.getUUID()) instanceof Active active) {
 				active.duel.forfeit(player.getUUID(), DuelRules.Ending.LOGGED_OFF);
-				// The record is written before the player is saved.
+				// The record is written, and they're put back as they began, before the player is saved.
 				finish(active, server, player);
+			}
+		});
+		// The server stopping logs everyone off one by one: the duels end first, for nobody, and both duellists are put back.
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			for (Active active : List.copyOf(new java.util.LinkedHashSet<>(BY_PLAYER.values()))) {
+				BY_PLAYER.remove(active.duel.a, active);
+				BY_PLAYER.remove(active.duel.b, active);
+				long elapsed = active.level.getGameTime() - active.duel.start;
+				for (UUID id : List.of(active.duel.a, active.duel.b)) {
+					ServerPlayer player = server.getPlayerList().getPlayer(id);
+					if (player != null && player.isAlive() && active.before.get(id) != null) {
+						restore(player, active.before.get(id), active.taken.getOrDefault(id, 0F), elapsed);
+					}
+				}
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Duels::tick);
@@ -498,10 +521,11 @@ public final class Duels {
 		ServerPlayer loser = duel.loser() == null ? null : online(server, duel.loser(), leaving);
 		long elapsed = active.level.getGameTime() - duel.start;
 		for (UUID id : List.of(duel.a, duel.b)) {
+			// The one logging off too: they're saved as they began, not as the duel left them.
 			ServerPlayer player = online(server, id, leaving);
 			Snapshot before = active.before.get(id);
-			if (player != null && player != leaving && player.isAlive() && before != null) {
-				restore(player, before, elapsed);
+			if (player != null && player.isAlive() && before != null) {
+				restore(player, before, active.taken.getOrDefault(id, 0F), elapsed);
 			}
 		}
 		Component result;
@@ -546,13 +570,12 @@ public final class Duels {
 	}
 
 	/**
-	 * Puts a duellist back as they were when the duel began: the health and mana they had (or what
-	 * they have now, if that's more), no harm the duel left on them (a harmful effect or fire they
+	 * Puts a duellist back as they were when the duel began: the health their opponent took from them
+	 * (never past what they had then), no harm the duel left on them (a harmful effect or fire they
 	 * didn't have before), and the effects they had then, less the time the duel took.
 	 */
-	private static void restore(ServerPlayer player, Snapshot before, long elapsed) {
-		player.setHealth(DuelRules.restored(player.getHealth(), before.health(), player.getMaxHealth()));
-		Spellbooks.setMana(player, DuelRules.restored(Spellbooks.mana(player), before.mana(), Mana.max(player)));
+	private static void restore(ServerPlayer player, Snapshot before, float taken, long elapsed) {
+		player.setHealth(DuelRules.restored(player.getHealth(), before.health(), player.getMaxHealth(), taken));
 		if (!before.burning()) {
 			player.clearFire();
 		}

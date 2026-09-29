@@ -394,10 +394,14 @@ class SocialRulesTest {
 		assertEquals(DuelRules.Refusal.NONE, DuelRules.ready(now, DuelRules.NEVER, DuelRules.NEVER, now - DuelRules.DUEL_COOLDOWN_TICKS));
 		assertFalse(DuelRules.within(now, now + 50, 200), "a clock that went backwards isn't 'recently'");
 
-		// Health and mana go back to what they were, never more; gains made meanwhile are kept.
-		assertEquals(6F, DuelRules.restored(1F, 6F, 20F));
-		assertEquals(9F, DuelRules.restored(9F, 6F, 20F));
-		assertEquals(20F, DuelRules.restored(1F, 30F, 20F), "never over the most");
+		// What the opponent took goes back, never past what it was; gains made meanwhile are kept.
+		assertEquals(6F, DuelRules.restored(1F, 6F, 20F, 5F));
+		assertEquals(6F, DuelRules.restored(1F, 6F, 20F, 9F), "never past what it was");
+		assertEquals(9F, DuelRules.restored(9F, 6F, 20F, 0F));
+		assertEquals(20F, DuelRules.restored(1F, 30F, 20F, 29F), "never over the most");
+		// Harm from anything else (a fall, a monster, lava) isn't undone: a duel is never a free heal.
+		assertEquals(3F, DuelRules.restored(1F, 6F, 20F, 2F));
+		assertEquals(1F, DuelRules.restored(1F, 20F, 20F, 0F), "hurt only by the world, nothing comes back");
 		// Effects come back with the time the duel took off them.
 		assertEquals(400, DuelRules.remaining(1000, 600));
 		assertEquals(0, DuelRules.remaining(500, 600));
