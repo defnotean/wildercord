@@ -21,7 +21,8 @@ import java.util.Set;
  * range is clamped (each with a warning), so a hand-edited file can never stop a server.
  *
  * <p>The feature switches ({@code world_events}, {@code duels}, {@code wild_magic},
- * {@code world_changing_magic}) are read by those features; each defaults to on.</p>
+ * {@code world_changing_magic}, {@code creature_affinities}, {@code elemental_climate}) are read by those
+ * features; each defaults to on.</p>
  *
  * @param maxCreatures       creatures one cast may touch (links and echoes included)
  * @param maxBlocks          blocks one cast may change
@@ -54,10 +55,12 @@ public record WildercordConfig(
 	boolean worldEvents,
 	boolean duels,
 	boolean wildMagic,
-	boolean worldChangingMagic
+	boolean worldChangingMagic,
+	boolean creatureAffinities,
+	boolean elementalClimate
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true);
+		true, true, true, true, true, true);
 
 	/** The file's format version, written so later versions can migrate it. */
 	public static final int VERSION = 1;
@@ -102,7 +105,9 @@ public record WildercordConfig(
 			r.bool("features", "world_events", d.worldEvents),
 			r.bool("features", "duels", d.duels),
 			r.bool("features", "wild_magic", d.wildMagic),
-			r.bool("features", "world_changing_magic", d.worldChangingMagic));
+			r.bool("features", "world_changing_magic", d.worldChangingMagic),
+			r.bool("features", "creature_affinities", d.creatureAffinities),
+			r.bool("features", "elemental_climate", d.elementalClimate));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -116,7 +121,7 @@ public record WildercordConfig(
 		KEYS.put("world", Set.of("runebound_chance_multiplier"));
 		KEYS.put("loot", Set.of("rune_chance_multiplier", "crystal_chance_multiplier", "page_chance_multiplier", "gear_chance_multiplier"));
 		KEYS.put("imbuing", Set.of("max_items", "max_glyphs"));
-		KEYS.put("features", Set.of("world_events", "duels", "wild_magic", "world_changing_magic"));
+		KEYS.put("features", Set.of("world_events", "duels", "wild_magic", "world_changing_magic", "creature_affinities", "elemental_climate"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -273,11 +278,13 @@ public record WildercordConfig(
 		root.add("imbuing", imbuing);
 
 		JsonObject features = new JsonObject();
-		features.addProperty("_about", "Switch whole features off: world events, duels, wild magic and world-changing magic.");
+		features.addProperty("_about", "Switch whole features off: world events, duels, wild magic, world-changing magic, creature affinities and elemental climate.");
 		features.addProperty("world_events", worldEvents);
 		features.addProperty("duels", duels);
 		features.addProperty("wild_magic", wildMagic);
 		features.addProperty("world_changing_magic", worldChangingMagic);
+		features.addProperty("creature_affinities", creatureAffinities);
+		features.addProperty("elemental_climate", elementalClimate);
 		root.add("features", features);
 		return GSON.toJson(root) + "\n";
 	}

@@ -4,7 +4,8 @@ import java.util.List;
 
 /**
  * The Grimoire: everything a caster has discovered. Entries are plain string keys, grouped by
- * a prefix: {@code reaction:shatter}, {@code secret:sunfall}, {@code feat:overcast}, {@code fusion:firestorm}. Each first
+ * a prefix: {@code reaction:shatter}, {@code secret:sunfall}, {@code feat:overcast}, {@code fusion:firestorm},
+ * {@code bestiary:minecraft:blaze|weak|frost} (see {@link Bestiary}). Each first
  * discovery condenses a little mana toward the next Heart Circle. Pure data, shared by the
  * server (which grants entries) and the Grimoire page (which lists them).
  */
@@ -101,6 +102,9 @@ public final class Feats {
 
 	/** Mana condensed toward the next circle by a first discovery. */
 	public static int reward(String key) {
+		if (key.startsWith(Bestiary.PREFIX)) {
+			return Bestiary.reward(key);
+		}
 		if (key.startsWith("secret:")) {
 			return 400;
 		}

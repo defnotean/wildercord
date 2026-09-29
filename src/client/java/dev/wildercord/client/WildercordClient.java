@@ -76,8 +76,11 @@ public final class WildercordClient implements ClientModInitializer {
 		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.config.Config.Sync.TYPE, (payload, context) -> dev.wildercord.config.Config.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.runesmith.Contracts.ShowBoard.TYPE, (payload, context) -> context.client().gui.setScreen(new ContractBoardScreen(payload)));
+		// The elemental climate where the player stands, for the HUD's marks and the Grimoire.
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.Climate.Sync.TYPE, (payload, context) -> dev.wildercord.cast.Climate.receive(payload));
 		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			dev.wildercord.config.Config.receive(null);
+			dev.wildercord.cast.Climate.receive(null);
 			CordGlow.clear();
 		});
 

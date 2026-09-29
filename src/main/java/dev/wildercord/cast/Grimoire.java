@@ -3,6 +3,7 @@ package dev.wildercord.cast;
 import dev.wildercord.net.WildercordNetworking;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.WildercordAttachments;
+import dev.wildercord.spell.Bestiary;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.Secrets;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -15,7 +16,8 @@ import java.util.List;
 
 /**
  * Writes discoveries into a player's Grimoire. The first time for each entry, a little mana
- * condenses toward the next Heart Circle and the client shows a Grimoire toast.
+ * condenses toward the next Heart Circle and the client shows a Grimoire toast (Bestiary entries for a
+ * creature met or a resistance found go in quietly: see {@link Bestiary#quiet}).
  */
 public final class Grimoire {
 	private Grimoire() {}
@@ -30,6 +32,10 @@ public final class Grimoire {
 		next.add(key);
 		player.setAttached(WildercordAttachments.GRIMOIRE, List.copyOf(next));
 		dev.wildercord.advancement.Advancements.grimoire(player);
+		// A creature met, or a resistance found, goes in quietly: the callout over the creature already said it.
+		if (Bestiary.quiet(key)) {
+			return true;
+		}
 		if (!key.startsWith("hint:")) {
 			player.setAttached(WildercordAttachments.CONDENSED, Heart.condensed(player) + Feats.reward(key));
 			Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F);

@@ -31,6 +31,8 @@ import java.util.Locale;
  *  ╰────╯ 112/300                 1.2s
  *   • • ·   (one dot per spell the Cord holds)
  * </pre>
+ * Above it: rhythm notes, cracked circles, the spell's name and, after it, the elemental climate where
+ * you stand (a mark per element, with a green ▲ or red ▼); the Shield you wear goes a line higher.
  * Everything is laid out from measured text widths and moves aside for an offhand slot or
  * attack indicator on the right, so it stays clean at every GUI scale. Hidden without a Cord.
  */
@@ -156,13 +158,23 @@ public final class SpellHud {
 			g.text(font, crack, lx + 1, above, RED, true);
 			lx += font.width(crack) + 3;
 		}
-		boolean nameRow = rhythm.stacks() > 0 || cracked > 0 || compiled != null;
+		// Where you stand: a mark for each element it favours or hinders, after the spell's name.
+		java.util.Map<String, Double> climate = dev.wildercord.spell.ClimateRules.factors(dev.wildercord.cast.Climate.shown());
+		int climateW = ElementGlyphs.rowWidth(climate.size());
+		boolean nameRow = rhythm.stacks() > 0 || cracked > 0 || compiled != null || !climate.isEmpty();
 		if (compiled != null) {
 			String name = SpellCaster.nameOf(player, book, spell, runes);
 			int nameX = Math.max(lx + 3, x0 + BODY_X);
-			String nameShown = font.plainSubstrByWidth(name, Math.max(20, g.guiWidth() - nameX - 4));
+			String nameShown = font.plainSubstrByWidth(name, Math.max(20, g.guiWidth() - nameX - 4 - (climateW > 0 ? climateW + 5 : 0)));
 			int nameColor = 0xFF000000 | spellColor(runes);
 			g.text(font, nameShown, nameX, above, nameColor, true);
+			lx = nameX + font.width(nameShown) + 2;
+		}
+		if (climateW > 0) {
+			int cx = Math.max(lx + 3, x0 + BODY_X);
+			if (cx + climateW <= g.guiWidth() - 2) {
+				ElementGlyphs.row(g, climate, cx, above);
+			}
 		}
 
 		// ---- badge: spell number, cooldown shade, and one dot per spell.

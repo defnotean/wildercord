@@ -20,6 +20,18 @@ class WildercordConfigTest {
 		assertEquals(6, D.imbueMaxItems());
 		assertEquals(12, D.imbueMaxGlyphs());
 		assertTrue(D.worldEvents() && D.duels() && D.wildMagic() && D.worldChangingMagic());
+		assertTrue(D.creatureAffinities() && D.elementalClimate());
+	}
+
+	@Test
+	void affinitiesAndClimateSwitchOffOnTheirOwn() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"features\": {\"creature_affinities\": false}}");
+		assertFalse(parsed.config().creatureAffinities());
+		assertTrue(parsed.config().elementalClimate());
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		WildercordConfig off = WildercordConfig.parse(D.toJson().replace("\"elemental_climate\": true", "\"elemental_climate\": false")).config();
+		assertFalse(off.elementalClimate());
+		assertTrue(off.creatureAffinities());
 	}
 
 	@Test

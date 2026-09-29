@@ -20,6 +20,7 @@ except ImportError:
 import sigil_art  # Magic circles and the GUI sprites that came with them.
 import world_art  # Scrolls, pages, the dummy, the Wellstone, Rune Seals, the lectern and the two skins.
 import dungeon_assets  # The dimension dungeons: their bosses' skins, trophies, altar, loot and worldgen.
+import affinity_data  # Creature affinities (entity type tags) and elemental climate: their tags and text.
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "src/main/resources"
@@ -345,6 +346,7 @@ def main():
     write_new_content(runes)
     write_advancements(runes)
     write_world_events()
+    affinity_data.write_tags(write_json, DATA)
     import runesmith_art  # The Runesmith: its desk, its outfit and its trades.
     runesmith_art.main()
     write_familiar_content()
@@ -614,6 +616,7 @@ def write_lang(runes):
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
     lang.update(WORLD_MAGIC_LANG)
+    lang.update(affinity_data.LANG)
     lang.update(WORLD_LANG)
     lang.update(PARRY_AND_WILD_LANG)
     lang.update(advancement_lang())
