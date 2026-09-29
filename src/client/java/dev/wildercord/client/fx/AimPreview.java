@@ -23,8 +23,9 @@ import java.util.List;
 /**
  * While you charge a spell, where it will go: a reticle on the ground for spells that land where
  * you look (Zone, Rain, Pillar, Totem, Mine), a ring around you for ones centred on you (Burst,
- * Ring, Domain, Nova), and a faint dotted line as far as the ones that fly or reach can go (Bolt,
- * Beam, Crescent, Orb, Spark, Comet, Ray, Lance, Stream...). Only you see it.
+ * Ring, Domain, Nova, and Imprint under your feet), and a faint dotted line as far as the ones that
+ * fly or reach can go (Bolt, Beam, Crescent, Orb, Spark, Comet, Ray, Lance, Stream, Glaive...), a
+ * Latch's with a mark on the creature it would hold. Only you see it.
  */
 public final class AimPreview {
 	private AimPreview() {}
@@ -70,8 +71,42 @@ public final class AimPreview {
 			case "prism" -> line(mc, player, SpellNumbers.PRISM_RANGE, color);
 			case "sweep" -> line(mc, player, SpellNumbers.sweepLength(g), color);
 			case "stream" -> line(mc, player, SpellNumbers.STREAM_RANGE, color);
+			// New runes (batch 2): a Glaive's reach out (it comes back along it), the ground an Imprint will
+			// erupt from, and a Latch's line with a mark on the creature it would hold.
+			case "glaive" -> line(mc, player, SpellNumbers.GLAIVE_RANGE, color);
+			case "imprint" -> reticle(mc, feet(player), SpellNumbers.imprintRadius(g), color);
+			case "latch" -> {
+				line(mc, player, SpellNumbers.LATCH_RANGE, color);
+				latchMark(mc, player, color);
+			}
 			default -> { }
 		}
+	}
+
+	/** The ground under the player (an Imprint lands there, not in mid-air). */
+	private static Vec3 feet(LocalPlayer player) {
+		Vec3 at = player.position();
+		BlockHitResult down = player.level().clip(new ClipContext(at.add(0, 0.2, 0), at.add(0, -16, 0), ClipContext.Block.COLLIDER,
+			ClipContext.Fluid.NONE, player));
+		return down.getType() == HitResult.Type.MISS ? at : down.getLocation();
+	}
+
+	/** A target mark on the first creature a Latch would take hold of, if any. */
+	private static void latchMark(Minecraft mc, LocalPlayer player, int color) {
+		Vec3 from = player.getEyePosition();
+		Vec3 dir = player.getLookAngle();
+		BlockHitResult hit = player.level().clip(new ClipContext(from, from.add(dir.scale(SpellNumbers.LATCH_RANGE)), ClipContext.Block.COLLIDER,
+			ClipContext.Fluid.NONE, player));
+		Vec3 to = hit.getType() == HitResult.Type.MISS ? from.add(dir.scale(SpellNumbers.LATCH_RANGE)) : hit.getLocation();
+		net.minecraft.world.phys.EntityHitResult entity = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(player, from, to,
+			new net.minecraft.world.phys.AABB(from, to).inflate(1.0), e -> e instanceof net.minecraft.world.entity.LivingEntity && e.isAlive() && !e.isSpectator(),
+			from.distanceToSqr(to));
+		if (entity == null) {
+			return;
+		}
+		net.minecraft.world.entity.Entity e = entity.getEntity();
+		SigilOption mark = SigilOption.flat(SigilOption.TARGET, color, (float) Math.max(0.7, e.getBbWidth() + 0.4), 3, 0.08F);
+		mc.particleEngine.add(SigilParticle.make(mc.level, e.position().add(0, 0.08, 0), mark, true));
 	}
 
 	private static Vec3 aim(LocalPlayer player, double range) {

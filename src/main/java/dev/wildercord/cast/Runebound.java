@@ -299,7 +299,9 @@ public final class Runebound {
 		String shape = spell.isEmpty() ? "" : spell.getFirst().path();
 		return switch (shape) {
 			case "touch" -> 3.5;
-			case "burst", "ring", "barrage" -> 5.0;
+			case "burst", "ring", "barrage", "imprint" -> 5.0;
+			case "glaive" -> 12.0;
+			case "latch" -> 16.0;
 			case "cone" -> 6.0;
 			case "blitz" -> 8.0;
 			case "self" -> 12.0;

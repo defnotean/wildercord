@@ -73,6 +73,17 @@ public final class Affinities {
 	private static final int MAX_KEY = 120;
 
 	private static final Map<UUID, Long> LAST_CALLOUT = new ConcurrentHashMap<>();
+	/**
+	 * How many times each creature has lately been struck where it's weak, counting up, and when last: On
+	 * Weakness compares the count before and after the group it watches lands.
+	 */
+	private static final Map<UUID, Integer> WEAK_STRIKES = new ConcurrentHashMap<>();
+	private static final Map<UUID, Long> WEAK_AT = new ConcurrentHashMap<>();
+
+	/** How many times {@code target} has lately been struck where it's weak (see {@link #WEAK_STRIKES}). */
+	public static int weakStrikes(net.minecraft.world.entity.Entity target) {
+		return WEAK_STRIKES.getOrDefault(target.getUUID(), 0);
+	}
 	/** Creatures an immune hit is about to land on: the hit is dropped whole (no flinch, no sound) rather than dealt as 0. */
 	private static final Set<LivingEntity> IMMUNE_HITS = Collections.newSetFromMap(new IdentityHashMap<>());
 
@@ -143,6 +154,10 @@ public final class Affinities {
 		boolean immune = burnproof || target.is(IMMUNE.get(element));
 		Affinity.Verdict verdict = Affinity.judge(weak, resists, immune, Reactions.reactedWithin(target, 0));
 		double multiplier = Affinity.multiplier(verdict);
+		if (verdict == Affinity.Verdict.WEAK) {
+			WEAK_STRIKES.merge(target.getUUID(), 1, Integer::sum);
+			WEAK_AT.put(target.getUUID(), cast.level.getGameTime());
+		}
 		if (source.is(DamageTypeTags.IS_FREEZING) && target.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
 			multiplier /= VANILLA_FREEZE;
 		}
@@ -281,11 +296,15 @@ public final class Affinities {
 			if (server.getTickCount() % 100 == 0) {
 				long now = server.overworld().getGameTime();
 				LAST_CALLOUT.values().removeIf(last -> now - last > 100 || last > now);
+				WEAK_AT.values().removeIf(at -> now - at > 100 || at > now);
+				WEAK_STRIKES.keySet().retainAll(WEAK_AT.keySet());
 			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			IMMUNE_HITS.clear();
 			LAST_CALLOUT.clear();
+			WEAK_STRIKES.clear();
+			WEAK_AT.clear();
 		});
 	}
 }

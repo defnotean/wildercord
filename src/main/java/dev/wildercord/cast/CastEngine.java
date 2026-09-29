@@ -146,7 +146,7 @@ public final class CastEngine {
 			// A link from an add-on (dev.wildercord.api) decides when the rest fires.
 			AddonRunes.link(cast, link, at);
 		}
-		// On Hit and On Kill fire from onHit(), through their anchor group.
+		// On Hit, On Kill, On Reaction and On Weakness fire from onHit(), through their anchor group.
 	}
 
 	// ------------------------------------------------------------------ shapes
@@ -328,6 +328,9 @@ public final class CastEngine {
 					onHit(child, g, new Cast.Hit(inRadius(child, target.add(0, 1, 0), 1.6), target, new Vec3(0, -1, 0), target, below, net.minecraft.core.Direction.UP, false), anchored);
 				});
 			}
+		} else if (CraftedShapes.handles(shape)) {
+			// New runes (batch 2): Glaive, Imprint and Latch.
+			CraftedShapes.deliver(cast, g, at, anchored, theme);
 		} else {
 			// A shape from an add-on (dev.wildercord.api) finds its own hits; otherwise the shapes of the world: Vortex, Snare and Constellation.
 			if (!AddonRunes.shape(cast, g, at, anchored)) {
@@ -438,20 +441,32 @@ public final class CastEngine {
 		if (!g.effects.isEmpty()) {
 			dev.wildercord.api.WildercordEvents.SPELL_HIT.invoker().onHit(cast.caster, entities, hit.point(), g.effects.stream().map(e -> e.effect).toList());
 		}
+		// On Reaction and On Weakness count only what this group sets off.
+		java.util.Map<Entity, Integer> watched = CraftedShapes.watch(anchored, entities);
 		double groupPower = SpellNumbers.groupPower(g);
 		for (SpellPlan.EffectNode effect : stasisFirst(g.effects)) {
-			Effects.apply(cast, effect, hit, groupPower);
+			// Belated: it (and each lingering landing after it) comes a moment late, on whatever it struck that's still there.
+			int late = SpellNumbers.belatedTicks(effect);
+			if (late == 0) {
+				Effects.apply(cast, effect, hit, groupPower);
+			} else {
+				Cast.Hit first = hit;
+				CraftedRunes.belated(cast, hit, late);
+				Scheduler.later(late, () -> {
+					if (cast.alive()) {
+						Effects.apply(cast, effect, still(cast, first), groupPower);
+					}
+				});
+			}
 			int again = SpellNumbers.lingerHits(effect);
 			for (int i = 1; i <= again; i++) {
 				Cast.Hit first = hit;
 				// The same cast landing again, not a link: it takes none of the cast's link depth.
-				Scheduler.later(20 * i, () -> {
+				Scheduler.later(late + 20 * i, () -> {
 					if (!cast.alive()) {
 						return;
 					}
-					// Not one that has gone to another dimension since (a player keeps being the same entity there).
-					List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == cast.level).toList();
-					Effects.apply(cast, effect, new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self()), groupPower);
+					Effects.apply(cast, effect, still(cast, first), groupPower);
 				});
 			}
 		}
@@ -483,7 +498,16 @@ public final class CastEngine {
 					runSegment(cast.child(), anchored.next, new Cast.Trigger(victim.getBoundingBox().getCenter(), hit.dir(), null, null, null));
 				}
 			}
+		} else if (watched != null) {
+			// On Reaction, On Weakness: at each creature this group set a reaction off on, or struck where it's weak.
+			CraftedShapes.fire(cast, anchored, hit, watched, MAX_TRIGGERS_PER_HIT);
 		}
+	}
+
+	/** What a hit struck that's still there to land on again: alive, and not gone to another dimension since (a player keeps being the same entity there). */
+	private static Cast.Hit still(Cast cast, Cast.Hit first) {
+		List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == cast.level).toList();
+		return new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self());
 	}
 
 	/**

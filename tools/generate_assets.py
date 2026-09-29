@@ -1068,6 +1068,29 @@ RUNE_RECIPES = {
     "push": ["minecraft:piston"],
 }
 
+# The second batch of new runes (Runes.java, "new runes (batch 2)"): their own items, kept apart from the rest.
+NEW_RUNES_2_RECIPES = {
+    "glaive": ["minecraft:iron_axe", "minecraft:string"],
+    "imprint": ["minecraft:clay_ball", "minecraft:gunpowder"],
+    "latch": ["minecraft:lead", "minecraft:amethyst_shard"],
+    "kindred": ["minecraft:cake"],
+    "thirst": ["minecraft:spider_eye", "minecraft:glass_bottle"],
+    "belated": ["minecraft:clock", "minecraft:cobweb"],
+    "on_reaction": ["minecraft:brewing_stand"],
+    "on_weakness": ["minecraft:fermented_spider_eye", "minecraft:target"],
+    "spellbrand": ["minecraft:book", "minecraft:gunpowder"],
+    "gash": ["minecraft:flint", "minecraft:rotten_flesh"],
+    "prospect": ["minecraft:stone_pickaxe", "minecraft:amethyst_shard"],
+    "searing_edge": ["minecraft:iron_sword", "minecraft:blaze_powder"],
+    "flash_freeze": ["minecraft:packed_ice", "minecraft:water_bucket"],
+    "drowse": ["minecraft:spore_blossom", "minecraft:honey_bottle"],
+    "galvanize": ["minecraft:lightning_rod", "minecraft:redstone"],
+    "prolong": ["minecraft:clock", "minecraft:redstone", "minecraft:redstone"],
+    "umbra": ["minecraft:ink_sac", "minecraft:flint"],
+    "disarm": ["minecraft:wind_charge", "minecraft:fishing_rod"],
+}
+RUNE_RECIPES.update(NEW_RUNES_2_RECIPES)
+
 
 def rune_result(path):
     return {"id": "wildercord:rune", "components": {"wildercord:rune": f"wildercord:{path}"}}

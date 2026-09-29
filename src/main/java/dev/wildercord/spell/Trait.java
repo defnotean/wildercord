@@ -24,6 +24,12 @@ public final class Trait {
 	/** Projectiles and beams that can fire in quick succession (Volley). */
 	public static final String VOLLEY = "volley";
 	/**
+	 * Helpful effects that land on each creature they touch, so they can be shared with you and an ally
+	 * (Kindred). Every such built-in effect has it; the few that act on a place or only ever on their
+	 * caster (a summon, a dome, a death save) don't.
+	 */
+	public static final String SHARE = "share";
+	/**
 	 * Every shape: Rapid, Vow and Blood Price sit on one but change the whole spell, so a modifier that
 	 * needs this is priced on the whole spell (see {@link SpellCompiler#wholeSpell}).
 	 */
