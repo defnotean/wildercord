@@ -48,7 +48,7 @@ public interface EffectContext {
 
 	/**
 	 * Power multiplier: its modifiers (Amplify, Frugal...), the shape, Heart Circles, Cord enchantments,
-	 * the charge, the rhythm chain, elemental leaning and casting gear. Multiply your numbers by it.
+	 * the charge, the rhythm chain, the caster's affinity with its element and casting gear. Multiply your numbers by it.
 	 */
 	double power();
 

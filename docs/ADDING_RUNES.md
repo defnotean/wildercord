@@ -74,7 +74,7 @@ In `RuneCategories.categoryFor`, add `"gust"` to the `control` list (or it falls
 In `Effects.applyEffect`, add a case. You get ready-made lists: `harmed` (fair game), `helped`
 (allies), `moved` (the caster on Self, otherwise `harmed`), plus `power`, `duration` and `amplify`
 already worked out from its modifiers, the shape, the caster's Heart Circles and Cord
-enchantments, the charge, the rhythm chain and the caster's leaning:
+enchantments, the charge, the rhythm chain and the caster's affinity with its element:
 
 ```java
 case "gust" -> harmed.forEach(t -> {
@@ -107,7 +107,7 @@ Rules of thumb:
 - **Anything bigger than a few lines** belongs in a helper (see `Techniques`).
 - **Don't stop a boss's AI or move it.** Use `Spirits.isBoss` (see `Spirits.hold`).
 
-An element comes with things for free: the effect counts toward elemental leaning, joins Unison,
+An element comes with things for free: the effect counts toward its casters' affinities, joins Unison,
 lights Rune Seals of its element, and (for fire) lights campfires.
 
 ### 4. Give it a look

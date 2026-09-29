@@ -88,7 +88,8 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Element reactions** | Eleven of them, from Shatter and Conduct to Overload, Fracture, Blight, Unweave, Rupture and Elapse: the right element on the right mark sets off a bonus, and every element takes part. |
 | **Creature affinities and climate** | Blazes fear frost, the undead burn under life magic, golems conduct storm: creatures are weak to some elements and resist others (a datapack can change which), and your Grimoire's Bestiary records what you find. Where you fight matters too: fire burns hotter in the Nether, storm in a thunderstorm, frost in the snow. See [docs/features/affinities.md](docs/features/affinities.md). |
 | **Heart Circles** | Condense mana by casting, earn breakthroughs (mostly feats: set off five different reactions, find secret spells, defeat the Archivist), and meditate to form rings of mana around your heart, from the 1st Circle to the 8th (Archmage). In a pinch, **overcast**: crack a circle to cast beyond your mana. |
-| **Rhythm and leaning** | Cast again right as your last spell comes off cooldown and the chain builds power. Cast one element most and your magic leans toward it: its effects hit 10% harder, your Heart Circles are tinted toward its colour, and a spell with no effect of its own charges in it. |
+| **Rhythm** | Cast again right as your last spell comes off cooldown and the chain builds power. |
+| **Your affinities** | An affinity with each of the ten elements that grows with what you do: casting it, its reactions, and everyday things that fit it (smelting for fire, fishing for frost, mining for earth, farming for life...), each with a daily allowance so nothing can be farmed. Levels I to V: +3% power a level with that element, a resistance to it from III, cheaper spells at V. Your magic leans toward your deepest one: your Heart Circles are tinted toward its colour, and a spell with no effect of its own charges in it. See [docs/features/player-affinity.md](docs/features/player-affinity.md). |
 | **Passive spells** | Up to two always-on spells (a buff, or an Orbit aura) that drain mana every second instead of having a cooldown. |
 | **Mana that grows** | Mana Crystals, Cord enchantments (Reservoir, Wellspring, Siphon), Clarity and Mana potions, meditation, Heart Circles. |
 | **Spell enchantments** | Potency, Celerity, Thrift and Persistence make your spells stronger, faster, cheaper and longer. |
@@ -192,7 +193,7 @@ script around it repeats the runes, and the first rune's emblem (Nova's) is the 
 | A Wellstone on a ley line | The spell wheel |
 | <img src="docs/images/wellstone.jpg" alt="A Wellstone block on a ley line, rings of light turning around it" width="420"> | <img src="docs/images/spell-wheel.png" alt="The radial spell wheel: four spells around a centre showing cost and cooldown" width="420"> |
 
-**The Grimoire:** your innate rune and leaning, and every reaction, secret spell and feat
+**The Grimoire:** your innate rune, leaning and affinities, and every reaction, secret spell and feat
 you've found, with the riddles you've read.
 
 <img src="docs/images/grimoire-reactions.jpg" alt="The Grimoire page of the Cord screen: your heart, six of the eleven reactions found (Shatter, Conduct, Wildfire, Overload, Fracture and Rupture), and ten secret spells still unknown" width="740">
@@ -308,7 +309,7 @@ src/
 ├── main/java/dev/wildercord/
 │   ├── spell/      The spell engine: pure Java, no Minecraft imports.
 │   │                 Runes (the roster), RuneDef, Trait, RuneCategories, SpellCompiler,
-│   │                 SpellPlan, SpellNumbers, Passives, Circles, Secrets, Feats, Leaning,
+│   │                 SpellPlan, SpellNumbers, Passives, Circles, Secrets, Feats, Leaning, PlayerAffinity,
 │   │                 SpellNames, SpellCodes, SpellSigil
 │   ├── cast/       Running spells in the world: SpellCaster (the gate), CastEngine, Cast,
 │   │                 Casters, Targets, ShapeRunners, Effects, Techniques, Wards, Reactions,

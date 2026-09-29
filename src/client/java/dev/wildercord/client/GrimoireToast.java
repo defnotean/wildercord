@@ -27,6 +27,7 @@ import java.util.Optional;
 /**
  * "New in your Grimoire": shown when a reaction, secret spell, feat, riddle or a creature's
  * weakness is first discovered, with an icon for what kind it is and the condensed mana it brought.
+ * An affinity reaching a new level has one too ({@link #affinity}), with the element's mark for its icon.
  */
 public class GrimoireToast implements Toast {
 	private static final Identifier BACKGROUND = Wildercord.id("toast/grimoire");
@@ -36,10 +37,36 @@ public class GrimoireToast implements Toast {
 	private final Component name;
 	private final ItemStack icon;
 	private final int color;
+	/** The element whose mark is drawn in place of an item (an affinity's toast), or null. */
+	private final String glyph;
+	private final Object token;
 	private Visibility visibility = Visibility.SHOW;
 
+	private GrimoireToast(Component title, Component name, int color, String glyph, Object token) {
+		this.title = title;
+		this.name = name;
+		this.icon = ItemStack.EMPTY;
+		this.color = color;
+		this.glyph = glyph;
+		this.token = token;
+	}
+
+	/** An affinity reached {@code level}: "An affinity awakens: Frost I", or "Your affinity deepens: Frost III". */
+	public static GrimoireToast affinity(String element, int level) {
+		Component title = Component.translatable(level <= 1 ? "toast.wildercord.affinity_new" : "toast.wildercord.affinity");
+		Component name = Component.translatable("toast.wildercord.affinity_level", Component.translatable("element.wildercord." + element), RuneItem.roman(level));
+		return new GrimoireToast(title, name, RuneColors.element(element), element, token(element, level));
+	}
+
+	/** The token an affinity's toast carries, so it can be found among the toasts (the game tests look for it). */
+	public static String token(String element, int level) {
+		return "affinity:" + element + ":" + level;
+	}
+
 	public GrimoireToast(String key) {
-		this.title = Component.translatable(key.startsWith("hint:") ? "toast.wildercord.riddle" : "toast.wildercord.grimoire");
+		this.glyph = null;
+		this.token = NO_TOKEN;
+		this.title =Component.translatable(key.startsWith("hint:") ? "toast.wildercord.riddle" : "toast.wildercord.grimoire");
 		String id = key.substring(key.indexOf(':') + 1);
 		if (key.startsWith("reaction:")) {
 			this.name = Component.translatable("reaction.wildercord." + id);
@@ -131,6 +158,11 @@ public class GrimoireToast implements Toast {
 	}
 
 	@Override
+	public Object getToken() {
+		return token;
+	}
+
+	@Override
 	public void update(ToastManager manager, long fullyVisibleForMs) {
 		visibility = fullyVisibleForMs >= SHOW_MS * manager.getNotificationDisplayTimeMultiplier() ? Visibility.HIDE : Visibility.SHOW;
 	}
@@ -143,7 +175,16 @@ public class GrimoireToast implements Toast {
 	@Override
 	public void extractRenderState(GuiGraphicsExtractor g, Font font, long fullyVisibleForMs) {
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, BACKGROUND, 0, 0, width(), height());
-		g.item(icon, 8, 8);
+		if (glyph != null) {
+			// The element's mark at twice its size, where an item would sit.
+			g.pose().pushMatrix();
+			g.pose().translate(9, 9);
+			g.pose().scale(2, 2);
+			ElementGlyphs.draw(g, glyph, 0, 0);
+			g.pose().popMatrix();
+		} else {
+			g.item(icon, 8, 8);
+		}
 		g.text(font, title, 30, 7, 0xFFB8A8FF, false);
 		String shown = font.plainSubstrByWidth(name.getString(), width() - 36);
 		g.text(font, Component.literal(shown).withStyle(name.getStyle()), 30, 18, 0xFF000000 | color, false);

@@ -155,7 +155,7 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 		return husk;
 	}
 
-	/** {@code rune} cast straight from a Touch at {@code targets}, at power 1 (no leaning, gear or charge). */
+	/** {@code rune} cast straight from a Touch at {@code targets}, at power 1 (no affinity, gear or charge). */
 	private static void touch(ServerPlayer player, RuneDef rune, List<? extends Entity> targets) {
 		SpellPlan.EffectNode node = SpellCompiler.compile(List.of(Runes.TOUCH, rune)).root().groups.getFirst().effects.getFirst();
 		Vec3 at = targets.isEmpty() ? player.position() : targets.getFirst().position();

@@ -66,6 +66,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.Unison.init();
 		dev.wildercord.cast.Affinities.init();
 		dev.wildercord.cast.Climate.init();
+		dev.wildercord.cast.PlayerAffinities.init();
 		dev.wildercord.cast.Runebound.init();
 		dev.wildercord.cast.LeyWalker.init();
 		dev.wildercord.cast.DomainClash.init();

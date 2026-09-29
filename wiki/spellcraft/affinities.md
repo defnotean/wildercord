@@ -34,7 +34,10 @@ creature, it's written into your [Bestiary](#the-bestiary).
 - **Runebound resist their own element.** A [Runebound]({{ '/world/runebound/' | relative_url }}) resists the element
   of the spell on its Cord, on top of what its kind resists: a skeleton with *Frost Bolt* takes half from your frost.
   If its kind is weak to that element, the two cancel out.
-- **Players have none.** Duels and PvP are untouched.
+- **Players grow their own.** A player isn't born weak or resistant to anything, but their
+  [affinities]({{ '/progression/affinity/' | relative_url }}) grow with what they do, and from level III they resist
+  that element a little: 10% at III, 15% at IV, 20% at V, against anyone's spells (a Runebound's, another player's in
+  a duel). A reaction breaks through it as through a creature's, and no callout floats over a player for it.
 - **Monsters' spells feel it too.** A Runebound's storm hits an iron golem 50% harder, just as yours would.
 
 ## Who's weak to what
@@ -95,7 +98,8 @@ have struck that has an affinity, and what you've learned about it.
 
 - **Meeting a creature** writes it in, quietly: *"Blaze · weak: ? · resists: ?"*.
 - **Finding a weakness** fills it in with a toast (*"New in your Grimoire: Blaze: weak to Frost"*) and condenses
-  **25 mana** toward your next [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}).
+  **25 mana** toward your next [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}), and **25 points** of your own
+  [affinity]({{ '/progression/affinity/' | relative_url }}) with that element.
 - **Finding a resistance or immunity** fills it in quietly: the callout over the creature already told you.
 - Each **?** is one still to find: hit it with other elements. A column reading *none* has nothing to find.
 - Hover a creature for what each affinity does. A line turns green once everything about it is known.
@@ -154,7 +158,8 @@ The Grimoire page says it in words under **Where you stand**: *"The Nether: Fire
   Conducts too.
 - **Earth for the deep, void for the night.** Mining below y 0, earth hits 15% harder; out under the night sky, void 10%.
 - **Watch your Runebound.** A Runebound resists its own element: read its nameplate and answer with another.
-- **Fill in the Bestiary.** Each weakness is 25 mana toward your next Heart Circle, and the **?**s tell you where to look.
+- **Fill in the Bestiary.** Each weakness is 25 mana toward your next Heart Circle and 25 points of your affinity with
+  that element, and the **?**s tell you where to look.
 
 {: .note }
 A server can switch either system off (`creature_affinities` and `elemental_climate` in the `features` section of its
