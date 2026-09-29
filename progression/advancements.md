@@ -59,7 +59,7 @@ A better Cord also counts for the ones before it: put on an Echo Cord and you ge
 | **Wild Magic** | task | First Words | Overcast a spell and watch it twist into something else | 25 XP |
 | **Second Nature** | task | First Words | Keep a passive spell running | 25 XP |
 | **Spell Collision** | task | First Words | Shoot an enemy's spell out of the air with your own | 25 XP |
-| **Leaning** | task | First Words | Cast one element so often that your magic leans toward it | 25 XP |
+| **Leaning** | task | First Words | Grow one affinity so far past the rest that your magic leans toward it | 25 XP |
 | **Scribe** | task | First Words | Inscribe a spell onto a scroll from the Cord screen | 15 XP |
 | **Chorus** | task | First Words | Cast the same spell with other casters at the same moment | 30 XP |
 
