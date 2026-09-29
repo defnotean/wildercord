@@ -148,6 +148,36 @@ class SocialRulesTest {
 		assertEquals(new ContractRules.Reward("mana_crystal", 1), ContractRules.Reward.parse("mana_crystal"));
 	}
 
+	@Test
+	void finishedContractsWaitThroughTheDawnUntilHandedIn() {
+		ContractRules.Contract finished = new ContractRules.Contract(ContractRules.RUNEBOUND, "frost", 2, 2, false, "rune:2");
+		ContractRules.Board yesterday = new ContractRules.Board(3, List.of(
+			finished,
+			new ContractRules.Contract(ContractRules.LEY, "", 3, 3, true, "emerald:8"),
+			new ContractRules.Contract(ContractRules.REACTION, "conduct", 2, 1, false, "blank_rune:6")));
+		for (long seed = 0; seed < 50; seed++) {
+			ContractRules.Board today = ContractRules.today(yesterday, 4, seed);
+			assertEquals(4, today.day());
+			assertEquals(ContractRules.COUNT, today.contracts().size());
+			assertEquals(finished, today.contracts().getFirst(), "a finished contract not handed in stays on the board");
+			assertEquals(ContractRules.COUNT, today.contracts().stream().map(ContractRules.Contract::kind).distinct().count());
+			assertTrue(today.contracts().stream().noneMatch(ContractRules.Contract::claimed), "handed-in contracts go at dawn");
+			assertEquals(List.of(new ContractRules.Reward("rune", 2)), ContractRules.claim(today).rewards());
+			// Once handed in, the next dawn brings a whole new board.
+			ContractRules.Board next = ContractRules.today(ContractRules.claim(today).board(), 5, seed);
+			assertEquals(ContractRules.generate(5, seed), next);
+		}
+		// A board of nothing but finished contracts is kept whole, never grown past three.
+		ContractRules.Board full = ContractRules.generate(7, 1);
+		List<ContractRules.Contract> done = new java.util.ArrayList<>();
+		for (ContractRules.Contract c : full.contracts()) {
+			done.add(c.advance(c.target()));
+		}
+		ContractRules.Board kept = ContractRules.today(new ContractRules.Board(7, done), 8, 1);
+		assertEquals(done, kept.contracts());
+		assertEquals(8, kept.day());
+	}
+
 	// ------------------------------------------------------------------ duels
 
 	@Test

@@ -4,6 +4,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Fixed
+- **A finished contract you hadn't handed in yet vanished at dawn**, reward and all. It now stays on the
+  Scribing Desk's board, in place of one of the new day's contracts, until you hand it in.
+
 ## [0.4.1-alpha] - 2026-09-28
 
 A player wiki, and the bugs found while writing it.
