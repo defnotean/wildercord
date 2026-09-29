@@ -304,6 +304,8 @@ public final class WorldEvents {
 		if (entity.entityTags().contains(RiftSiege.RIFTCALLER_TAG)) {
 			RiftSiege.riftcallerLoot(level, entity, source);
 		}
+		// Dead, it will never load again: nothing need remember it.
+		LIVE.remove(entity.getUUID());
 	}
 
 	/**
