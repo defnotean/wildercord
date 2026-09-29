@@ -460,7 +460,9 @@ public final class Imbuing {
 
 	/** A strike with an imbued weapon or tool, and whatever hurts someone wearing imbued armour. */
 	private static void afterDamage(LivingEntity entity, DamageSource source, float baseDamage, float damage, boolean blocked) {
-		if (source.getEntity() instanceof ServerPlayer player && source.getDirectEntity() == player && source.is(DamageTypes.PLAYER_ATTACK) && entity != player) {
+		// A strike by hand, not a spell's (Cleave and Aftershock strike as the caster too).
+		if (source.getEntity() instanceof ServerPlayer player && source.getDirectEntity() == player && source.is(DamageTypes.PLAYER_ATTACK) && entity != player
+				&& !Dungeons.spellLanding()) {
 			ItemStack weapon = player.getMainHandItem();
 			Imbued imbued = weapon.get(WildercordComponents.IMBUED);
 			Imbued.Release kind = imbued == null ? null : Imbued.release(weapon);

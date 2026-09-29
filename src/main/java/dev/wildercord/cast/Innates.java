@@ -477,7 +477,8 @@ public final class Innates {
 	}
 
 	private static void fortuneMelee(ServerLevel level, LivingEntity entity, DamageSource source, float damage) {
-		if (!(source.getDirectEntity() instanceof ServerPlayer player) || source.getEntity() != player) {
+		// A strike by hand: a spell's own strike (Cleave, Aftershock) already rolled Fortune in Effects.hurt.
+		if (!(source.getDirectEntity() instanceof ServerPlayer player) || source.getEntity() != player || Dungeons.spellLanding()) {
 			return;
 		}
 		Long until = FORTUNE.get(player.getUUID());
