@@ -75,7 +75,9 @@ public class GrimoireToast implements Toast {
 			this.color = secret == null ? 0xF5C46A : secret.color();
 		} else if (key.startsWith(dev.wildercord.spell.Fusions.KEY_PREFIX)) {
 			dev.wildercord.spell.RuneDef made = Runes.get("wildercord:" + id).orElse(Runes.HARM);
-			this.name = Component.translatable("toast.wildercord.fusion", RuneItem.runeName(made));
+			// A signature fusion (two particular runes) says so.
+			this.name = Component.translatable(dev.wildercord.spell.Fusions.isSignature(made) ? "toast.wildercord.signature" : "toast.wildercord.fusion",
+				RuneItem.runeName(made));
 			this.icon = RuneItem.stack(made);
 			this.color = RuneColors.of(made);
 		} else if (key.startsWith("attune:")) {

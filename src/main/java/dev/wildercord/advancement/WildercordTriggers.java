@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.CordTier;
 import dev.wildercord.spell.Feats;
+import dev.wildercord.spell.Fusions;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
@@ -29,7 +30,8 @@ import java.util.Optional;
  * <ul>
  *   <li>{@code wildercord:feat} {@code {"feat": "overcast"}}: the Grimoire holds that feat</li>
  *   <li>{@code wildercord:grimoire} {@code {"entry": "reaction:shatter"}}, {@code {"prefix": "secret:", "count": 1}}
- *       or {@code {"prefix": "secret:", "all": true}} (every entry with the prefix; no prefix: the whole Grimoire)</li>
+ *       or {@code {"prefix": "secret:", "all": true}} (every entry with the prefix; no prefix: the whole Grimoire), or
+ *       {@code {"signatures": 5}} (that many signature fusions found)</li>
  *   <li>{@code wildercord:heart_circle} {@code {"level": 4}}: has formed at least that many circles</li>
  *   <li>{@code wildercord:runes_known} {@code {"count": 50}} or {@code {"all": true}} (every rune you can find or make, and your own innate one;
  *       counted like the Heart Circles count them: Knots and runes of add-ons that aren't loaded don't count)</li>
@@ -86,19 +88,24 @@ public final class WildercordTriggers {
 			trigger(player, instance -> instance.matches(grimoire));
 		}
 
-		public record Instance(Optional<Holder<LootItemCondition>> player, Optional<String> entry, String prefix, int count, boolean all)
+		public record Instance(Optional<Holder<LootItemCondition>> player, Optional<String> entry, String prefix, int count, boolean all, int signatures)
 				implements SimpleCriterionTrigger.SimpleInstance {
 			public static final Codec<Instance> CODEC = RecordCodecBuilder.create(i -> i.group(
 				LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
 				Codec.STRING.optionalFieldOf("entry").forGetter(Instance::entry),
 				Codec.STRING.optionalFieldOf("prefix", "").forGetter(Instance::prefix),
 				Codec.INT.optionalFieldOf("count", 1).forGetter(Instance::count),
-				Codec.BOOL.optionalFieldOf("all", false).forGetter(Instance::all)
+				Codec.BOOL.optionalFieldOf("all", false).forGetter(Instance::all),
+				Codec.INT.optionalFieldOf("signatures", 0).forGetter(Instance::signatures)
 			).apply(i, Instance::new));
 
 			public boolean matches(Collection<String> grimoire) {
 				if (entry.isPresent()) {
 					return grimoire.contains(entry.get());
+				}
+				// Signature fusions share element fusions' "fusion:" keys, so they're counted by their own list.
+				if (signatures > 0) {
+					return Fusions.signaturesFound(grimoire) >= signatures;
 				}
 				if (all) {
 					return Feats.complete(grimoire, prefix);

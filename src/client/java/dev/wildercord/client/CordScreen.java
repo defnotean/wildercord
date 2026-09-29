@@ -2197,7 +2197,7 @@ public class CordScreen extends Screen {
 				List.of(Component.translatable("screen.wildercord.grimoire.duel_hint").withStyle(ChatFormatting.GRAY))));
 		}
 		// Fusions: found ones by name and recipe; the rest as ??? + ???, with a hint of one element.
-		int fusions = dev.wildercord.spell.Feats.count(found, Fusions.KEY_PREFIX);
+		int fusions = Fusions.elementFusionsFound(found);
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.fusions", fusions, Fusions.RECIPES.size()), 0, GOLD, null));
 		for (Fusions.Recipe recipe : Fusions.RECIPES) {
 			RuneDef made = recipe.result();
@@ -2213,6 +2213,7 @@ public class CordScreen extends Screen {
 					List.of(Component.translatable("screen.wildercord.grimoire.fusion_unknown").withStyle(ChatFormatting.GRAY))));
 			}
 		}
+		addSignatures(lines, found);
 		// Attunements: found ones by their land and rune, the rest as riddles.
 		addAttunements(lines, found);
 		// The runes of the world, by where they're found: known ones by name, the rest as a hint.
@@ -2253,6 +2254,36 @@ public class CordScreen extends Screen {
 			arrow(g, W - 18, bottom - 4, false);
 		}
 		return tip;
+	}
+
+	/**
+	 * Signature fusions: found ones by name and their two runes; the rest as ??? + ???, with the elements of the
+	 * two runes as the hint (never the runes themselves: finding the pair is the puzzle).
+	 */
+	private void addSignatures(List<GrimoireLine> lines, List<String> found) {
+		if (Fusions.SIGNATURES.isEmpty()) {
+			return;
+		}
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.signatures", Fusions.signaturesFound(found), Fusions.SIGNATURES.size()),
+			0, GOLD, null));
+		for (Fusions.Signature signature : Fusions.SIGNATURES) {
+			RuneDef made = signature.result();
+			if (found.contains(signature.key())) {
+				Component a = RuneItem.runeName(signature.a()).withColor(RuneColors.of(signature.a()));
+				Component b = RuneItem.runeName(signature.b()).withColor(RuneColors.of(signature.b()));
+				List<Component> tip = new ArrayList<>(List.of(RuneItem.runeName(made).withColor(RuneColors.of(made)), RuneItem.runeDescription(made).withStyle(ChatFormatting.GRAY),
+					Component.translatable("screen.wildercord.grimoire.signature_how", a, b).withStyle(ChatFormatting.DARK_GRAY)));
+				signature.overrides().ifPresent(recipe -> tip.add(Component.translatable("screen.wildercord.grimoire.signature_over",
+					RuneItem.runeName(recipe.result())).withStyle(ChatFormatting.DARK_GRAY)));
+				lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.fusion", RuneItem.runeName(made).withColor(RuneColors.of(made)), a, b),
+					8, TEXT, tip));
+			} else {
+				Component hint = Component.translatable("screen.wildercord.grimoire.signature_hint", Component.translatable("element.wildercord." + signature.first()),
+					Component.translatable("element.wildercord." + signature.second())).withStyle(ChatFormatting.DARK_GRAY);
+				lines.add(new GrimoireLine(Component.literal("??? + ???  ").append(hint), 8, FAINT,
+					List.of(Component.translatable("screen.wildercord.grimoire.signature_unknown").withStyle(ChatFormatting.GRAY))));
+			}
+		}
 	}
 
 	private void addAttunements(List<GrimoireLine> lines, List<String> found) {

@@ -296,9 +296,17 @@ public final class Runes {
 		CRIMSON_MIST, SINKHOLE, GEODE, FOSSILIZE, BONESPUR, MONOLITH, SOULBOND, SECOND_WIND, TRANSFUSION, LIFEBLOOM, SANGUINE_RITE,
 		ENTROPY, DEVOUR, TIMESTEAL, HEMOMANCY, RECKONING, SINGULARITY, PRISMATIC_BURST, CHRONOSHIFT);
 
+	/** Whether a rune is made only at the Fusion Altar: an element fusion or a signature one. */
 	public static boolean fused(RuneDef rune) {
-		return FUSED.contains(rune);
+		return FUSED.contains(rune) || SIGNATURE.contains(rune);
 	}
+
+	// ---- Signature fusions: each made only from two particular effects at the Fusion Altar (see Fusions.SIGNATURES),
+	// before their elements' own fusion. Never crafted or found. Fused runes take no designs from the others' circles,
+	// so where these sit changes no older rune's.
+
+	/** Signature fused effects: made only from their own two runes at the Fusion Altar. */
+	public static final java.util.List<RuneDef> SIGNATURE = java.util.List.of();
 	// ---- Runes of the world: never crafted, only found in particular places (see RuneSources and
 	// Attunements). Defined after everything else, so their magic circles never change an older rune's.
 	// Vanilla structures.

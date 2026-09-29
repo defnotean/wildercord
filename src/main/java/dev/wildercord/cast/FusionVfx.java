@@ -195,7 +195,7 @@ public final class FusionVfx {
 	/**
 	 * The altar at work: a magic circle opens over it and turns, light gathers into the middle, and a
 	 * pillar of light (in the colour of what was made) goes up as it's done. {@code kind}: 0 upgrade,
-	 * 1 combine, 2 Knot.
+	 * 1 combine, 2 Knot, 3 a signature fusion (a combine that also opens a star seal over the pillar).
 	 */
 	public static void altar(ServerLevel level, Vec3 top, int color, int kind) {
 		Vec3 above = top.add(0, 0.3, 0);
@@ -222,6 +222,13 @@ public final class FusionVfx {
 				Fx.sound(level, top, WildercordSounds.ALTAR_KNOT, 1.0F, 1.0F);
 			} else if (kind == 1) {
 				Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, top.add(0, 0.8, 0), 20, 0.35);
+			} else if (kind == 3) {
+				// A signature: a star seal turning over the pillar, and a second ring of white inside the first.
+				Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, top.add(0, 0.8, 0), 20, 0.35);
+				ElementFx.sigil(level, top.add(0, 1.6, 0), UP, SigilOption.STAR, color, 1.1, 30, 0.12);
+				ElementFx.sigil(level, top.add(0, 1.61, 0), UP, SigilOption.RING, WHITE, 1.5, 30, -0.08);
+				ElementFx.ring(level, top.add(0, 0.12, 0), UP, WHITE, 0.2, 2.0, 0.06, 12);
+				Fx.sound(level, top, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.5F);
 			}
 		});
 	}

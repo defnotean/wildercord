@@ -47,7 +47,26 @@ def read_fusions():
     return {consts[c]: (a, b) for a, b, c in re.findall(r'new Recipe\("(\w+)", "(\w+)", Runes\.(\w+)\)', src)}
 
 
-FUSED = read_fusions()
+def read_signatures():
+    """Signature fusions, from Fusions.java: path -> (rune path, rune path), the two particular effects that make it
+    (in place of their elements' fusion). Never crafted or found either."""
+    src = (ROOT / "src/main/java/dev/wildercord/spell/Fusions.java").read_text(encoding="utf-8")
+    consts = dict(re.findall(r'public static final RuneDef (\w+) = \w+\("(\w+)"', (ROOT / "src/main/java/dev/wildercord/spell/Runes.java").read_text(encoding="utf-8")))
+    return {consts[c]: (consts[a], consts[b]) for a, b, c in re.findall(r'new Signature\(Runes\.(\w+), Runes\.(\w+), Runes\.(\w+)\)', src)}
+
+
+def _signature_elements(signatures):
+    """A signature rune's two elements: its two runes' (for the circles, and for everything any fused rune is kept out of)."""
+    src = (ROOT / "src/main/java/dev/wildercord/spell/Runes.java").read_text(encoding="utf-8")
+    element = dict(re.findall(r'= effect\("(\w+)", "[^"]+", \d, [\d.]+, "(\w+)"', src))
+    return {path: (element[a], element[b]) for path, (a, b) in signatures.items()}
+
+
+# The element fusions (every pair of the ten elements), and the signature fusions (two particular runes each).
+ELEMENT_FUSIONS = read_fusions()
+SIGNATURES = read_signatures()
+# Every rune made at the Fusion Altar, with its two elements: never crafted, found, sold or rolled.
+FUSED = {**ELEMENT_FUSIONS, **_signature_elements(SIGNATURES)}
 def rune_sources():
     """Parses RuneSources.java: [(source id, where it is, [rune paths])], in the order they're listed."""
     src = (ROOT / "src/main/java/dev/wildercord/spell/RuneSources.java").read_text(encoding="utf-8")
@@ -664,13 +683,18 @@ def write_lang(runes):
     lang.update(DUNGEON_LANG)
     lang.update(TRAVEL_LANG)
     lang.update(LOADOUT_LANG)
+    lang.update(SIGNATURE_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
         lang.pop(f"rune.wildercord.{path}.craft", None)
-    for path in (r["path"] for r in runes if r["path"] in FUSED):
-        a, b = FUSED[path]
+    for path in (r["path"] for r in runes if r["path"] in ELEMENT_FUSIONS):
+        a, b = ELEMENT_FUSIONS[path]
         lang[f"rune.wildercord.{path}.found"] = f"Fused at a Fusion Altar: any {a.title()} effect + any {b.title()} effect"
+    names = {r["path"]: r["name"] for r in runes}
+    for path in (r["path"] for r in runes if r["path"] in SIGNATURES):
+        a, b = SIGNATURES[path]
+        lang[f"rune.wildercord.{path}.found"] = f"A signature fusion at a Fusion Altar: {names[a]} + {names[b]}, those two runes only"
     write_recipe_doc(runes)
     write_fusion_doc(runes)
     write_json(ASSETS / "lang/en_us.json", lang)
@@ -742,7 +766,7 @@ def loot_sources():
 
 def _tier_four_paths():
     world = found_only()
-    return [r["path"] for r in read_runes() if r["tier"] == 4 and r["path"] not in world]
+    return [r["path"] for r in read_runes() if r["tier"] == 4 and r["path"] not in world and r["path"] not in FUSED]
 
 
 def _adept_find_chance():
@@ -809,18 +833,21 @@ def write_recipe_doc(runes):
             items = recipe_text(["wildercord:blank_rune", *RUNE_RECIPES[r["path"]]])
             lines.append(f"| {r['name']} | {r['family'].title()} | {items} |")
         lines.append("")
-    t4 = [r for r in runes if r["tier"] == 4 and r["path"] not in world]
+    t4 = [r for r in runes if r["tier"] == 4 and r["path"] not in world and r["path"] not in FUSED]
     lines += [f"## Tier IV ({len(t4)} runes, found only)", "", "| Rune | Family | Found |", "|---|---|---|"]
     for r in sorted(t4, key=lambda r: (r["family"], r["name"])):
         lines.append(f"| {r['name']} | {r['family'].title()} | {', '.join(found.get(r['path'], ['?']))} |")
-    fused = [r for r in runes if r["path"] in FUSED]
+    fused = [r for r in runes if r["path"] in ELEMENT_FUSIONS]
     lines += ["", f"## Fused runes ({len(fused)}, made only at the Fusion Altar)", "",
               "Any two effects of the ten elements (one element with itself too), an amethyst shard and 3 XP levels.",
               "Any effect of an element counts.", "",
               "| Rune | Elements | Does |", "|---|---|---|"]
     for r in fused:
-        a, b = FUSED[r["path"]]
+        a, b = ELEMENT_FUSIONS[r["path"]]
         lines.append(f"| {r['name']} | {a.title()} + {b.title()} | {r['desc']} |")
+    lines += signature_table(runes, "## Signature fusions ({n}, made only at the Fusion Altar)",
+                             ["Two particular effects, an amethyst shard and 3 XP levels. The pair makes its signature rune "
+                              "instead of its elements' fusion; any other effects of those elements still make that."])
     lines += ["", "The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone "
               "(tiles in the corners, the lodestone in the middle)."]
     worldly = [r for r in runes if r["path"] in world]
@@ -851,7 +878,7 @@ def write_fusion_doc(runes):
     names = {r["path"]: r["name"] for r in runes}
     descs = {r["path"]: r["desc"] for r in runes}
     by_pair = {}
-    for path, (a, b) in FUSED.items():
+    for path, (a, b) in ELEMENT_FUSIONS.items():
         by_pair[frozenset((a, b))] = path
     lines = ["<!-- fusions:start (generated by tools/generate_assets.py) -->", "",
              "| | " + " | ".join(e.title() for e in ELEMENTS) + " |", "|---" * (len(ELEMENTS) + 1) + "|"]
@@ -862,15 +889,55 @@ def write_fusion_doc(runes):
             cells.append(names[path] if path else "")
         lines.append(f"| **{a.title()}** | " + " | ".join(cells) + " |")
     lines += ["", "| Elements | Makes | Does |", "|---|---|---|"]
-    for path, (a, b) in FUSED.items():
+    for path, (a, b) in ELEMENT_FUSIONS.items():
         pair = a.title() if a == b else f"{a.title()} + {b.title()}"
         lines.append(f"| {pair} | **{names[path]}** | {descs[path]} |")
+    lines += signature_table(runes, "### Signature fusions ({n})",
+                             ["Each of these pairs of particular runes makes its own rune, in place of the element fusion in the grid above "
+                              "(which any other effects of those two elements still make)."])
     lines += ["", "<!-- fusions:end -->"]
     doc = ROOT / "docs/features/fusion-altar.md"
     text = doc.read_text(encoding="utf-8")
     start = text.index("<!-- fusions:start")
     end = text.index("<!-- fusions:end -->") + len("<!-- fusions:end -->")
     doc.write_text(text[:start] + "\n".join(lines) + text[end:], encoding="utf-8", newline="\n")
+
+
+# ---------------------------------------------------------------- signature fusions (Fusions.SIGNATURES)
+
+def signature_table(runes, heading, intro):
+    """The signature fusions as a Markdown table under {@code heading} ({n}: how many), for the generated docs:
+    the two runes, what they make, what it counts as, its tier and its mana, what it does, and which element
+    fusion the pair would otherwise make. Nothing at all while there are none."""
+    if not SIGNATURES:
+        return []
+    by = {r["path"]: r for r in runes}
+    src = (ROOT / "src/main/java/dev/wildercord/spell/Runes.java").read_text(encoding="utf-8")
+    cost = dict(re.findall(r'= effect\("(\w+)", "[^"]+", \d, ([\d.]+),', src))
+    by_pair = {frozenset(pair): path for path, pair in ELEMENT_FUSIONS.items()}
+    lines = ["", heading.format(n=len(SIGNATURES)), "", *intro, "",
+             "| Runes | Makes | Counts as | Tier | Mana | Does | In place of |", "|---|---|---|---|---|---|---|"]
+    for path, (a, b) in SIGNATURES.items():
+        r = by[path]
+        over = by_pair.get(frozenset((by[a]["element"], by[b]["element"])))
+        mana = float(cost[path])
+        lines.append(f"| {by[a]['name']} + {by[b]['name']} | **{r['name']}** | {r['element'].title()} | {['I', 'II', 'III', 'IV'][r['tier'] - 1]} "
+                     f"| {int(mana) if mana == int(mana) else mana} | {r['desc']} | {by[over]['name'] if over else ''} |")
+    return lines
+
+
+# The Fusion Altar's and the Grimoire's words for signature fusions.
+SIGNATURE_LANG = {
+    "screen.wildercord.altar.kind.signature": "Signature fusion",
+    "screen.wildercord.altar.signature_line": "Born of %s and %s themselves, not just their elements",
+    "screen.wildercord.grimoire.signatures": "Signature fusions (%s of %s)",
+    "screen.wildercord.grimoire.signature_how": "%s and %s, with an amethyst shard, at a Fusion Altar: those two runes only",
+    "screen.wildercord.grimoire.signature_over": "The pair makes this instead of %s",
+    "screen.wildercord.grimoire.signature_hint": "(a rune of %s, and one of %s)",
+    "screen.wildercord.grimoire.signature_unknown": "Not found yet. Two particular runes of these elements make it, "
+                                                    "in place of their elements' own fusion: try pairs at a Fusion Altar.",
+    "toast.wildercord.signature": "Signature fusion: %s",
+}
 
 
 def source_lang(runes):
@@ -2118,7 +2185,7 @@ def write_new_content(runes):
 # One Wildercord tab, from a first Blank Rune to Archmage. The criteria are the mod's own
 # (registered in advancement/WildercordTriggers.java):
 #   wildercord:feat {"feat": id}                     the Grimoire holds feat:<id>
-#   wildercord:grimoire {"entry": key} | {"prefix": p, "count": n} | {"prefix": p, "all": true}
+#   wildercord:grimoire {"entry": key} | {"prefix": p, "count": n} | {"prefix": p, "all": true} | {"signatures": n}
 #   wildercord:heart_circle {"level": n}             n circles formed, or more
 #   wildercord:runes_known {"count": n} | {"all": true}
 #   wildercord:cord {"tier": "copper"}               wearing that Cord or a better one
@@ -2172,10 +2239,12 @@ def cord(tier):
     return {"trigger": "wildercord:cord", "conditions": {"tier": tier}}
 
 
-def grimoire(entry=None, prefix=None, count=None, every=False):
+def grimoire(entry=None, prefix=None, count=None, every=False, signatures=None):
     conditions = {}
     if entry:
         conditions["entry"] = entry
+    if signatures is not None:
+        conditions["signatures"] = signatures
     if prefix is not None:
         conditions["prefix"] = prefix
     if count is not None:
@@ -2324,6 +2393,12 @@ feat_adv("menagerie", "world/kindred", rune("resonance"), description="Bond with
 feat_adv("upgrade", "discovery/runes_10", rune("amplify"), description="Rank up a rune at the Fusion Altar", branch="altar", xp=20)
 feat_adv("combine", "altar/upgrade", rune("prism"), description="Fuse two effects into a new one at the Fusion Altar", xp=25)
 feat_adv("knot", "altar/combine", rune("chain"), description="Tie a whole spell into one rune", frame="goal", xp=50)
+# Signature fusions: counted apart from the element fusions (a signature's key shares their "fusion:" prefix).
+if SIGNATURES:
+    adv("altar/signature", "altar/combine", rune(next(iter(SIGNATURES))), "Signature", "Fuse two particular effects into a signature rune of their own",
+        grimoire(signatures=1), xp=30)
+    adv("altar/signatures", "altar/signature", rune(list(SIGNATURES)[min(4, len(SIGNATURES) - 1)]), "Hallmarks",
+        f"Find {min(5, len(SIGNATURES))} signature fusions", grimoire(signatures=min(5, len(SIGNATURES))), frame="goal", xp=75, loot=["blank_runes"])
 feat_adv("cinder_warden", "world/archivist", rune("inferno"), description="Defeat the Cinder Warden in its Ember Sanctum", frame="challenge", xp=300)
 feat_adv("star_eater", "world/archivist", rune("eclipse"), description="Defeat the Star-Eater in its Astral Observatory", frame="challenge", xp=300)
 feat_adv("tide_scribe", "world/archivist", rune("tidecall"), description="Defeat the Tide Scribe in its Drowned Scriptorium", frame="challenge", xp=300)
