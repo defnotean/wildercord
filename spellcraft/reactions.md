@@ -7,15 +7,16 @@ nav_order: 8
 # Element reactions
 {: .no_toc }
 
-Effects leave short-lived **marks** on what they hit: frozen, windswept, pulled, wet. When a later
-effect of the right element meets a mark, it sets off a **reaction**, and you see its name flash up in
-bold (at most once a second, however many go off). Reactions are the biggest free damage boost in the
-game: learn to set them up and a cheap spell hits like an expensive one.
+Effects leave short-lived **marks** on what they hit: frozen, windswept, pulled, wet, shadowed, bleeding.
+When a later effect of the right element meets a mark, it sets off a **reaction**, and you see its name
+flash up in bold (at most once a second, however many go off). Reactions are the biggest free damage boost
+in the game: learn to set them up and a cheap spell hits like an expensive one. There are eleven, and every
+one of the ten elements takes part in at least one.
 
 1. TOC
 {:toc}
 
-## The five reactions
+## The reactions
 
 | Reaction | Needs | What it does |
 |---|---|---|
@@ -24,46 +25,94 @@ game: learn to set them up and a cheap spell hits like an expensive one.
 | **Wildfire!** | Fire damage on a **windswept** target | Flames leap to **every other enemy within 3 blocks**: each is set alight for 4 seconds and takes 3 fire damage. |
 | **Implode!** | Explode, Meteor or Primer blasting where an enemy is still **pulled** | The blast is **50% wider** and hits **30% harder**. |
 | **Collapse!** | Repel on an enemy still **pulled** | Repel deals **double damage** there, in a violent burst. |
+| **Overload!** | Storm damage on a **burning** target | That hit deals **+30%**, and the flames blow apart: every other enemy within **3 blocks** takes **5 damage** and is thrown back. The fire goes out. No block is harmed. |
+| **Fracture!** | Earth damage on a **frozen** target | That hit deals **+40%**, the ice cracks and the target thaws, and it's left **cracked** for 5 seconds: **every spell hits it 20% harder**, whoever casts it. |
+| **Blight!** | Life damage on a **shadowed** target | Rot bursts out of it: it and up to **5 more enemies** within **4 blocks** take **3 damage** and are poisoned (Poison I, 5 seconds), and you heal **1** for each one it reaches. |
+| **Unweave!** | Arcane damage on a target with **two marks or more** | Every mark on it comes undone at once, and that hit deals **+30% for each** (at most four count: **+120%**). |
+| **Rupture!** | Wind damage on a **bleeding** target | That hit deals **+50%**, the wound tears open for **4 more** straight through armour, and you heal **2**. |
+| **Elapse!** | Time damage on a **burning, poisoned or withering** target | Their time passes at once: all the damage the fire, poison and withering still had to deal lands now, **half again** as hard (at least 3, at most 16), and they end. |
 
 The mark a reaction needs is used up when it goes off (wet is the exception: being in water or rain
-isn't something a spell can take away).
+isn't something a spell can take away). Two reactions can want the same mark: frozen is Shatter's and
+Fracture's, burning is Overload's and Elapse's, and whichever element reaches it first uses it.
 
 The first time you set off each one, it's written into your
 [Grimoire]({{ '/progression/grimoire/' | relative_url }}) and condenses **150 mana** toward your next
 [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}). Each also has its own
-[advancement]({{ '/progression/advancements/' | relative_url }}) (15 experience). The 3rd Heart Circle
-needs 1 reaction, the 4th 3 different ones, and the 6th all five. The Runesmith's
-[contracts]({{ '/social/contracts/' | relative_url }}) sometimes ask for them too, and the Cinder Warden
-in the [Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }}) only yields to them.
+[advancement]({{ '/progression/advancements/' | relative_url }}) (15 experience), and setting off every one
+earns **Chain Reaction**. The 3rd Heart Circle needs 1 reaction, the 4th 3 different ones, and the 6th
+**5 different ones** (any five). The Runesmith's [contracts]({{ '/social/contracts/' | relative_url }})
+sometimes ask for them too, and the Cinder Warden in the [Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }})
+only yields to them (any of them).
+
+### Every element's part
+
+| Element | Leaves | Sets off |
+|---|---|---|
+| **Fire** | burning | Shatter, Wildfire, Implode (its blasts) |
+| **Frost** | frozen, soaked | |
+| **Storm** | | Conduct, Overload |
+| **Wind** | windswept | Rupture, and Collapse (Repel) |
+| **Earth** | windswept (Tremor, Monolith...), soaked (Mire), bleeding (Bonespur) | Fracture |
+| **Life** | poisoned (Venom, Sporebloom) | Blight |
+| **Void** | pulled, shadowed, withering (Wither) | |
+| **Arcane** | | Unweave (and Prismatic Burst uses every mark) |
+| **Time** | | Elapse |
+| **Blood** | bleeding | |
+
+You can read it off a rune, too: in the Cord screen, a rune that leaves shadowed or bleeding says so in
+its tooltip (*"Leaves foes bleeding: wind damage on them sets off Rupture"*), and a rune whose damage sets
+off one of the six newer reactions says which (*"On a frozen foe it sets off Fracture"*), in that
+reaction's colour.
 
 ## Marks
 
 A mark lasts a few seconds. Nothing on screen names it, but you can see most of them: frozen creatures
 are frosted over and slowed, windswept ones are flying through the air, pulled ones are being dragged,
-wet ones are in water or dripping.
+wet ones are in water or dripping, shadowed ones are blinded or cursed, bleeding ones drip blood.
 
 | Mark | Lasts | Left by | Used by |
 |---|---|---|---|
-| **Frozen** | 4 s after Frost (or frost on a wet creature); 2 s after Chill, Coldsnap or Hail; while inside a Blizzard; while a freeze holds, plus 1 s | Frost, Chill, Freeze, Coldsnap; Hoarfrost; Hail, Blizzard, and Glacier, Black Ice, Rime Seal, Frostbite and Absolute Zero when they freeze; **any harmful frost on a wet creature** | Shatter, Prismatic Burst |
-| **Windswept** | 2.5 s (Levitate: while floating, plus 1 s) | Push, Launch, Dash, Levitate, Windcut, Thunderclap, Tremor, Cyclone, Repel, a Cushion landing's gust; Tusk Charge, Summit Wind, Basalt Surge, Shulkershell (when it opens); Tempest, Monolith, Updraft, Downdraft, Skyglyph, Recoil | Wildfire, Prismatic Burst |
-| **Pulled** | 2.5 s | Pull, Gravity Well, Hollow; Vortex, Riftcall; Hellmouth, Magnetize, Singularity | Implode, Collapse, Prismatic Burst |
-| **Wet** | while in water or rain; 5 s after Tidebreath or steam | Water, rain, Tidebreath (on you and allies), steam clouds | Conduct, Prismatic Burst |
-| **Soaked** (counts as wet) | about 5 s (a little longer after Mire and Drowning Word) | A popped Bubble, Tidecall, Undertow, Mire, Drowning Word, Tidewrit | Conduct, Prismatic Burst |
-| **Burning** | as long as it burns | Any fire that sets a creature alight | Prismatic Burst, Conflagration |
+| **Frozen** | 4 s after Frost (or frost on a wet creature); 2 s after Chill, Coldsnap or Hail; while inside a Blizzard; while a freeze holds, plus 1 s | Frost, Chill, Freeze, Coldsnap; Hoarfrost; Hail, Blizzard, and Glacier, Black Ice, Rime Seal, Frostbite and Absolute Zero when they freeze; **any harmful frost on a wet creature** | Shatter, Fracture, Unweave, Prismatic Burst |
+| **Windswept** | 2.5 s (Levitate: while floating, plus 1 s) | Push, Launch, Dash, Levitate, Windcut, Thunderclap, Tremor, Cyclone, Repel, a Cushion landing's gust; Tusk Charge, Summit Wind, Basalt Surge, Shulkershell (when it opens); Tempest, Monolith, Updraft, Downdraft, Skyglyph, Recoil | Wildfire, Unweave, Prismatic Burst |
+| **Pulled** | 2.5 s | Pull, Gravity Well, Hollow; Vortex, Riftcall; Hellmouth, Magnetize, Singularity | Implode, Collapse, Unweave, Prismatic Burst |
+| **Wet** | while in water or rain; 5 s after Tidebreath or steam | Water, rain, Tidebreath (on you and allies), steam clouds | Conduct, Unweave and Prismatic Burst (the 5 s kind only) |
+| **Soaked** (counts as wet) | about 5 s (a little longer after Mire and Drowning Word) | A popped Bubble, Tidecall, Undertow, Mire, Drowning Word, Tidewrit | Conduct, Unweave, Prismatic Burst |
+| **Burning** | as long as it burns | Any fire that sets a creature alight | Overload, Elapse, Unweave, Prismatic Burst, Conflagration |
+| **Shadowed** | as long as the curse: 8 s after Hex or Wither, 6 s after Resonant Shriek, 5 s after Blind, 3 s after Echolocate (on what it hits); while Blackflame burns and while Entropy frays; while inside a Hush or under an Eclipse, plus a moment | Hex, Blind, Wither, Blackflame; Echolocate, Resonant Shriek, Hush, Eclipse; Entropy | Blight, Unweave, Prismatic Burst |
+| **Bleeding** | while Bleed's wound runs (4.5 s); 4 s after Rend; 3 s after Cleave or Dismantle; while Bonespur's bleed runs, plus a moment; while inside a Crimson Mist, plus a moment | Bleed, Rend, Cleave, Dismantle; Crimson Mist, Bonespur | Rupture, Unweave, Prismatic Burst |
+| **Cracked** | 5 s | A Fracture | (every spell hits it 20% harder) Unweave, Prismatic Burst |
+
+Elapse also reads two things that aren't marks: **poisoned** (Venom, Sporebloom, a Blight's rot) and
+**withering** (Wither), for as long as the effect lasts.
 
 Runes that move **you** (Launch or Dash on Self) never mark you. The runes named after the first
 semicolon in each row are [runes of the world]({{ '/runes/world/' | relative_url }}) and
 [fused runes]({{ '/runes/fused/' | relative_url }}).
 
-### Which hits count as fire and storm
+### Which hits count
 
 **Fire damage that can Shatter and set off Wildfire:** Fire, Ember, Explode, Meteor, Inferno,
 Flashfire, Primer; Blazecall, Sunscorch, Cinderbrand, Soulfire (its first burn); Firestorm, Starfire's
 motes, Conflagration, Everburn (its first hit), Hellmouth (its first pulse); and the innate rune
 Kindling.
 
-**Storm damage that can Conduct:** Shock, Jolt, Lightning, Thunderclap, Ripple, Thunderbird's strikes;
-Plasma, Tempest, Riftbolt, Stormweave, Stormclock, Heartstopper, Thunderhead, and Magnetize's shocks.
+**Storm damage that can Conduct and Overload:** Shock, Jolt, Lightning, Thunderclap, Ripple, Thunderbird's
+strikes; Plasma, Tempest, Riftbolt, Stormweave, Stormclock, Heartstopper, Thunderhead, and Magnetize's
+shocks.
+
+The other five newer reactions go off for **any** spell damage of their element, from the first hit to the
+last tick of something that lingers:
+
+- **Earth (Fracture):** Pelt, Aftershock, Tremor; Stalactite, Infest, Sandstorm, Basalt Surge, Tusk Charge;
+  Magma, Sinkhole, Fossilize, Bonespur, Monolith. Root, Weigh, Shackle and Mire hold without hurting.
+- **Life (Blight):** Venom, and Bramble's thorns (they hurt whatever strikes you); Vinelash, Moonpetal,
+  Rootsnare. Sporebloom poisons without hurting.
+- **Arcane (Unweave):** Harm, Smite, Resonance, Starfall; Fangs, Starshard, Starlight Tether, Manaburn.
+  Prismatic Burst uses every mark up itself instead.
+- **Wind (Rupture):** Windcut, Cyclone, Repel; Summit Wind; Updraft, Downdraft, Recoil. Push, Launch, Dash and
+  Levitate throw without hurting.
+- **Time (Elapse):** Countdown (when the moment catches up) and Reckoning (when it comes due).
 
 ## Setting each one off
 
@@ -137,6 +186,87 @@ Pull them in, then Repel them.
 | `Zone · Gravity Well` then `Burst · Repel` | Amethyst and Copper | Drag a crowd in, then blow it apart. |
 | `Bolt · Pull · Repel · Fire` | Copper | Collapse, and Repel leaves the target windswept, so the Fire sets off **Wildfire** too. |
 
+### Overload
+
+Set them alight, then strike with storm.
+
+| Spell | Cord | Notes |
+|---|---|---|
+| `Bolt · Ember · Shock` | Twine | Three Tier I runes: Ember lights it, Shock blows the flames apart. |
+| `Bolt · Fire · Jolt` | Copper | Jolt's 4 becomes 5.2, and everything round the target takes 5 and is thrown clear. |
+| `Nova · Flashfire · Thunderclap` | Copper | Light everything within 3 blocks of you, then blast it: each burning one Overloads. |
+| `Bolt · Lightning`, twice | Amethyst | Lightning sets what it strikes alight, so the second bolt Overloads. |
+
+The fire goes out when it Overloads, so you trade the rest of the burn for the blast: best in a crowd.
+
+### Fracture
+
+Freeze it, then hit it with earth. It competes with Shatter for the same frost: Shatter hits harder
+once, Fracture leaves the target cracked for everything that follows.
+
+| Spell | Cord | Notes |
+|---|---|---|
+| `Bolt · Chill · Pelt` | Twine | Three Tier I runes: the Pelt cracks the ice. |
+| `Bolt · Frost · Aftershock` | Copper | Aftershock's first impact cracks it, and its second lands on a cracked target, 20% harder. |
+| `Nova · Coldsnap · Tremor` | Amethyst | Freeze everything around you, then heave the ground: every frozen one standing on it Fractures. |
+| `Bolt · Chill · Pelt`, then any spell | Twine | Crack it, then hit it again within 5 seconds: 20% harder. |
+
+A cracked target takes 20% more from **every** spell for 5 seconds, a friend's included: crack it, then
+let everyone pile in.
+
+### Blight
+
+Shadow it with void, then strike with life.
+
+| Spell | Cord | Notes |
+|---|---|---|
+| `Bolt · Blind · Venom` | Copper | Blind shadows it for 5 seconds; Venom's damage turns the shadow to rot. |
+| `Bolt · Hex · Venom` | Copper | The same, and the Hex makes your spells 25% harder on it for 8 seconds. |
+| `Zone · Hex · Venom` | Amethyst | Hex and poison everything in the zone: each one Blights, and the rot spreads to the rest. |
+
+**Bramble** counts too: a shadowed monster that hits you while your thorns are up gets the rot. Blight
+heals you a little for every creature the rot reaches, so it's at its best in a crowd.
+
+### Unweave
+
+Stack two marks or more, then strike with arcane.
+
+| Spell | Cord | Notes |
+|---|---|---|
+| `Bolt · Chill · Push · Harm` | Copper | Frozen and windswept: Harm's 7 becomes 11.2. |
+| `Bolt · Ember · Windcut · Harm` | Copper | Burning and windswept: +60%. |
+| `Bolt · Ember · Windcut · Rend · Harm` | Copper | Burning, windswept and bleeding: +90%. (Windcut before Rend: on a bleeding target it would Rupture instead.) |
+| `Bolt · Ember · Chill · Pull · Push · Smite` | Amethyst | Four marks: Smite hits 2.2 times as hard. |
+
+At most four marks count. Unweave uses up every mark, so it ends any other reaction waiting on them.
+
+### Rupture
+
+Cut it with blood, then strike with wind.
+
+| Spell | Cord | Notes |
+|---|---|---|
+| `Bolt · Rend · Windcut` | Twine | Two Tier I runes: Rend tears its armour and leaves it bleeding; Windcut tears the wound open. |
+| `Bolt · Bleed · Windcut` | Copper | The bleed keeps ticking afterwards, too. |
+| `Bolt · Bleed · Cyclone` | Copper | Cyclone flings everything round the point out for 3: whatever was bleeding Ruptures. |
+| `Burst · Dismantle · Repel` | Copper | Three slashes on everything round you, then a blast out: every bleeding one it reaches Ruptures. |
+
+Each Rupture heals you 2.
+
+### Elapse
+
+Leave something lingering on it (fire, poison, withering), then strike with time.
+
+| Spell | Cord | Notes |
+|---|---|---|
+| `Bolt · Fire · Countdown` | Copper | Fire burns for 6 seconds; a second and a half later the countdown lands, and the last 4.5 seconds of the burn land with it, as 6.75. |
+| `Bolt · Ember · Countdown` | Twine | Ember's burn is short: the rest lands for 3 at least. |
+| `Bolt · Venom · Countdown` | Copper | Poison II's last 4.5 seconds would deal 7: they land as 10.5. Not on undead (they can't be poisoned). |
+| `Bolt · Wither · Countdown` | Echo | Wither III's last 6.5 seconds would deal 13: they land as 16, the most Elapse deals. |
+
+Elapse ends the fire, poison and withering it hurried along, so it's a way to have it all now, not more
+of it.
+
 ## Wet, steam and the world
 
 <img src="{{ '/assets/images/b-steam.jpg' | relative_url }}" alt="Billows of white steam rise from a small stone-edged pool" class="shot">
@@ -148,7 +278,7 @@ Being wet changes more than Conduct:
 |---|---|
 | **Storm** | conducts: +50%, arcing to two more enemies |
 | **Fire** | hits **25% softer**, and dries it (unless it's standing in water) |
-| **Frost** | freezes it **solid at once** (for at least 3 seconds), and marks it frozen for Shatter |
+| **Frost** | freezes it **solid at once** (for at least 3 seconds), and marks it frozen for Shatter or Fracture |
 
 Harmful spells change the ground they land on too: fire lights grass and boils puddles into steam,
 frost freezes water to walk on, storm runs through water, wind knocks arrows out of the air, and more.
@@ -167,6 +297,11 @@ effect's element in each:
 | Frost and Storm | **Conduct!**: 8 damage within 4 blocks |
 | Fire and Wind | **Wildfire!**: 8 damage within 4 blocks |
 | Arcane and Void | **Implode!**: 8 damage within 4 blocks |
+| Fire and Storm | **Overload!**: 8 damage within 4 blocks |
+| Earth and Frost | **Fracture!**: 8 damage within 4 blocks |
+| Life and Void | **Blight!**: 8 damage within 4 blocks |
+| Blood and Wind | **Rupture!**: 8 damage within 4 blocks |
+| Fire and Time | **Elapse!**: 8 damage within 4 blocks |
 
 A collision reaction counts for your Grimoire like any other. Your first collision earns the **Spell
 Collision** feat.
@@ -174,9 +309,9 @@ Collision** feat.
 ## Other marks and named bursts
 
 - **Prismatic Burst** (a fused rune) uses up **every** mark on its target, burning, frozen, windswept,
-  pulled, soaked and wet: 4 damage, plus 3 for each mark (up to 22).
+  pulled, soaked, wet, cracked, shadowed and bleeding: 4 damage, plus 3 for each mark (up to 22).
 - **Resonance** leaves a cursed mark for 10 seconds, and every Resonance hit also deals half its damage
-  to each other marked enemy within 16 blocks (up to 8 of them).
+  to each other marked enemy within 16 blocks (up to 8 of them). Unweave doesn't count this one.
 - **Cinderbrand** brands a target for 6 seconds: your fire spells burn it 50% hotter.
 - Some other bursts flash their name the same way but aren't element reactions and don't go in the
   Grimoire's list: **Unison!** (two casters, two elements, one foe: see
@@ -192,4 +327,7 @@ Collision** feat.
 - **Order matters inside a spell.** `Bolt · Fire · Frost` does nothing special; `Bolt · Frost · Fire`
   Shatters.
 - **Chain them.** Collapse leaves its target windswept, ready for Wildfire. A soaked target hit by
-  frost freezes solid, ready for Shatter.
+  frost freezes solid, ready for Shatter. A Fracture leaves a crack that makes the next reaction's hit
+  bigger still. A Blight poisons everything it reaches, ready for Elapse.
+- **Pick what to spend.** Frozen can Shatter or Fracture, burning can Overload or Elapse, and Unweave
+  takes everything at once. Thread the one you want first.
