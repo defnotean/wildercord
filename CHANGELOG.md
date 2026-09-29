@@ -10,6 +10,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Timesteal did nothing at all to every enemy past the eighth, and Lifebloom didn't heal allies past the
   eighth. Every target now takes the hit; only the lasting and spreading parts (the fire leaping on, the
   cold setting in, the rift, the skipping heart, the bloom) are still kept to the first eight.
+- **A teammate sealed in Cryostasis could be pulled into a wall.** If they went through a portal while
+  sealed, the ice kept pulling them back to the spot where they were sealed, but in the new world, so they
+  could land inside rock or over lava. The seal now breaks when they leave the world it was cast in, and
+  Frostbloom and Geode stop answering blows there too.
 
 ## [0.4.1-alpha] - 2026-09-28
 

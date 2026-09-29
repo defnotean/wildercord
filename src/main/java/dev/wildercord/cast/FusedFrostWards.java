@@ -63,8 +63,9 @@ final class FusedFrostWards {
 			this.context = FusedFrost.context();
 		}
 
+		/** Past its time, or the ally is gone (dead, left, or into another world than the one it was cast in), or so is its caster. */
 		boolean over(long now) {
-			return now > until || ally.isRemoved() || !ally.isAlive() || !cast.alive();
+			return now > until || ally.isRemoved() || !ally.isAlive() || ally.level() != cast.level || !cast.alive();
 		}
 	}
 
@@ -219,7 +220,7 @@ final class FusedFrostWards {
 		}
 		Seal seal = SEALS.get(entity.getUUID());
 		if (seal == null || seal.ally != entity || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
-				|| !(entity.level() instanceof ServerLevel level)) {
+				|| !(entity.level() instanceof ServerLevel level) || level != seal.cast.level) {
 			return true;
 		}
 		long now = level.getGameTime();
@@ -401,7 +402,9 @@ final class FusedFrostWards {
 		for (Iterator<Seal> it = SEALS.values().iterator(); it.hasNext(); ) {
 			Seal seal = it.next();
 			LivingEntity ally = seal.ally;
-			if (ally.isRemoved() || !ally.isAlive() || !(ally.level() instanceof ServerLevel level)) {
+			// Gone, or carried into another world (a portal, a command): the ice holds nothing there, and its
+			// anchor is a place in the world it was cast in, never to be pulled to in this one.
+			if (ally.isRemoved() || !ally.isAlive() || !(ally.level() instanceof ServerLevel level) || level != seal.cast.level) {
 				it.remove();
 				thaw(seal, ally.level().getGameTime());
 				seal.shell.forEach(Entity::discard);
