@@ -15,6 +15,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   crushes them, but no longer moves them.
 - **A Shield now stops Swap and Shadowstep.** A Shield that blocked the spell still let Swap trade places with the
   enemy behind it, and Shadowstep put you at its back, as if the spell had gone through.
+- **Icepath no longer freezes a swimmer into the ice.** It froze the water a creature (or a player, or you) was
+  swimming in, leaving it stuck in a block of ice to choke. Like a frost spell's freezing, it now leaves the water
+  round a swimmer alone.
 
 ## [0.4.2-alpha] - 2026-09-28
 

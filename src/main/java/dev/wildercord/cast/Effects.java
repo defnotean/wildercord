@@ -58,6 +58,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -864,8 +865,9 @@ public final class Effects {
 				continue;
 			}
 			BlockState state = cast.level.getBlockState(p);
+			// Never around a creature swimming in it (frost walker's rule): it would be stuck in the ice, and choke.
 			if (state.is(Blocks.WATER) && state.getFluidState().isSource() && cast.level.getBlockState(p.above()).isAir()
-					&& Casters.mayEdit(cast.caster, cast.level, p)) {
+					&& cast.level.isUnobstructed(ice, p, CollisionContext.empty()) && Casters.mayEdit(cast.caster, cast.level, p)) {
 				if (!cast.takeBlock()) {
 					break;
 				}

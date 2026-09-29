@@ -75,7 +75,8 @@ Word and Tidewrit; and the fused runes of frost (Hail, Glacier, Blizzard, Black 
   **30 seconds** melts back anyway, even in the dark. If the server stops, or nobody is near when the time comes, the
   ice melts as soon as its ground is loaded again, so frozen water always comes back. The ice
   [Icepath]({{ '/runes/effects/frost/' | relative_url }}#icepath) makes thaws the same way, in caves and at night too.
-- **Never round a swimmer.** It won't freeze water where a creature is swimming (it would be trapped in the ice).
+- **Never round a swimmer.** It won't freeze water where a creature is swimming (it would be trapped in the ice),
+  and nor does Icepath.
 - **Puts out fire.** Up to **6** fires and lit campfires nearby go out.
 - **Lava is left alone.**
 
