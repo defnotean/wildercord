@@ -48,7 +48,7 @@ public final class Circles {
 		KILLS,
 		/** Have helped slay a boss: the Wither, the Warden, an Elder Guardian, the Ender Dragon or the Archivist. */
 		BOSS,
-		/** Have set off this many different element reactions (there are five). */
+		/** Have set off this many different element reactions (any of them: see {@link Feats#REACTIONS}). */
 		REACTIONS,
 		/** Have slain this many Runebound, the monsters that cast spells. */
 		RUNEBOUND,

@@ -277,6 +277,8 @@ final class FusedLife {
 			touched++;
 			if (enemy) {
 				FusedLifeVfx.crimsonMistBleed(level, t);
+				// Bleeding while it stands in the mist: wind damage on it sets off Rupture.
+				Reactions.mark(t, Reactions.Mark.BLEEDING, 30);
 				Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), 1 * mist.power);
 			} else if (t.getHealth() < t.getMaxHealth()) {
 				t.heal((float) (1 * mist.power));
@@ -908,6 +910,8 @@ final class FusedLife {
 	private static void bleed(Cast cast, LivingEntity t, double power, int ticks) {
 		Object token = new Object();
 		BLEEDING.put(t.getUUID(), token);
+		// Bleeding as long as it runs: wind damage on it sets off Rupture.
+		Reactions.mark(t, Reactions.Mark.BLEEDING, ticks + 10);
 		ServerLevel level = cast.level;
 		DamageSource source = level.damageSources().indirectMagic(cast.caster, cast.caster);
 		int wounds = Math.max(1, (int) Math.round(ticks / 20.0));

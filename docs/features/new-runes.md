@@ -145,5 +145,10 @@ Several of them leave the marks the element reactions look for:
   **Wildfire**.
 - **Pulled** (Vortex, Riftcall): an Explode or Meteor landing on them sets off **Implode**, and Repel
   sets off **Collapse**.
+- **Shadowed** (Echolocate's daze, Resonant Shriek, Hush, Eclipse): life damage on them sets off
+  **Blight**. Earth damage from Stalactite, Infest, Sandstorm, Basalt Surge or Tusk Charge on a frozen
+  target sets off **Fracture**, life damage from Vinelash, Moonpetal or Rootsnare sets off Blight, arcane
+  damage from Fangs, Starshard, Starlight Tether or Manaburn on a target with two marks sets off
+  **Unweave**, and Summit Wind on a bleeding target sets off **Rupture**.
 - **Cinderbrand** makes your own fire spells burn the target 50% hotter, and **Eclipse** makes all of
   your spells hit the targets beneath it 20% harder.

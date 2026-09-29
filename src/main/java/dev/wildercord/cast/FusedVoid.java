@@ -154,6 +154,8 @@ final class FusedVoid {
 	 */
 	private static void entropy(Cast cast, LivingEntity t, double power, double duration) {
 		int steps = FusedVoidRules.entropyWounds(duration);
+		// Shadowed while it frays: life damage on it sets off Blight.
+		Reactions.mark(t, Reactions.Mark.SHADOWED, steps * 20 + 20);
 		Unravel running = UNRAVELLING.get(t.getUUID());
 		if (running != null && running.target == t) {
 			running.last = Math.max(running.last, running.step + steps);
@@ -542,10 +544,13 @@ final class FusedVoid {
 	static final int PULLED = ElementFx.VOID.primary();
 	static final int SOAKED = 0x2F6BFF;
 	static final int WET = 0x7CCBF2;
+	static final int CRACKED = ElementFx.EARTH.primary();
+	static final int SHADOWED = ElementFx.VOID.secondary();
+	static final int BLEEDING = ElementFx.BLOOD.primary();
 
 	/**
-	 * Uses up every elemental mark on {@code t} (burning, frozen, windswept, pulled, soaked, wet) and says
-	 * which, as their element's colours in that order.
+	 * Uses up every elemental mark on {@code t} (burning, frozen, windswept, pulled, soaked, wet, cracked,
+	 * shadowed, bleeding) and says which, as their element's colours in that order.
 	 */
 	private static List<Integer> useMarks(LivingEntity t) {
 		List<Integer> used = new ArrayList<>();
@@ -573,6 +578,18 @@ final class FusedVoid {
 		if (Reactions.has(t, Reactions.Mark.WET)) {
 			Reactions.clear(t, Reactions.Mark.WET);
 			used.add(WET);
+		}
+		if (Reactions.has(t, Reactions.Mark.CRACKED)) {
+			Reactions.clear(t, Reactions.Mark.CRACKED);
+			used.add(CRACKED);
+		}
+		if (Reactions.has(t, Reactions.Mark.SHADOWED)) {
+			Reactions.clear(t, Reactions.Mark.SHADOWED);
+			used.add(SHADOWED);
+		}
+		if (Reactions.has(t, Reactions.Mark.BLEEDING)) {
+			Reactions.clear(t, Reactions.Mark.BLEEDING);
+			used.add(BLEEDING);
 		}
 		return used;
 	}

@@ -368,6 +368,38 @@ WORLD_MAGIC_LANG = {
 }
 
 
+# The reactions that joined the first five (cast/Reactions, spell/ReactionRules): their names as they go
+# off, their Grimoire lines, their contracts, and the lines in rune tooltips that say which runes play a part.
+REACTIONS_LANG = {
+    "reaction.wildercord.overload": "Overload!",
+    "reaction.wildercord.fracture": "Fracture!",
+    "reaction.wildercord.blight": "Blight!",
+    "reaction.wildercord.unweave": "Unweave!",
+    "reaction.wildercord.rupture": "Rupture!",
+    "reaction.wildercord.elapse": "Elapse!",
+    "reaction.wildercord.overload.desc": "Storm on a burning target: +30% damage, and the flames burst: 4 damage to every foe within 3 blocks, thrown back. The fire goes out.",
+    "reaction.wildercord.fracture.desc": "Earth on a frozen target: +40% damage, the ice cracks, and for 5 seconds every spell hits it 20% harder.",
+    "reaction.wildercord.blight.desc": "Life on a shadowed target (hexed, blinded, withered...): rot bursts out, 3 damage and poison to it and up to 5 foes around it, and you heal 1 for each (once a second at most).",
+    "reaction.wildercord.unweave.desc": "Arcane on a target with two marks or more: every mark comes undone, +30% damage for each (up to +120%).",
+    "reaction.wildercord.rupture.desc": "Wind on a bleeding target: +50% damage, the wound tears open for 4 more through armour, and you heal 2 (once a second at most).",
+    "reaction.wildercord.elapse.desc": "Time on a burning, poisoned or withering target: all the damage still to come lands at once, half again as much (3 to 16).",
+    "contract.wildercord.reaction.overload": "Overload",
+    "contract.wildercord.reaction.fracture": "Fracture",
+    "contract.wildercord.reaction.blight": "Blight",
+    "contract.wildercord.reaction.unweave": "Unweave",
+    "contract.wildercord.reaction.rupture": "Rupture",
+    "contract.wildercord.reaction.elapse": "Elapse",
+    "tooltip.wildercord.mark.shadowed": "Leaves foes shadowed: life damage on them sets off Blight",
+    "tooltip.wildercord.mark.bleeding": "Leaves foes bleeding: wind damage on them sets off Rupture",
+    "tooltip.wildercord.trigger.overload": "On a burning foe it sets off Overload",
+    "tooltip.wildercord.trigger.fracture": "On a frozen foe it sets off Fracture",
+    "tooltip.wildercord.trigger.blight": "On a shadowed foe (hexed, blinded, withered...) it sets off Blight",
+    "tooltip.wildercord.trigger.unweave": "On a foe with two marks or more (burning, frozen, bleeding...) it sets off Unweave",
+    "tooltip.wildercord.trigger.rupture": "On a bleeding foe (cut by Bleed, Rend, Cleave...) it sets off Rupture",
+    "tooltip.wildercord.trigger.elapse": "On a burning, poisoned or withering foe it sets off Elapse",
+}
+
+
 def write_lang(runes):
     lang = {
         "itemGroup.wildercord": "Wildercord",
@@ -614,6 +646,7 @@ def write_lang(runes):
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
     lang.update(WORLD_MAGIC_LANG)
+    lang.update(REACTIONS_LANG)
     lang.update(WORLD_LANG)
     lang.update(PARRY_AND_WILD_LANG)
     lang.update(advancement_lang())
@@ -2165,9 +2198,17 @@ REACTION_ADVANCEMENTS = {  # reaction -> (title, icon rune, description)
     "wildfire": ("Wildfire", "inferno", "Set fire to a foe the wind has just thrown"),
     "implode": ("Implode", "gravity_well", "Blast enemies that have just been pulled together"),
     "collapse": ("Collapse", "repel", "Repel enemies that have just been pulled in"),
+    "overload": ("Overload", "plasma", "Strike a burning foe with storm magic and blow its flames apart"),
+    "fracture": ("Fracture", "pelt", "Crack a frozen foe with earth magic"),
+    "blight": ("Blight", "venom", "Strike a foe that void has shadowed with life magic, and let the rot spread"),
+    "unweave": ("Unweave", "prismatic_burst", "Strike a foe carrying two marks or more with arcane magic"),
+    "rupture": ("Rupture", "bleed", "Strike a bleeding foe with wind magic"),
+    "elapse": ("Elapse", "countdown", "Strike a burning, poisoned or withering foe with time magic"),
 }
 for reaction, (title, icon, description) in REACTION_ADVANCEMENTS.items():
     adv(f"discovery/{reaction}", "discovery/runes_10", rune(icon), title, description, grimoire(entry=f"reaction:{reaction}"), xp=15)
+adv("discovery/all_reactions", "discovery/runes_10", rune("prism"), "Chain Reaction", "Set off every element reaction",
+    grimoire(prefix="reaction:", every=True), frame="goal", xp=100, loot=["blank_runes"])
 adv("discovery/torn_page", "discovery/runes_10", item("torn_page"), "Marginalia", "Read the riddle on a Torn Page", grimoire(prefix="hint:"), xp=15)
 adv("discovery/secret", "discovery/torn_page", rune("veil"), "Hidden Words", "Find a secret spell", grimoire(prefix="secret:"), frame="goal", xp=50, hidden=True)
 adv("discovery/all_secrets", "discovery/secret", rune("echo"), "Nothing Left Unsaid", "Find every secret spell",

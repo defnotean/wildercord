@@ -137,8 +137,9 @@ A **Bolt** or an **Arc** that meets an **enemy** caster's Bolt or Arc in flight 
 | Different elements | A blast of **5 damage** to enemies within 2.5 blocks |
 | A reacting pair | A named reaction: **8 damage** to enemies within 4 blocks |
 
-The reacting pairs are **Fire and Frost** (Shatter), **Frost and Storm** (Conduct), **Fire and Wind** (Wildfire) and
-**Void and Arcane** (Implode). The damage is the player's (it grows with the power of their spell) and only hurts what
+The reacting pairs are **Fire and Frost** (Shatter), **Frost and Storm** (Conduct), **Fire and Wind** (Wildfire),
+**Void and Arcane** (Implode), **Fire and Storm** (Overload), **Earth and Frost** (Fracture), **Life and Void** (Blight),
+**Blood and Wind** (Rupture) and **Fire and Time** (Elapse). The damage is the player's (it grows with the power of their spell) and only hurts what
 they could harm anyway.
 
 - "Enemy" means a caster your spell could harm: a spellcasting monster such as a

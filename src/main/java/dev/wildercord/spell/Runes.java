@@ -286,7 +286,7 @@ public final class Runes {
 	public static final RuneDef HEMOMANCY = effect("hemomancy", "Hemomancy", 3, 16, "blood", EffectKind.HARMFUL, "4 magic damage, and 1 more for every 2 health you're missing (up to 6 more).", POWER, LINGER);
 	public static final RuneDef RECKONING = effect("reckoning", "Reckoning", 3, 18, "time", EffectKind.HARMFUL, "For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12).", POWER, DURATION);
 	public static final RuneDef SINGULARITY = effect("singularity", "Singularity", 3, 22, "void", EffectKind.HARMFUL, "A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward.", POWER, RADIUS);
-	public static final RuneDef PRISMATIC_BURST = effect("prismatic_burst", "Prismatic Burst", 3, 16, "arcane", EffectKind.HARMFUL, "4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked or wet), each used up.", POWER, LINGER);
+	public static final RuneDef PRISMATIC_BURST = effect("prismatic_burst", "Prismatic Burst", 3, 16, "arcane", EffectKind.HARMFUL, "4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22.", POWER, LINGER);
 	public static final RuneDef CHRONOSHIFT = effect("chronoshift", "Chronoshift", 3, 18, "time", EffectKind.HELPFUL, "Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds.", POWER, DURATION);
 
 	/** Fused effects: made only by combining two effects at the Fusion Altar. */

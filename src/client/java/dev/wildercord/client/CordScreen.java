@@ -1456,6 +1456,16 @@ public class CordScreen extends Screen {
 			if (world != dev.wildercord.spell.WorldRules.Interaction.NONE) {
 				lines.add(Component.translatable(world.tooltipKey()).withStyle(ChatFormatting.DARK_GREEN));
 			}
+			// The part it plays in the newer reactions: the mark it leaves, and what its damage sets off.
+			String mark = dev.wildercord.spell.ReactionRules.marks(def);
+			if (mark != null) {
+				lines.add(Component.translatable(dev.wildercord.spell.ReactionRules.markKey(mark))
+					.withColor(dev.wildercord.spell.ReactionRules.color(dev.wildercord.spell.ReactionRules.reactionFor(mark))));
+			}
+			String reaction = dev.wildercord.spell.ReactionRules.triggers(def);
+			if (reaction != null) {
+				lines.add(Component.translatable(dev.wildercord.spell.ReactionRules.triggerKey(reaction)).withColor(dev.wildercord.spell.ReactionRules.color(reaction)));
+			}
 			if (def.family() == RuneFamily.MODIFIER) {
 				lines.add(Component.translatable("screen.wildercord.modifier_hint").withStyle(ChatFormatting.DARK_GRAY));
 			}

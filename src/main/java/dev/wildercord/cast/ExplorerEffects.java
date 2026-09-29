@@ -324,6 +324,8 @@ public final class ExplorerEffects {
 		}
 		for (LivingEntity t : harmed) {
 			effect(t, MobEffects.SLOWNESS, Effects.ticks(3, duration), 1, cast);
+			// Dazed in the dark: shadowed, so life damage sets off Blight.
+			Reactions.mark(t, Reactions.Mark.SHADOWED, Effects.ticks(3, duration));
 		}
 	}
 
@@ -332,6 +334,7 @@ public final class ExplorerEffects {
 		ExplorerVfx.shriek(cast.level, cast.caster, t, false);
 		Effects.hurt(cast, t, cast.level.damageSources().sonicBoom(cast.caster), 8 * power);
 		effect(t, MobEffects.DARKNESS, Effects.ticks(6, duration), 0, cast);
+		Reactions.mark(t, Reactions.Mark.SHADOWED, Effects.ticks(6, duration));
 		Scheduler.later(20, Effects.carryContext(() -> {
 			if (cast.alive() && onHand(cast, t)) {
 				ExplorerVfx.shriek(cast.level, cast.caster, t, true);
@@ -697,6 +700,7 @@ public final class ExplorerEffects {
 				effect(t, MobEffects.WEAKNESS, 15, 0, cast);
 				effect(t, MobEffects.DARKNESS, 30, 0, cast);
 				effect(t, MobEffects.BLINDNESS, 25, 0, cast);
+				Reactions.mark(t, Reactions.Mark.SHADOWED, 30);
 			}
 		}, () -> { });
 	}
@@ -1080,6 +1084,7 @@ public final class ExplorerEffects {
 			for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
 				mark(ECLIPSED, cast, t, 25);
 				effect(t, MobEffects.BLINDNESS, 30, 0, cast);
+				Reactions.mark(t, Reactions.Mark.SHADOWED, 30);
 				Effects.hurt(cast, t, magic(cast), 2 * power);
 			}
 		}, () -> { });

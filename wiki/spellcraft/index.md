@@ -26,7 +26,7 @@ wrist to the magic circle in front of your hands.
 | [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}) | How to read any spell from its circle, fused runes' two-coloured rings, and monsters' telegraphs. |
 | [Passive Spells]({{ '/spellcraft/passives/' | relative_url }}) | Up to two always-on spells that cost mana every second instead of having a cooldown. |
 | [Shields and parrying]({{ '/spellcraft/shields/' | relative_url }}) | Shield's stacked magic circles, what breaks them, and turning a spell back with a parry. |
-| [Reactions]({{ '/spellcraft/reactions/' | relative_url }}) | Shatter, Conduct, Wildfire, Implode and Collapse: the right element on the right mark. |
+| [Reactions]({{ '/spellcraft/reactions/' | relative_url }}) | Shatter, Overload, Blight and eight more: the right element on the right mark. |
 | [Imbuing and glyphs]({{ '/spellcraft/imbuing/' | relative_url }}) | Storing a spell in a sword, a bow, armour or any block. |
 | [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }}) | Casting past your mana by cracking a Heart Circle, and what a surge can do. |
 | [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}) | Ten exact rune sequences that become something grander, and how to find them. |

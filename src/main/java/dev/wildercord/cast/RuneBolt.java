@@ -276,6 +276,11 @@ public class RuneBolt extends Projectile {
 			case "frost+storm" -> "conduct";
 			case "fire+wind" -> "wildfire";
 			case "arcane+void" -> "implode";
+			case "fire+storm" -> "overload";
+			case "earth+frost" -> "fracture";
+			case "life+void" -> "blight";
+			case "blood+wind" -> "rupture";
+			case "fire+time" -> "elapse";
 			default -> null;
 		};
 	}

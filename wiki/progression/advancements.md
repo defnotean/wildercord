@@ -10,7 +10,7 @@ nav_order: 3
 <img src="{{ '/assets/images/b-advancements.jpg' | relative_url }}" alt="The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows" class="shot">
 
 Wildercord has its own advancement tab, set on dark indigo stone with faint rune script. It leads you
-from your first Blank Rune to the 8th Heart Circle and the bosses of the four dungeons: **66
+from your first Blank Rune to the 8th Heart Circle and the bosses of the four dungeons: **73
 advancements** below the root, most of them rewarding experience, some Blank Runes and Mana Crystals.
 
 1. TOC
@@ -111,6 +111,13 @@ Mirrorfrost can only be earned with the innate rune of the same name. See
 | **Wildfire** | task | Lettered | Set fire to a foe the wind has just thrown | 15 XP |
 | **Implode** | task | Lettered | Blast enemies that have just been pulled together | 15 XP |
 | **Collapse** | task | Lettered | Repel enemies that have just been pulled in | 15 XP |
+| **Overload** | task | Lettered | Strike a burning foe with storm magic and blow its flames apart | 15 XP |
+| **Fracture** | task | Lettered | Crack a frozen foe with earth magic | 15 XP |
+| **Blight** | task | Lettered | Strike a foe that void has shadowed with life magic, and let the rot spread | 15 XP |
+| **Unweave** | task | Lettered | Strike a foe carrying two marks or more with arcane magic | 15 XP |
+| **Rupture** | task | Lettered | Strike a bleeding foe with wind magic | 15 XP |
+| **Elapse** | task | Lettered | Strike a burning, poisoned or withering foe with time magic | 15 XP |
+| **Chain Reaction** | goal | Lettered | Set off every element reaction | 100 XP, 8 Blank Runes |
 | **Marginalia** | task | Lettered | Read the riddle on a Torn Page | 15 XP |
 | **Hidden Words** | goal, hidden | Marginalia | Find a secret spell | 50 XP |
 | **Nothing Left Unsaid** | challenge, hidden | Hidden Words | Find every secret spell | 300 XP, 3 Mana Crystals |
@@ -120,7 +127,8 @@ Mirrorfrost can only be earned with the innate rune of the same name. See
 - **Every Word** wants every rune there is except the innate runes that aren't yours: every craftable
   rune, every rune of the world and every fused rune (282 in all), plus your own innate rune. Runes
   added by other mods count too, if you have them installed.
-- **Every Page Filled** wants all 5 reactions, all 10 secret spells and every feat except Mirrorfrost,
+- **Chain Reaction** wants all eleven reactions in your Grimoire.
+- **Every Page Filled** wants all 11 reactions, all 10 secret spells and every feat except Mirrorfrost,
   Unison, Domain Clash and Chorus. See [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}#a-full-grimoire).
 
 See [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}) and
