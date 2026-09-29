@@ -52,6 +52,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.HeartCircles.init();
 		dev.wildercord.cast.PassiveCaster.init();
 		dev.wildercord.cast.SecretSpells.init();
+		dev.wildercord.cast.DeathsDoor.init();
 		dev.wildercord.cast.BlockFx.init();
 		dev.wildercord.cast.CordLook.init();
 		dev.wildercord.cast.Effects.init();

@@ -128,6 +128,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   they felt for the ground or a wall. They now stop at the edge of the loaded world.
 
 ### Changed
+- **Cheating death rests.** Once Reversal, Second Wind or a certain secret spell has saved you from a killing blow,
+  none of them saves you again for a minute, and the secret spell can't be taken up again for 3 minutes. Each could be
+  recast long before it ran out, so keeping one up meant never dying.
 - Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
 - Borrowed Time says its debt is forgiven when you slay a monster, as it always was (it said "something": killing an
   animal never forgave it).

@@ -65,7 +65,7 @@ public final class Secrets {
 		"Stop time on yourself, then hurry it along, and make it last.");
 	public static final Secret REBIRTH = new Secret("rebirth", "Rebirth",
 		List.of(Runes.SELF, Runes.REVERSAL, Runes.FIRE, Runes.HEAL), 0xFF7040, 1.2,
-		"For 60 seconds, a killing blow burns you back to life instead: full health, fire resistance, and a blast of flame (14 damage within 6 blocks).",
+		"For 60 seconds, a killing blow burns you back to life instead: full health, fire resistance, and a blast of flame (14 damage within 6 blocks). Once it has burned, it can't be taken up again for 3 minutes.",
 		"Refuse death, burn, and mend, all upon yourself.");
 	public static final Secret TECTONIC_RISE = new Secret("tectonic_rise", "Tectonic Rise",
 		List.of(Runes.WAVE, Runes.TREMOR, Runes.RAMPART, Runes.WIDEN), 0xC8A070, 1.2,

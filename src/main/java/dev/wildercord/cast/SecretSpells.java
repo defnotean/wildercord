@@ -56,10 +56,11 @@ public final class SecretSpells {
 			Long until = REBIRTH.get(entity.getUUID());
 			// As Reversal: never against what nothing survives (/kill, the void).
 			if (until == null || source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY) || !(entity.level() instanceof ServerLevel level)
-					|| level.getGameTime() > until) {
+					|| level.getGameTime() > until || DeathsDoor.resting(entity) > 0) {
 				return true;
 			}
 			REBIRTH.remove(entity.getUUID());
+			DeathsDoor.saved(entity, true);
 			reborn(level, entity, REBIRTH_POWER.getOrDefault(entity.getUUID(), 1.0));
 			return false;
 		});
@@ -586,6 +587,13 @@ public final class SecretSpells {
 	/** For a minute, death burns you back to life. */
 	private static void rebirth(Cast cast, double power) {
 		LivingEntity caster = cast.caster;
+		int resting = DeathsDoor.restingFromRebirth(caster);
+		if (resting > 0) {
+			// Recast every few seconds it would never let its caster die: it rests after it burns (see DeathsDoor).
+			Casters.tell(caster, Component.translatableWithFallback("message.wildercord.rebirth_resting",
+				"Too soon to be reborn again (%s s)", resting).withColor(0xFF7040));
+			return;
+		}
 		long until = cast.level.getGameTime() + Math.round(1200 * cast.duration);
 		REBIRTH.put(caster.getUUID(), until);
 		REBIRTH_POWER.put(caster.getUUID(), power);
