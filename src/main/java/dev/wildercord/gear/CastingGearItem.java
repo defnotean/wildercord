@@ -9,7 +9,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.function.Consumer;
 
-/** A staff, the Tome of the Fifth Page or a focus: held while casting, it changes your spells. */
+/** A staff, the Tome of the Fifth Page or a focus: worn in its gear slot (or held, while the slot is empty), it changes your spells. */
 public class CastingGearItem extends Item {
 	public final GearDef def;
 
@@ -24,7 +24,11 @@ public class CastingGearItem extends Item {
 		if (def.kind().staff()) {
 			builder.accept(Component.translatable("tooltip.wildercord.gear.flourish").withStyle(ChatFormatting.GRAY));
 		}
+		GearSlot slot = GearSlot.of(def);
+		if (slot != null) {
+			builder.accept(Component.translatable("tooltip.wildercord.gear.slot", Component.translatable(slot.nameKey())).withStyle(ChatFormatting.DARK_AQUA));
+		}
 		builder.accept(Component.translatable(def.kind().staff() ? "tooltip.wildercord.gear.either_hand" : "tooltip.wildercord.gear.off_hand")
-			.withStyle(ChatFormatting.DARK_AQUA));
+			.withStyle(slot != null ? ChatFormatting.DARK_GRAY : ChatFormatting.DARK_AQUA));
 	}
 }

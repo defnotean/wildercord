@@ -29,6 +29,20 @@ public final class WildercordAttachments {
 			.copyOnDeath()
 	);
 
+	/**
+	 * The casting gear in the gear slots (slot id to the piece; see {@code gear.GearSlot}; a slot with
+	 * nothing in it isn't listed). Synced to everyone who can see the wearer, who see it on them. Unlike the
+	 * Cord it isn't kept through death: it drops like the rest of the inventory, or is carried over with it
+	 * under keepInventory (see {@code gear.GearSlots}).
+	 */
+	public static final AttachmentType<Map<String, ItemStack>> GEAR = AttachmentRegistry.create(
+		Wildercord.id("gear"),
+		builder -> builder
+			.initializer(Map::of)
+			.persistent(Codec.unboundedMap(Codec.STRING, ItemStack.OPTIONAL_CODEC))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ItemStack.OPTIONAL_STREAM_CODEC), AttachmentSyncPredicate.all())
+	);
+
 	/** Learned runes and threaded spells. Kept through death. */
 	public static final AttachmentType<Spellbook> SPELLBOOK = AttachmentRegistry.create(
 		Wildercord.id("spellbook"),

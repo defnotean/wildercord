@@ -15,6 +15,7 @@ Public API (imported by generate_assets.py):
     staff_icon(element, greater) -> list[Image]   (16x16; greater staffs are animated)
     tome_icon() -> list[Image]                    (16x16, animated)
     focus_icon(kind) -> list[Image]               (16x16; kind: haste, thrift, deep_well, echoes)
+    slot_icon(kind) -> Image                      (16x16 empty-slot hint; kind: staff, focus, tome)
 
 Run this file directly to render a review sheet into build/art-preview/gear_art.png.
 """
@@ -409,6 +410,81 @@ def focus_icon(kind: str) -> list[Image.Image]:
     return frames
 
 
+# ============================================================== empty-slot icons
+
+# The hints the gear slots show while empty, in the style of vanilla's container/slot/*.png (opaque #555555
+# line art, like the Cord slot's): a staff with a gem head, a focus (a ring round a gem) and a book.
+SLOT_STAFF = """
+    ................
+    ...........#....
+    ..........#.#...
+    .........#.#.#..
+    ........#.....#.
+    .........#...#..
+    ..........#.#...
+    ...........#....
+    ..........#.#...
+    .........#.#....
+    ........#.#.....
+    .......#.#......
+    ......#.#.......
+    .....#.#........
+    ....#.#.........
+    .....#..........
+"""
+
+SLOT_FOCUS = """
+    ................
+    ................
+    .....######.....
+    ...##......##...
+    ..#....##....#..
+    ..#...#..#...#..
+    .#...#....#...#.
+    .#..#......#..#.
+    .#..#......#..#.
+    .#...#....#...#.
+    ..#...#..#...#..
+    ..#....##....#..
+    ...##......##...
+    .....######.....
+    ................
+    ................
+"""
+
+SLOT_TOME = """
+    ................
+    ...##########...
+    ...#.#.......#..
+    ...#.#.......#..
+    ...#.#.......#..
+    ...#.#...#...#..
+    ...#.#..###..#..
+    ...#.#...#...#..
+    ...#.#.......#..
+    ...#.#.......#..
+    ...#.#.......#..
+    ...#.#.......#..
+    ...#.#.......#..
+    ...##########...
+    ....#########...
+    ................
+"""
+
+SLOT_ICONS = {"staff": SLOT_STAFF, "focus": SLOT_FOCUS, "tome": SLOT_TOME}
+
+
+def slot_icon(kind: str) -> Image.Image:
+    """The empty gear slot's hint (16x16): 'staff', 'focus' or 'tome'."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    p = img.load()
+    for y, row in enumerate(grid(SLOT_ICONS[kind])):
+        for x, ch in enumerate(row):
+            if ch == "#":
+                p[x, y] = (85, 85, 85, 255)
+    return img
+
+
 ELEMENTS = ["fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood"]
 FOCUS_KINDS = ["haste", "thrift", "deep_well", "echoes"]
 
@@ -422,6 +498,8 @@ def preview(out_dir: str) -> str:
     items.append(tome_icon()[0])
     for kind in FOCUS_KINDS:
         items.append(focus_icon(kind)[0])
+    for kind in SLOT_ICONS:
+        items.append(slot_icon(kind))
     for im in items:
         assert im.size == (16, 16) and set(im.getchannel("A").tobytes()) <= {0, 255}
     per = 10

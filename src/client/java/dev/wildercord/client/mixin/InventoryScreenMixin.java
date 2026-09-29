@@ -1,5 +1,6 @@
 package dev.wildercord.client.mixin;
 
+import dev.wildercord.client.GearTray;
 import dev.wildercord.client.SlotWell;
 import dev.wildercord.menu.CordSlot;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -11,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** Draws the Cord slot's well above the offhand slot in the survival inventory. */
+/** Draws the Cord slot's well above the offhand slot in the survival inventory, and the gear slots' tray on the panel's top edge. */
 @Mixin(InventoryScreen.class)
 public abstract class InventoryScreenMixin extends AbstractContainerScreen<InventoryMenu> {
 	private InventoryScreenMixin() {
@@ -21,5 +22,6 @@ public abstract class InventoryScreenMixin extends AbstractContainerScreen<Inven
 	@Inject(method = "extractBackground", at = @At("TAIL"))
 	private void wildercord$drawCordWell(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
 		SlotWell.draw(graphics, this.leftPos + CordSlot.INVENTORY_X - 1, this.topPos + CordSlot.INVENTORY_Y - 1);
+		GearTray.drawSurvival(graphics, this.leftPos, this.topPos);
 	}
 }

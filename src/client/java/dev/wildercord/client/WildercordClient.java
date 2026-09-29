@@ -39,9 +39,16 @@ public final class WildercordClient implements ClientModInitializer {
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BAND, dev.wildercord.client.render.CordModel::createBand);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.SLIM_BAND, dev.wildercord.client.render.CordModel::createSlimBand);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.CordLayer.BEAD, dev.wildercord.client.render.CordModel::createBead);
+		// Casting gear in its slots, worn on the back, off a shoulder and at the hip.
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BELT, dev.wildercord.client.render.GearModel::createBelt);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.ARMORED_BELT, dev.wildercord.client.render.GearModel::createArmoredBelt);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.TIE, dev.wildercord.client.render.GearModel::createTie);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.LOOP, dev.wildercord.client.render.GearModel::createLoop);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.MOTE, dev.wildercord.client.render.GearModel::createMote);
 		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
 			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
 				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
+				helper.register(new dev.wildercord.client.render.GearLayer(avatar, context));
 			}
 		});
 		EntityRendererRegistry.register(WildercordEntities.TRAINING_DUMMY, TrainingDummyRenderer::new);

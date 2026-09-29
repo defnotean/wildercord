@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Casting gear in the world: what someone is holding, and what it does to their spells. Both sides
- * use it (the Cord screen and HUD to show costs, the server to charge them), and the server always
- * reads the hands at the moment of casting.
+ * Casting gear in the world: what someone has in their gear slots or, where a slot is empty, in their
+ * hands, and what it does to their spells. Both sides use it (the Cord screen and HUD to show costs, the
+ * server to charge them), and the server always reads the slots and hands at the moment of casting.
  */
 public final class Gear {
 	private Gear() {}
@@ -32,32 +32,40 @@ public final class Gear {
 		return stack.getItem() instanceof CastingGearItem gear ? gear.def : null;
 	}
 
-	/** What the gear in a creature's hands does. */
+	/**
+	 * What a creature's gear does: for a player, the pieces in their gear slots (which take the place of
+	 * held pieces of the same kind) and the held pieces of any kind whose slot is empty; for anything else,
+	 * what's in its hands.
+	 */
 	public static GearBonuses of(LivingEntity holder) {
 		if (holder == null) {
 			return GearBonuses.NONE;
 		}
-		return GearBonuses.of(defOf(holder.getMainHandItem()), defOf(holder.getOffhandItem()));
+		GearDef main = defOf(holder.getMainHandItem());
+		GearDef off = defOf(holder.getOffhandItem());
+		if (holder instanceof Player player) {
+			return GearBonuses.of(GearSlots.defs(player), main, off);
+		}
+		return GearBonuses.of(main, off);
 	}
 
-	/** Whether the Tome of the Fifth Page is in the off-hand. */
+	/** Whether the Tome of the Fifth Page counts: in its slot, or held in the off-hand while the slot is empty. */
 	public static boolean tome(Player player) {
-		GearDef off = defOf(player.getOffhandItem());
-		return off != null && off.fifthSpell();
+		return of(player).fifthSpell();
 	}
 
-	/** Whether spell slot {@code spell} is open: one of the Cord's, or the tome's while it's held. */
+	/** Whether spell slot {@code spell} is open: one of the Cord's, or the tome's while the tome counts. */
 	public static boolean spellOpen(Player player, CordTier tier, int spell) {
 		return tier != null && SpellSlots.open(tier.spells, tome(player), spell);
 	}
 
-	/** Cost multiplier from the gear held, for a spell (the factor {@code Heart.manaCost} folds in). */
+	/** Cost multiplier from the gear, for a spell (the factor {@code Heart.manaCost} folds in). */
 	public static double costFactor(Player player, SpellPlan.Segment root) {
 		GearBonuses gear = of(player);
 		return gear.isEmpty() ? 1.0 : gear.cost(GearBonuses.elements(root));
 	}
 
-	/** Extra max mana from the gear held (Focus of the Deep Well). */
+	/** Extra max mana from the gear (Focus of the Deep Well). */
 	public static int extraMana(Player player) {
 		return of(player).mana();
 	}
@@ -142,7 +150,7 @@ public final class Gear {
 
 	// ------------------------------------------------------------------ words
 
-	/** One line per piece held: what it's doing, for the Cord screen's mana badge. */
+	/** One line per piece that counts: what it's doing, for the Cord screen's mana badge. */
 	public static List<Component> describe(GearBonuses gear) {
 		List<Component> lines = new ArrayList<>();
 		for (GearDef piece : gear.pieces()) {
