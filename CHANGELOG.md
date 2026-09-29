@@ -30,6 +30,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   arrow, a flaming blade) are taken off.
 - **The Tide Scribe remembers its tide.** Reloaded (a restart, or its dungeon unloading and loading again), it
   turned the tide at once; it now keeps to when the tide was due to turn.
+- **Archives woken before lecterns remembered their Archivist can re-arm.** Such a lectern takes the Archivist it finds
+  about the Archive as its own, and if none is there for 3 minutes while players are, it wakes a new one for whoever
+  comes near, like any other.
 
 ## [0.4.2-alpha] - 2026-09-28
 

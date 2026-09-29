@@ -1415,6 +1415,20 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			ServerLevel level = player(server).level();
 			check(!level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40)).isEmpty(), "the Archivist wakes when a player comes near");
 		});
+		// A lectern woken before lecterns remembered their Archivist (awake, knowing none) takes the one about the Archive
+		// as its own, so it can re-arm if that one goes missing.
+		BlockPos old = lectern.above(6);
+		world.getServer().runOnServer(server -> player(server).level().setBlockAndUpdate(old,
+			WildercordBlocks.ARCHIVE_LECTERN.defaultBlockState().setValue(dev.wildercord.content.ArchiveLecternBlock.AWAKE, true)));
+		context.waitTicks(105);
+		world.getServer().runOnServer(server -> {
+			ServerLevel level = player(server).level();
+			List<Archivist> found = level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40));
+			boolean adopted = level.getBlockEntity(old) instanceof ArchiveLecternBlockEntity keeper && keeper.keeper() != null
+				&& found.stream().anyMatch(a -> a.getUUID().equals(keeper.keeper()));
+			level.setBlockAndUpdate(old, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+			check(adopted, "an awake lectern that doesn't know its Archivist should take the one about the Archive as its own");
+		});
 		// Like the dimension bosses, one huge blow can't skip a phase: it stops at the start of the next,
 		// and the rewriting begins at once, untouchable.
 		world.getServer().runOnServer(server -> {
