@@ -166,6 +166,7 @@ public class CordScreen extends Screen {
 			// The tome left the hand while its spell was being edited.
 			editing = 0;
 			readoutScroll = 0;
+			renaming = false;
 		}
 	}
 
@@ -258,6 +259,16 @@ public class CordScreen extends Screen {
 			x += font.width(Component.translatable(PAGE_KEYS[i])) + 10 + 2;
 		}
 		return onScreen(x + (font.width(Component.translatable(PAGE_KEYS[page])) + 10) / 2.0, 7 + 6.5);
+	}
+
+	/** The middle of the mana badge in the header, on screen. */
+	public double[] manaPoint() {
+		return onScreen(W - 27 - 18 + 7, 7 + 7);
+	}
+
+	/** The middle of spell tool {@code tool} (0 rename, 1 copy, 2 paste, 3 scroll) above the readout, on screen. */
+	public double[] toolPoint(int tool) {
+		return onScreen(toolX(tool) + TOOL / 2.0, toolY() + TOOL / 2.0);
 	}
 
 	/** Filters the Codex, as typing would. */
@@ -479,11 +490,16 @@ public class CordScreen extends Screen {
 				runes.add(rune);
 			}
 		}
+		// Each rune's name looked up once, not at every comparison (this runs every frame).
+		java.util.Map<RuneDef, String> names = new java.util.IdentityHashMap<>();
+		for (RuneDef rune : runes) {
+			names.put(rune, RuneItem.runeName(rune).getString());
+		}
 		runes.sort(Comparator.<RuneDef>comparingInt(r -> r.family().ordinal())
 			.thenComparingInt(RuneCategories::order)
 			.thenComparing(r -> !holds(r))
 			.thenComparingInt(RuneDef::tier)
-			.thenComparing(r -> RuneItem.runeName(r).getString()));
+			.thenComparing(names::get));
 		List<CodexRow> rows = new ArrayList<>();
 		RuneFamily groupFamily = null;
 		String groupCategory = null;
@@ -577,7 +593,7 @@ public class CordScreen extends Screen {
 			}
 		}
 		if (tooltip != null) {
-			g.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+			g.setTooltipForNextFrame(font, Tooltips.fit(font, tooltip, width, height), mouseX, mouseY);
 		}
 	}
 
@@ -1079,7 +1095,7 @@ public class CordScreen extends Screen {
 			}
 			List<RuneDef> runes = PassiveCaster.activeRunes(book.passives().get(s), book, tier);
 			if (!runes.isEmpty() && Passives.problem(runes) == null) {
-				SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+				SpellCompiler.Compiled compiled = SpellHud.read(runes);
 				if (!compiled.isEmpty()) {
 					total += Heart.upkeep(player, compiled);
 				}
@@ -1641,6 +1657,8 @@ public class CordScreen extends Screen {
 					editingPassive = s;
 				} else {
 					editing = s;
+					// A name being typed was for the spell left behind: Enter mustn't give it to this one.
+					renaming = false;
 					ClientPlayNetworking.send(new WildercordNetworking.SelectSpell(s));
 				}
 				click();
@@ -1755,6 +1773,7 @@ public class CordScreen extends Screen {
 		if (passivePage) {
 			editingPassive = spell;
 		} else {
+			renaming &= editing == spell;
 			editing = spell;
 		}
 		sync(spell);

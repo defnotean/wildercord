@@ -63,6 +63,25 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - In singleplayer, chest loot in a world opened after editing `wildercord.json` uses the new settings (it kept the
   old ones until /reload). A dedicated server no longer logs every config warning twice.
 - Shift-clicking a Cord into its slot works alongside mods that add their own inventory slots.
+- **Tooltips ran off the side of the screen.** A tooltip line was never wrapped, so most rune descriptions (and
+  Imbue's, several hundred pixels long, on any screen) were cut off unless the window was very wide. Tooltips in
+  the Cord screen, the Cosmetics page and the Fusion Altar, and those of the mod's items everywhere, now wrap to
+  fit. One still taller than the window (the mana badge's, on a short window) is cut short at the bottom instead
+  of losing its title and numbers off the top.
+- An add-on's rune drew black-and-magenta squares in the magic circle beside the Cord screen and on the Fusion
+  Altar. It now wears its family's art there, as its circle in the world always did.
+- When the spell HUD had too little room beside the hotbar (a small window with the attack indicator or the
+  off-hand slot on its side), it hid all but one of the spell's runes behind a "+2" even though they fitted.
+- On a window a little too narrow for the spell HUD beside the hotbar's attack indicator (or a left-handed
+  player's off-hand slot), such as 1280x720 or 2560x1440 at the automatic GUI scale, the HUD was drawn over the
+  indicator or slot. It now sits on top of them when there's room beside the hotbar.
+- The spell HUD's hint for an empty spell always said "K", even with the Open Cord key bound to another key.
+- A Cord's beads lit up for three seconds after every respawn, as if it had just been put on (and for a player
+  whose Cord showed up a moment after they came into view).
+- Renaming a spell, then picking another spell before pressing Enter, gave the name to the other spell. Picking
+  another spell now drops the name being typed.
+- After leaving a world, the next one could show the last world's ley lines until it sent its own (on a server
+  that never does, for good).
 
 ## [0.4.1-alpha] - 2026-09-28
 

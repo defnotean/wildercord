@@ -512,7 +512,12 @@ can draw the circle.
 - **`SpellHud`**: the panel beside the hotbar: selected spell, its runes and cost, the mana bar
   with a cost mark, cooldown, and passive drain (or the charge, while charging); above it the
   spell's name, rhythm notes and cracked circles (✦), and a beat ring that closes on the badge as
-  the beat comes. Laid out by measuring, and shrinks to fit.
+  the beat comes. Laid out by measuring, and shrinks to fit (short of room beside an offhand slot
+  or attack indicator, it sits on top of them: `SpellHud.place`). A spell's reading is remembered
+  by its runes (`SpellHud.read`) rather than compiled every frame.
+- **`Tooltips`**: the game never wraps a tooltip line, so every tooltip a screen draws goes through
+  `Tooltips.fit` (wrapped to at most 280 pixels, and cut short if taller than the screen), and the
+  mod's items' tooltips are wrapped as they're built (a late `ItemTooltipCallback` phase).
 - **`WildercordKeys`**: R (tap casts, hold charges), V (tap selects, hold opens the
   **`SpellWheelScreen`**), K and four unbound "cast spell N" keys.
 - **`fx/`**: everything magical is blended by `GlowLayers`: `GLOW` adds light to what's behind it

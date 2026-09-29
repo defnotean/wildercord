@@ -60,6 +60,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ImbuedTooltip.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		BlankRuneTooltip.init();
+		Tooltips.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
@@ -79,6 +80,8 @@ public final class WildercordClient implements ClientModInitializer {
 		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			dev.wildercord.config.Config.receive(null);
 			CordGlow.clear();
+			LeyMotes.forget();
+			SpellHud.forget();
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
