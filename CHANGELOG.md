@@ -4,6 +4,28 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+- **More of the world answers your magic.** A second layer of world-changing magic, and all ten elements now take part
+  (see [Magic that Changes the World](https://defnotean.github.io/wildercord/world/world-magic/)):
+  - **Frost cools lava into a crust** of basalt you can walk across (up to 12 blocks). It holds about 25 seconds; for
+    its last 5 it turns to glowing, cracking magma, then melts back into lava. It always melts back, even after a
+    crash or with nobody near, breaking it gives nothing, and it never forms round a creature in the lava.
+  - **Storm scrapes copper** a stage of oxidation clean (up to 4 blocks) and **pulses lightning rods** like a real
+    strike. Each creeper it strikes has a **1 in 4 chance of being charged**: careful.
+  - **Fire lights candles, candle cakes and campfires, and primes TNT** (up to 4 within 2 blocks): stand clear.
+    Frost and wind now snuff candles too.
+  - **Time ages the world**: crops and saplings grow a stage and copper weathers one (up to 3 blocks), baby animals
+    nearby grow up 2 minutes, and a furnace, smoker or blast furnace jumps 5 seconds ahead in its smelting. Its
+    helpful spells do it too, as life's do (not Stasis or Rewind).
+  - **Void anchors endermen**: one it strikes can't teleport for 5 seconds, a ring of darkness at its feet.
+  - **Life starts curing a zombie villager** that has Weakness, as a golden apple would.
+  - **Arcane** shows invisible creatures nearby (they glow for 3 seconds) and makes bookshelves and enchanting
+    tables shimmer. **Blood** ripens nether wart and grows crimson fungus.
+  - Every block change keeps the old rules: only a player's spell, only where they may build, within the cast's
+    block budget, and not on a server that turned world-changing magic or spells' block changes off. Charging a
+    creeper, curing and growing babies are a player's spell's only, and off with world-changing magic off too.
+  - The rune tooltips' dark green *"Where it lands"* lines say all of this, with the warnings.
+
 ### Fixed
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
