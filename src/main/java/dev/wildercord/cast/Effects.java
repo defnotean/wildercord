@@ -6,6 +6,7 @@ import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
+import dev.wildercord.spell.WorldRules;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBlockTags;
@@ -845,12 +846,15 @@ public final class Effects {
 		}
 	}
 
-	/** Icepath: water near the point freezes into frosted ice that melts on its own. */
+	/**
+	 * Icepath: water near the point freezes into frosted ice that melts on its own in the light, and
+	 * is thawed after {@link WorldRules#THAW_TICKS} wherever it is (frosted ice never melts in the dark).
+	 */
 	private static void icepath(Cast cast, Cast.Hit hit, double radius) {
 		BlockPos center = BlockPos.containing(hit.point().x, hit.point().y - 0.5, hit.point().z);
 		int r = (int) Math.ceil(radius);
 		BlockState ice = Blocks.FROSTED_ICE.defaultBlockState();
-		int frozen = 0;
+		List<BlockPos> frozen = new ArrayList<>();
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-r, -2, -r), center.offset(r, 1, r))) {
 			BlockPos p = pos.immutable();
 			if (p.distSqr(center) > radius * radius) {
@@ -864,10 +868,11 @@ public final class Effects {
 				}
 				cast.level.setBlockAndUpdate(p, ice);
 				cast.level.scheduleTick(p, Blocks.FROSTED_ICE, 60 + cast.level.getRandom().nextInt(60));
-				frozen++;
+				frozen.add(p);
 			}
 		}
-		if (frozen > 0) {
+		if (!frozen.isEmpty()) {
+			Thaws.schedule(cast.level, frozen, cast.level.getGameTime() + WorldRules.THAW_TICKS + cast.level.getRandom().nextInt(60));
 			Vfx.icepath(cast.level, Vec3.atCenterOf(center), radius);
 		}
 	}

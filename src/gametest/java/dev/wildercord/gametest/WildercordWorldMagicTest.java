@@ -90,6 +90,20 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 			});
 			note(failures, frost);
 
+			// Icepath: its frosted ice is written down to thaw, since in the dark it would never melt.
+			String icepath = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				BlockPos pool = site(player, 24, 0);
+				pool(player.level(), pool, 1);
+				apply(player, List.of(Runes.TOUCH, Runes.ICEPATH), Vec3.atCenterOf(pool), List.of());
+				BlockPos ice = pool.below();
+				if (!player.level().getBlockState(ice).is(Blocks.FROSTED_ICE)) {
+					return "Icepath should freeze the pool into frosted ice (found " + player.level().getBlockState(ice) + ")";
+				}
+				return Thaws.waiting(player.level(), ice) ? null : "Icepath's frosted ice should be written down to thaw";
+			});
+			note(failures, icepath);
+
 			// Fire by grass, with fire spreading on: the grass catches.
 			String fire = server.computeOnServer(s -> {
 				ServerPlayer player = player(s);
