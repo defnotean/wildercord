@@ -65,9 +65,11 @@ public final class CastEngine {
 		String id = link.link.id();
 		if (id.equals(Runes.DELAY.id())) {
 			Cast child = cast.child();
+			dev.wildercord.cast.feel.Tells.fuse(cast, SpellNumbers.delayTicks(link));
 			Scheduler.later(SpellNumbers.delayTicks(link), () -> runSegment(child, link.next, Cast.Trigger.self(caster)));
 		} else if (id.equals(Runes.ON_LAND.id())) {
 			Cast child = cast.child();
+			dev.wildercord.cast.feel.Tells.armed(cast);
 			Scheduler.onLand(caster, 200, pos -> {
 				// Not for a caster who has changed dimension since (the watch follows them there).
 				if (!child.alive()) {
@@ -75,6 +77,7 @@ public final class CastEngine {
 				}
 				Vfx.shockwave(child.level, pos, 2.0, Vfx.theme(""), 4);
 				Fx.sound(child.level, pos, net.minecraft.sounds.SoundEvents.MACE_SMASH_GROUND, 0.7F, 1.3F);
+				dev.wildercord.cast.feel.Tells.sprung(child, pos);
 				runSegment(child, link.next, new Cast.Trigger(pos, caster.getLookAngle(), caster, null, null));
 			});
 		} else if (id.equals(Runes.PULSE.id())) {
@@ -83,17 +86,25 @@ public final class CastEngine {
 				int interval = SpellNumbers.pulseInterval(link);
 				for (int i = 0; i < SpellNumbers.PULSES; i++) {
 					Cast child = cast.repeat();
-					Scheduler.later(1 + i * interval, () -> runSegment(child, link.next, Cast.Trigger.self(caster)));
+					int beat = i;
+					Scheduler.later(1 + i * interval, () -> {
+						if (child.alive()) {
+							dev.wildercord.cast.feel.Tells.beat(child, beat);
+						}
+						runSegment(child, link.next, Cast.Trigger.self(caster));
+					});
 				}
 			}
 		} else if (id.equals(Runes.ON_HURT.id())) {
 			Cast child = cast.child();
+			dev.wildercord.cast.feel.Tells.armed(cast);
 			Scheduler.onHurt(caster, 300, attacker -> {
 				// Not for a caster who has died of it, or changed dimension since.
 				if (!child.alive()) {
 					return;
 				}
 				Vfx.shockwave(child.level, caster.position(), 1.8, Vfx.theme(""), 3);
+				dev.wildercord.cast.feel.Tells.sprung(child, caster.position().add(0, 1, 0));
 				if (attacker != null && attacker.isAlive()) {
 					Vec3 dir = attacker.getBoundingBox().getCenter().subtract(caster.getEyePosition()).normalize();
 					runSegment(child, link.next, new Cast.Trigger(attacker.getBoundingBox().getCenter(), dir, attacker, null, null));
@@ -103,40 +114,50 @@ public final class CastEngine {
 			});
 		} else if (id.equals(Runes.IF_SNEAKING.id())) {
 			if (caster.isShiftKeyDown()) {
+				dev.wildercord.cast.feel.Tells.gate(cast, true);
 				runSegment(cast, link.next, at);
 			} else {
+				dev.wildercord.cast.feel.Tells.gate(cast, false);
 				refund(cast, link);
 			}
 		} else if (id.equals(Runes.IF_AIRBORNE.id())) {
 			if (!caster.onGround() && !caster.isInWater()) {
 				TechniqueVfx.airborne(cast.level, caster);
+				dev.wildercord.cast.feel.Tells.gate(cast, true);
 				runSegment(cast, link.next, at);
 			} else {
+				dev.wildercord.cast.feel.Tells.gate(cast, false);
 				refund(cast, link);
 			}
 		} else if (id.equals(Runes.COMBO.id())) {
 			if (cast.castNumber % 3 == 0) {
 				TechniqueVfx.combo(cast.level, caster);
 				Reactions.callout(cast, "combo", 0xF0C440);
+				dev.wildercord.cast.feel.Tells.gate(cast, true);
 				runSegment(cast, link.next, at);
 			} else {
+				dev.wildercord.cast.feel.Tells.gate(cast, false);
 				refund(cast, link);
 			}
 		} else if (ExplorerShapes.isCondition(id)) {
 			// If Wounded, If Outnumbered, If Wet: the runes of the world's conditions.
 			if (ExplorerShapes.conditionMet(cast, id)) {
 				ExplorerVfx.condition(cast.level, caster, id);
+				dev.wildercord.cast.feel.Tells.gate(cast, true);
 				runSegment(cast, link.next, at);
 			} else {
+				dev.wildercord.cast.feel.Tells.gate(cast, false);
 				refund(cast, link);
 			}
 		} else if (id.equals(Runes.ON_LOW_HEALTH.id())) {
 			Cast child = cast.child();
+			dev.wildercord.cast.feel.Tells.armed(cast);
 			Scheduler.onLowHealth(caster, 600, () -> {
 				if (!child.alive()) {
 					return;
 				}
 				Vfx.shockwave(child.level, caster.position(), 2.4, Vfx.theme("life"), 4);
+				dev.wildercord.cast.feel.Tells.sprung(child, caster.position().add(0, 1, 0));
 				runSegment(child, link.next, new Cast.Trigger(caster.position().add(0, 1, 0), caster.getLookAngle(), caster, null, null));
 			});
 		} else if (id.equals(Runes.ECHO.id())) {
@@ -147,7 +168,12 @@ public final class CastEngine {
 				// caster, so a stored Fire's echo burned nothing); otherwise the whole spell again, from you.
 				boolean stored = link.echoPrefix.implicitShape.is(Runes.TRIGGER.id()) && cast.origin() != null;
 				Cast.Trigger from = stored ? cast.origin() : Cast.Trigger.self(caster);
-				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, from));
+				Scheduler.later(10, () -> {
+					if (child.alive()) {
+						dev.wildercord.cast.feel.Tells.echo(child);
+					}
+					runSegment(child, link.echoPrefix, from);
+				});
 			}
 			runSegment(cast, link.next, at);
 		} else {
@@ -328,6 +354,7 @@ public final class CastEngine {
 						return;
 					}
 					Vfx.zonePulse(child.level, center, radius, theme, t / interval);
+					dev.wildercord.cast.feel.Feels.sound(child.level, center, "field_pulse", 0.4F, 1.0F);
 					onHit(child, g, new Cast.Hit(inRadius(child, center.add(0, 1, 0), radius), center, at.dir(), center, null, null, false), anchored);
 				});
 			}
@@ -389,7 +416,8 @@ public final class CastEngine {
 			Entity target = entityHit.getEntity();
 			Vfx.contact(cast.level, from.add(at.dir().scale(0.5)), entityHit.getLocation(), theme);
 			Vfx.impact(cast.level, entityHit.getLocation(), theme, 0.8);
-			onHit(cast, g, new Cast.Hit(List.of(target), entityHit.getLocation(), at.dir(), from, null, null, false), anchored);
+			// Laying on of hands: what you touch takes the spell a little harder than anything cast from afar.
+			onHit(cast, g, new Cast.Hit(List.of(target), entityHit.getLocation(), at.dir(), from, null, null, false).times(SpellNumbers.TOUCH_POWER), anchored);
 			chain(cast, g, anchored, target, theme);
 		} else if (block.getType() != HitResult.Type.MISS) {
 			Vfx.impact(cast.level, block.getLocation(), theme, 0.6);
@@ -447,6 +475,7 @@ public final class CastEngine {
 			visited.add(next);
 			Vfx.beam(cast.level, from.getBoundingBox().getCenter(), next.getBoundingBox().getCenter(), theme);
 			Vfx.impact(cast.level, next.getBoundingBox().getCenter(), theme, 0.6);
+			dev.wildercord.cast.feel.Feels.sound(cast.level, next.getBoundingBox().getCenter(), "tell_zap", 0.4F, dev.wildercord.cast.feel.Feels.step(i + 1));
 			onHit(cast, g, new Cast.Hit(List.of(next), next.getBoundingBox().getCenter(), next.position().subtract(from.position()).normalize(),
 				from.position(), null, null, false), anchored);
 			current = next;
@@ -464,7 +493,7 @@ public final class CastEngine {
 		int granted = cast.takeEntities(entities.size());
 		if (granted < entities.size()) {
 			entities = entities.subList(0, granted);
-			hit = new Cast.Hit(entities, hit.point(), hit.dir(), hit.origin(), hit.block(), hit.face(), hit.self());
+			hit = new Cast.Hit(entities, hit.point(), hit.dir(), hit.origin(), hit.block(), hit.face(), hit.self(), hit.power());
 		}
 		List<LivingEntity> aliveBefore = new ArrayList<>();
 		for (Entity e : entities) {
@@ -477,7 +506,7 @@ public final class CastEngine {
 		}
 		// On Reaction and On Weakness count only what this group sets off.
 		java.util.Map<Entity, Integer> watched = CraftedShapes.watch(anchored, entities);
-		double groupPower = SpellNumbers.groupPower(g);
+		double groupPower = SpellNumbers.groupPower(g) * hit.power();
 		for (SpellPlan.EffectNode effect : stasisFirst(g.effects)) {
 			// Belated: it (and each lingering landing after it) comes a moment late, on whatever it struck that's still there.
 			int late = SpellNumbers.belatedTicks(effect);
@@ -519,6 +548,7 @@ public final class CastEngine {
 					if (n++ >= MAX_TRIGGERS_PER_HIT) {
 						break;
 					}
+					dev.wildercord.cast.feel.Tells.handoff(cast.level, e.getBoundingBox().getCenter(), n - 1);
 					// The payload is paid once however many it fires at: each further one is a little weaker.
 					runSegment(cast.child(Math.pow(SpellNumbers.TRIGGER_FALLOFF, n - 1)), anchored.next, new Cast.Trigger(e.getBoundingBox().getCenter(), hit.dir(), e, null, null));
 				}
@@ -530,6 +560,7 @@ public final class CastEngine {
 				if (!victim.isAlive() || victim.isDeadOrDying()) {
 					Fx.particle(cast.level, ParticleTypes.SOUL, victim.getBoundingBox().getCenter(), 10, 0.3, 0.04);
 					Fx.particle(cast.level, ParticleTypes.SCULK_SOUL, victim.getBoundingBox().getCenter(), 6, 0.3, 0.04);
+					dev.wildercord.cast.feel.Tells.onKill(cast.level, victim.getBoundingBox().getCenter());
 					runSegment(cast.child(), anchored.next, new Cast.Trigger(victim.getBoundingBox().getCenter(), hit.dir(), null, null, null));
 				}
 			}
@@ -542,7 +573,7 @@ public final class CastEngine {
 	/** What a hit struck that's still there to land on again: alive, and not gone to another dimension since (a player keeps being the same entity there). */
 	private static Cast.Hit still(Cast cast, Cast.Hit first) {
 		List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == cast.level).toList();
-		return new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self());
+		return new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self(), first.power());
 	}
 
 	/**
@@ -568,8 +599,11 @@ public final class CastEngine {
 		int shots = SpellNumbers.volleyShots(g);
 		shot.run();
 		for (int i = 1; i < shots; i++) {
+			int k = i;
 			Scheduler.later(i * 5, () -> {
 				if (cast.alive()) {
+					// Each shot of a Volley a step up the scale: an arpeggio you can count.
+					dev.wildercord.cast.feel.Feels.sound(cast.level, cast.caster.getEyePosition(), "note_mod", 0.3F, dev.wildercord.cast.feel.Feels.step(k * 2));
 					shot.run();
 				}
 			});

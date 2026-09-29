@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.MarkHalos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -45,8 +46,8 @@ public final class Statuses {
 		SILENCED.merge(target.getUUID(), until, Math::max);
 		if (fresh && target.level() instanceof ServerLevel level) {
 			StatusVfx.silenced(level, target);
-			// A beat every second while it lasts, so the state can be read on the creature (at most 8 beats).
-			for (int beat = 20; beat <= Math.min(ticks, 160); beat += 20) {
+			// A crown halo every halo period while it lasts, so the state can be read on the creature (at most 16 beats).
+			for (int beat = MarkHalos.PERIOD; beat <= Math.min(ticks, 160); beat += MarkHalos.PERIOD) {
 				Scheduler.later(beat, () -> {
 					if (target.isAlive() && silenced(target)) {
 						StatusVfx.silencedBeat(level, target);

@@ -61,6 +61,7 @@ public final class BoltComets {
 		private final TextureAtlasSprite glow;
 		private int color;
 		private int secondary;
+		private int style;
 		private int gone = -1;
 
 		Comet(ClientLevel level, RuneBolt bolt) {
@@ -82,6 +83,7 @@ public final class BoltComets {
 			age++;
 			color = bolt.getEntityData().get(RuneBolt.DATA_COLOR);
 			secondary = bolt.getEntityData().get(RuneBolt.DATA_SECONDARY);
+			style = bolt.getEntityData().get(RuneBolt.DATA_STYLE);
 			if (bolt.isRemoved()) {
 				// The trail catches up with where the bolt ended, then the comet goes.
 				if (gone < 0) {
@@ -104,6 +106,23 @@ public final class BoltComets {
 			while (trail.size() > TRAIL) {
 				trail.removeLast();
 			}
+		}
+
+		/** How wide the comet is drawn: fatter for Amplify and Overcharge, thin for Frugal, a needle for Pierce. */
+		private float girth() {
+			float g = 1 + 0.18F * (style & RuneBolt.STYLE_POWER);
+			if ((style & RuneBolt.STYLE_FRUGAL) != 0) {
+				g *= 0.7F;
+			}
+			if ((style & RuneBolt.STYLE_PIERCE) != 0) {
+				g *= 0.65F;
+			}
+			return g;
+		}
+
+		/** The white-hot core: a pierce's needle burns hotter along its length. */
+		private float core() {
+			return (style & RuneBolt.STYLE_PIERCE) != 0 ? 1.2F : girth();
 		}
 
 		private static int argb(float alpha, int rgb) {
@@ -134,14 +153,35 @@ public final class BoltComets {
 				Vec3 p = it.next();
 				Vector3f q = new Vector3f((float) (p.x - cam.x), (float) (p.y - cam.y), (float) (p.z - cam.z));
 				float t = 1 - i / (float) TRAIL;
-				ribbon(state, prev, q, 0.24F * t, argb(0.5F * t * fade, color));
-				ribbon(state, prev, q, 0.09F * t, argb(0.9F * t * fade, hot(color, 0.7F)));
+				ribbon(state, prev, q, 0.24F * t * girth(), argb(0.5F * t * fade, color));
+				ribbon(state, prev, q, 0.09F * t * core(), argb(0.9F * t * fade, hot(color, 0.7F)));
 				prev = q;
 				i++;
 			}
 			if (gone < 0) {
-				billboard(state, h, 0.42F, argb(0.55F * fade, color));
-				billboard(state, h, 0.2F, argb(0.95F * fade, hot(secondary, 0.8F)));
+				billboard(state, h, 0.42F * girth(), argb(0.55F * fade, color));
+				billboard(state, h, 0.2F * girth(), argb(0.95F * fade, hot(secondary, 0.8F)));
+				if ((style & RuneBolt.STYLE_POWER) >= 2) {
+					// Overcharged: a second, wider halo.
+					billboard(state, h, 0.75F, argb(0.25F * fade, secondary));
+				}
+				if ((style & RuneBolt.STYLE_HOMING) != 0) {
+					// Seeking: a mote circling the head, a corkscrew in flight.
+					float a = (age + partial) * 0.9F;
+					Vec3 v = bolt.getDeltaMovement();
+					Vector3f dir = new Vector3f((float) v.x, (float) v.y, (float) v.z);
+					if (dir.lengthSquared() > 1.0E-6F) {
+						dir.normalize();
+						Vector3f side = new Vector3f(dir).cross(0, 1, 0);
+						if (side.lengthSquared() < 1.0E-4F) {
+							side.set(1, 0, 0);
+						}
+						side.normalize();
+						Vector3f up = new Vector3f(side).cross(dir).normalize();
+						Vector3f p = new Vector3f(h).add(side.mul(Mth.cos(a) * 0.3F)).add(up.mul(Mth.sin(a) * 0.3F));
+						billboard(state, p, 0.1F, argb(0.9F * fade, hot(secondary, 0.6F)));
+					}
+				}
 			}
 		}
 

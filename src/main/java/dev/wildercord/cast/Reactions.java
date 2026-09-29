@@ -85,8 +85,26 @@ public final class Reactions {
 	}
 
 	public static void mark(Entity target, Mark mark, int ticks) {
+		boolean fresh = !has(target, mark);
 		long until = target.level().getGameTime() + ticks;
 		MARKS.computeIfAbsent(target.getUUID(), k -> new EnumMap<>(Mark.class)).merge(mark, until, Math::max);
+		// Marks are seen: a halo in the mark's colour while it lasts (see MarkHalos).
+		dev.wildercord.cast.feel.MarkHalos.marked(target, mark, fresh);
+	}
+
+	/** The marks {@code target} carries right now. */
+	public static java.util.Set<Mark> marks(Entity target) {
+		Map<Mark, Long> marks = MARKS.get(target.getUUID());
+		java.util.Set<Mark> live = java.util.EnumSet.noneOf(Mark.class);
+		if (marks != null) {
+			long now = target.level().getGameTime();
+			marks.forEach((mark, until) -> {
+				if (until >= now) {
+					live.add(mark);
+				}
+			});
+		}
+		return live;
 	}
 
 	public static boolean has(Entity target, Mark mark) {

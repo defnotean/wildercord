@@ -846,10 +846,114 @@
       "wildercord:kit/blood/blood_slice_heavy_2"
     ]
   },
+  "field_pulse": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/neutral/field_pulse_1",
+      "wildercord:kit/neutral/field_pulse_2",
+      "wildercord:kit/neutral/field_pulse_3"
+    ]
+  },
+  "fizzle": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/fizzle_1",
+      "wildercord:kit/neutral/fizzle_2"
+    ]
+  },
+  "gate_fail": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/gate_fail"
+    ]
+  },
+  "gate_pass": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/gate_pass"
+    ]
+  },
+  "gesture_aura": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_aura"
+    ]
+  },
+  "gesture_beam": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_beam_1",
+      "wildercord:kit/neutral/gesture_beam_2"
+    ]
+  },
+  "gesture_blast": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_blast_1",
+      "wildercord:kit/neutral/gesture_blast_2"
+    ]
+  },
+  "gesture_call": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_call"
+    ]
+  },
+  "gesture_flick": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_flick_1",
+      "wildercord:kit/neutral/gesture_flick_2"
+    ]
+  },
+  "gesture_hurl": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_hurl_1",
+      "wildercord:kit/neutral/gesture_hurl_2"
+    ]
+  },
+  "gesture_seal": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_seal"
+    ]
+  },
+  "gesture_slash": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/neutral/gesture_slash_1",
+      "wildercord:kit/neutral/gesture_slash_2"
+    ]
+  },
   "link_ting": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
       "wildercord:kit/neutral/link_ting"
+    ]
+  },
+  "note_effect": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/note_effect"
+    ]
+  },
+  "note_link": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/note_link"
+    ]
+  },
+  "note_mod": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/note_mod"
+    ]
+  },
+  "note_shape": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/note_shape"
     ]
   },
   "ready_ping": {
@@ -863,6 +967,56 @@
     "sounds": [
       "wildercord:kit/neutral/tap_release_1",
       "wildercord:kit/neutral/tap_release_2"
+    ]
+  },
+  "tell_crack": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/neutral/tell_crack_1",
+      "wildercord:kit/neutral/tell_crack_2"
+    ]
+  },
+  "tell_drip": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/tell_drip_1",
+      "wildercord:kit/neutral/tell_drip_2",
+      "wildercord:kit/neutral/tell_drip_3"
+    ]
+  },
+  "tell_rumble": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/tell_rumble"
+    ]
+  },
+  "tell_tick": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/tell_tick_1",
+      "wildercord:kit/neutral/tell_tick_2",
+      "wildercord:kit/neutral/tell_tick_3"
+    ]
+  },
+  "tell_toll": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/neutral/tell_toll_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "wildercord:kit/neutral/tell_toll_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "tell_zap": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/tell_zap_1",
+      "wildercord:kit/neutral/tell_zap_2",
+      "wildercord:kit/neutral/tell_zap_3"
     ]
   }
 }

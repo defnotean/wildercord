@@ -6,11 +6,17 @@
     "blood_slice_heavy": {
       "part": "blood"
     },
+    "field_pulse": {
+      "part": "neutral"
+    },
     "fire_flick": {
       "part": "fire"
     },
     "fire_whump": {
       "part": "fire"
+    },
+    "fizzle": {
+      "part": "neutral"
     },
     "frost_break": {
       "part": "frost"
@@ -72,13 +78,73 @@
     "frost_zero": {
       "part": "frost"
     },
+    "gate_fail": {
+      "part": "neutral"
+    },
+    "gate_pass": {
+      "part": "neutral"
+    },
+    "gesture_aura": {
+      "part": "neutral"
+    },
+    "gesture_beam": {
+      "part": "neutral"
+    },
+    "gesture_blast": {
+      "part": "neutral"
+    },
+    "gesture_call": {
+      "part": "neutral"
+    },
+    "gesture_flick": {
+      "part": "neutral"
+    },
+    "gesture_hurl": {
+      "part": "neutral"
+    },
+    "gesture_seal": {
+      "part": "neutral"
+    },
+    "gesture_slash": {
+      "part": "neutral"
+    },
     "link_ting": {
+      "part": "neutral"
+    },
+    "note_effect": {
+      "part": "neutral"
+    },
+    "note_link": {
+      "part": "neutral"
+    },
+    "note_mod": {
+      "part": "neutral"
+    },
+    "note_shape": {
       "part": "neutral"
     },
     "ready_ping": {
       "part": "neutral"
     },
     "tap_release": {
+      "part": "neutral"
+    },
+    "tell_crack": {
+      "part": "neutral"
+    },
+    "tell_drip": {
+      "part": "neutral"
+    },
+    "tell_rumble": {
+      "part": "neutral"
+    },
+    "tell_tick": {
+      "part": "neutral"
+    },
+    "tell_toll": {
+      "part": "neutral"
+    },
+    "tell_zap": {
       "part": "neutral"
     },
     "wind_crash": {

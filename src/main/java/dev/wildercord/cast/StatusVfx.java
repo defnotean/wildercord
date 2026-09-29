@@ -1,6 +1,7 @@
 package dev.wildercord.cast;
 
 import dev.wildercord.cast.feel.Feels;
+import dev.wildercord.cast.feel.MarkHalos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -30,19 +31,18 @@ final class StatusVfx {
 		Feels.sound(level, target.position(), "wind_muffle", 0.8F, 1.0F);
 	}
 
-	/** One beat of a lasting silence: a faint ring over the head. */
+	/** One beat of a lasting silence: the shared crown halo (see {@link MarkHalos}) in the muted colour. */
 	static void silencedBeat(ServerLevel level, Entity target) {
-		Vec3 head = target.position().add(0, target.getBbHeight() + 0.45, 0);
-		ElementFx.ring(level, head, UP, MUTED, 0.45, 0.25, 0.025, 8);
+		MarkHalos.halo(level, target, MUTED, MarkHalos.Style.CROWN);
 	}
 
-	/** A creature is lifted (the airborne mark takes hold): pale rings climbing off the feet and sparkles rising. */
+	/**
+	 * A creature is lifted (the airborne mark takes hold): the mark's own halo is drawn by {@link MarkHalos} (pale motes rising
+	 * off it while it lasts), so this is just the lift: one ring off the feet and the sound.
+	 */
 	static void lifted(ServerLevel level, Entity target) {
 		Vec3 feet = target.position();
-		double r = Math.max(0.5, target.getBbWidth());
-		ElementFx.groundRing(level, feet, SKY, 0.2, r + 0.7, 0.05, 9);
-		ElementFx.ring(level, feet.add(0, 0.6, 0), UP, SKY, r + 0.5, r * 0.5, 0.03, 8);
-		Vfx.emit(level, ParticleTypes.END_ROD, target.getBoundingBox().getCenter(), 4, 0.25, 0.06);
+		ElementFx.groundRing(level, feet, SKY, 0.2, Math.max(0.5, target.getBbWidth()) + 0.7, 0.05, 9);
 		Feels.sound(level, feet, "wind_lift", 0.5F, 1.0F);
 	}
 

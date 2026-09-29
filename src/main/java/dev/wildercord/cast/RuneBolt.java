@@ -40,6 +40,10 @@ public class RuneBolt extends Projectile {
 	/** The bolt's colours, for the comet each client draws. */
 	public static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.INT);
 	public static final EntityDataAccessor<Integer> DATA_SECONDARY = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.INT);
+	/** What the bolt's modifiers make it look like, for the comet each client draws (see {@link #style}). */
+	public static final EntityDataAccessor<Integer> DATA_STYLE = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.INT);
+	/** Style bits: how much stronger it is (0 to 3: Amplify, Overcharge), thin (Frugal), a needle (Pierce), seeking (Homing). */
+	public static final int STYLE_POWER = 0x3, STYLE_FRUGAL = 0x4, STYLE_PIERCE = 0x8, STYLE_HOMING = 0x10;
 	private static final double RANGE = 48.0;
 	private static final Map<UUID, Integer> LIVE = new ConcurrentHashMap<>();
 
@@ -108,6 +112,7 @@ public class RuneBolt extends Projectile {
 		bolt.theme = cast.theme(group);
 		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());
 		bolt.getEntityData().set(DATA_SECONDARY, bolt.theme.secondary());
+		bolt.getEntityData().set(DATA_STYLE, style(group));
 		bolt.setOwner(cast.caster);
 		bolt.setPos(origin);
 		bolt.setDeltaMovement(dir.normalize().scale(bolt.speed));
@@ -118,6 +123,27 @@ public class RuneBolt extends Projectile {
 			Fx.sound(cast.level, origin, bolt.theme.cast(), 0.5F, 1.0F);
 		}
 		return bolt;
+	}
+
+	/** The comet's style from the group's modifiers: a heavier core for Amplify and Overcharge, a thin one for Frugal, a needle, a corkscrew. */
+	static int style(SpellPlan.Group group) {
+		int power = 0;
+		boolean frugal = false;
+		for (SpellPlan.EffectNode e : group.effects) {
+			power = Math.max(power, e.count(dev.wildercord.spell.Runes.AMPLIFY) + 2 * e.count(dev.wildercord.spell.Runes.OVERCHARGE_MOD));
+			frugal |= e.count(dev.wildercord.spell.Runes.FRUGAL_MOD) > 0;
+		}
+		int style = Math.min(3, power);
+		if (frugal) {
+			style |= STYLE_FRUGAL;
+		}
+		if (SpellNumbers.pierce(group) > 0) {
+			style |= STYLE_PIERCE;
+		}
+		if (SpellNumbers.homing(group)) {
+			style |= STYLE_HOMING;
+		}
+		return style;
 	}
 
 	/** Parried: the bolt turns round where it met the Shield and flies back at its caster, now {@code defender}'s. */
@@ -149,6 +175,7 @@ public class RuneBolt extends Projectile {
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
 		builder.define(DATA_COLOR, 0xFFFFFF);
 		builder.define(DATA_SECONDARY, 0xFFFFFF);
+		builder.define(DATA_STYLE, 0);
 	}
 
 	@Override

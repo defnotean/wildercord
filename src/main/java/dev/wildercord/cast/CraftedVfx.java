@@ -72,6 +72,8 @@ final class CraftedVfx {
 		glow(level, theme.primary(), pos, 0.45);
 		if (tick % 3 == 0) {
 			Vfx.emit(level, theme.spark(), pos, 1, 0.1, 0.02);
+		}
+		if (tick % 6 == 0) {
 			Fx.sound(level, pos, SoundEvents.TRIDENT_RIPTIDE_1, 0.25F, 1.9F);
 		}
 	}
