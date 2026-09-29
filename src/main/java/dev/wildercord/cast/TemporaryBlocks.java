@@ -76,6 +76,25 @@ public final class TemporaryBlocks extends SavedData {
 		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos));
 	}
 
+	/**
+	 * How a spell's {@code block} at {@code pos} is written down (what it replaced, and when it goes), or null
+	 * if no spell's block of that kind is. Saved, so it still knows after a restart (a lava crust broken then
+	 * drops nothing).
+	 */
+	static Placed find(ServerLevel level, BlockPos pos, net.minecraft.world.level.block.Block block) {
+		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
+		List<Placed> inChunk = blocks == null ? null : blocks.byChunk.get(Thaws.chunk(pos));
+		if (inChunk == null) {
+			return null;
+		}
+		for (Placed placed : inChunk) {
+			if (placed.pos().equals(pos) && placed.placed().is(block)) {
+				return placed;
+			}
+		}
+		return null;
+	}
+
 	/** Writes down a block a spell just put at {@code pos} in place of {@code replaced}, to go at game time {@code due}. */
 	public static void put(ServerLevel level, BlockPos pos, BlockState placed, BlockState replaced, long due) {
 		TemporaryBlocks blocks = level.getDataStorage().computeIfAbsent(TYPE);

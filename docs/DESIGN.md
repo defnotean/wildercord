@@ -894,10 +894,13 @@ the elements favoured and hindered where you stand. Details in [features/affinit
 **Wet.** Being wet (in water or rain, or for 5 s after Tidebreath, steam or a popped Bubble) makes storm
 conduct (above), fire hit 25% softer (and dries you), and frost freeze you solid at once.
 
-**The world reacts too.** Harmful spells also change the ground they land on: fire lights grass and
-leaves and boils puddles into blinding steam, frost freezes water to walk on and puts fires out, storm
-runs through water to every foe in it, wind knocks arrows out of the air, earth heaves the ground,
-life makes it bloom and void draws loose items in. The numbers are in
+**The world reacts too.** Harmful spells also change the ground they land on: fire lights grass,
+leaves, candles and TNT and boils puddles into blinding steam, frost freezes water to walk on, cools
+lava into a crust that melts back and puts fires out, storm runs through water to every foe in it,
+scrapes copper and pulses lightning rods (and may charge a creeper), wind knocks arrows out of the
+air, earth heaves the ground, life makes it bloom and cures a weakened zombie villager, void draws
+loose items in and anchors endermen, time ripens crops, weathers copper, grows up young animals and
+hurries furnaces, arcane shows the invisible, and blood feeds nether wart. The numbers are in
 [features/world-magic.md](features/world-magic.md).
 
 ## Getting runes
@@ -1076,10 +1079,12 @@ and Glacier frost, Lifesteal blood, Warp void, Bloom life and Nullify arcane.
   Rampart, Chisel, Glimmer, Prune, Tunnel, Vein, Smelt, Fell, Span) change blocks, and so do
   the elements where they land (see [world-magic.md](features/world-magic.md)), but only in
   vanilla's own temporary or natural ways: fire (only where fire spreads, so it burns out),
-  frosted ice (melts back), grass and flowers. Every change needs the caster to be allowed to
-  build there (spawn protection and claims are respected) and comes out of the cast's block
-  budget, 24 world changes a cast at most. Monsters' spells never change blocks (they still
-  shock through water, heave the ground as block displays and blow arrows away).
+  frosted ice (melts back), a crust of basalt on lava (melts back, saved with the world, drops
+  nothing), grass and flowers, growth, and copper weathering or being scraped. Every change needs
+  the caster to be allowed to build there (spawn protection and claims are respected) and comes
+  out of the cast's block budget, 24 world changes a cast at most. Monsters' spells never change
+  blocks (they still shock through water, heave the ground as block displays and blow arrows
+  away), and never charge creepers, cure zombie villagers or grow up young animals.
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
 - **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
