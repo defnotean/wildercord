@@ -37,7 +37,7 @@ Heals the damage you took in the last 5 seconds, as much as you're missing. Over
 
 *Tier I · Life · Helps you and your allies · 10 mana · needs any Cord*
 
-For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple.
+For 10 seconds, every hit you deal has a 1 in 4 chance to strike for double, and a kill has a 1 in 4 chance to drop extra experience.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
@@ -48,7 +48,7 @@ For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple.
 
 *Tier I · Wind · Helps you and your allies · 10 mana · needs any Cord*
 
-For 12 seconds, jump again in midair to dash forward (up to 3 dashes).
+For 12 seconds, jump again in midair to dash the way you're steering (up to 3 dashes), shoving aside whoever you pass.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
@@ -70,7 +70,7 @@ For 12 seconds, jump again in midair to dash forward (up to 3 dashes).
 
 *Tier I · Frost · Helps you and your allies · 12 mana · needs any Cord*
 
-Casts back the last spell that hit you in the past 30 seconds, as your own.
+Casts back the last spell that hit you in the past 30 seconds, as your own at 70% power. A spell cast back can't be cast back again.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
