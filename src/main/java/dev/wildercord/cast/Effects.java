@@ -631,12 +631,13 @@ public final class Effects {
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);
 		amount *= hexBonus(cast, target);
+		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
+		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
+		amount *= Reactions.hit(cast, target, currentElement);
 		amount *= Affinities.multiplier(cast, target, source, currentElement);
 		// Fire is weaker on the wet.
 		amount *= WorldMagic.wetDamage(target, currentElement);
 		amount *= AddonRunes.react(cast, target, currentElement);
-		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
-		amount *= Reactions.hit(cast, target, currentElement);
 		amount *= ExplorerEffects.bonus(cast, target, currentElement);
 		// Trial Key: the opening blow on a target still at full health.
 		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {

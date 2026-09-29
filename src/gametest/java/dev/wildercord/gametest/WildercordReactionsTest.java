@@ -295,6 +295,20 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 		if (!near(cracked, pelt * ReactionRules.CRACKED_BONUS)) {
 			return "while it's cracked, a Pelt should hit 20% harder (took " + cracked + ", a plain one " + pelt + ")";
 		}
+		// An iron golem resists earth, but a Fracture breaks through that, as a Shatter does through a resistance to fire.
+		Mob resisting = mob(level, EntityTypes.IRON_GOLEM, 6, 4);
+		cast(player, List.of(Runes.PELT), resisting);
+		float halved = resisting.getMaxHealth() - resisting.getHealth();
+		Mob chilled = mob(level, EntityTypes.IRON_GOLEM, 6, 8);
+		cast(player, List.of(Runes.CHILL), chilled);
+		float chill = chilled.getMaxHealth() - chilled.getHealth();
+		Mob cracking = mob(level, EntityTypes.IRON_GOLEM, 6, 12);
+		cast(player, List.of(Runes.CHILL, Runes.PELT), cracking);
+		float through = cracking.getMaxHealth() - cracking.getHealth();
+		if (halved <= 0 || !near(through, chill + 2 * halved * ReactionRules.FRACTURE_BONUS)) {
+			return "a Fracture on an iron golem should break through its resistance to earth (took " + through + " in all; Chill is " + chill
+				+ " and a resisted Pelt " + halved + ")";
+		}
 		return null;
 	}
 

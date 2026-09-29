@@ -17,6 +17,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   moment you accept.
 - **Waypoint offers could flood someone's chat.** `/waypoint share` had no limit and can't be switched off like
   requests. Now you can share with the same player once every 10 seconds.
+- **Fracture, Blight, Unweave, Rupture and Elapse didn't break through a resistance.** A reaction is meant to ignore
+  what a creature resists, and Shatter did, but the five set off by any damage of their element still let the
+  resistance halve the hit that set them off (a Fracture on an iron golem, an Unweave on the Archivist). Now they land
+  in full like the rest.
 
 ## [0.4.2-alpha] - 2026-09-28
 
