@@ -10,7 +10,7 @@ nav_order: 3
 <img src="{{ '/assets/images/b-advancements.jpg' | relative_url }}" alt="The Wildercord advancement tab, on dark indigo stone bricks, with rune-shaped icons in branching rows" class="shot">
 
 Wildercord has its own advancement tab, set on dark indigo stone with faint rune script. It leads you
-from your first Blank Rune to the 8th Heart Circle and the bosses of the four dungeons: **73
+from your first Blank Rune to the 8th Heart Circle and the bosses of the four dungeons: **74
 advancements** below the root, most of them rewarding experience, some Blank Runes and Mana Crystals.
 
 1. TOC
@@ -154,6 +154,7 @@ See [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 | **Menagerie** | challenge | Kindred | Bond with a wisp of every element | 150 XP |
 | **Stormcaller** | task | Ley Walker | Cast 20 spells under a mana storm | 30 XP |
 | **Stargazer** | goal | Ley Walker | Loot a Fallen Star | 40 XP |
+| **Reeled In** | task | Ley Walker | Fish a rune out of open water | 20 XP |
 | **The Buried Library** | task | Ley Walker | Find an Archive | 25 XP |
 | **Sealbreaker** | task | The Buried Library | Open a Rune Seal door in an Archive | 30 XP |
 | **The Last Page** | challenge | Sealbreaker | Defeat the Archivist | 500 XP, 3 Mana Crystals |

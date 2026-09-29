@@ -20,7 +20,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 
 4 lightning damage that arcs to one more enemy nearby.
 
-**How to get it:** Craft: a Blank Rune, Lightning Rod. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Lightning Rod. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts; Trail ruins (brushing).
 
 <img src="{{ '/assets/recipes/rune_shock.png' | relative_url }}" alt="Crafting Shock: a Blank Rune and Lightning Rod" class="recipe-grid" loading="lazy">
 
@@ -33,7 +33,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 
 4 lightning damage that stuns for 1 second: no moving or fighting back.
 
-**How to get it:** Craft: a Blank Rune, Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_jolt.png' | relative_url }}" alt="Crafting Jolt: a Blank Rune and Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -46,7 +46,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 
 Sunlight through the body: 6 damage, tripled against undead, and heals you for a third of it.
 
-**How to get it:** Craft: a Blank Rune, Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_ripple.png' | relative_url }}" alt="Crafting Ripple: a Blank Rune and Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -59,7 +59,7 @@ Sunlight through the body: 6 damage, tripled against undead, and heals you for a
 
 A crack of thunder: 5 damage and a heavy knockback within 3 blocks.
 
-**How to get it:** Craft: a Blank Rune, Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_thunderclap.png' | relative_url }}" alt="Crafting Thunderclap: a Blank Rune and Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ A crack of thunder: 5 damage and a heavy knockback within 3 blocks.
 
 A 12-damage lightning strike on each target that stuns and burns. You and your allies are immune.
 
-**How to get it:** Craft: a Blank Rune, Block of Copper and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Copper and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Trail ruins (brushing); Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_lightning.png' | relative_url }}" alt="Crafting Lightning: a Blank Rune and Block of Copper and Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ A 12-damage lightning strike on each target that stuns and burns. You and your a
 
 A storm bird circles above you for 15 seconds, striking the nearest enemy within 12 blocks every 1.5 seconds.
 
-**How to get it:** Craft: a Blank Rune, Feather and Lightning Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Feather and Lightning Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
 
 <img src="{{ '/assets/recipes/rune_thunderbird.png' | relative_url }}" alt="Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

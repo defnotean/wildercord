@@ -22,7 +22,7 @@ book.
 | Item | What it's for | How to get it |
 |---|---|---|
 | [Blank Rune](#blank-rune) | The base of every rune recipe | Crafted, 4 at a time |
-| [Runes](#runes) | Thread them onto your Cord | Crafted, found, traded |
+| [Runes](#runes) | Thread them onto your Cord | Crafted, found, fished, traded |
 | [Knot](#knot) | A whole spell in one rune | Tied at the Fusion Altar |
 | [Twine Cord](#cords) | Your first Cord | Crafted |
 | [Copper Cord](#cords) | More sockets, spells and mana | Crafted from a Twine Cord |
@@ -31,7 +31,7 @@ book.
 | [Mana Crystal](#mana-crystal) | +10 max mana for good; a crafting ingredient | Crafted, found, traded |
 | [Potions of Clarity and Mana](#potions) | Faster mana, or mana at once | Brewed |
 | [Spell Scroll](#spell-scroll) | One spell anyone can cast once | Inscribed from the Cord screen |
-| [Torn Page](#torn-page) | The riddle of a secret spell | Found, traded |
+| [Torn Page](#torn-page) | The riddle of a secret spell | Found, fished, traded |
 | [Fusion Altar](#fusion-altar) | Rank up, fuse and tie Knots | Crafted |
 | [Scribing Desk](#scribing-desk) | Makes a Runesmith; your daily contracts | Crafted |
 | [Wellstone](#wellstone) | Faster mana for everyone near it, on a ley line | Crafted |
@@ -77,6 +77,8 @@ Each rune is its own item, named after its rune (*Fire Rune*). Hold one and righ
 that the item is a spare. Runes stack to 16.
 
 - **Recipes:** [Rune Recipes]({{ '/items/rune-recipes/' | relative_url }}) lists every craftable rune.
+- **Fishing:** a treasure catch in open water is often a rune, and magic waters can tangle one in your line on top of
+  the catch. See [Fishing]({{ '/world/runes-of-the-world/' | relative_url }}#fishing).
 - **Everything about them:** [Runes]({{ '/runes/' | relative_url }}).
 - **Ranked runes** (*Fire Rune II*) shimmer and come from the [Fusion Altar]({{ '/fusion-altar/ranks/' | relative_url }}).
 - **Spares** can be ranked up or combined at the Fusion Altar, or sold and swapped at a
@@ -230,6 +232,7 @@ If there's no riddle left you haven't found or been given, the page says so and 
 | Trial chamber vaults | 15% |
 | Dungeon (monster spawner) chests | 12% |
 | Desert pyramid chests | 12% |
+| Fishing in open water | about 1 treasure catch in 11 (see [Fishing]({{ '/world/runes-of-the-world/' | relative_url }}#fishing)) |
 | Archive library and vault chests, and the halls and vaults of the other dungeons | often |
 | The Archivist | 2 |
 | The Cinder Warden, the Star-Eater, the Tide Scribe | 1 each |

@@ -8,7 +8,7 @@ nav_order: 5
 
 # Runes of the world
 
-51 runes that can't be crafted at all: each is found only in its own places. Some wait in the chests of vanilla structures, some are carried by bosses and dungeon guards, some fall with stars or come out of rifts, and some are drawn out of the land itself by **Attunement**: hold a Blank Rune and meditate in the right biome at the right moment. See [Runes of the World and Attunement]({{ '/world/runes-of-the-world/' | relative_url }}) for how to hunt them.
+53 runes that can't be crafted at all: each is found only in its own places. Some wait in the chests of vanilla structures, some are carried by bosses and dungeon guards, some fall with stars or come out of rifts, and some are drawn out of the land itself by **Attunement**: hold a Blank Rune and meditate in the right biome at the right moment. See [Runes of the World and Attunement]({{ '/world/runes-of-the-world/' | relative_url }}) for how to hunt them.
 
 ### <img src="{{ '/assets/runes/ancient_seed.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ancient Seed
 {: #ancient_seed}
@@ -75,6 +75,17 @@ Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50
 **How to get it:** Found only, never crafted: The Ember Sanctum.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+
+### <img src="{{ '/assets/runes/current.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Current
+{: #current}
+
+*Tier II · Frost · Moves you · 6 mana · needs a Copper Cord or better*
+
+Only in water or rain: a current sweeps you about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.
+
+**How to get it:** Found only, never crafted: Fished from open water.
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
 
 ### <img src="{{ '/assets/runes/echolocate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Echolocate
 {: #echolocate}
@@ -234,6 +245,17 @@ Spores burst from a giant mushroom at the point: Poison I and Nausea for 6 secon
 A stalactite drops on each target from above: 7 damage, 50% more against a bare head.
 
 **How to get it:** Found only, never crafted: Attuned in dripstone caves.
+
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+
+### <img src="{{ '/assets/runes/tidehook.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidehook
+{: #tidehook}
+
+*Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
+
+A hook of water snags each target and reels it in to your feet in three tugs: 4 damage, and it's left soaked.
+
+**How to get it:** Found only, never crafted: Fished from open water.
 
 **Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
 

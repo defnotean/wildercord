@@ -59,7 +59,7 @@ Pelts targets with stones: 4 damage and a small knockback.
 
 5 damage, then a second impact half a second later for 5 more.
 
-**How to get it:** Craft: a Blank Rune, Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_aftershock.png' | relative_url }}" alt="Crafting Aftershock: a Blank Rune and Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ Pelts targets with stones: 4 damage and a small knockback.
 
 Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 
-**How to get it:** Craft: a Blank Rune, Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_break.png' | relative_url }}" alt="Crafting Break: a Blank Rune and Iron Pickaxe, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ Mines the block that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 
 Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).
 
-**How to get it:** Craft: a Blank Rune, Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_excavate.png' | relative_url }}" alt="Crafting Excavate: a Blank Rune and Iron Shovel, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -98,7 +98,7 @@ Mines a 3x3 area of blocks (up to iron-pickaxe hardness; Amplify for diamond).
 
 Fells the tree that was hit: the log and every log joined to it above, up to 32.
 
-**How to get it:** Craft: a Blank Rune, Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_fell.png' | relative_url }}" alt="Crafting Fell: a Blank Rune and Iron Axe and any logs, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -111,7 +111,7 @@ Fells the tree that was hit: the log and every log joined to it above, up to 32.
 
 Raises a 5-wide, 3-high wall of earth at the point for 10 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Packed Mud, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Packed Mud, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_rampart.png' | relative_url }}" alt="Crafting Rampart: a Blank Rune and 2x Packed Mud, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ Raises a 5-wide, 3-high wall of earth at the point for 10 seconds.
 
 Vines hold targets in place for 3 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_root.png' | relative_url }}" alt="Crafting Root: a Blank Rune and 2x Vines, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -137,7 +137,7 @@ Vines hold targets in place for 3 seconds.
 
 Chains each target to the spot for 5 seconds: it's yanked back if it strays more than 2 blocks.
 
-**How to get it:** Craft: a Blank Rune, 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_shackle.png' | relative_url }}" alt="Crafting Shackle: a Blank Rune and 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -150,7 +150,7 @@ Chains each target to the spot for 5 seconds: it's yanked back if it strays more
 
 For 30 seconds, the next harmful spell cast at the target meets magic circles that spawn in front of it and stop it. A spell that cost more mana than the one that raised the Shield shatters them and goes through. The stronger the Shield, the more circles stack.
 
-**How to get it:** Craft: a Blank Rune, Shield, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Shield, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_shield.png' | relative_url }}" alt="Crafting Shield: a Blank Rune and Shield, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -163,7 +163,7 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 
 Resistance II for 10 seconds.
 
-**How to get it:** Craft: a Blank Rune, Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_stoneskin.png' | relative_url }}" alt="Crafting Stoneskin: a Blank Rune and Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -176,7 +176,7 @@ Resistance II for 10 seconds.
 
 Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe hardness; Amplify for diamond).
 
-**How to get it:** Craft: a Blank Rune, Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_tunnel.png' | relative_url }}" alt="Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -189,7 +189,7 @@ Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe 
 
 Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness; Amplify for diamond).
 
-**How to get it:** Craft: a Blank Rune, Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_vein.png' | relative_url }}" alt="Crafting Vein: a Blank Rune and Iron Pickaxe and Raw Iron, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -202,7 +202,7 @@ Mines the block that was hit and, if it's an ore, every matching ore joined to i
 
 Crushingly heavy for 5 seconds: triple gravity, barely able to move or jump, and fliers are dragged down.
 
-**How to get it:** Craft: a Blank Rune, Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_weigh.png' | relative_url }}" alt="Crafting Weigh: a Blank Rune and Block of Iron, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -215,7 +215,7 @@ Crushingly heavy for 5 seconds: triple gravity, barely able to move or jump, and
 
 The ground erupts: 8 damage to enemies within 4 blocks, throwing them up.
 
-**How to get it:** Craft: a Blank Rune, Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Bastions; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_tremor.png' | relative_url }}" alt="Crafting Tremor: a Blank Rune and Deepslate Bricks and TNT, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
