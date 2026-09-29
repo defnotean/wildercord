@@ -165,9 +165,15 @@ public final class Teleports {
 			return;
 		}
 		long now = server.getTickCount();
+		boolean on = Travel.enabled();
 		for (Map.Entry<UUID, Pending> entry : List.copyOf(PENDING.entrySet())) {
 			Pending pending = entry.getValue();
 			ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
+			// Travel switched off by a reload during the warmup: nothing more goes.
+			if (!on && player != null && PENDING.remove(entry.getKey(), pending)) {
+				Travel.fail(player, "disabled");
+				continue;
+			}
 			if (player == null || !player.isAlive() || player.isRemoved() || !player.level().dimension().equals(pending.world())) {
 				PENDING.remove(entry.getKey(), pending);
 				continue;
