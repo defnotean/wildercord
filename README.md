@@ -195,7 +195,7 @@ script around it repeats the runes, and the first rune's emblem (Nova's) is the 
 **The Grimoire:** your innate rune and leaning, and every reaction, secret spell and feat
 you've found, with the riddles you've read.
 
-<img src="docs/images/grimoire-page.jpg" alt="The Grimoire page of the Cord screen: your heart with the innate rune Gale Mantle, one of five reactions found, and ten secret spells still unknown" width="740">
+<img src="docs/images/grimoire-reactions.jpg" alt="The Grimoire page of the Cord screen: your heart, six of the eleven reactions found (Shatter, Conduct, Wildfire, Overload, Fracture and Rupture), and ten secret spells still unknown" width="740">
 
 ### Screens
 
