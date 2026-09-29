@@ -1061,9 +1061,9 @@ storm effects still make Hail. Same shard, same 3 XP levels, same rank rule (the
 lower of the two). Each is what its two runes do at once, and each pair has
 elements no other signature shares, so every signature's circle braids its own
 pairing (with a star added, to tell it from the element fusion). The ingredients
-are always runes a caster can come by: crafted ones mostly, three pairs with runes
-of the world or Tier IV runes for grander results (Doomclock, Cometfall and Dust
-Devil are Tier IV). The Grimoire lists them apart, as `??? + ???` with their two
+are always runes a caster can come by: crafted ones mostly, four pairs with runes
+of the world or Tier IV runes, three of them for grander results (Doomclock,
+Cometfall and Dust Devil are Tier IV). The Grimoire lists them apart, as `??? + ???` with their two
 runes' elements until found, and two advancements count them (the first, and
 five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
 

@@ -56,8 +56,8 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
   through every cold enemy, Seethe is a boiling Bubble that bursts into steam, Doomclock is a Primer
   that holds its blows like Stasis, and so on.
 - **Their ingredients are runes a caster can come by**, never innate or fused ones: mostly crafted,
-  and three pairs use runes of the world or Tier IV runes (Stasis, Starfall, Summit Wind, Sandstorm,
-  Stalactite) for Tier IV results (Doomclock, Cometfall, Dust Devil). The rest are Tier III.
+  and four pairs use runes of the world or Tier IV runes (Stasis, Starfall, Summit Wind, Sandstorm,
+  Stalactite). Three of those make Tier IV runes (Doomclock, Cometfall, Dust Devil); the rest are Tier III.
 - **No two share a pair of elements**, and every element is in at least two pairs. Their circles
   braid their two runes' elements like any fused rune, with a star added: a four-pointed star in each
   half of the ring and the points of one behind the emblem, so a signature is told from its elements'
