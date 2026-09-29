@@ -76,25 +76,28 @@ final class SignatureWards {
 		}
 	}
 
-	/** A Riposte on an ally: whose, until when, the blows it still answers, and how hard. */
+	/** A Riposte on an ally: whose, when it began and ends, the blows it still answers, and how hard. */
 	private static final class Guard {
 		final LivingEntity ally;
 		final Cast cast;
-		final long until;
+		final long began;
+		long until;
 		final double power;
 		final Consumer<Runnable> context;
 		int blows = SignatureRules.RIPOSTE_BLOWS;
 
-		Guard(LivingEntity ally, Cast cast, long until, double power) {
+		Guard(LivingEntity ally, Cast cast, long began, long until, double power) {
 			this.ally = ally;
 			this.cast = cast;
+			this.began = began;
 			this.until = until;
 			this.power = power;
 			this.context = FusedFrost.context();
 		}
 
+		/** Past its time, or the ally or its caster gone: dropped. (Spent, it stays until its time, resting.) */
 		boolean over(long now) {
-			return blows <= 0 || now > until || ally.isRemoved() || !ally.isAlive() || ally.level() != cast.level || !cast.alive();
+			return now > until || ally.isRemoved() || !ally.isAlive() || ally.level() != cast.level || !cast.alive();
 		}
 	}
 
@@ -162,13 +165,23 @@ final class SignatureWards {
 		SignatureVfx.doomclock(cast.level, target, ticks);
 	}
 
-	/** Riposte on {@code ally} for {@code ticks}: its next 2 blows sidestepped and answered. A newer one takes over, fresh. */
+	/**
+	 * Riposte on {@code ally} for {@code ticks}: its next 2 blows sidestepped and answered. Cast again while one is on
+	 * (a Zone's next pulse, an Echo), it lasts longer (never past three times its length from when it began) but its
+	 * blows aren't refilled; once they're spent it rests until its time is up. So nothing can keep an ally dodging every
+	 * blow by casting it over and over.
+	 */
 	static void riposte(Cast cast, LivingEntity ally, double power, int ticks) {
-		boolean fresh = !GUARDS.containsKey(ally.getUUID());
-		GUARDS.put(ally.getUUID(), new Guard(ally, cast, cast.level.getGameTime() + ticks, power));
-		if (fresh || !cast.passive) {
-			SignatureVfx.riposte(cast.level, ally);
+		long now = cast.level.getGameTime();
+		Guard old = GUARDS.get(ally.getUUID());
+		if (old != null && old.ally == ally && now <= old.until && old.cast.level == cast.level) {
+			if (old.blows > 0) {
+				old.until = Math.min(old.began + 3L * ticks, Math.max(old.until, now + ticks));
+			}
+			return;
 		}
+		GUARDS.put(ally.getUUID(), new Guard(ally, cast, now, now + ticks, power));
+		SignatureVfx.riposte(cast.level, ally);
 	}
 
 	/** Malison's curse on {@code target} until {@code ticks} from now: if it dies cursed, the curse passes on within {@code reach}. */
@@ -197,14 +210,11 @@ final class SignatureWards {
 			return true;
 		}
 		LivingEntity striker = striker(source, entity);
-		// Only a blow someone struck is seen coming: a fall, a fire, the void aren't.
-		if (striker == null || !Targets.canHarm(guard.cast.caster, striker)) {
+		// Only a blow someone struck is seen coming: a fall, a fire, the void aren't. A spent one sees nothing more.
+		if (guard.blows <= 0 || striker == null || !Targets.canHarm(guard.cast.caster, striker)) {
 			return true;
 		}
 		guard.blows--;
-		if (guard.blows <= 0) {
-			GUARDS.remove(entity.getUUID(), guard);
-		}
 		sidestep(entity, striker);
 		SignatureVfx.riposteDodge(level, entity, striker);
 		if (striker.level() == level && striker.distanceToSqr(entity) <= SignatureRules.RIPOSTE_REACH * SignatureRules.RIPOSTE_REACH) {
@@ -407,7 +417,9 @@ final class SignatureWards {
 				it.remove();
 				continue;
 			}
-			SignatureVfx.riposteAura(level, guard.ally, guard.blows);
+			if (guard.blows > 0) {
+				SignatureVfx.riposteAura(level, guard.ally, guard.blows);
+			}
 		}
 	}
 }

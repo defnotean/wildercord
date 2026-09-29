@@ -113,6 +113,7 @@ final class SignatureFusions {
 			RUNNING.clear();
 			DEVILS.clear();
 			DRIFTS.clear();
+			HALOS.clear();
 		});
 	}
 
@@ -589,45 +590,77 @@ final class SignatureFusions {
 
 	// ------------------------------------------------------------------ Halo (Smite and Regrowth)
 
+	/** A Halo over an ally: its caster's cast (the newest), how hard it smites and how far, and until when. */
+	private static final class Halo {
+		final LivingEntity ally;
+		Cast cast;
+		double power;
+		double reach;
+		long until;
+		/** Kept going, never past this: three times its length. */
+		final long cap;
+
+		Halo(LivingEntity ally, Cast cast, double power, double reach, long now, int ticks) {
+			this.ally = ally;
+			this.cast = cast;
+			this.power = power;
+			this.reach = reach;
+			this.until = now + ticks;
+			this.cap = now + 3L * ticks;
+		}
+	}
+
+	private static final Map<UUID, Halo> HALOS = new HashMap<>();
+
 	/**
 	 * Halo: a crown of light over the ally for {@code ticks}. A moment in and then every 2 seconds it smites the
 	 * nearest enemy within {@code reach} of them that they can see, 3 holy damage (tripled against undead), and the
-	 * ally heals 1 each time it does. One halo to an ally: a newer one takes over. Its smites are lingering damage,
-	 * which a Shield can block but not parry.
+	 * ally heals 1 each time it does. One halo to an ally: cast again while it shines (a Zone's next pulse, an Echo),
+	 * it shines on (never past three times its length) at the newest caster's strength, keeping its beat, rather than
+	 * a second one starting. Its smites are lingering damage, which a Shield can block but not parry.
 	 */
 	private static void halo(Cast cast, LivingEntity ally, double power, int ticks, double reach) {
 		ServerLevel level = cast.level;
-		String key = "halo:" + ally.getUUID();
-		Object token = claim(key);
+		long now = level.getGameTime();
+		Halo old = HALOS.get(ally.getUUID());
+		if (old != null && old.ally == ally && now < old.until && old.cast.level == level) {
+			old.until = Math.min(old.cap, Math.max(old.until, now + ticks));
+			old.cast = cast;
+			old.power = power;
+			old.reach = reach;
+			return;
+		}
+		Halo halo = new Halo(ally, cast, power, reach, now, ticks);
+		HALOS.put(ally.getUUID(), halo);
 		SignatureVfx.haloOpen(level, ally);
-		steps(cast, 10, ticks, tick -> {
-			if (!current(key, token)) {
+		int[] tick = {0};
+		Runnable[] next = new Runnable[1];
+		next[0] = Effects.carryContext(() -> {
+			Cast by = halo.cast;
+			if (HALOS.get(ally.getUUID()) != halo) {
 				return;
 			}
-			if (!onHand(cast, ally)) {
-				release(key, token);
+			if (!by.alive() || !onHand(by, ally) || level.getGameTime() >= halo.until) {
+				HALOS.remove(ally.getUUID(), halo);
+				if (onHand(by, ally)) {
+					SignatureVfx.haloClose(level, ally);
+				}
 				return;
 			}
 			SignatureVfx.haloGlow(level, ally);
-			if (!SignatureRules.haloSmitesAt(tick)) {
-				return;
-			}
-			LivingEntity foe = nearestSeen(cast, ally, reach);
-			if (foe == null) {
-				return;
-			}
-			double undead = foe.isInvertedHealAndHarm() ? SignatureRules.HALO_UNDEAD : 1.0;
-			SignatureVfx.haloSmite(level, ally, foe);
-			Effects.hurt(cast, foe, magic(cast), SignatureRules.HALO_SMITE * power * undead);
-			ally.heal((float) (SignatureRules.HALO_HEAL * power));
-		}, () -> {
-			if (current(key, token)) {
-				release(key, token);
-				if (onHand(cast, ally)) {
-					SignatureVfx.haloClose(level, ally);
+			if (SignatureRules.haloSmitesAt(tick[0])) {
+				LivingEntity foe = nearestSeen(by, ally, halo.reach);
+				if (foe != null) {
+					double undead = foe.isInvertedHealAndHarm() ? SignatureRules.HALO_UNDEAD : 1.0;
+					SignatureVfx.haloSmite(level, ally, foe);
+					Effects.lingering(() -> Effects.hurt(by, foe, magic(by), SignatureRules.HALO_SMITE * halo.power * undead));
+					ally.heal((float) (SignatureRules.HALO_HEAL * halo.power));
 				}
 			}
+			tick[0] += 10;
+			Scheduler.later(10, next[0]);
 		});
+		Scheduler.later(1, next[0]);
 	}
 
 	/** The enemy of the caster nearest {@code from} within {@code reach} that {@code from} can see, or null. */
