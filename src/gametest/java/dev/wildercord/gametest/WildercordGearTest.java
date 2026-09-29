@@ -297,7 +297,16 @@ public class WildercordGearTest implements FabricClientGameTest {
 		String after = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
-			return castFresh(player, SpellSlots.TOME) >= 0 ? "the tome's spell shouldn't cast once the tome is put away" : null;
+			if (castFresh(player, SpellSlots.TOME) >= 0) {
+				return "the tome's spell shouldn't cast once the tome is put away";
+			}
+			// With the tome's spell still selected, holding the cast key charges the next open spell, as a tap casts it.
+			Spellbooks.set(player, Spellbooks.get(player).withSpell(0, ids(Runes.SELF, Runes.HEAL)));
+			Spellbooks.setReadyAt(player, 0, 0);
+			dev.wildercord.cast.Charging.request(player, -1, true);
+			WildercordAttachments.Charge charge = player.getAttached(WildercordAttachments.CHARGE);
+			dev.wildercord.cast.Charging.request(player, -1, false);
+			return charge == null || charge.spell() != 0 ? "holding the cast key with the tome put away should charge spell 1 (charging " + charge + ")" : null;
 		});
 		check(after == null, after);
 	}
