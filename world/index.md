@@ -88,8 +88,8 @@ The four keepers share these rules:
 - **No blow skips a phase.** However hard you hit, the damage stops at the start of the next phase and the change
   begins at once, so every phase gets fought.
 - **Monsters can't hurt them.** Other monsters' attacks and spells do nothing to a boss, and nor does a fall.
-  Effects that hold a creature still (Freeze, for one) don't stop a boss either, though the marks they leave still
-  count for reactions.
+  Effects that hold a creature still (Freeze, for one), lift it (Levitate) or drag it (Gravity Well) don't stop or
+  move a boss either (Levitate slows it instead), though the marks they leave still count for reactions.
 - **Each has one trick** that teaches something about magic. Read its page before you go.
 - **It counts as a boss** for the 7th Heart Circle's breakthrough: everyone within 96 blocks when it dies gets it.
   Everyone within 64 blocks earns its Grimoire feat. Spectators get neither. See

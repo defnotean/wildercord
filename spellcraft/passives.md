@@ -54,7 +54,9 @@ can't be a machine gun, a free heal every two seconds or an endless death save.
 
 ### Shapes
 
-**Self** or **Orbit**, and only one shape. A passive that starts with an effect is on Self, like any spell.
+**Self** or **Orbit**, and only one shape. A passive that starts with an effect is on Self, like any spell, so
+an Orbit after that effect would be a second shape: `Swift · Orbit · Shock` is refused. Keep the buff and the
+aura in two passives (`Self · Swift` and `Orbit · Shock`).
 
 | Shape | What it does as a passive |
 |---|---|
@@ -106,7 +108,7 @@ either. The Cord screen tells you exactly what's wrong:
 | Message | Means |
 |---|---|
 | Heal can't be sustained as a passive. | That rune isn't allowed in passives. |
-| A passive has one shape at most. | Take all but one shape off. |
+| A passive has one shape at most. | Take all but one shape off (an effect before any shape counts as Self). |
 | Shock needs an Orbit to carry it in a passive. | Damage and control need an Orbit. |
 
 ## Upkeep

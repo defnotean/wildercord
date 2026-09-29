@@ -161,7 +161,7 @@ Puts things back: heals 6, puts out fire, and mends 5% of every worn and held it
 
 *Tier IV · Life · Helps you and your allies · 28 mana · needs an Echo Cord*
 
-For 30 seconds, one killing blow is reversed: back to half health instead of dying.
+For 30 seconds, one killing blow is reversed: back to half health instead of dying. Once death has been cheated, nothing turns it back again for a minute.
 
 **How to get it:** Found only, never crafted: Ominous vaults; Archive vaults; the Archivist.
 
