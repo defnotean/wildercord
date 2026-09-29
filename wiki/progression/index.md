@@ -44,7 +44,7 @@ A spell's strength is its runes' own numbers multiplied by everything below. The
 | Rhythm | +8% per beat, up to +24% |
 | A staff of the effect's element | +20% (a greater staff +35%) (see [Casting Gear]({{ '/gear/' | relative_url }})) |
 | A rune ranked up at the Fusion Altar | rank II +25%, rank III +50% (see [Ranks]({{ '/fusion-altar/ranks/' | relative_url }})) |
-| Your innate rune | +6% per Heart Circle, on that rune only |
+| Your innate rune | +6% per working Heart Circle, on that rune only |
 
 ## A path through it
 

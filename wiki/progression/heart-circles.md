@@ -118,7 +118,8 @@ Flow and Archmage stack with the Celerity and Thrift [Cord enchantments]({{ '/pr
 - **Passive slots** open at the 1st and 5th Circle: see [Passives]({{ '/spellcraft/passives/' | relative_url }}).
 - At the **1st Circle**, a few seconds after the title, one of ten **innate runes** wakes in your heart,
   chosen at random: *"Your innate rune awakens: ..."*. It's yours alone, it's in your Codex straight
-  away, it fits any Cord, and it grows **+6% stronger for every circle** you've formed. See
+  away, it fits any Cord, and it grows **+6% stronger for every circle** you've formed (a cracked one adds
+  nothing until it mends). See
   [Innate Runes]({{ '/runes/innate/' | relative_url }}). Your first earns the **Awakening** feat.
 
 ## The breakthroughs in detail
@@ -130,7 +131,7 @@ Flow and Archmage stack with the Celerity and Thrift [Cord enchantments]({{ '/pr
 | **Set off reactions** | Different element reactions in your Grimoire, any of the eleven: Shatter, Conduct, Wildfire, Implode, Collapse, Overload, Fracture, Blight, Unweave, Rupture, Elapse. The 6th Circle wants any five of them, not all. See [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}). |
 | **Defeat monsters with spells** | A hostile monster that dies within **5 seconds** of one of your spells hurting it, whatever finished it off. |
 | **Slay Runebound** | A Runebound killed by you (spell, blade or arrow). See [Runebound]({{ '/world/runebound/' | relative_url }}). |
-| **Help slay a boss** | Be alive within **96 blocks** when a boss dies: the Wither, the Warden, an Elder Guardian, the Ender Dragon, the Archivist, the Cinder Warden, the Star-Eater or the Tide Scribe. You're told *"A boss has fallen. Your heart can now break through to the 7th Circle."* You only need one, ever. |
+| **Help slay a boss** | Be alive, and not spectating, within **96 blocks** when a boss dies: the Wither, the Warden, an Elder Guardian, the Ender Dragon, the Archivist, the Cinder Warden, the Star-Eater or the Tide Scribe. You're told *"A boss has fallen. Your heart can now break through to the 7th Circle."* You only need one, ever. |
 | **Find secret spells** | Secret spells cast at least once. See [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}). |
 | **Long Incantation** | Slay a monster with a spell of **six runes or more** (it dies within 5 seconds of that spell hurting it). |
 | **In Rhythm** | Chain **three casts on the beat**: each one just as the last comes off cooldown (see [Casting]({{ '/spellcraft/casting/' | relative_url }})). |
@@ -153,8 +154,8 @@ turning its own way like a gyroscope. The inner rings are deep blue, burning out
 
 **Overcasting** (casting a spell you can't afford, with a second press) cracks your outermost working
 circle to pay for it. A cracked circle gives nothing (its mana, regeneration, power, perk or passive
-slot) until it mends **3 minutes** later. It never costs you the circle itself, your condensed mana or
-your innate rune's strength. The HUD shows **✦** and how many are cracked. Everything about it is on
+slot, or its +6% on your innate rune) until it mends **3 minutes** later. It never costs you the circle
+itself or your condensed mana. The HUD shows **✦** and how many are cracked. Everything about it is on
 [Overcasting and Wild Magic]({{ '/spellcraft/overcasting/' | relative_url }}).
 
 ## Advancements
