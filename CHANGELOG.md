@@ -28,6 +28,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   way, a cheap way to lag a server. A flying shape is now at most 8 times as fast (three Quickens on a bolt), a Wisp
   or a Ricochet stops where the loaded world ends, and a bolt flies its 48 blocks and no further (its spare ticks
   used to carry a quickened bolt 70 blocks and more), a wave its 14.
+- **An Arc bursts where it lands, even on a creature.** An Arc that came down on the ground splashed everything within
+  2 blocks, but one that landed on a creature struck only that creature. It bursts there too now.
 
 ## [0.4.2-alpha] - 2026-09-28
 

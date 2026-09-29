@@ -302,8 +302,19 @@ public class RuneBolt extends Projectile {
 		Entity target = result.getEntity();
 		alreadyHit.add(target);
 		Vec3 dir = getDeltaMovement().normalize();
-		Vfx.impact((ServerLevel) level(), result.getLocation(), theme, 1.0);
-		CastEngine.onHit(cast, group, new Cast.Hit(List.of(target), result.getLocation(), dir, cast.caster.position(), null, null, false), anchored);
+		Vfx.impact((ServerLevel) level(), result.getLocation(), theme, arc ? 1.4 : 1.0);
+		List<Entity> hits = List.of(target);
+		if (arc) {
+			// An Arc bursts where it lands, on a creature as on the ground: everything within a couple of blocks.
+			List<Entity> splash = new ArrayList<>(hits);
+			for (Entity e : CastEngine.inRadius(cast, result.getLocation(), 2.0)) {
+				if (e != target) {
+					splash.add(e);
+				}
+			}
+			hits = splash;
+		}
+		CastEngine.onHit(cast, group, new Cast.Hit(hits, result.getLocation(), dir, cast.caster.position(), null, null, false), anchored);
 		CastEngine.chain(cast, group, anchored, target, theme);
 		if (pierceLeft-- <= 0) {
 			fizzle();
