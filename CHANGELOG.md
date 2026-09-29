@@ -147,6 +147,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Stars could stop falling in a world until the server restarted**: one that landed where nobody went
   afterwards (so it never faded) kept counting as the world's star. Stars now also land only where the world is
   running, and one landing on something built while it fell burns up instead of crushing it.
+- When a Fallen Star went, its crater filled back in over anyone standing in it, and guards that had wandered
+  out of loaded ground stayed in the world for good. Anyone in the bowl is now lifted clear, and every guard
+  goes. A Wither could also break a star, leaving its crater open and its guards behind; stars are now safe
+  from the Wither, and one taken away any other way (by a command, say) still cleans up after itself.
 - Icepath's frosted ice never melted in the dark (in caves, or at night). Like frost's, it now thaws back into
   water after half a minute wherever it is.
 

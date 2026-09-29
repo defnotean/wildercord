@@ -280,6 +280,32 @@ public class WildercordEventsTest implements FabricClientGameTest {
 			return FallenStars.any(level) ? "a star that burnt up shouldn't count as lying in its world" : null;
 		});
 		check(built == null, built);
+		// A star taken away some other way (a command here; a Wither can't) still takes its guards with it.
+		BlockPos third = world.getServer().computeOnServer(server -> WorldEvents.startStar(player(server).level(), player(server), true));
+		check(third != null, "a third star should find somewhere to land");
+		context.waitTicks(100);
+		String removed = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			BlockPos at = find(level, third);
+			if (at == null) {
+				return "the third star should lie where it landed";
+			}
+			if (!level.getBlockState(at).is(net.minecraft.tags.BlockTags.WITHER_IMMUNE)) {
+				return "a Fallen Star should be safe from the Wither";
+			}
+			List<Mob> guards = FallenStars.guards(level, at);
+			if (guards.isEmpty()) {
+				return "guards should have risen round the third star";
+			}
+			level.setBlockAndUpdate(at, Blocks.AIR.defaultBlockState());
+			for (Mob guard : guards) {
+				if (!guard.isRemoved()) {
+					return "a star taken away should take its guards with it";
+				}
+			}
+			return FallenStars.any(level) ? "a star taken away shouldn't count as lying in its world" : null;
+		});
+		check(removed == null, removed);
 	}
 
 	/** The star near where it was meant to land: in its cell, or sunk to its crater's floor. */

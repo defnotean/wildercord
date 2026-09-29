@@ -2016,7 +2016,8 @@ def write_new_content(runes):
     # ---- mining
     write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
-    write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": ["wildercord:rune_seal", "wildercord:archive_lectern", "wildercord:dungeon_altar"]})
+    write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": [
+        "wildercord:rune_seal", "wildercord:archive_lectern", "wildercord:dungeon_altar", "wildercord:fallen_star"]})
 
     # ---- the Archive in the world
     write_json(DATA / "worldgen/structure/archive.json", {

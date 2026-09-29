@@ -34,6 +34,8 @@ public class FallenStarBlockEntity extends BlockEntity {
 	long fadeAt;
 	boolean guarded;
 	final List<Changed> crater = new ArrayList<>();
+	/** Crumbling (not saved): taking the block away is its own doing, so nothing more needs cleaning up. */
+	boolean gone;
 
 	public FallenStarBlockEntity(BlockPos pos, BlockState state) {
 		super(EventContent.FALLEN_STAR_ENTITY, pos, state);
@@ -68,6 +70,19 @@ public class FallenStarBlockEntity extends BlockEntity {
 		output.putBoolean("guarded", guarded);
 		ValueOutput.TypedOutputList<Changed> list = output.list("crater", Changed.CODEC);
 		crater.forEach(list::add);
+	}
+
+	/**
+	 * Taken away some other way than crumbling (a command, say): its guards, scorch marks and place in
+	 * the ledger still go, and its crater is still filled back in.
+	 */
+	@Override
+	public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+		super.preRemoveSideEffects(pos, state);
+		if (!gone && level instanceof ServerLevel server) {
+			gone = true;
+			FallenStars.cleanUp(server, pos, this);
+		}
 	}
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, FallenStarBlockEntity star) {
