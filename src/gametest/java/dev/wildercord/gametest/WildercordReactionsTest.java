@@ -191,8 +191,13 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 	private static String fromTheCord(ClientGameTestContext context, TestSingleplayerContext world) {
 		int id = onServer(world, server -> {
 			ServerPlayer player = player(server);
-			// Two blocks in front, right in the caster's line of sight.
+			// Two blocks in front, and the caster looking right at it as the spell goes off.
 			Mob husk = husk(player.level(), 0, 2);
+			Vec3 feet = player.position();
+			Vec3 d = husk.getBoundingBox().getCenter().subtract(feet.add(0, player.getEyeHeight(), 0));
+			float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
+			float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
+			player.teleportTo(player.level(), feet.x, feet.y, feet.z, Set.<Relative>of(), yaw, pitch, false);
 			SpellCaster.edit(player, 0, List.of(Runes.TOUCH.id(), Runes.CHILL.id(), Runes.PELT.id()));
 			Spellbooks.setReadyAt(player, 0, 0);
 			Spellbooks.setMana(player, Mana.max(player));
@@ -224,7 +229,7 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ Overload
 
-	/** Jolt on a burning husk: +30%, the flames burst for 5 on the husk beside it (not one 6 blocks off), and the fire goes out. */
+	/** Jolt on a burning husk: +30%, the flames burst for 4 on the husk beside it (not one 6 blocks off), and the fire goes out. */
 	private static String overload(MinecraftServer server) {
 		ServerPlayer player = player(server);
 		ServerLevel level = player.level();
@@ -247,8 +252,8 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 			return "the fire should go out";
 		}
 		float blast = beside.getMaxHealth() - beside.getHealth();
-		if (blast < 4.5F || blast > 5.05F) {
-			return "the flames should burst for 5 on the husk beside it, less its armour (it took " + blast + ")";
+		if (blast < ReactionRules.OVERLOAD_DAMAGE - 0.4F || blast > ReactionRules.OVERLOAD_DAMAGE + 0.05F) {
+			return "the flames should burst for 4 on the husk beside it, less its armour (it took " + blast + ")";
 		}
 		if (far.getHealth() < far.getMaxHealth()) {
 			return "the burst shouldn't reach a husk 6 blocks away";

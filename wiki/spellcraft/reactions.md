@@ -25,11 +25,11 @@ one of the ten elements takes part in at least one.
 | **Wildfire!** | Fire damage on a **windswept** target | Flames leap to **every other enemy within 3 blocks**: each is set alight for 4 seconds and takes 3 fire damage. |
 | **Implode!** | Explode, Meteor or Primer blasting where an enemy is still **pulled** | The blast is **50% wider** and hits **30% harder**. |
 | **Collapse!** | Repel on an enemy still **pulled** | Repel deals **double damage** there, in a violent burst. |
-| **Overload!** | Storm damage on a **burning** target | That hit deals **+30%**, and the flames blow apart: every other enemy within **3 blocks** takes **5 damage** and is thrown back. The fire goes out. No block is harmed. |
+| **Overload!** | Storm damage on a **burning** target | That hit deals **+30%**, and the flames blow apart: every other enemy within **3 blocks** takes **4 damage** and is thrown back. The fire goes out. No block is harmed. |
 | **Fracture!** | Earth damage on a **frozen** target | That hit deals **+40%**, the ice cracks and the target thaws, and it's left **cracked** for 5 seconds: **every spell hits it 20% harder**, whoever casts it. |
-| **Blight!** | Life damage on a **shadowed** target | Rot bursts out of it: it and up to **5 more enemies** within **4 blocks** take **3 damage** and are poisoned (Poison I, 5 seconds), and you heal **1** for each one it reaches. |
+| **Blight!** | Life damage on a **shadowed** target | Rot bursts out of it: it and up to **5 more enemies** within **4 blocks** take **3 damage** and are poisoned (Poison I, 5 seconds), and you heal **1** for each one it reaches (once a second at most). |
 | **Unweave!** | Arcane damage on a target with **two marks or more** | Every mark on it comes undone at once, and that hit deals **+30% for each** (at most four count: **+120%**). |
-| **Rupture!** | Wind damage on a **bleeding** target | That hit deals **+50%**, the wound tears open for **4 more** straight through armour, and you heal **2**. |
+| **Rupture!** | Wind damage on a **bleeding** target | That hit deals **+50%**, the wound tears open for **4 more** straight through armour, and you heal **2** (once a second at most). |
 | **Elapse!** | Time damage on a **burning, poisoned or withering** target | Their time passes at once: all the damage the fire, poison and withering still had to deal lands now, **half again** as hard (at least 3, at most 16), and they end. |
 
 The mark a reaction needs is used up when it goes off (wet is the exception: being in water or rain
@@ -193,7 +193,7 @@ Set them alight, then strike with storm.
 | Spell | Cord | Notes |
 |---|---|---|
 | `Bolt · Ember · Shock` | Twine | Three Tier I runes: Ember lights it, Shock blows the flames apart. |
-| `Bolt · Fire · Jolt` | Copper | Jolt's 4 becomes 5.2, and everything round the target takes 5 and is thrown clear. |
+| `Bolt · Fire · Jolt` | Copper | Jolt's 4 becomes 5.2, and everything round the target takes 4 and is thrown clear. |
 | `Nova · Flashfire · Thunderclap` | Copper | Light everything within 3 blocks of you, then blast it: each burning one Overloads. |
 | `Bolt · Lightning`, twice | Amethyst | Lightning sets what it strikes alight, so the second bolt Overloads. |
 
@@ -225,7 +225,7 @@ Shadow it with void, then strike with life.
 | `Zone · Hex · Venom` | Amethyst | Hex and poison everything in the zone: each one Blights, and the rot spreads to the rest. |
 
 **Bramble** counts too: a shadowed monster that hits you while your thorns are up gets the rot. Blight
-heals you a little for every creature the rot reaches, so it's at its best in a crowd.
+heals you a little for every creature the rot reaches (once a second at most), so it's at its best in a crowd.
 
 ### Unweave
 
@@ -251,7 +251,7 @@ Cut it with blood, then strike with wind.
 | `Bolt · Bleed · Cyclone` | Copper | Cyclone flings everything round the point out for 3: whatever was bleeding Ruptures. |
 | `Burst · Dismantle · Repel` | Copper | Three slashes on everything round you, then a blast out: every bleeding one it reaches Ruptures. |
 
-Each Rupture heals you 2.
+Each Rupture heals you 2, once a second at most.
 
 ### Elapse
 

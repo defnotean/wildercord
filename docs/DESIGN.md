@@ -863,11 +863,11 @@ Effects leave short marks on what they hit. A later effect of the right element 
 | **Wildfire** | Fire on a target just thrown by wind (Push, Launch, Dash, Levitate, Tremor) | Flames spread to every enemy within 3 blocks |
 | **Implode** | Explode or Meteor where enemies were just pulled (Pull, Gravity Well) | Blast 50% wider and 30% stronger |
 | **Collapse** | Repel on enemies just pulled (Pull, Gravity Well, Hollow) | Double damage, a violent burst |
-| **Overload** | Storm damage (as for Conduct) on a burning target | +30% damage; the flames burst for 5 on every other enemy within 3 blocks, throwing them back; the fire goes out |
+| **Overload** | Storm damage (as for Conduct) on a burning target | +30% damage; the flames burst for 4 on every other enemy within 3 blocks, throwing them back; the fire goes out |
 | **Fracture** | Any earth damage on a frozen target | +40% damage, it thaws, and it's left **cracked** for 5 s: every spell hits it 20% harder |
-| **Blight** | Any life damage (Venom, Bramble's thorns, Vinelash...) on a **shadowed** target: Hex, Blind, Wither, Blackflame, Echolocate, Resonant Shriek, Hush, Eclipse, Entropy | Rot bursts out: 3 damage and Poison I (5 s) to it and up to 5 enemies within 4 blocks; the caster heals 1 for each |
+| **Blight** | Any life damage (Venom, Bramble's thorns, Vinelash...) on a **shadowed** target: Hex, Blind, Wither, Blackflame, Echolocate, Resonant Shriek, Hush, Eclipse, Entropy | Rot bursts out: 3 damage and Poison I (5 s) to it and up to 5 enemies within 4 blocks; the caster heals 1 for each (once a second at most) |
 | **Unweave** | Any arcane damage (Harm, Smite, Resonance...) on a target with two marks or more | Every mark undone: +30% damage for each, at most four |
-| **Rupture** | Any wind damage (Windcut, Cyclone, Repel...) on a **bleeding** target: Bleed, Rend, Cleave, Dismantle, Crimson Mist, Bonespur | +50% damage, 4 more through armour, and the caster heals 2 |
+| **Rupture** | Any wind damage (Windcut, Cyclone, Repel...) on a **bleeding** target: Bleed, Rend, Cleave, Dismantle, Crimson Mist, Bonespur | +50% damage, 4 more through armour, and the caster heals 2 (once a second at most) |
 | **Elapse** | Any time damage (Countdown, Reckoning) on a target that's burning, poisoned or withering | All the damage still to come lands at once, half again (3 to 16); the fire, poison and withering end |
 
 So every element takes part: fire, storm, earth, life, arcane, wind and time set reactions off; frost, wind,

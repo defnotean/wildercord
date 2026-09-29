@@ -10,17 +10,17 @@ import java.util.Set;
  * they need, and which runes play a part (for a rune's tooltip). Pure data, shared by the server
  * ({@code cast.Reactions}, which sets them off), the Cord screen and the unit tests.
  * <ul>
- *   <li><b>Overload</b>: storm damage on a burning foe. The flames burst: that hit +30%, 5 damage to
+ *   <li><b>Overload</b>: storm damage on a burning foe. The flames burst: that hit +30%, 4 damage to
  *       every other enemy within 3 blocks, thrown back, and the fire goes out.</li>
  *   <li><b>Fracture</b>: earth damage on a frozen foe. The ice cracks: that hit +40%, it thaws, and
  *       it's left <i>cracked</i> for 5 seconds (every spell hits it 20% harder).</li>
  *   <li><b>Blight</b>: life damage on a <i>shadowed</i> foe (void's curses and darkness). Rot bursts
  *       from it: it and up to 5 other enemies within 4 blocks take 3 damage and are poisoned, and the
- *       caster heals 1 for each.</li>
+ *       caster heals 1 for each (once a second at most).</li>
  *   <li><b>Unweave</b>: arcane damage on a foe with two marks or more. Every mark comes undone: that
  *       hit +30% for each (at most +120%).</li>
  *   <li><b>Rupture</b>: wind damage on a <i>bleeding</i> foe (blood's cuts). The wound tears open: that
- *       hit +50%, 4 damage more straight through armour, and the caster heals 2.</li>
+ *       hit +50%, 4 damage more straight through armour, and the caster heals 2 (once a second at most).</li>
  *   <li><b>Elapse</b>: time damage on a foe that's burning, poisoned or withering. Their time passes at
  *       once: all the damage they had left, half again, lands now (3 to 16), and they end.</li>
  * </ul>
@@ -45,7 +45,7 @@ public final class ReactionRules {
 	// ---- Overload: storm on a burning foe.
 	public static final double OVERLOAD_BONUS = 1.3;
 	public static final double OVERLOAD_RADIUS = 3.0;
-	public static final double OVERLOAD_DAMAGE = 5.0;
+	public static final double OVERLOAD_DAMAGE = 4.0;
 
 	// ---- Fracture: earth on a frozen foe, and the crack it leaves.
 	public static final double FRACTURE_BONUS = 1.4;
@@ -61,6 +61,11 @@ public final class ReactionRules {
 	public static final int BLIGHT_REACH = 6;
 	/** Health the caster heals for each creature the rot reaches. */
 	public static final float BLIGHT_HEAL = 1.0F;
+	/**
+	 * A caster heals from Blight, and from Rupture, at most once in this many ticks: a Zone setting either
+	 * off on a whole crowd every second heals like one, not like every one of them.
+	 */
+	public static final int HEAL_EVERY = 20;
 	/** How long a void curse leaves a foe shadowed, unless the curse says otherwise. */
 	public static final int SHADOWED_TICKS = 120;
 

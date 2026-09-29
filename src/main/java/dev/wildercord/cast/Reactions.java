@@ -66,6 +66,8 @@ public final class Reactions {
 
 	private static final Map<UUID, Map<Mark, Long>> MARKS = new ConcurrentHashMap<>();
 	private static final Map<UUID, Long> LAST_CALLOUT = new ConcurrentHashMap<>();
+	/** When each caster last healed from Blight or Rupture, by "caster:reaction". */
+	private static final Map<String, Long> HEALED = new ConcurrentHashMap<>();
 	/** When a reaction last went off on each creature (the Cinder Warden only yields to reactions). */
 	private static final Map<UUID, Long> REACTED = new ConcurrentHashMap<>();
 
@@ -162,7 +164,7 @@ public final class Reactions {
 
 	/**
 	 * Overload: storm on a burning target blows its flames apart. Every other enemy within 3 blocks takes
-	 * 5 and is thrown back (no block is harmed), and the fire goes out.
+	 * 4 and is thrown back (no block is harmed), and the fire goes out.
 	 */
 	private static double overload(Cast cast, LivingEntity target) {
 		if (!target.isOnFire()) {
@@ -276,7 +278,7 @@ public final class Reactions {
 
 	/**
 	 * Blight: life on a shadowed target turns the darkness to rot. It and up to five other enemies within
-	 * 4 blocks take 3 damage and are poisoned, and the caster heals 1 for each.
+	 * 4 blocks take 3 damage and are poisoned, and the caster heals 1 for each (once a second at most).
 	 */
 	private static double blight(Cast cast, LivingEntity target) {
 		if (!has(target, Mark.SHADOWED)) {
@@ -301,9 +303,7 @@ public final class Reactions {
 			t.addEffect(new MobEffectInstance(MobEffects.POISON, ReactionRules.BLIGHT_POISON_TICKS, 0, false, true), cast.caster);
 			Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.BLIGHT_DAMAGE);
 		}
-		if (cast.caster.isAlive()) {
-			cast.caster.heal(ReactionRules.BLIGHT_HEAL * rotting.size());
-		}
+		heal(cast, ReactionRules.BLIGHT, ReactionRules.BLIGHT_HEAL * rotting.size());
 		callout(cast, ReactionRules.BLIGHT, ReactionRules.color(ReactionRules.BLIGHT));
 		return 1.0;
 	}
@@ -320,7 +320,7 @@ public final class Reactions {
 		return ReactionRules.unweave(used.size());
 	}
 
-	/** Rupture: wind on a bleeding target tears the wound open: +50%, 4 more through armour, and the caster heals 2. */
+	/** Rupture: wind on a bleeding target tears the wound open: +50%, 4 more through armour, and the caster heals 2 (once a second at most). */
 	private static double rupture(Cast cast, LivingEntity target) {
 		if (!has(target, Mark.BLEEDING)) {
 			return 1.0;
@@ -330,9 +330,7 @@ public final class Reactions {
 		reacted(target);
 		ReactionVfx.rupture(level, target, cast.caster);
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.RUPTURE_DAMAGE);
-		if (cast.caster.isAlive()) {
-			cast.caster.heal(ReactionRules.RUPTURE_HEAL);
-		}
+		heal(cast, ReactionRules.RUPTURE, ReactionRules.RUPTURE_HEAL);
 		callout(cast, ReactionRules.RUPTURE, ReactionRules.color(ReactionRules.RUPTURE));
 		return ReactionRules.RUPTURE_BONUS;
 	}
@@ -365,6 +363,19 @@ public final class Reactions {
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), damage);
 		callout(cast, ReactionRules.ELAPSE, ReactionRules.color(ReactionRules.ELAPSE));
 		return 1.0;
+	}
+
+	/** Heals the caster for a reaction, unless that reaction already healed them within the last second. */
+	private static void heal(Cast cast, String reaction, float amount) {
+		LivingEntity caster = cast.caster;
+		String key = caster.getUUID() + ":" + reaction;
+		long now = cast.level.getGameTime();
+		Long last = HEALED.get(key);
+		if (!caster.isAlive() || last != null && last <= now && now - last < ReactionRules.HEAL_EVERY) {
+			return;
+		}
+		HEALED.put(key, now);
+		caster.heal(amount);
 	}
 
 	/** How long an effect has left to run: an endless one counts as a minute, none as nothing. */
@@ -443,12 +454,14 @@ public final class Reactions {
 		});
 		LAST_CALLOUT.values().removeIf(last -> gameTime - last > 100 || last > gameTime);
 		REACTED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
+		HEALED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 	}
 
 	static void clear() {
 		MARKS.clear();
 		LAST_CALLOUT.clear();
 		REACTED.clear();
+		HEALED.clear();
 		reacting = false;
 	}
 }
