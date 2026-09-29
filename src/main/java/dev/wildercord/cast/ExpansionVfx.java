@@ -388,10 +388,9 @@ final class ExpansionVfx {
 			int k = i;
 			Scheduler.later(1 + i, () -> Light.ring(level, feet.add(0, y, 0), UP, k == 1 ? theme.secondary() : theme.primary(), r + 0.8, r, 0.04, 14));
 		}
-		Sigils.send(level, SigilOption.flat(SigilOption.STAR, theme.primary(), (float) (r + 0.3), 20, 0.1F), feet.add(0, 0.07, 0));
+		Sigils.send(level, SigilOption.flat(SigilOption.RING, theme.primary(), (float) (r + 0.3), 20, 0.1F), feet.add(0, 0.07, 0));
 		Sigils.flash(level, t.getBoundingBox().getCenter(), theme.primary(), 1.2F);
-		Fx.sound(level, feet, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.6F);
-		Fx.sound(level, feet, SoundEvents.AMETHYST_CLUSTER_PLACE, 0.8F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "arcane_hex", 0.8F, 1.0F);
 	}
 
 	/** Brace: a ring slams down around the feet and a shockwave runs out from it. */
@@ -441,7 +440,9 @@ final class ExpansionVfx {
 			Light.slash(level, c.add(0, (i - 1) * t.getBbHeight() * 0.25, 0), normal, toward, i == 1 ? 0x3E7A34 : LIFE, r, Math.PI * 1.4, 0.07, 3, 10);
 		}
 		Vfx.emit(level, new DustParticleOptions(0x3E7A34, 1.1F), c, 8, r * 0.8, 0.0);
-		Fx.sound(level, c, SoundEvents.SWEET_BERRY_BUSH_PLACE, 0.9F, 0.8F);
+		// Four thorns you can count, circling the body: each hit taken spends one.
+		ElementFx.orbit(level, c, r + 0.2, dev.wildercord.cast.Effects.BRAMBLE_THORNS, 200, 0x3E7A34, LIFE);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_thorn_grow", 0.9F, 1.0F);
 	}
 
 	/** Bramble answers: a thorn of light lashes out at the attacker. */
@@ -451,7 +452,7 @@ final class ExpansionVfx {
 		Light.ray(level, from, to, LIFE, 0.06, 5);
 		Sigils.flash(level, to, LIFE, 1.1F);
 		Vfx.radial(level, new DustParticleOptions(0x3E7A34, 1.0F), to, 8, 0.15);
-		Fx.sound(level, to, SoundEvents.PLAYER_HURT_SWEET_BERRY_BUSH, 0.8F, 1.1F);
+		dev.wildercord.cast.feel.Feels.sound(level, to, "life_thorn", 0.9F, 1.0F);
 	}
 
 	/** Frostward: pale rings of warmth climbing the body, snowflakes melting away from it. */
@@ -527,8 +528,7 @@ final class ExpansionVfx {
 			Scheduler.later(2 + t * 2, () -> Light.ring(level, c.add(0, radius * Math.sin(lat * Math.PI / 2), 0), UP, theme.primary(),
 				radius * Math.cos(lat * Math.PI / 2) * 0.6, radius * Math.cos(lat * Math.PI / 2), 0.05, 14));
 		}
-		Fx.sound(level, c, SoundEvents.BEACON_ACTIVATE, 0.9F, 1.2F);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 1.0F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_dome", 1.0F, 1.0F);
 	}
 
 	/** Haven holds: the dome's meridians and parallels, renewed every second. */
@@ -636,12 +636,12 @@ final class ExpansionVfx {
 		for (int i = 0; i < grown.size(); i++) {
 			Vec3 at = Vec3.atCenterOf(grown.get(i)).subtract(normalOf(face).scale(0.4));
 			Scheduler.later(1 + i, () -> {
-				glow(level, 0xB8FFC0, at, 0.8);
+				glow(level, 0x7CFFE0, at, 0.8);
 				Vfx.emit(level, ParticleTypes.GLOW, at, 3, 0.25, 0.01);
 			});
 		}
 		if (!grown.isEmpty()) {
-			Fx.sound(level, Vec3.atCenterOf(grown.getFirst()), SoundEvents.AMETHYST_CLUSTER_PLACE, 0.6F, 1.6F);
+			dev.wildercord.cast.feel.Feels.sound(level, Vec3.atCenterOf(grown.getFirst()), "life_glimmer", 0.7F, 1.0F);
 		}
 	}
 
@@ -661,7 +661,7 @@ final class ExpansionVfx {
 
 	static void spanStart(ServerLevel level, Vec3 feet, Vec3 dir, Vfx.Theme theme) {
 		Sigils.send(level, SigilOption.flat(SigilOption.CIRCLE, theme.primary(), 0.8F, 20, 0.15F), feet.add(dir.scale(0.8)).add(0, 0.05, 0));
-		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.9F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "arcane_glassrun", 0.9F, 1.0F);
 	}
 
 	/** Each block of a Span: a flat ring of light running out across its top. */
@@ -669,13 +669,15 @@ final class ExpansionVfx {
 		Vec3 top = Vec3.atCenterOf(pos).add(0, 0.52, 0);
 		Light.ring(level, top, UP, theme.primary(), 0.1, 0.7, 0.04, 6);
 		glow(level, theme.secondary(), top, 0.6);
-		if (Math.floorMod(pos.getX() + pos.getZ(), 3) == 0) {
-			Fx.sound(level, top, SoundEvents.AMETHYST_BLOCK_PLACE, 0.5F, 1.5F);
-		}
+
 	}
 
 	static void spanShatter(ServerLevel level, BlockPos pos, Vfx.Theme theme) {
 		Vfx.emit(level, theme.sparkle(), Vec3.atCenterOf(pos), 2, 0.3, 0.0);
+		// The glass goes in a cascade: a crash every few blocks.
+		if (Math.floorMod(pos.getX() + pos.getZ(), 4) == 0) {
+			dev.wildercord.cast.feel.Feels.sound(level, Vec3.atCenterOf(pos), "arcane_glassshatter", 0.5F, 1.0F);
+		}
 	}
 
 	// ------------------------------------------------------------------ damage and control

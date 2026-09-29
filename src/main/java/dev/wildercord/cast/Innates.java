@@ -184,6 +184,13 @@ public final class Innates {
 			if (entity instanceof ServerPlayer dead) {
 				DEBTS.remove(dead.getUUID());
 			}
+			if (source.getEntity() instanceof ServerPlayer winner && entity instanceof Enemy && entity.level() instanceof ServerLevel there) {
+				Long until = FORTUNE.get(winner.getUUID());
+				if (until != null && there.getGameTime() <= until && there.getRandom().nextFloat() < 0.25F) {
+					net.minecraft.world.entity.ExperienceOrb.award(there, entity.position(), LUCKY_XP);
+					lucky(there, entity);
+				}
+			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A));
 				TechniqueVfx.timeResumes(player.level(), player, 0);
@@ -266,9 +273,11 @@ public final class Innates {
 			case "fortune" -> helped.forEach(t -> {
 				FORTUNE.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
 				ElementFx.bloom(cast.level, t.getBoundingBox().getCenter(), t.position(), 1.3);
-				ElementFx.flatSigil(cast.level, t.position(), SigilOption.STAR, LUCK, 0.9, 24, 0.1);
+				ElementFx.groundRing(cast.level, t.position(), 0xF5D86A, 0.2, 1.1, 0.05, 14);
+				// A gold coin spinning over the head for as long as the luck lasts.
+				ElementFx.orbit(cast.level, t.position().add(0, t.getBbHeight() + 0.5, 0), 0.25, 1, Effects.ticks(10, duration), 0xF5D86A, 0xFFF4B0);
 				Vfx.emit(cast.level, ParticleTypes.HAPPY_VILLAGER, t.getBoundingBox().getCenter(), 6, 0.4, 0.0);
-				Fx.sound(cast.level, t.position(), SoundEvents.PLAYER_LEVELUP, 0.5F, 1.8F);
+				dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "life_coin", 0.9F, 1.0F);
 			});
 			case "phantom" -> {
 				if (onSelf && caster instanceof ServerPlayer player) {
@@ -390,6 +399,9 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Twin Star
 
+	/** How strong Twin Star's second cast is. */
+	public static final double TWIN_POWER = 0.75;
+
 	/** The next cast after Twin Star goes off twice; the Twin Star cast itself doesn't count. */
 	public static boolean consumeTwin(ServerPlayer player) {
 		long now = player.level().getGameTime();
@@ -468,15 +480,20 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Fortune
 
-	/** Spell damage multiplier from Fortune: a one-in-four chance of triple. */
+	/** Spell damage multiplier from Fortune: a one-in-four chance of double (expected +25%). */
 	static double fortune(Cast cast, LivingEntity target) {
 		Long until = FORTUNE.get(cast.caster.getUUID());
 		if (until == null || cast.level.getGameTime() > until || cast.level.getRandom().nextFloat() >= 0.25F) {
 			return 1.0;
 		}
 		lucky(cast.level, target);
-		return 3.0;
+		return LUCKY_MULTIPLIER;
 	}
+
+	/** What a fortunate hit deals: double. */
+	public static final double LUCKY_MULTIPLIER = 2.0;
+	/** XP a fortunate kill drops on top of its own (a one in four chance). */
+	public static final int LUCKY_XP = 6;
 
 	private static void fortuneMelee(ServerLevel level, LivingEntity entity, DamageSource source, float damage) {
 		// A strike by hand: a spell's own strike (Cleave, Aftershock) already rolled Fortune in Effects.hurt.
@@ -491,7 +508,7 @@ public final class Innates {
 		echoing = true;
 		try {
 			Effects.readyToHurt(entity);
-			entity.hurtServer(level, level.damageSources().playerAttack(player), damage * 2);
+			entity.hurtServer(level, level.damageSources().playerAttack(player), (float) (damage * (LUCKY_MULTIPLIER - 1)));
 		} finally {
 			echoing = false;
 		}
@@ -504,8 +521,7 @@ public final class Innates {
 		ElementFx.orbit(level, c, 0.7, 2, 4, LUCK, 0xFFF4B0);
 		Vfx.radial(level, ParticleTypes.HAPPY_VILLAGER, c, 8, 0.25);
 		Vfx.radial(level, ParticleTypes.CRIT, c, 8, 0.4);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 2.0F);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_coin_proc", 1.0F, 1.0F);
 	}
 
 	private static final int LUCK = 0x9CFF7A;

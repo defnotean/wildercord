@@ -31,7 +31,7 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 
 *Tier I · Arcane · Harms enemies · 8 mana · needs any Cord*
 
-7 magic damage.
+7 magic damage, and it leaves the target exposed for 3 seconds (an arcane mark: Unweave and Prismatic Burst count it).
 
 **How to get it:** Craft: a Blank Rune, Fermented Spider Eye. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
@@ -44,7 +44,7 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 
 *Tier I · Arcane · Helps you and your allies · 4 mana · needs any Cord*
 
-Haste II for 30 seconds: mine and swing faster.
+Haste II for 30 seconds: mine and swing faster, and a charged cast fills 30% sooner.
 
 **How to get it:** Craft: a Blank Rune, Golden Pickaxe. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
@@ -83,7 +83,7 @@ Night vision for 60 seconds.
 
 *Tier I · Arcane · Harms enemies · 3 mana · needs any Cord*
 
-Makes targets glow through walls for 15 seconds.
+Makes targets glow through walls for 15 seconds, strips their invisibility and leaves them exposed for as long (an arcane mark).
 
 **How to get it:** Craft: a Blank Rune, Glow Ink Sac. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
@@ -96,7 +96,7 @@ Makes targets glow through walls for 15 seconds.
 
 *Tier II · Arcane · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-A spoken command: everything hit is stunned for 2 seconds. Speaking it costs you 2 health per cast.
+A spoken command: everything hit is stunned for 2 seconds and condemned: your next 2 spell hits on it deal 40% more. Speaking it costs you 2 health, unless it holds 3 or more.
 
 **How to get it:** Craft: a Blank Rune, Book and Quill, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Evokers (10%); Astral Observatory.
 
@@ -109,7 +109,7 @@ A spoken command: everything hit is stunned for 2 seconds. Speaking it costs you
 
 *Tier II · Arcane · Helps you and your allies · 12 mana · needs a Copper Cord or better*
 
-Strength II for 10 seconds.
+Strength II for 10 seconds, then Weakness I for 4 (a passive carries only Strength I).
 
 **How to get it:** Craft: a Blank Rune, Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Bastions; Astral Observatory.
 
@@ -122,7 +122,7 @@ Strength II for 10 seconds.
 
 *Tier II · Arcane · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-Monsters forget their target and are weakened for 6 seconds.
+Casters can't cast: a cast in hand is cut short and none can follow for 4 seconds (3 on players). Monsters are weakened for 6 seconds.
 
 **How to get it:** Craft: a Blank Rune, any wool, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Astral Observatory.
 
@@ -148,7 +148,7 @@ A bridge of glass grows from your feet toward the point, up to 16 blocks, and sh
 
 *Tier II · Arcane · Harms enemies · 8 mana · needs a Copper Cord or better*
 
-Brands each target with a sigil for 8 seconds. The next time your magic hurts it, the sigil bursts for 6 arcane damage.
+Brands each target with a sigil for 8 seconds. The next time your magic hurts it, the sigil bursts for 7 damage of the element of the spell that set it off.
 
 **How to get it:** Craft: a Blank Rune, Book and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
 
@@ -174,7 +174,7 @@ You and the first creature hit trade places, instantly.
 
 *Tier III · Arcane · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
-For 10 seconds, whatever hurts the target takes 60% of the damage back.
+For 10 seconds, whatever hurts the target takes 60% of the damage back as arcane damage that ignores armour. Each reflection cracks it (6 at most).
 
 **How to get it:** Craft: a Blank Rune, Shield and Glass Pane, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; Astral Observatory.
 
@@ -187,7 +187,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 *Tier III · Arcane · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-4 damage and a cursed mark for 10 seconds. Every other marked enemy within 16 blocks takes half of it too.
+5 damage and a cursed mark for 10 seconds. Up to 4 other marked enemies within 16 blocks take half of it too, once each per cast.
 
 **How to get it:** Craft: a Blank Rune, Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Stronghold libraries; Woodland mansions; Astral Observatory.
 
@@ -200,7 +200,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 *Tier III · Arcane · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-10 holy damage, doubled against undead.
+A ring closes at the target's feet; 0.7 seconds later a column of light deals 13 holy damage (doubled against undead) and strips Absorption.
 
 **How to get it:** Craft: a Blank Rune, Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Stronghold libraries; Astral Observatory.
 
@@ -213,7 +213,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 *Tier IV · Arcane · Harms enemies · 32 mana · needs an Echo Cord*
 
-Eight falling stars around the point over 2 seconds: 6 damage each.
+Eight falling stars around the point over 2 seconds: 6 damage each. The first stars go to exposed enemies.
 
 **How to get it:** Found only, never crafted: the Elder Guardian; Archive vaults; the Archivist.
 
@@ -224,7 +224,7 @@ Eight falling stars around the point over 2 seconds: 6 damage each.
 
 *Tier IV · Arcane · Helps you and your allies · 30 mana · needs an Echo Cord*
 
-Three spirit wolves fight at your side for 20 seconds.
+Three spirit wolves fight at your side for 20 seconds. While they live, your mana regenerates a quarter slower.
 
 **How to get it:** Found only, never crafted: Evokers (15%); Archive vaults; the Archivist.
 

@@ -240,9 +240,9 @@ Any effect of an element counts.
 | Glacier | Frost + Earth | Freezes targets in place for 2 seconds (1 second on players). |
 | Lifesteal | Life + Void | 5 damage, and you heal for what it dealt. |
 | Warp | Wind + Void | You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds. |
-| Bloom | Life + Earth | Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches. |
+| Bloom | Life + Earth | Regeneration II for 6 seconds, plants grow around the first 3 allies it touches, and allies near them catch Regeneration I for 5. |
 | Surge | Life + Storm | Speed I and Strength I for 8 seconds; the blows you land in that time arc on to a nearby enemy for 2 (four arcs at most). |
-| Nullify | Arcane + Void | Strips an enemy's good effects, or an ally's bad effects. |
+| Nullify | Arcane + Void | Strips an enemy's good effects, or an ally's bad effects. Vexes, and spirit wolves and shades that aren't yours, dissolve. |
 | Phoenix Pyre | Fire + Life | Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. |
 | Hellmouth | Fire + Void | Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks toward it and burns those at its core for 2 damage a second, then caves in for 4 damage. |
 | Starfire | Fire + Arcane | Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, and they burn for 3 seconds. |
@@ -274,7 +274,7 @@ Any effect of an element counts.
 | Bonespur | Earth + Blood | Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 damage each, and they bleed for 3 seconds. |
 | Monolith | Earth + Earth | A pillar of stone bursts up under the target: 8 damage, and it's thrown 3 blocks into the air; where it lands, 3 more to whatever is there. The pillar crumbles after 4 seconds. |
 | Soulbond | Life + Arcane | Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks. |
-| Second Wind | Life + Time | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute. |
+| Second Wind | Life + Time | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II and Speed II for 4 seconds and a gust that shoves enemies away. Once death has been cheated (by this or any other spell), it isn't again on them for a minute. |
 | Transfusion | Life + Blood | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
 | Lifebloom | Life + Life | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
 | Sanguine Rite | Blood + Blood | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
@@ -284,7 +284,7 @@ Any effect of an element counts.
 | Hemomancy | Arcane + Blood | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
 | Reckoning | Time + Blood | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |
 | Singularity | Void + Void | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |
-| Prismatic Burst | Arcane + Arcane | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22. |
+| Prismatic Burst | Arcane + Arcane | 5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25. |
 | Chronoshift | Time + Time | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
 
 ## Signature fusions (16, made only at the Fusion Altar)
@@ -302,7 +302,7 @@ Two particular effects, an amethyst shard and 3 XP levels. The pair makes its si
 | Windcut + Bleed | **Razorgale** | Wind | III | 18 | A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2 and left bleeding; half a second later the gale comes back round for 2 more, tearing every wound open (Rupture). | Crimson Mist |
 | Primer + Stasis | **Doomclock** | Time | IV | 28 | Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks. Never breaks blocks. | Everburn |
 | Shadowstep + Lightning | **Thunderstep** | Storm | III | 18 | You come down as a bolt of lightning where the spell landed (up to 24 blocks), right behind the first enemy it hit: 8 damage to every enemy within 2.5 blocks of you, stunned for half a second. On Self it strikes where you stand. | Riftbolt |
-| Smite + Regrowth | **Halo** | Arcane | III | 18 | A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time. | Soulbond |
+| Smite + Regrowth | **Halo** | Arcane | III | 18 | A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy within 6 blocks of them (whoever hurt them, or else the nearest) for 3 holy damage (tripled against undead), and the ally heals 1 each time. | Soulbond |
 | Thunderclap + Tremor | **Thunderquake** | Earth | III | 20 | The ground booms like thunder: three shockwaves roll out from where it lands over a second, reaching 2, 4 and 6 blocks. Each strikes every enemy it reaches for 4 and tosses it up, so the nearer, the harder: 12 at the heart. | Magnetize |
 | Starfall + Meteor | **Cometfall** | Arcane | IV | 32 | A comet streaks down on the point a second later: 16 damage to every enemy within 4 blocks, setting them alight, and five shards of it scatter into the nearest other enemies within 10 blocks for 4 each. Never breaks blocks. | Starfire |
 | Reflect + Foresight | **Riposte** | Time | III | 16 | For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with 6 damage to whoever struck. | Timesteal |
@@ -382,7 +382,7 @@ One wakes in each caster's heart at the 1st Circle, chosen at random, and grows 
 |---|---|---|
 | Blood Thread | Blood | Threads everything hit together for 8 seconds: half of any damage one of them takes is dealt to the rest. |
 | Borrowed Time | Time | Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay a monster. |
-| Fortune | Life | For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple. |
+| Fortune | Life | For 10 seconds, every hit you deal has a 1 in 4 chance to strike for double, and a kill has a 1 in 4 chance to drop extra experience. |
 | Gale Mantle | Wind | For 12 seconds, jump again in midair to dash forward (up to 3 dashes). |
 | Kindling | Fire | 3 fire damage and a stack of Kindling. The fifth stack ignites: 10 damage in a 3-block burst. |
 | Mirrorfrost | Frost | Casts back the last spell that hit you in the past 30 seconds, as your own. |

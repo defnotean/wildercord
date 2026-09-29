@@ -60,13 +60,14 @@ public final class MarkHalos {
 			case SHADOWED -> 0x3A1060;
 			case BLEEDING -> ElementFx.BLOOD.primary();
 			case IONISED -> ElementFx.STORM.primary();
+			case EXPOSED -> ElementFx.ARCANE.secondary();
 		};
 	}
 
 	/** How a mark's halo is drawn. */
 	public static Style style(Reactions.Mark mark) {
 		return switch (mark) {
-			case FROZEN, RESONANT -> Style.CROWN;
+			case FROZEN, RESONANT, EXPOSED -> Style.CROWN;
 			case WINDSWEPT, PULLED -> Style.ORBIT;
 			case SOAKED, WET, BLEEDING -> Style.DRIP;
 			case SHADOWED, IONISED -> Style.MOTES;

@@ -572,6 +572,503 @@
       "wildercord:kit/fire/fire_whump_2"
     ]
   },
+  "life_bond": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_bond"
+    ]
+  },
+  "life_bond_snap": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_bond_snap"
+    ]
+  },
+  "life_coin": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_coin"
+    ]
+  },
+  "life_coin_proc": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_coin_proc"
+    ]
+  },
+  "life_crack": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_crack"
+    ]
+  },
+  "life_dome": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_dome"
+    ]
+  },
+  "life_door": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_door"
+    ]
+  },
+  "life_fang": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_fang"
+    ]
+  },
+  "life_gasp": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_gasp"
+    ]
+  },
+  "life_glimmer": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_glimmer"
+    ]
+  },
+  "life_grip": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_grip"
+    ]
+  },
+  "life_grow": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_grow_1",
+      "wildercord:kit/life/life_grow_2",
+      "wildercord:kit/life/life_grow_3"
+    ]
+  },
+  "life_heal": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_heal_1",
+      "wildercord:kit/life/life_heal_2"
+    ]
+  },
+  "life_lull": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_lull"
+    ]
+  },
+  "life_mend": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_mend"
+    ]
+  },
+  "life_munch": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_munch"
+    ]
+  },
+  "life_petals": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_petals"
+    ]
+  },
+  "life_plip": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_plip_1",
+      "wildercord:kit/life/life_plip_2",
+      "wildercord:kit/life/life_plip_3"
+    ]
+  },
+  "life_pollen": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_pollen"
+    ]
+  },
+  "life_purge": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_purge"
+    ]
+  },
+  "life_reap": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_reap"
+    ]
+  },
+  "life_regrow": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_regrow"
+    ]
+  },
+  "life_ripen": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_ripen_1",
+      "wildercord:kit/life/life_ripen_2"
+    ]
+  },
+  "life_ripen_burst": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_ripen_burst"
+    ]
+  },
+  "life_spore": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_spore"
+    ]
+  },
+  "life_step": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_step"
+    ]
+  },
+  "life_stinger_restore": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_stinger_restore_1",
+      "wildercord:kit/life/life_stinger_restore_2"
+    ]
+  },
+  "life_stinger_thorn": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_stinger_thorn_1",
+      "wildercord:kit/life/life_stinger_thorn_2"
+    ]
+  },
+  "life_stinger_ward": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_stinger_ward"
+    ]
+  },
+  "life_stinger_world": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/life/life_stinger_world_1",
+      "wildercord:kit/life/life_stinger_world_2"
+    ]
+  },
+  "life_stitch": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/life/life_stitch"
+    ]
+  },
+  "life_thorn": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_thorn_1",
+      "wildercord:kit/life/life_thorn_2"
+    ]
+  },
+  "life_thorn_grow": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_thorn_grow"
+    ]
+  },
+  "life_transmute": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_transmute"
+    ]
+  },
+  "life_whip": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/life/life_whip"
+    ]
+  },
+  "arcane_comet": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_comet"
+    ]
+  },
+  "arcane_fangs": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_fangs"
+    ]
+  },
+  "arcane_flutter": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_flutter"
+    ]
+  },
+  "arcane_glassrun": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_glassrun"
+    ]
+  },
+  "arcane_glassshatter": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_glassshatter_1",
+      "wildercord:kit/arcane/arcane_glassshatter_2"
+    ]
+  },
+  "arcane_glint": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_glint"
+    ]
+  },
+  "arcane_glint_ping": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_glint_ping"
+    ]
+  },
+  "arcane_gong": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_gong"
+    ]
+  },
+  "arcane_halo": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_halo"
+    ]
+  },
+  "arcane_halo_zap": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_halo_zap"
+    ]
+  },
+  "arcane_hex": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_hex"
+    ]
+  },
+  "arcane_hex_pop": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_hex_pop"
+    ]
+  },
+  "arcane_howl": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_howl"
+    ]
+  },
+  "arcane_hush": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_hush"
+    ]
+  },
+  "arcane_inhale": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_inhale"
+    ]
+  },
+  "arcane_inhale_tick": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_inhale_tick_1",
+      "wildercord:kit/arcane/arcane_inhale_tick_2"
+    ]
+  },
+  "arcane_kindle": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_kindle"
+    ]
+  },
+  "arcane_kindle_hum": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_kindle_hum"
+    ]
+  },
+  "arcane_mirror": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_mirror"
+    ]
+  },
+  "arcane_mirror_crack": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_mirror_crack_1",
+      "wildercord:kit/arcane/arcane_mirror_crack_2"
+    ]
+  },
+  "arcane_needle": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_needle_1",
+      "wildercord:kit/arcane/arcane_needle_2"
+    ]
+  },
+  "arcane_open": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_open"
+    ]
+  },
+  "arcane_ping": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_ping"
+    ]
+  },
+  "arcane_pluck": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_pluck_1",
+      "wildercord:kit/arcane/arcane_pluck_2",
+      "wildercord:kit/arcane/arcane_pluck_3"
+    ]
+  },
+  "arcane_resonate": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_resonate"
+    ]
+  },
+  "arcane_resonate_echo": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_resonate_echo"
+    ]
+  },
+  "arcane_scorch": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_scorch"
+    ]
+  },
+  "arcane_snuff": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_snuff"
+    ]
+  },
+  "arcane_split": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_split"
+    ]
+  },
+  "arcane_stamp": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_stamp"
+    ]
+  },
+  "arcane_stamp_burst": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_stamp_burst_1",
+      "wildercord:kit/arcane/arcane_stamp_burst_2",
+      "wildercord:kit/arcane/arcane_stamp_burst_3"
+    ]
+  },
+  "arcane_starfall": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_starfall"
+    ]
+  },
+  "arcane_stinger_glass": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_stinger_glass_1",
+      "wildercord:kit/arcane/arcane_stinger_glass_2"
+    ]
+  },
+  "arcane_stinger_mark": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_stinger_mark_1",
+      "wildercord:kit/arcane/arcane_stinger_mark_2"
+    ]
+  },
+  "arcane_stinger_step": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_stinger_step_1",
+      "wildercord:kit/arcane/arcane_stinger_step_2"
+    ]
+  },
+  "arcane_stinger_strike": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_stinger_strike_1",
+      "wildercord:kit/arcane/arcane_stinger_strike_2"
+    ]
+  },
+  "arcane_stinger_summon": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_stinger_summon"
+    ]
+  },
+  "arcane_swap": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_swap"
+    ]
+  },
+  "arcane_thrum": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_thrum"
+    ]
+  },
+  "arcane_thrum_exhale": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_thrum_exhale"
+    ]
+  },
+  "arcane_toll": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_toll"
+    ]
+  },
+  "arcane_twin": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_twin"
+    ]
+  },
+  "arcane_twin_echo": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_twin_echo"
+    ]
+  },
+  "arcane_yip": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/arcane/arcane_yip_1",
+      "wildercord:kit/arcane/arcane_yip_2"
+    ]
+  },
   "blood_slice": {
     "subtitle": "subtitles.wildercord.kit.hit",
     "sounds": [

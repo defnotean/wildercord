@@ -69,6 +69,25 @@ public final class ExplorerNumbers {
 	public static final int MANATIDE_MOST_TICKS = 200;
 	/** Manatide: how long a player waits between drinks (from the start of one to the next): a minute. */
 	public static final int MANATIDE_WAIT = 1200;
+	/** Moonpetal's strength under the moon: 1.4 at full moon (phase 0), 1.0 at the quarters, 0.7 at new moon; and 25% more at night under open sky. */
+	public static double moonFactor(int phase, boolean nightUnderSky) {
+		double[] byPhase = {1.4, 1.2, 1.0, 0.85, 0.7, 0.85, 1.0, 1.2};
+		return byPhase[Math.floorMod(phase, 8)] * (nightUnderSky ? 1.25 : 1.0);
+	}
+
+	/** The boon an ailment turns into, or null (Remedy). */
+	public static <T> T boonFor(T ailment, java.util.Map<T, T> pairs) {
+		return pairs.get(ailment);
+	}
+
+	/** A Manatide gives back this share of every spell cast under it, and 30 mana at most. */
+	public static final double MANATIDE_SHARE = 0.25;
+	public static final int MANATIDE_MOST = 30;
+
+	/** What a Manatide returns for a spell that cost {@code spent}, given {@code already} returned: a quarter, never past the most. */
+	public static double manatideRefund(double spent, double already) {
+		return Math.max(0, Math.min(spent * MANATIDE_SHARE, MANATIDE_MOST - already));
+	}
 
 	/**
 	 * How long a Manatide of {@code ticks} really flows: never past {@link #MANATIDE_MOST_TICKS}. With four

@@ -328,8 +328,7 @@ final class TechniqueVfx {
 			ElementFx.ring(level, o, UP, CURSE, 0.15, 0.7, 0.035, 8);
 			Vfx.radial(level, nail, o, 3, 0.12);
 		}
-		Fx.sound(level, c, SoundEvents.ANVIL_LAND, 0.3F, 1.9F);
-		Fx.sound(level, c, SoundEvents.BELL_RESONATE, 0.5F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, linked.isEmpty() ? "arcane_resonate" : "arcane_resonate_echo", 0.9F, 1.0F);
 	}
 
 	/** Ripple: rings of golden sunlight run out through the target, each on its own tilt. */
@@ -471,7 +470,7 @@ final class TechniqueVfx {
 			int tick = t;
 			Scheduler.later(t + 1, () -> ElementFx.ring(level, mouth.add(f.scale(1.6 + tick * 0.8)), f, tick == 1 ? CURSE : DECREE, 0.15, 0.4 + tick * 0.2, 0.03, 6));
 		}
-		Fx.sound(level, mouth, SoundEvents.ELDER_GUARDIAN_CURSE, 0.35F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, mouth, "arcane_gong", 0.9F, 1.0F);
 	}
 
 	/** The command lands: a thread of crimson to the target, and a seal hanging over its head while it's held. */
@@ -579,24 +578,14 @@ final class TechniqueVfx {
 		ElementFx.leafSpiral(level, base, 0.55, target.getBbHeight() + 0.3, 5);
 		ElementFx.flatSigil(level, base, SigilOption.STAR, ElementFx.LIFE.primary(), 0.8, 24, 0.06);
 		Vfx.emit(level, ParticleTypes.TOTEM_OF_UNDYING, target.getBoundingBox().getCenter(), 6, 0.3, 0.1);
-		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position(), "life_ripen", 0.7F, 0.75F);
 	}
 
 	private static final int TOTEM = 0xF5D86A;
 
 	/** A killing blow reversed: a great green bloom, rings of life rising, a leaf spiral and a burst of totem light. */
 	static void reversal(ServerLevel level, Entity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		Vec3 base = target.position();
-		dot(level, flash(0x6EDC64), c);
-		ElementFx.bloom(level, c, base, 2.0);
-		ElementFx.leafSpiral(level, base, 0.8, target.getBbHeight() + 0.8, 6);
-		for (int i = 0; i < 3; i++) {
-			ElementFx.ring(level, base.add(0, 0.2 + i * 0.7, 0), UP, i == 1 ? ElementFx.LIFE.secondary() : TOTEM, 0.3, 1.6 - i * 0.3, 0.05, 10 + i * 2);
-		}
-		Vfx.radial(level, ParticleTypes.TOTEM_OF_UNDYING, c, 30, 0.5);
-		Fx.sound(level, c, SoundEvents.TOTEM_USE, 0.9F, 1.1F);
-	}
+		LifeArcaneFx.reversalPayoff(level, target);	}
 
 	/** Reflect: a faceted shell of mirror light round the target and a star seal under it. */
 	static void reflectMark(ServerLevel level, Entity target) {
@@ -609,7 +598,7 @@ final class TechniqueVfx {
 		}
 		ElementFx.starSeal(level, target.position().add(0, 0.07, 0), UP, 0.7, 14);
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), c, 8, 0.15);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "arcane_mirror", 0.9F, 1.0F);
 	}
 
 	/** The hurt thrown back: a beam of light to the attacker and glass breaking round it. */
@@ -625,7 +614,7 @@ final class TechniqueVfx {
 		dot(level, SigilOption.glow(ElementFx.ARCANE.primary(), 1.4F), b);
 		ElementFx.ring(level, b, d, ElementFx.ARCANE.secondary(), 0.2, 1.0, 0.04, 7);
 		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), b, 6, 0.3, 0.1);
-		Fx.sound(level, b, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, b, "arcane_mirror_crack", 0.9F, 1.0F);
 	}
 
 	/** Overdrive: a heartbeat pulses out of the target and crimson crescents surge up round it; later beats as it pays. */
@@ -668,17 +657,7 @@ final class TechniqueVfx {
 	}
 
 	static void restore(ServerLevel level, Entity target, boolean mended) {
-		Vec3 base = target.position();
-		ElementFx.leafSpiral(level, base, 0.55, target.getBbHeight() + 0.3, 5);
-		ElementFx.bloom(level, target.getBoundingBox().getCenter(), base, 1.0);
-		Vfx.emit(level, ParticleTypes.HEART, base.add(0, target.getBbHeight() + 0.3, 0), 2, 0.3, 0.0);
-		if (mended) {
-			ElementFx.ring(level, target.getBoundingBox().getCenter(), UP, TOTEM, 1.2, 0.5, 0.04, 10);
-			Vfx.emit(level, ParticleTypes.WAX_ON, target.getBoundingBox().getCenter(), 8, 0.4, 0.0);
-			Fx.sound(level, target.position(), SoundEvents.SMITHING_TABLE_USE, 0.6F, 1.4F);
-		}
-		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.2F);
-	}
+		LifeArcaneFx.restore(level, target, mended);	}
 
 	/** Accelerate: a clock face round the target with its hands racing, another hand sweeping on a tilt, and gold at its feet. */
 	static void accelerate(ServerLevel level, Entity target) {
@@ -694,21 +673,7 @@ final class TechniqueVfx {
 	// ------------------------------------------------------------------ movement
 
 	static void swap(ServerLevel level, Vec3 a, Vec3 b) {
-		for (Vec3 p : List.of(a, b)) {
-			dot(level, SigilOption.glow(ElementFx.ARCANE.primary(), 1.8F), p.add(0, 1, 0));
-			ElementFx.starSeal(level, p.add(0, 0.07, 0), UP, 0.7, 16);
-			ElementFx.ring(level, p.add(0, 1, 0), UP, ElementFx.ARCANE.secondary(), 1.0, 0.3, 0.04, 8);
-			ElementFx.shimmer(level, p.add(0, 1, 0), 0.3, 5);
-		}
-		Vec3 d = b.subtract(a);
-		double length = d.length();
-		if (length > 2.4) {
-			Vec3 step = d.scale(1.1 / length);
-			ElementFx.ray(level, a.add(0, 1, 0).add(step), b.add(0, 1, 0).subtract(step), ElementFx.ARCANE.primary(), 0.04, 8);
-		}
-		Fx.sound(level, a, SoundEvents.NOTE_BLOCK_SNARE, 1.0F, 1.2F);
-		Fx.sound(level, b, SoundEvents.ENDERMAN_TELEPORT, 0.4F, 1.6F);
-	}
+		LifeArcaneFx.swap(level, a, b);	}
 
 	private static final int ZIP = 0xFFE070;
 
@@ -880,7 +845,7 @@ final class TechniqueVfx {
 	static void twinStarMark(ServerLevel level, LivingEntity caster) {
 		ElementFx.orbit(level, caster.position().add(0, 1.1, 0), 0.8, 2, 12, 0xFFE8FF, ElementFx.ARCANE.primary());
 		ElementFx.starSeal(level, caster.position().add(0, 0.07, 0), UP, 0.6, 20);
-		Fx.sound(level, caster.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, caster.position(), "arcane_twin", 0.8F, 1.0F);
 	}
 
 	/** Twin Star's second cast: a flash of starlight at the hands and a star under your feet. */
@@ -888,9 +853,9 @@ final class TechniqueVfx {
 		Vec3 hand = caster.getEyePosition().add(caster.getLookAngle().scale(0.8)).add(0, -0.3, 0);
 		dot(level, flash(0xE678DC), hand);
 		ElementFx.ring(level, hand, caster.getLookAngle(), ElementFx.ARCANE.secondary(), 0.1, 0.7, 0.03, 7);
-		ElementFx.flatSigil(level, caster.position(), SigilOption.STAR, ElementFx.ARCANE.primary(), 0.6, 14, 0.2);
+		ElementFx.groundRing(level, caster.position(), ElementFx.ARCANE.primary(), 0.6, 0.2, 0.04, 12);
 		Vfx.radial(level, ParticleTypes.END_ROD, hand, 8, 0.12);
-		Fx.sound(level, hand, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, hand, "arcane_twin_echo", 0.8F, 1.0F);
 	}
 
 	private static final int BEAT = 0xF5D56A;
