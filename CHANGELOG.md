@@ -17,6 +17,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   there, and stays quiet only once it has truly fallen.
 - The allies the Archivist calls up as it rewrites its Cord now go when it falls, as the dungeon bosses' do.
 - Spectators watching a boss fall no longer earn its feat.
+- A storm spell shocking the Tide Scribe's flooded arena also shocked your friends, your pets and any villager
+  wading in it. It now spares everyone your spells can't harm (you still get a jolt if you're in the water).
 
 ## [0.4.1-alpha] - 2026-09-28
 

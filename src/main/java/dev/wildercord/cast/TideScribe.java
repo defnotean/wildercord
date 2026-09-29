@@ -438,7 +438,8 @@ public class TideScribe extends DungeonBoss {
 				interrupt();
 				continue;
 			}
-			if (cast.caster == this && !Targets.canHarm(this, t)) {
+			// Whoever cast it is shocked too if they're wading, but never their allies, pets or bystanders.
+			if (t != cast.caster && !Targets.canHarm(cast.caster, t)) {
 				continue;
 			}
 			Effects.hurt(cast, t, source, shock);
@@ -634,13 +635,18 @@ public class TideScribe extends DungeonBoss {
 			forceTide(false);
 			Fx.sound(level, Vec3.atCenterOf(home), DungeonSounds.TIDE_EBB, 2.0F, 0.8F);
 		}
-		AWAKE.remove(this);
+		// (The client runs die() too: the set of awake Scribes is the server's alone.)
+		if (!level().isClientSide()) {
+			AWAKE.remove(this);
+		}
 	}
 
 	@Override
-	public void remove(RemovalReason reason) {
-		AWAKE.remove(this);
-		super.remove(reason);
+	public void onRemoval(RemovalReason reason) {
+		if (!level().isClientSide()) {
+			AWAKE.remove(this);
+		}
+		super.onRemoval(reason);
 	}
 
 	@Override
