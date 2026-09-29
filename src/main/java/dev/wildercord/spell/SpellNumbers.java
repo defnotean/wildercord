@@ -93,6 +93,17 @@ public final class SpellNumbers {
 
 	public static final int CONSTELLATION_STARS = 5;
 
+	/**
+	 * Quicken makes a flying shape at most this many times as fast (three Quickens on a bolt). Past that it only
+	 * lengthened each step of a flight, until one step crossed hundreds of blocks and loaded the world along it.
+	 */
+	public static final double MAX_QUICKEN = 8.0;
+
+	/** A flying shape's speed factor from Quicken: {@code each} per Quicken, up to {@link #MAX_QUICKEN}. */
+	private static double quickened(SpellPlan.Group g, double each) {
+		return Math.min(MAX_QUICKEN, Math.pow(each, g.count(Runes.QUICKEN)));
+	}
+
 	/** Domain radius: 9 blocks, widened up to 24 at most (beyond that it can't be seen or kept up). */
 	public static final double MAX_DOMAIN_RADIUS = 24.0;
 
@@ -115,7 +126,7 @@ public final class SpellNumbers {
 
 	/** Crescent speed in blocks per tick. */
 	public static double crescentSpeed(SpellPlan.Group g) {
-		return 1.5 * Math.pow(2.0, g.count(Runes.QUICKEN));
+		return 1.5 * quickened(g, 2.0);
 	}
 
 	public static int barrageBlows(SpellPlan.Group g) {
@@ -128,7 +139,7 @@ public final class SpellNumbers {
 
 	/** Orb speed in blocks per tick. */
 	public static double orbSpeed(SpellPlan.Group g) {
-		return 0.5 * Math.pow(1.6, g.count(Runes.QUICKEN));
+		return 0.5 * quickened(g, 1.6);
 	}
 
 	public static double blitzWidth(SpellPlan.Group g) {
@@ -154,7 +165,7 @@ public final class SpellNumbers {
 
 	/** Spark speed in blocks per tick. */
 	public static double sparkSpeed(SpellPlan.Group g) {
-		return 2.4 * Math.pow(2.0, g.count(Runes.QUICKEN));
+		return 2.4 * quickened(g, 2.0);
 	}
 
 	public static double novaRadius(SpellPlan.Group g) {
@@ -163,12 +174,12 @@ public final class SpellNumbers {
 
 	/** Wisp speed in blocks per tick. */
 	public static double wispSpeed(SpellPlan.Group g) {
-		return 0.7 * Math.pow(1.5, g.count(Runes.QUICKEN));
+		return 0.7 * quickened(g, 1.5);
 	}
 
 	/** Comet speed in blocks per tick. */
 	public static double cometSpeed(SpellPlan.Group g) {
-		return 1.1 * Math.pow(1.6, g.count(Runes.QUICKEN));
+		return 1.1 * quickened(g, 1.6);
 	}
 
 	public static double cometRadius(SpellPlan.Group g) {
@@ -177,7 +188,7 @@ public final class SpellNumbers {
 
 	/** Ricochet speed in blocks per tick, as it leaves the hand. */
 	public static double ricochetSpeed(SpellPlan.Group g) {
-		return 1.2 * Math.pow(1.5, g.count(Runes.QUICKEN));
+		return 1.2 * quickened(g, 1.5);
 	}
 
 	/** Bounces before a Ricochet stops: 4, and each Bounce adds 3. */
@@ -187,7 +198,7 @@ public final class SpellNumbers {
 
 	/** Cluster speed in blocks per tick. */
 	public static double clusterSpeed(SpellPlan.Group g) {
-		return 1.2 * Math.pow(1.6, g.count(Runes.QUICKEN));
+		return 1.2 * quickened(g, 1.6);
 	}
 
 	/** How far around each of a Cluster's shards it strikes. */
@@ -264,7 +275,7 @@ public final class SpellNumbers {
 
 	/** Arc speed in blocks per tick. */
 	public static double arcSpeed(SpellPlan.Group g) {
-		return 1.1 * Math.pow(1.5, g.count(Runes.QUICKEN));
+		return 1.1 * quickened(g, 1.5);
 	}
 
 	public static final int PULSES = 3;
@@ -328,7 +339,7 @@ public final class SpellNumbers {
 
 	/** Wave speed in blocks per tick. */
 	public static double waveSpeed(SpellPlan.Group g) {
-		return Math.pow(2.0, g.count(Runes.QUICKEN));
+		return quickened(g, 2.0);
 	}
 
 	public static double mineRadius(SpellPlan.Group g) {
@@ -366,7 +377,7 @@ public final class SpellNumbers {
 
 	/** Bolt speed in blocks per tick. */
 	public static double boltSpeed(SpellPlan.Group g) {
-		return 1.6 * Math.pow(2.0, g.count(Runes.QUICKEN));
+		return 1.6 * quickened(g, 2.0);
 	}
 
 	public static int delayTicks(SpellPlan.Link link) {

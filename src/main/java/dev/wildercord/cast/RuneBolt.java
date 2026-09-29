@@ -57,6 +57,8 @@ public class RuneBolt extends Projectile {
 	private double speed;
 	private boolean arc;
 	private int lifeLeft;
+	/** How much further a (straight, not lobbed) bolt may fly: {@link #RANGE} blocks in all, however fast it goes. */
+	private double travelLeft;
 	private int color;
 	private Vfx.Theme theme;
 	private final List<Entity> alreadyHit = new ArrayList<>();
@@ -101,6 +103,7 @@ public class RuneBolt extends Projectile {
 		bolt.arc = arc;
 		bolt.speed = arc ? SpellNumbers.arcSpeed(group) : SpellNumbers.boltSpeed(group);
 		bolt.lifeLeft = arc ? 120 : (int) Math.ceil(RANGE / bolt.speed) + 4;
+		bolt.travelLeft = RANGE;
 		bolt.color = CastEngine.colorOf(group);
 		bolt.theme = Vfx.theme(group);
 		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());
@@ -136,6 +139,7 @@ public class RuneBolt extends Projectile {
 		speed = Math.min(3.0, speed * dev.wildercord.spell.Parry.REFLECT_SPEED);
 		setDeltaMovement(getDeltaMovement().normalize().scale(speed));
 		lifeLeft = (int) Math.ceil(RANGE / speed) + 4;
+		travelLeft = RANGE;
 	}
 
 	@Override
@@ -150,7 +154,7 @@ public class RuneBolt extends Projectile {
 		if (!(level() instanceof ServerLevel server)) {
 			return;
 		}
-		if (cast == null || !cast.alive() || --lifeLeft <= 0) {
+		if (cast == null || !cast.alive() || --lifeLeft <= 0 || !arc && travelLeft <= 1.0E-3) {
 			fizzle();
 			return;
 		}
@@ -163,6 +167,14 @@ public class RuneBolt extends Projectile {
 			setDeltaMovement(getDeltaMovement().add(0, -0.055, 0));
 		}
 		Vec3 motion = getDeltaMovement();
+		if (!arc) {
+			// Up to 48 blocks, as it says: a quickened bolt's spare ticks used to carry it on well past that.
+			double step = motion.length();
+			if (step > travelLeft) {
+				motion = motion.scale(travelLeft / step);
+			}
+			travelLeft -= Math.min(step, travelLeft);
+		}
 		Vec3 from = position();
 		Vec3 to = from.add(motion);
 		BlockHitResult block = server.clip(new net.minecraft.world.level.ClipContext(from, to,

@@ -23,6 +23,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Ring's hits and a Linger's second landing all used up one of the cast's eight links, so `Bolt · On Hit` four times
   over and then `Bolt · Fire` never threw its last bolt, and a Linger deep in a chain never landed again. Only links
   count now.
+- **Quicken can't fling a spell across the world.** Quicken stacked without limit on flying shapes, so a spark or bolt
+  with a pile of Quickens crossed thousands of blocks in one step and loaded (even generated) the world along its
+  way, a cheap way to lag a server. A flying shape is now at most 8 times as fast (three Quickens on a bolt), a Wisp
+  or a Ricochet stops where the loaded world ends, and a bolt flies its 48 blocks and no further (its spare ticks
+  used to carry a quickened bolt 70 blocks and more), a wave its 14.
 
 ## [0.4.2-alpha] - 2026-09-28
 

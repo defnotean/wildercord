@@ -211,7 +211,8 @@ final class ShapeRunners {
 		int steps = (int) Math.ceil(14 / speed);
 		Set<UUID> hit = new java.util.HashSet<>();
 		for (int t = 0; t < steps; t++) {
-			double d = 1.0 + speed * (t + 1);
+			// 14 blocks and no further, however quick: the last step used to overshoot by up to a whole step.
+			double d = 1.0 + Math.min(14.0, speed * (t + 1));
 			Scheduler.later(t + 1, () -> {
 				if (!cast.alive()) {
 					return;
@@ -578,6 +579,11 @@ final class ShapeRunners {
 			net.minecraft.world.level.ClipContext.Fluid.NONE, cast.caster));
 	}
 
+	/** Whether the ground at {@code at} is loaded: a flight that goes on for seconds stops at its edge rather than load more. */
+	private static boolean loaded(Cast cast, Vec3 at) {
+		return cast.level.hasChunkAt(net.minecraft.core.BlockPos.containing(at));
+	}
+
 	private static boolean missed(net.minecraft.world.phys.BlockHitResult block) {
 		return block.getType() == net.minecraft.world.phys.HitResult.Type.MISS;
 	}
@@ -707,6 +713,11 @@ final class ShapeRunners {
 			}
 			Vec3 from = pos[0];
 			Vec3 to = from.add(velocity[0]);
+			if (!loaded(cast, to)) {
+				// Never on into ground that isn't loaded: following it there would load the world as it went.
+				ExpansionVfx.wispFade(cast.level, from, theme);
+				return false;
+			}
 			Contact c = contact(cast, g, anchored, from, to, 0.35, Set.of());
 			if (c != null && c.parried()) {
 				return false;
@@ -773,6 +784,11 @@ final class ShapeRunners {
 			velocity[0] = velocity[0].add(0, -0.06, 0);
 			Vec3 from = pos[0];
 			Vec3 to = from.add(velocity[0]);
+			if (!loaded(cast, to)) {
+				// As a wisp: it stops where the loaded world does.
+				ExpansionVfx.ricochetEnd(cast.level, from, theme);
+				return false;
+			}
 			net.minecraft.world.phys.BlockHitResult block = clip(cast, from, to);
 			Vec3 end = missed(block) ? to : block.getLocation();
 			List<Entity> passed = along(cast, from, end, 0.45, hit);

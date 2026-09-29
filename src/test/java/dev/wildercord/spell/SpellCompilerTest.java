@@ -318,6 +318,25 @@ class SpellCompilerTest {
 	}
 
 	@Test
+	void quickenMakesAFlyingShapeAtMostEightTimesAsFast() {
+		assertEquals(3.2, SpellNumbers.boltSpeed(compile(BOLT, QUICKEN, HARM).root().groups.getFirst()), 1e-9);
+		assertEquals(1.6 * 8, SpellNumbers.boltSpeed(compile(BOLT, QUICKEN, QUICKEN, QUICKEN, HARM).root().groups.getFirst()), 1e-9);
+		RuneDef[] quickened = new RuneDef[12];
+		java.util.Arrays.fill(quickened, QUICKEN);
+		for (RuneDef shape : List.of(BOLT, ARC, SPARK, WISP, COMET, RICOCHET, CLUSTER, CRESCENT, ORB, WAVE)) {
+			quickened[0] = shape;
+			SpellPlan.Group g = compile(quickened).root().groups.getFirst();
+			assertEquals(11, g.count(QUICKEN), shape.name());
+			// Eleven Quickens used to fling a spark 4,900 blocks in one step.
+			double speed = shape == BOLT ? SpellNumbers.boltSpeed(g) : shape == ARC ? SpellNumbers.arcSpeed(g) : shape == SPARK ? SpellNumbers.sparkSpeed(g)
+				: shape == WISP ? SpellNumbers.wispSpeed(g) : shape == COMET ? SpellNumbers.cometSpeed(g) : shape == RICOCHET ? SpellNumbers.ricochetSpeed(g)
+				: shape == CLUSTER ? SpellNumbers.clusterSpeed(g) : shape == CRESCENT ? SpellNumbers.crescentSpeed(g) : shape == ORB ? SpellNumbers.orbSpeed(g)
+				: SpellNumbers.waveSpeed(g);
+			assertTrue(speed <= 2.4 * SpellNumbers.MAX_QUICKEN + 1e-9, shape.name() + " flies " + speed + " blocks a tick");
+		}
+	}
+
+	@Test
 	void domainWidensUpTo24Blocks() {
 		assertEquals(9.0, SpellNumbers.domainRadius(compile(DOMAIN, HARM).root().groups.getFirst()), 1e-9);
 		assertEquals(13.5, SpellNumbers.domainRadius(compile(DOMAIN, WIDEN, HARM).root().groups.getFirst()), 1e-9);
