@@ -17,9 +17,13 @@ Now and then the world's magic stirs by itself. Three events come on their own: 
   while one is going, an open rift closes (giving nothing) and a fallen star won't open. Mana storms still come.
 - **Nothing is permanent.** A fallen star's crater fills back in, and any monster an event brought is taken away when
   the event ends.
+- **Event monsters don't pick things up.** A star's guards and a rift's monsters never pick up items, so they can't walk
+  off with a fallen player's gear. One that's taken away drops anything it was carrying.
+- **A monster that changes stays the event's.** A zombie that drowns, or a skeleton that freezes in powder snow, is
+  still one of the rift's (or the star's) own, and still has to be killed.
 - **Cooldowns are saved.** When each kind of event may next come, and where a star is lying, is saved with the world,
   so a restart doesn't reset them. (A storm or a rift in progress simply ends with a restart.)
-- Server operators can start any event on the spot; see [Controls]({{ '/controls/' | relative_url }}).
+- Server operators can start any event on the spot, in the Overworld; see [Controls]({{ '/controls/' | relative_url }}).
 - **A server can switch world events off** in its settings. Then none of the three ever starts, not even from the
   command, though one already going runs its course.
 
@@ -34,7 +38,8 @@ Now and then the world's magic stirs by itself. Three events come on their own: 
   near you, no storm. (See [Ley Lines]({{ '/progression/ley-lines/' | relative_url }}).)
 - **About once every three in-game days** for a player near a ley line.
 - **A region that just had one won't get another for a day and a half.** Regions are squares 512 blocks across.
-- **At most two storms** rage at once, in all the worlds together.
+- **At most two storms** rage at once, in all the worlds together, and **never on top of each other**: a storm won't
+  gather where its reach would overlap one already raging.
 - It lasts **3 to 5 minutes**, and covers everything within **96 blocks** of its heart (at any height).
 
 ### What happens
@@ -107,8 +112,11 @@ advancement *Stormcaller*.
 
 - **At night** (from dusk to dawn on the day clock), and **rarely**: about once in five nights for each player.
 - **At most one star lying in a world at a time**, and after one falls, none falls in that world for half a day.
-- It lands **60 to 150 blocks from a player**, on loaded, solid, dry ground, clear of water and lava, and somewhere that
-  player would be allowed to build (spawn protection and claims are respected).
+- It lands **60 to 150 blocks from a player**, on solid, dry ground where the world is running (close enough to a
+  player that nothing there is paused), clear of water and lava, and somewhere that player would be allowed to build
+  (spawn protection and claims are respected).
+- **It never crushes what's built.** If someone builds where it's coming down while it falls, the star burns up in the
+  air instead.
 
 ### What happens
 
@@ -119,8 +127,9 @@ advancement *Stormcaller*.
      gravel, sandstone, snow and the plants on them, never anything built or any block with things inside. The crater
      is about 7 blocks across and 2 deep at most, with a scorched floor of blackstone and smooth basalt.
    - Otherwise it only leaves dark scorch marks on the ground.
-3. **The Fallen Star** lies in the middle: a lump of glowing starstone. It can't be mined. For **5 minutes** a column of
-   starlight climbs from it, seen from up to 400 blocks away, so you can race to it.
+3. **The Fallen Star** lies in the middle: a lump of glowing starstone. It can't be mined, and not even the Wither can
+   break it. For **5 minutes** a column of starlight climbs from it, seen from up to 400 blocks away, so you can race
+   to it.
 
 <img src="{{ '/assets/images/world-star-column.jpg' | relative_url }}" alt="A column of starlight rising from a Fallen Star in a grassy clearing at night, two Runebound approaching it" class="shot">
 <span class="caption">The column of starlight, and the star's guards rising.</span>
@@ -154,8 +163,12 @@ dust"*. It gives:
 
 The rune is decided when the star lands, so waiting doesn't change it.
 
-Then the star crumbles, its remaining guards vanish, the scorch marks go and **the crater fills back in**, block for
-block (except where someone has built since). A star nobody opens **fades after 20 minutes**, the same way.
+Then the star crumbles, **every** remaining guard vanishes (even one led out of loaded ground, which goes as soon as
+its ground loads), the scorch marks go and **the crater fills back in**, block for block (except where someone has
+built since). Anyone standing in the crater is lifted clear first, so nobody is buried. A star nobody opens **fades
+after 20 minutes**, the same way. One left where nobody goes still counts as gone after 20 minutes, so it never holds
+up the next star, and crumbles as soon as its ground loads again. One taken away some other way (by an operator's
+command, say) cleans up after itself just the same.
 
 <img src="{{ '/assets/images/fallen-star.jpg' | relative_url }}" alt="A Fallen Star, a dark block glinting with white light, under its column of starlight with a Runebound zombie nearby" class="shot">
 <span class="caption">A Fallen Star, ready to open once its guards are down.</span>

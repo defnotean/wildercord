@@ -76,9 +76,10 @@ on top of the guards placed there.
 The four keepers share these rules:
 
 - **They wake once.** The boss rises from its lectern or altar the first time a player comes near, and never again
-  once it has fallen. (A dimension dungeon's altar re-arms only if its boss is lost without falling, for example
-  removed some other way: after players have spent 3 minutes in the arena without finding it, it wakes a new one.
-  The Archive's lectern never re-arms.)
+  once it has fallen. (A lectern or altar re-arms only if its boss is lost without falling, for example removed some
+  other way: after players have spent about 3 minutes in the Archive or the arena without finding it, it wakes a new
+  one.)
+- **They stay in their arenas.** No boss can be led through a portal, or carried off in a boat or minecart.
 - **Every spell is announced.** The boss bar names the spell it's casting, and its circle opens in its hand first.
   The Archivist telegraphs for 1.4 seconds; so do the other three.
 - **Three phases.** Each changes at two thirds and one third of its health. While it changes, it can't be hurt.
@@ -90,7 +91,11 @@ The four keepers share these rules:
   count for reactions.
 - **Each has one trick** that teaches something about magic. Read its page before you go.
 - **It counts as a boss** for the 7th Heart Circle's breakthrough: everyone within 96 blocks when it dies gets it.
-  Everyone within 64 blocks earns its Grimoire feat. See [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}).
+  Everyone within 64 blocks earns its Grimoire feat. Spectators get neither. See
+  [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}).
+- **Its boss bar** shows to everyone within 48 blocks of its lectern or altar, and goes when you leave (or when the boss
+  is gone, however it goes).
+- **Its guards go with it.** The Runebound it called up vanish when it dies.
 
 The three dimension bosses add a few more rules:
 
@@ -98,8 +103,6 @@ The three dimension bosses add a few more rules:
   blocks of its altar gets a Tier IV rune they don't know yet, straight into their pack. The killer also gets its loot
   (its trophy, its own Tier IV rune of the world, 3 Mana Crystals, a Torn Page and more). Anything that doesn't fit is
   left on the altar, glowing, where fire, lava and blasts can't touch it.
-- **Its boss bar** shows to everyone within 48 blocks of its altar, and goes when you leave.
-- **Its guards go with it.** The Runebound it called up vanish when it dies.
 
 ### Trophies
 
