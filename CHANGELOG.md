@@ -32,6 +32,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   wind (and could set off Rupture on a bleeding creature beside you, writing it in your Grimoire). It's always earth now.
 - **A spell could set the Cinder Warden alight for a moment**, long enough for a storm effect in the same spell to set
   off Overload and crack its armour. Nothing sets it alight now, as the Ember Sanctum page says.
+- **A settings file that couldn't be written lost its settings.** When the server couldn't add the newer settings to an
+  older `wildercord.json` (a read-only file, say), it ran on the defaults instead of the owner's settings. The file's
+  settings now hold either way; only the new ones run at their defaults.
 
 ## [0.4.2-alpha] - 2026-09-28
 
