@@ -79,7 +79,11 @@ final class FusedVoid {
 					devour(cast, t, power, shown++ < MAX_TARGETS);
 				}
 			}
-			case "timesteal" -> first(harmed).forEach(t -> timesteal(cast, t, duration));
+			case "timesteal" -> {
+				for (int i = 0; i < harmed.size(); i++) {
+					timesteal(cast, harmed.get(i), duration, i < MAX_TARGETS);
+				}
+			}
 			case "hemomancy" -> {
 				if (harmed.isEmpty()) {
 					return true;
@@ -228,9 +232,10 @@ final class FusedVoid {
 	/**
 	 * Timesteal: up to two of the target's good effects (the strongest, then the longest), each with the
 	 * time it had left, at most 30 seconds, go to the caster. A creature loses the whole effect; a boss
-	 * only the time taken (its fight is never stripped bare), and never an endless effect.
+	 * only the time taken (its fight is never stripped bare), and never an endless effect. Every target is
+	 * robbed; only if {@code show} (the first few of a crowd) is the theft drawn.
 	 */
-	private static void timesteal(Cast cast, LivingEntity t, double duration) {
+	private static void timesteal(Cast cast, LivingEntity t, double duration, boolean show) {
 		int cap = Math.max(20, Effects.ticks(FusedVoidRules.TIMESTEAL_SECONDS, duration));
 		boolean boss = Spirits.isBoss(t);
 		List<MobEffectInstance> good = new ArrayList<>();
@@ -262,7 +267,9 @@ final class FusedVoid {
 				caster.addEffect(effect, caster);
 			}
 		}
-		FusedVoidVfx.timesteal(cast.level, t, caster, colours);
+		if (show) {
+			FusedVoidVfx.timesteal(cast.level, t, caster, colours);
+		}
 	}
 
 	/** Ticks an effect has left, an endless one counting as longest of all. */

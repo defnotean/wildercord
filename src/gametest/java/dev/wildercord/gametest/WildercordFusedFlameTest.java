@@ -1,5 +1,6 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.Effects;
 import dev.wildercord.cast.SpellCaster;
 import dev.wildercord.content.WildercordItems;
@@ -9,6 +10,8 @@ import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.SpellCompiler;
+import dev.wildercord.spell.SpellPlan;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -92,6 +95,7 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 			check(context, world, failures, "Monolith", () -> monolith(context, world));
 			check(context, world, failures, "Magnetize", () -> magnetize(context, world));
 			check(context, world, failures, "Sinkhole", () -> sinkhole(context, world));
+			check(context, world, failures, "Firestorm on a crowd", () -> firestormCrowd(world));
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The fused runes of flame and stone went wrong:\n  " + String.join("\n  ", failures));
 			}
@@ -711,5 +715,30 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 			out.add(free);
 		}
 		return out;
+	}
+
+	/**
+	 * Firestorm landing on a crowd of ten, more than the eight whose fire leaps on: every husk is set alight and
+	 * takes its 4 (checked at once, before any fire has burned).
+	 */
+	private static List<String> firestormCrowd(TestSingleplayerContext world) {
+		return world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			List<Entity> crowd = new ArrayList<>();
+			for (int i = 0; i < 10; i++) {
+				crowd.add(husk(level, -9 + 2 * i, 6, false));
+			}
+			SpellPlan.EffectNode node = SpellCompiler.compile(List.of(Runes.BURST, Runes.FIRESTORM)).root().groups.getFirst().effects.getFirst();
+			Effects.apply(new Cast(player), node, new Cast.Hit(crowd, crowd.getFirst().position(), new Vec3(0, 0, 1), player.position(), null, null, false));
+			List<String> problems = new ArrayList<>();
+			for (int i = 0; i < crowd.size(); i++) {
+				LivingEntity t = (LivingEntity) crowd.get(i);
+				if (!burning(t) || lost(t) < 3.5F) {
+					problems.add("husk " + (i + 1) + " of ten should be set alight and take 4 (" + describe(t) + ")");
+				}
+			}
+			return problems;
+		});
 	}
 }

@@ -79,8 +79,16 @@ final class FusedFrost {
 			}
 			case "rime_seal" -> rimeSeal(cast, hit, 1.5 * SpellNumbers.effectRadius(node), power, duration);
 			case "cryostasis" -> first(helped).forEach(t -> FusedFrostWards.cryostasis(cast, t, Effects.ticks(2, duration), 6 * power));
-			case "frostbite" -> first(harmed).forEach(t -> frostbite(cast, t, power, duration));
-			case "absolute_zero" -> first(harmed).forEach(t -> absoluteZero(cast, t, power, duration));
+			case "frostbite" -> {
+				for (int i = 0; i < harmed.size(); i++) {
+					frostbite(cast, harmed.get(i), power, duration, i < MAX_TARGETS);
+				}
+			}
+			case "absolute_zero" -> {
+				for (int i = 0; i < harmed.size(); i++) {
+					absoluteZero(cast, harmed.get(i), power, duration, i < MAX_TARGETS);
+				}
+			}
 			case "fossilize" -> first(harmed).forEach(t -> fossilize(cast, t, power, duration));
 			case "geode" -> helped.forEach(t -> geode(cast, t, power, duration, amplify));
 			default -> {
@@ -214,15 +222,19 @@ final class FusedFrost {
 
 	/**
 	 * Frostbite: 3 damage, then 1 a second for 5 seconds as the cold sets in (Slowness I, II, then III),
-	 * and at the end a freeze of a second. The same caster biting again starts the cold over.
+	 * and at the end a freeze of a second. The same caster biting again starts the cold over. Every target
+	 * is bitten; only if {@code sets} does the cold set in (the first few of a crowd).
 	 */
-	private static void frostbite(Cast cast, LivingEntity t, double power, double duration) {
+	private static void frostbite(Cast cast, LivingEntity t, double power, double duration, boolean sets) {
 		ServerLevel level = cast.level;
 		DamageSource cold = frost(cast);
 		FusedFrostVfx.frostbite(level, t, cast.caster.getEyePosition());
 		Effects.hurt(cast, t, cold, 3 * power);
 		slow(cast, t, 0, 30);
 		chill(t, 30);
+		if (!sets) {
+			return;
+		}
 		int beats = FusedFrostRules.frostbiteBeats(duration);
 		String key = key("frostbite", t, cast);
 		Object token = claim(key);
@@ -260,18 +272,23 @@ final class FusedFrost {
 	/**
 	 * Absolute Zero: Slowness IV for 3 seconds; a target that was already slowed or frozen (Slowness
 	 * of any kind, a frozen mark, frost through it, held by a freeze) freezes solid for 2 seconds (1 on
-	 * players) and takes 7 damage.
+	 * players) and takes 7 damage. Every target is struck; only if {@code show} is it drawn in full (the
+	 * first few of a crowd).
 	 */
-	private static void absoluteZero(Cast cast, LivingEntity t, double power, double duration) {
+	private static void absoluteZero(Cast cast, LivingEntity t, double power, double duration, boolean show) {
 		boolean cold = alreadyCold(t);
 		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(3, duration), 3, false, true), cast.caster);
 		if (!cold) {
-			FusedFrostVfx.absoluteZero(cast.level, t);
+			if (show) {
+				FusedFrostVfx.absoluteZero(cast.level, t);
+			}
 			return;
 		}
 		int hold = Effects.ticks(t instanceof Player ? 1 : 2, duration);
 		freeze(t, hold);
-		FusedFrostVfx.absoluteZeroSolid(cast.level, t, hold);
+		if (show) {
+			FusedFrostVfx.absoluteZeroSolid(cast.level, t, hold);
+		}
 		Effects.hurt(cast, t, frost(cast), 7 * power);
 	}
 

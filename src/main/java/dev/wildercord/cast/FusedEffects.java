@@ -53,9 +53,14 @@ public final class FusedEffects {
 		switch (Effects.builtIn(node.effect) ? node.effect.path() : "") {
 			case "firestorm" -> {
 				double radius = 2.0 * SpellNumbers.effectRadius(node);
-				for (LivingEntity t : first(harmed)) {
+				int burning = 0;
+				for (LivingEntity t : harmed) {
 					t.igniteForSeconds((float) (6 * duration));
 					Effects.hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 4 * power * Reactions.fire(cast, t));
+					// Every target burns; only the first few spread it (and show it), so a crowd can't flood the server.
+					if (burning++ >= MAX_TARGETS) {
+						continue;
+					}
 					FusionVfx.firestorm(level, t, radius);
 					// The fire leaps to everyone near it (but never back onto the caster's side).
 					int spread = 0;

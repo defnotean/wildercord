@@ -171,10 +171,14 @@ final class FusedStorm {
 			double power, double duration, int amplify) {
 		double radius = SpellNumbers.effectRadius(node);
 		switch (node.effect.path()) {
-			case "riftbolt" -> riftbolt(cast, hit, first(harmed, MAX_TARGETS), power, duration);
+			case "riftbolt" -> riftbolt(cast, hit, harmed, power, duration);
 			case "stormweave" -> stormweave(cast, hit, harmed, WEAVE_RADIUS * radius, power);
 			case "stormclock" -> stormclock(cast, hit, harmed, CLOCK_RADIUS * radius, power);
-			case "heartstopper" -> first(harmed, MAX_TARGETS).forEach(t -> heartstopper(cast, hit, t, power, duration));
+			case "heartstopper" -> {
+				for (int i = 0; i < harmed.size(); i++) {
+					heartstopper(cast, hit, harmed.get(i), power, duration, i < MAX_TARGETS);
+				}
+			}
 			case "thunderhead" -> thunderhead(cast, hit, harmed, CLOUD_REACH * radius, power, Effects.ticks(CLOUD_SECONDS, duration));
 			case "downdraft" -> downdraft(cast, hit, DOWNDRAFT_RADIUS * radius, power);
 			case "updraft" -> updraft(cast, hit, harmed, UPDRAFT_RADIUS * radius, power);
@@ -189,7 +193,10 @@ final class FusedStorm {
 
 	// ------------------------------------------------------------------ Riftbolt
 
-	/** Riftbolt: a black bolt, darkness, and a rift that tears the target through to somewhere safe further on. */
+	/**
+	 * Riftbolt: a black bolt, darkness, and a rift that tears the target through to somewhere safe further on.
+	 * Every target takes the bolt; only the first few of a crowd are torn through.
+	 */
 	private static void riftbolt(Cast cast, Cast.Hit hit, List<LivingEntity> targets, double power, double duration) {
 		ServerLevel level = cast.level;
 		if (targets.isEmpty()) {
@@ -201,15 +208,21 @@ final class FusedStorm {
 		int drawn = 0;
 		for (LivingEntity t : targets) {
 			// Only the first few get the whole show; a crowd still gets every part of the spell.
-			boolean full = drawn++ < 4;
+			boolean full = drawn < 4;
+			boolean torn = drawn++ < MAX_TARGETS;
 			Vec3 from = t.position();
 			Vec3 dir = Effects.horizontal(heading(cast, hit), from.subtract(origin(cast, hit)));
-			FusedStormVfx.riftbolt(level, origin(cast, hit), t, full);
+			if (torn) {
+				FusedStormVfx.riftbolt(level, origin(cast, hit), t, full);
+			}
 			Effects.hurt(cast, t, lightning(cast), RIFTBOLT_DAMAGE * power * Reactions.storm(cast, t));
 			if (!onHand(cast, t)) {
 				continue;
 			}
 			t.addEffect(new MobEffectInstance(MobEffects.DARKNESS, Effects.ticks(RIFT_DARKNESS_SECONDS, duration), 0, false, true), cast.caster);
+			if (!torn) {
+				continue;
+			}
 			Vec3 exit = movable(t) ? riftExit(level, t, dir) : null;
 			if (exit == null) {
 				// The rift opens on it and can't take it (a boss, or nowhere safe to put it): it holds.
@@ -316,7 +329,8 @@ final class FusedStorm {
 		for (Vec3 spot : spots) {
 			clock(cast, spot, radius, power);
 		}
-		for (LivingEntity t : first(harmed, MAX_TARGETS)) {
+		// The first strike lands on every target; only the clocks are few.
+		for (LivingEntity t : harmed) {
 			Effects.hurt(cast, t, lightning(cast), CLOCK_FIRST_DAMAGE * power * Reactions.storm(cast, t));
 		}
 	}
@@ -371,12 +385,15 @@ final class FusedStorm {
 
 	// ------------------------------------------------------------------ Heartstopper
 
-	/** Heartstopper: a shock to the heart, and for a while every second beat is skipped: a short stun. */
-	private static void heartstopper(Cast cast, Cast.Hit hit, LivingEntity t, double power, double duration) {
+	/**
+	 * Heartstopper: a shock to the heart, and for a while every second beat is skipped: a short stun. Every
+	 * target is shocked; only if {@code skipping} (the first few of a crowd) does its heart go on skipping.
+	 */
+	private static void heartstopper(Cast cast, Cast.Hit hit, LivingEntity t, double power, double duration, boolean skipping) {
 		ServerLevel level = cast.level;
 		FusedStormVfx.heartstopper(level, origin(cast, hit), t);
 		Effects.hurt(cast, t, lightning(cast), HEART_DAMAGE * power * Reactions.storm(cast, t));
-		if (!onHand(cast, t)) {
+		if (!skipping || !onHand(cast, t)) {
 			return;
 		}
 		int skips = heartSkips(Effects.ticks(HEART_SECONDS, duration));

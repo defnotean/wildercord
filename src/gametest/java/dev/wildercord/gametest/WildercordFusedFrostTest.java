@@ -108,6 +108,8 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 			cleanup(context, world);
 			check(failures, "Geode", geode(context, world));
 			cleanup(context, world);
+			check(failures, "A crowd of ten", crowd(context, world));
+			cleanup(context, world);
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The fused runes of frost went wrong:\n  " + String.join("\n  ", failures));
 			}
@@ -535,6 +537,54 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 			return null;
 		});
 		return found(cut, trade);
+	}
+
+	/**
+	 * A crowd of ten, more than the eight that get a lasting part of their own: Absolute Zero slows every husk
+	 * (not just the first eight), and Frostbite bites every one for 3.
+	 */
+	private static List<String> crowd(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<Integer> ids = on(world, player -> {
+			List<Integer> out = new ArrayList<>();
+			for (int i = 0; i < 10; i++) {
+				out.add(husk(player, -9 + 2 * i, 5));
+			}
+			return out;
+		});
+		context.waitTicks(2);
+		return on(world, player -> {
+			List<Entity> crowd = new ArrayList<>();
+			for (int id : ids) {
+				Mob t = mob(player, id);
+				if (t == null) {
+					return List.of("a husk of the crowd is gone");
+				}
+				crowd.add(t);
+			}
+			land(player, Runes.ABSOLUTE_ZERO, crowd);
+			List<String> out = new ArrayList<>();
+			for (int i = 0; i < crowd.size(); i++) {
+				int slow = slowness((LivingEntity) crowd.get(i));
+				if (slow != 3) {
+					out.add("Absolute Zero should give husk " + (i + 1) + " of ten Slowness IV (Slowness at " + slow + ")");
+				}
+			}
+			land(player, Runes.FROSTBITE, crowd);
+			for (int i = 0; i < crowd.size(); i++) {
+				LivingEntity t = (LivingEntity) crowd.get(i);
+				float taken = t.getMaxHealth() - t.getHealth();
+				if (taken < 2.5F || taken > 3.5F) {
+					out.add("Frostbite should bite husk " + (i + 1) + " of ten for 3 (took " + taken + ")");
+				}
+			}
+			return out;
+		});
+	}
+
+	/** Lands a Burst of {@code rune} on {@code struck}, as the player's spell (as the shape would). */
+	private static void land(ServerPlayer player, RuneDef rune, List<Entity> struck) {
+		Effects.apply(new Cast(player), SpellCompiler.compile(List.of(Runes.BURST, rune)).root().groups.getFirst().effects.getFirst(),
+			new Cast.Hit(new ArrayList<>(struck), player.position(), player.getLookAngle(), player.position(), null, null, false));
 	}
 
 	// ------------------------------------------------------------------ helpers
