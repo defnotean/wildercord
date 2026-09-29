@@ -2047,6 +2047,20 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/manatide"
         }
+      },
+      {
+        "when": "wildercord:tidehook",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tidehook"
+        }
+      },
+      {
+        "when": "wildercord:current",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/current"
+        }
       }
     ],
     "fallback": {

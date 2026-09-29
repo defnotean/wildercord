@@ -1,10 +1,13 @@
 package dev.wildercord.content;
 
+import dev.wildercord.Wildercord;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneSources;
 import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -17,7 +20,9 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.NestedLootTable;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.HashMap;
@@ -26,8 +31,9 @@ import java.util.Map;
 
 /**
  * Where magic is found. Structure chests get one extra roll for a rune (and some for a Mana
- * Crystal); mobs and bosses drop the runes that fit them. Only vanilla's own tables are
- * touched, so a datapack that replaces a table keeps full control of it.
+ * Crystal); mobs and bosses drop the runes that fit them; fishing brings up runes too (see
+ * {@link FishingRules}). Only vanilla's own tables are touched, so a datapack that replaces a
+ * table keeps full control of it.
  */
 public final class WildercordLoot {
 	private WildercordLoot() {}
@@ -135,6 +141,35 @@ public final class WildercordLoot {
 		SOURCE_DIGS.put(BuiltInLootTables.TRAIL_RUINS_ARCHAEOLOGY_COMMON, new SourcePool(8, RuneSources.TRAIL_RUINS));
 	}
 
+	/**
+	 * Fishing: the runes of the sea, crafted runes of water, frost and storm and a few a fisher is glad of, that a
+	 * treasure catch can be (open water only) and magic waters can tangle in the line. The runes found only by fishing
+	 * ({@link RuneSources#FISHING}) come up beside them, likelier than a sea rune of their tier (see {@link FishingRules}).
+	 */
+	private static final List<RuneDef> SEA = List.of(Runes.TIDEBREATH, Runes.CHILL, Runes.ICICLE, Runes.ICEPATH, Runes.SHOCK, Runes.FEATHER_FALL,
+		Runes.NIGHT_EYE, Runes.SWIFT, Runes.HEAL, Runes.COLLECT, Runes.LEAP, Runes.BUBBLE, Runes.FROST, Runes.THUNDERCLAP, Runes.JOLT, Runes.PULL,
+		Runes.GRAPPLE, Runes.LEVITATE, Runes.WAVE, Runes.FREEZE, Runes.LIGHTNING);
+
+	/** The crafted runes a fishing line brings up beside the runes found only by fishing (see {@link #SEA}). */
+	public static List<RuneDef> seaRunes() {
+		return SEA;
+	}
+
+	/**
+	 * One fished rune, as an inline loot table: a rune of the {@link #SEA} list or one found only by fishing, picked by
+	 * tier, each fishing rune {@code worldWeight} times as likely as a sea rune of its tier.
+	 */
+	private static LootTable fishedRunes(int worldWeight) {
+		LootPool.Builder pool = LootPool.lootPool().setRolls(ContextIntProviders.exactly(1));
+		for (RuneDef rune : SEA) {
+			pool.add(runeEntry(rune).setWeight(tierWeight(rune.tier())));
+		}
+		for (RuneDef rune : RuneSources.FISHING.runes()) {
+			pool.add(runeEntry(rune).setWeight(tierWeight(rune.tier()) * worldWeight));
+		}
+		return LootTable.lootTable().setParamSet(LootContextParamSets.FISHING).withPool(pool).build();
+	}
+
 	/** Ocean monuments have no chests: their Elder Guardians carry the monument's runes (chance out of 100). */
 	private static final Map<EntityType<?>, SourcePool> SOURCE_GUARDIANS = Map.of(
 		EntityTypes.ELDER_GUARDIAN, new SourcePool(50, RuneSources.OCEAN_MONUMENT)
@@ -200,6 +235,8 @@ public final class WildercordLoot {
 	);
 
 	public static void init() {
+		Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, Wildercord.id("magic_waters"), MagicWatersCondition.MAP_CODEC);
+		Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, Wildercord.id("fished_rune"), FishedRuneFunction.MAP_CODEC);
 		Map<ResourceKey<LootTable>, List<Map.Entry<Integer, RuneDef>>> mobTables = new HashMap<>();
 		MOB_DROPS.forEach((type, drop) -> type.getDefaultLootTable().ifPresent(key -> mobTables.put(key, drop)));
 		Map<ResourceKey<LootTable>, SourcePool> guardianTables = new HashMap<>();
@@ -278,6 +315,30 @@ public final class WildercordLoot {
 						builder.add(runeEntry(rune).setWeight(Math.max(1, Math.round((float) total * tierWeight(rune.tier()) / weights))));
 					}
 				});
+			}
+			// Fishing. A treasure catch is one item, so the rune and the page join vanilla's six treasures (weight 1 each).
+			if (key.equals(BuiltInLootTables.FISHING_TREASURE)) {
+				int[] weights = FishingRules.treasureWeights(scaled(FishingRules.TREASURE_RUNE_CHANCE, config.runeLootChance()),
+					scaled(FishingRules.TREASURE_PAGE_CHANCE, config.pageLootChance()));
+				if (weights[0] > 0 || weights[1] > 0) {
+					table.modifyPools(builder -> {
+						if (weights[0] > 0) {
+							builder.add(NestedLootTable.inlineLootTable(fishedRunes(FishingRules.WORLD_WEIGHT_TREASURE)).setWeight(weights[0])
+								.apply(() -> new FishedRuneFunction(false)));
+						}
+						if (weights[1] > 0) {
+							builder.add(LootItem.lootTableItem(WildercordItems.TORN_PAGE).setWeight(weights[1]));
+						}
+					});
+				}
+			}
+			// Magic waters: where magic runs strong at the bobber, a rune comes up tangled in the line, on top of the catch.
+			if (key.equals(BuiltInLootTables.FISHING) && config.runeLootChance() > 0) {
+				double multiplier = config.runeLootChance();
+				table.withPool(LootPool.lootPool().setRolls(ContextIntProviders.exactly(1))
+					.add(NestedLootTable.inlineLootTable(fishedRunes(FishingRules.WORLD_WEIGHT_MAGIC)))
+					.when(() -> new MagicWatersCondition(multiplier))
+					.apply(() -> new FishedRuneFunction(true)));
 			}
 		});
 

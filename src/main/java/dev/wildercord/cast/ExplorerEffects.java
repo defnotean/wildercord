@@ -56,7 +56,7 @@ import java.util.function.IntConsumer;
 
 /**
  * What the runes of the world do: the effects found only in particular places (structures,
- * biomes through Attunement, Wildercord's dungeons and bosses, and world events), plus the hooks
+ * biomes through Attunement, Wildercord's dungeons and bosses, world events and fishing), plus the hooks
  * for their modifiers (Trial Key, Kindled, Unstable) and their lasting marks (Cinderbrand,
  * Eclipse). {@link Effects} hands any effect it doesn't know itself to {@link #apply}. Numbers match
  * the rune descriptions in {@link Runes}; visuals are in {@link ExplorerVfx}.
@@ -119,6 +119,9 @@ public final class ExplorerEffects {
 			case "riftcall" -> riftcall(cast, hit.point(), 5.0 * radius, power, Effects.ticks(3, duration));
 			case "manaburn" -> harmed.forEach(t -> manaburn(cast, t, power));
 			case "manatide" -> helped.forEach(t -> manatide(cast, t, Effects.ticks(10, duration)));
+			// ---- Fished from open water
+			case "tidehook" -> harmed.forEach(t -> tidehook(cast, t, power));
+			case "current" -> rideCurrent(cast, power);
 			default -> { }
 		}
 	}
@@ -1316,5 +1319,113 @@ public final class ExplorerEffects {
 				ExplorerVfx.manatide(cast.level, player, false);
 			}
 		}, () -> { });
+	}
+
+	// ------------------------------------------------------------------ fished from open water
+
+	/**
+	 * Tidehook: a line of water hooks the target and reels it in to the caster in a few tugs, like a fish on a line,
+	 * and leaves it soaked (so storm sets off Conduct). Each tug takes over the target's drift across the ground, so
+	 * the hit's own knockback and the target's steps away don't undo the reel. A boss is struck and soaked, never moved.
+	 */
+	private static void tidehook(Cast cast, LivingEntity t, double power) {
+		ExplorerVfx.tidehook(cast.level, cast.caster, t);
+		Effects.hurt(cast, t, magic(cast), 4 * power);
+		Reactions.mark(t, Reactions.Mark.SOAKED);
+		if (Spirits.isBoss(t)) {
+			return;
+		}
+		for (int i = 0; i < ExplorerNumbers.TIDEHOOK_TUGS; i++) {
+			int tug = i;
+			Scheduler.later(1 + i * ExplorerNumbers.TIDEHOOK_TUG_EVERY, () -> {
+				if (!cast.alive() || !onHand(cast, t)) {
+					return;
+				}
+				Vec3 toward = cast.caster.position().subtract(t.position());
+				double pull = ExplorerNumbers.tidehookTug(toward.horizontalDistance());
+				if (pull <= 0) {
+					return;
+				}
+				Vec3 flat = new Vec3(toward.x, 0, toward.z).normalize();
+				Vec3 v = t.getDeltaMovement();
+				Effects.push(t, new Vec3(flat.x * pull - v.x, Math.max(0, ExplorerNumbers.TIDEHOOK_LIFT - Math.max(0, v.y)), flat.z * pull - v.z));
+				ExplorerVfx.tidehookTug(cast.level, cast.caster, t, tug);
+			});
+		}
+	}
+
+	private static final Identifier CURRENT_ID = Wildercord.id("current");
+
+	/**
+	 * Current: a current sweeps the caster the way they look, held at speed for a moment and then carried on by the
+	 * water or the air. Only in water or rain, as a trident's riptide; on dry land it fizzles. Fall damage is off until
+	 * the rider lands (a modifier on the fall damage multiplier, as Cushion's), so a surge up out of the sea or off a
+	 * cliff in the rain comes down softly. A movement rune: it always moves the caster, whatever the shape hit.
+	 */
+	private static void rideCurrent(Cast cast, double power) {
+		ServerLevel level = cast.level;
+		LivingEntity rider = cast.caster;
+		if (!rider.isInWaterOrRain()) {
+			ExplorerVfx.currentFizzle(level, rider);
+			Casters.tell(rider, net.minecraft.network.chat.Component.translatable("message.wildercord.current_dry"));
+			return;
+		}
+		Vec3 look = rider.getLookAngle();
+		// Lifted off the ground a little, so its grip doesn't eat the surge.
+		Vec3 dir = (rider.onGround() && look.y < 0.15 ? new Vec3(look.x, 0.15, look.z) : look).normalize();
+		double speed = ExplorerNumbers.currentSpeed(power);
+		AttributeInstance fall = rider.getAttribute(Attributes.FALL_DAMAGE_MULTIPLIER);
+		if (fall != null) {
+			fall.addOrUpdateTransientModifier(new AttributeModifier(CURRENT_ID, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+		}
+		// One current at a time: a newer one takes over, and only the last to land lets fall damage back.
+		Linger key = new Linger(rider.getUUID(), null, "current");
+		Object token = linger(key);
+		ExplorerVfx.current(level, rider, dir, true);
+		ride(rider, dir, speed);
+		for (int i = 1; i < ExplorerNumbers.CURRENT_TICKS; i++) {
+			Scheduler.later(i, () -> {
+				if (current(key, token) && cast.alive() && onHand(cast, rider)) {
+					ride(rider, dir, speed);
+					ExplorerVfx.current(level, rider, dir, false);
+				}
+			});
+		}
+		Scheduler.later(ExplorerNumbers.CURRENT_TICKS, () -> landSoftly(rider, fall, key, token, ExplorerNumbers.CURRENT_GUARD_TICKS, 0));
+	}
+
+	/** Holds the current's rider at its speed, whatever the water's drag or gravity did since the last tick. */
+	private static void ride(LivingEntity rider, Vec3 dir, double speed) {
+		rider.setDeltaMovement(dir.scale(speed));
+		rider.resetFallDistance();
+		rider.needsSync = true;
+		if (rider instanceof ServerPlayer player) {
+			player.connection.send(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(player));
+		}
+	}
+
+	/**
+	 * Waits for the current's rider to come down (onto the ground, or settled in water: in it {@code wet} ticks running,
+	 * long enough that a surge up out of the sea has left it; or {@code left} ticks at most), then lets fall damage back a
+	 * few ticks later, so the landing itself (which a player's client reports) is still covered.
+	 */
+	private static void landSoftly(LivingEntity rider, AttributeInstance fall, Linger key, Object token, int left, int wet) {
+		if (!current(key, token)) {
+			return;
+		}
+		int soaked = rider.isInWater() ? wet + 1 : 0;
+		boolean down = rider.onGround() || soaked >= ExplorerNumbers.CURRENT_SETTLE_TICKS;
+		if (left > 0 && rider.isAlive() && !rider.isRemoved() && !down) {
+			Scheduler.later(1, () -> landSoftly(rider, fall, key, token, left - 1, soaked));
+			return;
+		}
+		Scheduler.later(5, () -> {
+			if (current(key, token)) {
+				release(key, token);
+				if (fall != null) {
+					fall.removeModifier(CURRENT_ID);
+				}
+			}
+		});
 	}
 }

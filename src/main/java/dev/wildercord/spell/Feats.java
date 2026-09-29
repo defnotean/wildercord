@@ -48,6 +48,7 @@ public final class Feats {
 	public static final String CINDER_WARDEN = "cinder_warden";
 	public static final String STAR_EATER = "star_eater";
 	public static final String TIDE_SCRIBE = "tide_scribe";
+	public static final String REELED_IN = "reeled_in";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
 	public record Feat(String id, String name, String description) {
@@ -91,7 +92,8 @@ public final class Feats {
 		new Feat(KNOT, "Knotted", "Tied a whole spell into one rune at the Fusion Altar."),
 		new Feat(CINDER_WARDEN, "Tempered", "Broke the Cinder Warden's armour with reactions and brought it down."),
 		new Feat(STAR_EATER, "Starbreaker", "Shattered the Star-Eater's shield and brought it down."),
-		new Feat(TIDE_SCRIBE, "Low Tide", "Turned the Tide Scribe's own flood against it and brought it down."));
+		new Feat(TIDE_SCRIBE, "Low Tide", "Turned the Tide Scribe's own flood against it and brought it down."),
+		new Feat(REELED_IN, "Reeled In", "Fished a rune out of open water."));
 
 	/** The element reactions, in the order the Grimoire lists them: the first five, then the newer ones of {@link ReactionRules}. */
 	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse",

@@ -3016,6 +3016,27 @@ GLYPHS: dict[str, str] = {
         .##...##.
         #++#.#++#
     """,
+    # Fished from open water: a hook with its eye and barb over a splash, and an arrow riding the waves.
+    "tidehook": """
+        ....###..
+        ....#.#..
+        ....###..
+        .....#...
+        .#...#-..
+        ##...#-..
+        .#+..+#..
+        ..#**#...
+        -.-##-.-.
+    """,
+    "current": """
+        .......#.
+        ..####.##
+        .#++++*+#
+        ..####.##
+        .......#.
+        -##-.....
+        ..-##--##
+    """,
     "trial_key": """
         ..###....
         .#+*+#...

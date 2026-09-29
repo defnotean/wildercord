@@ -9,8 +9,8 @@ import java.util.Optional;
 
 /**
  * Where the runes of the world are found. These runes are never crafted: each belongs to a place
- * (a vanilla structure, a biome through Attunement, one of Wildercord's dungeons or bosses, or a
- * world event), so exploring is how a spellbook grows. Pure data, like {@link Runes}: the loot
+ * (a vanilla structure, a biome through Attunement, one of Wildercord's dungeons or bosses, a
+ * world event, or the open water a fishing line reaches), so exploring is how a spellbook grows. Pure data, like {@link Runes}: the loot
  * code, the tooltips (through tools/generate_assets.py, which reads the {@code source(...)} lines
  * below, so keep each on one line), the Grimoire and the tests all read it.
  *
@@ -78,6 +78,9 @@ public final class RuneSources {
 	public static final Source RIFT = source("rift", "Rift sieges", Runes.RIFTCALL, Runes.UNSTABLE);
 	public static final Source RIFTCALLER = source("riftcaller", "the Riftcaller", Runes.UNSTABLE);
 	public static final Source MANA_STORM = source("mana_storm", "Mana storms (a surge after 10 casts)", Runes.MANABURN, Runes.MANATIDE);
+
+	// ---- Fishing: vanilla's treasure catches, and a rune tangled in the line where magic runs strong (see WildercordLoot)
+	public static final Source FISHING = source("fishing", "Fished from open water", Runes.TIDEHOOK, Runes.CURRENT);
 
 	// ---- Now and then elsewhere, too
 	public static final Source ARCHIVE = source("archive", "Archive libraries", Runes.ECHOLOCATE, Runes.INFEST, Runes.FANGS, Runes.TREASURE_SENSE, Runes.IF_WOUNDED);
