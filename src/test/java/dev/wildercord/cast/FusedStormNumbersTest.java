@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /** The numbers behind the storm and wind fused runes agree with what their descriptions promise. */
 class FusedStormNumbersTest {
 	@Test
-	void aWebDealsThreeAndOneMoreForEveryOtherCaught() {
+	void aWebDealsFourAndOneMoreForEveryOtherCaught() {
 		assertEquals(0, FusedStormNumbers.weaveDamage(0));
-		assertEquals(3, FusedStormNumbers.weaveDamage(1));
-		assertEquals(4, FusedStormNumbers.weaveDamage(2));
-		assertEquals(6, FusedStormNumbers.weaveDamage(4));
+		assertEquals(4, FusedStormNumbers.weaveDamage(1));
+		assertEquals(5, FusedStormNumbers.weaveDamage(2));
+		assertEquals(7, FusedStormNumbers.weaveDamage(4));
 		// A web holds four at most: a fifth changes nothing.
-		assertEquals(6, FusedStormNumbers.weaveDamage(5));
+		assertEquals(7, FusedStormNumbers.weaveDamage(5));
 	}
 
 	@Test

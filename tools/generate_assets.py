@@ -1416,6 +1416,7 @@ NEW_LANG = {
     "message.wildercord.mended": "Your cracked circles have mended.",
     "message.wildercord.rhythm": "\u266A Rhythm x%s (+%s%% power)",
     "message.wildercord.charge_fizzled": "The charge fizzles",
+    "message.wildercord.interrupted": "Your spell is cut off",
     "message.wildercord.leaning": "Your magic leans toward %s, your deepest affinity: your circles take its colour.",
     "message.wildercord.no_targets": "Nothing to strike nearby",
     "message.wildercord.reborn": "Reborn in flame!",

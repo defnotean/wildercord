@@ -303,7 +303,8 @@ final class FusedStorm {
 				return;
 			}
 			FusedStormVfx.weave(level, caught);
-			double each = weaveDamage(caught.size()) * power;
+			// A lone target has no web to run through, so the lightning anchors to the ground through it: 2 more.
+			double each = (weaveDamage(caught.size()) + (caught.size() == 1 ? WEAVE_ANCHOR : 0)) * power;
 			for (LivingEntity t : caught) {
 				Effects.hurt(cast, t, lightning(cast), each * Reactions.storm(cast, t));
 			}
@@ -507,6 +508,8 @@ final class FusedStorm {
 		}
 		LivingEntity victim = under.get(level.getRandom().nextInt(under.size()));
 		FusedStormVfx.cloudStrike(level, c, victim);
+		// The cloud's own rain soaks whoever it strikes, so its bolts Conduct (+50%, arcs on to two more).
+		Reactions.mark(victim, Reactions.Mark.WET, 40);
 		Effects.lingering(() -> Effects.hurt(cast, victim, lightning(cast), CLOUD_STRIKE_DAMAGE * cloud.power * Reactions.storm(cast, victim)));
 	}
 

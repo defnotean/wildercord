@@ -4,6 +4,21 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Fixed
+- **Lightning no longer multiplies on a crowd.** Every strike hurt everything near it, so enemies packed together took a
+  strike for each neighbour (three took 108 between them, five 300). Now each enemy takes the strongest strike of a cast
+  once: its own 12, or half of that from a strike aimed at a neighbour. Its text also says "slows", which is what it does.
+- **Stoneform answers blows, not fire.** Its aftershock fired on any damage, so burning, poison or a fall set it off
+  every half second; now only a blow from an attacker does, at most once a second.
+- **Ripple heals what it really took**, not what it computed: a target that was protected or invulnerable gave you the
+  health anyway.
+- **Earth's ground-heave no longer lifts what should sink.** Mire, Sinkhole and Fossilize hopped their targets up as they
+  cast, and Tremor, Monolith, Thunderquake, Magma, Sandstorm, Basalt Surge and Pelt each drew a second crack under their
+  own; they keep only their own show now.
+- **Excavate no longer shakes the screen** (it played Tremor's), and shows nothing when it mines nothing. **Thunderclap's
+  shake** is gentler and only comes when it hits something.
+- **Shock's second victim** takes part in Conduct and Overload like the first.
+
 ### Added
 - **Casting gear slots.** Your inventory has three new slots for casting gear: **Staff** (any staff, a greater one
   too), **Focus** (any focus) and **Tome** (the Tome of the Fifth Page). A piece in its slot works with nothing in
