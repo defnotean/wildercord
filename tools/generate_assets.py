@@ -360,13 +360,16 @@ def main():
 
 # Magic that changes the world (cast/WorldMagic, spell/WorldRules): each interaction's line in a rune's tooltip.
 WORLD_MAGIC_LANG = {
-    "tooltip.wildercord.world.ignite": "Where it lands: sets grass and leaves alight, melts snow and ice, boils water into blinding steam",
-    "tooltip.wildercord.world.freeze": "Where it lands: freezes water into ice you can walk on, puts out fires and campfires",
-    "tooltip.wildercord.world.conduct": "Where it lands: in water, shocks every foe in the same water",
-    "tooltip.wildercord.world.gust": "Where it lands: knocks arrows and fireballs away, blows out small fires, scatters loose items",
+    "tooltip.wildercord.world.ignite": "Where it lands: sets grass and leaves alight, lights candles and campfires, melts snow and ice, boils water into blinding steam. It lights TNT too: stand clear",
+    "tooltip.wildercord.world.freeze": "Where it lands: freezes water into ice you can walk on, cools lava into a crust that melts back after 25 seconds, puts out fires, campfires and candles",
+    "tooltip.wildercord.world.conduct": "Where it lands: in water, shocks every foe in the same water; scrapes a stage of oxidation off copper and powers lightning rods. It may charge a creeper: careful",
+    "tooltip.wildercord.world.gust": "Where it lands: knocks arrows and fireballs away, blows out small fires and candles, scatters loose items",
     "tooltip.wildercord.world.heave": "Where it lands: the ground heaves up, throwing foes standing on it",
-    "tooltip.wildercord.world.bloom": "Where it lands: grass and flowers bloom, crops grow",
-    "tooltip.wildercord.world.draw": "Where it lands: draws loose items and experience in",
+    "tooltip.wildercord.world.bloom": "Where it lands: grass and flowers bloom, crops grow, and a weakened zombie villager starts to be cured",
+    "tooltip.wildercord.world.draw": "Where it lands: draws loose items and experience in; an enderman struck can't teleport for 5 seconds",
+    "tooltip.wildercord.world.age": "Where it lands: crops and saplings grow, copper weathers, young animals grow up faster, and a furnace jumps ahead in its smelting",
+    "tooltip.wildercord.world.shimmer": "Where it lands: bookshelves and enchanting tables shimmer, and invisible creatures show for 3 seconds",
+    "tooltip.wildercord.world.feed": "Where it lands: nether wart and crimson fungus grow",
 }
 
 

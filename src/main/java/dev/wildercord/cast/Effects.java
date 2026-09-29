@@ -1715,9 +1715,9 @@ public final class Effects {
 	/** Light's invisible light blocks still lit, so they go out when the server stops (and, saved in {@link TemporaryBlocks}, even if it doesn't stop cleanly). */
 	private static final java.util.Set<GlobalPos> LIGHTS = new java.util.HashSet<>();
 
-	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall): pistons can't move it. */
+	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall, frost's crust on lava): pistons can't move it. */
 	public static boolean isTemporary(ServerLevel level, BlockPos pos) {
-		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos);
+		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos) || WorldMagic.isCrust(level, pos);
 	}
 
 	/** Span bridges still standing, and what each of their blocks replaced. */
