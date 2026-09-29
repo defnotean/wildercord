@@ -388,7 +388,37 @@ def void_wither_rot(v, rng):
     return sa.finish(sa.reverb(x, 0.7, 0.15), "effect")
 
 
+def void_step_leap(v, rng):
+    """A short rising band and a glass ping at the end: the leap of a Warp Step (a there-and-back, so it says 'there')."""
+    dur = 0.22
+    up = sa.moving_band(dur, [(0, 400), (dur, 2600)], 0.8, rng) * sa.swell(dur, dur * 0.85, 1.4)
+    ping = sa.glass(sa.note(sa.A, 2), 0.35, 0.14)
+    x = sa.mix(0.8 * up, (dur - 0.02, 0.5 * ping), (dur - 0.02, 0.5 * sa.thump(160, 80, 0.12, 0.03, 1.3)))
+    return sa.finish(sa.reverb(x, 0.4, 0.12), "effect")
+
+
+def void_step_snap(v, rng):
+    """The leap reversed and a dry tick: pulled back where you started."""
+    dur = 0.22
+    down = sa.moving_band(dur, [(0, 2600), (dur, 400)], 0.8, rng) * sa.env(dur, (0, 0), (0.03, 1), (dur, 0.2))
+    ping = sa.reverse(sa.glass(sa.note(sa.A, 2), 0.25, 0.1))
+    x = sa.mix(0.6 * ping, (0.2, 0.8 * down), (0.2 + dur, 0.7 * sa.tick(1400, rng, 0.9)))
+    return sa.finish(sa.reverb(x, 0.4, 0.1), "effect")
+
+
+def void_cue(v, rng):
+    """The first 80 ms of any void spell: a low dark knock and a breath of air drawn in, so the cast is heard the moment the hand moves
+    (the element's own cast swell peaks nearly a second later). Played at a different pitch for each rune."""
+    dur = 0.12
+    knock = sa.thump(150 - 15 * v, 70, dur, 0.03, 1.4)
+    breath = 0.5 * sa.moving_band(dur, [(0, 500), (dur, 2200)], 0.9, rng) * sa.env(dur, (0, 0), (0.05, 1), (dur, 0))
+    return sa.finish(sa.reverb(sa.mix(knock, breath), 0.25, 0.08), "cast")
+
+
 EVENTS = [
+    event("void_cue", void_cue, variants=3, role="cast", subtitle="cast"),
+    event("void_step_leap", void_step_leap, variants=2, role="effect", subtitle="cast"),
+    event("void_step_snap", void_step_snap, variants=2, role="effect", subtitle="cast"),
     event("void_anchor_clank", void_anchor_clank, variants=3, role="impact", subtitle="hit"),
     event("void_blind_gulp", void_blind_gulp, variants=2, role="effect", subtitle="cast"),
     event("void_collect_suck", void_collect_suck, variants=1, role="effect", subtitle="cast"),

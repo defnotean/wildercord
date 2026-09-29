@@ -50,6 +50,20 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - The **Cord screen's mana badge** lists the gear that counts, wherever it is; a gear tooltip now says which slot it
   goes in.
 - For add-on makers: `api.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` (API 1.1).
+- **Void and time look and sound like themselves.** Forty-eight new sounds (`void_*`, `time_*`: a hook, a corral, a snap, an
+  unzip, a shriek, a chomp, a black flame's heartbeat, a clock's fuse, a run of hurried ticks, a stopped world and the crack
+  of it starting again, a coin of borrowed time, a quill in the ledger...) replace the vanilla noises the runes used to
+  borrow, and every void and time rune now announces itself the instant the hand moves (the element's own cast swell peaks
+  nearly a second late). Each rune has its own shape as well: Pull is a taut tether, Gravity Well a wide disc of dust drawn
+  in along the ground, Riftcall an upright slit, Hollow a sphere cut out of the world, Shadowstep a smear, Grapple a
+  dotted rope that tightens, Warp two spirals that trade colours, Warp Step leaves a return sigil that counts down and snaps
+  you back, Zipper's teeth close behind you, Eclipse is a filled dark disc with a corona, Wither climbs as black veins,
+  Umbra rakes three claws in the dark, Anchor clanks when a push is refused. Time's faces now stand upright and turn to
+  you (Countdown, Doomclock), Foresight is a halo with a pip for each blow it will sidestep, Time Skip flickers gold
+  (never crimson), Rewind lights the way back in reverse, Stasis is a column of frozen sand with a shard for each blow
+  held, Prolong an hourglass, Timesteal a thread of sand, and a Borrowed Time payment is a coin. Timed effects now end with
+  a cue (Hex, Veil, Anchor, Accelerate, Foresight, Hush, Eclipse, Infinity), and a crowd can no longer flood the wire
+  (Countdown and Stasis draw eight in full per tick; Entropy ticks once a cast).
 
 ### Changed
 - **Casting sounds are cleaner.** The element's cast sound used to play twice on a dozen shapes (Bolt, Arc, Cone, Crescent, Spark,

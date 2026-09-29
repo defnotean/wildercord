@@ -276,7 +276,7 @@ final class Techniques {
 		}
 		BLACKFLAME.put(t.getUUID(), until);
 		TechniqueVfx.blackflame(cast.level, t);
-		Fx.sound(cast.level, t.position(), SoundEvents.SOUL_ESCAPE, 0.8F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "void_black_ignite", 1.0F, 1.0F);
 		boolean[] spent = {false};
 		burnTick(cast, t, power, spread, spent);
 	}
@@ -583,6 +583,8 @@ final class Techniques {
 		t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks, 0, false, true));
 		TechniqueVfx.accelerate(cast.level, t);
+		// Time slowing back to its own pace: a ring closes on the waist and a tick.
+		TimeFx.endingLater(cast.level, t, ticks, TimeFx.gold(), "time_tick", 0.6F);
 	}
 
 	// ------------------------------------------------------------------ movement
@@ -603,6 +605,11 @@ final class Techniques {
 
 	/** Swap: you and the target trade places. */
 	static void swap(Cast cast, Cast.Hit hit) {
+		swap(cast, hit, true);
+	}
+
+	/** Swap with or without its own arcane show (Warp draws its own). */
+	static void swap(Cast cast, Cast.Hit hit, boolean show) {
 		LivingEntity caster = cast.caster;
 		LivingEntity target = partner(cast, hit);
 		if (target == null || VoidTime.anchored(target)) {
@@ -616,7 +623,9 @@ final class Techniques {
 		}
 		teleport(caster, cast.level, b, caster.getYRot(), caster.getXRot());
 		teleport(target, cast.level, a, target.getYRot(), target.getXRot());
-		TechniqueVfx.swap(cast.level, a, b);
+		if (show) {
+			TechniqueVfx.swap(cast.level, a, b);
+		}
 	}
 
 	/** Zipper: steps you through the wall you're facing (up to 6 blocks thick). */

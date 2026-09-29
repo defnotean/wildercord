@@ -96,6 +96,7 @@ public class WildercordVoidTimeTest implements FabricClientGameTest {
 			check(failures, "Entropy (strips armour)", entropy(context, world));
 			check(failures, "Malison (stronger as it passes)", malison(context, world));
 			check(failures, "Portalfall (the landing slam)", portalfall(context, world));
+			check(failures, "Presentation (every drawing helper, crowd budgets)", world.getServer().computeOnServer(WildercordVoidTimeTest::presentation));
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The void and time runes went wrong:\n  " + String.join("\n  ", failures));
 			}
@@ -723,6 +724,77 @@ public class WildercordVoidTimeTest implements FabricClientGameTest {
 		});
 		clean(context, world);
 		return failure;
+	}
+
+	/**
+	 * The presentation of the void and time runes: every drawing helper runs on a real creature without throwing (a bad
+	 * particle or sound name fails here, not in front of a player), and a crowd cannot flood the wire (a Countdown on twenty
+	 * husks draws eight faces; the budget is spent within the tick).
+	 */
+	private static String presentation(MinecraftServer server) {
+		ServerPlayer player = player(server);
+		ServerLevel level = player.level();
+		Mob target = husk(level, 0, 5);
+		Vec3 at = target.position();
+		Vec3 far = at.add(6, 0, 3);
+		try {
+			dev.wildercord.cast.VoidFx.hook(level, target, player.position());
+			dev.wildercord.cast.VoidFx.hookLanded(level, at);
+			dev.wildercord.cast.VoidFx.disc(level, at, 7, 10);
+			dev.wildercord.cast.VoidFx.discSnap(level, at, 7);
+			dev.wildercord.cast.VoidFx.slit(level, at.add(0, 1, 0), new Vec3(0, 0, 1), 2.6, 0.6, 20);
+			dev.wildercord.cast.VoidFx.cutout(level, at.add(0, 1, 0), 0.75);
+			dev.wildercord.cast.VoidFx.smear(level, at, far);
+			dev.wildercord.cast.VoidFx.rope(level, at.add(0, 1, 0), far);
+			dev.wildercord.cast.VoidFx.spirals(level, at, far);
+			dev.wildercord.cast.VoidFx.returnSigil(level, at, 60);
+			dev.wildercord.cast.VoidFx.returnSnap(level, at);
+			dev.wildercord.cast.VoidFx.zipShut(level, at.add(0, 1, 0), new Vec3(0, 0, 1), 0xD8B040, 0x404048);
+			dev.wildercord.cast.VoidFx.eclipseDisc(level, at, 4, 4.5, 100);
+			dev.wildercord.cast.VoidFx.eclipseLift(level, at, 4);
+			dev.wildercord.cast.VoidFx.veins(level, target);
+			dev.wildercord.cast.VoidFx.blackHeart(level, at.add(0, 1, 0));
+			dev.wildercord.cast.VoidFx.clank(level, target);
+			dev.wildercord.cast.VoidFx.claws(level, target, true);
+			dev.wildercord.cast.VoidFx.claws(level, target, false);
+			dev.wildercord.cast.TimeFx.face(level, at.add(0, 2, 0), new Vec3(0, 0, 1), 0.6, 20, false);
+			dev.wildercord.cast.TimeFx.stoppedFace(level, at.add(0, 2, 0), new Vec3(1, 0, 0), 0.6, 1.0, 20);
+			dev.wildercord.cast.TimeFx.fuse(level, at.add(0, 2, 0), player.getEyePosition(), 0.5, 11);
+			dev.wildercord.cast.TimeFx.halo(level, target, 2, 30);
+			dev.wildercord.cast.TimeFx.pipSpent(level, target);
+			dev.wildercord.cast.TimeFx.skip(level, at, far);
+			dev.wildercord.cast.TimeFx.rewindPath(level, at, far);
+			dev.wildercord.cast.TimeFx.stasisColumn(level, target, 100);
+			dev.wildercord.cast.TimeFx.stasisShard(level, target, 100);
+			dev.wildercord.cast.TimeFx.stasisRelease(level, target, 9);
+			dev.wildercord.cast.TimeFx.hourglass(level, at, 1.6, 0xF2D98A, 24);
+			dev.wildercord.cast.TimeFx.sandThread(level, at.add(0, 1, 0), far, 0xF2D98A);
+			dev.wildercord.cast.TimeFx.coin(level, target);
+			dev.wildercord.cast.TimeFx.ending(level, at.add(0, 1, 0), 0xF2D98A, "time_tick", 0.6F);
+		} catch (RuntimeException e) {
+			return "a drawing helper threw: " + e;
+		}
+		// The budget: eight in a tick, then no more until the next one.
+		int drawn = 0;
+		for (int i = 0; i < 20; i++) {
+			if (dev.wildercord.cast.TimeFx.allow(level, "vt_budget_test", 8)) {
+				drawn++;
+			}
+		}
+		if (drawn != 8) {
+			return "the budget should allow 8 in one tick (allowed " + drawn + ")";
+		}
+		// A Countdown on twenty husks spends the eight faces of its tick and draws the other twelve as a spark.
+		List<Mob> crowd = new ArrayList<>();
+		for (int i = 0; i < 20; i++) {
+			crowd.add(husk(level, -8 + (i % 10) * 1.6, 8 + (i / 10) * 1.6));
+		}
+		Cast cast = new Cast(player);
+		apply(cast, Runes.COUNTDOWN, crowd);
+		if (dev.wildercord.cast.TimeFx.allow(level, "countdown_face", 8)) {
+			return "twenty Countdown marks should have spent the whole face budget of the tick";
+		}
+		return null;
 	}
 
 	/** An Eclipse makes the light dim, so Umbra bites double even at noon, and the eclipse adds 20% to it. */

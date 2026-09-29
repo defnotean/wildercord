@@ -63,8 +63,7 @@ public final class Spirits {
 	/** Shades: black shadow hounds that trail darkness instead of glowing. */
 	public static void summonShades(Cast cast, Vec3 around, int count, double power, double duration) {
 		spawnSpirits(cast, around, count, power, duration, true);
-		Fx.sound(cast.level, around, SoundEvents.WOLF_GROWL_BABY, 1.0F, 0.5F);
-		Fx.sound(cast.level, around, SoundEvents.SOUL_ESCAPE, 1.0F, 0.6F);
+		// The hounds growl in shadeRise (once each, from the kit); nothing borrowed from the baby wolf.
 	}
 
 	private static void spawnSpirits(Cast cast, Vec3 around, int wanted, double power, double duration, boolean shadow) {

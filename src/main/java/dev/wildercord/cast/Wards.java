@@ -177,10 +177,13 @@ public final class Wards {
 		}
 		long now = cast.level.getGameTime();
 		if (cast.once("stasis")) {
-			Fx.sound(cast.level, cast.caster.position(), SoundEvents.BELL_BLOCK, 1.0F, 0.5F);
-			Fx.sound(cast.level, cast.caster.position(), SoundEvents.BEACON_DEACTIVATE, 0.8F, 0.6F);
+			dev.wildercord.cast.feel.Feels.sound(cast.level, cast.caster.position(), "time_stop", 1.0F, 1.0F);
 		}
 		TechniqueVfx.stasisStart(cast.level, t);
+		// The column of frozen sand is drawn once and lasts the hold (a renewal by a repeating shape does not redraw it).
+		if (!STASIS.containsKey(t.getUUID())) {
+			TimeFx.stasisColumn(cast.level, t, ticks);
+		}
 		if (Spirits.isBoss(t)) {
 			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 4, false, true));
 			return;
@@ -242,7 +245,9 @@ public final class Wards {
 		sight.charges = charges;
 		sight.cast = cast.id();
 		FORESIGHT.put(t.getUUID(), sight);
-		TechniqueVfx.foresightMark(cast.level, t);
+		TechniqueVfx.foresightMark(cast.level, t, charges);
+		// The sight running out: a ring closes on the head and a tick.
+		TimeFx.endingLater(cast.level, t, ticks, TimeFx.gold(), "time_tick", 0.6F);
 	}
 
 	static void infinity(Cast cast, LivingEntity t, int ticks) {

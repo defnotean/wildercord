@@ -87,6 +87,9 @@
     "tell_zap": {
       "part": "neutral"
     },
+    "time_cue": {
+      "part": "time"
+    },
     "time_dodge": {
       "part": "time"
     },
@@ -157,6 +160,9 @@
       "part": "void"
     },
     "void_corral": {
+      "part": "void"
+    },
+    "void_cue": {
       "part": "void"
     },
     "void_curse_pass": {
@@ -238,6 +244,12 @@
       "part": "void"
     },
     "void_starmaw_gulp": {
+      "part": "void"
+    },
+    "void_step_leap": {
+      "part": "void"
+    },
+    "void_step_snap": {
       "part": "void"
     },
     "void_step_tick": {

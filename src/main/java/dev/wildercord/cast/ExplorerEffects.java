@@ -1098,7 +1098,7 @@ public final class ExplorerEffects {
 				}
 				return;
 			}
-			ExplorerVfx.warpStep(level, caster.position(), home);
+			ExplorerVfx.warpReturn(level, caster.position(), home);
 			teleport(caster, level, home);
 		});
 	}

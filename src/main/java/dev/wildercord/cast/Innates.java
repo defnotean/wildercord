@@ -194,7 +194,7 @@ public final class Innates {
 			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A));
-				TechniqueVfx.timeResumes(player.level(), player, 0);
+				TimeFx.stasisRelease(player.level(), player, 0);
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Innates::tick);
@@ -442,7 +442,7 @@ public final class Innates {
 		TechniqueVfx.rewind(player.level(), player.position(), player.position());
 		ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
 		ElementFx.groundRing(player.level(), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
-		Fx.sound(player.level(), player.position(), SoundEvents.BELL_BLOCK, 0.8F, 1.5F);
+		dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "time_sand", 0.9F, 1.0F);
 		player.sendOverlayMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A));
 	}
 
@@ -548,7 +548,7 @@ public final class Innates {
 		ElementFx.implode(level, body.getBoundingBox().getCenter(), 1.4, 8);
 		ElementFx.groundRing(level, body.position(), ElementFx.VOID.primary(), 0.2, 1.6, 0.05, 12);
 		Vfx.emit(level, ParticleTypes.SOUL, body.getBoundingBox().getCenter(), 8, 0.3, 0.03);
-		Fx.sound(level, body.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, body.position(), "void_phantom_form", 1.0F, 1.0F);
 		taunt(level, body);
 	}
 
@@ -572,8 +572,7 @@ public final class Innates {
 		ElementFx.blackCore(level, c, 0.35, 8);
 		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 20, 0.5);
 		Vfx.radial(level, ParticleTypes.SOUL, c, 10, 0.2);
-		Fx.sound(level, c, SoundEvents.ENDER_EYE_DEATH, 1.0F, 0.7F);
-		Fx.sound(level, c, SoundEvents.GLASS_BREAK, 0.7F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "void_phantom_burst", 1.0F, 1.0F);
 		image.body().discard();
 	}
 
@@ -677,6 +676,11 @@ public final class Innates {
 					}
 					continue;
 				}
+				long remaining = image.until() - level.getGameTime();
+				// The decoy's fuse quickens: a tick every half second, then every quarter, then every tenth of the last second.
+				if (level.getGameTime() % 10 == 0 || (remaining <= 40 && level.getGameTime() % 5 == 0) || (remaining <= 20 && level.getGameTime() % 2 == 0)) {
+					dev.wildercord.cast.feel.Feels.sound(level, body.position(), "void_phantom_tick", 0.8F, 1.0F + (float) (0.5 * (1.0 - Math.max(0, remaining) / 80.0)));
+				}
 				if (level.getGameTime() % 10 == 0) {
 					taunt(level, body);
 					ElementFx.groundRing(level, body.position(), ElementFx.VOID.primary(), 0.9, 0.5, 0.035, 11);
@@ -719,7 +723,8 @@ public final class Innates {
 						echoing = false;
 						repaying = false;
 					}
-					ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.4, 3);
+					// A coin of gold falls from you with a low tock: every payment is heard.
+					TimeFx.coin(player.level(), player);
 				});
 			}
 			THREADS.values().removeIf(t -> now > t.until());

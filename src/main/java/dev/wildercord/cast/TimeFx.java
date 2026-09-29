@@ -226,10 +226,12 @@ public final class TimeFx {
 			double u = (double) i / (rings - 1);
 			double y = height * u;
 			// The profile pinches at the middle: wide at both ends.
-			double r = 0.12 + 0.4 * Math.abs(u - 0.5) * 2;
-			ElementFx.ring(level, base.add(0, y, 0), UP, i == rings / 2 ? PALE : color, r, r, 0.02, lifetime);
+			double r = 0.14 + 0.5 * Math.abs(u - 0.5) * 2;
+			ElementFx.ring(level, base.add(0, y, 0), UP, i == rings / 2 ? PALE : color, r, r, 0.045, lifetime);
 		}
-		ElementFx.ray(level, base.add(0, height * 0.5, 0), base.add(0, height * 0.05, 0), color, 0.025, lifetime);
+		// The sand: a bright thread through the waist and a heap where it lands.
+		ElementFx.ray(level, base.add(0, height * 0.55, 0), base.add(0, height * 0.05, 0), 0xFFFFFF, 0.05, lifetime);
+		ElementFx.ray(level, base.add(0, height * 0.55, 0), base.add(0, height * 0.05, 0), color, 0.1, lifetime);
 		Vfx.emit(level, new DustParticleOptions(color, 0.6F), base.add(0, height * 0.3, 0), 4, 0.04, 0.0);
 	}
 

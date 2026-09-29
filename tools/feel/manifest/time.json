@@ -1,5 +1,14 @@
 {
   "events": {
+    "time_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_cue_1",
+        "kit/time/time_cue_2",
+        "kit/time/time_cue_3"
+      ],
+      "subtitle": "cast"
+    },
     "time_dodge": {
       "attenuation": 0,
       "files": [

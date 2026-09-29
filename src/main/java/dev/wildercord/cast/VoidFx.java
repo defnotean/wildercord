@@ -115,13 +115,13 @@ public final class VoidFx {
 			Vec3 left = centre.add(0, y, 0).add(side.scale(-w));
 			Vec3 right = centre.add(0, y, 0).add(side.scale(w));
 			if (previousLeft != null) {
-				ElementFx.ray(level, previousLeft, left, PALE, 0.03, lifetime);
-				ElementFx.ray(level, previousRight, right, PALE, 0.03, lifetime);
+				ElementFx.ray(level, previousLeft, left, PALE, 0.06, lifetime);
+				ElementFx.ray(level, previousRight, right, PALE, 0.06, lifetime);
 			}
 			previousLeft = left;
 			previousRight = right;
 		}
-		ElementFx.ray(level, centre.add(0, -height * 0.5, 0), centre.add(0, height * 0.5, 0), DARK, Math.max(0.1, gape * 1.2), lifetime);
+		ElementFx.ray(level, centre.add(0, -height * 0.5, 0), centre.add(0, height * 0.5, 0), DARK, 0.32, lifetime);
 		Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, centre, 3, gape, 0.03);
 	}
 
@@ -301,8 +301,8 @@ public final class VoidFx {
 			Vec3 base = feet.add(Math.cos(a) * w, 0.1, Math.sin(a) * w);
 			Vec3 mid = base.add((rnd.nextDouble() - 0.5) * 0.25, h * 0.4, (rnd.nextDouble() - 0.5) * 0.25);
 			Vec3 tip = mid.add((rnd.nextDouble() - 0.5) * 0.25, h * 0.4, (rnd.nextDouble() - 0.5) * 0.25);
-			ElementFx.ray(level, base, mid, DARK, 0.05, 24);
-			ElementFx.ray(level, mid, tip, DARK, 0.035, 24);
+			ElementFx.ray(level, base, mid, DARK, 0.1, 24);
+			ElementFx.ray(level, mid, tip, DARK, 0.07, 24);
 		}
 		Vfx.emit(level, ParticleTypes.SQUID_INK, t.getBoundingBox().getCenter(), 3, w, -0.02);
 	}
@@ -315,14 +315,23 @@ public final class VoidFx {
 
 	/** An Anchor refusing a push: a clank of light and a puff of dust at the feet. */
 	public static void clank(ServerLevel level, Entity t) {
+		long now = level.getGameTime();
+		Long last = CLANKED.get(t.getUUID());
+		if (last != null && now - last < 8) {
+			return;
+		}
+		if (CLANKED.size() > 64) {
+			CLANKED.values().removeIf(v -> now - v > 40);
+		}
+		CLANKED.put(t.getUUID(), now);
 		Vec3 feet = t.position();
 		ElementFx.groundRing(level, feet, PALE, 0.3, 1.4, 0.08, 6);
 		ElementFx.ring(level, t.getBoundingBox().getCenter(), UP, VIOLET, 0.7, 0.9, 0.05, 5);
 		Vfx.emit(level, ParticleTypes.POOF, feet.add(0, 0.1, 0), 4, 0.25, 0.02);
-		if (TimeFx.allow(level, "anchor_clank" + t.getId(), 1)) {
-			Feels.sound(level, feet, "void_anchor_clank", 0.7F, 1.0F);
-		}
+		Feels.sound(level, feet, "void_anchor_clank", 0.7F, 1.0F);
 	}
+
+	private static final java.util.Map<java.util.UUID, Long> CLANKED = new java.util.HashMap<>();
 
 	/** Umbra in the dark: three claws of darkness raked across the target; in the light, one pale flicker. */
 	public static void claws(ServerLevel level, Entity t, boolean dim) {
@@ -333,8 +342,8 @@ public final class VoidFx {
 			for (int i = -1; i <= 1; i++) {
 				Vec3 a = c.add(side.scale(i * 0.22)).add(look.scale(0.4)).add(0, 0.45, 0);
 				Vec3 b = c.add(side.scale(i * 0.22 - 0.15)).add(look.scale(0.4)).add(0, -0.45, 0);
-				ElementFx.ray(level, a, b, DARK, 0.09, 7);
-				ElementFx.ray(level, a, b, PALE, 0.02, 6);
+				ElementFx.ray(level, a, b, DARK, 0.14, 7);
+				ElementFx.ray(level, a, b, PALE, 0.035, 6);
 			}
 		} else {
 			Vfx.emit(level, SigilOption.glow(PALE, 0.8F), c, 1, 0.0, 0.0);

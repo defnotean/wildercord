@@ -641,6 +641,14 @@
       }
     ]
   },
+  "void_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/void/void_cue_1",
+      "wildercord:kit/void/void_cue_2",
+      "wildercord:kit/void/void_cue_3"
+    ]
+  },
   "void_curse_pass": {
     "subtitle": "subtitles.wildercord.kit.hit",
     "sounds": [
@@ -849,6 +857,20 @@
       "wildercord:kit/void/void_starmaw_gulp"
     ]
   },
+  "void_step_leap": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/void/void_step_leap_1",
+      "wildercord:kit/void/void_step_leap_2"
+    ]
+  },
+  "void_step_snap": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/void/void_step_snap_1",
+      "wildercord:kit/void/void_step_snap_2"
+    ]
+  },
   "void_step_tick": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
@@ -887,6 +909,14 @@
     "sounds": [
       "wildercord:kit/void/void_zeno_beat_1",
       "wildercord:kit/void/void_zeno_beat_2"
+    ]
+  },
+  "time_cue": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/time/time_cue_1",
+      "wildercord:kit/time/time_cue_2",
+      "wildercord:kit/time/time_cue_3"
     ]
   },
   "time_dodge": {

@@ -332,18 +332,20 @@ final class CraftedVfx {
 	/** Prolong: a clock face turning slowly round the target, gold light stretching out. */
 	static void prolong(ServerLevel level, Entity t, boolean any) {
 		Vec3 c = t.getBoundingBox().getCenter();
-		ElementFx.clock(level, c, UP, Math.max(0.9, t.getBbWidth() + 0.5), 20, false);
+		// An hourglass round the target with a thread of sand falling through it: what it holds is being stretched.
+		TimeFx.hourglass(level, t.position().add(0, 0.1, 0), Math.max(1.2, t.getBbHeight() + 0.3), ElementFx.TIME.primary(), 24);
 		ElementFx.goldenTicks(level, c, 0.5, any ? 10 : 3);
-		Fx.sound(level, c, SoundEvents.BELL_RESONATE, 0.5F, any ? 1.5F : 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "time_sand", any ? 1.0F : 0.6F, any ? 1.0F : 0.8F);
 	}
 
 	/** Umbra: darkness closes its jaws on the target, deeper where the light was already dim. */
 	static void umbra(ServerLevel level, Entity t, boolean dim) {
 		Vec3 c = t.getBoundingBox().getCenter();
-		ElementFx.blackCore(level, c, dim ? 0.8 : 0.5, 8);
+		ElementFx.blackCore(level, c, dim ? 0.8 : 0.4, 8);
 		Light.ring(level, c, UP, ElementFx.dark(0x1A0830), Math.max(1.0, t.getBbWidth() + 0.8), 0.2, 0.08, 8);
-		Vfx.emit(level, ParticleTypes.SQUID_INK, c, dim ? 8 : 4, 0.25, 0.02);
-		Fx.sound(level, c, SoundEvents.SCULK_CATALYST_BLOOM, 0.7F, dim ? 0.6F : 0.9F);
+		Vfx.emit(level, ParticleTypes.SQUID_INK, c, dim ? 8 : 3, 0.25, 0.02);
+		// Three claws of darkness in the dim, one pale flicker in the light (and the bite is heard either way).
+		VoidFx.claws(level, t, dim);
 	}
 
 	/** Disarm: a snatching gust, and the weapon tumbling up and out of reach. */

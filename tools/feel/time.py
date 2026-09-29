@@ -149,7 +149,17 @@ def time_ring(v, rng):
     return sa.finish(sa.reverb(x, 0.6, 0.2), "impact")
 
 
+def time_cue(v, rng):
+    """The first 80 ms of any time spell: one dry tick and a tiny glass ping, so the cast is heard the moment the hand moves
+    (the element's own cast swell arrives late). Played at a different pitch for each rune."""
+    dur = 0.16
+    ping = sa.glass(sa.note((sa.A, sa.D, sa.FS)[v % 3], 2), dur, 0.05)
+    x = sa.mix(sa.tick(2100 + 200 * (v % 3), rng, 0.9), (0.012, 0.35 * ping))
+    return sa.finish(sa.reverb(x, 0.25, 0.08), "cast")
+
+
 EVENTS = [
+    event("time_cue", time_cue, variants=3, role="cast", subtitle="cast"),
     event("time_tick", time_tick, variants=3, role="impact", subtitle="tell"),
     event("time_strike", time_strike, variants=2, role="impact", subtitle="hit"),
     event("time_run", time_run, variants=1, role="effect", subtitle="cast"),

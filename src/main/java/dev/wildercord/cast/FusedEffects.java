@@ -351,7 +351,7 @@ public final class FusedEffects {
 		}
 		Vec3 from = cast.caster.position();
 		Vec3 to = partner.position();
-		Techniques.swap(cast, hit);
+		Techniques.swap(cast, hit, false);
 		if (cast.caster.position().distanceToSqr(from) < 1.0E-4) {
 			// The swap was blocked (no room): nothing more happens.
 			return;

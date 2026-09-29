@@ -391,6 +391,7 @@ public final class Effects {
 					}
 				}
 				Vfx.veil(level, t);
+				TimeFx.endingLater(level, t, ticks(12, duration), ElementFx.VOID.secondary(), "void_step_tick", 0.6F);
 			});
 			case "empower" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks(10, duration), Math.min(3, 1 + amplify), false, true));
@@ -674,6 +675,9 @@ public final class Effects {
 	static void push(LivingEntity target, Vec3 impulse) {
 		// Anchor: nothing a spell does moves it.
 		if (VoidTime.anchored(target)) {
+			if (impulse.lengthSqr() > 0.09 && target.level() instanceof ServerLevel level) {
+				VoidFx.clank(level, target);
+			}
 			return;
 		}
 		double resist = target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
@@ -821,7 +825,7 @@ public final class Effects {
 
 	private static void dragonBreath(Cast cast, Vec3 start, double radius, double power, double duration, Vec3 along) {
 		int pulses = (int) Math.round(5 * duration);
-		Fx.sound(cast.level, start, net.minecraft.sounds.SoundEvents.ENDER_DRAGON_SHOOT, 1.0F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, start, "void_breath_roar", 1.0F, 1.0F);
 		// The breath rolls on along the way it was blown, a block and a bit each second: a lane, not a spot.
 		Vec3 drift = horizontal(along, along).scale(DRAGON_DRIFT);
 		for (int i = 0; i < pulses; i++) {
@@ -853,6 +857,7 @@ public final class Effects {
 		Vec3 back = hit.dir().lengthSqr() > 1.0E-4 ? hit.dir().normalize().scale(-0.6) : Vec3.ZERO;
 		if (target.distanceTo(caster.position()) > 40) {
 			Casters.tell(caster, Component.translatable("message.wildercord.blink_far"));
+			dev.wildercord.cast.feel.Feels.sound(cast.level, caster.position(), "void_blink_fizzle", 0.9F, 1.0F);
 			return;
 		}
 		for (int attempt = 0; attempt < 6; attempt++) {
@@ -870,6 +875,9 @@ public final class Effects {
 				return;
 			}
 		}
+		// Nowhere safe to land: the blink's ping cut short.
+		dev.wildercord.cast.feel.Feels.sound(cast.level, caster.position(), "void_blink_fizzle", 0.9F, 1.0F);
+		Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.SMOKE, caster.position().add(0, 1, 0), 4, 0.25, 0.02);
 	}
 
 	/**
@@ -1111,7 +1119,9 @@ public final class Effects {
 			}
 			moved++;
 		}
-		Fx.sound(cast.level, caster.position(), moved > 0 ? net.minecraft.sounds.SoundEvents.ITEM_PICKUP : net.minecraft.sounds.SoundEvents.FIRE_EXTINGUISH, 0.8F, moved > 0 ? 0.8F : 1.6F);
+		// A ring drawing in on the point, then the sound of everything arriving; a quiet fizzle when there was nothing to fetch.
+		ElementFx.groundRing(cast.level, CastEngine.ground(cast.level, point.add(0, 0.5, 0)), ElementFx.VOID.primary(), reach, 0.4, 0.05, 10);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, caster.position(), moved > 0 ? "void_collect_suck" : "fizzle", 0.9F, 1.0F);
 	}
 
 	/** Excavate: mines a 3x3 face of blocks around the block hit. */
@@ -1234,7 +1244,7 @@ public final class Effects {
 	/** Gravity Well: for a while, enemies around the point are dragged into it, then crushed a little. */
 	private static void gravityWell(Cast cast, Vec3 point, double radius, double power, double duration) {
 		int total = (int) Math.round(40 * duration);
-		Fx.sound(cast.level, point, net.minecraft.sounds.SoundEvents.WARDEN_SONIC_CHARGE, 0.8F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, point, "void_corral", 0.9F, 1.0F);
 		for (int t = 0; t <= total; t += 2) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -1242,6 +1252,9 @@ public final class Effects {
 					return;
 				}
 				Vfx.gravityWell(cast.level, point, radius, tick);
+				if (tick >= total - 1) {
+					VoidFx.discSnap(cast.level, point, radius);
+				}
 				for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
 					LivingEntity victim = (LivingEntity) e;
 					Vec3 towards = point.subtract(victim.position());
@@ -1498,7 +1511,13 @@ public final class Effects {
 			last[0] = t.position();
 			w.memory = still ? Math.min(2, w.memory + 1) : 0;
 			modifier(t, Attributes.ARMOR, ANCHOR_ID, w.memory >= 1 ? 8.0 : 4.0, AttributeModifier.Operation.ADD_VALUE);
-		}, () -> unmodify(t, ANCHOR_ID, ANCHORED));
+		}, () -> {
+			unmodify(t, ANCHOR_ID, ANCHORED);
+			if (t.isAlive() && !cast.passive && t.level() instanceof ServerLevel level) {
+				// The chains go slack.
+				TimeFx.ending(level, t.getBoundingBox().getCenter(), ElementFx.VOID.secondary(), "void_step_tick", 0.6F);
+			}
+		});
 		if (fresh != null || !cast.passive) {
 			ExpansionVfx.anchor(cast.level, t, Vfx.theme("void"));
 		}
@@ -2138,6 +2157,8 @@ public final class Effects {
 		// A curse leaves it shadowed as long as it lasts: life damage then sets off Blight.
 		Reactions.mark(t, Reactions.Mark.SHADOWED, ticks);
 		ExpansionVfx.hex(cast.level, t, ticks, sound);
+		// The curse lifting, so the +25% is never a guess: a ring closes on the head and a small tick.
+		TimeFx.endingLater(cast.level, t, ticks, ElementFx.VOID.primary(), "void_step_tick", 0.7F);
 	}
 
 	/** Hex: its caster's spells hit the hexed creature harder. */

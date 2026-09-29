@@ -143,15 +143,11 @@ public final class FusionVfx {
 
 	/** Warp: a hole in the world at either end, and a streak of darkness between them. */
 	static void warp(ServerLevel level, Vec3 a, Vec3 b) {
+		// Two spirals crossing and trading colours (VoidFx), a hole at each end; not Swap's seals and not Blink's streak.
+		VoidFx.spirals(level, a, b);
 		for (Vec3 end : new Vec3[] {a, b}) {
-			Vec3 mid = end.add(0, 1.0, 0);
-			ElementFx.implode(level, mid, 1.4, 12);
-			ElementFx.blackCore(level, mid, 0.5, 10);
-			ElementFx.swirl(level, end, 0.7, 2.0, 3, ElementFx.VOID.primary(), ElementFx.WIND.primary());
+			ElementFx.blackCore(level, end.add(0, 1.0, 0), 0.4, 10);
 		}
-		ElementFx.ray(level, a.add(0, 1, 0), b.add(0, 1, 0), ElementFx.dark(ElementFx.VOID.accent()), 0.08, 8);
-		Fx.sound(level, a, WildercordSounds.BLINK, 0.9F, 0.8F);
-		Fx.sound(level, b, WildercordSounds.BLINK, 0.9F, 0.8F);
 	}
 
 	/** Bloom: a flower seal under the ally and a spiral of leaves and petals. */

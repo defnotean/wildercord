@@ -76,6 +76,15 @@
       ],
       "subtitle": "field"
     },
+    "void_cue": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_cue_1",
+        "kit/void/void_cue_2",
+        "kit/void/void_cue_3"
+      ],
+      "subtitle": "cast"
+    },
     "void_curse_pass": {
       "attenuation": 0,
       "files": [
@@ -286,6 +295,22 @@
         "kit/void/void_starmaw_gulp"
       ],
       "subtitle": "hit"
+    },
+    "void_step_leap": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_step_leap_1",
+        "kit/void/void_step_leap_2"
+      ],
+      "subtitle": "cast"
+    },
+    "void_step_snap": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_step_snap_1",
+        "kit/void/void_step_snap_2"
+      ],
+      "subtitle": "cast"
     },
     "void_step_tick": {
       "attenuation": 0,

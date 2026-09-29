@@ -469,15 +469,9 @@ public final class Vfx {
 
 	/** Pull: darkness implodes round the target toward the pull, light streaming off it to where it's pulled. */
 	public static void pull(ServerLevel level, Entity target, Vec3 towards) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		Vec3 to = towards.subtract(c);
-		Vec3 n = to.lengthSqr() < 1.0E-4 ? UP : to.normalize();
-		double r = Math.max(0.8, target.getBbWidth() + 0.5);
-		ElementFx.ring(level, c, n, ElementFx.dark(ElementFx.VOID.accent()), r * 1.4, 0.15, 0.09, 8);
-		ElementFx.ring(level, c.add(n.scale(0.3)), n, ElementFx.VOID.primary(), r * 1.6, 0.2, 0.03, 8);
-		stream(level, c, towards, VOID, 4);
-		emit(level, ParticleTypes.PORTAL, c, 8, 0.1, 0.6);
-		Fx.sound(level, target.position(), SoundEvents.ENDER_EYE_DEATH, 0.6F, 0.8F);
+		// A taut tether and a hook, not a cloud: see VoidFx.
+		VoidFx.hook(level, target, towards);
+		emit(level, ParticleTypes.PORTAL, target.getBoundingBox().getCenter(), 6, 0.1, 0.6);
 	}
 
 	/** Launch: a ring of wind bursts out along the ground and a spiral of gusts throws the target skyward. */
@@ -605,7 +599,7 @@ public final class Vfx {
 			emit(level, ParticleTypes.SONIC_BOOM, p, 1, 0.0, 0.0);
 		}
 		ElementFx.voidImpact(level, to, 1.0);
-		Fx.sound(level, from, SoundEvents.WARDEN_SONIC_BOOM, 1.2F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, from, "void_sonic_crack", 1.1F, 1.0F);
 	}
 
 	/** Wither: darkness falls in on the target round a small black core, smoke and souls rising off it. */
@@ -616,7 +610,8 @@ public final class Vfx {
 		ElementFx.blackCore(level, c, 0.14 + w * 0.06, 10);
 		Motes.clouds(level, c, 3, 0.3, 0x3A3438, 0.9, 30, new Vec3(0, 0.02, 0), 0.02, 0.4);
 		radial(level, ParticleTypes.SOUL, c, 4, 0.06);
-		Fx.sound(level, c, SoundEvents.WITHER_SHOOT, 0.7F, 1.2F);
+		VoidFx.veins(level, target);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "void_wither_rot", 0.9F, 1.0F);
 	}
 
 	/** One pulse of Dragon Breath: violet breath over the ground, a rim of light round it and darkness drawing in. */
@@ -806,7 +801,7 @@ public final class Vfx {
 		ElementFx.groundRing(level, target.position(), ElementFx.dark(ElementFx.VOID.accent()), r * 1.4, 0.2, 0.1, 12);
 		Motes.clouds(level, c, 4, 0.35, 0x4A4450, 1.0, 30, new Vec3(0, 0.02, 0), 0.03, 0.4);
 		radial(level, ParticleTypes.REVERSE_PORTAL, c, 8, 0.08);
-		Fx.sound(level, target.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.8F, 1.1F);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position(), "void_veil_fade", 0.9F, 1.0F);
 	}
 
 	private static final int EMPOWER = 0xE04040;
@@ -914,8 +909,8 @@ public final class Vfx {
 			double tilt = tick * 0.3;
 			ElementFx.ring(level, core, ElementFx.tilted(1.2, tilt), ElementFx.VOID.primary(), 0.5, 0.48, 0.02, 12);
 			ElementFx.ring(level, core, ElementFx.tilted(1.2, tilt + Math.PI / 2), ElementFx.VOID.secondary(), 0.5, 0.48, 0.02, 12);
-			ElementFx.groundRing(level, point, ElementFx.VOID.primary(), radius, 0.4, 0.05, 14);
-			ElementFx.ring(level, core, ElementFx.tilted(0.9, -tilt), ElementFx.dark(ElementFx.VOID.accent()), radius * 0.7, 0.3, 0.1, 12);
+			// The well is a wide disc of inward-spiralling dust on the ground, not just a point in the air.
+			VoidFx.disc(level, point, radius, tick);
 		}
 		if (tick % 6 == 0) {
 			emit(level, ParticleTypes.PORTAL, core, 3, 0.1, 1.2);
@@ -1130,7 +1125,7 @@ public final class Vfx {
 		ElementFx.orb(level, eyes, ElementFx.dark(ElementFx.VOID.accent()), 0.28, 14);
 		ElementFx.ring(level, eyes, UP, ElementFx.VOID.primary(), 1.0, 0.3, 0.025, 9);
 		emit(level, ParticleTypes.SQUID_INK, eyes, 6, 0.25, 0.02);
-		Fx.sound(level, target.position(), SoundEvents.SQUID_SQUIRT, 0.7F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position(), "void_blind_gulp", 0.9F, 1.0F);
 	}
 
 	/** Chill: frost creeps out under the target and a thin ring of cold closes on it. */
@@ -1198,16 +1193,8 @@ public final class Vfx {
 
 	/** Grapple: a line of violet light from the caster to the anchor, and a black core where it bites. */
 	public static void grapple(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 d = to.subtract(from);
-		double length = d.length();
-		// It starts a little way out, so it never begins in the caster's own face.
-		Vec3 near = length > 2.6 ? from.add(d.scale(1.3 / length)) : from;
-		ElementFx.ray(level, near, to, ElementFx.VOID.primary(), 0.06, 12);
-		ElementFx.ray(level, near, to, ElementFx.VOID.secondary(), 0.025, 12);
-		ElementFx.blackCore(level, to, 0.2, 10);
-		ElementFx.ring(level, to, d, ElementFx.VOID.primary(), 0.1, 0.9, 0.04, 8);
-		radial(level, ParticleTypes.REVERSE_PORTAL, to, 8, 0.15);
-		Fx.sound(level, from, SoundEvents.FISHING_BOBBER_THROW, 0.8F, 0.7F);
+		// A dotted rope that tightens and is gone (VoidFx), not a laser line.
+		VoidFx.rope(level, from, to);
 	}
 
 	/** Icepath: frost creeps out over the water, shards of ice glinting up from it. */
