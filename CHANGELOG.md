@@ -5,6 +5,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ## [Unreleased]
 
 ### Fixed
+- A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up
+  and casts at you from there.
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
