@@ -15,7 +15,7 @@ nav_order: 7
 
 *Tier I · Blood · Harms enemies · 10 mana · needs any Cord*
 
-Threads everything hit together for 8 seconds: half of any damage one of them takes is dealt to the rest.
+Threads everything hit together (4 at most) for 8 seconds: 40% of any damage one of them takes is dealt to each of the rest (three times a second at most).
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
@@ -59,7 +59,7 @@ For 12 seconds, jump again in midair to dash forward (up to 3 dashes).
 
 *Tier I · Fire · Harms enemies · 7 mana · needs any Cord*
 
-3 fire damage and a stack of Kindling. The fifth stack ignites: 10 damage in a 3-block burst.
+3 fire damage and a stack of Kindling. The fifth stack ignites: 14 damage in a 3-block burst, and everything the burst reaches starts at two stacks.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 

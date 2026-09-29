@@ -18,7 +18,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 
 *Tier I · Fire · Harms enemies · 6 mana · needs any Cord*
 
-3 fire damage and sets alight for 3 seconds.
+3 fire damage and sets alight for 3 seconds. On something already burning it adds 3 seconds instead (10 at most).
 
 **How to get it:** Craft: a Blank Rune, Coal and Flint. The recipe is shapeless: any layout, any crafting grid.
 
@@ -57,7 +57,7 @@ Fire resistance for 30 seconds.
 
 *Tier II · Fire · Harms enemies · 11 mana · needs a Copper Cord or better*
 
-A flash of heat: 4 fire damage to every enemy within 3 blocks, setting them alight for 3 seconds.
+A flash of heat: 5 fire damage to every enemy within 3 blocks, setting them alight for 4 seconds. Allies in it are thawed and dried.
 
 **How to get it:** Craft: a Blank Rune, Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
 
@@ -96,7 +96,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 *Tier III · Fire · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-12 damage in a 3.5-block blast. Never breaks blocks.
+12 damage in a 3.5-block blast that throws what it hits. Blasts of one cast never stack on one enemy. Never breaks blocks.
 
 **How to get it:** Craft: a Blank Rune, TNT and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Creepers (1%); Ember Sanctum.
 
@@ -122,7 +122,7 @@ Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 
 *Tier III · Fire · Harms enemies · 24 mana · needs an Amethyst Cord or better*
 
-A burning meteor falls on each target: 10 damage in a 3-block blast.
+A burning meteor falls on each target (two at most) 1.2 seconds later: 12 damage in a 3.5-block blast, and the crater burns on for a moment.
 
 **How to get it:** Craft: a Blank Rune, Magma Block and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Ember Sanctum.
 
@@ -135,7 +135,7 @@ A burning meteor falls on each target: 10 damage in a 3-block blast.
 
 *Tier III · Fire · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-Turns each target into a bomb that goes off 2 seconds later: 10 damage within 3 blocks. Never breaks blocks.
+Turns each target into a bomb that goes off 2 seconds later, or the moment it dies: 10 damage within 3 blocks (an enemy takes only the strongest bomb). Never breaks blocks.
 
 **How to get it:** Craft: a Blank Rune, TNT and Pink Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Trial vaults; Ember Sanctum.
 
