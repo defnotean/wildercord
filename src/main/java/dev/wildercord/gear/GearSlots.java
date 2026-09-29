@@ -78,7 +78,7 @@ public final class GearSlots {
 	 * first if it should go back to the player). An empty stack clears the slot. Returns false, changing
 	 * nothing, if the piece doesn't fit the slot.
 	 */
-	public static boolean set(Player player, GearSlot slot, ItemStack stack) {
+	public static boolean set(Entity player, GearSlot slot, ItemStack stack) {
 		if (!stack.isEmpty() && !fits(slot, stack)) {
 			return false;
 		}
@@ -98,7 +98,7 @@ public final class GearSlots {
 	}
 
 	/** Empties a slot and returns what was in it (empty if nothing). */
-	public static ItemStack clear(Player player, GearSlot slot) {
+	public static ItemStack clear(Entity player, GearSlot slot) {
 		ItemStack old = get(player, slot);
 		if (!old.isEmpty()) {
 			set(player, slot, ItemStack.EMPTY);

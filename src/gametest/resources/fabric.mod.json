@@ -19,6 +19,7 @@
 			"dev.wildercord.gametest.WildercordFusionTest",
 			"dev.wildercord.gametest.WildercordSignatureFusionTest",
 			"dev.wildercord.gametest.WildercordGearTest",
+			"dev.wildercord.gametest.WildercordGearSlotsTest",
 			"dev.wildercord.gametest.WildercordPricesTest",
 			"dev.wildercord.gametest.WildercordNewRunesTest",
 			"dev.wildercord.gametest.WildercordNewRunes2Test",
