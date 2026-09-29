@@ -1692,6 +1692,118 @@
         }
       },
       {
+        "when": "wildercord:frostwire",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/frostwire"
+        }
+      },
+      {
+        "when": "wildercord:seethe",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/seethe"
+        }
+      },
+      {
+        "when": "wildercord:bloomstep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bloomstep"
+        }
+      },
+      {
+        "when": "wildercord:skyburst",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/skyburst"
+        }
+      },
+      {
+        "when": "wildercord:stitchtime",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/stitchtime"
+        }
+      },
+      {
+        "when": "wildercord:parasite",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/parasite"
+        }
+      },
+      {
+        "when": "wildercord:razorgale",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/razorgale"
+        }
+      },
+      {
+        "when": "wildercord:doomclock",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/doomclock"
+        }
+      },
+      {
+        "when": "wildercord:thunderstep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thunderstep"
+        }
+      },
+      {
+        "when": "wildercord:halo",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/halo"
+        }
+      },
+      {
+        "when": "wildercord:thunderquake",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thunderquake"
+        }
+      },
+      {
+        "when": "wildercord:cometfall",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cometfall"
+        }
+      },
+      {
+        "when": "wildercord:riposte",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/riposte"
+        }
+      },
+      {
+        "when": "wildercord:dust_devil",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/dust_devil"
+        }
+      },
+      {
+        "when": "wildercord:malison",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/malison"
+        }
+      },
+      {
+        "when": "wildercord:avalanche",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/avalanche"
+        }
+      },
+      {
         "when": "wildercord:echolocate",
         "model": {
           "type": "minecraft:model",

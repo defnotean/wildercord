@@ -125,9 +125,9 @@ public final class ReactionRules {
 
 	/** Void's curses and darkness: they leave a foe shadowed, for Blight. */
 	public static final Set<String> SHADOWS = Set.of("hex", "blind", "wither", "echolocate", "hush", "eclipse", "resonant_shriek", "blackflame",
-		"entropy");
-	/** Blood's cuts: they leave a foe bleeding, for Rupture. */
-	public static final Set<String> BLEEDS = Set.of("bleed", "rend", "cleave", "dismantle", "crimson_mist", "bonespur");
+		"entropy", "malison");
+	/** Blood's cuts: they leave a foe bleeding, for Rupture (Razorgale's blades too, which tear their own wounds open). */
+	public static final Set<String> BLEEDS = Set.of("bleed", "rend", "cleave", "dismantle", "crimson_mist", "bonespur", "razorgale");
 
 	/**
 	 * Harmful runes of a triggering element that deal no damage of their own, so set nothing off:
@@ -139,10 +139,11 @@ public final class ReactionRules {
 	/**
 	 * Runes that aren't harmful effects of a triggering element but deal its damage all the same:
 	 * Heartstopper's and Thunderbird's shocks are storm, Tusk Charge tosses what it runs through, and
-	 * Bramble's thorns are life.
+	 * Bramble's thorns are life; Thunderstep comes down as storm, Halo smites with arcane, and a Riposte
+	 * answers with time.
 	 */
 	private static final Map<String, String> ALSO = Map.of("heartstopper", OVERLOAD, "thunderbird", OVERLOAD, "tusk_charge", FRACTURE,
-		"bramble", BLIGHT);
+		"bramble", BLIGHT, "thunderstep", OVERLOAD, "halo", UNWEAVE, "riposte", ELAPSE);
 
 	/** The mark a rune leaves for a newer reaction ({@link #SHADOWED}, {@link #BLEEDING}), or null. */
 	public static String marks(RuneDef rune) {

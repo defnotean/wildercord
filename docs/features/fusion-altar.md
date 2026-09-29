@@ -115,6 +115,29 @@ its emblem is split down the middle between the two elements' glyphs.
 | Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
 | Blood | **Sanguine Rite** | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
 
+### Signature fusions (16)
+
+Each of these pairs of particular runes makes its own rune, in place of the element fusion in the grid above (which any other effects of those two elements still make).
+
+| Runes | Makes | Counts as | Tier | Mana | Does | In place of |
+|---|---|---|---|---|---|---|
+| Chill + Shock | **Frostwire** | Storm | III | 18 | Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 4 damage each, 6 to one frozen solid. | Hail |
+| Bubble + Fire | **Seethe** | Fire | III | 16 | Traps each target in a bubble of boiling water for 2 seconds (1 fire damage every half second), then it bursts into scalding steam: 4 damage to every enemy within 2.5 blocks, blinded for 2 seconds and left soaked. | Steam |
+| Grow + Blink | **Bloomstep** | Life | III | 14 | Steps you through a door of blossoms to where the spell landed (up to 32 blocks). Grass and flowers spring up where you left and where you arrive, and you and your allies within 3 blocks of where you arrive get Regeneration I for 5 seconds. | Lifesteal |
+| Launch + Explode | **Skyburst** | Fire | III | 20 | Flings each target high into the air (3 at most); at the top of its flight it explodes and rains fire down: 7 damage to it and every enemy within 3 blocks of it or beneath it, setting them alight, and the wind that carried it fans the flames (Wildfire). Never breaks blocks. | Firestorm |
+| Heal + Countdown | **Stitchtime** | Life | III | 16 | Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhile is counted, and when the time is up it all heals back at once (12 at most). | Second Wind |
+| Venom + Leech | **Parasite** | Blood | III | 16 | Plants a parasite in each target for 6 seconds: Poison I, and every second it drains 1 health from it into you. If its host dies with it inside, it leaps to the nearest enemy within 6 blocks for the time it had left (once). | Transfusion |
+| Windcut + Bleed | **Razorgale** | Wind | III | 18 | A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2 and left bleeding; half a second later the gale comes back round for 2 more, tearing every wound open (Rupture). | Crimson Mist |
+| Primer + Stasis | **Doomclock** | Time | IV | 28 | Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks. Never breaks blocks. | Everburn |
+| Shadowstep + Lightning | **Thunderstep** | Storm | III | 18 | You come down as a bolt of lightning where the spell landed (up to 24 blocks), right behind the first enemy it hit: 8 damage to every enemy within 2.5 blocks of you, stunned for half a second. On Self it strikes where you stand. | Riftbolt |
+| Smite + Regrowth | **Halo** | Arcane | III | 18 | A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time. | Soulbond |
+| Thunderclap + Tremor | **Thunderquake** | Earth | III | 20 | The ground booms like thunder: three shockwaves roll out from where it lands over a second, reaching 2, 4 and 6 blocks. Each strikes every enemy it reaches for 4 and tosses it up, so the nearer, the harder: 12 at the heart. | Magnetize |
+| Starfall + Meteor | **Cometfall** | Arcane | IV | 32 | A comet streaks down on the point a second later: 16 damage to every enemy within 4 blocks, setting them alight, and five shards of it scatter into the nearest other enemies within 10 blocks for 4 each. Never breaks blocks. | Starfire |
+| Reflect + Foresight | **Riposte** | Time | III | 16 | For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with 6 damage to whoever struck. | Timesteal |
+| Summit Wind + Sandstorm | **Dust Devil** | Wind | IV | 26 | A dust devil touches down where it lands and chases the nearest enemy for 5 seconds. Enemies within 2 blocks of it are caught up and whirled round it, blinded and scoured for 3 damage a second; when it blows out it flings them high. | Downdraft |
+| Hex + Resonance | **Malison** | Void | III | 16 | 3 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, for the time it had left, to up to 3 enemies within 6 blocks of it. | Nullify |
+| Coldsnap + Stalactite | **Avalanche** | Frost | III | 18 | Snow and ice crash down round where it lands: 6 damage to every enemy within 3 blocks (half again on a bare head), buried in snow (Slowness III for 3 seconds). Drifts of snow lie where it fell for 10 seconds. | Glacier |
+
 <!-- fusions:end -->
 
 Fused runes are Tier III (an Amethyst Cord or better) and can't be crafted or found. They take

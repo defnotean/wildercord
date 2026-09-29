@@ -1965,7 +1965,8 @@ public final class Effects {
 	/** How much harder a hexer's spells hit what they hexed. */
 	public static final double HEX_BONUS = 1.25;
 
-	private static void hex(Cast cast, LivingEntity t, int ticks) {
+	/** Hex (and Malison's curse, see {@link SignatureFusions}): its caster's spells hit {@code t} harder for {@code ticks}, and it's shadowed. */
+	static void hex(Cast cast, LivingEntity t, int ticks) {
 		long now = cast.level.getGameTime();
 		HEXED.put(t.getUUID(), new Hexed(cast.caster.getUUID(), now + ticks));
 		if (HEXED.size() > 256) {

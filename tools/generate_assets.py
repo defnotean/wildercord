@@ -937,6 +937,10 @@ SIGNATURE_LANG = {
     "screen.wildercord.grimoire.signature_unknown": "Not found yet. Two particular runes of these elements make it, "
                                                     "in place of their elements' own fusion: try pairs at a Fusion Altar.",
     "toast.wildercord.signature": "Signature fusion: %s",
+    # The signature runes' messages to their caster.
+    "message.wildercord.bloomstep_far": "Too far to step (32 blocks at most)",
+    "message.wildercord.thunderstep_far": "Too far to strike (24 blocks at most)",
+    "message.wildercord.step_nowhere": "Nowhere safe to set foot there",
 }
 
 
@@ -2395,9 +2399,9 @@ feat_adv("combine", "altar/upgrade", rune("prism"), description="Fuse two effect
 feat_adv("knot", "altar/combine", rune("chain"), description="Tie a whole spell into one rune", frame="goal", xp=50)
 # Signature fusions: counted apart from the element fusions (a signature's key shares their "fusion:" prefix).
 if SIGNATURES:
-    adv("altar/signature", "altar/combine", rune(next(iter(SIGNATURES))), "Signature", "Fuse two particular effects into a signature rune of their own",
-        grimoire(signatures=1), xp=30)
-    adv("altar/signatures", "altar/signature", rune(list(SIGNATURES)[min(4, len(SIGNATURES) - 1)]), "Hallmarks",
+    adv("altar/signature", "altar/combine", rune("frostwire" if "frostwire" in SIGNATURES else next(iter(SIGNATURES))), "Signature",
+        "Fuse two particular effects into a signature rune of their own", grimoire(signatures=1), xp=30)
+    adv("altar/signatures", "altar/signature", rune("cometfall" if "cometfall" in SIGNATURES else next(iter(SIGNATURES))), "Hallmarks",
         f"Find {min(5, len(SIGNATURES))} signature fusions", grimoire(signatures=min(5, len(SIGNATURES))), frame="goal", xp=75, loot=["blank_runes"])
 feat_adv("cinder_warden", "world/archivist", rune("inferno"), description="Defeat the Cinder Warden in its Ember Sanctum", frame="challenge", xp=300)
 feat_adv("star_eater", "world/archivist", rune("eclipse"), description="Defeat the Star-Eater in its Astral Observatory", frame="challenge", xp=300)

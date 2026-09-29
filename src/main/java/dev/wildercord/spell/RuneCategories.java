@@ -80,6 +80,10 @@ public final class RuneCategories {
 					"lifebloom" -> "support";
 				case "warp", "skyglyph" -> "movement";
 				case "chronoshift" -> "time";
+				// Signature fusions (see Fusions.SIGNATURES); the rest of them are damage.
+				case "seethe", "dust_devil", "malison" -> "control";
+				case "stitchtime", "halo", "riposte" -> "support";
+				case "bloomstep", "thunderstep" -> "movement";
 				case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom",
 					"stormheart" -> "innate";
 				default -> "damage";

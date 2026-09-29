@@ -156,7 +156,23 @@ public final class Fusions {
 	 * innate, never fused, always ones a caster can come by) and the rune only they make. No two share a pair
 	 * of elements, so each one's circle braids a pairing of its own.
 	 */
-	public static final List<Signature> SIGNATURES = List.of();
+	public static final List<Signature> SIGNATURES = List.of(
+		new Signature(Runes.CHILL, Runes.SHOCK, Runes.FROSTWIRE),
+		new Signature(Runes.BUBBLE, Runes.FIRE, Runes.SEETHE),
+		new Signature(Runes.GROW, Runes.BLINK, Runes.BLOOMSTEP),
+		new Signature(Runes.LAUNCH, Runes.EXPLODE, Runes.SKYBURST),
+		new Signature(Runes.HEAL, Runes.COUNTDOWN, Runes.STITCHTIME),
+		new Signature(Runes.VENOM, Runes.LEECH, Runes.PARASITE),
+		new Signature(Runes.WINDCUT, Runes.BLEED, Runes.RAZORGALE),
+		new Signature(Runes.PRIMER, Runes.STASIS, Runes.DOOMCLOCK),
+		new Signature(Runes.SHADOWSTEP, Runes.LIGHTNING, Runes.THUNDERSTEP),
+		new Signature(Runes.SMITE, Runes.REGROWTH, Runes.HALO),
+		new Signature(Runes.THUNDERCLAP, Runes.TREMOR, Runes.THUNDERQUAKE),
+		new Signature(Runes.STARFALL, Runes.METEOR, Runes.COMETFALL),
+		new Signature(Runes.REFLECT, Runes.FORESIGHT, Runes.RIPOSTE),
+		new Signature(Runes.SUMMIT_WIND, Runes.SANDSTORM, Runes.DUST_DEVIL),
+		new Signature(Runes.HEX, Runes.RESONANCE, Runes.MALISON),
+		new Signature(Runes.COLDSNAP, Runes.STALACTITE, Runes.AVALANCHE));
 
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {

@@ -29,7 +29,8 @@ import java.util.List;
  * The fused effects, made only at the Fusion Altar (see {@code spell.Fusions}). Each is two
  * elements at once, and looks it: their visuals, in {@link FusionVfx}, draw on both elements' languages.
  * The first twelve live here; the rest are in five classes by theme ({@link FusedFlame}, {@link FusedFrost},
- * {@link FusedStorm}, {@link FusedLife} and {@link FusedVoid}). Numbers match the rune descriptions in {@code Runes}.
+ * {@link FusedStorm}, {@link FusedLife} and {@link FusedVoid}), and the signature fusions (two particular runes
+ * each) in {@link SignatureFusions}. Numbers match the rune descriptions in {@code Runes}.
  */
 public final class FusedEffects {
 	private FusedEffects() {}
@@ -42,6 +43,7 @@ public final class FusedEffects {
 		FusedStorm.init();
 		FusedLife.init();
 		FusedVoid.init();
+		SignatureFusions.init();
 	}
 
 	/** At most this many targets get a lingering or spreading part of their own, so one hit can't flood the server. */
@@ -206,7 +208,8 @@ public final class FusedEffects {
 					|| FusedFrost.apply(cast, node, hit, helped, harmed, power, duration, amplify)
 					|| FusedStorm.apply(cast, node, hit, helped, harmed, power, duration, amplify)
 					|| FusedLife.apply(cast, node, hit, helped, harmed, power, duration, amplify)
-					|| FusedVoid.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+					|| FusedVoid.apply(cast, node, hit, helped, harmed, power, duration, amplify)
+					|| SignatureFusions.apply(cast, node, hit, helped, harmed, power, duration, amplify);
 			}
 		}
 	}
