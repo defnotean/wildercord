@@ -140,7 +140,12 @@ public final class Scheduler {
 				}
 			}
 			for (LandWatch watch : landed) {
-				watch.action.accept(watch.player.position());
+				// As for tasks: one failing part of a spell mustn't take the whole server tick down.
+				try {
+					watch.action.accept(watch.player.position());
+				} catch (RuntimeException e) {
+					dev.wildercord.Wildercord.LOGGER.error("A spell part set off by landing failed", e);
+				}
 			}
 		}
 	}
