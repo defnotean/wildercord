@@ -202,7 +202,7 @@ public class WildercordLifeArcaneTest implements FabricClientGameTest {
 		int[][] ids = {new int[4]};
 		String cast = world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();
-			double[][] spots = {{-1.5, 3}, {1.5, 3}, {-1.5, 5}, {1.5, 5}};
+			double[][] spots = {{-1.5, 2}, {1.5, 2}, {-1.5, 3.5}, {1.5, 3.5}};
 			for (int i = 0; i < 4; i++) {
 				Mob husk = husk(level, spots[i][0], spots[i][1]);
 				husk.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(100);
@@ -308,14 +308,14 @@ public class WildercordLifeArcaneTest implements FabricClientGameTest {
 		String cast = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			Wolf wolf = EntityTypes.WOLF.create(player.level(), EntitySpawnReason.COMMAND);
-			wolf.snapTo(STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 3.5, 180, 0);
+			wolf.snapTo(STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 2.0, 180, 0);
 			wolf.tame(player);
 			wolf.addTag(TAG);
 			wolf.setNoAi(true);
 			player.level().addFreshEntity(wolf);
 			wolf.setHealth(10.0F);
 			id[0] = wolf.getId();
-			return cast(player, Runes.TOUCH, Runes.NOURISH);
+			return cast(player, Runes.BURST, Runes.NOURISH);
 		});
 		if (cast != null) {
 			return cast;
