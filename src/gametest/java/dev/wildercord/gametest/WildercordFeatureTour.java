@@ -153,6 +153,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
 			camera.snapTo(eye.x, eye.y, eye.z, yaw, pitch);
 			camera.addTag("wildercord.camera");
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			camera.addTag("wildercord.rolled");
 			level.addFreshEntity(camera);
 			return camera.getId();
 		});
@@ -383,6 +385,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 						husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
 						husk.setNoAi(true);
 						husk.addTag("wildercord.tour");
+						// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+						husk.addTag("wildercord.rolled");
 						level.addFreshEntity(husk);
 					}
 				}
@@ -450,6 +454,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 						husk.snapTo(at.x + (i - 1) * 1.6, at.y, at.z + near + i * 1.5, 180, 0);
 						husk.setNoAi(true);
 						husk.addTag("wildercord.tour");
+						// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+						husk.addTag("wildercord.rolled");
 						level.addFreshEntity(husk);
 					}
 				}
@@ -524,6 +530,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 					husk.snapTo(stage.x + Math.cos(a) * 2.2, stage.y, stage.z + Math.sin(a) * 2.2, 180, 0);
 					husk.setNoAi(true);
 					husk.addTag("wildercord.tour");
+					// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+					husk.addTag("wildercord.rolled");
 					level.addFreshEntity(husk);
 				}
 			}
@@ -547,6 +555,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 					husk.snapTo(stage.x + (i - 1) * 2.2, stage.y, stage.z - 2 + (i % 2) * 2, 180, 0);
 					husk.setNoAi(true);
 					husk.addTag("wildercord.tour");
+					// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+					husk.addTag("wildercord.rolled");
 					level.addFreshEntity(husk);
 				}
 			}
@@ -580,6 +590,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				zombie.snapTo(stage.x, stage.y, stage.z, 200, 0);
 				zombie.setNoAi(true);
 				zombie.addTag("wildercord.tour");
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				zombie.addTag("wildercord.rolled");
 				level.addFreshEntity(zombie);
 				Runebound.bind(zombie, List.of(Runes.BOLT, Runes.FIRE, Runes.SPLIT_MOD), true);
 			}
@@ -606,6 +618,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			caster.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			caster.addTag("wildercord.tour");
 			caster.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			caster.addTag("wildercord.rolled");
 			level.addFreshEntity(caster);
 			Runebound.bind(caster, List.of(Runes.BOLT, Runes.FROST, Runes.SPLIT_MOD), true);
 			caster.setTarget(player);
@@ -643,6 +657,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			dummy.setYHeadRot(180);
 			dummy.setYBodyRot(180);
 			dummy.addTag("wildercord.tour");
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			dummy.addTag("wildercord.rolled");
 			level.addFreshEntity(dummy);
 		});
 		world.getServer().runOnServer(server -> {
@@ -696,6 +712,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			husk.setYBodyRot(180);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
 			Shields.give(husk, strength, 1200, List.of(Runes.SELF.id(), Runes.SHIELD.id(), Runes.AMPLIFY.id()));
 		});
@@ -853,6 +871,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
 			player.setHealth(8);
 		});
@@ -904,6 +924,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			husk.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
 		});
 		context.waitTicks(2);
@@ -984,6 +1006,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			husk.snapTo(top.x, top.y, top.z, 200, 0);
 			husk.setNoAi(true);
 			husk.addTag("wildercord.tour");
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
 		});
 		// A frame every tick as it goes off (for tools/make_gif.py), the fifth kept as the still.
@@ -1021,6 +1045,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			witch.snapTo(spot.x, spot.y, spot.z, 180, 0);
 			witch.setNoAi(true);
 			witch.addTag("wildercord.tour");
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			witch.addTag("wildercord.rolled");
 			level.addFreshEntity(witch);
 			Runebound.bind(witch, List.of(Runes.DOMAIN, Runes.CHILL), false);
 			Runebound.cast(level, witch, List.of(Runes.DOMAIN, Runes.CHILL), 0.8);

@@ -391,6 +391,8 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			w.tame(player);
 			w.setNoAi(true);
 			w.addTag(TAG);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			w.addTag("wildercord.rolled");
 			player.level().addFreshEntity(w);
 			return w.getId();
 		});
@@ -578,6 +580,8 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			}
 			mob.setPersistenceRequired();
 			mob.addTag(TAG);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			mob.addTag("wildercord.rolled");
 			level.addFreshEntity(mob);
 			return mob.getId();
 		});

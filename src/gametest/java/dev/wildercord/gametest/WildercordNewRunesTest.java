@@ -186,6 +186,8 @@ public class WildercordNewRunesTest implements FabricClientGameTest {
 				husk.addTag("wildercord.new_runes");
 				// Something good for Starmaw to swallow.
 				husk.addEffect(new MobEffectInstance(MobEffects.SPEED, 600, 0));
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				husk.addTag("wildercord.rolled");
 				level.addFreshEntity(husk);
 				out.add(husk.getId());
 			}

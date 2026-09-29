@@ -177,6 +177,8 @@ public class WildercordGearTest implements FabricClientGameTest {
 			}
 			husk.snapTo(at.x, at.y, at.z + 2.2, 180, 0);
 			husk.setNoAi(true);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
 
 			SpellCompiler.Compiled compiled = SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 0, CordTier.ECHO));
@@ -365,6 +367,8 @@ public class WildercordGearTest implements FabricClientGameTest {
 			for (int i = -1; i <= 1; i++) {
 				Arrow arrow = new Arrow(level, player, new ItemStack(Items.ARROW), crossbow);
 				arrow.shootFromRotation(player, player.getXRot(), player.getYRot() + i * 10, 0.0F, 3.0F, 0.0F);
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				arrow.addTag("wildercord.rolled");
 				level.addFreshEntity(arrow);
 				arrows.add(arrow);
 			}

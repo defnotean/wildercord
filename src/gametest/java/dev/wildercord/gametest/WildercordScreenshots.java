@@ -316,6 +316,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				husk.snapTo(STAGE[0] + 5 + i, STAGE[1], STAGE[2] + (i - 1) * 1.5, 90.0F, 0.0F);
 				husk.setPersistenceRequired();
 				husk.setNoAi(false);
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				husk.addTag("wildercord.rolled");
 				level.addFreshEntity(husk);
 			}
 		}
@@ -377,6 +379,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			var husk = net.minecraft.world.entity.EntityTypes.HUSK.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 			husk.snapTo(STAGE[0] + 6, STAGE[1], STAGE[2], 90.0F, 0.0F);
 			husk.setPersistenceRequired();
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
 			huskId[0] = husk.getUUID();
 		});
@@ -490,6 +494,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		var husk = net.minecraft.world.entity.EntityTypes.HUSK.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
 		husk.snapTo(STAGE[0] + 6, STAGE[1], STAGE[2], 90.0F, 0.0F);
 		husk.setPersistenceRequired();
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		husk.addTag("wildercord.rolled");
 		level.addFreshEntity(husk);
 		return husk.getUUID();
 	}

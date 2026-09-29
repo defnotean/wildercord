@@ -108,6 +108,8 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				mob.snapTo(pool.getX() + 0.5, pool.getY() - 2, pool.getZ() + 0.5, 0.0F, 0.0F);
 				mob.setNoAi(true);
 				mob.setPersistenceRequired();
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				mob.addTag("wildercord.rolled");
 				level.addFreshEntity(mob);
 				return mob.getUUID();
 			});
@@ -142,6 +144,8 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				arrow.snapTo(at.x, at.y, at.z, 0.0F, 0.0F);
 				arrow.setNoGravity(true);
 				arrow.setDeltaMovement(-1.5, 0, 0);
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				arrow.addTag("wildercord.rolled");
 				level.addFreshEntity(arrow);
 				// The gust comes from 3 blocks to the west, so it blows east (+x), against the arrow.
 				apply(player, List.of(Runes.TOUCH, Runes.PUSH), at, List.of(), at.add(-3, 0, 0));
@@ -183,6 +187,8 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				Mob mob = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 				mob.snapTo(pool.getX() - 3.5, pool.getY() + 1, pool.getZ() + 0.5, 0.0F, 0.0F);
 				mob.setNoAi(true);
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				mob.addTag("wildercord.rolled");
 				level.addFreshEntity(mob);
 				Cast monster = new Cast(mob);
 				SpellPlan.Group group = SpellCompiler.compile(List.of(Runes.TOUCH, Runes.FROST)).root().groups.getFirst();

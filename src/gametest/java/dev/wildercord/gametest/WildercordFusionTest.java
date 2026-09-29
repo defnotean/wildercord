@@ -128,6 +128,8 @@ public class WildercordFusionTest implements FabricClientGameTest {
 		husk.snapTo(at.x, at.y, at.z, 0, 0);
 		husk.setNoAi(true);
 		husk.addTag("wildercord.fusion");
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		husk.addTag("wildercord.rolled");
 		level.addFreshEntity(husk);
 		return husk;
 	}

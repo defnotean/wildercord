@@ -212,6 +212,8 @@ public class WildercordPricesTest implements FabricClientGameTest {
 				husk.snapTo(player.getX() + (i - 1) * 1.6, player.getY(), player.getZ() + 1.8, 180, 0);
 				husk.setNoAi(true);
 				husk.addTag("wildercord.prices");
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				husk.addTag("wildercord.rolled");
 				level.addFreshEntity(husk);
 			}
 			SpellCaster.edit(player, 0, spell);

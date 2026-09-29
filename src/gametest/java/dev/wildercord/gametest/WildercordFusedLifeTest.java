@@ -562,6 +562,8 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 		husk.snapTo(STAGE.getX() + 0.5 + dx, STAGE.getY(), STAGE.getZ() + 0.5 + dz, 180, 0);
 		husk.setNoAi(true);
 		husk.addTag(TAG);
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		husk.addTag("wildercord.rolled");
 		level.addFreshEntity(husk);
 		return husk;
 	}
@@ -582,6 +584,8 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 		wolf.tame(owner);
 		wolf.setNoAi(true);
 		wolf.addTag(TAG);
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		wolf.addTag("wildercord.rolled");
 		level.addFreshEntity(wolf);
 		return wolf;
 	}

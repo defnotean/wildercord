@@ -147,6 +147,8 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 		husk.snapTo(STAGE.getX() + 0.5 + side, STAGE.getY(), STAGE.getZ() + 0.5 + ahead, 180, 0);
 		husk.setNoAi(true);
 		husk.addTag(TAG);
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		husk.addTag("wildercord.rolled");
 		level.addFreshEntity(husk);
 		husk.setHealth(husk.getMaxHealth());
 		return husk;
@@ -316,6 +318,8 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 			warden.snapTo(STAGE.getX() + 4.5, STAGE.getY(), STAGE.getZ() + 6.5, 180, 0);
 			warden.setNoAi(true);
 			warden.addTag(TAG);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			warden.addTag("wildercord.rolled");
 			level.addFreshEntity(warden);
 			warden.addEffect(new MobEffectInstance(MobEffects.SPEED, 1200, 0));
 			touch(player, Runes.TIMESTEAL, warden);

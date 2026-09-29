@@ -163,6 +163,8 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 		}
 		husk.setPersistenceRequired();
 		husk.addTag(TAG);
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		husk.addTag("wildercord.rolled");
 		level.addFreshEntity(husk);
 		return husk;
 	}
@@ -178,6 +180,8 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 		wolf.tame(player);
 		wolf.setNoAi(true);
 		wolf.addTag(TAG);
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		wolf.addTag("wildercord.rolled");
 		level.addFreshEntity(wolf);
 		return wolf;
 	}

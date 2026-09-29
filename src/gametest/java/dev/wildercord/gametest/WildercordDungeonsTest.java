@@ -417,6 +417,8 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 			check(pig != null, "a pig should spawn");
 			pig.snapTo(altar.getX() - 3.5, altar.getY() + 0.2, altar.getZ() + 0.5, 0, 0);
 			pig.setNoAi(true);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			pig.addTag("wildercord.rolled");
 			level.addFreshEntity(pig);
 			return new int[] {scribe.getId(), pig.getId()};
 		});

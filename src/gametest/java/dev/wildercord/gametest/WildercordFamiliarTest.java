@@ -220,6 +220,8 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 			mob.snapTo(at.x, at.y, at.z, 180, 0);
 			mob.setNoAi(true);
 			mob.setTarget(player);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			mob.addTag("wildercord.rolled");
 			level.addFreshEntity(mob);
 			return mob.getId();
 		});

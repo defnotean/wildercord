@@ -175,6 +175,8 @@ public class WildercordSocialTest implements FabricClientGameTest {
 		villager.setNoAi(true);
 		villager.addTag("wildercord.social");
 		villager.setVillagerData(villager.getVillagerData().withProfession(level.registryAccess(), Runesmith.PROFESSION).withLevel(tradeLevel));
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		villager.addTag("wildercord.rolled");
 		level.addFreshEntity(villager);
 		return villager;
 	}
@@ -288,6 +290,8 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			mob.setNoAi(true);
 		}
 		mark.addTag("wildercord.social");
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		mark.addTag("wildercord.rolled");
 		level.addFreshEntity(mark);
 		return mark;
 	}
@@ -385,6 +389,8 @@ public class WildercordSocialTest implements FabricClientGameTest {
 		husk.snapTo(beside.x, beside.y, beside.z, 0, 0);
 		husk.setNoAi(true);
 		husk.addTag("wildercord.social");
+		// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+		husk.addTag("wildercord.rolled");
 		level.addFreshEntity(husk);
 		return husk;
 	}
