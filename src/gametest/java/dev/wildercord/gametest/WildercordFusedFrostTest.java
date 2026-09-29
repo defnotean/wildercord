@@ -454,6 +454,12 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 			if (slowness(t) < 6 || taken < 5.5F || taken > 8.0F) {
 				return "a husk already slowed should freeze solid and take 7 (took " + taken + ", Slowness at " + slowness(t) + ")";
 			}
+			// Straight after (a Linger's repeat, a second copy), it's still cold, but only slowed: no second freeze and 7.
+			float before = t.getHealth();
+			land(player, Runes.ABSOLUTE_ZERO, List.of(t));
+			if (t.getHealth() < before) {
+				return "Absolute Zero shouldn't freeze the same husk solid again so soon (took " + (before - t.getHealth()) + " more)";
+			}
 			return null;
 		});
 		return found(slowed, solid);

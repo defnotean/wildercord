@@ -56,11 +56,16 @@ final class FusedFrost {
 	 * caster: a newer one from the same caster takes over from the older instead of running beside it.
 	 */
 	private static final Map<String, Object> RUNNING = new HashMap<>();
+	/** Until when (game time) Absolute Zero can't freeze each creature solid again (see {@link FusedFrostRules#ZERO_LOCKOUT_TICKS}). */
+	private static final Map<java.util.UUID, Long> ZERO_LOCKED = new HashMap<>();
 
 	/** Registers anything these effects listen for (damage, deaths, ticks); called once at startup. */
 	static void init() {
 		FusedFrostWards.init();
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> RUNNING.clear());
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			RUNNING.clear();
+			ZERO_LOCKED.clear();
+		});
 	}
 
 	/** Does {@code node}'s effect if it's one of these, and says whether it was. */
@@ -272,11 +277,12 @@ final class FusedFrost {
 	/**
 	 * Absolute Zero: Slowness IV for 3 seconds; a target that was already slowed or frozen (Slowness
 	 * of any kind, a frozen mark, frost through it, held by a freeze) freezes solid for 2 seconds (1 on
-	 * players) and takes 7 damage. Every target is struck; only if {@code show} is it drawn in full (the
-	 * first few of a crowd).
+	 * players) and takes 7 damage, then can't be frozen solid again until 3 seconds after it thaws (it's only
+	 * slowed). Every target is struck; only if {@code show} is it drawn in full (the first few of a crowd).
 	 */
 	private static void absoluteZero(Cast cast, LivingEntity t, double power, double duration, boolean show) {
-		boolean cold = alreadyCold(t);
+		long now = cast.level.getGameTime();
+		boolean cold = alreadyCold(t) && now >= ZERO_LOCKED.getOrDefault(t.getUUID(), Long.MIN_VALUE);
 		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(3, duration), 3, false, true), cast.caster);
 		if (!cold) {
 			if (show) {
@@ -285,6 +291,10 @@ final class FusedFrost {
 			return;
 		}
 		int hold = Effects.ticks(t instanceof Player ? 1 : 2, duration);
+		if (ZERO_LOCKED.size() > 256) {
+			ZERO_LOCKED.values().removeIf(until -> until <= now);
+		}
+		ZERO_LOCKED.put(t.getUUID(), FusedFrostRules.zeroLockedUntil(now, hold));
 		freeze(t, hold);
 		if (show) {
 			FusedFrostVfx.absoluteZeroSolid(cast.level, t, hold);

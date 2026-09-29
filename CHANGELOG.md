@@ -38,6 +38,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
     creeper, curing and growing babies are a player's spell's only, and off with world-changing magic off too.
   - The rune tooltips' dark green *"Where it lands"* lines say all of this, with the warnings.
 
+### Changed
+- **Absolute Zero freezes the same creature solid at most once every few seconds.** Its first hit leaves a target
+  slowed, so with Linger, a Zone or a second copy every later hit was a certain freeze for 7 damage. Frozen solid, a
+  creature can't be again until 3 seconds after it thaws (it's still slowed meanwhile).
+
 ### Fixed
 - A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up
   and casts at you from there.

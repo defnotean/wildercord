@@ -3,8 +3,8 @@ package dev.wildercord.cast;
 /**
  * The fused effects of frost's pure rules, with no Minecraft types so they're unit-tested: how many
  * beats Frostbite's cold has and how deep each one slows, how Cryostasis spreads its healing over the
- * seal, and how long an enemy must stand on a Rime Seal. {@link FusedFrost} and {@link FusedFrostWards}
- * apply them.
+ * seal, how long an enemy must stand on a Rime Seal, and how soon Absolute Zero may freeze the same
+ * creature solid again. {@link FusedFrost} and {@link FusedFrostWards} apply them.
  */
 public final class FusedFrostRules {
 	private FusedFrostRules() {}
@@ -61,6 +61,18 @@ public final class FusedFrostRules {
 	/** Whether a creature locked out until {@code lockedUntil} may be sealed at {@code now}. */
 	public static boolean maySeal(long lockedUntil, long now) {
 		return now >= lockedUntil;
+	}
+
+	/**
+	 * After Absolute Zero freezes a creature solid, it can't freeze it solid again until this many ticks after the
+	 * ice lets go: 3 seconds. Its first hit leaves the creature slowed, so without this every later hit (a Linger,
+	 * a Zone's pulses, a second copy) would be a certain freeze and 7 damage.
+	 */
+	public static final int ZERO_LOCKOUT_TICKS = 60;
+
+	/** Until when Absolute Zero can't freeze a creature solid again, having frozen it at {@code at} for {@code hold} ticks. */
+	public static long zeroLockedUntil(long at, int hold) {
+		return at + hold + ZERO_LOCKOUT_TICKS;
 	}
 
 	/** Whole seconds left (rounded up) until {@code lockedUntil}, for telling the caster. */

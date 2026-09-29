@@ -105,7 +105,7 @@ its emblem is split down the middle between the two elements' glyphs.
 | Arcane + Blood | **Hemomancy** | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
 | Time + Blood | **Reckoning** | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |
 | Fire | **Conflagration** | Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flares up for 3 damage and burns 2 seconds longer. |
-| Frost | **Absolute Zero** | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage. |
+| Frost | **Absolute Zero** | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws. |
 | Storm | **Thunderhead** | A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 3 damage. |
 | Wind | **Updraft** | Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft smashes them back down for 4 damage. |
 | Earth | **Monolith** | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |

@@ -667,7 +667,7 @@
   "rune.wildercord.frostbite": "Frostbite",
   "rune.wildercord.frostbite.desc": "3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second.",
   "rune.wildercord.absolute_zero": "Absolute Zero",
-  "rune.wildercord.absolute_zero.desc": "Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage.",
+  "rune.wildercord.absolute_zero.desc": "Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws.",
   "rune.wildercord.magnetize": "Magnetize",
   "rune.wildercord.magnetize.desc": "Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second).",
   "rune.wildercord.riftbolt": "Riftbolt",
