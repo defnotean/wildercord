@@ -657,6 +657,7 @@ def write_lang(runes):
     lang.update(GEAR_LANG)
     lang.update(DUNGEON_LANG)
     lang.update(TRAVEL_LANG)
+    lang.update(LOADOUT_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1824,6 +1825,62 @@ TRAVEL_LANG = {
     "dimension.wildercord.overworld": "the Overworld",
     "dimension.wildercord.the_nether": "the Nether",
     "dimension.wildercord.the_end": "the End",
+}
+
+# Loadouts: saved Cord setups, from the Cord screen's panel, the quick-switch key and /loadout.
+LOADOUT_LANG = {
+    "key.wildercord.next_loadout": "Next loadout",
+    # The server's answers (above the hotbar, or in chat for /loadout)
+    "message.wildercord.loadout.saved": "Saved your Cord as %s (%s of %s)",
+    "message.wildercord.loadout.replaced": "Saved your Cord over %s",
+    "message.wildercord.loadout.renamed": "Renamed %s to %s",
+    "message.wildercord.loadout.deleted": "Deleted the loadout %s. Your Cord keeps what it holds",
+    "message.wildercord.loadout.loaded": "Loaded %s",
+    "message.wildercord.loadout.loaded_quiet": "Loaded %s. %s runes stay quiet: not learned, too strong for this Cord, or past its sockets",
+    "message.wildercord.loadout.switched": "Loadout: %s (%s of %s)",
+    "message.wildercord.loadout.switched_quiet": "Loadout: %s (%s of %s). %s runes stay quiet",
+    "message.wildercord.loadout.bad_name": "Give the loadout a name (up to %s letters)",
+    "message.wildercord.loadout.name_taken": "You already have a loadout called %s",
+    "message.wildercord.loadout.full": "You have %s loadouts, the most you can keep. Save over one, or delete one",
+    "message.wildercord.loadout.gone": "That loadout isn't there any more",
+    "message.wildercord.loadout.missing": "You don't have a loadout called %s",
+    "message.wildercord.loadout.none": "You haven't saved a loadout yet. Open your Cord (%s) and click the list badge to save one",
+    "message.wildercord.loadout.dead": "You can't change loadouts right now",
+    "message.wildercord.loadout.charging": "You can't change loadouts while charging a spell",
+    "message.wildercord.loadout.duel": "You can't change loadouts during a duel",
+    "message.wildercord.loadout.sealed": "You can't change loadouts while sealed in ice",
+    "message.wildercord.loadout.list": "Your loadouts (%s of %s): ",
+    "message.wildercord.loadout.list_hover": "Load %s",
+    "message.wildercord.loadout.list_none": "You haven't saved a loadout yet. /loadout save <name> saves your whole Cord",
+    # The Cord screen's badge and panel
+    "screen.wildercord.loadouts.badge": "Loadouts",
+    "screen.wildercord.loadouts.badge.hint": "Save your whole Cord (every spell and its name, your passives and the selected spell) and swap between setups: one for fighting, one for mining, one for exploring",
+    "screen.wildercord.loadouts.badge.count": "%s of %s saved",
+    "screen.wildercord.loadouts.badge.keys": "Ctrl+L opens them. Next loadout key: %s",
+    "screen.wildercord.loadouts.title": "Loadouts (%s of %s)",
+    "screen.wildercord.loadouts.close": "Close (Esc)",
+    "screen.wildercord.loadouts.load": "Load",
+    "screen.wildercord.loadouts.load.hint": "Put this loadout on your Cord. Runes you don't know or your Cord can't hold stay quiet, and every spell that changes starts its cooldown",
+    "screen.wildercord.loadouts.save_here": "Save current here",
+    "screen.wildercord.loadouts.save_here.hint": "Replace this loadout with your Cord as it is now. Click twice to be sure",
+    "screen.wildercord.loadouts.rename": "Rename",
+    "screen.wildercord.loadouts.rename.hint": "Type a new name. Enter saves, Esc cancels",
+    "screen.wildercord.loadouts.delete": "Delete",
+    "screen.wildercord.loadouts.delete.hint": "Forget this loadout (your Cord keeps what it holds now). Click twice to be sure",
+    "screen.wildercord.loadouts.confirm_save": "Click again to save over %s",
+    "screen.wildercord.loadouts.confirm_delete": "Click again to delete %s",
+    "screen.wildercord.loadouts.save_new": "+ Save current as new",
+    "screen.wildercord.loadouts.save_new.hint": "Save your spells, their names, your passives and the selected spell as a new loadout",
+    "screen.wildercord.loadouts.default_name": "Loadout %s",
+    "screen.wildercord.loadouts.typing": "Enter saves · Esc cancels",
+    "screen.wildercord.loadouts.note": "Runes you don't know or your Cord can't hold stay quiet",
+    "screen.wildercord.loadouts.keys": "\u2191\u2193 pick · Enter load · Ctrl+R rename · Del delete",
+    "screen.wildercord.loadouts.current": "Last loaded",
+    "screen.wildercord.loadouts.spell": "Spell %s: ",
+    "screen.wildercord.loadouts.spell_selected": "Spell %s (selected): ",
+    "screen.wildercord.loadouts.passive": "Passive %s: ",
+    "screen.wildercord.loadouts.passive_off": "Passive %s (off): ",
+    "screen.wildercord.loadouts.nothing": "Nothing threaded",
 }
 
 ARCHIVE_LAND = ["#minecraft:is_taiga", "#minecraft:is_jungle", "#minecraft:is_forest", "#minecraft:is_savanna", "#minecraft:is_badlands",
