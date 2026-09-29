@@ -1411,6 +1411,7 @@
   "command.wildercord.event.rift_open": "A rift is already open in this world",
   "command.wildercord.event.rift": "A rift tears open",
   "command.wildercord.event.off": "World events are switched off in the server's config (features.world_events)",
+  "command.wildercord.event.overworld": "World events only happen in the Overworld",
   "subtitles.wildercord.storm_start": "Mana storm gathers",
   "subtitles.wildercord.storm_end": "Mana storm passes",
   "subtitles.wildercord.storm_arc": "Ley line crackles",

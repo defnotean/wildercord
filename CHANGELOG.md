@@ -157,6 +157,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   the spot, and its wave could then never be beaten. It now stays, still one of the rift's (or the star's) own.
 - Two mana storms could roll in on top of each other from neighbouring regions. A storm no longer starts where
   it would overlap one already raging.
+- `/wildercord event` worked in any dimension (a star would land on the Nether's roof). Like the events the
+  server rolls, it now works only in the Overworld.
 - Icepath's frosted ice never melted in the dark (in caves, or at night). Like frost's, it now thaws back into
   water after half a minute wherever it is.
 
