@@ -357,21 +357,6 @@ public final class Vfx {
 	// Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap) send everything at once and
 	// let the light itself do the moving, never the Scheduler, so a quiet renewal stays quiet.
 
-	/** Fire: flame tongues licking up the target over a heat flare, a ring of fire at its feet, embers rising off it. */
-	public static void fire(ServerLevel level, Entity target) {
-		Vec3 base = target.position();
-		Vec3 c = target.getBoundingBox().getCenter();
-		double w = Math.max(0.35, target.getBbWidth() * 0.6);
-		double h = target.getBbHeight();
-		ElementFx.heatFlare(level, c, 1.2);
-		ElementFx.flames(level, base, w, h, 5);
-		Scheduler.later(2, () -> ElementFx.flames(level, target.position(), w, h, 3));
-		ElementFx.groundRing(level, base, ElementFx.FIRE.primary(), 0.2, w + 0.9, 0.05, 8);
-		ElementFx.embers(level, base.add(0, h * 0.4, 0), w, 8);
-		Motes.smoke(level, c.add(0, h * 0.3, 0), 1, 0.25);
-		Fx.sound(level, base, SoundEvents.GENERIC_BURN, 0.5F, 1.2F);
-	}
-
 	/** Frost: crystal shards burst out of the target, a shatter ring snaps round it and frost creeps over the ground. */
 	public static void frost(ServerLevel level, Entity target) {
 		Vec3 center = target.getBoundingBox().getCenter();
@@ -842,27 +827,6 @@ public final class Vfx {
 		Feels.sound(level, target.position(), "frost_crack", 0.7F, 1.0F);
 	}
 
-	/** A burning rock streaking down out of the sky onto a point over 12 ticks, a reticle marking where it will land. */
-	public static void meteorFall(ServerLevel level, Vec3 ground) {
-		Scheduler.later(12, () -> ScreenFx.shake(level, ground, 0.8F, 24));
-		Vec3 start = ground.add(-6, 18, -3);
-		Vec3 path = ground.subtract(start);
-		Sigils.target(level, ground, ElementFx.FIRE.primary(), 1.8F, 16);
-		for (int t = 0; t < 12; t++) {
-			int tick = t;
-			Scheduler.later(t + 1, () -> {
-				Vec3 p = start.add(path.scale((tick + 1) / 12.0));
-				Vec3 back = start.add(path.scale(Math.max(0, tick - 2) / 12.0));
-				ElementFx.orb(level, p, ElementFx.FIRE.secondary(), 0.4, 2);
-				emit(level, SigilOption.glow(ElementFx.FIRE.primary(), 1.8F), p, 1, 0.0, 0.0);
-				ElementFx.ray(level, back, p, ElementFx.FIRE.primary(), 0.32, 7);
-				emit(level, ParticleTypes.FLAME, p, 4, 0.3, 0.02);
-				Motes.smoke(level, back, 1, 0.3);
-			});
-		}
-		Fx.sound(level, ground, SoundEvents.BLAZE_SHOOT, 1.2F, 0.5F);
-	}
-
 	/** Tremor: the ground cracks open, shockwaves of dust race out over it and spires of stone jut up and sink. */
 	public static void tremor(ServerLevel level, Vec3 ground, double radius) {
 		ScreenFx.shake(level, ground, (float) Math.min(0.6, 0.2 + radius * 0.075), radius * 3 + 8);
@@ -1016,26 +980,6 @@ public final class Vfx {
 	public static void smite(ServerLevel level, Entity target) {
 		LifeArcaneFx.smite(level, target);	}
 
-	/** One pulse of Inferno: a ring of fire round the area, flame tongues leaping up inside it, embers and smoke. */
-	public static void inferno(ServerLevel level, Vec3 point, double radius) {
-		RandomSource random = level.getRandom();
-		ElementFx.groundRing(level, point, ElementFx.FIRE.primary(), radius * 0.9, radius, 0.08, 20);
-		ElementFx.groundRing(level, point, ElementFx.FIRE.accent(), radius * 0.4, radius * 0.95, 0.05, 14);
-		int tongues = (int) Math.min(8, 2 + radius);
-		for (int i = 0; i < tongues; i++) {
-			double a = random.nextDouble() * Math.PI * 2;
-			double r = Math.sqrt(random.nextDouble()) * radius * 0.85;
-			ElementFx.flames(level, point.add(Math.cos(a) * r, 0, Math.sin(a) * r), 0.25, 0.8, 1);
-		}
-		for (int i = 0; i < (int) (radius * 4); i++) {
-			double a = random.nextDouble() * Math.PI * 2;
-			double r = Math.sqrt(random.nextDouble()) * radius;
-			fling(level, ParticleTypes.FLAME, point.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), UP, 0.08);
-		}
-		Motes.smoke(level, point.add(0, 0.6, 0), 2, radius * 0.4);
-		Fx.sound(level, point, SoundEvents.GENERIC_BURN, 0.7F, 0.8F);
-	}
-
 	/** Thunderclap: a white flare, a shockwave of light and forks of lightning ripping out over the ground, a puff of thundercloud. */
 	public static void thunderclap(ServerLevel level, Vec3 point, double radius) {
 		thunderclap(level, point, radius, true);
@@ -1120,18 +1064,6 @@ public final class Vfx {
 	/** Silence: a ring of light closes over the target's head and seals there. */
 	public static void silence(ServerLevel level, Entity target) {
 		LifeArcaneFx.silence(level, target);	}
-
-	/** Fireward: flame tongues curl round the target and fold into warm rings that close on it. */
-	public static void fireward(ServerLevel level, Entity target) {
-		Vec3 base = target.position();
-		double w = Math.max(0.4, target.getBbWidth() * 0.65);
-		double h = target.getBbHeight();
-		ElementFx.flames(level, base, w, h, 4);
-		ElementFx.ring(level, base.add(0, 0.2, 0), UP, ElementFx.FIRE.secondary(), w + 1.1, w + 0.1, 0.05, 12);
-		ElementFx.ring(level, base.add(0, h * 0.6, 0), UP, ElementFx.FIRE.primary(), w + 0.9, w + 0.1, 0.04, 14);
-		emit(level, ParticleTypes.SMALL_FLAME, target.getBoundingBox().getCenter(), 6, 0.4, 0.01);
-		Fx.sound(level, target.position(), SoundEvents.FIRE_EXTINGUISH, 0.6F, 1.4F);
-	}
 
 	/** Nourish: crumbs and a small green bloom. */
 	public static void nourish(ServerLevel level, Entity target) {

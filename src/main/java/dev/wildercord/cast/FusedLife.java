@@ -96,7 +96,7 @@ final class FusedLife {
 					// Nothing to strike, nothing asked: the rite takes blood only when it has a victim.
 					return true;
 				}
-				if (!payBlood(caster, 3)) {
+				if (!payBlood(caster, sanguinePrice(node, amplify, harmed.size()))) {
 					FusedLifeVfx.sanguineRefused(level, caster);
 					Casters.tell(caster, Component.translatableWithFallback("message.wildercord.sanguine_rite_weak",
 						"The rite needs more blood than you can spare").withColor(0xFF6474));
@@ -118,6 +118,11 @@ final class FusedLife {
 			}
 		}
 		return true;
+	}
+
+	/** Sanguine Rite's price: 3 health, one more for each Amplify and two for each Overcharge (its power grows, so does its price), and one more per four victims. */
+	static float sanguinePrice(SpellPlan.EffectNode node, int amplify, int victims) {
+		return FireBloodRules.sanguinePrice(amplify, node.count(dev.wildercord.spell.Runes.OVERCHARGE_MOD), victims);
 	}
 
 	private static List<LivingEntity> first(List<LivingEntity> targets) {
@@ -251,7 +256,22 @@ final class FusedLife {
 		Scheduler.later(1, next[0]);
 	}
 
-	/** One second of the mist: enemies in it bleed, allies in it heal half a heart. */
+	/** Crimson Mist: damage a second to enemies in it, health a second to allies in it, and how far monsters can still see into it. */
+	static final double MIST_HARM = 2.0;
+	static final double MIST_MEND = 1.5;
+	static final double MIST_VEIL = 4.0;
+
+	/** Monsters farther than {@link #MIST_VEIL} from an ally in the mist lose track of it: the haze hides the ones it mends. */
+	private static void veil(LivingEntity ally, Mist mist) {
+		for (net.minecraft.world.entity.Mob mob : mist.cast.level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class,
+				ally.getBoundingBox().inflate(24.0), m -> m.getTarget() == ally)) {
+			if (mob.distanceTo(ally) > MIST_VEIL) {
+				mob.setTarget(null);
+			}
+		}
+	}
+
+	/** One second of the mist: enemies in it bleed, allies in it heal and are hidden from far-off monsters. */
 	private static void mistPulse(Mist mist, long now) {
 		Cast cast = mist.cast;
 		ServerLevel level = cast.level;
@@ -287,10 +307,13 @@ final class FusedLife {
 				FusedLifeVfx.crimsonMistBleed(level, t);
 				// Bleeding while it stands in the mist: wind damage on it sets off Rupture.
 				Reactions.mark(t, Reactions.Mark.BLEEDING, 30);
-				Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), 1 * mist.power);
-			} else if (t.getHealth() < t.getMaxHealth()) {
-				t.heal((float) (1 * mist.power));
-				FusedLifeVfx.crimsonMistMend(level, t);
+				Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), MIST_HARM * mist.power);
+			} else {
+				veil(t, mist);
+				if (t.getHealth() < t.getMaxHealth()) {
+					t.heal((float) (MIST_MEND * mist.power));
+					FusedLifeVfx.crimsonMistMend(level, t);
+				}
 			}
 		}
 	}
@@ -787,7 +810,14 @@ final class FusedLife {
 			if (!free) {
 				caster.setHealth((float) (caster.getHealth() - give));
 			}
-			t.heal((float) (2 * give));
+			t.heal((float) (FusedLifeRules.TRANSFUSION_RATIO * give));
+						// The blood carries a cure: one harmful effect on the ally is washed out.
+						for (MobEffectInstance effect : List.copyOf(t.getActiveEffects())) {
+							if (effect.getEffect().value().getCategory() == net.minecraft.world.effect.MobEffectCategory.HARMFUL) {
+								t.removeEffect(effect.getEffect());
+								break;
+							}
+						}
 			FusedLifeVfx.transfusion(level, caster, t, give);
 			gave = true;
 		}
@@ -943,7 +973,7 @@ final class FusedLife {
 				if (!cast.alive() || !t.isAlive() || t.level() != level) {
 					return;
 				}
-				ExpansionVfx.bleed(level, t, false);
+				FireBloodVfx.bleedDrip(level, t, false);
 				Effects.lingering(() -> Effects.hurt(cast, t, source, 1 * power));
 			}));
 		}

@@ -23,8 +23,11 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * The fused effects, made only at the Fusion Altar (see {@code spell.Fusions}). Each is two
@@ -38,7 +41,11 @@ public final class FusedEffects {
 
 	/** Registers what the fused effects listen for: called once at startup. */
 	public static void init() {
-		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> LANDED.clear());
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			LANDED.clear();
+			SIPHONED.clear();
+		});
+		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> siphon(entity, damage));
 		FusedFlame.init();
 		FusedFrost.init();
 		FusedStorm.init();
@@ -94,35 +101,43 @@ public final class FusedEffects {
 		switch (Effects.builtIn(node.effect) ? node.effect.path() : "") {
 			case "firestorm" -> {
 				double radius = 2.0 * SpellNumbers.effectRadius(node);
+				Set<UUID> caught = new HashSet<>();
+				List<LivingEntity> seeds = new ArrayList<>();
 				int burning = 0;
 				for (LivingEntity t : harmed) {
 					t.igniteForSeconds((float) (6 * duration));
-					Effects.hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 4 * power * Reactions.fire(cast, t));
+					Effects.hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 5 * power * Reactions.fire(cast, t));
+					caught.add(t.getUUID());
 					// Every target burns; only the first few spread it (and show it), so a crowd can't flood the server.
-					if (burning++ >= MAX_TARGETS) {
-						continue;
+					if (burning++ < MAX_TARGETS) {
+						FireBloodVfx.firestorm(level, t);
+						seeds.add(t);
 					}
-					FusionVfx.firestorm(level, t, radius);
-					// The fire leaps to everyone near it (but never back onto the caster's side).
-					int spread = 0;
-					for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(radius), e -> Targets.canHarm(caster, e))) {
-						if (spread++ >= MAX_TARGETS) {
-							break;
-						}
-						LivingEntity near = (LivingEntity) e;
-						near.igniteForSeconds((float) (6 * duration));
-						FusionVfx.fireLeap(level, t, near);
+				}
+				// The fire leaps to everyone near it, and a moment later to everyone near them: two waves, each enemy caught once.
+				List<LivingEntity> first =	contagion(cast, seeds, radius, caught, FIRESTORM_WAVE_ONE, power, 5 * duration);
+				Scheduler.later(FIRESTORM_WAVE_GAP, Effects.carryContext(() -> {
+					if (cast.alive()) {
+						contagion(cast, first, radius, caught, FIRESTORM_WAVE_TWO, power, 4 * duration);
 					}
+				}));
+			}
+			case "steam" -> {
+				List<Vec3> clouds = new ArrayList<>();
+				harmed.forEach(t -> clouds.add(t.position()));
+				harmed.forEach(t -> {
+					Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, caster), 5 * power * Reactions.fire(cast, t));
+					t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Effects.ticks(3, duration), 0, false, true));
+					if (t instanceof net.minecraft.world.entity.Mob mob) {
+						mob.setTarget(null);
+					}
+					FireBloodVfx.steam(level, t);
+				});
+				// It hangs where it burst: a cloud that blinds and leaves everything in it wet (Conduct and Flash Freeze love wet).
+				for (Vec3 at : Effects.clusterCentres(clouds, 2.5, 2)) {
+					WorldMagic.steam(cast, at);
 				}
 			}
-			case "steam" -> harmed.forEach(t -> {
-				Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, caster), 4 * power);
-				t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, Effects.ticks(3, duration), 0, false, true));
-				if (t instanceof net.minecraft.world.entity.Mob mob) {
-					mob.setTarget(null);
-				}
-				FusionVfx.steam(level, t);
-			});
 			case "magma" -> {
 				List<Vec3> pools = new ArrayList<>();
 				first(harmed, 4).forEach(t -> pools.add(t.position()));
@@ -182,6 +197,10 @@ public final class FusedEffects {
 				if (taken > 0 && caster.isAlive()) {
 					caster.heal(taken);
 				}
+				// The siphon mark: for a while, what anyone does to it feeds the caster too.
+				if (t.isAlive()) {
+					SIPHONED.put(t.getUUID(), new Siphon(caster, level.getGameTime() + Effects.ticks(SIPHON_SECONDS, duration)));
+				}
 				FusionVfx.lifesteal(level, t, caster, taken);
 			});
 			case "warp" -> warp(cast, hit, duration);
@@ -238,6 +257,66 @@ public final class FusedEffects {
 					|| FusedLife.apply(cast, node, hit, helped, harmed, power, duration, amplify)
 					|| FusedVoid.apply(cast, node, hit, helped, harmed, power, duration, amplify)
 					|| SignatureFusions.apply(cast, node, hit, helped, harmed, power, duration, amplify);
+			}
+		}
+	}
+
+	/** Firestorm: the two waves' damage, and the ticks between them. */
+	static final double FIRESTORM_WAVE_ONE = 2.0;
+	static final double FIRESTORM_WAVE_TWO = 1.5;
+	static final int FIRESTORM_WAVE_GAP = 30;
+
+	/**
+	 * One wave of Firestorm's contagion: every enemy within {@code radius} of any of {@code from} that hasn't been caught yet
+	 * (this cast) is set alight for {@code burn} seconds and scorched. Returns who it caught, for the next wave.
+	 */
+	private static List<LivingEntity> contagion(Cast cast, List<LivingEntity> from, double radius, Set<UUID> caught, double damage, double power, double burn) {
+		List<LivingEntity> out = new ArrayList<>();
+		for (LivingEntity source : from) {
+			if (!source.isAlive() || source.level() != cast.level) {
+				continue;
+			}
+			for (Entity e : cast.level.getEntities(source, source.getBoundingBox().inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
+				LivingEntity near = (LivingEntity) e;
+				if (out.size() >= MAX_TARGETS * 2 || caught.contains(near.getUUID())
+						|| near.getBoundingBox().getCenter().distanceTo(source.getBoundingBox().getCenter()) > radius + near.getBbWidth() / 2) {
+					continue;
+				}
+				caught.add(near.getUUID());
+				out.add(near);
+				near.igniteForSeconds((float) burn);
+				Effects.hurt(cast, near, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster),	damage * power);
+				FireBloodVfx.firestormHop(cast.level, source, near);
+			}
+		}
+		return out;
+	}
+
+/** Lifesteal: a siphon mark, how long it lasts, what share of any damage the marked creature takes feeds the caster. */
+	static final double SIPHON_SECONDS = 6;
+	static final float SIPHON_SHARE = 0.25F;
+
+	private record Siphon(LivingEntity caster, long until) {}
+
+	private static final java.util.Map<UUID, Siphon> SIPHONED = new HashMap<>();
+
+	/** A creature was hurt: if it carries a siphon mark, its caster takes a quarter of the damage back as health. */
+	private static void siphon(LivingEntity entity, float damage) {
+		if (SIPHONED.isEmpty() || !(damage > 0)) {
+			return;
+		}
+		Siphon mark = SIPHONED.get(entity.getUUID());
+		if (mark == null) {
+			return;
+		}
+		if (mark.until() < entity.level().getGameTime()) {
+			SIPHONED.remove(entity.getUUID());
+			return;
+		}
+		if (mark.caster().isAlive() && mark.caster() != entity) {
+			mark.caster().heal(damage * SIPHON_SHARE);
+			if (entity.level() instanceof ServerLevel level) {
+				FireBloodVfx.siphonFeed(level, entity, mark.caster());
 			}
 		}
 	}

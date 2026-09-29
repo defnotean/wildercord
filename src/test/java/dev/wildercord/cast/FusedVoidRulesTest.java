@@ -35,13 +35,13 @@ class FusedVoidRulesTest {
 	}
 
 	@Test
-	void hemomancyGainsOneForEveryTwoMissing() {
+	void hemomancyGainsOneForEveryOneAndAHalfMissing() {
 		assertEquals(0, FusedVoidRules.hemomancyBonus(20, 20));
 		assertEquals(0, FusedVoidRules.hemomancyBonus(20, 19));
 		assertEquals(1, FusedVoidRules.hemomancyBonus(20, 18));
-		assertEquals(3, FusedVoidRules.hemomancyBonus(20, 13));
-		assertEquals(6, FusedVoidRules.hemomancyBonus(20, 8));
-		assertEquals(6, FusedVoidRules.hemomancyBonus(20, 1));
+		assertEquals(4, FusedVoidRules.hemomancyBonus(20, 13));
+				assertEquals(8, FusedVoidRules.hemomancyBonus(20, 8));
+				assertEquals(8, FusedVoidRules.hemomancyBonus(20, 1));
 		assertEquals(0, FusedVoidRules.hemomancyBonus(20, 25));
 	}
 

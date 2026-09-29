@@ -94,7 +94,12 @@ final class FusedVoid {
 				}
 				for (LivingEntity t : harmed) {
 					FusedVoidVfx.hemomancy(level, caster, t, bonus);
+					float before = t.getHealth();
 					Effects.hurt(cast, t, magic(cast), (FusedVoidRules.HEMOMANCY_DAMAGE + bonus) * power);
+					// Hurt badly, the blood takes back a quarter of what it deals.
+					if (caster.isAlive() && caster.getHealth() < caster.getMaxHealth() * FusedVoidRules.HEMOMANCY_HEAL_BELOW) {
+						caster.heal(Math.max(0.0F, before - t.getHealth()) * FusedVoidRules.HEMOMANCY_HEAL_SHARE);
+					}
 				}
 			}
 			case "reckoning" -> first(harmed).forEach(t -> reckoning(cast, t, power, duration));

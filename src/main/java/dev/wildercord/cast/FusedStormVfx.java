@@ -280,22 +280,22 @@ final class FusedStormVfx {
 		ElementFx.pulse(level, heart, heart.subtract(start), 0.8);
 		ElementFx.sparks(level, heart, 8, 0.3);
 		ElementFx.drip(level, heart, 0.25, 5);
-		Fx.sound(level, heart, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.7F, 1.5F);
-		Fx.sound(level, heart, SoundEvents.WARDEN_HEARTBEAT, 1.2F, 1.0F);
+		Fx.sound(level, heart, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.4F, 1.6F);
+		Feels.sound(level, heart, "blood_heart", 1.1F, 1.0F);
 	}
 
 	/** A beat between skips: one soft heartbeat ring. */
-	static void heartbeat(ServerLevel level, Entity t) {
+	static void heartbeat(ServerLevel level, Entity t, float pace) {
 		Vec3 heart = chest(t);
 		ElementFx.ring(level, heart, UP, ElementFx.BLOOD.primary(), 0.1, Math.max(0.6, t.getBbWidth()) + 0.2, 0.035, 7);
-		Fx.sound(level, heart, SoundEvents.WARDEN_HEARTBEAT, 0.35F, 1.1F);
+		Feels.sound(level, heart, "blood_heart", 0.5F, pace);
 	}
 
 	/**
 	 * A skipped beat: one crimson ring where two should be, a ring of lightning clenching in on the heart from two
 	 * sides, lightning crawling over the body, and for a moment everything round it goes dark.
 	 */
-	static void heartSkip(ServerLevel level, Entity t) {
+	static void heartSkip(ServerLevel level, Entity t, int stun) {
 		Vec3 heart = chest(t);
 		double w = Math.max(0.6, t.getBbWidth());
 		RandomSource r = level.getRandom();
@@ -310,9 +310,10 @@ final class FusedStormVfx {
 			ElementFx.arc(level, a, b, i == 0 ? storm().primary() : ElementFx.BLOOD.secondary(), 0.025, 1, false, 5);
 		}
 		ElementFx.drip(level, heart, 0.2, 3);
-		ScreenFx.shake(level, t.position(), 0.35F, 2.5);
-		Fx.sound(level, heart, SoundEvents.WARDEN_HEARTBEAT, 1.1F, 1.3F);
-		Fx.sound(level, heart, SoundEvents.TRIDENT_THUNDER.value(), 0.25F, 1.9F);
+		ScreenFx.shake(level, t.position(), Math.min(0.6F, 0.2F + stun * 0.012F), 2.5);
+		// Each skip is a longer stun than the last, and the stop is deeper.
+		Feels.sound(level, heart, "blood_stop", 0.9F, stun >= 30 ? 0.7F : stun >= 10 ? 0.85F : 1.0F);
+		Fx.sound(level, heart, SoundEvents.TRIDENT_THUNDER.value(), 0.2F, 1.9F);
 	}
 
 	// ------------------------------------------------------------------ Thunderhead

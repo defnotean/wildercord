@@ -86,22 +86,22 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 
 | Elements | Makes | Does |
 |---|---|---|
-| Fire + Wind | **Firestorm** | Sets targets alight for 6 seconds and deals 4 damage, and the fire leaps to every enemy within 2 blocks of them. |
-| Fire + Frost | **Steam** | A scalding burst of steam: 4 damage and Blindness for 3 seconds. |
+| Fire + Wind | **Firestorm** | Sets targets alight for 6 seconds and deals 5 damage, and the fire leaps to every enemy within 2 blocks of them (2 damage), then a moment later to those within 2 blocks of those (1.5). |
+| Fire + Frost | **Steam** | A scalding burst of steam: 5 damage and Blindness for 3 seconds, and a cloud hangs where it burst: everything in it is blinded and left wet. |
 | Fire + Earth | **Magma** | The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it, and the pool widens as it burns. |
 | Storm + Wind | **Tempest** | A lightning strike for 8 damage, and a gale that hurls targets far away; where they come down a second bolt strikes for 4. |
 | Storm + Fire | **Plasma** | 10 damage, half of it ignoring armour, and the target is ionised for 5 seconds: the next storm damage it takes conducts as if it were wet. |
 | Storm + Frost | **Hail** | Five hailstones of 2 damage each, each staggering the target, and Slowness II for 4 seconds. |
 | Frost + Earth | **Glacier** | Freezes targets in place for 2 seconds (1 second on players). The ice spreads: up to 3 other enemies within 2.5 blocks freeze for 1 second, and when it cracks everything frozen takes 2. |
-| Life + Void | **Lifesteal** | 5 damage, and you heal for what it dealt. |
+| Life + Void | **Lifesteal** | 5 damage, and you heal for what it dealt. For 6 seconds everything the target suffers, from anyone, heals you for a quarter of it. |
 | Wind + Void | **Warp** | You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds. |
 | Life + Earth | **Bloom** | Regeneration II for 6 seconds, plants grow around the first 3 allies it touches, and allies near them catch Regeneration I for 5. |
 | Life + Storm | **Surge** | Speed I and Strength I for 8 seconds; the blows you land in that time arc on to a nearby enemy for 2 (four arcs at most). |
 | Arcane + Void | **Nullify** | Strips an enemy's good effects, or an ally's bad effects. Vexes, and spirit wolves and shades that aren't yours, dissolve. |
-| Fire + Life | **Phoenix Pyre** | Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. |
+| Fire + Life | **Phoenix Pyre** | Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. The first time an ally falls under 35% health the pyre flares: 6 health, and 4 damage to enemies within 3 blocks. |
 | Fire + Void | **Hellmouth** | Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks toward it and burns those at its core for 2 damage a second, then caves in for 4 damage. |
 | Fire + Arcane | **Starfire** | Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, and they burn for 3 seconds. |
-| Fire + Time | **Everburn** | Sets targets alight for 5 seconds with a fire that burns twice as fast (1 more damage a second), and rekindles once for 3 more when it goes out. |
+| Fire + Time | **Everburn** | Sets targets alight for 5 seconds with a fire that burns two and a half times as fast (1.5 more damage a second), and rekindles once for 3 more when it goes out. |
 | Fire + Blood | **Bloodboil** | 3 damage, and for 5 seconds the target's blood boils: each time it's hurt it takes 2 more fire damage (up to 5 times). |
 | Frost + Wind | **Blizzard** | A blizzard howls 3 blocks around where it lands for 4 seconds, walking 6 blocks the way you faced: enemies in it are slowed (Slowness II), chilled and take 1.5 damage a second. |
 | Frost + Life | **Frostbloom** | Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds) and heals them a point (4 at most). |
@@ -113,25 +113,25 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Storm + Void | **Riftbolt** | A black bolt for 7 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds. |
 | Storm + Arcane | **Stormweave** | Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 4 damage each, and 1 more for every other one caught in the web; a target alone takes 2 more. |
 | Storm + Time | **Stormclock** | 4 damage, and lightning strikes the same spot again 2 and 4 seconds later: 3 damage to enemies within 1.5 blocks each time. |
-| Storm + Blood | **Heartstopper** | 5 damage, and for 6 seconds the target's heart skips: every 2 seconds it's stunned for half a second. |
+| Storm + Blood | **Heartstopper** | 5 damage, and for 6 seconds the target's heart skips every 2 seconds: a stumble, a lurch, then a full stop (a quarter, half, then one and a half seconds of stun). |
 | Wind + Earth | **Downdraft** | Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more for every block it fell (up to 6). Flyers lose their lift. With nothing in the air it pins whoever stands under it (Slowness III for a second, 2 damage). |
 | Wind + Life | **Zephyr** | A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 10 seconds, and it blows away blindness, darkness, nausea and slowness. |
 | Wind + Arcane | **Skyglyph** | Writes a wind glyph where it lands for 10 seconds: an ally who steps on it is launched high and forward, an enemy thrown back 4 blocks. |
 | Wind + Time | **Recoil** | Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where they stood, for 5 damage. |
-| Wind + Blood | **Crimson Mist** | A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for 1 damage a second, allies in it heal half a heart a second. |
+| Wind + Blood | **Crimson Mist** | A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for 2 damage a second, allies in it heal 1.5 health a second and are hidden from monsters more than 4 blocks away. |
 | Earth + Void | **Sinkhole** | The ground gives way: enemies within 3 blocks are dragged to its middle and pinned for 2 seconds (Slowness IV, no jumping), then crushed for 6 damage. |
 | Earth + Arcane | **Geode** | Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally is cut by crystal shards for 2 damage and left cracked (every spell hits it 20% harder for 5 seconds). |
 | Earth + Time | **Fossilize** | The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then it's stone, held for 2 seconds (1 on players), brittle while it stands (every spell hits it 20% harder), and cracked for 6 damage. |
 | Earth + Blood | **Bonespur** | Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 damage each, and they bleed for 3 seconds. |
 | Life + Arcane | **Soulbond** | Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks. |
 | Life + Time | **Second Wind** | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II and Speed II for 4 seconds and a gust that shoves enemies away. Once death has been cheated (by this or any other spell), it isn't again on them for a minute. |
-| Life + Blood | **Transfusion** | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
+| Life + Blood | **Transfusion** | You give up to 4 of your own health (never below 2), and the ally heals three times what you gave and is cured of one harmful effect. |
 | Void + Time | **Entropy** | The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour. |
 | Void + Blood | **Devour** | 5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most). |
 | Arcane + Time | **Timesteal** | Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you. |
-| Arcane + Blood | **Hemomancy** | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
+| Arcane + Blood | **Hemomancy** | 4 magic damage, and 1 more for every 1.5 health you're missing (up to 8 more). Under half health you heal a quarter of what it deals. |
 | Time + Blood | **Reckoning** | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |
-| Fire | **Conflagration** | Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flares up for 3 damage and burns 2 seconds longer. |
+| Fire | **Conflagration** | Sets targets alight for 6 seconds, and every burning enemy within 6 blocks flares up for 4 damage (1 more for each other one flaring, up to 3) and burns 2 seconds longer. |
 | Frost | **Absolute Zero** | Slowness IV for 3 seconds. A target showing signs of cold (slowed, brittle, frozen skin, held) freezes solid and takes damage for each: 4.5 for one, 7 for two, 9.5 for three, 12 for four, and is held 1.5 to 3 seconds (half as long on players), then not again until 3 seconds after it thaws. |
 | Storm | **Thunderhead** | A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 2 damage, and the rain soaks it so the bolt conducts. |
 | Wind | **Updraft** | Hurls enemies within 2.5 blocks high into the air, where every spell hits them harder; a moment later a downdraft smashes them back down for 4 damage. |
@@ -140,7 +140,7 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Void | **Singularity** | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |
 | Arcane | **Prismatic Burst** | 5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25. |
 | Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
-| Blood | **Sanguine Rite** | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
+| Blood | **Sanguine Rite** | You pay 3 of your own health (never your last; more with Amplify, Overcharge and a crowd) for 12 damage that ignores armour. |
 
 ### Signature fusions (16)
 

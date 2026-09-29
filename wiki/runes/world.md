@@ -48,7 +48,7 @@ For 60 seconds, Luck II, and the nearest unopened treasure chests and suspicious
 
 *Tier II · Fire · Harms enemies · 11 mana · needs a Copper Cord or better*
 
-Three blaze fireballs fall on each target over a second: 2 fire damage each, setting it alight.
+Three blaze fireballs fall on each target over a second: 3 fire damage each, setting it alight and staggering it.
 
 **How to get it:** Found only, never crafted: Nether fortresses; Runebound Adepts (8%).
 
@@ -59,7 +59,7 @@ Three blaze fireballs fall on each target over a second: 2 fire damage each, set
 
 *Tier II · Blood · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you heal for all of it.
+Crimson moss spreads over each target: 1 damage a second for 6 seconds, and the most wounded of you and your allies nearby heals for all of it.
 
 **How to get it:** Found only, never crafted: Attuned in a crimson forest.
 
@@ -70,7 +70,7 @@ Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you 
 
 *Tier II · Fire · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50% hotter.
+Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50% hotter and its burning hurts a little more.
 
 **How to get it:** Found only, never crafted: The Ember Sanctum.
 
@@ -308,7 +308,7 @@ A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you
 
 *Tier II · Blood · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
-A war horn sounds: you and your allies within 8 blocks of the target gain Strength I and Speed I for 12 seconds.
+A war horn sounds: you and your allies within 8 blocks of the target gain Strength I and Speed I for 12 seconds, and each kill one of you makes meanwhile heals that one for 1.
 
 **How to get it:** Found only, never crafted: Pillager outposts; Runebound Adepts (8%).
 
@@ -330,7 +330,7 @@ Steps you to where the spell landed (up to 24 blocks). 3 seconds later you're pu
 
 *Tier III · Fire · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Wreathes the target in ash for 10 seconds: fire can't hurt it, and whatever strikes it up close is set alight for 4 seconds.
+Wreathes the target in ash for 10 seconds: fire can't hurt it, and whatever strikes it up close is set alight for 4 seconds and blinded by the ash for a second.
 
 **How to get it:** Found only, never crafted: The Ember Sanctum.
 
@@ -471,7 +471,7 @@ Shuts the target in a shulker's shell for 4 seconds: 80% less damage and no knoc
 
 *Tier III · Fire · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Blue soul flames: 3 fire damage a second for 5 seconds, and the damage they deal gives you back a little mana (up to 5 a cast).
+Blue soul flames: 3 fire damage a second for 5 seconds that water can't dull and the fire-proof can't shrug off, and the damage they deal gives you back a little mana (up to 5 a cast).
 
 **How to get it:** Found only, never crafted: Attuned in a soul sand valley.
 
@@ -515,7 +515,7 @@ A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and a
 
 *Tier III · Fire · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-The noon sun, focused: 8 fire damage and alight for 5 seconds. Under open sky by day it burns 50% hotter.
+The noon sun, focused: 8 fire damage and alight for 5 seconds, and the target glows for 6. Under open sky by day it burns 50% hotter and blinds; bright light of its own counts as dusk (25% hotter).
 
 **How to get it:** Found only, never crafted: Attuned in the badlands.
 
@@ -559,7 +559,7 @@ A whirling vortex opens where you look for 3 seconds, dragging creatures within 
 
 *Tier IV · Fire · Helps you and your allies · 30 mana · needs an Echo Cord*
 
-Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks takes 3 fire damage a second.
+Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every enemy within 4 blocks takes 3 fire damage a second. It can't be lit again until 24 seconds after it goes out.
 
 **How to get it:** Found only, never crafted: the Cinder Warden.
 

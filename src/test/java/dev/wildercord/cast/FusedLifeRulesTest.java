@@ -44,12 +44,12 @@ class FusedLifeRulesTest {
 		// At 2, or hardly above it, nothing.
 		assertEquals(0, FusedLifeRules.transfusionGift(1.0, 2, 30, false), 1e-6);
 		assertEquals(0, FusedLifeRules.transfusionGift(1.0, 2.1F, 30, false), 1e-6);
-		// No more than half of what the ally is missing (it heals double): none wasted, none on the whole.
-		assertEquals(0.5, FusedLifeRules.transfusionGift(1.0, 20, 1, false), 1e-6);
+		// No more than a third of what the ally is missing (it heals triple): none wasted, none on the whole.
+		assertEquals(1.0 / 3.0, FusedLifeRules.transfusionGift(1.0, 20, 1, false), 1e-6);
 		assertEquals(0, FusedLifeRules.transfusionGift(1.0, 20, 0, false), 1e-6);
 		// Creative gives without paying, still no more than 4 or than is needed.
 		assertEquals(4, FusedLifeRules.transfusionGift(1.0, 1, 30, true), 1e-6);
-		assertEquals(1, FusedLifeRules.transfusionGift(1.0, 1, 2, true), 1e-6);
+		assertEquals(1, FusedLifeRules.transfusionGift(1.0, 1, 3, true), 1e-6);
 	}
 
 	@Test

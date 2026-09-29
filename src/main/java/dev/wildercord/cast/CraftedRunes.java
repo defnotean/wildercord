@@ -56,6 +56,9 @@ public final class CraftedRunes {
 	private static final double BRAND_BURST = 7.0;
 	/** Gash: the cut itself. */
 	private static final double GASH_DAMAGE = 3.0;
+	/** Gash weeps this much a second plus this share of its bearer's maximum health. */
+	static final double GASH_WEEP = 0.4;
+	static final double GASH_WEEP_SHARE = 0.01;
 	/** Prospect: the farthest it listens for ore, however widened, and the most ores it shows. */
 	private static final double PROSPECT_MAX_RADIUS = 16.0;
 	private static final int PROSPECT_MAX_ORES = 48;
@@ -271,12 +274,16 @@ public final class CraftedRunes {
 		GASHED.merge(t.getUUID(), now + ticks, Math::max);
 		// Bleeding as long as the wound stays open: wind damage on it sets off Rupture.
 		Reactions.mark(t, Reactions.Mark.BLEEDING, ticks);
+		// The wound that won't close weeps in proportion to its bearer: a fixed sliver plus a share of its health, every second.
+		double weep = (GASH_WEEP + GASH_WEEP_SHARE * t.getMaxHealth()) * power;
+		Runnable bleed = Effects.carryContext(() -> Effects.hurt(cast, t, magic(cast), weep));
 		ShapeRunners.each(cast, ticks, tick -> {
 			if (!t.isAlive() || !gashed(t)) {
 				return false;
 			}
 			if (tick % 20 == 19) {
-				CraftedVfx.gashDrip(cast.level, t);
+				FireBloodVfx.gashWeep(cast.level, t);
+				Effects.lingering(bleed);
 			}
 			return true;
 		});

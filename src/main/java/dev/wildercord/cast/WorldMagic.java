@@ -433,11 +433,10 @@ public final class WorldMagic {
 	 * billows that swell as they rise, drift off on the air and thin away, thick enough to hide what's
 	 * behind them, and anyone in it the caster may harm is blinded and left wet each second.
 	 */
-	private static void steam(Cast cast, Vec3 at) {
+	static void steam(Cast cast, Vec3 at) {
 		ServerLevel level = cast.level;
 		double r = WorldRules.STEAM_RADIUS;
-		Fx.sound(level, at, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.8F);
-		Fx.sound(level, at, SoundEvents.LAVA_EXTINGUISH, 0.6F, 1.3F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "fire_steam", 1.0F, 0.9F);
 		ElementFx.ring(level, at, UP, 0xF2F6FF, 0.3, r + 0.6, 0.08, 12);
 		Vfx.emit(level, ParticleTypes.SPLASH, at, 16, r * 0.5, 0.1);
 		// The first gout: a burst of billows off the water, low and thick.

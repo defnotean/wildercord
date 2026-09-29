@@ -130,8 +130,7 @@ final class FusedLifeVfx {
 		Motes.clouds(level, feet.add(0, 0.6, 0), 8, radius * 0.4, HAZE, 1.4, 60, new Vec3(0, 0.008, 0), 0.03, 0.42);
 		ElementFx.drip(level, feet.add(0, 1.4, 0), radius * 0.35, 5);
 		Vfx.emit(level, ParticleTypes.SMALL_GUST, feet.add(0, 0.4, 0), 2, radius * 0.3, 0.0);
-		Fx.sound(level, feet, SoundEvents.WIND_CHARGE_BURST, 0.5F, 0.6F);
-		Fx.sound(level, feet, SoundEvents.WARDEN_HEARTBEAT, 1.0F, 1.0F);
+		Feels.sound(level, feet, "blood_mist", 1.0F, 1.0F);
 	}
 
 	/** The haze, every few ticks: billows drifting round on a slow wind, now and then a wisp of red wind stirring it. */
@@ -159,7 +158,7 @@ final class FusedLifeVfx {
 	static void crimsonMistPulse(ServerLevel level, Vec3 feet, double radius) {
 		ElementFx.groundRing(level, feet, BLOOD.primary(), 0.2, radius, 0.035, 9);
 		Scheduler.later(4, () -> ElementFx.groundRing(level, feet, BLOOD.secondary(), 0.1, radius * 0.7, 0.025, 9));
-		Fx.sound(level, feet, SoundEvents.WARDEN_HEARTBEAT, 0.45F, 1.2F);
+		Feels.sound(level, feet, "blood_heart", 0.5F, 1.0F);
 	}
 
 	/** An enemy bleeding in the mist. */
@@ -183,7 +182,7 @@ final class FusedLifeVfx {
 			Motes.clouds(level, feet.add(out.scale(radius * 0.5)).add(0, 0.6, 0), 1, 0.2, HAZE, 1.2, 30, out.scale(0.03).add(0, 0.01, 0), 0.005, 0.3);
 		}
 		ElementFx.groundRing(level, feet, HAZE_LIGHT, radius * 0.5, radius * 1.2, 0.03, 10);
-		Fx.sound(level, feet, SoundEvents.WIND_CHARGE_BURST, 0.3F, 0.8F);
+		Feels.sound(level, feet, "blood_heart", 0.4F, 0.7F);
 	}
 
 	// ------------------------------------------------------------------ Soulbond
@@ -472,17 +471,15 @@ final class FusedLifeVfx {
 			ElementFx.lifeImpact(level, c, size);
 			ElementFx.leafSpiral(level, to.position(), Math.max(0.4, to.getBbWidth() * 0.7), to.getBbHeight() + 0.2, 4);
 			Vfx.emit(level, ParticleTypes.HEART, to.position().add(0, to.getBbHeight() + 0.3, 0), 2, 0.3, 0.0);
-			Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.3F);
 		});
-		Fx.sound(level, a, SoundEvents.WARDEN_HEARTBEAT, 0.9F, 1.1F);
-		Fx.sound(level, a, SoundEvents.PLAYER_HURT, 0.4F, 0.8F);
+		Feels.sound(level, a, "blood_gift", 1.0F, 1.0F);
 	}
 
 	/** Nothing given: a heartbeat falling in at the giver's feet. */
 	static void transfusionRefused(ServerLevel level, LivingEntity caster) {
 		ElementFx.groundRing(level, caster.position(), BLOOD.primary(), 0.9, 0.1, 0.03, 8);
 		ElementFx.drip(level, centre(caster), 0.15, 2);
-		Fx.sound(level, caster.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.6F);
+		Feels.sound(level, caster.position(), "blood_drip", 0.6F, 0.7F);
 	}
 
 	// ------------------------------------------------------------------ Lifebloom
@@ -609,8 +606,7 @@ final class FusedLifeVfx {
 		ElementFx.pulse(level, centre(caster), UP, 0.9);
 		ElementFx.drip(level, centre(caster), 0.25, 4);
 		Vfx.emit(level, ParticleTypes.DAMAGE_INDICATOR, centre(caster), 3, 0.3, 0.1);
-		Fx.sound(level, feet, SoundEvents.WARDEN_HEARTBEAT, 1.0F, 0.9F);
-		Fx.sound(level, feet, SoundEvents.PLAYER_HURT, 0.6F, 0.7F);
+		Feels.sound(level, feet, "blood_heart", 1.0F, 0.9F);
 	}
 
 	/** The lance: a crimson spear of light from the caster into the target, over a stroke of darkness, and a sigil and crossed cuts where it lands. */
@@ -639,15 +635,13 @@ final class FusedLifeVfx {
 		ElementFx.drip(level, to, 0.3, 6);
 		ElementFx.pulse(level, to, dir, 1.0);
 		Sigils.flash(level, to, BLOOD.primary(), 1.6F);
-		Fx.sound(level, start, SoundEvents.TRIDENT_THROW, 0.8F, 0.7F);
-		Fx.sound(level, to, SoundEvents.TRIDENT_HIT, 1.0F, 0.6F);
-		Fx.sound(level, to, WildercordSounds.impact("blood"), 0.8F, 1.0F);
+		Feels.sound(level, to, "blood_rite", 1.0F, 1.0F);
 	}
 
 	/** Not enough blood for the rite: its sigil cracks and gutters out. */
 	static void sanguineRefused(ServerLevel level, LivingEntity caster) {
 		ElementFx.flatSigil(level, caster.position(), SigilOption.CRACKED, BLOOD.primary(), 0.9, 14, 0.0);
 		ElementFx.groundRing(level, caster.position(), BLOOD.secondary(), 1.0, 0.1, 0.03, 8);
-		Fx.sound(level, caster.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.5F);
+		Feels.sound(level, caster.position(), "blood_drip", 0.6F, 0.6F);
 	}
 }

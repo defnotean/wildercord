@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import com.mojang.math.Transformation;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
@@ -105,9 +106,7 @@ final class FusedFlameVfx {
 		ElementFx.petals(level, c.add(0, 0.6, 0), 0.5, 6);
 		Sigils.flash(level, c, LIFE.secondary(), 1.3F);
 		ElementFx.heatFlare(level, c.add(0, 0.2, 0), 0.9);
-		Fx.sound(level, feet, SoundEvents.ENDER_DRAGON_FLAP, 0.6F, 1.5F);
-		Fx.sound(level, feet, SoundEvents.FIRECHARGE_USE, 0.7F, 0.8F);
-		Fx.sound(level, feet, WildercordSounds.impact("life"), 0.7F, 1.0F);
+		Feels.sound(level, feet, "fire_pyre", 1.0F, 1.0F);
 	}
 
 	/**
@@ -156,7 +155,7 @@ final class FusedFlameVfx {
 		Motes.glows(level, centre(t), 3, 0.3, LIFE.secondary(), 0.12, 26, new Vec3(0, 0.05, 0), 0.015);
 		ElementFx.embers(level, feet.add(0, 0.2, 0), Math.min(0.8, radius * 0.4), 4);
 		if (age % 40 == 20) {
-			Fx.sound(level, feet, SoundEvents.FIRE_AMBIENT, 0.5F, 1.2F);
+			Feels.sound(level, feet, "fire_whump", 0.5F, 1.4F);
 		}
 	}
 
@@ -184,7 +183,7 @@ final class FusedFlameVfx {
 	static void phoenixFade(ServerLevel level, LivingEntity t) {
 		Motes.glows(level, centre(t).add(0, 0.5, 0), 5, 0.3, FIRE.secondary(), 0.12, 24, new Vec3(0, 0.06, 0), 0.02);
 		ElementFx.petals(level, centre(t), 0.4, 4);
-		Fx.sound(level, t.position(), SoundEvents.FIRE_EXTINGUISH, 0.4F, 1.4F);
+		Feels.sound(level, t.position(), "fire_out", 0.6F, 1.2F);
 	}
 
 	// ------------------------------------------------------------------ Hellmouth
@@ -204,9 +203,7 @@ final class FusedFlameVfx {
 		ElementFx.stoneShards(level, centre.add(0, 0.3, 0), ElementFx.groundBlock(level, centre), 12, 0.3);
 		Motes.clouds(level, centre.add(0, 0.4, 0), 4, core * 0.5, PIT_SMOKE, 1.3, 40, new Vec3(0, 0.03, 0), 0.01, 0.55);
 		ScreenFx.shake(level, centre, 0.25F, 10);
-		Fx.sound(level, centre, SoundEvents.RESPAWN_ANCHOR_DEPLETE, 1.0F, 0.6F);
-		Fx.sound(level, centre, SoundEvents.FIRECHARGE_USE, 0.8F, 0.5F);
-		Fx.sound(level, centre, WildercordSounds.cast("void"), 0.8F, 1.0F);
+		Feels.sound(level, centre, "fire_pit", 1.0F, 1.0F);
 	}
 
 	/** A quarter second of the pit: darkness sweeping in from its edge, flames at its rim, violet and red embers rising; a glow from its depths each second. */
@@ -219,7 +216,7 @@ final class FusedFlameVfx {
 			ElementFx.blackCore(level, centre.add(0, 0.35, 0), core * 0.35, 12);
 			Sigils.flash(level, centre.add(0, 0.2, 0), FIRE.accent(), (float) (core * 1.4));
 			Motes.clouds(level, centre.add(0, 0.4, 0), 2, core * 0.4, PIT_SMOKE, 1.1, 36, new Vec3(0, 0.035, 0), 0.01, 0.5);
-			Fx.sound(level, centre, SoundEvents.FIRE_AMBIENT, 0.9F, 0.5F);
+			Feels.sound(level, centre, "fire_field", 0.7F, 0.7F);
 		} else if (age % 10 == 5) {
 			Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, centre.add(0, 0.3, 0), 4, core * 0.4, 0.02);
 		}
@@ -242,14 +239,14 @@ final class FusedFlameVfx {
 	static void hellmouthStoke(ServerLevel level, Vec3 centre, double radius) {
 		ElementFx.implode(level, centre.add(0, 0.4, 0), radius, 8);
 		ElementFx.tongues(level, centre, 0.9, 1.6, 5, DARK, VOID.primary(), 2, 10);
-		Fx.sound(level, centre, SoundEvents.FIRECHARGE_USE, 0.6F, 0.5F);
+		Feels.sound(level, centre, "fire_whump", 0.6F, 0.7F);
 	}
 
 	/** Too many pits open: a gutter of darkness and smoke. */
 	static void hellmouthFizzle(ServerLevel level, Vec3 centre) {
 		ElementFx.implode(level, centre.add(0, 0.4, 0), 0.8, 6);
 		Motes.smoke(level, centre.add(0, 0.3, 0), 2, 0.3);
-		Fx.sound(level, centre, SoundEvents.FIRE_EXTINGUISH, 0.5F, 0.6F);
+		Feels.sound(level, centre, "fire_out", 0.5F, 0.7F);
 	}
 
 	/** The pit caves in: the ground cracks and falls in, the black fire gutters into a burst of violet flame, and dust rolls out. */
@@ -266,9 +263,7 @@ final class FusedFlameVfx {
 		Sigils.flash(level, mid, FIRE.accent(), (float) (core * 2.2));
 		Motes.clouds(level, centre.add(0, 0.3, 0), 6, radius * 0.4, Motes.SMOKE, 1.4, 44, new Vec3(0, 0.03, 0), 0.03, 0.45);
 		ScreenFx.shake(level, centre, 0.45F, 14);
-		Fx.sound(level, centre, SoundEvents.GENERIC_EXPLODE, 0.7F, 0.6F);
-		Fx.sound(level, centre, SoundEvents.DEEPSLATE_BREAK, 1.0F, 0.6F);
-		Fx.sound(level, centre, WildercordSounds.impact("void"), 0.9F, 1.0F);
+		Feels.sound(level, centre, "fire_meteor_hit", 1.0F, 0.8F);
 	}
 
 	// ------------------------------------------------------------------ Starfire
@@ -279,9 +274,7 @@ final class FusedFlameVfx {
 		ElementFx.starSeal(level, at, UP, 0.7, 12);
 		ElementFx.ring(level, at, UP, FIRE.secondary(), 0.2, 1.4, 0.05, 8);
 		ElementFx.ring(level, at, ElementFx.tilted(0.8, level.getRandom().nextDouble() * Math.PI * 2), ARCANE.primary(), 0.2, 1.1, 0.035, 9);
-		Fx.sound(level, at, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
-		Fx.sound(level, at, SoundEvents.FIRECHARGE_USE, 0.6F, 1.5F);
-		Fx.sound(level, at, WildercordSounds.cast("arcane"), 0.6F, 1.0F);
+		Feels.sound(level, at, "fire_star", 1.0F, 1.0F);
 	}
 
 	/** One tick of a mote's flight: a gold star, a pink or gold streak behind it with a pale core, and a spark falling off the trail. */
@@ -303,8 +296,7 @@ final class FusedFlameVfx {
 		ElementFx.flameBurst(level, at, 0.45, 2);
 		ElementFx.shimmer(level, at, 0.25, 4);
 		Motes.burst(level, at, 6, ARCANE.primary(), 0.08, 18, 0.12);
-		Fx.sound(level, at, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.4F + 0.1F * index);
-		Fx.sound(level, at, SoundEvents.FIRECHARGE_USE, 0.4F, 1.7F);
+		Feels.sound(level, at, "fire_flick", 0.8F, FireBloodVfx.LADDER[Math.floorMod(index, FireBloodVfx.LADDER.length)]);
 	}
 
 	/** A mote with nothing left to seek winks out. */
@@ -324,8 +316,7 @@ final class FusedFlameVfx {
 		ElementFx.tongues(level, t.position(), r * 0.8, t.getBbHeight() + 0.3, 6, FIRE.primary(), TIME.primary(), 2, 9);
 		ElementFx.heatFlare(level, c, 0.8);
 		ElementFx.goldenTicks(level, c, 0.35, 5);
-		Fx.sound(level, c, SoundEvents.FIRECHARGE_USE, 0.8F, 1.0F);
-		Fx.sound(level, c, WildercordSounds.impact("time"), 0.6F, 2.0F);
+		Feels.sound(level, c, "fire_whump", 0.8F, 1.2F);
 	}
 
 	/** One of Everburn's own burns: a gold hand sweeps once round the target and the flames jump. */
@@ -336,7 +327,7 @@ final class FusedFlameVfx {
 		ElementFx.slash(level, c, UP, ElementFx.flatDir(a), TIME.secondary(), r, Math.PI * 1.8, 0.06, 3, 7);
 		ElementFx.tongues(level, t.position(), r * 0.75, t.getBbHeight(), 3, rekindled ? TIME.primary() : FIRE.primary(), FIRE.secondary(), 2, 7);
 		ElementFx.goldenTicks(level, c, 0.3, 2);
-		Fx.sound(level, c, SoundEvents.NOTE_BLOCK_HAT, 0.5F, 1.8F);
+		Feels.sound(level, c, "fire_clock", 0.45F, 1.4F);
 	}
 
 	/** Everburn rekindles: the clock runs backward and the fire it burned comes back. */
@@ -347,9 +338,7 @@ final class FusedFlameVfx {
 		ElementFx.fireImpact(level, c, 1.0);
 		ElementFx.ring(level, t.position().add(0, 0.1, 0), UP, TIME.primary(), r * 1.6, 0.3, 0.05, 10);
 		ElementFx.goldenTicks(level, c, 0.4, 6);
-		Fx.sound(level, c, SoundEvents.BELL_BLOCK, 0.5F, 1.8F);
-		Fx.sound(level, c, SoundEvents.FIRECHARGE_USE, 0.8F, 0.8F);
-		Fx.sound(level, c, WildercordSounds.impact("time"), 0.7F, 1.0F);
+		Feels.sound(level, c, "fire_clock", 0.9F, 0.8F);
 	}
 
 	/** Everburn is spent: the clock stops, a curl of smoke. */
@@ -357,7 +346,7 @@ final class FusedFlameVfx {
 		Vec3 c = centre(t);
 		ElementFx.stoppedClock(level, c, UP, Math.max(0.6, t.getBbWidth() + 0.35), level.getRandom().nextDouble() * Math.PI * 2, 14);
 		Motes.smoke(level, c, 2, 0.3);
-		Fx.sound(level, c, SoundEvents.FIRE_EXTINGUISH, 0.4F, 1.2F);
+		Feels.sound(level, c, "fire_out", 0.5F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Bloodboil
@@ -435,9 +424,8 @@ final class FusedFlameVfx {
 		}
 		Vec3 first = hearts.getFirst();
 		ScreenFx.shake(level, first, 0.3F, 12);
-		Fx.sound(level, first, SoundEvents.BLAZE_SHOOT, 1.0F, 0.6F);
-		Fx.sound(level, first, SoundEvents.GHAST_SHOOT, 0.6F, 0.7F);
-		Fx.sound(level, first, WildercordSounds.impact("fire"), 0.9F, 0.5F);
+		Feels.sound(level, first, "fire_blast", 1.0F, 0.8F);
+		Feels.sound(level, first, "fire_field", 0.8F, 0.9F);
 	}
 
 	/** A burning enemy flares up: an arch of flame leaps to it from the fire's heart, and it goes up in a column of fire. */
@@ -455,7 +443,7 @@ final class FusedFlameVfx {
 		ElementFx.flameBurst(level, c, 0.6, 3);
 		ElementFx.tongues(level, t.position(), Math.max(0.4, t.getBbWidth() * 0.7), t.getBbHeight() + 1.0, 6, FIRE.primary(), FIRE.secondary(), 2, 9);
 		ElementFx.heatFlare(level, c, 1.0);
-		Fx.sound(level, c, SoundEvents.FIRECHARGE_USE, 0.7F, 0.9F + level.getRandom().nextFloat() * 0.4F);
+		Feels.sound(level, c, "fire_hop", 0.6F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ stone: block displays, visual only

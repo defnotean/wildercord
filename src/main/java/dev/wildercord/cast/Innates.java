@@ -52,6 +52,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -181,6 +182,7 @@ public final class Innates {
 			fortuneMelee(level, entity, source, damage);
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			ExplorerEffects.bloodlustKill(source);
 			// Death settles a debt: it isn't carried on to the one who respawns.
 			if (entity instanceof ServerPlayer dead) {
 				DEBTS.remove(dead.getUUID());
@@ -213,6 +215,7 @@ public final class Innates {
 			THREADS.clear();
 			SurgeArcs.clear();
 			THREAD_MEMBERS.clear();
+			THREAD_BEAT.clear();
 			KINDLING.clear();
 			TWIN.clear();
 			TWIN_ARMED.clear();
@@ -299,18 +302,29 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Blood Thread
 
+	/** Blood Thread: the most it ever ties together, and how much of a hurt each of the others shares. */
+	static final int THREAD_MEMBERS_MAX = 4;
+	static final float THREAD_SHARE = 0.4F;
+	/** A thread shares at most this many hurts a second (a Barrage's eight blows don't send eight echoes down every strand). */
+	static final int THREAD_SHARES_PER_SECOND = 3;
+
 	private static void bloodThread(Cast cast, List<LivingEntity> harmed, int ticks) {
 		if (harmed.isEmpty()) {
 			return;
 		}
 		UUID id = UUID.randomUUID();
 		long until = cast.level.getGameTime() + ticks;
-		Set<LivingEntity> members = new HashSet<>(harmed);
-		// A single target threads to everything else hostile near it.
+		Set<LivingEntity> members = new LinkedHashSet<>();
+		for (LivingEntity t : harmed) {
+			if (members.size() < THREAD_MEMBERS_MAX) {
+				members.add(t);
+			}
+		}
+		// A single target threads to the hostile creatures near it.
 		if (members.size() == 1) {
 			LivingEntity first = harmed.getFirst();
 			for (Entity e : cast.level.getEntities(first, first.getBoundingBox().inflate(6), e -> Targets.canHarm(cast.caster, e))) {
-				if (members.size() < 5) {
+				if (members.size() < THREAD_MEMBERS_MAX) {
 					members.add((LivingEntity) e);
 				}
 			}
@@ -319,7 +333,7 @@ public final class Innates {
 		for (LivingEntity t : members) {
 			THREADS.put(t.getUUID(), new Thread(id, until, cast.caster));
 		}
-		Fx.sound(cast.level, harmed.getFirst().position(), SoundEvents.CHAIN_PLACE, 1.0F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, harmed.getFirst().position(), "blood_twang", 1.0F, 1.0F);
 		ShapeRunners.steps(cast, 1, 10, ticks - 1, t -> drawThread(cast.level, members));
 	}
 
@@ -329,16 +343,13 @@ public final class Innates {
 			Vec3 a = alive.get(i).getBoundingBox().getCenter();
 			Vec3 b = alive.get(i + 1).getBoundingBox().getCenter();
 			Vec3 d = b.subtract(a);
-			// A sagging thread of crimson light, in four pieces, drawn fresh as the last fades.
-			Vec3 prev = a;
-			for (int k = 1; k <= 4; k++) {
-				double s = k / 4.0;
-				Vec3 p = a.add(d.scale(s)).add(0, -Math.sin(s * Math.PI) * 0.35, 0);
-				ElementFx.ray(level, prev, p, k % 2 == 0 ? 0xFF5060 : ElementFx.BLOOD.primary(), 0.03, 11);
-				prev = p;
-			}
+			// A taut thread of crimson light, drawn fresh as the last fades.
+			ElementFx.ray(level, a, b, ElementFx.BLOOD.primary(), 0.025, 11);
 		}
 	}
+
+	/** When each thread last shared, and how many shares that second. */
+	private static final Map<UUID, long[]> THREAD_BEAT = new HashMap<>();
 
 	private static void shareThread(ServerLevel level, LivingEntity entity, float damage) {
 		Thread thread = THREADS.get(entity.getUUID());
@@ -349,14 +360,25 @@ public final class Innates {
 		if (members == null) {
 			return;
 		}
+		long now = level.getGameTime();
+		long[] beat = THREAD_BEAT.computeIfAbsent(thread.id(), k -> new long[] {now, 0});
+		if (now - beat[0] >= 20) {
+			beat[0] = now;
+			beat[1] = 0;
+		}
+		if (beat[1] >= THREAD_SHARES_PER_SECOND) {
+			return;
+		}
+		beat[1]++;
 		echoing = true;
 		try {
 			DamageSource source = level.damageSources().indirectMagic(thread.caster(), thread.caster());
-			for (LivingEntity other : members) {
-				if (other != entity && other.isAlive() && other.level() == level && other.distanceTo(entity) < 32) {
-					Effects.readyToHurt(other);
-					other.hurtServer(level, source, damage * 0.5F);
-					TechniqueVfx.chain(level, entity.getBoundingBox().getCenter(), other, false);
+			int hop = 0;
+				for (LivingEntity other : members) {
+					if (other != entity && other.isAlive() && other.level() == level && other.distanceTo(entity) < 32) {
+						Effects.readyToHurt(other);
+						other.hurtServer(level, source, damage * THREAD_SHARE);
+						threadPulse(level, entity, other, hop++);
 				}
 			}
 		} finally {
@@ -364,7 +386,17 @@ public final class Innates {
 		}
 	}
 
+	/** A crimson pulse along the thread from the one hurt to the one that shares it. */
+	private static void threadPulse(ServerLevel level, LivingEntity from, LivingEntity to, int hop) {
+		FireBloodVfx.threadPulse(level, from, to, hop);
+	}
+
 	// ------------------------------------------------------------------ Kindling
+
+	/** Kindling: the fifth stack's burst, and the stacks it leaves on everything it reaches. */
+	static final double KINDLING_BURST = 14;
+	static final double KINDLING_RADIUS = 3.0;
+	static final int KINDLING_CHAIN = 2;
 
 	private static void kindle(Cast cast, LivingEntity t, double power) {
 		long now = cast.level.getGameTime();
@@ -372,24 +404,26 @@ public final class Innates {
 		int stacks = k == null || now - k.last() > 120 ? 1 : k.stacks() + 1;
 		Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
 		Vec3 c = t.getBoundingBox().getCenter();
-		// One flame tongue and one ember in the ring over its head for every stack.
-		ElementFx.flames(cast.level, t.position(), Math.max(0.35, t.getBbWidth() * 0.6), t.getBbHeight(), stacks);
-		for (int i = 0; i < stacks; i++) {
-			double a = Math.PI * 2 * i / 5;
-			Vfx.emit(cast.level, ParticleTypes.SMALL_FLAME, c.add(Math.cos(a) * 0.6, 0.6, Math.sin(a) * 0.6), 2, 0.02, 0.0);
+		if (stacks < 5) {
+			// One gold ember more in the ring over its head for every stack, and the tick a step higher up the scale.
+			FireBloodVfx.kindle(cast.level, t, stacks, false);
 		}
-		Fx.sound(cast.level, c, SoundEvents.FIRECHARGE_USE, 0.4F, 1.2F + stacks * 0.15F);
 		if (stacks >= 5) {
 			KINDLING.remove(t.getUUID());
-			ElementFx.fireImpact(cast.level, c, 2.2);
-			ElementFx.flames(cast.level, t.position(), Math.max(0.4, t.getBbWidth() * 0.7), t.getBbHeight() + 0.5, 6);
-			Vfx.radial(cast.level, ParticleTypes.FLAME, c, 20, 0.35);
-			Vfx.shockwave(cast.level, t.position(), 3.0, Vfx.theme("fire"), 4);
-			Fx.sound(cast.level, c, SoundEvents.GENERIC_EXPLODE, 0.7F, 1.4F);
-			for (Entity e : cast.level.getEntities((Entity) null, new AABB(c, c).inflate(3), e -> Targets.canHarm(cast.caster, e))) {
+			FireBloodVfx.kindleBurst(cast.level, t, KINDLING_RADIUS);
+			for (Entity e : cast.level.getEntities((Entity) null, new AABB(c, c).inflate(KINDLING_RADIUS), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
+				// A sphere, as drawn.
+				if (other.getBoundingBox().getCenter().distanceTo(c) > KINDLING_RADIUS + other.getBbWidth() / 2) {
+					continue;
+				}
 				other.igniteForSeconds(4);
-				Effects.hurt(cast, other, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 10 * power);
+				Effects.hurt(cast, other, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), KINDLING_BURST * power);
+				if (other != t && other.isAlive()) {
+					// The heat carries: everything the burst reached is left two stacks in.
+					KINDLING.put(other.getUUID(), new Kindle(KINDLING_CHAIN, now));
+					FireBloodVfx.kindle(cast.level, other, KINDLING_CHAIN, true);
+				}
 			}
 			Reactions.callout(cast, "ignite", 0xFF9040);
 		} else {
@@ -726,6 +760,7 @@ public final class Innates {
 			}
 			THREADS.values().removeIf(t -> now > t.until());
 			THREAD_MEMBERS.keySet().removeIf(id -> THREADS.values().stream().noneMatch(t -> t.id().equals(id)));
+			THREAD_BEAT.keySet().retainAll(THREAD_MEMBERS.keySet());
 			KINDLING.values().removeIf(k -> now - k.last() > 200);
 			TWIN.values().removeIf(until -> now > until);
 			// These only matter for a moment, and would otherwise grow with every creature that ever had them on a long-running server.

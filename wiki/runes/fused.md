@@ -107,7 +107,7 @@ Turns an ally's clock forward: their other spells come off cooldown 3 seconds so
 
 *Tier III · Fire · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
-Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flares up for 3 damage and burns 2 seconds longer.
+Sets targets alight for 6 seconds, and every burning enemy within 6 blocks flares up for 4 damage (1 more for each other one flaring, up to 3) and burns 2 seconds longer.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Fire effects and an amethyst shard (3 XP levels).
 
@@ -118,7 +118,7 @@ Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flare
 
 *Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for 1 damage a second, allies in it heal half a heart a second.
+A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for 2 damage a second, allies in it heal 1.5 health a second and are hidden from monsters more than 4 blocks away.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Blood effect, with an amethyst shard (3 XP levels).
 
@@ -173,7 +173,7 @@ The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight thro
 
 *Tier III · Fire · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Sets targets alight for 5 seconds with a fire that burns twice as fast (1 more damage a second), and rekindles once for 3 more when it goes out.
+Sets targets alight for 5 seconds with a fire that burns two and a half times as fast (1.5 more damage a second), and rekindles once for 3 more when it goes out.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -184,7 +184,7 @@ Sets targets alight for 5 seconds with a fire that burns twice as fast (1 more d
 
 *Tier III · Fire · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-Sets targets alight for 6 seconds and deals 4 damage, and the fire leaps to every enemy within 2 blocks of them.
+Sets targets alight for 6 seconds and deals 5 damage, and the fire leaps to every enemy within 2 blocks of them (2 damage), then a moment later to those within 2 blocks of those (1.5).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Wind effect, with an amethyst shard (3 XP levels).
 
@@ -261,7 +261,7 @@ Five hailstones of 2 damage each, each staggering the target, and Slowness II fo
 
 *Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-5 damage, and for 6 seconds the target's heart skips: every 2 seconds it's stunned for half a second.
+5 damage, and for 6 seconds the target's heart skips every 2 seconds: a stumble, a lurch, then a full stop (a quarter, half, then one and a half seconds of stun).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Blood effect, with an amethyst shard (3 XP levels).
 
@@ -283,7 +283,7 @@ Opens a pit of black fire for 3 seconds that drags enemies within 3 blocks towar
 
 *Tier III · Blood · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-4 magic damage, and 1 more for every 2 health you're missing (up to 6 more).
+4 magic damage, and 1 more for every 1.5 health you're missing (up to 8 more). Under half health you heal a quarter of what it deals.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Arcane effect and any Blood effect, with an amethyst shard (3 XP levels).
 
@@ -305,7 +305,7 @@ Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every a
 
 *Tier III · Blood · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-5 damage, and you heal for what it dealt.
+5 damage, and you heal for what it dealt. For 6 seconds everything the target suffers, from anyone, heals you for a quarter of it.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Void effect, with an amethyst shard (3 XP levels).
 
@@ -360,7 +360,7 @@ Strips an enemy's good effects, or an ally's bad effects. Vexes, and spirit wolv
 
 *Tier III · Fire · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage.
+Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. The first time an ally falls under 35% health the pyre flares: 6 health, and 4 damage to enemies within 3 blocks.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Life effect, with an amethyst shard (3 XP levels).
 
@@ -437,7 +437,7 @@ Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that s
 
 *Tier III · Blood · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-You pay 3 of your own health (never your last) for 12 damage that ignores armour.
+You pay 3 of your own health (never your last; more with Amplify, Overcharge and a crowd) for 12 damage that ignores armour.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Blood effects and an amethyst shard (3 XP levels).
 
@@ -514,7 +514,7 @@ Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, a
 
 *Tier III · Fire · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-A scalding burst of steam: 4 damage and Blindness for 3 seconds.
+A scalding burst of steam: 5 damage and Blindness for 3 seconds, and a cloud hangs where it burst: everything in it is blinded and left wet.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Fire effect and any Frost effect, with an amethyst shard (3 XP levels).
 
@@ -591,7 +591,7 @@ Steals up to 2 of the target's good effects, with the time they had left (at mos
 
 *Tier III · Blood · Helps you and your allies · 12 mana · needs an Amethyst Cord or better*
 
-You give up to 4 of your own health (never below 2), and the ally heals twice what you gave.
+You give up to 4 of your own health (never below 2), and the ally heals three times what you gave and is cured of one harmful effect.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Blood effect, with an amethyst shard (3 XP levels).
 

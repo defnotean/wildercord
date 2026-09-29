@@ -158,9 +158,8 @@ final class SignatureVfx {
 		Vfx.radial(level, ParticleTypes.SPLASH, at, 24, 0.35);
 		Vfx.radial(level, ParticleTypes.BUBBLE_POP, at, 12, 0.25);
 		Sigils.flash(level, at, STEAM, (float) Math.min(3, radius));
-		Fx.sound(level, at, SoundEvents.GENERIC_EXTINGUISH_FIRE, 1.0F, 0.7F);
-		Fx.sound(level, at, SoundEvents.BUBBLE_COLUMN_UPWARDS_AMBIENT, 1.0F, 1.2F);
-		Fx.sound(level, at, WildercordSounds.impact("fire"), 0.6F, 1.2F);
+		Feels.sound(level, at, "fire_steam", 1.0F, 1.2F);
+		Feels.sound(level, at, "fire_blast", 0.5F, 1.6F);
 	}
 
 	// ------------------------------------------------------------------ Bloomstep (Grow and Blink)
@@ -242,8 +241,8 @@ final class SignatureVfx {
 		Vfx.emit(level, ParticleTypes.LAVA, at, 6, 0.4, 0.1);
 		Motes.smoke(level, at, 4, radius * 0.3);
 		ScreenFx.shake(level, at, 0.5F, 14);
-		Fx.sound(level, at, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 1.2F, 0.8F);
-		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.8F, 1.2F);
+		Feels.sound(level, at, "fire_blast", 1.0F, 1.25F);
+		Fx.sound(level, at, SoundEvents.FIREWORK_ROCKET_LARGE_BLAST, 0.6F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Stitchtime (Heal and Countdown)

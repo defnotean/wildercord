@@ -48,8 +48,13 @@ final class FusedStormNumbers {
 	static final double HEART_SECONDS = 6;
 	/** Ticks between skipped beats. */
 	static final int HEART_EVERY = 40;
-	/** How long each skip stuns, in ticks. */
-	static final int HEART_STUN = 10;
+	/** How long the skips stun, in ticks: a stumble, a lurch, and at last a full stop. */
+	static final int[] HEART_STUNS = {5, 10, 30};
+
+	/** The stun of the {@code index}th skip (0 the first); every one after the third is a full stop too. */
+	static int heartStun(int index) {
+		return HEART_STUNS[Math.max(0, Math.min(HEART_STUNS.length - 1, index))];
+	}
 
 	/** How many times the heart skips over a window of {@code windowTicks}: once every 2 seconds, while it lasts. */
 	static int heartSkips(int windowTicks) {

@@ -372,7 +372,7 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 		ServerLevel level = player.level();
 		stand(player);
 		try {
-			float[][] cases = {{20, 4}, {13, 7}, {2, 10}};
+			float[][] cases = {{20, 4}, {13, 8}, {2, 12}};
 			for (float[] c : cases) {
 				player.setHealth(c[0]);
 				Mob husk = husk(level, 0, 4);

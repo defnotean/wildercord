@@ -36,13 +36,16 @@ public final class FusedLifeRules {
 	}
 
 	/**
-	 * What Transfusion gives (the ally heals twice this): up to 4 at power 1, no more than half of what the
-	 * ally is missing (so none is wasted), and never so much the giver drops below {@link #TRANSFUSION_FLOOR}
+		 * What Transfusion gives (the ally heals {@link #TRANSFUSION_RATIO} times this): up to 4 at power 1, no more than
+		 * a third of what the ally is missing (so none is wasted), and never so much the giver drops below {@link #TRANSFUSION_FLOOR}
 	 * ({@code free}, a creative player, gives without paying). 0 when there's nothing to give.
 	 */
+	/** Health an ally heals for each point the giver bleeds. */
+	public static final double TRANSFUSION_RATIO = 3.0;
+
 	public static double transfusionGift(double power, float giverHealth, float missing, boolean free) {
 		double spare = free ? Double.MAX_VALUE : giverHealth - TRANSFUSION_FLOOR;
-		double give = Math.min(4 * power, Math.min(missing / 2.0, spare));
+		double give = Math.min(4 * power, Math.min(missing / TRANSFUSION_RATIO, spare));
 		return give < 0.25 ? 0 : give;
 	}
 

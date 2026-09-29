@@ -153,8 +153,8 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 	}
 
 	/**
-	 * Crimson Mist on Self: over its 5 seconds an enemy standing in it bleeds 1 a second (5 in all) and the
-	 * hurt caster heals 1 a second; an enemy outside it is untouched.
+	 * Crimson Mist on Self: over its 5 seconds an enemy standing in it bleeds 2 a second (10 in all) and the
+	 * hurt caster heals 1.5 a second; an enemy outside it is untouched.
 	 */
 	private static void crimsonMist(ClientGameTestContext context, TestSingleplayerContext world, List<String> failures) {
 		int[] ids = world.getServer().computeOnServer(server -> {
@@ -170,8 +170,8 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			List<String> out = new ArrayList<>();
 			LivingEntity in = get(server, ids[0]);
 			float lost = in.getMaxHealth() - in.getHealth();
-			if (lost < 1.9F || lost > 4.1F) {
-				out.add("an enemy in the mist should have bled about 3 in its first 2.5 seconds (lost " + lost + ")");
+			if (lost < 3.9F || lost > 8.1F) {
+				out.add("an enemy in the mist should have bled about 6 (2 a second) in its first 2.5 seconds (lost " + lost + ")");
 			}
 			if (player(server).getHealth() < 11.9F) {
 				out.add("the caster in the mist should be healing (at " + player(server).getHealth() + " of 20, from 10)");
@@ -183,12 +183,12 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			List<String> out = new ArrayList<>();
 			LivingEntity in = get(server, ids[0]);
 			float lost = in.getMaxHealth() - in.getHealth();
-			if (Math.abs(lost - 5) > 0.6F) {
-				out.add("an enemy in the mist for all 5 seconds should have bled 5 (lost " + lost + ")");
+			if (Math.abs(lost - 10) > 0.8F) {
+				out.add("an enemy in the mist for all 5 seconds should have bled 10 (lost " + lost + ")");
 			}
 			float health = player(server).getHealth();
-			if (Math.abs(health - 15) > 0.6F) {
-				out.add("the caster should have healed half a heart a second for 5 seconds, 10 to 15 (at " + health + ")");
+			if (Math.abs(health - 17.5F) > 0.8F) {
+				out.add("the caster should have healed 1.5 a second for 5 seconds, 10 to 17.5 (at " + health + ")");
 			}
 			LivingEntity outside = get(server, ids[1]);
 			if (outside.getHealth() < outside.getMaxHealth()) {
@@ -361,21 +361,21 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			w.setHealth(10);
 			land(player, Runes.TOUCH, Runes.TRANSFUSION, List.of(w), w.position(), false);
 			near(out, "the caster, after giving to a wounded wolf", player, 16);
-			near(out, "the wolf, given 4", w, 18);
+			near(out, "the wolf, given 4", w, 22);
 			player.setHealth(5);
 			land(player, Runes.TOUCH, Runes.TRANSFUSION, List.of(w), w.position(), false);
 			near(out, "a caster at 5, who may only give 3", player, 2);
-			near(out, "the wolf, given 3", w, 24);
+			near(out, "the wolf, given 3", w, 31);
 			land(player, Runes.TOUCH, Runes.TRANSFUSION, List.of(w), w.position(), false);
 			near(out, "a caster at 2, with nothing to spare", player, 2);
-			near(out, "the wolf, when the caster had nothing to spare", w, 24);
+			near(out, "the wolf, when the caster had nothing to spare", w, 31);
 			player.setHealth(12);
 			land(player, Runes.SELF, Runes.TRANSFUSION, List.of(player), player.position(), true);
 			near(out, "the caster, after Transfusion on Self", player, 12);
 			player.setHealth(20);
 			w.setHealth(39);
 			land(player, Runes.TOUCH, Runes.TRANSFUSION, List.of(w), w.position(), false);
-			near(out, "the caster, giving to a wolf 1 short of whole", player, 19.5);
+			near(out, "the caster, giving to a wolf 1 short of whole", player, 19.67);
 			near(out, "the wolf 1 short of whole", w, 40);
 			return out;
 		}));
@@ -532,7 +532,7 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 				wolves.add(wolf);
 			}
 			land(player, Runes.BURST, Runes.SANGUINE_RITE, husks, player.position(), false);
-			near(out, "the caster, after one rite on ten husks", player, 17);
+			near(out, "the caster, after one rite on ten husks", player, 15);
 			for (int i = 0; i < husks.size(); i++) {
 				near(out, "husk " + (i + 1) + " of ten, after the rite", husks.get(i), 8);
 			}

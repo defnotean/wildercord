@@ -411,10 +411,12 @@ final class FusedStorm {
 				return false;
 			}
 			if (age % HEART_EVERY == 0) {
-				Spirits.hold(t, HEART_STUN);
-				FusedStormVfx.heartSkip(level, t);
+				int stun = FusedStormNumbers.heartStun(age / HEART_EVERY - 1);
+				Spirits.hold(t, stun);
+				FusedStormVfx.heartSkip(level, t, stun);
 			} else {
-				FusedStormVfx.heartbeat(level, t);
+				// The beats slow as the heart runs down.
+				FusedStormVfx.heartbeat(level, t, 1.0F - 0.3F * age / end);
 			}
 			return age < end;
 		}, () -> HEARTS.remove(key, token));

@@ -526,7 +526,7 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 	}
 
 	/**
-	 * Conflagration at a husk: it's alight for 8 seconds and more and flares up; a burning husk 3 blocks away flares up
+	 * Conflagration at a husk: it's alight for 6 seconds and more and flares up; a burning husk 3 blocks away flares up
 	 * too, burning longer; one beside it that isn't burning is left alone.
 	 */
 	private static List<String> conflagration(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -547,13 +547,13 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 		return world.getServer().computeOnServer(server -> {
 			List<String> problems = new ArrayList<>();
 			LivingEntity target = get(server, ids[0]);
-			if (target == null || target.getRemainingFireTicks() < 170 || lost(target) < 2.5F) {
-				problems.add("the husk struck should be alight for 8 seconds and more, and flare up (" + describe(target) + ")");
+			if (target == null || target.getRemainingFireTicks() < 130 || lost(target) < 3.5F) {
+				problems.add("the husk struck should be alight for 6 seconds and more, and flare up (" + describe(target) + ")");
 			}
 			LivingEntity burning = get(server, ids[1]);
 			// It was lit for 80 ticks; 12 have gone, and the flare adds 40.
 			if (burning == null || burning.getRemainingFireTicks() <= 80 || lost(burning) < 3.5F) {
-				problems.add("a burning husk 3 blocks away should flare up for 3 and burn 2 seconds longer (" + describe(burning) + ")");
+				problems.add("a burning husk 3 blocks away should flare up for 4 or more and burn 2 seconds longer (" + describe(burning) + ")");
 			}
 			LivingEntity cool = get(server, ids[2]);
 			if (lost(cool) > 0 || burning(cool)) {

@@ -30,6 +30,8 @@
 			"dev.wildercord.gametest.WildercordFusedStormTest",
 			"dev.wildercord.gametest.WildercordFusedLifeTest",
 			"dev.wildercord.gametest.WildercordFusedVoidTest",
+			"dev.wildercord.gametest.WildercordFireBloodTest",
+			"dev.wildercord.gametest.WildercordFireBloodShots",
 			"dev.wildercord.gametest.WildercordReactionsTest",
 			"dev.wildercord.gametest.WildercordStormEarthTest",
 			"dev.wildercord.gametest.WildercordOitTest",
