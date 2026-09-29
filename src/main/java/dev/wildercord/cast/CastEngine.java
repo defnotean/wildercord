@@ -135,7 +135,11 @@ public final class CastEngine {
 			// After On Hit or On Kill, only the first hit's Echo goes off: it was paid for once.
 			if (link.echoPrefix != null && (!link.firstOnly || cast.firstRepeat(link))) {
 				Cast child = cast.repeat();
-				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, Cast.Trigger.self(caster)));
+				// In a stored spell it repeats what was stored where the release was set off (it used to land on the
+				// caster, so a stored Fire's echo burned nothing); otherwise the whole spell again, from you.
+				boolean stored = link.echoPrefix.implicitShape.is(Runes.TRIGGER.id()) && cast.origin() != null;
+				Cast.Trigger from = stored ? cast.origin() : Cast.Trigger.self(caster);
+				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, from));
 			}
 			runSegment(cast, link.next, at);
 		} else {

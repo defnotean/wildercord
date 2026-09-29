@@ -30,6 +30,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   used to carry a quickened bolt 70 blocks and more), a wave its 14.
 - **An Arc bursts where it lands, even on a creature.** An Arc that came down on the ground splashed everything within
   2 blocks, but one that landed on a creature struck only that creature. It bursts there too now.
+- **An Echo in an imbued spell repeats it at its target.** The Echo went off from the caster instead, so a sword or a
+  glyph holding `Fire · Echo` burned what it struck once and then "burned" its own maker, which did nothing. It now
+  repeats what was stored where the release was set off, as the Imbuing page says.
 
 ## [0.4.2-alpha] - 2026-09-28
 

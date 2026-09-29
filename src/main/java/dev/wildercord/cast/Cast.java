@@ -50,6 +50,8 @@ public final class Cast {
 		double weight = -1;
 		/** The casting gear in the caster's hands when it was cast (staffs and foci). */
 		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.GearBonuses.NONE;
+		/** A stored (imbued) spell's release: where it was set off (see {@link #origin()}); null for a spell cast from a Cord. */
+		Trigger origin;
 
 		Shared() {
 			this(new Paid());
@@ -59,11 +61,12 @@ public final class Cast {
 			this.paid = paid;
 		}
 
-		/** A fresh cast's limits keeping this one's weight and gear, and its payment ({@code samePayment}) or a new one. */
+		/** A fresh cast's limits keeping this one's weight, gear and origin, and its payment ({@code samePayment}) or a new one. */
 		Shared copy(boolean samePayment) {
 			Shared copy = new Shared(samePayment ? paid : new Paid());
 			copy.weight = weight;
 			copy.gear = gear;
+			copy.origin = origin;
 			return copy;
 		}
 	}
@@ -201,6 +204,20 @@ public final class Cast {
 	/** Casting gear: the power multiplier on an effect of {@code element}. */
 	public double gearPower(String element) {
 		return budget.shared.gear.power(element);
+	}
+
+	/**
+	 * Marks this as a stored spell's release, set off at {@code origin} (the creature struck, the block broken, whoever
+	 * stepped on the glyph): an Echo inside it repeats what was stored there, not from the caster.
+	 */
+	public Cast from(Trigger origin) {
+		budget.shared.origin = origin;
+		return this;
+	}
+
+	/** Where a stored spell's release was set off (see {@link #from}), or null for a spell cast from a Cord. */
+	public Trigger origin() {
+		return budget.shared.origin;
 	}
 
 	/** No Siphon for this cast: for one that was paid for earlier (an imbued release), so it can't earn its mana back again. */
