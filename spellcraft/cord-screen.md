@@ -169,8 +169,9 @@ The box at the bottom explains the selected spell, line by line:
 1. **The spell's name**, in gold: its automatic name, the name you gave it, or, for a secret spell you've
    found, its true name in its own colour (with a line saying what the secret does).
 2. **Its price**, in cyan: "64 mana · 3.2s cooldown · Cord holds 225". This is what the spell costs *you*,
-   with every discount you have (Thrift, the Archmage perk, a staff or focus in hand, a mana storm, the
-   server's rules) and every cooldown change (Rapid, Vow, Celerity, Flow). A
+   with every discount you have (Thrift, the Archmage perk, a staff or focus in hand, a mana storm, an
+   [affinity]({{ '/progression/affinity/' | relative_url }}) at V, the server's rules) and every cooldown change
+   (Rapid, Vow, Celerity, Flow). A
    [secret spell]({{ '/spellcraft/secret-spells/' | relative_url }}) you've found shows its own, higher price
    and longer cooldown; one you haven't found shows the ordinary spell's, and the cast that finds it costs
    just that. If the spell costs more than your whole mana pool,
@@ -178,7 +179,9 @@ The box at the bottom explains the selected spell, line by line:
    [overcast]({{ '/spellcraft/overcasting/' | relative_url }})). A spell with Blood Price shows its price in
    health instead.
 3. **Casting gear** in your hands that changes the spell, in violet ("Arcane Staff: Arcane spells: +20%
-   power, 10% less mana"), and a line if the server makes spells cost more or less than usual.
+   power, 10% less mana"), and a line if the server makes spells cost more or less than usual. Then, quietly,
+   your [affinity]({{ '/progression/affinity/' | relative_url }}) with each of the spell's elements that you have
+   one with ("Fire affinity III: +9% power").
 4. **What it does**, one line for each group of the spell: what the shape hits, then its effects and what the
    modifiers did to them ("3 bolts (homing): Fire (+50% power)"). After a link, a header line ("On hit:",
    "After 1s:", "When something hurts you:") and the rest indented beneath it.
@@ -308,6 +311,8 @@ The rules for what a passive may hold are on [Passive Spells]({{ '/spellcraft/pa
 The **Grimoire** tab is your book of discoveries. It lists, in order:
 
 - **Your heart:** your innate rune (hover it to read it) and your leaning, or how to get them.
+- **Affinities:** each element's mark, its level and a bar toward the next; hover one for what it gives and
+  everything that raises it. See [Your Affinities]({{ '/progression/affinity/' | relative_url }}).
 - **Reactions:** the eleven element reactions, "???" until you've set one off.
 - **Secret spells:** found ones by name (hover for what they do), ones you've read the riddle of as that
   riddle, and "???" for the rest.
