@@ -32,6 +32,8 @@ public final class ChargeHum extends AbstractTickableSoundInstance {
 
 	private final Player caster;
 	private final long start;
+	/** The hum's note: each element hums on its own degree of the scale. */
+	private final float key;
 	private float fade;
 
 	/** Every client tick: starts a hum for each charge that doesn't have one yet. Each hum then looks after itself. */
@@ -52,16 +54,29 @@ public final class ChargeHum extends AbstractTickableSoundInstance {
 			if (charge == null || PLAYING.containsKey(player.getId())) {
 				continue;
 			}
-			ChargeHum hum = new ChargeHum(player, charge.start());
+			ChargeHum hum = new ChargeHum(player, charge.start(), keyOf(ChargeCircles.element(charge)));
 			PLAYING.put(player.getId(), hum);
 			mc.getSoundManager().play(hum);
 		}
 	}
 
-	private ChargeHum(Player caster, long start) {
+	/** An element's degree of the hum's scale (in key with everything else). */
+	private static float keyOf(String element) {
+		return switch (element) {
+			case "fire", "blood" -> 1.122F;
+			case "frost", "arcane" -> 1.26F;
+			case "earth", "void" -> 0.841F;
+			case "storm", "time" -> 1.498F * 0.75F;
+			case "wind", "life" -> 1.0F;
+			default -> 1.0F;
+		};
+	}
+
+	private ChargeHum(Player caster, long start, float key) {
 		super(WildercordSounds.CHARGE_LOOP, SoundSource.PLAYERS, SoundInstance.createUnseededRandom());
 		this.caster = caster;
 		this.start = start;
+		this.key = key;
 		this.looping = true;
 		this.delay = 0;
 		this.volume = 0.0F;
@@ -89,7 +104,7 @@ public final class ChargeHum extends AbstractTickableSoundInstance {
 		double progress = Mth.clamp((caster.level().getGameTime() - start) / (double) Charging.fullTicks(caster), 0, 1);
 		// Eased out: a quick climb at first that settles as the charge nears full.
 		float eased = (float) (1 - (1 - progress) * (1 - progress));
-		pitch = LOW + (HIGH - LOW) * eased;
+		pitch = (LOW + (HIGH - LOW) * eased) * key;
 		volume = VOLUME * fade * (0.75F + 0.25F * eased);
 		follow();
 	}

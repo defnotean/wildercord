@@ -68,6 +68,36 @@ public final class SpellHud {
 	private static int drawnTop = -1;
 	private static int drawnRight;
 	private static long drawnAt;
+	/** The selected spell's cooldown as last drawn: its slot, and the longest wait seen since it started (for the ready cue). */
+	private static int cueSpell = -1;
+	private static long longestWait;
+	/** When the selected spell last came off a cooldown worth announcing (the badge flashes). */
+	private static long readyAt = Long.MIN_VALUE;
+
+	/**
+	 * A quiet two-note ping and a gold flash on the badge when the selected spell's cooldown ends, for any wait of a second and a
+	 * half or more (a short one would ping all the time).
+	 */
+	private static void readyCue(Minecraft mc, int spell, long remaining, long now) {
+		if (spell != cueSpell) {
+			cueSpell = spell;
+			longestWait = Math.max(0, remaining);
+			return;
+		}
+		if (remaining > 0) {
+			longestWait = Math.max(longestWait, remaining);
+			return;
+		}
+		if (longestWait >= 30) {
+			readyAt = now;
+			net.minecraft.sounds.SoundEvent ping = dev.wildercord.content.WildercordSounds.kit("ready_ping");
+			if (ping != null) {
+				mc.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(ping, 1.0F, 0.8F));
+			}
+		}
+		longestWait = 0;
+	}
+
 	/** Spells already read, by their runes: reading one writes out its whole readout, too much to redo every frame. */
 	private static final Map<List<RuneDef>, SpellCompiler.Compiled> READ = new HashMap<>();
 
@@ -172,6 +202,7 @@ public final class SpellHud {
 		boolean affordable = compiled == null || creative || (blood ? player.getHealth() > healthCost : mana >= manaCost);
 		long remaining = Spellbooks.readyAt(player, spell) - player.level().getGameTime();
 		boolean cooling = compiled != null && remaining > 0;
+		readyCue(mc, spell, remaining, player.level().getGameTime());
 
 		// The bottom row holds the mana count (and its boost chevron) and, on the right, the charge,
 		// the cooldown or the passives' drain: the panel is never narrower than both side by side.
@@ -263,6 +294,12 @@ public final class SpellHud {
 		int bx = x0 + 4;
 		int by = y0 + 4;
 		sprite(g, BADGE, bx, by, 20, 20);
+		long sinceReady = player.level().getGameTime() - readyAt;
+		if (sinceReady >= 0 && sinceReady < 6) {
+			// A brief gold flash as the spell comes back.
+			int alpha = (int) (0x70 * (1 - sinceReady / 6.0));
+			g.fill(bx + 3, by + 3, bx + 17, by + 17, (alpha << 24) | 0xF5D56A);
+		}
 		if (cooling) {
 			int total = Math.max(1, dev.wildercord.player.Heart.cooldownTicks(player, compiled, dev.wildercord.player.Heart.secretCooldown(player, runes)));
 			int shade = (int) Math.ceil(14 * Math.min(1.0, remaining / (double) total));

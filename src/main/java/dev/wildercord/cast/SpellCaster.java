@@ -188,6 +188,10 @@ public final class SpellCaster {
 		int castNumber = COMBO.computeIfAbsent(player.getUUID(), k -> new int[dev.wildercord.gear.SpellSlots.ALL])[spell] += 1;
 		player.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 		Vfx.Theme theme = secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()));
+		if (!compiled.root().groups.isEmpty()) {
+			// The spell's feel (its scale sizes the circle), worked out as the cast will.
+			theme = theme.with(dev.wildercord.cast.feel.Signatures.adjust(dev.wildercord.cast.feel.Feel.of(compiled.root().groups.getFirst(), compiled.cost(), charge)));
+		}
 		Vfx.castCircle(player, theme, runes);
 		// Casting gear, read from the hands now: a staff's flourish on a charged cast, and its power on every part of the spell.
 		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.Gear.of(player);
@@ -453,6 +457,8 @@ public final class SpellCaster {
 
 	private static void fail(ServerPlayer player, Component message) {
 		player.sendOverlayMessage(message.copy().withStyle(ChatFormatting.RED));
+		// A quiet fizzle, so a cast that didn't go off is heard as well as read.
+		dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "fizzle", 0.4F, 1.0F);
 	}
 
 	/** Mana regeneration and the starter runes, checked every few ticks. */
