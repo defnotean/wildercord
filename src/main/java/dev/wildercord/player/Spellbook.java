@@ -41,7 +41,8 @@ public record Spellbook(List<String> learned, List<List<String>> spells, int sel
 		names = List.copyOf(sizedNames);
 	}
 
-	private static List<List<String>> sized(List<List<String>> lists, int count, int sockets) {
+	/** Exactly {@code count} rows of at most {@code sockets} runes each: missing rows empty, extra runes and rows dropped. */
+	public static List<List<String>> sized(List<List<String>> lists, int count, int sockets) {
 		List<List<String>> sized = new ArrayList<>(count);
 		for (int i = 0; i < count; i++) {
 			List<String> spell = i < lists.size() ? lists.get(i) : List.of();

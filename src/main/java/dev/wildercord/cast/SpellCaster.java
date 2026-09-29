@@ -256,6 +256,11 @@ public final class SpellCaster {
 		dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(player, spell, List.copyOf(runes), spent);
 	}
 
+	/** Whether {@code entity} is sealed in a Cryostasis right now: nothing is cast, and no loadout loaded, from inside the ice. */
+	public static boolean sealed(net.minecraft.world.entity.Entity entity) {
+		return FusedFrostWards.sealed(entity);
+	}
+
 	/** Why a spell slot can't be used: the Cord has too few spells, or the tome's slot without the tome in hand. */
 	private static Component locked(int spell) {
 		if (spell == dev.wildercord.gear.SpellSlots.TOME) {
