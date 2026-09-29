@@ -91,7 +91,8 @@ public class RuneBolt extends Projectile {
 			return null;
 		}
 		RuneBolt bolt = new RuneBolt(WildercordEntities.RUNE_BOLT, cast.level);
-		bolt.cast = cast.child();
+		// The same cast, not a child: a bolt is part of its shape, not a link, so it takes none of the cast's link depth.
+		bolt.cast = cast;
 		bolt.group = group;
 		bolt.anchored = anchored;
 		bolt.pierceLeft = SpellNumbers.pierce(group);

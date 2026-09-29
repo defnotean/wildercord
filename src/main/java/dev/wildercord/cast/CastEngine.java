@@ -440,14 +440,14 @@ public final class CastEngine {
 			int again = SpellNumbers.lingerHits(effect);
 			for (int i = 1; i <= again; i++) {
 				Cast.Hit first = hit;
-				Cast child = cast.child();
+				// The same cast landing again, not a link: it takes none of the cast's link depth.
 				Scheduler.later(20 * i, () -> {
-					if (!child.alive()) {
+					if (!cast.alive()) {
 						return;
 					}
 					// Not one that has gone to another dimension since (a player keeps being the same entity there).
-					List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == child.level).toList();
-					Effects.apply(child, effect, new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self()), groupPower);
+					List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == cast.level).toList();
+					Effects.apply(cast, effect, new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self()), groupPower);
 				});
 			}
 		}

@@ -144,9 +144,12 @@ public final class Cast {
 		return new Cast(caster, level, depth + 1, budget, castNumber, power, duration, passive, wanted, info, repeated);
 	}
 
-	/** One strike of a shape that strikes repeatedly: its own creature and block budget. */
+	/**
+	 * One strike of a shape that strikes repeatedly: its own creature and block budget. At the same depth: a strike
+	 * is part of its shape, not a link, so it mustn't use up the {@link #MAX_DEPTH} links a cast may chain.
+	 */
 	public Cast pulse() {
-		return new Cast(caster, level, depth + 1, new Budget(budget.shared), castNumber, power, duration, passive, wanted, info, repeated);
+		return new Cast(caster, level, depth, new Budget(budget.shared), castNumber, power, duration, passive, wanted, info, repeated);
 	}
 
 	/**

@@ -572,6 +572,17 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			}
 		});
 
+		// Only links use up a cast's eight links: a shape's own parts don't. Four On Hits deep, the fifth Lance (each
+		// Lance runs through the husk the last one struck) used to die before it landed, its hits a step too deep.
+		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
+		context.waitTicks(3);
+		float whole = server.computeOnServer(s -> health(s, huskId[0]));
+		server.runOnServer(s -> castAs(s, 1, Runes.LANCE, Runes.ON_HIT, Runes.LANCE, Runes.ON_HIT, Runes.LANCE, Runes.ON_HIT, Runes.LANCE,
+			Runes.ON_HIT, Runes.LANCE, Runes.HARM));
+		context.waitTicks(5);
+		float lanced = server.computeOnServer(s -> health(s, huskId[0]));
+		check(lanced < whole, "The fifth Lance, four On Hits deep, should strike, but the husk's health went " + whole + " -> " + lanced);
+
 		// A lasting shape keeps one part waiting in the scheduler, however long Extend makes it last (a four-minute
 		// Orbit used to book all 5,000 of its ticks up front), and stops once its caster is gone.
 		server.runOnServer(s -> {

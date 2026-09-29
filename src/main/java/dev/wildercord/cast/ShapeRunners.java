@@ -180,7 +180,7 @@ final class ShapeRunners {
 					}
 				}
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, origin, cast.caster.getLookAngle(), origin, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, origin, cast.caster.getLookAngle(), origin, null, null, false), anchored);
 				}
 			});
 		}
@@ -225,7 +225,7 @@ final class ShapeRunners {
 					hit.add(e.getUUID());
 				}
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, front, dir, front.subtract(dir), null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, front, dir, front.subtract(dir), null, null, false), anchored);
 				}
 			});
 		}
@@ -251,7 +251,7 @@ final class ShapeRunners {
 			}
 			fired[0] = true;
 			Vfx.burst(cast.level, point.add(0, 0.5, 0), radius, theme);
-			CastEngine.onHit(cast.child(), g, new Cast.Hit(CastEngine.inRadius(cast, point.add(0, 0.5, 0), radius), point, new Vec3(0, 1, 0), point, null, null, false), anchored);
+			CastEngine.onHit(cast, g, new Cast.Hit(CastEngine.inRadius(cast, point.add(0, 0.5, 0), radius), point, new Vec3(0, 1, 0), point, null, null, false), anchored);
 		});
 	}
 
@@ -377,7 +377,7 @@ final class ShapeRunners {
 					}
 				}
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, front, aim, front.subtract(aim), null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, front, aim, front.subtract(aim), null, null, false), anchored);
 				}
 			});
 		}
@@ -457,7 +457,7 @@ final class ShapeRunners {
 				if (wall || tick == steps) {
 					done[0] = true;
 					Vfx.burst(cast.level, pos, radius * 1.2, theme);
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(CastEngine.inRadius(cast, pos, radius * 1.2), pos, aim, pos, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(CastEngine.inRadius(cast, pos, radius * 1.2), pos, aim, pos, null, null, false), anchored);
 					return;
 				}
 				TechniqueVfx.orb(cast.level, pos, radius, theme, tick);
@@ -780,7 +780,7 @@ final class ShapeRunners {
 				passed.forEach(e -> hit.add(e.getUUID()));
 				Vec3 at = passed.getFirst().getBoundingBox().getCenter();
 				ExpansionVfx.ricochetHit(cast.level, at, theme);
-				CastEngine.onHit(cast.child(), g, new Cast.Hit(passed, at, velocity[0].normalize(), from, null, null, false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(passed, at, velocity[0].normalize(), from, null, null, false), anchored);
 			}
 			if (visible(cast, from, end)) {
 				ExpansionVfx.ricochetTick(cast.level, from, end, theme, tick);
@@ -792,7 +792,7 @@ final class ShapeRunners {
 			Vec3 normal = Vec3.atLowerCornerOf(block.getDirection().getUnitVec3i());
 			if (bounces[0]-- <= 0 || velocity[0].length() < 0.2) {
 				ExpansionVfx.ricochetEnd(cast.level, end, theme);
-				CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, velocity[0].normalize(), end, block.getBlockPos(), block.getDirection(), false), anchored);
 				return false;
 			}
 			velocity[0] = velocity[0].subtract(normal.scale(2 * velocity[0].dot(normal))).scale(0.82);
@@ -876,7 +876,7 @@ final class ShapeRunners {
 				}
 				ExpansionVfx.shardLand(cast.level, land, radius, theme);
 				if (!hits.isEmpty()) {
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, land, velocity[0].normalize(), land, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, land, velocity[0].normalize(), land, null, null, false), anchored);
 				}
 				return false;
 			});
@@ -893,7 +893,7 @@ final class ShapeRunners {
 		List<Entity> hits = along(cast, from, end, width, Set.of());
 		ExpansionVfx.lance(cast.level, from.add(aim.scale(0.8)), end, width, theme);
 		for (Entity e : hits) {
-			CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(e), e.getBoundingBox().getCenter(), aim, from, null, null, false), anchored);
+			CastEngine.onHit(cast, g, new Cast.Hit(List.of(e), e.getBoundingBox().getCenter(), aim, from, null, null, false), anchored);
 		}
 		if (hits.isEmpty() && !missed(block)) {
 			CastEngine.onHit(cast, g, new Cast.Hit(List.of(), end, aim, from, block.getBlockPos(), block.getDirection(), false), anchored);
@@ -924,7 +924,7 @@ final class ShapeRunners {
 				List<Entity> hits = along(cast, origin, end, 0.5, hit);
 				if (!hits.isEmpty()) {
 					hits.forEach(e -> hit.add(e.getUUID()));
-					CastEngine.onHit(cast.child(), g, new Cast.Hit(hits, hits.getFirst().getBoundingBox().getCenter(), dir, origin, null, null, false), anchored);
+					CastEngine.onHit(cast, g, new Cast.Hit(hits, hits.getFirst().getBoundingBox().getCenter(), dir, origin, null, null, false), anchored);
 				}
 			});
 		}
@@ -963,7 +963,7 @@ final class ShapeRunners {
 				Entity e = hits.getFirst();
 				struck.add(e.getUUID());
 				rayEnd = e.getBoundingBox().getCenter();
-				CastEngine.onHit(cast.child(), g, new Cast.Hit(List.of(e), rayEnd, rayDir, split, null, null, false), anchored);
+				CastEngine.onHit(cast, g, new Cast.Hit(List.of(e), rayEnd, rayDir, split, null, null, false), anchored);
 			}
 			ends.add(rayEnd);
 		}

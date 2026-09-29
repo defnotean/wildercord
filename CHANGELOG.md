@@ -19,6 +19,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Quicken makes a Wall strike twice as often.** A Wall struck once a second, and one Quicken left it at that (two
   jumped it to five times a second). It still strikes once a second, now twice with one Quicken and four times with
   two, and the readout says how often: "A 7-block wall (5s, every 1s)".
+- **A cast really goes eight links deep.** A bolt in flight, each strike of a Zone, Orbit or Domain, a Lance's or a
+  Ring's hits and a Linger's second landing all used up one of the cast's eight links, so `Bolt · On Hit` four times
+  over and then `Bolt · Fire` never threw its last bolt, and a Linger deep in a chain never landed again. Only links
+  count now.
 
 ## [0.4.2-alpha] - 2026-09-28
 
