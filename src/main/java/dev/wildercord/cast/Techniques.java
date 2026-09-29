@@ -579,7 +579,10 @@ final class Techniques {
 				if (feet.y < level.getMinY() + 1) {
 					continue;
 				}
-				if (fits(level, caster, feet)) {
+				// Out the far side: never into lava or fire (or onto it, a short drop below), nor past the world border.
+				AABB landing = caster.getDimensions(caster.getPose()).makeBoundingBox(feet);
+				if (fits(level, caster, feet) && !Effects.scorching(level, landing.expandTowards(0, -3, 0))
+						&& level.getWorldBorder().isWithinBounds(feet.x, feet.z)) {
 					teleport(caster, level, feet, caster.getYRot(), caster.getXRot());
 					TechniqueVfx.zipper(level, entry, feet.add(0, eyeHeight * 0.6, 0), dir);
 					return;
@@ -621,9 +624,9 @@ final class Techniques {
 		ServerLevel level = cast.level;
 		Vec3 dir = Effects.horizontal(caster.getLookAngle(), caster.getLookAngle());
 		Vec3 start = caster.position();
-		Vec3 end = start;
+		List<Vec3> path = new ArrayList<>();
 		for (double d = 0.5; d <= 8.0; d += 0.5) {
-			Vec3 spot = start.add(dir.scale(d));
+			Vec3 spot = path.isEmpty() ? start.add(dir.scale(d)) : path.getLast().add(dir.scale(0.5));
 			if (!fits(level, caster, spot)) {
 				if (fits(level, caster, spot.add(0, 1.05, 0))) {
 					spot = spot.add(0, 1.05, 0);
@@ -631,11 +634,19 @@ final class Techniques {
 					break;
 				}
 			}
-			end = spot;
+			path.add(spot);
 		}
-		Vec3 grounded = CastEngine.ground(level, end.add(0, 0.2, 0));
-		if (fits(level, caster, grounded)) {
-			end = grounded;
+		// The farthest spot along the way with safe ground under it: never into lava, never over a drop or the void.
+		Vec3 end = null;
+		for (int i = path.size() - 1; i >= 0 && end == null; i--) {
+			Vec3 grounded = CastEngine.ground(level, path.get(i).add(0, 0.2, 0));
+			if (Effects.safeSpot(level, caster, grounded)) {
+				end = grounded;
+			}
+		}
+		if (end == null) {
+			Casters.tell(caster, Component.translatableWithFallback("message.wildercord.time_skip_nowhere", "Nowhere safe ahead to skip to"));
+			return;
 		}
 		teleport(caster, level, end, caster.getYRot(), caster.getXRot());
 		caster.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));

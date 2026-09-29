@@ -39,6 +39,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   - The rune tooltips' dark green *"Where it lands"* lines say all of this, with the warnings.
 
 ### Fixed
+- **Warp Step, Time Skip and Zipper set you down safely**, as Blink now does: never into lava or fire, and Warp Step and
+  Time Skip never over a drop or the void (Time Skip takes the farthest safe spot on its way, and says so when there's none).
 - A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up
   and casts at you from there.
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read

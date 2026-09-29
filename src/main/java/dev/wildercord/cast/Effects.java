@@ -788,6 +788,21 @@ public final class Effects {
 		return !level.noCollision(new AABB(feet.x - 0.2, feet.y - 0.25, feet.z - 0.2, feet.x + 0.2, feet.y - 0.01, feet.z + 0.2));
 	}
 
+	/** Whether there's lava or fire in {@code box} or just under it. */
+	static boolean scorching(ServerLevel level, AABB box) {
+		return level.getBlockStates(box.inflate(0, 0.5, 0)).anyMatch(s -> s.getFluidState().is(FluidTags.LAVA) || s.is(BlockTags.FIRE));
+	}
+
+	/**
+	 * Somewhere a spell may set {@code entity} down, as Blink does: room for it, ground right under it (never over a
+	 * chasm or the void), inside the world border, and no lava or fire.
+	 */
+	static boolean safeSpot(ServerLevel level, Entity entity, Vec3 feet) {
+		AABB box = entity.getDimensions(entity.getPose()).makeBoundingBox(feet);
+		return footing(level, feet) && level.noCollision(entity, box) && level.getWorldBorder().isWithinBounds(feet.x, feet.z)
+			&& !scorching(level, box);
+	}
+
 	/** Inferno: everything around the point burns for a few seconds. */
 	private static void inferno(Cast cast, Vec3 point, double radius, double power, double duration) {
 		int pulses = (int) Math.round(4 * duration);

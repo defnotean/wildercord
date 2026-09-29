@@ -918,7 +918,8 @@ public final class ExplorerEffects {
 		Vec3 back = target.subtract(from).normalize();
 		for (double d = 0; d < 6; d += 0.5) {
 			Vec3 at = CastEngine.ground(level, target.subtract(back.scale(d)).add(0, 1.0, 0));
-			if (fits(level, caster, at)) {
+			// Somewhere safe to stand for its 3 seconds: not in lava, not over the void.
+			if (Effects.safeSpot(level, caster, at)) {
 				spot = at;
 				break;
 			}
