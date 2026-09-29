@@ -15,6 +15,24 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   cooldowns. Server owners can change the limits and times, or switch it all off, in the new `travel` section of
   the config. See [Getting Around](https://defnotean.github.io/wildercord/social/travel/).
 
+### Fixed
+- **Fused runes skipped part of a crowd.** Cast into more than eight enemies at once (a Domain or a big
+  Burst), Firestorm, Absolute Zero, Frostbite, Riftbolt, Heartstopper, Stormclock, Sanguine Rite and
+  Timesteal did nothing at all to every enemy past the eighth, and Lifebloom didn't heal allies past the
+  eighth. Every target now takes the hit; only the lasting and spreading parts (the fire leaping on, the
+  cold setting in, the rift, the skipping heart, the bloom) are still kept to the first eight.
+- **A teammate sealed in Cryostasis could be pulled into a wall.** If they went through a portal while
+  sealed, the ice kept pulling them back to the spot where they were sealed, but in the new world, so they
+  could land inside rock or over lava. The seal now breaks when they leave the world it was cast in, and
+  Frostbloom and Geode stop answering blows there too.
+- **Magma's burning ground could be parried.** Raising a Shield while standing in it parried its next second
+  of burning (a counter-burst at its caster, and the Parry feat) as if a spell had just arrived. Like every
+  other burning or freezing ground, its later seconds now only meet a Shield as a block. Its cracked, glowing
+  ground also now lasts as long as the magma does, instead of vanishing after 4 seconds when Extend makes it
+  burn longer.
+- A Knot put on the Fusion Altar was called "a silent rune (its add-on is missing)". The altar now says what's
+  really wrong (only effects with an element fuse, and a Knot has no power to rank up).
+
 ## [0.4.1-alpha] - 2026-09-28
 
 A player wiki, and the bugs found while writing it.

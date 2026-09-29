@@ -87,6 +87,7 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 			check(failures, "Entropy", entropy(context, world));
 			check(failures, "Devour", world.getServer().computeOnServer(WildercordFusedVoidTest::devour));
 			check(failures, "Timesteal", world.getServer().computeOnServer(WildercordFusedVoidTest::timesteal));
+			check(failures, "Timesteal (a crowd of ten)", world.getServer().computeOnServer(WildercordFusedVoidTest::timestealCrowd));
 			check(failures, "Hemomancy", world.getServer().computeOnServer(WildercordFusedVoidTest::hemomancy));
 			check(failures, "Reckoning", reckoning(context, world));
 			check(failures, "Singularity", singularity(context, world));
@@ -330,6 +331,31 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 			MobEffectInstance got = player.getEffect(MobEffects.SPEED);
 			if (got == null || got.getDuration() < 590) {
 				return "the caster should still get the boss's 30 seconds (has " + got + ")";
+			}
+			return null;
+		} finally {
+			level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(20), m -> m.entityTags().contains(TAG)).forEach(Mob::discard);
+			stand(player);
+		}
+	}
+
+	/** Ten husks with Speed, more than the eight that are drawn: one Timesteal takes it from every one of them. */
+	private static String timestealCrowd(MinecraftServer server) {
+		ServerPlayer player = player(server);
+		ServerLevel level = player.level();
+		stand(player);
+		try {
+			List<Mob> husks = new ArrayList<>();
+			for (int i = 0; i < 10; i++) {
+				Mob husk = husk(level, -9 + 2 * i, 4);
+				husk.addEffect(new MobEffectInstance(MobEffects.SPEED, 1200, 0));
+				husks.add(husk);
+			}
+			touch(player, Runes.TIMESTEAL, husks);
+			for (int i = 0; i < husks.size(); i++) {
+				if (husks.get(i).hasEffect(MobEffects.SPEED)) {
+					return "husk " + (i + 1) + " of ten should have had its Speed taken too";
+				}
 			}
 			return null;
 		} finally {

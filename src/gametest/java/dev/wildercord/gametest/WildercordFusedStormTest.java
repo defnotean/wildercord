@@ -1,5 +1,7 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.cast.Cast;
+import dev.wildercord.cast.Effects;
 import dev.wildercord.cast.SpellCaster;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Mana;
@@ -8,6 +10,8 @@ import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
+import dev.wildercord.spell.SpellCompiler;
+import dev.wildercord.spell.SpellPlan;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -17,6 +21,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -95,6 +100,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			run(failures, "Downdraft", () -> downdraft(context, world));
 			run(failures, "Updraft", () -> updraft(context, world));
 			run(failures, "Recoil", () -> recoil(context, world));
+			run(failures, "A crowd of ten", () -> crowd(context, world));
 			// Last: a glyph stays on the platform for 10 seconds.
 			run(failures, "Skyglyph (enemy)", () -> skyglyphEnemy(context, world));
 			run(failures, "Skyglyph (ally)", () -> skyglyphAlly(context, world));
@@ -463,6 +469,49 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			}
 			return took(h, 3) ? null : "the snap should deal 3 (took " + f(taken(h)) + ")";
 		}));
+	}
+
+	/**
+	 * A crowd of ten, more than the eight that get a lasting or moving part of their own: Riftbolt's bolt (6),
+	 * Heartstopper's shock (5) and Stormclock's first strike (4) each land on every husk, not just the first eight.
+	 */
+	private static String crowd(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<Integer> ids = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			ids.add(spawn(world, EntityTypes.HUSK, -9 + 2 * i, 6, 0, false));
+		}
+		context.waitTicks(3);
+		RuneDef[] runes = {Runes.RIFTBOLT, Runes.HEARTSTOPPER, Runes.STORMCLOCK};
+		double[] damage = {6, 5, 4};
+		for (int r = 0; r < runes.length; r++) {
+			RuneDef rune = runes[r];
+			double amount = damage[r];
+			String found = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = player(server);
+				List<Entity> crowd = new ArrayList<>();
+				for (int id : ids) {
+					Mob h = mob(server, id);
+					if (h == null) {
+						return "a husk of the crowd is gone";
+					}
+					h.setHealth(h.getMaxHealth());
+					crowd.add(h);
+				}
+				SpellPlan.EffectNode node = SpellCompiler.compile(List.of(Runes.BURST, rune)).root().groups.getFirst().effects.getFirst();
+				Effects.apply(new Cast(player), node, new Cast.Hit(crowd, at(0, 6), new Vec3(0, 0, 1), player.position(), null, null, false));
+				for (int i = 0; i < crowd.size(); i++) {
+					LivingEntity h = (LivingEntity) crowd.get(i);
+					if (!took(h, amount)) {
+						return rune.name() + " should strike husk " + (i + 1) + " of ten for " + f(amount) + " (took " + f(taken(h)) + ")";
+					}
+				}
+				return null;
+			});
+			if (found != null) {
+				return done(context, world, found);
+			}
+		}
+		return done(context, world, null);
 	}
 
 	/** Written under a husk (an enemy), the glyph throws it back about 4 blocks, and doesn't hurt it. */
