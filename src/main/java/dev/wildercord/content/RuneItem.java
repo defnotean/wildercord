@@ -226,6 +226,7 @@ public class RuneItem extends Item {
 			case 2 -> "II";
 			case 3 -> "III";
 			case 4 -> "IV";
+			case 5 -> "V";
 			default -> Integer.toString(n);
 		};
 	}

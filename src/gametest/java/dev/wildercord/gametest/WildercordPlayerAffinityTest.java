@@ -269,14 +269,18 @@ public class WildercordPlayerAffinityTest implements FabricClientGameTest {
 		Mob caster = runebound(player.level(), Vec3.atBottomCenterOf(STAGE).add(0, 0, 3));
 		fresh(player, Map.of());
 		float plain = hitPlayer(player, caster, Runes.FIRE, false);
-		float shatter = hitPlayer(player, caster, Runes.FIRE, true);
 		fresh(player, Map.of("fire", PlayerAffinity.threshold(2)));
 		float two = hitPlayer(player, caster, Runes.FIRE, false);
 		fresh(player, Map.of("fire", PlayerAffinity.threshold(3)));
 		float three = hitPlayer(player, caster, Runes.FIRE, false);
-		float shatterThree = hitPlayer(player, caster, Runes.FIRE, true);
 		fresh(player, Map.of("fire", PlayerAffinity.threshold(5)));
 		float five = hitPlayer(player, caster, Runes.FIRE, false);
+		// The Shatters last: a reaction lets every hit on the player that tick through a resistance, and these all
+		// land in the same tick.
+		fresh(player, Map.of());
+		float shatter = hitPlayer(player, caster, Runes.FIRE, true);
+		fresh(player, Map.of("fire", PlayerAffinity.threshold(3)));
+		float shatterThree = hitPlayer(player, caster, Runes.FIRE, true);
 		if (plain <= 0) {
 			return List.of("a Runebound's fire should hurt the player (took " + plain + ")");
 		}
