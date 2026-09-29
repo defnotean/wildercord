@@ -6,9 +6,10 @@ nav_order: 8
 
 # Runes of the world and Attunement
 
-Fifty-one runes can't be crafted at all, whatever their tier: each is found only in its own places. Some wait in the
+Fifty-three runes can't be crafted at all, whatever their tier: each is found only in its own places. Some wait in the
 chests of vanilla structures, some are drawn out of the land itself by **Attunement**, some are kept by Wildercord's
-dungeons and their bosses, and some come with the world's events. Going out and exploring is how your spellbook grows.
+dungeons and their bosses, some come with the world's events, and two come up only on a fishing line. Going out and
+exploring is how your spellbook grows.
 This page is a hunter's guide to all of them. What each rune does is on
 [Runes of the World]({{ '/runes/world/' | relative_url }}).
 
@@ -17,7 +18,7 @@ This page is a hunter's guide to all of them. What each rune does is on
 - A rune of the world's tooltip says *"Can't be crafted: a rune of the world, found only in its own places"*, and names
   where it's found.
 - You learn it like any other rune: hold it and use it (right-click). See [Runes]({{ '/runes/' | relative_url }}).
-- **The Grimoire** (the Cord screen's third page) has a section, *Runes of the world (12 of 51 known)*, listing every
+- **The Grimoire** (the Cord screen's third page) has a section, *Runes of the world (12 of 53 known)*, listing every
   place and the runes found there. Runes you've learned show by name; the rest show as a hint, like *??? (a Tier II
   effect)*. A separate section lists the Attunements (below), with a riddle for each land you haven't attuned in yet.
   See [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}).
@@ -33,6 +34,7 @@ Cord.
 | [Lands, by Attunement](#attunement) | 15 |
 | [Wildercord's dungeons and bosses](#dungeons-and-bosses) | 10 |
 | [World events](#world-events) | 5 |
+| [Fishing](#fishing) | 2 |
 
 A few of these also turn up [elsewhere](#now-and-then-elsewhere): in Archive libraries and on Runebound Adepts.
 
@@ -171,6 +173,69 @@ of its own. The bosses fight only once per dungeon, so their runes are rare.
 | **The Riftcaller** | [Unstable]({{ '/runes/world/#unstable' | relative_url }}), and 50% Riftcall or Unstable | When a player kills it |
 | **[Mana storms]({{ '/world/world-events/#the-storms-runes' | relative_url }})** | [Manaburn]({{ '/runes/world/#manaburn' | relative_url }}), [Manatide]({{ '/runes/world/#manatide' | relative_url }}) | From your 10th cast under a storm, each surge has a 1 in 3 chance to crystallise one straight into your pack: Manaburn 5 times in 7, Manatide 2 in 7. One per storm for each player |
 
+## Fishing
+
+Cast a line into **open water** and runes come up with the fish. Two runes of the world are found nowhere else, and a
+handful of crafted runes of water, frost and storm (and a few a fisher is glad of) come up the same way, so a spare rod
+is worth carrying.
+
+### Open water
+
+Everything in this section needs **open water**, the same rule the game uses for its own fishing treasure: the bobber
+floats in a clear stretch of water at least 5 blocks across, with no blocks in the water round it or in the air just
+above it. A small pond, a hole in the ice or a farm's water channel never brings up treasure, and never a rune.
+
+### In a treasure catch
+
+A fish, some junk, or now and then **treasure** (a name tag, a saddle, an enchanted bow, rod or book, a nautilus
+shell). Treasure is now joined by runes and Torn Pages:
+
+| A treasure catch is | How often |
+|---|---|
+| A **rune** | about 4 in 11 |
+| A **Torn Page** | about 1 in 11 |
+| One of the game's own treasures | the rest, about 6 in 11 |
+
+**Luck of the Sea** makes treasure likelier, and so runes: about 1 catch in 55 is a rune with a plain rod, about 1 in
+24 with Luck of the Sea III. A Potion of Luck helps too.
+
+A treasure rune is one of these, lower tiers more often:
+
+| Rune | Tier | How likely, of the runes a treasure catch brings up |
+|---|---|---|
+| [Tidehook]({{ '/runes/world/#tidehook' | relative_url }}) (found only by fishing) | II | about 1 in 11 |
+| [Current]({{ '/runes/world/#current' | relative_url }}) (found only by fishing) | II | about 1 in 11 |
+| [Tidebreath]({{ '/runes/effects/frost/#tidebreath' | relative_url }}), [Chill]({{ '/runes/effects/frost/#chill' | relative_url }}), [Icicle]({{ '/runes/effects/frost/#icicle' | relative_url }}), [Icepath]({{ '/runes/effects/frost/#icepath' | relative_url }}), [Shock]({{ '/runes/effects/storm/#shock' | relative_url }}), [Feather Fall]({{ '/runes/effects/wind/#feather_fall' | relative_url }}), [Night Eye]({{ '/runes/effects/arcane/#night_eye' | relative_url }}), [Swift]({{ '/runes/effects/wind/#swift' | relative_url }}), [Heal]({{ '/runes/effects/life/#heal' | relative_url }}), [Collect]({{ '/runes/effects/void/#collect' | relative_url }}), [Leap]({{ '/runes/effects/wind/#leap' | relative_url }}) | I | about 1 in 20 each |
+| [Bubble]({{ '/runes/effects/frost/#bubble' | relative_url }}), [Frost]({{ '/runes/effects/frost/#frost' | relative_url }}), [Thunderclap]({{ '/runes/effects/storm/#thunderclap' | relative_url }}), [Jolt]({{ '/runes/effects/storm/#jolt' | relative_url }}), [Pull]({{ '/runes/effects/void/#pull' | relative_url }}), [Grapple]({{ '/runes/effects/void/#grapple' | relative_url }}), [Levitate]({{ '/runes/effects/wind/#levitate' | relative_url }}), [Wave]({{ '/runes/shapes/#wave' | relative_url }}) | II | about 1 in 32 each |
+| [Freeze]({{ '/runes/effects/frost/#freeze' | relative_url }}), [Lightning]({{ '/runes/effects/storm/#lightning' | relative_url }}) | III | about 1 in 80 each: a rare catch |
+
+### Magic waters
+
+Where magic runs strong at the bobber, a rune can come up **tangled in the line, on top of whatever you caught**:
+*"Something magical was tangled in your line!"*, with a glint and a ring of pale light on the water. It doesn't take
+the place of your fish or your treasure; it comes as well.
+
+| At the bobber | Chance of a tangled rune per catch |
+|---|---|
+| Under a [mana storm]({{ '/world/world-events/' | relative_url }}) | 12% |
+| On or near a [ley line]({{ '/progression/ley-lines/' | relative_url }}) | 5% |
+| In a **thunderstorm**, with its rain (or snow) falling on the bobber | 5% |
+
+They add up, to at most **20%** a catch: a thunderstorm over a ley line is 10%, a mana storm over a ley line 17%. Magic
+waters need open water too, and Luck of the Sea doesn't change them. A tangled rune comes from the same list as a
+treasure rune, but Tidehook and Current are likelier: each about 1 in 6.
+
+### Tips for fishing up runes
+
+- **Fish under a mana storm.** Storms roll in over ley lines: cast where the line itself runs under the storm and it's
+  17% a catch, for the few minutes the storm lasts. A boat takes you to open water quickly.
+- **Fish on a ley line** for a steady 5%, and hope for thunder: plain rain does nothing, but a thunderstorm there makes it
+  10%.
+- **Luck of the Sea III** more than doubles treasure, and so treasure runes.
+- **The first rune you fish** earns the feat and advancement **Reeled In**. See
+  [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}).
+- A server can make runes and Torn Pages more or less common; the chances here are the normal ones.
+
 ## Now and then elsewhere
 
 - **Archive libraries.** The Hall of Shelves chest in an [Archive]({{ '/world/archive/' | relative_url }}) rolls 2 to 3
@@ -196,6 +261,7 @@ of its own. The bosses fight only once per dungeon, so their runes are rare.
 | <img src="{{ '/assets/runes/cinderbrand.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Cinderbrand]({{ '/runes/world/#cinderbrand' | relative_url }}) | II | Fire effect | Ember Sanctum vault; the Cinder Warden |
 | <img src="{{ '/assets/runes/cinderheart.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Cinderheart]({{ '/runes/world/#cinderheart' | relative_url }}) | IV | Fire effect | The Cinder Warden |
 | <img src="{{ '/assets/runes/constellation.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Constellation]({{ '/runes/world/#constellation' | relative_url }}) | III | Shape | Astral Observatory vault; the Star-Eater |
+| <img src="{{ '/assets/runes/current.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Current]({{ '/runes/world/#current' | relative_url }}) | II | Frost effect | Fishing in open water |
 | <img src="{{ '/assets/runes/drowning_word.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Drowning Word]({{ '/runes/world/#drowning_word' | relative_url }}) | III | Frost effect | Drowned Scriptorium vault; the Tide Scribe |
 | <img src="{{ '/assets/runes/echolocate.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Echolocate]({{ '/runes/world/#echolocate' | relative_url }}) | II | Void effect | Ancient cities; Archive libraries |
 | <img src="{{ '/assets/runes/eclipse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Eclipse]({{ '/runes/world/#eclipse' | relative_url }}) | III | Void effect | Astral Observatory vault; the Star-Eater |
@@ -229,6 +295,7 @@ of its own. The bosses fight only once per dungeon, so their runes are rare.
 | <img src="{{ '/assets/runes/summit_wind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Summit Wind]({{ '/runes/world/#summit_wind' | relative_url }}) | III | Wind effect | Attunement: jagged or frozen peaks, above height 200 |
 | <img src="{{ '/assets/runes/sunscorch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sunscorch]({{ '/runes/world/#sunscorch' | relative_url }}) | III | Fire effect | Attunement: badlands |
 | <img src="{{ '/assets/runes/tidecall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidecall]({{ '/runes/world/#tidecall' | relative_url }}) | III | Frost effect | Ocean monuments (Elder Guardians) |
+| <img src="{{ '/assets/runes/tidehook.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidehook]({{ '/runes/world/#tidehook' | relative_url }}) | II | Frost effect | Fishing in open water |
 | <img src="{{ '/assets/runes/tidewrit.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidewrit]({{ '/runes/world/#tidewrit' | relative_url }}) | IV | Frost effect | The Tide Scribe |
 | <img src="{{ '/assets/runes/treasure_sense.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Treasure Sense]({{ '/runes/world/#treasure_sense' | relative_url }}) | I | Arcane effect | Buried treasure; Archive libraries |
 | <img src="{{ '/assets/runes/trial_key.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Trial Key]({{ '/runes/world/#trial_key' | relative_url }}) | II | Modifier | Trial chamber vaults; ominous vaults |

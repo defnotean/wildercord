@@ -69,7 +69,7 @@ over the creature already told you. A discovery only counts once. Many of them a
 
 ## Every feat
 
-There are **35 feats**. Each is worth **250 mana** toward your next circle the first time, unless noted.
+There are **36 feats**. Each is worth **250 mana** toward your next circle the first time, unless noted.
 
 ### Casting
 
@@ -116,6 +116,7 @@ There are **35 feats**. Each is worth **250 mana** toward your next circle the f
 | **Low Tide** | Turn the Tide Scribe's own flood against it and bring it down, in the [Drowned Scriptorium]({{ '/world/drowned-scriptorium/' | relative_url }}). **1,500 mana.** |
 | **Stormcaller** | Cast 20 spells under one mana storm. See [World Events]({{ '/world/world-events/' | relative_url }}). |
 | **Stargazer** | Loot a Fallen Star. |
+| **Reeled In** | Fish a rune out of open water: in a treasure catch, or tangled in your line in magic waters. See [Fishing]({{ '/world/runes-of-the-world/' | relative_url }}#fishing). |
 | **Riftwarden** | Help close a rift: fight it, and be within 64 blocks when it closes. |
 
 ### Companions and the Fusion Altar
@@ -139,7 +140,7 @@ There are **35 feats**. Each is worth **250 mana** toward your next circle the f
 ## A full Grimoire
 
 The **Every Page Filled** challenge asks for a full Grimoire: all **11 reactions**, all **10 secret
-spells**, and **31 of the 35 feats**. The four you're let off are the ones nobody can be sure of
+spells**, and **32 of the 36 feats**. The four you're let off are the ones nobody can be sure of
 earning alone: **Mirrorfrost** (only its innate rune earns it) and **Unison**, **Domain Clash** and
 **Chorus** (they need other casters). Fusions, attunements and riddles don't count toward it. The
 reward is 500 experience, 3 Mana Crystals and 8 Blank Runes.

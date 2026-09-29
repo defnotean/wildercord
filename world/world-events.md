@@ -89,6 +89,10 @@ A mana storm keeps two runes of the world, [Manaburn]({{ '/runes/world/#manaburn
 With a surge on one cast in ten, that's about one rune for every 30 casts after your 10th, so a caster who keeps
 casting through a whole storm will usually come away with one.
 
+**Fish under it, too.** A fishing line cast into open water under a storm brings up a rune tangled in the line, on top
+of the catch, 12% of the time (17% where the ley line itself runs under the water). See
+[Fishing]({{ '/world/runes-of-the-world/' | relative_url }}#fishing).
+
 ### Feat
 
 **Stormcaller**: cast 20 spells under a single mana storm. Worth 250 mana toward your next Heart Circle, and the

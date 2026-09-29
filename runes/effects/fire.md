@@ -33,7 +33,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 
 5 fire damage and sets alight for 6 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Desert pyramids; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_fire.png' | relative_url }}" alt="Crafting Fire: a Blank Rune and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -46,7 +46,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 
 Fire resistance for 30 seconds.
 
-**How to get it:** Craft: a Blank Rune, Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_fireward.png' | relative_url }}" alt="Crafting Fireward: a Blank Rune and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -59,7 +59,7 @@ Fire resistance for 30 seconds.
 
 A flash of heat: 4 fire damage to every enemy within 3 blocks, setting them alight for 3 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_flashfire.png' | relative_url }}" alt="Crafting Flashfire: a Blank Rune and Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ A flash of heat: 4 fire damage to every enemy within 3 blocks, setting them alig
 
 Mines the block that was hit and drops it smelted, as a furnace would (iron-pickaxe hardness; Amplify for diamond).
 
-**How to get it:** Craft: a Blank Rune, Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_smelt.png' | relative_url }}" alt="Crafting Smelt: a Blank Rune and Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 12 damage in a 3.5-block blast. Never breaks blocks.
 
-**How to get it:** Craft: a Blank Rune, TNT and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, TNT and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Creepers (1%); Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_explode.png' | relative_url }}" alt="Crafting Explode: a Blank Rune and TNT and Fire Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -98,7 +98,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_inferno.png' | relative_url }}" alt="Crafting Inferno: a Blank Rune and Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -111,7 +111,7 @@ Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 
 A burning meteor falls on each target: 10 damage in a 3-block blast.
 
-**How to get it:** Craft: a Blank Rune, Magma Block and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Magma Block and Fire Charge, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Bastions; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_meteor.png' | relative_url }}" alt="Crafting Meteor: a Blank Rune and Magma Block and Fire Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ A burning meteor falls on each target: 10 damage in a 3-block blast.
 
 Turns each target into a bomb that goes off 2 seconds later: 10 damage within 3 blocks. Never breaks blocks.
 
-**How to get it:** Craft: a Blank Rune, TNT and Pink Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, TNT and Pink Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Desert pyramids; Trial vaults; Ember Sanctum.
 
 <img src="{{ '/assets/recipes/rune_primer.png' | relative_url }}" alt="Crafting Primer: a Blank Rune and TNT and Pink Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
