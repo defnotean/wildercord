@@ -25,6 +25,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - When the spell HUD had too little room beside the hotbar (a small window with the attack indicator or the
   off-hand slot on its side), it hid all but one of the spell's runes behind a "+2" even though they fitted.
 - The spell HUD's hint for an empty spell always said "K", even with the Open Cord key bound to another key.
+- After leaving a world, the next one could show the last world's ley lines until it sent its own (on a server
+  that never does, for good).
 
 ## [0.4.1-alpha] - 2026-09-28
 
