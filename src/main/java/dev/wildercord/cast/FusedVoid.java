@@ -187,6 +187,24 @@ final class FusedVoid {
 		Scheduler.later(20, () -> unravel(t, unravel));
 	}
 
+	private static final net.minecraft.resources.Identifier ENTROPY_ID = dev.wildercord.Wildercord.id("entropy");
+
+	/** Each wound also strips a point of armour (up to 5) until the unravelling ends: what the team hits it with goes further. */
+	private static void strip(LivingEntity t, int step) {
+		net.minecraft.world.entity.ai.attributes.AttributeInstance armour = t.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+		if (armour != null) {
+			armour.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(ENTROPY_ID,
+				-Math.min(step, FusedVoidRules.ENTROPY_ARMOUR_MAX), net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_VALUE));
+		}
+	}
+
+	private static void unstrip(LivingEntity t) {
+		net.minecraft.world.entity.ai.attributes.AttributeInstance armour = t.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR);
+		if (armour != null) {
+			armour.removeModifier(ENTROPY_ID);
+		}
+	}
+
 	private static void unravel(LivingEntity t, Unravel unravel) {
 		if (UNRAVELLING.get(t.getUUID()) != unravel) {
 			return;
@@ -194,15 +212,18 @@ final class FusedVoid {
 		Cast cast = unravel.cast;
 		if (!cast.alive() || !onHand(cast, t)) {
 			UNRAVELLING.remove(t.getUUID(), unravel);
+			unstrip(t);
 			return;
 		}
 		unravel.step++;
 		boolean last = unravel.step >= unravel.last;
+		strip(t, unravel.step);
 		double amount = FusedVoidRules.entropyWound(unravel.step) * unravel.power;
 		FusedVoidVfx.entropyTick(cast.level, t, cast.caster, unravel.step, unravel.last, last);
 		Effects.lingering(() -> Effects.hurt(cast, t, magic(cast), amount));
 		if (last || !t.isAlive()) {
 			UNRAVELLING.remove(t.getUUID(), unravel);
+			unstrip(t);
 			return;
 		}
 		Scheduler.later(20, () -> unravel(t, unravel));
@@ -213,7 +234,7 @@ final class FusedVoid {
 	/** Devour: a void maw closes on the target; if the bite kills, the caster feeds. */
 	private static void devour(Cast cast, LivingEntity t, double power, boolean full) {
 		ServerLevel level = cast.level;
-		Effects.hurt(cast, t, magic(cast), FusedVoidRules.DEVOUR_DAMAGE * power);
+		Effects.hurt(cast, t, magic(cast), FusedVoidRules.devourDamage(t.getHealth(), t.getMaxHealth()) * power);
 		boolean killed = !t.isAlive() || t.isDeadOrDying();
 		FusedVoidVfx.devour(level, t, killed, full);
 		// A cast feeds at most twice (a Burst through a flock of chickens isn't a mana well); its echoes share the two.
@@ -275,6 +296,14 @@ final class FusedVoid {
 			taken.add(new MobEffectInstance(kind, stolen, effect.getAmplifier(), false, true, true));
 		}
 		LivingEntity caster = cast.caster;
+		if (taken.isEmpty() && !boss) {
+			// Nothing to steal: it steals a moment instead. It drags for 2 s; you are quickened for 2 s.
+			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40, 1, false, true), caster);
+			if (caster.isAlive()) {
+				caster.addEffect(new MobEffectInstance(MobEffects.SPEED, 40, 0, false, true), caster);
+				caster.addEffect(new MobEffectInstance(MobEffects.HASTE, 40, 0, false, true), caster);
+			}
+		}
 		List<Integer> colours = new ArrayList<>();
 		for (MobEffectInstance effect : taken) {
 			colours.add(effect.getEffect().value().getColor());
@@ -397,9 +426,13 @@ final class FusedVoid {
 		settling = true;
 		try {
 			Effects.lingering(() -> Effects.hurt(cast, t, magic(cast), due));
-		} finally {
-			settling = false;
-		}
+				// The tax is collected: a share of what comes due heals whoever opened the ledger.
+				if (cast.caster.isAlive() && cast.caster != t) {
+					cast.caster.heal(FusedVoidRules.reckoningHeal(due));
+				}
+			} finally {
+				settling = false;
+			}
 	}
 
 	// ------------------------------------------------------------------ Singularity
@@ -423,6 +456,7 @@ final class FusedVoid {
 		HOLES.merge(owner, 1, Integer::sum);
 		Vec3 disk = ElementFx.tilted(0.32, level.getRandom().nextDouble() * Math.PI * 2);
 		Set<LivingEntity> caught = new LinkedHashSet<>();
+		int[] swallowed = {0};
 		FusedVoidVfx.singularityOpen(level, centre, radius, disk, FusedVoidRules.SINGULARITY_TICKS);
 		int[] tick = {0};
 		Runnable[] next = new Runnable[1];
@@ -436,13 +470,13 @@ final class FusedVoid {
 			if (now < FusedVoidRules.SINGULARITY_TICKS) {
 				FusedVoidVfx.singularity(level, centre, radius, disk, now);
 				if (now % 2 == 0) {
-					draw(cast, centre, radius, caught);
+					draw(cast, centre, radius, caught, swallowed);
 				}
 				Scheduler.later(1, next[0]);
 				return;
 			}
 			closeHole(owner);
-			Effects.lingering(() -> burst(cast, centre, radius, disk, power, caught));
+			Effects.lingering(() -> burst(cast, centre, radius, disk, power, caught, swallowed[0]));
 		};
 		Scheduler.later(1, next[0]);
 	}
@@ -463,7 +497,18 @@ final class FusedVoid {
 	}
 
 	/** One pull: every enemy it holds, and any new one in reach and in sight, drawn a step closer and a little round. */
-	private static void draw(Cast cast, Vec3 centre, double radius, Set<LivingEntity> caught) {
+	private static void draw(Cast cast, Vec3 centre, double radius, Set<LivingEntity> caught, int[] swallowed) {
+		// A black hole eats what is thrown at it: enemy arrows and bolts that enter it are gone, and each feeds the burst.
+		for (net.minecraft.world.entity.projectile.Projectile p : cast.level.getEntitiesOfClass(net.minecraft.world.entity.projectile.Projectile.class,
+				new AABB(centre, centre).inflate(radius), pr -> pr.position().distanceTo(centre) <= radius)) {
+			Entity owner = p.getOwner();
+			if (owner == null || owner == cast.caster || !Targets.canHarm(cast.caster, owner) || swallowed[0] >= FusedVoidRules.SINGULARITY_SWALLOW_MAX) {
+				continue;
+			}
+			swallowed[0]++;
+			FusedVoidVfx.singularityFizzle(cast.level, p.position());
+			p.discard();
+		}
 		ServerLevel level = cast.level;
 		caught.removeIf(v -> !onHand(cast, v));
 		for (Entity e : level.getEntities((Entity) null, new AABB(centre, centre).inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
@@ -480,7 +525,7 @@ final class FusedVoid {
 				}
 				caught.add(v);
 			}
-			if (Spirits.isBoss(v)) {
+			if (Spirits.isBoss(v) || VoidTime.anchored(v)) {
 				continue;
 			}
 			Reactions.mark(v, Reactions.Mark.PULLED);
@@ -510,7 +555,7 @@ final class FusedVoid {
 	}
 
 	/** The hole bursts: 6 damage to all it held (and anything else of its in reach), each flung out once. */
-	private static void burst(Cast cast, Vec3 centre, double radius, Vec3 disk, double power, Set<LivingEntity> caught) {
+	private static void burst(Cast cast, Vec3 centre, double radius, Vec3 disk, double power, Set<LivingEntity> caught, int swallowed) {
 		ServerLevel level = cast.level;
 		FusedVoidVfx.singularityBurst(level, centre, radius, disk);
 		Set<LivingEntity> struck = new LinkedHashSet<>(caught);
@@ -526,7 +571,7 @@ final class FusedVoid {
 			if (!onHand(cast, v) || v.getBoundingBox().getCenter().distanceTo(centre) > radius + 1.5) {
 				continue;
 			}
-			Effects.hurt(cast, v, magic(cast), FusedVoidRules.SINGULARITY_DAMAGE * power);
+			Effects.hurt(cast, v, magic(cast), FusedVoidRules.SINGULARITY_DAMAGE * power + swallowed);
 			if (Spirits.isBoss(v) || !v.isAlive()) {
 				continue;
 			}
@@ -658,6 +703,11 @@ final class FusedVoid {
 			return 0;
 		}
 		SHIFTED.put(player.getUUID(), now + window);
+		// The clock turns back on what they spent, too: a third of the last 5 seconds' mana comes back.
+		float back = VoidTime.turnBack(player, FusedVoidRules.CHRONOSHIFT_REFUND_SHARE, FusedVoidRules.CHRONOSHIFT_REFUND_MAX, FusedVoidRules.CHRONOSHIFT_REFUND_WINDOW);
+		if (back > 0) {
+			Mana.restore(player, back);
+		}
 		if (SHIFTED.size() > 64) {
 			SHIFTED.values().removeIf(t -> t < now);
 		}

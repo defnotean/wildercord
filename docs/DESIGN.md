@@ -177,16 +177,16 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 | Shield | II | earth | helpful | A one-time spell shield for 30 s: magic circles spawn in front of the next harmful spell and stop it, unless it cost more mana than the one that raised it (then they shatter and it goes through). More strength, more circles. See [Shields](#shields) | 12 |
 | Launch | II | wind | harmful | Flings targets upward. On Self it flings *you* up and forward | 8 |
 | Dash | II | wind | harmful | Shoves targets 8 blocks the way you're facing. On Self it's a dash | 6 |
-| Pull | II | void | harmful | Pulls targets toward the spell | 5 |
+| Pull | II | void | harmful | Pulls targets toward the spell, leaving them staggered and pulled for 4 s | 5 |
 | Fire | II | fire | harmful | 5 fire damage and sets alight for 6 s | 8 |
 | Frost | II | frost | harmful | 5 freeze damage, Slowness III for 4 s, and the frost leaves it brittle for Shatter | 8 |
 | Break | II | earth | world | Mines the block (up to iron-pickaxe hardness; Amplify raises it to diamond). Respects claims and spawn protection | 4 |
 | Lightning | III | storm | harmful | A 12-damage strike on each target that slows and burns (an enemy takes a cast's strongest strike once, however many land beside it). You and your allies are immune | 20 |
 | Blink | III | void | movement | Teleports you to where the spell landed (max 40 blocks, always to a safe spot) | 15 |
 | Explode | III | fire | harmful | 12 damage in a 3.5-block blast that throws what it hits; blasts of one cast never stack on one enemy. Never breaks blocks | 18 |
-| Sonic Boom | IV | void | harmful | 16 damage that ignores armour | 35 |
-| Wither | IV | void | harmful | Wither III for 8 s | 25 |
-| Dragon Breath | IV | void | harmful | A lingering 3-block cloud: 5 damage per second for 5 s | 30 |
+| Sonic Boom | IV | void | harmful | 16 damage that ignores armour, and 8 to everything else on the line to the target, through walls | 35 |
+| Wither | IV | void | harmful | Wither IV for 6 s: it spreads to whoever strikes it in melee, and the withered cannot heal | 25 |
+| Dragon Breath | IV | void | harmful | A 3-block cloud that rolls on the way you blew it: 5 damage per second for 5 s | 30 |
 | Summon | IV | arcane | helpful | 3 vexes fight for you for 15 s *(not in the first playable build)* | 30 |
 
 ### Modifiers (9)
@@ -236,13 +236,13 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Cleanse | II | life | Removes harmful effects, fire and freezing |
 | Stoneskin | II | earth | Resistance II for 10 s, and Slowness I |
 | Root | II | earth | Vines hold targets in place for 3 s |
-| Veil | II | void | Invisibility for 12 s; nearby monsters lose track of you |
+| Veil | II | void | Invisibility for 12 s; nearby monsters lose track of you; the first damage you deal from it is +50% and ends it |
 | Empower | II | arcane | Strength II for 10 s |
 | Levitate | II | wind | Targets float helplessly for 3 s (on Self, you float) |
 | Freeze | III | frost | Frozen solid for 2.5 s (1.5 on players): mobs stop completely; Shatter or Fracture ends the hold | 14 |
 | Meteor | III | fire | A meteor falls on each target (two at most) 1.2 s later: 12 damage in 3.5 blocks, and the crater burns on |
 | Tremor | III | earth | The ground erupts: 8 damage within 4 blocks, throwing enemies up |
-| Gravity Well | III | void | Drags every enemy within 7 blocks into the point for 2 s |
+| Gravity Well | III | void | Drags every enemy within 7 blocks into the point for 2 s, pulls fliers down, leaves them pulled |
 | Summon | IV | arcane | Three spirit wolves fight for you for 20 s |
 
 ### New modifiers and links
@@ -267,14 +267,14 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Inferno | Effect · Damage | III | Everything within 4 blocks burns: 3 damage/s for 4 s |
 | Thunderclap | Effect · Damage | II | A flash, then a crack: 5 damage within 3 blocks, half a second's stun and a forgotten target |
 | Starfall | Effect · Damage | IV | Eight falling stars, 6 damage each (Elder Guardian drop) |
-| Blind | Effect · Control | I | Blindness and darkness for 5 s |
+| Blind | Effect · Control | I | Blindness and darkness for 5 s (3 on players); a blinded monster lashes out at the creature beside it |
 | Chill | Effect · Control | I | Slowness II for 6 s and 1 freeze damage |
 | Silence | Effect · Control | II | Monsters forget their target and are weakened for 6 s |
 | Fireward | Effect · Support | II | Fire resistance for 30 s |
 | Nourish | Effect · Support | I | Restores 6 hunger |
 | Tidebreath | Effect · Support | I | Water breathing and faster swimming for 30 s |
 | Leap | Effect · Support | I | Jump Boost III for 15 s |
-| Grapple | Effect · Movement | II | Pulls you to where the spell hit |
+| Grapple | Effect · Movement | II | Pulls you to where the spell hit, and stops you there |
 | Harvest | Effect · World | I | Harvests grown crops around the block hit and replants them |
 | Icepath | Effect · World | I | Freezes water within 3 blocks into walkable ice |
 | Collect | Effect · World | I | Pulls items and experience within 8 blocks to you (Widen reaches up to 24), never out of land you can't build on |
@@ -303,27 +303,27 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Ripple | Effect · Damage | II | 6 damage (x2 on undead), heals you a quarter of what it took; a ripple 0.4 s later hits its neighbours |
 | Primer | Effect · Damage | III | The target explodes 2 s later (or the moment it dies): 10 damage within 3 blocks, an enemy takes only the strongest bomb, no block damage |
 | Blackflame | Effect · Damage | III | 3 damage a second for 6 s, water can't stop it, spreads if the target dies burning |
-| Hollow | Effect · Damage | IV | 20 damage, and everything within 4 blocks is dragged in for 8 more (Wither drop, 50%) |
+| Hollow | Effect · Damage | IV | 20 damage to the creature hit (it is gone for the wind-up), and everything within 4 blocks is dragged in for 8 more (Wither drop, 50%) |
 | Repel | Effect · Damage | II | 5 damage and a violent outward blast within 3 blocks (Breeze drop) |
 | Decree | Effect · Control | II | Stuns everything hit for 2 s; costs you 2 health per cast (Evoker drop) |
 | Weigh | Effect · Control | II | Triple gravity, crippled legs and jumps for 5 s; fliers are dragged down |
 | Shackle | Effect · Control | II | Chained to the spot for 5 s: yanked back past 2 blocks, and the chain bites for 2 |
 | Bubble | Effect · Control | II | Floats helplessly for 3 s, pops for 4 damage and leaves the target soaked (Witch drop) |
-| Infinity | Effect · Support | IV | 6 s: projectiles stop in the air around you, enemies that get close are pushed back (Ender Dragon drop) |
+| Infinity | Effect · Support | IV | 6 s: projectiles stop in the air around you, and hostile things are slowed harder the closer they come (Ender Dragon drop) |
 | Reversal | Effect · Support | IV | 30 s: one killing blow leaves you at half health instead |
 | Reflect | Effect · Support | III | 10 s: attackers take 60% of their damage back |
 | Overdrive | Effect · Support | II | Strength II, Speed II, Haste II for 10 s; lose 1 health every 2 s; Strength III under half health, IV under a quarter |
-| Foresight | Effect · Support | III | The next 2 attacks within 15 s miss, with a sidestep |
+| Foresight | Effect · Support | III | The next 2 attacks within 15 s miss, with a sidestep (12 damage turned away at most; the same spell never refills it) |
 | Restore | Effect · Support | III | Heals 6, puts out fire, mends 5% of every worn and held item |
 | Swap | Effect · Movement | II | You and the first creature hit trade places |
 | Zipper | Effect · Movement | II | Steps you through the wall you face, up to 6 blocks thick (never through bedrock) |
-| Shadowstep | Effect · Movement | III | You reappear behind the first creature hit, facing its back |
+| Shadowstep | Effect · Movement | III | You reappear behind the first creature hit, facing its back; your next blow on it is +50% |
 | Stasis | Effect · Time | IV | Stops time on everything hit for 5 s; every hit meanwhile (spells, explosions, arrows, anything) is held and lands all at once afterwards. Stasis always applies before the other effects in its group (Elder Guardian drop, 25%) |
-| Rewind | Effect · Time | IV | You return to where you were 5 s ago, with that health if it was more |
-| Accelerate | Effect · Time | III | Speed III, Haste III, Jump Boost II and Regeneration for 10 s |
-| Time Skip | Effect · Time | III | You vanish, reappear up to 8 blocks ahead, and monsters lose track of you |
+| Rewind | Effect · Time | IV | You return to where you were 5 s ago (if it is safe), with that health if it was more |
+| Accelerate | Effect · Time | III | Speed II, Haste III, Jump Boost II and Regeneration for 10 s; your charge fills 40% faster and bolts and arcs fly 50% faster |
+| Time Skip | Effect · Time | III | You vanish, reappear up to 8 blocks ahead, monsters lose track of you, and nothing can hurt you for a moment (not again for 5 s) |
 | Rampart | Effect · World | II | A 5-wide, 3-high earth wall for 10 s; broken by hand it crumbles, and however it's broken (an explosion too) it drops nothing |
-| Shades | Effect · Summon | III | Two shadow hounds for 20 s |
+| Shades | Effect · Summon | III | Two frail shadow hounds for 15 s that bite hard only in dim light, each bite leaving a shadow |
 | Thunderbird | Effect · Summon | III | A storm bird circles overhead for 12 s; every 2 s it marks the enemy you last hit and dives on that spot for 4.5 (2 at most) |
 | Vow | Modifier · Power | III | On a shape: its effects hit twice as hard, the whole spell's cooldown is 5x longer (up to 60 s) |
 | Blood Price | Modifier · Power | III | On a shape: the whole spell costs 1 health per 4 mana instead of mana, never lethal |
@@ -363,7 +363,7 @@ and craftable.
 | Stream | Shape · Direct | II | A beam that follows your aim for a second: 6 strikes at 35% power (Quicken: 12) on the first thing within 20 blocks |
 | Barrier | Effect · Support | I | 2 absorption hearts for 20 s |
 | Brace | Effect · Support | I | 80% less damage for 2 s; bracing again takes 6 s |
-| Anchor | Effect · Support | I | 15 s: no knockback from blows or blasts, and 4 armour |
+| Anchor | Effect · Support | I | 15 s: no knockback from blows or blasts, no spell can move you, and 4 armour (8 once you stand still) |
 | Bramble | Effect · Support | I | 10 s: whatever hurts you from within 4 blocks takes 3 damage and is shoved away |
 | Frostward | Effect · Support | I | 60 s: you can't freeze, not even in powder snow, a frost hold on you lasts a second at most, and frost can't leave you brittle for Shatter |
 | Cushion | Effect · Support | I | 30 s: no fall damage, and a hard landing throws a gust at the enemies around you |
@@ -382,14 +382,14 @@ and craftable.
 | Pelt | Effect · Damage | I | 4 damage and a hard shove |
 | Windcut | Effect · Damage | I | 4 damage and a light shove (sets up Wildfire) |
 | Leech | Effect · Damage | I | 3 damage; you heal what it took, and overhealing becomes a shield of up to 4 |
-| Hex | Effect · Control | I | 8 s: your spells hit the target 25% harder |
+| Hex | Effect · Control | I | 6 s: your spells hit the target 25% harder, and it fixes on you |
 | Rend | Effect · Control | I | 10 s: 4 less armour, and what it naturally resists it takes at full strength |
-| Countdown | Effect · Damage | I | 1.5 s later: 6 damage |
+| Countdown | Effect · Damage | I | 1.5 s later: 6 damage (if the mark dies first, on the nearest enemy) |
 | Jolt | Effect · Control | II | 4 lightning damage and a 1 s stun (bosses and players are slowed instead) |
 | Bleed | Effect · Damage | II | 2 damage, then 1 every half second for 4 s (half as much again while it moves) |
 | Coldsnap | Effect · Damage | II | 3 freeze damage and Slowness II for 4 s to every enemy within 3 blocks; they're left brittle for Shatter |
 | Flashfire | Effect · Damage | II | 5 fire damage to every enemy within 3 blocks, alight for 4 s; allies in it are thawed and dried |
-| Banish | Effect · Control | II | The target reappears up to 8 blocks further from you, somewhere it fits and can see back to (never a boss) |
+| Banish | Effect · Control | II | The target reappears up to 8 blocks further from you, dazed, somewhere it fits and can see back to (never a boss) |
 | Cyclone | Effect · Control | II | Enemies within 3 blocks whirl around the point for 2 s, then are flung out for 3 damage (bosses are struck, never moved) |
 
 Mining runes break blocks as a player holding a pickaxe of their strength would: nothing
@@ -427,7 +427,7 @@ and On Reaction also turn up in ancient city, end city and trial chamber chests.
 | Drowse | Effect · Control (life) | III | 14 | Sleep for 6 s (2 on players): no moving or fighting back, but any damage wakes it. Bosses only get Slowness II |
 | Galvanize | Effect · World (storm) | I | 3 | A redstone block in the air against the face it struck, for 5 s: it powers what it touches. Only in empty air, where you may build, out of the block budget; written down with its world, drops nothing, pistons can't move it |
 | Prolong | Effect · Time | III | 12 | Every good effect on the target lasts 15 s longer, up to 5 minutes; endless ones stay as they are |
-| Umbra | Effect · Damage (void) | I | 6 | 4 damage, doubled where the light at the target's eyes is 7 or less; shadowed for 6 s. An Orbit can carry it as a passive |
+| Umbra | Effect · Damage (void) | I | 6 | 4 damage, doubled where the light at the target's eyes is 7 or less (or under an Eclipse); shadowed for 6 s. An Orbit can carry it as a passive |
 | Disarm | Effect · Control (wind) | II | 7 | A creature's main-hand item is taken for 5 s and given back (if its hand is still empty); windswept and a small shove. Players and bosses keep hold; nothing ever drops |
 
 Combos worth trying:
@@ -602,7 +602,7 @@ the secret into the Grimoire with a title. Once found, they cost 1.1-1.5x the or
 and have a 50% longer cooldown, and the readout, HUD and wheel show that price and their name;
 until then everything shows (and the finding cast charges) the ordinary spell, so nothing gives
 them away. Their names: Glacial Lance, Sunfall, Horizon Cut, Petal Storm, Tempest Step,
-Singularity, Zero Hour, Rebirth, Tectonic Rise and Starlight Cascade. (The sequences are in
+Black Star, Zero Hour, Rebirth, Tectonic Rise and Starlight Cascade. (The sequences are in
 `spell/Secrets.java`, for developers; players find them by experimenting or from **Torn Pages**:
 read one to learn the riddle of a secret you haven't found, and its margin sketches the way to
 the nearest Archive.) Torn Pages turn up in stronghold libraries (45%), ancient cities
@@ -625,12 +625,12 @@ the Codex's Innate category, so any Cord can hold it.
 | Blood Thread | Blood | Threads everything hit together for 8 s: 40% of any damage one takes is dealt to each of the rest (4 at most, three shares a second) |
 | Kindling | Fire | 3 fire damage and a stack; the fifth stack ignites for 14 in 3 blocks and leaves everything it reaches at two stacks |
 | Twin Star | Arcane | Your next spell within 6 s is cast twice |
-| Borrowed Time | Time | Heals the damage you took in the last 5 s; it comes back over 10 s unless you slay a monster |
+| Borrowed Time | Time | Heals the damage you took in the last 5 s (what you are missing); it comes back over 10 s with a fifth on top, never lethal, unless you slay a monster |
 | Gale Mantle | Wind | 12 s: jump in midair to dash forward (3 dashes) |
 | Stoneform | Earth | 8 s: no knockback, Resistance, and each hit you take sends out an aftershock |
 | Mirrorfrost | Frost | Casts back the last spell that hit you in the past 30 s, as your own |
 | Fortune | Life | 10 s: each hit you deal (spells and melee) has a 1 in 4 chance to strike for triple |
-| Phantom | Void | An afterimage of you (your skin) draws every monster within 16 blocks for 4 s, then bursts for 8 |
+| Phantom | Void | An afterimage of you (your skin) draws every monster within 16 blocks for 4 s, then bursts for 8 (1 more for every 6 its decoy soaked) |
 | Stormheart | Storm | 10 s: whatever hits you is struck by lightning (once a second) |
 
 ### Affinities and leaning
@@ -871,12 +871,12 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
 - **Each passive has an on/off switch.** Two runes each, on any Cord (a passive is a lasting buff or an aura, not a whole spell); so at most four runes are ever active.
 - **Only sustainable runes, so it isn't broken:**
   - Shapes: Self or Orbit.
-  - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive, Anchor, Frostward, Cushion, Searing Edge.
+  - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Reflect, Overdrive, Anchor, Frostward, Cushion, Searing Edge.
   - Auras (only with Orbit): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt, Windcut, Umbra.
   - Modifiers: Amplify, Extend, Frugal, Widen, Focus, Quicken.
-  - Never: heals, Shield, Barrier (absorption), Brace, Reversal, Foresight, summons, links, big area damage, Stasis.
+  - Never: heals, Shield, Barrier (absorption), Brace, Reversal, Foresight, Infinity and Accelerate (a permanent bubble and a permanent tempo), summons, links, big area damage, Stasis.
 
-Examples: `Self · Infinity` (projectiles always stop around you, about 3.8 mana/s), `Orbit · Shock` (a crackling guard), `Orbit · Dismantle` (orbs that cut whatever comes near).
+Examples: `Self · Anchor` (immovable, about 0.5 mana/s), `Orbit · Shock` (a crackling guard), `Orbit · Dismantle` (orbs that cut whatever comes near).
 
 ## Spell enchantments
 

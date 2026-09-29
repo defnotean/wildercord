@@ -199,6 +199,9 @@ final class SignatureRules {
 	static final int RIPOSTE_SECONDS = 10;
 	static final int RIPOSTE_BLOWS = 2;
 	static final double RIPOSTE_DAMAGE = 6.0;
+	/** A riposte answers with the blow's own damage, at least this and at most that. */
+	static final double RIPOSTE_MIN = 4.0;
+	static final double RIPOSTE_MAX = 12.0;
 	/** Only a striker this close is answered (an archer beyond it is still sidestepped). */
 	static final double RIPOSTE_REACH = 24.0;
 
@@ -217,7 +220,10 @@ final class SignatureRules {
 	}
 
 	// ---- Malison (Hex and Resonance): a curse that passes on when its bearer dies.
-	static final double MALISON_DAMAGE = 3.0;
+	static final double MALISON_DAMAGE = 4.0;
+	/** Each time the curse passes on it is this much stronger, up to {@link #MALISON_MAX}. */
+	static final double MALISON_GROWTH = 0.05;
+	static final double MALISON_MAX = 1.45;
 	static final int MALISON_SECONDS = 8;
 	static final double MALISON_REACH = 6.0;
 	static final int MALISON_SPREAD = 3;

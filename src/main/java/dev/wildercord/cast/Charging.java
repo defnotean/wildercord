@@ -53,11 +53,12 @@ public final class Charging {
 	/** Ticks to a full charge for this caster: a Focus of Haste in the off-hand fills it faster. */
 	public static int fullTicks(net.minecraft.world.entity.Entity caster) {
 		double speed = caster instanceof net.minecraft.world.entity.LivingEntity living ? dev.wildercord.gear.Gear.chargeSpeed(living) : 1.0;
-		// Quick hands: Haste fills the charge 30% sooner.
-		if (caster instanceof net.minecraft.world.entity.LivingEntity hasty && hasty.hasEffect(net.minecraft.world.effect.MobEffects.HASTE)) {
+		boolean hurried = VoidTime.hurried(caster);
+		// Quick hands: Haste fills the charge 30% sooner (hurried time, Accelerate's Haste III, fills it 40% sooner and does not stack with that).
+		if (!hurried && caster instanceof net.minecraft.world.entity.LivingEntity hasty && hasty.hasEffect(net.minecraft.world.effect.MobEffects.HASTE)) {
 			speed *= 1.3;
 		}
-		return Math.max(1, (int) Math.round(FULL / speed));
+		return Math.max(1, (int) Math.round(FULL / (speed * (hurried ? VoidTime.HURRY_CHARGE : 1.0))));
 	}
 
 	/** How far along a caster's charge is, 0 to 1, with their casting gear. */

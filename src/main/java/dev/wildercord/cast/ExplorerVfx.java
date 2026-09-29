@@ -89,8 +89,7 @@ final class ExplorerVfx {
 		}
 		glow(level, SCULK, at, 1.4);
 		Vfx.radial(level, ParticleTypes.SCULK_SOUL, at, 6, 0.08);
-		sound(level, at, SoundEvents.SCULK_CLICKING, 1.0F, 0.8F);
-		sound(level, at, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "void_sonar_ping", 1.0F, 1.0F);
 	}
 
 	/** The echo back from one creature: a small teal ring round it. */
@@ -109,17 +108,22 @@ final class ExplorerVfx {
 			Vec3 from = caster.getEyePosition();
 			Vec3 dir = at.subtract(from);
 			double length = dir.length();
+			Vec3 unit = dir.normalize();
 			for (double d = 1.5; d < length; d += 1.5) {
-				ElementFx.ring(level, from.add(dir.normalize().scale(d)), dir, SCULK, 0.2, 0.7, 0.05, 6);
+				// The rings travel out along the path (a block or two a tick), not all on one tick.
+				Vec3 p = from.add(unit.scale(d));
+				Scheduler.later(1 + (int) (d / 2.5), () -> ElementFx.ring(level, p, dir, SCULK, 0.2, 0.7, 0.05, 6));
 			}
 			Vfx.emit(level, new ShriekParticleOption(0), t.position().add(0, 0.2, 0), 1, 0.0, 0.0);
-			sound(level, at, SoundEvents.SCULK_SHRIEKER_SHRIEK, 1.0F, 1.1F);
+			dev.wildercord.cast.feel.Feels.sound(level, at, "void_shriek", 1.0F, 1.0F);
 		}
 		ElementFx.implode(level, at, echo ? 1.0 : 1.6, 10);
 		ElementFx.ring(level, at, UP, echo ? SCULK : 0x7FF0E8, 0.3, echo ? 1.4 : 2.2, 0.08, 10);
 		Vfx.emit(level, ParticleTypes.SONIC_BOOM, at, 1, 0.0, 0.0);
 		Vfx.radial(level, ParticleTypes.SCULK_SOUL, at, echo ? 3 : 6, 0.1);
-		sound(level, at, SoundEvents.WARDEN_SONIC_BOOM, echo ? 0.5F : 0.9F, echo ? 1.5F : 1.2F);
+		if (echo) {
+			dev.wildercord.cast.feel.Feels.sound(level, at, "void_shriek_echo", 0.9F, 1.0F);
+		}
 	}
 
 	/** Tidecall: water rising in a ring round the point and crashing inward. */
@@ -284,7 +288,7 @@ final class ExplorerVfx {
 			ElementFx.ring(level, at, n, ElementFx.VOID.primary(), t.getBbHeight() * 1.2, t.getBbHeight() * 0.7, 0.08, 10);
 		}
 		ElementFx.flatSigil(level, t.position(), SigilOption.CIRCLE, ElementFx.VOID.secondary(), 2.0, 20, 0.05);
-		sound(level, at, SoundEvents.SHULKER_CLOSE, 1.0F, 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "void_shell_close", 1.0F, 1.0F);
 	}
 
 	static void shellHold(ServerLevel level, LivingEntity t, int tick) {
@@ -298,8 +302,7 @@ final class ExplorerVfx {
 		Vec3 at = centre(t);
 		ElementFx.ring(level, at, UP, ElementFx.VOID.secondary(), 0.4, 3.0, 0.1, 10);
 		Vfx.radial(level, ParticleTypes.END_ROD, at, 10, 0.2);
-		sound(level, at, SoundEvents.SHULKER_OPEN, 1.0F, 1.0F);
-		sound(level, at, SoundEvents.SHULKER_SHOOT, 0.7F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "void_shell_open", 1.0F, 1.0F);
 	}
 
 	/** Portalfall: a portal of darkness opening under the target, and (if it found room) another above. */
@@ -307,11 +310,12 @@ final class ExplorerVfx {
 		ElementFx.implode(level, from.add(0, 0.1, 0), 1.2, 10);
 		ElementFx.flatSigil(level, from, SigilOption.CIRCLE, ElementFx.dark(ElementFx.VOID.accent()), 1.8, 12, 0.3);
 		Vfx.emit(level, ParticleTypes.PORTAL, from.add(0, 0.5, 0), 20, 0.4, 0.4);
-		sound(level, from, SoundEvents.PORTAL_TRIGGER, 0.4F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, from, "void_portal_drop", 1.0F, 1.0F);
 		if (to != null) {
 			ElementFx.ring(level, to.add(0, 1.2, 0), UP, ElementFx.VOID.primary(), 1.4, 0.4, 0.1, 10);
 			Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, to.add(0, 1, 0), 16, 0.4, 0.1);
-			sound(level, to, SoundEvents.ENDERMAN_TELEPORT, 0.8F, 0.8F);
+			// The streak the fall takes, from the upper portal down to the lower.
+			ElementFx.ray(level, to.add(0, 1.2, 0), from.add(0, 0.3, 0), ElementFx.dark(ElementFx.VOID.accent()), 0.25, 6);
 		}
 	}
 
@@ -371,12 +375,20 @@ final class ExplorerVfx {
 	static void hushOpen(ServerLevel level, Vec3 centre, double radius, int ticks) {
 		ElementFx.flatSigil(level, centre, SigilOption.RING, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.05, ticks + 10, 0.01);
 		ElementFx.implode(level, centre.add(0, 1, 0), radius * 0.6, 14);
-		sound(level, centre, SoundEvents.SCULK_CLICKING, 0.6F, 0.5F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "void_hush_dome", 1.0F, 1.0F);
+		// The silence lifting: a ring closes on the ground where the pocket was.
+		Scheduler.later(Math.max(1, ticks), () -> TimeFx.ending(level, centre.add(0, 0.3, 0), ElementFx.VOID.secondary(), "void_step_tick", 0.7F));
 	}
 
 	/** Hush: the dome's rim, and sculk souls drifting down into the silence. */
 	static void hush(ServerLevel level, Vec3 centre, double radius) {
 		ElementFx.groundRing(level, centre, SCULK, radius, radius * 0.95, 0.06, 20);
+		// A dome of dark glass rings, one above the other, narrowing to the top.
+		for (int i = 1; i <= 3; i++) {
+			double u = i / 3.0;
+			ElementFx.ring(level, centre.add(0, radius * 0.75 * u, 0), UP, i == 3 ? ElementFx.VOID.secondary() : ElementFx.dark(ElementFx.VOID.accent()),
+				radius * Math.sqrt(1 - u * u * 0.9), radius * Math.sqrt(1 - u * u * 0.9), 0.05, 20);
+		}
 		Vfx.emit(level, ParticleTypes.SCULK_SOUL, centre.add(0, 1.5, 0), 3, radius * 0.4, 0.0);
 		Vfx.emit(level, ParticleTypes.SQUID_INK, centre.add(0, 1.0, 0), 4, radius * 0.4, 0.0);
 	}
@@ -468,13 +480,20 @@ final class ExplorerVfx {
 
 	/** Warp Step: warped spores and a violet streak between where the caster was and where they are. */
 	static void warpStep(ServerLevel level, Vec3 from, Vec3 to) {
-		ElementFx.implode(level, from.add(0, 1, 0), 1.0, 8);
-		ElementFx.ray(level, from.add(0, 1, 0), to.add(0, 1, 0), 0x2AB8A0, 0.05, 6);
+		// The leap: a violet tether and warped spores, and a sigil left where you were that counts the three seconds down.
+		ElementFx.ray(level, from.add(0, 1, 0), to.add(0, 1, 0), ElementFx.VOID.primary(), 0.05, 6);
 		Vfx.emit(level, ParticleTypes.WARPED_SPORE, from.add(0, 1, 0), 16, 0.4, 0.05);
 		Vfx.emit(level, ParticleTypes.WARPED_SPORE, to.add(0, 1, 0), 16, 0.4, 0.05);
-		ElementFx.ring(level, to.add(0, 1, 0), UP, 0x2AB8A0, 1.2, 0.3, 0.07, 8);
-		sound(level, from, WildercordSounds.BLINK, 0.8F, 1.2F);
-		sound(level, to, SoundEvents.ENDERMAN_TELEPORT, 0.7F, 1.3F);
+		ElementFx.ring(level, to.add(0, 1, 0), UP, ElementFx.VOID.secondary(), 1.2, 0.3, 0.07, 8);
+		VoidFx.returnSigil(level, from, 60);
+		dev.wildercord.cast.feel.Feels.sound(level, from, "void_step_leap", 1.0F, 1.0F);
+	}
+
+	/** The snap back: a ring collapsing on you, not a repeat of the leap. */
+	static void warpReturn(ServerLevel level, Vec3 from, Vec3 to) {
+		ElementFx.ray(level, from.add(0, 1, 0), to.add(0, 1, 0), ElementFx.VOID.secondary(), 0.05, 5);
+		VoidFx.returnSnap(level, to);
+		dev.wildercord.cast.feel.Feels.sound(level, to, "void_step_snap", 1.0F, 1.0F);
 	}
 
 	static void warpStay(ServerLevel level, LivingEntity caster) {
@@ -531,12 +550,11 @@ final class ExplorerVfx {
 
 	/** Eclipse opens: a disc of darkness over the point, its rim burning white. */
 	static void eclipseOpen(ServerLevel level, Vec3 centre, double radius, int ticks) {
-		Vec3 sky = centre.add(0, 4.5, 0);
-		ElementFx.sigil(level, sky, UP, SigilOption.CIRCLE, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.4, ticks + 10, 0.01);
-		ElementFx.ring(level, sky, UP, WHITE, radius * 0.7, radius * 0.72, 0.06, ticks + 10);
+		// A filled dark disc with a corona and a patch of shadow under it, not hairlines; and the light coming back at the end.
+		VoidFx.eclipseDisc(level, centre, radius, 4.5, ticks + 10);
 		ElementFx.flatSigil(level, centre, SigilOption.RING, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.05, ticks + 10, 0.01);
-		sound(level, centre, SoundEvents.BEACON_DEACTIVATE, 1.0F, 0.6F);
-		sound(level, centre, WildercordSounds.cast("void"), 0.8F, 0.7F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "void_eclipse_hum", 1.0F, 1.0F);
+		Scheduler.later(Math.max(1, ticks), () -> VoidFx.eclipseLift(level, centre, radius));
 	}
 
 	static void eclipse(ServerLevel level, Vec3 centre, double radius) {
@@ -554,8 +572,7 @@ final class ExplorerVfx {
 			ElementFx.ray(level, from, at, STAR, 0.04, 6);
 		}
 		ScreenFx.shake(level, at, 0.4F, 12);
-		sound(level, at, SoundEvents.WITHER_SPAWN, 0.35F, 1.8F);
-		sound(level, at, WildercordSounds.impact("void"), 1.0F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "void_starmaw_gulp", 1.0F, 1.0F);
 	}
 
 	/** Drowning Word: a word of water written in the air, bubbles rising from the target's mouth. */
@@ -606,10 +623,11 @@ final class ExplorerVfx {
 
 	/** Riftcall opens: a tear of darkness in the air, violet rimmed. */
 	static void riftOpen(ServerLevel level, Vec3 centre, double radius, int ticks) {
-		ElementFx.sigil(level, centre, UP, SigilOption.CRACKED, ElementFx.dark(ElementFx.VOID.accent()), 1.8, ticks + 10, 0.2);
+		// An upright jagged slit turned to whoever is watching, its rim lit; the disc on the ground stays.
+		net.minecraft.world.entity.player.Player viewer = level.getNearestPlayer(centre.x, centre.y, centre.z, 48.0, false);
+		VoidFx.slit(level, centre.add(0, 0.3, 0), viewer == null ? new Vec3(0, 0, 1) : TimeFx.toward(centre, viewer.position()), 2.6, 0.55, ticks + 10);
 		ElementFx.flatSigil(level, CastEngine.ground(level, centre), SigilOption.RING, ElementFx.VOID.primary(), radius * 1.05, ticks + 10, -0.03);
-		sound(level, centre, SoundEvents.PORTAL_TRIGGER, 0.6F, 0.6F);
-		sound(level, centre, WildercordSounds.cast("void"), 0.9F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "void_riftcall_open", 1.0F, 1.0F);
 	}
 
 	static void rift(ServerLevel level, Vec3 centre, double radius, int tick) {
@@ -621,7 +639,7 @@ final class ExplorerVfx {
 	static void riftClose(ServerLevel level, Vec3 centre, double radius) {
 		ElementFx.voidImpact(level, centre, radius * 0.5);
 		ScreenFx.shake(level, centre, 0.35F, 10);
-		sound(level, centre, WildercordSounds.DOMAIN_CLOSE, 0.8F, 1.3F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "void_snap", 1.0F, 1.0F);
 	}
 
 	/** Manaburn: violet-pink fire on the target, flaring brighter on a caster as its mana burns. */

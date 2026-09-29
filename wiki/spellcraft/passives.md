@@ -86,8 +86,6 @@ aura in two passives (`Self · Swift` and `Orbit · Shock`).
 | Overdrive | II | Strength II, Speed II and Haste II, but you lose 1 health every 2 seconds, all the time |
 | Searing Edge | II | Every melee hit you land sets the foe alight and deals 2 more fire damage |
 | Reflect | III | Attackers take 60% of their damage back |
-| Accelerate | III | Speed III, Haste III, Jump Boost II and Regeneration |
-| Infinity | IV | Projectiles stop in the air around you, and enemies that come too close are pushed back |
 
 ### Auras (only with Orbit)
 
@@ -130,7 +128,7 @@ as a passive it costs 0.72 mana a second (shown as 0.7/s).
 | `Stoneskin · Empower` | 24 | 2.88 |
 | `Orbit · Shock` | 23 | 2.76 |
 | `Orbit · Dismantle` | 29 | 3.48 |
-| `Self · Infinity` | 32 | 3.84 |
+| `Self · Anchor` | 4 | 0.48 |
 
 - **Thrift** on your Cord and the **Archmage** perk lower the upkeep, like they lower a spell's cost (and
   so does the server's own cost setting, if it has one).
@@ -194,7 +192,7 @@ off costs nothing and keeps its runes; its readout starts "Passive (off)" and sh
 | `Stoneskin · Empower` | 1st Circle, a Copper Cord | Tougher and stronger in every fight, in one passive. |
 | `Orbit · Shock` | an Amethyst Cord | A crackling guard that hits whatever comes close. |
 | `Orbit · Dismantle` | an Amethyst Cord | Orbs that cut straight through armour. |
-| `Self · Infinity` | an Echo Cord | Arrows and projectiles stop in the air around you, all the time. |
+| `Self · Anchor` | 1st Circle, any Cord | Nothing, not a blow, a blast or a spell, moves you. |
 
 {: .warning }
 **Overdrive** is allowed as a passive, but it keeps costing you 1 health every 2 seconds for as long as it runs.

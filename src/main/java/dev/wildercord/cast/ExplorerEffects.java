@@ -207,6 +207,17 @@ public final class ExplorerEffects {
 
 	/** Marks and timers go when the server stops. */
 	public static void init() {
+		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+			if (!SHELLS.isEmpty() && SHELLS.containsKey(entity.getUUID())) {
+				SHELL_BEFORE.put(entity.getUUID(), entity.getHealth() + entity.getAbsorptionAmount());
+			}
+			return true;
+		});
+		net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, damage, blocked) -> {
+			if (!SHELLS.isEmpty()) {
+				shellTurned(entity, base);
+			}
+		});
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> clear());
 	}
 
@@ -232,6 +243,7 @@ public final class ExplorerEffects {
 	/** Forgets every mark and ritual timer. */
 	static void clear() {
 		BITES.clear();
+		SHELLS.clear();
 		BRANDED.clear();
 		TIDES.clear();
 		ECLIPSED.clear();
@@ -383,6 +395,10 @@ public final class ExplorerEffects {
 		Effects.hurt(cast, t, cast.level.damageSources().sonicBoom(cast.caster), 8 * power);
 		effect(t, MobEffects.DARKNESS, Effects.ticks(6, duration), 0, cast);
 		Reactions.mark(t, Reactions.Mark.SHADOWED, Effects.ticks(6, duration));
+		// The shriek rocks it: half a second of stagger, enough to lose a step.
+		if (!Spirits.isBoss(t)) {
+			Spirits.hold(t, 10);
+		}
 		Scheduler.later(20, Effects.carryContext(() -> {
 			if (cast.alive() && onHand(cast, t)) {
 				ExplorerVfx.shriek(cast.level, cast.caster, t, true);
@@ -748,6 +764,42 @@ public final class ExplorerEffects {
 
 	private static final Identifier SHELL_ID = Wildercord.id("shulkershell");
 
+	/** What each shell has turned aside so far, by wearer (loosed as bullets when it opens). */
+	private static final Map<UUID, double[]> SHELLS = new HashMap<>();
+	private static final Map<UUID, Float> SHELL_BEFORE = new HashMap<>();
+	private static final int SHELL_BULLETS = 3;
+	private static final double SHELL_BULLET_MAX = 6.0;
+
+	/** The blows a shell turns aside are kept: {@code base} was struck, {@code taken} got through. */
+	private static void shellTurned(LivingEntity entity, float base) {
+		Float before = SHELL_BEFORE.remove(entity.getUUID());
+		// What it really cost (health and absorption before and after), not what the event calls the damage taken.
+		float taken = before == null ? base : Math.max(0.0F, before - (entity.getHealth() + entity.getAbsorptionAmount()));
+		double[] stored = SHELLS.get(entity.getUUID());
+		if (stored != null && base > taken) {
+			stored[0] += base - taken;
+		}
+	}
+
+	/** The shell opens: what it turned aside leaves as up to 3 bullets that seek the nearest enemies. */
+	private static void bullets(Cast cast, LivingEntity from, double turned) {
+		if (turned <= 0.5) {
+			return;
+		}
+		double each = Math.min(SHELL_BULLET_MAX, turned / SHELL_BULLETS);
+		Vec3 origin = from.getBoundingBox().getCenter();
+		List<LivingEntity> foes = new ArrayList<>(enemiesAround(cast, origin, 10.0));
+		foes.sort(java.util.Comparator.comparingDouble(f -> f.distanceToSqr(from)));
+		for (int i = 0; i < Math.min(SHELL_BULLETS, foes.size()); i++) {
+			LivingEntity foe = foes.get(i);
+			Vfx.stream(cast.level, origin, foe.getBoundingBox().getCenter(), Vfx.theme("void"), 4);
+			Effects.hurt(cast, foe, magic(cast), each);
+			if (!Spirits.isBoss(foe)) {
+				foe.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 40, 0, false, true), cast.caster);
+			}
+		}
+	}
+
 	/** Shulkershell: a shell that turns nearly every blow, holds the target still, and lifts its attackers when it opens. */
 	private static void shulkershell(Cast cast, LivingEntity t, int ticks) {
 		t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 3, false, true));
@@ -758,6 +810,7 @@ public final class ExplorerEffects {
 		}
 		t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
 		ExplorerVfx.shellClose(cast.level, t);
+		SHELLS.put(t.getUUID(), new double[] {0});
 		// One shell at a time: a newer one (anyone's) takes over, and only the last to close lets go of the modifier.
 		Linger key = new Linger(t.getUUID(), null, "shulkershell");
 		Object token = linger(key);
@@ -773,8 +826,10 @@ public final class ExplorerEffects {
 			if (knockback != null) {
 				knockback.removeModifier(SHELL_ID);
 			}
+			double[] turned = SHELLS.remove(t.getUUID());
 			if (cast.alive() && onHand(cast, t)) {
 				ExplorerVfx.shellOpen(cast.level, t);
+				bullets(cast, t, turned == null ? 0 : turned[0]);
 				for (LivingEntity near : enemiesAround(cast, t.getBoundingBox().getCenter(), 3.0)) {
 					// Never a boss: lifted, it could be dropped out of its own fight.
 					if (Spirits.isBoss(near)) {
@@ -791,7 +846,7 @@ public final class ExplorerEffects {
 	private static void portalfall(Cast cast, LivingEntity t, double power) {
 		ServerLevel level = cast.level;
 		Vec3 from = t.position();
-		if (Spirits.isBoss(t)) {
+		if (Spirits.isBoss(t) || VoidTime.anchored(t)) {
 			ExplorerVfx.portalfall(level, from, null);
 			Effects.hurt(cast, t, magic(cast), 2 * power);
 			return;
@@ -808,11 +863,33 @@ public final class ExplorerEffects {
 				if (t instanceof Mob mob) {
 					mob.getNavigation().stop();
 				}
+				slam(cast, t, power);
 				return;
 			}
 		}
 		ExplorerVfx.portalfall(level, from, null);
 		Effects.hurt(cast, t, magic(cast), 2 * power);
+	}
+
+	/** Portalfall's landing: where it comes down, the creatures beside it are thrown and hurt (3, and a stagger). */
+	private static void slam(Cast cast, LivingEntity fallen, double power) {
+		ShapeRunners.each(cast, 60, tick -> {
+			if (!fallen.isAlive() || fallen.level() != cast.level) {
+				return false;
+			}
+			if (tick < 3 || !fallen.onGround()) {
+				return true;
+			}
+			Vec3 at = fallen.position();
+			for (LivingEntity other : enemiesAround(cast, at, 2.0)) {
+				if (other != fallen) {
+					Effects.hurt(cast, other, magic(cast), 3 * power);
+					other.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 2, false, true), cast.caster);
+				}
+			}
+			Vfx.shockwave(cast.level, at, 2.0, Vfx.theme("void"), 3);
+			return false;
+		});
 	}
 
 	/** Ancient Seed: a flower from before the world was young, and a stage of growth for the crops around it. */
@@ -926,7 +1003,13 @@ public final class ExplorerEffects {
 	/** Hush: a pocket of silence where monsters forget what they were after. */
 	private static void hush(Cast cast, Vec3 point, double radius, int ticks) {
 		Vec3 centre = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
+		// One pocket at a place per cast: a Zone laying it again every second does not stack them.
+		if (!VoidTime.onceAt(cast, "hush", centre, Math.max(10, ticks - 10))) {
+			return;
+		}
 		ExplorerVfx.hushOpen(cast.level, centre, radius, ticks);
+		// No word said inside it makes a sound: enemy casters cannot cast until it closes (see SpellCaster).
+		VoidTime.hush(cast, centre, radius, ticks);
 		repeat(cast, ticks, 10, tick -> {
 			if (tick % 20 == 0) {
 				ExplorerVfx.hush(cast.level, centre, radius);
@@ -936,8 +1019,6 @@ public final class ExplorerEffects {
 					mob.setTarget(null);
 				}
 				effect(t, MobEffects.WEAKNESS, 15, 0, cast);
-				effect(t, MobEffects.DARKNESS, 30, 0, cast);
-				effect(t, MobEffects.BLINDNESS, 25, 0, cast);
 				Reactions.mark(t, Reactions.Mark.SHADOWED, 30);
 			}
 		}, () -> { });
@@ -1266,7 +1347,7 @@ public final class ExplorerEffects {
 				}
 				return;
 			}
-			ExplorerVfx.warpStep(level, caster.position(), home);
+			ExplorerVfx.warpReturn(level, caster.position(), home);
 			teleport(caster, level, home);
 		});
 	}
@@ -1486,14 +1567,22 @@ public final class ExplorerEffects {
 /** Eclipse: a disc of darkness that blinds and burns what's under it, and leaves it open to the caster's spells. */
 	private static void eclipse(Cast cast, Vec3 point, double radius, double power, int ticks) {
 		Vec3 centre = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
+		// One disc over a place per cast: a Zone laying it again does not darken it twice over.
+		if (!VoidTime.onceAt(cast, "eclipse", centre, Math.max(10, ticks - 10))) {
+			return;
+		}
 		ExplorerVfx.eclipseOpen(cast.level, centre, radius, ticks);
 		repeat(cast, ticks, 20, tick -> {
 			ExplorerVfx.eclipse(cast.level, centre, radius);
 			for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
 				mark(ECLIPSED, cast, t, 25);
+				// Under it the light is dim: Umbra doubles and a Shade hits harder.
+				VoidTime.darken(t);
 				effect(t, MobEffects.BLINDNESS, 30, 0, cast);
 				Reactions.mark(t, Reactions.Mark.SHADOWED, 30);
-				Effects.hurt(cast, t, magic(cast), 2 * power);
+				if (VoidTime.once(cast, "eclipse.pulse", t, 15)) {
+					Effects.hurt(cast, t, magic(cast), 2 * power);
+				}
 			}
 		}, () -> { });
 	}
@@ -1507,8 +1596,12 @@ public final class ExplorerEffects {
 			}
 		}
 		good.forEach(t::removeEffect);
-		ExplorerVfx.starmaw(cast.level, t, good.size());
-		Effects.hurt(cast, t, magic(cast), (14 + 3 * good.size()) * power);
+		// It devours the wards on it too (a Foresight, Reflect, Riposte, Reversal, Infinity, an Anchor) and the absorption hearts.
+		int wards = Wards.devourWards(t);
+		int hearts = (int) Math.floor(t.getAbsorptionAmount() / 2.0F);
+		t.setAbsorptionAmount(0);
+		ExplorerVfx.starmaw(cast.level, t, good.size() + wards);
+		Effects.hurt(cast, t, magic(cast), (14 + 4 * (good.size() + wards) + hearts) * power);
 	}
 
 	/** Drowning Word: water fills the target's lungs wherever it stands. Speaking it again starts it over. */
@@ -1593,16 +1686,24 @@ public final class ExplorerEffects {
 	/** Riftcall: a rift that drags enemies in, gnaws at them, then snaps shut. */
 	private static void riftcall(Cast cast, Vec3 point, double radius, double power, int ticks) {
 		Vec3 centre = CastEngine.ground(cast.level, point.add(0, 0.5, 0)).add(0, 1.0, 0);
+		// One rift at a place per cast: a Zone laying it again does not open a second on top.
+		if (!VoidTime.onceAt(cast, "riftcall", centre, Math.max(10, ticks - 5))) {
+			return;
+		}
 		ExplorerVfx.riftOpen(cast.level, centre, radius, ticks);
+		// It gapes wider for every creature it holds (up to 5): the reach and the snap grow with the crowd.
+		int[] held = {0};
 		repeat(cast, ticks, 5, tick -> {
 			ExplorerVfx.rift(cast.level, centre, radius, tick);
-			for (LivingEntity t : enemiesAround(cast, centre, radius)) {
+			List<LivingEntity> in = enemiesAround(cast, centre, radius + 0.5 * Math.min(RIFT_MAX_HELD, held[0]));
+			held[0] = Math.max(held[0], in.size());
+			for (LivingEntity t : in) {
 				Reactions.mark(t, Reactions.Mark.PULLED);
 				if (!Spirits.isBoss(t)) {
-					Vec3 in = centre.subtract(t.getBoundingBox().getCenter());
-					double d = in.length();
+					Vec3 pull = centre.subtract(t.getBoundingBox().getCenter());
+					double d = pull.length();
 					if (d > 0.8) {
-						Effects.push(t, in.normalize().scale(Math.min(0.5, 0.12 + d * 0.06)));
+						Effects.push(t, pull.normalize().scale(Math.min(0.5, 0.12 + d * 0.06)));
 					}
 				}
 				if (tick % 20 == 0) {
@@ -1613,12 +1714,16 @@ public final class ExplorerEffects {
 			if (!cast.alive()) {
 				return;
 			}
+			double grown = Math.min(RIFT_MAX_HELD, held[0]);
 			ExplorerVfx.riftClose(cast.level, centre, radius);
-			for (LivingEntity t : enemiesAround(cast, centre, radius * 0.5)) {
-				Effects.hurt(cast, t, magic(cast), 6 * power);
+			for (LivingEntity t : enemiesAround(cast, centre, (radius + 0.5 * grown) * 0.5)) {
+				Effects.hurt(cast, t, magic(cast), (6 + grown) * power);
 			}
 		}));
 	}
+
+	/** How many creatures a Riftcall counts to gape wider (each +0.5 blocks of reach and +1 to the snap). */
+	private static final int RIFT_MAX_HELD = 5;
 
 	/**
 	 * Manaburn: arcane fire that burns hotter in anything that carries magic. What it takes from a

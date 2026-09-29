@@ -153,6 +153,11 @@ public final class Cast {
 		this.repeated = repeated;
 	}
 
+	/** Which press this belongs to: children, pulses and echoes of one cast share it (a new press has another). */
+	public int id() {
+		return System.identityHashCode(budget.shared);
+	}
+
 	/** Sets how charged the spell was (0 to 1), for its {@link dev.wildercord.cast.feel.Feel}. */
 	public Cast charge(double charge) {
 		budget.shared.charge = Math.max(0, Math.min(1, charge));

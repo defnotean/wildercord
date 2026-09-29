@@ -85,6 +85,11 @@ public final class SpellCaster {
 			fail(player, Component.translatable("message.wildercord.silenced"));
 			return;
 		}
+		if (VoidTime.hushed(player)) {
+			// A Hush lies over them: no word they say makes a sound.
+			fail(player, Component.translatable("message.wildercord.hushed"));
+			return;
+		}
 		if (FusedFrostWards.sealed(player)) {
 			// Untouchable in the ice, so it can't be a fortress to cast from.
 			fail(player, Component.translatable("message.wildercord.cryostasis_sealed"));
@@ -178,6 +183,7 @@ public final class SpellCaster {
 		int cooldown = Heart.cooldownTicks(player, compiled, secretCooldown);
 		Spellbooks.setReadyAt(player, spell, now + cooldown);
 		HeartCircles.condense(player, spent);
+		VoidTime.spent(player, spent);
 		ExplorerEffects.manatideRefund(player, spent);
 		// Each element in the spell grows its affinity by the mana it made up; a Blood Price's health feeds blood.
 		PlayerAffinities.onCast(player, compiled.root(), spent, blood);

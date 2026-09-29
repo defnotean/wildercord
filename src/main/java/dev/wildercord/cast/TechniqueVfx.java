@@ -264,7 +264,7 @@ final class TechniqueVfx {
 			ElementFx.ring(level, c, ElementFx.tilted(0.8, level.getRandom().nextDouble() * Math.PI * 2), ElementFx.dark(ElementFx.VOID.accent()), 0.9, 0.1,
 				0.07, 6);
 			Vfx.radial(level, ParticleTypes.CRIT, c, 6, 0.25);
-			Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_STRONG, 0.8F, 0.8F);
+			dev.wildercord.cast.feel.Feels.sound(level, c, "void_spark_plain", 0.9F, 1.0F);
 			return;
 		}
 		dot(level, flash(BLOOD), c);
@@ -277,8 +277,7 @@ final class TechniqueVfx {
 		ElementFx.pulse(level, c, UP, 1.6);
 		ElementFx.sparks(level, c, 12, 0.5);
 		ElementFx.drip(level, c, 0.25, 4);
-		Fx.sound(level, c, SoundEvents.TRIDENT_THUNDER, 0.6F, 1.7F);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "void_spark_crit", 1.0F, 1.0F);
 	}
 
 	/** Aftershock: a hit, and half a second later the ground under the target cracks and heaves. */
@@ -354,7 +353,8 @@ final class TechniqueVfx {
 				0.08);
 		}
 		Motes.smoke(level, target.getBoundingBox().getCenter(), 1, w);
-		Fx.sound(level, base, SoundEvents.FIRE_AMBIENT, 0.6F, 0.6F);
+		VoidFx.blackHeart(level, target.getBoundingBox().getCenter());
+		dev.wildercord.cast.feel.Feels.sound(level, base, "void_black_fire", 0.7F, 1.0F);
 	}
 
 	private static final int RED = 0xFF3030;
@@ -363,6 +363,14 @@ final class TechniqueVfx {
 	/** Hollow: a red and a blue orb spiral together, then the gap collapses into a hole in the world that bursts violet. */
 	static void hollow(ServerLevel level, Vec3 c, double radius) {
 		Vec3 side = new Vec3(1, 0, 0);
+		// The creature is cut out of the world for the wind-up: a dark sphere with an inverted rim stands on it.
+		for (int t = 0; t < 7; t += 3) {
+			Scheduler.later(t, () -> VoidFx.cutout(level, c, 0.75));
+		}
+		// The creature is cut out of the world for the wind-up: a dark sphere with an inverted rim stands on it.
+		for (int t = 0; t < 7; t += 3) {
+			Scheduler.later(t, () -> VoidFx.cutout(level, c, 0.75));
+		}
 		for (int t = 0; t < 6; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -388,8 +396,7 @@ final class TechniqueVfx {
 			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 20, 0.6);
 			Vfx.shockwave(level, c.subtract(0, 0.8, 0), radius, Vfx.theme("void"), 5);
 		});
-		Fx.sound(level, c, SoundEvents.BEACON_DEACTIVATE, 1.0F, 0.5F);
-		Scheduler.later(7, () -> Fx.sound(level, c, SoundEvents.WARDEN_SONIC_BOOM, 1.0F, 0.6F));
+		Scheduler.later(7, () -> dev.wildercord.cast.feel.Feels.sound(level, c, "void_snap", 1.2F, 0.8F));
 	}
 
 	private static final int REPEL = ElementFx.WIND.accent();
@@ -526,12 +533,13 @@ final class TechniqueVfx {
 	static void infinityStart(ServerLevel level, Entity target) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		for (int i = 0; i < 3; i++) {
-			ElementFx.ring(level, c, ElementFx.tilted(i == 0 ? 0 : 1.1, i * Math.PI * 2 / 3), i == 1 ? ElementFx.VOID.secondary() : INFINITY, 2.4, 1.7, 0.03, 16);
+			// The bubble's whole reach (Zeno's 5 blocks) draws in to the shell: glass-clear ripples that tighten inward.
+			ElementFx.ring(level, c, ElementFx.tilted(i == 0 ? 0 : 1.1, i * Math.PI * 2 / 3), i == 1 ? ElementFx.VOID.secondary() : INFINITY, 4.6, 1.7, 0.03, 18);
 		}
 		// Under its feet too, where one warding themselves sees it.
 		ElementFx.groundRing(level, target.position(), INFINITY, 2.4, 1.7, 0.04, 16);
 		dot(level, SigilOption.glow(INFINITY, 1.6F), c);
-		Fx.sound(level, target.position(), SoundEvents.BEACON_ACTIVATE, 0.6F, 1.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position(), "void_zeno_beat", 1.0F, 1.0F);
 	}
 
 	/** Infinity holds: two faint great circles breathing round the target. */
@@ -539,6 +547,11 @@ final class TechniqueVfx {
 		double spin = level.getGameTime() * 0.05;
 		ElementFx.ring(level, c, ElementFx.tilted(1.1, spin), INFINITY, 1.7, 1.7, 0.02, 10);
 		ElementFx.ring(level, c, ElementFx.tilted(1.1, spin + Math.PI / 2), ElementFx.VOID.secondary(), 1.7, 1.7, 0.015, 10);
+		// A ripple drawn in from the edge of the bubble, and a slow heartbeat (time thickening).
+		ElementFx.ring(level, c, ElementFx.tilted(0.2, spin), 0xFFFFFF, 4.4, 1.9, 0.015, 16);
+		if (level.getGameTime() % 48 < 8) {
+			dev.wildercord.cast.feel.Feels.sound(level, c, "void_zeno_beat", 0.35F, 1.0F);
+		}
 	}
 
 	/** Where Infinity catches a projectile: a small ring of light closing on it. */
@@ -592,17 +605,17 @@ final class TechniqueVfx {
 		dev.wildercord.cast.feel.Feels.sound(level, b, "arcane_mirror_crack", 0.9F, 1.0F);
 	}
 
-	static void foresightMark(ServerLevel level, Entity target) {
-		Vec3 head = target.position().add(0, target.getBbHeight() + 0.25, 0);
-		ElementFx.clock(level, head, UP, 0.5, 8, false);
-		Vfx.emit(level, ParticleTypes.END_ROD, head, 4, 0.3, 0.02);
-		Fx.sound(level, head, SoundEvents.ILLUSIONER_PREPARE_MIRROR, 0.6F, 1.6F);
+	static void foresightMark(ServerLevel level, Entity target, int charges) {
+		// A halo over the head with a pip for every blow it will sidestep (nothing at the eyes: you would not see it).
+		TimeFx.halo(level, target, charges, 30);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position().add(0, target.getBbHeight() + 0.25, 0), "time_tick", 0.7F, 1.0F);
 	}
 
 	/** Foresight: a golden afterimage where the blow was meant to land, its clock stopped, and a streak to where you stepped. */
 	static void dodge(ServerLevel level, Entity entity, Vec3 from, Vec3 to) {
 		silhouette(level, dust(TIME, 0.8F), from, entity.getLookAngle(), entity.getBbHeight() / 1.8);
-		ElementFx.stoppedClock(level, from.add(0, entity.getBbHeight() * 0.55, 0), flat(entity.getLookAngle()), 0.5, level.getRandom().nextDouble() * Math.PI * 2, 10);
+		TimeFx.stoppedFace(level, from.add(0, entity.getBbHeight() * 0.55, 0), entity.getLookAngle(), 0.5, level.getRandom().nextDouble() * Math.PI * 2, 10);
+		TimeFx.pipSpent(level, entity);
 		if (from.distanceToSqr(to) > 0.01) {
 			Vec3 a = from.add(0, 1, 0);
 			Vec3 b = to.add(0, 1, 0);
@@ -612,7 +625,7 @@ final class TechniqueVfx {
 			}
 			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(b, TIME, 6), from.x, from.y + 1, from.z, 3, 0.2, 0.3, 0.2, 0);
 		}
-		Fx.sound(level, to, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.8F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, to, "time_dodge", 0.9F, 1.0F);
 	}
 
 	static void restore(ServerLevel level, Entity target, boolean mended) {
@@ -626,7 +639,14 @@ final class TechniqueVfx {
 		ElementFx.slash(level, c, tilt, ElementFx.inPlane(tilt, 0), ElementFx.TIME.secondary(), 0.6, Math.PI * 1.9, 0.05, 3, 6);
 		ElementFx.groundRing(level, target.position(), TIME, 0.2, 1.5, 0.05, 8);
 		Vfx.emit(level, ParticleTypes.END_ROD, c, 6, 0.5, 0.05);
-		Fx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.7F, 2.0F);
+		// Speed lines streaming back from whoever is hurried (a tempo buff, not a potion).
+		Vec3 back = flat(target.getLookAngle()).scale(-1);
+		for (int i = 0; i < 4; i++) {
+			double y = 0.3 + level.getRandom().nextDouble() * (target.getBbHeight() - 0.4);
+			Vec3 a = target.position().add(0, y, 0).add(back.scale(0.3));
+			ElementFx.ray(level, a, a.add(back.scale(1.2 + level.getRandom().nextDouble())), (i & 1) == 0 ? TIME : 0xFFFFFF, 0.03, 6);
+		}
+		dev.wildercord.cast.feel.Feels.sound(level, c, "time_run", 0.9F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ movement
@@ -649,20 +669,21 @@ final class TechniqueVfx {
 			}
 			dot(level, SigilOption.glow(ZIP, 0.6F), at.add(0, 0.9, 0));
 		}
-		Fx.sound(level, entry, SoundEvents.CHAIN_BREAK, 0.8F, 1.7F);
-		Fx.sound(level, exit, SoundEvents.CHAIN_PLACE, 0.8F, 1.9F);
+		// The teeth are open for a moment and then close behind you, from the ends toward the middle.
+		Scheduler.later(8, () -> {
+			VoidFx.zipShut(level, entry, dir, 0xD8B040, 0x404048);
+			VoidFx.zipShut(level, exit, dir, 0xD8B040, 0x404048);
+		});
+		dev.wildercord.cast.feel.Feels.sound(level, entry, "void_unzip", 1.0F, 1.0F);
 	}
 
 	/** Shadowstep: darkness implodes where you were and where you arrive, and a black afterimage is left behind. */
 	static void shadowstep(ServerLevel level, Vec3 from, Vec3 to) {
-		for (Vec3 p : List.of(from, to)) {
-			ElementFx.implode(level, p.add(0, 1, 0), 1.2, 7);
-			Vfx.radial(level, ParticleTypes.SQUID_INK, p.add(0, 1, 0), 8, 0.15);
-		}
+		// A stretched smear, not Blink's implosion: black dust from where you were, thick at the start, and ink where you land.
+		VoidFx.smear(level, from, to);
 		ElementFx.blackCore(level, to.add(0, 1, 0), 0.25, 6);
 		ElementFx.groundRing(level, to, ElementFx.dark(ElementFx.VOID.accent()), 1.4, 0.2, 0.1, 10);
 		silhouette(level, dust(BLACK, 1.0F), from, to.subtract(from), 1.0);
-		Fx.sound(level, to, SoundEvents.ENDERMAN_TELEPORT, 0.6F, 0.5F);
 	}
 
 	/** Stasis: the hands of a clock race round the target and stop; time closes in on it. */
@@ -670,14 +691,13 @@ final class TechniqueVfx {
 		Vec3 c = target.getBoundingBox().getCenter();
 		double r = Math.max(0.7, target.getBbWidth() * 0.9);
 		dot(level, flash(0xFFFFFF), c);
-		ElementFx.clock(level, c, UP, r, 4, false);
 		ElementFx.ring(level, c, UP, 0xFFFFFF, r * 2.2, r, 0.05, 8);
 	}
 
+	/** The hold: the column of frozen sand is drawn once (it lasts the hold); a few grains fall every so often. */
 	static void stasisTick(ServerLevel level, Entity target, int ticksLeft) {
 		Vec3 c = target.getBoundingBox().getCenter();
-		ElementFx.stoppedClock(level, c, UP, Math.max(0.7, target.getBbWidth() * 0.9), 0.0, 6);
-		Vfx.emit(level, dust(0xB8B8C4, 0.8F), c, 2, target.getBbWidth() * 0.6, 0.0);
+		Vfx.emit(level, dust(0xB8B8C4, 0.8F), c, 1, target.getBbWidth() * 0.6, 0.0);
 	}
 
 	/**
@@ -685,6 +705,15 @@ final class TechniqueVfx {
 	 * pale ring that tightens with every hit waiting to land.
 	 */
 	static void stasisStore(ServerLevel level, Entity target, int hits) {
+		// Six held blows a tick are drawn as shards; the rest still count but cost nothing on the wire.
+		if (!TimeFx.allow(level, "stasis_shard", 6)) {
+			return;
+		}
+		TimeFx.stasisShard(level, target, 100);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position(), "time_tick", 0.6F, dev.wildercord.cast.feel.Feels.step(Math.min(5, hits / 2)));
+		if (true) {
+			return;
+		}
 		Vec3 c = target.getBoundingBox().getCenter();
 		Vec3 at = c.add((level.getRandom().nextDouble() - 0.5) * target.getBbWidth(), (level.getRandom().nextDouble() - 0.5) * target.getBbHeight() * 0.8,
 			(level.getRandom().nextDouble() - 0.5) * target.getBbWidth());
@@ -701,47 +730,33 @@ final class TechniqueVfx {
 
 	/** Time moves again: the hands spin once and everything held lands at once. */
 	static void timeResumes(ServerLevel level, Entity target, float stored) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		dot(level, flash(0xFFFFFF), c);
-		ElementFx.clock(level, c, UP, 0.9, 3, false);
-		ElementFx.ring(level, c, UP, 0xFFFFFF, 0.3, 2.2, 0.06, 7);
-		Vfx.radial(level, ParticleTypes.CRIT, c, (int) Math.min(30, 6 + stored), 0.5);
+		// The column shatters outward and everything held lands as one flash (time_resume is the sound).
+		TimeFx.stasisRelease(level, target, stored);
+		Vfx.radial(level, ParticleTypes.CRIT, target.getBoundingBox().getCenter(), (int) Math.min(30, 6 + stored), 0.5);
 		Vfx.shockwave(level, target.position(), 1.6, Vfx.theme("time"), 4);
-		Fx.sound(level, c, SoundEvents.BELL_BLOCK, 0.8F, 1.4F);
-		if (stored > 0) {
-			Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 0.7F);
-		}
 	}
 
 	/** Rewind: golden streaks run back to where you were, and a clock's hands turn backward there. */
 	static void rewind(ServerLevel level, Vec3 from, Vec3 to) {
-		Vec3 a = from.add(0, 1, 0);
-		Vec3 b = to.add(0, 1, 0);
-		double length = b.distanceTo(a);
+		double length = to.distanceTo(from);
 		if (length > 0.5) {
-			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(b, TIME, 12), a.x, a.y, a.z, 8, 0.3, 0.5, 0.3, 0);
-			ElementFx.ray(level, a, b.subtract(b.subtract(a).scale(Math.min(0.8, length * 0.5) / length)), TIME, 0.05, 12);
+			// The way back lights up dot by dot (time running backward), with an afterimage where you stood.
+			TimeFx.rewindPath(level, from, to);
 			silhouette(level, dust(TIME, 0.8F), from, to.subtract(from), 1.0);
+			dev.wildercord.cast.feel.Feels.sound(level, to, "time_rewind", 1.0F, 1.0F);
+		} else {
+			TimeFx.face(level, to.add(0, 1, 0), new Vec3(0, 0, 1), 0.9, 10, true);
+			ElementFx.goldenTicks(level, to.add(0, 1, 0), 0.4, 6);
 		}
-		ElementFx.clock(level, b, UP, 0.9, 10, true);
-		ElementFx.goldenTicks(level, b, 0.4, 6);
-		Fx.sound(level, to, SoundEvents.TRIDENT_RETURN, 0.9F, 0.8F);
-		Fx.sound(level, to, SoundEvents.BELL_RESONATE, 0.5F, 0.6F);
 	}
 
 	private static final int SKIP = 0xB02030;
 
 	/** Time Skip: a crimson afterimage stays behind for a moment with a clock stopped in it; you're already elsewhere. */
 	static void timeSkip(ServerLevel level, Vec3 from, Vec3 to) {
-		for (int t = 0; t < 6; t += 2) {
-			Scheduler.later(t + 1, () -> silhouette(level, dust(SKIP, 0.9F), from, to.subtract(from), 1.0));
-		}
-		ElementFx.stoppedClock(level, from.add(0, 1, 0), flat(to.subtract(from)), 0.7, 0.0, 12);
-		dot(level, flash(SKIP), to.add(0, 1, 0));
-		ElementFx.ring(level, to.add(0, 1, 0), UP, SKIP, 0.2, 1.4, 0.05, 8);
-		ElementFx.groundRing(level, to, TIME, 0.2, 1.2, 0.04, 10);
-		Fx.sound(level, from, SoundEvents.ILLUSIONER_MIRROR_MOVE, 0.9F, 0.5F);
-		Fx.sound(level, to, SoundEvents.BELL_BLOCK, 0.4F, 0.5F);
+		// Gold frames flickering out of the film: nothing crimson (that is blood's colour).
+		TimeFx.skip(level, from, to);
+		dev.wildercord.cast.feel.Feels.sound(level, from, "time_stutter", 1.0F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ summons and links
@@ -752,6 +767,7 @@ final class TechniqueVfx {
 		ElementFx.implode(level, at.add(0, 0.5, 0), 1.0, 8);
 		Vfx.radial(level, ParticleTypes.SQUID_INK, at.add(0, 0.4, 0), 10, 0.15);
 		Motes.clouds(level, at.add(0, 0.5, 0), 3, 0.3, 0x3A3040, 1.0, 30, new Vec3(0, 0.02, 0), 0.03, 0.4);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "void_hound_growl", 0.9F, 1.0F);
 	}
 
 	static void shadeAura(ServerLevel level, Entity wolf) {

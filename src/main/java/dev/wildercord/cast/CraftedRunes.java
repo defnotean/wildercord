@@ -289,6 +289,11 @@ public final class CraftedRunes {
 		});
 	}
 
+	/** Stops {@code t} healing for {@code ticks} (Wither's rot does the same as a Gash). */
+	static void noHeal(LivingEntity t, int ticks) {
+		GASHED.merge(t.getUUID(), t.level().getGameTime() + ticks, Math::max);
+	}
+
 	/** Whether {@code entity} is gashed and can't heal right now. Server side only; the client's copy heals as it's told. */
 	public static boolean gashed(LivingEntity entity) {
 		if (GASHED.isEmpty() || entity.level().isClientSide()) {
@@ -631,7 +636,7 @@ public final class CraftedRunes {
 
 	private static void umbra(Cast cast, LivingEntity t, double power) {
 		int light = cast.level.getMaxLocalRawBrightness(BlockPos.containing(t.getEyePosition()));
-		boolean dim = light <= UMBRA_DIM;
+		boolean dim = light <= UMBRA_DIM || VoidTime.darkened(t);
 		CraftedVfx.umbra(cast.level, t, dim);
 		Effects.hurt(cast, t, magic(cast), UMBRA_DAMAGE * power * (dim ? 2 : 1));
 		// The dark stays on it: life damage then sets off Blight.

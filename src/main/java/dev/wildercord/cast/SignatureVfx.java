@@ -355,12 +355,14 @@ final class SignatureVfx {
 
 	/** The clock is set: a clock face over the target, its hand at the top, a ring of fire round its rim. */
 	static void doomclock(ServerLevel level, LivingEntity t, int ticks) {
-		Vec3 over = t.position().add(0, t.getBbHeight() + 0.6, 0);
-		ElementFx.clock(level, over, UP, 0.6 + width(t) * 0.3, ticks, false);
-		ElementFx.ring(level, over, UP, DOOM, 0.2, 0.8 + width(t) * 0.3, 0.05, 12);
+		Vec3 over = t.position().add(0, t.getBbHeight() + 0.9, 0);
+		// The face stands upright, turned to whoever is watching (a flat disc over a head cannot be read from the side).
+		net.minecraft.world.entity.player.Player viewer = level.getNearestPlayer(t, 48.0);
+		Vec3 facing = TimeFx.toward(over, viewer == null ? over.add(0, 0, 1) : viewer.getEyePosition());
+		TimeFx.face(level, over, facing, 0.6 + width(t) * 0.3, ticks, false);
+		ElementFx.ring(level, over, facing, DOOM, 0.2, 0.8 + width(t) * 0.3, 0.05, 12);
 		ElementFx.flatSigil(level, t.position(), SigilOption.TARGET, ElementFx.TIME.primary(), 0.9 + width(t) * 0.5, ticks, 0.0);
-		Fx.sound(level, over, SoundEvents.TNT_PRIMED, 0.6F, 1.6F);
-		Fx.sound(level, over, WildercordSounds.impact("time"), 0.6F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, over, "time_doomtick", 0.9F, 1.0F);
 	}
 
 	/** A blow winds it tighter: a flare of fire on the clock and a sharp tick, brighter the tighter it's wound. */
@@ -369,17 +371,19 @@ final class SignatureVfx {
 		float tight = (float) Math.min(1.0, wound / SignatureRules.DOOMCLOCK_WOUND);
 		ElementFx.ring(level, over, UP, DOOM, 0.9 + tight * 0.6, 0.2, 0.04 + tight * 0.04, 8);
 		ElementFx.goldenTicks(level, over, 0.3, 2 + (int) (tight * 4));
-		Fx.sound(level, over, SoundEvents.NOTE_BLOCK_HAT.value(), 0.8F, 1.0F + tight);
+		dev.wildercord.cast.feel.Feels.sound(level, over, "time_doomtick", 0.8F, 1.0F + tight * 0.5F);
 	}
 
 	/** Every half second: the clock ticks on over its bearer, embers gathering under it as it winds. */
 	static void doomclockTick(ServerLevel level, LivingEntity t, int left, double wound) {
-		Vec3 over = t.position().add(0, t.getBbHeight() + 0.6, 0);
-		ElementFx.stoppedClock(level, over, UP, 0.6 + width(t) * 0.3, left / 60.0 * Math.PI * 2, 10);
+		Vec3 over = t.position().add(0, t.getBbHeight() + 0.9, 0);
+		net.minecraft.world.entity.player.Player viewer = level.getNearestPlayer(t, 48.0);
+		TimeFx.stoppedFace(level, over, TimeFx.toward(over, viewer == null ? over.add(0, 0, 1) : viewer.getEyePosition()), 0.6 + width(t) * 0.3,
+			left / 60.0 * Math.PI * 2, 10);
 		if (wound > 0) {
 			ElementFx.embers(level, over.add(0, -0.2, 0), 0.2, 1 + (int) (wound / 4));
 		}
-		Fx.sound(level, over, SoundEvents.NOTE_BLOCK_BASEDRUM.value(), 0.5F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, over, "time_doomtick", 0.5F, 1.2F);
 	}
 
 	/** Zero: the clock shatters in a ring of gold and a burst of fire, bigger the tighter it was wound. */
@@ -392,8 +396,8 @@ final class SignatureVfx {
 		Sigils.flash(level, at, DOOM, (float) size);
 		Motes.smoke(level, at, 4, radius * 0.3);
 		ScreenFx.shake(level, at, (float) Math.min(0.8, 0.3 + wound / 20), 16);
-		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 1.0F, 1.1F);
-		Fx.sound(level, at, SoundEvents.BELL_BLOCK, 1.0F, 0.6F);
+		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.9F, 1.1F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "time_strike", 1.0F, 0.8F);
 	}
 
 	// ------------------------------------------------------------------ Thunderstep (Shadowstep and Lightning)
@@ -611,7 +615,7 @@ final class SignatureVfx {
 		ElementFx.implode(level, c, w + 1.0, 8);
 		ElementFx.ring(level, c, UP, CURSE_RUNE, w + 0.8, 0.2, 0.03, 10);
 		Vfx.emit(level, ParticleTypes.WITCH, c, 6, 0.3, 0.02);
-		Fx.sound(level, c, SoundEvents.EVOKER_CAST_SPELL, 0.6F, 0.7F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "void_hex_mark", 1.0F, 0.5F);
 	}
 
 	/** The curse passes on: a thread of pink darkness from where its bearer fell to each heir, and the seal on each. */
@@ -622,7 +626,7 @@ final class SignatureVfx {
 			ElementFx.ray(level, from, centre(t), CURSE_RUNE, 0.02, 9);
 			ElementFx.flatSigil(level, t.position(), SigilOption.STAR, CURSE_RUNE, 0.5 + width(t) * 0.5, 30, -0.08);
 		}
-		Fx.sound(level, from, SoundEvents.SOUL_ESCAPE.value(), 1.0F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, from, "void_curse_pass", 1.0F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Avalanche (Coldsnap and Stalactite)
@@ -667,8 +671,7 @@ final class SignatureVfx {
 		ElementFx.clock(level, c, UP, w * 0.6 + 0.5, 30, false);
 		ElementFx.ring(level, c, UP, ElementFx.ARCANE.primary(), w + 1.0, w * 0.6 + 0.5, 0.05, 10);
 		ElementFx.orbit(level, c, w * 0.6 + 0.5, 2, 30, ElementFx.ARCANE.secondary(), ElementFx.TIME.secondary());
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 0.9F, 1.8F);
-		Fx.sound(level, c, WildercordSounds.impact("time"), 0.5F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "time_tick", 0.9F, 1.2F);
 	}
 
 	/** Once a second while it lasts: a mote of light for each blow it still answers. */
@@ -687,7 +690,7 @@ final class SignatureVfx {
 			ElementFx.slash(level, s, ElementFx.perp(toward.normalize()), toward.normalize(), ElementFx.ARCANE.primary(), width(striker) * 0.5 + 0.5, 2.2, 0.08, 2, 6);
 			ElementFx.ray(level, c, s, ElementFx.ARCANE.secondary(), 0.02, 5);
 		}
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_NODAMAGE, 0.8F, 1.4F);
-		Fx.sound(level, s, SoundEvents.PLAYER_ATTACK_CRIT, 0.8F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "time_dodge", 0.9F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, s, "time_ring", 1.0F, 1.0F);
 	}
 }

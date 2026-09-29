@@ -55,7 +55,7 @@ public final class Secrets {
 		List.of(Runes.BLITZ, Runes.SHOCK, Runes.SHOCK, Runes.PUSH), 0xFFF070, 1.2,
 		"You flash from enemy to enemy, up to five of them within 12 blocks, striking each with lightning as you pass.",
 		"Flash forward on two sparks and a shove.");
-	public static final Secret SINGULARITY = new Secret("singularity", "Singularity",
+	public static final Secret SINGULARITY = new Secret("singularity", "Black Star",
 		List.of(Runes.ORB, Runes.GRAVITY_WELL, Runes.PULL, Runes.EXPLODE), 0x9A5AF0, 1.3,
 		"A black star drifts out and stops 12 blocks away. For 3 seconds it swallows everything within 9 blocks, then it collapses: 18 damage.",
 		"A slow orb that drinks the world: well, pull, and burst.");

@@ -749,37 +749,65 @@ final class ExpansionVfx {
 
 	/** Hex: a turning star of void light over the target's head, and a ring binding its body. */
 	static void hex(ServerLevel level, Entity t, int ticks) {
+		hex(level, t, ticks, true);
+	}
+
+	static void hex(ServerLevel level, Entity t, int ticks, boolean sound) {
 		Vec3 head = t.position().add(0, t.getBbHeight() + 0.45, 0);
-		Sigils.layer(level, head, UP, SigilOption.STAR, VOID, 0.45F, Math.min(ticks, 60), 0.12F);
+		// The star turns over the head for as long as the hex lasts (the sigil layer can live 160 ticks).
+		Sigils.layer(level, head, UP, SigilOption.STAR, VOID, 0.45F, Math.min(ticks, 160), 0.12F);
 		Light.ring(level, t.getBoundingBox().getCenter(), UP, VOID, Math.max(0.9, t.getBbWidth() + 0.5), 0.3, 0.05, 10);
 		Vfx.emit(level, ParticleTypes.WITCH, head, 6, 0.2, 0.0);
-		Fx.sound(level, head, SoundEvents.EVOKER_CAST_SPELL, 0.6F, 1.4F);
+		if (sound) {
+			dev.wildercord.cast.feel.Feels.sound(level, head, "void_hex_mark", 0.9F, 1.0F);
+		}
 	}
 
 	/** A hexed target takes its hexer's spell: a little bite of violet. */
 	static void hexBite(ServerLevel level, Entity t) {
+		// A multi-hit spell bites once, not once per hit: at most every half second for each hexed creature.
+		long now = level.getGameTime();
+		Long last = BITTEN.get(t.getUUID());
+		if (last != null && now - last < 10) {
+			return;
+		}
+		if (BITTEN.size() > 128) {
+			BITTEN.values().removeIf(v -> now - v > 40);
+		}
+		BITTEN.put(t.getUUID(), now);
 		glow(level, VOID, t.getBoundingBox().getCenter(), 0.8);
 		Vfx.emit(level, ParticleTypes.WITCH, t.getBoundingBox().getCenter(), 2, 0.25, 0.0);
+		dev.wildercord.cast.feel.Feels.sound(level, t.getBoundingBox().getCenter(), "void_hex_bite", 0.8F, 1.0F);
 	}
+
+	private static final java.util.Map<java.util.UUID, Long> BITTEN = new java.util.HashMap<>();
 
 	/** Countdown: a clock of light over the head, shrinking with each tick. */
 	static void countdown(ServerLevel level, Entity t, int beat) {
-		Vec3 head = t.position().add(0, t.getBbHeight() + 0.5, 0);
-		float size = 0.9F - beat * 0.25F;
-		Sigils.layer(level, head, UP, SigilOption.CIRCLE, TIME, size, 11, 0.2F);
-		Light.ring(level, head, UP, WHITE, size + 0.3, size * 0.6, 0.03, 8);
-		Fx.sound(level, head, SoundEvents.NOTE_BLOCK_HAT, 0.8F, 1.2F + beat * 0.3F);
+		Vec3 head = t.position().add(0, t.getBbHeight() + 0.6, 0);
+		// Sixty-four marks are not sixty-four faces: the first eight are drawn in full, the rest are a single spark.
+		if (!TimeFx.allow(level, "countdown_face", 8)) {
+			Vfx.emit(level, ParticleTypes.END_ROD, head, 1, 0.1, 0.01);
+			return;
+		}
+		// An upright face turned to the nearest player, its second hand sweeping the beat.
+		net.minecraft.world.entity.player.Player viewer = level.getNearestPlayer(t, 48.0);
+		TimeFx.fuse(level, head, viewer == null ? head.add(0, 0, 1) : viewer.getEyePosition(), 0.5 - beat * 0.06, 11);
+		dev.wildercord.cast.feel.Feels.sound(level, head, "time_tick", 0.8F, dev.wildercord.cast.feel.Feels.step(beat));
 	}
 
 	/** The moment catches up: a bolt of gold light falls on the target. */
 	static void countdownStrike(ServerLevel level, Entity t) {
 		Vec3 c = t.getBoundingBox().getCenter();
+		if (!TimeFx.allow(level, "countdown_strike", 8)) {
+			Vfx.radial(level, ParticleTypes.END_ROD, c, 4, 0.12);
+			return;
+		}
 		Light.ray(level, c.add(0, 4, 0), c, TIME, 0.18, 8);
 		Sigils.flash(level, c, TIME, 2.0F);
 		Light.ring(level, c, UP, TIME, 0.2, 1.6, 0.06, 9);
 		Vfx.radial(level, ParticleTypes.END_ROD, c, 10, 0.18);
-		Fx.sound(level, c, SoundEvents.BELL_BLOCK, 0.8F, 1.5F);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "time_strike", 1.0F, 1.0F);
 	}
 
 	/** Jolt: arcs crackling over the target and a ring pinning it. */
@@ -823,8 +851,13 @@ final class ExpansionVfx {
 		Sigils.flash(level, b, VOID, 1.8F);
 		Light.ring(level, b, UP, VOID, 0.1, Math.max(1.0, t.getBbWidth() + 0.6), 0.06, 8);
 		Vfx.radial(level, ParticleTypes.PORTAL, b, 14, 0.3);
-		Fx.sound(level, a, SoundEvents.ENDERMAN_TELEPORT, 0.7F, 0.8F);
-		Fx.sound(level, b, SoundEvents.CHORUS_FRUIT_TELEPORT, 0.6F, 1.2F);
+		// The target comes apart into dots that stream to the landing (and re-form there).
+		Vec3 d = b.subtract(a);
+		for (int i = 1; i < 8; i++) {
+			Vec3 p = a.add(d.scale(i / 8.0));
+			Scheduler.later(i / 2, () -> Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, p, 2, 0.15, 0.02));
+		}
+		dev.wildercord.cast.feel.Feels.sound(level, a, "void_banish_dissolve", 0.9F, 1.0F);
 	}
 
 	static void banishResisted(ServerLevel level, Entity t) {

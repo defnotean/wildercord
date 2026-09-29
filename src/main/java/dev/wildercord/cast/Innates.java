@@ -130,6 +130,11 @@ public final class Innates {
 
 	private record Debt(float left, float perSecond, long until) {}
 
+	/** What Borrowed Time is repaid with: the sum borrowed, and a fifth again. */
+	private static final float BORROW_INTEREST = 1.2F;
+	/** What each afterimage has soaked so far, by its body: it bursts harder for it. */
+	private static final Map<UUID, Float> SOAKED = new HashMap<>();
+
 	private record SpellHit(SpellPlan.Segment root, long time) {}
 
 	private record Afterimage(Mannequin body, LivingEntity caster, long until, double power) {}
@@ -161,6 +166,9 @@ public final class Innates {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
 			if (damage <= 0 || !(entity.level() instanceof ServerLevel level)) {
 				return;
+			}
+			if (entity instanceof Mannequin && entity.entityTags().contains(AFTERIMAGE_TAG)) {
+				SOAKED.merge(entity.getUUID(), damage, Float::sum);
 			}
 			long now = level.getGameTime();
 			if (!repaying && entity instanceof ServerPlayer player && player.getAttachedOrElse(WildercordAttachments.INNATE, "").equals(Runes.BORROWED_TIME.id())) {
@@ -196,7 +204,7 @@ public final class Innates {
 			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A));
-				TechniqueVfx.timeResumes(player.level(), player, 0);
+				TimeFx.stasisRelease(player.level(), player, 0);
 			}
 		});
 		ServerTickEvents.END_SERVER_TICK.register(Innates::tick);
@@ -227,6 +235,7 @@ public final class Innates {
 			LAST_SPELL_ON.clear();
 			FORTUNE.clear();
 			AFTERIMAGES.clear();
+			SOAKED.clear();
 			STORMHEART.clear();
 			STORM_LAST.clear();
 		});
@@ -461,21 +470,25 @@ public final class Innates {
 					owed += hurt[1];
 				}
 			}
-			history.clear();
 		}
+		// Only what can really be mended is borrowed: health that has already come back is nothing to repay.
+		owed = Math.min(owed, Math.max(0.0F, player.getMaxHealth() - player.getHealth()));
 		if (owed < 0.5F) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.nothing_borrowed"));
 			return;
 		}
+		if (history != null) {
+			history.clear();
+		}
 		player.heal(owed);
-		// Borrowing again adds to what's still owed (it never wipes it), and the whole of it is paid over the next ten seconds.
+		// Borrowing again adds to what's still owed (it never wipes it), and the whole of it, with a fifth on top, is paid over the next ten seconds.
 		Debt old = DEBTS.get(player.getUUID());
-		float total = owed + (old == null ? 0 : old.left());
+		float total = owed * BORROW_INTEREST + (old == null ? 0 : old.left());
 		DEBTS.put(player.getUUID(), new Debt(total, total / 10F, now + 200));
 		TechniqueVfx.rewind(player.level(), player.position(), player.position());
 		ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
 		ElementFx.groundRing(player.level(), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
-		Fx.sound(player.level(), player.position(), SoundEvents.BELL_BLOCK, 0.8F, 1.5F);
+		dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "time_sand", 0.9F, 1.0F);
 		player.sendOverlayMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A));
 	}
 
@@ -590,7 +603,7 @@ public final class Innates {
 		ElementFx.implode(level, body.getBoundingBox().getCenter(), 1.4, 8);
 		ElementFx.groundRing(level, body.position(), ElementFx.VOID.primary(), 0.2, 1.6, 0.05, 12);
 		Vfx.emit(level, ParticleTypes.SOUL, body.getBoundingBox().getCenter(), 8, 0.3, 0.03);
-		Fx.sound(level, body.position(), SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, body.position(), "void_phantom_form", 1.0F, 1.0F);
 		taunt(level, body);
 	}
 
@@ -603,16 +616,18 @@ public final class Innates {
 	private static void burst(ServerLevel level, Afterimage image) {
 		Vec3 c = image.body().getBoundingBox().getCenter();
 		Cast cast = new Cast(image.caster());
+		// Bait and revenge: it pays back 1 for every 6 it soaked (up to 8 more).
+		double soaked = Math.min(8.0, Math.floor(SOAKED.getOrDefault(image.body().getUUID(), 0.0F) / 6.0F));
+		SOAKED.remove(image.body().getUUID());
 		for (Entity e : level.getEntities(image.body(), new AABB(c, c).inflate(3), e -> Targets.canHarm(image.caster(), e))) {
-			Effects.hurt(cast, (LivingEntity) e, level.damageSources().indirectMagic(image.caster(), image.caster()), 8 * image.power());
+			Effects.hurt(cast, (LivingEntity) e, level.damageSources().indirectMagic(image.caster(), image.caster()), (8 + soaked) * image.power());
 		}
 		Sigils.flash(level, c, 0xFFB45AF0, 2.0F);
 		ElementFx.voidImpact(level, c, 2.0);
 		ElementFx.blackCore(level, c, 0.35, 8);
 		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 20, 0.5);
 		Vfx.radial(level, ParticleTypes.SOUL, c, 10, 0.2);
-		Fx.sound(level, c, SoundEvents.ENDER_EYE_DEATH, 1.0F, 0.7F);
-		Fx.sound(level, c, SoundEvents.GLASS_BREAK, 0.7F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "void_phantom_burst", 1.0F, 1.0F);
 		image.body().discard();
 	}
 
@@ -716,6 +731,11 @@ public final class Innates {
 					}
 					continue;
 				}
+				long remaining = image.until() - level.getGameTime();
+				// The decoy's fuse quickens: a tick every half second, then every quarter, then every tenth of the last second.
+				if (level.getGameTime() % 10 == 0 || (remaining <= 40 && level.getGameTime() % 5 == 0) || (remaining <= 20 && level.getGameTime() % 2 == 0)) {
+					dev.wildercord.cast.feel.Feels.sound(level, body.position(), "void_phantom_tick", 0.8F, 1.0F + (float) (0.5 * (1.0 - Math.max(0, remaining) / 80.0)));
+				}
 				if (level.getGameTime() % 10 == 0) {
 					taunt(level, body);
 					ElementFx.groundRing(level, body.position(), ElementFx.VOID.primary(), 0.9, 0.5, 0.035, 11);
@@ -740,9 +760,12 @@ public final class Innates {
 						it.remove();
 						continue;
 					}
-					float pay = Math.min(debt.left(), debt.perSecond());
+					// A payment never kills: it stops a heart short and waits.
+					float pay = Math.min(Math.min(debt.left(), debt.perSecond()), Math.max(0.0F, player.getHealth() - 1.0F));
 					entry.setValue(new Debt(debt.left() - pay, debt.perSecond(), debt.until()));
-					payments.put(player, pay);
+					if (pay > 0) {
+						payments.put(player, pay);
+					}
 				}
 				// Paid after the sweep: a payment can kill, and a death (or a monster Rebirth's blast slays) changes the debts.
 				payments.forEach((player, pay) -> {
@@ -755,7 +778,8 @@ public final class Innates {
 						echoing = false;
 						repaying = false;
 					}
-					ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.4, 3);
+					// A coin of gold falls from you with a low tock: every payment is heard.
+					TimeFx.coin(player.level(), player);
 				});
 			}
 			THREADS.values().removeIf(t -> now > t.until());

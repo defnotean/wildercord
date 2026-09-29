@@ -188,6 +188,19 @@ final class Techniques {
 			cast.caster.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 120, 0, false, true));
 			cast.caster.addEffect(new MobEffectInstance(MobEffects.SPEED, 120, 0, false, true));
 			Reactions.callout(cast, "blackspark", 0xD2283C);
+			// The spark arcs on to the next enemy near it.
+			LivingEntity next = null;
+			double best = Double.MAX_VALUE;
+			for (net.minecraft.world.entity.Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(4.0), e2 -> Targets.canHarm(cast.caster, e2))) {
+				double d = e.distanceToSqr(t);
+				if (d < best) {
+					best = d;
+					next = (LivingEntity) e;
+				}
+			}
+			if (next != null) {
+				Effects.hurt(cast, next, magic(cast), 8 * power);
+			}
 		}
 	}
 
@@ -326,7 +339,7 @@ final class Techniques {
 		}
 		BLACKFLAME.put(t.getUUID(), until);
 		TechniqueVfx.blackflame(cast.level, t);
-		Fx.sound(cast.level, t.position(), SoundEvents.SOUL_ESCAPE, 0.8F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "void_black_ignite", 1.0F, 1.0F);
 		boolean[] spent = {false};
 		burnTick(cast, t, power, spread, spent);
 	}
@@ -368,7 +381,17 @@ final class Techniques {
 	 * Up to three centres per application, so a crowd hit by a Burst still reads clearly.
 	 */
 	static void hollow(Cast cast, Cast.Hit hit, List<LivingEntity> harmed, double radius, double power) {
-		List<LivingEntity> centres = harmed.isEmpty() ? new ArrayList<>() : new ArrayList<>(harmed.subList(0, Math.min(3, harmed.size())));
+		// One centre: the creature the spell struck (nearest the point it landed); everything else near it is only dragged in.
+		List<LivingEntity> centres = new ArrayList<>();
+		if (!harmed.isEmpty()) {
+			LivingEntity best = harmed.getFirst();
+			for (LivingEntity h : harmed) {
+				if (h.distanceToSqr(hit.point()) < best.distanceToSqr(hit.point())) {
+					best = h;
+				}
+			}
+			centres.add(best);
+		}
 		List<Vec3> points = new ArrayList<>();
 		centres.forEach(t -> points.add(t.getBoundingBox().getCenter()));
 		if (points.isEmpty()) {
@@ -377,7 +400,16 @@ final class Techniques {
 		for (int i = 0; i < points.size(); i++) {
 			Vec3 c = points.get(i);
 			LivingEntity direct = i < centres.size() ? centres.get(i) : null;
+			// A repeating shape (Zone, Pulse, Echo) does not erase the same creature again within one cast.
+			if (direct != null ? !VoidTime.once(cast, "hollow", direct, 100) : !VoidTime.onceAt(cast, "hollow", c, 100)) {
+				continue;
+			}
 			TechniqueVfx.hollow(cast.level, c, radius);
+			if (direct != null && !Spirits.isBoss(direct) && !VoidTime.anchored(direct)) {
+				// Erased for the wind-up: it is gone from the fight until the cut lands.
+				direct.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 8, 0, false, false));
+				Spirits.hold(direct, 8);
+			}
 			Scheduler.later(6, () -> {
 				if (!cast.alive()) {
 					return;
@@ -690,11 +722,14 @@ final class Techniques {
 
 	/** Accelerate: time runs faster for the target. */
 	static void accelerate(Cast cast, LivingEntity t, int ticks, int amplify) {
-		t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, Math.min(4, 2 + amplify), false, true));
+		t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, Math.min(4, 1 + amplify), false, true));
+		// Haste III is the mark of hurried time: it fills your charge faster and speeds your Bolts (see VoidTime.hurried).
 		t.addEffect(new MobEffectInstance(MobEffects.HASTE, ticks, Math.min(4, 2 + amplify), false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks, 0, false, true));
 		TechniqueVfx.accelerate(cast.level, t);
+		// Time slowing back to its own pace: a ring closes on the waist and a tick.
+		TimeFx.endingLater(cast.level, t, ticks, TimeFx.gold(), "time_tick", 0.6F);
 	}
 
 	// ------------------------------------------------------------------ movement
@@ -715,9 +750,14 @@ final class Techniques {
 
 	/** Swap: you and the target trade places. */
 	static void swap(Cast cast, Cast.Hit hit) {
+		swap(cast, hit, true);
+	}
+
+	/** Swap with or without its own arcane show (Warp draws its own). */
+	static void swap(Cast cast, Cast.Hit hit, boolean show) {
 		LivingEntity caster = cast.caster;
 		LivingEntity target = partner(cast, hit);
-		if (target == null) {
+		if (target == null || VoidTime.anchored(target)) {
 			return;
 		}
 		Vec3 a = caster.position();
@@ -728,7 +768,9 @@ final class Techniques {
 		}
 		teleport(caster, cast.level, b, caster.getYRot(), caster.getXRot());
 		teleport(target, cast.level, a, target.getYRot(), target.getXRot());
-		TechniqueVfx.swap(cast.level, a, b);
+		if (show) {
+			TechniqueVfx.swap(cast.level, a, b);
+		}
 	}
 
 	/** Zipper: steps you through the wall you're facing (up to 6 blocks thick). */
@@ -773,6 +815,10 @@ final class Techniques {
 				AABB landing = caster.getDimensions(caster.getPose()).makeBoundingBox(feet);
 				if (fits(level, caster, feet) && !Effects.scorching(level, landing.expandTowards(0, -3, 0))
 						&& level.getWorldBorder().isWithinBounds(feet.x, feet.z)) {
+					if (!mayPass(caster, level, BlockPos.containing(entry), BlockPos.containing(feet))) {
+						Casters.tell(caster, Component.translatable("message.wildercord.zipper_claimed"));
+						return;
+					}
 					teleport(caster, level, feet, caster.getYRot(), caster.getXRot());
 					TechniqueVfx.zipper(level, entry, feet.add(0, eyeHeight * 0.6, 0), dir);
 					return;
@@ -780,6 +826,20 @@ final class Techniques {
 			}
 		}
 		Casters.tell(caster, Component.translatable("message.wildercord.zipper_thick"));
+	}
+
+	/** Whether the wall a Zipper opens, and the ground it opens onto, are ones the caster may go through (spawn protection, claims). */
+	private static boolean mayPass(LivingEntity caster, ServerLevel level, BlockPos wall, BlockPos out) {
+		if (!(caster instanceof ServerPlayer player)) {
+			return true;
+		}
+		for (BlockPos pos : new BlockPos[] {wall, out}) {
+			if (!level.mayInteract(player, pos) || !net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.BEFORE.invoker()
+					.beforeBlockBreak(level, player, pos, level.getBlockState(pos), level.getBlockEntity(pos))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/** Shadowstep: you reappear right behind the target, facing its back. */
@@ -803,6 +863,8 @@ final class Techniques {
 			float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));
 			teleport(caster, cast.level, spot, yaw, 15.0F);
 			caster.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 15, 0, false, false));
+			// You are behind it: the next blow you land on it within 3 s is half again as hard.
+			VoidTime.backstab(caster, target);
 			TechniqueVfx.shadowstep(cast.level, from, spot);
 			return;
 		}
@@ -840,6 +902,10 @@ final class Techniques {
 		}
 		teleport(caster, level, end, caster.getYRot(), caster.getXRot());
 		caster.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 30, 0, false, false));
+		// A second of time skipped: nothing can hurt you as you come out (not again for 5 s).
+		if (VoidTime.skipReady(caster)) {
+			caster.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 15, 4, false, true));
+		}
 		for (Entity e : level.getEntities(caster, caster.getBoundingBox().inflate(16.0), e -> e instanceof Mob)) {
 			Mob mob = (Mob) e;
 			if (mob.getTarget() == caster) {

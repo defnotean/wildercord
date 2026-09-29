@@ -82,8 +82,7 @@ public final class Spirits {
 	/** Shades: black shadow hounds that trail darkness instead of glowing. */
 	public static void summonShades(Cast cast, Vec3 around, int count, double power, double duration) {
 		spawnSpirits(cast, around, count, power, duration, true);
-		Fx.sound(cast.level, around, SoundEvents.WOLF_GROWL_BABY, 1.0F, 0.5F);
-		Fx.sound(cast.level, around, SoundEvents.SOUL_ESCAPE, 1.0F, 0.6F);
+		// The hounds growl in shadeRise (once each, from the kit); nothing borrowed from the baby wolf.
 	}
 
 	private static void spawnSpirits(Cast cast, Vec3 around, int wanted, double power, double duration, boolean shadow) {
@@ -98,7 +97,7 @@ public final class Spirits {
 			Vfx.emit(level, ParticleTypes.POOF, around.add(0, 1, 0), 8, 0.3, 0.02);
 			return;
 		}
-		int lifetime = (int) Math.round(20 * 20 * duration);
+		int lifetime = (int) Math.round((shadow ? 15 : 20) * 20 * duration);
 		LivingEntity target = caster.getLastHurtMob() != null && caster.getLastHurtMob().isAlive() ? caster.getLastHurtMob() : null;
 		for (int i = 0; i < count; i++) {
 			Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.MOB_SUMMONED);
@@ -113,17 +112,22 @@ public final class Spirits {
 				level.registryAccess().lookupOrThrow(Registries.WOLF_VARIANT).get(WolfVariants.BLACK)
 					.ifPresent(variant -> wolf.setComponent(DataComponents.WOLF_VARIANT, variant));
 				wolf.setCustomName(Component.translatable("entity.wildercord.shadow_hound").withColor(0x9A6AD0));
+				// Frail and only strong in the dark: 20 health, and Strength only where the light is 7 or less (see the aura below).
+				wolf.addTag(VoidTime.SHADE_TAG);
+				wolf.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH).setBaseValue(20.0);
+				wolf.setHealth(20.0F);
 			} else {
 				wolf.setCustomName(Component.translatable("entity.wildercord.spirit_wolf").withColor(0xE678DC));
 				wolf.addEffect(new MobEffectInstance(MobEffects.GLOWING, lifetime, 0, false, false));
 			}
 			wolf.addEffect(new MobEffectInstance(MobEffects.SPEED, lifetime, 1, false, false));
-			// Shades hit as they always did; a spirit wolf bites for a wolf's 4 unless the spell is Amplified (Strength I from one Amplify).
-			int strength = (int) Math.round(power) - (shadow ? 0 : 2);
-			if (strength >= 0) {
-				wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, strength, false, false));
-			}
+			// Shades are frail: no Strength by default, only in dim light (the aura loop below). A spirit wolf bites for a wolf's 4 unless
+			// the spell is Amplified (Strength I from one Amplify).
 			if (!shadow) {
+				int strength = (int) Math.round(power) - 2;
+				if (strength >= 0) {
+					wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, strength, false, false));
+				}
 				PACKS.computeIfAbsent(caster.getUUID(), k -> new java.util.ArrayList<>()).add(wolf);
 			}
 			wolf.setAttached(WildercordAttachments.SPIRIT_UNTIL, level.getGameTime() + lifetime);
@@ -137,6 +141,9 @@ public final class Spirits {
 					Scheduler.later(t, () -> {
 						if (!wolf.isRemoved()) {
 							TechniqueVfx.shadeAura(level, wolf);
+							if (level.getMaxLocalRawBrightness(wolf.blockPosition()) <= 7 || VoidTime.darkened(wolf)) {
+								wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 25, (int) Math.max(0, Math.round(power) - 1), false, false));
+							}
 						}
 					});
 				}

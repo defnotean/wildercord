@@ -51,6 +51,20 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - The **Cord screen's mana badge** lists the gear that counts, wherever it is; a gear tooltip now says which slot it
   goes in.
 - For add-on makers: `api.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` (API 1.1).
+- **Void and time look and sound like themselves.** Forty-eight new sounds (`void_*`, `time_*`: a hook, a corral, a snap, an
+  unzip, a shriek, a chomp, a black flame's heartbeat, a clock's fuse, a run of hurried ticks, a stopped world and the crack
+  of it starting again, a coin of borrowed time, a quill in the ledger...) replace the vanilla noises the runes used to
+  borrow, and every void and time rune now announces itself the instant the hand moves (the element's own cast swell peaks
+  nearly a second late). Each rune has its own shape as well: Pull is a taut tether, Gravity Well a wide disc of dust drawn
+  in along the ground, Riftcall an upright slit, Hollow a sphere cut out of the world, Shadowstep a smear, Grapple a
+  dotted rope that tightens, Warp two spirals that trade colours, Warp Step leaves a return sigil that counts down and snaps
+  you back, Zipper's teeth close behind you, Eclipse is a filled dark disc with a corona, Wither climbs as black veins,
+  Umbra rakes three claws in the dark, Anchor clanks when a push is refused. Time's faces now stand upright and turn to
+  you (Countdown, Doomclock), Foresight is a halo with a pip for each blow it will sidestep, Time Skip flickers gold
+  (never crimson), Rewind lights the way back in reverse, Stasis is a column of frozen sand with a shard for each blow
+  held, Prolong an hourglass, Timesteal a thread of sand, and a Borrowed Time payment is a coin. Timed effects now end with
+  a cue (Hex, Veil, Anchor, Accelerate, Foresight, Hush, Eclipse, Infinity), and a crowd can no longer flood the wire
+  (Countdown and Stasis draw eight in full per tick; Entropy ticks once a cast).
 
 ### Changed
 - **Every storm and earth spell looks and sounds like itself.** Each has its own synthesised sound instead of borrowed
@@ -155,7 +169,6 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
     **Transfusion**, **Lifesteal** (each thing done to its target sends a mote of blood to you) and **Blood Thread**
     (taut threads, a pulse and a twang up the scale for each share) each have their own.
   - A crowd never multiplies the show: a crowd catching fire, bleeding or being rended shows a few of each, not one each.
-
 - **Frost and wind runes each do their own thing.** Chill deepens if you Chill again (Slowness II, III, IV). Frost
   leaves a target brittle for Shatter. Icicle hits harder on a slowed target and melts after 2 seconds. Hail is five
   staggering stones. Hoarfrost creeps for 3 seconds, freezes solid, and blooms onto neighbours. Bubble lifts its
@@ -236,6 +249,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Water runes were audible in quiet places where they shouldn't be; Tidecall and Tidewrit are now quiet like the rest.
 - Casting Hoarfrost or Bubble repeatedly stacked their damage; each is now once per target at a time.
 - Several frost and wind rune descriptions no longer matched what the runes do.
+- **Borrowed Time** no longer repays health it never healed: only what you were missing is borrowed.
+- **Foresight** no longer refills its dodges when the same spell lands again (a Zone, a Pulse or an Echo of it).
+- **Hollow, Doomclock, Dragon Breath, Gravity Well, Riftcall and Eclipse** no longer stack on crowds or under a repeating
+  shape: a creature takes each once per cast, so a pack no longer takes 180 damage from one Hollow.
+- **Collect** takes 48 things at most, and makes a small fizzle when there is nothing to take.
+- **Rewind** will not put you into lava, a wall or thin air.
+- **Zipper** will not open a wall you may not build in (a claim, spawn protection).
+- **Malison** no longer plays its cast sound twice; Umbra's ring uses the dark tint like the rest of void.
+- **Warp's** description now mentions the Nausea it causes.
 
 ## [0.5.0-alpha] - 2026-09-29
 

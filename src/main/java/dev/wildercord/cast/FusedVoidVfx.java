@@ -87,8 +87,10 @@ final class FusedVoidVfx {
 		fray(level, t, 6);
 		dial(level, t, facing(t, caster), 0, steps, 22);
 		ElementFx.goldenTicks(level, c, 0.3, 4);
-		Fx.sound(level, c, WildercordSounds.cast("void"), 0.7F, 0.8F);
-		Fx.sound(level, c, SoundEvents.NOTE_BLOCK_HAT, 0.7F, 1.4F);
+		// One tick a cast, however many targets: the kit's rising tick (each wound of the ramp is a step higher).
+		if (TimeFx.allow(level, "entropy_tick", 1)) {
+			dev.wildercord.cast.feel.Feels.sound(level, c, "void_entropy_tick", 0.9F, 1.0F);
+		}
 	}
 
 	/** Struck again while it frays: the dial winds back up to its full count of pips. */
@@ -97,7 +99,9 @@ final class FusedVoidVfx {
 		dial(level, t, face, step, last, 14);
 		ElementFx.ring(level, dialCentre(t), face, ElementFx.TIME.secondary(), dialRadius(t) * 1.6, dialRadius(t), 0.04, 7);
 		fray(level, t, 3);
-		Fx.sound(level, centre(t), SoundEvents.NOTE_BLOCK_HAT, 0.5F, 1.8F);
+		if (TimeFx.allow(level, "entropy_tick", 1)) {
+			dev.wildercord.cast.feel.Feels.sound(level, centre(t), "void_entropy_tick", 0.7F, dev.wildercord.cast.feel.Feels.step(Math.min(5, step)));
+		}
 	}
 
 	/** One second of unravelling: a pip goes dark, the hand ticks on, and the target frays a little more (the last time, the dial collapses). */
@@ -109,8 +113,9 @@ final class FusedVoidVfx {
 		}
 		fray(level, t, Math.min(12, 3 + 2 * step));
 		ElementFx.ring(level, c, ElementFx.tilted(1.0, level.getRandom().nextDouble() * Math.PI * 2), HOLE, girth(t) + 0.5, 0.1, 0.06, 7);
-		Fx.sound(level, c, SoundEvents.NOTE_BLOCK_HAT, 0.8F, step % 2 == 0 ? 1.05F : 1.3F);
-		Fx.sound(level, c, SoundEvents.SOUL_ESCAPE, 0.5F, 0.55F + 0.07F * Math.min(5, step));
+		if (TimeFx.allow(level, "entropy_tick", 1)) {
+			dev.wildercord.cast.feel.Feels.sound(level, c, "void_entropy_tick", 0.9F, dev.wildercord.cast.feel.Feels.step(Math.min(5, step)));
+		}
 		if (end) {
 			Vec3 top = dialCentre(t);
 			double r = dialRadius(t);
@@ -119,7 +124,6 @@ final class FusedVoidVfx {
 			ElementFx.blackCore(level, c, 0.2 + 0.15 * girth(t), 10);
 			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, c, 14, 0.18);
 			Motes.clouds(level, c, 4, girth(t) * 0.4, SMOKE, 1.0, 34, new Vec3(0, 0.03, 0), 0.03, 0.55);
-			Fx.sound(level, c, SoundEvents.BELL_RESONATE, 0.6F, 0.5F);
 			Fx.sound(level, c, WildercordSounds.impact("void"), 0.7F, 0.7F);
 		}
 	}
@@ -184,7 +188,6 @@ final class FusedVoidVfx {
 			jaws(level, c, r, h, phase, 0.0);
 			Scheduler.later(2, () -> jaws(level, c, r, h, phase, 0.5));
 			Scheduler.later(4, () -> jaws(level, c, r, h, phase, 1.0));
-			Fx.sound(level, c, SoundEvents.WARDEN_HEARTBEAT, 0.6F, 0.7F);
 		}
 		Scheduler.later(full ? 5 : 1, () -> bite(level, c, r, killed));
 	}
@@ -213,12 +216,10 @@ final class FusedVoidVfx {
 		ElementFx.ring(level, c, UP, ElementFx.BLOOD.primary(), r * 1.2, 0.1, 0.06, 6);
 		ElementFx.pulse(level, c, UP, r * 0.9);
 		ElementFx.drip(level, c, 0.3, 6);
-		Fx.sound(level, c, SoundEvents.EVOKER_FANGS_ATTACK, 0.9F, 0.7F);
-		Fx.sound(level, c, WildercordSounds.impact("void"), 0.6F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "void_chomp", killed ? 1.0F : 0.8F, killed ? 0.9F : 1.1F);
 		if (killed) {
 			ElementFx.implode(level, c, r * 2.2, 10);
 			Vfx.radial(level, ParticleTypes.SQUID_INK, c, 8, 0.12);
-			Fx.sound(level, c, SoundEvents.GENERIC_EAT, 1.0F, 0.6F);
 		}
 	}
 
@@ -275,12 +276,13 @@ final class FusedVoidVfx {
 		boolean took = !stolen.isEmpty();
 		Vec3 reach = took ? to : c.add(point.scale(Math.min(2.0, c.distanceTo(to) * 0.4)));
 		ElementFx.ray(level, c.add(point.scale(r)), reach, ElementFx.TIME.primary(), took ? 0.03 : 0.02, 14);
-		Fx.sound(level, c, SoundEvents.BELL_RESONATE, 0.5F, 1.6F);
 		if (!took) {
 			ElementFx.goldenTicks(level, c, 0.3, 4);
-			Fx.sound(level, c, SoundEvents.NOTE_BLOCK_HAT, 0.6F, 0.6F);
+			dev.wildercord.cast.feel.Feels.sound(level, c, "time_sand", 0.6F, 0.8F);
 			return;
 		}
+		// A thread of sand joins the one robbed to the thief, and the sand runs as long as the sound does.
+		TimeFx.sandThread(level, c, to, ElementFx.TIME.primary());
 		RandomSource random = level.getRandom();
 		for (int i = 0; i < stolen.size(); i++) {
 			int colour = stolen.get(i);
@@ -290,7 +292,7 @@ final class FusedVoidVfx {
 			Motes.seek(level, from, to, colour, 0.38, 14, i % 2 == 0 ? 0.5 : -0.5);
 			Motes.seek(level, from, to, WHITE, 0.14, 14, i % 2 == 0 ? -0.5 : 0.5);
 		}
-		Fx.sound(level, c, SoundEvents.TRIDENT_RETURN, 0.8F, 1.3F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "time_sand", 1.0F, 1.0F);
 		Scheduler.later(14, () -> {
 			if (!caster.isAlive() || caster.level() != level) {
 				return;
@@ -301,7 +303,6 @@ final class FusedVoidVfx {
 				Motes.burst(level, centre(caster), 4, stolen.get(i), 0.12, 18, 0.25);
 			}
 			ElementFx.goldenTicks(level, centre(caster), 0.4, 5);
-			Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.3F);
 		});
 	}
 
@@ -394,7 +395,7 @@ final class FusedVoidVfx {
 			Vec3 d = ElementFx.inPlane(face, Math.PI / 2 - Math.PI * 2 * (wounds - 1) / 12.0);
 			ElementFx.ray(level, s.add(d.scale(r * 0.84)), s.add(d.scale(r * 1.08)), ElementFx.BLOOD.secondary(), 0.04, life);
 		}
-		Fx.sound(level, s, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, 0.5F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, s, "time_scratch", 0.7F, 1.0F);
 	}
 
 	/**
@@ -460,9 +461,7 @@ final class FusedVoidVfx {
 		ElementFx.implode(level, centre, 1.8, 8);
 		Sigils.flash(level, centre, HOLE, 2.2F);
 		Light.ring(level, centre, disk, ElementFx.VOID.primary(), radius, core(0) * 1.5, 0.06, 12);
-		Fx.sound(level, centre, WildercordSounds.cast("void"), 1.0F, 0.5F);
-		Fx.sound(level, centre, SoundEvents.BEACON_ACTIVATE, 0.9F, 0.5F);
-		Fx.sound(level, centre, SoundEvents.PORTAL_TRIGGER, 0.35F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "void_corral", 1.1F, 0.8F);
 	}
 
 	/**
@@ -521,9 +520,8 @@ final class FusedVoidVfx {
 		Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, centre, 28, 0.7);
 		Motes.burst(level, centre, 18, ElementFx.VOID.secondary(), 0.14, 26, 0.5);
 		ScreenFx.shake(level, centre, 0.7F, radius * 3);
-		Fx.sound(level, centre, SoundEvents.GENERIC_EXPLODE, 0.9F, 0.55F);
-		Fx.sound(level, centre, SoundEvents.WARDEN_SONIC_BOOM, 0.5F, 1.5F);
-		Fx.sound(level, centre, WildercordSounds.impact("void"), 1.0F, 0.6F);
+		Fx.sound(level, centre, SoundEvents.GENERIC_EXPLODE, 0.7F, 0.55F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "void_snap", 1.2F, 0.8F);
 	}
 
 	/** A creature flung out of the burst: a violet streak where it was. */
@@ -622,11 +620,7 @@ final class FusedVoidVfx {
 			});
 		}
 		ElementFx.goldenTicks(level, c, 0.4, 5);
-		Fx.sound(level, feet, SoundEvents.VAULT_OPEN_SHUTTER, 0.7F, 1.5F);
-		Fx.sound(level, feet, WildercordSounds.cast("time"), 0.6F, 1.2F);
-		if (turned > 0) {
-			Fx.sound(level, feet, SoundEvents.BELL_BLOCK, 0.4F, 1.8F);
-		}
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "time_wind", 1.0F, 1.0F);
 	}
 
 	/** A cog of light lying on the ground: an eight-pointed star turning inside a band that cuts its points into teeth, round a small hub. */
