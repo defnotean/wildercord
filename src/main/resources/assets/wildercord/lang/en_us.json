@@ -545,7 +545,7 @@
   "rune.wildercord.twin_star": "Twin Star",
   "rune.wildercord.twin_star.desc": "Your next spell within 6 seconds is cast twice.",
   "rune.wildercord.borrowed_time": "Borrowed Time",
-  "rune.wildercord.borrowed_time.desc": "Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay something.",
+  "rune.wildercord.borrowed_time.desc": "Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay a monster.",
   "rune.wildercord.gale_mantle": "Gale Mantle",
   "rune.wildercord.gale_mantle.desc": "For 12 seconds, jump again in midair to dash forward (up to 3 dashes).",
   "rune.wildercord.stoneform": "Stoneform",

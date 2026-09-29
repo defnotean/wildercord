@@ -338,7 +338,7 @@ One wakes in each caster's heart at the 1st Circle, chosen at random, and grows 
 | Rune | Element | Does |
 |---|---|---|
 | Blood Thread | Blood | Threads everything hit together for 8 seconds: half of any damage one of them takes is dealt to the rest. |
-| Borrowed Time | Time | Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay something. |
+| Borrowed Time | Time | Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay a monster. |
 | Fortune | Life | For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple. |
 | Gale Mantle | Wind | For 12 seconds, jump again in midair to dash forward (up to 3 dashes). |
 | Kindling | Fire | 3 fire damage and a stack of Kindling. The fifth stack ignites: 10 damage in a 3-block burst. |

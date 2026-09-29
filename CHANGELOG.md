@@ -42,6 +42,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ### Changed
 - Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
+- Borrowed Time says its debt is forgiven when you slay a monster, as it always was (it said "something": killing an
+  animal never forgave it).
 
 ## [0.4.2-alpha] - 2026-09-28
 
