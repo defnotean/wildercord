@@ -22,6 +22,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   for free, a seed out of nothing every time. Now one of the crop's own seeds goes back into the ground (a crop
   that dropped none isn't replanted), and a crop you may not touch (in a claim) no longer stops it harvesting the
   rest of the field.
+- **Grow keeps to the spell's block budget.** Every other rune that changes blocks counts each one against the
+  blocks a cast may change (32, or the server's `max_blocks_per_cast`), but Grow bone-mealed every block it
+  reached, however many times a Zone, a Split or an Echo landed it.
 
 ## [0.4.2-alpha] - 2026-09-28
 

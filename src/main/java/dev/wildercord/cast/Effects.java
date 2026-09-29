@@ -1111,6 +1111,10 @@ public final class Effects {
 					|| !Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
 				continue;
 			}
+			// Each block it grows comes out of the cast's block budget, as every other change to the world does.
+			if (!cast.takeBlock()) {
+				break;
+			}
 			boolean grew = false;
 			for (int i = 0; i < times; i++) {
 				grew |= BoneMealItem.growCrop(new ItemStack(Items.BONE_MEAL), cast.level, p);
