@@ -447,6 +447,29 @@ public class WildercordGearTest implements FabricClientGameTest {
 			});
 			check(switchedOff == null, switchedOff);
 
+			// The server's cost multiplier prices a scroll too: twice what the spell costs to cast, as the Cord screen shows it.
+			String costly = WildercordConfig.DEFAULTS.toJson().replace("\"cost_multiplier\": 1.0", "\"cost_multiplier\": 3.0");
+			check(costly.contains("\"cost_multiplier\": 3.0"), "the default file should list mana.cost_multiplier");
+			write(path, costly);
+			world.getServer().runCommand("wildercord reload");
+			context.waitTicks(2);
+			String scroll = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = player(server);
+				ready(player, new ItemStack(WildercordItems.ECHO_CORD));
+				SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.HEAL));
+				player.getInventory().add(new ItemStack(Items.PAPER));
+				player.getInventory().add(new ItemStack(Items.INK_SAC));
+				float before = Spellbooks.mana(player);
+				dev.wildercord.content.SpellScrollItem.inscribe(player, 0);
+				float spent = before - Spellbooks.mana(player);
+				SpellCompiler.Compiled heal = SpellCompiler.compile(List.of(Runes.SELF, Runes.HEAL));
+				int cast = Heart.manaCost(player, heal);
+				player.getInventory().clearContent();
+				return cast > heal.manaCost() && Math.abs(spent - 2 * cast) < 0.01F ? null
+					: "with cost_multiplier 3, a scroll should cost twice the spell's price of " + cast + " (it took " + spent + ")";
+			});
+			check(scroll == null, scroll);
+
 			write(path, WildercordConfig.DEFAULTS.toJson());
 			world.getServer().runCommand("wildercord reload");
 			context.waitTicks(2);

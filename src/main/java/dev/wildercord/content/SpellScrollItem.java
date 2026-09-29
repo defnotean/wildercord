@@ -66,7 +66,9 @@ public class SpellScrollItem extends Item {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.spell_empty", spell + 1).withStyle(ChatFormatting.RED));
 			return;
 		}
-		int cost = 2 * Math.max(1, compiled.manaCost());
+		// Twice what casting it would cost this player now, as the Cord screen shows it (the server's cost multiplier,
+		// discounts, a found secret's price), not the bare price of its runes.
+		int cost = 2 * Math.max(1, Heart.manaCost(player, compiled, Heart.secretCost(player, runes)));
 		boolean creative = player.isCreative();
 		if (!creative) {
 			if (!has(player, Items.PAPER) || !has(player, Items.INK_SAC) && !has(player, Items.GLOW_INK_SAC)) {
