@@ -67,6 +67,7 @@ final class Techniques {
 			}
 			server.levelEvent(2001, pos, Block.getId(state));
 			server.setBlockAndUpdate(pos, replaced);
+			TemporaryBlocks.remove(server, pos);
 			return false;
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(Techniques::crumbleAll);
@@ -664,6 +665,7 @@ final class Techniques {
 			columns.add(BlockPos.containing(c.x, base.y + 0.01, c.z));
 		}
 		Fx.sound(level, base, SoundEvents.MACE_SMASH_GROUND, 0.8F, 0.7F);
+		long due = level.getGameTime() + ticks;
 		for (int row = 0; row < 3; row++) {
 			int r = row;
 			Scheduler.later(1 + row * 2, () -> {
@@ -673,13 +675,16 @@ final class Techniques {
 				for (BlockPos column : columns) {
 					BlockPos p = column.above(r);
 					BlockState state = level.getBlockState(p);
-					if (!state.canBeReplaced() || !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()) {
+					// Never over a Light spell's light: put back when the wall crumbled, it would stay lit for good.
+					if (!state.canBeReplaced() || state.is(Blocks.LIGHT)
+							|| !level.getEntities((Entity) null, new AABB(p), e -> e instanceof LivingEntity).isEmpty()) {
 						continue;
 					}
 					if (!Casters.mayEdit(caster, level, p) || !cast.takeBlock()) {
 						continue;
 					}
 					RAMPART.put(GlobalPos.of(level.dimension(), p.immutable()), state);
+					TemporaryBlocks.put(level, p, RAMPART_BLOCK, state, due);
 					level.setBlockAndUpdate(p, RAMPART_BLOCK);
 					level.levelEvent(2001, p, Block.getId(RAMPART_BLOCK));
 				}
@@ -695,22 +700,34 @@ final class Techniques {
 		});
 	}
 
+	/** A Rampart block crumbles. One whose chunk isn't loaded now is put back as it loads ({@link TemporaryBlocks}), never loaded just for this. */
 	private static void crumble(ServerLevel level, BlockPos pos) {
 		BlockState replaced = RAMPART.remove(GlobalPos.of(level.dimension(), pos.immutable()));
-		if (replaced != null && level.getBlockState(pos).is(RAMPART_BLOCK.getBlock())) {
+		if (replaced == null || !level.isLoaded(pos)) {
+			return;
+		}
+		if (level.getBlockState(pos).is(RAMPART_BLOCK.getBlock())) {
 			level.levelEvent(2001, pos, Block.getId(RAMPART_BLOCK));
 			level.setBlockAndUpdate(pos, replaced);
 		}
+		TemporaryBlocks.remove(level, pos);
 	}
 
-	/** On shutdown every Rampart still standing crumbles, so none can outlive its spell. */
+	/**
+	 * On shutdown every Rampart still standing in loaded ground crumbles, so none can outlive its
+	 * spell; the rest are saved in {@link TemporaryBlocks}, and crumble as their chunks load.
+	 */
 	private static void crumbleAll(MinecraftServer server) {
 		for (Map.Entry<GlobalPos, BlockState> entry : new ArrayList<>(RAMPART.entrySet())) {
 			ServerLevel level = server.getLevel(entry.getKey().dimension());
 			BlockPos pos = entry.getKey().pos();
-			if (level != null && level.getBlockState(pos).is(RAMPART_BLOCK.getBlock())) {
+			if (level == null || !level.isLoaded(pos)) {
+				continue;
+			}
+			if (level.getBlockState(pos).is(RAMPART_BLOCK.getBlock())) {
 				level.setBlockAndUpdate(pos, entry.getValue());
 			}
+			TemporaryBlocks.remove(level, pos);
 		}
 		RAMPART.clear();
 	}

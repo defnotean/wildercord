@@ -139,6 +139,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   were a real foe. Like a Training Dummy, it no longer does.
 - New Ember Sanctums are no longer overgrown by basalt columns and lava sheets in basalt deltas, and no longer
   generate through fortresses and bastions.
+- **A server that crashed or was killed could leave a Rampart's packed mud, a Span's magenta glass or a Light
+  spell's invisible light in the world for good.** They're now written down with the world and taken down as
+  soon as their ground loads again. Taking them down no longer loads far-off chunks either.
+- A Rampart or Span raised over a Light spell's light put the light back when it came down, leaving it lit
+  forever. They now leave such a light alone.
 
 ## [0.4.1-alpha] - 2026-09-28
 
