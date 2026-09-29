@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "blight": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:blight"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:venom"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.blight.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.blight.description"
+    }
+  },
+  "requirements": [
+    [
+      "blight"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

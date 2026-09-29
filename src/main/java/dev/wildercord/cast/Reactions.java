@@ -1,21 +1,21 @@
 package dev.wildercord.cast;
 
-import dev.wildercord.content.SigilOption;
+import dev.wildercord.spell.ReactionRules;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.ItemParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +28,14 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li><b>Conduct</b>: storm damage on a wet target (water, rain, or dripping: see {@link WorldMagic#wet}) deals +50% and arcs to two more enemies.</li>
  *   <li><b>Wildfire</b>: fire on a target just thrown by wind spreads flames to enemies around it.</li>
  *   <li><b>Implode</b>: a blast where enemies were just pulled together grows 50% wider and hits 30% harder.</li>
+ *   <li><b>Collapse</b>: Repel on an enemy just pulled in deals double damage.</li>
  * </ul>
+ * And the newer six, so that every element takes part (numbers in {@link ReactionRules}): <b>Overload</b>
+ * (storm on a burning target), <b>Fracture</b> (earth on a frozen one), <b>Blight</b> (life on a shadowed
+ * one), <b>Unweave</b> (arcane on one with two marks or more), <b>Rupture</b> (wind on a bleeding one) and
+ * <b>Elapse</b> (time on one burning, poisoned or withering). Fire and storm reactions are asked for by the
+ * effects that deal that damage ({@link #fire}, {@link #storm}); the rest go off for any spell damage of
+ * their element, through {@link #hit} in {@code Effects.hurt}.
  */
 public final class Reactions {
 	private Reactions() {}
@@ -42,7 +49,13 @@ public final class Reactions {
 		/** Resonance's cursed mark. */
 		RESONANT(200),
 		/** Wet from Tidebreath or steam: counts as wet for Conduct, dulls fire and speeds frost (see {@link WorldMagic}). */
-		WET(100);
+		WET(100),
+		/** Left by Fracture: every spell hits it harder while it lasts. */
+		CRACKED(ReactionRules.CRACKED_TICKS),
+		/** Left by void's curses and darkness (Hex, Blind, Wither...): life damage on it sets off Blight. */
+		SHADOWED(ReactionRules.SHADOWED_TICKS),
+		/** Left by blood's cuts (Bleed, Rend, Cleave...): wind damage on it sets off Rupture. */
+		BLEEDING(ReactionRules.BLEEDING_TICKS);
 
 		final int ticks;
 
@@ -101,7 +114,7 @@ public final class Reactions {
 			multiplier *= 1.6;
 			reacted(target);
 			Vec3 c = target.getBoundingBox().getCenter();
-			shatterFx(level, target);
+			ReactionVfx.shatter(level, target);
 			Fx.sound(level, c, SoundEvents.GLASS_BREAK, 1.0F, 0.7F);
 			callout(cast, "shatter", 0x8CDCFF);
 		}
@@ -113,16 +126,21 @@ public final class Reactions {
 				reacted(other);
 				other.igniteForSeconds(4);
 				Effects.hurt(cast, other, level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3);
-				wildfireLeap(level, target, other);
+				ReactionVfx.wildfireLeap(level, target, other);
 			}
-			wildfireFx(level, target);
+			ReactionVfx.wildfire(level, target);
 			callout(cast, "wildfire", 0xF06E32);
 		}
 		return multiplier;
 	}
 
-	/** Called for storm-element damage: returns the damage multiplier after Conduct. */
+	/** Called for storm-element damage: returns the damage multiplier after Conduct / Overload. */
 	public static double storm(Cast cast, LivingEntity target) {
+		return conduct(cast, target) * overload(cast, target);
+	}
+
+	/** Conduct: storm on a wet target arcs on to two more enemies. */
+	private static double conduct(Cast cast, LivingEntity target) {
 		if (!WorldMagic.wet(target)) {
 			return 1.0;
 		}
@@ -137,9 +155,38 @@ public final class Reactions {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), other.getBoundingBox().getCenter());
 			Effects.hurt(cast, other, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4);
 		}
-		conductFx(level, target);
+		ReactionVfx.conduct(level, target);
 		callout(cast, "conduct", 0xFFE650);
 		return 1.5;
+	}
+
+	/**
+	 * Overload: storm on a burning target blows its flames apart. Every other enemy within 3 blocks takes
+	 * 5 and is thrown back (no block is harmed), and the fire goes out.
+	 */
+	private static double overload(Cast cast, LivingEntity target) {
+		if (!target.isOnFire()) {
+			return 1.0;
+		}
+		ServerLevel level = cast.level;
+		target.clearFire();
+		reacted(target);
+		Vec3 c = target.getBoundingBox().getCenter();
+		List<LivingEntity> struck = new ArrayList<>();
+		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(ReactionRules.OVERLOAD_RADIUS), e -> Targets.canHarm(cast.caster, e))) {
+			if (e.getBoundingBox().getCenter().distanceTo(c) <= ReactionRules.OVERLOAD_RADIUS + e.getBbWidth() / 2) {
+				struck.add((LivingEntity) e);
+			}
+		}
+		ReactionVfx.overload(level, target, struck);
+		for (LivingEntity other : struck) {
+			reacted(other);
+			Effects.hurt(cast, other, level.damageSources().explosion(cast.caster, cast.caster), ReactionRules.OVERLOAD_DAMAGE);
+			Vec3 away = Effects.horizontal(other.position().subtract(target.position()), cast.caster.getLookAngle());
+			Effects.push(other, away.scale(1.1).add(0, 0.45, 0));
+		}
+		callout(cast, ReactionRules.OVERLOAD, ReactionRules.color(ReactionRules.OVERLOAD));
+		return ReactionRules.OVERLOAD_BONUS;
 	}
 
 	/** Called for blasts: returns the radius multiplier after Implode (damage bonus is radius-based too). */
@@ -157,7 +204,7 @@ public final class Reactions {
 		for (Entity e : cast.level.getEntities((Entity) null, new AABB(center, center).inflate(radius * 1.5), e -> Targets.canHarm(cast.caster, e))) {
 			reacted(e);
 		}
-		implodeFx(cast.level, center, radius);
+		ReactionVfx.implode(cast.level, center, radius);
 		callout(cast, "implode", 0xB45AF0);
 		return 1.5;
 	}
@@ -177,78 +224,202 @@ public final class Reactions {
 		return 2.0;
 	}
 
-	// ------------------------------------------------------------------ how they look
+	// ------------------------------------------------------------------ the reactions of any spell damage
+
+	/** Set while one of these reactions deals its own damage, so that damage never sets off another. */
+	private static boolean reacting;
 
 	/**
-	 * Shatter: the ice bursts apart in a storm of shards, white rings snapping out through a flare of
-	 * fire, a cracked frost seal on the ground and steam rising.
+	 * Called for every point of spell damage (from {@code Effects.hurt}), with the element of the effect
+	 * dealing it: Cracked's extra, then whatever that element's damage sets off on the marks it meets
+	 * (earth Fracture, life Blight, arcane Unweave, wind Rupture, time Elapse). Returns the damage
+	 * multiplier.
 	 */
-	private static void shatterFx(ServerLevel level, LivingEntity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		double w = Math.max(0.6, target.getBbWidth());
-		double tilt = level.getRandom().nextDouble() * Math.PI * 2;
-		Sigils.flash(level, c, 0xBFEFFF, 2.8F);
-		ElementFx.heatFlare(level, c, 1.3);
-		ElementFx.shards(level, c, 1.2 + w * 0.5, 12);
-		ElementFx.ring(level, c, UP, 0xFFFFFF, 0.3, 2.4 + w, 0.07, 8);
-		ElementFx.ring(level, c, ElementFx.tilted(0.9, tilt), ElementFx.FROST.accent(), 0.2, 1.9 + w, 0.05, 9);
-		ElementFx.ring(level, c, ElementFx.tilted(0.9, tilt + Math.PI), ElementFx.FIRE.primary(), 0.2, 1.6 + w, 0.05, 10);
-		ElementFx.flatSigil(level, target.position(), SigilOption.CRACKED, ElementFx.FROST.primary(), 1.2 + w, 24, 0.0);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), c, 18, 0.35);
-		Motes.clouds(level, c, 4, 0.4, Motes.STEAM, 1.3, 40, new Vec3(0, 0.04, 0), 0.05, 0.45);
-	}
-
-	/** Wildfire leaps: a streak of flame from the burning target to another, flames catching on it. */
-	private static void wildfireLeap(ServerLevel level, LivingEntity from, LivingEntity to) {
-		Vec3 a = from.getBoundingBox().getCenter();
-		Vec3 b = to.getBoundingBox().getCenter();
-		ElementFx.ray(level, a, b, ElementFx.FIRE.primary(), 0.09, 8);
-		ElementFx.ray(level, a, b, ElementFx.FIRE.secondary(), 0.035, 7);
-		ElementFx.flames(level, to.position(), Math.max(0.35, to.getBbWidth() * 0.6), to.getBbHeight(), 3);
-		Vfx.stream(level, a, b, Vfx.theme("fire"), 2);
-	}
-
-	/** Wildfire: wind and fire together, a whirl of flame slashes spiralling up out of the target over a ring of fire. */
-	private static void wildfireFx(ServerLevel level, LivingEntity target) {
-		Vec3 base = target.position();
-		Vec3 c = target.getBoundingBox().getCenter();
-		ElementFx.heatFlare(level, c, 1.6);
-		ElementFx.swirl(level, base.add(0, 0.1, 0), 1.1, target.getBbHeight() + 1.2, 5, ElementFx.FIRE.primary(), ElementFx.FIRE.secondary());
-		ElementFx.flameBurst(level, c, 1.3, 5);
-		ElementFx.groundRing(level, base, ElementFx.FIRE.primary(), 0.3, 3.2, 0.1, 12);
-		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 2.4, 0.04, 10);
-		Vfx.radial(level, ParticleTypes.FLAME, c, 14, 0.3);
-	}
-
-	/** Conduct: lightning crawls over the wet target in a cage of short arcs, a ring of water bursting off it. */
-	private static void conductFx(ServerLevel level, LivingEntity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		double w = Math.max(0.6, target.getBbWidth());
-		Sigils.flash(level, c, ElementFx.STORM.secondary(), 2.2F);
-		ElementFx.ring(level, c, UP, 0x4AA8FF, 0.2, 2.2 + w, 0.06, 8);
-		ElementFx.ring(level, c, UP, ElementFx.STORM.primary(), 0.2, 1.6 + w, 0.04, 6);
-		for (int i = 0; i < 3; i++) {
-			Vec3 a = c.add(ElementFx.randomDir(level.getRandom()).scale(w * 0.8));
-			Vec3 b = c.add(ElementFx.randomDir(level.getRandom()).scale(w * 0.8));
-			ElementFx.bolt(level, a, b, 0.035, 0, 2);
+	public static double hit(Cast cast, LivingEntity target, String element) {
+		double multiplier = 1.0;
+		if (has(target, Mark.CRACKED)) {
+			multiplier *= ReactionRules.CRACKED_BONUS;
+			ReactionVfx.crackedBite(cast.level, target);
 		}
-		ElementFx.sparks(level, c, 12, 0.4);
-		Vfx.radial(level, ParticleTypes.SPLASH, c, 10, 0.2);
-	}
-
-	/** Implode: darkness falls in on the blast from far out, round a black core, before it goes off. */
-	private static void implodeFx(ServerLevel level, Vec3 center, double radius) {
-		ElementFx.implode(level, center, radius * 1.6, 7);
-		ElementFx.blackCore(level, center, 0.5, 8);
-		Vec3 floor = ElementFx.floor(level, center, radius + 1);
-		if (floor != null) {
-			ElementFx.groundRing(level, floor, ElementFx.dark(ElementFx.VOID.accent()), radius * 1.8, 0.3, 0.14, 10);
-			ElementFx.groundRing(level, floor, ElementFx.VOID.primary(), radius * 1.9, 0.4, 0.04, 9);
+		if (reacting || element.isEmpty()) {
+			return multiplier;
 		}
-		Vfx.emit(level, ParticleTypes.PORTAL, center, 20, 0.1, radius * 0.8);
+		reacting = true;
+		try {
+			multiplier *= switch (element) {
+				case "earth" -> fracture(cast, target);
+				case "life" -> blight(cast, target);
+				case "arcane" -> unweave(cast, target);
+				case "wind" -> rupture(cast, target);
+				case "time" -> elapse(cast, target);
+				default -> 1.0;
+			};
+		} finally {
+			reacting = false;
+		}
+		return multiplier;
 	}
 
-	private static final Vec3 UP = new Vec3(0, 1, 0);
+	/** Fracture: earth on a frozen target cracks the ice through: +40%, it thaws, and it's left cracked. */
+	private static double fracture(Cast cast, LivingEntity target) {
+		if (!has(target, Mark.FROZEN)) {
+			return 1.0;
+		}
+		clear(target, Mark.FROZEN);
+		target.setTicksFrozen(0);
+		mark(target, Mark.CRACKED);
+		reacted(target);
+		ReactionVfx.fracture(cast.level, target);
+		callout(cast, ReactionRules.FRACTURE, ReactionRules.color(ReactionRules.FRACTURE));
+		return ReactionRules.FRACTURE_BONUS;
+	}
+
+	/**
+	 * Blight: life on a shadowed target turns the darkness to rot. It and up to five other enemies within
+	 * 4 blocks take 3 damage and are poisoned, and the caster heals 1 for each.
+	 */
+	private static double blight(Cast cast, LivingEntity target) {
+		if (!has(target, Mark.SHADOWED)) {
+			return 1.0;
+		}
+		ServerLevel level = cast.level;
+		clear(target, Mark.SHADOWED);
+		reacted(target);
+		List<LivingEntity> rotting = new ArrayList<>();
+		rotting.add(target);
+		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(ReactionRules.BLIGHT_RADIUS), e -> Targets.canHarm(cast.caster, e))) {
+			if (rotting.size() >= ReactionRules.BLIGHT_REACH) {
+				break;
+			}
+			if (e.distanceTo(target) <= ReactionRules.BLIGHT_RADIUS) {
+				rotting.add((LivingEntity) e);
+			}
+		}
+		ReactionVfx.blight(level, target, rotting, cast.caster);
+		for (LivingEntity t : rotting) {
+			reacted(t);
+			t.addEffect(new MobEffectInstance(MobEffects.POISON, ReactionRules.BLIGHT_POISON_TICKS, 0, false, true), cast.caster);
+			Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.BLIGHT_DAMAGE);
+		}
+		if (cast.caster.isAlive()) {
+			cast.caster.heal(ReactionRules.BLIGHT_HEAL * rotting.size());
+		}
+		callout(cast, ReactionRules.BLIGHT, ReactionRules.color(ReactionRules.BLIGHT));
+		return 1.0;
+	}
+
+	/** Unweave: arcane on a target with two marks or more undoes them all: +30% for each (up to four). */
+	private static double unweave(Cast cast, LivingEntity target) {
+		if (countMarks(target) < ReactionRules.UNWEAVE_MIN_MARKS) {
+			return 1.0;
+		}
+		List<Integer> used = useMarks(target);
+		reacted(target);
+		ReactionVfx.unweave(cast.level, target, used);
+		callout(cast, ReactionRules.UNWEAVE, ReactionRules.color(ReactionRules.UNWEAVE));
+		return ReactionRules.unweave(used.size());
+	}
+
+	/** Rupture: wind on a bleeding target tears the wound open: +50%, 4 more through armour, and the caster heals 2. */
+	private static double rupture(Cast cast, LivingEntity target) {
+		if (!has(target, Mark.BLEEDING)) {
+			return 1.0;
+		}
+		ServerLevel level = cast.level;
+		clear(target, Mark.BLEEDING);
+		reacted(target);
+		ReactionVfx.rupture(level, target, cast.caster);
+		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.RUPTURE_DAMAGE);
+		if (cast.caster.isAlive()) {
+			cast.caster.heal(ReactionRules.RUPTURE_HEAL);
+		}
+		callout(cast, ReactionRules.RUPTURE, ReactionRules.color(ReactionRules.RUPTURE));
+		return ReactionRules.RUPTURE_BONUS;
+	}
+
+	/**
+	 * Elapse: time on a target that's burning, poisoned or withering passes their time at once. All the
+	 * damage they had left, half again, lands now (3 to 16), and they end.
+	 */
+	private static double elapse(Cast cast, LivingEntity target) {
+		MobEffectInstance poison = target.getEffect(MobEffects.POISON);
+		MobEffectInstance wither = target.getEffect(MobEffects.WITHER);
+		int fire = target.isOnFire() ? target.getRemainingFireTicks() : 0;
+		double damage = ReactionRules.elapse(ReactionRules.lingering(fire, ticksLeft(poison), poison == null ? 0 : poison.getAmplifier(),
+			ticksLeft(wither), wither == null ? 0 : wither.getAmplifier()));
+		if (damage <= 0) {
+			return 1.0;
+		}
+		ServerLevel level = cast.level;
+		if (fire > 0) {
+			target.clearFire();
+		}
+		if (poison != null) {
+			target.removeEffect(MobEffects.POISON);
+		}
+		if (wither != null) {
+			target.removeEffect(MobEffects.WITHER);
+		}
+		reacted(target);
+		ReactionVfx.elapse(level, target, fire > 0, poison != null, wither != null);
+		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), damage);
+		callout(cast, ReactionRules.ELAPSE, ReactionRules.color(ReactionRules.ELAPSE));
+		return 1.0;
+	}
+
+	/** How long an effect has left to run: an endless one counts as a minute, none as nothing. */
+	private static int ticksLeft(MobEffectInstance effect) {
+		if (effect == null) {
+			return 0;
+		}
+		return effect.isInfiniteDuration() ? 1200 : effect.getDuration();
+	}
+
+	// ------------------------------------------------------------------ every mark at once (Unweave)
+
+	/** How many marks a target carries: burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding. */
+	static int countMarks(LivingEntity t) {
+		int n = t.isOnFire() ? 1 : 0;
+		for (Mark mark : WOVEN) {
+			if (has(t, mark)) {
+				n++;
+			}
+		}
+		return n;
+	}
+
+	/** The marks Unweave counts and undoes (Resonance's own mark aside), after burning. */
+	private static final List<Mark> WOVEN = List.of(Mark.FROZEN, Mark.WINDSWEPT, Mark.PULLED, Mark.SOAKED, Mark.WET, Mark.CRACKED, Mark.SHADOWED,
+		Mark.BLEEDING);
+
+	/** Uses up every mark on {@code t} and says which, as their element's colours in that order. */
+	private static List<Integer> useMarks(LivingEntity t) {
+		List<Integer> used = new ArrayList<>();
+		if (t.isOnFire()) {
+			t.clearFire();
+			used.add(ElementFx.FIRE.primary());
+		}
+		for (Mark mark : WOVEN) {
+			if (!has(t, mark)) {
+				continue;
+			}
+			clear(t, mark);
+			if (mark == Mark.FROZEN) {
+				t.setTicksFrozen(0);
+			}
+			used.add(switch (mark) {
+				case FROZEN -> ElementFx.FROST.primary();
+				case WINDSWEPT -> ElementFx.WIND.accent();
+				case PULLED -> ElementFx.VOID.primary();
+				case SOAKED -> 0x2F6BFF;
+				case WET -> 0x7CCBF2;
+				case CRACKED -> ElementFx.EARTH.primary();
+				case SHADOWED -> ElementFx.VOID.secondary();
+				default -> ElementFx.BLOOD.primary();
+			});
+		}
+		return used;
+	}
 
 	/** Tells the caster what they set off, at most once a second. */
 	static void callout(Cast cast, String reaction, int color) {
@@ -278,5 +449,6 @@ public final class Reactions {
 		MARKS.clear();
 		LAST_CALLOUT.clear();
 		REACTED.clear();
+		reacting = false;
 	}
 }

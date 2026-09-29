@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "overload": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:overload"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:plasma"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.overload.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.overload.description"
+    }
+  },
+  "requirements": [
+    [
+      "overload"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

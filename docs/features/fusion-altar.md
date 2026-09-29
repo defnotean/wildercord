@@ -111,7 +111,7 @@ its emblem is split down the middle between the two elements' glyphs.
 | Earth | **Monolith** | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |
 | Life | **Lifebloom** | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
 | Void | **Singularity** | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |
-| Arcane | **Prismatic Burst** | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked or wet), each used up. |
+| Arcane | **Prismatic Burst** | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22. |
 | Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
 | Blood | **Sanguine Rite** | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
 

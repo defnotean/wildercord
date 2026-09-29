@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "unweave": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:unweave"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:prismatic_burst"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.unweave.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.unweave.description"
+    }
+  },
+  "requirements": [
+    [
+      "unweave"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

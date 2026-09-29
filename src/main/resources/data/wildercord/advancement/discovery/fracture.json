@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "fracture": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:fracture"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:pelt"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.fracture.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.fracture.description"
+    }
+  },
+  "requirements": [
+    [
+      "fracture"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

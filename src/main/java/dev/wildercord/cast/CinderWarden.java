@@ -35,8 +35,8 @@ import java.util.UUID;
 /**
  * The Cinder Warden, keeper of the Ember Sanctum: a hulking figure of magma plates and chains. Its
  * armour turns every plain blow and every single-element spell (a tenth of it gets through); only an
- * element reaction set off on it (Shatter, Conduct, Wildfire, Implode, Collapse) cracks it open for
- * full damage, and leaves it open for a moment after. It teaches reactions by using them: its own
+ * element reaction set off on it (any of them: Shatter, Conduct, Overload, Fracture...) cracks it open
+ * for full damage, and leaves it open for a moment after. It teaches reactions by using them: its own
  * spells set them up on you (freeze, then burn; throw, then burn; pull, then blast), and its name
  * on the boss bar says which. Up close it brings a fist down in a ring of fire.
  */

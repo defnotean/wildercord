@@ -266,7 +266,7 @@ Any effect of an element counts.
 | Hemomancy | Arcane + Blood | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
 | Reckoning | Time + Blood | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |
 | Singularity | Void + Void | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |
-| Prismatic Burst | Arcane + Arcane | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked or wet), each used up. |
+| Prismatic Burst | Arcane + Arcane | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22. |
 | Chronoshift | Time + Time | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
