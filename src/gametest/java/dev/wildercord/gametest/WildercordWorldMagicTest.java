@@ -34,7 +34,8 @@ import java.util.UUID;
 /**
  * Magic that changes the world, checked in a real world: frost on water makes frosted ice, fire by
  * grass lights fire (with fire spreading on), storm into water shocks a husk standing in that water,
- * wind knocks an arrow out of the air, and a spell where the caster may not build changes nothing.
+ * wind knocks an arrow out of the air, a Grow beside a Rampart leaves the wall standing, and a spell where
+ * the caster may not build changes nothing.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
@@ -154,6 +155,29 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				return x > 0.3 ? null : "wind should knock an arrow flying at it back the other way (its speed along x is " + x + ")";
 			});
 			note(failures, wind);
+
+			// A Grow beside a Rampart leaves the wall standing: a spell only asking whether it may change a block
+			// (offered to claims as a break) must never set off the handler that takes a Rampart down.
+			BlockPos wallSite = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				BlockPos site = site(player, 0, 24);
+				meadow(player.level(), site);
+				apply(player, List.of(Runes.TOUCH, Runes.RAMPART), Vec3.atBottomCenterOf(site), List.of());
+				return site;
+			});
+			context.waitTicks(8);
+			String rampart = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				int before = count(level, wallSite, 3, state -> state.is(Blocks.PACKED_MUD));
+				apply(player, List.of(Runes.TOUCH, Runes.GROW), Vec3.atBottomCenterOf(wallSite), List.of());
+				int after = count(level, wallSite, 3, state -> state.is(Blocks.PACKED_MUD));
+				if (before == 0) {
+					return "a Rampart should raise a wall of packed mud";
+				}
+				return after == before ? null : "a Grow beside a Rampart shouldn't take the wall down (" + before + " blocks, then " + after + ")";
+			});
+			note(failures, rampart);
 
 			// Protected ground: frost in a claim freezes nothing, fire from a caster who can't build lights nothing,
 			// and a monster's frost never changes blocks.
