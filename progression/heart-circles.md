@@ -42,6 +42,8 @@ and so on. Nothing is used up when a circle forms.
 
 | First discovery | Condenses |
 |---|---|
+| A creature's weakness, found | 25 |
+| An [affinity]({{ '/progression/affinity/' | relative_url }})'s first level (I) with an element | 100 |
 | A reaction | 150 |
 | A fusion at the Fusion Altar | 150 |
 | A feat | 250 |
@@ -144,7 +146,8 @@ the 6th Circle.
 
 Your circles show as rings of light around your heart, one per circle, each on its own tilt and
 turning its own way like a gyroscope. The inner rings are deep blue, burning out to white gold at the
-8th, and once your magic leans toward an element they're tinted halfway toward its colour.
+8th, and once your magic leans toward an element (your deepest
+[affinity]({{ '/progression/affinity/' | relative_url }})) they're tinted halfway toward its colour.
 
 - While you **meditate**, everyone can see them turning, you included.
 - Whenever you **cast**, they spin up round you for a moment, for everyone around you to see. You

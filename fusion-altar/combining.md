@@ -46,7 +46,7 @@ result socket; right-click it to learn it.
 - **Made, never found.** No recipe crafts them, no chest holds them, no monster drops them, and a Runesmith never sells,
   buys or rerolls them. The altar is the only way.
 - **One element each.** Each fused rune counts as one of its two elements (the **Counts as** column below). That's the
-  element that a [staff]({{ '/gear/' | relative_url }}) of that element boosts, that your elemental leaning counts,
+  element that a [staff]({{ '/gear/' | relative_url }}) of that element boosts, that your affinities count,
   and that [contracts]({{ '/social/contracts/' | relative_url }}) and further fusions see.
 - **Ordinary effects in every other way.** They take modifiers like any effect (each rune's entry lists which), they
   can be threaded anywhere an effect can, and most can be [ranked up]({{ '/fusion-altar/ranks/' | relative_url }}).
