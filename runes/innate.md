@@ -92,7 +92,7 @@ Leaves an afterimage of you that every monster within 16 blocks turns on for 4 s
 
 *Tier I · Earth · Helps you and your allies · 12 mana · needs any Cord*
 
-For 8 seconds: no knockback, 20% less damage, and every hit you take sends out an aftershock.
+For 8 seconds: no knockback, 20% less damage, and every blow you take from an attacker sends out an aftershock (at most once a second).
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
@@ -103,7 +103,7 @@ For 8 seconds: no knockback, 20% less damage, and every hit you take sends out a
 
 *Tier I · Storm · Helps you and your allies · 12 mana · needs any Cord*
 
-For 10 seconds, whatever hits you is struck by lightning (at most once a second).
+For 10 seconds, whatever hurts you (a blow of 2 or more) is struck by lightning (at most once a second).
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 

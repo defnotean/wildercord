@@ -200,7 +200,7 @@ The warnings you'll see:
 | On Hit has nothing after it. | A link with nothing after it. |
 | On Hit needs a shape before it to watch. | On Hit, On Kill, On Reaction, On Weakness and Imbue need a shape in front of them. |
 | Only 3 Echoes count; the rest are ignored. | A fourth Echo costs mana and does nothing. |
-| Vow strengthens only Bolt's effects, and it has none: the cooldown is 4x longer for nothing. | Vow doubles only its own shape's effects. Put it on the shape whose effects you want stronger. |
+| Vow strengthens only Bolt's effects, and it has none: the cooldown is 5x longer for nothing. | Vow doubles only its own shape's effects. Put it on the shape whose effects you want stronger. |
 | An Imbue can't store another Imbue. | See [Imbuing]({{ '/spellcraft/imbuing/' | relative_url }}). |
 | Combo never fires in an imbued spell: every release counts as a first cast. | See [Imbuing]({{ '/spellcraft/imbuing/' | relative_url }}). |
 | Costs more than this Cord's 100 mana, so it can't be cast. | Trim the spell, or grow your mana. |
