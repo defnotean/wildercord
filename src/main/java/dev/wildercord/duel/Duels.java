@@ -359,8 +359,9 @@ public final class Duels {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_no_challenge", from.getDisplayName()).withStyle(ChatFormatting.RED));
 			return 0;
 		}
-		CHALLENGES.remove(challenge);
+		// An accept that can't go ahead yet (too far, hurt too lately...) leaves the challenge standing, to accept again.
 		if (!yes) {
+			CHALLENGES.remove(challenge);
 			from.sendSystemMessage(Component.translatable("message.wildercord.duel_declined", to.getDisplayName()).withStyle(ChatFormatting.GRAY));
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_you_declined", from.getDisplayName()).withStyle(ChatFormatting.GRAY));
 			return 1;
@@ -373,13 +374,18 @@ public final class Duels {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_busy").withStyle(ChatFormatting.RED));
 			return 0;
 		}
-		if (from.level() != to.level() || from.distanceTo(to) > DuelRules.ARENA_RADIUS || !from.isAlive() || !to.isAlive()) {
+		if (!from.isAlive() || !to.isAlive()) {
+			to.sendSystemMessage(Component.translatable("message.wildercord.duel_not_alive", (from.isAlive() ? to : from).getDisplayName()).withStyle(ChatFormatting.RED));
+			return 0;
+		}
+		if (from.level() != to.level() || from.distanceTo(to) > DuelRules.ARENA_RADIUS) {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_too_far", from.getDisplayName()).withStyle(ChatFormatting.RED));
 			return 0;
 		}
 		if (!ready(to, from) || !ready(to, to)) {
 			return 0;
 		}
+		CHALLENGES.remove(challenge);
 		start(from, to);
 		return 1;
 	}

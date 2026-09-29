@@ -25,6 +25,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - A duellist who logged off mid-duel was saved as the duel left them, and a server shutting down during a duel
   gave one of the two a loss. The one logging off is now put back as they began, and a shutdown ends the duel
   for nobody.
+- Accepting a duel that couldn't start yet (too far apart, hurt too recently) used up the challenge, and the
+  reason given when one of you was dead was that you were too far apart. The challenge now stands until it
+  runs out, and the message says who can't duel.
 - New Ember Sanctums are no longer overgrown by basalt columns and lava sheets in basalt deltas, and no longer
   generate through fortresses and bastions.
 
