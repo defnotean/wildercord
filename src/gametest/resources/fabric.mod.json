@@ -10,6 +10,7 @@
 			"dev.wildercord.gametest.WildercordFeatureTour",
 			"dev.wildercord.gametest.WildercordCordTest",
 			"dev.wildercord.gametest.WildercordWorldMagicTest",
+			"dev.wildercord.gametest.WildercordWorldMagic2Test",
 			"dev.wildercord.gametest.WildercordParryTest",
 			"dev.wildercord.gametest.WildercordAdvancementTest",
 			"dev.wildercord.gametest.WildercordEventsTest",
@@ -29,6 +30,7 @@
 			"dev.wildercord.gametest.WildercordOitTest",
 			"dev.wildercord.gametest.WildercordTravelTest",
 			"dev.wildercord.gametest.WildercordAffinitiesTest",
+			"dev.wildercord.gametest.WildercordLoadoutsTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

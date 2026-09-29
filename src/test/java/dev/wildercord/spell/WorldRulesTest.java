@@ -22,6 +22,33 @@ class WorldRulesTest {
 		assertEquals(HEAVE, WorldRules.of(TREMOR));
 		assertEquals(WorldRules.Interaction.BLOOM, WorldRules.of(HEAL));
 		assertEquals(DRAW, WorldRules.of(PULL));
+		assertEquals(AGE, WorldRules.of(COUNTDOWN));
+		assertEquals(SHIMMER, WorldRules.of(HARM));
+		assertEquals(FEED, WorldRules.of(CLEAVE));
+		assertEquals(FEED, WorldRules.of(LEECH));
+	}
+
+	@Test
+	void timeAgesTheWorldFromHelpfulSpellsToo() {
+		// Like life, time's helpful spells change the world too: Accelerate on a field ripens it.
+		assertEquals(AGE, WorldRules.of(ACCELERATE));
+		assertEquals(AGE, WorldRules.of(CHRONOSHIFT));
+		// But not the ones that stop time or turn it back.
+		assertEquals(NONE, WorldRules.of(STASIS));
+		assertEquals(NONE, WorldRules.of(REWIND));
+		// Arcane's and blood's helpful spells leave the world alone.
+		assertEquals(NONE, WorldRules.of(NIGHT_EYE));
+		assertEquals(NONE, WorldRules.of(OVERDRIVE));
+	}
+
+	@Test
+	void runesThatCallLightningLeaveCopperAndRodsToIt() {
+		assertTrue(WorldRules.callsLightning(LIGHTNING));
+		assertTrue(WorldRules.callsLightning(TEMPEST));
+		assertFalse(WorldRules.callsLightning(SHOCK));
+		assertFalse(WorldRules.callsLightning(null));
+		// Either way, they're storm runes and conduct through water.
+		assertEquals(CONDUCT, WorldRules.of(TEMPEST));
 	}
 
 	@Test
@@ -51,23 +78,25 @@ class WorldRulesTest {
 		assertEquals(NONE, WorldRules.of(AMPLIFY));
 		assertEquals(NONE, WorldRules.of(ON_HIT));
 		assertEquals(NONE, WorldRules.of(null));
-		// Elements without a world interaction.
-		assertEquals(NONE, WorldRules.of(HARM));
-		assertEquals(NONE, WorldRules.of(CLEAVE));
-		assertEquals(NONE, WorldRules.of(STASIS));
+		// Movement runes never touch the world where they land.
+		assertEquals(NONE, WorldRules.of(TIME_SKIP));
 	}
 
 	@Test
 	void onlySomeInteractionsChangeBlocks() {
-		// These need building rights and never happen for a monster's spell.
+		// These change blocks, which needs building rights and never happens for a monster's spell.
 		assertTrue(IGNITE.editsBlocks());
 		assertTrue(WorldRules.Interaction.FREEZE.editsBlocks());
 		assertTrue(WorldRules.Interaction.BLOOM.editsBlocks());
 		assertTrue(GUST.editsBlocks());
-		// These work for monsters too: a shock through water, heaved ground (block displays), items drawn in.
-		assertFalse(CONDUCT.editsBlocks());
+		assertTrue(AGE.editsBlocks());
+		assertTrue(FEED.editsBlocks());
+		// Storm scrapes copper and pulses rods (blocks), though its shock through water works for monsters too.
+		assertTrue(CONDUCT.editsBlocks());
+		// These never change a block: heaved ground (block displays), items drawn in, shelves shimmering.
 		assertFalse(HEAVE.editsBlocks());
 		assertFalse(DRAW.editsBlocks());
+		assertFalse(SHIMMER.editsBlocks());
 		assertFalse(NONE.editsBlocks());
 	}
 
@@ -89,6 +118,50 @@ class WorldRulesTest {
 		// A whole cast's world edits fit inside the cast's block budget for a single strike.
 		assertTrue(WorldRules.EDITS_PER_CAST <= 32);
 		assertTrue(WorldRules.FREEZE_MAX <= WorldRules.EDITS_PER_CAST);
+		assertTrue(WorldRules.CRUST_MAX <= WorldRules.EDITS_PER_CAST);
+		// Every per-hit cap of the second layer stays modest: a few blocks a hit.
+		for (int cap : new int[] {WorldRules.KINDLE_MAX, WorldRules.COPPER_MAX, WorldRules.RODS_MAX, WorldRules.AGE_MAX,
+				WorldRules.AGE_BABIES, WorldRules.FURNACE_MAX, WorldRules.FEED_MAX}) {
+			assertTrue(cap > 0 && cap <= 6, "cap " + cap);
+		}
+	}
+
+	@Test
+	void theCrustWarnsBeforeItMelts() {
+		// It holds 20 to 30 seconds, and glows for its last few before it goes.
+		assertTrue(WorldRules.CRUST_TICKS >= 400 && WorldRules.CRUST_TICKS <= 600);
+		assertTrue(WorldRules.CRUST_WARN_TICKS >= 60 && WorldRules.CRUST_WARN_TICKS < WorldRules.CRUST_TICKS / 2);
+	}
+
+	@Test
+	void aCreeperIsOnlySometimesCharged() {
+		assertTrue(WorldRules.CREEPER_CHARGE_CHANCE > 0 && WorldRules.CREEPER_CHARGE_CHANCE < 0.5);
+	}
+
+	@Test
+	void aFurnaceJumpsAheadButNeverFinishesByItselfOrOutrunsItsFuel() {
+		// A furnace (200 ticks an item) 10 ticks in, with plenty of coal: half a smelt on.
+		assertEquals(WorldRules.FURNACE_SKIP_TICKS, WorldRules.furnaceSkip(10, 200, 1600));
+		// A smoker (100 ticks an item) 10 ticks in: up to the tick before it finishes, which it does itself.
+		assertEquals(89, WorldRules.furnaceSkip(10, 100, 1600));
+		// Fuel for 30 more ticks: only as far as the fire lasts, and never out.
+		assertEquals(29, WorldRules.furnaceSkip(0, 200, 30));
+		// Already on its last tick, or out of fuel: nothing.
+		assertEquals(0, WorldRules.furnaceSkip(199, 200, 1600));
+		assertEquals(0, WorldRules.furnaceSkip(0, 200, 0));
+	}
+
+	@Test
+	void aBabyGrowsUpALittleButNoFurther() {
+		// Newborn (-24000): two minutes older.
+		assertEquals(-24000 + WorldRules.AGE_BABY_SECONDS * 20, WorldRules.agedBaby(-24000));
+		// Nearly grown: grown, never past.
+		assertEquals(0, WorldRules.agedBaby(-100));
+		// Grown ups (and their breeding cooldowns) are left alone.
+		assertEquals(0, WorldRules.agedBaby(0));
+		assertEquals(6000, WorldRules.agedBaby(6000));
+		// It takes several casts to raise one from birth.
+		assertTrue(24000 / (WorldRules.AGE_BABY_SECONDS * 20) >= 5);
 	}
 
 	@Test

@@ -189,9 +189,12 @@ the caster's bonuses (power and duration from Heart Circles and enchantments), w
 passive renewing itself, and a **budget**:
 
 - at most **64 creatures** and **32 blocks** touched, and **8 links** deep, shared by the whole
-  cast through `child()`, so no chain of links can run away;
+  cast through `child()`, so no chain of links can run away (only links go a level deeper: a bolt in
+  flight, a shape's hits and a Linger's later landings run at their cast's own depth);
 - shapes that strike repeatedly (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb, Stream) take a fresh creature/block budget per strike with `pulse()`, while the Siphon cap and
-  `once(...)` costs still count for the whole cast.
+  `once(...)` costs still count for the whole cast. The lasting ones book their next step as each
+  runs (`ShapeRunners.steps`), never their whole lifetime up front, since `Scheduler` walks every
+  waiting task each tick.
 
 `Cast.alive()` is false once the caster leaves, dies or changes dimension (or, for a passive, once
 it's switched off, or once `cancel()` is called, which is how a Domain that loses a clash
@@ -248,12 +251,17 @@ hit for spell-kill counting and the innate runes that react to hits. After each 
   bleeding, and which runes' damage sets each off (for the Cord screen's tooltip line) are pure data in
   `spell.ReactionRules`; how every reaction looks is in `ReactionVfx`.
 - **`WorldMagic`**: what an effect's element does to the world where it lands, called by
-  `Effects.apply` after every effect (fire lights grass and boils puddles into steam, frost freezes
-  water and puts fires out, storm conducts through water, wind turns projectiles, earth heaves block
-  displays, life blooms, void draws items in), and being wet (`WorldMagic.wet`, read by Conduct and by
-  `Effects.hurt` to dull fire). Which rune does what, and every cap, is pure data in
-  `spell.WorldRules`. Block changes go through `Casters.mayEdit` and the cast's block budget, plus
-  a per-cast allowance kept against `Cast.identity()`.
+  `Effects.apply` after every effect (fire lights grass, candles and TNT and boils puddles into steam,
+  frost freezes water, crusts lava over and puts fires out, storm conducts through water, scrapes copper,
+  pulses rods and may charge creepers, wind turns projectiles, earth heaves block displays, life blooms
+  and cures weakened zombie villagers, void draws items in and anchors endermen, time ages crops,
+  copper, babies and furnaces, arcane shows the invisible, blood feeds nether wart), and being wet
+  (`WorldMagic.wet`, read by Conduct and by `Effects.hurt` to dull fire). Which rune does what, and
+  every cap, is pure data in `spell.WorldRules`. Block changes go through `Casters.mayEdit` and the
+  cast's block budget, plus a per-cast allowance kept against `Cast.identity()`. Frost's crust on lava
+  is written down in `TemporaryBlocks` and counts as one of `Effects.isTemporary`'s blocks. The
+  creature side reaches into vanilla through small mixins: `EndermanMixin` (an anchored enderman's
+  teleports fail), `CreeperAccessor`, `ZombieVillagerAccessor` and `AbstractFurnaceBlockEntityAccessor`.
 - **`Wards`**: magic that answers what happens to a creature: Stasis (holds damage via
   `ALLOW_DAMAGE`), Reversal (`ALLOW_DEATH`), Reflect and Foresight, Infinity (holds projectiles),
   and the position history Rewind reads.
@@ -447,6 +455,7 @@ player, synced to that player only, and copied through death where noted.
 | `spirit_until`, `frozen_until` | long | on the mob | End times for summons and frozen mobs |
 | `runebound` | list of string | on the mob | A Runebound's spell |
 | `travel` | `TravelData` | yes | Homes, waypoints, where `/back` goes, teleport requests on or off, the tracked waypoint (server only; see [features/travel.md](features/travel.md)) |
+| `loadouts` | `LoadoutData` | yes | Saved Cord setups (up to 6) and the one last loaded, synced for the Cord screen's panel (see [features/loadouts.md](features/loadouts.md)) |
 | `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
@@ -502,6 +511,7 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 | `ChargeSpell(spell, start)` | `Charging.request` (start a charge, or release it and cast) |
 | `RenameSpell(spell, name)` | `SpellCaster.rename` |
 | `InscribeScroll(spell)` | `SpellScrollItem.inscribe` |
+| `LoadoutRequest(kind, index, name)` | `Loadouts.request`: save as new, save over, load, rename, delete, or load the next one (no runes travel: the server saves its own spellbook) |
 
 Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
 `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
@@ -520,7 +530,9 @@ can draw the circle.
   for categories you've learned something in), the Codex, and the plain-English readout, whose
   small tool buttons rename the spell (`RenameSpell`), copy or paste its spell code, and inscribe
   a scroll (`InscribeScroll`). It edits a local copy of the spells and sends `EditSpell` /
-  `EditPassive` after each change. Beside the window, when there's room, `GuiSpellCircle` draws
+  `EditPassive` after each change. A list badge at the end of the tabs row (or `Ctrl`+`L`) opens
+  `LoadoutPanel` over the window: saved loadouts to load, save over, rename and delete
+  (`LoadoutRequest`); after a load the screen reads the spellbook again once it syncs. Beside the window, when there's room, `GuiSpellCircle` draws
   the edited spell's magic circle (laid out exactly as in the world), opening again whenever the
   spell changes; on the Grimoire page it shows the secret spells found so far, one after another,
   each named like a plate in a book. The Grimoire page replaces the rows, Codex and readout with
@@ -536,7 +548,7 @@ can draw the circle.
   `Tooltips.fit` (wrapped to at most 280 pixels, and cut short if taller than the screen), and the
   mod's items' tooltips are wrapped as they're built (a late `ItemTooltipCallback` phase).
 - **`WildercordKeys`**: R (tap casts, hold charges), V (tap selects, hold opens the
-  **`SpellWheelScreen`**), K and four unbound "cast spell N" keys.
+  **`SpellWheelScreen`**), K, the unbound "cast spell N" keys and an unbound "Next loadout" key.
 - **`fx/`**: everything magical is blended by `GlowLayers`: `GLOW` adds light to what's behind it
   (overlapping light burns brighter, and it never hides anything), `DARK` takes light away (void,
   for any colour carrying the `Light.DARK` flag). Both are vanilla's particle pipeline (reached
@@ -734,6 +746,9 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **`WildercordAffinitiesTest`** checks creature affinities (frost on a blaze against a husk, fire on
   a hoglin and a blaze, a snow golem's immunity, a Shatter through a resistance, a Runebound's own
   element, the Bestiary), the climate in the Nether and the End, and the config switches.
+- **`WildercordLoadoutsTest`** drives the loadouts panel (save, rename, load back), and checks quiet
+  runes after a load, the cooldowns a load starts, the refusal while charging, the limit of six and the
+  quick switch; screenshots `loadouts_panel` and `loadouts_panel_854x480`.
 - **`WildercordAdvancementTest`** checks the server loaded the advancement tab, that a feat, a
   reaction, a secret, a Heart Circle, learning runes, a Cord and a cast each grant theirs, and
   that revoked ones come back from the player's state as they would on login.
@@ -749,9 +764,10 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **Monsters never change blocks.** Every block edit checks `Casters.mayBuild`, which is false for
   anything but a player allowed to build there.
 - **Nothing temporary is permanent.** Summons and frozen mobs carry saved end times; Rampart
-  blocks crumble when the server stops and drop nothing when broken; Rampart, Span and Light blocks
-  are also written down with their world (`cast.TemporaryBlocks`, as frozen water is in `Thaws`),
-  so one left by a crash, or out of loaded ground when its time came, goes as its chunk loads;
+  blocks crumble when the server stops and drop nothing when broken; Rampart, Span and Light blocks,
+  and frost's crust on lava (which also drops nothing when broken), are written down with their world
+  (`cast.TemporaryBlocks`, as frozen water is in `Thaws`), so one left by a crash, or out of loaded
+  ground when its time came, goes as its chunk loads;
   block-display visuals are removed as their chunk loads; wards aren't saved at all.
 - **Bosses are only ever slowed**, never frozen, swapped or held in place, so their fights can't
   break.

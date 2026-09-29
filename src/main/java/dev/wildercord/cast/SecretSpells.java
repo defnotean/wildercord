@@ -56,10 +56,11 @@ public final class SecretSpells {
 			Long until = REBIRTH.get(entity.getUUID());
 			// As Reversal: never against what nothing survives (/kill, the void).
 			if (until == null || source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY) || !(entity.level() instanceof ServerLevel level)
-					|| level.getGameTime() > until) {
+					|| level.getGameTime() > until || DeathsDoor.resting(entity) > 0) {
 				return true;
 			}
 			REBIRTH.remove(entity.getUUID());
+			DeathsDoor.saved(entity, true);
 			reborn(level, entity, REBIRTH_POWER.getOrDefault(entity.getUUID(), 1.0));
 			return false;
 		});
@@ -508,10 +509,13 @@ public final class SecretSpells {
 				}
 				Vfx.emit(level, ParticleTypes.PORTAL, stop, 8, 0.1, 4.0);
 				for (LivingEntity t2 : enemiesNear(pulse, stop, 9)) {
-					Vec3 pull = stop.subtract(t2.getBoundingBox().getCenter());
-					double d = Math.max(0.5, pull.length());
-					Effects.push(t2, pull.normalize().scale(Math.min(0.55, 0.12 + 0.9 / d)).subtract(t2.getDeltaMovement().scale(0.4)));
-					Reactions.mark(t2, Reactions.Mark.PULLED);
+					// A boss is struck but never held at the star (bosses are only ever slowed, as the fused Singularity and Vortex keep to).
+					if (!Spirits.isBoss(t2)) {
+						Vec3 pull = stop.subtract(t2.getBoundingBox().getCenter());
+						double d = Math.max(0.5, pull.length());
+						Effects.push(t2, pull.normalize().scale(Math.min(0.55, 0.12 + 0.9 / d)).subtract(t2.getDeltaMovement().scale(0.4)));
+						Reactions.mark(t2, Reactions.Mark.PULLED);
+					}
 					if (tick % 20 == 0) {
 						Effects.hurt(pulse, t2, magic(pulse), 3 * power);
 					}
@@ -583,6 +587,13 @@ public final class SecretSpells {
 	/** For a minute, death burns you back to life. */
 	private static void rebirth(Cast cast, double power) {
 		LivingEntity caster = cast.caster;
+		int resting = DeathsDoor.restingFromRebirth(caster);
+		if (resting > 0) {
+			// Recast every few seconds it would never let its caster die: it rests after it burns (see DeathsDoor).
+			Casters.tell(caster, Component.translatableWithFallback("message.wildercord.rebirth_resting",
+				"Too soon to be reborn again (%s s)", resting).withColor(0xFF7040));
+			return;
+		}
 		long until = cast.level.getGameTime() + Math.round(1200 * cast.duration);
 		REBIRTH.put(caster.getUUID(), until);
 		REBIRTH_POWER.put(caster.getUUID(), power);

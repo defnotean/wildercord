@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -174,20 +173,15 @@ public class RingGlow extends SingleQuadParticle implements SigilGroup.Extent {
 		plane.transform(at.set(u, v, 0));
 		turn.set(plane).rotateZ(rot);
 		quad(soft, cx + at.x, cy + at.y, cz + at.z, turn, half, argb);
-		turn.rotateY(Mth.PI);
+		Facing.flip(turn);
 		quad(soft, cx + at.x, cy + at.y, cz + at.z, turn, half, argb);
 	}
 
 	private void billboard(float px, float py, float pz, float half, int argb) {
-		Vector3f zAxis = new Vector3f(-px, -py, -pz);
-		if ((argb >>> 24) < 2 || zAxis.lengthSquared() < 1.0E-6F) {
+		if ((argb >>> 24) < 2 || Vector3f.lengthSquared(px, py, pz) < 1.0E-6F) {
 			return;
 		}
-		zAxis.normalize();
-		Vector3f up = Math.abs(zAxis.y) > 0.95F ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
-		Vector3f xAxis = new Vector3f(up).cross(zAxis).normalize();
-		Vector3f yAxis = new Vector3f(zAxis).cross(xAxis).normalize();
-		quad(glow, px, py, pz, new Quaternionf().setFromNormalized(new Matrix3f(xAxis, yAxis, zAxis)), half, argb);
+		quad(glow, px, py, pz, Facing.toward(px, py, pz, turn), half, argb);
 	}
 
 	private void quad(TextureAtlasSprite sprite, float x, float y, float z, Quaternionf q, float half, int argb) {

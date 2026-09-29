@@ -552,6 +552,7 @@ Some things stop growing, so no spell can run away with the world:
 | Widen on an effect | 8 times its radius at most (five Widens make it about 7.6 times; a sixth reaches 8) |
 | Domain | a radius of 24 blocks at most (other shapes keep growing with every Widen) |
 | Barrage | 20 blows at most; Stream 12 strikes at most |
+| Quicken on a flying shape | 8 times as fast at most (three Quickens on a bolt); a bolt still flies 48 blocks at most, a wave 14 |
 | Links deep | 8 |
 | Creatures one cast can touch | 64 (a server can change this). Shapes that strike again and again (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb, Stream, Vortex, Snare) get a fresh 64 for every strike. |
 | Blocks one cast can change | 32 (a server can change this) |

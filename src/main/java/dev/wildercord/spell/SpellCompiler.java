@@ -497,7 +497,7 @@ public final class SpellCompiler {
 			return "Your trail (" + SpellNumbers.trailSeconds(g) + "s)";
 		}
 		if (id.equals(Runes.WALL.id())) {
-			return "A " + blocks(SpellNumbers.wallWidth(g)).replace(" blocks", "-block") + " wall (" + SpellNumbers.wallSeconds(g) + "s)";
+			return "A " + blocks(SpellNumbers.wallWidth(g)).replace(" blocks", "-block") + " wall (" + SpellNumbers.wallSeconds(g) + "s, every " + seconds(SpellNumbers.wallInterval(g)) + ")";
 		}
 		if (id.equals(Runes.ORBIT.id())) {
 			return SpellNumbers.orbs(g) + " orbiting orbs (" + SpellNumbers.orbitSeconds(g) + "s)";

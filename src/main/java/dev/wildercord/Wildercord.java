@@ -52,6 +52,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.HeartCircles.init();
 		dev.wildercord.cast.PassiveCaster.init();
 		dev.wildercord.cast.SecretSpells.init();
+		dev.wildercord.cast.DeathsDoor.init();
 		dev.wildercord.cast.BlockFx.init();
 		dev.wildercord.cast.CordLook.init();
 		dev.wildercord.cast.Effects.init();
@@ -81,6 +82,7 @@ public final class Wildercord implements ModInitializer {
 		SpellCaster.init();
 		WildercordCommand.init();
 		dev.wildercord.travel.Travel.init();
+		dev.wildercord.loadout.Loadouts.init();
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.
 		dev.wildercord.api.WildercordApi.loadAddons();
 		LOGGER.info("Wildercord initialized");

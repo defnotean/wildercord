@@ -65,7 +65,9 @@ and world-border check (`Grid.fits`). Creative and spectator travellers land exa
 - `/rtp`: random columns spread evenly over a disc of `travel.rtp_radius` round the overworld spawn
   (`TravelRules.randomPoint`), oceans and rivers skipped by biome without loading anything, at most
   `RTP_CHUNK_LOADS` (12) chunks loaded out of `RTP_TRIES` (64) columns, the surface from
-  `MOTION_BLOCKING_NO_LEAVES`. Found once before the warmup, re-checked at the end.
+  `MOTION_BLOCKING_NO_LEAVES`. Found once before the warmup, re-checked at the end. A player who isn't an
+  operator searches at most once every `RTP_SEARCH_SECONDS` (10): a retry sooner reuses the spot found (or
+  waits if none was), since a broken warmup starts no cooldown and each search can load a dozen chunks.
 
 ### Visuals (`TravelFx`)
 

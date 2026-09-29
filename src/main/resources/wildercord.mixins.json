@@ -14,7 +14,11 @@
 		"RunesmithTradeMixin",
 		"SwapOfferMixin",
 		"MobConversionMixin",
-		"ItemEntityAccessor"
+		"ItemEntityAccessor",
+		"EndermanMixin",
+		"CreeperAccessor",
+		"ZombieVillagerAccessor",
+		"AbstractFurnaceBlockEntityAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -307,9 +307,7 @@ public final class Innates {
 			THREADS.put(t.getUUID(), new Thread(id, until, cast.caster));
 		}
 		Fx.sound(cast.level, harmed.getFirst().position(), SoundEvents.CHAIN_PLACE, 1.0F, 0.6F);
-		for (int t = 0; t < ticks; t += 10) {
-			Scheduler.later(t + 1, () -> drawThread(cast.level, members));
-		}
+		ShapeRunners.steps(cast, 1, 10, ticks - 1, t -> drawThread(cast.level, members));
 	}
 
 	private static void drawThread(ServerLevel level, Set<LivingEntity> members) {
@@ -576,12 +574,15 @@ public final class Innates {
 		LivingEntity side = entity instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : entity;
 		echoing = true;
 		try {
-			for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> e != side && Targets.canHarm(side, e))) {
-				LivingEntity t = (LivingEntity) e;
-				Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3 * power);
-				Vec3 away = t.position().subtract(entity.position());
-				Effects.push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : away.normalize()).scale(0.8).add(0, 0.35, 0));
-			}
+			// Earth damage, whatever the blow it answers was: it's the Stoneform's own aftershock, not the attacker's spell.
+			Effects.asElement("earth", () -> {
+				for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> e != side && Targets.canHarm(side, e))) {
+					LivingEntity t = (LivingEntity) e;
+					Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3 * power);
+					Vec3 away = t.position().subtract(entity.position());
+					Effects.push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : away.normalize()).scale(0.8).add(0, 0.35, 0));
+				}
+			});
 		} finally {
 			echoing = false;
 		}
@@ -591,6 +592,11 @@ public final class Innates {
 		Long until = STORMHEART.get(entity.getUUID());
 		if (until == null || now > until || !(source.getEntity() instanceof LivingEntity attacker) || attacker == entity || !attacker.isAlive()
 				|| now - STORM_LAST.getOrDefault(entity.getUUID(), 0L) < 20) {
+			return;
+		}
+		// Never a friend (a pet with it fights for its owner, as in Stoneform).
+		LivingEntity side = entity instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : entity;
+		if (!Targets.canHarm(side, attacker)) {
 			return;
 		}
 		STORM_LAST.put(entity.getUUID(), now);
@@ -603,8 +609,10 @@ public final class Innates {
 		Vfx.shockArc(level, entity.getBoundingBox().getCenter(), attacker.getBoundingBox().getCenter());
 		echoing = true;
 		try {
-			Effects.readyToHurt(attacker);
-			attacker.hurtServer(level, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, entity), (float) (6 * scale(entity)));
+			// As spell damage, like Stoneform's aftershock: a player it strikes takes it at the server's pvp scale, and a Shield
+			// meets it. Storm damage, whatever the blow it answers was.
+			Effects.asElement("storm", () -> Effects.hurt(new Cast(entity), attacker, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, entity),
+				6 * scale(entity)));
 		} finally {
 			echoing = false;
 		}

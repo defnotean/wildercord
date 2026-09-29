@@ -6,23 +6,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 /** Runs spell parts later: delays, zone pulses, rain strikes and On Land watchers. */
 public final class Scheduler {
 	private Scheduler() {}
-
-	private static final class Task {
-		int ticksLeft;
-		final Runnable action;
-
-		Task(int ticksLeft, Runnable action) {
-			this.ticksLeft = ticksLeft;
-			this.action = action;
-		}
-	}
 
 	private static final class LandWatch {
 		final LivingEntity player;
@@ -53,11 +45,29 @@ public final class Scheduler {
 	}
 
 	private static final List<HurtWatch> HURT = new ArrayList<>();
-	private static final List<Task> TASKS = new ArrayList<>();
+	/**
+	 * Tasks by the tick they're due on the scheduler's own clock, each tick's in the order they were
+	 * added. Spells schedule many of their parts ahead (an effect's every pulse; a lasting shape books
+	 * one step at a time, see {@code ShapeRunners.steps}), so thousands can be waiting: kept by due tick,
+	 * a server tick only touches the ones due now, where a single list was walked (and shifted, for every
+	 * task taken out of it) in full every tick.
+	 */
+	private static final Map<Long, List<Runnable>> TASKS = new HashMap<>();
+	/** Ticks the scheduler has run: {@link #later} counts from here. */
+	private static long clock;
 	private static final List<LandWatch> LAND = new ArrayList<>();
 
 	public static void later(int ticks, Runnable action) {
-		TASKS.add(new Task(Math.max(1, ticks), Effects.carryContext(action)));
+		TASKS.computeIfAbsent(clock + Math.max(1, ticks), k -> new ArrayList<>()).add(Effects.carryContext(action));
+	}
+
+	/** Spell parts waiting to run, for the tests: a lasting shape keeps one waiting at a time, however long it lasts. */
+	public static int pending() {
+		int n = 0;
+		for (List<Runnable> due : TASKS.values()) {
+			n += due.size();
+		}
+		return n;
 	}
 
 	/** Fires once the player has left the ground and touched it again, within {@code timeout} ticks. */
@@ -105,20 +115,13 @@ public final class Scheduler {
 
 	private static void tick() {
 		HURT.removeIf(watch -> watch.player.isRemoved() || !watch.player.isAlive() || --watch.ticksLeft <= 0);
-		if (!TASKS.isEmpty()) {
-			List<Task> due = new ArrayList<>();
-			for (Iterator<Task> it = TASKS.iterator(); it.hasNext(); ) {
-				Task task = it.next();
-				if (--task.ticksLeft <= 0) {
-					it.remove();
-					due.add(task);
-				}
-			}
-			// Run after the sweep: actions may schedule more tasks.
-			for (Task task : due) {
+		// Taken out before any runs: actions may schedule more tasks (never for this same tick).
+		List<Runnable> due = TASKS.remove(++clock);
+		if (due != null) {
+			for (Runnable action : due) {
 				// One failing part of a spell (or an add-on's) mustn't take the whole server tick down.
 				try {
-					task.action.run();
+					action.run();
 				} catch (RuntimeException e) {
 					dev.wildercord.Wildercord.LOGGER.error("A scheduled spell part failed", e);
 				}

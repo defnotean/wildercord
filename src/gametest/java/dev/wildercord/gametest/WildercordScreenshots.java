@@ -572,6 +572,55 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			}
 		});
 
+		// Only links use up a cast's eight links: a shape's own parts don't. Four On Hits deep, the fifth Lance (each
+		// Lance runs through the husk the last one struck) used to die before it landed, its hits a step too deep.
+		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
+		context.waitTicks(3);
+		float whole = server.computeOnServer(s -> health(s, huskId[0]));
+		server.runOnServer(s -> castAs(s, 1, Runes.LANCE, Runes.ON_HIT, Runes.LANCE, Runes.ON_HIT, Runes.LANCE, Runes.ON_HIT, Runes.LANCE,
+			Runes.ON_HIT, Runes.LANCE, Runes.HARM));
+		context.waitTicks(5);
+		float lanced = server.computeOnServer(s -> health(s, huskId[0]));
+		check(lanced < whole, "The fifth Lance, four On Hits deep, should strike, but the husk's health went " + whole + " -> " + lanced);
+
+		// An Echo inside an imbued spell repeats it at what set it off: a sword holding Harm · Echo harms what it strikes
+		// twice (the echo used to land on its wielder, and a harmful one did nothing).
+		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
+		context.waitTicks(3);
+		server.runOnServer(s -> {
+			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			ItemStack sword = new ItemStack(net.minecraft.world.item.Items.IRON_SWORD);
+			sword.set(dev.wildercord.content.WildercordComponents.IMBUED, new dev.wildercord.content.Imbued(List.of(Runes.HARM.id(), Runes.ECHO.id()), 3,
+				0xE678DC, false, dev.wildercord.content.Imbued.NOBODY, 0L));
+			player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, sword);
+			player.attack(husk(s, huskId[0]));
+		});
+		context.waitTicks(5);
+		float struck = server.computeOnServer(s -> health(s, huskId[0]));
+		context.waitTicks(15);
+		float echoed = server.computeOnServer(s -> health(s, huskId[0]));
+		server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY));
+		check(struck > 0 && echoed < struck, "An imbued Harm · Echo should harm what the sword struck again, but its health went " + struck + " -> " + echoed);
+
+		// A lasting shape keeps one part waiting in the scheduler, however long Extend makes it last (a four-minute
+		// Orbit used to book all 5,000 of its ticks up front), and stops once its caster is gone.
+		server.runOnServer(s -> {
+			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			net.minecraft.server.level.ServerLevel level = player.level();
+			var husk = net.minecraft.world.entity.EntityTypes.HUSK.create(level, net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+			husk.snapTo(STAGE[0] + 20, STAGE[1], STAGE[2], 90.0F, 0.0F);
+			husk.setNoAi(true);
+			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+			husk.addTag("wildercord.rolled");
+			level.addFreshEntity(husk);
+			int before = dev.wildercord.cast.Scheduler.pending();
+			dev.wildercord.cast.CastEngine.cast(husk, dev.wildercord.spell.SpellCompiler.compile(List.of(Runes.ORBIT, Runes.EXTEND, Runes.EXTEND,
+				Runes.EXTEND, Runes.EXTEND, Runes.EXTEND)).root());
+			int booked = dev.wildercord.cast.Scheduler.pending() - before;
+			husk.discard();
+			check(booked < 20, "A four-minute Orbit should keep one part waiting in the scheduler, not " + booked);
+		});
+
 		// A Shield that stops a Swap keeps everyone where they are: the spell ended at its circles.
 		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
 		context.waitTicks(3);

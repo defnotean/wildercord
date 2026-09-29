@@ -164,6 +164,10 @@ public class WildercordNewRunesTest implements FabricClientGameTest {
 			h -> true, p -> has(p, MobEffects.STRENGTH, 1) && p.hasEffect(MobEffects.FIRE_RESISTANCE)));
 		samples.add(new Sample("Warcry", List.of(Runes.SELF, Runes.WARCRY), 0, 3,
 			h -> true, p -> p.hasEffect(MobEffects.STRENGTH) && p.hasEffect(MobEffects.SPEED)));
+		// Not a rune of the world, but a shape's promise: an Arc that lands on a creature bursts there too, catching the
+		// husks either side of it (it used to strike only the one it landed on).
+		samples.add(new Sample("Arc", List.of(Runes.ARC, Runes.HARM), 3, 20,
+			h -> h.stream().allMatch(WildercordNewRunesTest::hurt), p -> true));
 		return samples;
 	}
 

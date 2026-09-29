@@ -3,6 +3,8 @@ package dev.wildercord.cast;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -43,9 +45,13 @@ public final class Fx {
 		if (muted) {
 			return;
 		}
+		Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			if (player != except) {
-				level.sendParticles(player, particle, false, false, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			if (player != except && inRange(level, player, false, at.x, at.y, at.z)) {
+				if (packet == null) {
+					packet = packet(particle, false, false, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+				}
+				player.connection.send(packet);
 			}
 		}
 	}
@@ -55,8 +61,14 @@ public final class Fx {
 		if (muted) {
 			return;
 		}
+		Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			level.sendParticles(player, particle, false, false, at.x, at.y, at.z, count, spread, spread, spread, speed);
+			if (inRange(level, player, false, at.x, at.y, at.z)) {
+				if (packet == null) {
+					packet = packet(particle, false, false, at.x, at.y, at.z, count, spread, spread, spread, speed);
+				}
+				player.connection.send(packet);
+			}
 		}
 	}
 
@@ -70,15 +82,18 @@ public final class Fx {
 		}
 		double spread = count > 0 ? Math.min(0.6, Math.max(dx, Math.max(dy, dz))) : 0.0;
 		double clearance = EYE_CLEARANCE + spread;
+		Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			Vec3 eye = player.getEyePosition();
-			double ex = x - eye.x;
-			double ey = y - eye.y;
-			double ez = z - eye.z;
-			if (ex * ex + ey * ey + ez * ez < clearance * clearance) {
+			double ex = x - player.getX();
+			double ey = y - player.getEyeY();
+			double ez = z - player.getZ();
+			if (ex * ex + ey * ey + ez * ez < clearance * clearance || !inRange(level, player, false, x, y, z)) {
 				continue;
 			}
-			level.sendParticles(player, particle, false, false, x, y, z, count, dx, dy, dz, speed);
+			if (packet == null) {
+				packet = packet(particle, false, false, x, y, z, count, dx, dy, dz, speed);
+			}
+			player.connection.send(packet);
 		}
 	}
 
@@ -90,13 +105,40 @@ public final class Fx {
 		if (muted) {
 			return;
 		}
+		Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			Vec3 eye = player.getEyePosition();
-			if (eye.distanceToSqr(at) < EYE_CLEARANCE * EYE_CLEARANCE) {
+			double ex = at.x - player.getX();
+			double ey = at.y - player.getEyeY();
+			double ez = at.z - player.getZ();
+			if (ex * ex + ey * ey + ez * ez < EYE_CLEARANCE * EYE_CLEARANCE || !inRange(level, player, true, at.x, at.y, at.z)) {
 				continue;
 			}
-			level.sendParticles(player, particle, true, false, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			if (packet == null) {
+				packet = packet(particle, true, false, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			}
+			player.connection.send(packet);
 		}
+	}
+
+	/**
+	 * Whether a particle at {@code x, y, z} reaches {@code player}: vanilla's own test in
+	 * {@code ServerLevel.sendParticles}, the same world and within 32 blocks of their block (512 when
+	 * {@code far}, its override of the limit).
+	 *
+	 * <p>The senders here do that test themselves and build the packet once, the first time a
+	 * player passes it, then hand every player that same packet. {@code sendParticles(player, ...)}
+	 * builds a new packet for every player it's called for, even the ones it then leaves out; with
+	 * hundreds of particle calls a second in a fight, that's a lot of garbage for nothing.</p>
+	 */
+	static boolean inRange(ServerLevel level, ServerPlayer player, boolean far, double x, double y, double z) {
+		double range = far ? 512.0 : 32.0;
+		return player.level() == level && player.blockPosition().distToCenterSqr(x, y, z) < range * range;
+	}
+
+	/** The packet {@code ServerLevel.sendParticles} would build for these arguments. */
+	static Packet<?> packet(ParticleOptions particle, boolean far, boolean alwaysShow, double x, double y, double z, int count, double dx, double dy,
+			double dz, double speed) {
+		return new ClientboundLevelParticlesPacket(particle, far, alwaysShow, x, y, z, (float) dx, (float) dy, (float) dz, (float) speed, count);
 	}
 
 	public static void send(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {

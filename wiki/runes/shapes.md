@@ -405,7 +405,7 @@ A floating totem where you look pulses every 2 seconds for 10 seconds.
 
 *Tier III · 10 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
 
-A 7-block wall across where you look. Hits whatever crosses it for 5 seconds.
+A 7-block wall across where you look. Hits whatever crosses it every second for 5 seconds.
 
 **How to get it:** Craft: a Blank Rune, 2x Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
 

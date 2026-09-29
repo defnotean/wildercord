@@ -32,6 +32,8 @@ public final class PassiveCaster {
 		long nextCast;
 		boolean shown;
 		boolean faltering;
+		/** Counts the passive's casts: only the latest one's Orbit may fly (see {@link #running}). */
+		int casts;
 		/** The player and world it was cast in: after a dimension change the passive is cast afresh. */
 		ServerPlayer caster;
 		net.minecraft.world.level.Level level;
@@ -110,7 +112,8 @@ public final class PassiveCaster {
 				continue;
 			}
 			int index = slot;
-			Runnable cast = () -> CastEngine.cast(player, compiled.root(), 1, Heart.bonuses(player), true, () -> running(player, index, key));
+			int count = ++state.casts;
+			Runnable cast = () -> CastEngine.cast(player, compiled.root(), 1, Heart.bonuses(player), true, () -> running(player, index, key, count));
 			if (state.shown) {
 				Fx.quietly(cast);
 			} else {
@@ -122,10 +125,14 @@ public final class PassiveCaster {
 		}
 	}
 
-	/** Whether this passive is still the one running in its slot: its Orbit ends the moment it isn't. */
-	public static boolean running(ServerPlayer player, int slot, String key) {
+	/**
+	 * Whether this cast of a passive is still the one running in its slot: its Orbit ends the moment it isn't. Only the
+	 * latest cast counts, so switching a passive off and on again (or changing it and back) starts a fresh ring of orbs
+	 * instead of bringing the old one back beside it, which stacked a ring for every switch.
+	 */
+	public static boolean running(ServerPlayer player, int slot, String key, int cast) {
 		State[] states = STATES.get(player.getUUID());
-		return states != null && key.equals(states[slot].key) && !states[slot].faltering;
+		return states != null && key.equals(states[slot].key) && !states[slot].faltering && states[slot].casts == cast;
 	}
 
 	public static void forget(UUID player) {
