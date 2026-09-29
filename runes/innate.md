@@ -26,7 +26,7 @@ Threads everything hit together for 8 seconds: half of any damage one of them ta
 
 *Tier I · Time · Helps you and your allies · 14 mana · needs any Cord*
 
-Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay something.
+Heals every bit of damage you took in the last 5 seconds. Over the next 10 seconds it comes back, unless you slay a monster.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
