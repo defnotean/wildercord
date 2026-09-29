@@ -30,7 +30,9 @@ import java.util.Set;
 /**
  * Spells meeting the Archive's Rune Seals (and its braziers). A player's spell of the right
  * element lights every seal of that element in the door it touched; when every element in a
- * door is lit, the door dissolves. Fire spells also light unlit campfires they land on.
+ * door is lit, the door dissolves. Fire spells also light unlit campfires they land on, where world magic
+ * may change blocks ({@link WorldMagic#mayChange}: not in a claim or spawn protection, nor on a server that
+ * keeps spells off its blocks).
  */
 public final class RuneSeals {
 	private RuneSeals() {}
@@ -46,7 +48,7 @@ public final class RuneSeals {
 		RuneSealBlock.Element wanted = RuneSealBlock.Element.of(element);
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 			BlockState state = level.getBlockState(pos);
-			if (element.equals("fire") && state.getBlock() instanceof CampfireBlock && !state.getValue(CampfireBlock.LIT)) {
+			if (element.equals("fire") && state.getBlock() instanceof CampfireBlock && !state.getValue(CampfireBlock.LIT) && WorldMagic.mayChange(cast, pos.immutable())) {
 				level.setBlock(pos, state.setValue(CampfireBlock.LIT, true), Block.UPDATE_ALL);
 				Fx.sound(level, Vec3.atCenterOf(pos), SoundEvents.FIRECHARGE_USE, 0.8F, 1.0F);
 			}

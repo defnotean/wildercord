@@ -322,7 +322,7 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Rewind | Effect · Time | IV | You return to where you were 5 s ago, with that health if it was more |
 | Accelerate | Effect · Time | III | Speed III, Haste III, Jump Boost II and Regeneration for 10 s |
 | Time Skip | Effect · Time | III | You vanish, reappear up to 8 blocks ahead, and monsters lose track of you |
-| Rampart | Effect · World | II | A 5-wide, 3-high earth wall for 10 s; broken by hand it crumbles without drops |
+| Rampart | Effect · World | II | A 5-wide, 3-high earth wall for 10 s; broken by hand it crumbles, and however it's broken (an explosion too) it drops nothing |
 | Shades | Effect · Summon | III | Two shadow hounds for 20 s |
 | Thunderbird | Effect · Summon | III | A storm bird circles overhead for 15 s, striking the nearest enemy every 1.5 s (3 at most) |
 | Vow | Modifier · Power | III | On a shape: its effects hit twice as hard, the whole spell's cooldown is 4x longer (up to 60 s) |
@@ -820,6 +820,7 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
 - **No cooldown, no cost per cast:** a passive costs mana every second instead, 0.12 × its cost (Thrift and Archmage lower it). The HUD shows the total drain; the Passives page compares it to your regeneration.
 - **Faltering:** without the mana for a second's upkeep, a passive stops renewing until you have it again.
 - **Renewal:** a Self passive re-applies every 2 seconds, quietly (no particles after the first time). An Orbit passive restarts whenever its orbs run out, and stops the moment it's switched off.
+- **Nothing outlasts it:** whatever a passive's cast sets lasts 15 seconds at most (`Passives.EFFECT_TICKS`, above Night Vision's 10 seconds of flicker), so switching one on for a second can't bank a minute of its buff. The same effect from anywhere else keeps its own length.
 - **Each passive has an on/off switch.** Up to 5 runes each (fewer on small Cords).
 - **Only sustainable runes, so it isn't broken:**
   - Shapes: Self or Orbit.
@@ -1009,7 +1010,7 @@ element hints.
 | frost + earth | **Glacier** | Frozen in place for 2 s (1 s on players) |
 | life + void | **Lifesteal** | 5 damage, and you heal for what it dealt |
 | wind + void | **Warp** | Swaps places with the target; an enemy is left with Slowness II for 2 s |
-| life + earth | **Bloom** | Regeneration II for 6 s to allies, and plants grow around them |
+| life + earth | **Bloom** | Regeneration II for 6 s to allies, and plants grow around the first 3 of them |
 | life + storm | **Surge** | Allies get Speed I and Strength I for 8 s |
 | arcane + void | **Nullify** | Strips an enemy's good effects, or an ally's bad effects |
 

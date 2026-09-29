@@ -222,7 +222,7 @@ Any effect of an element counts.
 | Glacier | Frost + Earth | Freezes targets in place for 2 seconds (1 second on players). |
 | Lifesteal | Life + Void | 5 damage, and you heal for what it dealt. |
 | Warp | Wind + Void | You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds. |
-| Bloom | Life + Earth | Regeneration II for 6 seconds, and plants grow around every ally it touches. |
+| Bloom | Life + Earth | Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches. |
 | Surge | Life + Storm | Speed I and Strength I for 8 seconds. |
 | Nullify | Arcane + Void | Strips an enemy's good effects, or an ally's bad effects. |
 | Phoenix Pyre | Fire + Life | Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. |
@@ -237,7 +237,7 @@ Any effect of an element counts.
 | Rime Seal | Frost + Arcane | Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that stands in it for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each. |
 | Cryostasis | Frost + Time | Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds. |
 | Frostbite | Frost + Blood | 3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second. |
-| Absolute Zero | Frost + Frost | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage. |
+| Absolute Zero | Frost + Frost | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws. |
 | Magnetize | Storm + Earth | Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second). |
 | Riftbolt | Storm + Void | A black bolt for 6 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds. |
 | Stormweave | Storm + Arcane | Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 3 damage each, and 1 more for every other one caught in the web. |
@@ -261,7 +261,7 @@ Any effect of an element counts.
 | Lifebloom | Life + Life | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
 | Sanguine Rite | Blood + Blood | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
 | Entropy | Void + Time | The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour. |
-| Devour | Void + Blood | 5 damage. If it kills, you feed: 10 mana and 4 absorption. |
+| Devour | Void + Blood | 5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most). |
 | Timesteal | Arcane + Time | Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you. |
 | Hemomancy | Arcane + Blood | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
 | Reckoning | Time + Blood | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |

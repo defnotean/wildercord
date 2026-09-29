@@ -23,7 +23,9 @@ public final class BlankRuneTooltip {
 			}
 			lines.add(Component.translatable("tooltip.wildercord.blank_rune.attune").withStyle(ChatFormatting.DARK_AQUA));
 			Minecraft minecraft = Minecraft.getInstance();
-			if (minecraft.player != null) {
+			// The player's own count only on the game's thread: creative search builds its index from tooltips in the
+			// background, and the player's data isn't safe to read from there.
+			if (minecraft.player != null && minecraft.isSameThread()) {
 				int attuned = Feats.count(Heart.grimoire(minecraft.player), "attune:");
 				lines.add(Component.translatable("tooltip.wildercord.blank_rune.attuned", attuned, Attunements.RULES.size())
 					.withStyle(ChatFormatting.DARK_GRAY));

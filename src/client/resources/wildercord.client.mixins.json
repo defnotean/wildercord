@@ -13,7 +13,9 @@
 		"PlayerModelMixin",
 		"LivingEntityRendererMixin",
 		"ClientLevelMixin",
-		"AvatarRendererStyleMixin"
+		"AvatarRendererStyleMixin",
+		"BossHealthOverlayAccessor",
+		"SubtitleOverlayMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

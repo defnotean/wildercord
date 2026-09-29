@@ -58,7 +58,7 @@ import java.util.List;
  * up and handed in at a Scribing Desk, two casters' spells merging into a chorus (the second
  * voice is a husk calling the chorus logic directly, since a test has only one real player), and
  * another player's pets kept as safe from your spells as that player is (the other owner is a
- * stand-in player, or one who's away).
+ * stand-in player, or one who's away), and a duel's end leaving harm from anything but the opponent.
  *
  * <p>Runs in the full suite; skipped by {@code WILDERCORD_TOUR_ONLY} and {@code WILDERCORD_CORDS_ONLY}.</p>
  */
@@ -87,10 +87,11 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			context.waitTicks(2);
 			attempt(failures, "chorus", () -> chorus(context, world));
 			attempt(failures, "pets", () -> pets(world));
+			attempt(failures, "a duel's end", () -> duelEnd(context, world));
 			context.waitTicks(40);
 			world.getServer().runCommand("kill @e[tag=wildercord.social]");
 			if (!failures.isEmpty()) {
-				throw new AssertionError("The Runesmith, contracts, chorus or pets went wrong:\n  " + String.join("\n  ", failures));
+				throw new AssertionError("The Runesmith, contracts, chorus, pets or duels went wrong:\n  " + String.join("\n  ", failures));
 			}
 		}
 	}
@@ -111,6 +112,40 @@ public class WildercordSocialTest implements FabricClientGameTest {
 		if (!ok) {
 			throw new AssertionError(what);
 		}
+	}
+
+	// ------------------------------------------------------------------ duels
+
+	/**
+	 * A duel's end takes away only the harm the opponent did: poison and fire from anything else during the duel
+	 * stay. (The opponent is a stand-in player, not in the player list, so the duel ends at the next tick as if they
+	 * had logged off.)
+	 */
+	private static void duelEnd(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runCommand("weather clear");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.removeAllEffects();
+			player.clearFire();
+			dev.wildercord.duel.Duels.start(player, FakePlayer.get(player.level()));
+			check(dev.wildercord.duel.Duels.inDuel(player), "the duel should begin");
+			// Poison and fire from something else entirely: a monster, lava.
+			player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 400, 0));
+			player.setRemainingFireTicks(200);
+		});
+		context.waitTicks(3);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			boolean over = !dev.wildercord.duel.Duels.inDuel(player);
+			boolean poisoned = player.hasEffect(net.minecraft.world.effect.MobEffects.POISON);
+			boolean burning = player.getRemainingFireTicks() > 0;
+			player.removeAllEffects();
+			player.clearFire();
+			player.setHealth(player.getMaxHealth());
+			check(over, "the duel should be over once the stand-in has gone");
+			check(poisoned, "poison from something other than the opponent should outlast the duel");
+			check(burning, "fire from something other than the opponent should outlast the duel");
+		});
 	}
 
 	// ------------------------------------------------------------------ pets

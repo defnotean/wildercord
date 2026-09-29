@@ -25,6 +25,13 @@ public final class Passives {
 	public static final double UPKEEP_PER_COST = 0.12;
 	/** How often a Self passive is renewed, in ticks. */
 	public static final int SELF_INTERVAL = 40;
+	/**
+	 * The longest a passive's cast may make anything last, in ticks: a little past its next renewal,
+	 * so switching it off (or running dry) ends its buffs soon after instead of leaving a minute of
+	 * Night Vision for a second of upkeep. Night Vision flickers in its last 10 seconds, so this stays
+	 * that much above {@link #SELF_INTERVAL}.
+	 */
+	public static final int EFFECT_TICKS = 300;
 
 	private static final Set<String> SHAPES = Set.of("self", "orbit");
 	private static final Set<String> BUFFS = Set.of("feather_fall", "swift", "night_eye", "haste", "regrowth", "stoneskin", "empower",
@@ -94,6 +101,11 @@ public final class Passives {
 	/** Mana per second to keep a passive of this cost running. */
 	public static double upkeep(double cost) {
 		return cost * UPKEEP_PER_COST;
+	}
+
+	/** How long something a passive's cast sets may last: {@code ticks}, capped at {@link #EFFECT_TICKS} (a negative, endless one too). */
+	public static int effectTicks(int ticks) {
+		return ticks < 0 ? EFFECT_TICKS : Math.min(ticks, EFFECT_TICKS);
 	}
 
 	/** Ticks between renewals: Self every 2 seconds, Orbit whenever its orbs run out. */

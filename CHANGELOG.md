@@ -38,6 +38,30 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
     creeper, curing and growing babies are a player's spell's only, and off with world-changing magic off too.
   - The rune tooltips' dark green *"Where it lands"* lines say all of this, with the warnings.
 
+### Changed
+- **Absolute Zero freezes the same creature solid at most once every few seconds.** Its first hit leaves a target
+  slowed, so with Linger, a Zone or a second copy every later hit was a certain freeze for 7 damage. Frozen solid, a
+  creature can't be again until 3 seconds after it thaws (it's still slowed meanwhile).
+- **Magma's pools and Tempest's strikes don't stack on one enemy.** Each lays one under (or on) every target, so an
+  enemy bunched with others took every overlapping one: up to four burns a second from Magma, eight strikes from
+  Tempest. Now each enemy takes your strongest one once (Magma once a second, Tempest once per strike).
+- **A Blizzard or Rime Seal cast again on its own spot keeps it going** (up to three times its length) instead of laying
+  a second one on top: a Zone, an Echo or a Split used to stack several storms biting at once, or seals each freezing
+  the same enemy, as Hellmouth, Sinkhole and Crimson Mist already didn't.
+- Bloom's description says it grows plants around the first 3 allies it touches (it said every ally), and Devour's
+  that it feeds you twice a cast at most, as they always did.
+- **Manatide gives 30 mana a drink at most.** Extend made it flow longer without limit (four Extends: about 480 mana for
+  a 46-mana spell), and a stream that outlasted the minute between drinks ran alongside the next. It now flows 10
+  seconds however it's extended, and only your newest drink flows.
+- **Cheating death rests.** Once Reversal, Second Wind or a certain secret spell has saved you from a killing blow,
+  none of them saves you again for a minute, and the secret spell can't be taken up again for 3 minutes. Each could be
+  recast long before it ran out, so keeping one up meant never dying.
+- Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
+- Borrowed Time says its debt is forgiven when you slay a monster, as it always was (it said "something": killing an
+  animal never forgave it).
+- Vein's description now says what Amplify does to it: like Break, Tunnel and Smelt, an Amplified Vein mines at
+  diamond-pickaxe strength.
+
 ### Fixed
 - **Warp Step, Time Skip and Zipper set you down safely**, as Blink now does: never into lava or fire, and Warp Step and
   Time Skip never over a drop or the void (Time Skip takes the farthest safe spot on its way, and says so when there's none).
@@ -160,15 +184,44 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   strikes or a Sweep's beam could reach hundreds of blocks past what was loaded, loading (even generating) the land as
   they felt for the ground or a wall. They now stop at the edge of the loaded world.
 
-### Changed
-- **Cheating death rests.** Once Reversal, Second Wind or a certain secret spell has saved you from a killing blow,
-  none of them saves you again for a minute, and the secret spell can't be taken up again for 3 minutes. Each could be
-  recast long before it ran out, so keeping one up meant never dying.
-- Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
-- Borrowed Time says its debt is forgiven when you slay a monster, as it always was (it said "something": killing an
-  animal never forgave it).
-- Vein's description now says what Amplify does to it: like Break, Tunnel and Smelt, an Amplified Vein mines at
-  diamond-pickaxe strength.
+- **A passive's buffs no longer outlast it.** Whatever a passive gives lasts 15 seconds at most (it's renewed every
+  2), so switching `Self · Night Eye` on for a second no longer leaves a minute of night vision for a second's
+  upkeep. The same effect from a potion keeps its full length.
+- **A spell's blocks never drop anything.** A Rampart blown up by an explosion dropped its packed mud (a free packed
+  mud farm); a Rampart's wall, a Span's glass, Light's light and frost's crust on lava now drop nothing however
+  they're broken, and a crust blown up (or taken any way but melting) gives its lava back at once.
+- **Servers ignore a flood of cast requests**, as they already did for spell edits: a modified client can send at
+  most a burst of 20 casts (or charges), then 20 a second, far more than any hand on the cast keys.
+- **Fire spells no longer light campfires where they may not change blocks.** Lighting a campfire (as the Archive's
+  braziers are lit) skipped the rules the rest of world magic keeps: now it doesn't happen in a claim or spawn
+  protection, for a player who can't build there, or on a server that keeps spells off its blocks.
+- **Spells that grow something ask a claim first.** Protection and claim mods were only asked when a spell took a block
+  away, so Glimmer's lichen, Glowvine's vines and an Ancient Seed's flower could be put into the air inside someone
+  else's claim for good. Putting a block into the air now asks them too.
+- **Fangs never bite your friends.** Its evoker fangs bit anything that walked onto them, your own pets included, and
+  their bites went past Shields and the server's PvP damage scale. They now bite as the spell does (6, once for each
+  creature however many fangs it stands on), only what your spells may harm, and nothing once the spell has ended.
+- **A creature held in Stasis (or an arrow held by Infinity) that's carried through a portal falls again** as soon as
+  it arrives, instead of floating until its ground was next loaded.
+- **The glyph limit counts all your glyphs**, in every dimension together (12 by default), rather than 12 in each:
+  writing one more lets your oldest fade wherever it is.
+- **A parried spell doesn't earn Siphon mana afresh.** Turned back, it's still the one spell paid for once, so it
+  shares the original's Siphon cap however many times it's parried back and forth.
+- **A duel's end only undoes what your opponent did.** It took away every harmful effect and fire gained during the
+  duel, from anything: a monster's poison or lava's fire now stay, and only your opponent's (their spells, a tipped
+  arrow, a flaming blade) are taken off.
+- **The Tide Scribe remembers its tide.** Reloaded (a restart, or its dungeon unloading and loading again), it
+  turned the tide at once; it now keeps to when the tide was due to turn.
+- **Archives woken before lecterns remembered their Archivist can re-arm.** Such a lectern takes the Archivist it finds
+  about the Archive as its own, and if none is there for 3 minutes while players are, it wakes a new one for whoever
+  comes near, like any other.
+- **Subtitles no longer cover the spell panel's name**: where the two meet in the bottom-right corner, the subtitles
+  move up past it. On a narrow screen, the tracked waypoint's line moves below any boss bars instead of running under
+  them.
+- **A possible crash opening creative search**: the Blank Rune's and Wisp Lantern's tooltips read your own data while
+  the search index was built in the background; they now read it only on the game's own thread.
+- **Resizing the window no longer undoes a spell edit** made a moment before (the Cord screen copied your spells from
+  the server again, before your edit had come back).
 
 ## [0.4.2-alpha] - 2026-09-28
 

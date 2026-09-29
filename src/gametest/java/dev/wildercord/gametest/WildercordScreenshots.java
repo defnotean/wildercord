@@ -514,6 +514,31 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		float held = server.computeOnServer(s -> health(s, huskId[0]));
 		check(held == full, "Stasis threaded after Sonic Boom should still hold it, but health went " + full + " -> " + held);
 		context.waitTicks(110);
+		// A husk held in Stasis and carried to another world (a portal it stood in) floats no longer: the copy of it there,
+		// which nothing holds, gets its gravity back at once instead of when its chunk next loads.
+		server.runOnServer(s -> s.getLevel(net.minecraft.world.level.Level.NETHER).setChunkForced(0, 0, true));
+		context.waitTicks(60);
+		java.util.UUID carried = server.computeOnServer(WildercordScreenshots::freshHusk);
+		context.waitTicks(3);
+		server.runOnServer(s -> castAs(s, 2, Runes.BEAM, Runes.STASIS));
+		context.waitTicks(2);
+		server.runOnServer(s -> {
+			var husk = husk(s, carried);
+			check(husk.isNoGravity(), "A husk held in Stasis should float");
+			husk.teleport(new net.minecraft.world.level.portal.TeleportTransition(s.getLevel(net.minecraft.world.level.Level.NETHER),
+				new net.minecraft.world.phys.Vec3(0.5, 110, 0.5), net.minecraft.world.phys.Vec3.ZERO, 0.0F, 0.0F,
+				net.minecraft.world.level.portal.TeleportTransition.DO_NOTHING));
+		});
+		context.waitTicks(5);
+		server.runOnServer(s -> {
+			var nether = s.getLevel(net.minecraft.world.level.Level.NETHER);
+			var there = nether.getEntity(carried);
+			check(there != null, "The husk should have been carried to the Nether");
+			check(!there.isNoGravity() && !there.hasAttached(dev.wildercord.player.WildercordAttachments.HELD_GRAVITY),
+				"A husk held in Stasis and carried to another world should get its gravity back there");
+			there.discard();
+			nether.setChunkForced(0, 0, false);
+		});
 		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
 		context.waitTicks(3);
 
@@ -825,6 +850,21 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			Spellbooks.setMana(player, 100);
 			dev.wildercord.cast.PassiveCaster.tick(player, 20);
 			check(player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "With the mana back, the passive should cast at the next second");
+			// A passive's buffs last only a little past its next renewal: on for a second, it can't leave a minute of Night Vision.
+			// The same effect from a potion is kept whole.
+			check(SpellCaster.editPassive(player, 0, ids(Runes.SELF, Runes.NIGHT_EYE)) == null, "Self · Night Eye should be a valid passive");
+			player.removeAllEffects();
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			var eye = player.getEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
+			check(eye != null && eye.getDuration() <= dev.wildercord.spell.Passives.EFFECT_TICKS,
+				"A passive's Night Vision should last no more than " + dev.wildercord.spell.Passives.EFFECT_TICKS + " ticks (has " + eye + ")");
+			player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 6000));
+			SpellCaster.togglePassive(player, 0);
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			SpellCaster.togglePassive(player, 0);
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			eye = player.getEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
+			check(eye != null && eye.getDuration() > 5000, "A potion's Night Vision should survive the passive renewing its own (has " + eye + ")");
 			SpellCaster.togglePassive(player, 0);
 			for (int slot = 0; slot < dev.wildercord.spell.Passives.MAX; slot++) {
 				SpellCaster.togglePassive(player, slot);

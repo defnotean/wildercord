@@ -156,6 +156,37 @@ public class WildercordWorldMagic2Test implements FabricClientGameTest {
 			});
 			note(failures, broken);
 
+			// Blown up, a crust drops nothing either, and its lava comes back (not flowing in from beside it: the source).
+			BlockPos[] blownAt = new BlockPos[1];
+			String blown = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos pool = site(player, 40, 0);
+				blownAt[0] = pool.below();
+				pool(level, pool, 1, Blocks.LAVA.defaultBlockState());
+				apply(player, List.of(Runes.TOUCH, Runes.FROST), Vec3.atCenterOf(pool), List.of());
+				if (!level.getBlockState(pool.below()).is(Blocks.BASALT)) {
+					return "frost should crust the third pool (found " + level.getBlockState(pool.below()) + ")";
+				}
+				// A TNT blast drops every block it breaks (no decay), so any crust would show.
+				level.explode(null, pool.getX() + 0.5, pool.getY() + 0.2, pool.getZ() + 0.5, 4.0F, net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+				if (level.getBlockState(pool.below()).is(Blocks.BASALT)) {
+					return "the blast should break the crust under it";
+				}
+				List<ItemEntity> drops = level.getEntitiesOfClass(ItemEntity.class, new AABB(pool).inflate(8),
+					e -> e.getItem().is(Items.BASALT) || e.getItem().is(Items.MAGMA_BLOCK));
+				drops.forEach(Entity::discard);
+				return drops.isEmpty() ? null : "a crust blown up shouldn't drop anything (" + drops.size() + " stacks dropped)";
+			});
+			note(failures, blown);
+			context.waitTicks(25);
+			String lavaBack = server.computeOnServer(s -> {
+				BlockState there = player(s).level().getBlockState(blownAt[0]);
+				return there.is(Blocks.LAVA) && there.getFluidState().isSource() ? null
+					: "a crust blown up should give its lava back at once, not only when it was due to melt (found " + there + ")";
+			});
+			note(failures, lavaBack);
+
 			// Storm scrapes weathered copper back a stage, and pulses a lightning rod: the lamp under it lights.
 			BlockPos[] rodAt = new BlockPos[1];
 			String storm = server.computeOnServer(s -> {

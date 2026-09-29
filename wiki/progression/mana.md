@@ -156,8 +156,8 @@ and, with a Blank Rune in hand in the right place, how you attune one to a
 |---|---|
 | [Siphon]({{ '/progression/enchantments/' | relative_url }}) on your Cord | +2 mana per creature your spell hits, per level, up to 16 a cast |
 | **Soulfire** (a rune of the world) | The damage it deals gives back a little mana, up to 5 a cast (a mana storm's echo or Twin Star's second cast shares the same 5) |
-| **Manatide** (a rune of the world) | You and the allies it hits regain 3 mana a second for 10 seconds; once a minute each |
-| **Devour** (a fused rune) | 10 mana (and 4 absorption) if it kills |
+| **Manatide** (a rune of the world) | You and the allies it hits regain 3 mana a second for 10 seconds (30 at most: Extend doesn't make it flow longer); once a minute each |
+| **Devour** (a fused rune) | 10 mana (and 4 absorption) if it kills; twice a cast at most |
 | A Potion of Mana | 60 (II: 120), at once |
 | Forming a Heart Circle | Refills you completely |
 

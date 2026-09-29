@@ -9,6 +9,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /** Frostbite's cold setting in, Cryostasis's healing spread over the seal, and how long a Rime Seal waits. */
 class FusedFrostRulesTest {
 	@Test
+	void absoluteZeroFreezesTheSameCreatureSolidAtMostOnceEveryFewSeconds() {
+		// Frozen at 1000 for 2 seconds: slowed, not frozen, until 3 seconds after the ice lets go.
+		long until = FusedFrostRules.zeroLockedUntil(1000, 40);
+		assertEquals(1000 + 40 + FusedFrostRules.ZERO_LOCKOUT_TICKS, until);
+		assertTrue(FusedFrostRules.ZERO_LOCKOUT_TICKS >= 40, "a Linger's repeat (or a Zone's next pulse) mustn't freeze it again at once");
+	}
+
+	@Test
 	void frostbiteBeatsOnceASecondForFiveSeconds() {
 		assertEquals(5, FusedFrostRules.frostbiteBeats(1.0));
 		assertEquals(10, FusedFrostRules.frostbiteBeats(2.0));

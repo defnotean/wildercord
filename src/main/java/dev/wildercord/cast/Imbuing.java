@@ -280,15 +280,25 @@ public final class Imbuing {
 		Grimoire.feat(player, dev.wildercord.spell.Feats.IMBUE);
 	}
 
-	/** Writes a glyph (replacing any there), with its flourish; the oldest of the maker's fades if they have too many. */
+	/**
+	 * Writes a glyph (replacing any there), with its flourish; the oldest of the maker's fades if they have too many,
+	 * counted over every world (the game time they were made at is the same clock in all of them).
+	 */
 	private static void write(ServerPlayer player, ServerLevel level, BlockPos pos, Direction face, List<String> ids, int color, int charges) {
 		Glyphs glyphs = Glyphs.of(level);
 		long now = level.getGameTime();
-		List<Glyph> mine = glyphs.all().stream().filter(g -> g.owner().equals(player.getUUID())).sorted(java.util.Comparator.comparingLong(Glyph::made)).toList();
+		List<Map.Entry<ServerLevel, Glyph>> mine = new ArrayList<>();
+		for (ServerLevel world : level.getServer().getAllLevels()) {
+			Glyphs held = world == level ? glyphs : world.getDataStorage().get(Glyphs.TYPE);
+			if (held != null) {
+				held.all().stream().filter(g -> g.owner().equals(player.getUUID())).forEach(g -> mine.add(Map.entry(world, g)));
+			}
+		}
+		mine.sort(java.util.Comparator.comparingLong(e -> e.getValue().made()));
 		for (int i = 0; i <= mine.size() - maxGlyphs(); i++) {
-			Glyph oldest = mine.get(i);
-			glyphs.remove(oldest.pos());
-			fade(level, oldest);
+			Map.Entry<ServerLevel, Glyph> oldest = mine.get(i);
+			Glyphs.of(oldest.getKey()).remove(oldest.getValue().pos());
+			fade(oldest.getKey(), oldest.getValue());
 		}
 		Glyph glyph = new Glyph(pos, face, ids, charges, player.getUUID(), color, now, level.getBlockState(pos).getBlock());
 		glyphs.put(glyph);

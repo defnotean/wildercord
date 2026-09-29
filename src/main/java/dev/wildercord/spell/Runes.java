@@ -240,7 +240,7 @@ public final class Runes {
 	public static final RuneDef GLACIER = effect("glacier", "Glacier", 3, 16, "frost", EffectKind.HARMFUL, "Freezes targets in place for 2 seconds (1 second on players).", DURATION, LINGER);
 	public static final RuneDef LIFESTEAL = effect("lifesteal", "Lifesteal", 3, 16, "blood", EffectKind.HARMFUL, "5 damage, and you heal for what it dealt.", POWER, LINGER);
 	public static final RuneDef WARP = effect("warp", "Warp", 3, 12, "void", EffectKind.MOVEMENT, "You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds.", DURATION);
-	public static final RuneDef BLOOM = effect("bloom", "Bloom", 3, 16, "life", EffectKind.HELPFUL, "Regeneration II for 6 seconds, and plants grow around every ally it touches.", POWER, DURATION);
+	public static final RuneDef BLOOM = effect("bloom", "Bloom", 3, 16, "life", EffectKind.HELPFUL, "Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches.", POWER, DURATION);
 	public static final RuneDef SURGE = effect("surge", "Surge", 3, 16, "storm", EffectKind.HELPFUL, "Speed I and Strength I for 8 seconds.", POWER, DURATION);
 	public static final RuneDef NULLIFY = effect("nullify", "Nullify", 3, 14, "arcane", EffectKind.HARMFUL, "Strips an enemy's good effects, or an ally's bad effects.");
 
@@ -257,7 +257,7 @@ public final class Runes {
 	public static final RuneDef RIME_SEAL = effect("rime_seal", "Rime Seal", 3, 16, "frost", EffectKind.HARMFUL, "Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that stands in it for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each.", POWER, DURATION, RADIUS);
 	public static final RuneDef CRYOSTASIS = effect("cryostasis", "Cryostasis", 3, 18, "frost", EffectKind.HELPFUL, "Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds.", POWER, DURATION);
 	public static final RuneDef FROSTBITE = effect("frostbite", "Frostbite", 3, 16, "frost", EffectKind.HARMFUL, "3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second.", POWER, DURATION, LINGER);
-	public static final RuneDef ABSOLUTE_ZERO = effect("absolute_zero", "Absolute Zero", 3, 20, "frost", EffectKind.HARMFUL, "Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage.", POWER, DURATION, LINGER);
+	public static final RuneDef ABSOLUTE_ZERO = effect("absolute_zero", "Absolute Zero", 3, 20, "frost", EffectKind.HARMFUL, "Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws.", POWER, DURATION, LINGER);
 	public static final RuneDef MAGNETIZE = effect("magnetize", "Magnetize", 3, 16, "storm", EffectKind.HARMFUL, "Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second).", POWER, DURATION, RADIUS);
 	public static final RuneDef RIFTBOLT = effect("riftbolt", "Riftbolt", 3, 18, "storm", EffectKind.HARMFUL, "A black bolt for 6 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds.", POWER, DURATION, LINGER);
 	public static final RuneDef STORMWEAVE = effect("stormweave", "Stormweave", 3, 18, "storm", EffectKind.HARMFUL, "Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 3 damage each, and 1 more for every other one caught in the web.", POWER, RADIUS);
@@ -281,7 +281,7 @@ public final class Runes {
 	public static final RuneDef LIFEBLOOM = effect("lifebloom", "Lifebloom", 3, 16, "life", EffectKind.HELPFUL, "Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3.", POWER, DURATION, RADIUS);
 	public static final RuneDef SANGUINE_RITE = effect("sanguine_rite", "Sanguine Rite", 3, 14, "blood", EffectKind.HARMFUL, "You pay 3 of your own health (never your last) for 12 damage that ignores armour.", POWER, LINGER);
 	public static final RuneDef ENTROPY = effect("entropy", "Entropy", 3, 16, "void", EffectKind.HARMFUL, "The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour.", POWER, DURATION, LINGER);
-	public static final RuneDef DEVOUR = effect("devour", "Devour", 3, 16, "void", EffectKind.HARMFUL, "5 damage. If it kills, you feed: 10 mana and 4 absorption.", POWER, LINGER);
+	public static final RuneDef DEVOUR = effect("devour", "Devour", 3, 16, "void", EffectKind.HARMFUL, "5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most).", POWER, LINGER);
 	public static final RuneDef TIMESTEAL = effect("timesteal", "Timesteal", 3, 16, "time", EffectKind.HARMFUL, "Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you.", DURATION);
 	public static final RuneDef HEMOMANCY = effect("hemomancy", "Hemomancy", 3, 16, "blood", EffectKind.HARMFUL, "4 magic damage, and 1 more for every 2 health you're missing (up to 6 more).", POWER, LINGER);
 	public static final RuneDef RECKONING = effect("reckoning", "Reckoning", 3, 18, "time", EffectKind.HARMFUL, "For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12).", POWER, DURATION);
@@ -357,7 +357,7 @@ public final class Runes {
 	public static final RuneDef RIFTCALL = effect("riftcall", "Riftcall", 3, 18, "void", EffectKind.HARMFUL, "Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward it for 2 damage a second, then snaps shut on them for 6.", POWER, RADIUS, DURATION);
 	public static final RuneDef UNSTABLE = modifier("unstable", "Unstable", 3, 1.2, POWER, "Rift-touched: the effect's power swings anywhere from 50% to 200% each time it lands.");
 	public static final RuneDef MANABURN = effect("manaburn", "Manaburn", 2, 10, "arcane", EffectKind.HARMFUL, "Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana (less from a weaker hit).", POWER);
-	public static final RuneDef MANATIDE = effect("manatide", "Manatide", 3, 12, "arcane", EffectKind.HELPFUL, "Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds. Each caster can drink only once a minute.", DURATION);
+	public static final RuneDef MANATIDE = effect("manatide", "Manatide", 3, 12, "arcane", EffectKind.HELPFUL, "Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds (30 at most, however extended). Each player can drink only once a minute.", DURATION);
 
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());

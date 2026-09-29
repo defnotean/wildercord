@@ -97,6 +97,7 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 			check(context, world, failures, "Sinkhole", () -> sinkhole(context, world));
 			check(context, world, failures, "Firestorm on a crowd", () -> firestormCrowd(world));
 			check(context, world, failures, "Magma's later seconds", () -> magmaLingers(context, world));
+			check(context, world, failures, "Magma on a bunch", () -> magmaBunch(context, world));
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The fused runes of flame and stone went wrong:\n  " + String.join("\n  ", failures));
 			}
@@ -737,6 +738,45 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 				LivingEntity t = (LivingEntity) crowd.get(i);
 				if (!burning(t) || lost(t) < 3.5F) {
 					problems.add("husk " + (i + 1) + " of ten should be set alight and take 4 (" + describe(t) + ")");
+				}
+			}
+			return problems;
+		});
+	}
+
+	/**
+	 * Magma on three husks standing together: a pool opens under each, but where they overlap each husk burns once
+	 * (2), not once for every pool it stands in.
+	 */
+	private static List<String> magmaBunch(ClientGameTestContext context, TestSingleplayerContext world) {
+		List<Integer> ids = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			stand(player);
+			ServerLevel level = player.level();
+			// With AI (but no speed), so they settle on the floor: magma burns only what stands on it.
+			return List.of(husk(level, 0, 7, true).getId(), husk(level, 0.8, 7, true).getId(), husk(level, -0.8, 7, true).getId());
+		});
+		context.waitTicks(3);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			List<Entity> bunch = new ArrayList<>();
+			for (int id : ids) {
+				LivingEntity t = get(server, id);
+				if (t != null) {
+					bunch.add(t);
+				}
+			}
+			SpellPlan.EffectNode node = SpellCompiler.compile(List.of(Runes.BURST, Runes.MAGMA)).root().groups.getFirst().effects.getFirst();
+			Effects.apply(new Cast(player), node, new Cast.Hit(bunch, bunch.getFirst().position(), new Vec3(0, 0, 1), player.position(), null, null, false));
+		});
+		// Its first second burns 4 ticks in; the next comes 20 ticks after.
+		context.waitTicks(10);
+		return world.getServer().computeOnServer(server -> {
+			List<String> problems = new ArrayList<>();
+			for (int i = 0; i < ids.size(); i++) {
+				LivingEntity t = get(server, ids.get(i));
+				if (t == null || lost(t) < 1.5F || lost(t) > 3.5F) {
+					problems.add("husk " + (i + 1) + " of three should burn for 2 once, not once for each pool it stands in (" + describe(t) + ")");
 				}
 			}
 			return problems;

@@ -130,6 +130,15 @@ public final class WorldMagic {
 		USED.computeIfAbsent(cast.identity(), k -> new int[LIMITS.length])[kind] += amount;
 	}
 
+	/**
+	 * Whether this cast may change the block at {@code pos} as world magic does, for magic elsewhere that changes
+	 * blocks too (Rune Seals' campfires): never a passive's or a monster's, never with world-changing magic or
+	 * spells' block changes off, and only with building rights there and room in the budgets. Takes the block if so.
+	 */
+	static boolean mayChange(Cast cast, BlockPos pos) {
+		return !cast.passive && Casters.mayBuild(cast.caster) && dev.wildercord.config.Config.get().worldChangingMagic() && edit(cast, pos);
+	}
+
 	/** Whether this cast may change the block at {@code pos}: building rights there, and room in its budgets. Takes the block if so. */
 	private static boolean edit(Cast cast, BlockPos pos) {
 		if (left(cast, EDITS) <= 0 || !Casters.mayEdit(cast.caster, cast.level, pos) || !cast.takeBlock()) {

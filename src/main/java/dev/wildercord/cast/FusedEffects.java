@@ -36,6 +36,7 @@ public final class FusedEffects {
 
 	/** Registers what the fused effects listen for: called once at startup. */
 	public static void init() {
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> LANDED.clear());
 		FusedFlame.init();
 		FusedFrost.init();
 		FusedStorm.init();
@@ -45,6 +46,41 @@ public final class FusedEffects {
 
 	/** At most this many targets get a lingering or spreading part of their own, so one hit can't flood the server. */
 	private static final int MAX_TARGETS = 8;
+
+	/** One enemy takes a caster's Magma once a second, however many of their pools it stands in. */
+	private static final int MAGMA_EVERY = 20;
+	/** One enemy takes a caster's Tempest once a tick, however many of their strikes land round it. */
+	private static final int TEMPEST_EVERY = 1;
+
+	/** What last landed on a creature from one caster's rune: when, and how hard. */
+	private record Landed(long at, double damage) {}
+
+	/** By rune, caster and creature: see {@link #unstacked}. */
+	private static final java.util.Map<String, Landed> LANDED = new java.util.HashMap<>();
+
+	/**
+	 * How much of a hit of {@code damage} from this caster's {@code rune} still lands on {@code t}: all of it the
+	 * first time in {@code every} ticks; after that, in the same window, only what it has over the strongest that
+	 * already landed. Magma lays a pool under each of a crowd and Tempest a strike on each, so without this an
+	 * enemy bunched with others took every overlapping one (up to four pools, eight strikes) at once.
+	 */
+	private static double unstacked(Cast cast, LivingEntity t, String rune, int every, double damage) {
+		long now = cast.level.getGameTime();
+		String key = rune + ":" + cast.caster.getUUID() + ":" + t.getUUID();
+		Landed last = LANDED.get(key);
+		if (last == null || now < last.at() || now - last.at() >= every) {
+			if (LANDED.size() > 512) {
+				LANDED.values().removeIf(landed -> now - landed.at() > MAGMA_EVERY || landed.at() > now);
+			}
+			LANDED.put(key, new Landed(now, damage));
+			return damage;
+		}
+		if (damage <= last.damage()) {
+			return 0;
+		}
+		LANDED.put(key, new Landed(last.at(), damage));
+		return damage - last.damage();
+	}
 
 	static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, List<LivingEntity> helped, List<LivingEntity> harmed,
 			double power, double duration, int amplify) {
@@ -223,9 +259,11 @@ public final class FusedEffects {
 					AABB box = new AABB(at, at).inflate(radius, 0.8, radius).move(0, 0.4, 0);
 					for (Entity e : level.getEntities((Entity) null, box, e -> Targets.canHarm(cast.caster, e))) {
 						LivingEntity t = (LivingEntity) e;
-						if (t.onGround() && horizontal(t.position(), at) <= radius) {
+						// Pools overlapping (one under each of a crowd) burn an enemy standing in several once.
+						double burn = t.onGround() && horizontal(t.position(), at) <= radius ? unstacked(cast, t, "magma", MAGMA_EVERY, 2 * power) : 0;
+						if (burn > 0) {
 							t.igniteForSeconds(2);
-							Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), 2 * power);
+							Effects.hurt(cast, t, level.damageSources().source(DamageTypes.HOT_FLOOR, cast.caster), burn);
 						}
 					}
 				};
@@ -244,7 +282,7 @@ public final class FusedEffects {
 		return Math.sqrt(dx * dx + dz * dz);
 	}
 
-	/** Tempest: lightning on the spot, then a gale that throws everything struck far away. */
+	/** Tempest: lightning on the spot, then a gale that throws everything struck far away (once, however many strikes land round it). */
 	private static void tempest(Cast cast, Vec3 at, Cast.Hit hit, double power) {
 		ServerLevel level = cast.level;
 		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
@@ -256,7 +294,11 @@ public final class FusedEffects {
 		FusionVfx.tempest(level, at);
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(1.5, 2.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity t = (LivingEntity) e;
-			Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 8 * power * Reactions.storm(cast, t));
+			double strike = unstacked(cast, t, "tempest", TEMPEST_EVERY, 8 * power);
+			if (strike <= 0) {
+				continue;
+			}
+			Effects.hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), strike * Reactions.storm(cast, t));
 			if (!Spirits.isBoss(t)) {
 				Vec3 away = Effects.horizontal(t.position().subtract(hit.origin()), hit.dir());
 				Effects.push(t, away.scale(2.8 * Math.sqrt(power)).add(0, 0.9, 0));

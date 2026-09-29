@@ -45,10 +45,10 @@ import java.util.UUID;
  * wind knocks an arrow out of the air, a Grow beside a Rampart leaves the wall standing, and a spell where
  * the caster may not build changes nothing. Icepath's ice is written down to thaw (it never melts in the
  * dark), a Rampart never rises over a Light spell's light, its blocks are written down to come down even
- * after a crash, and one left past its time is taken down as soon as its ground is loaded. The world runes
- * keep their own rules: Icepath never freezes round a swimmer, Harvest replants each crop with one of its
- * own seeds, Grow keeps to the cast's block budget, Blink never lands in lava, and Banish never leaves a creature
- * standing on the ground out over a drop.
+ * after a crash, and one left past its time is taken down as soon as its ground is loaded; blown up, it drops
+ * nothing. The world runes keep their own rules: Icepath never freezes round a swimmer, Harvest replants each
+ * crop with one of its own seeds, Grow keeps to the cast's block budget, Blink never lands in lava, and Banish
+ * never leaves a creature standing on the ground out over a drop.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
@@ -348,6 +348,27 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 			});
 			note(failures, rampart);
 
+			// An explosion breaks the wall without a block of packed mud to show for it: a spell's blocks drop nothing, however they go.
+			String blast = server.computeOnServer(s -> {
+				ServerLevel level = player(s).level();
+				int standing = count(level, wallSite, 3, state -> state.is(Blocks.PACKED_MUD));
+				// A TNT blast drops every block it breaks (no decay), so each Rampart block would show.
+				level.explode(null, wallSite.getX() + 0.5, wallSite.getY() + 1.0, wallSite.getZ() + 0.5, 4.0F, net.minecraft.world.level.Level.ExplosionInteraction.TNT);
+				int left = count(level, wallSite, 3, state -> state.is(Blocks.PACKED_MUD));
+				int dropped = 0;
+				for (net.minecraft.world.entity.item.ItemEntity item : level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new AABB(wallSite).inflate(8))) {
+					if (item.getItem().is(net.minecraft.world.item.Items.PACKED_MUD)) {
+						dropped += item.getItem().getCount();
+					}
+					item.discard();
+				}
+				if (left >= standing) {
+					return "the explosion should break some of the Rampart (" + standing + " blocks before, " + left + " after)";
+				}
+				return dropped == 0 ? null : "a Rampart blown up shouldn't drop packed mud (" + dropped + " dropped)";
+			});
+			note(failures, blast);
+
 			// A spell's block left past its time (by a server that stopped without warning, say) comes down once its ground is loaded.
 			BlockPos leftover = server.computeOnServer(s -> {
 				ServerPlayer player = player(s);
@@ -385,6 +406,8 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				}
 				BlockPos patch = site(player, -12, 12);
 				meadow(level, patch);
+				// An unlit campfire too: Rune Seals' campfire lighting keeps to the same rules.
+				level.setBlockAndUpdate(patch, Blocks.CAMPFIRE.defaultBlockState().setValue(net.minecraft.world.level.block.CampfireBlock.LIT, false));
 				player.setGameMode(GameType.ADVENTURE);
 				try {
 					apply(player, List.of(Runes.TOUCH, Runes.FIRE), Vec3.atBottomCenterOf(patch), List.of());
@@ -392,9 +415,14 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 					player.setGameMode(GameType.SURVIVAL);
 				}
 				int fires = count(level, patch, 2, state -> state.is(BlockTags.FIRE));
+				boolean campfire = level.getBlockState(patch).getOptionalValue(net.minecraft.world.level.block.CampfireBlock.LIT).orElse(false);
 				douse(level, patch, 3);
+				level.setBlockAndUpdate(patch, Blocks.AIR.defaultBlockState());
 				if (fires > 0) {
 					return "fire from a caster who can't build there shouldn't light anything";
+				}
+				if (campfire) {
+					return "fire from a caster who can't build there shouldn't light a campfire";
 				}
 				Mob mob = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
 				mob.snapTo(pool.getX() - 3.5, pool.getY() + 1, pool.getZ() + 0.5, 0.0F, 0.0F);
@@ -413,6 +441,39 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				return null;
 			});
 			note(failures, protectedGround);
+
+			// Putting something into the air of a claim is asked of it too, not only taking something away: Glimmer's
+			// lichen grows on a bare stone outside the claim, and not on one inside it.
+			String placing = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos open = site(player, 18, 18);
+				BlockPos claimed = site(player, -18, 18);
+				level.setBlockAndUpdate(open, Blocks.STONE.defaultBlockState());
+				level.setBlockAndUpdate(claimed, Blocks.STONE.defaultBlockState());
+				apply(player, List.of(Runes.TOUCH, Runes.GLIMMER), Vec3.atBottomCenterOf(open.above()), List.of());
+				claim = new AABB(claimed).inflate(4);
+				try {
+					apply(player, List.of(Runes.TOUCH, Runes.GLIMMER), Vec3.atBottomCenterOf(claimed.above()), List.of());
+				} finally {
+					claim = null;
+				}
+				int outside = count(level, open, 2, state -> state.is(Blocks.GLOW_LICHEN));
+				int inside = count(level, claimed, 2, state -> state.is(Blocks.GLOW_LICHEN));
+				for (BlockPos stone : List.of(open, claimed)) {
+					for (BlockPos pos : BlockPos.betweenClosed(stone.offset(-2, -2, -2), stone.offset(2, 2, 2))) {
+						if (level.getBlockState(pos).is(Blocks.GLOW_LICHEN)) {
+							level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+						}
+					}
+					level.setBlockAndUpdate(stone, Blocks.AIR.defaultBlockState());
+				}
+				if (outside == 0) {
+					return "Glimmer should grow lichen on a bare stone outside a claim";
+				}
+				return inside == 0 ? null : "Glimmer shouldn't grow lichen into the air inside a claim (" + inside + " grew)";
+			});
+			note(failures, placing);
 
 			if (!failures.isEmpty()) {
 				throw new AssertionError("Magic that changes the world went wrong:\n  " + String.join("\n  ", failures));

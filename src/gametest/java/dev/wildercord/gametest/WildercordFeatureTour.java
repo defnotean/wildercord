@@ -897,6 +897,39 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				husk.discard();
 			}
 		});
+		// The glyph limit is per caster, over every world: a full set in the Nether and one more here lets the oldest there fade.
+		world.getServer().runOnServer(server -> server.getLevel(net.minecraft.world.level.Level.NETHER).setChunkForced(0, 0, true));
+		context.waitTicks(20);
+		BlockPos written = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel here = player.level();
+			ServerLevel nether = server.getLevel(net.minecraft.world.level.Level.NETHER);
+			Imbued frost = new Imbued(List.of(Runes.FROST.id()), 3, 0x9BE7FF, true, player.getUUID(), 0L);
+			for (int i = 0; i < Imbuing.maxGlyphs(); i++) {
+				BlockPos pos = new BlockPos(1 + (i % 4) * 3, 120, 1 + (i / 4) * 3);
+				nether.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+				Imbuing.placed(player, nether, pos, net.minecraft.core.Direction.UP, frost);
+			}
+			BlockPos pos = BlockPos.containing(player.position()).offset(3, 6, 3);
+			here.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+			Imbuing.placed(player, here, pos, net.minecraft.core.Direction.UP, frost);
+			java.util.function.ToLongFunction<ServerLevel> mine = level -> Imbuing.Glyphs.of(level).all().stream()
+				.filter(g -> g.owner().equals(player.getUUID())).count();
+			long total = mine.applyAsLong(here) + mine.applyAsLong(nether);
+			check(total == Imbuing.maxGlyphs(), "a caster keeps " + Imbuing.maxGlyphs() + " glyphs over every world together, not per world (has " + total + ")");
+			check(Imbuing.Glyphs.of(nether).at(new BlockPos(1, 120, 1)).isEmpty(), "the oldest glyph, in the Nether, should fade");
+			return pos;
+		});
+		// Their blocks go, and the glyphs with them.
+		world.getServer().runOnServer(server -> {
+			for (int i = 0; i < Imbuing.maxGlyphs(); i++) {
+				server.getLevel(net.minecraft.world.level.Level.NETHER).setBlockAndUpdate(new BlockPos(1 + (i % 4) * 3, 120, 1 + (i / 4) * 3),
+					net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+			}
+			player(server).level().setBlockAndUpdate(written, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+		});
+		context.waitTicks(4);
+		world.getServer().runOnServer(server -> server.getLevel(net.minecraft.world.level.Level.NETHER).setChunkForced(0, 0, false));
 	}
 
 	private static void imbuing(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -1381,6 +1414,20 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerLevel level = player(server).level();
 			check(!level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40)).isEmpty(), "the Archivist wakes when a player comes near");
+		});
+		// A lectern woken before lecterns remembered their Archivist (awake, knowing none) takes the one about the Archive
+		// as its own, so it can re-arm if that one goes missing.
+		BlockPos old = lectern.above(6);
+		world.getServer().runOnServer(server -> player(server).level().setBlockAndUpdate(old,
+			WildercordBlocks.ARCHIVE_LECTERN.defaultBlockState().setValue(dev.wildercord.content.ArchiveLecternBlock.AWAKE, true)));
+		context.waitTicks(105);
+		world.getServer().runOnServer(server -> {
+			ServerLevel level = player(server).level();
+			List<Archivist> found = level.getEntitiesOfClass(Archivist.class, player(server).getBoundingBox().inflate(40));
+			boolean adopted = level.getBlockEntity(old) instanceof ArchiveLecternBlockEntity keeper && keeper.keeper() != null
+				&& found.stream().anyMatch(a -> a.getUUID().equals(keeper.keeper()));
+			level.setBlockAndUpdate(old, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+			check(adopted, "an awake lectern that doesn't know its Archivist should take the one about the Archive as its own");
 		});
 		// Like the dimension bosses, one huge blow can't skip a phase: it stops at the start of the next,
 		// and the rewriting begins at once, untouchable.

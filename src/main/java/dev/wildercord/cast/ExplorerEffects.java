@@ -181,13 +181,54 @@ public final class ExplorerEffects {
 		return bonus;
 	}
 
+	/** The tag on a Fangs spell's evoker fangs, which bite as the spell does (see {@link #bite}). */
+	private static final String FANGS_TAG = "wildercord.fangs";
+
+	/**
+	 * A Fangs spell's ring of fangs: whose bite is already coming (the target's), who the ring has bitten (once each,
+	 * however many of its fangs they stand on), and the spell's own bite for anyone else on them.
+	 */
+	private static final class Bite {
+		final UUID target;
+		final Set<UUID> bitten = new HashSet<>();
+		LivingEntity victim;
+		Runnable hurt;
+
+		Bite(UUID target) {
+			this.target = target;
+		}
+	}
+
+	/** Each spell fang's bite, while the fang lasts (a second or so). */
+	private static final Map<EvokerFangs, Bite> BITES = new java.util.WeakHashMap<>();
+
 	/** Marks and timers go when the server stops. */
 	public static void init() {
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> clear());
 	}
 
+	/**
+	 * From EvokerFangsMixin, as {@code fangs} snap on {@code target}: whether vanilla's own bite goes ahead (only for
+	 * fangs that aren't a spell's). Vanilla's bites anything not on its owner's team (anyone, with its owner gone),
+	 * past Shields and the PvP scale: a Fangs spell's bite instead as the spell does, through {@link Effects#hurt}, and
+	 * only what the caster may harm (not the target, whose own bite is coming, and nobody once the spell has ended).
+	 */
+	public static boolean bite(EvokerFangs fangs, LivingEntity target) {
+		if (!fangs.entityTags().contains(FANGS_TAG)) {
+			return true;
+		}
+		Bite bite = BITES.get(fangs);
+		if (bite != null && !target.getUUID().equals(bite.target) && bite.bitten.add(target.getUUID())) {
+			bite.victim = target;
+			bite.hurt.run();
+			bite.victim = null;
+		}
+		return false;
+	}
+
 	/** Forgets every mark and ritual timer. */
 	static void clear() {
+		BITES.clear();
 		BRANDED.clear();
 		ECLIPSED.clear();
 		DRANK.clear();
@@ -439,14 +480,20 @@ public final class ExplorerEffects {
 	}
 
 	/**
-	 * Fangs: a ring of evoker fangs snaps up round the target. The fangs are vanilla's own (they bite
-	 * whatever enemy stands on them too); the target's bite goes through {@link Effects#hurt}, so it
-	 * meets Shields, Execute and the rest like any spell.
+	 * Fangs: a ring of evoker fangs snaps up round the target. The fangs are vanilla's own, and bite whatever enemy
+	 * stands on them too (see {@link #bite}); every bite, the target's included, goes through {@link Effects#hurt},
+	 * so it meets Shields, Execute, the PvP scale and the rest like any spell, and spares whoever the caster may not harm.
 	 */
 	private static void fangs(Cast cast, LivingEntity t, double power) {
 		ServerLevel level = cast.level;
 		Vec3 feet = t.position();
 		double spin = level.getRandom().nextDouble() * Math.PI * 2;
+		Bite bite = new Bite(t.getUUID());
+		bite.hurt = Effects.carryContext(() -> {
+			if (cast.alive() && bite.victim != null && Targets.canHarm(cast.caster, bite.victim)) {
+				Effects.hurt(cast, bite.victim, magic(cast), 6 * power);
+			}
+		});
 		for (int i = 0; i < 5; i++) {
 			double a = spin + Math.PI * 2 * i / 5;
 			Vec3 spot = CastEngine.ground(level, feet.add(Math.cos(a) * 1.15, 0.6, Math.sin(a) * 1.15));
@@ -454,7 +501,10 @@ public final class ExplorerEffects {
 			boolean clear = level.getEntities((Entity) null, new AABB(spot, spot).inflate(0.9, 1.0, 0.9),
 				e -> e instanceof LivingEntity && e != t && !Targets.canHarm(cast.caster, e)).isEmpty();
 			if (clear && Math.abs(spot.y - feet.y) < 2.5) {
-				level.addFreshEntity(new EvokerFangs(level, spot.x, spot.y, spot.z, (float) a, i, cast.caster));
+				EvokerFangs fang = new EvokerFangs(level, spot.x, spot.y, spot.z, (float) a, i, cast.caster);
+				fang.addTag(FANGS_TAG);
+				BITES.put(fang, bite);
+				level.addFreshEntity(fang);
 			}
 		}
 		ExplorerVfx.fangs(level, t);
@@ -1237,11 +1287,14 @@ public final class ExplorerEffects {
 		Effects.hurt(cast, t, magic(cast), (caster ? 9 : 5) * power);
 	}
 
-	/** When each caster last drank from a Manatide (game time), so it's once a minute. */
+	/** When each player last drank from a Manatide (game time), so it's once a minute, and only the newest drink flows. */
 	private static final Map<UUID, Long> DRANK = new HashMap<>();
-	private static final int MANATIDE_WAIT = 1200;
+	private static final int MANATIDE_WAIT = ExplorerNumbers.MANATIDE_WAIT;
 
-	/** Manatide: mana flows back into the target for a while. Only players have mana to fill. */
+	/**
+	 * Manatide: mana flows back into the target for a while (10 seconds at most, however extended). Only players
+	 * have mana to fill, each once a minute, and never from two drinks at once.
+	 */
 	private static void manatide(Cast cast, LivingEntity t, int ticks) {
 		if (!(t instanceof ServerPlayer player) || Spellbooks.tier(player) == null) {
 			return;
@@ -1256,9 +1309,10 @@ public final class ExplorerEffects {
 		}
 		DRANK.put(player.getUUID(), now);
 		ExplorerVfx.manatide(cast.level, player, true);
-		repeat(cast, ticks, 20, tick -> {
-			if (onHand(cast, player)) {
-				Mana.restore(player, 3);
+		repeat(cast, ExplorerNumbers.manatideTicks(ticks), 20, tick -> {
+			// Only the newest drink flows: a later one (a minute on) takes over from this one.
+			if (onHand(cast, player) && java.util.Objects.equals(DRANK.get(player.getUUID()), now)) {
+				Mana.restore(player, ExplorerNumbers.MANATIDE_PER_SECOND);
 				ExplorerVfx.manatide(cast.level, player, false);
 			}
 		}, () -> { });

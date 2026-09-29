@@ -51,7 +51,7 @@ stops a server. Every default is the number the mod used before.
 | `loot.page_chance_multiplier` | 1.0 | Torn Pages in structure chests |
 | `loot.gear_chance_multiplier` | 1.0 | Casting gear in chests and from bosses |
 | `imbuing.max_items` | 6 | Imbued items one caster keeps |
-| `imbuing.max_glyphs` | 12 | Glyphs one caster keeps per world |
+| `imbuing.max_glyphs` | 12 | Glyphs one caster keeps, over every dimension together |
 | `features.world_events` | true | World events (mana storms, fallen stars, rift sieges). When off, none starts, not even from `/wildercord event`; one already under way runs its course |
 | `features.duels` | true | Switch for duels |
 | `features.wild_magic` | true | Switch for wild magic |

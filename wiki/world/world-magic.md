@@ -103,8 +103,9 @@ Word and Tidewrit; and the fused runes of frost (Hail, Glacier, Blizzard, Black 
     get off. Then it melts back into lava.
   - **It always melts back.** If the server stops, or nobody is near when its time comes, it melts as soon as its
     ground is loaded again (after a restart it may melt without its warning glow, so don't linger on it).
-  - **It's only lent.** Breaking a block of the crust gives you nothing: the lava comes straight back. Pistons can't
-    push it, and other spells can't change it.
+  - **It's only lent.** Breaking a block of the crust gives you nothing: the lava comes straight back. Blown up by an
+    explosion, it drops nothing either, and its lava is back within a second. Pistons can't push it, and other spells
+    can't change it.
   - **Never round a creature in the lava.** A strider wading in lava, or anything else standing in it, keeps the lava
     round it (it would be stuck in the rock).
 

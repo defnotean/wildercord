@@ -40,7 +40,7 @@ import java.util.function.Predicate;
  * The runes of the world, in a real game: a sample of them cast at husks standing on a stone
  * platform high in the air (their effects checked on the husks and on the caster), and a Blank Rune
  * attuned by meditating in a biome that holds a rune (mushroom fields, filled in around the
- * platform with /fillbiome).
+ * platform with /fillbiome). A Fangs spell's fangs never bite the caster's pet.
  *
  * <p>Runs in the full suite; skipped by {@code WILDERCORD_TOUR_ONLY} and {@code WILDERCORD_CORDS_ONLY}.</p>
  */
@@ -70,6 +70,10 @@ public class WildercordNewRunesTest implements FabricClientGameTest {
 				if (failure != null) {
 					failures.add(sample.name() + ": " + failure);
 				}
+			}
+			String fangs = fangsSpareFriends(context, world);
+			if (fangs != null) {
+				failures.add("Fangs: " + fangs);
 			}
 			String attuned = attune(context, world);
 			if (attuned != null) {
@@ -259,6 +263,70 @@ public class WildercordNewRunesTest implements FabricClientGameTest {
 		world.getServer().runCommand("kill @e[type=experience_orb]");
 		world.getServer().runCommand("kill @e[type=evoker_fangs]");
 		context.waitTicks(20);
+	}
+
+	/**
+	 * Fangs keep to friendly fire: the caster's tamed wolf that steps onto one of its fangs before they snap is never
+	 * bitten, while a husk that does is (one killed by it is gone, which counts too).
+	 */
+	private static String fangsSpareFriends(ClientGameTestContext context, TestSingleplayerContext world) {
+		String cast = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			stand(player);
+			Mob target = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			net.minecraft.world.entity.animal.wolf.Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+			Mob bystander = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+			if (target == null || wolf == null || bystander == null) {
+				return "couldn't make the husks and the wolf";
+			}
+			target.snapTo(STAGE.getX() + 0.5, STAGE.getY(), STAGE.getZ() + 5.5, 180, 0);
+			wolf.snapTo(STAGE.getX() + 6.5, STAGE.getY(), STAGE.getZ() - 6.5, 0, 0);
+			wolf.tame(player);
+			wolf.setHealth(wolf.getMaxHealth());
+			bystander.snapTo(STAGE.getX() - 6.5, STAGE.getY(), STAGE.getZ() - 6.5, 0, 0);
+			bystander.addTag("wildercord.bystander");
+			for (Mob mob : List.of(target, wolf, bystander)) {
+				mob.setNoAi(true);
+				mob.addTag("wildercord.new_runes");
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				mob.addTag("wildercord.rolled");
+				level.addFreshEntity(mob);
+			}
+			SpellCaster.edit(player, 0, List.of());
+			SpellCaster.edit(player, 0, ids(List.of(Runes.BEAM, Runes.FANGS)));
+			Spellbooks.setReadyAt(player, 0, 0);
+			Spellbooks.setMana(player, Mana.max(player));
+			SpellCaster.cast(player, 0);
+			List<net.minecraft.world.entity.projectile.EvokerFangs> fangs = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.EvokerFangs.class,
+				target.getBoundingBox().inflate(3));
+			if (fangs.size() < 2) {
+				return "the spell should raise a ring of fangs round the husk (found " + fangs.size() + ")";
+			}
+			// Both step onto a fang before it snaps.
+			Vec3 first = fangs.get(0).position();
+			Vec3 second = fangs.get(1).position();
+			wolf.snapTo(first.x, first.y, first.z, 0, 0);
+			bystander.snapTo(second.x, second.y, second.z, 0, 0);
+			return null;
+		});
+		if (cast != null) {
+			cleanup(context, world);
+			return cast;
+		}
+		context.waitTicks(30);
+		String result = world.getServer().computeOnServer(server -> {
+			List<LivingEntity> mobs = player(server).level().getEntitiesOfClass(LivingEntity.class, new net.minecraft.world.phys.AABB(STAGE).inflate(12),
+				e -> e.entityTags().contains("wildercord.new_runes"));
+			LivingEntity wolf = mobs.stream().filter(e -> e.getType() == EntityTypes.WOLF).findFirst().orElse(null);
+			if (wolf == null || !wolf.isAlive() || wolf.getHealth() < wolf.getMaxHealth()) {
+				return "the caster's wolf on a fang shouldn't be bitten (" + (wolf == null ? "gone" : wolf.getHealth() + "/" + wolf.getMaxHealth()) + ")";
+			}
+			LivingEntity bystander = mobs.stream().filter(e -> e.entityTags().contains("wildercord.bystander")).findFirst().orElse(null);
+			return bystander == null || hurt(bystander) ? null : "a husk standing on a fang should still be bitten";
+		});
+		cleanup(context, world);
+		return result;
 	}
 
 	/**

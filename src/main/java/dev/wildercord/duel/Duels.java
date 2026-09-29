@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.effect.ServerMobEffectEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
@@ -33,6 +34,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -46,8 +49,10 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -56,8 +61,9 @@ import java.util.UUID;
  * with PvP or friendly fire off), and neither can harm anyone else. Nobody dies: brought down by the
  * other, the loser is knocked out at 1 health. When it ends, both are put back as they were when it
  * began: the health their opponent took is given back (never more than they had, and never what
- * anything else took), and their effects and fire are as they had them, so a duel is never a free
- * heal. Mana spent isn't given back. Leaving the area, logging off or dying to anything else
+ * anything else took), the harmful effects and fire their opponent left on them are taken away (noted
+ * as they land: see {@link #byOpponent(Active, ServerPlayer)}), and the effects they had come back, so
+ * a duel is never a free heal, nor a free cure for what anything else did. Mana spent isn't given back. Leaving the area, logging off or dying to anything else
  * forfeits; another player striking either duellist calls the duel off (and the blow lands). Nobody
  * hurt in the last few seconds, or fresh from a fight with another player or a duel, can start one.
  * The rules live in {@link DuelRules}.
@@ -123,6 +129,12 @@ public final class Duels {
 		 * afterwards is before armour, Resistance and absorption, so what the blow really took is measured.
 		 */
 		final Map<UUID, Float> landing = new HashMap<>();
+		/** The harmful effects each duellist's opponent laid on them, and who their opponent set alight: all the end undoes. */
+		final Map<UUID, Set<Holder<MobEffect>>> harms = new HashMap<>();
+		final Set<UUID> burned = new HashSet<>();
+		/** The server tick each duellist was last struck by the other (a blow, a shot, a pet or a spell), and who was burning last tick. */
+		final Map<UUID, Long> struck = new HashMap<>();
+		final Set<UUID> alight = new HashSet<>();
 		int shown = -1;
 
 		Active(DuelRules.Duel duel, ServerLevel level, Vec3 centre) {
@@ -198,10 +210,18 @@ public final class Duels {
 				if (before != null) {
 					active.taken.merge(victim.getUUID(), Math.max(0F, before - victim.getHealth()), Float::sum);
 				}
+				active.struck.put(victim.getUUID(), now);
 			}
 			if (attacker != null && attacker != victim && !opponents(attacker.getUUID(), victim.getUUID())) {
 				LAST_PVP.put(victim.getUUID(), now);
 				LAST_PVP.put(attacker.getUUID(), now);
+			}
+		});
+		// A harmful effect the opponent lays on a duellist is noted as it lands, so the end takes off that and nothing else.
+		ServerMobEffectEvents.AFTER_ADD.register((effect, entity, context) -> {
+			if (!BY_PLAYER.isEmpty() && entity instanceof ServerPlayer victim && effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL
+					&& BY_PLAYER.get(victim.getUUID()) instanceof Active active && byOpponent(active, victim)) {
+				active.harms.computeIfAbsent(victim.getUUID(), k -> new HashSet<>()).add(effect.getEffect());
 			}
 		});
 		// Brought down by the other duellist: knocked out, not killed.
@@ -247,7 +267,7 @@ public final class Duels {
 				for (UUID id : List.of(active.duel.a, active.duel.b)) {
 					ServerPlayer player = server.getPlayerList().getPlayer(id);
 					if (player != null && player.isAlive() && active.before.get(id) != null) {
-						restore(player, active.before.get(id), active.taken.getOrDefault(id, 0F), elapsed);
+						restore(player, active, id, elapsed);
 					}
 				}
 			}
@@ -455,6 +475,16 @@ public final class Duels {
 				continue;
 			}
 			long now = active.level.getGameTime();
+			// Fire has no name on it: a duellist catching alight just as their opponent struck was set alight by them.
+			for (ServerPlayer player : List.of(a, b)) {
+				boolean burning = player.getRemainingFireTicks() > 0;
+				if (burning && active.alight.add(player.getUUID())
+						&& DuelRules.byOpponent(server.getTickCount(), active.struck.getOrDefault(player.getUUID(), DuelRules.NEVER))) {
+					active.burned.add(player.getUUID());
+				} else if (!burning) {
+					active.alight.remove(player.getUUID());
+				}
+			}
 			if (server.getTickCount() % 10 == 0) {
 				for (ServerPlayer player : List.of(a, b)) {
 					if (player.level() != active.level || DuelRules.outside(active.centre.x, active.centre.z, player.getX(), player.getZ())) {
@@ -512,6 +542,20 @@ public final class Duels {
 		return last != null && last.getUUID().equals(opponent) && victim.tickCount - victim.getLastHurtByMobTimestamp() < 100;
 	}
 
+	/**
+	 * Whether the harm landing on {@code victim} right now is their opponent's: their spell being applied (a spell
+	 * says whose it is), or, for harm with no spell's name on it (an arrow's poison, a splash of harming), their
+	 * opponent struck them just now.
+	 */
+	private static boolean byOpponent(Active active, ServerPlayer victim) {
+		UUID opponent = active.duel.opponent(victim.getUUID());
+		LivingEntity caster = dev.wildercord.cast.Effects.applying();
+		if (caster != null) {
+			return caster.getUUID().equals(opponent);
+		}
+		return DuelRules.byOpponent(victim.level().getServer().getTickCount(), active.struck.getOrDefault(victim.getUUID(), DuelRules.NEVER));
+	}
+
 	/** The player behind some damage: the attacker, the shooter of a projectile, or the owner of a pet. */
 	private static Player playerBehind(DamageSource source) {
 		Entity entity = source.getEntity();
@@ -544,9 +588,8 @@ public final class Duels {
 		for (UUID id : List.of(duel.a, duel.b)) {
 			// The one logging off too: they're saved as they began, not as the duel left them.
 			ServerPlayer player = online(server, id, leaving);
-			Snapshot before = active.before.get(id);
-			if (player != null && player.isAlive() && before != null) {
-				restore(player, before, active.taken.getOrDefault(id, 0F), elapsed);
+			if (player != null && player.isAlive() && active.before.get(id) != null) {
+				restore(player, active, id, elapsed);
 			}
 		}
 		Component result;
@@ -592,18 +635,20 @@ public final class Duels {
 
 	/**
 	 * Puts a duellist back as they were when the duel began: the health their opponent took from them
-	 * (never past what they had then), no harm the duel left on them (a harmful effect or fire they
-	 * didn't have before), and the helpful effects they had then (Absorption aside), less the time the
-	 * duel took.
+	 * (never past what they had then), none of the harm their opponent left on them (a harmful effect or
+	 * fire they didn't have before; what anything else did stays), and the helpful effects they had then
+	 * (Absorption aside), less the time the duel took.
 	 */
-	private static void restore(ServerPlayer player, Snapshot before, float taken, long elapsed) {
-		player.setHealth(DuelRules.restored(player.getHealth(), before.health(), player.getMaxHealth(), taken));
-		if (!before.burning()) {
+	private static void restore(ServerPlayer player, Active active, UUID id, long elapsed) {
+		Snapshot before = active.before.get(id);
+		Set<Holder<MobEffect>> harms = active.harms.getOrDefault(id, Set.of());
+		player.setHealth(DuelRules.restored(player.getHealth(), before.health(), player.getMaxHealth(), active.taken.getOrDefault(id, 0F)));
+		if (DuelRules.undone(true, before.burning(), active.burned.contains(id))) {
 			player.clearFire();
 		}
 		for (MobEffectInstance effect : List.copyOf(player.getActiveEffects())) {
 			boolean had = before.effects().stream().anyMatch(e -> e.getEffect().equals(effect.getEffect()));
-			if (!had && effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+			if (DuelRules.undone(effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL, had, harms.contains(effect.getEffect()))) {
 				player.removeEffect(effect.getEffect());
 			}
 		}

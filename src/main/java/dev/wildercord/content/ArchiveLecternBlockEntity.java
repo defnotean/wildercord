@@ -23,7 +23,9 @@ import java.util.UUID;
  * Waits for a player to come within 12 blocks, then wakes the Archivist, and remembers which one it
  * woke (saved). Once the Archivist falls the lectern stays quiet for good; but if it's gone without
  * falling and nobody finds it in the Archive for a few minutes while players are there, the lectern
- * re-arms, as a dungeon's altar does, so the Archive isn't left without its keeper.
+ * re-arms, as a dungeon's altar does, so the Archive isn't left without its keeper. A lectern that
+ * doesn't know its Archivist (woken before lecterns remembered them) takes the one it finds about the
+ * Archive as its own, and, finding none there for those few minutes, re-arms the same way.
  */
 public class ArchiveLecternBlockEntity extends BlockEntity {
 	/** How near a player must be for the missing Archivist to count (they'd see it if it were there). */
@@ -46,6 +48,11 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 
 	public boolean isSlain() {
 		return slain;
+	}
+
+	/** The Archivist it woke (or took as its own), or null: for the tests. */
+	public UUID keeper() {
+		return boss;
 	}
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, ArchiveLecternBlockEntity entity) {
@@ -91,8 +98,9 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 				break;
 			}
 		}
-		// (A lectern that never knew its Archivist, woken before lecterns remembered them, is taken to have seen it fall.)
-		if (!watched || boss == null || bossHere(level, pos)) {
+		// A lectern that never knew its Archivist (woken before lecterns remembered them) adopts the one about the
+		// Archive, or, finding none, counts it missing like any other: one that fell would have said so.
+		if (!watched || bossHere(level, pos)) {
 			missingSince = 0;
 			return;
 		}

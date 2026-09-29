@@ -60,6 +60,17 @@ class HeartAndPassivesTest {
 	}
 
 	@Test
+	void aPassivesBuffsEndSoonAfterItIsSwitchedOff() {
+		// Night Eye's minute of Night Vision is cut to a little past the next renewal...
+		assertEquals(Passives.EFFECT_TICKS, Passives.effectTicks(60 * 20));
+		assertEquals(Passives.EFFECT_TICKS, Passives.effectTicks(-1));
+		assertEquals(100, Passives.effectTicks(100));
+		// ...which still outlasts a renewal by Night Vision's 10 seconds of flicker, so a running passive never flickers.
+		assertTrue(Passives.EFFECT_TICKS >= Passives.SELF_INTERVAL + 200);
+		assertTrue(Passives.EFFECT_TICKS <= 20 * 20);
+	}
+
+	@Test
 	void circlesNeedMoreAndMoreMana() {
 		int last = 0;
 		for (int n = 1; n <= Circles.MAX; n++) {

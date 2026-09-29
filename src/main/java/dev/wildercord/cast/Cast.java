@@ -37,6 +37,8 @@ public final class Cast {
 	private static final class Paid {
 		int siphon = dev.wildercord.player.Mana.SIPHON_CAP_PER_CAST;
 		int siphonLevel = -1;
+		/** Whose Cord {@link #siphonLevel} was read from: a parried spell changes hands but keeps its payment. */
+		LivingEntity siphoner;
 		final java.util.Set<String> once = new java.util.HashSet<>();
 	}
 
@@ -280,10 +282,12 @@ public final class Cast {
 	/**
 	 * The same spell, turned back by a parry: now {@code by}'s, at the same power (casting gear
 	 * included) and weight, with a fresh budget (so the Shield that stopped the original doesn't stop it).
+	 * It's still the one payment, so it shares the original's Siphon cap and once-per-cast things: a
+	 * spell parried back and forth never earns mana back afresh.
 	 */
 	public Cast reflected(LivingEntity by) {
 		weight();
-		return new Cast(by, (ServerLevel) by.level(), 0, new Budget(budget.shared.copy(false)), 1, power, duration, false, null, info, new java.util.HashSet<>());
+		return new Cast(by, (ServerLevel) by.level(), 0, new Budget(budget.shared.copy(true)), 1, power, duration, false, null, info, new java.util.HashSet<>());
 	}
 
 	/** Takes up to {@code wanted} creatures from the budget and returns how many may be touched. */
@@ -302,8 +306,9 @@ public final class Cast {
 		if (creatures <= 0 || shared.siphon <= 0 || !(caster instanceof ServerPlayer player)) {
 			return;
 		}
-		if (shared.siphonLevel < 0) {
+		if (shared.siphonLevel < 0 || shared.siphoner != player) {
 			shared.siphonLevel = dev.wildercord.player.Mana.of(player).siphon();
+			shared.siphoner = player;
 		}
 		if (shared.siphonLevel == 0) {
 			return;
