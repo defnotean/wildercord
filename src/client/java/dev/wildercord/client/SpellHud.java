@@ -33,8 +33,9 @@ import java.util.Map;
  *  ╰────╯ 112/300                 1.2s
  *   • • ·   (one dot per spell the Cord holds)
  * </pre>
- * Everything is laid out from measured text widths and moves aside for an offhand slot or
- * attack indicator on the right, so it stays clean at every GUI scale. Hidden without a Cord.
+ * Everything is laid out from measured text widths and moves aside for (or, short of room, on top
+ * of) an offhand slot or attack indicator on the right, so it stays clean at every GUI scale.
+ * Hidden without a Cord.
  */
 public final class SpellHud {
 	private SpellHud() {}
@@ -120,9 +121,16 @@ public final class SpellHud {
 		long remaining = Spellbooks.readyAt(player, spell) - player.level().getGameTime();
 		boolean cooling = compiled != null && remaining > 0;
 
+		// The bottom row holds the mana count (and its boost chevron) and, on the right, the charge,
+		// the cooldown or the passives' drain: the panel is never narrower than both side by side.
+		int row3 = font.width(maxMana + "/" + maxMana) + 6 + 4
+			+ Math.max(font.width("100%"), Math.max(font.width("FULL"), font.width("20.0s")));
+		int narrowest = BODY_X + Math.max(row3, MIN_BODY) + 4;
+
 		// ---- where: right of the hotbar, clear of an offhand slot or attack indicator on that side.
 		int center = g.guiWidth() / 2;
-		int x0 = center + 91 + 5;
+		int besideHotbar = center + 91 + 5;
+		int x0 = besideHotbar;
 		HumanoidArm offhandSide = player.getMainArm().getOpposite();
 		if (offhandSide == HumanoidArm.RIGHT && !player.getOffhandItem().isEmpty()) {
 			x0 += 29;
@@ -131,6 +139,12 @@ public final class SpellHud {
 			x0 += 23;
 		}
 		int y0 = g.guiHeight() - HEIGHT;
+		if (g.guiWidth() - x0 - 2 < narrowest && g.guiWidth() - besideHotbar - 2 >= narrowest) {
+			// No room beside the offhand slot or attack indicator, but enough beside the hotbar: sit on
+			// top of them rather than tucked into the corner over them.
+			x0 = besideHotbar;
+			y0 -= 24;
+		}
 		int avail = g.guiWidth() - x0 - 2;
 
 		// ---- how wide: measured, then shrunk to fit.
@@ -139,10 +153,6 @@ public final class SpellHud {
 		int costW = font.width(cost);
 		int iconSize = 10;
 		int shown = runes.size();
-		// The bottom row holds the mana count (and its boost chevron) and, on the right, the charge,
-		// the cooldown or the passives' drain: the panel is never narrower than both side by side.
-		int row3 = font.width(maxMana + "/" + maxMana) + 6 + 4
-			+ Math.max(font.width("100%"), Math.max(font.width("FULL"), font.width("20.0s")));
 		int bodyW = Math.max(row3, bodyWidth(shown, iconSize, costW, font));
 		// Smaller icons, then fewer, only while the runes are what makes the panel too wide: once the
 		// bottom row sets its width, hiding runes wins nothing (the panel is tucked aside below instead).

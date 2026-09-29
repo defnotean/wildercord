@@ -142,8 +142,10 @@ public class WildercordScreenshots implements FabricClientGameTest {
 	}
 
 	/**
-	 * The HUD with too little room right of the hotbar (the attack indicator beside it, on the smallest
-	 * window): it's tucked into the corner, and a short spell keeps all its runes instead of one and a "+2".
+	 * The HUD short of room with the attack indicator on the hotbar. At 854x480 there's room beside the
+	 * hotbar but not beside the indicator too: the panel sits on top of the indicator instead of over it.
+	 * At 800x600 there's no room at all: it's tucked into the corner, and a short spell keeps all its
+	 * runes instead of one and a "+2".
 	 */
 	private static void narrowHud(ClientGameTestContext context, TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> {
@@ -161,6 +163,13 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		context.getInput().setCursorPos(2, 2);
 		context.waitTicks(5);
 		context.takeScreenshot(TestScreenshotOptions.of("hud_narrow_indicator").disableCounterPrefix());
+		context.runOnClient(mc -> {
+			mc.getWindow().setWindowed(800, 600);
+			mc.options.guiScale().set(2);
+			mc.resizeGui();
+		});
+		context.waitTicks(5);
+		context.takeScreenshot(TestScreenshotOptions.of("hud_tucked_800x600").disableCounterPrefix());
 		context.runOnClient(mc -> mc.options.attackIndicator().set(before[0]));
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
