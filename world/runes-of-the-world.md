@@ -219,7 +219,7 @@ the place of your fish or your treasure; it comes as well.
 |---|---|
 | Under a [mana storm]({{ '/world/world-events/' | relative_url }}) | 12% |
 | On or near a [ley line]({{ '/progression/ley-lines/' | relative_url }}) | 5% |
-| In a **thunderstorm**, with the rain falling on the bobber | 5% |
+| In a **thunderstorm**, with its rain (or snow) falling on the bobber | 5% |
 
 They add up, to at most **20%** a catch: a thunderstorm over a ley line is 10%, a mana storm over a ley line 17%. Magic
 waters need open water too, and Luck of the Sea doesn't change them. A tangled rune comes from the same list as a
