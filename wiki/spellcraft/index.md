@@ -3,7 +3,7 @@ title: Spellcraft
 nav_order: 3
 has_children: true
 permalink: /spellcraft/
-description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, imbuing, overcasting and secret spells."
+description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, creature affinities and climate, imbuing, overcasting and secret spells."
 ---
 
 # Spellcraft
@@ -27,6 +27,7 @@ wrist to the magic circle in front of your hands.
 | [Passive Spells]({{ '/spellcraft/passives/' | relative_url }}) | Up to two always-on spells that cost mana every second instead of having a cooldown. |
 | [Shields and parrying]({{ '/spellcraft/shields/' | relative_url }}) | Shield's stacked magic circles, what breaks them, and turning a spell back with a parry. |
 | [Reactions]({{ '/spellcraft/reactions/' | relative_url }}) | Shatter, Overload, Blight and eight more: the right element on the right mark. |
+| [Creature Affinities and Climate]({{ '/spellcraft/affinities/' | relative_url }}) | Which creatures are weak to or resist which elements, the Bestiary, and how where you fight changes each element. |
 | [Imbuing and glyphs]({{ '/spellcraft/imbuing/' | relative_url }}) | Storing a spell in a sword, a bow, armour or any block. |
 | [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }}) | Casting past your mana by cracking a Heart Circle, and what a surge can do. |
 | [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}) | Ten exact rune sequences that become something grander, and how to find them. |

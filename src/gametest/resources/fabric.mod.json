@@ -28,6 +28,7 @@
 			"dev.wildercord.gametest.WildercordReactionsTest",
 			"dev.wildercord.gametest.WildercordOitTest",
 			"dev.wildercord.gametest.WildercordTravelTest",
+			"dev.wildercord.gametest.WildercordAffinitiesTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

@@ -2088,6 +2088,8 @@ public class CordScreen extends Screen {
 		addAttunements(lines, found);
 		// The runes of the world, by where they're found: known ones by name, the rest as a hint.
 		addWorldRunes(lines);
+		// The elemental climate where you stand, and the Bestiary: creatures met and what's known of their affinities.
+		addClimateAndBestiary(lines, found);
 		// Feats.
 		int feats = dev.wildercord.spell.Feats.count(found, "feat:");
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.feats", feats, dev.wildercord.spell.Feats.FEATS.size()), 0, GOLD, null));
@@ -2174,6 +2176,98 @@ public class CordScreen extends Screen {
 			boolean all = source.runes().stream().allMatch(r -> book.knows(r.id()));
 			lines.add(new GrimoireLine(Component.literal(source.where() + ": " + names), 8, all ? 0xFF9CE08C : DIM, tip));
 		}
+	}
+
+	/**
+	 * Where you stand (each condition of the elemental climate holding here, and what it does), then the
+	 * Bestiary: every kind of creature met, with the weaknesses and resistances found so far and a "?"
+	 * for each still to find (how many there are comes from the creature tags the server sent).
+	 */
+	private void addClimateAndBestiary(List<GrimoireLine> lines, List<String> found) {
+		List<Component> climateTip = List.of(Component.translatable("screen.wildercord.grimoire.climate_hint").withStyle(ChatFormatting.GRAY));
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.climate"), 0, GOLD, climateTip));
+		java.util.Set<dev.wildercord.spell.ClimateRules.Condition> here = dev.wildercord.cast.Climate.shown();
+		if (here.isEmpty()) {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.climate_none"), 8, DIM, climateTip));
+		}
+		for (dev.wildercord.spell.ClimateRules.Condition condition : dev.wildercord.spell.ClimateRules.Condition.values()) {
+			if (here.contains(condition)) {
+				String shifts = dev.wildercord.spell.ClimateRules.describe(condition, e -> Component.translatable("element.wildercord." + e).getString());
+				lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.climate_line",
+					Component.translatable("climate.wildercord." + condition.id), shifts), 8, TEXT, climateTip));
+			}
+		}
+
+		List<String> met = dev.wildercord.spell.Bestiary.met(found);
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.bestiary", met.size()), 0, GOLD, null));
+		if (met.isEmpty()) {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.bestiary_none"), 8, DIM, null));
+		}
+		for (String id : met) {
+			net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(Identifier.tryParse(id))
+				.flatMap(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
+			Component name = type == null ? Component.literal(id) : type.getDescription();
+			List<Component> tip = new ArrayList<>();
+			tip.add(name.copy().withStyle(ChatFormatting.GOLD));
+			// One slot per element it's weak to, and one per element it resists or is immune to; each shown once found.
+			net.minecraft.network.chat.MutableComponent weak = Component.empty();
+			net.minecraft.network.chat.MutableComponent resists = Component.empty();
+			int weakSlots = 0;
+			int weakKnown = 0;
+			int resistSlots = 0;
+			int resistKnown = 0;
+			int unknown = 0;
+			for (String element : dev.wildercord.spell.Affinity.ELEMENTS) {
+				Component elementName = Component.translatable("element.wildercord." + element).withColor(RuneColors.element(element));
+				boolean weakHere = type != null && type.builtInRegistryHolder().is(dev.wildercord.cast.Affinities.weakTo(element));
+				boolean knownWeak = found.contains(dev.wildercord.spell.Bestiary.key(id, dev.wildercord.spell.Bestiary.Kind.WEAK, element));
+				if (weakHere || knownWeak) {
+					weakSlots++;
+					if (knownWeak) {
+						weak.append(Component.literal(weakKnown++ == 0 ? "" : ", ")).append(elementName);
+						tip.add(Component.translatable("screen.wildercord.grimoire.bestiary_weak", elementName).withStyle(ChatFormatting.GRAY));
+					} else {
+						unknown++;
+					}
+				}
+				boolean immuneHere = type != null && (type.builtInRegistryHolder().is(dev.wildercord.cast.Affinities.immuneTo(element))
+					|| element.equals("fire") && type.fireImmune());
+				boolean resistHere = type != null && type.builtInRegistryHolder().is(dev.wildercord.cast.Affinities.resisting(element));
+				boolean knownImmune = found.contains(dev.wildercord.spell.Bestiary.key(id, dev.wildercord.spell.Bestiary.Kind.IMMUNE, element));
+				boolean knownResist = found.contains(dev.wildercord.spell.Bestiary.key(id, dev.wildercord.spell.Bestiary.Kind.RESISTS, element));
+				if (immuneHere || resistHere || knownImmune || knownResist) {
+					resistSlots++;
+					if (knownImmune || knownResist) {
+						resists.append(Component.literal(resistKnown++ == 0 ? "" : ", "))
+							.append(knownImmune ? Component.translatable("screen.wildercord.grimoire.bestiary_immune_to", elementName) : elementName);
+						tip.add(Component.translatable(knownImmune ? "screen.wildercord.grimoire.bestiary_immune" : "screen.wildercord.grimoire.bestiary_resists",
+							elementName).withStyle(ChatFormatting.GRAY));
+					} else {
+						unknown++;
+					}
+				}
+			}
+			Component weakText = column(weak, weakKnown, weakSlots);
+			Component resistText = column(resists, resistKnown, resistSlots);
+			tip.add(unknown > 0
+				? Component.translatable("screen.wildercord.grimoire.bestiary_unknown", unknown).withStyle(ChatFormatting.DARK_GRAY)
+				: Component.translatable("screen.wildercord.grimoire.bestiary_complete").withStyle(ChatFormatting.DARK_GRAY));
+			tip.add(Component.translatable("screen.wildercord.grimoire.bestiary_hint").withStyle(ChatFormatting.DARK_GRAY));
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.bestiary_line", name, weakText, resistText), 8,
+				unknown == 0 ? 0xFF9CE08C : TEXT, tip));
+		}
+	}
+
+	/** A Bestiary column: the elements found, then a "?" for each still to find, or "none" when there's nothing to find. */
+	private static Component column(net.minecraft.network.chat.MutableComponent known, int found, int slots) {
+		if (slots == 0) {
+			return Component.translatable("screen.wildercord.grimoire.bestiary_nothing").withColor(DIM);
+		}
+		net.minecraft.network.chat.MutableComponent text = known.copy();
+		for (int i = found; i < slots; i++) {
+			text.append(Component.literal((i == 0 ? "" : ", ") + "?").withColor(FAINT));
+		}
+		return text;
 	}
 
 	/** Used by the HUD to show an item for a rune id. */

@@ -56,6 +56,8 @@ stops a server. Every default is the number the mod used before.
 | `features.duels` | true | Switch for duels |
 | `features.wild_magic` | true | Switch for wild magic |
 | `features.world_changing_magic` | true | Magic that changes the world (fire lighting grass, frost freezing water, life making it bloom...). When off, spells change no blocks this way, though the steam, shocks through water and gusts still come |
+| `features.creature_affinities` | true | Creature affinities: weaknesses (+50%), resistances (half) and immunities to elements, the callouts and the Bestiary (see [affinities.md](affinities.md)). When off, every creature takes every element alike, and vanilla's fivefold freezing damage on blazes, striders and magma cubes comes back |
+| `features.elemental_climate` | true | Elemental climate: where a player casts nudges each element's damage (the Nether, a thunderstorm, snow...). When off, it's the same everywhere and the HUD shows no climate marks |
 | `travel.enabled` | true | The travel commands (`/home`, `/warp`, `/waypoint`, `/tpa`, `/back`, `/spawn`, `/rtp`). Read when commands are built (start, `/reload`); the commands also refuse at once after `/wildercord reload` turns it off |
 | `travel.max_homes` | 3 | Homes per player (0 turns homes off) |
 | `travel.warmup_seconds` | 3 | Standing still before a teleport (operators and creative players skip it) |
@@ -64,7 +66,7 @@ stops a server. Every default is the number the mod used before.
 | `travel.rtp_radius` | 5000 | How far from world spawn `/rtp` may land, in blocks |
 | `travel.tpa_timeout_seconds` | 60 | How long a teleport request waits for an answer |
 
-`world_events` and `world_changing_magic` take effect at once on `/wildercord reload`. The `duels` and
+`world_events`, `world_changing_magic`, `creature_affinities` and `elemental_climate` take effect at once on `/wildercord reload`. The `duels` and
 `wild_magic` switches are there for those features to read (`Config.get().duels()` and so on).
 The travel settings are described in [travel.md](travel.md). Loot chances apply when loot tables load (world start or `/reload`). Structure spacing isn't in the file:
 it's data, in `data/wildercord/worldgen/structure_set/archives.json`, which a datapack can override. The
