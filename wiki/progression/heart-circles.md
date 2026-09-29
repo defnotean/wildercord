@@ -79,7 +79,7 @@ the ground, and your **mana refills completely**. Chat tells you what you gained
 | **3rd** | 5,000 | Wear a Copper Cord or better; set off 1 reaction | *Mana Skin awakens* | **Mana Skin** |
 | **4th** | 10,000 | Defeat 40 monsters with spells; set off 3 different reactions | *Your circles turn as one* | |
 | **5th** | 18,000 | Know 35 runes; wear an Amethyst Cord or better; the **Long Incantation** feat | *Flow: the circles quicken* | Passive slot 2; **Flow** |
-| **6th** | 30,000 | Defeat 150 monsters with spells; slay 8 Runebound; set off all 5 reactions | *Your heart burns brighter* | |
+| **6th** | 30,000 | Defeat 150 monsters with spells; slay 8 Runebound; set off 5 different reactions | *Your heart burns brighter* | |
 | **7th** | 50,000 | Help slay a boss; find 2 secret spells; the **In Rhythm** feat | *Overflow: mana spills from you* | **Overflow** |
 | **8th** | 80,000 | Wear an Echo Cord; find 4 secret spells; **The Last Page** (defeat the Archivist) | *Archmage* | **Archmage** |
 
@@ -127,7 +127,7 @@ Flow and Archmage stack with the Celerity and Thrift [Cord enchantments]({{ '/pr
 |---|---|
 | **Know N runes** | Runes learned into your Codex. A Knot is a spell, not a rune, so it doesn't count. |
 | **Wear a Cord** | The Cord you're wearing now. A better Cord counts too. |
-| **Set off reactions** | Different element reactions in your Grimoire: Shatter, Conduct, Wildfire, Implode, Collapse. See [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}). |
+| **Set off reactions** | Different element reactions in your Grimoire, any of the eleven: Shatter, Conduct, Wildfire, Implode, Collapse, Overload, Fracture, Blight, Unweave, Rupture, Elapse. The 6th Circle wants any five of them, not all. See [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}). |
 | **Defeat monsters with spells** | A hostile monster that dies within **5 seconds** of one of your spells hurting it, whatever finished it off. |
 | **Slay Runebound** | A Runebound killed by you (spell, blade or arrow). See [Runebound]({{ '/world/runebound/' | relative_url }}). |
 | **Help slay a boss** | Be alive within **96 blocks** when a boss dies: the Wither, the Warden, an Elder Guardian, the Ender Dragon, the Archivist, the Cinder Warden, the Star-Eater or the Tide Scribe. You're told *"A boss has fallen. Your heart can now break through to the 7th Circle."* You only need one, ever. |

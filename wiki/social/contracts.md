@@ -35,7 +35,7 @@ ranges shown.
 | Contract | Target | Reward |
 |---|---|---|
 | **Defeat (3 to 5) Runebound with (element) spells** | Fire, Frost, Storm, Wind, Earth or Arcane | **a random Tier II rune** |
-| **Set off (2 to 4) (reaction) reactions** | Shatter, Conduct, Wildfire, Implode or Collapse | **6 Blank Runes** |
+| **Set off (2 to 4) (reaction) reactions** | Any of the eleven: Shatter, Conduct, Wildfire, Implode, Collapse, Overload, Fracture, Blight, Unweave, Rupture or Elapse | **6 Blank Runes** |
 | **Cast 15, 20 or 25 spells on a ley line** | | **8 Emeralds** |
 | **Imbue a weapon and use all its charges** | once | **1 Mana Crystal** |
 | **Slay 10, 15 or 20 monsters with spells** | | **6 Emeralds** |
@@ -67,7 +67,7 @@ The contracts count what your magic actually does, so they can't be finished by 
 - A reaction counts when you set it off and your spell lands on a real creature at the same moment. Setting one off on
   a Training Dummy earns nothing.
 - Each reaction contract names one reaction. See [Reactions]({{ '/spellcraft/reactions/' | relative_url }}) for how
-  to set off Shatter, Conduct, Wildfire, Implode and Collapse.
+  to set off each one.
 
 ### Slaying contracts (monsters and Runebound)
 

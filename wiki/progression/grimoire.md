@@ -31,7 +31,7 @@ From top to bottom:
 | Section | What it shows |
 |---|---|
 | **Your heart** | Your [innate rune]({{ '/runes/innate/' | relative_url }}) (hover it for what it does), or *"wakes at the 1st Circle"*; and your **leaning**: the element your magic leans toward and its +10% power, or how far you are from one. |
-| **Reactions** (of 5) | The five element reactions, by name once you've set each off, **???** until then. Hover a found one for what it does. See [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}). |
+| **Reactions** (of 11) | The eleven element reactions, by name once you've set each off, **???** until then. Hover a found one for what it does. See [Element Reactions]({{ '/spellcraft/reactions/' | relative_url }}). |
 | **Secret spells** (of 10) | Each found secret by name, in its colour (hover it for its runes and what it does). A secret you have the riddle for shows the **riddle**, in italics. The rest are **???**. See [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}). |
 | **Duels** | Your duels won and lost, once you've fought one. See [Duels]({{ '/social/duels/' | relative_url }}). |
 | **Fusions** (of 55) | Each fusion you've made at the Fusion Altar, as *"Firestorm (Fire + Wind)"*. The rest show as **??? + ???** with one of their elements as a hint. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}). |
@@ -131,7 +131,7 @@ There are **35 feats**. Each is worth **250 mana** toward your next circle the f
 
 ## A full Grimoire
 
-The **Every Page Filled** challenge asks for a full Grimoire: all **5 reactions**, all **10 secret
+The **Every Page Filled** challenge asks for a full Grimoire: all **11 reactions**, all **10 secret
 spells**, and **31 of the 35 feats**. The four you're let off are the ones nobody can be sure of
 earning alone: **Mirrorfrost** (only its innate rune earns it) and **Unison**, **Domain Clash** and
 **Chorus** (they need other casters). Fusions, attunements and riddles don't count toward it. The

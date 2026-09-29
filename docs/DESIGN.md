@@ -419,7 +419,7 @@ Casters build rings of condensed mana around their heart, from the 1st Circle to
 | 3rd | 5,000 | Wear a Copper Cord, set off a reaction | **Mana Skin**: a fifth of damage taken is paid with mana (2 mana per health) |
 | 4th | 10,000 | Defeat 40 monsters with spells, set off 3 different reactions | |
 | 5th | 18,000 | Know 35 runes, wear an Amethyst Cord, *Long Incantation* (slay a monster with a spell of 6+ runes) | Passive slot 2, **Flow**: cooldowns 15% shorter |
-| 6th | 30,000 | Defeat 150 monsters with spells, slay 8 Runebound, set off all 5 reactions | |
+| 6th | 30,000 | Defeat 150 monsters with spells, slay 8 Runebound, set off 5 different reactions (any five of the eleven) | |
 | 7th | 50,000 | Help slay a boss (Wither, Warden, Elder Guardian, Ender Dragon, the Archivist or a dimension dungeon's boss; everyone within 96 blocks counts), find 2 secret spells, *In Rhythm* (3 casts on the beat) | **Overflow**: spells cast at full mana hit 30% harder |
 | 8th | 80,000 | Wear an Echo Cord, find 4 secret spells, *The Last Page* (defeat the Archivist) | **Archmage**: spells and passives cost 15% less mana |
 
@@ -534,7 +534,10 @@ whatever shape carried it: a few strong shapes of light and a handful of particl
 
 Reactions are moments of both elements at once: Shatter bursts the ice through a flare of fire,
 Wildfire whirls up as a fire tornado, Conduct cages the target in lightning and Implode falls in as
-darkness before the blast. The secret spells are the grandest of all (a lance of ice that lightning
+darkness before the blast. Overload blows the flames apart with forks of lightning, Fracture stands a
+cracked frost seal over a splitting ground, Blight turns imploding darkness into billowing rot, Unweave
+spins every mark off in its own colour round a star seal, Rupture crosses crimson cuts through a slash
+of wind, and Elapse races a clock's hands round as what was lingering flares out at once. The secret spells are the grandest of all (a lance of ice that lightning
 runs along, a sun that sinks and bursts into a pillar of fire, a crescent cut out to the horizon, a
 black star with rings of light, a clock face across the whole of Zero Hour's circle). An effect on
 yourself stays out of your own view (you see what reaches your feet), and the buffs a passive
@@ -570,7 +573,7 @@ and woodland mansions (25%), trial vaults (15%), dungeons and desert pyramids (1
 Archive; Runebound and the Archivist drop them too.
 
 ### The Grimoire
-A third page of the Cord screen: your innate rune and leaning, the five reactions, the secret
+A third page of the Cord screen: your innate rune and leaning, the eleven reactions, the secret
 spells (found ones in full, hinted ones as riddles), and the feats. Every first discovery
 shows a toast, and each new reaction, feat and secret condenses mana toward your next circle: 150
 for a reaction, 250 for a feat, 400 for a secret, 2,000 for defeating the Archivist.
@@ -732,7 +735,8 @@ health (Adepts 120%).
 ### Collisions, clashes and Unison
 - **Spell collision:** a bolt that meets an enemy caster's bolt in the air bursts with it. Different
   elements burst harder (5 damage around the point); a reacting pair (fire/frost, storm/frost,
-  fire/wind, void/arcane) sets off a small named reaction (8 damage, 4 blocks).
+  fire/wind, void/arcane, fire/storm, earth/frost, life/void, blood/wind, fire/time) sets off a small
+  named reaction (8 damage, 4 blocks).
 - **Domain clash:** two casters' Domains can't overlap. The two shells push against each other for
   1.5 s, then the weaker one shatters like glass. Strength is power × shape power (Focus, Vow) ×
   (1 + 0.1 per working circle; a monster counts as 4) × √(radius / 9); the incumbent holds a tie.
@@ -859,8 +863,20 @@ Effects leave short marks on what they hit. A later effect of the right element 
 | **Wildfire** | Fire on a target just thrown by wind (Push, Launch, Dash, Levitate, Tremor) | Flames spread to every enemy within 3 blocks |
 | **Implode** | Explode or Meteor where enemies were just pulled (Pull, Gravity Well) | Blast 50% wider and 30% stronger |
 | **Collapse** | Repel on enemies just pulled (Pull, Gravity Well, Hollow) | Double damage, a violent burst |
+| **Overload** | Storm damage (as for Conduct) on a burning target | +30% damage; the flames burst for 5 on every other enemy within 3 blocks, throwing them back; the fire goes out |
+| **Fracture** | Any earth damage on a frozen target | +40% damage, it thaws, and it's left **cracked** for 5 s: every spell hits it 20% harder |
+| **Blight** | Any life damage (Venom, Bramble's thorns, Vinelash...) on a **shadowed** target: Hex, Blind, Wither, Blackflame, Echolocate, Resonant Shriek, Hush, Eclipse, Entropy | Rot bursts out: 3 damage and Poison I (5 s) to it and up to 5 enemies within 4 blocks; the caster heals 1 for each |
+| **Unweave** | Any arcane damage (Harm, Smite, Resonance...) on a target with two marks or more | Every mark undone: +30% damage for each, at most four |
+| **Rupture** | Any wind damage (Windcut, Cyclone, Repel...) on a **bleeding** target: Bleed, Rend, Cleave, Dismantle, Crimson Mist, Bonespur | +50% damage, 4 more through armour, and the caster heals 2 |
+| **Elapse** | Any time damage (Countdown, Reckoning) on a target that's burning, poisoned or withering | All the damage still to come lands at once, half again (3 to 16); the fire, poison and withering end |
 
-Try `Bolt · Frost · Delay · Bolt · Fire` for Shatter, or `Zone · Gravity Well · Delay · Burst · Explode` for Implode.
+So every element takes part: fire, storm, earth, life, arcane, wind and time set reactions off; frost, wind,
+void, blood, fire (burning) and life (poison) leave what they need. Two can want the same mark (frozen:
+Shatter or Fracture; burning: Overload or Elapse), and the first to reach it uses it. Numbers are in
+`spell.ReactionRules`; a rune's tooltip says which mark it leaves or which newer reaction its damage sets off.
+
+Try `Bolt · Frost · Delay · Bolt · Fire` for Shatter, `Zone · Gravity Well · Delay · Burst · Explode` for Implode,
+`Bolt · Chill · Pelt` for Fracture or `Bolt · Rend · Windcut` for Rupture.
 
 **Wet.** Being wet (in water or rain, or for 5 s after Tidebreath, steam or a popped Bubble) makes storm
 conduct (above), fire hit 25% softer (and dries you), and frost freeze you solid at once.

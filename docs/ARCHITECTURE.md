@@ -238,8 +238,14 @@ hit for spell-kill counting and the innate runes that react to hits. After each 
 
 - **`Scheduler`**: delayed tasks, On Land watchers, and On Hurt / On Low Health watchers. Ticked
   once per server tick; cleared when the server stops.
-- **`Reactions`**: short-lived marks (FROZEN, WINDSWEPT, PULLED, SOAKED, RESONANT, WET) and the bonuses
-  they set off (Shatter, Conduct, Wildfire, Implode, Collapse).
+- **`Reactions`**: short-lived marks (FROZEN, WINDSWEPT, PULLED, SOAKED, RESONANT, WET, CRACKED,
+  SHADOWED, BLEEDING) and the bonuses they set off. Fire and storm reactions (Shatter, Wildfire,
+  Conduct, Overload) are asked for by the effects that deal that damage (`Reactions.fire`/`storm`),
+  blasts ask `blast` (Implode) and Repel asks `collapse`; the rest (Fracture, Blight, Unweave, Rupture,
+  Elapse) go off for any spell damage of their element through `Reactions.hit`, one line in
+  `Effects.hurt`, which also adds Cracked's extra. Their numbers, which runes leave shadowed and
+  bleeding, and which runes' damage sets each off (for the Cord screen's tooltip line) are pure data in
+  `spell.ReactionRules`; how every reaction looks is in `ReactionVfx`.
 - **`WorldMagic`**: what an effect's element does to the world where it lands, called by
   `Effects.apply` after every effect (fire lights grass and boils puddles into steam, frost freezes
   water and puts fires out, storm conducts through water, wind turns projectiles, earth heaves block

@@ -14,10 +14,33 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   on safe ground and works across worlds, and none can be used in a duel. Operators skip the warmup and
   cooldowns. Server owners can change the limits and times, or switch it all off, in the new `travel` section of
   the config. See [Getting Around](https://defnotean.github.io/wildercord/social/travel/).
+- **Six new element reactions, so every element takes part.** Each has its own burst, its name in
+  bold, a place in the Grimoire (150 mana the first time), an advancement and Runesmith contracts:
+  - **Overload**: storm on a burning foe blows the flames apart: +30%, and 5 damage to every other
+    enemy within 3 blocks, thrown back. The fire goes out.
+  - **Fracture**: earth on a frozen foe cracks the ice: +40%, and for 5 seconds it's *cracked*: every
+    spell hits it 20% harder, a friend's included.
+  - **Blight**: life on a *shadowed* foe (hexed, blinded, withered, or in Hush, Eclipse, Echolocate,
+    Resonant Shriek, Blackflame or Entropy) turns the darkness to rot: 3 damage and poison to it and
+    up to 5 foes around it, and you heal 1 for each.
+  - **Unweave**: arcane on a foe carrying two marks or more undoes them all, +30% for each (up to
+    +120%).
+  - **Rupture**: wind on a *bleeding* foe (Bleed, Rend, Cleave, Dismantle, Crimson Mist, Bonespur)
+    tears the wound open: +50%, 4 more through armour, and you heal 2.
+  - **Elapse**: time on a burning, poisoned or withering foe lands everything they still had to deal
+    at once, half again as hard (3 to 16).
+- Rune tooltips in the Cord screen now say which of these a rune plays a part in: *"Leaves foes
+  bleeding: wind damage on them sets off Rupture"*, *"On a frozen foe it sets off Fracture"*.
+- Bolts of the right elements colliding in the air set off the new reactions too (fire and storm,
+  earth and frost, life and void, blood and wind, fire and time).
+- **Chain Reaction**, an advancement for setting off every reaction.
 
 ### Changed
 - **Cryostasis holds for 4 seconds at most**, however far Extend stretches it (three Extends made it 16 seconds
   of being untouchable), and nobody can cast from inside the ice: it's a moment's shelter, not a fortress.
+- The 6th Heart Circle asks for **five different reactions** (any five of the eleven) instead of all
+  of them, so it's no harder to reach than before.
+- **Prismatic Burst** also uses up the new marks (cracked, shadowed, bleeding); it still deals at most 22.
 
 ### Fixed
 - **Fused runes skipped part of a crowd.** Cast into more than eight enemies at once (a Domain or a big
