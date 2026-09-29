@@ -25,7 +25,8 @@ don't need a Runesmith nearby: the desk alone is enough, and every desk shows th
 - Finished contracts show *Done: hand it in at the desk*; handed-in ones show *Handed in*.
 
 Your board is yours alone. Every player gets their own three contracts each day, and they stay the same all day
-however often you look.
+however often you look. A finished contract you haven't handed in yet is never lost to the dawn: see
+[New boards](#new-boards).
 
 ## Every contract
 
@@ -50,8 +51,8 @@ The contracts count what your magic actually does, so they can't be finished by 
 ### Casting contracts (ley line and element casts)
 
 - **A cast counts only once your spell hurts a real creature**: a monster, an animal or another player, not you. Casting
-  at nothing, or at a [Training Dummy]({{ '/progression/training-dummy/' | relative_url }}), an armour stand or a
-  mannequin, earns nothing.
+  at nothing, or at a [Training Dummy]({{ '/progression/training-dummy/' | relative_url }}), an armour stand, a
+  mannequin or a [wisp]({{ '/companions/familiars/' | relative_url }}) (which nothing can hurt), earns nothing.
 - The spell has **five seconds** to land. A slow bolt still counts when it arrives.
 - **One cast counts once**, however many creatures it hits.
 - **Element casts:** a spell counts for each element its effects have. A spell with Fire and Frost effects counts
@@ -65,7 +66,7 @@ The contracts count what your magic actually does, so they can't be finished by 
 ### Reaction contracts
 
 - A reaction counts when you set it off and your spell lands on a real creature at the same moment. Setting one off on
-  a Training Dummy earns nothing.
+  a Training Dummy or a wisp earns nothing.
 - Each reaction contract names one reaction. See [Reactions]({{ '/spellcraft/reactions/' | relative_url }}) for how
   to set off each one.
 
@@ -92,7 +93,9 @@ charge**. It counts when the last charge is spent. See [Imbuing]({{ '/spellcraft
 
 ## New boards
 
-- **A new board comes each dawn.** Unfinished contracts from yesterday are gone, handed in or not, so hand in finished
-  ones before the sun comes up.
+- **A new board comes each dawn.** Yesterday's unfinished contracts are gone.
+- **A finished contract you haven't handed in stays**, reward and all. It keeps its place on the new board, in place of
+  one of the new day's contracts, until you open the board at a desk and hand it in. The new day's contracts fill the
+  rest, each of a kind not already on the board.
 - **Turning time back doesn't bring a new board**, and can't make contracts pay twice. The board only changes when a
   later day comes.

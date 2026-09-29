@@ -6,8 +6,9 @@ nav_order: 3
 
 # Duels
 
-A **duel** is a fair fight between two players where **nobody dies** and **nobody loses anything**. When it's over,
-however it ends, you're both put back as you were when it began. Duels work even on servers with PvP turned off.
+A **duel** is a fair fight between two players where **nobody dies**. When it's over, however it ends, the harm you
+did each other is undone: each of you gets back the health the other took. Duels work even on servers with PvP turned
+off.
 
 ## Challenging someone
 
@@ -33,14 +34,18 @@ either of you:
 | fighting another player (hitting them or being hit) | 30 seconds | *(Player) was fighting another player too recently to start a duel* |
 | in a duel that ended | 30 seconds | *(Player) duelled too recently: wait a little before the next one* |
 
-When accepting, you must also still be in the same world, within 40 blocks of each other, and both alive.
+When accepting, you must also still be in the same world, within 40 blocks of each other, and both alive (if one of
+you isn't, the game says *(Player) can't duel right now*).
+
+If the duel can't start yet, you're told why, and **the challenge still stands**: accept it again once you can, before
+its 30 seconds run out.
 
 This stops anyone using a duel to escape a real fight, or to heal up.
 
 ## How a duel goes
 
-1. **The countdown.** Both of you read *Duel with (player)! Nobody dies, and afterwards you're both as you were before
-   it. Stay within 40 blocks.* A gold **3, 2, 1** counts down on screen, each second with a click and a circle of
+1. **The countdown.** Both of you read *Duel with (player)! Nobody dies, and afterwards the harm you did each other is
+   undone. Stay within 40 blocks.* A gold **3, 2, 1** counts down on screen, each second with a click and a circle of
    light around each of you. Nothing about you changes as it starts, and no blow between you counts yet.
 2. **Fight!** A bell rings, *Fight!* fills the screen and a ring of light flashes at your feet. Now the two of you can
    hurt each other with anything (spells, weapons, arrows, pets) even if PvP or friendly fire is off.
@@ -74,14 +79,17 @@ forfeit.
 | Something else kills you (a monster, lava, the void) | You forfeit: *(winner) won the duel: (loser) fell to something else* | Yes |
 | Five minutes pass | Draw: *The duel ended in a draw* | No |
 | Someone else joins the fight | Called off | No |
+| The server shuts down | Ends for nobody | No |
 
-## What's restored
+## What's undone
 
-When a duel ends, **however it ends**, both duellists are put back as they were when it began. A duel is never a free
-heal, and never costs you anything:
+When a duel ends, **however it ends**, the harm the two of you did each other is undone. Only that: a duel is never a
+free heal.
 
-- **Health:** back to what you had when the duel began, or what you have now if that's more (never above your maximum).
-- **Mana:** the same: what you had, or what you have now if that's more.
+- **Health:** you get back the health **your opponent** took from you (their blows, spells, arrows and pets), but never
+  more than you had when the duel began. Health lost to anything else during the duel (a fall, a monster, your own
+  Blood Price) stays lost, and health you healed during it is kept.
+- **Mana:** not given back. Mana you spent during the duel stays spent, whatever you spent it on.
 - **Fire:** if you weren't burning when the duel began, the flames go out.
 - **Harmful effects** the duel left on you (poison, slowness and so on that you didn't have before) are removed.
 - **Effects you had** when it began come back, less the time the duel took. A potion with 3 minutes left when a
@@ -90,7 +98,9 @@ heal, and never costs you anything:
 Anything the duel didn't cause is kept: helpful effects you gained during it stay, and nothing is taken from your
 inventory. Nothing is dropped, because nobody dies to the other.
 
-A player who dies to something else or logs off during a duel isn't put back.
+A player who dies to something else during a duel isn't put back. One who **logs off** mid-duel is put back as above
+before they leave, so they come back without their opponent's harm on them. If the **server shuts down** during a
+duel, it ends for nobody (no win, no loss) and both duellists are put back.
 
 ## Your record
 

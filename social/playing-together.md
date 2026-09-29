@@ -50,8 +50,9 @@ whether or not they know its runes.
 **Inscribing a scroll:**
 
 1. Open the Cord screen, pick the spell, and press **Inscribe a scroll**.
-2. It takes **a sheet of Paper** and **an Ink Sac** (a Glow Ink Sac works too) from your inventory, and **twice the
-   spell's mana** (at least 2). Creative mode needs nothing.
+2. It takes **a sheet of Paper** and **an Ink Sac** (a Glow Ink Sac works too) from your inventory, and **twice what
+   the spell costs you to cast** (at least 2), as the Cord screen shows it: your discounts, the server's own cost
+   setting and a found secret spell's higher price all count. Creative mode needs nothing.
 3. The scroll appears in your inventory (or at your feet if it's full), named after the spell: *Scroll of Splitting
    Frost Bolt*.
 

@@ -208,17 +208,22 @@ change this). It's a good way to find fresh land to settle.
 
 ## For server owners
 
-Everything on this page works out of the box. In the server's Wildercord settings file, owners can change:
+Everything on this page works out of the box. Owners can change it in the **`travel`** section of the server's
+Wildercord settings file, `config/wildercord.json`, then run `/wildercord reload`:
 
-- **Whether the travel commands exist at all.** Turned off, they stop working as soon as the settings are reloaded,
-  and leave the command list the next time the server starts or reloads its data packs. Turned back on, they return
-  at that same point.
-- **How many homes each player may have** (3 at first). Setting it to 0 turns homes off.
-- **How long the warmup lasts** (3 seconds at first). 0 means every teleport is instant.
-- **The cooldown** for `/home`, `/warp`, `/spawn`, `/back` and `/tpa` (30 seconds at first), and **the cooldown for
-  `/rtp`** on its own (5 minutes at first).
-- **How far `/rtp` may send players** from the world spawn (5,000 blocks at first).
-- **How long a teleport request waits** for an answer (60 seconds at first).
+| Setting | At first | What it does |
+|---|---|---|
+| `enabled` | `true` | Whether the travel commands exist at all. Turned off, they stop working as soon as the settings are reloaded, and leave the command list the next time the server starts or reloads its data packs. Turned back on, they return at that same point. |
+| `max_homes` | `3` | How many homes each player may have. 0 turns homes off. |
+| `warmup_seconds` | `3` | How long the warmup lasts. 0 makes every teleport instant. |
+| `cooldown_seconds` | `30` | The cooldown for `/home`, `/warp`, `/spawn`, `/back` and `/tpa` (each has its own). |
+| `rtp_cooldown_seconds` | `300` | The cooldown for `/rtp` (5 minutes). |
+| `rtp_radius` | `5000` | How far from the world spawn `/rtp` may send players, in blocks. |
+| `tpa_timeout_seconds` | `60` | How long a teleport request waits for an answer. |
+
+A settings file written by an older Wildercord doesn't need editing by hand: when the server starts (or an operator
+reloads the settings), any setting the file lacks, the whole `travel` section included, is added to it at its default,
+and everything already set is kept.
 
 Operators always skip the warmup and cooldowns. Only operators can set and remove warps. See
 [Controls]({{ '/controls/' | relative_url }}) for how an operator reloads the settings.
