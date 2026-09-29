@@ -157,4 +157,8 @@ The Grimoire page says it in words under **Where you stand**: *"The Nether: Fire
 - **Fill in the Bestiary.** Each weakness is 25 mana toward your next Heart Circle, and the **?**s tell you where to look.
 
 {: .note }
-A server can switch either system off (`creature_affinities` and `elemental_climate` in its config).
+A server can switch either system off (`creature_affinities` and `elemental_climate` in the `features` section of its
+settings file). With affinities off, every creature takes every element alike (and frost hits blazes, striders and
+magma cubes five times as hard again, the game's own rule); with climate off, every element hits the same everywhere
+and the HUD shows no climate marks. A settings file from an older Wildercord gains both switches by itself, switched
+on, the next time the server starts or reloads its settings.

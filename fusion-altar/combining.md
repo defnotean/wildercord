@@ -34,7 +34,7 @@ result socket; right-click it to learn it.
   Tier IV effects, even a fused rune. A fused rune counts as its own element (the one in the table below), so
   Firestorm, a Fire effect, fused with any Frost effect makes Steam.
 - **What can't be combined:** shapes, modifiers, links, [innate runes]({{ '/runes/innate/' | relative_url }}) and
-  Knots (a Knot can't go on the altar at all).
+  Knots. Try one with an effect and a shard and the altar says *Only effects with an element fuse*.
 
 ### What fused runes are like
 

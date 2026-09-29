@@ -175,10 +175,10 @@ The Cord screen's mana badge and readout always include them. More on
 
 Everyone around you can see your Cord: a band round your **right wrist** in the Cord's own material (twine,
 copper, amethyst or echo), with a **bead** for each rune of the spell you have ready, in that rune's colour,
-up to eight beads. The beads **glow for a couple of seconds after you put the Cord on**, then fade to their
-plain material. They **light up while you charge** a spell, brighter as the charge builds, and **flare** for a
-moment when you cast. Switch spells and the beads change to match. The band isn't drawn while you're
-invisible.
+up to eight beads. The beads **glow for a couple of seconds after you put the Cord on** (not when you respawn
+wearing it), then fade to their plain material. They **light up while you charge** a spell, brighter as the
+charge builds, and **flare** for a moment when you cast. Switch spells and the beads change to match. The band
+isn't drawn while you're invisible.
 
 You can change how the beads look (their material, a fixed glow colour, and a trail your casts leave) on
 the Cord screen's **Cosmetics** page. See [Cosmetics]({{ '/companions/cosmetics/' | relative_url }}).

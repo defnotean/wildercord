@@ -65,6 +65,8 @@ The first time you cast a secret spell:
 - **They weigh their full price** against a [Shield]({{ '/spellcraft/shields/' | relative_url }}), so
   they break Shields their runes alone wouldn't.
 - **Scaled like any spell** by your Heart Circles, Cord enchantments, charging and rhythm.
+- **Nothing saves you from `/kill` or the void.** No secret spell, however grand, keeps you alive against an
+  operator's `/kill` or a fall out of the world.
 - **Wild magic** can surge a secret spell when you overcast it, but never into Element or Grand (a
   secret is its exact runes): those become Twice. See
   [Overcasting and Wild Magic]({{ '/spellcraft/overcasting/' | relative_url }}).

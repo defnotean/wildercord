@@ -205,8 +205,9 @@ spell 5.
 
 <img src="{{ '/assets/images/hud.png' | relative_url }}" alt="The spell panel to the right of the hotbar: a badge with the spell's number, twelve rune icons and a cost of 168, a mana bar with a gold mark, and 218/380 mana with an upward chevron" class="shot">
 
-The **spell panel** sits to the right of your hotbar (it moves aside for an offhand item, and tucks into the
-corner on a narrow window). It's hidden while you aren't wearing a Cord.
+The **spell panel** sits to the right of your hotbar. It moves aside for an offhand item or the attack indicator
+beside the hotbar; where there's no room beside them it sits on top of them instead, and only on a very narrow
+window does it tuck into the corner. It's hidden while you aren't wearing a Cord.
 
 | Part | Shows |
 |---|---|
@@ -218,8 +219,8 @@ corner on a narrow window). It's hidden while you aren't wearing a Cord.
 | **Above the panel** | The spell's **name** in its colour (a secret spell's own name only once you've found it), **♪** notes for your rhythm steps, **✦** and a number in red for Heart Circles cracked by overcasting, and, when you're wearing a Shield, its strength and time left ("Shield 12 · 28s"). |
 | **After the name** | The **elemental climate** where you stand: a small mark for each element it changes (a flame for fire, a snowflake for frost, a bolt for storm...), with a green **▲** if that element hits harder here or a red **▼** if it hits softer. In the Nether you'll see fire ▲ and frost ▼. See [Creature Affinities and Climate]({{ '/spellcraft/affinities/' | relative_url }}#elemental-climate). |
 
-If the selected spell is empty, the panel just shows a **K**, a reminder that the Cord screen is where you
-thread it.
+If the selected spell is empty, the panel just shows your **Open Cord** key (`K` unless you've changed it), a
+reminder that the Cord screen is where you thread it.
 
 ## What other players see
 
