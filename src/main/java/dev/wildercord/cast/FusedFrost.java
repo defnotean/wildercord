@@ -1,7 +1,6 @@
 package dev.wildercord.cast;
 
 import dev.wildercord.player.WildercordAttachments;
-import dev.wildercord.spell.ExplorerNumbers;
 import dev.wildercord.spell.SpellNumbers;
 import dev.wildercord.spell.SpellPlan;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -59,12 +58,39 @@ final class FusedFrost {
 	/** Until when (game time) Absolute Zero can't freeze each creature solid again (see {@link FusedFrostRules#ZERO_LOCKOUT_TICKS}). */
 	private static final Map<java.util.UUID, Long> ZERO_LOCKED = new HashMap<>();
 
+	/**
+	 * A Blizzard or Rime Seal one caster laid: where, and until when. Cast again on its own spot (a Zone's next
+	 * pulse, an Echo, a Split copy landing beside it), it keeps going instead of a second one stacking on it.
+	 */
+	private static final class Area {
+		final UUID caster;
+		final ServerLevel level;
+		final Vec3 centre;
+		long until;
+		/** Kept going, never past this: three times its length. */
+		final long cap;
+
+		Area(Cast cast, Vec3 centre, int ticks) {
+			this.caster = cast.caster.getUUID();
+			this.level = cast.level;
+			this.centre = centre;
+			long now = cast.level.getGameTime();
+			this.until = now + ticks;
+			this.cap = now + 3L * ticks;
+		}
+	}
+
+	private static final List<Area> BLIZZARDS = new ArrayList<>();
+	private static final List<Area> SEALS = new ArrayList<>();
+
 	/** Registers anything these effects listen for (damage, deaths, ticks); called once at startup. */
 	static void init() {
 		FusedFrostWards.init();
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			RUNNING.clear();
 			ZERO_LOCKED.clear();
+			BLIZZARDS.clear();
+			SEALS.clear();
 		});
 	}
 
@@ -108,14 +134,20 @@ final class FusedFrost {
 	/**
 	 * Blizzard: a storm {@code radius} round where it lands for {@code ticks}. Twice a second every
 	 * enemy in it is slowed (Slowness II) and chilled (brittle for Shatter, frost on its skin); once a
-	 * second it takes 1 damage.
+	 * second it takes 1 damage. Cast again on its own storm, the storm keeps going (up to three times its
+	 * length) instead of a second one howling on top of it.
 	 */
 	private static void blizzard(Cast cast, Cast.Hit hit, double radius, double power, int ticks) {
 		ServerLevel level = cast.level;
 		Vec3 centre = hit.self() ? cast.caster.position() : CastEngine.ground(level, hit.point().add(0, 0.5, 0));
+		if (renewed(BLIZZARDS, cast, centre, ticks)) {
+			return;
+		}
+		Area storm = new Area(cast, centre, ticks);
+		BLIZZARDS.add(storm);
 		DamageSource cold = frost(cast);
 		FusedFrostVfx.blizzardOpen(level, centre, radius, ticks);
-		repeat(cast, ticks, 5, tick -> {
+		lasting(cast, storm, BLIZZARDS, 5, tick -> {
 			FusedFrostVfx.blizzard(level, centre, radius, tick);
 			if (tick % 10 != 0) {
 				return;
@@ -168,18 +200,24 @@ final class FusedFrost {
 
 	/**
 	 * Rime Seal: a seal {@code radius} round where it lands, for 6 seconds. An enemy that stands on it
-	 * for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage; each only once.
+	 * for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage; each only once. Written
+	 * again on its own seal, the seal lasts longer (up to three times) instead of a second one lying on it.
 	 */
 	private static void rimeSeal(Cast cast, Cast.Hit hit, double radius, double power, double duration) {
 		ServerLevel level = cast.level;
 		Vec3 centre = hit.self() ? cast.caster.position() : CastEngine.ground(level, hit.point().add(0, 0.5, 0));
 		int ticks = Effects.ticks(6, duration);
+		if (renewed(SEALS, cast, centre, ticks)) {
+			return;
+		}
+		Area seal = new Area(cast, centre, ticks);
+		SEALS.add(seal);
 		DamageSource cold = frost(cast);
 		// When each enemy standing on it now was first seen there, and who it has already frozen.
 		Map<UUID, Integer> since = new HashMap<>();
 		Set<UUID> sealed = new HashSet<>();
 		FusedFrostVfx.rimeSealOpen(level, centre, radius, ticks);
-		repeat(cast, ticks, 5, tick -> {
+		lasting(cast, seal, SEALS, 5, tick -> {
 			if (tick % 10 == 0) {
 				FusedFrostVfx.rimeSeal(level, centre, radius, tick);
 			}
@@ -428,19 +466,43 @@ final class FusedFrost {
 	}
 
 	/**
-	 * Runs {@code step} every {@code every} ticks for {@code ticks} ticks (the first at once, the last
-	 * before the time is up), while the cast lasts, then {@code end}. What they deal is lingering damage,
-	 * which a Shield can block but not parry.
+	 * Whether this caster already has one of {@code areas} lying within 2 blocks of {@code at}: if so it's kept
+	 * going {@code ticks} longer (never past three times its length) instead of another being laid on it.
 	 */
-	private static void repeat(Cast cast, int ticks, int every, IntConsumer step, Runnable end) {
-		for (int tick : ExplorerNumbers.pulses(ticks, every)) {
-			Scheduler.later(Math.max(1, tick), Effects.carryContext(() -> {
-				if (cast.alive()) {
-					Effects.lingering(() -> step.accept(tick));
-				}
-			}));
+	private static boolean renewed(List<Area> areas, Cast cast, Vec3 at, int ticks) {
+		long now = cast.level.getGameTime();
+		// One whose loop was lost (a task that failed) is forgotten soon after its time.
+		areas.removeIf(a -> now > a.cap + 100);
+		UUID caster = cast.caster.getUUID();
+		for (Area a : areas) {
+			if (a.caster.equals(caster) && a.level == cast.level && a.centre.distanceToSqr(at) <= 4.0) {
+				a.until = Math.min(a.cap, Math.max(a.until, now + ticks));
+				return true;
+			}
 		}
-		Scheduler.later(ticks + 1, Effects.carryContext(() -> Effects.lingering(end)));
+		return false;
+	}
+
+	/**
+	 * Runs {@code step} every {@code every} ticks (the first at once) while {@code area} lasts and the cast does,
+	 * one step waiting at a time, then {@code end}, and forgets the area. What they deal is lingering damage, which a
+	 * Shield can block but not parry.
+	 */
+	private static void lasting(Cast cast, Area area, List<Area> areas, int every, IntConsumer step, Runnable end) {
+		int[] tick = {0};
+		Runnable[] next = new Runnable[1];
+		next[0] = Effects.carryContext(() -> {
+			if (!cast.alive() || area.level.getGameTime() >= area.until) {
+				areas.remove(area);
+				Effects.lingering(end);
+				return;
+			}
+			int at = tick[0];
+			Effects.lingering(() -> step.accept(at));
+			tick[0] += every;
+			Scheduler.later(every, next[0]);
+		});
+		Scheduler.later(1, next[0]);
 	}
 
 	private static String key(String rune, LivingEntity t, Cast cast) {

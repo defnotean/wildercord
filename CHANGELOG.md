@@ -45,6 +45,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Magma's pools and Tempest's strikes don't stack on one enemy.** Each lays one under (or on) every target, so an
   enemy bunched with others took every overlapping one: up to four burns a second from Magma, eight strikes from
   Tempest. Now each enemy takes your strongest one once (Magma once a second, Tempest once per strike).
+- **A Blizzard or Rime Seal cast again on its own spot keeps it going** (up to three times its length) instead of laying
+  a second one on top: a Zone, an Echo or a Split used to stack several storms biting at once, or seals each freezing
+  the same enemy, as Hellmouth, Sinkhole and Crimson Mist already didn't.
 - **Manatide gives 30 mana a drink at most.** Extend made it flow longer without limit (four Extends: about 480 mana for
   a 46-mana spell), and a stream that outlasted the minute between drinks ran alongside the next. It now flows 10
   seconds however it's extended, and only your newest drink flows.

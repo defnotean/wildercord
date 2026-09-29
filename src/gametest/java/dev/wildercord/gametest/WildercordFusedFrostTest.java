@@ -222,10 +222,16 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 		return found(untouchable, held, opened, locked, noIce, after);
 	}
 
-	/** Blizzard on a husk: for 4 seconds it's slowed (Slowness II) and bitten once a second; one 4.5 blocks off is left alone. */
+	/**
+	 * Blizzard on a husk: for 4 seconds it's slowed (Slowness II) and bitten once a second; one 4.5 blocks off is left
+	 * alone. Cast twice on the same spot (as a Zone or an Echo would), it's one storm, not two biting at once.
+	 */
 	private static List<String> blizzard(ClientGameTestContext context, TestSingleplayerContext world) {
 		int[] husks = on(world, player -> new int[] {husk(player, 0, 5), husk(player, 4.5, 5)});
-		String cast = on(world, player -> cast(player, Runes.BEAM, Runes.BLIZZARD));
+		String cast = on(world, player -> {
+			String first = cast(player, Runes.BEAM, Runes.BLIZZARD);
+			return first != null ? first : cast(player, Runes.BEAM, Runes.BLIZZARD);
+		});
 		if (cast != null) {
 			return List.of(cast);
 		}
@@ -246,7 +252,7 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 			}
 			float taken = in.getMaxHealth() - in.getHealth();
 			if (taken < 2.5F || taken > 5.0F) {
-				return "a husk in the storm should take about 1 a second for 4 seconds (took " + taken + ")";
+				return "a husk in the storm should take about 1 a second for 4 seconds, from one storm however often it's cast there (took " + taken + ")";
 			}
 			if (out.getHealth() < out.getMaxHealth() || out.hasEffect(MobEffects.SLOWNESS)) {
 				return "a husk 4.5 blocks away should be left alone";
@@ -334,7 +340,11 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 	 */
 	private static List<String> rimeSeal(ClientGameTestContext context, TestSingleplayerContext world) {
 		int first = on(world, player -> husk(player, 0, 5));
-		String cast = on(world, player -> cast(player, Runes.BEAM, Runes.RIME_SEAL));
+		// Written twice on the same spot (as a Zone or an Echo would): it's one seal, which freezes each enemy once.
+		String cast = on(world, player -> {
+			String one = cast(player, Runes.BEAM, Runes.RIME_SEAL);
+			return one != null ? one : cast(player, Runes.BEAM, Runes.RIME_SEAL);
+		});
 		if (cast != null) {
 			return List.of(cast);
 		}
@@ -354,7 +364,7 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 			}
 			float taken = husk.getMaxHealth() - husk.getHealth();
 			if (!has(husk, MobEffects.SLOWNESS, 6) || taken < 2.5F || taken > 4.0F) {
-				return "after a second on the seal the husk should be frozen and take 3 (took " + taken + ", effects "
+				return "after a second on the seal (one seal, however often it's written there) the husk should be frozen and take 3 (took " + taken + ", effects "
 					+ husk.getActiveEffectsMap().keySet() + ")";
 			}
 			after[0] = husk.getHealth();
