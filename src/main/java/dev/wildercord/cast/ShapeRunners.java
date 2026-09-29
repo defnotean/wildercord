@@ -584,6 +584,20 @@ final class ShapeRunners {
 		return cast.level.hasChunkAt(net.minecraft.core.BlockPos.containing(at));
 	}
 
+	/**
+	 * How far a line from {@code from} along {@code dir} reaches, up to {@code length}, before it would leave the loaded
+	 * world: a Sweep widened again and again is hundreds of blocks long, and tracing it there loaded the land it crossed.
+	 */
+	private static double loadedReach(Cast cast, Vec3 from, Vec3 dir, double length) {
+		for (double d = 4.0; d < length + 4.0; d += 4.0) {
+			double at = Math.min(d, length);
+			if (!loaded(cast, from.add(dir.scale(at)))) {
+				return Math.max(0.0, d - 4.0);
+			}
+		}
+		return length;
+	}
+
 	private static boolean missed(net.minecraft.world.phys.BlockHitResult block) {
 		return block.getType() == net.minecraft.world.phys.HitResult.Type.MISS;
 	}
@@ -934,8 +948,9 @@ final class ShapeRunners {
 				// From 50 degrees to one side across to 50 degrees to the other.
 				Vec3 dir = base.yRot((float) Math.toRadians(50 - 100.0 * step / ticks));
 				Vec3 origin = fromCaster ? caster.getEyePosition().subtract(0, 0.25, 0) : at.pos();
-				net.minecraft.world.phys.BlockHitResult block = clip(cast, origin, origin.add(dir.scale(length)));
-				Vec3 end = missed(block) ? origin.add(dir.scale(length)) : block.getLocation();
+				double reach = loadedReach(cast, origin, dir, length);
+				net.minecraft.world.phys.BlockHitResult block = clip(cast, origin, origin.add(dir.scale(reach)));
+				Vec3 end = missed(block) ? origin.add(dir.scale(reach)) : block.getLocation();
 				ExpansionVfx.sweepTick(cast.level, origin.add(dir.scale(0.8)), end, theme, step);
 				List<Entity> hits = along(cast, origin, end, 0.5, hit);
 				if (!hits.isEmpty()) {

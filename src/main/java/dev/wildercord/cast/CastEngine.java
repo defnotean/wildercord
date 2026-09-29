@@ -559,6 +559,10 @@ public final class CastEngine {
 
 	/** Drops a point onto the ground below it (up to 16 blocks). */
 	static Vec3 ground(ServerLevel level, Vec3 pos) {
+		if (!level.hasChunkAt(BlockPos.containing(pos))) {
+			// Never load the world to find the ground (a Rain widened again and again reaches far past it).
+			return pos;
+		}
 		BlockHitResult hit = level.clip(new ClipContext(pos.add(0, 0.5, 0), pos.add(0, -16, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
 		return hit.getType() == HitResult.Type.MISS ? pos : hit.getLocation();
 	}
