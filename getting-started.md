@@ -70,8 +70,9 @@ The first time you put on a Cord (any Cord), it hums and you're told:
 You now know three runes, **Self**, **Bolt** and **Push**, your mana is full, and your first spell is
 already threaded for you: `Bolt · Push`, a bolt that knocks back whatever it hits.
 
-Your Cord also shows on your right wrist for everyone to see, with a glowing bead for each rune of the spell
-you have ready. The Cord stays with you when you die: it's never dropped, and neither is anything you've
+Your Cord also shows on your right wrist for everyone to see, with a bead for each rune of the spell you have
+ready. The beads glow for a couple of seconds when you put the Cord on, and light up again whenever you charge
+or cast. The Cord stays with you when you die: it's never dropped, and neither is anything you've
 learned or threaded.
 
 ## Step 4: cast your first spell

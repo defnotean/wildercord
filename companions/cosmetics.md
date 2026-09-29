@@ -43,7 +43,8 @@ The beads are what your Cord is strung with.
 | **Obsidian** | Beads of volcanic glass, dark as night, their light burning brightest against it | Form your **4th Heart Circle** |
 | **Bone** | Carved bone beads, a trophy from a Runebound | Earn the **Runebreaker** feat: slay a [Runebound]({{ '/world/runebound/' | relative_url }}) |
 
-Glass beads glow all over in their rune's colour. The other materials keep their own colour, with a glowing core
+When the beads glow (for a couple of seconds after you put the Cord on, and while you charge and cast), glass
+beads glow all over in their rune's colour, and the other materials keep their own colour with a glowing core
 showing through them.
 
 ## Glow
