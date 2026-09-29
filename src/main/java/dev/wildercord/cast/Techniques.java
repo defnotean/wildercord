@@ -50,7 +50,11 @@ final class Techniques {
 	private static final Map<UUID, Long> WEIGHED = new HashMap<>();
 	private static final Map<UUID, Long> BLACKFLAME = new HashMap<>();
 	private static final Map<UUID, Integer> BIRDS = new HashMap<>();
-	private static final int MAX_BIRDS = 3;
+	private static final int MAX_BIRDS = 2;
+	/** A Thunderbird dives every this many ticks, on a spot it marked this many ticks before, for this much. */
+	static final int BIRD_EVERY = 40;
+	static final int BIRD_WARNING = 10;
+	static final double BIRD_DAMAGE = 4.5;
 	/** Rampart blocks still standing, and what they replaced. */
 	private static final Map<GlobalPos, BlockState> RAMPART = new HashMap<>();
 	private static final BlockState RAMPART_BLOCK = Blocks.PACKED_MUD.defaultBlockState();
@@ -149,13 +153,22 @@ final class Techniques {
 	static void aftershock(Cast cast, LivingEntity t, double power) {
 		TechniqueVfx.aftershock(cast.level, t, false);
 		Effects.hurt(cast, t, strike(cast), 5 * power);
-		Scheduler.later(10, () -> {
-			if (cast.alive() && t.isAlive() && t.level() == cast.level) {
-				TechniqueVfx.aftershock(cast.level, t, true);
-				Effects.hurt(cast, t, strike(cast), 5 * power);
-				Effects.push(t, new Vec3(0, 0.35, 0));
+		// The ground remembers the blow: half a second later the same spot is struck again, hitting whoever stands
+		// there (the target if it stayed, its neighbours too). Step aside and it misses.
+		Vec3 spot = t.position();
+		Scheduler.later(10, Effects.carryContext(() -> {
+			if (!cast.alive()) {
+				return;
 			}
-		});
+			TechniqueVfx.aftershock(cast.level, t, true);
+			for (Entity e : cast.level.getEntities((Entity) null, new AABB(spot, spot).inflate(1.5, 1.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
+				LivingEntity other = (LivingEntity) e;
+				if (other.position().distanceTo(spot) <= 1.5 + other.getBbWidth() / 2) {
+					Effects.lingering(() -> Effects.hurt(cast, other, strike(cast), 5 * power));
+					Effects.push(other, new Vec3(0, 0.35, 0));
+				}
+			}
+		}));
 	}
 
 	/** Resonance: marks the target; every other marked enemy nearby feels half the hit. */
@@ -176,12 +189,40 @@ final class Techniques {
 		}
 	}
 
-	/** Ripple: sunlight damage, tripled on undead, that heals the caster for a third of it. */
+	/**
+	 * Ripple: sunlight damage, doubled on undead, and you heal a quarter of what it really took (at most 6). Half a second
+	 * later the ripple runs out from the target: 3 to every other enemy within 2.5 blocks, and you heal 1 for each (3 at most).
+	 */
 	static void ripple(Cast cast, LivingEntity t, double power) {
-		double amount = 6 * power * (t.isInvertedHealAndHarm() ? 3.0 : 1.0) * Reactions.storm(cast, t);
+		double amount = 6 * power * (t.isInvertedHealAndHarm() ? 2.0 : 1.0) * Reactions.storm(cast, t);
 		TechniqueVfx.ripple(cast.level, t);
+		float before = t.getHealth();
 		Effects.hurt(cast, t, magic(cast), amount);
-		cast.caster.heal((float) Math.min(10.0, amount / 3.0));
+		float taken = Math.max(0.0F, before - Math.max(0.0F, t.getHealth()));
+		if (taken > 0 && cast.caster.isAlive()) {
+			cast.caster.heal(Math.min(6.0F, taken / 4.0F));
+		}
+		Vec3 centre = t.getBoundingBox().getCenter();
+		Scheduler.later(8, Effects.carryContext(() -> {
+			if (!cast.alive()) {
+				return;
+			}
+			TechniqueVfx.ripple(cast.level, t);
+			int healed = 0;
+			for (Entity e : cast.level.getEntities(t, new net.minecraft.world.phys.AABB(centre, centre).inflate(2.5),
+					e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e))) {
+				LivingEntity other = (LivingEntity) e;
+				if (other.getBoundingBox().getCenter().distanceTo(centre) > 2.5 + other.getBbWidth() / 2) {
+					continue;
+				}
+				float was = other.getHealth();
+				Effects.lingering(() -> Effects.hurt(cast, other, magic(cast), 3 * power));
+				if (healed < 3 && was > other.getHealth() && cast.caster.isAlive()) {
+					cast.caster.heal(1.0F);
+					healed++;
+				}
+			}
+		}));
 	}
 
 	/** Primer: the target becomes a bomb that goes off two seconds later. */
@@ -401,6 +442,10 @@ final class Techniques {
 				} else if (d > 2.0) {
 					Vec3 back = anchor.subtract(t.position()).normalize().scale(Math.min(1.2, 0.3 + (d - 2.0) * 0.4));
 					setMotion(t, new Vec3(back.x, Math.max(t.getDeltaMovement().y, back.y), back.z));
+					// The chain bites: 2 for a yank, at most once a second.
+					if (tick % 20 == 0) {
+						Effects.lingering(() -> Effects.hurt(cast, t, magic(cast), 2));
+					}
 					if (tick % 6 == 0) {
 						Fx.sound(cast.level, t.position(), SoundEvents.CHAIN_HIT, 0.7F, 0.8F);
 					}
@@ -762,6 +807,7 @@ final class Techniques {
 		BIRDS.merge(id, 1, Integer::sum);
 		double phase = cast.level.getRandom().nextDouble() * Math.PI * 2;
 		Vec3[] bird = {caster.position().add(0, 3.3, 0)};
+		Vec3[] marked = {null};
 		Fx.sound(cast.level, caster.position(), SoundEvents.PHANTOM_FLAP, 1.0F, 1.4F);
 		for (int t = 0; t <= ticks; t += 2) {
 			int tick = t;
@@ -772,13 +818,31 @@ final class Techniques {
 				double a = phase + tick * 0.12;
 				bird[0] = caster.position().add(Math.cos(a) * 2.6, 2.7 + Math.sin(tick * 0.25) * 0.15, Math.sin(a) * 2.6);
 				TechniqueVfx.thunderbird(cast.level, bird[0], a, tick);
-				if (tick == 0 || tick % 30 != 0) {
+				if (tick == 0) {
 					return;
 				}
-				LivingEntity target = ShapeRunners.nearestEnemy(cast, caster.position().add(0, 1, 0), 12.0, caster.getLastHurtMob());
-				if (target != null) {
-					TechniqueVfx.birdStrike(cast.level, bird[0], target.getBoundingBox().getCenter());
-					Effects.hurt(cast, target, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 5 * power * Reactions.storm(cast, target));
+				if (tick % BIRD_EVERY == BIRD_EVERY - BIRD_WARNING) {
+					// The bird picks the enemy you last hit (else the nearest) and marks the spot it will dive on.
+					LivingEntity pick = ShapeRunners.nearestEnemy(cast, caster.position().add(0, 1, 0), 12.0, caster.getLastHurtMob());
+					marked[0] = pick == null ? null : pick.position();
+					if (marked[0] != null) {
+						ElementFx.groundRing(cast.level, marked[0], ElementFx.STORM.primary(), 1.4, 0.4, 0.05, BIRD_WARNING);
+					}
+					return;
+				}
+				if (tick % BIRD_EVERY != 0 || marked[0] == null) {
+					return;
+				}
+				// The dive lands on the marked spot: an enemy that stayed is struck, one that stepped out is not.
+				Vec3 spot = marked[0];
+				marked[0] = null;
+				TechniqueVfx.birdStrike(cast.level, bird[0], spot.add(0, 1, 0));
+				for (Entity e : cast.level.getEntities((Entity) null, new AABB(spot, spot).inflate(1.5, 2.0, 1.5), e -> Targets.canHarm(caster, e))) {
+					LivingEntity target = (LivingEntity) e;
+					if (target.position().distanceTo(spot) > 1.5 + target.getBbWidth() / 2) {
+						continue;
+					}
+					Effects.hurt(cast, target, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), BIRD_DAMAGE * power * Reactions.storm(cast, target));
 					target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 2, false, false));
 				}
 			});

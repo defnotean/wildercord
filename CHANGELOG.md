@@ -4,6 +4,21 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Fixed
+- **Lightning no longer multiplies on a crowd.** Every strike hurt everything near it, so enemies packed together took a
+  strike for each neighbour (three took 108 between them, five 300). Now each enemy takes the strongest strike of a cast
+  once: its own 12, or half of that from a strike aimed at a neighbour. Its text also says "slows", which is what it does.
+- **Stoneform answers blows, not fire.** Its aftershock fired on any damage, so burning, poison or a fall set it off
+  every half second; now only a blow from an attacker does, at most once a second.
+- **Ripple heals what it really took**, not what it computed: a target that was protected or invulnerable gave you the
+  health anyway.
+- **Earth's ground-heave no longer lifts what should sink.** Mire, Sinkhole and Fossilize hopped their targets up as they
+  cast, and Tremor, Monolith, Thunderquake, Magma, Sandstorm, Basalt Surge and Pelt each drew a second crack under their
+  own; they keep only their own show now.
+- **Excavate no longer shakes the screen** (it played Tremor's), and shows nothing when it mines nothing. **Thunderclap's
+  shake** is gentler and only comes when it hits something.
+- **Shock's second victim** takes part in Conduct and Overload like the first.
+
 ### Added
 - **Casting gear slots.** Your inventory has three new slots for casting gear: **Staff** (any staff, a greater one
   too), **Focus** (any focus) and **Tome** (the Tome of the Fifth Page). A piece in its slot works with nothing in
@@ -21,6 +36,31 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - For add-on makers: `api.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` (API 1.1).
 
 ### Changed
+- **Thunderbird asks for aim.** Two birds at most, for 12 seconds; every 2 seconds it marks the enemy you last hit (else
+  the nearest) and dives on that spot for 4.5, so an enemy that steps aside is missed. It used to strike the nearest enemy
+  every 1.5 seconds for 5, three birds at once, for free.
+- **Thunderclap is the stun ring.** A flash and, a fifth of a second later, the crack: 5 damage, half a second's stun and
+  a forgotten target, with a short throw instead of a long one (Repel throws).
+- **Ripple** does double against undead (it was triple), heals a quarter of what it took, and ripples out half a second
+  later to hit its neighbours for 3 and heal you 1 each (3 at most).
+- **Stoneskin makes you a step slower** (Slowness I): stone is heavy, and permanent 40% off is no longer free as a passive.
+- **Stoneform** answers only blows from attackers, once a second, for 3.5. **Stormheart** ignores chip blows under 2 and
+  strikes for 5.
+- **Shock's arc finds a conductor first**: a wet enemy, or one in two or more pieces of metal armour, within 5.
+- **Jolt cuts off a caster mid-charge.**
+- **Tempest** throws, then strikes a second time where the target comes down (4, on it and on whatever it fell among).
+  **Plasma** does 10 and ionises: the next storm damage on the target conducts as if it were wet. **Surge**'s blows arc
+  on to a neighbour for 2 (four times). **Riftbolt** does 7. **Stormweave** does 4 and 1 more for every other target, and
+  a target alone takes 2 more. **Thunderhead**'s rain soaks whatever it strikes, so its bolts conduct (2 a strike, 3 wet).
+  **Frostwire** does 5, 7 to one frozen solid.
+- **Aftershock's second blow lands on the spot**, half a second later: whoever stands there takes it, and a target that
+  stepped aside does not. **Stalactite** falls on the spot it marked and can be dodged (30% more on a bare head, was 50%).
+  **Tusk Charge** hits harder the longer the run-up (3, and 0.8 more a block, 9 at most). **Sandstorm** chokes enemy
+  arrows and spells that fly into it. **Magma**'s pool widens as it burns. **Shackle**'s chain bites for 2 when it
+  yanks. **Pelt** shoves hard. **Monolith** does 8 and 3 more where the target lands; **Sinkhole**'s crush is 6.
+  **Geode** leaves whatever strikes the ally cracked (every spell hits it 20% harder for 5 seconds), and **Fossilize**'s
+  stone stage is brittle in the same way.
+
 - **Passives hold two runes.** A passive used to hold up to five, so two of them could keep ten runes running at once,
   which was a lot of free power. Each passive now holds **two runes**, whatever your Cord, and you still have the two
   slots (1st and 5th Heart Circle): at most four runes are ever active. An effect before any shape is on Self already,

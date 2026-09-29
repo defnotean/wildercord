@@ -55,7 +55,9 @@ public final class Reactions {
 		/** Left by void's curses and darkness (Hex, Blind, Wither...): life damage on it sets off Blight. */
 		SHADOWED(ReactionRules.SHADOWED_TICKS),
 		/** Left by blood's cuts (Bleed, Rend, Cleave...): wind damage on it sets off Rupture. */
-		BLEEDING(ReactionRules.BLEEDING_TICKS);
+		BLEEDING(ReactionRules.BLEEDING_TICKS),
+		/** Left by Plasma: counts as wet for Conduct (and only for Conduct: fire is not dulled, Unweave does not count it). */
+		IONISED(100);
 
 		final int ticks;
 
@@ -160,7 +162,7 @@ public final class Reactions {
 
 	/** Conduct: storm on a wet target arcs on to two more enemies. */
 	private static double conduct(Cast cast, LivingEntity target) {
-		if (!WorldMagic.wet(target)) {
+		if (!WorldMagic.wet(target) && !has(target, Mark.IONISED)) {
 			return 1.0;
 		}
 		ServerLevel level = cast.level;

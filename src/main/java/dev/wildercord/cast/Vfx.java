@@ -1043,7 +1043,14 @@ public final class Vfx {
 
 	/** Thunderclap: a white flare, a shockwave of light and forks of lightning ripping out over the ground, a puff of thundercloud. */
 	public static void thunderclap(ServerLevel level, Vec3 point, double radius) {
-		ScreenFx.shake(level, point, 0.55F, radius * 3 + 10);
+		thunderclap(level, point, radius, true);
+	}
+
+	/** As above; {@code shake} is false when the clap hit nothing (the ground rumbles for nobody). */
+	public static void thunderclap(ServerLevel level, Vec3 point, double radius, boolean shake) {
+		if (shake) {
+			ScreenFx.shake(level, point, 0.3F, radius * 3 + 10);
+		}
 		Vec3 ground = point.add(0, 0.2, 0);
 		Sigils.flash(level, point.add(0, 1, 0), ElementFx.STORM.secondary(), 2.6F);
 		ElementFx.groundRing(level, point, ElementFx.STORM.primary(), 0.3, radius * 1.3, 0.1, 8);

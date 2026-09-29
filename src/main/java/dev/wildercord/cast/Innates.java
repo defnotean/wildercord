@@ -171,9 +171,12 @@ public final class Innates {
 			if (echoing) {
 				return;
 			}
+			SurgeArcs.onBlow(level, entity, source, blocked);
 			shareThread(level, entity, damage);
-			stoneAftershock(level, entity, now);
-			stormStrike(level, entity, source, now);
+			if (source.getEntity() instanceof LivingEntity blow && blow != entity) {
+				stoneAftershock(level, entity, now);
+			}
+			stormStrike(level, entity, source, now, damage);
 			fortuneMelee(level, entity, source, damage);
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
@@ -200,6 +203,7 @@ public final class Innates {
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			THREADS.clear();
+			SurgeArcs.clear();
 			THREAD_MEMBERS.clear();
 			KINDLING.clear();
 			TWIN.clear();
@@ -561,7 +565,7 @@ public final class Innates {
 
 	private static void stoneAftershock(ServerLevel level, LivingEntity entity, long now) {
 		Long until = STONEFORM.get(entity.getUUID());
-		if (until == null || now > until || now - STONE_LAST.getOrDefault(entity.getUUID(), 0L) < 10) {
+		if (until == null || now > until || now - STONE_LAST.getOrDefault(entity.getUUID(), 0L) < 20) {
 			return;
 		}
 		STONE_LAST.put(entity.getUUID(), now);
@@ -578,7 +582,7 @@ public final class Innates {
 			Effects.asElement("earth", () -> {
 				for (Entity e : level.getEntities(entity, entity.getBoundingBox().inflate(3), e -> e != side && Targets.canHarm(side, e))) {
 					LivingEntity t = (LivingEntity) e;
-					Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3 * power);
+					Effects.hurt(cast, t, level.damageSources().indirectMagic(entity, entity), 3.5 * power);
 					Vec3 away = t.position().subtract(entity.position());
 					Effects.push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : away.normalize()).scale(0.8).add(0, 0.35, 0));
 				}
@@ -588,10 +592,13 @@ public final class Innates {
 		}
 	}
 
-	private static void stormStrike(ServerLevel level, LivingEntity entity, DamageSource source, long now) {
+	/** Blows under this (chip damage) don't call the storm down. */
+	static final float STORM_MIN = 2.0F;
+
+	private static void stormStrike(ServerLevel level, LivingEntity entity, DamageSource source, long now, float damage) {
 		Long until = STORMHEART.get(entity.getUUID());
 		if (until == null || now > until || !(source.getEntity() instanceof LivingEntity attacker) || attacker == entity || !attacker.isAlive()
-				|| now - STORM_LAST.getOrDefault(entity.getUUID(), 0L) < 20) {
+				|| now - STORM_LAST.getOrDefault(entity.getUUID(), 0L) < 20 || damage < STORM_MIN) {
 			return;
 		}
 		// Never a friend (a pet with it fights for its owner, as in Stoneform).
@@ -612,7 +619,7 @@ public final class Innates {
 			// As spell damage, like Stoneform's aftershock: a player it strikes takes it at the server's pvp scale, and a Shield
 			// meets it. Storm damage, whatever the blow it answers was.
 			Effects.asElement("storm", () -> Effects.hurt(new Cast(entity), attacker, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, entity),
-				6 * scale(entity)));
+				5 * scale(entity)));
 		} finally {
 			echoing = false;
 		}
