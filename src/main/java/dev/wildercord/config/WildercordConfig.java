@@ -314,7 +314,66 @@ public record WildercordConfig(
 		features.addProperty("creature_affinities", creatureAffinities);
 		features.addProperty("elemental_climate", elementalClimate);
 		root.add("features", features);
+
+		JsonObject travelSection = new JsonObject();
+		travelSection.addProperty("_about", "The travel commands (/home, /warp, /waypoint, /tpa, /back, /spawn, /rtp). Times are in seconds; operators skip warmups and cooldowns.");
+		travelSection.addProperty("enabled", travel.enabled());
+		travelSection.addProperty("max_homes", travel.maxHomes());
+		travelSection.addProperty("warmup_seconds", travel.warmupSeconds());
+		travelSection.addProperty("cooldown_seconds", travel.cooldownSeconds());
+		travelSection.addProperty("rtp_cooldown_seconds", travel.rtpCooldownSeconds());
+		travelSection.addProperty("rtp_radius", travel.rtpRadius());
+		travelSection.addProperty("tpa_timeout_seconds", travel.tpaTimeoutSeconds());
+		root.add("travel", travelSection);
 		return GSON.toJson(root) + "\n";
+	}
+
+	/**
+	 * The file's text with every setting it lacks added at its default, so a file written by an older
+	 * version shows the newer settings too; empty when nothing is missing, or when the file isn't
+	 * settings at all (broken JSON is left for its owner to fix). Nothing already there changes: an
+	 * owner's values, unknown keys and notes all stay. A section that gains a setting gets its current
+	 * {@code _about} as well, since that describes the new setting.
+	 */
+	public static java.util.Optional<String> addMissing(String json) {
+		JsonObject root;
+		try {
+			JsonElement element = JsonParser.parseString(json);
+			if (!element.isJsonObject()) {
+				return java.util.Optional.empty();
+			}
+			root = element.getAsJsonObject();
+		} catch (JsonParseException e) {
+			return java.util.Optional.empty();
+		}
+		JsonObject defaults = JsonParser.parseString(DEFAULTS.toJson()).getAsJsonObject();
+		boolean added = false;
+		for (Map.Entry<String, Set<String>> section : KEYS.entrySet()) {
+			JsonObject fresh = defaults.getAsJsonObject(section.getKey());
+			JsonElement have = root.get(section.getKey());
+			if (have == null) {
+				root.add(section.getKey(), fresh);
+				added = true;
+				continue;
+			}
+			if (!have.isJsonObject()) {
+				// Already warned about; the owner's file is theirs to fix.
+				continue;
+			}
+			JsonObject theirs = have.getAsJsonObject();
+			boolean grew = false;
+			for (String key : fresh.keySet()) {
+				if (section.getValue().contains(key) && !theirs.has(key)) {
+					theirs.add(key, fresh.get(key));
+					grew = true;
+				}
+			}
+			if (grew && fresh.has("_about")) {
+				theirs.add("_about", fresh.get("_about"));
+			}
+			added |= grew;
+		}
+		return added ? java.util.Optional.of(GSON.toJson(root) + "\n") : java.util.Optional.empty();
 	}
 
 	// ------------------------------------------------------------------ derived

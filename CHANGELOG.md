@@ -2,6 +2,13 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+- **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
+  but never written), and a file written by an older version gains any settings added since, at their defaults, the
+  next time the server loads it. Everything already in the file stays as it was.
+
 ## [0.4.2-alpha] - 2026-09-28
 
 Travel commands for servers, six new element reactions, creature affinities and elemental climate, and a bug

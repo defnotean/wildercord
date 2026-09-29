@@ -117,8 +117,7 @@ motes, to that player only (`sendParticles(player, ..., overrideLimiter = true, 
 | `travel.rtp_radius` | 5000 | 16-1000000 |
 | `travel.tpa_timeout_seconds` | 60 | 5-3600 |
 
-A config file written before the section existed reads as these defaults (the file isn't rewritten; add
-the section by hand, or delete the file to have it written again with every key).
+A config file written before the section existed reads as these defaults, and gains the section, at its defaults, the next time the server loads it (`WildercordConfig.addMissing`).
 
 ## Tests
 

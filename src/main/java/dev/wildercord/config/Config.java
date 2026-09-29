@@ -88,7 +88,14 @@ public final class Config {
 				Files.writeString(path, WildercordConfig.DEFAULTS.toJson(), StandardCharsets.UTF_8);
 				Wildercord.LOGGER.info("Wrote the default config to {}", path);
 			}
-			parsed = WildercordConfig.parse(Files.readString(path, StandardCharsets.UTF_8));
+			String text = Files.readString(path, StandardCharsets.UTF_8);
+			parsed = WildercordConfig.parse(text);
+			// A file from an older version gains the settings added since, at their defaults, so they can be seen and changed.
+			java.util.Optional<String> grown = WildercordConfig.addMissing(text);
+			if (grown.isPresent()) {
+				Files.writeString(path, grown.get(), StandardCharsets.UTF_8);
+				Wildercord.LOGGER.info("Added the newer settings to {} at their defaults", path);
+			}
 		} catch (IOException e) {
 			Wildercord.LOGGER.warn("Couldn't read {}: {}; using the defaults", path, e.toString());
 			parsed = new WildercordConfig.Parsed(WildercordConfig.DEFAULTS, List.of("couldn't read the file (" + e.getMessage() + "); using the defaults"));

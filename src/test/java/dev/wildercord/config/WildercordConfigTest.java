@@ -2,6 +2,8 @@ package dev.wildercord.config;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class WildercordConfigTest {
@@ -120,6 +122,35 @@ class WildercordConfigTest {
 		assertEquals(30, t.cooldownSeconds());
 		// Two out of range, one unknown key.
 		assertEquals(3, parsed.warnings().size(), parsed.warnings().toString());
+	}
+
+	@Test
+	void theWrittenFileKeepsChangedTravelSettings() {
+		WildercordConfig changed = WildercordConfig.parse(
+			"{\"travel\": {\"enabled\": false, \"max_homes\": 7, \"warmup_seconds\": 5, \"cooldown_seconds\": 10, \"rtp_cooldown_seconds\": 60, \"rtp_radius\": 2000, \"tpa_timeout_seconds\": 90}}").config();
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config());
+		assertTrue(D.toJson().contains("\"travel\""), "a fresh file should list the travel settings");
+	}
+
+	@Test
+	void anOlderFileGainsTheNewerSettingsAndKeepsItsOwn() {
+		// Written before the travel section and the affinity switches, with two settings changed and a note of the owner's.
+		String old = "{\"mana\": {\"regen_multiplier\": 2.5}, \"features\": {\"duels\": false, \"_note\": \"no duels here\"}}";
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(grown);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(2.5, parsed.config().manaRegenMultiplier(), 1e-9);
+		assertFalse(parsed.config().duels());
+		assertTrue(grown.contains("\"no duels here\""));
+		for (String key : List.of("\"creature_affinities\"", "\"elemental_climate\"", "\"travel\"", "\"max_homes\"", "\"cost_multiplier\"", "\"casting\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		assertEquals(WildercordConfig.TravelSettings.DEFAULTS, parsed.config().travel());
+		// Once complete, there's nothing more to add; a broken file is left alone.
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty());
+		assertTrue(WildercordConfig.addMissing(D.toJson()).isEmpty());
+		assertTrue(WildercordConfig.addMissing("{ not json").isEmpty());
+		assertTrue(WildercordConfig.addMissing("[1, 2]").isEmpty());
 	}
 
 	@Test
