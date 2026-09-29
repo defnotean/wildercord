@@ -128,8 +128,11 @@ public final class Config {
 
 	public static void init() {
 		PayloadTypeRegistry.clientboundPlay().register(Sync.TYPE, Sync.CODEC);
-		// Read (or write) the file as the server starts, so its warnings show up at start and not mid-game.
-		ServerLifecycleEvents.SERVER_STARTING.register(server -> load());
+		// Read (or write) the file as the server starts, so its warnings show up at start and not mid-game. Loot
+		// tables load (and read it) before this, so it's read once per start, fresh: a stopped server forgets it,
+		// and the next world in the same game reads the file as it is then.
+		ServerLifecycleEvents.SERVER_STARTING.register(server -> get());
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> current = null);
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(Sync.of(get())));
 	}
 }
