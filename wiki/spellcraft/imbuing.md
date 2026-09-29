@@ -1,7 +1,7 @@
 ---
 title: Imbuing and Glyphs
 parent: Spellcraft
-nav_order: 9
+nav_order: 10
 ---
 
 # Imbuing and glyphs

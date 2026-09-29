@@ -127,6 +127,7 @@ seconds after it rises, and it starts blinking after about 10.
 | **Can't be hurt** | While it rewrites its Cord (2.5 seconds, twice a fight) |
 | **Boss bar** | Purple, darkens the sky, and names the spell it's casting: *The Archivist · casting Shock Rain* |
 | **Spell power** | 10% more than a Runebound's: 66% of normal on Easy, 88% on Normal, 110% on Hard |
+| **Affinities** | Weak to **void** (+50%), resists **arcane** (half). See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |
 
 ### How it fights
 
@@ -186,8 +187,10 @@ begins at once, so you fight all three phases.
 
 ### Strategy
 
-- **Leave fire at home.** It's immune to burning. Frost, storm, void, arcane and the rest all work, and blasts like
-  Explode still land.
+- **Void unwrites it.** It's weak to void (Sonic Boom, Hollow, Blackspark) and resists arcane: Harm, its own
+  favourite, does half. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}).
+- **Leave fire at home.** It's immune to burning. Frost, storm, earth and the rest all work (arcane only half), and
+  blasts like Explode still land.
 - **Fight at range.** It blinks away whenever you close in, so bolts, beams and lances are worth more than Touch or
   Burst. Its own best spells (Sonic Boom Beam, Dismantle Barrage, the Blitz) want you close or in a line.
 - **Watch the boss bar.** It names every spell 1.4 seconds before it lands. Step out of a Zone, sidestep a bolt, don't

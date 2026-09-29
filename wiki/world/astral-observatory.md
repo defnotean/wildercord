@@ -94,6 +94,7 @@ about 3 seconds later.
 | **Casts from** | Up to 32 blocks away |
 | **Boss bar** | Purple, darkens the sky. Between spells it shows its shield: *shield up (20 mana)*, *loosing star shards*, or *shield broken!* |
 | **Spell power** | 10% more than a Runebound's: 66% of normal on Easy, 88% on Normal, 110% on Hard |
+| **Affinities** | Weak to **life** (+50%), resists **void** (half). In the End your void spells hit 20% harder, which doesn't make up for its resistance. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |
 
 ### Its trick: the shard shield
 
@@ -181,6 +182,9 @@ No blow carries it past the start of its next phase.
 
 ### Strategy
 
+- **Life magic once its shield is down.** It's weak to life (Vinelash, Moonpetal, Venom's hit, Rootsnare) and resists
+  void, whatever the End's climate adds to it. A spell heavy enough to break its shield goes through: make its effect
+  one of life's. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}).
 - **Bring a heavy spell for each phase.** You need a spell costing more than 20, then 28, then 36 mana:
 
   | Spell | Full cost | Breaks the shield in |

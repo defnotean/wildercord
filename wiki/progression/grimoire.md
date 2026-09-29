@@ -37,6 +37,8 @@ From top to bottom:
 | **Fusions** (of 55) | Each fusion you've made at the Fusion Altar, as *"Firestorm (Fire + Wind)"*. The rest show as **??? + ???** with one of their elements as a hint. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}). |
 | **Attunements** (of 15) | Each rune of the land you've attuned, with its land, and whether the land is resting or ready to give it again. The rest show as riddles pointing to where they wait. See [Runes of the World]({{ '/world/runes-of-the-world/' | relative_url }}). |
 | **Runes of the world** (of 51) | Every place with runes found only there, and which of its runes you know. Unknown ones show as **???** with their tier and family. |
+| **Where you stand** | What the [elemental climate]({{ '/spellcraft/affinities/' | relative_url }}#elemental-climate) is doing where you are right now: *"The Nether: Fire +20%, Frost -25%"*, or that nothing here favours or hinders an element. |
+| **Bestiary** | Every kind of creature your spells have struck that has an affinity, as *"Blaze · weak: Frost · resists: Fire (immune), ?"*: the weaknesses and resistances you've found, and a **?** for each still to find. Hover a creature for what each one does. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}). |
 | **Feats** (of 35) | Every feat, ✔ once earned. Hover one for how it's earned. |
 
 While the Grimoire page is open, the magic circles of the secret spells you've found turn beside the
@@ -56,9 +58,11 @@ condenses mana toward your next Heart Circle:
 | A secret spell | *New in your Grimoire:* its name (and its name fills your screen) | 400 |
 | Tempered, Starbreaker or Low Tide (a dungeon boss) | *New in your Grimoire:* the feat | 1,500 |
 | The Last Page (the Archivist) | *New in your Grimoire: The Last Page* | 2,000 |
+| A creature's weakness, found | *New in your Grimoire: Blaze: weak to Frost* | 25 |
 | A riddle from a Torn Page | *A riddle, found: See the Grimoire* | nothing |
 
-A discovery only counts once. Many of them also unlock an [advancement]({{ '/progression/advancements/' | relative_url }}).
+A creature met, or a resistance found, goes into the Bestiary quietly, with no toast and no mana: the callout
+over the creature already told you. A discovery only counts once. Many of them also unlock an [advancement]({{ '/progression/advancements/' | relative_url }}).
 
 ## Every feat
 

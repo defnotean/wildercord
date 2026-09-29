@@ -99,6 +99,7 @@ comes about 3 seconds later.
 | **Moves** | Walks toward you, slowly. It never strays more than 22 blocks from its altar (it's pulled back) |
 | **Boss bar** | Red, darkens the sky, names the spell it's casting, and says *cracked open!* while its armour is open |
 | **Spell power** | 10% more than a Runebound's: 66% of normal on Easy, 88% on Normal, 110% on Hard |
+| **Affinities** | Weak to **frost** (+50%) and resists **fire** (half), on top of its armour; a reaction set off on it breaks through the resistance, so a Shatter still lands in full. In the Nether your fire burns 20% hotter and your frost 25% softer. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |
 
 ### Its trick: armour only a reaction breaks
 
@@ -164,6 +165,10 @@ begins at once.
 
 ### Strategy
 
+- **Frost into the crack.** It's weak to frost: while its plates are cracked open, a frost spell hits it 50% harder
+  (a little less in the Nether's climate, still ahead). Plain fire does half of its tenth, but Shatter, Wildfire and
+  Implode land in full: a reaction breaks through its resistance. Its keepers are wither skeletons, weak to life (the
+  Fire Bolt one to frost too; the Frost Arc one resists frost). See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}).
 - **Bring a reaction you can cast in one spell.** The easiest is the Warden's own: `Bolt · Frost · Delay · Bolt · Fire`.
   The frost half does a tenth; the fire half sets off **Shatter** for full damage and 60% more, and cracks it open.
   Some others that work on it:

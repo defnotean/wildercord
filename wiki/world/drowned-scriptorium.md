@@ -97,6 +97,7 @@ water. The Tide Scribe rises from its core."* Its first spell comes about 3 seco
 | **Moves** | It floats. With the pit dry it drifts low and slow in a circle 4.5 blocks from the core; flooded, it swims wide, quick circles 6.5 blocks out, down in the water. It never strays more than 16 blocks from the core |
 | **Boss bar** | Blue, darkens the sky. Between spells it tells you the tide: *the tide is rising*, *the arena is flooded*, *the tide is going out*, or *stranded in the ice!* |
 | **Spell power** | 10% more than a Runebound's: 66% of normal on Easy, 88% on Normal, 110% on Hard |
+| **Affinities** | Weak to **life** (+50%: it's a drowned sorcerer), resists **frost** (half, though frost still freezes its flood and strands it). Its real weakness is still a storm through its own flood. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}) |
 
 ### Its trick: the tide
 
@@ -172,6 +173,9 @@ No blow carries it past the start of its next phase.
 
 ### Strategy
 
+- **Life magic when it's dry.** Between floods it's only a sorcerer, and a drowned one: life magic (Vinelash,
+  Moonpetal, Venom's hit) hits it 50% harder. Frost's own damage does half to it: freeze the water with it, don't
+  count on the hit. See [Creature Affinities]({{ '/spellcraft/affinities/' | relative_url }}).
 - **Get out of the water when the tide comes in.** Stand on the balcony or on one of the six pedestals. Up there, its
   shocks through the flood can't reach you, and you can shock the water freely.
 - **Then shock the flood.** Any storm spell landing in the water, or hitting the Scribe while it swims, does five times

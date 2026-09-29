@@ -862,6 +862,19 @@ Effects leave short marks on what they hit. A later effect of the right element 
 
 Try `Bolt · Frost · Delay · Bolt · Fire` for Shatter, or `Zone · Gravity Well · Delay · Burst · Explode` for Implode.
 
+**Creature affinities.** Creatures can be weak to an element (+50%), resist one (half) or, rarely, be
+immune: the Nether's creatures resist fire and fear frost, the cold's the reverse, the undead burn under
+life magic, golems conduct storm, the End's creatures resist void and fear time, and each boss has its
+own. A Runebound resists its Cord's element, and a reaction set off on a creature breaks through its
+resistance (so the Cinder Warden still yields to Shatter). A weakness struck flashes "Weak!" over the
+creature and goes into the Grimoire's Bestiary. The table is entity type tags, so a datapack can change it.
+
+**Elemental climate.** Where you cast nudges the elements, by 10 to 25%: fire +20% and frost -25% in the
+Nether, void +20% in the End, storm +25% under a thunderstorm, frost +20% and fire -10% in the snow, fire
++15% and frost -10% in hot dry lands, fire -10% in the rain, void +10% at night under the sky, life +10%
+in sunlight, earth +15% deep underground, arcane +15% on a ley line or under a mana storm. The HUD marks
+the elements favoured and hindered where you stand. Details in [features/affinities.md](features/affinities.md).
+
 **Wet.** Being wet (in water or rain, or for 5 s after Tidebreath, steam or a popped Bubble) makes storm
 conduct (above), fire hit 25% softer (and dries you), and frost freeze you solid at once.
 
@@ -1029,6 +1042,8 @@ and Glacier frost, Lifesteal blood, Warp void, Bloom life and Nullify arcane.
 
 - A slim mana bar with a cooldown ring, and the selected spell's name and icons,
   above the hotbar on the right.
+- After the spell's name, a small mark for each element the elemental climate favours (▲) or
+  hinders (▼) where you stand.
 - Each element has its own particle colour and cast sound.
 
 ## Server rules and safety
