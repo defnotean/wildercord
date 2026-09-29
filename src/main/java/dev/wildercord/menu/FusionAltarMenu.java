@@ -119,7 +119,8 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 			return Fusions.Slot.BLANK;
 		}
 		Optional<RuneDef> rune = RuneItem.runeOf(stack);
-		return rune.isEmpty() || Knots.isKnot(rune.get()) ? Fusions.Slot.SILENT : Fusions.Slot.of(rune.get(), RuneItem.rankOf(stack));
+		// A Knot is read like any rune, so the rules turn it down for what it is (not an effect), never as a silent one.
+		return rune.isEmpty() ? Fusions.Slot.SILENT : Fusions.Slot.of(rune.get(), RuneItem.rankOf(stack));
 	}
 
 	/** What the altar would do with what's on it now. The screen shows it; the server checks it again before fusing. */

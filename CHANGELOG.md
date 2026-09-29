@@ -19,6 +19,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   other burning or freezing ground, its later seconds now only meet a Shield as a block. Its cracked, glowing
   ground also now lasts as long as the magma does, instead of vanishing after 4 seconds when Extend makes it
   burn longer.
+- A Knot put on the Fusion Altar was called "a silent rune (its add-on is missing)". The altar now says what's
+  really wrong (only effects with an element fuse, and a Knot has no power to rank up).
 
 ## [0.4.1-alpha] - 2026-09-28
 
