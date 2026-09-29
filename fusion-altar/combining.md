@@ -87,9 +87,9 @@ Jolt, Icicle with Shock, Frost with Lightning.
 - **Its circle wears a star.** In a spell's magic circle a signature braids its two runes' elements like any fused rune,
   with a small star in each half of its ring and the points of one behind its emblem, so you can tell it from the
   element fusion at a glance.
-- **Where the runes come from.** Most signatures take crafted runes. Three take rarer ones for a grander result:
-  Stasis and Starfall (Tier IV, found only) and three [runes of the world]({{ '/runes/world/' | relative_url }}):
-  Summit Wind, Sandstorm and Stalactite.
+- **Where the runes come from.** Most signatures take crafted runes. Four take rarer ones: Stasis and Starfall (Tier
+  IV, found only) and three [runes of the world]({{ '/runes/world/' | relative_url }}), Summit Wind, Sandstorm and
+  Stalactite. Three of those make the grandest, the Tier IV signatures.
 
 The wiki lists them all below. In the game your Grimoire keeps each one hidden until you make it, with only the elements
 of its two runes as a hint.
