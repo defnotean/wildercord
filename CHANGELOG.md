@@ -19,9 +19,17 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - `/loadout save <name>`, `/loadout load <name>`, `/loadout delete <name>` and `/loadout list` for every player.
 
 ### Fixed
+- A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up
+  and casts at you from there.
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **Less work for the server each tick, and for your game each frame.** A spell's particles are packed once for
+  everyone who sees them instead of once per player (and not at all when nobody is near), lasting spells (Orbits,
+  Mines, Totems, Domains...) no longer make the server look through every spell part still waiting each tick, and an
+  Orbit looks for creatures once a tick instead of once per orb. On your side, the spell panel no longer reads your
+  whole spell again every frame just to write its name, and ley lines, beams, motes, glows and magic circles are drawn
+  without making new objects for every little piece. Nothing looks, sounds or plays any differently.
 
 ## [0.4.2-alpha] - 2026-09-28
 

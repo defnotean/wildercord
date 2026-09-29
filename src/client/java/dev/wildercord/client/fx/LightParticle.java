@@ -13,7 +13,6 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -315,7 +314,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		plane.transform(at.set(u, v, 0));
 		turn.set(plane).rotateZ(rot);
 		quad(sprite, cx + at.x, cy + at.y, cz + at.z, turn, half, argb);
-		turn.rotateY(Mth.PI);
+		Facing.flip(turn);
 		quad(sprite, cx + at.x, cy + at.y, cz + at.z, turn, half, argb);
 	}
 
@@ -334,15 +333,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		for (int i = 0; i < n; i++) {
 			from.lerp(to, (i + 0.5F) / n, mid);
 			// Face the camera (at the origin) as squarely as the beam's direction allows.
-			Vector3f z = new Vector3f(mid).negate();
-			z.sub(new Vector3f(d).mul(z.dot(d)));
-			if (z.lengthSquared() < 1.0E-6F) {
-				z.set(0, 1, 0);
-			}
-			z.normalize();
-			Vector3f y = new Vector3f(z).cross(d).normalize();
-			Quaternionf q = new Quaternionf().setFromNormalized(new Matrix3f(d, y, z));
-			quad(soft, mid.x, mid.y, mid.z, q, half, argb);
+			quad(soft, mid.x, mid.y, mid.z, Facing.along(d, mid.x, mid.y, mid.z, turn), half, argb);
 		}
 	}
 
@@ -351,15 +342,10 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		if ((argb >>> 24) < 3 || half <= 0) {
 			return;
 		}
-		Vector3f z = new Vector3f(p).negate();
-		if (z.lengthSquared() < 1.0E-6F) {
+		if (Vector3f.lengthSquared(p.x, p.y, p.z) < 1.0E-6F) {
 			return;
 		}
-		z.normalize();
-		Vector3f up = Math.abs(z.y) > 0.95F ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
-		Vector3f xAxis = new Vector3f(up).cross(z).normalize();
-		Vector3f yAxis = new Vector3f(z).cross(xAxis).normalize();
-		quad(glow, p.x, p.y, p.z, new Quaternionf().setFromNormalized(new Matrix3f(xAxis, yAxis, z)), half, argb);
+		quad(glow, p.x, p.y, p.z, Facing.toward(p.x, p.y, p.z, turn), half, argb);
 	}
 
 	private void quad(TextureAtlasSprite sprite, float x, float y, float z, Quaternionf q, float half, int argb) {

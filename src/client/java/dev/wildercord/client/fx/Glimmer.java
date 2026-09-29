@@ -163,15 +163,10 @@ public class Glimmer extends SingleQuadParticle implements SigilGroup.Extent {
 		if ((argb >>> 24) < 2) {
 			return;
 		}
-		Vector3f z = new Vector3f(-px, -py, -pz);
-		if (z.lengthSquared() < 1.0E-6F) {
+		if (Vector3f.lengthSquared(px, py, pz) < 1.0E-6F) {
 			return;
 		}
-		z.normalize();
-		Vector3f up = Math.abs(z.y) > 0.95F ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
-		Vector3f xAxis = new Vector3f(up).cross(z).normalize();
-		Vector3f yAxis = new Vector3f(z).cross(xAxis).normalize();
-		quad(state, glow, px, py, pz, new Quaternionf().setFromNormalized(new Matrix3f(xAxis, yAxis, z)), half, argb);
+		quad(state, glow, px, py, pz, Facing.toward(px, py, pz, new Quaternionf()), half, argb);
 	}
 
 	/** Pieces of the soft beam laid down the column, each turned about the vertical to face the camera. */
