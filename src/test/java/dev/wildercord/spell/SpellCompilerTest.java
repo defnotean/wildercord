@@ -309,6 +309,15 @@ class SpellCompilerTest {
 	}
 
 	@Test
+	void quickenMakesAWallStrikeTwiceAsOften() {
+		assertEquals(20, SpellNumbers.wallInterval(compile(WALL, HARM).root().groups.getFirst()));
+		assertEquals(10, SpellNumbers.wallInterval(compile(WALL, QUICKEN, HARM).root().groups.getFirst()));
+		assertEquals(5, SpellNumbers.wallInterval(compile(WALL, QUICKEN, QUICKEN, HARM).root().groups.getFirst()));
+		assertEquals("A 7-block wall (5s, every 1s): Harm", compile(WALL, HARM).lines().getFirst());
+		assertEquals("A 7-block wall (5s, every 0.5s): Harm", compile(WALL, QUICKEN, HARM).lines().getFirst());
+	}
+
+	@Test
 	void domainWidensUpTo24Blocks() {
 		assertEquals(9.0, SpellNumbers.domainRadius(compile(DOMAIN, HARM).root().groups.getFirst()), 1e-9);
 		assertEquals(13.5, SpellNumbers.domainRadius(compile(DOMAIN, WIDEN, HARM).root().groups.getFirst()), 1e-9);

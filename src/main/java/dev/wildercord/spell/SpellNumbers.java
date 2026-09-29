@@ -245,9 +245,9 @@ public final class SpellNumbers {
 		return (int) Math.round(5 * Math.pow(2.0, g.count(Runes.EXTEND)));
 	}
 
-	/** Ticks between a Wall's hits: 10, halved by each Quicken. */
+	/** Ticks between a Wall's hits: 20 (once a second, as a Wall has always struck), halved by each Quicken. */
 	public static int wallInterval(SpellPlan.Group g) {
-		return Math.max(4, (int) Math.round(10 / Math.pow(2.0, g.count(Runes.QUICKEN))));
+		return Math.max(4, (int) Math.round(20 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
 
 	public static int orbs(SpellPlan.Group g) {

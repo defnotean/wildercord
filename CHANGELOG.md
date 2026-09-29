@@ -16,6 +16,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Snare booked every one of its steps up front, and the server walked through all of them every tick: an Orbit that
   Extend made last hours booked hundreds of thousands, kept even after its caster had left. Each now keeps one step
   waiting at a time and stops once its caster is gone, and the scheduler takes finished steps out in one pass.
+- **Quicken makes a Wall strike twice as often.** A Wall struck once a second, and one Quicken left it at that (two
+  jumped it to five times a second). It still strikes once a second, now twice with one Quicken and four times with
+  two, and the readout says how often: "A 7-block wall (5s, every 1s)".
 
 ## [0.4.2-alpha] - 2026-09-28
 

@@ -267,7 +267,7 @@
   "rune.wildercord.trail": "Trail",
   "rune.wildercord.trail.desc": "For 5 seconds your footsteps leave a path that hits whatever steps on it.",
   "rune.wildercord.wall": "Wall",
-  "rune.wildercord.wall.desc": "A 7-block wall across where you look. Hits whatever crosses it for 5 seconds.",
+  "rune.wildercord.wall.desc": "A 7-block wall across where you look. Hits whatever crosses it every second for 5 seconds.",
   "rune.wildercord.orbit": "Orbit",
   "rune.wildercord.orbit.desc": "Three orbs circle you for 8 seconds and hit whatever they touch.",
   "rune.wildercord.ring": "Ring",

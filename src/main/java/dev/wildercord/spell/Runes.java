@@ -37,7 +37,7 @@ public final class Runes {
 	public static final RuneDef ARC = shape("arc", "Arc", 1, 3, 1.1, "Lobs a bolt that falls and bursts where it lands.", SPEED, BOUNCE, SPLIT, VOLLEY);
 	public static final RuneDef CONE = shape("cone", "Cone", 2, 5, 1.4, "Sweeps everything in a 60-degree cone up to 6 blocks in front of you.", RADIUS);
 	public static final RuneDef TRAIL = shape("trail", "Trail", 2, 7, 1.8, "For 5 seconds your footsteps leave a path that hits whatever steps on it.", DURATION);
-	public static final RuneDef WALL = shape("wall", "Wall", 3, 10, 2.2, "A 7-block wall across where you look. Hits whatever crosses it for 5 seconds.", RADIUS, DURATION, SPEED);
+	public static final RuneDef WALL = shape("wall", "Wall", 3, 10, 2.2, "A 7-block wall across where you look. Hits whatever crosses it every second for 5 seconds.", RADIUS, DURATION, SPEED);
 	public static final RuneDef ORBIT = shape("orbit", "Orbit", 3, 9, 2.0, "Three orbs circle you for 8 seconds and hit whatever they touch.", DURATION, SPLIT);
 	public static final RuneDef RING = shape("ring", "Ring", 2, 6, 1.5, "A ring expands from you out to 7 blocks, hitting everything it passes.", RADIUS);
 	public static final RuneDef PILLAR = shape("pillar", "Pillar", 2, 5, 1.4, "A column erupts where you look: hits everything within 1.5 blocks, 6 high.", RADIUS, SPLIT);

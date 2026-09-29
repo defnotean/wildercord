@@ -98,11 +98,15 @@ final class ShapeRunners {
 		Vec3 a = center.add(side.scale(-width / 2));
 		Vec3 b = center.add(side.scale(width / 2));
 		AABB box = new AABB(a, b.add(0, 3.0, 0)).inflate(0.6, 0.0, 0.6);
-		steps(cast, 1, 4, total, tick -> {
+		// Every tick, so the strikes fall on their own interval (stepping by the shimmer's 4 ticks, a 10-tick interval
+		// only ever struck every 20, and one Quicken changed nothing).
+		steps(cast, 1, 1, total, tick -> {
 			if (!cast.alive()) {
 				return;
 			}
-			Vfx.wall(cast.level, a, b, theme, tick);
+			if (tick % 4 == 0) {
+				Vfx.wall(cast.level, a, b, theme, tick);
+			}
 			if (tick % interval != 0) {
 				return;
 			}
