@@ -4,10 +4,92 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+- **Loadouts.** Save your whole Cord (every spell's runes and name, your passives and which are on, and the
+  selected spell) under a name, and swap between up to six setups: one for fighting, one for mining, one for
+  exploring. Open them from the new list badge at the end of the Cord screen's tabs row (or `Ctrl`+`L`): each
+  loadout shows its name and first runes, with **Load**, **Save current here**, **Rename** and **Delete** (saving
+  over and deleting ask twice), plus **Save current as new**. The arrow keys, `Enter`, `Ctrl`+`R` and `Delete` work too.
+  Loading never teaches a rune: runes you don't know or your Cord can't hold, and sockets and spells it doesn't
+  have, stay threaded but quiet, as on a smaller Cord. Every spell that changes starts its cooldown unless it's
+  cooling already, so swapping mid-fight is no cooldown reset, and loading is refused while you charge a spell,
+  duel or are sealed in a Cryostasis. See [Loadouts](https://defnotean.github.io/wildercord/spellcraft/loadouts/).
+- A **Next loadout** key (unbound at first, under Wildercord in the controls) loads your next loadout and names
+  it above the hotbar.
+- `/loadout save <name>`, `/loadout load <name>`, `/loadout delete <name>` and `/loadout list` for every player.
+- **More of the world answers your magic.** A second layer of world-changing magic, and all ten elements now take part
+  (see [Magic that Changes the World](https://defnotean.github.io/wildercord/world/world-magic/)):
+  - **Frost cools lava into a crust** of basalt you can walk across (up to 12 blocks). It holds about 25 seconds; for
+    its last 5 it turns to glowing, cracking magma, then melts back into lava. It always melts back, even after a
+    crash or with nobody near, breaking it gives nothing, and it never forms round a creature in the lava.
+  - **Storm scrapes copper** a stage of oxidation clean (up to 4 blocks) and **pulses lightning rods** like a real
+    strike. Each creeper it strikes has a **1 in 4 chance of being charged**: careful.
+  - **Fire lights candles, candle cakes and campfires, and primes TNT** (up to 4 within 2 blocks): stand clear.
+    Frost and wind now snuff candles too.
+  - **Time ages the world**: crops and saplings grow a stage and copper weathers one (up to 3 blocks), baby animals
+    nearby grow up 2 minutes, and a furnace, smoker or blast furnace jumps 5 seconds ahead in its smelting. Its
+    helpful spells do it too, as life's do (not Stasis or Rewind).
+  - **Void anchors endermen**: one it strikes can't teleport for 5 seconds, a ring of darkness at its feet.
+  - **Life starts curing a zombie villager** that has Weakness, as a golden apple would.
+  - **Arcane** shows invisible creatures nearby (they glow for 3 seconds) and makes bookshelves and enchanting
+    tables shimmer. **Blood** ripens nether wart and grows crimson fungus.
+  - Every block change keeps the old rules: only a player's spell, only where they may build, within the cast's
+    block budget, and not on a server that turned world-changing magic or spells' block changes off. Charging a
+    creeper, curing and growing babies are a player's spell's only, and off with world-changing magic off too.
+  - The rune tooltips' dark green *"Where it lands"* lines say all of this, with the warnings.
+
 ### Fixed
+- A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up
+  and casts at you from there.
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **`/rtp` typed over and over could stall a server.** Each `/rtp` searched for a new spot, loading (or generating) up
+  to a dozen far-off chunks, and a broken warmup starts no cooldown, so it could be repeated as fast as it was typed.
+  Now a player searches at most once every 10 seconds: trying again sooner goes to the spot already found (or, if the
+  last search found none, says how long to wait). Operators aren't limited.
+- **An accepted teleport request could land you in a duel.** If the player you were going to started a duel during
+  your warmup, you still arrived beside them. Now the teleport is called off, as it is when they're duelling at the
+  moment you accept.
+- **Waypoint offers could flood someone's chat.** `/waypoint share` had no limit and can't be switched off like
+  requests. Now you can share with the same player once every 10 seconds.
+- A teleport still warming up when an operator switches travel off (and reloads the settings) no longer goes ahead.
+- **Fracture, Blight, Unweave, Rupture and Elapse didn't break through a resistance.** A reaction is meant to ignore
+  what a creature resists, and Shatter did, but the five set off by any damage of their element still let the
+  resistance halve the hit that set them off (a Fracture on an iron golem, an Unweave on the Archivist). Now they land
+  in full like the rest.
+- **One Lightning cast could set off Overload again and again.** Each strike set its targets alight at once, so on a
+  crowd every later strike found them burning and blew them apart again, up to seven times over in one cast. Lightning
+  now sets them alight after its last strike.
+- **Overload in a crowd could launch creatures sky-high.** Every burning enemy that blew apart threw all its neighbours,
+  so in a packed crowd each was thrown once for every neighbour, and the throws added up (players too, in PvP). Now an
+  Overload throws each creature at most once at a time; the damage is unchanged.
+- **Stoneform's aftershock took on the element of the blow it answered.** Hit by a wind spell, its aftershock counted as
+  wind (and could set off Rupture on a bleeding creature beside you, writing it in your Grimoire). It's always earth now.
+- **A spell could set the Cinder Warden alight for a moment**, long enough for a storm effect in the same spell to set
+  off Overload and crack its armour. Nothing sets it alight now, as the Ember Sanctum page says.
+- **A settings file that couldn't be written lost its settings.** When the server couldn't add the newer settings to an
+  older `wildercord.json` (a read-only file, say), it ran on the defaults instead of the owner's settings. The file's
+  settings now hold either way; only the new ones run at their defaults.
+- Adding the newer settings to an older `wildercord.json` no longer strips out comments an owner wrote in it: a file
+  with comments is left as it is (its settings are read as before, and any it lacks run at their defaults).
+- **Duels gave back more health than the opponent took.** A blow was counted at its damage before armour, Resistance and
+  absorption hearts, so an armoured duellist got back far more than they lost, healing damage from falls and monsters
+  too (and a knockout gave back the whole killing blow). Now what each blow really took from your health is given back.
+- **Duels gave back used-up effects.** Every effect a duellist had at the start came back if it was gone at the end, so a
+  Bad Omen a raid had used, or Absorption a monster had knocked away, returned after every duel. Only helpful effects
+  come back now, and never Absorption.
+- **A creature immune to an element counted toward contracts.** Frost cast at a snow golem, which frost can't hurt,
+  counted as a frost cast landing on a real creature, making it a target for the Runesmith's contracts that never ran
+  out. A spell has to hurt what it lands on to count now.
+- Elapse no longer counts fire that couldn't hurt its target: a burning creature with Fire Resistance had at least 3
+  damage land on it, and its flames put out, for a burn that was dealing nothing.
+- **Less work for the server each tick, and for your game each frame.** A spell's particles are packed once for
+  everyone who sees them instead of once per player (and not at all when nobody is near), lasting spells (Orbits,
+  Mines, Totems, Domains...) no longer make the server look through every spell part still waiting each tick, and an
+  Orbit looks for creatures once a tick instead of once per orb. On your side, the spell panel no longer reads your
+  whole spell again every frame just to write its name, and ley lines, beams, motes, glows and magic circles are drawn
+  without making new objects for every little piece. Nothing looks, sounds or plays any differently.
 - **A passive's buffs no longer outlast it.** Whatever a passive gives lasts 15 seconds at most (it's renewed every
   2), so switching `Self · Night Eye` on for a second no longer leaves a minute of night vision for a second's
   upkeep. The same effect from a potion keeps its full length.

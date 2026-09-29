@@ -161,6 +161,28 @@ public final class Effects {
 		};
 	}
 
+	/**
+	 * Runs {@code task} as damage of {@code element} alone, without the Execute, Trial Key or element of
+	 * whatever effect is being applied right now: for damage dealt in answer to someone else's spell
+	 * (Stoneform's aftershock answering a blow), which would otherwise borrow that spell's, and set off
+	 * that element's reactions for the wrong caster.
+	 */
+	static void asElement(String element, Runnable task) {
+		double outerBonus = executeBonus;
+		double outerOpening = openingBonus;
+		String outerElement = currentElement;
+		executeBonus = 1.0;
+		openingBonus = 1.0;
+		currentElement = element;
+		try {
+			task.run();
+		} finally {
+			executeBonus = outerBonus;
+			openingBonus = outerOpening;
+			currentElement = outerElement;
+		}
+	}
+
 	private static void applyEffect(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		RuneDef rune = node.effect;
 		LivingEntity caster = cast.caster;
@@ -268,9 +290,12 @@ public final class Effects {
 				if (strikes.isEmpty()) {
 					strikes.add(hit.point());
 				}
+				// Set alight once every strike has landed: fire from one strike would let the next set off Overload again.
+				Set<LivingEntity> struck = new LinkedHashSet<>();
 				for (int i = 0; i < Math.min(MAX_STRIKES_PER_HIT, strikes.size()); i++) {
-					lightning(cast, strikes.get(i), power);
+					lightning(cast, strikes.get(i), power, struck);
 				}
+				struck.forEach(t -> t.igniteForSeconds(4));
 			}
 			case "explode" -> {
 				double radius = SpellNumbers.explodeRadius(node);
@@ -648,12 +673,13 @@ public final class Effects {
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);
 		amount *= hexBonus(cast, target);
+		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
+		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
+		amount *= Reactions.hit(cast, target, currentElement);
 		amount *= Affinities.multiplier(cast, target, source, currentElement);
 		// Fire is weaker on the wet.
 		amount *= WorldMagic.wetDamage(target, currentElement);
 		amount *= AddonRunes.react(cast, target, currentElement);
-		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
-		amount *= Reactions.hit(cast, target, currentElement);
 		amount *= ExplorerEffects.bonus(cast, target, currentElement);
 		// Trial Key: the opening blow on a target still at full health.
 		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {
@@ -666,7 +692,10 @@ public final class Effects {
 		}
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);
-		dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
+		// A hit that can't hurt (an immune snow golem under frost) isn't one a contract counts.
+		if (damage > 0) {
+			dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
+		}
 		readyToHurt(target);
 		float dealt = damage;
 		Dungeons.spellHit(() -> target.hurtServer(cast.level, source, dealt));
@@ -676,7 +705,8 @@ public final class Effects {
 		}
 	}
 
-	private static void lightning(Cast cast, Vec3 at, double power) {
+	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */
+	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck) {
 		ServerLevel level = cast.level;
 		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
 		if (bolt != null) {
@@ -688,7 +718,7 @@ public final class Effects {
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(2.0, 3.0, 2.0), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity target = (LivingEntity) e;
 			hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 12 * power * Reactions.storm(cast, target));
-			target.igniteForSeconds(4);
+			struck.add(target);
 			target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 3, false, false));
 		}
 	}
@@ -1744,9 +1774,9 @@ public final class Effects {
 	/** Light's invisible light blocks still lit, so they go out when the server stops (and, saved in {@link TemporaryBlocks}, even if it doesn't stop cleanly). */
 	private static final java.util.Set<GlobalPos> LIGHTS = new java.util.HashSet<>();
 
-	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall): pistons can't move it. */
+	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall, frost's crust on lava): pistons can't move it. */
 	public static boolean isTemporary(ServerLevel level, BlockPos pos) {
-		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos);
+		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos) || WorldMagic.isCrust(level, pos);
 	}
 
 	/** Span bridges still standing, and what each of their blocks replaced. */

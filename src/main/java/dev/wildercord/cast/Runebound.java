@@ -151,7 +151,8 @@ public final class Runebound {
 				if (mob.isRemoved() || !mob.isAlive()) {
 					LOADED.remove(mob.getUUID());
 					STATES.remove(mob.getUUID());
-				} else if (mob.level() instanceof ServerLevel level) {
+				} else if (mob.level() instanceof ServerLevel level && level.isPositionEntityTicking(mob.blockPosition())) {
+					// Only where the world is running: a monster frozen at the edge of the loaded area doesn't cast.
 					tick(level, mob);
 				}
 			}

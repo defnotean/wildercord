@@ -242,7 +242,7 @@ public final class SpellHud {
 		boolean nameRow = rhythm.stacks() > 0 || cracked > 0 || compiled != null || !climate.isEmpty();
 		int right = Math.max(x0 + width, lx);
 		if (compiled != null) {
-			String name = SpellCaster.nameOf(player, book, spell, runes);
+			String name = SpellCaster.nameOf(player, book, spell, runes, compiled);
 			int nameX = Math.max(lx + 3, x0 + BODY_X);
 			String nameShown = font.plainSubstrByWidth(name, Math.max(20, g.guiWidth() - nameX - 4 - (climateW > 0 ? climateW + 5 : 0)));
 			int nameColor = 0xFF000000 | spellColor(runes);

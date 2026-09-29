@@ -16,7 +16,11 @@
 		"MobConversionMixin",
 		"ItemEntityAccessor",
 		"TemporaryBlockDropsMixin",
-		"EvokerFangsMixin"
+		"EvokerFangsMixin",
+		"EndermanMixin",
+		"CreeperAccessor",
+		"ZombieVillagerAccessor",
+		"AbstractFurnaceBlockEntityAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

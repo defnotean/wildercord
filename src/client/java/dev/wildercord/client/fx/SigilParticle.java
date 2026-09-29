@@ -224,14 +224,13 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		int color = ARGB.colorFromFloat(alpha, rCol, gCol, bCol);
 		int light = getLightCoords(partial);
 		Layer layer = getLayer();
-		Vector3f at = new Vector3f();
 		for (int i = 0; i < pieces; i++) {
 			float a = Mth.TWO_PI * i / pieces;
 			plane.transform(at.set(Mth.cos(a) * r, Mth.sin(a) * r, 0));
-			Quaternionf piece = new Quaternionf(plane).rotateZ(a + Mth.HALF_PI);
+			Quaternionf piece = turnQ.set(plane).rotateZ(a + Mth.HALF_PI);
 			for (int side = 0; side < 2; side++) {
 				if (side == 1) {
-					piece.rotateY(Mth.PI);
+					Facing.flip(piece);
 				}
 				state.add(layer, px + at.x, py + at.y, pz + at.z, piece.x, piece.y, piece.z, piece.w, half,
 					getU0(), getU1(), getV0(), getV1(), color, light);
@@ -592,7 +591,7 @@ public class SigilParticle extends SingleQuadParticle implements SigilGroup.Exte
 		drawing.add(layer, px + at.x, py + at.y, pz + at.z, turnQ.x, turnQ.y, turnQ.z, turnQ.w, half,
 			sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, light);
 		plane.transform(at.set(u, v, -0.002F));
-		turnQ.rotateY(Mth.PI);
+		Facing.flip(turnQ);
 		drawing.add(layer, px + at.x, py + at.y, pz + at.z, turnQ.x, turnQ.y, turnQ.z, turnQ.w, half,
 			sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, light);
 	}

@@ -135,6 +135,15 @@ public class CinderWarden extends DungeonBoss {
 		}
 	}
 
+	/**
+	 * Lava and fire are home: nothing sets it alight, not even for the rest of a tick, so no spell's fire
+	 * on it can feed Overload, Elapse or Unweave (it isn't fire immune, or fire spells would read as immune).
+	 */
+	@Override
+	public void setRemainingFireTicks(int ticks) {
+		super.setRemainingFireTicks(Math.min(0, ticks));
+	}
+
 	@Override
 	protected boolean mayCast(ServerLevel level, LivingEntity target) {
 		return slamAt == 0;

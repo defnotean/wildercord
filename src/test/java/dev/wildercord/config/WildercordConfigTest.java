@@ -151,6 +151,10 @@ class WildercordConfigTest {
 		assertTrue(WildercordConfig.addMissing(D.toJson()).isEmpty());
 		assertTrue(WildercordConfig.addMissing("{ not json").isEmpty());
 		assertTrue(WildercordConfig.addMissing("[1, 2]").isEmpty());
+		// Comments are read, but a rewrite would lose them: such a file is left as it is.
+		String commented = "{\"mana\": {\"regen_multiplier\": 2.5}, // faster here\n \"features\": {\"duels\": false}}";
+		assertEquals(2.5, WildercordConfig.parse(commented).config().manaRegenMultiplier(), 1e-9);
+		assertTrue(WildercordConfig.addMissing(commented).isEmpty());
 	}
 
 	@Test

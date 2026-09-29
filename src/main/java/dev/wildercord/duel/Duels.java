@@ -38,6 +38,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
@@ -123,6 +124,11 @@ public final class Duels {
 		final Map<UUID, Snapshot> before = new HashMap<>();
 		/** The health each duellist lost to the other's blows and spells, to be given back. */
 		final Map<UUID, Float> taken = new HashMap<>();
+		/**
+		 * Each duellist's health as a blow of their opponent's began to land. The damage the game reports
+		 * afterwards is before armour, Resistance and absorption, so what the blow really took is measured.
+		 */
+		final Map<UUID, Float> landing = new HashMap<>();
 		/** The harmful effects each duellist's opponent laid on them, and who their opponent set alight: all the end undoes. */
 		final Map<UUID, Set<Holder<MobEffect>>> harms = new HashMap<>();
 		final Set<UUID> burned = new HashSet<>();
@@ -181,6 +187,9 @@ public final class Duels {
 				return true;
 			}
 			if (active.duel.involves(attacker.getUUID())) {
+				if (active.duel.fighting()) {
+					active.landing.put(victim.getUUID(), victim.getHealth());
+				}
 				return active.duel.fighting();
 			}
 			active.duel.interrupt();
@@ -196,7 +205,11 @@ public final class Duels {
 			LAST_HURT.put(victim.getUUID(), now);
 			Player attacker = playerBehind(source);
 			if (attacker != null && BY_PLAYER.get(victim.getUUID()) instanceof Active active && attacker.getUUID().equals(active.duel.opponent(victim.getUUID()))) {
-				active.taken.merge(victim.getUUID(), damage, Float::sum);
+				// What the blow took from their health, not the damage before armour and absorption (that would give back more than was lost).
+				Float before = active.landing.remove(victim.getUUID());
+				if (before != null) {
+					active.taken.merge(victim.getUUID(), Math.max(0F, before - victim.getHealth()), Float::sum);
+				}
 				active.struck.put(victim.getUUID(), now);
 			}
 			if (attacker != null && attacker != victim && !opponents(attacker.getUUID(), victim.getUUID())) {
@@ -221,8 +234,10 @@ public final class Duels {
 				return true;
 			}
 			victim.setHealth(1.0F);
-			// The last blow is given back with the rest (the duel ends before it's counted after the damage).
-			active.taken.merge(victim.getUUID(), amount, Float::sum);
+			// The last blow is given back with the rest (the duel ends before it's counted after the damage): all the health
+			// it found, less the 1 they're left with. Its damage before armour would give back more than the blow took.
+			Float before = active.landing.remove(victim.getUUID());
+			active.taken.merge(victim.getUUID(), Math.max(0F, (before != null ? before : amount) - 1.0F), Float::sum);
 			active.duel.knockout(victim.getUUID());
 			finish(active, victim.level().getServer());
 			return false;
@@ -621,8 +636,8 @@ public final class Duels {
 	/**
 	 * Puts a duellist back as they were when the duel began: the health their opponent took from them
 	 * (never past what they had then), none of the harm their opponent left on them (a harmful effect or
-	 * fire they didn't have before; what anything else did stays), and the effects they had then, less the
-	 * time the duel took.
+	 * fire they didn't have before; what anything else did stays), and the helpful effects they had then
+	 * (Absorption aside), less the time the duel took.
 	 */
 	private static void restore(ServerPlayer player, Active active, UUID id, long elapsed) {
 		Snapshot before = active.before.get(id);
@@ -638,6 +653,11 @@ public final class Duels {
 			}
 		}
 		for (MobEffectInstance effect : before.effects()) {
+			// Only helpful ones, and never Absorption: a Bad Omen used up by a raid, or absorption hearts a monster knocked
+			// away, would otherwise come back after every duel.
+			if (effect.getEffect().value().getCategory() != MobEffectCategory.BENEFICIAL || effect.is(MobEffects.ABSORPTION)) {
+				continue;
+			}
 			int left = DuelRules.remaining(effect.getDuration(), elapsed);
 			if (left != 0 && !player.hasEffect(effect.getEffect())) {
 				player.addEffect(new MobEffectInstance(effect.getEffect(), left, effect.getAmplifier(), effect.isAmbient(), effect.isVisible(), effect.showIcon()));

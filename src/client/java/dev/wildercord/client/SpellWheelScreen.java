@@ -231,7 +231,7 @@ public class SpellWheelScreen extends Screen {
 			String number = Integer.toString(slot + 1);
 			g.text(font, number, x - font.width(number) / 2, y - 4, isHovered ? GOLD : isSelected ? TEXT : DIM, true);
 			// Name and runes, just outside the disc, anchored on the side facing away from the centre.
-			String name = runes.isEmpty() ? Component.translatable("screen.wildercord.wheel.empty").getString() : SpellCaster.nameOf(minecraft.player, book, slot, runes);
+			String name = runes.isEmpty() ? Component.translatable("screen.wildercord.wheel.empty").getString() : SpellCaster.nameOf(minecraft.player, book, slot, runes, SpellHud.read(runes));
 			int lx = cx + (int) Math.round(Math.cos(a) * LABEL_RADIUS);
 			int ly = cy + (int) Math.round(Math.sin(a) * LABEL_RADIUS);
 			double cos = Math.cos(a);

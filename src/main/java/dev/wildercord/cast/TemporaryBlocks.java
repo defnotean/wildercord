@@ -81,9 +81,26 @@ public final class TemporaryBlocks extends SavedData {
 	 * explosion, a piston, a player, a Wither), it drops nothing, so a Rampart is never a packed mud farm.
 	 */
 	public static boolean holds(ServerLevel level, BlockPos pos, BlockState state) {
+		return find(level, pos, state.getBlock()) != null;
+	}
+
+	/**
+	 * How a spell's {@code block} at {@code pos} is written down (what it replaced, and when it goes), or null
+	 * if no spell's block of that kind is. Saved, so it still knows after a restart (a lava crust broken then
+	 * drops nothing).
+	 */
+	static Placed find(ServerLevel level, BlockPos pos, net.minecraft.world.level.block.Block block) {
 		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
-		List<Placed> inChunk = blocks == null || blocks.byChunk.isEmpty() ? null : blocks.byChunk.get(Thaws.chunk(pos));
-		return inChunk != null && inChunk.stream().anyMatch(p -> p.pos().equals(pos) && state.is(p.placed().getBlock()));
+		List<Placed> inChunk = blocks == null ? null : blocks.byChunk.get(Thaws.chunk(pos));
+		if (inChunk == null) {
+			return null;
+		}
+		for (Placed placed : inChunk) {
+			if (placed.pos().equals(pos) && placed.placed().is(block)) {
+				return placed;
+			}
+		}
+		return null;
 	}
 
 	/** Writes down a block a spell just put at {@code pos} in place of {@code replaced}, to go at game time {@code due}. */
