@@ -511,6 +511,8 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 				return done(context, world, found);
 			}
 		}
+		// Stormclock's later strikes (2 and 4 seconds on) mustn't land on the next check's husk.
+		context.waitTicks(90);
 		return done(context, world, null);
 	}
 
