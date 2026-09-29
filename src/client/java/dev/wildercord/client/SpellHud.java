@@ -222,7 +222,8 @@ public final class SpellHud {
 		int rx = x0 + BODY_X;
 		int rowY = y0 + 4;
 		if (compiled == null) {
-			g.text(font, "K", rx, rowY + 1, DIM, true);
+			// No spell yet: the key that opens the Cord screen to thread one, as it's bound now.
+			g.text(font, font.plainSubstrByWidth(WildercordKeys.openKey().getString(), bodyW), rx, rowY + 1, DIM, true);
 		} else {
 			float scale = iconSize / 16.0F;
 			g.pose().pushMatrix();
