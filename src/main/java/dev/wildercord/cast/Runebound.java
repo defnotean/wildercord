@@ -381,6 +381,12 @@ public final class Runebound {
 		}
 	}
 
+	/** Whether a Runebound is telegraphing a cast right now (for the tests, and for what can break one). */
+	public static boolean casting(Mob mob) {
+		State state = STATES.get(mob.getUUID());
+		return state != null && state.castAt > 0;
+	}
+
 	/** Breaks the cast a Runebound is telegraphing (its next comes a little later). Returns whether it had one. */
 	public static boolean interrupt(Mob mob) {
 		State state = STATES.get(mob.getUUID());

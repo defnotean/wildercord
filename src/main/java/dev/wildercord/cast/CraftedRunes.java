@@ -650,7 +650,7 @@ public final class CraftedRunes {
 	/** The weapon goes back into its creature's hand, if the hand is still empty (one it picked up meanwhile is kept). */
 	private static void rearm(Mob mob) {
 		Taken taken = DISARMED.remove(mob.getUUID());
-		if (taken == null || !mob.isAlive()) {
+		if (taken == null || mob.isRemoved()) {
 			return;
 		}
 		if (mob.getMainHandItem().isEmpty()) {

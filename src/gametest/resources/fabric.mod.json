@@ -36,6 +36,7 @@
 			"dev.wildercord.gametest.WildercordPlayerAffinityTest",
 			"dev.wildercord.gametest.WildercordLoadoutsTest",
 			"dev.wildercord.gametest.WildercordFishingTest",
+			"dev.wildercord.gametest.WildercordFrostWindTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

@@ -664,6 +664,8 @@ final class FusedStorm {
 		if (down) {
 			move(t, level, ground);
 		}
+		// Down on the ground it's no longer airborne: the smash itself isn't a fifth harder for having lifted it.
+		Reactions.clear(t, Reactions.Mark.AIRBORNE);
 		Effects.hurt(cast, t, wind(cast), damage);
 		if (down && onHand(cast, t)) {
 			setMotion(t, Vec3.ZERO);

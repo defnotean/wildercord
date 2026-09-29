@@ -139,8 +139,8 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			LivingEntity near = get(server, ids[0]);
 			for (Holder<MobEffect> effect : List.of(MobEffects.SPEED, MobEffects.JUMP_BOOST, MobEffects.REGENERATION)) {
-				expect(out, "the caster", player, effect, 0, 90, 130);
-				expect(out, "an ally 2 blocks away", near, effect, 0, 90, 130);
+				expect(out, "the caster", player, effect, 0, 170, 210);
+				expect(out, "an ally 2 blocks away", near, effect, 0, 170, 210);
 				if (get(server, ids[1]).hasEffect(effect)) {
 					out.add("an ally 9 blocks away shouldn't get " + effect.getRegisteredName());
 				}

@@ -91,8 +91,8 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Fire + Earth | **Magma** | The ground under the target turns to magma for 4 seconds: 2 damage a second to every enemy standing on it. |
 | Storm + Wind | **Tempest** | A lightning strike for 8 damage, and a gale that hurls targets far away. |
 | Storm + Fire | **Plasma** | 9 damage that ignores half of the target's armour. |
-| Storm + Frost | **Hail** | Three hailstones of 2 damage each, and Slowness II for 4 seconds. |
-| Frost + Earth | **Glacier** | Freezes targets in place for 2 seconds (1 second on players). |
+| Storm + Frost | **Hail** | Five hailstones of 2 damage each, each staggering the target, and Slowness II for 4 seconds. |
+| Frost + Earth | **Glacier** | Freezes targets in place for 2 seconds (1 second on players). The ice spreads: up to 3 other enemies within 2.5 blocks freeze for 1 second, and when it cracks everything frozen takes 2. |
 | Life + Void | **Lifesteal** | 5 damage, and you heal for what it dealt. |
 | Wind + Void | **Warp** | You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds. |
 | Life + Earth | **Bloom** | Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches. |
@@ -103,21 +103,21 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Fire + Arcane | **Starfire** | Five motes of starfire seek up to five enemies within 6 blocks: 2 damage each, and they burn for 3 seconds. |
 | Fire + Time | **Everburn** | Sets targets alight for 5 seconds with a fire that burns twice as fast (1 more damage a second), and rekindles once for 3 more when it goes out. |
 | Fire + Blood | **Bloodboil** | 3 damage, and for 5 seconds the target's blood boils: each time it's hurt it takes 2 more fire damage (up to 5 times). |
-| Frost + Wind | **Blizzard** | A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are slowed (Slowness II), chilled and take 1 damage a second. |
-| Frost + Life | **Frostbloom** | Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds). |
-| Frost + Void | **Black Ice** | Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II for 5 seconds). One that dies in the next 5 seconds shatters: 4 damage to enemies within 3 blocks. |
+| Frost + Wind | **Blizzard** | A blizzard howls 3 blocks around where it lands for 4 seconds, walking 6 blocks the way you faced: enemies in it are slowed (Slowness II), chilled and take 1.5 damage a second. |
+| Frost + Life | **Frostbloom** | Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds) and heals them a point (4 at most). |
+| Frost + Void | **Black Ice** | Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II for 5 seconds). One that dies in the next 5 seconds shatters: 4 damage to enemies within 3 blocks, which turn brittle in their turn. |
 | Frost + Arcane | **Rime Seal** | Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that stands in it for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each. |
-| Frost + Time | **Cryostasis** | Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds. |
-| Frost + Blood | **Frostbite** | 3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second. |
+| Frost + Time | **Cryostasis** | Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. When it opens it bursts: enemies within 3 blocks are thrown back, take 3, and are slowed and left brittle. Not again on the same creature for 10 seconds. |
+| Frost + Blood | **Frostbite** | 3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second and a half. |
 | Storm + Earth | **Magnetize** | Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second). |
 | Storm + Void | **Riftbolt** | A black bolt for 6 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds. |
 | Storm + Arcane | **Stormweave** | Marks up to 4 enemies within 6 blocks; a moment later lightning weaves between them all: 3 damage each, and 1 more for every other one caught in the web. |
 | Storm + Time | **Stormclock** | 4 damage, and lightning strikes the same spot again 2 and 4 seconds later: 3 damage to enemies within 1.5 blocks each time. |
 | Storm + Blood | **Heartstopper** | 5 damage, and for 6 seconds the target's heart skips: every 2 seconds it's stunned for half a second. |
-| Wind + Earth | **Downdraft** | Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more for every block it fell (up to 6). Flyers lose their lift. |
-| Wind + Life | **Zephyr** | A warm breeze: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 6 seconds. |
+| Wind + Earth | **Downdraft** | Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more for every block it fell (up to 6). Flyers lose their lift. With nothing in the air it pins whoever stands under it (Slowness III for a second, 2 damage). |
+| Wind + Life | **Zephyr** | A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 10 seconds, and it blows away blindness, darkness, nausea and slowness. |
 | Wind + Arcane | **Skyglyph** | Writes a wind glyph where it lands for 10 seconds: an ally who steps on it is launched high and forward, an enemy thrown back 4 blocks. |
-| Wind + Time | **Recoil** | Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where they stood, for 3 damage. |
+| Wind + Time | **Recoil** | Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where they stood, for 5 damage. |
 | Wind + Blood | **Crimson Mist** | A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for 1 damage a second, allies in it heal half a heart a second. |
 | Earth + Void | **Sinkhole** | The ground gives way: enemies within 3 blocks are dragged to its middle and pinned for 2 seconds (Slowness IV, no jumping), then crushed for 5 damage. |
 | Earth + Arcane | **Geode** | Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally is cut by crystal shards for 2 damage. |
@@ -132,9 +132,9 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Arcane + Blood | **Hemomancy** | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
 | Time + Blood | **Reckoning** | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |
 | Fire | **Conflagration** | Sets targets alight for 8 seconds, and every burning enemy within 6 blocks flares up for 3 damage and burns 2 seconds longer. |
-| Frost | **Absolute Zero** | Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws. |
+| Frost | **Absolute Zero** | Slowness IV for 3 seconds. A target showing signs of cold (slowed, brittle, frozen skin, held) freezes solid and takes damage for each: 4.5 for one, 7 for two, 9.5 for three, 12 for four, and is held 1.5 to 3 seconds (half as long on players), then not again until 3 seconds after it thaws. |
 | Storm | **Thunderhead** | A thundercloud gathers over the target for 4 seconds and strikes an enemy within 4 blocks of it every second: 3 damage. |
-| Wind | **Updraft** | Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft smashes them back down for 4 damage. |
+| Wind | **Updraft** | Hurls enemies within 2.5 blocks high into the air, where every spell hits them harder; a moment later a downdraft smashes them back down for 4 damage. |
 | Earth | **Monolith** | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |
 | Life | **Lifebloom** | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
 | Void | **Singularity** | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |

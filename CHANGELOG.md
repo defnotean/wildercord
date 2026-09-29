@@ -34,6 +34,35 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Gear in a slot **drops when you die**, like the rest of your inventory (Curse of Vanishing destroys its own), and
   stays with you when `keepInventory` is on. It never duplicates through death, respawning or changing dimension.
 - The tooltips and Cord screen texts about holding the tome or a Focus of the Deep Well now mention the slot.
+- **Frost and wind runes each do their own thing.** Chill deepens if you Chill again (Slowness II, III, IV). Frost
+  leaves a target brittle for Shatter. Icicle hits harder on a slowed target and melts after 2 seconds. Hail is five
+  staggering stones. Hoarfrost creeps for 3 seconds, freezes solid, and blooms onto neighbours. Bubble lifts its
+  target and holds by size (small 2.5 s, large 1.5 s). Absolute Zero counts a target's signs of cold: the more, the
+  harder it hits and the longer it holds. Glacier's ice spreads to a few neighbours and cracks for damage. Blizzard
+  walks the way you faced. Frostbloom's ward freezes attackers and heals you. Black Ice shatters what dies while
+  it holds. Cryostasis bursts when it opens. Coldsnap is a wider snap that leaves everything brittle. Freeze costs
+  14 mana, Bubble 9 and Absolute Zero 18.
+- **Wind now lifts.** Launch, Levitate, Updraft and Summit Wind mark targets *airborne*: every spell hits them 20%
+  harder while they are off the ground. Light creatures fly farther in wind and heavy ones barely budge. Windcut
+  breaks what a target is winding up (a charge, a bow's draw, a creeper's fuse, a spell). Push slams into walls for
+  damage. Repel deals 4 damage. Downdraft pins whoever stands under it when nothing is in the air. Recoil deals 5.
+  Cyclone and Gale Mantle follow where you steer. Feather Fall drifts the way you look. Zephyr lasts 10 seconds and
+  clears blindness, nausea and slowness. Mirrorfrost casts back at 70% power and can't be cast back again.
+- **New status: silenced.** A silenced creature can't cast; Drowning Word now silences its target. A Runebound
+  telegraphing a spell has it broken by silence or a Windcut.
+- Tidecall, Undertow, Tidehook, Tidewrit, Current, Disarm and Tidebreath got small mechanic tweaks (Tidecall pulls and
+  soaks, Undertow drags toward the nearest water, Tidehook leaves a gasp, Current carries allies, Disarm's player
+  version stops them using what they hold for 3 seconds).
+
+### Fixed
+- Shatter and Fracture now end a freeze hold instead of leaving the target frozen.
+- Repel was drawn in red; it now uses the wind palette. Glacier's shell no longer lingers after the ice cracks.
+- Tidewrit no longer repeats its sound for every target it sweeps.
+- A disarmed creature that died lost its weapon; it now drops it.
+- Frostward could be beaten by a long frost hold; the hold is now capped.
+- Water runes were audible in quiet places where they shouldn't be; Tidecall and Tidewrit are now quiet like the rest.
+- Casting Hoarfrost or Bubble repeatedly stacked their damage; each is now once per target at a time.
+- Several frost and wind rune descriptions no longer matched what the runes do.
 
 ## [0.5.0-alpha] - 2026-09-29
 

@@ -18,7 +18,7 @@ Air and motion. Wind throws, lifts, dashes and turns arrows aside.
 
 *Tier I · Wind · Helps you and your allies · 5 mana · needs any Cord*
 
-For 30 seconds falls can't hurt you, and a hard landing throws out a gust that knocks enemies back.
+For 30 seconds falls can't hurt you, and a hard landing throws out a gust that knocks enemies back and hurts them: three quarters of a point for every block you fell past four (6 at most).
 
 **How to get it:** Craft: a Blank Rune, any wool and Feather. The recipe is shapeless: any layout, any crafting grid.
 
@@ -31,7 +31,7 @@ For 30 seconds falls can't hurt you, and a hard landing throws out a gust that k
 
 *Tier I · Wind · Helps you and your allies · 6 mana · needs any Cord*
 
-Slow falling and no fall damage for 12 seconds.
+Slow falling and no fall damage for 12 seconds, and you drift the way you look while you fall (sneak to stop).
 
 **How to get it:** Craft: a Blank Rune, 2x Feather. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
@@ -57,7 +57,7 @@ Jump Boost III for 15 seconds.
 
 *Tier I · Wind · Works on the world · 2 mana · needs any Cord*
 
-A gust clears leaves, grass, flowers, vines and cobwebs within 3 blocks.
+A gust clears leaves, grass, flowers, vines and cobwebs within 3 blocks, and they drop as they would to shears.
 
 **How to get it:** Craft: a Blank Rune, Shears and any saplings. The recipe is shapeless: any layout, any crafting grid.
 
@@ -83,7 +83,7 @@ Hurls targets away from the spell.
 
 *Tier I · Wind · Helps you and your allies · 6 mana · needs any Cord*
 
-Speed III for 10 seconds.
+Speed III for 10 seconds, and it shakes off Slowness and frozen skin.
 
 **How to get it:** Craft: a Blank Rune, 2x Sugar. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
@@ -96,7 +96,7 @@ Speed III for 10 seconds.
 
 *Tier I · Wind · Harms enemies · 6 mana · needs any Cord*
 
-A cutting wind: 4 damage and a light shove.
+A cutting wind: 4 damage and a light shove, and it breaks what the target is winding up: a charge, a bow's draw, a creeper's fuse, a spell.
 
 **How to get it:** Craft: a Blank Rune, Feather and Flint. The recipe is shapeless: any layout, any crafting grid.
 
@@ -109,7 +109,7 @@ A cutting wind: 4 damage and a light shove.
 
 *Tier II · Wind · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, then flings them out for 3 damage.
+A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, then flings them all the way you were facing for 3 damage.
 
 **How to get it:** Craft: a Blank Rune, Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -122,7 +122,7 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 
 *Tier II · Wind · Harms enemies · 6 mana · needs a Copper Cord or better*
 
-Shoves targets hard the way you're facing. On Self it's a long dash.
+Shoves targets the way you're facing. On Self it's a precise dash of about ten blocks: level, and it stops where it should.
 
 **How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -135,7 +135,7 @@ Shoves targets hard the way you're facing. On Self it's a long dash.
 
 *Tier II · Wind · Helps you and your allies · 9 mana · needs a Copper Cord or better*
 
-For 8 seconds a whirl of wind turns aside arrows and other projectiles coming at the target.
+For 8 seconds a whirl of wind sends arrows and other projectiles coming at the target back at whoever shot them.
 
 **How to get it:** Craft: a Blank Rune, Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -148,7 +148,7 @@ For 8 seconds a whirl of wind turns aside arrows and other projectiles coming at
 
 *Tier II · Wind · Harms enemies · 7 mana · needs a Copper Cord or better*
 
-A snatching gust tears the weapon from each creature's hand for 5 seconds, then it drifts back. Players and bosses keep hold.
+A snatching gust tears the weapon from each creature's hand for 5 seconds, then it drifts back. Bosses keep hold; a player keeps hold too, but can't use what they're holding for 3 seconds.
 
 **How to get it:** Craft: a Blank Rune, Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -161,7 +161,7 @@ A snatching gust tears the weapon from each creature's hand for 5 seconds, then 
 
 *Tier II · Wind · Harms enemies · 8 mana · needs a Copper Cord or better*
 
-Flings targets high into the air. On Self it rockets you up and forward.
+Flings targets high into the air, where every spell hits them harder. On Self it rockets you up and forward.
 
 **How to get it:** Craft: a Blank Rune, Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -174,7 +174,7 @@ Flings targets high into the air. On Self it rockets you up and forward.
 
 *Tier II · Wind · Harms enemies · 8 mana · needs a Copper Cord or better*
 
-Targets float helplessly upward for 3 seconds. On Self you float.
+Targets hang in the air for 3 seconds, their drift stopped, and every spell hits them harder while they're off the ground. On Self you float.
 
 **How to get it:** Craft: a Blank Rune, Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; End cities.
 
@@ -187,7 +187,7 @@ Targets float helplessly upward for 3 seconds. On Self you float.
 
 *Tier II · Wind · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A violent outward blast: 5 damage and hurls everything within 3 blocks away. On enemies just pulled in, it sets off Collapse.
+A violent outward blast: 4 damage and hurls everything within 3 blocks away (light creatures far, heavy ones barely). On enemies just pulled in, it sets off Collapse.
 
 **How to get it:** Craft: a Blank Rune, 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Breezes (8%).
 
