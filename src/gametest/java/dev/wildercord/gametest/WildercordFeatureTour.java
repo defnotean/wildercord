@@ -12,6 +12,7 @@ import dev.wildercord.cast.WildercordEntities;
 import dev.wildercord.client.CordScreen;
 import dev.wildercord.client.SpellWheelScreen;
 import dev.wildercord.client.WildercordKeys;
+import dev.wildercord.content.ArchiveLecternBlockEntity;
 import dev.wildercord.content.Imbued;
 import dev.wildercord.content.WildercordBlocks;
 import dev.wildercord.content.WildercordComponents;
@@ -38,6 +39,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.Mob;
@@ -1382,6 +1384,25 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 				"one huge blow should stop at the start of the Archivist's next phase (health " + archivist.getHealth() + " of " + max + ")");
 			boolean again = archivist.hurtServer(level, level.damageSources().playerAttack(player), max * 10);
 			check(!again && Math.abs(archivist.getHealth() - max * 2 / 3) < 0.01F, "the Archivist shouldn't be hurt while it rewrites its Cord");
+			// Nothing leads it out of the Archive: no boat, no portal.
+			Entity boat = EntityTypes.OAK_BOAT.create(level, EntitySpawnReason.COMMAND);
+			check(boat != null, "a boat should spawn");
+			boat.snapTo(archivist.getX(), archivist.getY(), archivist.getZ(), 0, 0);
+			level.addFreshEntity(boat);
+			check(!archivist.startRiding(boat) && !archivist.isPassenger(), "the Archivist shouldn't be caught in a boat");
+			check(!archivist.canUsePortal(false), "the Archivist shouldn't go through a portal");
+			boat.discard();
+			// The allies it called from the stacks as it began rewriting.
+			List<Mob> allies = level.getEntitiesOfClass(Mob.class, archivist.getBoundingBox().inflate(10),
+				m -> m != archivist && m.isAlive() && (m.getType() == EntityTypes.SKELETON || m.getType() == EntityTypes.PILLAGER));
+			// A command's kill goes through even while it rewrites; its allies go with it, and its lectern goes quiet for good.
+			archivist.kill(level);
+			check(archivist.isDeadOrDying(), "a command's kill should go through while the Archivist rewrites its Cord");
+			for (Mob ally : allies) {
+				check(ally.isRemoved(), "the allies the Archivist called should go when it falls (a " + ally.getType().getDescription().getString() + " stayed)");
+			}
+			check(level.getBlockEntity(lectern) instanceof ArchiveLecternBlockEntity keeper && keeper.isSlain(),
+				"the Archive Lectern should remember that its Archivist fell");
 		});
 	}
 }

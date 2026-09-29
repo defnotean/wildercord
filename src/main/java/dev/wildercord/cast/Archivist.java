@@ -1,11 +1,11 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.content.ArchiveLecternBlockEntity;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Spellbooks;
-import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
@@ -14,6 +14,7 @@ import dev.wildercord.spell.SpellNames;
 import dev.wildercord.spell.SpellSigil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -54,6 +55,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * The Archivist: keeper of the Archive and its Tier IV runes. It fights with a Cord like any
@@ -96,6 +98,8 @@ public class Archivist extends SpellcasterIllager {
 	private LivingEntity castTarget;
 	private long nextBlink;
 	private int spellIndex;
+	/** The allies it called from the stacks (saved), sent away when it falls. */
+	private final List<UUID> minions = new ArrayList<>();
 	/** How far its arms and tome are into the casting and rewriting poses, 0 to 1 (worked out on the client only). */
 	private float castPose;
 	private float castPoseO;
@@ -117,11 +121,11 @@ public class Archivist extends SpellcasterIllager {
 			.add(Attributes.KNOCKBACK_RESISTANCE, 0.8);
 	}
 
-	/** Wakes the Archivist above its lectern. */
-	public static void rise(ServerLevel level, BlockPos lectern) {
+	/** Wakes the Archivist above its lectern (null if it couldn't be made). */
+	public static Archivist rise(ServerLevel level, BlockPos lectern) {
 		Archivist boss = WildercordEntities.ARCHIVIST.create(level, EntitySpawnReason.TRIGGERED);
 		if (boss == null) {
-			return;
+			return null;
 		}
 		Vec3 at = Vec3.atBottomCenterOf(lectern).add(0, 1.2, 0);
 		boss.snapTo(at.x, at.y, at.z, level.getRandom().nextFloat() * 360, 0);
@@ -141,6 +145,7 @@ public class Archivist extends SpellcasterIllager {
 				player.sendSystemMessage(Component.translatable("message.wildercord.archivist_wakes").withColor(0xB8A0FF).withStyle(ChatFormatting.ITALIC));
 			}
 		}
+		return boss;
 	}
 
 	@Override
@@ -316,6 +321,7 @@ public class Archivist extends SpellcasterIllager {
 			// Bound before it enters the world, so the Archive's own roll doesn't bind it a second time.
 			Runebound.bind(guard, phase == 3);
 			level.addFreshEntity(guard);
+			minions.add(guard.getUUID());
 			Sigils.ground(level, spot, 0x9A6AD0, 0xE8E0FF, 1.2F, 30);
 			Vfx.emit(level, ParticleTypes.SOUL, spot.add(0, 1, 0), 12, 0.3, 0.03);
 		}
@@ -449,15 +455,24 @@ public class Archivist extends SpellcasterIllager {
 		Vfx.radial(level, new DustParticleOptions(0xF5C46A, 1.6F), c, 50, 0.5);
 		Fx.sound(level, c, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 0.8F);
 		Fx.sound(level, c, SoundEvents.BOOK_PUT, 1.5F, 0.5F);
+		// (The 7th Circle's boss breakthrough is given to everyone near by HeartCircles, as for every boss.)
 		for (ServerPlayer player : level.players()) {
-			if (player.distanceTo(this) <= 64) {
+			if (player.distanceTo(this) <= 64 && !player.isSpectator()) {
 				Grimoire.feat(player, Feats.ARCHIVIST);
-				if (!Heart.bossSlain(player)) {
-					player.setAttached(WildercordAttachments.BOSS_SLAIN, true);
-					player.sendSystemMessage(Component.translatable("message.wildercord.boss_breakthrough").withStyle(ChatFormatting.GOLD));
-				}
 			}
 		}
+		// Its lectern goes quiet for good.
+		if (home != null && level.getBlockEntity(home.below()) instanceof ArchiveLecternBlockEntity lectern) {
+			lectern.slain();
+		}
+		// The allies it called go with it.
+		for (UUID id : minions) {
+			if (level.getEntity(id) instanceof Mob mob && mob.isAlive()) {
+				Motes.clouds(level, mob.position().add(0, mob.getBbHeight() / 2, 0), 5, 0.3, Motes.SMOKE, 1.0, 30, new Vec3(0, 0.03, 0), 0.08, 0.45);
+				mob.discard();
+			}
+		}
+		minions.clear();
 	}
 
 	@Override
@@ -495,27 +510,6 @@ public class Archivist extends SpellcasterIllager {
 		bossEvent.removePlayer(player);
 	}
 
-	@Override
-	protected void addAdditionalSaveData(ValueOutput output) {
-		super.addAdditionalSaveData(output);
-		if (home != null) {
-			output.store("home", BlockPos.CODEC, home);
-		}
-		output.putInt("phase", phase);
-	}
-
-	@Override
-	protected void readAdditionalSaveData(ValueInput input) {
-		super.readAdditionalSaveData(input);
-		home = input.read("home", BlockPos.CODEC).orElse(null);
-		phase = input.getIntOr("phase", 1);
-	}
-
-	@Override
-	public boolean removeWhenFarAway(double distSqr) {
-		return false;
-	}
-
 	/** Its bar goes from every screen however it leaves: killed, discarded, unloaded with its chunk or taken to another world. */
 	@Override
 	public void onRemoval(RemovalReason reason) {
@@ -537,6 +531,30 @@ public class Archivist extends SpellcasterIllager {
 	/** Never through a portal: one that left would be missing from the Archive, and its lectern would wake another. */
 	@Override
 	public boolean canUsePortal(boolean ignorePassenger) {
+		return false;
+	}
+
+	@Override
+	protected void addAdditionalSaveData(ValueOutput output) {
+		super.addAdditionalSaveData(output);
+		if (home != null) {
+			output.store("home", BlockPos.CODEC, home);
+		}
+		output.putInt("phase", phase);
+		output.store("minions", UUIDUtil.CODEC.listOf(), List.copyOf(minions));
+	}
+
+	@Override
+	protected void readAdditionalSaveData(ValueInput input) {
+		super.readAdditionalSaveData(input);
+		home = input.read("home", BlockPos.CODEC).orElse(null);
+		phase = input.getIntOr("phase", 1);
+		minions.clear();
+		input.read("minions", UUIDUtil.CODEC.listOf()).ifPresent(minions::addAll);
+	}
+
+	@Override
+	public boolean removeWhenFarAway(double distSqr) {
 		return false;
 	}
 

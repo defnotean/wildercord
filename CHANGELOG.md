@@ -12,6 +12,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - A boss's bar could stay stuck on screen after its chunk unloaded, and the Archivist's showed to anyone who
   could see it from far off. Like the dungeon bosses', the Archivist's bar now shows only in its arena.
 - `/kill` and the void couldn't kill a boss while it gathered itself between phases.
+- **An Archivist lost without being killed never came back**: its lectern stayed dark for good. Like a dungeon's
+  altar, the lectern now wakes a new one if its Archivist has been missing for a few minutes while players are
+  there, and stays quiet only once it has truly fallen.
+- The allies the Archivist calls up as it rewrites its Cord now go when it falls, as the dungeon bosses' do.
+- Spectators watching a boss fall no longer earn its feat.
 
 ## [0.4.1-alpha] - 2026-09-28
 

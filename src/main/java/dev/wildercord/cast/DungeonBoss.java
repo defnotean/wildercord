@@ -494,7 +494,7 @@ public abstract class DungeonBoss extends Monster {
 		Sigils.ground(level, position().add(0, 0.05, 0), color(), 0xFFFFFF, 6.0F, DEATH_TICKS + 20);
 		Fx.sound(level, c, net.minecraft.sounds.SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 0.8F);
 		for (ServerPlayer player : level.players()) {
-			if (player.distanceTo(this) <= 64) {
+			if (player.distanceTo(this) <= 64 && !player.isSpectator()) {
 				Grimoire.feat(player, feat());
 			}
 		}
