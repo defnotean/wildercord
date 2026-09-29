@@ -129,8 +129,12 @@ cooldown and duration. Both are pure, so both are unit-tested.
   multiplier and riddle. `Secrets.match` only matches the whole spell, nothing before or after.
 - **`Feats`**: the Grimoire's keys (`reaction:shatter`, `secret:sunfall`, `feat:overcast`,
   `hint:` for a riddle read), every feat, and how much mana each first discovery condenses.
-- **`Leaning`**: which element a caster leans toward, from their cast counts (40+ casts and 1.25x
-  the runner-up), and its 10% bonus.
+- **`PlayerAffinity`**: a player's own affinity with each element: the levels (100 to 10,000 points),
+  what each gives (+3% power a level, a resistance from III, 10% off the element's share of a price at V),
+  every way of earning points with its daily allowance (`Source`, `grant`), and which elements each
+  reaction feeds. See [features/player-affinity.md](features/player-affinity.md).
+- **`Leaning`**: which element a caster leans toward: their deepest affinity, at level I and 1.25x the
+  runner-up. Colour only; the power is the affinity's.
 - **`SpellNames`**: a readable name made from a spell's runes ("Splitting Frost Bolt"), and
   cleaning of custom names.
 - **`SpellCodes`**: a spell as a `wc:bolt.frost.split` code and back (add-on runes as
@@ -163,7 +167,8 @@ hold. Runes outside those rules stay threaded but quiet, so swapping Cords never
 
 Around the gate sit the batch 5 systems it calls: `Charging` (hold to charge; `cast(player,
 spell, charge)` adds up to 40% power), `Overcast` (a second press within 2 seconds cracks a Heart
-Circle to pay), `Rhythm` (casts on the beat), elemental leaning (counted in `countElements`),
+Circle to pay), `Rhythm` (casts on the beat), affinities (`PlayerAffinities.onCast` counts the mana spent
+toward each element in the spell, and the cast is marked `withAffinity`),
 secret spells (`Secrets.match` routes the cast to `SecretSpells`, at `Secret.power` times the mana
 and a 50% longer cooldown) and Twin Star (`Innates.consumeTwin`). Charge, rhythm and the Heart's
 bonuses all end up in the cast's `power`.
@@ -201,7 +206,9 @@ it's switched off, or once `cancel()` is called, which is how a Domain that lose
 shatters), and every scheduled part checks it, so a spell never outlives its caster.
 
 `Cast.Info` records what was cast: the plan (Mirrorfrost casts it back), its rune count (a kill
-with six or more is a feat) and the caster's leaning element (+10% for effects of it).
+with six or more is a feat) and the caster's leaning element (their deepest affinity, for its colour).
+Whether the caster's affinities add their power is the cast's own flag (`withAffinity`, kept by copies): set
+for a spell from the Cord, an imbued release and Mirrorfrost, not for scrolls or passives.
 
 `Cast.Trigger` is where a segment starts (the caster, or the thing that set a link off).
 `Cast.Hit` is what a shape hit: creatures, the point, the direction, the block and face if any.
@@ -231,10 +238,12 @@ On Hit / On Kill link.
 `harmed` (fair game) lists with `Targets`, so friendly fire is impossible by construction. Simple
 effects are a few lines inline; bigger ones live in helpers in `Effects` or, for the newer
 techniques, in `Techniques`; the ten innate runes go to `Innates.apply`. Power already includes
-the caster's leaning (+10% for effects of that element) and, for innate runes, +6% per circle.
+the caster's affinity with the effect's element (`PlayerAffinities.power`: +3% a level) and, for innate runes,
++6% per circle.
 All spell damage goes through `Effects.hurt`, which skips invulnerability frames (so stacked
-effects all land), applies Execute, Fortune and Unison, the target's creature affinity and the
-caster's elemental climate (`Affinities.multiplier`), scales damage to players, and records the
+effects all land), applies Execute, Fortune and Unison, the target's creature affinity (or a player
+target's own resistance from affinity III) and the caster's elemental climate (`Affinities.multiplier`),
+scales damage to players, and records the
 hit for spell-kill counting and the innate runes that react to hits. After each effect,
 `Effects.apply` tells `RuneSeals` its element and where it landed.
 
@@ -306,6 +315,15 @@ None of the wards are saved: they last seconds, and a restart simply ends them.
   player casts (the Nether, a thunderstorm, snow, the deep...), cached per player per second and sent
   to the HUD when it changes. The pure rules are `spell.Affinity`, `spell.Bestiary` and
   `spell.ClimateRules`. See [features/affinities.md](features/affinities.md).
+- **`PlayerAffinities`**: players' own affinities at runtime. `gain` keeps every source to its daily
+  allowance (`affinity_tally`), scales by `affinity.gain_multiplier`, and announces each level (a message,
+  the `Rise` toast, the first level's Grimoire entry, a leaning change). Points come from casting (told by
+  `SpellCaster`), reactions and discoveries (told by `Grimoire`), block breaks, deaths and harm survived
+  (Fabric events), a check every 100 ticks per player (where they stand, and vanilla's own statistics for
+  fish, breeding, enchanting, pearls and elytra flight), and a few small hooks (`FurnaceResultSlotMixin`,
+  `TameAnimalTriggerMixin`, `LivingEntityHealMixin`, `LightningRodBlockMixin`, `RuneItem`, `WorldMagic.age`).
+  What they give is read in `Effects` (power), `Affinities` (resistance) and `Heart` (the price at V). See
+  [features/player-affinity.md](features/player-affinity.md).
 - **`LeyWalker`**: sends the ley seed at login and sets the `on_ley` attachment every 5 ticks;
   `Mana.of` and `HeartCircles.tick` read it. The Wellstone's block entity checks the line under it
   once a second and renews `well_until` on players within 12 blocks.
@@ -442,7 +460,9 @@ player, synced to that player only, and copied through death where noted.
 | `runebound_slain` | int | yes | Runebound slain, for the 6th Circle |
 | `grimoire` | list of string | yes | Discoveries: reactions, secrets, feats and riddles read |
 | `innate` | string | yes | The caster's innate rune |
-| `element_casts` | map of string to int | yes | Casts per element, for leaning |
+| `element_casts` | map of string to int | yes | Casts per element as leaning counted them before affinities; read once to give a caster's affinities a start |
+| `affinity` | map of string to int | yes | Affinity points per element (see [features/player-affinity.md](features/player-affinity.md)) |
+| `affinity_tally` | day, map of string to double | yes (server only) | What each way of earning affinity has offered today: its daily allowance |
 | `cracks` | count, mend time | yes | Circles cracked by overcasting, and when they mend |
 | `meditating` | bool | no (not saved) | Worked out by the server each tick |
 | `rhythm` | stacks, window | no (not saved) | The rhythm chain and the next beat |
@@ -518,7 +538,8 @@ Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the clie
 `ScreenFx(kind, strength, ticks)` (a camera shake, field-of-view kick, punch or Domain tint; see
 `cast.ScreenFx`). The travel commands send `Waypoints.Track` (the tracked waypoint, for `WaypointHud`), and
 `cast.Climate.Sync(conditions)` tells each player the elemental climate where they stand (once a second, only
-when it changes) for the HUD's marks.
+when it changes) for the HUD's marks, and `cast.PlayerAffinities.Rise(element, level)` tells a player an
+affinity reached a new level (the client shows its toast).
 Everything else travels through synced attachments; `CHARGE` is synced to everyone nearby so they
 can draw the circle.
 
@@ -576,7 +597,9 @@ can draw the circle.
   glowing (brighter while the Archivist is abroad), and quiet pages, whispers and chimes;
   `WellstoneHalo` hangs a turning ring over every awake Wellstone. Each spawner keeps a small
   budget of lights out at once (`Glimmer.Budget`).
-- **`GrimoireToast`**, and the Grimoire page inside `CordScreen`.
+- **`GrimoireToast`** (and `GrimoireToast.affinity`, a level reached, with the element's mark from
+  `ElementGlyphs`), and the Grimoire page inside `CordScreen`, whose Affinities section draws each element's
+  mark, level and a bar toward the next level (`GrimoireLine`'s `glyph` and `points`).
 - **Casting poses**: a cast sets the synced `cast_pose`; `AvatarRendererMixin` reads it (and the
   charge, and the Cord's look) into the render state through the `CastingPose` interface that
   `AvatarRenderStateMixin` adds, and `PlayerModelMixin` moves the arms: both hands held out while
@@ -605,7 +628,9 @@ can draw the circle.
   copies a Runebound's rune marks into its render state (a render layer only sees the state, and
   there is no event for this step). `GameRendererMixin` applies camera shake where the view bobs
   when you're hurt, and `CameraMixin` the field-of-view kicks. On the server side,
-  `LightningRodBlockMixin` turns a Blank Rune by a struck rod into Lightning, and
+  `LightningRodBlockMixin` turns a Blank Rune by a struck rod into Lightning (and feeds nearby players' storm
+  affinity), `FurnaceResultSlotMixin`, `TameAnimalTriggerMixin` and `LivingEntityHealMixin` tell
+  `PlayerAffinities` of smelting, taming and a spell healing someone else, and
   `MannequinAccessor` sets up Phantom's afterimage (a mannequin wearing the caster's skin).
 
 ## 7. Content: items, loot, effects
@@ -746,6 +771,10 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **`WildercordAffinitiesTest`** checks creature affinities (frost on a blaze against a husk, fire on
   a hoglin and a blaze, a snow golem's immunity, a Shatter through a resistance, a Runebound's own
   element, the Bestiary), the climate in the Nether and the End, and the config switches.
+- **`WildercordPlayerAffinityTest`** checks players' own affinities (casting grows its element, mining stone
+  stops at the day's allowance, a level's toast and Grimoire entry, power on that element only, resistance
+  from III against a Runebound, the config switch) and screenshots `affinity_toast` and `affinity_grimoire`.
+  `PlayerAffinityTest` covers the pure rules.
 - **`WildercordLoadoutsTest`** drives the loadouts panel (save, rename, load back), and checks quiet
   runes after a load, the cooldowns a load starts, the refusal while charging, the limit of six and the
   quick switch; screenshots `loadouts_panel` and `loadouts_panel_854x480`.

@@ -25,7 +25,9 @@ Only damage changes. Heals, durations, knockback and marks are the same everywhe
 `<element>` is one of `fire`, `frost`, `storm`, `wind`, `earth`, `life`, `void`, `arcane`, `time`,
 `blood`. The rules (`spell.Affinity.judge`, unit-tested):
 
-- **Players have none.** PvP is untouched.
+- **Players have their own**, grown rather than born with: from level III of an affinity they resist that element
+  (x0.9, x0.85, x0.8), through `PlayerAffinities.resistance` in the same factor, with no callout. A reaction breaks
+  through it too. See [player-affinity.md](player-affinity.md).
 - **A reaction breaks through a resistance.** A hit that sets off a reaction on the creature
   (`Reactions.reactedWithin(target, 0)`) ignores its resistance; immunity still holds. This is what
   keeps the Cinder Warden's fight: it resists fire, but a Shatter lands in full.

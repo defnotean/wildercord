@@ -256,8 +256,8 @@ def main():
          ["# Effects", "",
           "An **effect** decides *what happens* to whatever the shape hit: damage, healing, a push, a freeze, a blink. "
           "Every effect belongs to one of ten **elements**, and elements matter: they set the spell's colour and sound, "
-          "they set off reactions together, they decide what fuses at the Fusion Altar, and the element you cast most "
-          "becomes your leaning. Each element has its own page:", ""],
+          "they set off reactions together, they decide what fuses at the Fusion Altar, and casting one grows your "
+          "affinity with its element. Each element has its own page:", ""],
          [f"- [{e.title()}]({{{{ '/runes/effects/{e}/' | relative_url }}}}): {ELEMENT_BLURB[e]}" for e in ELEMENTS])
     for i, element in enumerate(ELEMENTS):
         rs = [r for r in runes if r["family"] == "effect" and r["element"] == element and r["path"] not in special]

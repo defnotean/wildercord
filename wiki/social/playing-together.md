@@ -63,7 +63,7 @@ doesn't do anything, can't be inscribed. Your first scroll earns the **Scribe** 
 the scroll is used up.
 
 - **No mana, no Cord, no runes needed.** The scroll carries everything.
-- **Base strength.** A scroll's spell goes off at its plain strength: the reader's Heart Circles, leaning and casting
+- **Base strength.** A scroll's spell goes off at its plain strength: the reader's Heart Circles, affinities and casting
   gear don't add to it.
 - **One at a time.** After reading a scroll you wait a second before you can read another.
 - **Its tooltip** shows the spell's readout, *Inscribed by (player)*, and *Right-click to cast it once. No Cord
