@@ -79,6 +79,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.familiar.FamiliarContent.init();
 		dev.wildercord.familiar.Familiars.init();
 		dev.wildercord.cast.Dungeons.init();
+		dev.wildercord.world.dungeons.DungeonWards.init();
 		SpellCaster.init();
 		WildercordCommand.init();
 		dev.wildercord.travel.Travel.init();

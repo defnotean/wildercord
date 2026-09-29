@@ -233,6 +233,86 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 		return altar;
 	}
 
+	/**
+	 * The arena and vault are warded: a survival player can't break into them, nor blast them open, but a block they
+	 * put down inside can go again, and ground outside the ward breaks as ever.
+	 */
+	private static void wards(TestSingleplayerContext world, ResourceKey<Level> dimension, BlockPos altar, String name) {
+		String problem = world.getServer().computeOnServer(server -> {
+			ServerLevel level = server.getLevel(dimension);
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			GameType was = player.gameMode.getGameModeForPlayer();
+			player.setGameMode(GameType.SURVIVAL);
+			try {
+				BlockPos floor = altar.below();
+				if (level.getBlockState(floor).canBeReplaced() || !dev.wildercord.world.dungeons.DungeonWards.warded(level, floor)) {
+					return name + ": the floor under the altar should be solid and warded (" + level.getBlockState(floor) + ")";
+				}
+				BlockState before = level.getBlockState(floor);
+				player.gameMode.destroyBlock(floor);
+				if (!level.getBlockState(floor).equals(before)) {
+					return name + ": a survival player shouldn't break the arena's floor";
+				}
+				// A block put down in the arena is the player's to take up again.
+				BlockPos spot = null;
+				for (net.minecraft.core.Direction side : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+					BlockPos at = altar.relative(side, 3);
+					if (level.getBlockState(at).isAir() && level.getBlockState(at.above()).isAir() && !level.getBlockState(at.below()).canBeReplaced()) {
+						spot = at;
+						break;
+					}
+				}
+				if (spot == null) {
+					return name + ": no floor beside the altar to put a block on";
+				}
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.COBBLESTONE, 4));
+				net.minecraft.world.phys.BlockHitResult hit = new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(spot.below()).add(0, 0.5, 0),
+					net.minecraft.core.Direction.UP, spot.below(), false);
+				player.getMainHandItem().useOn(new net.minecraft.world.item.context.UseOnContext(player, net.minecraft.world.InteractionHand.MAIN_HAND, hit));
+				if (!level.getBlockState(spot).is(Blocks.COBBLESTONE)) {
+					return name + ": the cobblestone should have been put down in the arena (" + level.getBlockState(spot) + ")";
+				}
+				player.gameMode.destroyBlock(spot);
+				if (!level.getBlockState(spot).isAir()) {
+					return name + ": a block a player put down in the arena should break again";
+				}
+				// A blast at the altar's foot leaves the warded floor.
+				level.explode(null, floor.getX() + 0.5, floor.getY() + 1.2, floor.getZ() + 0.5, 4.0F, Level.ExplosionInteraction.TNT);
+				if (level.getBlockState(floor).canBeReplaced()) {
+					return name + ": an explosion shouldn't blast the arena's floor";
+				}
+				// Well away, outside the ward, ground breaks as ever.
+				BlockPos outside = null;
+				for (int d = 40; d <= 90 && outside == null; d += 5) {
+					for (net.minecraft.core.Direction side : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+						BlockPos at = altar.relative(side, d).below();
+						for (int dy = 0; dy < 12 && outside == null; dy++) {
+							BlockPos p = at.below(dy);
+							BlockState state = level.getBlockState(p);
+							if (!state.canBeReplaced() && state.getDestroySpeed(level, p) >= 0 && !dev.wildercord.world.dungeons.DungeonWards.warded(level, p)) {
+								outside = p;
+							}
+						}
+						if (outside != null) {
+							break;
+						}
+					}
+				}
+				if (outside != null) {
+					player.gameMode.destroyBlock(outside);
+					if (!level.getBlockState(outside).canBeReplaced()) {
+						return name + ": ground outside the ward should still break (" + outside + ")";
+					}
+				}
+				return null;
+			} finally {
+				player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+				player.setGameMode(was);
+			}
+		});
+		check(problem == null, problem);
+	}
+
 	private static void done(TestSingleplayerContext world, ResourceKey<Level> dimension) {
 		String dim = dimension.identifier().toString();
 		world.getServer().runCommand("execute in " + dim + " run kill @e[type=!player]");
@@ -244,6 +324,7 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 	private static void emberSanctum(ClientGameTestContext context, TestSingleplayerContext world) {
 		ResourceKey<Level> nether = Level.NETHER;
 		BlockPos altar = build(context, world, nether, "ember_sanctum", new BlockPos(8, 64, 8), DungeonAltarBlock.Kind.CINDER);
+		wards(world, nether, altar, "the Ember Sanctum");
 		world.getServer().runOnServer(server -> {
 			ServerLevel level = server.getLevel(nether);
 			Map<Block, Integer> census = census(level, altar);
@@ -339,6 +420,7 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 	private static void astralObservatory(ClientGameTestContext context, TestSingleplayerContext world) {
 		ResourceKey<Level> end = Level.END;
 		BlockPos altar = build(context, world, end, "astral_observatory", new BlockPos(8, 64, 8), DungeonAltarBlock.Kind.ASTRAL);
+		wards(world, end, altar, "the Astral Observatory");
 		world.getServer().runCommand("execute in minecraft:the_end run kill @e[type=minecraft:ender_dragon]");
 		world.getServer().runOnServer(server -> {
 			ServerLevel level = server.getLevel(end);
@@ -419,6 +501,7 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 		// Well away from where the world began; land or sea, the command builds it all the same.
 		BlockPos origin = new BlockPos(408, 64, 408);
 		BlockPos altar = build(context, world, overworld, "drowned_scriptorium", origin, DungeonAltarBlock.Kind.TIDE);
+		wards(world, overworld, altar, "the Drowned Scriptorium");
 		world.getServer().runOnServer(server -> {
 			ServerLevel level = server.getLevel(overworld);
 			Map<Block, Integer> census = census(level, altar);

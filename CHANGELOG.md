@@ -26,6 +26,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Craftable runes' wiki entries now say where else they're found, and Lightning's and Shock's tooltips name trail
   ruins (brushing), where they've been found all along.
 
+### Fixed
+- **Dungeon arenas and vaults are warded.** Players could tunnel, blast or spell their way straight into a boss arena
+  or vault without going through the dungeon. Their walls, floors and domes now can't be broken by survival players,
+  explosions, block-breaking spells or pistons ("These walls are warded: the only way in is through the dungeon").
+  The halls on the way can still be dug into, and a block you put down inside an arena can be broken again. Dungeons
+  already in a world are warded too.
+
 ## [0.4.4-alpha] - 2026-09-29
 
 ### Fixed

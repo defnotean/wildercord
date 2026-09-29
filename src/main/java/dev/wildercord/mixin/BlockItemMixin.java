@@ -12,9 +12,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/** An imbued block item, placed: the block becomes a glyph holding what the item held. */
+/**
+ * An imbued block item, placed: the block becomes a glyph holding what the item held. And a block a player puts
+ * down inside a dungeon's warded arena is remembered as theirs, so they can break it again (see DungeonWards).
+ */
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin {
+	@Inject(method = "placeBlock", at = @At("RETURN"))
+	private void wildercord$placedInWard(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
+		if (cir.getReturnValueZ() && context.getLevel() instanceof ServerLevel level) {
+			dev.wildercord.world.dungeons.DungeonWards.placedBy(level, context.getPlayer(), context.getClickedPos());
+		}
+	}
+
 	@Inject(method = "placeBlock", at = @At("RETURN"))
 	private void wildercord$placeImbued(BlockPlaceContext context, BlockState state, CallbackInfoReturnable<Boolean> cir) {
 		if (cir.getReturnValueZ() && context.getLevel() instanceof ServerLevel level && context.getPlayer() instanceof ServerPlayer player

@@ -20,7 +20,8 @@
 		"EndermanMixin",
 		"CreeperAccessor",
 		"ZombieVillagerAccessor",
-		"AbstractFurnaceBlockEntityAccessor"
+		"AbstractFurnaceBlockEntityAccessor",
+		"ServerExplosionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
