@@ -10,7 +10,7 @@ nav_order: 4
 
 A **link** ends a segment of the spell: everything after it happens *later*, or somewhere else. `On Hit` fires the rest where the spell struck, `Delay` fires it from you a moment later, `Echo` repeats everything before it, and the conditions (If Sneaking, If Airborne...) let one spell do two different things.
 
-12 links, by tier.
+14 links, by tier.
 
 ### <img src="{{ '/assets/runes/delay.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Delay
 {: #delay}
@@ -91,6 +91,17 @@ The rest fires when you next touch the ground.
 
 <img src="{{ '/assets/recipes/rune_on_land.png' | relative_url }}" alt="Crafting On Land: a Blank Rune and Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
+### <img src="{{ '/assets/runes/on_weakness.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Weakness
+{: #on_weakness}
+
+*Tier II · 2 mana · needs a Copper Cord or better*
+
+The rest fires at each creature the shape before it strikes with an element it's weak to.
+
+**How to get it:** Craft: a Blank Rune, Fermented Spider Eye and Target, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_on_weakness.png' | relative_url }}" alt="Crafting On Weakness: a Blank Rune and Fermented Spider Eye and Target, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/pulse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pulse
 {: #pulse}
 
@@ -147,4 +158,15 @@ The rest fires when your health drops below 30% (within 30 seconds).
 **How to get it:** Craft: a Blank Rune, Golden Apple, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities.
 
 <img src="{{ '/assets/recipes/rune_on_low_health.png' | relative_url }}" alt="Crafting On Low Health: a Blank Rune and Golden Apple, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/on_reaction.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> On Reaction
+{: #on_reaction}
+
+*Tier III · 2 mana · needs an Amethyst Cord or better*
+
+The rest fires at each creature the shape before it sets off an element reaction on (Shatter, Conduct, Blight...).
+
+**How to get it:** Craft: a Blank Rune, Brewing Stand, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults.
+
+<img src="{{ '/assets/recipes/rune_on_reaction.png' | relative_url }}" alt="Crafting On Reaction: a Blank Rune and Brewing Stand, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

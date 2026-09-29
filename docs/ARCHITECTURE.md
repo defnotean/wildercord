@@ -220,7 +220,11 @@ the shape: instant shapes (Self, Touch, Beam, Burst, Cone) compute their hits ri
 lasting shapes (Bolt and Arc via the `RuneBolt` entity; Trail, Wall, Orbit, Ring, Pillar, Wave,
 Mine, Totem, Domain, Crescent, Barrage, Orb, Blitz in `ShapeRunners`) schedule their work
 with `Scheduler` and call `onHit` as they go. Split fans shapes out (`CastEngine.fan`,
-`CastEngine.spread`); Volley repeats them (`CastEngine.volley`).
+`CastEngine.spread`); Volley repeats them (`CastEngine.volley`). The second batch of new runes' shapes (Glaive,
+out and back with a fresh budget for the way back; Imprint, which erupts where you stood; Latch, which holds one
+creature and strikes it again and again) are in `CraftedShapes`, with On Reaction and On Weakness: `onHit`
+counts each creature's reactions (`Reactions.count`) and weak strikes (`Affinities.weakStrikes`) before and after
+their group lands, and fires the rest at those that went up.
 
 Two shapes meet other casters' magic. A `RuneBolt` checks its path each tick for an enemy
 caster's bolt (`RuneBolt.collide`): both burst, harder for different elements, and a reacting pair
@@ -239,7 +243,11 @@ On Hit / On Kill link.
 effects are a few lines inline; bigger ones live in helpers in `Effects` or, for the newer
 techniques, in `Techniques`; the ten innate runes go to `Innates.apply`. Power already includes
 the caster's affinity with the effect's element (`PlayerAffinities.power`: +3% a level) and, for innate runes,
-+6% per circle.
++6% per circle. The second batch of new runes' effects are in `CraftedRunes`, which also shares a Kindred effect
+(applying it again, at half power, to the caster and the nearest ally it missed) and draws Belated's clock
+(`onHit` holds a Belated effect back); Thirst is read in `Effects.hurt`, which heals the caster a share of what the
+hit really took, and Gash's "no healing" is in `mixin/LivingEntityHealMixin` (which also counts healing others
+toward life affinity).
 All spell damage goes through `Effects.hurt`, which skips invulnerability frames (so stacked
 effects all land), applies Execute, Fortune and Unison, the target's creature affinity (or a player
 target's own resistance from affinity III) and the caster's elemental climate (`Affinities.multiplier`),
@@ -787,6 +795,12 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **`WildercordAdvancementTest`** checks the server loaded the advancement tab, that a feat, a
   reaction, a secret, a Heart Circle, learning runes, a Cord and a cast each grant theirs, and
   that revoked ones come back from the player's state as they would on login.
+- **`WildercordNewRunes2Test`** casts each of the second batch of new runes at husks (and a tamed wolf) on a
+  platform in the sky and checks what it's for (two glaive hits, an imprint's wait, a latch's strikes, Kindred's
+  share, Thirst's drink, Belated's delay, On Reaction and On Weakness firing only when they should, a brand's
+  burst, a gash that stops healing, ore glowing, a seared blow, the soaked freezing, a sleeper waking, a spark
+  lighting a lamp and going, Prolong, Umbra at noon and midnight, a sword snatched and given back), then
+  screenshots three of their circles (`new_runes_2_circles`).
 - **`WildercordFishingTest`** rolls the fishing tables thousands of times through the server's loot
   API with a real bobber (treasure runes and Torn Pages at their rates; a tangled rune never in plain
   water or out of open water, and at its rate under a mana storm, on a ley line and in a

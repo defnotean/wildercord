@@ -44,7 +44,7 @@ public abstract class PlayerModelMixin {
 		String shape = pose.wildercord$shape();
 		String path = shape.substring(shape.indexOf(':') + 1);
 		switch (path) {
-			case "crescent" -> {
+			case "crescent", "glaive" -> {
 				set(right, forward, turn + Mth.lerp(e, 1.3F, -1.2F), -0.3F, w);
 				set(left, 0.3F, 0, 0, w);
 			}
@@ -79,7 +79,7 @@ public abstract class PlayerModelMixin {
 				set(right, 0.9F, 0, 0.3F, w);
 				set(left, 0.9F, 0, -0.3F, w);
 			}
-			case "self", "orbit", "trail" -> {
+			case "self", "orbit", "trail", "imprint" -> {
 				set(right, -0.35F, 0, 0.6F, w);
 				set(left, -0.35F, 0, -0.6F, w);
 			}

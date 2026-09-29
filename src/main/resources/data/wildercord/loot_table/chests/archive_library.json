@@ -891,6 +891,127 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:glaive"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:latch"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:kindred"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:thirst"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:belated"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:on_weakness"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:spellbrand"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:gash"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:searing_edge"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:flash_freeze"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:disarm"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
           "weight": 2,
           "modifier": {
             "components": {
@@ -1302,6 +1423,39 @@
           "modifier": {
             "components": {
               "wildercord:rune": "wildercord:combo"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 2,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:on_reaction"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 2,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:drowse"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 2,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:prolong"
             },
             "type": "minecraft:set_components"
           }

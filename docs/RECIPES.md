@@ -10,7 +10,7 @@ a **Blank Rune** plus the items below, plus a cost that grows with the tier:
 Recipes appear in the crafting recipe book once you hold a Blank Rune
 (Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.
 
-## Tier I (47 runes, + nothing extra)
+## Tier I (51 runes, + nothing extra)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -27,6 +27,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Ember | Effect | Coal, Flint |
 | Feather Fall | Effect | 2x Feather |
 | Frostward | Effect | Snowball, Leather |
+| Galvanize | Effect | Lightning Rod, Redstone |
 | Glimmer | Effect | Glow Lichen |
 | Grow | Effect | 2x Bone Meal |
 | Harm | Effect | Fermented Spider Eye |
@@ -42,6 +43,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Night Eye | Effect | Glow Berries |
 | Nourish | Effect | Bread |
 | Pelt | Effect | Gravel, Cobblestone |
+| Prospect | Effect | Stone Pickaxe, Amethyst Shard |
 | Prune | Effect | Shears, any saplings |
 | Push | Effect | Piston |
 | Rend | Effect | Iron Nugget, Bone |
@@ -49,6 +51,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Shock | Effect | Lightning Rod |
 | Swift | Effect | 2x Sugar |
 | Tidebreath | Effect | Pufferfish |
+| Umbra | Effect | Ink Sac, Flint |
 | Windcut | Effect | Feather, Flint |
 | Delay | Link | Clock |
 | Amplify | Modifier | Gold Ingot |
@@ -56,13 +59,14 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Frugal | Modifier | Emerald |
 | Arc | Shape | 2x Snowball |
 | Bolt | Shape | Arrow |
+| Imprint | Shape | Clay Ball, Gunpowder |
 | Nova | Shape | Gunpowder, Glowstone Dust |
 | Ray | Shape | Glass Pane, Glowstone Dust |
 | Self | Shape | Glass Pane |
 | Spark | Shape | Flint, Glowstone Dust |
 | Touch | Shape | Leather |
 
-## Tier II (80 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (91 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -77,14 +81,17 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Dash | Effect | Rabbit Foot |
 | Decree | Effect | Writable Book |
 | Deflect | Effect | Shield, Wind Charge |
+| Disarm | Effect | Wind Charge, Fishing Rod |
 | Dismantle | Effect | Shears |
 | Empower | Effect | Iron Sword |
 | Excavate | Effect | Iron Shovel |
 | Fell | Effect | Iron Axe, any logs |
 | Fire | Effect | Blaze Powder |
 | Fireward | Effect | Magma Cream |
+| Flash Freeze | Effect | Packed Ice, Water Bucket |
 | Flashfire | Effect | Blaze Powder, Gunpowder |
 | Frost | Effect | Powder Snow Bucket |
+| Gash | Effect | Flint, Rotten Flesh |
 | Grapple | Effect | Lead |
 | Haven | Effect | Shield, Glistering Melon Slice |
 | Jolt | Effect | Lightning Rod, Iron Ingot |
@@ -97,11 +104,13 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Repel | Effect | 2x Wind Charge |
 | Ripple | Effect | Sunflower, Glowstone Dust |
 | Root | Effect | 2x Vine |
+| Searing Edge | Effect | Iron Sword, Blaze Powder |
 | Shackle | Effect | 2x Iron Chain |
 | Shield | Effect | Shield |
 | Silence | Effect | any wool |
 | Smelt | Effect | Furnace, Blaze Powder |
 | Span | Effect | 2x Magenta Stained Glass |
+| Spellbrand | Effect | Book, Gunpowder |
 | Stoneskin | Effect | Armadillo Scute |
 | Swap | Effect | 2x Ender Pearl |
 | Thunderclap | Effect | Goat Horn |
@@ -117,14 +126,18 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | On Hit | Link | Target |
 | On Hurt | Link | Cactus |
 | On Land | Link | Hay Block |
+| On Weakness | Link | Fermented Spider Eye, Target |
 | Pulse | Link | Repeater |
+| Belated | Modifier | Clock, Cobweb |
 | Bounce | Modifier | Slime Block |
 | Execute | Modifier | Iron Axe |
 | Focus | Modifier | Glass Pane, Gold Nugget |
+| Kindred | Modifier | Cake |
 | Linger | Modifier | Honey Bottle |
 | Pierce | Modifier | 2x Arrow |
 | Quicken | Modifier | Breeze Rod |
 | Rapid | Modifier | Sugar, Redstone |
+| Thirst | Modifier | Spider Eye, Glass Bottle |
 | Volley | Modifier | Crossbow |
 | Widen | Modifier | 2x Amethyst Shard |
 | Barrage | Shape | Leather, Iron Ingot |
@@ -135,7 +148,9 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Comet | Shape | Fire Charge, Gunpowder |
 | Cone | Shape | Fire Charge |
 | Crescent | Shape | Iron Sword, Feather |
+| Glaive | Shape | Iron Axe, String |
 | Lance | Shape | Spyglass, Blaze Rod |
+| Latch | Shape | Lead, Amethyst Shard |
 | Mine | Shape | Tripwire Hook |
 | Pillar | Shape | 2x Pointed Dripstone |
 | Prism | Shape | Prismarine Crystals, Glass |
@@ -147,7 +162,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Wave | Shape | 2x Kelp |
 | Wisp | Shape | Glow Berries, Amethyst Shard |
 
-## Tier III (38 runes, + a Mana Crystal and a Diamond)
+## Tier III (41 runes, + a Mana Crystal and a Diamond)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -156,6 +171,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Blackspark | Effect | Black Dye, Glowstone |
 | Blink | Effect | Ender Pearl, Chorus Fruit |
 | Cleave | Effect | Diamond Axe |
+| Drowse | Effect | Spore Blossom, Honey Bottle |
 | Explode | Effect | TNT, Fire Charge |
 | Foresight | Effect | Spyglass |
 | Freeze | Effect | 2x Blue Ice |
@@ -164,6 +180,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Lightning | Effect | Copper Block, Glowstone |
 | Meteor | Effect | Magma Block, Fire Charge |
 | Primer | Effect | TNT, Pink Dye |
+| Prolong | Effect | Clock, 2x Redstone |
 | Reflect | Effect | Shield, Glass Pane |
 | Resonance | Effect | Iron Nugget, Hay Block |
 | Restore | Effect | Iron Ingot, Glistering Melon Slice |
@@ -177,6 +194,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Echo | Link | 2x Echo Shard |
 | On Kill | Link | Bone Block |
 | On Low Health | Link | Golden Apple |
+| On Reaction | Link | Brewing Stand |
 | Blood Price | Modifier | Ghast Tear, Redstone |
 | Chain | Modifier | Iron Chain, Redstone |
 | Homing | Modifier | Compass |

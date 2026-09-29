@@ -11,7 +11,7 @@ nav_order: 2
 
 Cold, ice and water. Frost slows, freezes and shatters, and freezes water you can walk on.
 
-9 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
+10 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/chill.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chill
 {: #chill}
@@ -37,7 +37,7 @@ For 60 seconds you can't freeze, not even in powder snow.
 
 <img src="{{ '/assets/recipes/rune_frostward.png' | relative_url }}" alt="Crafting Frostward: a Blank Rune and Snowball and Leather" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/icepath.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Icepath
 {: #icepath}
@@ -63,7 +63,7 @@ Freezes water within 3 blocks into ice you can walk on.
 
 <img src="{{ '/assets/recipes/rune_icicle.png' | relative_url }}" alt="Crafting Icicle: a Blank Rune and Ice and Pointed Dripstone" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/tidebreath.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidebreath
 {: #tidebreath}
@@ -76,7 +76,7 @@ Water breathing and faster swimming for 30 seconds.
 
 <img src="{{ '/assets/recipes/rune_tidebreath.png' | relative_url }}" alt="Crafting Tidebreath: a Blank Rune and Pufferfish" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/bubble.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bubble
 {: #bubble}
@@ -89,7 +89,7 @@ Traps targets in a floating bubble for 3 seconds. It pops for 4 damage and leave
 
 <img src="{{ '/assets/recipes/rune_bubble.png' | relative_url }}" alt="Crafting Bubble: a Blank Rune and Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/coldsnap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Coldsnap
 {: #coldsnap}
@@ -102,7 +102,20 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 <img src="{{ '/assets/recipes/rune_coldsnap.png' | relative_url }}" alt="Crafting Coldsnap: a Blank Rune and Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/flash_freeze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Flash Freeze
+{: #flash_freeze}
+
+*Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
+
+4 freeze damage. A wet or soaked target freezes solid for 3 seconds (1.5 on players); a dry one is only slowed.
+
+**How to get it:** Craft: a Blank Rune, Packed Ice and Water Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+<img src="{{ '/assets/recipes/rune_flash_freeze.png' | relative_url }}" alt="Crafting Flash Freeze: a Blank Rune and Packed Ice and Water Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/frost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frost
 {: #frost}
@@ -115,7 +128,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 <img src="{{ '/assets/recipes/rune_frost.png' | relative_url }}" alt="Crafting Frost: a Blank Rune and Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/freeze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Freeze
 {: #freeze}
@@ -128,5 +141,5 @@ Freezes targets solid for 2.5 seconds: they can't move or fight back.
 
 <img src="{{ '/assets/recipes/rune_freeze.png' | relative_url }}" alt="Crafting Freeze: a Blank Rune and 2x Blue Ice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

@@ -190,3 +190,68 @@ Several of them leave the marks the element reactions look for:
   **Unweave**, and Summit Wind on a bleeding target sets off **Rupture**.
 - **Cinderbrand** makes your own fire spells burn the target 50% hotter, and **Eclipse** makes all of
   your spells hit the targets beneath it 20% harder.
+
+# New runes, batch 2: more ways to build a spell
+
+Eighteen more runes, and these ones you **craft** (a Blank Rune and a couple of items, as every Tier I-III
+rune is): three shapes, three modifiers, two links and an effect for every element. Each does something its
+family or element couldn't before. Drowse, Prolong and On Reaction also turn up now and then in ancient city,
+end city and trial chamber (rare) chests, and every one of them can come from the places that give out crafted
+runes at random (the dimension dungeons' chests take the effects of their elements).
+
+## Shapes
+
+| Rune | Tier | Cost | Does | Recipe |
+|---|---|---|---|---|
+| Imprint | I | 3, effects ×1.3 | Leaves an imprint where you stand; 2 seconds later (1 with Quicken) it erupts on everything within 3 blocks. Charging shows the ring under your feet | Clay Ball, Gunpowder |
+| Glaive | II | 5, effects ×1.8 | A spinning glaive flies out up to 12 blocks (turning back at a wall) and curves back to you, striking each creature on the way out and again on the way back. Charging shows its reach | Iron Axe, String |
+| Latch | II | 6, effects ×1.9 | A thread latches onto the first creature within 16 blocks of your aim and strikes it 4 times, a second apart, at 70% power, while it stays within 24 blocks and in sight. After a link it tethers the creature that set it off to the spot it was struck. Charging marks the creature it would take | Lead, Amethyst Shard |
+
+## Modifiers
+
+| Rune | Tier | Cost | Does | Recipe |
+|---|---|---|---|---|
+| Kindred | II | ×1.4 | A helpful effect also lands on you and on the nearest ally within 8 blocks that it missed, at half power. It works on every helpful effect that lands on each creature it touches, but not on summons, Haven, Warcry, Zephyr, the death saves, Soulbond, Transfusion, Cryostasis, Shulkershell, Rewind, Overdrive or innate runes | Cake |
+| Thirst | II | ×1.4 | You heal for a quarter of the damage the effect really deals (half with two, three quarters at most) | Spider Eye, Glass Bottle |
+| Belated | II | ×1.25 | The effect lands 1.5 seconds late, 40% stronger, on whatever it struck that's still there (three count at most). Lingering landings wait too, and a Belated kill comes too late for On Kill | Clock, Cobweb |
+
+## Links
+
+| Rune | Tier | Cost | Does | Recipe |
+|---|---|---|---|---|
+| On Weakness | II | 2 | Watches the group before it, as On Hit does, and fires the rest at each creature it struck with an element it's weak to (see [Affinities](affinities.md)). Players have no weaknesses | Fermented Spider Eye, Target |
+| On Reaction | III | 2 | Watches the group before it and fires the rest at each creature it set an element reaction off on as it landed (Shatter, Conduct, Overload, Blight...) | Brewing Stand |
+
+What follows either is paid for once, so an Echo or a Pulse after one goes off for the first creature only,
+as after On Hit.
+
+## Effects
+
+| Rune | Element | Tier | Cost | Does | Recipe |
+|---|---|---|---|---|---|
+| Prospect | Earth | I | 3 | The ground rings out: every ore within 12 blocks of where it lands (16 at most, widened) glows through the rock for 20 seconds, in the colour of what it gives. Nothing in the world changes | Stone Pickaxe, Amethyst Shard |
+| Galvanize | Storm | I | 3 | A spark of raw power (a redstone block) sits in the air against the block it strikes for 5 seconds: doors open, lamps light, pistons push. Only in empty air nobody stands in, where you may build; it drops nothing, pistons can't move it, and it always goes | Lightning Rod, Redstone Dust |
+| Umbra | Void | I | 6 | 4 damage, doubled where the light at the target's eyes is level 7 or less (night, caves), and it leaves the target shadowed for Blight | Ink Sac, Flint |
+| Spellbrand | Arcane | II | 8 | Brands each target for 8 seconds; the next time your magic hurts it, the brand bursts for 6 arcane damage (which can Unweave) | Book, Gunpowder |
+| Gash | Blood | II | 9 | 3 damage, and for 8 seconds the target can't heal at all (Regeneration, potions, food, healing spells) and is bleeding, for Rupture | Flint, Rotten Flesh |
+| Searing Edge | Fire | II | 8 | For 15 seconds each melee hit the target lands sets the foe alight for 4 seconds and deals 2 more fire damage. It can be a passive | Iron Sword, Blaze Powder |
+| Flash Freeze | Frost | II | 9 | 4 freeze damage; a wet or soaked target (in rain, in water, after a Bubble) freezes solid for 3 seconds (1.5 on players) and is left frozen for Shatter; a dry one is slowed | Packed Ice, Water Bucket |
+| Disarm | Wind | II | 7 | A snatching gust takes the weapon (whatever's in its main hand) from each creature for 5 seconds, then gives it back; windswept. Players and bosses keep hold, and nothing is ever dropped | Wind Charge, Fishing Rod |
+| Drowse | Life | III | 14 | Lulls each target to sleep for 6 seconds (2 on players): it can't move or fight back, but any damage wakes it. Bosses are only slowed | Spore Blossom, Honey Bottle |
+| Prolong | Time | III | 12 | Every good effect on the target lasts 15 seconds longer, up to 5 minutes | Clock, 2 Redstone Dust |
+
+Tier II recipes also take 2 Lapis Lazuli and a Gold Ingot; Tier III a Mana Crystal and a Diamond.
+
+## How they fit in
+
+- **Reactions.** Umbra leaves foes shadowed and Gash leaves them bleeding; Flash Freeze turns soaked into
+  frozen; Disarm leaves them windswept; Searing Edge's blows set them burning; Spellbrand's burst is arcane
+  damage. On Reaction lets a spell do something only when one of these pays off.
+- **Affinities.** On Weakness fires on a weakness struck: life on the undead, frost on a blaze, wind on a
+  spider, storm on an iron golem, earth on a breeze.
+- **Monsters, scrolls and imbued items** run all of them as the rest: a monster never places a Galvanize
+  spark (monsters never change blocks), and Kindred shares a monster's buffs with its own kind.
+- **Passives:** Searing Edge can be sustained on Self, and an Orbit can carry Umbra.
+- **In code:** `cast/CraftedRunes` (the effects, Kindred's share and Belated's clock), `cast/CraftedShapes`
+  (the three shapes, and the two links' watch over the group they follow), `cast/CraftedVfx`, and
+  `mixin/LivingEntityHealMixin` (Gash). The numbers are in `SpellNumbers` ("new runes (batch 2)").

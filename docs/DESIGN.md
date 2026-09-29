@@ -403,6 +403,41 @@ Combos worth trying:
 - `Self · Brace · On Hurt · Jolt`: take the blow, then stun whatever dealt it.
 - `Spark · Volley · Ember`: three quick embers in a row.
 
+### Batch 7: more ways to build a spell
+Eighteen crafted runes that give spells new moves rather than more of the same: three shapes that travel
+or wait in new ways, three modifiers, two links that answer the reaction and affinity systems, and an
+effect for every element with a job its element didn't have. All Tier I-III and craftable; Drowse, Prolong
+and On Reaction also turn up in ancient city, end city and trial chamber chests.
+
+| Rune | Family · category | Tier | Cost | Does |
+|---|---|---|---|---|
+| Glaive | Shape · Projectile | II | 5, effects ×1.8 | Flies out 12 blocks (sooner at a wall, where a world effect lands) and curves back to you, striking each creature on the way out and again on the way back (the way back is a strike of its own, with its own creature budget). Widen, Quicken, Split |
+| Imprint | Shape · Lingering | I | 3, effects ×1.3 | An imprint on the ground where you stand; 2 s later (Quicken: 1 s) it erupts on everything within 3 blocks. Kiting in a rune. Widen, Quicken, Split |
+| Latch | Shape · Direct | II | 6, effects ×1.9 | A thread latches onto the first creature within 16 blocks of your aim (after a link, the creature that set it off) and strikes it 4 times a second apart at 70% power, snapping if it strays past 24 blocks or out of sight. Extend: 8 strikes; Quicken: 8 in the same time |
+| Kindred | Modifier · Area | II | ×1.4 | A helpful effect also lands on you and on the nearest ally within 8 blocks that it missed, at half power. Needs the new share trait: every helpful effect that lands per creature, not summons, domes, horns, death saves, Soulbond, Transfusion, Cryostasis, Shulkershell, Rewind, Overdrive or innate runes |
+| Thirst | Modifier · Power | II | ×1.4 | You heal for a quarter of the damage the effect really deals (a half with two, three quarters at most) |
+| Belated | Modifier · Timing | II | ×1.25 | The effect, and any Linger after it, lands 1.5 s late on whatever it struck that's still there, 40% stronger (three count: 4.5 s, ×2.74). A Belated kill is too late for On Kill |
+| On Reaction | Link · Trigger | III | 2 | Watches the group before it; fires the rest at each creature that group set an element reaction off on as it landed |
+| On Weakness | Link · Trigger | II | 2 | Watches the group before it; fires the rest at each creature that group struck with an element it's weak to (creature affinities: players have none) |
+| Spellbrand | Effect · Damage (arcane) | II | 8 | Brands each target for 8 s; the next spell damage you deal it, from the next tick on, bursts the brand for 6 arcane |
+| Gash | Effect · Control (blood) | II | 9 | 3 damage; for 8 s the target can't heal at all (Regeneration, potions, food, spells) and is bleeding. Setting health outright (a death save) still works |
+| Prospect | Effect · World (earth) | I | 3 | Every ore within 12 blocks (16 at most, widened) glows through the rock for 20 s, in the colour of what it gives: block displays only, nothing in the world changes |
+| Searing Edge | Effect · Support (fire) | II | 8 | 15 s: each melee hit the target lands sets the foe alight for 4 s and deals 2 more fire damage (who may be burned is the caster's call). Sustainable as a passive |
+| Flash Freeze | Effect · Control (frost) | II | 9 | 4 freeze damage; a wet or soaked target freezes solid for 3 s (1.5 on players), its soak turned to frozen; a dry one gets Slowness II for 3 s |
+| Drowse | Effect · Control (life) | III | 14 | Sleep for 6 s (2 on players): no moving or fighting back, but any damage wakes it. Bosses only get Slowness II |
+| Galvanize | Effect · World (storm) | I | 3 | A redstone block in the air against the face it struck, for 5 s: it powers what it touches. Only in empty air, where you may build, out of the block budget; written down with its world, drops nothing, pistons can't move it |
+| Prolong | Effect · Time | III | 12 | Every good effect on the target lasts 15 s longer, up to 5 minutes; endless ones stay as they are |
+| Umbra | Effect · Damage (void) | I | 6 | 4 damage, doubled where the light at the target's eyes is 7 or less; shadowed for 6 s. An Orbit can carry it as a passive |
+| Disarm | Effect · Control (wind) | II | 7 | A creature's main-hand item is taken for 5 s and given back (if its hand is still empty); windswept and a small shove. Players and bosses keep hold; nothing ever drops |
+
+Combos worth trying:
+- `Imprint · Explode`: cast it, run, and let whatever chases you meet the blast.
+- `Bolt · Frost · Fire · On Reaction · Burst · Explode`: the burst goes off only where the Shatter lands.
+- `Bolt · Venom · On Weakness · Latch · Harm`: an undead hit by life is held and struck four more times.
+- `Beam · Spellbrand · Delay · Glaive · Harm`: the glaive's first pass bursts the brand.
+- `Latch · Gash · Belated`: hold a healer down and keep it from mending.
+- `Self · Heal · Kindred`: heal yourself and the ally beside you in one cast.
+
 ## Heart Circles
 
 Casters build rings of condensed mana around their heart, from the 1st Circle to the 8th (the Archmage).
@@ -458,8 +493,10 @@ messages, building rights, reach).
 - Let go to cast: up to **+40% power** at a full charge. You walk 40% slower while charging, and
   a charge held 12 s fizzles.
 - While charging, you (only you) see **where the spell goes**: a reticle on the ground at the spell's
-  real radius for Zone, Rain, Pillar, Totem and Mine; around you for Burst, Ring and Domain; a
-  dotted line for Bolt, Arc, Beam, Crescent, Orb and Wave.
+  real radius for Zone, Rain, Pillar, Totem and Mine; around you for Burst, Ring and Domain (under
+  your feet for an Imprint); a dotted line for Bolt, Arc, Beam, Crescent, Orb, Wave and the rest that
+  fly or reach (a Glaive's as far as it goes before it turns back), with a mark on the creature a
+  Latch would hold.
 - The circle is drawn by every client from a synced attachment, so it follows the caster's hands
   smoothly. A spell's circle is one particle, `wildercord:spell_circle`, carrying the spell's runes;
   each client builds the whole circle from them every frame, laying lines down as short pieces and
@@ -834,8 +871,8 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
 - **Each passive has an on/off switch.** Up to 5 runes each (fewer on small Cords).
 - **Only sustainable runes, so it isn't broken:**
   - Shapes: Self or Orbit.
-  - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive, Anchor, Frostward, Cushion.
-  - Auras (only with Orbit): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt, Windcut.
+  - Buffs: Feather Fall, Swift, Night Eye, Haste, Regrowth, Stoneskin, Empower, Fireward, Tidebreath, Leap, Infinity, Reflect, Accelerate, Overdrive, Anchor, Frostward, Cushion, Searing Edge.
+  - Auras (only with Orbit): Harm, Shock, Fire, Frost, Chill, Venom, Dismantle, Ripple, Aftershock, Push, Ember, Icicle, Pelt, Windcut, Umbra.
   - Modifiers: Amplify, Extend, Frugal, Widen, Focus, Quicken.
   - Never: heals, Shield, Barrier (absorption), Brace, Reversal, Foresight, summons, links, big area damage, Stasis.
 
@@ -876,9 +913,9 @@ Effects leave short marks on what they hit. A later effect of the right element 
 | **Collapse** | Repel on enemies just pulled (Pull, Gravity Well, Hollow) | Double damage, a violent burst |
 | **Overload** | Storm damage (as for Conduct) on a burning target | +30% damage; the flames burst for 4 on every other enemy within 3 blocks, throwing them back; the fire goes out |
 | **Fracture** | Any earth damage on a frozen target | +40% damage, it thaws, and it's left **cracked** for 5 s: every spell hits it 20% harder |
-| **Blight** | Any life damage (Venom, Bramble's thorns, Vinelash...) on a **shadowed** target: Hex, Blind, Wither, Blackflame, Echolocate, Resonant Shriek, Hush, Eclipse, Entropy | Rot bursts out: 3 damage and Poison I (5 s) to it and up to 5 enemies within 4 blocks; the caster heals 1 for each (once a second at most) |
+| **Blight** | Any life damage (Venom, Bramble's thorns, Vinelash...) on a **shadowed** target: Hex, Blind, Wither, Blackflame, Umbra, Echolocate, Resonant Shriek, Hush, Eclipse, Entropy | Rot bursts out: 3 damage and Poison I (5 s) to it and up to 5 enemies within 4 blocks; the caster heals 1 for each (once a second at most) |
 | **Unweave** | Any arcane damage (Harm, Smite, Resonance...) on a target with two marks or more | Every mark undone: +30% damage for each, at most four |
-| **Rupture** | Any wind damage (Windcut, Cyclone, Repel...) on a **bleeding** target: Bleed, Rend, Cleave, Dismantle, Crimson Mist, Bonespur | +50% damage, 4 more through armour, and the caster heals 2 (once a second at most) |
+| **Rupture** | Any wind damage (Windcut, Cyclone, Repel...) on a **bleeding** target: Bleed, Rend, Cleave, Dismantle, Gash, Crimson Mist, Bonespur | +50% damage, 4 more through armour, and the caster heals 2 (once a second at most) |
 | **Elapse** | Any time damage (Countdown, Reckoning) on a target that's burning, poisoned or withering | All the damage still to come lands at once, half again (3 to 16); the fire, poison and withering end |
 
 So every element takes part: fire, storm, earth, life, arcane, wind and time set reactions off; frost, wind,

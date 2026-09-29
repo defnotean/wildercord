@@ -100,6 +100,8 @@ public final class Effects {
 	private static boolean passiveEffect;
 	/** Whose spell is being applied right now (null outside one): a duel undoes only what the opponent's spells did. */
 	private static LivingEntity applying;
+	/** Thirst on the effect being applied: the share of the damage it deals that heals its caster (0 = none). */
+	private static double thirst;
 
 	/** Whose spell is being applied right now, or null: harm landing meanwhile is that caster's doing. */
 	public static LivingEntity applying() {
@@ -113,11 +115,13 @@ public final class Effects {
 		double outerOpening = openingBonus;
 		boolean outerPassive = passiveEffect;
 		LivingEntity outerApplying = applying;
+		double outerThirst = thirst;
 		executeBonus = SpellNumbers.executeBonus(node);
 		currentElement = node.effect.element();
 		openingBonus = SpellNumbers.trialKeyBonus(node);
 		passiveEffect = cast.passive;
 		applying = cast.caster;
+		thirst = SpellNumbers.thirstShare(node);
 		try {
 			applyEffect(cast, node, hit, groupPower);
 		} finally {
@@ -126,6 +130,7 @@ public final class Effects {
 			openingBonus = outerOpening;
 			passiveEffect = outerPassive;
 			applying = outerApplying;
+			thirst = outerThirst;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
 		WorldMagic.onSpell(cast, node, hit, groupPower);
@@ -140,25 +145,29 @@ public final class Effects {
 	 * Unison.
 	 */
 	static Runnable carryContext(Runnable task) {
-		if (executeBonus == 1.0 && openingBonus == 1.0 && currentElement.isEmpty()) {
+		if (executeBonus == 1.0 && openingBonus == 1.0 && currentElement.isEmpty() && thirst == 0) {
 			return task;
 		}
 		double bonus = executeBonus;
 		double opening = openingBonus;
 		String element = currentElement;
+		double drinks = thirst;
 		return () -> {
 			double outerBonus = executeBonus;
 			double outerOpening = openingBonus;
 			String outerElement = currentElement;
+			double outerThirst = thirst;
 			executeBonus = bonus;
 			openingBonus = opening;
 			currentElement = element;
+			thirst = drinks;
 			try {
 				task.run();
 			} finally {
 				executeBonus = outerBonus;
 				openingBonus = outerOpening;
 				currentElement = outerElement;
+				thirst = outerThirst;
 			}
 		};
 	}
@@ -173,15 +182,18 @@ public final class Effects {
 		double outerBonus = executeBonus;
 		double outerOpening = openingBonus;
 		String outerElement = currentElement;
+		double outerThirst = thirst;
 		executeBonus = 1.0;
 		openingBonus = 1.0;
 		currentElement = element;
+		thirst = 0;
 		try {
 			task.run();
 		} finally {
 			executeBonus = outerBonus;
 			openingBonus = outerOpening;
 			currentElement = outerElement;
+			thirst = outerThirst;
 		}
 	}
 
@@ -566,6 +578,9 @@ public final class Effects {
 			case "flashfire" -> flashfire(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power);
 			case "banish" -> harmed.forEach(t -> banish(cast, t, Math.min(16.0, 8.0 * power)));
 			case "cyclone" -> cyclone(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, ticks(2, duration));
+			// New runes (batch 2): their own class.
+			case "spellbrand", "gash", "prospect", "searing_edge", "flash_freeze", "drowse", "galvanize", "prolong", "umbra", "disarm" ->
+				CraftedRunes.apply(cast, node, hit, helped, harmed, power, duration);
 			case "blood_thread", "kindling", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart" ->
 				Innates.apply(cast, rune, helped, harmed, power, duration);
 			default -> {
@@ -581,6 +596,10 @@ public final class Effects {
 		}
 		// Kindled: whatever the effect struck is set alight too.
 		ExplorerEffects.kindle(cast, node, harmed, duration);
+		// Kindred: a helpful effect lands again, at half power, on its caster and the nearest ally it missed.
+		if (node.count(Runes.KINDRED) > 0) {
+			CraftedRunes.share(cast, node, hit, helped, groupPower);
+		}
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;
 		if (!hit.self()) {
 			Vfx.Theme theme = Vfx.theme(rune);
@@ -702,11 +721,20 @@ public final class Effects {
 		}
 		readyToHurt(target);
 		float dealt = damage;
+		float before = target.getHealth();
 		Dungeons.spellHit(() -> target.hurtServer(cast.level, source, dealt));
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));
 		}
+		// Thirst: its caster drinks a share of what the hit really took.
+		float taken = before - Math.max(0.0F, target.getHealth());
+		if (thirst > 0 && taken > 0 && cast.caster.isAlive() && cast.caster != target) {
+			cast.caster.heal((float) (taken * thirst));
+			CraftedVfx.thirst(cast.level, target, cast.caster);
+		}
+		// Spellbrand: a brand this caster left on the target bursts.
+		CraftedRunes.afterSpellHit(cast, target);
 	}
 
 	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */
@@ -1825,9 +1853,10 @@ public final class Effects {
 	/** Light's invisible light blocks still lit, so they go out when the server stops (and, saved in {@link TemporaryBlocks}, even if it doesn't stop cleanly). */
 	private static final java.util.Set<GlobalPos> LIGHTS = new java.util.HashSet<>();
 
-	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall, frost's crust on lava): pistons can't move it. */
+	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall, frost's crust on lava, a Galvanize spark): pistons can't move it. */
 	public static boolean isTemporary(ServerLevel level, BlockPos pos) {
-		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos) || WorldMagic.isCrust(level, pos);
+		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos) || WorldMagic.isCrust(level, pos)
+			|| CraftedRunes.isSpark(level, pos);
 	}
 
 	/** Span bridges still standing, and what each of their blocks replaced. */

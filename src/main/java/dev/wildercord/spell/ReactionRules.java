@@ -125,17 +125,17 @@ public final class ReactionRules {
 
 	/** Void's curses and darkness: they leave a foe shadowed, for Blight. */
 	public static final Set<String> SHADOWS = Set.of("hex", "blind", "wither", "echolocate", "hush", "eclipse", "resonant_shriek", "blackflame",
-		"entropy", "malison");
+		"entropy", "umbra", "malison");
 	/** Blood's cuts: they leave a foe bleeding, for Rupture (Razorgale's blades too, which tear their own wounds open). */
-	public static final Set<String> BLEEDS = Set.of("bleed", "rend", "cleave", "dismantle", "crimson_mist", "bonespur", "razorgale");
+	public static final Set<String> BLEEDS = Set.of("bleed", "rend", "cleave", "dismantle", "crimson_mist", "bonespur", "gash", "razorgale");
 
 	/**
 	 * Harmful runes of a triggering element that deal no damage of their own, so set nothing off:
-	 * earth's holds, life's spores, arcane's curses, wind's throws and time's stops. Prismatic Burst
-	 * uses up the marks itself, so it never finds two left to unweave.
+	 * earth's holds, life's spores and sleep, arcane's curses, wind's throws and snatches, and time's
+	 * stops. Prismatic Burst uses up the marks itself, so it never finds two left to unweave.
 	 */
 	private static final Set<String> QUIET = Set.of("root", "weigh", "shackle", "mire", "sporebloom", "reveal", "silence", "decree", "nullify",
-		"prismatic_burst", "push", "launch", "dash", "levitate", "stasis", "timesteal");
+		"prismatic_burst", "push", "launch", "dash", "levitate", "stasis", "timesteal", "drowse", "disarm");
 	/**
 	 * Runes that aren't harmful effects of a triggering element but deal its damage all the same:
 	 * Heartstopper's and Thunderbird's shocks are storm, Tusk Charge tosses what it runs through, and

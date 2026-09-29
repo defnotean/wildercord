@@ -76,6 +76,8 @@ FAMILY_TITLE = {"shape": "Shapes", "modifier": "Modifiers", "link": "Links"}
 def read():
     """Every rune in Runes.java, in its order: family, id, name, tier, cost, element, kind, traits, description."""
     src = RUNES_JAVA.read_text(encoding="utf-8")
+    # Helpful effects can be shared (Kindred), bar the few Runes.java lists as unshared.
+    unshared = set(re.findall(r'"(\w+)"', re.search(r"PATHS = Set\.of\((.*?)\);", src).group(1)))
     runes = []
     pattern = re.compile(r'public static final RuneDef (\w+) = (shape|effect|modifier|link)\((.*)\);\s*$', re.M)
     for m in pattern.finditer(src):
@@ -96,6 +98,8 @@ def read():
             r["element"] = strings[2]
             r["kind"] = re.search(r"EffectKind\.(\w+)", args).group(1)
             r["traits"] = {i for i in idents if not i.startswith("EffectKind")} | {"FRUGAL"}
+            if r["kind"] == "HELPFUL" and path not in unshared:
+                r["traits"].add("SHARE")
         elif family == "modifier":
             r["mult"] = float(parts[3])
             r["needs"] = idents[0] if idents else ""
@@ -214,6 +218,7 @@ def entry(r, fused, found, world, modifiers):
                    "RADIUS": "anything with an area", "SPEED": "anything that flies", "PIERCE": "projectiles and beams",
                    "BOUNCE": "projectiles", "SPLIT": "projectiles and beams", "HOMING": "projectiles", "CHAIN": "anything that can jump to a new target",
                    "LINGER": "effects that can land again over time", "FRUGAL": "any effect", "VOLLEY": "projectiles and beams",
+                   "SHARE": "a helpful effect that lands on each creature it touches (healing, a buff, a ward)",
                    "COOLDOWN": "any shape (it changes the whole spell, so its cost multiplies the whole spell's, wherever it sits)"}.get(r["needs"], "")
         if targets:
             lines += [f"**Attaches to:** the closest rune on its left that is {targets}.", ""]

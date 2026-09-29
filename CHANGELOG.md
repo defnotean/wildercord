@@ -68,6 +68,29 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Server settings: `features.player_affinity` switches affinities off, and `affinity.gain_multiplier` makes them grow
   faster or slower. An older settings file gains both by itself. See
   [Your Affinities](https://defnotean.github.io/wildercord/progression/affinity/).
+- **Eighteen new runes to build spells with**, all crafted (a Blank Rune and a couple of items). See
+  [Shapes](https://defnotean.github.io/wildercord/runes/shapes/), [Modifiers](https://defnotean.github.io/wildercord/runes/modifiers/),
+  [Links](https://defnotean.github.io/wildercord/runes/links/) and each element's [Effects](https://defnotean.github.io/wildercord/runes/effects/) page.
+  - **Three shapes.** **Glaive** (Tier II): a spinning glaive flies out 12 blocks and curves back to you,
+    striking everything on the way out and again on the way back. **Imprint** (Tier I): an imprint where you
+    stand erupts 2 seconds later on everything within 3 blocks: cast it and run. **Latch** (Tier II): a thread
+    holds on to the first creature in your aim and strikes it 4 times a second apart at 70% power, until it
+    strays past 24 blocks or out of sight. Charging shows where each one goes.
+  - **Three modifiers.** **Kindred**: a helpful effect also lands on you and on the nearest ally it missed, at
+    half power. **Thirst**: you heal for a quarter of the damage the effect deals. **Belated**: the effect lands
+    1.5 seconds late, 40% stronger.
+  - **Two links.** **On Reaction** fires the rest of the spell at each creature the shape before it set an
+    element reaction off on; **On Weakness** at each one it struck with an element it's weak to.
+  - **An effect for every element.** **Spellbrand** (arcane): a brand your next spell damage bursts for 6.
+    **Gash** (blood): 3 damage, and no healing of any kind for 8 seconds, bleeding. **Prospect** (earth): every
+    ore within 12 blocks glows through the rock for 20 seconds. **Searing Edge** (fire): for 15 seconds, melee
+    hits set foes alight for 2 more fire damage. **Flash Freeze** (frost): 4 damage, and a wet or soaked target
+    freezes solid. **Drowse** (life): sleep for 6 seconds that any damage breaks. **Galvanize** (storm): a spark
+    of redstone power against a block for 5 seconds (doors, lamps, pistons), gone without a trace.
+    **Prolong** (time): every good effect lasts 15 seconds longer, up to 5 minutes. **Umbra** (void): 4 damage,
+    doubled in the dark, and shadowed. **Disarm** (wind): a creature's weapon is snatched for 5 seconds, then
+    given back.
+  - Drowse, Prolong and On Reaction also turn up in ancient city, end city and trial chamber chests.
 - **Runes from fishing.** A rod in open water (vanilla's rule for treasure) now brings up magic. See
   [Fishing](https://defnotean.github.io/wildercord/world/runes-of-the-world/#fishing).
   - **Treasure catches can be runes.** About 4 treasure catches in 11 are a rune and 1 in 11 a Torn Page, beside the

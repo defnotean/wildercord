@@ -11,7 +11,7 @@ nav_order: 9
 
 Slowing, speeding and rewinding. Time stops foes and turns back the clock.
 
-6 time effects you can craft or find in the usual way. Time also has runes of the world, fused runes and innate runes: see their own pages.
+7 time effects you can craft or find in the usual way. Time also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/countdown.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Countdown
 {: #countdown}
@@ -24,7 +24,7 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.
 
 <img src="{{ '/assets/recipes/rune_countdown.png' | relative_url }}" alt="Crafting Countdown: a Blank Rune and Clock and Gunpowder" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/accelerate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Accelerate
 {: #accelerate}
@@ -37,7 +37,7 @@ Time runs faster for 10 seconds: Speed III, Haste III, Jump Boost II and Regener
 
 <img src="{{ '/assets/recipes/rune_accelerate.png' | relative_url }}" alt="Crafting Accelerate: a Blank Rune and Clock and Sugar, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/foresight.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Foresight
 {: #foresight}
@@ -50,7 +50,20 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 
 <img src="{{ '/assets/recipes/rune_foresight.png' | relative_url }}" alt="Crafting Foresight: a Blank Rune and Spyglass, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/prolong.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prolong
+{: #prolong}
+
+*Tier III · Time · Helps you and your allies · 12 mana · needs an Amethyst Cord or better*
+
+Every good effect on the target (Speed, Strength, Regeneration, a potion's...) lasts 15 seconds longer, up to 5 minutes.
+
+**How to get it:** Craft: a Blank Rune, Clock and 2x Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities.
+
+<img src="{{ '/assets/recipes/rune_prolong.png' | relative_url }}" alt="Crafting Prolong: a Blank Rune and Clock and 2x Redstone Dust, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/time_skip.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Time Skip
 {: #time_skip}

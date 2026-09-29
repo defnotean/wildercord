@@ -17,6 +17,7 @@ import static dev.wildercord.spell.Trait.VOLLEY;
 import static dev.wildercord.spell.Trait.PIERCE;
 import static dev.wildercord.spell.Trait.POWER;
 import static dev.wildercord.spell.Trait.RADIUS;
+import static dev.wildercord.spell.Trait.SHARE;
 import static dev.wildercord.spell.Trait.SPEED;
 import static dev.wildercord.spell.Trait.SPLIT;
 
@@ -388,6 +389,27 @@ public final class Runes {
 	public static final RuneDef TIDEHOOK = effect("tidehook", "Tidehook", 2, 9, "frost", EffectKind.HARMFUL, "A hook of water snags each target and reels it in to your feet in three tugs: 4 damage, and it's left soaked.", POWER, LINGER);
 	public static final RuneDef CURRENT = effect("current", "Current", 2, 6, "frost", EffectKind.MOVEMENT, "Only in water or rain: a current sweeps you about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.", POWER);
 
+	// ---- new runes (batch 2): more ways to build a spell. Crafted like the rest (see cast/CraftedRunes and
+	// cast/CraftedShapes), and defined last, so no older rune's magic circle changes.
+	public static final RuneDef GLAIVE = shape("glaive", "Glaive", 2, 5, 1.8, "A spinning glaive flies out up to 12 blocks and curves back to you, striking everything it passes on the way out and again on the way back.", RADIUS, SPEED, SPLIT);
+	public static final RuneDef IMPRINT = shape("imprint", "Imprint", 1, 3, 1.3, "Leaves an imprint of the spell where you stand. 2 seconds later it erupts, striking everything within 3 blocks of it.", RADIUS, SPEED, SPLIT);
+	public static final RuneDef LATCH = shape("latch", "Latch", 2, 6, 1.9, "A thread of light latches onto the first creature within 16 blocks of your aim and strikes it 4 times, a second apart, at 70% power, while it stays within 24 blocks and in sight.", DURATION, SPEED);
+	public static final RuneDef KINDRED = modifier("kindred", "Kindred", 2, 1.4, SHARE, "Shares a helpful effect: it also lands on you and on the nearest ally it missed within 8 blocks, at half power.");
+	public static final RuneDef THIRST = modifier("thirst", "Thirst", 2, 1.4, POWER, "You heal for a quarter of the damage the effect deals.");
+	public static final RuneDef BELATED = modifier("belated", "Belated", 2, 1.25, POWER, "The effect lands 1.5 seconds late, but 40% stronger.");
+	public static final RuneDef ON_REACTION = link("on_reaction", "On Reaction", 3, 2, "The rest fires at each creature the shape before it sets off an element reaction on (Shatter, Conduct, Blight...).");
+	public static final RuneDef ON_WEAKNESS = link("on_weakness", "On Weakness", 2, 2, "The rest fires at each creature the shape before it strikes with an element it's weak to.");
+	public static final RuneDef SPELLBRAND = effect("spellbrand", "Spellbrand", 2, 8, "arcane", EffectKind.HARMFUL, "Brands each target with a sigil for 8 seconds. The next time your magic hurts it, the sigil bursts for 6 arcane damage.", POWER, DURATION);
+	public static final RuneDef GASH = effect("gash", "Gash", 2, 9, "blood", EffectKind.HARMFUL, "A wound that won't close: 3 damage, and for 8 seconds the target can't heal and is left bleeding.", POWER, DURATION, LINGER);
+	public static final RuneDef PROSPECT = effect("prospect", "Prospect", 1, 3, "earth", EffectKind.WORLD, "The ground rings out: every ore within 12 blocks of where it lands glows through the rock for 20 seconds.", RADIUS, DURATION);
+	public static final RuneDef SEARING_EDGE = effect("searing_edge", "Searing Edge", 2, 8, "fire", EffectKind.HELPFUL, "For 15 seconds the target's weapon sears: each melee hit it lands sets the foe alight for 4 seconds and deals 2 more fire damage.", POWER, DURATION);
+	public static final RuneDef FLASH_FREEZE = effect("flash_freeze", "Flash Freeze", 2, 9, "frost", EffectKind.HARMFUL, "4 freeze damage. A wet or soaked target freezes solid for 3 seconds (1.5 on players); a dry one is only slowed.", POWER, DURATION, LINGER);
+	public static final RuneDef DROWSE = effect("drowse", "Drowse", 3, 14, "life", EffectKind.HARMFUL, "Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't move or fight back, but any damage wakes it. Bosses only grow drowsy.", DURATION);
+	public static final RuneDef GALVANIZE = effect("galvanize", "Galvanize", 1, 3, "storm", EffectKind.WORLD, "Sets a spark of raw power against the block it strikes for 5 seconds: it powers what it touches as a redstone block would (doors open, lamps light, pistons push).", DURATION);
+	public static final RuneDef PROLONG = effect("prolong", "Prolong", 3, 12, "time", EffectKind.HELPFUL, "Every good effect on the target (Speed, Strength, Regeneration, a potion's...) lasts 15 seconds longer, up to 5 minutes.", DURATION);
+	public static final RuneDef UMBRA = effect("umbra", "Umbra", 1, 6, "void", EffectKind.HARMFUL, "The dark bites: 4 damage, doubled where the light is dim (level 7 or less), and it leaves the target shadowed.", POWER, LINGER);
+	public static final RuneDef DISARM = effect("disarm", "Disarm", 2, 7, "wind", EffectKind.HARMFUL, "A snatching gust tears the weapon from each creature's hand for 5 seconds, then it drifts back. Players and bosses keep hold.", DURATION);
+
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());
 
@@ -479,6 +501,9 @@ public final class Runes {
 	private static RuneDef effect(String path, String name, int tier, double cost, String element, EffectKind kind, String desc, String... traits) {
 		java.util.Set<String> all = new java.util.HashSet<>(Set.of(traits));
 		all.add(FRUGAL);
+		if (kind == EffectKind.HELPFUL && !Unshared.PATHS.contains(path)) {
+			all.add(SHARE);
+		}
 		return register(new RuneDef(id(path), name, RuneFamily.EFFECT, tier, cost, 1.0, element, kind, all, "", desc,
 			RuneCategories.categoryFor(path, RuneFamily.EFFECT)));
 	}
@@ -491,5 +516,16 @@ public final class Runes {
 	private static RuneDef link(String path, String name, int tier, double cost, String desc, String... traits) {
 		return register(new RuneDef(id(path), name, RuneFamily.LINK, tier, cost, 1.0, "", EffectKind.NONE, Set.of(traits), "", desc,
 			RuneCategories.categoryFor(path, RuneFamily.LINK)));
+	}
+
+	/**
+	 * Helpful effects Kindred can't share ({@link Trait#SHARE}): ones that act on a place or only ever on
+	 * their caster (summons, a dome, a war horn, a breeze), the death saves, the ones that would trap or move
+	 * whoever they were shared with (Cryostasis, Shulkershell, Rewind), cost the one they land on something
+	 * (Overdrive, Transfusion), bind two creatures (Soulbond), and the innate runes. Kept in a class of its own
+	 * so it's ready whenever the roster above is being built (tools/wiki.py reads this line).
+	 */
+	private static final class Unshared {
+		static final Set<String> PATHS = Set.of("summon", "shades", "thunderbird", "haven", "warcry", "zephyr", "soulbond", "transfusion", "reversal", "second_wind", "cryostasis", "shulkershell", "rewind", "overdrive", "twin_star", "borrowed_time", "gale_mantle", "stoneform", "mirrorfrost", "fortune", "phantom", "stormheart");
 	}
 }

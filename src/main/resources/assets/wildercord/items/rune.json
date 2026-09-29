@@ -2173,6 +2173,132 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/current"
         }
+      },
+      {
+        "when": "wildercord:glaive",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/glaive"
+        }
+      },
+      {
+        "when": "wildercord:imprint",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/imprint"
+        }
+      },
+      {
+        "when": "wildercord:latch",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/latch"
+        }
+      },
+      {
+        "when": "wildercord:kindred",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/kindred"
+        }
+      },
+      {
+        "when": "wildercord:thirst",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thirst"
+        }
+      },
+      {
+        "when": "wildercord:belated",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/belated"
+        }
+      },
+      {
+        "when": "wildercord:on_reaction",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_reaction"
+        }
+      },
+      {
+        "when": "wildercord:on_weakness",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/on_weakness"
+        }
+      },
+      {
+        "when": "wildercord:spellbrand",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/spellbrand"
+        }
+      },
+      {
+        "when": "wildercord:gash",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gash"
+        }
+      },
+      {
+        "when": "wildercord:prospect",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/prospect"
+        }
+      },
+      {
+        "when": "wildercord:searing_edge",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/searing_edge"
+        }
+      },
+      {
+        "when": "wildercord:flash_freeze",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/flash_freeze"
+        }
+      },
+      {
+        "when": "wildercord:drowse",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/drowse"
+        }
+      },
+      {
+        "when": "wildercord:galvanize",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/galvanize"
+        }
+      },
+      {
+        "when": "wildercord:prolong",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/prolong"
+        }
+      },
+      {
+        "when": "wildercord:umbra",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/umbra"
+        }
+      },
+      {
+        "when": "wildercord:disarm",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/disarm"
+        }
       }
     ],
     "fallback": {
