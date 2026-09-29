@@ -18,7 +18,7 @@ Slowing, speeding and rewinding. Time stops foes and turns back the clock.
 
 *Tier I · Time · Harms enemies · 7 mana · needs any Cord*
 
-Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.
+Marks targets: 1.5 seconds later the moment catches up with them for 6 damage. If the mark dies first, it finds the nearest enemy within 6 blocks.
 
 **How to get it:** Craft: a Blank Rune, Clock and Gunpowder. The recipe is shapeless: any layout, any crafting grid.
 
@@ -31,7 +31,7 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage.
 
 *Tier III · Time · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Time runs faster for 10 seconds: Speed III, Haste III, Jump Boost II and Regeneration.
+Time runs faster for 10 seconds: Speed II, Haste III, Jump Boost II and Regeneration, and your spells charge 40% faster and your bolts and arcs fly 50% faster.
 
 **How to get it:** Craft: a Blank Rune, Clock and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -44,7 +44,7 @@ Time runs faster for 10 seconds: Speed III, Haste III, Jump Boost II and Regener
 
 *Tier III · Time · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
+Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep. A dodge turns away 12 damage at most, and casting it again in the same spell doesn't refill it.
 
 **How to get it:** Craft: a Blank Rune, Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Stronghold libraries.
 
@@ -70,7 +70,7 @@ Every good effect on the target (Speed, Strength, Regeneration, a potion's...) l
 
 *Tier III · Time · Moves you · 14 mana · needs an Amethyst Cord or better*
 
-Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, and nearby monsters lose track of you.
+Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, and nearby monsters lose track of you. For a moment after, nothing can hurt you (not again for 5 seconds).
 
 **How to get it:** Craft: a Blank Rune, Clock and Ender Pearl, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities; Endermen (1%).
 
@@ -83,7 +83,7 @@ Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, an
 
 *Tier IV · Time · Helps you and your allies · 26 mana · needs an Echo Cord*
 
-Turns back the clock: return to where you were 5 seconds ago, with the health you had then if it was more.
+Turns back the clock: return to where you were 5 seconds ago, if it is safe, with the health you had then if it was more.
 
 **How to get it:** Found only, never crafted: End cities; Archive vaults; the Archivist.
 

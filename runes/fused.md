@@ -96,7 +96,7 @@ Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 dam
 
 *Tier III · Time · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds.
+Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Time effects and an amethyst shard (3 XP levels).
 
@@ -140,7 +140,7 @@ Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can'
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most).
+5 damage, and 1 more for every tenth of its health the target is missing (up to 10). If it kills, you feed: 10 mana and 4 absorption (twice a cast at most).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Void effect and any Blood effect, with an amethyst shard (3 XP levels).
 
@@ -162,7 +162,7 @@ Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more f
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour.
+The target unravels: 1, 1.5, 2, 2.5 and 3 damage over 5 seconds, straight through armour, and each wound strips a point of its armour until it ends.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Void effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -393,7 +393,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 *Tier III · Time · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12).
+For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12), and half of what comes due heals you (at most 6).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Time effect and any Blood effect, with an amethyst shard (3 XP levels).
 
@@ -459,7 +459,7 @@ For 20 seconds, the first blow that would kill the ally leaves them at 4 health 
 
 *Tier III · Void · Harms enemies · 22 mana · needs an Amethyst Cord or better*
 
-A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward.
+A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks and swallowing arrows and bolts, then bursts: 6 damage (1 more for each thing swallowed, up to 5), and they're flung outward.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Void effects and an amethyst shard (3 XP levels).
 
@@ -580,7 +580,7 @@ A thundercloud gathers over the target for 4 seconds and strikes an enemy within
 
 *Tier III · Time · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you.
+Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you. With nothing to steal it steals a moment: the target drags, and you are quickened, for 2 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Arcane effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -613,7 +613,7 @@ Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft sm
 
 *Tier III · Void · Moves you · 12 mana · needs an Amethyst Cord or better*
 
-You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds.
+You and the first creature hit swap places through the void, and you come out unseen for a second. An enemy is left pulled and reeling: Slowness II and Nausea for 2 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Void effect, with an amethyst shard (3 XP levels).
 
@@ -702,7 +702,7 @@ A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enem
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-3 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, for the time it had left, to up to 3 enemies within 6 blocks of it.
+4 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, 5% stronger each time (up to 45%), for the time it had left, to up to 3 enemies within 6 blocks of it.
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Hex]({{ '/runes/effects/void/' | relative_url }}#hex) and [Resonance]({{ '/runes/effects/arcane/' | relative_url }}#resonance) themselves, with an amethyst shard (3 XP levels). Any other Void and Arcane effects make Nullify instead.
 
@@ -735,7 +735,7 @@ A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2
 
 *Tier III · Time · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
-For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with 6 damage to whoever struck.
+For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with the blow's own damage (4 to 12) to whoever struck.
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) and [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
 
@@ -812,7 +812,7 @@ A comet streaks down on the point a second later: 16 damage to every enemy withi
 
 *Tier IV · Time · Harms enemies · 28 mana · needs an Echo Cord*
 
-Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks. Never breaks blocks.
+Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks (an enemy takes one burst a cast). Never breaks blocks.
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Primer]({{ '/runes/effects/fire/' | relative_url }}#primer) and [Stasis]({{ '/runes/effects/time/' | relative_url }}#stasis) themselves, with an amethyst shard (3 XP levels). Any other Fire and Time effects make Everburn instead.
 
