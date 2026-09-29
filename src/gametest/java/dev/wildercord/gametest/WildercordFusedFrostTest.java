@@ -164,8 +164,8 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 			if (ice < 2) {
 				return "a sealed ally should be closed in ice (" + ice + " blocks of it)";
 			}
-			// Again while it holds: it mustn't renew.
-			return cast(player, Runes.SELF, Runes.CRYOSTASIS);
+			// Nothing is cast from inside the ice (so it can't renew itself either).
+			return cast(player, Runes.SELF, Runes.CRYOSTASIS) == null ? "a sealed ally shouldn't be able to cast" : null;
 		});
 		context.waitTicks(35);
 		String opened = on(world, player -> {

@@ -15,6 +15,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   cooldowns. Server owners can change the limits and times, or switch it all off, in the new `travel` section of
   the config. See [Getting Around](https://defnotean.github.io/wildercord/social/travel/).
 
+### Changed
+- **Cryostasis holds for 4 seconds at most**, however far Extend stretches it (three Extends made it 16 seconds
+  of being untouchable), and nobody can cast from inside the ice: it's a moment's shelter, not a fortress.
+
 ### Fixed
 - **Fused runes skipped part of a crowd.** Cast into more than eight enemies at once (a Domain or a big
   Burst), Firestorm, Absolute Zero, Frostbite, Riftbolt, Heartstopper, Stormclock, Sanguine Rite and

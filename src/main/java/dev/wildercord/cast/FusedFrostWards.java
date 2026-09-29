@@ -95,6 +95,12 @@ final class FusedFrostWards {
 		}
 	}
 
+	/** Whether {@code entity} is sealed in a Cryostasis right now: nothing is cast from inside the ice. */
+	public static boolean sealed(Entity entity) {
+		Seal seal = SEALS.get(entity.getUUID());
+		return seal != null && seal.ally == entity && entity.level().getGameTime() < seal.until;
+	}
+
 	private static final Map<UUID, Answer> BLOOMS = new HashMap<>();
 	private static final Map<UUID, Answer> GEODES = new HashMap<>();
 	private static final Map<UUID, Brittle> BRITTLE = new HashMap<>();

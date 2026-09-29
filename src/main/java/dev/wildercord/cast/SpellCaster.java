@@ -81,6 +81,11 @@ public final class SpellCaster {
 			fail(player, Component.translatable("message.wildercord.no_cord"));
 			return;
 		}
+		if (FusedFrostWards.sealed(player)) {
+			// Untouchable in the ice, so it can't be a fortress to cast from.
+			fail(player, Component.translatable("message.wildercord.cryostasis_sealed"));
+			return;
+		}
 		Spellbook book = Spellbooks.get(player);
 		int spell = requested < 0 ? book.selected() : requested;
 		if (requested < 0 && !dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {

@@ -127,7 +127,7 @@ A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for
 
 *Tier III · Frost · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds.
+Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Time effect, with an amethyst shard (3 XP levels).
 

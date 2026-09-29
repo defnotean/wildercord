@@ -78,7 +78,7 @@ final class FusedFrost {
 				}
 			}
 			case "rime_seal" -> rimeSeal(cast, hit, 1.5 * SpellNumbers.effectRadius(node), power, duration);
-			case "cryostasis" -> first(helped).forEach(t -> FusedFrostWards.cryostasis(cast, t, Effects.ticks(2, duration), 6 * power));
+			case "cryostasis" -> first(helped).forEach(t -> FusedFrostWards.cryostasis(cast, t, Math.min(Effects.ticks(2, duration), FusedFrostRules.SEAL_MAX_TICKS), 6 * power));
 			case "frostbite" -> {
 				for (int i = 0; i < harmed.size(); i++) {
 					frostbite(cast, harmed.get(i), power, duration, i < MAX_TARGETS);
