@@ -73,6 +73,25 @@ public final class DuelRules {
 		return Math.min(max, Math.max(now, Math.min(before, now + taken)));
 	}
 
+	/**
+	 * How recently the opponent must have struck a duellist (this tick or the one before) for harm landing with no
+	 * spell's name on it, an arrow's poison or a flaming blade's fire, to count as theirs.
+	 */
+	public static final int STRUCK_TICKS = 2;
+
+	/** Whether harm landing at {@code now} with no spell's name on it is the opponent's: they struck at {@code struck}, just now. */
+	public static boolean byOpponent(long now, long struck) {
+		return within(now, struck, STRUCK_TICKS);
+	}
+
+	/**
+	 * Whether a duel's end takes an effect (or fire) off a duellist: harmful, laid on them by their opponent, and not
+	 * something they had when it began. Harm from anything else (a monster's poison, lava, a potion) is left as it is.
+	 */
+	public static boolean undone(boolean harmful, boolean hadBefore, boolean byOpponent) {
+		return harmful && !hadBefore && byOpponent;
+	}
+
 	/** An effect a duellist had when the duel began, put back with the time the duel took off it (-1 lasts forever). */
 	public static int remaining(int duration, long elapsed) {
 		return duration < 0 ? duration : (int) Math.max(0, duration - elapsed);

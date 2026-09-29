@@ -407,6 +407,16 @@ class SocialRulesTest {
 		assertEquals(400, DuelRules.remaining(1000, 600));
 		assertEquals(0, DuelRules.remaining(500, 600));
 		assertEquals(-1, DuelRules.remaining(-1, 600), "an endless effect stays endless");
+		// Only the harm the opponent did is taken away: a monster's poison or lava's fire during the duel stays.
+		assertTrue(DuelRules.undone(true, false, true), "the opponent's poison goes");
+		assertFalse(DuelRules.undone(true, false, false), "anything else's poison stays");
+		assertFalse(DuelRules.undone(true, true, true), "what you had before comes back as it was, not taken away");
+		assertFalse(DuelRules.undone(false, false, true), "a helpful effect is never taken");
+		// Harm with no spell's name on it (an arrow's poison, a flaming blade) is the opponent's if they struck just now.
+		assertTrue(DuelRules.byOpponent(now, now));
+		assertTrue(DuelRules.byOpponent(now, now - 1));
+		assertFalse(DuelRules.byOpponent(now, now - DuelRules.STRUCK_TICKS));
+		assertFalse(DuelRules.byOpponent(now, DuelRules.NEVER));
 
 		DuelRules.Duel duel = new DuelRules.Duel(A, B, 0);
 		duel.tick(DuelRules.COUNTDOWN_TICKS);

@@ -89,13 +89,14 @@ When a duel ends, **however it ends**, the harm the two of you did each other is
   more than you had when the duel began. Health lost to anything else during the duel (a fall, a monster, your own
   Blood Price) stays lost, and health you healed during it is kept.
 - **Mana:** not given back. Mana you spent during the duel stays spent, whatever you spent it on.
-- **Fire:** if you weren't burning when the duel began, the flames go out.
-- **Harmful effects** the duel left on you (poison, slowness and so on that you didn't have before) are removed.
+- **Fire:** if your opponent set you alight (and you weren't burning when the duel began), the flames go out.
+- **Harmful effects** your opponent left on you (their spells' poison, slowness and so on, a tipped arrow's, that you
+  didn't have before) are removed.
 - **Effects you had** when it began come back, less the time the duel took. A potion with 3 minutes left when a
   one-minute duel began has 2 minutes left afterwards.
 
-Anything the duel didn't cause is kept: helpful effects you gained during it stay, and nothing is taken from your
-inventory. Nothing is dropped, because nobody dies to the other.
+Anything your opponent didn't cause is kept: a monster's poison, lava's fire and helpful effects you gained during
+the duel all stay, and nothing is taken from your inventory. Nothing is dropped, because nobody dies to the other.
 
 A player who dies to something else during a duel isn't put back. One who **logs off** mid-duel is put back as above
 before they leave, so they come back without their opponent's harm on them. If the **server shuts down** during a

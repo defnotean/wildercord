@@ -96,6 +96,13 @@ public final class Effects {
 	private static double openingBonus = 1.0;
 	/** Whether the effect being applied is a passive renewing itself: {@link #ticks} caps what it sets (see {@link dev.wildercord.spell.Passives#effectTicks}). */
 	private static boolean passiveEffect;
+	/** Whose spell is being applied right now (null outside one): a duel undoes only what the opponent's spells did. */
+	private static LivingEntity applying;
+
+	/** Whose spell is being applied right now, or null: harm landing meanwhile is that caster's doing. */
+	public static LivingEntity applying() {
+		return applying;
+	}
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
@@ -103,10 +110,12 @@ public final class Effects {
 		String outerElement = currentElement;
 		double outerOpening = openingBonus;
 		boolean outerPassive = passiveEffect;
+		LivingEntity outerApplying = applying;
 		executeBonus = SpellNumbers.executeBonus(node);
 		currentElement = node.effect.element();
 		openingBonus = SpellNumbers.trialKeyBonus(node);
 		passiveEffect = cast.passive;
+		applying = cast.caster;
 		try {
 			applyEffect(cast, node, hit, groupPower);
 		} finally {
@@ -114,6 +123,7 @@ public final class Effects {
 			currentElement = outerElement;
 			openingBonus = outerOpening;
 			passiveEffect = outerPassive;
+			applying = outerApplying;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
 		WorldMagic.onSpell(cast, node, hit, groupPower);

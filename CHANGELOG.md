@@ -25,6 +25,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   writing one more lets your oldest fade wherever it is.
 - **A parried spell doesn't earn Siphon mana afresh.** Turned back, it's still the one spell paid for once, so it
   shares the original's Siphon cap however many times it's parried back and forth.
+- **A duel's end only undoes what your opponent did.** It took away every harmful effect and fire gained during the
+  duel, from anything: a monster's poison or lava's fire now stay, and only your opponent's (their spells, a tipped
+  arrow, a flaming blade) are taken off.
 
 ## [0.4.2-alpha] - 2026-09-28
 

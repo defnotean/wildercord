@@ -74,8 +74,9 @@ challenge and when they accept). You can challenge again after 10 seconds.
 - **Nobody dies.** Brought down by your opponent, you're knocked out at 1 health.
 - When the duel ends, however it ends (logging off included), both of you are put back as you were
   when it began: the health your opponent took from you is given back (never more than you had),
-  no harmful effects or fire the duel left on you, and the effects you had, less the time the duel
-  took. Harm from anything else (a fall, a monster) stays, and mana you spent isn't given back, so
+  no harmful effects or fire your opponent left on you (noted as they land: their spell, or harm
+  landing just as they struck), and the effects you had, less the time the duel took. Harm from
+  anything else (a fall, a monster's poison, lava) stays, and mana you spent isn't given back, so
   a duel is never a free heal. A duel still under way when the server stops ends for nobody.
 - Walking more than 40 blocks from where the duel began, logging off or dying to something else
   forfeits. A duel with no winner after 5 minutes is a draw.
