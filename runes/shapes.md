@@ -15,7 +15,7 @@ A **shape** decides *where* a spell goes and *who* it touches: yourself, a bolt 
 ### <img src="{{ '/assets/runes/arc.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Arc
 {: #arc}
 
-*Tier I · 3 mana · its effects cost x1.1 · needs any Cord*
+*Tier I · 3 mana · its effects cost x1.25 · needs any Cord*
 
 Lobs a bolt that falls and bursts where it lands.
 
@@ -67,7 +67,7 @@ A small nova bursts from you, hitting everything within 2.5 blocks.
 ### <img src="{{ '/assets/runes/ray.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ray
 {: #ray}
 
-*Tier I · 2 mana · needs any Cord*
+*Tier I · 2 mana · its effects cost x1.15 · needs any Cord*
 
 An instant, short ray that hits the first thing within 10 blocks.
 
@@ -117,7 +117,7 @@ Targets what you're looking at, within reach.
 ### <img src="{{ '/assets/runes/barrage.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barrage
 {: #barrage}
 
-*Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
+*Tier II · 5 mana · its effects cost x1.85 · needs a Copper Cord or better*
 
 A flurry of 8 blows in one second on everything right in front of you, each at 35% power.
 
@@ -130,7 +130,7 @@ A flurry of 8 blows in one second on everything right in front of you, each at 3
 ### <img src="{{ '/assets/runes/beam.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Beam
 {: #beam}
 
-*Tier II · 4 mana · its effects cost x1.2 · needs a Copper Cord or better*
+*Tier II · 3 mana · its effects cost x1.2 · needs a Copper Cord or better*
 
 An instant line that hits the first thing within 24 blocks.
 
@@ -169,7 +169,7 @@ Hits everything within 4 blocks.
 ### <img src="{{ '/assets/runes/cluster.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cluster
 {: #cluster}
 
-*Tier II · 6 mana · its effects cost x1.7 · needs a Copper Cord or better*
+*Tier II · 6 mana · its effects cost x1.5 · needs a Copper Cord or better*
 
 A ball of energy that breaks into five shards where it hits; each shard strikes everything within 1.5 blocks of where it lands.
 
@@ -247,7 +247,7 @@ A thick lance of light drives 16 blocks forward, through every creature in its p
 ### <img src="{{ '/assets/runes/latch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Latch
 {: #latch}
 
-*Tier II · 6 mana · its effects cost x1.9 · needs a Copper Cord or better*
+*Tier II · 6 mana · its effects cost x2.15 · needs a Copper Cord or better*
 
 A thread of light latches onto the first creature within 16 blocks of your aim and strikes it 4 times, a second apart, at 70% power, while it stays within 24 blocks and in sight.
 
@@ -312,9 +312,9 @@ An orb that bounces off the ground and walls 4 times, passing through creatures 
 ### <img src="{{ '/assets/runes/ring.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ring
 {: #ring}
 
-*Tier II · 6 mana · its effects cost x1.5 · needs a Copper Cord or better*
+*Tier II · 6 mana · its effects cost x1.7 · needs a Copper Cord or better*
 
-A ring expands from you out to 7 blocks, hitting everything it passes.
+A hollow ring expands from you out to 7 blocks, hitting everything it passes but sparing the ground right around you.
 
 **How to get it:** Craft: a Blank Rune, Bell, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -325,7 +325,7 @@ A ring expands from you out to 7 blocks, hitting everything it passes.
 ### <img src="{{ '/assets/runes/stream.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stream
 {: #stream}
 
-*Tier II · 5 mana · its effects cost x1.8 · needs a Copper Cord or better*
+*Tier II · 5 mana · its effects cost x1.95 · needs a Copper Cord or better*
 
 A steady stream of energy follows your aim for a second, striking the first thing within 20 blocks 6 times at 35% power.
 
@@ -338,7 +338,7 @@ A steady stream of energy follows your aim for a second, striking the first thin
 ### <img src="{{ '/assets/runes/sweep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sweep
 {: #sweep}
 
-*Tier II · 5 mana · its effects cost x1.6 · needs a Copper Cord or better*
+*Tier II · 5 mana · its effects cost x1.8 · needs a Copper Cord or better*
 
 A 10-block beam sweeps across in front of you in half a second, hitting everything it crosses once.
 
@@ -351,7 +351,7 @@ A 10-block beam sweeps across in front of you in half a second, hitting everythi
 ### <img src="{{ '/assets/runes/trail.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trail
 {: #trail}
 
-*Tier II · 7 mana · its effects cost x1.8 · needs a Copper Cord or better*
+*Tier II · 7 mana · its effects cost x2.85 · needs a Copper Cord or better*
 
 For 5 seconds your footsteps leave a path that hits whatever steps on it.
 
@@ -390,9 +390,9 @@ A wisp drifts out and chases the nearest enemy within 16 blocks for up to 4 seco
 ### <img src="{{ '/assets/runes/orb.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Orb
 {: #orb}
 
-*Tier III · 9 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
+*Tier III · 9 mana · its effects cost x2 · needs an Amethyst Cord or better*
 
-A slow, heavy orb drifts 20 blocks forward through creatures, striking everything within 2 blocks of it once a second.
+A slow, heavy orb you steer with your aim drifts up to 30 blocks through creatures, striking everything within 2 blocks of it once a second.
 
 **How to get it:** Craft: a Blank Rune, Slime Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; End cities.
 
@@ -403,7 +403,7 @@ A slow, heavy orb drifts 20 blocks forward through creatures, striking everythin
 ### <img src="{{ '/assets/runes/orbit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Orbit
 {: #orbit}
 
-*Tier III · 9 mana · its effects cost x2 · needs an Amethyst Cord or better*
+*Tier III · 9 mana · its effects cost x3.05 · needs an Amethyst Cord or better*
 
 Three orbs circle you for 8 seconds and hit whatever they touch.
 
@@ -429,7 +429,7 @@ Three orbs circle you for 8 seconds and hit whatever they touch.
 ### <img src="{{ '/assets/runes/totem.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Totem
 {: #totem}
 
-*Tier III · 10 mana · its effects cost x2.4 · needs an Amethyst Cord or better*
+*Tier III · 10 mana · its effects cost x3.15 · needs an Amethyst Cord or better*
 
 A floating totem where you look pulses every 2 seconds for 10 seconds.
 
@@ -442,9 +442,9 @@ A floating totem where you look pulses every 2 seconds for 10 seconds.
 ### <img src="{{ '/assets/runes/wall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wall
 {: #wall}
 
-*Tier III · 10 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
+*Tier III · 10 mana · its effects cost x2.95 · needs an Amethyst Cord or better*
 
-A 7-block wall across where you look. Hits whatever crosses it every second for 5 seconds.
+A 7-block wall across where you look. Hits whatever crosses it every second for 5 seconds, slows what touches it and turns projectiles aside.
 
 **How to get it:** Craft: a Blank Rune, 2x Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; Ominous vaults; Stronghold libraries.
 
@@ -455,7 +455,7 @@ A 7-block wall across where you look. Hits whatever crosses it every second for 
 ### <img src="{{ '/assets/runes/zone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Zone
 {: #zone}
 
-*Tier III · 8 mana · its effects cost x2 · needs an Amethyst Cord or better*
+*Tier III · 8 mana · its effects cost x2.75 · needs an Amethyst Cord or better*
 
 A 3-block field where you look. Re-applies every second for 6 seconds.
 
@@ -468,7 +468,7 @@ A 3-block field where you look. Re-applies every second for 6 seconds.
 ### <img src="{{ '/assets/runes/domain.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Domain
 {: #domain}
 
-*Tier IV · 20 mana · its effects cost x3 · needs an Echo Cord*
+*Tier IV · 20 mana · its effects cost x3.9 · needs an Echo Cord*
 
 Expands a 9-block domain around you for 6 seconds. Every second everything inside is struck, and enemies inside are slowed.
 
