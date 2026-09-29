@@ -8,11 +8,23 @@ public final class SpellNumbers {
 	private SpellNumbers() {}
 
 	public static final int MAX_COPIES = 9;
+	/** Rain: the share of strikes that fall on an enemy in the area, and how wide each strikes. */
+	public static final double RAIN_SEEK = 0.6;
+	public static final double RAIN_STRIKE = 2.0;
+	/** Orb: how far it drifts, and how sharply your aim turns it each tick (0 = not at all, 1 = at once). */
+	public static final double ORB_RANGE = 30.0;
+	public static final double ORB_STEER = 0.08;
+	/** Ring: the share of its radius around the caster that it leaves alone. */
+	public static final double RING_HOLLOW = 0.22;
+	/** Linger's landings after the first are echoes: this share of the power. */
+	public static final double LINGER_POWER = 0.6;
+	/** The k-th creature an On Hit payload fires at in one landing gets this much of the last one's power. */
+	public static final double TRIGGER_FALLOFF = 0.85;
 	public static final int MAX_ECHOES = 3;
 
 	public static double power(SpellPlan.EffectNode e) {
 		return Math.pow(1.5, e.count(Runes.AMPLIFY)) * Math.pow(0.6, e.count(Runes.FRUGAL_MOD))
-			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.2, e.count(Runes.KINDLED))
+			* Math.pow(2.5, e.count(Runes.OVERCHARGE_MOD)) * Math.pow(1.5, e.count(Runes.FOCUS_MOD)) * RuneNumbers.power(e.mods) * Math.pow(1.3, e.count(Runes.KINDLED))
 			* belatedPower(e);
 	}
 
@@ -120,6 +132,11 @@ public final class SpellNumbers {
 	}
 
 	/** Ticks between a Domain's strikes: 20, halved by each Quicken. */
+	/** A Domain's life in ticks (Quicken shortens it with its interval: the same strikes, sooner). */
+	public static int domainTicks(SpellPlan.Group g) {
+		return domainSeconds(g) * domainInterval(g);
+	}
+
 	public static int domainInterval(SpellPlan.Group g) {
 		return Math.max(5, (int) Math.round(20 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
@@ -133,8 +150,14 @@ public final class SpellNumbers {
 		return 1.5 * quickened(g, 2.0);
 	}
 
+	/** A Barrage always lands 8 blows; Quicken makes them come faster (see {@link #barrageTicks}), not more. */
 	public static int barrageBlows(SpellPlan.Group g) {
-		return Math.min(20, 8 + 4 * g.count(Runes.QUICKEN));
+		return 8;
+	}
+
+	/** Ticks a Barrage's blows are spread over: 20, halved by each Quicken (never under 6). */
+	public static int barrageTicks(SpellPlan.Group g) {
+		return Math.max(6, (int) Math.round(20 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
 
 	public static double orbRadius(SpellPlan.Group g) {
@@ -224,9 +247,14 @@ public final class SpellNumbers {
 		return Math.max(3, (int) Math.round(10 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
 
-	/** Strikes in a Stream's second: 6, doubled by each Quicken (12 at most). */
+	/** Strikes in a Stream: always 6; Quicken packs them into less time ({@link #streamTicks}). */
 	public static int streamStrikes(SpellPlan.Group g) {
-		return (int) Math.min(12, 6 * Math.pow(2.0, g.count(Runes.QUICKEN)));
+		return 6;
+	}
+
+	/** Ticks a Stream lasts: 20, halved by each Quicken (never under 8). */
+	public static int streamTicks(SpellPlan.Group g) {
+		return Math.max(8, (int) Math.round(STREAM_TICKS / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
 
 	/** Radius factor on a shape from Widen and Focus (and add-on radius modifiers). */
@@ -261,6 +289,11 @@ public final class SpellNumbers {
 	}
 
 	/** Ticks between a Wall's hits: 20 (once a second, as a Wall has always struck), halved by each Quicken. */
+	/** A Wall's life in ticks: its seconds, shortened in step with its interval by Quicken (the same strikes, sooner). */
+	public static int wallTicks(SpellPlan.Group g) {
+		return wallSeconds(g) * wallInterval(g);
+	}
+
 	public static int wallInterval(SpellPlan.Group g) {
 		return Math.max(4, (int) Math.round(20 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
@@ -321,6 +354,16 @@ public final class SpellNumbers {
 	}
 
 	/** Ticks between a Zone's pulses: 20, halved by each Quicken. */
+	/** A Zone's pulses: one a second of its life whatever Quicken does (Quicken only makes them come faster). */
+	public static int zonePulses(SpellPlan.Group g) {
+		return Math.max(1, zoneSeconds(g));
+	}
+
+	/** How long a Zone lasts, in seconds: its pulses at their interval. */
+	public static double zoneLife(SpellPlan.Group g) {
+		return zonePulses(g) * zoneInterval(g) / 20.0;
+	}
+
 	public static int zoneInterval(SpellPlan.Group g) {
 		return Math.max(5, (int) Math.round(20 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
@@ -359,6 +402,11 @@ public final class SpellNumbers {
 	}
 
 	/** Ticks between a Totem's pulses: 40, halved by each Quicken. */
+	/** A Totem's life in ticks (Quicken shortens it with its interval: the same pulses, sooner). */
+	public static int totemTicks(SpellPlan.Group g) {
+		return totemSeconds(g) * totemInterval(g) / 2;
+	}
+
 	public static int totemInterval(SpellPlan.Group g) {
 		return Math.max(10, (int) Math.round(40 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
@@ -402,15 +450,15 @@ public final class SpellNumbers {
 		return cooldownTicks(cost, rapid, 0);
 	}
 
-	/** Cooldown after Rapid and Vow: each Vow makes it 4x longer, up to a minute. */
+	/** Cooldown after Rapid and Vow: each Vow makes it 5x longer, up to a minute. */
 	public static int cooldownTicks(double cost, int rapid, int vows) {
-		double ticks = cooldownTicks(cost) * Math.pow(0.5, rapid) * Math.pow(4.0, vows);
+		double ticks = cooldownTicks(cost) * Math.pow(0.5, rapid) * Math.pow(5.0, vows);
 		return (int) Math.max(5, Math.min(1200, Math.round(ticks)));
 	}
 
-	/** Blood Price: health paid instead of mana, 1 per 5 mana, at least 1. */
+	/** Blood Price: health paid instead of mana, 1 per 4 mana, at least 1. */
 	public static int healthCost(double cost) {
-		return (int) Math.max(1, Math.ceil(cost / 5.0 - 1e-9));
+		return (int) Math.max(1, Math.ceil(cost / 4.0 - 1e-9));
 	}
 
 	// ---- new runes (batch 2): Glaive, Imprint and Latch; Kindred, Thirst and Belated
@@ -451,9 +499,9 @@ public final class SpellNumbers {
 		return Math.max(5, (int) Math.round(20 / Math.pow(2.0, g.count(Runes.QUICKEN))));
 	}
 
-	/** A Latch's strikes: 4, doubled by each Extend (longer) and each Quicken (as long, twice as often), 16 at most. */
+	/** A Latch's strikes: 4, doubled by each Extend (longer), 16 at most. Quicken makes them come faster, not more. */
 	public static int latchStrikes(SpellPlan.Group g) {
-		return (int) Math.min(16, 4 * Math.pow(2.0, g.count(Runes.EXTEND)) * Math.pow(2.0, g.count(Runes.QUICKEN)));
+		return (int) Math.min(16, 4 * Math.pow(2.0, g.count(Runes.EXTEND)));
 	}
 
 	/** Kindred: the share of the effect's power that you and the ally it missed get, and how far it looks for that ally. */
@@ -466,7 +514,7 @@ public final class SpellNumbers {
 	}
 
 	/** Belated: each one counted (three at most) makes the effect this much stronger and this many ticks later. */
-	public static final double BELATED_POWER = 1.4;
+	public static final double BELATED_POWER = 1.25;
 	public static final int BELATED_TICKS = 30;
 	private static final int MAX_BELATED = 3;
 

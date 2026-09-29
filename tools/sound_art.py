@@ -17,7 +17,8 @@ always harmonise. Play them at pitch 1 (a little random spread is fine) and they
     sounds/events/*.ogg                mana storms, falling stars and rifts
     sounds/familiar/*.ogg              wisps drifting, drinking magic, bonding, casting and growing
     sounds/boss/*.ogg                  the dungeon bosses: their cries, blows and phases, and the tide
-    sounds.json                        every event, its variants and its subtitle key
+    sounds.json                        every event, its variants and its subtitle key (generated: see tools/feel/build.py)
+    sounds/kit/<part>/*.ogg            the feel kit's sounds, one folder per element (tools/feel)
 
 The subtitles' English text lives in generate_assets.py (NEW_LANG), like the rest of en_us.json.
 Needs numpy, scipy and ffmpeg (built with libvorbis) on the PATH.
@@ -25,6 +26,7 @@ Run from the project root:  python tools/sound_art.py
 """
 import json
 import subprocess
+import sys
 import tempfile
 import zlib
 from pathlib import Path
@@ -406,6 +408,8 @@ ROLES = {
     "loop": (-6.0, -20.0),     # beds that play under everything else
     "ui": (-7.0, -22.0),       # quieter: heard close up, over and over
     "tick": (-12.0, -27.0),    # the quietest: the wheel's hover tick
+    "tell": (-9.0, -24.0),     # the feel kit: a modifier or link announcing itself
+    "pulse": (-12.0, -26.0),   # the feel kit: one landing of a field, heard many times
 }
 
 
@@ -1503,10 +1507,19 @@ def main():
                 entries.append({"name": f"wildercord:{rel}", **extra} if extra else f"wildercord:{rel}")
             events[name] = {"subtitle": f"subtitles.wildercord.{name}", "sounds": entries}
     for stale in SOUNDS.rglob("*.ogg"):
+        if "kit" in stale.relative_to(SOUNDS).parts:
+            # The feel kit (tools/feel) owns sounds/kit; each part prunes its own folder.
+            continue
         if stale not in written:
             print(f"removing {stale.relative_to(ROOT).as_posix()}, no longer made")
             stale.unlink()
-    (ASSETS / "sounds.json").write_text(json.dumps(events, indent=2) + "\n", encoding="utf-8", newline="\n")
+    # sounds.json is generated from this palette (tools/feel/manifest/base.json) and every feel part (tools/feel).
+    manifests = ROOT / "tools/feel/manifest"
+    manifests.mkdir(parents=True, exist_ok=True)
+    (manifests / "base.json").write_text(json.dumps(events, indent=2) + "\n", encoding="utf-8", newline="\n")
+    sys.path.insert(0, str(ROOT / "tools"))
+    from feel import build as feel_build
+    feel_build.merge()
 
     print(f"{'file':34} {'sec':>5} {'peak':>6} {'loud':>6} {'centre':>7} {'mid':>5} {'>8k':>5} {'KB':>5}")
     for r in rows:

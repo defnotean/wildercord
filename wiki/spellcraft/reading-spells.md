@@ -158,7 +158,7 @@ Every rune's page lists exactly which modifiers work on it: see [Shapes]({{ '/ru
 | Execute | Double power against targets under half health | 1.3 |
 | Kindred | A helpful effect also lands on you and on the nearest ally it missed within 8 blocks, at half power | 1.4 |
 | Thirst | You heal for a quarter of the damage the effect deals (two: half, three or more: three quarters) | 1.4 |
-| Belated | The effect (and any Linger after it) lands 1.5 seconds late, 40% stronger (three count at most: 4.5 seconds, 2.7x) | 1.25 |
+| Belated | The effect (and any Linger after it) lands 1.5 seconds late, 25% stronger (three count at most: 4.5 seconds, 1.95x) | 1.25 |
 | Rapid | Halves the whole spell's cooldown | 1.4, on the whole spell |
 | Vow | That shape's effects hit twice as hard; the whole spell's cooldown is four times longer | 1.0 |
 | Blood Price | The whole spell is paid for in health, 1 per 5 mana | 1.0 |

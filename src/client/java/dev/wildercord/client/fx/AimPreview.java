@@ -49,8 +49,14 @@ public final class AimPreview {
 			return;
 		}
 		SpellPlan.Group g = root.groups.getFirst();
-		int color = charge.runes().isEmpty() ? 0xFFFFFF : dev.wildercord.spell.Runes.get(charge.runes().get(Math.min(1, charge.runes().size() - 1)))
-			.map(dev.wildercord.spell.RuneColors::of).orElse(0xFFFFFF);
+		int color = dev.wildercord.spell.RuneColors.SHAPE;
+		for (String id : charge.runes()) {
+			var rune = dev.wildercord.spell.Runes.get(id);
+			if (rune.isPresent() && rune.get().family() == dev.wildercord.spell.RuneFamily.EFFECT) {
+				color = dev.wildercord.spell.RuneColors.of(rune.get());
+				break;
+			}
+		}
 		String shape = g.shape.path();
 		switch (shape) {
 			case "zone" -> reticle(mc, aim(player, CastEngine.AIM_RANGE), SpellNumbers.zoneRadius(g), color);

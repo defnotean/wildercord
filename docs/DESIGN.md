@@ -325,8 +325,8 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Rampart | Effect · World | II | A 5-wide, 3-high earth wall for 10 s; broken by hand it crumbles, and however it's broken (an explosion too) it drops nothing |
 | Shades | Effect · Summon | III | Two shadow hounds for 20 s |
 | Thunderbird | Effect · Summon | III | A storm bird circles overhead for 15 s, striking the nearest enemy every 1.5 s (3 at most) |
-| Vow | Modifier · Power | III | On a shape: its effects hit twice as hard, the whole spell's cooldown is 4x longer (up to 60 s) |
-| Blood Price | Modifier · Power | III | On a shape: the whole spell costs 1 health per 5 mana instead of mana, never lethal |
+| Vow | Modifier · Power | III | On a shape: its effects hit twice as hard, the whole spell's cooldown is 5x longer (up to 60 s) |
+| Blood Price | Modifier · Power | III | On a shape: the whole spell costs 1 health per 4 mana instead of mana, never lethal |
 | Execute | Modifier · Power | II | On an effect: double power against targets under half health |
 | If Airborne | Link · Condition | II | The rest fires only while you're in the air |
 | Combo | Link · Condition | III | The rest fires only on every third cast of this spell |
@@ -416,7 +416,7 @@ and On Reaction also turn up in ancient city, end city and trial chamber chests.
 | Latch | Shape · Direct | II | 6, effects ×1.9 | A thread latches onto the first creature within 16 blocks of your aim (after a link, the creature that set it off) and strikes it 4 times a second apart at 70% power, snapping if it strays past 24 blocks or out of sight. Extend: 8 strikes; Quicken: 8 in the same time |
 | Kindred | Modifier · Area | II | ×1.4 | A helpful effect also lands on you and on the nearest ally within 8 blocks that it missed, at half power. Needs the new share trait: every helpful effect that lands per creature, not summons, domes, horns, death saves, Soulbond, Transfusion, Cryostasis, Shulkershell, Rewind, Overdrive or innate runes |
 | Thirst | Modifier · Power | II | ×1.4 | You heal for a quarter of the damage the effect really deals (a half with two, three quarters at most) |
-| Belated | Modifier · Timing | II | ×1.25 | The effect, and any Linger after it, lands 1.5 s late on whatever it struck that's still there, 40% stronger (three count: 4.5 s, ×2.74). A Belated kill is too late for On Kill |
+| Belated | Modifier · Timing | II | ×1.25 | The effect, and any Linger after it, lands 1.5 s late on whatever it struck that's still there, 25% stronger (three count: 4.5 s, ×1.95). A Belated kill is too late for On Kill |
 | On Reaction | Link · Trigger | III | 2 | Watches the group before it; fires the rest at each creature that group set an element reaction off on as it landed |
 | On Weakness | Link · Trigger | II | 2 | Watches the group before it; fires the rest at each creature that group struck with an element it's weak to (creature affinities: players have none) |
 | Spellbrand | Effect · Damage (arcane) | II | 8 | Brands each target for 8 s; the next spell damage you deal it, from the next tick on, bursts the brand for 6 arcane |

@@ -335,7 +335,7 @@ public final class SpellCompiler {
 				}
 			}
 			if (g.effects.isEmpty() && g.count(Runes.VOW_MOD) > 0) {
-				String message = "Vow strengthens only " + g.shape.name() + "'s effects, and it has none: the cooldown is 4x longer for nothing.";
+				String message = "Vow strengthens only " + g.shape.name() + "'s effects, and it has none: the cooldown is 5x longer for nothing.";
 				if (!warnings.contains(message)) {
 					warnings.add(message);
 				}
@@ -355,6 +355,11 @@ public final class SpellCompiler {
 	 */
 	public static double cost(SpellPlan.Segment root) {
 		return partCost(root) * product(wholeSpellMods(root));
+	}
+
+	/** What a segment of a plan costs by itself (the mana of what a link fires), before the whole-spell modifiers. */
+	public static double segmentCost(SpellPlan.Segment seg) {
+		return partCost(seg);
 	}
 
 	private static double partCost(SpellPlan.Segment seg) {
@@ -544,7 +549,7 @@ public final class SpellCompiler {
 			return (copies > 1 ? copies + " bursts" : "Everything") + " within " + blocks(SpellNumbers.burstRadius(g));
 		}
 		if (id.equals(Runes.ZONE.id())) {
-			return (copies > 1 ? copies + " fields" : "A field") + " (" + blocks(SpellNumbers.zoneRadius(g)) + ", " + SpellNumbers.zoneSeconds(g) + "s, every " + seconds(SpellNumbers.zoneInterval(g)) + ")";
+			return (copies > 1 ? copies + " fields" : "A field") + " (" + blocks(SpellNumbers.zoneRadius(g)) + ", " + trim(SpellNumbers.zoneLife(g)) + "s, every " + seconds(SpellNumbers.zoneInterval(g)) + ")";
 		}
 		if (id.equals(Runes.RAIN.id())) {
 			return (5 * copies) + " strikes from the sky (" + blocks(SpellNumbers.rainRadius(g)) + ")";
@@ -561,7 +566,7 @@ public final class SpellCompiler {
 			return "Your trail (" + SpellNumbers.trailSeconds(g) + "s)";
 		}
 		if (id.equals(Runes.WALL.id())) {
-			return "A " + blocks(SpellNumbers.wallWidth(g)).replace(" blocks", "-block") + " wall (" + SpellNumbers.wallSeconds(g) + "s, every " + seconds(SpellNumbers.wallInterval(g)) + ")";
+			return "A " + blocks(SpellNumbers.wallWidth(g)).replace(" blocks", "-block") + " wall (" + seconds(SpellNumbers.wallTicks(g)) + ", every " + seconds(SpellNumbers.wallInterval(g)) + ")";
 		}
 		if (id.equals(Runes.ORBIT.id())) {
 			return SpellNumbers.orbs(g) + " orbiting orbs (" + SpellNumbers.orbitSeconds(g) + "s)";
@@ -579,10 +584,10 @@ public final class SpellCompiler {
 			return (copies > 1 ? copies + " hidden mines" : "A hidden mine") + " (" + blocks(SpellNumbers.mineRadius(g)) + ")";
 		}
 		if (id.equals(Runes.TOTEM.id())) {
-			return "A totem (" + blocks(SpellNumbers.totemRadius(g)) + ", " + SpellNumbers.totemSeconds(g) + "s, every " + seconds(SpellNumbers.totemInterval(g)) + ")";
+			return "A totem (" + blocks(SpellNumbers.totemRadius(g)) + ", " + seconds(SpellNumbers.totemTicks(g)) + ", every " + seconds(SpellNumbers.totemInterval(g)) + ")";
 		}
 		if (id.equals(Runes.DOMAIN.id())) {
-			return "Your domain (" + blocks(SpellNumbers.domainRadius(g)) + ", " + SpellNumbers.domainSeconds(g) + "s, every " + seconds(SpellNumbers.domainInterval(g)) + ")";
+			return "Your domain (" + blocks(SpellNumbers.domainRadius(g)) + ", " + seconds(SpellNumbers.domainTicks(g)) + ", every " + seconds(SpellNumbers.domainInterval(g)) + ")";
 		}
 		if (id.equals(Runes.CRESCENT.id())) {
 			return (copies > 1 ? copies + " crescents" : "A crescent") + times + " (" + blocks(SpellNumbers.crescentWidth(g)).replace(" blocks", "-block") + " wide)";
