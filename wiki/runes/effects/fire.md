@@ -11,7 +11,7 @@ nav_order: 1
 
 Burning, blasts and heat. Fire lights what it touches and boils water into steam.
 
-9 fire effects you can craft or find in the usual way. Fire also has runes of the world, fused runes and innate runes: see their own pages.
+10 fire effects you can craft or find in the usual way. Fire also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/ember.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ember
 {: #ember}
@@ -24,7 +24,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 
 <img src="{{ '/assets/recipes/rune_ember.png' | relative_url }}" alt="Crafting Ember: a Blank Rune and Coal and Flint" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/fire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fire
 {: #fire}
@@ -37,7 +37,7 @@ Burning, blasts and heat. Fire lights what it touches and boils water into steam
 
 <img src="{{ '/assets/recipes/rune_fire.png' | relative_url }}" alt="Crafting Fire: a Blank Rune and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/fireward.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Fireward
 {: #fireward}
@@ -50,7 +50,7 @@ Fire resistance for 30 seconds.
 
 <img src="{{ '/assets/recipes/rune_fireward.png' | relative_url }}" alt="Crafting Fireward: a Blank Rune and Magma Cream, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/flashfire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Flashfire
 {: #flashfire}
@@ -63,7 +63,20 @@ A flash of heat: 4 fire damage to every enemy within 3 blocks, setting them alig
 
 <img src="{{ '/assets/recipes/rune_flashfire.png' | relative_url }}" alt="Crafting Flashfire: a Blank Rune and Blaze Powder and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/searing_edge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Searing Edge
+{: #searing_edge}
+
+*Tier II · Fire · Helps you and your allies · 8 mana · needs a Copper Cord or better*
+
+For 15 seconds the target's weapon sears: each melee hit it lands sets the foe alight for 4 seconds and deals 2 more fire damage.
+
+**How to get it:** Craft: a Blank Rune, Iron Sword and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Ember Sanctum.
+
+<img src="{{ '/assets/recipes/rune_searing_edge.png' | relative_url }}" alt="Crafting Searing Edge: a Blank Rune and Iron Sword and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/smelt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Smelt
 {: #smelt}
@@ -76,7 +89,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 <img src="{{ '/assets/recipes/rune_smelt.png' | relative_url }}" alt="Crafting Smelt: a Blank Rune and Furnace and Blaze Powder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/explode.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Explode
 {: #explode}
@@ -89,7 +102,7 @@ Mines the block that was hit and drops it smelted, as a furnace would (iron-pick
 
 <img src="{{ '/assets/recipes/rune_explode.png' | relative_url }}" alt="Crafting Explode: a Blank Rune and TNT and Fire Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/inferno.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Inferno
 {: #inferno}
@@ -102,7 +115,7 @@ Everything within 4 blocks burns: 3 fire damage a second for 4 seconds.
 
 <img src="{{ '/assets/recipes/rune_inferno.png' | relative_url }}" alt="Crafting Inferno: a Blank Rune and Blaze Rod and Magma Block, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/meteor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Meteor
 {: #meteor}
@@ -115,7 +128,7 @@ A burning meteor falls on each target: 10 damage in a 3-block blast.
 
 <img src="{{ '/assets/recipes/rune_meteor.png' | relative_url }}" alt="Crafting Meteor: a Blank Rune and Magma Block and Fire Charge, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/primer.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Primer
 {: #primer}
@@ -128,5 +141,5 @@ Turns each target into a bomb that goes off 2 seconds later: 10 damage within 3 
 
 <img src="{{ '/assets/recipes/rune_primer.png' | relative_url }}" alt="Crafting Primer: a Blank Rune and TNT and Pink Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

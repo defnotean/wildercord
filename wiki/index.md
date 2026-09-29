@@ -47,7 +47,7 @@ where to get it, every recipe, the dungeons and their bosses, the world's events
 
 | | |
 |---|---|
-| **294 runes** | 186 you can craft, 53 found only out in the world (two of them only on a fishing line), and 55 fused at the Fusion Altar, one for every pair of elements. |
+| **312 runes** | 204 you can craft, 53 found only out in the world (two of them only on a fishing line), and 55 fused at the Fusion Altar, one for every pair of elements. |
 | **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look and sound. Eleven reactions play them off each other, creatures are weak to some and resist others, and where you stand favours some over the rest. |
 | **Four Cords** | Twine, Copper, Amethyst and Echo: more sockets, more spells, higher rune tiers, more mana. |
 | **Readable magic** | Every spell writes its own magic circle. Learn the emblems and you can read what a monster, or another player, is about to cast. |

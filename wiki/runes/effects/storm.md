@@ -11,7 +11,20 @@ nav_order: 3
 
 Lightning and shock. Storm strikes hard, chains between foes and runs through water.
 
-6 storm effects you can craft or find in the usual way. Storm also has runes of the world, fused runes and innate runes: see their own pages.
+7 storm effects you can craft or find in the usual way. Storm also has runes of the world, fused runes and innate runes: see their own pages.
+
+### <img src="{{ '/assets/runes/galvanize.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Galvanize
+{: #galvanize}
+
+*Tier I · Storm · Works on the world · 3 mana · needs any Cord*
+
+Sets a spark of raw power against the block it strikes for 5 seconds: it powers what it touches as a redstone block would (doors open, lamps light, pistons push).
+
+**How to get it:** Craft: a Blank Rune, Lightning Rod and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_galvanize.png' | relative_url }}" alt="Crafting Galvanize: a Blank Rune and Lightning Rod and Redstone Dust" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/shock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shock
 {: #shock}
@@ -24,7 +37,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 
 <img src="{{ '/assets/recipes/rune_shock.png' | relative_url }}" alt="Crafting Shock: a Blank Rune and Lightning Rod" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/jolt.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Jolt
 {: #jolt}
@@ -37,7 +50,7 @@ Lightning and shock. Storm strikes hard, chains between foes and runs through wa
 
 <img src="{{ '/assets/recipes/rune_jolt.png' | relative_url }}" alt="Crafting Jolt: a Blank Rune and Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/ripple.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Ripple
 {: #ripple}
@@ -50,7 +63,7 @@ Sunlight through the body: 6 damage, tripled against undead, and heals you for a
 
 <img src="{{ '/assets/recipes/rune_ripple.png' | relative_url }}" alt="Crafting Ripple: a Blank Rune and Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/thunderclap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderclap
 {: #thunderclap}
@@ -63,7 +76,7 @@ A crack of thunder: 5 damage and a heavy knockback within 3 blocks.
 
 <img src="{{ '/assets/recipes/rune_thunderclap.png' | relative_url }}" alt="Crafting Thunderclap: a Blank Rune and Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/lightning.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Lightning
 {: #lightning}
@@ -76,7 +89,7 @@ A 12-damage lightning strike on each target that stuns and burns. You and your a
 
 <img src="{{ '/assets/recipes/rune_lightning.png' | relative_url }}" alt="Crafting Lightning: a Blank Rune and Block of Copper and Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/thunderbird.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderbird
 {: #thunderbird}
@@ -89,5 +102,5 @@ A storm bird circles above you for 15 seconds, striking the nearest enemy within
 
 <img src="{{ '/assets/recipes/rune_thunderbird.png' | relative_url }}" alt="Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

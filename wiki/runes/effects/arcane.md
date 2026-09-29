@@ -11,7 +11,7 @@ nav_order: 8
 
 Pure magic. Arcane strikes, reveals, silences, summons and bends the rules.
 
-16 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
+17 arcane effects you can craft or find in the usual way. Arcane also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/barrier.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Barrier
 {: #barrier}
@@ -24,7 +24,7 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 
 <img src="{{ '/assets/recipes/rune_barrier.png' | relative_url }}" alt="Crafting Barrier: a Blank Rune and Glass and Amethyst Shard" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/harm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Harm
 {: #harm}
@@ -37,7 +37,7 @@ A thin barrier of light: 2 absorption hearts for 20 seconds.
 
 <img src="{{ '/assets/recipes/rune_harm.png' | relative_url }}" alt="Crafting Harm: a Blank Rune and Fermented Spider Eye" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/haste.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Haste
 {: #haste}
@@ -50,7 +50,7 @@ Haste II for 30 seconds: mine and swing faster.
 
 <img src="{{ '/assets/recipes/rune_haste.png' | relative_url }}" alt="Crafting Haste: a Blank Rune and Golden Pickaxe" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/light.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Light
 {: #light}
@@ -76,7 +76,7 @@ Night vision for 60 seconds.
 
 <img src="{{ '/assets/recipes/rune_night_eye.png' | relative_url }}" alt="Crafting Night Eye: a Blank Rune and Glow Berries" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/reveal.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reveal
 {: #reveal}
@@ -115,7 +115,7 @@ Strength II for 10 seconds.
 
 <img src="{{ '/assets/recipes/rune_empower.png' | relative_url }}" alt="Crafting Empower: a Blank Rune and Iron Sword, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/silence.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Silence
 {: #silence}
@@ -143,6 +143,19 @@ A bridge of glass grows from your feet toward the point, up to 16 blocks, and sh
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus
 
+### <img src="{{ '/assets/runes/spellbrand.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Spellbrand
+{: #spellbrand}
+
+*Tier II · Arcane · Harms enemies · 8 mana · needs a Copper Cord or better*
+
+Brands each target with a sigil for 8 seconds. The next time your magic hurts it, the sigil bursts for 6 arcane damage.
+
+**How to get it:** Craft: a Blank Rune, Book and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
+
+<img src="{{ '/assets/recipes/rune_spellbrand.png' | relative_url }}" alt="Crafting Spellbrand: a Blank Rune and Book and Gunpowder, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
 ### <img src="{{ '/assets/runes/swap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Swap
 {: #swap}
 
@@ -167,7 +180,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 <img src="{{ '/assets/recipes/rune_reflect.png' | relative_url }}" alt="Crafting Reflect: a Blank Rune and Shield and Glass Pane, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/resonance.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Resonance
 {: #resonance}
@@ -180,7 +193,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 <img src="{{ '/assets/recipes/rune_resonance.png' | relative_url }}" alt="Crafting Resonance: a Blank Rune and Iron Nugget and Hay Bale, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/smite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Smite
 {: #smite}
@@ -193,7 +206,7 @@ For 10 seconds, whatever hurts the target takes 60% of the damage back.
 
 <img src="{{ '/assets/recipes/rune_smite.png' | relative_url }}" alt="Crafting Smite: a Blank Rune and Glowstone and Golden Carrot, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/starfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Starfall
 {: #starfall}
@@ -204,7 +217,7 @@ Eight falling stars around the point over 2 seconds: 6 damage each.
 
 **How to get it:** Found only, never crafted: the Elder Guardian; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/summon.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Summon
 {: #summon}
@@ -215,5 +228,5 @@ Three spirit wolves fight at your side for 20 seconds.
 
 **How to get it:** Found only, never crafted: Evokers (15%); Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

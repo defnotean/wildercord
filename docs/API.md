@@ -67,7 +67,9 @@ rune throws `IllegalArgumentException` from `register()`, so mistakes show up at
 
 Your runes work with every other rune, built-in or from other add-ons, because they all speak the same
 packet: shapes find targets, effects act on them, modifiers change numbers, links schedule the rest.
-Effects automatically get `Trait.FRUGAL`, shapes `Trait.COOLDOWN`, just like built-in ones.
+Effects automatically get `Trait.FRUGAL`, shapes `Trait.COOLDOWN`, just like built-in ones. A helpful effect
+that lands on each creature it touches can declare `Trait.SHARE`, so Kindred shares it (built-in ones have it
+already; an add-on's opts in, since only it knows whether it acts on a place instead).
 
 ## Effects
 

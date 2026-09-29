@@ -41,7 +41,7 @@ For 60 seconds, Luck II, and every chest, barrel and suspicious block within 24 
 
 **How to get it:** Found only, never crafted: Buried treasure; Archive libraries.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/blazecall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blazecall
 {: #blazecall}
@@ -52,7 +52,7 @@ Three blaze fireballs fall on each target over a second: 2 fire damage each, set
 
 **How to get it:** Found only, never crafted: Nether fortresses; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/blood_moss.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blood Moss
 {: #blood_moss}
@@ -63,7 +63,7 @@ Crimson moss spreads over each target: 1 damage a second for 6 seconds, and you 
 
 **How to get it:** Found only, never crafted: Attuned in a crimson forest.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/cinderbrand.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cinderbrand
 {: #cinderbrand}
@@ -74,7 +74,7 @@ Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50
 
 **How to get it:** Found only, never crafted: The Ember Sanctum.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/current.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Current
 {: #current}
@@ -85,7 +85,7 @@ Only in water or rain: a current sweeps you about 15 blocks the way you look, an
 
 **How to get it:** Found only, never crafted: Fished from open water.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/echolocate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Echolocate
 {: #echolocate}
@@ -107,7 +107,7 @@ A ring of evoker fangs snaps up around each target: 6 damage from below.
 
 **How to get it:** Found only, never crafted: Woodland mansions; Archive libraries.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/hush.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hush
 {: #hush}
@@ -147,7 +147,7 @@ Silverfish burrow out of the stone around each target: 1 damage every half secon
 
 **How to get it:** Found only, never crafted: Stronghold libraries; Archive libraries.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/manaburn.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Manaburn
 {: #manaburn}
@@ -158,7 +158,7 @@ Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) a
 
 **How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/mire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mire
 {: #mire}
@@ -180,7 +180,7 @@ A storm of moonlit petals at the point: 4 damage to every enemy within 3 blocks,
 
 **How to get it:** Found only, never crafted: Attuned in a cherry grove.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/portalfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Portalfall
 {: #portalfall}
@@ -191,7 +191,7 @@ A portal opens under each target and drops it from 7 blocks up, with 2 damage on
 
 **How to get it:** Found only, never crafted: Ruined portals; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/remedy.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Remedy
 {: #remedy}
@@ -202,7 +202,7 @@ Cures what ails: washes away harmful effects, heals 4 and gives Regeneration I f
 
 **How to get it:** Found only, never crafted: Igloo basements.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/rootsnare.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rootsnare
 {: #rootsnare}
@@ -213,7 +213,7 @@ Mangrove roots burst up around the point: every enemy within 3 blocks is held fo
 
 **How to get it:** Found only, never crafted: Attuned in a mangrove swamp.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/snare.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Snare
 {: #snare}
@@ -246,7 +246,7 @@ A stalactite drops on each target from above: 7 damage, 50% more against a bare 
 
 **How to get it:** Found only, never crafted: Attuned in dripstone caves.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/tidehook.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidehook
 {: #tidehook}
@@ -257,7 +257,7 @@ A hook of water snags each target and reels it in to your feet in three tugs: 4 
 
 **How to get it:** Found only, never crafted: Fished from open water.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/trial_key.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Trial Key
 {: #trial_key}
@@ -279,7 +279,7 @@ You charge like a hoglin, up to 8 blocks the way you look, tossing everything in
 
 **How to get it:** Found only, never crafted: Bastions.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/undertow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Undertow
 {: #undertow}
@@ -290,7 +290,7 @@ Drags each target down: Slowness III for 3 seconds and soaked. In water it's pul
 
 **How to get it:** Found only, never crafted: Shipwrecks; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/vinelash.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vinelash
 {: #vinelash}
@@ -301,7 +301,7 @@ A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you
 
 **How to get it:** Found only, never crafted: Jungle temples; Runebound Adepts (8%).
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/warcry.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Warcry
 {: #warcry}
@@ -334,7 +334,7 @@ Wreathes the target in ash for 10 seconds: fire can't hurt it, and whatever stri
 
 **How to get it:** Found only, never crafted: The Ember Sanctum.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/basalt_surge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Basalt Surge
 {: #basalt_surge}
@@ -345,7 +345,7 @@ Basalt columns burst up in a line from you to the point: 7 damage and a toss int
 
 **How to get it:** Found only, never crafted: Attuned in the basalt deltas.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/constellation.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Constellation
 {: #constellation}
@@ -367,7 +367,7 @@ A drowning word: for 5 seconds the target's lungs fill with water (it loses its 
 
 **How to get it:** Found only, never crafted: The Drowned Scriptorium.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/eclipse.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Eclipse
 {: #eclipse}
@@ -378,7 +378,7 @@ A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are 
 
 **How to get it:** Found only, never crafted: The Astral Observatory.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/hoarfrost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hoarfrost
 {: #hoarfrost}
@@ -389,7 +389,7 @@ Rime creeps over each target for 3 seconds, slowing it more every second; then i
 
 **How to get it:** Found only, never crafted: Attuned among ice spikes.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/if_outnumbered.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> If Outnumbered
 {: #if_outnumbered}
@@ -420,7 +420,7 @@ Drinks in the storm: you and your allies hit regain 3 mana a second for 10 secon
 
 **How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/resonant_shriek.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Resonant Shriek
 {: #resonant_shriek}
@@ -431,7 +431,7 @@ A sculk shriek: 8 damage that ignores armour, and Darkness for 6 seconds. A seco
 
 **How to get it:** Found only, never crafted: Ancient cities.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/riftcall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Riftcall
 {: #riftcall}
@@ -442,7 +442,7 @@ Opens a rift at the point for 3 seconds: it drags enemies within 5 blocks toward
 
 **How to get it:** Found only, never crafted: Rift sieges.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/sandstorm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sandstorm
 {: #sandstorm}
@@ -453,7 +453,7 @@ A sandstorm whirls at the point for 4 seconds: every enemy within 3.5 blocks tak
 
 **How to get it:** Found only, never crafted: Desert pyramids.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/shulkershell.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shulkershell
 {: #shulkershell}
@@ -475,7 +475,7 @@ Blue soul flames: 3 fire damage a second for 5 seconds, and the damage they deal
 
 **How to get it:** Found only, never crafted: Attuned in a soul sand valley.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/starlight_tether.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Starlight Tether
 {: #starlight_tether}
@@ -486,7 +486,7 @@ Tethers each target to the point with a thread of starlight for 6 seconds: it's 
 
 **How to get it:** Found only, never crafted: Attuned on the End's outer islands.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/starshard.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Starshard
 {: #starshard}
@@ -497,7 +497,7 @@ A shard of the fallen star: 9 damage, then it splinters into 3 sparks that strik
 
 **How to get it:** Found only, never crafted: Fallen Star craters.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/summit_wind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Summit Wind
 {: #summit_wind}
@@ -508,7 +508,7 @@ A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and a
 
 **How to get it:** Found only, never crafted: Attuned on a mountain peak.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/sunscorch.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sunscorch
 {: #sunscorch}
@@ -519,7 +519,7 @@ The noon sun, focused: 8 fire damage and alight for 5 seconds. Under open sky by
 
 **How to get it:** Found only, never crafted: Attuned in the badlands.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/tidecall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidecall
 {: #tidecall}
@@ -530,7 +530,7 @@ The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dra
 
 **How to get it:** Found only, never crafted: Ocean monuments (Elder Guardians).
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/unstable.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Unstable
 {: #unstable}
@@ -563,7 +563,7 @@ Your heart burns for 12 seconds: Strength II, fire can't hurt you, and every ene
 
 **How to get it:** Found only, never crafted: the Cinder Warden.
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/starmaw.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Starmaw
 {: #starmaw}
@@ -574,7 +574,7 @@ Devours the light: 14 damage, and it swallows each of the target's good effects 
 
 **How to get it:** Found only, never crafted: the Star Eater.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/tidewrit.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidewrit
 {: #tidewrit}
@@ -585,5 +585,5 @@ Writes the tide: a 7-wide wall of water rolls from you through the point, 10 dam
 
 **How to get it:** Found only, never crafted: the Tide Scribe.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

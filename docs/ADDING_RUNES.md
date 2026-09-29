@@ -59,8 +59,10 @@ traits decide which modifiers can change it:
 | `DURATION` | Extend |
 | `RADIUS` | Widen, Focus |
 | `LINGER` | Linger |
+| `SHARE` | Kindred (given for you: see below) |
 
-Every effect automatically gets `FRUGAL`, so Frugal always works. Pick the **kind** carefully:
+Every effect automatically gets `FRUGAL`, so Frugal always works, and every `HELPFUL` one `SHARE`, so Kindred can
+share it, unless it acts on a place or only ever on its caster: then add it to `Runes.Unshared`. Pick the **kind** carefully:
 `HARMFUL` effects never touch you or your allies, `HELPFUL` only touch you and your allies,
 `WORLD` acts on blocks and points, and `MOVEMENT` moves the caster whatever was hit.
 
