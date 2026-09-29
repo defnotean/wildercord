@@ -36,6 +36,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Subtitles no longer cover the spell panel's name**: where the two meet in the bottom-right corner, the subtitles
   move up past it. On a narrow screen, the tracked waypoint's line moves below any boss bars instead of running under
   them.
+- **A possible crash opening creative search**: the Blank Rune's and Wisp Lantern's tooltips read your own data while
+  the search index was built in the background; they now read it only on the game's own thread.
 
 ## [0.4.2-alpha] - 2026-09-28
 

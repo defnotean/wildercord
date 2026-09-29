@@ -184,6 +184,14 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 		context.waitTicks(5);
 		int bonded = context.computeOnClient(mc -> Familiars.get(mc.player).bonds().size());
 		check(bonded == 1, "the client should see its familiar (sees " + bonded + ")");
+		// The lantern lists it on the game's own thread; asked from another (creative search builds its index from
+		// tooltips in the background), it leaves the player's data alone.
+		ItemStack lantern = new ItemStack(FamiliarContent.WISP_LANTERN);
+		net.minecraft.world.entity.player.Player local = context.computeOnClient(mc -> mc.player);
+		int onThread = context.computeOnClient(mc -> lantern.getTooltipLines(net.minecraft.world.item.Item.TooltipContext.EMPTY, local,
+			net.minecraft.world.item.TooltipFlag.NORMAL).size());
+		int offThread = lantern.getTooltipLines(net.minecraft.world.item.Item.TooltipContext.EMPTY, local, net.minecraft.world.item.TooltipFlag.NORMAL).size();
+		check(onThread > offThread, "the lantern should list its familiars only on the game's thread (" + onThread + " lines there, " + offThread + " off it)");
 		return id;
 	}
 
