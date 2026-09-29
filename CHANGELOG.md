@@ -2,23 +2,13 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
-- **Life and arcane look and sound like themselves.** Arcane's star seal now means a lasting mark on someone (Exposed, a brand, a reflecting shell); instant strikes are needles, columns and comets (Harm is a thin needle of light, Smite a tall column after its ring, Starfall drops along a star of light threads with a different note per star), wards are glass, and Swap is two crossing arcs. Life's bloom means restoration; Bramble shows its four thorns, Regrowth winds a vine up in three stages, Remedy's grey motes turn green, Harvest sweeps a golden crescent, Grow ripples out, Reversal raises a sun-disc, and Fortune spins a coin. Every life and arcane rune has its own synthesised sound (about 75 new ones) and a role stinger under its cast sound, replacing the borrowed vanilla ones (Harm's melee crit, Venom's spider, Reversal's Totem of Undying).
+## [0.6.0-alpha] - 2026-09-29
 
-### Fixed
-- **Lightning no longer multiplies on a crowd.** Every strike hurt everything near it, so enemies packed together took a
-  strike for each neighbour (three took 108 between them, five 300). Now each enemy takes the strongest strike of a cast
-  once: its own 12, or half of that from a strike aimed at a neighbour. Its text also says "slows", which is what it does.
-- **Stoneform answers blows, not fire.** Its aftershock fired on any damage, so burning, poison or a fall set it off
-  every half second; now only a blow from an attacker does, at most once a second.
-- **Ripple heals what it really took**, not what it computed: a target that was protected or invulnerable gave you the
-  health anyway.
-- **Earth's ground-heave no longer lifts what should sink.** Mire, Sinkhole and Fossilize hopped their targets up as they
-  cast, and Tremor, Monolith, Thunderquake, Magma, Sandstorm, Basalt Surge and Pelt each drew a second crack under their
-  own; they keep only their own show now.
-- **Excavate no longer shakes the screen** (it played Tremor's), and shows nothing when it mines nothing. **Thunderclap's
-  shake** is gentler and only comes when it hits something.
-- **Shock's second victim** takes part in Conduct and Overload like the first.
+Every spell now looks, sounds and plays like itself: a presentation and balance overhaul of all ten elements and
+every shape, modifier and link (about 280 new sounds, visible reaction marks, spells that play a tune while you
+charge), casting gear slots, two-rune passives, and many fixes.
+
+Players need 0.6.0 to join a 0.6.0 server (its new sounds must match).
 
 ### Added
 - **Every spell reads from how it's built.** Each shape leaves your hands with its own gesture and sound (a flick, a
@@ -67,6 +57,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   (Countdown and Stasis draw eight in full per tick; Entropy ticks once a cast).
 
 ### Changed
+- **Life and arcane look and sound like themselves.** Arcane's star seal now means a lasting mark on someone (Exposed, a brand, a reflecting shell); instant strikes are needles, columns and comets (Harm is a thin needle of light, Smite a tall column after its ring, Starfall drops along a star of light threads with a different note per star), wards are glass, and Swap is two crossing arcs. Life's bloom means restoration; Bramble shows its four thorns, Regrowth winds a vine up in three stages, Remedy's grey motes turn green, Harvest sweeps a golden crescent, Grow ripples out, Reversal raises a sun-disc, and Fortune spins a coin. Every life and arcane rune has its own synthesised sound (about 75 new ones) and a role stinger under its cast sound, replacing the borrowed vanilla ones (Harm's melee crit, Venom's spider, Reversal's Totem of Undying).
 - **Every storm and earth spell looks and sounds like itself.** Each has its own synthesised sound instead of borrowed
   vanilla thunder, anvils and chains: Shock's dry zap, Jolt's clamp, Lightning's crack with the thunder rolling in a moment
   after, Thunderclap's whine then boom, the Thunderbird's cry and the whistle of its dive, Stormweave's plucked wires,
@@ -102,7 +93,6 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Conditions give back what they didn't use:** Combo on its first two casts, and If Sneaking, If Airborne, If Wounded, If Outnumbered and If
   Wet when they don't hold, return the mana their branch cost.
 - Casting poses now follow a spell's first *shape* (a spell that began with an effect always thrust before).
-
 - **Passives hold two runes.** A passive used to hold up to five, so two of them could keep ten runes running at once,
   which was a lot of free power. Each passive now holds **two runes**, whatever your Cord, and you still have the two
   slots (1st and 5th Heart Circle): at most four runes are ever active. An effect before any shape is on Self already,
@@ -232,6 +222,19 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
     vexes and spirit wolves and shades that aren't yours.
 
 ### Fixed
+- **Lightning no longer multiplies on a crowd.** Every strike hurt everything near it, so enemies packed together took a
+  strike for each neighbour (three took 108 between them, five 300). Now each enemy takes the strongest strike of a cast
+  once: its own 12, or half of that from a strike aimed at a neighbour. Its text also says "slows", which is what it does.
+- **Stoneform answers blows, not fire.** Its aftershock fired on any damage, so burning, poison or a fall set it off
+  every half second; now only a blow from an attacker does, at most once a second.
+- **Ripple heals what it really took**, not what it computed: a target that was protected or invulnerable gave you the
+  health anyway.
+- **Earth's ground-heave no longer lifts what should sink.** Mire, Sinkhole and Fossilize hopped their targets up as they
+  cast, and Tremor, Monolith, Thunderquake, Magma, Sandstorm, Basalt Surge and Pelt each drew a second crack under their
+  own; they keep only their own show now.
+- **Excavate no longer shakes the screen** (it played Tremor's), and shows nothing when it mines nothing. **Thunderclap's
+  shake** is gentler and only comes when it hits something.
+- **Shock's second victim** takes part in Conduct and Overload like the first.
 - **Cinderheart stacked with itself:** casting it again started another full aura, so casting it every 1.5 seconds
   piled up several.
 - **Explode, Meteor and Primer** multiplied their damage on enemies that stood together (Burst + Primer on eight bunched
