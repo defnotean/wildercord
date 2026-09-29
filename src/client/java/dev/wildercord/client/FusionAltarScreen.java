@@ -409,7 +409,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 						lines.add(Component.literal(problem).withStyle(ChatFormatting.GOLD));
 					}
 					if (!lines.isEmpty()) {
-						g.setComponentTooltipForNextFrame(font, lines, mouseX, mouseY);
+						g.setTooltipForNextFrame(font, Tooltips.wrap(font, lines, Tooltips.maxWidth(width)), mouseX, mouseY);
 					}
 					return;
 				}
@@ -418,7 +418,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		if (plan.kind() != Fusions.Kind.NONE && inside(mouseX - leftPos, mouseY - topPos, buttonX(), buttonY(), BUTTON_W, BUTTON_H)) {
 			Component blocked = blocked(plan);
 			if (blocked != null) {
-				g.setComponentTooltipForNextFrame(font, List.of(blocked.copy().withStyle(ChatFormatting.RED)), mouseX, mouseY);
+				g.setTooltipForNextFrame(font, Tooltips.wrap(font, List.of(blocked.copy().withStyle(ChatFormatting.RED)), Tooltips.maxWidth(width)), mouseX, mouseY);
 			}
 		}
 	}

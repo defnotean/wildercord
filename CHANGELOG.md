@@ -15,6 +15,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   cooldowns. Server owners can change the limits and times, or switch it all off, in the new `travel` section of
   the config. See [Getting Around](https://defnotean.github.io/wildercord/social/travel/).
 
+### Fixed
+- **Tooltips ran off the side of the screen.** A tooltip line was never wrapped, so most rune descriptions (and
+  Imbue's, several hundred pixels long, on any screen) were cut off unless the window was very wide. Tooltips in
+  the Cord screen, the Cosmetics page and the Fusion Altar, and those of the mod's items everywhere, now wrap to
+  fit.
+
 ## [0.4.1-alpha] - 2026-09-28
 
 A player wiki, and the bugs found while writing it.

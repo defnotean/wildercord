@@ -60,6 +60,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ImbuedTooltip.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		BlankRuneTooltip.init();
+		Tooltips.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));

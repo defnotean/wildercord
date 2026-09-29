@@ -577,7 +577,7 @@ public class CordScreen extends Screen {
 			}
 		}
 		if (tooltip != null) {
-			g.setComponentTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+			g.setTooltipForNextFrame(font, Tooltips.wrap(font, tooltip, Tooltips.maxWidth(width)), mouseX, mouseY);
 		}
 	}
 

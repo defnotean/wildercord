@@ -107,12 +107,37 @@ public class WildercordScreenshots implements FabricClientGameTest {
 					context.waitTicks(2);
 				}
 			}
+			longTooltip(context);
 			batch4Screens(context, world);
 			castEverything(context, world);
 			mechanicsChecks(context, world);
 			heartAndPassives(context, world);
 			starterChips(context, world);
 		}
+	}
+
+	/**
+	 * The longest rune description there is (Imbue's) hovered in the Codex on the smallest window: the
+	 * tooltip should wrap and stay on the screen instead of running off its side.
+	 */
+	private static void longTooltip(ClientGameTestContext context) {
+		context.runOnClient(mc -> {
+			mc.getWindow().setWindowed(854, 480);
+			mc.options.guiScale().set(2);
+			mc.resizeGui();
+		});
+		context.waitTicks(5);
+		context.setScreen(CordScreen::new);
+		context.waitTicks(3);
+		context.runOnClient(mc -> ((CordScreen) mc.gui.screen()).searchFor("Imbue"));
+		context.waitTicks(2);
+		double[] imbue = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).codexPoint(Runes.IMBUE.id()));
+		check(imbue != null, "Imbue should show in the Codex when searched for");
+		context.getInput().setCursorPos(imbue[0] * 2, imbue[1] * 2);
+		context.waitTicks(3);
+		context.takeScreenshot(TestScreenshotOptions.of("tooltip_long_854x480").disableCounterPrefix());
+		context.setScreen(() -> null);
+		context.waitTicks(2);
 	}
 
 	/** A Blood Price spell (health cost in the header and HUD) and a search for the Time category. */
