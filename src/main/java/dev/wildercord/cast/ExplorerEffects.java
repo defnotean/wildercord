@@ -882,7 +882,8 @@ public final class ExplorerEffects {
 			Effects.hurt(cast, t, fire(cast), 3 * power * react);
 			float dealt = Math.max(0.0F, before - (t.getHealth() + t.getAbsorptionAmount()));
 			if (cast.caster instanceof ServerPlayer player) {
-				double[] refunded = REFUNDED.computeIfAbsent(cast.identity(), k -> new double[1]);
+				// One cap per payment: a storm's echo or Twin Star of the same spell shares it.
+				double[] refunded = REFUNDED.computeIfAbsent(cast.payment(), k -> new double[1]);
 				double back = ExplorerNumbers.soulfireRefund(dealt, refunded[0]);
 				if (back > 0) {
 					refunded[0] += back;

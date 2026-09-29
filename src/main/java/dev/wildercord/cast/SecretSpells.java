@@ -54,7 +54,9 @@ public final class SecretSpells {
 	public static void init() {
 		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
 			Long until = REBIRTH.get(entity.getUUID());
-			if (until == null || !(entity.level() instanceof ServerLevel level) || level.getGameTime() > until) {
+			// As Reversal: never against what nothing survives (/kill, the void).
+			if (until == null || source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY) || !(entity.level() instanceof ServerLevel level)
+					|| level.getGameTime() > until) {
 				return true;
 			}
 			REBIRTH.remove(entity.getUUID());

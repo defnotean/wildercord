@@ -878,7 +878,7 @@ public final class Effects {
 		int moved = 0;
 		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(reach),
 				e -> (e instanceof net.minecraft.world.entity.item.ItemEntity || e instanceof net.minecraft.world.entity.ExperienceOrb)
-					&& e.distanceToSqr(point) <= reach * reach && Casters.mayEdit(caster, cast.level, BlockPos.containing(e.position()).below()))) {
+					&& e.distanceToSqr(point) <= reach * reach && onOpenGround(cast, BlockPos.containing(e.position()).below()))) {
 			Vfx.stream(cast.level, e.position(), caster.position().add(0, 1, 0), Vfx.theme("void"), 1);
 			e.teleportTo(caster.getX(), caster.getY() + 0.5, caster.getZ());
 			if (e instanceof net.minecraft.world.entity.item.ItemEntity item) {
@@ -1043,13 +1043,23 @@ public final class Effects {
 		});
 	}
 
+	/** Whether Collect may take what lies on {@code ground}: ground the caster could build on, or a spell's passing Span or Rampart. */
+	private static boolean onOpenGround(Cast cast, BlockPos ground) {
+		if (isTemporary(cast.level, ground)) {
+			return cast.caster instanceof ServerPlayer player && Casters.mayBuild(player) && cast.level.mayInteract(player, ground);
+		}
+		return Casters.mayEdit(cast.caster, cast.level, ground);
+	}
+
 	/** Bone-meals the block that was hit and the ones around it. */
 	private static void grow(Cast cast, Cast.Hit hit, double power) {
 		BlockPos center = targetBlock(hit);
 		int times = (int) Math.round(2 * power);
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 			BlockPos p = pos.immutable();
-			if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
+			// Only what bone meal would grow is asked about (claims hear it as a break, and so do glyphs).
+			if (!(cast.level.getBlockState(p).getBlock() instanceof net.minecraft.world.level.block.BonemealableBlock)
+					|| !Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
 				continue;
 			}
 			boolean grew = false;

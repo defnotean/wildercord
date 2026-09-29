@@ -9,6 +9,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,13 +25,17 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 	private static final int WILDERCORD_INV_START = 9;
 	private static final int WILDERCORD_INV_END = 45;
 
+	/** Where the Cord slot really is: 46 on its own, later if another mod added slots to this menu first. */
+	@Unique
+	private int wildercord$cordIndex = CordSlot.MENU_INDEX;
+
 	private InventoryMenuMixin() {
 		super(null, 0);
 	}
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void wildercord$addCordSlot(Inventory inventory, boolean active, Player player, CallbackInfo ci) {
-		this.addSlot(new CordSlot(player, CordSlot.INVENTORY_X, CordSlot.INVENTORY_Y));
+		this.wildercord$cordIndex = this.addSlot(new CordSlot(player, CordSlot.INVENTORY_X, CordSlot.INVENTORY_Y)).index;
 	}
 
 	@Inject(method = "quickMoveStack", at = @At("HEAD"), cancellable = true)
@@ -42,9 +47,9 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 		if (slot instanceof CordSlot) {
 			cir.setReturnValue(slot.hasItem() ? wildercord$move(player, slot, WILDERCORD_INV_START, WILDERCORD_INV_END, true) : ItemStack.EMPTY);
 		} else if (index != 0 && slot.hasItem() && slot.getItem().getItem() instanceof CordItem && slot.mayPickup(player)
-				&& !this.slots.get(CordSlot.MENU_INDEX).hasItem()) {
+				&& !this.slots.get(this.wildercord$cordIndex).hasItem()) {
 			// Index 0 is the crafting result; taking over there would skip crafting bookkeeping.
-			ItemStack moved = wildercord$move(player, slot, CordSlot.MENU_INDEX, CordSlot.MENU_INDEX + 1, false);
+			ItemStack moved = wildercord$move(player, slot, this.wildercord$cordIndex, this.wildercord$cordIndex + 1, false);
 			if (!moved.isEmpty()) {
 				cir.setReturnValue(moved);
 			}

@@ -45,6 +45,11 @@ public final class Casters {
 		if (!(caster instanceof ServerPlayer player) || !mayBuild(player) || !level.mayInteract(player, pos)) {
 			return false;
 		}
+		// A spell's own passing blocks (a Span's glass, a Rampart) are never edited, and never offered as a break:
+		// the break handlers that take them down would run on a mere question (a Grow nearby, a Collect over them).
+		if (Effects.isTemporary(level, pos)) {
+			return false;
+		}
 		BlockState state = level.getBlockState(pos);
 		return state.isAir() || PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(level, player, pos, state, level.getBlockEntity(pos));
 	}

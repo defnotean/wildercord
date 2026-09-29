@@ -211,6 +211,14 @@ public final class Cast {
 		return budget.shared;
 	}
 
+	/**
+	 * The same for every copy of a spell paid for once (see {@link #again}): for a cap on what one payment may
+	 * win back, which a storm's echo or Twin Star mustn't get a second time.
+	 */
+	public Object payment() {
+		return budget.shared.paid;
+	}
+
 	/** Takes one segment from the whole cast's allowance; false once it's spent. */
 	public boolean takeSegment() {
 		return budget.shared.segments-- > 0;

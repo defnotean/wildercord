@@ -584,6 +584,16 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		check(withoutPassives - withPassives > 3, "Passives should drain mana: gained " + withPassives + " with them on, " + withoutPassives + " off");
 		server.runOnServer(s -> {
 			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			// Switched on with no mana, a passive casts nothing: it pays its first second before its buffs, even between two seconds.
+			player.removeAllEffects();
+			Spellbooks.setMana(player, 0);
+			SpellCaster.togglePassive(player, 0);
+			dev.wildercord.cast.PassiveCaster.tick(player, 5);
+			check(!player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "A passive switched on with no mana shouldn't cast its buff for free");
+			Spellbooks.setMana(player, 100);
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			check(player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "With the mana back, the passive should cast at the next second");
+			SpellCaster.togglePassive(player, 0);
 			for (int slot = 0; slot < dev.wildercord.spell.Passives.MAX; slot++) {
 				SpellCaster.togglePassive(player, slot);
 			}

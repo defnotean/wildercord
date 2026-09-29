@@ -138,10 +138,8 @@ public final class Imbuing {
 		net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register(Imbuing::onUseBlock);
 		UseItemCallback.EVENT.register(Imbuing::onUse);
 		ServerTickEvents.END_SERVER_TICK.register(Imbuing::tick);
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-			READY_AT.remove(handler.player.getUUID());
-			LAST_SHOT.remove(handler.player.getUUID());
-		});
+		// The shared cooldown outlasts a logout (relogging mustn't reset it); spent ones are swept in the tick.
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> LAST_SHOT.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			READY_AT.clear();
 			LAST_SHOT.clear();
@@ -462,7 +460,9 @@ public final class Imbuing {
 
 	/** A strike with an imbued weapon or tool, and whatever hurts someone wearing imbued armour. */
 	private static void afterDamage(LivingEntity entity, DamageSource source, float baseDamage, float damage, boolean blocked) {
-		if (source.getEntity() instanceof ServerPlayer player && source.getDirectEntity() == player && source.is(DamageTypes.PLAYER_ATTACK) && entity != player) {
+		// A strike by hand, not a spell's (Cleave and Aftershock strike as the caster too).
+		if (source.getEntity() instanceof ServerPlayer player && source.getDirectEntity() == player && source.is(DamageTypes.PLAYER_ATTACK) && entity != player
+				&& !Dungeons.spellLanding()) {
 			ItemStack weapon = player.getMainHandItem();
 			Imbued imbued = weapon.get(WildercordComponents.IMBUED);
 			Imbued.Release kind = imbued == null ? null : Imbued.release(weapon);
@@ -885,6 +885,10 @@ public final class Imbuing {
 		}
 		if (tick % 2 != 0) {
 			return;
+		}
+		if (tick % 1200 == 0 && !READY_AT.isEmpty()) {
+			long now = server.overworld().getGameTime();
+			READY_AT.values().removeIf(at -> at <= now || at - now > STALE);
 		}
 		for (ServerLevel level : server.getAllLevels()) {
 			Glyphs glyphs = level.getDataStorage().get(Glyphs.TYPE);

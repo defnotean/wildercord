@@ -36,6 +36,33 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   burn longer.
 - A Knot put on the Fusion Altar was called "a silent rune (its add-on is missing)". The altar now says what's
   really wrong (only effects with an element fuse, and a Knot has no power to rank up).
+- **Passives couldn't be kept running for free any more.** Switching a passive on now pays its first second of
+  upkeep straight away: switched on and off between two seconds, it cast its buffs at full length without ever
+  paying, even with no mana at all.
+- **Borrowed Time's debt can't be dodged.** Casting it again adds to what you still owe (it used to wipe most of
+  it), logging out no longer forgives it, and dying settles it instead of carrying it on after you respawn. Paying
+  it back could also, rarely, crash the server.
+- Pets covered by your Shield no longer parry. A spell a pet turned back spared the monster that cast it and hit
+  players instead; their Shields still block and shatter as before.
+- A Grow cast beside a Rampart no longer crumbles the wall, and a Grow or Collect over a Span no longer takes the
+  bridge away under you.
+- Rewind can't take you back to where you were before you died.
+- A lingering effect's later hits no longer follow a player through a portal, and On Land, On Hurt and On Low
+  Health no longer play their shockwave in the world you left.
+- Stasis ends when its creature is carried to another world, instead of pinning it to the old coordinates there.
+- Relogging no longer resets your imbued items' shared cooldown.
+- Cleave and Aftershock no longer release the imbued weapon in your hand, or roll Fortune twice.
+- Soulfire's mana refund, and Siphon and Imbue in a chorus spell, are capped once per payment: a mana storm's echo or
+  Twin Star no longer gets them a second time.
+- A Spell Scroll costs twice what its spell costs you to cast, as the Cord screen shows it: the server's cost
+  multiplier, your discounts and a found secret's price now count.
+- Holding the cast key with the Tome of the Fifth Page's spell selected but the tome put away now charges your next
+  spell, as a tap casts it.
+- A cracked Heart Circle no longer adds to your innate rune's power.
+- Rebirth no longer saves you from /kill or the void.
+- In singleplayer, chest loot in a world opened after editing `wildercord.json` uses the new settings (it kept the
+  old ones until /reload). A dedicated server no longer logs every config warning twice.
+- Shift-clicking a Cord into its slot works alongside mods that add their own inventory slots.
 
 ## [0.4.1-alpha] - 2026-09-28
 
