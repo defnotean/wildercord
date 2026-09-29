@@ -46,6 +46,8 @@ public final class Wards {
 		final LivingEntity target;
 		final LivingEntity caster;
 		final Vec3 anchor;
+		/** The world the anchor is in. */
+		final net.minecraft.world.level.Level level;
 		final boolean hadNoGravity;
 		long until;
 		float stored;
@@ -56,6 +58,7 @@ public final class Wards {
 			this.target = target;
 			this.caster = caster;
 			this.anchor = target.position();
+			this.level = target.level();
 			this.hadNoGravity = target.isNoGravity();
 			this.until = until;
 		}
@@ -364,7 +367,9 @@ public final class Wards {
 				continue;
 			}
 			long now = level.getGameTime();
-			if (now >= held.until) {
+			// Carried to another world (a portal it stood in): time moves again, rather than pulling it to the old
+			// anchor's coordinates in the new one.
+			if (now >= held.until || level != held.level) {
 				it.remove();
 				ended.add(held);
 				continue;
