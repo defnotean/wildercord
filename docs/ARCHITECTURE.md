@@ -630,9 +630,13 @@ can draw the circle.
   colour and brightness reach the render state as Fabric render-state data. Babies (their own
   models in 26.x) and monsters of other shapes get the aura only.
 - **Mixins**: the Cord slot is added to the inventory menu on both sides (`InventoryMenuMixin`,
-  menu index 46), synced from creative mode (`ServerGamePacketListenerImplMixin`), drawn in the
-  survival inventory (`InventoryScreenMixin`, with `SlotWell` for the slot's frame) and placed in
-  the creative inventory tab (`CreativeModeInventoryScreenMixin`). `LivingEntityRendererMixin`
+  menu index 46, and the gear slots after it), synced from creative mode (`ServerGamePacketListenerImplMixin`,
+  for any `PlacedSlot`), drawn in the survival inventory (`InventoryScreenMixin`, with `SlotWell` for the
+  slot's frame and `GearTray` for the gear slots) and placed in the creative inventory tab
+  (`CreativeModeInventoryScreenMixin`). `AbstractRecipeBookScreenMixin` keeps a click on the gear tray from
+  counting as outside the window, `AbstractContainerScreenMixin` names an empty gear slot on hover,
+  `PlayerGearMixin` drops the gear slots with the inventory on death, and `AvatarRendererGearMixin` carries
+  worn gear into the render state. `LivingEntityRendererMixin`
   copies a Runebound's rune marks into its render state (a render layer only sees the state, and
   there is no event for this step). `GameRendererMixin` applies camera shake where the view bobs
   when you're hurt, and `CameraMixin` the field-of-view kicks. On the server side,
@@ -680,10 +684,15 @@ can draw the circle.
   author; casting it builds a `Cast` with base bonuses), Torn Page (a riddle from
   `Grimoire.hint`, and the distance and direction to the nearest Archive), Training Dummy.
 - **Casting gear** (`gear/`): `GearDef` (pure: every staff, the tome and the foci, with their numbers),
-  `GearBonuses` (pure: what the pieces in two hands do to a spell), `SpellSlots` (pure: which of the five
-  spell slots are open), `Gear` (reads the hands; the charged-cast flourishes), `GearItems` and
-  `GearLoot`. The server reads the hands when casting and stores the result on the `Cast` (`cast.gear`),
-  so the whole spell uses the gear it was cast with. Server settings live in `config/` (`WildercordConfig`
+  `GearSlot` (pure: the list of gear slots, each with the kinds it takes, its icon and how it shows on the
+  wearer), `GearLayout` (pure: where they sit on the inventory screens), `GearBonuses` (pure: what a
+  player's slotted pieces and the held pieces of any kind whose slot is empty do to a spell),
+  `SpellSlots` (pure: which of the five spell slots are open), `Gear` (combines slots and hands; the
+  charged-cast flourishes), `GearSlots` (reads and writes the `wildercord:gear` attachment; drops it on
+  death), `GearItems` and `GearLoot`. The server reads the slots and hands when casting and stores the
+  result on the `Cast` (`cast.gear`), so the whole spell uses the gear it was cast with. The slots are
+  menu slots after the Cord's (`menu.GearInventorySlot`), drawn as a tray above the survival panel
+  (`client.GearTray`) and worn by `client.render.GearLayer`, fed by `GearLook` from the render state. Server settings live in `config/` (`WildercordConfig`
   is pure and unit-tested; `Config` loads, reloads and syncs it), and the add-on API in `api/`, with its
   runtime side in `cast.AddonRunes`. See [features/gear-config-api.md](features/gear-config-api.md) and
   [API.md](API.md).

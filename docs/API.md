@@ -200,6 +200,22 @@ WildercordEvents.AFTER_CAST.register((player, spell, runes, spent) -> { ... });
 `api.spells(player)` (rune ids per slot, silent runes included), `api.selectedSpell(player)` and
 `api.wearsCord(player)`. They work on both sides; a client only knows its own player's.
 
+## Casting gear
+
+Players have three gear slots in their inventory (see
+[features/gear-config-api.md](features/gear-config-api.md#gear-slots)): `staff`, `focus` and `tome`. A
+piece in its slot works with nothing held and takes the place of held pieces of its kind.
+
+- `api.gearSlots()`: the slot ids, in inventory order.
+- `api.equippedGear(entity, slot)`: what's in a slot (empty if nothing). Works on a player or any avatar (a
+  mannequin), on both sides; everyone who can see the wearer knows it. Copy the stack before changing it.
+- `api.equipGear(entity, slot, stack)` (server): puts one piece in, replacing what was there; an empty
+  stack empties the slot. Returns false, changing nothing, if the stack isn't gear that fits the slot.
+- `api.unequipGear(entity, slot)` (server): empties a slot and returns what was in it.
+- `api.gearSlotFor(stack)`: the id of the slot a stack fits, if it is casting gear.
+
+An unknown slot id throws `IllegalArgumentException`. Since 1.1.
+
 ## Names, icons and recipes
 
 - **Names and descriptions** come from the rune (`name`, `description`), and can be translated with

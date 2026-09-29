@@ -79,7 +79,7 @@ Some things to know:
 - Hold a charge longer than **12 seconds** and it **fizzles** ("The charge fizzles"): letting go then does
   nothing, and you can start again.
 - Taking your Cord off, dying or spectating ends a charge.
-- A **Focus of Haste** in your offhand fills a charge 40% faster (see [Casting Gear]({{ '/gear/' | relative_url }})).
+- A **Focus of Haste** in your focus slot (or held in your offhand) fills a charge 40% faster (see [Casting Gear]({{ '/gear/' | relative_url }})).
 - The direct "Cast spell 1 to 5" keys only tap: they can't charge.
 - Releasing a fully charged spell for the first time earns the feat **Full Charge** (and its advancement),
   which condenses mana toward your next [Heart Circle]({{ '/progression/heart-circles/' | relative_url }}).
@@ -176,7 +176,7 @@ ahead, your magic leans toward that one instead. The Grimoire page and the heart
 ## Switching spells
 
 A Copper Cord holds 2 spells, an Amethyst Cord 3 and an Echo Cord 4, and the
-[Tome of the Fifth Page]({{ '/gear/' | relative_url }}) adds a fifth while it's in your offhand. There are four
+[Tome of the Fifth Page]({{ '/gear/' | relative_url }}) adds a fifth while it's in its slot (or your offhand). There are four
 ways to pick one:
 
 - **Tap `V`** to move to the next spell. It steps through every spell you can use, the tome's included, and
@@ -193,9 +193,9 @@ The spell you have selected is the one your wrist beads show.
 <img src="{{ '/assets/images/spell-wheel.png' | relative_url }}" alt="The spell wheel: four spells in a ring around a centre showing the pointed spell's mana and cooldown, each with its name and rune icons outside the ring" class="shot">
 
 Hold `V` for a quarter of a second and your spells fan out in a ring (you need at least two spells: a Cord
-with two or more, or the Tome of the Fifth Page in your offhand). Each shows its number, its name and runes,
+with two or more, or the Tome of the Fifth Page in its slot or your offhand). Each shows its number, its name and runes,
 a coloured bar for its first element, and a dark shade while it's still cooling down. The centre shows the
-pointed spell's mana and cooldown. While the tome is in your offhand, its spell is on the wheel too, as
+pointed spell's mana and cooldown. While the tome counts, its spell is on the wheel too, as
 spell 5.
 
 - **Point and let go:** move the mouse toward a spell and let go of `V` to select it.

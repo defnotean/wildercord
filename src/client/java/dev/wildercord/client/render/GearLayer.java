@@ -47,7 +47,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	/** The staff's slant: its sprite runs at 45 degrees, and this turns it to about 63 (steeper, from the hip to over the shoulder). */
 	private static final float STAFF_TURN = 18.4F;
 	/** How far the head end leans back off the back (degrees). */
-	private static final float STAFF_LEAN = 8.0F;
+	private static final float STAFF_LEAN = 5.0F;
 	/** Half of the staff's length along its shaft, in pixels (a 16-pixel sprite's diagonal). */
 	private static final float STAFF_HALF = 10.6F;
 	private static final float SIN45 = 0.7071F;
@@ -55,9 +55,9 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private static final float BELT_OUTER = 2.42F;
 	private static final float BELT_ARMORED_OUTER = 3.1F;
 	/** The tome: its size against the sprite's 16 pixels, where it hangs (pixels left of the middle) and how long its strap is. */
-	private static final float TOME_SIZE = 0.4F;
+	private static final float TOME_SIZE = 0.36F;
 	private static final float TOME_X = 2.2F;
-	private static final float LOOP_LENGTH = 3.0F;
+	private static final float LOOP_LENGTH = 2.2F;
 
 	private final GearModel belt;
 	private final GearModel armoredBelt;
@@ -74,8 +74,8 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		this.mote = GearModel.of(context.bakeLayer(MOTE));
 	}
 
-	/** How far out the wearer's surfaces are, in pixels from the body's middle: the back (skin, chestplate, cape, elytra) and the front. */
-	private record Surface(float back, float front, boolean armored) {}
+	/** How far out the back of the wearer is, in pixels from the body's middle (skin, chestplate, cape or elytra), and whether a chestplate is on. */
+	private record Surface(float back, boolean armored) {}
 
 	private static Surface surface(AvatarRenderState state) {
 		ItemStack chest = state.chestEquipment;
@@ -83,7 +83,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		boolean armored = !wings && !chest.isEmpty() && chest.has(DataComponents.EQUIPPABLE);
 		boolean cape = !wings && state.showCape && state.skin != null && state.skin.cape() != null;
 		float back = wings ? 5.0F : cape ? armored ? 4.2F : 3.2F : armored ? 3.05F : 2.3F;
-		return new Surface(back, armored ? 3.05F : 2.3F, armored);
+		return new Surface(back, armored);
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			pose.translate(along * SIN45 / 16, along * SIN45 / 16, (0.75F - depth / 2) / 16);
 			pose.rotateDegrees(Axis.ZP, -45.0F);
 			pose.scale(1.0F, 1.0F, depth);
-			nodes.submitModel(tie, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, -1);
+			nodes.submitModel(tie, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor);
 			pose.popPose();
 		}
 	}
@@ -136,7 +136,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		float age = state.ageInTicks;
 		float bob = Mth.sin(age * 0.09F) * 1.0F;
 		pose.rotateDegrees(Axis.ZP, 180.0F);
-		pose.translate(-7.6F / 16, (5.0F + bob) / 16, 0.4F / 16);
+		pose.translate(-6.8F / 16, (3.8F + bob) / 16, 0.4F / 16);
 		pose.pushPose();
 		pose.rotateDegrees(Axis.YP, age * 2.6F);
 		pose.scale(0.42F, 0.42F, 0.42F);
@@ -147,16 +147,17 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			float phase = age * 0.13F + i * Mth.PI;
 			pose.pushPose();
 			pose.translate(Mth.cos(phase) * 4.4F / 16, Mth.sin(phase * 2) * 0.9F / 16, Mth.sin(phase) * 4.4F / 16);
+			pose.scale(0.7F, 0.7F, 0.7F);
 			float fade = 0.35F + 0.25F * Mth.sin(age * 0.2F + i * 2.0F);
 			int alpha = Mth.clamp(Math.round(255 * fade), 0, 255);
-			nodes.submitModel(mote, Unit.INSTANCE, pose, RenderTypes.eyes(MOTE_TEXTURE), LightCoordsUtil.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF);
+			nodes.submitModel(mote, Unit.INSTANCE, pose, RenderTypes.eyes(MOTE_TEXTURE), LightCoordsUtil.FULL_BRIGHT, overlay, (alpha << 24) | 0xE4DCFF, null, state.outlineColor);
 			pose.popPose();
 		}
 	}
 
 	/** The tome, hung from a strap on a belt at the left hip. In body space: y down, the front at -z, the wearer's left at +x. */
 	private void hip(GearLook.Piece piece, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state, Surface surface) {
-		nodes.submitModel(surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, -1);
+		nodes.submitModel(surface.armored() ? armoredBelt : belt, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor);
 		float outer = surface.armored() ? BELT_ARMORED_OUTER : BELT_OUTER;
 		float top = GearModel.BELT_TOP + GearModel.BELT_HEIGHT;
 		// Swings a little with the wearer's stride, from where the strap meets the belt.
@@ -164,7 +165,7 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		pose.pushPose();
 		pose.translate(TOME_X / 16, top / 16, -(outer + 0.5F) / 16);
 		pose.rotateDegrees(Axis.XP, swing);
-		nodes.submitModel(loop, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, -1);
+		nodes.submitModel(loop, Unit.INSTANCE, pose, RenderTypes.entityCutout(LEATHER), light, overlay, state.outlineColor);
 		// Below the strap, the book hangs with its cover out (item space, turned to face the front).
 		pose.translate(0, (LOOP_LENGTH + 0.2F + TOME_SIZE * 8) / 16, -0.75F / 16);
 		pose.rotateDegrees(Axis.ZP, 180.0F);

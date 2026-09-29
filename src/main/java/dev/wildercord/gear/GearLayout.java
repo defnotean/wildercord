@@ -28,7 +28,7 @@ public final class GearLayout {
 	private static final int TRAY_PADDING = 12;
 
 	/** Creative Survival Inventory tab: the block's first slot, right of the Cord slot (127, 20). */
-	public static final int CREATIVE_X = 149;
+	public static final int CREATIVE_X = 146;
 	public static final int CREATIVE_Y = 7;
 	/** The block is two slots wide and two deep: the free corner holds four. */
 	public static final int CREATIVE_COLUMNS = 2;

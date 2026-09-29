@@ -4,6 +4,31 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+- **Casting gear slots.** Your inventory has three new slots for casting gear: **Staff** (any staff, a greater one
+  too), **Focus** (any focus) and **Tome** (the Tome of the Fifth Page). A piece in its slot works with nothing in
+  your hands, so you no longer have to hold your staff or a focus to cast. In the survival inventory the slots sit in
+  a small tray on top of the panel, above your armour; in the creative inventory's Survival Inventory tab they are
+  beside the Cord slot. Shift-click sends a piece to its slot and back, and a slot only takes what it is for, one
+  piece each. Hover an empty slot to see what it takes.
+- **Gear shows on your character**, to you in third person, to everyone around you and in the inventory's paper doll:
+  a staff strapped across your back with its head over your shoulder, a focus hovering off your other shoulder
+  (bobbing and turning, with a faint glimmer circling it), and the tome hanging from a belt at your hip. Each looks
+  like its item, keeps clear of armour, capes and elytra, follows a sneak, and isn't drawn when you're invisible or
+  already holding that piece.
+- The **Cord screen's mana badge** lists the gear that counts, wherever it is; a gear tooltip now says which slot it
+  goes in.
+- For add-on makers: `api.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` (API 1.1).
+
+### Changed
+- **A piece in its slot takes the place of held pieces of its kind:** a staff in the Staff slot and staffs in your
+  hands, only the slotted one counts; the same for a focus and for the tome. A slot that is empty lets held gear work
+  exactly as before (staffs in either hand, foci and the tome in the off-hand), so nothing stops working. The slots
+  are separate, so the tome and a focus can now work together.
+- Gear in a slot **drops when you die**, like the rest of your inventory (Curse of Vanishing destroys its own), and
+  stays with you when `keepInventory` is on. It never duplicates through death, respawning or changing dimension.
+- The tooltips and Cord screen texts about holding the tome or a Focus of the Deep Well now mention the slot.
+
 ## [0.5.0-alpha] - 2026-09-29
 
 Your own affinities, runes to fish up, thirty-four new runes (eighteen to build with and sixteen signature fusions),

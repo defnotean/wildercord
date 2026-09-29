@@ -5,30 +5,69 @@ stable API for add-on mods.
 
 ## Casting gear
 
-Items you hold while you cast. The server reads your hands at the moment of casting; the Cord screen's
-readout shows what your gear does to the spell being edited (its cost line already includes it), and the
-mana badge lists everything in your hands.
+Items you wear in the inventory's gear slots (or, while a slot is empty, hold) when you cast. The server
+reads your slots and hands at the moment of casting; the Cord screen's readout shows what your gear does to
+the spell being edited (its cost line already includes it), and the mana badge lists everything that counts.
+See [Gear slots](#gear-slots) below.
 
-| Item | Hand | What it does | How to get it |
+| Item | Slot (held instead) | What it does | How to get it |
 |---|---|---|---|
-| **Elemental staff** (Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time, Blood) | either | Effects of its element: +20% power. A spell with an effect of its element: 10% less mana. A charged cast (20% or more) of its element leaves it with the element's flourish | Craft: 2 sticks (Fire: 2 blaze rods), 2 of the element's material, a Mana Crystal |
-| **Greater staff** (every element) | either | As a staff, at +35% power; set in gold, with a halo of sparks | The Archivist (50%), the Wither (Void, Blood), the Warden (Earth, Storm), the Elder Guardian (Frost, Life) and the Ender Dragon (Void, Arcane, Time), 35-50%; Archive vaults |
-| **Tome of the Fifth Page** | off-hand | A fifth spell: thread it, select it (V steps on to it) and cast it while the tome is held. The Cord screen shows its row | Archive vaults and libraries, stronghold libraries |
-| **Focus of Haste** | off-hand | Charged casts fill 40% faster | Craft: Mana Crystal, feather, 2 sugar, gold ingot; Archive, strongholds, ancient cities, mansions |
-| **Focus of Thrift** | off-hand | Spells cost 15% less mana, and hit 10% softer | Craft: Mana Crystal, emerald, 3 gold ingots; same places |
-| **Focus of the Deep Well** | off-hand | +50 max mana while held | Craft: Mana Crystal, lapis block, 3 polished deepslate; same places |
-| **Focus of Echoes** | off-hand | A 10% chance a spell echoes: it goes off again half a second later, free | Craft: Mana Crystal, echo shard, 3 amethyst shards; same places |
+| **Elemental staff** (Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time, Blood) | Staff (either hand) | Effects of its element: +20% power. A spell with an effect of its element: 10% less mana. A charged cast (20% or more) of its element leaves it with the element's flourish | Craft: 2 sticks (Fire: 2 blaze rods), 2 of the element's material, a Mana Crystal |
+| **Greater staff** (every element) | Staff (either hand) | As a staff, at +35% power; set in gold, with a halo of sparks | The Archivist (50%), the Wither (Void, Blood), the Warden (Earth, Storm), the Elder Guardian (Frost, Life) and the Ender Dragon (Void, Arcane, Time), 35-50%; Archive vaults |
+| **Tome of the Fifth Page** | Tome (off-hand) | A fifth spell: thread it, select it (V steps on to it) and cast it while the tome counts. The Cord screen shows its row | Archive vaults and libraries, stronghold libraries |
+| **Focus of Haste** | Focus (off-hand) | Charged casts fill 40% faster | Craft: Mana Crystal, feather, 2 sugar, gold ingot; Archive, strongholds, ancient cities, mansions |
+| **Focus of Thrift** | Focus (off-hand) | Spells cost 15% less mana, and hit 10% softer | Craft: Mana Crystal, emerald, 3 gold ingots; same places |
+| **Focus of the Deep Well** | Focus (off-hand) | +50 max mana | Craft: Mana Crystal, lapis block, 3 polished deepslate; same places |
+| **Focus of Echoes** | Focus (off-hand) | A 10% chance a spell echoes: it goes off again half a second later, free | Craft: Mana Crystal, echo shard, 3 amethyst shards; same places |
 
 Staff materials: Fire blaze powder, Frost packed ice, Storm a lightning rod, Wind wind charges, Earth
 mossy cobblestone, Life glistering melon, Void ender pearls, Arcane amethyst shards, Time clocks, Blood
 nether wart.
 
-Rules: the same piece in both hands counts once; two staffs never discount one spell twice (the better
+Rules: the same piece twice counts once; two staffs never discount one spell twice (the better
 counts); a staff's power only reaches effects of its element, Thrift's reaches every effect. Gear is its
 own factor on cost and power, applied after everything else (Heart Circles, enchantments, charge).
 
 Spell 5 is the tome's slot whatever your Cord: without the tome it's locked (its runes are kept), and a
 "Cast spell 5" key can be bound.
+
+## Gear slots
+
+Every player has three gear slots in their inventory, after the Cord slot: **Staff** (any staff, greater
+ones too), **Focus** (any focus) and **Tome** (the Tome of the Fifth Page). One piece each; only the kind a
+slot is for goes in.
+
+- **The rule.** A piece in its slot works with nothing held, and *takes the place of* held pieces of its
+  kind: a staff in the staff slot and staffs in the hands, only the slotted one counts; a focus in the
+  focus slot, a held focus is ignored; a tome in the tome slot, a held tome is ignored. A slot that is
+  empty lets held gear work exactly as before (staffs in either hand, foci and the tome in the off-hand),
+  so nothing that worked stops working. The slots are separate, so a tome and a focus now apply together.
+- **Where.** In the survival inventory the slots sit in a tray on the panel's top edge, above the armour and
+  the paper doll (the recipe book button and the crafting grid leave no room beside the Cord slot); the
+  tray moves with the window when the recipe book opens, and a click on it isn't a click outside the window
+  (which would throw what the cursor carries). In the creative inventory's Survival Inventory tab they're a
+  block beside the Cord slot. Shift-click sends a piece to its slot (if empty) and back out; number keys swap.
+- **Storage.** The `wildercord:gear` attachment (slot id to piece), saved with the player and synced to
+  everyone who can see the wearer. It is not `copyOnDeath`: on death the pieces drop like the inventory
+  (Curse of Vanishing destroys its own) unless `keepInventory` is on, when they go with the player. A piece
+  is never in two places: the slots are emptied as they drop, and the respawned player only receives what
+  the old one still had (`ServerPlayerEvents.COPY_FROM`).
+- **On the wearer.** Everyone sees it, and it shows in the inventory's paper doll: a staff strapped across
+  the back with its head over the right shoulder, a focus hovering off the left shoulder (bobbing and
+  turning, with a faint glimmer circling it), the tome hanging from a belt at the left hip. Each is drawn
+  with the item's own model. Nothing is drawn for an invisible or spectating wearer, or for a piece that is
+  also held in a hand (no second staff on the back); the back and the belt stand clear of a chestplate,
+  a cape and elytra, and follow a sneak.
+- **Adding a slot.** `gear/GearSlot.java` is the list: one line gives a kind of gear its slot (its id, the
+  `GearKind`s that fit, and a `Look` for the wearer). The menu slot, its place on both inventory screens
+  (`GearLayout`), the empty-slot icon (`container/slot/gear_<id>`, drawn in `tools/gear_art.py`), its
+  hover text (`gear_slot.wildercord.<id>` and `.hint`) and the rule all follow from that line; a new
+  `Look` needs a case in `client/render/GearLayer`. The survival tray grows with the list; the creative
+  block holds four.
+- **The API.** `dev.wildercord.gear.GearSlots` reads and changes a wearer's slots (`get`, `equipped`,
+  `set`, `clear`, `slotFor`, `fits`; reads work on any avatar, a mannequin too), and
+  `WildercordApi.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` expose the
+  same to add-ons (see [API.md](../API.md#casting-gear)). Writes belong on the server.
 
 ## Server config
 
@@ -90,3 +129,5 @@ add-on lives in the test sources.
   loot.
 - **Spell slots**: `SpellSlots` and `Gear.spellOpen(player, tier, spell)` say which spells are open; a
   spellbook now keeps five.
+- **Reading gear**: `Gear.of(entity)` (and `Gear.tome(player)`) is the one place that combines the
+  slots and the hands; use it, not `getMainHandItem`, for anything gear does.

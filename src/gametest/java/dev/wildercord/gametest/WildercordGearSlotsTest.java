@@ -82,7 +82,9 @@ import java.util.Set;
  * {@code WILDERCORD_SHOWCASE}. {@code WILDERCORD_GEARSLOTS_ONLY=looks} (or {@code checks}) runs half of it.</p>
  */
 public class WildercordGearSlotsTest implements FabricClientGameTest {
-	private static final int LEFT = 0;
+	/** The Cord screen takes its own buttons (0 left); the container screens take Minecraft's (1 left). */
+	private static final int CORD_LEFT = 0;
+	private static final int LEFT = com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT;
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -551,7 +553,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 		double scale = context.computeOnClient(mc -> mc.getWindow().getGuiScale());
 		context.getInput().setCursorPos(row[0] * scale, row[1] * scale);
 		context.waitTicks(1);
-		context.getInput().pressMouse(LEFT);
+		context.getInput().pressMouse(CORD_LEFT);
 		context.waitTicks(3);
 		check(context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).editingRow()) == SpellSlots.TOME,
 			"the tome's row should show in the Cord screen while the tome is in its slot");
@@ -609,11 +611,27 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 		context.waitTicks(1);
 		if (shift) {
 			context.getInput().holdShift();
+			context.waitTicks(1);
 		}
 		context.getInput().pressMouse(LEFT);
 		if (shift) {
 			context.getInput().releaseShift();
 		}
+		context.waitTicks(4);
+	}
+
+	/** A shift-click: the screen's own call, as the game sends it (the test input can't hold Shift through a mouse press). */
+	private static void shiftClick(ClientGameTestContext context, java.util.function.Predicate<Slot> which) {
+		context.runOnClient(mc -> {
+			AbstractContainerScreen<?> screen = (AbstractContainerScreen<?>) mc.gui.screen();
+			for (Slot slot : screen.getMenu().slots) {
+				if (which.test(slot)) {
+					mc.gameMode.handleContainerInput(screen.getMenu().containerId, slot.index, 0, ContainerInput.QUICK_MOVE, mc.player);
+					return;
+				}
+			}
+			throw new AssertionError("no such slot to shift-click");
+		});
 		context.waitTicks(4);
 	}
 
@@ -670,7 +688,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			check(world.getServer().computeOnServer(server -> GearSlots.get(player(server), GearSlot.FOCUS).is(GearItems.get(GearDef.HASTE))),
 				"the focus should go in the focus slot" + where);
 			// Shift-click the tome in, and the staff out.
-			click(context, pixel(context, inventorySlot(11)), true);
+			shiftClick(context, inventorySlot(11));
 			check(world.getServer().computeOnServer(server -> GearSlots.get(player(server), GearSlot.TOME).is(GearItems.get(GearDef.TOME))),
 				"a shift-click on the tome should slot it" + where);
 			if (!recipeBookOpen) {
@@ -683,7 +701,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 				context.waitTicks(4);
 				shot(context, "inventory_hover_item");
 			}
-			click(context, pixel(context, gearSlot(GearSlot.STAFF)), true);
+			shiftClick(context, gearSlot(GearSlot.STAFF));
 			check(world.getServer().computeOnServer(server -> GearSlots.get(player(server), GearSlot.STAFF).isEmpty()), "a shift-click on the staff slot should take it out" + where);
 			// Put things back for the next round, then open the recipe book.
 			world.getServer().runOnServer(server -> {
@@ -722,6 +740,18 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ the client sees it
 
 	private static void seenByTheClient(ClientGameTestContext context, TestSingleplayerContext world) {
+		try {
+			seenByTheClientChecks(context, world);
+		} finally {
+			world.getServer().runOnServer(server -> {
+				player(server).setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+				player(server).level().getEntitiesOfClass(Mannequin.class, player(server).getBoundingBox().inflate(64)).forEach(Entity::discard);
+			});
+			context.waitTicks(3);
+		}
+	}
+
+	private static void seenByTheClientChecks(ClientGameTestContext context, TestSingleplayerContext world) {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			ready(player, new ItemStack(WildercordItems.ECHO_CORD));
@@ -741,7 +771,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			}
 			Entity other = null;
 			for (Entity entity : mc.level.entitiesForRendering()) {
-				if (entity instanceof Mannequin mannequin && mannequin.entityTags().contains("wildercord.gearslots")) {
+				if (entity instanceof Mannequin mannequin) {
 					other = mannequin;
 				}
 			}
@@ -774,11 +804,6 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			return list == null ? 0 : list.size();
 		});
 		check(pieces == 2, "the staff shouldn't be drawn on the back while a copy is in hand (" + pieces + " pieces drawn)");
-		// An invisible wearer carries no gear on the back either: the layer skips it, so the state says so.
-		world.getServer().runOnServer(server -> {
-			player(server).setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-			player(server).level().getEntitiesOfClass(Mannequin.class, player(server).getBoundingBox().inflate(16)).forEach(Entity::discard);
-		});
 	}
 
 	// ------------------------------------------------------------------ death, respawn and dimensions
@@ -981,6 +1006,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			if (camera != null) {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				mc.setCameraEntity(camera);
+				org.slf4j.LoggerFactory.getLogger("gear slots").info("camera {} yaw {} looking at player {} (client)", camera.position(), camera.getYRot(), mc.player.position());
 				if (!mc.gui.hud.isHidden()) {
 					mc.gui.hud.toggle();
 				}
@@ -1001,86 +1027,112 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 		}
 	}
 
+	/** A mannequin (drawn by the same renderer as a player, and seen from outside as other players are) wearing gear, filmed all round. */
 	private static void wearing(ClientGameTestContext context, TestSingleplayerContext world) {
 		Vec3[] stage = new Vec3[1];
+		int[] id = new int[1];
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			stage[0] = ready(player, new ItemStack(WildercordItems.ECHO_CORD));
-			player.setGameMode(GameType.SURVIVAL);
-			// Sky above, flat ground: the stage is cleared in ready().
+			Mannequin dummy = EntityTypes.MANNEQUIN.create(player.level(), EntitySpawnReason.COMMAND);
+			dummy.snapTo(stage[0].x, stage[0].y, stage[0].z, 0, 0);
+			dummy.addTag("wildercord.gearslots");
+			player.level().addFreshEntity(dummy);
+			id[0] = dummy.getId();
+			// The player steps well away, out of every shot.
+			player.teleportTo(player.level(), stage[0].x - 40, stage[0].y, stage[0].z, Set.<Relative>of(), 0, 0, false);
 		});
-		context.waitTicks(5);
+		context.waitTicks(10);
 		Vec3 at = stage[0];
+		java.util.function.Consumer<java.util.function.Consumer<Mannequin>> edit = change -> world.getServer().runOnServer(server -> {
+			Entity entity = player(server).level().getEntity(id[0]);
+			change.accept((Mannequin) entity);
+		});
 		for (Object[] piece : new Object[][]{
 				{"staff", GearSlot.STAFF, gear(GearDef.staff("fire"))},
 				{"greater_staff", GearSlot.STAFF, gear(GearDef.greaterStaff("void"))},
 				{"focus", GearSlot.FOCUS, gear(GearDef.HASTE)},
 				{"focus_well", GearSlot.FOCUS, gear(GearDef.DEEP_WELL)},
 				{"tome", GearSlot.TOME, gear(GearDef.TOME)}}) {
-			world.getServer().runOnServer(server -> {
-				ServerPlayer player = player(server);
+			edit.accept(dummy -> {
 				for (GearSlot slot : GearSlot.all()) {
-					GearSlots.clear(player, slot);
+					GearSlots.clear(dummy, slot);
 				}
-				GearSlots.set(player, (GearSlot) piece[1], (ItemStack) piece[2]);
+				GearSlots.set(dummy, (GearSlot) piece[1], (ItemStack) piece[2]);
 			});
 			context.waitTicks(4);
 			around(context, world, at, "look_" + piece[0], true);
 		}
-		// All three at once, standing, sneaking, in armour, with elytra, and with the staff also held.
-		world.getServer().runOnServer(server -> fill(player(server), gear(GearDef.staff("storm")), gear(GearDef.THRIFT), gear(GearDef.TOME)));
+		// All three at once, in armour, with elytra, and with the staff also held.
+		edit.accept(dummy -> fill2(dummy, gear(GearDef.staff("storm")), gear(GearDef.THRIFT), gear(GearDef.TOME)));
 		context.waitTicks(4);
 		around(context, world, at, "look_all", true);
-		world.getServer().runOnServer(server -> player(server).setShiftKeyDown(true));
-		context.waitTicks(8);
-		around(context, world, at, "look_sneaking", true);
-		world.getServer().runOnServer(server -> {
-			ServerPlayer player = player(server);
-			player.setShiftKeyDown(false);
-			player.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.DIAMOND_CHESTPLATE));
-			player.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.DIAMOND_LEGGINGS));
-			player.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET));
-			player.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.DIAMOND_BOOTS));
+		edit.accept(dummy -> {
+			dummy.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.DIAMOND_CHESTPLATE));
+			dummy.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.DIAMOND_LEGGINGS));
+			dummy.setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.DIAMOND_HELMET));
+			dummy.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.DIAMOND_BOOTS));
 		});
 		context.waitTicks(6);
 		around(context, world, at, "look_armoured", true);
-		world.getServer().runOnServer(server -> player(server).setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA)));
+		edit.accept(dummy -> dummy.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.ELYTRA)));
 		context.waitTicks(6);
 		around(context, world, at, "look_elytra", true);
-		world.getServer().runOnServer(server -> {
-			ServerPlayer player = player(server);
+		edit.accept(dummy -> {
 			for (EquipmentSlot equipment : List.of(EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET)) {
-				player.setItemSlot(equipment, ItemStack.EMPTY);
+				dummy.setItemSlot(equipment, ItemStack.EMPTY);
 			}
-			player.setItemInHand(InteractionHand.MAIN_HAND, gear(GearDef.staff("storm")));
+			dummy.setItemSlot(EquipmentSlot.MAINHAND, gear(GearDef.staff("storm")));
 		});
 		context.waitTicks(6);
 		around(context, world, at, "look_staff_in_hand", false);
-		// A mannequin wearing gear: what everyone else sees of a wearer.
+		edit.accept(dummy -> dummy.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY));
+		context.waitTicks(3);
+		// A closer look at each end: the shoulder and the hip.
+		director(context, world, at.add(-0.9, 1.9, 1.2), at.add(-0.2, 1.5, 0));
+		shot(context, "look_close_shoulder");
+		director(context, world, at.add(0.9, 1.0, 1.4), at.add(0.2, 0.9, 0));
+		shot(context, "look_close_hip");
+		world.getServer().runOnServer(server -> player(server).level().getEntitiesOfClass(Mannequin.class, player(server).getBoundingBox().inflate(64)
+			.move(40, 0, 0)).forEach(Entity::discard));
+
+		// The player themselves, in their own third-person camera: the gear on you, sneaking, and the paper doll's view is in screens().
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-			player.teleportTo(player.level(), at.x - 30, at.y, at.z, Set.<Relative>of(), 0, 0, false);
-			Mannequin other = EntityTypes.MANNEQUIN.create(player.level(), EntitySpawnReason.COMMAND);
-			other.snapTo(at.x, at.y, at.z, 200, 0);
-			other.addTag("wildercord.gearslots");
-			player.level().addFreshEntity(other);
-			GearSlots.set(other, GearSlot.STAFF, gear(GearDef.greaterStaff("arcane")));
-			GearSlots.set(other, GearSlot.FOCUS, gear(GearDef.ECHOES));
-			GearSlots.set(other, GearSlot.TOME, gear(GearDef.TOME));
+			player.teleportTo(player.level(), at.x, at.y, at.z, Set.<Relative>of(), 0, 0, false);
+			fill(player, gear(GearDef.staff("storm")), gear(GearDef.THRIFT), gear(GearDef.TOME));
 		});
 		context.waitTicks(10);
-		director(context, world, at.add(-1.6, 1.7, -2.0), at.add(0, 1.1, 0));
-		shot(context, "look_other_wearer_back");
-		director(context, world, at.add(1.8, 1.6, 2.0), at.add(0, 1.0, 0));
-		shot(context, "look_other_wearer_front");
+		context.runOnClient(mc -> {
+			mc.setCameraEntity(mc.player);
+			if (mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+			mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+		});
+		context.waitTicks(6);
+		shot(context, "self_back");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(4);
+		shot(context, "self_front");
+		world.getServer().runOnServer(server -> player(server).setShiftKeyDown(true));
+		context.waitTicks(8);
+		shot(context, "self_sneaking_front");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(4);
+		shot(context, "self_sneaking_back");
 		world.getServer().runOnServer(server -> {
-			player(server).level().getEntitiesOfClass(Mannequin.class, player(server).getBoundingBox().inflate(64)).forEach(Entity::discard);
-			player(server).teleportTo(player(server).level(), at.x, at.y, at.z, Set.<Relative>of(), 0, 0, false);
+			player(server).setShiftKeyDown(false);
 			for (GearSlot slot : GearSlot.all()) {
 				GearSlots.clear(player(server), slot);
 			}
 		});
-		context.waitTicks(5);
+		context.waitTicks(3);
+	}
+
+	private static void fill2(Entity wearer, ItemStack staff, ItemStack focus, ItemStack tome) {
+		GearSlots.set(wearer, GearSlot.STAFF, staff);
+		GearSlots.set(wearer, GearSlot.FOCUS, focus);
+		GearSlots.set(wearer, GearSlot.TOME, tome);
 	}
 }

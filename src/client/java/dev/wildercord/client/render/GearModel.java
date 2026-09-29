@@ -26,7 +26,7 @@ public final class GearModel extends Model<Unit> {
 	}
 
 	/** Belt height and where it sits on the torso (body space, pixels). */
-	public static final float BELT_TOP = 9.2F;
+	public static final float BELT_TOP = 7.6F;
 	public static final float BELT_HEIGHT = 1.3F;
 
 	/** A belt lying just over the skin and its jacket layer. */
@@ -60,7 +60,7 @@ public final class GearModel extends Model<Unit> {
 	public static LayerDefinition createLoop() {
 		MeshDefinition mesh = new MeshDefinition();
 		mesh.getRoot().addOrReplaceChild("loop", CubeListBuilder.create()
-				.texOffs(0, 10).addBox(-0.6F, 0.0F, -0.5F, 1.2F, 3.0F, 1.0F),
+				.texOffs(0, 10).addBox(-0.6F, 0.0F, -0.5F, 1.2F, 2.2F, 1.0F),
 			PartPose.ZERO);
 		return LayerDefinition.create(mesh, 32, 16);
 	}

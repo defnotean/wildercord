@@ -284,7 +284,7 @@ so any lantern works. See [Familiars]({{ '/companions/familiars/' | relative_url
 
 ## Casting gear
 
-Held in your hands while you cast. Full details on [Casting Gear]({{ '/gear/' | relative_url }}). None of them stack.
+Worn in your inventory's gear slots (Staff, Focus and Tome) while you cast, or held while a slot is empty. Full details on [Casting Gear]({{ '/gear/' | relative_url }}). None of them stack.
 
 ### Staffs
 
@@ -326,12 +326,12 @@ Storm) and Elder Guardians (35%: Frost or Life), and are found in Archive vaults
 
 ### Tome of the Fifth Page
 
-Off-hand: a fifth spell to thread and cast while you hold it. Can't be crafted: found in Archive vaults and libraries
+Tome slot (or off-hand): a fifth spell to thread and cast while it counts. Can't be crafted: found in Archive vaults and libraries
 and in stronghold libraries.
 
 ### Foci
 
-Off-hand. Each is a plus shape around a Mana Crystal.
+Focus slot (or off-hand). Each is a plus shape around a Mana Crystal.
 
 **Focus of Haste** (charged casts fill 40% faster)
 
@@ -341,7 +341,7 @@ Off-hand. Each is a plus shape around a Mana Crystal.
 
 {% include recipe.html id="focus_of_thrift" alt="Crafting grid: top row empty · Emerald · empty; middle row Gold Ingot · Mana Crystal · Gold Ingot; bottom row empty · Gold Ingot · empty" %}
 
-**Focus of the Deep Well** (+50 max mana while held)
+**Focus of the Deep Well** (+50 max mana)
 
 {% include recipe.html id="focus_of_the_deep_well" alt="Crafting grid: top row empty · Block of Lapis Lazuli · empty; middle row Polished Deepslate · Mana Crystal · Polished Deepslate; bottom row empty · Polished Deepslate · empty" %}
 
