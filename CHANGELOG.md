@@ -16,10 +16,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   the config. See [Getting Around](https://defnotean.github.io/wildercord/social/travel/).
 
 ### Changed
+- Joining a server whose Wildercord is **older** than yours (from before the version check) now says so in chat too,
+  a few seconds after you join.
 - **Cryostasis holds for 4 seconds at most**, however far Extend stretches it (three Extends made it 16 seconds
   of being untouchable), and nobody can cast from inside the ice: it's a moment's shelter, not a fortress.
 
 ### Fixed
+- Other players no longer see your Cord vanish from your wrist for a moment after you respawn.
 - **Fused runes skipped part of a crowd.** Cast into more than eight enemies at once (a Domain or a big
   Burst), Firestorm, Absolute Zero, Frostbite, Riftbolt, Heartstopper, Stormclock, Sanguine Rite and
   Timesteal did nothing at all to every enemy past the eighth, and Lifebloom didn't heal allies past the

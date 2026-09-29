@@ -1222,6 +1222,7 @@ NEW_LANG = {
     "screen.wildercord.grimoire.fusion_unknown": "Not found yet. Try two effects of different elements at a Fusion Altar.",
     "toast.wildercord.fusion": "Fusion: %s",
     "message.wildercord.version_mismatch": "This server runs Wildercord %s, and you have %s. Runes one of them doesn't know show as Silent Runes: install %s to match.",
+    "message.wildercord.version_server_old": "This server runs an older Wildercord than yours (%s). Runes it doesn't know show as Silent Runes: the server needs updating, or install the version it runs.",
     "message.wildercord.version_old": "This server runs Wildercord %s, newer than yours. Update to %s, or runes your version doesn't know will show as Silent Runes.",
     # The fused runes' messages to their caster.
     "message.wildercord.cryostasis_wait": "Too soon to seal %s in ice again (%ss)",

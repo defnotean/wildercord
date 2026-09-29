@@ -66,12 +66,7 @@ public final class WildercordClient implements ClientModInitializer {
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
 		// The server's Wildercord version: a word in chat if it isn't ours (runes one of us doesn't know go silent).
-		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.net.VersionCheck.ServerVersion.TYPE, (payload, context) -> {
-			net.minecraft.network.chat.Component warning = dev.wildercord.net.VersionCheck.mismatch(payload.version(), dev.wildercord.net.VersionCheck.version());
-			if (warning != null && context.player() != null) {
-				context.player().sendSystemMessage(warning);
-			}
-		});
+		VersionWatch.init();
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.ScreenFx.TYPE,
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.
