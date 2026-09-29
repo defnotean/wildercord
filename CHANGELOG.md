@@ -8,6 +8,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **A passive can't stack its Orbits.** A passive that started with an effect and then held an Orbit (`Swift · Orbit ·
+  Shock`) renewed every two seconds like a Self passive, so up to four rings of orbs (eight with Extend) struck at
+  once for one upkeep. The effect before the Orbit counts as Self, so that passive now has two shapes and is refused,
+  as the Passives page says; keep the buff and the aura in two passives.
 
 ## [0.4.2-alpha] - 2026-09-28
 

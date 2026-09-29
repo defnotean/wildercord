@@ -43,6 +43,12 @@ class HeartAndPassivesTest {
 		assertTrue(Passives.problem(runes(SELF, SHOCK)).contains("needs an Orbit"));
 		assertTrue(Passives.problem(runes(ORBIT, SWIFT, SELF)).contains("one shape"));
 		assertTrue(Passives.problem(runes(BOLT, HARM)).contains("can't be sustained"));
+		// A passive that starts with an effect is on Self already: an Orbit after it is a second shape (it would
+		// renew every two seconds, as Self does, and stack its orbits).
+		assertTrue(Passives.problem(runes(SWIFT, ORBIT, SHOCK)).contains("one shape"));
+		assertTrue(Passives.problem(runes(SWIFT, EXTEND, ORBIT, SHOCK)).contains("one shape"));
+		assertNull(Passives.problem(runes(SWIFT, AMPLIFY, STONESKIN)));
+		assertNull(Passives.problem(runes(ORBIT, SHOCK, SWIFT)));
 	}
 
 	@Test
