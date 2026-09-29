@@ -91,8 +91,9 @@ While you charge, **you** (and only you) see where the spell will go, for the sp
 | Shape | What you see |
 |---|---|
 | Zone, Rain, Pillar, Totem, Mine | A ring on the ground where you're looking, as wide as the spell |
-| Burst, Ring, Nova, Domain | A ring on the ground around you, as wide as the spell |
-| Bolt, Arc, Crescent, Orb, Wave, Wisp, Ricochet, Comet, Cluster, Beam, Spark, Ray, Lance, Prism, Sweep, Stream | A faint dotted line as far as it can reach, and a mark where it meets a block |
+| Burst, Ring, Nova, Domain, Imprint | A ring on the ground around you (an Imprint's under your feet), as wide as the spell |
+| Bolt, Arc, Crescent, Orb, Wave, Wisp, Ricochet, Comet, Cluster, Beam, Spark, Ray, Lance, Prism, Sweep, Stream, Glaive | A faint dotted line as far as it can reach (a Glaive's, as far as it flies before it turns back), and a mark where it meets a block |
+| Latch | The dotted line, and a mark under the creature it would take hold of |
 
 ## Cooldowns
 

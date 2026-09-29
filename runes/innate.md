@@ -63,7 +63,7 @@ For 12 seconds, jump again in midair to dash forward (up to 3 dashes).
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/mirrorfrost.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mirrorfrost
 {: #mirrorfrost}

@@ -11,7 +11,7 @@ nav_order: 7
 
 Darkness, gravity and space. Void pulls, blinks, withers and swallows light.
 
-20 void effects you can craft or find in the usual way. Void also has runes of the world, fused runes and innate runes: see their own pages.
+21 void effects you can craft or find in the usual way. Void also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/anchor.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Anchor
 {: #anchor}
@@ -24,7 +24,7 @@ Holds you fast for 15 seconds: blows and blasts can't knock you back, and 4 more
 
 <img src="{{ '/assets/recipes/rune_anchor.png' | relative_url }}" alt="Crafting Anchor: a Blank Rune and Iron Chain and Cobblestone" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/blind.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blind
 {: #blind}
@@ -65,6 +65,19 @@ Hexes targets for 8 seconds: your spells hit them 25% harder.
 
 **Modifiers that work on it:** Extend, Frugal
 
+### <img src="{{ '/assets/runes/umbra.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Umbra
+{: #umbra}
+
+*Tier I · Void · Harms enemies · 6 mana · needs any Cord*
+
+The dark bites: 4 damage, doubled where the light is dim (level 7 or less), and it leaves the target shadowed.
+
+**How to get it:** Craft: a Blank Rune, Ink Sac and Flint. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_umbra.png' | relative_url }}" alt="Crafting Umbra: a Blank Rune and Ink Sac and Flint" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
 ### <img src="{{ '/assets/runes/banish.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Banish
 {: #banish}
 
@@ -76,7 +89,7 @@ Banishes targets: they vanish and reappear up to 8 blocks further away from you.
 
 <img src="{{ '/assets/recipes/rune_banish.png' | relative_url }}" alt="Crafting Banish: a Blank Rune and Ender Pearl and Popped Chorus Fruit, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/grapple.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Grapple
 {: #grapple}
@@ -89,7 +102,7 @@ Pulls you to where the spell hit.
 
 <img src="{{ '/assets/recipes/rune_grapple.png' | relative_url }}" alt="Crafting Grapple: a Blank Rune and Lead, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/pull.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pull
 {: #pull}
@@ -102,7 +115,7 @@ Pulls targets toward the spell.
 
 <img src="{{ '/assets/recipes/rune_pull.png' | relative_url }}" alt="Crafting Pull: a Blank Rune and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/veil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Veil
 {: #veil}
@@ -115,7 +128,7 @@ Invisibility for 12 seconds, and nearby monsters lose track of you.
 
 <img src="{{ '/assets/recipes/rune_veil.png' | relative_url }}" alt="Crafting Veil: a Blank Rune and Golden Carrot and Fermented Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/zipper.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Zipper
 {: #zipper}
@@ -141,7 +154,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 
 <img src="{{ '/assets/recipes/rune_blackflame.png' | relative_url }}" alt="Crafting Blackflame: a Blank Rune and Soul Campfire and Black Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/blackspark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blackspark
 {: #blackspark}
@@ -154,7 +167,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 
 <img src="{{ '/assets/recipes/rune_blackspark.png' | relative_url }}" alt="Crafting Blackspark: a Blank Rune and Black Dye and Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/blink.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Blink
 {: #blink}
@@ -180,7 +193,7 @@ Drags every enemy within 7 blocks into the point for 2 seconds.
 
 <img src="{{ '/assets/recipes/rune_gravity_well.png' | relative_url }}" alt="Crafting Gravity Well: a Blank Rune and Eye of Ender and Crying Obsidian, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/shades.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shades
 {: #shades}
@@ -193,7 +206,7 @@ Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.
 
 <img src="{{ '/assets/recipes/rune_shades.png' | relative_url }}" alt="Crafting Shades: a Blank Rune and 2x Bone and Black Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/shadowstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Shadowstep
 {: #shadowstep}
@@ -217,7 +230,7 @@ A lingering 3-block cloud: 5 damage per second for 5 seconds.
 
 **How to get it:** Found only, never crafted: the Ender Dragon; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/hollow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Hollow
 {: #hollow}
@@ -228,7 +241,7 @@ Erases what it touches: 20 damage, and everything within 4 blocks is dragged int
 
 **How to get it:** Found only, never crafted: the Wither (50%); Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/infinity.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Infinity
 {: #infinity}
@@ -239,7 +252,7 @@ For 6 seconds nothing reaches you: projectiles slow to a stop in the air and ene
 
 **How to get it:** Found only, never crafted: Ominous vaults; the Ender Dragon; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/sonic_boom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Sonic Boom
 {: #sonic_boom}
@@ -250,7 +263,7 @@ For 6 seconds nothing reaches you: projectiles slow to a stop in the air and ene
 
 **How to get it:** Found only, never crafted: the Warden; Archive vaults; the Archivist.
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/wither.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wither
 {: #wither}

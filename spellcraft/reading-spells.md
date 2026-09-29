@@ -77,6 +77,7 @@ which one depends on the link. The readout calls it "The target".
 | Delay, Pulse | You | You, aimed where you look *at that moment* |
 | On Hit | The creature that was hit (each one), or the block if it hit only a block | The hit, carrying on the way the spell was going |
 | On Kill | The spot where the creature died (it's gone, so nothing is there to touch) | That spot |
+| On Reaction, On Weakness | Each creature the group set a reaction off on, or struck with an element it's weak to | That creature, carrying on the way the spell was going |
 | On Hurt | Whatever hurt you | The attacker, carrying on away from you |
 | On Land | You | You, where you landed |
 | On Low Health | You | You |
@@ -118,11 +119,11 @@ Some more rules:
 
 | Modifier | Needs | Can change |
 |---|---|---|
-| Amplify, Overcharge, Execute, Trial Key, Kindled, Unstable | power | Effects with power (damage, healing, force, a buff's strength). The rune pages list which. |
-| Extend | duration | Effects that last; the shapes Zone, Trail, Wall, Orbit, Totem, Domain and Vortex; the link Delay |
-| Widen, Focus | radius | Effects with a radius (Explode, Meteor, Inferno...); the shapes Burst, Zone, Rain, Cone, Wall, Ring, Pillar, Wave, Mine, Totem, Domain, Crescent, Orb, Blitz, Nova, Comet, Cluster, Lance, Sweep, Vortex, Snare and Constellation |
-| Quicken | speed | The shapes Bolt, Arc, Spark, Wisp, Comet, Ricochet, Cluster, Crescent, Orb, Wave, Zone, Wall, Totem, Domain, Barrage, Sweep and Stream; the links Delay and Pulse |
-| Split | copies | The shapes Bolt, Beam, Arc, Spark, Wisp, Comet, Ricochet, Cluster, Crescent, Orb, Lance, Prism, Burst, Zone, Rain, Pillar, Mine and Orbit |
+| Amplify, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated | power | Effects with power (damage, healing, force, a buff's strength). The rune pages list which. |
+| Extend | duration | Effects that last; the shapes Zone, Trail, Wall, Orbit, Totem, Domain, Vortex and Latch; the link Delay |
+| Widen, Focus | radius | Effects with a radius (Explode, Meteor, Inferno...); the shapes Burst, Zone, Rain, Cone, Wall, Ring, Pillar, Wave, Mine, Totem, Domain, Crescent, Orb, Blitz, Nova, Comet, Cluster, Lance, Sweep, Vortex, Snare, Constellation, Glaive and Imprint |
+| Quicken | speed | The shapes Bolt, Arc, Spark, Wisp, Comet, Ricochet, Cluster, Crescent, Orb, Wave, Zone, Wall, Totem, Domain, Barrage, Sweep, Stream, Glaive, Imprint and Latch; the links Delay and Pulse |
+| Split | copies | The shapes Bolt, Beam, Arc, Spark, Wisp, Comet, Ricochet, Cluster, Crescent, Orb, Lance, Prism, Burst, Zone, Rain, Pillar, Mine, Orbit, Glaive and Imprint |
 | Volley | repeat shots | Bolt, Beam, Arc, Crescent, Spark, Comet |
 | Pierce | passing through | Bolt, Beam, Ray |
 | Bounce | bouncing | Bolt, Arc, Ricochet |
@@ -130,6 +131,7 @@ Some more rules:
 | Homing | steering | Bolt |
 | Linger | landing again | Effects that can land again (most damage and control effects) |
 | Frugal | | Any effect |
+| Kindred | sharing | Helpful effects that land on each creature they touch: not the ones that act on a place or only on you (Summon, Shades, Thunderbird, Haven, Warcry, Zephyr), the death saves (Reversal, Second Wind), Soulbond, Transfusion, Cryostasis, Shulkershell, Rewind, Overdrive or the innate runes |
 | Rapid, Vow, Blood Price | a shape | Any shape (they change the whole spell: see [cost](#cost) and [cooldown](#cooldown)) |
 
 Every rune's page lists exactly which modifiers work on it: see [Shapes]({{ '/runes/shapes/' | relative_url }}),
@@ -143,8 +145,8 @@ Every rune's page lists exactly which modifiers work on it: see [Shapes]({{ '/ru
 | Extend | Twice as long | 1.4 |
 | Widen | +50% radius | 1.5 |
 | Focus | Half the radius, +50% power | 1.2 |
-| Quicken | Bolts, sparks, crescents twice as fast (other projectiles a little less); fields, walls, totems and Domains strike twice as often; Barrage 4 more blows; Stream twice the strikes; Delay and Pulse gaps halved | 1.2 |
-| Split | Three copies: bolts, beams and other things that fly fan out; bursts, fields, pillars and mines spread into a ring around the first; Rain drops five more strikes per copy; Orbit gets three more orbs | 2.4 |
+| Quicken | Bolts, sparks, crescents twice as fast (other projectiles a little less); fields, walls, totems and Domains strike twice as often; Barrage 4 more blows; Stream twice the strikes; a Glaive half again as fast, an Imprint erupts twice as soon, a Latch strikes twice as often; Delay and Pulse gaps halved | 1.2 |
+| Split | Three copies: bolts, beams and other things that fly fan out; bursts, fields, pillars, mines and imprints spread into a ring around the first; Rain drops five more strikes per copy; Orbit gets three more orbs | 2.4 |
 | Volley | Fires three times, a quarter second apart | 2.4 |
 | Pierce | Passes through 3 more targets | 1.3 |
 | Bounce | Bounces off blocks 3 more times | 1.3 |
@@ -154,6 +156,9 @@ Every rune's page lists exactly which modifiers work on it: see [Shapes]({{ '/ru
 | Frugal | Half the mana; 40% weaker and shorter | 0.5 |
 | Overcharge | +150% power | 3.0 |
 | Execute | Double power against targets under half health | 1.3 |
+| Kindred | A helpful effect also lands on you and on the nearest ally it missed within 8 blocks, at half power | 1.4 |
+| Thirst | You heal for a quarter of the damage the effect deals (two: half, three or more: three quarters) | 1.4 |
+| Belated | The effect (and any Linger after it) lands 1.5 seconds late, 40% stronger (three count at most: 4.5 seconds, 2.7x) | 1.25 |
 | Rapid | Halves the whole spell's cooldown | 1.4, on the whole spell |
 | Vow | That shape's effects hit twice as hard; the whole spell's cooldown is four times longer | 1.0 |
 | Blood Price | The whole spell is paid for in health, 1 per 5 mana | 1.0 |
@@ -181,19 +186,25 @@ beneath it.
 | If Wounded | II | 1 | fires only if you're below half health. |
 | If Outnumbered | III | 1 | fires only if 3 or more enemies are within 8 blocks of you. |
 | If Wet | II | 1 | fires only if you're in water or rain. |
+| On Weakness | II | 2 | fires at each creature the shape before it strikes with an element it's weak to (a husk and life, a blaze and frost: see the Bestiary). |
+| On Reaction | III | 2 | fires at each creature the shape before it sets off an element reaction on (Shatter, Conduct, Blight...). |
 
 If Wounded, If Outnumbered and If Wet are [runes of the world]({{ '/runes/world/' | relative_url }}). Every
 link is described on [Links]({{ '/runes/links/' | relative_url }}).
 
 Things worth knowing about links:
 
-- **On Hit, On Kill and Imbue watch the group just before them.** In `Bolt · Fire · Burst · Heal · On Hit · Explode`,
+- **On Hit, On Kill, On Reaction, On Weakness and Imbue watch the group just before them.** In `Bolt · Fire · Burst · Heal · On Hit · Explode`,
   On Hit watches the Burst, not the Bolt. They need a shape in front of them in the same segment ("On Hit
   needs a shape before it to watch").
 - **On Hit fires once for every hit.** A bolt that pierces three creatures, three split bolts, a Chain's
   every jump or each pulse of a Zone all set it off again, at each creature hit (at most eight from any one
   hit). On Kill does the same for every kill.
-- **A repeat after On Hit or On Kill goes off once.** An **Echo** or a **Pulse** there is paid for once, so
+- **On Reaction and On Weakness count only what that group does as it lands.** `Bolt · Frost · Fire · On Reaction · ...`
+  fires when the Fire shatters the Frost; a reaction from something that lands later (a Belated effect, a
+  Countdown, a Linger's second landing) or from another spell doesn't count. Players have no weaknesses,
+  so On Weakness never fires at one.
+- **A repeat after On Hit, On Kill, On Reaction or On Weakness goes off once.** An **Echo** or a **Pulse** there is paid for once, so
   it goes off for the first hit (or kill) only, not for every creature. The readout says so: "(first hit
   only)". A Pulse's three runs are each paid for, so an Echo after a Pulse goes off in every run.
 - **Shapes after a link start where the link fired.** After On Hit, a Bolt flies on from the point of impact
@@ -429,6 +440,25 @@ seven tenths of the plain spell's.)
 Two Splits make nine bolts for **68 mana**. A third Split still makes nine (that's the most) but multiplies
 the cost again, to 164. The readout shows the copies, so it's easy to spot.
 
+### 19. Only if it reacts: `Beam · Frost · Fire · On Reaction · Burst · Explode`
+{: .no_toc }
+
+> A beam: Frost, Fire<br>
+> On a reaction:<br>
+> &nbsp;&nbsp;Everything within 4 blocks: Explode
+
+The Frost freezes what the beam hits and the Fire shatters it: that Shatter is a reaction, so an explosion goes
+off around the creature. Swap the Frost for a Harm and nothing reacts, so nothing explodes (the mana is spent
+all the same). **59 mana, about 2.9 s. Amethyst Cord** (On Reaction and Explode are Tier III).
+
+### 20. Sharing it out: `Self · Heal · Kindred`
+{: .no_toc }
+
+> You: Heal (shared at 50% power)
+
+You heal 8, and the nearest ally within 8 blocks (a teammate, your wolf) heals 4. Cast it on an ally instead
+(`Bolt · Heal · Kindred`) and you heal 4 too. **17 mana, 0.85 s. Copper Cord** (Kindred is Tier II).
+
 ## Cost
 
 Every rune has a base cost, and the spell's cost is worked out from them in one go:
@@ -465,6 +495,8 @@ Every rune has a base cost, and the spell's cost is worked out from them in one 
 | Sweep | 5 | 1.6 | | Domain | 20 | 3.0 |
 | Cluster | 6 | 1.7 | | Stream | 5 | 1.8 |
 | Burst | 6 | 1.5 | | Blitz | 6 | 1.5 |
+| Imprint | 3 | 1.3 | | Glaive | 5 | 1.8 |
+| Latch | 6 | 1.9 | | | | |
 
 The implicit Self (a spell or segment with no shape) costs nothing and multiplies by 1. Every effect's cost
 is on its rune page, and the modifiers' multipliers are in the table [above](#what-the-common-modifiers-do).
@@ -554,7 +586,7 @@ Some things stop growing, so no spell can run away with the world:
 | Barrage | 20 blows at most; Stream 12 strikes at most |
 | Quicken on a flying shape | 8 times as fast at most (three Quickens on a bolt); a bolt still flies 48 blocks at most, a wave 14 |
 | Links deep | 8 |
-| Creatures one cast can touch | 64 (a server can change this). Shapes that strike again and again (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb, Stream, Vortex, Snare) get a fresh 64 for every strike. |
+| Creatures one cast can touch | 64 (a server can change this). Shapes that strike again and again (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb, Stream, Vortex, Snare, Latch) get a fresh 64 for every strike, and a Glaive for its way back. |
 | Blocks one cast can change | 32 (a server can change this) |
 | Parts of one cast | 128 in all (links, pulses, echoes and repeats together) |
 | On Hit from one hit | fires at 8 creatures at most |

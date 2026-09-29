@@ -77,14 +77,14 @@ wet ones are in water or dripping, shadowed ones are blinded or cursed, bleeding
 
 | Mark | Lasts | Left by | Used by |
 |---|---|---|---|
-| **Frozen** | 4 s after Frost (or frost on a wet creature); 2 s after Chill, Coldsnap or Hail; while inside a Blizzard; while a freeze holds, plus 1 s | Frost, Chill, Freeze, Coldsnap; Hoarfrost; Hail, Blizzard, and Glacier, Black Ice, Rime Seal, Frostbite and Absolute Zero when they freeze; **any harmful frost on a wet creature** | Shatter, Fracture, Unweave, Prismatic Burst |
-| **Windswept** | 2.5 s (Levitate: while floating, plus 1 s) | Push, Launch, Dash, Levitate, Windcut, Thunderclap, Tremor, Cyclone, Repel, a Cushion landing's gust; Tusk Charge, Summit Wind, Basalt Surge, Shulkershell (when it opens); Tempest, Monolith, Updraft, Downdraft, Skyglyph, Recoil | Wildfire, Unweave, Prismatic Burst |
+| **Frozen** | 4 s after Frost (or frost on a wet creature); 2 s after Chill, Coldsnap or Hail; while inside a Blizzard; while a freeze holds, plus 1 s | Frost, Chill, Freeze, Coldsnap; Hoarfrost; Hail, Blizzard, and Glacier, Black Ice, Rime Seal, Frostbite and Absolute Zero when they freeze; Flash Freeze on a wet or soaked creature; **any harmful frost on a wet creature** | Shatter, Fracture, Unweave, Prismatic Burst |
+| **Windswept** | 2.5 s (Levitate: while floating, plus 1 s) | Push, Launch, Dash, Levitate, Windcut, Thunderclap, Tremor, Cyclone, Repel, Disarm, a Cushion landing's gust; Tusk Charge, Summit Wind, Basalt Surge, Shulkershell (when it opens); Tempest, Monolith, Updraft, Downdraft, Skyglyph, Recoil | Wildfire, Unweave, Prismatic Burst |
 | **Pulled** | 2.5 s | Pull, Gravity Well, Hollow; Vortex, Riftcall; Hellmouth, Magnetize, Singularity | Implode, Collapse, Unweave, Prismatic Burst |
 | **Wet** | while in water or rain; 5 s after Tidebreath or steam | Water, rain, Tidebreath (on you and allies), steam clouds | Conduct, Unweave and Prismatic Burst (the 5 s kind only) |
-| **Soaked** (counts as wet) | about 5 s (a little longer after Mire and Drowning Word) | A popped Bubble, Tidecall, Undertow, Mire, Drowning Word, Tidewrit | Conduct, Unweave, Prismatic Burst |
-| **Burning** | as long as it burns | Any fire that sets a creature alight | Overload, Elapse, Unweave, Prismatic Burst, Conflagration |
-| **Shadowed** | as long as the curse: 8 s after Hex or Wither, 6 s after Resonant Shriek, 5 s after Blind, 3 s after Echolocate (on what it hits); while Blackflame burns and while Entropy frays; while inside a Hush or under an Eclipse, plus a moment | Hex, Blind, Wither, Blackflame; Echolocate, Resonant Shriek, Hush, Eclipse; Entropy | Blight, Unweave, Prismatic Burst |
-| **Bleeding** | while Bleed's wound runs (4.5 s); 4 s after Rend; 3 s after Cleave or Dismantle; while Bonespur's bleed runs, plus a moment; while inside a Crimson Mist, plus a moment | Bleed, Rend, Cleave, Dismantle; Crimson Mist, Bonespur | Rupture, Unweave, Prismatic Burst |
+| **Soaked** (counts as wet) | about 5 s (a little longer after Mire and Drowning Word) | A popped Bubble, Tidecall, Undertow, Mire, Drowning Word, Tidewrit | Conduct, Unweave, Prismatic Burst, Flash Freeze (it freezes the water on it solid: soaked becomes frozen) |
+| **Burning** | as long as it burns | Any fire that sets a creature alight (a Searing Edge blow too) | Overload, Elapse, Unweave, Prismatic Burst, Conflagration |
+| **Shadowed** | as long as the curse: 8 s after Hex or Wither, 6 s after Resonant Shriek or Umbra, 5 s after Blind, 3 s after Echolocate (on what it hits); while Blackflame burns and while Entropy frays; while inside a Hush or under an Eclipse, plus a moment | Hex, Blind, Wither, Blackflame, Umbra; Echolocate, Resonant Shriek, Hush, Eclipse; Entropy | Blight, Unweave, Prismatic Burst |
+| **Bleeding** | while Bleed's wound runs (4.5 s); while a Gash keeps it from healing (8 s); 4 s after Rend; 3 s after Cleave or Dismantle; while Bonespur's bleed runs, plus a moment; while inside a Crimson Mist, plus a moment | Bleed, Rend, Cleave, Dismantle, Gash; Crimson Mist, Bonespur | Rupture, Unweave, Prismatic Burst |
 | **Cracked** | 5 s | A Fracture | (every spell hits it 20% harder) Unweave, Prismatic Burst |
 
 Elapse also reads two things that aren't marks: **poisoned** (Venom, Sporebloom, a Blight's rot) and
@@ -97,7 +97,7 @@ semicolon in each row are [runes of the world]({{ '/runes/world/' | relative_url
 ### Which hits count
 
 **Fire damage that can Shatter and set off Wildfire:** Fire, Ember, Explode, Meteor, Inferno,
-Flashfire, Primer; Blazecall, Sunscorch, Cinderbrand, Soulfire (its first burn); Firestorm, Starfire's
+Flashfire, Primer, a Searing Edge blow's flames; Blazecall, Sunscorch, Cinderbrand, Soulfire (its first burn); Firestorm, Starfire's
 motes, Conflagration, Everburn (its first hit), Hellmouth (its first pulse); and the innate rune
 Kindling.
 
@@ -111,11 +111,11 @@ last tick of something that lingers:
 - **Earth (Fracture):** Pelt, Aftershock, Tremor; Stalactite, Infest, Sandstorm, Basalt Surge, Tusk Charge;
   Magma, Sinkhole, Fossilize, Bonespur, Monolith. Root, Weigh, Shackle and Mire hold without hurting.
 - **Life (Blight):** Venom, and Bramble's thorns (they hurt whatever strikes you); Vinelash, Moonpetal,
-  Rootsnare. Sporebloom poisons without hurting.
-- **Arcane (Unweave):** Harm, Smite, Resonance, Starfall; Fangs, Starshard, Starlight Tether, Manaburn.
+  Rootsnare. Sporebloom poisons and Drowse lulls to sleep without hurting.
+- **Arcane (Unweave):** Harm, Smite, Resonance, Starfall, a Spellbrand's burst; Fangs, Starshard, Starlight Tether, Manaburn.
   Prismatic Burst uses every mark up itself instead.
-- **Wind (Rupture):** Windcut, Cyclone, Repel; Summit Wind; Updraft, Downdraft, Recoil. Push, Launch, Dash and
-  Levitate throw without hurting.
+- **Wind (Rupture):** Windcut, Cyclone, Repel; Summit Wind; Updraft, Downdraft, Recoil. Push, Launch, Dash,
+  Levitate and Disarm throw without hurting.
 - **Time (Elapse):** Countdown (when the moment catches up) and Reckoning (when it comes due).
 
 ## Setting each one off
@@ -317,6 +317,8 @@ Collision** feat.
 - **Resonance** leaves a cursed mark for 10 seconds, and every Resonance hit also deals half its damage
   to each other marked enemy within 16 blocks (up to 8 of them). Unweave doesn't count this one.
 - **Cinderbrand** brands a target for 6 seconds: your fire spells burn it 50% hotter.
+- **Spellbrand** brands a target for 8 seconds: the next time your magic hurts it (from a moment later on),
+  the brand bursts for 6 arcane damage, which can Unweave what's on it.
 - Some other bursts flash their name the same way but aren't element reactions and don't go in the
   Grimoire's list: **Unison!** (two casters, two elements, one foe: see
   [Playing Together]({{ '/social/playing-together/' | relative_url }})), **Collision!**, **Combo!**,
@@ -335,3 +337,8 @@ Collision** feat.
   bigger still. A Blight poisons everything it reaches, ready for Elapse.
 - **Pick what to spend.** Frozen can Shatter or Fracture, burning can Overload or Elapse, and Unweave
   takes everything at once. Thread the one you want first.
+- **Rain helps frost.** In the rain everything is wet, so **Flash Freeze** freezes whatever it hits solid (in
+  the dry, only something soaked: after a Bubble pops, say).
+- **Follow up only when it works.** **On Reaction** fires the rest of a spell only at a creature a reaction
+  just went off on: `Bolt · Frost · Fire · On Reaction · Burst · Explode` blows up round the Shatter, and
+  nowhere else.

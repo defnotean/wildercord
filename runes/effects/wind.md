@@ -11,7 +11,7 @@ nav_order: 4
 
 Air and motion. Wind throws, lifts, dashes and turns arrows aside.
 
-13 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
+14 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cushion
 {: #cushion}
@@ -24,7 +24,7 @@ For 30 seconds falls can't hurt you, and a hard landing throws out a gust that k
 
 <img src="{{ '/assets/recipes/rune_cushion.png' | relative_url }}" alt="Crafting Cushion: a Blank Rune and any wool and Feather" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/feather_fall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Feather Fall
 {: #feather_fall}
@@ -37,7 +37,7 @@ Slow falling and no fall damage for 12 seconds.
 
 <img src="{{ '/assets/recipes/rune_feather_fall.png' | relative_url }}" alt="Crafting Feather Fall: a Blank Rune and 2x Feather" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Extend, Frugal
+**Modifiers that work on it:** Extend, Frugal, Kindred
 
 ### <img src="{{ '/assets/runes/leap.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Leap
 {: #leap}
@@ -50,7 +50,7 @@ Jump Boost III for 15 seconds.
 
 <img src="{{ '/assets/recipes/rune_leap.png' | relative_url }}" alt="Crafting Leap: a Blank Rune and Slimeball" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/prune.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Prune
 {: #prune}
@@ -76,7 +76,7 @@ Hurls targets away from the spell.
 
 <img src="{{ '/assets/recipes/rune_push.png' | relative_url }}" alt="Crafting Push: a Blank Rune and Piston" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/swift.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Swift
 {: #swift}
@@ -89,7 +89,7 @@ Speed III for 10 seconds.
 
 <img src="{{ '/assets/recipes/rune_swift.png' | relative_url }}" alt="Crafting Swift: a Blank Rune and 2x Sugar" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/windcut.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Windcut
 {: #windcut}
@@ -102,7 +102,7 @@ A cutting wind: 4 damage and a light shove.
 
 <img src="{{ '/assets/recipes/rune_windcut.png' | relative_url }}" alt="Crafting Windcut: a Blank Rune and Feather and Flint" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/cyclone.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cyclone
 {: #cyclone}
@@ -115,7 +115,7 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 
 <img src="{{ '/assets/recipes/rune_cyclone.png' | relative_url }}" alt="Crafting Cyclone: a Blank Rune and Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/dash.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dash
 {: #dash}
@@ -128,7 +128,7 @@ Shoves targets hard the way you're facing. On Self it's a long dash.
 
 <img src="{{ '/assets/recipes/rune_dash.png' | relative_url }}" alt="Crafting Dash: a Blank Rune and Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/deflect.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Deflect
 {: #deflect}
@@ -140,6 +140,19 @@ For 8 seconds a whirl of wind turns aside arrows and other projectiles coming at
 **How to get it:** Craft: a Blank Rune, Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
 <img src="{{ '/assets/recipes/rune_deflect.png' | relative_url }}" alt="Crafting Deflect: a Blank Rune and Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred
+
+### <img src="{{ '/assets/runes/disarm.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Disarm
+{: #disarm}
+
+*Tier II · Wind · Harms enemies · 7 mana · needs a Copper Cord or better*
+
+A snatching gust tears the weapon from each creature's hand for 5 seconds, then it drifts back. Players and bosses keep hold.
+
+**How to get it:** Craft: a Blank Rune, Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_disarm.png' | relative_url }}" alt="Crafting Disarm: a Blank Rune and Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Extend, Frugal
 
@@ -154,7 +167,7 @@ Flings targets high into the air. On Self it rockets you up and forward.
 
 <img src="{{ '/assets/recipes/rune_launch.png' | relative_url }}" alt="Crafting Launch: a Blank Rune and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/levitate.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Levitate
 {: #levitate}
@@ -180,5 +193,5 @@ A violent outward blast: 5 damage and hurls everything within 3 blocks away. On 
 
 <img src="{{ '/assets/recipes/rune_repel.png' | relative_url }}" alt="Crafting Repel: a Blank Rune and 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
-**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
