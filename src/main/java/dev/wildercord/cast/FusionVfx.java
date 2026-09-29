@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -113,7 +114,12 @@ public final class FusionVfx {
 		if (stone == 0) {
 			Sigils.flash(level, top, ElementFx.STORM.secondary(), 0.8F);
 		}
-		Fx.sound(level, c, SoundEvents.GLASS_HIT, 0.8F, 1.6F + 0.15F * stone);
+		// The first stone opens with a patter of hail; each later one is one hard tick, rising.
+		if (stone == 0) {
+			Feels.sound(level, c, "frost_hail", 0.9F, 1.0F);
+		} else {
+			Feels.sound(level, c, "frost_tick", 0.6F, 1.0F + 0.1F * stone);
+		}
 	}
 
 	/** Glacier: frost creeps out and closes round the target in a shell of ice and stone. */
@@ -128,8 +134,7 @@ public final class FusionVfx {
 		ElementFx.shards(level, centre(t), Math.max(0.7, t.getBbWidth()), 8);
 		Light.ring(level, centre(t), UP, ElementFx.FROST.primary(), Math.max(1.2, t.getBbWidth() + 0.9), 0.2, 0.07, 10);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.PACKED_ICE.defaultBlockState()), centre(t), 14, 0.2);
-		Fx.sound(level, feet, SoundEvents.GLASS_PLACE, 1.0F, 0.6F);
-		Fx.sound(level, feet, WildercordSounds.impact("frost"), 0.7F, 1.0F);
+		Feels.sound(level, feet, "frost_lock", 1.0F, 0.8F);
 	}
 
 	/** Lifesteal: blood drawn out of the target along a dark stream into the caster. */

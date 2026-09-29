@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -425,15 +426,12 @@ final class TechniqueVfx {
 	static void repel(ServerLevel level, Vec3 c, double radius) {
 		dot(level, flash(REPEL), c);
 		RandomSource random = level.getRandom();
-		double spin = random.nextDouble() * Math.PI;
-		for (int i = 0; i < 3; i++) {
-			Vec3 normal = i == 2 ? UP : new Vec3(Math.cos(spin + i * Math.PI / 2), 0, Math.sin(spin + i * Math.PI / 2));
-			ElementFx.ring(level, c, normal, i == 1 ? REPEL_LIGHT : REPEL, 0.3, radius, 0.07, 9);
-		}
-		for (int i = 0; i < 4; i++) {
-			Vec3 normal = ElementFx.randomDir(random);
-			ElementFx.slash(level, c, normal, ElementFx.inPlane(normal, random.nextDouble() * Math.PI * 2), i % 2 == 0 ? REPEL : ElementFx.WIND.secondary(),
-				radius * 0.7, 2.4, 0.1, 2, 7);
+		// A dome: a hemisphere of level rings stacked up from the ground, each a beat after the one below.
+		double[] rise = {0.0, 0.3, 0.55, 0.75};
+		for (int i = 0; i < rise.length; i++) {
+			double phi = rise[i];
+			Scheduler.later(i, () -> ElementFx.ring(level, c.add(0, radius * 0.6 * Math.sin(phi), 0), UP, phi > 0.5 ? REPEL_LIGHT : REPEL,
+				0.3, radius * Math.cos(phi), 0.07, 8));
 		}
 		Vec3 floor = ElementFx.floor(level, c, radius);
 		if (floor != null) {
@@ -441,8 +439,7 @@ final class TechniqueVfx {
 		}
 		Vfx.radial(level, ParticleTypes.GUST, c, 3, 0.3);
 		Vfx.radial(level, ParticleTypes.SMALL_GUST, c, 8, 0.5);
-		Fx.sound(level, c, SoundEvents.BREEZE_WIND_CHARGE_BURST, 1.0F, 0.7F);
-		Fx.sound(level, c, SoundEvents.GENERIC_EXPLODE, 0.5F, 1.4F);
+		Feels.sound(level, c, "wind_thump", 1.0F, 0.7F);
 	}
 
 	/** Collapse (Repel meeting a pull): the two forces annihilate, darkness falling in as violet light bursts out. */
@@ -522,9 +519,14 @@ final class TechniqueVfx {
 	private static final int BUBBLE = 0xCFEFFF;
 
 	/** Bubble: a shimmering sphere of water round the target, two great circles turning over it and a glint on top. */
-	static void bubble(ServerLevel level, Entity target) {
+	static void bubble(ServerLevel level, Entity target, boolean straining) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		double r = Math.max(target.getBbWidth(), target.getBbHeight()) * 0.65 + 0.15;
+		if (straining) {
+			// About to pop: the sphere swells and shivers, tiny bubbles breaking off it.
+			r *= 1.0 + 0.08 * Math.sin(level.getGameTime() * 1.7);
+			Vfx.emit(level, ParticleTypes.BUBBLE_POP, c, 3, r * 0.5, 0.02);
+		}
 		double spin = level.getGameTime() * 0.2;
 		ElementFx.ring(level, c, ElementFx.tilted(1.1, spin), BUBBLE, r, r, 0.025, 4);
 		ElementFx.ring(level, c, ElementFx.tilted(0.5, -spin * 1.3), BUBBLE, r, r, 0.02, 4);
@@ -540,8 +542,7 @@ final class TechniqueVfx {
 		}
 		Vfx.radial(level, ParticleTypes.SPLASH, c, 16, 0.3);
 		Vfx.emit(level, ParticleTypes.BUBBLE_POP, c, 10, 0.5, 0.05);
-		Fx.sound(level, c, SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 1.0F, 1.0F);
-		Fx.sound(level, c, SoundEvents.PLAYER_SPLASH, 0.5F, 1.6F);
+		Feels.sound(level, c, "frost_bubble_pop", 1.0F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ support

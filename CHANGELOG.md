@@ -83,6 +83,17 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   damage. Repel deals 4 damage. Downdraft pins whoever stands under it when nothing is in the air. Recoil deals 5.
   Cyclone and Gale Mantle follow where you steer. Feather Fall drifts the way you look. Zephyr lasts 10 seconds and
   clears blindness, nausea and slowness. Mirrorfrost casts back at 70% power and can't be cast back again.
+- **Frost and wind look and sound like themselves.** Every frost, water and wind rune has its own sound now (thirty-four
+  new ones: a needle for Icicle, a creeping crystal for Hoarfrost, a deep lock for Freeze, a wet splat for Flash
+  Freeze, a rising wave for Tidecall, a snatch for Disarm, a rewinding whoosh for Recoil and so on) in place of the
+  handful of shared glass, powder-snow and wind pops. Runes read by silhouette: Push is one broad slab, Windcut one long
+  cut, Launch a pillar of rings, Repel a dome, Icicle a needle falling from above, Chill three rings climbing the body,
+  Tidewrit a wall, Undertow a corkscrew of bubbles, Flash Freeze a crown of ice spikes. Each element family has its own
+  colour (rime, steel and deep cyan for frost, aqua for water, mint, sky and grey-green for wind), and a rune's size on
+  screen follows its power. Timed effects now tell you when they end: ice shows hairline cracks in its last half second,
+  a Bubble strains before it pops, Hoarfrost flashes white before it closes, and Frostward and Cushion show a faint ring
+  while they last. Silenced creatures show a muted ring over their head, and a creature lifted by wind shows pale rings
+  and lights while a spell hits it harder. Fewer particles for the same rune (Push, Prune, Repel, Tidewrit, Undertow).
 - **New status: silenced.** A silenced creature can't cast; Drowning Word now silences its target. A Runebound
   telegraphing a spell has it broken by silence or a Windcut.
 - Tidecall, Undertow, Tidehook, Tidewrit, Current, Disarm and Tidebreath got small mechanic tweaks (Tidecall pulls and

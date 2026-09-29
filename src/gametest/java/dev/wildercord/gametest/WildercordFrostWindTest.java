@@ -74,6 +74,10 @@ public class WildercordFrostWindTest implements FabricClientGameTest {
 			world.getServer().runCommand("weather clear");
 			stage(world);
 			context.waitTicks(10);
+			if ("1".equals(System.getenv("WILDERCORD_FROSTWIND_SHOTS"))) {
+				shots(context, world);
+				return;
+			}
 			List<String> failures = new ArrayList<>();
 			List<Object[]> checks = List.of(
 				new Object[] {"Silenced", (Check) WildercordFrostWindTest::silenced},
@@ -118,6 +122,107 @@ public class WildercordFrostWindTest implements FabricClientGameTest {
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The frost and wind runes went wrong:\n  " + String.join("\n  ", failures));
 			}
+		}
+	}
+
+	// ------------------------------------------------------------------ screenshots (WILDERCORD_FROSTWIND_SHOTS=1)
+
+	/** One picture: what to cast (after an optional first cast), how many husks, and how long after the cast to look. */
+	private record Shot(String name, RuneDef[] prep, int prepWait, RuneDef[] spell, int husks, int after) {}
+
+	private static Shot shot(String name, RuneDef[] spell, int husks, int wait) {
+		return new Shot(name, null, 0, spell, husks, wait);
+	}
+
+	private static RuneDef[] r(RuneDef... runes) {
+		return runes;
+	}
+
+	private static void shots(ClientGameTestContext context, TestSingleplayerContext world) {
+		// Films from a fixed point at the side, through an invisible marker, with the HUD hidden: the caster and the target both in frame.
+		int cameraId = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			net.minecraft.world.entity.Display.TextDisplay camera = EntityTypes.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
+			Vec3 eye = new Vec3(STAGE.getX() + 6.2, STAGE.getY() + 2.2, STAGE.getZ() + 1.0);
+			Vec3 look = new Vec3(STAGE.getX() + 0.5, STAGE.getY() + 1.0, STAGE.getZ() + 3.5);
+			Vec3 d = look.subtract(eye);
+			camera.snapTo(eye.x, eye.y, eye.z, (float) Math.toDegrees(Math.atan2(-d.x, d.z)), (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z))));
+			camera.addTag("wildercord.camera");
+			level.addFreshEntity(camera);
+			return camera.getId();
+		});
+		context.waitTicks(3);
+		context.runOnClient(mc -> {
+			net.minecraft.world.entity.Entity camera = mc.level.getEntity(cameraId);
+			if (camera != null) {
+				mc.options.setCameraType(net.minecraft.client.CameraType.FIRST_PERSON);
+				mc.setCameraEntity(camera);
+				if (!mc.gui.hud.isHidden()) {
+					mc.gui.hud.toggle();
+				}
+			}
+		});
+		List<Shot> all = List.of(
+			shot("chill", r(Runes.BEAM, Runes.CHILL), 1, 3),
+			shot("frost", r(Runes.BEAM, Runes.FROST), 1, 3),
+			shot("icicle", r(Runes.BEAM, Runes.ICICLE), 1, 2),
+			shot("coldsnap", r(Runes.BEAM, Runes.COLDSNAP), 3, 3),
+			shot("hail", r(Runes.BEAM, Runes.HAIL), 1, 10),
+			shot("freeze", r(Runes.BEAM, Runes.FREEZE), 1, 4),
+			shot("glacier", r(Runes.BEAM, Runes.GLACIER), 3, 4),
+			new Shot("absolute_zero", r(Runes.BEAM, Runes.CHILL), 8, r(Runes.BEAM, Runes.ABSOLUTE_ZERO), 1, 4),
+			shot("hoarfrost", r(Runes.BEAM, Runes.HOARFROST), 1, 45),
+			shot("bubble", r(Runes.BEAM, Runes.BUBBLE), 1, 14),
+			shot("flash_freeze", r(Runes.BEAM, Runes.FLASH_FREEZE), 1, 3),
+			shot("undertow", r(Runes.BEAM, Runes.UNDERTOW), 1, 4),
+			shot("tidecall", r(Runes.BEAM, Runes.TIDECALL), 3, 8),
+			shot("tidewrit", r(Runes.BEAM, Runes.TIDEWRIT), 1, 4),
+			shot("tidehook", r(Runes.BEAM, Runes.TIDEHOOK), 1, 3),
+			shot("drowning_word_silenced", r(Runes.BEAM, Runes.DROWNING_WORD), 1, 3),
+			shot("blizzard", r(Runes.BEAM, Runes.BLIZZARD), 2, 30),
+			shot("avalanche", r(Runes.BEAM, Runes.AVALANCHE), 2, 4),
+			shot("black_ice", r(Runes.BEAM, Runes.BLACK_ICE), 1, 4),
+			shot("cryostasis", r(Runes.SELF, Runes.CRYOSTASIS), 0, 8),
+			shot("frostward", r(Runes.SELF, Runes.FROSTWARD), 0, 4),
+			shot("push", r(Runes.BEAM, Runes.PUSH), 1, 2),
+			shot("launch_airborne", r(Runes.BEAM, Runes.LAUNCH), 1, 6),
+			shot("windcut", r(Runes.BEAM, Runes.WINDCUT), 1, 2),
+			shot("repel", r(Runes.SELF, Runes.REPEL), 2, 3),
+			shot("disarm", r(Runes.BEAM, Runes.DISARM), 1, 3),
+			shot("cyclone", r(Runes.BEAM, Runes.CYCLONE), 2, 20),
+			shot("updraft", r(Runes.BEAM, Runes.UPDRAFT), 1, 6),
+			shot("summit_wind", r(Runes.BEAM, Runes.SUMMIT_WIND), 1, 6),
+			shot("razorgale", r(Runes.BEAM, Runes.RAZORGALE), 2, 4),
+			shot("dust_devil", r(Runes.BEAM, Runes.DUST_DEVIL), 1, 30),
+			shot("dash", r(Runes.SELF, Runes.DASH), 0, 2),
+			shot("swift", r(Runes.SELF, Runes.SWIFT), 0, 2),
+			shot("leap", r(Runes.SELF, Runes.LEAP), 0, 6),
+			shot("feather_fall", r(Runes.SELF, Runes.FEATHER_FALL), 0, 3),
+			shot("cushion", r(Runes.SELF, Runes.CUSHION), 0, 3),
+			shot("deflect", r(Runes.SELF, Runes.DEFLECT), 0, 3),
+			shot("zephyr", r(Runes.SELF, Runes.ZEPHYR), 1, 4),
+			shot("prune", r(Runes.SELF, Runes.PRUNE), 0, 2),
+			shot("levitate", r(Runes.BEAM, Runes.LEVITATE), 1, 18),
+			shot("recoil", r(Runes.BEAM, Runes.RECOIL), 1, 8));
+		double[][] spots = {{0, 5}, {1.6, 5.5}, {-1.6, 5}, {0.5, 7}, {-2.4, 7}, {2.4, 7}, {0, 9}, {1.5, 9}};
+		for (Shot s : all) {
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				stand(player);
+				for (int i = 0; i < s.husks(); i++) {
+					husk(player.level(), spots[i][0], spots[i][1], true);
+				}
+			});
+			context.waitTicks(4);
+			if (s.prep() != null) {
+				world.getServer().runOnServer(server -> cast(player(server), s.prep()));
+				context.waitTicks(s.prepWait());
+			}
+			world.getServer().runOnServer(server -> cast(player(server), s.spell()));
+			context.waitTicks(s.after());
+			context.runOnClient(mc -> mc.gui.toastManager().clear());
+			context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("frostwind_" + s.name()).disableCounterPrefix());
+			cleanup(context, world);
 		}
 	}
 

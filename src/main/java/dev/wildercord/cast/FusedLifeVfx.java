@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -84,9 +85,8 @@ final class FusedLifeVfx {
 		breeze(level, feet, radius, 0);
 		Scheduler.later(7, () -> breeze(level, feet, radius, 1));
 		Scheduler.later(14, () -> breeze(level, feet, radius, 2));
-		Fx.sound(level, feet, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.45F, 1.5F);
+		Feels.sound(level, feet, "wind_feather", 0.9F, 0.9F);
 		Fx.sound(level, feet, SoundEvents.CHERRY_LEAVES_BREAK, 1.0F, 1.2F);
-		Fx.sound(level, feet, WildercordSounds.impact("life"), 0.5F, 1.3F);
 	}
 
 	/** One wave of the breeze: petals of light carried round the circle on the wind, a low warm crescent sweeping after them. */

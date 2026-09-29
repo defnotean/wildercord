@@ -1682,12 +1682,20 @@ public final class Effects {
 	private static void frostward(Cast cast, LivingEntity t, int ticks) {
 		t.setTicksFrozen(0);
 		Reactions.clear(t, Reactions.Mark.FROZEN);
+		int[] beats = {0};
 		Ward fresh = ward(cast, t, "frostward", ticks, 1.0, 5, w -> {
 			if (t.getTicksFrozen() > 0) {
 				t.setTicksFrozen(0);
 			}
 			Reactions.clear(t, Reactions.Mark.FROZEN);
-		}, () -> { });
+			if (++beats[0] % 8 == 0) {
+				ExpansionVfx.frostwardIdle(cast.level, t);
+			}
+		}, () -> {
+			if (t.isAlive() && t.level() == cast.level) {
+				ExpansionVfx.frostwardEnd(cast.level, t);
+			}
+		});
 		if (fresh != null || !cast.passive) {
 			ExpansionVfx.frostward(cast.level, t, Vfx.theme("frost"));
 		}
@@ -1699,7 +1707,11 @@ public final class Effects {
 	private static void cushion(Cast cast, LivingEntity t, int ticks, double power) {
 		modifier(t, Attributes.FALL_DAMAGE_MULTIPLIER, CUSHION_ID, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 		t.resetFallDistance();
+		int[] beats = {0};
 		Ward fresh = ward(cast, t, "cushion", ticks, power, 1, w -> {
+			if (++beats[0] % 50 == 0 && t.onGround()) {
+				ExpansionVfx.cushionIdle(cast.level, t, Vfx.theme("wind"));
+			}
 			// Remembers how far this fall has come; it lands on the tick the ground is found again.
 			if (!t.onGround()) {
 				w.memory = Math.max(w.memory, t.fallDistance);
@@ -1709,7 +1721,12 @@ public final class Effects {
 				cushionLanding(w.cast, t, w.power, w.memory);
 			}
 			w.memory = 0;
-		}, () -> unmodify(t, CUSHION_ID, List.of(Attributes.FALL_DAMAGE_MULTIPLIER)));
+		}, () -> {
+			unmodify(t, CUSHION_ID, List.of(Attributes.FALL_DAMAGE_MULTIPLIER));
+			if (t.isAlive() && t.level() == cast.level) {
+				ExpansionVfx.cushionEnd(cast.level, t, Vfx.theme("wind"));
+			}
+		});
 		if (fresh != null || !cast.passive) {
 			ExpansionVfx.cushion(cast.level, t, Vfx.theme("wind"));
 		}
@@ -1720,7 +1737,7 @@ public final class Effects {
 	private static final double CUSHION_MAX = 6.0;
 
 	private static void cushionLanding(Cast cast, LivingEntity t, double power, double fallen) {
-		ExpansionVfx.cushionLand(cast.level, t.position(), 3.0, Vfx.theme("wind"));
+		ExpansionVfx.cushionLand(cast.level, t.position(), 3.0, Vfx.theme("wind"), fallen);
 		double damage = Math.min(CUSHION_MAX, CUSHION_PER_BLOCK * Math.max(0, fallen - 4)) * power;
 		int struck = 0;
 		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(3.0, 1.0, 3.0), e -> Targets.canHarm(cast.caster, e))) {

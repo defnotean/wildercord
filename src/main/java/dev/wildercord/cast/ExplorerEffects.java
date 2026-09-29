@@ -815,6 +815,12 @@ public final class ExplorerEffects {
 				}
 			});
 		}
+		// A white flash a few ticks before the ice closes: the tell for the freeze.
+		Scheduler.later(55, () -> {
+			if (cast.alive() && onHand(cast, t)) {
+				ExplorerVfx.hoarfrostFlash(cast.level, t);
+			}
+		});
 		Scheduler.later(60, Effects.carryContext(() -> {
 			if (cast.alive() && onHand(cast, t)) {
 				Spirits.freeze(t, Effects.ticks(2, duration));

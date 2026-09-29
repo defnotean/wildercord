@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,8 +40,20 @@ public final class Statuses {
 
 	/** Silences a creature for {@code ticks}; a longer silence already on it stays. */
 	public static void silence(LivingEntity target, int ticks) {
+		boolean fresh = !silenced(target);
 		long until = target.level().getGameTime() + Math.max(1, ticks);
 		SILENCED.merge(target.getUUID(), until, Math::max);
+		if (fresh && target.level() instanceof ServerLevel level) {
+			StatusVfx.silenced(level, target);
+			// A beat every second while it lasts, so the state can be read on the creature (at most 8 beats).
+			for (int beat = 20; beat <= Math.min(ticks, 160); beat += 20) {
+				Scheduler.later(beat, () -> {
+					if (target.isAlive() && silenced(target)) {
+						StatusVfx.silencedBeat(level, target);
+					}
+				});
+			}
+		}
 		if (target instanceof ServerPlayer player) {
 			Charging.interrupt(player);
 		} else if (target instanceof Mob mob) {
@@ -65,7 +78,11 @@ public final class Statuses {
 
 	/** Marks {@code target} airborne for up to {@code ticks} (see {@link #AIRBORNE_BONUS}). */
 	public static void airborne(Entity target, int ticks) {
+		boolean fresh = !Reactions.has(target, Reactions.Mark.AIRBORNE);
 		Reactions.mark(target, Reactions.Mark.AIRBORNE, ticks);
+		if (fresh && target.level() instanceof ServerLevel level) {
+			StatusVfx.lifted(level, target);
+		}
 	}
 
 	/** The airborne factor for a hit on {@code target}: {@link #AIRBORNE_BONUS} while marked and off the ground, else 1. */

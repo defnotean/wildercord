@@ -148,6 +148,15 @@ public final class Spirits {
 		hold(target, ticks);
 		target.setTicksFrozen(Math.max(target.getTicksFrozen(), target.getTicksRequiredToFreeze() + ticks));
 		Reactions.mark(target, Reactions.Mark.FROZEN, ticks + 20);
+		if (ticks >= 16 && target.level() instanceof ServerLevel level) {
+			// The tell: in its last half second the ice shows hairline cracks (only if it is still the same hold).
+			Scheduler.later(ticks - 10, () -> {
+				MobEffectInstance slow = target.getEffect(MobEffects.SLOWNESS);
+				if (target.isAlive() && slow != null && slow.getAmplifier() >= 6 && slow.getDuration() <= 14) {
+					Vfx.iceCracking(level, target);
+				}
+			});
+		}
 	}
 
 	/** The longest a frost hold lasts on a creature under Frostward: one second. */

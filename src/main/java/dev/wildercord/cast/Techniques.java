@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
@@ -470,7 +471,7 @@ final class Techniques {
 			t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks, 0, false, false));
 			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, false));
 		}
-		Fx.sound(cast.level, t.position(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 0.8F, 0.6F);
+		Feels.sound(cast.level, t.position(), "frost_bubble_in", 0.9F, 1.0F);
 		for (int i = 0; i < ticks; i += 2) {
 			int tick = i;
 			Scheduler.later(i + 1, () -> {
@@ -480,8 +481,8 @@ final class Techniques {
 				if (t instanceof Mob && !Spirits.isBoss(t) && fits(cast.level, t, t.position().add(0, lift, 0))) {
 					teleport(t, cast.level, t.position().add(0, lift, 0), t.getYRot(), t.getXRot());
 				}
-				if (tick % 4 == 0) {
-					TechniqueVfx.bubble(cast.level, t);
+				if (tick % 4 == 0 || tick > ticks - 12) {
+					TechniqueVfx.bubble(cast.level, t, tick > ticks - 12);
 				}
 			});
 		}

@@ -266,6 +266,9 @@ public final class Reactions {
 	 */
 	public static double hit(Cast cast, LivingEntity target, String element) {
 		double multiplier = Statuses.airborneFactor(target);
+		if (multiplier > 1.0) {
+			StatusVfx.airborneBite(cast.level, target);
+		}
 		if (has(target, Mark.CRACKED)) {
 			multiplier *= ReactionRules.CRACKED_BONUS;
 			ReactionVfx.crackedBite(cast.level, target);

@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -464,8 +465,30 @@ final class ExpansionVfx {
 		}
 		Light.groundRing(level, feet, 0xFFD8A0, 0.2, r + 1.2, 0.06, 12);
 		Vfx.radial(level, ParticleTypes.SNOWFLAKE, t.getBoundingBox().getCenter(), 10, 0.12);
-		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_CHIME, 0.6F, 1.8F);
-		Fx.sound(level, feet, SoundEvents.FIRE_EXTINGUISH, 0.3F, 1.8F);
+		Feels.sound(level, feet, "frost_ward", 0.8F, 1.0F);
+	}
+
+	/** Frostward while it lasts: a faint warm ring at the feet now and then (gone with the ward). */
+	static void frostwardIdle(ServerLevel level, Entity t) {
+		Light.groundRing(level, t.position(), 0xFFD8A0, 0.3, 0.9, 0.03, 12);
+	}
+
+	/** Frostward wearing off: the warmth drains out of the ring and a last snowflake settles. */
+	static void frostwardEnd(ServerLevel level, Entity t) {
+		Light.groundRing(level, t.position(), 0xCFEFFF, 0.9, 0.2, 0.03, 10);
+		Vfx.emit(level, ParticleTypes.SNOWFLAKE, t.getBoundingBox().getCenter(), 4, 0.3, 0.01);
+		Feels.sound(level, t.position(), "frost_tick", 0.35F, 0.7F);
+	}
+
+	/** Cushion while it lasts: a faint ring of air at the feet now and then. */
+	static void cushionIdle(ServerLevel level, Entity t, Vfx.Theme theme) {
+		Light.groundRing(level, t.position(), theme.primary(), 0.3, 0.9, 0.03, 12);
+	}
+
+	/** Cushion wearing off: the ring folds back into the feet. */
+	static void cushionEnd(ServerLevel level, Entity t, Vfx.Theme theme) {
+		Light.groundRing(level, t.position(), theme.secondary(), 0.9, 0.2, 0.03, 10);
+		Vfx.emit(level, ParticleTypes.SMALL_GUST, t.position().add(0, 0.2, 0), 2, 0.3, 0.0);
 	}
 
 	/** Cushion: a soft ring of air around the feet. */
@@ -474,20 +497,24 @@ final class ExpansionVfx {
 		Light.groundRing(level, feet, theme.primary(), 0.3, 1.3, 0.07, 12);
 		Light.ring(level, feet.add(0, 0.3, 0), UP, theme.secondary(), 1.2, 0.5, 0.04, 10);
 		Vfx.emit(level, ParticleTypes.SMALL_GUST, feet.add(0, 0.2, 0), 4, 0.4, 0.0);
-		Fx.sound(level, feet, SoundEvents.BREEZE_JUMP, 0.4F, 1.7F);
-		Fx.sound(level, feet, SoundEvents.WOOL_PLACE, 0.6F, 0.8F);
+		Feels.sound(level, feet, "wind_feather", 0.6F, 0.7F);
 	}
 
 	/** A cushioned landing: a gust bursting out along the ground. */
-	static void cushionLand(ServerLevel level, Vec3 feet, double radius, Vfx.Theme theme) {
+	static void cushionLand(ServerLevel level, Vec3 feet, double radius, Vfx.Theme theme, double fallen) {
 		Light.groundRing(level, feet, theme.primary(), 0.4, radius, 0.12, 10);
 		Light.groundRing(level, feet, theme.secondary(), 0.2, radius * 0.7, 0.06, 8);
+		// The landing grows with the fall: one more ring for every 3 blocks past the first 4.
+		int extra = (int) Math.min(4, Math.max(0, (fallen - 4) / 3));
+		for (int i = 0; i < extra; i++) {
+			Light.groundRing(level, feet.add(0, 0.05 * (i + 1), 0), theme.secondary(), 0.3, radius * (1.0 + 0.25 * (i + 1)), 0.05, 9 + i);
+		}
 		dot(level, ParticleTypes.GUST, feet.add(0, 0.3, 0));
 		for (int i = 0; i < 10; i++) {
 			double a = Math.PI * 2 * i / 10;
 			Vfx.fling(level, ParticleTypes.SMALL_GUST, feet.add(0, 0.2, 0), new Vec3(Math.cos(a), 0.1, Math.sin(a)), 0.3);
 		}
-		Fx.sound(level, feet, SoundEvents.WIND_CHARGE_BURST, 0.7F, 1.2F);
+		Feels.sound(level, feet, "wind_thump", 0.9F, 1.0F);
 	}
 
 	/** Deflect: a ring of wind rising around the body. */
@@ -497,7 +524,7 @@ final class ExpansionVfx {
 		Light.ring(level, t.position().add(0, 0.2, 0), UP, theme.primary(), 0.4, r + 0.4, 0.06, 10);
 		Light.ring(level, c, new Vec3(0.3, 1, 0.2).normalize(), theme.secondary(), r, r, 0.04, 12);
 		Vfx.emit(level, ParticleTypes.SMALL_GUST, c, 6, r * 0.6, 0.0);
-		Fx.sound(level, c, SoundEvents.BREEZE_SHOOT, 0.7F, 1.4F);
+		Feels.sound(level, c, "wind_deflect", 0.5F, 0.8F);
 	}
 
 	/** Every few ticks of a Deflect: gusts circling the body. */
@@ -515,7 +542,7 @@ final class ExpansionVfx {
 		Vec3 normal = across(away).cross(away).normalize();
 		Light.slash(level, at.subtract(away.scale(0.4)), normal.lengthSqr() < 1.0E-4 ? UP : normal, away, theme.primary(), 0.6, 2.0, 0.08, 1, 5);
 		Sigils.flash(level, at, theme.primary(), 0.8F);
-		Fx.sound(level, at, SoundEvents.BREEZE_DEFLECT, 0.9F, 1.2F);
+		Feels.sound(level, at, "wind_deflect", 1.0F, 1.0F);
 	}
 
 	/** Haven opens: a circle on the ground, a flare, and the dome rising ring by ring. */
@@ -647,13 +674,14 @@ final class ExpansionVfx {
 
 	/** Prune: a gust spreading out through the leaves. */
 	static void prune(ServerLevel level, Vec3 at, double radius, boolean cleared) {
-		Light.ring(level, at, UP, 0xC8F0DC, 0.3, radius, 0.06, 10);
-		Light.ring(level, at, new Vec3(0.5, 1, 0.3).normalize(), 0xFFFFFF, 0.3, radius * 0.8, 0.04, 9);
-		for (int i = 0; i < 12; i++) {
-			double a = Math.PI * 2 * i / 12;
-			Vfx.fling(level, ParticleTypes.SMALL_GUST, at, new Vec3(Math.cos(a), 0.2, Math.sin(a)), 0.35);
+		// A flat scythe of air sweeping a full circle over four ticks, low over the brush.
+		for (int i = 0; i < 4; i++) {
+			double a = Math.PI * 0.5 * i;
+			int color = i % 2 == 0 ? 0xC8F0DC : WHITE;
+			Scheduler.later(i, () -> Light.slash(level, at.add(0, 0.4, 0), UP, new Vec3(Math.cos(a), 0, Math.sin(a)), color, radius * 0.9, 1.6, 0.08, 1, 5));
 		}
-		Fx.sound(level, at, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.6F, 1.4F);
+		Vfx.emit(level, ParticleTypes.SMALL_GUST, at.add(0, 0.3, 0), 4, radius * 0.5, 0.0);
+		Feels.sound(level, at, "wind_slash", 0.6F, 1.4F);
 		if (cleared) {
 			Fx.sound(level, at, SoundEvents.GRASS_BREAK, 1.0F, 1.1F);
 		}
@@ -696,14 +724,17 @@ final class ExpansionVfx {
 	/** Icicle: ice bursting off the target; a slowed one cracks with a sharper ring. */
 	static void icicle(ServerLevel level, Entity t, boolean slowed) {
 		Vec3 c = t.getBoundingBox().getCenter();
-		Sigils.flash(level, c, FROST, slowed ? 1.4F : 1.0F);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), c, 10, 0.16);
-		Light.ring(level, c, UP, FROST, 0.1, slowed ? 1.3 : 0.9, 0.04, 7);
+		// A vertical needle of ice light falling from three blocks up (unlike every radial burst); a slowed target also gets a star.
+		ElementFx.ray(level, c.add(0, 3.0, 0), c, WHITE, 0.09, 4);
+		ElementFx.ray(level, c.add(0, 3.0, 0), c, FROST, 0.2, 5);
+		Sigils.flash(level, c, FROST, slowed ? 1.2F : 0.8F);
+		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), c, 6, 0.14);
 		if (slowed) {
+			Light.ring(level, c, UP, FROST, 0.1, 1.1, 0.04, 7);
 			Light.ring(level, c, new Vec3(0.6, 0.5, 0.6).normalize(), WHITE, 0.1, 1.0, 0.03, 6);
-			Fx.sound(level, c, SoundEvents.GLASS_BREAK, 0.7F, 1.8F);
+			Feels.sound(level, c, "frost_break", 0.4F, 1.6F);
 		}
-		Fx.sound(level, c, SoundEvents.SNOW_GOLEM_SHOOT, 0.7F, 1.4F);
+		Feels.sound(level, c, "frost_needle", 0.9F, 1.0F);
 	}
 
 	/** Pelt: stones cracking against the target. */
@@ -720,11 +751,11 @@ final class ExpansionVfx {
 		Vec3 c = t.getBoundingBox().getCenter();
 		Vec3 side = across(away);
 		double r = Math.max(0.6, t.getBbHeight() * 0.5);
-		Light.slash(level, c.subtract(away.scale(r * 0.6)), side.add(UP).normalize(), away, 0xC8F0DC, r, 2.0, 0.1, 1, 5);
-		Light.slash(level, c.subtract(away.scale(r * 0.6)), side.subtract(UP).normalize(), away, WHITE, r, 2.0, 0.07, 1, 5);
-		Vfx.emit(level, ParticleTypes.SMALL_GUST, c, 3, 0.3, 0.0);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_SWEEP, 0.7F, 1.6F);
-		Fx.sound(level, c, SoundEvents.BREEZE_SHOOT, 0.4F, 1.8F);
+		// A cut, not a burst: one long white-hot line through the target with a mint halo round it.
+		Vec3 n = side.add(UP.scale(0.35)).normalize();
+		Light.slash(level, c.subtract(away.scale(r * 0.5)), n, away, 0xC8F0DC, r * 1.5, 1.5, 0.16, 1, 5);
+		Light.slash(level, c.subtract(away.scale(r * 0.5)), n, away, WHITE, r * 1.5, 1.5, 0.05, 1, 4);
+		Feels.sound(level, c, "wind_slash", 0.9F, 1.0F);
 	}
 
 	/** Leech: crimson motes drawn from the target into the caster. */
@@ -813,13 +844,15 @@ final class ExpansionVfx {
 	static void coldsnap(ServerLevel level, Vec3 point, double radius) {
 		Vec3 ground = CastEngine.ground(level, point.add(0, 0.5, 0));
 		Sigils.ground(level, ground, FROST, WHITE, (float) radius, 20);
-		Light.groundRing(level, ground, WHITE, 0.3, radius, 0.1, 10);
-		Light.groundRing(level, ground, FROST, 0.2, radius * 0.8, 0.06, 12);
-		Sigils.flash(level, ground.add(0, 0.8, 0), FROST, (float) Math.min(4, radius));
+		// The snap races out over a few ticks: a white ring first, then the frost ring after it, then the crust.
+		Light.groundRing(level, ground, WHITE, 0.3, radius, 0.1, 6);
+		Scheduler.later(2, () -> Light.groundRing(level, ground, FROST, 0.2, radius * 0.9, 0.06, 8));
+		Scheduler.later(4, () -> Light.groundRing(level, ground, WHITE, 0.4, radius * 0.6, 0.04, 8));
+		Sigils.flash(level, ground.add(0, 0.8, 0), FROST, (float) Math.min(3, radius));
 		Vfx.radial(level, ParticleTypes.SNOWFLAKE, ground.add(0, 0.6, 0), 20, 0.25);
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), ground.add(0, 0.4, 0), 10, 0.2);
-		Fx.sound(level, ground, SoundEvents.POWDER_SNOW_BREAK, 1.0F, 0.7F);
-		Fx.sound(level, ground, SoundEvents.GLASS_BREAK, 0.5F, 1.3F);
+		Feels.sound(level, ground, "frost_crust", 1.0F, 0.8F);
+		Feels.sound(level, ground, "frost_whump", 0.5F, 1.3F);
 	}
 
 	static void chilled(ServerLevel level, Entity t) {
@@ -859,8 +892,7 @@ final class ExpansionVfx {
 
 	static void cycloneRise(ServerLevel level, Vec3 centre, double radius) {
 		Light.groundRing(level, centre, 0xC8F0DC, 0.3, radius, 0.08, 12);
-		Fx.sound(level, centre, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.9F, 0.6F);
-		Fx.sound(level, centre, SoundEvents.BREEZE_IDLE_AIR, 1.0F, 0.8F);
+		Feels.sound(level, centre, "wind_whirl", 0.9F, 1.0F);
 	}
 
 	/** A Cyclone turning: arcs of wind whirling around it at three heights, gusts thrown off them. */
@@ -879,7 +911,6 @@ final class ExpansionVfx {
 				new Vec3(-Math.sin(a), 0.3, Math.cos(a)), 0.3);
 		}
 		if (tick % 10 == 0) {
-			Fx.sound(level, centre, SoundEvents.BREEZE_IDLE_AIR, 0.8F, 1.2F);
 		}
 	}
 
@@ -889,6 +920,6 @@ final class ExpansionVfx {
 		Light.ring(level, centre.add(0, 1, 0), UP, WHITE, 0.4, radius * 1.3, 0.06, 9);
 		Vfx.radial(level, ParticleTypes.GUST, centre.add(0, 1, 0), 4, 0.3);
 		Vfx.radial(level, ParticleTypes.SMALL_GUST, centre.add(0, 1, 0), 14, 0.5);
-		Fx.sound(level, centre, SoundEvents.WIND_CHARGE_BURST, 1.0F, 0.8F);
+		Feels.sound(level, centre, "wind_thump", 1.0F, 0.8F);
 	}
 }

@@ -1,4 +1,127 @@
 {
-  "events": {},
+  "events": {
+    "wind_crash": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_crash_1",
+        "kit/wind/wind_crash_2"
+      ],
+      "subtitle": "hit"
+    },
+    "wind_dash": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_dash_1",
+        "kit/wind/wind_dash_2",
+        "kit/wind/wind_dash_3"
+      ],
+      "subtitle": "cast"
+    },
+    "wind_deflect": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_deflect_1",
+        "kit/wind/wind_deflect_2",
+        "kit/wind/wind_deflect_3"
+      ],
+      "subtitle": "hit"
+    },
+    "wind_feather": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_feather_1",
+        "kit/wind/wind_feather_2",
+        "kit/wind/wind_feather_3"
+      ],
+      "subtitle": "cast"
+    },
+    "wind_gale": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_gale_1",
+        "kit/wind/wind_gale_2",
+        "kit/wind/wind_gale_3"
+      ],
+      "subtitle": "cast"
+    },
+    "wind_glyph": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_glyph_1",
+        "kit/wind/wind_glyph_2"
+      ],
+      "subtitle": "field"
+    },
+    "wind_lift": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_lift_1",
+        "kit/wind/wind_lift_2",
+        "kit/wind/wind_lift_3"
+      ],
+      "subtitle": "tell"
+    },
+    "wind_muffle": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_muffle_1",
+        "kit/wind/wind_muffle_2",
+        "kit/wind/wind_muffle_3"
+      ],
+      "subtitle": "tell"
+    },
+    "wind_rewind": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_rewind_1",
+        "kit/wind/wind_rewind_2"
+      ],
+      "subtitle": "hit"
+    },
+    "wind_rise": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_rise_1",
+        "kit/wind/wind_rise_2",
+        "kit/wind/wind_rise_3"
+      ],
+      "subtitle": "cast"
+    },
+    "wind_slash": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_slash_1",
+        "kit/wind/wind_slash_2",
+        "kit/wind/wind_slash_3"
+      ],
+      "subtitle": "hit"
+    },
+    "wind_snatch": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_snatch_1",
+        "kit/wind/wind_snatch_2",
+        "kit/wind/wind_snatch_3"
+      ],
+      "subtitle": "hit"
+    },
+    "wind_thump": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_thump_1",
+        "kit/wind/wind_thump_2",
+        "kit/wind/wind_thump_3"
+      ],
+      "subtitle": "hit"
+    },
+    "wind_whirl": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_whirl_1",
+        "kit/wind/wind_whirl_2"
+      ],
+      "subtitle": "field"
+    }
+  },
   "part": "wind"
 }

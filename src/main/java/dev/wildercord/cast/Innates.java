@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.Wildercord;
 import dev.wildercord.mixin.MannequinAccessor;
@@ -464,8 +465,7 @@ public final class Innates {
 		Vfx.radial(cast.level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.GLASS_PANE), hand, 10, 0.2);
 		ElementFx.shatterRing(cast.level, hand, 1.4);
 		ElementFx.shards(cast.level, hand, 0.9, 5);
-		Fx.sound(cast.level, hand, SoundEvents.GLASS_BREAK, 0.8F, 1.6F);
-		Fx.sound(cast.level, hand, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
+		Feels.sound(cast.level, hand, "frost_mirror", 1.0F, 1.0F);
 		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), MIRRORED, Heart.leaning(player))).withAffinity()
 			.withPower(MIRROR_POWER);
 		CastEngine.cast(mirrored, hit.root());
@@ -764,6 +764,6 @@ public final class Innates {
 		Vfx.emit(level, ParticleTypes.GUST, player.position(), 1, 0.0, 0.0);
 		ElementFx.gustRing(level, player.position(), 1.4);
 		ElementFx.ring(level, player.position().add(0, 0.9, 0).subtract(flat.scale(0.9)), flat, ElementFx.WIND.secondary(), 0.3, 1.3, 0.04, 7);
-		Fx.sound(level, player.position(), SoundEvents.BREEZE_JUMP, 0.8F, 1.3F);
+		Feels.sound(level, player.position(), "wind_gale", 0.9F, 1.0F);
 	}
 }

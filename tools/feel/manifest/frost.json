@@ -1,4 +1,177 @@
 {
-  "events": {},
+  "events": {
+    "frost_break": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_break_1",
+        "kit/frost/frost_break_2",
+        "kit/frost/frost_break_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_breath": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_breath_1",
+        "kit/frost/frost_breath_2"
+      ],
+      "subtitle": "cast"
+    },
+    "frost_bubble_in": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_bubble_in_1",
+        "kit/frost/frost_bubble_in_2"
+      ],
+      "subtitle": "cast"
+    },
+    "frost_bubble_pop": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_bubble_pop_1",
+        "kit/frost/frost_bubble_pop_2",
+        "kit/frost/frost_bubble_pop_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_crack": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_crack_1",
+        "kit/frost/frost_crack_2",
+        "kit/frost/frost_crack_3"
+      ],
+      "subtitle": "tell"
+    },
+    "frost_creep": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_creep_1",
+        "kit/frost/frost_creep_2",
+        "kit/frost/frost_creep_3"
+      ],
+      "subtitle": "tell"
+    },
+    "frost_crust": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_crust_1",
+        "kit/frost/frost_crust_2",
+        "kit/frost/frost_crust_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_drag": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_drag_1",
+        "kit/frost/frost_drag_2",
+        "kit/frost/frost_drag_3"
+      ],
+      "subtitle": "tell"
+    },
+    "frost_hail": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_hail_1",
+        "kit/frost/frost_hail_2",
+        "kit/frost/frost_hail_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_hook": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_hook_1",
+        "kit/frost/frost_hook_2",
+        "kit/frost/frost_hook_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_lock": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_lock_1",
+        "kit/frost/frost_lock_2",
+        "kit/frost/frost_lock_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_lotus": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_lotus_1",
+        "kit/frost/frost_lotus_2"
+      ],
+      "subtitle": "cast"
+    },
+    "frost_mirror": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_mirror_1",
+        "kit/frost/frost_mirror_2"
+      ],
+      "subtitle": "cast"
+    },
+    "frost_needle": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_needle_1",
+        "kit/frost/frost_needle_2",
+        "kit/frost/frost_needle_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_splat": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_splat_1",
+        "kit/frost/frost_splat_2",
+        "kit/frost/frost_splat_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_surge": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_surge_1",
+        "kit/frost/frost_surge_2",
+        "kit/frost/frost_surge_3"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_tick_1",
+        "kit/frost/frost_tick_2"
+      ],
+      "subtitle": "tell"
+    },
+    "frost_ward": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_ward_1",
+        "kit/frost/frost_ward_2"
+      ],
+      "subtitle": "cast"
+    },
+    "frost_whump": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_whump_1",
+        "kit/frost/frost_whump_2"
+      ],
+      "subtitle": "hit"
+    },
+    "frost_zero": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_zero_1",
+        "kit/frost/frost_zero_2"
+      ],
+      "subtitle": "hit"
+    }
+  },
   "part": "frost"
 }

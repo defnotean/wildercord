@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
@@ -377,8 +378,8 @@ public final class Vfx {
 		ElementFx.shards(level, center, 0.6 + w * 0.5, 7);
 		ElementFx.shatterRing(level, center, 0.8 + w);
 		ElementFx.frostCreep(level, target.position(), 0.6 + w * 0.6, 24);
-		Fx.sound(level, center, SoundEvents.GLASS_BREAK, 0.6F, 1.6F);
-		Fx.sound(level, center, SoundEvents.POWDER_SNOW_BREAK, 0.8F, 0.8F);
+		Feels.sound(level, center, "frost_crust", 0.9F, 1.0F);
+		Feels.sound(level, center, "frost_needle", 0.5F, 1.1F);
 	}
 
 	/** Lightning lands (the bolt itself is vanilla's): a white flare, forks racing out over the ground, rings of light and a scorch. */
@@ -452,17 +453,15 @@ public final class Vfx {
 		Vec3 c = target.getBoundingBox().getCenter();
 		Vec3 dir = direction.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : direction.normalize();
 		double r = Math.max(0.8, target.getBbWidth() + 0.4);
-		for (int i = 0; i < 2; i++) {
-			// Round a point behind the target, so the crescent bulges through it along the push.
-			Vec3 at = c.add(0, (i - 0.5) * 0.5, 0).subtract(dir.scale(r * 0.9));
-			ElementFx.slash(level, at, UP, dir, i == 0 ? ElementFx.WIND.primary() : ElementFx.WIND.secondary(), r, 1.7, 0.13, 1 + i, 6);
-		}
-		ElementFx.ring(level, c, dir, ElementFx.WIND.secondary(), 0.3, r * 1.4, 0.05, 7);
+		// One broad, blunt slab thrust along the push (heavy, not a burst) and a low ring of dust at the feet.
+		Vec3 at = c.subtract(dir.scale(r * 0.9));
+		ElementFx.slash(level, at, UP, dir, ElementFx.WIND.primary(), r * 1.2, 1.3, 0.3, 2, 7);
+		ElementFx.groundRing(level, target.position(), ElementFx.WIND.secondary(), 0.2, r * 1.4, 0.06, 8);
 		emit(level, ParticleTypes.GUST, c, 1, 0.0, 0.0);
-		for (int i = 0; i < 5; i++) {
-			fling(level, ParticleTypes.CLOUD, c, dir.add((i - 2) * 0.12, 0.08, ((i * 7) % 3 - 1) * 0.12), 0.3);
+		for (int i = 0; i < 3; i++) {
+			fling(level, ParticleTypes.CLOUD, c, dir.add((i - 1) * 0.15, 0.06, 0), 0.3);
 		}
-		Fx.sound(level, c, SoundEvents.WIND_CHARGE_BURST, 0.7F, 1.1F);
+		Feels.sound(level, c, "wind_thump", 0.8F, 1.1F);
 	}
 
 	/** Pull: darkness implodes round the target toward the pull, light streaming off it to where it's pulled. */
@@ -482,14 +481,16 @@ public final class Vfx {
 	public static void launch(ServerLevel level, Entity target) {
 		Vec3 base = target.position();
 		double w = Math.max(0.5, target.getBbWidth());
-		ElementFx.gustRing(level, base, 1.6 + w);
-		ElementFx.swirl(level, base.add(0, 0.1, 0), 0.5 + w * 0.4, 1.6, 4);
-		emit(level, ParticleTypes.GUST_EMITTER_SMALL, base, 1, 0.0, 0.0);
-		for (int i = 0; i < 8; i++) {
-			double a = Math.PI * 2 * i / 8;
-			fling(level, ParticleTypes.CLOUD, base.add(0, 0.1, 0), new Vec3(Math.cos(a), 0.15, Math.sin(a)), 0.22);
+		ElementFx.groundRing(level, base, 0xBFE3FF, 0.2, 1.3 + w, 0.07, 8);
+		// A pillar: rings stacked up the lift, one a tick, each a little narrower than the last.
+		for (int i = 0; i < 5; i++) {
+			int k = i;
+			Scheduler.later(i, () -> ElementFx.ring(level, base.add(0, 0.3 + k * 0.55, 0), UP, k % 2 == 0 ? ElementFx.WIND.primary() : ElementFx.WIND.secondary(),
+				0.9 + w * 0.3 - k * 0.1, 0.35, 0.04, 8));
 		}
-		Fx.sound(level, target.position(), SoundEvents.BREEZE_JUMP, 0.9F, 1.0F);
+		ElementFx.swirl(level, base.add(0, 0.1, 0), 0.5 + w * 0.4, 1.8, 3);
+		emit(level, ParticleTypes.GUST_EMITTER_SMALL, base, 1, 0.0, 0.0);
+		Feels.sound(level, target.position(), "wind_rise", 0.9F, 1.0F);
 	}
 
 	/** Dash: rings of air burst out behind the target, and streaks of wind trail it as it goes. */
@@ -518,7 +519,7 @@ public final class Vfx {
 			});
 		}
 		emit(level, ParticleTypes.GUST, c, 1, 0.0, 0.0);
-		Fx.sound(level, c, SoundEvents.BREEZE_SHOOT, 0.8F, 1.4F);
+		Feels.sound(level, c, "wind_dash", 0.9F, 1.0F);
 	}
 
 	/** Feather Fall: feathers drift down round the target, a slow crescent of air circles its feet and a ring opens under it. */
@@ -533,16 +534,22 @@ public final class Vfx {
 		ElementFx.slash(level, base.add(0, 0.25, 0), UP, ElementFx.flatDir(level.getRandom().nextDouble() * Math.PI * 2), ElementFx.WIND.primary(), 0.8,
 			Math.PI * 1.6, 0.05, 8, 14);
 		emit(level, ParticleTypes.CLOUD, base.add(0, 0.15, 0), 4, 0.35, 0.01);
-		Fx.sound(level, target.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, 1.9F);
+		Feels.sound(level, target.position(), "wind_feather", 0.7F, 1.4F);
 	}
 
 	/** Swift: gusts swirl round the target's legs and a ring of wind runs out along the ground. */
 	public static void swift(ServerLevel level, Entity target) {
 		Vec3 base = target.position();
-		ElementFx.swirl(level, base.add(0, 0.1, 0), Math.max(0.45, target.getBbWidth() * 0.8), 0.8, 3);
-		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 1.4, 0.04, 8);
-		emit(level, ParticleTypes.SMALL_GUST, base.add(0, 0.3, 0), 3, 0.3, 0.0);
-		Fx.sound(level, target.position(), SoundEvents.BREEZE_JUMP, 0.5F, 1.8F);
+		// Streaks trailing off the legs (low, behind the way it faces), and a thin sonic ring at the feet.
+		Vec3 look = target.getLookAngle();
+		Vec3 back = new Vec3(-look.x, 0, -look.z).lengthSqr() < 1.0E-4 ? new Vec3(0, 0, -1) : new Vec3(-look.x, 0, -look.z).normalize();
+		Vec3 side = ElementFx.perp(back);
+		for (int s = -1; s <= 1; s++) {
+			Vec3 from = base.add(side.scale(s * 0.28)).add(0, 0.25 + Math.abs(s) * 0.15, 0);
+			ElementFx.ray(level, from, from.add(back.scale(1.1)), ElementFx.WIND.primary(), 0.03, 6);
+		}
+		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 1.6, 0.03, 7);
+		Feels.sound(level, target.position(), "wind_dash", 0.5F, 1.4F);
 	}
 
 	/** Night Eye: a violet ring closes round the eyes and a spark of light kindles in each (not for your own eyes). */
@@ -833,7 +840,13 @@ public final class Vfx {
 			fling(level, ParticleTypes.END_ROD, target.position().add(Math.cos(a) * 0.6, 0.1, Math.sin(a) * 0.6), UP, 0.1);
 		}
 		emit(level, ParticleTypes.CLOUD, target.position(), 3, 0.3, 0.02);
-		Fx.sound(level, target.position(), SoundEvents.SHULKER_SHOOT, 0.6F, 1.5F);
+		// Where it comes to hang: a pale halo round it once it has risen.
+		Scheduler.later(14, () -> {
+			if (target.isAlive() && target.level() == level) {
+				ElementFx.ring(level, target.position().add(0, target.getBbHeight() * 0.5, 0), UP, 0xBFE3FF, r * 1.6, r * 1.4, 0.03, 30);
+			}
+		});
+		Feels.sound(level, target.position(), "wind_rise", 0.5F, 0.7F);
 	}
 
 	/** Freeze: ice closes round the target for as long as it's held, a ring of frost clamps in and frost creeps over the ground. */
@@ -851,8 +864,16 @@ public final class Vfx {
 		ElementFx.shards(level, c, 0.5 + w * 0.5, 5);
 		ElementFx.frostCreep(level, target.position(), 0.8 + w * 0.5, 40);
 		emit(level, ParticleTypes.SNOWFLAKE, c, 6, 0.4, 0.02);
-		Fx.sound(level, target.position(), SoundEvents.GLASS_PLACE, 1.0F, 0.6F);
-		Fx.sound(level, target.position(), SoundEvents.POWDER_SNOW_BREAK, 1.0F, 0.6F);
+		Feels.sound(level, target.position(), "frost_lock", 1.0F, 1.0F);
+	}
+
+	/** Ice about to give: hairline cracks run across the shell and a shard or two fall (the tell before a hold ends). */
+	public static void iceCracking(ServerLevel level, LivingEntity target) {
+		Vec3 c = target.getBoundingBox().getCenter();
+		double w = Math.max(0.5, target.getBbWidth());
+		ElementFx.crack(level, target.position(), 0.6 + w * 0.5, 10);
+		ElementFx.shards(level, c, 0.4 + w * 0.4, 3);
+		Feels.sound(level, target.position(), "frost_crack", 0.7F, 1.0F);
 	}
 
 	/** A burning rock streaking down out of the sky onto a point over 12 ticks, a reticle marking where it will land. */
@@ -1136,9 +1157,14 @@ public final class Vfx {
 	public static void chill(ServerLevel level, Entity target) {
 		double w = Math.max(0.5, target.getBbWidth());
 		ElementFx.frostCreep(level, target.position(), 0.5 + w * 0.4, 16);
-		ElementFx.ring(level, target.getBoundingBox().getCenter(), UP, ElementFx.FROST.primary(), w + 0.6, w * 0.5, 0.035, 8);
-		emit(level, ParticleTypes.SNOWFLAKE, target.getBoundingBox().getCenter(), 5, 0.35, 0.01);
-		Fx.sound(level, target.position(), SoundEvents.POWDER_SNOW_STEP, 0.8F, 1.2F);
+		// Three thin rings climbing from the feet to the hips, one every two ticks.
+		for (int i = 0; i < 3; i++) {
+			int k = i;
+			Scheduler.later(1 + i * 2, () -> ElementFx.ring(level, target.position().add(0, 0.1 + k * target.getBbHeight() * 0.28, 0), UP,
+				k == 2 ? ElementFx.FROST.secondary() : ElementFx.FROST.primary(), w + 0.6, w * 0.55, 0.025, 8));
+		}
+		emit(level, ParticleTypes.SNOWFLAKE, target.getBoundingBox().getCenter(), 4, 0.35, 0.01);
+		Feels.sound(level, target.position(), "frost_crust", 0.5F, 1.3F);
 	}
 
 	/** Silence: a ring of light closes over the target's head and seals there. */
@@ -1182,17 +1208,20 @@ public final class Vfx {
 			fling(level, ParticleTypes.BUBBLE_POP, base.add((i % 4 - 1.5) * 0.2, 0.2, (i / 4 - 0.5) * 0.4), UP, 0.1);
 		}
 		emit(level, ParticleTypes.SPLASH, target.getBoundingBox().getCenter(), 6, 0.35, 0.05);
-		Fx.sound(level, target.position(), SoundEvents.CONDUIT_ACTIVATE, 0.5F, 1.6F);
+		Feels.sound(level, target.position(), "frost_breath", 0.7F, 1.0F);
 	}
 
 	/** Leap: rings of air spring out along the ground and a pair of gusts curl up the legs. */
 	public static void leap(ServerLevel level, Entity target) {
 		Vec3 base = target.position();
-		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 0.2, 1.1, 0.05, 8);
-		ElementFx.groundRing(level, base, ElementFx.WIND.accent(), 0.1, 0.7, 0.035, 11);
-		ElementFx.swirl(level, base.add(0, 0.1, 0), 0.6, 0.5, 2);
-		emit(level, ParticleTypes.CLOUD, base.add(0, 0.1, 0), 5, 0.35, 0.02);
-		Fx.sound(level, target.position(), SoundEvents.RABBIT_JUMP, 0.8F, 1.0F);
+		// The crouch: a ring closes in on the feet, then springs up as a column of two rings.
+		ElementFx.groundRing(level, base, ElementFx.WIND.secondary(), 1.1, 0.3, 0.05, 4);
+		Scheduler.later(4, () -> {
+			ElementFx.ring(level, base.add(0, 0.2, 0), UP, ElementFx.WIND.accent(), 0.3, 1.0, 0.04, 7);
+			ElementFx.ring(level, base.add(0, 0.9, 0), UP, ElementFx.WIND.secondary(), 0.4, 0.8, 0.03, 8);
+			emit(level, ParticleTypes.CLOUD, base.add(0, 0.1, 0), 4, 0.3, 0.02);
+		});
+		Feels.sound(level, target.position(), "wind_feather", 0.8F, 1.2F);
 	}
 
 	/** Grapple: a line of violet light from the caster to the anchor, and a black core where it bites. */
@@ -1214,7 +1243,7 @@ public final class Vfx {
 		ElementFx.frostCreep(level, center.add(0, 0.5, 0), radius, 30);
 		ElementFx.shards(level, center.add(0, 0.8, 0), 0.7, 4);
 		emit(level, ParticleTypes.SNOWFLAKE, center.add(0, 0.8, 0), 10, radius / 2, 0.01);
-		Fx.sound(level, center, SoundEvents.GLASS_PLACE, 0.8F, 1.4F);
+		Feels.sound(level, center, "frost_crust", 0.8F, 0.6F);
 	}
 
 	/** The small pop of light on a creature any effect touches, so every hit reads clearly: a glow and a few of its element's motes. */

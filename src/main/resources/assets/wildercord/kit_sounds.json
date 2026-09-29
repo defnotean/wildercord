@@ -12,6 +12,66 @@
     "fire_whump": {
       "part": "fire"
     },
+    "frost_break": {
+      "part": "frost"
+    },
+    "frost_breath": {
+      "part": "frost"
+    },
+    "frost_bubble_in": {
+      "part": "frost"
+    },
+    "frost_bubble_pop": {
+      "part": "frost"
+    },
+    "frost_crack": {
+      "part": "frost"
+    },
+    "frost_creep": {
+      "part": "frost"
+    },
+    "frost_crust": {
+      "part": "frost"
+    },
+    "frost_drag": {
+      "part": "frost"
+    },
+    "frost_hail": {
+      "part": "frost"
+    },
+    "frost_hook": {
+      "part": "frost"
+    },
+    "frost_lock": {
+      "part": "frost"
+    },
+    "frost_lotus": {
+      "part": "frost"
+    },
+    "frost_mirror": {
+      "part": "frost"
+    },
+    "frost_needle": {
+      "part": "frost"
+    },
+    "frost_splat": {
+      "part": "frost"
+    },
+    "frost_surge": {
+      "part": "frost"
+    },
+    "frost_tick": {
+      "part": "frost"
+    },
+    "frost_ward": {
+      "part": "frost"
+    },
+    "frost_whump": {
+      "part": "frost"
+    },
+    "frost_zero": {
+      "part": "frost"
+    },
     "link_ting": {
       "part": "neutral"
     },
@@ -20,6 +80,48 @@
     },
     "tap_release": {
       "part": "neutral"
+    },
+    "wind_crash": {
+      "part": "wind"
+    },
+    "wind_dash": {
+      "part": "wind"
+    },
+    "wind_deflect": {
+      "part": "wind"
+    },
+    "wind_feather": {
+      "part": "wind"
+    },
+    "wind_gale": {
+      "part": "wind"
+    },
+    "wind_glyph": {
+      "part": "wind"
+    },
+    "wind_lift": {
+      "part": "wind"
+    },
+    "wind_muffle": {
+      "part": "wind"
+    },
+    "wind_rewind": {
+      "part": "wind"
+    },
+    "wind_rise": {
+      "part": "wind"
+    },
+    "wind_slash": {
+      "part": "wind"
+    },
+    "wind_snatch": {
+      "part": "wind"
+    },
+    "wind_thump": {
+      "part": "wind"
+    },
+    "wind_whirl": {
+      "part": "wind"
     }
   }
 }
