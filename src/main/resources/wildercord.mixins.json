@@ -15,7 +15,8 @@
 		"SwapOfferMixin",
 		"MobConversionMixin",
 		"ItemEntityAccessor",
-		"TemporaryBlockDropsMixin"
+		"TemporaryBlockDropsMixin",
+		"EvokerFangsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -181,9 +181,21 @@ public final class ExplorerEffects {
 		return bonus;
 	}
 
+	/** The tag on a Fangs spell's evoker fangs, which bite only what their caster may harm (see {@link #mayBite}). */
+	private static final String FANGS_TAG = "wildercord.fangs";
+
 	/** Marks and timers go when the server stops. */
 	public static void init() {
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> clear());
+	}
+
+	/**
+	 * Whether {@code fangs} may bite {@code target}. Vanilla fangs bite anything not on their owner's team (and,
+	 * with their owner gone, anyone): a Fangs spell's keep to its caster's friendly-fire rules, and bite nobody once
+	 * the caster has left.
+	 */
+	public static boolean mayBite(EvokerFangs fangs, LivingEntity target) {
+		return !fangs.entityTags().contains(FANGS_TAG) || fangs.getOwner() instanceof LivingEntity caster && Targets.canHarm(caster, target);
 	}
 
 	/** Forgets every mark and ritual timer. */
@@ -439,8 +451,8 @@ public final class ExplorerEffects {
 
 	/**
 	 * Fangs: a ring of evoker fangs snaps up round the target. The fangs are vanilla's own (they bite
-	 * whatever enemy stands on them too); the target's bite goes through {@link Effects#hurt}, so it
-	 * meets Shields, Execute and the rest like any spell.
+	 * whatever enemy stands on them too, never anyone the caster may not harm: see {@link #mayBite}); the
+	 * target's bite goes through {@link Effects#hurt}, so it meets Shields, Execute and the rest like any spell.
 	 */
 	private static void fangs(Cast cast, LivingEntity t, double power) {
 		ServerLevel level = cast.level;
@@ -453,7 +465,9 @@ public final class ExplorerEffects {
 			boolean clear = level.getEntities((Entity) null, new AABB(spot, spot).inflate(0.9, 1.0, 0.9),
 				e -> e instanceof LivingEntity && e != t && !Targets.canHarm(cast.caster, e)).isEmpty();
 			if (clear && Math.abs(spot.y - feet.y) < 2.5) {
-				level.addFreshEntity(new EvokerFangs(level, spot.x, spot.y, spot.z, (float) a, i, cast.caster));
+				EvokerFangs fang = new EvokerFangs(level, spot.x, spot.y, spot.z, (float) a, i, cast.caster);
+				fang.addTag(FANGS_TAG);
+				level.addFreshEntity(fang);
 			}
 		}
 		ExplorerVfx.fangs(level, t);
