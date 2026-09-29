@@ -12,6 +12,10 @@ effect of the right element meets a mark, it sets off a **reaction**, and you se
 bold (at most once a second, however many go off). Reactions are the biggest free damage boost in the
 game: learn to set them up and a cheap spell hits like an expensive one.
 
+Reactions go hand in hand with [creature affinities]({{ '/spellcraft/affinities/' | relative_url }}): many creatures
+are weak to an element or resist one, and **a reaction breaks through a resistance**, so a Shatter lands in full on
+a creature that shrugs off plain fire.
+
 1. TOC
 {:toc}
 

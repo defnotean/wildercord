@@ -1,7 +1,7 @@
 ---
 title: Overcasting and Wild Magic
 parent: Spellcraft
-nav_order: 10
+nav_order: 11
 ---
 
 # Overcasting and wild magic
