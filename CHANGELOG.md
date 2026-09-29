@@ -37,6 +37,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   settings now hold either way; only the new ones run at their defaults.
 - Adding the newer settings to an older `wildercord.json` no longer strips out comments an owner wrote in it: a file
   with comments is left as it is (its settings are read as before, and any it lacks run at their defaults).
+- **Duels gave back more health than the opponent took.** A blow was counted at its damage before armour, Resistance and
+  absorption hearts, so an armoured duellist got back far more than they lost, healing damage from falls and monsters
+  too (and a knockout gave back the whole killing blow). Now what each blow really took from your health is given back.
+- **Duels gave back used-up effects.** Every effect a duellist had at the start came back if it was gone at the end, so a
+  Bad Omen a raid had used, or Absorption a monster had knocked away, returned after every duel. Only helpful effects
+  come back now, and never Absorption.
 
 ## [0.4.2-alpha] - 2026-09-28
 
