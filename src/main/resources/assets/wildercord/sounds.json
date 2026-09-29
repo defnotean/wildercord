@@ -572,6 +572,350 @@
       "wildercord:kit/fire/fire_whump_2"
     ]
   },
+  "storm_boom": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/storm/storm_boom_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "wildercord:kit/storm/storm_boom_2",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "storm_clamp": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/storm/storm_clamp_1",
+      "wildercord:kit/storm/storm_clamp_2"
+    ]
+  },
+  "storm_cloud": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/storm/storm_cloud_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "wildercord:kit/storm/storm_cloud_2",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "storm_crack": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/storm/storm_crack_1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "wildercord:kit/storm/storm_crack_2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "wildercord:kit/storm/storm_crack_3",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "storm_cry": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/storm/storm_cry_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "wildercord:kit/storm/storm_cry_2",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "storm_dive": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/storm/storm_dive_1",
+      "wildercord:kit/storm/storm_dive_2",
+      "wildercord:kit/storm/storm_dive_3"
+    ]
+  },
+  "storm_flash": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/storm/storm_flash_1",
+      "wildercord:kit/storm/storm_flash_2"
+    ]
+  },
+  "storm_gale": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/storm/storm_gale_1",
+      "wildercord:kit/storm/storm_gale_2"
+    ]
+  },
+  "storm_hour": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/storm/storm_hour",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "storm_hum": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/storm/storm_hum"
+    ]
+  },
+  "storm_magnet": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/storm/storm_magnet_1",
+      "wildercord:kit/storm/storm_magnet_2"
+    ]
+  },
+  "storm_pip": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/storm/storm_pip_1",
+      "wildercord:kit/storm/storm_pip_2",
+      "wildercord:kit/storm/storm_pip_3"
+    ]
+  },
+  "storm_pluck": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/storm/storm_pluck_1",
+      "wildercord:kit/storm/storm_pluck_2",
+      "wildercord:kit/storm/storm_pluck_3",
+      "wildercord:kit/storm/storm_pluck_4"
+    ]
+  },
+  "storm_roll": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/storm/storm_roll_1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "wildercord:kit/storm/storm_roll_2",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "storm_sizzle": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/storm/storm_sizzle_1",
+      "wildercord:kit/storm/storm_sizzle_2"
+    ]
+  },
+  "storm_sun": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/storm/storm_sun_1",
+      "wildercord:kit/storm/storm_sun_2"
+    ]
+  },
+  "storm_tear": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/storm/storm_tear_1",
+      "wildercord:kit/storm/storm_tear_2"
+    ]
+  },
+  "storm_tick": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/storm/storm_tick_1",
+      "wildercord:kit/storm/storm_tick_2",
+      "wildercord:kit/storm/storm_tick_3"
+    ]
+  },
+  "storm_whine": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/storm/storm_whine_1",
+      "wildercord:kit/storm/storm_whine_2"
+    ]
+  },
+  "storm_zap": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/storm/storm_zap_1",
+      "wildercord:kit/storm/storm_zap_2",
+      "wildercord:kit/storm/storm_zap_3"
+    ]
+  },
+  "earth_bloop": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/earth/earth_bloop_1",
+      "wildercord:kit/earth/earth_bloop_2",
+      "wildercord:kit/earth/earth_bloop_3"
+    ]
+  },
+  "earth_chain": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_chain_1",
+      "wildercord:kit/earth/earth_chain_2",
+      "wildercord:kit/earth/earth_chain_3"
+    ]
+  },
+  "earth_clamp": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/earth/earth_clamp_1",
+      "wildercord:kit/earth/earth_clamp_2",
+      "wildercord:kit/earth/earth_clamp_3"
+    ]
+  },
+  "earth_crack": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_crack_1",
+      "wildercord:kit/earth/earth_crack_2"
+    ]
+  },
+  "earth_creak": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_creak_1",
+      "wildercord:kit/earth/earth_creak_2"
+    ]
+  },
+  "earth_dig": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_dig_1",
+      "wildercord:kit/earth/earth_dig_2",
+      "wildercord:kit/earth/earth_dig_3"
+    ]
+  },
+  "earth_drop": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_drop_1",
+      "wildercord:kit/earth/earth_drop_2"
+    ]
+  },
+  "earth_gloop": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/earth/earth_gloop_1",
+      "wildercord:kit/earth/earth_gloop_2",
+      "wildercord:kit/earth/earth_gloop_3"
+    ]
+  },
+  "earth_grind": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/earth/earth_grind_1",
+      "wildercord:kit/earth/earth_grind_2"
+    ]
+  },
+  "earth_hiss": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/earth/earth_hiss_1",
+      "wildercord:kit/earth/earth_hiss_2",
+      "wildercord:kit/earth/earth_hiss_3"
+    ]
+  },
+  "earth_ping": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_ping_1",
+      "wildercord:kit/earth/earth_ping_2",
+      "wildercord:kit/earth/earth_ping_3",
+      "wildercord:kit/earth/earth_ping_4"
+    ]
+  },
+  "earth_press": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_press"
+    ]
+  },
+  "earth_quake": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/earth/earth_quake_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "wildercord:kit/earth/earth_quake_2",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "wildercord:kit/earth/earth_quake_3",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "earth_rattle": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_rattle_1",
+      "wildercord:kit/earth/earth_rattle_2",
+      "wildercord:kit/earth/earth_rattle_3"
+    ]
+  },
+  "earth_sink": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/earth/earth_sink",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "earth_slam": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/earth/earth_slam_1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "wildercord:kit/earth/earth_slam_2",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "earth_snap": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_snap_1",
+      "wildercord:kit/earth/earth_snap_2",
+      "wildercord:kit/earth/earth_snap_3",
+      "wildercord:kit/earth/earth_snap_4"
+    ]
+  },
+  "earth_stomp": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/earth/earth_stomp_1",
+      "wildercord:kit/earth/earth_stomp_2",
+      "wildercord:kit/earth/earth_stomp_3"
+    ]
+  },
+  "earth_tick": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/earth/earth_tick_1",
+      "wildercord:kit/earth/earth_tick_2",
+      "wildercord:kit/earth/earth_tick_3"
+    ]
+  },
   "blood_slice": {
     "subtitle": "subtitles.wildercord.kit.hit",
     "sounds": [

@@ -310,11 +310,18 @@ public final class CraftedRunes {
 		CraftedVfx.prospectRing(level, centre, r, ores.size());
 		List<net.minecraft.world.entity.Display> glows = new ArrayList<>();
 		for (BlockPos p : ores.subList(0, Math.min(PROSPECT_MAX_ORES, ores.size()))) {
-			BlockState ore = level.getBlockState(p);
-			net.minecraft.world.entity.Display glow = CraftedVfx.oreGlow(level, p, ore, oreColor(ore), ticks);
-			if (glow != null) {
-				glows.add(glow);
-			}
+			// Each ore lights as the ring racing out over the ground reaches it (the ring takes 16 ticks to its edge).
+			int delay = (int) Math.round(16 * Math.sqrt(p.distSqr(c)) / Math.max(1.0, r));
+			Scheduler.later(Math.max(1, delay), () -> {
+				if (PROSPECTED.get(cast.caster.getUUID()) != glows) {
+					return;
+				}
+				BlockState ore = level.getBlockState(p);
+				net.minecraft.world.entity.Display glow = CraftedVfx.oreGlow(level, p, ore, oreColor(ore), Math.max(1, ticks - delay));
+				if (glow != null) {
+					glows.add(glow);
+				}
+			});
 		}
 		List<net.minecraft.world.entity.Display> old = PROSPECTED.put(cast.caster.getUUID(), glows);
 		if (old != null) {
@@ -545,6 +552,9 @@ public final class CraftedRunes {
 
 	private static void discharge(ServerLevel level, BlockPos pos) {
 		SPARKS.remove(GlobalPos.of(level.dimension(), pos));
+		if (level.isLoaded(pos) && level.getBlockState(pos).is(Blocks.REDSTONE_BLOCK)) {
+			StormEarthFx.discharge(level, Vec3.atCenterOf(pos));
+		}
 		// Out of loaded ground now: it goes as its chunk loads (see TemporaryBlocks), never loaded just for this.
 		if (level.isLoaded(pos)) {
 			if (level.getBlockState(pos).is(Blocks.REDSTONE_BLOCK)) {

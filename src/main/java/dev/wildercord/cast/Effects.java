@@ -307,7 +307,7 @@ public final class Effects {
 				// Set alight once every strike has landed: fire from one strike would let the next set off Overload again.
 				Set<LivingEntity> struck = new LinkedHashSet<>();
 				for (int i = 0; i < Math.min(MAX_STRIKES_PER_HIT, strikes.size()); i++) {
-					lightning(cast, strikes.get(i), power, struck, new HashSet<>(harmed));
+					lightning(cast, strikes.get(i), power, struck, new HashSet<>(harmed), i < 3);
 				}
 				struck.forEach(t -> t.igniteForSeconds(4));
 			}
@@ -363,11 +363,15 @@ public final class Effects {
 				// Stone is heavy: the price of the best long ward is a step slower.
 				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(10, duration), 0, false, false));
 				Vfx.stoneskin(level, t);
+				if (!cast.passive) {
+					StormEarthFx.stoneskinHold(level, t, ticks(10, duration));
+				}
 			});
 			case "root" -> harmed.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(3, duration), 6, false, false));
 				t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-				Vfx.root(level, t);
+				Vfx.root(level, t, ticks(3, duration));
+				StormEarthFx.rootHold(level, t, ticks(3, duration));
 			});
 			case "veil" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks(12, duration), 0, false, true));
@@ -572,6 +576,7 @@ public final class Effects {
 			case "countdown" -> harmed.forEach(t -> countdown(cast, t, power));
 			case "jolt" -> harmed.forEach(t -> {
 				ExpansionVfx.jolt(level, t);
+				StormEarthFx.stunRing(level, t, ticks(1, duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 4 * power * Reactions.storm(cast, t));
 				Spirits.hold(t, ticks(1, duration));
 				// The counter-spell: a caster caught mid-charge loses the spell.
@@ -745,8 +750,10 @@ public final class Effects {
 	}
 
 	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */
-	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck, Set<LivingEntity> aimedAt) {
-		ServerLevel level = cast.level;
+	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck, Set<LivingEntity> aimedAt, boolean full) {
+	ServerLevel level = cast.level;
+	// The first three strikes of a cast are the whole show; the rest a lighter bolt, so a crowd doesn't fill the sky.
+	if (full) {
 		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
 		if (bolt != null) {
 			bolt.setVisualOnly(true);
@@ -754,6 +761,10 @@ public final class Effects {
 			level.addFreshEntity(bolt);
 		}
 		Vfx.lightning(level, at);
+	} else {
+		ElementFx.bolt(level, at.add(0, 10, 0), at, 0.08, 1, 2);
+		ElementFx.groundRing(level, at, ElementFx.STORM.primary(), 0.3, 1.8, 0.05, 7);
+	}
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(2.0, 3.0, 2.0), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity target = (LivingEntity) e;
 			// A creature takes its strongest strike once per cast (its own 12, or half of that from a strike aimed at a neighbour),
@@ -898,6 +909,8 @@ public final class Effects {
 	 */
 	private static void thunderclap(Cast cast, Vec3 point, double radius, double power) {
 		ElementFx.groundRing(cast.level, point, ElementFx.STORM.secondary(), radius * 1.2, 0.3, 0.06, CLAP_DELAY);
+		Sigils.flash(cast.level, point.add(0, 1, 0), ElementFx.STORM.secondary(), 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, point, "storm_flash", 0.9F, 1.0F);
 		Scheduler.later(CLAP_DELAY, carryContext(() -> {
 			if (!cast.alive()) {
 				return;
@@ -1115,6 +1128,7 @@ public final class Effects {
 		}
 		if (next != null) {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
+			StormEarthFx.tether(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
 			hurt(cast, next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), (conductor ? 4 : 3) * power * Reactions.storm(cast, next));
 		}
 	}

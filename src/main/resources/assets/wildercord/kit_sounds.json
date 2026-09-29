@@ -6,6 +6,63 @@
     "blood_slice_heavy": {
       "part": "blood"
     },
+    "earth_bloop": {
+      "part": "earth"
+    },
+    "earth_chain": {
+      "part": "earth"
+    },
+    "earth_clamp": {
+      "part": "earth"
+    },
+    "earth_crack": {
+      "part": "earth"
+    },
+    "earth_creak": {
+      "part": "earth"
+    },
+    "earth_dig": {
+      "part": "earth"
+    },
+    "earth_drop": {
+      "part": "earth"
+    },
+    "earth_gloop": {
+      "part": "earth"
+    },
+    "earth_grind": {
+      "part": "earth"
+    },
+    "earth_hiss": {
+      "part": "earth"
+    },
+    "earth_ping": {
+      "part": "earth"
+    },
+    "earth_press": {
+      "part": "earth"
+    },
+    "earth_quake": {
+      "part": "earth"
+    },
+    "earth_rattle": {
+      "part": "earth"
+    },
+    "earth_sink": {
+      "part": "earth"
+    },
+    "earth_slam": {
+      "part": "earth"
+    },
+    "earth_snap": {
+      "part": "earth"
+    },
+    "earth_stomp": {
+      "part": "earth"
+    },
+    "earth_tick": {
+      "part": "earth"
+    },
     "fire_flick": {
       "part": "fire"
     },
@@ -17,6 +74,66 @@
     },
     "ready_ping": {
       "part": "neutral"
+    },
+    "storm_boom": {
+      "part": "storm"
+    },
+    "storm_clamp": {
+      "part": "storm"
+    },
+    "storm_cloud": {
+      "part": "storm"
+    },
+    "storm_crack": {
+      "part": "storm"
+    },
+    "storm_cry": {
+      "part": "storm"
+    },
+    "storm_dive": {
+      "part": "storm"
+    },
+    "storm_flash": {
+      "part": "storm"
+    },
+    "storm_gale": {
+      "part": "storm"
+    },
+    "storm_hour": {
+      "part": "storm"
+    },
+    "storm_hum": {
+      "part": "storm"
+    },
+    "storm_magnet": {
+      "part": "storm"
+    },
+    "storm_pip": {
+      "part": "storm"
+    },
+    "storm_pluck": {
+      "part": "storm"
+    },
+    "storm_roll": {
+      "part": "storm"
+    },
+    "storm_sizzle": {
+      "part": "storm"
+    },
+    "storm_sun": {
+      "part": "storm"
+    },
+    "storm_tear": {
+      "part": "storm"
+    },
+    "storm_tick": {
+      "part": "storm"
+    },
+    "storm_whine": {
+      "part": "storm"
+    },
+    "storm_zap": {
+      "part": "storm"
     },
     "tap_release": {
       "part": "neutral"

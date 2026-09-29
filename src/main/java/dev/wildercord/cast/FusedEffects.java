@@ -150,6 +150,7 @@ public final class FusedEffects {
 				Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 5 * power * storm);
 				// Ionised: the air round it conducts, so the next storm hit on it Conducts even when it is dry.
 				Reactions.mark(t, Reactions.Mark.IONISED);
+				StormEarthFx.ionised(level, t, 100);
 				FusionVfx.plasma(level, hit.origin(), t);
 			});
 			case "hail" -> harmed.forEach(t -> {
@@ -197,6 +198,7 @@ public final class FusedEffects {
 				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, Effects.ticks(8, duration), Math.min(1, extra), false, true));
 				// Static discharge: for as long as it lasts, the blows it lands arc on to a neighbour (see SurgeArcs).
 				SurgeArcs.charge(cast, t, power, Effects.ticks(8, duration));
+				StormEarthFx.surgeAura(level, t, Effects.ticks(8, duration));
 				FusionVfx.surge(level, t);
 			});
 			case "nullify" -> {
@@ -264,7 +266,7 @@ public final class FusedEffects {
 				if (!cast.alive()) {
 					return;
 				}
-				FusionVfx.magmaPulse(level, at, radius, last);
+				FusionVfx.magmaPulse(level, at, reach, last);
 				// After the first, the pulses linger: a Shield blocks them but can't parry them.
 				Runnable pulse = () -> {
 					AABB box = new AABB(at, at).inflate(reach, 0.8, reach).move(0, 0.4, 0);
@@ -325,7 +327,7 @@ public final class FusedEffects {
 	/** Tempest's second bolt: 4 to everything within 2 blocks of where its first victim came down, once each. */
 	private static void tempestLanding(Cast cast, Vec3 at, double power) {
 		ServerLevel level = cast.level;
-		FusionVfx.tempest(level, at);
+		FusionVfx.tempestLanding(level, at);
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(2.0, 2.5, 2.0), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity t = (LivingEntity) e;
 			double strike = unstacked(cast, t, "tempest_landing", 10, 4 * power);

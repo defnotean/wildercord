@@ -597,9 +597,7 @@ final class FusedLifeVfx {
 		ElementFx.stoneShards(level, feet.add(0, 0.3, 0), Blocks.BONE_BLOCK.defaultBlockState(), 10, 0.25);
 		ElementFx.drip(level, centre(t), 0.3, 5);
 		ElementFx.pulse(level, centre(t), UP, Math.max(0.7, w + 0.4));
-		Fx.sound(level, feet, SoundEvents.BONE_BLOCK_BREAK, 1.0F, 0.7F);
-		Fx.sound(level, feet, SoundEvents.POINTED_DRIPSTONE_LAND, 0.8F, 1.2F);
-		Fx.sound(level, feet, WildercordSounds.impact("earth"), 0.6F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_snap", 1.0F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Sanguine Rite

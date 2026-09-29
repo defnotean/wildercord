@@ -314,11 +314,12 @@ final class CraftedVfx {
 		Vec3 c = Vec3.atCenterOf(pos);
 		Sigils.flash(level, c, STORM, 1.3F);
 		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.25);
-		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.3F, 1.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_pip", 0.8F, 1.0F);
 	}
 
 	static void galvanizeHum(ServerLevel level, BlockPos pos) {
 		Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, Vec3.atCenterOf(pos), 3, 0.35, 0.05);
+		ElementFx.ring(level, Vec3.atCenterOf(pos), new Vec3(0, 1, 0), ElementFx.STORM.primary(), 0.75, 0.6, 0.02, 10);
 	}
 
 	/** Nothing to set a spark against (no room, or no building there): it fizzles. */

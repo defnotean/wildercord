@@ -64,6 +64,11 @@ public class WildercordStormEarthTest implements FabricClientGameTest {
 			world.getServer().runCommand("weather clear");
 			stage(world);
 			context.waitTicks(10);
+			if (System.getenv("WILDERCORD_FX_STORM_EARTH") != null) {
+				// Only the pictures: every storm and earth rune cast for real, and a screenshot of each (fx_<rune>.png).
+				pictures(context, world);
+				return;
+			}
 			List<String> failures = new ArrayList<>();
 			check(failures, "Lightning on a crowd", onServer(world, WildercordStormEarthTest::lightningCrowd));
 			clean(context, world);
@@ -167,6 +172,68 @@ public class WildercordStormEarthTest implements FabricClientGameTest {
 		world.getServer().runCommand("kill @e[tag=" + TAG + "]");
 		world.getServer().runOnServer(server -> stand(player(server)));
 		context.waitTicks(20);
+	}
+
+	// ------------------------------------------------------------------ the pictures
+
+	/** Each storm and earth rune cast from the Cord at three husks ahead, a shot {@code wait} ticks in. */
+	private static void pictures(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runCommand("time set 13000");
+		world.getServer().runOnServer(server -> player(server).setGameMode(GameType.CREATIVE));
+		Object[][] shots = {
+			{"shock", 4, Runes.BEAM}, {"jolt", 8, Runes.BEAM}, {"thunderclap", 7, Runes.BEAM}, {"lightning", 3, Runes.BEAM},
+			{"ripple", 10, Runes.BEAM}, {"thunderbird", 34, Runes.SELF}, {"stormheart", 12, Runes.SELF}, {"tempest", 4, Runes.BEAM},
+			{"plasma", 3, Runes.BEAM}, {"surge", 18, Runes.SELF}, {"magnetize", 20, Runes.BEAM}, {"riftbolt", 3, Runes.BEAM},
+			{"stormweave", 16, Runes.BEAM}, {"stormclock", 38, Runes.BEAM}, {"thunderhead", 22, Runes.BEAM}, {"frostwire", 8, Runes.BEAM},
+			{"thunderstep", 3, Runes.BEAM},
+			{"pelt", 3, Runes.BEAM}, {"aftershock", 8, Runes.BEAM}, {"root", 10, Runes.BEAM}, {"weigh", 10, Runes.BEAM},
+			{"shackle", 10, Runes.BEAM}, {"stoneskin", 6, Runes.SELF}, {"stoneform", 6, Runes.SELF}, {"brace", 3, Runes.SELF},
+			{"geode", 6, Runes.SELF}, {"tremor", 4, Runes.BEAM}, {"magma", 30, Runes.BEAM}, {"sinkhole", 20, Runes.BEAM},
+			{"fossilize", 62, Runes.BEAM}, {"bonespur", 8, Runes.BEAM}, {"monolith", 10, Runes.BEAM}, {"thunderquake", 12, Runes.BEAM},
+			{"infest", 10, Runes.BEAM}, {"sandstorm", 20, Runes.BEAM}, {"mire", 10, Runes.BEAM}, {"stalactite", 5, Runes.BEAM},
+			{"basalt_surge", 8, Runes.BEAM}, {"tusk_charge", 4, Runes.SELF}, {"rampart", 10, Runes.BEAM},
+		};
+		for (Object[] shot : shots) {
+			String rune = (String) shot[0];
+			int wait = (Integer) shot[1];
+			RuneDef shape = (RuneDef) shot[2];
+			// Spells cast at others are seen through the caster's eyes; spells on yourself from in front.
+			net.minecraft.client.CameraType camera = shape == Runes.SELF ? net.minecraft.client.CameraType.THIRD_PERSON_FRONT
+				: net.minecraft.client.CameraType.FIRST_PERSON;
+			context.runOnClient(mc -> mc.options.setCameraType(camera));
+			world.getServer().runCommand("kill @e[tag=" + TAG + "]");
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				stand(player);
+				ServerLevel level = player.level();
+				for (int i = 0; i < 3; i++) {
+					husk(level, (i - 1) * 1.6, 5 + (i % 2));
+				}
+				// Looking a little down at the middle husk, as a caster would.
+				player.teleportTo(level, player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, 8.0F, false);
+				RuneDef effect = Runes.get("wildercord:" + rune).orElseThrow();
+				dev.wildercord.cast.SpellCaster.edit(player, 0, List.of(shape.id(), effect.id()));
+				Spellbooks.setReadyAt(player, 0, 0);
+				Spellbooks.setMana(player, Mana.max(player));
+				dev.wildercord.cast.SpellCaster.cast(player, 0);
+			});
+			context.waitTicks(wait);
+			context.runOnClient(mc -> {
+				if (!mc.gui.hud.isHidden()) {
+					mc.gui.hud.toggle();
+				}
+				mc.gui.toastManager().clear();
+			});
+			context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("fx_" + rune).disableCounterPrefix());
+			// Long enough for the last one's pools, pillars and bodies to go.
+			context.waitTicks(80);
+		}
+		context.waitTicks(200);
+		context.runOnClient(mc -> {
+			if (mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+		});
 	}
 
 	// ------------------------------------------------------------------ the checks

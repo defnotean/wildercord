@@ -451,7 +451,8 @@ public class WildercordNewRunes2Test implements FabricClientGameTest {
 		if (cast != null) {
 			return cast;
 		}
-		context.waitTicks(3);
+		// Each ore lights as the ring racing out reaches it: 16 ticks to the ring's edge.
+		context.waitTicks(18);
 		String result = world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();
 			List<Display.BlockDisplay> glows = level.getEntitiesOfClass(Display.BlockDisplay.class, new AABB(ore).inflate(1.0),

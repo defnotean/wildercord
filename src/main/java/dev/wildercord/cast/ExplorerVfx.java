@@ -149,6 +149,7 @@ final class ExplorerVfx {
 		if (first) {
 			ElementFx.crack(level, feet, 1.1, 12);
 			sound(level, feet, SoundEvents.SILVERFISH_AMBIENT, 0.9F, 1.0F);
+			dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_rattle", 0.7F, 1.0F);
 		} else {
 			sound(level, feet, SoundEvents.SILVERFISH_STEP, 0.6F, 1.2F);
 		}
@@ -187,7 +188,7 @@ final class ExplorerVfx {
 			}
 		}
 		if (tick % 20 == 0) {
-			sound(level, centre, SoundEvents.SAND_FALL, 0.8F, 0.7F);
+			dev.wildercord.cast.feel.Feels.sound(level, centre, "earth_hiss", 0.9F, 1.0F);
 		}
 	}
 
@@ -265,8 +266,8 @@ final class ExplorerVfx {
 		if (first) {
 			ElementFx.crack(level, feet, 1.2, 10);
 			sound(level, feet, SoundEvents.HOGLIN_ANGRY, 1.0F, 1.0F);
-			sound(level, feet, WildercordSounds.cast("earth"), 0.7F, 1.1F);
-		}
+			}
+			dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_stomp", 0.7F, first ? 1.0F : 1.12F);
 	}
 
 	static void tossed(ServerLevel level, LivingEntity t) {
@@ -415,7 +416,7 @@ final class ExplorerVfx {
 		Vfx.emit(level, ParticleTypes.BUBBLE_POP, feet.add(0, 0.2, 0), 3, 0.4, 0.02);
 		if (first) {
 			ElementFx.crack(level, feet, 1.2, 40);
-			sound(level, feet, SoundEvents.MUD_BREAK, 1.0F, 0.7F);
+			dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_gloop", 1.0F, 1.0F);
 		}
 	}
 
@@ -454,6 +455,8 @@ final class ExplorerVfx {
 		Vec3 top = t.position().add(0, t.getBbHeight() + 3.5, 0);
 		Vfx.emit(level, ParticleTypes.DRIPPING_DRIPSTONE_WATER, top, 3, 0.1, 0.0);
 		Sigils.target(level, t.position(), ElementFx.EARTH.primary(), 1.2F, 10);
+		// The spike is seen falling the whole way down onto the marked spot.
+		ElementFx.ray(level, top, t.position().add(0, t.getBbHeight(), 0), ElementFx.EARTH.secondary(), 0.05, 8);
 		sound(level, top, SoundEvents.POINTED_DRIPSTONE_FALL, 0.8F, 1.0F);
 	}
 
@@ -468,7 +471,7 @@ final class ExplorerVfx {
 		ElementFx.ray(level, head.add(0, 4, 0), head, ElementFx.EARTH.secondary(), 0.18, 4);
 		ElementFx.stoneShards(level, head, Blocks.DRIPSTONE_BLOCK.defaultBlockState(), 12, 0.2);
 		ElementFx.earthImpact(level, head, 0.7);
-		sound(level, head, SoundEvents.POINTED_DRIPSTONE_LAND, 1.0F, 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, head, "earth_drop", 1.0F, 1.0F);
 	}
 
 	/** Summit Wind: a howling updraft, gusts spiralling up round the point (or round the caster, carried off). */
@@ -527,13 +530,22 @@ final class ExplorerVfx {
 	}
 
 	/** Basalt Surge: a column of basalt jutting up out of the ground and sinking back. */
-	static void basaltColumn(ServerLevel level, Vec3 at, double width) {
-		ElementFx.ray(level, at, at.add(0, 2.2, 0), 0x4A4A52, 0.35 * width, 10);
-		ElementFx.ray(level, at, at.add(0, 1.4, 0), ElementFx.FIRE.primary(), 0.08 * width, 6);
-		ElementFx.stoneShards(level, at.add(0, 0.4, 0), Blocks.BASALT.defaultBlockState(), 8, 0.25);
-		Vfx.emit(level, ParticleTypes.WHITE_ASH, at.add(0, 1, 0), 6, 0.4, 0.02);
-		ElementFx.crack(level, at, width, 10);
-		sound(level, at, SoundEvents.BASALT_BREAK, 1.0F, 0.6F);
+	static void basaltColumn(ServerLevel level, Vec3 at, double width, boolean first, boolean last) {
+	// A lighter basalt tone (dark light reads as nothing), the ember core and the crack only at the end of the line.
+	if (!first) {
+			// Not the first column, a step from the caster: from there a column of light fills the caster's view.
+			ElementFx.ray(level, at, at.add(0, 2.2, 0), 0x60606C, 0.22 * width, 10);
+		}
+	ElementFx.stoneShards(level, at.add(0, 0.4, 0), Blocks.BASALT.defaultBlockState(), 5, 0.25);
+	Vfx.emit(level, ParticleTypes.WHITE_ASH, at.add(0, 1, 0), 3, 0.4, 0.02);
+	if (first) {
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_grind", 1.0F, 1.0F);
+	}
+	if (last) {
+		ElementFx.ray(level, at, at.add(0, 1.6, 0), ElementFx.FIRE.primary(), 0.1 * width, 8);
+		ElementFx.crack(level, at, width * 1.4, 16);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_crack", 1.0F, 0.9F);
+	}
 	}
 
 	/** Starlight Tether: a thread of starlight from the anchor to the target; a bright flash when it yanks. */

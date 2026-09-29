@@ -253,10 +253,8 @@ public final class Innates {
 				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true));
 				t.getAttribute(Attributes.KNOCKBACK_RESISTANCE).addOrUpdateTransientModifier(
 					new AttributeModifier(STONE_KNOCKBACK, 1.0, AttributeModifier.Operation.ADD_VALUE));
-				Vfx.stoneskin(cast.level, t);
-				Vfx.emit(cast.level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
-					net.minecraft.world.level.block.Blocks.DEEPSLATE.defaultBlockState()), t.position().add(0, 1, 0), 12, 0.4, 0.1);
-				Fx.sound(cast.level, t.position(), SoundEvents.DEEPSLATE_PLACE, 1.0F, 0.6F);
+				// Its own stance, in deepslate: not Stoneskin's sandstone cast.
+				StormEarthFx.stoneform(cast.level, t, ticks);
 			});
 			case "mirrorfrost" -> {
 				if (onSelf && caster instanceof ServerPlayer player) {
@@ -277,12 +275,13 @@ public final class Innates {
 			}
 			case "stormheart" -> helped.forEach(t -> {
 				STORMHEART.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
+				StormEarthFx.stormheartStance(cast.level, t, Effects.ticks(10, duration));
 				Vec3 c = t.getBoundingBox().getCenter();
 				ElementFx.bolt(cast.level, c.add(0.6, 2.4, 0.3), c, 0.05, 1, 2);
 				ElementFx.ring(cast.level, c, UP, ElementFx.STORM.primary(), 1.4, 0.5, 0.04, 8);
 				ElementFx.groundRing(cast.level, t.position(), ElementFx.STORM.accent(), 0.3, 1.6, 0.05, 9);
 				Vfx.emit(cast.level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.5, 0.05);
-				Fx.sound(cast.level, t.position(), SoundEvents.TRIDENT_THUNDER, 0.4F, 1.8F);
+				dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "storm_whine", 0.7F, 1.0F);
 			});
 			default -> { }
 		}
@@ -573,7 +572,7 @@ public final class Innates {
 		double power = scale(entity);
 		Vfx.shockwave(level, entity.position(), 3.0, Vfx.theme("earth"), 4);
 		ElementFx.crack(level, entity.position(), 1.4, 16);
-		Fx.sound(level, entity.position(), SoundEvents.MACE_SMASH_GROUND_HEAVY, 0.6F, 1.1F);
+		dev.wildercord.cast.feel.Feels.sound(level, entity.position(), "earth_stomp", 0.9F, 0.84F);
 		// A pet in Stoneform fights for its owner: its aftershock spares them and hits what they'd hit.
 		LivingEntity side = entity instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : entity;
 		echoing = true;

@@ -295,12 +295,23 @@ final class TechniqueVfx {
 	}
 
 	/** Aftershock: a hit, and half a second later the ground under the target cracks and heaves. */
+	/** Aftershock's echo: the ground struck again on the spot of the first blow (not where the target went). */
+	static void aftershockSpot(ServerLevel level, Vec3 spot) {
+		Vfx.Theme earth = Vfx.theme("earth");
+		dot(level, flash(0xFFE0B0), spot.add(0, 0.6, 0));
+		ElementFx.crack(level, spot, 1.6, 20);
+		Vfx.shockwave(level, spot, 1.8, earth, 4);
+		Scheduler.later(2, () -> Vfx.shockwave(level, spot, 2.6, earth, 4));
+		ElementFx.stoneShards(level, spot.add(0, 0.4, 0), ElementFx.groundBlock(level, spot), 10, 0.3);
+		dev.wildercord.cast.feel.Feels.sound(level, spot, "earth_quake", 1.0F, 0.84F);
+	}
+	
 	static void aftershock(ServerLevel level, Entity target, boolean second) {
 		Vec3 c = target.getBoundingBox().getCenter();
 		Vfx.Theme earth = Vfx.theme("earth");
 		if (!second) {
 			ElementFx.earthImpact(level, c, 0.8);
-			Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_STRONG, 0.9F, 0.7F);
+			dev.wildercord.cast.feel.Feels.sound(level, c, "earth_stomp", 0.9F, 1.0F);
 			return;
 		}
 		dot(level, flash(0xFFE0B0), c);
@@ -342,9 +353,8 @@ final class TechniqueVfx {
 			Scheduler.later(t + 1, () -> ElementFx.ring(level, target.getBoundingBox().getCenter(), ElementFx.tilted(0.5, a + k * 2.1),
 				k % 2 == 0 ? 0xFFD050 : 0xFF9A30, 0.2, 0.8 + k * 0.35, 0.05, 7));
 		}
-		ElementFx.sparks(level, c, 10, 0.3);
 		Vfx.emit(level, ParticleTypes.WAX_ON, c, 6, 0.4, 0.0);
-		Fx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_sun", 0.8F, 1.0F);
 	}
 
 	private static final int FUSE = 0xFF6EC7;
@@ -496,7 +506,7 @@ final class TechniqueVfx {
 		if (start) {
 			ElementFx.crack(level, target.position(), 0.9, 30);
 			ElementFx.ring(level, top, UP, ElementFx.EARTH.secondary(), 1.0, 0.3, 0.05, 8);
-			Fx.sound(level, target.position(), SoundEvents.ANVIL_LAND, 0.5F, 0.6F);
+			dev.wildercord.cast.feel.Feels.sound(level, target.position(), "earth_press", 0.9F, 1.0F);
 		}
 	}
 
@@ -848,18 +858,19 @@ final class TechniqueVfx {
 			ElementFx.slash(level, shoulder, heading, toward, ElementFx.STORM.primary(), 0.38, 1.8, 0.07, 1, 3);
 		}
 		ElementFx.ray(level, bird.subtract(heading.scale(0.1)), bird.subtract(heading.scale(0.6)).add(0, 0.05, 0), ElementFx.STORM.secondary(), 0.05, 3);
-		if (tick % 6 == 0) {
+		if (tick % 12 == 0) {
 			Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, bird, 2, 0.2, 0.05);
 		}
-		if (tick % 20 == 0) {
-			Fx.sound(level, bird, SoundEvents.PHANTOM_FLAP, 0.4F, 1.6F);
+		if (tick % 40 == 0) {
+			dev.wildercord.cast.feel.Feels.sound(level, bird, "storm_hum", 0.35F, 1.0F);
 		}
 	}
 
 	static void birdStrike(ServerLevel level, Vec3 from, Vec3 to) {
-		Vfx.shockArc(level, from, to);
-		ElementFx.stormImpact(level, to, 0.9);
-		Fx.sound(level, to, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.5F, 1.6F);
+		ElementFx.bolt(level, from, to, 0.05, 0, 2);
+		ElementFx.groundRing(level, to.subtract(0, 0.9, 0), ElementFx.STORM.primary(), 0.2, 1.4, 0.05, 6);
+		ElementFx.sparks(level, to, 6, 0.3);
+		dev.wildercord.cast.feel.Feels.sound(level, to, "storm_zap", 0.8F, 1.26F);
 	}
 
 	static void birdFade(ServerLevel level, Vec3 at) {

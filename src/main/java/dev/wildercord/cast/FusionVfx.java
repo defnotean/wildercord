@@ -65,8 +65,8 @@ public final class FusionVfx {
 		ElementFx.crack(level, at.add(0, 0.05, 0), radius, ticks - 4);
 		ElementFx.flatSigil(level, at.add(0, 0.07, 0), SigilOption.CRACKED, ElementFx.FIRE.accent(), (float) (radius * 1.1), ticks, 0.01);
 		ElementFx.stoneShards(level, at.add(0, 0.3, 0), Blocks.MAGMA_BLOCK.defaultBlockState(), 10, 0.25);
-		Fx.sound(level, at, SoundEvents.BASALT_BREAK, 1.0F, 0.6F);
-		Fx.sound(level, at, WildercordSounds.impact("earth"), 0.7F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_crack", 0.8F, 0.84F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_bloop", 0.9F, 1.0F);
 	}
 
 	/** One second of the magma burning: lava pops and a ring of heat. */
@@ -74,7 +74,7 @@ public final class FusionVfx {
 		Vfx.emit(level, ParticleTypes.LAVA, at.add(0, 0.2, 0), 3, radius * 0.5, 0.0);
 		Vfx.emit(level, ParticleTypes.FLAME, at.add(0, 0.15, 0), 6, radius * 0.5, 0.01);
 		ElementFx.groundRing(level, at.add(0, 0.06, 0), ElementFx.FIRE.primary(), radius * 0.3, radius, 0.05, 12);
-		Fx.sound(level, at, SoundEvents.LAVA_POP, 0.8F, 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_bloop", 0.8F, 1.0F);
 		if (last) {
 			Motes.smoke(level, at.add(0, 0.3, 0), 4, radius * 0.4);
 			Fx.sound(level, at, SoundEvents.FIRE_EXTINGUISH, 0.6F, 0.8F);
@@ -82,25 +82,39 @@ public final class FusionVfx {
 	}
 
 	/** Tempest: storm's lightning over a burst of wind that throws everything outward. */
+	/** The game tick Tempest last shook the screen: one shake per cast, however many strikes land. */
+	private static long lastTempestShake = Long.MIN_VALUE;
+	
+	/** Tempest's second bolt where its victim came down: a short strike from above and a round boom. */
+	static void tempestLanding(ServerLevel level, Vec3 at) {
+		ElementFx.bolt(level, at.add(0, 6, 0), at, 0.06, 1, 2);
+		ElementFx.groundRing(level, at, ElementFx.WIND.primary(), 0.3, 2.2, 0.06, 8);
+		ElementFx.sparks(level, at.add(0, 0.5, 0), 6, 0.3);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_boom", 0.9F, 1.12F);
+	}
+	
 	static void tempest(ServerLevel level, Vec3 at) {
 		ElementFx.stormImpact(level, at.add(0, 0.8, 0), 1.4);
 		ElementFx.gustRing(level, at.add(0, 0.1, 0), 3.5);
 		ElementFx.swirl(level, at, 1.2, 2.4, 5, ElementFx.WIND.primary(), ElementFx.STORM.primary());
-		ScreenFx.shake(level, at, 0.5F, 16);
-		Fx.sound(level, at, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.9F, 1.2F);
-		Fx.sound(level, at, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.0F, 0.7F);
+		if (level.getGameTime() != lastTempestShake) {
+			lastTempestShake = level.getGameTime();
+			ScreenFx.shake(level, at, 0.5F, 16);
+		}
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_crack", 1.0F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_gale", 1.0F, 1.0F);
 	}
 
 	/** Plasma: a white-hot lance of lightning into the target, burning where it lands. */
 	static void plasma(ServerLevel level, Vec3 from, Entity t) {
 		Vec3 c = centre(t);
 		Vec3 start = from.distanceToSqr(c) > 64 ? c.add(c.subtract(from).normalize().scale(-6)) : from;
-		ElementFx.bolt(level, start, c, 0.09, 2, 2, ElementFx.FIRE.secondary(), ElementFx.FIRE.primary());
-		ElementFx.orb(level, c, 0xFFF0D0, Math.max(0.5, t.getBbWidth() * 0.6), 8);
-		ElementFx.heatFlare(level, c, 1.0);
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.35);
-		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, 1.5F);
-		Fx.sound(level, c, SoundEvents.BLAZE_SHOOT, 0.5F, 1.4F);
+		ElementFx.ray(level, start, c, StormEarthFx.PLASMA, 0.16, 6);
+		ElementFx.ray(level, start, c, StormEarthFx.PLASMA_CORE, 0.06, 5);
+		ElementFx.orb(level, c, StormEarthFx.PLASMA_CORE, Math.max(0.5, t.getBbWidth() * 0.6), 8);
+		ElementFx.ring(level, c, c.subtract(start).normalize(), StormEarthFx.PLASMA, 0.3, 1.2, 0.05, 7);
+		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 6, 0.3);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_sizzle", 1.0F, 1.0F);
 	}
 
 	/** One hailstone: ice falling out of a stormy flash and cracking on the target. */
@@ -173,7 +187,7 @@ public final class FusionVfx {
 		ElementFx.ring(level, feet.add(0, 0.1, 0), UP, ElementFx.LIFE.primary(), 0.2, 1.2, 0.05, 10);
 		ElementFx.ring(level, top, UP, ElementFx.STORM.primary(), 1.0, 0.2, 0.04, 10);
 		ElementFx.sparks(level, centre(t), 10, 0.25);
-		Fx.sound(level, feet, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "storm_whine", 0.8F, 1.0F);
 	}
 
 	/** Nullify: a star seal snuffs out the effects, drawn into a small void. */

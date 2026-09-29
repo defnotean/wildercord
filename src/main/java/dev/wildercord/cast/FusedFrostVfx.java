@@ -592,7 +592,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, stone), feet.add(0, y, 0), 4 + stage * 2, 0.1);
 		ElementFx.clock(level, feet.add(0, 0.1, 0), UP, w * 0.5 + 0.6, (int) Math.max(6, stepTicks * (0.6 + 0.5 * stage)), false);
 		ElementFx.goldenTicks(level, feet.add(0, y, 0), w * 0.4, 2 + stage);
-		Fx.sound(level, feet, SoundEvents.STONE_HIT, 0.7F, 1.1F - 0.2F * stage);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_tick", 0.9F, new float[] {1.0F, 1.122F, 1.26F}[Math.max(0, Math.min(2, stage))]);
 		if (stage == 0) {
 			Fx.sound(level, feet, WildercordSounds.impact("time"), 0.5F, 1.0F);
 		}
@@ -610,9 +610,8 @@ final class FusedFrostVfx {
 		ElementFx.crack(level, feet, 0.8 + w * 0.4, ticks + 6);
 		Sigils.flash(level, c, ElementFx.EARTH.secondary(), 1.4F);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.TUFF.defaultBlockState()), c, 10, 0.12);
-		Fx.sound(level, feet, SoundEvents.DEEPSLATE_PLACE, 1.0F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_clamp", 1.0F, 0.75F);
 		Fx.sound(level, feet, SoundEvents.BELL_BLOCK, 0.4F, 0.5F);
-		Fx.sound(level, feet, WildercordSounds.impact("earth"), 0.7F, 1.0F);
 	}
 
 	/** The stone cracks apart: chips of tuff flying, the ground cracking, a ring of gold and one of dust, a flash. */
@@ -628,8 +627,7 @@ final class FusedFrostVfx {
 		Sigils.flash(level, c, ElementFx.EARTH.secondary(), 1.8F);
 		ScreenFx.shake(level, feet, 0.25F, 10);
 		Fx.sound(level, feet, SoundEvents.STONE_BREAK, 1.0F, 0.7F);
-		Fx.sound(level, feet, SoundEvents.BASALT_BREAK, 0.8F, 0.8F);
-		Fx.sound(level, feet, WildercordSounds.impact("earth"), 0.7F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_crack", 1.0F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Geode (earth and arcane)
@@ -658,7 +656,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.AMETHYST_SHARD), c, 10, 0.18);
 		Fx.sound(level, feet, SoundEvents.AMETHYST_CLUSTER_PLACE, 1.0F, 0.9F);
 		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.2F);
-		Fx.sound(level, feet, WildercordSounds.impact("earth"), 0.6F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_ping", 0.8F, 1.0F);
 	}
 
 	/** A cage of crystal light round {@code feet}: a six-sided bipyramid, its edges in amethyst. */
@@ -707,8 +705,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.AMETHYST_SHARD), b, 8, 0.2);
 		Vec3 normal = ElementFx.randomDir(r);
 		ElementFx.slash(level, b, normal, ElementFx.inPlane(normal, r.nextDouble() * Math.PI * 2), AMETHYST_LIGHT, 0.45, 2.0, 0.08, 1, 6);
-		Fx.sound(level, b, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.7F, 1.3F);
-		Fx.sound(level, b, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, b, "earth_ping", 0.9F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ blocks that grow and go (block displays)
