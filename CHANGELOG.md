@@ -36,6 +36,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **A secret spell read from a scroll weighs its full price against a Shield**, as it does cast from a Cord (it counted
   only its runes' mana).
 - **Singularity no longer holds a boss at its black star.** It still strikes them, but bosses are only ever slowed.
+- **Stormheart's lightning is spell damage.** It struck whoever hurt you in full, even a player (spell damage to players
+  is scaled down by the server's PvP setting) and even a friend whose blow landed; it now spares friends, a Shield
+  meets it, and players take it at the PvP scale.
 
 ### Changed
 - Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
