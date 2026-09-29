@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
  * The Cord slot in the player's inventory, just above the offhand. It is backed by the
  * {@code wildercord:cord} attachment, which saves and syncs it.
  */
-public class CordSlot extends Slot {
+public class CordSlot extends Slot implements PlacedSlot {
 	/** Survival inventory position, relative to the window: directly above the offhand slot. */
 	public static final int INVENTORY_X = 77;
 	public static final int INVENTORY_Y = 44;
@@ -42,6 +42,16 @@ public class CordSlot extends Slot {
 	@Override
 	public Identifier getNoItemIcon() {
 		return EMPTY_ICON;
+	}
+
+	@Override
+	public int creativeX() {
+		return CREATIVE_X;
+	}
+
+	@Override
+	public int creativeY() {
+		return CREATIVE_Y;
 	}
 
 	/** A one-slot container that reads and writes the Cord attachment directly. */

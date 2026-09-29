@@ -12,7 +12,9 @@ import java.util.Optional;
  * Minecraft types (like {@link dev.wildercord.spell.RuneDef}), so the bonuses can be unit-tested and
  * the Cord screen, the HUD and the server all read the same numbers.
  *
- * <p>Staffs work in either hand; the tome and the foci only in the off-hand.</p>
+ * <p>Each goes in its inventory slot ({@link GearSlot}) and works from there. Held instead, staffs work in
+ * either hand and the tome and the foci only in the off-hand; a piece in its slot takes the place of
+ * held pieces of its kind (see {@link GearBonuses}).</p>
  *
  * @param path         item path, e.g. {@code fire_staff}
  * @param element      staffs: the element they favour; otherwise ""
@@ -21,7 +23,7 @@ import java.util.Optional;
  * @param power        power multiplier on every effect (Focus of Thrift)
  * @param cost         cost multiplier on every spell (Focus of Thrift)
  * @param chargeSpeed  how much faster charged casts fill (Focus of Haste)
- * @param mana         extra max mana while held (Focus of the Deep Well)
+ * @param mana         extra max mana while it counts (Focus of the Deep Well)
  * @param echo         chance a spell goes off a second time (Focus of Echoes)
  * @param fifthSpell   opens a fifth spell (Tome of the Fifth Page)
  */
@@ -96,7 +98,7 @@ public record GearDef(String path, GearKind kind, String element, double element
 		return ALL.get("greater_" + element + "_staff");
 	}
 
-	/** Whether it works from this hand: staffs from either, everything else only from the off-hand. */
+	/** Whether it works held in this hand: staffs from either, everything else only from the off-hand (a slotted piece needs no hand). */
 	public boolean worksIn(boolean mainHand) {
 		return !mainHand || kind.staff();
 	}

@@ -27,7 +27,7 @@ keys.
 | Cast spell 2 | not set | The same for spell 2. |
 | Cast spell 3 | not set | The same for spell 3. |
 | Cast spell 4 | not set | The same for spell 4. |
-| Cast spell 5 (the tome's) | not set | The same for the fifth spell, while the Tome of the Fifth Page is in your offhand. |
+| Cast spell 5 (the tome's) | not set | The same for the fifth spell, while the Tome of the Fifth Page is in its slot (or your offhand). |
 | Next loadout | not set | Loads your next saved loadout and names it above your hotbar. Refused while you charge a spell, duel or are sealed in ice. See [Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}#switching-with-a-key). |
 
 A key press counts as a **hold** once it's been down for a quarter of a second. Shorter than that is a tap.
@@ -37,6 +37,7 @@ A key press counts as a **hold** once it's been down for a quarter of a second. 
 | Do | To |
 |---|---|
 | Put a Cord in the slot above your offhand (inventory, `E`), or shift-click it | Wear it |
+| Put a staff, a focus or the tome in its gear slot (inventory, `E`), or shift-click it | Wear it: it works with nothing held, and shows on your character. See [Casting Gear]({{ '/gear/' | relative_url }}) |
 | Use (right-click) a rune | Learn it for good |
 | Use a Knot | Learn it (anyone can, even without the runes inside) |
 | Use a Mana Crystal | Absorb it: +10 max mana, up to 10 crystals |

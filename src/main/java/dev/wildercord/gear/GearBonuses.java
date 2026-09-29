@@ -8,16 +8,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * What the casting gear in someone's hands does to their spells. Pure, so it's unit-tested and the
- * readout, the HUD and the server agree.
+ * What someone's casting gear does to their spells. Pure, so it's unit-tested and the readout, the
+ * HUD and the server agree.
  *
- * <p>The rules: the same piece in both hands counts once. A staff's power goes to effects of its
- * element only; its discount goes to a whole spell with at least one effect of its element, and two
- * staffs never discount the same spell twice (the better one counts). Foci and the tome work only
- * from the off-hand, and apply to every spell.</p>
+ * <p>Gear counts from its slot in the inventory ({@link GearSlot}) or, while that slot is empty,
+ * from the hands: a piece in its slot <em>takes the place of</em> held pieces of the same kind (a
+ * staff in the staff slot and staffs in the hands: only the slotted one counts), and a kind whose
+ * slot is empty works held exactly as before (staffs in either hand, foci and the tome from the
+ * off-hand). The slots are separate, so a tome and a focus, or a slotted staff and a held focus, all
+ * apply together.</p>
+ *
+ * <p>The rules: the same piece twice counts once. A staff's power goes to effects of its element
+ * only; its discount goes to a whole spell with at least one effect of its element, and two staffs
+ * never discount the same spell twice (the better one counts). Foci and the tome apply to every
+ * spell.</p>
  */
 public record GearBonuses(List<GearDef> pieces) {
 	public static final GearBonuses NONE = new GearBonuses(List.of());
@@ -26,16 +34,41 @@ public record GearBonuses(List<GearDef> pieces) {
 		pieces = List.copyOf(new LinkedHashSet<>(pieces));
 	}
 
-	/** The gear in these hands (either may be null): each piece counts only from a hand it works in. */
+	/** The gear in these hands (either may be null), with nothing in the slots: each piece counts only from a hand it works in. */
 	public static GearBonuses of(GearDef mainHand, GearDef offHand) {
-		List<GearDef> held = new ArrayList<>(2);
-		if (mainHand != null && mainHand.worksIn(true)) {
-			held.add(mainHand);
+		return of(Map.of(), mainHand, offHand);
+	}
+
+	/**
+	 * The gear someone has: what's in its slots, plus the pieces in the hands whose slot is empty (each
+	 * from a hand it works in). {@code slotted} may hold a piece only under a slot that accepts it; anything
+	 * else is ignored.
+	 */
+	public static GearBonuses of(Map<GearSlot, GearDef> slotted, GearDef mainHand, GearDef offHand) {
+		List<GearDef> pieces = new ArrayList<>(4);
+		for (GearSlot slot : GearSlot.all()) {
+			GearDef piece = slotted.get(slot);
+			if (piece != null && slot.accepts(piece)) {
+				pieces.add(piece);
+			}
 		}
-		if (offHand != null && offHand.worksIn(false)) {
-			held.add(offHand);
+		if (mainHand != null && mainHand.worksIn(true) && !filled(slotted, mainHand)) {
+			pieces.add(mainHand);
 		}
-		return held.isEmpty() ? NONE : new GearBonuses(held);
+		if (offHand != null && offHand.worksIn(false) && !filled(slotted, offHand)) {
+			pieces.add(offHand);
+		}
+		return pieces.isEmpty() ? NONE : new GearBonuses(pieces);
+	}
+
+	/** Whether the slot this held piece would go in has a piece of its own, which then takes its place. */
+	private static boolean filled(Map<GearSlot, GearDef> slotted, GearDef held) {
+		GearSlot slot = GearSlot.of(held);
+		if (slot == null) {
+			return false;
+		}
+		GearDef piece = slotted.get(slot);
+		return piece != null && slot.accepts(piece);
 	}
 
 	public boolean isEmpty() {
@@ -95,7 +128,7 @@ public record GearBonuses(List<GearDef> pieces) {
 		return 1 - miss;
 	}
 
-	/** Whether the Tome of the Fifth Page is in the off-hand. */
+	/** Whether the Tome of the Fifth Page counts (in its slot, or held in the off-hand with the slot empty). */
 	public boolean fifthSpell() {
 		for (GearDef piece : pieces) {
 			if (piece.fifthSpell()) {
@@ -105,7 +138,7 @@ public record GearBonuses(List<GearDef> pieces) {
 		return false;
 	}
 
-	/** The staffs held that favour one of these elements (for the charged-cast flourish and the readout). */
+	/** The staffs that count and favour one of these elements (for the charged-cast flourish and the readout). */
 	public List<GearDef> staffsFor(Collection<String> elements) {
 		List<GearDef> staffs = new ArrayList<>();
 		for (GearDef piece : pieces) {
@@ -116,7 +149,7 @@ public record GearBonuses(List<GearDef> pieces) {
 		return staffs;
 	}
 
-	/** Whether anything held changes a spell with these elements (so the readout mentions it). */
+	/** Whether any gear that counts changes a spell with these elements (so the readout mentions it). */
 	public boolean changes(Collection<String> elements) {
 		return Math.abs(cost(elements) - 1) > 1e-9 || !staffsFor(elements).isEmpty() || pieces.stream().anyMatch(p -> Math.abs(p.power() - 1) > 1e-9);
 	}

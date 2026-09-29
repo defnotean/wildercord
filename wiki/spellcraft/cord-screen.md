@@ -30,7 +30,7 @@ in plain English, with its exact cost and cooldown, before you ever cast it.
 ## The layout
 
 <img src="{{ '/assets/images/a-cord-screen.jpg' | relative_url }}" alt="The Cord screen of an Echo Cord: the header with page tabs and three badges, five spell rows (the fifth for the Tome of the Fifth Page), family tabs and a search box, the Codex with rows for Personal, Direct, Projectile and Area shapes, and the readout; the selected spell's magic circle is open beside the window" class="shot">
-<span class="caption">An Echo Cord's screen with the Tome of the Fifth Page in hand (so there's a fifth row). The selected spell's magic circle is open beside the window.</span>
+<span class="caption">An Echo Cord's screen with the Tome of the Fifth Page in its slot (so there's a fifth row). The selected spell's magic circle is open beside the window.</span>
 
 From top to bottom:
 
@@ -55,7 +55,7 @@ The three badges:
 | Badge | Shows | Hover it for |
 |---|---|---|
 | **Heart** | How many Heart Circles you've formed (the number in its corner). A small gold light blinks on it when your heart is ready to form the next circle. | Your circles and what they give (max mana, mana a second, spell power), your passive slots, any circles cracked by overcasting and when they mend, your innate rune and leaning, the four perks (lit once you have them), and what the next circle still needs, each part ticked when it's done. |
-| **Mana** | | Where your max mana comes from (your Cord, Mana Crystals, Reservoir, Heart Circles, a Focus of the Deep Well), where your regeneration comes from (your Cord, circles, Wellspring, Clarity, meditating, a ley line, a Wellstone), what your passives drain, your Siphon, the casting gear in your hands, and every way to grow your mana. |
+| **Mana** | | Where your max mana comes from (your Cord, Mana Crystals, Reservoir, Heart Circles, a Focus of the Deep Well), where your regeneration comes from (your Cord, circles, Wellspring, Clarity, meditating, a ley line, a Wellstone), what your passives drain, your Siphon, the casting gear that counts, and every way to grow your mana. |
 | **Help** (the **?**) | | A reminder of how to thread spells and which keys cast, switch and open the screen (it shows your keys, even after you change them). |
 
 See [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) and [Mana]({{ '/progression/mana/' | relative_url }}).
@@ -71,7 +71,7 @@ Each row is one spell: its number on the left, then the cord threaded through it
   Cord), the extra sockets are drawn dim and their runes are quiet.
 - A row your Cord doesn't have is **locked**: it says which Cord it needs ("Needs a Copper Cord") and, if it
   still holds runes from a bigger Cord, how many ("5 runes kept").
-- With the [Tome of the Fifth Page]({{ '/gear/' | relative_url }}) in your offhand, a fifth row with a violet
+- With the [Tome of the Fifth Page]({{ '/gear/' | relative_url }}) in its slot (or your offhand), a fifth row with a violet
   number appears for the tome's spell.
 
 **Gold lines** under the sockets show what each modifier is attached to: a line joins the modifier to the
@@ -178,7 +178,7 @@ The box at the bottom explains the selected spell, line by line:
    the line turns red and a warning says it "can't be cast" (you'd have to
    [overcast]({{ '/spellcraft/overcasting/' | relative_url }})). A spell with Blood Price shows its price in
    health instead.
-3. **Casting gear** in your hands that changes the spell, in violet ("Arcane Staff: Arcane spells: +20%
+3. **Casting gear** (in its slots, or held) that changes the spell, in violet ("Arcane Staff: Arcane spells: +20%
    power, 10% less mana"), and a line if the server makes spells cost more or less than usual. Then, quietly,
    your [affinity]({{ '/progression/affinity/' | relative_url }}) with each of the spell's elements that you have
    one with ("Fire affinity III: +9% power").

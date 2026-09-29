@@ -1,7 +1,10 @@
 package dev.wildercord.mixin;
 
 import dev.wildercord.content.CordItem;
+import dev.wildercord.gear.GearSlot;
+import dev.wildercord.gear.GearSlots;
 import dev.wildercord.menu.CordSlot;
+import dev.wildercord.menu.GearInventorySlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -16,8 +19,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Appends the Cord slot (menu index 46) to the player inventory menu, and teaches
- * shift-click to move a Cord in and out of it.
+ * Appends the Cord slot (menu index 46) and then a slot for each kind of casting gear (47 onwards, in
+ * {@link GearSlot#all()} order) to the player inventory menu, and teaches shift-click to move a Cord or a
+ * piece of gear in and out of them.
  */
 @Mixin(InventoryMenu.class)
 public abstract class InventoryMenuMixin extends AbstractContainerMenu {
@@ -36,6 +40,9 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void wildercord$addCordSlot(Inventory inventory, boolean active, Player player, CallbackInfo ci) {
 		this.wildercord$cordIndex = this.addSlot(new CordSlot(player, CordSlot.INVENTORY_X, CordSlot.INVENTORY_Y)).index;
+		for (GearSlot kind : GearSlot.all()) {
+			this.addSlot(new GearInventorySlot(player, kind));
+		}
 	}
 
 	@Inject(method = "quickMoveStack", at = @At("HEAD"), cancellable = true)
@@ -44,16 +51,37 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 			return;
 		}
 		Slot slot = this.slots.get(index);
-		if (slot instanceof CordSlot) {
+		if (slot instanceof CordSlot || slot instanceof GearInventorySlot) {
 			cir.setReturnValue(slot.hasItem() ? wildercord$move(player, slot, WILDERCORD_INV_START, WILDERCORD_INV_END, true) : ItemStack.EMPTY);
-		} else if (index != 0 && slot.hasItem() && slot.getItem().getItem() instanceof CordItem && slot.mayPickup(player)
-				&& !this.slots.get(this.wildercord$cordIndex).hasItem()) {
-			// Index 0 is the crafting result; taking over there would skip crafting bookkeeping.
-			ItemStack moved = wildercord$move(player, slot, this.wildercord$cordIndex, this.wildercord$cordIndex + 1, false);
+			return;
+		}
+		// Index 0 is the crafting result; taking over there would skip crafting bookkeeping.
+		if (index == 0 || !slot.hasItem() || !slot.mayPickup(player)) {
+			return;
+		}
+		ItemStack stack = slot.getItem();
+		Slot target = stack.getItem() instanceof CordItem ? this.slots.get(this.wildercord$cordIndex) : wildercord$gearSlot(stack);
+		if (target != null && !target.hasItem()) {
+			ItemStack moved = wildercord$move(player, slot, target.index, target.index + 1, false);
 			if (!moved.isEmpty()) {
 				cir.setReturnValue(moved);
 			}
 		}
+	}
+
+	/** The gear slot this stack goes in, or null (it isn't gear). */
+	@Unique
+	private Slot wildercord$gearSlot(ItemStack stack) {
+		GearSlot kind = GearSlots.slotFor(stack).orElse(null);
+		if (kind == null) {
+			return null;
+		}
+		for (Slot slot : this.slots) {
+			if (slot instanceof GearInventorySlot gear && gear.kind() == kind) {
+				return slot;
+			}
+		}
+		return null;
 	}
 
 	private ItemStack wildercord$move(Player player, Slot slot, int destStart, int destEnd, boolean reverse) {

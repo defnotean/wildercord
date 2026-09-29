@@ -79,7 +79,7 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Parry and wild magic** | A Shield raised at the last moment turns a flying spell back at its caster. An overcast may surge into something wild. See [docs/features/parry-and-wild-magic.md](docs/features/parry-and-wild-magic.md). |
 | **The Runesmith, duels and chorus** | A villager who sells runes, buys your duplicates or swaps them for runes you don't know, and posts daily contracts; formal duels that put everything back afterwards; and allies casting together in a chorus. See [docs/features/runesmith-duels-chorus.md](docs/features/runesmith-duels-chorus.md). |
 | **Travel commands** | For servers: homes, public warps, personal waypoints with an arrow on screen and a beam only you can see, teleport requests with clickable answers, `/back`, `/spawn` and `/rtp`. Every teleport is a short warmup in a forming magic circle, with a cooldown and a safe landing. See [docs/features/travel.md](docs/features/travel.md). |
-| **Casting gear** | Elemental and greater staffs, the Tome of the Fifth Page (a fifth spell) and four off-hand foci. See [docs/features/gear-config-api.md](docs/features/gear-config-api.md). |
+| **Casting gear** | Elemental and greater staffs, the Tome of the Fifth Page (a fifth spell) and four foci, each worn in its own inventory slot (staff, focus, tome) and shown on your character, or held as before while its slot is empty. See [docs/features/gear-config-api.md](docs/features/gear-config-api.md). |
 | **Advancements** | A Wildercord tab from your first Blank Rune to the 8th Heart Circle. See [docs/features/advancements.md](docs/features/advancements.md). |
 | **Ley lines** | Veins of world mana, visible to Cord-wearers as flowing ribbons of violet light: mana flows twice as fast on them. A Wellstone set on one becomes a well for everyone nearby. |
 | **Play together** | Paste a spell code (`wc:bolt.frost.split`) in chat and it becomes a readable spell card; inscribe spells onto scrolls anyone can cast; hit the foe another player just hit, with a different element, for **Unison**; win **domain clashes**; shoot enemy bolts out of the air. |
@@ -324,8 +324,8 @@ src/
 │   │                 components, the sigil, spell circle and light particles, sounds, potions,
 │   │                 loot
 │   ├── world/      The Archive structure, and ley lines (pure maths shared by both sides)
-│   ├── menu/       The Cord slot
-│   ├── mixin/      Cord slot in the inventory menu, creative sync, lightning rods,
+│   ├── menu/       The Cord slot and the gear slots
+│   ├── mixin/      Cord and gear slots in the inventory menu, creative sync, gear dropped on death, lightning rods,
 │   │                 Phantom's afterimage, pistons (temporary blocks stay put), imbued arrows
 │   │                 and placed imbued blocks
 │   ├── net/        Packets: cast, charge, select, edit, rename, passives, scrolls; and the

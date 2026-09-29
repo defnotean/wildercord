@@ -148,9 +148,9 @@ is threaded for you as `Bolt · Push`.
 
 ## The fifth spell
 
-The **Tome of the Fifth Page**, held in your offhand, gives you a fifth spell whatever your Cord. Its row
+The **Tome of the Fifth Page**, in its gear slot (or held in your offhand), gives you a fifth spell whatever your Cord. Its row
 appears in the Cord screen under your Cord's own rows, with a violet number. You can select it with `V`, or
-bind a key to cast it directly. Put the tome away and the fifth spell goes quiet (its runes are kept). See
+bind a key to cast it directly. Take the tome out and the fifth spell goes quiet (its runes are kept). See
 [Casting Gear]({{ '/gear/' | relative_url }}).
 
 ## Enchanting a Cord

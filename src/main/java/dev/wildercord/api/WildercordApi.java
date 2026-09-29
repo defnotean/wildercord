@@ -2,6 +2,8 @@ package dev.wildercord.api;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.AddonRunes;
+import dev.wildercord.gear.GearSlot;
+import dev.wildercord.gear.GearSlots;
 import dev.wildercord.player.Mana;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.EffectKind;
@@ -13,6 +15,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.EntrypointContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.Optional;
 /**
  * Wildercord's public API for add-ons. An add-on gets it in {@link WildercordAddon#onWildercordInit}
  * (or any time from {@link #get()}), registers runes, categories and reactions, listens to
- * {@link WildercordEvents}, and reads players' magic.
+ * {@link WildercordEvents}, reads players' magic and reads and changes the casting gear they wear.
  *
  * <p>Within 1.x this package only grows: nothing public here is removed or renamed. See
  * {@code docs/API.md} for a walk-through and a complete example add-on.</p>
@@ -30,7 +33,7 @@ import java.util.Optional;
  */
 public final class WildercordApi {
 	/** The API's version: the minor number grows when something is added. */
-	public static final String VERSION = "1.0";
+	public static final String VERSION = "1.1";
 	/** The {@code fabric.mod.json} entrypoint key add-ons list their {@link WildercordAddon} under. */
 	public static final String ENTRYPOINT = "wildercord";
 
@@ -154,6 +157,65 @@ public final class WildercordApi {
 	/** Whether the player is wearing a Cord (they can't cast without one). */
 	public boolean wearsCord(Player player) {
 		return Spellbooks.tier(player) != null;
+	}
+
+	// ------------------------------------------------------------------ casting gear
+
+	/**
+	 * The gear slots every player has in their inventory, by id, in inventory order ({@code staff},
+	 * {@code focus}, {@code tome}). A piece of casting gear works from its slot with nothing held, and takes
+	 * the place of held pieces of its kind.
+	 *
+	 * @since 1.1
+	 */
+	public List<String> gearSlots() {
+		return GearSlot.all().stream().map(GearSlot::id).toList();
+	}
+
+	/**
+	 * What a player (or any avatar, such as a mannequin) has in a gear slot: empty if nothing. Safe on both
+	 * sides, and everyone who can see the wearer knows it. The stack is the stored one: copy it before
+	 * changing it.
+	 *
+	 * @throws IllegalArgumentException if {@code slot} isn't one of {@link #gearSlots()}
+	 * @since 1.1
+	 */
+	public ItemStack equippedGear(Entity wearer, String slot) {
+		return GearSlots.get(wearer, gearSlot(slot));
+	}
+
+	/**
+	 * Puts one piece of casting gear in a gear slot (server only), replacing what was there; an empty stack
+	 * empties the slot. Returns false, changing nothing, if the stack isn't the kind of gear the slot is for.
+	 *
+	 * @throws IllegalArgumentException if {@code slot} isn't one of {@link #gearSlots()}
+	 * @since 1.1
+	 */
+	public boolean equipGear(Entity wearer, String slot, ItemStack stack) {
+		return GearSlots.set(wearer, gearSlot(slot), stack);
+	}
+
+	/**
+	 * Takes whatever is in a gear slot out (server only) and returns it, for the caller to give back or drop.
+	 *
+	 * @throws IllegalArgumentException if {@code slot} isn't one of {@link #gearSlots()}
+	 * @since 1.1
+	 */
+	public ItemStack unequipGear(Entity wearer, String slot) {
+		return GearSlots.clear(wearer, gearSlot(slot));
+	}
+
+	/** The gear slot a stack goes in, by id: empty if it isn't casting gear. @since 1.1 */
+	public Optional<String> gearSlotFor(ItemStack stack) {
+		return GearSlots.slotFor(stack).map(GearSlot::id);
+	}
+
+	private static GearSlot gearSlot(String id) {
+		GearSlot slot = GearSlot.get(id);
+		if (slot == null) {
+			throw new IllegalArgumentException("No gear slot called " + id + " (they are " + GearSlot.all().stream().map(GearSlot::id).toList() + ")");
+		}
+		return slot;
 	}
 
 	// ------------------------------------------------------------------ loading add-ons

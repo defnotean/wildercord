@@ -5,6 +5,8 @@
 	"client": [
 		"InventoryScreenMixin",
 		"CreativeModeInventoryScreenMixin",
+		"AbstractRecipeBookScreenMixin",
+		"AbstractContainerScreenMixin",
 		"AvatarRendererMixin",
 		"RenderPipelinesAccessor",
 		"GameRendererMixin",
@@ -14,6 +16,7 @@
 		"LivingEntityRendererMixin",
 		"ClientLevelMixin",
 		"AvatarRendererStyleMixin",
+		"AvatarRendererGearMixin",
 		"BossHealthOverlayAccessor",
 		"SubtitleOverlayMixin",
 		"ServerStatusPingerMixin"

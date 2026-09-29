@@ -2610,23 +2610,30 @@ GEAR_LANG = {
     "item.wildercord.focus_of_the_deep_well": "Focus of the Deep Well",
     "item.wildercord.focus_of_echoes": "Focus of Echoes",
     "tooltip.wildercord.gear.staff": "%s spells: +%s%% power, %s%% less mana",
-    "tooltip.wildercord.gear.tome": "A fifth spell, to thread and cast while it's in your off-hand",
+    "tooltip.wildercord.gear.tome": "A fifth spell, to thread and cast",
     "tooltip.wildercord.gear.haste": "Charged casts fill %s%% faster",
     "tooltip.wildercord.gear.thrift": "Spells cost %s%% less mana, but hit %s%% softer",
-    "tooltip.wildercord.gear.deep_well": "+%s max mana while it's held",
+    "tooltip.wildercord.gear.deep_well": "+%s max mana",
     "tooltip.wildercord.gear.echoes": "A %s%% chance that a spell echoes: it goes off again, free",
     "tooltip.wildercord.gear.flourish": "A charged spell of its element leaves it with a flourish",
-    "tooltip.wildercord.gear.either_hand": "Hold it in either hand while you cast",
-    "tooltip.wildercord.gear.off_hand": "Hold it in your off-hand while you cast",
-    "screen.wildercord.gear.title": "Casting gear in hand",
+    "tooltip.wildercord.gear.slot": "Goes in your inventory's %s",
+    "tooltip.wildercord.gear.either_hand": "With the slot empty, it works held in either hand",
+    "tooltip.wildercord.gear.off_hand": "With the slot empty, it works held in your off-hand",
+    "gear_slot.wildercord.staff": "Staff slot",
+    "gear_slot.wildercord.staff.hint": "Any staff, a greater one too",
+    "gear_slot.wildercord.focus": "Focus slot",
+    "gear_slot.wildercord.focus.hint": "Any focus",
+    "gear_slot.wildercord.tome": "Tome slot",
+    "gear_slot.wildercord.tome.hint": "The Tome of the Fifth Page",
+    "screen.wildercord.gear.title": "Casting gear",
     "screen.wildercord.gear.piece": "  %s: %s",
     "screen.wildercord.gear.readout": "%s: %s",
     "screen.wildercord.server_cost": "This server's rules: spells cost x%s mana",
     "screen.wildercord.mana.max_gear": "  +%s from a Focus of the Deep Well",
     "screen.wildercord.mana.regen_server": "  x%s from this server's rules",
-    "screen.wildercord.mana.way.gear": "Hold a Focus of the Deep Well in your off-hand: +50 max mana",
-    "screen.wildercord.tome_row": "The tome's spell: it casts while the tome is in your off-hand",
-    "message.wildercord.tome_needed": "Spell 5 is the tome's: hold the Tome of the Fifth Page in your off-hand",
+    "screen.wildercord.mana.way.gear": "A Focus of the Deep Well in your focus slot: +50 max mana",
+    "screen.wildercord.tome_row": "The tome's spell: it casts while the tome is in its slot or your off-hand",
+    "message.wildercord.tome_needed": "Spell 5 is the tome's: put the Tome of the Fifth Page in its slot (or hold it in your off-hand)",
     "command.wildercord.reloaded": "Reloaded %s",
     "command.wildercord.config_warning": "Config: %s",
     "key.wildercord.cast_5": "Cast spell 5 (the tome's)",
@@ -2646,6 +2653,9 @@ def write_gear_content():
     pieces.append(("tome_of_the_fifth_page", gear_art.tome_icon()))
     for focus in FOCI:
         pieces.append((f"focus_of_{focus}", gear_art.focus_icon(focus.replace("the_", ""))))
+    # The hint each empty gear slot shows (one per slot in gear/GearSlot.java).
+    for kind in gear_art.SLOT_ICONS:
+        save(gear_art.slot_icon(kind), ASSETS / f"textures/gui/sprites/container/slot/gear_{kind}.png")
     for path, art in pieces:
         save(art if len(art) > 1 else art[0], tex / f"{path}.png")
         # Staffs are held like tools (angled in the hand); the tome and foci like any other item.
