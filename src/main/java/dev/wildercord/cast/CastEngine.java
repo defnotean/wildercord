@@ -69,6 +69,10 @@ public final class CastEngine {
 		} else if (id.equals(Runes.ON_LAND.id())) {
 			Cast child = cast.child();
 			Scheduler.onLand(caster, 200, pos -> {
+				// Not for a caster who has changed dimension since (the watch follows them there).
+				if (!child.alive()) {
+					return;
+				}
 				Vfx.shockwave(child.level, pos, 2.0, Vfx.theme(""), 4);
 				Fx.sound(child.level, pos, net.minecraft.sounds.SoundEvents.MACE_SMASH_GROUND, 0.7F, 1.3F);
 				runSegment(child, link.next, new Cast.Trigger(pos, caster.getLookAngle(), caster, null, null));
@@ -85,6 +89,10 @@ public final class CastEngine {
 		} else if (id.equals(Runes.ON_HURT.id())) {
 			Cast child = cast.child();
 			Scheduler.onHurt(caster, 300, attacker -> {
+				// Not for a caster who has died of it, or changed dimension since.
+				if (!child.alive()) {
+					return;
+				}
 				Vfx.shockwave(child.level, caster.position(), 1.8, Vfx.theme(""), 3);
 				if (attacker != null && attacker.isAlive()) {
 					Vec3 dir = attacker.getBoundingBox().getCenter().subtract(caster.getEyePosition()).normalize();
@@ -117,6 +125,9 @@ public final class CastEngine {
 		} else if (id.equals(Runes.ON_LOW_HEALTH.id())) {
 			Cast child = cast.child();
 			Scheduler.onLowHealth(caster, 600, () -> {
+				if (!child.alive()) {
+					return;
+				}
 				Vfx.shockwave(child.level, caster.position(), 2.4, Vfx.theme("life"), 4);
 				runSegment(child, link.next, new Cast.Trigger(caster.position().add(0, 1, 0), caster.getLookAngle(), caster, null, null));
 			});
@@ -437,7 +448,8 @@ public final class CastEngine {
 					if (!child.alive()) {
 						return;
 					}
-					List<Entity> still = first.entities().stream().filter(Entity::isAlive).toList();
+					// Not one that has gone to another dimension since (a player keeps being the same entity there).
+					List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == child.level).toList();
 					Effects.apply(child, effect, new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self()), groupPower);
 				});
 			}
