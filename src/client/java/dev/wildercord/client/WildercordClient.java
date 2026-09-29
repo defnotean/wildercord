@@ -64,6 +64,9 @@ public final class WildercordClient implements ClientModInitializer {
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
+		// An affinity reached a new level: a toast in its element's colour.
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.PlayerAffinities.Rise.TYPE, (payload, context) ->
+			context.client().gui.toastManager().addToast(GrimoireToast.affinity(payload.element(), payload.level())));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
 		// The server's Wildercord version: a word in chat if it isn't ours (runes one of us doesn't know go silent).
 		VersionWatch.init();
