@@ -9,14 +9,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * A Fangs spell's evoker fangs bite only what their caster may harm (vanilla's bite anything off their
- * owner's team, a pet or a friend walking onto them): see {@link ExplorerEffects#mayBite}.
+ * A Fangs spell's evoker fangs bite as the spell does, through the mod's spell damage and only what their
+ * caster may harm (vanilla's bite anything off their owner's team, past Shields and the PvP scale): see
+ * {@link ExplorerEffects#bite}.
  */
 @Mixin(EvokerFangs.class)
 public abstract class EvokerFangsMixin {
 	@Inject(method = "dealDamageTo", at = @At("HEAD"), cancellable = true)
 	private void wildercord$friendlyFire(LivingEntity target, CallbackInfo ci) {
-		if (!ExplorerEffects.mayBite((EvokerFangs) (Object) this, target)) {
+		if (!ExplorerEffects.bite((EvokerFangs) (Object) this, target)) {
 			ci.cancel();
 		}
 	}

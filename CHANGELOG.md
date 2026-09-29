@@ -185,8 +185,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Fire spells no longer light campfires where they may not change blocks.** Lighting a campfire (as the Archive's
   braziers are lit) skipped the rules the rest of world magic keeps: now it doesn't happen in a claim or spawn
   protection, for a player who can't build there, or on a server that keeps spells off its blocks.
-- **Fangs never bite your friends.** Its evoker fangs bit anything that walked onto them, your own pets included;
-  they now bite only what your spells may harm, and nothing at all once you've gone.
+- **Fangs never bite your friends.** Its evoker fangs bit anything that walked onto them, your own pets included, and
+  their bites went past Shields and the server's PvP damage scale. They now bite as the spell does (6, once for each
+  creature however many fangs it stands on), only what your spells may harm, and nothing once the spell has ended.
 - **A creature held in Stasis (or an arrow held by Infinity) that's carried through a portal falls again** as soon as
   it arrives, instead of floating until its ground was next loaded.
 - **The glyph limit counts all your glyphs**, in every dimension together (12 by default), rather than 12 in each:
