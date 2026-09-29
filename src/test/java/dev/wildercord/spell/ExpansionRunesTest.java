@@ -71,8 +71,11 @@ class ExpansionRunesTest {
 		SpellPlan.Group g = group(STREAM, HARM);
 		assertEquals(0.35, SpellNumbers.groupPower(g), 1e-9);
 		assertEquals(6, SpellNumbers.streamStrikes(g));
-		assertEquals(12, SpellNumbers.streamStrikes(group(STREAM, QUICKEN, HARM)));
-		assertEquals(12, SpellNumbers.streamStrikes(group(STREAM, QUICKEN, QUICKEN, HARM)));
+		// Quicken packs the same six strikes into less time.
+		assertEquals(6, SpellNumbers.streamStrikes(group(STREAM, QUICKEN, HARM)));
+		assertEquals(20, SpellNumbers.streamTicks(g));
+		assertEquals(10, SpellNumbers.streamTicks(group(STREAM, QUICKEN, HARM)));
+		assertEquals(8, SpellNumbers.streamTicks(group(STREAM, QUICKEN, QUICKEN, QUICKEN, HARM)));
 		assertEquals("A stream of 6 strikes (35% power each): Harm", compile(STREAM, HARM).lines().getFirst());
 	}
 

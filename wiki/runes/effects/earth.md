@@ -44,7 +44,7 @@ Mines the block that was hit (up to stone-pickaxe hardness; Amplify for iron).
 
 *Tier I · Earth · Harms enemies · 5 mana · needs any Cord*
 
-Pelts targets with stones: 4 damage and a small knockback.
+Pelts targets with stones: 4 damage and a hard shove.
 
 **How to get it:** Craft: a Blank Rune, Gravel and Cobblestone. The recipe is shapeless: any layout, any crafting grid.
 
@@ -70,7 +70,7 @@ The ground rings out: every ore within 12 blocks of where it lands glows through
 
 *Tier II · Earth · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-5 damage, then a second impact half a second later for 5 more.
+5 damage, then half a second later the same spot is struck again for 5: whoever is still there takes it.
 
 **How to get it:** Craft: a Blank Rune, Piston and Cobblestone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts; Ember Sanctum.
 
@@ -148,7 +148,7 @@ Vines hold targets in place for 3 seconds.
 
 *Tier II · Earth · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-Chains each target to the spot for 5 seconds: it's yanked back if it strays more than 2 blocks.
+Chains each target to the spot for 5 seconds: it's yanked back if it strays more than 2 blocks, and the chain bites for 2.
 
 **How to get it:** Craft: a Blank Rune, 2x Iron Chain, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 
@@ -174,7 +174,7 @@ For 30 seconds, the next harmful spell cast at the target meets magic circles th
 
 *Tier II · Earth · Helps you and your allies · 12 mana · needs a Copper Cord or better*
 
-Resistance II for 10 seconds.
+Resistance II for 10 seconds, and Slowness I: stone is heavy.
 
 **How to get it:** Craft: a Blank Rune, Armadillo Scute, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ember Sanctum.
 

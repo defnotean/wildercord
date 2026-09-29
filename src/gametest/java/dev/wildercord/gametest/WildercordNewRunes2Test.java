@@ -330,7 +330,7 @@ public class WildercordNewRunes2Test implements FabricClientGameTest {
 		});
 	}
 
-	/** Belated: nothing at first; a moment later, 40% more. */
+	/** Belated: nothing at first; a moment later, 25% more. */
 	private static String belated(ClientGameTestContext context, TestSingleplayerContext world) {
 		int[] id = {0};
 		String cast = world.getServer().computeOnServer(server -> {
@@ -351,7 +351,7 @@ public class WildercordNewRunes2Test implements FabricClientGameTest {
 		context.waitTicks(30);
 		return world.getServer().computeOnServer(server -> {
 			Mob husk = mob(server, id[0]);
-			return husk == null || husk.getHealth() <= husk.getMaxHealth() - 9.5F ? null : "it should land 40% stronger, 9.8 (" + health(husk) + ")";
+			return husk == null || husk.getHealth() <= husk.getMaxHealth() - 8.5F ? null : "it should land 25% stronger, 8.75 (" + health(husk) + ")";
 		});
 	}
 

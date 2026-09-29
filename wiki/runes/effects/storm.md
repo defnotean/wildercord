@@ -31,7 +31,7 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 *Tier I · Storm · Harms enemies · 7 mana · needs any Cord*
 
-4 lightning damage that arcs to one more enemy nearby.
+4 lightning damage that arcs to one more enemy nearby: it finds a wet or metal-armoured one first.
 
 **How to get it:** Craft: a Blank Rune, Lightning Rod. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts; Trail ruins (brushing).
 
@@ -44,7 +44,7 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 *Tier II · Storm · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-4 lightning damage that stuns for 1 second: no moving or fighting back.
+4 lightning damage that stuns for 1 second: no moving or fighting back. A caster caught mid-charge loses the spell.
 
 **How to get it:** Craft: a Blank Rune, Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Drowned Scriptorium.
 
@@ -57,7 +57,7 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 *Tier II · Storm · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-Sunlight through the body: 6 damage, tripled against undead, and heals you for a third of it.
+Sunlight through the body: 6 damage, doubled against undead, and you heal a quarter of what it took. Half a second later it ripples out: 3 to every other enemy within 2.5 blocks, and you heal 1 for each.
 
 **How to get it:** Craft: a Blank Rune, Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
 
@@ -70,7 +70,7 @@ Sunlight through the body: 6 damage, tripled against undead, and heals you for a
 
 *Tier II · Storm · Harms enemies · 12 mana · needs a Copper Cord or better*
 
-A crack of thunder: 5 damage and a heavy knockback within 3 blocks.
+A flash, then a crack of thunder: 5 damage within 3 blocks, and everything hit is stunned for half a second and, if it is a monster, forgets who it was hunting.
 
 **How to get it:** Craft: a Blank Rune, Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
 
@@ -83,7 +83,7 @@ A crack of thunder: 5 damage and a heavy knockback within 3 blocks.
 
 *Tier III · Storm · Harms enemies · 20 mana · needs an Amethyst Cord or better*
 
-A 12-damage lightning strike on each target that stuns and burns. You and your allies are immune.
+A 12-damage lightning strike on each target that slows and burns. An enemy takes the strongest strike of a cast once, however many land beside it. You and your allies are immune.
 
 **How to get it:** Craft: a Blank Rune, Block of Copper and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Trail ruins (brushing); Drowned Scriptorium.
 
@@ -96,7 +96,7 @@ A 12-damage lightning strike on each target that stuns and burns. You and your a
 
 *Tier III · Storm · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
 
-A storm bird circles above you for 15 seconds, striking the nearest enemy within 12 blocks every 1.5 seconds.
+A storm bird circles above you for 12 seconds. Every 2 seconds it marks the enemy you last hit (or the nearest within 12 blocks) and dives on that spot for 4.5 damage: step aside and it misses. Two at most.
 
 **How to get it:** Craft: a Blank Rune, Feather and Lightning Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
 

@@ -197,7 +197,7 @@ public final class SpellCaster {
 		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.Gear.of(player);
 		dev.wildercord.gear.Gear.flourish(player, gear, dev.wildercord.gear.GearBonuses.elements(compiled.root()), charge);
 		// Everyone around sees the casting pose for this spell's shape.
-		player.setAttached(dev.wildercord.player.WildercordAttachments.CAST_POSE, new dev.wildercord.player.WildercordAttachments.CastPose(runes.getFirst().id(), now));
+		player.setAttached(dev.wildercord.player.WildercordAttachments.CAST_POSE, new dev.wildercord.player.WildercordAttachments.CastPose(poseShape(runes).id(), now));
 		HeartCircles.onCast(player);
 		// Under a mana storm, a spell may surge (see cast.events.ManaStorm).
 		dev.wildercord.cast.events.EventRules.Surge surge = dev.wildercord.cast.events.ManaStorm.surge(player);
@@ -206,6 +206,15 @@ public final class SpellCaster {
 		// Against a Shield a secret always weighs its full price, found or not.
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear)
 			.withAffinity();
+		cast.charge(charge);
+		if (!cast.info.root().groups.isEmpty()) {
+			var first = cast.info.root().groups.getFirst();
+			dev.wildercord.cast.feel.Feels.cue(cast, cast.feel(first), cast.theme(first));
+		}
+		if (charge < 0.2) {
+			// A tap has no release sound of its own (the charged release has): a short snap so it doesn't leave in silence.
+			dev.wildercord.cast.feel.Feels.sound(player.level(), player.position(), "tap_release", 0.45F, 1.0F);
+		}
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
 		}
@@ -262,6 +271,16 @@ public final class SpellCaster {
 			});
 		}
 		dev.wildercord.api.WildercordEvents.AFTER_CAST.invoker().afterCast(player, spell, List.copyOf(runes), spent);
+	}
+
+	/** The shape a spell's casting pose is taken from: its first shape rune, or Self when it has none (effects come first in some spells). */
+	static RuneDef poseShape(List<RuneDef> runes) {
+		for (RuneDef rune : runes) {
+			if (rune.family() == dev.wildercord.spell.RuneFamily.SHAPE) {
+				return rune;
+			}
+		}
+		return Runes.SELF;
 	}
 
 	/** Whether {@code entity} is sealed in a Cryostasis right now: nothing is cast, and no loadout loaded, from inside the ice. */

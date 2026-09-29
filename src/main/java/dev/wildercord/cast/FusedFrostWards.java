@@ -276,6 +276,8 @@ final class FusedFrostWards {
 			if (geode != null && live(GEODES, geode, entity, now) && punishable(geode, attacker)) {
 				FusedFrostVfx.geodeShards(level, entity, attacker);
 				geode.context.accept(() -> Effects.hurt(geode.cast, attacker, level.damageSources().thorns(entity), geode.damage));
+				// The crystals open it up: every spell (the geode's caster's side too) hits it 20% harder for 5 s.
+				Reactions.mark(attacker, Reactions.Mark.CRACKED);
 			}
 		} finally {
 			answering = false;

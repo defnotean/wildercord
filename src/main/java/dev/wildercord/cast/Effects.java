@@ -316,7 +316,7 @@ public final class Effects {
 				// Set alight once every strike has landed: fire from one strike would let the next set off Overload again.
 				Set<LivingEntity> struck = new LinkedHashSet<>();
 				for (int i = 0; i < Math.min(MAX_STRIKES_PER_HIT, strikes.size()); i++) {
-					lightning(cast, strikes.get(i), power, struck);
+					lightning(cast, strikes.get(i), power, struck, new HashSet<>(harmed));
 				}
 				struck.forEach(t -> t.igniteForSeconds(4));
 			}
@@ -369,6 +369,8 @@ public final class Effects {
 			});
 			case "stoneskin" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks(10, duration), Math.min(3, 1 + amplify), false, true));
+				// Stone is heavy: the price of the best long ward is a step slower.
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(10, duration), 0, false, false));
 				Vfx.stoneskin(level, t);
 			});
 			case "root" -> harmed.forEach(t -> {
@@ -528,7 +530,7 @@ public final class Effects {
 			case "time_skip" -> Techniques.timeSkip(cast);
 			case "rampart" -> Techniques.rampart(cast, hit, SpellNumbers.effectRadius(node), ticks(10, duration));
 			case "shades" -> Spirits.summonShades(cast, caster.position(), 2, power, duration);
-			case "thunderbird" -> Techniques.thunderbird(cast, power, ticks(15, duration));
+			case "thunderbird" -> Techniques.thunderbird(cast, power, ticks(12, duration));
 			// Batch 6: protection.
 			case "barrier" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, ticks(20, duration), Math.min(4, amplify), false, true));
@@ -570,7 +572,7 @@ public final class Effects {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
 				ExpansionVfx.pelt(level, t, away);
 				hurt(cast, t, level.damageSources().source(DamageTypes.FALLING_BLOCK, caster), 4 * power);
-				push(t, away.scale(0.6 * Math.sqrt(power)).add(0, 0.25, 0));
+				push(t, away.scale(1.1 * Math.sqrt(power)).add(0, 0.25, 0));
 			});
 			case "windcut" -> harmed.forEach(t -> {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
@@ -599,6 +601,11 @@ public final class Effects {
 				ExpansionVfx.jolt(level, t);
 				hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 4 * power * Reactions.storm(cast, t));
 				Spirits.hold(t, ticks(1, duration));
+				// The counter-spell: a caster caught mid-charge loses the spell.
+				if (t instanceof ServerPlayer charging && charging.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)) {
+					Charging.forget(charging);
+					Casters.tell(charging, Component.translatable("message.wildercord.interrupted"));
+				}
 			});
 			case "bleed" -> harmed.forEach(t -> bleed(cast, t, power, (int) Math.round(8 * duration)));
 			case "coldsnap" -> coldsnap(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, duration);
@@ -630,7 +637,7 @@ public final class Effects {
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;
 		if (!hit.self()) {
 			Vfx.Theme theme = Vfx.theme(rune);
-			touched.forEach(t -> Vfx.touched(level, t, theme));
+			touched.forEach(t -> dev.wildercord.cast.feel.Feels.touched(level, t, theme, rune, cast));
 		}
 	}
 
@@ -765,7 +772,7 @@ public final class Effects {
 	}
 
 	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */
-	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck) {
+	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck, Set<LivingEntity> aimedAt) {
 		ServerLevel level = cast.level;
 		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
 		if (bolt != null) {
@@ -776,7 +783,12 @@ public final class Effects {
 		Vfx.lightning(level, at);
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(2.0, 3.0, 2.0), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity target = (LivingEntity) e;
-			hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 12 * power * Reactions.storm(cast, target));
+			// A creature takes its strongest strike once per cast (its own 12, or half of that from a strike aimed at a neighbour),
+			// however many strikes land near it: a crowd is hit once each, not once for every neighbour.
+			double dealt = FusedEffects.unstacked(cast, target, "lightning", 2, 12 * power * (aimedAt.contains(target) ? 1.0 : 0.5));
+			if (dealt > 0) {
+				hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), dealt * Reactions.storm(cast, target));
+			}
 			struck.add(target);
 			target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 3, false, false));
 		}
@@ -903,17 +915,33 @@ public final class Effects {
 		}
 	}
 
-	/** Thunderclap: a crack of thunder that hurts and hurls everything around the point. */
+	/** Ticks between Thunderclap's flash and its crack. */
+	static final int CLAP_DELAY = 5;
+
+	/**
+	 * Thunderclap: a flash, then (a fifth of a second later) the crack: 5 damage to everything around the point, which
+	 * is staggered for half a second (a real stun on mobs) and, if a mob, forgets who it was hunting; the throw is short
+	 * (Repel throws, this one stops). The delay is the warning.
+	 */
 	private static void thunderclap(Cast cast, Vec3 point, double radius, double power) {
-		Vfx.thunderclap(cast.level, point, radius);
-		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
-			LivingEntity t = (LivingEntity) e;
-			hurt(cast, t, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 5 * power * Reactions.storm(cast, t));
-			Vec3 away = horizontal(t.position().subtract(point), cast.caster.getLookAngle());
-			push(t, away.scale(2.0 * power).add(0, 0.5, 0));
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 20, 3, false, false));
-			Reactions.mark(t, Reactions.Mark.WINDSWEPT);
-		}
+		ElementFx.groundRing(cast.level, point, ElementFx.STORM.secondary(), radius * 1.2, 0.3, 0.06, CLAP_DELAY);
+		Scheduler.later(CLAP_DELAY, carryContext(() -> {
+			if (!cast.alive()) {
+				return;
+			}
+			List<LivingEntity> caught = enemiesAround(cast, point, radius);
+			Vfx.thunderclap(cast.level, point, radius, !caught.isEmpty());
+			for (LivingEntity t : caught) {
+				hurt(cast, t, cast.level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 5 * power * Reactions.storm(cast, t));
+				Vec3 away = horizontal(t.position().subtract(point), cast.caster.getLookAngle());
+				push(t, away.scale(0.8 * Math.sqrt(power)).add(0, 0.3, 0));
+				Spirits.hold(t, 10);
+				if (t instanceof Mob mob) {
+					mob.setTarget(null);
+				}
+				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+			}
+		}));
 	}
 
 	/** Starfall: stars rain down around the point over two seconds. */
@@ -1084,6 +1112,7 @@ public final class Effects {
 		}
 		net.minecraft.core.Direction face = hit.face() == null ? net.minecraft.core.Direction.UP : hit.face();
 		BlockPos center = hit.block();
+		int mined = 0;
 		for (int a = -1; a <= 1; a++) {
 			for (int b = -1; b <= 1; b++) {
 				BlockPos p = switch (face.getAxis()) {
@@ -1099,10 +1128,14 @@ public final class Effects {
 				if (mayEdit(cast, p)) {
 					cast.level.destroyBlock(p, true, cast.caster);
 					magicBreak(cast.level, p);
+					mined++;
 				}
 			}
 		}
-		Vfx.tremor(cast.level, Vec3.atCenterOf(center), 1.5);
+		// Digging is not an earthquake: a cracked seal where it dug (nothing at all if nothing gave), and no shake.
+		if (mined > 0) {
+			ElementFx.crack(cast.level, Vec3.atCenterOf(center), 1.2, 20);
+		}
 	}
 
 	/** Shock: a small zap that arcs on to the nearest other enemy. */
@@ -1110,12 +1143,41 @@ public final class Effects {
 		ServerLevel level = cast.level;
 		Vfx.shockArc(level, target.getBoundingBox().getCenter().add(0, 1.2, 0), target.getBoundingBox().getCenter());
 		hurt(cast, target, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 4 * power * Reactions.storm(cast, target));
-		Entity next = level.getEntities(target, target.getBoundingBox().inflate(4.0), e -> Targets.canHarm(cast.caster, e))
-			.stream().min(java.util.Comparator.comparingDouble(e -> e.distanceToSqr(target))).orElse(null);
+		// The arc looks for a conductor first (a wet enemy, or one in metal armour) within 5; else the nearest within 4.
+		LivingEntity next = null;
+		boolean conductor = false;
+		double best = Double.MAX_VALUE;
+		for (Entity e : level.getEntities(target, target.getBoundingBox().inflate(5.0), e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e))) {
+			LivingEntity other = (LivingEntity) e;
+			double d = other.distanceToSqr(target);
+			boolean conducts = conducts(other);
+			if (d > 25 || (!conducts && d > 16) || (conducts != conductor ? !conducts : d >= best)) {
+				continue;
+			}
+			next = other;
+			conductor = conducts;
+			best = d;
+		}
 		if (next != null) {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
-			hurt(cast, (LivingEntity) next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), 3 * power);
+			hurt(cast, next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), (conductor ? 4 : 3) * power * Reactions.storm(cast, next));
 		}
+	}
+
+	/** Whether something carries a shock on: standing wet, or in two or more pieces of metal armour. */
+	private static boolean conducts(LivingEntity e) {
+		if (WorldMagic.wet(e)) {
+			return true;
+		}
+		int metal = 0;
+		for (net.minecraft.world.entity.EquipmentSlot slot : new net.minecraft.world.entity.EquipmentSlot[] {net.minecraft.world.entity.EquipmentSlot.HEAD,
+				net.minecraft.world.entity.EquipmentSlot.CHEST, net.minecraft.world.entity.EquipmentSlot.LEGS, net.minecraft.world.entity.EquipmentSlot.FEET}) {
+			String path = BuiltInRegistries.ITEM.getKey(e.getItemBySlot(slot).getItem()).getPath();
+			if (path.startsWith("iron_") || path.startsWith("chainmail_") || path.startsWith("golden_") || path.startsWith("copper_")) {
+				metal++;
+			}
+		}
+		return metal >= 2;
 	}
 
 	/** Meteor: a burning rock falls for half a second, then bursts. */

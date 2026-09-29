@@ -393,6 +393,8 @@ final class FusedFrost {
 			int hold = Effects.ticks(t instanceof Player ? 1 : 2, duration);
 			Spirits.hold(t, hold);
 			still(t);
+			// The stone is brittle: whatever follows lands 20% harder for as long as it holds.
+			Reactions.mark(t, Reactions.Mark.CRACKED, Math.max(1, hold - 4));
 			FusedFrostVfx.fossilizeStone(level, t, hold);
 			Scheduler.later(hold, Effects.carryContext(() -> {
 				if (!current(key, token)) {

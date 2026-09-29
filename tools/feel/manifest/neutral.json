@@ -1,0 +1,27 @@
+{
+  "events": {
+    "link_ting": {
+      "attenuation": 0,
+      "files": [
+        "kit/neutral/link_ting"
+      ],
+      "subtitle": "tell"
+    },
+    "ready_ping": {
+      "attenuation": 0,
+      "files": [
+        "kit/neutral/ready_ping"
+      ],
+      "subtitle": "tell"
+    },
+    "tap_release": {
+      "attenuation": 0,
+      "files": [
+        "kit/neutral/tap_release_1",
+        "kit/neutral/tap_release_2"
+      ],
+      "subtitle": "cast"
+    }
+  },
+  "part": "neutral"
+}

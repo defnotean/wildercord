@@ -34,7 +34,18 @@ import net.minecraft.world.phys.Vec3;
 public final class Vfx {
 	private Vfx() {}
 
-	public record Theme(int primary, int secondary, ParticleOptions mote, ParticleOptions spark, SoundEvent cast, SoundEvent impact) {
+	public record Theme(int primary, int secondary, ParticleOptions mote, ParticleOptions spark, SoundEvent cast, SoundEvent impact,
+			dev.wildercord.cast.feel.Feel feel) {
+		/** A plain element theme, with no {@link dev.wildercord.cast.feel.Feel} yet. */
+		public Theme(int primary, int secondary, ParticleOptions mote, ParticleOptions spark, SoundEvent cast, SoundEvent impact) {
+			this(primary, secondary, mote, spark, cast, impact, null);
+		}
+
+		/** The same look carrying the feel of the spell it is drawn for (see {@code dev.wildercord.cast.feel}). */
+		public Theme with(dev.wildercord.cast.feel.Feel feel) {
+			return new Theme(primary, secondary, mote, spark, cast, impact, feel);
+		}
+
 		DustParticleOptions dust(float scale) {
 			return new DustParticleOptions(primary, scale);
 		}
@@ -234,13 +245,20 @@ public final class Vfx {
 
 	/** Where a bolt, beam or touch lands: a flare, a shockwave racing out, and sparks. */
 	public static void impact(ServerLevel level, Vec3 at, Theme theme, double size) {
+		dev.wildercord.cast.feel.Feels.impact(level, at, theme, size);
+	}
+
+	/** The plain impact (what {@link #impact} always was), with or without its sound: {@code Feels.impact} decides which. */
+	public static void impactDefault(ServerLevel level, Vec3 at, Theme theme, double size, boolean sound) {
 		Sigils.flash(level, at, theme.primary, (float) (1.5 * size));
 		Light.ring(level, at, UP, theme.primary, 0.15 * size, 1.3 * size, 0.06 * size, 9);
 		Light.ring(level, at, UP.add(0.6, 0, 0.4).normalize(), theme.secondary, 0.1 * size, 0.9 * size, 0.035 * size, 7);
 		radial(level, theme.spark, at, (int) (8 * size), 0.2 * size);
 		radial(level, theme.mote, at, (int) (6 * size), 0.1 * size);
 		emit(level, theme.sparkle(), at, (int) Math.max(1, 3 * size), 0.3 * size, 0.0);
-		Fx.sound(level, at, theme.impact, 0.7F, 1.0F);
+		if (sound) {
+			Fx.sound(level, at, theme.impact, 0.7F, 1.0F);
+		}
 	}
 
 	/**
@@ -261,6 +279,13 @@ public final class Vfx {
 		Light.ring(level, to, dir, theme.secondary, 0.1, 1.1, 0.05, 9);
 		Fx.send(level, theme.trail(to, 8), from.x, from.y, from.z, 4, 0.08, 0.08, 0.08, 0);
 		Fx.sound(level, from, dev.wildercord.content.WildercordSounds.BEAM_FIRE, 0.8F, 1.0F);
+	}
+
+	/** Touch: a small contact, not a beam: a thin thread from the hand, a glow at the palm and a mote or two. */
+	public static void contact(ServerLevel level, Vec3 from, Vec3 to, Theme theme) {
+		Light.ray(level, from, to, theme.primary, 0.05, 4);
+		emit(level, SigilOption.glow(theme.primary, 0.5F), from, 1, 0.0, 0.0);
+		emit(level, theme.mote, from, 2, 0.1, 0.01);
 	}
 
 	/** Burst: a flare, a shell of light (two crossed rings racing out) and a shockwave along the ground. */
@@ -630,7 +655,6 @@ public final class Vfx {
 			double yaw = (level.getRandom().nextDouble() - 0.5) * Math.toRadians(56);
 			fling(level, theme.mote, start, aim.add(side.scale(Math.tan(yaw))).normalize(), 0.4 + level.getRandom().nextDouble() * 0.3);
 		}
-		Fx.sound(level, origin, theme.cast, 0.7F, 1.0F);
 	}
 
 	public static void trailPatch(ServerLevel level, Vec3 patch, Theme theme, int tick) {
@@ -650,7 +674,7 @@ public final class Vfx {
 	public static void wall(ServerLevel level, Vec3 a, Vec3 b, Theme theme, int tick) {
 		Vec3 ab = b.subtract(a);
 		int posts = (int) Math.max(3, ab.length() / 1.5);
-		if (tick % 10 == 0) {
+		if (tick % 8 == 0) {
 			for (int i = 0; i <= posts; i++) {
 				Vec3 base = a.add(ab.scale(i / (double) posts));
 				Light.ray(level, base, base.add(0, 3.0, 0), theme.primary, 0.22, 14);
@@ -659,7 +683,7 @@ public final class Vfx {
 			Light.ray(level, a.add(0, 3.0, 0), b.add(0, 3.0, 0), theme.secondary, 0.11, 14);
 			Light.ray(level, a.add(0, 1.55, 0), b.add(0, 1.55, 0), theme.primary, 0.06, 14);
 		}
-		if (tick % 3 == 0) {
+		if (tick % 4 == 0) {
 			Vec3 p = a.add(ab.scale(level.getRandom().nextDouble())).add(0, level.getRandom().nextDouble() * 2.8, 0);
 			fling(level, theme.mote, p, UP, 0.05);
 		}
@@ -1043,7 +1067,14 @@ public final class Vfx {
 
 	/** Thunderclap: a white flare, a shockwave of light and forks of lightning ripping out over the ground, a puff of thundercloud. */
 	public static void thunderclap(ServerLevel level, Vec3 point, double radius) {
-		ScreenFx.shake(level, point, 0.55F, radius * 3 + 10);
+		thunderclap(level, point, radius, true);
+	}
+
+	/** As above; {@code shake} is false when the clap hit nothing (the ground rumbles for nobody). */
+	public static void thunderclap(ServerLevel level, Vec3 point, double radius, boolean shake) {
+		if (shake) {
+			ScreenFx.shake(level, point, 0.3F, radius * 3 + 10);
+		}
 		Vec3 ground = point.add(0, 0.2, 0);
 		Sigils.flash(level, point.add(0, 1, 0), ElementFx.STORM.secondary(), 2.6F);
 		ElementFx.groundRing(level, point, ElementFx.STORM.primary(), 0.3, radius * 1.3, 0.1, 8);

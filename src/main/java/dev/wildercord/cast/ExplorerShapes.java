@@ -101,7 +101,14 @@ final class ExplorerShapes {
 			sprung[0] = true;
 			Vec3 spot = crossing.getBoundingBox().getCenter();
 			ExplorerVfx.snareSpring(cast.level, a, b, spot, radius, theme);
-			CastEngine.onHit(cast.pulse(), g, new Cast.Hit(CastEngine.inRadius(cast, spot, radius), spot, flat, a, null, null, false), anchored);
+			List<Entity> caught = CastEngine.inRadius(cast, spot, radius);
+			// Tripped: whoever it catches stumbles for a second.
+			for (Entity e : caught) {
+				if (Targets.canHarm(caster, e)) {
+					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 20, 1, false, true));
+				}
+			}
+			CastEngine.onHit(cast.pulse(), g, new Cast.Hit(caught, spot, flat, a, null, null, false), anchored);
 		});
 	}
 

@@ -58,7 +58,7 @@ final class CraftedVfx {
 	static void glaiveLaunch(ServerLevel level, Vec3 origin, Vfx.Theme theme) {
 		glow(level, theme.primary(), origin, 0.6);
 		Fx.sound(level, origin, SoundEvents.PLAYER_ATTACK_SWEEP, 0.8F, 1.3F);
-		Fx.sound(level, origin, theme.cast(), 0.5F, 1.1F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	/** The glaive in flight: two crescent blades spinning flat round a bright hub. */
@@ -96,7 +96,7 @@ final class CraftedVfx {
 		Sigils.send(level, SigilOption.flat(SigilOption.RING, theme.secondary(), (float) (radius * 0.55), delay + 6, -0.05F), feet.add(0, 0.07, 0));
 		Light.groundRing(level, feet, theme.primary(), radius, radius * 0.3, 0.05, 10);
 		Fx.sound(level, feet, SoundEvents.MUD_PLACE, 0.8F, 0.8F);
-		Fx.sound(level, feet, theme.cast(), 0.4F, 0.8F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	/** Every half second while it waits: a pulse closing in, quicker as it's about to go. */
@@ -124,7 +124,7 @@ final class CraftedVfx {
 		Light.ray(level, from, c, theme.primary(), 0.08, 6);
 		Sigils.layer(level, c, unit(c.subtract(from)), SigilOption.TARGET, theme.primary(), (float) Math.max(0.8, target.getBbWidth() + 0.4), 10, 0.2F);
 		Fx.sound(level, c, SoundEvents.LEAD_TIED, 0.8F, 1.4F);
-		Fx.sound(level, from, theme.cast(), 0.4F, 1.3F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	/** The thread, redrawn as it follows its creature: a thin line of light with a bead running along it. */

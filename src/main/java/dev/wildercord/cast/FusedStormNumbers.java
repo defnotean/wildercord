@@ -10,7 +10,7 @@ final class FusedStormNumbers {
 	private FusedStormNumbers() {}
 
 	// ---- Riftbolt
-	static final double RIFTBOLT_DAMAGE = 6;
+	static final double RIFTBOLT_DAMAGE = 7;
 	/** How far the rift can carry its target, in blocks. */
 	static final double RIFT_REACH = 5;
 	static final double RIFT_DARKNESS_SECONDS = 3;
@@ -21,13 +21,15 @@ final class FusedStormNumbers {
 	static final double WEAVE_RADIUS = 6;
 	/** "A moment later": ticks between the marks and the lightning. */
 	static final int WEAVE_DELAY = 15;
+	/** What a lone target takes on top: the lightning grounds through it. */
+	static final int WEAVE_ANCHOR = 2;
 
-	/** What each enemy caught in a web of {@code caught} takes: 3, and 1 more for every other one caught with it. */
+	/** What each enemy caught in a web of {@code caught} takes: 4, and 1 more for every other one caught with it. */
 	static double weaveDamage(int caught) {
 		if (caught <= 0) {
 			return 0;
 		}
-		return 3 + (Math.min(caught, WEAVE_MAX) - 1);
+		return 4 + (Math.min(caught, WEAVE_MAX) - 1);
 	}
 
 	// ---- Stormclock
@@ -55,7 +57,7 @@ final class FusedStormNumbers {
 	}
 
 	// ---- Thunderhead
-	static final double CLOUD_STRIKE_DAMAGE = 3;
+	static final double CLOUD_STRIKE_DAMAGE = 2;
 	static final double CLOUD_REACH = 4;
 	static final double CLOUD_SECONDS = 4;
 	/** How far over its target's head a cloud hangs (lower under a ceiling). */

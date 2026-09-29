@@ -19,7 +19,7 @@ class WorldRulesTest {
 		assertEquals(CONDUCT, WorldRules.of(LIGHTNING));
 		assertEquals(CONDUCT, WorldRules.of(SHOCK));
 		assertEquals(GUST, WorldRules.of(PUSH));
-		assertEquals(HEAVE, WorldRules.of(TREMOR));
+		assertEquals(HEAVE, WorldRules.of(AFTERSHOCK));
 		assertEquals(WorldRules.Interaction.BLOOM, WorldRules.of(HEAL));
 		assertEquals(DRAW, WorldRules.of(PULL));
 		assertEquals(AGE, WorldRules.of(COUNTDOWN));

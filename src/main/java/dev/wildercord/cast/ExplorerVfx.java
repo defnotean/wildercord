@@ -457,6 +457,12 @@ final class ExplorerVfx {
 		sound(level, top, SoundEvents.POINTED_DRIPSTONE_FALL, 0.8F, 1.0F);
 	}
 
+	/** A stalactite that fell on nobody: it shatters on the ground where it was aimed. */
+	static void stalactiteMiss(ServerLevel level, Vec3 spot) {
+		ElementFx.stoneShards(level, spot.add(0, 0.2, 0), Blocks.DRIPSTONE_BLOCK.defaultBlockState(), 8, 0.15);
+		sound(level, spot, SoundEvents.POINTED_DRIPSTONE_LAND, 0.7F, 0.9F);
+	}
+
 	static void stalactite(ServerLevel level, LivingEntity t) {
 		Vec3 head = t.position().add(0, t.getBbHeight(), 0);
 		ElementFx.ray(level, head.add(0, 4, 0), head, ElementFx.EARTH.secondary(), 0.18, 4);

@@ -1,0 +1,22 @@
+{
+  "events": {
+    "fire_flick": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_flick_1",
+        "kit/fire/fire_flick_2",
+        "kit/fire/fire_flick_3"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_whump": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_whump_1",
+        "kit/fire/fire_whump_2"
+      ],
+      "subtitle": "hit"
+    }
+  },
+  "part": "fire"
+}
