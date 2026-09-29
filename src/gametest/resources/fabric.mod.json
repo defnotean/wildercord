@@ -25,7 +25,9 @@
 			"dev.wildercord.gametest.WildercordFusedStormTest",
 			"dev.wildercord.gametest.WildercordFusedLifeTest",
 			"dev.wildercord.gametest.WildercordFusedVoidTest",
+			"dev.wildercord.gametest.WildercordReactionsTest",
 			"dev.wildercord.gametest.WildercordOitTest",
+			"dev.wildercord.gametest.WildercordTravelTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

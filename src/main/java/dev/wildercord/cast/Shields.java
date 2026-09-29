@@ -108,8 +108,10 @@ public final class Shields {
 		List<String> runes = cast.info.spell().isEmpty() ? List.of(dev.wildercord.spell.Runes.SHIELD.id())
 			: cast.info.spell().stream().map(dev.wildercord.spell.RuneDef::id).toList();
 		give(t, strength, ticks, runes);
-		if (cast.caster instanceof ServerPlayer && !cast.passive) {
-			// Raised by hand: for the next moment it can parry, and so it can a spell already on its way.
+		if (cast.caster instanceof ServerPlayer && !cast.passive && t instanceof ServerPlayer) {
+			// Raised by hand: for the next moment it can parry, and so it can a spell already on its way. Only a
+			// player parries: a turned spell becomes the parrier's, and a pet's would be a monster's (sparing
+			// monsters and hitting players).
 			RAISED.put(t.getUUID(), now);
 			prime(cast.level, t, now);
 		}

@@ -4,7 +4,110 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+- **Travel commands for servers**: `/sethome`, `/home`, `/delhome` and `/homes` (3 homes each); public warps
+  (`/warp`, `/warps`, and `/setwarp` and `/delwarp` for operators); personal waypoints (`/waypoint add`, `remove`,
+  `list`, `track`, `untrack` and `share`), with an arrow, name and distance in the top-left corner and a faint beam
+  only you can see; teleport requests (`/tpa`, `/tpahere`, `/tpaccept`, `/tpdeny`, `/tpcancel`, `/tptoggle`) with
+  clickable answers; `/back` (to before your last teleport, or where you died), `/spawn` and `/rtp`. Every teleport
+  forms a magic circle at your feet for a 3-second warmup (moving or being hurt cancels it), has a cooldown, lands
+  on safe ground and works across worlds, and none can be used in a duel. Operators skip the warmup and
+  cooldowns. Server owners can change the limits and times, or switch it all off, in the new `travel` section of
+  the config. See [Getting Around](https://defnotean.github.io/wildercord/social/travel/).
+- **Six new element reactions, so every element takes part.** Each has its own burst, its name in
+  bold, a place in the Grimoire (150 mana the first time), an advancement and Runesmith contracts:
+  - **Overload**: storm on a burning foe blows the flames apart: +30%, and 4 damage to every other
+    enemy within 3 blocks, thrown back. The fire goes out.
+  - **Fracture**: earth on a frozen foe cracks the ice: +40%, and for 5 seconds it's *cracked*: every
+    spell hits it 20% harder, a friend's included.
+  - **Blight**: life on a *shadowed* foe (hexed, blinded, withered, or in Hush, Eclipse, Echolocate,
+    Resonant Shriek, Blackflame or Entropy) turns the darkness to rot: 3 damage and poison to it and
+    up to 5 foes around it, and you heal 1 for each (once a second at most).
+  - **Unweave**: arcane on a foe carrying two marks or more undoes them all, +30% for each (up to
+    +120%).
+  - **Rupture**: wind on a *bleeding* foe (Bleed, Rend, Cleave, Dismantle, Crimson Mist, Bonespur)
+    tears the wound open: +50%, 4 more through armour, and you heal 2 (once a second at most).
+  - **Elapse**: time on a burning, poisoned or withering foe lands everything they still had to deal
+    at once, half again as hard (3 to 16).
+- Rune tooltips in the Cord screen now say which of these a rune plays a part in: *"Leaves foes
+  bleeding: wind damage on them sets off Rupture"*, *"On a frozen foe it sets off Fracture"*.
+- Bolts of the right elements colliding in the air set off the new reactions too (fire and storm,
+  earth and frost, life and void, blood and wind, fire and time).
+- **Chain Reaction**, an advancement for setting off every reaction.
+
+### Changed
+- Joining a server whose Wildercord is **older** than yours (from before the version check) now says so in chat too,
+  a few seconds after you join.
+- **Cryostasis holds for 4 seconds at most**, however far Extend stretches it (three Extends made it 16 seconds
+  of being untouchable), and nobody can cast from inside the ice: it's a moment's shelter, not a fortress.
+- The 6th Heart Circle asks for **five different reactions** (any five of the eleven) instead of all
+  of them, so it's no harder to reach than before.
+- **Prismatic Burst** also uses up the new marks (cracked, shadowed, bleeding); it still deals at most 22.
+
 ### Fixed
+- Other players no longer see your Cord vanish from your wrist for a moment after you respawn.
+- **Fused runes skipped part of a crowd.** Cast into more than eight enemies at once (a Domain or a big
+  Burst), Firestorm, Absolute Zero, Frostbite, Riftbolt, Heartstopper, Stormclock, Sanguine Rite and
+  Timesteal did nothing at all to every enemy past the eighth, and Lifebloom didn't heal allies past the
+  eighth. Every target now takes the hit; only the lasting and spreading parts (the fire leaping on, the
+  cold setting in, the rift, the skipping heart, the bloom) are still kept to the first eight.
+- **A teammate sealed in Cryostasis could be pulled into a wall.** If they went through a portal while
+  sealed, the ice kept pulling them back to the spot where they were sealed, but in the new world, so they
+  could land inside rock or over lava. The seal now breaks when they leave the world it was cast in, and
+  Frostbloom and Geode stop answering blows there too.
+- **Magma's burning ground could be parried.** Raising a Shield while standing in it parried its next second
+  of burning (a counter-burst at its caster, and the Parry feat) as if a spell had just arrived. Like every
+  other burning or freezing ground, its later seconds now only meet a Shield as a block. Its cracked, glowing
+  ground also now lasts as long as the magma does, instead of vanishing after 4 seconds when Extend makes it
+  burn longer.
+- A Knot put on the Fusion Altar was called "a silent rune (its add-on is missing)". The altar now says what's
+  really wrong (only effects with an element fuse, and a Knot has no power to rank up).
+- **Passives couldn't be kept running for free any more.** Switching a passive on now pays its first second of
+  upkeep straight away: switched on and off between two seconds, it cast its buffs at full length without ever
+  paying, even with no mana at all.
+- **Borrowed Time's debt can't be dodged.** Casting it again adds to what you still owe (it used to wipe most of
+  it), logging out no longer forgives it, and dying settles it instead of carrying it on after you respawn. Paying
+  it back could also, rarely, crash the server.
+- Pets covered by your Shield no longer parry. A spell a pet turned back spared the monster that cast it and hit
+  players instead; their Shields still block and shatter as before.
+- A Grow cast beside a Rampart no longer crumbles the wall, and a Grow or Collect over a Span no longer takes the
+  bridge away under you.
+- Rewind can't take you back to where you were before you died.
+- A lingering effect's later hits no longer follow a player through a portal, and On Land, On Hurt and On Low
+  Health no longer play their shockwave in the world you left.
+- Stasis ends when its creature is carried to another world, instead of pinning it to the old coordinates there.
+- Relogging no longer resets your imbued items' shared cooldown.
+- Cleave and Aftershock no longer release the imbued weapon in your hand, or roll Fortune twice.
+- Soulfire's mana refund, and Siphon and Imbue in a chorus spell, are capped once per payment: a mana storm's echo or
+  Twin Star no longer gets them a second time.
+- A Spell Scroll costs twice what its spell costs you to cast, as the Cord screen shows it: the server's cost
+  multiplier, your discounts and a found secret's price now count.
+- Holding the cast key with the Tome of the Fifth Page's spell selected but the tome put away now charges your next
+  spell, as a tap casts it.
+- A cracked Heart Circle no longer adds to your innate rune's power.
+- Rebirth no longer saves you from /kill or the void.
+- In singleplayer, chest loot in a world opened after editing `wildercord.json` uses the new settings (it kept the
+  old ones until /reload). A dedicated server no longer logs every config warning twice.
+- Shift-clicking a Cord into its slot works alongside mods that add their own inventory slots.
+- **Tooltips ran off the side of the screen.** A tooltip line was never wrapped, so most rune descriptions (and
+  Imbue's, several hundred pixels long, on any screen) were cut off unless the window was very wide. Tooltips in
+  the Cord screen, the Cosmetics page and the Fusion Altar, and those of the mod's items everywhere, now wrap to
+  fit. One still taller than the window (the mana badge's, on a short window) is cut short at the bottom instead
+  of losing its title and numbers off the top.
+- An add-on's rune drew black-and-magenta squares in the magic circle beside the Cord screen and on the Fusion
+  Altar. It now wears its family's art there, as its circle in the world always did.
+- When the spell HUD had too little room beside the hotbar (a small window with the attack indicator or the
+  off-hand slot on its side), it hid all but one of the spell's runes behind a "+2" even though they fitted.
+- On a window a little too narrow for the spell HUD beside the hotbar's attack indicator (or a left-handed
+  player's off-hand slot), such as 1280x720 or 2560x1440 at the automatic GUI scale, the HUD was drawn over the
+  indicator or slot. It now sits on top of them when there's room beside the hotbar.
+- The spell HUD's hint for an empty spell always said "K", even with the Open Cord key bound to another key.
+- A Cord's beads lit up for three seconds after every respawn, as if it had just been put on (and for a player
+  whose Cord showed up a moment after they came into view).
+- Renaming a spell, then picking another spell before pressing Enter, gave the name to the other spell. Picking
+  another spell now drops the name being typed.
+- After leaving a world, the next one could show the last world's ley lines until it sent its own (on a server
+  that never does, for good).
 - **A finished contract you hadn't handed in yet vanished at dawn**, reward and all. It now stays on the
   Scribing Desk's board, in place of one of the new day's contracts, until you hand it in.
 - **Bosses could be led out of their arenas**: any of them through a Nether portal (its altar or lectern then

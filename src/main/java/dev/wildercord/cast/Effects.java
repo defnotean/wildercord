@@ -273,6 +273,7 @@ public final class Effects {
 			});
 			case "wither" -> harmed.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.WITHER, ticks(8, duration), 2, false, true), caster);
+				Reactions.mark(t, Reactions.Mark.SHADOWED, ticks(8, duration));
 				Vfx.wither(level, t);
 			});
 			case "dragon_breath" -> dragonBreath(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power, duration);
@@ -370,6 +371,7 @@ public final class Effects {
 				if (t instanceof net.minecraft.world.entity.Mob mob) {
 					mob.setTarget(null);
 				}
+				Reactions.mark(t, Reactions.Mark.SHADOWED, ticks(5, duration));
 				Vfx.blind(level, t);
 			});
 			case "chill" -> harmed.forEach(t -> {
@@ -631,6 +633,8 @@ public final class Effects {
 		// Fire is weaker on the wet.
 		amount *= WorldMagic.wetDamage(target, currentElement);
 		amount *= AddonRunes.react(cast, target, currentElement);
+		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
+		amount *= Reactions.hit(cast, target, currentElement);
 		amount *= ExplorerEffects.bonus(cast, target, currentElement);
 		// Trial Key: the opening blow on a target still at full health.
 		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {
@@ -878,7 +882,7 @@ public final class Effects {
 		int moved = 0;
 		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(reach),
 				e -> (e instanceof net.minecraft.world.entity.item.ItemEntity || e instanceof net.minecraft.world.entity.ExperienceOrb)
-					&& e.distanceToSqr(point) <= reach * reach && Casters.mayEdit(caster, cast.level, BlockPos.containing(e.position()).below()))) {
+					&& e.distanceToSqr(point) <= reach * reach && onOpenGround(cast, BlockPos.containing(e.position()).below()))) {
 			Vfx.stream(cast.level, e.position(), caster.position().add(0, 1, 0), Vfx.theme("void"), 1);
 			e.teleportTo(caster.getX(), caster.getY() + 0.5, caster.getZ());
 			if (e instanceof net.minecraft.world.entity.item.ItemEntity item) {
@@ -1043,13 +1047,23 @@ public final class Effects {
 		});
 	}
 
+	/** Whether Collect may take what lies on {@code ground}: ground the caster could build on, or a spell's passing Span or Rampart. */
+	private static boolean onOpenGround(Cast cast, BlockPos ground) {
+		if (isTemporary(cast.level, ground)) {
+			return cast.caster instanceof ServerPlayer player && Casters.mayBuild(player) && cast.level.mayInteract(player, ground);
+		}
+		return Casters.mayEdit(cast.caster, cast.level, ground);
+	}
+
 	/** Bone-meals the block that was hit and the ones around it. */
 	private static void grow(Cast cast, Cast.Hit hit, double power) {
 		BlockPos center = targetBlock(hit);
 		int times = (int) Math.round(2 * power);
 		for (BlockPos pos : BlockPos.betweenClosed(center.offset(-1, -1, -1), center.offset(1, 1, 1))) {
 			BlockPos p = pos.immutable();
-			if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
+			// Only what bone meal would grow is asked about (claims hear it as a break, and so do glyphs).
+			if (!(cast.level.getBlockState(p).getBlock() instanceof net.minecraft.world.level.block.BonemealableBlock)
+					|| !Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
 				continue;
 			}
 			boolean grew = false;
@@ -1818,6 +1832,8 @@ public final class Effects {
 		if (HEXED.size() > 256) {
 			HEXED.values().removeIf(h -> h.until() < now);
 		}
+		// A curse leaves it shadowed as long as it lasts: life damage then sets off Blight.
+		Reactions.mark(t, Reactions.Mark.SHADOWED, ticks);
 		ExpansionVfx.hex(cast.level, t, ticks);
 	}
 
@@ -1843,8 +1859,9 @@ public final class Effects {
 
 	private static final Identifier REND_ID = Wildercord.id("rend");
 
-	/** Rend: less armour for a while. */
+	/** Rend: less armour for a while, and torn open (bleeding: wind damage on it sets off Rupture). */
 	private static void rend(Cast cast, LivingEntity t, int ticks) {
+		Reactions.mark(t, Reactions.Mark.BLEEDING);
 		if (t.getAttribute(Attributes.ARMOR) == null) {
 			return;
 		}
@@ -1877,6 +1894,8 @@ public final class Effects {
 	private static void bleed(Cast cast, LivingEntity t, double power, int wounds) {
 		DamageSource source = cast.level.damageSources().indirectMagic(cast.caster, cast.caster);
 		ExpansionVfx.bleed(cast.level, t, true);
+		// Bleeding for as long as the wound runs: wind damage on it sets off Rupture.
+		Reactions.mark(t, Reactions.Mark.BLEEDING, wounds * 10 + 10);
 		hurt(cast, t, source, 2 * power);
 		for (int i = 1; i <= wounds; i++) {
 			Scheduler.later(i * 10, () -> {

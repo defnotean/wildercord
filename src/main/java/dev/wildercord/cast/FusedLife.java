@@ -86,14 +86,13 @@ final class FusedLife {
 			case "transfusion" -> transfusion(cast, helped, power);
 			case "lifebloom" -> {
 				double radius = 3.0 * SpellNumbers.effectRadius(node);
-				for (LivingEntity t : first(helped)) {
-					lifebloom(cast, t, power, Effects.ticks(5, duration), radius);
+				for (int i = 0; i < helped.size(); i++) {
+					lifebloom(cast, helped.get(i), power, Effects.ticks(5, duration), radius, i < MAX_TARGETS);
 				}
 			}
 			case "bonespur" -> bonespur(cast, hit, 4.0 * SpellNumbers.effectRadius(node), power, Effects.ticks(3, duration));
 			case "sanguine_rite" -> {
-				List<LivingEntity> targets = first(harmed);
-				if (targets.isEmpty()) {
+				if (harmed.isEmpty()) {
 					// Nothing to strike, nothing asked: the rite takes blood only when it has a victim.
 					return true;
 				}
@@ -104,8 +103,12 @@ final class FusedLife {
 					return true;
 				}
 				FusedLifeVfx.sanguineSigil(level, caster);
-				for (LivingEntity t : targets) {
-					FusedLifeVfx.sanguineLance(level, caster, t);
+				// Every victim is struck; only the first few are drawn a lance of their own.
+				for (int i = 0; i < harmed.size(); i++) {
+					LivingEntity t = harmed.get(i);
+					if (i < MAX_TARGETS) {
+						FusedLifeVfx.sanguineLance(level, caster, t);
+					}
 					// Indirect magic: straight through armour.
 					Effects.hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 12 * power);
 				}
@@ -274,6 +277,8 @@ final class FusedLife {
 			touched++;
 			if (enemy) {
 				FusedLifeVfx.crimsonMistBleed(level, t);
+				// Bleeding while it stands in the mist: wind damage on it sets off Rupture.
+				Reactions.mark(t, Reactions.Mark.BLEEDING, 30);
 				Effects.hurt(cast, t, level.damageSources().indirectMagic(cast.caster, cast.caster), 1 * mist.power);
 			} else if (t.getHealth() < t.getMaxHealth()) {
 				t.heal((float) (1 * mist.power));
@@ -804,10 +809,14 @@ final class FusedLife {
 	/**
 	 * Lifebloom: heals at once, then a little every second; when it fades it bursts, healing every ally
 	 * around. Cast again on a blooming ally, it heals at once and the bloom starts over (one burst, not two).
+	 * Every ally is healed at once; only if {@code blooms} (the first few of a crowd) does the bloom open.
 	 */
-	private static void lifebloom(Cast cast, LivingEntity t, double power, int ticks, double radius) {
+	private static void lifebloom(Cast cast, LivingEntity t, double power, int ticks, double radius, boolean blooms) {
 		ServerLevel level = cast.level;
 		t.heal((float) (4 * power));
+		if (!blooms) {
+			return;
+		}
 		FusedLifeVfx.lifebloomOpen(level, t);
 		// Counted in whole seconds, so it's always exactly that many heals, however the ticks fall.
 		int beats = Math.max(1, (int) Math.round(ticks / 20.0));
@@ -901,6 +910,8 @@ final class FusedLife {
 	private static void bleed(Cast cast, LivingEntity t, double power, int ticks) {
 		Object token = new Object();
 		BLEEDING.put(t.getUUID(), token);
+		// Bleeding as long as it runs: wind damage on it sets off Rupture.
+		Reactions.mark(t, Reactions.Mark.BLEEDING, ticks + 10);
 		ServerLevel level = cast.level;
 		DamageSource source = level.damageSources().indirectMagic(cast.caster, cast.caster);
 		int wounds = Math.max(1, (int) Math.round(ticks / 20.0));

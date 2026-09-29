@@ -94,6 +94,7 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			check(context, world, failures, "Lifebloom", WildercordFusedLifeTest::lifebloom);
 			check(context, world, failures, "Bonespur", WildercordFusedLifeTest::bonespur);
 			check(context, world, failures, "Sanguine Rite", WildercordFusedLifeTest::sanguineRite);
+			check(context, world, failures, "A crowd of ten", WildercordFusedLifeTest::crowd);
 			if (!failures.isEmpty()) {
 				throw new AssertionError("The fused runes of life and blood went wrong:\n  " + String.join("\n  ", failures));
 			}
@@ -509,6 +510,35 @@ public class WildercordFusedLifeTest implements FabricClientGameTest {
 			float lost = h == null || !h.isAlive() ? 20 : h.getMaxHealth() - h.getHealth();
 			if (lost < 11) {
 				out.add("the husk the Beam struck should take about 12 through its armour (lost " + lost + ")");
+			}
+			return out;
+		}));
+	}
+
+	/**
+	 * A crowd of ten, more than the eight that get a lasting part of their own: one Sanguine Rite strikes every
+	 * husk for 12 (the caster paying 3 once), and one Lifebloom heals every wolf 4 at once.
+	 */
+	private static void crowd(ClientGameTestContext context, TestSingleplayerContext world, List<String> failures) {
+		failures.addAll(world.getServer().computeOnServer(server -> {
+			List<String> out = new ArrayList<>();
+			ServerPlayer player = player(server);
+			List<Mob> husks = new ArrayList<>();
+			List<Wolf> wolves = new ArrayList<>();
+			for (int i = 0; i < 10; i++) {
+				husks.add(husk(player.level(), -9 + 2 * i, 6));
+				Wolf wolf = wolf(player, -9 + 2 * i, -6);
+				wolf.setHealth(10);
+				wolves.add(wolf);
+			}
+			land(player, Runes.BURST, Runes.SANGUINE_RITE, husks, player.position(), false);
+			near(out, "the caster, after one rite on ten husks", player, 17);
+			for (int i = 0; i < husks.size(); i++) {
+				near(out, "husk " + (i + 1) + " of ten, after the rite", husks.get(i), 8);
+			}
+			land(player, Runes.BURST, Runes.LIFEBLOOM, wolves, player.position(), false);
+			for (int i = 0; i < wolves.size(); i++) {
+				near(out, "wolf " + (i + 1) + " of ten, just after Lifebloom", wolves.get(i), 14);
 			}
 			return out;
 		}));

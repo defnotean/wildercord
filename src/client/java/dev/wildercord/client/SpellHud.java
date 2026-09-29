@@ -20,8 +20,10 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * The spell panel right of the hotbar, bottom-aligned with it:
@@ -31,8 +33,9 @@ import java.util.Locale;
  *  ╰────╯ 112/300                 1.2s
  *   • • ·   (one dot per spell the Cord holds)
  * </pre>
- * Everything is laid out from measured text widths and moves aside for an offhand slot or
- * attack indicator on the right, so it stays clean at every GUI scale. Hidden without a Cord.
+ * Everything is laid out from measured text widths and moves aside for (or, short of room, on top
+ * of) an offhand slot or attack indicator on the right, so it stays clean at every GUI scale.
+ * Hidden without a Cord.
  */
 public final class SpellHud {
 	private SpellHud() {}
@@ -46,6 +49,8 @@ public final class SpellHud {
 	private static final int HEIGHT = 32;
 	private static final int BODY_X = 28;
 	private static final int MIN_BODY = 58;
+	/** How far the panel is lifted to clear an offhand slot or attack indicator (both at most 24 tall). */
+	private static final int RAISE = 24;
 
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int LAVENDER = 0xFFB8A8FF;
@@ -54,12 +59,51 @@ public final class SpellHud {
 
 	/** Smoothed mana so the bar glides instead of jumping in quarter-second steps. */
 	private static float shownMana = -1;
+	/** Spells already read, by their runes: reading one writes out its whole readout, too much to redo every frame. */
+	private static final Map<List<RuneDef>, SpellCompiler.Compiled> READ = new HashMap<>();
 
 	public static void init() {
 		HudElementRegistry.attachElementAfter(VanillaHudElements.HOTBAR, Wildercord.id("spell_hud"), SpellHud::extract);
 		// A Domain's tint goes under everything else on the HUD.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
 			(g, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(g));
+	}
+
+	/** The panel's left edge, and whether it's lifted by {@link #RAISE}. */
+	record Place(int x, boolean raised) {}
+
+	/**
+	 * Where the panel goes on a screen {@code guiWidth} wide, beside the hotbar and past whatever sits
+	 * on its side ({@code aside} pixels: an offhand slot or attack indicator). Short of room there but
+	 * not beside the hotbar itself, it sits on top of them instead. Shorter still of room, it's tucked
+	 * into the corner once its width is known.
+	 *
+	 * @param narrowest the narrowest the panel can get (its bottom row, with runes left out)
+	 */
+	static Place place(int guiWidth, int aside, int narrowest) {
+		int besideHotbar = guiWidth / 2 + 91 + 5;
+		if (aside > 0 && guiWidth - (besideHotbar + aside) - 2 < narrowest && guiWidth - besideHotbar - 2 >= narrowest) {
+			return new Place(besideHotbar, true);
+		}
+		return new Place(besideHotbar + aside, false);
+	}
+
+	/** On leaving a world: the next one's mana bar starts from its own mana, not glides from this one's. */
+	static void forget() {
+		shownMana = -1;
+	}
+
+	/** {@code runes} read as a spell, remembered while they stay the same (the HUD and the wheel draw every frame). */
+	static SpellCompiler.Compiled read(List<RuneDef> runes) {
+		SpellCompiler.Compiled compiled = READ.get(runes);
+		if (compiled == null) {
+			if (READ.size() >= 32) {
+				READ.clear();
+			}
+			compiled = SpellCompiler.compile(runes);
+			READ.put(List.copyOf(runes), compiled);
+		}
+		return compiled;
 	}
 
 	private static void sprite(GuiGraphicsExtractor g, Identifier id, int x, int y, int w, int h) {
@@ -83,7 +127,7 @@ public final class SpellHud {
 		boolean tome = dev.wildercord.gear.Gear.tome(player);
 		int spell = dev.wildercord.gear.Gear.spellOpen(player, tier, book.selected()) ? book.selected() : Math.min(book.selected(), tier.spells - 1);
 		List<RuneDef> runes = SpellCaster.activeRunes(book, spell, tier);
-		SpellCompiler.Compiled compiled = runes.isEmpty() ? null : SpellCompiler.compile(runes);
+		SpellCompiler.Compiled compiled = runes.isEmpty() ? null : read(runes);
 		Mana.Stats stats = Mana.of(player);
 		int maxMana = Math.max(1, stats.max());
 		float mana = Spellbooks.mana(player);
@@ -98,17 +142,24 @@ public final class SpellHud {
 		long remaining = Spellbooks.readyAt(player, spell) - player.level().getGameTime();
 		boolean cooling = compiled != null && remaining > 0;
 
+		// The bottom row holds the mana count (and its boost chevron) and, on the right, the charge,
+		// the cooldown or the passives' drain: the panel is never narrower than both side by side.
+		int row3 = font.width(maxMana + "/" + maxMana) + 6 + 4
+			+ Math.max(font.width("100%"), Math.max(font.width("FULL"), font.width("20.0s")));
+		int narrowest = BODY_X + Math.max(row3, MIN_BODY) + 4;
+
 		// ---- where: right of the hotbar, clear of an offhand slot or attack indicator on that side.
-		int center = g.guiWidth() / 2;
-		int x0 = center + 91 + 5;
+		int aside = 0;
 		HumanoidArm offhandSide = player.getMainArm().getOpposite();
 		if (offhandSide == HumanoidArm.RIGHT && !player.getOffhandItem().isEmpty()) {
-			x0 += 29;
+			aside += 29;
 		}
 		if (offhandSide == HumanoidArm.LEFT && mc.options.attackIndicator().get() == AttackIndicatorStatus.HOTBAR) {
-			x0 += 23;
+			aside += 23;
 		}
-		int y0 = g.guiHeight() - HEIGHT;
+		Place place = place(g.guiWidth(), aside, narrowest);
+		int x0 = place.x();
+		int y0 = g.guiHeight() - HEIGHT - (place.raised() ? RAISE : 0);
 		int avail = g.guiWidth() - x0 - 2;
 
 		// ---- how wide: measured, then shrunk to fit.
@@ -117,17 +168,15 @@ public final class SpellHud {
 		int costW = font.width(cost);
 		int iconSize = 10;
 		int shown = runes.size();
-		// The bottom row holds the mana count (and its boost chevron) and, on the right, the charge,
-		// the cooldown or the passives' drain: the panel is never narrower than both side by side.
-		int row3 = font.width(maxMana + "/" + maxMana) + 6 + 4
-			+ Math.max(font.width("100%"), Math.max(font.width("FULL"), font.width("20.0s")));
 		int bodyW = Math.max(row3, bodyWidth(shown, iconSize, costW, font));
-		if (BODY_X + bodyW + 4 > avail) {
+		// Smaller icons, then fewer, only while the runes are what makes the panel too wide: once the
+		// bottom row sets its width, hiding runes wins nothing (the panel is tucked aside below instead).
+		if (BODY_X + bodyW + 4 > avail && bodyW > row3) {
 			iconSize = 8;
 			bodyW = Math.max(row3, bodyWidth(shown, iconSize, costW, font));
 		}
 		String more = "";
-		while (shown > 1 && BODY_X + bodyW + 4 > avail) {
+		while (shown > 1 && BODY_X + bodyW + 4 > avail && bodyW > row3) {
 			shown--;
 			more = "+" + (runes.size() - shown);
 			bodyW = Math.max(row3, Math.max(MIN_BODY, shown * iconSize + 2 + font.width(more) + 4 + costW));
@@ -203,7 +252,8 @@ public final class SpellHud {
 		int rx = x0 + BODY_X;
 		int rowY = y0 + 4;
 		if (compiled == null) {
-			g.text(font, "K", rx, rowY + 1, DIM, true);
+			// No spell yet: the key that opens the Cord screen to thread one, as it's bound now.
+			g.text(font, font.plainSubstrByWidth(WildercordKeys.openKey().getString(), bodyW), rx, rowY + 1, DIM, true);
 		} else {
 			float scale = iconSize / 16.0F;
 			g.pose().pushMatrix();

@@ -37,9 +37,16 @@ public final class GuiSpellCircle {
 		return Wildercord.id("textures/particle/circle/" + rune.path() + "_" + part + ".png");
 	}
 
-	/** Whose ring and emblem a rune wears: its own, or for a Knot (a spell tied up, like a link) the links' shared ones. */
+	/**
+	 * Whose ring and emblem a rune wears: its own, or for a Knot (a spell tied up, like a link) the links'
+	 * shared ones. An add-on's rune has no art here and wears its family's, as its circle in the world does
+	 * (see SpellCircleParticle.runeSprite).
+	 */
 	private static String art(RuneDef rune) {
-		return rune.family() == RuneFamily.KNOT ? "_link" : rune.path();
+		if (rune.family() == RuneFamily.KNOT) {
+			return "_link";
+		}
+		return rune.id().startsWith(Wildercord.MOD_ID + ":") ? rune.path() : "_" + rune.family().name().toLowerCase(java.util.Locale.ROOT);
 	}
 
 	/**

@@ -224,7 +224,7 @@ public class SpellWheelScreen extends Screen {
 			g.fill(x - 9, y + 10, x + 9, y + 11, color);
 			long remaining = Spellbooks.readyAt(minecraft.player, slot) - now;
 			if (!runes.isEmpty() && remaining > 0) {
-				int total = Math.max(1, Heart.cooldownTicks(minecraft.player, SpellCompiler.compile(runes), Heart.secretCooldown(minecraft.player, runes)));
+				int total = Math.max(1, Heart.cooldownTicks(minecraft.player, SpellHud.read(runes), Heart.secretCooldown(minecraft.player, runes)));
 				int shade = (int) Math.ceil(24 * Math.min(1.0, remaining / (double) total));
 				g.fill(x - 12, y - 12 + (24 - shade), x + 12, y + 12, 0x90000000);
 			}
@@ -257,7 +257,7 @@ public class SpellWheelScreen extends Screen {
 		if (hovered >= 0 && hovered < n) {
 			List<RuneDef> runes = SpellCaster.activeRunes(book, slots.get(hovered), tier);
 			if (!runes.isEmpty()) {
-				SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
+				SpellCompiler.Compiled compiled = SpellHud.read(runes);
 				// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
 				double secretCost = Heart.secretCost(minecraft.player, runes);
 				String cost = compiled.paysInHealth()

@@ -109,7 +109,7 @@ The Warden's plates turn almost everything:
 | A sword, an axe, an arrow, a trident, a fist: anything that isn't a spell | **Nothing.** A dead clang and a spray of sparks |
 | Fire, lava, burning | **Nothing** |
 | A spell that isn't a reaction | **A tenth** of its damage |
-| A spell that sets off a **reaction** on it (Shatter, Conduct, Wildfire, Implode or Collapse) | **Full damage** (with the reaction's bonus), and its plates **crack open** |
+| A spell that sets off a **reaction** on it (any of them: Shatter, Fracture, Blight, Rupture...) | **Full damage** (with the reaction's bonus), and its plates **crack open** |
 | Any spell while its plates are cracked open | **Full damage** |
 
 A crack stays open for **1.5 seconds**: magma bursts from between its plates and the boss bar says *cracked open!*.
@@ -175,6 +175,13 @@ begins at once.
   | **Implode** | Pull | 2.5 seconds, a blast: Explode or Meteor | `Bolt · Pull · Delay · Bolt · Explode` |
   | **Collapse** | Pull | 2.5 seconds, Repel | `Bolt · Pull · Delay · Bolt · Repel` |
   | **Conduct** | Soak it: Mire, Undertow or another soaking spell (there's no rain or water in the Nether) | while it's soaked, a storm effect | |
+  | **Fracture** | Frost, Freeze or Chill, as for Shatter | 4 seconds after Frost (2 after Chill), an earth effect | `Bolt · Chill · Pelt` |
+  | **Blight** | Hex or Blind | 8 seconds after Hex (5 after Blind), a life effect that hurts | `Bolt · Hex · Venom` |
+  | **Rupture** | Rend, Bleed or Cleave | 4 seconds after Rend, a wind effect that hurts | `Bolt · Rend · Windcut` |
+  | **Unweave** | Two marks at once: frost and a shove, say | the shorter of the two, an arcane effect | `Bolt · Chill · Push · Harm` |
+
+  Overload and Elapse can't crack it with fire: nothing sets the Warden alight. Wither it, though, and time
+  damage sets off Elapse.
 
 - **Follow up inside the crack.** For 1.5 seconds after a reaction every spell does full damage. Anything that lands
   right after, a Rain strike, a second bolt, a friend's spell, hits in full.

@@ -368,6 +368,38 @@ WORLD_MAGIC_LANG = {
 }
 
 
+# The reactions that joined the first five (cast/Reactions, spell/ReactionRules): their names as they go
+# off, their Grimoire lines, their contracts, and the lines in rune tooltips that say which runes play a part.
+REACTIONS_LANG = {
+    "reaction.wildercord.overload": "Overload!",
+    "reaction.wildercord.fracture": "Fracture!",
+    "reaction.wildercord.blight": "Blight!",
+    "reaction.wildercord.unweave": "Unweave!",
+    "reaction.wildercord.rupture": "Rupture!",
+    "reaction.wildercord.elapse": "Elapse!",
+    "reaction.wildercord.overload.desc": "Storm on a burning target: +30% damage, and the flames burst: 4 damage to every foe within 3 blocks, thrown back. The fire goes out.",
+    "reaction.wildercord.fracture.desc": "Earth on a frozen target: +40% damage, the ice cracks, and for 5 seconds every spell hits it 20% harder.",
+    "reaction.wildercord.blight.desc": "Life on a shadowed target (hexed, blinded, withered...): rot bursts out, 3 damage and poison to it and up to 5 foes around it, and you heal 1 for each (once a second at most).",
+    "reaction.wildercord.unweave.desc": "Arcane on a target with two marks or more: every mark comes undone, +30% damage for each (up to +120%).",
+    "reaction.wildercord.rupture.desc": "Wind on a bleeding target: +50% damage, the wound tears open for 4 more through armour, and you heal 2 (once a second at most).",
+    "reaction.wildercord.elapse.desc": "Time on a burning, poisoned or withering target: all the damage still to come lands at once, half again as much (3 to 16).",
+    "contract.wildercord.reaction.overload": "Overload",
+    "contract.wildercord.reaction.fracture": "Fracture",
+    "contract.wildercord.reaction.blight": "Blight",
+    "contract.wildercord.reaction.unweave": "Unweave",
+    "contract.wildercord.reaction.rupture": "Rupture",
+    "contract.wildercord.reaction.elapse": "Elapse",
+    "tooltip.wildercord.mark.shadowed": "Leaves foes shadowed: life damage on them sets off Blight",
+    "tooltip.wildercord.mark.bleeding": "Leaves foes bleeding: wind damage on them sets off Rupture",
+    "tooltip.wildercord.trigger.overload": "On a burning foe it sets off Overload",
+    "tooltip.wildercord.trigger.fracture": "On a frozen foe it sets off Fracture",
+    "tooltip.wildercord.trigger.blight": "On a shadowed foe (hexed, blinded, withered...) it sets off Blight",
+    "tooltip.wildercord.trigger.unweave": "On a foe with two marks or more (burning, frozen, bleeding...) it sets off Unweave",
+    "tooltip.wildercord.trigger.rupture": "On a bleeding foe (cut by Bleed, Rend, Cleave...) it sets off Rupture",
+    "tooltip.wildercord.trigger.elapse": "On a burning, poisoned or withering foe it sets off Elapse",
+}
+
+
 def write_lang(runes):
     lang = {
         "itemGroup.wildercord": "Wildercord",
@@ -614,12 +646,14 @@ def write_lang(runes):
     lang.update(source_lang(runes))
     lang.update(NEW_LANG)
     lang.update(WORLD_MAGIC_LANG)
+    lang.update(REACTIONS_LANG)
     lang.update(WORLD_LANG)
     lang.update(PARRY_AND_WILD_LANG)
     lang.update(advancement_lang())
     lang.update(familiar_lang())
     lang.update(GEAR_LANG)
     lang.update(DUNGEON_LANG)
+    lang.update(TRAVEL_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1221,10 +1255,12 @@ NEW_LANG = {
     "screen.wildercord.grimoire.fusion_unknown": "Not found yet. Try two effects of different elements at a Fusion Altar.",
     "toast.wildercord.fusion": "Fusion: %s",
     "message.wildercord.version_mismatch": "This server runs Wildercord %s, and you have %s. Runes one of them doesn't know show as Silent Runes: install %s to match.",
+    "message.wildercord.version_server_old": "This server runs an older Wildercord than yours (%s). Runes it doesn't know show as Silent Runes: the server needs updating, or install the version it runs.",
     "message.wildercord.version_old": "This server runs Wildercord %s, newer than yours. Update to %s, or runes your version doesn't know will show as Silent Runes.",
     # The fused runes' messages to their caster.
     "message.wildercord.cryostasis_wait": "Too soon to seal %s in ice again (%ss)",
     "message.wildercord.cryostasis_wait_self": "Too soon to seal yourself in ice again (%ss)",
+    "message.wildercord.cryostasis_sealed": "You can't cast from inside the ice",
     "message.wildercord.second_wind": "Second Wind!",
     "message.wildercord.second_wind_spent": "Second Wind has saved them already: again in %s s",
     "message.wildercord.soulbond_alone": "Soulbond needs an ally to bind you to",
@@ -1683,6 +1719,108 @@ DUNGEON_LANG = {
     "subtitles.wildercord.tide_ebb": "The tide ebbs",
 }
 
+# The travel commands: homes, warps, waypoints, teleport requests, /back, /spawn and /rtp (dev.wildercord.travel).
+TRAVEL_LANG = {
+    # Shared by every teleport
+    "message.wildercord.travel.disabled": "Travel commands are turned off on this server",
+    "message.wildercord.travel.duel": "You can't teleport during a duel",
+    "message.wildercord.travel.cooldown": "You can use %s again in %s seconds",
+    "message.wildercord.travel.bad_name": "Names can only use letters, numbers, - and _ (up to %s of them)",
+    "message.wildercord.travel.no_world": "That place is in a world that doesn't exist any more",
+    "message.wildercord.travel.unsafe": "There's no safe ground to land on near %s",
+    "message.wildercord.travel.countdown": "Teleporting to %s in %s... stand still",
+    "message.wildercord.travel.arrived": "Teleported to %s",
+    "message.wildercord.travel.cancel.moved": "Teleport cancelled: you moved",
+    "message.wildercord.travel.cancel.hurt": "Teleport cancelled: you were hurt",
+    "message.wildercord.travel.cancel.duel": "Teleport cancelled: you're in a duel",
+    "message.wildercord.travel.place": "%s, %s, %s in %s",
+    "message.wildercord.travel.go_hover": "Teleport to %s\n%s",
+    "message.wildercord.travel.where.home_default": "your home",
+    "message.wildercord.travel.where.home": "your home %s",
+    "message.wildercord.travel.where.warp": "%s",
+    "message.wildercord.travel.where.spawn": "spawn",
+    "message.wildercord.travel.where.back": "where you were",
+    "message.wildercord.travel.where.random": "somewhere new",
+    # Homes
+    "message.wildercord.travel.home_set_default": "Home set! /home brings you back here",
+    "message.wildercord.travel.home_set": "Home %1$s set! /home %1$s brings you back here",
+    "message.wildercord.travel.home_moved_default": "Your home is here now",
+    "message.wildercord.travel.home_moved": "Home %s is here now",
+    "message.wildercord.travel.homes_full": "You already have %s homes, the most you can have. Set one of them again to move it, or remove one with /delhome",
+    "message.wildercord.travel.homes_off": "Homes are turned off on this server",
+    "message.wildercord.travel.homes_none": "You haven't set a home yet. Stand where you'd like it and type /sethome",
+    "message.wildercord.travel.home_missing": "You don't have a home called %s",
+    "message.wildercord.travel.home_deleted": "Home %s removed",
+    "message.wildercord.travel.home_unsafe": "It isn't safe to land at %s any more, and there's no safe ground near it",
+    "message.wildercord.travel.homes_list": "Your homes (%s of %s): ",
+    # Warps
+    "message.wildercord.travel.warp_set": "Warp %1$s set here. Anyone can go to it with /warp %1$s",
+    "message.wildercord.travel.warp_moved": "Warp %s moved here",
+    "message.wildercord.travel.warp_missing": "There's no warp called %s",
+    "message.wildercord.travel.warp_deleted": "Warp %s removed",
+    "message.wildercord.travel.warps_none": "There are no warps yet",
+    "message.wildercord.travel.warps_list": "Warps (%s): ",
+    # /back, /spawn and /rtp
+    "message.wildercord.travel.back_none": "There's nowhere to go back to yet",
+    "message.wildercord.travel.back_hint": "Type /back to return to where you died",
+    "message.wildercord.travel.back_hover": "Go back to where you died",
+    "message.wildercord.travel.rtp_failed": "Couldn't find a safe spot this time. Try again",
+    "message.wildercord.travel.rtp_landed": "You landed at %s, %s, %s",
+    # Teleport requests
+    "message.wildercord.travel.tpa_self": "You can't send a teleport request to yourself",
+    "message.wildercord.travel.tpa_closed": "%s isn't taking teleport requests",
+    "message.wildercord.travel.tpa_busy": "%s is in a duel right now",
+    "message.wildercord.travel.tpa_asked_to": "%s would like to teleport to you.",
+    "message.wildercord.travel.tpa_asked_here": "%s would like you to teleport to them.",
+    "message.wildercord.travel.tpa_accept": "[Accept]",
+    "message.wildercord.travel.tpa_deny": "[Deny]",
+    "message.wildercord.travel.tpa_accept_hover": "Accept %s's request",
+    "message.wildercord.travel.tpa_deny_hover": "Turn the request down",
+    "message.wildercord.travel.tpa_sent": "Request sent to %s. They have %s seconds to answer (/tpcancel takes it back)",
+    "message.wildercord.travel.tpa_none": "You don't have any teleport requests",
+    "message.wildercord.travel.tpa_none_from": "%s hasn't sent you a request, or it ran out",
+    "message.wildercord.travel.tpa_gone": "That player isn't online any more",
+    "message.wildercord.travel.tpa_accepted": "%s accepted your teleport request",
+    "message.wildercord.travel.tpa_you_accepted": "You accepted %s's request",
+    "message.wildercord.travel.tpa_denied": "%s turned down your teleport request",
+    "message.wildercord.travel.tpa_you_denied": "You turned down %s's request",
+    "message.wildercord.travel.tpa_expired_from": "Your teleport request to %s ran out",
+    "message.wildercord.travel.tpa_expired_to": "The teleport request from %s ran out",
+    "message.wildercord.travel.tpa_cancelled": "You took back your request to %s",
+    "message.wildercord.travel.tpa_withdrawn": "%s took back their teleport request",
+    "message.wildercord.travel.tpa_nothing_out": "You don't have any requests waiting",
+    "message.wildercord.travel.tpa_left": "%s left, so their teleport request was dropped",
+    "message.wildercord.travel.tpa_off": "Teleport requests are off: nobody can send you one. /tptoggle turns them back on",
+    "message.wildercord.travel.tpa_on": "Teleport requests are on again",
+    "message.wildercord.travel.tpa_unsafe": "There's no safe ground near %s to land on",
+    # Waypoints
+    "message.wildercord.travel.waypoint_added": "Waypoint %s added at %s. Show the way: %s",
+    "message.wildercord.travel.waypoint_moved": "Waypoint %s moved to %s. Show the way: %s",
+    "message.wildercord.travel.waypoint_track_hover": "Track %s",
+    "message.wildercord.travel.waypoints_full": "You have %s waypoints, the most you can keep. Remove one with /waypoint remove",
+    "message.wildercord.travel.waypoint_missing": "You don't have a waypoint called %s",
+    "message.wildercord.travel.waypoint_removed": "Waypoint %s removed",
+    "message.wildercord.travel.waypoints_none": "You don't have any waypoints yet. /waypoint add <name> marks where you're standing",
+    "message.wildercord.travel.waypoints_list": "Your waypoints (%s): ",
+    "message.wildercord.travel.waypoint_hover": "%s\nClick to track it",
+    "message.wildercord.travel.waypoint_tracking": "Tracking %s: follow the arrow in the top corner. /waypoint untrack hides it",
+    "message.wildercord.travel.waypoint_untracked": "Stopped tracking %s",
+    "message.wildercord.travel.waypoint_not_tracking": "You aren't tracking a waypoint",
+    "message.wildercord.travel.waypoint_share_self": "You can't share a waypoint with yourself",
+    "message.wildercord.travel.waypoint_shared": "Shared %s with %s",
+    "message.wildercord.travel.waypoint_offer": "%s shared a waypoint with you: %s, at %s.",
+    "message.wildercord.travel.waypoint_offer_add": "[Add]",
+    "message.wildercord.travel.waypoint_offer_hover": "Add %s to your waypoints",
+    # The waypoint line on the HUD
+    "hud.wildercord.waypoint.blocks": "%s blocks",
+    "hud.wildercord.waypoint.here": "you're here",
+    "hud.wildercord.waypoint.elsewhere": "in %s",
+    # Worlds, by name
+    "dimension.wildercord.overworld": "the Overworld",
+    "dimension.wildercord.the_nether": "the Nether",
+    "dimension.wildercord.the_end": "the End",
+}
+
 ARCHIVE_LAND = ["#minecraft:is_taiga", "#minecraft:is_jungle", "#minecraft:is_forest", "#minecraft:is_savanna", "#minecraft:is_badlands",
                 "minecraft:plains", "minecraft:sunflower_plains", "minecraft:snowy_plains", "minecraft:desert", "minecraft:meadow",
                 "minecraft:cherry_grove", "minecraft:snowy_taiga", "minecraft:grove"]
@@ -2061,9 +2199,17 @@ REACTION_ADVANCEMENTS = {  # reaction -> (title, icon rune, description)
     "wildfire": ("Wildfire", "inferno", "Set fire to a foe the wind has just thrown"),
     "implode": ("Implode", "gravity_well", "Blast enemies that have just been pulled together"),
     "collapse": ("Collapse", "repel", "Repel enemies that have just been pulled in"),
+    "overload": ("Overload", "plasma", "Strike a burning foe with storm magic and blow its flames apart"),
+    "fracture": ("Fracture", "pelt", "Crack a frozen foe with earth magic"),
+    "blight": ("Blight", "venom", "Strike a foe that void has shadowed with life magic, and let the rot spread"),
+    "unweave": ("Unweave", "prismatic_burst", "Strike a foe carrying two marks or more with arcane magic"),
+    "rupture": ("Rupture", "bleed", "Strike a bleeding foe with wind magic"),
+    "elapse": ("Elapse", "countdown", "Strike a burning, poisoned or withering foe with time magic"),
 }
 for reaction, (title, icon, description) in REACTION_ADVANCEMENTS.items():
     adv(f"discovery/{reaction}", "discovery/runes_10", rune(icon), title, description, grimoire(entry=f"reaction:{reaction}"), xp=15)
+adv("discovery/all_reactions", "discovery/runes_10", rune("prism"), "Chain Reaction", "Set off every element reaction",
+    grimoire(prefix="reaction:", every=True), frame="goal", xp=100, loot=["blank_runes"])
 adv("discovery/torn_page", "discovery/runes_10", item("torn_page"), "Marginalia", "Read the riddle on a Torn Page", grimoire(prefix="hint:"), xp=15)
 adv("discovery/secret", "discovery/torn_page", rune("veil"), "Hidden Words", "Find a secret spell", grimoire(prefix="secret:"), frame="goal", xp=50, hidden=True)
 adv("discovery/all_secrets", "discovery/secret", rune("echo"), "Nothing Left Unsaid", "Find every secret spell",

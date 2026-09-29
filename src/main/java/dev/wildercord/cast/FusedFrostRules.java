@@ -13,6 +13,8 @@ public final class FusedFrostRules {
 	public static final int SEAL_STAND_TICKS = 20;
 	/** Cryostasis heals once every this many ticks while the ice holds. */
 	public static final int SEAL_HEAL_EVERY = 10;
+	/** The longest a Cryostasis holds, however it's extended: 4 seconds, so untouchable never lasts long. */
+	public static final int SEAL_MAX_TICKS = 80;
 
 	/** Frostbite's beats: one a second for five seconds, times the duration (always at least one). */
 	public static int frostbiteBeats(double duration) {

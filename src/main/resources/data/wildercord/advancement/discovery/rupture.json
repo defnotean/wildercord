@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:discovery/runes_10",
+  "criteria": {
+    "rupture": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "entry": "reaction:rupture"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:bleed"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.discovery.rupture.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.discovery.rupture.description"
+    }
+  },
+  "requirements": [
+    [
+      "rupture"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

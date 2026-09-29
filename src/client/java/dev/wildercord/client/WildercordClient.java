@@ -60,17 +60,13 @@ public final class WildercordClient implements ClientModInitializer {
 		ImbuedTooltip.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
 		BlankRuneTooltip.init();
+		Tooltips.init();
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
 		// The server's Wildercord version: a word in chat if it isn't ours (runes one of us doesn't know go silent).
-		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.net.VersionCheck.ServerVersion.TYPE, (payload, context) -> {
-			net.minecraft.network.chat.Component warning = dev.wildercord.net.VersionCheck.mismatch(payload.version(), dev.wildercord.net.VersionCheck.version());
-			if (warning != null && context.player() != null) {
-				context.player().sendSystemMessage(warning);
-			}
-		});
+		VersionWatch.init();
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.ScreenFx.TYPE,
 			(payload, context) -> dev.wildercord.client.fx.ScreenEffects.receive(payload));
 		// The server's cost and regeneration multipliers, for the Cord screen and HUD; forgotten on leaving.
@@ -79,6 +75,8 @@ public final class WildercordClient implements ClientModInitializer {
 		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			dev.wildercord.config.Config.receive(null);
 			CordGlow.clear();
+			LeyMotes.forget();
+			SpellHud.forget();
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -111,6 +109,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.ChargeHum::tick);
 		WildercordKeys.init();
 		SpellHud.init();
+		WaypointHud.init();
 		Wildercord.LOGGER.info("Wildercord client initialized");
 	}
 }

@@ -238,8 +238,14 @@ hit for spell-kill counting and the innate runes that react to hits. After each 
 
 - **`Scheduler`**: delayed tasks, On Land watchers, and On Hurt / On Low Health watchers. Ticked
   once per server tick; cleared when the server stops.
-- **`Reactions`**: short-lived marks (FROZEN, WINDSWEPT, PULLED, SOAKED, RESONANT, WET) and the bonuses
-  they set off (Shatter, Conduct, Wildfire, Implode, Collapse).
+- **`Reactions`**: short-lived marks (FROZEN, WINDSWEPT, PULLED, SOAKED, RESONANT, WET, CRACKED,
+  SHADOWED, BLEEDING) and the bonuses they set off. Fire and storm reactions (Shatter, Wildfire,
+  Conduct, Overload) are asked for by the effects that deal that damage (`Reactions.fire`/`storm`),
+  blasts ask `blast` (Implode) and Repel asks `collapse`; the rest (Fracture, Blight, Unweave, Rupture,
+  Elapse) go off for any spell damage of their element through `Reactions.hit`, one line in
+  `Effects.hurt`, which also adds Cracked's extra. Their numbers, which runes leave shadowed and
+  bleeding, and which runes' damage sets each off (for the Cord screen's tooltip line) are pure data in
+  `spell.ReactionRules`; how every reaction looks is in `ReactionVfx`.
 - **`WorldMagic`**: what an effect's element does to the world where it lands, called by
   `Effects.apply` after every effect (fire lights grass and boils puddles into steam, frost freezes
   water and puts fires out, storm conducts through water, wind turns projectiles, earth heaves block
@@ -432,6 +438,7 @@ player, synced to that player only, and copied through death where noted.
 | `on_ley`, `well_until` | bool, long | no (not saved) | On a ley line; near an awake Wellstone until |
 | `spirit_until`, `frozen_until` | long | on the mob | End times for summons and frozen mobs |
 | `runebound` | list of string | on the mob | A Runebound's spell |
+| `travel` | `TravelData` | yes | Homes, waypoints, where `/back` goes, teleport requests on or off, the tracked waypoint (server only; see [features/travel.md](features/travel.md)) |
 | `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
@@ -491,7 +498,7 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
 `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
 `ScreenFx(kind, strength, ticks)` (a camera shake, field-of-view kick, punch or Domain tint; see
-`cast.ScreenFx`).
+`cast.ScreenFx`). The travel commands send `Waypoints.Track` (the tracked waypoint, for `WaypointHud`).
 Everything else travels through synced attachments; `CHARGE` is synced to everyone nearby so they
 can draw the circle.
 
@@ -511,7 +518,12 @@ can draw the circle.
 - **`SpellHud`**: the panel beside the hotbar: selected spell, its runes and cost, the mana bar
   with a cost mark, cooldown, and passive drain (or the charge, while charging); above it the
   spell's name, rhythm notes and cracked circles (✦), and a beat ring that closes on the badge as
-  the beat comes. Laid out by measuring, and shrinks to fit.
+  the beat comes. Laid out by measuring, and shrinks to fit (short of room beside an offhand slot
+  or attack indicator, it sits on top of them: `SpellHud.place`). A spell's reading is remembered
+  by its runes (`SpellHud.read`) rather than compiled every frame.
+- **`Tooltips`**: the game never wraps a tooltip line, so every tooltip a screen draws goes through
+  `Tooltips.fit` (wrapped to at most 280 pixels, and cut short if taller than the screen), and the
+  mod's items' tooltips are wrapped as they're built (a late `ItemTooltipCallback` phase).
 - **`WildercordKeys`**: R (tap casts, hold charges), V (tap selects, hold opens the
   **`SpellWheelScreen`**), K and four unbound "cast spell N" keys.
 - **`fx/`**: everything magical is blended by `GlowLayers`: `GLOW` adds light to what's behind it

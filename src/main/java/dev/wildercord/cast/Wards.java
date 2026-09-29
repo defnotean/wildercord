@@ -46,6 +46,8 @@ public final class Wards {
 		final LivingEntity target;
 		final LivingEntity caster;
 		final Vec3 anchor;
+		/** The world the anchor is in. */
+		final net.minecraft.world.level.Level level;
 		final boolean hadNoGravity;
 		long until;
 		float stored;
@@ -56,6 +58,7 @@ public final class Wards {
 			this.target = target;
 			this.caster = caster;
 			this.anchor = target.position();
+			this.level = target.level();
 			this.hadNoGravity = target.isNoGravity();
 			this.until = until;
 		}
@@ -99,6 +102,12 @@ public final class Wards {
 		ServerLivingEntityEvents.ALLOW_DAMAGE.register(Wards::allowDamage);
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> reflect(entity, source, damage));
 		ServerLivingEntityEvents.ALLOW_DEATH.register(Wards::allowDeath);
+		// Rewind never reaches back past a death (a quick respawn could land between two snapshots).
+		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			if (entity instanceof ServerPlayer) {
+				HISTORY.remove(entity.getUUID());
+			}
+		});
 		ServerTickEvents.END_SERVER_TICK.register(Wards::tick);
 		Techniques.init();
 		// Held things let go before the world is saved, and anything saved while held (a player who
@@ -358,7 +367,9 @@ public final class Wards {
 				continue;
 			}
 			long now = level.getGameTime();
-			if (now >= held.until) {
+			// Carried to another world (a portal it stood in): time moves again, rather than pulling it to the old
+			// anchor's coordinates in the new one.
+			if (now >= held.until || level != held.level) {
 				it.remove();
 				ended.add(held);
 				continue;
@@ -473,6 +484,11 @@ public final class Wards {
 
 	private static void record(MinecraftServer server) {
 		for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			if (!player.isAlive()) {
+				// Dead: nothing from before the death is kept, so Rewind can't carry the respawned back to it.
+				HISTORY.remove(player.getUUID());
+				continue;
+			}
 			ArrayDeque<Snapshot> history = HISTORY.computeIfAbsent(player.getUUID(), k -> new ArrayDeque<>());
 			history.addLast(new Snapshot(player.level().dimension(), player.position(), player.getHealth(), player.getYRot(), player.getXRot(),
 				player.level().getGameTime()));

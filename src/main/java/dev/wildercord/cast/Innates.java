@@ -66,9 +66,9 @@ public final class Innates {
 
 	public static final double POWER_PER_CIRCLE = 0.06;
 
-	/** Innate power: stronger with every circle the caster holds. */
+	/** Innate power: stronger with every circle the caster holds (a cracked one gives nothing, as for everything a circle grants). */
 	public static double scale(LivingEntity caster) {
-		return caster instanceof ServerPlayer player ? 1 + POWER_PER_CIRCLE * Heart.circles(player) : 1.0;
+		return caster instanceof ServerPlayer player ? 1 + POWER_PER_CIRCLE * Heart.active(player) : 1.0;
 	}
 
 	// ------------------------------------------------------------------ awakening
@@ -152,6 +152,8 @@ public final class Innates {
 	private static final Identifier STONE_KNOCKBACK = Wildercord.id("stoneform");
 	/** Set while shared or bonus damage is being dealt, so it never shares or bonuses itself again. */
 	private static boolean echoing;
+	/** Set while Borrowed Time's debt is being paid: a payment is never borrowed again. */
+	private static boolean repaying;
 
 	public static void init() {
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damage, blocked) -> {
@@ -159,7 +161,7 @@ public final class Innates {
 				return;
 			}
 			long now = level.getGameTime();
-			if (entity instanceof ServerPlayer player && player.getAttachedOrElse(WildercordAttachments.INNATE, "").equals(Runes.BORROWED_TIME.id())) {
+			if (!repaying && entity instanceof ServerPlayer player && player.getAttachedOrElse(WildercordAttachments.INNATE, "").equals(Runes.BORROWED_TIME.id())) {
 				Deque<float[]> history = HURT_HISTORY.computeIfAbsent(player.getUUID(), k -> new ArrayDeque<>());
 				history.addLast(new float[] {now, damage});
 				while (history.size() > 40 || !history.isEmpty() && now - history.peekFirst()[0] > 100) {
@@ -175,6 +177,10 @@ public final class Innates {
 			fortuneMelee(level, entity, source, damage);
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+			// Death settles a debt: it isn't carried on to the one who respawns.
+			if (entity instanceof ServerPlayer dead) {
+				DEBTS.remove(dead.getUUID());
+			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A));
 				TechniqueVfx.timeResumes(player.level(), player, 0);
@@ -414,12 +420,21 @@ public final class Innates {
 			return;
 		}
 		player.heal(owed);
-		DEBTS.put(player.getUUID(), new Debt(owed, owed / 10F, now + 200));
+		// Borrowing again adds to what's still owed (it never wipes it), and the whole of it is paid over the next ten seconds.
+		Debt old = DEBTS.get(player.getUUID());
+		float total = owed + (old == null ? 0 : old.left());
+		DEBTS.put(player.getUUID(), new Debt(total, total / 10F, now + 200));
 		TechniqueVfx.rewind(player.level(), player.position(), player.position());
 		ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.5, 8);
 		ElementFx.groundRing(player.level(), player.position(), ElementFx.TIME.primary(), 1.8, 0.4, 0.06, 14);
 		Fx.sound(player.level(), player.position(), SoundEvents.BELL_BLOCK, 0.8F, 1.5F);
 		player.sendOverlayMessage(Component.translatable("message.wildercord.borrowed", Math.round(owed)).withColor(0xF2D98A));
+	}
+
+	/** What a player still owes Borrowed Time (0 for nothing), for the tests. */
+	public static float owed(ServerPlayer player) {
+		Debt debt = DEBTS.get(player.getUUID());
+		return debt == null ? 0 : debt.left();
 	}
 
 	// ------------------------------------------------------------------ Mirrorfrost
@@ -462,7 +477,8 @@ public final class Innates {
 	}
 
 	private static void fortuneMelee(ServerLevel level, LivingEntity entity, DamageSource source, float damage) {
-		if (!(source.getDirectEntity() instanceof ServerPlayer player) || source.getEntity() != player) {
+		// A strike by hand: a spell's own strike (Cleave, Aftershock) already rolled Fortune in Effects.hurt.
+		if (!(source.getDirectEntity() instanceof ServerPlayer player) || source.getEntity() != player || Dungeons.spellLanding()) {
 			return;
 		}
 		Long until = FORTUNE.get(player.getUUID());
@@ -640,30 +656,46 @@ public final class Innates {
 		}
 		if (now % 20 == 0) {
 			if (!DEBTS.isEmpty()) {
+				Map<ServerPlayer, Float> payments = new java.util.LinkedHashMap<>();
 				for (Iterator<Map.Entry<UUID, Debt>> it = DEBTS.entrySet().iterator(); it.hasNext(); ) {
 					Map.Entry<UUID, Debt> entry = it.next();
 					ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
 					Debt debt = entry.getValue();
-					if (player == null || debt.left() <= 0.01F || now > debt.until() + 20) {
+					if (player == null) {
+						// Away: the debt waits for them (logging out doesn't forgive it).
+						entry.setValue(new Debt(debt.left(), debt.perSecond(), debt.until() + 20));
+						continue;
+					}
+					if (debt.left() <= 0.01F || now > debt.until() + 20) {
 						it.remove();
 						continue;
 					}
 					float pay = Math.min(debt.left(), debt.perSecond());
 					entry.setValue(new Debt(debt.left() - pay, debt.perSecond(), debt.until()));
+					payments.put(player, pay);
+				}
+				// Paid after the sweep: a payment can kill, and a death (or a monster Rebirth's blast slays) changes the debts.
+				payments.forEach((player, pay) -> {
 					echoing = true;
+					repaying = true;
 					try {
 						Effects.readyToHurt(player);
 						player.hurtServer(player.level(), player.level().damageSources().magic(), pay);
 					} finally {
 						echoing = false;
+						repaying = false;
 					}
 					ElementFx.goldenTicks(player.level(), player.getBoundingBox().getCenter(), 0.4, 3);
-				}
+				});
 			}
 			THREADS.values().removeIf(t -> now > t.until());
 			THREAD_MEMBERS.keySet().removeIf(id -> THREADS.values().stream().noneMatch(t -> t.id().equals(id)));
 			KINDLING.values().removeIf(k -> now - k.last() > 200);
 			TWIN.values().removeIf(until -> now > until);
+			// These only matter for a moment, and would otherwise grow with every creature that ever had them on a long-running server.
+			TWIN_ARMED.keySet().removeIf(id -> !TWIN.containsKey(id));
+			STONE_LAST.values().removeIf(last -> now - last > 20);
+			STORM_LAST.values().removeIf(last -> now - last > 20);
 			FORTUNE.values().removeIf(until -> now > until);
 			STORMHEART.values().removeIf(until -> now > until);
 			LAST_SPELL_ON.values().removeIf(h -> now - h.time() > 600);

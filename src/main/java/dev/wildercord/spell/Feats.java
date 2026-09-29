@@ -92,8 +92,9 @@ public final class Feats {
 		new Feat(STAR_EATER, "Starbreaker", "Shattered the Star-Eater's shield and brought it down."),
 		new Feat(TIDE_SCRIBE, "Low Tide", "Turned the Tide Scribe's own flood against it and brought it down."));
 
-	/** The five element reactions, in the order the Grimoire lists them. */
-	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse");
+	/** The element reactions, in the order the Grimoire lists them: the first five, then the newer ones of {@link ReactionRules}. */
+	public static final List<String> REACTIONS = List.of("shatter", "conduct", "wildfire", "implode", "collapse",
+		ReactionRules.OVERLOAD, ReactionRules.FRACTURE, ReactionRules.BLIGHT, ReactionRules.UNWEAVE, ReactionRules.RUPTURE, ReactionRules.ELAPSE);
 
 	public static String reactionKey(String reaction) {
 		return "reaction:" + reaction;

@@ -931,9 +931,23 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			level.addFreshEntity(husk);
 		});
 		context.waitTicks(2);
+		// A spell's strike isn't one by hand: a Cleave (which strikes as its caster) leaves the sword's charges alone.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Mob husk = tourHusk(server);
+			check(husk != null, "the husk should be there to strike");
+			dev.wildercord.spell.SpellPlan.Group cleave = SpellCompiler.compile(List.of(Runes.TOUCH, Runes.CLEAVE)).root().groups.getFirst();
+			dev.wildercord.cast.CastEngine.onHit(new dev.wildercord.cast.Cast(player), cleave,
+				new dev.wildercord.cast.Cast.Hit(List.of(husk), husk.getBoundingBox().getCenter(), new Vec3(0, 0, 1), player.position(), null, null, false), null);
+			Imbued imbued = player.getMainHandItem().get(WildercordComponents.IMBUED);
+			check(imbued != null && imbued.charges() == 3, "a spell's strike (Cleave) shouldn't release the imbued sword its caster holds");
+			husk.setHealth(husk.getMaxHealth());
+		});
+		context.waitTicks(2);
 		world.getServer().runOnServer(server -> {
 			Mob husk = tourHusk(server);
 			if (husk != null) {
+				dev.wildercord.cast.Effects.readyToHurt(husk);
 				player(server).attack(husk);
 			}
 		});

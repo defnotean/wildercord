@@ -110,7 +110,7 @@ public class WildercordCordTest implements FabricClientGameTest {
 				book = book.learn(rune.id());
 			}
 			for (int i = 0; i < CordTier.MAX_SPELLS; i++) {
-				book = book.withSpell(i, List.of());
+				book = book.withSpell(i, List.of()).withName(i, "");
 			}
 			for (int i = 0; i < dev.wildercord.spell.Passives.MAX; i++) {
 				book = book.withPassive(i, List.of());
@@ -132,6 +132,17 @@ public class WildercordCordTest implements FabricClientGameTest {
 			check(selected == 1, "selecting spell 2 should tell the server (it has " + (selected + 1) + ")");
 			click(context, screen(context).rowPoint(0), LEFT);
 			check(screen(context).editingRow() == 0, "clicking spell 1 should go back to it");
+			// A name typed for spell 1, then spell 2 picked: Enter mustn't give spell 2 that name.
+			click(context, screen(context).toolPoint(0), LEFT);
+			context.getInput().typeChars("Misnamed");
+			context.waitTicks(1);
+			click(context, screen(context).rowPoint(1), LEFT);
+			context.getInput().pressKey(com.mojang.blaze3d.platform.InputConstants.getKey(new net.minecraft.client.input.KeyEvent(
+				com.mojang.blaze3d.platform.InputConstants.KEY_RETURN, 0, 0)));
+			context.waitTicks(3);
+			String names = world.getServer().computeOnServer(server -> Spellbooks.get(player(server)).name(0) + "|" + Spellbooks.get(player(server)).name(1));
+			check(names.equals("|"), "a name being typed should be dropped when another spell is picked (names are " + names + ")");
+			click(context, screen(context).rowPoint(0), LEFT);
 		} else {
 			check(screen(context).editingRow() == 0, "a locked spell shouldn't be selected");
 			check(screen(context).lastRefusal() != null, "clicking a locked spell should say why it's locked");

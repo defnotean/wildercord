@@ -95,6 +95,10 @@ public final class Charging {
 		}
 		Spellbook book = Spellbooks.get(player);
 		int spell = requested < 0 ? book.selected() : requested;
+		if (requested < 0 && !dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
+			// As a tap does (SpellCaster.cast): the selected spell went quiet with the Tome put away, so the next open one charges.
+			spell = dev.wildercord.gear.SpellSlots.resolve(tier.spells, dev.wildercord.gear.Gear.tome(player), spell);
+		}
 		if (!dev.wildercord.gear.Gear.spellOpen(player, tier, spell)) {
 			return;
 		}

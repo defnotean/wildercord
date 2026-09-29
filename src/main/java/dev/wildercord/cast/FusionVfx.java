@@ -60,10 +60,10 @@ public final class FusionVfx {
 		Fx.sound(level, c, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.9F);
 	}
 
-	/** Magma opening: the ground cracks, glowing orange from below. */
-	static void magmaOpen(ServerLevel level, Vec3 at, double radius) {
-		ElementFx.crack(level, at.add(0, 0.05, 0), radius, 80);
-		ElementFx.flatSigil(level, at.add(0, 0.07, 0), SigilOption.CRACKED, ElementFx.FIRE.accent(), (float) (radius * 1.1), 84, 0.01);
+	/** Magma opening: the ground cracks, glowing orange from below, for as long as the magma lasts ({@code ticks}). */
+	static void magmaOpen(ServerLevel level, Vec3 at, double radius, int ticks) {
+		ElementFx.crack(level, at.add(0, 0.05, 0), radius, ticks - 4);
+		ElementFx.flatSigil(level, at.add(0, 0.07, 0), SigilOption.CRACKED, ElementFx.FIRE.accent(), (float) (radius * 1.1), ticks, 0.01);
 		ElementFx.stoneShards(level, at.add(0, 0.3, 0), Blocks.MAGMA_BLOCK.defaultBlockState(), 10, 0.25);
 		Fx.sound(level, at, SoundEvents.BASALT_BREAK, 1.0F, 0.6F);
 		Fx.sound(level, at, WildercordSounds.impact("earth"), 0.7F, 1.0F);

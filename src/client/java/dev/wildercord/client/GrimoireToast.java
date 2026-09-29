@@ -42,12 +42,24 @@ public class GrimoireToast implements Toast {
 				case "conduct" -> Runes.SHOCK;
 				case "wildfire" -> Runes.FIRE;
 				case "implode" -> Runes.GRAVITY_WELL;
+				case "overload" -> Runes.PLASMA;
+				case "fracture" -> Runes.PELT;
+				case "blight" -> Runes.VENOM;
+				case "unweave" -> Runes.PRISMATIC_BURST;
+				case "rupture" -> Runes.BLEED;
+				case "elapse" -> Runes.COUNTDOWN;
 				default -> Runes.REPEL;
 			});
 			this.color = RuneColors.of(switch (id) {
 				case "shatter" -> Runes.FROST;
 				case "conduct" -> Runes.SHOCK;
 				case "wildfire" -> Runes.FIRE;
+				case "overload" -> Runes.PLASMA;
+				case "fracture" -> Runes.PELT;
+				case "blight" -> Runes.VENOM;
+				case "unweave" -> Runes.HARM;
+				case "rupture" -> Runes.BLEED;
+				case "elapse" -> Runes.COUNTDOWN;
 				default -> Runes.PULL;
 			});
 		} else if (key.startsWith("secret:")) {

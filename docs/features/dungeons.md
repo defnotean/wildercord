@@ -40,9 +40,10 @@ frost. A second door of **Void and Storm** leads through the forge to the arena.
 
 **The Cinder Warden** (300 health) is a hulking figure of iron plates, magma and chains. **Its
 armour turns everything that isn't a reaction**: blades, arrows and fire do nothing, and a
-single-element spell only gets a tenth through. Set off a **reaction** on it (Shatter, Conduct,
-Wildfire, Implode or Collapse) and its plates crack open for full damage, and stay open for a
-moment afterwards. Freeze it, then burn it; throw it, then burn it; pull it in, then blast it.
+single-element spell only gets a tenth through. Set off a **reaction** on it (any of them: Shatter,
+Fracture, Blight, Rupture...) and its plates crack open for full damage, and stay open for a
+moment afterwards. Freeze it, then burn it; throw it, then burn it; pull it in, then blast it. It
+can't be set alight, so Overload and a burning Elapse never happen on it.
 
 It teaches by doing: its own spells set reactions up on you (a Frost Bolt, then a Fire Bolt; a
 Dash, then a Comet of fire; a Pull, then an Explode), and the boss bar says which is coming. Up

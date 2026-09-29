@@ -162,7 +162,7 @@ public final class WildercordNetworking {
 		}
 	}
 
-	/** Spellbook rewrites (select, edit, rename, a passive's switch): a burst of 20, then 10 a second. */
+	/** Spellbook rewrites (select, edit, rename, a passive's switch) and inscribing: a burst of 20, then 10 a second. */
 	private static final PacketThrottle SPELLBOOK = new PacketThrottle(20, 2);
 
 	/** Whether this spellbook-rewriting packet may be handled: a flood past the allowance is dropped. */
@@ -210,7 +210,12 @@ public final class WildercordNetworking {
 				SpellCaster.rename(context.player(), payload.spell(), payload.name());
 			}
 		});
-		ServerPlayNetworking.registerGlobalReceiver(InscribeScroll.TYPE, (payload, context) -> dev.wildercord.content.SpellScrollItem.inscribe(context.player(), payload.spell()));
+		// Limited like the rest: in creative a scroll costs nothing, and a flood would drop item after item.
+		ServerPlayNetworking.registerGlobalReceiver(InscribeScroll.TYPE, (payload, context) -> {
+			if (allowed(context)) {
+				dev.wildercord.content.SpellScrollItem.inscribe(context.player(), payload.spell());
+			}
+		});
 		ServerPlayNetworking.registerGlobalReceiver(EditSpell.TYPE, (payload, context) -> {
 			if (!allowed(context)) {
 				return;

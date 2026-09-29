@@ -8,7 +8,6 @@ import dev.wildercord.cast.Sigils;
 import dev.wildercord.cast.Targets;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.duel.Duels;
-import dev.wildercord.player.Heart;
 import dev.wildercord.spell.EffectKind;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneColors;
@@ -147,9 +146,8 @@ public final class Chorus {
 		}
 		double power = ChorusRules.power(voices);
 		// Cost and cooldown were settled when the spell was cast (a Cast doesn't carry them); the power, duration and gear go on.
-		Cast chorus = new Cast(caster, cast.castNumber, new Heart.Bonuses(cast.power * power, cast.duration, 1, 1), cast.passive, null, cast.info)
-			.weigh(cast.weight() * power)
-			.gear(cast.gear());
+		// The same payment too: a storm's echo or Twin Star copies the first cast, and must share its Siphon cap and once-per-cast things.
+		Cast chorus = cast.again(power).weigh(cast.weight() * power);
 		LIVE.put(caster.getUUID(), new Voiced(color, now));
 
 		braid(level, singers, aim, colors);

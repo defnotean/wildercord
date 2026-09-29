@@ -66,7 +66,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			context.waitTicks(5);
 			context.setScreen(CordScreen::new);
 			context.waitTicks(3);
-			context.getInput().setCursorPos((320 + 275 + 7) * 2, (144 + 7 + 7) * 2);
+			double[] manaBadge = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).manaPoint());
+			context.getInput().setCursorPos(manaBadge[0] * 2, manaBadge[1] * 2);
 			context.waitTicks(3);
 			context.takeScreenshot(TestScreenshotOptions.of("mana_tooltip").disableCounterPrefix());
 			// Search: type a query and see the grouped, filtered Codex.
@@ -107,12 +108,112 @@ public class WildercordScreenshots implements FabricClientGameTest {
 					context.waitTicks(2);
 				}
 			}
+			longTooltip(context);
+			narrowHud(context, world);
 			batch4Screens(context, world);
 			castEverything(context, world);
 			mechanicsChecks(context, world);
 			heartAndPassives(context, world);
 			starterChips(context, world);
+			respawnGlow(context, world);
 		}
+	}
+
+	/**
+	 * Respawning with a Cord on (it's kept through death): the new body's Cord look comes from the server
+	 * a few ticks after the body itself, and that mustn't read as the Cord going on, which would light its
+	 * beads for three seconds after every respawn.
+	 */
+	private static void respawnGlow(ClientGameTestContext context, TestSingleplayerContext world) {
+		context.waitTicks(80);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			player.kill(player.level());
+		});
+		context.waitTicks(5);
+		context.runOnClient(mc -> {
+			mc.player.respawn();
+			mc.gui.setScreen(null);
+		});
+		float[] brightest = {0};
+		for (int i = 0; i < 30; i++) {
+			context.waitTicks(1);
+			context.runOnClient(mc -> {
+				if (mc.player != null) {
+					var state = mc.getEntityRenderDispatcher().getRenderer(mc.player).createRenderState(mc.player, 0);
+					brightest[0] = Math.max(brightest[0], ((dev.wildercord.client.CastingPose) state).wildercord$glow());
+				}
+			});
+		}
+		boolean worn = context.computeOnClient(mc -> mc.player != null && Spellbooks.tier(mc.player) != null);
+		check(worn, "the Cord should still be worn after respawning");
+		check(brightest[0] == 0, "the Cord's beads shouldn't light up after a respawn (glowed " + brightest[0] + ")");
+	}
+
+	/**
+	 * The longest rune description there is (Imbue's) hovered in the Codex on the smallest window: the
+	 * tooltip should wrap and stay on the screen instead of running off its side.
+	 */
+	private static void longTooltip(ClientGameTestContext context) {
+		context.runOnClient(mc -> {
+			mc.getWindow().setWindowed(854, 480);
+			mc.options.guiScale().set(2);
+			mc.resizeGui();
+		});
+		context.waitTicks(5);
+		context.setScreen(CordScreen::new);
+		context.waitTicks(3);
+		context.runOnClient(mc -> ((CordScreen) mc.gui.screen()).searchFor("Imbue"));
+		context.waitTicks(2);
+		double[] imbue = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).codexPoint(Runes.IMBUE.id()));
+		check(imbue != null, "Imbue should show in the Codex when searched for");
+		context.getInput().setCursorPos(imbue[0] * 2, imbue[1] * 2);
+		context.waitTicks(3);
+		context.takeScreenshot(TestScreenshotOptions.of("tooltip_long_854x480").disableCounterPrefix());
+		// The mana badge's tooltip is taller than this window: it should keep its top (title and numbers) on it.
+		double[] mana = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).manaPoint());
+		context.getInput().setCursorPos(mana[0] * 2, mana[1] * 2);
+		context.waitTicks(3);
+		context.takeScreenshot(TestScreenshotOptions.of("mana_tooltip_854x480").disableCounterPrefix());
+		context.setScreen(() -> null);
+		context.waitTicks(2);
+	}
+
+	/**
+	 * The HUD short of room with the attack indicator on the hotbar. At 854x480 there's room beside the
+	 * hotbar but not beside the indicator too: the panel sits on top of the indicator instead of over it.
+	 * At 800x600 there's no room at all: it's tucked into the corner, and a short spell keeps all its
+	 * runes instead of one and a "+2".
+	 */
+	private static void narrowHud(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			Spellbooks.set(player, Spellbooks.get(player).withSelected(2));
+		});
+		net.minecraft.client.AttackIndicatorStatus[] before = new net.minecraft.client.AttackIndicatorStatus[1];
+		context.runOnClient(mc -> {
+			before[0] = mc.options.attackIndicator().get();
+			mc.options.attackIndicator().set(net.minecraft.client.AttackIndicatorStatus.HOTBAR);
+			mc.getWindow().setWindowed(854, 480);
+			mc.options.guiScale().set(2);
+			mc.resizeGui();
+		});
+		context.getInput().setCursorPos(2, 2);
+		context.waitTicks(5);
+		context.takeScreenshot(TestScreenshotOptions.of("hud_narrow_indicator").disableCounterPrefix());
+		context.runOnClient(mc -> {
+			mc.getWindow().setWindowed(800, 600);
+			mc.options.guiScale().set(2);
+			mc.resizeGui();
+		});
+		context.waitTicks(5);
+		context.takeScreenshot(TestScreenshotOptions.of("hud_tucked_800x600").disableCounterPrefix());
+		context.runOnClient(mc -> mc.options.attackIndicator().set(before[0]));
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+			Spellbooks.set(player, Spellbooks.get(player).withSelected(0));
+		});
+		context.waitTicks(2);
 	}
 
 	/** A Blood Price spell (health cost in the header and HUD) and a search for the Time category. */
@@ -584,6 +685,16 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		check(withoutPassives - withPassives > 3, "Passives should drain mana: gained " + withPassives + " with them on, " + withoutPassives + " off");
 		server.runOnServer(s -> {
 			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			// Switched on with no mana, a passive casts nothing: it pays its first second before its buffs, even between two seconds.
+			player.removeAllEffects();
+			Spellbooks.setMana(player, 0);
+			SpellCaster.togglePassive(player, 0);
+			dev.wildercord.cast.PassiveCaster.tick(player, 5);
+			check(!player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "A passive switched on with no mana shouldn't cast its buff for free");
+			Spellbooks.setMana(player, 100);
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			check(player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "With the mana back, the passive should cast at the next second");
+			SpellCaster.togglePassive(player, 0);
 			for (int slot = 0; slot < dev.wildercord.spell.Passives.MAX; slot++) {
 				SpellCaster.togglePassive(player, slot);
 			}

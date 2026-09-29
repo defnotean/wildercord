@@ -110,12 +110,16 @@ final class Techniques {
 		double amount = (4 + Math.min(30, 0.12 * t.getMaxHealth())) * power;
 		TechniqueVfx.cleave(cast.level, t, cast.caster.getLookAngle());
 		Effects.hurt(cast, t, strike(cast), amount);
+		// A deep cut: bleeding for a few seconds, so wind damage sets off Rupture.
+		Reactions.mark(t, Reactions.Mark.BLEEDING, 60);
 	}
 
 	/** Dismantle: three slashes a tenth of a second apart, through armour. */
 	static void dismantle(Cast cast, LivingEntity t, double power) {
 		TechniqueVfx.dismantle(cast.level, t, 0);
 		Effects.hurt(cast, t, magic(cast), 3 * power);
+		// Cut three times over: bleeding until a little after the last, so wind damage sets off Rupture.
+		Reactions.mark(t, Reactions.Mark.BLEEDING, 64);
 		for (int i = 1; i < 3; i++) {
 			int slash = i;
 			Scheduler.later(i * 2, () -> {
@@ -206,6 +210,8 @@ final class Techniques {
 	 */
 	static void blackflame(Cast cast, LivingEntity t, double power, int seconds, boolean spread) {
 		long until = cast.level.getGameTime() + seconds * 20L;
+		// Shadowed while the black flames burn: life damage on it sets off Blight.
+		Reactions.mark(t, Reactions.Mark.SHADOWED, seconds * 20);
 		Long burning = BLACKFLAME.get(t.getUUID());
 		if (burning != null && burning >= cast.level.getGameTime()) {
 			BLACKFLAME.put(t.getUUID(), Math.max(burning, until));

@@ -287,7 +287,8 @@ public final class WildercordAttachments {
 
 	public static final AttachmentType<CordLook> CORD_LOOK = AttachmentRegistry.create(
 		Wildercord.id("cord_look"),
-		builder -> builder.syncWith(CordLook.STREAM_CODEC, AttachmentSyncPredicate.all())
+		// Kept through death with the Cord itself, so it doesn't vanish from a respawned player for a moment.
+		builder -> builder.syncWith(CordLook.STREAM_CODEC, AttachmentSyncPredicate.all()).copyOnDeath()
 	);
 
 	/**

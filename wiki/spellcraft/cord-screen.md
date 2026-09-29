@@ -294,7 +294,7 @@ The rules for what a passive may hold are on [Passive Spells]({{ '/spellcraft/pa
 The **Grimoire** tab is your book of discoveries. It lists, in order:
 
 - **Your heart:** your innate rune (hover it to read it) and your leaning, or how to get them.
-- **Reactions:** the five element reactions, "???" until you've set one off.
+- **Reactions:** the eleven element reactions, "???" until you've set one off.
 - **Secret spells:** found ones by name (hover for what they do), ones you've read the riddle of as that
   riddle, and "???" for the rest.
 - **Duels:** your wins and losses, once you've fought one.

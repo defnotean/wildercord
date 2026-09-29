@@ -80,7 +80,7 @@ its emblem is split down the middle between the two elements' glyphs.
 | Frost + Life | **Frostbloom** | Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds). |
 | Frost + Void | **Black Ice** | Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II for 5 seconds). One that dies in the next 5 seconds shatters: 4 damage to enemies within 3 blocks. |
 | Frost + Arcane | **Rime Seal** | Writes a frost seal 3 blocks across on the ground for 6 seconds. An enemy that stands in it for a second freezes solid for 1.5 seconds (1 on players) and takes 3 damage, once each. |
-| Frost + Time | **Cryostasis** | Seals an ally in ice for 2 seconds: they can't move or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds. |
+| Frost + Time | **Cryostasis** | Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds. |
 | Frost + Blood | **Frostbite** | 3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second. |
 | Storm + Earth | **Magnetize** | Magnetizes a target for 4 seconds: enemies within 5 blocks are drawn to it, and any that touch it are shocked for 3 damage (once a second). |
 | Storm + Void | **Riftbolt** | A black bolt for 6 damage that tears the target through a rift up to 5 blocks away, left in Darkness for 3 seconds. |
@@ -111,7 +111,7 @@ its emblem is split down the middle between the two elements' glyphs.
 | Earth | **Monolith** | A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks into the air. The pillar crumbles after 4 seconds. |
 | Life | **Lifebloom** | Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3. |
 | Void | **Singularity** | A black hole opens where it lands for 2.5 seconds, drawing in enemies within 5 blocks, then bursts: 6 damage, and they're flung outward. |
-| Arcane | **Prismatic Burst** | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked or wet), each used up. |
+| Arcane | **Prismatic Burst** | 4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22. |
 | Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, and they get Haste I and Speed I for 5 seconds. |
 | Blood | **Sanguine Rite** | You pay 3 of your own health (never your last) for 12 damage that ignores armour. |
 

@@ -272,6 +272,14 @@ public class WildercordFusionTest implements FabricClientGameTest {
 		if (!Heart.discovered(player, "feat:" + Feats.KNOT)) {
 			failures.add("the first Knot should earn its feat");
 		}
+		// A Knot on the altar with an effect and a shard is turned down for what it is, not taken for a silent rune.
+		menu.getSlot(FusionAltarMenu.RESULT).set(ItemStack.EMPTY);
+		load(menu, new ItemStack(Items.AMETHYST_SHARD), knotItem, RuneItem.stack(Runes.FIRE));
+		String refused = menu.plan().problem();
+		if (refused == null || refused.contains("add-on")) {
+			failures.add("a Knot and an effect shouldn't fuse, and not because of a missing add-on (says \"" + refused + "\")");
+		}
+		load(menu, ItemStack.EMPTY);
 		double loose = SpellCompiler.compile(List.of(Runes.BOLT, Runes.FIRE, Runes.AMPLIFY)).cost();
 		double tied = SpellCompiler.compile(List.of(knot.get())).cost();
 		if (Math.abs(tied - loose * 0.9) > 1e-6) {

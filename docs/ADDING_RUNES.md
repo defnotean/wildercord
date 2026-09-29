@@ -89,7 +89,14 @@ case "gust" -> harmed.forEach(t -> {
 Rules of thumb:
 
 - **Damage always goes through `Effects.hurt(cast, target, source, amount)`.** It skips
-  invulnerability frames, scales PvP, applies Execute, Fortune and Unison, and counts spell kills.
+  invulnerability frames, scales PvP, applies Execute, Fortune and Unison, counts spell kills, and
+  sets off the reactions any damage of the rune's element sets off (earth Fracture, life Blight,
+  arcane Unweave, wind Rupture, time Elapse). Fire and storm damage ask `Reactions.fire` / `storm`
+  for their multiplier themselves.
+- **Leaving a mark?** `Reactions.mark(t, Reactions.Mark.SHADOWED)` (a void curse) or `BLEEDING` (a
+  cut) sets up Blight or Rupture; add the rune to `ReactionRules.SHADOWS` / `BLEEDS` too, so its
+  tooltip says so. A new harmful rune of a triggering element that deals no damage belongs in
+  `ReactionRules.QUIET`.
 - **The caster may be a monster.** `cast.caster` is a `LivingEntity` (a Runebound or the
   Archivist casts your rune too). Send messages with `Casters.tell`, check `Casters.creative`, and
   never assume a `ServerPlayer`.
