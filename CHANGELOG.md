@@ -35,6 +35,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **A settings file that couldn't be written lost its settings.** When the server couldn't add the newer settings to an
   older `wildercord.json` (a read-only file, say), it ran on the defaults instead of the owner's settings. The file's
   settings now hold either way; only the new ones run at their defaults.
+- Adding the newer settings to an older `wildercord.json` no longer strips out comments an owner wrote in it: a file
+  with comments is left as it is (its settings are read as before, and any it lacks run at their defaults).
 
 ## [0.4.2-alpha] - 2026-09-28
 
