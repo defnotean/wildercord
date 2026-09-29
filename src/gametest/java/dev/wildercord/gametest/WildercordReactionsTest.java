@@ -301,9 +301,9 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ Blight
 
 	/**
-	 * Blind then Venom: the rot bursts for 3 on the husk and on a pillager beside it (poisoning the
-	 * pillager: husks can't be poisoned), not on a husk 8 blocks off, and the caster heals 1 for each.
-	 * Blind then Harm sets nothing off: it needs life.
+	 * Blind then Venom: the rot bursts for 3 on a vindicator and on a pillager beside it (poisoning the
+	 * pillager), not on a husk 8 blocks off, and the caster heals 1 for each. Blind then Harm sets nothing
+	 * off: it needs life. (Not a husk as the target: the undead are weak to life, which would change the numbers.)
 	 */
 	private static String blight(MinecraftServer server) {
 		ServerPlayer player = player(server);
@@ -314,12 +314,12 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 			return "arcane damage on a shadowed husk shouldn't set off Blight, and should leave it shadowed";
 		}
 		player.setHealth(10);
-		Mob target = husk(level, 0, 4);
+		Mob target = mob(level, EntityTypes.VINDICATOR, 0, 4);
 		Mob beside = mob(level, EntityTypes.PILLAGER, 2, 5);
 		Mob far = husk(level, 0, 12);
 		cast(player, List.of(Runes.BLIND, Runes.VENOM), target);
 		if (!near(target.getHealth(), target.getMaxHealth() - 2 - ReactionRules.BLIGHT_DAMAGE)) {
-			return "the husk should take Venom's 2 and the rot's 3 (health " + target.getHealth() + ")";
+			return "the vindicator should take Venom's 2 and the rot's 3 (health " + target.getHealth() + ")";
 		}
 		if (!near(beside.getHealth(), beside.getMaxHealth() - ReactionRules.BLIGHT_DAMAGE) || !beside.hasEffect(MobEffects.POISON)) {
 			return "the rot should spread to the pillager beside it: 3 damage and poison (health " + beside.getHealth() + " of " + beside.getMaxHealth()
