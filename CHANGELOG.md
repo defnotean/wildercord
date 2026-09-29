@@ -2,6 +2,15 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.4.4-alpha] - 2026-09-29
+
+### Fixed
+- **A server reached through its own domain shows in the server list.** Minecraft greets a server with the address as
+  typed when it asks for its status, but with the address its DNS (SRV) record points at when joining it. Tunnels that
+  sort connections by that greeting (playit.gg's, for one) only know the second, so such a server said "Can't connect
+  to server" in the list while joining it worked. The list now greets a redirected server the way joining does;
+  addresses no SRV record redirects go as typed, as before.
+
 ## [0.4.3-alpha] - 2026-09-29
 
 Loadouts, a second layer of world-changing magic (all ten elements now touch the world), and another bug hunt: the

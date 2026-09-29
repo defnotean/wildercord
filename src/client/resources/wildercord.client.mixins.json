@@ -15,7 +15,8 @@
 		"ClientLevelMixin",
 		"AvatarRendererStyleMixin",
 		"BossHealthOverlayAccessor",
-		"SubtitleOverlayMixin"
+		"SubtitleOverlayMixin",
+		"ServerStatusPingerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
