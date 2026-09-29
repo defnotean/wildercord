@@ -11,6 +11,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   woke another, loot and all), and the Archivist in a boat or minecart. They stay where they belong now.
 - A boss's bar could stay stuck on screen after its chunk unloaded, and the Archivist's showed to anyone who
   could see it from far off. Like the dungeon bosses', the Archivist's bar now shows only in its arena.
+- `/kill` and the void couldn't kill a boss while it gathered itself between phases.
 
 ## [0.4.1-alpha] - 2026-09-28
 

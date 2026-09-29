@@ -408,6 +408,10 @@ public class Archivist extends SpellcasterIllager {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+		// A command's kill and the void always go through, even while it rewrites.
+		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+			return super.hurtServer(level, source, damage);
+		}
 		if (rewriting > 0 || source.is(DamageTypes.FALL) || source.getEntity() instanceof Mob && !(source.getEntity() instanceof Player)) {
 			return false;
 		}

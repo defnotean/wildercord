@@ -294,6 +294,30 @@ public class WildercordDungeonsTest implements FabricClientGameTest {
 			check(Heart.discovered(player(server), "reaction:shatter"), "setting off Shatter on it should go in the Grimoire");
 			player(server).setGameMode(GameType.CREATIVE);
 		});
+		// Nothing leads it out of its arena: no boat, no portal (one that left would be missing, and its altar would wake another).
+		world.getServer().runOnServer(server -> {
+			ServerLevel level = server.getLevel(nether);
+			CinderWarden warden = (CinderWarden) level.getEntity(wardenId);
+			Entity boat = EntityTypes.OAK_BOAT.create(level, EntitySpawnReason.COMMAND);
+			check(boat != null, "a boat should spawn");
+			boat.snapTo(warden.getX(), warden.getY(), warden.getZ(), 0, 0);
+			level.addFreshEntity(boat);
+			check(!warden.startRiding(boat) && !warden.isPassenger(), "the Cinder Warden shouldn't be caught in a boat");
+			check(!warden.canUsePortal(false), "the Cinder Warden shouldn't go through a portal");
+			boat.discard();
+			// Into its next phase: it gathers itself, untouchable...
+			warden.setNoAi(false);
+			warden.setHealth(warden.getMaxHealth() / 2);
+		});
+		world.getServer().waitFor(server -> ((CinderWarden) server.getLevel(nether).getEntity(wardenId)).state(CinderWarden.SHIFTING), 20);
+		world.getServer().runOnServer(server -> {
+			ServerLevel level = server.getLevel(nether);
+			CinderWarden warden = (CinderWarden) level.getEntity(wardenId);
+			check(warden.state(CinderWarden.SHIFTING), "the Cinder Warden should gather itself as it enters its second phase");
+			// ...but a command's kill still goes through.
+			warden.kill(level);
+			check(warden.isDeadOrDying(), "a command's kill should go through while a boss gathers itself between phases");
+		});
 		done(world, nether);
 	}
 

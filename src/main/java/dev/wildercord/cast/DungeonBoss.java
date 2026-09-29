@@ -403,12 +403,13 @@ public abstract class DungeonBoss extends Monster {
 
 	@Override
 	public boolean hurtServer(ServerLevel level, DamageSource source, float damage) {
+		// A command's kill and the void always go through, even between phases.
+		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+			return super.hurtServer(level, source, damage);
+		}
 		if (shifting > 0 || source.is(DamageTypes.FALL) || source.is(DamageTypes.IN_WALL)
 				|| source.getEntity() instanceof Mob && !(source.getEntity() instanceof Player) && source.getEntity() != this) {
 			return false;
-		}
-		if (source.is(DamageTypes.GENERIC_KILL) || source.is(DamageTypes.FELL_OUT_OF_WORLD)) {
-			return super.hurtServer(level, source, damage);
 		}
 		float taken = resist(level, source, damage);
 		if (taken <= 0) {
