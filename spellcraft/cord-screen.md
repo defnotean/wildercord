@@ -288,7 +288,7 @@ The rules for what a passive may hold are on [Passive Spells]({{ '/spellcraft/pa
 
 ## The Grimoire page
 
-<img src="{{ '/assets/images/a-grimoire-page.jpg' | relative_url }}" alt="The Grimoire page: your heart with innate rune and leaning, the reactions with Conduct found, the secret spells as question marks, and the start of the fusions with Firestorm found" class="shot">
+<img src="{{ '/assets/images/a-grimoire-page.jpg' | relative_url }}" alt="The Grimoire page: your heart with innate rune and leaning, six of the eleven reactions found, and the secret spells as question marks" class="shot">
 <span class="caption">The Grimoire page. (This picture is from before the full set of fused runes; the Fusions list now counts all 55.)</span>
 
 The **Grimoire** tab is your book of discoveries. It lists, in order:
