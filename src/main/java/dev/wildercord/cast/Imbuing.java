@@ -138,10 +138,8 @@ public final class Imbuing {
 		net.fabricmc.fabric.api.event.player.UseBlockCallback.EVENT.register(Imbuing::onUseBlock);
 		UseItemCallback.EVENT.register(Imbuing::onUse);
 		ServerTickEvents.END_SERVER_TICK.register(Imbuing::tick);
-		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-			READY_AT.remove(handler.player.getUUID());
-			LAST_SHOT.remove(handler.player.getUUID());
-		});
+		// The shared cooldown outlasts a logout (relogging mustn't reset it); spent ones are swept in the tick.
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> LAST_SHOT.remove(handler.player.getUUID()));
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			READY_AT.clear();
 			LAST_SHOT.clear();
@@ -885,6 +883,10 @@ public final class Imbuing {
 		}
 		if (tick % 2 != 0) {
 			return;
+		}
+		if (tick % 1200 == 0 && !READY_AT.isEmpty()) {
+			long now = server.overworld().getGameTime();
+			READY_AT.values().removeIf(at -> at <= now || at - now > STALE);
 		}
 		for (ServerLevel level : server.getAllLevels()) {
 			Glyphs glyphs = level.getDataStorage().get(Glyphs.TYPE);
