@@ -72,7 +72,7 @@ A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are
 
 *Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
 
-Regeneration II for 6 seconds, and plants grow around every ally it touches.
+Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Earth effect, with an amethyst shard (3 XP levels).
 
@@ -138,7 +138,7 @@ Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can'
 
 *Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-5 damage. If it kills, you feed: 10 mana and 4 absorption.
+5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Void effect and any Blood effect, with an amethyst shard (3 XP levels).
 

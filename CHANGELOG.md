@@ -48,6 +48,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **A Blizzard or Rime Seal cast again on its own spot keeps it going** (up to three times its length) instead of laying
   a second one on top: a Zone, an Echo or a Split used to stack several storms biting at once, or seals each freezing
   the same enemy, as Hellmouth, Sinkhole and Crimson Mist already didn't.
+- Bloom's description says it grows plants around the first 3 allies it touches (it said every ally), and Devour's
+  that it feeds you twice a cast at most, as they always did.
 - **Manatide gives 30 mana a drink at most.** Extend made it flow longer without limit (four Extends: about 480 mana for
   a 46-mana spell), and a stream that outlasted the minute between drinks ran alongside the next. It now flows 10
   seconds however it's extended, and only your newest drink flows.

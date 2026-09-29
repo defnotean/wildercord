@@ -1010,7 +1010,7 @@ element hints.
 | frost + earth | **Glacier** | Frozen in place for 2 s (1 s on players) |
 | life + void | **Lifesteal** | 5 damage, and you heal for what it dealt |
 | wind + void | **Warp** | Swaps places with the target; an enemy is left with Slowness II for 2 s |
-| life + earth | **Bloom** | Regeneration II for 6 s to allies, and plants grow around them |
+| life + earth | **Bloom** | Regeneration II for 6 s to allies, and plants grow around the first 3 of them |
 | life + storm | **Surge** | Allies get Speed I and Strength I for 8 s |
 | arcane + void | **Nullify** | Strips an enemy's good effects, or an ally's bad effects |
 

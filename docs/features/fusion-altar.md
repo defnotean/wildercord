@@ -68,7 +68,7 @@ its emblem is split down the middle between the two elements' glyphs.
 | Frost + Earth | **Glacier** | Freezes targets in place for 2 seconds (1 second on players). |
 | Life + Void | **Lifesteal** | 5 damage, and you heal for what it dealt. |
 | Wind + Void | **Warp** | You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds. |
-| Life + Earth | **Bloom** | Regeneration II for 6 seconds, and plants grow around every ally it touches. |
+| Life + Earth | **Bloom** | Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches. |
 | Life + Storm | **Surge** | Speed I and Strength I for 8 seconds. |
 | Arcane + Void | **Nullify** | Strips an enemy's good effects, or an ally's bad effects. |
 | Fire + Life | **Phoenix Pyre** | Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistance, and every second enemies within 2 blocks of them are set alight and take 1 damage. |
@@ -100,7 +100,7 @@ its emblem is split down the middle between the two elements' glyphs.
 | Life + Time | **Second Wind** | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute. |
 | Life + Blood | **Transfusion** | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
 | Void + Time | **Entropy** | The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour. |
-| Void + Blood | **Devour** | 5 damage. If it kills, you feed: 10 mana and 4 absorption. |
+| Void + Blood | **Devour** | 5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most). |
 | Arcane + Time | **Timesteal** | Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you. |
 | Arcane + Blood | **Hemomancy** | 4 magic damage, and 1 more for every 2 health you're missing (up to 6 more). |
 | Time + Blood | **Reckoning** | For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12). |

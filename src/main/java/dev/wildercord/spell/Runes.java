@@ -240,7 +240,7 @@ public final class Runes {
 	public static final RuneDef GLACIER = effect("glacier", "Glacier", 3, 16, "frost", EffectKind.HARMFUL, "Freezes targets in place for 2 seconds (1 second on players).", DURATION, LINGER);
 	public static final RuneDef LIFESTEAL = effect("lifesteal", "Lifesteal", 3, 16, "blood", EffectKind.HARMFUL, "5 damage, and you heal for what it dealt.", POWER, LINGER);
 	public static final RuneDef WARP = effect("warp", "Warp", 3, 12, "void", EffectKind.MOVEMENT, "You and the first creature hit swap places through the void. An enemy is left reeling: Slowness II for 2 seconds.", DURATION);
-	public static final RuneDef BLOOM = effect("bloom", "Bloom", 3, 16, "life", EffectKind.HELPFUL, "Regeneration II for 6 seconds, and plants grow around every ally it touches.", POWER, DURATION);
+	public static final RuneDef BLOOM = effect("bloom", "Bloom", 3, 16, "life", EffectKind.HELPFUL, "Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches.", POWER, DURATION);
 	public static final RuneDef SURGE = effect("surge", "Surge", 3, 16, "storm", EffectKind.HELPFUL, "Speed I and Strength I for 8 seconds.", POWER, DURATION);
 	public static final RuneDef NULLIFY = effect("nullify", "Nullify", 3, 14, "arcane", EffectKind.HARMFUL, "Strips an enemy's good effects, or an ally's bad effects.");
 
@@ -281,7 +281,7 @@ public final class Runes {
 	public static final RuneDef LIFEBLOOM = effect("lifebloom", "Lifebloom", 3, 16, "life", EffectKind.HELPFUL, "Heals 4, then 1 a second for 5 seconds; when it fades it bursts, healing every ally within 3 blocks for 3.", POWER, DURATION, RADIUS);
 	public static final RuneDef SANGUINE_RITE = effect("sanguine_rite", "Sanguine Rite", 3, 14, "blood", EffectKind.HARMFUL, "You pay 3 of your own health (never your last) for 12 damage that ignores armour.", POWER, LINGER);
 	public static final RuneDef ENTROPY = effect("entropy", "Entropy", 3, 16, "void", EffectKind.HARMFUL, "The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour.", POWER, DURATION, LINGER);
-	public static final RuneDef DEVOUR = effect("devour", "Devour", 3, 16, "void", EffectKind.HARMFUL, "5 damage. If it kills, you feed: 10 mana and 4 absorption.", POWER, LINGER);
+	public static final RuneDef DEVOUR = effect("devour", "Devour", 3, 16, "void", EffectKind.HARMFUL, "5 damage. If it kills, you feed: 10 mana and 4 absorption (twice a cast at most).", POWER, LINGER);
 	public static final RuneDef TIMESTEAL = effect("timesteal", "Timesteal", 3, 16, "time", EffectKind.HARMFUL, "Steals up to 2 of the target's good effects, with the time they had left (at most 30 seconds), and gives them to you.", DURATION);
 	public static final RuneDef HEMOMANCY = effect("hemomancy", "Hemomancy", 3, 16, "blood", EffectKind.HARMFUL, "4 magic damage, and 1 more for every 2 health you're missing (up to 6 more).", POWER, LINGER);
 	public static final RuneDef RECKONING = effect("reckoning", "Reckoning", 3, 18, "time", EffectKind.HARMFUL, "For 4 seconds, every wound the target takes is counted; then half of it comes due again at once (at most 12).", POWER, DURATION);
