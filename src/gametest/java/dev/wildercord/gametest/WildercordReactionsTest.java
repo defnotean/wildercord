@@ -317,11 +317,13 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 		Mob target = mob(level, EntityTypes.VINDICATOR, 0, 4);
 		Mob beside = mob(level, EntityTypes.PILLAGER, 2, 5);
 		Mob far = husk(level, 0, 12);
+		// Life is a little stronger in the midday sun where the test stands: the climate is part of the sum.
+		double climate = dev.wildercord.cast.Climate.factor(player, "life");
 		cast(player, List.of(Runes.BLIND, Runes.VENOM), target);
-		if (!near(target.getHealth(), target.getMaxHealth() - 2 - ReactionRules.BLIGHT_DAMAGE)) {
+		if (!near(target.getHealth(), target.getMaxHealth() - (2 + ReactionRules.BLIGHT_DAMAGE) * climate)) {
 			return "the vindicator should take Venom's 2 and the rot's 3 (health " + target.getHealth() + ")";
 		}
-		if (!near(beside.getHealth(), beside.getMaxHealth() - ReactionRules.BLIGHT_DAMAGE) || !beside.hasEffect(MobEffects.POISON)) {
+		if (!near(beside.getHealth(), beside.getMaxHealth() - ReactionRules.BLIGHT_DAMAGE * climate) || !beside.hasEffect(MobEffects.POISON)) {
 			return "the rot should spread to the pillager beside it: 3 damage and poison (health " + beside.getHealth() + " of " + beside.getMaxHealth()
 				+ ", poisoned " + beside.hasEffect(MobEffects.POISON) + ")";
 		}
