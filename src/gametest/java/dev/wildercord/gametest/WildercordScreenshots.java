@@ -624,6 +624,23 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			warden.discard();
 			player.removeAllEffects();
 		});
+
+		// A Bubble popping lets go of its own hold only: a longer Freeze on the same creature still holds it.
+		huskId[0] = server.computeOnServer(WildercordScreenshots::freshHusk);
+		context.waitTicks(3);
+		server.runOnServer(s -> {
+			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
+			var husk = husk(s, huskId[0]);
+			land(player, List.of(husk), husk.getBoundingBox().getCenter(), false, Runes.TOUCH, Runes.FREEZE, Runes.EXTEND, Runes.EXTEND);
+			land(player, List.of(husk), husk.getBoundingBox().getCenter(), false, Runes.TOUCH, Runes.BUBBLE);
+		});
+		context.waitTicks(80);
+		server.runOnServer(s -> {
+			var husk = husk(s, huskId[0]);
+			check(husk instanceof net.minecraft.world.entity.Mob mob && mob.isNoAi(),
+				"a Bubble popping shouldn't thaw a creature still held by a longer Freeze");
+			husk.discard();
+		});
 		server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().setGameMode(GameType.CREATIVE));
 	}
 

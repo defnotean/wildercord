@@ -36,6 +36,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Banish never drops a creature into the void.** Its target reappears near its own height, but with no ground
   within reach below (the edge of an End island, a deep ravine) it could be left in mid-air to fall. A creature
   standing on the ground now always reappears on ground, or not at all.
+- **A Bubble popping, or a Stasis ending, no longer thaws a longer Freeze.** Either one let the creature go the
+  moment it ended, even if a Freeze (or another hold) cast on it had seconds still to run.
 - **Blackflame spreads only from a death.** A burning creature that simply went away (its ground unloaded, it
   despawned, or it went through a portal) passed its black flames on as if it had died. Blackflame, Dismantle's
   later slashes, Aftershock's second impact and a Bubble's pop also no longer follow a player through a portal.

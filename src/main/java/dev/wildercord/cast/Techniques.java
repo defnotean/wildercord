@@ -440,7 +440,8 @@ final class Techniques {
 				return;
 			}
 			t.removeEffect(MobEffects.LEVITATION);
-			Spirits.thawNow(t);
+			// The bubble's own hold lets go now by itself (Spirits.hold); forcing a thaw would also end a longer
+			// Freeze on the same creature.
 			TechniqueVfx.bubblePop(cast.level, t);
 			Effects.hurt(cast, t, magic(cast), 4 * power);
 			Reactions.mark(t, Reactions.Mark.SOAKED);
