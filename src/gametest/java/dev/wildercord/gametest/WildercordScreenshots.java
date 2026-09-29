@@ -694,6 +694,21 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			Spellbooks.setMana(player, 100);
 			dev.wildercord.cast.PassiveCaster.tick(player, 20);
 			check(player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED), "With the mana back, the passive should cast at the next second");
+			// A passive's buffs last only a little past its next renewal: on for a second, it can't leave a minute of Night Vision.
+			// The same effect from a potion is kept whole.
+			check(SpellCaster.editPassive(player, 0, ids(Runes.SELF, Runes.NIGHT_EYE)) == null, "Self · Night Eye should be a valid passive");
+			player.removeAllEffects();
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			var eye = player.getEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
+			check(eye != null && eye.getDuration() <= dev.wildercord.spell.Passives.EFFECT_TICKS,
+				"A passive's Night Vision should last no more than " + dev.wildercord.spell.Passives.EFFECT_TICKS + " ticks (has " + eye + ")");
+			player.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.NIGHT_VISION, 6000));
+			SpellCaster.togglePassive(player, 0);
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			SpellCaster.togglePassive(player, 0);
+			dev.wildercord.cast.PassiveCaster.tick(player, 20);
+			eye = player.getEffect(net.minecraft.world.effect.MobEffects.NIGHT_VISION);
+			check(eye != null && eye.getDuration() > 5000, "A potion's Night Vision should survive the passive renewing its own (has " + eye + ")");
 			SpellCaster.togglePassive(player, 0);
 			for (int slot = 0; slot < dev.wildercord.spell.Passives.MAX; slot++) {
 				SpellCaster.togglePassive(player, slot);

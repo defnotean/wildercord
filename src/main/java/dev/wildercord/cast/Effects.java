@@ -94,21 +94,26 @@ public final class Effects {
 	private static String currentElement = "";
 	/** Trial Key on the effect being applied: extra power against targets at full health (1 = none). */
 	private static double openingBonus = 1.0;
+	/** Whether the effect being applied is a passive renewing itself: {@link #ticks} caps what it sets (see {@link dev.wildercord.spell.Passives#effectTicks}). */
+	private static boolean passiveEffect;
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
 		double outerBonus = executeBonus;
 		String outerElement = currentElement;
 		double outerOpening = openingBonus;
+		boolean outerPassive = passiveEffect;
 		executeBonus = SpellNumbers.executeBonus(node);
 		currentElement = node.effect.element();
 		openingBonus = SpellNumbers.trialKeyBonus(node);
+		passiveEffect = cast.passive;
 		try {
 			applyEffect(cast, node, hit, groupPower);
 		} finally {
 			executeBonus = outerBonus;
 			currentElement = outerElement;
 			openingBonus = outerOpening;
+			passiveEffect = outerPassive;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
 		WorldMagic.onSpell(cast, node, hit, groupPower);
@@ -562,7 +567,9 @@ public final class Effects {
 	}
 
 	static int ticks(double seconds, double duration) {
-		return (int) Math.round(seconds * 20 * duration);
+		int ticks = (int) Math.round(seconds * 20 * duration);
+		// A passive's buffs last a little past its next renewal, so switching it off ends them (a potion's own are untouched).
+		return passiveEffect ? dev.wildercord.spell.Passives.effectTicks(ticks) : ticks;
 	}
 
 	/** A horizontal unit vector, falling back to {@code fallback} when the input is (nearly) vertical. */

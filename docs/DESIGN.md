@@ -820,6 +820,7 @@ Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slo
 - **No cooldown, no cost per cast:** a passive costs mana every second instead, 0.12 × its cost (Thrift and Archmage lower it). The HUD shows the total drain; the Passives page compares it to your regeneration.
 - **Faltering:** without the mana for a second's upkeep, a passive stops renewing until you have it again.
 - **Renewal:** a Self passive re-applies every 2 seconds, quietly (no particles after the first time). An Orbit passive restarts whenever its orbs run out, and stops the moment it's switched off.
+- **Nothing outlasts it:** whatever a passive's cast sets lasts 15 seconds at most (`Passives.EFFECT_TICKS`, above Night Vision's 10 seconds of flicker), so switching one on for a second can't bank a minute of its buff. The same effect from anywhere else keeps its own length.
 - **Each passive has an on/off switch.** Up to 5 runes each (fewer on small Cords).
 - **Only sustainable runes, so it isn't broken:**
   - Shapes: Self or Orbit.

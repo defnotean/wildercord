@@ -8,6 +8,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **A passive's buffs no longer outlast it.** Whatever a passive gives lasts 15 seconds at most (it's renewed every
+  2), so switching `Self · Night Eye` on for a second no longer leaves a minute of night vision for a second's
+  upkeep. The same effect from a potion keeps its full length.
 
 ## [0.4.2-alpha] - 2026-09-28
 
