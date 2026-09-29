@@ -224,7 +224,7 @@
   "message.wildercord.no_health": "Blood Price needs more than %s health",
   "message.wildercord.swap_blocked": "No room to trade places",
   "message.wildercord.light_blocked": "No room for a light there",
-  "message.wildercord.silenced": "Your voice is gone: you can't cast",
+  "message.wildercord.silenced": "You are silenced and cannot cast",
   "message.wildercord.charge_interrupted": "Your charge is cut short",
   "message.wildercord.zipper_no_wall": "There's no wall in front of you to unzip",
   "message.wildercord.zipper_unbreakable": "That can't be unzipped",
