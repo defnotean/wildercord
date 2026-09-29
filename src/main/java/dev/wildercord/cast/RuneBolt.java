@@ -57,6 +57,8 @@ public class RuneBolt extends Projectile {
 	private double speed;
 	private boolean arc;
 	private int lifeLeft;
+	/** How much further a (straight, not lobbed) bolt may fly: {@link #RANGE} blocks in all, however fast it goes. */
+	private double travelLeft;
 	private int color;
 	private Vfx.Theme theme;
 	private final List<Entity> alreadyHit = new ArrayList<>();
@@ -91,7 +93,8 @@ public class RuneBolt extends Projectile {
 			return null;
 		}
 		RuneBolt bolt = new RuneBolt(WildercordEntities.RUNE_BOLT, cast.level);
-		bolt.cast = cast.child();
+		// The same cast, not a child: a bolt is part of its shape, not a link, so it takes none of the cast's link depth.
+		bolt.cast = cast;
 		bolt.group = group;
 		bolt.anchored = anchored;
 		bolt.pierceLeft = SpellNumbers.pierce(group);
@@ -100,6 +103,7 @@ public class RuneBolt extends Projectile {
 		bolt.arc = arc;
 		bolt.speed = arc ? SpellNumbers.arcSpeed(group) : SpellNumbers.boltSpeed(group);
 		bolt.lifeLeft = arc ? 120 : (int) Math.ceil(RANGE / bolt.speed) + 4;
+		bolt.travelLeft = RANGE;
 		bolt.color = CastEngine.colorOf(group);
 		bolt.theme = Vfx.theme(group);
 		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());
@@ -135,6 +139,7 @@ public class RuneBolt extends Projectile {
 		speed = Math.min(3.0, speed * dev.wildercord.spell.Parry.REFLECT_SPEED);
 		setDeltaMovement(getDeltaMovement().normalize().scale(speed));
 		lifeLeft = (int) Math.ceil(RANGE / speed) + 4;
+		travelLeft = RANGE;
 	}
 
 	@Override
@@ -149,7 +154,7 @@ public class RuneBolt extends Projectile {
 		if (!(level() instanceof ServerLevel server)) {
 			return;
 		}
-		if (cast == null || !cast.alive() || --lifeLeft <= 0) {
+		if (cast == null || !cast.alive() || --lifeLeft <= 0 || !arc && travelLeft <= 1.0E-3) {
 			fizzle();
 			return;
 		}
@@ -162,6 +167,14 @@ public class RuneBolt extends Projectile {
 			setDeltaMovement(getDeltaMovement().add(0, -0.055, 0));
 		}
 		Vec3 motion = getDeltaMovement();
+		if (!arc) {
+			// Up to 48 blocks, as it says: a quickened bolt's spare ticks used to carry it on well past that.
+			double step = motion.length();
+			if (step > travelLeft) {
+				motion = motion.scale(travelLeft / step);
+			}
+			travelLeft -= Math.min(step, travelLeft);
+		}
 		Vec3 from = position();
 		Vec3 to = from.add(motion);
 		BlockHitResult block = server.clip(new net.minecraft.world.level.ClipContext(from, to,
@@ -289,8 +302,19 @@ public class RuneBolt extends Projectile {
 		Entity target = result.getEntity();
 		alreadyHit.add(target);
 		Vec3 dir = getDeltaMovement().normalize();
-		Vfx.impact((ServerLevel) level(), result.getLocation(), theme, 1.0);
-		CastEngine.onHit(cast, group, new Cast.Hit(List.of(target), result.getLocation(), dir, cast.caster.position(), null, null, false), anchored);
+		Vfx.impact((ServerLevel) level(), result.getLocation(), theme, arc ? 1.4 : 1.0);
+		List<Entity> hits = List.of(target);
+		if (arc) {
+			// An Arc bursts where it lands, on a creature as on the ground: everything within a couple of blocks.
+			List<Entity> splash = new ArrayList<>(hits);
+			for (Entity e : CastEngine.inRadius(cast, result.getLocation(), 2.0)) {
+				if (e != target) {
+					splash.add(e);
+				}
+			}
+			hits = splash;
+		}
+		CastEngine.onHit(cast, group, new Cast.Hit(hits, result.getLocation(), dir, cast.caster.position(), null, null, false), anchored);
 		CastEngine.chain(cast, group, anchored, target, theme);
 		if (pierceLeft-- <= 0) {
 			fizzle();

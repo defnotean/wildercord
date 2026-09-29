@@ -189,9 +189,12 @@ the caster's bonuses (power and duration from Heart Circles and enchantments), w
 passive renewing itself, and a **budget**:
 
 - at most **64 creatures** and **32 blocks** touched, and **8 links** deep, shared by the whole
-  cast through `child()`, so no chain of links can run away;
+  cast through `child()`, so no chain of links can run away (only links go a level deeper: a bolt in
+  flight, a shape's hits and a Linger's later landings run at their cast's own depth);
 - shapes that strike repeatedly (Domain, Zone, Totem, Orbit, Wall, Trail, Rain, Barrage, Orb, Stream) take a fresh creature/block budget per strike with `pulse()`, while the Siphon cap and
-  `once(...)` costs still count for the whole cast.
+  `once(...)` costs still count for the whole cast. The lasting ones book their next step as each
+  runs (`ShapeRunners.steps`), never their whole lifetime up front, since `Scheduler` walks every
+  waiting task each tick.
 
 `Cast.alive()` is false once the caster leaves, dies or changes dimension (or, for a passive, once
 it's switched off, or once `cancel()` is called, which is how a Domain that loses a clash

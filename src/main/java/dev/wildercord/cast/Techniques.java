@@ -124,7 +124,8 @@ final class Techniques {
 		for (int i = 1; i < 3; i++) {
 			int slash = i;
 			Scheduler.later(i * 2, () -> {
-				if (cast.alive() && t.isAlive()) {
+				// Not after a player who stepped through a portal meanwhile.
+				if (cast.alive() && t.isAlive() && t.level() == cast.level) {
 					TechniqueVfx.dismantle(cast.level, t, slash);
 					Effects.hurt(cast, t, magic(cast), 3 * power);
 				}
@@ -149,7 +150,7 @@ final class Techniques {
 		TechniqueVfx.aftershock(cast.level, t, false);
 		Effects.hurt(cast, t, strike(cast), 5 * power);
 		Scheduler.later(10, () -> {
-			if (cast.alive() && t.isAlive()) {
+			if (cast.alive() && t.isAlive() && t.level() == cast.level) {
 				TechniqueVfx.aftershock(cast.level, t, true);
 				Effects.hurt(cast, t, strike(cast), 5 * power);
 				Effects.push(t, new Vec3(0, 0.35, 0));
@@ -234,10 +235,11 @@ final class Techniques {
 			}
 			Long until = BLACKFLAME.get(t.getUUID());
 			long now = cast.level.getGameTime();
-			if (!t.isAlive()) {
+			if (!t.isAlive() || t.level() != cast.level) {
 				BLACKFLAME.remove(t.getUUID());
 				int left = until == null ? 0 : (int) ((until - now) / 20);
-				if (spread && !spent[0] && left >= 1) {
+				// Only a death spreads it: not a creature that just went (unloaded, despawned, or through a portal).
+				if (spread && !spent[0] && left >= 1 && t.isDeadOrDying()) {
 					spent[0] = true;
 					LivingEntity next = ShapeRunners.nearestEnemy(cast, t.getBoundingBox().getCenter(), 6.0, null);
 					if (next != null) {
@@ -434,11 +436,12 @@ final class Techniques {
 			});
 		}
 		Scheduler.later(ticks, () -> {
-			if (!cast.alive() || !t.isAlive()) {
+			if (!cast.alive() || !t.isAlive() || t.level() != cast.level) {
 				return;
 			}
 			t.removeEffect(MobEffects.LEVITATION);
-			Spirits.thawNow(t);
+			// The bubble's own hold lets go now by itself (Spirits.hold); forcing a thaw would also end a longer
+			// Freeze on the same creature.
 			TechniqueVfx.bubblePop(cast.level, t);
 			Effects.hurt(cast, t, magic(cast), 4 * power);
 			Reactions.mark(t, Reactions.Mark.SOAKED);
@@ -506,11 +509,14 @@ final class Techniques {
 
 	// ------------------------------------------------------------------ movement
 
-	/** The first creature in a hit that a movement trick may act on: not you, not a boss, and friend or fair game. */
+	/**
+	 * The first creature in a hit that a movement trick may act on: not you, not a boss, and friend or fair game
+	 * (an enemy whose Shield stopped this spell is neither: the spell ended at its circles).
+	 */
 	private static LivingEntity partner(Cast cast, Cast.Hit hit) {
 		for (Entity e : hit.entities()) {
 			if (e instanceof LivingEntity living && e != cast.caster && living.isAlive() && !Spirits.isBoss(e)
-					&& (Targets.canHarm(cast.caster, e) || Targets.isAlly(cast.caster, e))) {
+					&& (Targets.canHarm(cast.caster, e) && !Shields.blocked(cast, living) || Targets.isAlly(cast.caster, e))) {
 				return living;
 			}
 		}

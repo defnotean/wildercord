@@ -638,6 +638,8 @@ def write_lang(runes):
         "message.wildercord.rewind_dimension": "Rewind can't reach into another dimension",
         "message.wildercord.time_resumes": "Time resumes: %s damage from %s hits lands at once",
         "message.wildercord.reversal": "Reversal! Death turned back",
+        "message.wildercord.deaths_door": "Death was cheated too recently: nothing turns it back again for %s s",
+        "message.wildercord.rebirth_resting": "Too soon to be reborn again (%s s)",
         "entity.wildercord.shadow_hound": "Shadow Hound",
         "modmenu.descriptionTranslation.wildercord": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key.",
     }

@@ -716,9 +716,10 @@ final class FusedLife {
 		wind.over = true;
 		WINDS.remove(e.getUUID(), wind);
 		long now = level.getGameTime();
-		if (now > wind.until) {
+		if (now > wind.until || DeathsDoor.resting(e) > 0) {
 			return false;
 		}
+		DeathsDoor.saved(e, false);
 		if (SPENT.size() > 64) {
 			SPENT.values().removeIf(saved -> !FusedLifeRules.lockedOut(saved, now));
 		}

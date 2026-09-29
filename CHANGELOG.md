@@ -45,6 +45,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Magma's pools and Tempest's strikes don't stack on one enemy.** Each lays one under (or on) every target, so an
   enemy bunched with others took every overlapping one: up to four burns a second from Magma, eight strikes from
   Tempest. Now each enemy takes your strongest one once (Magma once a second, Tempest once per strike).
+- **Cheating death rests.** Once Reversal, Second Wind or a certain secret spell has saved you from a killing blow,
+  none of them saves you again for a minute, and the secret spell can't be taken up again for 3 minutes. Each could be
+  recast long before it ran out, so keeping one up meant never dying.
+- Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
+- Borrowed Time says its debt is forgiven when you slay a monster, as it always was (it said "something": killing an
+  animal never forgave it).
+- Vein's description now says what Amplify does to it: like Break, Tunnel and Smelt, an Amplified Vein mines at
+  diamond-pickaxe strength.
 
 ### Fixed
 - A Runebound monster standing where the world has stopped running (at the edge of what's loaded) no longer winds up
@@ -52,6 +60,37 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **Bosses can't be lifted or dragged any more.** Levitate floated the Warden, the Wither, the Archivist and the
+  dungeon bosses up out of their fights (Extended, high enough for the fall to hurt), Gravity Well held them in
+  its pull straight through their knockback resistance, and Shulkershell's opening lifted them too. Bosses are
+  only ever slowed: Levitate now gives them Slowness II instead, and Gravity Well still marks them pulled and
+  crushes them, but no longer moves them.
+- **A Shield now stops Swap and Shadowstep.** A Shield that blocked the spell still let Swap trade places with the
+  enemy behind it, and Shadowstep put you at its back, as if the spell had gone through.
+- **Icepath no longer freezes a swimmer into the ice.** It froze the water a creature (or a player, or you) was
+  swimming in, leaving it stuck in a block of ice to choke. Like a frost spell's freezing, it now leaves the water
+  round a swimmer alone.
+- **Harvest replants with a seed from the crop it cut.** It dropped everything the crop gave and then replanted it
+  for free, a seed out of nothing every time. Now one of the crop's own seeds goes back into the ground (a crop
+  that dropped none isn't replanted), and a crop you may not touch (in a claim) no longer stops it harvesting the
+  rest of the field.
+- **Grow keeps to the spell's block budget.** Every other rune that changes blocks counts each one against the
+  blocks a cast may change (32, or the server's `max_blocks_per_cast`), but Grow bone-mealed every block it
+  reached, however many times a Zone, a Split or an Echo landed it.
+- **Blink never lands you in lava.** Aimed at a lava pool (or a creature dying in one), it put you on the ground at
+  the bottom of it, aimed out over the void or a deep drop it left you in mid-air to fall, and it could also put
+  you past the world border. It still only lands where there's room to stand, and now only on ground, never in
+  lava or fire or outside the border: with nowhere safe, you stay where you are.
+- **Banish never drops a creature into the void.** Its target reappears near its own height, but with no ground
+  within reach below (the edge of an End island, a deep ravine) it could be left in mid-air to fall. A creature
+  standing on the ground now always reappears on ground, or not at all.
+- **A Bubble popping, or a Stasis ending, no longer thaws a longer Freeze.** Either one let the creature go the
+  moment it ended, even if a Freeze (or another hold) cast on it had seconds still to run.
+- Echolocate now lights up every enemy in range (up to 32) in a big crowd too: enemies just outside its range were
+  using up the count, leaving some in range dark.
+- **Blackflame spreads only from a death.** A burning creature that simply went away (its ground unloaded, it
+  despawned, or it went through a portal) passed its black flames on as if it had died. Blackflame, Dismantle's
+  later slashes, Aftershock's second impact and a Bubble's pop also no longer follow a player through a portal.
 - **`/rtp` typed over and over could stall a server.** Each `/rtp` searched for a new spot, loading (or generating) up
   to a dozen far-off chunks, and a broken warmup starts no cooldown, so it could be repeated as fast as it was typed.
   Now a player searches at most once every 10 seconds: trying again sooner goes to the spot already found (or, if the
@@ -98,11 +137,46 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Orbit looks for creatures once a tick instead of once per orb. On your side, the spell panel no longer reads your
   whole spell again every frame just to write its name, and ley lines, beams, motes, glows and magic circles are drawn
   without making new objects for every little piece. Nothing looks, sounds or plays any differently.
+- **A passive can't stack its Orbits.** A passive that started with an effect and then held an Orbit (`Swift · Orbit ·
+  Shock`) renewed every two seconds like a Self passive, so up to four rings of orbs (eight with Extend) struck at
+  once for one upkeep. The effect before the Orbit counts as Self, so that passive now has two shapes and is refused,
+  as the Passives page says; keep the buff and the aura in two passives.
+- **Switching an Orbit passive off and on no longer doubles its orbs.** The old ring came back beside the fresh one it
+  started, so every switch within its 8 seconds added another ring for one second's upkeep. Only the latest ring flies.
+- **Long-lasting shapes no longer pile up waiting steps.** An Orbit, Zone, Trail, Wall, Totem, Domain, Vortex, Mine or
+  Snare booked every one of its steps up front: an Orbit that Extend made last hours held hundreds of thousands of
+  them, kept even after its caster had left. Each now keeps one step waiting at a time and stops once its caster is
+  gone.
+- **Quicken makes a Wall strike twice as often.** A Wall struck once a second, and one Quicken left it at that (two
+  jumped it to five times a second). It still strikes once a second, now twice with one Quicken and four times with
+  two, and the readout says how often: "A 7-block wall (5s, every 1s)".
+- **A cast really goes eight links deep.** A bolt in flight, each strike of a Zone, Orbit or Domain, a Lance's or a
+  Ring's hits and a Linger's second landing all used up one of the cast's eight links, so `Bolt · On Hit` four times
+  over and then `Bolt · Fire` never threw its last bolt, and a Linger deep in a chain never landed again. Only links
+  count now.
+- **Quicken can't fling a spell across the world.** Quicken stacked without limit on flying shapes, so a spark or bolt
+  with a pile of Quickens crossed thousands of blocks in one step and loaded (even generated) the world along its
+  way, a cheap way to lag a server. A flying shape is now at most 8 times as fast (three Quickens on a bolt), a Wisp
+  or a Ricochet stops where the loaded world ends, and a bolt flies its 48 blocks and no further (its spare ticks
+  used to carry a quickened bolt 70 blocks and more), a wave its 14.
+- **An Arc bursts where it lands, even on a creature.** An Arc that came down on the ground splashed everything within
+  2 blocks, but one that landed on a creature struck only that creature. It bursts there too now.
+- **An Echo in an imbued spell repeats it at its target.** The Echo went off from the caster instead, so a sword or a
+  glyph holding `Fire · Echo` burned what it struck once and then "burned" its own maker, which did nothing. It now
+  repeats what was stored where the release was set off, as the Imbuing page says.
+- **A secret spell read from a scroll weighs its full price against a Shield**, as it does cast from a Cord (it counted
+  only its runes' mana).
+- **Singularity no longer holds a boss at its black star.** It still strikes them, but bosses are only ever slowed.
+- **Stormheart's lightning is spell damage.** It struck whoever hurt you in full, even a player (spell damage to players
+  is scaled down by the server's PvP setting) and even a friend whose blow landed; it now spares friends, counts as
+  storm damage (a creature weak to storm feels it), a Shield meets it, and players take it at the PvP scale.
+- **A widened Rain or Sweep no longer loads the world far away.** Shapes keep growing with every Widen, and a Rain's
+  strikes or a Sweep's beam could reach hundreds of blocks past what was loaded, loading (even generating) the land as
+  they felt for the ground or a wall. They now stop at the edge of the loaded world.
+
 - **A passive's buffs no longer outlast it.** Whatever a passive gives lasts 15 seconds at most (it's renewed every
   2), so switching `Self · Night Eye` on for a second no longer leaves a minute of night vision for a second's
   upkeep. The same effect from a potion keeps its full length.
-- **Harvest replants with one of the crop's own seeds**, as it always said, instead of a free one: each crop it
-  harvested used to drop every seed and replant as well. A crop that drops no seed is left unplanted.
 - **A spell's blocks never drop anything.** A Rampart blown up by an explosion dropped its packed mud (a free packed
   mud farm); a Rampart's wall, a Span's glass, Light's light and frost's crust on lava now drop nothing however
   they're broken, and a crust blown up (or taken any way but melting) gives its lava back at once.

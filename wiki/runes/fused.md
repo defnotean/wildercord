@@ -446,7 +446,7 @@ You pay 3 of your own health (never your last) for 12 damage that ignores armour
 
 *Tier III · Life · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
 
-For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once it has saved someone, not again on them for a minute.
+For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Time effect, with an amethyst shard (3 XP levels).
 

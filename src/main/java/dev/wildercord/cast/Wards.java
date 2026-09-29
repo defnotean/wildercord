@@ -167,6 +167,13 @@ public final class Wards {
 	}
 
 	static void reversal(Cast cast, LivingEntity t, int ticks) {
+		int resting = DeathsDoor.resting(t);
+		if (resting > 0) {
+			// Death was cheated a moment ago: it won't be again yet (see DeathsDoor).
+			Casters.tell(cast.caster, Component.translatableWithFallback("message.wildercord.deaths_door",
+				"Death was cheated too recently: nothing turns it back again for %s s", resting).withColor(0x6EDC64));
+			return;
+		}
 		REVERSAL.merge(t.getUUID(), cast.level.getGameTime() + ticks, Math::max);
 		TechniqueVfx.reversalMark(cast.level, t);
 	}
@@ -316,9 +323,10 @@ public final class Wards {
 			return true;
 		}
 		Long until = REVERSAL.remove(entity.getUUID());
-		if (until == null || until < level.getGameTime()) {
+		if (until == null || until < level.getGameTime() || DeathsDoor.resting(entity) > 0) {
 			return true;
 		}
+		DeathsDoor.saved(entity, false);
 		entity.setHealth(entity.getMaxHealth() * 0.5F);
 		List<net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect>> bad = new ArrayList<>();
 		for (MobEffectInstance effect : entity.getActiveEffects()) {
@@ -393,7 +401,8 @@ public final class Wards {
 	private static void release(Stasis held) {
 		LivingEntity t = held.target;
 		unhold(t, held.hadNoGravity);
-		Spirits.thawNow(t);
+		// Its hold (Spirits.hold, renewed as the Stasis was) lets go on its own schedule: a thaw forced here would
+		// also end a longer Freeze on the same creature.
 		if (!(t.level() instanceof ServerLevel level)) {
 			return;
 		}

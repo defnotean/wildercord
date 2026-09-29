@@ -81,6 +81,10 @@ public final class Passives {
 			if (rune.family() == RuneFamily.SHAPE) {
 				shapes++;
 				aura |= !rune.is(Runes.SELF.id());
+			} else if (rune.family() == RuneFamily.EFFECT && shapes == 0) {
+				// An effect before any shape is on the implicit Self: one shape already. With an Orbit after it the
+				// passive would renew every two seconds, as a Self passive does, and its orbits would pile up.
+				shapes++;
 			}
 		}
 		if (shapes > 1) {

@@ -464,7 +464,7 @@ public final class Imbuing {
 		dev.wildercord.api.WildercordEvents.IMBUE_RELEASED.invoker().onRelease(caster, List.copyOf(runes), at.pos(), at.entity());
 		// Paid for when it was imbued: it can't Siphon that mana back a second time.
 		Cast cast = new Cast(caster, 1, Heart.bonuses(caster), false, null, new Cast.Info(compiled.root(), runes.size(), Heart.leaning(caster), List.copyOf(runes)))
-			.noSiphon();
+			.noSiphon().from(at);
 		CastEngine.runSegment(cast, compiled.root(), at);
 	}
 

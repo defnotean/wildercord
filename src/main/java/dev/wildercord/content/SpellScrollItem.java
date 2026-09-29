@@ -127,7 +127,9 @@ public class SpellScrollItem extends Item {
 				return InteractionResult.FAIL;
 			}
 			Optional<Secrets.Secret> secret = Secrets.match(runes);
-			Cast cast = new Cast(serverPlayer, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), runes.size(), "", List.copyOf(runes)));
+			// Against a Shield a secret weighs its full price, as it does cast from a Cord.
+			Cast cast = new Cast(serverPlayer, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), runes.size(), "", List.copyOf(runes)))
+				.weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
 			Vfx.castCircle(serverPlayer, secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst())), runes);
 			if (secret.isPresent()) {
 				SecretSpells.cast(cast, secret.get());

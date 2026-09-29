@@ -97,7 +97,7 @@ its emblem is split down the middle between the two elements' glyphs.
 | Earth + Time | **Fossilize** | The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then it's stone, held for 2 seconds (1 on players) and cracked for 6 damage. |
 | Earth + Blood | **Bonespur** | Spurs of bone burst from the ground under up to 4 enemies within 4 blocks: 5 damage each, and they bleed for 3 seconds. |
 | Life + Arcane | **Soulbond** | Binds you and an ally for 10 seconds: any damage either of you takes is split between you. The bond breaks beyond 16 blocks. |
-| Life + Time | **Second Wind** | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once it has saved someone, not again on them for a minute. |
+| Life + Time | **Second Wind** | For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute. |
 | Life + Blood | **Transfusion** | You give up to 4 of your own health (never below 2), and the ally heals twice what you gave. |
 | Void + Time | **Entropy** | The target unravels: 0.5, 1, 1.5, 2 and 2.5 damage over 5 seconds, straight through armour. |
 | Void + Blood | **Devour** | 5 damage. If it kills, you feed: 10 mana and 4 absorption. |

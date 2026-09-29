@@ -135,7 +135,11 @@ public final class CastEngine {
 			// After On Hit or On Kill, only the first hit's Echo goes off: it was paid for once.
 			if (link.echoPrefix != null && (!link.firstOnly || cast.firstRepeat(link))) {
 				Cast child = cast.repeat();
-				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, Cast.Trigger.self(caster)));
+				// In a stored spell it repeats what was stored where the release was set off (it used to land on the
+				// caster, so a stored Fire's echo burned nothing); otherwise the whole spell again, from you.
+				boolean stored = link.echoPrefix.implicitShape.is(Runes.TRIGGER.id()) && cast.origin() != null;
+				Cast.Trigger from = stored ? cast.origin() : Cast.Trigger.self(caster);
+				Scheduler.later(10, () -> runSegment(child, link.echoPrefix, from));
 			}
 			runSegment(cast, link.next, at);
 		} else {
@@ -290,17 +294,14 @@ public final class CastEngine {
 			int interval = SpellNumbers.zoneInterval(g);
 			for (Vec3 center : spread(aimPoint(cast, at), copies, radius)) {
 				Vfx.zoneOpen(cast.level, center, radius, theme, pulses * interval + 12);
-				for (int i = 0; i < pulses; i++) {
+				ShapeRunners.steps(cast, 1, interval, (pulses - 1) * interval, t -> {
 					Cast child = cast.pulse();
-					int pulse = i;
-					Scheduler.later(1 + i * interval, () -> {
-						if (!child.alive()) {
-							return;
-						}
-						Vfx.zonePulse(child.level, center, radius, theme, pulse);
-						onHit(child, g, new Cast.Hit(inRadius(child, center.add(0, 1, 0), radius), center, at.dir(), center, null, null, false), anchored);
-					});
-				}
+					if (!child.alive()) {
+						return;
+					}
+					Vfx.zonePulse(child.level, center, radius, theme, t / interval);
+					onHit(child, g, new Cast.Hit(inRadius(child, center.add(0, 1, 0), radius), center, at.dir(), center, null, null, false), anchored);
+				});
 			}
 		} else if (shape.equals(Runes.RAIN.id())) {
 			double radius = SpellNumbers.rainRadius(g);
@@ -443,14 +444,14 @@ public final class CastEngine {
 			int again = SpellNumbers.lingerHits(effect);
 			for (int i = 1; i <= again; i++) {
 				Cast.Hit first = hit;
-				Cast child = cast.child();
+				// The same cast landing again, not a link: it takes none of the cast's link depth.
 				Scheduler.later(20 * i, () -> {
-					if (!child.alive()) {
+					if (!cast.alive()) {
 						return;
 					}
 					// Not one that has gone to another dimension since (a player keeps being the same entity there).
-					List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == child.level).toList();
-					Effects.apply(child, effect, new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self()), groupPower);
+					List<Entity> still = first.entities().stream().filter(e -> e.isAlive() && e.level() == cast.level).toList();
+					Effects.apply(cast, effect, new Cast.Hit(still, first.point(), first.dir(), first.origin(), first.block(), first.face(), first.self()), groupPower);
 				});
 			}
 		}
@@ -558,6 +559,10 @@ public final class CastEngine {
 
 	/** Drops a point onto the ground below it (up to 16 blocks). */
 	static Vec3 ground(ServerLevel level, Vec3 pos) {
+		if (!level.hasChunkAt(BlockPos.containing(pos))) {
+			// Never load the world to find the ground (a Rain widened again and again reaches far past it).
+			return pos;
+		}
 		BlockHitResult hit = level.clip(new ClipContext(pos.add(0, 0.5, 0), pos.add(0, -16, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
 		return hit.getType() == HitResult.Type.MISS ? pos : hit.getLocation();
 	}
