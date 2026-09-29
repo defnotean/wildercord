@@ -44,6 +44,37 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **Bosses can't be lifted or dragged any more.** Levitate floated the Warden, the Wither, the Archivist and the
+  dungeon bosses up out of their fights (Extended, high enough for the fall to hurt), Gravity Well held them in
+  its pull straight through their knockback resistance, and Shulkershell's opening lifted them too. Bosses are
+  only ever slowed: Levitate now gives them Slowness II instead, and Gravity Well still marks them pulled and
+  crushes them, but no longer moves them.
+- **A Shield now stops Swap and Shadowstep.** A Shield that blocked the spell still let Swap trade places with the
+  enemy behind it, and Shadowstep put you at its back, as if the spell had gone through.
+- **Icepath no longer freezes a swimmer into the ice.** It froze the water a creature (or a player, or you) was
+  swimming in, leaving it stuck in a block of ice to choke. Like a frost spell's freezing, it now leaves the water
+  round a swimmer alone.
+- **Harvest replants with a seed from the crop it cut.** It dropped everything the crop gave and then replanted it
+  for free, a seed out of nothing every time. Now one of the crop's own seeds goes back into the ground (a crop
+  that dropped none isn't replanted), and a crop you may not touch (in a claim) no longer stops it harvesting the
+  rest of the field.
+- **Grow keeps to the spell's block budget.** Every other rune that changes blocks counts each one against the
+  blocks a cast may change (32, or the server's `max_blocks_per_cast`), but Grow bone-mealed every block it
+  reached, however many times a Zone, a Split or an Echo landed it.
+- **Blink never lands you in lava.** Aimed at a lava pool (or a creature dying in one), it put you on the ground at
+  the bottom of it, aimed out over the void or a deep drop it left you in mid-air to fall, and it could also put
+  you past the world border. It still only lands where there's room to stand, and now only on ground, never in
+  lava or fire or outside the border: with nowhere safe, you stay where you are.
+- **Banish never drops a creature into the void.** Its target reappears near its own height, but with no ground
+  within reach below (the edge of an End island, a deep ravine) it could be left in mid-air to fall. A creature
+  standing on the ground now always reappears on ground, or not at all.
+- **A Bubble popping, or a Stasis ending, no longer thaws a longer Freeze.** Either one let the creature go the
+  moment it ended, even if a Freeze (or another hold) cast on it had seconds still to run.
+- Echolocate now lights up every enemy in range (up to 32) in a big crowd too: enemies just outside its range were
+  using up the count, leaving some in range dark.
+- **Blackflame spreads only from a death.** A burning creature that simply went away (its ground unloaded, it
+  despawned, or it went through a portal) passed its black flames on as if it had died. Blackflame, Dismantle's
+  later slashes, Aftershock's second impact and a Bubble's pop also no longer follow a player through a portal.
 - **`/rtp` typed over and over could stall a server.** Each `/rtp` searched for a new spot, loading (or generating) up
   to a dozen far-off chunks, and a broken warmup starts no cooldown, so it could be repeated as fast as it was typed.
   Now a player searches at most once every 10 seconds: trying again sooner goes to the spot already found (or, if the
@@ -134,6 +165,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
 - Borrowed Time says its debt is forgiven when you slay a monster, as it always was (it said "something": killing an
   animal never forgave it).
+- Vein's description now says what Amplify does to it: like Break, Tunnel and Smelt, an Amplified Vein mines at
+  diamond-pickaxe strength.
 
 ## [0.4.2-alpha] - 2026-09-28
 

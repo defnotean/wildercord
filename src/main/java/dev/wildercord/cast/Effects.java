@@ -21,6 +21,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -58,6 +59,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -353,7 +355,9 @@ public final class Effects {
 				Vfx.empower(level, t);
 			});
 			case "levitate" -> moved.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks(3, duration), 1, false, true));
+				// Bosses are only ever slowed: lifted out of reach, a fight could be won by the fall.
+				boolean boss = t != caster && Spirits.isBoss(t);
+				t.addEffect(new MobEffectInstance(boss ? MobEffects.SLOWNESS : MobEffects.LEVITATION, ticks(3, duration), 1, false, true));
 				if (t != caster) {
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT, ticks(3, duration) + 20);
 				}
@@ -763,7 +767,10 @@ public final class Effects {
 			Vec3 spot = target.add(back.scale(1 + attempt * 0.5)).add(0, attempt % 2 == 0 ? 0 : 1, 0);
 			spot = CastEngine.ground(cast.level, spot);
 			AABB box = caster.getDimensions(caster.getPose()).makeBoundingBox(spot);
-			if (cast.level.noCollision(caster, box)) {
+			// Always somewhere safe: ground to stand on (never over a chasm or the void), room, inside the world border,
+			// and never into lava or fire (the ground under a lava lake is still "where the spell landed").
+			if (footing(cast.level, spot) && cast.level.noCollision(caster, box) && cast.level.getWorldBorder().isWithinBounds(spot.x, spot.z)
+					&& cast.level.getBlockStates(box.inflate(0, 0.5, 0)).noneMatch(s -> s.getFluidState().is(FluidTags.LAVA) || s.is(BlockTags.FIRE))) {
 				Vec3 from = caster.position();
 				caster.teleportTo(cast.level, spot.x, spot.y, spot.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
 				caster.resetFallDistance();
@@ -771,6 +778,14 @@ public final class Effects {
 				return;
 			}
 		}
+	}
+
+	/**
+	 * Whether there's ground right under {@code feet}: a spot {@link CastEngine#ground} found, rather than the point
+	 * itself, which it hands back when there's nothing within reach below (a chasm, the void).
+	 */
+	static boolean footing(ServerLevel level, Vec3 feet) {
+		return !level.noCollision(new AABB(feet.x - 0.2, feet.y - 0.25, feet.z - 0.2, feet.x + 0.2, feet.y - 0.01, feet.z + 0.2));
 	}
 
 	/** Inferno: everything around the point burns for a few seconds. */
@@ -853,8 +868,11 @@ public final class Effects {
 		Vfx.grapple(cast.level, caster.getEyePosition().subtract(0, 0.4, 0), hit.point());
 	}
 
-	/** Harvest: breaks grown crops around the block hit and replants them from their drops. */
+	/** Harvest: breaks grown crops around the block hit and replants them from their drops (a seed each, never a free one). */
 	private static void harvest(Cast cast, Cast.Hit hit, double radiusScale) {
+		if (!Casters.mayBuild(cast.caster)) {
+			return;
+		}
 		BlockPos center = targetBlock(hit);
 		int r = (int) Math.round(1 * radiusScale) + 1;
 		int harvested = 0;
@@ -864,11 +882,33 @@ public final class Effects {
 			if (!(state.getBlock() instanceof net.minecraft.world.level.block.CropBlock crop) || !crop.isMaxAge(state)) {
 				continue;
 			}
-			if (!Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p) || !cast.takeBlock()) {
+			// A crop in a claim is left alone; the rest of the field is still harvested.
+			if (!Casters.mayEdit(cast.caster, cast.level, p)) {
+				continue;
+			}
+			if (!cast.takeBlock()) {
 				break;
 			}
-			cast.level.destroyBlock(p, true, cast.caster);
-			cast.level.setBlockAndUpdate(p, crop.getStateForAge(0));
+			// Replanted from its own drops, as a farmer would: one seed goes back into the ground (none, and it isn't).
+			List<ItemStack> drops = Block.getDrops(state, cast.level, p, null, cast.caster, ItemStack.EMPTY);
+			ItemStack seed = state.getCloneItemStack(cast.level, p, false);
+			boolean replant = false;
+			for (ItemStack drop : drops) {
+				if (!replant && !seed.isEmpty() && ItemStack.isSameItem(drop, seed)) {
+					drop.shrink(1);
+					replant = true;
+				}
+			}
+			cast.level.destroyBlock(p, false, cast.caster);
+			for (ItemStack drop : drops) {
+				if (!drop.isEmpty()) {
+					Block.popResource(cast.level, p, drop);
+				}
+			}
+			state.spawnAfterBreak(cast.level, p, ItemStack.EMPTY, true);
+			if (replant) {
+				cast.level.setBlockAndUpdate(p, crop.getStateForAge(0));
+			}
 			harvested++;
 		}
 		if (harvested > 0) {
@@ -892,8 +932,9 @@ public final class Effects {
 				continue;
 			}
 			BlockState state = cast.level.getBlockState(p);
+			// Never around a creature swimming in it (frost walker's rule): it would be stuck in the ice, and choke.
 			if (state.is(Blocks.WATER) && state.getFluidState().isSource() && cast.level.getBlockState(p.above()).isAir()
-					&& Casters.mayEdit(cast.caster, cast.level, p)) {
+					&& cast.level.isUnobstructed(ice, p, CollisionContext.empty()) && Casters.mayEdit(cast.caster, cast.level, p)) {
 				if (!cast.takeBlock()) {
 					break;
 				}
@@ -1032,10 +1073,13 @@ public final class Effects {
 					if (distance > radius || distance < 0.4) {
 						continue;
 					}
-					victim.setDeltaMovement(victim.getDeltaMovement().scale(0.5).add(towards.normalize().scale(Math.min(0.6, 0.12 + distance * 0.05))));
-					victim.needsSync = true;
-					if (victim instanceof ServerPlayer player) {
-						player.connection.send(new ClientboundSetEntityMotionPacket(player));
+					// Bosses feel the pull (and the crush) but are never dragged: a boss held in the well is out of its fight.
+					if (!Spirits.isBoss(victim)) {
+						victim.setDeltaMovement(victim.getDeltaMovement().scale(0.5).add(towards.normalize().scale(Math.min(0.6, 0.12 + distance * 0.05))));
+						victim.needsSync = true;
+						if (victim instanceof ServerPlayer player) {
+							player.connection.send(new ClientboundSetEntityMotionPacket(player));
+						}
 					}
 					Reactions.mark(victim, Reactions.Mark.PULLED);
 					if (tick >= total - 1) {
@@ -1108,6 +1152,10 @@ public final class Effects {
 			if (!(cast.level.getBlockState(p).getBlock() instanceof net.minecraft.world.level.block.BonemealableBlock)
 					|| !Casters.mayBuild(cast.caster) || !Casters.mayEdit(cast.caster, cast.level, p)) {
 				continue;
+			}
+			// Each block it grows comes out of the cast's block budget, as every other change to the world does.
+			if (!cast.takeBlock()) {
+				break;
 			}
 			boolean grew = false;
 			for (int i = 0; i < times; i++) {
@@ -2011,7 +2059,10 @@ public final class Effects {
 		Vec3 from = t.position();
 		for (double d = distance; d >= 2; d -= 1) {
 			Vec3 spot = CastEngine.ground(level, from.add(away.scale(d)).add(0, 1.0, 0));
-			if (Math.abs(spot.y - from.y) > 4 || !level.noCollision(t, t.getDimensions(t.getPose()).makeBoundingBox(spot))) {
+			// Near its own height, and for a creature on the ground, on ground again: never over a chasm or the void
+			// (where no ground is found, and the height check alone would pass a spot in mid-air). A flier may stay aloft.
+			if (t.onGround() && !footing(level, spot) || Math.abs(spot.y - from.y) > 4
+					|| !level.noCollision(t, t.getDimensions(t.getPose()).makeBoundingBox(spot))) {
 				continue;
 			}
 			if (level.clip(new ClipContext(from.add(0, 1, 0), spot.add(0, 1, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, t)).getType()

@@ -505,7 +505,7 @@
   "rune.wildercord.tunnel": "Tunnel",
   "rune.wildercord.tunnel.desc": "Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe hardness; Amplify for diamond).",
   "rune.wildercord.vein": "Vein",
-  "rune.wildercord.vein.desc": "Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness).",
+  "rune.wildercord.vein.desc": "Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness; Amplify for diamond).",
   "rune.wildercord.smelt": "Smelt",
   "rune.wildercord.smelt.desc": "Mines the block that was hit and drops it smelted, as a furnace would (iron-pickaxe hardness; Amplify for diamond).",
   "rune.wildercord.fell": "Fell",

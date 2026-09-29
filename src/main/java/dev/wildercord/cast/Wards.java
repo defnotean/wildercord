@@ -400,7 +400,8 @@ public final class Wards {
 	private static void release(Stasis held) {
 		LivingEntity t = held.target;
 		unhold(t, held.hadNoGravity);
-		Spirits.thawNow(t);
+		// Its hold (Spirits.hold, renewed as the Stasis was) lets go on its own schedule: a thaw forced here would
+		// also end a longer Freeze on the same creature.
 		if (!(t.level() instanceof ServerLevel level)) {
 			return;
 		}

@@ -313,7 +313,8 @@ public final class ExplorerEffects {
 		ExplorerVfx.echolocate(cast.level, point, radius);
 		int seen = 0;
 		for (Entity e : cast.level.getEntities(cast.caster, new AABB(point, point).inflate(radius), e -> Targets.canHarm(cast.caster, e))) {
-			if (seen++ >= MAX_REVEALED || e.position().distanceTo(point) > radius) {
+			// Only what's really in range counts toward the cap (the box's corners are further than the radius).
+			if (e.position().distanceTo(point) > radius || seen++ >= MAX_REVEALED) {
 				continue;
 			}
 			LivingEntity t = (LivingEntity) e;
@@ -586,6 +587,10 @@ public final class ExplorerEffects {
 			if (cast.alive() && onHand(cast, t)) {
 				ExplorerVfx.shellOpen(cast.level, t);
 				for (LivingEntity near : enemiesAround(cast, t.getBoundingBox().getCenter(), 3.0)) {
+					// Never a boss: lifted, it could be dropped out of its own fight.
+					if (Spirits.isBoss(near)) {
+						continue;
+					}
 					near.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 40, 0, false, true), cast.caster);
 					Reactions.mark(near, Reactions.Mark.WINDSWEPT, 60);
 				}

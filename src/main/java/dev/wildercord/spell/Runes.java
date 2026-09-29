@@ -163,7 +163,7 @@ public final class Runes {
 	public static final RuneDef GLIMMER = effect("glimmer", "Glimmer", 1, 2, "life", EffectKind.WORLD, "Grows glowing lichen over the block that was hit and up to 4 around it: a light that stays.", RADIUS);
 	public static final RuneDef PRUNE = effect("prune", "Prune", 1, 2, "wind", EffectKind.WORLD, "A gust clears leaves, grass, flowers, vines and cobwebs within 3 blocks.", RADIUS);
 	public static final RuneDef TUNNEL = effect("tunnel", "Tunnel", 2, 8, "earth", EffectKind.WORLD, "Bores a tunnel 2 high and 4 deep into the wall that was hit (up to iron-pickaxe hardness; Amplify for diamond).", POWER);
-	public static final RuneDef VEIN = effect("vein", "Vein", 2, 10, "earth", EffectKind.WORLD, "Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness).", POWER);
+	public static final RuneDef VEIN = effect("vein", "Vein", 2, 10, "earth", EffectKind.WORLD, "Mines the block that was hit and, if it's an ore, every matching ore joined to it (up to 16; iron-pickaxe hardness; Amplify for diamond).", POWER);
 	public static final RuneDef SMELT = effect("smelt", "Smelt", 2, 6, "fire", EffectKind.WORLD, "Mines the block that was hit and drops it smelted, as a furnace would (iron-pickaxe hardness; Amplify for diamond).", POWER);
 	public static final RuneDef FELL = effect("fell", "Fell", 2, 8, "earth", EffectKind.WORLD, "Fells the tree that was hit: the log and every log joined to it above, up to 32.");
 	public static final RuneDef SPAN = effect("span", "Span", 2, 8, "arcane", EffectKind.WORLD, "A bridge of glass grows from your feet toward the point, up to 16 blocks, and shatters 30 seconds later.", DURATION, RADIUS);

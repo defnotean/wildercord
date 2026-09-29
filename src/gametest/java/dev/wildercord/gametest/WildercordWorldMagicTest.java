@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,8 +23,13 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.AABB;
@@ -39,7 +45,10 @@ import java.util.UUID;
  * wind knocks an arrow out of the air, a Grow beside a Rampart leaves the wall standing, and a spell where
  * the caster may not build changes nothing. Icepath's ice is written down to thaw (it never melts in the
  * dark), a Rampart never rises over a Light spell's light, its blocks are written down to come down even
- * after a crash, and one left past its time is taken down as soon as its ground is loaded.
+ * after a crash, and one left past its time is taken down as soon as its ground is loaded. The world runes
+ * keep their own rules: Icepath never freezes round a swimmer, Harvest replants each crop with one of its
+ * own seeds, Grow keeps to the cast's block budget, Blink never lands in lava, and Banish never leaves a creature
+ * standing on the ground out over a drop.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
@@ -103,6 +112,137 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				return Thaws.waiting(player.level(), ice) ? null : "Icepath's frosted ice should be written down to thaw";
 			});
 			note(failures, icepath);
+
+			// Icepath never freezes round a swimmer (frost walker's rule): the water a husk stands in stays water.
+			String swimmer = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos pool = site(player, 24, 12);
+				pool(level, pool, 1);
+				Mob mob = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+				// On the pool's floor, in the middle: its body fills the water block the ice would take.
+				mob.snapTo(pool.getX() + 0.5, pool.getY() - 1, pool.getZ() + 0.5, 0.0F, 0.0F);
+				mob.setNoAi(true);
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				mob.addTag("wildercord.rolled");
+				level.addFreshEntity(mob);
+				apply(player, List.of(Runes.TOUCH, Runes.ICEPATH), Vec3.atCenterOf(pool), List.of());
+				BlockState under = level.getBlockState(pool.below());
+				BlockState beside = level.getBlockState(pool.below().offset(2, 0, 0));
+				mob.discard();
+				if (under.is(Blocks.FROSTED_ICE)) {
+					return "Icepath shouldn't freeze the water a creature is in: it would be stuck in the ice";
+				}
+				return beside.is(Blocks.FROSTED_ICE) ? null : "Icepath should still freeze the water round a swimmer (found " + beside + ")";
+			});
+			note(failures, swimmer);
+
+			// Harvest replants each crop from its own drops: one seed goes back into the ground, never a free one. The
+			// same loot is rolled twice over (the wheat's random sequence reset between): once here, to count the seeds
+			// 25 ripe wheat drop, then by the Harvest.
+			String harvest = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos field = site(player, 24, 24);
+				BlockState ripe = ((CropBlock) Blocks.WHEAT).getStateForAge(7);
+				farm(level, field, 2, ripe);
+				Identifier sequence = Identifier.withDefaultNamespace("blocks/wheat");
+				s.getRandomSequences().reset(sequence, 5L);
+				int dropped = 0;
+				for (int i = 0; i < 25; i++) {
+					for (ItemStack stack : Block.getDrops(ripe, level, field, null, player, ItemStack.EMPTY)) {
+						dropped += stack.is(Items.WHEAT_SEEDS) ? stack.getCount() : 0;
+					}
+				}
+				s.getRandomSequences().reset(sequence, 5L);
+				apply(player, List.of(Runes.TOUCH, Runes.HARVEST), Vec3.atBottomCenterOf(field).add(0, 0.5, 0), List.of());
+				int seeds = 0;
+				for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, new AABB(field).inflate(5))) {
+					seeds += item.getItem().is(Items.WHEAT_SEEDS) ? item.getItem().getCount() : 0;
+					item.discard();
+				}
+				int replanted = count(level, field, 2, state -> state.is(Blocks.WHEAT) && state.getValue(CropBlock.AGE) == 0);
+				if (replanted != 25) {
+					return "Harvest should replant every crop it cut (" + replanted + " of 25 replanted)";
+				}
+				return seeds == dropped - 25 ? null
+					: "Harvest should replant each crop with one of its own seeds (" + dropped + " dropped, " + seeds + " left on the ground)";
+			});
+			note(failures, harvest);
+
+			// Grow keeps to the cast's block budget, as every change to the world does: four 3x3 fields of fresh wheat
+			// grown by one cast, and whatever the budget doesn't reach stays a seedling.
+			String grow = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				List<BlockPos> fields = List.of(site(player, 12, -12), site(player, -12, -12), site(player, 24, -12), site(player, -24, -12));
+				for (BlockPos field : fields) {
+					farm(level, field, 1, ((CropBlock) Blocks.WHEAT).getStateForAge(0));
+				}
+				Cast cast = new Cast(player);
+				SpellPlan.Group group = SpellCompiler.compile(List.of(Runes.TOUCH, Runes.GROW)).root().groups.getFirst();
+				for (BlockPos field : fields) {
+					Vec3 at = Vec3.atBottomCenterOf(field).add(0, 0.5, 0);
+					CastEngine.onHit(cast, group, new Cast.Hit(List.of(), at, new Vec3(1, 0, 0), player.position(), null, null, false), null);
+				}
+				int seedlings = 0;
+				for (BlockPos field : fields) {
+					seedlings += count(level, field, 1, state -> state.is(Blocks.WHEAT) && state.getValue(CropBlock.AGE) == 0);
+				}
+				int left = Math.max(0, fields.size() * 9 - dev.wildercord.config.Config.get().maxBlocks());
+				return seedlings == left ? null
+					: "one cast's Grow should grow no more blocks than its budget (" + seedlings + " seedlings left, expected " + left + ")";
+			});
+			note(failures, grow);
+
+			// Blink never lands in lava: aimed at a lava pool (whose floor is still where the spell landed), it stays put.
+			String blink = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos pit = site(player, 12, 24);
+				pool(level, pit, 1);
+				for (BlockPos pos : BlockPos.betweenClosed(pit.offset(-2, -1, -2), pit.offset(2, -1, 2))) {
+					level.setBlockAndUpdate(pos, Blocks.LAVA.defaultBlockState());
+				}
+				Vec3 before = player.position();
+				apply(player, List.of(Runes.TOUCH, Runes.BLINK), Vec3.atCenterOf(pit.below()), List.of());
+				Vec3 landed = player.position();
+				for (BlockPos pos : BlockPos.betweenClosed(pit.offset(-2, -1, -2), pit.offset(2, -1, 2))) {
+					level.setBlockAndUpdate(pos, Blocks.STONE.defaultBlockState());
+				}
+				if (landed.distanceTo(before) > 0.01) {
+					player.teleportTo(level, before.x, before.y, before.z, java.util.Set.of(), player.getYRot(), player.getXRot(), false);
+					player.clearFire();
+					return "Blink aimed into lava shouldn't take you there (it took you to " + landed + ")";
+				}
+				return null;
+			});
+			note(failures, blink);
+
+			// Banish never drops a creature standing on the ground into a chasm or the void: on a lone pillar high over
+			// open air, with no ground within reach anywhere it could go, it stays where it is.
+			String banish = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos top = site(player, -24, 24).above(40);
+				level.setBlockAndUpdate(top.below(), Blocks.STONE.defaultBlockState());
+				Mob mob = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+				mob.snapTo(top.getX() + 0.5, top.getY(), top.getZ() + 0.5, 0.0F, 0.0F);
+				mob.setNoAi(true);
+				// Standing on the pillar (a creature without AI never moves, so never finds its footing itself).
+				mob.setOnGround(true);
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				mob.addTag("wildercord.rolled");
+				level.addFreshEntity(mob);
+				Vec3 before = mob.position();
+				apply(player, List.of(Runes.TOUCH, Runes.BANISH), mob.getBoundingBox().getCenter(), List.of(mob));
+				Vec3 after = mob.position();
+				mob.discard();
+				level.setBlockAndUpdate(top.below(), Blocks.AIR.defaultBlockState());
+				return after.distanceTo(before) < 0.01 ? null
+					: "Banish shouldn't put a creature standing on the ground out over a drop with nowhere to land (it went to " + after + ")";
+			});
+			note(failures, banish);
 
 			// Fire by grass, with fire spreading on: the grass catches.
 			String fire = server.computeOnServer(s -> {
@@ -322,6 +462,21 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				level.setBlockAndUpdate(centre.offset(dx, -1, dz), Blocks.GRASS_BLOCK.defaultBlockState());
 				level.setBlockAndUpdate(centre.offset(dx, 0, dz), Blocks.SHORT_GRASS.defaultBlockState());
 				level.setBlockAndUpdate(centre.offset(dx, 1, dz), Blocks.AIR.defaultBlockState());
+			}
+		}
+	}
+
+	/**
+	 * A square of farmland {@code 2r + 1} across with {@code crop} growing on it, around {@code centre} (the air above
+	 * the surface), and open air over it. Set without block updates, so no crop pops off for want of light under a
+	 * tree the site happens to be by.
+	 */
+	private static void farm(ServerLevel level, BlockPos centre, int r, BlockState crop) {
+		for (int dx = -r; dx <= r; dx++) {
+			for (int dz = -r; dz <= r; dz++) {
+				level.setBlock(centre.offset(dx, -1, dz), Blocks.FARMLAND.defaultBlockState(), Block.UPDATE_CLIENTS);
+				level.setBlock(centre.offset(dx, 0, dz), crop, Block.UPDATE_CLIENTS);
+				level.setBlock(centre.offset(dx, 1, dz), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
 			}
 		}
 	}
