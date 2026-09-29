@@ -75,6 +75,7 @@ final class Techniques {
 			WEIGHED.clear();
 			BLACKFLAME.clear();
 			OVERDRIVE.clear();
+			OVERDRIVE_AMP.clear();
 			BIRDS.clear();
 		});
 	}
@@ -107,15 +108,50 @@ final class Techniques {
 	// ------------------------------------------------------------------ damage
 
 	/** Cleave: damage in proportion to the target's size. */
-	static void cleave(Cast cast, LivingEntity t, double power) {
-		double amount = (4 + Math.min(30, 0.12 * t.getMaxHealth())) * power;
+	static void cleave(Cast cast, LivingEntity t, double power, java.util.Set<java.util.UUID> struck, int[] budget) {
+		double amount = cleaveDamage(t.getMaxHealth()) * power;
 		TechniqueVfx.cleave(cast.level, t, cast.caster.getLookAngle());
 		Effects.hurt(cast, t, strike(cast), amount);
 		// A deep cut: bleeding for a few seconds, so wind damage sets off Rupture.
 		Reactions.mark(t, Reactions.Mark.BLEEDING, 60);
+		// The axe swings on: enemies beside it take half (three at most).
+		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(CLEAVE_SWEEP), e -> Targets.canHarm(cast.caster, e))) {
+			if (budget[0] <= 0) {
+				break;
+			}
+			LivingEntity other = (LivingEntity) e;
+			// Whoever the spell struck itself is cut in its own right, never again as a bystander.
+			if (struck.contains(other.getUUID())
+					|| other.getBoundingBox().getCenter().distanceTo(t.getBoundingBox().getCenter()) > CLEAVE_SWEEP + other.getBbWidth() / 2) {
+				continue;
+			}
+			budget[0]--;
+			struck.add(other.getUUID());
+			Effects.hurt(cast, other, strike(cast), cleaveDamage(other.getMaxHealth()) * power * 0.5);
+			Reactions.mark(other, Reactions.Mark.BLEEDING, 60);
+		}
 	}
 
-	/** Dismantle: three slashes a tenth of a second apart, through armour. */
+	/** Cleave: how far beside its target the axe swings on. */
+	static final double CLEAVE_SWEEP = 2.5;
+
+	/** Cleave's damage before power: 6 plus 10% of the target's max health (20 more at most). */
+	static double cleaveDamage(double maxHealth) {
+		return FireBloodRules.cleaveDamage(maxHealth);
+	}
+
+	/** Whether {@code t} is looking toward {@code who} (within about 100 degrees of them). */
+	static boolean facing(LivingEntity t, LivingEntity who) {
+		Vec3 to = who.position().subtract(t.position());
+		Vec3 flat = new Vec3(to.x, 0, to.z);
+		if (flat.lengthSqr() < 1.0E-4) {
+			return true;
+		}
+		Vec3 look = t.getViewVector(1.0F);
+		return new Vec3(look.x, 0, look.z).normalize().dot(flat.normalize()) > -0.2;
+	}
+
+	/** Dismantle: three slashes a tenth of a second apart, through armour; the last is a backstab. */
 	static void dismantle(Cast cast, LivingEntity t, double power) {
 		TechniqueVfx.dismantle(cast.level, t, 0);
 		Effects.hurt(cast, t, magic(cast), 3 * power);
@@ -127,7 +163,9 @@ final class Techniques {
 				// Not after a player who stepped through a portal meanwhile.
 				if (cast.alive() && t.isAlive() && t.level() == cast.level) {
 					TechniqueVfx.dismantle(cast.level, t, slash);
-					Effects.hurt(cast, t, magic(cast), 3 * power);
+					// The last slash is a backstab, twice as deep, if its bearer isn't facing the caster.
+					boolean back = slash == 2 && !facing(t, cast.caster);
+					Effects.hurt(cast, t, magic(cast), 3 * power * (back ? 2.0 : 1.0));
 				}
 			});
 		}
@@ -185,25 +223,40 @@ final class Techniques {
 	}
 
 	/** Primer: the target becomes a bomb that goes off two seconds later. */
-	static void primer(Cast cast, LivingEntity t, double radius, double power) {
+	static void primer(Cast cast, LivingEntity t, double radius, double power, java.util.Map<java.util.UUID, Double> landed) {
 		Vec3[] last = {t.getBoundingBox().getCenter()};
+		boolean[] gone = {false};
 		TechniqueVfx.primed(cast.level, t);
 		Fx.sound(cast.level, t.position(), SoundEvents.TNT_PRIMED, 0.8F, 1.4F);
-		for (int i = 6; i < 40; i += 6) {
-			Scheduler.later(i, () -> {
-				if (t.isAlive() && t.level() == cast.level) {
-					last[0] = t.getBoundingBox().getCenter();
-					TechniqueVfx.primerTick(cast.level, t);
-				}
-			});
-		}
-		Scheduler.later(40, () -> {
+		Runnable blast = () -> {
+			if (gone[0]) {
+				return;
+			}
+			gone[0] = true;
 			if (!cast.alive()) {
 				return;
 			}
 			Vec3 at = t.isAlive() && t.level() == cast.level ? t.getBoundingBox().getCenter() : last[0];
-			Effects.explode(cast, at, radius, power * 10.0 / 12.0);
-		});
+			Effects.explode(cast, at, radius, power * 10.0 / 12.0, landed);
+		};
+		for (int i = 2; i < 40; i += 2) {
+			int tick = i;
+			Scheduler.later(i, () -> {
+				if (gone[0]) {
+					return;
+				}
+				if (t.isAlive() && t.level() == cast.level) {
+					last[0] = t.getBoundingBox().getCenter();
+					if (tick % 6 == 0) {
+						TechniqueVfx.primerTick(cast.level, t);
+					}
+				} else if (t.isDeadOrDying() && t.level() == cast.level) {
+					// Killed with the fuse lit: it goes off where it fell, at once.
+					blast.run();
+				}
+			});
+		}
+		Scheduler.later(40, blast);
 	}
 
 	/**
@@ -452,7 +505,8 @@ final class Techniques {
 
 	/** Overdrive: strength, speed and haste, paid for with a little health every two seconds. */
 	static void overdrive(Cast cast, LivingEntity t, int ticks, int amplify) {
-		t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, Math.min(3, 1 + amplify), false, true));
+		OVERDRIVE_AMP.put(t.getUUID(), amplify);
+		t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, painStrength(t, amplify), false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.HASTE, ticks, 1, false, true));
 		TechniqueVfx.overdrive(cast.level, t, true);
@@ -465,18 +519,28 @@ final class Techniques {
 	}
 
 	private static final Map<UUID, Long> OVERDRIVE = new HashMap<>();
+	private static final Map<UUID, Integer> OVERDRIVE_AMP = new HashMap<>();
+
+	/** Overdrive's Strength level (an amplifier): II, one more below half health and another below a quarter (pain fuels it), IV at most. */
+	static int painStrength(LivingEntity t, int amplify) {
+		return FireBloodRules.painStrength(t.getHealth(), t.getMaxHealth(), amplify);
+	}
 
 	private static void overdriveDrain(ServerLevel level, LivingEntity t) {
 		Scheduler.later(40, () -> {
 			Long until = OVERDRIVE.get(t.getUUID());
 			if (until == null || !t.isAlive() || level.getGameTime() > until) {
 				OVERDRIVE.remove(t.getUUID());
+				OVERDRIVE_AMP.remove(t.getUUID());
 				return;
 			}
 			if (t.getHealth() > 2.0F && !(t instanceof ServerPlayer player && player.isCreative())) {
 				t.setHealth(t.getHealth() - 1.0F);
 				TechniqueVfx.overdrive(level, t, false);
 			}
+			// The weaker it leaves them, the harder they hit.
+			int left = (int) Math.max(1, until - level.getGameTime());
+			t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, left, painStrength(t, OVERDRIVE_AMP.getOrDefault(t.getUUID(), 0)), false, true));
 			overdriveDrain(level, t);
 		});
 	}

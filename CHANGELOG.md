@@ -34,6 +34,47 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Gear in a slot **drops when you die**, like the rest of your inventory (Curse of Vanishing destroys its own), and
   stays with you when `keepInventory` is on. It never duplicates through death, respawning or changing dimension.
 - The tooltips and Cord screen texts about holding the tome or a Focus of the Deep Well now mention the slot.
+- **Fire, remade rune by rune** so that each does something its neighbours don't:
+  - **Ember** tops up a burn that's already going (3 more seconds, 10 at most) instead of restarting it.
+  - **Flashfire** hits harder (5, burning 4 s) and thaws and dries the allies in the flash.
+  - **Explode** throws what it hits and sets it up for **Wildfire**; **Meteor** now falls for 1.2 seconds (two at
+    most), hits for 12 in 3.5 blocks and leaves a crater that burns on; **Primer**'s bomb goes off at once if its
+    target is killed. The blasts of one cast no longer stack on one enemy, and blasts of enemies that stand together
+    are merged: Burst + Explode on a bunched crowd used to deal about four times as much as the text said.
+  - **Kindling** bursts for 14 and leaves everything the burst reached at two stacks; **Firestorm** deals 5 and the
+    fire leaps in two waves, to neighbours and then to theirs; **Steam** hangs a cloud where it bursts that blinds and
+    wets everything in it; **Sunscorch** makes its target glow and, by day, blinds it (bright light of its own counts
+    as dusk); **Soulfire** is fire that water can't dull and the fire-proof can't shrug off; **Blazecall** hits for 3
+    and each fireball staggers; **Cinderbrand** also stokes the burn; **Ashen Veil** blinds those it burns;
+    **Everburn** burns two and a half times as fast; **Conflagration** flares more the more burning enemies are
+    around; **Phoenix Pyre** flares once when an ally is nearly dead: 6 health and a burst of fire; **Cinderheart**
+    lights one heart at a time and can't be lit again for 24 seconds after it goes out.
+- **Blood, remade rune by rune:**
+  - **Rend** also tears the natural resistances of what it hits (a blaze takes frost, a skeleton takes blood, at full
+    strength); **Leech** turns overhealing into a shield of up to 4; **Bleed** tears wider while its bearer moves;
+    **Gash** weeps 0.4 plus 1% of its bearer's health a second on top of the heal-lock; **Dismantle**'s last slash is
+    twice as deep against something that isn't facing you; **Cleave** is 6 + 10% of max health (20 more at most) and
+    the axe swings on to enemies beside the target for half.
+  - **Overdrive** hits harder as it weakens you (Strength III under half health, IV under a quarter); **Warcry**
+    heals its rallied allies for 1 on each kill; **Blood Moss** feeds the most wounded ally nearby, not only you;
+    **Lifesteal** marks its target for 6 s: everything anyone does to it heals you for a quarter of it;
+    **Heartstopper**'s heart skips harder each time (stumble, lurch, full stop); **Crimson Mist** bleeds foes for 2 a
+    second, heals allies 1.5 and hides them from monsters more than 4 blocks away; **Hemomancy** is 4 + 1 per 1.5
+    health missing (up to 8 more) and heals under half health; **Transfusion** heals three times what you give and
+    cures one harmful effect; **Sanguine Rite** costs more health with Amplify, Overcharge and a crowd.
+  - **Blood Thread** ties 4 creatures at most (a Burst used to thread every enemy it hit, multiplying all damage
+    without limit) and shares 40% of each hurt, three times a second at most; the shares show as crimson pulses along
+    the thread.
+
+### Fixed
+- **Cinderheart stacked with itself:** casting it again started another full aura, so casting it every 1.5 seconds
+  piled up several.
+- **Explode, Meteor and Primer** multiplied their damage on enemies that stood together (Burst + Primer on eight bunched
+  enemies dealt about 66 to each, not 10).
+- **Soulfire** said it burns on through water but took the wet penalty, and did nothing to fire-proof mobs.
+- **Cinderbrand** said the burn hurts more, but only spell damage did.
+- **Inferno's** field and **Kindling's** burst reached farther than the circle drawn (their search boxes were square).
+- **Steam** now sets off Shatter and Wildfire like every other fire hit.
 
 ## [0.5.0-alpha] - 2026-09-29
 

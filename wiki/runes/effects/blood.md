@@ -18,7 +18,7 @@ Life paid for power. Blood cuts, drains, bleeds and turns wounds into strength.
 
 *Tier I · Blood · Harms enemies · 8 mana · needs any Cord*
 
-3 damage, and you heal for what it takes.
+3 damage, and you heal for what it takes; what a full heart can't hold becomes a shield of up to 4.
 
 **How to get it:** Craft: a Blank Rune, Spider Eye and Redstone Dust. The recipe is shapeless: any layout, any crafting grid.
 
@@ -31,7 +31,7 @@ Life paid for power. Blood cuts, drains, bleeds and turns wounds into strength.
 
 *Tier I · Blood · Harms enemies · 5 mana · needs any Cord*
 
-Rends armour: targets lose 4 armour for 10 seconds.
+Rends armour: targets lose 4 armour for 10 seconds, and what they naturally resist they take at full strength.
 
 **How to get it:** Craft: a Blank Rune, Iron Nugget and Bone. The recipe is shapeless: any layout, any crafting grid.
 
@@ -44,7 +44,7 @@ Rends armour: targets lose 4 armour for 10 seconds.
 
 *Tier II · Blood · Harms enemies · 8 mana · needs a Copper Cord or better*
 
-Opens a wound: 2 damage, then 1 more every half second for 4 seconds.
+Opens a wound: 2 damage, then 1 more every half second for 4 seconds (half as much again while it moves).
 
 **How to get it:** Craft: a Blank Rune, Shears and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -57,7 +57,7 @@ Opens a wound: 2 damage, then 1 more every half second for 4 seconds.
 
 *Tier II · Blood · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-Three unseen slashes a tenth of a second apart: 3 damage each, straight through armour.
+Three unseen slashes a tenth of a second apart: 3 damage each, straight through armour; the last is twice as deep against something that isn't facing you.
 
 **How to get it:** Craft: a Blank Rune, Shears, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
@@ -70,7 +70,7 @@ Three unseen slashes a tenth of a second apart: 3 damage each, straight through 
 
 *Tier II · Blood · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A wound that won't close: 3 damage, and for 8 seconds the target can't heal and is left bleeding.
+A wound that won't close: 3 damage, and for 8 seconds the target can't heal, is left bleeding, and weeps 0.4 damage plus 1% of its health a second.
 
 **How to get it:** Craft: a Blank Rune, Flint and Rotten Flesh, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
 
@@ -83,7 +83,7 @@ A wound that won't close: 3 damage, and for 8 seconds the target can't heal and 
 
 *Tier II · Blood · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
-Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you lose 1 health every 2 seconds.
+Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you lose 1 health every 2 seconds. The weaker it leaves you, the harder you hit: Strength III under half health, IV under a quarter.
 
 **How to get it:** Craft: a Blank Rune, Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Bastions.
 
@@ -96,7 +96,7 @@ Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you los
 
 *Tier III · Blood · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-Cuts in proportion to the target: 4 damage plus 12% of its max health (up to 30 more).
+Cuts in proportion to the target: 6 damage plus 10% of its max health (up to 20 more); enemies beside it take half (three at most).
 
 **How to get it:** Craft: a Blank Rune, Diamond Axe, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Bastions; Woodland mansions; Vindicators (4%).
 

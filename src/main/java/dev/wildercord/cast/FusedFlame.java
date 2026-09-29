@@ -291,6 +291,7 @@ final class FusedFlame {
 				continue;
 			}
 			UUID id = t.getUUID();
+			boolean[] reborn = {false};
 			boolean renewed = PYRES.containsKey(id);
 			Object token = new Object();
 			PYRES.put(id, token);
@@ -301,6 +302,11 @@ final class FusedFlame {
 			every(cast, ticks, 5, age -> {
 				if (PYRES.get(id) != token || !onHand(cast, t)) {
 					return false;
+				}
+				// Rebirth: the first time the ally is nearly done for, the pyre flares once.
+				if (!reborn[0] && t.getHealth() < t.getMaxHealth() * REBIRTH_BELOW) {
+					reborn[0] = true;
+					rebirth(cast, t, power);
 				}
 				if (age % 20 == 0) {
 					beat(age, () -> phoenixBurn(cast, t, radius, power));
@@ -314,6 +320,25 @@ final class FusedFlame {
 					FusedFlameVfx.phoenixFade(level, t);
 				}
 			});
+		}
+	}
+
+	/** Phoenix Pyre's rebirth: under this share of health, the flare heals this much and burns everything within 3 blocks for this much. */
+	static final float REBIRTH_BELOW = 0.35F;
+	static final float REBIRTH_HEAL = 6.0F;
+	static final double REBIRTH_BURST = 4.0;
+
+	private static void rebirth(Cast cast, LivingEntity t, double power) {
+		ServerLevel level = cast.level;
+		t.heal((float) (REBIRTH_HEAL * Math.max(1.0, power)));
+		FusedFlameVfx.phoenixRise(level, t, 3.0);
+		Vec3 c = t.getBoundingBox().getCenter();
+		for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(3.0), e -> Targets.canHarm(cast.caster, e) && !(t instanceof Player && Targets.isAlly(t, e)))) {
+			LivingEntity near = (LivingEntity) e;
+			if (near.getBoundingBox().getCenter().distanceTo(c) <= 3.0 + near.getBbWidth() / 2) {
+				near.igniteForSeconds(3);
+				Effects.hurt(cast, near, fire(cast), REBIRTH_BURST * power);
+			}
 		}
 	}
 
@@ -542,6 +567,9 @@ final class FusedFlame {
 
 	// ------------------------------------------------------------------ Everburn
 
+	/** Everburn's own burn: damage a second on top of the fire's (so 2.5 a second in all). */
+	static final double EVERBURN_EXTRA = 1.5;
+
 	/** Each burning creature's Everburn (a new one takes over from the old). */
 	private static final Map<UUID, Object> EVERBURNING = new HashMap<>();
 
@@ -587,7 +615,7 @@ final class FusedFlame {
 						double react = first[0] ? Reactions.fire(cast, t) : 1.0;
 						first[0] = false;
 						FusedFlameVfx.everburnTick(level, t, rekindled[0]);
-						Effects.lingering(() -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.ON_FIRE, cast.caster), 1 * power * react));
+						Effects.lingering(() -> Effects.hurt(cast, t, level.damageSources().source(DamageTypes.ON_FIRE, cast.caster), EVERBURN_EXTRA * power * react));
 						due = 20;
 					}
 					wait = Math.max(1, Math.min(5, due));
@@ -720,10 +748,15 @@ final class FusedFlame {
 	 * themselves too) flares up, the flare leaping outward from each target to the furthest: 3 damage and 2 seconds
 	 * more burning. With nothing struck it flares up whatever burns around the point.
 	 */
+	/** Conflagration: seconds it burns, the flare's damage, and the most the flare gains from the other burning enemies around. */
+	static final double CONFLAGRATION_BURN = 6;
+	static final double CONFLAGRATION_FLARE = 4;
+	static final int CONFLAGRATION_CROWD = 3;
+
 	private static void conflagration(Cast cast, Cast.Hit hit, List<LivingEntity> harmed, double radius, double power, double duration) {
 		ServerLevel level = cast.level;
 		for (LivingEntity t : harmed) {
-			t.igniteForSeconds((float) (8 * duration));
+			t.igniteForSeconds((float) (CONFLAGRATION_BURN * duration));
 		}
 		List<Vec3> hearts = new ArrayList<>();
 		Map<LivingEntity, Vec3> flare = new LinkedHashMap<>();
@@ -758,8 +791,8 @@ final class FusedFlame {
 					return;
 				}
 				FusedFlameVfx.flareUp(level, heart, t);
-				Effects.hurt(cast, t, fire(cast), 3 * power * Reactions.fire(cast, t));
-				if (t.isOnFire()) {
+				Effects.hurt(cast, t, fire(cast), (CONFLAGRATION_FLARE + Math.min(CONFLAGRATION_CROWD, flare.size() - 1)) * power * Reactions.fire(cast, t));
+								if (t.isOnFire()) {
 					t.setRemainingFireTicks(t.getRemainingFireTicks() + longer);
 				}
 			});

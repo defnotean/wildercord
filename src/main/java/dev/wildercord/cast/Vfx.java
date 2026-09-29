@@ -832,16 +832,16 @@ public final class Vfx {
 	}
 
 	/** A burning rock streaking down out of the sky onto a point over 12 ticks, a reticle marking where it will land. */
-	public static void meteorFall(ServerLevel level, Vec3 ground) {
-		Scheduler.later(12, () -> ScreenFx.shake(level, ground, 0.8F, 24));
+	public static void meteorFall(ServerLevel level, Vec3 ground, int fall) {
+		Scheduler.later(fall, () -> ScreenFx.shake(level, ground, 0.8F, 24));
 		Vec3 start = ground.add(-6, 18, -3);
 		Vec3 path = ground.subtract(start);
-		Sigils.target(level, ground, ElementFx.FIRE.primary(), 1.8F, 16);
-		for (int t = 0; t < 12; t++) {
+		Sigils.target(level, ground, ElementFx.FIRE.primary(), 1.8F, fall + 4);
+		for (int t = 0; t < fall; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
-				Vec3 p = start.add(path.scale((tick + 1) / 12.0));
-				Vec3 back = start.add(path.scale(Math.max(0, tick - 2) / 12.0));
+				Vec3 p = start.add(path.scale((tick + 1) / (double) fall));
+				Vec3 back = start.add(path.scale(Math.max(0, tick - 2) / (double) fall));
 				ElementFx.orb(level, p, ElementFx.FIRE.secondary(), 0.4, 2);
 				emit(level, SigilOption.glow(ElementFx.FIRE.primary(), 1.8F), p, 1, 0.0, 0.0);
 				ElementFx.ray(level, back, p, ElementFx.FIRE.primary(), 0.32, 7);

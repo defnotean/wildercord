@@ -433,7 +433,7 @@ public final class WorldMagic {
 	 * billows that swell as they rise, drift off on the air and thin away, thick enough to hide what's
 	 * behind them, and anyone in it the caster may harm is blinded and left wet each second.
 	 */
-	private static void steam(Cast cast, Vec3 at) {
+	static void steam(Cast cast, Vec3 at) {
 		ServerLevel level = cast.level;
 		double r = WorldRules.STEAM_RADIUS;
 		Fx.sound(level, at, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.8F);

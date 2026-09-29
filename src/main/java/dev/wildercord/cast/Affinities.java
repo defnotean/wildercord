@@ -159,6 +159,10 @@ public final class Affinities {
 		boolean resists = target.is(RESISTS.get(element)) || runeboundElement(target).equals(element);
 		boolean immune = burnproof || target.is(IMMUNE.get(element));
 		Affinity.Verdict verdict = Affinity.judge(weak, resists, immune, Reactions.reactedWithin(target, 0));
+		if (verdict == Affinity.Verdict.RESISTED && Effects.isRent(target)) {
+			// A Rend has torn its natural resistances: it takes the element at full strength (immunity still holds).
+			verdict = Affinity.Verdict.NONE;
+		}
 		double multiplier = Affinity.multiplier(verdict);
 		if (verdict == Affinity.Verdict.WEAK) {
 			WEAK_STRIKES.merge(target.getUUID(), 1, Integer::sum);
@@ -167,7 +171,7 @@ public final class Affinities {
 		if (source.is(DamageTypeTags.IS_FREEZING) && target.is(EntityTypeTags.FREEZE_HURTS_EXTRA_TYPES)) {
 			multiplier /= VANILLA_FREEZE;
 		}
-		if (verdict == Affinity.Verdict.RESISTED && wetCounted) {
+		if (verdict == Affinity.Verdict.RESISTED && wetCounted && !Effects.soulBurning()) {
 			// Resisting fire already counts being wet: a soaked guardian takes half, not half of three quarters.
 			multiplier /= WorldMagic.wetDamage(target, element);
 		}

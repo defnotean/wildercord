@@ -410,7 +410,7 @@ final class FusedStorm {
 				return false;
 			}
 			if (age % HEART_EVERY == 0) {
-				Spirits.hold(t, HEART_STUN);
+				Spirits.hold(t, FusedStormNumbers.heartStun(age / HEART_EVERY - 1));
 				FusedStormVfx.heartSkip(level, t);
 			} else {
 				FusedStormVfx.heartbeat(level, t);

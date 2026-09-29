@@ -318,8 +318,10 @@ public final class Effects {
 				if (blasts.isEmpty()) {
 					blasts.add(hit.point());
 				}
-				for (int i = 0; i < Math.min(4, blasts.size()); i++) {
-					explode(cast, blasts.get(i), radius, power);
+				// One blast per cluster of enemies, and an enemy takes only the strongest blast that reaches it.
+				Map<UUID, Double> landed = new HashMap<>();
+				for (Vec3 at : clusterCentres(blasts, radius * BLAST_MERGE, MAX_BLASTS)) {
+					explode(cast, at, radius, power, landed);
 				}
 			}
 			case "sonic_boom" -> harmed.forEach(t -> {
@@ -401,9 +403,10 @@ public final class Effects {
 				if (targets.isEmpty()) {
 					targets.add(hit.point());
 				}
-				double radius = 3.0 * SpellNumbers.effectRadius(node);
-				for (int i = 0; i < Math.min(4, targets.size()); i++) {
-					meteor(cast, targets.get(i), radius, power);
+				double radius = METEOR_RADIUS * SpellNumbers.effectRadius(node);
+				Map<UUID, Double> landed = new HashMap<>();
+				for (Vec3 at : clusterCentres(targets, radius * BLAST_MERGE, MAX_METEORS)) {
+					meteor(cast, at, radius, power, landed);
 				}
 			}
 			case "tremor" -> tremor(cast, hit.point(), 4.0 * SpellNumbers.effectRadius(node), power);
@@ -473,15 +476,21 @@ public final class Effects {
 			case "light" -> light(cast, hit, duration);
 			case "grow" -> grow(cast, hit, power);
 			case "break" -> breakBlock(cast, hit, amplify > 0);
-			case "cleave" -> harmed.forEach(t -> Techniques.cleave(cast, t, power));
+			case "cleave" -> {
+				Set<UUID> struck = new HashSet<>();
+				harmed.forEach(t -> struck.add(t.getUUID()));
+				int[] budget = {3};
+				harmed.forEach(t -> Techniques.cleave(cast, t, power, struck, budget));
+			}
 			case "dismantle" -> harmed.forEach(t -> Techniques.dismantle(cast, t, power));
 			case "blackspark" -> harmed.forEach(t -> Techniques.blackspark(cast, t, power));
 			case "aftershock" -> harmed.forEach(t -> Techniques.aftershock(cast, t, power));
 			case "resonance" -> harmed.forEach(t -> Techniques.resonance(cast, t, power, ticks(10, duration)));
 			case "ripple" -> harmed.forEach(t -> Techniques.ripple(cast, t, power));
 			case "primer" -> {
+				Map<UUID, Double> landed = new HashMap<>();
 				for (int i = 0; i < Math.min(MAX_STRIKES_PER_HIT, harmed.size()); i++) {
-					Techniques.primer(cast, harmed.get(i), 3.0 * SpellNumbers.effectRadius(node), power);
+					Techniques.primer(cast, harmed.get(i), 3.0 * SpellNumbers.effectRadius(node), power, landed);
 				}
 			}
 			case "blackflame" -> harmed.forEach(t -> Techniques.blackflame(cast, t, power, (int) Math.round(6 * duration), true));
@@ -532,7 +541,7 @@ public final class Effects {
 			// Batch 6: a simple spell for every element.
 			case "ember" -> harmed.forEach(t -> {
 				double react = Reactions.fire(cast, t);
-				t.igniteForSeconds((float) (3 * duration));
+				feedOrIgnite(t, (int) Math.round(60 * duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.IN_FIRE, caster), 3 * power * react);
 				ExpansionVfx.ember(level, t);
 			});
@@ -561,7 +570,15 @@ public final class Effects {
 				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 3 * power);
 				float taken = Math.max(0.0F, before - t.getHealth());
 				if (taken > 0 && caster.isAlive()) {
+					float room = caster.getMaxHealth() - caster.getHealth();
 					caster.heal(taken);
+					// What a full heart can't take becomes a shield (up to 4).
+					float over = taken - room;
+					if (over > 0.25F) {
+						float shield = Math.min(4.0F, caster.getAbsorptionAmount() + over);
+						caster.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 200, 0, false, true));
+						caster.setAbsorptionAmount(shield);
+					}
 				}
 				ExpansionVfx.leech(level, t, caster);
 			});
@@ -661,6 +678,36 @@ public final class Effects {
 		}
 	}
 
+	/** Set while soul fire burns: water can't dull it (see {@link #hurt}). */
+	private static boolean soulBurn;
+
+	static boolean soulBurning() {
+		return soulBurn;
+	}
+
+	/** Creatures whose natural resistances a Rend has torn, until a game time. */
+	private static final Map<UUID, Long> RENT = new HashMap<>();
+
+	/** Whether {@code t} has been rent (Rend): what it resists it takes at full strength. */
+	static boolean isRent(LivingEntity t) {
+		if (RENT.isEmpty()) {
+			return false;
+		}
+		Long until = RENT.get(t.getUUID());
+		return until != null && until >= t.level().getGameTime();
+	}
+
+	/** Runs {@code task} as soul fire: fire damage that being wet doesn't weaken. */
+	static void soulFire(Runnable task) {
+		boolean outer = soulBurn;
+		soulBurn = true;
+		try {
+			task.run();
+		} finally {
+			soulBurn = outer;
+		}
+	}
+
 	/** Set while lingering damage (a burn's later ticks, a zone's pulses) is dealt: a Shield blocks it but can't parry it. */
 	private static boolean lingering;
 
@@ -701,7 +748,9 @@ public final class Effects {
 		amount *= Reactions.hit(cast, target, currentElement);
 		amount *= Affinities.multiplier(cast, target, source, currentElement);
 		// Fire is weaker on the wet.
-		amount *= WorldMagic.wetDamage(target, currentElement);
+		if (!soulBurn) {
+			amount *= WorldMagic.wetDamage(target, currentElement);
+		}
 		amount *= AddonRunes.react(cast, target, currentElement);
 		amount *= ExplorerEffects.bonus(cast, target, currentElement);
 		// Trial Key: the opening blow on a target still at full health.
@@ -755,7 +804,39 @@ public final class Effects {
 		}
 	}
 
+	/** Blasts one cast may set off at once, and how close (in radii) two blast centres must be to count as one. */
+	static final int MAX_BLASTS = FireBloodRules.MAX_BLASTS;
+	static final int MAX_METEORS = FireBloodRules.MAX_METEORS;
+	static final double BLAST_MERGE = FireBloodRules.BLAST_MERGE;
+	/** Meteor: how far it hits, and how long it falls (ticks). */
+	static final double METEOR_RADIUS = 3.5;
+	static final int METEOR_FALL = 24;
+
+	static List<Vec3> clusterCentres(List<Vec3> points, double gap, int max) {
+		return FireBloodRules.clusterCentres(points, gap, max);
+	}
+
+	/** Sets {@code t} alight for {@code ticks}; one already burning is topped up by that much instead (10 s at most). */
+	static void feedOrIgnite(LivingEntity t, int ticks) {
+		if (t.fireImmune()) {
+			return;
+		}
+		if (t.isOnFire()) {
+			t.setRemainingFireTicks(Math.min(200, t.getRemainingFireTicks() + ticks));
+		} else {
+			t.igniteForTicks(ticks);
+		}
+	}
+
 	static void explode(Cast cast, Vec3 center, double radius, double power) {
+		explode(cast, center, radius, power, new HashMap<>());
+	}
+
+	/**
+	 * A blast. {@code landed} is what each enemy has already taken from this cast's blasts (before reactions): a blast only adds
+	 * what it has over the strongest that landed, so overlapping blasts never stack on one enemy.
+	 */
+	static void explode(Cast cast, Vec3 center, double radius, double power, Map<UUID, Double> landed) {
 		ServerLevel level = cast.level;
 		double implode = Reactions.blast(cast, center, radius);
 		radius *= implode;
@@ -769,9 +850,20 @@ public final class Effects {
 				continue;
 			}
 			double falloff = 1.0 - 0.4 * (distance / radius);
-			hurt(cast, target, source, 12 * power * falloff * Reactions.fire(cast, target));
+			double amount = 12 * power * falloff;
+			double extra = FireBloodRules.unstacked(landed, target.getUUID(), amount);
+			if (extra > 0) {
+				hurt(cast, target, source, extra * Reactions.fire(cast, target));
+			}
 			Vec3 away = target.position().subtract(center);
 			push(target, (away.lengthSqr() < 1.0E-4 ? new Vec3(0, 1, 0) : away.normalize()).scale(1.3 * falloff).add(0, 0.45, 0));
+			// Thrown by the blast: fire again soon (an Ember, say) sets off Wildfire.
+			// (a tick later, so a second blast of this same cast doesn't set it off)
+			Scheduler.later(2, () -> {
+				if (target.isAlive()) {
+					Reactions.mark(target, Reactions.Mark.WINDSWEPT);
+				}
+			});
 		}
 	}
 
@@ -863,6 +955,10 @@ public final class Effects {
 				Runnable pulse = () -> {
 					for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius, 2.0, radius), e -> Targets.canHarm(cast.caster, e))) {
 						LivingEntity t = (LivingEntity) e;
+						// A circle, as drawn (the search box is square).
+						if (Math.hypot(t.getX() - point.x, t.getZ() - point.z) > radius + t.getBbWidth() / 2) {
+							continue;
+						}
 						t.igniteForSeconds(3);
 						hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
 					}
@@ -1073,11 +1169,11 @@ public final class Effects {
 		}
 	}
 
-	/** Meteor: a burning rock falls for half a second, then bursts. */
-	private static void meteor(Cast cast, Vec3 target, double radius, double power) {
+	/** Meteor: a burning rock falls for 1.2 seconds (a reticle shows where), bursts, and leaves a crater that burns on a moment. */
+	private static void meteor(Cast cast, Vec3 target, double radius, double power, Map<UUID, Double> landed) {
 		Vec3 ground = CastEngine.ground(cast.level, target.add(0, 1, 0));
-		Vfx.meteorFall(cast.level, ground);
-		Scheduler.later(12, () -> {
+		Vfx.meteorFall(cast.level, ground, METEOR_FALL);
+		Scheduler.later(METEOR_FALL, () -> {
 			if (!cast.alive()) {
 				return;
 			}
@@ -1092,11 +1188,17 @@ public final class Effects {
 					continue;
 				}
 				double falloff = 1.0 - 0.4 * (distance / r);
-				hurt(cast, t, source, 10 * power * falloff * (implode > 1 ? 1.3 : 1.0) * Reactions.fire(cast, t));
+				double amount = 12 * power * falloff * (implode > 1 ? 1.3 : 1.0);
+				double extra = FireBloodRules.unstacked(landed, t.getUUID(), amount);
+				if (extra > 0) {
+					hurt(cast, t, source, extra * Reactions.fire(cast, t));
+				}
 				t.igniteForSeconds(4);
 				Vec3 away = t.position().subtract(ground);
-				push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(0, 1, 0) : away.normalize()).scale(0.8 * falloff).add(0, 0.5, 0));
+				push(t, (away.lengthSqr() < 1.0E-4 ? new Vec3(0, 1, 0) : away.normalize()).scale(0.8 * falloff).add(0, 0.9, 0));
 			}
+			// The crater: the ground where it fell burns on for a moment.
+			inferno(cast, ground, r * 0.6, power * 0.33, 0.5);
 		});
 	}
 
@@ -2031,6 +2133,12 @@ public final class Effects {
 	/** Rend: less armour for a while, and torn open (bleeding: wind damage on it sets off Rupture). */
 	private static void rend(Cast cast, LivingEntity t, int ticks) {
 		Reactions.mark(t, Reactions.Mark.BLEEDING);
+		// The tear goes deeper than armour: what the creature naturally resists, it takes at full strength meanwhile.
+		RENT.put(t.getUUID(), cast.level.getGameTime() + ticks);
+		if (RENT.size() > 256) {
+			long now = cast.level.getGameTime();
+			RENT.values().removeIf(until -> until < now);
+		}
 		if (t.getAttribute(Attributes.ARMOR) == null) {
 			return;
 		}
@@ -2059,20 +2167,27 @@ public final class Effects {
 		});
 	}
 
-	/** Bleed: a cut, then more damage every half second. */
+	/** Bleed: blocks a creature must have moved in half a second for its wound to tear wider. */
+	static final double BLEED_MOVING = FireBloodRules.BLEED_MOVING;
+
+	/** Bleed: a cut, then more damage every half second (half as much again while the bearer moves). */
 	private static void bleed(Cast cast, LivingEntity t, double power, int wounds) {
 		DamageSource source = cast.level.damageSources().indirectMagic(cast.caster, cast.caster);
 		ExpansionVfx.bleed(cast.level, t, true);
 		// Bleeding for as long as the wound runs: wind damage on it sets off Rupture.
 		Reactions.mark(t, Reactions.Mark.BLEEDING, wounds * 10 + 10);
 		hurt(cast, t, source, 2 * power);
+		Vec3[] last = {t.position()};
 		for (int i = 1; i <= wounds; i++) {
 			Scheduler.later(i * 10, () -> {
 				if (!cast.alive() || !t.isAlive() || t.level() != cast.level) {
 					return;
 				}
 				ExpansionVfx.bleed(cast.level, t, false);
-				hurt(cast, t, source, power);
+				// The wound tears wider while its bearer is on the move.
+				boolean moving = t.position().distanceToSqr(last[0]) > BLEED_MOVING * BLEED_MOVING;
+				last[0] = t.position();
+				hurt(cast, t, source, power * (moving ? 1.5 : 1.0));
 			});
 		}
 	}
@@ -2104,9 +2219,21 @@ public final class Effects {
 		ExpansionVfx.flashfire(cast.level, point, radius);
 		for (LivingEntity t : enemiesAround(cast, point, radius)) {
 			double react = Reactions.fire(cast, t);
-			t.igniteForSeconds(3);
-			hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 4 * power * react);
+			t.igniteForSeconds(4);
+			hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 5 * power * react);
 			ExpansionVfx.ember(cast.level, t);
+		}
+		// The heat is a friend to the cold-struck: allies in the flash are thawed and dried.
+		for (Entity e : cast.level.getEntities((Entity) null, new AABB(point, point).inflate(radius + 1), e -> e instanceof LivingEntity && e.isAlive() && Targets.canHelp(cast.caster, e))) {
+			LivingEntity ally = (LivingEntity) e;
+			if (ally.getBoundingBox().getCenter().distanceTo(point) > radius + ally.getBbWidth() / 2) {
+				continue;
+			}
+			ally.setTicksFrozen(0);
+			ally.removeEffect(MobEffects.SLOWNESS);
+			Reactions.clear(ally, Reactions.Mark.FROZEN);
+			Reactions.clear(ally, Reactions.Mark.WET);
+			Reactions.clear(ally, Reactions.Mark.SOAKED);
 		}
 	}
 

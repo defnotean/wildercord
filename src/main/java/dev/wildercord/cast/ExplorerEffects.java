@@ -236,6 +236,8 @@ public final class ExplorerEffects {
 		ECLIPSED.clear();
 		DRANK.clear();
 		LINGERING.clear();
+		BLOODLUST.clear();
+		HEARTS.clear();
 	}
 
 	/**
@@ -478,7 +480,32 @@ public final class ExplorerEffects {
 		for (LivingEntity t : rallied) {
 			t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 0, false, true));
 			t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, 0, false, true));
+			BLOODLUST.put(t.getUUID(), cast.level.getGameTime() + ticks);
 			ExplorerVfx.rallied(cast.level, t);
+		}
+	}
+
+	/** Warcry's bloodlust: who is rallied, until when. */
+	private static final Map<UUID, Long> BLOODLUST = new HashMap<>();
+	/** Health a rallied creature takes back from each kill it makes. */
+	static final float BLOODLUST_HEAL = 1.0F;
+
+	/** A creature died: if a rallied creature killed it, the killer takes a little of its life. */
+	static void bloodlustKill(DamageSource source) {
+		if (BLOODLUST.isEmpty() || !(source.getEntity() instanceof LivingEntity killer) || !killer.isAlive()) {
+			return;
+		}
+		Long until = BLOODLUST.get(killer.getUUID());
+		if (until == null) {
+			return;
+		}
+		if (until < killer.level().getGameTime()) {
+			BLOODLUST.remove(killer.getUUID());
+			return;
+		}
+		killer.heal(BLOODLUST_HEAL);
+		if (killer.level() instanceof ServerLevel level) {
+			ElementFx.drip(level, killer.getBoundingBox().getCenter(), 0.3, 3);
 		}
 	}
 
@@ -594,7 +621,10 @@ public final class ExplorerEffects {
 		}, runner::resetFallDistance);
 	}
 
-	/** Blazecall: three blaze fireballs fall on the target, a third of a second apart. */
+	/** Ticks each Blazecall fireball staggers what it hits. */
+	static final int BLAZE_STAGGER = 5;
+
+	/** Blazecall: three blaze fireballs fall on the target, a third of a second apart, each staggering it. */
 	private static void blazecall(Cast cast, LivingEntity t, double power) {
 		for (int i = 0; i < 3; i++) {
 			int shot = i;
@@ -605,7 +635,9 @@ public final class ExplorerEffects {
 				ExplorerVfx.blazeFireball(cast.level, t, shot);
 				double react = Reactions.fire(cast, t);
 				t.igniteForSeconds(3);
-				Effects.hurt(cast, t, fire(cast), 2 * power * react);
+				Effects.hurt(cast, t, fire(cast), 3 * power * react);
+				// Each fireball staggers: three of them pin a creature for most of a second.
+				Spirits.hold(t, BLAZE_STAGGER);
 			}));
 		}
 	}
@@ -781,10 +813,22 @@ public final class ExplorerEffects {
 	/** Sunscorch: the noon sun, focused; fiercer under an open sky by day. */
 	private static void sunscorch(Cast cast, LivingEntity t, double power, double duration) {
 		boolean sunlit = cast.level.isBrightOutside() && cast.level.canSeeSky(t.blockPosition().above());
+		// Bright light of its own (a torch, lava, glowstone) counts as dusk where there is no sun.
+		boolean dusk = !sunlit && cast.level.getBrightness(net.minecraft.world.level.LightLayer.BLOCK, t.blockPosition()) >= 12;
 		ExplorerVfx.sunscorch(cast.level, t, sunlit);
 		double react = Reactions.fire(cast, t);
 		t.igniteForSeconds((float) (5 * duration));
-		Effects.hurt(cast, t, fire(cast), 8 * power * react * (sunlit ? 1.5 : 1.0));
+		Effects.hurt(cast, t, fire(cast), 8 * power * react * (sunlit ? 1.5 : dusk ? 1.25 : 1.0));
+		// The light dazzles: it glows for the whole party to see, and by day it is blinded too.
+		if (t.isAlive()) {
+			t.addEffect(new MobEffectInstance(MobEffects.GLOWING, (int) Math.round(120 * duration), 0, false, false), cast.caster);
+			if (sunlit) {
+				t.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30, 0, false, true), cast.caster);
+				if (t instanceof Mob mob) {
+					mob.setTarget(null);
+				}
+			}
+		}
 	}
 
 	private static final Identifier MIRE_ID = Wildercord.id("mire");
@@ -941,7 +985,8 @@ public final class ExplorerEffects {
 			ExplorerVfx.soulfire(cast.level, t, false);
 			double react = tick == 0 ? Reactions.fire(cast, t) : 1.0;
 			float before = t.getHealth() + t.getAbsorptionAmount();
-			Effects.hurt(cast, t, fire(cast), 3 * power * react);
+			// Soul fire: water can't dull it and the fire-proof can't shrug it off (it is fire damage that isn't burning).
+			Effects.soulFire(() -> Effects.hurt(cast, t, magic(cast), 3 * power * react));
 			float dealt = Math.max(0.0F, before - (t.getHealth() + t.getAbsorptionAmount()));
 			if (cast.caster instanceof ServerPlayer player) {
 				// One cap per payment: a storm's echo or Twin Star of the same spell shares it.
@@ -1009,10 +1054,32 @@ public final class ExplorerEffects {
 			Effects.hurt(cast, t, magic(cast), 1 * power);
 			float taken = Math.max(0.0F, before - t.getHealth());
 			if (taken > 0 && cast.caster.isAlive()) {
-				cast.caster.heal(taken);
+				// The moss feeds whoever is most wounded among you and your allies nearby (you, if that's no one else).
+				LivingEntity drinker = mostWounded(cast);
+				drinker.heal(taken);
+				if (drinker != cast.caster) {
+					ExplorerVfx.bloodMoss(cast.level, t, drinker, false);
+				}
 			}
 			ExplorerVfx.bloodMoss(cast.level, t, cast.caster, false);
 		}, () -> release(key, token));
+	}
+
+	/** Blood Moss: how far around the caster it looks for someone to feed. */
+	static final double MOSS_REACH = 10.0;
+
+	/** The most wounded (by share of health) of the caster and the allies near them; the caster if none is hurt worse. */
+	private static LivingEntity mostWounded(Cast cast) {
+		LivingEntity best = cast.caster;
+		float worst = cast.caster.getHealth() / cast.caster.getMaxHealth();
+		for (LivingEntity ally : alliesAround(cast, cast.caster.position(), MOSS_REACH)) {
+			float share = ally.getHealth() / ally.getMaxHealth();
+			if (ally.isAlive() && share < worst - 0.05F) {
+				best = ally;
+				worst = share;
+			}
+		}
+		return best;
 	}
 
 	/** Basalt Surge: columns of basalt burst up in a line from the caster to the point. */
@@ -1085,7 +1152,18 @@ public final class ExplorerEffects {
 		ExplorerVfx.cinderbrand(cast.level, t);
 		Effects.hurt(cast, t, fire(cast), 3 * power * Reactions.fire(cast, t));
 		mark(BRANDED, cast, t, ticks);
+		// The brand also stokes the burn: while it burns, half a point more each second (the brand's own 1.5x on top of a third).
+		Linger key = new Linger(t.getUUID(), cast.caster.getUUID(), "cinderbrand");
+		Object token = linger(key);
+		repeat(cast, ticks, 20, tick -> {
+			if (tick > 0 && current(key, token) && onHand(cast, t) && t.isOnFire() && !t.fireImmune()) {
+				Effects.hurt(cast, t, fire(cast), 0.33 * power);
+			}
+		}, () -> release(key, token));
 	}
+
+	/** Ashen Veil: ticks between the puffs of blinding ash one attacker gets. */
+	static final int ASH_BLIND_EVERY = 60;
 
 	/** Ashen Veil: ash that keeps fire off the target and sets whoever strikes it alight. */
 	private static void ashenVeil(Cast cast, LivingEntity t, int ticks) {
@@ -1093,6 +1171,7 @@ public final class ExplorerEffects {
 		t.clearFire();
 		ExplorerVfx.ashenVeil(cast.level, t, true);
 		int[] seen = {t.getLastHurtByMobTimestamp()};
+		Map<UUID, Long> puffed = new HashMap<>();
 		repeat(cast, ticks, 2, tick -> {
 			if (!onHand(cast, t)) {
 				return;
@@ -1108,13 +1187,33 @@ public final class ExplorerEffects {
 			LivingEntity attacker = t.getLastHurtByMob();
 			if (attacker != null && attacker != t && attacker.isAlive() && attacker.distanceTo(t) <= 4.5 && Targets.canHarm(cast.caster, attacker)) {
 				attacker.igniteForSeconds(4);
+				// A puff of ash in the face, once in a while per attacker.
+				long now = cast.level.getGameTime();
+				Long last = puffed.get(attacker.getUUID());
+				if (last == null || now - last >= ASH_BLIND_EVERY) {
+					puffed.put(attacker.getUUID(), now);
+					attacker.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20, 0, false, true), cast.caster);
+				}
 				ExplorerVfx.ashIgnite(cast.level, t, attacker);
 			}
 		}, () -> { });
 	}
 
+	/** Cinderheart: when each heart may burn again (the end of its fire, plus the time the coals need to cool). */
+	private static final Map<UUID, Long> HEARTS = new HashMap<>();
+	/** Ticks the coals need to cool after a Cinderheart goes out (24 s). */
+	static final int HEART_COOL = 480;
+
 	/** Cinderheart: strength, a body fire can't touch, and a furnace of heat around it. */
 	private static void cinderheart(Cast cast, LivingEntity t, double power, int ticks) {
+		long now = cast.level.getGameTime();
+		Long cooling = HEARTS.get(t.getUUID());
+		if (cooling != null && cooling > now) {
+			// Still burning, or the coals haven't cooled: nothing catches (and it never stacks with itself).
+			Motes.smoke(cast.level, t.getBoundingBox().getCenter(), 2, 0.3);
+			return;
+		}
+		HEARTS.put(t.getUUID(), now + ticks + HEART_COOL);
 		t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks, 1, false, true));
 		t.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, ticks, 0, false, true));
 		t.clearFire();

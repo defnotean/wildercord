@@ -183,7 +183,7 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 | Break | II | earth | world | Mines the block (up to iron-pickaxe hardness; Amplify raises it to diamond). Respects claims and spawn protection | 4 |
 | Lightning | III | storm | harmful | A 12-damage strike on each target that stuns and burns. You and your allies are immune | 20 |
 | Blink | III | void | movement | Teleports you to where the spell landed (max 40 blocks, always to a safe spot) | 15 |
-| Explode | III | fire | harmful | 12 damage in a 3.5-block blast. Never breaks blocks | 18 |
+| Explode | III | fire | harmful | 12 damage in a 3.5-block blast that throws what it hits; blasts of one cast never stack on one enemy. Never breaks blocks | 18 |
 | Sonic Boom | IV | void | harmful | 16 damage that ignores armour | 35 |
 | Wither | IV | void | harmful | Wither III for 8 s | 25 |
 | Dragon Breath | IV | void | harmful | A lingering 3-block cloud: 5 damage per second for 5 s | 30 |
@@ -240,7 +240,7 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Empower | II | arcane | Strength II for 10 s |
 | Levitate | II | wind | Targets float helplessly for 3 s (on Self, you float) |
 | Freeze | III | frost | Frozen solid for 2.5 s: mobs stop completely |
-| Meteor | III | fire | A meteor falls on each target: 10 damage in 3 blocks |
+| Meteor | III | fire | A meteor falls on each target (two at most) 1.2 s later: 12 damage in 3.5 blocks, and the crater burns on |
 | Tremor | III | earth | The ground erupts: 8 damage within 4 blocks, throwing enemies up |
 | Gravity Well | III | void | Drags every enemy within 7 blocks into the point for 2 s |
 | Summon | IV | arcane | Three spirit wolves fight for you for 20 s |
@@ -295,13 +295,13 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Barrage | Shape · Direct | II | 8 blows in one second on everything right in front of you (35% power each; Quicken adds 4) |
 | Orb | Shape · Projectile | III | A slow orb drifts 20 blocks through creatures, striking everything within 2 blocks once a second, and bursts on walls |
 | Blitz | Shape · Direct | II | You flash up to 8 blocks forward and strike everything you pass through |
-| Cleave | Effect · Damage | III | 4 damage + 12% of the target's max health (up to 30 more) |
-| Dismantle | Effect · Damage | II | Three slashes 0.1 s apart, 3 damage each, through armour |
+| Cleave | Effect · Damage | III | 6 damage + 10% of the target's max health (up to 20 more); enemies beside it take half |
+| Dismantle | Effect · Damage | II | Three slashes 0.1 s apart, 3 damage each, through armour; the last is twice as deep from behind |
 | Blackspark | Effect · Damage | III | 8 damage; 1 in 4 hits deal 2.5x and give you Strength and Speed for 6 s |
 | Aftershock | Effect · Damage | II | 5 damage, then 5 more half a second later |
 | Resonance | Effect · Damage | III | 4 damage and a 10 s mark; every other marked enemy within 16 blocks takes half |
 | Ripple | Effect · Damage | II | 6 damage (x3 on undead), heals you for a third |
-| Primer | Effect · Damage | III | The target explodes 2 s later: 10 damage within 3 blocks, no block damage |
+| Primer | Effect · Damage | III | The target explodes 2 s later (or the moment it dies): 10 damage within 3 blocks, an enemy takes only the strongest bomb, no block damage |
 | Blackflame | Effect · Damage | III | 3 damage a second for 6 s, water can't stop it, spreads if the target dies burning |
 | Hollow | Effect · Damage | IV | 20 damage, and everything within 4 blocks is dragged in for 8 more (Wither drop, 50%) |
 | Repel | Effect · Damage | II | 5 damage and a violent outward blast within 3 blocks (Breeze drop) |
@@ -312,7 +312,7 @@ Two new elements arrive: **Time** (pale gold) and **Blood** (crimson). Effects g
 | Infinity | Effect · Support | IV | 6 s: projectiles stop in the air around you, enemies that get close are pushed back (Ender Dragon drop) |
 | Reversal | Effect · Support | IV | 30 s: one killing blow leaves you at half health instead |
 | Reflect | Effect · Support | III | 10 s: attackers take 60% of their damage back |
-| Overdrive | Effect · Support | II | Strength II, Speed II, Haste II for 10 s; lose 1 health every 2 s |
+| Overdrive | Effect · Support | II | Strength II, Speed II, Haste II for 10 s; lose 1 health every 2 s; Strength III under half health, IV under a quarter |
 | Foresight | Effect · Support | III | The next 2 attacks within 15 s miss, with a sidestep |
 | Restore | Effect · Support | III | Heals 6, puts out fire, mends 5% of every worn and held item |
 | Swap | Effect · Movement | II | You and the first creature hit trade places |
@@ -377,18 +377,18 @@ and craftable.
 | Smelt | Effect · World | II | Mines the block hit and drops what a furnace would make of it, with the furnace's experience |
 | Fell | Effect · World | II | Fells a tree: the log hit and every log joined to it at its height or above (up to 32). A log with no living leaves around it (a build) comes down alone |
 | Span | Effect · World | II | A 1-wide glass bridge from your feet toward the point (up to 16 blocks; Widen: 3 wide) for 30 s. It puts back whatever it replaced, drops nothing when broken, and is taken down if the server stops |
-| Ember | Effect · Damage | I | 3 fire damage, alight for 3 s |
+| Ember | Effect · Damage | I | 3 fire damage, alight for 3 s (on a burning target it adds 3 s instead) |
 | Icicle | Effect · Damage | I | 4 freeze damage, 6 against a slowed target |
 | Pelt | Effect · Damage | I | 4 damage and a small knockback |
 | Windcut | Effect · Damage | I | 4 damage and a light shove (sets up Wildfire) |
-| Leech | Effect · Damage | I | 3 damage; you heal what it took |
+| Leech | Effect · Damage | I | 3 damage; you heal what it took, and overhealing becomes a shield of up to 4 |
 | Hex | Effect · Control | I | 8 s: your spells hit the target 25% harder |
-| Rend | Effect · Control | I | 10 s: 4 less armour |
+| Rend | Effect · Control | I | 10 s: 4 less armour, and what it naturally resists it takes at full strength |
 | Countdown | Effect · Damage | I | 1.5 s later: 6 damage |
 | Jolt | Effect · Control | II | 4 lightning damage and a 1 s stun (bosses and players are slowed instead) |
-| Bleed | Effect · Damage | II | 2 damage, then 1 every half second for 4 s |
+| Bleed | Effect · Damage | II | 2 damage, then 1 every half second for 4 s (half as much again while it moves) |
 | Coldsnap | Effect · Damage | II | 3 freeze damage and Slowness II for 4 s to every enemy within 3 blocks; they're left brittle for Shatter |
-| Flashfire | Effect · Damage | II | 4 fire damage to every enemy within 3 blocks, alight for 3 s |
+| Flashfire | Effect · Damage | II | 5 fire damage to every enemy within 3 blocks, alight for 4 s; allies in it are thawed and dried |
 | Banish | Effect · Control | II | The target reappears up to 8 blocks further from you, somewhere it fits and can see back to (never a boss) |
 | Cyclone | Effect · Control | II | Enemies within 3 blocks whirl around the point for 2 s, then are flung out for 3 damage (bosses are struck, never moved) |
 
@@ -420,7 +420,7 @@ and On Reaction also turn up in ancient city, end city and trial chamber chests.
 | On Reaction | Link · Trigger | III | 2 | Watches the group before it; fires the rest at each creature that group set an element reaction off on as it landed |
 | On Weakness | Link · Trigger | II | 2 | Watches the group before it; fires the rest at each creature that group struck with an element it's weak to (creature affinities: players have none) |
 | Spellbrand | Effect · Damage (arcane) | II | 8 | Brands each target for 8 s; the next spell damage you deal it, from the next tick on, bursts the brand for 6 arcane |
-| Gash | Effect · Control (blood) | II | 9 | 3 damage; for 8 s the target can't heal at all (Regeneration, potions, food, spells) and is bleeding. Setting health outright (a death save) still works |
+| Gash | Effect · Control (blood) | II | 9 | 3 damage, then it weeps 0.4 + 1% of its max health a second; for 8 s the target can't heal at all (Regeneration, potions, food, spells) and is bleeding. Setting health outright (a death save) still works |
 | Prospect | Effect · World (earth) | I | 3 | Every ore within 12 blocks (16 at most, widened) glows through the rock for 20 s, in the colour of what it gives: block displays only, nothing in the world changes |
 | Searing Edge | Effect · Support (fire) | II | 8 | 15 s: each melee hit the target lands sets the foe alight for 4 s and deals 2 more fire damage (who may be burned is the caster's call). Sustainable as a passive |
 | Flash Freeze | Effect · Control (frost) | II | 9 | 4 freeze damage; a wet or soaked target freezes solid for 3 s (1.5 on players), its soak turned to frozen; a dry one gets Slowness II for 3 s |
@@ -622,8 +622,8 @@ the Codex's Innate category, so any Cord can hold it.
 
 | Innate rune | Element | Does |
 |---|---|---|
-| Blood Thread | Blood | Threads everything hit together for 8 s: half of any damage one takes is dealt to the rest |
-| Kindling | Fire | 3 fire damage and a stack; the fifth stack ignites for 10 in 3 blocks |
+| Blood Thread | Blood | Threads everything hit together for 8 s: 40% of any damage one takes is dealt to each of the rest (4 at most, three shares a second) |
+| Kindling | Fire | 3 fire damage and a stack; the fifth stack ignites for 14 in 3 blocks and leaves everything it reaches at two stacks |
 | Twin Star | Arcane | Your next spell within 6 s is cast twice |
 | Borrowed Time | Time | Heals the damage you took in the last 5 s; it comes back over 10 s unless you slay a monster |
 | Gale Mantle | Wind | 12 s: jump in midair to dash forward (3 dashes) |

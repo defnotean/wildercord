@@ -52,14 +52,17 @@ final class FusedVoidRules {
 		return boss && left != Integer.MAX_VALUE ? Math.max(0, left - stolen) : 0;
 	}
 
-	// ---- Hemomancy: 4 magic damage, 1 more per 2 health missing, up to 6 more.
+	// ---- Hemomancy: 4 magic damage, 1 more per 1.5 health missing, up to 8 more; under half health it heals a quarter of what it deals.
 	static final double HEMOMANCY_DAMAGE = 4.0;
-	static final int HEMOMANCY_BONUS = 6;
+	static final int HEMOMANCY_BONUS = 8;
+		static final double HEMOMANCY_MISSING_PER_POINT = 1.5;
+		static final float HEMOMANCY_HEAL_BELOW = 0.5F;
+		static final float HEMOMANCY_HEAL_SHARE = 0.25F;
 
-	/** Hemomancy's extra damage for a caster on {@code health} of {@code max}: 1 for every 2 missing, up to 6. */
+	/** Hemomancy's extra damage for a caster on {@code health} of {@code max}: 1 for every 1.5 missing, up to 8. */
 	static int hemomancyBonus(float max, float health) {
 		double missing = Math.max(0.0, max - health);
-		return (int) Math.min(HEMOMANCY_BONUS, Math.floor(missing / 2.0 + 1.0E-6));
+		return (int) Math.min(HEMOMANCY_BONUS, Math.floor(missing / HEMOMANCY_MISSING_PER_POINT + 1.0E-6));
 	}
 
 	// ---- Reckoning: 4 seconds of wounds counted; half of it due at once, at most 12.
