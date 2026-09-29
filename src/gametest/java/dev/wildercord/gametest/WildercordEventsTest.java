@@ -230,6 +230,9 @@ public class WildercordEventsTest implements FabricClientGameTest {
 				if (Runebound.spellOf(guard).isEmpty()) {
 					return "every guard should be Runebound";
 				}
+				if (guard.canPickUpLoot()) {
+					return "an event's monster shouldn't pick things up (it goes with its event, and what it carried would go too)";
+				}
 			}
 			// Guarded: it won't open.
 			FallenStars.open(level, star, player(server));

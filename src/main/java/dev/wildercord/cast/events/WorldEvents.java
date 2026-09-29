@@ -342,6 +342,8 @@ public final class WorldEvents {
 		float yaw = target == null ? level.getRandom().nextFloat() * 360 : (float) Math.toDegrees(Math.atan2(-(target.getX() - at.x), target.getZ() - at.z));
 		mob.snapTo(at.x, at.y, at.z, yaw, 0);
 		mob.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.EVENT, mob instanceof Zombie ? new Zombie.ZombieGroupData(false, false) : null);
+		// It never picks anything up: it goes when its event does, and whatever it carried (a fallen player's gear) would go with it.
+		mob.setCanPickUpLoot(false);
 		if (spell == null) {
 			Runebound.bind(mob, adept);
 		} else {
@@ -366,11 +368,14 @@ public final class WorldEvents {
 		LIVE.add(entity.getUUID());
 	}
 
-	/** An event's monster goes back where it came from, in a puff of violet. */
+	/** An event's monster goes back where it came from, in a puff of violet, leaving anything it picked up. */
 	static void vanish(ServerLevel level, Entity entity) {
 		Vec3 at = entity.position().add(0, entity.getBbHeight() * 0.5, 0);
 		level.sendParticles(ParticleTypes.REVERSE_PORTAL, at.x, at.y, at.z, 20, 0.3, 0.5, 0.3, 0.05);
 		level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 6, 0.3, 0.5, 0.3, 0.03);
+		if (entity instanceof Mob mob) {
+			mob.dropPreservedEquipment(level);
+		}
 		LIVE.remove(entity.getUUID());
 		entity.discard();
 	}

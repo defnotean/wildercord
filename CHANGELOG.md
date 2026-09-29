@@ -151,6 +151,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   out of loaded ground stayed in the world for good. Anyone in the bowl is now lifted clear, and every guard
   goes. A Wither could also break a star, leaving its crater open and its guards behind; stars are now safe
   from the Wither, and one taken away any other way (by a command, say) still cleans up after itself.
+- **A rift's or star's monsters could pick up a fallen player's gear and take it with them when they went.**
+  They no longer pick anything up, and one sent away drops whatever it was carrying.
 - Icepath's frosted ice never melted in the dark (in caves, or at night). Like frost's, it now thaws back into
   water after half a minute wherever it is.
 
