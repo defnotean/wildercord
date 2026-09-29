@@ -38,9 +38,13 @@ public final class Fishing {
 		return level.dimension() == Level.OVERWORLD && LeyLines.strength(LeyWalker.seed(level), at.x, at.z) >= FishingRules.NEAR_LEY;
 	}
 
-	/** Whether a thunderstorm's rain falls on this point: on the surface above it, where a bobber floats. */
+	/**
+	 * Whether a thunderstorm reaches this point: its rain (or its snow, high up or in the cold) falls on the surface
+	 * above it, where a bobber floats. Not under a roof, and not where no weather falls (a desert).
+	 */
 	public static boolean inThunder(ServerLevel level, Vec3 at) {
-		return level.isThundering() && level.isRainingAt(BlockPos.containing(at).above());
+		return level.isThundering()
+			&& level.precipitationAt(BlockPos.containing(at).above()) != net.minecraft.world.level.biome.Biome.Precipitation.NONE;
 	}
 
 	/**

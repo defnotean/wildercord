@@ -14,7 +14,7 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
     Collect, Leap, Bubble, Frost, Thunderclap, Jolt, Pull, Grapple, Levitate and Wave, and now and then Freeze or
     Lightning), lower tiers more often, and the two runes below.
   - **Magic waters.** Where magic runs strong at the bobber, a rune comes up tangled in the line **on top of** the
-    catch: 12% a catch under a mana storm, 5% on or near a ley line, 5% in a thunderstorm with the rain on the bobber,
+    catch: 12% a catch under a mana storm, 5% on or near a ley line, 5% in a thunderstorm with its rain (or snow) on the bobber,
     adding up to 20% at most. *"Something magical was tangled in your line!"*, and a glint on the water.
   - **Two new runes of the world, found only by fishing:**
     - **Tidehook** (Tier II frost, 9 mana): a hook of water snags each target and reels it in to your feet in three

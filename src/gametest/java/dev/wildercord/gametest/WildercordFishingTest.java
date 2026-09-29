@@ -166,7 +166,7 @@ public class WildercordFishingTest implements FabricClientGameTest {
 		world.getServer().runCommand("fill " + (x - 12) + " " + y + " " + (z - 12) + " " + (x + 12) + " " + (y + 40) + " " + (z + 12) + " minecraft:air");
 		world.getServer().runCommand("fill " + (x - 10) + " " + (y - 2) + " " + (z - 11) + " " + (x - 4) + " " + (y + 1) + " " + (z + 11) + " minecraft:glass");
 		world.getServer().runCommand("fill " + (x - 9) + " " + (y - 1) + " " + (z - 10) + " " + (x - 5) + " " + (y + 1) + " " + (z + 10) + " minecraft:water");
-		world.getServer().runCommand("fillbiome " + (x - 13) + " " + (y - 5) + " " + (z - 13) + " " + (x + 13) + " " + (y + 30) + " " + (z + 13) + " minecraft:ocean");
+		world.getServer().runCommand("fillbiome " + (x - 13) + " " + (y - 5) + " " + (z - 13) + " " + (x + 13) + " " + (y + 60) + " " + (z + 13) + " minecraft:ocean");
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.setGameMode(GameType.SURVIVAL);
@@ -430,7 +430,11 @@ public class WildercordFishingTest implements FabricClientGameTest {
 		String failure = world.getServer().computeOnServer(server -> {
 			ServerLevel level = player(server).level();
 			if (!level.isThundering() || !Fishing.inThunder(level, bobber())) {
-				return "the thunderstorm should rain on the bobber (thundering " + level.isThundering() + ")";
+				net.minecraft.core.BlockPos above = net.minecraft.core.BlockPos.containing(bobber()).above();
+				return "the thunderstorm should rain on the bobber (thundering " + level.isThundering() + ", raining " + level.isRaining()
+					+ ", rain level " + level.getRainLevel(1.0F) + ", sky " + level.canSeeSky(above) + ", height " + level.getHeight(
+					net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, above.getX(), above.getZ()) + " at " + above
+					+ ", precipitation " + level.getBiome(above).value().getPrecipitationAt(above, level.getSeaLevel()) + ")";
 			}
 			Tangled run = tangled(level, bobber(), hook(level, bobber(), null), CATCH_ROLLS);
 			if (run.failure() != null) {

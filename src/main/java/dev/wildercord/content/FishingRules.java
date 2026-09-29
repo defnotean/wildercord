@@ -52,7 +52,7 @@ public final class FishingRules {
 	public static final int STORM_CHANCE = 12;
 	/** On or near a ley line. */
 	public static final int LEY_CHANCE = 5;
-	/** In a thunderstorm, with the rain falling on the bobber. */
+	/** In a thunderstorm, with its rain (or snow) falling on the bobber. */
 	public static final int THUNDER_CHANCE = 5;
 	/** The most all three add up to, out of 100, before the rune loot multiplier. */
 	public static final int MAGIC_MOST = 20;

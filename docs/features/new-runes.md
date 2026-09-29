@@ -40,7 +40,7 @@ list, tiers weigh 8, 5 and 2 as in a chest.
   Current weigh three times a sea rune of their tier here: each is about 1 in 11 of the runes.
 - **Magic waters.** Where magic runs strong at the bobber, a rune comes up **as well as** the catch:
   12% a catch under a mana storm, 5% on or near a ley line (a little wider than where you count as
-  standing on one), 5% in a thunderstorm with the rain falling on the bobber. They add up, to at
+  standing on one), 5% in a thunderstorm with its rain (or snow) falling on the bobber. They add up, to at
   most 20%. Tidehook and Current weigh six times a sea rune of their tier here (each about 1 in 6).
   The angler reads *"Something magical was tangled in your line!"*, and the bobber flashes with a
   glint and a ring of pale light.
