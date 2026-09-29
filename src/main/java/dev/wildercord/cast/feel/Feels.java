@@ -31,6 +31,8 @@ public final class Feels {
 			return;
 		}
 		initialised = true;
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_SERVER_TICK.register(MarkHalos::tick);
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> MarkHalos.clear());
 		ShapeFeels.register();
 		FireFeels.register();
 		FrostFeels.register();
@@ -70,6 +72,24 @@ public final class Feels {
 		sound(level, at, kitName, volume * feel.band().volume, pitch);
 	}
 
+	/** The pentatonic ratios: playing a tonal kit sound at {@code step(i)} climbs the scale (i = 0, 1, 2...; 5 is an octave up). */
+	private static final float[] SCALE = {1.0F, 1.122F, 1.26F, 1.498F, 1.682F};
+
+	public static float step(int i) {
+		int k = Math.max(0, i);
+		return Math.min(2.0F, SCALE[k % 5] * (1 << Math.min(1, k / 5)));
+	}
+
+	/** The spell circle's radius under the caster for a feel: 0.8 (S), 1.0 (M, as always), 1.3 (L), 1.7 (XL). */
+	public static double circleRadius(Feel feel) {
+		return switch (feel.band()) {
+			case S -> 0.8;
+			case M -> 1.0;
+			case L -> 1.3;
+			case XL -> 1.7;
+		};
+	}
+
 	// ------------------------------------------------------------------ helpers
 
 	/** The theme of a group's first effect (or the shape colour) with the feel attached and the signature's accent applied. */
@@ -104,10 +124,22 @@ public final class Feels {
 
 	// ------------------------------------------------------------------ the layers
 
-	/** CUE: the first 200 ms. Called once per cast, for the spell's first group. */
+	/**
+	 * CUE: the first 200 ms. Called once per cast, for the spell's first group: the shape's gesture (its motion's sound at the
+	 * shape's own pitch), the modifiers' gold tells, a kick for the big ones, then the leading rune's signature.
+	 */
 	public static void cue(Cast cast, Feel feel, Vfx.Theme theme) {
 		var caster = cast.caster;
 		Vec3 hand = caster.getEyePosition().add(caster.getLookAngle().scale(0.9)).add(0, -0.3, 0);
+		Signature lead = Signatures.of(feel);
+		if (lead == null || !lead.replaces(Phase.CUE)) {
+			ShapeFeels.gesture(cast.level, hand, feel);
+			Tells.modifiers(cast, feel, theme, hand);
+			if (feel.band().ordinal() >= Band.L.ordinal()) {
+				// A big spell leaves the hand with a shove.
+				dev.wildercord.cast.ScreenFx.kick(caster, feel.band() == Band.XL ? 0.6F : 0.35F);
+			}
+		}
 		run(Phase.CUE, feel, theme, cast.level, hand, caster.getLookAngle(), null, cast, 0);
 	}
 
@@ -139,8 +171,33 @@ public final class Feels {
 			// The signature took over the sound and hooks; the flare and rings are still the shape's.
 			Vfx.impactDefault(level, at, theme, size, false);
 		}
-		if (feel != null && feel.band() != Band.S) {
-			run(Phase.AFTERMATH, feel, theme, level, at, null, null, null, 0);
+		if (feel != null && feel.band() != Band.S && size >= 0.8) {
+			if (run(Phase.AFTERMATH, feel, theme, level, at, null, null, null, 0)) {
+				aftermath(level, at, feel);
+			}
+		}
+	}
+
+	/**
+	 * The default aftermath: for a moment, the element leaves a small mark where a spell of band M or bigger landed (embers,
+	 * rime, static, dust, petals, a dark wisp, glyph flecks, golden ticks, drops). A handful of particles, never a second show.
+	 */
+	public static void aftermath(ServerLevel level, Vec3 at, Feel feel) {
+		double s = Math.min(1.6, feel.scale());
+		Vec3 floor = dev.wildercord.cast.ElementFx.floor(level, at, 2.5);
+		Vec3 ground = floor == null ? at : floor;
+		switch (feel.element()) {
+			case "fire" -> dev.wildercord.cast.ElementFx.embers(level, ground.add(0, 0.2, 0), 0.4 * s, (int) (4 * s));
+			case "frost" -> dev.wildercord.cast.ElementFx.frostCreep(level, ground, 0.5 * s, 40);
+			case "storm" -> dev.wildercord.cast.ElementFx.sparks(level, ground.add(0, 0.2, 0), (int) (4 * s), 0.15);
+			case "wind" -> dev.wildercord.cast.ElementFx.gustRing(level, ground, 0.9 * s);
+			case "earth" -> dev.wildercord.cast.ElementFx.crack(level, ground, 0.6 * s, 50);
+			case "life" -> dev.wildercord.cast.ElementFx.petals(level, ground.add(0, 0.4, 0), 0.4 * s, (int) (3 * s));
+			case "void" -> dev.wildercord.cast.ElementFx.implode(level, at, 0.5 * s, 8);
+			case "arcane" -> dev.wildercord.cast.ElementFx.shimmer(level, at, 0.3 * s, (int) (3 * s));
+			case "time" -> dev.wildercord.cast.ElementFx.goldenTicks(level, at, 0.3 * s, (int) (3 * s));
+			case "blood" -> dev.wildercord.cast.ElementFx.drip(level, at, 0.3 * s, (int) (3 * s));
+			default -> { }
 		}
 	}
 

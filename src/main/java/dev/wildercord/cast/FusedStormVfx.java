@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.MoteOption;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
@@ -459,7 +460,7 @@ final class FusedStormVfx {
 		if (fallen >= 3) {
 			ScreenFx.shake(level, to, 0.35F, 10);
 		}
-		Fx.sound(level, to, fallen >= 4 ? SoundEvents.MACE_SMASH_GROUND_HEAVY : SoundEvents.MACE_SMASH_GROUND, 1.0F, 0.9F);
+		Feels.sound(level, to, "wind_crash", 1.0F, 0.9F);
 	}
 
 	// ------------------------------------------------------------------ Updraft
@@ -490,8 +491,7 @@ final class FusedStormVfx {
 				0.5 + r.nextDouble() * 0.4);
 		}
 		ElementFx.gustRing(level, ground, radius * 1.4);
-		Fx.sound(level, ground, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.0F, 1.3F);
-		Fx.sound(level, ground, SoundEvents.WIND_CHARGE_THROW, 0.8F, 0.7F);
+		Feels.sound(level, ground, "wind_rise", 1.0F, 1.0F);
 	}
 
 	/** A creature caught up in it: the wind wrapped round it as it goes. */
@@ -524,8 +524,7 @@ final class FusedStormVfx {
 			double a = Math.PI * 2 * i / 8;
 			Vfx.fling(level, ParticleTypes.CLOUD, to.add(0, 0.15, 0), new Vec3(Math.cos(a), 0.1, Math.sin(a)), 0.3);
 		}
-		Fx.sound(level, to, SoundEvents.MACE_SMASH_GROUND, 0.9F, 1.1F);
-		Fx.sound(level, to, SoundEvents.WIND_CHARGE_BURST.value(), 0.8F, 0.7F);
+		Feels.sound(level, to, "wind_crash", 0.9F, 1.1F);
 	}
 
 	// ------------------------------------------------------------------ Skyglyph
@@ -548,8 +547,7 @@ final class FusedStormVfx {
 		Sigils.flash(level, feet.add(0, 0.3, 0), ElementFx.ARCANE.secondary(), 1.6F);
 		ElementFx.shimmer(level, feet.add(0, 0.4, 0), radius * 0.6, 8);
 		ElementFx.gustRing(level, feet, radius * 1.4);
-		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.9F, 1.4F);
-		Fx.sound(level, feet, WildercordSounds.cast("wind"), 0.7F, 1.0F);
+		Feels.sound(level, feet, "wind_glyph", 0.9F, 1.0F);
 	}
 
 	/** Every half second on a glyph: a pinwheel of three wind crescents going round over it, and specks of light rising off it. */
@@ -571,7 +569,7 @@ final class FusedStormVfx {
 		ElementFx.groundRing(level, feet, ElementFx.ARCANE.accent(), radius * 1.2, 0.1, 0.05, 9);
 		Vfx.emit(level, ParticleTypes.ENCHANT, feet.add(0, 0.5, 0), 10, radius * 0.4, 0.3);
 		Vfx.emit(level, ParticleTypes.SMALL_GUST, feet.add(0, 0.3, 0), 1, 0.2, 0.0);
-		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.8F);
+		Feels.sound(level, feet, "wind_glyph", 0.5F, 0.7F);
 	}
 
 	/** An ally launched: wind spiralling up round them in white and pink, the star under their feet flaring, cloud thrown down and out. */
@@ -584,8 +582,7 @@ final class FusedStormVfx {
 			double a = Math.PI * 2 * i / 6;
 			Vfx.fling(level, ParticleTypes.CLOUD, feet.add(0, 0.2, 0), new Vec3(Math.cos(a), -0.1, Math.sin(a)), 0.25);
 		}
-		Fx.sound(level, t.position(), SoundEvents.BREEZE_JUMP, 1.0F, 1.1F);
-		Fx.sound(level, t.position(), SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.5F);
+		Feels.sound(level, t.position(), "wind_rise", 0.7F, 1.4F);
 	}
 
 	/** An enemy thrown off: a paddle of wind sweeping up and over it, outward, and a star flaring at the glyph's edge. */
@@ -596,7 +593,7 @@ final class FusedStormVfx {
 		ElementFx.slash(level, c.subtract(away.scale(0.7)), side, away.add(0, 0.6, 0), ElementFx.ARCANE.accent(), Math.max(0.7, t.getBbWidth() + 0.2), 1.7, 0.06, 3, 8);
 		ElementFx.ring(level, c, away, ElementFx.WIND.secondary(), 0.3, 1.3, 0.05, 7);
 		Sigils.flash(level, feet.add(away.scale(1.2)).add(0, 0.3, 0), ElementFx.ARCANE.primary(), 1.0F);
-		Fx.sound(level, c, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.8F, 1.4F);
+		Feels.sound(level, c, "wind_thump", 0.8F, 1.2F);
 	}
 
 	// ------------------------------------------------------------------ Recoil
@@ -613,7 +610,7 @@ final class FusedStormVfx {
 				1 + i, 7);
 		}
 		ElementFx.ring(level, c, away, ElementFx.TIME.primary(), 0.3, 1.4, 0.04, 8);
-		Fx.sound(level, c, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.9F, 1.1F);
+		Feels.sound(level, c, "wind_thump", 0.8F, 1.0F);
 		if (!first) {
 			return;
 		}
@@ -621,7 +618,6 @@ final class FusedStormVfx {
 		ElementFx.stoppedClock(level, anchor.add(0, 0.09, 0), UP, 0.75, Math.atan2(away.z, away.x), hold);
 		ElementFx.flatSigil(level, anchor, SigilOption.BAND, ElementFx.TIME.primary(), Math.max(0.9, t.getBbWidth() + 0.4), hold, 0);
 		ElementFx.goldenTicks(level, anchor.add(0, 0.5, 0), 0.3, 5);
-		Fx.sound(level, anchor, WildercordSounds.impact("time"), 0.6F, 1.0F);
 	}
 
 	/**
@@ -657,7 +653,6 @@ final class FusedStormVfx {
 		}
 		Sigils.flash(level, back, ElementFx.TIME.secondary(), 1.6F);
 		ElementFx.goldenTicks(level, back, 0.4, 8);
-		Fx.sound(level, back, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 0.8F);
-		Fx.sound(level, back, SoundEvents.WIND_CHARGE_BURST.value(), 0.6F, 0.7F);
+		Feels.sound(level, back, "wind_rewind", 1.0F, 1.0F);
 	}
 }

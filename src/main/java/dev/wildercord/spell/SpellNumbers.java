@@ -8,6 +8,11 @@ public final class SpellNumbers {
 	private SpellNumbers() {}
 
 	public static final int MAX_COPIES = 9;
+	/** Touch: what you lay hands on takes the spell this much harder. */
+	public static final double TOUCH_POWER = 1.3;
+	/** Cone: the near half of the cone strikes this much harder, the far half this much softer. */
+	public static final double CONE_NEAR = 1.35;
+	public static final double CONE_FAR = 0.85;
 	/** Rain: the share of strikes that fall on an enemy in the area, and how wide each strikes. */
 	public static final double RAIN_SEEK = 0.6;
 	public static final double RAIN_STRIKE = 2.0;

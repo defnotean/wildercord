@@ -541,8 +541,11 @@ public class WildercordNewRunes2Test implements FabricClientGameTest {
 			if (husk == null) {
 				return "the dry husk should still stand";
 			}
-			if (Reactions.has(husk, Reactions.Mark.FROZEN)) {
-				return "a dry husk shouldn't freeze";
+			if (husk.getTicksFrozen() > husk.getTicksRequiredToFreeze()) {
+				return "a dry husk shouldn't freeze solid";
+			}
+			if (!Reactions.has(husk, Reactions.Mark.FROZEN)) {
+				return "a dry husk should be left brittle (the strike still primes Shatter)";
 			}
 			MobEffectInstance slow = husk.getEffect(MobEffects.SLOWNESS);
 			return slow != null && slow.getAmplifier() >= 1 ? null : "a dry husk should be slowed (Slowness II)";

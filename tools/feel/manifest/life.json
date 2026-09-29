@@ -1,4 +1,260 @@
 {
-  "events": {},
+  "events": {
+    "life_bond": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_bond"
+      ],
+      "subtitle": "field"
+    },
+    "life_bond_snap": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_bond_snap"
+      ],
+      "subtitle": "field"
+    },
+    "life_coin": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_coin"
+      ],
+      "subtitle": "hit"
+    },
+    "life_coin_proc": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_coin_proc"
+      ],
+      "subtitle": "hit"
+    },
+    "life_crack": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_crack"
+      ],
+      "subtitle": "hit"
+    },
+    "life_dome": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_dome"
+      ],
+      "subtitle": "field"
+    },
+    "life_door": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_door"
+      ],
+      "subtitle": "cast"
+    },
+    "life_fang": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_fang"
+      ],
+      "subtitle": "hit"
+    },
+    "life_gasp": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_gasp"
+      ],
+      "subtitle": "cast"
+    },
+    "life_glimmer": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_glimmer"
+      ],
+      "subtitle": "field"
+    },
+    "life_grip": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_grip"
+      ],
+      "subtitle": "hit"
+    },
+    "life_grow": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_grow_1",
+        "kit/life/life_grow_2",
+        "kit/life/life_grow_3"
+      ],
+      "subtitle": "hit"
+    },
+    "life_heal": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_heal_1",
+        "kit/life/life_heal_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_lull": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_lull"
+      ],
+      "subtitle": "field"
+    },
+    "life_mend": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_mend"
+      ],
+      "subtitle": "hit"
+    },
+    "life_munch": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_munch"
+      ],
+      "subtitle": "hit"
+    },
+    "life_petals": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_petals"
+      ],
+      "subtitle": "hit"
+    },
+    "life_plip": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_plip_1",
+        "kit/life/life_plip_2",
+        "kit/life/life_plip_3"
+      ],
+      "subtitle": "field"
+    },
+    "life_pollen": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_pollen"
+      ],
+      "subtitle": "hit"
+    },
+    "life_purge": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_purge"
+      ],
+      "subtitle": "hit"
+    },
+    "life_reap": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_reap"
+      ],
+      "subtitle": "hit"
+    },
+    "life_regrow": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_regrow"
+      ],
+      "subtitle": "cast"
+    },
+    "life_ripen": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_ripen_1",
+        "kit/life/life_ripen_2"
+      ],
+      "subtitle": "field"
+    },
+    "life_ripen_burst": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_ripen_burst"
+      ],
+      "subtitle": "field"
+    },
+    "life_spore": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_spore"
+      ],
+      "subtitle": "field"
+    },
+    "life_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_step"
+      ],
+      "subtitle": "cast"
+    },
+    "life_stinger_restore": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_stinger_restore_1",
+        "kit/life/life_stinger_restore_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_stinger_thorn": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_stinger_thorn_1",
+        "kit/life/life_stinger_thorn_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_stinger_ward": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_stinger_ward"
+      ],
+      "subtitle": "cast"
+    },
+    "life_stinger_world": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_stinger_world_1",
+        "kit/life/life_stinger_world_2"
+      ],
+      "subtitle": "cast"
+    },
+    "life_stitch": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_stitch"
+      ],
+      "subtitle": "field"
+    },
+    "life_thorn": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_thorn_1",
+        "kit/life/life_thorn_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_thorn_grow": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_thorn_grow"
+      ],
+      "subtitle": "hit"
+    },
+    "life_transmute": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_transmute"
+      ],
+      "subtitle": "hit"
+    },
+    "life_whip": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_whip"
+      ],
+      "subtitle": "hit"
+    }
+  },
   "part": "life"
 }

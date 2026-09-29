@@ -37,7 +37,19 @@ final class ShapeRunners {
 			}
 		}
 		Vfx.cone(cast.level, origin, aim, length, theme);
-		CastEngine.onHit(cast, g, new Cast.Hit(hits, origin.add(aim.scale(length * 0.6)), aim, origin, null, null, false), anchored);
+		// A shotgun: whatever is close takes it harder than what is at the edge of the spray.
+		List<Entity> near = new ArrayList<>();
+		List<Entity> far = new ArrayList<>();
+		for (Entity e : hits) {
+			(e.getBoundingBox().getCenter().distanceTo(origin) <= length / 2 ? near : far).add(e);
+		}
+		Vec3 point = origin.add(aim.scale(length * 0.6));
+		if (!near.isEmpty() || far.isEmpty()) {
+			CastEngine.onHit(cast, g, new Cast.Hit(near, point, aim, origin, null, null, false).times(SpellNumbers.CONE_NEAR), anchored);
+		}
+		if (!far.isEmpty()) {
+			CastEngine.onHit(cast, g, new Cast.Hit(far, point, aim, origin, null, null, false).times(SpellNumbers.CONE_FAR), anchored);
+		}
 	}
 
 	/**
@@ -121,6 +133,7 @@ final class ShapeRunners {
 				}
 			}
 			if (!hits.isEmpty()) {
+				dev.wildercord.cast.feel.Feels.sound(cast.level, center, "field_pulse", 0.4F, 0.749F);
 				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, center, look, center, null, null, false), anchored);
 			}
 		});
@@ -161,21 +174,26 @@ final class ShapeRunners {
 	static void orbit(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vfx.Theme theme) {
 		int orbs = SpellNumbers.orbs(g);
 		int total = SpellNumbers.orbitSeconds(g) * 20;
-		Map<UUID, Long> lastHit = new HashMap<>();
+		// Each orb keeps its own once-a-second, so a Split Orbit's extra orbs are worth their price.
+		List<Map<UUID, Long>> lastHit = new ArrayList<>();
+		for (int i = 0; i < orbs; i++) {
+			lastHit.add(new HashMap<>());
+		}
 		LivingEntity caster = cast.caster;
 		steps(cast, 1, 1, total, tick -> {
 			if (!cast.alive()) {
 				return;
 			}
 			long now = cast.level.getGameTime();
-			List<Entity> hits = new ArrayList<>();
 			Vec3 lastOrb = caster.position();
+			Vec3[] at = new Vec3[orbs];
 			AABB[] boxes = new AABB[orbs];
 			AABB around = null;
 			for (int i = 0; i < orbs; i++) {
 				double angle = tick * 0.22 + Math.PI * 2 * i / orbs;
 				Vec3 orb = caster.position().add(Math.cos(angle) * 2.2, 1.0 + Math.sin(tick * 0.1 + i) * 0.25, Math.sin(angle) * 2.2);
 				lastOrb = orb;
+				at[i] = orb;
 				Vfx.orb(cast.level, orb, theme, tick);
 				boxes[i] = new AABB(orb, orb).inflate(0.8);
 				around = around == null ? boxes[i] : around.minmax(boxes[i]);
@@ -183,20 +201,23 @@ final class ShapeRunners {
 			// One look round all the orbs instead of one per orb (a passive Orbit does this every tick, for good),
 			// then each orb takes what its own box touches: the same creatures, in the same order, as asking per orb.
 			List<Entity> near = around == null ? List.of() : cast.level.getEntities(caster, around, e -> e instanceof LivingEntity && e.isAlive());
-			for (AABB box : boxes) {
+			for (int i = 0; i < orbs; i++) {
+				List<Entity> hits = new ArrayList<>();
 				for (Entity e : near) {
-					if (!e.getBoundingBox().intersects(box)) {
+					if (!e.getBoundingBox().intersects(boxes[i])) {
 						continue;
 					}
-					Long last = lastHit.get(e.getUUID());
-					if (!hits.contains(e) && (last == null || now - last >= 20)) {
+					Long last = lastHit.get(i).get(e.getUUID());
+					if (last == null || now - last >= 20) {
 						hits.add(e);
-						lastHit.put(e.getUUID(), now);
+						lastHit.get(i).put(e.getUUID(), now);
 					}
 				}
-			}
-			if (!hits.isEmpty()) {
-				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, lastOrb, caster.getLookAngle(), caster.position(), null, null, false), anchored);
+				if (!hits.isEmpty()) {
+					// Each orb chimes its own note of the chord as it strikes.
+					dev.wildercord.cast.feel.Feels.sound(cast.level, at[i], "note_effect", 0.35F, dev.wildercord.cast.feel.Feels.step(i));
+					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, at[i], caster.getLookAngle(), caster.position(), null, null, false), anchored);
+				}
 			}
 		});
 		Fx.sound(cast.level, caster.position(), dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
@@ -316,6 +337,7 @@ final class ShapeRunners {
 				return;
 			}
 			Vfx.totemPulse(cast.level, base, radius, theme);
+			dev.wildercord.cast.feel.Feels.sound(cast.level, base, "tell_toll", 0.4F, dev.wildercord.cast.feel.Feels.step(tick / interval));
 			List<Entity> hits = CastEngine.inRadius(cast, top, radius);
 			if (!hits.isEmpty()) {
 				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(hits, top, new Vec3(0, 1, 0), top, null, null, false), anchored);
@@ -376,6 +398,7 @@ final class ShapeRunners {
 				}
 			}
 			TechniqueVfx.domainStrike(cast.level, center, radius, theme);
+			dev.wildercord.cast.feel.Feels.sound(cast.level, center, "tell_toll", 0.6F, 0.5F);
 			if (!inside.isEmpty()) {
 				CastEngine.onHit(cast.pulse(), g, new Cast.Hit(inside, center, new Vec3(0, 1, 0), center, null, null, false), anchored);
 			}
@@ -883,6 +906,7 @@ final class ShapeRunners {
 			velocity[0] = velocity[0].subtract(normal.scale(2 * velocity[0].dot(normal))).scale(0.82);
 			pos[0] = end.add(normal.scale(0.05));
 			ExpansionVfx.ricochetBounce(cast.level, end, normal, theme);
+			dev.wildercord.cast.feel.Feels.sound(cast.level, end, "note_shape", 0.4F, dev.wildercord.cast.feel.Feels.step(SpellNumbers.ricochetBounces(g) - bounces[0]));
 			return true;
 		});
 	}
@@ -1092,6 +1116,7 @@ final class ShapeRunners {
 			boolean strike = strikeTicks.contains(tick);
 			ExpansionVfx.streamTick(cast.level, origin.add(aim.scale(0.8)), stop, aim, theme, tick, strike);
 			if (strike) {
+				dev.wildercord.cast.feel.Feels.sound(cast.level, stop, "note_effect", 0.25F, dev.wildercord.cast.feel.Feels.step((int) strikeTicks.stream().filter(s -> s < tick).count()));
 				if (!hits.isEmpty()) {
 					CastEngine.onHit(cast.pulse(), g, new Cast.Hit(List.of(hits.getFirst()), stop, aim, origin, null, null, false), anchored);
 				} else if (!missed(block)) {

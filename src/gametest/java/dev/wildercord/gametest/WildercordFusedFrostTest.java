@@ -2,6 +2,7 @@ package dev.wildercord.gametest;
 
 import dev.wildercord.cast.Cast;
 import dev.wildercord.cast.Effects;
+import dev.wildercord.cast.Reactions;
 import dev.wildercord.cast.SpellCaster;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Mana;
@@ -251,8 +252,8 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 				return "the husks should still be there";
 			}
 			float taken = in.getMaxHealth() - in.getHealth();
-			if (taken < 2.5F || taken > 5.0F) {
-				return "a husk in the storm should take about 1 a second for 4 seconds, from one storm however often it's cast there (took " + taken + ")";
+			if (taken < 2.5F || taken > 6.5F) {
+				return "a husk in the storm should take 1.5 a second while the walking storm is on it (up to 4 bites), from one storm however often it's cast there (took " + taken + ")";
 			}
 			if (out.getHealth() < out.getMaxHealth() || out.hasEffect(MobEffects.SLOWNESS)) {
 				return "a husk 4.5 blocks away should be left alone";
@@ -448,6 +449,8 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 		int cold = on(world, player -> {
 			int id = husk(player, 0, 5);
 			mob(player, id).addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 200, 0));
+			// Slowed and brittle: two signs of cold, so the old 7 damage.
+			Reactions.mark(mob(player, id), Reactions.Mark.FROZEN, 200);
 			return id;
 		});
 		cast = on(world, player -> cast(player, Runes.BEAM, Runes.ABSOLUTE_ZERO));

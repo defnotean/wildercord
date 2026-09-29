@@ -99,4 +99,21 @@ class ExplorerNumbersTest {
 		assertTrue(ExplorerNumbers.CURRENT_SETTLE_TICKS * ExplorerNumbers.CURRENT_SPEED >= 9, "a surge leaves the water within the settling time");
 		assertTrue(ExplorerNumbers.CURRENT_SETTLE_TICKS < ExplorerNumbers.CURRENT_GUARD_TICKS);
 	}
+
+	@Test
+	void manatideReturnsAQuarterOfEachSpellUpToThirty() {
+		assertEquals(8.0, ExplorerNumbers.manatideRefund(32, 0), 1e-9);
+		assertEquals(0.0, ExplorerNumbers.manatideRefund(0, 0), 1e-9);
+		assertEquals(2.0, ExplorerNumbers.manatideRefund(32, 28), 1e-9, "only what is left of the 30");
+		assertEquals(0.0, ExplorerNumbers.manatideRefund(32, 30), 1e-9);
+	}
+
+	@Test
+	void moonpetalWaxesAndWanes() {
+		assertEquals(1.4, ExplorerNumbers.moonFactor(0, false), 1e-9, "full moon");
+		assertEquals(1.0, ExplorerNumbers.moonFactor(2, false), 1e-9, "quarter");
+		assertEquals(0.7, ExplorerNumbers.moonFactor(4, false), 1e-9, "new moon");
+		assertEquals(1.4 * 1.25, ExplorerNumbers.moonFactor(0, true), 1e-9, "and stronger at night under open sky");
+		assertEquals(ExplorerNumbers.moonFactor(1, false), ExplorerNumbers.moonFactor(9, false), 1e-9);
+	}
 }

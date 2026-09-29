@@ -389,7 +389,16 @@ public final class Cast {
 
 	/**
 	 * What a shape hit: creatures (maybe none), the point, and the block if one was hit.
-	 * {@code origin} is where push and pull measure from.
+	 * {@code origin} is where push and pull measure from; {@code power} multiplies its effects (1 for most shapes).
 	 */
-	public record Hit(List<Entity> entities, Vec3 point, Vec3 dir, Vec3 origin, BlockPos block, Direction face, boolean self) {}
+	public record Hit(List<Entity> entities, Vec3 point, Vec3 dir, Vec3 origin, BlockPos block, Direction face, boolean self, double power) {
+		public Hit(List<Entity> entities, Vec3 point, Vec3 dir, Vec3 origin, BlockPos block, Direction face, boolean self) {
+			this(entities, point, dir, origin, block, face, self, 1.0);
+		}
+
+		/** The same hit, its effects {@code multiplier} times as strong (a Touch's laying on of hands, the near half of a Cone). */
+		public Hit times(double multiplier) {
+			return new Hit(entities, point, dir, origin, block, face, self, power * multiplier);
+		}
+	}
 }

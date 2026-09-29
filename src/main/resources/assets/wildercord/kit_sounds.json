@@ -1,5 +1,137 @@
 {
   "events": {
+    "arcane_comet": {
+      "part": "arcane"
+    },
+    "arcane_fangs": {
+      "part": "arcane"
+    },
+    "arcane_flutter": {
+      "part": "arcane"
+    },
+    "arcane_glassrun": {
+      "part": "arcane"
+    },
+    "arcane_glassshatter": {
+      "part": "arcane"
+    },
+    "arcane_glint": {
+      "part": "arcane"
+    },
+    "arcane_glint_ping": {
+      "part": "arcane"
+    },
+    "arcane_gong": {
+      "part": "arcane"
+    },
+    "arcane_halo": {
+      "part": "arcane"
+    },
+    "arcane_halo_zap": {
+      "part": "arcane"
+    },
+    "arcane_hex": {
+      "part": "arcane"
+    },
+    "arcane_hex_pop": {
+      "part": "arcane"
+    },
+    "arcane_howl": {
+      "part": "arcane"
+    },
+    "arcane_hush": {
+      "part": "arcane"
+    },
+    "arcane_inhale": {
+      "part": "arcane"
+    },
+    "arcane_inhale_tick": {
+      "part": "arcane"
+    },
+    "arcane_kindle": {
+      "part": "arcane"
+    },
+    "arcane_kindle_hum": {
+      "part": "arcane"
+    },
+    "arcane_mirror": {
+      "part": "arcane"
+    },
+    "arcane_mirror_crack": {
+      "part": "arcane"
+    },
+    "arcane_needle": {
+      "part": "arcane"
+    },
+    "arcane_open": {
+      "part": "arcane"
+    },
+    "arcane_ping": {
+      "part": "arcane"
+    },
+    "arcane_pluck": {
+      "part": "arcane"
+    },
+    "arcane_resonate": {
+      "part": "arcane"
+    },
+    "arcane_resonate_echo": {
+      "part": "arcane"
+    },
+    "arcane_scorch": {
+      "part": "arcane"
+    },
+    "arcane_snuff": {
+      "part": "arcane"
+    },
+    "arcane_split": {
+      "part": "arcane"
+    },
+    "arcane_stamp": {
+      "part": "arcane"
+    },
+    "arcane_stamp_burst": {
+      "part": "arcane"
+    },
+    "arcane_starfall": {
+      "part": "arcane"
+    },
+    "arcane_stinger_glass": {
+      "part": "arcane"
+    },
+    "arcane_stinger_mark": {
+      "part": "arcane"
+    },
+    "arcane_stinger_step": {
+      "part": "arcane"
+    },
+    "arcane_stinger_strike": {
+      "part": "arcane"
+    },
+    "arcane_stinger_summon": {
+      "part": "arcane"
+    },
+    "arcane_swap": {
+      "part": "arcane"
+    },
+    "arcane_thrum": {
+      "part": "arcane"
+    },
+    "arcane_thrum_exhale": {
+      "part": "arcane"
+    },
+    "arcane_toll": {
+      "part": "arcane"
+    },
+    "arcane_twin": {
+      "part": "arcane"
+    },
+    "arcane_twin_echo": {
+      "part": "arcane"
+    },
+    "arcane_yip": {
+      "part": "arcane"
+    },
     "blood_slice": {
       "part": "blood"
     },
@@ -63,13 +195,226 @@
     "earth_tick": {
       "part": "earth"
     },
+    "field_pulse": {
+      "part": "neutral"
+    },
     "fire_flick": {
       "part": "fire"
     },
     "fire_whump": {
       "part": "fire"
     },
+    "fizzle": {
+      "part": "neutral"
+    },
+    "frost_break": {
+      "part": "frost"
+    },
+    "frost_breath": {
+      "part": "frost"
+    },
+    "frost_bubble_in": {
+      "part": "frost"
+    },
+    "frost_bubble_pop": {
+      "part": "frost"
+    },
+    "frost_crack": {
+      "part": "frost"
+    },
+    "frost_creep": {
+      "part": "frost"
+    },
+    "frost_crust": {
+      "part": "frost"
+    },
+    "frost_drag": {
+      "part": "frost"
+    },
+    "frost_hail": {
+      "part": "frost"
+    },
+    "frost_hook": {
+      "part": "frost"
+    },
+    "frost_lock": {
+      "part": "frost"
+    },
+    "frost_lotus": {
+      "part": "frost"
+    },
+    "frost_mirror": {
+      "part": "frost"
+    },
+    "frost_needle": {
+      "part": "frost"
+    },
+    "frost_splat": {
+      "part": "frost"
+    },
+    "frost_surge": {
+      "part": "frost"
+    },
+    "frost_tick": {
+      "part": "frost"
+    },
+    "frost_ward": {
+      "part": "frost"
+    },
+    "frost_whump": {
+      "part": "frost"
+    },
+    "frost_zero": {
+      "part": "frost"
+    },
+    "gate_fail": {
+      "part": "neutral"
+    },
+    "gate_pass": {
+      "part": "neutral"
+    },
+    "gesture_aura": {
+      "part": "neutral"
+    },
+    "gesture_beam": {
+      "part": "neutral"
+    },
+    "gesture_blast": {
+      "part": "neutral"
+    },
+    "gesture_call": {
+      "part": "neutral"
+    },
+    "gesture_flick": {
+      "part": "neutral"
+    },
+    "gesture_hurl": {
+      "part": "neutral"
+    },
+    "gesture_seal": {
+      "part": "neutral"
+    },
+    "gesture_slash": {
+      "part": "neutral"
+    },
+    "life_bond": {
+      "part": "life"
+    },
+    "life_bond_snap": {
+      "part": "life"
+    },
+    "life_coin": {
+      "part": "life"
+    },
+    "life_coin_proc": {
+      "part": "life"
+    },
+    "life_crack": {
+      "part": "life"
+    },
+    "life_dome": {
+      "part": "life"
+    },
+    "life_door": {
+      "part": "life"
+    },
+    "life_fang": {
+      "part": "life"
+    },
+    "life_gasp": {
+      "part": "life"
+    },
+    "life_glimmer": {
+      "part": "life"
+    },
+    "life_grip": {
+      "part": "life"
+    },
+    "life_grow": {
+      "part": "life"
+    },
+    "life_heal": {
+      "part": "life"
+    },
+    "life_lull": {
+      "part": "life"
+    },
+    "life_mend": {
+      "part": "life"
+    },
+    "life_munch": {
+      "part": "life"
+    },
+    "life_petals": {
+      "part": "life"
+    },
+    "life_plip": {
+      "part": "life"
+    },
+    "life_pollen": {
+      "part": "life"
+    },
+    "life_purge": {
+      "part": "life"
+    },
+    "life_reap": {
+      "part": "life"
+    },
+    "life_regrow": {
+      "part": "life"
+    },
+    "life_ripen": {
+      "part": "life"
+    },
+    "life_ripen_burst": {
+      "part": "life"
+    },
+    "life_spore": {
+      "part": "life"
+    },
+    "life_step": {
+      "part": "life"
+    },
+    "life_stinger_restore": {
+      "part": "life"
+    },
+    "life_stinger_thorn": {
+      "part": "life"
+    },
+    "life_stinger_ward": {
+      "part": "life"
+    },
+    "life_stinger_world": {
+      "part": "life"
+    },
+    "life_stitch": {
+      "part": "life"
+    },
+    "life_thorn": {
+      "part": "life"
+    },
+    "life_thorn_grow": {
+      "part": "life"
+    },
+    "life_transmute": {
+      "part": "life"
+    },
+    "life_whip": {
+      "part": "life"
+    },
     "link_ting": {
+      "part": "neutral"
+    },
+    "note_effect": {
+      "part": "neutral"
+    },
+    "note_link": {
+      "part": "neutral"
+    },
+    "note_mod": {
+      "part": "neutral"
+    },
+    "note_shape": {
       "part": "neutral"
     },
     "ready_ping": {
@@ -137,6 +482,66 @@
     },
     "tap_release": {
       "part": "neutral"
+    },
+    "tell_crack": {
+      "part": "neutral"
+    },
+    "tell_drip": {
+      "part": "neutral"
+    },
+    "tell_rumble": {
+      "part": "neutral"
+    },
+    "tell_tick": {
+      "part": "neutral"
+    },
+    "tell_toll": {
+      "part": "neutral"
+    },
+    "tell_zap": {
+      "part": "neutral"
+    },
+    "wind_crash": {
+      "part": "wind"
+    },
+    "wind_dash": {
+      "part": "wind"
+    },
+    "wind_deflect": {
+      "part": "wind"
+    },
+    "wind_feather": {
+      "part": "wind"
+    },
+    "wind_gale": {
+      "part": "wind"
+    },
+    "wind_glyph": {
+      "part": "wind"
+    },
+    "wind_lift": {
+      "part": "wind"
+    },
+    "wind_muffle": {
+      "part": "wind"
+    },
+    "wind_rewind": {
+      "part": "wind"
+    },
+    "wind_rise": {
+      "part": "wind"
+    },
+    "wind_slash": {
+      "part": "wind"
+    },
+    "wind_snatch": {
+      "part": "wind"
+    },
+    "wind_thump": {
+      "part": "wind"
+    },
+    "wind_whirl": {
+      "part": "wind"
     }
   }
 }

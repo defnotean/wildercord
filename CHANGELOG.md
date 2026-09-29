@@ -3,6 +3,7 @@
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+- **Life and arcane look and sound like themselves.** Arcane's star seal now means a lasting mark on someone (Exposed, a brand, a reflecting shell); instant strikes are needles, columns and comets (Harm is a thin needle of light, Smite a tall column after its ring, Starfall drops along a star of light threads with a different note per star), wards are glass, and Swap is two crossing arcs. Life's bloom means restoration; Bramble shows its four thorns, Regrowth winds a vine up in three stages, Remedy's grey motes turn green, Harvest sweeps a golden crescent, Grow ripples out, Reversal raises a sun-disc, and Fortune spins a coin. Every life and arcane rune has its own synthesised sound (about 75 new ones) and a role stinger under its cast sound, replacing the borrowed vanilla ones (Harm's melee crit, Venom's spider, Reversal's Totem of Undying).
 
 ### Fixed
 - **Lightning no longer multiplies on a crowd.** Every strike hurt everything near it, so enemies packed together took a
@@ -20,6 +21,22 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Shock's second victim** takes part in Conduct and Overload like the first.
 
 ### Added
+- **Every spell reads from how it's built.** Each shape leaves your hands with its own gesture and sound (a flick, a
+  throw, a line of light, a slash, a blast, a seal, a call, an aura), and you hold each kind its own way while
+  charging. The circle under your feet grows with the spell's cost, charge and tier, and the biggest spells leave
+  with a shove. See [How a spell sounds and looks](https://defnotean.github.io/wildercord/spellcraft/casting/#how-a-spell-sounds-and-looks).
+- **Spells have melodies.** While you charge, each rune plays its own note as its roundel opens (a knock for a shape,
+  glass for an effect, a bell for a modifier, a clink for a link), and the hum is in your first element's key.
+- **Modifiers show in gold, links in violet.** Amplify, Overcharge, Focus, Widen, Extend, Quicken, Split, Pierce, Vow,
+  Blood Price and the rest each have their own cue as the spell leaves; bolts show Amplify, Overcharge, Frugal, Pierce and
+  Homing in flight; Volley shots and Chain jumps climb the scale. Delay ticks down, Pulse keeps time, Echo ripples, On Hit
+  rings at each creature it hands on to, On Kill tolls, conditions click open or shut, and reactive links show a seal at
+  your feet while armed.
+- **Reaction marks are visible.** Frozen, Windswept, Pulled, Wet, Soaked, Resonant, Cracked, Shadowed, Bleeding and Ionised
+  creatures wear a small halo in the mark's colour, and a tick sounds when a mark is set.
+- Fields keep time (a Zone beats, a Totem's bell climbs with each strike, a Domain tolls, each Orbit orb chimes its note),
+  impacts leave a moment's trace of their element, a failed cast fizzles, and the HUD chimes and flashes when a long
+  cooldown ends.
 - **Casting gear slots.** Your inventory has three new slots for casting gear: **Staff** (any staff, a greater one
   too), **Focus** (any focus) and **Tome** (the Tome of the Fifth Page). A piece in its slot works with nothing in
   your hands, so you no longer have to hold your staff or a focus to cast. In the survival inventory the slots sit in
@@ -59,6 +76,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   twice as fast, so a Zone, Wall, Totem, Domain, Latch, Stream or Barrage is over sooner instead of hitting more; **Linger's** later landings
   strike at 60%; and Zone (x2.75), Wall (x2.95), Totem (x3.15), Orbit (x3.05), Trail (x2.85), Vortex (x2.8), Domain (x3.9), Barrage (x1.85),
   Latch (x2.15) and Stream (x1.95) cost more in proportion to how often they strike.
+- **Touch** lays the spell on 30% harder; **Cone** hits 35% harder in its near half and 15% softer at its edge; each of
+  **Orbit's** orbs strikes a creature once a second on its own, so a Split Orbit's extra orbs count.
 - **On Hit** fires its payload a little weaker at each further creature of one landing (85% each), still paid once.
 - **Vow's** cooldown is 5x (was 4x); **Blood Price** costs 1 health per 4 mana (was 5); **Belated** is 25% stronger per rune (was 40%).
 - **Weak runes lifted:** Amplify x1.5 cost (was x1.6), Overcharge x2.6 (was x3.0), Kindled +30% power (was +20%), **Rain**'s strikes
@@ -83,6 +102,78 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Gear in a slot **drops when you die**, like the rest of your inventory (Curse of Vanishing destroys its own), and
   stays with you when `keepInventory` is on. It never duplicates through death, respawning or changing dimension.
 - The tooltips and Cord screen texts about holding the tome or a Focus of the Deep Well now mention the slot.
+- **Frost and wind runes each do their own thing.** Chill deepens if you Chill again (Slowness II, III, IV). Frost
+  leaves a target brittle for Shatter. Icicle hits harder on a slowed target and melts after 2 seconds. Hail is five
+  staggering stones. Hoarfrost creeps for 3 seconds, freezes solid, and blooms onto neighbours. Bubble lifts its
+  target and holds by size (small 2.5 s, large 1.5 s). Absolute Zero counts a target's signs of cold: the more, the
+  harder it hits and the longer it holds. Glacier's ice spreads to a few neighbours and cracks for damage. Blizzard
+  walks the way you faced. Frostbloom's ward freezes attackers and heals you. Black Ice shatters what dies while
+  it holds. Cryostasis bursts when it opens. Coldsnap is a wider snap that leaves everything brittle. Freeze costs
+  14 mana, Bubble 9 and Absolute Zero 18.
+- **Wind now lifts.** Launch, Levitate, Updraft and Summit Wind mark targets *airborne*: every spell hits them 20%
+  harder while they are off the ground. Light creatures fly farther in wind and heavy ones barely budge. Windcut
+  breaks what a target is winding up (a charge, a bow's draw, a creeper's fuse, a spell). Push slams into walls for
+  damage. Repel deals 4 damage. Downdraft pins whoever stands under it when nothing is in the air. Recoil deals 5.
+  Cyclone and Gale Mantle follow where you steer. Feather Fall drifts the way you look. Zephyr lasts 10 seconds and
+  clears blindness, nausea and slowness. Mirrorfrost casts back at 70% power and can't be cast back again.
+- **Frost and wind look and sound like themselves.** Every frost, water and wind rune has its own sound now (thirty-four
+  new ones: a needle for Icicle, a creeping crystal for Hoarfrost, a deep lock for Freeze, a wet splat for Flash
+  Freeze, a rising wave for Tidecall, a snatch for Disarm, a rewinding whoosh for Recoil and so on) in place of the
+  handful of shared glass, powder-snow and wind pops. Runes read by silhouette: Push is one broad slab, Windcut one long
+  cut, Launch a pillar of rings, Repel a dome, Icicle a needle falling from above, Chill three rings climbing the body,
+  Tidewrit a wall, Undertow a corkscrew of bubbles, Flash Freeze a crown of ice spikes. Each element family has its own
+  colour (rime, steel and deep cyan for frost, aqua for water, mint, sky and grey-green for wind), and a rune's size on
+  screen follows its power. Timed effects now tell you when they end: ice shows hairline cracks in its last half second,
+  a Bubble strains before it pops, Hoarfrost flashes white before it closes, and Frostward and Cushion show a faint ring
+  while they last. Silenced creatures show a muted ring over their head, and a creature lifted by wind shows pale rings
+  and lights while a spell hits it harder. Fewer particles for the same rune (Push, Prune, Repel, Tidewrit, Undertow).
+- **New status: silenced.** A silenced creature can't cast; Drowning Word now silences its target. A Runebound
+  telegraphing a spell has it broken by silence or a Windcut.
+- Tidecall, Undertow, Tidehook, Tidewrit, Current, Disarm and Tidebreath got small mechanic tweaks (Tidecall pulls and
+  soaks, Undertow drags toward the nearest water, Tidehook leaves a gasp, Current carries allies, Disarm's player
+  version stops them using what they hold for 3 seconds).
+- **Life and arcane runes each have their own verb, and the outliers are tuned.** The numbers now sit near their
+  tier's yardstick, and every repeater is guarded (a Zone, Linger or Echo no longer multiplies a rune without limit).
+  - **Exposed**, a new arcane mark: **Harm** leaves its target exposed for 3 seconds and **Reveal** for as long as it
+    glows (and strips invisibility). Exposed counts as a mark for **Unweave** and **Prismatic Burst**, and **Starfall**
+    and **Cometfall** send their stars and shards to exposed enemies first.
+  - **Silence** does what it says: a caster can't cast for 4 seconds (3 on players) and a charge or a Runebound's
+    telegraphed cast in hand is cut short; monsters get Weakness I. **Manaburn** cuts a caster's charge or cast short.
+  - **Smite** is a verdict: a ring closes at the target's feet for 0.7 seconds, then a column of light deals 13 (26
+    against undead) and strips Absorption. **Prismatic Burst** is 5 damage and 4 per mark (five at most) and passes each
+    mark it eats to up to 3 enemies nearby. **Resonance** rings each enemy once per cast (up to 4 at a time) instead of
+    growing with the square of the crowd. **Spellbrand** bursts for 7 damage of the element of the spell that sets it
+    off. **Decree** condemns what it holds (your next 2 spells hurt it 40% more) and is free on a crowd of 3 or more.
+    **Reflect** returns arcane damage that ignores armour and cracks with each reflection (6 at most). **Halo** smites
+    every 1.5 seconds and answers whoever hurt its ally. **Starshard** (11, sparks of 4), **Starlight Tether** (1 damage
+    a pull, 5 seconds), **Twin Star** (the twin casts at 75%), **Empower** (a Weakness comedown; a passive carries only
+    Strength I), **Summon** (spirit wolves bite for a wolf's 4, and your mana regenerates a quarter slower while they
+    live), **Manatide** (10 mana; a quarter of every spell you cast under it comes back) and **Haste** (charge fills
+    30% sooner).
+  - **Heal**'s overheal becomes a shield of up to 2 hearts, and repeats within one cast heal 100%, 60%, then 40%.
+    **Regrowth** ramps (I, II, III). **Cleanse** washes elemental marks off too. **Remedy** turns what it cures to good
+    (poison to Regeneration, slowness to Speed...). **Venom** is its own lethal poison (2 now, 0.75 a second for 4
+    seconds, Poison I as a marker) that works on undead and spiders and spreads once to 3 enemies nearby.
+    **Sporebloom** makes monsters fight each other for 5 seconds. **Drowse** makes the blow that wakes a sleeper deal 75%
+    more. **Rootsnare** holds for 1.5 seconds and then taxes each block of movement. **Haven** shoves enemies out of
+    the dome instead of giving Resistance. **Vinelash** marks its target Pulled and trips it. **Moonpetal** waxes and
+    wanes with the moon (5 damage, 4 healing). **Bramble** has 4 thorns. **Fortune** strikes for double (1 in 4) and
+    a fortunate kill drops extra experience. **Bloom** costs 14 and spreads Regeneration to allies near the ones it
+    touches. **Second Wind** also gives Speed II and a gust that shoves enemies away. **Restore** heals 4 and mends 8%,
+    an item once a minute. **Nourish** feeds pets (they heal and are ready to breed). **Grow** ages baby animals up.
+    **Ancient Seed** keeps growing its field for 12 more seconds. **Glowvine** re-ripens vines. **Nullify** dissolves
+    vexes and spirit wolves and shades that aren't yours.
+
+### Fixed
+- **Silence** now stops casting (it only ever made monsters forget their target for a moment). **Treasure Sense** shows only unopened treasure, nearest first, not every player chest, hopper and dispenser. **Restore** can no longer repair without limit through a Zone or Linger. **Venom** hurts undead and spiders. **Nourish** no longer wastes mana on a pet. **Light** says when there is no room for it.
+- Shatter and Fracture now end a freeze hold instead of leaving the target frozen.
+- Repel was drawn in red; it now uses the wind palette. Glacier's shell no longer lingers after the ice cracks.
+- Tidewrit no longer repeats its sound for every target it sweeps.
+- A disarmed creature that died lost its weapon; it now drops it.
+- Frostward could be beaten by a long frost hold; the hold is now capped.
+- Water runes were audible in quiet places where they shouldn't be; Tidecall and Tidewrit are now quiet like the rest.
+- Casting Hoarfrost or Bubble repeatedly stacked their damage; each is now once per target at a time.
+- Several frost and wind rune descriptions no longer matched what the runes do.
 
 ## [0.5.0-alpha] - 2026-09-29
 
