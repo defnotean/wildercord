@@ -33,6 +33,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **An Echo in an imbued spell repeats it at its target.** The Echo went off from the caster instead, so a sword or a
   glyph holding `Fire · Echo` burned what it struck once and then "burned" its own maker, which did nothing. It now
   repeats what was stored where the release was set off, as the Imbuing page says.
+- **A secret spell read from a scroll weighs its full price against a Shield**, as it does cast from a Cord (it counted
+  only its runes' mana).
+- **Singularity no longer holds a boss at its black star.** It still strikes them, but bosses are only ever slowed.
+
+### Changed
+- Glacial Lance's Grimoire entry says it flies 32 blocks, as far as it has always reached (it said 40).
 
 ## [0.4.2-alpha] - 2026-09-28
 
