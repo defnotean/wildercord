@@ -43,6 +43,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Duels gave back used-up effects.** Every effect a duellist had at the start came back if it was gone at the end, so a
   Bad Omen a raid had used, or Absorption a monster had knocked away, returned after every duel. Only helpful effects
   come back now, and never Absorption.
+- **A creature immune to an element counted toward contracts.** Frost cast at a snow golem, which frost can't hurt,
+  counted as a frost cast landing on a real creature, making it a target for the Runesmith's contracts that never ran
+  out. A spell has to hurt what it lands on to count now.
 
 ## [0.4.2-alpha] - 2026-09-28
 

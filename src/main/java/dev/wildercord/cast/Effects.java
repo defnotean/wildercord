@@ -675,7 +675,10 @@ public final class Effects {
 		}
 		HeartCircles.hurtBySpell(cast, target);
 		Innates.spellHit(cast, target);
-		dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
+		// A hit that can't hurt (an immune snow golem under frost) isn't one a contract counts.
+		if (damage > 0) {
+			dev.wildercord.runesmith.Contracts.onSpellHit(cast.caster, target, currentElement);
+		}
 		readyToHurt(target);
 		float dealt = damage;
 		Dungeons.spellHit(() -> target.hurtServer(cast.level, source, dealt));
