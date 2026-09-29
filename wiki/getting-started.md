@@ -236,7 +236,7 @@ There's no fixed path, but this order works well:
    riddles on Torn Pages to [secret spells]({{ '/spellcraft/secret-spells/' | relative_url }}).
 7. **Find the Archive**, a buried library in the Overworld, and defeat the **Archivist** for a Tier IV rune.
    See [The Archive]({{ '/world/archive/' | relative_url }}).
-8. **Build a Fusion Altar** to rank runes up, fuse two elements into one of 55 fused runes, and tie whole spells
+8. **Build a Fusion Altar** to rank runes up, fuse two elements into one of 55 fused runes (or a signature rune, for sixteen particular pairs), and tie whole spells
    into single-socket Knots. See [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 9. **Make an Echo Cord** for four spells of twelve runes and Tier IV runes, then take on the dimension
    dungeons: the [Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }}) in the Nether, the

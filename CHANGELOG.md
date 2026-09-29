@@ -4,6 +4,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.5.0-alpha] - 2026-09-29
+
+Your own affinities, runes to fish up, thirty-four new runes (eighteen to build with and sixteen signature fusions),
+and boss arenas that can only be entered through their dungeons.
+
 ### Added
 - **Signature fusions: sixteen new fused runes.** At the Fusion Altar, sixteen pairs of *particular* effects now fuse
   into a rune of their own instead of their elements' fusion: Chill with Shock makes Frostwire, while any other Frost
