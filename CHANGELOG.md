@@ -20,6 +20,22 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Shock's second victim** takes part in Conduct and Overload like the first.
 
 ### Added
+- **Every spell reads from how it's built.** Each shape leaves your hands with its own gesture and sound (a flick, a
+  throw, a line of light, a slash, a blast, a seal, a call, an aura), and you hold each kind its own way while
+  charging. The circle under your feet grows with the spell's cost, charge and tier, and the biggest spells leave
+  with a shove. See [How a spell sounds and looks](https://defnotean.github.io/wildercord/spellcraft/casting/#how-a-spell-sounds-and-looks).
+- **Spells have melodies.** While you charge, each rune plays its own note as its roundel opens (a knock for a shape,
+  glass for an effect, a bell for a modifier, a clink for a link), and the hum is in your first element's key.
+- **Modifiers show in gold, links in violet.** Amplify, Overcharge, Focus, Widen, Extend, Quicken, Split, Pierce, Vow,
+  Blood Price and the rest each have their own cue as the spell leaves; bolts show Amplify, Overcharge, Frugal, Pierce and
+  Homing in flight; Volley shots and Chain jumps climb the scale. Delay ticks down, Pulse keeps time, Echo ripples, On Hit
+  rings at each creature it hands on to, On Kill tolls, conditions click open or shut, and reactive links show a seal at
+  your feet while armed.
+- **Reaction marks are visible.** Frozen, Windswept, Pulled, Wet, Soaked, Resonant, Cracked, Shadowed, Bleeding and Ionised
+  creatures wear a small halo in the mark's colour, and a tick sounds when a mark is set.
+- Fields keep time (a Zone beats, a Totem's bell climbs with each strike, a Domain tolls, each Orbit orb chimes its note),
+  impacts leave a moment's trace of their element, a failed cast fizzles, and the HUD chimes and flashes when a long
+  cooldown ends.
 - **Casting gear slots.** Your inventory has three new slots for casting gear: **Staff** (any staff, a greater one
   too), **Focus** (any focus) and **Tome** (the Tome of the Fifth Page). A piece in its slot works with nothing in
   your hands, so you no longer have to hold your staff or a focus to cast. In the survival inventory the slots sit in
@@ -45,6 +61,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   twice as fast, so a Zone, Wall, Totem, Domain, Latch, Stream or Barrage is over sooner instead of hitting more; **Linger's** later landings
   strike at 60%; and Zone (x2.75), Wall (x2.95), Totem (x3.15), Orbit (x3.05), Trail (x2.85), Vortex (x2.8), Domain (x3.9), Barrage (x1.85),
   Latch (x2.15) and Stream (x1.95) cost more in proportion to how often they strike.
+- **Touch** lays the spell on 30% harder; **Cone** hits 35% harder in its near half and 15% softer at its edge; each of
+  **Orbit's** orbs strikes a creature once a second on its own, so a Split Orbit's extra orbs count.
 - **On Hit** fires its payload a little weaker at each further creature of one landing (85% each), still paid once.
 - **Vow's** cooldown is 5x (was 4x); **Blood Price** costs 1 health per 4 mana (was 5); **Belated** is 25% stronger per rune (was 40%).
 - **Weak runes lifted:** Amplify x1.5 cost (was x1.6), Overcharge x2.6 (was x3.0), Kindled +30% power (was +20%), **Rain**'s strikes
