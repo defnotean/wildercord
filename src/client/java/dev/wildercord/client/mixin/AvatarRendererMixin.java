@@ -30,7 +30,7 @@ public abstract class AvatarRendererMixin {
 		pose.wildercord$setGlow(idle);
 		WildercordAttachments.Charge charge = avatar.getAttached(WildercordAttachments.CHARGE);
 		if (charge != null) {
-			pose.wildercord$setPose(charge.runes().isEmpty() ? "" : charge.runes().getFirst(), 0, true);
+			pose.wildercord$setPose(wildercord$firstShape(charge.runes()), 0, true);
 			// The beads burn brighter as the charge builds.
 			pose.wildercord$setGlow(1 + Math.min(1, (avatar.level().getGameTime() - charge.start() + partial) / 30F) * 1.5F);
 			return;
@@ -46,5 +46,16 @@ public abstract class AvatarRendererMixin {
 			}
 		}
 		pose.wildercord$setPose("", -1, false);
+	}
+
+	/** The first shape rune of a charge (its pose), or Self when a spell starts with its effects. */
+	private static String wildercord$firstShape(java.util.List<String> runes) {
+		for (String id : runes) {
+			var rune = dev.wildercord.spell.Runes.get(id);
+			if (rune.isPresent() && rune.get().family() == dev.wildercord.spell.RuneFamily.SHAPE) {
+				return id;
+			}
+		}
+		return dev.wildercord.spell.Runes.SELF.id();
 	}
 }

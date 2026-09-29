@@ -88,6 +88,57 @@ class FeelTest {
 	}
 
 	@Test
+	void everyBuiltInShapeHasItsOwnGesture() {
+		for (RuneDef rune : Runes.all()) {
+			if (rune.family() == RuneFamily.SHAPE && rune.id().startsWith("wildercord:")) {
+				assertTrue(ShapeFeels.hasGesture(rune.path()), rune.path() + " has no gesture in ShapeFeels");
+			}
+		}
+	}
+
+	@Test
+	void stepsClimbThePentatonicScale() {
+		assertEquals(1.0F, Feels.step(0), 1e-6);
+		assertEquals(1.498F, Feels.step(3), 1e-6);
+		assertEquals(2.0F, Feels.step(5), 1e-6);
+		assertEquals(2.0F, Feels.step(40), 1e-6);
+		for (int i = 1; i < 6; i++) {
+			assertTrue(Feels.step(i) > Feels.step(i - 1));
+		}
+	}
+
+	@Test
+	void theCircleGrowsWithTheBand() {
+		assertEquals(1.0, Feels.circleRadius(Feel.plain("wildercord:bolt", "fire")), 1e-9);
+		assertTrue(Feels.circleRadius(Feel.of(first(Runes.DOMAIN, Runes.HARM), 200, 1)) > 1.0);
+	}
+
+	@Test
+	void everyKitSoundTheCodeNamesExists() throws java.io.IOException {
+		java.util.Set<String> kit;
+		try (java.io.InputStream in = FeelTest.class.getResourceAsStream("/assets/wildercord/kit_sounds.json")) {
+			kit = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject()
+				.getAsJsonObject("events").keySet();
+		}
+		for (Motion m : Motion.values()) {
+			assertTrue(kit.contains(ShapeFeels.gestureSound(m)), ShapeFeels.gestureSound(m));
+		}
+		java.util.regex.Pattern named = java.util.regex.Pattern.compile("Feels\\.sound\\([^\"]*\"([a-z0-9_]+)\"");
+		java.util.List<String> missing = new java.util.ArrayList<>();
+		try (java.util.stream.Stream<java.nio.file.Path> files = java.nio.file.Files.walk(java.nio.file.Path.of("src/main/java"))) {
+			for (java.nio.file.Path f : files.filter(p -> p.toString().endsWith(".java")).toList()) {
+				java.util.regex.Matcher m = named.matcher(java.nio.file.Files.readString(f));
+				while (m.find()) {
+					if (!kit.contains(m.group(1))) {
+						missing.add(f.getFileName() + ": " + m.group(1));
+					}
+				}
+			}
+		}
+		assertTrue(missing.isEmpty(), "kit sounds named in code but not authored: " + missing);
+	}
+
+	@Test
 	void signaturesAdjustMotionAndScale() {
 		Signature.of("wildercord:meteor").motion(Motion.CALL).scale(1.5).register();
 		Feel f = Signatures.adjust(Feel.of(first(Runes.BOLT, Runes.METEOR), 24, 0));

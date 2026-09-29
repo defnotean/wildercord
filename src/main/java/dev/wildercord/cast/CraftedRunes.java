@@ -53,7 +53,7 @@ public final class CraftedRunes {
 	private CraftedRunes() {}
 
 	/** Spellbrand: the burst when your magic next hurts a branded creature. */
-	private static final double BRAND_BURST = 6.0;
+	private static final double BRAND_BURST = 7.0;
 	/** Gash: the cut itself. */
 	private static final double GASH_DAMAGE = 3.0;
 	/** Gash weeps this much a second plus this share of its bearer's maximum health. */
@@ -67,6 +67,11 @@ public final class CraftedRunes {
 	private static final int SEAR_BURN_SECONDS = 4;
 	/** Flash Freeze: its cut of cold, and how hard it slows a dry target. */
 	private static final double FLASH_FREEZE_DAMAGE = 4.0;
+	/** Flash Freeze's hold on a soaked creature, and on one only rained on. */
+	private static final double FLASH_SOAKED_SECONDS = 3.0;
+	private static final double FLASH_RAIN_SECONDS = 2.0;
+	/** Disarm on a player: their held item can't be used for this long (a bow, a shield, a trident, a pearl). Nothing is taken. */
+	private static final int DISARM_PLAYER_COOLDOWN = 60;
 	/** Drowse on a boss: only drowsy (Slowness II for as long as the sleep). */
 	private static final int DROWSY_AMPLIFIER = 1;
 	/** Prolong: the longest any good effect may be made to last, in ticks (5 minutes). */
@@ -82,6 +87,13 @@ public final class CraftedRunes {
 				wake(entity);
 			}
 			sear(entity, source, blocked);
+		});
+		// A creature that dies disarmed gets its weapon back before its loot is rolled (its drop chance is its own).
+		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
+			if (entity instanceof Mob mob && DISARMED.containsKey(mob.getUUID())) {
+				rearm(mob);
+			}
+			return true;
 		});
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> forget(entity.getUUID()));
 		// A snatched weapon goes back before its creature is saved with its chunk.
@@ -233,12 +245,17 @@ public final class CraftedRunes {
 			return;
 		}
 		Cast owner = brand.cast();
+		// The burst is an echo of whatever spell set it off: fire's ignites, storm's can overload, arcane's unweaves.
+		String trigger = Effects.currentElementNow().isEmpty() ? "arcane" : Effects.currentElementNow();
 		Scheduler.later(2, () -> {
 			if (!owner.alive() || !target.isAlive() || target.level() != owner.level) {
 				return;
 			}
 			CraftedVfx.spellbrandBurst(owner.level, target);
-			Effects.asElement("arcane", () -> Effects.hurt(owner, target, magic(owner), BRAND_BURST * brand.power()));
+			Effects.asElement(trigger, () -> Effects.hurt(owner, target, magic(owner), BRAND_BURST * brand.power()));
+			if (trigger.equals("fire") && target.isAlive()) {
+				target.igniteForSeconds(3);
+			}
 		});
 	}
 
@@ -317,11 +334,18 @@ public final class CraftedRunes {
 		CraftedVfx.prospectRing(level, centre, r, ores.size());
 		List<net.minecraft.world.entity.Display> glows = new ArrayList<>();
 		for (BlockPos p : ores.subList(0, Math.min(PROSPECT_MAX_ORES, ores.size()))) {
-			BlockState ore = level.getBlockState(p);
-			net.minecraft.world.entity.Display glow = CraftedVfx.oreGlow(level, p, ore, oreColor(ore), ticks);
-			if (glow != null) {
-				glows.add(glow);
-			}
+			// Each ore lights as the ring racing out over the ground reaches it (the ring takes 16 ticks to its edge).
+			int delay = (int) Math.round(16 * Math.sqrt(p.distSqr(c)) / Math.max(1.0, r));
+			Scheduler.later(Math.max(1, delay), () -> {
+				if (PROSPECTED.get(cast.caster.getUUID()) != glows) {
+					return;
+				}
+				BlockState ore = level.getBlockState(p);
+				net.minecraft.world.entity.Display glow = CraftedVfx.oreGlow(level, p, ore, oreColor(ore), Math.max(1, ticks - delay));
+				if (glow != null) {
+					glows.add(glow);
+				}
+			});
 		}
 		List<net.minecraft.world.entity.Display> old = PROSPECTED.put(cast.caster.getUUID(), glows);
 		if (old != null) {
@@ -425,19 +449,24 @@ public final class CraftedRunes {
 
 	private static void flashFreeze(Cast cast, LivingEntity t, double power, double duration) {
 		boolean wet = WorldMagic.wet(t);
+		// Soaked (in water, or by a water rune, Tidebreath or a Bubble) freezes hardest; only rained on, less.
+		boolean soaked = t.isInWater() || Reactions.has(t, Reactions.Mark.WET) || Reactions.has(t, Reactions.Mark.SOAKED);
 		Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), FLASH_FREEZE_DAMAGE * power);
 		if (!t.isAlive()) {
 			return;
 		}
 		if (wet) {
 			// The water on it freezes in an instant: soaked becomes frozen (fire then sets off Shatter, earth Fracture).
-			int ticks = Effects.ticks(t instanceof Player ? 1.5 : 3, duration);
+			double seconds = soaked ? FLASH_SOAKED_SECONDS : FLASH_RAIN_SECONDS;
+			int ticks = Effects.ticks(t instanceof Player ? seconds / 2 : seconds, duration);
 			Reactions.clear(t, Reactions.Mark.WET);
 			Reactions.clear(t, Reactions.Mark.SOAKED);
 			Spirits.freeze(t, ticks);
 			BlockFx.encase(cast.level, t, ticks);
 		} else {
 			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(3, duration), 1, false, true), cast.caster);
+			// A dry one is left brittle for two seconds: the strike still primes Shatter.
+			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 		}
 		CraftedVfx.flashFreeze(cast.level, t, wet);
 	}
@@ -507,6 +536,13 @@ public final class CraftedRunes {
 		CraftedVfx.wake(level, t);
 	}
 
+	/** The damage multiplier for a blow on a sleeper: 1.75 (Drowse's backstab). */
+	public static final double BACKSTAB = 1.75;
+
+	static double backstab(LivingEntity t) {
+		return ASLEEP.isEmpty() || !asleep(t) ? 1.0 : BACKSTAB;
+	}
+
 	/** Whether {@code t} is asleep under Drowse (for the tests). */
 	public static boolean asleep(LivingEntity t) {
 		Long until = ASLEEP.get(t.getUUID());
@@ -552,6 +588,9 @@ public final class CraftedRunes {
 
 	private static void discharge(ServerLevel level, BlockPos pos) {
 		SPARKS.remove(GlobalPos.of(level.dimension(), pos));
+		if (level.isLoaded(pos) && level.getBlockState(pos).is(Blocks.REDSTONE_BLOCK)) {
+			StormEarthFx.discharge(level, Vec3.atCenterOf(pos));
+		}
 		// Out of loaded ground now: it goes as its chunk loads (see TemporaryBlocks), never loaded just for this.
 		if (level.isLoaded(pos)) {
 			if (level.getBlockState(pos).is(Blocks.REDSTONE_BLOCK)) {
@@ -615,7 +654,16 @@ public final class CraftedRunes {
 		Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 		if (!Spirits.isBoss(t)) {
 			Vec3 away = Effects.horizontal(t.position().subtract(hit.origin()), hit.dir());
-			Effects.push(t, away.scale(0.35).add(0, 0.2, 0));
+			Statuses.windPush(t, away.scale(0.35).add(0, 0.2, 0));
+		}
+		if (t instanceof Player player) {
+			// A player keeps hold, but can't use it for three seconds.
+			ItemStack held = player.getMainHandItem();
+			if (!held.isEmpty()) {
+				player.getCooldowns().addCooldown(held, DISARM_PLAYER_COOLDOWN);
+				CraftedVfx.disarm(cast.level, player, held);
+				return;
+			}
 		}
 		if (!(t instanceof Mob mob) || Spirits.isBoss(t) || DISARMED.containsKey(mob.getUUID()) || mob.getMainHandItem().isEmpty()) {
 			CraftedVfx.disarm(cast.level, t, ItemStack.EMPTY);
@@ -631,7 +679,7 @@ public final class CraftedRunes {
 	/** The weapon goes back into its creature's hand, if the hand is still empty (one it picked up meanwhile is kept). */
 	private static void rearm(Mob mob) {
 		Taken taken = DISARMED.remove(mob.getUUID());
-		if (taken == null || !mob.isAlive()) {
+		if (taken == null || mob.isRemoved()) {
 			return;
 		}
 		if (mob.getMainHandItem().isEmpty()) {

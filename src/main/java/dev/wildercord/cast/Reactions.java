@@ -56,6 +56,10 @@ public final class Reactions {
 		SHADOWED(ReactionRules.SHADOWED_TICKS),
 		/** Left by blood's cuts (Bleed, Rend, Cleave...): wind damage on it sets off Rupture. */
 		BLEEDING(ReactionRules.BLEEDING_TICKS),
+		/** Left by Launch, Levitate, Updraft and Cyclone: any spell hits it harder while it's off the ground (see {@link Statuses#airborne}). */
+		AIRBORNE(40),
+		/** Left by arcane's Harm and Reveal (see {@link Exposed}): counts as one mark for Unweave and Prismatic Burst. */
+		EXPOSED(Exposed.HARM_TICKS),
 		/** Left by Plasma: counts as wet for Conduct (and only for Conduct: fire is not dulled, Unweave does not count it). */
 		IONISED(100);
 
@@ -83,8 +87,26 @@ public final class Reactions {
 	}
 
 	public static void mark(Entity target, Mark mark, int ticks) {
+		boolean fresh = !has(target, mark);
 		long until = target.level().getGameTime() + ticks;
 		MARKS.computeIfAbsent(target.getUUID(), k -> new EnumMap<>(Mark.class)).merge(mark, until, Math::max);
+		// Marks are seen: a halo in the mark's colour while it lasts (see MarkHalos).
+		dev.wildercord.cast.feel.MarkHalos.marked(target, mark, fresh);
+	}
+
+	/** The marks {@code target} carries right now. */
+	public static java.util.Set<Mark> marks(Entity target) {
+		Map<Mark, Long> marks = MARKS.get(target.getUUID());
+		java.util.Set<Mark> live = java.util.EnumSet.noneOf(Mark.class);
+		if (marks != null) {
+			long now = target.level().getGameTime();
+			marks.forEach((mark, until) -> {
+				if (until >= now) {
+					live.add(mark);
+				}
+			});
+		}
+		return live;
 	}
 
 	public static boolean has(Entity target, Mark mark) {
@@ -132,6 +154,8 @@ public final class Reactions {
 		if (has(target, Mark.FROZEN)) {
 			clear(target, Mark.FROZEN);
 			target.setTicksFrozen(0);
+			// The ice bursts: a Freeze, Glacier or Black Ice hold ends with it.
+			Spirits.thawNow(target);
 			multiplier *= 1.6;
 			reacted(target);
 			Vec3 c = target.getBoundingBox().getCenter();
@@ -261,7 +285,10 @@ public final class Reactions {
 	 * multiplier.
 	 */
 	public static double hit(Cast cast, LivingEntity target, String element) {
-		double multiplier = 1.0;
+		double multiplier = Statuses.airborneFactor(target);
+		if (multiplier > 1.0) {
+			StatusVfx.airborneBite(cast.level, target);
+		}
 		if (has(target, Mark.CRACKED)) {
 			multiplier *= ReactionRules.CRACKED_BONUS;
 			ReactionVfx.crackedBite(cast.level, target);
@@ -292,6 +319,8 @@ public final class Reactions {
 		}
 		clear(target, Mark.FROZEN);
 		target.setTicksFrozen(0);
+		// The ice cracks through: a Freeze, Glacier or Black Ice hold ends with it.
+		Spirits.thawNow(target);
 		mark(target, Mark.CRACKED);
 		reacted(target);
 		ReactionVfx.fracture(cast.level, target);
@@ -425,7 +454,7 @@ public final class Reactions {
 
 	/** The marks Unweave counts and undoes (Resonance's own mark aside), after burning. */
 	private static final List<Mark> WOVEN = List.of(Mark.FROZEN, Mark.WINDSWEPT, Mark.PULLED, Mark.SOAKED, Mark.WET, Mark.CRACKED, Mark.SHADOWED,
-		Mark.BLEEDING);
+		Mark.BLEEDING, Mark.EXPOSED);
 
 	/** Uses up every mark on {@code t} and says which, as their element's colours in that order. */
 	private static List<Integer> useMarks(LivingEntity t) {
@@ -450,6 +479,7 @@ public final class Reactions {
 				case WET -> 0x7CCBF2;
 				case CRACKED -> ElementFx.EARTH.primary();
 				case SHADOWED -> ElementFx.VOID.secondary();
+				case EXPOSED -> ElementFx.ARCANE.primary();
 				default -> ElementFx.BLOOD.primary();
 			});
 		}
@@ -481,6 +511,7 @@ public final class Reactions {
 		SET_OFF.keySet().retainAll(REACTED.keySet());
 		HEALED.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
 		THROWN.values().removeIf(at -> gameTime - at > 100 || at > gameTime);
+		Statuses.sweep(gameTime);
 	}
 
 	static void clear() {
@@ -490,6 +521,7 @@ public final class Reactions {
 		SET_OFF.clear();
 		HEALED.clear();
 		THROWN.clear();
+		Statuses.clear();
 		reacting = false;
 	}
 }

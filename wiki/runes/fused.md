@@ -28,9 +28,9 @@ nav_order: 6
 ### <img src="{{ '/assets/runes/absolute_zero.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Absolute Zero
 {: #absolute_zero}
 
-*Tier III · Frost · Harms enemies · 20 mana · needs an Amethyst Cord or better*
+*Tier III · Frost · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-Slowness IV for 3 seconds. A target that was already slowed or frozen freezes solid for 2 seconds (1 on players) and takes 7 damage, then not again until 3 seconds after it thaws.
+Slowness IV for 3 seconds. A target showing signs of cold (slowed, brittle, frozen skin, held) freezes solid and takes damage for each: 4.5 for one, 7 for two, 9.5 for three, 12 for four, and is held 1.5 to 3 seconds (half as long on players), then not again until 3 seconds after it thaws.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Frost effects and an amethyst shard (3 XP levels).
 
@@ -41,7 +41,7 @@ Slowness IV for 3 seconds. A target that was already slowed or frozen freezes so
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II for 5 seconds). One that dies in the next 5 seconds shatters: 4 damage to enemies within 3 blocks.
+Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II for 5 seconds). One that dies in the next 5 seconds shatters: 4 damage to enemies within 3 blocks, which turn brittle in their turn.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Void effect, with an amethyst shard (3 XP levels).
 
@@ -52,7 +52,7 @@ Freezes targets for 1.5 seconds (1 on players) and leaves them weak (Weakness II
 
 *Tier III · Frost · Harms enemies · 18 mana · needs an Amethyst Cord or better*
 
-A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are slowed (Slowness II), chilled and take 1 damage a second.
+A blizzard howls 3 blocks around where it lands for 4 seconds, walking 6 blocks the way you faced: enemies in it are slowed (Slowness II), chilled and take 1.5 damage a second.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Wind effect, with an amethyst shard (3 XP levels).
 
@@ -72,9 +72,9 @@ A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are
 ### <img src="{{ '/assets/runes/bloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloom
 {: #bloom}
 
-*Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+*Tier III · Life · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches.
+Regeneration II for 6 seconds, plants grow around the first 3 allies it touches, and allies near them catch Regeneration I for 5.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Earth effect, with an amethyst shard (3 XP levels).
 
@@ -129,7 +129,7 @@ A red mist 3 blocks around where it lands for 5 seconds: enemies in it bleed for
 
 *Tier III · Frost · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. Not again on the same creature for 10 seconds.
+Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can't move, cast or be hurt, and heal 6 health while they wait. When it opens it bursts: enemies within 3 blocks are thrown back, take 3, and are slowed and left brittle. Not again on the same creature for 10 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -151,7 +151,7 @@ Seals an ally in ice for 2 seconds (4 at most, however it's extended): they can'
 
 *Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more for every block it fell (up to 6). Flyers lose their lift.
+Slams every airborne enemy within 6 blocks to the ground: 4 damage, and 1 more for every block it fell (up to 6). Flyers lose their lift. With nothing in the air it pins whoever stands under it (Slowness III for a second, 2 damage).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Earth effect, with an amethyst shard (3 XP levels).
 
@@ -206,7 +206,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second.
+3 damage, then 1 damage a second for 5 seconds as the cold sets in (Slowness I, then II, then III); at the end the target freezes for a second and a half.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Blood effect, with an amethyst shard (3 XP levels).
 
@@ -217,7 +217,7 @@ The target turns slowly to stone: Slowness I, II, then III over 3 seconds, then 
 
 *Tier III · Frost · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds).
+Regeneration II for 5 seconds, and for 8 seconds anything that strikes the ally is frozen stiff (Slowness III for 2 seconds) and heals them a point (4 at most).
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Life effect, with an amethyst shard (3 XP levels).
 
@@ -239,7 +239,7 @@ Crystal armour: Resistance II for 5 seconds, and anything that strikes the ally 
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Freezes targets in place for 2 seconds (1 second on players).
+Freezes targets in place for 2 seconds (1 second on players). The ice spreads: up to 3 other enemies within 2.5 blocks freeze for 1 second, and when it cracks everything frozen takes 2.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Frost effect and any Earth effect, with an amethyst shard (3 XP levels).
 
@@ -250,7 +250,7 @@ Freezes targets in place for 2 seconds (1 second on players).
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Three hailstones of 2 damage each, and Slowness II for 4 seconds.
+Five hailstones of 2 damage each, each staggering the target, and Slowness II for 4 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Storm effect and any Frost effect, with an amethyst shard (3 XP levels).
 
@@ -349,7 +349,7 @@ A pillar of stone bursts up under the target: 8 damage, and it's thrown 3 blocks
 
 *Tier III · Arcane · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-Strips an enemy's good effects, or an ally's bad effects.
+Strips an enemy's good effects, or an ally's bad effects. Vexes, and spirit wolves and shades that aren't yours, dissolve.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Arcane effect and any Void effect, with an amethyst shard (3 XP levels).
 
@@ -382,7 +382,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 *Tier III · Arcane · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22.
+5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Arcane effects and an amethyst shard (3 XP levels).
 
@@ -404,7 +404,7 @@ For 4 seconds, every wound the target takes is counted; then half of it comes du
 
 *Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where they stood, for 3 damage.
+Hurls targets 5 blocks back; 2 seconds later the wind snaps them back to where they stood, for 5 damage.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -448,7 +448,7 @@ You pay 3 of your own health (never your last; more with Amplify, Overcharge and
 
 *Tier III · Life · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
 
-For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute.
+For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II and Speed II for 4 seconds and a gust that shoves enemies away. Once death has been cheated (by this or any other spell), it isn't again on them for a minute.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -602,7 +602,7 @@ You give up to 4 of your own health (never below 2), and the ally heals three ti
 
 *Tier III · Wind · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Hurls enemies within 2.5 blocks high into the air; a moment later a downdraft smashes them back down for 4 damage.
+Hurls enemies within 2.5 blocks high into the air, where every spell hits them harder; a moment later a downdraft smashes them back down for 4 damage.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Wind effects and an amethyst shard (3 XP levels).
 
@@ -624,7 +624,7 @@ You and the first creature hit swap places through the void. An enemy is left re
 
 *Tier III · Wind · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-A warm breeze: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 6 seconds.
+A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 10 seconds, and it blows away blindness, darkness, nausea and slowness.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Life effect, with an amethyst shard (3 XP levels).
 
@@ -691,7 +691,7 @@ Chills each target (Slowness II for 4 seconds); a moment later a current races t
 
 *Tier III · Arcane · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time.
+A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy within 6 blocks of them (whoever hurt them, or else the nearest) for 3 holy damage (tripled against undead), and the ally heals 1 each time.
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Smite]({{ '/runes/effects/arcane/' | relative_url }}#smite) and [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Life effects make Soulbond instead.
 

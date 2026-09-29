@@ -309,6 +309,24 @@ static void register() {
 - Read the feel in your own effect code with `Vfx.Theme theme` (`theme.feel()`, which is null outside a shape's delivery) or, for a group,
   `cast.feel(group)`; `feel.mod("widen")` counts a modifier, `feel.element()`, `feel.role()`, `feel.band()`, `feel.scale()`.
 
+### Shared helpers
+
+- **Marks show themselves.** `Reactions.mark(...)` already makes a mark visible (a halo in its colour every half
+  second and a tick when it's first set: `cast/feel/MarkHalos`). For a mark a rune keeps in its own state, show the
+  same halo with `MarkHalos.show(level, entity, Reactions.Mark.FROZEN)`, or your own colour with
+  `MarkHalos.halo(level, entity, 0xRRGGBB, MarkHalos.Style.CROWN)` (styles `CROWN`, `ORBIT`, `DRIP`, `MOTES`,
+  `CRACKS`); call it every `MarkHalos.PERIOD` (10) ticks while the mark lasts.
+- **Scales:** `Feels.step(i)` is the i-th note of the pentatonic scale as a pitch (0 = 1.0, 5 = an octave up): play a
+  tonal kit sound at `step(k)` for the k-th of anything (a Totem's beats, a Chain's jumps) and it climbs in key.
+- **Per-hit power:** `new Cast.Hit(...).times(1.3)` makes a hit's effects stronger or weaker (Touch uses 1.3, the near
+  and far halves of a Cone 1.35 and 0.85). `CastEngine.onHit` multiplies it into the shape's power.
+- **Tells:** `Tells.handoff(level, at, k)` (a violet ring and ting where a link hands on), `Tells.gate(cast, passed)`,
+  `Tells.armed(cast)`: for a link from an add-on, the same language as the built-in ones.
+- **Neutral kit sounds anyone may play** (`tools/feel/neutral.py`): `gesture_<motion>`, `note_shape`, `note_effect`,
+  `note_mod`, `note_link`, `link_ting`, `gate_pass`, `gate_fail`, `tell_tick`, `tell_toll`, `tell_rumble`, `tell_zap`,
+  `tell_drip`, `tell_crack`, `field_pulse`, `tap_release`, `ready_ping`, `fizzle`. `FeelTest` fails if code names a kit
+  sound that no file defines.
+
 ### 2. Its sounds (Python)
 
 Sounds are synthesised, never recorded. Each element has one file, **`tools/feel/<element>.py`** (`neutral.py` for the shared ones), which

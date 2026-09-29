@@ -539,9 +539,8 @@ final class FusedFlameVfx {
 			column(level, t.getUUID(), base, (float) width);
 		}
 		ScreenFx.shake(level, base, 0.35F, 10);
-		Fx.sound(level, base, SoundEvents.MACE_SMASH_GROUND_HEAVY, 0.9F, 0.8F);
-		Fx.sound(level, base, SoundEvents.STONE_BREAK, 1.0F, 0.6F);
-		Fx.sound(level, base, WildercordSounds.impact("earth"), 0.9F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, base, "earth_quake", 0.9F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, base, "earth_grind", 0.9F, 1.12F);
 	}
 
 	/**
@@ -596,8 +595,7 @@ final class FusedFlameVfx {
 			parts.forEach(STONE::remove);
 			return;
 		}
-		Fx.sound(level, base, SoundEvents.STONE_BREAK, 1.0F, 0.7F);
-		Fx.sound(level, base, SoundEvents.GRAVEL_BREAK, 0.9F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, base, "earth_crack", 0.9F, 0.84F);
 		int n = parts.size();
 		for (int i = n - 1; i >= 0; i--) {
 			Display.BlockDisplay d = parts.get(i);
@@ -614,7 +612,7 @@ final class FusedFlameVfx {
 				Vec3 at = base.add(0, s[2], 0);
 				Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, state), at, 10, s[0] * 0.4, 0.05);
 				Vfx.emit(level, new BlockParticleOption(ParticleTypes.FALLING_DUST, state), at, 4, s[0] * 0.4, 0.0);
-				Fx.sound(level, at, SoundEvents.STONE_HIT, 0.6F, 0.8F);
+				
 			});
 		}
 		int sunk = n * 3 + 6;
@@ -644,8 +642,7 @@ final class FusedFlameVfx {
 		ElementFx.stormImpact(level, c, 0.8);
 		magnetField(level, t, 0);
 		Fx.sound(level, feet, SoundEvents.LODESTONE_PLACE, 1.0F, 0.6F);
-		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.4F, 1.8F);
-		Fx.sound(level, c, WildercordSounds.impact("storm"), 0.6F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_magnet", 1.0F, 1.0F);
 	}
 
 	/** Field lines: four loops of light arching out from the target's head round to its feet, turning slowly, gold and yellow; iron filings drawn in. */
@@ -679,8 +676,8 @@ final class FusedFlameVfx {
 		Vec3 b = centre(other);
 		ElementFx.bolt(level, a, b, 0.05, 1, 2);
 		ElementFx.stormImpact(level, a.add(b).scale(0.5), 0.6);
-		Fx.sound(level, b, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.5F, 1.6F);
-		Fx.sound(level, b, SoundEvents.LODESTONE_HIT, 0.8F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, b, "storm_zap", 0.7F, 1.12F);
+		Fx.sound(level, b, SoundEvents.LODESTONE_HIT, 0.6F, 0.8F);
 	}
 
 	/** The magnet lets go: its field falls in and sparks scatter. */
@@ -723,9 +720,7 @@ final class FusedFlameVfx {
 		Vfx.emit(level, new BlockParticleOption(ParticleTypes.DUST_PILLAR, ground), centre.add(0, 0.1, 0), 12, radius * 0.5, 0.05);
 		slabs(level, centre, radius, solid(ground, Blocks.DIRT.defaultBlockState()), ticks);
 		ScreenFx.shake(level, centre, 0.3F, 12);
-		Fx.sound(level, centre, SoundEvents.GRAVEL_BREAK, 1.0F, 0.5F);
-		Fx.sound(level, centre, SoundEvents.ROOTED_DIRT_BREAK, 1.0F, 0.5F);
-		Fx.sound(level, centre, WildercordSounds.cast("void"), 0.7F, 0.5F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "earth_sink", 1.0F, 1.0F);
 	}
 
 	/**
@@ -791,9 +786,8 @@ final class FusedFlameVfx {
 		ElementFx.stoneShards(level, mid, ElementFx.groundBlock(level, centre), 16, 0.35);
 		Motes.clouds(level, centre.add(0, 0.3, 0), 5, radius * 0.5, DUST, 1.3, 40, new Vec3(0, 0.02, 0), 0.03, 0.45);
 		ScreenFx.shake(level, centre, 0.5F, 14);
-		Fx.sound(level, centre, SoundEvents.ANVIL_LAND, 0.5F, 0.5F);
-		Fx.sound(level, centre, SoundEvents.DEEPSLATE_BREAK, 1.0F, 0.5F);
-		Fx.sound(level, centre, WildercordSounds.impact("earth"), 1.0F, 0.5F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "earth_slam", 1.0F, 0.84F);
+		Fx.sound(level, centre, SoundEvents.DEEPSLATE_BREAK, 0.8F, 0.5F);
 	}
 
 	/** A creature crushed: stone breaking over it. */

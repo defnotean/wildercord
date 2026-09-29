@@ -827,6 +827,8 @@ final class FusedFlame {
 		Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 		// It comes down hard: 3 more to whatever is at the landing (the creature itself, or the crowd it fell into), once each.
 		Landings.after(cast, t, Landings.MAX_TICKS, down -> {
+		ElementFx.groundRing(cast.level, down, ElementFx.EARTH.primary(), 0.3, 1.8, 0.08, 9);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, down, "earth_slam", 0.8F, 1.12F);
 			for (Entity e : cast.level.getEntities((Entity) null, new AABB(down, down).inflate(1.5, 1.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity hit = (LivingEntity) e;
 				double slam = FusedEffects.unstacked(cast, hit, "monolith_slam", 20, 3 * power);
@@ -908,11 +910,11 @@ final class FusedFlame {
 				drag(other, in.scale(1 / d), FusedFlameRules.magnetDraw(d));
 				Reactions.mark(other, Reactions.Mark.PULLED);
 			}
-			if (age % 8 == 0) {
+			if (age % 12 == 0) {
 				FusedFlameVfx.magnetPull(level, t, other);
 			}
 		}
-		if (age % 8 == 0) {
+		if (age % 12 == 0) {
 			FusedFlameVfx.magnetField(level, t, age);
 		}
 	}

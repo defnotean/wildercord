@@ -18,7 +18,7 @@ Cold, ice and water. Frost slows, freezes and shatters, and freezes water you ca
 
 *Tier I · Frost · Harms enemies · 4 mana · needs any Cord*
 
-Slowness II for 6 seconds and 1 freeze damage.
+Slowness II for 6 seconds and 1 freeze damage. Chill again within 6 seconds and the cold deepens (III, then IV).
 
 **How to get it:** Craft: a Blank Rune, Ice. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
@@ -31,7 +31,7 @@ Slowness II for 6 seconds and 1 freeze damage.
 
 *Tier I · Frost · Helps you and your allies · 3 mana · needs any Cord*
 
-For 60 seconds you can't freeze, not even in powder snow.
+For 60 seconds you can't freeze, not even in powder snow, and a frost hold on you lasts a second at most.
 
 **How to get it:** Craft: a Blank Rune, Snowball and Leather. The recipe is shapeless: any layout, any crafting grid.
 
@@ -44,7 +44,7 @@ For 60 seconds you can't freeze, not even in powder snow.
 
 *Tier I · Frost · Works on the world · 3 mana · needs any Cord*
 
-Freezes water within 3 blocks into ice you can walk on.
+Freezes water within 3 blocks into ice you can walk on. On Self it lays a strip of ice ten blocks long the way you look.
 
 **How to get it:** Craft: a Blank Rune, Packed Ice. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
@@ -57,7 +57,7 @@ Freezes water within 3 blocks into ice you can walk on.
 
 *Tier I · Frost · Harms enemies · 6 mana · needs any Cord*
 
-4 freeze damage, or 6 against a target that's already slowed.
+4 freeze damage, or 6 against a target that's already slowed. The icicle melts after 2 seconds and leaves it soaked.
 
 **How to get it:** Craft: a Blank Rune, Ice and Pointed Dripstone. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water.
 
@@ -70,7 +70,7 @@ Freezes water within 3 blocks into ice you can walk on.
 
 *Tier I · Frost · Helps you and your allies · 4 mana · needs any Cord*
 
-Water breathing and faster swimming for 30 seconds.
+Water breathing and faster swimming for 30 seconds, and it douses you: fire goes out, and fire hits are softer while you drip.
 
 **How to get it:** Craft: a Blank Rune, Pufferfish. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
@@ -81,9 +81,9 @@ Water breathing and faster swimming for 30 seconds.
 ### <img src="{{ '/assets/runes/bubble.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bubble
 {: #bubble}
 
-*Tier II · Frost · Harms enemies · 8 mana · needs a Copper Cord or better*
+*Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-Traps targets in a floating bubble for 3 seconds. It pops for 4 damage and leaves them soaked.
+Traps targets in a floating bubble that pops for 4 damage and leaves them soaked. It holds small creatures 2.5 seconds, bigger ones 2, the largest 1.5.
 
 **How to get it:** Craft: a Blank Rune, Water Bucket and Slimeball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Witches (5%); Drowned Scriptorium.
 
@@ -96,7 +96,7 @@ Traps targets in a floating bubble for 3 seconds. It pops for 4 damage and leave
 
 *Tier II · Frost · Harms enemies · 11 mana · needs a Copper Cord or better*
 
-A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy within 3 blocks.
+A cold snap racing out from the point: 4 freeze damage and Slowness II for 4 seconds to every enemy within 3 blocks, all left brittle for Shatter for 4 seconds.
 
 **How to get it:** Craft: a Blank Rune, Packed Ice and Snow Block, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
 
@@ -109,7 +109,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 *Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-4 freeze damage. A wet or soaked target freezes solid for 3 seconds (1.5 on players); a dry one is only slowed.
+4 freeze damage. A soaked target (in water, or after a water rune or Bubble) freezes solid for 3 seconds (1.5 on players), one only rained on for 2 (1); a dry one is slowed and left brittle.
 
 **How to get it:** Craft: a Blank Rune, Packed Ice and Water Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
 
@@ -122,7 +122,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 
 *Tier II · Frost · Harms enemies · 8 mana · needs a Copper Cord or better*
 
-5 freeze damage, freezes solid and Slowness III for 4 seconds.
+5 freeze damage and Slowness III for 4 seconds; the frost leaves it brittle for Shatter for 4 seconds.
 
 **How to get it:** Craft: a Blank Rune, Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
 
@@ -133,7 +133,7 @@ A sudden cold snap: 3 freeze damage and Slowness II for 4 seconds to every enemy
 ### <img src="{{ '/assets/runes/freeze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Freeze
 {: #freeze}
 
-*Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+*Tier III · Frost · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
 Freezes targets solid for 2.5 seconds: they can't move or fight back.
 

@@ -63,11 +63,11 @@ class FusedVoidRulesTest {
 	}
 
 	@Test
-	void prismaticBurstGainsThreeAMark() {
-		assertEquals(4, FusedVoidRules.prismaticDamage(0), 1e-9);
-		assertEquals(13, FusedVoidRules.prismaticDamage(3), 1e-9);
-		assertEquals(22, FusedVoidRules.prismaticDamage(6), 1e-9);
-		assertEquals(22, FusedVoidRules.prismaticDamage(9), 1e-9);
+	void prismaticBurstGainsFourAMark() {
+		assertEquals(5, FusedVoidRules.prismaticDamage(0), 1e-9);
+		assertEquals(17, FusedVoidRules.prismaticDamage(3), 1e-9);
+		assertEquals(25, FusedVoidRules.prismaticDamage(5), 1e-9);
+		assertEquals(25, FusedVoidRules.prismaticDamage(9), 1e-9);
 	}
 
 	@Test

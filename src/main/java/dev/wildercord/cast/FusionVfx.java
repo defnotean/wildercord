@@ -37,8 +37,8 @@ public final class FusionVfx {
 		ElementFx.crack(level, at.add(0, 0.05, 0), radius, ticks - 4);
 		ElementFx.flatSigil(level, at.add(0, 0.07, 0), SigilOption.CRACKED, ElementFx.FIRE.accent(), (float) (radius * 1.1), ticks, 0.01);
 		ElementFx.stoneShards(level, at.add(0, 0.3, 0), Blocks.MAGMA_BLOCK.defaultBlockState(), 10, 0.25);
-		Fx.sound(level, at, SoundEvents.BASALT_BREAK, 1.0F, 0.6F);
-		Fx.sound(level, at, WildercordSounds.impact("earth"), 0.7F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_crack", 0.8F, 0.84F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_bloop", 0.9F, 1.0F);
 	}
 
 	/** One second of the magma burning: lava pops and a ring of heat. */
@@ -46,7 +46,7 @@ public final class FusionVfx {
 		Vfx.emit(level, ParticleTypes.LAVA, at.add(0, 0.2, 0), 3, radius * 0.5, 0.0);
 		Vfx.emit(level, ParticleTypes.FLAME, at.add(0, 0.15, 0), 6, radius * 0.5, 0.01);
 		ElementFx.groundRing(level, at.add(0, 0.06, 0), ElementFx.FIRE.primary(), radius * 0.3, radius, 0.05, 12);
-		Fx.sound(level, at, SoundEvents.LAVA_POP, 0.8F, 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_bloop", 0.8F, 1.0F);
 		if (last) {
 			Motes.smoke(level, at.add(0, 0.3, 0), 4, radius * 0.4);
 			Fx.sound(level, at, SoundEvents.FIRE_EXTINGUISH, 0.6F, 0.8F);
@@ -54,25 +54,39 @@ public final class FusionVfx {
 	}
 
 	/** Tempest: storm's lightning over a burst of wind that throws everything outward. */
+	/** The game tick Tempest last shook the screen: one shake per cast, however many strikes land. */
+	private static long lastTempestShake = Long.MIN_VALUE;
+	
+	/** Tempest's second bolt where its victim came down: a short strike from above and a round boom. */
+	static void tempestLanding(ServerLevel level, Vec3 at) {
+		ElementFx.bolt(level, at.add(0, 6, 0), at, 0.06, 1, 2);
+		ElementFx.groundRing(level, at, ElementFx.WIND.primary(), 0.3, 2.2, 0.06, 8);
+		ElementFx.sparks(level, at.add(0, 0.5, 0), 6, 0.3);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_boom", 0.9F, 1.12F);
+	}
+	
 	static void tempest(ServerLevel level, Vec3 at) {
 		ElementFx.stormImpact(level, at.add(0, 0.8, 0), 1.4);
 		ElementFx.gustRing(level, at.add(0, 0.1, 0), 3.5);
 		ElementFx.swirl(level, at, 1.2, 2.4, 5, ElementFx.WIND.primary(), ElementFx.STORM.primary());
-		ScreenFx.shake(level, at, 0.5F, 16);
-		Fx.sound(level, at, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.9F, 1.2F);
-		Fx.sound(level, at, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 1.0F, 0.7F);
+		if (level.getGameTime() != lastTempestShake) {
+			lastTempestShake = level.getGameTime();
+			ScreenFx.shake(level, at, 0.5F, 16);
+		}
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_crack", 1.0F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_gale", 1.0F, 1.0F);
 	}
 
 	/** Plasma: a white-hot lance of lightning into the target, burning where it lands. */
 	static void plasma(ServerLevel level, Vec3 from, Entity t) {
 		Vec3 c = centre(t);
 		Vec3 start = from.distanceToSqr(c) > 64 ? c.add(c.subtract(from).normalize().scale(-6)) : from;
-		ElementFx.bolt(level, start, c, 0.09, 2, 2, ElementFx.FIRE.secondary(), ElementFx.FIRE.primary());
-		ElementFx.orb(level, c, 0xFFF0D0, Math.max(0.5, t.getBbWidth() * 0.6), 8);
-		ElementFx.heatFlare(level, c, 1.0);
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.35);
-		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, 1.5F);
-		Fx.sound(level, c, SoundEvents.BLAZE_SHOOT, 0.5F, 1.4F);
+		ElementFx.ray(level, start, c, StormEarthFx.PLASMA, 0.16, 6);
+		ElementFx.ray(level, start, c, StormEarthFx.PLASMA_CORE, 0.06, 5);
+		ElementFx.orb(level, c, StormEarthFx.PLASMA_CORE, Math.max(0.5, t.getBbWidth() * 0.6), 8);
+		ElementFx.ring(level, c, c.subtract(start).normalize(), StormEarthFx.PLASMA, 0.3, 1.2, 0.05, 7);
+		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 6, 0.3);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_sizzle", 1.0F, 1.0F);
 	}
 
 	/** One hailstone: ice falling out of a stormy flash and cracking on the target. */
@@ -85,19 +99,27 @@ public final class FusionVfx {
 		if (stone == 0) {
 			Sigils.flash(level, top, ElementFx.STORM.secondary(), 0.8F);
 		}
-		Fx.sound(level, c, SoundEvents.GLASS_HIT, 0.8F, 1.6F + 0.15F * stone);
+		// The first stone opens with a patter of hail; each later one is one hard tick, rising.
+		if (stone == 0) {
+			Feels.sound(level, c, "frost_hail", 0.9F, 1.0F);
+		} else {
+			Feels.sound(level, c, "frost_tick", 0.6F, 1.0F + 0.1F * stone);
+		}
 	}
 
 	/** Glacier: frost creeps out and closes round the target in a shell of ice and stone. */
 	static void glacier(ServerLevel level, Entity t, int ticks) {
+		// A mob held solid is closed in ice, as Freeze does it.
+		if (t instanceof net.minecraft.world.entity.Mob mob && mob.isAlive() && mob.isNoAi()) {
+			BlockFx.encase(level, mob, Math.max(10, ticks - 4));
+		}
 		Vec3 feet = t.position();
 		ElementFx.frostCreep(level, feet.add(0, 0.05, 0), Math.max(1.0, t.getBbWidth() + 0.8), ticks + 10);
 		ElementFx.crack(level, feet.add(0, 0.05, 0), Math.max(0.8, t.getBbWidth() + 0.4), ticks);
 		ElementFx.shards(level, centre(t), Math.max(0.7, t.getBbWidth()), 8);
 		Light.ring(level, centre(t), UP, ElementFx.FROST.primary(), Math.max(1.2, t.getBbWidth() + 0.9), 0.2, 0.07, 10);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.PACKED_ICE.defaultBlockState()), centre(t), 14, 0.2);
-		Fx.sound(level, feet, SoundEvents.GLASS_PLACE, 1.0F, 0.6F);
-		Fx.sound(level, feet, WildercordSounds.impact("frost"), 0.7F, 1.0F);
+		Feels.sound(level, feet, "frost_lock", 1.0F, 0.8F);
 	}
 
 	/** Lifesteal: blood drawn out of the target along a dark stream into the caster. */
@@ -126,15 +148,17 @@ public final class FusionVfx {
 		Fx.sound(level, b, WildercordSounds.BLINK, 0.9F, 0.8F);
 	}
 
+	private static final int PETAL_POLLEN = 0xFFE39A;
+
 	/** Bloom: a flower seal under the ally and a spiral of leaves and petals. */
 	static void bloom(ServerLevel level, Entity t) {
 		Vec3 feet = t.position();
 		ElementFx.bloom(level, centre(t), feet, 1.2);
 		ElementFx.leafSpiral(level, feet, Math.max(0.6, t.getBbWidth()), t.getBbHeight() + 0.4, 10);
 		ElementFx.petals(level, centre(t), 0.8, 12);
-		ElementFx.crack(level, feet.add(0, 0.05, 0), 1.4, 20);
-		Fx.sound(level, feet, SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 0.9F);
-		Fx.sound(level, feet, WildercordSounds.impact("life"), 0.6F, 1.0F);
+		ElementFx.groundRing(level, feet, PETAL_POLLEN, 0.4, 4.0, 0.05, 14);
+		Motes.glows(level, feet.add(0, 0.6, 0), 6, 0.6, PETAL_POLLEN, 0.12, 26, new Vec3(0.02, 0.03, 0), 0.01);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "life_pollen", 1.0F, 1.0F);
 	}
 
 	/** Surge: lightning running up the ally in green and gold. */
@@ -145,13 +169,13 @@ public final class FusionVfx {
 		ElementFx.ring(level, feet.add(0, 0.1, 0), UP, ElementFx.LIFE.primary(), 0.2, 1.2, 0.05, 10);
 		ElementFx.ring(level, top, UP, ElementFx.STORM.primary(), 1.0, 0.2, 0.04, 10);
 		ElementFx.sparks(level, centre(t), 10, 0.25);
-		Fx.sound(level, feet, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "storm_whine", 0.8F, 1.0F);
 	}
 
 	/** Nullify: a star seal snuffs out the effects, drawn into a small void. */
 	static void nullify(ServerLevel level, Entity t, boolean ally) {
 		Vec3 c = centre(t);
-		ElementFx.starSeal(level, c, UP, Math.max(1.0, t.getBbWidth() + 0.6), 14);
+		ElementFx.ring(level, c, UP, ElementFx.ARCANE.secondary(), Math.max(1.6, t.getBbWidth() + 1.2), 0.3, 0.06, 12);
 		if (ally) {
 			ElementFx.shimmer(level, c, 0.6, 10);
 			Light.ring(level, c, UP, ElementFx.ARCANE.secondary(), 0.2, Math.max(1.0, t.getBbWidth() + 0.6), 0.05, 10);
@@ -159,7 +183,7 @@ public final class FusionVfx {
 			ElementFx.implode(level, c, Math.max(1.0, t.getBbWidth() + 0.5), 12);
 			Vfx.emit(level, ParticleTypes.WITCH, c, 8, 0.3, 0.02);
 		}
-		Fx.sound(level, c, SoundEvents.ILLUSIONER_CAST_SPELL, 0.8F, ally ? 1.4F : 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "arcane_snuff", 0.9F, ally ? 1.2F : 1.0F);
 	}
 
 	// ------------------------------------------------------------------ the Fusion Altar

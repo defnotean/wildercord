@@ -224,6 +224,38 @@ window does it tuck into the corner. It's hidden while you aren't wearing a Cord
 If the selected spell is empty, the panel just shows your **Open Cord** key (`K` unless you've changed it), a
 reminder that the Cord screen is where you thread it.
 
+## How a spell sounds and looks
+
+Every spell reads from how it's built:
+
+- **Its shape sets the gesture.** Each shape leaves your hands its own way, with its own sound: a flick
+  (Spark, Ray, Touch), a throw (Bolt, Comet, Orb...), a line of light (Beam, Lance, Stream...), a slash
+  (Crescent, Cone, Barrage...), a blast (Burst, Nova, Ring, Pillar), a seal pressed into the ground (Zone,
+  Domain, Totem...), a call to the sky (Rain, Constellation) or an aura (Self, Orbit). You hold each kind
+  differently while you charge (drawing back for a throw, palms down for a seal, arms up for a call), and no
+  two shapes of a kind sound alike.
+- **Its size follows its cost.** A cheap spell opens a small circle under your feet; a costly, charged, high-tier
+  one opens a great circle, and the biggest leave your hands with a shove.
+- **Its melody.** While you charge, every rune plays its own note as its roundel appears on the circle: a knock
+  for a shape, a glass note for an effect, a bell for a modifier, a clink for a link. Each spell has its own tune,
+  so you (and anyone near) can learn to hear it. Your charge hums in your first element's key.
+- **Modifiers show in gold.** As the spell leaves: a gold ring for each Amplify (and a low rumble), a crackle
+  for Overcharge, a ring closing in for Focus, one racing out for Widen, sand falling for Extend, a streak for
+  Quicken (and a higher snap), three small circles and a chord for Split, a needle for Pierce, an oath ring and a
+  bell for Vow, a red ring and a drop for Blood Price. Bolts show theirs in flight: fatter for Amplify and
+  Overcharge, thin for Frugal, a needle for Pierce, a mote circling it for Homing. Each Volley shot and each Chain
+  jump is a step higher up the scale.
+- **Links show in violet.** Delay ticks down, Pulse ticks each beat, Echo ripples before its replay, On Hit rings
+  at each creature it hands on to (a step higher each), On Kill tolls, a condition clicks open or tocks shut, and
+  On Land, On Hurt and On Low Health put a violet seal at your feet when they're armed.
+- **Fields keep time.** A Zone beats softly each pulse, a Totem's bell climbs a step each time it strikes (you can
+  count them), a Domain tolls, Orbit's orbs each chime their own note, a Stream, a Latch and a Ricochet climb the
+  scale as they strike or bounce, and a Constellation rings each star it finds.
+- **What's left behind.** A spell of any size lands with a trace of its element for a moment: embers, rime, sparks,
+  a gust, cracks, petals, a dark wisp, glyphs, golden ticks or drops.
+- A tap has its own little snap as it leaves, a cast that can't go off fizzles, and the HUD chimes and flashes
+  gold when a spell with a wait of a second and a half or more is ready again.
+
 ## What other players see
 
 Casting is meant to be read by everyone around you:

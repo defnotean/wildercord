@@ -23,6 +23,7 @@
 			"dev.wildercord.gametest.WildercordPricesTest",
 			"dev.wildercord.gametest.WildercordNewRunesTest",
 			"dev.wildercord.gametest.WildercordNewRunes2Test",
+			"dev.wildercord.gametest.WildercordLifeArcaneTest",
 			"dev.wildercord.gametest.WildercordDungeonsTest",
 			"dev.wildercord.gametest.WildercordFusedFlameTest",
 			"dev.wildercord.gametest.WildercordFusedFrostTest",
@@ -39,6 +40,7 @@
 			"dev.wildercord.gametest.WildercordPlayerAffinityTest",
 			"dev.wildercord.gametest.WildercordLoadoutsTest",
 			"dev.wildercord.gametest.WildercordFishingTest",
+			"dev.wildercord.gametest.WildercordFrostWindTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},
