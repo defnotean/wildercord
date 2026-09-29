@@ -217,8 +217,43 @@ CORDS = {
 # ---------------------------------------------------------------- writers
 
 
+def loot_format(x):
+    """
+    A loot table written the older way ({@code "functions": [{"function": ...}]},
+    {@code "conditions": [{"condition": ...}]}) in the form Minecraft 26.3 reads: one {@code "modifier"}
+    (or a list of them) and one {@code "condition"} (several joined by {@code minecraft:all_of}), each
+    named by {@code "type"}. 26.3 silently ignores the old keys, so a rune's set_components would never
+    run and the rune would come out blank.
+    """
+    if isinstance(x, list):
+        return [loot_format(v) for v in x]
+    if not isinstance(x, dict):
+        return x
+    out = {}
+    for key, value in x.items():
+        if key == "functions":
+            mods = [_typed(f, "function") for f in value]
+            if mods:
+                out["modifier"] = mods[0] if len(mods) == 1 else mods
+        elif key == "conditions":
+            conds = [_typed(c, "condition") for c in value]
+            if conds:
+                out["condition"] = conds[0] if len(conds) == 1 else {"type": "minecraft:all_of", "terms": conds}
+        else:
+            out[key] = loot_format(value)
+    return out
+
+
+def _typed(entry, old_key):
+    entry = dict(entry)
+    entry["type"] = entry.pop(old_key)
+    return loot_format(entry)
+
+
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
+    if "loot_table" in path.parts:
+        data = loot_format(data)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
 
 

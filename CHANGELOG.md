@@ -30,6 +30,11 @@ A player wiki, and the bugs found while writing it.
   Runes one version knows and the other doesn't show as Silent Runes, and their tooltip now says why.
 
 ### Fixed
+- **Runes from chests and bosses came out blank.** Minecraft 26.3 reads loot tables in a new format and
+  silently skipped the part that sets which rune an item is. So the Archive's chests, every dungeon chest and
+  every boss drop handed out Silent Runes, and advancements gave 1 Blank Rune or Mana Crystal instead of the
+  full amount. All loot now uses the new format. Any blank rune you already have turns into a random rune
+  (Tier I to IV) the moment it's in your inventory.
 - Manaburn and Manatide couldn't be obtained at all.
 - Upgrading a Cord lost its enchantments and name. It now keeps them.
 - With PvP off, your spells could hurt other players' pets and familiars. They're as safe as their owners now.

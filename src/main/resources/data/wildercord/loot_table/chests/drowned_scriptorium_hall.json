@@ -12,118 +12,100 @@
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:frost"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:frost"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:lightning"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:lightning"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:freeze"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:freeze"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:thunderclap"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:thunderclap"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:ripple"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:ripple"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:bubble"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:bubble"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:thunderbird"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:thunderbird"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:jolt"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:jolt"
+            },
+            "type": "minecraft:set_components"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_components",
-              "components": {
-                "wildercord:rune": "wildercord:coldsnap"
-              }
-            }
-          ]
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:coldsnap"
+            },
+            "type": "minecraft:set_components"
+          }
         }
       ]
     },
@@ -148,76 +130,66 @@
           "type": "minecraft:item",
           "name": "wildercord:blank_rune",
           "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 2,
-                "max": 5
-              }
-            }
-          ]
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 5
+            },
+            "type": "minecraft:set_count"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:lapis_lazuli",
           "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 3,
-                "max": 9
-              }
-            }
-          ]
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 3,
+              "max": 9
+            },
+            "type": "minecraft:set_count"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:prismarine_crystals",
           "weight": 4,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 2,
-                "max": 6
-              }
-            }
-          ]
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 6
+            },
+            "type": "minecraft:set_count"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:nautilus_shell",
           "weight": 2,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 1,
-                "max": 2
-              }
-            }
-          ]
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 1,
+              "max": 2
+            },
+            "type": "minecraft:set_count"
+          }
         },
         {
           "type": "minecraft:item",
           "name": "minecraft:ink_sac",
           "weight": 3,
-          "functions": [
-            {
-              "function": "minecraft:set_count",
-              "count": {
-                "type": "minecraft:uniform",
-                "min": 2,
-                "max": 5
-              }
-            }
-          ]
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 2,
+              "max": 5
+            },
+            "type": "minecraft:set_count"
+          }
         },
         {
           "type": "minecraft:item",

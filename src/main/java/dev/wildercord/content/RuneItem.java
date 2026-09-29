@@ -10,17 +10,21 @@ import dev.wildercord.spell.Runes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Locale;
@@ -58,6 +62,19 @@ public class RuneItem extends Item {
 	public static int rankOf(ItemStack stack) {
 		Integer rank = stack.get(WildercordComponents.RANK);
 		return rank == null ? 1 : Ranks.clamp(rank);
+	}
+
+	/**
+	 * A rune item with no rune at all (not one from a missing add-on, which keeps its id) is a blank that
+	 * something failed to fill: loot written in an older format, before 0.4.1. Held by a player, it
+	 * wakes as a random rune of Tier I to IV, as a Runesmith would pick one. A whole stack becomes the same rune.
+	 */
+	@Override
+	public void inventoryTick(ItemStack stack, ServerLevel level, Entity owner, @Nullable EquipmentSlot slot) {
+		if (stack.get(WildercordComponents.RUNE) == null && owner instanceof Player) {
+			dev.wildercord.runesmith.RuneTrades.random(1, 4, new java.util.Random(level.getRandom().nextLong()))
+				.ifPresent(rune -> stack.set(WildercordComponents.RUNE, rune.id()));
+		}
 	}
 
 	public static Optional<RuneDef> runeOf(ItemStack stack) {
