@@ -37,7 +37,7 @@ Heals every bit of damage you took in the last 5 seconds. Over the next 10 secon
 
 *Tier I · Life · Helps you and your allies · 10 mana · needs any Cord*
 
-For 10 seconds, every hit you deal has a 1 in 4 chance to strike for triple.
+For 10 seconds, every hit you deal has a 1 in 4 chance to strike for double, and a kill has a 1 in 4 chance to drop extra experience.
 
 **How to get it:** Never crafted or found: one innate rune wakes in each caster's heart at the 1st Heart Circle, chosen at random.
 

@@ -55,7 +55,9 @@ public final class Reactions {
 		/** Left by void's curses and darkness (Hex, Blind, Wither...): life damage on it sets off Blight. */
 		SHADOWED(ReactionRules.SHADOWED_TICKS),
 		/** Left by blood's cuts (Bleed, Rend, Cleave...): wind damage on it sets off Rupture. */
-		BLEEDING(ReactionRules.BLEEDING_TICKS);
+		BLEEDING(ReactionRules.BLEEDING_TICKS),
+		/** Left by arcane's Harm and Reveal (see {@link Exposed}): counts as one mark for Unweave and Prismatic Burst. */
+		EXPOSED(Exposed.HARM_TICKS);
 
 		final int ticks;
 
@@ -423,7 +425,7 @@ public final class Reactions {
 
 	/** The marks Unweave counts and undoes (Resonance's own mark aside), after burning. */
 	private static final List<Mark> WOVEN = List.of(Mark.FROZEN, Mark.WINDSWEPT, Mark.PULLED, Mark.SOAKED, Mark.WET, Mark.CRACKED, Mark.SHADOWED,
-		Mark.BLEEDING);
+		Mark.BLEEDING, Mark.EXPOSED);
 
 	/** Uses up every mark on {@code t} and says which, as their element's colours in that order. */
 	private static List<Integer> useMarks(LivingEntity t) {
@@ -448,6 +450,7 @@ public final class Reactions {
 				case WET -> 0x7CCBF2;
 				case CRACKED -> ElementFx.EARTH.primary();
 				case SHADOWED -> ElementFx.VOID.secondary();
+				case EXPOSED -> ElementFx.ARCANE.primary();
 				default -> ElementFx.BLOOD.primary();
 			});
 		}

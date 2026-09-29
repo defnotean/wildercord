@@ -322,6 +322,18 @@ public final class Runebound {
 
 	// ------------------------------------------------------------------ casting
 
+	/** Cuts a monster's telegraphed cast short and holds its next one back {@code delay} ticks (Silence, Manaburn). */
+	public static void interrupt(Mob mob, int delay) {
+		State state = STATES.get(mob.getUUID());
+		List<RuneDef> spell = spellOf(mob);
+		if (state == null || spell.isEmpty()) {
+			return;
+		}
+		state.castAt = 0;
+		state.readyAt = Math.max(state.readyAt, mob.level().getGameTime() + delay);
+		mob.setCustomName(nameplate(spell, mob.entityTags().contains("wildercord.adept"), false));
+	}
+
 	private static void tick(ServerLevel level, Mob mob) {
 		long now = level.getGameTime();
 		State state = STATES.computeIfAbsent(mob.getUUID(), k -> {

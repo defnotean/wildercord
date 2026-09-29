@@ -72,9 +72,9 @@ A blizzard howls 3 blocks around where it lands for 4 seconds: enemies in it are
 ### <img src="{{ '/assets/runes/bloom.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloom
 {: #bloom}
 
-*Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+*Tier III · Life · Helps you and your allies · 14 mana · needs an Amethyst Cord or better*
 
-Regeneration II for 6 seconds, and plants grow around the first 3 allies it touches.
+Regeneration II for 6 seconds, plants grow around the first 3 allies it touches, and allies near them catch Regeneration I for 5.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Earth effect, with an amethyst shard (3 XP levels).
 
@@ -349,7 +349,7 @@ A pillar of stone bursts up under the target: 6 damage, and it's thrown 3 blocks
 
 *Tier III · Arcane · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-Strips an enemy's good effects, or an ally's bad effects.
+Strips an enemy's good effects, or an ally's bad effects. Vexes, and spirit wolves and shades that aren't yours, dissolve.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Arcane effect and any Void effect, with an amethyst shard (3 XP levels).
 
@@ -382,7 +382,7 @@ Wreathes allies in healing flame for 6 seconds: Regeneration I and Fire Resistan
 
 *Tier III · Arcane · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-4 damage, and 3 more for every elemental mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed or bleeding), each used up: up to 22.
+5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any two Arcane effects and an amethyst shard (3 XP levels).
 
@@ -448,7 +448,7 @@ You pay 3 of your own health (never your last) for 12 damage that ignores armour
 
 *Tier III · Life · Helps you and your allies · 20 mana · needs an Amethyst Cord or better*
 
-For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II for 4 seconds. Once death has been cheated (by this or any other spell), it isn't again on them for a minute.
+For 20 seconds, the first blow that would kill the ally leaves them at 4 health instead, with Regeneration II and Speed II for 4 seconds and a gust that shoves enemies away. Once death has been cheated (by this or any other spell), it isn't again on them for a minute.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Life effect and any Time effect, with an amethyst shard (3 XP levels).
 
@@ -691,7 +691,7 @@ Chills each target (Slowness II for 4 seconds); a moment later a current races t
 
 *Tier III · Arcane · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time.
+A halo crowns the ally for 8 seconds: every 1.5 seconds it smites an enemy within 6 blocks of them (whoever hurt them, or else the nearest) for 3 holy damage (tripled against undead), and the ally heals 1 each time.
 
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Smite]({{ '/runes/effects/arcane/' | relative_url }}#smite) and [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Life effects make Soulbond instead.
 

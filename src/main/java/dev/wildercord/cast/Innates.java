@@ -181,6 +181,13 @@ public final class Innates {
 			if (entity instanceof ServerPlayer dead) {
 				DEBTS.remove(dead.getUUID());
 			}
+			if (source.getEntity() instanceof ServerPlayer winner && entity instanceof Enemy && entity.level() instanceof ServerLevel there) {
+				Long until = FORTUNE.get(winner.getUUID());
+				if (until != null && there.getGameTime() <= until && there.getRandom().nextFloat() < 0.25F) {
+					net.minecraft.world.entity.ExperienceOrb.award(there, entity.position(), LUCKY_XP);
+					lucky(there, entity);
+				}
+			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A));
 				TechniqueVfx.timeResumes(player.level(), player, 0);
@@ -386,6 +393,9 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Twin Star
 
+	/** How strong Twin Star's second cast is. */
+	public static final double TWIN_POWER = 0.75;
+
 	/** The next cast after Twin Star goes off twice; the Twin Star cast itself doesn't count. */
 	public static boolean consumeTwin(ServerPlayer player) {
 		long now = player.level().getGameTime();
@@ -464,15 +474,20 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Fortune
 
-	/** Spell damage multiplier from Fortune: a one-in-four chance of triple. */
+	/** Spell damage multiplier from Fortune: a one-in-four chance of double (expected +25%). */
 	static double fortune(Cast cast, LivingEntity target) {
 		Long until = FORTUNE.get(cast.caster.getUUID());
 		if (until == null || cast.level.getGameTime() > until || cast.level.getRandom().nextFloat() >= 0.25F) {
 			return 1.0;
 		}
 		lucky(cast.level, target);
-		return 3.0;
+		return LUCKY_MULTIPLIER;
 	}
+
+	/** What a fortunate hit deals: double. */
+	public static final double LUCKY_MULTIPLIER = 2.0;
+	/** XP a fortunate kill drops on top of its own (a one in four chance). */
+	public static final int LUCKY_XP = 6;
 
 	private static void fortuneMelee(ServerLevel level, LivingEntity entity, DamageSource source, float damage) {
 		// A strike by hand: a spell's own strike (Cleave, Aftershock) already rolled Fortune in Effects.hurt.
@@ -487,7 +502,7 @@ public final class Innates {
 		echoing = true;
 		try {
 			Effects.readyToHurt(entity);
-			entity.hurtServer(level, level.damageSources().playerAttack(player), damage * 2);
+			entity.hurtServer(level, level.damageSources().playerAttack(player), (float) (damage * (LUCKY_MULTIPLIER - 1)));
 		} finally {
 			echoing = false;
 		}

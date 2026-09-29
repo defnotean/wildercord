@@ -24,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The fused effects, made only at the Fusion Altar (see {@code spell.Fusions}). Each is two
@@ -186,6 +187,19 @@ public final class FusedEffects {
 					FusionVfx.bloom(level, t);
 				}
 				first(helped, 3).forEach(t -> blossom(cast, t.blockPosition()));
+				// Pollen: every ally within 4 blocks of a touched one that it missed gets Regeneration I (one hop, six at most).
+				Set<LivingEntity> pollen = new java.util.LinkedHashSet<>();
+				for (LivingEntity t : first(helped, 3)) {
+					for (Entity e : level.getEntities(t, t.getBoundingBox().inflate(4.0), x -> x instanceof LivingEntity && Targets.canHelp(caster, x))) {
+						if (pollen.size() < 6 && e.distanceTo(t) <= 4.0 && !helped.contains(e)) {
+							pollen.add((LivingEntity) e);
+						}
+					}
+				}
+				for (LivingEntity a : pollen) {
+					a.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(5, duration), 0, false, true));
+					FusionVfx.bloom(level, a);
+				}
 			}
 			case "surge" -> helped.forEach(t -> {
 				int extra = boost(power, amplify);
@@ -195,6 +209,12 @@ public final class FusedEffects {
 			});
 			case "nullify" -> {
 				harmed.forEach(t -> {
+					// Magic-made creatures unravel: vexes, and spirits and shades that aren't the caster's.
+					if (t.getType() == EntityTypes.VEX || t.hasAttached(dev.wildercord.player.WildercordAttachments.SPIRIT_UNTIL)) {
+						FusionVfx.nullify(level, t, false);
+						t.discard();
+						return;
+					}
 					strip(t, MobEffectCategory.BENEFICIAL);
 					FusionVfx.nullify(level, t, false);
 				});

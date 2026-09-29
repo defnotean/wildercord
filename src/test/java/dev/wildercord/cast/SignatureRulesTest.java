@@ -71,8 +71,8 @@ class SignatureRulesTest {
 
 	@Test
 	void aHaloSmitesEveryTwoSeconds() {
-		assertEquals(4, SignatureRules.haloSmites(160), "8 seconds");
-		assertEquals(8, SignatureRules.haloSmites(320), "Extended");
+		assertEquals(5, SignatureRules.haloSmites(160), "8 seconds");
+		assertEquals(11, SignatureRules.haloSmites(320), "Extended");
 		assertEquals(1, SignatureRules.haloSmites(5));
 		int smites = 0;
 		for (int tick = 0; tick < 160; tick += 10) {
@@ -83,7 +83,7 @@ class SignatureRulesTest {
 		assertEquals(SignatureRules.haloSmites(160), smites, "the steps smite as often as the rule says");
 		assertFalse(SignatureRules.haloSmitesAt(0));
 		assertTrue(SignatureRules.haloSmitesAt(10));
-		assertTrue(SignatureRules.haloSmitesAt(50));
+		assertTrue(SignatureRules.haloSmitesAt(40));
 	}
 
 	@Test

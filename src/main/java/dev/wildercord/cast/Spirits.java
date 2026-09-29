@@ -55,6 +55,25 @@ public final class Spirits {
 	/** Spirits one player may have at once, across Summon and Shades. */
 	public static final int MAX_SPIRITS = 6;
 
+	/** Every player's living spirit wolves, for the upkeep. */
+	private static final java.util.Map<java.util.UUID, java.util.List<Wolf>> PACKS = new java.util.HashMap<>();
+	/** Mana regeneration while a pack lives: sustaining spirits costs a quarter of it. */
+	public static final double PACK_UPKEEP = 0.75;
+
+	/** The share of its mana regeneration a player keeps: {@link #PACK_UPKEEP} while a spirit wolf of theirs lives, else 1. */
+	public static double upkeep(net.minecraft.world.entity.player.Player player) {
+		java.util.List<Wolf> pack = PACKS.get(player.getUUID());
+		if (pack == null) {
+			return 1.0;
+		}
+		pack.removeIf(w -> w.isRemoved() || !w.isAlive());
+		if (pack.isEmpty()) {
+			PACKS.remove(player.getUUID());
+			return 1.0;
+		}
+		return PACK_UPKEEP;
+	}
+
 	public static void summonWolves(Cast cast, Vec3 around, int count, double power, double duration) {
 		spawnSpirits(cast, around, count, power, duration, false);
 		Fx.sound(cast.level, around, SoundEvents.EVOKER_CAST_SPELL, 1.0F, 1.2F);
@@ -99,7 +118,14 @@ public final class Spirits {
 				wolf.addEffect(new MobEffectInstance(MobEffects.GLOWING, lifetime, 0, false, false));
 			}
 			wolf.addEffect(new MobEffectInstance(MobEffects.SPEED, lifetime, 1, false, false));
-			wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, (int) Math.max(0, Math.round(power) - (shadow ? 0 : 1)), false, false));
+			// Shades hit as they always did; a spirit wolf bites for a wolf's 4 unless the spell is Amplified (Strength I from one Amplify).
+			int strength = (int) Math.round(power) - (shadow ? 0 : 2);
+			if (strength >= 0) {
+				wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, strength, false, false));
+			}
+			if (!shadow) {
+				PACKS.computeIfAbsent(caster.getUUID(), k -> new java.util.ArrayList<>()).add(wolf);
+			}
 			wolf.setAttached(WildercordAttachments.SPIRIT_UNTIL, level.getGameTime() + lifetime);
 			if (target != null && Targets.canHarm(caster, target)) {
 				wolf.setTarget(target);

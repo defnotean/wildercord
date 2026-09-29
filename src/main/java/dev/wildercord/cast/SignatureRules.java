@@ -141,7 +141,7 @@ final class SignatureRules {
 	static final int HALO_SECONDS = 8;
 	/** The first smite comes this soon, then one every {@link #HALO_EVERY} ticks while it lasts. */
 	static final int HALO_FIRST = 10;
-	static final int HALO_EVERY = 40;
+	static final int HALO_EVERY = 30;
 	static final double HALO_REACH = 6.0;
 	static final double HALO_SMITE = 3.0;
 	static final double HALO_UNDEAD = 3.0;

@@ -53,6 +53,10 @@ public final class Charging {
 	/** Ticks to a full charge for this caster: a Focus of Haste in the off-hand fills it faster. */
 	public static int fullTicks(net.minecraft.world.entity.Entity caster) {
 		double speed = caster instanceof net.minecraft.world.entity.LivingEntity living ? dev.wildercord.gear.Gear.chargeSpeed(living) : 1.0;
+		// Quick hands: Haste fills the charge 30% sooner.
+		if (caster instanceof net.minecraft.world.entity.LivingEntity hasty && hasty.hasEffect(net.minecraft.world.effect.MobEffects.HASTE)) {
+			speed *= 1.3;
+		}
 		return Math.max(1, (int) Math.round(FULL / speed));
 	}
 
@@ -90,7 +94,7 @@ public final class Charging {
 	private static void begin(ServerPlayer player, int requested) {
 		FIZZLED.remove(player.getUUID());
 		CordTier tier = Spellbooks.tier(player);
-		if (tier == null || !player.isAlive() || player.isSpectator() || player.hasAttached(WildercordAttachments.CHARGE)) {
+		if (tier == null || !player.isAlive() || player.isSpectator() || player.hasAttached(WildercordAttachments.CHARGE) || CastLock.locked(player)) {
 			return;
 		}
 		Spellbook book = Spellbooks.get(player);
@@ -127,6 +131,17 @@ public final class Charging {
 		Fx.sound(player.level(), player.position(), WildercordSounds.CIRCLE_OPEN, 0.5F, 1.0F);
 	}
 
+	/** Cuts a charge in hand short (Silence, Manaburn): the release that follows does nothing. */
+	public static void interrupt(ServerPlayer player) {
+		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
+			return;
+		}
+		stop(player);
+		FIZZLED.add(player.getUUID());
+		player.sendOverlayMessage(Component.translatable("message.wildercord.charge_interrupted").withStyle(ChatFormatting.GRAY));
+		Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
+	}
+
 	private static void stop(ServerPlayer player) {
 		player.removeAttached(WildercordAttachments.CHARGE);
 		player.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SLOW);
@@ -160,6 +175,7 @@ public final class Charging {
 	}
 
 	static void clear() {
+		CastLock.clear();
 		LAST_BEGIN.clear();
 		FIZZLED.clear();
 	}
