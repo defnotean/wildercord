@@ -358,6 +358,9 @@ public final class Runes {
 	public static final RuneDef UNSTABLE = modifier("unstable", "Unstable", 3, 1.2, POWER, "Rift-touched: the effect's power swings anywhere from 50% to 200% each time it lands.");
 	public static final RuneDef MANABURN = effect("manaburn", "Manaburn", 2, 10, "arcane", EffectKind.HARMFUL, "Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana (less from a weaker hit).", POWER);
 	public static final RuneDef MANATIDE = effect("manatide", "Manatide", 3, 12, "arcane", EffectKind.HELPFUL, "Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds (30 at most, however extended). Each player can drink only once a minute.", DURATION);
+	// Fished from open water.
+	public static final RuneDef TIDEHOOK = effect("tidehook", "Tidehook", 2, 9, "frost", EffectKind.HARMFUL, "A hook of water snags each target and reels it in to your feet in three tugs: 4 damage, and it's left soaked.", POWER, LINGER);
+	public static final RuneDef CURRENT = effect("current", "Current", 2, 6, "frost", EffectKind.MOVEMENT, "Only in water or rain: a current sweeps you about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.", POWER);
 
 	/** Runes you learn the first time you wear a Cord. */
 	public static final Set<String> STARTER = Set.of(SELF.id(), BOLT.id(), PUSH.id());

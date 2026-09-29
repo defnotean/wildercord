@@ -59,7 +59,7 @@ Opens a wound: 2 damage, then 1 more every half second for 4 seconds.
 
 Three unseen slashes a tenth of a second apart: 3 damage each, straight through armour.
 
-**How to get it:** Craft: a Blank Rune, Shears, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Shears, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_dismantle.png' | relative_url }}" alt="Crafting Dismantle: a Blank Rune and Shears, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ Three unseen slashes a tenth of a second apart: 3 damage each, straight through 
 
 Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you lose 1 health every 2 seconds.
 
-**How to get it:** Craft: a Blank Rune, Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Bastions.
 
 <img src="{{ '/assets/recipes/rune_overdrive.png' | relative_url }}" alt="Crafting Overdrive: a Blank Rune and Blaze Powder and Redstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ Past your limits for 10 seconds: Strength II, Speed II and Haste II, but you los
 
 Cuts in proportion to the target: 4 damage plus 12% of its max health (up to 30 more).
 
-**How to get it:** Craft: a Blank Rune, Diamond Axe, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Diamond Axe, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Bastions; Woodland mansions; Vindicators (4%).
 
 <img src="{{ '/assets/recipes/rune_cleave.png' | relative_url }}" alt="Crafting Cleave: a Blank Rune and Diamond Axe, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

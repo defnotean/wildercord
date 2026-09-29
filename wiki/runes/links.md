@@ -19,7 +19,7 @@ A **link** ends a segment of the spell: everything after it happens *later*, or 
 
 The rest fires 1 second later, from you.
 
-**How to get it:** Craft: a Blank Rune, Clock. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Clock. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_delay.png' | relative_url }}" alt="Crafting Delay: a Blank Rune and Clock" class="recipe-grid" loading="lazy">
 
@@ -32,7 +32,7 @@ The rest fires 1 second later, from you.
 
 The rest fires only if you're in the air. Build aerial finishers.
 
-**How to get it:** Craft: a Blank Rune, Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Phantoms (5%).
 
 <img src="{{ '/assets/recipes/rune_if_airborne.png' | relative_url }}" alt="Crafting If Airborne: a Blank Rune and Feather and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -43,7 +43,7 @@ The rest fires only if you're in the air. Build aerial finishers.
 
 The rest fires only if you're sneaking. Build two spells in one.
 
-**How to get it:** Craft: a Blank Rune, Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_if_sneaking.png' | relative_url }}" alt="Crafting If Sneaking: a Blank Rune and Leather Boots, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -65,7 +65,7 @@ The rest isn't cast: it's stored, with 3 charges, in what the shape before it to
 
 The rest fires wherever the shape before it hits.
 
-**How to get it:** Craft: a Blank Rune, Target, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Target, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_on_hit.png' | relative_url }}" alt="Crafting On Hit: a Blank Rune and Target, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -76,7 +76,7 @@ The rest fires wherever the shape before it hits.
 
 The rest fires at whatever next hurts you (within 15 seconds).
 
-**How to get it:** Craft: a Blank Rune, Cactus, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Cactus, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_on_hurt.png' | relative_url }}" alt="Crafting On Hurt: a Blank Rune and Cactus, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -87,7 +87,7 @@ The rest fires at whatever next hurts you (within 15 seconds).
 
 The rest fires when you next touch the ground.
 
-**How to get it:** Craft: a Blank Rune, Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_on_land.png' | relative_url }}" alt="Crafting On Land: a Blank Rune and Hay Bale, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -98,7 +98,7 @@ The rest fires when you next touch the ground.
 
 The rest fires three times, one second apart, from you. After On Hit or On Kill, only for the first hit or kill.
 
-**How to get it:** Craft: a Blank Rune, Redstone Repeater, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Redstone Repeater, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Stronghold libraries; Woodland mansions.
 
 <img src="{{ '/assets/recipes/rune_pulse.png' | relative_url }}" alt="Crafting Pulse: a Blank Rune and Redstone Repeater, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -111,7 +111,7 @@ The rest fires three times, one second apart, from you. After On Hit or On Kill,
 
 The rest fires only on every third cast of this spell: a finisher.
 
-**How to get it:** Craft: a Blank Rune, 2x Redstone Repeater, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Redstone Repeater, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults.
 
 <img src="{{ '/assets/recipes/rune_combo.png' | relative_url }}" alt="Crafting Combo: a Blank Rune and 2x Redstone Repeater, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -122,7 +122,7 @@ The rest fires only on every third cast of this spell: a finisher.
 
 Everything before it fires again 0.5 seconds later. After On Hit or On Kill, only for the first hit or kill.
 
-**How to get it:** Craft: a Blank Rune, 2x Echo Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Echo Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Stronghold libraries.
 
 <img src="{{ '/assets/recipes/rune_echo.png' | relative_url }}" alt="Crafting Echo: a Blank Rune and 2x Echo Shard, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -133,7 +133,7 @@ Everything before it fires again 0.5 seconds later. After On Hit or On Kill, onl
 
 The rest fires at each creature the shape before it kills.
 
-**How to get it:** Craft: a Blank Rune, Bone Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Bone Block, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Bastions; Woodland mansions.
 
 <img src="{{ '/assets/recipes/rune_on_kill.png' | relative_url }}" alt="Crafting On Kill: a Blank Rune and Bone Block, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -144,7 +144,7 @@ The rest fires at each creature the shape before it kills.
 
 The rest fires when your health drops below 30% (within 30 seconds).
 
-**How to get it:** Craft: a Blank Rune, Golden Apple, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Golden Apple, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities.
 
 <img src="{{ '/assets/recipes/rune_on_low_health.png' | relative_url }}" alt="Crafting On Low Health: a Blank Rune and Golden Apple, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

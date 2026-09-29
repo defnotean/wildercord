@@ -229,8 +229,9 @@ A rune that should never be crafted, whatever its tier, belongs to a place inste
    and condition links) and `cast/ExplorerVfx.java` (visuals); `Effects` and `CastEngine` hand
    anything they don't know to these.
 4. Hand it out: a vanilla structure's chest through `sourcePool(...)` in `WildercordLoot`, a biome
-   through a rule in `spell/Attunements.java` (plus its `attunement:<id>` source), or one of
-   Wildercord's own places, whose loot tables the generator writes from the source
+   through a rule in `spell/Attunements.java` (plus its `attunement:<id>` source), a fishing line
+   (add it to the `fishing` source: the fishing pools draw from it), or one of Wildercord's own
+   places, whose loot tables the generator writes from the source
    (`WildercordLoot.foundRune(sourceId, random)` picks one in code).
 
 ### Regenerate

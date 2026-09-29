@@ -33,7 +33,7 @@ Holds you fast for 15 seconds: blows and blasts can't knock you back, and 4 more
 
 Blindness and darkness for 5 seconds.
 
-**How to get it:** Craft: a Blank Rune, Ink Sac. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ink Sac. The recipe is shapeless: any layout, any crafting grid. Also found: Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_blind.png' | relative_url }}" alt="Crafting Blind: a Blank Rune and Ink Sac" class="recipe-grid" loading="lazy">
 
@@ -46,7 +46,7 @@ Blindness and darkness for 5 seconds.
 
 Pulls items and experience within 8 blocks to you.
 
-**How to get it:** Craft: a Blank Rune, Hopper. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Hopper. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Dungeons; Mineshafts.
 
 <img src="{{ '/assets/recipes/rune_collect.png' | relative_url }}" alt="Crafting Collect: a Blank Rune and Hopper" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ Hexes targets for 8 seconds: your spells hit them 25% harder.
 
 Banishes targets: they vanish and reappear up to 8 blocks further away from you.
 
-**How to get it:** Craft: a Blank Rune, Ender Pearl and Popped Chorus Fruit, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ender Pearl and Popped Chorus Fruit, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_banish.png' | relative_url }}" alt="Crafting Banish: a Blank Rune and Ender Pearl and Popped Chorus Fruit, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ Banishes targets: they vanish and reappear up to 8 blocks further away from you.
 
 Pulls you to where the spell hit.
 
-**How to get it:** Craft: a Blank Rune, Lead, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Lead, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_grapple.png' | relative_url }}" alt="Crafting Grapple: a Blank Rune and Lead, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -98,7 +98,7 @@ Pulls you to where the spell hit.
 
 Pulls targets toward the spell.
 
-**How to get it:** Craft: a Blank Rune, Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_pull.png' | relative_url }}" alt="Crafting Pull: a Blank Rune and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -111,7 +111,7 @@ Pulls targets toward the spell.
 
 Invisibility for 12 seconds, and nearby monsters lose track of you.
 
-**How to get it:** Craft: a Blank Rune, Golden Carrot and Fermented Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Golden Carrot and Fermented Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Ancient cities; Woodland mansions; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_veil.png' | relative_url }}" alt="Crafting Veil: a Blank Rune and Golden Carrot and Fermented Spider Eye, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ Invisibility for 12 seconds, and nearby monsters lose track of you.
 
 Unzips the wall in front of you and steps you through up to 6 blocks of solid wall.
 
-**How to get it:** Craft: a Blank Rune, 2x Iron Nugget and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Iron Nugget and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_zipper.png' | relative_url }}" alt="Crafting Zipper: a Blank Rune and 2x Iron Nugget and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -137,7 +137,7 @@ Unzips the wall in front of you and steps you through up to 6 blocks of solid wa
 
 Black flames that water can't put out: 3 damage a second for 6 seconds. If the target dies burning, they spread.
 
-**How to get it:** Craft: a Blank Rune, Soul Campfire and Black Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Soul Campfire and Black Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Bastions; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_blackflame.png' | relative_url }}" alt="Crafting Blackflame: a Blank Rune and Soul Campfire and Black Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -150,7 +150,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 
 8 damage. One hit in four sparks black: 2.5x damage, and you're in the zone (Strength and Speed) for 6 seconds.
 
-**How to get it:** Craft: a Blank Rune, Black Dye and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Black Dye and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Bastions; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_blackspark.png' | relative_url }}" alt="Crafting Blackspark: a Blank Rune and Black Dye and Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -163,7 +163,7 @@ Black flames that water can't put out: 3 damage a second for 6 seconds. If the t
 
 Teleports you to where the spell landed (max 40 blocks).
 
-**How to get it:** Craft: a Blank Rune, Ender Pearl and Chorus Fruit, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ender Pearl and Chorus Fruit, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities; Endermen (2%); Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_blink.png' | relative_url }}" alt="Crafting Blink: a Blank Rune and Ender Pearl and Chorus Fruit, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -176,7 +176,7 @@ Teleports you to where the spell landed (max 40 blocks).
 
 Drags every enemy within 7 blocks into the point for 2 seconds.
 
-**How to get it:** Craft: a Blank Rune, Eye of Ender and Crying Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Eye of Ender and Crying Obsidian, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ominous vaults; Ancient cities; End cities; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_gravity_well.png' | relative_url }}" alt="Crafting Gravity Well: a Blank Rune and Eye of Ender and Crying Obsidian, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -189,7 +189,7 @@ Drags every enemy within 7 blocks into the point for 2 seconds.
 
 Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.
 
-**How to get it:** Craft: a Blank Rune, 2x Bone and Black Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, 2x Bone and Black Dye, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_shades.png' | relative_url }}" alt="Crafting Shades: a Blank Rune and 2x Bone and Black Dye, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -202,7 +202,7 @@ Two shadow hounds rise from your shadow and hunt at your side for 20 seconds.
 
 You vanish and reappear right behind the first creature hit, facing its back.
 
-**How to get it:** Craft: a Blank Rune, Ender Pearl and Ink Sac, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Ender Pearl and Ink Sac, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Woodland mansions; Astral Observatory.
 
 <img src="{{ '/assets/recipes/rune_shadowstep.png' | relative_url }}" alt="Crafting Shadowstep: a Blank Rune and Ender Pearl and Ink Sac, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

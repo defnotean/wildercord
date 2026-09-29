@@ -271,7 +271,7 @@ Any effect of an element counts.
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
 
-## Runes of the world (51 runes, found only)
+## Runes of the world (53 runes, found only)
 
 Never crafted, whatever their tier: each is found only in its own places (vanilla structures, a biome by
 Attunement, Wildercord's dungeons and bosses, world events). Attunement: meditate with a Blank Rune in hand
@@ -285,6 +285,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Blazecall | Effect | II | Nether fortresses, Runebound Adepts (8%) |
 | Blood Moss | Effect | II | Attuned in a crimson forest |
 | Cinderbrand | Effect | II | The Ember Sanctum |
+| Current | Effect | II | Fished from open water |
 | Echolocate | Effect | II | Ancient cities, Archive libraries |
 | Fangs | Effect | II | Woodland mansions, Archive libraries |
 | Hush | Effect | II | Attuned in the deep dark |
@@ -297,6 +298,7 @@ in the right biome, under the right conditions, for 20 seconds.
 | Rootsnare | Effect | II | Attuned in a mangrove swamp |
 | Sporebloom | Effect | II | Attuned in mushroom fields |
 | Stalactite | Effect | II | Attuned in dripstone caves |
+| Tidehook | Effect | II | Fished from open water |
 | Tusk Charge | Effect | II | Bastions |
 | Undertow | Effect | II | Shipwrecks, Runebound Adepts (8%) |
 | Vinelash | Effect | II | Jungle temples, Runebound Adepts (8%) |

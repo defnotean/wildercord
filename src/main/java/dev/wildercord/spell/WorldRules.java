@@ -58,11 +58,12 @@ public final class WorldRules {
 
 	/**
 	 * Effects of an interacting element that leave the world alone anyway: World runes that already
-	 * change blocks their own way (Grow, Harvest, Icepath, Smelt...), Bubble (it soaks, it doesn't
-	 * freeze), the pins (Root, Weigh, Shackle hold creatures down rather than heave them up), and
-	 * Stasis and Rewind (they stop time or turn it back, never on).
+	 * change blocks their own way (Grow, Harvest, Icepath, Smelt...), Bubble and Tidehook (they soak,
+	 * they don't freeze: a hook of water that froze the pond would stop its own reel), the pins (Root,
+	 * Weigh, Shackle hold creatures down rather than heave them up), and Stasis and Rewind (they stop
+	 * time or turn it back, never on).
 	 */
-	private static final Set<String> QUIET = Set.of("bubble", "root", "weigh", "shackle", "kindling", "stasis", "rewind");
+	private static final Set<String> QUIET = Set.of("bubble", "tidehook", "root", "weigh", "shackle", "kindling", "stasis", "rewind");
 
 	/**
 	 * Storm runes that call down a real (if harmless) lightning bolt: vanilla's own strike already

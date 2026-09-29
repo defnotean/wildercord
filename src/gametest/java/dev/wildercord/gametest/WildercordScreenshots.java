@@ -373,6 +373,9 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			{"fx_riftcall", 30, new RuneDef[] {Runes.BEAM, Runes.RIFTCALL}},
 			{null, 20, new RuneDef[] {Runes.BEAM, Runes.MANABURN}},
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.MANATIDE}},
+			// Fished from open water (on the dry stage, Current only fizzles).
+			{"fx_tidehook", 16, new RuneDef[] {Runes.BEAM, Runes.TIDEHOOK}},
+			{null, 20, new RuneDef[] {Runes.SELF, Runes.CURRENT}},
 		};
 		for (Object[] step : casts) {
 			String shot = (String) step[0];

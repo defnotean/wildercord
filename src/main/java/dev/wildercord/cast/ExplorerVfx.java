@@ -767,4 +767,65 @@ final class ExplorerVfx {
 			Fx.sound(level, stars.getFirst(), theme.impact(), 0.7F, 1.2F);
 		}
 	}
+
+	// ------------------------------------------------------------------ fished from open water
+
+	/** Where a line leaves the caster's hand. */
+	private static Vec3 hand(LivingEntity caster) {
+		return caster.getEyePosition().subtract(0, 0.4, 0);
+	}
+
+	/** Tidehook: a line of water cast from the caster's hand, and a hook of pale light biting the target in a splash. */
+	static void tidehook(ServerLevel level, LivingEntity caster, LivingEntity t) {
+		Vec3 from = hand(caster);
+		Vec3 to = centre(t);
+		ElementFx.ray(level, from, to, WATER, 0.07, 8);
+		ElementFx.ray(level, from, to, ElementFx.FROST.secondary(), 0.025, 7);
+		Vec3 dir = to.subtract(from).normalize();
+		Vec3 side = dir.cross(UP).lengthSqr() < 1e-4 ? new Vec3(1, 0, 0) : dir.cross(UP).normalize();
+		// The hook: a curl of light round the target's middle, bending back toward the caster.
+		ElementFx.slash(level, to, side, dir.scale(-1), ElementFx.FROST.primary(), t.getBbWidth() * 0.5 + 0.35, 1.6, 0.07, 3, 10);
+		ElementFx.ring(level, to, dir, WATER, 0.2, t.getBbWidth() + 0.5, 0.05, 8);
+		Vfx.emit(level, ParticleTypes.SPLASH, to, 16, 0.35, 0.15);
+		Vfx.emit(level, ParticleTypes.BUBBLE_POP, to, 6, 0.3, 0.05);
+		sound(level, from, SoundEvents.FISHING_BOBBER_THROW, 0.8F, 0.8F);
+		sound(level, to, SoundEvents.FISHING_BOBBER_SPLASH, 1.0F, 1.1F);
+		sound(level, to, WildercordSounds.impact("frost"), 0.5F, 1.2F);
+	}
+
+	/** One of Tidehook's tugs: the line pulled taut back to the caster, water shaken off the catch. */
+	static void tidehookTug(ServerLevel level, LivingEntity caster, LivingEntity t, int tug) {
+		Vec3 from = hand(caster);
+		Vec3 to = centre(t);
+		ElementFx.ray(level, from, to, WATER, 0.05, 4);
+		ElementFx.ray(level, from, to, ElementFx.FROST.secondary(), 0.02, 3);
+		Vfx.emit(level, ParticleTypes.SPLASH, to, 10, 0.3, 0.1);
+		Vfx.emit(level, ParticleTypes.DRIPPING_WATER, to.add(0, 0.3, 0), 4, 0.3, 0.0);
+		sound(level, from, SoundEvents.FISHING_BOBBER_RETRIEVE, 0.9F, 0.9F + tug * 0.15F);
+	}
+
+	/** Current: a ring of water round the rider as it takes hold, then spray and bubbles streaming off behind them. */
+	static void current(ServerLevel level, LivingEntity rider, Vec3 dir, boolean first) {
+		Vec3 at = centre(rider);
+		Vec3 behind = at.subtract(dir.scale(0.8));
+		if (first) {
+			ElementFx.ring(level, at, dir, WATER, 0.3, 1.6, 0.1, 8);
+			ElementFx.ring(level, behind, dir, ElementFx.FROST.secondary(), 0.2, 1.1, 0.05, 6);
+			Vfx.emit(level, ParticleTypes.SPLASH, rider.position().add(0, 0.2, 0), 24, 0.6, 0.2);
+			Fx.sound(level, at, SoundEvents.TRIDENT_RIPTIDE_2, 1.0F, 1.1F);
+			sound(level, at, WildercordSounds.cast("frost"), 0.6F, 1.2F);
+		} else {
+			ElementFx.ring(level, behind, dir, WATER, 0.9, 0.3, 0.06, 5);
+		}
+		Vfx.emit(level, rider.isInWater() ? ParticleTypes.BUBBLE : ParticleTypes.SPLASH, behind, first ? 10 : 6, 0.3, 0.05);
+		Vfx.emit(level, ParticleTypes.FISHING, behind, 3, 0.2, 0.02);
+	}
+
+	/** Current on dry land: a few drops and a hiss of mist, and nothing more. */
+	static void currentFizzle(ServerLevel level, LivingEntity rider) {
+		Vec3 at = rider.position().add(0, 0.3, 0);
+		Vfx.emit(level, ParticleTypes.DRIPPING_WATER, centre(rider), 5, 0.3, 0.0);
+		Motes.clouds(level, at, 2, 0.3, 0xDCEBFF, 0.7, 20, new Vec3(0, 0.03, 0), 0.01, 0.3);
+		sound(level, at, SoundEvents.FIRE_EXTINGUISH, 0.35F, 1.8F);
+	}
 }

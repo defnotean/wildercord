@@ -72,4 +72,31 @@ class ExplorerNumbersTest {
 		assertEquals(0, ExplorerNumbers.attuneRestLeft(1000L, 1000 + ExplorerNumbers.ATTUNE_REST));
 		assertEquals(0, ExplorerNumbers.attuneRestLeft(1000L, 500), "a clock that went back doesn't lock the land forever");
 	}
+
+	@Test
+	void tidehookReelsHarderFromFurtherOutAndStopsAtYourFeet() {
+		assertEquals(0, ExplorerNumbers.tidehookTug(0), 1e-9);
+		assertEquals(0, ExplorerNumbers.tidehookTug(ExplorerNumbers.TIDEHOOK_REST), 1e-9, "close enough: no more pulling");
+		assertTrue(ExplorerNumbers.tidehookTug(3) > 0);
+		assertTrue(ExplorerNumbers.tidehookTug(10) > ExplorerNumbers.tidehookTug(5), "harder from further out");
+		assertEquals(ExplorerNumbers.TIDEHOOK_TUG_MAX, ExplorerNumbers.tidehookTug(200), 1e-9, "never past the hardest tug, however far");
+		assertEquals(0, ExplorerNumbers.tidehookTug(Double.NaN), 1e-9);
+		// It reels in over about a second: every tug lands before the next spell could.
+		assertTrue(ExplorerNumbers.TIDEHOOK_TUGS * ExplorerNumbers.TIDEHOOK_TUG_EVERY <= 30);
+	}
+
+	@Test
+	void currentCarriesFurtherWithPowerButWithinLimits() {
+		assertEquals(ExplorerNumbers.CURRENT_SPEED, ExplorerNumbers.currentSpeed(1.0), 1e-9);
+		assertEquals(9.0, ExplorerNumbers.CURRENT_TICKS * ExplorerNumbers.currentSpeed(1.0), 1e-9, "9 blocks while it holds, at normal power");
+		double amplified = ExplorerNumbers.currentSpeed(1.5);
+		assertTrue(amplified > ExplorerNumbers.CURRENT_SPEED && amplified < 1.5 * ExplorerNumbers.CURRENT_SPEED, "Amplify carries further, not half as far again");
+		assertEquals(1.6 * ExplorerNumbers.CURRENT_SPEED, ExplorerNumbers.currentSpeed(100), 1e-9, "never a launch into the sky");
+		assertEquals(0.6 * ExplorerNumbers.CURRENT_SPEED, ExplorerNumbers.currentSpeed(0.1), 1e-9, "Frugal still carries you somewhere");
+		assertEquals(0.6 * ExplorerNumbers.CURRENT_SPEED, ExplorerNumbers.currentSpeed(-1), 1e-9);
+		assertTrue(ExplorerNumbers.CURRENT_GUARD_TICKS > ExplorerNumbers.CURRENT_TICKS, "the landing is watched for after the surge");
+		// Settled in water means staying there long enough that a surge up out of the sea would have left it.
+		assertTrue(ExplorerNumbers.CURRENT_SETTLE_TICKS * ExplorerNumbers.CURRENT_SPEED >= 9, "a surge leaves the water within the settling time");
+		assertTrue(ExplorerNumbers.CURRENT_SETTLE_TICKS < ExplorerNumbers.CURRENT_GUARD_TICKS);
+	}
 }

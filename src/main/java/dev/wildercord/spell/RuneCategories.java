@@ -64,12 +64,12 @@ public final class RuneCategories {
 			case EFFECT -> switch (path) {
 				case "push", "pull", "launch", "root", "freeze", "levitate", "gravity_well", "blind", "chill", "silence", "reveal",
 					"decree", "weigh", "shackle", "bubble", "hex", "rend", "jolt", "banish", "cyclone",
-					"echolocate", "undertow", "portalfall", "hush", "mire", "rootsnare", "starlight_tether", "sporebloom" -> "control";
+					"echolocate", "undertow", "portalfall", "hush", "mire", "rootsnare", "starlight_tether", "sporebloom", "tidehook" -> "control";
 				case "heal", "shield", "regrowth", "cleanse", "stoneskin", "empower", "haste", "swift", "night_eye", "feather_fall", "veil",
 					"fireward", "nourish", "tidebreath", "leap", "infinity", "reversal", "reflect", "overdrive", "foresight", "restore",
 					"barrier", "brace", "anchor", "bramble", "frostward", "cushion", "deflect", "haven",
 					"remedy", "warcry", "treasure_sense", "shulkershell", "ashen_veil", "cinderheart", "manatide" -> "support";
-				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep", "tusk_charge", "warp_step" -> "movement";
+				case "dash", "blink", "grapple", "swap", "zipper", "shadowstep", "tusk_charge", "warp_step", "current" -> "movement";
 				case "stasis", "rewind", "accelerate", "time_skip" -> "time";
 				case "light", "grow", "break", "harvest", "icepath", "collect", "excavate", "rampart", "chisel", "glimmer", "prune", "tunnel",
 					"vein", "smelt", "fell", "span", "ancient_seed", "glowvine" -> "world";
