@@ -1,4 +1,169 @@
 {
-  "events": {},
+  "events": {
+    "earth_bloop": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_bloop_1",
+        "kit/earth/earth_bloop_2",
+        "kit/earth/earth_bloop_3"
+      ],
+      "subtitle": "field"
+    },
+    "earth_chain": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_chain_1",
+        "kit/earth/earth_chain_2",
+        "kit/earth/earth_chain_3"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_clamp": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_clamp_1",
+        "kit/earth/earth_clamp_2",
+        "kit/earth/earth_clamp_3"
+      ],
+      "subtitle": "cast"
+    },
+    "earth_crack": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_crack_1",
+        "kit/earth/earth_crack_2"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_creak": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_creak_1",
+        "kit/earth/earth_creak_2"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_dig": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_dig_1",
+        "kit/earth/earth_dig_2",
+        "kit/earth/earth_dig_3"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_drop": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_drop_1",
+        "kit/earth/earth_drop_2"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_gloop": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_gloop_1",
+        "kit/earth/earth_gloop_2",
+        "kit/earth/earth_gloop_3"
+      ],
+      "subtitle": "field"
+    },
+    "earth_grind": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_grind_1",
+        "kit/earth/earth_grind_2"
+      ],
+      "subtitle": "field"
+    },
+    "earth_hiss": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_hiss_1",
+        "kit/earth/earth_hiss_2",
+        "kit/earth/earth_hiss_3"
+      ],
+      "subtitle": "field"
+    },
+    "earth_ping": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_ping_1",
+        "kit/earth/earth_ping_2",
+        "kit/earth/earth_ping_3",
+        "kit/earth/earth_ping_4"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_press": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_press"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_quake": {
+      "attenuation": 32,
+      "files": [
+        "kit/earth/earth_quake_1",
+        "kit/earth/earth_quake_2",
+        "kit/earth/earth_quake_3"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_rattle": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_rattle_1",
+        "kit/earth/earth_rattle_2",
+        "kit/earth/earth_rattle_3"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_sink": {
+      "attenuation": 32,
+      "files": [
+        "kit/earth/earth_sink"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_slam": {
+      "attenuation": 48,
+      "files": [
+        "kit/earth/earth_slam_1",
+        "kit/earth/earth_slam_2"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_snap": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_snap_1",
+        "kit/earth/earth_snap_2",
+        "kit/earth/earth_snap_3",
+        "kit/earth/earth_snap_4"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_stomp": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_stomp_1",
+        "kit/earth/earth_stomp_2",
+        "kit/earth/earth_stomp_3"
+      ],
+      "subtitle": "hit"
+    },
+    "earth_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_tick_1",
+        "kit/earth/earth_tick_2",
+        "kit/earth/earth_tick_3"
+      ],
+      "subtitle": "tell"
+    }
+  },
   "part": "earth"
 }

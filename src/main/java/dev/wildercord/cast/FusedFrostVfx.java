@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import com.mojang.math.Transformation;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
@@ -100,9 +101,7 @@ final class FusedFrostVfx {
 		Sigils.flash(level, c, ElementFx.FROST.secondary(), (float) Math.min(4, radius));
 		Motes.clouds(level, c, 6, radius * 0.4, SNOW, 1.6, 36, new Vec3(0, 0.02, 0), 0.06, 0.45);
 		Vfx.radial(level, ParticleTypes.SNOWFLAKE, c, 18, 0.3);
-		Fx.sound(level, centre, SoundEvents.BREEZE_WIND_CHARGE_BURST.value(), 0.9F, 0.6F);
-		Fx.sound(level, centre, SoundEvents.POWDER_SNOW_BREAK, 1.0F, 0.6F);
-		Fx.sound(level, centre, WildercordSounds.impact("frost"), 0.7F, 1.0F);
+		Feels.sound(level, centre, "frost_whump", 1.0F, 0.8F);
 	}
 
 	/**
@@ -140,8 +139,7 @@ final class FusedFrostVfx {
 		}
 		if (tick % 20 == 0) {
 			ElementFx.groundRing(level, centre, ElementFx.FROST.secondary(), radius * 0.25, radius, 0.05, 12);
-			Fx.sound(level, centre, SoundEvents.BREEZE_IDLE_AIR, 0.6F, 0.6F);
-			Fx.sound(level, centre, SoundEvents.POWDER_SNOW_STEP, 0.8F, 0.7F);
+			Feels.sound(level, centre, "wind_whirl", 0.35F, 0.7F);
 		}
 	}
 
@@ -159,7 +157,7 @@ final class FusedFrostVfx {
 		ElementFx.swirl(level, centre, radius * 0.3, 2.0, 3, SNOW, ElementFx.WIND.primary());
 		Motes.clouds(level, centre.add(0, 0.8, 0), 5, radius * 0.5, SNOW, 1.4, 30, new Vec3(0, 0.03, 0), 0.08, 0.35);
 		Vfx.radial(level, ParticleTypes.SNOWFLAKE, centre.add(0, 1.0, 0), 14, 0.35);
-		Fx.sound(level, centre, SoundEvents.BREEZE_IDLE_GROUND, 0.7F, 0.8F);
+		Feels.sound(level, centre, "frost_crust", 0.6F, 0.6F);
 	}
 
 	// ------------------------------------------------------------------ Frostbloom (frost and life)
@@ -191,9 +189,7 @@ final class FusedFrostVfx {
 		Sigils.flash(level, c, ElementFx.LIFE.secondary(), 1.1F);
 		ElementFx.petals(level, c.add(0, 0.4, 0), 0.6, 8);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, c, 8, 0.5, 0.01);
-		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_CHIME, 0.9F, 1.3F);
-		Fx.sound(level, feet, SoundEvents.AZALEA_LEAVES_PLACE, 1.0F, 1.2F);
-		Fx.sound(level, feet, WildercordSounds.impact("life"), 0.5F, 1.0F);
+		Feels.sound(level, feet, "frost_lotus", 0.9F, 1.0F);
 	}
 
 	/** Once a second while it lasts: a cold mote or two and a petal drifting round the ally. */
@@ -215,8 +211,7 @@ final class FusedFrostVfx {
 		ElementFx.shards(level, b, 0.4 + w * 0.4, 4);
 		ElementFx.petals(level, b, 0.4, 4);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, b, 6, 0.35, 0.02);
-		Fx.sound(level, b, SoundEvents.GLASS_HIT, 0.8F, 1.5F);
-		Fx.sound(level, b, SoundEvents.AMETHYST_CLUSTER_HIT, 0.6F, 1.4F);
+		Feels.sound(level, b, "frost_tick", 0.8F, 1.5F);
 	}
 
 	// ------------------------------------------------------------------ Black Ice (frost and void)
@@ -241,9 +236,7 @@ final class FusedFrostVfx {
 		ElementFx.groundRing(level, feet, ElementFx.VOID.primary(), 0.2, 1.0 + w * 0.6, 0.035, 12);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.black().defaultBlockState()), c, 10, 0.18);
 		Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, c, 8, 0.3, 0.02);
-		Fx.sound(level, feet, SoundEvents.GLASS_PLACE, 1.0F, 0.5F);
-		Fx.sound(level, feet, WildercordSounds.impact("void"), 0.7F, 1.0F);
-		Fx.sound(level, feet, WildercordSounds.impact("frost"), 0.5F, 0.5F);
+		Feels.sound(level, feet, "frost_lock", 1.0F, 0.75F);
 	}
 
 	/** Once a second while it's brittle: hairline cracks of violet light on it and darkness seeping out. */
@@ -278,9 +271,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.black().defaultBlockState()), at, 20, 0.35);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STAINED_GLASS.purple().defaultBlockState()), at, 10, 0.3);
 		ScreenFx.shake(level, at, 0.35F, 12);
-		Fx.sound(level, at, SoundEvents.GLASS_BREAK, 1.0F, 0.5F);
-		Fx.sound(level, at, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.8F, 0.6F);
-		Fx.sound(level, at, WildercordSounds.impact("void"), 0.8F, 1.0F);
+		Feels.sound(level, at, "frost_break", 1.0F, 0.7F);
 	}
 
 	/** A shard of the shatter driven into an enemy. */
@@ -307,9 +298,7 @@ final class FusedFrostVfx {
 		ElementFx.orbit(level, centre.add(0, 0.35, 0), radius * 0.9, 3, 14, ElementFx.ARCANE.primary(), ElementFx.FROST.secondary());
 		ElementFx.shimmer(level, centre.add(0, 0.3, 0), radius * 0.5, 10);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, centre.add(0, 0.3, 0), 8, radius * 0.4, 0.01);
-		Fx.sound(level, centre, SoundEvents.ILLUSIONER_CAST_SPELL, 0.7F, 1.4F);
-		Fx.sound(level, centre, SoundEvents.POWDER_SNOW_STEP, 0.9F, 0.8F);
-		Fx.sound(level, centre, WildercordSounds.impact("arcane"), 0.6F, 1.0F);
+		Feels.sound(level, centre, "frost_crust", 0.9F, 0.7F);
 	}
 
 	/** Every half second on the seal: cold motes and snow rising off it; once a second an arcane crescent running round its rim. */
@@ -356,9 +345,7 @@ final class FusedFrostVfx {
 		ElementFx.shatterRing(level, c, w + 1.0);
 		ElementFx.shards(level, c, 0.5 + w * 0.4, 5);
 		Sigils.flash(level, c, LAVENDER, 1.6F);
-		Fx.sound(level, feet, SoundEvents.GLASS_PLACE, 1.0F, 0.8F);
-		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.6F);
-		Fx.sound(level, feet, WildercordSounds.impact("frost"), 0.6F, 1.0F);
+		Feels.sound(level, feet, "frost_lock", 1.0F, 1.2F);
 	}
 
 	/** The seal fades: a last arcane ring running out, and its frost thrown up as snow. */
@@ -366,7 +353,7 @@ final class FusedFrostVfx {
 		ElementFx.groundRing(level, centre, ElementFx.ARCANE.primary(), radius, radius * 1.4, 0.04, 10);
 		Vfx.radial(level, ParticleTypes.SNOWFLAKE, centre.add(0, 0.3, 0), 12, 0.2);
 		ElementFx.shimmer(level, centre.add(0, 0.4, 0), radius * 0.4, 6);
-		Fx.sound(level, centre, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 1.4F);
+		Feels.sound(level, centre, "frost_tick", 0.6F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Cryostasis (frost and time)
@@ -401,9 +388,7 @@ final class FusedFrostVfx {
 		Sigils.flash(level, c, CLOCK_ICE, 1.6F);
 		ElementFx.goldenTicks(level, c, 0.5, 6);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, c, 6, 0.5, 0.01);
-		Fx.sound(level, feet, SoundEvents.GLASS_PLACE, 1.0F, 1.2F);
-		Fx.sound(level, feet, SoundEvents.BELL_BLOCK, 0.5F, 1.6F);
-		Fx.sound(level, feet, WildercordSounds.impact("time"), 0.7F, 1.0F);
+		Feels.sound(level, feet, "frost_lock", 1.0F, 1.0F);
 		return shell;
 	}
 
@@ -416,7 +401,7 @@ final class FusedFrostVfx {
 		ElementFx.ring(level, feet.add(0, h + 0.1 - y, 0), UP, CLOCK_ICE, r + 0.05, r + 0.05, 0.03, 8);
 		ElementFx.goldenTicks(level, feet.add(0, h * 0.6, 0), r * 0.7, 2);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, feet.add(0, h * 0.5, 0), 1, r, 0.0);
-		Fx.sound(level, feet, SoundEvents.NOTE_BLOCK_HAT.value(), 0.35F, 2.0F);
+		Feels.sound(level, feet, "frost_tick", 0.5F, 1.0F);
 	}
 
 	/** A blow glances off the ice: a flash where it struck, a ring of gold on the surface and chips of ice. */
@@ -428,7 +413,7 @@ final class FusedFrostVfx {
 		Sigils.flash(level, at, ElementFx.FROST.secondary(), 0.9F);
 		ElementFx.ring(level, at, dir, CLOCK_ICE, 0.1, 0.6, 0.03, 6);
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), at, 5, 0.12);
-		Fx.sound(level, at, SoundEvents.GLASS_HIT, 0.8F, 1.8F);
+		Feels.sound(level, at, "frost_tick", 0.8F, 1.5F);
 	}
 
 	/** Time runs out and the cocoon cracks open: the clock stops, the ice bursts into shards and gold. */
@@ -443,8 +428,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()), c, 16, 0.25);
 		ElementFx.goldenTicks(level, c, 0.5, 8);
 		Sigils.flash(level, c, CLOCK_ICE, 1.8F);
-		Fx.sound(level, feet, SoundEvents.GLASS_BREAK, 0.9F, 1.4F);
-		Fx.sound(level, feet, WildercordSounds.impact("time"), 0.6F, 2.0F);
+		Feels.sound(level, feet, "frost_break", 1.0F, 1.0F);
 	}
 
 	/** A seal asked for while one still holds: the clock stands still, a dull knock on the ice. */
@@ -452,7 +436,7 @@ final class FusedFrostVfx {
 		Vec3 c = centre(t);
 		ElementFx.stoppedClock(level, c, UP, t.getBbWidth() * 0.5 + 0.4, 0.8, 10);
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, c, 3, 0.3, 0.01);
-		Fx.sound(level, c, SoundEvents.GLASS_HIT, 0.6F, 0.6F);
+		Feels.sound(level, c, "frost_tick", 0.6F, 0.6F);
 	}
 
 	// ------------------------------------------------------------------ Frostbite (frost and blood)
@@ -475,8 +459,7 @@ final class FusedFrostVfx {
 		ElementFx.ring(level, c, UP, ElementFx.BLOOD.secondary(), 0.15, w + 0.7, 0.05, 7);
 		ElementFx.ring(level, c, UP, BLOOD_ICE, 0.05, w + 0.4, 0.035, 11);
 		Sigils.flash(level, c, BLOOD_ICE, 1.2F);
-		Fx.sound(level, c, WildercordSounds.impact("blood"), 0.7F, 1.0F);
-		Fx.sound(level, c, SoundEvents.POWDER_SNOW_BREAK, 0.8F, 1.3F);
+		Feels.sound(level, c, "frost_crust", 0.8F, 0.9F);
 	}
 
 	/** A beat of the cold: a heartbeat colder each time ({@code stage} 0 to 2), and crystals of blood-red ice forcing out through the skin. */
@@ -509,7 +492,7 @@ final class FusedFrostVfx {
 		ElementFx.ring(level, c, ElementFx.tilted(0.7, level.getRandom().nextDouble() * Math.PI * 2), ElementFx.BLOOD.primary(), 0.2, w + 0.8, 0.04, 9);
 		ElementFx.frostCreep(level, feet, 0.8 + w * 0.4, ticks + 10);
 		Sigils.flash(level, c, ElementFx.FROST.secondary(), 1.4F);
-		Fx.sound(level, feet, SoundEvents.GLASS_PLACE, 1.0F, 0.7F);
+		Feels.sound(level, feet, "frost_lock", 0.9F, 0.9F);
 		Fx.sound(level, feet, SoundEvents.WARDEN_HEARTBEAT, 0.9F, 0.6F);
 	}
 
@@ -529,8 +512,7 @@ final class FusedFrostVfx {
 		Motes.glows(level, c, 10, w * 0.8 + 0.4, 0xFFFFFF, 0.09, 50, Vec3.ZERO, 0.0);
 		ElementFx.flatSigil(level, feet, SigilOption.STAR, ElementFx.FROST.accent(), 0.8 + w * 0.6, 30, 0.0);
 		Sigils.flash(level, c, 0xFFFFFF, 1.2F);
-		Fx.sound(level, feet, SoundEvents.POWDER_SNOW_BREAK, 0.9F, 0.5F);
-		Fx.sound(level, feet, WildercordSounds.impact("frost"), 0.7F, 0.5F);
+		Feels.sound(level, feet, "frost_zero", 1.0F, 1.0F);
 	}
 
 	/** Frozen solid at absolute zero: the cold closing in, then a crown of ice spikes bursting out of the ground, a starburst of frozen light and a wide frost seal. */
@@ -554,8 +536,7 @@ final class FusedFrostVfx {
 		Sigils.flash(level, c, 0xFFFFFF, 2.6F);
 		ScreenFx.shake(level, feet, 0.3F, 10);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.BLUE_ICE.defaultBlockState()), c, 16, 0.25);
-		Fx.sound(level, feet, SoundEvents.GLASS_PLACE, 1.0F, 0.5F);
-		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_BREAK, 0.8F, 0.5F);
+		Feels.sound(level, feet, "frost_lock", 1.0F, 1.3F);
 	}
 
 	/** Spikes of packed ice bursting out of the ground round {@code feet}, leaning outward, melting away after {@code ticks}. */
@@ -592,7 +573,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, stone), feet.add(0, y, 0), 4 + stage * 2, 0.1);
 		ElementFx.clock(level, feet.add(0, 0.1, 0), UP, w * 0.5 + 0.6, (int) Math.max(6, stepTicks * (0.6 + 0.5 * stage)), false);
 		ElementFx.goldenTicks(level, feet.add(0, y, 0), w * 0.4, 2 + stage);
-		Fx.sound(level, feet, SoundEvents.STONE_HIT, 0.7F, 1.1F - 0.2F * stage);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_tick", 0.9F, new float[] {1.0F, 1.122F, 1.26F}[Math.max(0, Math.min(2, stage))]);
 		if (stage == 0) {
 			Fx.sound(level, feet, WildercordSounds.impact("time"), 0.5F, 1.0F);
 		}
@@ -610,9 +591,8 @@ final class FusedFrostVfx {
 		ElementFx.crack(level, feet, 0.8 + w * 0.4, ticks + 6);
 		Sigils.flash(level, c, ElementFx.EARTH.secondary(), 1.4F);
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.TUFF.defaultBlockState()), c, 10, 0.12);
-		Fx.sound(level, feet, SoundEvents.DEEPSLATE_PLACE, 1.0F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_clamp", 1.0F, 0.75F);
 		Fx.sound(level, feet, SoundEvents.BELL_BLOCK, 0.4F, 0.5F);
-		Fx.sound(level, feet, WildercordSounds.impact("earth"), 0.7F, 1.0F);
 	}
 
 	/** The stone cracks apart: chips of tuff flying, the ground cracking, a ring of gold and one of dust, a flash. */
@@ -628,8 +608,7 @@ final class FusedFrostVfx {
 		Sigils.flash(level, c, ElementFx.EARTH.secondary(), 1.8F);
 		ScreenFx.shake(level, feet, 0.25F, 10);
 		Fx.sound(level, feet, SoundEvents.STONE_BREAK, 1.0F, 0.7F);
-		Fx.sound(level, feet, SoundEvents.BASALT_BREAK, 0.8F, 0.8F);
-		Fx.sound(level, feet, WildercordSounds.impact("earth"), 0.7F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_crack", 1.0F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Geode (earth and arcane)
@@ -658,7 +637,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.AMETHYST_SHARD), c, 10, 0.18);
 		Fx.sound(level, feet, SoundEvents.AMETHYST_CLUSTER_PLACE, 1.0F, 0.9F);
 		Fx.sound(level, feet, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 1.2F);
-		Fx.sound(level, feet, WildercordSounds.impact("earth"), 0.6F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_ping", 0.8F, 1.0F);
 	}
 
 	/** A cage of crystal light round {@code feet}: a six-sided bipyramid, its edges in amethyst. */
@@ -707,8 +686,7 @@ final class FusedFrostVfx {
 		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.AMETHYST_SHARD), b, 8, 0.2);
 		Vec3 normal = ElementFx.randomDir(r);
 		ElementFx.slash(level, b, normal, ElementFx.inPlane(normal, r.nextDouble() * Math.PI * 2), AMETHYST_LIGHT, 0.45, 2.0, 0.08, 1, 6);
-		Fx.sound(level, b, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.7F, 1.3F);
-		Fx.sound(level, b, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, b, "earth_ping", 0.9F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ blocks that grow and go (block displays)

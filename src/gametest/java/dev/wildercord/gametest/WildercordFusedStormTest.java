@@ -436,7 +436,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 		}));
 	}
 
-	/** A husk is hurled about 5 blocks back; 2 seconds later it's snapped back to where it stood, for 3. */
+	/** A husk is hurled about 5 blocks back; 2 seconds later it's snapped back to where it stood, for 5. */
 	private static String recoil(ClientGameTestContext context, TestSingleplayerContext world) {
 		int husk = spawn(world, EntityTypes.HUSK, 0, 5, 0, true);
 		String cast = cast(context, world, Runes.BEAM, Runes.RECOIL);
@@ -468,7 +468,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 			if (d > 0.6) {
 				return "the husk should be snapped back to where it stood (it's " + f(d) + " away)";
 			}
-			return took(h, 3) ? null : "the snap should deal 3 (took " + f(taken(h)) + ")";
+			return took(h, 5) ? null : "the snap should deal 5 (took " + f(taken(h)) + ")";
 		}));
 	}
 

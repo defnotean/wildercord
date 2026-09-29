@@ -75,7 +75,7 @@ final class FusedLife {
 		ServerLevel level = cast.level;
 		LivingEntity caster = cast.caster;
 		switch (node.effect.path()) {
-			case "zephyr" -> zephyr(cast, hit, helped, 4.0 * SpellNumbers.effectRadius(node), Effects.ticks(6, duration), amplify);
+			case "zephyr" -> zephyr(cast, hit, helped, 4.0 * SpellNumbers.effectRadius(node), Effects.ticks(10, duration), amplify);
 			case "crimson_mist" -> crimsonMist(cast, hit, 3.0 * SpellNumbers.effectRadius(node), power, Effects.ticks(5, duration));
 			case "soulbond" -> soulbond(cast, hit, helped, Effects.ticks(10, duration));
 			case "second_wind" -> {
@@ -165,6 +165,14 @@ final class FusedLife {
 		for (LivingEntity t : blessed) {
 			if (n++ >= MAX_TARGETS) {
 				break;
+			}
+			// Clear air: the breeze also blows away what blinds, sickens or slows (a hold stays).
+			t.removeEffect(MobEffects.BLINDNESS);
+			t.removeEffect(MobEffects.DARKNESS);
+			t.removeEffect(MobEffects.NAUSEA);
+			MobEffectInstance slow = t.getEffect(MobEffects.SLOWNESS);
+			if (slow != null && slow.getAmplifier() < 6) {
+				t.removeEffect(MobEffects.SLOWNESS);
 			}
 			t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks, level2, false, true));
 			t.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, ticks, level2, false, true));
@@ -726,6 +734,13 @@ final class FusedLife {
 		SPENT.put(e.getUUID(), now);
 		e.setHealth(FusedLifeRules.secondWindHealth(wind.power, e.getMaxHealth()));
 		e.addEffect(new MobEffectInstance(MobEffects.REGENERATION, Effects.ticks(4, wind.duration), 1, false, true));
+		// The way out: a burst of speed and a gust that clears the enemies round them (a creature gets out, it doesn't stand and fight: that is Reversal).
+		e.addEffect(new MobEffectInstance(MobEffects.SPEED, Effects.ticks(4, wind.duration), 1, false, true));
+		for (Entity near : level.getEntities(e, e.getBoundingBox().inflate(3.0), x -> Targets.canHarm(wind.cast.caster, x) && x instanceof LivingEntity)) {
+			if (!Spirits.isBoss(near) && near.distanceTo(e) <= 3.0) {
+				Effects.push((LivingEntity) near, Effects.horizontal(near.position().subtract(e.position()), e.getLookAngle()).scale(1.6).add(0, 0.35, 0));
+			}
+		}
 		FusedLifeVfx.secondWindSaved(level, e);
 		if (e instanceof ServerPlayer player) {
 			player.sendOverlayMessage(Component.translatableWithFallback("message.wildercord.second_wind", "Second Wind!").withColor(0x6EDC64));

@@ -63,7 +63,7 @@ public final class WorldRules {
 	 * Weigh, Shackle hold creatures down rather than heave them up), and Stasis and Rewind (they stop
 	 * time or turn it back, never on).
 	 */
-	private static final Set<String> QUIET = Set.of("bubble", "tidehook", "root", "weigh", "shackle", "kindling", "stasis", "rewind",
+	private static final Set<String> QUIET = Set.of("bubble", "tidehook", "tidecall", "tidewrit", "root", "weigh", "shackle", "kindling", "stasis", "rewind",
 		"mire", "sinkhole", "fossilize", "tremor", "monolith", "thunderquake", "magma", "sandstorm", "basalt_surge", "pelt");
 
 	/**

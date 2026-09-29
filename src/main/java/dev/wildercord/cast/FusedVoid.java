@@ -100,9 +100,17 @@ final class FusedVoid {
 			case "reckoning" -> first(harmed).forEach(t -> reckoning(cast, t, power, duration));
 			case "singularity" -> singularity(cast, hit, FusedVoidRules.SINGULARITY_RADIUS * SpellNumbers.effectRadius(node), power);
 			case "prismatic_burst" -> harmed.forEach(t -> {
+				boolean burning = t.isOnFire();
+				List<Reactions.Mark> had = new ArrayList<>();
+				for (Reactions.Mark m : Reactions.Mark.values()) {
+					if (m != Reactions.Mark.RESONANT && Reactions.has(t, m)) {
+						had.add(m);
+					}
+				}
 				List<Integer> marks = useMarks(t);
 				FusedVoidVfx.prismaticBurst(level, t, marks);
 				Effects.hurt(cast, t, magic(cast), FusedVoidRules.prismaticDamage(marks.size()) * power);
+				spreadMarks(cast, t, burning, had);
 			});
 			case "chronoshift" -> {
 				int ticks = Effects.ticks(FusedVoidRules.CHRONOSHIFT_BUFF_SECONDS, duration);
@@ -636,7 +644,33 @@ final class FusedVoid {
 			Reactions.clear(t, Reactions.Mark.BLEEDING);
 			used.add(BLEEDING);
 		}
+		if (Exposed.has(t)) {
+			Exposed.clear(t);
+			used.add(ElementFx.ARCANE.primary());
+		}
 		return used;
+	}
+
+	/** Prismatic Burst: each mark it ate leaps, once, to up to 3 other enemies within 4 blocks of the target (burning as a short fire). */
+	private static void spreadMarks(Cast cast, LivingEntity t, boolean burning, List<Reactions.Mark> had) {
+		if (!burning && had.isEmpty()) {
+			return;
+		}
+		List<LivingEntity> near = new ArrayList<>();
+		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(4.0), e -> Targets.canHarm(cast.caster, e))) {
+			if (e instanceof LivingEntity living && living.distanceTo(t) <= 4.0) {
+				near.add(living);
+			}
+		}
+		near.sort(Comparator.comparingDouble(e -> e.distanceToSqr(t)));
+		for (LivingEntity other : near.subList(0, Math.min(3, near.size()))) {
+			if (burning) {
+				other.igniteForSeconds(3);
+			}
+			for (Reactions.Mark m : had) {
+				Reactions.mark(other, m);
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------ Chronoshift

@@ -1,4 +1,170 @@
 {
-  "events": {},
+  "events": {
+    "storm_boom": {
+      "attenuation": 32,
+      "files": [
+        "kit/storm/storm_boom_1",
+        "kit/storm/storm_boom_2"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_clamp": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_clamp_1",
+        "kit/storm/storm_clamp_2"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_cloud": {
+      "attenuation": 32,
+      "files": [
+        "kit/storm/storm_cloud_1",
+        "kit/storm/storm_cloud_2"
+      ],
+      "subtitle": "field"
+    },
+    "storm_crack": {
+      "attenuation": 48,
+      "files": [
+        "kit/storm/storm_crack_1",
+        "kit/storm/storm_crack_2",
+        "kit/storm/storm_crack_3"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_cry": {
+      "attenuation": 32,
+      "files": [
+        "kit/storm/storm_cry_1",
+        "kit/storm/storm_cry_2"
+      ],
+      "subtitle": "cast"
+    },
+    "storm_dive": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_dive_1",
+        "kit/storm/storm_dive_2",
+        "kit/storm/storm_dive_3"
+      ],
+      "subtitle": "tell"
+    },
+    "storm_flash": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_flash_1",
+        "kit/storm/storm_flash_2"
+      ],
+      "subtitle": "tell"
+    },
+    "storm_gale": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_gale_1",
+        "kit/storm/storm_gale_2"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_hour": {
+      "attenuation": 32,
+      "files": [
+        "kit/storm/storm_hour"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_hum": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_hum"
+      ],
+      "subtitle": "field"
+    },
+    "storm_magnet": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_magnet_1",
+        "kit/storm/storm_magnet_2"
+      ],
+      "subtitle": "field"
+    },
+    "storm_pip": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_pip_1",
+        "kit/storm/storm_pip_2",
+        "kit/storm/storm_pip_3"
+      ],
+      "subtitle": "tell"
+    },
+    "storm_pluck": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_pluck_1",
+        "kit/storm/storm_pluck_2",
+        "kit/storm/storm_pluck_3",
+        "kit/storm/storm_pluck_4"
+      ],
+      "subtitle": "tell"
+    },
+    "storm_roll": {
+      "attenuation": 64,
+      "files": [
+        "kit/storm/storm_roll_1",
+        "kit/storm/storm_roll_2"
+      ],
+      "subtitle": "field"
+    },
+    "storm_sizzle": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_sizzle_1",
+        "kit/storm/storm_sizzle_2"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_sun": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_sun_1",
+        "kit/storm/storm_sun_2"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_tear": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_tear_1",
+        "kit/storm/storm_tear_2"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_tick_1",
+        "kit/storm/storm_tick_2",
+        "kit/storm/storm_tick_3"
+      ],
+      "subtitle": "tell"
+    },
+    "storm_whine": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_whine_1",
+        "kit/storm/storm_whine_2"
+      ],
+      "subtitle": "cast"
+    },
+    "storm_zap": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_zap_1",
+        "kit/storm/storm_zap_2",
+        "kit/storm/storm_zap_3"
+      ],
+      "subtitle": "hit"
+    }
+  },
   "part": "storm"
 }

@@ -508,7 +508,7 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ Prismatic Burst
 
-	/** 4 damage, and 3 more for every mark (burning, frozen, windswept, pulled, soaked, wet), each used up. */
+	/** 5 damage, and 4 more for every mark (five at most) (burning, frozen, windswept, pulled, soaked, wet), each used up. */
 	private static String prismaticBurst(MinecraftServer server) {
 		ServerPlayer player = player(server);
 		ServerLevel level = player.level();
@@ -516,24 +516,24 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 		try {
 			Mob plain = husk(level, -2, 4);
 			touch(player, Runes.PRISMATIC_BURST, plain);
-			if (!near(plain.getHealth(), 16)) {
-				return "with no marks it should deal 4 (health " + plain.getHealth() + ")";
+			if (!near(plain.getHealth(), 15)) {
+				return "with no marks it should deal 5 (health " + plain.getHealth() + ")";
 			}
 			Mob marked = husk(level, 0, 4);
 			marked.igniteForSeconds(5);
 			Reactions.mark(marked, Reactions.Mark.FROZEN);
 			Reactions.mark(marked, Reactions.Mark.WINDSWEPT);
 			touch(player, Runes.PRISMATIC_BURST, marked);
-			if (!near(marked.getHealth(), 7)) {
-				return "burning, frozen and windswept should make it 4 + 9 = 13 (health " + marked.getHealth() + ")";
+			if (!near(marked.getHealth(), 3)) {
+				return "burning, frozen and windswept should make it 5 + 12 = 17 (health " + marked.getHealth() + ")";
 			}
 			if (marked.isOnFire() || Reactions.has(marked, Reactions.Mark.FROZEN) || Reactions.has(marked, Reactions.Mark.WINDSWEPT)) {
 				return "the marks should be used up (on fire " + marked.isOnFire() + ", frozen " + Reactions.has(marked, Reactions.Mark.FROZEN) + ", windswept "
 					+ Reactions.has(marked, Reactions.Mark.WINDSWEPT) + ")";
 			}
 			touch(player, Runes.PRISMATIC_BURST, marked);
-			if (!near(marked.getHealth(), 3)) {
-				return "with its marks used up, the next should deal 4 again (health " + marked.getHealth() + ")";
+			if (marked.isAlive()) {
+				return "with its marks used up, the next should deal 5 and finish it (health " + marked.getHealth() + ")";
 			}
 			Mob all = husk(level, 2, 4);
 			all.igniteForSeconds(5);
@@ -543,8 +543,8 @@ public class WildercordFusedVoidTest implements FabricClientGameTest {
 			all.getAttribute(Attributes.MAX_HEALTH).setBaseValue(40);
 			all.setHealth(40);
 			touch(player, Runes.PRISMATIC_BURST, all);
-			if (!near(all.getHealth(), 18)) {
-				return "all six marks should make it 4 + 18 = 22 (health " + all.getHealth() + " of 40)";
+			if (!near(all.getHealth(), 15)) {
+				return "six marks count as five: 5 + 20 = 25 (health " + all.getHealth() + " of 40)";
 			}
 			return null;
 		} finally {

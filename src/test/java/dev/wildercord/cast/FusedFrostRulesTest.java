@@ -17,6 +17,29 @@ class FusedFrostRulesTest {
 	}
 
 	@Test
+	void absoluteZeroCountsTheColdAndNeverPaysLessThanItDidForTwoSigns() {
+		// One sign of cold 4.5, two 7 (what it always dealt), three 9.5, four 12.
+		assertEquals(4.5, FusedFrostRules.zeroDamage(1), 1.0E-9);
+		assertEquals(7.0, FusedFrostRules.zeroDamage(2), 1.0E-9);
+		assertEquals(9.5, FusedFrostRules.zeroDamage(3), 1.0E-9);
+		assertEquals(12.0, FusedFrostRules.zeroDamage(4), 1.0E-9);
+		assertEquals(12.0, FusedFrostRules.zeroDamage(9), 1.0E-9, "never counts past four");
+		// Held 1.5 to 3 seconds, half as long on a player; two signs is the 2 seconds it always held.
+		assertEquals(2.0, FusedFrostRules.zeroHoldSeconds(2, false), 1.0E-9);
+		assertEquals(1.0, FusedFrostRules.zeroHoldSeconds(2, true), 1.0E-9);
+		assertEquals(3.0, FusedFrostRules.zeroHoldSeconds(4, false), 1.0E-9);
+	}
+
+	@Test
+	void theNewFrostConstantsAreWhatTheTextSays() {
+		assertEquals(1.5, FusedFrostRules.FROSTBITE_HOLD_SECONDS, 1.0E-9);
+		assertEquals(1.5, FusedFrostRules.BLIZZARD_WALK * 4 / 4, 1.0E-9);
+		assertEquals(6.0, FusedFrostRules.BLIZZARD_WALK * 4, 1.0E-9, "it walks 6 blocks over its 4 seconds");
+		assertEquals(4, FusedFrostRules.BLOOM_HEALS);
+		assertEquals(60, FusedFrostRules.CASCADE_TICKS);
+	}
+
+	@Test
 	void frostbiteBeatsOnceASecondForFiveSeconds() {
 		assertEquals(5, FusedFrostRules.frostbiteBeats(1.0));
 		assertEquals(10, FusedFrostRules.frostbiteBeats(2.0));

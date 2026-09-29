@@ -208,7 +208,7 @@ final class FusedStorm {
 		int drawn = 0;
 		for (LivingEntity t : targets) {
 			// Only the first few get the whole show; a crowd still gets every part of the spell.
-			boolean full = drawn < 4;
+			boolean full = drawn < 2;
 			boolean torn = drawn++ < MAX_TARGETS;
 			Vec3 from = t.position();
 			Vec3 dir = Effects.horizontal(heading(cast, hit), from.subtract(origin(cast, hit)));
@@ -469,7 +469,7 @@ final class FusedStorm {
 				Vec3 want = sky(level, t.position().add(0, t.getBbHeight(), 0), CLOUD_HEIGHT);
 				cloud.centre = cloud.centre.lerp(want, 0.3);
 			}
-			if (age % 4 == 0) {
+			if (age % 8 == 0) {
 				FusedStormVfx.cloud(level, cloud.centre, age);
 			}
 			if (age % 20 == 0) {
@@ -531,6 +531,22 @@ final class FusedStorm {
 			}
 			slammed++;
 			slam(cast, t, power);
+		}
+		if (slammed == 0) {
+			// Nothing in the air to swat: the downburst pins whoever stands under it (Slowness III 1 s, 2 damage).
+			int pinned = 0;
+			for (Entity e : level.getEntities((Entity) null, new AABB(point, point).inflate(radius + 1), e -> Targets.canHarm(cast.caster, e))) {
+				LivingEntity t = (LivingEntity) e;
+				if (pinned >= MAX_TARGETS) {
+					break;
+				}
+				if (t.getBoundingBox().getCenter().distanceTo(point) > radius + t.getBbWidth() / 2) {
+					continue;
+				}
+				pinned++;
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, DOWNDRAFT_PIN_TICKS, 2, false, true), cast.caster);
+				Effects.hurt(cast, t, wind(cast), DOWNDRAFT_PIN_DAMAGE * power);
+			}
 		}
 	}
 
@@ -628,6 +644,8 @@ final class FusedStorm {
 				fling(t, new Vec3(v.x * 0.2, UPDRAFT_LIFT, v.z * 0.2));
 				cushion(t, UPDRAFT_SMASH + 60);
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+				// Every spell hits it harder while it's in the air.
+				Statuses.airborne(t, UPDRAFT_SMASH + 5);
 				FusedStormVfx.hurled(level, t);
 			}
 			Scheduler.later(UPDRAFT_SMASH, () -> {
@@ -649,6 +667,8 @@ final class FusedStorm {
 		if (down) {
 			move(t, level, ground);
 		}
+		// Down on the ground it's no longer airborne: the smash itself isn't a fifth harder for having lifted it.
+		Reactions.clear(t, Reactions.Mark.AIRBORNE);
 		Effects.hurt(cast, t, wind(cast), damage);
 		if (down && onHand(cast, t)) {
 			setMotion(t, Vec3.ZERO);

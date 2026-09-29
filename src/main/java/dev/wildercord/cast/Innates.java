@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.Wildercord;
 import dev.wildercord.mixin.MannequinAccessor;
@@ -192,6 +193,13 @@ public final class Innates {
 			if (entity instanceof ServerPlayer dead) {
 				DEBTS.remove(dead.getUUID());
 			}
+			if (source.getEntity() instanceof ServerPlayer winner && entity instanceof Enemy && entity.level() instanceof ServerLevel there) {
+				Long until = FORTUNE.get(winner.getUUID());
+				if (until != null && there.getGameTime() <= until && there.getRandom().nextFloat() < 0.25F) {
+					net.minecraft.world.entity.ExperienceOrb.award(there, entity.position(), LUCKY_XP);
+					lucky(there, entity);
+				}
+			}
 			if (source.getEntity() instanceof ServerPlayer player && entity instanceof Enemy && DEBTS.remove(player.getUUID()) != null) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.debt_forgiven").withColor(0xF2D98A));
 				TimeFx.stasisRelease(player.level(), player, 0);
@@ -262,10 +270,8 @@ public final class Innates {
 				t.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, ticks, 0, false, true));
 				t.getAttribute(Attributes.KNOCKBACK_RESISTANCE).addOrUpdateTransientModifier(
 					new AttributeModifier(STONE_KNOCKBACK, 1.0, AttributeModifier.Operation.ADD_VALUE));
-				Vfx.stoneskin(cast.level, t);
-				Vfx.emit(cast.level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
-					net.minecraft.world.level.block.Blocks.DEEPSLATE.defaultBlockState()), t.position().add(0, 1, 0), 12, 0.4, 0.1);
-				Fx.sound(cast.level, t.position(), SoundEvents.DEEPSLATE_PLACE, 1.0F, 0.6F);
+				// Its own stance, in deepslate: not Stoneskin's sandstone cast.
+				StormEarthFx.stoneform(cast.level, t, ticks);
 			});
 			case "mirrorfrost" -> {
 				if (onSelf && caster instanceof ServerPlayer player) {
@@ -275,9 +281,11 @@ public final class Innates {
 			case "fortune" -> helped.forEach(t -> {
 				FORTUNE.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
 				ElementFx.bloom(cast.level, t.getBoundingBox().getCenter(), t.position(), 1.3);
-				ElementFx.flatSigil(cast.level, t.position(), SigilOption.STAR, LUCK, 0.9, 24, 0.1);
+				ElementFx.groundRing(cast.level, t.position(), 0xF5D86A, 0.2, 1.1, 0.05, 14);
+				// A gold coin spinning over the head for as long as the luck lasts.
+				ElementFx.orbit(cast.level, t.position().add(0, t.getBbHeight() + 0.5, 0), 0.25, 1, Effects.ticks(10, duration), 0xF5D86A, 0xFFF4B0);
 				Vfx.emit(cast.level, ParticleTypes.HAPPY_VILLAGER, t.getBoundingBox().getCenter(), 6, 0.4, 0.0);
-				Fx.sound(cast.level, t.position(), SoundEvents.PLAYER_LEVELUP, 0.5F, 1.8F);
+				dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "life_coin", 0.9F, 1.0F);
 			});
 			case "phantom" -> {
 				if (onSelf && caster instanceof ServerPlayer player) {
@@ -286,12 +294,13 @@ public final class Innates {
 			}
 			case "stormheart" -> helped.forEach(t -> {
 				STORMHEART.put(t.getUUID(), cast.level.getGameTime() + Effects.ticks(10, duration));
+				StormEarthFx.stormheartStance(cast.level, t, Effects.ticks(10, duration));
 				Vec3 c = t.getBoundingBox().getCenter();
 				ElementFx.bolt(cast.level, c.add(0.6, 2.4, 0.3), c, 0.05, 1, 2);
 				ElementFx.ring(cast.level, c, UP, ElementFx.STORM.primary(), 1.4, 0.5, 0.04, 8);
 				ElementFx.groundRing(cast.level, t.position(), ElementFx.STORM.accent(), 0.3, 1.6, 0.05, 9);
 				Vfx.emit(cast.level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.5, 0.05);
-				Fx.sound(cast.level, t.position(), SoundEvents.TRIDENT_THUNDER, 0.4F, 1.8F);
+				dev.wildercord.cast.feel.Feels.sound(cast.level, t.position(), "storm_whine", 0.7F, 1.0F);
 			});
 			default -> { }
 		}
@@ -399,6 +408,9 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Twin Star
 
+	/** How strong Twin Star's second cast is. */
+	public static final double TWIN_POWER = 0.75;
+
 	/** The next cast after Twin Star goes off twice; the Twin Star cast itself doesn't count. */
 	public static boolean consumeTwin(ServerPlayer player) {
 		long now = player.level().getGameTime();
@@ -454,9 +466,14 @@ public final class Innates {
 
 	// ------------------------------------------------------------------ Mirrorfrost
 
+	/** What Mirrorfrost returns: 70% of the power, and marked (a negative rune count) so it can't be mirrored back. */
+	static final double MIRROR_POWER = 0.7;
+	static final int MIRRORED = -1;
+
 	/** Remembers the last spell that hit a player, for Mirrorfrost. */
 	static void spellHit(Cast cast, LivingEntity target) {
-		if (target instanceof ServerPlayer player && cast.caster != player && cast.info.root() != null) {
+		// A mirrored spell (marked by its negative rune count) is never itself mirrored.
+		if (target instanceof ServerPlayer player && cast.caster != player && cast.info.root() != null && cast.info.runes() >= 0) {
 			LAST_SPELL_ON.put(player.getUUID(), new SpellHit(cast.info.root(), cast.level.getGameTime()));
 		}
 	}
@@ -472,24 +489,29 @@ public final class Innates {
 		Vfx.radial(cast.level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.GLASS_PANE), hand, 10, 0.2);
 		ElementFx.shatterRing(cast.level, hand, 1.4);
 		ElementFx.shards(cast.level, hand, 0.9, 5);
-		Fx.sound(cast.level, hand, SoundEvents.GLASS_BREAK, 0.8F, 1.6F);
-		Fx.sound(cast.level, hand, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
-		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), 0, Heart.leaning(player))).withAffinity();
+		Feels.sound(cast.level, hand, "frost_mirror", 1.0F, 1.0F);
+		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), MIRRORED, Heart.leaning(player))).withAffinity()
+			.withPower(MIRROR_POWER);
 		CastEngine.cast(mirrored, hit.root());
 		Grimoire.feat(player, Feats.MIRROR);
 	}
 
 	// ------------------------------------------------------------------ Fortune
 
-	/** Spell damage multiplier from Fortune: a one-in-four chance of triple. */
+	/** Spell damage multiplier from Fortune: a one-in-four chance of double (expected +25%). */
 	static double fortune(Cast cast, LivingEntity target) {
 		Long until = FORTUNE.get(cast.caster.getUUID());
 		if (until == null || cast.level.getGameTime() > until || cast.level.getRandom().nextFloat() >= 0.25F) {
 			return 1.0;
 		}
 		lucky(cast.level, target);
-		return 3.0;
+		return LUCKY_MULTIPLIER;
 	}
+
+	/** What a fortunate hit deals: double. */
+	public static final double LUCKY_MULTIPLIER = 2.0;
+	/** XP a fortunate kill drops on top of its own (a one in four chance). */
+	public static final int LUCKY_XP = 6;
 
 	private static void fortuneMelee(ServerLevel level, LivingEntity entity, DamageSource source, float damage) {
 		// A strike by hand: a spell's own strike (Cleave, Aftershock) already rolled Fortune in Effects.hurt.
@@ -504,7 +526,7 @@ public final class Innates {
 		echoing = true;
 		try {
 			Effects.readyToHurt(entity);
-			entity.hurtServer(level, level.damageSources().playerAttack(player), damage * 2);
+			entity.hurtServer(level, level.damageSources().playerAttack(player), (float) (damage * (LUCKY_MULTIPLIER - 1)));
 		} finally {
 			echoing = false;
 		}
@@ -517,8 +539,7 @@ public final class Innates {
 		ElementFx.orbit(level, c, 0.7, 2, 4, LUCK, 0xFFF4B0);
 		Vfx.radial(level, ParticleTypes.HAPPY_VILLAGER, c, 8, 0.25);
 		Vfx.radial(level, ParticleTypes.CRIT, c, 8, 0.4);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 2.0F);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 1.0F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_coin_proc", 1.0F, 1.0F);
 	}
 
 	private static final int LUCK = 0x9CFF7A;
@@ -588,7 +609,7 @@ public final class Innates {
 		double power = scale(entity);
 		Vfx.shockwave(level, entity.position(), 3.0, Vfx.theme("earth"), 4);
 		ElementFx.crack(level, entity.position(), 1.4, 16);
-		Fx.sound(level, entity.position(), SoundEvents.MACE_SMASH_GROUND_HEAVY, 0.6F, 1.1F);
+		dev.wildercord.cast.feel.Feels.sound(level, entity.position(), "earth_stomp", 0.9F, 0.84F);
 		// A pet in Stoneform fights for its owner: its aftershock spares them and hits what they'd hit.
 		LivingEntity side = entity instanceof net.minecraft.world.entity.OwnableEntity pet && pet.getOwner() instanceof LivingEntity owner ? owner : entity;
 		echoing = true;
@@ -757,6 +778,23 @@ public final class Innates {
 		Vec3 look = player.getLookAngle();
 		Vec3 flat = new Vec3(look.x, 0, look.z);
 		flat = flat.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flat.normalize();
+		// Steered: the dash goes where you're pushing (forward, back, left, right), not only where you look.
+		net.minecraft.world.entity.player.Input input = player.getLastClientInput();
+		int ahead = (input.forward() ? 1 : 0) - (input.backward() ? 1 : 0);
+		int aside = (input.left() ? 1 : 0) - (input.right() ? 1 : 0);
+		if (ahead != 0 || aside != 0) {
+			Vec3 left = new Vec3(flat.z, 0, -flat.x);
+			flat = flat.scale(ahead).add(left.scale(aside)).normalize();
+		}
+		// It shoves aside whoever it passes through the moment it leaves.
+		int shoved = 0;
+		for (Entity e : player.level().getEntities(player, player.getBoundingBox().inflate(1.5), e -> e instanceof LivingEntity && Targets.canHarm(player, e))) {
+			if (shoved++ >= 8) {
+				break;
+			}
+			Vec3 away = Effects.horizontal(e.position().subtract(player.position()), flat);
+			Statuses.windPush((LivingEntity) e, away.scale(0.6).add(0, 0.2, 0));
+		}
 		player.setDeltaMovement(flat.scale(1.25).add(0, 0.42, 0));
 		player.needsSync = true;
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
@@ -765,6 +803,6 @@ public final class Innates {
 		Vfx.emit(level, ParticleTypes.GUST, player.position(), 1, 0.0, 0.0);
 		ElementFx.gustRing(level, player.position(), 1.4);
 		ElementFx.ring(level, player.position().add(0, 0.9, 0).subtract(flat.scale(0.9)), flat, ElementFx.WIND.secondary(), 0.3, 1.3, 0.04, 7);
-		Fx.sound(level, player.position(), SoundEvents.BREEZE_JUMP, 0.8F, 1.3F);
+		Feels.sound(level, player.position(), "wind_gale", 0.9F, 1.0F);
 	}
 }

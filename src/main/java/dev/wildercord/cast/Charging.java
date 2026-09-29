@@ -53,7 +53,12 @@ public final class Charging {
 	/** Ticks to a full charge for this caster: a Focus of Haste in the off-hand fills it faster. */
 	public static int fullTicks(net.minecraft.world.entity.Entity caster) {
 		double speed = caster instanceof net.minecraft.world.entity.LivingEntity living ? dev.wildercord.gear.Gear.chargeSpeed(living) : 1.0;
-		return Math.max(1, (int) Math.round(FULL / (speed * (VoidTime.hurried(caster) ? VoidTime.HURRY_CHARGE : 1.0))));
+		boolean hurried = VoidTime.hurried(caster);
+		// Quick hands: Haste fills the charge 30% sooner (hurried time, Accelerate's Haste III, fills it 40% sooner and does not stack with that).
+		if (!hurried && caster instanceof net.minecraft.world.entity.LivingEntity hasty && hasty.hasEffect(net.minecraft.world.effect.MobEffects.HASTE)) {
+			speed *= 1.3;
+		}
+		return Math.max(1, (int) Math.round(FULL / (speed * (hurried ? VoidTime.HURRY_CHARGE : 1.0))));
 	}
 
 	/** How far along a caster's charge is, 0 to 1, with their casting gear. */
@@ -87,10 +92,25 @@ public final class Charging {
 		}
 	}
 
+	/**
+	 * Breaks a player's charge (a Windcut, a silence, Manaburn): the circle closes and the release that follows does nothing.
+	 * Returns whether there was a charge.
+	 */
+	public static boolean interrupt(ServerPlayer player) {
+		if (!player.hasAttached(WildercordAttachments.CHARGE)) {
+			return false;
+		}
+		stop(player);
+		FIZZLED.add(player.getUUID());
+		player.sendOverlayMessage(Component.translatable("message.wildercord.charge_interrupted").withStyle(ChatFormatting.GRAY));
+		Fx.sound(player.level(), player.position(), SoundEvents.FIRE_EXTINGUISH, 0.5F, 1.4F);
+		return true;
+	}
+
 	private static void begin(ServerPlayer player, int requested) {
 		FIZZLED.remove(player.getUUID());
 		CordTier tier = Spellbooks.tier(player);
-		if (tier == null || !player.isAlive() || player.isSpectator() || player.hasAttached(WildercordAttachments.CHARGE)) {
+		if (tier == null || !player.isAlive() || player.isSpectator() || player.hasAttached(WildercordAttachments.CHARGE) || CastLock.locked(player)) {
 			return;
 		}
 		Spellbook book = Spellbooks.get(player);
@@ -160,6 +180,7 @@ public final class Charging {
 	}
 
 	static void clear() {
+		CastLock.clear();
 		LAST_BEGIN.clear();
 		FIZZLED.clear();
 	}

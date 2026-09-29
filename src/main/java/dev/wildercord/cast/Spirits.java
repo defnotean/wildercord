@@ -55,9 +55,28 @@ public final class Spirits {
 	/** Spirits one player may have at once, across Summon and Shades. */
 	public static final int MAX_SPIRITS = 6;
 
+	/** Every player's living spirit wolves, for the upkeep. */
+	private static final java.util.Map<java.util.UUID, java.util.List<Wolf>> PACKS = new java.util.HashMap<>();
+	/** Mana regeneration while a pack lives: sustaining spirits costs a quarter of it. */
+	public static final double PACK_UPKEEP = 0.75;
+
+	/** The share of its mana regeneration a player keeps: {@link #PACK_UPKEEP} while a spirit wolf of theirs lives, else 1. */
+	public static double upkeep(net.minecraft.world.entity.player.Player player) {
+		java.util.List<Wolf> pack = PACKS.get(player.getUUID());
+		if (pack == null) {
+			return 1.0;
+		}
+		pack.removeIf(w -> w.isRemoved() || !w.isAlive());
+		if (pack.isEmpty()) {
+			PACKS.remove(player.getUUID());
+			return 1.0;
+		}
+		return PACK_UPKEEP;
+	}
+
 	public static void summonWolves(Cast cast, Vec3 around, int count, double power, double duration) {
 		spawnSpirits(cast, around, count, power, duration, false);
-		Fx.sound(cast.level, around, SoundEvents.EVOKER_CAST_SPELL, 1.0F, 1.2F);
+		LifeArcaneFx.summonCircle(cast.level, around);
 	}
 
 	/** Shades: black shadow hounds that trail darkness instead of glowing. */
@@ -102,8 +121,14 @@ public final class Spirits {
 				wolf.addEffect(new MobEffectInstance(MobEffects.GLOWING, lifetime, 0, false, false));
 			}
 			wolf.addEffect(new MobEffectInstance(MobEffects.SPEED, lifetime, 1, false, false));
+			// Shades are frail: no Strength by default, only in dim light (the aura loop below). A spirit wolf bites for a wolf's 4 unless
+			// the spell is Amplified (Strength I from one Amplify).
 			if (!shadow) {
-				wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, (int) Math.max(0, Math.round(power) - 1), false, false));
+				int strength = (int) Math.round(power) - 2;
+				if (strength >= 0) {
+					wolf.addEffect(new MobEffectInstance(MobEffects.STRENGTH, lifetime, strength, false, false));
+				}
+				PACKS.computeIfAbsent(caster.getUUID(), k -> new java.util.ArrayList<>()).add(wolf);
 			}
 			wolf.setAttached(WildercordAttachments.SPIRIT_UNTIL, level.getGameTime() + lifetime);
 			if (target != null && Targets.canHarm(caster, target)) {
@@ -149,15 +174,42 @@ public final class Spirits {
 
 	/** Freeze: {@link #hold} plus ice, which sets up Shatter. */
 	public static void freeze(LivingEntity target, int ticks) {
+		// A Frostward makes a frost hold last a second at most.
+		if (Effects.warded(target, "frostward")) {
+			ticks = Math.min(ticks, FROSTWARD_CAP);
+		}
 		hold(target, ticks);
 		target.setTicksFrozen(Math.max(target.getTicksFrozen(), target.getTicksRequiredToFreeze() + ticks));
 		Reactions.mark(target, Reactions.Mark.FROZEN, ticks + 20);
+		if (ticks >= 16 && target.level() instanceof ServerLevel level) {
+			// The tell: in its last half second the ice shows hairline cracks (only if it is still the same hold).
+			Scheduler.later(ticks - 10, () -> {
+				MobEffectInstance slow = target.getEffect(MobEffects.SLOWNESS);
+				if (target.isAlive() && slow != null && slow.getAmplifier() >= 6 && slow.getDuration() <= 14) {
+					Vfx.iceCracking(level, target);
+				}
+			});
+		}
 	}
 
-	/** Ends a hold early (Stasis and Bubble end on their own schedule). */
+	/** The longest a frost hold lasts on a creature under Frostward: one second. */
+	public static final int FROSTWARD_CAP = 20;
+
+	/**
+	 * Ends a hold early (Stasis and Bubble end on their own schedule): a mob's AI comes back, and what holds a player
+	 * or a boss (Slowness VII and Weakness V) is taken off.
+	 */
 	public static void thawNow(LivingEntity target) {
 		if (target instanceof Mob mob) {
 			thaw(mob);
+		}
+		MobEffectInstance slow = target.getEffect(MobEffects.SLOWNESS);
+		if (slow != null && slow.getAmplifier() >= 6) {
+			target.removeEffect(MobEffects.SLOWNESS);
+		}
+		MobEffectInstance weak = target.getEffect(MobEffects.WEAKNESS);
+		if (weak != null && weak.getAmplifier() >= 4) {
+			target.removeEffect(MobEffects.WEAKNESS);
 		}
 	}
 

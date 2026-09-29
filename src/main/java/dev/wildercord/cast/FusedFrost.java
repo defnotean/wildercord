@@ -147,18 +147,21 @@ final class FusedFrost {
 		BLIZZARDS.add(storm);
 		DamageSource cold = frost(cast);
 		FusedFrostVfx.blizzardOpen(level, centre, radius, ticks);
+		// It walks: the whiteout advances along the way the caster faced (or the spell flew), 1.5 blocks a second.
+		Vec3 heading = Effects.horizontal(hit.dir(), cast.caster.getLookAngle());
 		lasting(cast, storm, BLIZZARDS, 5, tick -> {
-			FusedFrostVfx.blizzard(level, centre, radius, tick);
+			Vec3 here = CastEngine.ground(level, centre.add(heading.scale(FusedFrostRules.BLIZZARD_WALK * tick / 20.0)).add(0, 1.0, 0));
+			FusedFrostVfx.blizzard(level, here, radius, tick);
 			if (tick % 10 != 0) {
 				return;
 			}
 			boolean bite = tick % 20 == 0;
-			for (LivingEntity t : inside(cast, centre, radius, 3.2)) {
+			for (LivingEntity t : inside(cast, here, radius, 3.2)) {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 30, 1, false, true), cast.caster);
 				chill(t, 30);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 30);
 				if (bite) {
-					Effects.hurt(cast, t, cold, power);
+					Effects.hurt(cast, t, cold, FusedFrostRules.BLIZZARD_BITE * power);
 					FusedFrostVfx.blizzardBite(level, t);
 				}
 			}
@@ -301,7 +304,7 @@ final class FusedFrost {
 				if (beat == beats) {
 					release(key, token);
 					if (t.isAlive()) {
-						int hold = Effects.ticks(1, duration);
+						int hold = Effects.ticks(FusedFrostRules.FROSTBITE_HOLD_SECONDS, duration);
 						freeze(t, hold);
 						FusedFrostVfx.frostbiteFreeze(level, t, hold);
 					}
@@ -320,7 +323,8 @@ final class FusedFrost {
 	 */
 	private static void absoluteZero(Cast cast, LivingEntity t, double power, double duration, boolean show) {
 		long now = cast.level.getGameTime();
-		boolean cold = alreadyCold(t) && now >= ZERO_LOCKED.getOrDefault(t.getUUID(), Long.MIN_VALUE);
+		int n = coldConditions(t);
+		boolean cold = n > 0 && now >= ZERO_LOCKED.getOrDefault(t.getUUID(), Long.MIN_VALUE);
 		t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, Effects.ticks(3, duration), 3, false, true), cast.caster);
 		if (!cold) {
 			if (show) {
@@ -328,7 +332,7 @@ final class FusedFrost {
 			}
 			return;
 		}
-		int hold = Effects.ticks(t instanceof Player ? 1 : 2, duration);
+		int hold = Effects.ticks(FusedFrostRules.zeroHoldSeconds(n, t instanceof Player), duration);
 		if (ZERO_LOCKED.size() > 256) {
 			ZERO_LOCKED.values().removeIf(until -> until <= now);
 		}
@@ -337,13 +341,18 @@ final class FusedFrost {
 		if (show) {
 			FusedFrostVfx.absoluteZeroSolid(cast.level, t, hold);
 		}
-		Effects.hurt(cast, t, frost(cast), 7 * power);
+		Effects.hurt(cast, t, frost(cast), FusedFrostRules.zeroDamage(n) * power);
 	}
 
 	/** Whether a creature is already slowed or frozen, for Absolute Zero. */
 	static boolean alreadyCold(LivingEntity t) {
-		return t.hasEffect(MobEffects.SLOWNESS) || Reactions.has(t, Reactions.Mark.FROZEN) || t.isFullyFrozen()
-			|| t.hasAttached(WildercordAttachments.FROZEN_UNTIL);
+		return coldConditions(t) > 0;
+	}
+
+	/** How many of the four signs of cold a creature shows (0 to 4): slowed, the FROZEN mark, frozen skin, held. */
+	static int coldConditions(LivingEntity t) {
+		return (t.hasEffect(MobEffects.SLOWNESS) ? 1 : 0) + (Reactions.has(t, Reactions.Mark.FROZEN) ? 1 : 0) + (t.isFullyFrozen() ? 1 : 0)
+			+ (t.hasAttached(WildercordAttachments.FROZEN_UNTIL) ? 1 : 0);
 	}
 
 	// ------------------------------------------------------------------ Fossilize (earth and time)

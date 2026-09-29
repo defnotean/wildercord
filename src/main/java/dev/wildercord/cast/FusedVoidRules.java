@@ -109,10 +109,10 @@ final class FusedVoidRules {
 	}
 
 	// ---- Prismatic Burst: 4 damage and 3 more per mark.
-	static final double PRISMATIC_DAMAGE = 4.0;
-	static final double PRISMATIC_PER_MARK = 3.0;
+	static final double PRISMATIC_DAMAGE = 5.0;
+	static final double PRISMATIC_PER_MARK = 4.0;
 	/** Marks it counts at most (it uses up every one: burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding). */
-	static final int PRISMATIC_MARKS = 6;
+	static final int PRISMATIC_MARKS = 5;
 
 	/** Prismatic Burst's damage at power 1 on a target with {@code marks} elemental marks. */
 	static double prismaticDamage(int marks) {

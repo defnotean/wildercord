@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
@@ -80,6 +81,8 @@ final class Techniques {
 			BLACKFLAME.clear();
 			OVERDRIVE.clear();
 			BIRDS.clear();
+			CONDEMNED.clear();
+			RESTORED.clear();
 		});
 	}
 
@@ -169,11 +172,13 @@ final class Techniques {
 		// The ground remembers the blow: half a second later the same spot is struck again, hitting whoever stands
 		// there (the target if it stayed, its neighbours too). Step aside and it misses.
 		Vec3 spot = t.position();
+		// The spot is marked as the ground gathers itself, two ticks before it is struck.
+		Scheduler.later(6, () -> StormEarthFx.mark(cast.level, spot, ElementFx.EARTH.primary(), 1.8, 4));
 		Scheduler.later(10, Effects.carryContext(() -> {
 			if (!cast.alive()) {
 				return;
 			}
-			TechniqueVfx.aftershock(cast.level, t, true);
+			TechniqueVfx.aftershockSpot(cast.level, spot);
 			for (Entity e : cast.level.getEntities((Entity) null, new AABB(spot, spot).inflate(1.5, 1.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
 				if (other.position().distanceTo(spot) <= 1.5 + other.getBbWidth() / 2) {
@@ -185,12 +190,16 @@ final class Techniques {
 	}
 
 	/** Resonance: marks the target; every other marked enemy nearby feels half the hit. */
+	/** The most enemies one Resonance hit rings. */
+	public static final int RESONANCE_LINKS = 4;
+
 	static void resonance(Cast cast, LivingEntity t, double power, int markTicks) {
-		double amount = 4 * power;
+		double amount = 5 * power;
 		List<LivingEntity> linked = new ArrayList<>();
 		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(16.0),
 				e -> Targets.canHarm(cast.caster, e) && Reactions.has(e, Reactions.Mark.RESONANT))) {
-			if (linked.size() < 8) {
+			// An enemy rings once per cast, however many pulses or hits follow, so a crowd is linear, not quadratic.
+			if (linked.size() < RESONANCE_LINKS && cast.once("resonance:" + e.getUUID())) {
 				linked.add((LivingEntity) e);
 			}
 		}
@@ -214,6 +223,7 @@ final class Techniques {
 		float taken = Math.max(0.0F, before - Math.max(0.0F, t.getHealth()));
 		if (taken > 0 && cast.caster.isAlive()) {
 			cast.caster.heal(Math.min(6.0F, taken / 4.0F));
+			Vfx.stream(cast.level, t.getBoundingBox().getCenter(), cast.caster.getBoundingBox().getCenter(), Vfx.themeOf(0xFFD050), 3);
 		}
 		Vec3 centre = t.getBoundingBox().getCenter();
 		Scheduler.later(8, Effects.carryContext(() -> {
@@ -380,15 +390,59 @@ final class Techniques {
 				continue;
 			}
 			double react = Reactions.collapse(cast, t);
-			Effects.hurt(cast, t, magic(cast), 5 * power * react);
+			Effects.hurt(cast, t, magic(cast), 4 * power * react);
 			Vec3 away = Effects.horizontal(t.position().subtract(c), cast.caster.getLookAngle());
 			double falloff = 1.0 - 0.4 * Math.min(1.0, d / Math.max(0.5, radius));
-			Effects.push(t, away.scale(2.4 * power * falloff).add(0, 0.5, 0));
+			Statuses.windPush(t, away.scale(2.4 * power * falloff).add(0, 0.5, 0));
 			Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 		}
 	}
 
 	// ------------------------------------------------------------------ control
+
+	/** Decree's verdict: the caster's next {@link #DECREE_HITS} spell hits on a held creature within 4 s deal 40% more; a decree on this many or more costs nothing. */
+	public static final int DECREE_HITS = 2;
+	public static final int DECREE_CONDEMNED_TICKS = 80;
+	public static final double DECREE_BONUS = 1.4;
+	public static final int DECREE_FREE_AT = 3;
+
+	private static final class Condemned {
+		final java.util.UUID by;
+		final long until;
+		int hits;
+
+		Condemned(java.util.UUID by, long until, int hits) {
+			this.by = by;
+			this.until = until;
+			this.hits = hits;
+		}
+	}
+
+	private static final java.util.Map<java.util.UUID, Condemned> CONDEMNED = new java.util.concurrent.ConcurrentHashMap<>();
+
+	/** The damage multiplier for a hit on a creature its caster decreed (1 when it isn't): called for every spell hit. */
+	static double condemned(Cast cast, LivingEntity target) {
+		if (CONDEMNED.isEmpty()) {
+			return 1.0;
+		}
+		Condemned c = CONDEMNED.get(target.getUUID());
+		if (c == null) {
+			return 1.0;
+		}
+		if (c.until < cast.level.getGameTime() || c.hits <= 0) {
+			CONDEMNED.remove(target.getUUID(), c);
+			return 1.0;
+		}
+		if (!c.by.equals(cast.caster.getUUID())) {
+			return 1.0;
+		}
+		c.hits--;
+		return DECREE_BONUS;
+	}
+
+	static void clearCondemned() {
+		CONDEMNED.clear();
+	}
 
 	/** Decree: everything hit is stunned; speaking it costs the caster 2 health, once per cast. */
 	static void decree(Cast cast, List<LivingEntity> harmed, int ticks) {
@@ -398,12 +452,15 @@ final class Techniques {
 		LivingEntity caster = cast.caster;
 		if (cast.once("decree")) {
 			TechniqueVfx.decreeSpoken(cast.level, caster);
-			if (!Casters.creative(caster)) {
+			// Speaking to a crowd is free: the cost is for a single command.
+			if (!Casters.creative(caster) && harmed.size() < DECREE_FREE_AT) {
 				caster.setHealth(Math.max(1.0F, caster.getHealth() - 2.0F));
 				Fx.sound(cast.level, caster.position(), SoundEvents.PLAYER_HURT, 0.6F, 0.8F);
 			}
 		}
+		long until = cast.level.getGameTime() + DECREE_CONDEMNED_TICKS;
 		for (LivingEntity t : harmed) {
+			CONDEMNED.put(t.getUUID(), new Condemned(caster.getUUID(), until, DECREE_HITS));
 			Spirits.hold(t, ticks);
 			if (t instanceof Mob mob) {
 				mob.setTarget(null);
@@ -491,24 +548,29 @@ final class Techniques {
 
 	/** Bubble: floats the target helplessly, then pops for damage and leaves it soaked. */
 	static void bubble(Cast cast, LivingEntity t, int ticks, double power) {
+		// One bubble at a time on a creature: a Zone's next pulse or a Linger doesn't stack pops.
+		if (!Statuses.claim(t, "bubble", ticks + 10)) {
+			return;
+		}
+		double lift = 2.5 / Math.max(1, ticks / 2);
 		if (t instanceof Mob) {
 			Spirits.hold(t, ticks);
 		} else {
 			t.addEffect(new MobEffectInstance(MobEffects.LEVITATION, ticks, 0, false, false));
 			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, false));
 		}
-		Fx.sound(cast.level, t.position(), SoundEvents.BUBBLE_COLUMN_BUBBLE_POP, 0.8F, 0.6F);
+		Feels.sound(cast.level, t.position(), "frost_bubble_in", 0.9F, 1.0F);
 		for (int i = 0; i < ticks; i += 2) {
 			int tick = i;
 			Scheduler.later(i + 1, () -> {
 				if (!t.isAlive() || t.level() != cast.level) {
 					return;
 				}
-				if (t instanceof Mob && !Spirits.isBoss(t) && fits(cast.level, t, t.position().add(0, 0.06, 0))) {
-					teleport(t, cast.level, t.position().add(0, 0.06, 0), t.getYRot(), t.getXRot());
+				if (t instanceof Mob && !Spirits.isBoss(t) && fits(cast.level, t, t.position().add(0, lift, 0))) {
+					teleport(t, cast.level, t.position().add(0, lift, 0), t.getYRot(), t.getXRot());
 				}
-				if (tick % 4 == 0) {
-					TechniqueVfx.bubble(cast.level, t);
+				if (tick % 4 == 0 || tick > ticks - 12) {
+					TechniqueVfx.bubble(cast.level, t, tick > ticks - 12);
 				}
 			});
 		}
@@ -558,16 +620,32 @@ final class Techniques {
 		});
 	}
 
+	/** Restore: heals 4, mends 8% of each item, and an item can be mended by it once a minute (so Zone, Linger and Pulse can't repair without limit). */
+	public static final double RESTORE_HEAL = 4.0;
+	public static final double RESTORE_MEND = 0.08;
+	public static final int RESTORE_REST = 1200;
+	private static final java.util.Map<String, Long> RESTORED = new java.util.concurrent.ConcurrentHashMap<>();
+
 	/** Restore: heals, puts out fire and mends worn and held gear a little. */
 	static void restore(Cast cast, LivingEntity t, double power) {
-		t.heal((float) (6 * power));
+		t.heal((float) (RESTORE_HEAL * power));
 		t.clearFire();
 		boolean mended = false;
+		long now = cast.level.getGameTime();
+		if (RESTORED.size() > 512) {
+			RESTORED.values().removeIf(at -> now - at >= RESTORE_REST || at > now);
+		}
 		for (EquipmentSlot slot : List.of(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST,
 				EquipmentSlot.LEGS, EquipmentSlot.FEET)) {
 			ItemStack stack = t.getItemBySlot(slot);
+			String key = t.getUUID() + ":" + slot.getName();
+			Long last = RESTORED.get(key);
+			if (last != null && last <= now && now - last < RESTORE_REST) {
+				continue;
+			}
 			if (!stack.isEmpty() && stack.isDamageableItem() && stack.getDamageValue() > 0) {
-				int fix = (int) Math.ceil(stack.getMaxDamage() * 0.05 * power);
+				RESTORED.put(key, now);
+				int fix = (int) Math.ceil(stack.getMaxDamage() * RESTORE_MEND * power);
 				stack.setDamageValue(Math.max(0, stack.getDamageValue() - fix));
 				mended = true;
 			}
@@ -792,7 +870,7 @@ final class Techniques {
 			Vec3 c = base.add(side.scale(i));
 			columns.add(BlockPos.containing(c.x, base.y + 0.01, c.z));
 		}
-		Fx.sound(level, base, SoundEvents.MACE_SMASH_GROUND, 0.8F, 0.7F);
+		dev.wildercord.cast.feel.Feels.sound(level, base, "earth_stomp", 0.8F, 0.84F);
 		long due = level.getGameTime() + ticks;
 		for (int row = 0; row < 3; row++) {
 			int r = row;
@@ -814,12 +892,15 @@ final class Techniques {
 					RAMPART.put(GlobalPos.of(level.dimension(), p.immutable()), state);
 					TemporaryBlocks.put(level, p, RAMPART_BLOCK, state, due);
 					level.setBlockAndUpdate(p, RAMPART_BLOCK);
-					level.levelEvent(2001, p, Block.getId(RAMPART_BLOCK));
+					Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, RAMPART_BLOCK), Vec3.atCenterOf(p), 4, 0.3, 0.05);
 				}
-				Fx.sound(level, base.add(0, r, 0), SoundEvents.PACKED_MUD_PLACE, 1.0F, 0.8F + r * 0.1F);
+				dev.wildercord.cast.feel.Feels.sound(level, base.add(0, r, 0), "earth_grind", 0.8F, new float[] {1.0F, 1.122F, 1.26F}[r]);
 			});
 		}
 		Scheduler.later(ticks, () -> {
+			if (level.isLoaded(BlockPos.containing(base))) {
+				dev.wildercord.cast.feel.Feels.sound(level, base.add(0, 1, 0), "earth_crack", 0.9F, 0.84F);
+			}
 			for (BlockPos column : columns) {
 				for (int r = 0; r < 3; r++) {
 					crumble(level, column.above(r));
@@ -835,7 +916,9 @@ final class Techniques {
 			return;
 		}
 		if (level.getBlockState(pos).is(RAMPART_BLOCK.getBlock())) {
-			level.levelEvent(2001, pos, Block.getId(RAMPART_BLOCK));
+			// Dust, not a vanilla break each: fifteen break sounds at once was a wall of noise (one crack plays for the wall).
+			Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, RAMPART_BLOCK),
+				Vec3.atCenterOf(pos), 6, 0.3, 0.05);
 			level.setBlockAndUpdate(pos, replaced);
 		}
 		TemporaryBlocks.remove(level, pos);
@@ -874,7 +957,7 @@ final class Techniques {
 		double phase = cast.level.getRandom().nextDouble() * Math.PI * 2;
 		Vec3[] bird = {caster.position().add(0, 3.3, 0)};
 		Vec3[] marked = {null};
-		Fx.sound(cast.level, caster.position(), SoundEvents.PHANTOM_FLAP, 1.0F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, caster.position(), "storm_cry", 1.0F, 1.0F);
 		for (int t = 0; t <= ticks; t += 2) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -892,7 +975,8 @@ final class Techniques {
 					LivingEntity pick = ShapeRunners.nearestEnemy(cast, caster.position().add(0, 1, 0), 12.0, caster.getLastHurtMob());
 					marked[0] = pick == null ? null : pick.position();
 					if (marked[0] != null) {
-						ElementFx.groundRing(cast.level, marked[0], ElementFx.STORM.primary(), 1.4, 0.4, 0.05, BIRD_WARNING);
+						StormEarthFx.mark(cast.level, marked[0], ElementFx.STORM.primary(), 1.5, BIRD_WARNING);
+						dev.wildercord.cast.feel.Feels.sound(cast.level, marked[0], "storm_dive", 0.8F, 1.0F);
 					}
 					return;
 				}

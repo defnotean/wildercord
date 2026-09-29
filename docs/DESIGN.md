@@ -179,7 +179,7 @@ Tiers: **I** early game · **II** mid game · **III** late game · **IV** boss.
 | Dash | II | wind | harmful | Shoves targets 8 blocks the way you're facing. On Self it's a dash | 6 |
 | Pull | II | void | harmful | Pulls targets toward the spell, leaving them staggered and pulled for 4 s | 5 |
 | Fire | II | fire | harmful | 5 fire damage and sets alight for 6 s | 8 |
-| Frost | II | frost | harmful | 5 freeze damage, freezes solid, Slowness III for 4 s | 8 |
+| Frost | II | frost | harmful | 5 freeze damage, Slowness III for 4 s, and the frost leaves it brittle for Shatter | 8 |
 | Break | II | earth | world | Mines the block (up to iron-pickaxe hardness; Amplify raises it to diamond). Respects claims and spawn protection | 4 |
 | Lightning | III | storm | harmful | A 12-damage strike on each target that slows and burns (an enemy takes a cast's strongest strike once, however many land beside it). You and your allies are immune | 20 |
 | Blink | III | void | movement | Teleports you to where the spell landed (max 40 blocks, always to a safe spot) | 15 |
@@ -239,7 +239,7 @@ Modifiers stack: `Amplify · Amplify` = +125% power at ×2.56 cost.
 | Veil | II | void | Invisibility for 12 s; nearby monsters lose track of you; the first damage you deal from it is +50% and ends it |
 | Empower | II | arcane | Strength II for 10 s |
 | Levitate | II | wind | Targets float helplessly for 3 s (on Self, you float) |
-| Freeze | III | frost | Frozen solid for 2.5 s: mobs stop completely |
+| Freeze | III | frost | Frozen solid for 2.5 s (1.5 on players): mobs stop completely; Shatter or Fracture ends the hold | 14 |
 | Meteor | III | fire | A meteor falls on each target: 10 damage in 3 blocks |
 | Tremor | III | earth | The ground erupts: 8 damage within 4 blocks, throwing enemies up |
 | Gravity Well | III | void | Drags every enemy within 7 blocks into the point for 2 s, pulls fliers down, leaves them pulled |
@@ -365,7 +365,7 @@ and craftable.
 | Brace | Effect · Support | I | 80% less damage for 2 s; bracing again takes 6 s |
 | Anchor | Effect · Support | I | 15 s: no knockback from blows or blasts, no spell can move you, and 4 armour (8 once you stand still) |
 | Bramble | Effect · Support | I | 10 s: whatever hurts you from within 4 blocks takes 3 damage and is shoved away |
-| Frostward | Effect · Support | I | 60 s: you can't freeze, not even in powder snow, and frost can't leave you brittle for Shatter |
+| Frostward | Effect · Support | I | 60 s: you can't freeze, not even in powder snow, a frost hold on you lasts a second at most, and frost can't leave you brittle for Shatter |
 | Cushion | Effect · Support | I | 30 s: no fall damage, and a hard landing throws a gust at the enemies around you |
 | Deflect | Effect · Support | II | 8 s: projectiles coming at the target are turned aside |
 | Haven | Effect · Support | II | A 4-block dome for 8 s: allies inside take 20% less damage, projectiles from outside glance off it |
@@ -423,7 +423,7 @@ and On Reaction also turn up in ancient city, end city and trial chamber chests.
 | Gash | Effect · Control (blood) | II | 9 | 3 damage; for 8 s the target can't heal at all (Regeneration, potions, food, spells) and is bleeding. Setting health outright (a death save) still works |
 | Prospect | Effect · World (earth) | I | 3 | Every ore within 12 blocks (16 at most, widened) glows through the rock for 20 s, in the colour of what it gives: block displays only, nothing in the world changes |
 | Searing Edge | Effect · Support (fire) | II | 8 | 15 s: each melee hit the target lands sets the foe alight for 4 s and deals 2 more fire damage (who may be burned is the caster's call). Sustainable as a passive |
-| Flash Freeze | Effect · Control (frost) | II | 9 | 4 freeze damage; a wet or soaked target freezes solid for 3 s (1.5 on players), its soak turned to frozen; a dry one gets Slowness II for 3 s |
+| Flash Freeze | Effect · Control (frost) | II | 9 | 4 freeze damage; a soaked target (in water, or after a water rune or Bubble) freezes solid for 3 s (1.5 on players), one only rained on for 2 s (1); a dry one is slowed and left brittle |
 | Drowse | Effect · Control (life) | III | 14 | Sleep for 6 s (2 on players): no moving or fighting back, but any damage wakes it. Bosses only get Slowness II |
 | Galvanize | Effect · World (storm) | I | 3 | A redstone block in the air against the face it struck, for 5 s: it powers what it touches. Only in empty air, where you may build, out of the block budget; written down with its world, drops nothing, pistons can't move it |
 | Prolong | Effect · Time | III | 12 | Every good effect on the target lasts 15 s longer, up to 5 minutes; endless ones stay as they are |

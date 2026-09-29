@@ -81,6 +81,10 @@ public final class SpellCaster {
 			fail(player, Component.translatable("message.wildercord.no_cord"));
 			return;
 		}
+		if (CastLock.locked(player)) {
+			fail(player, Component.translatable("message.wildercord.silenced"));
+			return;
+		}
 		if (VoidTime.hushed(player)) {
 			// A Hush lies over them: no word they say makes a sound.
 			fail(player, Component.translatable("message.wildercord.hushed"));
@@ -180,6 +184,7 @@ public final class SpellCaster {
 		Spellbooks.setReadyAt(player, spell, now + cooldown);
 		HeartCircles.condense(player, spent);
 		VoidTime.spent(player, spent);
+		ExplorerEffects.manatideRefund(player, spent);
 		// Each element in the spell grows its affinity by the mana it made up; a Blood Price's health feeds blood.
 		PlayerAffinities.onCast(player, compiled.root(), spent, blood);
 		double rhythm = Rhythm.onCast(player, now, cooldown);
@@ -253,7 +258,8 @@ public final class SpellCaster {
 			Scheduler.later(8, () -> {
 				if (!player.isRemoved() && player.isAlive()) {
 					TechniqueVfx.twinStar(player.level(), player);
-					Cast again = cast.again(1.0);
+					// The twin is a shade weaker than the caster (75%): a free second cast is not a free double.
+					Cast again = cast.again(Innates.TWIN_POWER);
 					if (secret.isPresent()) {
 						SecretSpells.cast(again, secret.get());
 					} else {
@@ -542,7 +548,7 @@ public final class SpellCaster {
 		}
 		Mana.Stats stats = Mana.of(player);
 		float mana = Spellbooks.mana(player);
-		float next = Math.min(stats.max(), mana + stats.regen() / 4.0F);
+		float next = Math.min(stats.max(), mana + stats.regen() * (float) Spirits.upkeep(player) / 4.0F);
 		if (mana > stats.max()) {
 			next = stats.max();
 		}

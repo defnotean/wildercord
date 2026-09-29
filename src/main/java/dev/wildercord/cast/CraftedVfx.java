@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -188,7 +189,7 @@ final class CraftedVfx {
 		Sigils.layer(level, head(t), UP, SigilOption.STAR, ARCANE, 0.55F, Math.min(ticks, 160), 0.1F);
 		Light.ring(level, t.getBoundingBox().getCenter(), UP, ARCANE, 0.2, Math.max(0.9, t.getBbWidth() + 0.5), 0.05, 9);
 		Vfx.emit(level, ParticleTypes.ENCHANT, head(t), 10, 0.3, 0.2);
-		Fx.sound(level, t.position(), SoundEvents.ENCHANTMENT_TABLE_USE, 0.6F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, t.position(), "arcane_stamp", 0.9F, 1.0F);
 	}
 
 	static void spellbrandBurst(ServerLevel level, Entity t) {
@@ -197,7 +198,7 @@ final class CraftedVfx {
 		Light.ring(level, c, UP, ARCANE, 0.2, 1.8, 0.07, 9);
 		Light.ring(level, c, new Vec3(0.3, 0.2, 0.9).normalize(), 0xFFD8FA, 0.2, 1.4, 0.05, 8);
 		Vfx.radial(level, ParticleTypes.ENCHANTED_HIT, c, 14, 0.3);
-		Fx.sound(level, c, SoundEvents.AMETHYST_CLUSTER_BREAK, 0.9F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "arcane_stamp_burst", 0.9F, 1.0F);
 	}
 
 	/** Gash: a ragged cut and the first drops. */
@@ -285,12 +286,19 @@ final class CraftedVfx {
 		Vec3 c = t.getBoundingBox().getCenter();
 		Sigils.flash(level, c, FROST, frozen ? 1.8F : 1.0F);
 		Light.ring(level, t.position().add(0, 0.1, 0), UP, frozen ? WHITE : FROST, 0.2, Math.max(0.8, t.getBbWidth() + 0.5), 0.05, 9);
-		Vfx.radial(level, ParticleTypes.SNOWFLAKE, c, frozen ? 16 : 6, 0.2);
+		Vfx.radial(level, ParticleTypes.SNOWFLAKE, c, frozen ? 12 : 5, 0.2);
+		// A frozen splash: a crown of blue-to-white spikes standing up round the feet (higher when it froze solid).
+		int spikes = frozen ? 10 : 6;
+		double rim = Math.max(0.5, t.getBbWidth() * 0.8);
+		for (int i = 0; i < spikes; i++) {
+			double a = Math.PI * 2 * i / spikes;
+			Vec3 foot = t.position().add(Math.cos(a) * rim, 0.05, Math.sin(a) * rim);
+			ElementFx.ray(level, foot, foot.add(Math.cos(a) * -0.15, (frozen ? 0.9 : 0.5) + 0.25 * (i % 2), Math.sin(a) * -0.15), i % 2 == 0 ? WHITE : FROST, 0.05, 7);
+		}
 		if (frozen) {
 			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.ICE), c, 10, 0.2);
-			Fx.sound(level, c, SoundEvents.GLASS_PLACE, 0.9F, 1.6F);
+			Feels.sound(level, c, "frost_splat", 1.0F, 1.0F);
 		}
-		Fx.sound(level, c, SoundEvents.POWDER_SNOW_STEP, 0.9F, 0.8F);
 	}
 
 	/** Drowse: a puff of pink pollen, and the target sinks into sleep. */
@@ -298,7 +306,7 @@ final class CraftedVfx {
 		Vec3 c = t.getBoundingBox().getCenter();
 		Motes.clouds(level, c, 4, 0.4, 0xF7C6E8, 0.8, 30, new Vec3(0, 0.01, 0), 0.02, 0.35);
 		ElementFx.petals(level, c, 0.5, 8);
-		Fx.sound(level, c, SoundEvents.AZALEA_LEAVES_BREAK, 0.8F, 0.7F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "life_lull", 0.9F, 1.0F);
 	}
 
 	/** While it sleeps: pale motes drifting up off its head. */
@@ -316,11 +324,12 @@ final class CraftedVfx {
 		Vec3 c = Vec3.atCenterOf(pos);
 		Sigils.flash(level, c, STORM, 1.3F);
 		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 12, 0.25);
-		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.3F, 1.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_pip", 0.8F, 1.0F);
 	}
 
 	static void galvanizeHum(ServerLevel level, BlockPos pos) {
 		Vfx.emit(level, ParticleTypes.ELECTRIC_SPARK, Vec3.atCenterOf(pos), 3, 0.35, 0.05);
+		ElementFx.ring(level, Vec3.atCenterOf(pos), new Vec3(0, 1, 0), ElementFx.STORM.primary(), 0.75, 0.6, 0.02, 10);
 	}
 
 	/** Nothing to set a spark against (no room, or no building there): it fizzles. */
@@ -355,9 +364,8 @@ final class CraftedVfx {
 		if (!taken.isEmpty()) {
 			Vfx.fling(level, new ItemParticleOption(ParticleTypes.ITEM, taken.getItem()), c, new Vec3(0, 1, 0), 0.3);
 			Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, taken.getItem()), c, 6, 0.2);
-			Fx.sound(level, c, SoundEvents.ITEM_BREAK, 0.4F, 1.6F);
+			Feels.sound(level, c, "wind_snatch", 0.9F, 1.0F);
 		}
-		Fx.sound(level, c, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.6F, 1.4F);
 	}
 
 	/** The weapon drifts back into its hand. */

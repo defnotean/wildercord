@@ -64,7 +64,28 @@ public final class Wards {
 		}
 	}
 
-	private record Reflect(long until, double fraction) {}
+	/** A mirror ward: it cracks with every blow it returns (each costs a second of its time, and it holds at most {@link #REFLECTIONS}). */
+	private static final class Reflect {
+		long until;
+		final double fraction;
+		int left = REFLECTIONS;
+
+		Reflect(long until, double fraction) {
+			this.until = until;
+			this.fraction = fraction;
+		}
+
+		long until() {
+			return until;
+		}
+
+		double fraction() {
+			return fraction;
+		}
+	}
+
+	/** Blows a Reflect returns before it shatters. */
+	public static final int REFLECTIONS = 6;
 
 	private static final class Sight {
 		long until;
@@ -385,7 +406,11 @@ public final class Wards {
 		reflecting = true;
 		try {
 			Effects.readyToHurt(attacker);
-			attacker.hurtServer(level, level.damageSources().thorns(entity), (float) (damage * ward.fraction()));
+			attacker.hurtServer(level, level.damageSources().indirectMagic(entity, entity), (float) (damage * ward.fraction()));
+			ward.until -= 20;
+			if (--ward.left <= 0) {
+				REFLECT.remove(entity.getUUID(), ward);
+			}
 			TechniqueVfx.reflect(level, entity, attacker);
 		} finally {
 			reflecting = false;

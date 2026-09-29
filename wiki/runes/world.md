@@ -15,7 +15,7 @@ nav_order: 5
 
 *Tier I · Life · Works on the world · 4 mana · needs any Cord*
 
-Plants an ancient seed at the point: a torchflower or pitcher plant blooms, and crops within 4 blocks grow a stage.
+Plants an ancient seed at the point: a torchflower or pitcher plant blooms, and crops within 4 blocks grow a stage now and every 3 seconds for 12 seconds more.
 
 **How to get it:** Found only, never crafted: Trail ruins (brushing).
 
@@ -26,7 +26,7 @@ Plants an ancient seed at the point: a torchflower or pitcher plant blooms, and 
 
 *Tier I · Life · Works on the world · 3 mana · needs any Cord*
 
-Glowing cave vines heavy with glow berries grow down from the ceiling around the point: a light that stays.
+Glowing cave vines heavy with glow berries grow down from the ceiling around the point: a light that stays. Vines already there bear berries again.
 
 **How to get it:** Found only, never crafted: Attuned in lush caves.
 
@@ -37,7 +37,7 @@ Glowing cave vines heavy with glow berries grow down from the ceiling around the
 
 *Tier I · Arcane · Helps you and your allies · 4 mana · needs any Cord*
 
-For 60 seconds, Luck II, and every chest, barrel and suspicious block within 24 blocks sparkles now and then.
+For 60 seconds, Luck II, and the nearest unopened treasure chests and suspicious blocks within 24 blocks sparkle now and then.
 
 **How to get it:** Found only, never crafted: Buried treasure; Archive libraries.
 
@@ -81,7 +81,7 @@ Brands each target: 3 fire damage, and for 6 seconds your fire spells burn it 50
 
 *Tier II · Frost · Moves you · 6 mana · needs a Copper Cord or better*
 
-Only in water or rain: a current sweeps you about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.
+Only in water or rain: a current sweeps you and the allies within 2 blocks about 15 blocks the way you look, and you land without fall damage. On dry land it fizzles.
 
 **How to get it:** Found only, never crafted: Fished from open water.
 
@@ -154,7 +154,7 @@ Silverfish burrow out of the stone around each target: 1 damage every half secon
 
 *Tier II · Arcane · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, and a player loses up to 20 mana (less from a weaker hit).
+Burns magic: 5 damage. A spellcaster (a player wearing a Cord, or a Runebound) also takes 4 more, a player loses up to 20 mana (less from a weaker hit), and a charge or telegraphed cast in hand is cut short.
 
 **How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
 
@@ -176,7 +176,7 @@ The ground turns to mire under each target for 5 seconds: it sinks (Slowness IV,
 
 *Tier II · Life · Harms enemies · 12 mana · needs a Copper Cord or better*
 
-A storm of moonlit petals at the point: 4 damage to every enemy within 3 blocks, and 3 health to you and your allies there.
+A storm of moonlit petals at the point: 5 damage to every enemy within 3 blocks, and 4 health to you and your allies there. Stronger under a full moon and at night, weaker under a new moon.
 
 **How to get it:** Found only, never crafted: Attuned in a cherry grove.
 
@@ -198,7 +198,7 @@ A portal opens under each target and drops it from up to 7 blocks up, with 2 dam
 
 *Tier II · Life · Helps you and your allies · 10 mana · needs a Copper Cord or better*
 
-Cures what ails: washes away harmful effects, heals 4 and gives Regeneration I for 6 seconds. A zombie villager it touches is weakened, ready for a golden apple.
+Cures what ails and turns it to good (poison to Regeneration, slowness to Speed, weakness to Strength...) for half its time; heals 4 and gives Regeneration I for 6 seconds. A zombie villager it touches is weakened, ready for a golden apple.
 
 **How to get it:** Found only, never crafted: Igloo basements.
 
@@ -209,7 +209,7 @@ Cures what ails: washes away harmful effects, heals 4 and gives Regeneration I f
 
 *Tier II · Life · Harms enemies · 11 mana · needs a Copper Cord or better*
 
-Mangrove roots burst up around the point: every enemy within 3 blocks is held for 2 seconds and takes 3 damage.
+Mangrove roots burst up around the point: every enemy within 3 blocks is held for 1.5 seconds and takes 3 damage, then slowed for 4 seconds and cut by 1 damage for every 1.5 blocks it moves (5 at most).
 
 **How to get it:** Found only, never crafted: Attuned in a mangrove swamp.
 
@@ -231,7 +231,7 @@ Strings an unseen tripwire from your feet to where you look (up to 12 blocks). T
 
 *Tier II · Life · Harms enemies · 10 mana · needs a Copper Cord or better*
 
-Spores burst from a giant mushroom at the point: Poison I and Nausea for 6 seconds to enemies within 3 blocks, and 4 hunger restored to your allies there.
+Spores burst from a giant mushroom at the point: enemies within 3 blocks take Poison I and spore damage, and monsters among them turn on each other for 5 seconds (players get Nausea). Your allies there get 4 hunger back.
 
 **How to get it:** Found only, never crafted: Attuned in mushroom fields.
 
@@ -253,7 +253,7 @@ A stalactite drops on the spot each target stands on: 7 damage, 30% more against
 
 *Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A hook of water snags each target and reels it in to your feet in three tugs: 4 damage, and it's left soaked.
+A hook of water snags each target and reels it in to your feet in three tugs (a flyer is reeled down): 4 damage, it's left soaked and gasping for half a second when it lands.
 
 **How to get it:** Found only, never crafted: Fished from open water.
 
@@ -286,7 +286,7 @@ You charge like a hoglin, up to 8 blocks the way you look, tossing everything in
 
 *Tier II · Frost · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-Drags each target down: Slowness III for 3 seconds and soaked. In water it's pulled under and takes 5 damage.
+Drags each target down: Slowness III for 3 seconds and soaked. Out of the water it hauls the target toward the nearest water within 6 blocks (with none near, the ground turns to slurry for 3 damage); in water it's pulled under and takes 5.
 
 **How to get it:** Found only, never crafted: Shipwrecks; Runebound Adepts (8%).
 
@@ -297,7 +297,7 @@ Drags each target down: Slowness III for 3 seconds and soaked. In water it's pul
 
 *Tier II · Life · Harms enemies · 9 mana · needs a Copper Cord or better*
 
-A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you.
+A thorned vine lashes each target: 5 damage, and it's yanked 4 blocks toward you and tripped (Slowness II for 2 seconds).
 
 **How to get it:** Found only, never crafted: Jungle temples; Runebound Adepts (8%).
 
@@ -363,7 +363,7 @@ Joins up to 5 enemies within 12 blocks of you in a constellation of light and st
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-A drowning word: for 5 seconds the target's lungs fill with water (it loses its air and takes 2 damage a second), and it's soaked.
+A drowning word: for 5 seconds the target's lungs fill with water (it loses its air, takes 2 damage a second and can't cast), and it's soaked.
 
 **How to get it:** Found only, never crafted: The Drowned Scriptorium.
 
@@ -385,7 +385,7 @@ A dark disc eclipses the point for 5 seconds: enemies beneath it (4 blocks) are 
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-Rime creeps over each target for 3 seconds, slowing it more every second; then it freezes solid for 2 seconds and takes 6 damage.
+Rime creeps over each target for 3 seconds, slowing it more every second; then it freezes solid for 2 seconds and takes 6 damage, and the frost blooms: enemies within 2 blocks take 3 and are slowed. Cast again on a creeping target, it starts nothing new.
 
 **How to get it:** Found only, never crafted: Attuned among ice spikes.
 
@@ -414,9 +414,9 @@ The rest fires only if 3 or more enemies are within 8 blocks of you.
 ### <img src="{{ '/assets/runes/manatide.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Manatide
 {: #manatide}
 
-*Tier III · Arcane · Helps you and your allies · 12 mana · needs an Amethyst Cord or better*
+*Tier III · Arcane · Helps you and your allies · 10 mana · needs an Amethyst Cord or better*
 
-Drinks in the storm: you and your allies hit regain 3 mana a second for 10 seconds (30 at most, however extended). Each player can drink only once a minute.
+Drinks in the storm: for 10 seconds, every spell you and your allies hit cast gives back a quarter of its mana (30 at most, however extended). Each player can drink only once a minute.
 
 **How to get it:** Found only, never crafted: Mana storms (a surge after 10 casts).
 
@@ -482,7 +482,7 @@ Blue soul flames: 3 fire damage a second for 5 seconds, and the damage they deal
 
 *Tier III · Arcane · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-Tethers each target to the point with a thread of starlight for 6 seconds: it's dragged back if it strays 3 blocks, taking 2 damage each time.
+Tethers each target to the point with a thread of starlight for 5 seconds: it's dragged back if it strays 3 blocks, taking 1 damage each time (once a second at most).
 
 **How to get it:** Found only, never crafted: Attuned on the End's outer islands.
 
@@ -493,7 +493,7 @@ Tethers each target to the point with a thread of starlight for 6 seconds: it's 
 
 *Tier III · Arcane · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-A shard of the fallen star: 9 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks for 3.
+A shard of the fallen star: 11 damage, then it splinters into 3 sparks that strike the nearest other enemies within 8 blocks for 4.
 
 **How to get it:** Found only, never crafted: Fallen Star craters.
 
@@ -504,7 +504,7 @@ A shard of the fallen star: 9 damage, then it splinters into 3 sparks that strik
 
 *Tier III · Wind · Harms enemies · 14 mana · needs an Amethyst Cord or better*
 
-A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and away. On Self it carries you 12 blocks up and lets you glide down.
+A howling mountain wind: 5 damage and hurls every enemy within 3 blocks up and away, holding them aloft so they glide down out of the fight (a fifth stronger above y=120). On Self it carries you 12 blocks up and lets you glide down.
 
 **How to get it:** Found only, never crafted: Attuned on a mountain peak.
 
@@ -526,7 +526,7 @@ The noon sun, focused: 8 fire damage and alight for 5 seconds. Under open sky by
 
 *Tier III · Frost · Harms enemies · 16 mana · needs an Amethyst Cord or better*
 
-The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle and leaving them soaked.
+The tide crashes in at the point: 6 damage to every enemy within 3.5 blocks, dragging them into the middle (as a Pull does) and leaving them soaked. A crowd it bunches takes 1 more for each neighbour (4 at most).
 
 **How to get it:** Found only, never crafted: Ocean monuments (Elder Guardians).
 
@@ -581,7 +581,7 @@ Devours the light: 14 damage, and it swallows each of the target's good effects 
 
 *Tier IV · Frost · Harms enemies · 30 mana · needs an Echo Cord*
 
-Writes the tide: a 7-wide wall of water rolls from you through the point, 10 damage to everything in it, sweeping it 8 blocks on, soaked.
+Writes the tide: a 7-wide wall of water rolls from you through the point, 10 damage to everything in it, sweeping it about 11 blocks on, soaked.
 
 **How to get it:** Found only, never crafted: the Tide Scribe.
 

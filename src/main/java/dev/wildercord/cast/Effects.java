@@ -103,6 +103,11 @@ public final class Effects {
 	/** Thirst on the effect being applied: the share of the damage it deals that heals its caster (0 = none). */
 	private static double thirst;
 
+	/** The element of the effect being applied right now (empty outside one). */
+	static String currentElementNow() {
+		return currentElement;
+	}
+
 	/** Whose spell is being applied right now, or null: harm landing meanwhile is that caster's doing. */
 	public static LivingEntity applying() {
 		return applying;
@@ -228,8 +233,12 @@ public final class Effects {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, ticks(12, duration), 0, false, true));
 				t.resetFallDistance();
 				Vfx.featherFall(level, t);
+				if (!cast.passive) {
+					featherglide(cast, t, ticks(12, duration));
+				}
 			});
 			case "swift" -> helped.forEach(t -> {
+				shakeOffCold(t);
 				t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(10, duration), Math.min(4, 2 + amplify), false, true));
 				Vfx.swift(level, t);
 			});
@@ -238,7 +247,17 @@ public final class Effects {
 				Vfx.nightEye(level, t);
 			});
 			case "heal" -> helped.forEach(t -> {
-				t.heal((float) (8 * power));
+				// Repeats inside one cast (a Zone's pulses, Linger, Echo) heal 100%, then 60%, then 40% of it: a heal over time is its own runes' job.
+				double share = cast.once("heal0:" + t.getUUID()) ? 1.0 : cast.once("heal1:" + t.getUUID()) ? 0.6 : 0.4;
+				float before = t.getHealth();
+				t.heal((float) (8 * power * share));
+				// Whatever the heal could not use becomes a shield of up to 2 hearts that fades in 10 s (never stacking past that).
+				float over = (float) (8 * power * share) - (t.getHealth() - before);
+				if (over >= 0.5F && t.getAbsorptionAmount() < HEAL_SHIELD_MAX) {
+					float keep = Math.max(t.getAbsorptionAmount(), Math.min(HEAL_SHIELD_MAX, over));
+					t.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 200, 0, false, true));
+					t.setAbsorptionAmount(keep);
+				}
 				Vfx.heal(level, t);
 			});
 			case "shield" -> {
@@ -247,13 +266,15 @@ public final class Effects {
 			}
 			case "harm" -> harmed.forEach(t -> {
 				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 7 * power);
+				Exposed.mark(t, Exposed.HARM_TICKS);
 				Vfx.harm(level, t);
 			});
 			case "push" -> harmed.forEach(t -> {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
-				push(t, away.scale(2.2 * power).add(0, 0.45, 0));
+				Statuses.windPush(t, away.scale(2.2 * power).add(0, 0.45, 0));
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 				Vfx.push(level, t, away);
+				wallSlam(cast, t, power);
 			});
 			case "pull" -> harmed.forEach(t -> {
 				Vec3 towards = hit.origin().subtract(t.position());
@@ -271,19 +292,23 @@ public final class Effects {
 					kick = kick.add(horizontal(caster.getLookAngle(), caster.getLookAngle()).scale(0.7));
 					caster.resetFallDistance();
 				}
-				push(t, new Vec3(v.x, Math.max(0, v.y), v.z).add(kick).subtract(v));
-				if (t != caster) {
+				Vec3 lift = new Vec3(v.x, Math.max(0, v.y), v.z).add(kick).subtract(v);
+				if (t == caster) {
+					push(t, lift);
+				} else {
+					Statuses.windPush(t, lift);
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT);
+					Statuses.airborne(t, AIRBORNE_LAUNCH_TICKS);
 				}
 				Vfx.launch(level, t);
 			});
 			case "dash" -> moved.forEach(t -> {
-				Vec3 look = caster.getLookAngle();
-				Vec3 dir = new Vec3(look.x, Math.max(-0.2, Math.min(0.45, look.y)) + 0.12, look.z).normalize();
-				push(t, dir.scale(2.6 * power));
+				Vec3 flat = horizontal(caster.getLookAngle(), caster.getLookAngle());
+				Vec3 dir = flat.add(0, 0.12, 0).normalize();
 				if (t == caster) {
-					caster.resetFallDistance();
+					dashSelf(cast, caster, flat, power);
 				} else {
+					Statuses.windPush(t, flat.scale(DASH_SHOVE * power).add(0, 0.2, 0));
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 				}
 				Vfx.dash(level, t, dir);
@@ -310,7 +335,7 @@ public final class Effects {
 				// Set alight once every strike has landed: fire from one strike would let the next set off Overload again.
 				Set<LivingEntity> struck = new LinkedHashSet<>();
 				for (int i = 0; i < Math.min(MAX_STRIKES_PER_HIT, strikes.size()); i++) {
-					lightning(cast, strikes.get(i), power, struck, new HashSet<>(harmed));
+					lightning(cast, strikes.get(i), power, struck, new HashSet<>(harmed), i < 3);
 				}
 				struck.forEach(t -> t.igniteForSeconds(4));
 			}
@@ -351,10 +376,32 @@ public final class Effects {
 			});
 			case "reveal" -> harmed.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.GLOWING, ticks(15, duration), 0, false, false));
-				Vfx.reveal(level, t);
+				t.removeEffect(MobEffects.INVISIBILITY);
+				Exposed.mark(t, ticks(15, duration));
+				LifeArcaneFx.reveal(level, t, ticks(15, duration));
 			});
 			case "regrowth" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks(8, duration), Math.min(3, 1 + amplify), false, true));
+				if (passiveEffect) {
+					t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, ticks(8, duration), Math.min(3, 1 + amplify), false, true));
+				} else {
+					// The vines take hold: Regeneration I for 3 s, II for 3, III for 2 (about 7 health in all).
+					int[] length = {ticks(3, duration), ticks(3, duration), ticks(2, duration)};
+					int at = 0;
+					for (int stage = 0; stage < 3; stage++) {
+						int level2 = Math.min(3, stage + amplify);
+						int span = length[stage];
+						if (stage == 0) {
+							t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, span, level2, false, true));
+						} else {
+							Scheduler.later(at, () -> {
+								if (t.isAlive() && t.level() == level) {
+									t.addEffect(new MobEffectInstance(MobEffects.REGENERATION, span, level2, false, true));
+								}
+							});
+						}
+						at += span;
+					}
+				}
 				Vfx.regrowth(level, t);
 			});
 			case "cleanse" -> helped.forEach(t -> {
@@ -367,7 +414,10 @@ public final class Effects {
 				bad.forEach(t::removeEffect);
 				t.clearFire();
 				t.setTicksFrozen(0);
-				Reactions.clear(t, Reactions.Mark.FROZEN);
+				// It washes the elemental marks off too, so a reaction can't be set off on someone just cleansed.
+				for (Reactions.Mark mark : Reactions.Mark.values()) {
+					Reactions.clear(t, mark);
+				}
 				Vfx.cleanse(level, t);
 			});
 			case "stoneskin" -> helped.forEach(t -> {
@@ -375,11 +425,15 @@ public final class Effects {
 				// Stone is heavy: the price of the best long ward is a step slower.
 				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(10, duration), 0, false, false));
 				Vfx.stoneskin(level, t);
+				if (!cast.passive) {
+					StormEarthFx.stoneskinHold(level, t, ticks(10, duration));
+				}
 			});
 			case "root" -> harmed.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(3, duration), 6, false, false));
 				t.setDeltaMovement(0, Math.min(0, t.getDeltaMovement().y), 0);
-				Vfx.root(level, t);
+				Vfx.root(level, t, ticks(3, duration));
+				StormEarthFx.rootHold(level, t, ticks(3, duration));
 			});
 			case "veil" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, ticks(12, duration), 0, false, true));
@@ -394,15 +448,30 @@ public final class Effects {
 				TimeFx.endingLater(level, t, ticks(12, duration), ElementFx.VOID.secondary(), "void_step_tick", 0.6F);
 			});
 			case "empower" -> helped.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, ticks(10, duration), Math.min(3, 1 + amplify), false, true));
+				int strength = ticks(10, duration);
+				// A passive carries only Strength I; a cast's borrowed strength is paid back as a comedown when it runs out.
+				t.addEffect(new MobEffectInstance(MobEffects.STRENGTH, strength, passiveEffect ? 0 : Math.min(3, 1 + amplify), false, true));
+				if (!passiveEffect) {
+					Scheduler.later(strength, () -> {
+						if (t.isAlive() && t.level() == level) {
+							t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, EMPOWER_COMEDOWN, 0, false, true));
+							LifeArcaneFx.comedown(level, t);
+						}
+					});
+				}
 				Vfx.empower(level, t);
 			});
 			case "levitate" -> moved.forEach(t -> {
 				// Bosses are only ever slowed: lifted out of reach, a fight could be won by the fall.
 				boolean boss = t != caster && Spirits.isBoss(t);
-				t.addEffect(new MobEffectInstance(boss ? MobEffects.SLOWNESS : MobEffects.LEVITATION, ticks(3, duration), 1, false, true));
+				t.addEffect(new MobEffectInstance(boss ? MobEffects.SLOWNESS : MobEffects.LEVITATION, ticks(3, duration), boss ? 1 : 0, false, true));
 				if (t != caster) {
 					Reactions.mark(t, Reactions.Mark.WINDSWEPT, ticks(3, duration) + 20);
+					if (!boss) {
+						// Suspended: it hangs where it was lifted, and every spell hits it harder while it's off the ground.
+						Statuses.airborne(t, ticks(3, duration) + 10);
+						suspend(cast, t, ticks(3, duration));
+					}
 				}
 				Vfx.levitate(level, t);
 			});
@@ -430,14 +499,29 @@ public final class Effects {
 			}
 			case "summon" -> Spirits.summonWolves(cast, caster.position(), 3, power, duration);
 			case "venom" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.POISON, ticks(6, duration), Math.min(3, 1 + amplify), false, true), caster);
+				// Poison I stays as the marker (cures, Blight, Elapse); the damage is the venom's own, so undead and spiders feel it and it can kill.
+				int seconds = (int) Math.max(1, Math.round(VENOM_SECONDS * duration));
+				t.addEffect(new MobEffectInstance(MobEffects.POISON, seconds * 20, Math.min(3, amplify), false, true), caster);
 				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 2 * power);
+				venomDot(cast, t, power, seconds);
+				if (cast.once("venom-spread:" + t.getUUID())) {
+					venomSpread(cast, t, power, seconds);
+				}
 				Vfx.venom(level, t);
 			});
 			case "smite" -> harmed.forEach(t -> {
-				double undead = t.isInvertedHealAndHarm() ? 2.0 : 1.0;
-				hurt(cast, t, level.damageSources().indirectMagic(caster, caster), 10 * power * undead);
-				Vfx.smite(level, t);
+				// A verdict, not a flick: a ring closes at its feet for 0.7 s (it can step out), then the column falls on where it stands.
+				Sigils.target(level, t.position(), 0xFFF0B0, 1.6F, SMITE_DELAY);
+				LifeArcaneFx.smiteWindUp(level, t);
+				Scheduler.later(SMITE_DELAY, carryContext(() -> {
+					if (!cast.alive() || !t.isAlive() || t.level() != level || !Targets.canHarm(caster, t)) {
+						return;
+					}
+					double undead = t.isInvertedHealAndHarm() ? 2.0 : 1.0;
+					t.setAbsorptionAmount(0);
+					hurt(cast, t, level.damageSources().indirectMagic(caster, caster), SMITE_DAMAGE * power * undead);
+					Vfx.smite(level, t);
+				}));
 			});
 			case "inferno" -> inferno(cast, hit.point(), 4.0 * SpellNumbers.effectRadius(node), power, duration);
 			case "thunderclap" -> thunderclap(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node), power);
@@ -454,7 +538,7 @@ public final class Effects {
 				Vfx.blind(level, t);
 			});
 			case "chill" -> harmed.forEach(t -> {
-				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(6, duration), 1, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(6, duration), chillLevel(t, ticks(6, duration)), false, true));
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), 1 * power);
 				Reactions.mark(t, Reactions.Mark.FROZEN, 40);
 				Vfx.chill(level, t);
@@ -463,7 +547,9 @@ public final class Effects {
 				if (t instanceof net.minecraft.world.entity.Mob mob) {
 					mob.setTarget(null);
 				}
-				t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks(6, duration), 1, false, true));
+				t.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, ticks(6, duration), 0, false, true));
+				// What it says: a caster can't cast for a few seconds (a player 3, a monster 4), and a cast in hand is cut short.
+				CastLock.lock(t, ticks(t instanceof Player ? 3 : 4, duration));
 				Vfx.silence(level, t);
 			});
 			case "fireward" -> helped.forEach(t -> {
@@ -474,12 +560,21 @@ public final class Effects {
 			case "nourish" -> helped.forEach(t -> {
 				if (t instanceof Player player) {
 					player.getFoodData().eat((int) Math.round(6 * power), 0.6F);
+					player.removeEffect(MobEffects.HUNGER);
+				} else if (t instanceof net.minecraft.world.entity.animal.Animal animal) {
+					// A pet is fed too: it heals, and a grown one is ready to breed.
+					animal.heal((float) (6 * power));
+					if (animal.getAge() == 0 && caster instanceof ServerPlayer feeder) {
+						animal.setInLove(feeder);
+					}
 				}
 				Vfx.nourish(level, t);
 			});
 			case "tidebreath" -> helped.forEach(t -> {
 				t.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, ticks(30, duration), 0, false, true));
 				t.addEffect(new MobEffectInstance(MobEffects.DOLPHINS_GRACE, ticks(30, duration), 0, false, true));
+				// It douses: the fire on them goes out (and fire hits are dulled while they drip).
+				t.clearFire();
 				Vfx.tidebreath(level, t);
 			});
 			case "leap" -> helped.forEach(t -> {
@@ -488,7 +583,13 @@ public final class Effects {
 			});
 			case "grapple" -> grapple(cast, hit, power);
 			case "harvest" -> harvest(cast, hit, SpellNumbers.effectRadius(node));
-			case "icepath" -> icepath(cast, hit, 3.0 * SpellNumbers.effectRadius(node));
+			case "icepath" -> {
+				if (hit.self()) {
+					icepathStrip(cast, 1.5 * SpellNumbers.effectRadius(node));
+				} else {
+					icepath(cast, hit.point(), 3.0 * SpellNumbers.effectRadius(node));
+				}
+			}
 			case "collect" -> collect(cast, hit.point(), 8.0 * SpellNumbers.effectRadius(node));
 			case "excavate" -> excavate(cast, hit, amplify > 0);
 			case "blink" -> blink(cast, hit);
@@ -512,10 +613,10 @@ public final class Effects {
 			case "decree" -> Techniques.decree(cast, harmed, ticks(2, duration));
 			case "weigh" -> harmed.forEach(t -> Techniques.weigh(cast, t, ticks(5, duration)));
 			case "shackle" -> harmed.forEach(t -> Techniques.shackle(cast, t, ticks(5, duration)));
-			case "bubble" -> harmed.forEach(t -> Techniques.bubble(cast, t, ticks(3, duration), power));
+			case "bubble" -> harmed.forEach(t -> Techniques.bubble(cast, t, ticks(bubbleSeconds(t), duration), power));
 			case "infinity" -> helped.forEach(t -> Wards.infinity(cast, t, ticks(6, duration)));
 			case "reversal" -> helped.forEach(t -> Wards.reversal(cast, t, ticks(30, duration)));
-			case "reflect" -> helped.forEach(t -> Wards.reflect(cast, t, ticks(10, duration), Math.min(1.5, 0.6 * power)));
+			case "reflect" -> helped.forEach(t -> Wards.reflect(cast, t, ticks(10, duration), passiveEffect ? Math.min(0.3, 0.6 * power) : Math.min(1.5, 0.6 * power)));
 			case "overdrive" -> helped.forEach(t -> Techniques.overdrive(cast, t, ticks(10, duration), amplify));
 			case "foresight" -> helped.forEach(t -> Wards.foresight(cast, t, ticks(15, duration), (int) Math.max(1, Math.round(2 * power))));
 			case "restore" -> helped.forEach(t -> Techniques.restore(cast, t, power));
@@ -564,6 +665,7 @@ public final class Effects {
 				hurt(cast, t, level.damageSources().source(DamageTypes.FREEZE, caster), (slowed ? 6 : 4) * power);
 				// A touch of frost on the skin, well short of frozen solid.
 				t.setTicksFrozen(Math.min(t.getTicksRequiredToFreeze() - 1, t.getTicksFrozen() + 40));
+				melt(cast, t);
 			});
 			case "pelt" -> harmed.forEach(t -> {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
@@ -574,9 +676,13 @@ public final class Effects {
 			case "windcut" -> harmed.forEach(t -> {
 				Vec3 away = horizontal(t.position().subtract(hit.origin()), hit.dir());
 				hurt(cast, t, level.damageSources().source(DamageTypes.WIND_CHARGE, caster), 4 * power);
-				push(t, away.scale(0.7).add(0, 0.2, 0));
+				Statuses.windPush(t, away.scale(0.7).add(0, 0.2, 0));
 				Reactions.mark(t, Reactions.Mark.WINDSWEPT);
 				ExpansionVfx.windcut(level, t, away);
+				// The cut breaks what it was winding up: a charge, a draw, a fuse, a telegraphed spell.
+				if (t.isAlive()) {
+					Statuses.interrupt(t);
+				}
 			});
 			case "leech" -> harmed.forEach(t -> {
 				float before = t.getHealth();
@@ -598,6 +704,7 @@ public final class Effects {
 			case "countdown" -> harmed.forEach(t -> countdown(cast, t, power));
 			case "jolt" -> harmed.forEach(t -> {
 				ExpansionVfx.jolt(level, t);
+				StormEarthFx.stunRing(level, t, ticks(1, duration));
 				hurt(cast, t, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster), 4 * power * Reactions.storm(cast, t));
 				Spirits.hold(t, ticks(1, duration));
 				// The counter-spell: a caster caught mid-charge loses the spell.
@@ -739,6 +846,9 @@ public final class Effects {
 		amount *= hexBonus(cast, target);
 		// Veil's ambush and Shadowstep's backstab: the first blow from the dark lands half again as hard.
 		amount *= VoidTime.opener(cast, target);
+		amount *= Techniques.condemned(cast, target);
+		// A sleeper struck takes a backstab from the blow that wakes it (Drowse).
+		amount *= CraftedRunes.backstab(target);
 		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
 		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
 		amount *= Reactions.hit(cast, target, currentElement);
@@ -781,8 +891,10 @@ public final class Effects {
 	}
 
 	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */
-	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck, Set<LivingEntity> aimedAt) {
-		ServerLevel level = cast.level;
+	private static void lightning(Cast cast, Vec3 at, double power, Set<LivingEntity> struck, Set<LivingEntity> aimedAt, boolean full) {
+	ServerLevel level = cast.level;
+	// The first three strikes of a cast are the whole show; the rest a lighter bolt, so a crowd doesn't fill the sky.
+	if (full) {
 		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
 		if (bolt != null) {
 			bolt.setVisualOnly(true);
@@ -790,6 +902,10 @@ public final class Effects {
 			level.addFreshEntity(bolt);
 		}
 		Vfx.lightning(level, at);
+	} else {
+		ElementFx.bolt(level, at.add(0, 10, 0), at, 0.08, 1, 2);
+		ElementFx.groundRing(level, at, ElementFx.STORM.primary(), 0.3, 1.8, 0.05, 7);
+	}
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(2.0, 3.0, 2.0), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity target = (LivingEntity) e;
 			// A creature takes its strongest strike once per cast (its own 12, or half of that from a strike aimed at a neighbour),
@@ -944,6 +1060,8 @@ public final class Effects {
 	 */
 	private static void thunderclap(Cast cast, Vec3 point, double radius, double power) {
 		ElementFx.groundRing(cast.level, point, ElementFx.STORM.secondary(), radius * 1.2, 0.3, 0.06, CLAP_DELAY);
+		Sigils.flash(cast.level, point.add(0, 1, 0), ElementFx.STORM.secondary(), 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, point, "storm_flash", 0.9F, 1.0F);
 		Scheduler.later(CLAP_DELAY, carryContext(() -> {
 			if (!cast.alive()) {
 				return;
@@ -964,11 +1082,75 @@ public final class Effects {
 	}
 
 	/** Starfall: stars rain down around the point over two seconds. */
+	/** Venom: seconds it lasts, damage a second, and how far and to how many it spreads. */
+	public static final int VENOM_SECONDS = 4;
+	public static final double VENOM_PER_SECOND = 0.75;
+	public static final double VENOM_SPREAD_REACH = 2.5;
+	public static final int VENOM_SPREAD_MAX = 3;
+
+	/** Until when (game time) each creature's venom runs: a second dose only extends it, so repeaters never stack tickers. */
+	private static final Map<UUID, long[]> VENOM = new HashMap<>();
+
+	static void venomDot(Cast cast, LivingEntity t, double power, int seconds) {
+		long now = cast.level.getGameTime();
+		long[] running = VENOM.get(t.getUUID());
+		if (running != null && running[0] > now) {
+			running[0] = Math.max(running[0], now + seconds * 20L);
+			return;
+		}
+		long[] state = {now + seconds * 20L};
+		VENOM.put(t.getUUID(), state);
+		Runnable[] next = new Runnable[1];
+		next[0] = carryContext(() -> {
+			if (!cast.alive() || !t.isAlive() || t.level() != cast.level || cast.level.getGameTime() > state[0]) {
+				VENOM.remove(t.getUUID(), state);
+				return;
+			}
+			lingering(() -> hurt(cast, t, cast.level.damageSources().indirectMagic(cast.caster, cast.caster), VENOM_PER_SECOND * power));
+			Scheduler.later(20, next[0]);
+		});
+		Scheduler.later(20, next[0]);
+	}
+
+	/** The venomed pass it on, once: to up to 3 enemies nearby, at half strength. */
+	static void venomSpread(Cast cast, LivingEntity from, double power, int seconds) {
+		int passed = 0;
+		for (Entity e : cast.level.getEntities(from, from.getBoundingBox().inflate(VENOM_SPREAD_REACH), x -> Targets.canHarm(cast.caster, x))) {
+			if (passed >= VENOM_SPREAD_MAX) {
+				break;
+			}
+			if (e instanceof LivingEntity other && other.distanceTo(from) <= VENOM_SPREAD_REACH && cast.once("venom-spread:" + other.getUUID())) {
+				other.addEffect(new MobEffectInstance(MobEffects.POISON, seconds * 20, 0, false, true), cast.caster);
+				venomDot(cast, other, power * 0.5, seconds);
+				LifeArcaneFx.venomHop(cast.level, from, other);
+				passed++;
+			}
+		}
+	}
+
+	/** The most Absorption an overheal turns into: 2 hearts. */
+	public static final float HEAL_SHIELD_MAX = 4.0F;
+
+	/** Weakness I for 4 s once an Empower runs out. */
+	public static final int EMPOWER_COMEDOWN = 80;
+
+	/** Smite's wind-up in ticks (0.7 s) and its damage (13, x2 on undead). */
+	public static final int SMITE_DELAY = 14;
+	public static final double SMITE_DAMAGE = 13.0;
+
 	private static void starfall(Cast cast, Vec3 point, double radius, double power) {
+		// The first stars go to exposed enemies in the rain; the rest fall where they will.
+		List<LivingEntity> exposed = enemiesAround(cast, point, radius).stream().filter(Exposed::has).limit(4).toList();
+		List<Vec3> marks = new ArrayList<>();
 		for (int i = 0; i < 8; i++) {
 			double a = cast.level.getRandom().nextDouble() * Math.PI * 2;
 			double r = Math.sqrt(cast.level.getRandom().nextDouble()) * radius;
-			Vec3 target = CastEngine.ground(cast.level, point.add(Math.cos(a) * r, 2, Math.sin(a) * r));
+			Vec3 target = i < exposed.size() ? CastEngine.ground(cast.level, exposed.get(i).position().add(0, 2, 0))
+				: CastEngine.ground(cast.level, point.add(Math.cos(a) * r, 2, Math.sin(a) * r));
+			marks.add(target);
+			if (i == 7) {
+				LifeArcaneFx.starfallPattern(cast.level, marks);
+			}
 			Scheduler.later(1 + i * 5, () -> {
 				if (!cast.alive()) {
 					return;
@@ -1059,8 +1241,7 @@ public final class Effects {
 			harvested++;
 		}
 		if (harvested > 0) {
-			Vfx.grow(cast.level, Vec3.atCenterOf(center).add(0, 0.6, 0));
-			Fx.sound(cast.level, Vec3.atCenterOf(center), net.minecraft.sounds.SoundEvents.CROP_BREAK, 0.8F, 1.2F);
+			LifeArcaneFx.reap(cast.level, Vec3.atCenterOf(center));
 		}
 	}
 
@@ -1068,8 +1249,8 @@ public final class Effects {
 	 * Icepath: water near the point freezes into frosted ice that melts on its own in the light, and
 	 * is thawed after {@link WorldRules#THAW_TICKS} wherever it is (frosted ice never melts in the dark).
 	 */
-	private static void icepath(Cast cast, Cast.Hit hit, double radius) {
-		BlockPos center = BlockPos.containing(hit.point().x, hit.point().y - 0.5, hit.point().z);
+	private static void icepath(Cast cast, Vec3 point, double radius) {
+		BlockPos center = BlockPos.containing(point.x, point.y - 0.5, point.z);
 		int r = (int) Math.ceil(radius);
 		BlockState ice = Blocks.FROSTED_ICE.defaultBlockState();
 		List<BlockPos> frozen = new ArrayList<>();
@@ -1093,6 +1274,24 @@ public final class Effects {
 		if (!frozen.isEmpty()) {
 			Thaws.schedule(cast.level, frozen, cast.level.getGameTime() + WorldRules.THAW_TICKS + cast.level.getRandom().nextInt(60));
 			Vfx.icepath(cast.level, Vec3.atCenterOf(center), radius);
+		}
+	}
+
+	/** How far an Icepath strip runs from the caster (blocks). */
+	private static final int ICEPATH_LENGTH = 10;
+
+	/** A path, literally: on Self it freezes a strip {@code halfWidth} either side of the way you look, an ice front growing a block a tick. */
+	private static void icepathStrip(Cast cast, double halfWidth) {
+		LivingEntity caster = cast.caster;
+		Vec3 flat = horizontal(caster.getLookAngle(), caster.getLookAngle());
+		Vec3 from = caster.position();
+		for (int i = 1; i <= ICEPATH_LENGTH; i++) {
+			Vec3 at = from.add(flat.scale(i)).add(0, 0.5, 0);
+			Scheduler.later(i, () -> {
+				if (cast.alive()) {
+					icepath(cast, at, halfWidth);
+				}
+			});
 		}
 	}
 
@@ -1179,6 +1378,7 @@ public final class Effects {
 		}
 		if (next != null) {
 			Vfx.shockArc(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
+			StormEarthFx.tether(level, target.getBoundingBox().getCenter(), next.getBoundingBox().getCenter());
 			hurt(cast, next, level.damageSources().source(DamageTypes.LIGHTNING_BOLT, cast.caster), (conductor ? 4 : 3) * power * Reactions.storm(cast, next));
 		}
 	}
@@ -1307,6 +1507,7 @@ public final class Effects {
 		BlockPos pos = hit.block() != null && hit.face() != null ? hit.block().relative(hit.face()) : BlockPos.containing(hit.point());
 		ServerLevel level = cast.level;
 		if (!level.getBlockState(pos).isAir() || !mayEdit(cast, pos)) {
+			Casters.tell(cast.caster, Component.translatable("message.wildercord.light_blocked"));
 			return;
 		}
 		BlockState light = Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 15);
@@ -1359,7 +1560,11 @@ public final class Effects {
 				cast.level.levelEvent(null, 1505, p, 15);
 			}
 		}
-		Vfx.grow(cast.level, Vec3.atCenterOf(center).add(0, 0.6, 0));
+		// Whatever is young there grows up.
+		for (net.minecraft.world.entity.AgeableMob baby : cast.level.getEntitiesOfClass(net.minecraft.world.entity.AgeableMob.class, new AABB(center).inflate(1.5), m -> m.getAge() < 0)) {
+			baby.setAge(0);
+		}
+		LifeArcaneFx.growRipple(cast.level, Vec3.atCenterOf(center).add(0, 0.6, 0));
 	}
 
 	private static void breakBlock(Cast cast, Cast.Hit hit, boolean amplified) {
@@ -1404,12 +1609,16 @@ public final class Effects {
 		long beat;
 		/** What the ward remembers between ticks. */
 		double memory;
+		/** Uses left (Bramble's thorns) and what a renewal refills them to; 0 refill means unlimited. */
+		int charges;
+		int refill;
 	}
 
 	private static final Map<String, Ward> WARDS = new HashMap<>();
 
 	static void clearWards() {
 		WARDS.clear();
+		VENOM.clear();
 	}
 
 	/**
@@ -1425,6 +1634,7 @@ public final class Effects {
 			old.until = Math.max(old.until, now + ticks);
 			old.power = power;
 			old.cast = cast;
+			old.charges = Math.max(old.charges, old.refill);
 			return null;
 		}
 		Ward ward = new Ward();
@@ -1524,6 +1734,9 @@ public final class Effects {
 	}
 
 	/** Bramble: whatever hurts the target from close by takes damage back and is shoved away. */
+	/** Bramble's thorns: each hit taken from within reach spends one, so a swarm can only be punished so far. */
+	public static final int BRAMBLE_THORNS = 4;
+
 	private static void bramble(Cast cast, LivingEntity t, int ticks, double power) {
 		Ward fresh = ward(cast, t, "bramble", ticks, power, 2, w -> {
 			int stamp = t.getLastHurtByMobTimestamp();
@@ -1531,6 +1744,9 @@ public final class Effects {
 				return;
 			}
 			w.memory = stamp;
+			if (w.refill > 0 && w.charges <= 0) {
+				return;
+			}
 			LivingEntity attacker = t.getLastHurtByMob();
 			DamageSource last = t.getLastDamageSource();
 			// Thorns never answer thorns, so two brambled casters can't trade blows forever.
@@ -1538,28 +1754,207 @@ public final class Effects {
 					|| (last != null && last.is(DamageTypes.THORNS)) || !Targets.canHarm(w.cast.caster, attacker)) {
 				return;
 			}
+			w.charges--;
 			ExpansionVfx.brambleStrike(w.cast.level, t, attacker);
 			hurt(w.cast, attacker, w.cast.level.damageSources().thorns(t), 3 * w.power);
 			Vec3 away = horizontal(attacker.position().subtract(t.position()), t.getLookAngle());
 			push(attacker, away.scale(0.9).add(0, 0.3, 0));
 		}, () -> { });
 		if (fresh != null) {
+			fresh.charges = fresh.refill = BRAMBLE_THORNS;
 			// Only hits from now on count.
 			fresh.memory = t.getLastHurtByMobTimestamp();
 		}
 		ExpansionVfx.bramble(cast.level, t);
 	}
 
+	// ------------------------------------------------------------------ frost and wind mechanics
+
+	/** How long an Airborne mark from Launch lasts (the flight of a throw). */
+	private static final int AIRBORNE_LAUNCH_TICKS = 40;
+	/** Dash: the impulse it shoves others with, and the speed (blocks a tick) it holds you at for five ticks. */
+	private static final double DASH_SHOVE = 1.4;
+	private static final double DASH_SPEED = 2.0;
+	private static final int DASH_TICKS = 5;
+
+	/** Whether {@code t} carries a ward of this kind right now. */
+	static boolean warded(Entity t, String kind) {
+		Ward ward = WARDS.get(kind + ":" + t.getUUID());
+		return ward != null && ward.until >= t.level().getGameTime();
+	}
+
+	/** Push: a creature thrown hard into a block takes 2 and a flinch, once. Watches for about 0.7 s. */
+	private static void wallSlam(Cast cast, LivingEntity t, double power) {
+		if (Spirits.isBoss(t) || !Statuses.claim(t, "slam", 40)) {
+			return;
+		}
+		Vec3[] last = {t.getDeltaMovement()};
+		for (int i = 1; i <= 14; i++) {
+			Scheduler.later(i, () -> {
+				if (last[0] == null || !t.isAlive() || t.level() != cast.level) {
+					return;
+				}
+				double before = Math.sqrt(last[0].x * last[0].x + last[0].z * last[0].z);
+				if (t.horizontalCollision && before > 0.5) {
+					last[0] = null;
+					hurt(cast, t, cast.level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), 2 * power);
+					Statuses.stagger(t, 10);
+					Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.CRIT, t.getBoundingBox().getCenter(), 6, 0.3, 0.2);
+					return;
+				}
+				last[0] = t.getDeltaMovement();
+			});
+		}
+	}
+
+	/** Dash on yourself: held level at speed for five ticks, then braked, so it goes about ten blocks and never up or off anything. */
+	private static void dashSelf(Cast cast, LivingEntity caster, Vec3 flat, double power) {
+		double speed = DASH_SPEED * Math.sqrt(Math.max(0.25, power));
+		caster.resetFallDistance();
+		for (int i = 0; i < DASH_TICKS; i++) {
+			Runnable step = () -> {
+				if (caster.isAlive() && caster.level() == cast.level) {
+					Vec3 v = caster.getDeltaMovement();
+					setMotion(caster, new Vec3(flat.x * speed, Math.min(0, v.y), flat.z * speed));
+					caster.resetFallDistance();
+				}
+			};
+			if (i == 0) {
+				step.run();
+			} else {
+				Scheduler.later(i, step);
+			}
+		}
+		Scheduler.later(DASH_TICKS, () -> {
+			if (caster.isAlive() && caster.level() == cast.level) {
+				Vec3 v = caster.getDeltaMovement();
+				setMotion(caster, new Vec3(flat.x * 0.25, v.y, flat.z * 0.25));
+			}
+		});
+	}
+
+	/** Levitate: the lifted creature hangs where it is, its drift stopped, for {@code ticks}. */
+	private static void suspend(Cast cast, LivingEntity t, int ticks) {
+		for (int i = 2; i < ticks; i += 2) {
+			Scheduler.later(i, () -> {
+				if (t.isAlive() && t.level() == cast.level && !t.onGround()) {
+					Vec3 v = t.getDeltaMovement();
+					setMotion(t, new Vec3(0, v.y, 0));
+				}
+			});
+		}
+	}
+
+	/** Feather Fall: while it lasts, a creature that's falling drifts the way it looks (sneaking stops the drift). */
+	private static void featherglide(Cast cast, LivingEntity t, int ticks) {
+		String key = "featherglide:" + t.getUUID();
+		Object token = new Object();
+		GLIDES.put(key, token);
+		for (int i = 2; i < ticks; i += 2) {
+			Scheduler.later(i, () -> {
+				if (GLIDES.get(key) != token || !t.isAlive() || t.level() != cast.level) {
+					return;
+				}
+				if (t.onGround() || t.isShiftKeyDown() || t.isInWater() || t.isFallFlying()) {
+					return;
+				}
+				Vec3 v = t.getDeltaMovement();
+				Vec3 look = horizontal(t.getLookAngle(), t.getLookAngle());
+				double sx = v.x + look.x * GLIDE_PUSH * 2;
+				double sz = v.z + look.z * GLIDE_PUSH * 2;
+				double speed = Math.sqrt(sx * sx + sz * sz);
+				if (speed > GLIDE_MAX) {
+					sx *= GLIDE_MAX / speed;
+					sz *= GLIDE_MAX / speed;
+				}
+				setMotion(t, new Vec3(sx, v.y, sz));
+			});
+		}
+	}
+
+	private static final Map<String, Object> GLIDES = new HashMap<>();
+	private static final double GLIDE_PUSH = 0.03;
+	private static final double GLIDE_MAX = 0.35;
+
+	/** Swift: it shakes off the cold: Slowness (not a hold) and frozen skin are gone. */
+	private static void shakeOffCold(LivingEntity t) {
+		MobEffectInstance slow = t.getEffect(MobEffects.SLOWNESS);
+		if (slow != null && slow.getAmplifier() < 6) {
+			t.removeEffect(MobEffects.SLOWNESS);
+		}
+		t.setTicksFrozen(0);
+		Reactions.clear(t, Reactions.Mark.FROZEN);
+	}
+
+	// ---- Chill stacks: each Chill within 6 s of the last deepens the slow one level (II, III, IV)
+
+	/** By creature: when its chill runs out, its stacks so far, and when the last stack was added. */
+	private static final Map<UUID, long[]> CHILLS = new HashMap<>();
+	private static final int CHILL_MEMORY = 120;
+	/** The soonest one creature takes another stack (a Zone's every pulse can't run it up to IV). */
+	private static final int CHILL_GAP = 20;
+
+	/** The Slowness amplifier a chill of {@code ticks} gives {@code t} now: 1 (II), 2 (III) or 3 (IV). */
+	static int chillLevel(LivingEntity t, int ticks) {
+		long now = t.level().getGameTime();
+		if (CHILLS.size() > 256) {
+			CHILLS.values().removeIf(c -> c[0] < now);
+		}
+		long[] c = CHILLS.get(t.getUUID());
+		if (c == null || c[0] < now) {
+			c = new long[] {now + ticks, 0, now};
+			CHILLS.put(t.getUUID(), c);
+		} else {
+			c[0] = Math.max(c[0], now + ticks);
+			if (now - c[2] >= CHILL_GAP && c[1] < 2) {
+				c[1]++;
+				c[2] = now;
+			}
+		}
+		return 1 + (int) c[1];
+	}
+
+	// ---- Icicle melts into a soak
+
+	/** The icicle stays lodged for 2 s, then melts and leaves its target soaked for 5 s. One melt at a time on a creature. */
+	private static void melt(Cast cast, LivingEntity t) {
+		if (!Statuses.claim(t, "melt", 40)) {
+			return;
+		}
+		Scheduler.later(40, () -> {
+			if (t.isAlive() && t.level() == cast.level) {
+				Reactions.mark(t, Reactions.Mark.SOAKED, 100);
+				Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.DRIPPING_WATER, t.getBoundingBox().getCenter(), 6, 0.3, 0.0);
+			}
+		});
+	}
+
+	// ---- Bubble: a bubble holds small things longest
+
+	/** Seconds a bubble holds a creature of this size: 2.5 up to 0.8 wide, 2 up to 1.4, 1.5 above. */
+	static double bubbleSeconds(Entity t) {
+		double w = t.getBbWidth();
+		return w <= 0.8 ? 2.5 : w <= 1.4 ? 2.0 : 1.5;
+	}
+
 	/** Frostward: the target can't freeze, and frost can't leave it brittle for Shatter. */
 	private static void frostward(Cast cast, LivingEntity t, int ticks) {
 		t.setTicksFrozen(0);
 		Reactions.clear(t, Reactions.Mark.FROZEN);
+		int[] beats = {0};
 		Ward fresh = ward(cast, t, "frostward", ticks, 1.0, 5, w -> {
 			if (t.getTicksFrozen() > 0) {
 				t.setTicksFrozen(0);
 			}
 			Reactions.clear(t, Reactions.Mark.FROZEN);
-		}, () -> { });
+			if (++beats[0] % 8 == 0) {
+				ExpansionVfx.frostwardIdle(cast.level, t);
+			}
+		}, () -> {
+			if (t.isAlive() && t.level() == cast.level) {
+				ExpansionVfx.frostwardEnd(cast.level, t);
+			}
+		});
 		if (fresh != null || !cast.passive) {
 			ExpansionVfx.frostward(cast.level, t, Vfx.theme("frost"));
 		}
@@ -1571,32 +1966,57 @@ public final class Effects {
 	private static void cushion(Cast cast, LivingEntity t, int ticks, double power) {
 		modifier(t, Attributes.FALL_DAMAGE_MULTIPLIER, CUSHION_ID, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 		t.resetFallDistance();
+		int[] beats = {0};
 		Ward fresh = ward(cast, t, "cushion", ticks, power, 1, w -> {
+			if (++beats[0] % 50 == 0 && t.onGround()) {
+				ExpansionVfx.cushionIdle(cast.level, t, Vfx.theme("wind"));
+			}
 			// Remembers how far this fall has come; it lands on the tick the ground is found again.
 			if (!t.onGround()) {
 				w.memory = Math.max(w.memory, t.fallDistance);
 				return;
 			}
 			if (w.memory > 4) {
-				cushionLanding(w.cast, t, w.power);
+				cushionLanding(w.cast, t, w.power, w.memory);
 			}
 			w.memory = 0;
-		}, () -> unmodify(t, CUSHION_ID, List.of(Attributes.FALL_DAMAGE_MULTIPLIER)));
+		}, () -> {
+			unmodify(t, CUSHION_ID, List.of(Attributes.FALL_DAMAGE_MULTIPLIER));
+			if (t.isAlive() && t.level() == cast.level) {
+				ExpansionVfx.cushionEnd(cast.level, t, Vfx.theme("wind"));
+			}
+		});
 		if (fresh != null || !cast.passive) {
 			ExpansionVfx.cushion(cast.level, t, Vfx.theme("wind"));
 		}
 	}
 
-	private static void cushionLanding(Cast cast, LivingEntity t, double power) {
-		ExpansionVfx.cushionLand(cast.level, t.position(), 3.0, Vfx.theme("wind"));
+	/** Cushion's landing: the gust deals this much per block fallen past 4, up to 6. */
+	private static final double CUSHION_PER_BLOCK = 0.75;
+	private static final double CUSHION_MAX = 6.0;
+
+	private static void cushionLanding(Cast cast, LivingEntity t, double power, double fallen) {
+		ExpansionVfx.cushionLand(cast.level, t.position(), 3.0, Vfx.theme("wind"), fallen);
+		double damage = Math.min(CUSHION_MAX, CUSHION_PER_BLOCK * Math.max(0, fallen - 4)) * power;
+		int struck = 0;
 		for (Entity e : cast.level.getEntities(t, t.getBoundingBox().inflate(3.0, 1.0, 3.0), e -> Targets.canHarm(cast.caster, e))) {
+			if (struck++ >= 16) {
+				break;
+			}
+			LivingEntity v = (LivingEntity) e;
 			Vec3 away = horizontal(e.position().subtract(t.position()), t.getLookAngle());
-			push((LivingEntity) e, away.scale(1.1 * Math.sqrt(power)).add(0, 0.35, 0));
+			Statuses.windPush(v, away.scale(1.1 * Math.sqrt(power)).add(0, 0.35, 0));
 			Reactions.mark(e, Reactions.Mark.WINDSWEPT);
+			if (damage > 0.5 && Statuses.claim(v, "cushion", 20)) {
+				hurt(cast, v, cast.level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), damage);
+			}
 		}
 	}
 
-	/** Deflect: projectiles coming at the target are turned aside by the wind around it. */
+	/** Tags a projectile Deflect has already sent back (a second deflection only turns it aside). */
+	private static final String DEFLECTED_TAG = "wildercord.deflected";
+
+	/** Deflect: projectiles coming at the target are sent back at their shooter, or turned aside if they've been already. */
 	private static void deflect(Cast cast, LivingEntity t, int ticks) {
 		Vfx.Theme theme = Vfx.theme("wind");
 		Ward fresh = ward(cast, t, "deflect", ticks, 1.0, 1, w -> {
@@ -1612,6 +2032,16 @@ public final class Effects {
 					continue;
 				}
 				Vec3 away = horizontal(p.position().subtract(centre), v.scale(-1));
+				if (owner instanceof LivingEntity shooter && shooter.isAlive() && !p.entityTags().contains(DEFLECTED_TAG)) {
+					// Returned to sender, once: it flies back at its shooter, now the warded creature's.
+					p.addTag(DEFLECTED_TAG);
+					Vec3 back = shooter.getBoundingBox().getCenter().subtract(p.position());
+					p.setOwner(t);
+					p.setDeltaMovement(back.normalize().scale(Math.max(0.6, v.length() * 0.8)));
+					p.needsSync = true;
+					ExpansionVfx.deflectHit(level, p.position(), back.normalize(), theme);
+					continue;
+				}
 				p.setDeltaMovement(away.scale(Math.max(0.4, v.length() * 0.6)).add(0, 0.2, 0));
 				p.needsSync = true;
 				ExpansionVfx.deflectHit(level, p.position(), away, theme);
@@ -1629,6 +2059,9 @@ public final class Effects {
 	 * Haven: a dome over the point for a while. Allies inside are kept under Resistance, and
 	 * projectiles fired from outside by anyone but an ally glance off its shell.
 	 */
+	/** How hard Haven's dome pushes the hostile out, once a second. */
+	public static final double HAVEN_SHOVE = 0.9;
+
 	private static void haven(Cast cast, Vec3 centre, double radius, int ticks) {
 		ServerLevel level = cast.level;
 		Vfx.Theme theme = Vfx.theme("life");
@@ -1652,7 +2085,16 @@ public final class Effects {
 			if (tick % 10 == 0) {
 				for (Entity e : level.getEntities((Entity) null, new AABB(centre, centre).inflate(radius),
 						e -> Targets.canHelp(cast.caster, e) && e.position().distanceTo(centre) <= radius)) {
-					((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 25, 0, false, true));
+					// (No Resistance: the dome keeps the fight out instead, below.)
+				}
+			}
+			if (tick % 20 == 10) {
+				for (Entity e : level.getEntities((Entity) null, new AABB(centre, centre).inflate(radius), e -> Targets.canHarm(cast.caster, e) && e instanceof LivingEntity)) {
+					LivingEntity foe = (LivingEntity) e;
+					if (foe.position().distanceTo(centre) <= radius && !Spirits.isBoss(foe)) {
+						push(foe, horizontal(foe.position().subtract(centre), foe.getLookAngle()).scale(HAVEN_SHOVE));
+						ExpansionVfx.havenGlance(level, foe.position().add(0, 1, 0), horizontal(foe.position().subtract(centre), foe.getLookAngle()), theme);
+					}
 				}
 			}
 			if (tick % 20 == 0) {
@@ -1992,7 +2434,15 @@ public final class Effects {
 			if (!cast.takeBlock()) {
 				break;
 			}
-			level.destroyBlock(p, true, cast.caster);
+			// As shears would: leaves, webs and vines drop as themselves.
+			BlockState state = level.getBlockState(p);
+			List<ItemStack> drops = Block.getDrops(state, level, p, level.getBlockEntity(p), cast.caster, new ItemStack(Items.SHEARS));
+			level.destroyBlock(p, false, cast.caster);
+			for (ItemStack drop : drops) {
+				if (!drop.isEmpty()) {
+					Block.popResource(level, p, drop);
+				}
+			}
 			cleared++;
 		}
 		ExpansionVfx.prune(level, point, radius, cleared > 0);
@@ -2272,14 +2722,30 @@ public final class Effects {
 		return out;
 	}
 
+	/** How long Coldsnap leaves everything it strikes brittle for Shatter and Fracture (4 s: the whole crowd primed). */
+	private static final int COLDSNAP_WINDOW = 80;
+
 	/** Coldsnap: frost bites everything around the point, slowing it and leaving it brittle for Shatter. */
 	private static void coldsnap(Cast cast, Vec3 point, double radius, double power, double duration) {
 		ExpansionVfx.coldsnap(cast.level, point, radius);
+		int slow = ticks(4, duration);
 		for (LivingEntity t : enemiesAround(cast, point, radius)) {
-			hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 3 * power);
-			t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks(4, duration), 1, false, true));
-			Reactions.mark(t, Reactions.Mark.FROZEN, 40);
-			ExpansionVfx.chilled(cast.level, t);
+			// The ring travels: the nearest are struck at once, the farthest six ticks later.
+			int delay = (int) Math.round(6 * Math.min(1.0, t.getBoundingBox().getCenter().distanceTo(point) / Math.max(0.5, radius)));
+			Runnable strike = () -> {
+				if (!t.isAlive() || t.level() != cast.level) {
+					return;
+				}
+				hurt(cast, t, cast.level.damageSources().source(DamageTypes.FREEZE, cast.caster), 4 * power);
+				t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, slow, 1, false, true));
+				Reactions.mark(t, Reactions.Mark.FROZEN, COLDSNAP_WINDOW);
+				ExpansionVfx.chilled(cast.level, t);
+			};
+			if (delay <= 0) {
+				strike.run();
+			} else {
+				Scheduler.later(delay, strike);
+			}
 		}
 	}
 
@@ -2350,6 +2816,7 @@ public final class Effects {
 					}
 					caught.add(v);
 					Reactions.mark(v, Reactions.Mark.WINDSWEPT);
+					Statuses.airborne(v, 12);
 					if (Spirits.isBoss(v)) {
 						continue;
 					}
@@ -2367,8 +2834,9 @@ public final class Effects {
 					continue;
 				}
 				if (!Spirits.isBoss(v)) {
-					Vec3 away = horizontal(v.position().subtract(centre), cast.caster.getLookAngle());
-					push(v, away.scale(1.4 * Math.sqrt(power)).add(0, 0.5, 0));
+					// Bowling: the crowd is flung the way the caster faced, as one, not out in every direction.
+					Vec3 away = horizontal(cast.caster.getLookAngle(), cast.caster.getLookAngle());
+					Statuses.windPush(v, away.scale(1.4 * Math.sqrt(power)).add(0, 0.5, 0));
 				}
 				hurt(cast, v, level.damageSources().source(DamageTypes.WIND_CHARGE, cast.caster), 3 * power);
 			}

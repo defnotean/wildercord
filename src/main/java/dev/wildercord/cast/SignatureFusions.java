@@ -564,9 +564,10 @@ final class SignatureFusions {
 			level.addFreshEntity(bolt);
 		}
 		double r = SignatureRules.THUNDERSTEP_RADIUS * radius;
-		SignatureVfx.thunderstep(level, spot, r);
+		List<LivingEntity> caught = take(cast, around(cast, spot, r), new HashSet<>(hit.entities()));
+		SignatureVfx.thunderstep(level, spot, r, !caught.isEmpty());
 		DamageSource shock = level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster);
-		for (LivingEntity t : take(cast, around(cast, spot, r), new HashSet<>(hit.entities()))) {
+		for (LivingEntity t : caught) {
 			Effects.hurt(cast, t, shock, SignatureRules.THUNDERSTEP_DAMAGE * power * Reactions.storm(cast, t));
 			Spirits.hold(t, SignatureRules.THUNDERSTEP_STUN);
 		}
@@ -649,7 +650,11 @@ final class SignatureFusions {
 			}
 			SignatureVfx.haloGlow(level, ally);
 			if (SignatureRules.haloSmitesAt(tick[0])) {
-				LivingEntity foe = nearestSeen(by, ally, halo.reach);
+				// A guardian answers whoever hurt the ally a moment ago; with no one to answer, it smites the nearest enemy.
+				LivingEntity attacker = ally.getLastHurtByMob();
+				boolean answers = attacker != null && attacker.isAlive() && ally.tickCount - ally.getLastHurtByMobTimestamp() <= 40 && attacker.distanceTo(ally) <= halo.reach
+					&& Targets.canHarm(by.caster, attacker) && ally.hasLineOfSight(attacker);
+				LivingEntity foe = answers ? attacker : nearestSeen(by, ally, halo.reach);
 				if (foe != null) {
 					double undead = foe.isInvertedHealAndHarm() ? SignatureRules.HALO_UNDEAD : 1.0;
 					SignatureVfx.haloSmite(level, ally, foe);
@@ -753,7 +758,7 @@ final class SignatureFusions {
 				Effects.push(t, away.scale(0.6).add(0, 0.35, 0));
 			}
 			List<LivingEntity> others = new ArrayList<>();
-			for (LivingEntity t : nearest(cast, heart, SignatureRules.COMET_SHARD_REACH, MAX_IN_AREA)) {
+			for (LivingEntity t : Exposed.first(nearest(cast, heart, SignatureRules.COMET_SHARD_REACH, MAX_IN_AREA), heart)) {
 				if (others.size() < SignatureRules.COMET_SHARDS && !blasted.contains(t)) {
 					others.add(t);
 				}
