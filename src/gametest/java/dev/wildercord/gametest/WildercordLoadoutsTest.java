@@ -135,6 +135,11 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 		return context.computeOnClient(mc -> mc.gui.screen() instanceof CordScreen s ? s : null);
 	}
 
+	/** Asks the open Cord screen something, on the client thread (its layout reads the game's font and window). */
+	private static <T> T onScreen(ClientGameTestContext context, java.util.function.Function<CordScreen, T> ask) {
+		return context.computeOnClient(mc -> mc.gui.screen() instanceof CordScreen s ? ask.apply(s) : null);
+	}
+
 	private static void openScreen(ClientGameTestContext context) {
 		context.runOnClient(mc -> mc.gui.setScreen(new CordScreen()));
 		context.waitTicks(5);
@@ -181,10 +186,10 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 		context.waitTicks(5);
 		Spellbook original = book(world);
 		openScreen(context);
-		click(context, screen(context).loadoutsPoint());
-		check(screen(context).loadoutsOpen(), "the list badge should open the loadouts panel");
+		click(context, onScreen(context, cs -> cs.loadoutsPoint()));
+		check(onScreen(context, cs -> cs.loadoutsOpen()), "the list badge should open the loadouts panel");
 		// Save the Cord as a new loadout under the name offered ("Loadout 1").
-		click(context, screen(context).saveNewLoadoutPoint());
+		click(context, onScreen(context, cs -> cs.saveNewLoadoutPoint()));
 		press(context, InputConstants.KEY_RETURN);
 		context.waitTicks(3);
 		LoadoutData data = saved(world);
@@ -194,7 +199,7 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 			&& data.get(0).passives().equals(original.passives()) && data.get(0).selected() == 1,
 			"the loadout should hold the whole Cord: every spell, its name, the passives and the selected spell");
 		// Rename it with the keyboard.
-		click(context, screen(context).loadoutPoint(0, RENAME));
+		click(context, onScreen(context, cs -> cs.loadoutPoint(0, RENAME)));
 		for (int i = 0; i < "Loadout 1".length(); i++) {
 			press(context, InputConstants.KEY_BACKSPACE);
 		}
@@ -204,7 +209,7 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 		context.waitTicks(3);
 		check(saved(world).get(0).name().equals("Fighting"), "renaming should be saved (is " + saved(world).get(0).name() + ")");
 		press(context, InputConstants.KEY_ESCAPE);
-		check(!screen(context).loadoutsOpen(), "Esc should close the panel first");
+		check(!onScreen(context, cs -> cs.loadoutsOpen()), "Esc should close the panel first");
 		check(screen(context) != null, "and leave the Cord screen open");
 		closeScreen(context);
 
@@ -216,9 +221,9 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 		});
 		context.waitTicks(5);
 		openScreen(context);
-		check(screen(context).rowRunes(0).equals(ids(Runes.BEAM, Runes.SHOCK)), "the changed spell should show before loading");
-		click(context, screen(context).loadoutsPoint());
-		click(context, screen(context).loadoutPoint(0, LOAD));
+		check(onScreen(context, cs -> cs.rowRunes(0)).equals(ids(Runes.BEAM, Runes.SHOCK)), "the changed spell should show before loading");
+		click(context, onScreen(context, cs -> cs.loadoutsPoint()));
+		click(context, onScreen(context, cs -> cs.loadoutPoint(0, LOAD)));
 		context.waitTicks(5);
 		Spellbook loaded = book(world);
 		check(loaded.spells().equals(original.spells()), "loading should bring every spell back (has " + loaded.spells() + ")");
@@ -227,9 +232,9 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 		check(loaded.selected() == 1, "loading should select the loadout's spell");
 		check(loaded.learned().equals(original.learned()), "loading should never change the runes learned");
 		check(saved(world).current() == 0, "the loadout loaded should be the current one");
-		check(!screen(context).loadoutsOpen(), "loading should close the panel");
-		check(screen(context).rowRunes(0).equals(ids(Runes.BOLT, Runes.HARM)), "the Cord screen should show the loaded spells (has " + screen(context).rowRunes(0) + ")");
-		check(screen(context).editingRow() == 1, "the Cord screen should edit the loaded selected spell");
+		check(!onScreen(context, cs -> cs.loadoutsOpen()), "loading should close the panel");
+		check(onScreen(context, cs -> cs.rowRunes(0)).equals(ids(Runes.BOLT, Runes.HARM)), "the Cord screen should show the loaded spells (has " + onScreen(context, cs -> cs.rowRunes(0)) + ")");
+		check(onScreen(context, cs -> cs.editingRow()) == 1, "the Cord screen should edit the loaded selected spell");
 		closeScreen(context);
 	}
 
@@ -367,12 +372,12 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 		context.waitTicks(5);
 		check(saved(world).size() == LoadoutRules.MAX - 1, "five should save");
 		openScreen(context);
-		click(context, screen(context).loadoutsPoint());
-		click(context, screen(context).saveNewLoadoutPoint());
+		click(context, onScreen(context, cs -> cs.loadoutsPoint()));
+		click(context, onScreen(context, cs -> cs.saveNewLoadoutPoint()));
 		press(context, InputConstants.KEY_RETURN);
 		context.waitTicks(3);
 		check(saved(world).size() == LoadoutRules.MAX, "the sixth should save from the panel (has " + saved(world).size() + ")");
-		check(screen(context).saveNewLoadoutPoint() == null, "with six saved the panel shouldn't offer to save another");
+		check(onScreen(context, cs -> cs.saveNewLoadoutPoint()) == null, "with six saved the panel shouldn't offer to save another");
 		String seventh = world.getServer().computeOnServer(server -> {
 			Loadouts.Result result = Loadouts.save(player(server), "Seventh", false);
 			return result.ok() ? "a seventh shouldn't save" : key(result.message()).endsWith("full") ? null : "the refusal should say it's full";
@@ -385,11 +390,11 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 		String over = world.getServer().computeOnServer(server -> Loadouts.save(player(server), "set 2", true).ok() ? null : "saving over one by name should work when full");
 		check(over == null, over);
 		// Delete asks twice.
-		click(context, screen(context).loadoutPoint(5, DELETE));
+		click(context, onScreen(context, cs -> cs.loadoutPoint(5, DELETE)));
 		check(saved(world).size() == LoadoutRules.MAX, "one click on Delete should only ask");
-		click(context, screen(context).loadoutPoint(5, DELETE));
+		click(context, onScreen(context, cs -> cs.loadoutPoint(5, DELETE)));
 		check(saved(world).size() == LoadoutRules.MAX - 1, "a second click should delete it (has " + saved(world).size() + ")");
-		check(screen(context).saveNewLoadoutPoint() != null, "with one deleted there's room again");
+		check(onScreen(context, cs -> cs.saveNewLoadoutPoint()) != null, "with one deleted there's room again");
 		closeScreen(context);
 	}
 
@@ -447,8 +452,8 @@ public class WildercordLoadoutsTest implements FabricClientGameTest {
 			});
 			context.waitTicks(5);
 			openScreen(context);
-			click(context, screen(context).loadoutsPoint());
-			check(screen(context).loadoutsOpen(), "the panel should open at " + size[0] + "x" + size[1]);
+			click(context, onScreen(context, cs -> cs.loadoutsPoint()));
+			check(onScreen(context, cs -> cs.loadoutsOpen()), "the panel should open at " + size[0] + "x" + size[1]);
 			context.getInput().setCursorPos(2, 2);
 			context.waitTicks(3);
 			String name = size[0] == 1920 ? "loadouts_panel" : "loadouts_panel_" + size[0] + "x" + size[1];

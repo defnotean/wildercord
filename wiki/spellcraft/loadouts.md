@@ -12,6 +12,9 @@ A Cord set up for a boss fight is no good in a mine. A **loadout** is your whole
 you can switch between setups in a moment instead of threading every rune again: one for fighting, one for
 mining, one for exploring, one for keeping your friends alive.
 
+<img src="{{ '/assets/images/loadouts-panel.jpg' | relative_url }}" alt="The loadouts panel over the Cord screen: three saved loadouts named Fighting, Mining and Helping friends, each with its first runes and Load, save, rename and delete buttons, and a row to save the current Cord as a new one" class="shot">
+<span class="caption">The loadouts panel: three saved, room for three more.</span>
+
 1. TOC
 {:toc}
 
