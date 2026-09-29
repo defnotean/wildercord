@@ -1811,6 +1811,7 @@ TRAVEL_LANG = {
     "message.wildercord.travel.waypoint_untracked": "Stopped tracking %s",
     "message.wildercord.travel.waypoint_not_tracking": "You aren't tracking a waypoint",
     "message.wildercord.travel.waypoint_share_self": "You can't share a waypoint with yourself",
+    "message.wildercord.travel.waypoint_share_wait": "You can share another waypoint with %s in %s seconds",
     "message.wildercord.travel.waypoint_shared": "Shared %s with %s",
     "message.wildercord.travel.waypoint_offer": "%s shared a waypoint with you: %s, at %s.",
     "message.wildercord.travel.waypoint_offer_add": "[Add]",

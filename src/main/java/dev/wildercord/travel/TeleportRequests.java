@@ -143,6 +143,11 @@ public final class TeleportRequests {
 				Travel.fail(t, "tpa_gone");
 				return null;
 			}
+			// Nobody arrives in a duel, even one the other player started during the warmup.
+			if (Duels.inDuel(there)) {
+				Travel.fail(t, "tpa_busy", there.getDisplayName());
+				return null;
+			}
 			ServerLevel level = there.level();
 			Vec3 pos = Landing.near(level, there.position(), t, false);
 			if (pos == null) {

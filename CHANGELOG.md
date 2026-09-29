@@ -8,6 +8,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **The server config file shows every setting.** A fresh `wildercord.json` now lists the `travel` section (it was read
   but never written), and a file written by an older version gains any settings added since, at their defaults, the
   next time the server loads it. Everything already in the file stays as it was.
+- **`/rtp` typed over and over could stall a server.** Each `/rtp` searched for a new spot, loading (or generating) up
+  to a dozen far-off chunks, and a broken warmup starts no cooldown, so it could be repeated as fast as it was typed.
+  Now a player searches at most once every 10 seconds: trying again sooner goes to the spot already found (or, if the
+  last search found none, says how long to wait). Operators aren't limited.
+- **An accepted teleport request could land you in a duel.** If the player you were going to started a duel during
+  your warmup, you still arrived beside them. Now the teleport is called off, as it is when they're duelling at the
+  moment you accept.
+- **Waypoint offers could flood someone's chat.** `/waypoint share` had no limit and can't be switched off like
+  requests. Now you can share with the same player once every 10 seconds.
 
 ## [0.4.2-alpha] - 2026-09-28
 

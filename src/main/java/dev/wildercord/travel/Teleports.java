@@ -71,6 +71,9 @@ public final class Teleports {
 	private static final Map<UUID, Pending> PENDING = new HashMap<>();
 	/** Server tick at which each player may use each command again. */
 	private static final Map<UUID, EnumMap<Kind, Long>> READY_AT = new HashMap<>();
+	/** Each player's last {@code /rtp} search: the spot it found (null if none) and the server tick it ran at. */
+	private record Searched(Vec3 found, long at) {}
+	private static final Map<UUID, Searched> RTP_SEARCHES = new HashMap<>();
 
 	static void init() {
 		ServerTickEvents.END_SERVER_TICK.register(Teleports::tick);
@@ -83,6 +86,7 @@ public final class Teleports {
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			PENDING.clear();
 			READY_AT.clear();
+			RTP_SEARCHES.clear();
 		});
 	}
 
@@ -146,6 +150,7 @@ public final class Teleports {
 	/** Forgets {@code player}'s cooldowns (for tests, or an operator's fixing up). */
 	public static void resetCooldowns(ServerPlayer player) {
 		READY_AT.remove(player.getUUID());
+		RTP_SEARCHES.remove(player.getUUID());
 	}
 
 	private static long cooldownTicks(Kind kind) {
@@ -225,6 +230,8 @@ public final class Teleports {
 			.put(kind, arrival.level().getServer().getTickCount() + cooldownTicks(kind));
 		player.sendOverlayMessage(Travel.text("arrived", where).withColor(Travel.ARCANE));
 		if (kind == Kind.RTP) {
+			// Used: the next /rtp looks for somewhere new.
+			RTP_SEARCHES.remove(player.getUUID());
 			BlockPos at = BlockPos.containing(arrival.pos());
 			Travel.good(player, "rtp_landed", at.getX(), at.getY(), at.getZ());
 		}
@@ -304,21 +311,57 @@ public final class Teleports {
 
 			@Override
 			public Arrival resolve(ServerPlayer traveller) {
-				MinecraftServer server = traveller.level().getServer();
-				ServerLevel overworld = server.overworld();
+				ServerLevel overworld = traveller.level().getServer().overworld();
 				if (found == null) {
-					LevelData.RespawnData data = server.getRespawnData();
-					BlockPos centre = Level.OVERWORLD.equals(data.dimension()) ? data.pos() : BlockPos.ZERO;
-					found = Landing.random(overworld, centre, Travel.config().rtpRadius(), traveller.getRandom(), traveller);
+					found = search(traveller, overworld, operator);
+					if (found == null) {
+						return null;
+					}
 				} else {
 					found = Landing.near(overworld, found, traveller, true);
-				}
-				if (found == null) {
-					Travel.fail(traveller, "rtp_failed");
-					return null;
+					if (found == null) {
+						Travel.fail(traveller, "rtp_failed");
+						return null;
+					}
 				}
 				return new Arrival(overworld, found, traveller.getYRot(), 0F);
 			}
 		}, operator);
+	}
+
+	/**
+	 * A random spot for {@code player}'s {@code /rtp}, or null (having told them why). A search can load
+	 * a dozen chunks, so someone who isn't an operator searches at most once every
+	 * {@link TravelRules#RTP_SEARCH_SECONDS}: trying again sooner (after a broken warmup, say) goes to the
+	 * spot the last search found, or waits if it found none.
+	 */
+	private static Vec3 search(ServerPlayer player, ServerLevel overworld, boolean operator) {
+		MinecraftServer server = overworld.getServer();
+		long now = server.getTickCount();
+		Searched last = operator ? null : RTP_SEARCHES.get(player.getUUID());
+		long wait = last == null ? 0 : TravelRules.searchWait(now, last.at());
+		if (wait > 0) {
+			Vec3 again = last.found() == null ? null : Landing.near(overworld, last.found(), player, true);
+			if (again == null) {
+				Travel.fail(player, "cooldown", Kind.RTP.command, TravelRules.seconds(wait));
+			}
+			return again;
+		}
+		LevelData.RespawnData data = server.getRespawnData();
+		BlockPos centre = Level.OVERWORLD.equals(data.dimension()) ? data.pos() : BlockPos.ZERO;
+		Vec3 found = Landing.random(overworld, centre, Travel.config().rtpRadius(), player.getRandom(), player);
+		if (!operator) {
+			RTP_SEARCHES.put(player.getUUID(), new Searched(found, now));
+		}
+		if (found == null) {
+			Travel.fail(player, "rtp_failed");
+		}
+		return found;
+	}
+
+	/** Where {@code player}'s last {@code /rtp} search landed, while trying again would still go there (null if nowhere). For tests. */
+	public static Vec3 lastRandomSpot(ServerPlayer player) {
+		Searched last = RTP_SEARCHES.get(player.getUUID());
+		return last == null || TravelRules.searchWait(player.level().getServer().getTickCount(), last.at()) <= 0 ? null : last.found();
 	}
 }
