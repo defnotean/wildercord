@@ -83,8 +83,7 @@ forfeit.
 
 ## What's undone
 
-When a duel ends, **however it ends**, the harm the two of you did each other is undone. Only that: a duel is never a
-free heal.
+When a duel ends, **however it ends**, the harm the two of you did each other is undone. A duel is never a free heal:
 
 - **Health:** you get back the health **your opponent** took from you (their blows, spells, arrows and pets), but never
   more than you had when the duel began. Health lost to anything else during the duel (a fall, a monster, your own
