@@ -142,5 +142,5 @@ There are **36 feats**. Each is worth **250 mana** toward your next circle the f
 The **Every Page Filled** challenge asks for a full Grimoire: all **11 reactions**, all **10 secret
 spells**, and **32 of the 36 feats**. The four you're let off are the ones nobody can be sure of
 earning alone: **Mirrorfrost** (only its innate rune earns it) and **Unison**, **Domain Clash** and
-**Chorus** (they need other casters). Fusions, attunements and riddles don't count toward it. The
+**Chorus** (they need other casters). Fusions, attunements, affinities and riddles don't count toward it. The
 reward is 500 experience, 3 Mana Crystals and 8 Blank Runes.
