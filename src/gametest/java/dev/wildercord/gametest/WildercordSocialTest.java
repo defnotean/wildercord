@@ -327,6 +327,21 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a spell landing on a Training Dummy shouldn't count");
 		});
 		context.waitTicks(1);
+		// Nor on a wild wisp, which no spell can hurt.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			dev.wildercord.familiar.Wisp wisp = dev.wildercord.familiar.FamiliarContent.WISP.create(level, EntitySpawnReason.COMMAND);
+			check(wisp != null, "a wisp should spawn");
+			wisp.snapTo(player.getX() + 2, player.getY() + 1, player.getZ() - 3, 0, 0);
+			wisp.setNoAi(true);
+			wisp.addTag("wildercord.social");
+			level.addFreshEntity(wisp);
+			Contracts.onSpellHit(player, wisp, "");
+			check(Contracts.board(player).contracts().getFirst().progress() == 0, "a spell landing on a wisp shouldn't count");
+			wisp.discard();
+		});
+		context.waitTicks(1);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			Contracts.onSpellHit(player, (net.minecraft.world.entity.LivingEntity) player.level().getEntity(marks[0]), "");

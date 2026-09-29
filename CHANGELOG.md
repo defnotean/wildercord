@@ -32,6 +32,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   as the same day, as the contract board already did.
 - Any villager's trade asking for a rune (from a data pack, say) was taken for one of the Runesmith's swaps: it
   gave no experience and refused ranked runes. Only the Runesmith's own swaps are treated that way now.
+- Casting at a wild wisp (which nothing can hurt) counted toward the casting and reaction contracts, as if it
+  were a real foe. Like a Training Dummy, it no longer does.
 - New Ember Sanctums are no longer overgrown by basalt columns and lava sheets in basalt deltas, and no longer
   generate through fortresses and bastions.
 
