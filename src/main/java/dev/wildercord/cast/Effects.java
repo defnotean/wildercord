@@ -737,9 +737,9 @@ public final class Effects {
 			Vec3 spot = target.add(back.scale(1 + attempt * 0.5)).add(0, attempt % 2 == 0 ? 0 : 1, 0);
 			spot = CastEngine.ground(cast.level, spot);
 			AABB box = caster.getDimensions(caster.getPose()).makeBoundingBox(spot);
-			// Always somewhere safe: room to stand, inside the world border, and never into lava or fire (the ground
-			// under a lava lake is still "where the spell landed").
-			if (cast.level.noCollision(caster, box) && cast.level.getWorldBorder().isWithinBounds(spot.x, spot.z)
+			// Always somewhere safe: ground to stand on (never over a chasm or the void), room, inside the world border,
+			// and never into lava or fire (the ground under a lava lake is still "where the spell landed").
+			if (footing(cast.level, spot) && cast.level.noCollision(caster, box) && cast.level.getWorldBorder().isWithinBounds(spot.x, spot.z)
 					&& cast.level.getBlockStates(box.inflate(0, 0.5, 0)).noneMatch(s -> s.getFluidState().is(FluidTags.LAVA) || s.is(BlockTags.FIRE))) {
 				Vec3 from = caster.position();
 				caster.teleportTo(cast.level, spot.x, spot.y, spot.z, Set.<Relative>of(), caster.getYRot(), caster.getXRot(), false);
@@ -748,6 +748,14 @@ public final class Effects {
 				return;
 			}
 		}
+	}
+
+	/**
+	 * Whether there's ground right under {@code feet}: a spot {@link CastEngine#ground} found, rather than the point
+	 * itself, which it hands back when there's nothing within reach below (a chasm, the void).
+	 */
+	static boolean footing(ServerLevel level, Vec3 feet) {
+		return !level.noCollision(new AABB(feet.x - 0.2, feet.y - 0.25, feet.z - 0.2, feet.x + 0.2, feet.y - 0.01, feet.z + 0.2));
 	}
 
 	/** Inferno: everything around the point burns for a few seconds. */
@@ -2021,7 +2029,10 @@ public final class Effects {
 		Vec3 from = t.position();
 		for (double d = distance; d >= 2; d -= 1) {
 			Vec3 spot = CastEngine.ground(level, from.add(away.scale(d)).add(0, 1.0, 0));
-			if (Math.abs(spot.y - from.y) > 4 || !level.noCollision(t, t.getDimensions(t.getPose()).makeBoundingBox(spot))) {
+			// Near its own height, and for a creature on the ground, on ground again: never over a chasm or the void
+			// (where no ground is found, and the height check alone would pass a spot in mid-air). A flier may stay aloft.
+			if (t.onGround() && !footing(level, spot) || Math.abs(spot.y - from.y) > 4
+					|| !level.noCollision(t, t.getDimensions(t.getPose()).makeBoundingBox(spot))) {
 				continue;
 			}
 			if (level.clip(new ClipContext(from.add(0, 1, 0), spot.add(0, 1, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, t)).getType()

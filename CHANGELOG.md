@@ -30,8 +30,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   blocks a cast may change (32, or the server's `max_blocks_per_cast`), but Grow bone-mealed every block it
   reached, however many times a Zone, a Split or an Echo landed it.
 - **Blink never lands you in lava.** Aimed at a lava pool (or a creature dying in one), it put you on the ground at
-  the bottom of it, and it could also put you past the world border. It still only lands where there's room to
-  stand, and now never in lava or fire or outside the border: with nowhere safe, you stay where you are.
+  the bottom of it, aimed out over the void or a deep drop it left you in mid-air to fall, and it could also put
+  you past the world border. It still only lands where there's room to stand, and now only on ground, never in
+  lava or fire or outside the border: with nowhere safe, you stay where you are.
+- **Banish never drops a creature into the void.** Its target reappears near its own height, but with no ground
+  within reach below (the edge of an End island, a deep ravine) it could be left in mid-air to fall. A creature
+  standing on the ground now always reappears on ground, or not at all.
 - **Blackflame spreads only from a death.** A burning creature that simply went away (its ground unloaded, it
   despawned, or it went through a portal) passed its black flames on as if it had died. Blackflame, Dismantle's
   later slashes, Aftershock's second impact and a Bubble's pop also no longer follow a player through a portal.

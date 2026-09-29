@@ -47,7 +47,8 @@ import java.util.UUID;
  * dark), a Rampart never rises over a Light spell's light, its blocks are written down to come down even
  * after a crash, and one left past its time is taken down as soon as its ground is loaded. The world runes
  * keep their own rules: Icepath never freezes round a swimmer, Harvest replants each crop with one of its
- * own seeds, Grow keeps to the cast's block budget, and Blink never lands in lava.
+ * own seeds, Grow keeps to the cast's block budget, Blink never lands in lava, and Banish never leaves a creature
+ * standing on the ground out over a drop.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
@@ -217,6 +218,31 @@ public class WildercordWorldMagicTest implements FabricClientGameTest {
 				return null;
 			});
 			note(failures, blink);
+
+			// Banish never drops a creature standing on the ground into a chasm or the void: on a lone pillar high over
+			// open air, with no ground within reach anywhere it could go, it stays where it is.
+			String banish = server.computeOnServer(s -> {
+				ServerPlayer player = player(s);
+				ServerLevel level = player.level();
+				BlockPos top = site(player, -24, 24).above(40);
+				level.setBlockAndUpdate(top.below(), Blocks.STONE.defaultBlockState());
+				Mob mob = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
+				mob.snapTo(top.getX() + 0.5, top.getY(), top.getZ() + 0.5, 0.0F, 0.0F);
+				mob.setNoAi(true);
+				// Standing on the pillar (a creature without AI never moves, so never finds its footing itself).
+				mob.setOnGround(true);
+				// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
+				mob.addTag("wildercord.rolled");
+				level.addFreshEntity(mob);
+				Vec3 before = mob.position();
+				apply(player, List.of(Runes.TOUCH, Runes.BANISH), mob.getBoundingBox().getCenter(), List.of(mob));
+				Vec3 after = mob.position();
+				mob.discard();
+				level.setBlockAndUpdate(top.below(), Blocks.AIR.defaultBlockState());
+				return after.distanceTo(before) < 0.01 ? null
+					: "Banish shouldn't put a creature standing on the ground out over a drop with nowhere to land (it went to " + after + ")";
+			});
+			note(failures, banish);
 
 			// Fire by grass, with fire spreading on: the grass catches.
 			String fire = server.computeOnServer(s -> {
