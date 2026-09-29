@@ -85,15 +85,16 @@ forfeit.
 
 When a duel ends, **however it ends**, the harm the two of you did each other is undone. A duel is never a free heal:
 
-- **Health:** you get back the health **your opponent** took from you (their blows, spells, arrows and pets), but never
-  more than you had when the duel began. Health lost to anything else during the duel (a fall, a monster, your own
+- **Health:** you get back the health **your opponent** took from you (their blows, spells, arrows and pets, after
+  your armour and any absorption hearts), but never more than you had when the duel began. Health lost to anything else during the duel (a fall, a monster, your own
   Blood Price) stays lost, and health you healed during it is kept.
 - **Mana:** not given back. Mana you spent during the duel stays spent, whatever you spent it on.
 - **Fire:** if your opponent set you alight (and you weren't burning when the duel began), the flames go out.
 - **Harmful effects** your opponent left on you (their spells' poison, slowness and so on, a tipped arrow's, that you
   didn't have before) are removed.
-- **Effects you had** when it began come back, less the time the duel took. A potion with 3 minutes left when a
-  one-minute duel began has 2 minutes left afterwards.
+- **Helpful effects you had** when it began come back, less the time the duel took. A potion with 3 minutes left when a
+  one-minute duel began has 2 minutes left afterwards. Absorption doesn't come back, and nor does anything that isn't
+  helpful (a Bad Omen a raid used up stays used).
 
 Anything your opponent didn't cause is kept: a monster's poison, lava's fire and helpful effects you gained during
 the duel all stay, and nothing is taken from your inventory. Nothing is dropped, because nobody dies to the other.

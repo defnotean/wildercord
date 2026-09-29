@@ -2,7 +2,7 @@
 title: The Cord Screen
 parent: Spellcraft
 nav_order: 2
-description: "Every part of the Cord screen: the Codex and its search, threading runes, the readout, the magic circle preview, naming spells, spell codes, scrolls, and the Passives, Grimoire and Cosmetics pages."
+description: "Every part of the Cord screen: the Codex and its search, threading runes, the readout, the magic circle preview, naming spells, spell codes, scrolls, loadouts, and the Passives, Grimoire and Cosmetics pages."
 ---
 
 # The Cord Screen
@@ -23,7 +23,7 @@ in plain English, with its exact cost and cooldown, before you ever cast it.
 - It **doesn't pause the game**, even in single player. The world is dimmed behind it, the way the inventory
   dims it.
 - **`Esc`** closes it. Because typing searches the Codex, `Esc` first clears the search, then lets go of the
-  search box, and only then closes the screen. Pressing `K` again doesn't close it: it types a "k" into the
+  search box, and only then closes the screen. With the loadouts panel open, `Esc` closes the panel first. Pressing `K` again doesn't close it: it types a "k" into the
   search.
 - On a small window or a large interface scale, the whole screen is scaled down to fit.
 
@@ -38,7 +38,8 @@ From top to bottom:
    your Cord's limits ("12 sockets · 4 spells · Tier IV", when there's room) and three badges on the right:
    the **heart**, the **mana** crystal and the **help** mark.
 2. **The spell rows:** one row per spell, numbered, with a socket for each rune.
-3. **The family tabs and the search box:** All, Shapes, Effects, Modifiers, Links, and a box to type in.
+3. **The family tabs and the search box:** All, Shapes, Effects, Modifiers, Links, a box to type in, and at the
+   end of the row the **loadouts** badge (a little list).
 4. **The category chips:** the categories of the chosen family, and how many runes match.
 5. **The Codex:** every rune you know, in rows by category.
 6. **The readout:** the selected spell explained, with four small tool buttons at its top right.
@@ -270,6 +271,15 @@ and the spell's name, and says who inscribed it. Right-click it to cast it; it's
 plain strength: nobody's Heart Circles or enchantments count. In creative, inscribing is free. See
 [Playing Together]({{ '/social/playing-together/' | relative_url }}).
 
+## Loadouts
+
+The little **list badge** at the right end of the family tabs row, just under the **?**, opens the loadouts panel
+(so does `Ctrl`+`L`). There you save your whole Cord (every spell's runes and name, your passives and which are on,
+and the selected spell) as one of up to six **loadouts**, and load, save over, rename or delete them. Loading one
+puts it straight on the Cord, and the rows show the loaded spells. Runes you don't know or your Cord can't hold
+stay quiet, and every spell that changes starts its cooldown. Everything about them is on
+[Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}).
+
 ## The Passives page
 
 <img src="{{ '/assets/images/passives.png' | relative_url }}" alt="The Passives page: two passive rows with their upkeep and On switches, the total drain against regeneration, and the Codex with the runes that can't be passives dimmed" class="shot">
@@ -345,3 +355,5 @@ Every option and its price is on [Cosmetics]({{ '/companions/cosmetics/' | relat
 | Codex, readout, Grimoire | Mouse wheel | Scroll |
 | Renaming | `Enter` / `Esc` | Save the name / cancel |
 | Passives page | Click On/Off | Switch that passive |
+| Spells or Passives page | Click the list badge, or `Ctrl`+`L` | Open the loadouts panel |
+| Loadouts panel | `↑`/`↓`, `Enter`, `Ctrl`+`R`, `Delete` | Pick a loadout, load it, rename it, delete it |
