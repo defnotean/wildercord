@@ -37,6 +37,23 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void playerAffinitiesHaveASwitchAndAPace() {
+		assertTrue(D.playerAffinity());
+		assertEquals(1.0, D.affinityGain(), 1e-9);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"features\": {\"player_affinity\": false}, \"affinity\": {\"gain_multiplier\": 2.5}}");
+		assertFalse(parsed.config().playerAffinity());
+		assertEquals(2.5, parsed.config().affinityGain(), 1e-9);
+		assertTrue(parsed.config().creatureAffinities());
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(100.0, WildercordConfig.parse("{\"affinity\": {\"gain_multiplier\": 1000}}").config().affinityGain(), 1e-9);
+		assertTrue(D.toJson().contains("\"player_affinity\": true") && D.toJson().contains("\"gain_multiplier\": 1.0"));
+		// A file from before affinities gains both, switched on at the normal pace.
+		String grown = WildercordConfig.addMissing("{\"features\": {\"duels\": false}}").orElseThrow();
+		assertTrue(grown.contains("\"player_affinity\"") && grown.contains("\"gain_multiplier\""), grown);
+		assertTrue(WildercordConfig.parse(grown).config().playerAffinity());
+	}
+
+	@Test
 	void theWrittenFileReadsBackAsTheDefaults() {
 		WildercordConfig.Parsed parsed = WildercordConfig.parse(D.toJson());
 		assertEquals(D, parsed.config());

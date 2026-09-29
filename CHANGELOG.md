@@ -45,6 +45,29 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   - The Grimoire lists them apart, *Signature fusions (n of 16)*, hidden as ??? + ??? with both runes' elements as the
     hint until found. Each condenses as much mana as any fusion; the element fusions are still counted out of 55.
   - Two new advancements: **Signature** (make your first) and **Hallmarks** (find five).
+- **Your affinities.** Every player now has an affinity with each of the ten elements, and it grows with what you
+  do: casting the element (a point for every 10 mana its effects cost, so cheap spam is worth no more than a real
+  spell), setting off reactions it takes part in, finding creatures weak to it, and everyday things that fit it.
+  Smelting, killing with fire and the Nether's lava feed fire; fishing, snow and powder snow frost; thunderstorms and
+  lightning (a strike you live through is worth a lot) storm; elytra flight, long falls and great heights wind; stone
+  and ores mined with a pickaxe, and the deep, earth; ripe harvests, breeding, taming and healing others life; the
+  End, endermen, ender pearls and the deep dark void; enchanting, meditating, Torn Pages, new runes and ley lines
+  arcane; a whole night watched under the sky, time magic aging the world and a clock in hand time; melee kills, Blood
+  Price and heavy blows survived blood. Every way has a daily allowance (an in-game day, which sleeping doesn't
+  hurry), so no farm grows an affinity past it; casting slows to a tenth past its own instead of stopping.
+- **Five levels** at 100, 600, 1,800, 4,500 and 10,000 points: each gives **+3% power** with that element's effects
+  (heals and shields too: up to +15% at V), from **III** others' spells of it land **10%, 15%, 20%** softer (a
+  reaction still breaks through, and no callout floats over you), and at **V** its share of a spell's price costs
+  **10% less**, shown in the Cord screen and the HUD. It counts on your own spells (from your Cord, imbued, turned
+  back by Mirrorfrost), not on scrolls or passives.
+- Every new level is announced with a message and a **toast** with the element's mark in its colour; the first level
+  of each element is a Grimoire entry worth **100 mana** toward your next Heart Circle.
+- The **Grimoire page** has an **Affinities** section under your heart: each element's mark, its level and a bar
+  toward the next, with a tooltip of what it gives and everything that raises it. The readout says a spell's affinity
+  bonus quietly under its cost ("Fire affinity III: +9% power").
+- Server settings: `features.player_affinity` switches affinities off, and `affinity.gain_multiplier` makes them grow
+  faster or slower. An older settings file gains both by itself. See
+  [Your Affinities](https://defnotean.github.io/wildercord/progression/affinity/).
 - **Runes from fishing.** A rod in open water (vanilla's rule for treasure) now brings up magic. See
   [Fishing](https://defnotean.github.io/wildercord/world/runes-of-the-world/#fishing).
   - **Treasure catches can be runes.** About 4 treasure catches in 11 are a rune and 1 in 11 a Torn Page, beside the
@@ -65,6 +88,19 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   - The server's rune and page loot multipliers scale all of it, as they do chests (0 turns it off).
 - Craftable runes' wiki entries now say where else they're found, and Lightning's and Shock's tooltips name trail
   ruins (brushing), where they've been found all along.
+
+### Changed
+- **Leaning follows your deepest affinity.** Your magic leans toward the element whose affinity is at level I or more
+  and a quarter ahead of the rest, and your circles take its colour as before. Leaning's own +10% power is gone: the
+  affinity's levels give power now, for every element you grow. The casts leaning counted before give each element a
+  start (2 points a cast, never past level II).
+
+### Fixed
+- **Dungeon arenas and vaults are warded.** Players could tunnel, blast or spell their way straight into a boss arena
+  or vault without going through the dungeon. Their walls, floors and domes now can't be broken by survival players,
+  explosions, block-breaking spells or pistons ("These walls are warded: the only way in is through the dungeon").
+  The halls on the way can still be dug into, and a block you put down inside an arena can be broken again. Dungeons
+  already in a world are warded too.
 
 ## [0.4.4-alpha] - 2026-09-29
 

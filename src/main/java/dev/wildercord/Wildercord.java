@@ -66,6 +66,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.Unison.init();
 		dev.wildercord.cast.Affinities.init();
 		dev.wildercord.cast.Climate.init();
+		dev.wildercord.cast.PlayerAffinities.init();
 		dev.wildercord.cast.Runebound.init();
 		dev.wildercord.cast.LeyWalker.init();
 		dev.wildercord.cast.DomainClash.init();
@@ -79,6 +80,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.familiar.FamiliarContent.init();
 		dev.wildercord.familiar.Familiars.init();
 		dev.wildercord.cast.Dungeons.init();
+		dev.wildercord.world.dungeons.DungeonWards.init();
 		SpellCaster.init();
 		WildercordCommand.init();
 		dev.wildercord.travel.Travel.init();

@@ -34,7 +34,7 @@ A better Cord also counts for the ones before it.
 | Wild Magic | Overcast a spell and watch it twist into something else (feat) | 25 XP |
 | Second Nature | Keep a passive spell running | 25 XP |
 | Spell Collision | Shoot a spell out of the air (feat) | 25 XP |
-| Leaning | Your magic leans toward an element (feat) | 25 XP |
+| Leaning | Your magic leans toward an element, your deepest affinity (feat) | 25 XP |
 | Scribe | Inscribe a scroll (feat) | 15 XP |
 | Chorus | Cast the same spell with other casters at the same moment (feat) | 30 XP |
 

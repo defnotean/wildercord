@@ -32,7 +32,7 @@ import java.util.List;
  * order chunks generate in. In a piece's own frame NORTH points inward (+z), SOUTH back out toward
  * the entrance, EAST along +x and WEST along -x.
  */
-public abstract class DungeonPiece extends ScatteredFeaturePiece {
+public abstract class DungeonPiece extends ScatteredFeaturePiece implements WardedPiece {
 	protected static final BlockState AIR = Blocks.AIR.defaultBlockState();
 
 	protected DungeonPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing) {
@@ -46,6 +46,12 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece {
 	@Override
 	protected void addAdditionalSaveData(net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSerializationContext context, CompoundTag tag) {
 		super.addAdditionalSaveData(context, tag);
+	}
+
+	/** A box given in the piece's own coordinates, turned and placed as the piece is: in the world's. */
+	protected BoundingBox worldBox(int x0, int y0, int z0, int x1, int y1, int z1) {
+		return BoundingBox.fromCorners(new net.minecraft.core.Vec3i(getWorldX(x0, z0), getWorldY(y0), getWorldZ(x0, z0)),
+			new net.minecraft.core.Vec3i(getWorldX(x1, z1), getWorldY(y1), getWorldZ(x1, z1)));
 	}
 
 	// ------------------------------------------------------------------ blocks

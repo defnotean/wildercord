@@ -71,6 +71,18 @@ All four are laid out the same way, so once you've cleared one you know the shap
 Inside any of the four, about a third (35%) of the zombies, skeletons, witches and illagers that spawn are Runebound,
 on top of the guards placed there.
 
+### Warded arenas
+{: #warded-arenas }
+
+The **arena and the vault are warded**: the only way in is through the dungeon. Their walls, floors and domes can't be
+broken by pick, shovel or spell, blown open by TNT, creepers or blast spells, or pushed aside by pistons. Dig at one
+and violet sparks fly: *"These walls are warded: the only way in is through the dungeon"*. The rest of the dungeon
+isn't warded, so you may tunnel into its halls, as people always have.
+
+Inside a ward, what isn't part of the dungeon still goes: a torch or a block **you put down** there can be broken
+again, a spell's temporary blocks (a Rampart, a Span) come and go as usual, and grass, water and the like are no
+trouble. Players in creative mode aren't stopped.
+
 ### The bosses
 
 The four keepers share these rules:

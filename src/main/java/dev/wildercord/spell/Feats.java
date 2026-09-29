@@ -5,7 +5,8 @@ import java.util.List;
 /**
  * The Grimoire: everything a caster has discovered. Entries are plain string keys, grouped by
  * a prefix: {@code reaction:shatter}, {@code secret:sunfall}, {@code feat:overcast}, {@code fusion:firestorm},
- * {@code bestiary:minecraft:blaze|weak|frost} (see {@link Bestiary}). Each first
+ * {@code bestiary:minecraft:blaze|weak|frost} (see {@link Bestiary}), {@code affinity:frost} (see
+ * {@link PlayerAffinity}). Each first
  * discovery condenses a little mana toward the next Heart Circle. Pure data, shared by the
  * server (which grants entries) and the Grimoire page (which lists them).
  */
@@ -71,7 +72,7 @@ public final class Feats {
 		new Feat(WELLSTONE, "Wellkeeper", "Woke a Wellstone on a ley line."),
 		new Feat(SEAL, "Sealbreaker", "Opened a Rune Seal in the Archive."),
 		new Feat(ARCHIVIST, "The Last Page", "Defeated the Archivist."),
-		new Feat(LEANING, "Leaning", "Cast one element so often that your magic leans toward it."),
+		new Feat(LEANING, "Leaning", "Grew one affinity so far past the rest that your magic leans toward it."),
 		new Feat(INNATE, "Awakening", "Awakened your innate rune at the 1st Circle."),
 		new Feat(SCROLL, "Scribe", "Inscribed a spell onto a scroll."),
 		new Feat(SPELLGUARD, "Spellguard", "Your Shield stopped a spell cast at you."),
@@ -107,6 +108,9 @@ public final class Feats {
 	public static int reward(String key) {
 		if (key.startsWith(Bestiary.PREFIX)) {
 			return Bestiary.reward(key);
+		}
+		if (key.startsWith(PlayerAffinity.KEY_PREFIX)) {
+			return PlayerAffinity.REWARD;
 		}
 		if (key.startsWith("secret:")) {
 			return 400;

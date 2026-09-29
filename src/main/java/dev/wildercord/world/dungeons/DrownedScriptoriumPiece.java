@@ -87,6 +87,7 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
+		dev.wildercord.world.dungeons.DungeonWards.remember(level, this);
 		approach(level, bb);
 		foundation(level, bb, 12, 14, 28, 24, F - 1);
 		foundation(level, bb, 8, 24, 32, 42, F - 1);
@@ -271,6 +272,14 @@ public class DrownedScriptoriumPiece extends DungeonPiece {
 		double h = y - (F + 6);
 		double e = (d / (BALCONY_R + 0.5)) * (d / (BALCONY_R + 0.5)) + (h / RISE) * (h / RISE);
 		return d <= BALCONY_R && e <= 0.9;
+	}
+
+	/** The arena, from under its pit to its glass dome, and the vault off the balcony (with the door between). */
+	@Override
+	public java.util.List<BoundingBox> wardedBoxes() {
+		return java.util.List.of(
+			worldBox(CX - WALL_R - 2, 0, ARENA_Z - WALL_R - 2, CX + WALL_R + 2, HEIGHT - 1, Math.min(DEPTH - 1, ARENA_Z + WALL_R + 2)),
+			worldBox(32, 0, 56, WIDTH - 1, F + 9, 70));
 	}
 
 	private void arena(WorldGenLevel level, BoundingBox bb) {

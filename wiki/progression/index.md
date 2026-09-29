@@ -9,7 +9,8 @@ permalink: /progression/
 
 There's no level to grind and no skill tree in Wildercord. You grow stronger by **casting**: every
 spell you pay for condenses a little mana in your heart, every new thing you discover is written into
-your Grimoire, and the world itself has places and things that feed your magic.
+your Grimoire, what you do grows your affinity with each element, and the world itself has places and
+things that feed your magic.
 
 <img src="{{ '/assets/images/heart.png' | relative_url }}" alt="The Cord screen's Passives page, with the heart badge's tooltip open: Heart 8th Circle, +120 max mana, +4.0 mana/s, +24% spell power, and the four perks" class="shot">
 <span class="caption">A complete heart: all eight circles and their perks.</span>
@@ -20,6 +21,7 @@ your Grimoire, and the world itself has places and things that feed your magic.
 |---|---|---|
 | **Heart Circles** | Eight rings of condensed mana: more mana, faster regeneration, more power, passive slots, your innate rune, and four perks. | [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) |
 | **The Grimoire and feats** | A record of everything you've discovered. Every first discovery condenses mana toward your next circle. | [The Grimoire and Feats]({{ '/progression/grimoire/' | relative_url }}) |
+| **Your affinities** | An affinity with each of the ten elements, grown by casting it and by everyday things that fit it (smelting, fishing, mining...): up to +15% power with it, a resistance to it from level III, cheaper spells at V. | [Your Affinities]({{ '/progression/affinity/' | relative_url }}) |
 | **Advancements** | Wildercord's own advancement tab: experience, Blank Runes and Mana Crystals. | [Advancements]({{ '/progression/advancements/' | relative_url }}) |
 | **Mana** | Max mana and regeneration from your Cord, Mana Crystals, potions, meditation and more. | [Mana]({{ '/progression/mana/' | relative_url }}) |
 | **Cord enchantments** | Seven enchantments for your Cord: more mana, faster regeneration, stronger, cheaper, quicker, longer spells. | [Cord Enchantments]({{ '/progression/enchantments/' | relative_url }}) |
@@ -39,7 +41,7 @@ A spell's strength is its runes' own numbers multiplied by everything below. The
 | Each working Heart Circle | +3% (up to +24%) |
 | Potency on your Cord | +8% per level (up to +24%) |
 | Overflow (7th Circle), casting at full mana | +30% |
-| Leaning toward the effect's element | +10% on effects of that element |
+| Your affinity with the effect's element | +3% per level, up to +15% at V (see [Your Affinities]({{ '/progression/affinity/' | relative_url }})) |
 | Charging a cast | up to +40% at full charge (see [Casting]({{ '/spellcraft/casting/' | relative_url }})) |
 | Rhythm | +8% per beat, up to +24% |
 | A staff of the effect's element | +20% (a greater staff +35%) (see [Casting Gear]({{ '/gear/' | relative_url }})) |

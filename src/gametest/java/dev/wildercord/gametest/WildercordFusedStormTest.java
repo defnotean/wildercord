@@ -719,7 +719,7 @@ public class WildercordFusedStormTest implements FabricClientGameTest {
 
 	/**
 	 * Whether {@code e} has taken about {@code amount}: a husk's armour can take a little off, and the caster's
-	 * elemental leaning can add a tenth.
+	 * affinity with the element can add a little.
 	 */
 	private static boolean took(LivingEntity e, double amount) {
 		double t = taken(e);

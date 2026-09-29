@@ -45,7 +45,7 @@ Like every link, it splits the spell in two:
 - A release **never Siphons** mana back: it was paid for when you imbued it.
 - A released spell hits with your strength at the moment it goes off: your
   [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}), your Cord's enchantments and your
-  leaning count, charging and rhythm don't.
+  affinities count, charging and rhythm don't.
 
 ## The shared cooldown
 

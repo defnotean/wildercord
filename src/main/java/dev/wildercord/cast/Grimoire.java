@@ -17,13 +17,24 @@ import java.util.List;
 /**
  * Writes discoveries into a player's Grimoire. The first time for each entry, a little mana
  * condenses toward the next Heart Circle and the client shows a Grimoire toast (Bestiary entries for a
- * creature met or a resistance found go in quietly: see {@link Bestiary#quiet}).
+ * creature met or a resistance found go in quietly: see {@link Bestiary#quiet}; an affinity's first level
+ * has a toast of its own).
  */
 public final class Grimoire {
 	private Grimoire() {}
 
 	/** Adds an entry; returns true if it was new. */
 	public static boolean unlock(ServerPlayer player, String key) {
+		return unlock(player, key, true);
+	}
+
+	/**
+	 * Adds an entry; returns true if it was new.
+	 *
+	 * @param announce whether it gets the page's chime and a toast: an affinity's first level brings its own
+	 *                 (see {@link PlayerAffinities}), so it only condenses its mana here
+	 */
+	public static boolean unlock(ServerPlayer player, String key, boolean announce) {
 		List<String> entries = Heart.grimoire(player);
 		if (entries.contains(key)) {
 			return false;
@@ -32,16 +43,22 @@ public final class Grimoire {
 		next.add(key);
 		player.setAttached(WildercordAttachments.GRIMOIRE, List.copyOf(next));
 		dev.wildercord.advancement.Advancements.grimoire(player);
+		// A weakness found feeds that element's affinity, a riddle read arcane.
+		PlayerAffinities.discovered(player, key);
 		// A creature met, or a resistance found, goes in quietly: the callout over the creature already said it.
 		if (Bestiary.quiet(key)) {
 			return true;
 		}
 		if (!key.startsWith("hint:")) {
 			player.setAttached(WildercordAttachments.CONDENSED, Heart.condensed(player) + Feats.reward(key));
-			Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F);
-			Fx.sound(player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.9F, 1.0F);
+			if (announce) {
+				Fx.sound(player.level(), player.position(), SoundEvents.BOOK_PAGE_TURN, 0.7F, 1.1F);
+				Fx.sound(player.level(), player.position(), dev.wildercord.content.WildercordSounds.DISCOVERY, 0.9F, 1.0F);
+			}
 		}
-		ServerPlayNetworking.send(player, new WildercordNetworking.Discovery(key));
+		if (announce) {
+			ServerPlayNetworking.send(player, new WildercordNetworking.Discovery(key));
+		}
 		return true;
 	}
 
@@ -49,10 +66,11 @@ public final class Grimoire {
 		return who instanceof ServerPlayer player && unlock(player, "feat:" + feat);
 	}
 
-	/** Called whenever a reaction goes off: the caster learns its name. */
+	/** Called whenever a reaction goes off: the caster learns its name, and its elements' affinities grow. */
 	public static void reaction(LivingEntity caster, String reaction) {
 		if (caster instanceof ServerPlayer player && Feats.REACTIONS.contains(reaction)) {
 			unlock(player, Feats.reactionKey(reaction));
+			PlayerAffinities.reaction(player, reaction);
 		}
 	}
 

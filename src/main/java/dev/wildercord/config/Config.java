@@ -26,9 +26,10 @@ import java.util.List;
  * it needs a value (it's cheap), so a reload takes effect at once, except loot chances, which apply
  * when loot tables next load.
  *
- * <p>The few numbers a client shows (the cost and regeneration multipliers, for the Cord screen and
- * HUD) are sent to each player when they join and after every reload; {@link #costMultiplier} and
- * {@link #regenMultiplier} answer with those on the client.</p>
+ * <p>The few settings a client shows (the cost and regeneration multipliers, and whether affinities are
+ * on, for the Cord screen and HUD) are sent to each player when they join and after every reload;
+ * {@link #costMultiplier}, {@link #regenMultiplier} and {@link #playerAffinity} answer with those on the
+ * client.</p>
  */
 public final class Config {
 	private Config() {}
@@ -39,15 +40,15 @@ public final class Config {
 	/** What the server told this client (the defaults until it does). */
 	private static volatile Sync synced = Sync.DEFAULT;
 
-	/** Server to client: the settings a client needs to show costs and regeneration truthfully. */
-	public record Sync(float costMultiplier, float regenMultiplier) implements CustomPacketPayload {
-		public static final Sync DEFAULT = new Sync(1.0F, 1.0F);
+	/** Server to client: the settings a client needs to show costs, regeneration and affinities truthfully. */
+	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity) implements CustomPacketPayload {
+		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true);
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC = StreamCodec.composite(
-			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, Sync::new).cast();
+			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity, Sync::new).cast();
 
 		static Sync of(WildercordConfig config) {
-			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier());
+			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity());
 		}
 
 		@Override
@@ -131,6 +132,11 @@ public final class Config {
 	/** Mana regeneration multiplier: the server's own, or on a client the one it was sent. */
 	public static double regenMultiplier(Player player) {
 		return player != null && player.level().isClientSide() ? synced.regenMultiplier() : get().manaRegenMultiplier();
+	}
+
+	/** Whether players' affinities are on: the server's own switch, or on a client the one it was sent. */
+	public static boolean playerAffinity(Player player) {
+		return player != null && player.level().isClientSide() ? synced.playerAffinity() : get().playerAffinity();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */
