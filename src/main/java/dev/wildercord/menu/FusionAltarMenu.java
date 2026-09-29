@@ -185,7 +185,8 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 				Grimoire.feat(server, Feats.UPGRADE);
 			}
 			result.setItem(0, made);
-			flourish(RuneColors.of(plan.result()), plan.kind() == Fusions.Kind.COMBINE ? 1 : 0);
+			// A signature fusion flares with its own star (see FusionVfx.altar).
+			flourish(RuneColors.of(plan.result()), plan.kind() != Fusions.Kind.COMBINE ? 0 : plan.signature() ? 3 : 1);
 			broadcastChanges();
 			return true;
 		}

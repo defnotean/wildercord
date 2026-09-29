@@ -15,6 +15,7 @@ rules and how a cast runs.
 - [A modifier](#a-modifier)
 - [A link](#a-link)
 - [An innate rune](#an-innate-rune)
+- [A signature fusion](#a-signature-fusion)
 - [Art, recipes and loot](#art-recipes-and-loot)
 - [Checklist](#checklist)
 - [From another mod](#from-another-mod)
@@ -184,6 +185,26 @@ Circle, and they're never crafted or dropped. On top of the effect steps above:
    Tier IV icon treatment, no recipe, and stays out of loot).
 3. Route its case in `Effects.applyEffect` to `Innates.apply`, and keep any state it needs in
    `Innates`, cleared when the server stops. Its power already grows +6% per circle.
+
+## A signature fusion
+
+A signature fusion is a fused rune made from two *particular* effects at the Fusion Altar, in place of
+their elements' fusion (see [features/fusion-altar.md](features/fusion-altar.md#signature-fusions)). On
+top of the effect steps above (it's never crafted or found, so no recipe and no loot):
+
+1. Define it in the "Signature fusions" section of `Runes.java` (Tier III, or IV for a grand one) and
+   add it to `Runes.SIGNATURE`.
+2. Add one line to `Fusions.SIGNATURES`: `new Signature(Runes.FIRST, Runes.SECOND, Runes.RESULT)`. The
+   tools read these lines, so keep each on one line. Its two runes must be effects a caster can come by
+   (never innate or fused), and their pair of elements must be one no other signature has: that's what
+   keeps every signature's circle its own (`circle_art.py` asserts it).
+3. Its behaviour goes in `cast/SignatureFusions.java` (and `SignatureWards` for anything that answers
+   what happens to a creature), its numbers in `SignatureRules`, its look in `SignatureVfx`.
+4. Its icon goes in `tools/signature_art.py`, which can draw with its partner element's colours.
+5. Add it to `WildercordSignatureFusionTest` with a check of its core effect.
+
+The Grimoire, the altar's screen, the circle (a braid of its two runes' elements with a star) and the
+docs' tables all follow from the `Signature` line.
 
 ## Art, recipes and loot
 

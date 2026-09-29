@@ -23,6 +23,11 @@ its own texture so the game can tint it in its own element's colour:
     textures/particle/circle/<rune>_band.png, _mark.png     the rune's own element's half
     textures/particle/circle/<rune>_band2.png, _mark2.png   its partner element's half
 
+A signature fusion (made from two particular runes rather than any two of their elements) wears its two
+runes' elements the same way, and a star besides: a four-pointed star in the empty space of each half of
+its ring, and the points of a star behind its emblem's heavy ring, so a signature is told from the element
+fusion of the same two elements at a glance. No two signatures share a pair of elements.
+
 Also writes circle/_<family>_band.png and _mark.png, used for add-on runes.
 Run from the project root:  python tools/circle_art.py [--preview]
 """
@@ -34,7 +39,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from generate_assets import read_runes, read_fusions, ELEMENT_COLOR, FAMILY_COLOR  # noqa: E402
+from generate_assets import read_runes, read_fusions, read_signatures, ELEMENT_COLOR, FAMILY_COLOR  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src/main/resources/assets/wildercord/textures/particle/circle"
@@ -373,6 +378,31 @@ def fused_mark(own, partner):
     return left, right
 
 
+# ---------------------------------------------------------------- signature fusions
+
+# A small four-pointed star: its centre and the four pixels round it.
+STAR = [(0, -1), (-1, 0), (0, 0), (1, 0), (0, 1)]
+
+
+def signature_band(own_half, partner_half):
+    """A signature rune's ring: its braid (see {@code fused_band}), with a star in the empty space of each half, the
+    own element's above the braid (between its motifs) and the partner's below it, clear of the strands."""
+    own, partner = set(own_half), set(partner_half)
+    own.update(((12 + dx) % N, 3 + dy) for dx, dy in STAR)
+    partner.update(((4 + dx) % N, 12 + dy) for dx, dy in STAR)
+    return own, partner
+
+
+def signature_mark(own_half, partner_half):
+    """A signature rune's emblem: its split glyph in a heavy ring (see {@code fused_mark}), with the points of a star
+    reaching out behind the ring at the four corners, the left two in the own element's colour, the right two in
+    the partner's."""
+    own, partner = set(own_half), set(partner_half)
+    own.update({(0, 0), (1, 1), (0, 15), (1, 14)})
+    partner.update({(15, 0), (14, 1), (15, 15), (14, 14)})
+    return own, partner
+
+
 # ---------------------------------------------------------------- handing out designs
 
 def stable(key):
@@ -502,7 +532,10 @@ def main(preview=False):
     sprites = [tuple(v) for v in MOTIFS.values()]
     assert len(set(sprites)) == len(sprites), "two motifs are the same picture"
     runes = read_runes()
-    fusions = read_fusions()
+    element = {r["path"]: r["element"] for r in runes}
+    # A signature rune's two elements are its two runes'.
+    signatures = {path: (element[a], element[b]) for path, (a, b) in read_signatures().items()}
+    fusions = {**read_fusions(), **signatures}
     fused = [r for r in runes if r["path"] in fusions]
     bands, marks = designs(runes, skip=frozenset(r["path"] for r in fused if r["path"] not in LEGACY_FUSED))
     # Fused runes wear their two elements instead (the legacy twelve's old designs stay held, unused).
@@ -511,6 +544,9 @@ def main(preview=False):
         own, partner = fused_pair(r, fusions)
         band, band2 = fused_band(own, partner)
         mark, mark2 = fused_mark(own, partner)
+        if r["path"] in signatures:
+            band, band2 = signature_band(band, band2)
+            mark, mark2 = signature_mark(mark, mark2)
         bands[r["path"]], marks[r["path"]] = band, mark
         second[r["path"]] = (band2, mark2, second_color(own, partner))
     # Every rune's ring and emblem must be its own (a fused rune's counted with both halves).
@@ -546,7 +582,7 @@ def main(preview=False):
             sheet.alpha_composite(ring_preview(bands[r["path"]], marks[r["path"]], color_of(r), cell, band2, mark2, color2), (x, y + 14))
             draw.text((x + 4, y + 1), r["name"], fill=(230, 225, 245))
         sheet.save(out / "rune_circles.png")
-    print(f"{len(bands)} rune rings and emblems written ({len(fused)} fused, in two halves)")
+    print(f"{len(bands)} rune rings and emblems written ({len(fused)} fused, in two halves, {len(signatures)} of them signatures)")
 
 
 if __name__ == "__main__":

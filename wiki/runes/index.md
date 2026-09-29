@@ -56,7 +56,8 @@ thunderstorm) a rune can come up tangled in the line on top of your catch. The w
 ## Special runes
 
 - **[Runes of the World]({{ '/runes/world/' | relative_url }})**: 53 runes that can't be crafted, each found only in its own places.
-- **[Fused Runes]({{ '/runes/fused/' | relative_url }})**: 55 runes made at the Fusion Altar, one for every pair of elements.
+- **[Fused Runes]({{ '/runes/fused/' | relative_url }})**: 55 runes made at the Fusion Altar, one for every pair of elements,
+  and 16 [signature fusions]({{ '/runes/fused/' | relative_url }}#signature-fusions), each made from two particular runes.
 - **[Innate Runes]({{ '/runes/innate/' | relative_url }})**: 10 runes that wake in a caster's heart; you get exactly one.
 - **Knots**: a whole spell tied into a single rune at the Fusion Altar. See [Knots]({{ '/fusion-altar/knots/' | relative_url }}).
 

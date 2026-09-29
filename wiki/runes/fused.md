@@ -8,7 +8,7 @@ nav_order: 6
 
 # Fused runes
 
-55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm.
+55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (16 more).
 
 | | Fire | Frost | Storm | Wind | Earth | Life | Void | Arcane | Time | Blood |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -22,6 +22,8 @@ nav_order: 6
 | **Arcane** | Starfire | Rime Seal | Stormweave | Skyglyph | Geode | Soulbond | Nullify | Prismatic Burst | Timesteal | Hemomancy |
 | **Time** | Everburn | Cryostasis | Stormclock | Recoil | Fossilize | Second Wind | Entropy | Timesteal | Chronoshift | Reckoning |
 | **Blood** | Bloodboil | Frostbite | Heartstopper | Crimson Mist | Bonespur | Transfusion | Devour | Hemomancy | Reckoning | Sanguine Rite |
+
+## Element fusions
 
 ### <img src="{{ '/assets/runes/absolute_zero.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Absolute Zero
 {: #absolute_zero}
@@ -625,6 +627,205 @@ You and the first creature hit swap places through the void. An enemy is left re
 A warm breeze: allies within 4 blocks get Speed I, Jump Boost I and Regeneration I for 6 seconds.
 
 **How to get it:** Fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from any Wind effect and any Life effect, with an amethyst shard (3 XP levels).
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+## Signature fusions
+
+16 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
+
+| | Put in | Makes | Counts as | In place of |
+|---|---|---|---|---|
+| <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Frostwire](#frostwire) | Storm | Hail |
+| <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) + [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) | [Seethe](#seethe) | Fire | Steam |
+| <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) + [Blink]({{ '/runes/effects/void/' | relative_url }}#blink) | [Bloomstep](#bloomstep) | Life | Lifesteal |
+| <img src="{{ '/assets/runes/skyburst.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Launch]({{ '/runes/effects/wind/' | relative_url }}#launch) + [Explode]({{ '/runes/effects/fire/' | relative_url }}#explode) | [Skyburst](#skyburst) | Fire | Firestorm |
+| <img src="{{ '/assets/runes/stitchtime.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Heal]({{ '/runes/effects/life/' | relative_url }}#heal) + [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) | [Stitchtime](#stitchtime) | Life | Second Wind |
+| <img src="{{ '/assets/runes/parasite.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Venom]({{ '/runes/effects/life/' | relative_url }}#venom) + [Leech]({{ '/runes/effects/blood/' | relative_url }}#leech) | [Parasite](#parasite) | Blood | Transfusion |
+| <img src="{{ '/assets/runes/razorgale.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) + [Bleed]({{ '/runes/effects/blood/' | relative_url }}#bleed) | [Razorgale](#razorgale) | Wind | Crimson Mist |
+| <img src="{{ '/assets/runes/doomclock.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Primer]({{ '/runes/effects/fire/' | relative_url }}#primer) + [Stasis]({{ '/runes/effects/time/' | relative_url }}#stasis) | [Doomclock](#doomclock) | Time | Everburn |
+| <img src="{{ '/assets/runes/thunderstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Shadowstep]({{ '/runes/effects/void/' | relative_url }}#shadowstep) + [Lightning]({{ '/runes/effects/storm/' | relative_url }}#lightning) | [Thunderstep](#thunderstep) | Storm | Riftbolt |
+| <img src="{{ '/assets/runes/halo.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Smite]({{ '/runes/effects/arcane/' | relative_url }}#smite) + [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) | [Halo](#halo) | Arcane | Soulbond |
+| <img src="{{ '/assets/runes/thunderquake.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Thunderclap]({{ '/runes/effects/storm/' | relative_url }}#thunderclap) + [Tremor]({{ '/runes/effects/earth/' | relative_url }}#tremor) | [Thunderquake](#thunderquake) | Earth | Magnetize |
+| <img src="{{ '/assets/runes/cometfall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starfall]({{ '/runes/effects/arcane/' | relative_url }}#starfall) + [Meteor]({{ '/runes/effects/fire/' | relative_url }}#meteor) | [Cometfall](#cometfall) | Arcane | Starfire |
+| <img src="{{ '/assets/runes/riposte.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) + [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) | [Riposte](#riposte) | Time | Timesteal |
+| <img src="{{ '/assets/runes/dust_devil.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Summit Wind]({{ '/runes/world/' | relative_url }}#summit_wind) + [Sandstorm]({{ '/runes/world/' | relative_url }}#sandstorm) | [Dust Devil](#dust_devil) | Wind | Downdraft |
+| <img src="{{ '/assets/runes/malison.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Hex]({{ '/runes/effects/void/' | relative_url }}#hex) + [Resonance]({{ '/runes/effects/arcane/' | relative_url }}#resonance) | [Malison](#malison) | Void | Nullify |
+| <img src="{{ '/assets/runes/avalanche.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Coldsnap]({{ '/runes/effects/frost/' | relative_url }}#coldsnap) + [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) | [Avalanche](#avalanche) | Frost | Glacier |
+
+### <img src="{{ '/assets/runes/avalanche.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Avalanche
+{: #avalanche}
+
+*Tier III · Frost · Harms enemies · 18 mana · needs an Amethyst Cord or better*
+
+Snow and ice crash down round where it lands: 6 damage to every enemy within 3 blocks (half again on a bare head), buried in snow (Slowness III for 3 seconds). Drifts of snow lie where it fell for 10 seconds.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Coldsnap]({{ '/runes/effects/frost/' | relative_url }}#coldsnap) and [Stalactite]({{ '/runes/world/' | relative_url }}#stalactite) themselves, with an amethyst shard (3 XP levels). Any other Frost and Earth effects make Glacier instead.
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloomstep
+{: #bloomstep}
+
+*Tier III · Life · Moves you · 14 mana · needs an Amethyst Cord or better*
+
+Steps you through a door of blossoms to where the spell landed (up to 32 blocks). Grass and flowers spring up where you left and where you arrive, and you and your allies within 3 blocks of where you arrive get Regeneration I for 5 seconds.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) and [Blink]({{ '/runes/effects/void/' | relative_url }}#blink) themselves, with an amethyst shard (3 XP levels). Any other Life and Void effects make Lifesteal instead.
+
+**Modifiers that work on it:** Extend, Widen, Frugal, Focus
+
+### <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostwire
+{: #frostwire}
+
+*Tier III · Storm · Harms enemies · 18 mana · needs an Amethyst Cord or better*
+
+Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 4 damage each, 6 to one frozen solid.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) and [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) themselves, with an amethyst shard (3 XP levels). Any other Frost and Storm effects make Hail instead.
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/halo.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Halo
+{: #halo}
+
+*Tier III · Arcane · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
+
+A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Smite]({{ '/runes/effects/arcane/' | relative_url }}#smite) and [Regrowth]({{ '/runes/effects/life/' | relative_url }}#regrowth) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Life effects make Soulbond instead.
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/malison.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Malison
+{: #malison}
+
+*Tier III · Void · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+3 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, for the time it had left, to up to 3 enemies within 6 blocks of it.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Hex]({{ '/runes/effects/void/' | relative_url }}#hex) and [Resonance]({{ '/runes/effects/arcane/' | relative_url }}#resonance) themselves, with an amethyst shard (3 XP levels). Any other Void and Arcane effects make Nullify instead.
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/parasite.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Parasite
+{: #parasite}
+
+*Tier III · Blood · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+Plants a parasite in each target for 6 seconds: Poison I, and every second it drains 1 health from it into you. If its host dies with it inside, it leaps to the nearest enemy within 6 blocks for the time it had left (once).
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Venom]({{ '/runes/effects/life/' | relative_url }}#venom) and [Leech]({{ '/runes/effects/blood/' | relative_url }}#leech) themselves, with an amethyst shard (3 XP levels). Any other Life and Blood effects make Transfusion instead.
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/razorgale.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Razorgale
+{: #razorgale}
+
+*Tier III · Wind · Harms enemies · 18 mana · needs an Amethyst Cord or better*
+
+A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2 and left bleeding; half a second later the gale comes back round for 2 more, tearing every wound open (Rupture).
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Windcut]({{ '/runes/effects/wind/' | relative_url }}#windcut) and [Bleed]({{ '/runes/effects/blood/' | relative_url }}#bleed) themselves, with an amethyst shard (3 XP levels). Any other Wind and Blood effects make Crimson Mist instead.
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/riposte.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Riposte
+{: #riposte}
+
+*Tier III · Time · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with 6 damage to whoever struck.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) and [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Seethe
+{: #seethe}
+
+*Tier III · Fire · Harms enemies · 16 mana · needs an Amethyst Cord or better*
+
+Traps each target in a bubble of boiling water for 2 seconds (1 fire damage every half second), then it bursts into scalding steam: 4 damage to every enemy within 2.5 blocks, blinded for 2 seconds and left soaked.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) and [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) themselves, with an amethyst shard (3 XP levels). Any other Frost and Fire effects make Steam instead.
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/skyburst.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Skyburst
+{: #skyburst}
+
+*Tier III · Fire · Harms enemies · 20 mana · needs an Amethyst Cord or better*
+
+Flings each target high into the air (3 at most); at the top of its flight it explodes and rains fire down: 7 damage to it and every enemy within 3 blocks of it or beneath it, setting them alight, and the wind that carried it fans the flames (Wildfire). Never breaks blocks.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Launch]({{ '/runes/effects/wind/' | relative_url }}#launch) and [Explode]({{ '/runes/effects/fire/' | relative_url }}#explode) themselves, with an amethyst shard (3 XP levels). Any other Wind and Fire effects make Firestorm instead.
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/stitchtime.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Stitchtime
+{: #stitchtime}
+
+*Tier III · Life · Helps you and your allies · 16 mana · needs an Amethyst Cord or better*
+
+Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhile is counted, and when the time is up it all heals back at once (12 at most).
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Heal]({{ '/runes/effects/life/' | relative_url }}#heal) and [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
+
+**Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/thunderquake.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderquake
+{: #thunderquake}
+
+*Tier III · Earth · Harms enemies · 20 mana · needs an Amethyst Cord or better*
+
+The ground booms like thunder: three shockwaves roll out from where it lands over a second, reaching 2, 4 and 6 blocks. Each strikes every enemy it reaches for 4 and tosses it up, so the nearer, the harder: 12 at the heart.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Thunderclap]({{ '/runes/effects/storm/' | relative_url }}#thunderclap) and [Tremor]({{ '/runes/effects/earth/' | relative_url }}#tremor) themselves, with an amethyst shard (3 XP levels). Any other Storm and Earth effects make Magnetize instead.
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/thunderstep.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderstep
+{: #thunderstep}
+
+*Tier III · Storm · Moves you · 18 mana · needs an Amethyst Cord or better*
+
+You come down as a bolt of lightning where the spell landed (up to 24 blocks), right behind the first enemy it hit: 8 damage to every enemy within 2.5 blocks of you, stunned for half a second. On Self it strikes where you stand.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Shadowstep]({{ '/runes/effects/void/' | relative_url }}#shadowstep) and [Lightning]({{ '/runes/effects/storm/' | relative_url }}#lightning) themselves, with an amethyst shard (3 XP levels). Any other Void and Storm effects make Riftbolt instead.
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/cometfall.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cometfall
+{: #cometfall}
+
+*Tier IV · Arcane · Harms enemies · 32 mana · needs an Echo Cord*
+
+A comet streaks down on the point a second later: 16 damage to every enemy within 4 blocks, setting them alight, and five shards of it scatter into the nearest other enemies within 10 blocks for 4 each. Never breaks blocks.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Starfall]({{ '/runes/effects/arcane/' | relative_url }}#starfall) and [Meteor]({{ '/runes/effects/fire/' | relative_url }}#meteor) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Fire effects make Starfire instead.
+
+**Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/doomclock.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Doomclock
+{: #doomclock}
+
+*Tier IV · Time · Harms enemies · 28 mana · needs an Echo Cord*
+
+Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks. Never breaks blocks.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Primer]({{ '/runes/effects/fire/' | relative_url }}#primer) and [Stasis]({{ '/runes/effects/time/' | relative_url }}#stasis) themselves, with an amethyst shard (3 XP levels). Any other Fire and Time effects make Everburn instead.
+
+**Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/dust_devil.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Dust Devil
+{: #dust_devil}
+
+*Tier IV · Wind · Harms enemies · 26 mana · needs an Echo Cord*
+
+A dust devil touches down where it lands and chases the nearest enemy for 5 seconds. Enemies within 2 blocks of it are caught up and whirled round it, blinded and scoured for 3 damage a second; when it blows out it flings them high.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Summit Wind]({{ '/runes/world/' | relative_url }}#summit_wind) and [Sandstorm]({{ '/runes/world/' | relative_url }}#sandstorm) themselves, with an amethyst shard (3 XP levels). Any other Wind and Earth effects make Downdraft instead.
 
 **Modifiers that work on it:** Amplify, Extend, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 

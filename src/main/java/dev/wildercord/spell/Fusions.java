@@ -1,6 +1,7 @@
 package dev.wildercord.spell;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +12,9 @@ import java.util.Optional;
  *       ({@link Ranks}). 2 XP levels for rank II, 5 for rank III.</li>
  *   <li><b>Combine</b>: two effects of the right elements and an amethyst shard make a fused effect,
  *       for {@link #COMBINE_XP} XP levels. Recipes match on element tags, not on particular runes, so
- *       an add-on's fire effect works in every fire fusion.</li>
+ *       an add-on's fire effect works in every fire fusion. A few pairs of particular runes have a
+ *       {@link Signature signature} of their own instead, asked for first: Chill with Shock makes
+ *       Frostwire, while any other frost and storm effects still make Hail.</li>
  *   <li><b>Tie a Knot</b>: a Blank Rune and string, and one of your spells, make a {@link Knots Knot}.</li>
  * </ul>
  * Pure rules, shared by the altar's screen (which shows what will happen) and the server (which
@@ -24,14 +27,63 @@ public final class Fusions {
 	/** The Grimoire's key prefix for a fusion found: {@code fusion:firestorm}. */
 	public static final String KEY_PREFIX = "fusion:";
 
+	/**
+	 * A fusion of either kind: what it makes, the two elements it wears (for its magic circle's two halves,
+	 * and the Grimoire's hints), and the Grimoire key it's recorded under once made.
+	 */
+	public sealed interface Fusion permits Recipe, Signature {
+		RuneDef result();
+
+		/** The first of its two elements (a signature's: its first rune's). */
+		String first();
+
+		/** The second of its two elements (a signature's: its second rune's). */
+		String second();
+
+		default String key() {
+			return KEY_PREFIX + result().path();
+		}
+
+		/** Whether it's a signature fusion: two particular runes, rather than any two of their elements. */
+		default boolean signature() {
+			return this instanceof Signature;
+		}
+	}
+
 	/** Two elements that fuse, and what they make. */
-	public record Recipe(String first, String second, RuneDef result) {
+	public record Recipe(String first, String second, RuneDef result) implements Fusion {
 		public boolean takes(String a, String b) {
 			return first.equals(a) && second.equals(b) || first.equals(b) && second.equals(a);
 		}
 
+		@Override
 		public String key() {
 			return KEY_PREFIX + result.path();
+		}
+	}
+
+	/**
+	 * A signature fusion: two particular effects (not just their elements) that fuse into a rune of their
+	 * own. Asked for before the element recipes, so the pair makes this instead of their elements' fusion.
+	 */
+	public record Signature(RuneDef a, RuneDef b, RuneDef result) implements Fusion {
+		public boolean takes(RuneDef x, RuneDef y) {
+			return a.is(x.id()) && b.is(y.id()) || a.is(y.id()) && b.is(x.id());
+		}
+
+		@Override
+		public String first() {
+			return a.element();
+		}
+
+		@Override
+		public String second() {
+			return b.element();
+		}
+
+		/** The element fusion its two runes would make if it weren't for this one (Hail, for Chill and Shock). */
+		public Optional<Recipe> overrides() {
+			return elementRecipe(first(), second());
 		}
 	}
 
@@ -97,27 +149,96 @@ public final class Fusions {
 		new Recipe("time", "time", Runes.CHRONOSHIFT),
 		new Recipe("blood", "blood", Runes.SANGUINE_RITE));
 
+	// ---- signature fusions
+
+	/**
+	 * Every signature fusion, in the order the Grimoire lists them: each a pair of particular effects (never
+	 * innate, never fused, always ones a caster can come by) and the rune only they make. No two share a pair
+	 * of elements, so each one's circle braids a pairing of its own.
+	 */
+	public static final List<Signature> SIGNATURES = List.of(
+		new Signature(Runes.CHILL, Runes.SHOCK, Runes.FROSTWIRE),
+		new Signature(Runes.BUBBLE, Runes.FIRE, Runes.SEETHE),
+		new Signature(Runes.GROW, Runes.BLINK, Runes.BLOOMSTEP),
+		new Signature(Runes.LAUNCH, Runes.EXPLODE, Runes.SKYBURST),
+		new Signature(Runes.HEAL, Runes.COUNTDOWN, Runes.STITCHTIME),
+		new Signature(Runes.VENOM, Runes.LEECH, Runes.PARASITE),
+		new Signature(Runes.WINDCUT, Runes.BLEED, Runes.RAZORGALE),
+		new Signature(Runes.PRIMER, Runes.STASIS, Runes.DOOMCLOCK),
+		new Signature(Runes.SHADOWSTEP, Runes.LIGHTNING, Runes.THUNDERSTEP),
+		new Signature(Runes.SMITE, Runes.REGROWTH, Runes.HALO),
+		new Signature(Runes.THUNDERCLAP, Runes.TREMOR, Runes.THUNDERQUAKE),
+		new Signature(Runes.STARFALL, Runes.METEOR, Runes.COMETFALL),
+		new Signature(Runes.REFLECT, Runes.FORESIGHT, Runes.RIPOSTE),
+		new Signature(Runes.SUMMIT_WIND, Runes.SANDSTORM, Runes.DUST_DEVIL),
+		new Signature(Runes.HEX, Runes.RESONANCE, Runes.MALISON),
+		new Signature(Runes.COLDSNAP, Runes.STALACTITE, Runes.AVALANCHE));
+
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {
 		return rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty() && !Runes.innate(rune);
 	}
 
-	/** What two effects fuse into, if anything. */
-	public static Optional<Recipe> recipe(RuneDef a, RuneDef b) {
+	/**
+	 * What two effects fuse into, if anything: their signature fusion if the pair has one, or else the
+	 * fusion of their two elements.
+	 */
+	public static Optional<Fusion> recipe(RuneDef a, RuneDef b) {
 		if (!fusible(a) || !fusible(b)) {
 			return Optional.empty();
 		}
+		Optional<Signature> signature = signature(a, b);
+		if (signature.isPresent()) {
+			return Optional.of(signature.get());
+		}
+		return elementRecipe(a.element(), b.element()).map(Fusion.class::cast);
+	}
+
+	/** The signature fusion of these two particular effects, if they have one. */
+	public static Optional<Signature> signature(RuneDef a, RuneDef b) {
+		if (!fusible(a) || !fusible(b)) {
+			return Optional.empty();
+		}
+		return SIGNATURES.stream().filter(s -> s.takes(a, b)).findFirst();
+	}
+
+	/** The fusion of two elements (whatever the effects), if they have one: every pair of the ten does. */
+	public static Optional<Recipe> elementRecipe(String a, String b) {
 		for (Recipe recipe : RECIPES) {
-			if (recipe.takes(a.element(), b.element())) {
+			if (recipe.takes(a, b)) {
 				return Optional.of(recipe);
 			}
 		}
 		return Optional.empty();
 	}
 
-	/** The recipe that makes {@code result}, if it's a fused effect. */
-	public static Optional<Recipe> recipeFor(RuneDef result) {
-		return RECIPES.stream().filter(r -> r.result().is(result.id())).findFirst();
+	/** The recipe that makes {@code result}, if it's a fused effect: an element fusion or a signature one. */
+	public static Optional<Fusion> recipeFor(RuneDef result) {
+		Optional<Recipe> recipe = RECIPES.stream().filter(r -> r.result().is(result.id())).findFirst();
+		if (recipe.isPresent()) {
+			return Optional.of(recipe.get());
+		}
+		return signatureFor(result).map(Fusion.class::cast);
+	}
+
+	/** The signature fusion that makes {@code result}, if it's a signature rune. */
+	public static Optional<Signature> signatureFor(RuneDef result) {
+		return SIGNATURES.stream().filter(s -> s.result().is(result.id())).findFirst();
+	}
+
+	/** Whether {@code rune} is made only by a signature fusion. */
+	public static boolean isSignature(RuneDef rune) {
+		return signatureFor(rune).isPresent();
+	}
+
+	/** How many of the element fusions a Grimoire holds (its signature ones aside). */
+	public static int elementFusionsFound(Collection<String> grimoire) {
+		return (int) RECIPES.stream().filter(r -> grimoire.contains(r.key())).count();
+	}
+
+	/** How many of the signature fusions a Grimoire holds. */
+	public static int signaturesFound(Collection<String> grimoire) {
+		return (int) SIGNATURES.stream().filter(s -> grimoire.contains(s.key())).count();
 	}
 
 	// ------------------------------------------------------------------ what's on the altar
@@ -150,9 +271,9 @@ public final class Fusions {
 	 * @param rank    the result's rank
 	 * @param xp      XP levels it costs (for a Knot, see {@link Knots#xpCost})
 	 * @param problem why it can't go ahead, or null
-	 * @param recipe  for a Combine, the recipe it follows
+	 * @param recipe  for a Combine, the recipe it follows (a signature one, or its elements')
 	 */
-	public record Plan(Kind kind, RuneDef result, int rank, int xp, String problem, Recipe recipe) {
+	public record Plan(Kind kind, RuneDef result, int rank, int xp, String problem, Fusion recipe) {
 		static Plan hint(String text) {
 			return new Plan(Kind.NONE, null, 0, 0, text, null);
 		}
@@ -163,6 +284,11 @@ public final class Fusions {
 
 		public boolean ready() {
 			return kind != Kind.NONE && problem == null;
+		}
+
+		/** Whether it's a Combine that follows a signature fusion (two particular runes). */
+		public boolean signature() {
+			return recipe != null && recipe.signature();
 		}
 	}
 
@@ -223,11 +349,12 @@ public final class Fusions {
 			if (!fusible(a) || !fusible(b)) {
 				return Plan.refuse(Kind.COMBINE, "Only effects with an element fuse.");
 			}
-			Optional<Recipe> recipe = recipe(a, b);
+			// A signature fusion of these two particular runes comes first; any other pair makes its elements' fusion.
+			Optional<Fusion> recipe = recipe(a, b);
 			if (recipe.isEmpty()) {
 				return Plan.refuse(Kind.COMBINE, a.name() + " and " + b.name() + " don't fuse: only effects of the ten elements do.");
 			}
-			// The fused rune keeps the lower of the two ranks put in, so ranking up first isn't wasted.
+			// The fused rune keeps the lower of the two ranks put in, so ranking up first isn't wasted (a signature's too).
 			RuneDef made = recipe.get().result();
 			int kept = Ranks.rankable(made) ? Math.min(filled.get(0).rank(), filled.get(1).rank()) : 1;
 			return new Plan(Kind.COMBINE, made, Math.max(1, kept), COMBINE_XP, null, recipe.get());

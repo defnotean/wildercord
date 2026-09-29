@@ -32,7 +32,7 @@ class DataFormatTest {
 
 	private static final Map<String, Set<String>> TRIGGER_CONDITIONS = Map.of(
 		"wildercord:feat", Set.of("player", "feat"),
-		"wildercord:grimoire", Set.of("player", "entry", "prefix", "count", "all"),
+		"wildercord:grimoire", Set.of("player", "entry", "prefix", "count", "all", "signatures"),
 		"wildercord:heart_circle", Set.of("player", "level"),
 		"wildercord:runes_known", Set.of("player", "count", "all"),
 		"wildercord:cord", Set.of("player", "tier"),

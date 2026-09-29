@@ -3101,6 +3101,12 @@ import new_rune_art  # noqa: E402
 
 GLYPHS.update(new_rune_art.GLYPHS)
 
+# ---------------------------------------------------------------- signature fusions
+# The runes two particular effects fuse into, drawn in their own file with their partner element's colours.
+import signature_art  # noqa: E402
+
+GLYPHS.update(signature_art.GLYPHS)
+
 FALLBACK_GLYPH = """
     ...#...
     ..#+#..

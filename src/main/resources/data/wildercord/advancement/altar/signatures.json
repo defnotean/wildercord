@@ -1,0 +1,37 @@
+{
+  "parent": "wildercord:altar/signature",
+  "criteria": {
+    "signatures": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "signatures": 5
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:cometfall"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.altar.signatures.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.altar.signatures.description"
+    },
+    "frame": "goal"
+  },
+  "requirements": [
+    [
+      "signatures"
+    ]
+  ],
+  "rewards": {
+    "experience": 75,
+    "loot": [
+      "wildercord:advancement_reward/blank_runes"
+    ]
+  }
+}

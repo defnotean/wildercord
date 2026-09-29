@@ -297,9 +297,35 @@ public final class Runes {
 		CRIMSON_MIST, SINKHOLE, GEODE, FOSSILIZE, BONESPUR, MONOLITH, SOULBOND, SECOND_WIND, TRANSFUSION, LIFEBLOOM, SANGUINE_RITE,
 		ENTROPY, DEVOUR, TIMESTEAL, HEMOMANCY, RECKONING, SINGULARITY, PRISMATIC_BURST, CHRONOSHIFT);
 
+	/** Whether a rune is made only at the Fusion Altar: an element fusion or a signature one. */
 	public static boolean fused(RuneDef rune) {
-		return FUSED.contains(rune);
+		return FUSED.contains(rune) || SIGNATURE.contains(rune);
 	}
+
+	// ---- Signature fusions: each made only from two particular effects at the Fusion Altar (see Fusions.SIGNATURES),
+	// before their elements' own fusion. Never crafted or found. Fused runes take no designs from the others' circles,
+	// so where these sit changes no older rune's.
+
+	public static final RuneDef FROSTWIRE = effect("frostwire", "Frostwire", 3, 18, "storm", EffectKind.HARMFUL, "Chills each target (Slowness II for 4 seconds); a moment later a current races through every chilled or frozen enemy within 6 blocks of it, 6 at most: 4 damage each, 6 to one frozen solid.", POWER, RADIUS, LINGER);
+	public static final RuneDef SEETHE = effect("seethe", "Seethe", 3, 16, "fire", EffectKind.HARMFUL, "Traps each target in a bubble of boiling water for 2 seconds (1 fire damage every half second), then it bursts into scalding steam: 4 damage to every enemy within 2.5 blocks, blinded for 2 seconds and left soaked.", POWER, DURATION, RADIUS);
+	public static final RuneDef BLOOMSTEP = effect("bloomstep", "Bloomstep", 3, 14, "life", EffectKind.MOVEMENT, "Steps you through a door of blossoms to where the spell landed (up to 32 blocks). Grass and flowers spring up where you left and where you arrive, and you and your allies within 3 blocks of where you arrive get Regeneration I for 5 seconds.", DURATION, RADIUS);
+	public static final RuneDef SKYBURST = effect("skyburst", "Skyburst", 3, 20, "fire", EffectKind.HARMFUL, "Flings each target high into the air (3 at most); at the top of its flight it explodes and rains fire down: 7 damage to it and every enemy within 3 blocks of it or beneath it, setting them alight, and the wind that carried it fans the flames (Wildfire). Never breaks blocks.", POWER, RADIUS);
+	public static final RuneDef STITCHTIME = effect("stitchtime", "Stitchtime", 3, 16, "life", EffectKind.HELPFUL, "Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhile is counted, and when the time is up it all heals back at once (12 at most).", POWER, DURATION);
+	public static final RuneDef PARASITE = effect("parasite", "Parasite", 3, 16, "blood", EffectKind.HARMFUL, "Plants a parasite in each target for 6 seconds: Poison I, and every second it drains 1 health from it into you. If its host dies with it inside, it leaps to the nearest enemy within 6 blocks for the time it had left (once).", POWER, DURATION);
+	public static final RuneDef RAZORGALE = effect("razorgale", "Razorgale", 3, 18, "wind", EffectKind.HARMFUL, "A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2 and left bleeding; half a second later the gale comes back round for 2 more, tearing every wound open (Rupture).", POWER, RADIUS);
+	public static final RuneDef DOOMCLOCK = effect("doomclock", "Doomclock", 4, 28, "time", EffectKind.HARMFUL, "Sets a clock ticking on each target (3 at most) for 3 seconds: every blow it takes meanwhile (up to four a second) winds it 2 tighter, 12 at most. At zero it bursts: 8 damage and all it was wound, to it and every enemy within 3 blocks. Never breaks blocks.", POWER, DURATION, RADIUS);
+	public static final RuneDef THUNDERSTEP = effect("thunderstep", "Thunderstep", 3, 18, "storm", EffectKind.MOVEMENT, "You come down as a bolt of lightning where the spell landed (up to 24 blocks), right behind the first enemy it hit: 8 damage to every enemy within 2.5 blocks of you, stunned for half a second. On Self it strikes where you stand.", POWER, RADIUS);
+	public static final RuneDef HALO = effect("halo", "Halo", 3, 18, "arcane", EffectKind.HELPFUL, "A halo crowns the ally for 8 seconds: every 2 seconds it smites the nearest enemy within 6 blocks of them for 3 holy damage (tripled against undead), and the ally heals 1 each time.", POWER, DURATION, RADIUS);
+	public static final RuneDef THUNDERQUAKE = effect("thunderquake", "Thunderquake", 3, 20, "earth", EffectKind.HARMFUL, "The ground booms like thunder: three shockwaves roll out from where it lands over a second, reaching 2, 4 and 6 blocks. Each strikes every enemy it reaches for 4 and tosses it up, so the nearer, the harder: 12 at the heart.", POWER, RADIUS);
+	public static final RuneDef COMETFALL = effect("cometfall", "Cometfall", 4, 32, "arcane", EffectKind.HARMFUL, "A comet streaks down on the point a second later: 16 damage to every enemy within 4 blocks, setting them alight, and five shards of it scatter into the nearest other enemies within 10 blocks for 4 each. Never breaks blocks.", POWER, RADIUS);
+	public static final RuneDef RIPOSTE = effect("riposte", "Riposte", 3, 16, "time", EffectKind.HELPFUL, "For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and answered at once with 6 damage to whoever struck.", POWER, DURATION);
+	public static final RuneDef DUST_DEVIL = effect("dust_devil", "Dust Devil", 4, 26, "wind", EffectKind.HARMFUL, "A dust devil touches down where it lands and chases the nearest enemy for 5 seconds. Enemies within 2 blocks of it are caught up and whirled round it, blinded and scoured for 3 damage a second; when it blows out it flings them high.", POWER, DURATION, RADIUS);
+	public static final RuneDef MALISON = effect("malison", "Malison", 3, 16, "void", EffectKind.HARMFUL, "3 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, for the time it had left, to up to 3 enemies within 6 blocks of it.", POWER, DURATION, RADIUS);
+	public static final RuneDef AVALANCHE = effect("avalanche", "Avalanche", 3, 18, "frost", EffectKind.HARMFUL, "Snow and ice crash down round where it lands: 6 damage to every enemy within 3 blocks (half again on a bare head), buried in snow (Slowness III for 3 seconds). Drifts of snow lie where it fell for 10 seconds.", POWER, RADIUS, DURATION);
+
+	/** Signature fused effects: made only from their own two runes at the Fusion Altar. */
+	public static final java.util.List<RuneDef> SIGNATURE = java.util.List.of(FROSTWIRE, SEETHE, BLOOMSTEP, SKYBURST, STITCHTIME, PARASITE, RAZORGALE,
+		DOOMCLOCK, THUNDERSTEP, HALO, THUNDERQUAKE, COMETFALL, RIPOSTE, DUST_DEVIL, MALISON, AVALANCHE);
 	// ---- Runes of the world: never crafted, only found in particular places (see RuneSources and
 	// Attunements). Defined after everything else, so their magic circles never change an older rune's.
 	// Vanilla structures.

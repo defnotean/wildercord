@@ -611,7 +611,7 @@ def main(g, runes):
     world = g.found_only()
     sources = {sid: paths for sid, _, paths in g.rune_sources()}
     tier = {r["path"]: r["tier"] for r in runes}
-    fourth = [r["path"] for r in runes if r["tier"] == 4 and r["path"] not in g.INNATE and r["path"] not in world]
+    fourth = [r["path"] for r in runes if r["tier"] == 4 and r["path"] not in g.INNATE and r["path"] not in world and r["path"] not in g.FUSED]
 
     def found_pool(sid, odds=None):
         """This place's own runes (RuneSources.java), commoner by tier; with {@code odds}, only sometimes."""

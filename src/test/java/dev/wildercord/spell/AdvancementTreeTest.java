@@ -136,6 +136,10 @@ class AdvancementTreeTest {
 						if (conditions.has("entry")) {
 							assertTrue(Feats.everyEntry().contains(conditions.get("entry").getAsString()), id + ": no such Grimoire entry");
 						}
+						if (conditions.has("signatures")) {
+							int wanted = conditions.get("signatures").getAsInt();
+							assertTrue(wanted >= 1 && wanted <= Fusions.SIGNATURES.size(), id + ": asks for " + wanted + " signature fusions");
+						}
 					}
 					default -> {}
 				}

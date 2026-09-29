@@ -34,8 +34,13 @@ The altar works out what you mean from what you put on it. There's no mode to pi
 | Put in the three rune sockets | Put in the middle socket | You get | It costs | Read more |
 |---|---|---|---|---|
 | Three copies of the same rune, all at the same rank | nothing | That rune, one rank higher | 2 XP levels for rank II, 5 for rank III | [Ranks]({{ '/fusion-altar/ranks/' | relative_url }}) |
-| Two effects (the third socket empty) | an Amethyst Shard | A fused rune, chosen by the two effects' elements | 3 XP levels | [Combining]({{ '/fusion-altar/combining/' | relative_url }}) |
+| Two effects (the third socket empty) | an Amethyst Shard | A fused rune, chosen by the two effects' elements; or, for sixteen particular pairs of runes, their own **signature** rune | 3 XP levels | [Combining]({{ '/fusion-altar/combining/' | relative_url }}) |
 | One Blank Rune, and nothing else | String | A Knot: one of your spells tied into a single rune | 1 XP level per rune inside, at least 2 | [Knots]({{ '/fusion-altar/knots/' | relative_url }}) |
+
+**Signature fusions** are combines too: two particular effects that make a rune of their own instead of their elements'
+fusion (Chill and Shock make Frostwire, where any other Frost and Storm effects make Hail). The panel says **Signature
+fusion** when the two on the altar are such a pair. See
+[Signature fusions]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
 
 ## Using the altar
 
@@ -113,12 +118,17 @@ of the same name. A new feat condenses a little mana toward your next
 Every fused rune you make for the first time is also written into the Grimoire's list of fusions, and condenses a
 little more mana. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#the-grimoire).
 
+Signature fusions have no feat of their own, but two advancements: **Signature** (make your first) and **Hallmarks**
+(find five).
+
 ## Tips
 
 - **Rank up before you combine.** A fused rune keeps the lower of the two ranks you put in, so two rank III effects
   make a rank III fused rune.
 - **Use your cheapest spares for fusions.** Only the elements count, so a Tier I Ember does the same job as a Tier II
   Fire.
+- **Try the pairs that belong together.** Runes that seem made for each other (a bubble and a flame, a heal and a
+  countdown) may be a signature pair. Your Grimoire hints at each one's two elements.
 - **Spare runes have other uses too.** A [Runesmith]({{ '/social/runesmith/' | relative_url }}) buys back plain runes
   you already know, or swaps two of them for one you don't.
 - **Share signature spells as Knots.** One rune, one socket, 10% cheaper, and your friend doesn't need to know any

@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:altar/combine",
+  "criteria": {
+    "signature": {
+      "trigger": "wildercord:grimoire",
+      "conditions": {
+        "signatures": 1
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:frostwire"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.altar.signature.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.altar.signature.description"
+    }
+  },
+  "requirements": [
+    [
+      "signature"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}
