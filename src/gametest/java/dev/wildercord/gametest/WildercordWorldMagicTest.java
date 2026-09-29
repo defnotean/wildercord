@@ -45,7 +45,9 @@ import java.util.UUID;
  * wind knocks an arrow out of the air, a Grow beside a Rampart leaves the wall standing, and a spell where
  * the caster may not build changes nothing. Icepath's ice is written down to thaw (it never melts in the
  * dark), a Rampart never rises over a Light spell's light, its blocks are written down to come down even
- * after a crash, and one left past its time is taken down as soon as its ground is loaded.
+ * after a crash, and one left past its time is taken down as soon as its ground is loaded. The world runes
+ * keep their own rules: Icepath never freezes round a swimmer, Harvest replants each crop with one of its
+ * own seeds, Grow keeps to the cast's block budget, and Blink never lands in lava.
  *
  * <p>Spells are applied straight to a hit at a chosen point ({@link CastEngine#onHit}), the same call
  * every shape ends in, so each check is exact. A singleplayer world has no spawn protection (only a
