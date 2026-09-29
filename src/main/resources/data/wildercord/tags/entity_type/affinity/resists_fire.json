@@ -1,0 +1,17 @@
+{
+  "values": [
+    "minecraft:blaze",
+    "minecraft:magma_cube",
+    "minecraft:ghast",
+    "minecraft:strider",
+    "minecraft:wither_skeleton",
+    "minecraft:hoglin",
+    "minecraft:zoglin",
+    "minecraft:piglin",
+    "minecraft:piglin_brute",
+    "minecraft:zombified_piglin",
+    "#minecraft:aquatic",
+    "minecraft:drowned",
+    "wildercord:cinder_warden"
+  ]
+}

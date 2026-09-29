@@ -631,6 +631,7 @@ public final class Effects {
 		amount *= Innates.fortune(cast, target);
 		amount *= Unison.onHit(cast, target, currentElement);
 		amount *= hexBonus(cast, target);
+		amount *= Affinities.multiplier(cast, target, source, currentElement);
 		// Fire is weaker on the wet.
 		amount *= WorldMagic.wetDamage(target, currentElement);
 		amount *= AddonRunes.react(cast, target, currentElement);

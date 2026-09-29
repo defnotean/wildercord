@@ -230,7 +230,8 @@ effects are a few lines inline; bigger ones live in helpers in `Effects` or, for
 techniques, in `Techniques`; the ten innate runes go to `Innates.apply`. Power already includes
 the caster's leaning (+10% for effects of that element) and, for innate runes, +6% per circle.
 All spell damage goes through `Effects.hurt`, which skips invulnerability frames (so stacked
-effects all land), applies Execute, Fortune and Unison, scales damage to players, and records the
+effects all land), applies Execute, Fortune and Unison, the target's creature affinity and the
+caster's elemental climate (`Affinities.multiplier`), scales damage to players, and records the
 hit for spell-kill counting and the innate runes that react to hits. After each effect,
 `Effects.apply` tells `RuneSeals` its element and where it landed.
 
@@ -290,6 +291,13 @@ None of the wards are saved: they last seconds, and a restart simply ends them.
 - **`RuneSeals`**: a player's spell of the right element lights every seal of that element in the
   door it touched (found by flood fill); when no seal in the door is unlit, the door dissolves.
   Fire also lights unlit campfires.
+- **`Affinities`** and **`Climate`**: creature affinities (weak +50%, resists half, immune) from the
+  entity type tags `wildercord:affinity/weak_to_<element>`, `resists_<element>` and `immune_to_<element>`
+  (a Runebound also resists its Cord's element; a reaction breaks through a resistance), with the
+  "Weak!"/"Resisted" callouts and the Grimoire's Bestiary entries; and the elemental climate where a
+  player casts (the Nether, a thunderstorm, snow, the deep...), cached per player per second and sent
+  to the HUD when it changes. The pure rules are `spell.Affinity`, `spell.Bestiary` and
+  `spell.ClimateRules`. See [features/affinities.md](features/affinities.md).
 - **`LeyWalker`**: sends the ley seed at login and sets the `on_ley` attachment every 5 ticks;
   `Mana.of` and `HeartCircles.tick` read it. The Wellstone's block entity checks the line under it
   once a second and renews `well_until` on players within 12 blocks.
@@ -498,7 +506,9 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
 `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
 `ScreenFx(kind, strength, ticks)` (a camera shake, field-of-view kick, punch or Domain tint; see
-`cast.ScreenFx`). The travel commands send `Waypoints.Track` (the tracked waypoint, for `WaypointHud`).
+`cast.ScreenFx`). The travel commands send `Waypoints.Track` (the tracked waypoint, for `WaypointHud`), and
+`cast.Climate.Sync(conditions)` tells each player the elemental climate where they stand (once a second, only
+when it changes) for the HUD's marks.
 Everything else travels through synced attachments; `CHARGE` is synced to everyone nearby so they
 can draw the circle.
 
@@ -517,8 +527,9 @@ can draw the circle.
   everything discovered. It turns on SDL text input while open (see the 26.x notes).
 - **`SpellHud`**: the panel beside the hotbar: selected spell, its runes and cost, the mana bar
   with a cost mark, cooldown, and passive drain (or the charge, while charging); above it the
-  spell's name, rhythm notes and cracked circles (✦), and a beat ring that closes on the badge as
-  the beat comes. Laid out by measuring, and shrinks to fit (short of room beside an offhand slot
+  spell's name, rhythm notes and cracked circles (✦), the elemental climate after the name (a mark
+  per element from `ElementGlyphs`, with a green ▲ or red ▼), and a beat ring that closes on the badge
+  as the beat comes. Laid out by measuring, and shrinks to fit (short of room beside an offhand slot
   or attack indicator, it sits on top of them: `SpellHud.place`). A spell's reading is remembered
   by its runes (`SpellHud.read`) rather than compiled every frame.
 - **`Tooltips`**: the game never wraps a tooltip line, so every tooltip a screen draws goes through
@@ -658,7 +669,9 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
 7. **`docs/RECIPES.md`**, including where every rune drops, parsed from `WildercordLoot.java`.
 8. **Batch 5 content** (`write_new_content`): item and block models, blockstates, the Archive's
    loot tables, recipes, the pickaxe tag and the worldgen JSON.
-9. **The advancement tab** (`write_advancements`): every advancement under
+9. **Creature affinities** (`affinity_data.py`): the entity type tags under
+   `data/wildercord/tags/entity_type/affinity/` and the affinity and climate text.
+10. **The advancement tab** (`write_advancements`): every advancement under
    `data/wildercord/advancement/` (the recipe-book unlocks aside) from the `ADVANCEMENTS` list, their
    titles, the reward loot tables and the tab's background (`world_art.advancement_background`).
    Feat advancements take their title and text from `Feats.java` unless given their own. See
@@ -718,6 +731,9 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   Spells that fly away from the caster are filmed from the side: `director` spawns an invisible
   text display as the camera and hides the HUD (the local player isn't drawn from another camera,
   so those shots show the spell and its targets only).
+- **`WildercordAffinitiesTest`** checks creature affinities (frost on a blaze against a husk, fire on
+  a hoglin and a blaze, a snow golem's immunity, a Shatter through a resistance, a Runebound's own
+  element, the Bestiary), the climate in the Nether and the End, and the config switches.
 - **`WildercordAdvancementTest`** checks the server loaded the advancement tab, that a feat, a
   reaction, a secret, a Heart Circle, learning runes, a Cord and a cast each grant theirs, and
   that revoked ones come back from the player's state as they would on login.

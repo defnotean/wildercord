@@ -2,6 +2,7 @@ package dev.wildercord.client;
 
 import dev.wildercord.Wildercord;
 import dev.wildercord.content.RuneItem;
+import dev.wildercord.spell.Bestiary;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.Runes;
@@ -11,16 +12,21 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SpawnEggItem;
+
+import java.util.Optional;
 
 /**
- * "New in your Grimoire": shown when a reaction, secret spell, feat or riddle is first
- * discovered, with an icon for what kind it is and the condensed mana it brought.
+ * "New in your Grimoire": shown when a reaction, secret spell, feat, riddle or a creature's
+ * weakness is first discovered, with an icon for what kind it is and the condensed mana it brought.
  */
 public class GrimoireToast implements Toast {
 	private static final Identifier BACKGROUND = Wildercord.id("toast/grimoire");
@@ -78,6 +84,14 @@ public class GrimoireToast implements Toast {
 			this.name = Component.translatable("toast.wildercord.attuned").append(": ").append(RuneItem.runeName(rune));
 			this.icon = RuneItem.stack(rune);
 			this.color = RuneColors.of(rune);
+		} else if (key.startsWith(Bestiary.PREFIX)) {
+			// A weakness found (the Bestiary's only announced entries): the creature, its spawn egg, the element's colour.
+			Bestiary.Entry entry = Bestiary.parse(key).orElse(new Bestiary.Entry(id, Bestiary.Kind.MET, ""));
+			EntityType<?> type = Optional.ofNullable(Identifier.tryParse(entry.type())).flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
+			Component creature = type == null ? Component.literal(entry.type()) : type.getDescription();
+			this.name = Component.translatable("toast.wildercord.bestiary", creature, Component.translatable("element.wildercord." + entry.element()));
+			this.icon = type == null ? new ItemStack(Items.BOOK) : SpawnEggItem.byId(type).map(ItemStack::new).orElseGet(() -> new ItemStack(Items.BOOK));
+			this.color = RuneColors.element(entry.element());
 		} else if (key.startsWith("hint:")) {
 			this.name = Component.translatable("toast.wildercord.riddle_hint");
 			this.icon = new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE);

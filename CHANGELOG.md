@@ -43,6 +43,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - The 6th Heart Circle asks for **five different reactions** (any five of the eleven) instead of all
   of them, so it's no harder to reach than before.
 - **Prismatic Burst** also uses up the new marks (cracked, shadowed, bleeding); it still deals at most 22.
+- Frost no longer hits blazes, striders and magma cubes five times as hard (a vanilla rule meant for powder
+  snow). They're weak to frost instead, +50% like every weakness.
 
 ### Fixed
 - Other players no longer see your Cord vanish from your wrist for a moment after you respawn.
