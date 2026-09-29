@@ -529,7 +529,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		state.add(layer, cx + at.x, cy + at.y, cz + at.z, turn.x, turn.y, turn.z, turn.w, half,
 			sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, light);
 		plane.transform(at.set(u, v, -depth));
-		turn.rotateY(Mth.PI);
+		Facing.flip(turn);
 		state.add(layer, cx + at.x, cy + at.y, cz + at.z, turn.x, turn.y, turn.z, turn.w, half,
 			sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), argb, light);
 	}

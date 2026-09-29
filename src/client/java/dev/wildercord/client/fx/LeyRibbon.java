@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -145,12 +144,14 @@ public class LeyRibbon extends SingleQuadParticle implements SigilGroup.Extent {
 		Vector3f a = new Vector3f();
 		Vector3f b = new Vector3f();
 		Vector3f mid = new Vector3f();
+		Vector3f d = new Vector3f();
+		Quaternionf q = new Quaternionf();
 		for (int i = 0; i < n; i++) {
 			float s0 = from + step * i;
 			float s1 = s0 + step;
 			at(s0, a).add(base);
 			at(s1, b).add(base);
-			Vector3f d = new Vector3f(b).sub(a);
+			d.set(b).sub(a);
 			float len = d.length();
 			if (len < 1.0E-4F) {
 				continue;
@@ -164,14 +165,7 @@ public class LeyRibbon extends SingleQuadParticle implements SigilGroup.Extent {
 			if (pieceAlpha < 0.01F) {
 				continue;
 			}
-			Vector3f zAxis = new Vector3f(mid).negate();
-			zAxis.sub(new Vector3f(d).mul(zAxis.dot(d)));
-			if (zAxis.lengthSquared() < 1.0E-6F) {
-				zAxis.set(0, 1, 0);
-			}
-			zAxis.normalize();
-			Vector3f yAxis = new Vector3f(zAxis).cross(d).normalize();
-			Quaternionf q = new Quaternionf().setFromNormalized(new Matrix3f(d, yAxis, zAxis));
+			Facing.along(d, mid.x, mid.y, mid.z, q);
 			state.add(getLayer(), mid.x, mid.y, mid.z, q.x, q.y, q.z, q.w, len / 2 * 1.04F, soft.getU0(), soft.getU1(), soft.getV0(), soft.getV1(),
 				argb(pieceAlpha, rgb), LightCoordsUtil.FULL_BRIGHT);
 		}
