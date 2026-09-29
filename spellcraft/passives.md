@@ -143,7 +143,7 @@ as a passive it costs 0.72 mana a second (shown as 0.7/s).
 
 If you don't have the mana for a second's upkeep, that passive **falters**: it stops renewing (an Orbit's
 orbs vanish) and takes no mana, until you have enough again. Then it picks up by itself. What it already gave
-you (the rest of a Swift, say) wears off as usual.
+you wears off within 15 seconds (see below).
 
 With two passives running, keep an eye on the drain line: casting a big spell can leave too little for the
 next second's upkeep.
@@ -156,6 +156,10 @@ next second's upkeep.
   Orbit makes it 16). Switch it off and its orbs vanish at once.
 - A passive is cast afresh after you change dimension, or when you change its runes.
 - Passives stop renewing when you take your Cord off, and while you're dead.
+- **What a passive gives lasts 15 seconds at most**, however long the rune's own buff would be: a little past the
+  next renewal, so it never runs out while the passive is on, and wears off soon after you switch it off or it
+  falters. (So switching `Self · Night Eye` on for a moment gives 15 seconds of night vision, not a minute.) The same
+  buff from a potion or another spell keeps its own full length.
 
 Because a Self passive is renewed every 2 seconds anyway, **Extend on a Self passive only raises its upkeep**.
 **Frugal** halves the upkeep, at 40% less strength.
@@ -170,7 +174,7 @@ off costs nothing and keeps its runes; its readout starts "Passive (off)" and sh
 - Passives are cast with your Heart Circles' power and your Cord's Potency and Persistence.
 - They don't use a cooldown, don't count toward rhythm or leaning, and don't condense mana.
 - Their buffs are the same effects as the runes' own: `Self · Swift` as a passive gives exactly the Speed
-  that `Self · Swift` gives as a spell, kept up forever.
+  that `Self · Swift` gives as a spell, kept up forever (each renewal lasting 15 seconds at most).
 
 ## Passives to try
 
