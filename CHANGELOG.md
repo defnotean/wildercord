@@ -20,6 +20,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   Imbue's, several hundred pixels long, on any screen) were cut off unless the window was very wide. Tooltips in
   the Cord screen, the Cosmetics page and the Fusion Altar, and those of the mod's items everywhere, now wrap to
   fit.
+- An add-on's rune drew black-and-magenta squares in the magic circle beside the Cord screen and on the Fusion
+  Altar. It now wears its family's art there, as its circle in the world always did.
 
 ## [0.4.1-alpha] - 2026-09-28
 
