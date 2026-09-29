@@ -451,7 +451,9 @@ public final class ExplorerEffects {
 		Vec3 centre = CastEngine.ground(cast.level, point.add(0, 0.5, 0));
 		ExplorerVfx.sandstormOpen(cast.level, centre, radius, ticks);
 		repeat(cast, ticks, 5, tick -> {
-			ExplorerVfx.sandstorm(cast.level, centre, radius, tick);
+			if (tick % 10 == 0) {
+				ExplorerVfx.sandstorm(cast.level, centre, radius, tick);
+			}
 			choke(cast, centre, radius);
 			if (tick % 20 == 0) {
 				for (LivingEntity t : enemiesAround(cast, centre.add(0, 1, 0), radius)) {
@@ -970,6 +972,7 @@ public final class ExplorerEffects {
 			jump.addOrUpdateTransientModifier(new AttributeModifier(MIRE_ID, -0.9, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 		}
 		// One mire at a time: a newer one (anyone's) takes over, and only the last to dry lets go of the modifier.
+		StormEarthFx.mire(cast.level, t, ticks);
 		Linger key = new Linger(t.getUUID(), null, "mire");
 		Object token = linger(key);
 		repeat(cast, ticks, 10, tick -> {
@@ -1252,7 +1255,7 @@ public final class ExplorerEffects {
 					return;
 				}
 				Vec3 at = CastEngine.ground(level, from.add(dir.scale(step)).add(0, 1.5, 0));
-				ExplorerVfx.basaltColumn(level, at, width);
+				ExplorerVfx.basaltColumn(level, at, width, step < 1.6, step + 1.25 > length);
 				for (LivingEntity t : enemiesAround(cast, at.add(0, 1, 0), width)) {
 					if (struck.add(t.getUUID())) {
 						Effects.hurt(cast, t, magic(cast), 7 * power);

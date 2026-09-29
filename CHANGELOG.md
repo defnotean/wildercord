@@ -53,6 +53,20 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - For add-on makers: `api.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` (API 1.1).
 
 ### Changed
+- **Every storm and earth spell looks and sounds like itself.** Each has its own synthesised sound instead of borrowed
+  vanilla thunder, anvils and chains: Shock's dry zap, Jolt's clamp, Lightning's crack with the thunder rolling in a moment
+  after, Thunderclap's whine then boom, the Thunderbird's cry and the whistle of its dive, Stormweave's plucked wires,
+  Stormclock's ticks and hour bell, Plasma's sizzle, Riftbolt's tear; Tremor's slam and grind, Weigh's groan, Root's creak,
+  Mire's gloop, Stalactite's whistle and crunch, Geode's crystal pings, Fossilize's rising ticks and crack, the mining
+  runes' pick bites. The tells the new mechanics need are drawn: a ring under the spot a Thunderbird will dive on, the
+  patch of ground an Aftershock is about to strike again, a stalactite seen falling onto the spot it marked, Tempest's
+  second bolt where its victim lands, Jolt's ring of arcs for as long as the stun holds, Plasma's violet haze while a
+  target is ionised, Surge's crackle and Stormheart's charged ring for as long as they last, Stoneform's slate stance (no
+  longer Stoneskin's cast), roots and bog that stay visible the whole hold. Plasma is a steady violet beam now, not orange
+  lightning. Busy displays are trimmed: Lightning draws its full show for three strikes, Thunderclap two forks, a
+  Thunderbird, Thunderhead, Stormclock and Magnetize about half their particles, Tempest one shake a cast, Basalt Surge one
+  grind and one crack instead of a sound per column, a Rampart one crack instead of fifteen breaks; Prospect's ores light
+  as its ring reaches them.
 - **Casting sounds are cleaner.** The element's cast sound used to play twice on a dozen shapes (Bolt, Arc, Cone, Crescent, Spark,
   Comet, Ricochet, Stream, Blitz, Glaive, Imprint, Latch); now once. A sound can play at most three times in a tick, so a blast on a
   crowd no longer roars, and a tap cast has its own little snap of release.

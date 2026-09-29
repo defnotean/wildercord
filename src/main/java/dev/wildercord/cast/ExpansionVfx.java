@@ -404,8 +404,7 @@ final class ExpansionVfx {
 			Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.STONE.defaultBlockState()), feet.add(0, 0.2, 0), 10, 0.15);
 		});
 		Sigils.send(level, SigilOption.flat(SigilOption.CIRCLE, theme.secondary(), (float) (r + 0.2), 40, 0.0F), feet.add(0, 0.07, 0));
-		Fx.sound(level, feet, SoundEvents.ANVIL_PLACE, 0.35F, 1.6F);
-		Fx.sound(level, feet, SoundEvents.MACE_SMASH_GROUND, 0.5F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, feet, "earth_clamp", 0.9F, 1.26F);
 	}
 
 	/** Braced too recently: a dull clink. */
@@ -628,7 +627,8 @@ final class ExpansionVfx {
 		}
 		Sigils.flash(level, b, 0xFFE6A0, 1.1F);
 		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, state), b, 6, 0.3, 0.05);
-		Fx.sound(level, b, SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, 1.2F + level.getRandom().nextFloat() * 0.6F);
+		int step = Math.floorMod(pos.getX() * 7 + pos.getY() * 13 + pos.getZ() * 3, 6);
+		Fx.sound(level, b, SoundEvents.AMETHYST_BLOCK_CHIME, 0.5F, new float[] {1.0F, 1.122F, 1.26F, 1.498F, 1.682F, 2.0F}[step]);
 	}
 
 	/** Smelt: the block goes up in a flash of furnace heat. */
@@ -648,14 +648,14 @@ final class ExpansionVfx {
 		Vec3 at = Vec3.atCenterOf(start);
 		Light.slash(level, at, UP, new Vec3(1, 0, 0), theme.primary(), 0.9, Math.PI * 1.6, 0.14, 3, 8);
 		Sigils.flash(level, at, theme.primary(), 1.2F);
-		Fx.sound(level, at, SoundEvents.PLAYER_ATTACK_SWEEP, 0.9F, 0.6F);
 		Fx.sound(level, at, SoundEvents.AXE_STRIP, 1.0F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_dig", 0.8F, 0.75F);
 	}
 
 	static void fell(ServerLevel level, BlockPos pos, BlockState state) {
 		Vec3 at = Vec3.atCenterOf(pos);
-		Light.ring(level, at, UP, LIFE, 0.2, 0.8, 0.04, 6);
-		Vfx.emit(level, ParticleTypes.HAPPY_VILLAGER, at, 2, 0.3, 0.0);
+		Light.ring(level, at, UP, EARTH, 0.2, 0.8, 0.04, 6);
+		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, state), at, 3, 0.3, 0.05);
 	}
 
 	/** Glimmer: each new patch of lichen lights up with a soft glow. */
@@ -745,7 +745,7 @@ final class ExpansionVfx {
 		Vfx.radial(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.COBBLESTONE.defaultBlockState()), c, 10, 0.15);
 		Light.ring(level, c.subtract(away.scale(0.3)), away, EARTH, 0.1, 0.8, 0.05, 6);
 		Vfx.emit(level, ParticleTypes.CRIT, c, 5, 0.25, 0.2);
-		Fx.sound(level, c, SoundEvents.STONE_BREAK, 0.8F, 1.3F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "earth_rattle", 0.9F, 1.0F);
 	}
 
 	/** Windcut: two blades of wind crossing through the target. */
@@ -823,8 +823,8 @@ final class ExpansionVfx {
 		Vfx.shockArc(level, c.add(-0.4, 0.8, -0.3), c.subtract(0, 0.3, 0));
 		Sigils.flash(level, c, STORM, 1.4F);
 		Light.ring(level, t.position().add(0, 0.1, 0), UP, STORM, Math.max(0.8, t.getBbWidth() + 0.4), 0.3, 0.05, 8);
-		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 10, 0.3);
-		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.4F, 1.8F);
+		Vfx.radial(level, ParticleTypes.ELECTRIC_SPARK, c, 6, 0.3);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_clamp", 0.9F, 1.0F);
 	}
 
 	/** Bleed: the opening cut, then drops falling with every wound. */

@@ -106,8 +106,8 @@ final class SignatureVfx {
 			}
 			from = to;
 		}
-		Fx.sound(level, centre(origin), SoundEvents.TRIDENT_THUNDER.value(), 0.4F, 1.8F);
-		Fx.sound(level, centre(origin), SoundEvents.GLASS_BREAK, 0.5F, 1.6F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre(origin), "storm_zap", 0.8F, 0.75F);
+		Fx.sound(level, centre(origin), SoundEvents.GLASS_BREAK, 0.4F, 1.8F);
 	}
 
 	/** Where the current lands: storm sparks and ice crystals; a starburst of ice on one frozen solid. */
@@ -119,7 +119,7 @@ final class SignatureVfx {
 		if (frozen) {
 			ElementFx.shatterRing(level, c, width(t) + 0.6);
 		}
-		Fx.sound(level, c, WildercordSounds.impact("storm"), 0.5F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_zap", 0.6F, 0.84F);
 	}
 
 	// ------------------------------------------------------------------ Seethe (Bubble and Fire)
@@ -405,11 +405,11 @@ final class SignatureVfx {
 		ElementFx.implode(level, c, 1.1, 6);
 		ElementFx.sparks(level, c, 6, 0.2);
 		Vfx.emit(level, ParticleTypes.REVERSE_PORTAL, c, 10, 0.3, 0.05);
-		Fx.sound(level, from, WildercordSounds.BLINK, 0.7F, 1.5F);
+		dev.wildercord.cast.feel.Feels.sound(level, from, "storm_whine", 0.8F, 1.0F);
 	}
 
 	/** Where they come down: a column of lightning, forks thrown out over the ground and a dark ring round it. */
-	static void thunderstep(ServerLevel level, Vec3 at, double radius) {
+	static void thunderstep(ServerLevel level, Vec3 at, double radius, boolean shake) {
 		ElementFx.bolt(level, at.add(0, 9, 0), at, 0.12, 3, 3);
 		ElementFx.stormImpact(level, at.add(0, 0.2, 0), Math.min(3, radius));
 		ElementFx.groundRing(level, at.add(0, 0.05, 0), ElementFx.dark(ElementFx.VOID.accent()), 0.3, radius * 1.2, 0.08, 10);
@@ -418,8 +418,11 @@ final class SignatureVfx {
 			ElementFx.arc(level, at.add(0, 0.1, 0), at.add(Math.cos(a) * radius, 0.1, Math.sin(a) * radius), ElementFx.STORM.primary(), 0.05, 1, true, 5);
 		}
 		Sigils.flash(level, at.add(0, 1, 0), ElementFx.STORM.secondary(), 2.2F);
-		ScreenFx.shake(level, at, 0.5F, 16);
-		Fx.sound(level, at, SoundEvents.LIGHTNING_BOLT_IMPACT, 1.0F, 1.1F);
+		if (shake) {
+			ScreenFx.shake(level, at, 0.5F, 16);
+		}
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_crack", 1.2F, 0.9F);
+		Scheduler.later(8, () -> dev.wildercord.cast.feel.Feels.sound(level, at, "storm_roll", 0.8F, 1.0F));
 	}
 
 	// ------------------------------------------------------------------ Halo (Smite and Regrowth)
@@ -470,7 +473,7 @@ final class SignatureVfx {
 		ElementFx.crack(level, at, 1.4, 30);
 		ElementFx.bolt(level, at.add(0, 3.5, 0), at, 0.08, 2, 2);
 		Sigils.flash(level, at.add(0, 0.8, 0), ElementFx.STORM.secondary(), 1.8F);
-		Fx.sound(level, at, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.6F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_boom", 0.9F, 1.0F);
 	}
 
 	/** A shockwave: a ring of cracking ground out to its reach, dust thrown up and forks of lightning running along it. */
@@ -489,8 +492,7 @@ final class SignatureVfx {
 			}
 		}
 		ScreenFx.shake(level, at, 0.35F + 0.1F * wave, 10 + reach * 2);
-		Fx.sound(level, at, SoundEvents.GENERIC_EXPLODE.value(), 0.5F, 0.5F + 0.1F * wave);
-		Fx.sound(level, at, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.4F, 1.6F + 0.1F * wave);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "earth_quake", 1.0F, new float[] {1.0F, 1.122F, 1.26F}[Math.max(0, Math.min(2, wave - 1))]);
 	}
 
 	/** A wave strikes an enemy: stone chips and a spark under its feet. */

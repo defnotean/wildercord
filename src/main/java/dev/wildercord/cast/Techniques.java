@@ -159,11 +159,13 @@ final class Techniques {
 		// The ground remembers the blow: half a second later the same spot is struck again, hitting whoever stands
 		// there (the target if it stayed, its neighbours too). Step aside and it misses.
 		Vec3 spot = t.position();
+		// The spot is marked as the ground gathers itself, two ticks before it is struck.
+		Scheduler.later(6, () -> StormEarthFx.mark(cast.level, spot, ElementFx.EARTH.primary(), 1.8, 4));
 		Scheduler.later(10, Effects.carryContext(() -> {
 			if (!cast.alive()) {
 				return;
 			}
-			TechniqueVfx.aftershock(cast.level, t, true);
+			TechniqueVfx.aftershockSpot(cast.level, spot);
 			for (Entity e : cast.level.getEntities((Entity) null, new AABB(spot, spot).inflate(1.5, 1.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
 				if (other.position().distanceTo(spot) <= 1.5 + other.getBbWidth() / 2) {
@@ -208,6 +210,7 @@ final class Techniques {
 		float taken = Math.max(0.0F, before - Math.max(0.0F, t.getHealth()));
 		if (taken > 0 && cast.caster.isAlive()) {
 			cast.caster.heal(Math.min(6.0F, taken / 4.0F));
+			Vfx.stream(cast.level, t.getBoundingBox().getCenter(), cast.caster.getBoundingBox().getCenter(), Vfx.themeOf(0xFFD050), 3);
 		}
 		Vec3 centre = t.getBoundingBox().getCenter();
 		Scheduler.later(8, Effects.carryContext(() -> {
@@ -801,7 +804,7 @@ final class Techniques {
 			Vec3 c = base.add(side.scale(i));
 			columns.add(BlockPos.containing(c.x, base.y + 0.01, c.z));
 		}
-		Fx.sound(level, base, SoundEvents.MACE_SMASH_GROUND, 0.8F, 0.7F);
+		dev.wildercord.cast.feel.Feels.sound(level, base, "earth_stomp", 0.8F, 0.84F);
 		long due = level.getGameTime() + ticks;
 		for (int row = 0; row < 3; row++) {
 			int r = row;
@@ -823,12 +826,15 @@ final class Techniques {
 					RAMPART.put(GlobalPos.of(level.dimension(), p.immutable()), state);
 					TemporaryBlocks.put(level, p, RAMPART_BLOCK, state, due);
 					level.setBlockAndUpdate(p, RAMPART_BLOCK);
-					level.levelEvent(2001, p, Block.getId(RAMPART_BLOCK));
+					Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, RAMPART_BLOCK), Vec3.atCenterOf(p), 4, 0.3, 0.05);
 				}
-				Fx.sound(level, base.add(0, r, 0), SoundEvents.PACKED_MUD_PLACE, 1.0F, 0.8F + r * 0.1F);
+				dev.wildercord.cast.feel.Feels.sound(level, base.add(0, r, 0), "earth_grind", 0.8F, new float[] {1.0F, 1.122F, 1.26F}[r]);
 			});
 		}
 		Scheduler.later(ticks, () -> {
+			if (level.isLoaded(BlockPos.containing(base))) {
+				dev.wildercord.cast.feel.Feels.sound(level, base.add(0, 1, 0), "earth_crack", 0.9F, 0.84F);
+			}
 			for (BlockPos column : columns) {
 				for (int r = 0; r < 3; r++) {
 					crumble(level, column.above(r));
@@ -844,7 +850,9 @@ final class Techniques {
 			return;
 		}
 		if (level.getBlockState(pos).is(RAMPART_BLOCK.getBlock())) {
-			level.levelEvent(2001, pos, Block.getId(RAMPART_BLOCK));
+			// Dust, not a vanilla break each: fifteen break sounds at once was a wall of noise (one crack plays for the wall).
+			Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(net.minecraft.core.particles.ParticleTypes.BLOCK, RAMPART_BLOCK),
+				Vec3.atCenterOf(pos), 6, 0.3, 0.05);
 			level.setBlockAndUpdate(pos, replaced);
 		}
 		TemporaryBlocks.remove(level, pos);
@@ -883,7 +891,7 @@ final class Techniques {
 		double phase = cast.level.getRandom().nextDouble() * Math.PI * 2;
 		Vec3[] bird = {caster.position().add(0, 3.3, 0)};
 		Vec3[] marked = {null};
-		Fx.sound(cast.level, caster.position(), SoundEvents.PHANTOM_FLAP, 1.0F, 1.4F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, caster.position(), "storm_cry", 1.0F, 1.0F);
 		for (int t = 0; t <= ticks; t += 2) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
@@ -901,7 +909,8 @@ final class Techniques {
 					LivingEntity pick = ShapeRunners.nearestEnemy(cast, caster.position().add(0, 1, 0), 12.0, caster.getLastHurtMob());
 					marked[0] = pick == null ? null : pick.position();
 					if (marked[0] != null) {
-						ElementFx.groundRing(cast.level, marked[0], ElementFx.STORM.primary(), 1.4, 0.4, 0.05, BIRD_WARNING);
+						StormEarthFx.mark(cast.level, marked[0], ElementFx.STORM.primary(), 1.5, BIRD_WARNING);
+						dev.wildercord.cast.feel.Feels.sound(cast.level, marked[0], "storm_dive", 0.8F, 1.0F);
 					}
 					return;
 				}

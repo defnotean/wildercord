@@ -564,9 +564,10 @@ final class SignatureFusions {
 			level.addFreshEntity(bolt);
 		}
 		double r = SignatureRules.THUNDERSTEP_RADIUS * radius;
-		SignatureVfx.thunderstep(level, spot, r);
+		List<LivingEntity> caught = take(cast, around(cast, spot, r), new HashSet<>(hit.entities()));
+		SignatureVfx.thunderstep(level, spot, r, !caught.isEmpty());
 		DamageSource shock = level.damageSources().source(DamageTypes.LIGHTNING_BOLT, caster);
-		for (LivingEntity t : take(cast, around(cast, spot, r), new HashSet<>(hit.entities()))) {
+		for (LivingEntity t : caught) {
 			Effects.hurt(cast, t, shock, SignatureRules.THUNDERSTEP_DAMAGE * power * Reactions.storm(cast, t));
 			Spirits.hold(t, SignatureRules.THUNDERSTEP_STUN);
 		}

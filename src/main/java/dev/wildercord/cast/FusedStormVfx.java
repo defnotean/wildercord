@@ -70,8 +70,7 @@ final class FusedStormVfx {
 		Sigils.flash(level, c, ElementFx.dark(ElementFx.VOID.accent()), 2.2F);
 		Sigils.flash(level, c, ElementFx.VOID.primary(), 0.9F);
 		ElementFx.sparks(level, c, 8, 0.3);
-		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.8F, 0.6F);
-		Fx.sound(level, c, WildercordSounds.impact("void"), 0.6F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, c, "storm_tear", 1.0F, 1.0F);
 	}
 
 	/**
@@ -107,12 +106,11 @@ final class FusedStormVfx {
 		}
 		if (entry) {
 			ElementFx.implode(level, mid, 1.2, 10);
-			Fx.sound(level, mid, SoundEvents.ENDERMAN_TELEPORT, 0.7F, 0.6F);
 		} else {
 			ElementFx.ring(level, mid, along, ElementFx.VOID.secondary(), 0.15, 1.4, 0.04, 9);
 			Vfx.radial(level, ParticleTypes.REVERSE_PORTAL, mid, 12, 0.12);
 			ElementFx.sparks(level, mid, 6, 0.25);
-			Fx.sound(level, mid, WildercordSounds.BLINK, 0.9F, 1.0F);
+			dev.wildercord.cast.feel.Feels.sound(level, mid, "storm_tear", 0.6F, 0.75F);
 		}
 	}
 
@@ -142,8 +140,7 @@ final class FusedStormVfx {
 			}
 		}
 		Vec3 first = nodes.getFirst();
-		Fx.sound(level, first, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.2F);
-		Fx.sound(level, first, WildercordSounds.cast("arcane"), 0.5F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, first, "storm_pluck", 0.9F, 1.0F);
 	}
 
 	/**
@@ -175,8 +172,8 @@ final class FusedStormVfx {
 			ElementFx.sparks(level, n, 6, 0.3);
 			mid = mid.add(n.scale(1.0 / nodes.size()));
 		}
-		Fx.sound(level, mid, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.9F, 1.3F);
-		Fx.sound(level, mid, WildercordSounds.impact("arcane"), 0.8F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, mid, "storm_zap", 1.0F, 0.84F);
+		dev.wildercord.cast.feel.Feels.sound(level, mid, "storm_crack", 0.7F, 1.12F);
 	}
 
 	/** A Stormweave with no one to catch: a star seal sparks and goes out. */
@@ -217,6 +214,11 @@ final class FusedStormVfx {
 	 * On the last step before the hour the ground below is marked where it will strike and the face flares.
 	 */
 	static void clockTick(ServerLevel level, Vec3 face, Vec3 normal, Vec3 spot, double size, int hand, int steps) {
+		boolean warn = hand == steps - 1;
+		// Every other step is drawn (and ticks): the hand still reads, at half the packets and clicks.
+		if (hand % 2 == 1 && !warn) {
+			return;
+		}
 		double a = Math.PI * 2 * hand / steps;
 		Vec3 dir = ElementFx.inPlane(normal, a);
 		Vec3 tip = face.add(dir.scale(size * 0.82));
@@ -224,13 +226,12 @@ final class FusedStormVfx {
 		ElementFx.arc(level, face, tip, storm().primary(), 0.025, 0, false, 5);
 		ElementFx.slash(level, face, normal, ElementFx.inPlane(normal, a - Math.PI / steps), ElementFx.TIME.accent(), size * 0.6, Math.PI * 2 / steps, 0.06,
 			2, 6);
-		boolean warn = hand == steps - 1;
 		if (warn) {
 			Sigils.target(level, spot, storm().primary(), (float) size, 8);
 			ElementFx.ring(level, face, normal, storm().secondary(), size * 0.3, size * 1.05, 0.05, 6);
 			ElementFx.sparks(level, face, 6, 0.15);
 		}
-		Fx.sound(level, face, SoundEvents.COMPARATOR_CLICK, warn ? 0.9F : 0.5F, 1.2F + 0.1F * hand);
+		dev.wildercord.cast.feel.Feels.sound(level, face, "storm_tick", warn ? 0.9F : 0.55F, warn ? 1.26F : 1.0F);
 	}
 
 	/** The hour strikes: golden lightning falls on the spot, and the face is written again, or at the last hour breaks apart. */
@@ -260,9 +261,7 @@ final class FusedStormVfx {
 		ElementFx.groundRing(level, spot, ElementFx.TIME.primary(), 0.2, size, 0.06, 9);
 		ElementFx.goldenTicks(level, spot.add(0, 0.3, 0), 0.4, 5);
 		Vfx.emit(level, new DustParticleOptions(SCORCH, 1.6F), spot.add(0, 0.08, 0), 5, 0.4, 0.0);
-		Fx.sound(level, spot, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.9F, 1.1F);
-		Fx.sound(level, spot, SoundEvents.BELL_BLOCK, 0.8F, 1.0F);
-		Fx.sound(level, face, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.45F, 1.5F);
+		dev.wildercord.cast.feel.Feels.sound(level, spot, "storm_hour", 1.0F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Heartstopper
@@ -333,7 +332,7 @@ final class FusedStormVfx {
 			Motes.clouds(level, from, 1, 0.2, CLOUD_GREY, 1.7, 30, centre.subtract(from).scale(0.045), 0.004, 0.7);
 		}
 		billows(level, centre, 3, CLOUD_DARK, 1.6, 30, Vec3.ZERO, 0.75);
-		Fx.sound(level, centre, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.35F, 0.5F);
+		dev.wildercord.cast.feel.Feels.sound(level, centre, "storm_cloud", 0.9F, 1.0F);
 	}
 
 	/**
@@ -378,8 +377,7 @@ final class FusedStormVfx {
 		ElementFx.sparks(level, centre(t), 10, 0.35);
 		Vfx.emit(level, new DustParticleOptions(SCORCH, 1.5F), t.position().add(0, 0.08, 0), 4, 0.35, 0.0);
 		RandomSource r = level.getRandom();
-		Fx.sound(level, cloud, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.55F, 1.1F + r.nextFloat() * 0.3F);
-		Fx.sound(level, foot, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.7F, 1.2F);
+		dev.wildercord.cast.feel.Feels.sound(level, foot, "storm_crack", 0.7F, 1.26F);
 	}
 
 	/** The storm passes: pale billows drifting apart and upward, and a last grumble. */

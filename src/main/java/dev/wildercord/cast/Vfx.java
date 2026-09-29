@@ -399,7 +399,8 @@ public final class Vfx {
 		ElementFx.groundRing(level, at, ElementFx.STORM.accent(), 0.2, 1.8, 0.04, 9);
 		ElementFx.sparks(level, at.add(0, 0.3, 0), 14, 0.5);
 		emit(level, new DustParticleOptions(0x2A2418, 1.8F), at.add(0, 0.08, 0), 6, 0.45, 0.0);
-		Fx.sound(level, at, SoundEvents.LIGHTNING_BOLT_IMPACT, 1.4F, 1.0F);
+		dev.wildercord.cast.feel.Feels.sound(level, at, "storm_crack", 1.2F, 1.0F);
+		Scheduler.later(8, () -> dev.wildercord.cast.feel.Feels.sound(level, at, "storm_roll", 0.8F, 1.0F));
 	}
 
 	/** An explosion: a great heat flare, a shell of flame slashes and fire rings racing out, a shockwave over the ground, embers and smoke. */
@@ -701,7 +702,7 @@ public final class Vfx {
 	public static void shockArc(ServerLevel level, Vec3 from, Vec3 to) {
 		ElementFx.bolt(level, from, to, 0.045, from.distanceTo(to) > 2.5 ? 1 : 0, 2);
 		emit(level, ParticleTypes.ELECTRIC_SPARK, to, 4, 0.1, 0.1);
-		Fx.sound(level, to, SoundEvents.TRIDENT_THUNDER.value(), 0.25F, 1.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, to, "storm_zap", 0.6F, 1.0F);
 	}
 
 	/** Haste: two comets of pink light whirl fast round the target's arms and a star seal flickers at its feet. */
@@ -747,27 +748,32 @@ public final class Vfx {
 				10 + i * 3);
 		}
 		Sigils.flash(level, target.getBoundingBox().getCenter(), ElementFx.EARTH.secondary(), 1.2F);
-		Fx.sound(level, target.position(), SoundEvents.ARMOR_EQUIP_NETHERITE, 0.9F, 0.9F);
+		dev.wildercord.cast.feel.Feels.sound(level, target.position(), "earth_clamp", 0.9F, 1.0F);
 	}
 
 	private static final int VINE = 0x3E8A34;
 
 	/** Root: the ground cracks and vines of green light twist up round the target's legs and hold it. */
 	public static void root(ServerLevel level, Entity target) {
+		root(level, target, 30);
+	}
+	
+	/** Root: the ground cracks and roots twist up round the target's legs, brown with green tips, lasting {@code ticks}. */
+	public static void root(ServerLevel level, Entity target, int ticks) {
 		Vec3 base = target.position();
 		double r = Math.max(0.45, target.getBbWidth() * 0.7);
-		ElementFx.crack(level, base, 0.9 + r, 30);
+		ElementFx.crack(level, base, 0.9 + r, Math.min(60, ticks));
 		double phase = level.getRandom().nextDouble() * Math.PI * 2;
 		for (int vine = 0; vine < 4; vine++) {
 			for (int s = 0; s < 3; s++) {
 				double a = phase + vine * Math.PI / 2 + s * 0.9;
 				ElementFx.slash(level, base.add(0, 0.15 + s * 0.35, 0), ElementFx.tilted(0.5, a + Math.PI / 2), ElementFx.flatDir(a),
-					s == 2 ? ElementFx.LIFE.primary() : VINE, r * (1 - s * 0.15), 1.0, 0.09, 2 + s * 2, 30);
+					s == 2 ? VINE : StormEarthFx.ROOT, r * (1 - s * 0.15), 1.0, 0.09, 2 + s * 2, Math.min(60, ticks));
 			}
 		}
 		emit(level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, net.minecraft.world.level.block.Blocks.MOSS_BLOCK.defaultBlockState()),
 			base.add(0, 0.2, 0), 8, 0.3, 0.05);
-		Fx.sound(level, base, SoundEvents.AZALEA_LEAVES_PLACE, 0.9F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, base, "earth_creak", 0.9F, 1.0F);
 	}
 
 	/** Veil: darkness falls in on the target as it fades from sight, a wisp of smoke left behind. */
@@ -859,7 +865,7 @@ public final class Vfx {
 
 	/** Tremor: the ground cracks open, shockwaves of dust race out over it and spires of stone jut up and sink. */
 	public static void tremor(ServerLevel level, Vec3 ground, double radius) {
-		ScreenFx.shake(level, ground, (float) Math.min(0.9, 0.3 + radius * 0.1), radius * 3 + 8);
+		ScreenFx.shake(level, ground, (float) Math.min(0.6, 0.2 + radius * 0.075), radius * 3 + 8);
 		ElementFx.crack(level, ground, radius * 0.8, 30);
 		ElementFx.groundRing(level, ground, ElementFx.EARTH.secondary(), 0.4, radius * 1.1, 0.14, 12);
 		Scheduler.later(3, () -> ElementFx.groundRing(level, ground, ElementFx.EARTH.primary(), 0.3, radius * 0.8, 0.08, 10));
@@ -876,7 +882,8 @@ public final class Vfx {
 				}
 			}
 		}
-		Fx.sound(level, ground, SoundEvents.MACE_SMASH_GROUND_HEAVY, 1.2F, 0.8F);
+		dev.wildercord.cast.feel.Feels.sound(level, ground, "earth_slam", 1.1F, 1.0F);
+		Scheduler.later(2, () -> dev.wildercord.cast.feel.Feels.sound(level, ground, "earth_grind", 0.7F, 1.0F));
 	}
 
 	/** One frame of a gravity well (every other tick): a black core, light spiralling into it, darkness and a violet rim falling in. */
@@ -1045,13 +1052,13 @@ public final class Vfx {
 		ElementFx.ring(level, point.add(0, 1, 0), UP, ElementFx.STORM.accent(), 0.3, radius, 0.05, 7);
 		RandomSource random = level.getRandom();
 		double phase = random.nextDouble() * Math.PI * 2;
-		for (int i = 0; i < 4; i++) {
-			double a = phase + Math.PI / 2 * i + (random.nextDouble() - 0.5) * 0.7;
+		for (int i = 0; i < 2; i++) {
+			double a = phase + Math.PI * i + (random.nextDouble() - 0.5) * 0.7;
 			ElementFx.bolt(level, ground, ground.add(Math.cos(a) * radius, 0, Math.sin(a) * radius), 0.05, i % 2, 2);
 		}
-		radial(level, ParticleTypes.CLOUD, point.add(0, 0.5, 0), 10, 0.3);
-		ElementFx.sparks(level, point.add(0, 1, 0), 12, 0.5);
-		Fx.sound(level, point, SoundEvents.LIGHTNING_BOLT_THUNDER, 0.6F, 1.6F);
+		radial(level, ParticleTypes.CLOUD, point.add(0, 0.5, 0), 6, 0.3);
+		ElementFx.sparks(level, point.add(0, 1, 0), 6, 0.5);
+		dev.wildercord.cast.feel.Feels.sound(level, point, "storm_boom", 1.0F, 1.0F);
 	}
 
 	private static final int STARLIGHT = 0xFFF0FF;

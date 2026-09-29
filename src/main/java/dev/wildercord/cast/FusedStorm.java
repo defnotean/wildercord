@@ -208,7 +208,7 @@ final class FusedStorm {
 		int drawn = 0;
 		for (LivingEntity t : targets) {
 			// Only the first few get the whole show; a crowd still gets every part of the spell.
-			boolean full = drawn < 4;
+			boolean full = drawn < 2;
 			boolean torn = drawn++ < MAX_TARGETS;
 			Vec3 from = t.position();
 			Vec3 dir = Effects.horizontal(heading(cast, hit), from.subtract(origin(cast, hit)));
@@ -469,7 +469,7 @@ final class FusedStorm {
 				Vec3 want = sky(level, t.position().add(0, t.getBbHeight(), 0), CLOUD_HEIGHT);
 				cloud.centre = cloud.centre.lerp(want, 0.3);
 			}
-			if (age % 4 == 0) {
+			if (age % 8 == 0) {
 				FusedStormVfx.cloud(level, cloud.centre, age);
 			}
 			if (age % 20 == 0) {
