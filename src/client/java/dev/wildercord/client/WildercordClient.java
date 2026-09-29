@@ -80,6 +80,8 @@ public final class WildercordClient implements ClientModInitializer {
 		net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			dev.wildercord.config.Config.receive(null);
 			CordGlow.clear();
+			LeyMotes.forget();
+			SpellHud.forget();
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

@@ -44,6 +44,12 @@ public final class LeyMotes {
 		known = true;
 	}
 
+	/** Forgets the seed on leaving a world, so the last world's lines don't show in the next before its seed comes. */
+	public static void forget() {
+		seed = 0;
+		known = false;
+	}
+
 	public static boolean known() {
 		return known;
 	}

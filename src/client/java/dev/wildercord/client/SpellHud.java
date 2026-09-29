@@ -66,6 +66,11 @@ public final class SpellHud {
 			(g, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(g));
 	}
 
+	/** On leaving a world: the next one's mana bar starts from its own mana, not glides from this one's. */
+	static void forget() {
+		shownMana = -1;
+	}
+
 	/** {@code runes} read as a spell, remembered while they stay the same (the HUD and the wheel draw every frame). */
 	static SpellCompiler.Compiled read(List<RuneDef> runes) {
 		SpellCompiler.Compiled compiled = READ.get(runes);
