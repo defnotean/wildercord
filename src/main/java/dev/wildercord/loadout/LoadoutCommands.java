@@ -68,7 +68,7 @@ final class LoadoutCommands {
 				.withClickEvent(new ClickEvent.RunCommand("/loadout load " + name))
 				.withHoverEvent(new HoverEvent.ShowText(Loadouts.text("list_hover", name))));
 			if (i == data.current()) {
-				button.append(Component.literal(" •").withColor(0x7FE0F0));
+				button.append(Component.literal(" \u2022").withColor(0x7FE0F0));
 			}
 			line.append(button);
 		}

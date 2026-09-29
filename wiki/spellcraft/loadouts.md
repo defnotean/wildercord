@@ -56,8 +56,8 @@ and press `Enter`.
 | Forget a loadout | **Delete** (✕), then click it again to be sure |
 | Close the panel | `Esc`, the **×**, or click outside it |
 
-Saving over a loadout and deleting one both ask for a second click within three seconds ("Click again to save
-over it"), so a stray click never loses a setup. Deleting a loadout never touches your Cord: it keeps what it
+Saving over a loadout and deleting one both ask for a second click within three seconds (the row says "Click
+again to save over Fighting"), so a stray click never loses a setup. Deleting a loadout never touches your Cord: it keeps what it
 holds now.
 
 Names can be up to 24 letters, spaces included, and two loadouts can't share a name (whatever the capitals).
@@ -69,7 +69,7 @@ Names can be up to 24 letters, spaces included, and two loadouts can't share a n
 | `Ctrl`+`L` | Open or close the panel |
 | `↑` / `↓` | Pick a loadout (it gets a gold frame) |
 | `Enter` | Load it |
-| `F2` | Rename it |
+| `Ctrl`+`R` | Rename it |
 | `Delete` | Delete it (press twice) |
 | `Ctrl`+`S` | Save your Cord over it (press twice) |
 | `Ctrl`+`N` | Save your Cord as a new loadout |

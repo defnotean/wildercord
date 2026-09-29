@@ -2021,10 +2021,14 @@ public class CordScreen extends Screen {
 		return grimoirePage ? 2 : passivePage ? 1 : 0;
 	}
 
-	/** Opens the loadouts panel: a name being typed for a spell, and the search box, let go. */
+	/** Opens the loadouts panel: a name being typed for a spell, the search box and any rune being dragged, let go. */
 	private void openLoadouts() {
 		renaming = false;
 		searchFocused = false;
+		pressedRune = null;
+		pressedSpell = -1;
+		pressedSocket = -1;
+		dragging = false;
 		if (!loadouts.isOpen()) {
 			loadouts.toggle();
 		}

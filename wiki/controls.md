@@ -66,7 +66,7 @@ A key press counts as a **hold** once it's been down for a quarter of a second. 
 | Click a passive's On/Off | Switch that passive |
 | The four buttons over the readout | Rename the spell, copy its spell code, paste a spell code, inscribe a scroll |
 | The list badge at the end of the tabs row, or `Ctrl`+`L` | Open the loadouts panel |
-| In the loadouts panel: `↑`/`↓`, `Enter`, `F2`, `Delete` | Pick a loadout, load it, rename it, delete it (press twice) |
+| In the loadouts panel: `↑`/`↓`, `Enter`, `Ctrl`+`R`, `Delete` | Pick a loadout, load it, rename it, delete it (press twice) |
 | In the loadouts panel: `Ctrl`+`S` / `Ctrl`+`N` | Save your Cord over the loadout picked (press twice) / as a new one |
 | `Enter` / `Esc` while renaming | Save the name / cancel |
 | `Esc` | Close the loadouts panel, clear the search, then let go of the search box, then close the screen |

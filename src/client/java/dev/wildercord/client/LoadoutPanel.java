@@ -53,7 +53,7 @@ final class LoadoutPanel {
 	private static final int ICONS = 5;
 	private static final int ICON_PITCH = 17;
 	private static final int BUTTON = 14;
-	private static final String[] GLYPHS = {"", "⇩", "✎", "✕"};
+	private static final String[] GLYPHS = {"", "\u21E9", "\u270E", "\u2715"};
 	private static final String[] BUTTON_KEYS = {"load", "save_here", "rename", "delete"};
 	/** How long a button that asks for a second click waits for it. */
 	private static final long CONFIRM_MS = 3000;
@@ -245,7 +245,7 @@ final class LoadoutPanel {
 		int cx = closeX(windowW);
 		boolean closeHover = inside(mx, my, cx, TOP + PAD - 3, BUTTON, BUTTON);
 		sprite(g, closeHover ? SPR_TAB_ACTIVE : SPR_TAB, cx, TOP + PAD - 3, BUTTON, BUTTON);
-		g.text(font, "×", cx + BUTTON / 2 - font.width("×") / 2 + 1, TOP + PAD, closeHover ? TEXT : DIM, false);
+		g.text(font, "\u00D7", cx + BUTTON / 2 - font.width("\u00D7") / 2 + 1, TOP + PAD, closeHover ? TEXT : DIM, false);
 		if (closeHover) {
 			tip = List.of(Component.translatable("screen.wildercord.loadouts.close").withStyle(ChatFormatting.GRAY));
 		}
@@ -281,28 +281,31 @@ final class LoadoutPanel {
 		int iconsX = X + NAME_X + NAME_W + 4;
 		boolean typing = naming == i;
 		if (typing) {
+			// Renaming: only the Rename button stays, and the hint takes the others' room.
 			String shown = font.plainSubstrByWidth(typed, NAME_W - 6, true) + ((System.currentTimeMillis() / 500) % 2 == 0 ? "_" : "");
 			g.text(font, shown, X + NAME_X, y + 6, TEXT, false);
-			fitText(g, font, Component.translatable("screen.wildercord.loadouts.typing"), iconsX, y + 6, loadX - 4 - iconsX, FAINT, false);
+			fitText(g, font, Component.translatable("screen.wildercord.loadouts.typing"), iconsX, y + 6, buttonX(2, windowW, font) - 4 - iconsX, FAINT, false);
+		} else if (confirmRow == i) {
+			// Asking for the second click: the question takes the name's and the runes' place.
+			String key = confirmButton == 1 ? "screen.wildercord.loadouts.confirm_save" : "screen.wildercord.loadouts.confirm_delete";
+			fitText(g, font, Component.translatable(key, loadout.name()), X + NAME_X, y + 6, loadX - 4 - (X + NAME_X), WARN, false);
 		} else {
 			fitText(g, font, Component.literal(loadout.name()), X + NAME_X, y + 6, NAME_W, selected ? GOLD : TEXT, false);
-			if (confirmRow == i) {
-				String key = confirmButton == 1 ? "screen.wildercord.loadouts.confirm_save" : "screen.wildercord.loadouts.confirm_delete";
-				fitText(g, font, Component.translatable(key), iconsX, y + 6, loadX - 4 - iconsX, WARN, false);
-			} else {
-				List<String> runes = shownRunes(loadout);
-				for (int k = 0; k < Math.min(ICONS, runes.size()); k++) {
-					g.item(RuneItem.stack(runes.get(k)), iconsX + k * ICON_PITCH, y + 1);
-				}
-				if (runes.size() > ICONS) {
-					g.text(font, "+" + (runes.size() - ICONS), iconsX + ICONS * ICON_PITCH + 1, y + 6, FAINT, false);
-				}
+			List<String> runes = shownRunes(loadout);
+			for (int k = 0; k < Math.min(ICONS, runes.size()); k++) {
+				g.item(RuneItem.stack(runes.get(k)), iconsX + k * ICON_PITCH, y + 1);
+			}
+			if (runes.size() > ICONS) {
+				g.text(font, "+" + (runes.size() - ICONS), iconsX + ICONS * ICON_PITCH + 1, y + 6, FAINT, false);
 			}
 			if (inside(mx, my, X + PAD, y, loadX - 4 - (X + PAD), ROW - 1)) {
 				tip = describe(loadout, current);
 			}
 		}
 		for (int b = 0; b < 4; b++) {
+			if (typing && b != 2) {
+				continue;
+			}
 			int bx = buttonX(b, windowW, font);
 			int bw = buttonW(b, font);
 			boolean hover = inside(mx, my, bx, y + 2, bw, BUTTON);
@@ -408,7 +411,7 @@ final class LoadoutPanel {
 		Spellbook book = mc().player == null ? Spellbook.EMPTY : Spellbooks.get(mc().player);
 		for (int i = 0; i < ids.size(); i++) {
 			if (i > 0) {
-				out.append(Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY));
+				out.append(Component.literal(" \u00B7 ").withStyle(ChatFormatting.DARK_GRAY));
 			}
 			Optional<RuneDef> rune = Runes.get(ids.get(i));
 			if (rune.isEmpty()) {
@@ -454,7 +457,8 @@ final class LoadoutPanel {
 				return;
 			}
 			for (int b = 0; b < 4; b++) {
-				if (inside(mx, my, buttonX(b, windowW, font), y + 2, buttonW(b, font), BUTTON)) {
+				// While a row is renamed only its Rename button is there.
+				if ((naming != i || b == 2) && inside(mx, my, buttonX(b, windowW, font), y + 2, buttonW(b, font), BUTTON)) {
 					cursor = i;
 					press(i, b);
 					return;
@@ -565,7 +569,7 @@ final class LoadoutPanel {
 
 	/**
 	 * A key while the panel is open. Typing a name: Enter saves it, Esc cancels. Otherwise the arrows pick
-	 * a loadout, Enter loads it, F2 renames it, Delete deletes it and Ctrl+S saves over it (both asking
+	 * a loadout, Enter loads it, Ctrl+R renames it, Delete deletes it and Ctrl+S saves over it (both asking
 	 * twice), Ctrl+N saves the Cord as a new one, and Esc or Ctrl+L closes the panel.
 	 */
 	void key(KeyEvent event) {
@@ -593,7 +597,7 @@ final class LoadoutPanel {
 			confirmRow = -1;
 		} else if ((key == InputConstants.KEY_RETURN || key == InputConstants.KEY_NUMPADENTER) && cursor < data.size()) {
 			press(cursor, 0);
-		} else if (key == InputConstants.KEY_F2 && cursor < data.size()) {
+		} else if (event.hasControlDown() && key == InputConstants.KEY_R && cursor < data.size()) {
 			press(cursor, 2);
 		} else if (key == InputConstants.KEY_DELETE && cursor < data.size()) {
 			press(cursor, 3);
