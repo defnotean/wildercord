@@ -152,7 +152,8 @@ passed, a cave entrance, the stronghold you're hunting, a friend's base.
 - `/waypoint list` shows them all (the tracked one has a star). Hover over a name to see where it is; click it to
   track it.
 - `/waypoint share <name> <player>` sends the waypoint to someone else. They get a message in chat with an **[Add]**
-  button that adds it to their own waypoints, in the right world.
+  button that adds it to their own waypoints, in the right world. You can share with the same player once every
+  10 seconds.
 - You can keep **up to 50 waypoints**. Adding one by a name you already use moves it.
 
 The corner line hides while the debug screen (`F3`) is open, since it uses the same corner.
@@ -172,7 +173,8 @@ To visit a friend, **ask first**: `/tpa Alex`. To bring a friend to you: `/tpahe
 - `/tpcancel` takes back every request you've sent.
 - You can't send a request to yourself, or to someone who's in a duel.
 - **When a request is accepted**, whoever is travelling goes through the usual warmup (so they must stand still),
-  and lands wherever the other player is **when the warmup ends**, on safe ground near them.
+  and lands wherever the other player is **when the warmup ends**, on safe ground near them. If the other player has
+  started a duel by then, the teleport is called off.
 - Everyone is told what happened: sent, accepted, turned down, taken back or run out. If either player leaves the
   game, the request is dropped.
 
@@ -203,7 +205,9 @@ change this). It's a good way to find fresh land to settle.
   block.
 - It works from any world, and always takes you to the Overworld.
 - It has a longer cooldown than the other commands: **5 minutes**.
-- Very rarely it can't find anywhere safe; you're told, and can simply try again.
+- Very rarely it can't find anywhere safe; you're told, and can try again. It looks for a new spot at most once every
+  10 seconds: try again sooner (after moving broke the warmup, say) and it takes you to the spot it already found, or,
+  if it found none, tells you how long to wait.
 - Your coordinates are shown in chat when you land, so you can write them down (or `/sethome` right away).
 
 ## For server owners
