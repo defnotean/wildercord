@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A spell's block that is only there for a while (a Rampart's wall, a Span's glass, Light's light) drops
- * nothing, however it's taken down: every block's drops are worked out here, whether a player, a piston,
- * an explosion or a Wither breaks it.
+ * A spell's block that is only there for a while (a Rampart's wall, a Span's glass, Light's light, frost's
+ * crust on lava) drops nothing, however it's taken down: every block's drops are worked out here, whether a
+ * player, a piston, an explosion or a Wither breaks it.
  */
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class TemporaryBlockDropsMixin {

@@ -96,7 +96,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - **Harvest replants with one of the crop's own seeds**, as it always said, instead of a free one: each crop it
   harvested used to drop every seed and replant as well. A crop that drops no seed is left unplanted.
 - **A spell's blocks never drop anything.** A Rampart blown up by an explosion dropped its packed mud (a free packed
-  mud farm); a Rampart's wall, a Span's glass and Light's light now drop nothing however they're broken.
+  mud farm); a Rampart's wall, a Span's glass, Light's light and frost's crust on lava now drop nothing however
+  they're broken, and a crust blown up (or taken any way but melting) gives its lava back at once.
 - **Servers ignore a flood of cast requests**, as they already did for spell edits: a modified client can send at
   most a burst of 20 casts (or charges), then 20 a second, far more than any hand on the cast keys.
 - **Fangs never bite your friends.** Its evoker fangs bit anything that walked onto them, your own pets included;

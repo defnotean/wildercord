@@ -18,13 +18,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Blocks a spell put up for a while (a Rampart's wall, a Span's glass, Light's light) and what each
- * replaced, written down by chunk and saved with its dimension, as {@link Thaws} does for frozen water.
+ * Blocks a spell put up for a while (a Rampart's wall, a Span's glass, Light's light, frost's crust on
+ * lava) and what each replaced, written down by chunk and saved with its dimension, as {@link Thaws} does
+ * for frozen water.
  * The spells take their blocks down on time themselves, and every one still standing when the server
  * stops; this is for what they can't reach: a block whose chunk wasn't loaded when its time came
  * (never loaded just to take it down) and anything left by a server that stopped without warning (a
  * crash, a kill). Each goes back as soon as it's past its time and its chunk is loaded, but only if
- * the spell's block is still there: whatever replaced it since is left alone.
+ * the spell's block is still there: whatever replaced it since is left alone. One that held back lava or
+ * water (frost's crust on lava) and is gone early, not by its spell (blown up), gives the fluid back at
+ * once. However any of them goes, it drops nothing (see {@link #holds}).
  */
 public final class TemporaryBlocks extends SavedData {
 	/** One block a spell put up: the block it is, what it replaced, and the game time it goes. */
@@ -153,10 +156,21 @@ public final class TemporaryBlocks extends SavedData {
 			Iterator<Placed> it = chunk.getValue().iterator();
 			while (it.hasNext()) {
 				Placed placed = it.next();
-				if (placed.due() + GRACE > now || !level.isLoaded(placed.pos())) {
+				if (!level.isLoaded(placed.pos())) {
 					continue;
 				}
-				if (level.getBlockState(placed.pos()).is(placed.placed().getBlock())) {
+				BlockState standing = level.getBlockState(placed.pos());
+				if (placed.due() + GRACE > now) {
+					// Gone early, and not by its spell (an explosion, say): the lava or water it held back comes back
+					// into the gap at once, rather than never.
+					if (!standing.is(placed.placed().getBlock()) && standing.canBeReplaced() && !placed.replaced().getFluidState().isEmpty()) {
+						level.setBlockAndUpdate(placed.pos(), placed.replaced());
+						it.remove();
+						changed = true;
+					}
+					continue;
+				}
+				if (standing.is(placed.placed().getBlock())) {
 					level.setBlockAndUpdate(placed.pos(), placed.replaced());
 				}
 				it.remove();
