@@ -129,6 +129,9 @@ as a passive it costs 0.72 mana a second (shown as 0.7/s).
 - **Thrift** on your Cord and the **Archmage** perk lower the upkeep, like they lower a spell's cost (and
   so does the server's own cost setting, if it has one).
 - Upkeep is taken **once a second**, for every passive that's on, in its open slot, with valid runes.
+- **A passive pays its first second as it starts**: when you switch it on, change its runes, or it's cast afresh after
+  you change dimension. Without the mana for that first second it doesn't start (it falters, below), so switching a
+  passive on and off can't get its buffs for free.
 - **In creative**, passives cost nothing.
 - Under the passive rows the Cord screen compares your total drain with your regeneration ("Passives drain
   4.0 mana/s · you regenerate 15.0/s"), and turns yellow when the drain is bigger. On your spell panel, the

@@ -20,7 +20,7 @@ other.
 |---|---|
 | [The Runesmith]({{ '/social/runesmith/' | relative_url }}) | The rune-trading villager, the Scribing Desk that gives them the job, every trade by level, and how they buy back and swap the runes you already know |
 | [Daily Contracts]({{ '/social/contracts/' | relative_url }}) | Three magical jobs a day at any Scribing Desk, and what they pay |
-| [Duels]({{ '/social/duels/' | relative_url }}) | Challenging another player to a fight where nobody dies and nobody loses anything |
+| [Duels]({{ '/social/duels/' | relative_url }}) | Challenging another player to a fight where nobody dies, and the harm you did each other is undone afterwards |
 | [Chorus Casting]({{ '/social/chorus/' | relative_url }}) | Casting the same spell with friends at the same moment for one much stronger spell |
 | [Playing Together]({{ '/social/playing-together/' | relative_url }}) | Spell codes, Spell Scrolls, Unison, Domain clashes, shooting spells out of the air, and the friendly fire and PvP rules |
 | [Getting Around]({{ '/social/travel/' | relative_url }}) | Homes, warps, waypoints, teleport requests, /back, /spawn and /rtp, and the short warmup before every teleport |
@@ -36,7 +36,7 @@ other.
 - **Hit the same foe together** with different elements for a [Unison]({{ '/social/playing-together/' | relative_url }}#unison)
   (+50%), or with the same kind of spell in the same shape for a [chorus]({{ '/social/chorus/' | relative_url }}) (up to
   twice as strong).
-- **Settle it with a duel.** Nobody dies, and afterwards you're both put back as you were.
+- **Settle it with a duel.** Nobody dies, and afterwards the harm you did each other is undone.
 - **Get around together.** Set homes, visit friends with a teleport request, and track waypoints on your screen. See
   [Getting Around]({{ '/social/travel/' | relative_url }}).
 

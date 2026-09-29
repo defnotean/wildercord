@@ -36,7 +36,9 @@ isn't in the Wildercord you have installed, so it can't show what it is or do an
 other way round), or the rune came from an add-on mod that isn't installed. Nothing is lost: a Silent Rune keeps
 its rune safe, threaded runes stay in their sockets, and they all wake up as soon as you install the matching
 version. When you join a server whose Wildercord differs from yours, a message in chat says which version to
-install.
+install. A server running a Wildercord older than the version check itself can't say which version it runs: a few
+seconds after you join, a message says the server's Wildercord is older than yours, so either the server needs
+updating or you install the version it runs.
 
 ### I pressed `R` and nothing happened.
 Look just above your hotbar: the game always says why.
@@ -222,3 +224,26 @@ in the Nether, the Astral Observatory in the End, and the Drowned Scriptorium on
 ### Does the Cord screen pause the game?
 No, not even in single player, so find a safe spot before you rebuild your spells mid-fight. (Every key can be
 changed in Options, Controls, Key Binds, under **Wildercord**: see [Controls]({{ '/controls/' | relative_url }}).)
+
+## For server owners
+
+### What can a server change?
+Wildercord's server settings live in `config/wildercord.json` in the server's folder (in single player, the game's
+own `config` folder), written with every default the first time the server starts. Change a value, then have an operator run `/wildercord reload`: it reads the file again
+and says what, if anything, was wrong with it. A missing or broken value falls back to its default, so a bad edit
+never stops the server.
+
+| Section | What it changes |
+|---|---|
+| `casting` | How many creatures and blocks one cast may touch, whether spells may change blocks at all, and how hard spells hit other players (60% at first) |
+| `mana` | How fast mana comes back, and what every spell and passive costs |
+| `world` | How often monsters spawn as Runebound |
+| `loot` | How often runes, Mana Crystals, Torn Pages and casting gear turn up in chests (these apply the next time the world loads, or after `/reload`) |
+| `imbuing` | How many imbued items and glyphs one caster keeps |
+| `features` | Switches for whole features: world events, duels, wild magic, magic that changes the world, creature affinities and elemental climate (all on at first) |
+| `travel` | The travel commands: whether they exist at all, how many homes each player may have, the warmup, the cooldowns, how far `/rtp` goes and how long a teleport request waits. See [Getting Around]({{ '/social/travel/' | relative_url }}#for-server-owners) |
+
+### I updated Wildercord. Do I need a new settings file?
+No. When the server starts (or an operator runs `/wildercord reload`), any setting the file lacks is added to it at
+its default, and everything you've already set is kept. So an older file gains the newer settings, such as the
+`travel` section and the creature affinity and climate switches, by itself.

@@ -40,15 +40,14 @@ It always takes that second press, so it never happens by accident.
   a cracked circle shows on the ground at your feet, and you see *"Overcast! Your 3rd Circle cracks. It
   mends in 3 minutes"*. Your first overcast earns the **Overcast** feat.
 - **A cracked circle gives nothing** until it mends: not its +15 max mana, +0.5 mana a second or +3%
-  spell power, not its perk (Mana Skin, Flow, Overflow, Archmage), not its passive slot. Crack your 5th
-  Circle and you lose Flow and your second passive until it mends.
+  spell power, not its +6% on your innate rune, not its perk (Mana Skin, Flow, Overflow, Archmage), not
+  its passive slot. Crack your 5th Circle and you lose Flow and your second passive until it mends.
 - It mends **3 minutes** later. Overcasting again before then cracks the **next circle in**, and starts
   the 3 minutes over for all of them. With every circle cracked, you can't overcast any more.
 - When they mend you're told *"Your cracked circles have mended."*, with a chime.
 
-What a crack never touches: the circles themselves (you don't lose them), mana you've condensed toward
-the next circle, and your innate rune's strength (it grows with every circle you've formed, cracked or
-not).
+What a crack never touches: the circles themselves (you don't lose them) and mana you've condensed toward
+the next circle. Everything a cracked circle gave comes back when it mends.
 
 The HUD shows **✦** and the number of cracked circles above your spell panel, and hovering the heart
 badge in the Cord screen shows how long until they mend.

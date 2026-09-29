@@ -83,8 +83,10 @@ strong for your Cord, past your Cord's last socket, not learned, or from an add-
 [Quiet runes]({{ '/spellcraft/cords/' | relative_url }}#quiet-runes-and-a-smaller-cord).
 
 Hover any threaded rune for its tooltip: its name and rank, family, tier, element and category, what it
-does, its rank bonus, what it does to the ground it lands on (burns grass, freezes water) if anything, and
-"Click to remove · drag to move".
+does, its rank bonus, what it does to the ground it lands on (burns grass, freezes water) if anything, the
+[reaction]({{ '/spellcraft/reactions/' | relative_url }}) it sets up or sets off if it plays a part in one of the six
+newer ones, and "Click to remove · drag to move". Long tooltips wrap to fit your window, so none runs off the side
+of the screen.
 
 ## The Codex
 
@@ -215,7 +217,8 @@ Four small buttons sit at the top right of the readout. Hover one for its name.
 
 Click **Rename** (the pencil), type a name, and press `Enter` to save it. `Esc` cancels, `Backspace`
 deletes a letter and `Ctrl`+`Backspace` clears the name. Names can be up to 28 characters. Save an **empty**
-name to go back to the automatic one.
+name to go back to the automatic one. Picking another spell before you press `Enter` drops the name you were
+typing, so it never lands on the wrong spell.
 
 Your name shows on your spell panel, on the spell wheel, in the readout, and on scrolls you inscribe from the
 spell. It's yours alone: a spell code you share carries the runes, not your name.
@@ -261,7 +264,8 @@ code on the clipboard, it says so and changes nothing.
 
 Writes the selected spell onto a **Spell Scroll** that anyone can cast once, with or without a Cord, whether
 or not they know its runes. Inscribing takes **a sheet of paper**, **an ink sac** (a glow ink sac works too)
-and **twice the spell's mana** (its plain cost, before your own discounts). The scroll is called "Scroll of"
+and **twice what the spell costs you to cast**, as the readout shows it (your discounts, the server's cost
+setting and a found secret's price all count). The scroll is called "Scroll of"
 and the spell's name, and says who inscribed it. Right-click it to cast it; it's used up. It goes off at
 plain strength: nobody's Heart Circles or enchantments count. In creative, inscribing is free. See
 [Playing Together]({{ '/social/playing-together/' | relative_url }}).

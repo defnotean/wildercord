@@ -142,6 +142,8 @@ The second rule means you can wait until you *see* a bolt coming, then raise you
 
 - It works for a Shield you raise on an ally too, with `Burst · Shield` or `Nova · Shield`: time it
   to the spell coming at them.
+- **Only a player parries.** A Shield on your pet (a wolf caught in your `Burst · Shield`, say) blocks and
+  shatters like any Shield, but never parries.
 - It needs a Shield raised **by a player's cast**. A Shield from a wild surge, a command or a monster
   never parries.
 - **Weight doesn't matter.** A parry turns any spell, even one that would shatter the Shield, the
@@ -183,9 +185,9 @@ parried!"*. Your first parry earns the **Parry** feat and advancement.
 
 ### What can't be parried
 
-- **Damage that lingers** after a spell landed: a burn or bleed ticking on, a zone or cloud pulsing, a
-  clock striking again. A Shield timed to one of those later hits doesn't turn it; it meets the
-  Shield like any spell, blocked or breaking through by weight.
+- **Damage that lingers** after a spell landed: a burn or bleed ticking on, a zone or cloud pulsing,
+  burning or freezing ground (Magma's included), a clock striking again. A Shield timed to one of those
+  later hits doesn't turn it; it meets the Shield like any spell, blocked or breaking through by weight.
 - **Anything that isn't a spell**: arrows, blades and falls pass straight through a Shield.
 - **Your own spells.**
 

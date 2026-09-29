@@ -80,7 +80,7 @@ a spell. Players within 48 blocks see it.
 - **Heart Circle options** unlock as soon as you've formed that circle. See
   [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}).
 - **Feat options** unlock with the feat in your [Grimoire]({{ '/progression/grimoire/' | relative_url }}).
-- **Help slay a boss** means being alive within 96 blocks when a boss dies: the Ender Dragon, the Wither, the Warden,
+- **Help slay a boss** means being alive (and not spectating) within 96 blocks when a boss dies: the Ender Dragon, the Wither, the Warden,
   an Elder Guardian, the Archivist, the Cinder Warden, the Star-Eater or the Tide Scribe. You don't need the killing
   blow. The same kill is your heart's breakthrough to the 7th Circle.
 - **Nothing locked can be worn.** If an option you were wearing ever stops being yours, it goes back to the default
