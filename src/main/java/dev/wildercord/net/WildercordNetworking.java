@@ -111,6 +111,24 @@ public final class WildercordNetworking {
 		}
 	}
 
+	/**
+	 * Save, load, rename or delete a loadout, or load the next one (the quick-switch key): {@code kind} is
+	 * one of {@code Loadouts.SAVE_NEW}, {@code SAVE_OVER}, {@code LOAD}, {@code RENAME}, {@code DELETE} or
+	 * {@code NEXT}, {@code index} the loadout's place in the list, {@code name} a new name (saving as new,
+	 * renaming). Saving always saves the server's own spellbook: no runes travel in this packet.
+	 */
+	public record LoadoutRequest(int kind, int index, String name) implements CustomPacketPayload {
+		public static final Type<LoadoutRequest> TYPE = new Type<>(Wildercord.id("loadout"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, LoadoutRequest> CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, LoadoutRequest::kind, ByteBufCodecs.VAR_INT, LoadoutRequest::index, ByteBufCodecs.stringUtf8(64), LoadoutRequest::name,
+			LoadoutRequest::new).cast();
+
+		@Override
+		public Type<LoadoutRequest> type() {
+			return TYPE;
+		}
+	}
+
 	/** Server to client: a new Grimoire entry (the client shows a toast). */
 	public record Discovery(String key) implements CustomPacketPayload {
 		public static final Type<Discovery> TYPE = new Type<>(Wildercord.id("discovery"));
@@ -162,7 +180,7 @@ public final class WildercordNetworking {
 		}
 	}
 
-	/** Spellbook rewrites (select, edit, rename, a passive's switch) and inscribing: a burst of 20, then 10 a second. */
+	/** Spellbook rewrites (select, edit, rename, a passive's switch, loadouts) and inscribing: a burst of 20, then 10 a second. */
 	private static final PacketThrottle SPELLBOOK = new PacketThrottle(20, 2);
 
 	/** Whether this spellbook-rewriting packet may be handled: a flood past the allowance is dropped. */
@@ -214,6 +232,17 @@ public final class WildercordNetworking {
 		ServerPlayNetworking.registerGlobalReceiver(InscribeScroll.TYPE, (payload, context) -> {
 			if (allowed(context)) {
 				dev.wildercord.content.SpellScrollItem.inscribe(context.player(), payload.spell());
+			}
+		});
+		PayloadTypeRegistry.serverboundPlay().register(LoadoutRequest.TYPE, LoadoutRequest.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(LoadoutRequest.TYPE, (payload, context) -> {
+			if (!allowed(context)) {
+				return;
+			}
+			dev.wildercord.loadout.Loadouts.Result result = dev.wildercord.loadout.Loadouts.request(context.player(), payload.kind(), payload.index(), payload.name());
+			if (result != null) {
+				context.player().sendOverlayMessage(result.ok() ? result.message().copy().withColor(0x7FE0F0)
+					: result.message().copy().withStyle(net.minecraft.ChatFormatting.RED));
 			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(EditSpell.TYPE, (payload, context) -> {

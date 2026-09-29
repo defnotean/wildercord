@@ -141,12 +141,24 @@ final class ShapeRunners {
 				long now = cast.level.getGameTime();
 				List<Entity> hits = new ArrayList<>();
 				Vec3 lastOrb = caster.position();
+				AABB[] boxes = new AABB[orbs];
+				AABB around = null;
 				for (int i = 0; i < orbs; i++) {
 					double angle = tick * 0.22 + Math.PI * 2 * i / orbs;
 					Vec3 orb = caster.position().add(Math.cos(angle) * 2.2, 1.0 + Math.sin(tick * 0.1 + i) * 0.25, Math.sin(angle) * 2.2);
 					lastOrb = orb;
 					Vfx.orb(cast.level, orb, theme, tick);
-					for (Entity e : cast.level.getEntities(caster, new AABB(orb, orb).inflate(0.8), e -> e instanceof LivingEntity && e.isAlive())) {
+					boxes[i] = new AABB(orb, orb).inflate(0.8);
+					around = around == null ? boxes[i] : around.minmax(boxes[i]);
+				}
+				// One look round all the orbs instead of one per orb (a passive Orbit does this every tick, for good),
+				// then each orb takes what its own box touches: the same creatures, in the same order, as asking per orb.
+				List<Entity> near = around == null ? List.of() : cast.level.getEntities(caster, around, e -> e instanceof LivingEntity && e.isAlive());
+				for (AABB box : boxes) {
+					for (Entity e : near) {
+						if (!e.getBoundingBox().intersects(box)) {
+							continue;
+						}
 						Long last = lastHit.get(e.getUUID());
 						if (!hits.contains(e) && (last == null || now - last >= 20)) {
 							hits.add(e);

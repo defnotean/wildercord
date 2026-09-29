@@ -1,6 +1,7 @@
 package dev.wildercord.travel;
 
 import dev.wildercord.Wildercord;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -17,9 +18,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Waypoints: personal markers that never teleport anyone. {@code /waypoint add <name> [pos]} marks a
@@ -57,6 +60,12 @@ public final class Waypoints {
 		}
 	}
 
+	/** Who shared a waypoint with whom. */
+	private record Share(UUID from, UUID to) {}
+
+	/** When each player last shared a waypoint with each other player (server ticks), so nobody can flood someone's chat with offers. */
+	private static final Map<Share, Long> SHARED = new HashMap<>();
+
 	static void init() {
 		// The tracked waypoint comes back with you when you join.
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
@@ -64,6 +73,11 @@ public final class Waypoints {
 				sync(handler.player);
 			}
 		});
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			UUID leaving = handler.player.getUUID();
+			SHARED.keySet().removeIf(share -> share.from().equals(leaving) || share.to().equals(leaving));
+		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> SHARED.clear());
 		ServerTickEvents.END_SERVER_TICK.register(Waypoints::tick);
 	}
 
@@ -192,6 +206,15 @@ public final class Waypoints {
 			Travel.fail(player, "waypoint_share_self");
 			return 0;
 		}
+		long now = player.level().getServer().getTickCount();
+		Share share = new Share(player.getUUID(), to.getUUID());
+		Long last = SHARED.get(share);
+		long wait = last == null ? 0 : TravelRules.shareWait(now, last);
+		if (wait > 0) {
+			Travel.fail(player, "waypoint_share_wait", to.getDisplayName(), TravelRules.seconds(wait));
+			return 0;
+		}
+		SHARED.put(share, now);
 		String command = String.format(Locale.ROOT, "/waypoint add %s %.2f %.2f %.2f %s", name, spot.x(), spot.y(), spot.z(), spot.dimension());
 		MutableComponent add = Travel.button(Travel.text("waypoint_offer_add").withStyle(ChatFormatting.GREEN, ChatFormatting.BOLD), command,
 			Travel.text("waypoint_offer_hover", Travel.name(name)));

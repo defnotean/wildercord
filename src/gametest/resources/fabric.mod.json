@@ -30,6 +30,7 @@
 			"dev.wildercord.gametest.WildercordOitTest",
 			"dev.wildercord.gametest.WildercordTravelTest",
 			"dev.wildercord.gametest.WildercordAffinitiesTest",
+			"dev.wildercord.gametest.WildercordLoadoutsTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

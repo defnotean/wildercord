@@ -30,6 +30,13 @@ public final class TravelRules {
 	public static final int RTP_TRIES = 64;
 	/** Chunks a random teleport may load (or generate) looking for ground, so one command can't stall the server long. */
 	public static final int RTP_CHUNK_LOADS = 12;
+	/**
+	 * How often a player (not an operator) may search for a new random spot. A broken warmup starts no
+	 * cooldown, so without this {@code /rtp} over and over would load (or generate) chunks as fast as it's typed.
+	 */
+	public static final int RTP_SEARCH_SECONDS = 10;
+	/** How often one player may share a waypoint with the same other player, so nobody can flood someone's chat with offers. */
+	public static final int SHARE_SECONDS = 10;
 	/** Server ticks in a second. */
 	public static final int TICKS_PER_SECOND = 20;
 
@@ -89,6 +96,16 @@ public final class TravelRules {
 	/** Ticks left before {@code readyAt} (0 once it's passed). */
 	public static long remaining(long now, long readyAt) {
 		return Math.max(0, readyAt - now);
+	}
+
+	/** Ticks before a player who last searched for a random spot at {@code searched} may search again (0 once they may). */
+	public static long searchWait(long now, long searched) {
+		return remaining(now, searched + (long) RTP_SEARCH_SECONDS * TICKS_PER_SECOND);
+	}
+
+	/** Ticks before a player who last shared a waypoint with someone at {@code shared} may share another with them (0 once they may). */
+	public static long shareWait(long now, long shared) {
+		return remaining(now, shared + (long) SHARE_SECONDS * TICKS_PER_SECOND);
 	}
 
 	/** Ticks as whole seconds, rounded up, so "1 second" is shown until the very end. */

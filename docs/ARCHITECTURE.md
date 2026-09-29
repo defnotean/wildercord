@@ -452,6 +452,7 @@ player, synced to that player only, and copied through death where noted.
 | `spirit_until`, `frozen_until` | long | on the mob | End times for summons and frozen mobs |
 | `runebound` | list of string | on the mob | A Runebound's spell |
 | `travel` | `TravelData` | yes | Homes, waypoints, where `/back` goes, teleport requests on or off, the tracked waypoint (server only; see [features/travel.md](features/travel.md)) |
+| `loadouts` | `LoadoutData` | yes | Saved Cord setups (up to 6) and the one last loaded, synced for the Cord screen's panel (see [features/loadouts.md](features/loadouts.md)) |
 | `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
@@ -507,6 +508,7 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 | `ChargeSpell(spell, start)` | `Charging.request` (start a charge, or release it and cast) |
 | `RenameSpell(spell, name)` | `SpellCaster.rename` |
 | `InscribeScroll(spell)` | `SpellScrollItem.inscribe` |
+| `LoadoutRequest(kind, index, name)` | `Loadouts.request`: save as new, save over, load, rename, delete, or load the next one (no runes travel: the server saves its own spellbook) |
 
 Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
 `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
@@ -525,7 +527,9 @@ can draw the circle.
   for categories you've learned something in), the Codex, and the plain-English readout, whose
   small tool buttons rename the spell (`RenameSpell`), copy or paste its spell code, and inscribe
   a scroll (`InscribeScroll`). It edits a local copy of the spells and sends `EditSpell` /
-  `EditPassive` after each change. Beside the window, when there's room, `GuiSpellCircle` draws
+  `EditPassive` after each change. A list badge at the end of the tabs row (or `Ctrl`+`L`) opens
+  `LoadoutPanel` over the window: saved loadouts to load, save over, rename and delete
+  (`LoadoutRequest`); after a load the screen reads the spellbook again once it syncs. Beside the window, when there's room, `GuiSpellCircle` draws
   the edited spell's magic circle (laid out exactly as in the world), opening again whenever the
   spell changes; on the Grimoire page it shows the secret spells found so far, one after another,
   each named like a plate in a book. The Grimoire page replaces the rows, Codex and readout with
@@ -541,7 +545,7 @@ can draw the circle.
   `Tooltips.fit` (wrapped to at most 280 pixels, and cut short if taller than the screen), and the
   mod's items' tooltips are wrapped as they're built (a late `ItemTooltipCallback` phase).
 - **`WildercordKeys`**: R (tap casts, hold charges), V (tap selects, hold opens the
-  **`SpellWheelScreen`**), K and four unbound "cast spell N" keys.
+  **`SpellWheelScreen`**), K, the unbound "cast spell N" keys and an unbound "Next loadout" key.
 - **`fx/`**: everything magical is blended by `GlowLayers`: `GLOW` adds light to what's behind it
   (overlapping light burns brighter, and it never hides anything), `DARK` takes light away (void,
   for any colour carrying the `Light.DARK` flag). Both are vanilla's particle pipeline (reached
@@ -739,6 +743,9 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
 - **`WildercordAffinitiesTest`** checks creature affinities (frost on a blaze against a husk, fire on
   a hoglin and a blaze, a snow golem's immunity, a Shatter through a resistance, a Runebound's own
   element, the Bestiary), the climate in the Nether and the End, and the config switches.
+- **`WildercordLoadoutsTest`** drives the loadouts panel (save, rename, load back), and checks quiet
+  runes after a load, the cooldowns a load starts, the refusal while charging, the limit of six and the
+  quick switch; screenshots `loadouts_panel` and `loadouts_panel_854x480`.
 - **`WildercordAdvancementTest`** checks the server loaded the advancement tab, that a feat, a
   reaction, a secret, a Heart Circle, learning runes, a Cord and a cast each grant theirs, and
   that revoked ones come back from the player's state as they would on login.

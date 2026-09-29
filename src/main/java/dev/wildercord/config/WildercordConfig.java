@@ -333,17 +333,20 @@ public record WildercordConfig(
 	 * version shows the newer settings too; empty when nothing is missing, or when the file isn't
 	 * settings at all (broken JSON is left for its owner to fix). Nothing already there changes: an
 	 * owner's values, unknown keys and notes all stay. A section that gains a setting gets its current
-	 * {@code _about} as well, since that describes the new setting.
+	 * {@code _about} as well, since that describes the new setting. A file with comments in it (which
+	 * {@link #parse} reads, leniently) is left alone too: writing it out again would lose them.
 	 */
 	public static java.util.Optional<String> addMissing(String json) {
 		JsonObject root;
 		try {
-			JsonElement element = JsonParser.parseString(json);
-			if (!element.isJsonObject()) {
+			// Strictly: no comments or other leniencies, which a rewrite couldn't keep.
+			com.google.gson.stream.JsonReader reader = new com.google.gson.stream.JsonReader(new java.io.StringReader(json));
+			JsonElement element = GSON.getAdapter(JsonElement.class).read(reader);
+			if (element == null || !element.isJsonObject() || reader.peek() != com.google.gson.stream.JsonToken.END_DOCUMENT) {
 				return java.util.Optional.empty();
 			}
 			root = element.getAsJsonObject();
-		} catch (JsonParseException e) {
+		} catch (JsonParseException | java.io.IOException | IllegalStateException e) {
 			return java.util.Optional.empty();
 		}
 		JsonObject defaults = JsonParser.parseString(DEFAULTS.toJson()).getAsJsonObject();

@@ -27,12 +27,24 @@ public final class Sigils {
 		// Nothing but a beam may open right in front of someone's eyes: a circle there fills the whole
 		// screen in first person. (A circle under your own feet is further than this, and still shows.)
 		boolean beam = sigil instanceof dev.wildercord.content.LightOption light && light.kind() == dev.wildercord.content.LightOption.RAY;
+		// One packet for everyone it reaches, built only if someone does (see Fx.inRange).
+		net.minecraft.network.protocol.Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			if (player.position().distanceToSqr(at) <= RANGE * RANGE
-					&& (beam || player.getEyePosition().distanceToSqr(at) > EYE_CLEARANCE * EYE_CLEARANCE)) {
-				level.sendParticles(player, sigil, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+			if (player.distanceToSqr(at) <= RANGE * RANGE && (beam || eyeDistanceSqr(player, at) > EYE_CLEARANCE * EYE_CLEARANCE)
+					&& Fx.inRange(level, player, true, at.x, at.y, at.z)) {
+				if (packet == null) {
+					packet = Fx.packet(sigil, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+				}
+				player.connection.send(packet);
 			}
 		}
+	}
+
+	private static double eyeDistanceSqr(ServerPlayer player, Vec3 at) {
+		double dx = at.x - player.getX();
+		double dy = at.y - player.getEyeY();
+		double dz = at.z - player.getZ();
+		return dx * dx + dy * dy + dz * dz;
 	}
 
 	/** How close to a player's eyes a circle or shaped light may open before it's left out for them. */
