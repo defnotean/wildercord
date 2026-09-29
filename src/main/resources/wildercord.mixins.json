@@ -7,6 +7,9 @@
 		"ServerGamePacketListenerImplMixin",
 		"LightningRodBlockMixin",
 		"PistonBaseBlockMixin",
+		"FurnaceResultSlotMixin",
+		"TameAnimalTriggerMixin",
+		"LivingEntityHealMixin",
 		"ProjectileMixin",
 		"BlockItemMixin",
 		"MannequinAccessor",
@@ -21,7 +24,7 @@
 		"CreeperAccessor",
 		"ZombieVillagerAccessor",
 		"AbstractFurnaceBlockEntityAccessor",
-		"LivingEntityHealMixin"
+		"ServerExplosionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

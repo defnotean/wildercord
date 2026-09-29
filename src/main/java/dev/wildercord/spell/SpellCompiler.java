@@ -395,6 +395,56 @@ public final class SpellCompiler {
 		return p;
 	}
 
+	/**
+	 * How a spell's mana divides between the elements of its effects, each as a share of what all its
+	 * effects cost as {@link #cost} prices them (a Pulse's runs and an Imbue's charges counted, a shape's
+	 * multiplier and its modifiers on its own effects). The shape and links carry whatever they deliver,
+	 * so a spell of fire alone is all fire; an effect with no element is nobody's share. Empty for a spell
+	 * with no effects. What a player's affinity makes cheaper, and what casting it counts toward.
+	 */
+	public static java.util.Map<String, Double> elementShares(SpellPlan.Segment root) {
+		java.util.Map<String, Double> costs = new java.util.LinkedHashMap<>();
+		double total = effectCosts(root, 1.0, costs, 0);
+		java.util.Map<String, Double> shares = new java.util.LinkedHashMap<>();
+		if (total <= 0) {
+			return shares;
+		}
+		for (java.util.Map.Entry<String, Double> entry : costs.entrySet()) {
+			if (!entry.getKey().isEmpty()) {
+				shares.put(entry.getKey(), entry.getValue() / total);
+			}
+		}
+		return shares;
+	}
+
+	/** Adds each element's effect costs in {@code seg} (times {@code scale}) into {@code into}; returns all of them together. */
+	private static double effectCosts(SpellPlan.Segment seg, double scale, java.util.Map<String, Double> into, int depth) {
+		if (seg == null || depth > 32) {
+			return 0;
+		}
+		double total = 0;
+		for (SpellPlan.Group g : seg.groups) {
+			double mods = 1;
+			for (RuneDef mod : g.shapeMods) {
+				if (!wholeSpell(mod)) {
+					mods *= mod.multiplier();
+				}
+			}
+			for (SpellPlan.EffectNode e : g.effects) {
+				double cost = e.effect.cost() * product(e.mods) * e.factor * g.shape.multiplier() * mods * scale;
+				into.merge(e.effect.element(), cost, Double::sum);
+				total += cost;
+			}
+		}
+		if (seg.link != null) {
+			SpellPlan.Link link = seg.link;
+			double runs = link.link.is(Runes.PULSE.id()) ? SpellNumbers.PULSES : link.link.is(Runes.IMBUE.id()) ? SpellNumbers.IMBUE_CHARGES : 1;
+			total += effectCosts(link.next, scale * runs, into, depth + 1);
+			total += effectCosts(link.echoPrefix, scale, into, depth + 1);
+		}
+		return total;
+	}
+
 	// ------------------------------------------------------------------ readout
 
 	/** @param after "hit" or "kill" under an On Hit or On Kill (the nearest), otherwise "" */

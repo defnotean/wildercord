@@ -1385,6 +1385,7 @@ public final class WorldMagic {
 		if (grownUp + aged + smelted > 0) {
 			ElementFx.clock(level, at.add(0, 0.1, 0), UP, 1.0, 10, false);
 			Fx.sound(level, at, SoundEvents.BONE_MEAL_USE, 0.6F, 0.8F);
+			PlayerAffinities.aged(cast.caster, grownUp + aged + smelted);
 		}
 	}
 

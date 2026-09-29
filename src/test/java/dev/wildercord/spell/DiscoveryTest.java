@@ -66,10 +66,13 @@ class DiscoveryTest {
 
 	@Test
 	void leaningNeedsAClearFavourite() {
+		// Leaning follows the deepest affinity: level I at least, and a quarter ahead of the next.
+		int first = PlayerAffinity.threshold(1);
 		assertEquals("", Leaning.of(Map.of()));
-		assertEquals("", Leaning.of(Map.of("fire", Leaning.MIN_CASTS - 1)));
-		assertEquals("fire", Leaning.of(Map.of("fire", 60, "frost", 30)));
-		assertEquals("", Leaning.of(Map.of("fire", 60, "frost", 55)));
+		assertEquals("", Leaning.of(Map.of("fire", first - 1)));
+		assertEquals("fire", Leaning.of(Map.of("fire", first)));
+		assertEquals("fire", Leaning.of(Map.of("fire", 600, "frost", 300)));
+		assertEquals("", Leaning.of(Map.of("fire", 600, "frost", 550)));
 	}
 
 	@Test

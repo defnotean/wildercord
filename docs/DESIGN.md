@@ -610,7 +610,7 @@ and woodland mansions (25%), trial vaults (15%), dungeons and desert pyramids (1
 Archive; Runebound and the Archivist drop them too.
 
 ### The Grimoire
-A third page of the Cord screen: your innate rune and leaning, the eleven reactions, the secret
+A third page of the Cord screen: your innate rune and leaning, your affinities, the eleven reactions, the secret
 spells (found ones in full, hinted ones as riddles), and the feats. Every first discovery
 shows a toast, and each new reaction, feat and secret condenses mana toward your next circle: 150
 for a reaction, 250 for a feat, 400 for a secret, 2,000 for defeating the Archivist.
@@ -633,12 +633,22 @@ the Codex's Innate category, so any Cord can hold it.
 | Phantom | Void | An afterimage of you (your skin) draws every monster within 16 blocks for 4 s, then bursts for 8 |
 | Stormheart | Storm | 10 s: whatever hits you is struck by lightning (once a second) |
 
-### Elemental leaning
-Each cast counts toward the elements in it. Once one element has 40+ casts and 1.25x the
-runner-up, your magic **leans** toward it: its effects hit **10% harder**, your Heart Circles'
-rings are tinted toward its colour, and a spell with no effect in it (whose circle would otherwise
-charge in gold) charges in its colour. A spell with an effect always takes its first effect's
-colour.
+### Affinities and leaning
+Every player has an **affinity** with each element, grown by what they do: casting it (a tenth of a
+point per mana its effects cost), setting off its reactions, finding creatures weak to it, and
+everyday things that fit it (smelting for fire, fishing for frost, mining for earth, farming and
+breeding for life, the End for void, enchanting and ley lines for arcane, a night watched for time,
+melee kills for blood...). Each source has a daily allowance, so nothing can be farmed. Five levels
+(100, 600, 1,800, 4,500, 10,000 points): **+3% power a level** with that element's effects, from
+III **10/15/20% less** from others' spells of it (a reaction still breaks through), and at V
+**10% off** the element's share of a spell's price. The first level of each is a small Grimoire
+entry (100 mana). It's gentle on purpose: a mastered element is only 15% stronger, so nobody is
+locked in and PvP stays fair. See [features/player-affinity.md](features/player-affinity.md).
+
+Your magic **leans** toward your deepest affinity (level I, and 1.25x the runner-up): your Heart
+Circles' rings are tinted toward its colour, and a spell with no effect in it (whose circle would
+otherwise charge in gold) charges in its colour. A spell with an effect always takes its first
+effect's colour. Leaning adds no power of its own: that's the affinity's.
 
 ### Shields
 **Shield** guards the target (you with Self, allies with Burst or Nova) for 30 seconds (Extend

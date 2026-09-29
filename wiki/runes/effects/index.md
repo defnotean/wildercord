@@ -9,7 +9,7 @@ has_children: true
 
 # Effects
 
-An **effect** decides *what happens* to whatever the shape hit: damage, healing, a push, a freeze, a blink. Every effect belongs to one of ten **elements**, and elements matter: they set the spell's colour and sound, they set off reactions together, they decide what fuses at the Fusion Altar, and the element you cast most becomes your leaning. Each element has its own page:
+An **effect** decides *what happens* to whatever the shape hit: damage, healing, a push, a freeze, a blink. Every effect belongs to one of ten **elements**, and elements matter: they set the spell's colour and sound, they set off reactions together, they decide what fuses at the Fusion Altar, and casting one grows your affinity with its element. Each element has its own page:
 
 
 - [Fire]({{ '/runes/effects/fire/' | relative_url }}): Burning, blasts and heat. Fire lights what it touches and boils water into steam.

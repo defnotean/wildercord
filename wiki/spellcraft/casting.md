@@ -2,7 +2,7 @@
 title: Casting
 parent: Spellcraft
 nav_order: 4
-description: "Tapping and charging, the reticle, cooldowns, mana and regeneration, rhythm, leaning, switching spells with V, the spell wheel and direct keys, and the HUD."
+description: "Tapping and charging, the reticle, cooldowns, mana and regeneration, rhythm, leaning and affinities, switching spells with V, the spell wheel and direct keys, and the HUD."
 ---
 
 # Casting
@@ -160,17 +160,18 @@ Short spells are easiest to keep in rhythm, because their beat comes round quick
 
 ## Leaning
 
-Every cast counts toward the elements of the effects in it (each element once per cast, and the runes inside
-a Knot count too). Once one element has **40 or more casts** and **a quarter more than any other**, your magic
-**leans** toward it:
+Every spell you pay for grows your [affinity]({{ '/progression/affinity/' | relative_url }}) with the elements
+of its effects, by the mana each one's effects cost (the runes inside a Knot count too), and so do everyday things
+that fit each element. Your **leaning** is your deepest affinity: once one element reaches **level I** and has
+**a quarter more points than any other**, your magic **leans** toward it:
 
-- effects of that element hit **10% harder**,
 - your Heart Circles turn toward its colour, and a charging circle for a spell with no effect of its own takes
   its colour,
 - you're told "Your magic leans toward Fire..." and earn the feat **Leaning**.
 
-Your leaning can change: if another element pulls far enough ahead, your magic leans toward that one
-instead. The Grimoire page and the heart badge show your leaning, or how close you are.
+Leaning is the face of your affinities, not a bonus of its own: the power comes from each affinity's level (+3% a
+level with that element, for every element you grow). Your leaning can change: if another element pulls far enough
+ahead, your magic leans toward that one instead. The Grimoire page and the heart badge show your leaning.
 
 ## Switching spells
 

@@ -175,7 +175,8 @@ off costs nothing and keeps its runes; its readout starts "Passive (off)" and sh
 ## How passives count
 
 - Passives are cast with your Heart Circles' power and your Cord's Potency and Persistence.
-- They don't use a cooldown, don't count toward rhythm or leaning, and don't condense mana.
+- They don't use a cooldown, don't count toward rhythm or your affinities, and don't condense mana. Your affinities add
+  no power to them either.
 - Their buffs are the same effects as the runes' own: `Self · Swift` as a passive gives exactly the Speed
   that `Self · Swift` gives as a spell, kept up forever (each renewal lasting 15 seconds at most).
 

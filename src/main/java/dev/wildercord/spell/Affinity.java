@@ -7,7 +7,7 @@ import java.util.List;
  * it 50% harder), resist one (half) or, in a few cases, be immune (nothing). Which creature is which is
  * data, entity type tags under {@code data/wildercord/tags/entity_type/affinity/} read by
  * {@code cast.Affinities}; this says how what's true of a creature and a hit becomes one multiplier.
- * Players have no affinities.
+ * Players have affinities of their own, grown rather than born with: see {@link PlayerAffinity}.
  */
 public final class Affinity {
 	private Affinity() {}

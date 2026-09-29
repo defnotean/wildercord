@@ -226,7 +226,8 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			Spellbooks.set(player, book);
 			player.setAttached(WildercordAttachments.CIRCLES, 6);
 			player.setAttached(WildercordAttachments.INNATE, Runes.KINDLING.id());
-			player.setAttached(WildercordAttachments.ELEMENT_CASTS, java.util.Map.of("fire", 64, "frost", 12));
+			// Leaning toward fire (the deepest affinity), so the rings and circles take its colour.
+			player.setAttached(WildercordAttachments.AFFINITY, java.util.Map.of("fire", 640, "frost", 120));
 			SpellCaster.edit(player, 0, ids(Runes.ZONE, Runes.FIRE, Runes.WIDEN, Runes.SHOCK, Runes.LINGER_MOD, Runes.ON_HIT, Runes.BURST));
 			SpellCaster.edit(player, 1, ids(Runes.BOLT, Runes.FROST, Runes.SPLIT_MOD));
 			SpellCaster.edit(player, 2, ids(Runes.SELF, Runes.SWIFT, Runes.STONESKIN));

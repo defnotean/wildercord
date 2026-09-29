@@ -457,7 +457,7 @@ public final class Innates {
 		ElementFx.shards(cast.level, hand, 0.9, 5);
 		Fx.sound(cast.level, hand, SoundEvents.GLASS_BREAK, 0.8F, 1.6F);
 		Fx.sound(cast.level, hand, SoundEvents.ILLUSIONER_MIRROR_MOVE, 1.0F, 1.2F);
-		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), 0, Heart.leaning(player)));
+		Cast mirrored = new Cast(player, 1, Heart.bonuses(player), false, null, new Cast.Info(hit.root(), 0, Heart.leaning(player))).withAffinity();
 		CastEngine.cast(mirrored, hit.root());
 		Grimoire.feat(player, Feats.MIRROR);
 	}

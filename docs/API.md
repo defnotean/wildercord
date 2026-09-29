@@ -92,7 +92,7 @@ The `EffectContext` has:
   `WORLD` (blocks and points), `MOVEMENT` (moves the caster).
 - `point()`, `direction()`, `block()`, `face()`, `self()`: what the shape hit.
 - `power()` and `duration()`: multipliers from its modifiers, the shape, Heart Circles, Cord
-  enchantments, the charge, rhythm, elemental leaning and casting gear. Multiply your numbers by them.
+  enchantments, the charge, rhythm, the caster's affinity with its element and casting gear. Multiply your numbers by them.
 - `hurt(target, source, amount)`: **always deal damage through this.** It skips invulnerability frames,
   applies Execute, element reactions, Unison and PvP scaling, meets Shields and counts spell kills.
   `magic()` is a ready-made damage source.

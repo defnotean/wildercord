@@ -123,6 +123,7 @@ public class AstralObservatoryPiece extends DungeonPiece {
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
+		dev.wildercord.world.dungeons.DungeonWards.remember(level, this);
 		approach(level, bb);
 		gallery(level, bb);
 		corridor(level, bb);
@@ -230,6 +231,14 @@ public class AstralObservatoryPiece extends DungeonPiece {
 	}
 
 	// ------------------------------------------------------------------ the Dome
+
+	/** The dome, from its foundations to its glass, and the vault off it (with the door between). */
+	@Override
+	public java.util.List<BoundingBox> wardedBoxes() {
+		return java.util.List.of(
+			worldBox(CX - DOME_R - 3, 0, DOME_Z - DOME_R - 3, CX + DOME_R + 3, HEIGHT - 1, Math.min(DEPTH - 1, DOME_Z + DOME_R + 3)),
+			worldBox(30, 0, 53, WIDTH - 1, F + 10, 67));
+	}
 
 	private void dome(WorldGenLevel level, BoundingBox bb) {
 		double rise = DOME_R * 0.9;

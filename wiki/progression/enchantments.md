@@ -106,7 +106,7 @@ Wellspring and Siphon add.
 |---|---|---|---|
 | Max mana | Reservoir (+25/level) | +15 per circle | Mana Crystals, Focus of the Deep Well |
 | Regeneration | Wellspring (+25%/level) | +0.5/s per circle | Meditating, Clarity, ley lines, Wellstones, storms, familiars |
-| Power | Potency (+8%/level) | +3% per circle; Overflow +30% at full mana | Charging, rhythm, leaning, staffs, rune ranks |
+| Power | Potency (+8%/level) | +3% per circle; Overflow +30% at full mana | Charging, rhythm, affinities, staffs, rune ranks |
 | Cooldown | Celerity (-8%/level) | Flow -15% | Rapid, Vow |
 | Cost | Thrift (-7%/level) | Archmage -15% | Staffs, Focus of Thrift, mana storms, Frugal |
 | Duration | Persistence (+20%/level) | | Extend |

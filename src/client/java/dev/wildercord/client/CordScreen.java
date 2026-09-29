@@ -1274,6 +1274,7 @@ public class CordScreen extends Screen {
 			: Component.translatable("screen.wildercord.cost", manaCost, cooldown, maxMana);
 		wrap(out, header, 0, width, tooCostly ? QUIET : CYAN);
 		gearLines(out, compiled, width);
+		affinityLines(out, compiled, width);
 		for (String text : compiled.lines()) {
 			int spaces = 0;
 			while (spaces < text.length() && text.charAt(spaces) == ' ') {
@@ -1307,6 +1308,25 @@ public class CordScreen extends Screen {
 		double server = dev.wildercord.config.Config.costMultiplier(minecraft.player);
 		if (Math.abs(server - 1) > 1e-6) {
 			wrap(out, Component.translatable("screen.wildercord.server_cost", String.format(Locale.ROOT, "%.2f", server)), 0, width, DIM);
+		}
+	}
+
+	/** A quiet line for each of the spell's elements you have an affinity with: its power, and at V its cheaper price (the cost above includes it). */
+	private void affinityLines(List<ReadoutLine> out, SpellCompiler.Compiled compiled, int width) {
+		if (!dev.wildercord.config.Config.playerAffinity(minecraft.player)) {
+			return;
+		}
+		for (String element : dev.wildercord.gear.GearBonuses.elements(compiled.root())) {
+			int level = Heart.affinityLevel(minecraft.player, element);
+			if (level <= 0) {
+				continue;
+			}
+			Component name = Component.translatable("element.wildercord." + element);
+			long power = Math.round(dev.wildercord.spell.PlayerAffinity.POWER_PER_LEVEL * level * 100);
+			wrap(out, level >= dev.wildercord.spell.PlayerAffinity.MAX_LEVEL
+				? Component.translatable("screen.wildercord.affinity.readout_mastered", name, RuneItem.roman(level), power,
+					Math.round(dev.wildercord.spell.PlayerAffinity.DISCOUNT * 100))
+				: Component.translatable("screen.wildercord.affinity.readout", name, RuneItem.roman(level), power), 0, width, DIM);
 		}
 	}
 
@@ -1462,7 +1482,7 @@ public class CordScreen extends Screen {
 		String leaning = Heart.leaning(player);
 		if (!leaning.isEmpty()) {
 			lines.add(Component.translatable("screen.wildercord.heart.leaning", Component.translatable("element.wildercord." + leaning).withColor(RuneColors.element(leaning)),
-				Math.round(dev.wildercord.spell.Leaning.POWER * 100)).withStyle(ChatFormatting.GRAY));
+				RuneItem.roman(Heart.affinityLevel(player, leaning))).withStyle(ChatFormatting.GRAY));
 		}
 		for (int perk : new int[] {Circles.MANA_SKIN, Circles.FLOW, Circles.OVERFLOW, Circles.ARCHMAGE}) {
 			Component text = Component.translatable("screen.wildercord.heart.perk." + perk, Circles.ordinal(perk));
@@ -2136,9 +2156,22 @@ public class CordScreen extends Screen {
 			: Component.translatable("message.wildercord.code_partial", missing).withColor(0xF0C440));
 	}
 
-	private record GrimoireLine(Component text, int x, int color, List<Component> tooltip) {}
+	/**
+	 * One line of the Grimoire page.
+	 *
+	 * @param glyph  an element whose mark goes before the text, or null
+	 * @param points an affinity's points, for a bar toward its next level at the right of the line; -1 for none
+	 */
+	private record GrimoireLine(Component text, int x, int color, List<Component> tooltip, String glyph, int points) {
+		GrimoireLine(Component text, int x, int color, List<Component> tooltip) {
+			this(text, x, color, tooltip, null, -1);
+		}
+	}
 
-	/** Everything discovered: reactions, secret spells (and riddles), feats, your innate rune and your leaning. */
+	/** How long an affinity's bar is on the Grimoire page. */
+	private static final int AFFINITY_BAR = 64;
+
+	/** Everything discovered: your innate rune, leaning and affinities, reactions, secret spells (and riddles), feats... */
 	private List<Component> drawGrimoire(GuiGraphicsExtractor g, int mx, int my) {
 		Player player = minecraft.player;
 		List<String> found = Heart.grimoire(player);
@@ -2158,10 +2191,13 @@ public class CordScreen extends Screen {
 			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.innate_none"), 8, DIM, null));
 		}
 		String leaning = Heart.leaning(player);
+		List<Component> leaningTip = List.of(Component.translatable("screen.wildercord.grimoire.leaning_hint").withStyle(ChatFormatting.GRAY));
 		lines.add(new GrimoireLine(leaning.isEmpty()
-			? Component.translatable("screen.wildercord.grimoire.leaning_none", dev.wildercord.spell.Leaning.MIN_CASTS)
-			: Component.translatable("screen.wildercord.grimoire.leaning", Component.translatable("element.wildercord." + leaning).withColor(RuneColors.element(leaning)),
-				Math.round(dev.wildercord.spell.Leaning.POWER * 100)), 8, leaning.isEmpty() ? DIM : TEXT, null));
+			? Component.translatable("screen.wildercord.grimoire.leaning_none")
+			: Component.translatable("screen.wildercord.grimoire.leaning", Component.translatable("element.wildercord." + leaning).withColor(RuneColors.element(leaning))),
+			8, leaning.isEmpty() ? DIM : TEXT, leaningTip));
+		// Your affinities with the ten elements.
+		addAffinities(lines, player);
 		// Reactions.
 		int reactions = dev.wildercord.spell.Feats.count(found, "reaction:");
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.reactions", reactions, dev.wildercord.spell.Feats.REACTIONS.size()), 0, GOLD, null));
@@ -2240,8 +2276,19 @@ public class CordScreen extends Screen {
 			if (line.x() == 0) {
 				g.fill(TEXT_X - 2, y + 9, W - 20, y + 10, 0x40E8C46A);
 			}
-			fitText(g, line.text(), x, y, W - 24 - x, line.color(), line.x() == 0);
-			if (line.tooltip() != null && inside(mx, my, x, y - 1, Math.min(W - 24 - x, font.width(line.text())), LINE)) {
+			int start = x;
+			int right = W - 24;
+			if (line.glyph() != null) {
+				ElementGlyphs.draw(g, line.glyph(), x, y);
+				x += ElementGlyphs.SIZE + 3;
+			}
+			if (line.points() >= 0) {
+				right = affinityBar(g, line.glyph(), line.points(), y);
+			}
+			fitText(g, line.text(), x, y, right - x, line.color(), line.x() == 0);
+			// An affinity's whole line answers the mouse (its bar too); any other line, its text.
+			int hover = line.points() >= 0 ? W - 24 - start : Math.min(W - 24 - x, font.width(line.text())) + (x - start);
+			if (line.tooltip() != null && inside(mx, my, start, y - 1, hover, LINE)) {
 				tip = line.tooltip();
 			}
 		}
@@ -2253,6 +2300,88 @@ public class CordScreen extends Screen {
 			arrow(g, W - 18, bottom - 4, false);
 		}
 		return tip;
+	}
+
+	/**
+	 * Your affinities: each element with its mark, its level (or "none yet") and a bar toward the next, and a
+	 * tooltip saying what it gives and every way to raise it.
+	 */
+	private void addAffinities(List<GrimoireLine> lines, Player player) {
+		java.util.Map<String, Integer> points = Heart.affinity(player);
+		boolean on = dev.wildercord.config.Config.playerAffinity(player);
+		List<Component> about = List.of(Component.translatable(on ? "screen.wildercord.grimoire.affinities_hint" : "screen.wildercord.grimoire.affinities_off")
+			.withStyle(ChatFormatting.GRAY));
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.affinities"), 0, GOLD, about));
+		for (String element : dev.wildercord.spell.Affinity.ELEMENTS) {
+			int have = points.getOrDefault(element, 0);
+			int level = dev.wildercord.spell.PlayerAffinity.level(have);
+			Component name = Component.translatable("element.wildercord." + element);
+			Component text = level == 0
+				? Component.translatable("screen.wildercord.grimoire.affinity_none", name)
+				: Component.translatable("screen.wildercord.grimoire.affinity_level", name, RuneItem.roman(level));
+			lines.add(new GrimoireLine(text, 8, level == 0 || !on ? DIM : 0xFF000000 | RuneColors.element(element), affinityTip(element, have), element, have));
+		}
+	}
+
+	/** An affinity's tooltip: its level, what that gives, the next level, and what raises it (with each daily allowance). */
+	private static List<Component> affinityTip(String element, int points) {
+		List<Component> tip = new ArrayList<>();
+		int level = dev.wildercord.spell.PlayerAffinity.level(points);
+		Component name = Component.translatable("element.wildercord." + element);
+		Component coloured = name.copy().withColor(RuneColors.element(element));
+		tip.add(level == 0 ? Component.translatable("screen.wildercord.affinity.title_none", coloured)
+			: Component.translatable("screen.wildercord.affinity.title", coloured, RuneItem.roman(level)));
+		if (level > 0) {
+			affinityGifts(tip, name, level, ChatFormatting.GRAY);
+		}
+		int next = dev.wildercord.spell.PlayerAffinity.next(points);
+		if (next < 0) {
+			tip.add(Component.translatable("screen.wildercord.affinity.mastered").withStyle(ChatFormatting.GOLD));
+		} else {
+			tip.add(Component.translatable("screen.wildercord.affinity.next", RuneItem.roman(level + 1), String.format(Locale.ROOT, "%,d", points),
+				String.format(Locale.ROOT, "%,d", next)).withStyle(ChatFormatting.DARK_AQUA));
+			affinityGifts(tip, name, level + 1, ChatFormatting.DARK_GRAY);
+		}
+		tip.add(Component.empty());
+		tip.add(Component.translatable("screen.wildercord.affinity.raised_by").withStyle(ChatFormatting.GOLD));
+		for (dev.wildercord.spell.PlayerAffinity.Source source : dev.wildercord.spell.PlayerAffinity.sources(element)) {
+			Component what = Component.translatable("affinity.wildercord.source." + source.id, name);
+			tip.add((source.tail > 0
+				? Component.translatable("screen.wildercord.affinity.source_tail", what, Math.round(source.daily), Math.round(source.tail * 100))
+				: Component.translatable("screen.wildercord.affinity.source", what, Math.round(source.daily))).withStyle(ChatFormatting.GRAY));
+		}
+		tip.add(Component.translatable("screen.wildercord.affinity.allowance").withStyle(ChatFormatting.DARK_GRAY));
+		return tip;
+	}
+
+	/** What an affinity at {@code level} gives: its power, from III its resistance, at V its cheaper spells. */
+	private static void affinityGifts(List<Component> tip, Component element, int level, ChatFormatting style) {
+		tip.add(Component.translatable("screen.wildercord.affinity.power", Math.round(dev.wildercord.spell.PlayerAffinity.POWER_PER_LEVEL * level * 100), element)
+			.withStyle(style));
+		if (level >= dev.wildercord.spell.PlayerAffinity.RESIST_FROM) {
+			tip.add(Component.translatable("screen.wildercord.affinity.resist", Math.round(dev.wildercord.spell.PlayerAffinity.resistance(level) * 100), element)
+				.withStyle(style));
+		}
+		if (level >= dev.wildercord.spell.PlayerAffinity.MAX_LEVEL) {
+			tip.add(Component.translatable("screen.wildercord.affinity.cheaper", element, Math.round(dev.wildercord.spell.PlayerAffinity.DISCOUNT * 100)).withStyle(style));
+		}
+	}
+
+	/** An affinity's bar toward its next level and its points, at the right of its line; returns where the line's text must stop. */
+	private int affinityBar(GuiGraphicsExtractor g, String element, int points, int y) {
+		int next = dev.wildercord.spell.PlayerAffinity.next(points);
+		String label = next < 0 ? String.format(Locale.ROOT, "%,d", points) : String.format(Locale.ROOT, "%,d / %,d", points, next);
+		int labelX = W - 24 - font.width(label);
+		g.text(font, Component.literal(label), labelX, y, next < 0 ? GOLD : DIM, false);
+		int barRight = labelX - 5;
+		int barLeft = barRight - AFFINITY_BAR;
+		int barTop = y + 3;
+		g.fill(barLeft - 1, barTop - 1, barRight + 1, barTop + 3, 0xFF1A1724);
+		int filled = (int) Math.round(AFFINITY_BAR * dev.wildercord.spell.PlayerAffinity.progress(points));
+		if (filled > 0) {
+			g.fill(barLeft, barTop, barLeft + filled, barTop + 2, 0xFF000000 | RuneColors.element(element));
+		}
+		return barLeft - 5;
 	}
 
 	private void addAttunements(List<GrimoireLine> lines, List<String> found) {

@@ -21,8 +21,8 @@ import java.util.Set;
  * range is clamped (each with a warning), so a hand-edited file can never stop a server.
  *
  * <p>The feature switches ({@code world_events}, {@code duels}, {@code wild_magic},
- * {@code world_changing_magic}, {@code creature_affinities}, {@code elemental_climate}) are read by those
- * features; each defaults to on.</p>
+ * {@code world_changing_magic}, {@code creature_affinities}, {@code elemental_climate},
+ * {@code player_affinity}) are read by those features; each defaults to on.</p>
  *
  * @param maxCreatures       creatures one cast may touch (links and echoes included)
  * @param maxBlocks          blocks one cast may change
@@ -37,6 +37,8 @@ import java.util.Set;
  * @param gearLootChance     the chance of casting gear in a structure chest or from a boss, times this
  * @param imbueMaxItems      imbued items one caster keeps before the oldest fades
  * @param imbueMaxGlyphs     glyphs one caster keeps in a world before the oldest fades
+ * @param playerAffinity     whether players grow affinities with the elements (and what they give: power, resistance, cheaper spells)
+ * @param affinityGain       how fast affinity points come, times this (the daily allowances count what's done, not what it's worth)
  * @param travel             the travel commands ({@code /home}, {@code /warp}, {@code /tpa}...): see {@link TravelSettings}
  */
 public record WildercordConfig(
@@ -59,10 +61,12 @@ public record WildercordConfig(
 	boolean worldChangingMagic,
 	boolean creatureAffinities,
 	boolean elementalClimate,
+	boolean playerAffinity,
+	double affinityGain,
 	TravelSettings travel
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true, true, true, TravelSettings.DEFAULTS);
+		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -127,6 +131,8 @@ public record WildercordConfig(
 			r.bool("features", "world_changing_magic", d.worldChangingMagic),
 			r.bool("features", "creature_affinities", d.creatureAffinities),
 			r.bool("features", "elemental_climate", d.elementalClimate),
+			r.bool("features", "player_affinity", d.playerAffinity),
+			r.number("affinity", "gain_multiplier", d.affinityGain, 0, 100),
 			new TravelSettings(
 				r.bool("travel", "enabled", d.travel.enabled()),
 				r.integer("travel", "max_homes", d.travel.maxHomes(), 0, 1000),
@@ -148,7 +154,9 @@ public record WildercordConfig(
 		KEYS.put("world", Set.of("runebound_chance_multiplier"));
 		KEYS.put("loot", Set.of("rune_chance_multiplier", "crystal_chance_multiplier", "page_chance_multiplier", "gear_chance_multiplier"));
 		KEYS.put("imbuing", Set.of("max_items", "max_glyphs"));
-		KEYS.put("features", Set.of("world_events", "duels", "wild_magic", "world_changing_magic", "creature_affinities", "elemental_climate"));
+		KEYS.put("features", Set.of("world_events", "duels", "wild_magic", "world_changing_magic", "creature_affinities", "elemental_climate",
+			"player_affinity"));
+		KEYS.put("affinity", Set.of("gain_multiplier"));
 		KEYS.put("travel", Set.of("enabled", "max_homes", "warmup_seconds", "cooldown_seconds", "rtp_cooldown_seconds", "rtp_radius", "tpa_timeout_seconds"));
 	}
 
@@ -306,14 +314,20 @@ public record WildercordConfig(
 		root.add("imbuing", imbuing);
 
 		JsonObject features = new JsonObject();
-		features.addProperty("_about", "Switch whole features off: world events, duels, wild magic, world-changing magic, creature affinities and elemental climate.");
+		features.addProperty("_about", "Switch whole features off: world events, duels, wild magic, world-changing magic, creature affinities, elemental climate and players' own affinities.");
 		features.addProperty("world_events", worldEvents);
 		features.addProperty("duels", duels);
 		features.addProperty("wild_magic", wildMagic);
 		features.addProperty("world_changing_magic", worldChangingMagic);
 		features.addProperty("creature_affinities", creatureAffinities);
 		features.addProperty("elemental_climate", elementalClimate);
+		features.addProperty("player_affinity", playerAffinity);
 		root.add("features", features);
+
+		JsonObject affinity = new JsonObject();
+		affinity.addProperty("_about", "Players' affinities with the elements, grown by casting and by everyday things (smelting, fishing, mining...). 2.0 grows them twice as fast.");
+		affinity.addProperty("gain_multiplier", affinityGain);
+		root.add("affinity", affinity);
 
 		JsonObject travelSection = new JsonObject();
 		travelSection.addProperty("_about", "The travel commands (/home, /warp, /waypoint, /tpa, /back, /spawn, /rtp). Times are in seconds; operators skip warmups and cooldowns.");

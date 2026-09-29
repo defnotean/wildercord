@@ -50,7 +50,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * an iron golem conducts storm, the undead burn under life magic. The table is entity type tags,
  * {@code wildercord:affinity/weak_to_<element>}, {@code resists_<element>} and {@code immune_to_<element>}
  * (written by tools/generate_assets.py, so a datapack can change any of it), and {@link Affinity} says how
- * they combine. On top of its kind's, a Runebound resists the element its Cord carries. Players have none.
+ * they combine. On top of its kind's, a Runebound resists the element its Cord carries. A player's side is
+ * their own affinity, grown by what they do: from level III they resist that element a little, quietly (see
+ * {@link PlayerAffinities}).
  *
  * <p>{@link #multiplier} is the one factor {@code Effects.hurt} takes for all of this, the caster's
  * {@link Climate} included. A weakness struck shows "Weak!" over the creature in the element's colour,
@@ -144,7 +146,11 @@ public final class Affinities {
 	 * @param wetCounted whether {@code Effects.hurt} dulls this hit for a wet target too (it does for an effect's fire)
 	 */
 	static double affinity(Cast cast, LivingEntity target, DamageSource source, String element, boolean wetCounted) {
-		if (target instanceof Player || !Config.get().creatureAffinities()) {
+		if (target instanceof Player player) {
+			// A player's own affinity: from level III they shrug a little of that element off (see PlayerAffinities).
+			return PlayerAffinities.resistance(player, cast.caster, element, Reactions.reactedWithin(target, 0));
+		}
+		if (!Config.get().creatureAffinities()) {
 			return 1.0;
 		}
 		// Burning spells on something fire can't hurt (a blaze, a strider) do nothing already: say so.

@@ -97,6 +97,7 @@ public class EmberSanctumPiece extends DungeonPiece {
 	@Override
 	public void postProcess(WorldGenLevel level, StructureManager structures, ChunkGenerator generator, RandomSource random, BoundingBox bb,
 			ChunkPos chunkPos, BlockPos reference) {
+		dev.wildercord.world.dungeons.DungeonWards.remember(level, this);
 		approach(level, bb);
 		hall(level, bb);
 		forge(level, bb);
@@ -224,6 +225,14 @@ public class EmberSanctumPiece extends DungeonPiece {
 	}
 
 	// ------------------------------------------------------------------ the Arena
+
+	/** The arena, from its outer wall to its dome, and the vault off it (with the door between). */
+	@Override
+	public java.util.List<BoundingBox> wardedBoxes() {
+		return java.util.List.of(
+			worldBox(CX - ARENA_R - 3, 0, ARENA_Z - ARENA_R - 3, CX + ARENA_R + 3, HEIGHT - 1, Math.min(DEPTH - 1, ARENA_Z + ARENA_R + 3)),
+			worldBox(31, 0, 55, WIDTH - 1, 11, 69));
+	}
 
 	private int ceiling(double d) {
 		return 13 + (int) Math.floor(Math.sqrt(Math.max(0, ARENA_R * ARENA_R - d * d)) * 0.5);
