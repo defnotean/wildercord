@@ -44,9 +44,12 @@ public final class RuneTrades {
 		return rank == null || rank <= 1;
 	}
 
-	/** How many buybacks a player has left today, given what they sold on {@code soldDay}. */
+	/**
+	 * How many buybacks a player has left today, given what they sold on {@code soldDay}. Time turned
+	 * back (an operator's {@code /time set}) counts as the same day, so it never brings them back.
+	 */
 	public static int buybacksLeft(long soldDay, int sold, long today) {
-		return soldDay == today ? Math.max(0, DAILY_BUYBACKS - sold) : DAILY_BUYBACKS;
+		return today <= soldDay ? Math.max(0, DAILY_BUYBACKS - sold) : DAILY_BUYBACKS;
 	}
 
 	/** Emeralds the Runesmith pays for a rune you already know: 1, 2, 5, 10 by tier. */

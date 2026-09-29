@@ -41,6 +41,7 @@ import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.item.trading.VillagerTrade;
 import net.minecraft.world.level.GameType;
@@ -263,6 +264,9 @@ public class WildercordSocialTest implements FabricClientGameTest {
 			ranked.set(WildercordComponents.RANK, 3);
 			check(!healBack.satisfiedBy(ranked, ItemStack.EMPTY), "a rank III rune shouldn't pay a rank I's buyback");
 			check(healBack.getXp() == 0, "a buyback shouldn't give experience");
+			// Someone else's trade that happens to want a rune (a data pack's, say) is never taken for a swap.
+			MerchantOffer packTrade = new MerchantOffer(new ItemCost(WildercordItems.RUNE), new ItemStack(Items.EMERALD, 3), 12, 5, 0.05F);
+			check(!DuplicateSwap.isSwap(packTrade), "a trade that wants a rune and gives experience isn't a Runesmith swap");
 
 			MerchantOffer reroll = swaps.stream().filter(o -> !o.getCostB().isEmpty() && isRune(o.getResult(), 1)).findFirst()
 				.orElseThrow(() -> new AssertionError("no Tier I reroll for two known Heal runes"));

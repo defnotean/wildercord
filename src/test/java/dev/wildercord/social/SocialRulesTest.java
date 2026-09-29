@@ -336,6 +336,7 @@ class SocialRulesTest {
 		assertEquals(RuneTrades.DAILY_BUYBACKS - 3, RuneTrades.buybacksLeft(5, 3, 5));
 		assertEquals(0, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS + 2, 5));
 		assertEquals(RuneTrades.DAILY_BUYBACKS, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS, 6), "a new day, a fresh allowance");
+		assertEquals(0, RuneTrades.buybacksLeft(5, RuneTrades.DAILY_BUYBACKS, 4), "time turned back doesn't bring buybacks back");
 	}
 
 	@Test
