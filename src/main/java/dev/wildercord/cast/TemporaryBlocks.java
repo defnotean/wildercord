@@ -77,10 +77,11 @@ public final class TemporaryBlocks extends SavedData {
 	}
 
 	/**
-	 * What a spell's {@code block} standing at {@code pos} replaced, or null if no spell's block of that kind
-	 * is written down there. Saved, so it still knows after a restart (a lava crust broken then drops nothing).
+	 * How a spell's {@code block} at {@code pos} is written down (what it replaced, and when it goes), or null
+	 * if no spell's block of that kind is. Saved, so it still knows after a restart (a lava crust broken then
+	 * drops nothing).
 	 */
-	static BlockState replaced(ServerLevel level, BlockPos pos, net.minecraft.world.level.block.Block block) {
+	static Placed find(ServerLevel level, BlockPos pos, net.minecraft.world.level.block.Block block) {
 		TemporaryBlocks blocks = level.getDataStorage().get(TYPE);
 		List<Placed> inChunk = blocks == null ? null : blocks.byChunk.get(Thaws.chunk(pos));
 		if (inChunk == null) {
@@ -88,7 +89,7 @@ public final class TemporaryBlocks extends SavedData {
 		}
 		for (Placed placed : inChunk) {
 			if (placed.pos().equals(pos) && placed.placed().is(block)) {
-				return placed.replaced();
+				return placed;
 			}
 		}
 		return null;

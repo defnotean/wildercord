@@ -594,7 +594,7 @@ public final class WorldMagic {
 			ANCHORED.clear();
 		});
 		PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) ->
-			!(world instanceof ServerLevel server) || !meltCrust(server, pos.immutable(), true));
+			!(world instanceof ServerLevel server) || !meltCrust(server, pos.immutable(), -1, true));
 	}
 
 	private static void watchBridge(Cast cast, List<BlockPos> frozen) {
@@ -683,23 +683,20 @@ public final class WorldMagic {
 		Fx.sound(level, top, SoundEvents.BASALT_PLACE, 0.9F, 0.7F);
 		int left = (int) (due - level.getGameTime());
 		Scheduler.later(left - WorldRules.CRUST_WARN_TICKS, () -> crustWarns(level, crust, due));
-		Scheduler.later(left, () -> crust.forEach(pos -> meltCrust(level, pos, false)));
+		Scheduler.later(left, () -> crust.forEach(pos -> meltCrust(level, pos, due, false)));
 	}
 
 	/** The crust about to melt glows and cracks: its basalt turns to magma, and cracks spread over it until it goes. */
 	private static void crustWarns(ServerLevel level, List<BlockPos> crust, long due) {
 		List<BlockPos> glowing = new ArrayList<>();
 		for (BlockPos pos : crust) {
-			if (!level.isLoaded(pos) || !level.getBlockState(pos).is(CRUST.getBlock())) {
-				continue;
-			}
-			BlockState lava = TemporaryBlocks.replaced(level, pos, CRUST.getBlock());
-			if (lava == null) {
+			TemporaryBlocks.Placed placed = crustAt(level, pos, due);
+			if (placed == null || !placed.placed().is(CRUST.getBlock())) {
 				continue;
 			}
 			level.setBlockAndUpdate(pos, CRUST_MELTING);
 			// Written down again as magma, so a crash from now on still melts it back.
-			TemporaryBlocks.put(level, pos, CRUST_MELTING, lava, due);
+			TemporaryBlocks.put(level, pos, CRUST_MELTING, placed.replaced(), due);
 			glowing.add(pos);
 		}
 		if (glowing.isEmpty()) {
@@ -710,7 +707,7 @@ public final class WorldMagic {
 			int stage = 3 + 6 * t / WorldRules.CRUST_WARN_TICKS;
 			Runnable crack = () -> {
 				for (BlockPos pos : glowing) {
-					if (level.isLoaded(pos) && level.getBlockState(pos).is(CRUST_MELTING.getBlock())) {
+					if (crustAt(level, pos, due) != null) {
 						level.destroyBlockProgress(crackId(pos), pos, stage);
 						if (level.getRandom().nextInt(3) == 0) {
 							Vfx.emit(level, ParticleTypes.LAVA, Vec3.atCenterOf(pos).add(0, 0.5, 0), 1, 0.3, 0.0);
@@ -729,37 +726,45 @@ public final class WorldMagic {
 
 	/**
 	 * A block of crust melts back into the lava it was (if it's still there), and is crossed off. One whose
-	 * ground isn't loaded is left to {@link TemporaryBlocks}, which melts it as its chunk loads. True if it melted.
+	 * ground isn't loaded is left to {@link TemporaryBlocks}, which melts it as its chunk loads. Only the
+	 * crust due at {@code due}, so a spell's melting never takes a later spell's crust in the same place
+	 * early; any crust at all for {@code due} below zero (a block broken). True if it melted.
 	 */
-	private static boolean meltCrust(ServerLevel level, BlockPos pos, boolean broken) {
-		if (!level.isLoaded(pos)) {
+	private static boolean meltCrust(ServerLevel level, BlockPos pos, long due, boolean broken) {
+		TemporaryBlocks.Placed placed = crustAt(level, pos, due);
+		if (placed == null) {
 			return false;
 		}
 		BlockState state = level.getBlockState(pos);
-		if (!state.is(CRUST.getBlock()) && !state.is(CRUST_MELTING.getBlock())) {
-			return false;
-		}
-		BlockState lava = TemporaryBlocks.replaced(level, pos, state.getBlock());
-		if (lava == null) {
-			return false;
-		}
 		level.destroyBlockProgress(crackId(pos), pos, -1);
 		if (broken) {
 			level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_DESTROY_BLOCK, pos, Block.getId(state));
 		}
-		level.setBlockAndUpdate(pos, lava);
+		level.setBlockAndUpdate(pos, placed.replaced());
 		TemporaryBlocks.remove(level, pos);
 		Vfx.emit(level, ParticleTypes.LAVA, Vec3.atCenterOf(pos).add(0, 0.5, 0), 1, 0.3, 0.0);
 		return true;
 	}
 
-	/** Whether the block at {@code pos} is frost's crust on lava, still to melt: it can't be pushed, mined for itself or changed by another spell. */
-	public static boolean isCrust(ServerLevel level, BlockPos pos) {
+	/**
+	 * How the crust standing at {@code pos} (loaded, and still basalt or magma) is written down, if it's
+	 * the one due at {@code due} (or any, for {@code due} below zero); null if there's no such crust.
+	 */
+	private static TemporaryBlocks.Placed crustAt(ServerLevel level, BlockPos pos, long due) {
 		if (!level.isLoaded(pos)) {
-			return false;
+			return null;
 		}
 		BlockState state = level.getBlockState(pos);
-		return (state.is(CRUST.getBlock()) || state.is(CRUST_MELTING.getBlock())) && TemporaryBlocks.replaced(level, pos, state.getBlock()) != null;
+		if (!state.is(CRUST.getBlock()) && !state.is(CRUST_MELTING.getBlock())) {
+			return null;
+		}
+		TemporaryBlocks.Placed placed = TemporaryBlocks.find(level, pos, state.getBlock());
+		return placed != null && (due < 0 || placed.due() == due) ? placed : null;
+	}
+
+	/** Whether the block at {@code pos} is frost's crust on lava, still to melt: it can't be pushed, mined for itself or changed by another spell. */
+	public static boolean isCrust(ServerLevel level, BlockPos pos) {
+		return crustAt(level, pos, -1) != null;
 	}
 
 	/** A crack overlay's own number for each block of crust (never a player's, so everyone sees it). */
@@ -1393,29 +1398,31 @@ public final class WorldMagic {
 	/** Ages a block {@link #ages} said yes to: a crop one stage riper, a sapling a stage on (or into a tree), copper a stage greener. */
 	private static void ageBlock(ServerLevel level, BlockPos pos, BlockState state) {
 		Block block = state.getBlock();
-		if (block instanceof CropBlock crop) {
-			level.setBlock(pos, crop.getStateForAge(crop.getAge(state) + 1), Block.UPDATE_CLIENTS);
-		} else if (block instanceof SaplingBlock sapling) {
-			sapling.advanceTree(level, pos, state, level.getRandom());
-		} else if (block instanceof BonemealableBlock plant && !(block instanceof WeatheringCopper)) {
-			plant.performBonemeal(level, level.getRandom(), pos, state, BonemealSource.INTERACTION);
-		} else if (block instanceof WeatheringCopper copper) {
+		if (block instanceof WeatheringCopper copper) {
 			copper.getNext(state).ifPresent(older -> level.setBlockAndUpdate(pos, older));
 			level.levelEvent(LevelEvent.PARTICLES_WAX_OFF, pos, 0);
 			return;
 		}
+		if (block instanceof CropBlock crop) {
+			level.setBlock(pos, crop.getStateForAge(crop.getAge(state) + 1), Block.UPDATE_CLIENTS);
+		} else if (block instanceof SaplingBlock sapling) {
+			sapling.advanceTree(level, pos, state, level.getRandom());
+		} else if (block instanceof BonemealableBlock plant) {
+			plant.performBonemeal(level, level.getRandom(), pos, state, BonemealSource.INTERACTION);
+		}
 		level.levelEvent(LevelEvent.PARTICLES_AND_SOUND_PLANT_GROWTH, pos, 8);
 	}
 
-	/** How far time may jump a furnace's smelting on: nothing unless it's burning and smelting something. */
+	/** How far time may jump a furnace's smelting on: nothing unless it's burning and partway through smelting something. */
 	private static int smeltSkip(AbstractFurnaceBlockEntity furnace) {
 		AbstractFurnaceBlockEntityAccessor smelting = (AbstractFurnaceBlockEntityAccessor) furnace;
+		int timer = smelting.wildercord$cookingTimer();
 		int total = smelting.wildercord$cookingTotalTime();
 		int fuel = smelting.wildercord$litTimeRemaining();
-		if (fuel <= 0 || total <= 0 || furnace.getItem(0).isEmpty()) {
+		if (timer <= 0 || fuel <= 0 || total <= 0 || furnace.getItem(0).isEmpty()) {
 			return 0;
 		}
-		return WorldRules.furnaceSkip(smelting.wildercord$cookingTimer(), total, fuel);
+		return WorldRules.furnaceSkip(timer, total, fuel);
 	}
 
 	// ------------------------------------------------------------------ arcane
