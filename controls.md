@@ -28,6 +28,7 @@ keys.
 | Cast spell 3 | not set | The same for spell 3. |
 | Cast spell 4 | not set | The same for spell 4. |
 | Cast spell 5 (the tome's) | not set | The same for the fifth spell, while the Tome of the Fifth Page is in your offhand. |
+| Next loadout | not set | Loads your next saved loadout and names it above your hotbar. Refused while you charge a spell, duel or are sealed in ice. See [Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}#switching-with-a-key). |
 
 A key press counts as a **hold** once it's been down for a quarter of a second. Shorter than that is a tap.
 
@@ -64,8 +65,11 @@ A key press counts as a **hold** once it's been down for a quarter of a second. 
 | Click the page tabs | Spells, Passives, Grimoire, Cosmetics |
 | Click a passive's On/Off | Switch that passive |
 | The four buttons over the readout | Rename the spell, copy its spell code, paste a spell code, inscribe a scroll |
+| The list badge at the end of the tabs row, or `Ctrl`+`L` | Open the loadouts panel |
+| In the loadouts panel: `↑`/`↓`, `Enter`, `Ctrl`+`R`, `Delete` | Pick a loadout, load it, rename it, delete it (press twice) |
+| In the loadouts panel: `Ctrl`+`S` / `Ctrl`+`N` | Save your Cord over the loadout picked (press twice) / as a new one |
 | `Enter` / `Esc` while renaming | Save the name / cancel |
-| `Esc` | Clear the search, then let go of the search box, then close the screen |
+| `Esc` | Close the loadouts panel, clear the search, then let go of the search box, then close the screen |
 
 Either mouse button works for threading. Full details on [The Cord Screen]({{ '/spellcraft/cord-screen/' | relative_url }}).
 
@@ -91,6 +95,10 @@ Anyone can use these (the travel commands, from `/sethome` down, unless the serv
 | `/duel decline <player>` | Turn the challenge down. (Or click **[Decline]**.) |
 | `/duel stats` | Your wins and losses in duels. |
 | `/duel stats <player>` | Another player's. |
+| `/loadout save <name>` | Save your whole Cord as a loadout (a name you already use is saved over). |
+| `/loadout load <name>` | Load a loadout. |
+| `/loadout delete <name>` | Forget a loadout. |
+| `/loadout list` | List your loadouts (click one to load it). |
 | `/sethome [name]` | Set a home where you stand (called **home** without a name). Setting it again moves it. |
 | `/home [name]` | Teleport to a home. |
 | `/delhome <name>` | Remove a home. |
