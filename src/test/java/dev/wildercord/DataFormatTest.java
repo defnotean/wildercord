@@ -203,6 +203,10 @@ class DataFormatTest {
 			allowed(placement, file + " placement", "type", "salt", "spacing", "separation", "spread_type", "frequency",
 				"frequency_reduction_method", "locate_offset", "exclusion_zone");
 			required(placement, file + " placement", "type", "salt", "spacing", "separation");
+			if (placement.has("exclusion_zone")) {
+				allowed(placement.getAsJsonObject("exclusion_zone"), file + " exclusion_zone", "other_set", "chunk_count");
+				required(placement.getAsJsonObject("exclusion_zone"), file + " exclusion_zone", "other_set", "chunk_count");
+			}
 			for (JsonElement entry : set.getAsJsonArray("structures")) {
 				allowed(entry.getAsJsonObject(), file + " structure", "structure", "weight");
 				required(entry.getAsJsonObject(), file + " structure", "structure", "weight");

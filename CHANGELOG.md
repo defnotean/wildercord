@@ -19,6 +19,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - Spectators watching a boss fall no longer earn its feat.
 - A storm spell shocking the Tide Scribe's flooded arena also shocked your friends, your pets and any villager
   wading in it. It now spares everyone your spells can't harm (you still get a jolt if you're in the water).
+- New Ember Sanctums are no longer overgrown by basalt columns and lava sheets in basalt deltas, and no longer
+  generate through fortresses and bastions.
 
 ## [0.4.1-alpha] - 2026-09-28
 

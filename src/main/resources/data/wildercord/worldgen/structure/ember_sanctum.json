@@ -24,6 +24,6 @@
       ]
     }
   },
-  "step": "underground_structures",
+  "step": "underground_decoration",
   "terrain_adaptation": "none"
 }
