@@ -20,6 +20,177 @@
     },
     "tap_release": {
       "part": "neutral"
+    },
+    "time_dodge": {
+      "part": "time"
+    },
+    "time_doomtick": {
+      "part": "time"
+    },
+    "time_resume": {
+      "part": "time"
+    },
+    "time_rewind": {
+      "part": "time"
+    },
+    "time_ring": {
+      "part": "time"
+    },
+    "time_run": {
+      "part": "time"
+    },
+    "time_sand": {
+      "part": "time"
+    },
+    "time_scratch": {
+      "part": "time"
+    },
+    "time_stop": {
+      "part": "time"
+    },
+    "time_strike": {
+      "part": "time"
+    },
+    "time_stutter": {
+      "part": "time"
+    },
+    "time_tick": {
+      "part": "time"
+    },
+    "time_tock": {
+      "part": "time"
+    },
+    "time_wind": {
+      "part": "time"
+    },
+    "void_anchor_clank": {
+      "part": "void"
+    },
+    "void_banish_dissolve": {
+      "part": "void"
+    },
+    "void_black_fire": {
+      "part": "void"
+    },
+    "void_black_ignite": {
+      "part": "void"
+    },
+    "void_blind_gulp": {
+      "part": "void"
+    },
+    "void_blink_fizzle": {
+      "part": "void"
+    },
+    "void_breath_roar": {
+      "part": "void"
+    },
+    "void_chomp": {
+      "part": "void"
+    },
+    "void_collect_suck": {
+      "part": "void"
+    },
+    "void_corral": {
+      "part": "void"
+    },
+    "void_curse_pass": {
+      "part": "void"
+    },
+    "void_eclipse_hum": {
+      "part": "void"
+    },
+    "void_eclipse_lift": {
+      "part": "void"
+    },
+    "void_entropy_tick": {
+      "part": "void"
+    },
+    "void_grapple_reel": {
+      "part": "void"
+    },
+    "void_hex_bite": {
+      "part": "void"
+    },
+    "void_hex_mark": {
+      "part": "void"
+    },
+    "void_hook": {
+      "part": "void"
+    },
+    "void_hound_growl": {
+      "part": "void"
+    },
+    "void_hush_dome": {
+      "part": "void"
+    },
+    "void_phantom_burst": {
+      "part": "void"
+    },
+    "void_phantom_form": {
+      "part": "void"
+    },
+    "void_phantom_tick": {
+      "part": "void"
+    },
+    "void_portal_drop": {
+      "part": "void"
+    },
+    "void_riftcall_open": {
+      "part": "void"
+    },
+    "void_shadow_bite": {
+      "part": "void"
+    },
+    "void_shadow_cut": {
+      "part": "void"
+    },
+    "void_shell_close": {
+      "part": "void"
+    },
+    "void_shell_open": {
+      "part": "void"
+    },
+    "void_shriek": {
+      "part": "void"
+    },
+    "void_shriek_echo": {
+      "part": "void"
+    },
+    "void_snap": {
+      "part": "void"
+    },
+    "void_sonar_ping": {
+      "part": "void"
+    },
+    "void_sonic_crack": {
+      "part": "void"
+    },
+    "void_spark_crit": {
+      "part": "void"
+    },
+    "void_spark_plain": {
+      "part": "void"
+    },
+    "void_starmaw_gulp": {
+      "part": "void"
+    },
+    "void_step_tick": {
+      "part": "void"
+    },
+    "void_unzip": {
+      "part": "void"
+    },
+    "void_veil_fade": {
+      "part": "void"
+    },
+    "void_warp_ping": {
+      "part": "void"
+    },
+    "void_wither_rot": {
+      "part": "void"
+    },
+    "void_zeno_beat": {
+      "part": "void"
     }
   }
 }

@@ -1,4 +1,115 @@
 {
-  "events": {},
+  "events": {
+    "time_dodge": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_dodge_1",
+        "kit/time/time_dodge_2"
+      ],
+      "subtitle": "hit"
+    },
+    "time_doomtick": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_doomtick_1",
+        "kit/time/time_doomtick_2",
+        "kit/time/time_doomtick_3"
+      ],
+      "subtitle": "tell"
+    },
+    "time_resume": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_resume"
+      ],
+      "subtitle": "hit"
+    },
+    "time_rewind": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_rewind"
+      ],
+      "subtitle": "cast"
+    },
+    "time_ring": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_ring"
+      ],
+      "subtitle": "hit"
+    },
+    "time_run": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_run"
+      ],
+      "subtitle": "cast"
+    },
+    "time_sand": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_sand_1",
+        "kit/time/time_sand_2"
+      ],
+      "subtitle": "hit"
+    },
+    "time_scratch": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_scratch_1",
+        "kit/time/time_scratch_2",
+        "kit/time/time_scratch_3"
+      ],
+      "subtitle": "tell"
+    },
+    "time_stop": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_stop"
+      ],
+      "subtitle": "field"
+    },
+    "time_strike": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_strike_1",
+        "kit/time/time_strike_2"
+      ],
+      "subtitle": "hit"
+    },
+    "time_stutter": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_stutter_1",
+        "kit/time/time_stutter_2"
+      ],
+      "subtitle": "cast"
+    },
+    "time_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_tick_1",
+        "kit/time/time_tick_2",
+        "kit/time/time_tick_3"
+      ],
+      "subtitle": "tell"
+    },
+    "time_tock": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_tock_1",
+        "kit/time/time_tock_2",
+        "kit/time/time_tock_3"
+      ],
+      "subtitle": "tell"
+    },
+    "time_wind": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_wind"
+      ],
+      "subtitle": "cast"
+    }
+  },
   "part": "time"
 }

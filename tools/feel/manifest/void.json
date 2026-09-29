@@ -1,4 +1,338 @@
 {
-  "events": {},
+  "events": {
+    "void_anchor_clank": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_anchor_clank_1",
+        "kit/void/void_anchor_clank_2",
+        "kit/void/void_anchor_clank_3"
+      ],
+      "subtitle": "hit"
+    },
+    "void_banish_dissolve": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_banish_dissolve"
+      ],
+      "subtitle": "hit"
+    },
+    "void_black_fire": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_black_fire_1",
+        "kit/void/void_black_fire_2",
+        "kit/void/void_black_fire_3"
+      ],
+      "subtitle": "field"
+    },
+    "void_black_ignite": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_black_ignite"
+      ],
+      "subtitle": "hit"
+    },
+    "void_blind_gulp": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_blind_gulp_1",
+        "kit/void/void_blind_gulp_2"
+      ],
+      "subtitle": "cast"
+    },
+    "void_blink_fizzle": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_blink_fizzle"
+      ],
+      "subtitle": "cast"
+    },
+    "void_breath_roar": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_breath_roar"
+      ],
+      "subtitle": "field"
+    },
+    "void_chomp": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_chomp_1",
+        "kit/void/void_chomp_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_collect_suck": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_collect_suck"
+      ],
+      "subtitle": "cast"
+    },
+    "void_corral": {
+      "attenuation": 32,
+      "files": [
+        "kit/void/void_corral"
+      ],
+      "subtitle": "field"
+    },
+    "void_curse_pass": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_curse_pass"
+      ],
+      "subtitle": "hit"
+    },
+    "void_eclipse_hum": {
+      "attenuation": 32,
+      "files": [
+        "kit/void/void_eclipse_hum"
+      ],
+      "subtitle": "field"
+    },
+    "void_eclipse_lift": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_eclipse_lift"
+      ],
+      "subtitle": "field"
+    },
+    "void_entropy_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_entropy_tick_1",
+        "kit/void/void_entropy_tick_2",
+        "kit/void/void_entropy_tick_3",
+        "kit/void/void_entropy_tick_4",
+        "kit/void/void_entropy_tick_5",
+        "kit/void/void_entropy_tick_6"
+      ],
+      "subtitle": "tell"
+    },
+    "void_grapple_reel": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_grapple_reel"
+      ],
+      "subtitle": "cast"
+    },
+    "void_hex_bite": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_hex_bite_1",
+        "kit/void/void_hex_bite_2",
+        "kit/void/void_hex_bite_3"
+      ],
+      "subtitle": "tell"
+    },
+    "void_hex_mark": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_hex_mark_1",
+        "kit/void/void_hex_mark_2"
+      ],
+      "subtitle": "cast"
+    },
+    "void_hook": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_hook_1",
+        "kit/void/void_hook_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_hound_growl": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_hound_growl_1",
+        "kit/void/void_hound_growl_2"
+      ],
+      "subtitle": "cast"
+    },
+    "void_hush_dome": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_hush_dome"
+      ],
+      "subtitle": "field"
+    },
+    "void_phantom_burst": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_phantom_burst_1",
+        "kit/void/void_phantom_burst_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_phantom_form": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_phantom_form"
+      ],
+      "subtitle": "cast"
+    },
+    "void_phantom_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_phantom_tick_1",
+        "kit/void/void_phantom_tick_2",
+        "kit/void/void_phantom_tick_3"
+      ],
+      "subtitle": "tell"
+    },
+    "void_portal_drop": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_portal_drop"
+      ],
+      "subtitle": "hit"
+    },
+    "void_riftcall_open": {
+      "attenuation": 32,
+      "files": [
+        "kit/void/void_riftcall_open"
+      ],
+      "subtitle": "field"
+    },
+    "void_shadow_bite": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_shadow_bite_1",
+        "kit/void/void_shadow_bite_2",
+        "kit/void/void_shadow_bite_3"
+      ],
+      "subtitle": "hit"
+    },
+    "void_shadow_cut": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_shadow_cut"
+      ],
+      "subtitle": "cast"
+    },
+    "void_shell_close": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_shell_close"
+      ],
+      "subtitle": "hit"
+    },
+    "void_shell_open": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_shell_open"
+      ],
+      "subtitle": "hit"
+    },
+    "void_shriek": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_shriek_1",
+        "kit/void/void_shriek_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_shriek_echo": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_shriek_echo"
+      ],
+      "subtitle": "hit"
+    },
+    "void_snap": {
+      "attenuation": 32,
+      "files": [
+        "kit/void/void_snap_1",
+        "kit/void/void_snap_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_sonar_ping": {
+      "attenuation": 32,
+      "files": [
+        "kit/void/void_sonar_ping_1",
+        "kit/void/void_sonar_ping_2"
+      ],
+      "subtitle": "field"
+    },
+    "void_sonic_crack": {
+      "attenuation": 32,
+      "files": [
+        "kit/void/void_sonic_crack_1",
+        "kit/void/void_sonic_crack_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_spark_crit": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_spark_crit_1",
+        "kit/void/void_spark_crit_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_spark_plain": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_spark_plain_1",
+        "kit/void/void_spark_plain_2",
+        "kit/void/void_spark_plain_3"
+      ],
+      "subtitle": "hit"
+    },
+    "void_starmaw_gulp": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_starmaw_gulp"
+      ],
+      "subtitle": "hit"
+    },
+    "void_step_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_step_tick_1",
+        "kit/void/void_step_tick_2",
+        "kit/void/void_step_tick_3"
+      ],
+      "subtitle": "tell"
+    },
+    "void_unzip": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_unzip"
+      ],
+      "subtitle": "cast"
+    },
+    "void_veil_fade": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_veil_fade"
+      ],
+      "subtitle": "cast"
+    },
+    "void_warp_ping": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_warp_ping"
+      ],
+      "subtitle": "cast"
+    },
+    "void_wither_rot": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_wither_rot_1",
+        "kit/void/void_wither_rot_2"
+      ],
+      "subtitle": "hit"
+    },
+    "void_zeno_beat": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_zeno_beat_1",
+        "kit/void/void_zeno_beat_2"
+      ],
+      "subtitle": "field"
+    }
+  },
   "part": "void"
 }
