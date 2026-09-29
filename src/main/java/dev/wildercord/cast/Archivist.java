@@ -27,6 +27,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
@@ -66,6 +67,8 @@ public class Archivist extends SpellcasterIllager {
 	private static final int TELEGRAPH = 28;
 	private static final int REWRITE_TICKS = 50;
 	private static final int DOMAIN_SECRET = -1;
+	/** Its boss bar shows to players this near the Archive's heart, like the dimension bosses'. */
+	private static final double BAR_RANGE = DungeonBoss.BAR_RANGE;
 
 	private static final List<List<RuneDef>> PHASE_1 = List.of(
 		List.of(Runes.BOLT, Runes.FROST, Runes.SPLIT_MOD),
@@ -164,6 +167,9 @@ public class Archivist extends SpellcasterIllager {
 		bossEvent.setProgress(getHealth() / getMaxHealth());
 		if (home == null) {
 			home = blockPosition();
+		}
+		if (now % 10 == 0) {
+			updateViewers(level);
 		}
 		// Rewriting its Cord: floats, untouchable, pages whirling.
 		if (rewriting > 0) {
@@ -335,6 +341,21 @@ public class Archivist extends SpellcasterIllager {
 		Fx.sound(level, tome, SoundEvents.CHISELED_BOOKSHELF_PICKUP_ENCHANTED, 1.0F, 0.7F);
 	}
 
+	/** Its boss bar: shown to everyone in the Archive's arena, taken from anyone who has left it (or its world). */
+	private void updateViewers(ServerLevel level) {
+		Vec3 heart = home != null ? Vec3.atCenterOf(home) : position();
+		for (ServerPlayer player : new ArrayList<>(bossEvent.getPlayers())) {
+			if (player.isRemoved() || player.level() != level || player.position().distanceTo(heart) > BAR_RANGE + 8) {
+				bossEvent.removePlayer(player);
+			}
+		}
+		for (ServerPlayer player : level.players()) {
+			if (player.position().distanceTo(heart) <= BAR_RANGE) {
+				bossEvent.addPlayer(player);
+			}
+		}
+	}
+
 	private void blink(ServerLevel level, Vec3 to) {
 		Vec3 spot = CastEngine.ground(level, to.add(0, 3, 0));
 		if (!level.noCollision(this, getDimensions(getPose()).makeBoundingBox(spot))) {
@@ -465,12 +486,6 @@ public class Archivist extends SpellcasterIllager {
 	}
 
 	@Override
-	public void startSeenByPlayer(ServerPlayer player) {
-		super.startSeenByPlayer(player);
-		bossEvent.addPlayer(player);
-	}
-
-	@Override
 	public void stopSeenByPlayer(ServerPlayer player) {
 		super.stopSeenByPlayer(player);
 		bossEvent.removePlayer(player);
@@ -494,6 +509,30 @@ public class Archivist extends SpellcasterIllager {
 
 	@Override
 	public boolean removeWhenFarAway(double distSqr) {
+		return false;
+	}
+
+	/** Its bar goes from every screen however it leaves: killed, discarded, unloaded with its chunk or taken to another world. */
+	@Override
+	public void onRemoval(RemovalReason reason) {
+		bossEvent.removeAllPlayers();
+		super.onRemoval(reason);
+	}
+
+	@Override
+	public boolean isPushable() {
+		return false;
+	}
+
+	/** Never led off in a boat or a minecart: it keeps to the Archive. */
+	@Override
+	protected boolean canRide(Entity vehicle) {
+		return false;
+	}
+
+	/** Never through a portal: one that left would be missing from the Archive, and its lectern would wake another. */
+	@Override
+	public boolean canUsePortal(boolean ignorePassenger) {
 		return false;
 	}
 

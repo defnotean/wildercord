@@ -451,6 +451,18 @@ public abstract class DungeonBoss extends Monster {
 		return false;
 	}
 
+	/** Never led off in a boat or a minecart: it stays in its arena. */
+	@Override
+	protected boolean canRide(Entity vehicle) {
+		return false;
+	}
+
+	/** Never through a portal: one that left would be missing from its arena, and its altar would wake another. */
+	@Override
+	public boolean canUsePortal(boolean ignorePassenger) {
+		return false;
+	}
+
 	@Override
 	public boolean removeWhenFarAway(double distSqr) {
 		return false;
@@ -592,10 +604,11 @@ public abstract class DungeonBoss extends Monster {
 		bossEvent.removePlayer(player);
 	}
 
+	/** Its bar goes from every screen however it leaves: killed, discarded, unloaded with its chunk or taken to another world. */
 	@Override
-	public void remove(RemovalReason reason) {
+	public void onRemoval(RemovalReason reason) {
 		bossEvent.removeAllPlayers();
-		super.remove(reason);
+		super.onRemoval(reason);
 	}
 
 	@Override

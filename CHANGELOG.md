@@ -7,6 +7,10 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ### Fixed
 - **A finished contract you hadn't handed in yet vanished at dawn**, reward and all. It now stays on the
   Scribing Desk's board, in place of one of the new day's contracts, until you hand it in.
+- **Bosses could be led out of their arenas**: any of them through a Nether portal (its altar or lectern then
+  woke another, loot and all), and the Archivist in a boat or minecart. They stay where they belong now.
+- A boss's bar could stay stuck on screen after its chunk unloaded, and the Archivist's showed to anyone who
+  could see it from far off. Like the dungeon bosses', the Archivist's bar now shows only in its arena.
 
 ## [0.4.1-alpha] - 2026-09-28
 
