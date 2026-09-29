@@ -47,7 +47,8 @@ import java.util.Set;
  *   <li>a husk's Beam (a spell that doesn't fly) parried at the last moment is negated and answered
  *       with a counter-burst that hurts the husk;</li>
  *   <li>an overcast forced into every wild magic outcome in turn goes off without error, never kills
- *       the caster, and the outcomes that leave a mark leave the right one.</li>
+ *       the caster, and the outcomes that leave a mark leave the right one;</li>
+ *   <li>Borrowed Time cast again adds to the debt still owed, without borrowing back what was paid.</li>
  * </ul>
  *
  * <p>Runs in the full suite; skipped by {@code WILDERCORD_TOUR_ONLY} and {@code WILDERCORD_CORDS_ONLY}.</p>
@@ -76,6 +77,8 @@ public class WildercordParryTest implements FabricClientGameTest {
 			run(failures, "a Shield raised too early", () -> earlyShield(context, world));
 			run(failures, "parrying a beam", () -> parryBeam(context, world));
 			run(failures, "wild magic", () -> wildMagic(context, world));
+			// Last: the debt it leaves is still being paid when the world closes.
+			run(failures, "Borrowed Time", () -> borrowedTime(context, world));
 			if (!failures.isEmpty()) {
 				throw new AssertionError("Parrying or wild magic went wrong:\n  " + String.join("\n  ", failures));
 			}
@@ -302,5 +305,35 @@ public class WildercordParryTest implements FabricClientGameTest {
 			clearHusks(world);
 			context.waitTicks(2);
 		}
+	}
+
+	// ------------------------------------------------------------------ Borrowed Time
+
+	/** Borrowing again adds to what's still owed: a payment is never borrowed back, and a recast never wipes the debt. */
+	private static void borrowedTime(ClientGameTestContext context, TestSingleplayerContext world) {
+		SpellPlan.Segment borrow = SpellCompiler.compile(List.of(Runes.SELF, Runes.BORROWED_TIME)).root();
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			stand(player);
+			player.setAttached(WildercordAttachments.INNATE, Runes.BORROWED_TIME.id());
+			dev.wildercord.cast.Effects.readyToHurt(player);
+			player.hurtServer(player.level(), player.level().damageSources().magic(), 10);
+			CastEngine.cast(player, borrow);
+			check(dev.wildercord.cast.Innates.owed(player) > 9, "Borrowed Time should heal the 10 just taken and owe it (owes " + dev.wildercord.cast.Innates.owed(player) + ")");
+		});
+		// Long enough for a payment or two.
+		context.waitTicks(45);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			float before = dev.wildercord.cast.Innates.owed(player);
+			check(before > 0 && before < 10, "the debt should be paid a little each second (owes " + before + ")");
+			dev.wildercord.cast.Effects.readyToHurt(player);
+			player.hurtServer(player.level(), player.level().damageSources().magic(), 4);
+			CastEngine.cast(player, borrow);
+			float after = dev.wildercord.cast.Innates.owed(player);
+			check(after > before + 3.5 && after < before + 4.5, "borrowing again should add the 4 just taken to what's owed, and never the payments ("
+				+ before + " owed, then " + after + ")");
+			player.setAttached(WildercordAttachments.INNATE, "");
+		});
 	}
 }
