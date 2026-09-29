@@ -108,12 +108,12 @@ class CraftedRunesTest {
 		assertEquals(4, SpellNumbers.latchStrikes(g));
 		assertEquals(20, SpellNumbers.latchInterval(g));
 		assertEquals("A latch (4 strikes, every 1s, 70% power each): Harm", compile(LATCH, HARM).lines().getFirst());
-		// Extend holds it twice as long; Quicken strikes twice as often in the same time.
+		// Extend holds it twice as long; Quicken strikes twice as often, so the same strikes are over sooner.
 		SpellPlan.Group extended = group(LATCH, EXTEND, HARM);
 		assertEquals(8, SpellNumbers.latchStrikes(extended));
 		assertEquals(20, SpellNumbers.latchInterval(extended));
 		SpellPlan.Group quick = group(LATCH, QUICKEN, HARM);
-		assertEquals(8, SpellNumbers.latchStrikes(quick));
+		assertEquals(4, SpellNumbers.latchStrikes(quick));
 		assertEquals(10, SpellNumbers.latchInterval(quick));
 		assertEquals(16, SpellNumbers.latchStrikes(group(LATCH, EXTEND, EXTEND, QUICKEN, QUICKEN, HARM)));
 		// Extend right after Harm changes Harm? Harm has no duration, so it reaches back to the Latch.
@@ -161,17 +161,17 @@ class CraftedRunesTest {
 		SpellCompiler.Compiled c = compile(BOLT, HARM, BELATED);
 		assertEquals(1, c.attachedTo()[2]);
 		assertEquals(3 + 8 * 1.25 * 1.1, c.cost(), 1e-9);
-		assertEquals("A bolt: Harm (+40% power, lands 1.5s late)", c.lines().getFirst());
+		assertEquals("A bolt: Harm (+25% power, lands 1.5s late)", c.lines().getFirst());
 		SpellPlan.EffectNode once = effect(BOLT, HARM, BELATED);
-		assertEquals(1.4, SpellNumbers.power(once), 1e-9);
+		assertEquals(1.25, SpellNumbers.power(once), 1e-9);
 		assertEquals(30, SpellNumbers.belatedTicks(once));
 		// Only three count, for power and for the wait alike.
 		SpellPlan.EffectNode many = effect(BOLT, HARM, BELATED, BELATED, BELATED, BELATED);
-		assertEquals(Math.pow(1.4, 3), SpellNumbers.power(many), 1e-9);
+		assertEquals(Math.pow(1.25, 3), SpellNumbers.power(many), 1e-9);
 		assertEquals(90, SpellNumbers.belatedTicks(many));
 		assertEquals(0, SpellNumbers.belatedTicks(effect(BOLT, HARM)));
 		// With Amplify too, the readout says the whole of it.
-		assertEquals("A bolt: Harm (+110% power, lands 1.5s late)", compile(BOLT, HARM, AMPLIFY, BELATED).lines().getFirst());
+		assertEquals("A bolt: Harm (+88% power, lands 1.5s late)", compile(BOLT, HARM, AMPLIFY, BELATED).lines().getFirst());
 	}
 
 	@Test
@@ -244,8 +244,8 @@ class CraftedRunesTest {
 	@Test
 	void theWikisWorkedExamplesAddUp() {
 		SpellCompiler.Compiled reaction = compile(BEAM, FROST, FIRE, ON_REACTION, BURST, EXPLODE);
-		assertEquals(59, reaction.manaCost());
-		assertEquals(58, reaction.cooldownTicks());
+		assertEquals(58, reaction.manaCost());
+		assertEquals(57, reaction.cooldownTicks());
 		assertEquals(List.of("A beam: Frost, Fire", "On a reaction:", "  Everything within 4 blocks: Explode"), reaction.lines());
 		SpellCompiler.Compiled shared = compile(SELF, HEAL, KINDRED);
 		assertEquals(17, shared.manaCost());

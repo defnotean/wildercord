@@ -91,7 +91,7 @@ final class ShapeRunners {
 	/** Wall: a line across the caster's aim at a point; anything crossing it is hit on each pulse. */
 	static void wall(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 center, Vec3 look, Vfx.Theme theme) {
 		double width = SpellNumbers.wallWidth(g);
-		int total = SpellNumbers.wallSeconds(g) * 20;
+		int total = SpellNumbers.wallTicks(g);
 		int interval = SpellNumbers.wallInterval(g);
 		Vec3 flat = new Vec3(look.x, 0, look.z);
 		Vec3 side = (flat.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : flat.normalize()).cross(new Vec3(0, 1, 0)).normalize();
@@ -106,6 +106,9 @@ final class ShapeRunners {
 			}
 			if (tick % 4 == 0) {
 				Vfx.wall(cast.level, a, b, theme, tick);
+			}
+			if (tick % 2 == 0) {
+				barrier(cast, a, b, center, flat);
 			}
 			if (tick % interval != 0) {
 				return;
@@ -122,6 +125,36 @@ final class ShapeRunners {
 			}
 		});
 		Fx.sound(cast.level, center, net.minecraft.sounds.SoundEvents.MACE_SMASH_GROUND, 0.7F, 1.4F);
+	}
+
+	/**
+	 * A Wall is a barrier: projectiles from anyone but the caster's allies that reach it glance off (as off Haven's shell), and
+	 * creatures touching it are slowed.
+	 */
+	private static void barrier(Cast cast, Vec3 a, Vec3 b, Vec3 center, Vec3 flat) {
+		Vec3 n = (flat.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flat.normalize());
+		AABB box = new AABB(a, b.add(0, 3.0, 0)).inflate(1.5, 0.5, 1.5);
+		for (net.minecraft.world.entity.projectile.Projectile p : cast.level.getEntitiesOfClass(net.minecraft.world.entity.projectile.Projectile.class, box)) {
+			Entity owner = p.getOwner();
+			if (owner != null && Targets.isAlly(cast.caster, owner) || p.getY() > a.y + 3.5 || distanceToSegment(p.position(), a, b) > 1.0) {
+				continue;
+			}
+			Vec3 v = p.getDeltaMovement();
+			Vec3 rel = p.position().subtract(center);
+			if (v.lengthSqr() < 0.01 || v.dot(n) * rel.dot(n) >= 0) {
+				continue;
+			}
+			p.setDeltaMovement(v.subtract(n.scale(2 * v.dot(n))).scale(0.6));
+			p.needsSync = true;
+			Vfx.impact(cast.level, p.position(), Vfx.theme(""), 0.4);
+		}
+		if (cast.level.getGameTime() % 10 == 0) {
+			for (Entity e : cast.level.getEntities((Entity) null, box, e -> e instanceof LivingEntity && Targets.canHarm(cast.caster, e))) {
+				if (distanceToSegment(e.position(), a, b) <= 1.0) {
+					((LivingEntity) e).addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOWNESS, 25, 0, false, true));
+				}
+			}
+		}
 	}
 
 	/** Orbit: orbs circle the caster; each creature an orb touches is hit, at most once a second. */
@@ -186,7 +219,7 @@ final class ShapeRunners {
 				for (Entity e : cast.level.getEntities(cast.caster, new AABB(origin, origin).inflate(r + 1, 2.5, r + 1),
 						e -> e instanceof LivingEntity && e.isAlive() && !hit.contains(e.getUUID()))) {
 					double d = Math.hypot(e.getX() - origin.x, e.getZ() - origin.z);
-					if (d <= r + 0.6 && d >= inner) {
+					if (d <= r + 0.6 && d >= Math.max(inner, radius * SpellNumbers.RING_HOLLOW)) {
 						hits.add(e);
 						hit.add(e.getUUID());
 					}
@@ -271,7 +304,7 @@ final class ShapeRunners {
 	/** Totem: a floating totem that pulses its effects on everything nearby for a while. */
 	static void totem(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 base, Vfx.Theme theme) {
 		double radius = SpellNumbers.totemRadius(g);
-		int total = SpellNumbers.totemSeconds(g) * 20;
+		int total = SpellNumbers.totemTicks(g);
 		int interval = SpellNumbers.totemInterval(g);
 		Vec3 top = base.add(0, 1.6, 0);
 		steps(cast, 1, 5, total, tick -> {
@@ -317,7 +350,7 @@ final class ShapeRunners {
 	 */
 	static void domain(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 center, Vfx.Theme theme) {
 		double radius = SpellNumbers.domainRadius(g);
-		int total = SpellNumbers.domainSeconds(g) * 20;
+		int total = SpellNumbers.domainTicks(g);
 		int interval = SpellNumbers.domainInterval(g);
 		TechniqueVfx.domainOpen(cast.level, center, radius, theme, cast.info.spell(), total + 20);
 		DomainClash.open(cast, g, center, radius, total, theme.primary());
@@ -395,7 +428,7 @@ final class ShapeRunners {
 			});
 		}
 		Fx.sound(cast.level, origin, net.minecraft.sounds.SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 0.7F);
-		Fx.sound(cast.level, origin, theme.cast(), 0.6F, 1.0F);
+		// (the element's cast sound already played once, with the cast circle)
 	}
 
 	/** Barrage: a flurry of blows over one second on whatever is right in front of you. */
@@ -405,7 +438,7 @@ final class ShapeRunners {
 		boolean fromCaster = at.fromCaster(caster);
 		for (int i = 0; i < blows; i++) {
 			int blow = i;
-			Scheduler.later(1 + (int) Math.round(i * 20.0 / blows), () -> {
+			Scheduler.later(1 + (int) Math.round(i * (double) SpellNumbers.barrageTicks(g) / blows), () -> {
 				if (!cast.alive()) {
 					return;
 				}
@@ -455,16 +488,26 @@ final class ShapeRunners {
 		double radius = SpellNumbers.orbRadius(g);
 		double speed = SpellNumbers.orbSpeed(g);
 		Vec3 aim = dir.normalize();
-		int steps = (int) Math.ceil(20 / speed);
+		int steps = (int) Math.ceil(SpellNumbers.ORB_RANGE / speed);
 		Map<UUID, Long> lastHit = new HashMap<>();
 		boolean[] done = {false};
+		// Thrown from your hand, it turns where you look; set off by a link, it just drifts.
+		boolean piloted = cast.caster.getEyePosition().distanceTo(origin) < 3.0;
+		Vec3[] cur = {origin};
+		Vec3[] heading = {aim};
 		for (int t = 0; t <= steps; t++) {
 			int tick = t;
 			Scheduler.later(t + 1, () -> {
 				if (done[0] || !cast.alive()) {
 					return;
 				}
-				Vec3 pos = origin.add(aim.scale(speed * tick));
+				if (tick > 0) {
+					if (piloted && cast.caster.isAlive()) {
+						heading[0] = heading[0].lerp(cast.caster.getLookAngle(), SpellNumbers.ORB_STEER).normalize();
+					}
+					cur[0] = cur[0].add(heading[0].scale(speed));
+				}
+				Vec3 pos = cur[0];
 				net.minecraft.core.BlockPos block = net.minecraft.core.BlockPos.containing(pos);
 				boolean wall = !cast.level.getBlockState(block).getCollisionShape(cast.level, block).isEmpty();
 				if (wall || tick == steps) {
@@ -965,6 +1008,21 @@ final class ShapeRunners {
 				Vec3 end = missed(block) ? origin.add(dir.scale(reach)) : block.getLocation();
 				ExpansionVfx.sweepTick(cast.level, origin.add(dir.scale(0.8)), end, theme, step);
 				List<Entity> hits = along(cast, origin, end, 0.5, hit);
+				// The beam moves this many degrees between two ticks (more with Quicken, which has fewer steps): trace the
+				// gap between this tick's ray and the next one too, so nothing slips through however far the tip is.
+				double slice = 100.0 / ticks;
+				double gap = Math.toRadians(slice) * reach;
+				int between = (int) Math.min(12, Math.max(0, Math.ceil(gap / 1.1) - 1));
+				for (int k = 1; k <= between && step < ticks; k++) {
+					Vec3 mid = base.yRot((float) Math.toRadians(50 - 100.0 * step / ticks - slice * k / (between + 1)));
+					net.minecraft.world.phys.BlockHitResult wall = clip(cast, origin, origin.add(mid.scale(reach)));
+					Vec3 midEnd = missed(wall) ? origin.add(mid.scale(reach)) : wall.getLocation();
+					for (Entity extra : along(cast, origin, midEnd, 0.5, hit)) {
+						if (!hits.contains(extra)) {
+							hits.add(extra);
+						}
+					}
+				}
 				if (!hits.isEmpty()) {
 					hits.forEach(e -> hit.add(e.getUUID()));
 					CastEngine.onHit(cast, g, new Cast.Hit(hits, hits.getFirst().getBoundingBox().getCenter(), dir, origin, null, null, false), anchored);
@@ -1018,7 +1076,7 @@ final class ShapeRunners {
 		LivingEntity caster = cast.caster;
 		boolean fromCaster = at.fromCaster(caster);
 		int strikes = SpellNumbers.streamStrikes(g);
-		int total = SpellNumbers.STREAM_TICKS;
+		int total = SpellNumbers.streamTicks(g);
 		Set<Integer> strikeTicks = new java.util.HashSet<>();
 		for (int i = 0; i < strikes; i++) {
 			strikeTicks.add((int) Math.round(i * (double) total / strikes));

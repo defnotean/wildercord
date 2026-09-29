@@ -603,7 +603,7 @@ public final class Effects {
 		List<LivingEntity> touched = rune.kind() == EffectKind.HELPFUL ? helped : harmed;
 		if (!hit.self()) {
 			Vfx.Theme theme = Vfx.theme(rune);
-			touched.forEach(t -> Vfx.touched(level, t, theme));
+			touched.forEach(t -> dev.wildercord.cast.feel.Feels.touched(level, t, theme, rune, cast));
 		}
 	}
 

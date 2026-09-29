@@ -1,0 +1,25 @@
+{
+  "events": {
+    "blood_slice": {
+      "part": "blood"
+    },
+    "blood_slice_heavy": {
+      "part": "blood"
+    },
+    "fire_flick": {
+      "part": "fire"
+    },
+    "fire_whump": {
+      "part": "fire"
+    },
+    "link_ting": {
+      "part": "neutral"
+    },
+    "ready_ping": {
+      "part": "neutral"
+    },
+    "tap_release": {
+      "part": "neutral"
+    }
+  }
+}

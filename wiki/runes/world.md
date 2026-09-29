@@ -220,7 +220,7 @@ Mangrove roots burst up around the point: every enemy within 3 blocks is held fo
 
 *Tier II · 4 mana · its effects cost x1.4 · needs a Copper Cord or better*
 
-Strings an unseen tripwire from your feet to where you look (up to 12 blocks). The first enemy to cross it within 30 seconds springs it on everything within 2.5 blocks.
+Strings an unseen tripwire from your feet to where you look (up to 12 blocks). The first enemy to cross it within 30 seconds springs it on everything within 2.5 blocks, and whoever it catches stumbles for a second.
 
 **How to get it:** Found only, never crafted: Jungle temples.
 
@@ -405,7 +405,7 @@ The rest fires only if 3 or more enemies are within 8 blocks of you.
 
 *Tier III · cost x1.4 · needs an Amethyst Cord or better*
 
-+20% power, and the effect sets what it hits alight for 4 seconds.
++30% power, and the effect sets what it hits alight for 4 seconds.
 
 **How to get it:** Found only, never crafted: The Ember Sanctum.
 
@@ -546,7 +546,7 @@ Rift-touched: the effect's power swings anywhere from 50% to 200% each time it l
 ### <img src="{{ '/assets/runes/vortex.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vortex
 {: #vortex}
 
-*Tier III · 9 mana · its effects cost x2.2 · needs an Amethyst Cord or better*
+*Tier III · 9 mana · its effects cost x2.8 · needs an Amethyst Cord or better*
 
 A whirling vortex opens where you look for 3 seconds, dragging creatures within 5 blocks into its eye and striking everything in the eye twice a second.
 

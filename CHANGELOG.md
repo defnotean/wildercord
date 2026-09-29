@@ -21,6 +21,26 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 - For add-on makers: `api.gearSlots()`, `equippedGear`, `equipGear`, `unequipGear` and `gearSlotFor` (API 1.1).
 
 ### Changed
+- **Casting sounds are cleaner.** The element's cast sound used to play twice on a dozen shapes (Bolt, Arc, Cone, Crescent, Spark,
+  Comet, Ricochet, Stream, Blitz, Glaive, Imprint, Latch); now once. A sound can play at most three times in a tick, so a blast on a
+  crowd no longer roars, and a tap cast has its own little snap of release.
+- **Touch is a touch,** not a mini Beam: a thin thread, a glow at your palm and no beam sound.
+- **Fields and streams are priced by their strikes.** Fields and streams were far too cheap for the hits they land, and Quicken, Linger and Extend multiplied
+  them further (a Zone with Linger and two Quickens dealt 500 damage to one creature for 53 mana). Now: **Quicken** makes the same strikes come
+  twice as fast, so a Zone, Wall, Totem, Domain, Latch, Stream or Barrage is over sooner instead of hitting more; **Linger's** later landings
+  strike at 60%; and Zone (x2.75), Wall (x2.95), Totem (x3.15), Orbit (x3.05), Trail (x2.85), Vortex (x2.8), Domain (x3.9), Barrage (x1.85),
+  Latch (x2.15) and Stream (x1.95) cost more in proportion to how often they strike.
+- **On Hit** fires its payload a little weaker at each further creature of one landing (85% each), still paid once.
+- **Vow's** cooldown is 5x (was 4x); **Blood Price** costs 1 health per 4 mana (was 5); **Belated** is 25% stronger per rune (was 40%).
+- **Weak runes lifted:** Amplify x1.5 cost (was x1.6), Overcharge x2.6 (was x3.0), Kindled +30% power (was +20%), **Rain**'s strikes
+  seek enemies in the area and strike 2 blocks wide, **Orb** is steered by your aim and drifts 30 blocks (x2.0), **Cluster** costs x1.5.
+- **Near clones set apart:** **Ring** is hollow (it spares the ground around you) and costs x1.7; **Arc** x1.25; **Ray** x1.15; **Sweep** x1.8;
+  **Beam** costs 3; **Wall** is a real barrier (it turns projectiles aside and slows what touches it); **Snare** trips what it catches (Slowness II
+  for a second).
+- **Conditions give back what they didn't use:** Combo on its first two casts, and If Sneaking, If Airborne, If Wounded, If Outnumbered and If
+  Wet when they don't hold, return the mana their branch cost.
+- Casting poses now follow a spell's first *shape* (a spell that began with an effect always thrust before).
+
 - **Passives hold two runes.** A passive used to hold up to five, so two of them could keep ten runes running at once,
   which was a lot of free power. Each passive now holds **two runes**, whatever your Cord, and you still have the two
   slots (1st and 5th Heart Circle): at most four runes are ever active. An effect before any shape is on Self already,
@@ -155,6 +175,9 @@ and boss arenas that can only be entered through their dungeons.
   start (2 points a cast, never past level II).
 
 ### Fixed
+- **Sweep** missed creatures at long range, and more with Quicken or Widen; it now traces the whole arc.
+- The **aim preview** took its colour from the second rune (a modifier's gold or a shape's teal); it now uses the first effect's element.
+- **Wall's** fence blinked off for a third of the time.
 - **Dungeon arenas and vaults are warded.** Players could tunnel, blast or spell their way straight into a boss arena
   or vault without going through the dungeon. Their walls, floors and domes now can't be broken by survival players,
   explosions, block-breaking spells or pistons ("These walls are warded: the only way in is through the dungeon").

@@ -1,0 +1,21 @@
+{
+  "events": {
+    "blood_slice": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_slice_1",
+        "kit/blood/blood_slice_2"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_slice_heavy": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_slice_heavy_1",
+        "kit/blood/blood_slice_heavy_2"
+      ],
+      "subtitle": "hit"
+    }
+  },
+  "part": "blood"
+}
