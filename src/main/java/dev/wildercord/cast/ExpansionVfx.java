@@ -680,19 +680,6 @@ final class ExpansionVfx {
 
 	// ------------------------------------------------------------------ damage and control
 
-	/** Ember: flames licking up around the target and a warm flare. */
-	static void ember(ServerLevel level, Entity t) {
-		Vec3 base = t.position();
-		double r = Math.max(0.4, t.getBbWidth() * 0.6);
-		for (int i = 0; i < 8; i++) {
-			double a = Math.PI * 2 * i / 8;
-			Vfx.fling(level, ParticleTypes.FLAME, base.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), new Vec3(-Math.cos(a) * 0.2, 1, -Math.sin(a) * 0.2), 0.08);
-		}
-		glow(level, FIRE, t.getBoundingBox().getCenter(), 1.2);
-		Light.groundRing(level, base, FIRE, 0.2, r + 0.6, 0.05, 8);
-		Fx.sound(level, base, SoundEvents.FIRECHARGE_USE, 0.4F, 1.7F);
-	}
-
 	/** Icicle: ice bursting off the target; a slowed one cracks with a sharper ring. */
 	static void icicle(ServerLevel level, Entity t, boolean slowed) {
 		Vec3 c = t.getBoundingBox().getCenter();
@@ -727,15 +714,6 @@ final class ExpansionVfx {
 		Fx.sound(level, c, SoundEvents.BREEZE_SHOOT, 0.4F, 1.8F);
 	}
 
-	/** Leech: crimson motes drawn from the target into the caster. */
-	static void leech(ServerLevel level, Entity t, Entity caster) {
-		Vec3 c = t.getBoundingBox().getCenter();
-		glow(level, BLOOD, c, 1.1);
-		Vfx.stream(level, c, caster.getBoundingBox().getCenter(), Vfx.theme("blood"), 8);
-		Vfx.emit(level, new DustParticleOptions(0x8A0A1A, 1.0F), c, 6, 0.25, 0.0);
-		Fx.sound(level, c, SoundEvents.GENERIC_DRINK, 0.5F, 0.7F);
-	}
-
 	/** Hex: a turning star of void light over the target's head, and a ring binding its body. */
 	static void hex(ServerLevel level, Entity t, int ticks) {
 		Vec3 head = t.position().add(0, t.getBbHeight() + 0.45, 0);
@@ -749,18 +727,6 @@ final class ExpansionVfx {
 	static void hexBite(ServerLevel level, Entity t) {
 		glow(level, VOID, t.getBoundingBox().getCenter(), 0.8);
 		Vfx.emit(level, ParticleTypes.WITCH, t.getBoundingBox().getCenter(), 2, 0.25, 0.0);
-	}
-
-	/** Rend: two crimson slashes crossing over the chest and scraps of armour flying. */
-	static void rend(ServerLevel level, Entity t) {
-		Vec3 c = t.getBoundingBox().getCenter();
-		double r = Math.max(0.5, t.getBbHeight() * 0.4);
-		Vec3 look = unit(new Vec3(-Math.sin(Math.toRadians(t.getYRot())), 0, Math.cos(Math.toRadians(t.getYRot()))));
-		Vec3 side = across(look);
-		Light.slash(level, c.add(look.scale(0.4)), look, side.add(UP).normalize(), BLOOD, r, 1.6, 0.08, 1, 6);
-		Light.slash(level, c.add(look.scale(0.4)), look, side.subtract(UP).normalize(), 0xFF8090, r, 1.6, 0.06, 1, 6);
-		Vfx.radial(level, new ItemParticleOption(ParticleTypes.ITEM, Items.IRON_NUGGET), c, 6, 0.15);
-		Fx.sound(level, c, SoundEvents.ITEM_BREAK, 0.6F, 1.3F);
 	}
 
 	/** Countdown: a clock of light over the head, shrinking with each tick. */
@@ -794,21 +760,6 @@ final class ExpansionVfx {
 		Fx.sound(level, c, SoundEvents.LIGHTNING_BOLT_IMPACT, 0.4F, 1.8F);
 	}
 
-	/** Bleed: the opening cut, then drops falling with every wound. */
-	static void bleed(ServerLevel level, Entity t, boolean cut) {
-		Vec3 c = t.getBoundingBox().getCenter();
-		if (cut) {
-			Vec3 look = unit(new Vec3(-Math.sin(Math.toRadians(t.getYRot())), 0, Math.cos(Math.toRadians(t.getYRot()))));
-			Light.slash(level, c.add(look.scale(0.4)), look, across(look).add(0, -0.6, 0).normalize(), BLOOD, Math.max(0.5, t.getBbHeight() * 0.4), 1.8, 0.07, 1, 6);
-			Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_SWEEP, 0.6F, 1.5F);
-		}
-		for (int i = 0; i < 2; i++) {
-			Vec3 p = c.add((level.getRandom().nextDouble() - 0.5) * t.getBbWidth(), (level.getRandom().nextDouble() - 0.5) * t.getBbHeight() * 0.6,
-				(level.getRandom().nextDouble() - 0.5) * t.getBbWidth());
-			Vfx.fling(level, new DustParticleOptions(0x8A0A1A, 1.0F), p, new Vec3(0, -1, 0), 0.05);
-		}
-	}
-
 	/** Coldsnap: frost spreading across the ground in a ring of white light. */
 	static void coldsnap(ServerLevel level, Vec3 point, double radius) {
 		Vec3 ground = CastEngine.ground(level, point.add(0, 0.5, 0));
@@ -825,17 +776,6 @@ final class ExpansionVfx {
 	static void chilled(ServerLevel level, Entity t) {
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, t.getBoundingBox().getCenter(), 6, 0.3, 0.01);
 		Light.ring(level, t.position().add(0, 0.1, 0), UP, FROST, 0.2, Math.max(0.7, t.getBbWidth() + 0.2), 0.04, 8);
-	}
-
-	/** Flashfire: a flare of heat, a shell of fire racing out and flames thrown in every direction. */
-	static void flashfire(ServerLevel level, Vec3 point, double radius) {
-		Sigils.flash(level, point, FIRE, (float) Math.min(5, radius * 1.4));
-		shell(level, point, FIRE, 0xFFD060, 0.3, radius, 0.07, 9);
-		Light.groundRing(level, CastEngine.ground(level, point.add(0, 0.5, 0)), FIRE, 0.4, radius * 1.1, 0.1, 11);
-		Vfx.radial(level, ParticleTypes.FLAME, point, 24, 0.3);
-		Motes.clouds(level, point, 6, radius * 0.3, Motes.SMOKE, 1.3, 40, new Vec3(0, 0.03, 0), 0.07, 0.4);
-		Fx.sound(level, point, SoundEvents.FIRECHARGE_USE, 1.0F, 0.8F);
-		Fx.sound(level, point, SoundEvents.BLAZE_SHOOT, 0.6F, 0.7F);
 	}
 
 	/** Banish: the target folds away into a point of void light and unfolds where it lands. */

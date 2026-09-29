@@ -324,7 +324,7 @@ public final class Innates {
 		for (LivingEntity t : members) {
 			THREADS.put(t.getUUID(), new Thread(id, until, cast.caster));
 		}
-		Fx.sound(cast.level, harmed.getFirst().position(), SoundEvents.CHAIN_PLACE, 1.0F, 0.6F);
+		dev.wildercord.cast.feel.Feels.sound(cast.level, harmed.getFirst().position(), "blood_twang", 1.0F, 1.0F);
 		ShapeRunners.steps(cast, 1, 10, ticks - 1, t -> drawThread(cast.level, members));
 	}
 
@@ -334,14 +334,8 @@ public final class Innates {
 			Vec3 a = alive.get(i).getBoundingBox().getCenter();
 			Vec3 b = alive.get(i + 1).getBoundingBox().getCenter();
 			Vec3 d = b.subtract(a);
-			// A sagging thread of crimson light, in four pieces, drawn fresh as the last fades.
-			Vec3 prev = a;
-			for (int k = 1; k <= 4; k++) {
-				double s = k / 4.0;
-				Vec3 p = a.add(d.scale(s)).add(0, -Math.sin(s * Math.PI) * 0.35, 0);
-				ElementFx.ray(level, prev, p, k % 2 == 0 ? 0xFF5060 : ElementFx.BLOOD.primary(), 0.03, 11);
-				prev = p;
-			}
+			// A taut thread of crimson light, drawn fresh as the last fades.
+			ElementFx.ray(level, a, b, ElementFx.BLOOD.primary(), 0.025, 11);
 		}
 	}
 
@@ -370,11 +364,12 @@ public final class Innates {
 		echoing = true;
 		try {
 			DamageSource source = level.damageSources().indirectMagic(thread.caster(), thread.caster());
-			for (LivingEntity other : members) {
-				if (other != entity && other.isAlive() && other.level() == level && other.distanceTo(entity) < 32) {
-					Effects.readyToHurt(other);
-					other.hurtServer(level, source, damage * THREAD_SHARE);
-					threadPulse(level, entity, other);
+			int hop = 0;
+				for (LivingEntity other : members) {
+					if (other != entity && other.isAlive() && other.level() == level && other.distanceTo(entity) < 32) {
+						Effects.readyToHurt(other);
+						other.hurtServer(level, source, damage * THREAD_SHARE);
+						threadPulse(level, entity, other, hop++);
 				}
 			}
 		} finally {
@@ -383,11 +378,8 @@ public final class Innates {
 	}
 
 	/** A crimson pulse along the thread from the one hurt to the one that shares it. */
-	private static void threadPulse(ServerLevel level, LivingEntity from, LivingEntity to) {
-		Vec3 a = from.getBoundingBox().getCenter();
-		Vec3 b = to.getBoundingBox().getCenter();
-		ElementFx.ray(level, a, b, 0xFF5060, 0.05, 5);
-		Vfx.emit(level, new net.minecraft.core.particles.DustParticleOptions(ElementFx.BLOOD.primary(), 0.8F), b, 3, 0.2, 0.0);
+	private static void threadPulse(ServerLevel level, LivingEntity from, LivingEntity to, int hop) {
+		FireBloodVfx.threadPulse(level, from, to, hop);
 	}
 
 	// ------------------------------------------------------------------ Kindling
@@ -403,20 +395,13 @@ public final class Innates {
 		int stacks = k == null || now - k.last() > 120 ? 1 : k.stacks() + 1;
 		Effects.hurt(cast, t, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster), 3 * power * Reactions.fire(cast, t));
 		Vec3 c = t.getBoundingBox().getCenter();
-		// One flame tongue and one ember in the ring over its head for every stack.
-		ElementFx.flames(cast.level, t.position(), Math.max(0.35, t.getBbWidth() * 0.6), t.getBbHeight(), stacks);
-		for (int i = 0; i < stacks; i++) {
-			double a = Math.PI * 2 * i / 5;
-			Vfx.emit(cast.level, ParticleTypes.SMALL_FLAME, c.add(Math.cos(a) * 0.6, 0.6, Math.sin(a) * 0.6), 2, 0.02, 0.0);
+		if (stacks < 5) {
+			// One gold ember more in the ring over its head for every stack, and the tick a step higher up the scale.
+			FireBloodVfx.kindle(cast.level, t, stacks, false);
 		}
-		Fx.sound(cast.level, c, SoundEvents.FIRECHARGE_USE, 0.4F, 1.2F + stacks * 0.15F);
 		if (stacks >= 5) {
 			KINDLING.remove(t.getUUID());
-			ElementFx.fireImpact(cast.level, c, 2.2);
-			ElementFx.flames(cast.level, t.position(), Math.max(0.4, t.getBbWidth() * 0.7), t.getBbHeight() + 0.5, 6);
-			Vfx.radial(cast.level, ParticleTypes.FLAME, c, 20, 0.35);
-			Vfx.shockwave(cast.level, t.position(), 3.0, Vfx.theme("fire"), 4);
-			Fx.sound(cast.level, c, SoundEvents.GENERIC_EXPLODE, 0.7F, 1.4F);
+			FireBloodVfx.kindleBurst(cast.level, t, KINDLING_RADIUS);
 			for (Entity e : cast.level.getEntities((Entity) null, new AABB(c, c).inflate(KINDLING_RADIUS), e -> Targets.canHarm(cast.caster, e))) {
 				LivingEntity other = (LivingEntity) e;
 				// A sphere, as drawn.
@@ -428,6 +413,7 @@ public final class Innates {
 				if (other != t && other.isAlive()) {
 					// The heat carries: everything the burst reached is left two stacks in.
 					KINDLING.put(other.getUUID(), new Kindle(KINDLING_CHAIN, now));
+					FireBloodVfx.kindle(cast.level, other, KINDLING_CHAIN, true);
 				}
 			}
 			Reactions.callout(cast, "ignite", 0xFF9040);

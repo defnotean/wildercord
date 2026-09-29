@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -253,21 +254,7 @@ final class TechniqueVfx {
 		Sigils.flash(level, c, BLOOD, 1.6F);
 		dot(level, ParticleTypes.SWEEP_ATTACK, c);
 		ElementFx.drip(level, c, 0.3, 6);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_SWEEP, 1.0F, 0.6F);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 0.8F, 0.7F);
-	}
-
-	/** Dismantle: an unseen slash, a hairline of white light over crimson, straight through the target on a new tilt each time. */
-	static void dismantle(ServerLevel level, Entity target, int slash) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		RandomSource random = level.getRandom();
-		Vec3 normal = ElementFx.randomDir(random);
-		Vec3 bulge = ElementFx.inPlane(normal, random.nextDouble() * Math.PI * 2);
-		double r = Math.max(0.7, target.getBbHeight() * 0.55) * 1.6;
-		ElementFx.slash(level, c.subtract(bulge.scale(r * 0.97)), normal, bulge, BLOOD, r, 1.1, 0.13, 1, 5);
-		ElementFx.slash(level, c.subtract(bulge.scale(r)), normal, bulge, 0xFFE0E4, r, 1.3, 0.06, 1, 4);
-		ElementFx.drip(level, c, 0.2, 2);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_SWEEP, 0.7F, 1.6F + slash * 0.15F);
+		Feels.sound(level, c, "blood_cleave", 1.0F, 1.0F);
 	}
 
 	/** Blackspark: on a true hit, black lightning edged in crimson strikes into the target and the air falls in on it. */
@@ -347,29 +334,7 @@ final class TechniqueVfx {
 		Fx.sound(level, c, SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.8F);
 	}
 
-	private static final int FUSE = 0xFF6EC7;
-
-	/** Primer: the target flares pink and a ring closes on it: it's a bomb now. */
-	static void primed(ServerLevel level, Entity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		double w = Math.max(0.5, target.getBbWidth());
-		dot(level, flash(FUSE), c);
-		ElementFx.ring(level, c, UP, FUSE, w + 1.2, w * 0.5, 0.05, 12);
-		ElementFx.ring(level, c, ElementFx.tilted(1.2, level.getRandom().nextDouble() * Math.PI * 2), ElementFx.FIRE.secondary(), w + 0.9, w * 0.5, 0.035, 14);
-		Vfx.emit(level, ParticleTypes.SMOKE, c, 4, 0.3, 0.01);
-	}
-
-	/** A tick of the fuse: a ring pulsing out of the target and a spark fizzing over its head. */
-	static void primerTick(ServerLevel level, Entity target) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		Vec3 top = target.position().add(0, target.getBbHeight() + 0.2, 0);
-		ElementFx.ring(level, c, UP, FUSE, 0.2, Math.max(0.5, target.getBbWidth()) + 0.5, 0.035, 5);
-		dot(level, SigilOption.glow(ElementFx.FIRE.secondary(), 0.45F), top);
-		Vfx.emit(level, ParticleTypes.SMOKE, top, 2, 0.05, 0.01);
-		Fx.sound(level, c, SoundEvents.TRIPWIRE_CLICK_ON, 0.6F, 2.0F);
-	}
-
-	/** Blackflame: tongues of black fire licking up the target, a few of them violet at the edge. */
+/** Blackflame: tongues of black fire licking up the target, a few of them violet at the edge. */
 	static void blackflame(ServerLevel level, Entity target) {
 		Vec3 base = target.position();
 		double w = Math.max(0.35, target.getBbWidth() * 0.6);
@@ -626,22 +591,6 @@ final class TechniqueVfx {
 		ElementFx.ring(level, b, d, ElementFx.ARCANE.secondary(), 0.2, 1.0, 0.04, 7);
 		Vfx.emit(level, new ItemParticleOption(ParticleTypes.ITEM, Items.GLASS_PANE), b, 6, 0.3, 0.1);
 		Fx.sound(level, b, SoundEvents.AMETHYST_BLOCK_HIT, 0.8F, 1.6F);
-	}
-
-	/** Overdrive: a heartbeat pulses out of the target and crimson crescents surge up round it; later beats as it pays. */
-	static void overdrive(ServerLevel level, Entity target, boolean start) {
-		Vec3 c = target.getBoundingBox().getCenter();
-		if (start) {
-			ElementFx.pulse(level, c, UP, 1.6);
-			ElementFx.groundRing(level, target.position(), BLOOD, 0.3, 1.8, 0.07, 9);
-			ElementFx.tongues(level, target.position(), Math.max(0.4, target.getBbWidth() * 0.6), target.getBbHeight(), 4, BLOOD, ElementFx.BLOOD.secondary(), 2, 8);
-			Sigils.flash(level, c, BLOOD, 1.5F);
-			Fx.sound(level, c, SoundEvents.WARDEN_HEARTBEAT, 1.0F, 1.4F);
-		} else {
-			ElementFx.pulse(level, c, UP, 1.0);
-			ElementFx.drip(level, c, 0.25, 2);
-			Vfx.emit(level, ParticleTypes.DAMAGE_INDICATOR, c, 1, 0.2, 0.05);
-		}
 	}
 
 	static void foresightMark(ServerLevel level, Entity target) {

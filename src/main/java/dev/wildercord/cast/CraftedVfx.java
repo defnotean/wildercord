@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -204,18 +205,8 @@ final class CraftedVfx {
 		Vec3 look = unit(new Vec3(-Math.sin(Math.toRadians(t.getYRot())), 0, Math.cos(Math.toRadians(t.getYRot()))));
 		Vec3 side = unit(look.cross(UP));
 		Light.slash(level, c.add(look.scale(0.4)), look, side.add(0, 0.8, 0).normalize(), BLOOD, Math.max(0.5, t.getBbHeight() * 0.45), 2.0, 0.09, 1, 7);
-		gashDrip(level, t);
-		Fx.sound(level, c, SoundEvents.PLAYER_ATTACK_CRIT, 0.7F, 0.7F);
-	}
-
-	/** A wound that won't close keeps weeping. */
-	static void gashDrip(ServerLevel level, Entity t) {
-		Vec3 c = t.getBoundingBox().getCenter();
-		for (int i = 0; i < 2; i++) {
-			Vec3 p = c.add((level.getRandom().nextDouble() - 0.5) * t.getBbWidth(), (level.getRandom().nextDouble() - 0.5) * t.getBbHeight() * 0.5,
-				(level.getRandom().nextDouble() - 0.5) * t.getBbWidth());
-			Vfx.fling(level, new DustParticleOptions(0x8A0A1A, 1.0F), p, new Vec3(0, -1, 0), 0.05);
-		}
+		FireBloodVfx.gashWeep(level, t);
+		Feels.sound(level, c, "blood_rip", 0.9F, 1.0F);
 	}
 
 	/** Prospect: the ground rings, a ripple of earth-coloured light running out as far as it reaches. */
@@ -257,7 +248,7 @@ final class CraftedVfx {
 		Vec3 hand = hand(t);
 		ElementFx.embers(level, hand, 0.2, 6);
 		Light.ring(level, t.getBoundingBox().getCenter(), UP, FIRE, 0.2, Math.max(0.9, t.getBbWidth() + 0.5), 0.05, 9);
-		Fx.sound(level, hand, SoundEvents.FIRECHARGE_USE, 0.6F, 1.4F);
+		Feels.sound(level, hand, "fire_blade", 0.8F, 1.0F);
 	}
 
 	/** While it lasts, the weapon smoulders. */
@@ -270,7 +261,7 @@ final class CraftedVfx {
 		Vec3 c = t.getBoundingBox().getCenter();
 		ElementFx.embers(level, c, 0.35, 10);
 		Sigils.flash(level, c, FIRE, 1.2F);
-		Fx.sound(level, c, SoundEvents.FIRECHARGE_USE, 0.5F, 1.2F);
+		Feels.sound(level, c, "fire_flick", 0.7F, 1.0F);
 	}
 
 	private static Vec3 hand(LivingEntity t) {

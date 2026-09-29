@@ -100,6 +100,28 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   - **Blood Thread** ties 4 creatures at most (a Burst used to thread every enemy it hit, multiplying all damage
     without limit) and shares 40% of each hurt, three times a second at most; the shares show as crimson pulses along
     the thread.
+- **Fire and blood look and sound like themselves.** Every fire and blood rune now has its own shape, timing and
+  synthesised sound (forty new sounds), and the displays that were the same show again and again are cut down:
+  - Fire: **Flashfire** is a flat white-gold disc and one hard crack, gone in a quarter of a second, with no smoke;
+    **Explode** is a hard shell out of a white heart with a deep boom (a cast with more than one blast shakes the ground once);
+    **Meteor** shows a reticle that closes as the rock roars down, lands with one great blow and leaves a molten scar for
+    three seconds; **Inferno** is a standing ring of low flames that breathes with a low roar and sighs when it goes out;
+    **Primer**'s fuse ring closes tighter and turns pink to orange to white while its ticks climb, then goes quiet for a
+    breath before the blast; **Kindling** circles one more gold ember over the head with each stack, a note higher each time;
+    **Cinderbrand**'s glyph hangs over its target for as long as the brand holds; **Cinderheart** pulses a four-block ring,
+    circles embers, and shows a grey ring of dead ash when it will not catch; **Ashen Veil** puffs ash into whoever strikes
+    it; **Sunscorch**, **Soulfire** (whose mana comes back as a mote flying to you), **Blazecall** (three round
+    fireballs), **Steam**, **Firestorm**, **Fireward**, **Hellmouth**, **Starfire**, **Everburn**, **Conflagration** and
+    **Phoenix Pyre** each have a voice of their own, and the ones that burn or hang about end with a sigh.
+  - Blood: **Leech** streams a thin thread to your hand and rings you when it shields you; **Bleed** drips (with a ring
+    when the wound tears wider), **Gash** rips ragged and weeps, **Rend** cracks open across the chest and spreads,
+    **Dismantle**'s three hairlines each tilt steeper (the backstab is longer and white-gold), **Cleave** is one heavy cut
+    with a thin stroke to each enemy it swings on to; **Overdrive** surges with a racing heart, beats with a ring more for each
+    tier of pain and flushes the screen edge red; **Warcry** is a horn and three rings; **Blood Moss** lays a patch of moss;
+    **Heartstopper**'s beats slow, and each skip is a deeper stop; **Crimson Mist**, **Sanguine Rite**, **Hemomancy**,
+    **Transfusion**, **Lifesteal** (each thing done to its target sends a mote of blood to you) and **Blood Thread**
+    (taut threads, a pulse and a twang up the scale for each share) each have their own.
+  - A crowd never multiplies the show: a crowd catching fire, bleeding or being rended shows a few of each, not one each.
 
 ### Fixed
 - **Cinderheart stacked with itself:** casting it again started another full aura, so casting it every 1.5 seconds

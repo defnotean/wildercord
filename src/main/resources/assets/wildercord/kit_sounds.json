@@ -1,12 +1,132 @@
 {
   "events": {
+    "blood_cleave": {
+      "part": "blood"
+    },
+    "blood_drain": {
+      "part": "blood"
+    },
+    "blood_drip": {
+      "part": "blood"
+    },
+    "blood_gift": {
+      "part": "blood"
+    },
+    "blood_heart": {
+      "part": "blood"
+    },
+    "blood_horn": {
+      "part": "blood"
+    },
+    "blood_mist": {
+      "part": "blood"
+    },
+    "blood_moss": {
+      "part": "blood"
+    },
+    "blood_race": {
+      "part": "blood"
+    },
+    "blood_rend": {
+      "part": "blood"
+    },
+    "blood_rip": {
+      "part": "blood"
+    },
+    "blood_rite": {
+      "part": "blood"
+    },
+    "blood_sip": {
+      "part": "blood"
+    },
     "blood_slice": {
       "part": "blood"
     },
     "blood_slice_heavy": {
       "part": "blood"
     },
+    "blood_stop": {
+      "part": "blood"
+    },
+    "blood_tempo": {
+      "part": "blood"
+    },
+    "blood_triple": {
+      "part": "blood"
+    },
+    "blood_twang": {
+      "part": "blood"
+    },
+    "fire_ash": {
+      "part": "fire"
+    },
+    "fire_blade": {
+      "part": "fire"
+    },
+    "fire_blast": {
+      "part": "fire"
+    },
+    "fire_brand": {
+      "part": "fire"
+    },
+    "fire_clock": {
+      "part": "fire"
+    },
+    "fire_coals": {
+      "part": "fire"
+    },
+    "fire_field": {
+      "part": "fire"
+    },
+    "fire_flare": {
+      "part": "fire"
+    },
     "fire_flick": {
+      "part": "fire"
+    },
+    "fire_fuse": {
+      "part": "fire"
+    },
+    "fire_fuse_tick": {
+      "part": "fire"
+    },
+    "fire_hop": {
+      "part": "fire"
+    },
+    "fire_launch": {
+      "part": "fire"
+    },
+    "fire_meteor_fall": {
+      "part": "fire"
+    },
+    "fire_meteor_hit": {
+      "part": "fire"
+    },
+    "fire_out": {
+      "part": "fire"
+    },
+    "fire_pit": {
+      "part": "fire"
+    },
+    "fire_pyre": {
+      "part": "fire"
+    },
+    "fire_soul": {
+      "part": "fire"
+    },
+    "fire_stack": {
+      "part": "fire"
+    },
+    "fire_star": {
+      "part": "fire"
+    },
+    "fire_steam": {
+      "part": "fire"
+    },
+    "fire_sun": {
+      "part": "fire"
+    },
+    "fire_ward": {
       "part": "fire"
     },
     "fire_whump": {

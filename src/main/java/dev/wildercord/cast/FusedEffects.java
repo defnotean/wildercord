@@ -110,7 +110,7 @@ public final class FusedEffects {
 					caught.add(t.getUUID());
 					// Every target burns; only the first few spread it (and show it), so a crowd can't flood the server.
 					if (burning++ < MAX_TARGETS) {
-						FusionVfx.firestorm(level, t, radius);
+						FireBloodVfx.firestorm(level, t);
 						seeds.add(t);
 					}
 				}
@@ -131,7 +131,7 @@ public final class FusedEffects {
 					if (t instanceof net.minecraft.world.entity.Mob mob) {
 						mob.setTarget(null);
 					}
-					FusionVfx.steam(level, t);
+					FireBloodVfx.steam(level, t);
 				});
 				// It hangs where it burst: a cloud that blinds and leaves everything in it wet (Conduct and Flash Freeze love wet).
 				for (Vec3 at : Effects.clusterCentres(clouds, 2.5, 2)) {
@@ -265,7 +265,7 @@ public final class FusedEffects {
 				out.add(near);
 				near.igniteForSeconds((float) burn);
 				Effects.hurt(cast, near, cast.level.damageSources().source(DamageTypes.IN_FIRE, cast.caster),	damage * power);
-				FusionVfx.fireLeap(cast.level, source, near);
+				FireBloodVfx.firestormHop(cast.level, source, near);
 			}
 		}
 		return out;
@@ -294,6 +294,9 @@ public final class FusedEffects {
 		}
 		if (mark.caster().isAlive() && mark.caster() != entity) {
 			mark.caster().heal(damage * SIPHON_SHARE);
+			if (entity.level() instanceof ServerLevel level) {
+				FireBloodVfx.siphonFeed(level, entity, mark.caster());
+			}
 		}
 	}
 

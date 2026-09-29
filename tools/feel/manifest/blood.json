@@ -1,5 +1,105 @@
 {
   "events": {
+    "blood_cleave": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_cleave_1",
+        "kit/blood/blood_cleave_2"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_drain": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_drain"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_drip": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_drip_1",
+        "kit/blood/blood_drip_2",
+        "kit/blood/blood_drip_3",
+        "kit/blood/blood_drip_4"
+      ],
+      "subtitle": "tell"
+    },
+    "blood_gift": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_gift"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_heart": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_heart_1",
+        "kit/blood/blood_heart_2",
+        "kit/blood/blood_heart_3"
+      ],
+      "subtitle": "field"
+    },
+    "blood_horn": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_horn"
+      ],
+      "subtitle": "cast"
+    },
+    "blood_mist": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_mist"
+      ],
+      "subtitle": "field"
+    },
+    "blood_moss": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_moss"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_race": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_race"
+      ],
+      "subtitle": "cast"
+    },
+    "blood_rend": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_rend_1",
+        "kit/blood/blood_rend_2"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_rip": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_rip_1",
+        "kit/blood/blood_rip_2"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_rite": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_rite"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_sip": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_sip_1",
+        "kit/blood/blood_sip_2"
+      ],
+      "subtitle": "hit"
+    },
     "blood_slice": {
       "attenuation": 0,
       "files": [
@@ -13,6 +113,37 @@
       "files": [
         "kit/blood/blood_slice_heavy_1",
         "kit/blood/blood_slice_heavy_2"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_stop": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_stop"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_tempo": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_tempo_1",
+        "kit/blood/blood_tempo_2"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_triple": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_triple"
+      ],
+      "subtitle": "hit"
+    },
+    "blood_twang": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_twang_1",
+        "kit/blood/blood_twang_2",
+        "kit/blood/blood_twang_3"
       ],
       "subtitle": "hit"
     }

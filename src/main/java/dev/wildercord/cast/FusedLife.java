@@ -958,7 +958,7 @@ final class FusedLife {
 				if (!cast.alive() || !t.isAlive() || t.level() != level) {
 					return;
 				}
-				ExpansionVfx.bleed(level, t, false);
+				FireBloodVfx.bleedDrip(level, t, false);
 				Effects.lingering(() -> Effects.hurt(cast, t, source, 1 * power));
 			}));
 		}

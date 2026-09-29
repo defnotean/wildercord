@@ -213,14 +213,6 @@ final class ExplorerVfx {
 		sound(level, centre(t), SoundEvents.ZOMBIE_VILLAGER_CURE, 0.35F, 1.6F);
 	}
 
-	/** Warcry: a horn's blast, crimson rings pulsing out along the ground. */
-	static void warcry(ServerLevel level, Vec3 centre, double radius) {
-		ElementFx.pulse(level, centre.add(0, 0.1, 0), UP, radius);
-		ElementFx.groundRing(level, CastEngine.ground(level, centre.add(0, 0.5, 0)), ElementFx.BLOOD.secondary(), 0.4, radius, 0.1, 14);
-		Fx.sound(level, centre, SoundEvents.RAID_HORN, 0.8F, 1.1F);
-		sound(level, centre, WildercordSounds.cast("blood"), 0.7F, 1.0F);
-	}
-
 	static void rallied(ServerLevel level, LivingEntity t) {
 		ElementFx.ring(level, t.position().add(0, 0.2, 0), UP, ElementFx.BLOOD.primary(), 0.2, 0.9, 0.05, 8);
 		Vfx.emit(level, ParticleTypes.ANGRY_VILLAGER, t.position().add(0, t.getBbHeight() + 0.3, 0), 1, 0.1, 0.0);
@@ -272,17 +264,6 @@ final class ExplorerVfx {
 	static void tossed(ServerLevel level, LivingEntity t) {
 		ElementFx.earthImpact(level, t.position().add(0, 0.2, 0), 0.8);
 		sound(level, t.position(), SoundEvents.HOGLIN_ATTACK, 0.8F, 1.0F);
-	}
-
-	/** Blazecall: a fireball streaking down from above onto the target. */
-	static void blazeFireball(ServerLevel level, LivingEntity t, int shot) {
-		Vec3 at = centre(t);
-		double a = shot * 2.1;
-		Vec3 from = at.add(Math.cos(a) * 2.5, 6, Math.sin(a) * 2.5);
-		ElementFx.ray(level, from, at, ElementFx.FIRE.primary(), 0.14, 5);
-		ElementFx.ray(level, from.lerp(at, 0.4), at, ElementFx.FIRE.secondary(), 0.05, 4);
-		ElementFx.fireImpact(level, at, 0.7);
-		sound(level, at, SoundEvents.BLAZE_SHOOT, 0.8F, 1.0F + shot * 0.1F);
 	}
 
 	/** Shulkershell closes: void-violet plates folding in round the target. */
@@ -396,18 +377,6 @@ final class ExplorerVfx {
 		sound(level, centre, WildercordSounds.impact("life"), 0.6F, 0.8F);
 	}
 
-	/** Sunscorch: a beam of sunlight burning down onto the target; brighter under the open sky. */
-	static void sunscorch(ServerLevel level, LivingEntity t, boolean sunlit) {
-		Vec3 at = centre(t);
-		Vec3 top = at.add(0, sunlit ? 12 : 6, 0);
-		ElementFx.ray(level, top, t.position(), ElementFx.FIRE.secondary(), sunlit ? 0.35 : 0.22, 8);
-		ElementFx.ray(level, top, t.position(), WHITE, 0.08, 6);
-		ElementFx.flatSigil(level, t.position(), SigilOption.STAR, ElementFx.FIRE.secondary(), 1.6, 12, 0.2);
-		ElementFx.fireImpact(level, at, sunlit ? 1.2 : 0.9);
-		sound(level, at, SoundEvents.BEACON_ACTIVATE, 0.6F, 1.8F);
-		sound(level, at, WildercordSounds.impact("fire"), 0.8F, 1.0F);
-	}
-
 	/** Mire: mud bubbling round the target's feet. */
 	static void mire(ServerLevel level, LivingEntity t, boolean first) {
 		Vec3 feet = t.position();
@@ -481,19 +450,6 @@ final class ExplorerVfx {
 		sound(level, at, WildercordSounds.impact("wind"), 0.7F, 0.8F);
 	}
 
-	/** Soulfire: blue flames licking up the target. */
-	static void soulfire(ServerLevel level, LivingEntity t, boolean first) {
-		Vec3 feet = t.position();
-		ElementFx.tongues(level, feet, t.getBbWidth() * 0.6, t.getBbHeight(), first ? 5 : 3, SOUL, 0xB0F4FF, 5, 10);
-		Vfx.emit(level, ParticleTypes.SOUL_FIRE_FLAME, feet.add(0, t.getBbHeight() * 0.5, 0), first ? 12 : 5, 0.3, 0.02);
-		Vfx.emit(level, ParticleTypes.SOUL, feet.add(0, t.getBbHeight(), 0), 1, 0.2, 0.02);
-		if (first) {
-			ElementFx.flatSigil(level, feet, SigilOption.CIRCLE, SOUL, 1.6, 14, 0.2);
-			sound(level, feet, SoundEvents.SOUL_ESCAPE.value(), 1.0F, 0.9F);
-		}
-		sound(level, feet, SoundEvents.FIRE_AMBIENT, 0.6F, 1.4F);
-	}
-
 	/** Warp Step: warped spores and a violet streak between where the caster was and where they are. */
 	static void warpStep(ServerLevel level, Vec3 from, Vec3 to) {
 		ElementFx.implode(level, from.add(0, 1, 0), 1.0, 8);
@@ -521,8 +477,7 @@ final class ExplorerVfx {
 		ElementFx.drip(level, at, 0.3, first ? 4 : 2);
 		ElementFx.ray(level, at, centre(caster), ElementFx.BLOOD.primary(), 0.025, 5);
 		if (first) {
-			ElementFx.pulse(level, t.position().add(0, 0.1, 0), UP, 1.1);
-			sound(level, at, SoundEvents.MOSS_PLACE, 1.0F, 0.7F);
+			FireBloodVfx.mossPatch(level, t);
 		}
 	}
 
@@ -549,44 +504,6 @@ final class ExplorerVfx {
 	}
 
 	// ------------------------------------------------------------------ dungeons, bosses and events
-
-	/** Cinderbrand: a brand of fire seared onto the target. */
-	static void cinderbrand(ServerLevel level, LivingEntity t) {
-		Vec3 at = centre(t);
-		ElementFx.flatSigil(level, t.position(), SigilOption.STAR, ElementFx.FIRE.accent(), 1.4, 20, 0.3);
-		ElementFx.heatFlare(level, at, 0.8);
-		ElementFx.embers(level, at, 0.4, 6);
-		sound(level, at, SoundEvents.FIRECHARGE_USE, 0.8F, 1.3F);
-	}
-
-	/** Ashen Veil: grey ash whirling round the target. */
-	static void ashenVeil(ServerLevel level, LivingEntity t, boolean first) {
-		Vec3 feet = t.position();
-		ElementFx.swirl(level, feet, 0.7, t.getBbHeight(), first ? 3 : 1, 0x8A8480, ElementFx.FIRE.primary());
-		Vfx.emit(level, ParticleTypes.ASH, feet.add(0, t.getBbHeight() * 0.5, 0), first ? 16 : 6, 0.4, 0.02);
-		if (first) {
-			sound(level, feet, SoundEvents.FIRE_AMBIENT, 0.8F, 0.6F);
-			sound(level, feet, WildercordSounds.cast("fire"), 0.5F, 0.8F);
-		}
-	}
-
-	static void ashIgnite(ServerLevel level, LivingEntity t, LivingEntity attacker) {
-		ElementFx.ray(level, centre(t), centre(attacker), ElementFx.FIRE.primary(), 0.05, 4);
-		ElementFx.fireImpact(level, centre(attacker), 0.6);
-	}
-
-	/** Cinderheart: a heat flare at the heart and flame tongues ringing the target. */
-	static void cinderheart(ServerLevel level, LivingEntity t, boolean first) {
-		Vec3 feet = t.position();
-		ElementFx.groundRing(level, feet, ElementFx.FIRE.primary(), 0.4, 4.0, 0.1, 12);
-		ElementFx.tongues(level, feet, 1.6, 1.2, first ? 8 : 4, ElementFx.FIRE.primary(), ElementFx.FIRE.secondary(), 5, 10);
-		if (first) {
-			ElementFx.heatFlare(level, centre(t), 1.4);
-			ElementFx.flatSigil(level, feet, SigilOption.STAR, ElementFx.FIRE.accent(), 3.2, 30, 0.1);
-			sound(level, feet, SoundEvents.BLAZE_AMBIENT, 1.0F, 0.6F);
-			sound(level, feet, WildercordSounds.cast("fire"), 0.8F, 0.7F);
-		}
-	}
 
 	/** Eclipse opens: a disc of darkness over the point, its rim burning white. */
 	static void eclipseOpen(ServerLevel level, Vec3 centre, double radius, int ticks) {

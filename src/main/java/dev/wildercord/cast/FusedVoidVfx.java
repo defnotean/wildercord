@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -321,8 +322,7 @@ final class FusedVoidVfx {
 		}
 		ElementFx.orbit(level, centre(caster), 0.9, 1 + bonus / 2, 12, ElementFx.BLOOD.primary(), ElementFx.BLOOD.secondary());
 		ElementFx.drip(level, centre(caster).add(0, -0.3, 0), 0.25, 2 + bonus);
-		Fx.sound(level, feet, SoundEvents.WARDEN_HEARTBEAT, 0.8F, 1.0F + 0.05F * bonus);
-		Fx.sound(level, feet, SoundEvents.ILLUSIONER_CAST_SPELL, 0.6F, 0.8F);
+		Feels.sound(level, feet, "blood_tempo", 0.8F + 0.05F * bonus, 1.0F);
 	}
 
 	/** The blood strikes: crimson threads run from the caster's runes into the target, where a blood star seal flares, larger the more was paid. */
@@ -344,8 +344,7 @@ final class FusedVoidVfx {
 		Vec3 across = ElementFx.inPlane(face, phase);
 		ElementFx.cut(level, c.subtract(across.scale(0.5)), face, across, 0.5 + 0.04 * bonus, 0.12);
 		ElementFx.drip(level, c, 0.25, 3 + bonus);
-		Fx.sound(level, c, WildercordSounds.impact("blood"), 0.8F, 1.0F);
-		Fx.sound(level, c, SoundEvents.AMETHYST_BLOCK_RESONATE, 0.5F, 0.7F);
+		Feels.sound(level, c, "blood_twang", 0.7F, 1.0F);
 	}
 
 	// ------------------------------------------------------------------ Reckoning

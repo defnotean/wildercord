@@ -265,7 +265,7 @@ public final class CraftedRunes {
 				return false;
 			}
 			if (tick % 20 == 19) {
-				CraftedVfx.gashDrip(cast.level, t);
+				FireBloodVfx.gashWeep(cast.level, t);
 				Effects.lingering(bleed);
 			}
 			return true;

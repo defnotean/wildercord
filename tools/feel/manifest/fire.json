@@ -1,5 +1,68 @@
 {
   "events": {
+    "fire_ash": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_ash_1",
+        "kit/fire/fire_ash_2"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_blade": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_blade"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_blast": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_blast_1",
+        "kit/fire/fire_blast_2"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_brand": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_brand"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_clock": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_clock"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_coals": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_coals_1",
+        "kit/fire/fire_coals_2",
+        "kit/fire/fire_coals_3"
+      ],
+      "subtitle": "field"
+    },
+    "fire_field": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_field_1",
+        "kit/fire/fire_field_2",
+        "kit/fire/fire_field_3"
+      ],
+      "subtitle": "field"
+    },
+    "fire_flare": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_flare_1",
+        "kit/fire/fire_flare_2"
+      ],
+      "subtitle": "hit"
+    },
     "fire_flick": {
       "attenuation": 0,
       "files": [
@@ -8,6 +71,120 @@
         "kit/fire/fire_flick_3"
       ],
       "subtitle": "hit"
+    },
+    "fire_fuse": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_fuse"
+      ],
+      "subtitle": "tell"
+    },
+    "fire_fuse_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_fuse_tick_1",
+        "kit/fire/fire_fuse_tick_2",
+        "kit/fire/fire_fuse_tick_3",
+        "kit/fire/fire_fuse_tick_4"
+      ],
+      "subtitle": "tell"
+    },
+    "fire_hop": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_hop_1",
+        "kit/fire/fire_hop_2",
+        "kit/fire/fire_hop_3"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_launch": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_launch_1",
+        "kit/fire/fire_launch_2",
+        "kit/fire/fire_launch_3"
+      ],
+      "subtitle": "cast"
+    },
+    "fire_meteor_fall": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_meteor_fall"
+      ],
+      "subtitle": "cast"
+    },
+    "fire_meteor_hit": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_meteor_hit_1",
+        "kit/fire/fire_meteor_hit_2"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_out": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_out_1",
+        "kit/fire/fire_out_2"
+      ],
+      "subtitle": "tell"
+    },
+    "fire_pit": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_pit"
+      ],
+      "subtitle": "field"
+    },
+    "fire_pyre": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_pyre"
+      ],
+      "subtitle": "cast"
+    },
+    "fire_soul": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_soul"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_stack": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_stack"
+      ],
+      "subtitle": "tell"
+    },
+    "fire_star": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_star"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_steam": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_steam"
+      ],
+      "subtitle": "field"
+    },
+    "fire_sun": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_sun"
+      ],
+      "subtitle": "hit"
+    },
+    "fire_ward": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_ward"
+      ],
+      "subtitle": "cast"
     },
     "fire_whump": {
       "attenuation": 0,

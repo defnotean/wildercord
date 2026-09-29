@@ -1,5 +1,6 @@
 package dev.wildercord.cast;
 
+import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.content.SigilOption;
 import dev.wildercord.content.WildercordSounds;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -30,35 +31,6 @@ public final class FusionVfx {
 	}
 
 	// ------------------------------------------------------------------ the fused effects
-
-	/** Firestorm: a whirl of flame tongues round the target, carried up on the wind. */
-	static void firestorm(ServerLevel level, Entity t, double radius) {
-		Vec3 feet = t.position();
-		ElementFx.swirl(level, feet, Math.max(0.6, t.getBbWidth()), t.getBbHeight() + 0.6, 4, ElementFx.FIRE.primary(), ElementFx.FIRE.secondary());
-		ElementFx.flames(level, feet, Math.max(0.5, t.getBbWidth() * 0.7), t.getBbHeight(), 10);
-		ElementFx.gustRing(level, feet.add(0, 0.1, 0), radius);
-		ElementFx.embers(level, centre(t), 0.6, 10);
-		Sigils.flash(level, centre(t), ElementFx.FIRE.primary(), 1.4F);
-		Fx.sound(level, feet, SoundEvents.FIRECHARGE_USE, 0.8F, 0.8F);
-		Fx.sound(level, feet, WildercordSounds.impact("wind"), 0.5F, 1.0F);
-	}
-
-	/** The fire leaping from one burning creature to the next: a flame-coloured streak and a lick of fire. */
-	static void fireLeap(ServerLevel level, Entity from, Entity to) {
-		ElementFx.ray(level, centre(from), centre(to), ElementFx.FIRE.primary(), 0.06, 6);
-		ElementFx.flames(level, to.position(), Math.max(0.4, to.getBbWidth() * 0.6), to.getBbHeight() * 0.8, 5);
-	}
-
-	/** Steam: a shatter ring of frost that boils into a white cloud. */
-	static void steam(ServerLevel level, Entity t) {
-		Vec3 c = centre(t);
-		ElementFx.shatterRing(level, c, Math.max(0.8, t.getBbWidth() + 0.3));
-		ElementFx.heatFlare(level, c, 0.9);
-		Motes.clouds(level, c, 6, Math.max(0.35, t.getBbWidth() * 0.5), Motes.STEAM, 1.5, 50, new Vec3(0, 0.04, 0), 0.04, 0.55);
-		Motes.clouds(level, c.add(0, 0.5, 0), 3, 0.3, Motes.STEAM, 1.0, 34, new Vec3(0, 0.06, 0), 0.03, 0.4);
-		Light.ring(level, c, UP, 0xE6FAFF, 0.1, Math.max(1.0, t.getBbWidth() + 0.8), 0.06, 9);
-		Fx.sound(level, c, SoundEvents.FIRE_EXTINGUISH, 1.0F, 0.9F);
-	}
 
 	/** Magma opening: the ground cracks, glowing orange from below, for as long as the magma lasts ({@code ticks}). */
 	static void magmaOpen(ServerLevel level, Vec3 at, double radius, int ticks) {
@@ -138,7 +110,7 @@ public final class FusionVfx {
 		if (taken > 0) {
 			Scheduler.later(8, () -> ElementFx.lifeImpact(level, centre(caster), 0.6));
 		}
-		Fx.sound(level, c, SoundEvents.GENERIC_DRINK, 0.7F, 0.6F);
+		Feels.sound(level, c, "blood_drain", 0.9F, 1.0F);
 	}
 
 	/** Warp: a hole in the world at either end, and a streak of darkness between them. */
