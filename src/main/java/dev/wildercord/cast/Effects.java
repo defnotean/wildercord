@@ -226,6 +226,7 @@ public final class Effects {
 		// Self always means you: movement effects move you even though they are "harmful" to others.
 		List<LivingEntity> moved = hit.self() ? List.of(caster) : harmed;
 		List<LivingEntity> targetsHit = harmed;
+		RunicAnimations.land(cast, rune, hit);
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
 		switch (builtIn(rune) ? rune.path() : "") {

@@ -211,6 +211,7 @@ public final class CastEngine {
 		int copies = SpellNumbers.copies(g);
 		int color = colorOf(g);
 		Vfx.Theme theme = cast.theme(g);
+		RunicAnimations.release(cast, g, at);
 
 		if (shape.equals(Runes.SELF.id())) {
 			Vfx.self(caster, theme);

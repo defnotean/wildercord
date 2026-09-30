@@ -272,8 +272,11 @@ This writes the texture, item model, language entries, recipe, recipe-book unloc
 Every spell already gets a **feel** from how it is built (see `dev.wildercord.cast.feel`): the shape's *motion* (Flick, Hurl, Beam,
 Slash, Blast, Seal, Call, Aura), the mana-dominant *element* (and an accent element), the first effect's *role* (Strike, Bind, Mend,
 Move, Time, World, Call up), a *band* from cost, charge and tier (S, M, L, XL: band M is the mod's usual sizes), and the modifiers
-on it. It travels inside `Vfx.Theme` (`theme.feel()`), so any shape or effect code that has a theme has the feel. A rune with
-nothing of its own keeps exactly that. To make a rune **signature**, do two things, both in files that are yours alone.
+on it. It travels inside `Vfx.Theme` (`theme.feel()`), so any shape or effect code that has a theme has the feel.
+`RunicAnimations` also gives every shape and effect a stable, illustrated three-beat release and first-landing
+animation based on its id and role. All effects in a group get one, including secondary effects and the two inside
+a woven rune. This is the starting point; a rune with a distinctive wind-up, movement or lasting field should still
+have an authored signature and VFX of its own. To make a rune **signature**, do two things, both in files that are yours alone.
 
 ### 1. Its signature (Java)
 
