@@ -335,10 +335,12 @@ def main():
         save(item_art.mana_effect_icon(), ASSETS / "textures/mob_effect/mana.png")
         save(item_art.mana_badge_icon(), ASSETS / "textures/gui/sprites/cord/mana_badge.png")
         save(item_art.heart_badge_icon(), ASSETS / "textures/gui/sprites/cord/heart_badge.png")
+        save(item_art.warded_effect_icon(), ASSETS / "textures/mob_effect/warded.png")
+        save(item_art.ward_badge_icon(), ASSETS / "textures/gui/sprites/cord/ward_badge.png")
     else:
         crystal = stone("effect", (0x9C, 0x7C, 0xFF), None, body=(0x5A, 0x3C, 0xC8))
         save(crystal, tex / "mana_crystal.png")
-        for name in ("clarity", "mana"):
+        for name in ("clarity", "mana", "warded"):
             icon18 = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
             icon18.paste(crystal, (1, 1))
             save(icon18, ASSETS / f"textures/mob_effect/{name}.png")
@@ -524,6 +526,13 @@ def write_lang(runes):
         "item.minecraft.splash_potion.effect.wildercord_mana": "Splash Potion of Mana",
         "item.minecraft.lingering_potion.effect.wildercord_mana": "Lingering Potion of Mana",
         "item.minecraft.tipped_arrow.effect.wildercord_mana": "Arrow of Mana",
+        "effect.wildercord.warded": "Warded",
+        "item.minecraft.potion.effect.wildercord_warded": "Potion of Warding",
+        "item.minecraft.splash_potion.effect.wildercord_warded": "Splash Potion of Warding",
+        "item.minecraft.lingering_potion.effect.wildercord_warded": "Lingering Potion of Warding",
+        "item.minecraft.tipped_arrow.effect.wildercord_warded": "Arrow of Warding",
+        "enchantment.wildercord.warding": "Warding",
+        "enchantment.wildercord.warding.desc": "Spells hurt 8% less per level, up to 80% with Protection's share. Can't share a piece with Protection",
         "enchantment.wildercord.reservoir": "Reservoir",
         "enchantment.wildercord.wellspring": "Wellspring",
         "enchantment.wildercord.siphon": "Siphon",
@@ -691,6 +700,7 @@ def write_lang(runes):
     lang.update(TRAVEL_LANG)
     lang.update(LOADOUT_LANG)
     lang.update(SIGNATURE_LANG)
+    lang.update(DEFENCE_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1255,12 +1265,31 @@ ENCHANTMENTS = {
     "persistence": (2, 5, 4, 10, 12),
 }
 
-POTIONS = ["clarity", "long_clarity", "strong_clarity", "mana", "strong_mana"]
+POTIONS = ["clarity", "long_clarity", "strong_clarity", "mana", "strong_mana", "warded", "long_warded", "strong_warded"]
 BREWS = [("minecraft:awkward", "minecraft:amethyst_shard", "clarity"),
          ("wildercord:clarity", "minecraft:redstone", "long_clarity"),
          ("wildercord:clarity", "minecraft:glowstone_dust", "strong_clarity"),
          ("minecraft:awkward", "minecraft:lapis_lazuli", "mana"),
-         ("wildercord:mana", "minecraft:glowstone_dust", "strong_mana")]
+         ("wildercord:mana", "minecraft:glowstone_dust", "strong_mana"),
+         # The Potion of Warding (Warded: less damage from spells) brews from tinted glass, which keeps light out:
+         # Wildercord's magic is light written in the air.
+         ("minecraft:awkward", "minecraft:tinted_glass", "warded"),
+         ("wildercord:warded", "minecraft:redstone", "long_warded"),
+         ("wildercord:warded", "minecraft:glowstone_dust", "strong_warded")]
+
+# Warding, the armour enchantment against spells (SpellDefence.java does what it does). A protection against one kind
+# of harm, like Fire or Blast Protection: the same costs and rarity, and it joins their set, so it can't sit beside
+# Protection on one piece.
+WARDING = {
+    "anvil_cost": 2,
+    "description": {"translate": "enchantment.wildercord.warding"},
+    "exclusive_set": "#minecraft:exclusive_set/armor",
+    "max_cost": {"base": 18, "per_level_above_first": 8},
+    "max_level": 4,
+    "min_cost": {"base": 10, "per_level_above_first": 8},
+    "slots": ["armor"],
+    "supported_items": "#minecraft:enchantable/armor",
+    "weight": 5}
 
 
 def brewing(name, container_in, potion_in, reagent, container_out, potion_out):
@@ -1284,9 +1313,11 @@ def write_mana_data():
             "slots": ["any"],
             "supported_items": "#wildercord:enchantable/cord",
             "weight": weight})
+    write_json(DATA / "enchantment/warding.json", WARDING)
+    write_json(RES / "data/minecraft/tags/enchantment/exclusive_set/armor.json", {"replace": False, "values": ["wildercord:warding"]})
     # Joining non_treasure puts them in the enchanting table, villager trades and random loot.
     write_json(RES / "data/minecraft/tags/enchantment/non_treasure.json",
-               {"replace": False, "values": [f"wildercord:{e}" for e in ENCHANTMENTS]})
+               {"replace": False, "values": [f"wildercord:{e}" for e in [*ENCHANTMENTS, "warding"]]})
 
     for container in ("potion", "splash_potion", "lingering_potion"):
         item = f"minecraft:{container}"
@@ -1301,6 +1332,30 @@ def write_mana_data():
         "type": "minecraft:crafting_shaped", "category": "misc",
         "key": {"L": "minecraft:lapis_lazuli", "A": "minecraft:amethyst_shard", "D": "minecraft:diamond"},
         "pattern": ["LAL", "ADA", "LAL"], "result": {"id": "wildercord:mana_crystal"}})
+
+
+# ---------------------------------------------------------------- standing up to spells (SpellDefence.java)
+
+DEFENCE_LANG = {
+    "message.wildercord.spellguard": "Your spellguard held: one heart left. It recharges in %ss",
+    "screen.wildercord.defence.title": "Spell defence",
+    "screen.wildercord.defence.total": "Spells hurt you %s%% less",
+    "screen.wildercord.defence.armour": "  %s%% from your armour (against a 5-heart spell)",
+    "screen.wildercord.defence.enchant": "  %s%% from Warding and Protection",
+    "screen.wildercord.defence.warded": "  %s%% from Warded %s",
+    "screen.wildercord.defence.resistance": "  %s%% from Resistance %s",
+    "screen.wildercord.defence.none": "  Nothing yet: see the ways below",
+    "screen.wildercord.defence.guard_ready": "Spellguard: ready",
+    "screen.wildercord.defence.guard_recharging": "Spellguard: recharging (%ss)",
+    "screen.wildercord.defence.guard_off": "Spellguard: off on this server",
+    "screen.wildercord.defence.guard_rule": "One spell can't take you from %s%% health or more to dead: it leaves you on one heart, then recharges in %ss",
+    "screen.wildercord.defence.ways": "Ways to stand up to spells",
+    "screen.wildercord.defence.way.armour": "Armour: about half its worth against magic and frost, all of it against fire, lightning and blasts",
+    "screen.wildercord.defence.way.warding": "Warding (armour enchantment): 8% less per level, but not on a piece with Protection",
+    "screen.wildercord.defence.way.potion": "Potion of Warding (tinted glass): 20% less per level",
+    "screen.wildercord.defence.way.shield": "A Shield spell stops a spell outright, and a parry turns it back",
+    "screen.wildercord.defence.way.resistance": "Resistance and Protection work against spells too",
+}
 
 
 # ---------------------------------------------------------------- the Archive, the Grimoire and friends

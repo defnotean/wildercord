@@ -40,6 +40,7 @@ import java.util.Set;
  * @param playerAffinity     whether players grow affinities with the elements (and what they give: power, resistance, cheaper spells)
  * @param affinityGain       how fast affinity points come, times this (the daily allowances count what's done, not what it's worth)
  * @param travel             the travel commands ({@code /home}, {@code /warp}, {@code /tpa}...): see {@link TravelSettings}
+ * @param defence            how players stand up to spells (armour, the bonus cap, the spellguard): see {@link DefenceSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -63,10 +64,11 @@ public record WildercordConfig(
 	boolean elementalClimate,
 	boolean playerAffinity,
 	double affinityGain,
-	TravelSettings travel
+	TravelSettings travel,
+	DefenceSettings defence
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS);
+		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -83,6 +85,23 @@ public record WildercordConfig(
 	public record TravelSettings(boolean enabled, int maxHomes, int warmupSeconds, int cooldownSeconds, int rtpCooldownSeconds, int rtpRadius,
 			int tpaTimeoutSeconds) {
 		public static final TravelSettings DEFAULTS = new TravelSettings(true, 3, 3, 30, 300, 5000, 60);
+	}
+
+	/**
+	 * How players stand up to spells (the {@code defence} section), whoever cast them. None of it touches spells landing on
+	 * creatures. A file written before the section existed reads as these defaults.
+	 *
+	 * @param spellguard                whether the spellguard is on: a single spell hit can't take a player from high health
+	 *                                  straight to dead, and leaves them on one heart instead
+	 * @param spellguardHealth          the share of full health (0.8 is 80%) a player needs for the spellguard to hold
+	 * @param spellguardRechargeSeconds how long the spellguard takes to come back after it has held
+	 * @param maxBonus                  the most a hit's bonuses together (execute, reactions, affinities, backstabs...) may
+	 *                                  multiply a spell against a player
+	 * @param armourRate                how much of armour's worth against blades counts against spells that ignore armour
+	 *                                  (magic, frost): 0 is none, 1 all of it
+	 */
+	public record DefenceSettings(boolean spellguard, double spellguardHealth, int spellguardRechargeSeconds, double maxBonus, double armourRate) {
+		public static final DefenceSettings DEFAULTS = new DefenceSettings(true, 0.8, 60, 2.5, 0.55);
 	}
 
 	/** The file's format version, written so later versions can migrate it. */
@@ -140,7 +159,13 @@ public record WildercordConfig(
 				r.integer("travel", "cooldown_seconds", d.travel.cooldownSeconds(), 0, 86400),
 				r.integer("travel", "rtp_cooldown_seconds", d.travel.rtpCooldownSeconds(), 0, 86400),
 				r.integer("travel", "rtp_radius", d.travel.rtpRadius(), 16, 1000000),
-				r.integer("travel", "tpa_timeout_seconds", d.travel.tpaTimeoutSeconds(), 5, 3600)));
+				r.integer("travel", "tpa_timeout_seconds", d.travel.tpaTimeoutSeconds(), 5, 3600)),
+			new DefenceSettings(
+				r.bool("defence", "spellguard", d.defence.spellguard()),
+				r.number("defence", "spellguard_health", d.defence.spellguardHealth(), 0.1, 1),
+				r.integer("defence", "spellguard_recharge_seconds", d.defence.spellguardRechargeSeconds(), 0, 3600),
+				r.number("defence", "max_bonus", d.defence.maxBonus(), 1, 100),
+				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -158,6 +183,7 @@ public record WildercordConfig(
 			"player_affinity"));
 		KEYS.put("affinity", Set.of("gain_multiplier"));
 		KEYS.put("travel", Set.of("enabled", "max_homes", "warmup_seconds", "cooldown_seconds", "rtp_cooldown_seconds", "rtp_radius", "tpa_timeout_seconds"));
+		KEYS.put("defence", Set.of("spellguard", "spellguard_health", "spellguard_recharge_seconds", "max_bonus", "armour_rate"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -339,6 +365,17 @@ public record WildercordConfig(
 		travelSection.addProperty("rtp_radius", travel.rtpRadius());
 		travelSection.addProperty("tpa_timeout_seconds", travel.tpaTimeoutSeconds());
 		root.add("travel", travelSection);
+
+		JsonObject defenceSection = new JsonObject();
+		defenceSection.addProperty("_about", "How players stand up to spells, from players and monsters alike. The spellguard stops one spell hit taking a player "
+			+ "from spellguard_health (0.8 is 80%) of their health straight to dead, leaving them on one heart, then recharges. max_bonus caps what a hit's "
+			+ "bonuses together multiply a spell by against a player. armour_rate is how much of armour's worth counts against spells that ignore armour.");
+		defenceSection.addProperty("spellguard", defence.spellguard());
+		defenceSection.addProperty("spellguard_health", defence.spellguardHealth());
+		defenceSection.addProperty("spellguard_recharge_seconds", defence.spellguardRechargeSeconds());
+		defenceSection.addProperty("max_bonus", defence.maxBonus());
+		defenceSection.addProperty("armour_rate", defence.armourRate());
+		root.add("defence", defenceSection);
 		return GSON.toJson(root) + "\n";
 	}
 

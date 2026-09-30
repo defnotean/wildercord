@@ -18,6 +18,9 @@ Public API (imported by generate_assets.py):
     clarity_effect_icon() -> Image          (18x18 mob-effect icon)
     mana_effect_icon() -> Image             (18x18 mob-effect icon)
     mana_badge_icon() -> Image              (12x12 GUI badge for a dark screen)
+    heart_badge_icon() -> Image             (12x12 GUI badge for a dark screen)
+    warded_effect_icon() -> Image           (18x18 mob-effect icon)
+    ward_badge_icon() -> Image              (12x12 GUI badge for a dark screen)
 
 Run this file directly to render review contact sheets into build/art-preview (or a folder you pass).
 """
@@ -3642,6 +3645,61 @@ def heart_badge_icon() -> Image.Image:
     return _sprite(HEART_BADGE, HEART_PAL, 12)
 
 
+# Warded (less damage from spells) and the Cord screen's spell-defence badge: a shield in the amber of a
+# Shield rune's circles, lit from the top-left, with a ring of light (a ward) on its face.
+WARD_PAL = {
+    "o": hexc("#5A3A10"), "d": hexc("#A8661C"), "m": hexc("#D88A2E"), "M": hexc("#F5B04A"),
+    "l": hexc("#FFD27A"), "h": hexc("#FFF0C8"), "w": hexc("#FFFFFF"),
+}
+WARDED = """
+    ..................
+    ...oooooooooooo...
+    ..ohhllllllllMdo..
+    ..ohlMMMMMMMMMdo..
+    ..olMMMMwwMMMmdo..
+    ..olMMMwMMwMMmdo..
+    ..olMMwMMMMwMmdo..
+    ..olMMwMMMMwMmdo..
+    ..olMMMwMMwMMmdo..
+    ...olMMMwwMMmdo...
+    ...olMMMMMMMmdo...
+    ....olMMMMMmdo....
+    ....olMMMMMmdo....
+    .....olMMMmdo.....
+    ......olMmdo......
+    .......oddo.......
+    ........oo........
+    ..................
+"""
+
+# For the dark screen a lighter rim, as the mana badge has, so the outline survives against the panel.
+WARD_BADGE_PAL = dict(WARD_PAL, o=hexc("#8A5A20"))
+WARD_BADGE = """
+    ............
+    .oooooooooo.
+    .ohllllllMo.
+    .olMMwwMMmo.
+    .olMwMMwMmo.
+    .olMwMMwMmo.
+    .olMMwwMMmo.
+    ..olMMMMmo..
+    ..olMMMMmo..
+    ...olMMmo...
+    ....oMmo....
+    .....oo.....
+"""
+
+
+def warded_effect_icon() -> Image.Image:
+    """18x18 mob-effect icon for Warded."""
+    return _sprite(WARDED, WARD_PAL, 18)
+
+
+def ward_badge_icon() -> Image.Image:
+    """12x12 GUI badge for the Cord screen's spell defences."""
+    return _sprite(WARD_BADGE, WARD_BADGE_PAL, 12)
+
+
 # ============================================================== the Knot
 # A whole spell tied into one rune: a knotted cord of pale rope round a rose gem.
 
@@ -3776,7 +3834,8 @@ def preview(out_dir: str):
     _check(crystal, "mana_crystal")
     items.append(("mana_crystal", crystal))
     for name, im, size in [("clarity 18px", clarity_effect_icon(), 18), ("mana 18px", mana_effect_icon(), 18),
-                           ("mana_badge 12px", mana_badge_icon(), 12)]:
+                           ("mana_badge 12px", mana_badge_icon(), 12), ("warded 18px", warded_effect_icon(), 18),
+                           ("ward_badge 12px", ward_badge_icon(), 12)]:
         _check([im], name, size=size)
         items.append((name, [im]))
 

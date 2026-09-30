@@ -440,5 +440,17 @@ public final class WildercordAttachments {
 		builder -> builder.syncWith(RuneMarks.STREAM_CODEC, AttachmentSyncPredicate.all())
 	);
 
+	/**
+	 * The game time a player's spellguard last held (absent: it never has), so it recharges from then (see
+	 * {@code cast.SpellDefence}). Saved, so leaving and coming back doesn't recharge it; synced, for the Cord screen's
+	 * readout. Not kept through death: a player who respawns starts with it ready.
+	 */
+	public static final AttachmentType<Long> SPELLGUARD = AttachmentRegistry.create(
+		Wildercord.id("spellguard"),
+		builder -> builder
+			.persistent(Codec.LONG)
+			.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly())
+	);
+
 	public static void init() {}
 }

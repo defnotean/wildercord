@@ -241,6 +241,14 @@ Read its circle: the colour is the element, the seal in the middle is the first 
 each little roundel on the star is one rune. Area spells also mark the ground where they'll land. See
 [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}#telegraphs).
 
+### Spells keep killing me in one hit. How do I survive them?
+Wear armour: it now counts against every spell, for a little over half its worth against pure magic, frost and
+sonic booms (full netherite takes 35 to 40% off an everyday spell). Put **Warding** on it, an armour enchantment that
+takes 8% off spells per level, up to 80% (it can't share a piece with Protection), and drink a **Potion of Warding**
+(Awkward Potion + Tinted Glass) before a boss for 20% more. And you always have a **spellguard**: one spell can't take
+you from 80% of your health or more straight to dead, it leaves you on one heart instead, then takes a minute to come
+back. See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}).
+
 ### I can't see ley lines.
 You need to be wearing a Cord, and to be in the Overworld. They're thin ribbons of violet light running along
 the ground. See [Ley Lines]({{ '/progression/ley-lines/' | relative_url }}).
@@ -278,9 +286,10 @@ never stops the server.
 | `imbuing` | How many imbued items and glyphs one caster keeps |
 | `features` | Switches for whole features: world events, duels, wild magic, magic that changes the world, creature affinities and elemental climate (all on at first) |
 | `travel` | The travel commands: whether they exist at all, how many homes each player may have, the warmup, the cooldowns, how far `/rtp` goes and how long a teleport request waits. See [Getting Around]({{ '/social/travel/' | relative_url }}#for-server-owners) |
+| `defence` | How players stand up to spells: whether the spellguard is on, how much health it needs (80% at first) and how long it takes to come back (a minute), how far a spell's bonuses may multiply it against a player (two and a half times), and how much armour counts against magic (a little over half). See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}) |
 
 ### I updated Wildercord. Do I need a new settings file?
 No. When the server starts (or an operator runs `/wildercord reload`), any setting the file lacks is added to it at
 its default, and everything you've already set is kept. So an older file gains the newer settings, such as the
-`travel` section and the creature affinity and climate switches, by itself. (A file you've written comments in is left
+`travel` and `defence` sections and the creature affinity and climate switches, by itself. (A file you've written comments in is left
 as it is, so the comments aren't lost; the settings it lacks still run at their defaults.)

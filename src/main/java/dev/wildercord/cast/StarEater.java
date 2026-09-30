@@ -388,7 +388,7 @@ public class StarEater extends DungeonBoss {
 					parry(level, shard, player);
 					continue;
 				}
-				hit.hurtServer(level, level.damageSources().indirectMagic(this, this), (float) (6 * Runebound.power(level)));
+				SpellDefence.hurt(level, hit, level.damageSources().indirectMagic(this, this), (float) (6 * Runebound.power(level)));
 				Vfx.radial(level, ParticleTypes.END_ROD, shard.pos, 12, 0.2);
 				Fx.sound(level, shard.pos, SoundEvents.AMETHYST_CLUSTER_BREAK, 1.0F, 1.2F);
 				it.remove();
@@ -533,7 +533,7 @@ public class StarEater extends DungeonBoss {
 				LivingEntity t = (LivingEntity) e;
 				Vec3 out = t.position().subtract(c);
 				Vec3 flat = new Vec3(out.x, 0, out.z).lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : new Vec3(out.x, 0, out.z).normalize();
-				t.hurtServer(level, level.damageSources().indirectMagic(this, this), (float) (5 * Runebound.power(level)));
+				SpellDefence.hurt(level, t, level.damageSources().indirectMagic(this, this), (float) (5 * Runebound.power(level)));
 				Effects.push(t, new Vec3(flat.x * 1.5, 0.4, flat.z * 1.5));
 			}
 			Vfx.radial(level, ParticleTypes.END_ROD, c, 60, 0.5);

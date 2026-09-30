@@ -406,7 +406,7 @@ public final class Wards {
 		reflecting = true;
 		try {
 			Effects.readyToHurt(attacker);
-			attacker.hurtServer(level, level.damageSources().indirectMagic(entity, entity), (float) (damage * ward.fraction()));
+			SpellDefence.hurt(level, attacker, level.damageSources().indirectMagic(entity, entity), (float) (damage * ward.fraction()));
 			ward.until -= 20;
 			if (--ward.left <= 0) {
 				REFLECT.remove(entity.getUUID(), ward);
@@ -509,7 +509,8 @@ public final class Wards {
 		if (held.stored > 0) {
 			DamageSource source = held.source != null ? held.source : level.damageSources().indirectMagic(held.caster, held.caster);
 			Effects.readyToHurt(t);
-			t.hurtServer(level, source, held.stored);
+			// What was held already met a player's spell defences as it was stored; it lands as one blow, so the spellguard answers it.
+			SpellDefence.guarded(t, () -> t.hurtServer(level, source, held.stored));
 			// Everything held lands at once, and it hits like it.
 			Vec3 away = Effects.horizontal(t.position().subtract(held.caster.position()), held.caster.getLookAngle());
 			Effects.push(t, away.scale(Math.min(2.0, 0.4 + held.hits * 0.15)).add(0, 0.35, 0));

@@ -10,6 +10,10 @@ nav_order: 5
 Cords take **seven enchantments** of their own: three for your **mana** and four for your **spells**.
 They only work on the Cord you're wearing, and they only go on Cords.
 
+{: .note }
+Looking for protection against spells? That's **Warding**, an enchantment for your armour: see
+[Defending Against Magic]({{ '/progression/defence/' | relative_url }}#warding).
+
 1. TOC
 {:toc}
 

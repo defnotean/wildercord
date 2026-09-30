@@ -175,6 +175,67 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void defenceDefaultsAreTheSpellDefenceNumbers() {
+		WildercordConfig.DefenceSettings d = D.defence();
+		assertTrue(d.spellguard());
+		assertEquals(dev.wildercord.cast.SpellDefenceRules.GUARD_HEALTH, d.spellguardHealth(), 1e-9);
+		assertEquals(dev.wildercord.cast.SpellDefenceRules.GUARD_RECHARGE, d.spellguardRechargeSeconds());
+		assertEquals(dev.wildercord.cast.SpellDefenceRules.MAX_BONUS, d.maxBonus(), 1e-9);
+		assertEquals(dev.wildercord.cast.SpellDefenceRules.ARMOUR_RATE, d.armourRate(), 1e-9);
+		assertTrue(D.toJson().contains("\"defence\""), "a fresh file should list the defence settings");
+	}
+
+	@Test
+	void defenceSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(
+			"{\"defence\": {\"spellguard\": false, \"spellguard_health\": 0.9, \"spellguard_recharge_seconds\": 99999, \"max_bonus\": 0.5, \"armour_rate\": 0.3, \"guard\": 1}}");
+		WildercordConfig.DefenceSettings d = parsed.config().defence();
+		assertFalse(d.spellguard());
+		assertEquals(0.9, d.spellguardHealth(), 1e-9);
+		assertEquals(3600, d.spellguardRechargeSeconds());
+		// A cap under 1 would turn a weakened hit into a stronger one: 1 is the least.
+		assertEquals(1.0, d.maxBonus(), 1e-9);
+		assertEquals(0.3, d.armourRate(), 1e-9);
+		// Two out of range, one unknown key.
+		assertEquals(3, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(1.0, WildercordConfig.parse("{\"defence\": {\"armour_rate\": 4}}").config().defence().armourRate(), 1e-9);
+		assertEquals(0.1, WildercordConfig.parse("{\"defence\": {\"spellguard_health\": 0}}").config().defence().spellguardHealth(), 1e-9);
+		// Everything else is untouched.
+		assertEquals(WildercordConfig.TravelSettings.DEFAULTS, parsed.config().travel());
+		assertEquals(0.6, parsed.config().pvpDamageScale(), 1e-9);
+	}
+
+	@Test
+	void theWrittenFileKeepsChangedDefenceSettings() {
+		WildercordConfig changed = WildercordConfig.parse(
+			"{\"defence\": {\"spellguard\": false, \"spellguard_health\": 0.5, \"spellguard_recharge_seconds\": 30, \"max_bonus\": 4, \"armour_rate\": 0.8}}").config();
+		assertEquals(new WildercordConfig.DefenceSettings(false, 0.5, 30, 4.0, 0.8), changed.defence());
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config());
+	}
+
+	@Test
+	void aFileFromBeforeTheDefenceSectionGainsIt() {
+		// Written by 0.6.1, before the defence section existed.
+		String old = "{\"version\": 1, \"casting\": {\"pvp_damage_scale\": 0.4}, \"features\": {\"duels\": false}}";
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertEquals(WildercordConfig.DefenceSettings.DEFAULTS, parsed.config().defence());
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"defence\"", "\"spellguard\"", "\"spellguard_health\"", "\"spellguard_recharge_seconds\"", "\"max_bonus\"", "\"armour_rate\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		WildercordConfig regrown = WildercordConfig.parse(grown).config();
+		assertEquals(0.4, regrown.pvpDamageScale(), 1e-9);
+		assertEquals(WildercordConfig.DefenceSettings.DEFAULTS, regrown.defence());
+		// A defence section missing one setting gets just that one back, and keeps the owner's others.
+		String partial = D.toJson().replace("\"max_bonus\": 2.5,", "").replace("\"armour_rate\": 0.55", "\"armour_rate\": 0.2");
+		assertFalse(partial.contains("\"max_bonus\""), partial);
+		WildercordConfig.DefenceSettings fixed = WildercordConfig.parse(WildercordConfig.addMissing(partial).orElseThrow()).config().defence();
+		assertEquals(2.5, fixed.maxBonus(), 1e-9);
+		assertEquals(0.2, fixed.armourRate(), 1e-9);
+	}
+
+	@Test
 	void chancesScaleAndStayWithinAHundred() {
 		assertEquals(35, WildercordConfig.scaledChance(35, 1.0));
 		assertEquals(70, WildercordConfig.scaledChance(35, 2.0));

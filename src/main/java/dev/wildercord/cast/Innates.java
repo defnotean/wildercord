@@ -386,7 +386,7 @@ public final class Innates {
 				for (LivingEntity other : members) {
 					if (other != entity && other.isAlive() && other.level() == level && other.distanceTo(entity) < 32) {
 						Effects.readyToHurt(other);
-						other.hurtServer(level, source, damage * THREAD_SHARE);
+						SpellDefence.hurt(level, other, source, damage * THREAD_SHARE);
 						threadPulse(level, entity, other, hop++);
 				}
 			}

@@ -1157,6 +1157,13 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
 - **PvP:** with PvP off, harmful effects never affect other players or their pets. With PvP on, rune
   damage to players is ×0.6. *(Planned: crowd-control such as Frost, Pull and Launch
   lasting half as long on players.)*
+- **Spell defence (players only):** every spell hit on a player, whoever cast it, goes through
+  `SpellDefence`. A hit's bonuses (Execute, reactions, hexes, backstabs...) multiply to ×2.5 at most;
+  armour counts at 55% of its worth against spells that bypass armour; Warding (armour enchantment,
+  I-IV, 2 protection points a level, sharing vanilla's 20-point cap with Protection and exclusive
+  with it) and Warded (the Potion of Warding, 20% a level) take their share; and the spellguard stops
+  one hit taking a player from 80%+ health to dead (one heart left, recharges in 60 s). See the
+  `defence` settings in [features/gear-config-api.md](features/gear-config-api.md).
 - **Hard caps per cast:** 64 creatures, 32 blocks, 24 live projectiles per player,
   8 links deep, and Knots 2 deep. Nobody can crash a server with
   `Split · Split · Echo · Echo · Echo`.
@@ -1173,8 +1180,8 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
 - **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
-  blocks, the PvP scale, mana-regen and cost multipliers, Runebound and loot chances, imbue
-  limits and feature switches; `/wildercord reload` reads it again (see
+  blocks, the PvP scale, the spell defences, mana-regen and cost multipliers, Runebound and loot
+  chances, imbue limits and feature switches; `/wildercord reload` reads it again (see
   [features/gear-config-api.md](features/gear-config-api.md)).
 
 ## Add-on compatibility contract
