@@ -34,4 +34,11 @@ class RuneChoreographyTest {
 		assertEquals(new RuneChoreography.Sequence(RuneChoreography.Gesture.GATE,
 			RuneChoreography.Gesture.STEP, RuneChoreography.Gesture.FLARE), RuneChoreography.of(Runes.BLINK));
 	}
+
+	@Test
+	void addonRunesHaveASafeVisualFallback() {
+		RuneDef addon = new RuneDef("example:flare", "Flare", RuneFamily.EFFECT, 1, 3, 1,
+			"fire", EffectKind.HARMFUL, Set.of(), "", "A test effect", "damage");
+		assertNotNull(RuneChoreography.of(addon));
+	}
 }

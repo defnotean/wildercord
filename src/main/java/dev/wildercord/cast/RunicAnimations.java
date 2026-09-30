@@ -3,6 +3,7 @@ package dev.wildercord.cast;
 import dev.wildercord.spell.RuneChoreography;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellPlan;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +29,8 @@ public final class RunicAnimations {
 			return;
 		}
 		List<RuneDef> runes = new ArrayList<>();
-		runes.add(group.shape);
+		// Linked effects use an internal Target placeholder, not a castable shape with artwork.
+		if (!group.shape.is(Runes.TRIGGER.id())) runes.add(group.shape);
 		for (SpellPlan.EffectNode node : group.effects) {
 			runes.add(node.effect);
 		}

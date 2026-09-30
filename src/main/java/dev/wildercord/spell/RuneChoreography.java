@@ -34,8 +34,11 @@ public final class RuneChoreography {
 	}
 
 	private static final Map<String, Sequence> ALL = load();
+	private static final Sequence ADDON = new Sequence(Gesture.SEAL, Gesture.ORBIT, Gesture.FLARE);
 
 	public static Sequence of(RuneDef rune) {
+		// Add-on namespaces cannot have entries in Wildercord's bundled roster.
+		if (!rune.id().startsWith("wildercord:")) return ADDON;
 		Sequence sequence = ALL.get(rune.path());
 		if (sequence == null) throw new IllegalArgumentException("No authored animation for " + rune.id());
 		return sequence;
