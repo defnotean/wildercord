@@ -298,6 +298,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			{null, 30, new RuneDef[] {Runes.BOLT, Runes.VOW_MOD, Runes.HARM}},
 			{null, 30, new RuneDef[] {Runes.BOLT, Runes.BLOOD_PRICE_MOD, Runes.HARM}},
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.IF_AIRBORNE, Runes.SWIFT}},
+			{null, 20, new RuneDef[] {Runes.BURST, Runes.SOAR}},
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.SWIFT, Runes.COMBO, Runes.BLITZ, Runes.CLEAVE}},
 			{null, 20, new RuneDef[] {Runes.SELF, Runes.SWIFT, Runes.COMBO, Runes.BLITZ, Runes.CLEAVE}},
 			{null, 30, new RuneDef[] {Runes.SELF, Runes.SWIFT, Runes.COMBO, Runes.BLITZ, Runes.CLEAVE}},
