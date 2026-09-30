@@ -1,8 +1,10 @@
 package dev.wildercord.mixin;
 
+import dev.wildercord.backpack.Backpacks;
 import dev.wildercord.content.CordItem;
 import dev.wildercord.gear.GearSlot;
 import dev.wildercord.gear.GearSlots;
+import dev.wildercord.menu.BackpackSlot;
 import dev.wildercord.menu.CordSlot;
 import dev.wildercord.menu.GearInventorySlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,9 +21,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Appends the Cord slot (menu index 46) and then a slot for each kind of casting gear (47 onwards, in
- * {@link GearSlot#all()} order) to the player inventory menu, and teaches shift-click to move a Cord or a
- * piece of gear in and out of them.
+ * Appends the Cord slot (menu index 46), then a slot for each kind of casting gear (47 onwards, in
+ * {@link GearSlot#all()} order) and then the Backpack slot to the player inventory menu, and teaches
+ * shift-click to move a Cord, a piece of gear or a backpack in and out of them.
  */
 @Mixin(InventoryMenu.class)
 public abstract class InventoryMenuMixin extends AbstractContainerMenu {
@@ -43,6 +45,7 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 		for (GearSlot kind : GearSlot.all()) {
 			this.addSlot(new GearInventorySlot(player, kind));
 		}
+		this.addSlot(new BackpackSlot(player));
 	}
 
 	@Inject(method = "quickMoveStack", at = @At("HEAD"), cancellable = true)
@@ -51,7 +54,7 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 			return;
 		}
 		Slot slot = this.slots.get(index);
-		if (slot instanceof CordSlot || slot instanceof GearInventorySlot) {
+		if (slot instanceof CordSlot || slot instanceof GearInventorySlot || slot instanceof BackpackSlot) {
 			cir.setReturnValue(slot.hasItem() ? wildercord$move(player, slot, WILDERCORD_INV_START, WILDERCORD_INV_END, true) : ItemStack.EMPTY);
 			return;
 		}
@@ -60,7 +63,8 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 			return;
 		}
 		ItemStack stack = slot.getItem();
-		Slot target = stack.getItem() instanceof CordItem ? this.slots.get(this.wildercord$cordIndex) : wildercord$gearSlot(stack);
+		Slot target = stack.getItem() instanceof CordItem ? this.slots.get(this.wildercord$cordIndex)
+			: Backpacks.isBackpack(stack) ? wildercord$backpackSlot() : wildercord$gearSlot(stack);
 		if (target != null && !target.hasItem()) {
 			ItemStack moved = wildercord$move(player, slot, target.index, target.index + 1, false);
 			if (!moved.isEmpty()) {
@@ -78,6 +82,17 @@ public abstract class InventoryMenuMixin extends AbstractContainerMenu {
 		}
 		for (Slot slot : this.slots) {
 			if (slot instanceof GearInventorySlot gear && gear.kind() == kind) {
+				return slot;
+			}
+		}
+		return null;
+	}
+
+	/** The Backpack slot. */
+	@Unique
+	private Slot wildercord$backpackSlot() {
+		for (Slot slot : this.slots) {
+			if (slot instanceof BackpackSlot) {
 				return slot;
 			}
 		}

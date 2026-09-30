@@ -1,5 +1,5 @@
 {
-  "type": "wildercord:cord_upgrade",
+  "type": "wildercord:upgrade",
   "category": "equipment",
   "ingredients": [
     "wildercord:twine_cord",

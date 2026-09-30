@@ -1,9 +1,12 @@
 package dev.wildercord.content;
 
 import dev.wildercord.Wildercord;
+import dev.wildercord.backpack.BackpackItem;
+import dev.wildercord.backpack.BackpackTier;
 import dev.wildercord.spell.Runes;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -12,6 +15,8 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 import java.util.function.Function;
 
@@ -30,6 +35,9 @@ public final class WildercordItems {
 	public static final Item SPELL_SCROLL = register("spell_scroll", SpellScrollItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
 	public static final Item TORN_PAGE = register("torn_page", TornPageItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
 	public static final Item TRAINING_DUMMY = register("training_dummy", TrainingDummyItem::new, new Item.Properties().stacksTo(16));
+	public static final BackpackItem BACKPACK = backpack(BackpackTier.BACKPACK, Rarity.COMMON);
+	public static final BackpackItem REINFORCED_BACKPACK = backpack(BackpackTier.REINFORCED, Rarity.COMMON);
+	public static final BackpackItem RUNEWOVEN_BACKPACK = backpack(BackpackTier.RUNEWOVEN, Rarity.UNCOMMON);
 
 	public static final CreativeModeTab TAB = Registry.register(
 		BuiltInRegistries.CREATIVE_MODE_TAB,
@@ -46,6 +54,9 @@ public final class WildercordItems {
 				output.accept(MANA_CRYSTAL);
 				output.accept(TORN_PAGE);
 				output.accept(TRAINING_DUMMY);
+				output.accept(BACKPACK);
+				output.accept(REINFORCED_BACKPACK);
+				output.accept(RUNEWOVEN_BACKPACK);
 				dev.wildercord.gear.GearItems.all().forEach(output::accept);
 				output.accept(WildercordBlocks.WELLSTONE);
 				output.accept(WildercordBlocks.RUNE_SEAL);
@@ -64,6 +75,18 @@ public final class WildercordItems {
 	private static CordItem cord(CordTier tier, Rarity rarity) {
 		// Enchantable so Reservoir, Wellspring and Siphon can go on a Cord at the table, anvil or with books.
 		return register(tier.key + "_cord", p -> new CordItem(tier, p), new Item.Properties().stacksTo(1).rarity(rarity).enchantable(15));
+	}
+
+	private static BackpackItem backpack(BackpackTier tier, Rarity rarity) {
+		// One to a slot, empty to begin with (an emptied one matches a new one); the runes keep the best one from burning.
+		// The game's own list of what's inside is left out of the tooltip, which lists it itself (see BackpackItem).
+		Item.Properties properties = new Item.Properties().stacksTo(1).rarity(rarity)
+			.component(DataComponents.CONTAINER, ItemContainerContents.EMPTY)
+			.component(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.CONTAINER, true));
+		if (tier == BackpackTier.RUNEWOVEN) {
+			properties.fireResistant();
+		}
+		return register(tier.path, p -> new BackpackItem(tier, p), properties);
 	}
 
 	private static <T extends Item> T register(String path, Function<Item.Properties, T> factory, Item.Properties properties) {

@@ -31,10 +31,11 @@ public final class Wildercord implements ModInitializer {
 		WildercordEffects.init();
 		WildercordBlocks.init();
 		WildercordItems.init();
-		dev.wildercord.content.CordUpgradeRecipe.init();
+		dev.wildercord.content.UpgradeRecipe.init();
 		dev.wildercord.menu.WildercordMenus.init();
 		dev.wildercord.gear.GearItems.init();
 		dev.wildercord.gear.GearSlots.init();
+		dev.wildercord.backpack.Backpacks.init();
 		dev.wildercord.config.Config.init();
 		dev.wildercord.content.WildercordParticles.init();
 		dev.wildercord.content.WildercordSounds.init();

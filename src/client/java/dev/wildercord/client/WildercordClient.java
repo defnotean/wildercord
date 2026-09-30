@@ -45,6 +45,9 @@ public final class WildercordClient implements ClientModInitializer {
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.TIE, dev.wildercord.client.render.GearModel::createTie);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.LOOP, dev.wildercord.client.render.GearModel::createLoop);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.MOTE, dev.wildercord.client.render.GearModel::createMote);
+		// A worn backpack, on the back with its straps down the chest.
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK, dev.wildercord.client.render.BackpackModel::createPack);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK_STRAP, dev.wildercord.client.render.BackpackModel::createStrap);
 		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
 			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
 				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
@@ -68,6 +71,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
 		ImbuedTooltip.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
+		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.BACKPACK, BackpackScreen::new);
 		BlankRuneTooltip.init();
 		Tooltips.init();
 

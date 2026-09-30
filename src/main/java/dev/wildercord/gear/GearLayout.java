@@ -5,7 +5,10 @@ package dev.wildercord.gear;
  * Pure arithmetic (in pixels, relative to the screen's window), so the menu, the drawing, the click
  * handling and the tests all read the same numbers.
  *
- * <p>Survival: the vanilla panel has no free room for three more slots beside the Cord slot (the recipe
+ * <p>The Backpack slot ({@code menu.BackpackSlot}) rides along after the last gear slot, in the same tray and
+ * block: {@link #traySlots()} counts it, and {@link #backpackIndex()} is its place.</p>
+ *
+ * <p>Survival: the vanilla panel has no free room for more slots beside the Cord slot (the recipe
  * book button and the crafting grid take it), so they sit in a tray on the panel's top edge, above the
  * armour column and the paper doll, left to right. It is part of the window for clicking, and moves with
  * it when the recipe book opens. Creative: a block of two columns to the right of the Cord slot, in the
@@ -34,8 +37,23 @@ public final class GearLayout {
 	public static final int CREATIVE_COLUMNS = 2;
 	public static final int CREATIVE_CAPACITY = 4;
 
+	/** Every slot on the tray: the gear slots, then the Backpack slot. */
+	public static int traySlots() {
+		return GearSlot.all().size() + 1;
+	}
+
+	/** The Backpack slot's place on the tray and in the creative block: after the last gear slot. */
+	public static int backpackIndex() {
+		return GearSlot.all().size();
+	}
+
 	public static int inventoryX(GearSlot slot) {
-		return INVENTORY_X + slot.index() * SLOT;
+		return inventoryX(slot.index());
+	}
+
+	/** Survival: the x of the tray's slot at {@code index}. */
+	public static int inventoryX(int index) {
+		return INVENTORY_X + index * SLOT;
 	}
 
 	public static int inventoryY(GearSlot slot) {
@@ -53,10 +71,19 @@ public final class GearLayout {
 	}
 
 	public static int creativeX(GearSlot slot) {
-		return CREATIVE_X + slot.index() % CREATIVE_COLUMNS * SLOT;
+		return creativeX(slot.index());
 	}
 
 	public static int creativeY(GearSlot slot) {
-		return CREATIVE_Y + slot.index() / CREATIVE_COLUMNS * SLOT;
+		return creativeY(slot.index());
+	}
+
+	/** Creative: where the block's slot at {@code index} sits. */
+	public static int creativeX(int index) {
+		return CREATIVE_X + index % CREATIVE_COLUMNS * SLOT;
+	}
+
+	public static int creativeY(int index) {
+		return CREATIVE_Y + index / CREATIVE_COLUMNS * SLOT;
 	}
 }

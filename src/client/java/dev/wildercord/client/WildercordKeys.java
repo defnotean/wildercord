@@ -13,8 +13,9 @@ import net.minecraft.client.Minecraft;
 
 /**
  * R casts (tap) or charges (hold, then let go); V moves to the next spell (tap) or opens the spell
- * wheel (hold); K opens the Cord screen. Casting spells 1-4 directly, and loading the next loadout,
- * are unbound by default.
+ * wheel (hold); K opens the Cord screen; B opens the backpack worn in the Backpack slot (in the inventory
+ * too, and closes an open backpack). Casting spells 1-4 directly, and loading the next loadout, are
+ * unbound by default.
  */
 public final class WildercordKeys {
 	private WildercordKeys() {}
@@ -26,6 +27,8 @@ public final class WildercordKeys {
 	private static KeyMapping cast;
 	private static KeyMapping next;
 	private static KeyMapping open;
+	/** Opens the worn backpack (the server opens it, or says there's none). */
+	private static KeyMapping backpack;
 	/** Loads the next saved loadout (the server checks it may, and names it above the hotbar). */
 	private static KeyMapping nextLoadout;
 	/** "Cast spell N": the Cord's four, and the tome's fifth. */
@@ -53,6 +56,20 @@ public final class WildercordKeys {
 		return open.getTranslatedKeyMessage();
 	}
 
+	/** The backpack key, which the backpack screen and the inventory watch too. */
+	public static KeyMapping backpackMapping() {
+		return backpack;
+	}
+
+	public static net.minecraft.network.chat.Component backpackKey() {
+		return backpack.getTranslatedKeyMessage();
+	}
+
+	/** Asks the server to open the worn backpack. */
+	public static void openBackpack() {
+		ClientPlayNetworking.send(new WildercordNetworking.OpenBackpack());
+	}
+
 	public static net.minecraft.network.chat.Component nextLoadoutKey() {
 		return nextLoadout.getTranslatedKeyMessage();
 	}
@@ -61,6 +78,7 @@ public final class WildercordKeys {
 		cast = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast", InputConstants.KEY_R, CATEGORY));
 		next = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_spell", InputConstants.KEY_V, CATEGORY));
 		open = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.open_cord", InputConstants.KEY_K, CATEGORY));
+		backpack = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.open_backpack", InputConstants.KEY_B, CATEGORY));
 		for (int i = 0; i < CAST_N.length; i++) {
 			CAST_N[i] = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast_" + (i + 1),
 				InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
@@ -134,6 +152,11 @@ public final class WildercordKeys {
 		while (open.consumeClick()) {
 			if (client.player != null && client.gui.screen() == null) {
 				client.gui.setScreen(new CordScreen());
+			}
+		}
+		while (backpack.consumeClick()) {
+			if (playing) {
+				openBackpack();
 			}
 		}
 		while (nextLoadout.consumeClick()) {

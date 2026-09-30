@@ -1,0 +1,18 @@
+{
+  "type": "wildercord:upgrade",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:reinforced_backpack",
+    "wildercord:mana_crystal",
+    "minecraft:echo_shard",
+    "minecraft:amethyst_shard",
+    "minecraft:amethyst_shard",
+    "minecraft:amethyst_shard",
+    "minecraft:amethyst_shard",
+    "wildercord:blank_rune",
+    "wildercord:blank_rune"
+  ],
+  "result": {
+    "id": "wildercord:runewoven_backpack"
+  }
+}

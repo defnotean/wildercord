@@ -43,6 +43,29 @@ public final class WildercordAttachments {
 			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ItemStack.OPTIONAL_STREAM_CODEC), AttachmentSyncPredicate.all())
 	);
 
+	/**
+	 * The backpack in the Backpack slot (see {@code backpack.Backpacks}), with everything in it. Saved with the
+	 * player and synced only to them: what's inside is nobody else's business. Like the gear it isn't kept
+	 * through death: it drops, or is carried over under keepInventory.
+	 */
+	public static final AttachmentType<ItemStack> BACKPACK = AttachmentRegistry.create(
+		Wildercord.id("backpack"),
+		builder -> builder
+			.persistent(ItemStack.OPTIONAL_CODEC)
+			.syncWith(ItemStack.OPTIONAL_STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+	);
+
+	/**
+	 * How the worn backpack looks: the bare item and its colour, none of its contents. Synced to everyone who
+	 * can see the wearer, who see it on their back. Saved alongside {@link #BACKPACK}, and always set with it.
+	 */
+	public static final AttachmentType<ItemStack> BACKPACK_LOOK = AttachmentRegistry.create(
+		Wildercord.id("backpack_look"),
+		builder -> builder
+			.persistent(ItemStack.OPTIONAL_CODEC)
+			.syncWith(ItemStack.OPTIONAL_STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
 	/** Learned runes and threaded spells. Kept through death. */
 	public static final AttachmentType<Spellbook> SPELLBOOK = AttachmentRegistry.create(
 		Wildercord.id("spellbook"),

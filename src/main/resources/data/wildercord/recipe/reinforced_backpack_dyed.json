@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_dye",
+  "category": "equipment",
+  "group": "dyed_backpack",
+  "dye": "#minecraft:dyes",
+  "target": "wildercord:reinforced_backpack",
+  "result": {
+    "id": "wildercord:reinforced_backpack"
+  }
+}

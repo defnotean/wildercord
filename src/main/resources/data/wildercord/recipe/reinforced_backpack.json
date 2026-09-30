@@ -1,0 +1,17 @@
+{
+  "type": "wildercord:upgrade",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:backpack",
+    "minecraft:chest",
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:iron_ingot",
+    "minecraft:leather",
+    "minecraft:leather"
+  ],
+  "result": {
+    "id": "wildercord:reinforced_backpack"
+  }
+}

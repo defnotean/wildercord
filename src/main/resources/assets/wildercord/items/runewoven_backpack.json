@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "wildercord:item/runewoven_backpack",
+    "tints": [
+      {
+        "type": "minecraft:dye",
+        "default": -10467160
+      }
+    ]
+  }
+}

@@ -1,13 +1,13 @@
 package dev.wildercord.client;
 
 import dev.wildercord.gear.GearLayout;
-import dev.wildercord.gear.GearSlot;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 /**
- * The gear slots on the inventory screens. In the survival inventory they sit in a tray on the panel's top
- * edge, drawn to match the vanilla panel (its black outline, white lit edge and grey shaded edge) and open
- * at the bottom into it; every gear slot, and the creative tab's, gets the Cord slot's riveted well.
+ * The gear slots and the Backpack slot on the inventory screens. In the survival inventory they sit in a tray
+ * on the panel's top edge, drawn to match the vanilla panel (its black outline, white lit edge and grey shaded
+ * edge) and open at the bottom into it; every slot on it, and the creative tab's, gets the Cord slot's riveted
+ * well.
  */
 public final class GearTray {
 	private GearTray() {}
@@ -17,12 +17,9 @@ public final class GearTray {
 	private static final int FILL = 0xFFC6C6C6;
 	private static final int SHADE = 0xFF555555;
 
-	/** Draws the tray and the wells of every gear slot; {@code left} and {@code top} are the window's corner. */
+	/** Draws the tray and the wells of every slot on it; {@code left} and {@code top} are the window's corner. */
 	public static void drawSurvival(GuiGraphicsExtractor g, int left, int top) {
-		int slots = GearSlot.all().size();
-		if (slots == 0) {
-			return;
-		}
+		int slots = GearLayout.traySlots();
 		int x0 = left + GearLayout.TRAY_X;
 		int y0 = top + GearLayout.TRAY_Y;
 		int x1 = x0 + GearLayout.trayWidth(slots);
@@ -36,15 +33,15 @@ public final class GearTray {
 		g.fill(x0 + 1, y0 + 3, x0 + 3, y1, WHITE);
 		g.fill(x1 - 4, y0 + 3, x1 - 1, y1, SHADE);
 		g.fill(x1 - 3, y0 + 3, x1 - 1, y0 + 4, SHADE);
-		for (GearSlot slot : GearSlot.all()) {
-			SlotWell.draw(g, left + GearLayout.inventoryX(slot) - 1, top + GearLayout.inventoryY(slot) - 1);
+		for (int i = 0; i < slots; i++) {
+			SlotWell.draw(g, left + GearLayout.inventoryX(i) - 1, top + GearLayout.INVENTORY_Y - 1);
 		}
 	}
 
-	/** Draws the wells of the creative Survival Inventory tab's gear slots. */
+	/** Draws the wells of the creative Survival Inventory tab's gear slots and Backpack slot. */
 	public static void drawCreative(GuiGraphicsExtractor g, int left, int top) {
-		for (GearSlot slot : GearSlot.all()) {
-			SlotWell.draw(g, left + GearLayout.creativeX(slot) - 1, top + GearLayout.creativeY(slot) - 1);
+		for (int i = 0; i < GearLayout.traySlots(); i++) {
+			SlotWell.draw(g, left + GearLayout.creativeX(i) - 1, top + GearLayout.creativeY(i) - 1);
 		}
 	}
 }

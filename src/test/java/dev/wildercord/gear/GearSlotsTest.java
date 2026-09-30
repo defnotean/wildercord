@@ -219,7 +219,10 @@ class GearSlotsTest {
 
 	@Test
 	void theSurvivalTrayIsAboveThePanelAndClearOfEverything() {
-		int count = GearSlot.all().size();
+		// The gear slots, then the Backpack slot after them.
+		int count = GearLayout.traySlots();
+		assertEquals(GearSlot.all().size() + 1, count);
+		assertEquals(GearSlot.all().size(), GearLayout.backpackIndex());
 		assertTrue(GearLayout.INVENTORY_X + count * GearLayout.SLOT <= 176, "the tray fits over the panel's width");
 		for (GearSlot slot : GearSlot.all()) {
 			// Slots are 16 wide, in 18-pixel wells, all above the window's top edge, so nothing in the panel is under them.
@@ -227,6 +230,10 @@ class GearSlotsTest {
 			assertEquals(GearLayout.INVENTORY_X + slot.index() * 18, GearLayout.inventoryX(slot));
 			assertTrue(GearLayout.onTray(GearLayout.inventoryX(slot) + 8, GearLayout.inventoryY(slot) + 8, count), slot + " is on the tray");
 		}
+		int backpackX = GearLayout.inventoryX(GearLayout.backpackIndex());
+		assertEquals(GearLayout.inventoryX(GearSlot.TOME) + 18, backpackX, "the Backpack slot follows the last gear slot");
+		assertTrue(GearLayout.onTray(backpackX + 8, GearLayout.INVENTORY_Y + 8, count), "the Backpack slot is on the tray");
+		assertFalse(GearLayout.onTray(backpackX + 8, GearLayout.INVENTORY_Y + 8, count - 1), "a tray without it wouldn't reach it");
 		// The tray takes a click on its own padding and its slots, and nothing off to the side of it.
 		assertTrue(GearLayout.onTray(GearLayout.TRAY_X, GearLayout.TRAY_Y, count));
 		assertFalse(GearLayout.onTray(GearLayout.TRAY_X - 1, GearLayout.TRAY_Y, count));
@@ -249,10 +256,15 @@ class GearSlotsTest {
 		for (int i = 0; i < 9; i++) {
 			taken.add(new Box("hotbar", 9 + i * 18, 112));
 		}
-		assertTrue(GearSlot.all().size() <= GearLayout.CREATIVE_CAPACITY);
+		assertTrue(GearLayout.traySlots() <= GearLayout.CREATIVE_CAPACITY, "the gear slots and the Backpack slot fit the block");
 		List<Box> gear = new ArrayList<>();
+		List<Box> block = new ArrayList<>();
 		for (GearSlot slot : GearSlot.all()) {
-			Box box = new Box(slot.id(), GearLayout.creativeX(slot), GearLayout.creativeY(slot));
+			block.add(new Box(slot.id(), GearLayout.creativeX(slot), GearLayout.creativeY(slot)));
+		}
+		block.add(new Box("backpack", GearLayout.creativeX(GearLayout.backpackIndex()), GearLayout.creativeY(GearLayout.backpackIndex())));
+		for (Box box : block) {
+			String slot = box.name();
 			assertTrue(box.x() >= 0 && box.x() + 18 <= 195 && box.y() >= 0 && box.y() + 18 <= 136, slot + " is on the tab");
 			for (Box other : taken) {
 				assertFalse(box.overlaps(other), slot + " overlaps " + other.name());
