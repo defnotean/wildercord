@@ -36,6 +36,7 @@ book.
 | [Scribing Desk](#scribing-desk) | Makes a Runesmith; your daily contracts | Crafted |
 | [Wellstone](#wellstone) | Faster mana for everyone near it, on a ley line | Crafted |
 | [Training Dummy](#training-dummy) | Try your spells and read your damage | Crafted |
+| [Backpacks](#backpacks) | 18, 27 or 36 more slots, in hand or worn | Crafted, each from the one before |
 | [Wisp Lantern](#wisp-lantern) | Call out and send home your familiars | Crafted |
 | [Staffs](#staffs) | +20% power and 10% less mana for one element | Crafted |
 | [Greater staffs](#greater-staffs) | +35% power and 10% less mana for one element | Bosses, Archive vaults |
@@ -271,6 +272,21 @@ out of its mana at any hour, and a familiar told to stay near it waits there. Mi
 A straw dummy for trying your spells. Use it on a block to set it up facing you. It never dies: every hit floats up as
 a number, and its name shows your damage per second. **Sneak and punch it** to pick it back up. Dummies stack to 16.
 Hits on a dummy don't count for contracts. See [Training Dummy]({{ '/progression/training-dummy/' | relative_url }}).
+
+## Backpacks
+
+Extra room you carry: the **Backpack** (18 slots), the **Reinforced Backpack** (27) and the **Runewoven Backpack**
+(36). Each bigger one is crafted from the one below it and keeps everything inside. Use one to open it, or wear it in
+the **Backpack slot** on the gear tray and press `B`. Whatever is inside stays inside, wherever the backpack goes.
+
+<div class="recipe-gallery">
+{% include recipe-card.html id="backpack" name="Backpack" %}
+{% include recipe-card.html id="reinforced_backpack" name="Reinforced Backpack" %}
+{% include recipe-card.html id="runewoven_backpack" name="Runewoven Backpack" %}
+</div>
+
+Everything about them (opening, wearing, dyeing, what can't go inside) is on
+**[Backpacks]({{ '/items/backpacks/' | relative_url }})**.
 
 ## Familiars
 

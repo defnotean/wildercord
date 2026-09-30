@@ -180,6 +180,17 @@ public final class WildercordNetworking {
 		}
 	}
 
+	/** The backpack key: open the backpack worn in the Backpack slot. */
+	public record OpenBackpack() implements CustomPacketPayload {
+		public static final Type<OpenBackpack> TYPE = new Type<>(Wildercord.id("open_backpack"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, OpenBackpack> CODEC = StreamCodec.unit(new OpenBackpack());
+
+		@Override
+		public Type<OpenBackpack> type() {
+			return TYPE;
+		}
+	}
+
 	/** Spellbook rewrites (select, edit, rename, a passive's switch, loadouts) and inscribing: a burst of 20, then 10 a second. */
 	private static final PacketThrottle SPELLBOOK = new PacketThrottle(20, 2);
 
@@ -260,6 +271,13 @@ public final class WildercordNetworking {
 			if (result != null) {
 				context.player().sendOverlayMessage(result.ok() ? result.message().copy().withColor(0x7FE0F0)
 					: result.message().copy().withStyle(net.minecraft.ChatFormatting.RED));
+			}
+		});
+		PayloadTypeRegistry.serverboundPlay().register(OpenBackpack.TYPE, OpenBackpack.CODEC);
+		// Limited like the rest: each opening closes and reopens the menu, reading and writing the backpack.
+		ServerPlayNetworking.registerGlobalReceiver(OpenBackpack.TYPE, (payload, context) -> {
+			if (allowed(context)) {
+				dev.wildercord.backpack.Backpacks.openWorn(context.player());
 			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(EditSpell.TYPE, (payload, context) -> {

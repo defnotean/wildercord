@@ -25,7 +25,8 @@
 		"CreeperAccessor",
 		"ZombieVillagerAccessor",
 		"AbstractFurnaceBlockEntityAccessor",
-		"ServerExplosionMixin"
+		"ServerExplosionMixin",
+		"ShulkerBoxBlockEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

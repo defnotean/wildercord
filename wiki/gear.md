@@ -32,6 +32,9 @@ A slot holds one piece and only takes what it's for. Click a piece into it, or *
 take it out); a number key swaps it with your hotbar. Hover an empty slot to see what it takes, and an item's tooltip
 says which slot it goes in.
 
+The fourth slot on the tray is the **Backpack slot**, for a backpack you wear on your back: see
+[Backpacks]({{ '/items/backpacks/' | relative_url }}). A staff in its slot is strapped over the backpack.
+
 What counts is what's in your slots **at the moment you cast**. A piece in its slot works with nothing in your hands.
 
 ### Or held, as before

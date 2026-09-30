@@ -25,33 +25,36 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 /**
- * A Cord made from the one below it ({@code wildercord:cord_upgrade}): crafted like any shapeless
- * recipe (the old Cord and the materials, anywhere in the grid), but the new Cord keeps everything
- * the old one carried, its enchantments, its name and the rest, the way vanilla's transmuting
- * recipes keep a shulker box's contents. The matching and the recipe book's display are a plain
+ * An item made from the one below it ({@code wildercord:upgrade}): a Cord from the Cord before it, a backpack
+ * from the backpack before it. It's crafted like any shapeless recipe (the old item and the materials,
+ * anywhere in the grid), but the new item keeps everything the old one carried, its enchantments, its name,
+ * its colour, what's inside it and the rest, the way vanilla's transmuting recipes keep a shulker box's
+ * contents. The old item is the first ingredient. The matching and the recipe book's display are a plain
  * shapeless recipe's.
  */
-public final class CordUpgradeRecipe extends NormalCraftingRecipe {
-	public static final MapCodec<CordUpgradeRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+public final class UpgradeRecipe extends NormalCraftingRecipe {
+	public static final MapCodec<UpgradeRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
 		Recipe.CommonInfo.MAP_CODEC.forGetter(o -> o.commonInfo),
 		CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(o -> o.bookInfo),
 		ItemStackTemplate.CODEC.fieldOf("result").forGetter(o -> o.result),
 		Ingredient.CODEC.listOf(1, 9).fieldOf("ingredients").forGetter(o -> o.ingredients)
-	).apply(i, CordUpgradeRecipe::new));
-	public static final StreamCodec<RegistryFriendlyByteBuf, CordUpgradeRecipe> STREAM_CODEC = StreamCodec.composite(
+	).apply(i, UpgradeRecipe::new));
+	public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeRecipe> STREAM_CODEC = StreamCodec.composite(
 		Recipe.CommonInfo.STREAM_CODEC, o -> o.commonInfo,
 		CraftingRecipe.CraftingBookInfo.STREAM_CODEC, o -> o.bookInfo,
 		ItemStackTemplate.STREAM_CODEC, o -> o.result,
 		Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()), o -> o.ingredients,
-		CordUpgradeRecipe::new);
-	public static final RecipeSerializer<CordUpgradeRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+		UpgradeRecipe::new);
+	public static final RecipeSerializer<UpgradeRecipe> SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
+	/** The name Cord upgrades had before backpacks shared the recipe; still read, so a data pack written for it keeps working. */
+	private static final RecipeSerializer<UpgradeRecipe> OLD_CORD_SERIALIZER = new RecipeSerializer<>(MAP_CODEC, STREAM_CODEC);
 
 	private final ItemStackTemplate result;
 	private final List<Ingredient> ingredients;
 	/** The same recipe as a plain shapeless one: it does the matching and the recipe book's display. */
 	private final ShapelessRecipe shapeless;
 
-	public CordUpgradeRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ItemStackTemplate result, List<Ingredient> ingredients) {
+	public UpgradeRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ItemStackTemplate result, List<Ingredient> ingredients) {
 		super(commonInfo, bookInfo);
 		this.result = result;
 		this.ingredients = ingredients;
@@ -59,7 +62,8 @@ public final class CordUpgradeRecipe extends NormalCraftingRecipe {
 	}
 
 	public static void init() {
-		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("cord_upgrade"), SERIALIZER);
+		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("upgrade"), SERIALIZER);
+		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("cord_upgrade"), OLD_CORD_SERIALIZER);
 	}
 
 	@Override
@@ -67,12 +71,13 @@ public final class CordUpgradeRecipe extends NormalCraftingRecipe {
 		return shapeless.matches(input, level);
 	}
 
-	/** The new Cord, carrying over whatever the old one in the grid held. */
+	/** The new item, carrying over whatever the old one in the grid held. */
 	@Override
 	public ItemStack assemble(CraftingInput input) {
+		Ingredient old = ingredients.getFirst();
 		for (int slot = 0; slot < input.size(); slot++) {
 			ItemStack stack = input.getItem(slot);
-			if (stack.getItem() instanceof CordItem) {
+			if (!stack.isEmpty() && old.test(stack)) {
 				return TransmuteRecipe.createWithOriginalComponents(result, stack);
 			}
 		}
@@ -90,7 +95,7 @@ public final class CordUpgradeRecipe extends NormalCraftingRecipe {
 	}
 
 	@Override
-	public RecipeSerializer<CordUpgradeRecipe> getSerializer() {
+	public RecipeSerializer<UpgradeRecipe> getSerializer() {
 		return SERIALIZER;
 	}
 }

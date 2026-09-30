@@ -138,6 +138,46 @@ def _shield():
     return _flat(img)
 
 
+def _chest():
+    """A chest as the inventory draws it, from its entity texture: the lid's top, and its front and side (lid over base)."""
+    with JAR.open("assets/minecraft/textures/entity/chest/normal.png") as f:
+        tex = Image.open(f).convert("RGBA")
+    k = tex.width // 64
+
+    def face(u):
+        img = Image.new("RGBA", (14, 15), (0, 0, 0, 0))
+        img.alpha_composite(tex.crop((u * k, 14 * k, (u + 14) * k, 19 * k)).resize((14, 5), Image.NEAREST), (0, 0))
+        img.alpha_composite(tex.crop((u * k, 33 * k, (u + 14) * k, 43 * k)).resize((14, 10), Image.NEAREST), (0, 5))
+        return img.resize((16, 16), Image.NEAREST)
+
+    top = tex.crop((28 * k, 0, 42 * k, 14 * k)).resize((16, 16), Image.NEAREST)
+    front = face(42)
+    # The latch, over the seam between lid and base.
+    front.alpha_composite(tex.crop((1 * k, 1 * k, 3 * k, 5 * k)).resize((2, 4), Image.NEAREST), (7, 3))
+    return _cube(top, front, face(0))
+
+
+def _dyed_layers(name):
+    """A mod item drawn in two layers with its first tinted, as leather is (a backpack): None if it isn't one."""
+    item_file = ROOT / f"src/main/resources/assets/wildercord/items/{name}.json"
+    model_file = ROOT / f"src/main/resources/assets/wildercord/models/item/{name}.json"
+    if not item_file.exists() or not model_file.exists():
+        return None
+    tints = json.loads(item_file.read_text(encoding="utf-8"))["model"].get("tints", [])
+    layers = json.loads(model_file.read_text(encoding="utf-8")).get("textures", {})
+    if not tints or tints[0].get("type") != "minecraft:dye" or "layer1" not in layers:
+        return None
+    colour = tints[0]["default"] & 0xFFFFFF
+    base = _texture(layers["layer0"]).copy()
+    px = base.load()
+    for y in range(16):
+        for x in range(16):
+            r, g, b, a = px[x, y]
+            px[x, y] = (r * (colour >> 16) // 255, g * ((colour >> 8) & 255) // 255, b * (colour & 255) // 255, a)
+    base.alpha_composite(_texture(layers["layer1"]))
+    return _flat(base)
+
+
 def _cube(top, left, right, half=False):
     """A block as the inventory draws it: a little cube seen from above, its sides shaded (a slab: half as tall)."""
     out = Image.new("RGBA", (ICON, ICON), (0, 0, 0, 0))
@@ -216,6 +256,10 @@ def icon(item, rune=None, potion=None, kind="potion"):
         img = _cube(face, face, face, half=True)
     elif item == "minecraft:shield":
         img = _shield()
+    elif item == "minecraft:chest":
+        img = _chest()
+    elif ns == "wildercord" and _dyed_layers(name) is not None:
+        img = _dyed_layers(name)
     else:
         sprite = _vanilla(f"item/{name}") if ns == "minecraft" else _mod(f"item/{name}")
         if sprite is not None:
@@ -364,7 +408,7 @@ def render(out_dir):
     made = {}
     for f in sorted(RECIPES.glob("*.json")):
         recipe = json.loads(f.read_text(encoding="utf-8"))
-        if recipe["type"] in ("minecraft:crafting_shaped", "minecraft:crafting_shapeless", "wildercord:cord_upgrade"):
+        if recipe["type"] in ("minecraft:crafting_shaped", "minecraft:crafting_shapeless", "wildercord:upgrade"):
             crafting(recipe).save(out_dir / f"{f.stem}.png")
             made[f.stem] = recipe
     for f in sorted((RECIPES / "brewing").glob("*.json")):

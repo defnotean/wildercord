@@ -370,6 +370,7 @@ def main():
     runesmith_art.main()
     write_familiar_content()
     write_gear_content()
+    write_backpack_content()
     dungeon_assets.main(sys.modules[__name__], runes)
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
@@ -685,6 +686,7 @@ def write_lang(runes):
     lang.update(advancement_lang())
     lang.update(familiar_lang())
     lang.update(GEAR_LANG)
+    lang.update(BACKPACK_LANG)
     lang.update(DUNGEON_LANG)
     lang.update(TRAVEL_LANG)
     lang.update(LOADOUT_LANG)
@@ -1232,10 +1234,10 @@ def write_recipes(runes):
     upgrades = [("copper", "twine", ["minecraft:copper_ingot"] * 4 + ["minecraft:amethyst_shard"]),
                 ("amethyst", "copper", ["minecraft:amethyst_shard"] * 4 + ["minecraft:gold_ingot"] * 2),
                 ("echo", "amethyst", ["minecraft:echo_shard"] * 2 + ["minecraft:netherite_scrap"])]
-    # A shapeless recipe that keeps the old Cord's enchantments, name and the rest (CordUpgradeRecipe.java).
+    # A shapeless recipe that keeps the old Cord's enchantments, name and the rest (UpgradeRecipe.java).
     for new, old, extra in upgrades:
         write_json(out / f"{new}_cord.json", {
-            "type": "wildercord:cord_upgrade", "category": "equipment",
+            "type": "wildercord:upgrade", "category": "equipment",
             "ingredients": [f"wildercord:{old}_cord", *extra], "result": {"id": f"wildercord:{new}_cord"}})
 
 
@@ -2684,6 +2686,65 @@ def write_gear_content():
             "type": "minecraft:crafting_shaped", "category": "equipment",
             "key": {"C": "wildercord:mana_crystal", **key}, "pattern": pattern, "result": {"id": recipe_id}})
         unlock_advancement(recipe_id, "wildercord:mana_crystal")
+
+
+# ---------------------------------------------------------------- backpacks
+# (the rules live in src/main/java/dev/wildercord/backpack/; the art in backpack_art.py)
+
+# Each backpack, smallest first, with its colour before it's dyed (as in BackpackTier.java).
+BACKPACKS = {"backpack": 0xA06540, "reinforced_backpack": 0x8C5A36, "runewoven_backpack": 0x6048A8}
+# The bigger two are made from the one below them and keep what's in it (UpgradeRecipe.java): the old backpack
+# comes first.
+BACKPACK_UPGRADES = {
+    "reinforced_backpack": ["wildercord:backpack", "minecraft:chest", *["minecraft:iron_ingot"] * 4, *["minecraft:leather"] * 2],
+    "runewoven_backpack": ["wildercord:reinforced_backpack", "wildercord:mana_crystal", "minecraft:echo_shard",
+                           *["minecraft:amethyst_shard"] * 4, *["wildercord:blank_rune"] * 2],
+}
+
+BACKPACK_LANG = {
+    "item.wildercord.backpack": "Backpack",
+    "item.wildercord.reinforced_backpack": "Reinforced Backpack",
+    "item.wildercord.runewoven_backpack": "Runewoven Backpack",
+    "tooltip.wildercord.backpack.fill": "Holds %s of %s stacks",
+    "tooltip.wildercord.backpack.full": "Full: %s of %s stacks",
+    "tooltip.wildercord.backpack.open": "Use it to open it, or wear it in the Backpack slot and press %s",
+    "gear_slot.wildercord.backpack": "Backpack slot",
+    "gear_slot.wildercord.backpack.hint": "A backpack, worn on your back: %s opens it",
+    "key.wildercord.open_backpack": "Open backpack",
+    "message.wildercord.backpack.none": "You aren't wearing a backpack: put one in the Backpack slot, on the tray above your inventory (E)",
+    "screen.wildercord.backpack.open_here": "Open: it stays in this slot until you close it",
+}
+
+
+def write_backpack_content():
+    import backpack_art
+    backpack_art.main()
+    for path, colour in BACKPACKS.items():
+        # Two layers like leather armour: the first takes the backpack's colour (a dye's, or its own), the second doesn't.
+        write_json(ASSETS / f"models/item/{path}.json", {"parent": "minecraft:item/generated", "textures": {
+            "layer0": f"wildercord:item/{path}", "layer1": f"wildercord:item/{path}_overlay"}})
+        write_json(ASSETS / f"items/{path}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{path}",
+                                                             "tints": [{"type": "minecraft:dye", "default": (0xFF000000 | colour) - (1 << 32)}]}})
+        # Dyed like leather armour, keeping what's inside; a cauldron washes the dye out.
+        write_json(DATA / f"recipe/{path}_dyed.json", {
+            "type": "minecraft:crafting_dye", "category": "equipment", "group": "dyed_backpack",
+            "dye": "#minecraft:dyes", "target": f"wildercord:{path}", "result": {"id": f"wildercord:{path}"}})
+        unlock_advancement(f"wildercord:{path}_dyed", f"wildercord:{path}")
+    write_json(DATA / "recipe/backpack.json", {
+        "type": "minecraft:crafting_shaped", "category": "equipment",
+        "key": {"S": "minecraft:string", "L": "minecraft:leather", "C": "minecraft:chest"},
+        "pattern": [" S ", "LCL", "LLL"], "result": {"id": "wildercord:backpack"}})
+    unlock_advancement("wildercord:backpack", "minecraft:leather")
+    for path, ingredients in BACKPACK_UPGRADES.items():
+        write_json(DATA / f"recipe/{path}.json", {
+            "type": "wildercord:upgrade", "category": "equipment",
+            "ingredients": ingredients, "result": {"id": f"wildercord:{path}"}})
+        unlock_advancement(f"wildercord:{path}", ingredients[0])
+    backpacks = [f"wildercord:{path}" for path in BACKPACKS]
+    write_json(DATA / "tags/item/backpacks.json", {"values": backpacks})
+    # Nothing that holds items goes in a backpack (Backpacks.fitsInside); a data pack can add other mods' containers here.
+    write_json(DATA / "tags/item/not_for_backpacks.json", {"values": ["#wildercord:backpacks", "#minecraft:shulker_boxes", "#minecraft:bundles"]})
+    write_json(RES / "data/minecraft/tags/item/cauldron_can_remove_dye.json", {"replace": False, "values": backpacks})
 
 
 if __name__ == "__main__":

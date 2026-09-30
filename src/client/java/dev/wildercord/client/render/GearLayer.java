@@ -3,6 +3,7 @@ package dev.wildercord.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import dev.wildercord.Wildercord;
+import dev.wildercord.backpack.BackpackTier;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -19,7 +20,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Casting gear in its slots, seen on the wearer by everyone (and in the inventory's paper doll). Each
@@ -31,9 +34,13 @@ import java.util.List;
  * glimmer circling it;</li>
  * <li>{@code HIP}: hanging at the left hip from a belt.</li>
  * </ul>
- * Everything is drawn in the body's space, so it follows a sneak, a swim or a glide, and stands clear of
- * a chestplate, a cape or elytra (each puts the back and front surface out by a different amount). A piece
- * is skipped for an invisible or spectating wearer.
+ * A worn backpack sits on the back below the neck, its straps down the chest, over a chestplate or a cape;
+ * with elytra it's worn over the folded wings, and while gliding, with the wings spread, it comes in against
+ * the back between them. A staff is strapped across the outside of the pack.
+ *
+ * <p>Everything is drawn in the body's space, so it follows a sneak, a swim or a glide, and stands clear of
+ * a chestplate, a cape or elytra (each puts the back and front surface out by a different amount). Nothing
+ * is drawn for an invisible or spectating wearer.</p>
  */
 public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation BELT = new ModelLayerLocation(Wildercord.id("gear"), "belt");
@@ -41,6 +48,8 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation TIE = new ModelLayerLocation(Wildercord.id("gear"), "tie");
 	public static final ModelLayerLocation LOOP = new ModelLayerLocation(Wildercord.id("gear"), "loop");
 	public static final ModelLayerLocation MOTE = new ModelLayerLocation(Wildercord.id("gear"), "mote");
+	public static final ModelLayerLocation BACKPACK = new ModelLayerLocation(Wildercord.id("backpack"), "main");
+	public static final ModelLayerLocation BACKPACK_STRAP = new ModelLayerLocation(Wildercord.id("backpack"), "strap");
 	private static final Identifier LEATHER = Wildercord.id("textures/entity/gear/leather.png");
 	private static final Identifier MOTE_TEXTURE = Wildercord.id("textures/entity/cord/bead.png");
 
@@ -58,12 +67,31 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private static final float TOME_SIZE = 0.36F;
 	private static final float TOME_X = 2.2F;
 	private static final float LOOP_LENGTH = 2.2F;
+	/** The top of a backpack's lid, in body space: just below the neck. */
+	private static final float PACK_TOP = 1.2F;
+	/** The straps' middles, either side of the neck. */
+	private static final float STRAP_X = 2.4F;
+	/** How far out the skin (with its jacket layer) is, at the front and the back, and a chestplate's front. */
+	private static final float SKIN = 2.3F;
+	private static final float FRONT_ARMORED = 3.05F;
+	/** Each backpack's colour-tinted texture and the untinted one over it (buckles, iron, a bedroll, runes). */
+	private static final Map<BackpackTier, Identifier[]> PACK_TEXTURES = new EnumMap<>(BackpackTier.class);
+
+	static {
+		for (BackpackTier tier : BackpackTier.values()) {
+			PACK_TEXTURES.put(tier, new Identifier[]{
+				Wildercord.id("textures/entity/backpack/" + tier.path + ".png"),
+				Wildercord.id("textures/entity/backpack/" + tier.path + "_overlay.png")});
+		}
+	}
 
 	private final GearModel belt;
 	private final GearModel armoredBelt;
 	private final GearModel tie;
 	private final GearModel loop;
 	private final GearModel mote;
+	private final BackpackModel pack;
+	private final BackpackModel strap;
 
 	public GearLayer(RenderLayerParent<AvatarRenderState, PlayerModel> parent, EntityRendererProvider.Context context) {
 		super(parent);
@@ -72,9 +100,11 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		this.tie = GearModel.of(context.bakeLayer(TIE));
 		this.loop = GearModel.of(context.bakeLayer(LOOP));
 		this.mote = GearModel.of(context.bakeLayer(MOTE));
+		this.pack = BackpackModel.of(context.bakeLayer(BACKPACK));
+		this.strap = BackpackModel.of(context.bakeLayer(BACKPACK_STRAP));
 	}
 
-	/** How far out the back of the wearer is, in pixels from the body's middle (skin, chestplate, cape or elytra), and whether a chestplate is on. */
+	/** How far out the back of the wearer is, in pixels from the body's middle (skin, chestplate, cape, elytra or a backpack), and whether a chestplate is on. */
 	private record Surface(float back, boolean armored) {}
 
 	private static Surface surface(AvatarRenderState state) {
@@ -89,11 +119,22 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	@Override
 	public void submit(PoseStack pose, SubmitNodeCollector nodes, int light, AvatarRenderState state, float yRot, float xRot) {
 		List<GearLook.Piece> pieces = state.getData(GearLook.PIECES);
-		if (pieces == null || state.isInvisible || state.isSpectator) {
+		GearLook.Pack pack = state.getData(GearLook.PACK);
+		if ((pieces == null && pack == null) || state.isInvisible || state.isSpectator) {
 			return;
 		}
 		Surface surface = surface(state);
 		int overlay = LivingEntityRenderer.getOverlayCoords(state, 0.0F);
+		if (pack != null) {
+			pose.pushPose();
+			getParentModel().body.translateAndRotate(pose);
+			// What's strapped on the back from here on goes over the pack.
+			surface = new Surface(backpack(pack, pose, nodes, light, overlay, state, surface), surface.armored());
+			pose.popPose();
+		}
+		if (pieces == null) {
+			return;
+		}
 		for (GearLook.Piece piece : pieces) {
 			pose.pushPose();
 			getParentModel().body.translateAndRotate(pose);
@@ -104,6 +145,45 @@ public class GearLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			}
 			pose.popPose();
 		}
+	}
+
+	/**
+	 * A backpack on the back, and its straps down the chest. Returns how far out it reaches (its flap and
+	 * pocket's outer faces), for anything strapped over it.
+	 */
+	private float backpack(GearLook.Pack worn, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state, Surface surface) {
+		float size = switch (worn.tier()) {
+			case BACKPACK -> 0.8F;
+			case REINFORCED -> 0.9F;
+			case RUNEWOVEN -> 1.0F;
+		};
+		float back = surface.back();
+		if (state.isFallFlying && state.chestEquipment.has(DataComponents.GLIDER)) {
+			// Gliding, the wings spread away from the back, and the pack comes in against it between them.
+			float spread = Mth.clamp((-state.elytraRotZ - Mth.PI / 12) / (Mth.PI / 2 - Mth.PI / 12), 0.0F, 1.0F);
+			back = Mth.lerp(spread, back, SKIN);
+		}
+		Identifier[] textures = PACK_TEXTURES.get(worn.tier());
+		pose.pushPose();
+		pose.translate(0, (PACK_TOP + BackpackModel.LID * size) / 16, (back + 0.05F) / 16);
+		pose.scale(size, size, size);
+		leather(pack, textures, worn.color(), pose, nodes, light, overlay, state);
+		pose.popPose();
+		float front = surface.armored() ? FRONT_ARMORED : SKIN;
+		for (float x : new float[]{-STRAP_X, STRAP_X}) {
+			pose.pushPose();
+			pose.translate(x / 16, 0, -front / 16);
+			pose.scale(0.6F, 1.0F, 0.5F);
+			leather(strap, textures, worn.color(), pose, nodes, light, overlay, state);
+			pose.popPose();
+		}
+		return back + 0.05F + BackpackModel.DEPTH * size;
+	}
+
+	/** A backpack part: its leather (or cloth) in the backpack's colour, then what isn't dyed over it. */
+	private static void leather(BackpackModel model, Identifier[] textures, int color, PoseStack pose, SubmitNodeCollector nodes, int light, int overlay, AvatarRenderState state) {
+		nodes.order(0).submitModel(model, Unit.INSTANCE, pose, RenderTypes.entityCutout(textures[0]), light, overlay, color, null, state.outlineColor);
+		nodes.order(1).submitModel(model, Unit.INSTANCE, pose, RenderTypes.entityCutout(textures[1]), light, overlay, -1, null, state.outlineColor);
 	}
 
 	/** The staff, strapped across the back. In item space: +x to the wearer's right, +y up, +z out of the back, in pixels of 1/16. */

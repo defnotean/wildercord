@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "wildercord:item/backpack",
+    "layer1": "wildercord:item/backpack_overlay"
+  }
+}
