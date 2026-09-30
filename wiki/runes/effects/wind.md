@@ -9,9 +9,9 @@ nav_order: 4
 
 # Wind effects
 
-Air and motion. Wind throws, lifts, dashes and turns arrows aside.
+Air and motion. Wind throws, lifts, dashes, turns arrows aside and carries you through the sky.
 
-14 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
+15 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cushion
 {: #cushion}
@@ -194,4 +194,17 @@ A violent outward blast: 4 damage and hurls everything within 3 blocks away (lig
 <img src="{{ '/assets/recipes/rune_repel.png' | relative_url }}" alt="Crafting Repel: a Blank Rune and 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/soar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Soar
+{: #soar}
+
+*Tier III · Wind · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
+
+Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump and sneak to rise and sink. It can't be renewed mid-flight, and when the wind fades it sets you down gently, then your wings need 30 seconds' rest. A pull or a grounding wind tears it away, and it won't lift anyone in a warded arena.
+
+**How to get it:** Craft: a Blank Rune, Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; End cities.
+
+<img src="{{ '/assets/recipes/rune_soar.png' | relative_url }}" alt="Crafting Soar: a Blank Rune and Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal, Kindred
 

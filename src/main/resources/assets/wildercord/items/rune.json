@@ -2299,6 +2299,13 @@
           "type": "minecraft:model",
           "model": "wildercord:item/rune/disarm"
         }
+      },
+      {
+        "when": "wildercord:soar",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/soar"
+        }
       }
     ],
     "fallback": {

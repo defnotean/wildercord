@@ -191,6 +191,15 @@ in 3 minutes). Or thread **Blood Price** and pay in health instead of mana. See
 No. Harmful effects never touch you, your tamed pets or players on your team, and other players (and their
 pets) only when the server allows PvP (and then for 60% damage to a player, unless the server changes it).
 
+### Can I fly?
+Yes, with [Soar]({{ '/runes/effects/wind/' | relative_url }}#soar), a Tier III wind rune (an Amethyst Cord or better).
+It works as flying does in creative, only a little slower: double-tap jump to take off, then hold jump to rise and
+sneak to sink. It lasts 20 seconds (Extend makes it longer), and cast while you're falling it catches you at once.
+Three seconds before it ends the wind starts to fade, with a chime and a line over your hotbar, and then it sets you
+down gently: you can't be hurt by the landing, however high you were. Cast on a shape that reaches your friends
+(a Burst, say) it lifts them too. Being pulled (Pull, Gravity Well) or weighed down (Weigh, Downdraft) tears the
+flight away, and nobody flies inside a dungeon's warded arena.
+
 ### Why won't my Heal heal my friend?
 Helpful spells only reach **you and your allies**, and another player is only your ally when you're on the
 **same team** (the game's team command, which an operator can set up). Pets you've tamed always count. See
@@ -287,6 +296,13 @@ never stops the server.
 | `features` | Switches for whole features: world events, duels, wild magic, magic that changes the world, creature affinities and elemental climate (all on at first) |
 | `travel` | The travel commands: whether they exist at all, how many homes each player may have, the warmup, the cooldowns, how far `/rtp` goes and how long a teleport request waits. See [Getting Around]({{ '/social/travel/' | relative_url }}#for-server-owners) |
 | `defence` | How players stand up to spells: whether the spellguard is on, how much health it needs (80% at first) and how long it takes to come back (a minute), how far a spell's bonuses may multiply it against a player (two and a half times), and how much armour counts against magic (a little over half). See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}) |
+
+### Will players flying with Soar be kicked if flying is turned off?
+No. A player soaring on [Soar]({{ '/runes/effects/wind/' | relative_url }}#soar) is allowed to fly, as a creative
+player is, so the server's check for players floating in the air leaves them alone, and the gentle fall at the end is
+quick enough not to count. Nothing about Soar lingers either: a player who logs out mid-flight is saved unable to fly
+(what was left is given back when they return), and a death, a crash or a trip to another dimension never leaves
+anyone able to fly.
 
 ### I updated Wildercord. Do I need a new settings file?
 No. When the server starts (or an operator runs `/wildercord reload`), any setting the file lacks is added to it at

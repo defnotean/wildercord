@@ -594,7 +594,7 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 </figure>
 </div>
 
-## Tier III (41 runes)
+## Tier III (42 runes)
 
 Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**.
 
@@ -682,6 +682,10 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_smite.png' | relative_url }}" alt="Crafting Smite: a Blank Rune and Glowstone and Golden Carrot" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/smite.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#smite">Smite</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_soar.png' | relative_url }}" alt="Crafting Soar: a Blank Rune and Phantom Membrane, Feather and Breeze Rod" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/soar.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#soar">Soar</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_thunderbird.png' | relative_url }}" alt="Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod" class="recipe-grid" loading="lazy">

@@ -92,6 +92,10 @@ public final class Reactions {
 		MARKS.computeIfAbsent(target.getUUID(), k -> new EnumMap<>(Mark.class)).merge(mark, until, Math::max);
 		// Marks are seen: a halo in the mark's colour while it lasts (see MarkHalos).
 		dev.wildercord.cast.feel.MarkHalos.marked(target, mark, fresh);
+		// Whatever is pulled (Pull, Gravity Well, a vortex, a rift...) is dragged out of the sky: a soaring player loses the wind.
+		if (mark == Mark.PULLED && target instanceof net.minecraft.world.entity.LivingEntity living) {
+			Soar.ground(living);
+		}
 	}
 
 	/** The marks {@code target} carries right now. */

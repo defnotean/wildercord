@@ -8,7 +8,7 @@ package dev.wildercord.cast.feel;
  * where the rune already draws its own burst.
  *
  * <p>Families: displace (Push, Windcut, Repel, Disarm, Recoil), vertical (Launch, Levitate, Updraft, Downdraft, Summit
- * Wind, Skyglyph, Cushion, Feather Fall), whirl (Cyclone, Dust Devil, Razorgale), buff and ward (Swift, Leap, Dash, Gale
+ * Wind, Skyglyph, Cushion, Feather Fall, Soar), whirl (Cyclone, Dust Devil, Razorgale), buff and ward (Swift, Leap, Dash, Gale
  * Mantle, Deflect, Zephyr) and Prune.</p>
  */
 final class WindFeels {
@@ -40,6 +40,7 @@ final class WindFeels {
 		wind("skyglyph", 1.0, SKY, "wind_glyph", 0.3F, 1.0F).motion(Motion.SEAL).register();
 		wind("cushion", 0.85, SKY, "wind_feather", 0.3F, 0.7F).register();
 		wind("feather_fall", 0.8, SKY, "wind_feather", 0.3F, 1.3F).register();
+		wind("soar", 1.1, SKY, "wind_soar", 0.35F, 1.0F).register();
 
 		// Whirl: funnels and spiralling crescents.
 		wind("cyclone", 1.1, HEAVY, "wind_whirl", 0.3F, 1.0F).motion(Motion.SEAL).register();

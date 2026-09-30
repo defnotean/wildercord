@@ -1152,6 +1152,39 @@
       "wildercord:kit/wind/wind_snatch_3"
     ]
   },
+  "wind_soar": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/wind/wind_soar_1",
+      "wildercord:kit/wind/wind_soar_2",
+      "wildercord:kit/wind/wind_soar_3"
+    ]
+  },
+  "wind_soar_fade": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/wind/wind_soar_fade_1",
+      "wildercord:kit/wind/wind_soar_fade_2",
+      "wildercord:kit/wind/wind_soar_fade_3"
+    ]
+  },
+  "wind_soar_gust": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      "wildercord:kit/wind/wind_soar_gust_1",
+      "wildercord:kit/wind/wind_soar_gust_2",
+      "wildercord:kit/wind/wind_soar_gust_3",
+      "wildercord:kit/wind/wind_soar_gust_4"
+    ]
+  },
+  "wind_soar_takeoff": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/wind/wind_soar_takeoff_1",
+      "wildercord:kit/wind/wind_soar_takeoff_2",
+      "wildercord:kit/wind/wind_soar_takeoff_3"
+    ]
+  },
   "wind_thump": {
     "subtitle": "subtitles.wildercord.kit.hit",
     "sounds": [

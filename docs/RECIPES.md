@@ -162,7 +162,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Wave | Shape | 2x Kelp |
 | Wisp | Shape | Glow Berries, Amethyst Shard |
 
-## Tier III (41 runes, + a Mana Crystal and a Diamond)
+## Tier III (42 runes, + a Mana Crystal and a Diamond)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -187,6 +187,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Shades | Effect | 2x Bone, Black Dye |
 | Shadowstep | Effect | Ender Pearl, Ink Sac |
 | Smite | Effect | Glowstone, Golden Carrot |
+| Soar | Effect | Phantom Membrane, Feather, Breeze Rod |
 | Thunderbird | Effect | Feather, Lightning Rod |
 | Time Skip | Effect | Clock, Ender Pearl |
 | Tremor | Effect | Deepslate Bricks, TNT |

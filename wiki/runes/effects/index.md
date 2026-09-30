@@ -15,7 +15,7 @@ An **effect** decides *what happens* to whatever the shape hit: damage, healing,
 - [Fire]({{ '/runes/effects/fire/' | relative_url }}): Burning, blasts and heat. Fire lights what it touches and boils water into steam.
 - [Frost]({{ '/runes/effects/frost/' | relative_url }}): Cold, ice and water. Frost slows, freezes and shatters, and freezes water you can walk on.
 - [Storm]({{ '/runes/effects/storm/' | relative_url }}): Lightning and shock. Storm strikes hard, chains between foes and runs through water.
-- [Wind]({{ '/runes/effects/wind/' | relative_url }}): Air and motion. Wind throws, lifts, dashes and turns arrows aside.
+- [Wind]({{ '/runes/effects/wind/' | relative_url }}): Air and motion. Wind throws, lifts, dashes, turns arrows aside and carries you through the sky.
 - [Earth]({{ '/runes/effects/earth/' | relative_url }}): Stone and ground. Earth shields, roots, heaves the ground and breaks blocks.
 - [Life]({{ '/runes/effects/life/' | relative_url }}): Healing and growth. Life mends allies, cleanses poisons and makes plants grow.
 - [Void]({{ '/runes/effects/void/' | relative_url }}): Darkness, gravity and space. Void pulls, blinks, withers and swallows light.

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:phantom_membrane",
+    "minecraft:feather",
+    "minecraft:breeze_rod",
+    "wildercord:mana_crystal",
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:soar"
+    }
+  }
+}

@@ -147,5 +147,5 @@ type.
 |---|---|
 | Fighting | Your strongest attack selected, a Shield spell, a heal, and a Stoneskin passive. |
 | Mining | `Beam · Break` selected, `Self · Night Eye · Haste`, and `Self · Swift` as a passive. |
-| Exploring | Movement (Leap, Blink, Feather Fall) and Night Eye as a passive. |
+| Exploring | Movement (Leap, Blink, Feather Fall, and Soar to fly over what's in the way) and Night Eye as a passive. |
 | Helping friends | Healing and buffs that reach your allies, and a Regrowth passive. |

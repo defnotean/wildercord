@@ -88,6 +88,8 @@ public final class RuneCategories {
 				case "searing_edge" -> "support";
 				case "prospect", "galvanize" -> "world";
 				case "prolong" -> "time";
+				// Flight.
+				case "soar" -> "movement";
 				// Signature fusions (see Fusions.SIGNATURES); the rest of them are damage.
 				case "seethe", "dust_devil", "malison" -> "control";
 				case "stitchtime", "halo", "riposte" -> "support";

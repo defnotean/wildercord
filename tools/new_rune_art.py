@@ -1,4 +1,4 @@
-"""Hand-drawn rune icons for the second batch of new runes (merged into item_art.GLYPHS).
+"""Hand-drawn rune icons for the second batch of new runes, and the runes defined after them (merged into item_art.GLYPHS).
 
 Same format as item_art.GLYPHS: a pictogram at most 9 wide and 9 tall, "." empty, "-" shade,
 "#" main, "+" light, "*" core (the stone's own glow colours), "o" darkens the stone, "k" near-black,
@@ -213,5 +213,15 @@ GLYPHS: dict[str, str] = {
         .+.#.....
         .##..##..
         #..##..#.
+    """,
+    # ---------------------------------------------------------------- flight
+    # Soar: a pair of wings of wind raised from a bright heart, the air streaming off below.
+    "soar": """
+        .##...##.
+        #++#.#++#
+        #+##*##+#
+        .##-*-##.
+        ..#-+-#..
+        ..-...-..
     """,
 }

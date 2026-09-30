@@ -288,6 +288,20 @@ hit for spell-kill counting and the innate runes that react to hits. After each 
 
 None of the wards are saved: they last seconds, and a restart simply ends them.
 
+**`Soar`** (flight) is saved, unlike the wards, because it changes a player's own abilities (`mayfly`
+and the flying speed). A flight writes the `soaring` attachment (its end, the speed from before, and
+whether it's over and the player is coming down), and that note is what lets Soar take back only a flight
+it gave. `Soar.tick` runs every flier each server tick: the warning 3 seconds before the end, the take-off
+and gusts, a ward check every 10 ticks (`DungeonWards.warded`), and at the end the flight taken back and a
+gentle descent (slow falling, Feather Fall's drift through `Effects.glide`, and an `ALLOW_DAMAGE` hook that
+cancels fall damage) until the player lands. Leaving (and `SERVER_STOPPING`) takes the flight away before
+the player is saved but keeps the note, and `Soar.login` gives back what's left or lets them down; death
+(`AFTER_DEATH`) ends it, a new body (`AFTER_RESPAWN`) starts without it, and a dimension change sets them down.
+Creative and spectator players are never touched. A grounding hit (`Soar.ground`: any `Reactions.mark` of
+PULLED, Weigh, Downdraft) ends it and starts a 30-second rest. The pure numbers are `SoarRules`; the
+server's one-shot visuals and the wing shape are `SoarVfx`, and every client draws the wings and wake from
+the synced note (`client.fx.SoarWings`).
+
 ### Discoveries, monsters and the world
 
 - **`Grimoire`**: writes a key into the `grimoire` attachment. The first time for each, it
@@ -485,6 +499,7 @@ player, synced to that player only, and copied through death where noted.
 | `travel` | `TravelData` | yes | Homes, waypoints, where `/back` goes, teleport requests on or off, the tracked waypoint (server only; see [features/travel.md](features/travel.md)) |
 | `loadouts` | `LoadoutData` | yes | Saved Cord setups (up to 6) and the one last loaded, synced for the Cord screen's panel (see [features/loadouts.md](features/loadouts.md)) |
 | `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
+| `soaring` | end time, speed before, falling | no (ended at death) | A Soar flight or its gentle descent: the note that Soar gave the flight, saved so a logout, restart or crash is tidied at login; synced to **everyone** nearby, who draw the wings |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
 new instance, which is what makes the attachment save and sync it. Rune ids are kept as strings
@@ -603,7 +618,9 @@ can draw the circle.
   lectern's block entity and, inside, reads the halls a slice a tick for lamps, braziers and shelves:
   shafts of light with dust in them, flickering braziers and embers, the arena's inlaid circle
   glowing (brighter while the Archivist is abroad), and quiet pages, whispers and chimes;
-  `WellstoneHalo` hangs a turning ring over every awake Wellstone. Each spawner keeps a small
+  `WellstoneHalo` hangs a turning ring over every awake Wellstone; `SoarWings` draws a Soar flier's wings
+  of wind (strokes of `LightParticle` carried along with the body) and the wake off their wingtips, from the
+  synced `soaring` note. Each spawner keeps a small
   budget of lights out at once (`Glimmer.Budget`).
 - **`GrimoireToast`** (and `GrimoireToast.affinity`, a level reached, with the element's mark from
   `ElementGlyphs`), and the Grimoire page inside `CordScreen`, whose Affinities section draws each element's
@@ -825,6 +842,12 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   water or out of open water, and at its rate under a mana storm, on a ley line and in a
   thunderstorm; Reeled In), then casts Tidehook at a husk and Current in water, in the rain and on
   dry land.
+- **`WildercordFlightTest`** casts Soar for real on a platform in the sky: casting gives flight and a double-tap of
+  jump takes off; a flight running out 64 blocks up warns, then lands the player with no damage and nothing left;
+  creative players are left alone; an ally a Burst reaches flies and a stranger doesn't; a dungeon's ward (filed
+  as a dungeon piece files its arena) won't let it lift anyone and sets down a flier who comes in; a monster's Pull
+  and a Weigh ground a flier; a flight saved in a crash is tidied at login; death leaves nothing; and a real save
+  and reload saves the player unable to fly, gives the flight back and lets it run out safely. Screenshots `soar_*`.
 
 ## 10. Rules that keep it safe
 
@@ -877,3 +900,4 @@ easy to trip over:
 - **Dev client**: Loom's `runClient` loads classes from `build/`; rebuilding while it runs mixes old
   and new classes. The build supports `-PaltBuild` (outputs to `build-alt/`) for compile checks
   while a client is open.
+

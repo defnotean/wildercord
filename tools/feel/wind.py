@@ -149,6 +149,51 @@ def wind_gale(v, rng):
     return sa.finish(sa.reverb(x, 0.2, 0.06), "cast")
 
 
+def wind_soar(v, rng):
+    """Soar's cast: a breath of air swelling upward under an open glass chord that climbs as it opens."""
+    dur = 0.9
+    band = sa.moving_band(dur, [(0, 400), (0.5, 1800), (dur, 2600)], 0.9, rng) * sa.swell(dur, 0.45, 1.6)
+    root = (sa.D, sa.E, sa.A)[v % 3]
+    chord = [
+        (0.08, 0.6 * sa.glass(sa.note(root, 1), 0.7, 0.35, 0.004)),
+        (0.2, 0.5 * sa.glass(sa.note(root + 2, 1), 0.6, 0.3, 0.004)),
+        (0.32, 0.45 * sa.glass(sa.note(root, 2), 0.55, 0.3, 0.004)),
+    ]
+    x = sa.mix(0.8 * band, *chord)
+    return sa.finish(sa.reverb(x, 0.6, 0.15), "cast")
+
+
+def wind_soar_takeoff(v, rng):
+    """Take-off: a wingbeat of air (a soft low push) and a whoosh that lifts away."""
+    dur = 0.6
+    beat = sa.norm(sa.lowpass(sa.noise(0.18, rng), 420)) * sa.decay(0.18, 0.05, 0.006)
+    body = sa.thump(110 - 8 * v, 55, 0.2, 0.06, drive=1.1, knock=0.2)
+    whoosh = sa.moving_band(dur, [(0, 600), (0.25, 2800 * _step(v, (1.0, 1.08, 0.93))), (dur, 1800)], 0.7, rng) * sa.env(dur, (0, 0), (0.12, 1), (dur, 0))
+    x = sa.mix(0.9 * beat, (0.0, 0.35 * body), (0.04, whoosh))
+    return sa.finish(sa.reverb(x, 0.35, 0.08), "cast")
+
+
+def wind_soar_gust(v, rng):
+    """A soft gust past the ears while flying: a slow swell of moving air with a faint eddy in it."""
+    dur = 1.4
+    c = (700, 900, 600, 800)[v % 4]
+    band = sa.moving_band(dur, [(0, c), (0.6, c * 2.2), (dur, c * 1.3)], 1.0, rng) * sa.swell(dur, 0.6, 1.8)
+    eddy = 0.8 + 0.2 * np.sin(2 * np.pi * (3.5 + 0.5 * v) * sa.timeline(dur) + v)
+    low = sa.norm(sa.lowpass(sa.brown(dur, rng), 260)) * sa.swell(dur, 0.7, 2.0)
+    x = sa.mix(band * eddy, 0.3 * low)
+    return sa.finish(x, "effect")
+
+
+def wind_soar_fade(v, rng):
+    """The wind fading: a flutter of air thinning and falling away, and two glass notes stepping down."""
+    dur = 0.9
+    flut = sa.moving_band(dur, [(0, 3000), (dur, 700)], 0.6, rng) * sa.chopper(dur, rng, (18, 40), 0.35) * sa.env(dur, (0, 0), (0.05, 1), (dur, 0))
+    hi, lo = [(sa.A, sa.E), (sa.B, sa.FS), (sa.A, sa.D)][v % 3]
+    notes = sa.mix((0.0, 0.6 * sa.glass(sa.note(hi, 1), 0.5, 0.25, 0.003)), (0.28, 0.55 * sa.glass(sa.note(lo, 1), 0.6, 0.3, 0.003)))
+    x = sa.mix(0.7 * flut, notes)
+    return sa.finish(sa.reverb(x, 0.45, 0.12), "tell")
+
+
 EVENTS = [
     event("wind_slash", wind_slash, variants=3, role="impact", subtitle="hit"),
     event("wind_thump", wind_thump, variants=3, role="impact", subtitle="hit"),
@@ -164,4 +209,8 @@ EVENTS = [
     event("wind_muffle", wind_muffle, variants=3, role="tell", subtitle="tell"),
     event("wind_lift", wind_lift, variants=3, role="tell", subtitle="tell"),
     event("wind_gale", wind_gale, variants=3, role="cast", subtitle="cast"),
+    event("wind_soar", wind_soar, variants=3, role="cast", subtitle="cast"),
+    event("wind_soar_takeoff", wind_soar_takeoff, variants=3, role="cast", subtitle="cast"),
+    event("wind_soar_gust", wind_soar_gust, variants=4, role="effect", subtitle="field"),
+    event("wind_soar_fade", wind_soar_fade, variants=3, role="tell", subtitle="tell"),
 ]

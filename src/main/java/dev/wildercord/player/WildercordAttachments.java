@@ -450,7 +450,44 @@ public final class WildercordAttachments {
 		builder -> builder
 			.persistent(Codec.LONG)
 			.syncWith(ByteBufCodecs.VAR_LONG, AttachmentSyncPredicate.targetOnly())
+);
+
+	/**
+	 * A flight from Soar (see {@code cast.Soar}): the game time it ends (or, once it has, the game time its
+	 * gentle descent stops guarding the faller), the flying speed the player had before it, and whether it's
+	 * over and they're coming down. Its being here before it's over is the note that Soar gave the flight, so
+	 * Soar only ever takes back a flight it gave. Saved, so a flight caught by a logout, a restart or a crash is
+	 * picked up or tidied away as the player logs in; not kept through death; synced to everyone nearby, who
+	 * draw the wings.
+	 */
+	public record Soaring(long until, float speed, boolean falling) {
+		public static final Codec<Soaring> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.create(i -> i.group(
+			Codec.LONG.fieldOf("until").forGetter(Soaring::until),
+			Codec.FLOAT.fieldOf("speed").forGetter(Soaring::speed),
+			Codec.BOOL.fieldOf("falling").forGetter(Soaring::falling)
+		).apply(i, Soaring::new));
+		public static final StreamCodec<ByteBuf, Soaring> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_LONG, Soaring::until, ByteBufCodecs.FLOAT, Soaring::speed, ByteBufCodecs.BOOL, Soaring::falling, Soaring::new);
+	}
+
+	public static final AttachmentType<Soaring> SOARING = AttachmentRegistry.create(
+		Wildercord.id("soaring"),
+		builder -> builder
+			.persistent(Soaring.CODEC)
+			.syncWith(Soaring.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
+	/**
+	 * When a player's wings have rested after a Soar flight: the game time Soar may lift them again (a flight
+	 * that ends for any reason but death rests them for 30 seconds; see {@code cast.SoarRules#REST_TICKS}).
+	 * Saved, so logging out doesn't cut it short, and kept through death, so dying doesn't either. Server only.
+	 */
+	public static final AttachmentType<Long> SOAR_REST = AttachmentRegistry.create(
+		Wildercord.id("soar_rest"),
+		builder -> builder.persistent(Codec.LONG).copyOnDeath()
 	);
 
 	public static void init() {}
 }
+
+

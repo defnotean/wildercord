@@ -438,6 +438,18 @@ Combos worth trying:
 - `Latch · Gash · Belated`: hold a healer down and keep it from mending.
 - `Self · Heal · Kindred`: heal yourself and the ally beside you in one cast.
 
+### Flight
+One crafted rune that lets a caster (and their allies) fly: real flight, as in creative, for a while.
+
+| Rune | Family · category | Tier | Cost | Does |
+|---|---|---|---|---|
+| Soar | Effect · Movement (wind) | III | 18 | 20 s of flight (double-tap jump to take off; jump and sneak to rise and sink) at three fifths of creative's flying speed. Extend doubles it, Frugal takes 40% off, 40 s at most; a cast during flight cannot renew it, and the wings rest for 30 s after it ends; cast while falling, it catches you at once. 3 s before the end the wind fades (a chime, wisps off the wings, a line over the hotbar), then it sets you down as Feather Fall does: slow falling, a drift the way you look, no fall damage until you land. Helpful: a shape that reaches allies lifts them too; creatures that aren't players fall slowly for as long instead. Never touches creative or spectator players, or a player who can already fly some other way. A pull (anything that leaves a creature pulled) or a grounding wind (Weigh, Downdraft) ends it and starts the 30 s rest; a dungeon's warded arena or vault won't let it lift anyone and sets down whoever flies in. Logging out saves the player unable to fly and gives back what's left on login; death ends it; another dimension sets you down. Not sustainable as a passive. Phantom Membrane, Feather, Breeze Rod; trial vaults and End cities |
+
+Combos worth trying:
+- `Burst · Soar`: you and every ally within 4 blocks take to the air together.
+- `Self · Soar · Extend`: 40 seconds in the sky for an Amethyst Cord's scouting trip.
+- Against a flier: `Bolt · Pull` or `Beam · Weigh` brings them down, and their wings need 30 seconds of rest.
+
 ## Heart Circles
 
 Casters build rings of condensed mana around their heart, from the 1st Circle to the 8th (the Archmage).
@@ -1179,6 +1191,10 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   away), and never charge creepers, cure zombie villagers or grow up young animals.
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
+- **Flight (Soar):** only ever takes back a flight it gave (a saved note says it gave one), never touches
+  creative or spectator players, is taken away before a leaving player is saved (and given back on login),
+  ends at death, sets you down in another dimension and inside a dungeon's ward, and never gets a player
+  kicked on a server with flying turned off (vanilla only counts a player as floating when they may not fly).
 - **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
   blocks, the PvP scale, the spell defences, mana-regen and cost multipliers, Runebound and loot
   chances, imbue limits and feature switches; `/wildercord reload` reads it again (see
@@ -1249,3 +1265,4 @@ practice:
 - **Cord cosmetics.**
 - **More boss runes:** Elder Guardian, Breeze boss variants.
 - **Optional Attuned integration:** a Focus that cuts rune costs.
+
