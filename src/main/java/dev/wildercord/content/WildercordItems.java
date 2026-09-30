@@ -26,6 +26,12 @@ public final class WildercordItems {
 	public static final Item RUNE = register("rune", RuneItem::new, new Item.Properties().stacksTo(16));
 	/** A Knot: a whole spell tied into one rune at the Fusion Altar. The same {@code wildercord:rune} component says which. */
 	public static final Item KNOT = register("knot", RuneItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+	/** Two exact effects woven into one socket with an amethyst block. */
+	public static final Item WOVEN_RUNE = register("woven_rune", RuneItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
+	public static final Item ROOTBOUND_RELIC = register("rootbound_relic", p -> new DungeonRelicItem(DungeonRelicItem.Kind.ROOT, p),
+		new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+	public static final Item STORMGLASS_RELIC = register("stormglass_relic", p -> new DungeonRelicItem(DungeonRelicItem.Kind.STORM, p),
+		new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
 	public static final Item BLANK_RUNE = register("blank_rune", Item::new, new Item.Properties());
 	public static final Item MANA_CRYSTAL = register("mana_crystal", ManaCrystalItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
 	public static final CordItem TWINE_CORD = cord(CordTier.TWINE, Rarity.COMMON);
@@ -57,6 +63,8 @@ public final class WildercordItems {
 				output.accept(BACKPACK);
 				output.accept(REINFORCED_BACKPACK);
 				output.accept(RUNEWOVEN_BACKPACK);
+				output.accept(ROOTBOUND_RELIC);
+				output.accept(STORMGLASS_RELIC);
 				dev.wildercord.gear.GearItems.all().forEach(output::accept);
 				output.accept(WildercordBlocks.WELLSTONE);
 				output.accept(WildercordBlocks.RUNE_SEAL);

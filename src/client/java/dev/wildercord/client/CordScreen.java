@@ -22,6 +22,7 @@ import dev.wildercord.spell.Passives;
 import dev.wildercord.spell.RuneCategories;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.WovenRunes;
 import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
@@ -528,7 +529,7 @@ public class CordScreen extends Screen {
 		}
 	}
 
-	/** Every rune the player knows: the roster's, then the Knots they've learned. */
+	/** Every rune the player knows: the roster's, then the dynamic Knots and woven pairs they've learned. */
 	private List<RuneDef> known() {
 		List<RuneDef> runes = new ArrayList<>();
 		Spellbook book = book();
@@ -538,7 +539,7 @@ public class CordScreen extends Screen {
 			}
 		}
 		for (String id : book.learned()) {
-			if (Knots.isKnot(id)) {
+			if (Knots.isKnot(id) || WovenRunes.isWoven(id)) {
 				Runes.get(id).ifPresent(runes::add);
 			}
 		}

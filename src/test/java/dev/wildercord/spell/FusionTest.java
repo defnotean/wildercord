@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
 
 import static dev.wildercord.spell.Runes.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -244,6 +245,40 @@ class FusionTest {
 		Fusions.Plan pure = plan(Fusions.Catalyst.SHARD, Fusions.Slot.of(FIRE, 1), Fusions.Slot.of(EMBER, 1), Fusions.Slot.EMPTY);
 		assertTrue(pure.ready(), String.valueOf(pure.problem()));
 		assertSame(Runes.CONFLAGRATION, pure.result(), "two effects of one element make that element at its purest");
+	}
+
+	@Test
+	void amethystBlockWeavesEveryPairIntoOneUsableRune() {
+		RuneDef first = WovenRunes.bind(FIRE, HEAL);
+		assertEquals(first.id(), WovenRunes.bind(HEAL, FIRE).id());
+		assertEquals(List.of(FIRE, HEAL), WovenRunes.contents(first));
+		assertEquals(first, Runes.get(first.id()).orElseThrow());
+		assertEquals(RuneFamily.EFFECT, first.family());
+		assertFalse(Fusions.fusible(first), "woven pairs cannot nest indefinitely");
+		Fusions.Plan woven = plan(Fusions.Catalyst.BLOCK, Fusions.Slot.of(FIRE, 2), Fusions.Slot.of(HEAL, 3), Fusions.Slot.EMPTY);
+		assertTrue(woven.ready(), String.valueOf(woven.problem()));
+		assertEquals(first, woven.result());
+		assertEquals(2, woven.rank());
+		assertNull(woven.recipe());
+		SpellCompiler.Compiled compiled = SpellCompiler.compile(List.of(BOLT, first));
+		assertEquals(2, compiled.root().groups.getFirst().effects.size());
+		assertEquals(SpellCompiler.compile(List.of(BOLT, FIRE, HEAL)).cost(), compiled.cost(), 1e-6);
+	}
+
+	@Test
+	void everyFusibleEffectPairHasItsOwnWovenRune() {
+		List<RuneDef> effects = Runes.all().stream().filter(Fusions::fusible).toList();
+		var ids = new HashSet<String>();
+		for (int i = 0; i < effects.size(); i++) {
+			for (int j = i; j < effects.size(); j++) {
+				RuneDef a = effects.get(i);
+				RuneDef b = effects.get(j);
+				RuneDef woven = WovenRunes.bind(a, b);
+				assertTrue(ids.add(woven.id()), "each unordered pair needs a distinct result");
+				assertEquals(woven, Runes.get(woven.id()).orElseThrow());
+			}
+		}
+		assertEquals(effects.size() * (effects.size() + 1) / 2, ids.size());
 	}
 
 	@Test

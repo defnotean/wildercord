@@ -13,6 +13,13 @@ again.
 `/place structure wildercord:ember_sanctum` (or `astral_observatory`, `drowned_scriptorium`)
 builds one where you stand.
 
+Two smaller Overworld dungeons also generate: the **Rootbound Maze** in swamps and mangrove swamps, and the
+**Storm Spire** on stony, frozen and jagged peaks. Both have Runebound guards, side caches and a vault behind
+two elemental seals. Their vaults always hold their own reusable relic, plus runes and materials. The Rootbound
+Relic heals its bearer and slows nearby monsters; the Stormglass Relic pushes monsters away and grants speed and
+slow falling. Both rest for 30 seconds after use. Their loot can include amethyst blocks for weaving exact pairs
+of effects at the Fusion Altar. Use `/place structure wildercord:rootbound_maze` or `storm_spire` to build one.
+
 Every boss has a boss bar that names the spell it's casting, telegraphs each spell with its own
 circle, fights in three phases (it changes at two thirds and one third of its health, and can't be
 hurt while it changes), and dies slowly. No blow, however big, takes it past the start of its next

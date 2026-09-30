@@ -176,7 +176,7 @@ public final class Fusions {
 
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {
-		return rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty() && !Runes.innate(rune);
+		return rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty() && !Runes.innate(rune) && !WovenRunes.isWoven(rune);
 	}
 
 	/**
@@ -260,7 +260,7 @@ public final class Fusions {
 	}
 
 	/** What's in the altar's fourth slot. */
-	public enum Catalyst { NONE, SHARD, STRING, OTHER }
+	public enum Catalyst { NONE, SHARD, BLOCK, STRING, OTHER }
 
 	public enum Kind { NONE, UPGRADE, COMBINE, KNOT }
 
@@ -271,7 +271,7 @@ public final class Fusions {
 	 * @param rank    the result's rank
 	 * @param xp      XP levels it costs (for a Knot, see {@link Knots#xpCost})
 	 * @param problem why it can't go ahead, or null
-	 * @param recipe  for a Combine, the recipe it follows (a signature one, or its elements')
+	 * @param recipe  for a shard Combine, the recipe it follows; null when a block weaves an exact pair
 	 */
 	public record Plan(Kind kind, RuneDef result, int rank, int xp, String problem, Fusion recipe) {
 		static Plan hint(String text) {
@@ -292,7 +292,7 @@ public final class Fusions {
 		}
 	}
 
-	public static final String HOW = "Three of the same rune rank it up. Two effects and an amethyst shard combine. A Blank Rune and string tie a spell into a Knot.";
+	public static final String HOW = "Three matching runes rank up. Two effects and an amethyst shard make an elemental fusion; an amethyst block weaves their exact effects together. A Blank Rune and string tie a Knot.";
 
 	/** Works out which fusion three rune slots and a catalyst mean, and whether it can go ahead. */
 	public static Plan plan(List<Slot> slots, Catalyst catalyst) {
@@ -341,13 +341,23 @@ public final class Fusions {
 			return new Plan(Kind.UPGRADE, rune, rank + 1, Ranks.xpCost(rank + 1), null, null);
 		}
 		if (filled.size() == 2) {
-			if (catalyst != Catalyst.SHARD) {
-				return Plan.refuse(Kind.COMBINE, "Combining two effects takes an amethyst shard.");
+			if (catalyst != Catalyst.SHARD && catalyst != Catalyst.BLOCK) {
+				return Plan.refuse(Kind.COMBINE, "Combining two effects takes an amethyst shard, or an amethyst block to weave their exact effects.");
 			}
 			RuneDef a = filled.get(0).rune();
 			RuneDef b = filled.get(1).rune();
 			if (!fusible(a) || !fusible(b)) {
 				return Plan.refuse(Kind.COMBINE, "Only effects with an element fuse.");
+			}
+			if (catalyst == Catalyst.BLOCK) {
+				RuneDef made;
+				try {
+					made = WovenRunes.bind(a, b);
+				} catch (IllegalArgumentException exception) {
+					return Plan.refuse(Kind.COMBINE, "These rune ids are too long to weave together.");
+				}
+				int kept = Ranks.rankable(made) ? Math.min(filled.get(0).rank(), filled.get(1).rank()) : 1;
+				return new Plan(Kind.COMBINE, made, kept, COMBINE_XP, null, null);
 			}
 			// A signature fusion of these two particular runes comes first; any other pair makes its elements' fusion.
 			Optional<Fusion> recipe = recipe(a, b);
@@ -359,6 +369,6 @@ public final class Fusions {
 			int kept = Ranks.rankable(made) ? Math.min(filled.get(0).rank(), filled.get(1).rank()) : 1;
 			return new Plan(Kind.COMBINE, made, Math.max(1, kept), COMBINE_XP, null, recipe.get());
 		}
-		return Plan.hint("Add two more to rank it up, or a second effect and an amethyst shard to combine them.");
+		return Plan.hint("Add two more to rank it up, or a second effect and amethyst to combine them.");
 	}
 }

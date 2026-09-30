@@ -96,9 +96,9 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 		addStandardInventorySlots(inventory, INVENTORY_X, INVENTORY_Y);
 	}
 
-	/** What can go on the altar: a rune (not a Knot) or a Blank Rune. */
+	/** What can go on the altar: a rune (not a Knot) or a Blank Rune. Woven runes may be ranked up. */
 	public static boolean fusible(ItemStack stack) {
-		return stack.is(WildercordItems.BLANK_RUNE) || stack.is(WildercordItems.RUNE);
+		return stack.is(WildercordItems.BLANK_RUNE) || stack.is(WildercordItems.RUNE) || stack.is(WildercordItems.WOVEN_RUNE);
 	}
 
 	public static Fusions.Catalyst catalyst(ItemStack stack) {
@@ -107,6 +107,9 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 		}
 		if (stack.is(Items.AMETHYST_SHARD)) {
 			return Fusions.Catalyst.SHARD;
+		}
+		if (stack.is(Items.AMETHYST_BLOCK)) {
+			return Fusions.Catalyst.BLOCK;
 		}
 		return stack.is(Items.STRING) ? Fusions.Catalyst.STRING : Fusions.Catalyst.OTHER;
 	}
@@ -179,7 +182,9 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 			}
 			if (plan.kind() == Fusions.Kind.COMBINE) {
 				inputs.removeItem(CATALYST, 1);
-				Grimoire.unlock(server, plan.recipe().key());
+				if (plan.recipe() != null) {
+					Grimoire.unlock(server, plan.recipe().key());
+				}
 				Grimoire.feat(server, Feats.COMBINE);
 			} else {
 				Grimoire.feat(server, Feats.UPGRADE);

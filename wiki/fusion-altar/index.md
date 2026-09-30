@@ -27,7 +27,7 @@ altar.
 - Mine it with a pickaxe to take it with you. Broken without a pickaxe, it drops nothing.
 - The altar keeps nothing inside it, so any altar works for anyone, and you can move it freely.
 
-## The three fusions
+## The four altar recipes
 
 The altar works out what you mean from what you put on it. There's no mode to pick.
 
@@ -35,6 +35,7 @@ The altar works out what you mean from what you put on it. There's no mode to pi
 |---|---|---|---|---|
 | Three copies of the same rune, all at the same rank | nothing | That rune, one rank higher | 2 XP levels for rank II, 5 for rank III | [Ranks]({{ '/fusion-altar/ranks/' | relative_url }}) |
 | Two effects (the third socket empty) | an Amethyst Shard | A fused rune, chosen by the two effects' elements; or, for sixteen particular pairs of runes, their own **signature** rune | 3 XP levels | [Combining]({{ '/fusion-altar/combining/' | relative_url }}) |
+| Two effects (the third socket empty) | a Block of Amethyst | A **woven rune** holding those exact two effects in one socket | 3 XP levels | [Combining]({{ '/fusion-altar/combining/' | relative_url }}) |
 | One Blank Rune, and nothing else | String | A Knot: one of your spells tied into a single rune | 1 XP level per rune inside, at least 2 | [Knots]({{ '/fusion-altar/knots/' | relative_url }}) |
 
 **Signature fusions** are combines too: two particular effects that make a rune of their own instead of their elements'
@@ -53,11 +54,11 @@ corner.
 <span class="caption">Three Fire runes on the altar. The panel says what they'll make and what it costs.</span>
 
 - **The rune sockets** take runes and Blank Runes only. A Knot can't go on the altar at all.
-- **The middle socket** takes an Amethyst Shard or String, and nothing else.
+- **The middle socket** takes an Amethyst Shard, Block of Amethyst or String.
 - **Shift-click** a stack of runes in your inventory and one rune drops into each empty rune socket, so three copies
   spread themselves out ready to rank up. Shift-click a shard or string and it goes into the middle socket.
 - **The panel** always tells you what the altar would do: which fusion, what it makes, and what it costs in XP levels.
-  If something is wrong, it says what (see below). With nothing on the altar, it lists the three fusions.
+  If something is wrong, it says what (see below). With nothing on the altar, it lists the recipes.
 - **The button** says **Fuse** (for a rank-up or a combine) or **Tie Knot**. Nothing is used up until you press it.
   Then one of each rune in the sockets goes, and so does the shard or string, if the fusion needed one.
 
@@ -85,12 +86,12 @@ inventory is full, it drops at your feet.
 | Ranking up takes only the three runes: take the catalyst out. | Empty the middle socket. |
 | (Rune) has no power to rank up: only effects with power have ranks. | That rune can't be ranked. See [which runes can rank]({{ '/fusion-altar/ranks/' | relative_url }}#which-runes-can-rank). |
 | (Rune) is already at its highest rank. | Rank III is the top. |
-| Combining two effects takes an amethyst shard. | Put an Amethyst Shard in the middle socket. |
+| Combining two effects takes an amethyst shard, or an amethyst block to weave their exact effects. | Put either catalyst in the middle socket. |
 | Only effects with an element fuse. | Shapes, modifiers, links and innate runes can't be combined. |
 | A Knot takes only the Blank Rune: take the other runes out. | Leave just the Blank Rune in the rune sockets. |
 | Tying a Knot takes string too. | Put String in the middle socket. |
 | None of your spells can be tied yet | Each of your spells is empty or breaks one of the [Knot rules]({{ '/fusion-altar/knots/' | relative_url }}#limits). |
-| Add two more to rank it up, or a second effect and an amethyst shard to combine them. | You've only put one rune on. |
+| Add two more to rank it up, or a second effect and amethyst to combine them. | You've only put one rune on. |
 
 ## Learning what you make
 

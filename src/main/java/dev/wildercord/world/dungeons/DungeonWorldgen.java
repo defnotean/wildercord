@@ -28,6 +28,10 @@ public final class DungeonWorldgen {
 		(StructurePieceType.ContextlessType) AstralObservatoryPiece::new);
 	public static final StructurePieceType DROWNED_SCRIPTORIUM_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, Wildercord.id("drowned_scriptorium"),
 		(StructurePieceType.ContextlessType) DrownedScriptoriumPiece::new);
+	public static final StructurePieceType ROOTBOUND_MAZE_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, Wildercord.id("rootbound_maze"),
+		(StructurePieceType.ContextlessType) RootboundMazePiece::new);
+	public static final StructurePieceType STORM_SPIRE_PIECE = Registry.register(BuiltInRegistries.STRUCTURE_PIECE, Wildercord.id("storm_spire"),
+		(StructurePieceType.ContextlessType) StormSpirePiece::new);
 
 	/** Every dimension dungeon (not the Archive): inside one, a third of the monsters carry Cords. */
 	public static final TagKey<Structure> DUNGEONS = TagKey.create(Registries.STRUCTURE, Wildercord.id("dungeon"));
@@ -38,6 +42,10 @@ public final class DungeonWorldgen {
 	public static final ResourceKey<LootTable> ASTRAL_VAULT = loot("chests/astral_observatory_vault");
 	public static final ResourceKey<LootTable> TIDE_HALL = loot("chests/drowned_scriptorium_hall");
 	public static final ResourceKey<LootTable> TIDE_VAULT = loot("chests/drowned_scriptorium_vault");
+	public static final ResourceKey<LootTable> ROOT_HALL = loot("chests/rootbound_maze_hall");
+	public static final ResourceKey<LootTable> ROOT_VAULT = loot("chests/rootbound_maze_vault");
+	public static final ResourceKey<LootTable> STORM_HALL = loot("chests/storm_spire_hall");
+	public static final ResourceKey<LootTable> STORM_VAULT = loot("chests/storm_spire_vault");
 
 	private static ResourceKey<LootTable> loot(String path) {
 		return ResourceKey.create(Registries.LOOT_TABLE, Wildercord.id(path));

@@ -19,7 +19,9 @@ public class DungeonStructure extends Structure {
 	public enum Kind implements StringRepresentable {
 		EMBER_SANCTUM,
 		ASTRAL_OBSERVATORY,
-		DROWNED_SCRIPTORIUM;
+		DROWNED_SCRIPTORIUM,
+		ROOTBOUND_MAZE,
+		STORM_SPIRE;
 
 		public static final Codec<Kind> CODEC = StringRepresentable.fromEnum(Kind::values);
 
@@ -47,6 +49,8 @@ public class DungeonStructure extends Structure {
 			case EMBER_SANCTUM -> EmberSanctumPiece.locate(context);
 			case ASTRAL_OBSERVATORY -> AstralObservatoryPiece.locate(context);
 			case DROWNED_SCRIPTORIUM -> DrownedScriptoriumPiece.locate(context);
+			case ROOTBOUND_MAZE -> RootboundMazePiece.locate(context);
+			case STORM_SPIRE -> StormSpirePiece.locate(context);
 		};
 	}
 

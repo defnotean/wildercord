@@ -1406,6 +1406,12 @@ NEW_LANG = {
     "block.wildercord.fusion_altar": "Fusion Altar",
     "container.wildercord.fusion_altar": "Fusion Altar",
     "item.wildercord.knot": "Knot",
+    "item.wildercord.woven_rune": "Woven Rune",
+    "category.wildercord.effect.fusion": "Woven fusions",
+    "item.wildercord.rootbound_relic": "Rootbound Relic",
+    "item.wildercord.stormglass_relic": "Stormglass Relic",
+    "item.wildercord.rootbound_relic.desc": "Heal and root nearby monsters. Recharges in 30 seconds.",
+    "item.wildercord.stormglass_relic.desc": "A burst of wind repels monsters and grants speed and slow falling. Recharges in 30 seconds.",
     "item.wildercord.knot.named": "Knot: %s",
     "item.wildercord.rune.ranked": "%s Rune %s",
     "family.wildercord.knot": "Knot",
@@ -1425,9 +1431,10 @@ NEW_LANG = {
     "screen.wildercord.altar.kind.none": "The altar waits",
     "screen.wildercord.altar.kind.upgrade": "Upgrade",
     "screen.wildercord.altar.kind.combine": "Combine",
+    "screen.wildercord.altar.kind.weave": "Weave exact effects",
     "screen.wildercord.altar.kind.knot": "Tie a Knot: pick a spell",
     "screen.wildercord.altar.how.1": "Three of a rune: rank it up",
-    "screen.wildercord.altar.how.2": "Two effects and an amethyst shard: combine them",
+    "screen.wildercord.altar.how.2": "Two effects: shard fuses elements, block weaves the pair",
     "screen.wildercord.altar.how.3": "A Blank Rune and string: tie a spell into a Knot",
     "screen.wildercord.altar.upgrade_line": "+%s%% power at the same mana, in every spell it's threaded in",
     "screen.wildercord.altar.combine_line": "A new effect, born of %s and %s",
@@ -2292,6 +2299,8 @@ def write_new_content(runes):
     save(item_art.knot_icon(), tex / "item/knot.png")
     item_model("knot", "knot")
     write_json(ASSETS / "items/knot.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/knot"}})
+    item_model("woven_rune", "knot")
+    write_json(ASSETS / "items/woven_rune.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/woven_rune"}})
 
     # ---- entity skins
     save(world_art.archivist_texture(), tex / "entity/archivist.png")

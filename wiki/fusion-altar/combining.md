@@ -11,6 +11,12 @@ every pair of the ten elements and one for each element on its own, **55** in al
 fusions**, each made from two *particular* runes (see [Signature fusions](#signature-fusions)). The only way to get any
 of them is to make it at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 
+A **Block of Amethyst** offers another choice: it weaves the exact two effects you selected into one rune. Each
+different pair makes its own woven rune, so every pair has a distinct result available. A woven rune takes one
+socket but casts both effects at their full combined mana cost. The two effects keep their own targeting rules and
+visual effects. Woven runes may be ranked up when they have power, but cannot be woven into another woven rune.
+Shapes, modifiers, links and innate effects cannot be woven. The block recipe also costs 3 XP levels.
+
 <img src="{{ '/assets/images/d-altar-combine.jpg' | relative_url }}" alt="The Fusion Altar screen with a Fire effect and a Wind effect on the circle and an amethyst shard in the middle; the panel reads Combine, Firestorm, a new effect born of Fire and Wind, costs 3 XP levels" class="shot">
 <span class="caption">A Fire effect and a Wind effect, with an amethyst shard: Firestorm, for 3 XP levels</span>
 

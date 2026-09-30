@@ -299,7 +299,7 @@ public final class Runes {
 
 	/** Whether a rune is made only at the Fusion Altar: an element fusion or a signature one. */
 	public static boolean fused(RuneDef rune) {
-		return FUSED.contains(rune) || SIGNATURE.contains(rune);
+		return FUSED.contains(rune) || SIGNATURE.contains(rune) || WovenRunes.isWoven(rune);
 	}
 
 	// ---- Signature fusions: each made only from two particular effects at the Fusion Altar (see Fusions.SIGNATURES),
@@ -459,13 +459,16 @@ public final class Runes {
 		return n;
 	}
 
-	/** A rune by id: one of the roster, or a Knot (which carries its spell in its id, see {@link Knots}). */
+	/** A rune by id: one of the roster, a Knot or a woven pair (both dynamic ids carry their contents). */
 	public static Optional<RuneDef> get(String id) {
 		RuneDef rune = ALL.get(id);
 		if (rune != null) {
 			return Optional.of(rune);
 		}
-		return Knots.isKnot(id) ? Knots.def(id) : Optional.empty();
+		if (Knots.isKnot(id)) {
+			return Knots.def(id);
+		}
+		return WovenRunes.isWoven(id) ? WovenRunes.def(id) : Optional.empty();
 	}
 
 	public static Collection<RuneDef> all() {

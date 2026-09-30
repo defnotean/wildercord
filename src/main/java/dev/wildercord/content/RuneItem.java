@@ -3,6 +3,7 @@ package dev.wildercord.content;
 import dev.wildercord.player.RuneRanks;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.Knots;
+import dev.wildercord.spell.WovenRunes;
 import dev.wildercord.spell.Ranks;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
@@ -43,7 +44,7 @@ public class RuneItem extends Item {
 	}
 
 	public static ItemStack stack(String runeId) {
-		ItemStack stack = new ItemStack(Knots.isKnot(runeId) ? WildercordItems.KNOT : WildercordItems.RUNE);
+		ItemStack stack = new ItemStack(Knots.isKnot(runeId) ? WildercordItems.KNOT : WovenRunes.isWoven(runeId) ? WildercordItems.WOVEN_RUNE : WildercordItems.RUNE);
 		stack.set(WildercordComponents.RUNE, runeId);
 		return stack;
 	}

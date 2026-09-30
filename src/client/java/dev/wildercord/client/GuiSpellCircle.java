@@ -5,6 +5,7 @@ import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.SpellSigil;
+import dev.wildercord.spell.WovenRunes;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -45,6 +46,9 @@ public final class GuiSpellCircle {
 	private static String art(RuneDef rune) {
 		if (rune.family() == RuneFamily.KNOT) {
 			return "_link";
+		}
+		if (WovenRunes.isWoven(rune)) {
+			return "_effect";
 		}
 		return rune.id().startsWith(Wildercord.MOD_ID + ":") ? rune.path() : "_" + rune.family().name().toLowerCase(java.util.Locale.ROOT);
 	}

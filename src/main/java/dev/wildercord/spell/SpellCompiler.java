@@ -106,21 +106,27 @@ public final class SpellCompiler {
 	 * @param scope  0 for a rune written in the spell; each Knot's runes share a number of their own
 	 * @param factor the share of its mana it costs: {@link Knots#DISCOUNT} for each Knot around it
 	 */
-	private record Entry(RuneDef rune, int outer, int scope, double factor) {}
+	private record Entry(RuneDef rune, int outer, int scope, double factor, String rankId) {}
 
 	/** The spell with every Knot replaced by the runes it holds (Knots in Knots too, up to {@link Knots#MAX_DEPTH}). */
 	private static List<Entry> expand(List<RuneDef> runes) {
 		List<Entry> out = new ArrayList<>();
 		int[] scopes = {0};
 		for (int i = 0; i < runes.size(); i++) {
-			expand(runes.get(i), i, 0, 1.0, 0, out, scopes);
+			expand(runes.get(i), i, 0, 1.0, 0, null, out, scopes);
 		}
 		return out;
 	}
 
-	private static void expand(RuneDef rune, int outer, int scope, double factor, int depth, List<Entry> out, int[] scopes) {
+	private static void expand(RuneDef rune, int outer, int scope, double factor, int depth, String rankId, List<Entry> out, int[] scopes) {
+		if (WovenRunes.isWoven(rune)) {
+			for (RuneDef held : WovenRunes.contents(rune)) {
+				out.add(new Entry(held, outer, scope, factor, rune.id()));
+			}
+			return;
+		}
 		if (!Knots.isKnot(rune)) {
-			out.add(new Entry(rune, outer, scope, factor));
+			out.add(new Entry(rune, outer, scope, factor, rankId));
 			return;
 		}
 		if (depth >= Knots.MAX_DEPTH) {
@@ -128,7 +134,7 @@ public final class SpellCompiler {
 		}
 		int inner = ++scopes[0];
 		for (RuneDef held : Knots.contents(rune)) {
-			expand(held, outer, inner, factor * Knots.DISCOUNT, depth + 1, out, scopes);
+			expand(held, outer, inner, factor * Knots.DISCOUNT, depth + 1, rankId, out, scopes);
 		}
 	}
 
@@ -187,7 +193,7 @@ public final class SpellCompiler {
 						}
 						SpellPlan.EffectNode node = new SpellPlan.EffectNode(rune);
 						node.factor = entry.factor();
-						node.rank = Ranks.clamp(ranks.rank(rune.id()));
+						node.rank = Ranks.clamp(ranks.rank(entry.rankId() == null ? rune.id() : entry.rankId()));
 						group.effects.add(node);
 						targets.add(new Target(i, entry, node.mods));
 					}

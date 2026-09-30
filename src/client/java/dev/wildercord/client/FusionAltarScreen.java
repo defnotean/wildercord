@@ -303,7 +303,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		String kind = switch (plan.kind()) {
 			case UPGRADE -> "upgrade";
 			// Two particular runes with a signature of their own say so: it isn't their elements' usual fusion.
-			case COMBINE -> plan.signature() ? "signature" : "combine";
+			case COMBINE -> plan.recipe() == null ? "weave" : plan.signature() ? "signature" : "combine";
 			case KNOT -> "knot";
 			case NONE -> "none";
 		};
@@ -322,6 +322,8 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 				what = Component.translatable("screen.wildercord.altar.upgrade_line", Math.round((dev.wildercord.spell.Ranks.power(plan.rank()) - 1) * 100));
 			} else if (plan.recipe() instanceof Fusions.Signature signature) {
 				what = Component.translatable("screen.wildercord.altar.signature_line", RuneItem.runeName(signature.a()), RuneItem.runeName(signature.b()));
+			} else if (plan.recipe() == null) {
+				what = Component.literal("Both effects in one socket; costs the mana of both.");
 			} else {
 				what = Component.translatable("screen.wildercord.altar.combine_line",
 					Component.translatable("element.wildercord." + plan.recipe().first()), Component.translatable("element.wildercord." + plan.recipe().second()));

@@ -523,6 +523,48 @@ DROWNED_QUILL = """
 DROWNED_QUILL_PAL = {"W": hexc("#E8E4D8"), "w": hexc("#B8C8C8"), "k": hexc("#2E5A1E"), "b": hexc("#44782A"),
                      "i": hexc("#1E3A6A"), "I": hexc("#9AF0E8")}
 
+ROOTBOUND_RELIC = """
+    ................
+    ......gg........
+    .....gGGg.......
+    ....gGLLGg......
+    ...gGL**LGg.....
+    ..gGLL**LLGg....
+    ..gGL****LGg....
+    ..gGLL**LLGg....
+    ...gGLLLLGg.....
+    ....gGGGGg......
+    .....gggg.......
+    ......bb........
+    .....b..b.......
+    ...bb....bb.....
+    ..b........b....
+    ................
+"""
+ROOTBOUND_RELIC_PAL = {"g": hexc("#254A2A"), "G": hexc("#447D36"), "L": hexc("#9CCB56"),
+                        "*": hexc("#E9EE9A"), "b": hexc("#63452D")}
+
+STORMGLASS_RELIC = """
+    ................
+    ......aa........
+    .....aBBA.......
+    ....aBccBA......
+    ...aBcCCcBA.....
+    ..aBcCCcBBA.....
+    ..aBcCCcBBA.....
+    ...aBccBBa......
+    ....aBBAa.......
+    .....aAa........
+    ......yy........
+    .....yYYy.......
+    ....yY..Yy......
+    .....yyyy.......
+    ................
+    ................
+"""
+STORMGLASS_RELIC_PAL = {"a": hexc("#35416E"), "A": hexc("#6678B0"), "B": hexc("#8EACE1"),
+                         "c": hexc("#61C8E5"), "C": hexc("#F2FCFF"), "y": hexc("#8D692B"), "Y": hexc("#F3D77A")}
+
 
 def trophy_icon(text, pal):
     cv = Canvas(16)
@@ -566,6 +608,20 @@ DUNGEONS = {
         "extras": [("minecraft:prismarine_crystals", 4, 2, 6), ("minecraft:nautilus_shell", 2, 1, 2), ("minecraft:ink_sac", 3, 2, 5),
                    ("minecraft:heart_of_the_sea", 1, 1, 1)],
     },
+    "rootbound_maze": {
+        "elements": ("life", "earth"), "name": "the Rootbound Maze", "relic": "wildercord:rootbound_relic",
+        "step": "surface_structures", "biomes": ["minecraft:swamp", "minecraft:mangrove_swamp"],
+        "spacing": 28, "separation": 9, "salt": 20261001, "spawns": [],
+        "extras": [("minecraft:moss_block", 4, 2, 7), ("minecraft:vine", 3, 2, 6),
+                   ("minecraft:amethyst_block", 2, 1, 2), ("minecraft:golden_apple", 1, 1, 1)],
+    },
+    "storm_spire": {
+        "elements": ("storm", "wind"), "name": "the Storm Spire", "relic": "wildercord:stormglass_relic",
+        "step": "surface_structures", "biomes": ["minecraft:jagged_peaks", "minecraft:frozen_peaks", "minecraft:stony_peaks"],
+        "spacing": 32, "separation": 10, "salt": 20261002, "spawns": [],
+        "extras": [("minecraft:lightning_rod", 4, 1, 3), ("minecraft:amethyst_shard", 4, 2, 8),
+                   ("minecraft:amethyst_block", 2, 1, 2), ("minecraft:emerald", 2, 1, 3)],
+    },
 }
 
 
@@ -585,7 +641,9 @@ def main(g, runes):
     g.save(tide_scribe_script_texture(), tex / "entity/tide_scribe_script.png")
     # ---- trophies
     icons = {"cinder_heart": trophy_icon(CINDER_HEART, CINDER_HEART_PAL), "astral_lens": trophy_icon(ASTRAL_LENS, ASTRAL_LENS_PAL),
-             "drowned_quill": trophy_icon(DROWNED_QUILL, DROWNED_QUILL_PAL)}
+             "drowned_quill": trophy_icon(DROWNED_QUILL, DROWNED_QUILL_PAL),
+             "rootbound_relic": trophy_icon(ROOTBOUND_RELIC, ROOTBOUND_RELIC_PAL),
+             "stormglass_relic": trophy_icon(STORMGLASS_RELIC, STORMGLASS_RELIC_PAL)}
     for name, image in icons.items():
         g.save(image, tex / f"item/{name}.png")
         g.item_model(name, name)
@@ -631,17 +689,19 @@ def main(g, runes):
         ]})
         # ---- the vault: a Tier IV rune, runes of its elements, and treasure
         g.write_json(data / f"loot_table/chests/{key}_vault.json", {"type": "minecraft:chest", "pools": [
-            {"rolls": 1, "entries": [g.rune_entry(p, 1) for p in fourth]},
+            *([{"rolls": 1, "entries": [g.item_entry(d["relic"], 1)]}] if "relic" in d else []),
+            {"rolls": 1, "entries": [g.rune_entry(p, 1) for p in fourth]} if "boss" in d else
+            {"rolls": 1, "entries": [g.rune_entry(p, 1) for p in second_third]},
             # The dungeon's own runes, found nowhere else: one, and a second a third of the time.
-            found_pool(key),
-            found_pool(key, 0.35),
+            *([found_pool(key), found_pool(key, 0.35)] if key in sources else []),
             {"rolls": {"type": "minecraft:uniform", "min": 2, "max": 4}, "entries": [
                 g.item_entry("wildercord:mana_crystal", 4, 1, 2), g.item_entry("wildercord:torn_page", 4), g.item_entry("minecraft:diamond", 2, 1, 3),
                 g.item_entry("minecraft:gold_ingot", 3, 2, 6), g.item_entry("minecraft:echo_shard", 1)] +
                 [g.item_entry(i, w, lo, hi) for i, w, lo, hi in d["extras"]]},
         ]})
         # ---- the boss (its Tier IV rune, one its killer doesn't know, is dropped in code)
-        g.write_json(data / f"loot_table/entities/{d['boss']}.json", {"type": "minecraft:entity", "pools": [
+        if "boss" in d:
+            g.write_json(data / f"loot_table/entities/{d['boss']}.json", {"type": "minecraft:entity", "pools": [
             {"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"wildercord:{d['trophy']}"}]},
             {"rolls": 1, "entries": [g.item_entry("wildercord:mana_crystal", 1, 3, 3)]},
             {"rolls": 1, "entries": [g.item_entry("wildercord:torn_page", 1)]},
@@ -649,7 +709,7 @@ def main(g, runes):
             # The boss's own rune, found nowhere else, and half the time one of its dungeon's.
             found_pool(d["boss"]),
             found_pool(key, 0.5),
-        ]})
+            ]})
         # ---- where it grows
         g.write_json(data / f"worldgen/structure/{key}.json", {
             "type": "wildercord:dungeon", "dungeon": key, "biomes": f"#wildercord:has_structure/{key}",

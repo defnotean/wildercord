@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20261001,
+    "separation": 9,
+    "spacing": 28
+  },
+  "structures": [
+    {
+      "structure": "wildercord:rootbound_maze",
+      "weight": 1
+    }
+  ]
+}
