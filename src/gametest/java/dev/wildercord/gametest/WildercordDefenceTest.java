@@ -61,8 +61,8 @@ import java.util.function.BiConsumer;
  * {@code WILDERCORD_SHOWCASE}.</p>
  */
 public class WildercordDefenceTest implements FabricClientGameTest {
-	/** The stage: a stone platform high in the sky, so terrain and mobs stay out of it. */
-	private static final BlockPos STAGE = new BlockPos(0, 180, 0);
+	/** The stage: a stone platform high in the sky over where the player spawned, so terrain and mobs stay out of it. */
+	private static BlockPos stage = BlockPos.ZERO;
 	/** Enough health that no measured hit kills (so the guard never has a say in the numbers). */
 	private static final double BIG_HEALTH = 200;
 
@@ -97,17 +97,18 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = player(server);
 				ServerLevel level = player.level();
+				stage = new BlockPos(player.getBlockX(), 180, player.getBlockZ());
 				for (int x = -6; x <= 6; x++) {
 					for (int z = -6; z <= 6; z++) {
-						level.setBlockAndUpdate(STAGE.offset(x, 0, z), Blocks.STONE.defaultBlockState());
+						level.setBlockAndUpdate(stage.offset(x, 0, z), Blocks.STONE.defaultBlockState());
 					}
 				}
 				player.setGameMode(GameType.SURVIVAL);
-				player.teleportTo(level, 0.5, STAGE.getY() + 1, 0.5, java.util.Set.of(), 0, 10, false);
+				ready(player, 20);
 				Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
 				// The monster that casts: a husk that stands still, can't be hurt and never becomes a random Runebound.
 				Mob husk = EntityTypes.HUSK.create(level, EntitySpawnReason.COMMAND);
-				husk.snapTo(0.5, STAGE.getY() + 1, 3.0, 180, 0);
+				husk.snapTo(stage.getX() + 0.5, stage.getY() + 1, stage.getZ() + 3.0, 180, 0);
 				husk.setNoAi(true);
 				husk.setPermanentlyInvulnerable(true);
 				husk.setPersistenceRequired();
@@ -353,7 +354,7 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 
 	/** Back in the middle of the stage, standing still, health restored to {@code max}, nothing absorbing, no hurt cooldown. */
 	private static void ready(ServerPlayer player, double max) {
-		player.teleportTo(player.level(), 0.5, STAGE.getY() + 1, 0.5, java.util.Set.of(), 0, 10, false);
+		player.teleportTo(player.level(), stage.getX() + 0.5, stage.getY() + 1, stage.getZ() + 0.5, java.util.Set.of(), 0, 10, false);
 		player.setDeltaMovement(net.minecraft.world.phys.Vec3.ZERO);
 		player.getAttribute(Attributes.MAX_HEALTH).setBaseValue(max);
 		player.setHealth((float) max);
