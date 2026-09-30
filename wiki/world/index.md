@@ -83,6 +83,10 @@ Inside a ward, what isn't part of the dungeon still goes: a torch or a block **y
 again, a spell's temporary blocks (a Rampart, a Span) come and go as usual, and grass, water and the like are no
 trouble. Players in creative mode aren't stopped.
 
+The ward also **stills the wind**: [Soar]({{ '/runes/effects/wind/' | relative_url }}#soar) won't lift anyone inside an
+arena or a vault, and a flier who comes in is set down gently (*"The ward stills the wind here"*). The fight is on
+foot.
+
 ### The bosses
 
 The four keepers share these rules:

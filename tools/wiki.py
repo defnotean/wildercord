@@ -56,7 +56,7 @@ ELEMENT_BLURB = {
     "fire": "Burning, blasts and heat. Fire lights what it touches and boils water into steam.",
     "frost": "Cold, ice and water. Frost slows, freezes and shatters, and freezes water you can walk on.",
     "storm": "Lightning and shock. Storm strikes hard, chains between foes and runs through water.",
-    "wind": "Air and motion. Wind throws, lifts, dashes and turns arrows aside.",
+    "wind": "Air and motion. Wind throws, lifts, dashes, turns arrows aside and carries you through the sky.",
     "earth": "Stone and ground. Earth shields, roots, heaves the ground and breaks blocks.",
     "life": "Healing and growth. Life mends allies, cleanses poisons and makes plants grow.",
     "void": "Darkness, gravity and space. Void pulls, blinks, withers and swallows light.",

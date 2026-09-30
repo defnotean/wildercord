@@ -2,6 +2,29 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- **Soar: flight.** A new Tier III wind rune (18 mana, an Amethyst Cord or better) gives real flight for 20 seconds,
+  as in creative: double-tap jump to take off, then jump and sneak to rise and sink, a little slower than creative.
+  Extend lengthens it (a minute and a half at most), and cast while falling it catches you at once. On a shape that
+  reaches your allies it lifts them too; a pet it reaches falls slowly instead. Craft it from a Phantom Membrane, a
+  Feather and a Breeze Rod, or find it in trial vaults and End cities. See
+  [Soar](https://defnotean.github.io/wildercord/runes/effects/wind/#soar).
+- **Flight ends gently.** Three seconds before the end the wind starts to fade: a falling chime, wisps peeling off your
+  wings and a line over the hotbar. Then it sets you down as Feather Fall does, drifting the way you look, and the
+  landing never hurts, from any height.
+- **Wings of wind.** A flier wears a pair of wings of wind that beat slowly (faster on the move) and fold small on the
+  ground; on the move the wind streams off the wingtips and curls away behind. Taking off is a wingbeat and a whoosh,
+  and soft gusts go by while you fly.
+- **Flight has its counters.** A pull (Pull, Gravity Well, a vortex, a rift) or a grounding wind (Weigh, Downdraft) tears
+  the flight away and keeps the wind from lifting you for 3 seconds; the fall is still a gentle one. The dungeons'
+  warded arenas and vaults still the wind: nobody flies in there.
+- **Flight is never left behind.** Soar never touches a player in creative or spectator, or anyone who can already fly
+  some other way. Log out mid-flight and you're saved unable to fly, with what was left given back when you return
+  (hovering, if you were up in the air); a restart or a crash is tidied the same way, death ends the flight and a trip
+  to another world sets you down gently. A server with flying turned off doesn't kick a soaring player.
+
 ## [0.6.1-alpha] - 2026-09-29
 
 The Cord stops glowing all the time, and magic looks right under shader packs. Works with 0.6.0 servers and clients.
