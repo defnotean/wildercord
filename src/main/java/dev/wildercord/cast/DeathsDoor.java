@@ -12,6 +12,10 @@ import java.util.UUID;
  * and each can be cast again long before it runs out; without a rest, a caster who kept one up would never
  * die. So once any of them has saved a creature, none of them saves it again for a minute (and the secret
  * one, stronger, can't be taken up again for three).
+ *
+ * <p>A player's spellguard ({@link SpellDefence}) isn't one of them: it stops one spell hit short of killing
+ * before any of these is asked, has its own recharge, and never counts as a save here. Like them, it never
+ * answers /kill or the void.</p>
  */
 public final class DeathsDoor {
 	private DeathsDoor() {}
