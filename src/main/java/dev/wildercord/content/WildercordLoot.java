@@ -86,7 +86,7 @@ public final class WildercordLoot {
 		RUNE_POOLS.put(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_COMMON, new RunePool(30, uncommon));
 		RUNE_POOLS.put(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_RARE, new RunePool(45,
 			List.of(Runes.ZONE, Runes.SPLIT_MOD, Runes.CHAIN_MOD, Runes.WALL, Runes.ORBIT, Runes.FREEZE, Runes.VOLLEY_MOD, Runes.ON_HURT,
-				Runes.COMBO, Runes.REFLECT, Runes.PRIMER, Runes.ON_REACTION)));
+				Runes.COMBO, Runes.REFLECT, Runes.PRIMER, Runes.ON_REACTION, Runes.SOAR)));
 		RUNE_POOLS.put(BuiltInLootTables.TRIAL_CHAMBERS_REWARD_OMINOUS_RARE, new RunePool(70,
 			List.of(Runes.ZONE, Runes.SPLIT_MOD, Runes.CHAIN_MOD, Runes.WALL, Runes.ORBIT, Runes.FREEZE, Runes.TREMOR, Runes.GRAVITY_WELL,
 				Runes.TOTEM, Runes.OVERCHARGE_MOD, Runes.ORB, Runes.BLACKSPARK, Runes.VOW_MOD, Runes.INFINITY, Runes.REVERSAL)));
@@ -95,7 +95,7 @@ public final class WildercordLoot {
 				Runes.ON_LOW_HEALTH, Runes.SMITE, Runes.SHADES, Runes.SHADOWSTEP, Runes.DOMAIN, Runes.VOW_MOD, Runes.BLACKFLAME, Runes.DROWSE)));
 		RUNE_POOLS.put(BuiltInLootTables.END_CITY_TREASURE, new RunePool(45,
 			List.of(Runes.RAIN, Runes.HOMING_MOD, Runes.BLINK, Runes.LEVITATE, Runes.GRAVITY_WELL, Runes.ORBIT, Runes.ORB, Runes.TIME_SKIP,
-				Runes.STASIS, Runes.REWIND, Runes.PROLONG)));
+				Runes.STASIS, Runes.REWIND, Runes.PROLONG, Runes.SOAR)));
 		RUNE_POOLS.put(BuiltInLootTables.STRONGHOLD_LIBRARY, new RunePool(50,
 			List.of(Runes.RAIN, Runes.HOMING_MOD, Runes.WALL, Runes.PULSE, Runes.ECHO, Runes.LINGER_MOD, Runes.SMITE, Runes.TOTEM,
 				Runes.RESONANCE, Runes.FORESIGHT, Runes.RESTORE)));

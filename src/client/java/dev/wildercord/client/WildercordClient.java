@@ -104,6 +104,7 @@ public final class WildercordClient implements ClientModInitializer {
 				dev.wildercord.client.fx.ScreenEffects.tick(client);
 				dev.wildercord.client.fx.ShieldCircles.tick(client);
 				dev.wildercord.client.fx.RitualCircles.tick(client);
+				dev.wildercord.client.fx.SoarWings.tick(client);
 				return;
 			}
 			if (client.isPaused()) {
@@ -118,6 +119,7 @@ public final class WildercordClient implements ClientModInitializer {
 			dev.wildercord.client.fx.StormSky.tick(client);
 			LeyMotes.tick(client);
 			RuneAura.tick(client);
+			dev.wildercord.client.fx.SoarWings.tick(client);
 			ArchiveAmbience.tick(client);
 			WellstoneHalo.tick(client);
 		});

@@ -1463,6 +1463,17 @@
         {
           "type": "minecraft:item",
           "name": "wildercord:rune",
+          "weight": 2,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:soar"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
           "weight": 1,
           "modifier": {
             "components": {

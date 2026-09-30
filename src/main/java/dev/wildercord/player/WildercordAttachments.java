@@ -417,5 +417,30 @@ public final class WildercordAttachments {
 		builder -> builder.syncWith(RuneMarks.STREAM_CODEC, AttachmentSyncPredicate.all())
 	);
 
+	/**
+	 * A flight from Soar (see {@code cast.Soar}): the game time it ends (or, once it has, the game time its
+	 * gentle descent stops guarding the faller), the flying speed the player had before it, and whether it's
+	 * over and they're coming down. Its being here before it's over is the note that Soar gave the flight, so
+	 * Soar only ever takes back a flight it gave. Saved, so a flight caught by a logout, a restart or a crash is
+	 * picked up or tidied away as the player logs in; not kept through death; synced to everyone nearby, who
+	 * draw the wings.
+	 */
+	public record Soaring(long until, float speed, boolean falling) {
+		public static final Codec<Soaring> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.create(i -> i.group(
+			Codec.LONG.fieldOf("until").forGetter(Soaring::until),
+			Codec.FLOAT.fieldOf("speed").forGetter(Soaring::speed),
+			Codec.BOOL.fieldOf("falling").forGetter(Soaring::falling)
+		).apply(i, Soaring::new));
+		public static final StreamCodec<ByteBuf, Soaring> STREAM_CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_LONG, Soaring::until, ByteBufCodecs.FLOAT, Soaring::speed, ByteBufCodecs.BOOL, Soaring::falling, Soaring::new);
+	}
+
+	public static final AttachmentType<Soaring> SOARING = AttachmentRegistry.create(
+		Wildercord.id("soaring"),
+		builder -> builder
+			.persistent(Soaring.CODEC)
+			.syncWith(Soaring.STREAM_CODEC, AttachmentSyncPredicate.all())
+	);
+
 	public static void init() {}
 }

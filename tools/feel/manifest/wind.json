@@ -105,6 +105,43 @@
       ],
       "subtitle": "hit"
     },
+    "wind_soar": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_soar_1",
+        "kit/wind/wind_soar_2",
+        "kit/wind/wind_soar_3"
+      ],
+      "subtitle": "cast"
+    },
+    "wind_soar_fade": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_soar_fade_1",
+        "kit/wind/wind_soar_fade_2",
+        "kit/wind/wind_soar_fade_3"
+      ],
+      "subtitle": "tell"
+    },
+    "wind_soar_gust": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_soar_gust_1",
+        "kit/wind/wind_soar_gust_2",
+        "kit/wind/wind_soar_gust_3",
+        "kit/wind/wind_soar_gust_4"
+      ],
+      "subtitle": "field"
+    },
+    "wind_soar_takeoff": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_soar_takeoff_1",
+        "kit/wind/wind_soar_takeoff_2",
+        "kit/wind/wind_soar_takeoff_3"
+      ],
+      "subtitle": "cast"
+    },
     "wind_thump": {
       "attenuation": 0,
       "files": [

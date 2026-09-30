@@ -664,6 +664,13 @@ def write_lang(runes):
         "message.wildercord.rebirth_resting": "Too soon to be reborn again (%s s)",
         "message.wildercord.time_skip_nowhere": "Nowhere safe ahead to skip to",
         "message.wildercord.warded": "These walls are warded: the only way in is through the dungeon",
+        "message.wildercord.soar_fading": "The wind beneath you is fading...",
+        "message.wildercord.soar_ended": "The wind sets you down gently",
+        "message.wildercord.soar_grounded": "Grounded! The wind is torn out from under you",
+        "message.wildercord.soar_warded": "The ward stills the wind here",
+        "message.wildercord.soar_travelled": "The wind doesn't follow you between worlds",
+        "message.wildercord.soar_already": "You can already fly",
+        "message.wildercord.soar_resting": "The wind won't take you yet (%s s)",
         "entity.wildercord.shadow_hound": "Shadow Hound",
         "modmenu.descriptionTranslation.wildercord": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key.",
     }
@@ -1166,6 +1173,8 @@ NEW_RUNES_2_RECIPES = {
     "disarm": ["minecraft:wind_charge", "minecraft:fishing_rod"],
 }
 RUNE_RECIPES.update(NEW_RUNES_2_RECIPES)
+# Flight (Runes.java, after batch 2): wings of wind from a phantom's membrane, a feather and a breeze's rod.
+RUNE_RECIPES["soar"] = ["minecraft:phantom_membrane", "minecraft:feather", "minecraft:breeze_rod"]
 
 
 def rune_result(path):

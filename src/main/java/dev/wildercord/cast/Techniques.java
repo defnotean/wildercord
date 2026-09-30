@@ -529,6 +529,8 @@ final class Techniques {
 		modifier(t, Attributes.JUMP_STRENGTH, -0.7, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 		long until = cast.level.getGameTime() + ticks;
 		WEIGHED.merge(t.getUUID(), until, Math::max);
+		// Too heavy for the wind to hold: a soaring player comes down.
+		Soar.ground(t);
 		TechniqueVfx.weigh(cast.level, t, true);
 		for (int i = 5; i < ticks; i += 5) {
 			Scheduler.later(i, () -> {

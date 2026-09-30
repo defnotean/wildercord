@@ -577,6 +577,8 @@ final class FusedStorm {
 
 	/** Flyers lose their lift: no levitating or slow falling, no gliding for 2 seconds, and a flying mob is pinned where it fell for a moment. */
 	private static void grounded(Cast cast, LivingEntity t, boolean flyer) {
+		// A soaring player loses the wind too (already slammed to the ground, there's no fall left to cushion).
+		Soar.ground(t);
 		t.removeEffect(MobEffects.LEVITATION);
 		t.removeEffect(MobEffects.SLOW_FALLING);
 		if (t instanceof Player player) {

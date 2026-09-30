@@ -237,6 +237,7 @@ public final class Effects {
 					featherglide(cast, t, ticks(12, duration));
 				}
 			});
+			case "soar" -> Soar.lift(cast, helped, SoarRules.flightTicks(duration));
 			case "swift" -> helped.forEach(t -> {
 				shakeOffCold(t);
 				t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(10, duration), Math.min(4, 2 + amplify), false, true));
@@ -1969,21 +1970,30 @@ public final class Effects {
 				if (GLIDES.get(key) != token || !t.isAlive() || t.level() != cast.level) {
 					return;
 				}
-				if (t.onGround() || t.isShiftKeyDown() || t.isInWater() || t.isFallFlying()) {
-					return;
-				}
-				Vec3 v = t.getDeltaMovement();
-				Vec3 look = horizontal(t.getLookAngle(), t.getLookAngle());
-				double sx = v.x + look.x * GLIDE_PUSH * 2;
-				double sz = v.z + look.z * GLIDE_PUSH * 2;
-				double speed = Math.sqrt(sx * sx + sz * sz);
-				if (speed > GLIDE_MAX) {
-					sx *= GLIDE_MAX / speed;
-					sz *= GLIDE_MAX / speed;
-				}
-				setMotion(t, new Vec3(sx, v.y, sz));
+				glide(t);
 			});
 		}
+	}
+
+	/**
+	 * One step of Feather Fall's drift, meant for every other tick: a creature falling slowly drifts the way it
+	 * looks, up to a gentle speed, unless it's on the ground, sneaking (which stops it), swimming or gliding.
+	 * Soar's descent drifts the same way.
+	 */
+	static void glide(LivingEntity t) {
+		if (t.onGround() || t.isShiftKeyDown() || t.isInWater() || t.isFallFlying()) {
+			return;
+		}
+		Vec3 v = t.getDeltaMovement();
+		Vec3 look = horizontal(t.getLookAngle(), t.getLookAngle());
+		double sx = v.x + look.x * GLIDE_PUSH * 2;
+		double sz = v.z + look.z * GLIDE_PUSH * 2;
+		double speed = Math.sqrt(sx * sx + sz * sz);
+		if (speed > GLIDE_MAX) {
+			sx *= GLIDE_MAX / speed;
+			sz *= GLIDE_MAX / speed;
+		}
+		setMotion(t, new Vec3(sx, v.y, sz));
 	}
 
 	private static final Map<String, Object> GLIDES = new HashMap<>();
