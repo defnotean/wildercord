@@ -238,6 +238,13 @@ in the Nether, the Astral Observatory in the End, and the Drowned Scriptorium on
 No, not even in single player, so find a safe spot before you rebuild your spells mid-fight. (Every key can be
 changed in Options, Controls, Key Binds, under **Wildercord**: see [Controls]({{ '/controls/' | relative_url }}).)
 
+### Does Wildercord work with shaders?
+Yes, with Iris (and Sodium). While a shader pack is on, magic is drawn the way the game draws its own glowing
+particles, so the pack lights it properly: no squares, smears or oddly lit patches where a spell was. Light looks a
+little softer than without a pack, void magic is a deep shade of its colour instead of a hole in the light, and
+glows (spell light, a wisp's halo, your Cord's beads) cast no shadows. Nothing needs switching on; without a pack
+everything looks as it always has.
+
 ## For server owners
 
 ### What can a server change?
