@@ -49,8 +49,8 @@ public final class GearLoot {
 	public static final int ARCHIVIST_CHANCE = 50;
 
 	static {
-		List<GearDef> foci = List.of(GearDef.HASTE, GearDef.THRIFT, GearDef.DEEP_WELL, GearDef.ECHOES);
-		List<GearDef> tomeAndFoci = List.of(GearDef.TOME, GearDef.HASTE, GearDef.THRIFT, GearDef.DEEP_WELL, GearDef.ECHOES);
+		List<GearDef> foci = List.of(GearDef.HASTE, GearDef.THRIFT, GearDef.DEEP_WELL, GearDef.ECHOES, GearDef.RESOLVE);
+		List<GearDef> tomeAndFoci = List.of(GearDef.TOME, GearDef.HASTE, GearDef.THRIFT, GearDef.DEEP_WELL, GearDef.ECHOES, GearDef.RESOLVE);
 		java.util.ArrayList<GearDef> vault = new java.util.ArrayList<>(tomeAndFoci);
 		GearDef.ELEMENTS.forEach(e -> vault.add(GearDef.greaterStaff(e)));
 		CHESTS.put(ARCHIVE_VAULT, new Pool(45, List.copyOf(vault)));

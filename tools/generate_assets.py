@@ -1355,6 +1355,7 @@ DEFENCE_LANG = {
     "screen.wildercord.defence.armour": "  %s%% from your armour (against a 5-heart spell)",
     "screen.wildercord.defence.enchant": "  %s%% from Warding and Protection",
     "screen.wildercord.defence.warded": "  %s%% from Warded %s",
+    "screen.wildercord.defence.focus": "  %s%% from Focus of Resolve",
     "screen.wildercord.defence.resistance": "  %s%% from Resistance %s",
     "screen.wildercord.defence.none": "  Nothing yet: see the ways below",
     "screen.wildercord.defence.guard_ready": "Spellguard: ready",
@@ -1365,6 +1366,7 @@ DEFENCE_LANG = {
     "screen.wildercord.defence.way.armour": "Armour: about half its worth against magic and frost, all of it against fire, lightning and blasts",
     "screen.wildercord.defence.way.warding": "Warding (armour enchantment): 8% less per level, but not on a piece with Protection",
     "screen.wildercord.defence.way.potion": "Potion of Warding (tinted glass): 20% less per level",
+    "screen.wildercord.defence.way.focus": "Focus of Resolve: 20% less damage, 15% weaker spell effects",
     "screen.wildercord.defence.way.shield": "A Shield spell stops a spell outright, and a parry turns it back",
     "screen.wildercord.defence.way.resistance": "Resistance and Protection work against spells too",
 }
@@ -2662,7 +2664,7 @@ def write_world_events():
 # (the numbers live in src/main/java/dev/wildercord/gear/GearDef.java; the art in gear_art.py)
 
 GEAR_ELEMENTS = ["fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood"]
-FOCI = ["haste", "thrift", "the_deep_well", "echoes"]
+FOCI = ["haste", "thrift", "the_deep_well", "echoes", "resolve"]
 
 # A staff: its core (two of it, up the diagonal), two of its element's material, and a Mana Crystal at the head.
 STAFF_MATERIALS = {
@@ -2678,6 +2680,7 @@ FOCUS_RECIPES = {
     "thrift": ({"E": "minecraft:emerald", "G": "minecraft:gold_ingot"}, [" E ", "GCG", " G "]),
     "the_deep_well": ({"L": "minecraft:lapis_block", "D": "minecraft:polished_deepslate"}, [" L ", "DCD", " D "]),
     "echoes": ({"E": "minecraft:echo_shard", "A": "minecraft:amethyst_shard"}, [" E ", "ACA", " A "]),
+    "resolve": ({"A": "minecraft:amethyst_shard", "I": "minecraft:iron_ingot"}, [" I ", "ACA", " I "]),
 }
 
 GEAR_LANG = {
@@ -2686,12 +2689,14 @@ GEAR_LANG = {
     "item.wildercord.focus_of_thrift": "Focus of Thrift",
     "item.wildercord.focus_of_the_deep_well": "Focus of the Deep Well",
     "item.wildercord.focus_of_echoes": "Focus of Echoes",
+    "item.wildercord.focus_of_resolve": "Focus of Resolve",
     "tooltip.wildercord.gear.staff": "%s spells: +%s%% power, %s%% less mana",
     "tooltip.wildercord.gear.tome": "A fifth spell, to thread and cast",
     "tooltip.wildercord.gear.haste": "Charged casts fill %s%% faster",
     "tooltip.wildercord.gear.thrift": "Spells cost %s%% less mana, but hit %s%% softer",
     "tooltip.wildercord.gear.deep_well": "+%s max mana",
     "tooltip.wildercord.gear.echoes": "A %s%% chance that a spell echoes: it goes off again, free",
+    "tooltip.wildercord.gear.resolve": "Spells hurt you %s%% less, but your spell effects are %s%% weaker",
     "tooltip.wildercord.gear.flourish": "A charged spell of its element leaves it with a flourish",
     "tooltip.wildercord.gear.slot": "Goes in your inventory's %s",
     "tooltip.wildercord.gear.either_hand": "With the slot empty, it works held in either hand",

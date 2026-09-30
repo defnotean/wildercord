@@ -180,6 +180,7 @@ A **focus** goes in the **Focus slot** (or your off-hand) and changes **every** 
 | **Focus of Thrift** | Spells cost **15% less mana**, but every effect hits **10% softer** | Emerald on top; Gold Ingot, Mana Crystal, Gold Ingot across the middle; Gold Ingot below |
 | **Focus of the Deep Well** | **+50 max mana** | Block of Lapis Lazuli on top; Polished Deepslate, Mana Crystal, Polished Deepslate across the middle; Polished Deepslate below |
 | **Focus of Echoes** | A **10% chance** that a spell **echoes**: it goes off again half a second later, for free | Echo Shard on top; Amethyst Shard, Mana Crystal, Amethyst Shard across the middle; Amethyst Shard below |
+| **Focus of Resolve** | Incoming spells hurt **20% less**, but your spell effects are **15% weaker** | Iron Ingot on top and below; Amethyst Shard, Mana Crystal, Amethyst Shard across the middle |
 
 Each focus is a plus shape around a Mana Crystal:
 
@@ -188,6 +189,7 @@ Each focus is a plus shape around a Mana Crystal:
 {% include recipe-card.html id="focus_of_thrift" name="Focus of Thrift" %}
 {% include recipe-card.html id="focus_of_the_deep_well" name="Focus of the Deep Well" %}
 {% include recipe-card.html id="focus_of_echoes" name="Focus of Echoes" %}
+{% include recipe-card.html id="focus_of_resolve" name="Focus of Resolve" %}
 </div>
 
 Foci can also be found (see the table below).
@@ -198,13 +200,13 @@ Chests that hold casting gear roll once for **one piece**, shared evenly among t
 
 | Chest | Chance of a piece | Pieces it can be |
 |---|---|---|
-| **Archive vault** | 45% | the Tome, any of the four foci, or any of the ten greater staffs |
-| **Archive library** | 20% | the Tome or any of the four foci |
-| **Stronghold library** | 10% | the Tome or any of the four foci |
-| **Ancient city** | 12% | any of the four foci |
-| **Woodland mansion** | 8% | any of the four foci |
+| **Archive vault** | 45% | the Tome, any of the five foci, or any of the ten greater staffs |
+| **Archive library** | 20% | the Tome or any of the five foci |
+| **Stronghold library** | 10% | the Tome or any of the five foci |
+| **Ancient city** | 12% | any of the five foci |
+| **Woodland mansion** | 8% | any of the five foci |
 
-So an Archive library chest has a 4% chance of the Tome, and each of the four foci the same. Plain staffs are never
+So an Archive library chest has about a 3.3% chance of the Tome, and each of the five foci the same. Plain staffs are never
 found: craft them.
 
 ## How gear stacks

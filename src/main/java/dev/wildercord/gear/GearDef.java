@@ -53,6 +53,8 @@ public record GearDef(String path, GearKind kind, String element, double element
 	public static final double THRIFT_POWER = 0.90;
 	public static final int DEEP_WELL_MANA = 50;
 	public static final double ECHO_CHANCE = 0.10;
+	public static final double RESOLVE_PROTECTION = 0.20;
+	public static final double RESOLVE_POWER = 0.85;
 
 	private static final Map<String, GearDef> ALL = new LinkedHashMap<>();
 
@@ -61,6 +63,8 @@ public record GearDef(String path, GearKind kind, String element, double element
 	public static final GearDef THRIFT = register(focus("focus_of_thrift", THRIFT_POWER, THRIFT_COST, 1, 0, 0));
 	public static final GearDef DEEP_WELL = register(focus("focus_of_the_deep_well", 1, 1, 1, DEEP_WELL_MANA, 0));
 	public static final GearDef ECHOES = register(focus("focus_of_echoes", 1, 1, 1, 0, ECHO_CHANCE));
+	/** A defensive focus trades spell power for protection from incoming spell hits. */
+	public static final GearDef RESOLVE = register(focus("focus_of_resolve", RESOLVE_POWER, 1, 1, 0, 0));
 
 	static {
 		for (String element : ELEMENTS) {

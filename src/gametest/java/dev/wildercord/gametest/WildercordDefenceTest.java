@@ -9,6 +9,10 @@ import dev.wildercord.cast.SpellDefence;
 import dev.wildercord.client.CordScreen;
 import dev.wildercord.content.WildercordEffects;
 import dev.wildercord.content.WildercordItems;
+import dev.wildercord.gear.GearDef;
+import dev.wildercord.gear.GearItems;
+import dev.wildercord.gear.GearSlot;
+import dev.wildercord.gear.GearSlots;
 import dev.wildercord.player.Heart;
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
@@ -120,6 +124,7 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 
 			checkWardingIsAnArmourProtection(world);
 			layers(context, world);
+			resolveFocus(world);
 			bonusCap(context, world);
 			spellguard(context, world);
 			readout(context, world);
@@ -195,6 +200,28 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 		check(Math.abs(resisted - magic[3] * 0.8) < 0.05, "Resistance I should take its fifth off a spell too (" + magic[3] + " to " + resisted + ")");
 		world.getServer().runOnServer(server -> dress(player(server), false, false, false));
 		context.waitTicks(3);
+	}
+
+	// ------------------------------------------------------------------ the bonus cap
+
+	/** The defensive focus works in its actual inventory slot and competes with casting foci. */
+	private static void resolveFocus(TestSingleplayerContext world) {
+		String problem = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
+			dress(player, false, false, false);
+			GearSlots.clear(player, GearSlot.FOCUS);
+			DamageSource magic = level.damageSources().magic();
+			float ordinary = SpellDefence.reduce(level, player, magic, 20);
+			if (!GearSlots.set(player, GearSlot.FOCUS, new ItemStack(GearItems.get(GearDef.RESOLVE)))) {
+				return "Focus of Resolve did not fit the focus slot";
+			}
+			float defended = SpellDefence.reduce(level, player, magic, 20);
+			GearSlots.clear(player, GearSlot.FOCUS);
+			return Math.abs(defended - ordinary * 0.8F) < 0.001F ? null
+				: "Focus of Resolve should reduce spell damage by 20% (" + ordinary + " to " + defended + ")";
+		});
+		check(problem == null, problem);
 	}
 
 	// ------------------------------------------------------------------ the bonus cap
@@ -326,6 +353,7 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 			ServerPlayer player = player(server);
 			player.setAttached(WildercordAttachments.SPELLGUARD, player.level().getGameTime() - 20L * 60 - 1);
 			dress(player, true, true, true);
+			GearSlots.set(player, GearSlot.FOCUS, new ItemStack(GearItems.get(GearDef.RESOLVE)));
 			ready(player, 20);
 		});
 		context.waitTicks(5);
@@ -341,6 +369,7 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 		int percent = Integer.parseInt(total.replaceAll("[^0-9]", "").isEmpty() ? "0" : total.replaceAll("[^0-9]", ""));
 		check(percent >= 85 && percent < 100, "the readout should show the full outfit's share, well over 80% and never all (" + total + ")");
 		check(lines.stream().anyMatch(l -> l.contains("Spellguard: ready")), "the readout should say the spellguard is ready (" + lines + ")");
+		check(lines.stream().anyMatch(l -> l.contains("Focus of Resolve")), "the readout should show the equipped focus (" + lines + ")");
 		context.takeScreenshot(TestScreenshotOptions.of("defence_readout").disableCounterPrefix());
 		context.runOnClient(mc -> mc.gui.setScreen(null));
 		context.waitTicks(3);

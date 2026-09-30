@@ -22,8 +22,8 @@ class GearBonusesTest {
 			assertEquals(GearDef.GearKind.STAFF, GearDef.staff(element).kind());
 			assertEquals(GearDef.GearKind.GREATER_STAFF, GearDef.greaterStaff(element).kind());
 		}
-		// 20 staffs, the tome and four foci.
-		assertEquals(25, GearDef.all().size());
+		// 20 staffs, the tome and five foci.
+		assertEquals(26, GearDef.all().size());
 		assertTrue(GearDef.get("focus_of_the_deep_well").isPresent());
 	}
 
@@ -73,6 +73,7 @@ class GearBonusesTest {
 		assertEquals(1.20 * 0.90, both.power("fire"), 1e-9);
 		assertEquals(1.40, GearBonuses.of(null, GearDef.HASTE).chargeSpeed(), 1e-9);
 		assertEquals(0.10, GearBonuses.of(null, GearDef.ECHOES).echo(), 1e-9);
+		assertEquals(0.85, GearBonuses.of(null, GearDef.RESOLVE).power("fire"), 1e-9);
 		assertEquals(0.0, GearBonuses.NONE.echo(), 1e-9);
 		assertEquals(1.0, GearBonuses.NONE.cost(Set.of("fire")), 1e-9);
 		assertFalse(GearBonuses.NONE.fifthSpell());

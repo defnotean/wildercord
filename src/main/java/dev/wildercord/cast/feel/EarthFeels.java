@@ -23,6 +23,7 @@ final class EarthFeels {
 		Signature.of("brace").accent(0xB0B0B0).register();
 		Signature.of("stoneform").accent(0x98A2BE).register();
 		Signature.of("geode").accent(0xA064F0).register();
+		Signature.of("shield").motion(Motion.SEAL).accent(0xF5B04A).sound(Phase.CUE, "earth_clamp", 0.65F, 1.12F).register();
 		// Holds: roots, weight, a chain, a bog.
 		Signature.of("root").accent(0x7A5A36).register();
 		Signature.of("weigh").accent(0x6E5436).register();

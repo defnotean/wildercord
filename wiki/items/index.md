@@ -41,7 +41,7 @@ book.
 | [Staffs](#staffs) | +20% power and 10% less mana for one element | Crafted |
 | [Greater staffs](#greater-staffs) | +35% power and 10% less mana for one element | Bosses, Archive vaults |
 | [Tome of the Fifth Page](#tome-of-the-fifth-page) | A fifth spell | Found |
-| [Foci](#foci) | Faster charging, cheaper spells, more mana, or echoes | Crafted, found |
+| [Foci](#foci) | Faster charging, cheaper spells, more mana, echoes, or spell protection | Crafted, found |
 | [Trophies](#trophies) | Cinder Heart, Astral Lens, Drowned Quill | Dungeon bosses |
 | [Rune Seal, Archive Lectern, Dungeon Altar, Fallen Star](#blocks-found-only-in-the-world) | Dungeon and event blocks | Found in place, never taken |
 
@@ -364,6 +364,10 @@ Focus slot (or off-hand). Each is a plus shape around a Mana Crystal.
 **Focus of Echoes** (a 10% chance a spell goes off again, free)
 
 {% include recipe.html id="focus_of_echoes" alt="Crafting grid: top row empty · Echo Shard · empty; middle row Amethyst Shard · Mana Crystal · Amethyst Shard; bottom row empty · Amethyst Shard · empty" %}
+
+**Focus of Resolve** (incoming spells hurt 20% less, but your spell effects are 15% weaker)
+
+{% include recipe.html id="focus_of_resolve" alt="Crafting grid: top row empty · Iron Ingot · empty; middle row Amethyst Shard · Mana Crystal · Amethyst Shard; bottom row empty · Iron Ingot · empty" %}
 
 Foci are also found in Archive vaults and libraries, stronghold libraries, ancient cities and woodland mansions.
 

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "A": "minecraft:amethyst_shard",
+    "I": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    " I ",
+    "ACA",
+    " I "
+  ],
+  "result": {
+    "id": "wildercord:focus_of_resolve"
+  }
+}

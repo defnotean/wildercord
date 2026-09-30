@@ -1493,10 +1493,12 @@ public class CordScreen extends Screen {
 		double enchant = SpellDefenceRules.enchantmentShare(SpellDefence.protectionLevels(player), warding);
 		int wardedLevel = SpellDefence.wardedLevel(player);
 		double warded = SpellDefenceRules.wardedShare(wardedLevel);
+		double focus = dev.wildercord.gear.Gear.of(player).pieces().contains(dev.wildercord.gear.GearDef.RESOLVE)
+			? dev.wildercord.gear.GearDef.RESOLVE_PROTECTION : 0;
 		MobEffectInstance resistanceEffect = player.getEffect(MobEffects.RESISTANCE);
 		int resistanceLevel = resistanceEffect == null ? 0 : resistanceEffect.getAmplifier() + 1;
 		double resistance = Math.min(1.0, resistanceLevel * 0.2);
-		double total = SpellDefenceRules.combined(armour, enchant, warded, resistance);
+		double total = SpellDefenceRules.combined(armour, enchant, warded, focus, resistance);
 		List<Component> lines = new ArrayList<>();
 		lines.add(Component.translatable("screen.wildercord.defence.title").withColor(0xFF000000 | SpellDefence.GUARD_COLOR));
 		lines.add(Component.translatable("screen.wildercord.defence.total", percent(total)).withStyle(ChatFormatting.WHITE));
@@ -1508,6 +1510,9 @@ public class CordScreen extends Screen {
 		}
 		if (warded > 0) {
 			lines.add(Component.translatable("screen.wildercord.defence.warded", percent(warded), RuneItem.roman(wardedLevel)).withStyle(ChatFormatting.GRAY));
+		}
+		if (focus > 0) {
+			lines.add(Component.translatable("screen.wildercord.defence.focus", percent(focus)).withStyle(ChatFormatting.GRAY));
 		}
 		if (resistance > 0) {
 			lines.add(Component.translatable("screen.wildercord.defence.resistance", percent(resistance), RuneItem.roman(resistanceLevel)).withStyle(ChatFormatting.GRAY));
@@ -1528,7 +1533,7 @@ public class CordScreen extends Screen {
 		}
 		lines.add(Component.empty());
 		lines.add(Component.translatable("screen.wildercord.defence.ways").withStyle(ChatFormatting.GOLD));
-		for (String way : new String[] {"armour", "warding", "potion", "shield", "resistance"}) {
+		for (String way : new String[] {"armour", "warding", "potion", "focus", "shield", "resistance"}) {
 			lines.add(Component.translatable("screen.wildercord.defence.way." + way).withStyle(ChatFormatting.GRAY));
 		}
 		return lines;

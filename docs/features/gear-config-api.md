@@ -19,6 +19,7 @@ See [Gear slots](#gear-slots) below.
 | **Focus of Thrift** | Focus (off-hand) | Spells cost 15% less mana, and hit 10% softer | Craft: Mana Crystal, emerald, 3 gold ingots; same places |
 | **Focus of the Deep Well** | Focus (off-hand) | +50 max mana | Craft: Mana Crystal, lapis block, 3 polished deepslate; same places |
 | **Focus of Echoes** | Focus (off-hand) | A 10% chance a spell echoes: it goes off again half a second later, free | Craft: Mana Crystal, echo shard, 3 amethyst shards; same places |
+| **Focus of Resolve** | Focus (off-hand) | Incoming spells hurt 20% less, but your spell effects are 15% weaker | Craft: Mana Crystal, 2 amethyst shards, 2 iron ingots; same places |
 
 Staff materials: Fire blaze powder, Frost packed ice, Storm a lightning rod, Wind wind charges, Earth
 mossy cobblestone, Life glistering melon, Void ender pearls, Arcane amethyst shards, Time clocks, Blood

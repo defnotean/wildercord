@@ -4,6 +4,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+- **Focus of Resolve.** Craft it from a Mana Crystal, two amethyst shards and two iron ingots, then wear it in the focus slot (or hold it in your off-hand while the slot is empty). Incoming spells deal 20% less damage; your spell effects are 15% weaker. It also joins the existing focus loot pools.
+- **Shield's cast cue.** The Shield rune now announces itself with a sealing gesture, an amber accent and a clamping sound. Every built-in effect has a registered cast signature, checked by a roster-wide test.
+
 Spells no longer kill players in one blow from full health: armour counts against every spell, a new armour
 enchantment and potion ward spells off, and a spellguard catches the one spell that would have killed. Players need
 this version to join a server running it (it adds a potion and an effect).

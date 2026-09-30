@@ -97,6 +97,28 @@ class FeelTest {
 	}
 
 	@Test
+	void everyBuiltInEffectHasASignature() {
+		ShapeFeels.register();
+		FireFeels.register();
+		FrostFeels.register();
+		StormFeels.register();
+		WindFeels.register();
+		EarthFeels.register();
+		LifeFeels.register();
+		VoidFeels.register();
+		ArcaneFeels.register();
+		TimeFeels.register();
+		BloodFeels.register();
+		java.util.List<String> missing = new java.util.ArrayList<>();
+		for (RuneDef rune : Runes.all()) {
+			if (rune.id().startsWith("wildercord:") && rune.family() == RuneFamily.EFFECT) {
+				if (Signatures.get(rune.id()) == null) missing.add(rune.id());
+			}
+		}
+		assertTrue(missing.isEmpty(), "Effects without a cast signature: " + missing);
+	}
+
+	@Test
 	void stepsClimbThePentatonicScale() {
 		assertEquals(1.0F, Feels.step(0), 1e-6);
 		assertEquals(1.498F, Feels.step(3), 1e-6);

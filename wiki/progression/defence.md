@@ -2,7 +2,7 @@
 title: Defending Against Magic
 parent: Growing Stronger
 nav_order: 5.5
-description: "How armour, the Warding enchantment, the Potion of Warding, Resistance and your spellguard keep spells from killing you in one blow."
+description: "How armour, Warding, the Focus of Resolve, Resistance and your spellguard keep spells from killing you in one blow."
 ---
 
 # Defending against magic
@@ -23,6 +23,7 @@ health is high.
 | **Armour** | Against fire, lightning and blasts, all it takes off a blade. Against pure magic, frost and sonic booms, a little over half that: full netherite takes **35 to 40%** off an everyday spell | Wear it |
 | **Warding I-IV** | **8% per level**, adding up over every piece you wear, up to **80%** | Enchanting table, anvil, librarians, loot |
 | **Potion of Warding** | **20%** (40% at Warding II) | Brew it: Awkward Potion + Tinted Glass |
+| **Focus of Resolve** | **20%**, while your spell effects are 15% weaker | Craft it and wear it in the focus slot, or hold it in your off-hand while that slot is empty |
 | **Resistance** | 20% per level, as against anything | Potion of the Turtle Master, Stoneskin, Reversal... |
 | **Protection** | 4% per level on each piece, as against anything (but nothing off a sonic boom) | Enchanting table |
 | **A Shield spell** | Stops a spell outright, or turns it back if you parry | See [Shields and Parrying]({{ '/spellcraft/shields/' | relative_url }}) |
@@ -158,6 +159,6 @@ The **amber shield** in the corner of the [Cord screen]({{ '/spellcraft/cord-scr
 the heart, shows your spell defence. Hover it for:
 
 - how much less spells hurt you, and what from: your armour (weighed against a 5-heart spell), Warding and
-  Protection, Warded, and Resistance;
+  Protection, Warded, Focus of Resolve, and Resistance;
 - whether your spellguard is ready, or how many seconds until it is (a small dot on the shield while it recharges);
 - every way to stand up to spells.

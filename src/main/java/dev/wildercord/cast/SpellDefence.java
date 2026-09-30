@@ -5,6 +5,8 @@ import dev.wildercord.config.Config;
 import dev.wildercord.config.WildercordConfig;
 import dev.wildercord.content.WildercordEffects;
 import dev.wildercord.content.WildercordSounds;
+import dev.wildercord.gear.Gear;
+import dev.wildercord.gear.GearDef;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.Event;
@@ -47,6 +49,7 @@ import java.util.function.BooleanSupplier;
  *   <li><b>Warding</b> (armour enchantment, I to IV): two protection points a level against spells, sharing the game's cap
  *   of 20 (80%) with Protection, which it can't sit beside.</li>
  *   <li><b>Warded</b> (the Potion of Warding): a fifth off per level, 80% at most.</li>
+ *   <li><b>Focus of Resolve</b> (in the focus slot or off-hand): a fifth off, in exchange for 15% weaker outgoing spell effects.</li>
  * </ul>
  * Resistance, Protection and absorption then work as the game has them. Last comes the <b>spellguard</b>: a spell hit that
  * would kill a player it found at {@code defence.spellguard_health} of their health or more leaves them on one heart
@@ -172,6 +175,10 @@ public final class SpellDefence {
 			left *= SpellDefenceRules.wardingFactor(protection, warding);
 		}
 		left *= 1 - SpellDefenceRules.wardedShare(wardedLevel(player));
+		// The focus slot offers a defensive choice in place of a casting focus. Its spell power penalty is in GearDef.
+		if (Gear.of(player).pieces().contains(GearDef.RESOLVE)) {
+			left *= 1 - GearDef.RESOLVE_PROTECTION;
+		}
 		return (float) left;
 	}
 
