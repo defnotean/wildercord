@@ -2,6 +2,31 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+- **Backpacks.** Three of them: the **Backpack** (2 rows, 18 slots: string over a chest in leather), the
+  **Reinforced Backpack** (3 rows, 27 slots: a Backpack, a chest, 4 iron ingots and 2 leather) and the **Runewoven
+  Backpack** (4 rows, 36 slots: a Reinforced Backpack, a Mana Crystal, an Echo Shard, 4 amethyst shards and 2 Blank
+  Runes). Each bigger one is crafted from the one below it and keeps everything inside, its colour and its name. See
+  [Backpacks](https://defnotean.github.io/wildercord/items/backpacks/).
+- **What's inside stays inside.** A backpack carries its contents with it: drop it, put it in a chest, run it through
+  a hopper or die with it, and it still holds everything. Its tooltip says how full it is and lists what's in it.
+  Burnt up, it spills what it held; the Runewoven Backpack doesn't burn.
+- **Open it anywhere.** Use a backpack in either hand to open it, or wear one and press `B` (a new key, under
+  Wildercord in the controls), in the world or in your inventory. `B` or `E` closes it again. It opens and closes
+  with a rustle of leather.
+- **A Backpack slot.** The gear tray on top of your inventory has a fourth slot, for a backpack; in the creative
+  inventory it's beside the gear slots. Shift-click a backpack to put it on. The worn backpack shows on your back for
+  everyone: under a staff strapped across it, over a chestplate or a cape, and over folded elytra (it tucks in against
+  your back between the wings while you glide). It isn't drawn while you're invisible.
+- **No backpacks in backpacks.** Nothing that holds items goes inside one: no backpack, no shulker box, no bundle, no
+  chest carrying its contents. A backpack doesn't go in a shulker box or a bundle either, and a hopper can't feed one
+  into a shulker box.
+- **Safe on servers.** An open backpack stays put: its slot is locked, and number keys, `F` and `Q` can't move it
+  while it's open. Anything that moves it anyway (a death, a command) closes it, and everything it held stays in it.
+- **Dye them.** Every backpack dyes like leather armour, keeping what's inside, and a cauldron washes the dye out.
+
 ## [0.6.1-alpha] - 2026-09-29
 
 The Cord stops glowing all the time, and magic looks right under shader packs. Works with 0.6.0 servers and clients.

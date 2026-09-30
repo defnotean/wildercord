@@ -37,6 +37,22 @@ Survival Inventory tab). Shift-click a staff, focus or the tome and it goes to i
 ### Do I lose my gear when I die?
 What's in your gear slots drops with the rest of your inventory (and stays with you if the server keeps inventory).
 
+### How do I carry more?
+Craft a **Backpack** (a String over a Chest, with 5 Leather round it): 18 more slots. Upgrade it to a **Reinforced
+Backpack** (27) and then a **Runewoven Backpack** (36); each upgrade keeps everything inside. Use it to open it, or
+wear it in the **Backpack slot** (the fourth slot on the tray on top of your inventory) and press `B`. See
+[Backpacks]({{ '/items/backpacks/' | relative_url }}).
+
+### Do I lose what's in my backpack when I die?
+Not what's inside it: the backpack keeps its contents, so it drops with everything still in it, as the rest of your
+inventory drops (and stays with you if the server keeps inventory). Go back for it like any other drop. The same goes
+for a backpack you throw, put in a chest or send through a hopper.
+
+### Why won't my shulker box go in my backpack?
+Nothing that holds items goes in a backpack: no other backpack, no shulker box, no bundle, no chest still holding
+its contents. That keeps storage from being packed inside storage. See
+[Backpacks]({{ '/items/backpacks/' | relative_url }}#what-cant-go-inside).
+
 ### Does the mod need to be on the server too?
 Yes. Wildercord has to be installed on the server and on every player's game, with Fabric API.
 

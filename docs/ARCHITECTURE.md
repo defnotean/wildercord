@@ -630,12 +630,12 @@ can draw the circle.
   colour and brightness reach the render state as Fabric render-state data. Babies (their own
   models in 26.x) and monsters of other shapes get the aura only.
 - **Mixins**: the Cord slot is added to the inventory menu on both sides (`InventoryMenuMixin`,
-  menu index 46, and the gear slots after it), synced from creative mode (`ServerGamePacketListenerImplMixin`,
+  menu index 46, and the gear slots and the Backpack slot after it), synced from creative mode (`ServerGamePacketListenerImplMixin`,
   for any `PlacedSlot`), drawn in the survival inventory (`InventoryScreenMixin`, with `SlotWell` for the
   slot's frame and `GearTray` for the gear slots) and placed in the creative inventory tab
   (`CreativeModeInventoryScreenMixin`). `AbstractRecipeBookScreenMixin` keeps a click on the gear tray from
   counting as outside the window, `AbstractContainerScreenMixin` names an empty gear slot on hover,
-  `PlayerGearMixin` drops the gear slots with the inventory on death, and `AvatarRendererGearMixin` carries
+  `PlayerGearMixin` drops the gear slots and worn backpack with the inventory on death, and `AvatarRendererGearMixin` carries
   worn gear into the render state. `LivingEntityRendererMixin`
   copies a Runebound's rune marks into its render state (a render layer only sees the state, and
   there is no event for this step). `GameRendererMixin` applies camera shake where the view bobs
@@ -696,6 +696,16 @@ can draw the circle.
   is pure and unit-tested; `Config` loads, reloads and syncs it), and the add-on API in `api/`, with its
   runtime side in `cast.AddonRunes`. See [features/gear-config-api.md](features/gear-config-api.md) and
   [API.md](API.md).
+- **Backpacks** (`backpack/`): `BackpackTier` (pure: rows and colour of each), `BackpackItem` (use opens it;
+  its contents live in vanilla's `minecraft:container` component, so it keeps them wherever it goes) and
+  `Backpacks` (what may go inside, the worn one in the `wildercord:backpack` attachment, synced only to its
+  owner, with `wildercord:backpack_look` for everyone else; opening; the death drop). `menu.BackpackMenu` is an
+  open backpack: it holds the very stack it opened and where it was, writes every change back into it at once,
+  locks that slot, refuses swaps onto it, and takes no clicks (and closes) once the stack is anywhere else, which
+  is what keeps an open backpack from being duplicated. `menu.BackpackSlot` is the worn slot, after the gear slots
+  on the tray (`GearLayout.traySlots()`); `client.BackpackScreen` draws the menu; `client.render.GearLayer` draws the
+  worn pack (`BackpackModel`) under a slotted staff. The bigger backpacks are `content.UpgradeRecipe`s, shared with
+  the Cords; `mixin.ShulkerBoxBlockEntityMixin` keeps hoppers from feeding backpacks into shulker boxes.
 - **The Archive** (`world/`): `ArchiveStructure` finds a spot and sinks the piece so its stairway
   meets the ground; `ArchivePiece` builds the whole dungeon in its own coordinates (every
   terrain-dependent part is worked out per column, so chunks can generate in any order) and places

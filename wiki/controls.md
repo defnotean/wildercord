@@ -23,6 +23,7 @@ keys.
 | Cast spell (hold to charge) | `R` | **Tap** to cast your selected spell at once. **Hold** to charge it (up to +40% power at a full charge), then let go to cast. See [Casting]({{ '/spellcraft/casting/' | relative_url }}#tap-or-charge). |
 | Next spell (hold for the wheel) | `V` | **Tap** to select your next spell. **Hold** for the spell wheel (with two or more spells). See [Switching spells]({{ '/spellcraft/casting/' | relative_url }}#switching-spells). |
 | Open Cord | `K` | Opens the [Cord screen]({{ '/spellcraft/cord-screen/' | relative_url }}). |
+| Open backpack | `B` | Opens the backpack in your Backpack slot, in the world or from your inventory. Press it again (or `E`) to close it. See [Backpacks]({{ '/items/backpacks/' | relative_url }}). |
 | Cast spell 1 | not set | Casts spell 1 straight away, without selecting it. Taps only: no charging. |
 | Cast spell 2 | not set | The same for spell 2. |
 | Cast spell 3 | not set | The same for spell 3. |
@@ -38,6 +39,8 @@ A key press counts as a **hold** once it's been down for a quarter of a second. 
 |---|---|
 | Put a Cord in the slot above your offhand (inventory, `E`), or shift-click it | Wear it |
 | Put a staff, a focus or the tome in its gear slot (inventory, `E`), or shift-click it | Wear it: it works with nothing held, and shows on your character. See [Casting Gear]({{ '/gear/' | relative_url }}) |
+| Put a backpack in the Backpack slot (the fourth on the gear tray), or shift-click it | Wear it: `B` opens it, and it shows on your back. See [Backpacks]({{ '/items/backpacks/' | relative_url }}) |
+| Use (right-click) a backpack | Open it. While it's open it stays in its slot: it can't be picked up, thrown or swapped out |
 | Use (right-click) a rune | Learn it for good |
 | Use a Knot | Learn it (anyone can, even without the runes inside) |
 | Use a Mana Crystal | Absorb it: +10 max mana, up to 10 crystals |
