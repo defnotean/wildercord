@@ -93,6 +93,18 @@ def icon(tier):
     _rect(base, 5, 11, 10, 11, M)  # the flap's shadow
     # The pocket.
     _panel(base, 5, 11, 10, bottom - 1, L, N, M)
+    # Cut leather catches light unevenly. Seams and creases make the flat panels read as a sewn bag.
+    for x, y, shade in ((4, 7, L), (4, 9, M), (11, 8, D), (11, 10, M),
+                        (6, 4, L), (8, 4, H), (10, 4, N), (6, 7, N), (9, 7, L),
+                        (6, 12, M), (9, 12, L)):
+        _put(base, x, y, shade)
+    for x, y in ((3, 7), (3, 10), (12, 7), (12, 10), (5, 10), (10, 10)):
+        _put(over, x, y, STRAP[2])
+    # The straps sit proud of the flap, with shaded leather on one side and a stitch on the other.
+    for x in (5, 10):
+        _put(over, x, 6, STRAP[0])
+        _put(over, x, 7, STRAP[1])
+        _put(over, x + (1 if x == 5 else -1), 7, STRAP[2])
     if reinforced:
         # A bedroll strapped underneath, and iron at the corners.
         _rect(over, 3, 12, 12, 15, K)
@@ -110,15 +122,18 @@ def icon(tier):
         _put(over, x, 8, metal[2])
         _put(over, x, 9, metal[1])
     if runewoven:
-        # Gold along the lid's edge, and an amethyst rune on the flap and the pocket.
+        # A wide gold lid binding, inset clasps and a faceted amethyst rune on the flap.
         _rect(over, 3, 6, 12, 6, GOLD[1])
         _put(over, 2, 5, GOLD[0]), _put(over, 13, 5, GOLD[0])
-        _put(over, 7, 7, AMETHYST[2]), _put(over, 8, 7, AMETHYST[1])
-        _put(over, 7, 8, AMETHYST[1]), _put(over, 8, 8, AMETHYST[0])
+        for x, y, tone in ((7, 7, 2), (8, 7, 1), (6, 8, 1), (7, 8, 2),
+                           (8, 8, 2), (9, 8, 0), (7, 9, 1), (8, 9, 0)):
+            _put(over, x, y, AMETHYST[tone])
+        _put(over, 7, 8, (245, 226, 255))
         for x, y in ((6, 12), (7, 13), (8, 12), (9, 13)):
             _put(over, x, y, AMETHYST[2])
         for x0 in (1, 12):
             _put(over, x0 + 1, 9, GOLD[2])
+            _put(over, x0 + 1, 11, GOLD[1])
     else:
         _put(over, 7, 12, metal[2]), _put(over, 8, 12, metal[1])
     return base, over
@@ -219,12 +234,17 @@ def worn(tier):
     metal = GOLD if woven else IRON if reinforced else BRASS
     # The flap: two straps down it, buckled at the bottom.
     x0, y0, w, h = faces("flap")["outer"]
+    for x in range(x0 + 1, x0 + w - 1):
+        _put(over, x, y0, STRAP[2] if x % 2 == 0 else STRAP[1])
+        _put(over, x, y0 + h - 1, STRAP[0])
     for x in (x0 + 1, x0 + w - 2):
         _rect(over, x, y0, x, y0 + h - 3, STRAP[1] if not woven else GOLD[0])
         _put(over, x, y0 + h - 2, metal[2])
         _put(over, x, y0 + h - 1, metal[1])
     # The pocket's button.
     x0, y0, w, h = faces("pocket")["outer"]
+    for x in range(x0, x0 + w):
+        _put(over, x, y0 + h - 1, STRAP[0] if x % 2 else STRAP[2])
     _put(over, x0 + w // 2 - 1, y0, metal[2])
     _put(over, x0 + w // 2, y0, metal[1])
     # A buckle on each strap, halfway down the chest.
@@ -255,7 +275,7 @@ def worn(tier):
                 for x in (fx + 2, fx + fw - 3):
                     _rect(over, x, fy, x, fy + fh - 1, STRAP[1])
     if woven:
-        # Gold trim along the lid and down the flap's sides; a rune on the flap in amethyst; gold buttons on the pouches.
+        # Gold trim along the lid, flap and pocket; faceted runes visible from behind.
         x0, y0, w, h = faces("lid")["outer"]
         _rect(over, x0, y0 + h - 1, x0 + w - 1, y0 + h - 1, GOLD[1])
         _rect(over, x0, y0, x0 + w - 1, y0, GOLD[2])
@@ -265,12 +285,18 @@ def worn(tier):
         # A rune on the flap: a small diamond of amethyst round a spot of cloth.
         x0, y0, w, h = faces("flap")["outer"]
         mid = x0 + w // 2
-        for x, y, c in ((mid, y0, AMETHYST[2]), (mid - 1, y0 + 1, AMETHYST[2]), (mid + 1, y0 + 1, AMETHYST[1]), (mid, y0 + 2, AMETHYST[1])):
+        for x, y, c in ((mid, y0, AMETHYST[2]), (mid - 1, y0 + 1, AMETHYST[2]),
+                        (mid, y0 + 1, (255, 240, 255)), (mid + 1, y0 + 1, AMETHYST[1]),
+                        (mid, y0 + 2, AMETHYST[1]), (mid, y0 + 3, AMETHYST[0])):
             _put(over, x, y, c)
-        # Two strokes of script on the pocket.
+        # A bound pocket with a smaller matching glyph.
         x0, y0, w, h = faces("pocket")["outer"]
-        for x, y in ((x0 + 1, y0 + 1), (x0 + 2, y0 + 1), (x0 + 4, y0 + 1), (x0 + 4, y0 + 2)):
-            _put(over, x, y, AMETHYST[1])
+        for x in range(x0, x0 + w):
+            _put(over, x, y0, GOLD[1] if x % 2 else GOLD[2])
+        for x, y, c in ((x0 + 1, y0 + 1, AMETHYST[1]), (x0 + 2, y0 + 1, AMETHYST[2]),
+                        (x0 + 3, y0 + 1, (255, 240, 255)), (x0 + 4, y0 + 1, AMETHYST[1]),
+                        (x0 + 2, y0 + 2, AMETHYST[0]), (x0 + 3, y0 + 2, AMETHYST[1])):
+            _put(over, x, y, c)
         x0, y0, w, h = faces("body")["outer"]
         for x in range(x0 + 1, x0 + w - 1):
             if x % 2 == 0:

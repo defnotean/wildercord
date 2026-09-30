@@ -12,6 +12,7 @@ import dev.wildercord.cast.StarEater;
 import dev.wildercord.cast.TideScribe;
 import dev.wildercord.content.dungeons.DungeonAltarBlock;
 import dev.wildercord.content.dungeons.DungeonAltarBlockEntity;
+import dev.wildercord.content.dungeons.DungeonItems;
 import dev.wildercord.cast.RuneBolt;
 import dev.wildercord.cast.SpellCaster;
 import dev.wildercord.cast.WildSurge;
@@ -159,6 +160,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 			section(context, world, "runesmith", () -> runesmith(context, world));
 			section(context, world, "chorus", () -> chorus(context, world));
 			section(context, world, "gear", () -> gear(context, world));
+			section(context, world, "item art", () -> itemArt(context, world));
 			section(context, world, "new runes", () -> newRunes(context, world));
 			section(context, world, "attunement", () -> attunement(context, world));
 			section(context, world, "advancements", () -> advancements(context, world));
@@ -1298,6 +1300,45 @@ public class WildercordShowcase implements FabricClientGameTest {
 
 	private static ItemStack gearStack(GearDef def) {
 		return new ItemStack(GearItems.get(def));
+	}
+
+	/** Compare the four Cord tiers and recent gear against established items at actual inventory size. */
+	private static void itemArt(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			place(player, stage, 0, 0);
+			player.setGameMode(GameType.SURVIVAL);
+			player.getInventory().clearContent();
+			ItemStack[] items = {
+				new ItemStack(WildercordItems.TWINE_CORD), new ItemStack(WildercordItems.COPPER_CORD),
+				new ItemStack(WildercordItems.AMETHYST_CORD), new ItemStack(WildercordItems.ECHO_CORD),
+				new ItemStack(WildercordItems.BACKPACK), new ItemStack(WildercordItems.REINFORCED_BACKPACK),
+				new ItemStack(WildercordItems.RUNEWOVEN_BACKPACK), gearStack(GearDef.RESOLVE),
+				new ItemStack(DungeonItems.CINDER_HEART), new ItemStack(DungeonItems.ASTRAL_LENS),
+				new ItemStack(DungeonItems.DROWNED_QUILL), new ItemStack(WildercordItems.ROOTBOUND_RELIC),
+				new ItemStack(WildercordItems.STORMGLASS_RELIC), gearStack(GearDef.HASTE)
+			};
+			for (int i = 0; i < items.length; i++) {
+				player.getInventory().setItem(9 + i, items[i]);
+			}
+			Spellbooks.setCord(player, new ItemStack(WildercordItems.ECHO_CORD));
+		});
+		context.waitTicks(8);
+		context.runOnClient(mc -> {
+			mc.options.guiScale().set(3);
+			mc.resizeGui();
+			if (!mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+			mc.gui.setScreen(new InventoryScreen(mc.player));
+		});
+		context.getInput().setCursorPos(4, 4);
+		context.waitTicks(8);
+		shot(context, "item_art_inventory");
+		context.runOnClient(mc -> {
+			mc.gui.setScreen(null);
+			if (mc.gui.hud.isHidden()) mc.gui.hud.toggle();
+			mc.options.guiScale().set(2);
+			mc.resizeGui();
+		});
 	}
 
 	private static void gear(ClientGameTestContext context, TestSingleplayerContext world) {

@@ -3293,16 +3293,16 @@ def silent_rune_icon() -> list[Image.Image]:
 # shared loop: O = outer strand pixel, I = inner strand pixel
 LOOP = """
     .....OOOOOO.....
-    ...OOIIIIIIOO...
-    ..OII......IIO..
-    .OI..........IO.
-    .OI..........IO.
-    .OI..........IO.
-    ..OI........IO..
-    ...OI......IO...
-    ....OI....IO....
-    .....OI..IO.....
-    ......OIIO......
+    ...OOOIIIIOOO...
+    ..OOII....IIOO..
+    .OOI........IOO.
+    .OOI........IOO.
+    .OOI........IOO.
+    ..OOII....IIOO..
+    ...OOII..IIOO...
+    ....OOI..IOO....
+    .....OOIIOO.....
+    ......OOOO......
 """
 
 
@@ -3330,7 +3330,7 @@ def loop_cells():
 
 
 def _twine(cv: Canvas, frame: int):
-    L, m, d, X = hexc("#E8D6A8"), hexc("#C6A672"), hexc("#8E6C40"), hexc("#664A2A")
+    L, m, d, X = hexc("#F2DFAC"), hexc("#C6A672"), hexc("#8E6C40"), hexc("#55371D")
     outer = [c for c in loop_cells() if c[2] == "O"]
     order = {(c[0], c[1]): i for i, c in enumerate(outer)}
     for x, y, layer, lit in loop_cells():
@@ -3340,15 +3340,17 @@ def _twine(cv: Canvas, frame: int):
         else:
             col = m if lit else d
         cv.put(x, y, col)
+    # A knotted carved seed, with one bright ridge and two hanging fibre tails.
     pend = """
-        ..mx..
-        ..hb..
-        .hBbn.
-        .Bbnn.
-        ..nn..
+        ...mm...
+        ..mXXm..
+        .mhBBbn.
+        .hBBhbnn
+        ..bBbn..
+        .n.n.n..
     """
-    blit(cv, pend, {"m": m, "x": X, "h": hexc("#E6B47A"), "B": hexc("#B87A44"),
-                    "b": hexc("#915A2E"), "n": hexc("#613A1A")}, 5, 10)
+    blit(cv, pend, {"m": m, "X": X, "h": hexc("#F0C48A"), "B": hexc("#B87A44"),
+                    "b": hexc("#915A2E"), "n": hexc("#613A1A")}, 4, 10)
 
 
 def _copper(cv: Canvas, frame: int):
@@ -3368,17 +3370,17 @@ def _copper(cv: Canvas, frame: int):
         else:
             col = L if lit else M
         cv.put(x, y, col)
-    # a little runestone set in a copper bezel
+    # A turquoise runestone in a riveted copper bezel.
     pend = """
-        ..LM..
-        .LMMD.
-        LksskD
-        MsSSsX
-        MksskX
-        .DXvX.
+        ..LML...
+        .LMMMD..
+        LDksskDX
+        MsSWSsMX
+        MkssskDX
+        .DXvXD..
     """
     blit(cv, pend, {"L": L, "M": M, "D": D, "X": X, "v": v, "k": hexc("#22282E"),
-                    "s": hexc("#2A7470"), "S": hexc("#7AF4E4")}, 5, 10)
+                    "s": hexc("#2A7470"), "S": hexc("#7AF4E4"), "W": hexc("#E2FFFC")}, 4, 10)
 
 
 def _amethyst(cv: Canvas, frame: int):
@@ -3386,8 +3388,7 @@ def _amethyst(cv: Canvas, frame: int):
     P = {"h": hexc("#F6DCFF"), "P": hexc("#C090F4"), "p": hexc("#9460D8"), "d": hexc("#643CA8"),
          "x": hexc("#3E2270")}
     for x, y, layer, lit in loop_cells():
-        if layer == "O":
-            cv.put(x, y, G if lit else g)
+        cv.put(x, y, (G if lit else g) if layer == "O" else (g if lit else gd))
     beads = """
         ................
         ................
@@ -3401,38 +3402,39 @@ def _amethyst(cv: Canvas, frame: int):
     """
     blit(cv, beads, P)
     pend = """
-        ..Gg..
-        .GggD.
-        .hPpd.
-        .PPpd.
-        .Ppdx.
-        ..dx..
+        ..GgG...
+        .GgggD..
+        GhPPpdD.
+        GPPHppdD
+        .Pppddx.
+        ..dxxD..
     """
-    blit(cv, pend, dict(P, G=G, g=g, D=gd), 5, 10)
+    blit(cv, pend, dict(P, G=G, g=g, D=gd, H=hexc("#FFFFFF")), 4, 10)
 
 
 def _echo(cv: Canvas, frame: int):
-    lit_c, dark_c = hexc("#107482"), hexc("#07424C")
+    lit_c, dark_c = hexc("#28ACB6"), hexc("#0C5665")
     pulse = 0.5 - 0.5 * math.cos(2 * math.pi * frame / ANIM_FRAMES)
-    vein = mix(hexc("#12909C"), hexc("#2AD8E4"), pulse)
+    vein = mix(hexc("#49BED0"), hexc("#B0FCFF"), pulse)
     outer = [c for c in loop_cells() if c[2] == "O"]
     order = {(c[0], c[1]): i for i, c in enumerate(outer)}
     for x, y, layer, lit in loop_cells():
         col = lit_c if lit else dark_c
-        if layer == "O" and order[(x, y)] % 5 == 2:
+        if layer == "O" and order[(x, y)] % 4 == 2:
             col = vein
         cv.put(x, y, col)
     core = mix(hexc("#3CE6F0"), hexc("#E0FFFF"), pulse)
     mid = mix(hexc("#009AA0"), hexc("#29DFEB"), pulse)
     pend = """
-        ..tt..
-        .oCCo.
-        oCWWco
-        oCWCco
-        .occo.
-        ..oo..
+        ..tTTt..
+        .toCCot.
+        toCWWCot
+        toCWCcot
+        .toccot.
+        ..toot..
     """
-    blit(cv, pend, {"t": lit_c, "o": hexc("#0B171C"), "C": mid, "c": hexc("#04606C"), "W": core}, 5, 10)
+    blit(cv, pend, {"t": lit_c, "T": vein, "o": hexc("#09262D"), "C": mid,
+                    "c": hexc("#087481"), "W": core}, 4, 10)
 
 
 CORDS = {"twine": (_twine, 1), "copper": (_copper, 1), "amethyst": (_amethyst, 1), "echo": (_echo, ANIM_FRAMES)}

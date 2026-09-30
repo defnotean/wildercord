@@ -18,8 +18,8 @@ GEAR_OUT = ROOT / "src/main/resources/assets/wildercord/textures/entity/gear"
 TIERS = {
     "twine": ((176, 142, 98), (214, 186, 140)),
     "copper": ((196, 110, 64), (236, 160, 110)),
-    "amethyst": ((122, 78, 196), (180, 140, 236)),
-    "echo": ((24, 78, 88), (60, 150, 160)),
+    "amethyst": ((170, 124, 58), (246, 214, 122)),
+    "echo": ((26, 94, 104), (82, 206, 220)),
 }
 
 
@@ -27,16 +27,35 @@ def mix(a, b, t):
     return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3))
 
 
-def band(main, light):
-    """A twisted cord: diagonal strands, lighter on top, darker in the grooves."""
+def band(main, light, tier):
+    """Material-specific braiding: fibre, linked copper, gilded amethyst or living echo veins."""
     img = Image.new("RGBA", (32, 16), (0, 0, 0, 0))
     px = img.load()
-    dark = mix(main, (0, 0, 0), 0.35)
+    dark = mix(main, (0, 0, 0), 0.45)
     for y in range(16):
         for x in range(32):
             strand = (x + y * 2) % 4
             c = light if strand == 0 else main if strand in (1, 2) else dark
+            if tier == "copper":
+                c = dark if x % 4 == 0 else light if (y + x // 4) % 3 == 0 else main
+                if (x + y * 3) % 17 == 0:
+                    c = (62, 148, 126)  # oxidation in the link seams
+            elif tier == "amethyst":
+                if (x + y) % 7 == 0:
+                    c = (164, 112, 226)
+                elif (x + y) % 7 == 1:
+                    c = (84, 48, 152)
+            elif tier == "echo":
+                c = (8, 48, 60) if strand == 3 else main if strand in (1, 2) else light
+                if (x * 3 + y * 5) % 11 == 0:
+                    c = (164, 246, 250)
             px[x, y] = c + (255,)
+    # Small clasps break up the repeat and catch light on both turns of the wrist.
+    clasp = (238, 206, 116) if tier == "amethyst" else (226, 166, 98) if tier == "copper" else (144, 228, 230) if tier == "echo" else (225, 199, 148)
+    for y in (2, 8):
+        for x in (7, 8):
+            px[x, y] = clasp + (255,)
+            px[x, y + 1] = dark + (255,)
     return img
 
 
@@ -83,7 +102,7 @@ def main():
     leather().save(GEAR_OUT / "leather.png")
     OUT.mkdir(parents=True, exist_ok=True)
     for tier, (main_c, light) in TIERS.items():
-        band(main_c, light).save(OUT / f"{tier}.png")
+        band(main_c, light, tier).save(OUT / f"{tier}.png")
     bead().save(OUT / "bead.png")
     print("cord and gear textures written")
 
