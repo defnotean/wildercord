@@ -17,6 +17,7 @@ import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
 import dev.wildercord.spell.SpellPlan;
+import dev.wildercord.world.dungeons.DungeonWards;
 import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
@@ -41,6 +42,7 @@ import net.minecraft.world.entity.Relative;
 import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 
@@ -59,7 +61,8 @@ import java.util.UUID;
  * damage and nothing left of it; a creative player is left alone (and one who turns creative mid-flight
  * keeps creative's flight); an ally a Burst reaches can fly and a stranger can't, while a pet only falls
  * slowly; a pull from a monster grounds a flier and keeps the wind away for 3 seconds, and Weigh grounds
- * too; a flight saved in the middle of a crash is tidied as the player logs in; death leaves nothing; and a
+ * too; a dungeon's ward won't let it lift anyone and sets down a flier who comes in; a flight saved in the middle
+ * of a crash is tidied as the player logs in; death leaves nothing; and a
  * flight carried through a real save and reload is saved without flight, given back on loading, and runs
  * out safely. Screenshots of the wings, the wake, the fading and the descent from third person
  * ({@code soar_*}).
@@ -97,6 +100,8 @@ public class WildercordFlightTest implements FabricClientGameTest {
 				new Object[] {"Running out lets you down gently", (Check) WildercordFlightTest::runningOut},
 				new Object[] {"Creative is left alone", (Check) WildercordFlightTest::creative},
 				new Object[] {"Allies", (Check) WildercordFlightTest::allies},
+				// Before grounding, whose last hit leaves the player grounded for a moment.
+				new Object[] {"Warded arenas", (Check) WildercordFlightTest::wards},
 				new Object[] {"Grounding", (Check) WildercordFlightTest::grounding},
 				new Object[] {"A crashed flight is tidied at login", (Check) WildercordFlightTest::crashTidied},
 				new Object[] {"Death", (Check) WildercordFlightTest::death});
@@ -440,7 +445,7 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		context.waitTicks(1);
 		shot(context, "soar_grounded");
 		context.waitTicks(SoarRules.GROUNDED_TICKS);
-		return on(world, player -> {
+		String weighed = on(world, player -> {
 			hover(player, 12);
 			String cast = cast(player, Runes.SELF, Runes.SOAR);
 			if (cast != null) {
@@ -455,6 +460,59 @@ public class WildercordFlightTest implements FabricClientGameTest {
 			}
 			pull(caster, player, Runes.WEIGH);
 			return Soar.soaring(player) ? "Weigh should ground a flier" : null;
+		});
+		// The lockout run out, so the checks after this one can fly.
+		context.waitTicks(SoarRules.GROUNDED_TICKS + 2);
+		return weighed;
+	}
+
+	/**
+	 * A dungeon's ward (a room filed the way a dungeon piece files its arena as it's built, off to one side of the
+	 * platform): Soar won't lift anyone inside it, and a flier who comes in is set down gently.
+	 */
+	private static String wards(ClientGameTestContext context, TestSingleplayerContext world) {
+		BoundingBox room = new BoundingBox(STAGE.getX() + 40, STAGE.getY() - 10, STAGE.getZ() - 10, STAGE.getX() + 60, STAGE.getY() + 30, STAGE.getZ() + 10);
+		world.getServer().runOnServer(server -> DungeonWards.remember(player(server).level(), () -> List.of(room)));
+		context.waitTicks(3);
+		String inside = on(world, player -> {
+			if (!DungeonWards.warded(player.level(), room.getCenter())) {
+				return "the ward should be filed (test setup)";
+			}
+			player.teleportTo(player.level(), room.getCenter().getX() + 0.5, STAGE.getY() + 4, room.getCenter().getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+			player.setOnGround(false);
+			String cast = cast(player, Runes.SELF, Runes.SOAR);
+			if (cast != null) {
+				return cast;
+			}
+			return Soar.soaring(player) || player.getAbilities().mayfly ? "Soar shouldn't lift anyone inside a ward" : null;
+		});
+		if (inside != null) {
+			return inside;
+		}
+		String outside = on(world, player -> {
+			player.teleportTo(player.level(), room.minX() - 8.5, STAGE.getY() + 4, room.getCenter().getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+			player.setDeltaMovement(Vec3.ZERO);
+			player.setOnGround(false);
+			String cast = cast(player, Runes.SELF, Runes.SOAR);
+			if (cast != null) {
+				return cast;
+			}
+			if (!Soar.soaring(player)) {
+				return "outside the ward Soar should lift as usual";
+			}
+			fly(player);
+			player.teleportTo(player.level(), room.minX() + 3.5, STAGE.getY() + 4, room.getCenter().getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
+			return null;
+		});
+		if (outside != null) {
+			return outside;
+		}
+		context.waitTicks(SoarRules.WARD_CHECK_TICKS + 3);
+		return on(world, player -> {
+			if (Soar.soaring(player) || player.getAbilities().mayfly) {
+				return "a flier who comes into a ward should lose the flight";
+			}
+			return Soar.descending(player) ? null : "set down by a ward, the player should still come down gently";
 		});
 	}
 
@@ -496,6 +554,9 @@ public class WildercordFlightTest implements FabricClientGameTest {
 			if (cast != null) {
 				return cast;
 			}
+			if (!Soar.soaring(player)) {
+				return "the flight should have begun before dying (test setup)";
+			}
 			fly(player);
 			player.kill(player.level());
 			return null;
@@ -532,6 +593,9 @@ public class WildercordFlightTest implements FabricClientGameTest {
 			String cast = cast(player, Runes.SELF, Runes.SOAR);
 			if (cast != null) {
 				return cast;
+			}
+			if (!Soar.soaring(player)) {
+				return "the flight should have begun before the save (test setup)";
 			}
 			fly(player);
 			long now = player.level().getGameTime();

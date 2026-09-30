@@ -84,17 +84,15 @@ public final class SoarVfx {
 		}
 	}
 
-	/** The wind gathers: a spiral of crescents climbs round the target, a ring runs out under it and wings unfurl at its back. */
+	/**
+	 * The wind gathers: a spiral of crescents climbs round the target and a ring runs out under it (a player's
+	 * wings then open on every client, drawn from the flight itself).
+	 */
 	static void lift(ServerLevel level, Entity target) {
 		Vec3 feet = target.position();
 		double r = Math.max(0.6, target.getBbWidth() * 0.9);
 		ElementFx.swirl(level, feet.add(0, 0.1, 0), r, target.getBbHeight() + 0.3, 4, SKY, ElementFx.WIND.secondary());
 		ElementFx.gustRing(level, feet, 1.6);
-		Scheduler.later(4, () -> {
-			if (target.isAlive() && target.level() == level) {
-				wingbeat(level, target, 0.25, 5, 14);
-			}
-		});
 		for (int i = 0; i < 6; i++) {
 			double a = Math.PI * 2 * i / 6;
 			Vfx.fling(level, ParticleTypes.END_ROD, feet.add(Math.cos(a) * r, 0.15, Math.sin(a) * r), UP, 0.08);
