@@ -60,7 +60,7 @@ import java.util.UUID;
  * takes off, jump climbs; a flight running out 60 blocks up warns, then lets the player down with no fall
  * damage and nothing left of it; a creative player is left alone (and one who turns creative mid-flight
  * keeps creative's flight); an ally a Burst reaches can fly and a stranger can't, while a pet only falls
- * slowly; a pull from a monster grounds a flier and keeps the wind away for 3 seconds, and Weigh grounds
+ * slowly; a pull from a monster grounds a flier and rests the wings for 30 seconds, and Weigh grounds
  * too; a dungeon's ward won't let it lift anyone and sets down a flier who comes in; a flight saved in the middle
  * of a crash is tidied as the player logs in; death leaves nothing; and a
  * flight carried through a real save and reload is saved without flight, given back on loading, and runs
@@ -444,7 +444,7 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		});
 		context.waitTicks(1);
 		shot(context, "soar_grounded");
-		context.waitTicks(SoarRules.GROUNDED_TICKS);
+		context.waitTicks(SoarRules.REST_TICKS);
 		String weighed = on(world, player -> {
 			hover(player, 12);
 			String cast = cast(player, Runes.SELF, Runes.SOAR);
@@ -452,7 +452,7 @@ public class WildercordFlightTest implements FabricClientGameTest {
 				return cast;
 			}
 			if (!Soar.soaring(player)) {
-				return "three seconds after a grounding the wind should lift them again";
+				return "30 seconds after a grounding the wind should lift them again";
 			}
 			fly(player);
 			if (!(player.level().getEntity(husk[0]) instanceof Mob caster)) {
@@ -462,7 +462,7 @@ public class WildercordFlightTest implements FabricClientGameTest {
 			return Soar.soaring(player) ? "Weigh should ground a flier" : null;
 		});
 		// The lockout run out, so the checks after this one can fly.
-		context.waitTicks(SoarRules.GROUNDED_TICKS + 2);
+		context.waitTicks(SoarRules.REST_TICKS + 2);
 		return weighed;
 	}
 
@@ -800,3 +800,4 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		return String.format("%.2f", value);
 	}
 }
+
