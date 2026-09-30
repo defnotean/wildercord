@@ -55,7 +55,8 @@ public final class RunicAnimations {
 		show(cast.level, rune, hit.point().add(0, hit.self() ? 0.08 : 0.22, 0), safe(hit.dir()), 0.68, true, cast);
 	}
 
-	private static void show(ServerLevel level, RuneDef rune, Vec3 at, Vec3 normal, double scale, boolean landing, Cast cast) {
+	// Package access lets the client gallery capture this exact production animation for each rune.
+	static void show(ServerLevel level, RuneDef rune, Vec3 at, Vec3 normal, double scale, boolean landing, Cast cast) {
 		AnimationSignature signature = AnimationSignature.of(rune);
 		int base = RuneColors.of(rune);
 		int color = tint(base, signature.accent());
