@@ -670,7 +670,10 @@ def write_lang(runes):
         "message.wildercord.soar_warded": "The ward stills the wind here",
         "message.wildercord.soar_travelled": "The wind doesn't follow you between worlds",
         "message.wildercord.soar_already": "You can already fly",
-        "message.wildercord.soar_resting": "The wind won't take you yet (%s s)",
+        "message.wildercord.soar_soaring": "Already soaring",
+        "message.wildercord.soar_soaring_ally": "%s is already soaring",
+        "message.wildercord.soar_resting": "Your wings need rest: %s s",
+        "message.wildercord.soar_resting_ally": "%s's wings need rest: %s s",
         "entity.wildercord.shadow_hound": "Shadow Hound",
         "modmenu.descriptionTranslation.wildercord": "Thread simple runes onto a Cord in any order, then cast the whole sequence with one key.",
     }

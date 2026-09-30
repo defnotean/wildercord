@@ -48,35 +48,51 @@ class SoarRulesTest {
 	}
 
 	@Test
-	void flightsLastTwentySecondsWithinLimits() {
+	void aFlightIsABurstOfTwentySecondsFortyAtMost() {
 		assertEquals(400, SoarRules.flightTicks(1.0));
-		assertEquals(800, SoarRules.flightTicks(2.0));
-		// However many Extends and circles: a minute and a half at most.
+		assertEquals(800, SoarRules.flightTicks(2.0), "one Extend: 40 seconds");
+		// However many Extends and circles: 40 seconds at most.
+		assertEquals(800, SoarRules.MAX_TICKS);
+		assertEquals(SoarRules.MAX_TICKS, SoarRules.flightTicks(4.0));
 		assertEquals(SoarRules.MAX_TICKS, SoarRules.flightTicks(32.0));
-		assertEquals(1800, SoarRules.MAX_TICKS);
+		assertEquals(420, SoarRules.flightTicks(1.05), "a little over 20 with the caster's circles");
 		// However shortened: a second at least.
 		assertEquals(SoarRules.MIN_TICKS, SoarRules.flightTicks(0.01));
 		assertEquals(SoarRules.MIN_TICKS, SoarRules.flightTicks(-1));
 	}
 
 	@Test
-	void castingAgainNeverCutsAFlightShort() {
-		assertEquals(1400, SoarRules.renewed(1000, 0, false, 400), "a fresh flight");
-		assertEquals(1400, SoarRules.renewed(1000, 1200, true, 400), "renewed: from now");
-		assertEquals(2000, SoarRules.renewed(1000, 2000, true, 400), "a longer one already going stays as it is");
-		assertEquals(1400, SoarRules.renewed(1000, 5000, false, 400), "a descent's guard isn't a flight");
+	void theWingsRestThirtySecondsAfterAFlight() {
+		assertEquals(600, SoarRules.REST_TICKS);
+		long ended = 10_000;
+		long until = SoarRules.restUntil(ended, 0);
+		assertEquals(ended + 600, until, "no rest yet: 30 seconds from the end");
+		assertTrue(SoarRules.resting(ended, until));
+		assertTrue(SoarRules.resting(until - 1, until));
+		assertFalse(SoarRules.resting(until, until), "rested");
+		assertFalse(SoarRules.resting(ended, 0), "never flew");
+		assertEquals(30, SoarRules.restSecondsLeft(ended, until));
+		assertEquals(12, SoarRules.restSecondsLeft(until - 240, until));
+		assertEquals(1, SoarRules.restSecondsLeft(until - 1, until));
+		assertEquals(0, SoarRules.restSecondsLeft(until, until));
+		// A rest already running that's longer is kept; a shorter one gives way to the full rest.
+		assertEquals(ended + 650, SoarRules.restUntil(ended, ended + 650));
+		assertEquals(ended + 600, SoarRules.restUntil(ended, ended + 100));
+		// A rest from another world's clock isn't one, and doesn't stretch the next.
+		assertFalse(SoarRules.resting(ended, ended + 1_000_000));
+		assertEquals(ended + 600, SoarRules.restUntil(ended, ended + 1_000_000));
 	}
 
 	@Test
-	void itNeverLiftsCreativeOrSomeoneWhoAlreadyFlies() {
+	void itNeverRenewsAFlightOrLiftsCreativeOrSomeoneWhoAlreadyFlies() {
 		assertEquals(SoarRules.Lift.LIFT, SoarRules.lift(false, false, false, false, false));
 		assertEquals(SoarRules.Lift.CREATIVE, SoarRules.lift(true, true, false, false, false));
 		assertEquals(SoarRules.Lift.CREATIVE, SoarRules.lift(true, false, true, false, false), "even one who was soaring before turning creative");
+		assertEquals(SoarRules.Lift.ALREADY_SOARING, SoarRules.lift(false, true, true, false, false), "a flight is never renewed mid-air");
+		assertEquals(SoarRules.Lift.ALREADY_SOARING, SoarRules.lift(false, true, true, true, true));
 		assertEquals(SoarRules.Lift.ALREADY_FLIES, SoarRules.lift(false, true, false, false, false), "a flight from elsewhere isn't Soar's");
-		assertEquals(SoarRules.Lift.LIFT, SoarRules.lift(false, true, true, false, false), "its own flight is renewed");
 		assertEquals(SoarRules.Lift.WARDED, SoarRules.lift(false, false, false, true, false));
-		assertEquals(SoarRules.Lift.WARDED, SoarRules.lift(false, true, true, true, false), "no renewing inside a ward either");
-		assertEquals(SoarRules.Lift.GROUNDED, SoarRules.lift(false, false, false, false, true));
+		assertEquals(SoarRules.Lift.RESTING, SoarRules.lift(false, false, false, false, true), "resting wings");
 	}
 
 	@Test
@@ -84,7 +100,7 @@ class SoarRulesTest {
 		long until = 1000;
 		assertFalse(SoarRules.warnNow(until - 61, until, false));
 		assertTrue(SoarRules.warnNow(until - 60, until, false));
-		assertTrue(SoarRules.warnNow(until - 1, until, false), "a flight renewed into its last seconds still warns");
+		assertTrue(SoarRules.warnNow(until - 1, until, false), "a flight given back at login in its last seconds still warns");
 		assertFalse(SoarRules.warnNow(until - 30, until, true), "once");
 		assertFalse(SoarRules.warnNow(until, until, false), "over");
 		assertEquals(60, SoarRules.WARNING_TICKS);
@@ -118,15 +134,20 @@ class SoarRulesTest {
 	}
 
 	@Test
-	void groundedForThreeSeconds() {
-		long hit = 1000;
-		long until = hit + SoarRules.GROUNDED_TICKS;
-		assertTrue(SoarRules.grounded(hit, until));
-		assertTrue(SoarRules.grounded(until - 1, until));
-		assertFalse(SoarRules.grounded(until, until));
-		assertEquals(3, SoarRules.groundedSecondsLeft(hit, until));
-		assertEquals(1, SoarRules.groundedSecondsLeft(until - 1, until));
-		assertEquals(0, SoarRules.groundedSecondsLeft(until, until));
+	void aRefusedSoarGivesBackItsShare() {
+		// Soar alone on Self: all of it.
+		SpellPlan.Segment self = SpellCompiler.compile(List.of(Runes.SELF, Runes.SOAR)).root();
+		assertEquals(1.0, SpellCompiler.effectShare(self, self.groups.getFirst().effects.getFirst()), 1e-9);
+		// Beside a Heal (12 mana against Soar's 18): three fifths.
+		SpellPlan.Segment both = SpellCompiler.compile(List.of(Runes.SELF, Runes.SOAR, Runes.HEAL)).root();
+		SpellPlan.EffectNode soar = both.groups.getFirst().effects.getFirst();
+		assertEquals(Runes.SOAR, soar.effect);
+		assertEquals(0.6, SpellCompiler.effectShare(both, soar), 1e-9);
+		// Found by its rune and modifiers in a plan of its own (a chorus recasts a spell).
+		SpellPlan.Segment again = SpellCompiler.compile(List.of(Runes.SELF, Runes.SOAR, Runes.HEAL)).root();
+		assertEquals(0.6, SpellCompiler.effectShare(again, soar), 1e-9);
+		// Not in the spell at all: nothing.
+		assertEquals(0.0, SpellCompiler.effectShare(SpellCompiler.compile(List.of(Runes.SELF, Runes.HEAL)).root(), soar), 1e-9);
 	}
 
 	@Test

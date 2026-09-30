@@ -200,7 +200,7 @@ A violent outward blast: 4 damage and hurls everything within 3 blocks away (lig
 
 *Tier III · Wind · Helps you and your allies · 18 mana · needs an Amethyst Cord or better*
 
-Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump and sneak to rise and sink. When the wind fades it sets you down gently. A pull or a grounding wind tears it away, and it won't lift anyone in a warded arena.
+Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump and sneak to rise and sink. It can't be renewed mid-flight, and when the wind fades it sets you down gently, then your wings need 30 seconds' rest. A pull or a grounding wind tears it away, and it won't lift anyone in a warded arena.
 
 **How to get it:** Craft: a Blank Rune, Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; End cities.
 

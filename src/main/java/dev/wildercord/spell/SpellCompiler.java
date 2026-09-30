@@ -422,6 +422,49 @@ public final class SpellCompiler {
 		return shares;
 	}
 
+	/**
+	 * The share of a spell's effect mana that one of its effects costs, priced as {@link #elementShares} prices
+	 * them (the shape's multiplier and modifiers on it, a Pulse's runs and an Imbue's charges counted): what a
+	 * spell gives back when that effect finds nothing it can do (Soar on someone already soaring). The effect is
+	 * {@code node} itself if it's in {@code root}, or else the first effect of the same rune with the same
+	 * modifiers (a chorus recasts a spell as a plan of its own). 0 when there's no such effect.
+	 */
+	public static double effectShare(SpellPlan.Segment root, SpellPlan.EffectNode node) {
+		double total = effectCosts(root, 1.0, new java.util.HashMap<>(), 0);
+		if (total <= 0) {
+			return 0;
+		}
+		double exact = nodeCost(root, 1.0, node, true, 0);
+		return (exact > 0 ? exact : nodeCost(root, 1.0, node, false, 0)) / total;
+	}
+
+	/** What {@code node} (or, not {@code exact}, the first effect like it) costs in {@code seg}, times {@code scale}; 0 if absent. */
+	private static double nodeCost(SpellPlan.Segment seg, double scale, SpellPlan.EffectNode node, boolean exact, int depth) {
+		if (seg == null || depth > 32) {
+			return 0;
+		}
+		for (SpellPlan.Group g : seg.groups) {
+			double mods = 1;
+			for (RuneDef mod : g.shapeMods) {
+				if (!wholeSpell(mod)) {
+					mods *= mod.multiplier();
+				}
+			}
+			for (SpellPlan.EffectNode e : g.effects) {
+				if (exact ? e == node : e.effect.equals(node.effect) && e.mods.equals(node.mods)) {
+					return e.effect.cost() * product(e.mods) * e.factor * g.shape.multiplier() * mods * scale;
+				}
+			}
+		}
+		if (seg.link != null) {
+			SpellPlan.Link link = seg.link;
+			double runs = link.link.is(Runes.PULSE.id()) ? SpellNumbers.PULSES : link.link.is(Runes.IMBUE.id()) ? SpellNumbers.IMBUE_CHARGES : 1;
+			double found = nodeCost(link.next, scale * runs, node, exact, depth + 1);
+			return found > 0 ? found : nodeCost(link.echoPrefix, scale, node, exact, depth + 1);
+		}
+		return 0;
+	}
+
 	/** Adds each element's effect costs in {@code seg} (times {@code scale}) into {@code into}; returns all of them together. */
 	private static double effectCosts(SpellPlan.Segment seg, double scale, java.util.Map<String, Double> into, int depth) {
 		if (seg == null || depth > 32) {

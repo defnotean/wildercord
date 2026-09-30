@@ -2,6 +2,8 @@ package dev.wildercord.cast;
 
 import dev.wildercord.player.WildercordAttachments;
 import dev.wildercord.player.WildercordAttachments.Soaring;
+import dev.wildercord.spell.SpellCompiler;
+import dev.wildercord.spell.SpellPlan;
 import dev.wildercord.world.dungeons.DungeonWards;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -31,6 +33,11 @@ import java.util.UUID;
  * it ends it sets them down as Feather Fall does: slow falling, a drift the way they look, and no fall damage
  * until they touch the ground. Running out of flight never kills.
  *
+ * <p>It's a burst of flight, not a way to live in the sky: casting it on someone already soaring is refused
+ * (and gives its mana back), so a flight lasts its duration and no longer, and when a flight ends for any
+ * reason but death the wings rest for 30 seconds ({@link WildercordAttachments#SOAR_REST}, saved) before it
+ * lifts that player again.</p>
+ *
  * <p>The rules that keep it from ever leaving a player flying who shouldn't be:</p>
  * <ul>
  *   <li>Creative and spectator players are never touched, and nor is a player who can already fly some
@@ -46,7 +53,7 @@ import java.util.UUID;
  *   <li>The dungeons' warded arenas and vaults still the wind: it won't lift anyone inside, and a flier
  *       who comes in is set down.</li>
  *   <li>Pulls (anything that leaves a creature pulled: Pull, Gravity Well, a vortex...) and the winds that
- *       ground fliers (Weigh, Downdraft) tear it away, and keep it away for 3 seconds.</li>
+ *       ground fliers (Weigh, Downdraft) tear it away, and the rest follows.</li>
  * </ul>
  * Only players fly; any other ally the wind touches falls slowly for as long instead.
  */
@@ -59,8 +66,6 @@ public final class Soar {
 
 	/** Everyone Soar is looking after (flying or coming down), by id: fake players too, which aren't in the player list. */
 	private static final Map<UUID, Flier> FLIERS = new HashMap<>();
-	/** Players a grounding hit knocked out of the air, and the game time the wind may lift them again. */
-	private static final Map<UUID, Long> GROUNDED = new HashMap<>();
 
 	/** What Soar remembers of a flier between ticks (the rest is in their saved note). */
 	private static final class Flier {
@@ -89,20 +94,23 @@ public final class Soar {
 				leave(flier.player);
 			}
 		});
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			FLIERS.clear();
-			GROUNDED.clear();
-		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> FLIERS.clear());
 		ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
 			if (entity instanceof ServerPlayer player) {
 				stop(player);
 			}
 		});
 		// The body a player comes back in (after dying, or leaving the End) starts with the flight its game mode
-		// gives it: a note carried over with the rest of their things is of a flight that's gone.
-		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
-			newPlayer.removeAttached(WildercordAttachments.SOARING);
+		// gives it: a note carried over with the rest of their things is of a flight that's gone. After the whole
+		// respawn, so whatever order the carrying over happens in, it's done. Leaving the End mid-flight ends the
+		// flight as any new world does, and the wings rest.
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			Soaring note = oldPlayer.getAttached(WildercordAttachments.SOARING);
 			FLIERS.remove(oldPlayer.getUUID());
+			newPlayer.removeAttached(WildercordAttachments.SOARING);
+			if (alive && note != null && !note.falling()) {
+				rest(newPlayer);
+			}
 		});
 		ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, from, to) -> end(player, Ending.TRAVELLED));
 		// Coming down, a landing never hurts. (While flying, a player who may fly takes no fall damage anyway.)
@@ -112,36 +120,87 @@ public final class Soar {
 
 	// ------------------------------------------------------------------ casting
 
-	/** Soar landing on its allies: players are given flight, anything else falls slowly for as long. */
-	static void lift(Cast cast, List<LivingEntity> helped, int ticks) {
+	/**
+	 * Soar landing on its allies: players are given flight, anything else falls slowly for as long. Whoever
+	 * can't be lifted (already soaring, resting, in a ward...) is refused, and the caster told why; a Soar that
+	 * lifted nobody at all gives back what it cost.
+	 */
+	static void lift(Cast cast, SpellPlan.EffectNode node, List<LivingEntity> helped, int ticks) {
+		// Only its first landing in a cast may give its mana back (a Pulse or a Zone lands it again, on those it just lifted).
+		boolean first = cast.once("soar:" + System.identityHashCode(node));
+		boolean lifted = false;
 		for (LivingEntity t : helped) {
 			if (!(t instanceof ServerPlayer player)) {
 				t.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, ticks, 0, false, true));
 				t.resetFallDistance();
 				SoarVfx.lift(cast.level, t);
+				lifted = true;
 				continue;
 			}
+			boolean self = player == cast.caster;
 			switch (start(player, ticks)) {
-				case LIFT -> SoarVfx.lift(cast.level, player);
+				case LIFT -> {
+					SoarVfx.lift(cast.level, player);
+					lifted = true;
+				}
+				case ALREADY_SOARING -> refuse(cast, self
+					? Component.translatableWithFallback("message.wildercord.soar_soaring", "Already soaring")
+					: Component.translatableWithFallback("message.wildercord.soar_soaring_ally", "%s is already soaring", player.getDisplayName()));
+				case RESTING -> {
+					int left = SoarRules.restSecondsLeft(player.level().getGameTime(), restingUntil(player));
+					refuse(cast, self
+						? Component.translatableWithFallback("message.wildercord.soar_resting", "Your wings need rest: %s s", left)
+						: Component.translatableWithFallback("message.wildercord.soar_resting_ally", "%s's wings need rest: %s s", player.getDisplayName(), left));
+				}
 				case WARDED -> {
 					SoarVfx.stilled(cast.level, player);
 					tell(player, "soar_warded", "The ward stills the wind here", WARD_TEXT);
 				}
-				case GROUNDED -> {
-					long now = player.level().getGameTime();
-					tell(player, Component.translatableWithFallback("message.wildercord.soar_resting", "The wind won't take you yet (%s s)",
-						SoarRules.groundedSecondsLeft(now, GROUNDED.getOrDefault(player.getUUID(), now))), WIND_TEXT);
+				case ALREADY_FLIES -> {
+					if (self) {
+						tell(player, "soar_already", "You can already fly", WIND_TEXT);
+					}
 				}
-				case ALREADY_FLIES -> tell(player, "soar_already", "You can already fly", WIND_TEXT);
 				// Creative and spectator players are left alone, even by the particles.
 				case CREATIVE -> { }
 			}
 		}
+		if (first && !lifted) {
+			refund(cast, node);
+		}
+	}
+
+	/** Tells a player who cast Soar why it didn't lift someone. */
+	private static void refuse(Cast cast, Component why) {
+		if (cast.caster instanceof ServerPlayer caster) {
+			tell(caster, why, WIND_TEXT);
+		}
 	}
 
 	/**
-	 * Gives {@code player} a flight of {@code ticks}, or renews the one they have (never shortening it). Returns
-	 * whether it did, and if not, why (see {@link SoarRules#lift}).
+	 * A Soar that lifted nobody gives back its share of what the spell cost, as a condition that doesn't hold gives
+	 * back its branch's (see {@code CastEngine.refund}): only for a spell cast from a Cord and paid in mana, once.
+	 */
+	private static void refund(Cast cast, SpellPlan.EffectNode node) {
+		if (!(cast.caster instanceof ServerPlayer player) || cast.passive || cast.origin() != null || player.isCreative()
+				|| cast.info.root() == null || cast.info.spell().isEmpty()) {
+			return;
+		}
+		SpellCompiler.Compiled compiled = SpellCompiler.compile(cast.info.spell());
+		if (compiled.paysInHealth() || compiled.cost() <= 0) {
+			return;
+		}
+		double share = SpellCompiler.effectShare(cast.info.root(), node);
+		int paid = dev.wildercord.player.Heart.manaCost(player, compiled, 1.0);
+		float back = (float) Math.min(paid, paid * share);
+		if (back > 0) {
+			dev.wildercord.player.Spellbooks.setMana(player, Math.min(dev.wildercord.player.Mana.max(player), dev.wildercord.player.Spellbooks.mana(player) + back));
+		}
+	}
+
+	/**
+	 * Gives {@code player} a flight of {@code ticks}. Returns whether it did, and if not, why (see
+	 * {@link SoarRules#lift}): a flight is never renewed, and never given while the wings rest.
 	 */
 	public static SoarRules.Lift start(ServerPlayer player, int ticks) {
 		Soaring note = player.getAttached(WildercordAttachments.SOARING);
@@ -149,40 +208,42 @@ public final class Soar {
 		long now = player.level().getGameTime();
 		Abilities abilities = player.getAbilities();
 		SoarRules.Lift lift = SoarRules.lift(player.isCreative() || player.isSpectator(), abilities.mayfly, soaring,
-			DungeonWards.warded(player.level(), player.blockPosition()), SoarRules.grounded(now, GROUNDED.getOrDefault(player.getUUID(), 0L)));
+			DungeonWards.warded(player.level(), player.blockPosition()), SoarRules.resting(now, restingUntil(player)));
 		if (lift != SoarRules.Lift.LIFT) {
 			return lift;
 		}
-		float before = soaring ? note.speed() : SoarRules.priorSpeed(abilities.getFlyingSpeed());
-		long until = SoarRules.renewed(now, soaring ? note.until() : now, soaring, ticks);
-		player.setAttached(WildercordAttachments.SOARING, new Soaring(until, before, false));
+		player.removeAttached(WildercordAttachments.SOAR_REST);
+		player.setAttached(WildercordAttachments.SOARING, new Soaring(now + ticks, SoarRules.priorSpeed(abilities.getFlyingSpeed()), false));
 		abilities.mayfly = true;
 		abilities.setFlyingSpeed(SoarRules.FLY_SPEED);
 		// Cast while falling (off a cliff, thrown up by something), the wind catches you at once.
-		if (!soaring && airborne(player)) {
+		if (airborne(player)) {
 			abilities.flying = true;
 		}
 		player.onUpdateAbilities();
 		player.resetFallDistance();
-		Flier flier = FLIERS.computeIfAbsent(player.getUUID(), id -> new Flier(player));
-		if (flier.player != player) {
-			flier = new Flier(player);
-			FLIERS.put(player.getUUID(), flier);
-		}
-		if (until - now > SoarRules.WARNING_TICKS) {
-			flier.warned = false;
-		}
-		flier.wasFlying = abilities.flying;
-		if (flier.nextGust <= now) {
-			flier.nextGust = now + SoarRules.GUST_TICKS;
-		}
+		Flier flier = new Flier(player);
+		flier.nextGust = now + SoarRules.GUST_TICKS;
+		FLIERS.put(player.getUUID(), flier);
 		return lift;
+	}
+
+	/** When {@code player}'s wings have rested (0 if they aren't resting, or never flew). */
+	public static long restingUntil(ServerPlayer player) {
+		Long until = player.getAttached(WildercordAttachments.SOAR_REST);
+		return until == null ? 0L : until;
+	}
+
+	/** A flight just ended (any way but death): the wings rest before the wind lifts them again. */
+	private static void rest(ServerPlayer player) {
+		long now = player.level().getGameTime();
+		player.setAttached(WildercordAttachments.SOAR_REST, SoarRules.restUntil(now, restingUntil(player)));
 	}
 
 	/**
 	 * A grounding hit on {@code target}: a pull, Weigh's weight or Downdraft's slam. A soaring player loses the
-	 * flight (and comes down gently, unless the hit itself takes that away too), and the wind won't lift them
-	 * again for {@link SoarRules#GROUNDED_TICKS}.
+	 * flight (and comes down gently, unless the hit itself takes that away too), and the wings rest as after any
+	 * flight.
 	 */
 	public static void ground(LivingEntity target) {
 		if (!(target instanceof ServerPlayer player)) {
@@ -192,7 +253,6 @@ public final class Soar {
 		if (note == null || note.falling()) {
 			return;
 		}
-		GROUNDED.put(player.getUUID(), player.level().getGameTime() + SoarRules.GROUNDED_TICKS);
 		end(player, Ending.GROUNDED);
 	}
 
@@ -237,10 +297,6 @@ public final class Soar {
 			} else {
 				fly(flier, note, now);
 			}
-		}
-		if (!GROUNDED.isEmpty() && server.getTickCount() % 100 == 0) {
-			long now = server.overworld().getGameTime();
-			GROUNDED.values().removeIf(until -> !SoarRules.grounded(now, until));
 		}
 	}
 
@@ -333,6 +389,7 @@ public final class Soar {
 		if (player.connection != null) {
 			player.connection.resetFlyingTicks();
 		}
+		rest(player);
 		long now = player.level().getGameTime();
 		player.setAttached(WildercordAttachments.SOARING, new Soaring(now + SoarRules.DESCENT_TICKS, note.speed(), true));
 		FLIERS.computeIfAbsent(player.getUUID(), id -> new Flier(player));
@@ -366,8 +423,14 @@ public final class Soar {
 		abilities.setFlyingSpeed(SoarRules.restoredSpeed(abilities.getFlyingSpeed(), note.speed()));
 	}
 
-	/** A player who turned creative or spectator: their flight is their game mode's now. Only the speed Soar set goes back. */
+	/**
+	 * A player who turned creative or spectator: their flight is their game mode's now. Only the speed Soar set goes
+	 * back (and a flight cut short this way rests the wings, as any does).
+	 */
 	private static void forget(ServerPlayer player, Soaring note) {
+		if (!note.falling()) {
+			rest(player);
+		}
 		Abilities abilities = player.getAbilities();
 		float speed = SoarRules.restoredSpeed(abilities.getFlyingSpeed(), note.speed());
 		if (speed != abilities.getFlyingSpeed()) {
@@ -413,6 +476,10 @@ public final class Soar {
 	 * left of it is taken away and they're let down gently. Creative and spectator players just lose the note.
 	 */
 	public static void login(ServerPlayer player) {
+		// A rest that's over (or from another world's clock) is only clutter in the saved player.
+		if (player.hasAttached(WildercordAttachments.SOAR_REST) && !SoarRules.resting(player.level().getGameTime(), restingUntil(player))) {
+			player.removeAttached(WildercordAttachments.SOAR_REST);
+		}
 		Soaring note = player.getAttached(WildercordAttachments.SOARING);
 		if (note == null) {
 			return;
@@ -439,6 +506,7 @@ public final class Soar {
 				if (!note.falling()) {
 					takeBack(player, note);
 					player.onUpdateAbilities();
+					rest(player);
 				}
 				player.setAttached(WildercordAttachments.SOARING, new Soaring(now + SoarRules.DESCENT_TICKS, note.speed(), true));
 				FLIERS.put(player.getUUID(), new Flier(player));

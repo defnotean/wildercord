@@ -2,18 +2,27 @@ package dev.wildercord.cast;
 
 /**
  * The pure rules of Soar ({@link Soar}), with no Minecraft types so they're unit-tested: how long a flight
- * lasts, when its warning comes, how fast it flies, who it lifts, how long a grounding hit keeps the wind
- * away, and what becomes of a flight found on a player as they log in.
+ * lasts, when its warning comes, how fast it flies, who it lifts, the rest the wings need afterwards, and what
+ * becomes of a flight found on a player as they log in.
+ *
+ * <p>Soar is a burst of flight, not a way to live in the sky: one flight lasts its duration and no longer
+ * (casting again mid-flight is refused), and when it ends, however it ends short of death, the wind won't lift
+ * that player again for {@link #REST_TICKS}. Elytras and the long road keep their place.</p>
  */
 public final class SoarRules {
 	private SoarRules() {}
 
 	/** A flight's length at duration 1 (Extend doubles it, Frugal takes 40% off): 20 seconds. */
 	public static final int BASE_TICKS = 400;
-	/** However it's lengthened, no flight lasts longer than this: a minute and a half. */
-	public static final int MAX_TICKS = 1800;
+	/** However it's lengthened, no flight lasts longer than this: 40 seconds, one Extend's worth. */
+	public static final int MAX_TICKS = 800;
 	/** The shortest flight there is, so a much shortened one still does something: a second. */
 	public static final int MIN_TICKS = 20;
+	/**
+	 * After a flight ends (running out, grounded, set down by a ward or a new world, or run out while logged
+	 * out: anything but death), the wings rest this long before Soar lifts that player again: 30 seconds.
+	 */
+	public static final int REST_TICKS = 600;
 	/** The wind starts to fade this long before a flight ends: 3 seconds, time enough to think about the ground. */
 	public static final int WARNING_TICKS = 60;
 	/**
@@ -23,8 +32,6 @@ public final class SoarRules {
 	public static final float FLY_SPEED = 0.03F;
 	/** Vanilla's own flying speed, which a player has when nothing has changed it. */
 	public static final float DEFAULT_FLY_SPEED = 0.05F;
-	/** A grounding hit (a pull, Weigh, Downdraft) keeps the wind from lifting that player again for 3 seconds. */
-	public static final int GROUNDED_TICKS = 60;
 	/**
 	 * The gentle descent after a flight guards its faller this long at most: longer than a slow fall from the
 	 * top of the world to the bottom, and a limit so nothing can hold it open forever.
@@ -41,45 +48,41 @@ public final class SoarRules {
 		return (int) Math.max(MIN_TICKS, Math.min(MAX_TICKS, Math.round(ticks)));
 	}
 
-	/**
-	 * When a flight of {@code ticks} cast at {@code now} ends. On someone already soaring until {@code until}
-	 * it's the later of the two: casting again never cuts a flight short.
-	 */
-	public static long renewed(long now, long until, boolean soaring, int ticks) {
-		long fresh = now + ticks;
-		return soaring ? Math.max(until, fresh) : fresh;
-	}
-
 	/** Whether a flight could be given to a player, and if not, why. */
 	public enum Lift {
-		/** Given (or renewed). */
+		/** Given. */
 		LIFT,
 		/** Creative or spectator: their own flight is never touched. */
 		CREATIVE,
+		/** Already soaring: a flight is never lengthened or started over mid-air. */
+		ALREADY_SOARING,
 		/** They can already fly by some other means, which isn't Soar's to give or take away. */
 		ALREADY_FLIES,
 		/** In a dungeon's warded arena or vault, where the ward stills the wind. */
 		WARDED,
-		/** A grounding hit knocked them out of the air a moment ago. */
-		GROUNDED
+		/** Their wings are resting after a flight. */
+		RESTING
 	}
 
 	/**
-	 * Whether Soar lifts a player: never one in creative or spectator, never one who can already fly unless
-	 * that flight is Soar's own ({@code soaring}, renewed), never inside a ward, and not while grounded.
+	 * Whether Soar lifts a player: never one in creative or spectator, never one already soaring (no renewing),
+	 * never one who can already fly some other way, never inside a ward, and not while their wings rest.
 	 */
-	public static Lift lift(boolean creativeOrSpectator, boolean mayFly, boolean soaring, boolean warded, boolean grounded) {
+	public static Lift lift(boolean creativeOrSpectator, boolean mayFly, boolean soaring, boolean warded, boolean resting) {
 		if (creativeOrSpectator) {
 			return Lift.CREATIVE;
 		}
-		if (mayFly && !soaring) {
+		if (soaring) {
+			return Lift.ALREADY_SOARING;
+		}
+		if (mayFly) {
 			return Lift.ALREADY_FLIES;
 		}
 		if (warded) {
 			return Lift.WARDED;
 		}
-		if (grounded) {
-			return Lift.GROUNDED;
+		if (resting) {
+			return Lift.RESTING;
 		}
 		return Lift.LIFT;
 	}
@@ -95,6 +98,28 @@ public final class SoarRules {
 	 */
 	public static boolean stale(long now, long until) {
 		return until - now > Math.max(MAX_TICKS, DESCENT_TICKS) + WARNING_TICKS;
+	}
+
+	/**
+	 * Whether wings resting until {@code restUntil} still rest at {@code now}. A rest further off than any rest
+	 * can be (another world's clock) isn't one.
+	 */
+	public static boolean resting(long now, long restUntil) {
+		return now < restUntil && restUntil - now <= REST_TICKS + WARNING_TICKS;
+	}
+
+	/**
+	 * When the wings rest until once a flight ends at {@code now}: {@link #REST_TICKS} on, or a rest already
+	 * running if that's longer (a rest from another clock is forgotten).
+	 */
+	public static long restUntil(long now, long current) {
+		long fresh = now + REST_TICKS;
+		return resting(now, current) ? Math.max(current, fresh) : fresh;
+	}
+
+	/** Whole seconds left of a rest (at least 1 while it lasts, 0 once it's over). */
+	public static int restSecondsLeft(long now, long restUntil) {
+		return resting(now, restUntil) ? (int) Math.max(1, (restUntil - now + 19) / 20) : 0;
 	}
 
 	/** What becomes of a flight found on a player logging in (after a logout, a restart or a crash). */
@@ -123,16 +148,6 @@ public final class SoarRules {
 	/** The flying speed to put back when a flight ends: the one from before, unless something else has changed it since. */
 	public static float restoredSpeed(float current, float before) {
 		return same(current, FLY_SPEED) ? before : current;
-	}
-
-	/** Whether a player grounded until {@code groundedUntil} is still grounded at {@code now}. */
-	public static boolean grounded(long now, long groundedUntil) {
-		return now < groundedUntil;
-	}
-
-	/** Whole seconds left of being grounded (at least 1 while it lasts, 0 once it's over). */
-	public static int groundedSecondsLeft(long now, long groundedUntil) {
-		return grounded(now, groundedUntil) ? (int) Math.max(1, (groundedUntil - now + 19) / 20) : 0;
 	}
 
 	/** How loud the soft gust is for a flier moving {@code speed} blocks a tick: quiet while hovering, fuller at speed. */

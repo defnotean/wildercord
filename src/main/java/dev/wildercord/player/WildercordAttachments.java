@@ -442,5 +442,15 @@ public final class WildercordAttachments {
 			.syncWith(Soaring.STREAM_CODEC, AttachmentSyncPredicate.all())
 	);
 
+	/**
+	 * When a player's wings have rested after a Soar flight: the game time Soar may lift them again (a flight
+	 * that ends for any reason but death rests them for 30 seconds; see {@code cast.SoarRules#REST_TICKS}).
+	 * Saved, so logging out doesn't cut it short, and kept through death, so dying doesn't either. Server only.
+	 */
+	public static final AttachmentType<Long> SOAR_REST = AttachmentRegistry.create(
+		Wildercord.id("soar_rest"),
+		builder -> builder.persistent(Codec.LONG).copyOnDeath()
+	);
+
 	public static void init() {}
 }

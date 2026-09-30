@@ -237,7 +237,7 @@ public final class Effects {
 					featherglide(cast, t, ticks(12, duration));
 				}
 			});
-			case "soar" -> Soar.lift(cast, helped, SoarRules.flightTicks(duration));
+			case "soar" -> Soar.lift(cast, node, helped, SoarRules.flightTicks(duration));
 			case "swift" -> helped.forEach(t -> {
 				shakeOffCold(t);
 				t.addEffect(new MobEffectInstance(MobEffects.SPEED, ticks(10, duration), Math.min(4, 2 + amplify), false, true));
