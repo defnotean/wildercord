@@ -765,6 +765,8 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			Soar.stop(player);
+			// Each check starts fresh; keep rest within a check, not across independent checks.
+			player.removeAttached(WildercordAttachments.SOAR_REST);
 			player.setGameMode(GameType.SURVIVAL);
 			player.getAbilities().setFlyingSpeed(SoarRules.DEFAULT_FLY_SPEED);
 			player.onUpdateAbilities();
@@ -800,4 +802,3 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		return String.format("%.2f", value);
 	}
 }
-
