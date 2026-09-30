@@ -69,4 +69,13 @@ public final class GlowLayers {
 	private static int sub(int c) {
 		return Math.round(255 * 0.7F + (255 - c) * 0.3F);
 	}
+
+	/**
+	 * A darkness colour ({@link #darkColor}: what to take away) as the plain colour to lay over the world
+	 * instead, for when it can't be taken away (under a shader pack, see ShaderCompat): what's left after
+	 * taking it from white, a deep shade of the tint. The alpha stays.
+	 */
+	public static int darkAsShade(int argb) {
+		return (argb & 0xFF000000) | (~argb & 0xFFFFFF);
+	}
 }

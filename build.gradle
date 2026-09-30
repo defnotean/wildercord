@@ -17,6 +17,18 @@ repositories {
 	// Loom adds the Minecraft/Fabric repositories automatically; Maven Central
 	// is declared here for ordinary library dependencies such as JUnit.
 	mavenCentral()
+	// Iris and Sodium, for drawing magic properly under shader packs (see client.compat.ShaderCompat).
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = "https://api.modrinth.com/maven"
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 loom {
@@ -47,6 +59,17 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Iris's API, to tell shader packs how to draw magic. Iris is optional: nothing of it is bundled,
+	// and it's only touched when it's installed.
+	compileOnly "maven.modrinth:iris:${project.iris_version}"
+	// The shader test switches a test pack on through Iris itself.
+	gametestCompileOnly "maven.modrinth:iris:${project.iris_version}"
+	// `-Pshaders` runs the dev client and the client gametests with Iris and Sodium installed.
+	if (project.hasProperty('shaders')) {
+		runtimeOnly "maven.modrinth:iris:${project.iris_version}"
+		runtimeOnly "maven.modrinth:sodium:${project.sodium_version}"
+	}
 
 	// JUnit 5 for the Minecraft-free spell engine (run by the `test` task).
 	testImplementation platform("org.junit:junit-bom:5.11.4")

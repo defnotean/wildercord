@@ -2,6 +2,20 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.6.1-alpha] - 2026-09-29
+
+The Cord stops glowing all the time, and magic looks right under shader packs. Works with 0.6.0 servers and clients.
+
+### Fixed
+- **The Cord no longer glows all the time.** It carried a white outline, drawn like the Glowing effect's and seen
+  even through walls, and its beads showed grey instead of their runes' colours. Now the beads wear their runes'
+  colours, glow only for a moment after the Cord goes on and while you charge or cast, and fade out smoothly.
+- **Magic under shader packs.** With Iris and a shader pack on, spell light, void darkness and a wisp's glow were
+  drawn with blends the pack doesn't expect, leaving squares, smears and wrongly lit patches wherever magic was.
+  While a pack is on, they're now drawn the way vanilla draws its own glowing particles and eyes, which every pack
+  is written for, and glows cast no shadows. Without a pack nothing changes. See
+  [the FAQ](https://defnotean.github.io/wildercord/faq/#does-wildercord-work-with-shaders).
+
 ## [0.6.0-alpha] - 2026-09-29
 
 Every spell now looks, sounds and plays like itself: a presentation and balance overhaul of all ten elements and

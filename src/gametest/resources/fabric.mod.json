@@ -43,6 +43,8 @@
 			"dev.wildercord.gametest.WildercordLoadoutsTest",
 			"dev.wildercord.gametest.WildercordFishingTest",
 			"dev.wildercord.gametest.WildercordFrostWindTest",
+			"dev.wildercord.gametest.WildercordCordGlowTest",
+			"dev.wildercord.gametest.WildercordShaderTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

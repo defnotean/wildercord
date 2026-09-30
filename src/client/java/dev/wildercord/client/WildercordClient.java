@@ -56,6 +56,8 @@ public final class WildercordClient implements ClientModInitializer {
 		RuneMarksLayer.register();
 		dev.wildercord.client.familiar.FamiliarClient.init();
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.cosmetic.CordTrails::tick);
+		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.
+		dev.wildercord.client.compat.ShaderCompat.init();
 
 		ParticleGroupRegistry.register(SigilGroup.TYPE, SigilGroup::new);
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SIGIL, SigilParticle.Provider::new);

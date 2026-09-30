@@ -16,8 +16,12 @@ public abstract class AvatarRenderStateMixin implements CastingPose {
 	private boolean wildercord$charging;
 	@Unique
 	private dev.wildercord.player.WildercordAttachments.CordLook wildercord$cord = dev.wildercord.player.WildercordAttachments.CordLook.NONE;
+	/**
+	 * How brightly the Cord's beads glow. Unlit until the renderer says otherwise (AvatarRendererMixin): a
+	 * player drawn some other way (another mod's renderer, a preview) mustn't show its beads always lit.
+	 */
 	@Unique
-	private float wildercord$glow = 1;
+	private float wildercord$glow = 0;
 
 	@Override
 	public dev.wildercord.player.WildercordAttachments.CordLook wildercord$cord() {

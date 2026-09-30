@@ -19,7 +19,8 @@
 		"AvatarRendererGearMixin",
 		"BossHealthOverlayAccessor",
 		"SubtitleOverlayMixin",
-		"ServerStatusPingerMixin"
+		"ServerStatusPingerMixin",
+		"QuadParticleRenderStateMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

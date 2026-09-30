@@ -7,6 +7,7 @@ import com.mojang.renderpearl.api.pipeline.ColorTargetState;
 import com.mojang.renderpearl.api.pipeline.DepthStencilState;
 import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import dev.wildercord.Wildercord;
+import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.Glimmer;
 import dev.wildercord.familiar.Wisp;
 import net.minecraft.client.Minecraft;
@@ -59,7 +60,7 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	private static final Identifier GLOW = Wildercord.id("textures/entity/wisp_glow.png");
 
 	/** Light added to the world (source × alpha + destination), never hiding what's behind, like the spell glows. */
-	private static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENERGY_SWIRL_SNIPPET)
+	public static final RenderPipeline GLOW_PIPELINE = RenderPipeline.builder(RenderPipelines.ENERGY_SWIRL_SNIPPET)
 		.withLocation(Wildercord.id("pipeline/wisp_glow"))
 		.withColorTargetState(new ColorTargetState(BlendFunction.LIGHTNING))
 		.withDepthStencilState(new DepthStencilState(DepthStencilState.DEFAULT.depthTest(), false))
@@ -69,6 +70,8 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 	private static final RenderType GLOW_TYPE = RenderType.create("wildercord_wisp_glow",
 		RenderSetup.builder(GLOW_PIPELINE).setOitPipelines(GLOW_OIT).withTexture("Sampler0", GLOW).sortOnUpload().createRenderSetup());
 	private static final RenderType BODY_TYPE = RenderTypes.entityTranslucentEmissive(BODY);
+	/** The glow under a shader pack, which can't add light (see ShaderCompat): vanilla's glowing eyes, laid over what's behind. */
+	private static final RenderType PLAIN_GLOW_TYPE = RenderTypes.eyes(GLOW);
 
 	/** The middle of the orb above the entity's feet (its box is 0.45 tall). */
 	private static final float MIDDLE = 0.24F;
@@ -153,37 +156,41 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 
 		poseStack.pushPose();
 		poseStack.translate(0.0F, MIDDLE + bob, 0.0F);
-		collector.order(0).submitCustomGeometry(poseStack, GLOW_TYPE, (pose, buffer) -> {
-			// The tail, farthest first: beads of light shrinking and flickering along the way it came.
-			for (int i = tail.length / 3 - 1; i >= 0; i--) {
-				float along = (i + 1F) / (TAIL + 1F);
-				float fade = (float) Math.pow(1 - along, 1.35) * (0.7F + 0.3F * Mth.sin(t * 0.9F + i * 1.7F));
-				float r = size * (0.95F - 0.75F * along);
-				float x = tail[i * 3];
-				float y = tail[i * 3 + 1];
-				float z = tail[i * 3 + 2];
-				quad(buffer, pose, right, up, x, y, z, r * 2.3F, 0, PUFF, scale(color, 0.7F * fade * bright));
-				quad(buffer, pose, right, up, x, y, z, r * 0.9F, 0, PUFF, scale(hot, 0.55F * fade * bright));
-			}
-			// Sparks twinkling along it, each a few ticks, somewhere new each time.
-			int beads = tail.length / 3;
-			for (int k = 0; k < 3 && beads > 0; k++) {
-				int slot = Mth.floor(t / 4F) * 3 + k;
-				float life = (t / 4F) % 1F;
-				int i = Math.floorMod(hash(slot), beads);
-				float jx = (hashF(slot * 3 + 1) - 0.5F) * size * 1.2F;
-				float jy = (hashF(slot * 3 + 2) - 0.5F) * size * 1.2F;
-				float jz = (hashF(slot * 3 + 3) - 0.5F) * size * 1.2F;
-				float glint = Mth.sin(life * Mth.PI) * (1 - (i + 1F) / (beads + 1F));
-				quad(buffer, pose, right, up, tail[i * 3] + jx, tail[i * 3 + 1] + jy, tail[i * 3 + 2] + jz, size * 0.75F, t * 0.1F, SPARK,
-					scale(hot, 0.9F * glint * bright));
-			}
-			// The halo, a brighter heart, and a slow shimmer turning behind it.
-			float halo = size * (3.6F + 0.25F * breath + 1.3F * flare);
-			quad(buffer, pose, right, up, 0, 0, 0, halo, 0, HALO, scale(color, 0.62F * bright));
-			quad(buffer, pose, right, up, 0, 0, 0, size * 1.9F, 0, HALO, scale(pale, 0.75F * bright));
-			quad(buffer, pose, right, up, 0, 0, 0, size * (2.6F + 1.5F * flare), t * 0.03F, SPARK, scale(hot, (0.35F + 0.6F * flare) * bright));
-		});
+		// Under a shader pack the glow is drawn the plain way, and is left out of its shadows: it's light, not a thing.
+		boolean plain = ShaderCompat.active();
+		if (!ShaderCompat.shadowPass()) {
+			collector.order(0).submitCustomGeometry(poseStack, plain ? PLAIN_GLOW_TYPE : GLOW_TYPE, (pose, buffer) -> {
+				// The tail, farthest first: beads of light shrinking and flickering along the way it came.
+				for (int i = tail.length / 3 - 1; i >= 0; i--) {
+					float along = (i + 1F) / (TAIL + 1F);
+					float fade = (float) Math.pow(1 - along, 1.35) * (0.7F + 0.3F * Mth.sin(t * 0.9F + i * 1.7F));
+					float r = size * (0.95F - 0.75F * along);
+					float x = tail[i * 3];
+					float y = tail[i * 3 + 1];
+					float z = tail[i * 3 + 2];
+					quad(buffer, pose, right, up, x, y, z, r * 2.3F, 0, PUFF, glow(plain, scale(color, 0.7F * fade * bright)));
+					quad(buffer, pose, right, up, x, y, z, r * 0.9F, 0, PUFF, glow(plain, scale(hot, 0.55F * fade * bright)));
+				}
+				// Sparks twinkling along it, each a few ticks, somewhere new each time.
+				int beads = tail.length / 3;
+				for (int k = 0; k < 3 && beads > 0; k++) {
+					int slot = Mth.floor(t / 4F) * 3 + k;
+					float life = (t / 4F) % 1F;
+					int i = Math.floorMod(hash(slot), beads);
+					float jx = (hashF(slot * 3 + 1) - 0.5F) * size * 1.2F;
+					float jy = (hashF(slot * 3 + 2) - 0.5F) * size * 1.2F;
+					float jz = (hashF(slot * 3 + 3) - 0.5F) * size * 1.2F;
+					float glint = Mth.sin(life * Mth.PI) * (1 - (i + 1F) / (beads + 1F));
+					quad(buffer, pose, right, up, tail[i * 3] + jx, tail[i * 3 + 1] + jy, tail[i * 3 + 2] + jz, size * 0.75F, t * 0.1F, SPARK,
+						glow(plain, scale(hot, 0.9F * glint * bright)));
+				}
+				// The halo, a brighter heart, and a slow shimmer turning behind it.
+				float halo = size * (3.6F + 0.25F * breath + 1.3F * flare);
+				quad(buffer, pose, right, up, 0, 0, 0, halo, 0, HALO, glow(plain, scale(color, 0.62F * bright)));
+				quad(buffer, pose, right, up, 0, 0, 0, size * 1.9F, 0, HALO, glow(plain, scale(pale, 0.75F * bright)));
+				quad(buffer, pose, right, up, 0, 0, 0, size * (2.6F + 1.5F * flare), t * 0.03F, SPARK, glow(plain, scale(hot, (0.35F + 0.6F * flare) * bright)));
+			});
+		}
 		collector.order(1).submitCustomGeometry(poseStack, BODY_TYPE, (pose, buffer) -> {
 			float half = size * (1.0F + 0.04F * breath + 0.12F * flare);
 			quad(buffer, pose, right, up, 0, 0, 0, half, 0, bodyFrame(frame), 0xFF000000 | mix(pale, 0xFFFFFF, 0.25F * flare));
@@ -291,6 +298,24 @@ public class WispRenderer extends MobRenderer<Wisp, WispRenderState, WispModel> 
 
 	private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float z, float u, float v, int argb) {
 		buffer.addVertex(pose, x, y, z).setColor(argb).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(FULL).setNormal(pose, 0, 1, 0);
+	}
+
+	/**
+	 * A glow colour for {@link #PLAIN_GLOW_TYPE}: added light (its strength in its brightness) as a colour
+	 * laid over what's behind (its strength in its alpha), which looks the same against the dark.
+	 */
+	private static int glow(boolean plain, int argb) {
+		if (!plain) {
+			return argb;
+		}
+		int r = (argb >> 16) & 0xFF;
+		int g = (argb >> 8) & 0xFF;
+		int b = argb & 0xFF;
+		int a = Math.max(r, Math.max(g, b));
+		if (a == 0) {
+			return 0;
+		}
+		return (a << 24) | (r * 255 / a << 16) | (g * 255 / a << 8) | b * 255 / a;
 	}
 
 	/** A light's colour at {@code k} strength: its channels scaled (light adds by colour), fully opaque. */

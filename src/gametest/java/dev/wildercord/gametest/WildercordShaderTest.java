@@ -1,0 +1,172 @@
+package dev.wildercord.gametest;
+
+import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.client.compat.ShaderCompat;
+import dev.wildercord.content.WildercordItems;
+import dev.wildercord.familiar.Wisp;
+import dev.wildercord.familiar.WispSpawner;
+import dev.wildercord.player.Spellbook;
+import dev.wildercord.player.Spellbooks;
+import dev.wildercord.spell.RuneDef;
+import dev.wildercord.spell.Runes;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
+import net.fabricmc.loader.api.FabricLoader;
+import net.irisshaders.iris.Iris;
+import net.minecraft.client.CameraType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Magic under a shader pack: spells whose light glows and whose void darkens, a Shield's circles, a
+ * wisp and a Cord just put on, each photographed with a pack drawing the world. Only runs with Iris
+ * installed ({@code ./gradlew runClientGameTest -Pshaders}).
+ *
+ * <p>The pack (in this test's resources, {@code shaderpack/}) is a tiny one that works like the big
+ * deferred packs in the way that matters here: every surface writes its colour to {@code colortex0} and
+ * its light levels to {@code colortex1}, and a composite pass re-lights the scene from {@code colortex1}.
+ * Anything drawn with a blend the pack doesn't expect shows up as a wrongly lit patch.</p>
+ */
+public class WildercordShaderTest implements FabricClientGameTest {
+	@Override
+	public void runTest(ClientGameTestContext context) {
+		if (!FabricLoader.getInstance().isModLoaded("iris")) {
+			return;
+		}
+		context.runOnClient(mc -> TestPack.switchOn(true));
+		try (TestSingleplayerContext world = context.worldBuilder().create()) {
+			context.waitTicks(40);
+			check(context.computeOnClient(mc -> ShaderCompat.active()), "the test shader pack should be in use");
+			world.getServer().runCommand("time set 18000");
+			world.getServer().runCommand("gamerule advance_time false");
+			world.getServer().runCommand("gamerule spawn_mobs false");
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				Spellbook book = Spellbooks.get(player).withStarterGiven();
+				for (RuneDef rune : Runes.all()) {
+					book = book.learn(rune.id());
+				}
+				book = book.withSpell(0, ids(Runes.NOVA, Runes.FIRE)).withSpell(1, ids(Runes.BOLT, Runes.HOLLOW))
+					.withSpell(2, ids(Runes.SELF, Runes.SHIELD)).withSpell(3, ids(Runes.BURST, Runes.LIGHTNING));
+				Spellbooks.set(player, book);
+			});
+			context.runOnClient(mc -> hideHud(mc, true));
+			scenes(context, world, "shader");
+			// The same without the pack, to compare.
+			context.runOnClient(mc -> TestPack.switchOn(false));
+			context.waitTicks(10);
+			check(!context.computeOnClient(mc -> ShaderCompat.active()), "the shader pack should be off again");
+			scenes(context, world, "plain");
+		} finally {
+			context.runOnClient(mc -> {
+				mc.options.setCameraType(CameraType.FIRST_PERSON);
+				hideHud(mc, false);
+				TestPack.switchOn(false);
+			});
+		}
+	}
+
+	/** Each spell cast and photographed from behind, then a wisp beside you, then a Cord just put on, from the front. */
+	private static void scenes(ClientGameTestContext context, TestSingleplayerContext world, String prefix) {
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		world.getServer().runOnServer(server -> Spellbooks.setCord(player(server), new ItemStack(WildercordItems.ECHO_CORD)));
+		context.waitTicks(20);
+		String[] names = {"nova_fire", "bolt_hollow", "self_shield", "burst_lightning"};
+		for (int spell = 0; spell < 4; spell++) {
+			int s = spell;
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				Spellbooks.setMana(player, 300);
+				Spellbooks.setReadyAt(player, s, 0);
+				SpellCaster.cast(player, s);
+			});
+			context.waitTicks(8);
+			shot(context, prefix + "_" + names[spell]);
+			context.waitTicks(30);
+		}
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.level().getEntitiesOfClass(Wisp.class, player.getBoundingBox().inflate(32)).forEach(Wisp::discard);
+			// Ahead and to the right, so it isn't hidden behind you.
+			Vec3 look = player.getLookAngle().multiply(1, 0, 1).normalize();
+			Vec3 at = player.position().add(look.scale(3)).add(-look.z * 2, 1.4, look.x * 2);
+			check(WispSpawner.spawn(player.level(), BlockPos.containing(at), "frost") != null, "a wisp should spawn");
+		});
+		context.waitTicks(30);
+		shot(context, prefix + "_wisp");
+		world.getServer().runOnServer(server -> Spellbooks.setCord(player(server), ItemStack.EMPTY));
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(20);
+		world.getServer().runOnServer(server -> Spellbooks.setCord(player(server), new ItemStack(WildercordItems.AMETHYST_CORD)));
+		context.waitTicks(20);
+		shot(context, prefix + "_cord");
+	}
+
+	private static void shot(ClientGameTestContext context, String name) {
+		context.runOnClient(mc -> mc.gui.toastManager().clear());
+		context.waitTicks(1);
+		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
+	}
+
+	private static void hideHud(net.minecraft.client.Minecraft mc, boolean hide) {
+		if (mc.gui.hud.isHidden() != hide) {
+			mc.gui.hud.toggle();
+		}
+	}
+
+	/** The test pack, put in Iris's shader pack folder and switched on (or off again). Only touched with Iris installed. */
+	private static final class TestPack {
+		private static final String NAME = "WildercordTest";
+		private static final String[] FILES = {"gbuffers_basic.vsh", "gbuffers_basic.fsh", "gbuffers_textured.vsh", "gbuffers_textured.fsh",
+			"gbuffers_textured_lit.vsh", "gbuffers_textured_lit.fsh", "composite.vsh", "composite.fsh", "final.vsh", "final.fsh"};
+
+		static void switchOn(boolean on) {
+			try {
+				if (on) {
+					Path shaders = Iris.getShaderpacksDirectory().resolve(NAME).resolve("shaders");
+					Files.createDirectories(shaders);
+					for (String file : FILES) {
+						try (InputStream in = WildercordShaderTest.class.getResourceAsStream("/shaderpack/shaders/" + file)) {
+							check(in != null, "the test pack is missing " + file);
+							Files.copy(in, shaders.resolve(file), StandardCopyOption.REPLACE_EXISTING);
+						}
+					}
+					Iris.getIrisConfig().setShaderPackName(NAME);
+				}
+				Iris.getIrisConfig().setShadersEnabled(on);
+				Iris.getIrisConfig().save();
+				Iris.reload();
+			} catch (IOException e) {
+				throw new UncheckedIOException(e);
+			}
+		}
+	}
+
+	private static ServerPlayer player(MinecraftServer server) {
+		return server.getPlayerList().getPlayers().getFirst();
+	}
+
+	private static void check(boolean ok, String what) {
+		if (!ok) {
+			throw new AssertionError(what);
+		}
+	}
+
+	private static List<String> ids(RuneDef... runes) {
+		return Arrays.stream(runes).map(RuneDef::id).toList();
+	}
+}
