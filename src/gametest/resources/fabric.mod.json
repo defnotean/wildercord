@@ -45,6 +45,7 @@
 			"dev.wildercord.gametest.WildercordFrostWindTest",
 			"dev.wildercord.gametest.WildercordCordGlowTest",
 			"dev.wildercord.gametest.WildercordShaderTest",
+			"dev.wildercord.gametest.WildercordDefenceTest",
 			"dev.wildercord.gametest.WildercordShowcase"
 		]
 	},

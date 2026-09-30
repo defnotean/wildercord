@@ -25,6 +25,7 @@ things that feed your magic.
 | **Advancements** | Wildercord's own advancement tab: experience, Blank Runes and Mana Crystals. | [Advancements]({{ '/progression/advancements/' | relative_url }}) |
 | **Mana** | Max mana and regeneration from your Cord, Mana Crystals, potions, meditation and more. | [Mana]({{ '/progression/mana/' | relative_url }}) |
 | **Cord enchantments** | Seven enchantments for your Cord: more mana, faster regeneration, stronger, cheaper, quicker, longer spells. | [Cord Enchantments]({{ '/progression/enchantments/' | relative_url }}) |
+| **Defending against magic** | Armour that counts against spells, the Warding enchantment, the Potion of Warding, and the spellguard that stops one spell killing you from high health. | [Defending Against Magic]({{ '/progression/defence/' | relative_url }}) |
 | **Ley lines and the Wellstone** | Veins of world mana: twice the regeneration, circles formed twice as fast. | [Ley Lines and the Wellstone]({{ '/progression/ley-lines/' | relative_url }}) |
 | **The Training Dummy** | See exactly what your spells do: every hit and your damage per second. | [The Training Dummy]({{ '/progression/training-dummy/' | relative_url }}) |
 | **Better Cords** | More sockets, more spells, higher rune tiers, more mana. | [Cords]({{ '/spellcraft/cords/' | relative_url }}) |

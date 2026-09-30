@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.wildercord.Wildercord;
 import dev.wildercord.cast.PassiveCaster;
 import dev.wildercord.cast.SpellCaster;
+import dev.wildercord.cast.SpellDefence;
+import dev.wildercord.cast.SpellDefenceRules;
 import dev.wildercord.content.CordTier;
 import dev.wildercord.content.RuneItem;
 import dev.wildercord.net.WildercordNetworking;
@@ -37,6 +39,9 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -111,6 +116,7 @@ public class CordScreen extends Screen {
 	private static final Identifier SPR_BADGE = Wildercord.id("hud/badge");
 	private static final Identifier SPR_MANA = Wildercord.id("cord/mana_badge");
 	private static final Identifier SPR_HEART = Wildercord.id("cord/heart_badge");
+	private static final Identifier SPR_WARD = Wildercord.id("cord/ward_badge");
 	private static final int LAVENDER = 0xFFB8A8FF;
 
 	private static final String[] TAB_KEYS = {"all", "shape", "effect", "modifier", "link"};
@@ -291,6 +297,16 @@ public class CordScreen extends Screen {
 	/** The middle of the mana badge in the header, on screen. */
 	public double[] manaPoint() {
 		return onScreen(W - 27 - 18 + 7, 7 + 7);
+	}
+
+	/** The middle of the spell-defence badge in the header (left of the heart's), on screen. */
+	public double[] defencePoint() {
+		return onScreen(W - 27 - 18 * 3 + 7, 7 + 7);
+	}
+
+	/** The spell-defence badge's tooltip as plain text, one line each (for the game tests). */
+	public List<String> defenceLines() {
+		return defenceTooltip().stream().map(Component::getString).toList();
 	}
 
 	/** The middle of spell tool {@code tool} (0 rename, 1 copy, 2 paste, 3 scroll) above the readout, on screen. */
@@ -759,6 +775,16 @@ public class CordScreen extends Screen {
 		if (inside(mx, my, heartX, helpY, 14, 14)) {
 			tooltip = heartTooltip();
 		}
+		// Spell defence: how much less spells hurt you, and whether your spellguard is ready (a dot while it recharges).
+		int wardX = heartX - 18;
+		sprite(g, SPR_BADGE, wardX, helpY, 14, 14);
+		sprite(g, SPR_WARD, wardX + 1, helpY + 1, 12, 12);
+		if (SpellDefence.guardSeconds(minecraft.player) > 0) {
+			g.fill(wardX + 11, helpY + 1, wardX + 13, helpY + 3, 0xFF8A6A5A);
+		}
+		if (inside(mx, my, wardX, helpY, 14, 14)) {
+			tooltip = defenceTooltip();
+		}
 		Component name = Component.translatable(tier.itemKey());
 		Component spellsLabel = Component.translatable(tier.spells == 1 ? "screen.wildercord.spells.one" : "screen.wildercord.spells.many", tier.spells);
 		Component stats = Component.translatable("screen.wildercord.stats", tier.sockets, spellsLabel, RuneItem.roman(tier.maxRuneTier));
@@ -776,7 +802,7 @@ public class CordScreen extends Screen {
 			g.text(font, label, pageX + 5, 10, active ? GOLD : inside(mx, my, pageX, 7, w, 13) ? TEXT : DIM, false);
 			pageX += w + 2;
 		}
-		int statsRight = heartX - 6;
+		int statsRight = wardX - 6;
 		int statsW = font.width(stats);
 		if (pageX + 8 + statsW <= statsRight) {
 			g.text(font, stats, statsRight - statsW, 10, DIM, false);
@@ -1454,6 +1480,63 @@ public class CordScreen extends Screen {
 		lines.add(Component.translatable("screen.wildercord.mana.way.ley").withStyle(ChatFormatting.GRAY));
 		lines.add(Component.translatable("screen.wildercord.mana.way.gear").withStyle(ChatFormatting.GRAY));
 		return lines;
+	}
+
+	/** Spell defence: how much less spells hurt you and from what, the spellguard, and every way to stand up to spells. */
+	private List<Component> defenceTooltip() {
+		Player player = minecraft.player;
+		dev.wildercord.config.WildercordConfig.DefenceSettings settings = dev.wildercord.config.Config.defence(player);
+		// Weighed against a spell of 5 hearts, the size armour's share is shown for.
+		double armour = SpellDefenceRules.armourShare(10, player.getArmorValue(),
+			player.getAttributeValue(Attributes.ARMOR_TOUGHNESS), settings.armourRate());
+		int warding = SpellDefence.wardingLevels(player);
+		double enchant = SpellDefenceRules.enchantmentShare(SpellDefence.protectionLevels(player), warding);
+		int wardedLevel = SpellDefence.wardedLevel(player);
+		double warded = SpellDefenceRules.wardedShare(wardedLevel);
+		MobEffectInstance resistanceEffect = player.getEffect(MobEffects.RESISTANCE);
+		int resistanceLevel = resistanceEffect == null ? 0 : resistanceEffect.getAmplifier() + 1;
+		double resistance = Math.min(1.0, resistanceLevel * 0.2);
+		double total = SpellDefenceRules.combined(armour, enchant, warded, resistance);
+		List<Component> lines = new ArrayList<>();
+		lines.add(Component.translatable("screen.wildercord.defence.title").withColor(0xFF000000 | SpellDefence.GUARD_COLOR));
+		lines.add(Component.translatable("screen.wildercord.defence.total", percent(total)).withStyle(ChatFormatting.WHITE));
+		if (armour > 0) {
+			lines.add(Component.translatable("screen.wildercord.defence.armour", percent(armour)).withStyle(ChatFormatting.GRAY));
+		}
+		if (enchant > 0) {
+			lines.add(Component.translatable("screen.wildercord.defence.enchant", percent(enchant)).withStyle(ChatFormatting.GRAY));
+		}
+		if (warded > 0) {
+			lines.add(Component.translatable("screen.wildercord.defence.warded", percent(warded), RuneItem.roman(wardedLevel)).withStyle(ChatFormatting.GRAY));
+		}
+		if (resistance > 0) {
+			lines.add(Component.translatable("screen.wildercord.defence.resistance", percent(resistance), RuneItem.roman(resistanceLevel)).withStyle(ChatFormatting.GRAY));
+		}
+		if (total <= 0) {
+			lines.add(Component.translatable("screen.wildercord.defence.none").withStyle(ChatFormatting.GRAY));
+		}
+		lines.add(Component.empty());
+		if (!settings.spellguard()) {
+			lines.add(Component.translatable("screen.wildercord.defence.guard_off").withStyle(ChatFormatting.DARK_GRAY));
+		} else {
+			int left = SpellDefence.guardSeconds(player);
+			lines.add(left > 0
+				? Component.translatable("screen.wildercord.defence.guard_recharging", left).withStyle(ChatFormatting.RED)
+				: Component.translatable("screen.wildercord.defence.guard_ready").withStyle(ChatFormatting.AQUA));
+			lines.add(Component.translatable("screen.wildercord.defence.guard_rule", percent(settings.spellguardHealth()), settings.spellguardRechargeSeconds())
+				.withStyle(ChatFormatting.GRAY));
+		}
+		lines.add(Component.empty());
+		lines.add(Component.translatable("screen.wildercord.defence.ways").withStyle(ChatFormatting.GOLD));
+		for (String way : new String[] {"armour", "warding", "potion", "shield", "resistance"}) {
+			lines.add(Component.translatable("screen.wildercord.defence.way." + way).withStyle(ChatFormatting.GRAY));
+		}
+		return lines;
+	}
+
+	/** A share as a whole percentage (0.355 is 36). */
+	private static long percent(double share) {
+		return Math.round(share * 100);
 	}
 
 	/** The heart: circles formed, what they give, and what the next one needs. */

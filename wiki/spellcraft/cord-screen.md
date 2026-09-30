@@ -35,8 +35,8 @@ in plain English, with its exact cost and cooldown, before you ever cast it.
 From top to bottom:
 
 1. **The header:** your Cord's name, the page tabs (**Spells**, **Passives**, **Grimoire**, **Cosmetics**),
-   your Cord's limits ("12 sockets · 4 spells · Tier IV", when there's room) and three badges on the right:
-   the **heart**, the **mana** crystal and the **help** mark.
+   your Cord's limits ("12 sockets · 4 spells · Tier IV", when there's room) and four badges on the right:
+   the amber **shield**, the **heart**, the **mana** crystal and the **help** mark.
 2. **The spell rows:** one row per spell, numbered, with a socket for each rune.
 3. **The family tabs and the search box:** All, Shapes, Effects, Modifiers, Links, a box to type in, and at the
    end of the row the **loadouts** badge (a little list).
@@ -50,15 +50,16 @@ And beside the window, when there's room for it, the selected spell's **magic ci
 
 Hover the **Cord's name** to see its limits. The **page tabs** switch between the four pages described below.
 
-The three badges:
+The four badges:
 
 | Badge | Shows | Hover it for |
 |---|---|---|
+| **Shield** (amber) | A small dot in its corner while your spellguard is recharging. | How much less spells hurt you, and what from (your armour, Warding and Protection, Warded, Resistance), whether your spellguard is ready or how long until it is, and every way to stand up to spells. |
 | **Heart** | How many Heart Circles you've formed (the number in its corner). A small gold light blinks on it when your heart is ready to form the next circle. | Your circles and what they give (max mana, mana a second, spell power), your passive slots, any circles cracked by overcasting and when they mend, your innate rune and leaning, the four perks (lit once you have them), and what the next circle still needs, each part ticked when it's done. |
 | **Mana** | | Where your max mana comes from (your Cord, Mana Crystals, Reservoir, Heart Circles, a Focus of the Deep Well), where your regeneration comes from (your Cord, circles, Wellspring, Clarity, meditating, a ley line, a Wellstone), what your passives drain, your Siphon, the casting gear that counts, and every way to grow your mana. |
 | **Help** (the **?**) | | A reminder of how to thread spells and which keys cast, switch and open the screen (it shows your keys, even after you change them). |
 
-See [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) and [Mana]({{ '/progression/mana/' | relative_url }}).
+See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}), [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) and [Mana]({{ '/progression/mana/' | relative_url }}).
 
 ## The spell rows
 

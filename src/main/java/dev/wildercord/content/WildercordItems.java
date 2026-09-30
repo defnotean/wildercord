@@ -52,7 +52,8 @@ public final class WildercordItems {
 				output.accept(WildercordBlocks.ARCHIVE_LECTERN);
 				output.accept(WildercordBlocks.FUSION_ALTAR);
 				for (var potion : java.util.List.of(WildercordEffects.CLARITY_POTION, WildercordEffects.LONG_CLARITY_POTION, WildercordEffects.STRONG_CLARITY_POTION,
-						WildercordEffects.MANA_POTION, WildercordEffects.STRONG_MANA_POTION)) {
+						WildercordEffects.MANA_POTION, WildercordEffects.STRONG_MANA_POTION, WildercordEffects.WARDED_POTION, WildercordEffects.LONG_WARDED_POTION,
+						WildercordEffects.STRONG_WARDED_POTION)) {
 					output.accept(net.minecraft.world.item.alchemy.PotionContents.createItemStack(net.minecraft.world.item.Items.POTION, potion));
 					output.accept(net.minecraft.world.item.alchemy.PotionContents.createItemStack(net.minecraft.world.item.Items.SPLASH_POTION, potion));
 				}

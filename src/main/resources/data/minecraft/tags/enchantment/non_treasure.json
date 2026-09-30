@@ -7,6 +7,7 @@
     "wildercord:potency",
     "wildercord:celerity",
     "wildercord:thrift",
-    "wildercord:persistence"
+    "wildercord:persistence",
+    "wildercord:warding"
   ]
 }

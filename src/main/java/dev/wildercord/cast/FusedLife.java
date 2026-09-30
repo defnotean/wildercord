@@ -638,8 +638,9 @@ final class FusedLife {
 				level.broadcastDamageEvent(to, level.damageSources().magic());
 			} else {
 				Effects.readyToHurt(to);
-				// Enough to get through Resistance IV and full protection both: this share is a death.
-				to.hurtServer(level, level.damageSources().magic(), (pool + share) * 25.0F);
+				// Enough to get through Resistance IV and full protection both: this share is a death. It already met the
+				// defences it should on the way in, so it isn't weighed again; the spellguard still answers it.
+				SpellDefence.guarded(to, () -> to.hurtServer(level, level.damageSources().magic(), (pool + share) * 25.0F));
 			}
 		} finally {
 			splitting = false;

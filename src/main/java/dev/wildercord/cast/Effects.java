@@ -886,34 +886,38 @@ public final class Effects {
 		if (Shields.stops(cast, target, cast.caster.getEyePosition())) {
 			return;
 		}
+		// What the moment adds to the hit (a setup paying off, a weakness, a reaction), multiplied together.
+		double bonus = 1.0;
 		if (executeBonus > 1.0 && target.getHealth() < target.getMaxHealth() * 0.5F) {
-			amount *= executeBonus;
+			bonus *= executeBonus;
 			Vfx.emit(cast.level, net.minecraft.core.particles.ParticleTypes.DAMAGE_INDICATOR, target.getBoundingBox().getCenter(), 4, 0.3, 0.1);
 			dev.wildercord.cast.feel.Feels.sound(cast.level, target.getBoundingBox().getCenter(), "tell_crack", 0.5F, 1.0F);
 		}
-		amount *= Innates.fortune(cast, target);
-		amount *= Unison.onHit(cast, target, currentElement);
-		amount *= hexBonus(cast, target);
+		bonus *= Innates.fortune(cast, target);
+		bonus *= Unison.onHit(cast, target, currentElement);
+		bonus *= hexBonus(cast, target);
 		// Veil's ambush and Shadowstep's backstab: the first blow from the dark lands half again as hard.
-		amount *= VoidTime.opener(cast, target);
-		amount *= Techniques.condemned(cast, target);
+		bonus *= VoidTime.opener(cast, target);
+		bonus *= Techniques.condemned(cast, target);
 		// A sleeper struck takes a backstab from the blow that wakes it (Drowse).
-		amount *= CraftedRunes.backstab(target);
+		bonus *= CraftedRunes.backstab(target);
 		// What damage of this element sets off on the marks it meets (Fracture, Blight, Unweave, Rupture, Elapse), and Cracked.
 		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
-		amount *= Reactions.hit(cast, target, currentElement);
-		amount *= Affinities.multiplier(cast, target, source, currentElement);
+		bonus *= Reactions.hit(cast, target, currentElement);
+		bonus *= Affinities.multiplier(cast, target, source, currentElement);
 		// Fire is weaker on the wet.
 		if (!soulBurn) {
-			amount *= WorldMagic.wetDamage(target, currentElement);
+			bonus *= WorldMagic.wetDamage(target, currentElement);
 		}
-		amount *= AddonRunes.react(cast, target, currentElement);
-		amount *= ExplorerEffects.bonus(cast, target, currentElement);
+		bonus *= AddonRunes.react(cast, target, currentElement);
+		bonus *= ExplorerEffects.bonus(cast, target, currentElement);
 		// Trial Key: the opening blow on a target still at full health.
 		if (openingBonus > 1.0 && target.getHealth() >= target.getMaxHealth() - 0.01F) {
-			amount *= openingBonus;
+			bonus *= openingBonus;
 		}
-		float damage = (float) amount;
+		// Against a player all that together is held to the server's cap (defence.max_bonus): a setup still pays off, but
+		// never ten times over, which is what took players from full health to dead in one blow.
+		float damage = (float) (amount * SpellDefenceRules.capBonus(bonus, SpellDefence.maxBonus(target)));
 		// PvP only: a monster's spell already has its power set by difficulty. The server can change the scale.
 		if (target instanceof Player && cast.caster instanceof Player) {
 			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();
@@ -927,7 +931,8 @@ public final class Effects {
 		readyToHurt(target);
 		float dealt = damage;
 		float before = target.getHealth();
-		Dungeons.spellHit(() -> target.hurtServer(cast.level, source, dealt));
+		// A player's defences against spells (armour, Warding, Warded, the spellguard) are met there.
+		Dungeons.spellHit(() -> SpellDefence.hurt(cast.level, target, source, dealt));
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));

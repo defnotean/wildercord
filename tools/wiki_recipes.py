@@ -37,7 +37,8 @@ SPRITES = {"minecraft:clock": "item/clock_00", "minecraft:compass": "item/compas
 SLABS = {"minecraft:oak_slab": "block/oak_planks"}
 POTION_COLOURS = {"minecraft:awkward": 0x385DC6, "minecraft:water": 0x385DC6, "wildercord:clarity": 0xB8A8FF,
                   "wildercord:mana": 0x7C5CFF, "wildercord:long_clarity": 0xB8A8FF, "wildercord:strong_clarity": 0xB8A8FF,
-                  "wildercord:strong_mana": 0x7C5CFF}
+                  "wildercord:strong_mana": 0x7C5CFF, "wildercord:warded": 0xF5B04A, "wildercord:long_warded": 0xF5B04A,
+                  "wildercord:strong_warded": 0xF5B04A}
 
 # A 3x5 font for stack counts.
 DIGITS = {

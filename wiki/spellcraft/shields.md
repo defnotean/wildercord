@@ -15,6 +15,10 @@ at you. Then its magic circles spring up between you and the spell. A light spel
 heavier one smashes through. Raise it at the very last moment and you **parry** instead: the spell is
 turned back on whoever cast it.
 
+A Shield isn't your only defence: your armour counts against spells, the Warding enchantment and the Potion of
+Warding take more off, and your spellguard stops one spell killing you from high health. See
+[Defending Against Magic]({{ '/progression/defence/' | relative_url }}).
+
 1. TOC
 {:toc}
 

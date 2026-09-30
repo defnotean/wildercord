@@ -94,8 +94,9 @@ The `EffectContext` has:
 - `power()` and `duration()`: multipliers from its modifiers, the shape, Heart Circles, Cord
   enchantments, the charge, rhythm, the caster's affinity with its element and casting gear. Multiply your numbers by them.
 - `hurt(target, source, amount)`: **always deal damage through this.** It skips invulnerability frames,
-  applies Execute, element reactions, Unison and PvP scaling, meets Shields and counts spell kills.
-  `magic()` is a ready-made damage source.
+  applies Execute, element reactions, Unison and PvP scaling, meets Shields and counts spell kills. On a
+  player it also meets their spell defences (the bonus cap, armour, Warding, Warded and the spellguard),
+  and a /kill or void source is dealt as magic instead. `magic()` is a ready-made damage source.
 - `mayEdit(pos)`: **check it before changing any block.** It's false when the server has turned block
   editing off, when the caster isn't a player allowed to build there (claims and spawn protection are
   asked), or when the cast's block budget is spent. A true answer uses one block of the budget.

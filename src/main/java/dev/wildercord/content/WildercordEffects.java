@@ -18,8 +18,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.alchemy.Potion;
 
 /**
- * Mana potions. Clarity speeds up mana regeneration for a while; Mana restores it at once.
- * Both brew from an Awkward Potion (amethyst shard for Clarity, lapis lazuli for Mana).
+ * Mana potions and the Potion of Warding. Clarity speeds up mana regeneration for a while; Mana restores it at once;
+ * Warded takes a share off every spell that hurts you. All three brew from an Awkward Potion (amethyst shard for Clarity,
+ * lapis lazuli for Mana, tinted glass for Warding: glass that keeps light out, against magic that is light).
  */
 public final class WildercordEffects {
 	private WildercordEffects() {}
@@ -32,11 +33,18 @@ public final class WildercordEffects {
 	public static final Holder<MobEffect> MANA = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("mana"),
 		new ManaEffect());
 
+	/** 20% less damage from spells per level, 80% at most (see {@code cast.SpellDefenceRules}). */
+	public static final Holder<MobEffect> WARDED = Registry.registerForHolder(BuiltInRegistries.MOB_EFFECT, Wildercord.id("warded"),
+		new WardedEffect());
+
 	public static final Holder<Potion> CLARITY_POTION = potion("clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 3600)));
 	public static final Holder<Potion> LONG_CLARITY_POTION = potion("long_clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 9600)));
 	public static final Holder<Potion> STRONG_CLARITY_POTION = potion("strong_clarity", new Potion("wildercord_clarity", new MobEffectInstance(CLARITY, 1800, 1)));
 	public static final Holder<Potion> MANA_POTION = potion("mana", new Potion("wildercord_mana", new MobEffectInstance(MANA, 1)));
 	public static final Holder<Potion> STRONG_MANA_POTION = potion("strong_mana", new Potion("wildercord_mana", new MobEffectInstance(MANA, 1, 1)));
+	public static final Holder<Potion> WARDED_POTION = potion("warded", new Potion("wildercord_warded", new MobEffectInstance(WARDED, 3600)));
+	public static final Holder<Potion> LONG_WARDED_POTION = potion("long_warded", new Potion("wildercord_warded", new MobEffectInstance(WARDED, 9600)));
+	public static final Holder<Potion> STRONG_WARDED_POTION = potion("strong_warded", new Potion("wildercord_warded", new MobEffectInstance(WARDED, 1800, 1)));
 
 	private static Holder<Potion> potion(String path, Potion potion) {
 		return Registry.registerForHolder(BuiltInRegistries.POTION, ResourceKey.create(Registries.POTION, Wildercord.id(path)), potion);
@@ -47,6 +55,13 @@ public final class WildercordEffects {
 	private static final class ClarityEffect extends MobEffect {
 		ClarityEffect() {
 			super(MobEffectCategory.BENEFICIAL, 0xB8A8FF);
+		}
+	}
+
+	/** Its work is done where spells land (SpellDefence); the effect only has to be there. The amber of a Shield's circles. */
+	private static final class WardedEffect extends MobEffect {
+		WardedEffect() {
+			super(MobEffectCategory.BENEFICIAL, 0xF5B04A);
 		}
 	}
 

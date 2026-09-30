@@ -2,6 +2,56 @@
 
 All notable changes to Wildercord. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+Spells no longer kill players in one blow from full health: armour counts against every spell, a new armour
+enchantment and potion ward spells off, and a spellguard catches the one spell that would have killed. Players need
+this version to join a server running it (it adds a potion and an effect).
+
+### Added
+- **Warding**, an armour enchantment against spells, I to IV. Each level takes 8% off every spell that hurts you,
+  adding up over every piece you wear, up to 80% (the most enchantments take off anything), and it works against sonic
+  booms, which Protection doesn't. It's a protection against one kind of harm like Fire or Blast Protection, so it can't
+  share a piece with Protection; the two share the one 80% limit against spells, so three pieces of Protection IV and
+  one of Warding IV reach it and still keep 48% against everything else. From the enchanting table, anvil books,
+  librarians and loot, about as often as Fire Protection. See
+  [Defending Against Magic](https://defnotean.github.io/wildercord/progression/defence/#warding).
+- **The Potion of Warding**, brewed from an Awkward Potion and Tinted Glass (glass that keeps light out, against magic
+  that is light): its **Warded** effect makes every spell that hurts you 20% weaker for 3:00. Redstone makes it last
+  8:00, Glowstone Dust makes it Warded II (40%) for 1:30, and it splashes, lingers and tips arrows like any potion.
+- **The spellguard.** A single spell can no longer take you from 80% of your health or more straight to dead: it leaves
+  you on one heart instead, with a ring of amber light, the sound of a ward breaking and a word on screen, and for the
+  rest of that spell (its other effects land a moment later) nothing finishes you. Then it takes a minute to come back.
+  It goes first, so no totem, Reversal, Second Wind, Rebirth or duel knockout is spent on a blow it caught, and it never
+  stops /kill or the void.
+- **A spell-defence badge on the Cord screen**, the amber shield beside the heart: how much less spells hurt you and
+  from what (your armour, Warding and Protection, Warded, Resistance), whether your spellguard is ready or how long
+  until it is (a dot on the badge while it recharges), and every way to stand up to spells.
+- **Server settings for all of it**, in a new `defence` section: `spellguard` (on), `spellguard_health` (0.8),
+  `spellguard_recharge_seconds` (60), `max_bonus` (2.5) and `armour_rate` (0.55). An older config file gains the
+  section at its defaults, and the Cord screen shows the server's numbers.
+
+### Changed
+- **Armour counts against every spell.** Pure magic (Harm, most arcane and void spells), frost and sonic booms used to
+  go straight through armour; now your armour and toughness count for a little over half their worth against them, so
+  full netherite takes 35 to 40% off an everyday spell and about a third off a huge one. Fire, lightning and blasts,
+  which armour already stopped, are unchanged. Players only: spells hit creatures as hard as ever.
+- **A spell's bonuses are capped against players.** Execute, Trial Key, reactions, hexes, Decree, Drowse, Veil's ambush,
+  Fortune and the rest still multiply together, but never past ×2.5 on a player (stacked, they could reach ×120).
+  Against creatures they're uncapped, as before.
+
+### Fixed
+- **One-shots from full health.** On Hard, the Archivist's Sunfall (32.5 damage), the Tide Scribe's lightning on a wet
+  player (29.7), the Archivist's beam of sonic boom (26.4, through any armour and every enchantment), the Cinder Warden's
+  comet (25.7) and the Star-Eater's Domain (23.1, through any armour) each killed a 20-health player outright, and in PvP
+  a strong caster's Hollow, Prismatic Burst or Sunfall dealt 43 to 55. Now the spellguard leaves an unarmoured player on
+  one heart, full netherite takes those bosses' spells to 10 to 18, and netherite with Warding IV on every piece to 1 to 4.
+- **Every spell's damage meets the same defences.** The Star-Eater's shards and eclipse, a wisp's spells, a Reflect
+  ward's returned blow and Blood Thread's shared wounds used to reach players past them; they don't any more. A Stasis
+  letting its held hits go and a Soulbond passing on a killing share now answer to the spellguard. A spell (an add-on's)
+  that deals /kill damage lands as magic instead, so defences, Resistance, totems and the spellguard answer it; the real
+  /kill and the void still kill.
+
 ## [0.6.1-alpha] - 2026-09-29
 
 The Cord stops glowing all the time, and magic looks right under shader packs. Works with 0.6.0 servers and clients.

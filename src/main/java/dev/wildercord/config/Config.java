@@ -26,10 +26,10 @@ import java.util.List;
  * it needs a value (it's cheap), so a reload takes effect at once, except loot chances, which apply
  * when loot tables next load.
  *
- * <p>The few settings a client shows (the cost and regeneration multipliers, and whether affinities are
- * on, for the Cord screen and HUD) are sent to each player when they join and after every reload;
- * {@link #costMultiplier}, {@link #regenMultiplier} and {@link #playerAffinity} answer with those on the
- * client.</p>
+ * <p>The few settings a client shows (the cost and regeneration multipliers, whether affinities are on,
+ * and the spell defences, for the Cord screen and HUD) are sent to each player when they join and after
+ * every reload; {@link #costMultiplier}, {@link #regenMultiplier}, {@link #playerAffinity} and
+ * {@link #defence} answer with those on the client.</p>
  */
 public final class Config {
 	private Config() {}
@@ -40,15 +40,21 @@ public final class Config {
 	/** What the server told this client (the defaults until it does). */
 	private static volatile Sync synced = Sync.DEFAULT;
 
-	/** Server to client: the settings a client needs to show costs, regeneration and affinities truthfully. */
-	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity) implements CustomPacketPayload {
-		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true);
+	/** Server to client: the settings a client needs to show costs, regeneration, affinities and spell defences truthfully. */
+	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence) implements CustomPacketPayload {
+		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS);
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
+		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
+		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
+			ByteBufCodecs.BOOL, WildercordConfig.DefenceSettings::spellguard, ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::spellguardHealth,
+			ByteBufCodecs.VAR_INT, WildercordConfig.DefenceSettings::spellguardRechargeSeconds, ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::maxBonus,
+			ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::armourRate, WildercordConfig.DefenceSettings::new);
 		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC = StreamCodec.composite(
-			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity, Sync::new).cast();
+			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity,
+			DEFENCE_CODEC, Sync::defence, Sync::new).cast();
 
 		static Sync of(WildercordConfig config) {
-			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity());
+			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity(), config.defence());
 		}
 
 		@Override
@@ -137,6 +143,11 @@ public final class Config {
 	/** Whether players' affinities are on: the server's own switch, or on a client the one it was sent. */
 	public static boolean playerAffinity(Player player) {
 		return player != null && player.level().isClientSide() ? synced.playerAffinity() : get().playerAffinity();
+	}
+
+	/** The spell defences: the server's own, or on a client the ones it was sent. */
+	public static WildercordConfig.DefenceSettings defence(Player player) {
+		return player != null && player.level().isClientSide() ? synced.defence() : get().defence();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */
