@@ -834,9 +834,10 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   dry land.
 - **`WildercordFlightTest`** casts Soar for real on a platform in the sky: casting gives flight and a double-tap of
   jump takes off; a flight running out 64 blocks up warns, then lands the player with no damage and nothing left;
-  creative players are left alone; an ally a Burst reaches flies and a stranger doesn't; a monster's Pull and a
-  Weigh ground a flier; a flight saved in a crash is tidied at login; death leaves nothing; and a real save and
-  reload saves the player unable to fly, gives the flight back and lets it run out safely. Screenshots `soar_*`.
+  creative players are left alone; an ally a Burst reaches flies and a stranger doesn't; a dungeon's ward (filed
+  as a dungeon piece files its arena) won't let it lift anyone and sets down a flier who comes in; a monster's Pull
+  and a Weigh ground a flier; a flight saved in a crash is tidied at login; death leaves nothing; and a real save
+  and reload saves the player unable to fly, gives the flight back and lets it run out safely. Screenshots `soar_*`.
 
 ## 10. Rules that keep it safe
 
