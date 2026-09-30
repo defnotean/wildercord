@@ -1,6 +1,6 @@
 package dev.wildercord.cast;
 
-import dev.wildercord.spell.AnimationSignature;
+import dev.wildercord.spell.RuneChoreography;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.SpellPlan;
@@ -57,77 +57,92 @@ public final class RunicAnimations {
 
 	// Package access lets the client gallery capture this exact production animation for each rune.
 	static void show(ServerLevel level, RuneDef rune, Vec3 at, Vec3 normal, double scale, boolean landing, Cast cast) {
-		AnimationSignature signature = AnimationSignature.of(rune);
-		int base = RuneColors.of(rune);
-		int color = tint(base, signature.accent());
-		int lifetime = 10 + signature.beat();
-		Sigils.spell(level, at, normal, List.of(rune), color, (float) scale, lifetime);
-		stroke(level, at, normal, color, signature, scale, 0, landing);
-		Scheduler.later(signature.beat(), () -> {
+		RuneChoreography.Sequence sequence = RuneChoreography.of(rune);
+		int color = RuneColors.of(rune);
+		Sigils.spell(level, at, normal, List.of(rune), color, (float) (scale * 0.42), 11);
+		draw(level, at, normal, color, sequence.opening(), scale, 0, landing);
+		Scheduler.later(3, () -> {
 			if (cast.alive()) {
-				stroke(level, at, normal, color, signature, scale, 1, landing);
+				draw(level, at, normal, color, sequence.middle(), scale, 1, landing);
 			}
 		});
-		Scheduler.later(signature.beat() * 2, () -> {
+		Scheduler.later(6, () -> {
 			if (cast.alive()) {
-				stroke(level, at, normal, color, signature, scale, 2, landing);
+				draw(level, at, normal, color, sequence.finish(), scale, 2, landing);
 			}
 		});
 	}
 
-	private static void stroke(ServerLevel level, Vec3 at, Vec3 normal, int color, AnimationSignature sig,
-			double scale, int phase, boolean landing) {
-		Vec3 side = side(normal);
-		Vec3 high = side.cross(normal).normalize();
-		double cadence = 0.42 + ((sig.fingerprint() >>> 27) & 15) * 0.05;
-		double a = Math.PI * 2 * sig.turn() / 16.0 + phase * (sig.fingerprint() < 0 ? -cadence : cadence);
-		Vec3 spoke = side.scale(Math.cos(a)).add(high.scale(Math.sin(a)));
-		double radius = scale * (0.49 + 0.16 * phase + (sig.arms() - 3) * 0.05
-			+ ((sig.fingerprint() >>> 43) & 7) * 0.012);
-		int bright = phase == 2 ? tint(color, 13) : color;
-		int life = 6 + sig.beat();
-		switch (sig.motif()) {
-			case 0 -> { // a breathing halo with one named spoke
-				Light.ring(level, at, normal, bright, radius * 0.4, radius, 0.028, life);
-				Light.ray(level, at, at.add(spoke.scale(radius)), color, 0.022, life);
-			}
-			case 1 -> { // three turning crescent cuts
-				Light.slash(level, at, normal, spoke, bright, radius, 1.0 + sig.arms() * 0.18, 0.034, 4, life);
-			}
-			case 2 -> { // a collapsing pair of rings
-				Light.ring(level, at, normal, color, radius * 1.2, radius * 0.3, 0.03, life);
-				Light.ring(level, at.add(normal.scale(0.04)), normal, bright, radius * 0.8, radius * 0.18, 0.02, life + 2);
-			}
-			case 3 -> { // an orbit that darts forward
-				Vec3 orb = at.add(spoke.scale(radius * 0.7));
-				Light.orb(level, orb, bright, radius * 0.26, life);
-				Light.ray(level, orb, orb.add(normal.scale(0.35 + phase * 0.2)), color, 0.025, life);
-			}
-			case 4 -> { // forking prongs
-				for (int i = -1; i <= 1; i++) {
-					Vec3 fork = side.scale(Math.cos(a + i * 0.5)).add(high.scale(Math.sin(a + i * 0.5)));
-					Light.ray(level, at.add(normal.scale(0.05)), at.add(fork.scale(radius)), i == 0 ? bright : color, 0.023, life);
-				}
-			}
-			case 5 -> { // crossing blades
-				Light.ray(level, at.add(spoke.scale(-radius)), at.add(spoke.scale(radius)), color, 0.027, life);
-				Vec3 cross = normal.cross(spoke).normalize();
-				Light.ray(level, at.add(cross.scale(-radius * 0.6)), at.add(cross.scale(radius * 0.6)), bright, 0.02, life);
-			}
-			case 6 -> { // a short fan of lances
-				for (int i = 0; i < sig.arms(); i++) {
-					double b = a + Math.PI * 2 * i / sig.arms();
-					Vec3 ray = side.scale(Math.cos(b)).add(high.scale(Math.sin(b)));
-					Light.ray(level, at.add(ray.scale(radius * 0.25)), at.add(ray.scale(radius)), i % 2 == 0 ? bright : color, 0.018, life);
-				}
-			}
-			default -> { // a clock-like arc, opening then closing
-				Light.slash(level, at, normal, spoke, color, radius, Math.PI * (phase == 2 ? 1.75 : 0.7), 0.025, 5, life);
-				Light.orb(level, at, bright, radius * 0.16, life);
-			}
+	/** Each beat draws a specific object or motion; the sequence belongs to the named rune. */
+	private static void draw(ServerLevel level, Vec3 at, Vec3 normal, int color,
+			RuneChoreography.Gesture gesture, double scale, int phase, boolean landing) {
+		int bright = phase == 2 ? tint(color, 11) : color;
+		Canvas c = new Canvas(level, at.add(normal.scale(phase * 0.045)), normal, bright,
+			scale * (1.08 + phase * 0.08), 9);
+		switch (gesture) {
+			case SEAL -> { c.ring(0.75, 0.75); c.ring(0.33, 0.33); c.line(-0.24, 0, 0.24, 0); }
+			case HALO -> { c.ring(0.43, 0.92); c.orb(0, 0.94, 0.13); }
+			case ORBIT -> { c.ring(0.72, 0.72); c.orb(-0.66, 0.28, 0.16); c.orb(0.63, 0.30, 0.16); c.orb(0, -0.73, 0.16); }
+			case LANCE -> { c.line(0, -0.86, 0, 0.86); c.line(-0.23, 0.5, 0, 0.86); c.line(0.23, 0.5, 0, 0.86); }
+			case FAN -> { for (int i = -2; i <= 2; i++) c.line(0, -0.65, i * 0.28, 0.72); }
+			case CRESCENT -> { c.arc(-0.26, 0, 0.92, 2.5); c.orb(0.52, 0, 0.09); }
+			case CROSS -> { c.line(-0.72, -0.72, 0.72, 0.72); c.line(-0.72, 0.72, 0.72, -0.72); }
+			case FORK -> { c.line(0, -0.75, 0, 0.04); c.line(0, 0.04, -0.53, 0.75); c.line(0, 0.04, 0.53, 0.75); }
+			case BURST -> { for (int i = 0; i < 8; i++) { double a = i * Math.PI / 4; c.line(Math.cos(a) * 0.24, Math.sin(a) * 0.24, Math.cos(a) * 0.9, Math.sin(a) * 0.9); } }
+			case CRACK -> { c.line(-0.36, 0.88, 0.12, 0.27); c.line(0.12, 0.27, -0.09, -0.11); c.line(-0.09, -0.11, 0.43, -0.85); c.line(0.1, 0.28, 0.51, 0.49); }
+			case DROPLET -> { c.orb(0, -0.21, 0.39); c.line(-0.29, 0.02, 0, 0.85); c.line(0.29, 0.02, 0, 0.85); }
+			case SHARD -> { c.line(-0.5, -0.7, 0, 0.85); c.line(0, 0.85, 0.53, -0.52); c.line(0.53, -0.52, -0.5, -0.7); c.line(0, 0.85, 0.13, -0.55); }
+			case SPIRAL -> { c.arc(0.18, -0.15, 0.8, 3.9); c.arc(-0.12, 0.11, 0.49, 3.4); c.orb(0, 0, 0.11); }
+			case VINE -> { c.arc(-0.4, -0.24, 0.72, 1.9); c.line(-0.25, -0.24, 0.11, 0.1); c.orb(0.47, 0.53, 0.14); }
+			case PETAL -> { for (int i = 0; i < 4; i++) { double a = i * Math.PI / 2; c.orb(Math.cos(a) * 0.52, Math.sin(a) * 0.52, 0.28); } c.orb(0, 0, 0.18); }
+			case ROOTS -> { c.line(0, 0.7, 0, -0.24); c.line(0, -0.24, -0.68, -0.75); c.line(0, -0.24, 0.63, -0.75); c.line(-0.29, -0.47, -0.4, -0.88); }
+			case WING -> { c.arc(-0.38, 0.24, 0.65, 1.8); c.arc(0.38, 0.24, 0.65, 1.8); c.line(0, -0.62, 0, 0.4); }
+			case FLAME -> { c.arc(0, -0.24, 0.76, 2.2); c.line(-0.43, -0.52, -0.12, 0.78); c.line(0.3, -0.55, 0.12, 0.39); c.orb(0, -0.28, 0.18); }
+			case RAIN -> { for (int i = -2; i <= 2; i++) c.line(i * 0.32, 0.78 - (i & 1) * 0.25, i * 0.32 - 0.12, -0.73 + (i & 1) * 0.19); }
+			case GEAR -> { c.ring(0.64, 0.64); for (int i = 0; i < 8; i++) { double a = i * Math.PI / 4; c.line(Math.cos(a) * 0.65, Math.sin(a) * 0.65, Math.cos(a) * 0.87, Math.sin(a) * 0.87); } }
+			case CLOCK -> { c.ring(0.76, 0.76); c.line(0, 0, 0, 0.55); c.line(0, 0, 0.43, -0.2); }
+			case GATE -> { c.line(-0.61, -0.8, -0.61, 0.58); c.line(0.61, -0.8, 0.61, 0.58); c.arc(0, 0.44, 0.63, 2.7); }
+			case MIRROR -> { c.line(0, -0.87, 0, 0.87); c.line(-0.69, -0.43, -0.2, 0.33); c.line(0.69, -0.43, 0.2, 0.33); c.orb(0, 0, 0.11); }
+			case CHAIN -> { c.orb(-0.46, 0.43, 0.3); c.orb(0.45, -0.4, 0.3); c.line(-0.26, 0.22, 0.25, -0.2); }
+			case CROWN -> { c.line(-0.77, -0.58, -0.64, 0.49); c.line(-0.64, 0.49, -0.24, 0.02); c.line(-0.24, 0.02, 0, 0.82); c.line(0, 0.82, 0.24, 0.02); c.line(0.24, 0.02, 0.64, 0.49); c.line(0.64, 0.49, 0.77, -0.58); c.line(-0.77, -0.58, 0.77, -0.58); }
+			case SHELL -> { c.arc(0, 0, 0.87, 3.2); c.arc(0, -0.08, 0.56, 3.0); c.line(-0.8, -0.3, 0.8, -0.3); }
+			case STAR -> { for (int i = 0; i < 5; i++) { double a = Math.PI / 2 + i * Math.PI * 4 / 5; double b = Math.PI / 2 + (i + 1) * Math.PI * 4 / 5; c.line(Math.cos(a) * 0.85, Math.sin(a) * 0.85, Math.cos(b) * 0.85, Math.sin(b) * 0.85); } }
+			case WAVE -> { c.arc(-0.4, -0.08, 0.55, 2.0); c.arc(0.25, 0.18, 0.62, 2.0); c.line(-0.8, -0.55, 0.8, -0.55); }
+			case PILLAR -> { c.line(-0.36, -0.84, -0.36, 0.84); c.line(0.36, -0.84, 0.36, 0.84); c.line(-0.59, -0.84, 0.59, -0.84); c.line(-0.59, 0.84, 0.59, 0.84); }
+			case SWARM -> { c.orb(-0.65, -0.12, 0.17); c.orb(-0.2, 0.59, 0.13); c.orb(0.27, -0.53, 0.2); c.orb(0.72, 0.35, 0.12); }
+			case MIST -> { c.ring(0.28, 0.84); c.orb(-0.54, 0.32, 0.2); c.orb(0.53, -0.3, 0.16); }
+			case FLARE -> { c.orb(0, 0, 0.25); for (int i = 0; i < 6; i++) { double a = i * Math.PI / 3; c.line(Math.cos(a) * 0.42, Math.sin(a) * 0.42, Math.cos(a) * 0.9, Math.sin(a) * 0.9); } }
+			case NEEDLE -> { c.line(-0.09, -0.77, 0.09, 0.83); c.line(0.09, 0.83, 0.33, 0.4); c.orb(-0.09, -0.77, 0.08); }
+			case DIAMOND -> { c.line(0, 0.86, 0.63, 0); c.line(0.63, 0, 0, -0.86); c.line(0, -0.86, -0.63, 0); c.line(-0.63, 0, 0, 0.86); }
+			case TIDE -> { c.arc(-0.4, -0.28, 0.54, 2.3); c.arc(0.19, 0.06, 0.62, 2.3); c.arc(0.57, -0.43, 0.29, 1.9); }
+			case CLAW -> { for (int i = -1; i <= 1; i++) c.arc(i * 0.34, i * 0.08, 0.6, 1.15); }
+			case HEART -> { c.orb(-0.32, 0.3, 0.35); c.orb(0.32, 0.3, 0.35); c.line(-0.62, 0.12, 0, -0.81); c.line(0.62, 0.12, 0, -0.81); }
+			case EYE -> { c.arc(0, 0.26, 0.8, 2.1); c.arc(0, -0.26, 0.8, 2.1); c.orb(0, 0, 0.24); }
+			case STEP -> { c.orb(-0.42, -0.4, 0.19); c.orb(0.2, 0.28, 0.19); c.line(-0.3, -0.22, 0.07, 0.12); }
+			case TETHER -> { c.orb(-0.73, 0.35, 0.14); c.orb(0.73, -0.35, 0.14); c.line(-0.6, 0.28, 0.6, -0.28); }
+			case CLOUD -> { c.orb(-0.47, 0.03, 0.36); c.orb(0.04, 0.36, 0.42); c.orb(0.49, 0.02, 0.34); c.line(-0.72, -0.27, 0.73, -0.27); }
+			case FOAM -> { c.orb(-0.59, -0.37, 0.15); c.orb(-0.21, 0.16, 0.27); c.orb(0.35, -0.13, 0.22); c.orb(0.67, 0.48, 0.11); }
 		}
 		if (landing && phase == 2) {
-			Vfx.emit(level, new DustParticleOptions(bright, 0.72F), at, Math.min(7, sig.arms() + 1), radius * 0.35, 0.02);
+			Vfx.emit(level, new DustParticleOptions(bright, 0.72F), at, 5, scale * 0.3, 0.02);
+		}
+	}
+
+	private record Canvas(ServerLevel level, Vec3 centre, Vec3 normal, int color, double size, int life) {
+		Vec3 x() { return side(normal); }
+		Vec3 y() { return x().cross(normal).normalize(); }
+		Vec3 point(double u, double v) { return centre.add(x().scale(u * size)).add(y().scale(v * size)); }
+		void line(double u1, double v1, double u2, double v2) {
+			Light.ray(level, point(u1, v1), point(u2, v2), color, 0.024, life);
+		}
+		void ring(double from, double to) {
+			Light.ring(level, centre, normal, color, from * size, to * size, 0.028, life);
+		}
+		void orb(double u, double v, double radius) {
+			Light.orb(level, point(u, v), color, radius * size, life);
+		}
+		void arc(double u, double v, double radius, double span) {
+			Light.slash(level, point(u, v), normal, y(), color, radius * size, span, 0.028, 4, life);
 		}
 	}
 

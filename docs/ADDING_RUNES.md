@@ -273,10 +273,12 @@ Every spell already gets a **feel** from how it is built (see `dev.wildercord.ca
 Slash, Blast, Seal, Call, Aura), the mana-dominant *element* (and an accent element), the first effect's *role* (Strike, Bind, Mend,
 Move, Time, World, Call up), a *band* from cost, charge and tier (S, M, L, XL: band M is the mod's usual sizes), and the modifiers
 on it. It travels inside `Vfx.Theme` (`theme.feel()`), so any shape or effect code that has a theme has the feel.
-`RunicAnimations` also gives every shape and effect a stable, illustrated three-beat release and first-landing
-animation based on its id and role. All effects in a group get one, including secondary effects and the two inside
-a woven rune. This is the starting point; a rune with a distinctive wind-up, movement or lasting field should still
-have an authored signature and VFX of its own. To make a rune **signature**, do two things, both in files that are yours alone.
+`RunicAnimations` gives every shape and effect an illustrated three-beat release and first-landing
+animation from its explicit entry in `assets/wildercord/animations/rune_choreography.txt`. Add a distinct
+opening, middle and finish when you add a castable rune; `RuneChoreographyTest` checks roster coverage and
+rejects a reused complete sequence. All effects in a group get one, including secondary effects and the two
+inside a woven rune. A rune with a distinctive wind-up, movement or lasting field should also have an authored
+signature and VFX of its own. To make a rune **signature**, do two things, both in files that are yours alone.
 
 ### 1. Its signature (Java)
 
