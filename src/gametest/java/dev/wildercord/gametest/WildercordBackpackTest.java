@@ -28,6 +28,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
 import net.minecraft.server.MinecraftServer;
@@ -60,9 +61,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.component.ResolvableProfile;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.entity.BlockEntityTypes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
@@ -509,11 +512,13 @@ public class WildercordBackpackTest implements FabricClientGameTest {
 		String problem = world.getServer().computeOnServer(server -> {
 			ItemStack fullChest = new ItemStack(Items.CHEST);
 			fullChest.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND))));
+			ItemStack pickedChest = new ItemStack(Items.CHEST);
+			pickedChest.set(DataComponents.BLOCK_ENTITY_DATA, TypedEntityData.of(BlockEntityTypes.CHEST, new CompoundTag()));
 			ItemStack fullShulker = new ItemStack(Items.SHULKER_BOX);
 			fullShulker.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(List.of(new ItemStack(Items.DIAMOND))));
 			for (ItemStack refused : List.of(new ItemStack(WildercordItems.BACKPACK), new ItemStack(WildercordItems.REINFORCED_BACKPACK),
 					new ItemStack(WildercordItems.RUNEWOVEN_BACKPACK), new ItemStack(Items.SHULKER_BOX), new ItemStack(Items.DYED_SHULKER_BOX.pick(DyeColor.BLUE)), fullShulker,
-					new ItemStack(Items.BUNDLE), new ItemStack(Items.DYED_BUNDLE.pick(DyeColor.RED)), fullChest)) {
+					new ItemStack(Items.BUNDLE), new ItemStack(Items.DYED_BUNDLE.pick(DyeColor.RED)), fullChest, pickedChest)) {
 				if (Backpacks.fitsInside(refused)) {
 					return refused + " (" + refused.getComponents() + ") shouldn't fit in a backpack";
 				}

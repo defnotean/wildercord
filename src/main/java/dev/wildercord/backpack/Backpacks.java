@@ -78,7 +78,8 @@ public final class Backpacks {
 			return true;
 		}
 		if (isBackpack(stack) || !stack.getItem().canFitInsideContainerItems() || stack.is(NOT_FOR_BACKPACKS) || stack.is(ItemTags.BUNDLES)
-				|| stack.getItem() instanceof BundleItem || stack.has(DataComponents.BUNDLE_CONTENTS)) {
+				|| stack.getItem() instanceof BundleItem || stack.has(DataComponents.BUNDLE_CONTENTS)
+				|| stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
 			return false;
 		}
 		ItemContainerContents contents = stack.get(DataComponents.CONTAINER);

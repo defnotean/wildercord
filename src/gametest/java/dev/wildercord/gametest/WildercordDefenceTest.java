@@ -238,6 +238,16 @@ public class WildercordDefenceTest implements FabricClientGameTest {
 		context.takeScreenshot(TestScreenshotOptions.of("defence_spellguard").disableCounterPrefix());
 		int left = context.computeOnClient(mc -> SpellDefence.guardSeconds(mc.player));
 		check(left > 50 && left <= 60, "the client should see the spellguard recharging for about a minute (" + left + " s)");
+		// A different spell in the grace window must not borrow the first spell's guard.
+		String separate = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ready(player, 20);
+			player.setItemInHand(InteractionHand.OFF_HAND, new ItemStack(Items.TOTEM_OF_UNDYING));
+			SpellDefence.hurt(player.level(), player, player.level().damageSources().magic(), 100);
+			return player.isAlive() && player.getOffhandItem().isEmpty() ? null
+				: "a separate spell in the guard's grace should use the totem, not the spent guard";
+		});
+		check(separate == null, separate);
 
 		// Recharging: a killing spell a second later finds no guard, and a totem answers instead (one killing blow: a totem
 		// answers one).

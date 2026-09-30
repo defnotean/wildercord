@@ -933,7 +933,7 @@ public final class Effects {
 		float dealt = damage;
 		float before = target.getHealth();
 		// A player's defences against spells (armour, Warding, Warded, the spellguard) are met there.
-		Dungeons.spellHit(() -> SpellDefence.hurt(cast.level, target, source, dealt));
+		Dungeons.spellHit(() -> SpellDefence.hurt(cast.level, target, source, dealt, cast));
 		// A heavy hit lands with a punch for whoever cast it.
 		if (damage >= 8) {
 			ScreenFx.punch(cast.caster, Math.min(1, damage / 20F));

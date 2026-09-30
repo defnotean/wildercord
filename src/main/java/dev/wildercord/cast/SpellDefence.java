@@ -8,6 +8,8 @@ import dev.wildercord.content.WildercordSounds;
 import dev.wildercord.player.WildercordAttachments;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
@@ -30,6 +32,8 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.BooleanSupplier;
 
 /**
@@ -67,15 +71,24 @@ public final class SpellDefence {
 	private static final Identifier GUARD_PHASE = Wildercord.id("spellguard");
 
 	/** A spell hit landing on a player right now: who, and their health as it arrived. Null outside one. */
-	private record Landing(LivingEntity target, float healthBefore) {}
+	private record Landing(LivingEntity target, float healthBefore, Object castIdentity) {}
+	private record Grace(Object castIdentity, long serverTick) {}
 
 	private static Landing landing;
+	/** Short lived protection for the remaining hits of the cast the guard stopped. */
+	private static final Map<ServerPlayer, Grace> grace = new WeakHashMap<>();
 
 	public static void init() {
 		// The guard is a limit on one hit, not a way back from death: a hit it stops never killed anyone, so nothing that
 		// answers a death (Reversal, Rebirth, Second Wind, a duel's knockout, a totem) is spent on it. It goes first.
 		ServerLivingEntityEvents.ALLOW_DEATH.addPhaseOrdering(GUARD_PHASE, Event.DEFAULT_PHASE);
 		ServerLivingEntityEvents.ALLOW_DEATH.register(GUARD_PHASE, SpellDefence::allowDeath);
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if (server.getTickCount() % 20 == 0) {
+				grace.values().removeIf(saved -> server.getTickCount() - saved.serverTick > GUARD_GRACE);
+			}
+		});
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> grace.clear());
 	}
 
 	// ------------------------------------------------------------------ landing
@@ -87,12 +100,21 @@ public final class SpellDefence {
 	 * @return whether it hurt
 	 */
 	public static boolean hurt(ServerLevel level, LivingEntity target, DamageSource source, float amount) {
+		return hurt(level, target, source, amount, new Object());
+	}
+
+	/** A hit from a known cast: children and repeated landings carry its identity through the guard. */
+	public static boolean hurt(ServerLevel level, LivingEntity target, DamageSource source, float amount, Cast cast) {
+		return hurt(level, target, source, amount, cast.identity());
+	}
+
+	private static boolean hurt(ServerLevel level, LivingEntity target, DamageSource source, float amount, Object castIdentity) {
 		DamageSource spell = spellSource(level, source);
 		if (!(target instanceof Player player)) {
 			return target.hurtServer(level, spell, amount);
 		}
 		float left = reduce(level, player, spell, amount);
-		return guarded(target, () -> target.hurtServer(level, spell, left));
+		return guarded(target, castIdentity, () -> target.hurtServer(level, spell, left));
 	}
 
 	/**
@@ -100,12 +122,17 @@ public final class SpellDefence {
 	 * a Stasis letting its held hits go) as a spell hit for the spellguard, without weighing it again.
 	 */
 	public static boolean guarded(LivingEntity target, BooleanSupplier hit) {
+		return guarded(target, new Object(), hit);
+	}
+
+	private static boolean guarded(LivingEntity target, Object castIdentity, BooleanSupplier hit) {
 		if (!(target instanceof Player)) {
 			return hit.getAsBoolean();
 		}
 		Landing outer = landing;
 		// A hit inside a hit on the same player (a dodge letting part of it through) keeps the health it first found.
-		landing = outer != null && outer.target == target ? outer : new Landing(target, target.getHealth());
+		landing = outer != null && outer.target == target && outer.castIdentity == castIdentity
+			? outer : new Landing(target, target.getHealth(), castIdentity);
 		try {
 			return hit.getAsBoolean();
 		} finally {
@@ -218,9 +245,12 @@ public final class SpellDefence {
 		}
 		WildercordConfig.DefenceSettings settings = Config.get().defence();
 		long now = level.getGameTime();
+		long serverTick = level.getServer().getTickCount();
 		Long heldAt = player.getAttached(WildercordAttachments.SPELLGUARD);
 		// Just held: the rest of the same spell can't finish them either.
-		if (settings.spellguard() && heldAt != null && heldAt <= now && now - heldAt <= GUARD_GRACE) {
+		Grace recent = grace.get(player);
+		if (settings.spellguard() && recent != null && recent.castIdentity == hit.castIdentity && recent.serverTick <= serverTick
+				&& serverTick - recent.serverTick <= GUARD_GRACE) {
 			player.setHealth(Math.min(player.getMaxHealth(), SpellDefenceRules.GUARD_LEAVES));
 			return false;
 		}
@@ -230,6 +260,7 @@ public final class SpellDefence {
 		}
 		player.setHealth(Math.min(player.getMaxHealth(), SpellDefenceRules.GUARD_LEAVES));
 		player.setAttached(WildercordAttachments.SPELLGUARD, now);
+		grace.put(player, new Grace(hit.castIdentity, serverTick));
 		held(level, player, settings.spellguardRechargeSeconds());
 		return false;
 	}
