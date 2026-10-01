@@ -8,6 +8,17 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
+## New in 0.8: magic of your own
+
+- **Your world has spells of its own.** Every world hides about a dozen *harmonies*: rune sequences only it answers, each with a twist (glass rain, birds of light, a pale steed...). Find them by experiment or from Torn Page riddles; some only wake where ley lines cross. A few runes bend your world's way too, and new runes must be read before you understand them.
+- **Your spells grow with you.** Five ranks of mastery from casts that matter, a trait of your choosing at each rank, a sigil that is yours alone, spoken names and inscribed scrolls.
+- **Casting is a performance.** Overchannel past full charge through three cracking stages, trace the spell's glyph to steady it, and watch its incantation rise.
+- **The world remembers magic.** Big spells leave storm-glass, everfrost, wildblooms and void scars that give Fusion Altar reagents; ley crossings, the moon, the hour and the weather favour different elements.
+
+![Overchannelling a spell, its incantation rising](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/overchannel.png)
+
+![A spell's circle at mastery ranks I, III and V](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/mastery-circles.jpg)
+
 ## A spell, one rune at a time
 
 `Bolt → Fire → Split → On Hit → Burst → Explode`
@@ -49,11 +60,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.7.1-alpha
+## Install 0.8.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.8.0 server needs 0.8.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 
