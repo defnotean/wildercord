@@ -332,7 +332,7 @@ class WildercordConfigTest {
 		assertEquals("", r.rerollSalt());
 		assertTrue(r.announce());
 		assertEquals(dev.wildercord.spell.RuneQuirks.DEFAULT_COUNT, r.quirks());
-		assertTrue(D.toJson().contains("\"resonances\""), "a fresh file should list the resonance settings");
+		assertTrue(D.toJson().contains("\"harmonies\""), "a fresh file should list the harmony settings");
 		assertTrue(D.toJson().contains("\"unread_runes\""));
 		assertFalse(WildercordConfig.parse("{\"features\": {\"unread_runes\": false}}").config().unreadRunes());
 	}
@@ -340,7 +340,7 @@ class WildercordConfigTest {
 	@Test
 	void resonanceSettingsAreReadAndKeptInRange() {
 		WildercordConfig.Parsed parsed = WildercordConfig.parse(
-			"{\"resonances\": {\"enabled\": false, \"count\": 400, \"reroll_salt\": \"second age\", \"announce\": false, \"quirks\": -2, \"riddles\": 1}}");
+			"{\"harmonies\": {\"enabled\": false, \"count\": 400, \"reroll_salt\": \"second age\", \"announce\": false, \"quirks\": -2, \"riddles\": 1}}");
 		WildercordConfig.ResonanceSettings r = parsed.config().resonances();
 		assertFalse(r.enabled());
 		assertEquals(dev.wildercord.spell.ResonanceForge.MAX_COUNT, r.count());
@@ -350,12 +350,12 @@ class WildercordConfigTest {
 		// Two out of range, one unknown key.
 		assertEquals(3, parsed.warnings().size(), parsed.warnings().toString());
 		// A salt that isn't text, or is far too long, is reported and fixed.
-		WildercordConfig.Parsed number = WildercordConfig.parse("{\"resonances\": {\"reroll_salt\": 7}}");
+		WildercordConfig.Parsed number = WildercordConfig.parse("{\"harmonies\": {\"reroll_salt\": 7}}");
 		assertEquals("", number.config().resonances().rerollSalt());
 		assertEquals(1, number.warnings().size(), number.warnings().toString());
 		String longSalt = "s".repeat(200);
 		assertEquals(WildercordConfig.ResonanceSettings.MAX_SALT,
-			WildercordConfig.parse("{\"resonances\": {\"reroll_salt\": \"" + longSalt + "\"}}").config().resonances().rerollSalt().length());
+			WildercordConfig.parse("{\"harmonies\": {\"reroll_salt\": \"" + longSalt + "\"}}").config().resonances().rerollSalt().length());
 		// The written file keeps every changed setting.
 		WildercordConfig changed = parsed.config();
 		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config());
@@ -371,7 +371,7 @@ class WildercordConfigTest {
 		assertEquals(WildercordConfig.ResonanceSettings.DEFAULTS, parsed.config().resonances());
 		assertTrue(parsed.config().unreadRunes());
 		String grown = WildercordConfig.addMissing(old).orElseThrow();
-		for (String key : List.of("\"resonances\"", "\"reroll_salt\"", "\"count\"", "\"announce\"", "\"quirks\"", "\"unread_runes\"")) {
+		for (String key : List.of("\"harmonies\"", "\"reroll_salt\"", "\"count\"", "\"announce\"", "\"quirks\"", "\"unread_runes\"")) {
 			assertTrue(grown.contains(key), key + " should have been added");
 		}
 		WildercordConfig regrown = WildercordConfig.parse(grown).config();

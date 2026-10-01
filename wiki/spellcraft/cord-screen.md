@@ -111,7 +111,7 @@ same way.
 
 A rune you've only just learned shows a small **?** in its corner, and its tooltip gives a hint of what it does
 instead of its text; once you've cast it, a small dot, and its text with the numbers veiled. See
-[Reading runes]({{ '/spellcraft/resonances/' | relative_url }}#reading-runes).
+[Reading runes]({{ '/spellcraft/harmonies/' | relative_url }}#reading-runes).
 
 ### Family tabs and category chips
 

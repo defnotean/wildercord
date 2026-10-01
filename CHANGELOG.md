@@ -65,7 +65,7 @@ sends and syncs more than it did).
 - **The beat.** The moment a charge fills, and the moment each stage lands, is a beat: let go just then (within about
   a third of a second after) for 10% more power and a bright chime. While you charge, the ring on your spell badge
   closes on the charge's own beats instead of the rhythm's.
-- **Tearing loose.** Hold on past your last stage for another 1.2 seconds (the ring turns red, the circle reddens and
+- **Tearing loose.** Hold on past your last stage for another 3 seconds (the ring turns red, the circle reddens and
   shakes) and the channel tears loose: the circle bursts, the spell fizzles, a harmless wild surge goes off (butterflies,
   a blink, a lift with a slow fall, slowed time or healing for everyone near), you're dazed for a second and a half and
   lose 30% of your mana. It never costs health: on one heart, you walk away on one heart.
@@ -90,7 +90,7 @@ Every world's magic is its own now: spells only your world answers, runes that b
 read before you understand them.
 
 ### Added
-- **Resonances: spells only your world answers.** Each world draws about a dozen hidden resonances from its seed: exact
+- **Harmonies: spells only your world answers.** Each world draws about a dozen hidden harmonies from its seed: exact
   sequences of three or four craftable runes (Tier I to III) that are ordinary spells anywhere else, but here carry a
   twist of their own. There are 27 twists, each with its own look and its own synthesised sound: rain that lands as
   falling glass, a flame that mends your friends as it burns your foes, a bolt bursting into birds of light, flowers
@@ -100,17 +100,17 @@ read before you understand them.
   the spell defences and the cast's budget, never at you or your friends, never moving a boss. Casting one finds it:
   its name fills the screen ("the Glasswind Rite"), it goes into the Grimoire with its runes and riddle (400 mana toward
   your next circle), and the server tells everyone its name, but never its runes. Once found it costs 15% more mana
-  and recharges a fifth slower, and the Cord screen names it and says what its twist does. No resonance is a secret
+  and recharges a fifth slower, and the Cord screen names it and says what its twist does. No harmony is a secret
   spell or holds a signature fusion's pair, and the ten secret spells are unchanged.
 - **Rune quirks.** A few runes bend a little differently in each world, in their own conditions ("Here, Shock cracks
   harder in the rain", "Here, Veil lasts longer at night"): a little stronger, longer, or striking again, faintly, a
   moment later. Nobody is told; each shows itself the first time it matters to one of your spells, with a glint, a line
   in chat and a Grimoire entry (100 mana).
 - **Torn Pages carry this world's riddles too.** Half the time, while any are left, a page tells one of your world's
-  resonances, by name, and its riddle, instead of a secret's. A riddle speaks of every rune in order.
-- **This world's resonances in the Grimoire**: those you found (hover for the runes, the twist, the riddle and who
+  harmonies, by name, and its riddle, instead of a secret's. A riddle speaks of every rune in order.
+- **This world's harmonies in the Grimoire**: those you found (hover for the runes, the twist, the riddle and who
   found it first), the riddles you read, those other players found (by name and finder), and how many nobody has found;
-  then the quirks you've met. A client is never sent a resonance its player hasn't found, read or heard announced.
+  then the quirks you've met. A client is never sent a harmony its player hasn't found, read or heard announced.
 - **Reading runes.** A rune you've just learned starts unread: the Codex shows its name, family, tier, element and cost,
   but only a hint of what it does, written by hand for the runes everyone meets first and made from each rune's own
   nature for the rest. The first cast glimpses it (its text, every number veiled in a shimmer); three casts that land,
@@ -118,14 +118,14 @@ read before you understand them.
   them, and rune item tooltips follow the same rule. Every rune you knew before this version, and the starter runes,
   are understood, and creative players see everything. The wiki keeps the full reference.
 - **The Codex's tooltips show each rune's cost.**
-- **Server settings** for all of it: a new `resonances` section (`enabled`, `count` of 12, `reroll_salt` to draw a
+- **Server settings** for all of it: a new `harmonies` section (`enabled`, `count` of 12, `reroll_salt` to draw a
   world a fresh set, `announce`, and `quirks` of 4) and `features.unread_runes`. An older config file gains them at
   their defaults.
-- **Hooks for other systems** in `cast.WorldResonances`: whether a player found a resonance, this world's resonances,
-  a resonance matching some runes, an extra condition a resonance must meet to wake, and a listener for each find.
+- **Hooks for other systems** in `cast.WorldResonances`: whether a player found a harmony, this world's harmonies,
+  a harmony matching some runes, an extra condition a harmony must meet to wake, and a listener for each find.
 
 ### Changed
-- **A world's draw is saved with it**, so a later version adding runes never moves a world's resonances under its
+- **A world's draw is saved with it**, so a later version adding runes never moves a world's harmonies under its
   players; it's drawn again only when the owner changes the count or the reroll salt.
 
 ## [0.7.1-alpha] - 2026-10-01

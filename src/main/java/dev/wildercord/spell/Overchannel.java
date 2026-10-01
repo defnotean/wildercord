@@ -7,7 +7,7 @@ package dev.wildercord.spell;
  *
  * <p>The shape of a charge, in ticks after it began:</p>
  * <pre>
- *   0 ........ full ──24── I ──24── II ──24── III ──24── the channel tears loose
+ *   0 ........ full ──24── I ──24── II ──24── III ──60── the channel tears loose
  *              beat        beat     beat      beat
  * </pre>
  * <ul>
@@ -35,8 +35,11 @@ public final class Overchannel {
 	public static final int STAGE_TICKS = 24;
 	/** The most stages any heart can hold. */
 	public static final int MAX_STAGES = 3;
-	/** Ticks after the last stage the heart can hold before the channel tears loose. */
-	public static final int GRACE = 24;
+	/**
+	 * Ticks after the last stage the heart can hold before the channel tears loose: three seconds, so a player
+	 * still aiming (a young heart reaches its one stage soon after full) has time to see the warning and let go.
+	 */
+	public static final int GRACE = 60;
 	/**
 	 * Ticks after a beat in which a release still counts as on it. Only after: the release travels to
 	 * the server, so a press made right on the beat arrives a tick or two late, never early.

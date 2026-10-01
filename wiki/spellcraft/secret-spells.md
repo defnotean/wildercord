@@ -15,8 +15,8 @@ own sound, far beyond what the runes do on their own.
 Nothing in the game lists them, and this wiki won't either. You find them by experimenting, or by
 following the riddles on **Torn Pages**.
 
-The ten secret spells are the same in every world. Your world also has **resonances** of its own, which no other
-world shares: see [Resonances and Reading Runes]({{ '/spellcraft/resonances/' | relative_url }}).
+The ten secret spells are the same in every world. Your world also has **harmonies** of its own, which no other
+world shares: see [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}).
 
 1. TOC
 {:toc}
@@ -83,13 +83,13 @@ A **Torn Page** is a scrap of an old grimoire. Hold it and use it (right-click) 
 
 - You learn the **riddle** of one secret spell you haven't found yet and haven't already got the riddle
   for, picked at random. Half the time, while your world has any left, it's instead the riddle of one of your
-  world's own [resonances]({{ '/spellcraft/resonances/' | relative_url }}#riddles), with its name. It's printed in chat (*"The page is torn, but a riddle survives:"*), a toast
+  world's own [harmonies]({{ '/spellcraft/harmonies/' | relative_url }}#riddles), with its name. It's printed in chat (*"The page is torn, but a riddle survives:"*), a toast
   says *"A riddle, found"*, and the riddle takes that secret's place in your Grimoire until you solve
   it. The page is used up.
 - In the Overworld, the margin also holds **a map**: *"an Archive lies about 350 blocks to the
   northwest"*, the way to the nearest [Archive]({{ '/world/archive/' | relative_url }}), rounded to 50
   blocks.
-- If you already have every riddle (or every secret and resonance), the page says *"Nothing on this page you don't
+- If you already have every riddle (or every secret and harmony), the page says *"Nothing on this page you don't
   already know"* and you keep it. Give it to a friend.
 - Your first page earns the **Marginalia** advancement (15 experience).
 

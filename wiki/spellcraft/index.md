@@ -31,7 +31,7 @@ wrist to the magic circle behind your shoulders.
 | [Imbuing and glyphs]({{ '/spellcraft/imbuing/' | relative_url }}) | Storing a spell in a sword, a bow, armour or any block. |
 | [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }}) | Casting past your mana by cracking a Heart Circle, and what a surge can do. |
 | [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}) | Ten exact rune sequences that become something grander, and how to find them. |
-| [Resonances and Reading Runes]({{ '/spellcraft/resonances/' | relative_url }}) | Your world's own resonances and quirks, which no other world shares, and how a new rune goes from a hint to understood. |
+| [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}) | Your world's own harmonies and quirks, which no other world shares, and how a new rune goes from a hint to understood. |
 | [Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}) | Your whole Cord saved under a name: swap between up to six setups from the Cord screen, a key or `/loadout`. |
 | [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}) | Your spells grow with you: five ranks earned by casts that matter, a trait you choose at each, your own sigil, spoken names and inscribing a mastered spell for a friend. |
 

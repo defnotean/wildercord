@@ -130,7 +130,7 @@ When you let go of an overchannelled or well-timed spell, the line above your ho
 ### Holding too long: the channel tears loose
 
 At your last stage the circle starts to **redden and shake**, sparks fly off it in red, and the ring on your badge turns
-red as it closes on one more beat. Hold on past it (another 1.2 seconds) and the channel **tears loose**:
+red as it closes on one more beat. Hold on past it (another 3 seconds) and the channel **tears loose**:
 
 - the circle bursts and the spell **fizzles** (letting go afterwards does nothing),
 - the loose magic **surges** harmlessly: butterflies of light, a blink a few blocks aside, a moment of floating (with

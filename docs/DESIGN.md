@@ -523,7 +523,7 @@ Charging is where a caster performs, and where they take risks. The pure rules a
 - **The beat.** Filling, and each stage landing, is a beat: a release within **0.3 s after** it (only after: a
   release travels to the server) adds **+10% power** and a chime. The HUD's badge ring closes on the charge's
   beats while charging (red for the tear), instead of the rhythm's.
-- **Tearing loose.** Held **1.2 s** past the heart's last stage, the channel tears loose: the circle bursts, the
+- **Tearing loose.** Held **3 s** past the heart's last stage, the channel tears loose: the circle bursts, the
   release does nothing, a harmless spell-less surge goes off (`WildMagic.FIZZLES`: Butterflies, Heal All, Blink,
   Levitate, Slow Time; never Backfire), and the caster is dazed (no casting, slowed) for **1.5 s** and loses **30% of
   full mana**. It deals no damage at all. A channel stalled short of its last stage never tears.

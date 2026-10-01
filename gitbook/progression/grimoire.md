@@ -5,7 +5,7 @@
 <span>A young Grimoire: six reactions found, every secret still a mystery.</span>
 
 Your **Grimoire** is the record of everything you've discovered: reactions, secret spells and their
-riddles, your own world's resonances and quirks, fusions, the runes of the land, your affinities with the
+riddles, your own world's harmonies and quirks, fusions, the runes of the land, your affinities with the
 elements, and **feats**, the things you've done with magic. Every first
 discovery pops up as a toast and condenses mana toward your next
 [Heart Circle](heart-circles.md).
@@ -27,7 +27,7 @@ From top to bottom:
 | **Affinities** | Your [affinity](affinity.md) with each of the ten elements: its mark, its level (I to V, or *none yet*), and a bar toward the next level with your points (*2,140 / 4,500*). Hover an element for what its level gives, what the next one will, and every way to raise it with its daily allowance. |
 | **Reactions** (of 11) | The eleven element reactions, by name once you've set each off, **???** until then. Hover a found one for what it does. See [Element Reactions](../spellcraft/reactions.md). |
 | **Secret spells** (of 10) | Each found secret by name, in its colour (hover it for its runes and what it does). A secret you have the riddle for shows the **riddle**, in italics. The rest are **???**. See [Secret Spells](../spellcraft/secret-spells.md). |
-| **This world's resonances** | Each of your world's resonances you've found, by name and in its colour (hover it for its runes, what its twist does, its riddle and who found it first); the riddles you've read from Torn Pages, in italics; the ones other players have found, by name and finder; and how many nobody has found yet. See [Resonances and Reading Runes](../spellcraft/resonances.md). |
+| **This world's harmonies** | Each of your world's harmonies you've found, by name and in its colour (hover it for its runes, what its twist does, its riddle and who found it first); the riddles you've read from Torn Pages, in italics; the ones other players have found, by name and finder; and how many nobody has found yet. See [Harmonies and Reading Runes](../spellcraft/harmonies.md). |
 | **This world's quirks** | The small ways your world bends a few runes, each as you first meet it: *"Here, Shock cracks harder in the rain."* |
 | **Runes you're still reading** | Once you've learned a rune you don't understand yet: how many, and (hover it) each one and how far you've read it. |
 | **Duels** | Your duels won and lost, once you've fought one. See [Duels](../social/duels.md). |
@@ -55,13 +55,13 @@ condenses mana toward your next Heart Circle:
 | A feat | *New in your Grimoire:* the feat | 250 |
 | A rune of the land, attuned | *New in your Grimoire: A rune of the land: ...* | 250 |
 | A secret spell | *New in your Grimoire:* its name (and its name fills your screen) | 400 |
-| A resonance of your world | *A resonance answers:* its name (and its name fills your screen) | 400 |
+| A harmony of your world | *A harmony answers:* its name (and its name fills your screen) | 400 |
 | A quirk of your world | *This world's nature:* what it does | 100 |
 | Tempered, Starbreaker or Low Tide (a dungeon boss) | *New in your Grimoire:* the feat | 1,500 |
 | The Last Page (the Archivist) | *New in your Grimoire: The Last Page* | 2,000 |
 | A creature's weakness, found | *New in your Grimoire: Blaze: weak to Frost* | 25 |
 | An affinity's first level | *An affinity awakens: Frost I* (every later level has a toast too: *Your affinity deepens: Frost II*) | 100 |
-| A riddle from a Torn Page (a secret's, or a resonance's) | *A riddle, found: See the Grimoire* | nothing |
+| A riddle from a Torn Page (a secret's, or a harmony's) | *A riddle, found: See the Grimoire* | nothing |
 
 A creature met, or a resistance found, goes into the Bestiary quietly, with no toast and no mana: the callout
 over the creature already told you. A discovery only counts once. Many of them also unlock an [advancement](advancements.md).
@@ -141,5 +141,5 @@ There are **36 feats**. Each is worth **250 mana** toward your next circle the f
 The **Every Page Filled** challenge asks for a full Grimoire: all **11 reactions**, all **10 secret
 spells**, and **32 of the 36 feats**. The four you're let off are the ones nobody can be sure of
 earning alone: **Mirrorfrost** (only its innate rune earns it) and **Unison**, **Domain Clash** and
-**Chorus** (they need other casters). Fusions, attunements, affinities, riddles, and your world's resonances and quirks don't count toward it. The
+**Chorus** (they need other casters). Fusions, attunements, affinities, riddles, and your world's harmonies and quirks don't count toward it. The
 reward is 500 experience, 3 Mana Crystals and 8 Blank Runes.

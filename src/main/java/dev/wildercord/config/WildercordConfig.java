@@ -154,7 +154,7 @@ public record WildercordConfig(
 	}
 
 	/**
-	 * Each world's own magic (the {@code resonances} section): its resonances, drawn from the world's seed, and its rune
+	 * Each world's own magic (the {@code harmonies} section; players call resonances harmonies): its resonances, drawn from the world's seed, and its rune
 	 * quirks. A file written before the section existed reads as these defaults.
 	 *
 	 * @param enabled    whether resonances and quirks wake at all (off: casting their runes is only the ordinary spell)
@@ -250,11 +250,11 @@ public record WildercordConfig(
 				r.number("channeling", "trace_power", d.channeling.tracePower(), 0, 0.25)),
 			r.bool("features", "unread_runes", d.unreadRunes),
 			new ResonanceSettings(
-				r.bool("resonances", "enabled", d.resonances.enabled()),
-				r.integer("resonances", "count", d.resonances.count(), 0, dev.wildercord.spell.ResonanceForge.MAX_COUNT),
-				r.string("resonances", "reroll_salt", d.resonances.rerollSalt(), ResonanceSettings.MAX_SALT),
-				r.bool("resonances", "announce", d.resonances.announce()),
-				r.integer("resonances", "quirks", d.resonances.quirks(), 0, dev.wildercord.spell.RuneQuirks.MAX_COUNT)));
+				r.bool("harmonies", "enabled", d.resonances.enabled()),
+				r.integer("harmonies", "count", d.resonances.count(), 0, dev.wildercord.spell.ResonanceForge.MAX_COUNT),
+				r.string("harmonies", "reroll_salt", d.resonances.rerollSalt(), ResonanceSettings.MAX_SALT),
+				r.bool("harmonies", "announce", d.resonances.announce()),
+				r.integer("harmonies", "quirks", d.resonances.quirks(), 0, dev.wildercord.spell.RuneQuirks.MAX_COUNT)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -276,7 +276,7 @@ public record WildercordConfig(
 		KEYS.put("mastery", Set.of("enabled", "xp_multiplier", "traits", "spoken_names", "inscription"));
 		KEYS.put("channeling", Set.of("overchannel", "power_per_stage", "drain_per_second", "surge_chance_per_stage", "beat_bonus",
 			"backfire_stun_seconds", "backfire_mana_burn", "sigil_tracing", "trace_power"));
-		KEYS.put("resonances", Set.of("enabled", "count", "reroll_salt", "announce", "quirks"));
+		KEYS.put("harmonies", Set.of("enabled", "count", "reroll_salt", "announce", "quirks"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -517,7 +517,7 @@ public record WildercordConfig(
 		channelingSection.addProperty("trace_power", channeling.tracePower());
 		root.add("channeling", channelingSection);
 		JsonObject resonanceSection = new JsonObject();
-		resonanceSection.addProperty("_about", "Each world's own magic, drawn from its seed: count resonances (exact rune sequences the world answers with a twist) "
+		resonanceSection.addProperty("_about", "Each world's own magic, drawn from its seed: count harmonies (exact rune sequences the world answers with a twist) "
 			+ "and quirks (small tweaks to runes). Change reroll_salt to any other text to draw a fresh set (the old ones and who found them are forgotten). "
 			+ "announce tells the whole server in chat when someone finds one.");
 		resonanceSection.addProperty("enabled", resonances.enabled());
@@ -525,7 +525,7 @@ public record WildercordConfig(
 		resonanceSection.addProperty("reroll_salt", resonances.rerollSalt());
 		resonanceSection.addProperty("announce", resonances.announce());
 		resonanceSection.addProperty("quirks", resonances.quirks());
-		root.add("resonances", resonanceSection);
+		root.add("harmonies", resonanceSection);
 		return GSON.toJson(root) + "\n";
 	}
 
