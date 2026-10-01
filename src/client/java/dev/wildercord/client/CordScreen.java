@@ -2574,12 +2574,9 @@ public class CordScreen extends Screen {
 		if (here.isEmpty()) {
 			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.climate_none"), 8, DIM, climateTip));
 		}
-		for (dev.wildercord.spell.ClimateRules.Condition condition : dev.wildercord.spell.ClimateRules.Condition.values()) {
-			if (here.contains(condition)) {
-				String shifts = dev.wildercord.spell.ClimateRules.describe(condition, e -> Component.translatable("element.wildercord." + e).getString());
-				lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.climate_line",
-					Component.translatable("climate.wildercord." + condition.id), shifts), 8, TEXT, climateTip));
-			}
+		// The same lines the HUD shows for a moment when something comes into force here (places and times of power included).
+		for (Component line : SpellHud.whyLines(here, dev.wildercord.cast.Climate.shownTuning())) {
+			lines.add(new GrimoireLine(line, 8, TEXT, climateTip));
 		}
 
 		List<String> met = dev.wildercord.spell.Bestiary.met(found);

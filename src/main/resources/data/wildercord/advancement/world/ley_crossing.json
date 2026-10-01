@@ -1,0 +1,33 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "ley_crossing": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "ley_crossing"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:vein"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.ley_crossing.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.ley_crossing.description"
+    }
+  },
+  "requirements": [
+    [
+      "ley_crossing"
+    ]
+  ],
+  "rewards": {
+    "experience": 25
+  }
+}

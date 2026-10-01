@@ -191,7 +191,7 @@ public class ResidueBlock extends Block {
 		if (level instanceof ServerLevel server) {
 			player.setItemInHand(hand, ItemUtils.createFilledResult(stack, player, new ItemStack(Reagents.item(Kind.LINGERING_EDDY))));
 			server.playSound(null, pos, SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.BLOCKS, 0.8F, 1.3F);
-			Residues.harvested(server, pos, state);
+			Residues.harvested(server, pos, state, player instanceof net.minecraft.server.level.ServerPlayer sp ? sp : null);
 			server.removeBlock(pos, false);
 		}
 		return InteractionResult.SUCCESS;

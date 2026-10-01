@@ -143,7 +143,7 @@ public final class Residues {
 		// Harvested by a player: its reagent drops (the block's loot table), and the ground it took comes back.
 		PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, blockEntity) -> {
 			if (world instanceof ServerLevel level && ResidueBlocks.is(state)) {
-				harvested(level, pos, state);
+				harvested(level, pos, state, player instanceof ServerPlayer sp ? sp : null);
 			}
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
@@ -418,13 +418,16 @@ public final class Residues {
 	// ------------------------------------------------------------------ how they go
 
 	/** A residue was harvested (broken by a player, or bottled): its record goes, and the ground it took comes back. */
-	public static void harvested(ServerLevel level, BlockPos pos, BlockState state) {
+	public static void harvested(ServerLevel level, BlockPos pos, BlockState state, @Nullable ServerPlayer by) {
 		Record record = level.getDataStorage().get(Record.TYPE);
 		ResidueLedger.Entry<Blocks> entry = record == null ? null : record.ledger.remove(pos.asLong());
 		if (entry == null) {
 			return;
 		}
 		record.setDirty();
+		if (by != null) {
+			Grimoire.feat(by, dev.wildercord.spell.Feats.RESIDUE);
+		}
 		Kind kind = ResidueBlocks.kindOf(state);
 		if (kind != null && kind.placement == Placement.COVER && level.getBlockState(pos).isAir()) {
 			level.setBlock(pos, entry.data().replaced(), Block.UPDATE_ALL);

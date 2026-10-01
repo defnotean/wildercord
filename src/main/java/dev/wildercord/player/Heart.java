@@ -179,12 +179,13 @@ public final class Heart {
 	}
 
 	/**
-	 * A spell's price before rounding. Under a mana storm spells cost less (see cast.events.ManaStorm);
-	 * casting gear and the server's config are their own factors. Rounded once, at the very end.
+	 * A spell's price before rounding. Under a mana storm spells cost less (see cast.events.ManaStorm), and on a
+	 * ley crossing (see cast.Climate); casting gear and the server's config are their own factors. Rounded once,
+	 * at the very end.
 	 */
 	private static double rawCost(Player player, SpellCompiler.Compiled compiled) {
 		return compiled.cost() * bonuses(player).cost() * dev.wildercord.cast.events.ManaStorm.costFactor(player)
-			* gearCost(player, compiled) * serverCost(player) * affinityCost(player, compiled);
+			* gearCost(player, compiled) * serverCost(player) * affinityCost(player, compiled) * dev.wildercord.cast.Climate.costFactor(player);
 	}
 
 	/**

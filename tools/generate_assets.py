@@ -2714,6 +2714,8 @@ adv("discovery/grimoire", "discovery/all_secrets", item("spell_scroll"), "Every 
 # ---- the World
 feat_adv("ley_line", "root", rune("vein"), description="Stand on a ley line, where the world's mana runs close to the surface", branch="world", xp=10)
 feat_adv("wellstone", "world/ley_line", item("wellstone"), description="Wake a Wellstone by setting it on a ley line", xp=30)
+feat_adv("ley_crossing", "world/ley_line", rune("vein"), description="Stand where two ley lines cross, a place of power", xp=25)
+feat_adv("residue", "world/ley_line", item("everfrost_shard"), description="Harvest a residue that big magic left on the world", xp=20)
 adv("world/archive", "world/ley_line", item("minecraft:chiseled_bookshelf"), "The Buried Library", "Find an Archive", in_structure("wildercord:archive"), xp=25)
 feat_adv("seal", "world/archive", item("rune_seal"), description="Open a Rune Seal door in an Archive", xp=30)
 feat_adv("archivist", "world/seal", item("archive_lectern"), description="Defeat the Archivist", frame="challenge", xp=500, loot=["mana_crystals"])
