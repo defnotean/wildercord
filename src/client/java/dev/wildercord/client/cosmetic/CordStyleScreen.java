@@ -69,14 +69,10 @@ public class CordStyleScreen extends Screen {
 
 	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
 	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
-	private static final Identifier SPR_TAB = Wildercord.id("cord/tab");
-	private static final Identifier SPR_TAB_ACTIVE = Wildercord.id("cord/tab_active");
 	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
 	private static final Identifier SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
 	private static final Identifier SPR_LOCK = Wildercord.id("cord/lock");
 
-	private static final String[] PAGE_KEYS = {"screen.wildercord.page.spells", "screen.wildercord.page.passives", "screen.wildercord.page.grimoire",
-		"screen.wildercord.page.cosmetics"};
 	private static final String[] GROUPS = {CordStyles.MATERIAL, CordStyles.GLOW, CordStyles.TRAIL};
 
 	/** Glows in two rows: "spell" and eight dyes, then the other eight. */
@@ -193,16 +189,10 @@ public class CordStyleScreen extends Screen {
 		sprite(g, SPR_PANEL, 0, 0, W, H);
 		CordTier tier = Spellbooks.tier(minecraft.player);
 		Component name = tier == null ? Component.translatable("screen.wildercord.page.cosmetics") : Component.translatable(tier.itemKey());
-		g.text(font, name, 13, 10, GOLD, true);
-		int pageX = 13 + font.width(name) + 8;
-		for (int page = 0; page < PAGE_KEYS.length; page++) {
-			Component label = Component.translatable(PAGE_KEYS[page]);
-			int w = font.width(label) + 10;
-			boolean active = page == 3;
-			sprite(g, active ? SPR_TAB_ACTIVE : SPR_TAB, pageX, 7, w, 13);
-			g.text(font, label, pageX + 5, 10, active ? GOLD : inside(mx, my, pageX, 7, w, 13) ? TEXT : DIM, false);
-			pageX += w + 2;
-		}
+		// The same header as the Cord screen's other pages, so the tabs don't jump when you switch.
+		CordScreen.PageTabs tabs = CordScreen.pageTabs(font, name);
+		g.text(font, tabs.shown(), 13, 10, GOLD, true);
+		tabs.draw(g, font, 3, mx, my);
 		if (tier == null) {
 			g.centeredText(font, Component.translatable("screen.wildercord.no_cord"), W / 2, H / 2 - 10, TEXT);
 			g.centeredText(font, Component.translatable("screen.wildercord.no_cord_hint"), W / 2, H / 2 + 4, DIM);
@@ -398,18 +388,14 @@ public class CordStyleScreen extends Screen {
 		}
 		CordTier tier = Spellbooks.tier(minecraft.player);
 		Component name = tier == null ? Component.translatable("screen.wildercord.page.cosmetics") : Component.translatable(tier.itemKey());
-		int pageX = 13 + font.width(name) + 8;
-		for (int page = 0; page < PAGE_KEYS.length; page++) {
-			int w = font.width(Component.translatable(PAGE_KEYS[page])) + 10;
-			if (inside(mx, my, pageX, 7, w, 13)) {
-				if (page != 3) {
-					click();
-					parent.showPage(page);
-					minecraft.gui.setScreen(parent);
-				}
-				return true;
+		int page = CordScreen.pageTabs(font, name).at(mx, my);
+		if (page >= 0) {
+			if (page != 3) {
+				click();
+				parent.showPage(page);
+				minecraft.gui.setScreen(parent);
 			}
-			pageX += w + 2;
+			return true;
 		}
 		if (tier == null) {
 			return true;

@@ -124,6 +124,19 @@ public class WildercordCordTest implements FabricClientGameTest {
 		context.waitTicks(5);
 		check(screen(context) != null, "the Cord screen should open");
 
+		// The header: every Cord's name and page tabs end short of the badges in the corner, the Aura badge included.
+		int[] edges = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).headerEdges());
+		String shown = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).headerName());
+		check(edges[0] + 4 <= edges[1], "the page tabs (ending at " + edges[0] + ") should stop short of the Aura badge (at "
+			+ edges[1] + "); the name shows as \"" + shown + "\"");
+		context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions
+			.of("cord_header_" + tier.name().toLowerCase(java.util.Locale.ROOT)).disableCounterPrefix());
+		click(context, screen(context).auraBadgePoint(), LEFT);
+		boolean aura = context.computeOnClient(mc -> mc.gui.screen() instanceof dev.wildercord.client.AuraScreen);
+		check(aura, "the Aura badge beside the tabs should open the Aura page");
+		context.runOnClient(mc -> mc.gui.setScreen(new CordScreen()));
+		context.waitTicks(5);
+
 		// Selecting the 2nd spell: a Cord with room for it switches to it; the Twine Cord refuses, and says why.
 		click(context, screen(context).rowPoint(1), LEFT);
 		if (tier.spells >= 2) {

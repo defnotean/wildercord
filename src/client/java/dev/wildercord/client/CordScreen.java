@@ -28,6 +28,7 @@ import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellCompiler;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
@@ -355,11 +356,20 @@ public class CordScreen extends Screen {
 
 	/** The middle of page tab {@code page} (0 Spells, 1 Passives, 2 Grimoire, 3 Cosmetics), on screen. */
 	public double[] pagePoint(int page) {
-		int x = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
-		for (int i = 0; i < page; i++) {
-			x += font.width(Component.translatable(PAGE_KEYS[i])) + 10 + 2;
-		}
-		return onScreen(x + (font.width(Component.translatable(PAGE_KEYS[page])) + 10) / 2.0, 7 + 6.5);
+		PageTabs tabs = pageTabs(font, Component.translatable(tier().itemKey()));
+		return onScreen(tabs.x()[page] + tabs.w()[page] / 2.0, 7 + 6.5);
+	}
+
+	/** The Cord's name as the header draws it (cut short when the row is crowded). */
+	public String headerName() {
+		return pageTabs(font, Component.translatable(tier().itemKey())).shown().getString();
+	}
+
+	/** The right edge of the last page tab, and the Aura badge's left edge, in the screen's own layout. */
+	public int[] headerEdges() {
+		PageTabs tabs = pageTabs(font, Component.translatable(tier().itemKey()));
+		int last = tabs.x().length - 1;
+		return new int[] {tabs.x()[last] + tabs.w()[last], auraX()};
 	}
 
 	/** The middle of the mana badge in the header, on screen. */
@@ -941,20 +951,15 @@ public class CordScreen extends Screen {
 		Component name = Component.translatable(tier.itemKey());
 		Component spellsLabel = Component.translatable(tier.spells == 1 ? "screen.wildercord.spells.one" : "screen.wildercord.spells.many", tier.spells);
 		Component stats = Component.translatable("screen.wildercord.stats", tier.sockets, spellsLabel, RuneItem.roman(tier.maxRuneTier));
-		g.text(font, name, 13, 10, GOLD, true);
-		if (inside(mx, my, 13, 8, font.width(name), 10)) {
+		// Spells | Passives | Grimoire | Cosmetics, after the name and short of the badges.
+		PageTabs tabs = pageTabs(font, name);
+		g.text(font, tabs.shown(), 13, 10, GOLD, true);
+		if (inside(mx, my, 13, 8, font.width(tabs.shown()), 10)) {
 			tooltip = List.of(name.copy().withColor(GOLD), stats.copy().withStyle(ChatFormatting.GRAY));
 		}
-		// Spells | Passives | Grimoire
-		int pageX = 13 + font.width(name) + 8;
-		for (int page = 0; page < PAGE_KEYS.length; page++) {
-			Component label = Component.translatable(PAGE_KEYS[page]);
-			int w = font.width(label) + 10;
-			boolean active = page() == page;
-			sprite(g, active ? SPR_TAB_ACTIVE : SPR_TAB, pageX, 7, w, 13);
-			g.text(font, label, pageX + 5, 10, active ? GOLD : inside(mx, my, pageX, 7, w, 13) ? TEXT : DIM, false);
-			pageX += w + 2;
-		}
+		tabs.draw(g, font, page(), mx, my);
+		int last = PAGE_KEYS.length - 1;
+		int pageX = tabs.x()[last] + tabs.w()[last] + 2;
 		int statsRight = auraX() - 6;
 		int statsW = font.width(stats);
 		if (pageX + 8 + statsW <= statsRight) {
@@ -2118,27 +2123,23 @@ public class CordScreen extends Screen {
 			click();
 			return true;
 		}
-		// Spells | Passives | Grimoire
-		int pageX = 13 + font.width(Component.translatable(tier().itemKey())) + 8;
-		for (int page = 0; page < PAGE_KEYS.length; page++) {
-			int w = font.width(Component.translatable(PAGE_KEYS[page])) + 10;
-			if (inside(mx, my, pageX, 7, w, 13)) {
-				if (page == 3) {
-					// Cosmetics is its own screen, drawn as a page of this one.
-					click();
-					minecraft.gui.setScreen(new dev.wildercord.client.cosmetic.CordStyleScreen(this));
-					return true;
-				}
-				if (page() != page) {
-					passivePage = page == 1;
-					grimoirePage = page == 2;
-					readoutScroll = 0;
-					renaming = false;
-					click();
-				}
+		// Spells | Passives | Grimoire | Cosmetics
+		int page = pageTabs(font, Component.translatable(tier().itemKey())).at(mx, my);
+		if (page >= 0) {
+			if (page == 3) {
+				// Cosmetics is its own screen, drawn as a page of this one.
+				click();
+				minecraft.gui.setScreen(new dev.wildercord.client.cosmetic.CordStyleScreen(this));
 				return true;
 			}
-			pageX += w + 2;
+			if (page() != page) {
+				passivePage = page == 1;
+				grimoirePage = page == 2;
+				readoutScroll = 0;
+				renaming = false;
+				click();
+			}
+			return true;
 		}
 		if (grimoirePage) {
 			return true;
@@ -2458,6 +2459,74 @@ public class CordScreen extends Screen {
 
 	private static final String[] PAGE_KEYS = {"screen.wildercord.page.spells", "screen.wildercord.page.passives", "screen.wildercord.page.grimoire",
 		"screen.wildercord.page.cosmetics"};
+	/** Where the header's page tabs must end: short of the five badges in its corner (Aura, defence, heart, mana, help). */
+	private static final int PAGE_TABS_RIGHT = W - 27 - 18 * 4 - 4;
+
+	/**
+	 * The header row: the Cord's name at the left, then the page tabs (Spells, Passives, Grimoire, Cosmetics).
+	 * {@code shown} is the name as drawn, {@code x} and {@code w} each tab's left edge and width.
+	 */
+	public record PageTabs(Component shown, int[] x, int[] w, int pad) {
+		/** The tab under a point, or -1. */
+		public int at(double mx, double my) {
+			for (int page = 0; page < x.length; page++) {
+				if (inside(mx, my, x[page], 7, w[page], 13)) {
+					return page;
+				}
+			}
+			return -1;
+		}
+
+		/** Draws the tabs with {@code active} lit and the one under the mouse brightened. */
+		public void draw(GuiGraphicsExtractor g, Font font, int active, int mx, int my) {
+			for (int page = 0; page < x.length; page++) {
+				Component label = Component.translatable(PAGE_KEYS[page]);
+				sprite(g, page == active ? SPR_TAB_ACTIVE : SPR_TAB, x[page], 7, w[page], 13);
+				g.text(font, label, x[page] + pad / 2, 10, page == active ? GOLD : inside(mx, my, x[page], 7, w[page], 13) ? TEXT : DIM, false);
+			}
+		}
+	}
+
+	/**
+	 * Lays out the header for a Cord called {@code name}, the same on every page. A long name (or a long translation) would
+	 * push the tabs under the badges, so the tabs tighten first, then the name is cut short with an ellipsis; hovering it
+	 * still shows it whole.
+	 */
+	public static PageTabs pageTabs(Font font, Component name) {
+		int[] labels = new int[PAGE_KEYS.length];
+		int total = 2 * (PAGE_KEYS.length - 1);
+		for (int page = 0; page < PAGE_KEYS.length; page++) {
+			labels[page] = font.width(Component.translatable(PAGE_KEYS[page]));
+			total += labels[page];
+		}
+		int pad = 10;
+		int gap = 8;
+		if (13 + font.width(name) + gap + total + pad * PAGE_KEYS.length > PAGE_TABS_RIGHT) {
+			pad = 6;
+			gap = 6;
+		}
+		int room = PAGE_TABS_RIGHT - 13 - gap - total - pad * PAGE_KEYS.length;
+		Component shown = name;
+		if (font.width(name) > room) {
+			String whole = name.getString();
+			String cut = font.plainSubstrByWidth(whole, Math.max(0, room - font.width("…")));
+			// Break at a word when there is one ("Copper…", not "Copper C…").
+			int space = cut.lastIndexOf(' ');
+			if (space > 0 && cut.length() < whole.length() && whole.charAt(cut.length()) != ' ') {
+				cut = cut.substring(0, space);
+			}
+			shown = Component.literal(cut.stripTrailing() + "…");
+		}
+		int[] x = new int[PAGE_KEYS.length];
+		int[] w = new int[PAGE_KEYS.length];
+		int pageX = 13 + font.width(shown) + gap;
+		for (int page = 0; page < PAGE_KEYS.length; page++) {
+			x[page] = pageX;
+			w[page] = labels[page] + pad;
+			pageX += w[page] + 2;
+		}
+		return new PageTabs(shown, x, w, pad);
+	}
 	private static final int TOOL = 14;
 	private static final String[] TOOL_GLYPHS = {"\u270E", "\u29C9", "\u2398", "\u2709"};
 	private static final String[] TOOL_KEYS = {"rename", "copy", "paste", "scroll"};
