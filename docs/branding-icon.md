@@ -1,6 +1,6 @@
 # Wildercord project icon
 
-Created with the built-in image generation tool on 2026-10-01. The master artwork is `docs/images/wildercord-icon-2026.png`; copies are used by the mod metadata, documentation and CurseForge project logo. This is promotional branding artwork, not a gameplay screenshot or an item texture.
+Created with the built-in image generation tool on 2026-10-01. The master artwork is `docs/images/wildercord-icon-2026.png`; copies are used by the mod metadata, documentation and CurseForge project logo. The copies are downscaled from the master, since none is shown anywhere near its full 1254 pixels: the mod's `icon.png` and `docs/images/logo.png` are 512×512, and the guide's logo and favicon (`wiki/assets/images/logo.png`, shown at 44 pixels) are 256×256. This is promotional branding artwork, not a gameplay screenshot or an item texture.
 
 ## Final prompt
 
