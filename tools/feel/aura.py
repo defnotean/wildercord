@@ -12,6 +12,9 @@
     aura_dominion       Dominion: a deep strike into the ground and a chord rising out of it as the circle opens
     aura_dominion_fade  a Dominion ending: its ring falling away down the scale, a breath let out
     aura_spellblade     a spell drawn into the blade: its breath pulled in, then the blade ringing as it takes it
+    aura_string_tick    a swing landing on a sword string: a small bright knock of steel and a glassy ping (played up the scale as it grows)
+    aura_string_complete a sword string played to its end: a swish, two rising glassy notes, a blade's ring and a shimmer
+    aura_string_fumble  a sword string broken: a dull, muted clank and a short note sliding down off the scale
 
 Tonal sounds are tuned to D so the pentatonic ratios make a scale from one sample.
 """
@@ -150,6 +153,40 @@ def aura_spellblade(v, rng):
     return _clean(x, "effect", 0.6, 0.14, 9000)
 
 
+def aura_string_tick(v, rng):
+    """A swing landing on a sword string: a small bright knock of steel on steel, a short glassy ping at A over it. Played
+    climbing the scale (Feels.step) as the string grows, so a string sounds like a rising run; heard often, so it's soft."""
+    dur = 0.22
+    knock = sa.tick(sa.note(A, 2), rng, 0.8)
+    ping = sa.glass(sa.note(A, 2), dur, 0.05)
+    air = sa.norm(sa.bandpass(sa.noise(0.05, rng), 3000, 8000)) * sa.decay(0.05, 0.008, 0.0005)
+    x = sa.mix(0.5 * sa.norm(knock), 0.45 * ping, 0.12 * air)
+    return _clean(x, "ui", 0.18, 0.06, 9500)
+
+
+def aura_string_complete(v, rng):
+    """A sword string played to its end: a quick swish, two glassy notes rising (A, then the D above), a blade's ring under
+    them and a shimmer as they settle. Distinct from the ticks, short enough to sit under the art's own sound."""
+    dur = 0.9
+    swish = sa.moving_band(0.22, [(0, 1500), (0.22, 5500)], 0.7, rng) * sa.swell(0.22, 0.18)
+    first = sa.glass(sa.note(A, 2), 0.45, 0.1)
+    second = sa.glass(sa.note(D, 3), dur - 0.08, 0.22)
+    ring = sa.partials(sa.note(D, 1), dur - 0.08, ((1.0, 1.0, 1.0), (2.41, 0.6, 0.55), (3.9, 0.35, 0.35)), 0.25)
+    shimmer = sa.sparkle(0.5, 30, rng, [sa.note(d, 3) for d in (D, FS, A)], tau=(0.03, 0.08), shape=[(0, 1), (0.5, 0)])
+    x = sa.mix(0.3 * sa.norm(swish), (0.02, 0.5 * first), (0.08, 0.65 * second), (0.08, 0.3 * ring), (0.12, 0.16 * sa.norm(shimmer)))
+    return _clean(x, "effect", 0.5, 0.12, 9500)
+
+
+def aura_string_fumble(v, rng):
+    """A sword string broken: a dull, muted clank of steel, a flat body under it, and a short note sliding down off the scale."""
+    dur = 0.42
+    clank = sa.norm(sa.lowpass(sa.noise(0.05, rng), 1800)) * sa.decay(0.05, 0.01, 0.0005)
+    body = sa.partials(sa.note(A, 0) * 1.03, dur, ((1.0, 1.0, 1.0), (2.2, 0.5, 0.5), (3.1, 0.3, 0.3)), 0.07)
+    slide = sa.sine(sa.sweep(sa.note(D, 1) * 1.04, sa.note(A, 0) * 0.97, dur, 0.8), dur) * sa.decay(dur, 0.12, 0.003)
+    x = sa.mix(0.5 * clank, 0.4 * body, 0.35 * slide)
+    return _clean(x, "ui", 0.2, 0.06, 5000)
+
+
 EVENTS = [
     event("aura_slash", aura_slash, variants=2, role="cast", subtitle="cast"),
     event("aura_guard", aura_guard, role="effect", subtitle="tell"),
@@ -163,4 +200,7 @@ EVENTS = [
     event("aura_dominion", aura_dominion, role="grand", subtitle="field", attenuation=40),
     event("aura_dominion_fade", aura_dominion_fade, role="effect", subtitle="field", attenuation=24),
     event("aura_spellblade", aura_spellblade, role="effect", subtitle="cast"),
+    event("aura_string_tick", aura_string_tick, role="ui", subtitle="tell"),
+    event("aura_string_complete", aura_string_complete, role="effect", subtitle="cast"),
+    event("aura_string_fumble", aura_string_fumble, role="ui", subtitle="tell"),
 ]

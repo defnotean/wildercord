@@ -307,22 +307,32 @@ public record WildercordConfig(
 	 * @param backlashSeconds      how long backlash (spending past empty) slows and weakens, never damaging
 	 * @param guardShare           how much of a blow a held Aura Guard takes off (0.5 is half)
 	 * @param heights              the top stages (Form and Sovereign), the spellblade and aura marks: see {@link AuraHeights}
+	 * @param strings              sword strings, the arts set off by a run of swings: see {@link AuraStrings}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
-			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights) {
+			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
+			AuraStrings strings) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
-			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS);
+			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS);
 
-		/** A file's aura section before the top stages: the same, with their defaults. */
+		/** A file's aura section before the top stages: the same, with their defaults (and sword strings' too). */
 		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
 				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare) {
 			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
-				guardShare, AuraHeights.DEFAULTS);
+				guardShare, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS);
+		}
+
+		/** A file's aura section before sword strings: the same, with their defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, heights, AuraStrings.DEFAULTS);
 		}
 
 		public AuraSettings {
 			heights = heights == null ? AuraHeights.DEFAULTS : heights;
+			strings = strings == null ? AuraStrings.DEFAULTS : strings;
 		}
 
 		/** The slash's cooldown in ticks. */
@@ -376,6 +386,22 @@ public record WildercordConfig(
 
 		public int spellbladeTicks() {
 			return (int) Math.round(spellbladeSeconds * 20);
+		}
+	}
+
+	/**
+	 * Sword strings (more keys of the {@code aura} section): arts set off by a short run of ordinary swings, read by each player's
+	 * client and checked by the server. The numbers' meaning is in {@code aura.StringRules}, whose defaults these are.
+	 *
+	 * @param enabled       whether sword strings set off their arts at all (the swings themselves stay ordinary swings either way)
+	 * @param windowSeconds how long after the blade is ready again the next swing of a string may come; a pause any longer breaks it
+	 */
+	public record AuraStrings(boolean enabled, double windowSeconds) {
+		public static final AuraStrings DEFAULTS = new AuraStrings(true, dev.wildercord.aura.StringRules.WINDOW / 20.0);
+
+		/** The window in ticks. */
+		public int windowTicks() {
+			return dev.wildercord.aura.StringRules.windowTicks(windowSeconds);
 		}
 	}
 
@@ -553,7 +579,11 @@ public record WildercordConfig(
 					r.number("aura", "dominion_cooldown_seconds", d.aura.heights().dominionCooldownSeconds(), 0, 600),
 					r.number("aura", "dominion_weaken", d.aura.heights().dominionWeaken(), 0, 0.9),
 					r.number("aura", "spellblade_seconds", d.aura.heights().spellbladeSeconds(), 1, 30),
-					r.number("aura", "mark_chance_multiplier", d.aura.heights().markChanceMultiplier(), 0, 3))),
+					r.number("aura", "mark_chance_multiplier", d.aura.heights().markChanceMultiplier(), 0, 3)),
+				new AuraStrings(
+					r.bool("aura", "strings", d.aura.strings().enabled()),
+					r.number("aura", "string_window_seconds", d.aura.strings().windowSeconds(), dev.wildercord.aura.StringRules.MIN_WINDOW_SECONDS,
+						dev.wildercord.aura.StringRules.MAX_WINDOW_SECONDS))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -599,7 +629,9 @@ public record WildercordConfig(
 			"slash_cooldown_seconds", "pvp_scale", "backlash_seconds", "guard_share",
 			// The top stages, the spellblade and aura marks.
 			"step_cost", "step_cooldown_seconds", "step_distance", "armour_share", "intent_pvp", "intent_pvp_slow", "dominion_cost",
-			"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier"));
+			"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier",
+			// Sword strings.
+			"strings", "string_window_seconds"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -910,7 +942,8 @@ public record WildercordConfig(
 			+ "and carries you step_distance blocks; aura armour takes armour_share of what reaches you; Intent presses on other players only with "
 			+ "intent_pvp, slowing them intent_pvp_slow; Dominion costs dominion_cost, lasts dominion_seconds every dominion_cooldown_seconds, and foes "
 			+ "inside hit dominion_weaken weaker. A spell rides the blade for spellblade_seconds; mark_chance_multiplier scales the chance an elemental "
-			+ "aura strike leaves its reaction mark.");
+			+ "aura strike leaves its reaction mark. Sword strings (strings) set off arts from a short run of ordinary swings; each swing must come "
+			+ "within string_window_seconds of the moment the blade is ready again, or the string breaks.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -935,6 +968,9 @@ public record WildercordConfig(
 		auraSection.addProperty("dominion_weaken", heights.dominionWeaken());
 		auraSection.addProperty("spellblade_seconds", heights.spellbladeSeconds());
 		auraSection.addProperty("mark_chance_multiplier", heights.markChanceMultiplier());
+		AuraStrings strings = aura.strings();
+		auraSection.addProperty("strings", strings.enabled());
+		auraSection.addProperty("string_window_seconds", strings.windowSeconds());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

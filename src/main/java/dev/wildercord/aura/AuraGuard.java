@@ -201,6 +201,8 @@ public final class AuraGuard {
 
 	/** The guard's flash, sound and words: a parry's gold. */
 	static void feedback(ServerPlayer player) {
+		// The swing straight after it is a counter, for sword strings.
+		SwordStrings.cue(player, StringReader.Cue.GUARD);
 		AuraVfx.perfect(player, Aura.color(player));
 		Aura.sound(player, "aura_perfect_guard", 1.0F, 1.0F);
 		dev.wildercord.cast.Fx.sound(player.level(), player.position(), WildercordSounds.SHIELD_PARRY, 0.8F, 1.2F);

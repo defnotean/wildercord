@@ -76,7 +76,8 @@
 			"dev.wildercord.gametest.WildercordWildlifeTest",
 			"dev.wildercord.gametest.WildercordAuraTest",
 			"dev.wildercord.gametest.WildercordAuraMasteryTest",
-			"dev.wildercord.gametest.WildercordAuraWorldTest"
+			"dev.wildercord.gametest.WildercordAuraWorldTest",
+			"dev.wildercord.gametest.WildercordSwordStringsTest"
 		]
 	},
 	"depends": {

@@ -27,7 +27,8 @@ import java.util.List;
  * when loot tables next load.
  *
  * <p>The few settings a client shows (the cost and regeneration multipliers, whether affinities, spell mastery and aura are on,
- * the spell defences, Aura Slash's price, and whether runes start unread, for the Cord screen and HUD) are sent to each player
+ * the spell defences, Aura Slash's price, whether runes start unread, and sword strings' switch and window, for the Cord screen,
+ * the HUD and the string reader) are sent to each player
  * when they join and after every reload; {@link #costMultiplier}, {@link #regenMultiplier},
  * {@link #playerAffinity}, {@link #defence} and {@link #unreadRunes} answer with those on the client.</p>
  */
@@ -42,9 +43,11 @@ public final class Config {
 
 	/** Server to client: the settings a client needs to show costs, regeneration, affinities and spell defences truthfully. */
 	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence, boolean mastery,
-			boolean masteryTraits, boolean unreadRunes, boolean aura, float slashCost, boolean forgedGear, float sashCapacity) implements CustomPacketPayload {
+			boolean masteryTraits, boolean unreadRunes, boolean aura, float slashCost, boolean forgedGear, float sashCapacity, boolean strings,
+			int stringWindow) implements CustomPacketPayload {
 		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
-			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity());
+			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity(), true,
+			WildercordConfig.AuraStrings.DEFAULTS.windowTicks());
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
 		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
@@ -55,12 +58,13 @@ public final class Config {
 			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity,
 			DEFENCE_CODEC, Sync::defence, ByteBufCodecs.BOOL, Sync::mastery, ByteBufCodecs.BOOL, Sync::masteryTraits, ByteBufCodecs.BOOL,
 			Sync::unreadRunes, ByteBufCodecs.BOOL, Sync::aura, ByteBufCodecs.FLOAT, Sync::slashCost, ByteBufCodecs.BOOL, Sync::forgedGear,
-			ByteBufCodecs.FLOAT, Sync::sashCapacity, Sync::new).cast();
+			ByteBufCodecs.FLOAT, Sync::sashCapacity, ByteBufCodecs.BOOL, Sync::strings, ByteBufCodecs.VAR_INT, Sync::stringWindow, Sync::new).cast();
 
 		static Sync of(WildercordConfig config) {
 			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity(), config.defence(),
 				config.mastery().enabled(), config.mastery().enabled() && config.mastery().traits(), config.unreadRunes(), config.aura().enabled(),
-				(float) config.aura().slashCost(), config.auraWorld().forgedGear(), (float) config.auraWorld().sashCapacity());
+				(float) config.aura().slashCost(), config.auraWorld().forgedGear(), (float) config.auraWorld().sashCapacity(),
+				config.aura().strings().enabled(), config.aura().strings().windowTicks());
 		}
 
 		@Override
@@ -191,6 +195,16 @@ public final class Config {
 	/** What the Breath Sash multiplies aura capacity by: the server's own, or on a client the one it was sent (for the aura bar). */
 	public static double sashCapacity(Player player) {
 		return player != null && player.level().isClientSide() ? synced.sashCapacity() : get().auraWorld().sashCapacity();
+	}
+
+	/** Whether sword strings set off arts: the server's own switch, or on a client the one it was sent (the reader stays quiet without). */
+	public static boolean strings(Player player) {
+		return player != null && player.level().isClientSide() ? synced.strings() : get().aura().strings().enabled();
+	}
+
+	/** Sword strings' window (ticks after the blade is ready again): the server's own, or on a client the one it was sent. */
+	public static int stringWindow(Player player) {
+		return player != null && player.level().isClientSide() ? synced.stringWindow() : get().aura().strings().windowTicks();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */

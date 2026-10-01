@@ -171,6 +171,8 @@ public final class AuraStep {
 		}
 		Aura.sound(player, "aura_step", 1.0F, 1.0F);
 		AuraVfx.stepStart(level, from, dir, color);
+		// The swing straight after it is a step cut, for sword strings.
+		SwordStrings.cue(player, StringReader.Cue.STEP);
 		int ticks = AuraRules.STEP_TICKS;
 		for (int i = 1; i <= ticks; i++) {
 			Vec3 point = path.get(Math.min(path.size() - 1, (int) Math.round((path.size() - 1) * i / (double) ticks)));

@@ -464,6 +464,8 @@ public final class Aura {
 		AuraApi.registerTechnique(new AuraApi.Technique("slash", AuraRules.EDGE, AuraApi.Trigger.TAP, AuraRules.SLASH_COST, AuraSlash::loose));
 		AuraApi.registerTechnique(new AuraApi.Technique("step", AuraRules.FORM, AuraApi.Trigger.DOUBLE_TAP, AuraRules.STEP_COST, AuraStep::step));
 		AuraApi.registerTechnique(new AuraApi.Technique("dominion", AuraRules.SOVEREIGN, AuraApi.Trigger.HOLD, AuraRules.DOMINION_COST, AuraDominion::raise));
+		// Sword strings: arts set off by a run of ordinary swings, read by the client, checked and performed here.
+		SwordStrings.init();
 		AuraMethods.init();
 		Crescents.init();
 		AuraCombat.init();
@@ -498,6 +500,7 @@ public final class Aura {
 			AuraIntent.forget(id);
 			AuraDominion.forget(id);
 			AuraMarks.forget(id);
+			SwordStrings.forget(id);
 			// A spell riding the blade leaves with its caster (its cast is no longer alive).
 			Spellblade.forget(id);
 		});
@@ -511,13 +514,15 @@ public final class Aura {
 			AuraIntent.clear();
 			AuraDominion.clear();
 			AuraMarks.clear();
+			SwordStrings.clear();
 			Spellblade.clear();
 		});
 	}
 
 	/** Every kit sound aura plays, for the tests. */
 	public static final List<String> SOUNDS = List.of("aura_slash", "aura_guard", "aura_perfect_guard", "aura_breakthrough", "aura_backlash", "aura_breath",
-		"aura_step", "aura_armour", "aura_intent", "aura_dominion", "aura_dominion_fade", "aura_spellblade");
+		"aura_step", "aura_armour", "aura_intent", "aura_dominion", "aura_dominion_fade", "aura_spellblade", "aura_string_tick", "aura_string_complete",
+		"aura_string_fumble");
 
 	/** Plays one of aura's sounds where {@code player} is. */
 	static void sound(ServerPlayer player, String name, float volume, float pitch) {

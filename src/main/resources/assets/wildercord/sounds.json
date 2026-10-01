@@ -3408,6 +3408,24 @@
       "wildercord:kit/aura/aura_step_2"
     ]
   },
+  "aura_string_complete": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_string_complete"
+    ]
+  },
+  "aura_string_fumble": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_string_fumble"
+    ]
+  },
+  "aura_string_tick": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_string_tick"
+    ]
+  },
   "duelist_bow": {
     "subtitle": "subtitles.wildercord.kit.duelist.bow",
     "sounds": [

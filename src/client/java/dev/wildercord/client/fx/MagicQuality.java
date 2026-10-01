@@ -14,6 +14,9 @@ public final class MagicQuality {
 	public static boolean reducedFlash, cameraShake = true;
 	/** Whether the names of mastered spells others cast nearby (and your own) show as a brief title by the caster. */
 	public static boolean spellTitles = true;
+	/** Where the sword string indicator shows: a little below the crosshair, above the aura bar, or not at all (its ticks go quiet too). */
+	public enum StringIndicator { CROSSHAIR, HOTBAR, HIDDEN; public StringIndicator next() { return values()[(ordinal() + 1) % values().length]; } }
+	public static StringIndicator stringIndicator = StringIndicator.CROSSHAIR;
 	private MagicQuality() {}
 	public static void preset(String name) {
 		switch(name) {
@@ -31,6 +34,7 @@ public final class MagicQuality {
 			if (json.has("reduced_flash")) reducedFlash = json.get("reduced_flash").getAsBoolean();
 			if (json.has("camera_shake")) cameraShake = json.get("camera_shake").getAsBoolean();
 			if (json.has("spell_titles")) spellTitles = json.get("spell_titles").getAsBoolean();
+			if (json.has("string_indicator")) stringIndicator = StringIndicator.valueOf(json.get("string_indicator").getAsString().toUpperCase(java.util.Locale.ROOT));
 		} catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Invalid local magic preferences: {}", e.toString()); }
 	}
 	public static void save() {
@@ -38,6 +42,7 @@ public final class MagicQuality {
 		json.addProperty("own", own.name()); json.addProperty("others", others.name());
 		json.addProperty("reduced_flash", reducedFlash); json.addProperty("camera_shake", cameraShake);
 		json.addProperty("spell_titles", spellTitles);
+		json.addProperty("string_indicator", stringIndicator.name().toLowerCase(java.util.Locale.ROOT));
 		try { Files.createDirectories(FILE.getParent()); Files.writeString(FILE, new GsonBuilder().setPrettyPrinting().create().toJson(json)); }
 		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Cannot save local magic preferences: {}", e.toString()); }
 	}
