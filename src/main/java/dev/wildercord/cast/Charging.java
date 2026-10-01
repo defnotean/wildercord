@@ -69,6 +69,8 @@ public final class Charging {
 	private static final java.util.Set<java.util.UUID> FIZZLED = new java.util.HashSet<>();
 	/** What the server keeps about each charge in hand that the client never decides: its price, the steadying, the trace reported. */
 	private static final Map<UUID, Channel> CHANNELS = new HashMap<>();
+	/** How each player's last charged release was performed (for tests and commands). */
+	private static final Map<UUID, Performance> LAST = new HashMap<>();
 
 	/** One charge's channel: the spell's mana price (what the channel may never drain), ticks spent steadying, and the reported trace. */
 	private static final class Channel {
@@ -139,6 +141,7 @@ public final class Charging {
 		long now = player.level().getGameTime();
 		double progress = progress(player, charge, now);
 		Performance performance = performance(player, charge, now);
+		LAST.put(player.getUUID(), performance);
 		stop(player);
 		long readyAt = Spellbooks.readyAt(player, charge.spell());
 		SpellCaster.cast(player, charge.spell(), progress, performance);
@@ -163,7 +166,7 @@ public final class Charging {
 	 * How the release of {@code charge} at {@code now} was performed, as far as the server can tell: the
 	 * stage the channel reached, whether it's on the beat, and what it believes of the reported trace.
 	 */
-	static Performance performance(ServerPlayer player, WildercordAttachments.Charge charge, long now) {
+	public static Performance performance(ServerPlayer player, WildercordAttachments.Charge charge, long now) {
 		Overchannel.Tuning tuning = tuning();
 		Channel channel = CHANNELS.get(player.getUUID());
 		int stage = Math.max(0, Math.min(charge.stages(), charge.stage()));
@@ -172,6 +175,11 @@ public final class Charging {
 			: Overchannel.validTrace(channel.reported, channel.steady, tuning.tracing() && charge.traceable());
 		return new Performance(stage, onBeat, trace, Overchannel.power(stage, onBeat, trace, tuning),
 			Overchannel.surgeChance(stage, tuning.surgePerStage(), trace));
+	}
+
+	/** How {@code player}'s last charged release was performed ({@link Performance#NONE} before any). */
+	public static Performance last(ServerPlayer player) {
+		return LAST.getOrDefault(player.getUUID(), Performance.NONE);
 	}
 
 	/** The line above the hotbar for a performed release: "Overchannel III · on the beat · steadied 92% (+90% power)". */
@@ -420,6 +428,7 @@ public final class Charging {
 			stop(player);
 		}
 		LAST_BEGIN.remove(player.getUUID());
+		LAST.remove(player.getUUID());
 		FIZZLED.remove(player.getUUID());
 		CHANNELS.remove(player.getUUID());
 	}
@@ -427,6 +436,7 @@ public final class Charging {
 	static void clear() {
 		CastLock.clear();
 		LAST_BEGIN.clear();
+		LAST.clear();
 		FIZZLED.clear();
 		CHANNELS.clear();
 	}

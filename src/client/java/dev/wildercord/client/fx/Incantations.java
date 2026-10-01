@@ -43,8 +43,8 @@ import java.util.Map;
 public final class Incantations {
 	private Incantations() {}
 
-	/** Text size, blocks per pixel of the font: a syllable is about a seventh of a block tall. */
-	private static final float SCALE = 0.016F;
+	/** Text size, blocks per pixel of the font: a syllable is about a sixth of a block tall. */
+	private static final float SCALE = 0.019F;
 	/** Ticks a syllable takes to rise into its place in the line. */
 	private static final int RISE = 14;
 	/** Ticks the incantation takes to thin away once the charge ends. */

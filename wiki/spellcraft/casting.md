@@ -2,14 +2,15 @@
 title: Casting
 parent: Spellcraft
 nav_order: 4
-description: "Tapping and charging, the reticle, cooldowns, mana and regeneration, rhythm, leaning and affinities, switching spells with V, the spell wheel and direct keys, and the HUD."
+description: "Tapping and charging, overchannelling past full and letting go on the beat, sigil tracing, incantations, the reticle, cooldowns, mana and regeneration, rhythm, leaning and affinities, switching spells with V, the spell wheel and direct keys, and the HUD."
 ---
 
 # Casting
 {: .no_toc }
 
-You've threaded a spell. This page is about firing it: tapping or charging, what the game checks when you
-press the key, how cooldowns and mana work, the small skills that make a caster stronger (rhythm and
+You've threaded a spell. This page is about firing it: tapping or charging, pushing a charge past full and
+letting it go on the beat, steadying it by tracing its glyph, the incantation it speaks, what the game checks
+when you press the key, how cooldowns and mana work, the small skills that make a caster stronger (rhythm and
 leaning), switching between spells, and reading the spell panel beside your hotbar.
 
 1. TOC
@@ -75,7 +76,9 @@ Some things to know:
 
 - A charge **can't start while the spell is cooling down**. Hold the key anyway and letting go just tells you
   it's recharging.
-- Hold a charge longer than **12 seconds** and it **fizzles** ("The charge fizzles"): letting go then does
+- Keep holding past full and the charge **overchannels**: stronger and wilder, until it tears loose (see
+  [Overchannel](#overchannel-holding-on-past-full) below). A charge that can't overchannel (short of spare mana)
+  just waits, and held longer than **12 seconds** it **fizzles** ("The charge fizzles"): letting go then does
   nothing, and you can start again.
 - Taking your Cord off, dying or spectating ends a charge.
 - A **Focus of Haste** in your focus slot (or held in your offhand) fills a charge 40% faster (see [Casting Gear]({{ '/gear/' | relative_url }})).
@@ -93,6 +96,97 @@ While you charge, **you** (and only you) see where the spell will go, for the sp
 | Burst, Ring, Nova, Domain, Imprint | A ring on the ground around you (an Imprint's under your feet), as wide as the spell |
 | Bolt, Arc, Crescent, Orb, Wave, Wisp, Ricochet, Comet, Cluster, Beam, Spark, Ray, Lance, Prism, Sweep, Stream, Glaive | A faint dotted line as far as it can reach (a Glaive's, as far as it flies before it turns back), and a mark where it meets a block |
 | Latch | The dotted line, and a mark under the creature it would take hold of |
+
+## Overchannel: holding on past full
+
+A full charge doesn't have to be the end. **Keep holding** and the charge **overchannels**: you pour your spare mana
+into the circle, and it climbs a **stage** a little over every second.
+
+| Stage | Reached after full | Extra power (on top of the full charge's +40%) | Chance it surges into wild magic |
+|---|---|---|---|
+| I | 1.2 s | +20% | 7% |
+| II | 2.4 s | +40% | 14% |
+| III | 3.6 s | +60% | 21% |
+
+- **Your heart sets how far you can go.** Anyone can push one stage. With two working
+  [Heart Circles]({{ '/progression/heart-circles/' | relative_url }}) you can push two, and from the 4th all three. A
+  circle cracked by [overcasting]({{ '/spellcraft/overcasting/' | relative_url }}) doesn't count until it mends.
+- **It drains spare mana.** From stage I on, the circle drinks a little mana every moment (about 15% of the spell's
+  price each second), but it **never touches the mana the spell itself needs**: short of spare mana it simply stops
+  climbing and waits. Overchannel never cracks a Heart Circle, and a spell you couldn't afford can't overchannel.
+- **You can feel each stage land.** The circle behind your shoulders swells, cracks a little further (white-hot cracks
+  running in from its frame) and throws a ring of sparks; a crackle of light runs across it; the hum strains higher and
+  wavers; and the edges of your screen close in a little more, with a hairline crack from each corner. Everyone near
+  you sees the circle crack and tremble, so they know you're pushing your luck.
+- **The surge chance** works like an overcast's: the spell may come out twice, as another element, at double size, as
+  a shower of butterflies of light... (see [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }})).
+  An overchannelled spell never hurts you with its surge any more than an overcast does. Tracing the spell's glyph
+  (below) steadies it.
+- Your spell panel shows the stage where the charge was: **✦I**, **✦II**, **✦III**, hotter in colour with each.
+
+### Let go on the beat
+
+The moment a charge **fills**, and the moment each **stage lands**, is a **beat**. Let go just then (within about a
+third of a second after it) and the spell leaves with **+10% more power** and a bright chime. While you charge, the
+ring on your spell badge closes in on the charge's next beat, pale violet, and glows while it's open. (Outside a
+charge the ring shows your [rhythm](#rhythm) as usual, and the two bonuses stack.)
+
+When you let go of an overchannelled or well-timed spell, the line above your hotbar says how it went:
+"Overchannel III · on the beat · steadied 92% (+90% power)".
+
+### Holding too long: the channel tears loose
+
+At your last stage the circle starts to **redden and shake**, sparks fly off it in red, and the ring on your badge turns
+red as it closes on one more beat. Hold on past it (another 1.2 seconds) and the channel **tears loose**:
+
+- the circle bursts and the spell **fizzles** (letting go afterwards does nothing),
+- the loose magic **surges** harmlessly: butterflies of light, a blink a few blocks aside, a moment of floating (with
+  a slow fall after), slowed time or healing for everyone near,
+- you're **dazed** for a second and a half (you can't cast or charge, and you move slowly),
+- and you lose **30% of your mana**.
+
+Tearing loose **never costs health**: on one heart you walk away on one heart. It's the price of greed, not a trap: let
+go at any stage before it and you keep everything you built.
+
+## Sigil tracing
+
+<img src="{{ '/assets/images/sigil-trace.png' | relative_url }}" alt="A glyph of four violet strokes round the crosshair while a spell charges, with a gold path traced along it and the accuracy shown below" class="shot">
+
+While a spell charges, a **faint glyph** of three to five straight strokes appears round your crosshair. It's made
+from the spell's own runes, so a spell always has the same glyph, and a longer spell draws more strokes.
+
+**Hold sneak while charging** to steady your hands: the camera **holds still** and moving the mouse draws a point of
+light along the glyph instead. It starts at the bright dot; follow the strokes in one unbroken line. Your accuracy shows
+under the glyph as you go.
+
+- A good trace **steadies** an overchannel (a perfect one takes away 60% of its surge chance) and adds up to **+8%
+  power**. A scribble earns nothing.
+- **Not tracing loses nothing.** It's a skill for those who want it, never a requirement.
+- You have to really steady your hands: a trace only counts as far as the time you spent holding sneak allows (about a
+  second for a full one), however well it was drawn.
+- The glyph is the same share of your screen at every GUI scale, and the mouse moves the point at your own
+  sensitivity, held within a comfortable range so neither the slowest nor the fastest setting makes it awkward.
+- In the **Magic visual settings** screen (its key is unbound until you set it, under **Wildercord** in Controls), **Sigil tracing** turns it off
+  (sneaking while charging then just sneaks), and **Trace assist** sets how much help you get: *None*, *Light* (the
+  default: a little forgiveness, and the point is drawn gently back onto the line) or *Strong*.
+
+## Incantations
+
+<img src="{{ '/assets/images/incantation.png' | relative_url }}" alt="A charging caster seen from the front, three glowing syllables in a line of script over their shoulders" class="shot">
+
+Every rune has its own spoken **syllable**: "vo" for Bolt, "ign" for Fire, "hrim" for Frost, "sei" for Split, "mae" for
+Heal, and one for every other rune, no two alike. While you charge, your spell's syllables **rise one by one from
+behind your shoulders**, each as its rune's roundel opens on the circle (with a soft whisper under its note), and
+gather into a line of glowing script over your shoulders: the spell's **incantation**.
+
+- **Everyone near you can read it**, clearest up close and fading with distance. In a duel, a sharp-eyed opponent can
+  read what's coming, and learn which syllable means which rune.
+- **A tap is cast without a word.** Only a charge speaks, so a quick spell keeps its secret, and a charged one pays for
+  its power with a tell.
+- The incantation thins away the moment the spell leaves your hands.
+- In first person your own incantation is behind you, out of your way; in third person you can watch it form.
+- **Incantations** in the Magic visual settings screen chooses whose you see: all of them, all but your own, only your own, or
+  none. Hidden ones are silent too.
 
 ## Cooldowns
 
@@ -212,11 +306,11 @@ window does it tuck into the corner. It's hidden while you aren't wearing a Cord
 
 | Part | Shows |
 |---|---|
-| **The badge** | The selected spell's number: gold when you can cast it, red when you can't afford it, dim when the spell is empty. A dark shade drains out of it as the spell recharges. |
+| **The badge** | The selected spell's number: gold when you can cast it, red when you can't afford it, dim when the spell is empty. A dark shade drains out of it as the spell recharges. A gold ring closes in on it as your [rhythm](#rhythm) beat comes; while you charge, a pale ring closes on the charge's own beats (red as an overchannel nears tearing loose). |
 | **Dots under the badge** | One for each spell you can use, the selected one in gold (the tome's in violet). |
 | **Top row** | The spell's rune icons (with "+2" and so on when there are too many to fit) and, on the right, its cost in mana, or in health with a heart for Blood Price. The cost turns red when you can't afford it. |
 | **The mana bar** | Your mana. A **gold mark** shows how much this spell will take; it turns red when you haven't enough. A soft shine runs along the bar while you're meditating or under Clarity. |
-| **Bottom row** | Your mana ("218/380"). It turns bright, with a small up-arrow, while your regeneration is boosted (violet on a ley line or near a Wellstone). On the right: your **charge** ("60%", "FULL"), or the **cooldown** left ("1.2s"), or, when neither, what your **passives drain** ("-3.4/s", red if you can't keep them up). |
+| **Bottom row** | Your mana ("218/380"). It turns bright, with a small up-arrow, while your regeneration is boosted (violet on a ley line or near a Wellstone). On the right: your **charge** ("60%", "FULL", then "✦I" to "✦III" while it overchannels), or the **cooldown** left ("1.2s"), or, when neither, what your **passives drain** ("-3.4/s", red if you can't keep them up). |
 | **Above the panel** | The spell's **name** in its colour (a secret spell's own name only once you've found it), **♪** notes for your rhythm steps, **✦** and a number in red for Heart Circles cracked by overcasting, and, when you're wearing a Shield, its strength and time left ("Shield 12 · 28s"). |
 | **After the name** | The **elemental climate** where you stand: a small mark for each element it changes (a flame for fire, a snowflake for frost, a bolt for storm...), with a green **▲** if that element hits harder here or a red **▼** if it hits softer. In the Nether you'll see fire ▲ and frost ▼. See [Creature Affinities and Climate]({{ '/spellcraft/affinities/' | relative_url }}#elemental-climate). |
 
@@ -260,11 +354,13 @@ Every spell reads from how it's built:
 Casting is meant to be read by everyone around you:
 
 - the Cord on your wrist, with a bead for each rune of your ready spell,
-- your hands raised and your spell's circle opening behind your shoulders while you charge,
+- your hands raised and your spell's circle opening behind your shoulders while you charge, cracking and trembling if
+  you overchannel,
+- your spell's [incantation](#incantations) rising over your shoulders as you charge,
 - the circle under your feet and the shape's pose when a spell goes off,
 - your Heart Circles' rings turning round you as you cast and meditate.
 
-Anyone who knows the runes can read what you're about to cast from your circle. See
+Anyone who knows the runes can read what you're about to cast from your circle, or from the syllables you speak. See
 [Magic Circles]({{ '/spellcraft/magic-circles/' | relative_url }}).
 
 Big impacts (explosions, bursts, pillars, Domains, meteors) shake the camera of everyone nearby, a charged

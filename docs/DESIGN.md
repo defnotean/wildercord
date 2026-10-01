@@ -504,6 +504,52 @@ messages, building rights, reach).
   circle. In your own first-person view your charge circle is a small seal in the lower right.
 - Let go to cast: up to **+40% power** at a full charge. You walk 40% slower while charging, and
   a charge held 12 s fizzles.
+
+### Casting as a performance: overchannel, the beat, tracing and incantations
+Charging is where a caster performs, and where they take risks. The pure rules are `spell.Overchannel`,
+`spell.TraceGlyph` and `spell.Incantation`; `cast.Charging` runs them on the server every tick.
+
+- **Overchannel.** Held past full, a charge climbs a stage every **1.2 s**, up to the stages the heart holds: one
+  with fewer than two working Heart Circles, two with two or three, three from the 4th (a cracked circle holds
+  nothing). Each stage adds **+20% power** (I +20%, II +40%, III +60%, multiplying the full charge's +40%) and a
+  **7% wild surge chance** (7/14/21%), rolled from the overcast table (`WildMagic`, `WildSurge`) when it's let go.
+  From stage I the channel drains **15% of the spell's mana price a second**, never the price itself: short of a
+  surplus it stops climbing and waits (and the old 12 s fizzle still ends it). Overchannel never cracks a Heart
+  Circle, and a spell that would overcast can't overchannel. Each stage lands with a crack sound a step up the
+  scale, a swell of the circle, a ring of sparks and a crackle across it; the circle shows a stage's four cracks
+  more per stage, trembles harder, throws sparks off its rim, and the hum strains higher with a waver. The
+  caster's own screen edges close in with a hairline crack from each corner per stage.
+- **The beat.** Filling, and each stage landing, is a beat: a release within **0.3 s after** it (only after: a
+  release travels to the server) adds **+10% power** and a chime. The HUD's badge ring closes on the charge's
+  beats while charging (red for the tear), instead of the rhythm's.
+- **Tearing loose.** Held **1.2 s** past the heart's last stage, the channel tears loose: the circle bursts, the
+  release does nothing, a harmless spell-less surge goes off (`WildMagic.FIZZLES`: Butterflies, Heal All, Blink,
+  Levitate, Slow Time; never Backfire), and the caster is dazed (no casting, slowed) for **1.5 s** and loses **30% of
+  full mana**. It deals no damage at all. A channel stalled short of its last stage never tears.
+- **Sigil tracing.** A spell's glyph is a single line of 3 to 5 strokes (one per rune, at least three) between nine
+  points (a ring of eight and its centre), drawn from the rune sequence's hash: always the same, different for
+  most spells and for the same runes in another order. It sits faintly round the crosshair while charging;
+  holding sneak steadies the hands: the camera holds still and the mouse moves a point along it. The client scores
+  coverage times `0.4 + 0.6 × precision` (held back for a path over twice the glyph's length) and sends it just
+  before the release; the server clamps it to 0-1, ignores it without half a second of steadying (sneak held while
+  charging), and believes at most `steady ticks / 20`. Accuracy takes up to **60%** off the overchannel's surge
+  chance and adds up to **+8% power** (nothing below a third). Not tracing loses nothing. The glyph is 16% of the
+  screen's short side at every GUI scale; the mouse runs at the player's sensitivity held between 0.04 and 0.3
+  degrees a count; client options turn tracing off and choose its assist (how far off the line counts, and how
+  strongly the point is pulled back onto it: none, light, strong).
+- **Incantations.** Every rune has a syllable: a small generator (an onset, a vowel, an ending, with English words
+  and rune names avoided) gives each rune of the roster its own in roster order, with the best known tuned by hand
+  (Bolt "vo", Fire "ign", Frost "hrim", Shock "zar", Heal "mae", Split "sei"...). While charging, the syllables rise
+  from behind the caster's shoulders as their roundels open and gather into a line over them (world-space text,
+  glowing-sign style, readable up close and gone by 18 blocks), with a soft whisper under each rune's note. Every
+  nearby client draws them from the synced charge. A tap says nothing: a quick cast keeps its secret, a charged one
+  pays for its power with a tell. Client options hide all, others' or your own. They thin away on release, which
+  is left to the spell (and its name).
+- **Against players**, everything a performance adds (stage, beat, trace) counts inside the ×2.5 bonus cap
+  (`SpellDefenceRules.capBonus(bonus, performance, cap)`).
+- Server settings: the `channeling` section (`overchannel`, `power_per_stage`, `drain_per_second`,
+  `surge_chance_per_stage`, `beat_bonus`, `backfire_stun_seconds`, `backfire_mana_burn`, `sigil_tracing`,
+  `trace_power`). With `features.wild_magic` off nothing surges.
 - While charging, you (only you) see **where the spell goes**: a reticle on the ground at the spell's
   real radius for Zone, Rain, Pillar, Totem and Mine; around you for Burst, Ring and Domain (under
   your feet for an Imprint); a dotted line for Bolt, Arc, Beam, Crescent, Orb, Wave and the rest that
@@ -770,7 +816,8 @@ cracked.
 
 An overcast spell may also surge into **wild magic** (20%, up to 50% the further past your mana it
 went): it goes off twice, turns to another element, blinks you aside, bursts into butterflies of
-light, and more (see [features/parry-and-wild-magic.md](features/parry-and-wild-magic.md)).
+light, and more (see [features/parry-and-wild-magic.md](features/parry-and-wild-magic.md)). An
+overchannelled spell rolls the same table at 7% a stage, and both together roll as one chance.
 
 ### Runebound
 About 2-6% of zombies and skeletons of every kind (husks, drowned, zombie villagers, strays,
@@ -1135,7 +1182,8 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
 
 | Key (rebindable) | Action |
 |---|---|
-| **R** | Cast the selected spell. Hold to charge it, then release |
+| **R** | Cast the selected spell. Hold to charge it, then release; hold past full to overchannel, release on the beat |
+| **Sneak** (while charging) | Steady the hands: the camera holds still and the mouse traces the spell's glyph |
 | **V** | Tap: select the next spell. Hold: the spell wheel; point at a spell and let go to select it. Let go without pointing and it stays open until you click a spell, press `V` or Enter, press a number, or press Esc |
 | **K** | Open the Cord screen |
 | (unbound) | Cast spell 1 / 2 / 3 / 4 directly |
@@ -1170,7 +1218,8 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   damage to players is ×0.6. *(Planned: crowd-control such as Frost, Pull and Launch
   lasting half as long on players.)*
 - **Spell defence (players only):** every spell hit on a player, whoever cast it, goes through
-  `SpellDefence`. A hit's bonuses (Execute, reactions, hexes, backstabs...) multiply to ×2.5 at most;
+  `SpellDefence`. A hit's bonuses (Execute, reactions, hexes, backstabs, and what an overchannel, a release on
+  the beat or a traced glyph added to the cast) multiply to ×2.5 at most;
   armour counts at 55% of its worth against spells that bypass armour; Warding (armour enchantment,
   I-IV, 2 protection points a level, sharing vanilla's 20-point cap with Protection and exclusive
   with it) and Warded (the Potion of Warding, 20% a level) take their share; and the spellguard stops
@@ -1197,7 +1246,8 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   kicked on a server with flying turned off (vanilla only counts a player as floating when they may not fly).
 - **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
   blocks, the PvP scale, the spell defences, mana-regen and cost multipliers, Runebound and loot
-  chances, imbue limits and feature switches; `/wildercord reload` reads it again (see
+  chances, imbue limits, feature switches and the overchannel and tracing tuning (`channeling`);
+  `/wildercord reload` reads it again (see
   [features/gear-config-api.md](features/gear-config-api.md)).
 
 ## Add-on compatibility contract

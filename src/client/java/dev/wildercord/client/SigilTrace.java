@@ -47,6 +47,12 @@ public final class SigilTrace {
 	private static double[] cursor = {0, 0};
 	/** Whether the hands are steadied this tick (sneak held while charging): the mouse traces instead of turning. */
 	private static boolean steadying;
+	/** The word on how to trace: shown for the first few charges of a session, until the player first steadies, and never again after. */
+	private static final int HINTED_CHARGES = 3;
+	private static final int HINT_TICKS = 40;
+	private static int hinted;
+	private static boolean everSteadied;
+	private static boolean hintThisCharge;
 
 	/** Every client tick: follows the local player's charge, and whether they're steadying. */
 	public static void tick(Minecraft mc) {
@@ -62,9 +68,16 @@ public final class SigilTrace {
 			chargeStart = charge.start();
 			glyph = TraceGlyph.of(charge.runes());
 			cursor = glyph.isEmpty() ? new double[] {0, 0} : glyph.getFirst().clone();
+			hintThisCharge = !everSteadied && hinted < HINTED_CHARGES;
+			if (hintThisCharge) {
+				hinted++;
+			}
 		}
 		boolean was = steadying;
 		steadying = !glyph.isEmpty() && mc.gui.screen() == null && player.isAlive() && mc.options.keyShift.isDown();
+		if (steadying) {
+			everSteadied = true;
+		}
 		if (steadying && !was && PATH.isEmpty()) {
 			PATH.add(cursor.clone());
 		}
@@ -122,6 +135,15 @@ public final class SigilTrace {
 		return glyph.isEmpty() ? 0 : TraceGlyph.score(glyph, PATH, CastingOptions.assist.tolerance);
 	}
 
+	/** The glyph being traced now (empty when none), and how many points the path has: for tests. */
+	public static List<double[]> glyph() {
+		return List.copyOf(glyph);
+	}
+
+	public static int pathSize() {
+		return PATH.size();
+	}
+
 	/** Whether anything worth reporting was traced for the charge in hand. */
 	public static boolean traced() {
 		return chargeStart != Long.MIN_VALUE && PATH.size() >= 2 && TraceGlyph.length(PATH) >= TraceGlyph.MIN_PATH;
@@ -172,8 +194,8 @@ public final class SigilTrace {
 			dot(g, cx + (float) cursor[0] * radius, cy - (float) cursor[1] * radius, lineWidth + 1, 0xFFFFFFFF);
 			String score = Math.round(accuracy() * 100) + "%";
 			g.centeredText(mc.font, score, (int) cx, (int) (cy + radius * 1.12F) + 2, 0xFFF5D56A);
-		} else if (PATH.isEmpty()) {
-			// A quiet word on how, until the hands are first steadied.
+		} else if (PATH.isEmpty() && hintThisCharge && time - chargeStart < HINT_TICKS) {
+			// A quiet word on how, for the first moments of the first few charges, until the hands are first steadied.
 			Component hint = Component.translatable("hud.wildercord.trace_hint", mc.options.keyShift.getTranslatedKeyMessage());
 			g.centeredText(mc.font, hint, (int) cx, (int) (cy + radius * 1.12F) + 2, argb(0.55F, 0xB8A8FF));
 		}
