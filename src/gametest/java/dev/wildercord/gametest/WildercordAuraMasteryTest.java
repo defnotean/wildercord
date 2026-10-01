@@ -954,6 +954,20 @@ public class WildercordAuraMasteryTest implements FabricClientGameTest {
 			return chained <= cap ? null : "a chain onto a player should be held to the PvP cap (" + chained + " against at most " + cap + ")";
 		});
 		check(chain == null, chain);
+		// A mark never sets a player alight or poisons them; one that does nothing by itself is left as on a creature.
+		String marked = on(world, player -> {
+			FakePlayer rival = rival(player, "", 0, 1.0);
+			rival.clearFire();
+			rival.removeAllEffects();
+			dev.wildercord.aura.AuraMarks.leave(player, rival, "burning");
+			dev.wildercord.aura.AuraMarks.leave(player, rival, "poisoned");
+			if (rival.isOnFire() || rival.hasEffect(MobEffects.POISON)) {
+				return "an aura mark should never set a player alight or poison them";
+			}
+			dev.wildercord.aura.AuraMarks.leave(player, rival, "bleeding");
+			return Reactions.has(rival, Reactions.Mark.BLEEDING) ? null : "a bleeding mark should be left on a player as on anything";
+		});
+		check(marked == null, marked);
 		on(world, player -> {
 			kill(player, TAG);
 			return null;

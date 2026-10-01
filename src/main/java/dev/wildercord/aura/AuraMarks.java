@@ -18,8 +18,8 @@ import java.util.UUID;
  * Unweave, an Ember blade burning and a Verdant blade a touch of poison for Overload and Elapse. Earth, storm and time set
  * reactions off and leave nothing (storm's own mark is one a Thunder blade's next blow would conduct through itself).
  *
- * <p>Kept modest on purpose: a chance per strike (15% at Glow, 5% more a stage), marks shorter than a spell's, and a foe takes
- * another mark from the same striker only after a rest. A method's own element never sets off the mark it leaves (each leaves
+ * <p>Kept modest on purpose: a chance per strike (15% at Glow, 5% more a stage), marks shorter than a spell's, a foe takes
+ * another mark from the same striker only after a rest, and another player is never set alight or poisoned by one. A method's own element never sets off the mark it leaves (each leaves
  * what a different element answers; Starlit's exposed only counts toward an Unweave that needs another mark too), so the reward
  * is in fighting beside a mage, or casting as one.</p>
  */
@@ -64,13 +64,21 @@ public final class AuraMarks {
 		return true;
 	}
 
-	/** Leaves {@code mark} on {@code target} (the tests call this to skip the chance). */
+	/**
+	 * Leaves {@code mark} on {@code target} (the tests call this to skip the chance). On another player only the marks that do
+	 * nothing by themselves are left: no fire and no poison, which would be harm outside the PvP caps.
+	 */
 	public static void leave(ServerPlayer player, LivingEntity target, String mark) {
 		int ticks = AuraRules.MARK_TICKS;
+		if (target instanceof net.minecraft.world.entity.player.Player && (mark.equals("burning") || mark.equals("poisoned"))) {
+			return;
+		}
 		switch (mark) {
 			case "frozen" -> {
 				Reactions.mark(target, Reactions.Mark.FROZEN, ticks);
-				target.setTicksFrozen(Math.max(target.getTicksFrozen(), Math.min(target.getTicksRequiredToFreeze(), target.getTicksFrozen() + 40)));
+				// A rime of frost to see, never so much that it freezes solid (which hurts).
+				int frost = Math.min(target.getTicksRequiredToFreeze() - 1, target.getTicksFrozen() + 40);
+				target.setTicksFrozen(Math.max(target.getTicksFrozen(), frost));
 			}
 			case "windswept" -> Reactions.mark(target, Reactions.Mark.WINDSWEPT, ticks);
 			case "shadowed" -> Reactions.mark(target, Reactions.Mark.SHADOWED, ticks);

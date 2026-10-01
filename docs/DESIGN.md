@@ -1357,7 +1357,9 @@ exposed (one of Unweave's marks), fire burning and life a touch of poison (Overl
 none: they set reactions off, and storm's own mark (ionised) is one a Thunder blade would conduct through itself. No method's
 mark is set off by its own element. The chance is 15% at Glow and 5% more a stage (35% at Sovereign, times
 `mark_chance_multiplier`), the mark lasts 3 seconds (shorter than a spell's), and the same striker marks the same foe again
-only after 2 seconds.
+only after 2 seconds. Another player is never set alight or poisoned by a mark (that would be harm outside the PvP caps);
+the marks that do nothing by themselves are left on players as on creatures. Frozen frosts a foe over but never freezes it
+solid.
 
 ### Experience and breakthroughs
 **Experience comes from meaningful melee**, on spell mastery's rules: a full swing on a real foe is worth 0.25, plus 1.0

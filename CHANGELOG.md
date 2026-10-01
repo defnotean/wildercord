@@ -174,8 +174,8 @@ server running it (it adds an item, sounds and synced data).
 - **Aura marks**: an elemental strike (a coated blow or the slash) may leave its element's reaction mark for a mage's
   spell to set off: a Rime blade leaves foes frozen (Shatter, Fracture), Gale windswept (Wildfire), Crimson bleeding
   (Rupture), Hollow shadowed (Blight), Starlit exposed (Unweave), Ember burning and Verdant a touch of poison (Overload,
-  Elapse). Earth, storm and time leave none. A modest chance (15% at Glow, 5% more a stage), short marks, and a rest
-  before the same foe takes another from you.
+  Elapse). Earth, storm and time leave none. A modest chance (15% at Glow, 5% more a stage), short marks, a rest before
+  the same foe takes another from you, and never fire or poison on another player.
 - **The aura bar** shows the step recharging on the Form diamond and a Dominion on the Sovereign one (with a thread filling
   back as it rests), and above the bar a spell's time on the blade and a Dominion's time left. The **Aura page** lists the
   new techniques and the top stages' trials.

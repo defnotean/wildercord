@@ -189,7 +189,8 @@ for Rupture, a Hollow blade **shadowed** for Blight, a Starlit blade **exposed**
 and a Verdant blade a touch of **poison** for Overload and Elapse. Earth, storm and time set reactions off but leave no mark.
 
 The chance is modest: 15% at Glow, 5% more at each stage, and a foe takes another mark from you only after a moment's
-rest. A method never sets off its own mark, so the reward is in fighting beside a mage, or casting as one.
+rest. A method never sets off its own mark, so the reward is in fighting beside a mage, or casting as one. Another player
+is never set alight or poisoned by a mark.
 
 ## Breakthroughs
 
