@@ -52,6 +52,40 @@ need this version to join a server running it (it adds a scroll component and ne
   `inscription`, all on at first. An older config file gains the section at its defaults.
 - **For other parts of the mod and add-ons:** `api.SpellMasteryApi` adds circumstances a spell's casts are counted
   in, offers traits from outside the catalogue, and sets what a residue trait leaves where its spell lands.
+Casting is a performance now, with a risk in it. Players need this version to join a server running it (charging
+sends and syncs more than it did).
+
+- **Overchannel.** Keep holding a charged spell past full and it climbs into overchannel stages, one every 1.2 seconds:
+  +20%, +40% and +60% power on top of the full charge's +40%. Each stage drains a little of your spare mana (15% of
+  the spell's price a second, never the price itself), cracks the circle behind your shoulders a little further, throws
+  sparks off its rim, strains the hum higher and closes the edges of your screen in, and adds a 7% chance (14%, 21%)
+  that the spell surges into wild magic when you let go. A young heart holds one stage; two Heart Circles hold two, and
+  the 4th holds all three (a cracked circle holds nothing). Short of spare mana the channel simply stops climbing:
+  overchannel never cracks a Heart Circle.
+- **The beat.** The moment a charge fills, and the moment each stage lands, is a beat: let go just then (within about
+  a third of a second after) for 10% more power and a bright chime. While you charge, the ring on your spell badge
+  closes on the charge's own beats instead of the rhythm's.
+- **Tearing loose.** Hold on past your last stage for another 1.2 seconds (the ring turns red, the circle reddens and
+  shakes) and the channel tears loose: the circle bursts, the spell fizzles, a harmless wild surge goes off (butterflies,
+  a blink, a lift with a slow fall, slowed time or healing for everyone near), you're dazed for a second and a half and
+  lose 30% of your mana. It never costs health: on one heart, you walk away on one heart.
+- **Sigil tracing.** While a spell charges, a faint glyph of three to five strokes (made from the spell's own runes,
+  the same every time) sits round your crosshair. Hold sneak to steady your hands: the camera holds still and the mouse
+  draws a point of light along the glyph. A good trace steadies an overchannel (up to 60% less surge chance) and adds
+  up to 8% power; not tracing loses nothing. Your client scores the trace; the server only believes as much of it as
+  the time you really spent steadying allows. The glyph is the same share of the screen at every GUI scale, the mouse
+  works at any sensitivity, and two new options in the Magic visual settings screen turn tracing off or set how much it
+  helps (none, light, strong).
+- **Incantations.** Every rune has its own spoken syllable ("vo" for Bolt, "ign" for Fire, "sei" for Split...). While
+  you charge, your spell's syllables rise one by one from behind your shoulders as each rune's roundel opens, and
+  gather into a line of glowing script over them: the spell's incantation, readable by anyone near enough (it fades
+  with distance), with a soft whisper under each rune's note. In a duel, a sharp-eyed opponent can read what's coming.
+  A tap is cast without a word. A Magic visual settings option hides incantations: all of them, only others' or only your own.
+- **Server settings**, in a new `channeling` section: `overchannel` (on), `power_per_stage` (0.2), `drain_per_second`
+  (0.15), `surge_chance_per_stage` (0.07), `beat_bonus` (0.1), `backfire_stun_seconds` (1.5), `backfire_mana_burn`
+  (0.3), `sigil_tracing` (on) and `trace_power` (0.08). With `features.wild_magic` off nothing surges. Against players,
+  everything a performance adds counts inside `defence.max_bonus`, so it never stacks a spell past the cap. An older
+  config file gains the section at its defaults.
 
 ## [0.7.1-alpha] - 2026-10-01
 

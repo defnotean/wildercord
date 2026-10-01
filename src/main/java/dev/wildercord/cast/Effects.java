@@ -939,8 +939,9 @@ public final class Effects {
 			bonus *= openingBonus;
 		}
 		// Against a player all that together is held to the server's cap (defence.max_bonus): a setup still pays off, but
-		// never ten times over, which is what took players from full health to dead in one blow.
-		float damage = (float) (amount * SpellDefenceRules.capBonus(bonus, SpellDefence.maxBonus(target)));
+		// never ten times over, which is what took players from full health to dead in one blow. What the cast's performance
+		// added (overchannel, the beat, a traced glyph) is in the hit's power already, and counts toward the same cap.
+		float damage = (float) (amount * SpellDefenceRules.capBonus(bonus, cast.performance(), SpellDefence.maxBonus(target)));
 		// PvP only: a monster's spell already has its power set by difficulty. The server can change the scale.
 		if (target instanceof Player && cast.caster instanceof Player) {
 			damage *= (float) dev.wildercord.config.Config.get().pvpDamageScale();

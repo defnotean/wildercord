@@ -106,6 +106,11 @@ public final class SpellHud {
 		// A Domain's tint goes under everything else on the HUD.
 		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("domain_tint"),
 			(g, delta) -> dev.wildercord.client.fx.ScreenEffects.drawTint(g));
+		// An overchannelling caster's view closing in, under everything else too.
+		HudElementRegistry.attachElementBefore(VanillaHudElements.MISC_OVERLAYS, Wildercord.id("overchannel_strain"),
+			dev.wildercord.client.fx.ScreenEffects::drawStrain);
+		// The glyph to trace, round the crosshair.
+		HudElementRegistry.attachElementAfter(VanillaHudElements.CROSSHAIR, Wildercord.id("sigil_trace"), SigilTrace::draw);
 	}
 
 	/** The panel's left edge, and whether it's lifted by {@link #RAISE}. */
@@ -306,8 +311,14 @@ public final class SpellHud {
 			int shade = (int) Math.ceil(14 * Math.min(1.0, remaining / (double) total));
 			g.fill(bx + 3, by + 3 + (14 - shade), bx + 17, by + 17, 0x90000000);
 		}
-		// The beat: a ring closes in on the badge as the next on-beat moment comes, and glows during it.
-		if (rhythm.windowEnd() >= gameTime && rhythm.windowStart() - gameTime <= 16) {
+		dev.wildercord.player.WildercordAttachments.Charge held = player.getAttached(dev.wildercord.player.WildercordAttachments.CHARGE);
+		if (held != null && held.stages() > 0) {
+			// Charging, the beat is the charge's own: a pale ring closing on the moment it fills and on each
+			// overchannel stage (let go then for a little more), glowing just after; at the last stage, a red
+			// one closing on the moment it would tear loose.
+			chargeBeat(g, held, bx, by, gameTime, delta.getGameTimeDeltaPartialTick(false));
+		} else if (rhythm.windowEnd() >= gameTime && rhythm.windowStart() - gameTime <= 16) {
+			// The beat: a ring closes in on the badge as the next on-beat moment comes, and glows during it.
 			float partial = delta.getGameTimeDeltaPartialTick(false);
 			double until = rhythm.windowStart() - gameTime - partial;
 			boolean onBeat = until <= 0;
@@ -390,10 +401,19 @@ public final class SpellHud {
 		dev.wildercord.player.WildercordAttachments.Charge charge = player.getAttached(dev.wildercord.player.WildercordAttachments.CHARGE);
 		if (charge != null) {
 			double progress = dev.wildercord.cast.Charging.progress(player, charge, gameTime);
-			String text = progress >= 1 ? "FULL" : Math.round(progress * 100) + "%";
+			// Overchannelled, the stage it has climbed to (✦I, ✦II, ✦III), hotter with each and quickening as it nears tearing loose.
+			int stage = charge.stage();
+			String text = stage > 0 ? "✦" + dev.wildercord.cast.Charging.roman(stage) : progress >= 1 ? "FULL" : Math.round(progress * 100) + "%";
 			int tw = font.width(text);
-			boolean blink = progress >= 1 && (gameTime / 4) % 2 == 0;
-			g.text(font, text, x0 + width - 4 - tw, textY, blink ? 0xFFFFFFFF : GOLD, true);
+			boolean tearing = stage > 0 && stage >= charge.stages();
+			boolean blink = progress >= 1 && (gameTime / (tearing ? 2 : 4)) % 2 == 0;
+			int hot = switch (stage) {
+				case 0 -> GOLD;
+				case 1 -> 0xFFFFC266;
+				case 2 -> 0xFFFF9A4A;
+				default -> 0xFFFF6A4A;
+			};
+			g.text(font, text, x0 + width - 4 - tw, textY, blink ? 0xFFFFFFFF : hot, true);
 		} else if (cooling) {
 			String time = String.format(Locale.ROOT, "%.1fs", remaining / 20.0);
 			int tw = font.width(time);
@@ -427,6 +447,36 @@ public final class SpellHud {
 		drawnTop = top;
 		drawnRight = right;
 		drawnAt = System.nanoTime();
+	}
+
+	/**
+	 * The charge's beat on the badge (see {@link dev.wildercord.spell.Overchannel}): a ring closing in over
+	 * the 16 ticks before the next beat, and a glow for the ticks just after one in which letting go
+	 * counts as on it. Pale for the charge filling and each stage; red for the moment it would tear loose.
+	 */
+	private static void chargeBeat(GuiGraphicsExtractor g, dev.wildercord.player.WildercordAttachments.Charge charge, int bx, int by, long now,
+			float partial) {
+		int stage = charge.stage();
+		long beat = dev.wildercord.spell.Overchannel.beatTime(charge.start(), charge.full(), stage, charge.stageTime());
+		boolean filled = now >= charge.start() + charge.full();
+		if (filled && dev.wildercord.spell.Overchannel.onBeat(now, beat, charge.stages())) {
+			// On the beat: let go now.
+			g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, bx - 1, by - 1, 22, 22, 0xFFFFFFFF);
+			g.fill(bx + 3, by + 3, bx + 17, by + 17, 0x50E8E0FF);
+		}
+		long next = dev.wildercord.spell.Overchannel.nextBeat(charge.start(), charge.full(), charge.stages(), stage, charge.stageTime(), now);
+		if (next == Long.MIN_VALUE) {
+			return;
+		}
+		double until = next - now - partial;
+		if (until > 16 || until < 0) {
+			return;
+		}
+		boolean tear = filled && stage >= charge.stages();
+		int size = 22 + (int) Math.round(18 * Math.min(1, until / 16.0));
+		int alpha = (int) (0x60 + 0x9F * (1 - Math.min(1, until / 16.0)));
+		int tint = tear ? 0xFF5A4A : 0xD8D0FF;
+		g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, bx + 10 - size / 2, by + 10 - size / 2, size, size, (alpha << 24) | tint);
 	}
 
 	/** A small hexagon outline, 7 pixels across: the Shield's mark. */

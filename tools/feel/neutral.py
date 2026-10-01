@@ -10,6 +10,8 @@ Families:
 
 Tonal sounds are tuned to D so the pentatonic ratios (1.0, 1.122, 1.26, 1.498, 1.682, 2.0) make a scale from one sample.
 """
+import numpy as np
+
 from feel.core import sa, event
 
 D, E, FS, A, B = sa.D, sa.E, sa.FS, sa.A, sa.B
@@ -225,6 +227,52 @@ def field_pulse(v, rng):
     return _clean(sa.mix(0.5 * beat, 0.5 * air), "pulse", 0.3, 0.05)
 
 
+# ---------------------------------------------------------------- casting as a performance
+
+
+def overchannel_crack(v, rng):
+    """An overchannel stage lands: a glassy crack through the circle and a strained tone pulled upward,
+    wavering. Charging plays it a step higher for each stage (Feels.step), so the three climb the scale."""
+    dur = 0.55
+    crack = sa.shatter(rng, count=6 + 2 * v, band=(2600, 7200), spread=0.02, tau=(0.012, 0.045))
+    strain_f = sa.sweep(sa.note(A, 0), sa.note(D, 1), dur, 0.5)
+    waver = 1 + 0.012 * sa.sine(np.full(sa.samples(dur), 9.0 + v))
+    strain = sa.lowpass(sa.soft_saw(strain_f * waver, harmonics=6), 2400) * sa.env(dur, (0, 0), (0.03, 1), (0.3, 0.55), (dur, 0))
+    knock = sa.thump(200, 90, 0.18, 0.035, drive=1.3, knock=0.4)
+    return _clean(sa.mix(0.65 * crack, 0.35 * sa.norm(strain), 0.35 * knock), "tell", 0.45, 0.12, 8000)
+
+
+def overchannel_backfire(v, rng):
+    """An overchannel held too long tears loose: a breath drawn in, the circle bursting like glass, and a
+    dull falling thud as the gathered mana scatters. Never loud enough to read as an explosion."""
+    dur = 0.9
+    draw = sa.reverse(sa.moving_band(0.25, [(0, 4200), (0.25, 900)], 0.9, rng) * sa.decay(0.25, 0.06, 0.002))
+    burst = sa.shatter(rng, count=20, band=(1400, 6000), spread=0.14)
+    fall = (sa.sine(sa.sweep(sa.note(A, 0), sa.note(A, -1) * 0.9, dur, 0.7)) + 0.6 * sa.sine(sa.sweep(sa.note(D, 0), sa.note(D, -1) * 0.9, dur, 0.7)))
+    fall = fall * sa.decay(dur, 0.25, 0.003)
+    thud = sa.thump(130, 50, 0.4, 0.07, drive=1.4)
+    return _clean(sa.mix(0.45 * draw, (0.22, 0.75 * burst), (0.22, 0.35 * fall), (0.22, 0.5 * thud)), "effect", 0.9, 0.2)
+
+
+def beat_release(v, rng):
+    """A charge let go on the beat: one clean bright chime, glass and a small bell together at D."""
+    dur = 0.6
+    x = sa.mix(sa.glass(sa.note(D, 2), dur, 0.16), (0.004, 0.55 * sa.bell(sa.note(A, 2), dur, 0.12, 2.0, 1.2)))
+    return _clean(x, "tell", 0.5, 0.14, 9000)
+
+
+def incant_whisper(v, rng):
+    """One syllable of an incantation: a breath shaped like a spoken vowel, and the faintest glass note at D
+    under it so it stays in key when played on the rune's own degree. Kept soft: it sits under the note."""
+    dur = 0.38
+    vowels = ((700, 1150), (450, 1900), (550, 950))
+    lo, hi = vowels[v % len(vowels)]
+    breath = sa.moving_band(dur, [(0, lo), (0.12, hi), (dur, lo)], 0.55, rng)
+    breath = breath * sa.env(dur, (0, 0), (0.05, 1), (0.18, 0.7), (dur, 0))
+    tone = 0.18 * sa.glass(sa.note(D, 2), dur, 0.08)
+    return _clean(sa.highpass(sa.mix(0.8 * sa.norm(breath), tone), 250), "ui", 0.35, 0.1, 7000)
+
+
 EVENTS = [
     event("tap_release", tap_release, variants=2, role="cast", subtitle="cast"),
     event("ready_ping", ready_ping, role="ui", subtitle="tell"),
@@ -251,4 +299,8 @@ EVENTS = [
     event("tell_drip", tell_drip, variants=3, role="tell", subtitle="tell"),
     event("tell_crack", tell_crack, variants=2, role="impact", subtitle="hit"),
     event("field_pulse", field_pulse, variants=3, role="pulse", subtitle="field"),
+    event("overchannel_crack", overchannel_crack, variants=2, role="tell", subtitle="tell"),
+    event("overchannel_backfire", overchannel_backfire, role="effect", subtitle="hit"),
+    event("beat_release", beat_release, role="tell", subtitle="tell"),
+    event("incant_whisper", incant_whisper, variants=3, role="ui", subtitle="tell"),
 ]

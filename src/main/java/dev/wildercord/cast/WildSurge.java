@@ -37,8 +37,9 @@ import java.util.UUID;
 import java.util.function.Consumer;
 
 /**
- * Wild magic: an overcast spell (paid for by cracking a Heart Circle) sometimes twists into
- * something unexpected. {@link WildMagic} holds the chance and the table; this makes each outcome
+ * Wild magic: an overcast spell (paid for by cracking a Heart Circle) or an overchanneled one (see
+ * {@link Charging}) sometimes twists into something unexpected, and an overchannel held too long
+ * tears loose into a harmless surge of its own ({@link #fizzle}). {@link WildMagic} holds the chance and the table; this makes each outcome
  * happen, with a swirl of its colour around the caster and a line above their hotbar.
  *
  * <p>Nothing here changes a block (the spell itself still asks {@link Casters#mayEdit} for every one
@@ -89,14 +90,21 @@ public final class WildSurge {
 	}
 
 	/**
-	 * An overcast spell is about to go off: rolls for a surge, and makes it happen if one comes up.
+	 * The chance an overcast surges: {@code mana} the caster had, {@code cost} what the spell cost (see
+	 * {@link WildMagic#chance}).
+	 */
+	static double overcastChance(ServerPlayer player, double mana, double cost) {
+		return WildMagic.chance(mana, cost, Mana.max(player));
+	}
+
+	/**
+	 * A spell that may twist is about to go off (an overcast, an overchanneled release, or both): rolls
+	 * {@code chance} for a surge, and makes it happen if one comes up.
 	 *
-	 * @param mana    the mana the caster had
-	 * @param cost    what the spell cost
 	 * @param release casts the spell as it was written, for a given cast
 	 * @return true if it surged (and the surge decided what, if anything, was cast); false to cast it as usual
 	 */
-	static boolean overcast(Cast cast, List<RuneDef> runes, boolean secret, double mana, double cost, Consumer<Cast> release) {
+	static boolean roll(Cast cast, List<RuneDef> runes, boolean secret, double chance, Consumer<Cast> release) {
 		if (!cast.alive()) return true;
 		if (!(cast.caster instanceof ServerPlayer player)) {
 			return false;
@@ -104,8 +112,8 @@ public final class WildSurge {
 		RandomSource random = player.getRandom();
 		Surge surge = FORCED.remove(player.getUUID());
 		if (surge == null) {
-			// A server can switch wild magic off (features.wild_magic): overcasts then go off as written.
-			if (!dev.wildercord.config.Config.get().wildMagic() || random.nextDouble() >= WildMagic.chance(mana, cost, Mana.max(player))) {
+			// A server can switch wild magic off (features.wild_magic): such spells then go off as written.
+			if (!dev.wildercord.config.Config.get().wildMagic() || random.nextDouble() >= chance) {
 				return false;
 			}
 			surge = WildMagic.pick(random.nextDouble(), !secret);
@@ -241,6 +249,29 @@ public final class WildSurge {
 			}
 		}
 		announce(player, surge);
+	}
+
+	/**
+	 * An overchannel held too long has torn loose: no spell goes off, but the loose magic surges into one
+	 * of the harmless outcomes that need no spell ({@link WildMagic#FIZZLES}), the forced one if it is one
+	 * of them. Nothing when the server has wild magic off.
+	 *
+	 * @return the outcome, or null for none
+	 */
+	static Surge fizzle(ServerPlayer player) {
+		Surge forced = FORCED.get(player.getUUID());
+		Surge surge;
+		if (forced != null && WildMagic.FIZZLES.contains(forced)) {
+			FORCED.remove(player.getUUID());
+			surge = forced;
+		} else if (dev.wildercord.config.Config.get().wildMagic()) {
+			surge = WildMagic.pickFizzle(player.getRandom().nextDouble());
+		} else {
+			return null;
+		}
+		surge(player, new Cast(player), List.of(), surge, c -> { });
+		Grimoire.feat(player, Feats.WILD_SURGE);
+		return surge;
 	}
 
 	/** It goes off, and again a moment later. */

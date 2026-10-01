@@ -16,8 +16,9 @@ import java.util.Map;
 
 /**
  * The hum of a spell being charged: a warm loop that follows the caster, climbing in pitch as the
- * charge builds (from 0.8 to 1.3 at full) and fading in and out with it. Like the circle in
- * {@link ChargeCircles}, every nearby client plays it from the synced charge.
+ * charge builds (from 0.8 to 1.3 at full) and fading in and out with it, then straining higher and
+ * wavering with each overchannel stage. Like the circle in {@link ChargeCircles}, every nearby client
+ * plays it from the synced charge.
  */
 public final class ChargeHum extends AbstractTickableSoundInstance {
 	/** The hum still following each caster's current charge, by entity id. */
@@ -104,8 +105,12 @@ public final class ChargeHum extends AbstractTickableSoundInstance {
 		double progress = Mth.clamp((caster.level().getGameTime() - start) / (double) Charging.fullTicks(caster), 0, 1);
 		// Eased out: a quick climb at first that settles as the charge nears full.
 		float eased = (float) (1 - (1 - progress) * (1 - progress));
-		pitch = (LOW + (HIGH - LOW) * eased) * key;
-		volume = VOLUME * fade * (0.75F + 0.25F * eased);
+		// Overchannelled, it strains: a step higher for each stage, and a waver that grows with it.
+		WildercordAttachments.Charge charge = caster.getAttached(WildercordAttachments.CHARGE);
+		int stage = charge != null && charge.start() == start ? charge.stage() : 0;
+		float strain = stage <= 0 ? 1 : (1 + 0.06F * stage) * (1 + 0.012F * stage * Mth.sin(caster.level().getGameTime() * 1.9F));
+		pitch = Math.min(2.0F, (LOW + (HIGH - LOW) * eased) * key * strain);
+		volume = VOLUME * fade * (0.75F + 0.25F * eased) * (1 + 0.08F * stage);
 		follow();
 	}
 

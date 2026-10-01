@@ -87,6 +87,22 @@ public final class WildercordNetworking {
 		}
 	}
 
+	/**
+	 * How well the caster traced the glyph of the charge that began at {@code chargeStart}, 0 to 1, sent
+	 * just before letting it go. The client scores the trace; the server only remembers it for that
+	 * charge, and believes it as far as the time the caster really spent steadying allows.
+	 */
+	public record TraceSpell(long chargeStart, float accuracy) implements CustomPacketPayload {
+		public static final Type<TraceSpell> TYPE = new Type<>(Wildercord.id("trace_spell"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, TraceSpell> CODEC =
+			StreamCodec.composite(ByteBufCodecs.VAR_LONG, TraceSpell::chargeStart, ByteBufCodecs.FLOAT, TraceSpell::accuracy, TraceSpell::new).cast();
+
+		@Override
+		public Type<TraceSpell> type() {
+			return TYPE;
+		}
+	}
+
 	/** Give a spell a custom name ("" goes back to the automatic one). */
 	public record RenameSpell(int spell, String name) implements CustomPacketPayload {
 		public static final Type<RenameSpell> TYPE = new Type<>(Wildercord.id("rename_spell"));
@@ -251,6 +267,12 @@ public final class WildercordNetworking {
 		ServerPlayNetworking.registerGlobalReceiver(ChargeSpell.TYPE, (payload, context) -> {
 			if (CASTING.allow(context.player().getUUID(), context.server().getTickCount())) {
 				dev.wildercord.cast.Charging.request(context.player(), payload.spell(), payload.start());
+			}
+		});
+		PayloadTypeRegistry.serverboundPlay().register(TraceSpell.TYPE, TraceSpell.CODEC);
+		ServerPlayNetworking.registerGlobalReceiver(TraceSpell.TYPE, (payload, context) -> {
+			if (CASTING.allow(context.player().getUUID(), context.server().getTickCount())) {
+				dev.wildercord.cast.Charging.trace(context.player(), payload.chargeStart(), payload.accuracy());
 			}
 		});
 		ServerPlayNetworking.registerGlobalReceiver(RenameSpell.TYPE, (payload, context) -> {

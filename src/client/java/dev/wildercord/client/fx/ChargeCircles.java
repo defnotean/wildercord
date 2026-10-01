@@ -24,6 +24,11 @@ import java.util.Map;
  * charge: the spell's own circle (see {@link SpellCircleParticle}), opening as the charge builds, so
  * its roundels appear one by one and it flares when full. It floats behind the caster's shoulders,
  * leaving the view and the path of the spell clear.
+ *
+ * <p>Held past full, it overchannels (see {@link dev.wildercord.spell.Overchannel}): each stage lands
+ * with a swell, a ring of sparks and a crackle across its face, and cracks it further; it trembles
+ * more and throws sparks off its rim the higher it climbs, and at its last stage it reddens as the
+ * moment it would tear loose comes on.</p>
  */
 public final class ChargeCircles {
 	private ChargeCircles() {}
@@ -158,6 +163,13 @@ public final class ChargeCircles {
 		private final float scale;
 		private final java.util.List<RuneDef> spell = new java.util.ArrayList<>();
 		private int fading = -1;
+		/** The overchannel stage the circle shows and when it landed, and the charge as last seen (for its stages and timing). */
+		private int stage;
+		private long stageTime;
+		private WildercordAttachments.Charge seen;
+		/** Each crack's place and wander, made once from the charge's start, so every client draws the same cracks. */
+		private final float[] crackAngles = new float[12];
+		private final float[] crackKinks = new float[12 * 4];
 
 		Circle(ClientLevel level, Player caster, WildercordAttachments.Charge charge, int color, float scale) {
 			super(level, caster.getX(), caster.getEyeY(), caster.getZ(), new SpellCircleOption(charge.runes(), color, RADIUS, 0, 0, 20 * 20));
@@ -166,6 +178,15 @@ public final class ChargeCircles {
 			this.scale = scale;
 			for (String id : charge.runes()) {
 				Runes.get(id).ifPresent(spell::add);
+			}
+			this.seen = charge;
+			java.util.Random cracks = new java.util.Random(charge.start() * 31 + caster.getId());
+			for (int i = 0; i < crackAngles.length; i++) {
+				// Spread round the circle: each stage's four cracks fall between the last stage's.
+				crackAngles[i] = Mth.TWO_PI * ((i % 4) / 4F + (i / 4) / 12F) + (cracks.nextFloat() - 0.5F) * 0.35F;
+			}
+			for (int i = 0; i < crackKinks.length; i++) {
+				crackKinks[i] = cracks.nextFloat() * 2 - 1;
 			}
 			move(0);
 			xo = x;
@@ -209,6 +230,131 @@ public final class ChargeCircles {
 				remove();
 			}
 			move(1);
+			if (still) {
+				seen = charge;
+				if (charge.stage() > stage) {
+					stage = charge.stage();
+					stageTime = charge.stageTime();
+					landed();
+				}
+				if (stage > 0 && fading < 0) {
+					sparks();
+				}
+			}
+		}
+
+		/** How near the channel is to tearing loose at its last stage, 0 to 1 (0 short of it). */
+		private float tension(float partial) {
+			if (seen == null || seen.stages() <= 0 || stage < seen.stages()) {
+				return 0;
+			}
+			return Mth.clamp((caster.level().getGameTime() - stageTime + partial) / (float) dev.wildercord.spell.Overchannel.GRACE, 0, 1);
+		}
+
+		/** A point on the circle's rim in the world, at angle {@code a}. */
+		private Vec3 rim(float a, float partial) {
+			org.joml.Vector3f p = orientation(partial).transform(new org.joml.Vector3f(Mth.cos(a), Mth.sin(a), 0).mul(size(partial)));
+			return centre(partial).add(p.x, p.y, p.z);
+		}
+
+		/** A stage lands: a ring of sparks flies off the rim and a crackle of light runs across the face. */
+		private void landed() {
+			Minecraft mc = Minecraft.getInstance();
+			ClientLevel level = (ClientLevel) caster.level();
+			Vec3 c = centre(1);
+			int n = 8 + 4 * stage;
+			for (int i = 0; i < n; i++) {
+				float a = Mth.TWO_PI * i / n + random.nextFloat() * 0.3F;
+				Vec3 at = rim(a, 1);
+				Vec3 out = at.subtract(c).normalize().scale(0.06 + random.nextDouble() * 0.05);
+				mc.particleEngine.add(Glimmer.mote(level, at, i % 3 == 0 ? 0xFFFFFF : lighter(color, 0.4F), 0.07F + random.nextFloat() * 0.04F,
+					0.95F, 8 + random.nextInt(6), out.x, out.y + 0.01, out.z, 0.01F));
+			}
+			for (int k = 0; k < stage; k++) {
+				Vec3 a = rim(random.nextFloat() * Mth.TWO_PI, 1);
+				Vec3 b = rim(random.nextFloat() * Mth.TWO_PI, 1);
+				Vec3 d = b.subtract(a);
+				mc.particleEngine.add(new LightParticle(level, a.x, a.y, a.z, new dev.wildercord.content.LightOption(
+					dev.wildercord.content.LightOption.ARC, lighter(color, 0.6F), (float) d.x, (float) d.y, (float) d.z, 0.012F, 1, 0, 0.6F, 4)));
+			}
+		}
+
+		/** Sparks thrown off the rim: more the higher it climbs, and more again as it nears tearing loose. */
+		private void sparks() {
+			float tension = tension(0);
+			float rate = 0.35F * stage * stage * (1 + 2 * tension);
+			Minecraft mc = Minecraft.getInstance();
+			ClientLevel level = (ClientLevel) caster.level();
+			Vec3 c = centre(1);
+			for (float left = rate; left > 0; left -= 1) {
+				if (left < 1 && random.nextFloat() > left) {
+					break;
+				}
+				Vec3 at = rim(random.nextFloat() * Mth.TWO_PI, 1);
+				Vec3 out = at.subtract(c).normalize().scale(0.03 + random.nextDouble() * 0.04);
+				int tint = tension > 0.5F && random.nextBoolean() ? 0xFF5A3A : random.nextInt(3) == 0 ? 0xFFFFFF : lighter(color, 0.45F);
+				mc.particleEngine.add(Glimmer.mote(level, at, tint, 0.05F + random.nextFloat() * 0.03F, 0.9F, 6 + random.nextInt(6),
+					out.x, out.y - 0.004, out.z, 0.015F));
+			}
+		}
+
+		/** The cracks of every stage it has climbed, each running in from the frame as its stage lands. */
+		@Override
+		protected void extras(float r, float a, float fine, float partial) {
+			if (stage <= 0) {
+				return;
+			}
+			float since = caster.level().getGameTime() - stageTime + partial;
+			float tension = tension(partial);
+			int hot = lighter(color, 0.7F);
+			for (int s = 0; s < stage; s++) {
+				// The newest stage's cracks run in over three ticks; the older ones are already there.
+				float grown = s < stage - 1 ? 1 : Mth.clamp(since / 3F, 0, 1);
+				float flicker = 0.75F + 0.25F * Mth.sin((age + partial) * 1.7F + s * 2.1F);
+				int ink = argb(a * (0.55F + 0.45F * flicker), tension > 0 ? mix(hot, 0xFF5A3A, tension) : hot);
+				for (int k = 0; k < 4; k++) {
+					crack(r, s * 4 + k, grown, fine * 1.4F, ink);
+				}
+			}
+			if (tension > 0) {
+				// The frame itself reddening as it strains.
+				ring(0, 0, r * dev.wildercord.spell.SpellSigil.FRAME, fine * 2.2F, argb(a * tension * 0.8F, 0xFF5A3A), 0.009F);
+			}
+		}
+
+		/** One crack: in from the frame toward the middle, kinking as it goes, with a short fork off its second kink. */
+		private void crack(float r, int i, float grown, float width, int ink) {
+			float angle = crackAngles[i];
+			float outer = r * dev.wildercord.spell.SpellSigil.FRAME;
+			float inner = r * (0.38F + 0.12F * Math.abs(crackKinks[i * 4]));
+			float length = (outer - inner) * grown;
+			if (length <= 0) {
+				return;
+			}
+			float pu = Mth.cos(angle) * outer;
+			float pv = Mth.sin(angle) * outer;
+			float nu = -Mth.sin(angle);
+			float nv = Mth.cos(angle);
+			for (int k = 1; k <= 3; k++) {
+				float d = outer - length * k / 3F;
+				float off = crackKinks[i * 4 + k] * r * 0.06F;
+				float qu = Mth.cos(angle) * d + nu * off;
+				float qv = Mth.sin(angle) * d + nv * off;
+				line(pu, pv, qu, qv, width * (1.2F - 0.25F * k), ink, 0.0085F);
+				if (k == 2) {
+					float fork = angle + 0.5F * Math.signum(crackKinks[i * 4 + 1] + 0.01F);
+					line(qu, qv, qu - Mth.cos(fork) * length * 0.3F, qv - Mth.sin(fork) * length * 0.3F, width * 0.6F, ink, 0.0085F);
+				}
+				pu = qu;
+				pv = qv;
+			}
+		}
+
+		private static int mix(int a, int b, float t) {
+			int r = Math.round(((a >> 16) & 0xFF) * (1 - t) + ((b >> 16) & 0xFF) * t);
+			int g = Math.round(((a >> 8) & 0xFF) * (1 - t) + ((b >> 8) & 0xFF) * t);
+			int bl = Math.round((a & 0xFF) * (1 - t) + (b & 0xFF) * t);
+			return (r << 16) | (g << 8) | bl;
 		}
 
 		@Override
@@ -224,20 +370,42 @@ public final class ChargeCircles {
 
 		@Override
 		protected float size(float partial) {
-			// A flare when the charge is full.
+			// A flare when the charge is full, a little more for each overchannel stage, and a swell as one lands.
 			float full = progress(partial) >= 1 ? 1.06F : 1F;
-			return RADIUS * scale * full;
+			float swell = 0;
+			if (stage > 0) {
+				float since = caster.level().getGameTime() - stageTime + partial;
+				swell = 0.1F * Math.max(0, 1 - since / 8F);
+			}
+			return RADIUS * scale * (full + 0.03F * stage + swell);
+		}
+
+		/** How hard it trembles: more with each stage, and more again as it nears tearing loose. */
+		private float tremble(float partial) {
+			return stage <= 0 ? 0 : 0.0035F * stage * stage * (1 + 2.5F * tension(partial));
 		}
 
 		@Override
 		protected Vec3 centre(float partial) {
-			return anchor(partial);
+			Vec3 at = anchor(partial);
+			float t = tremble(partial);
+			if (t <= 0) {
+				return at;
+			}
+			float time = caster.level().getGameTime() + partial;
+			return at.add(t * Mth.sin(time * 2.9F), t * Mth.sin(time * 3.7F + 1.3F), t * Mth.sin(time * 3.1F + 2.6F));
 		}
 
 		@Override
 		protected Quaternionf orientation(float partial) {
-			return new Quaternionf().rotationYXZ((float) Math.toRadians(-caster.getViewYRot(partial)),
+			Quaternionf q = new Quaternionf().rotationYXZ((float) Math.toRadians(-caster.getViewYRot(partial)),
 				(float) Math.toRadians(caster.getViewXRot(partial)), 0);
+			float t = tremble(partial);
+			if (t > 0) {
+				float time = caster.level().getGameTime() + partial;
+				q.rotateZ(t * 6 * Mth.sin(time * 2.3F));
+			}
+			return q;
 		}
 
 		/** The caster's own mastery of the spell they're charging (its rank and sigil), from the public look of the spell they have ready. */

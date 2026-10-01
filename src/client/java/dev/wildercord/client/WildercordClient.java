@@ -118,12 +118,16 @@ public final class WildercordClient implements ClientModInitializer {
 				dev.wildercord.client.fx.ShieldCircles.tick(client);
 				dev.wildercord.client.fx.RitualCircles.tick(client);
 				dev.wildercord.client.fx.SoarWings.tick(client);
+				dev.wildercord.client.fx.Incantations.tick(client);
+				SigilTrace.tick(client);
 				return;
 			}
 			if (client.isPaused()) {
 				return;
 			}
 			ChargeCircles.tick(client);
+			dev.wildercord.client.fx.Incantations.tick(client);
+			SigilTrace.tick(client);
 			dev.wildercord.client.fx.ShieldCircles.tick(client);
 			dev.wildercord.client.fx.RitualCircles.tick(client);
 			dev.wildercord.client.fx.BoltComets.tick(client);
@@ -137,6 +141,9 @@ public final class WildercordClient implements ClientModInitializer {
 			WellstoneHalo.tick(client);
 		});
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.ChargeHum::tick);
+		// Charging casters' incantations, drawn among the frame's other things as vanilla text.
+		net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents.COLLECT_SUBMITS.register(dev.wildercord.client.fx.Incantations::submit);
+		CastingOptions.load();
 		WildercordKeys.init();
 		SpellHud.init();
 		dev.wildercord.client.fx.FrameBenchmark.init();

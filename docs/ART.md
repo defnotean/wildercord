@@ -73,6 +73,22 @@ motif says the element, the emblem's frame says the family again (square, circle
 - **Bodies move too**: a caster raises both hands while charging and moves with the shape when it
   goes off; the beads on their Cord burn brighter as the charge builds.
 
+## Casting as a performance
+
+An overchannelled charge circle shows strain, never damage to the world: four white-hot cracks per stage
+running in from its frame (`ChargeCircles`, the circle's `extras` pass), a swell (+10%, gone in 8 ticks) and a
+ring of sparks as each stage lands, a tremble that grows with the square of the stage, and sparks off the rim. At
+its last stage the cracks and frame redden toward `#FF5A3A` as the tear comes. The caster alone sees their screen
+edges close in (a deep violet `#12051E`, reddening the same way) with one hairline crack from each corner per stage.
+
+The tracing glyph is deliberately plain: thin lavender (`#B8A8FF`) strokes round the crosshair, a white start dot,
+the traced path in gold (`#F5D56A`). It belongs to the HUD, not the world, so it never competes with a circle.
+
+Incantations are the only text magic writes in the world: lower-case italic syllables in their rune's colour,
+lightened, with a darker outline, at full brightness (glowing-sign text), 0.019 blocks a font pixel, in one line
+over the caster's shoulders, fully legible to 6 blocks and gone by 18. They rise in over 14 ticks and thin away in
+6 when the spell leaves, so the release keeps the stage to itself.
+
 ## Shields and glass
 
 A Shield is invisible until a spell comes. Then its magic circles (`ShieldCircles`: the spell that

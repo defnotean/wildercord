@@ -319,12 +319,28 @@ public final class WildercordAttachments {
 
 	/**
 	 * A spell being charged: which one, when charging began, and its runes' ids in order. Synced to
-	 * everyone nearby, who draw the spell's readable circle growing in front of the caster.
+	 * everyone nearby, who draw the spell's readable circle growing in front of the caster, read its
+	 * incantation rising from them, and see its overchannel (see {@code spell.Overchannel}): the ticks it
+	 * takes to fill ({@code full}, fixed as it began), the stages the caster's heart can hold
+	 * ({@code stages}, 0 when overchannel is off), the stage it has reached and when
+	 * ({@code stageTime}), and whether the server counts a traced glyph ({@code traceable}).
 	 */
-	public record Charge(int spell, long start, List<String> runes) {
+	public record Charge(int spell, long start, List<String> runes, int full, int stages, int stage, long stageTime, boolean traceable) {
 		public static final StreamCodec<ByteBuf, Charge> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Charge::spell, ByteBufCodecs.VAR_LONG, Charge::start,
-			ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), Charge::runes, Charge::new);
+			ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(16)), Charge::runes, ByteBufCodecs.VAR_INT, Charge::full,
+			ByteBufCodecs.VAR_INT, Charge::stages, ByteBufCodecs.VAR_INT, Charge::stage, ByteBufCodecs.VAR_LONG, Charge::stageTime,
+			ByteBufCodecs.BOOL, Charge::traceable, Charge::new);
+
+		/** A plain charge: the usual time to fill, no overchannel, no tracing. */
+		public Charge(int spell, long start, List<String> runes) {
+			this(spell, start, runes, dev.wildercord.cast.Charging.FULL, 0, 0, start, false);
+		}
+
+		/** This charge at {@code stage}, reached at {@code time}. */
+		public Charge withStage(int stage, long time) {
+			return new Charge(spell, start, runes, full, stages, stage, time, traceable);
+		}
 	}
 
 	/**

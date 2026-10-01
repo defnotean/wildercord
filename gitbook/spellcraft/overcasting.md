@@ -49,7 +49,11 @@ badge in the Cord screen shows how long until they mend.
 ![Butterflies of light flutter up and away over a group of husks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/b-wild-butterflies.jpg)
 <span>A surge of butterflies: nothing cast, but very pretty.</span>
 
-An overcast spell may **surge**, twisting into something unexpected.
+An overcast spell may **surge**, twisting into something unexpected. So may a spell held past full and
+[overchannelled](casting.md#overchannel-holding-on-past-full): 7% at its first stage, 14% at
+its second and 21% at its third, less if you traced its glyph, rolled from the same outcomes below. A spell that was both
+overcast and overchannelled rolls the two chances as one. An overchannel held too long tears loose into a surge of its
+own, always one of the harmless ones that need no spell (Butterflies, Heal All, Blink, Levitate or Slow Time).
 
 ### The chance
 

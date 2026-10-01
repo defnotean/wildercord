@@ -153,6 +153,18 @@ cooldown and duration. Both are pure, so both are unit-tested.
   generator for the language file), a spell's makeup (`Profile.of`), and the weighted, seeded offer (`offer`).
   `MasterySigil` draws the personal sigil from a seed (`seed(owner, key)`, `glyph(seed)`). See
   [Spell mastery](#spell-mastery-mastery-masterychoices-inscriptions).
+- **`Overchannel`**: casting as a performance, pure: the stages a heart holds (`stagesFor`), when a stage is due
+  and when an overheld channel tears (`due`, `tears`), the beat and the HUD's next beat (`beatTime`, `onBeat`,
+  `nextBeat`), what a release adds (`power`, `traceBonus`) and its surge chance (`surgeChance`, `combined`), the
+  drain (`drainPerTick`, `fed`), how much of a reported trace counts (`validTrace`) and what tearing loose does
+  (`backfire`, never damage). `Tuning` is the server's `channeling` settings.
+- **`TraceGlyph`**: a spell's tracing glyph (3-5 strokes between nine points, from an FNV hash of its rune ids),
+  path geometry (`resample`, `nearest`, `distanceTo`), the score of a traced path (`score`: coverage times
+  `0.4 + 0.6 × precision`, held back for a path over `LENGTH_ALLOWANCE` times the glyph's length) and the assist
+  levels (`Assist`: tolerance and pull).
+- **`Incantation`**: every rune's syllable (hand-tuned for the best known, otherwise an onset, vowel and ending
+  made from the id, never an English word or a rune's name, unique within the roster, given in roster order so a
+  new rune never changes an old one's), and a spell's incantation (`of`, `line`).
 - **`SpellSigil`**: the layout of a spell's magic circle, as fractions of its radius: the frame and
   its rays, the script band, the pattern band, the star ({p/q} with `points`/`step`, a point per
   rune), the roundels on its points (`pointOf`, `roundel`), the inner ring and the seal. The size
@@ -185,6 +197,22 @@ bonuses all end up in the cast's `power`.
 Every 5 ticks `SpellCaster.tickPlayer` runs the per-player upkeep: `Meditation`, `HeartCircles`,
 `PassiveCaster`, `Overcast` (mending), `Rhythm` (dropping a missed chain), `Charging` (the
 full-charge chime and the 12-second fizzle), `LeyWalker`, then mana regeneration.
+
+**Performed casting** (`Charging`, rules in `spell.Overchannel`). A charge fixes, as it begins, the ticks it takes
+to fill and the stages the caster's working circles hold, and prices the spell (a `Channel`, server only, with the
+ticks spent steadying and the reported trace). Every tick, for a player with a charge (`Charging.everyTick`, from
+`SpellCaster`'s tick handler, before its every-5-ticks gate), sneak held counts as steadying, and past full the
+overchannel drains `drainPerTick` from stage I on while `fed` (never the spell's own price), climbs when `due`
+(updating the synced `charge` with the stage and when it landed, so every client's beat and cracks agree), and
+tears when held `GRACE` past the last stage: `backfire` stops the charge (the release that follows does nothing),
+burns mana, dazes (`CastLock.daze`, quiet and without the recovery window a foe's seal gives, plus Slowness) and
+surges harmlessly (`WildSurge.fizzle`). The client reports a trace with `TraceSpell` just before the release;
+`Charging.trace` keeps it for that charge only. At release, `Charging.performance` reads the stage, the beat and
+`validTrace` into a `Performance` (power, surge chance), and `SpellCaster.cast(player, spell, charge, performance)`
+multiplies it into the cast's power, notes it on the `Cast` (`Cast.performance`, so `Effects.hurt` counts it inside
+the players' bonus cap through `SpellDefenceRules.capBonus(bonus, performance, cap)`), and rolls the surge with any
+overcast's as one chance (`WildSurge.roll`). The line above the hotbar says how it went; `Charging.last` keeps it for
+tests.
 
 ### Who casts: players and monsters
 
@@ -560,7 +588,7 @@ player, synced to that player only, and copied through death where noted.
 | `cracks` | count, mend time | yes | Circles cracked by overcasting, and when they mend |
 | `meditating` | bool | no (not saved) | Worked out by the server each tick |
 | `rhythm` | stacks, window | no (not saved) | The rhythm chain and the next beat |
-| `charge` | spell, start, rune ids | no (not saved) | A spell being charged; synced to **everyone** nearby, who draw its circle (and hear its hum) |
+| `charge` | spell, start, rune ids, ticks to fill, stages held, stage reached and when, traceable | no (not saved) | A spell being charged; synced to **everyone** nearby, who draw its circle (cracking as it overchannels), hear its hum and read its incantation |
 | `spell_shield` | strength, until, colour | no (not saved) | A Shield on any creature; synced to **everyone** nearby, who draw its shell |
 | `imbued_shot` | rune ids, colour | on the arrow (not saved) | An arrow fired from an imbued bow: the spell it releases where it lands (server only) |
 | `cast_pose` | shape, time | no (not saved) | The spell just cast, for its casting pose; synced to **everyone** nearby |
@@ -626,6 +654,7 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 | `EditPassive(slot, runes)` | `SpellCaster.editPassive` |
 | `TogglePassive(slot)` | `SpellCaster.togglePassive` |
 | `ChargeSpell(spell, start)` | `Charging.request` (start a charge, or release it and cast) |
+| `TraceSpell(chargeStart, accuracy)` | `Charging.trace` (how well the charge's glyph was traced, sent just before the release; the server decides how much counts) |
 | `RenameSpell(spell, name)` | `SpellCaster.rename` |
 | `InscribeScroll(spell)` | `SpellScrollItem.inscribe` |
 | `LoadoutRequest(kind, index, name)` | `Loadouts.request`: save as new, save over, load, rename, delete, or load the next one (no runes travel: the server saves its own spellbook) |
@@ -671,6 +700,21 @@ can draw the circle.
   mod's items' tooltips are wrapped as they're built (a late `ItemTooltipCallback` phase).
 - **`WildercordKeys`**: R (tap casts, hold charges), V (tap selects, hold opens the
   **`SpellWheelScreen`**), K, the unbound "cast spell N" keys and an unbound "Next loadout" key.
+- **Performed casting, the client's half.** **`SigilTrace`** follows the local charge (when the server marks it
+  traceable and the player hasn't turned tracing off): sneak held steadies, and `mixin/MouseHandlerMixin` hands the
+  frame's mouse movement to `SigilTrace.mouse` instead of turning the view (sensitivity read as vanilla does, held
+  between 0.04 and 0.3 degrees a count; the assist pulls the point toward the line); it draws the glyph round the
+  crosshair as a HUD element (16% of the screen's short side at any GUI scale) and, on release, scores the path
+  (`TraceGlyph.score`) and sends `TraceSpell` just before `ChargeSpell`. **`fx/Incantations`** speaks each charging
+  player's syllables as their roundels open (with a kit whisper) and draws them in `LevelRenderEvents.COLLECT_SUBMITS`
+  as vanilla text submits (billboarded, glowing-sign outline, full bright, fading by distance), so they render under
+  shader packs the way name tags do. **`CastingOptions`** keeps this player's choices in
+  `config/wildercord-casting.json` (tracing on or off, its assist, whose incantations show), set from
+  `MagicSettingsScreen`. The overchannel is drawn from the synced charge too: `ChargeCircles.Circle` adds four
+  cracks per stage in its `extras` pass, swells, trembles and throws `Glimmer` sparks and `LightParticle` arcs as stages
+  land and reddens near the tear; `ChargeHum` strains higher with a waver; `ScreenEffects.drawStrain` closes the
+  caster's screen edges in (a HUD element under the rest); `SpellHud` shows the stage (✦I to ✦III) and the charge's
+  beat ring.
 - **`fx/`**: everything magical is blended by `GlowLayers`: `GLOW` adds light to what's behind it
   (overlapping light burns brighter, and it never hides anything), `DARK` takes light away (void,
   for any colour carrying the `Light.DARK` flag). Both are vanilla's particle pipeline (reached
@@ -911,6 +955,14 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   Spells that fly away from the caster are filmed from the side: `director` spawns an invisible
   text display as the camera and hides the HUD (the local player isn't drawn from another camera,
   so those shots show the spell and its targets only).
+- **`WildercordPerformanceCastTest`** plays performed casting for real on a platform in the sky: a beam held to each
+  overchannel stage hits a husk 1.2x, 1.4x and 1.6x as hard as a plain release and drains spare mana (and a starved
+  channel stops climbing without touching the price), releases on the beat add their bonus, a forged trace is clamped
+  to the steadying time, a glyph traced with the test's own mouse (sneak held, the camera still) scores high and
+  steadies while an untraced release scores neutral, a client-side rival's incantation reads right and hides with the
+  option, and a channel held too long tears loose without hurting a caster on one heart. Screenshots
+  `performance_overchannel_stage_1..3`, `performance_trace_glyph`, `performance_incantation_rival` and
+  `performance_incantation_third_person`.
 - **`WildercordAffinitiesTest`** checks creature affinities (frost on a blaze against a husk, fire on
   a hoglin and a blaze, a snow golem's immunity, a Shatter through a resistance, a Runebound's own
   element, the Bestiary), the climate in the Nether and the End, and the config switches.

@@ -169,6 +169,30 @@ Tap for speed, hold for power. A full charge takes a second and a half and adds 
 while charging. While you charge, a ring or dotted line shows where the spell will go. See
 [Tap or charge]({{ '/spellcraft/casting/' | relative_url }}#tap-or-charge).
 
+### What happens if I keep holding `R` after the charge is full?
+It **overchannels**: every 1.2 seconds it climbs a stage (up to three, as your Heart Circles allow), each stronger
+(+20%, +40%, +60%) and each with a bigger chance the spell surges into wild magic. It drinks a little spare mana as it
+goes, but never the mana the spell itself costs. Let go just as the charge fills or a stage lands for 10% more. Hold on
+too long past your last stage and it tears loose. See
+[Overchannel]({{ '/spellcraft/casting/' | relative_url }}#overchannel-holding-on-past-full).
+
+### My spell tore loose and I couldn't cast for a moment.
+You held an overchannel past your last stage. The spell fizzled, the loose magic surged (harmlessly), and you were
+dazed for a second and a half and lost 30% of your mana. It never costs health. Watch the ring on your spell badge: when
+it turns red, let go. See [Holding too long]({{ '/spellcraft/casting/' | relative_url }}#holding-too-long-the-channel-tears-loose).
+
+### What's the shape round my crosshair while I charge?
+Your spell's **glyph**, a few strokes made from its runes. Hold sneak while charging to steady your hands: the camera
+holds still and the mouse traces it. A good trace makes an overchannel less likely to surge and adds a little power;
+not tracing loses nothing. You can turn it off, or make it more forgiving, in the Magic visual settings screen. See
+[Sigil tracing]({{ '/spellcraft/casting/' | relative_url }}#sigil-tracing).
+
+### What are the words rising over a caster's shoulders?
+Their spell's **incantation**: one syllable for each rune, spoken as the rune's roundel opens on their circle while they
+charge. Learn the syllables and you can read what's coming. A tap is cast without a word. The Magic visual settings
+screen can hide incantations: all of them, others' or your own. See
+[Incantations]({{ '/spellcraft/casting/' | relative_url }}#incantations).
+
 ### My charge won't start.
 A charge can't start while the spell is cooling down, with an empty spell, or without a Cord. And a charge
 held longer than 12 seconds fizzles.
@@ -321,6 +345,7 @@ never stops the server.
 | `features` | Switches for whole features: world events, duels, wild magic, magic that changes the world, creature affinities and elemental climate (all on at first) |
 | `travel` | The travel commands: whether they exist at all, how many homes each player may have, the warmup, the cooldowns, how far `/rtp` goes and how long a teleport request waits. See [Getting Around]({{ '/social/travel/' | relative_url }}#for-server-owners) |
 | `defence` | How players stand up to spells: whether the spellguard is on, how much health it needs (80% at first) and how long it takes to come back (a minute), how far a spell's bonuses may multiply it against a player (two and a half times), and how much armour counts against magic (a little over half). See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}) |
+| `channeling` | Casting as a performance: whether a charge can overchannel at all, how much power and surge chance each stage adds and how much spare mana it drains, the bonus for letting go on the beat, how long tearing loose dazes a caster and how much mana it burns, and whether sigil tracing counts and how much power it adds. Against players, whatever a performance adds counts inside the defence bonus limit. See [Overchannel]({{ '/spellcraft/casting/' | relative_url }}#overchannel-holding-on-past-full) |
 
 ### Will players flying with Soar be kicked if flying is turned off?
 No. A player soaring on [Soar]({{ '/runes/effects/wind/' | relative_url }}#soar) is allowed to fly, as a creative
@@ -332,5 +357,5 @@ anyone able to fly.
 ### I updated Wildercord. Do I need a new settings file?
 No. When the server starts (or an operator runs `/wildercord reload`), any setting the file lacks is added to it at
 its default, and everything you've already set is kept. So an older file gains the newer settings, such as the
-`travel` and `defence` sections and the creature affinity and climate switches, by itself. (A file you've written comments in is left
+`travel`, `defence` and `channeling` sections and the creature affinity and climate switches, by itself. (A file you've written comments in is left
 as it is, so the comments aren't lost; the settings it lacks still run at their defaults.)

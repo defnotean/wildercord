@@ -117,6 +117,91 @@ public final class ScreenEffects {
 		return fov * (1 + kick * curve * scale());
 	}
 
+	/**
+	 * An overchannelling caster's own view: the edges of the screen close in a little more with each
+	 * stage, breathing with the hum, with a hairline crack running in from each corner per stage; at the
+	 * last stage they redden and close faster as the moment it would tear loose comes on. Only the
+	 * caster sees it (everyone sees the circle crack), and the screen-effect setting softens it.
+	 */
+	public static void drawStrain(GuiGraphicsExtractor g, net.minecraft.client.DeltaTracker delta) {
+		Minecraft mc = Minecraft.getInstance();
+		if (mc.player == null || mc.level == null) {
+			return;
+		}
+		dev.wildercord.player.WildercordAttachments.Charge charge = mc.player.getAttached(dev.wildercord.player.WildercordAttachments.CHARGE);
+		if (charge == null || charge.stage() <= 0) {
+			return;
+		}
+		float partial = delta.getGameTimeDeltaPartialTick(false);
+		float now = mc.level.getGameTime() + partial;
+		int stage = charge.stage();
+		float tension = stage >= charge.stages()
+			? Mth.clamp((now - charge.stageTime()) / dev.wildercord.spell.Overchannel.GRACE, 0, 1) : 0;
+		float soften = Math.max(0.4F, scale());
+		float breath = 0.85F + 0.15F * Mth.sin(now * (0.25F + 0.1F * stage));
+		int w = g.guiWidth();
+		int h = g.guiHeight();
+		int band = Math.max(16, (int) (Math.min(w, h) * (0.06F + 0.045F * stage + 0.08F * tension)));
+		float strength = (0.16F + 0.08F * stage + 0.2F * tension) * breath * soften;
+		int tint = tension > 0 ? lerpColor(0x12051E, 0x3A0808, tension) : 0x12051E;
+		for (int x = 0; x < band; x += 2) {
+			float f = 1 - x / (float) band;
+			int a = (int) (255 * strength * f * f);
+			if (a <= 0) {
+				continue;
+			}
+			int color = (Math.min(255, a) << 24) | tint;
+			g.fill(x, x, w - x, x + 2, color);
+			g.fill(x, h - x - 2, w - x, h - x, color);
+			g.fill(x, x + 2, x + 2, h - x - 2, color);
+			g.fill(w - x - 2, x + 2, w - x, h - x - 2, color);
+		}
+		// A hairline crack in from each corner for every stage, pale, wandering a little.
+		int crack = ((int) (150 * soften * breath) << 24) | (tension > 0.5F ? 0xFFB0A0 : 0xD8CCFF);
+		int length = (int) (band * 1.6F);
+		for (int s = 0; s < stage; s++) {
+			for (int corner = 0; corner < 4; corner++) {
+				int sx = (corner & 1) == 0 ? 1 : -1;
+				int sy = (corner & 2) == 0 ? 1 : -1;
+				int x0 = sx > 0 ? 0 : w - 1;
+				int y0 = sy > 0 ? 0 : h - 1;
+				// Each stage's crack leaves its corner at its own angle.
+				float angle = 0.35F + 0.4F * s + 0.1F * corner;
+				int px = x0;
+				int py = y0;
+				for (int k = 1; k <= 4; k++) {
+					float d = length * k / 4F;
+					float wobble = ((s * 7 + corner * 3 + k * 5) % 5 - 2) * 0.12F;
+					int qx = x0 + sx * (int) (Mth.cos(angle + wobble) * d);
+					int qy = y0 + sy * (int) (Mth.sin(angle + wobble) * d);
+					hairline(g, px, py, qx, qy, crack);
+					px = qx;
+					py = qy;
+				}
+			}
+		}
+	}
+
+	/** A one-pixel line from one point to another, as a single turned bar. */
+	private static void hairline(GuiGraphicsExtractor g, int x0, int y0, int x1, int y1, int color) {
+		float length = (float) Math.hypot(x1 - x0, y1 - y0);
+		if (length < 1) {
+			return;
+		}
+		g.pose().pushMatrix();
+		g.pose().translate(x0, y0);
+		g.pose().rotate((float) Math.atan2(y1 - y0, x1 - x0));
+		g.fill(0, 0, Math.round(length), 1, color);
+		g.pose().popMatrix();
+	}
+
+	private static int lerpColor(int a, int b, float t) {
+		int r = Math.round(((a >> 16) & 0xFF) * (1 - t) + ((b >> 16) & 0xFF) * t);
+		int gr = Math.round(((a >> 8) & 0xFF) * (1 - t) + ((b >> 8) & 0xFF) * t);
+		int bl = Math.round((a & 0xFF) * (1 - t) + (b & 0xFF) * t);
+		return (r << 16) | (gr << 8) | bl;
+	}
+
 	/** A Domain's tint: a soft coloured band around the edges of the screen. */
 	public static void drawTint(GuiGraphicsExtractor g) {
 		if (tintAlpha <= 0.01F) {

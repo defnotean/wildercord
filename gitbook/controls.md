@@ -11,7 +11,7 @@ keys.
 
 | Key | Default | What it does |
 |---|---|---|
-| Cast spell (hold to charge) | `R` | **Tap** to cast your selected spell at once. **Hold** to charge it (up to +40% power at a full charge), then let go to cast. See [Casting](spellcraft/casting.md#tap-or-charge). |
+| Cast spell (hold to charge) | `R` | **Tap** to cast your selected spell at once. **Hold** to charge it (up to +40% power at a full charge), then let go to cast. Keep holding past full to [overchannel](spellcraft/casting.md#overchannel-holding-on-past-full), and let go on the beat for a little more. See [Casting](spellcraft/casting.md#tap-or-charge). |
 | Next spell (hold for the wheel) | `V` | **Tap** to select your next spell. **Hold** for the spell wheel (with two or more spells). See [Switching spells](spellcraft/casting.md#switching-spells). |
 | Open Cord | `K` | Opens the [Cord screen](spellcraft/cord-screen.md). |
 | Open backpack | `B` | Opens the backpack in your Backpack slot, in the world or from your inventory. Press it again (or `E`) to close it. See [Backpacks](items/backpacks.md). |
@@ -21,6 +21,7 @@ keys.
 | Cast spell 4 | not set | The same for spell 4. |
 | Cast spell 5 (the tome's) | not set | The same for the fifth spell, while the Tome of the Fifth Page is in its slot (or your offhand). |
 | Next loadout | not set | Loads your next saved loadout and names it above your hotbar. Refused while you charge a spell, duel or are sealed in ice. See [Loadouts](spellcraft/loadouts.md#switching-with-a-key). |
+| Magic visual settings | not set | Opens your own magic settings: how spells look (yours and others'), reduced flash, camera motion, and how you cast: [sigil tracing](spellcraft/casting.md#sigil-tracing) on or off, how much it helps, and whose [incantations](spellcraft/casting.md#incantations) you see. |
 
 A key press counts as a **hold** once it's been down for a quarter of a second. Shorter than that is a tap.
 
@@ -38,6 +39,7 @@ A key press counts as a **hold** once it's been down for a quarter of a second. 
 | Use a Spell Scroll | Cast the spell on it, once |
 | Use a Torn Page | Read the riddle of a secret spell |
 | Sneak and stand still, wearing a Cord | Meditate: mana comes back twice as fast. When your heart is ready, meditate for 10 seconds without getting hurt to form a Heart Circle |
+| Hold sneak while charging a spell | Steady your hands: the camera holds still and the mouse traces the spell's glyph round the crosshair. See [Sigil tracing](spellcraft/casting.md#sigil-tracing) |
 | Meditate with a Blank Rune in hand, in the right land at the right moment | Attune it (see [Runes of the World](runes/world.md)) |
 | Sneak and punch a Training Dummy | Pick it back up |
 | Sneak and use your familiar | Tell it to stay, or to follow again |
