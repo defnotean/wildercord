@@ -131,7 +131,15 @@ class DataFormatTest {
 					recipe.getAsJsonObject("key").entrySet().forEach(key -> ingredient(key.getValue(), file + " key " + key.getKey()));
 					stack(recipe.getAsJsonObject("result"), file + " result");
 				}
-				case "minecraft:crafting_shapeless", "wildercord:upgrade", "wildercord:cord_upgrade" -> {
+				case "minecraft:smithing_transform" -> {
+					allowed(recipe, file, "type", "template", "base", "addition", "result");
+					required(recipe, file, "template", "base", "addition", "result");
+					for (String part : List.of("template", "base", "addition")) {
+						ingredient(recipe.get(part), file + " " + part);
+					}
+					stack(recipe.getAsJsonObject("result"), file + " result");
+				}
+				case "minecraft:crafting_shapeless", "wildercord:upgrade", "wildercord:cord_upgrade", "wildercord:manual_pages" -> {
 					allowed(recipe, file, "type", "category", "group", "show_notification", "ingredients", "result");
 					required(recipe, file, "ingredients", "result");
 					recipe.getAsJsonArray("ingredients").forEach(ingredient -> ingredient(ingredient, file + " ingredient"));
