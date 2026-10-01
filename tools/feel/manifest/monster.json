@@ -1,0 +1,283 @@
+{
+  "events": {
+    "monster_bramble_ambient": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_bramble_ambient_1",
+        "kit/monster/monster_bramble_ambient_2"
+      ],
+      "subtitle": "bramblewalker.ambient"
+    },
+    "monster_bramble_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_bramble_death"
+      ],
+      "subtitle": "bramblewalker.death"
+    },
+    "monster_bramble_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_bramble_hurt_1",
+        "kit/monster/monster_bramble_hurt_2"
+      ],
+      "subtitle": "bramblewalker.hurt"
+    },
+    "monster_bramble_lash": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_bramble_lash"
+      ],
+      "subtitle": "bramblewalker.lash"
+    },
+    "monster_bramble_rear": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_bramble_rear"
+      ],
+      "subtitle": "bramblewalker.rear"
+    },
+    "monster_bubble_pop": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_bubble_pop"
+      ],
+      "subtitle": "frog.pop"
+    },
+    "monster_frog_ambient": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_ambient_1",
+        "kit/monster/monster_frog_ambient_2"
+      ],
+      "subtitle": "frog.ambient"
+    },
+    "monster_frog_croak": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_croak"
+      ],
+      "subtitle": "frog.ambient"
+    },
+    "monster_frog_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_death"
+      ],
+      "subtitle": "frog.death"
+    },
+    "monster_frog_gulp": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_gulp"
+      ],
+      "subtitle": "frog.gulp"
+    },
+    "monster_frog_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_hurt_1",
+        "kit/monster/monster_frog_hurt_2"
+      ],
+      "subtitle": "frog.hurt"
+    },
+    "monster_frog_spit": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_spit"
+      ],
+      "subtitle": "frog.spit"
+    },
+    "monster_frog_swell": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_swell"
+      ],
+      "subtitle": "frog.swell"
+    },
+    "monster_frog_tongue": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_frog_tongue"
+      ],
+      "subtitle": "frog.tongue"
+    },
+    "monster_geode_ambient": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_geode_ambient_1",
+        "kit/monster/monster_geode_ambient_2"
+      ],
+      "subtitle": "geode_crawler.ambient"
+    },
+    "monster_geode_crack": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_geode_crack"
+      ],
+      "subtitle": "geode_crawler.crack"
+    },
+    "monster_geode_curl": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_geode_curl"
+      ],
+      "subtitle": "geode_crawler.curl"
+    },
+    "monster_geode_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_geode_death"
+      ],
+      "subtitle": "geode_crawler.death"
+    },
+    "monster_geode_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_geode_hurt_1",
+        "kit/monster/monster_geode_hurt_2"
+      ],
+      "subtitle": "geode_crawler.hurt"
+    },
+    "monster_geode_rattle": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_geode_rattle"
+      ],
+      "subtitle": "geode_crawler.rattle"
+    },
+    "monster_geode_roll": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_geode_roll"
+      ],
+      "subtitle": "geode_crawler.roll"
+    },
+    "monster_gloom_ambient": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_gloom_ambient_1",
+        "kit/monster/monster_gloom_ambient_2"
+      ],
+      "subtitle": "gloomstalker.ambient"
+    },
+    "monster_gloom_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_gloom_death"
+      ],
+      "subtitle": "gloomstalker.death"
+    },
+    "monster_gloom_growl": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_gloom_growl"
+      ],
+      "subtitle": "gloomstalker.growl"
+    },
+    "monster_gloom_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_gloom_hurt_1",
+        "kit/monster/monster_gloom_hurt_2"
+      ],
+      "subtitle": "gloomstalker.hurt"
+    },
+    "monster_gloom_pounce": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_gloom_pounce"
+      ],
+      "subtitle": "gloomstalker.pounce"
+    },
+    "monster_gloom_reveal": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_gloom_reveal"
+      ],
+      "subtitle": "gloomstalker.reveal"
+    },
+    "monster_harpy_ambient": {
+      "attenuation": 32,
+      "files": [
+        "kit/monster/monster_harpy_ambient_1",
+        "kit/monster/monster_harpy_ambient_2"
+      ],
+      "subtitle": "harpy.ambient"
+    },
+    "monster_harpy_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_harpy_death"
+      ],
+      "subtitle": "harpy.death"
+    },
+    "monster_harpy_dive": {
+      "attenuation": 32,
+      "files": [
+        "kit/monster/monster_harpy_dive"
+      ],
+      "subtitle": "harpy.dive"
+    },
+    "monster_harpy_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_harpy_hurt_1",
+        "kit/monster/monster_harpy_hurt_2"
+      ],
+      "subtitle": "harpy.hurt"
+    },
+    "monster_harpy_shriek": {
+      "attenuation": 48,
+      "files": [
+        "kit/monster/monster_harpy_shriek"
+      ],
+      "subtitle": "harpy.shriek"
+    },
+    "monster_ooze_absorb": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_ooze_absorb"
+      ],
+      "subtitle": "ooze.absorb"
+    },
+    "monster_ooze_ambient": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_ooze_ambient_1",
+        "kit/monster/monster_ooze_ambient_2"
+      ],
+      "subtitle": "ooze.ambient"
+    },
+    "monster_ooze_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_ooze_death"
+      ],
+      "subtitle": "ooze.death"
+    },
+    "monster_ooze_grow": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_ooze_grow"
+      ],
+      "subtitle": "ooze.grow"
+    },
+    "monster_ooze_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_ooze_hurt_1",
+        "kit/monster/monster_ooze_hurt_2"
+      ],
+      "subtitle": "ooze.hurt"
+    },
+    "monster_ooze_split": {
+      "attenuation": 0,
+      "files": [
+        "kit/monster/monster_ooze_split"
+      ],
+      "subtitle": "ooze.split"
+    }
+  },
+  "part": "monster"
+}

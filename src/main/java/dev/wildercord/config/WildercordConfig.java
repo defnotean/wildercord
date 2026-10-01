@@ -47,6 +47,7 @@ import java.util.Set;
  * @param resonances         each world's own resonances and rune quirks: see {@link ResonanceSettings}
  * @param residues           the lasting marks big magic leaves on the world: see {@link ResidueSettings}
  * @param power              places and times of power (ley crossings, the moon, the hour, the weather): see {@link PowerSettings}
+ * @param monsters           the magical monsters of the wilds (Bramblewalkers, Gloomstalkers...): see {@link MonsterSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -77,11 +78,12 @@ public record WildercordConfig(
 	boolean unreadRunes,
 	ResonanceSettings resonances,
 	ResidueSettings residues,
-	PowerSettings power
+	PowerSettings power,
+	MonsterSettings monsters
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
 		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, MasterySettings.DEFAULTS,
-		ChannelingSettings.DEFAULTS, true, ResonanceSettings.DEFAULTS, ResidueSettings.DEFAULTS, PowerSettings.DEFAULTS);
+		ChannelingSettings.DEFAULTS, true, ResonanceSettings.DEFAULTS, ResidueSettings.DEFAULTS, PowerSettings.DEFAULTS, MonsterSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -206,6 +208,43 @@ public record WildercordConfig(
 		public static final PowerSettings DEFAULTS = new PowerSettings(true, dev.wildercord.spell.ClimateRules.CROSSING_BONUS, true, 1.0);
 	}
 
+	/**
+	 * The magical monsters of the wilds (the {@code monsters} section): six creatures that spawn on their own in forests,
+	 * mountains, swamps and caves. A file written before the section existed reads as these defaults.
+	 *
+	 * @param enabled          whether any of them spawn on their own at all (spawn eggs and commands still work)
+	 * @param spawnRate        how often they spawn, times this (0 stops them, 2 is twice as often). Read when a world loads,
+	 *                         since it sets their weight among the other monsters; the switches below take effect at once
+	 * @param bramblewalker    walking thickets of the forests at night
+	 * @param gloomstalker     shadow panthers of dark forests and the deep caves
+	 * @param thunderwingHarpy storm-feathered hunters of the peaks
+	 * @param geodeCrawler     crystal-backed beetles of the caves
+	 * @param bogWitchFrog     great poison-spitting frogs of the swamps
+	 * @param manaOoze         spell-eating slimes of the deep and the ley lines
+	 */
+	public record MonsterSettings(boolean enabled, double spawnRate, boolean bramblewalker, boolean gloomstalker, boolean thunderwingHarpy,
+			boolean geodeCrawler, boolean bogWitchFrog, boolean manaOoze) {
+		public static final MonsterSettings DEFAULTS = new MonsterSettings(true, 1.0, true, true, true, true, true, true);
+		/** The most {@link #spawnRate} goes: beyond this they would crowd out every other monster. */
+		public static final double MAX_SPAWN_RATE = 4.0;
+
+		/** Whether the monster with this id (its entity id's path: {@code bramblewalker}...) may spawn on its own. */
+		public boolean spawns(String id) {
+			if (!enabled || spawnRate <= 0) {
+				return false;
+			}
+			return switch (id) {
+				case "bramblewalker" -> bramblewalker;
+				case "gloomstalker" -> gloomstalker;
+				case "thunderwing_harpy" -> thunderwingHarpy;
+				case "geode_crawler" -> geodeCrawler;
+				case "bog_witch_frog" -> bogWitchFrog;
+				case "mana_ooze" -> manaOoze;
+				default -> false;
+			};
+		}
+	}
+
 	/** The file's format version, written so later versions can migrate it. */
 	public static final int VERSION = 1;
 
@@ -301,7 +340,16 @@ public record WildercordConfig(
 				r.bool("places_of_power", "ley_crossings", d.power.leyCrossings()),
 				r.number("places_of_power", "crossing_bonus", d.power.crossingBonus(), 0, 0.5),
 				r.bool("places_of_power", "celestial", d.power.celestial()),
-				r.number("places_of_power", "celestial_multiplier", d.power.celestialMultiplier(), 0, 2)));
+				r.number("places_of_power", "celestial_multiplier", d.power.celestialMultiplier(), 0, 2)),
+			new MonsterSettings(
+				r.bool("monsters", "enabled", d.monsters.enabled()),
+				r.number("monsters", "spawn_rate", d.monsters.spawnRate(), 0, MonsterSettings.MAX_SPAWN_RATE),
+				r.bool("monsters", "bramblewalker", d.monsters.bramblewalker()),
+				r.bool("monsters", "gloomstalker", d.monsters.gloomstalker()),
+				r.bool("monsters", "thunderwing_harpy", d.monsters.thunderwingHarpy()),
+				r.bool("monsters", "geode_crawler", d.monsters.geodeCrawler()),
+				r.bool("monsters", "bog_witch_frog", d.monsters.bogWitchFrog()),
+				r.bool("monsters", "mana_ooze", d.monsters.manaOoze())));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -326,6 +374,8 @@ public record WildercordConfig(
 		KEYS.put("harmonies", Set.of("enabled", "count", "reroll_salt", "announce", "quirks"));
 		KEYS.put("residues", Set.of("enabled", "min_spell_cost", "lifetime_multiplier", "max_per_chunk", "max_per_dimension"));
 		KEYS.put("places_of_power", Set.of("ley_crossings", "crossing_bonus", "celestial", "celestial_multiplier"));
+		KEYS.put("monsters", Set.of("enabled", "spawn_rate", "bramblewalker", "gloomstalker", "thunderwing_harpy", "geode_crawler", "bog_witch_frog",
+			"mana_ooze"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -595,6 +645,21 @@ public record WildercordConfig(
 		powerSection.addProperty("celestial", power.celestial());
 		powerSection.addProperty("celestial_multiplier", power.celestialMultiplier());
 		root.add("places_of_power", powerSection);
+
+		JsonObject monsterSection = new JsonObject();
+		monsterSection.addProperty("_about", "The magical monsters of the wilds: Bramblewalkers in the forests at night, Gloomstalkers in dark forests and "
+			+ "deep caves, Thunderwing Harpies on the peaks, Geode Crawlers in caves, Bog Witch-Frogs in swamps and Mana Oozes in the deep and on ley "
+			+ "lines. enabled and each creature's switch decide whether they spawn on their own (at once, with /wildercord reload); spawn_rate "
+			+ "multiplies how often (0 to 4, read when a world loads). None spawn on Peaceful.");
+		monsterSection.addProperty("enabled", monsters.enabled());
+		monsterSection.addProperty("spawn_rate", monsters.spawnRate());
+		monsterSection.addProperty("bramblewalker", monsters.bramblewalker());
+		monsterSection.addProperty("gloomstalker", monsters.gloomstalker());
+		monsterSection.addProperty("thunderwing_harpy", monsters.thunderwingHarpy());
+		monsterSection.addProperty("geode_crawler", monsters.geodeCrawler());
+		monsterSection.addProperty("bog_witch_frog", monsters.bogWitchFrog());
+		monsterSection.addProperty("mana_ooze", monsters.manaOoze());
+		root.add("monsters", monsterSection);
 		return GSON.toJson(root) + "\n";
 	}
 

@@ -11,6 +11,8 @@
     "minecraft:piglin_brute",
     "minecraft:zombified_piglin",
     "minecraft:slime",
-    "wildercord:cinder_warden"
+    "wildercord:cinder_warden",
+    "wildercord:thunderwing_harpy",
+    "wildercord:bog_witch_frog"
   ]
 }

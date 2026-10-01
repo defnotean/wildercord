@@ -105,8 +105,8 @@ public final class Effects {
 	/** Thirst on the effect being applied: the share of the damage it deals that heals its caster (0 = none). */
 	private static double thirst;
 
-	/** The element of the effect being applied right now (empty outside one). */
-	static String currentElementNow() {
+	/** The element of the effect being applied right now (empty outside one): the monsters of the wilds ask, as a spell lands on them. */
+	public static String currentElementNow() {
 		return currentElement;
 	}
 
@@ -161,6 +161,8 @@ public final class Effects {
 		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
 		dev.wildercord.familiar.Familiars.onSpell(cast, hit, node.effect.element());
 		Dungeons.onSpell(cast, hit, node.effect.element());
+		// Monsters that answer magic: a Gloomstalker shown by light, a harpy dragged down by earth.
+		dev.wildercord.monster.Monsters.onSpell(cast, hit, node.effect);
 	}
 
 	/**
