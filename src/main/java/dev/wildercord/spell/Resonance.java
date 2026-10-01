@@ -22,6 +22,12 @@ import java.util.Optional;
  */
 public record Resonance(String id, String name, String riddle, List<String> runes, String twist, int color) {
 	public static final String KEY_PREFIX = "resonance:";
+	/**
+	 * A found resonance's price and cooldown, as multiples of the ordinary spell's: its twist is a modest extra, and it
+	 * costs a little for it. Until it's found, everything shows (and the finding cast charges) the ordinary spell.
+	 */
+	public static final double COST = 1.15;
+	public static final double COOLDOWN = 1.2;
 	/** A riddle read: the Grimoire's {@code hint:} entries are riddles, worth no mana until solved. */
 	public static final String HINT_PREFIX = "hint:" + KEY_PREFIX;
 

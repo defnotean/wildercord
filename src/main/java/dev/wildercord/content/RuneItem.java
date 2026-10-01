@@ -91,6 +91,12 @@ public class RuneItem extends Item {
 		return Component.translatableWithFallback("rune." + def.id().replace(':', '.') + ".desc", def.description());
 	}
 
+	/**
+	 * How a rune item's tooltip tells its text: in full here. The client tells it as far as its player has read the rune
+	 * (a hint, the text with its numbers veiled, or in full: see {@code spell.RuneReading}), and sets its own.
+	 */
+	public static volatile java.util.function.Function<RuneDef, MutableComponent> describe = RuneItem::runeDescription;
+
 	/** "Effect · Tier II · Fire", coloured. */
 	public static MutableComponent familyLine(RuneDef def) {
 		String family = def.family().name().toLowerCase(Locale.ROOT);
@@ -134,7 +140,7 @@ public class RuneItem extends Item {
 			knotLines(def, builder);
 			return;
 		}
-		builder.accept(runeDescription(def).withStyle(ChatFormatting.GRAY));
+		builder.accept(describe.apply(def).withStyle(ChatFormatting.GRAY));
 		int rank = rankOf(stack);
 		if (rank > 1) {
 			builder.accept(Component.translatable("tooltip.wildercord.rank", roman(rank), Math.round((Ranks.power(rank) - 1) * 100)).withColor(0xE8C46A));
@@ -211,6 +217,8 @@ public class RuneItem extends Item {
 			if (!known) {
 				// Learning something new is an arcane thing.
 				dev.wildercord.cast.PlayerAffinities.learnedRune(serverPlayer);
+				// It's known now, not yet understood: its text stays a hint until it's been cast and seen at work.
+				dev.wildercord.cast.RuneReadings.learned(serverPlayer, def);
 			}
 			// A higher rank upgrades the rune everywhere it's threaded: every spell reads it from here.
 			RuneRanks.raise(serverPlayer, def.id(), rank);

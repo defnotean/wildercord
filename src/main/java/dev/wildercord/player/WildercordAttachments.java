@@ -487,6 +487,65 @@ public final class WildercordAttachments {
 		builder -> builder.persistent(Codec.LONG).copyOnDeath()
 	);
 
+	/**
+	 * Reading runes (see {@code spell.RuneReading}): how far the player is with each rune they're still reading (rune id to
+	 * progress). A rune not listed is understood, so every rune known before reading existed, and every starter rune,
+	 * needs nothing here; an entry is dropped the moment its rune is understood. Saved, synced for the Codex, kept
+	 * through death.
+	 */
+	public static final AttachmentType<Map<String, Integer>> RUNE_READING = AttachmentRegistry.create(
+		Wildercord.id("rune_reading"),
+		builder -> builder
+			.initializer(Map::of)
+			.persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
+			.syncWith(ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.VAR_INT), AttachmentSyncPredicate.targetOnly())
+			.copyOnDeath()
+	);
+
+	/**
+	 * What this player may know of their world's own magic (see {@code spell.ResonanceLore}, which decides it): the
+	 * resonances they found, read the riddle of, or heard announced, the quirks they've met, and how many resonances the
+	 * world holds. Worked out by the server from the world and the player's Grimoire whenever either changes (and at
+	 * login), so it's never saved: a client is never sent anything else.
+	 */
+	public record WorldLore(List<dev.wildercord.spell.ResonanceLore.View> resonances, List<dev.wildercord.spell.ResonanceLore.QuirkView> quirks, int total) {
+		public static final WorldLore NONE = new WorldLore(List.of(), List.of(), 0);
+
+		public WorldLore {
+			resonances = List.copyOf(resonances);
+			quirks = List.copyOf(quirks);
+		}
+
+		private static final StreamCodec<ByteBuf, dev.wildercord.spell.ResonanceLore.View> VIEW = StreamCodec.of(
+			(buf, view) -> {
+				ByteBufCodecs.STRING_UTF8.encode(buf, view.id());
+				ByteBufCodecs.STRING_UTF8.encode(buf, view.name());
+				ByteBufCodecs.STRING_UTF8.encode(buf, view.riddle());
+				ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(8)).encode(buf, view.runes());
+				ByteBufCodecs.STRING_UTF8.encode(buf, view.twist());
+				ByteBufCodecs.INT.encode(buf, view.color());
+				ByteBufCodecs.BOOL.encode(buf, view.found());
+				ByteBufCodecs.BOOL.encode(buf, view.hinted());
+				ByteBufCodecs.STRING_UTF8.encode(buf, view.finder());
+			},
+			buf -> new dev.wildercord.spell.ResonanceLore.View(ByteBufCodecs.STRING_UTF8.decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf),
+				ByteBufCodecs.STRING_UTF8.decode(buf), ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list(8)).decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf),
+				ByteBufCodecs.INT.decode(buf), ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.BOOL.decode(buf), ByteBufCodecs.STRING_UTF8.decode(buf)));
+		private static final StreamCodec<ByteBuf, dev.wildercord.spell.ResonanceLore.QuirkView> QUIRK = StreamCodec.composite(
+			ByteBufCodecs.STRING_UTF8, dev.wildercord.spell.ResonanceLore.QuirkView::id, ByteBufCodecs.STRING_UTF8, dev.wildercord.spell.ResonanceLore.QuirkView::text,
+			dev.wildercord.spell.ResonanceLore.QuirkView::new);
+		public static final StreamCodec<ByteBuf, WorldLore> STREAM_CODEC = StreamCodec.composite(
+			VIEW.apply(ByteBufCodecs.list(64)), WorldLore::resonances, QUIRK.apply(ByteBufCodecs.list(64)), WorldLore::quirks, ByteBufCodecs.VAR_INT, WorldLore::total,
+			WorldLore::new);
+	}
+
+	public static final AttachmentType<WorldLore> WORLD_LORE = AttachmentRegistry.create(
+		Wildercord.id("world_lore"),
+		builder -> builder
+			.initializer(() -> WorldLore.NONE)
+			.syncWith(WorldLore.STREAM_CODEC, AttachmentSyncPredicate.targetOnly())
+	);
+
 	public static void init() {}
 }
 

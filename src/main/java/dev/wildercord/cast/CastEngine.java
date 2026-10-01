@@ -536,6 +536,8 @@ public final class CastEngine {
 				});
 			}
 		}
+		// A world's resonance riding this cast may add its twist to the hit (see TwistMagic).
+		TwistMagic.onHit(cast, g, hit);
 		cast.siphon(aliveBefore.stream().filter(e -> Targets.canHarm(cast.caster, e) || !e.isAlive()).count());
 		if (anchored == null) {
 			return;

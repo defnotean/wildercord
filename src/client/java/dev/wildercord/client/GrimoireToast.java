@@ -43,9 +43,13 @@ public class GrimoireToast implements Toast {
 	private Visibility visibility = Visibility.SHOW;
 
 	private GrimoireToast(Component title, Component name, int color, String glyph, Object token) {
+		this(title, name, ItemStack.EMPTY, color, glyph, token);
+	}
+
+	private GrimoireToast(Component title, Component name, ItemStack icon, int color, String glyph, Object token) {
 		this.title = title;
 		this.name = name;
-		this.icon = ItemStack.EMPTY;
+		this.icon = icon;
 		this.color = color;
 		this.glyph = glyph;
 		this.token = token;
@@ -56,6 +60,18 @@ public class GrimoireToast implements Toast {
 		Component title = Component.translatable(level <= 1 ? "toast.wildercord.affinity_new" : "toast.wildercord.affinity");
 		Component name = Component.translatable("toast.wildercord.affinity_level", Component.translatable("element.wildercord." + element), RuneItem.roman(level));
 		return new GrimoireToast(title, name, RuneColors.element(element), element, token(element, level));
+	}
+
+	/**
+	 * Something of this world's magic revealed: "A resonance answers: the Glasswind Rite" (with a book for its icon), or
+	 * "This world's nature: Here, Shock cracks harder in the rain." The token carries the kind and name, for the tests.
+	 */
+	public static GrimoireToast revealed(String kind, String name, int color) {
+		boolean quirk = dev.wildercord.cast.WorldResonances.Revealed.QUIRK.equals(kind);
+		Component title = Component.translatable(quirk ? "toast.wildercord.quirk" : "toast.wildercord.resonance");
+		String shown = name.isEmpty() ? name : Character.toUpperCase(name.charAt(0)) + name.substring(1);
+		ItemStack icon = new ItemStack(quirk ? Items.COMPASS : Items.AMETHYST_CLUSTER);
+		return new GrimoireToast(title, Component.literal(shown), icon, color, null, kind + ":" + name);
 	}
 
 	/** The token an affinity's toast carries, so it can be found among the toasts (the game tests look for it). */

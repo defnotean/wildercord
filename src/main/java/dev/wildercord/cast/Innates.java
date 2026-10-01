@@ -83,6 +83,8 @@ public final class Innates {
 		RuneDef rune = Runes.INNATE.get(player.getRandom().nextInt(Runes.INNATE.size()));
 		player.setAttached(WildercordAttachments.INNATE, rune.id());
 		Spellbooks.learn(player, rune.id());
+		// A heart's own rune tells what it is only by being used.
+		RuneReadings.learned(player, rune);
 		int color = RuneColors.of(rune);
 		player.connection.send(new ClientboundSetTitlesAnimationPacket(10, 60, 20));
 		player.connection.send(new ClientboundSetTitleTextPacket(Component.literal(rune.name()).withColor(color)));

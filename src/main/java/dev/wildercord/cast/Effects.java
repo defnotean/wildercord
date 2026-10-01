@@ -144,6 +144,7 @@ public final class Effects {
 			thirst = outerThirst;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
+		WorldQuirks.after(cast, node, hit, groupPower);
 		WorldMagic.onSpell(cast, node, hit, groupPower);
 		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
 		dev.wildercord.familiar.Familiars.onSpell(cast, hit, node.effect.element());
@@ -220,8 +221,9 @@ public final class Effects {
 		// Casting gear (a staff of this element, a Focus of Thrift): its own factor, set when the spell was cast.
 		double gear = cast.gearPower(rune.element());
 		double power = SpellNumbers.power(node) * groupPower * cast.power * affinity * innate * dev.wildercord.spell.Ranks.power(rank) * gear
-			* ExplorerEffects.swing(cast, node, hit);
-		double duration = SpellNumbers.duration(node) * cast.duration;
+			* ExplorerEffects.swing(cast, node, hit) * WorldQuirks.power(cast, rune, hit);
+		// This world's quirks may make it stronger or last longer where it lands (see WorldQuirks).
+		double duration = SpellNumbers.duration(node) * cast.duration * WorldQuirks.duration(cast, rune, hit);
 		int amplify = node.count(Runes.AMPLIFY) + dev.wildercord.spell.Ranks.levels(rank);
 		List<LivingEntity> helped = filter(hit.entities(), e -> Targets.canHelp(caster, e));
 		List<LivingEntity> harmed = filter(hit.entities(), e -> Targets.canHarm(caster, e));
