@@ -452,15 +452,21 @@ public final class SpellHud {
 		float fade = since < WHY_SHOWN - WHY_FADE ? 1.0F : (WHY_SHOWN - since) / (float) WHY_FADE;
 		int alpha = Math.max(8, (int) (255 * fade)) << 24;
 		dev.wildercord.spell.ClimateRules.Tuning tuning = dev.wildercord.cast.Climate.shownTuning();
+		List<net.minecraft.network.chat.Component> lines = whyLines(here, tuning);
+		if (lines.size() > 5) {
+			lines = lines.subList(0, 5);
+		}
+		int widest = 0;
+		for (net.minecraft.network.chat.Component line : lines) {
+			widest = Math.max(widest, font.width(line));
+		}
+		// Beside the panel when there's room, moved left as far as the longest line needs when there isn't.
+		int x = Math.max(2, Math.min(x0 + 3, guiWidth - 3 - widest));
 		int y = above;
-		int lines = 0;
-		for (net.minecraft.network.chat.Component line : whyLines(here, tuning)) {
-			if (lines++ >= 5) {
-				break;
-			}
+		for (net.minecraft.network.chat.Component line : lines) {
 			y -= 10;
-			String text = font.plainSubstrByWidth(line.getString(), Math.max(40, guiWidth - x0 - 6));
-			g.text(font, text, x0 + 3, y, alpha | 0xD8D0F0, true);
+			String text = font.plainSubstrByWidth(line.getString(), Math.max(40, guiWidth - x - 3));
+			g.text(font, text, x, y, alpha | 0xD8D0F0, true);
 		}
 		return y;
 	}

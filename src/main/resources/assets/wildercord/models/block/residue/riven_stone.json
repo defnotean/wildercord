@@ -84,18 +84,42 @@
       "light_emission": 10,
       "faces": {
         "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
           "texture": "#side_veins",
           "cullface": "north"
         },
         "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
           "texture": "#side_veins",
           "cullface": "south"
         },
         "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
           "texture": "#side_veins",
           "cullface": "west"
         },
         "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
           "texture": "#side_veins",
           "cullface": "east"
         }

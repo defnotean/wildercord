@@ -4,6 +4,57 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+The world now remembers magic. Big spells leave lasting marks where they land, the marks give reagents that steady
+or strengthen fusions, and some places and hours make every spell a little stronger.
+
+- **Residues: big magic leaves a mark.** A spell whose mana price is 30 or more, any overcast, a boss's spell and now
+  and then an element reaction leave a residue of their element where they land: **Smouldering Ash** that stays warm
+  and glows (fire), **Everfrost** that holds about a day and is slick as ice (frost), **Fulgurite**, storm-glass that
+  still crackles and jolts whatever brushes it with speed (storm), a **Lingering Eddy** that lifts you gently (wind),
+  **Riven Stone** with glowing amber cracks (earth), the **Wildbloom**, a strange luminous flower that bees visit and
+  that seeds a little (life), a **Void Scar** that hums, draws loose items in, keeps animals off and slowly closes
+  (void), a **Star Glyph** that shows invisible creatures to whoever stands on it (arcane), **Stilled Sand** where time
+  runs thick, slowing what walks it and keeping dropped items from ageing (time), and **Bloodmoss** that feeds nether
+  wart beside it (blood). A stronger spell leaves more (one block at the threshold, up to five) for longer (up to half
+  again). Each has its own art, glow, ambient particles and a quiet sound of its own.
+- **Residues never grief.** They take only natural ground (grass, dirt, sand, stone, snow, netherrack, end stone...)
+  or open air over it, never anything built or placed, never a block with contents and never a spell's passing block.
+  They ask the same permission any spell's block change does (claims, spawn protection, `spells_edit_blocks`), keep
+  out of dungeon wards, and fade on their own, giving back the ground they took. A chunk holds at most 12, a few blocks
+  around one spot at most 6, a dimension 1024, and one caster's magic 64. Their records are saved, fade on time after a
+  restart too, and one in unloaded ground waits for its chunk rather than loading it.
+- **Reagents.** Harvesting a residue gives its reagent: Cinder Ash, an Everfrost Shard, a Fulgurite Shard, a Bottled
+  Gale (fill a glass bottle at an eddy), Geode Grit, a Wildbloom Petal, Hollow Dust, Star Dust, Hourglass Sand and a
+  Sanguine Bead. Each has a small use of its own: furnace fuel that burns hot, freezing still water or cooling lava,
+  scraping weathered copper, 30 seconds of slow falling, showing the ore around you, growing a plant, drawing loose
+  items to you, a mote of starlight that lights a spot for five minutes, jumping a furnace or a young animal ahead,
+  and growing nether wart.
+- **Reagents at the Fusion Altar.** Lay one in the free rune socket while two effects fuse or weave: Cinder Ash keeps
+  the higher of the two ranks, an Everfrost Shard halves the XP, a Fulgurite Shard makes a rank I result rank II, a
+  Bottled Gale unbinds a signature pair into its elements' fusion, Geode Grit keeps the amethyst, a Wildbloom Petal
+  makes two, Hollow Dust keeps the lower-tier rune, Star Dust raises the rank for 3 more levels, Hourglass Sand frees a
+  fusion you've made before, and a Sanguine Bead pays up to six levels in health instead. One that would change nothing
+  is refused, and the altar says what each does.
+- **Ley crossings.** Ley lines now run in two weaves that cross every few hundred blocks. Where they meet, every spell
+  is 10% stronger and costs 10% less, the crossing shimmers with turning rings, a faint column of light and rising
+  motes, and stepping onto one says so. The first time earns the **Crossroads** feat.
+- **The moon, the hour and the weather.** Under the open sky a full moon strengthens arcane and void (+15%), a new moon
+  blood (+15%) and void (+10%), the noon sun fire (+15%), dawn and dusk time (+15%), and rain now strengthens frost
+  (+10%). These ride on the elemental climate, so the Nether still favours fire and the End void, and a thunderstorm
+  storm. All of them go through the spell-defence cap against players.
+- **The HUD says why.** For a few seconds after something new comes into force where you stand, lines over the spell
+  panel say what's favoured and why ("Full moon: Arcane +15%, Void +15%"); the Grimoire's page keeps them.
+- **New feats**: Crossroads (stand on a ley crossing) and Lasting Mark (harvest a residue), with their advancements.
+- **Server settings**: a new `residues` section (`enabled`, `min_spell_cost` 30, `lifetime_multiplier` 1.0,
+  `max_per_chunk` 12, `max_per_dimension` 1024) and a new `places_of_power` section (`ley_crossings`, `crossing_bonus`
+  0.1, `celestial`, `celestial_multiplier` 1.0). An older config file gains both at their defaults. Switching
+  `elemental_climate` off turns places and times of power off too.
+
+### Changed
+- **More ley lines.** The second weave adds lines where there were none, so a little more of the Overworld lies on a
+  ley line (faster mana, quicker Heart Circles, Wellstones that wake).
+- Other spells leave residues alone (they count as a spell's passing block, so pistons can't move them either).
+
 ## [0.7.1-alpha] - 2026-10-01
 
 - New detailed project icon shared by the mod JAR, player guide and CurseForge: a braided Cord, luminous elemental rune beads and a mint-and-gold magic circle.

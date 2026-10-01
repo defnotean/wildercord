@@ -47,6 +47,15 @@ with a soft chime. The first time, you're told what it means and earn the **Ley 
 The mana badge in the Cord screen shows *"+100% on a ley line"* while you're on one, and the HUD's mana
 bar shows a violet up-chevron.
 
+### Where two lines cross
+
+Ley lines run in two weaves, and every few hundred blocks a line of one crosses a line of the other. A **ley crossing**
+is a place of power: every spell you cast there is **10% stronger** and costs **10% less**, on top of everything a ley
+line gives. A crossing shimmers with turning rings of pale light on the ground and a faint column of light over it,
+seen from further than the ribbons, so follow a line until another crosses it. Stepping onto one says so above your
+hotbar, and the first time earns the **Crossroads** feat. See
+[Places and Times of Power]({{ '/world/places-of-power/' | relative_url }}).
+
 ### What else gathers there
 
 - **Mana storms** gather over ley lines. See [World Events]({{ '/world/world-events/' | relative_url }}).

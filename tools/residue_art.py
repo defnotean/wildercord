@@ -306,14 +306,17 @@ def eddy(frame: int) -> Image.Image:
     # Two wisps spiralling up round the eddy's heart, turning frame by frame; fainter as they widen.
     for arm in range(2):
         for i in range(90):
+            # Broken into wisps, so the air between them shows through.
+            if (i + arm * 5 + frame) % 6 in (4, 5):
+                continue
             t = i / 90
             a = turn + arm * math.pi + t * 4 * math.pi
             r = 0.8 + t * 5.0
             x = 7.5 + math.cos(a) * r
             y = 15 - t * 14
-            # The near side of the turn is brighter than the far side.
+            # The near side of the turn is brighter than the far side, and the whole fainter as it widens.
             near = math.sin(a) > 0
-            alpha = int((235 if near else 150) * (1 - t * 0.45))
+            alpha = int((200 if near else 110) * (1 - t * 0.5))
             c = WIND[3] if i % 11 == 0 else WIND[2] if near else WIND[1]
             put(im, int(round(x)), int(round(y)), c, alpha)
     return im
@@ -842,7 +845,7 @@ def models(tex: str) -> dict:
                         "side": t("riven_stone_side"), "veins": t("riven_stone_veins"), "side_veins": t("riven_stone_side_veins")},
                         "elements": [_cube("#side", "#top", "#side"), _plane(16.01, "#veins", 10),
                                      {"from": [-0.01, 0, -0.01], "to": [16.01, 16, 16.01], "light_emission": 10, "faces": {
-                                         d: {"texture": "#side_veins", "cullface": d} for d in ("north", "south", "west", "east")}}]},
+                                         d: {"uv": [0, 0, 16, 16], "texture": "#side_veins", "cullface": d} for d in ("north", "south", "west", "east")}}]},
         "wildbloom": {"ambientocclusion": False, "textures": {"particle": t("wildbloom"), "flower": t("wildbloom"), "glow": t("wildbloom_glow")},
                       "elements": _cross("#flower", 0, 0.8, 16) + _cross("#glow", 11, 0.75, 16)},
         "star_glyph": {"parent": "minecraft:block/thin_block", "textures": {"particle": t("star_glyph"), "glyph": t("star_glyph"), "glow": t("star_glyph_glow")},
@@ -972,11 +975,13 @@ def write(g):
         save_png(g, reagent_icon(reagent), g.ASSETS / f"textures/item/{reagent}.png")
         g.item_model(reagent, reagent)
         g.write_json(g.ASSETS / f"items/{reagent}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{reagent}"}})
-        # Every residue gives its reagent, however it's harvested (a pinch more from the strongest-looking ground ones).
+        # Every residue gives its reagent when it's broken (a pinch more from the ground ones), except an eddy: being only
+        # air, breaking it just disperses it, and it has to be bottled.
         count = {"type": "minecraft:uniform", "min": 1, "max": 2} if placement == "cover" or path in ("smouldering_ash", "wildbloom", "stilled_sand") else 1
-        g.write_json(g.DATA / f"loot_table/blocks/{path}.json", {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        pools = [] if path == "lingering_eddy" else [{"rolls": 1, "entries": [
             {"type": "minecraft:item", "name": f"wildercord:{reagent}",
-             **({"functions": [{"function": "minecraft:set_count", "count": count}]} if count != 1 else {})}]}]})
+             **({"functions": [{"function": "minecraft:set_count", "count": count}]} if count != 1 else {})}]}]
+        g.write_json(g.DATA / f"loot_table/blocks/{path}.json", {"type": "minecraft:block", "pools": pools})
 
     g.write_json(g.DATA / "tags/block/residue_ground.json", {"values": RESIDUE_GROUND})
     g.write_json(g.DATA / "tags/item/reagents.json", {"values": [f"wildercord:{r[3]}" for r in RESIDUES]})

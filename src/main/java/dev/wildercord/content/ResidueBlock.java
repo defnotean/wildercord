@@ -51,7 +51,7 @@ public class ResidueBlock extends Block {
 	public static final IntegerProperty STAGE = IntegerProperty.create("stage", 0, 3);
 
 	/** How often (in ticks) a void scar draws items in. */
-	private static final int PULL_EVERY = 10;
+	private static final int PULL_EVERY = 4;
 	private static final double PULL_RADIUS = 5.0;
 
 	public final Kind kind;
@@ -246,8 +246,8 @@ public class ResidueBlock extends Block {
 			level.setBlock(pos, state.setValue(STAGE, stage), Block.UPDATE_CLIENTS);
 		}
 		Vec3 heart = Vec3.atCenterOf(pos).add(0, 0.5, 0);
-		// The less open it is, the weaker its pull.
-		double pull = 0.06 * (1 - stage * 0.2);
+		// The less open it is, the weaker its pull (about a block a second, fresh).
+		double pull = 0.11 * (1 - stage * 0.2);
 		for (Entity loose : level.getEntities((Entity) null, new AABB(pos).inflate(PULL_RADIUS), e -> e instanceof ItemEntity || e instanceof ExperienceOrb)) {
 			Vec3 toward = heart.subtract(loose.position());
 			double distance = toward.length();
@@ -256,7 +256,10 @@ public class ResidueBlock extends Block {
 				loose.needsSync = true;
 			}
 		}
-		// Animals shy away from it.
+		// Animals shy away from it (looked for less often: they needn't be told every few ticks).
+		if (level.getGameTime() % 20 >= PULL_EVERY) {
+			return;
+		}
 		for (Animal animal : level.getEntitiesOfClass(Animal.class, new AABB(pos).inflate(3.5))) {
 			Vec3 away = animal.position().subtract(heart).multiply(1, 0, 1);
 			if (away.lengthSqr() > 1.0E-4 && !animal.isPassenger()) {

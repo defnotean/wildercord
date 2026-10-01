@@ -212,6 +212,18 @@ only spreads where fire spreads anyway, frozen water always thaws, and a crust a
 melts back. Two things to mind: a fire spell lights TNT, and a storm spell can charge a creeper. See
 [World Magic]({{ '/world/world-magic/' | relative_url }}).
 
+### My spell left ash (or frost, or a strange flower) on the ground.
+That's a **residue**: a strong spell (30 mana or more), any overcast, and now and then a reaction leave a mark of
+their element where they land. Each fades on its own (a void scar in minutes, everfrost in about a day), and each gives
+a **reagent** when you break it (bottle an eddy instead). Reagents have small uses, and at the Fusion Altar they steady
+or strengthen a fusion. See [Residues and Reagents]({{ '/world/residues/' | relative_url }}).
+
+### Will residues mess up my base?
+No. They only ever take natural ground (grass, dirt, sand, stone, snow...) or the air just above it, never anything
+built or placed, never a chest, never inside a claim you can't build in or a dungeon's ward, and a residue that took
+the ground's place gives it back when it fades or when you harvest it. There are only a few in any one place, and
+other spells and pistons leave them alone.
+
 ## Cords and progress
 
 ### Do I lose anything when I die?
@@ -261,6 +273,17 @@ back. See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}
 ### I can't see ley lines.
 You need to be wearing a Cord, and to be in the Overworld. They're thin ribbons of violet light running along
 the ground. See [Ley Lines]({{ '/progression/ley-lines/' | relative_url }}).
+
+### Why do my spells hit harder some nights?
+The sky favours some elements: a clear full moon strengthens arcane and void, a new moon blood, the noon sun fire,
+dawn and dusk time, rain frost and a thunderstorm storm. Lines over your spell panel say why for a few seconds after
+something comes into force, and the Grimoire page keeps them. See
+[Places and Times of Power]({{ '/world/places-of-power/' | relative_url }}).
+
+### What's a ley crossing, and where do I find one?
+Where two ley lines cross: every spell is 10% stronger and 10% cheaper there. Wearing a Cord you'll see it shimmer, with
+rings of light on the ground and a faint column over it, from about 50 blocks. Follow a ley line until another crosses
+it; they're a few hundred blocks apart. See [Places and Times of Power]({{ '/world/places-of-power/' | relative_url }}).
 
 ### Where are the dungeons?
 The Archive is buried under the Overworld (Torn Pages sketch the way to the nearest one); the Ember Sanctum is
