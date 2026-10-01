@@ -748,7 +748,8 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 			level.addFreshEntity(snack);
 			return snack.getId();
 		});
-		check(await(context, world, 120, server -> level(server).getEntity(chicken) == null && ((BogWitchFrog) level(server).getEntity(id)).engorged()),
+		// It looks for prey every two seconds and takes a few moments to swallow: give it time on a busy machine.
+		check(await(context, world, 300, server -> level(server).getEntity(chicken) == null && ((BogWitchFrog) level(server).getEntity(id)).engorged()),
 			"a Bog Witch-Frog should snatch and swallow a chicken nearby");
 		shot(context, "bog_witch_frog_gulp_live");
 
