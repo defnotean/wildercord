@@ -166,9 +166,9 @@ public final class AuraBlade {
 		float z = s.z();
 		int color = glow.spell();
 		textured(buffer, pose, b0x - px * half, b0y - py * half, z, t0x - px * half, t0y - py * half, z, t0x + px * half, t0y + py * half, z,
-			b0x + px * half, b0y + py * half, z, color, 0.55F * beat);
+			b0x + px * half, b0y + py * half, z, color, 0.75F * beat);
 		float deep = half * 0.8F;
-		textured(buffer, pose, b0x, b0y, z - deep, t0x, t0y, z - deep, t0x, t0y, z + deep, b0x, b0y, z + deep, color, 0.45F * beat);
+		textured(buffer, pose, b0x, b0y, z - deep, t0x, t0y, z - deep, t0x, t0y, z + deep, b0x, b0y, z + deep, color, 0.6F * beat);
 	}
 
 	/**
@@ -181,7 +181,7 @@ public final class AuraBlade {
 		float ay = s.axisY();
 		float px = -ay;
 		float py = ax;
-		float width = s.spread() + 0.09F;
+		float width = s.spread() * 0.75F + 0.05F;
 		int color = glow.spell();
 		int hot = mix(color, 0xFFFFFF, 0.55F);
 		int pieces = 14;

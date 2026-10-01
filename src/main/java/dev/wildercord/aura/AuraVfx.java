@@ -165,9 +165,9 @@ public final class AuraVfx {
 		if (from.distanceToSqr(to) < 1.0E-4) {
 			return;
 		}
-		Light.ray(level, from.add(0, 0.9, 0), to.add(0, 0.9, 0), color, 0.5, 7);
-		Light.ray(level, from.add(0, 0.9, 0), to.add(0, 0.9, 0), hot(color, 0.7), 0.12, 5);
-		Light.ray(level, from.add(0, 0.15, 0), to.add(0, 0.15, 0), color, 0.22, 9);
+		Light.ray(level, from.add(0, 0.9, 0), to.add(0, 0.9, 0), color, 0.26, 7);
+		Light.ray(level, from.add(0, 0.9, 0), to.add(0, 0.9, 0), hot(color, 0.45), 0.06, 5);
+		Light.ray(level, from.add(0, 0.12, 0), to.add(0, 0.12, 0), color, 0.16, 9);
 		Motes.glows(level, to.add(0, 0.9, 0), 3, 0.35, hot(color, 0.3), 0.07, 12, new Vec3(0, 0.01, 0), 0.01);
 	}
 
@@ -216,8 +216,8 @@ public final class AuraVfx {
 	 */
 	static void dominionRise(ServerLevel level, Vec3 centre, double radius, int color, int ticks) {
 		Vec3 heart = centre.add(0, 1.1, 0);
-		Sigils.ground(level, centre, color, hot(color, 0.45), (float) radius, ticks);
-		Sigils.layer(level, centre.add(0, 0.09, 0), UP, dev.wildercord.content.SigilOption.BAND, hot(color, 0.6), (float) (radius * 1.04), ticks, 0.01F);
+		Sigils.ground(level, centre, color, hot(color, 0.15), (float) radius, ticks);
+		Sigils.layer(level, centre.add(0, 0.09, 0), UP, dev.wildercord.content.SigilOption.BAND, hot(color, 0.3), (float) (radius * 1.04), ticks, 0.01F);
 		Light.groundRing(level, centre, hot(color, 0.4), 0.3, radius * 1.15, 0.22, 14);
 		Light.groundRing(level, centre, color, 0.3, radius * 1.6, 0.1, 20);
 		Light.ray(level, centre, centre.add(0, 9, 0), color, 0.7, 18);

@@ -121,11 +121,33 @@ public final class WildercordKeys {
 		ClientTickEvents.END_CLIENT_TICK.register(WildercordKeys::tick);
 	}
 
+	/** A lone tap held back for the double tap's moment (see {@link #auraKey}), or false. */
+	private static boolean auraTapWaiting;
+
+	/**
+	 * Whether a lone tap waits out the double tap's moment before it goes: only when the player has a double-tap technique
+	 * (Aura Step, from Form), so a double tap is a step alone and never looses a slash first.
+	 */
+	private static boolean tapsWait(Minecraft client) {
+		return client.player != null && dev.wildercord.api.AuraApi.techniqueFor(dev.wildercord.aura.Aura.stage(client.player),
+			dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP).isPresent();
+	}
+
 	/**
 	 * The Aura key: pressed while sneaking it goes at once (a guard can't wait for the key to come up); otherwise a tap goes
-	 * when it's let go (and a second tap soon after is a double tap too), and held it goes once as the hold begins.
+	 * when it's let go, and held it goes once as the hold begins. A second tap soon after is a double tap: with a double-tap
+	 * technique (from Form) a lone tap waits out that moment first and the pair goes as the double tap alone; without one the
+	 * first tap goes at once and the second goes as a tap and a double tap.
 	 */
 	private static void auraKey(Minecraft client, boolean playing) {
+		long gameTime = client.level == null ? 0 : client.level.getGameTime();
+		if (auraTapWaiting && (!playing || gameTime - auraTapAt > DOUBLE_TAP)) {
+			// No second tap came: the first goes as a tap after all.
+			auraTapWaiting = false;
+			if (playing) {
+				sendAura(dev.wildercord.api.AuraApi.Trigger.TAP);
+			}
+		}
 		while (aura.consumeClick()) {
 			if (auraHeld < 0 && playing) {
 				auraHeld = 0;
@@ -147,13 +169,25 @@ public final class WildercordKeys {
 			return;
 		}
 		if (!auraSent) {
-			long now = client.level == null ? 0 : client.level.getGameTime();
-			sendAura(dev.wildercord.api.AuraApi.Trigger.TAP);
-			if (now - auraTapAt <= DOUBLE_TAP) {
-				sendAura(dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP);
-				auraTapAt = Long.MIN_VALUE / 2;
+			long now = gameTime;
+			boolean second = now - auraTapAt <= DOUBLE_TAP;
+			if (tapsWait(client)) {
+				if (second && auraTapWaiting) {
+					auraTapWaiting = false;
+					sendAura(dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP);
+					auraTapAt = Long.MIN_VALUE / 2;
+				} else {
+					auraTapWaiting = true;
+					auraTapAt = now;
+				}
 			} else {
-				auraTapAt = now;
+				sendAura(dev.wildercord.api.AuraApi.Trigger.TAP);
+				if (second) {
+					sendAura(dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP);
+					auraTapAt = Long.MIN_VALUE / 2;
+				} else {
+					auraTapAt = now;
+				}
 			}
 		}
 		auraHeld = -1;

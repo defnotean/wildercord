@@ -11,7 +11,7 @@ asset pipeline and testing. For *what* each rune does and why, see [DESIGN.md](D
   - [Spell mastery](#spell-mastery-mastery-masterychoices-inscriptions) and [its hooks](#mastery-hooks-for-other-systems-apispellmasteryapi)
 - [3. Player state (`player/`)](#3-player-state-player)
 - [4. Heart Circles and passives](#4-heart-circles-and-passives)
-- [Aura: the swordsman's path](#aura-the-swordsmans-path-aura) and [its hooks for the next wave](#hooks-for-the-next-wave-apiauraapi)
+- [Aura: the swordsman's path](#aura-the-swordsmans-path-aura) and [its hooks](#hooks-for-the-next-wave-apiauraapi)
 - [5. Networking](#5-networking)
 - [6. The client](#6-the-client)
 - [7. Content: items, loot, effects](#7-content-items-loot-effects)
@@ -726,6 +726,8 @@ player, synced to that player only, and copied through death where noted.
 | `aura` | `AuraAttachments.Data` (method, stage, experience, aura held, practice) | yes (the aura held empties on a new body) | A player's aura: the swordsman's path (see [Aura](#aura-the-swordsmans-path-aura)) |
 | `aura_state` | `AuraAttachments.State` (stance settled at, guard raised and until, slash ready at, backlash until, stillness held, trial until) | no (not saved) | What a player's aura is doing now, for their HUD's beat ring and marks |
 | `aura_look` | `AuraAttachments.Look` (colour, stage, lit, guarding, breathing) | no (not saved) | How a player's aura looks; synced to **everyone** nearby, who draw the blade's glow |
+| `aura_presence` | `AuraPresence.Look` (shell up, shell struck at, the colour of a spell on the blade and until when) | no (not saved) | The top stages' look: aura armour's shell and the spellblade; synced to **everyone** nearby |
+| `aura_timers` | `AuraPresence.Timers` (step ready at, Dominion ready at, Dominion until) | yes, and kept through death (game time, so a relog never resets a rest) | The top stages' cooldowns, for the owner's HUD |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
 new instance, which is what makes the attachment save and sync it. Rune ids are kept as strings
@@ -775,7 +777,9 @@ package follows the mod's layers: the rules are pure, the runtime is server side
   `pierced`, the slash's damage, backlash as `Spend`, experience by worth, the trials' numbers, every method's passive by
   stage, the colour by stage), `BreathingMethod` and `BreathingMethods` (the ten, and the registry add-ons add to),
   `MethodSources` (where manuals are found: loot tables with a chance and weights, or sources in code such as the trades)
-  and `AuraStages` (the stage registry: Glow to Edge registered, Form and Sovereign waiting).
+  and `AuraStages` (the stage registry: all five registered). `AuraRules` also holds the top stages' numbers: the step's
+  distance, cost, cooldown and untouchable ticks, `armourAbsorb`, `intimidated` and `senseRange`, Dominion's radius, length,
+  rest and `dominionWeakened`, `spellbladePower`, `markChance` and `markFor`, and `stillnessTicks` for the tempest.
 - **State** (`AuraAttachments`, see the table in [Player state](#3-player-state-player)): the private `Data` (method, stage,
   experience, aura held, practice), the owner-only `State` (the stance's beat, the guard, cooldowns, backlash, a trial's
   progress) and the public `Look` (colour, stage, lit, guarding, breathing), all anyone else's client learns.
@@ -817,21 +821,56 @@ package follows the mod's layers: the rules are pure, the runtime is server side
   the creative tab. **`AuraLoot`**: a pool per `MethodSources` loot table as tables load (scaled by the rune loot
   multiplier), and the loot function `wildercord:random_breathing_method` the trades use
   (`data/wildercord/villager_trade/aura/`, added to the weaponsmith's and cleric's level 5 tags).
-- **`AuraSense`**: the breath's sense, sent to the breather alone as `AuraSense.Sensed(entity ids, colour, ticks)`.
-- **`AuraVfx`**: the server's shaped light for the stance, the beat, the guard, the perfect guard, the sweep, the slash and
-  a breakthrough.
+- **`AuraSense`**: the breath's sense, sent to the breather alone as `AuraSense.Sensed(entity ids, colour, ticks)`; from Form
+  further (`senseRange`) and pulsed every 3 seconds in a fight (`combat`).
+- **`AuraVfx`**: the server's shaped light for the stance, the beat, the guard, the perfect guard, the sweep, the slash,
+  a breakthrough, and the top stages: the step's start, streak and landing, the shell struck, Intent's ring and a creature
+  faltering, Dominion's rising (a great `Sigils.ground` circle for its whole length and a band round it), its pulse, its end and
+  its chain, a spell drawn into the blade, riding it and slipping off, the slash carrying a spell, and an aura mark.
+- **`AuraPresence`**: the top stages' own attachments, beside `AuraAttachments` (left as it was, for the duelists and knights
+  that read it): the public `Look` (aura armour's shell and when it was struck, a spell on the blade) and the owner's saved
+  `Timers` (the step's and Dominion's rests, Dominion's end).
+- **`AuraStep`** (Form, `DOUBLE_TAP`): `direction` (`getLastClientMoveIntent`, or ahead and level), `path` (the body's box swept
+  in `STEP_PROBE` pieces, climbing `STEP_CLIMB`, stopped by collision, a change in `DungeonWards.warded`, the world border,
+  lava or fire), the move (`STEP_TICKS` small teleports on the `Scheduler`, rotation kept), the untouchable moment
+  (`untouchable`, asked by `mixin.LivingEntityAuraMixin`), and `Stepped(entity, from, to, yaw, colour)` to everyone tracking the
+  player and the player.
+- **`AuraArmour`** (Form): `up` (aura at or above `ARMOUR_MIN`), `share` (what it would take, `armourAbsorb`, nothing from a
+  fall, drowning, starving, suffocation or the void) and `paid` (spends, flares the shell, `aura_armour`), called by the mixin
+  only once the hit has landed.
+- **`AuraIntent`** (Form): `active` (a coated blade at Form), `presses` (`intimidated` against `stageOf`: a player's stage or an
+  aura look's), `pulse` (once a second from `Aura.tick`: Slowness I and a chance to falter for creatures; a vignette through
+  `ScreenFx.tint` and a transient movement-speed modifier for players, let go by `release` once it stops reaching them).
+- **`AuraDominion`** (Sovereign, `HOLD`): `Field`s by owner (centre, radius, start, until, colour), `raise` (cost, timers,
+  `aura_dominion`, the circle, a camera shake, the Grimoire's `aura:dominion`), `tick` (Slowness on the foes inside every half
+  second, the trickle, the pulse, the end), `weakened` (from the mixin: a striker inside a foe's field hits weaker,
+  `dominionWeakened`, times the PvP scale for a player), `chain` (from `AuraCombat.landed`: once a tick to the nearest other foe
+  inside, as `projected` aura) and a gain hook that doubles aura gained inside one's own field.
+- **`Spellblade`** (Edge and up) and **`cast.BladeCasting`**: `SpellCaster.cast` asks `Spellblade.wants` (Edge, a blade, sneaking,
+  not a secret, not overchannelled, and `BladeCasting.rides`: a group of the first segment that reaches out) as the spell is
+  paid for, and its release then calls `draw` in place of `CastEngine.cast`: the paid `Cast`, the segment and the release are
+  held (`Held`) until the next `AuraSlash.loose` takes them, or slip off unused (`tick`) and leave through the release.
+  `AuraSlash.fly` then calls `BladeCasting.begin` (the segment's allowance, and its Self groups delivered on the caster),
+  `cut` for each of the first `SPELLBLADE_TARGETS` foes cut (`CastEngine.onHit` per reaching group, at `spellbladePower`),
+  `broke` where it ends having cut nothing, and `follow` (`CastEngine.runLink`, split out of `runSegment` for this).
+- **`AuraMarks`**: `strike` (from `AuraCombat.landed` for a coated blow or the slash: `markFor` the method's element, at
+  `markChance` times `mark_chance_multiplier`, a rest per striker and foe) and `leave` (through `Reactions.mark`, or fire, or
+  poison, for 3 seconds).
+- **`AuraBreakthroughs`** also runs the top stages' trials: `stillTrial` picks stillness or the tempest (`tempest`: thundering
+  and the sky above), counted to `stillnessTicks(next)`; `foeTrial` picks the guardian's (a boss, `GUARDIAN_WINDOW`) or the
+  stronger foe's; and `DUEL` is a trial id left for the duelists.
 
 ### Hooks for the next wave: `api.AuraApi`
 
-Wave 2 (Form and Sovereign, spellblade, element marks, duelists, aura-forged gear, aura knights, PvP tuning) slots in
-through these, all on the server thread unless noted, registered at start-up:
+The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in
+through them, all on the server thread unless noted, registered at start-up:
 
 | Call | What it's for |
 |---|---|
-| `registerStage(new AuraStages.Stage(4, "form", 110, 1800))` | Opens a stage (the defaults for 4 and 5 are already in `AuraRules`). Until a stage is registered its threshold still caps experience, so nothing earned is lost; `AuraStages.highest()` and `canBreakThrough` follow the registry. Its name and description are `aura.wildercord.stage.<id>` and `.desc`, its Grimoire entry `aura:<id>` (toast `toast.wildercord.aura.<id>`). |
-| `allowTrial(stage, trial)` / `trials(stage)` | Which trials make the breakthrough into a stage. The built-in ones are `AuraBreakthroughs.STILLNESS` and `STRONGER_FOE` (allowed for Flow and Edge); any other id is a trial of your own. The Aura page lists them (`screen.wildercord.aura.trial.<id>`). |
+| `registerStage(new AuraStages.Stage(4, "form", 110, 1800))` | Opens or changes a stage (all five are registered from `AuraRules`). An unregistered stage's threshold still caps experience, so nothing earned is lost; `AuraStages.highest()` and `canBreakThrough` follow the registry. Its name and description are `aura.wildercord.stage.<id>` and `.desc`, its Grimoire entry `aura:<id>` (toast `toast.wildercord.aura.<id>`). |
+| `allowTrial(stage, trial)` / `trials(stage)` | Which trials make the breakthrough into a stage. Built in: `AuraBreakthroughs.STILLNESS` and `STRONGER_FOE` (allowed for Flow and Edge), `TEMPEST` and `GUARDIAN` (allowed for Form and Sovereign). `DUEL` is an id left for the duelists, allowed nowhere until they allow it; any other id is a trial of your own. The Aura page lists them (`screen.wildercord.aura.trial.<id>`; `duel`'s line is already there). |
 | `completeTrial(player, trial)` | Your trial was met: the waiting breakthrough is made, if the trial is allowed for it. |
-| `registerTechnique(new Technique(id, stage, trigger, cost, performer))` | A technique of the Aura key. `Trigger.TAP` (Aura Slash), `SNEAK_TAP` (Aura Guard), `DOUBLE_TAP` and `HOLD` (kept for Aura Step and Dominion): the client sends every trigger, and the server runs the highest-stage technique for it that the player has reached (`techniqueFor`). The performer pays through `spend`. Its name and description are `aura.wildercord.technique.<id>` and `.desc`; the Aura page lists it with its key and cost. Safe to read on both sides. |
+| `registerTechnique(new Technique(id, stage, trigger, cost, performer))` | A technique of the Aura key. `Trigger.TAP` (Aura Slash), `SNEAK_TAP` (Aura Guard), `DOUBLE_TAP` (Aura Step) and `HOLD` (Dominion): the client sends every trigger (a lone tap waits out the double tap's moment when the player has a double-tap technique), and the server runs the highest-stage technique for it that the player has reached (`techniqueFor`). The performer pays through `spend`. Its name and description are `aura.wildercord.technique.<id>` and `.desc`; the Aura page lists it with its key and cost. Safe to read on both sides. |
 | `gain(player, amount, source)` / `onGain(hook)` | Fill aura with every rule applying (the server's rate, Starlit, the capacity), or hear of (and change) each gain: `hook.modify(player, amount, source)` returns the amount. Sources: `hit`, `stance`, `beat`, or yours. |
 | `spend(player, cost, reason)` / `onSpend(hook)` / `backlash(player)` | Spend aura (short of the price: everything there, and backlash, never damage), hear of each spend (`paid`, `reason`, `backlash`), or bring backlash outright. |
 | `registerMethod(method)` | Another breathing method (a namespaced id; its manual, loot and trades work at once; give it lang keys `aura.wildercord.method.<namespace>.<path>`, `.lore`, `.flavour`). Passives of your own: `Flavour.NONE` and your own code in `onGain` or the blow. |
@@ -839,11 +878,14 @@ through these, all on the server thread unless noted, registered at start-up:
 | `grantMethod(player, methodId, sourceId)` | Teach a method outright (a duelist's lesson): as reading its manual, switching cost included, without asking twice. `manual(methodId)` makes the item. |
 | `stage`, `method`, `aura`, `capacity`, `color` | Reading a player's aura (both sides; a client knows only its own player's, and everyone's `Aura.look`). |
 
-Other seams wave 2 will want: `AuraCombat.blow` and `landed` (where a spellblade's channelled spell or an aura mark would
-join a blow), `AuraCombat.projected` (aura damage at anything, with the spell defences), `AuraRules.capBonus` and
-`AuraCombat.againstPlayer` (PvP tuning), `AuraGuard.incoming` (aura armour would add its share there), the `Aura.Key`
-payload's triggers, and `AuraAttachments.Look` (aura knights and duelists can carry one: `AuraBlade` draws any player's
-blade from it; a mob's would need its render state to carry an `AuraBlade.Glow`).
+Other seams: `AuraCombat.blow` and `landed` (where aura marks and Dominion's chain join a blow), `AuraCombat.projected`
+(aura damage at anything, with the spell defences), `AuraRules.capBonus`, `AuraCombat.againstPlayer` and
+`AuraRules.dominionWeakened` (PvP tuning), the order of `mixin.LivingEntityAuraMixin` (the step's moment, Dominion's
+weakening, the guard, then aura armour), `AuraIntent.stageOf` (anything carrying an `AuraAttachments.Look` counts as an aura
+user of that stage, for Intent: an aura knight is pressed on only by a higher stage), `AuraDominion.inside`/`end`, the
+`Aura.Key` payload's triggers, and `AuraAttachments.Look` (aura knights and duelists can carry one: `AuraBlade` draws any
+player's blade from it; a mob's would need its render state to carry an `AuraBlade.Glow`, whose five-part constructor is
+kept beside the one with a spell's colour).
 
 ## 5. Networking
 
@@ -865,8 +907,9 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 | `MasteryChoices.Request(kind, spell, slot, trait)` | `MasteryChoices.request`: choose a trait, re-roll the offer or unbind a trait (registered by `MasteryChoices`, with its own throttle) |
 | `Aura.Key(trigger)` | `Aura.press`: the Aura key pressed one of its ways (`AuraApi.Trigger`: tap, sneak and press, double tap, hold), dispatched to the technique registry (registered by `Aura`, with the casting throttle) |
 
-Aura sends one notice of its own: `AuraSense.Sensed(ids, colour, ticks)`, the creatures a breath of the stance sensed, to the
-breather alone. Spell mastery sends two notices of its own: `MasteryChoices.Rise(name, rank, colour, choice, seed)` (one of your spells
+Aura sends two notices of its own: `AuraSense.Sensed(ids, colour, ticks)`, the creatures a breath of the stance sensed, to the
+breather alone, and `AuraStep.Stepped(entity, from, to, yaw, colour)`, a step taken, to everyone tracking the stepper and the
+stepper (for the afterimages). Spell mastery sends two notices of its own: `MasteryChoices.Rise(name, rank, colour, choice, seed)` (one of your spells
 reached a rank: a toast with its sigil, and the Cord screen opens the choice) and `MasteryChoices.Title(caster, name,
 rank, colour)` (a named Adept spell cast nearby: its title by the caster).
 Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
@@ -921,7 +964,18 @@ can draw the circle.
   `FirstPersonAuraMixin` (first person) mark the main hand's item while it's drawn; `ItemLayerAuraMixin`, at the end of each
   item layer's submit, draws round the model in its own space: the outline traced from a flat item's side faces (cached
   per model) with its principal axis as the blade's line, or the extent of a special model (the trident in hand). All of
-  it is `RenderTypes.eyes`, so shader packs take it as glowing eyes.
+  it is `RenderTypes.eyes`, so shader packs take it as glowing eyes. A spell riding the blade (`AuraPresence.Look.bladeSpell`,
+  carried in `Glow.spell`) adds a soft glow of its colour and two coils winding up the blade. `render.AuraShellLayer` (on every
+  `AvatarRenderer`) draws the top stages on the body: aura armour's shell (a `PlayerModel` baked a little larger,
+  `SHELL`/`SLIM_SHELL`, its skin's second layer hidden, in `RenderTypes.eyes` with `shell.png`, light gathered at each face's
+  edges, flaring after `shellStruckAt`) and a step's afterimages (`AuraClient.afterimages`: the parent model again at each
+  point the step passed, backed out of the body's turn and set down at the point turned the dash's way, in
+  `entityTranslucentEmissive` over the skin and `eyes` over the shell's texture, fading over 12 ticks). `AuraClient` takes
+  `AuraStep.Stepped` notices (four afterimages along the way, each as the body passes it). The aura bar dims Form's diamond
+  while the step recharges, burns Sovereign's while a Dominion stands (a thread under it while it rests), and writes a spell's
+  time on the blade and a Dominion's time left above itself; the Aura page lists aura marks, the spellblade, aura armour and
+  Intent beside the registry's techniques. `WildercordKeys` holds a lone tap of the Aura key back for the double tap's 8 ticks
+  when the player has a double-tap technique (`AuraApi.techniqueFor(stage, DOUBLE_TAP)`), so Aura Step never looses a slash.
 - **`WildercordKeys`**: R (tap casts, hold charges), V (tap selects, hold opens the
   **`SpellWheelScreen`**), K, the unbound "cast spell N" keys and an unbound "Next loadout" key.
 - **Performed casting, the client's half.** **`SigilTrace`** follows the local charge (when the server marks it
@@ -1241,7 +1295,18 @@ the stance's breath), registered by `WildercordSounds.kit(name)` and played thro
   and its default, learning and switching methods, aura from a real swing and not a half one, a dummy's quarter and cap,
   the stance, a breath on the beat and aura sense, the coat's 10% and an element, Flow's sweep from an axe, the guard and
   every perfect guard (a blow, an arrow, a spell), the Edge's reach, pierce and slash (by the real key), backlash, a
-  simulated player's slash under the cap and the spellguard, and both breakthroughs; screenshots `aura_*`.
+  simulated player's slash under the cap and the spellguard, and both breakthroughs; screenshots `aura_*`. `AuraRulesTest`
+  also covers the top stages (all five open, their trials, the step, aura armour's floor, Intent's weaker-only rule, Dominion,
+  the spellblade's falloff, the marks and that no method sets off its own), and `WildercordConfigTest` their keys.
+  **`WildercordAuraMasteryTest`** plays the top stages: Aura Step by the real key (its distance, price with no slash, cooldown,
+  a wall, its untouchable moment, backlash), aura armour's quarter and floor and its shell on the client, Intent on a weaker
+  husk and not a stronger one (and a simulated rival's on the player, slight, and not from an equal), Dominion by the real key
+  held (price, slow, weaker hits, a chain inside and never outside, the rest, its end), the spellblade (a fire spell cast
+  sneaking riding the real slash onto a line of husks, both prices paid, a standing cast going out as usual, one left too long
+  slipping off), a Rime mark set off by the player's fire spell (Shatter, with the config's chance raised for the test), the
+  breakthroughs into Form (the tempest at a ley crossing) and Sovereign (a boss, and not one a spell touched), and against
+  players (Dominion's weakening times the PvP scale, a rival's chain held to the cap, a carried spell meeting the spellguard);
+  screenshots `aura_mastery_*`.
 
 - **`src/test`**: JUnit 5 tests for everything in `spell/`: reading rules, attachment, costs,
   cooldowns, Blood Price, Vow, passive rules, circle and enchantment maths (`SpellCompilerTest`,
@@ -1400,7 +1465,11 @@ To give a resonance's riddle a line about its condition, a system can keep its o
   give a quarter and teach 40 at most, one blow earns 6 at most, experience waits at each threshold for a trial, creative
   players earn nothing. Its blows are melee (armour applies); against players its bonuses sit under the spell-defence cap
   and the aura PvP scale, and projected aura meets the spell defences and the spellguard. Backlash never damages. Nothing
-  about a player's aura leaves the server except to them; others see only a colour, a stage and a few flags.
+  about a player's aura leaves the server except to them; others see only a colour, a stage and a few flags. The top stages
+  keep to the same: a step never passes anything solid or a ward's edge (and its move is the server's), aura armour never
+  spends below its floor and is paid only for a blow that lands, Intent on a player is a vignette and a capped speed modifier
+  that always lets go, Dominion's rest is saved in game time (a relog never resets it), and a carried spell is a spell paid
+  for as one, through the cast engine (Shields, the spell defences, the PvP cap).
 - **Spell mastery can't be farmed or stacked.** Experience comes from outcomes (`Mastery.afterDamage`, `healed`,
   `afterHit`), never from casting; repetition fades a place, dummies cap out, and one cast earns at most 20. Traits
   apply inside the ordinary cast and their damage sits under the spell-defence cap. Nothing about a player's records

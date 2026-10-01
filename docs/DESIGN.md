@@ -1242,7 +1242,7 @@ is the only limit. The pure rules and every number are `aura.AuraRules`; the ser
 
 ### The resource
 - **Aura** is a small pool that never decays, held by anyone who has learned a **breathing method**. Its capacity grows by
-  stage: Glow 20, Flow 40, Edge 70 (Form 110 and Sovereign 160 are kept for the next wave).
+  stage: Glow 20, Flow 40, Edge 70, Form 110, Sovereign 160.
 - **It fills from real blows**: a full swing (vanilla's attack strength at 90% or more) of an aura weapon on a real foe
   gives 0.4 aura per point of damage it took, at most 4 a blow. A half swing gives nothing. Repetition fades it (the same
   kind of foe in the same 16-block cube, as spell mastery remembers places; a blow counts a quarter of a cast toward
@@ -1294,8 +1294,8 @@ Aura climbs in leaps. Each stage keeps everything below it.
 | **Glow** | 20 | (with the method) | **Aura Coat**: with aura held, every blow of an aura weapon is coated: +10% and the method's element, for 0.5 aura. **Aura Sense**: each breath of the stance outlines the hostile creatures within 16 blocks, for you alone |
 | **Flow** | 40 | 150 | **Flowing Cut**: every aura weapon sweeps (vanilla sweeps only with a sword), reaching 1.6 blocks round the struck foe and 3.75 from you (vanilla: 1 and 3), carrying 40% more of the blow. **Aura Guard**: sneak and press the Aura key |
 | **Edge** | 70 | 600 | **Crystal Edge**: a blade of solid aura: +1 block of reach, and a quarter of each coated blow goes through armour. **Aura Slash**: tap the Aura key |
-| Form | 110 | 1,800 | the next wave: Aura Step, aura armour, Intent |
-| Sovereign | 160 | 4,500 | the next wave: Dominion |
+| **Form** | 110 | 1,800 | **Aura Step**: double-tap the Aura key. **Aura Armour** and **Intent**, always on. Aura Sense reaches 24 blocks and pulses in a fight |
+| **Sovereign** | 160 | 4,500 | **Dominion**: hold the Aura key |
 
 **Aura Guard** (Flow): it holds while sneak is held, two seconds at most, then rests a second. It halves blows and
 projectiles from in front, paying 0.6 aura a point it takes off; at nothing it breaks, with backlash. Raised within 7
@@ -1309,6 +1309,56 @@ whoever loosed it, now yours, a quarter faster, and a spell is parried as a Shie
 2 seconds; spent past empty it goes out weakened, with backlash. It's the Crescent shape's flight and crescents of
 shaped light, without a spell.
 
+**Aura Step** (Form, a double tap): aura carries you 6 blocks in 3 ticks, the way you're moving (the client's movement keys,
+`getLastClientMoveIntent`), or ahead and level when you stand still. The path is swept with your whole body in 0.2-block
+pieces: it climbs 0.6 (a slab, a stair) as walking would, and stops before anything solid, a dungeon ward's edge (never into
+or out of a warded room), the world border, lava or fire. For its first 6 ticks no harm reaches you (anything that bypasses
+invulnerability aside). Afterimages of you in your colour are left along the way, for everyone who sees it. 12 aura, every 2
+seconds; spent past empty it never forms, with backlash. With a double-tap technique, a lone tap of the Aura key waits out the
+double tap's 8 ticks before it goes as a tap, so a step never looses a slash first.
+
+**Aura Armour** (Form, always on): while you hold 20 aura or more, it takes a quarter of what reaches you after the guard
+(blows, projectiles, spells, fire, blasts; never a fall, drowning, starving, suffocation or the void), paying 0.5 aura a
+point, and only as far as the aura above 20 pays: it fades rather than breaks, so it never brings backlash. It's paid only
+when the blow really lands. A faint shell of aura is drawn round the body (the player model again, a little larger, its
+light gathered at each face's edges), flaring where a blow strikes.
+
+**Intent** (Form, always on, with an aura weapon in hand and aura to coat a blow): once a second, every hostile creature
+within 8 blocks whose whole health is below yours (or, for anything carrying aura of its own, whose stage is below yours) is
+slowed for a second and a half (Slowness I) and, one time in four, falters (its path dropped where it stands). Bosses never
+feel it. Another player it presses on (PvP on, `intent_pvp`) gets a dark vignette and their speed taken down 5%
+(`intent_pvp_slow`, a modifier that lets go when Intent stops reaching them, never the Slowness effect).
+
+**Dominion** (Sovereign, a hold): a circle 3 blocks out from where you raised it (6 across), for 8 seconds. Foes inside
+(those you could harm) are slowed (creatures Slowness II, bosses and players Slowness I) and every harm they deal lands 30%
+weaker (against a player inside, the weakening is times the aura PvP scale: 18%). Each of your blows on a foe inside chains
+once (a sweep's blows once between them) to the nearest other foe inside, for half of what it took as projected aura. While
+you stand in it aura comes twice as fast, plus 2 a second. 40 aura, and a 90-second rest that a relog doesn't reset (the
+timers are saved in game time). It's raised with a great circle of the aura's colour on the ground, a column of light, a
+camera shake and `aura_dominion`; its rim breathes light while it holds and breaks up into motes as it ends.
+
+### The spellblade
+From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
+choice is the sneak: a spell cast standing goes out as usual, sword or not). The next **Aura Slash** within 5 seconds
+carries it: the slash takes the place of the spell's first part's shape, and each of its groups that reaches out lands on
+the first 4 foes the slash cuts, each at 85% of the one before (On Hit's falloff), or bursts where the slash breaks if it
+cut none; groups that act on the caster (Self) go off on the caster as usual, and the first part's own link (Delay, a
+condition, Echo...) follows once the slash has flown. Both prices are paid: the spell's mana and cooldown as it's cast (with
+everything a cast brings: mastery, affinity, residues), the slash's aura when it's loosed. It runs through the cast engine
+(`CastEngine.onHit`), so a Shield, the spell defences, the PvP cap and mastery all have their say. Unused past its time it
+slips off and leaves as cast. Secret spells, overchannelled spells (sneak there steadies the charge) and spells that only act
+on their caster never ride a blade. While a spell rides it, the blade glows in the spell's colour with two coils of light
+winding up it, sparks run off it, and `aura_spellblade` rings as it takes it and again as the slash carries it.
+
+### Aura marks
+An elemental aura strike (a coated blow, or the slash) may leave its element's reaction mark, for a mage's spell to set off:
+frost leaves frozen (Shatter, Fracture), wind windswept (Wildfire), void shadowed (Blight), blood bleeding (Rupture), arcane
+exposed (one of Unweave's marks), fire burning and life a touch of poison (Overload, Elapse). Earth, storm and time leave
+none: they set reactions off, and storm's own mark (ionised) is one a Thunder blade would conduct through itself. No method's
+mark is set off by its own element. The chance is 15% at Glow and 5% more a stage (35% at Sovereign, times
+`mark_chance_multiplier`), the mark lasts 3 seconds (shorter than a spell's), and the same striker marks the same foe again
+only after 2 seconds.
+
 ### Experience and breakthroughs
 **Experience comes from meaningful melee**, on spell mastery's rules: a full swing on a real foe is worth 0.25, plus 1.0
 for the share of its health the blow took, plus 0.5 for the kill (an ordinary monster felled in four swings: about 2.5).
@@ -1318,10 +1368,20 @@ horde 1.5, a boss near 1.5, a dungeon 1.25, at most 3); repetition fades it; one
 practice arena teach at half rate, 40 in all. Creative players earn nothing. Meaningful fighting earns about 300 an hour:
 Flow in about half an hour of play, Edge in about two hours.
 
-Experience fills toward the next stage's threshold and **waits there**: a breakthrough waits for a **trial**, either:
+Experience fills toward the next stage's threshold and **waits there**: a breakthrough waits for a **trial**. For Flow and
+Edge, either:
 - **Stillness**: hold the breathing stance unbroken for 30 seconds where ley lines cross (a place of power); or
 - **A stronger foe**: fell a boss, a Runebound or a creature with twice your health or more, with your blade (melee and
   the slash) within a minute of your first blow on it, no spell of yours touching it.
+
+Form and Sovereign (about six and fifteen hours of meaningful fighting) ask more, either:
+- **The tempest**: hold the breathing stance unbroken at a ley crossing through a thunderstorm, open to the sky: 45 seconds
+  for Form, 60 for Sovereign. Lightning that strikes you breaks the stance, as any blow does; or
+- **A guardian**: fell a boss (`Spirits.isBoss`: a dungeon's guardian, the Wither, the Warden, the Elder Guardian, the
+  Dragon, the Archivist) with your blade within three minutes of your first blow on it, no spell of yours touching it (a
+  spell carried on the slash counts as a spell).
+
+A won aura duel against a duelist (`AuraBreakthroughs.DUEL`) is left for the duelists to allow for the stages they teach.
 
 A breakthrough is a moment: a burst of aura in your colour (rings, a column of light, motes), the stage's name as a title,
 a rising chord, a full new pool of aura, and a Grimoire entry (150 mana toward your next Heart Circle).
@@ -1333,8 +1393,11 @@ tip, and ripples leaving the blade one after another; at Edge a solid, transluce
 past the point, bright at its facets and ridge. An empty aura shows only faintly. It's drawn with vanilla's glowing-eyes
 type, so it renders the same under shader packs and stays out of their shadows. The stance draws slow
 rings at the feet and motes drawn into the body; a breath on the beat, the guard, a perfect guard (the parry's gold), the
-sweep, the slash and a breakthrough each have their shaped light. Sounds: `aura_slash`, `aura_guard`,
-`aura_perfect_guard`, `aura_breakthrough`, `aura_backlash` and `aura_breath` (the feel kit's `tools/feel/aura.py`).
+sweep, the slash and a breakthrough each have their shaped light. From Form the body wears a faint shell of aura (while
+aura armour is up) and a step leaves afterimages, both drawn on every client with vanilla's glowing-eyes and emissive
+translucent types, like the blade, so they hold under shader packs. Sounds: `aura_slash`, `aura_guard`,
+`aura_perfect_guard`, `aura_breakthrough`, `aura_backlash`, `aura_breath`, `aura_step`, `aura_armour`, `aura_intent`,
+`aura_dominion`, `aura_dominion_fade` and `aura_spellblade` (the feel kit's `tools/feel/aura.py`).
 
 ### Fairness
 - Aura blows are melee, so armour applies to them as to any blow; only the Edge's quarter goes through.
@@ -1342,8 +1405,14 @@ sweep, the slash and a breakthrough each have their shaped light. Sounds: `aura_
   (`defence.max_bonus`), then scaled by `aura.pvp_scale` (0.6).
 - **Projected** aura (the slash and a Thunder spark) is the damage type `wildercord:aura`; against players it goes
   through the spell defences (`cast.SpellDefence`): armour, Warding and Warded, the cap, the PvP scale and the spellguard.
+- The top stages stay inside the same caps: Intent on a player is a vignette and a 5% slow, and only from a higher stage;
+  Dominion's weakening of a player is times the PvP scale and its slow is Slowness I; its chain onto a player is projected
+  aura (the spell defences); a carried spell is a spell (Shields, the spell defences, the PvP cap, the spellguard).
 - The server's `aura` section: `enabled`, `xp_multiplier`, `gain_multiplier`, `coat_bonus`, `damage_scale`,
-  `slash_damage`, `slash_cost`, `slash_cooldown_seconds`, `pvp_scale`, `backlash_seconds` and `guard_share`.
+  `slash_damage`, `slash_cost`, `slash_cooldown_seconds`, `pvp_scale`, `backlash_seconds` and `guard_share`; and for the top
+  stages, the spellblade and marks `step_cost`, `step_cooldown_seconds`, `step_distance`, `armour_share`, `intent_pvp`,
+  `intent_pvp_slow`, `dominion_cost`, `dominion_seconds`, `dominion_cooldown_seconds`, `dominion_weaken`,
+  `spellblade_seconds` and `mark_chance_multiplier`.
 
 ## Passives
 

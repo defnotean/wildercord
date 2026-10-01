@@ -1,4 +1,4 @@
-"""Aura, the swordsman's path: its manuals' covers, the blade's glow textures, its data and its English text.
+"""Aura, the swordsman's path: its manuals' covers, the blade's glow textures, aura armour's shell, its data and its English text.
 
 Called by generate_assets.py (write(g) with the rest of the pack, LANG with the language file). Everything here is drawn by
 code, like the rest of the mod's art: 16x16 pixel covers lit from the top left with a one-pixel outline, and soft white
@@ -230,21 +230,34 @@ def crystal():
     return img
 
 
-def shell():
-    """Aura armour's shell, laid over the player's skin layout (64x64), white for the client to tint: a faint even skin with a
-    lattice of brighter diamonds woven through it, so the shell reads as a mesh of aura rather than a flat colour."""
-    w = h = 64
-    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    for y in range(h):
-        for x in range(w):
-            # Two sets of diagonals, four pixels apart: a diamond lattice.
-            d1 = (x + y) % 4
-            d2 = (x - y) % 4
-            line = 1.0 if d1 == 0 or d2 == 0 else 0.0
-            cross = 1.0 if d1 == 0 and d2 == 0 else 0.0
-            a = 0.28 + 0.42 * line + 0.3 * cross
-            v = 235 + int(20 * line)
-            img.putpixel((x, y), (v, v, 255, int(round(255 * min(1.0, a)))))
+# The player model's boxes on its skin (texture offset, then width, height, depth in pixels), as vanilla lays them out: the
+# head, the body, the arms (four wide, or three for the slim model) and the legs. The shell is the same model a little larger.
+def _player_boxes(slim):
+    arm = 3 if slim else 4
+    return [((0, 0), (8, 8, 8)), ((16, 16), (8, 12, 4)), ((40, 16), (arm, 12, 4)), ((32, 48), (arm, 12, 4)),
+            ((0, 16), (4, 12, 4)), ((16, 48), (4, 12, 4))]
+
+
+def _faces(u, v, w, h, d):
+    """A box's six faces on its texture, as (x, y, width, height): top, bottom, then its four sides round from the right."""
+    return [(u + d, v, w, d), (u + d + w, v, w, d), (u, v + d, d, h), (u + d, v + d, w, h), (u + d + w, v + d, d, h),
+            (u + d + w + d, v + d, w, h)]
+
+
+def shell(slim=False):
+    """Aura armour's shell, laid over the player's skin layout (64x64), white for the client to tint: every face of the body
+    clear and faint in its middle and bright toward its edges, so drawn over the body the shell reads as light gathering at
+    its outline, the way a glow does, rather than a skin of colour."""
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    for (u, v), (w, h, d) in _player_boxes(slim):
+        for fx, fy, fw, fh in _faces(u, v, w, h, d):
+            for y in range(fy, fy + fh):
+                for x in range(fx, fx + fw):
+                    # How far in from the face's nearest edge, in pixels (0 on the edge itself).
+                    inward = min(x - fx, fx + fw - 1 - x, y - fy, fy + fh - 1 - y)
+                    a = 0.16 + 0.84 * (0.5 ** (inward * 1.6))
+                    v_ = 236 + int(19 * (0.5 ** inward))
+                    img.putpixel((x, y), (v_, v_, 255, int(round(255 * min(1.0, a)))))
     return img
 
 
@@ -268,6 +281,7 @@ def write(g):
     g.save(crystal(), glow / "crystal.png")
     g.save(soft(), glow / "soft.png")
     g.save(shell(), glow / "shell.png")
+    g.save(shell(slim=True), glow / "shell_slim.png")
 
     # What carries aura: servers and add-ons extend it.
     g.write_json(g.DATA / "tags/item/aura_weapons.json", {"replace": False, "values": [

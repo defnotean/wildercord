@@ -129,10 +129,10 @@ server running it (it adds an item, sounds and synced data).
   nothing from spam), and at each stage's threshold a breakthrough waits for a trial: hold the breathing stance unbroken
   for half a minute where ley lines cross, or fell a foe stronger than you (a boss, a Runebound or anything with twice
   your health) by your blade alone. A breakthrough bursts out of you in your aura's colour, with its name on screen, a
-  sound and a Grimoire entry. Flow takes about half an hour of real play, Edge about two hours. Form and Sovereign come
-  later.
+  sound and a Grimoire entry. Flow takes about half an hour of real play, Edge about two hours (Form and Sovereign, below,
+  about six and fifteen).
 - **The Aura key** (Z, under Wildercord in the controls; V is still the spell key): tap for the slash, sneak and press
-  for the guard. A double tap and a hold are kept for the techniques still to come.
+  for the guard, double-tap for the step and hold for Dominion (below).
 - **The aura bar** sits on top of the spell panel (or alone, without a Cord): your stages, the next pulsing gold while a
   breakthrough waits, your aura in your method's colour with the slash's price marked, and the breath's beat ring. The
   **Aura page**, from the Cord screen's new Aura badge (it opens without a Cord too), shows your method, stage, aura, the
@@ -144,6 +144,52 @@ server running it (it adds an item, sounds and synced data).
   file gains it at its defaults. Servers and add-ons can add weapons to the `wildercord:aura_weapons` item tag.
 - **Hooks for what comes next** in `api.AuraApi`: a stage registry and trials, a technique registry for the Aura key, hooks
   on aura gained and spent, and breathing methods and the places manuals are found (and a way to teach one outright).
+
+### Aura's last stages, and the blade that carries a spell
+- **Form** (110 aura): aura leaves the body.
+  - **Aura Step**: double-tap the Aura key and aura carries you about six blocks in an instant, the way you're moving (ahead
+    when you stand still), leaving afterimages of you in your colour. For its first moments nothing can touch you. It never
+    passes through anything solid (it climbs a slab or a stair on the way), never carries you into or out of a dungeon's
+    warded room, and stops short of lava and fire (12 aura, every 2 seconds). Once you have it, a lone tap of the Aura key
+    waits a moment in case it's the first of two, so a step never looses a slash as well.
+  - **Aura armour**: while you hold 20 aura or more, a faint shell of aura round your body takes a quarter of the harm that
+    reaches you (blows, arrows, spells, fire), half a point of aura for each point it takes, and flares where it's struck.
+    It never spends you below 20, so it fades rather than breaks. Falling, drowning and starving get through.
+  - **Intent**: with your blade in hand, weaker hostile creatures within 8 blocks (less health than you, or a lower aura
+    stage) are slowed and now and then falter where they stand. Bosses never feel it.
+  - **Aura sense** reaches 24 blocks, and pulses on its own every few seconds while you fight.
+- **Sovereign** (160 aura): **Dominion**. Hold the Aura key and a circle of your aura six blocks across opens where you
+  stand for 8 seconds: foes inside are slowed and hit 30% weaker, each of your blows on a foe inside chains once to another
+  foe inside for half of it, and your aura flows back twice as fast while you stand in it. A big moment: a great circle on
+  the ground, a column of light, the camera shaking, a deep chord. 40 aura, and a minute and a half's rest.
+- **Harder breakthroughs** for the top stages: hold the breathing stance where ley lines cross **through a thunderstorm**,
+  open to the sky (45 seconds for Form, a minute for Sovereign; lightning breaks it), or fell a **boss** by your blade
+  alone within three minutes. A stronger foe or a calm sky no longer does.
+- **The spellblade** (from Edge): cast a spell while sneaking with your blade in hand and it flows into the blade, which
+  glows in the spell's colour with coils of light winding up it. Your next Aura Slash within 5 seconds carries it: the slash
+  replaces the spell's shape and lands it on the first few foes it cuts (each a little weaker), or bursts it where the
+  slash breaks. Both prices are paid, and the spell goes through the cast engine as any does, so Shields, the spell
+  defences, the PvP cap and mastery all apply. Unused, it slips off and leaves as cast. Spells cast standing, Self spells,
+  secret spells and overchannelled spells go out as usual.
+- **Aura marks**: an elemental strike (a coated blow or the slash) may leave its element's reaction mark for a mage's
+  spell to set off: a Rime blade leaves foes frozen (Shatter, Fracture), Gale windswept (Wildfire), Crimson bleeding
+  (Rupture), Hollow shadowed (Blight), Starlit exposed (Unweave), Ember burning and Verdant a touch of poison (Overload,
+  Elapse). Earth, storm and time leave none. A modest chance (15% at Glow, 5% more a stage), short marks, and a rest
+  before the same foe takes another from you.
+- **The aura bar** shows the step recharging on the Form diamond and a Dominion on the Sovereign one (with a thread filling
+  back as it rests), and above the bar a spell's time on the blade and a Dominion's time left. The **Aura page** lists the
+  new techniques and the top stages' trials.
+- **Fair in PvP**: Intent presses on another player only if their stage (or, without aura, their health) is lower, as a
+  dark vignette and a slight slow (5%); a player inside a Dominion is slowed less and hits only a little weaker (the
+  weakening times the PvP scale); a Dominion's chain onto a player is aura off the blade, which meets their spell
+  defences; a carried spell meets them as any spell does.
+- **Sounds**: `aura_step`, `aura_armour`, `aura_intent`, `aura_dominion`, `aura_dominion_fade` and `aura_spellblade`.
+- **Server settings**, more keys in the `aura` section: `step_cost`, `step_cooldown_seconds`, `step_distance`,
+  `armour_share`, `intent_pvp`, `intent_pvp_slow`, `dominion_cost`, `dominion_seconds`, `dominion_cooldown_seconds`,
+  `dominion_weaken`, `spellblade_seconds` and `mark_chance_multiplier`. An older file gains them at their defaults.
+- **For add-ons**: Form and Sovereign are open in the stage registry, the step and Dominion are in the technique registry,
+  the top stages' trials are allowed through `AuraApi.allowTrial`, and a duel trial (`AuraBreakthroughs.DUEL`) waits for
+  whoever teaches aura duels to allow it.
 
 ## [0.8.0-alpha] - 2026-10-01
 

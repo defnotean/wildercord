@@ -185,8 +185,8 @@ public final class AuraStep {
 				player.resetFallDistance();
 				AuraVfx.stepTrail(level, prev, point, color);
 				if (last) {
-					player.setDeltaMovement(dir.scale(0.18));
-					player.syncVelocity = true;
+					// It lands where it was aimed: no slide on past the end.
+					player.setDeltaMovement(Vec3.ZERO);
 					AuraVfx.stepEnd(level, point, dir, color);
 				}
 			});

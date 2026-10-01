@@ -49,7 +49,9 @@ import java.util.UUID;
  * Aura at runtime: reading a player's aura on either side, filling and spending it (with backlash), the breathing stance,
  * the attribute modifiers each stage and method gives, and the public look. Checked every tick for every player (the stance
  * has to see a quick breath of sneak let up and pressed again); the rest of aura lives beside it: {@link AuraCombat} (blows),
- * {@link AuraGuard}, {@link AuraSlash}, {@link AuraBreakthroughs}, {@link AuraMethods} (learning) and {@link AuraLoot}.
+ * {@link AuraGuard}, {@link AuraSlash}, {@link AuraBreakthroughs}, {@link AuraMethods} (learning) and {@link AuraLoot}, and
+ * for the top stages {@link AuraStep}, {@link AuraArmour}, {@link AuraIntent}, {@link AuraDominion}, with {@link Spellblade}
+ * and {@link AuraMarks} where aura meets spells.
  *
  * <p>The rules and their numbers are {@link AuraRules}; the hooks for other systems are {@link AuraApi}.</p>
  */
@@ -388,7 +390,7 @@ public final class Aura {
 			AuraSense.combat(player, now);
 			AuraPresence.look(player, AuraPresence.look(player).withShell(AuraArmour.up(player)));
 		}
-		AuraIntent.release(server, server.getTickCount());
+		AuraIntent.release(server);
 		AuraDominion.tick(server);
 		Spellblade.tick(server);
 	}

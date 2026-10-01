@@ -96,6 +96,11 @@ Runes that move **you** (Launch or Dash on Self) never mark you. The runes named
 semicolon in each row are [runes of the world]({{ '/runes/world/' | relative_url }}) and
 [fused runes]({{ '/runes/fused/' | relative_url }}).
 
+**Blades leave marks too.** A swordsman's elemental strikes sometimes leave their element's mark for 3 seconds: a Rime
+blade frozen, a Gale blade windswept, a Hollow blade shadowed, a Crimson blade bleeding, a Starlit blade exposed, an
+Ember blade burning and a Verdant blade a touch of poison. Fight beside one and your spells have marks to set off (see
+[Aura marks]({{ '/progression/aura/' | relative_url }}#aura-marks)).
+
 ### Which hits count
 
 **Fire damage that can Shatter and set off Wildfire:** Fire, Ember, Explode, Meteor, Inferno,

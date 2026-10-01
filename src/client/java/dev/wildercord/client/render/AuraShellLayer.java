@@ -45,8 +45,9 @@ import java.util.List;
 public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	public static final ModelLayerLocation SHELL = new ModelLayerLocation(Wildercord.id("aura_shell"), "main");
 	public static final ModelLayerLocation SLIM_SHELL = new ModelLayerLocation(Wildercord.id("aura_shell"), "slim");
-	private static final Identifier SHELL_TEXTURE = Wildercord.id("textures/entity/aura/shell.png");
-	private static final RenderType SHELL_TYPE = RenderTypes.eyes(SHELL_TEXTURE);
+	/** The shell's light, laid out on the skin of each model (the slim one's arms are a pixel narrower). */
+	private static final RenderType SHELL_TYPE = RenderTypes.eyes(Wildercord.id("textures/entity/aura/shell.png"));
+	private static final RenderType SLIM_SHELL_TYPE = RenderTypes.eyes(Wildercord.id("textures/entity/aura/shell_slim.png"));
 	/** How far the shell stands off the body, in pixels. */
 	private static final float STAND_OFF = 0.55F;
 
@@ -101,7 +102,8 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		Integer glow = state.getData(SHELL_GLOW);
 		if (glow != null) {
 			boolean slim = state.skin != null && state.skin.model() == PlayerModelType.SLIM;
-			nodes.order(1).submitModel(slim ? slimShell : shell, state, pose, SHELL_TYPE, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, glow, null, 0);
+			nodes.order(1).submitModel(slim ? slimShell : shell, state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightCoordsUtil.FULL_BRIGHT,
+				OverlayTexture.NO_OVERLAY, glow, null, 0);
 		}
 		List<Image> images = state.getData(IMAGES);
 		if (images != null && !images.isEmpty() && upright(state)) {
@@ -119,7 +121,13 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 				pose.scale(-1.0F, -1.0F, 1.0F);
 				pose.scale(0.9375F, 0.9375F, 0.9375F);
 				pose.translate(0.0F, -1.501F, 0.0F);
-				nodes.order(2).submitModel(getParentModel(), state, pose, ghost, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, image.color(), null, 0);
+				// The body as it was, ghostly in the aura's colour, and its outline lit as the shell's is.
+				int alpha = image.color() >>> 24;
+				int ghostColor = (Math.round(alpha * 0.55F) << 24) | (image.color() & 0xFFFFFF);
+				nodes.order(2).submitModel(getParentModel(), state, pose, ghost, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, ghostColor, null, 0);
+				boolean slim = state.skin != null && state.skin.model() == PlayerModelType.SLIM;
+				nodes.order(3).submitModel(getParentModel(), state, pose, slim ? SLIM_SHELL_TYPE : SHELL_TYPE, LightCoordsUtil.FULL_BRIGHT,
+					OverlayTexture.NO_OVERLAY, image.color(), null, 0);
 				pose.popPose();
 			}
 		}
@@ -147,8 +155,8 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 			// Faint at rest, breathing slowly; flaring white-hot for a moment when a blow lands on it.
 			float since = presence.shellStruckAt() < 0 ? 99 : time - presence.shellStruckAt();
 			float flare = since >= 0 && since < 8 ? 1 - since / 8F : 0;
-			float alpha = 0.16F + 0.05F * Mth.sin(time * 0.09F + player.getId()) + 0.6F * flare;
-			int rgb = mix(look.color(), 0xFFFFFF, 0.15F + 0.5F * flare);
+			float alpha = Math.min(1.0F, 0.3F + 0.07F * Mth.sin(time * 0.09F + player.getId()) + 0.4F * flare);
+			int rgb = mix(look.color(), 0xFFFFFF, 0.1F + 0.3F * flare);
 			state.setData(SHELL_GLOW, (Mth.clamp(Math.round(alpha * 255), 0, 255) << 24) | rgb);
 		}
 		List<AuraClient.Afterimage> images = AuraClient.afterimages(player.getId(), time);
@@ -159,8 +167,8 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 				if (age < 0 || age >= 1) {
 					continue;
 				}
-				float alpha = 0.62F * (1 - age) * (1 - age);
-				int rgb = mix(image.color(), 0xFFFFFF, 0.2F);
+				float alpha = 0.9F * (float) Math.pow(1 - age, 1.4);
+				int rgb = mix(image.color(), 0xFFFFFF, 0.1F);
 				out.add(new Image(image.at().x - state.x, image.at().y - state.y, image.at().z - state.z, image.yaw(),
 					(Mth.clamp(Math.round(alpha * 255), 0, 255) << 24) | rgb));
 			}

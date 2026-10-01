@@ -54,7 +54,11 @@ public final class AuraApi {
 		TAP,
 		/** Pressed while sneaking: goes off at once, on the press. */
 		SNEAK_TAP,
-		/** Two taps within a little under half a second (the second one only; the first still went off as a tap). */
+		/**
+		 * Two taps within a little under half a second. For a player who has a double-tap technique (Aura Step, from Form) a lone
+		 * tap waits out that moment before it goes, so the pair goes as the double tap alone; for anyone else the first tap still
+		 * went off as a tap.
+		 */
 		DOUBLE_TAP,
 		/** Held a quarter of a second or more: sent once as the hold begins. */
 		HOLD

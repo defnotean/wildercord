@@ -85,6 +85,22 @@ public final class AuraDominion {
 		return field != null && player.level().getGameTime() <= field.until();
 	}
 
+	/** Whether {@code entity} stands inside the Dominion {@code owner} holds now. */
+	public static boolean inside(Player owner, Entity entity) {
+		Field field = FIELDS.get(owner.getUUID());
+		return field != null && owner.level().getGameTime() <= field.until() && field.inside(entity);
+	}
+
+	/** Ends the Dominion {@code player} holds, at once (its rest still runs). */
+	public static void end(ServerPlayer player) {
+		forget(player.getUUID());
+		AuraPresence.Timers timers = AuraPresence.timers(player);
+		long now = player.level().getGameTime();
+		if (timers.dominionUntil() > now) {
+			AuraPresence.timers(player, timers.dominion(timers.dominionReadyAt(), now));
+		}
+	}
+
 	/** The technique: raise a Dominion where the player stands. */
 	public static boolean raise(ServerPlayer player) {
 		long now = player.level().getGameTime();

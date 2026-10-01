@@ -87,9 +87,14 @@ public final class AuraIntent {
 
 	/** Every tick, for a player with aura: once a second, their Intent presses. */
 	static void tick(ServerPlayer player, long now) {
-		if ((now + player.getId()) % AuraRules.INTENT_PERIOD != 0 || !active(player)) {
-			return;
+		if ((now + player.getId()) % AuraRules.INTENT_PERIOD == 0 && active(player)) {
+			pulse(player);
 		}
+	}
+
+	/** One press of {@code player}'s Intent on everything round them (also the tests, for a simulated player); returns how many it pressed on. */
+	public static int pulse(ServerPlayer player) {
+		long now = player.level().getGameTime();
 		ServerLevel level = player.level();
 		double r = AuraRules.INTENT_RADIUS;
 		int pressed = 0;
@@ -113,6 +118,7 @@ public final class AuraIntent {
 				Aura.sound(player, "aura_intent", 0.5F, 1.0F);
 			}
 		}
+		return pressed;
 	}
 
 	/** A weaker creature: slowed for a moment, and now and then it falters where it stands. */
@@ -136,7 +142,7 @@ public final class AuraIntent {
 	}
 
 	/** Every tick: a pressed player's slow lets go once Intent stops reaching them. */
-	static void release(MinecraftServer server, long now) {
+	static void release(MinecraftServer server) {
 		for (Iterator<Map.Entry<UUID, Long>> it = PRESSED.entrySet().iterator(); it.hasNext(); ) {
 			Map.Entry<UUID, Long> entry = it.next();
 			ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
