@@ -41,6 +41,7 @@ import java.util.Set;
  * @param affinityGain       how fast affinity points come, times this (the daily allowances count what's done, not what it's worth)
  * @param travel             the travel commands ({@code /home}, {@code /warp}, {@code /tpa}...): see {@link TravelSettings}
  * @param defence            how players stand up to spells (armour, the bonus cap, the spellguard): see {@link DefenceSettings}
+ * @param mastery            spells that grow with their caster (ranks, traits, sigils, spoken names): see {@link MasterySettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -65,10 +66,11 @@ public record WildercordConfig(
 	boolean playerAffinity,
 	double affinityGain,
 	TravelSettings travel,
-	DefenceSettings defence
+	DefenceSettings defence,
+	MasterySettings mastery
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS);
+		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, MasterySettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -102,6 +104,20 @@ public record WildercordConfig(
 	 */
 	public record DefenceSettings(boolean spellguard, double spellguardHealth, int spellguardRechargeSeconds, double maxBonus, double armourRate) {
 		public static final DefenceSettings DEFAULTS = new DefenceSettings(true, 0.8, 60, 2.5, 0.55);
+	}
+
+	/**
+	 * Spell mastery (the {@code mastery} section): spells that grow with the one who casts them. A file written before the
+	 * section existed reads as these defaults.
+	 *
+	 * @param enabled       whether spells gain experience and ranks at all (records already earned are kept while it's off)
+	 * @param xpMultiplier  how fast spells gain experience, times this
+	 * @param traits        whether the traits players chose for their spells take effect
+	 * @param spokenNames   whether a named spell of Adept rank or higher shows its name to everyone nearby when cast
+	 * @param inscription   whether an Adept spell can be inscribed onto a scroll with its traits for someone else to learn
+	 */
+	public record MasterySettings(boolean enabled, double xpMultiplier, boolean traits, boolean spokenNames, boolean inscription) {
+		public static final MasterySettings DEFAULTS = new MasterySettings(true, 1.0, true, true, true);
 	}
 
 	/** The file's format version, written so later versions can migrate it. */
@@ -165,7 +181,13 @@ public record WildercordConfig(
 				r.number("defence", "spellguard_health", d.defence.spellguardHealth(), 0.1, 1),
 				r.integer("defence", "spellguard_recharge_seconds", d.defence.spellguardRechargeSeconds(), 0, 3600),
 				r.number("defence", "max_bonus", d.defence.maxBonus(), 1, 100),
-				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)));
+				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)),
+			new MasterySettings(
+				r.bool("mastery", "enabled", d.mastery.enabled()),
+				r.number("mastery", "xp_multiplier", d.mastery.xpMultiplier(), 0, 100),
+				r.bool("mastery", "traits", d.mastery.traits()),
+				r.bool("mastery", "spoken_names", d.mastery.spokenNames()),
+				r.bool("mastery", "inscription", d.mastery.inscription())));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -184,6 +206,7 @@ public record WildercordConfig(
 		KEYS.put("affinity", Set.of("gain_multiplier"));
 		KEYS.put("travel", Set.of("enabled", "max_homes", "warmup_seconds", "cooldown_seconds", "rtp_cooldown_seconds", "rtp_radius", "tpa_timeout_seconds"));
 		KEYS.put("defence", Set.of("spellguard", "spellguard_health", "spellguard_recharge_seconds", "max_bonus", "armour_rate"));
+		KEYS.put("mastery", Set.of("enabled", "xp_multiplier", "traits", "spoken_names", "inscription"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -376,6 +399,17 @@ public record WildercordConfig(
 		defenceSection.addProperty("max_bonus", defence.maxBonus());
 		defenceSection.addProperty("armour_rate", defence.armourRate());
 		root.add("defence", defenceSection);
+
+		JsonObject masterySection = new JsonObject();
+		masterySection.addProperty("_about", "Spell mastery: spells grow with the one who casts them, through ranks (Kindled to Mythic) earned by casts that matter. "
+			+ "xp_multiplier changes how fast (2.0 is twice as fast). traits switches the chosen traits' effects off without losing them, spoken_names whether "
+			+ "named Adept spells show their name to people nearby, inscription whether Adept spells can be inscribed onto scrolls with their traits.");
+		masterySection.addProperty("enabled", mastery.enabled());
+		masterySection.addProperty("xp_multiplier", mastery.xpMultiplier());
+		masterySection.addProperty("traits", mastery.traits());
+		masterySection.addProperty("spoken_names", mastery.spokenNames());
+		masterySection.addProperty("inscription", mastery.inscription());
+		root.add("mastery", masterySection);
 		return GSON.toJson(root) + "\n";
 	}
 

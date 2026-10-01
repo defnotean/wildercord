@@ -54,6 +54,39 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void spellMasteryHasSwitchesAndAPace() {
+		WildercordConfig.MasterySettings m = D.mastery();
+		assertTrue(m.enabled() && m.traits() && m.spokenNames() && m.inscription());
+		assertEquals(1.0, m.xpMultiplier(), 1e-9);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(
+			"{\"mastery\": {\"enabled\": false, \"xp_multiplier\": 2.5, \"traits\": false, \"spoken_names\": false, \"inscription\": false}}");
+		assertEquals(new WildercordConfig.MasterySettings(false, 2.5, false, false, false), parsed.config().mastery());
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		// Out of range is clamped, with a warning; a typo is reported.
+		WildercordConfig.Parsed wild = WildercordConfig.parse("{\"mastery\": {\"xp_multiplier\": 500, \"xp_multiplyer\": 2}}");
+		assertEquals(100.0, wild.config().mastery().xpMultiplier(), 1e-9);
+		assertEquals(2, wild.warnings().size(), wild.warnings().toString());
+		// The written file explains it and reads back the same.
+		assertTrue(D.toJson().contains("\"mastery\"") && D.toJson().contains("\"xp_multiplier\": 1.0"));
+		WildercordConfig changed = WildercordConfig.parse(D.toJson().replace("\"spoken_names\": true", "\"spoken_names\": false")).config();
+		assertFalse(changed.mastery().spokenNames());
+		assertTrue(changed.mastery().enabled());
+	}
+
+	@Test
+	void anOlderFileGainsTheMasterySection() {
+		String older = "{\"features\": {\"duels\": false}, \"defence\": {\"max_bonus\": 3.0}}";
+		String grown = WildercordConfig.addMissing(older).orElseThrow();
+		assertTrue(grown.contains("\"mastery\"") && grown.contains("\"inscription\""), grown);
+		WildercordConfig config = WildercordConfig.parse(grown).config();
+		assertEquals(WildercordConfig.MasterySettings.DEFAULTS, config.mastery());
+		assertFalse(config.duels());
+		assertEquals(3.0, config.defence().maxBonus(), 1e-9);
+		// Nothing more to add once it's there.
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty());
+	}
+
+	@Test
 	void theWrittenFileReadsBackAsTheDefaults() {
 		WildercordConfig.Parsed parsed = WildercordConfig.parse(D.toJson());
 		assertEquals(D, parsed.config());

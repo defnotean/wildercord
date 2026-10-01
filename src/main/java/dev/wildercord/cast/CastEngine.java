@@ -429,7 +429,7 @@ public final class CastEngine {
 
 	private static void beam(Cast cast, SpellPlan.Group g, SpellPlan.Link anchored, Vec3 from, Vec3 dir, Vfx.Theme theme) {
 		LivingEntity caster = cast.caster;
-		Vec3 to = from.add(dir.scale(BEAM_RANGE));
+		Vec3 to = from.add(dir.scale(BEAM_RANGE * Mastery.range(cast)));
 		BlockHitResult block = cast.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
 		Vec3 end = block.getType() == HitResult.Type.MISS ? to : block.getLocation();
 		List<Entity> along = new ArrayList<>();
@@ -537,6 +537,8 @@ public final class CastEngine {
 			}
 		}
 		cast.siphon(aliveBefore.stream().filter(e -> Targets.canHarm(cast.caster, e) || !e.isAlive()).count());
+		// Allies helped, a caster moved: what the spell learns from it, and the traits that answer it (see Mastery).
+		Mastery.afterHit(cast, g, hit);
 		if (anchored == null) {
 			return;
 		}
@@ -648,7 +650,7 @@ public final class CastEngine {
 		}
 		LivingEntity caster = cast.caster;
 		Vec3 from = caster.getEyePosition();
-		Vec3 to = from.add(caster.getLookAngle().scale(AIM_RANGE));
+		Vec3 to = from.add(caster.getLookAngle().scale(AIM_RANGE * Mastery.range(cast)));
 		BlockHitResult hit = cast.level.clip(new ClipContext(from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster));
 		return ground(cast.level, hit.getType() == HitResult.Type.MISS ? to : hit.getLocation());
 	}

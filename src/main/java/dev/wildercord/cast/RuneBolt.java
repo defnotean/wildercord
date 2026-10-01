@@ -106,8 +106,10 @@ public class RuneBolt extends Projectile {
 		bolt.homing = SpellNumbers.homing(group);
 		bolt.arc = arc;
 		bolt.speed = (arc ? SpellNumbers.arcSpeed(group) : SpellNumbers.boltSpeed(group)) * (VoidTime.hurried(cast.caster) ? VoidTime.HURRY_BOLT : 1.0);
-		bolt.lifeLeft = arc ? 120 : (int) Math.ceil(RANGE / bolt.speed) + 4;
-		bolt.travelLeft = RANGE;
+		// A spell grown Far Reach flies a little farther (see Mastery).
+		double range = RANGE * Mastery.range(cast);
+		bolt.lifeLeft = arc ? 120 : (int) Math.ceil(range / bolt.speed) + 4;
+		bolt.travelLeft = range;
 		bolt.color = CastEngine.colorOf(group);
 		bolt.theme = cast.theme(group);
 		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());

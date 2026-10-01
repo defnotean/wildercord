@@ -129,6 +129,8 @@ public final class SpellCaster {
 		// first cast, which finds it, costs what the ordinary spell does. Read before it's found below.
 		double secretPower = Heart.secretCost(player, runes);
 		double secretCooldown = Heart.secretCooldown(player, runes);
+		// The traits its caster chose as it grew with them (see Mastery): a little cheaper, a little quicker.
+		double traitCost = Mastery.costFactor(player, runes);
 		// What it costs, and whether it can be paid, before anything is spent.
 		int blood = 0;
 		int cost = 0;
@@ -136,13 +138,13 @@ public final class SpellCaster {
 		float mana = Spellbooks.mana(player);
 		if (!free && compiled.paysInHealth()) {
 			// Blood Price: paid in health, and never enough to kill you.
-			blood = Heart.healthCost(player, compiled, secretPower);
+			blood = Heart.healthCost(player, compiled, secretPower * traitCost);
 			if (!player.isCreative() && player.getHealth() <= blood) {
 				fail(player, Component.translatable("message.wildercord.no_health", blood));
 				return;
 			}
 		} else if (!free) {
-			cost = Heart.manaCost(player, compiled, secretPower);
+			cost = Heart.manaCost(player, compiled, secretPower * traitCost);
 			if (!player.isCreative() && mana < cost) {
 				// Not enough: a second press within two seconds overcasts, cracking a circle to pay.
 				if (!Overcast.confirm(player, spell, (int) mana, cost)) {
@@ -183,7 +185,7 @@ public final class SpellCaster {
 				Spellbooks.setMana(player, mana - cost);
 			}
 		}
-		int cooldown = Heart.cooldownTicks(player, compiled, secretCooldown);
+		int cooldown = Heart.cooldownTicks(player, compiled, secretCooldown * Mastery.cooldownFactor(player, runes));
 		Spellbooks.setReadyAt(player, spell, now + cooldown);
 		HeartCircles.condense(player, spent);
 		VoidTime.spent(player, spent);
@@ -192,7 +194,7 @@ public final class SpellCaster {
 		PlayerAffinities.onCast(player, compiled.root(), spent, blood);
 		double rhythm = Rhythm.onCast(player, now, cooldown);
 		double charged = 1 + Charging.POWER * Math.max(0, Math.min(1, charge));
-		bonuses = bonuses.withPower(bonuses.power() * rhythm * charged);
+		bonuses = bonuses.withPower(bonuses.power() * rhythm * charged * Mastery.powerFactor(player, runes));
 		if (charge >= 1.0) {
 			Grimoire.feat(player, dev.wildercord.spell.Feats.CHARGED);
 		}
@@ -223,6 +225,8 @@ public final class SpellCaster {
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear)
 			.withAffinity();
 		cast.charge(charge);
+		// What this spell learns from the cast, and the traits it has grown (see Mastery).
+		Mastery.onCast(player, spell, runes, cast, spent);
 		if (!cast.info.root().groups.isEmpty()) {
 			var first = cast.info.root().groups.getFirst();
 			dev.wildercord.cast.feel.Feels.cue(cast, cast.feel(first), cast.theme(first));

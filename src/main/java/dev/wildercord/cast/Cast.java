@@ -61,6 +61,8 @@ public final class Cast {
 		Trigger origin;
 		/** Whether the caster's affinities count on this spell (see {@link #withAffinity}). */
 		boolean affinity;
+		/** What the spell is learning, and the traits its caster chose for it (see {@link Mastery}); null for a spell that has none. */
+		Mastery.Tally mastery;
 
 		Shared() {
 			this(new Paid());
@@ -78,6 +80,7 @@ public final class Cast {
 			copy.gear = gear;
 			copy.origin = origin;
 			copy.affinity = affinity;
+			copy.mastery = mastery;
 			return copy;
 		}
 	}
@@ -285,6 +288,17 @@ public final class Cast {
 		return budget.shared.affinity;
 	}
 
+	/** Gives the whole cast (and every copy paid for with it) what it's learning and its traits: see {@link Mastery}. */
+	public Cast mastery(Mastery.Tally tally) {
+		budget.shared.mastery = tally;
+		return this;
+	}
+
+	/** What the cast is learning and its traits, or null (a monster's spell, a passive, an imbued release). */
+	public Mastery.Tally mastery() {
+		return budget.shared.mastery;
+	}
+
 	/**
 	 * Marks this as a stored spell's release, set off at {@code origin} (the creature struck, the block broken, whoever
 	 * stepped on the glyph): an Echo inside it repeats what was stored there, not from the caster.
@@ -364,7 +378,10 @@ public final class Cast {
 	 */
 	public Cast reflected(LivingEntity by) {
 		weight();
-		return new Cast(by, (ServerLevel) by.level(), 0, new Budget(budget.shared.copy(true)), 1, power, duration, false, null, info, new java.util.HashSet<>());
+		Shared turned = budget.shared.copy(true);
+		// Turned back, it's no longer its caster's spell to learn from, and their traits don't go with it.
+		turned.mastery = null;
+		return new Cast(by, (ServerLevel) by.level(), 0, new Budget(turned), 1, power, duration, false, null, info, new java.util.HashSet<>());
 	}
 
 	/** Takes up to {@code wanted} creatures from the budget and returns how many may be touched. */

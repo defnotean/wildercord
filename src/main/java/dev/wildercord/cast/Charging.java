@@ -53,6 +53,8 @@ public final class Charging {
 	/** Ticks to a full charge for this caster: a Focus of Haste in the off-hand fills it faster. */
 	public static int fullTicks(net.minecraft.world.entity.Entity caster) {
 		double speed = caster instanceof net.minecraft.world.entity.LivingEntity living ? dev.wildercord.gear.Gear.chargeSpeed(living) : 1.0;
+		// A spell grown Ready Breath charges a little faster (see Mastery).
+		speed *= Mastery.chargeSpeed(caster);
 		boolean hurried = VoidTime.hurried(caster);
 		// Quick hands: Haste fills the charge 30% sooner (hurried time, Accelerate's Haste III, fills it 40% sooner and does not stack with that).
 		if (!hurried && caster instanceof net.minecraft.world.entity.LivingEntity hasty && hasty.hasEffect(net.minecraft.world.effect.MobEffects.HASTE)) {

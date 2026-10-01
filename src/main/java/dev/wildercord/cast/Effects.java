@@ -100,6 +100,8 @@ public final class Effects {
 	private static boolean passiveEffect;
 	/** Whose spell is being applied right now (null outside one): a duel undoes only what the opponent's spells did. */
 	private static LivingEntity applying;
+	/** The cast being applied right now (null outside one): health it restores counts toward the spell's mastery. */
+	private static Cast applyingCast;
 	/** Thirst on the effect being applied: the share of the damage it deals that heals its caster (0 = none). */
 	private static double thirst;
 
@@ -111,6 +113,11 @@ public final class Effects {
 	/** Whose spell is being applied right now, or null: harm landing meanwhile is that caster's doing. */
 	public static LivingEntity applying() {
 		return applying;
+	}
+
+	/** The cast being applied right now, or null (see {@link Mastery#healed}). */
+	public static Cast applyingCast() {
+		return applyingCast;
 	}
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
@@ -126,12 +133,14 @@ public final class Effects {
 		double outerOpening = openingBonus;
 		boolean outerPassive = passiveEffect;
 		LivingEntity outerApplying = applying;
+		Cast outerCast = applyingCast;
 		double outerThirst = thirst;
 		executeBonus = SpellNumbers.executeBonus(node);
 		currentElement = node.effect.element();
 		openingBonus = SpellNumbers.trialKeyBonus(node);
 		passiveEffect = cast.passive;
 		applying = cast.caster;
+		applyingCast = cast;
 		thirst = SpellNumbers.thirstShare(node);
 		try {
 			applyEffect(cast, node, hit, groupPower);
@@ -141,6 +150,7 @@ public final class Effects {
 			openingBonus = outerOpening;
 			passiveEffect = outerPassive;
 			applying = outerApplying;
+			applyingCast = outerCast;
 			thirst = outerThirst;
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
@@ -916,10 +926,12 @@ public final class Effects {
 		// Before the affinity, so a reaction this hit sets off breaks through a resistance, as Shatter's does.
 		bonus *= Reactions.hit(cast, target, currentElement);
 		bonus *= Affinities.multiplier(cast, target, source, currentElement);
-		// Fire is weaker on the wet.
-		if (!soulBurn) {
+		// Fire is weaker on the wet (unless the spell has grown Undying Flame).
+		if (!soulBurn && !Mastery.wetFire(cast)) {
 			bonus *= WorldMagic.wetDamage(target, currentElement);
 		}
+		// The damage traits its caster chose for it as it grew (see Mastery): held to their own cap, and to the one below.
+		bonus *= Mastery.damageBonus(cast, target);
 		bonus *= AddonRunes.react(cast, target, currentElement);
 		bonus *= ExplorerEffects.bonus(cast, target, currentElement);
 		// Trial Key: the opening blow on a target still at full health.
@@ -956,6 +968,8 @@ public final class Effects {
 		}
 		// Spellbrand: a brand this caster left on the target bursts.
 		CraftedRunes.afterSpellHit(cast, target);
+		// What the spell learns from the blow, and the traits that answer one (see Mastery).
+		Mastery.afterDamage(cast, target, dealt, taken);
 	}
 
 	/** One strike of Lightning at {@code at}; whatever it hits is added to {@code struck}, to be set alight after the last strike. */
