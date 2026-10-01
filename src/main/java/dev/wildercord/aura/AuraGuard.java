@@ -47,7 +47,8 @@ public final class AuraGuard {
 		if (state.guarding(now) || now < state.guardUntil() + AuraRules.GUARD_REST) {
 			return false;
 		}
-		AuraRules.Spend paid = Aura.spend(player, AuraRules.GUARD_RAISE_COST, "guard");
+		// An aura-forged maul braces for less.
+		AuraRules.Spend paid = Aura.spend(player, AuraRules.GUARD_RAISE_COST * dev.wildercord.aura.world.ForgedGear.guardCost(player), "guard");
 		if (paid.backlash()) {
 			// Spent past empty: the guard never forms.
 			Aura.state(player, Aura.state(player).guard(-1, now));
@@ -155,12 +156,14 @@ public final class AuraGuard {
 			return -1;
 		}
 		double share = Config.get().aura().guardShare();
-		double absorbed = AuraRules.guardAbsorb(damage, Aura.aura(player), share);
+		// An aura-forged maul's guard pays less a point, so the same aura holds off more.
+		double cost = dev.wildercord.aura.world.ForgedGear.guardCost(player);
+		double absorbed = AuraRules.guardAbsorb(damage, Aura.aura(player) / Math.max(1.0E-3, cost), share);
 		if (absorbed <= 0) {
 			breaks(player, now);
 			return damage;
 		}
-		Aura.spend(player, absorbed * AuraRules.GUARD_COST_PER_POINT, "guard");
+		Aura.spend(player, absorbed * AuraRules.GUARD_COST_PER_POINT * cost, "guard");
 		AuraVfx.held(player, Aura.color(player), source);
 		if (Aura.aura(player) <= 1.0E-3 && absorbed < damage * share - 1.0E-3) {
 			// It took what it could and has nothing left: it breaks.
@@ -182,7 +185,11 @@ public final class AuraGuard {
 		// The perfect moment answers once.
 		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
 		Entity direct = source.getDirectEntity();
-		if (direct instanceof Projectile projectile) {
+		if (source.is(Aura.DAMAGE)) {
+			// Aura off a blade (a slash, a spark): a crescent is sent back at whoever loosed it, as the guard's own. Nobody is
+			// staggered from across a field.
+			Crescents.reflect(player, Aura.color(player), e -> dev.wildercord.cast.Targets.canHarm(player, e), AuraSlash.cutter(player));
+		} else if (direct instanceof Projectile projectile) {
 			reflect(player, projectile);
 		} else if (source.getEntity() instanceof LivingEntity attacker && attacker != player) {
 			stagger(player, attacker);

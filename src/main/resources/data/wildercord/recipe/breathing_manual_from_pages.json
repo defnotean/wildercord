@@ -1,0 +1,14 @@
+{
+  "type": "wildercord:manual_pages",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:manual_page",
+    "wildercord:manual_page",
+    "wildercord:manual_page",
+    "wildercord:manual_page",
+    "minecraft:book"
+  ],
+  "result": {
+    "id": "wildercord:breathing_manual"
+  }
+}

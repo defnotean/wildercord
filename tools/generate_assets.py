@@ -396,6 +396,8 @@ def main():
     wildlife_art.write(sys.modules[__name__])
     import aura_art  # Aura, the swordsman's path: manuals, the blade's glow, its data.
     aura_art.write(sys.modules[__name__])
+    import aura_world_art  # The world of aura: duelists, fallen knights, pages, forged gear, the sash, their recipes and loot.
+    aura_world_art.write(sys.modules[__name__])
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -761,6 +763,8 @@ def write_lang(runes):
     lang.update(wildlife_art.LANG)
     import aura_art
     lang.update(aura_art.LANG)
+    import aura_world_art
+    lang.update(aura_world_art.LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -3080,7 +3084,7 @@ GEAR_LANG = {
     "gear_slot.wildercord.focus": "Focus slot",
     "gear_slot.wildercord.focus.hint": "Any focus",
     "gear_slot.wildercord.tome": "Tome slot",
-    "gear_slot.wildercord.tome.hint": "The Tome of the Fifth Page",
+    "gear_slot.wildercord.tome.hint": "The Tome of the Fifth Page, or a Breath Sash",
     "screen.wildercord.gear.title": "Casting gear",
     "screen.wildercord.gear.piece": "  %s: %s",
     "screen.wildercord.gear.readout": "%s: %s",

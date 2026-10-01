@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/spear_in_hand",
+  "textures": {
+    "layer0": "wildercord:item/skyrend_glaive_in_hand"
+  }
+}

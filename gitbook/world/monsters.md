@@ -5,7 +5,8 @@
 
 Six magical monsters live out in the world beside the zombies and skeletons. Each has its own way of fighting, a
 **tell** before its big attack (a sound and a pose you can learn), and a **way to beat it**. None of them appear on
-Peaceful, and they're never common: a few in fifty of the monsters where they live.
+Peaceful, and they're never common: a few in fifty of the monsters where they live. And in the deep old places,
+strongholds, ancient cities, expeditions and dungeons, [fallen knights](#fallen-knight) walk.
 
 | Monster | Where | Watch for | Beat it with | Drops |
 |---|---|---|---|---|
@@ -15,6 +16,7 @@ Peaceful, and they're never common: a few in fifty of the monsters where they li
 | [Geode Crawler](#geode-crawler) | Caves, mostly near amethyst geodes | It curls into a ball and rattles before it rolls | A mace, a pickaxe, a blast or a storm spell | Geode Grit, amethyst |
 | [Bog Witch-Frog](#bog-witch-frog) | Swamps and mangrove swamps at night | Its throat swells and glows before it spits | Shoot the bubble down; a shield turns its tongue | Bog Gland |
 | [Mana Ooze](#mana-ooze) | Deep caves, and caves under ley lines | It drinks your spells and swells | Blades, arrows and fire | Mana Gel |
+| [Fallen Knight](#fallen-knight) | Strongholds, ancient cities, expeditions, old dungeons | It raises its blade high, and a line of light marks the ground | Step off the line; wait out its guard or break it with an axe | Manual Pages, Aura Shards |
 
 Any of the six can also be [Runebound](runebound.md), carrying a spell that suits it, with
 the nameplate, glow and drops that come with a Cord. Their spells, and their own magic (a harpy's lightning, a frog's
@@ -155,6 +157,31 @@ A slime of clear, faintly pink jelly with a mote of raw mana turning at its hear
 
 ![A Mana Ooze in a dark cave: a cube of clear pink jelly with a glowing pink core turning inside it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/monster-mana-ooze.jpg)
 <span>A Mana Ooze, its heart glowing with the spells it has eaten.</span>
+
+## Fallen Knight
+
+
+An old suit of armour that a swordsman's aura still walks in, long after the swordsman. Its visor slit and the cracks in
+its plate glow a dim, smoky version of the [breathing method](../progression/aura.md) it once
+breathed, and its blade carries a faint crystal edge of aura.
+
+- **Where:** in the dark of the old places: strongholds, ancient cities, the [expeditions](expeditions.md)
+  and the spawner rooms of dungeons. Never more than a couple at once around you, and never on Peaceful. The deeper the
+  place, the tougher the knight: an ancient city's or an expedition's hits harder and slashes more often than a
+  dungeon's.
+- **Its slash:** it raises its blade high and holds it, its visor flaring, with a rising hum. A moment before it swings, a
+  line of light runs along the ground where the crescent will fly. **Step off the line.** Or meet it with your own
+  [Aura Slash](../progression/aura.md#edge) (the two clash and break), or turn it back with a
+  [perfect guard](../progression/aura.md#flow). After the swing it's open for a moment: strike then.
+- **Its guard:** close in and it braces its blade across its body. A rushed swing into it is turned aside and leaves you
+  staggered; the guard halves the rest. Wait it out (it can't strike while it guards), circle round and strike from the
+  side or behind, or **break it with an axe**: it reels, open, taking more for a few seconds.
+- **Its slash is magic:** your armour, Warding, the Potion of Warding and the spellguard all count against it.
+- **Drops:** always a **Manual Page** of its method's manual (four pages of one method and a book bind into its
+  Breathing Manual), and about one time in four an **Aura Shard**, which forges [aura weapons](../progression/aura.md#aura-forged-gear).
+
+![A fallen knight at night: dark plate armour with a ragged red crest and tabard, its visor slit and the cracks in its breastplate glowing red, a sword wreathed in red light](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/monster-fallen-knight.jpg)
+<span>A fallen knight who once breathed Crimson Breath.</span>
 
 ## Spawn eggs
 

@@ -50,6 +50,7 @@ import java.util.Set;
  * @param monsters           the magical monsters of the wilds (Bramblewalkers, Gloomstalkers...): see {@link MonsterSettings}
  * @param wildlife           magical wildlife spawning in its biomes (the wildlife keys of the {@code creatures} section): see {@link WildlifeSettings}
  * @param aura               aura, the swordsman's path (breathing methods, stages, techniques): see {@link AuraSettings}
+ * @param auraWorld          the world of aura (wandering duelists, fallen knights, aura-forged gear): see {@link AuraWorldSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -83,12 +84,13 @@ public record WildercordConfig(
 	PowerSettings power,
 	MonsterSettings monsters,
 	WildlifeSettings wildlife,
-	AuraSettings aura
+	AuraSettings aura,
+	AuraWorldSettings auraWorld
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
 		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, MasterySettings.DEFAULTS,
 		ChannelingSettings.DEFAULTS, true, ResonanceSettings.DEFAULTS, ResidueSettings.DEFAULTS, PowerSettings.DEFAULTS, MonsterSettings.DEFAULTS,
-		WildlifeSettings.DEFAULTS, AuraSettings.DEFAULTS);
+		WildlifeSettings.DEFAULTS, AuraSettings.DEFAULTS, AuraWorldSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -377,6 +379,42 @@ public record WildercordConfig(
 		}
 	}
 
+	/**
+	 * The world of aura (the {@code aura_world} section): the wandering duelists who teach breathing methods, the fallen
+	 * knights who haunt old places, and the aura-forged gear. A file written before the section existed reads as these
+	 * defaults. The numbers' meaning is in {@code aura.world.AuraWorldRules}, whose defaults these are.
+	 *
+	 * @param duelists          whether duelists wander in on their own (near villages, on roads, at small camps)
+	 * @param duelistSpawnRate  how often, times this (0 stops them)
+	 * @param maxDuelists       the most duelists loaded at once, across the server
+	 * @param duelistCamps      whether a duelist met in the open lights a campfire beside it (a borrowed block, gone when it leaves)
+	 * @param knights           whether fallen knights rise on their own in strongholds, ancient cities, expeditions and dungeons
+	 * @param knightSpawnRate   how often, times this (0 stops them)
+	 * @param maxKnightsNearby  the most knights around one player before no more rise
+	 * @param forgedGear        whether aura-forged weapons and the Breath Sash do what they do for aura (the items stay either way)
+	 * @param lumenedgeGain     Lumenedge: a blow's aura, times this
+	 * @param skyrendSlash      Skyrend Glaive: its slash's damage, times this
+	 * @param bulwarkGuardCost  Bulwark Maul: what the guard costs, times this
+	 * @param sashCapacity      Breath Sash: aura capacity, times this
+	 */
+	public record AuraWorldSettings(boolean duelists, double duelistSpawnRate, int maxDuelists, boolean duelistCamps, boolean knights,
+			double knightSpawnRate, int maxKnightsNearby, boolean forgedGear, double lumenedgeGain, double skyrendSlash, double bulwarkGuardCost,
+			double sashCapacity) {
+		public static final AuraWorldSettings DEFAULTS = new AuraWorldSettings(true, 1.0, 2, true, true, 1.0, 2, true,
+			dev.wildercord.aura.world.AuraWorldRules.LUMENEDGE_GAIN, dev.wildercord.aura.world.AuraWorldRules.SKYREND_SLASH,
+			dev.wildercord.aura.world.AuraWorldRules.BULWARK_GUARD_COST, dev.wildercord.aura.world.AuraWorldRules.SASH_CAPACITY);
+
+		/** Whether duelists spawn on their own at all. */
+		public boolean duelistsSpawn() {
+			return duelists && duelistSpawnRate > 0 && maxDuelists > 0;
+		}
+
+		/** Whether knights rise on their own at all. */
+		public boolean knightsSpawn() {
+			return knights && knightSpawnRate > 0 && maxKnightsNearby > 0;
+		}
+	}
+
 	/** The file's format version, written so later versions can migrate it. */
 	public static final int VERSION = 1;
 
@@ -515,7 +553,20 @@ public record WildercordConfig(
 					r.number("aura", "dominion_cooldown_seconds", d.aura.heights().dominionCooldownSeconds(), 0, 600),
 					r.number("aura", "dominion_weaken", d.aura.heights().dominionWeaken(), 0, 0.9),
 					r.number("aura", "spellblade_seconds", d.aura.heights().spellbladeSeconds(), 1, 30),
-					r.number("aura", "mark_chance_multiplier", d.aura.heights().markChanceMultiplier(), 0, 3))));
+					r.number("aura", "mark_chance_multiplier", d.aura.heights().markChanceMultiplier(), 0, 3))),
+			new AuraWorldSettings(
+				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
+				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
+				r.integer("aura_world", "max_duelists", d.auraWorld.maxDuelists(), 0, 16),
+				r.bool("aura_world", "duelist_camps", d.auraWorld.duelistCamps()),
+				r.bool("aura_world", "knights", d.auraWorld.knights()),
+				r.number("aura_world", "knight_spawn_rate", d.auraWorld.knightSpawnRate(), 0, 4),
+				r.integer("aura_world", "max_knights_nearby", d.auraWorld.maxKnightsNearby(), 0, 8),
+				r.bool("aura_world", "forged_gear", d.auraWorld.forgedGear()),
+				r.number("aura_world", "lumenedge_gain", d.auraWorld.lumenedgeGain(), 1, 4),
+				r.number("aura_world", "skyrend_slash", d.auraWorld.skyrendSlash(), 1, 4),
+				r.number("aura_world", "bulwark_guard_cost", d.auraWorld.bulwarkGuardCost(), 0, 1),
+				r.number("aura_world", "sash_capacity", d.auraWorld.sashCapacity(), 1, 3)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -549,6 +600,8 @@ public record WildercordConfig(
 			// The top stages, the spellblade and aura marks.
 			"step_cost", "step_cooldown_seconds", "step_distance", "armour_share", "intent_pvp", "intent_pvp_slow", "dominion_cost",
 			"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier"));
+		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
+			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -883,6 +936,27 @@ public record WildercordConfig(
 		auraSection.addProperty("spellblade_seconds", heights.spellbladeSeconds());
 		auraSection.addProperty("mark_chance_multiplier", heights.markChanceMultiplier());
 		root.add("aura", auraSection);
+		JsonObject auraWorldSection = new JsonObject();
+		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "
+			+ "by day; use one to be challenged, and win its breathing method. duelist_spawn_rate scales how often, max_duelists caps how many are about at "
+			+ "once, and duelist_camps lets one met in the open light a campfire that goes when it does. Fallen knights (knights) rise in strongholds, "
+			+ "ancient cities, expeditions and spawner dungeons, slashing and guarding with aura, and drop manual pages and Aura Shards; knight_spawn_rate "
+			+ "scales how often and max_knights_nearby caps them round each player. forged_gear switches what the aura-forged weapons and the Breath Sash "
+			+ "do for aura: Lumenedge's aura from blows (lumenedge_gain), Skyrend Glaive's slash (skyrend_slash), Bulwark Maul's guard cost "
+			+ "(bulwark_guard_cost) and the sash's aura capacity (sash_capacity).");
+		auraWorldSection.addProperty("duelists", auraWorld.duelists());
+		auraWorldSection.addProperty("duelist_spawn_rate", auraWorld.duelistSpawnRate());
+		auraWorldSection.addProperty("max_duelists", auraWorld.maxDuelists());
+		auraWorldSection.addProperty("duelist_camps", auraWorld.duelistCamps());
+		auraWorldSection.addProperty("knights", auraWorld.knights());
+		auraWorldSection.addProperty("knight_spawn_rate", auraWorld.knightSpawnRate());
+		auraWorldSection.addProperty("max_knights_nearby", auraWorld.maxKnightsNearby());
+		auraWorldSection.addProperty("forged_gear", auraWorld.forgedGear());
+		auraWorldSection.addProperty("lumenedge_gain", auraWorld.lumenedgeGain());
+		auraWorldSection.addProperty("skyrend_slash", auraWorld.skyrendSlash());
+		auraWorldSection.addProperty("bulwark_guard_cost", auraWorld.bulwarkGuardCost());
+		auraWorldSection.addProperty("sash_capacity", auraWorld.sashCapacity());
+		root.add("aura_world", auraWorldSection);
 		return GSON.toJson(root) + "\n";
 	}
 

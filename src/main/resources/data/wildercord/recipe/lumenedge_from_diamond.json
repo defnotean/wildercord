@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": "wildercord:aura_shard",
+  "base": "minecraft:diamond_sword",
+  "addition": "wildercord:lumen_antler",
+  "result": {
+    "id": "minecraft:diamond_sword",
+    "components": {
+      "wildercord:aura_forged": "lumenedge",
+      "minecraft:item_model": "wildercord:lumenedge",
+      "minecraft:item_name": {
+        "translate": "item.wildercord.lumenedge"
+      },
+      "minecraft:rarity": "rare"
+    }
+  }
+}

@@ -42,9 +42,9 @@ public final class Config {
 
 	/** Server to client: the settings a client needs to show costs, regeneration, affinities and spell defences truthfully. */
 	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence, boolean mastery,
-			boolean masteryTraits, boolean unreadRunes, boolean aura, float slashCost) implements CustomPacketPayload {
+			boolean masteryTraits, boolean unreadRunes, boolean aura, float slashCost, boolean forgedGear, float sashCapacity) implements CustomPacketPayload {
 		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
-			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost());
+			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity());
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
 		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
@@ -54,12 +54,13 @@ public final class Config {
 		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC = StreamCodec.composite(
 			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity,
 			DEFENCE_CODEC, Sync::defence, ByteBufCodecs.BOOL, Sync::mastery, ByteBufCodecs.BOOL, Sync::masteryTraits, ByteBufCodecs.BOOL,
-			Sync::unreadRunes, ByteBufCodecs.BOOL, Sync::aura, ByteBufCodecs.FLOAT, Sync::slashCost, Sync::new).cast();
+			Sync::unreadRunes, ByteBufCodecs.BOOL, Sync::aura, ByteBufCodecs.FLOAT, Sync::slashCost, ByteBufCodecs.BOOL, Sync::forgedGear,
+			ByteBufCodecs.FLOAT, Sync::sashCapacity, Sync::new).cast();
 
 		static Sync of(WildercordConfig config) {
 			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity(), config.defence(),
 				config.mastery().enabled(), config.mastery().enabled() && config.mastery().traits(), config.unreadRunes(), config.aura().enabled(),
-				(float) config.aura().slashCost());
+				(float) config.aura().slashCost(), config.auraWorld().forgedGear(), (float) config.auraWorld().sashCapacity());
 		}
 
 		@Override
@@ -180,6 +181,16 @@ public final class Config {
 	/** Aura Slash's price: the server's own, or on a client the one it was sent (the HUD marks it on the aura bar). */
 	public static double slashCost(Player player) {
 		return player != null && player.level().isClientSide() ? synced.slashCost() : get().aura().slashCost();
+	}
+
+	/** Whether aura-forged gear and the Breath Sash do what they do for aura: the server's own switch, or on a client the one it was sent. */
+	public static boolean forgedGear(Player player) {
+		return player != null && player.level().isClientSide() ? synced.forgedGear() : get().auraWorld().forgedGear();
+	}
+
+	/** What the Breath Sash multiplies aura capacity by: the server's own, or on a client the one it was sent (for the aura bar). */
+	public static double sashCapacity(Player player) {
+		return player != null && player.level().isClientSide() ? synced.sashCapacity() : get().auraWorld().sashCapacity();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */

@@ -23,7 +23,7 @@ public final class GearItems {
 	static {
 		for (GearDef def : GearDef.all()) {
 			Rarity rarity = switch (def.kind()) {
-				case STAFF, FOCUS -> Rarity.UNCOMMON;
+				case STAFF, FOCUS, SASH -> Rarity.UNCOMMON;
 				case TOME -> Rarity.RARE;
 				case GREATER_STAFF -> Rarity.EPIC;
 			};

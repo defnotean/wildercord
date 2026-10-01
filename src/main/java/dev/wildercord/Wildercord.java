@@ -110,6 +110,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.Mastery.init();
 		// Aura, the swordsman's path: breathing methods, stages and the Aura key's techniques.
 		dev.wildercord.aura.Aura.init();
+		// The world of aura: wandering duelists, fallen knights, aura-forged gear.
+		dev.wildercord.aura.world.AuraWorld.init();
 		// The world's own magic, spells that grow and the marks magic leaves, tied to each other.
 		dev.wildercord.cast.WorldBonds.init();
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.

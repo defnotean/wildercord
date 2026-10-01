@@ -1,0 +1,79 @@
+{
+  "events": {
+    "duelist_bow": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_bow"
+      ],
+      "subtitle": "duelist.bow"
+    },
+    "duelist_challenge": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_challenge"
+      ],
+      "subtitle": "duelist.challenge"
+    },
+    "duelist_clash": {
+      "attenuation": 32,
+      "files": [
+        "kit/duelist/duelist_clash"
+      ],
+      "subtitle": "duelist.clash"
+    },
+    "duelist_knight_ambient": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_knight_ambient_1",
+        "kit/duelist/duelist_knight_ambient_2"
+      ],
+      "subtitle": "fallen_knight.ambient"
+    },
+    "duelist_knight_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_knight_death"
+      ],
+      "subtitle": "fallen_knight.death"
+    },
+    "duelist_knight_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_knight_hurt_1",
+        "kit/duelist/duelist_knight_hurt_2"
+      ],
+      "subtitle": "fallen_knight.hurt"
+    },
+    "duelist_knight_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_knight_step_1",
+        "kit/duelist/duelist_knight_step_2",
+        "kit/duelist/duelist_knight_step_3"
+      ],
+      "subtitle": "fallen_knight.step"
+    },
+    "duelist_knight_windup": {
+      "attenuation": 24,
+      "files": [
+        "kit/duelist/duelist_knight_windup"
+      ],
+      "subtitle": "fallen_knight.windup"
+    },
+    "duelist_sheathe": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_sheathe"
+      ],
+      "subtitle": "duelist.sheathe"
+    },
+    "duelist_yield": {
+      "attenuation": 0,
+      "files": [
+        "kit/duelist/duelist_yield"
+      ],
+      "subtitle": "duelist.yield"
+    }
+  },
+  "part": "duelist"
+}

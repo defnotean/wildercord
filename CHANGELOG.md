@@ -190,6 +190,47 @@ server running it (it adds an item, sounds and synced data).
 - **For add-ons**: Form and Sovereign are open in the stage registry, the step and Dominion are in the technique registry,
   the top stages' trials are allowed through `AuraApi.allowTrial`, and a duel trial (`AuraBreakthroughs.DUEL`) waits for
   whoever teaches aura duels to allow it.
+### The world of aura
+Swordsmen of the world to meet, fight and learn from, gear forged with aura, and slashes that meet in the air.
+- **Wandering duelists.** Sword masters in travelling cloaks, a scabbard at the hip, one for each breathing method (its
+  colour in the cloak's trim, the sash and the blade's aura). Now and then, by day, one wanders in near a village's bell,
+  on a road, or makes a small camp in the open and sits by its campfire. Rare (about one an hour of daylight out in the
+  world), never two near each other, and each moves on after twenty minutes; nothing harms it outside a duel.
+- **Duels.** Use a duelist and it offers a duel; use it again to accept. A countdown in a circle of light, then the fight:
+  you and the duelist, nobody else. It meets you **at your own stage** and fights as that stage fights: coated blows, from
+  Flow a guard with a perfect moment that turns a rushed blow and staggers you, from Edge the slash (its blade raised high
+  first), and from Form a dash, once Aura Step exists. Every move has a tell. Brought low, it yields on one knee; knocked
+  out, you get back up on one health. Either way you're put back as you began: losing costs nothing but pride.
+- **Winning teaches.** A duelist you beat teaches you its breathing method (or, if you already breathe another way, hands
+  you its manual to choose), a little aura experience and a Grimoire entry, then bows and goes. A duel won without magic
+  is a new breakthrough trial, kept for Form and Sovereign.
+- **Fallen knights.** Old armour that a swordsman's aura still walks in, haunting strongholds, ancient cities, the
+  expeditions and the spawner rooms of dungeons, its visor and the cracks in its plate glowing a dim, smoky version of the
+  method it once breathed. It raises its blade before a slash, and a line of light marks the ground where the crescent
+  will fly: step off it, clash with it, or turn it back with a perfect guard; after the swing it's open. Close in, it
+  braces its guard: wait it out, strike from behind, or break it with an axe. Tougher in deeper places. Its slash is
+  magic: armour, Warding and the spellguard meet it.
+- **Manual pages and Aura Shards.** A knight always drops a page of its method's manual (four of one method and a book
+  bind into its Breathing Manual) and sometimes an **Aura Shard**.
+- **Aura-forged gear.** At a smithing table, an Aura Shard forges a diamond or netherite weapon with a reagent of the
+  world, keeping everything it was: **Lumenedge** (a sword, with a Lumen Antler) gives half again the aura from every
+  blow; **Skyrend Glaive** (a spear, with a Fulgurite Shard) slashes 60% harder, further and wider, through more foes;
+  **Bulwark Maul** (an axe, with Geode Grit) guards for 40% less. Each has its own look and its aura in hand.
+- **The Breath Sash.** Worn where the Tome of the Fifth Page goes, on the gear tray: a quarter more aura held, and a
+  breathing stance that settles twice as fast and breathes in half again as much. A fifth spell, or a steadier breath.
+- **Aura clash.** Two Aura Slashes meeting in the air break together in a burst that shoves creatures back and harms
+  nobody, a duelist's and a knight's included.
+- **Guard and slash.** A held guard facing a slash catches it (it cuts the guard, halved, and goes no further); a perfect
+  guard sends it back at whoever loosed it, as your own. A perfect guard no longer staggers a slasher from across a field.
+- **The slash by day.** Its crescent has a rim of shadow under its light and a brighter edge, so it reads against a bright
+  sky as well as by night (and under shader packs).
+- **The field guide** lists the duelist (under a new Wanderers heading) and the fallen knight.
+- **Sounds**: a blade drawn and sheathed, a bow, a yield, the clash, and the knight's creaking plate, its tell, its steps
+  and its fall (the feel kit's new duelist part).
+- **Server settings**: a new `aura_world` section: `duelists`, `duelist_spawn_rate`, `max_duelists`, `duelist_camps`,
+  `knights`, `knight_spawn_rate`, `max_knights_nearby`, `forged_gear`, `lumenedge_gain`, `skyrend_slash`,
+  `bulwark_guard_cost` and `sash_capacity`. An older config file gains it at its defaults. The structures knights haunt
+  are the `wildercord:knight_haunts` structure tag.
 
 ## [0.8.0-alpha] - 2026-10-01
 

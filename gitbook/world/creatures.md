@@ -3,7 +3,8 @@
 
 The world has more in it than monsters. Six magical creatures live in its forests, swamps, deserts, mountains and
 snowfields. None of them will attack you; each belongs to an element and a land, and each leaves something behind
-that's worth having. Some are common, two are rare, and one should never be harmed.
+that's worth having. Some are common, two are rare, and one should never be harmed. And now and then you'll meet a
+**wandering duelist**, a sword master who teaches its way of breathing to anyone who can beat it.
 
 Every creature you see up close for the first time goes into your **Grimoire** (open your Cord and press the Grimoire
 switch): you get a toast, a little mana toward your next Heart Circle, and a short entry about it. Creatures you haven't
@@ -20,6 +21,7 @@ met yet are listed too, as a hint of where to look.
 | [Cinderfox](#cinderfox) | Deserts and badlands | Any time | One to three | Ember Tuft | Fire Resistance potions, furnace fuel |
 | [Skyray](#skyray) | Windswept hills and forests, meadows, peaks and snowy slopes | Any time | Rare, high overhead | Skyray Membrane | Slow Falling potions, mending elytra |
 | [Rimehare](#rimehare) | Snowy plains and taigas, ice spikes, snowy slopes, groves | Any time | Two or three | Rime Fur | Rimebound armour, leather |
+| [Wandering Duelist](#wandering-duelist) | Near villages, on roads, by small campfires | Day | Rare, one at a time | Its breathing method, if you beat it | Learning aura |
 
 ## Glimmerwing
 
@@ -150,6 +152,27 @@ A quick white hare of the snowy lands, with long dark-tipped ears and frost glin
 
 **Rime Fur** can be woven into **Rimebound armour** in place of packed ice (the leather piece, a Rime Fur and a Mana
 Crystal), and four Rime Fur in a square make a piece of **leather**.
+
+## Wandering Duelist
+
+![A wandering duelist in a hooded travelling cloak trimmed in orange, a cloth mask over its mouth and a scabbard slung at its hip](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/creature-duelist.jpg)
+<span>A duelist who breathes Ember Breath.</span>
+
+A sword master in a hooded travelling cloak, a scabbard slung at the hip. Each breathes one of the ten
+[breathing methods](../progression/aura.md), and you can tell which at a glance: its cloak's trim,
+its sash, its mask and the tassel on its scabbard are in that method's colours.
+
+- **Where:** by day, a duelist now and then wanders in near a village's bell, along a road, or out in the open, where it
+  lights a small campfire and sits by it. They're rare, never two near each other, and each moves on after a while (its
+  fire goes with it).
+- **It's no threat.** It harms nobody, and nothing harms it unless you're duelling it: it turns a blow aside with its
+  sheathed blade and tells you to speak to it first.
+- **A duel.** Use it (with a blade in hand) and it offers you a duel, naming its method; use it again within ten seconds
+  to accept. See [Duels with a duelist](../progression/aura.md#duels-with-a-duelist). Beat it and it
+  teaches you its breathing method.
+
+![A duelist sitting on the ground beside a lit campfire, forearms on its knees](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/creature-duelist-camp.jpg)
+<span>A duelist resting by its campfire.</span>
 
 ## Spawn eggs
 

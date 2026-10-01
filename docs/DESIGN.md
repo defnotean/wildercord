@@ -1416,6 +1416,117 @@ translucent types, like the blade, so they hold under shader packs. Sounds: `aur
   `intent_pvp_slow`, `dominion_cost`, `dominion_seconds`, `dominion_cooldown_seconds`, `dominion_weaken`,
   `spellblade_seconds` and `mark_chance_multiplier`.
 
+### The world of aura
+Swordsmen to meet and learn from, swordsmen to fear, gear forged with aura, and what happens when two slashes meet. The
+pure rules and every number are `aura.world.AuraWorldRules`; the server's `aura_world` settings change the main ones.
+
+**Wandering duelists.** A sword master in a travelling cloak with a scabbard at the left hip, one look per breathing method
+(the cloak's dye, its trim, the sash, the mask and the scabbard's tassel in the method's colours; its sash's emblem glows
+softly in its aura). It harms nobody, nothing harms it outside a duel (a blow is turned aside by the sheathed blade, and
+fire, falls and drowning pass it by), and after twenty minutes it moves on in a swirl of its aura.
+- **Where**: by day in the overworld, once a minute a 3% chance (times `duelist_spawn_rate`) near a random player: a few
+  blocks from the nearest village bell within 96, else on a dirt path 16 to 48 blocks off, else a **small camp** on open
+  ground 20 to 40 blocks off, where it lights a campfire (a borrowed block, written down so it goes when the duelist
+  does, drops nothing, and is only lit where mobs may change the world and `duelist_camps` allows) and sits by it while
+  nobody is close. Never within 160 blocks of another duelist, never more than `max_duelists` (2) loaded. About one an
+  hour of daylight for a player out in the world.
+- **The duel**: use it and it offers (its method named, the stage it will fight at); use it again within ten seconds to
+  accept. A blade in hand is needed. It's the player duel's rules (`duel.DuelRules`): a 3-second countdown in circles of
+  light, a 40-block arena, a draw after five minutes, leaving or logging off forfeits. One player and one duelist: the
+  duelist cuts nobody else and takes harm from nobody else, and another player striking the challenger calls it off.
+- **It meets you at your own stage** (`duelStage`: yours, at least Glow, at most the highest stage open) and fights with
+  what that stage brings:
+
+  | Its stage | Health | Its blade | Blows every | What it adds |
+  |---|---|---|---|---|
+  | Glow | 30 | iron sword | 26 ticks | coated blows (+10%) |
+  | Flow | 40 | iron sword | 24 ticks | a guard: raised after a blow lands on it (35% of the time), or now and then when you're close; its first 7 ticks are a perfect guard that turns a blow whole and staggers the striker (thrown back, Slowness II and Weakness for 1.5 s); held it halves a blow; 30 ticks, then it rests 2 s; an axe breaks it |
+  | Edge | 50 | diamond sword | 22 ticks | the slash: its blade raised for 18 ticks (the tell; the aim fixes 6 ticks before), a crescent at 1.3 blocks a tick for 12 blocks, its weapon's damage × 0.8, every 5 s, when you're 5.5 to 10 blocks off; guard 45% |
+  | Form | 60 | netherite sword | 20 ticks | slash × 0.9 every 4¼ s (16-tick tell); a dash once Aura Step exists: a 6-tick crouch, then 4 blocks at you, every 4 s |
+  | Sovereign | 70 | netherite sword | 18 ticks | slash × 1.0 every 3½ s (14-tick tell) |
+
+  Its slash is projected aura through the spell defences, as any monster's magic is. A player's perfect guard staggers it
+  (it can't act until the stagger passes) and sends its crescent back.
+- **Nobody dies.** A blow that would leave the duelist at 15% of its health or less makes it **yield**, kneeling. A
+  challenger brought down by it is **knocked out** on one health. Either way the challenger is put back as they began:
+  the health it took given back, the harm it left (its stagger) taken off.
+- **Winning**: its method taught outright to a challenger with none (`AuraApi.grantMethod`, source `duelist`); to one who
+  already breathes another way, its manual handed over, so switching stays their choice. Then 20 + 15 × its stage aura
+  experience (35 at Glow, 65 at Edge), the Grimoire entry `aura:duelist` (a toast, 150 mana), and, if no magic of theirs
+  touched it, the **duel trial** (`duel`), allowed for the breakthroughs into Form and Sovereign. It bows and goes.
+  **Losing** costs nothing; it stays, resting 30 s before another challenge.
+
+**Fallen knights.** Old plate a swordsman's aura still walks in: a closed helm with a glowing visor slit and a ragged
+crest, pauldrons, a torn tabard, a rag of a cloak; the visor, the cracks across its breastplate and its joints glow a dim,
+smoky version of its method's colour, and its drawn blade carries a dim Edge of aura.
+- **Where**: every 10 s, a 12% chance (times `knight_spawn_rate`) near each player standing in a place in the
+  `#wildercord:knight_haunts` structure tag (strongholds, ancient cities, the expeditions) or within 10 blocks of a
+  dungeon's spawner on cobblestone: 8 to 20 blocks off, in the dark (light 9 or less), never within 7 blocks of a player,
+  inside the same place, never with `max_knights_nearby` (2) within 48 blocks, never on Peaceful.
+- **Rank** follows the place: a dungeon 1, a stronghold 2, an ancient city or an expedition 3. Health 40/50/60, armour
+  8/10/12, an iron sword (a diamond one at rank 3), its slash 5/6/7 (before the game's difficulty scaling: 4/6/9 on rank
+  2), its tell 20/18/16 ticks, every 7/6/5 s. Its method is drawn by the place's manual weights (an ancient city's Hollow,
+  Rime and Crimson), any method in a dungeon.
+- **The slash** (5 to 13 blocks off, in sight): blade raised high, its visor flaring and a rising hum; 6 ticks before it
+  swings, a line of light along the ground marks the crescent's way. A crescent at 1.1 blocks a tick for 14 blocks, 3
+  wide, through the spell defences. After it the knight is **open** for a second (no guard). Answers: step off the line,
+  meet it with your own slash (a clash), or turn it back with a perfect guard.
+- **The guard** (when you're within 4 blocks and its blow rests, 30% each half second; 40% right after it's struck): as
+  the duelist's. Answers: wait out its 1.5 s, strike from the side or behind (no guard there), or **break it with an axe**:
+  it reels for 2½ s, taking a quarter more.
+- **Drops** (its loot table, `entities/fallen_knight`): a **Manual Page** of its method always (one more by luck with
+  Looting; the method from the loot function `wildercord:knight_method`), an **Aura Shard** a time in four (killed by a
+  player; +8% a Looting level), a few iron nuggets; 15 experience.
+
+**Manual pages** bind four of one method and a book into that method's Breathing Manual (`wildercord:manual_pages`, a
+shapeless recipe that only matches pages of one method). About three knights of one method make a manual.
+
+**Aura-forged gear.** A smithing table forges a diamond or netherite weapon with an **Aura Shard** (the template slot)
+and a reagent of the world: the weapon keeps its tier, enchantments, damage and durability (the forging is the
+`wildercord:aura_forged` component, with its own look through `minecraft:item_model`, its name and rare rarity). Each does
+one thing for aura:
+
+| Forging | From | Reagent | Does |
+|---|---|---|---|
+| **Lumenedge** | diamond or netherite sword | Lumen Antler | a blow's aura × 1.5 |
+| **Skyrend Glaive** | diamond or netherite spear | Fulgurite Shard | Aura Slash × 1.6, flying 30% further and wider, through 2 more foes |
+| **Bulwark Maul** | diamond or netherite axe | Geode Grit | Aura Guard (raised and held) costs × 0.6 |
+
+The glaive's 1.6 makes up a spear's lower damage: a netherite spear's slash (5 × 1.2 × 1.6 = 9.6) matches a netherite
+sword's (8 × 1.2), further and wider. Its bonus counts with the element under the spell-defence cap against players.
+
+**The Breath Sash** is casting gear for the gear tray's tome slot (or held in the off-hand with that slot empty): aura
+capacity × 1.25 (Glow 25, Flow 50, Edge 87), the breathing stance settling in 10 ticks instead of 20, and the stance's
+breath (steady and on the beat) × 1.5. A swordsman's alternative to the Tome of the Fifth Page. Crafted from four white
+wool, two string and an Aura Shard.
+
+**Aura clash.** Every crescent in flight (a player's, a duelist's, a knight's, one sent back) moves first each tick; two of
+different owners whose fronts pass within 0.6 × their mean width + 0.4 blocks on the way break together: a white flash,
+a ring of each colour, a ring along the ground, sparks; creatures within 2.5 blocks are shoved back; nobody is harmed. A
+player's first clash goes into the Grimoire (`aura:clash`).
+
+**Guard and slash, and the PvP review.**
+- A held guard (a player's or a mob's) facing a slash takes its share off it and **stops** it: nothing behind the guard is
+  cut. A perfect guard **sends it back** at whoever loosed it, as the guard's own, a little faster; it no longer staggers a
+  slasher from across a field. A Thunder spark meeting a perfect guard is simply turned.
+- Numbers against a player (defaults, before armour): a netherite sword's slash 8 × 1.2 × 0.6 = 5.8 (a diamond one 5.0), a
+  Skyrend netherite glaive's 5 × 1.2 × 1.6 × 0.6 = 5.8, every 2 s for 12 aura; a coated netherite blow 8 × (1 + 0.1 × 0.6)
+  = 8.5. Five slashes empty an Edge pool (70), so a slash-only fight runs dry in 10 s and backlashes; the guard halves a
+  slash at 0.6 aura a point it takes off, the perfect guard reflects it, two slashes clash. Everything aura adds sits under
+  `defence.max_bonus` and is scaled by `aura.pvp_scale`, so no forging takes a slash past the cap.
+
+**How it looks**: the duelist's and knight's models are hand-built humanoids (`DuelistModel`, `FallenKnightModel`) on skins
+painted by `tools/aura_world_art.py`; their glow layers and the aura on their blades (the player's own `AuraBlade`, from
+their render state) are vanilla's glowing-eyes pass, so shader packs draw them. The slash by day: under its crescents of
+light a rim of shadow (the mod's darkness, as void magic is drawn) a little wider than its halo, and a brighter edge.
+Against a bright sky added light alone washes out; the darkness gives it an edge, and takes nothing from a dark sky.
+Sounds: the feel kit's `tools/feel/duelist.py` (`duelist_challenge`, `_sheathe`, `_bow`, `_yield`, `_clash`, and the
+knight's `duelist_knight_ambient`, `_hurt`, `_death`, `_windup`, `_step`).
+
+**Server settings** (`aura_world`): `duelists`, `duelist_spawn_rate` (0 to 4), `max_duelists` (0 to 16), `duelist_camps`,
+`knights`, `knight_spawn_rate` (0 to 4), `max_knights_nearby` (0 to 8), `forged_gear`, `lumenedge_gain` (1 to 4),
+`skyrend_slash` (1 to 4), `bulwark_guard_cost` (0 to 1), `sash_capacity` (1 to 3).
+
 ## Passives
 
 Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slots open at the 1st and 5th Circle.

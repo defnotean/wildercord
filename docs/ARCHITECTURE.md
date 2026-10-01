@@ -12,6 +12,8 @@ asset pipeline and testing. For *what* each rune does and why, see [DESIGN.md](D
 - [3. Player state (`player/`)](#3-player-state-player)
 - [4. Heart Circles and passives](#4-heart-circles-and-passives)
 - [Aura: the swordsman's path](#aura-the-swordsmans-path-aura) and [its hooks](#hooks-for-the-next-wave-apiauraapi)
+- [Aura: the swordsman's path](#aura-the-swordsmans-path-aura) and [its hooks for the next wave](#hooks-for-the-next-wave-apiauraapi)
+  - [Crescents in flight](#crescents-in-flight-auracrescents) and [the world of aura](#the-world-of-aura-auraworld)
 - [5. Networking](#5-networking)
 - [6. The client](#6-the-client)
 - [7. Content: items, loot, effects](#7-content-items-loot-effects)
@@ -886,6 +888,71 @@ user of that stage, for Intent: an aura knight is pressed on only by a higher st
 `Aura.Key` payload's triggers, and `AuraAttachments.Look` (aura knights and duelists can carry one: `AuraBlade` draws any
 player's blade from it; a mob's would need its render state to carry an `AuraBlade.Glow`, whose five-part constructor is
 kept beside the one with a spell's colour).
+The world of aura (below) registers the trial `duel` for Form and Sovereign through `allowTrial`, completes it with
+`completeTrial`, teaches through `grantMethod` and `manual`, and adds the forged gear's and the sash's effects with `onGain`.
+
+Other seams wave 2 will want: `AuraCombat.blow` and `landed` (where a spellblade's channelled spell or an aura mark would
+join a blow), `AuraCombat.projected` (aura damage at anything, with the spell defences), `AuraRules.capBonus` and
+`AuraCombat.againstPlayer` (PvP tuning), `AuraGuard.incoming` (aura armour would add its share there), the `Aura.Key`
+payload's triggers, and `AuraAttachments.Look` (aura knights and duelists can carry one: `AuraBlade` draws any player's
+blade from it; a mob's would need its render state to carry an `AuraBlade.Glow`).
+
+### Crescents in flight: `aura.Crescents`
+
+Every Aura Slash flies through `Crescents`, whoever loosed it: `AuraSlash.fly` (a player's), `AuraFighter.release` (a
+duelist's or a knight's) and a perfect guard sending one back (`Crescents.reflect`). `launch(caster, origin, aim, colour,
+damage, bonus, speed, range, width, targets, weak, mayCut, cut)` adds a `Flight`; `END_SERVER_TICK` steps them all (the
+first step a tick after the launch, as the old `Scheduler` steps were): **every crescent moves** (stopped by a solid block;
+`AuraVfx.slashStep` draws it), then **any two of different casters that met** on the way (`AuraWorldRules.meets`: the
+nearest their fronts came over the tick) **clash** (`AuraVfx.clash`, a shove, the Grimoire's `aura:clash`), then the rest
+**cut** what they reached (the old geometry exactly), each creature once. `cutting()` is the flight cutting a creature
+right now, so a perfect guard can send it back; a held guard facing it (`AuraGuard.guarding` and `facing` for a player, the
+`Crescents.Guarding` interface for a mob) takes its cut and stops it. The bonus is a multiplier counted with the element
+(`AuraCombat.projected(player, target, damage, bonus, answer)`, held to the cap against a player), which is where Skyrend
+Glaive's slash goes.
+
+## The world of aura (`aura/world/`)
+
+Wandering duelists, fallen knights, aura-forged gear and the Breath Sash (the rules and numbers are DESIGN.md's [The
+world of aura](DESIGN.md#the-world-of-aura)):
+
+- **`AuraWorldRules`** (pure, `AuraWorldRulesTest`): the duel's stage, a duelist's numbers by stage, yielding, mob guards'
+  timing, knights' numbers by rank, spawn chances, the forgings and the sash, `meets` (the clash) and `slashAgainstPlayer`.
+- **`AuraFighter`**: what a duelist and a knight share, a `PathfinderMob` with a method and a stage (synced bytes) and a byte
+  of pose flags (`WINDUP`, `GUARD`, `STAGGER`, `BOW`, `YIELD`, `DRAWN`, `SIT`, `DASH`) eased on the client; coated blows (a
+  transient attack modifier), a guard (`raiseGuard`, `guarded`: halved, perfect, broken by an axe, and `catches` for
+  crescents), the slash (`windUp`: the tell, the aim fixed `SLASH_LOCK` ticks before with a line of light on the ground,
+  then `release` into `Crescents`) and `projected` (aura through `SpellDefence`, as monster magic is).
+- **`Duelist`** (`MobCategory.CREATURE`): wanders, sits by its fire, and `mobInteract` hands a use to `DuelistDuels`. Its
+  `hurtServer` takes only its challenger's harm in a fight (`DuelistDuels.counts`), else turns blows aside and ignores the
+  rest; a blow that would leave it at `YIELD_SHARE` yields instead. In a duel its AI is a `MeleeAttackGoal` gated by
+  `fighting()` and a small state machine in `customServerAiStep` (the guard after a blow, the slash at range, the dash
+  once a `step` technique is registered). It saves its stay, rest and camp; a duel never survives a reload.
+- **`DuelistDuels`**: offers and duels, on `duel.DuelRules.Duel` (countdown, fight, knockout, forfeit, draw); the challenger
+  knocked out in `ALLOW_DEATH`, the health the duelist took counted in `ALLOW_DAMAGE`/`AFTER_DAMAGE` and given back with
+  `DuelRules.restored`, the stagger's effects taken off; the lesson (`grantMethod` or the manual, `AuraExperience.grant`,
+  `Grimoire.unlock("aura:duelist")`, `completeTrial(TRIAL)` unless magic touched it). `Duels` refuses a player duel to anyone
+  in one of these.
+- **`DuelistSpawner`**: the wandering spawner (a village bell through the POI manager, a dirt path, a camp with a
+  `TemporaryBlocks` campfire), its caps and `loaded`.
+- **`FallenKnight`** (`MobCategory.MONSTER`, `notInPeaceful`, `Enemy`): rank, the slash and guard by `AuraFighter`, open after
+  its slash, a quarter more harm while its guard is broken. **`KnightSpawner`**: `haunt` (the structure tag
+  `#wildercord:knight_haunts`, or a spawner on cobblestone near) and `spawnIn`/`raise` (rank, a method by the place's
+  `MethodSources` weights). **`KnightLoot`**: the loot function `wildercord:knight_method`.
+- **`ManualPageItem`** and **`ManualPagesRecipe`** (`wildercord:manual_pages`): pages carry the manual's own
+  `wildercord:breathing_method` component; the recipe is a shapeless one that matches only pages of one method.
+- **`ForgedGear`**: the `wildercord:aura_forged` component and what each forging does (`slashBonus`, `slashReach`,
+  `slashTargets`, `guardCost`, and an `onGain` hook for Lumenedge), and the Breath Sash (`sash`, `capacity`, `settleTicks`):
+  `Aura.capacity`, `Aura`'s stance, `AuraSlash.loose` and `AuraGuard.raise`/`incoming` call these. The sash is casting gear
+  (`GearDef.BREATH_SASH`, a new `GearKind.SASH` the tome slot takes). `Config.Sync` carries `forged_gear` and
+  `sash_capacity` so a client's aura bar agrees.
+- **`AuraWorld`**: the registrations (entity types, the page and the shard, the spawn eggs, the recipe serializer, the
+  loot function, the field guide's entries, the creative tabs) and `init`.
+- **Client** (`client/auraworld/`): `DuelistModel` and `FallenKnightModel` (humanoid models with a hood, cloak, mantle and
+  scabbard, or a helm, crest, pauldrons and rags; their layouts in their javadoc), `AuraFighterRenderer` (a
+  `HumanoidMobRenderer`: its skin, a glow layer through `RenderTypes.eyes` tinted with the aura's colour, lowered while it
+  sits or kneels, and an `AuraBlade.Glow` in the render state so the existing item-layer mixins draw its blade's aura) and
+  `AuraWorldClient` (layers, renderers, and the forged weapons' tooltip lines).
 
 ## 5. Networking
 
@@ -1243,6 +1310,13 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
    the spawn eggs, the frost print, the entities' loot tables, the `wildercord:spawns_on/<creature>` ground tags, the
    brews and recipes, and their English text (`wildlife_art.LANG`, with the creatures' sound subtitles).
    `python tools/wildlife_art.py` renders a review sheet into `build/art-preview/`.
+13. **The world of aura** (`aura_world_art.py`, after `aura_art.py`): the ten duelists' skins and their glow layer, the
+   fallen knight's skin and glow (painted on the layouts in `client/auraworld/`'s models), the manual pages (one model per
+   method, picked by the component), the Aura Shard, the Breath Sash, the three forged weapons' looks (the glaive's with a
+   spear's in-hand model), the spawn eggs, the smithing forgings and the other recipes, the knight's loot table, the
+   `wildercord:knight_haunts` structure tag and the English text (`aura_world_art.LANG`). `python tools/aura_world_art.py`
+   renders a review sheet into `build/art-preview/`. `tools/wiki_recipes.py` draws smithing recipes as the smithing table
+   lays them out.
 
 Run `python tools/item_art.py` on its own to render review sheets of every icon into
 `build/art-preview/` (`circle_art.py --preview` does the same for every rune's ring and emblem).
@@ -1284,7 +1358,9 @@ The feel kit (`tools/feel/`, built with `python tools/feel/build.py --only <part
 generic subtitles; a creature's names itself (`core.CREATURE_SUBTITLES`, their text in `wildlife_art.SUBTITLES`).
 The feel kit (`tools/feel/`, built by `python tools/feel/build.py --only <part>` and checked with `--check`) holds the
 rest, one part per element plus `neutral` and `aura` (the slash, the guard, the perfect guard, a breakthrough, backlash and
-the stance's breath), registered by `WildercordSounds.kit(name)` and played through `cast.feel.Feels.sound`.
+the stance's breath), registered by `WildercordSounds.kit(name)` and played through `cast.feel.Feels.sound`. The `duelist`
+part holds the world of aura's: a blade drawn and sheathed, a bow, a yield, the clash, and the fallen knight's voice
+(`duelist_knight_*`), with subtitles that name them (`aura_world_art.LANG`).
 
 ## 9. Testing
 
@@ -1307,6 +1383,18 @@ the stance's breath), registered by `WildercordSounds.kit(name)` and played thro
   breakthroughs into Form (the tempest at a ley crossing) and Sovereign (a boss, and not one a spell touched), and against
   players (Dominion's weakening times the PvP scale, a rival's chain held to the cap, a carried spell meeting the spellguard);
   screenshots `aura_mastery_*`.
+
+- **`AuraWorldRulesTest`** covers the world of aura's pure rules (the duel's stage, duelists and knights by stage and rank,
+  yielding, mob guards, spawn chances, the forgings and the sash, the clash's meeting and a slash against a player), and
+  `WildercordConfigTest` the `aura_world` section. **`WildercordAuraWorldTest`** plays it on a platform in the sky: duelists
+  come to a camp (its borrowed fire going with them), a road and a village bell, never two together, and go into the field
+  guide; a duel by the real use key (offer, accept, countdown, the fight at the challenger's stage), its guard's halving and
+  perfect stagger, its slash at Edge cutting only its challenger, its yield teaching a method, experience and the Grimoire,
+  a second victor handed the manual, a knocked-out challenger put back whole; every forging's recipe (keeping
+  enchantments) and effect, pages bound into a manual (mixed ones refused), the sash's capacity and quicker stance; a knight
+  rising in a dark spawner room, its telegraphed slash through the spell defences, dodged by stepping off its line and sent
+  back by a perfect guard, its guard's stagger, halving and break by an axe, and its loot; a clash harming nothing; and the
+  slash by day and night (`aura_world_slash_*`). Screenshots `aura_world_*`.
 
 - **`src/test`**: JUnit 5 tests for everything in `spell/`: reading rules, attachment, costs,
   cooldowns, Blood Price, Vow, passive rules, circle and enchantment maths (`SpellCompilerTest`,

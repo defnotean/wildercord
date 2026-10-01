@@ -1,23 +1,15 @@
 package dev.wildercord.aura;
 
-import dev.wildercord.cast.Scheduler;
+import dev.wildercord.aura.world.ForgedGear;
 import dev.wildercord.cast.Targets;
 import dev.wildercord.config.Config;
 import dev.wildercord.config.WildercordConfig;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /**
  * Aura Slash (Edge): tap the Aura key and the blade looses a crescent of aura that flies ahead at chest height, cutting each
@@ -50,33 +42,29 @@ public final class AuraSlash {
 			// A technique failing at nothing: only the backlash (a spell riding the blade stays on it, for a slash that can carry it).
 			return false;
 		}
-		fly(player, damage, paid.backlash(), Spellblade.take(player));
+		// An aura-forged glaive's slash: harder (a bonus counted with the element, so held to the cap against a player), further,
+		// wider, and through more foes. A spell riding the blade (Spellblade) goes with it.
+		fly(player, damage, paid.backlash(), ForgedGear.slashBonus(player), ForgedGear.slashReach(player), ForgedGear.slashTargets(player),
+			Spellblade.take(player));
 		return true;
 	}
 
 	/** The crescent's flight: a step a tick, cutting what it passes, stopped by a solid block. */
 	static void fly(ServerPlayer player, double damage, boolean weak) {
-		fly(player, damage, weak, null);
+		fly(player, damage, weak, 1.0, 1.0, 0, null);
 	}
 
 	/**
-	 * The crescent's flight, carrying {@code spell} (riding the blade, or null): a step a tick, cutting what it passes, stopped
-	 * by a solid block. A carried spell lands on the first few foes it cuts in place of its own shape, or bursts where the slash
-	 * breaks if it cuts none, and the rest of the spell follows once it has flown.
+	 * The crescent's flight (see {@link Crescents}), {@code bonus} times as hard (counted with its element), {@code reach} times
+	 * as far and wide, through {@code extraTargets} more foes, carrying {@code spell} (riding the blade, or null). A carried spell
+	 * lands on the first few foes it cuts in place of its own shape, or bursts where the slash ends if it cuts none (a wall, a
+	 * clash, a guard, the end of its flight), and the rest of the spell follows once it has flown.
 	 */
-	static void fly(ServerPlayer player, double damage, boolean weak, Spellblade.Held spell) {
-		ServerLevel level = player.level();
+	static void fly(ServerPlayer player, double damage, boolean weak, double bonus, double reach, int extraTargets, Spellblade.Held spell) {
 		Vec3 aim = player.getViewVector(1.0F);
 		Vec3 flat = new Vec3(aim.x, aim.y * 0.6, aim.z).normalize();
-		Vec3 side = flat.cross(new Vec3(0, 1, 0));
-		side = side.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : side.normalize();
-		Vec3 sideF = side;
 		Vec3 origin = player.getEyePosition().subtract(0, 0.45, 0);
 		int color = Aura.color(player);
-		int steps = (int) Math.ceil(AuraRules.SLASH_RANGE / AuraRules.SLASH_SPEED);
-		Set<UUID> hit = new HashSet<>();
-		boolean[] stopped = {false};
-		// A carried spell: its colour on the crescent's edge, how many it has landed on, and the first of them.
 		boolean carrying = spell != null && dev.wildercord.cast.BladeCasting.begin(spell.cast(), spell.root());
 		int[] carried = {0};
 		Entity[] first = {null};
@@ -86,72 +74,43 @@ public final class AuraSlash {
 		if (carrying) {
 			Aura.sound(player, "aura_spellblade", 1.0F, 1.25F);
 		}
-		AuraVfx.slashStart(player, origin, flat, sideF, color);
-		for (int t = 0; t < steps; t++) {
-			int tick = t;
-			boolean lastStep = t == steps - 1;
-			double d = 0.8 + AuraRules.SLASH_SPEED * (t + 1);
-			Scheduler.later(t + 1, () -> {
-				if (stopped[0] || !player.isAlive() || player.level() != level) {
+		AuraVfx.slashStart(player.level(), origin, flat, color);
+		Crescents.Cut base = cutter(player);
+		Crescents.Cut cut = !carrying ? base : (flight, target) -> {
+			float taken = base.cut(flight, target);
+			if (target.isAlive()) {
+				double power = AuraRules.spellbladePower(carried[0]);
+				if (power > 0) {
+					if (first[0] == null) {
+						first[0] = target;
+					}
+					carried[0]++;
+					dev.wildercord.cast.BladeCasting.cut(spell.cast(), spell.root(), target, origin, flat, power);
+					AuraVfx.slashCut(flight.level, target.getBoundingBox().getCenter(), flat, edge);
+				}
+			}
+			return taken;
+		};
+		Crescents.Flight flight = Crescents.launch(player, origin, flat, color, damage, bonus, AuraRules.SLASH_SPEED, AuraRules.SLASH_RANGE * reach,
+			AuraRules.SLASH_WIDTH * reach, AuraRules.SLASH_TARGETS + extraTargets, weak, e -> Targets.canHarm(player, e), cut);
+		if (carrying) {
+			flight.onStep(f -> AuraVfx.slashCarry(f.level, f.front, f.aim, f.side, edge, f.step));
+			flight.onEnd((f, at, blocked) -> {
+				if (!player.isAlive() || player.level() != f.level) {
 					return;
 				}
-				Vec3 front = origin.add(flat.scale(d));
-				BlockPos pos = BlockPos.containing(front);
-				if (!level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()) {
-					stopped[0] = true;
-					AuraVfx.slashEnd(level, front.subtract(flat.scale(0.4)), flat, color);
-					if (carrying) {
-						Vec3 at = front.subtract(flat.scale(0.4));
-						if (carried[0] == 0) {
-							dev.wildercord.cast.BladeCasting.broke(spell.cast(), spell.root(), at, flat, origin, pos, net.minecraft.core.Direction.getApproximateNearest(-flat.x, -flat.y, -flat.z));
-						}
-						dev.wildercord.cast.BladeCasting.follow(spell.cast(), spell.root(), at, flat, first[0]);
-					}
-					return;
+				// The end of its flight: a spell that cut nothing bursts here, and the rest of it follows.
+				if (carried[0] == 0) {
+					dev.wildercord.cast.BladeCasting.broke(spell.cast(), spell.root(), at, flat, origin, blocked,
+						blocked == null ? null : net.minecraft.core.Direction.getApproximateNearest(-flat.x, -flat.y, -flat.z));
 				}
-				AuraVfx.slashStep(level, front, flat, sideF, color, tick, weak);
-				if (carrying) {
-					AuraVfx.slashCarry(level, front, flat, sideF, edge, tick);
-				}
-				double width = AuraRules.SLASH_WIDTH;
-				for (Entity e : level.getEntities(player, new AABB(front, front).inflate(width / 2 + 1, 2.0, width / 2 + 1),
-						e -> e instanceof LivingEntity && e.isAlive() && !hit.contains(e.getUUID()))) {
-					if (hit.size() >= AuraRules.SLASH_TARGETS) {
-						break;
-					}
-					Vec3 rel = e.getBoundingBox().getCenter().subtract(front);
-					if (Math.abs(rel.dot(flat)) > AuraRules.SLASH_SPEED / 2 + 0.8 || Math.abs(rel.dot(sideF)) > width / 2 + e.getBbWidth() / 2
-						|| Math.abs(rel.y) > 1.6) {
-						continue;
-					}
-					hit.add(e.getUUID());
-					if (Targets.canHarm(player, e)) {
-						AuraCombat.projected(player, (LivingEntity) e, damage, true);
-						AuraVfx.slashCut(level, e.getBoundingBox().getCenter(), flat, color);
-						if (carrying && e.isAlive()) {
-							double power = AuraRules.spellbladePower(carried[0]);
-							if (power > 0) {
-								if (first[0] == null) {
-									first[0] = e;
-								}
-								carried[0]++;
-								dev.wildercord.cast.BladeCasting.cut(spell.cast(), spell.root(), (LivingEntity) e, origin, flat, power);
-								AuraVfx.slashCut(level, e.getBoundingBox().getCenter(), flat, edge);
-							}
-						}
-					}
-				}
-				if (carrying && lastStep) {
-					// The end of its flight: a spell that cut nothing bursts here, and the rest of it follows.
-					if (carried[0] == 0) {
-						dev.wildercord.cast.BladeCasting.broke(spell.cast(), spell.root(), front, flat, origin, null, null);
-					}
-					dev.wildercord.cast.BladeCasting.follow(spell.cast(), spell.root(), front, flat, first[0]);
-				}
+				dev.wildercord.cast.BladeCasting.follow(spell.cast(), spell.root(), at, flat, first[0]);
 			});
 		}
-		if (carrying && steps <= 0) {
-			dev.wildercord.cast.BladeCasting.follow(spell.cast(), spell.root(), origin, flat, null);
-		}
+	}
+
+	/** What a player's crescent does to a creature it reaches: projected aura, through the spell defences against a player. */
+	static Crescents.Cut cutter(ServerPlayer player) {
+		return (flight, target) -> AuraCombat.projected(player, target, flight.damage(), flight.bonus(), true);
 	}
 }
