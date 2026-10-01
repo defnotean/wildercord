@@ -113,9 +113,9 @@ public class DuelistModel extends HumanoidModel<AuraFighterRenderState> {
 		// A bow: bent forward from the waist, one hand to the chest, the other behind.
 		lean(0.6F * bow + 0.28F * kneel + 0.42F * dash);
 		head.xRot += 0.45F * bow + 0.4F * kneel;
-		rightArm.xRot = Mth.lerp(bow, rightArm.xRot, -1.25F);
-		rightArm.yRot = Mth.lerp(bow, rightArm.yRot, 0.95F);
-		rightArm.zRot = Mth.lerp(bow, rightArm.zRot, -0.2F);
+		rightArm.xRot = Mth.lerp(bow, rightArm.xRot, -1.05F);
+		rightArm.yRot = Mth.lerp(bow, rightArm.yRot, -0.8F);
+		rightArm.zRot = Mth.lerp(bow, rightArm.zRot, 0.05F);
 		leftArm.xRot = Mth.lerp(bow, leftArm.xRot, 0.55F);
 		leftArm.zRot = Mth.lerp(bow, leftArm.zRot, -0.15F);
 

@@ -574,6 +574,38 @@ def page_icon(method_id, color, highlight):
     return cv.image()
 
 
+def glaive_in_hand():
+    """The glaive as a hand holds it: a 32-pixel sheet laid out like the game's own spears (the point to the top left, a thin
+    haft running to the bottom right), since the spear's in-hand model scales its texture up to a long reach and the
+    16-pixel icon would come out as a broad paddle."""
+    cv = Canvas(32)
+    outline, haft, haft_dark, gold = hexc("#141A2A"), hexc("#7A5634"), hexc("#4E3420"), hexc("#C29A3A")
+    steel, spine, edge, white = hexc("#8CA8D8"), hexc("#5C78B0"), hexc("#FFF6A0"), hexc("#FFFFFF")
+    down = 2  # the whole weapon sits two pixels low, so the blade's belly has room above it
+    # The haft, two pixels thick, from the collar to the butt.
+    for i in range(11, 29):
+        cv.put(i, i + down, haft)
+        cv.put(i + 1, i + down, haft_dark)
+    for (x, y) in ((10, 10), (11, 10), (10, 9), (29, 29), (30, 29), (29, 28)):
+        cv.put(x, y + down, gold)
+    # The blade: along the haft's line, its belly curving out to the top right, widest past the middle.
+    for t in range(1, 10):
+        width = round(3.2 * math.sin(math.pi * t / 10.5)) + 1
+        for k in range(width + 1):
+            colour = edge if k == width else steel if k else spine
+            cv.put(t + k, t - k + down, colour)
+            cv.put(t + k + 1, t - k + down, edge if k == width else steel)
+    cv.put(1, 1 + down, white)
+    cv.put(2, 1 + down, white)
+    # A dark outline round everything, as the game's items have.
+    filled = {(x, y) for y in range(32) for x in range(32) if cv.get(x, y) is not None}
+    for (x, y) in filled:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            if (x + dx, y + dy) not in filled:
+                cv.put(x + dx, y + dy, outline)
+    return cv.image()
+
+
 def icon(name):
     art, pal = ICONS[name] if name in ICONS else FORGED_ICONS[name]
     cv = Canvas()
@@ -722,8 +754,9 @@ def write(g):
         g.write_json(g.ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"wildercord:item/{name}"}})
     g.save(icon("skyrend_glaive"), tex / "skyrend_glaive.png")
     g.item_model("skyrend_glaive", "skyrend_glaive")
+    g.save(glaive_in_hand(), tex / "skyrend_glaive_in_hand.png")
     g.write_json(g.ASSETS / "models/item/skyrend_glaive_in_hand.json", {"parent": "minecraft:item/spear_in_hand",
-                                                                         "textures": {"layer0": "wildercord:item/skyrend_glaive"}})
+                                                                         "textures": {"layer0": "wildercord:item/skyrend_glaive_in_hand"}})
     g.write_json(g.ASSETS / "items/skyrend_glaive.json", {"model": {
         "type": "minecraft:select", "property": "minecraft:display_context",
         "cases": [{"when": ["gui", "ground", "fixed", "on_shelf"], "model": {"type": "minecraft:model", "model": "wildercord:item/skyrend_glaive"}}],

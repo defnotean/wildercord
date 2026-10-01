@@ -181,16 +181,7 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 			ServerLevel level = player.level();
 			Duelist duelist = DuelistSpawner.spawnNear(level, player, true, level.getRandom());
 			if (duelist == null) {
-				StringBuilder why = new StringBuilder();
-				for (int[] c : new int[][] {{30, 0}, {0, -30}, {-30, 10}, {25, 25}}) {
-					BlockPos column = player.blockPosition().offset(c[0], 0, c[1]);
-					BlockPos top = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
-					why.append(" [").append(column.getX()).append(",").append(column.getZ()).append(": loaded ").append(level.hasChunkAt(column))
-						.append(" top ").append(top.getY()).append(" ground ").append(level.getBlockState(top.below()).getBlock())
-						.append(" sky ").append(level.canSeeSky(top)).append(" near ")
-						.append(DuelistSpawner.camp(level, player.blockPosition(), level.getRandom())).append("]");
-				}
-				return "a duelist should find a camp on the open ground below:" + why;
+				return "a duelist should find a camp on the open grass below";
 			}
 			duelist.addTag(TAG);
 			BlockPos fire = duelist.camp();
@@ -1100,14 +1091,31 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 				}
 			});
 			context.waitTicks(3);
-			// A glaive is held point first, as a lance: seen from the side, or it's only a line.
-			float body = forged == AuraWorldRules.Forged.SKYREND_GLAIVE ? 95 : 48;
-			context.runOnClient(mc -> {
-				mc.player.setYBodyRot(body);
-				mc.player.yBodyRotO = body;
-			});
-			context.waitTicks(2);
-			shot(context, "aura_world_" + forged.id + "_in_hand");
+			if (forged == AuraWorldRules.Forged.SKYREND_GLAIVE) {
+				// A glaive is held upright with its blade's flat to the sides, so from the front it's only a line, and a camera
+				// of its own doesn't draw the player: a duelist holds it side on instead.
+				on(world, player -> {
+					player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+					Duelist d = duelist(player, "thunder", 0, 3.4, 115);
+					d.setNoAi(true);
+					d.setStage(AuraRules.EDGE);
+					d.setItemSlot(EquipmentSlot.MAINHAND, AuraWorld.forged(forged, true));
+					d.holdPose(AuraFighter.DRAWN);
+					return null;
+				});
+				frame(context, world, 0, 14, "aura_world_" + forged.id + "_in_hand");
+				on(world, player -> {
+					kill(player, TAG);
+					return null;
+				});
+			} else {
+				context.runOnClient(mc -> {
+					mc.player.setYBodyRot(48);
+					mc.player.yBodyRotO = 48;
+				});
+				context.waitTicks(2);
+				shot(context, "aura_world_" + forged.id + "_in_hand");
+			}
 			context.runOnClient(mc -> {
 				mc.options.setCameraType(CameraType.FIRST_PERSON);
 				if (mc.gui.hud.isHidden()) {

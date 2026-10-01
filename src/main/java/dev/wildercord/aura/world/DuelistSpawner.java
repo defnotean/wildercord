@@ -139,7 +139,8 @@ public final class DuelistSpawner {
 				continue;
 			}
 			BlockPos top = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
-			if (level.getBlockState(top.below()).is(Blocks.DIRT_PATH) && standable(level, top)) {
+			// A path is a sixteenth short of a full block, so its top doesn't count as sturdy: just ask for headroom.
+			if (level.getBlockState(top.below()).is(Blocks.DIRT_PATH) && level.getBlockState(top).isAir() && level.getBlockState(top.above()).isAir()) {
 				return new Spot(top, Place.ROAD);
 			}
 		}
