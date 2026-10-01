@@ -22,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.BreedGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowOwnerGoal;
@@ -89,7 +88,7 @@ public class Cinderfox extends TamableAnimal {
 		goalSelector.addGoal(1, new FloatGoal(this));
 		goalSelector.addGoal(1, new TamableAnimal.TamableAnimalPanicGoal(1.5, DamageTypeTags.PANIC_ENVIRONMENTAL_CAUSES));
 		goalSelector.addGoal(2, new SitWhenOrderedToGoal(this));
-		goalSelector.addGoal(3, new AvoidEntityGoal<>(this, Player.class, p -> !isTame() && !p.isShiftKeyDown(), 9.0F, 1.2, 1.5, p -> true));
+		goalSelector.addGoal(3, new FleeGoal(this, p -> !isTame() && !p.isShiftKeyDown() && !p.isSpectator() && !tames(p.getMainHandItem()), 9, 1.2, 1.5));
 		goalSelector.addGoal(4, new LeapAtTargetGoal(this, 0.35F));
 		goalSelector.addGoal(5, new MeleeAttackGoal(this, 1.25, true));
 		goalSelector.addGoal(6, new FollowOwnerGoal(this, 1.1, 10.0F, 2.0F));

@@ -45,10 +45,10 @@ public final class RimehareModel extends EntityModel<WildlifeRenderState> {
 		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(26, 0).addBox(-2, -3.5F, -3.5F, 4, 4, 4),
 			PartPose.offset(0, 15.5F, -3));
 		head.addOrReplaceChild("muzzle", CubeListBuilder.create().texOffs(42, 0).addBox(-1.5F, -1.5F, -4.5F, 3, 2, 2), PartPose.ZERO);
-		head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(52, 0).addBox(-1, -7, -0.5F, 2, 7, 1),
-			PartPose.offsetAndRotation(1.1F, -3.3F, -1.2F, 0.22F, 0, 0.1F));
-		head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(52, 0).mirror().addBox(-1, -7, -0.5F, 2, 7, 1),
-			PartPose.offsetAndRotation(-1.1F, -3.3F, -1.2F, 0.22F, 0, -0.1F));
+		head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(52, 0).addBox(-1, -6, -0.5F, 2, 6, 1),
+			PartPose.offsetAndRotation(1.1F, -3.3F, -1.0F, 0.35F, 0, 0.18F));
+		head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(52, 0).mirror().addBox(-1, -6, -0.5F, 2, 6, 1),
+			PartPose.offsetAndRotation(-1.1F, -3.3F, -1.0F, 0.35F, 0, -0.18F));
 		haunch(root, "left", 2.1F, false);
 		haunch(root, "right", -2.1F, true);
 		frontLeg(root, "front_left", 1.2F, false);
@@ -90,9 +90,9 @@ public final class RimehareModel extends EntityModel<WildlifeRenderState> {
 		// Its nose never stops; its ears turn to every sound.
 		float sniff = Mth.clamp(Mth.sin(t * 0.17F) * 3 - 1.5F, 0, 1);
 		muzzle.y = Mth.sin(t * 2.1F) * 0.18F * sniff;
-		leftEar.zRot = 0.1F + Mth.sin(t * 0.05F) * 0.08F;
-		rightEar.zRot = -0.1F + Mth.sin(t * 0.06F + 1.3F) * 0.08F;
-		leftEar.xRot = rightEar.xRot = 0.22F - alert * 0.25F + air * 0.9F + speed * 0.3F;
+		leftEar.zRot = 0.18F + Mth.sin(t * 0.05F) * 0.08F;
+		rightEar.zRot = -0.18F + Mth.sin(t * 0.06F + 1.3F) * 0.08F;
+		leftEar.xRot = rightEar.xRot = 0.35F - alert * 0.35F + air * 0.8F + speed * 0.3F;
 
 		// On alert it sits up tall, forepaws lifted.
 		body.xRot = BODY_REST - alert * 0.6F;

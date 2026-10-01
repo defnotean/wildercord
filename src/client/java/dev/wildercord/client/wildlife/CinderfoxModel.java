@@ -10,14 +10,14 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 
 /**
- * A cinderfox: slight and long-legged, with a narrow snout, a ruff at the cheeks, tall desert ears and a long brush of
- * a tail in two parts, its tip a living ember (drawn again by the glow layer). It trots with its legs in diagonal
- * pairs and its tail streaming and swaying behind, twitches its ears and cocks its head when idle, and sits upright
- * with its tail curled round its feet. A kit has a bigger head and bigger ears. UVs match {@code cinderfox_skin} in
- * tools/wildlife_art.py.
+ * A cinderfox: slight and long-legged, a wedge of a head with a narrow snout, a fluff of fur under its chin and tall desert ears,
+ * and a long brush of a tail in three parts (root, brush, and the living ember at its tip, drawn again by the glow
+ * layer). It trots with its legs in diagonal pairs and its tail streaming and swaying behind, twitches its ears and
+ * cocks its head when idle, and sits up on its haunches with its tail curled round beside it. A kit has a bigger head
+ * and bigger ears. UVs match {@code cinderfox_skin} in tools/wildlife_art.py.
  */
 public final class CinderfoxModel extends EntityModel<WildlifeRenderState> {
-	private final ModelPart body, head, leftEar, rightEar, tail, tailTip, frontLeft, frontRight, hindLeft, hindRight;
+	private final ModelPart body, head, leftEar, rightEar, tail, brush, ember, frontLeft, frontRight, hindLeft, hindRight;
 
 	public CinderfoxModel(ModelPart root) {
 		super(root);
@@ -26,7 +26,8 @@ public final class CinderfoxModel extends EntityModel<WildlifeRenderState> {
 		leftEar = head.getChild("left_ear");
 		rightEar = head.getChild("right_ear");
 		tail = root.getChild("tail");
-		tailTip = tail.getChild("tail_tip");
+		brush = tail.getChild("brush");
+		ember = brush.getChild("ember");
 		frontLeft = root.getChild("front_left_leg");
 		frontRight = root.getChild("front_right_leg");
 		hindLeft = root.getChild("hind_left_leg");
@@ -38,16 +39,17 @@ public final class CinderfoxModel extends EntityModel<WildlifeRenderState> {
 		PartDefinition root = mesh.getRoot();
 		root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(-2.5F, -2.5F, -5.5F, 5, 5, 11), PartPose.offset(0, 16.5F, 0));
 		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create()
-			.texOffs(32, 0).addBox(-3, -3, -4.5F, 6, 5, 5)
-			.texOffs(32, 10).addBox(-1.5F, -0.5F, -7.5F, 3, 2, 3)
-			.texOffs(44, 10).addBox(-3.5F, -0.5F, -2.5F, 7, 3, 2), PartPose.offset(0, 15, -5.5F));
-		head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(54, 0).addBox(-1.5F, -4, -0.5F, 3, 4, 1),
-			PartPose.offsetAndRotation(2, -2.5F, -2, -0.1F, 0, 0.28F));
-		head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(54, 0).mirror().addBox(-1.5F, -4, -0.5F, 3, 4, 1),
-			PartPose.offsetAndRotation(-2, -2.5F, -2, -0.1F, 0, -0.28F));
-		PartDefinition tail = root.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(8, 16).addBox(-1.5F, -1.5F, 0, 3, 3, 6),
+			.texOffs(32, 0).addBox(-2.5F, -2.5F, -4, 5, 4, 4)
+			.texOffs(32, 8).addBox(-1, -0.5F, -6.5F, 2, 2, 3)
+			.texOffs(42, 8).addBox(-2, 1.5F, -3.5F, 4, 1, 3), PartPose.offset(0, 14.5F, -5.5F));
+		head.addOrReplaceChild("left_ear", CubeListBuilder.create().texOffs(54, 0).addBox(-1.5F, -5, -0.5F, 3, 5, 1),
+			PartPose.offsetAndRotation(1.6F, -2.2F, -1.6F, -0.12F, 0, 0.32F));
+		head.addOrReplaceChild("right_ear", CubeListBuilder.create().texOffs(54, 0).mirror().addBox(-1.5F, -5, -0.5F, 3, 5, 1),
+			PartPose.offsetAndRotation(-1.6F, -2.2F, -1.6F, -0.12F, 0, -0.32F));
+		PartDefinition tail = root.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(8, 16).addBox(-1.5F, -1.5F, 0, 3, 3, 5),
 			PartPose.offsetAndRotation(0, 15, 5.2F, -0.55F, 0, 0));
-		tail.addOrReplaceChild("tail_tip", CubeListBuilder.create().texOffs(26, 16).addBox(-2, -2, 0, 4, 4, 5), PartPose.offset(0, 0, 5.5F));
+		PartDefinition brush = tail.addOrReplaceChild("brush", CubeListBuilder.create().texOffs(24, 16).addBox(-2, -2, 0, 4, 4, 4), PartPose.offset(0, 0, 4.5F));
+		brush.addOrReplaceChild("ember", CubeListBuilder.create().texOffs(40, 16).addBox(-1.5F, -1.5F, 0, 3, 3, 3), PartPose.offset(0, 0, 3.8F));
 		leg(root, "front_left", 1.4F, -3.5F, false);
 		leg(root, "front_right", -1.4F, -3.5F, true);
 		leg(root, "hind_left", 1.4F, 4, false);
@@ -85,35 +87,45 @@ public final class CinderfoxModel extends EntityModel<WildlifeRenderState> {
 		float tilt = Mth.clamp(Mth.sin(t * 0.031F) * 5 - 4, 0, 1) * (1 - speed);
 		head.zRot = tilt * 0.28F;
 		float twitch = Mth.clamp(Mth.sin(t * 0.11F) * 8 - 7, 0, 1);
-		leftEar.xRot = -0.1F - twitch * 0.35F + speed * 0.3F;
-		rightEar.xRot = -0.1F - Mth.clamp(Mth.sin(t * 0.13F + 2) * 8 - 7, 0, 1) * 0.35F + speed * 0.3F;
+		leftEar.xRot = -0.12F - twitch * 0.35F + speed * 0.35F;
+		rightEar.xRot = -0.12F - Mth.clamp(Mth.sin(t * 0.13F + 2) * 8 - 7, 0, 1) * 0.35F + speed * 0.35F;
 
-		// The brush streams out at a trot and sways when it stands; the ember tip follows a beat behind.
-		float sway = Mth.sin(t * 0.09F) * 0.22F * (1 - speed * 0.6F) + Mth.sin(walk) * 0.15F * speed;
-		tail.xRot = -0.55F + speed * 0.4F;
+		// The brush streams out at a trot and sways when it stands; each part follows the one before a beat behind.
+		float sway = Mth.sin(t * 0.09F) * 0.2F * (1 - speed * 0.6F) + Mth.sin(walk) * 0.15F * speed;
+		tail.xRot = -0.55F + speed * 0.45F;
 		tail.yRot = sway;
-		tailTip.yRot = Mth.sin(t * 0.09F - 0.9F) * 0.3F * (1 - speed * 0.5F);
-		tailTip.xRot = -0.15F + speed * 0.1F;
+		brush.yRot = Mth.sin(t * 0.09F - 0.7F) * 0.18F * (1 - speed * 0.5F);
+		brush.xRot = 0.1F - speed * 0.05F;
+		ember.yRot = Mth.sin(t * 0.09F - 1.4F) * 0.22F * (1 - speed * 0.5F);
+		ember.xRot = 0.12F;
 
 		if (sit > 0) {
-			// Sitting up: haunches down, forelegs straight, tail curled round its feet.
-			body.xRot = -0.62F * sit;
-			body.y += 1.6F * sit;
-			body.z = 1.2F * sit;
-			head.y = 15 - 3.2F * sit;
-			head.z = -5.5F + 2.2F * sit;
-			frontLeft.xRot = Mth.lerp(sit, frontLeft.xRot, -0.12F);
-			frontRight.xRot = Mth.lerp(sit, frontRight.xRot, -0.12F);
-			frontLeft.z = frontRight.z = -3.5F + 0.6F * sit;
-			hindLeft.xRot = Mth.lerp(sit, hindLeft.xRot, -1.45F);
-			hindRight.xRot = Mth.lerp(sit, hindRight.xRot, -1.45F);
-			hindLeft.y = hindRight.y = 19 + 2.6F * sit;
-			hindLeft.z = hindRight.z = 4 - 0.6F * sit;
-			tail.y = 15 + 6.5F * sit;
-			tail.z = 5.2F - 1.4F * sit;
-			tail.xRot = Mth.lerp(sit, tail.xRot, -0.05F);
-			tail.yRot = Mth.lerp(sit, tail.yRot, 1.05F);
-			tailTip.yRot = Mth.lerp(sit, tailTip.yRot, 1.0F);
+			// Up on its haunches: the body tipped up about its rump (which stays on the ground), forelegs straight
+			// under its chest, hind legs folded flat, the tail curled round beside it.
+			body.xRot = -0.75F * sit;
+			body.y = Mth.lerp(sit, body.y, 18.4F);
+			body.z = 1.7F * sit;
+			head.y = Mth.lerp(sit, 14.5F, 12.6F);
+			head.z = Mth.lerp(sit, -5.5F, -2.6F);
+			frontLeft.xRot = Mth.lerp(sit, frontLeft.xRot, -0.05F);
+			frontRight.xRot = Mth.lerp(sit, frontRight.xRot, -0.05F);
+			frontLeft.y = frontRight.y = Mth.lerp(sit, 19, 17.2F);
+			frontLeft.yScale = frontRight.yScale = Mth.lerp(sit, 1, 1.36F);
+			frontLeft.z = frontRight.z = Mth.lerp(sit, -3.5F, -3.1F);
+			hindLeft.xRot = Mth.lerp(sit, hindLeft.xRot, -1.4F);
+			hindRight.xRot = Mth.lerp(sit, hindRight.xRot, -1.4F);
+			hindLeft.y = hindRight.y = Mth.lerp(sit, 19, 22.0F);
+			hindLeft.z = hindRight.z = Mth.lerp(sit, 4, 3.0F);
+			hindLeft.x = Mth.lerp(sit, 1.4F, 2.1F);
+			hindRight.x = Mth.lerp(sit, -1.4F, -2.1F);
+			tail.y = Mth.lerp(sit, 15, 22.4F);
+			tail.z = Mth.lerp(sit, 5.2F, 4.4F);
+			tail.xRot = Mth.lerp(sit, tail.xRot, 0);
+			tail.yRot = Mth.lerp(sit, tail.yRot, 1.0F);
+			brush.yRot = Mth.lerp(sit, brush.yRot, 0.75F);
+			brush.xRot = Mth.lerp(sit, brush.xRot, 0);
+			ember.yRot = Mth.lerp(sit, ember.yRot, 0.7F);
+			ember.xRot = Mth.lerp(sit, ember.xRot, 0);
 		}
 
 		if (state.isBaby) {

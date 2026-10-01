@@ -4,6 +4,47 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Magical wildlife
+Six new creatures to make the world feel enchanted between the fights. None of them is hostile; each belongs to an
+element and a land, and each leaves something behind that's worth a little.
+- **Glimmerwings.** Soft-glowing moths that flutter in little swarms at night through forests and flower fields,
+  moonlit blue in most woods, rose in flower forests and cherry groves, amber in meadows. They circle lamps, torches and
+  campfires, and anyone who has just cast a spell, leave a faint glittering dust behind them and fade one by one at
+  daybreak. They drop **Glimmer Dust**, which brews Night Vision from an Awkward Potion and turns an ink sac into a glow
+  ink sac.
+- **The lumen stag.** A rare, shy deer of old forests, taigas and cherry groves, always alone, whose crystal antlers
+  burn brighter as the moon fills. It bolts from anyone who walks up to it, and lets someone sneaking quietly come close:
+  stay beside it, still, for a few seconds and it bows and sheds an antler at your feet, once a day. A **Lumen Antler**
+  can take the diamond's place at the heart of a Mana Crystal. A stag never drops one: killing one leaves nothing, brings
+  five minutes of Bad Luck, and frightens every stag nearby.
+- **The mossback tortoise.** A huge, slow tortoise of swamps, mangroves and jungles with a little garden on its shell:
+  blue orchids and a mushroom in swamp moss, a propagule and a lily pad in the mangroves, ferns and a dandelion in the
+  jungle, growing over to match if it wanders into another of those lands for long enough. Struck, it pulls into its
+  shell and takes far less. It loves melon: two fed melon raise a big-headed baby with a bare shell. Now and then it lets
+  a **Mossback Scute** go, which brews the Turtle Master and mends a turtle shell.
+- **The cinderfox.** A big-eared fox of deserts and badlands whose tail ends in a living ember that sparks at night.
+  Tame one with rabbit (one try in three): it follows, sits when told and fights for you, and its bite sets anything
+  weak to fire alight and hurts it half again. Brush a tame one for an **Ember Tuft** once a day: it brews Fire
+  Resistance and burns long in a furnace.
+- **The skyray.** A manta of the open sky, three and a half blocks from wingtip to wingtip, gliding in slow loops high
+  over mountains, windswept hills and meadows, its back full of stars at night. Rare, and never more than two in one sky.
+  Now and then a **Skyray Membrane** falls from it, which brews Slow Falling and mends an elytra.
+- **The rimehare.** A quick snow hare that goes in bounds, leaving pairs of frost prints that fade as you watch. It bolts
+  faster than you can run, unless you hold out sweet berries and don't run at it. It drops **Rime Fur**, which weaves
+  Rimebound armour in place of packed ice, and four of which make a piece of leather.
+- **Their own voices**, made for each: wing whirr, a stag's glassy call and the chime of a falling antler, a tortoise's
+  grumble and plod, a fox's yip and the crackle of its embers, a skyray's long song carried down on the wind, a hare's
+  squeak and the crunch of its landing.
+- **Spawn eggs** for all six, in the creative tabs. Each creature has its own affinities: glimmerwings fear fire and
+  wind, a stag's light is snuffed by void, a tortoise shrugs off earth and wind but feels the cold, a cinderfox resists
+  fire and fears frost, a skyray rides out wind but not a storm, a rimehare resists frost and fears fire.
+- **The Grimoire's field guide.** A creature seen up close for the first time goes into your Grimoire with a toast (and a
+  little mana toward your next circle). The Grimoire lists every creature you've met with a short entry, and the rest as
+  a hint of where to look.
+- **Server settings**: a new `creatures` section in `wildercord.json` switches wildlife's natural spawns off
+  (`wildlife`), scales them (`wildlife_spawn_multiplier`) and switches each creature on its own. They spawn in vanilla's
+  own pools, so the mob caps hold, and the rare ones stay rare and keep their distance from each other.
+
 ## [0.8.0-alpha] - 2026-10-01
 
 Magic that feels like your own. Every world answers to harmonies of its own and bends a few runes its own way, runes

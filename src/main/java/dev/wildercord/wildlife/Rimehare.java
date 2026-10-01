@@ -10,7 +10,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.BreedGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.FollowParentGoal;
@@ -56,7 +55,7 @@ public class Rimehare extends Animal {
 		goalSelector.addGoal(1, new PanicGoal(this, 2.6));
 		goalSelector.addGoal(2, new BreedGoal(this, 0.9));
 		goalSelector.addGoal(3, new TemptGoal(this, 1.0, this::isFood, true));
-		goalSelector.addGoal(4, new AvoidEntityGoal<>(this, Player.class, this::boltsFrom, WildlifeRules.HARE_NOTICE, 2.0, 2.6, p -> true));
+		goalSelector.addGoal(4, new FleeGoal(this, this::boltsFrom, WildlifeRules.HARE_NOTICE, 2.0, 2.6));
 		goalSelector.addGoal(5, new FollowParentGoal(this, 1.2));
 		goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.7));
 		goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
@@ -78,7 +77,9 @@ public class Rimehare extends Animal {
 		if (level().isClientSide()) {
 			airO = air;
 			alertO = alert;
-			air = WildlifeRules.approach(air, onGround() ? 0 : 1, onGround() ? 0.5F : 0.3F);
+			// (One standing still for a picture, with no mind of its own, is never in the air.)
+			boolean aloft = !onGround() && !isNoAi();
+			air = WildlifeRules.approach(air, aloft ? 1 : 0, aloft ? 0.3F : 0.5F);
 			if (onGround() && !wasOnGround) {
 				landedTick = tickCount;
 			}

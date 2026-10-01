@@ -1170,6 +1170,46 @@ condition holding and what it shifts ("Full moon: Arcane +15%, Void +15%"); the 
   at a place of power, a rite that wants a full moon).
 - `#wildercord:reagents`, `Reagents.kindOf(stack)`: whether an item is a reagent, and its element.
 
+## Magical wildlife
+
+The world should feel enchanted between the fights: things that glow in the woods at night, a shape against the
+sky over the peaks, tracks in the frost. Six creatures, none of them hostile, each tied to an element and to its
+land, each leaving something behind that's worth a little (a brew, a recipe, a stand-in for a rare ingredient) and
+none of it power. They spawn on their own, in their biomes, and the rare ones stay rare.
+
+| Creature | Where | What it does | Leaves | Its use |
+|---|---|---|---|---|
+| **Glimmerwing** | Forests, flower forests, birch woods, dark forests, meadows, sunflower plains, cherry groves; at night | Soft-glowing moths in swarms of 3 to 5 that keep together, circle lamps and anyone who cast a spell in the last 8 seconds, shed a faint glittering dust, and fade one by one at daybreak. A swarm shares one colouring from where it rose: moonlit blue, rose (flower forests, cherry groves) or amber (meadows) | Glimmer Dust (killed) | Brews Night Vision from an Awkward Potion; with an ink sac, a glow ink sac |
+| **Lumen Stag** | Old-growth birch, pine and spruce taiga, taiga, cherry groves; rare, always alone | Crystal antlers that burn brighter as the moon fills (full at a full moon, a third at a new moon, faint by day). It bolts from anyone who walks up or runs at it (sneaking or not) and watches a calm, sneaking player; one who stays within 3.5 blocks for 3 seconds is trusted and it bows and sheds an antler at their feet. Once a day: for whoever it trusts first, or on its own (1 in 40 every 10 seconds) while a player is within 48 blocks | Lumen Antler (shed, never dropped) | Stands in for the diamond in a Mana Crystal |
+| **Mossback Tortoise** | Swamps, mangrove swamps, jungles, sparse and bamboo jungles; 1 or 2 | A garden on its shell (blue orchids and a mushroom in swamp moss; a propagule, a lily pad and a red mushroom in the mangroves; ferns and a dandelion in the jungle) that grows over to match after 10 minutes in another of those lands. Struck, it hides in its shell for 5 seconds and takes 40%. Follows melon; two fed melon raise a baby (bare shell, big head) | A Mossback Scute every 10 to 20 minutes, one when a baby grows up, 0 to 1 when killed | Brews the Turtle Master from an Awkward Potion; mends a turtle shell |
+| **Cinderfox** | Deserts and the three badlands; 1 to 3 | Wild, it keeps its distance (unless you sneak or hold rabbit) and hunts rabbits and chickens. A rabbit, raw or cooked, tames it one time in three; tame, it follows, sits and fights for you, and its bite sets a creature weak to fire alight for 4 seconds and hurts it half again. Breeds when tame (rabbit or chicken). Its ember tail glows always and sparks at night. Fire-immune | An Ember Tuft from a brush, once a day (tame only); 0 to 1 when killed | Brews Fire Resistance from an Awkward Potion; burns in a furnace for eight items |
+| **Skyray** | Windswept hills, gravelly hills and forest, meadows, jagged and stony peaks, snowy slopes; rare, at most two in a sky | A manta three and a half blocks across. It climbs from the summit where it spawned to 26-44 blocks over the ground and circles a point (14-26 blocks round, a lap every half minute or so) that drifts slowly across the land; leans into its turns, glides on a ripple and strokes now and then. Its stars glow at night. Struck, it climbs and flies off. Stays while a player is within 96 blocks | A Skyray Membrane every 7.5 to 15 minutes while a player is within 64 blocks; 1 or 2 when killed | Brews Slow Falling from an Awkward Potion; mends an elytra as a phantom's membrane does |
+| **Rimehare** | Snowy plains and taiga, ice spikes, snowy slopes, groves; 2 or 3 | Goes in bounds, leaving a pair of frost prints at every landing that fade in about 3 seconds. Bolts from anyone within 10 blocks, faster than a sprint, unless they hold out sweet berries and don't run; sits up on alert. Two fed sweet berries raise a leveret | Rime Fur, 0 to 2 when killed | Weaves Rimebound armour in place of packed ice; four make a piece of leather |
+
+**Killing a lumen stag** leaves nothing and brings Bad Luck on whoever did it for five minutes ("The forest falls
+silent around you"); every stag within 48 blocks is frightened for five minutes and trusts nobody.
+
+**Spawning.** Each creature joins its biomes' spawn lists through biome modifications, in vanilla's own pools (the two
+fliers in the ambient pool with the bats, the rest with the animals), so the mob caps hold. On top of its weight, each
+one's spawn rule decides every natural try: its ground (block tags under `wildercord:spawns_on/`), the light, its
+rarity (the share of good tries let through: a stag a third, a skyray one in 800, a glimmerwing a quarter, the rest
+every one) and how many of its kind are already near (no other stag within 80 blocks; at most two skyrays within 112;
+9 glimmerwings within 40; 4 to 6 of the others within 48). Glimmerwings only rise at night, in open air within 6
+blocks of the ground; skyrays only from an open summit. Spawn eggs, `/summon` and spawners aren't held to any of it.
+
+**The server's say** (the `creatures` section of `wildercord.json`): `wildlife` switches all their natural spawns,
+`wildlife_spawn_multiplier` scales them (below 1 by letting fewer tries through at once; above 1 by raising their
+spawn weights too, from the next world load; the crowding limits hold either way), and each creature has a switch of
+its own.
+
+**Affinities.** Glimmerwings are weak to fire and wind and resist arcane; a stag is weak to void and resists arcane; a
+tortoise resists earth and wind and is weak to frost; a cinderfox resists fire and is weak to frost; a skyray resists
+wind and is weak to storm; a rimehare resists frost and is weak to fire.
+
+**The field guide.** A creature of the guide seen up close (within 14 blocks, in sight) goes into the Grimoire the
+first time (40 mana toward the next circle, a toast with its spawn egg). The Grimoire lists every creature met with its
+short entry, and the rest as a hint of where to look. It's one list, `spell.FieldGuide`, that any creature can join.
+
 ## Passives
 
 Up to two always-on spells, threaded on the Cord screen's **Passives** page. Slots open at the 1st and 5th Circle.

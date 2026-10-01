@@ -137,6 +137,14 @@ public class GrimoireToast implements Toast {
 			this.name = Component.translatable("toast.wildercord.bestiary", creature, Component.translatable("element.wildercord." + entry.element()));
 			this.icon = type == null ? new ItemStack(Items.BOOK) : SpawnEggItem.byId(type).map(ItemStack::new).orElseGet(() -> new ItemStack(Items.BOOK));
 			this.color = RuneColors.element(entry.element());
+		} else if (dev.wildercord.spell.FieldGuide.isKey(key)) {
+			// A creature met for the first time: its name, its spawn egg, its colour in the field guide.
+			String typeId = key.substring(dev.wildercord.spell.FieldGuide.PREFIX.length());
+			EntityType<?> type = Optional.ofNullable(Identifier.tryParse(typeId)).flatMap(BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
+			Component creature = type == null ? Component.literal(typeId) : type.getDescription();
+			this.name = Component.translatable("toast.wildercord.creature", creature);
+			this.icon = type == null ? new ItemStack(Items.BOOK) : SpawnEggItem.byId(type).map(ItemStack::new).orElseGet(() -> new ItemStack(Items.BOOK));
+			this.color = dev.wildercord.spell.FieldGuide.byType(typeId).map(dev.wildercord.spell.FieldGuide.Entry::color).orElse(0xF5C46A);
 		} else if (key.startsWith("hint:")) {
 			this.name = Component.translatable("toast.wildercord.riddle_hint");
 			this.icon = new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE);

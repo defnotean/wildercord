@@ -146,7 +146,7 @@ STAG_INNER_EAR = hexc("#E9D3C3")
 STAG_NOSE = hexc("#2A2525")
 STAG_EYE = hexc("#17151C")
 STAG_BONE = hexc("#E6DDC8")
-STAG_CRYSTAL = H("#6FC2EA", "#9EE0FF", "#CFF4FF", "#F4FFFF")
+STAG_CRYSTAL = H("#4EAAE6", "#7ACCFA", "#B2EAFF", "#E8FCFF")
 
 # Pale spots in two rows down the back, like a fawn's that never faded: (X, Z) on the body's top, in pixels.
 STAG_SPOTS = [(2.2, 3.5), (5.8, 5.0), (2.0, 7.0), (5.9, 8.6), (2.3, 10.4), (5.6, 12.0), (2.6, 13.8), (5.2, 15.0), (3.9, 2.0)]
@@ -166,7 +166,7 @@ def stag_skin(glow=False):
         if glow:
             near = any((X - sx) ** 2 + (Z - sz) ** 2 < 0.9 for sx, sz in STAG_SPOTS) if face == "top" else False
             near = near or (face in ("left", "right") and any((Z - fz) ** 2 + (Y - fy) ** 2 < 0.7 for fz, fy in STAG_FLANK))
-            return rgba(hexc("#CFF6FF"), 105) if near else clear
+            return rgba(hexc("#CFF6FF"), 60) if near else clear
         if face == "top":
             c = coat(0, 8, tx, ty)
             if abs(X - 4) < 1.1:
@@ -195,7 +195,7 @@ def stag_skin(glow=False):
     def chest(face, X, Y, Z, tx, ty):
         if glow:
             return clear
-        return fur(mix(STAG_COAT[3], STAG_COAT[4], Y / 5), tx, ty, 16, 0.07)
+        return fur(mix(STAG_COAT[3], STAG_COAT[4], Y / 4), tx, ty, 16, 0.07)
 
     def neck(face, X, Y, Z, tx, ty):
         if glow:
@@ -211,7 +211,7 @@ def stag_skin(glow=False):
         if glow:
             return clear
         # Shaggy cream, streaked.
-        c = mix(STAG_COAT[4], hexc("#FFFFFF"), 0.2)
+        c = mix(STAG_COAT[3], STAG_COAT[4], 0.55)
         return fur(c, tx, ty, 20, 0.12)
 
     def head(face, X, Y, Z, tx, ty):
@@ -284,17 +284,17 @@ def stag_skin(glow=False):
         return fur(STAG_STRIPE if Y < 2 else STAG_COAT[1], tx, ty, 36)
 
     sk.box(0, 0, 8, 8, 17, body)
-    sk.box(0, 25, 7, 5, 4, chest)
+    sk.box(0, 25, 6, 4, 3, chest)
     sk.box(50, 0, 4, 9, 5, neck)
-    sk.box(68, 0, 5, 6, 2, ruff)
+    sk.box(68, 0, 4, 4, 1, ruff)
     sk.box(82, 0, 5, 5, 6, head)
     sk.box(104, 0, 3, 3, 4, muzzle)
     sk.box(104, 7, 3, 2, 1, ear)
-    sk.box(112, 7, 1, 8, 1, crystal(8, "beam"), tone=False)
-    sk.box(116, 7, 1, 4, 1, crystal(4, "tine"), tone=False)
-    sk.box(120, 7, 1, 4, 1, crystal(4, "tine"), tone=False)
-    sk.box(124, 7, 1, 3, 1, crystal(3, "tine"), tone=False)
-    sk.box(116, 12, 1, 3, 1, crystal(3, "tine"), tone=False)
+    sk.box(112, 7, 1, 10, 1, crystal(10, "beam"), tone=False)
+    sk.box(116, 7, 1, 5, 1, crystal(5, "tine"), tone=False)
+    sk.box(120, 7, 1, 5, 1, crystal(5, "tine"), tone=False)
+    sk.box(124, 7, 1, 4, 1, crystal(4, "tine"), tone=False)
+    sk.box(116, 13, 1, 3, 1, crystal(3, "tine"), tone=False)
     sk.box(0, 36, 3, 5, 3, leg(True, False, 5))
     sk.box(12, 36, 2, 6, 2, leg(False, True, 6))
     sk.box(20, 36, 4, 6, 4, leg(True, False, 6))
@@ -322,7 +322,7 @@ def stag_skin(glow=False):
 SHELL = H("#2F2818", "#4E4329", "#655836", "#7D7047", "#978A5B")
 MOSS = H("#2C4A1A", "#3E6424", "#557F2E", "#6F9C38", "#8EBC48")
 PLASTRON = H("#7A6A44", "#A8955F", "#C8B37A", "#DCCB94")
-SKIN = H("#3F4433", "#555B44", "#6C7356", "#868D6C")
+SKIN = H("#45432E", "#5E5C3E", "#777452", "#908C68")
 BEAK = hexc("#A8925A")
 LICHEN = hexc("#A8FFD0")
 
@@ -351,7 +351,7 @@ def tortoise_skin(glow=False):
         def paint(face, X, Y, Z, tx, ty):
             under = face == "top" and mossy(cover, tx, ty, seed)
             # Moss drips over the top edge of each tier.
-            drip = face not in ("top", "bottom") and Y < (1.2 + 1.6 * noise(tx, 0, seed + 3)) * cover * 1.6
+            drip = face not in ("top", "bottom") and Y < (0.8 + 1.6 * noise(tx, 0, seed + 3)) * cover
             if glow:
                 if (under or drip) and noise(tx, ty, seed + 9) > 0.965:
                     return rgba(LICHEN, 235)
@@ -431,28 +431,28 @@ def tortoise_skin(glow=False):
     def tail(face, X, Y, Z, tx, ty):
         return clear if glow else hide(face, X, Y, Z, tx, ty, 106)
 
-    sk.box(0, 0, 20, 3, 24, plates(0.28, 6.0, 110))
-    sk.box(0, 27, 18, 3, 22, plates(0.5, 5.5, 120))
-    sk.box(0, 52, 14, 2, 17, plates(0.8, 4.5, 130))
+    sk.box(0, 0, 20, 3, 24, plates(0.12, 6.0, 110))
+    sk.box(0, 27, 18, 3, 22, plates(0.3, 5.5, 120))
+    sk.box(0, 52, 14, 2, 17, plates(0.58, 4.5, 130))
     sk.box(62, 52, 9, 1, 10, crown)
     sk.box(0, 71, 17, 2, 21, plastron)
     sk.box(88, 0, 0, 5, 20, strands, tone=False)
     sk.box(88, 25, 18, 5, 0, strands, tone=False)
     sk.box(76, 71, 5, 5, 5, hide)
-    sk.box(96, 71, 6, 6, 6, head)
-    sk.box(76, 81, 4, 2, 2, jaw)
+    sk.box(96, 71, 5, 5, 6, head)
+    sk.box(76, 81, 3, 2, 2, jaw)
     sk.box(0, 94, 6, 7, 6, leg)
     sk.box(24, 94, 3, 2, 4, tail)
     if not glow:
         # Old, patient eyes ringed in gold, and two nostrils.
         for face, x in (("right", 4), ("left", 1)):
-            sk.at(96, 71, 6, 6, 6, face, x, 2, hexc("#141410"))
-            sk.at(96, 71, 6, 6, 6, face, x, 1, hexc("#B89236"))
-            sk.at(96, 71, 6, 6, 6, face, x + (-1 if face == "right" else 1), 2, hexc("#B89236"))
-        sk.at(96, 71, 6, 6, 6, "front", 2, 2, SKIN[0])
-        sk.at(96, 71, 6, 6, 6, "front", 3, 2, SKIN[0])
-        for x in range(4):
-            sk.at(76, 81, 4, 2, 2, "front", x, 0, shade(BEAK, 0.7))
+            sk.at(96, 71, 5, 5, 6, face, x, 2, hexc("#141410"))
+            sk.at(96, 71, 5, 5, 6, face, x, 1, hexc("#B89236"))
+            sk.at(96, 71, 5, 5, 6, face, x + (-1 if face == "right" else 1), 2, hexc("#B89236"))
+        sk.at(96, 71, 5, 5, 6, "front", 1, 3, SKIN[0])
+        sk.at(96, 71, 5, 5, 6, "front", 3, 3, SKIN[0])
+        for x in range(3):
+            sk.at(76, 81, 3, 2, 2, "front", x, 1, shade(BEAK, 0.7))
     return sk.image()
 
 
@@ -476,7 +476,9 @@ def cinderfox_skin(glow=False):
         if glow:
             return clear
         if face == "top":
-            # A faint darker saddle over the shoulders.
+            # A darker line down the spine and a faint saddle over the shoulders.
+            if abs(X - 2.5) < 0.7:
+                return fur(SAND[1], tx, ty, 39)
             return fur(mix(SAND[2], SAND[1], 0.35 if 2 < Z < 7 else 0.12), tx, ty, 40)
         if face == "bottom":
             return fur(SAND[4], tx, ty, 41, 0.05)
@@ -488,31 +490,40 @@ def cinderfox_skin(glow=False):
         if glow:
             return clear
         if face == "top":
-            return fur(SAND[2], tx, ty, 44)
+            return fur(SAND[2] if abs(X - 2.5) > 0.7 else SAND[1], tx, ty, 44)
         if face == "front":
-            # A cream mask below the eyes.
-            return fur(SAND[4] if Y > 2.2 else SAND[2], tx, ty, 45, 0.05)
+            # A cream mask below the eyes, a dark tear-line from each eye down toward the snout.
+            if Y > 1.9:
+                return fur(SAND[4], tx, ty, 45, 0.04)
+            return fur(SAND[2], tx, ty, 45)
         if face == "bottom":
             return SAND[4]
-        return fur(SAND[3] if Y > 2.5 else SAND[2], tx, ty, 46)
+        return fur(SAND[3] if Y > 2.2 else SAND[2], tx, ty, 46)
 
     def snout(face, X, Y, Z, tx, ty):
         if glow:
             return clear
-        return fur(SAND[3] if face == "top" else SAND[4], tx, ty, 47, 0.04)
+        if face == "top":
+            return fur(SAND[3], tx, ty, 47, 0.04)
+        if face == "bottom":
+            return SAND[4]
+        return fur(SAND[4], tx, ty, 47, 0.03)
 
-    def ruff(face, X, Y, Z, tx, ty):
+    def chin(face, X, Y, Z, tx, ty):
         if glow:
             return clear
-        return fur(mix(SAND[4], hexc("#FFFFFF"), 0.15), tx, ty, 48, 0.12)
+        return fur(mix(SAND[4], hexc("#FFFFFF"), 0.25), tx, ty, 48, 0.1)
 
     def ear(face, X, Y, Z, tx, ty):
         if glow:
             return clear
-        if Y < 1.1:
+        if Y < 1.2:
             return SOCK[0]
         if face == "front":
-            return hexc("#F2A784") if 0.7 < X < 2.3 and Y > 1.2 else fur(SAND[3], tx, ty, 49)
+            # Pale pink inside, fringed with cream fur.
+            if 0.7 < X < 2.3 and Y > 1.4:
+                return mix(hexc("#F2A784"), hexc("#F8D8C0"), (Y - 1.4) / 3.6)
+            return fur(SAND[3], tx, ty, 49)
         return fur(SAND[2], tx, ty, 50)
 
     def leg(face, X, Y, Z, tx, ty):
@@ -523,52 +534,60 @@ def cinderfox_skin(glow=False):
         return fur(SAND[2], tx, ty, 52)
 
     def tail(face, X, Y, Z, tx, ty):
-        """The brush: sand at the root, deepening to rust, with charred flecks where the ember begins."""
-        t = Z / 6
+        """The root of the brush: sand, deepening toward rust."""
         if glow:
-            return rgba(EMBER[2], 70 * max(0, t - 0.6) / 0.4) if t > 0.6 else clear
-        c = mix(SAND[2], hexc("#C2602A"), t * 0.9)
-        if t > 0.7 and noise(tx, ty, 53) > 0.7:
-            c = CHAR
-        return fur(c, tx, ty, 54, 0.09)
+            return clear
+        c = mix(SAND[2], hexc("#D07A38"), Z / 5)
+        return fur(c if face != "bottom" else SAND[3], tx, ty, 53, 0.08)
 
-    def tip(face, X, Y, Z, tx, ty):
-        """The ember: smouldering at its root, white-hot at the very end."""
-        t = Z / 5 if face != "back" else 1.0
-        core = 1 - min(1.0, math.hypot(X - 2, Y - 2) / 2.2) if face == "back" else 0
-        heat = 0.2 + 0.65 * t + 0.25 * core
-        c = along(EMBER, heat)
-        if t < 0.25 and noise(tx, ty, 55) > 0.6:
+    def brush(face, X, Y, Z, tx, ty):
+        """The thick of the brush: rust, smouldering darker toward the ember, flecked with char."""
+        t = Z / 4
+        if glow:
+            return rgba(EMBER[2], 90 * (t - 0.55) / 0.45) if t > 0.55 and face != "front" else clear
+        c = mix(hexc("#C8642A"), hexc("#8E3A1C"), t * 0.8)
+        if t > 0.5 and noise(tx, ty, 54) > 0.68:
             c = CHAR
-        if noise(tx, ty, 56) > 0.88:
+        return fur(c, tx, ty, 55, 0.1)
+
+    def ember(face, X, Y, Z, tx, ty):
+        """The living ember: deep red where it meets the fur, white-hot at the very end."""
+        t = Z / 3 if face != "back" else 1.0
+        core = 1 - min(1.0, math.hypot(X - 1.5, Y - 1.5) / 1.8) if face == "back" else 0
+        heat = 0.25 + 0.6 * t + 0.3 * core
+        c = along(EMBER, heat)
+        if noise(tx, ty, 56) > 0.86:
             c = mix(c, EMBER[5], 0.6)
         if glow:
-            return rgba(mix(c, EMBER[5], 0.2), 120 + 135 * min(1.0, heat)) if c != CHAR else clear
+            return rgba(mix(c, EMBER[5], 0.2), 130 + 125 * min(1.0, heat))
         return c
 
     sk.box(0, 0, 5, 5, 11, body)
-    sk.box(32, 0, 6, 5, 5, head)
-    sk.box(32, 10, 3, 2, 3, snout)
-    sk.box(44, 10, 7, 3, 2, ruff)
-    sk.box(54, 0, 3, 4, 1, ear)
+    sk.box(32, 0, 5, 4, 4, head)
+    sk.box(32, 8, 2, 2, 3, snout)
+    sk.box(42, 8, 4, 1, 3, chin)
+    sk.box(54, 0, 3, 5, 1, ear)
     sk.box(0, 16, 2, 5, 2, leg)
-    sk.box(8, 16, 3, 3, 6, tail)
-    sk.box(26, 16, 4, 4, 5, tip, tone=False)
-    # Bright amber eyes with dark inner corners, a dark nose.
-    for x, inner in ((1, 2), (4, 3)):
+    sk.box(8, 16, 3, 3, 5, tail)
+    sk.box(24, 16, 4, 4, 4, brush)
+    sk.box(40, 16, 3, 3, 3, ember, tone=False)
+    # Bright amber eyes with dark inner corners and a dark line running down from each; a dark nose.
+    for x, inner in ((0, 1), (4, 3)):
         if glow:
-            sk.at(32, 0, 6, 5, 5, "front", x, 1, rgba(FOX_EYE, 200))
+            sk.at(32, 0, 5, 4, 4, "front", x, 1, rgba(FOX_EYE, 210))
         else:
-            sk.at(32, 0, 6, 5, 5, "front", x, 1, FOX_EYE)
-            sk.at(32, 0, 6, 5, 5, "front", inner, 1, hexc("#2A1810"))
+            sk.at(32, 0, 5, 4, 4, "front", x, 1, FOX_EYE)
+            sk.at(32, 0, 5, 4, 4, "front", inner, 1, hexc("#2A1810"))
+            sk.at(32, 0, 5, 4, 4, "front", inner, 2, shade(SAND[1], 0.8))
     if not glow:
-        sk.at(32, 10, 3, 2, 3, "front", 1, 0, hexc("#2A1C18"))
+        sk.at(32, 8, 2, 2, 3, "front", 0, 0, hexc("#2A1C18"))
+        sk.at(32, 8, 2, 2, 3, "front", 1, 0, hexc("#2A1C18"))
     return sk.image()
 
 
 # ============================================================== the rimehare
 
-SNOW = H("#AFC0D2", "#CCDAE8", "#E2EBF4", "#F4F8FC", "#FFFFFF")
+SNOW = H("#C4D2E0", "#DAE5EF", "#EBF1F7", "#F7FAFD", "#FFFFFF")
 FROST = hexc("#BCD6EE")
 EAR_TIP = hexc("#3C4858")
 RIME = hexc("#D2F2FF")
@@ -591,7 +610,7 @@ def rimehare_skin(glow=False):
             return clear
         if face == "bottom":
             return SNOW[4]
-        return fur(along(SNOW, 0.85 - 0.45 * (Y / h) if Y / h > 0.6 else 0.85), tx, ty, seed + 2, 0.05)
+        return fur(along(SNOW, 0.95 - 0.4 * (Y / h) if Y / h > 0.65 else 0.95), tx, ty, seed + 2, 0.04)
 
     def body(face, X, Y, Z, tx, ty):
         return coat(face, X, Y, Z, tx, ty, 5, 60)
@@ -636,7 +655,7 @@ def rimehare_skin(glow=False):
     sk.box(0, 0, 5, 5, 8, body)
     sk.box(26, 0, 4, 4, 4, head)
     sk.box(42, 0, 3, 2, 2, muzzle)
-    sk.box(52, 0, 2, 7, 1, ear, tone=False)
+    sk.box(52, 0, 2, 6, 1, ear, tone=False)
     sk.box(0, 13, 2, 4, 5, haunch)
     sk.box(14, 13, 2, 1, 5, foot)
     sk.box(28, 13, 2, 5, 2, leg)
@@ -759,8 +778,7 @@ TEAL = hexc("#3FA6B8")
 STAR = hexc("#DCE8FF")
 
 # Its constellations, in body pixels: (x across from the middle, z from the nose back). Mirrored on both sides.
-SKY_STARS = [(1.2, -5.0), (2.4, -2.0), (1.0, 1.5), (2.8, 4.0), (6.0, -3.6), (8.5, -1.4), (11.0, 0.4), (13.5, -0.8), (15.5, 1.6),
-             (18.0, 0.9), (20.5, 1.6), (7.2, 2.6), (10.2, 3.4)]
+SKY_STARS = [(1.2, -5.0), (2.4, -2.0), (1.0, 1.5), (2.8, 4.0), (6.5, -3.0), (10.5, 0.2), (14.0, -0.4), (18.0, 1.0), (8.4, 2.8)]
 
 
 def wing_front(x):
@@ -821,19 +839,19 @@ def skyray_skin(glow=False):
             front, back = wing_front(span), wing_back(span)
             if not front <= bz <= back:
                 return clear
-            leading = bz - front < 0.9
+            leading = bz - front < 0.7
             trailing = back - bz < 0.8
             if face == "top":
                 if glow:
-                    if starry(span + 4, bz):
+                    if starry(span + 4, bz, 0.55):
                         return rgba(STAR, 230)
                     if leading:
                         return rgba(hexc("#7FE6F0"), 150)
                     return clear
-                if starry(span + 4, bz):
+                if starry(span + 4, bz, 0.55):
                     return STAR
                 if leading:
-                    return TEAL
+                    return mix(TEAL, SKY[2], 0.3)
                 c = along(SKY, 0.62 - 0.4 * span / 24)
                 return shade(c, 0.85) if trailing else fur(c, tx, ty, 143, 0.04)
             if glow:
@@ -1115,8 +1133,9 @@ SPAWNS_ON = {
     "mossback_tortoise": ["#minecraft:frogs_spawnable_on", "#minecraft:animals_spawnable_on", "#minecraft:parrots_spawnable_on",
                           "minecraft:moss_block", "minecraft:mud", "minecraft:podzol", "minecraft:clay"],
     "cinderfox": ["#minecraft:camels_spawnable_on", "#minecraft:armadillo_spawnable_on", "#minecraft:sand", "#minecraft:badlands_terracotta"],
-    "rimehare": ["#minecraft:rabbits_spawnable_on", "minecraft:snow", "minecraft:snow_block", "minecraft:powder_snow", "minecraft:ice",
-                 "minecraft:packed_ice", "minecraft:podzol", "minecraft:stone"],
+    # Not the rabbits' tag: that has sand in it, and a rimehare is a creature of the snow.
+    "rimehare": ["minecraft:grass_block", "minecraft:snow", "minecraft:snow_block", "minecraft:powder_snow", "minecraft:ice", "minecraft:packed_ice",
+                 "minecraft:podzol", "minecraft:coarse_dirt", "minecraft:dirt", "minecraft:stone"],
 }
 
 # Brews from an Awkward Potion: (the creature's gift, the potion it makes).

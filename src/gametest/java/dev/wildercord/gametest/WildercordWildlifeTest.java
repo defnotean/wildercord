@@ -1,6 +1,9 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.client.CordScreen;
 import dev.wildercord.config.Config;
+import dev.wildercord.content.WildercordItems;
+import dev.wildercord.player.Spellbooks;
 import dev.wildercord.config.WildercordConfig;
 import dev.wildercord.player.Heart;
 import dev.wildercord.spell.FieldGuide;
@@ -152,9 +155,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		server.runCommand("setblock -27 " + GROUND + " -1 minecraft:fern");
 		server.runCommand("setblock 32 " + GROUND + " -1 minecraft:cornflower");
 		server.runCommand("setblock -3 " + GROUND + " -3 minecraft:dead_bush");
-		server.runCommand("setblock 3 " + GROUND + " -2 minecraft:cactus");
-		server.runCommand("setblock -17 " + GROUND + " -2 minecraft:moss_carpet");
-		server.runCommand("setblock -13 " + GROUND + " 2 minecraft:moss_carpet");
+		server.runCommand("setblock 4 " + GROUND + " -4 minecraft:cactus");
 		server.runCommand("setblock 30 " + GROUND + " -1 minecraft:oak_fence");
 		server.runCommand("setblock 30 " + (GROUND + 1) + " -1 minecraft:lantern");
 		server.runOnServer(s -> {
@@ -304,14 +305,15 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			LumenStag stag = (LumenStag) player.level().getEntity(trusting);
-			int antlers = count(player.level(), STAG, Wildlife.LUMEN_ANTLER);
+			// Shed at the player's feet, it's usually picked up at once.
+			int antlers = count(player.level(), STAG, Wildlife.LUMEN_ANTLER) + player.getInventory().countItem(Wildlife.LUMEN_ANTLER);
 			check(stag != null && stag.shedToday(), "a trusted stag should shed today's antler");
 			check(antlers == 1, "a trusted stag should leave one antler, found " + antlers);
 		});
 		context.waitTicks(WildlifeRules.STAG_TRUST_TICKS + 30);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			int antlers = count(player.level(), STAG, Wildlife.LUMEN_ANTLER);
+			int antlers = count(player.level(), STAG, Wildlife.LUMEN_ANTLER) + player.getInventory().countItem(Wildlife.LUMEN_ANTLER);
 			check(antlers == 1, "a stag sheds once a day, found " + antlers + " antlers");
 			LumenStag stag = (LumenStag) player.level().getEntity(trusting);
 			if (stag != null) {
@@ -419,7 +421,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			float full = shell.getHealth();
 			shell.hurtServer(level, level.damageSources().magic(), 10);
 			check(shell.hidden(), "a struck tortoise should hide in its shell");
-			shell.setInvulnerableTime(0);
+			shell.damageCooldownTime = 0;
 			shell.hurtServer(level, level.damageSources().magic(), 10);
 			float taken = full - shell.getHealth();
 			check(Math.abs(taken - 14) < 0.01F, "in its shell a tortoise should take 40% (10 then 4), took " + taken);
@@ -527,7 +529,23 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			check(grimoire.contains(FieldGuide.key("wildercord:rimehare")), "a rimehare seen up close should go into the Grimoire's field guide");
 			check(grimoire.contains(FieldGuide.key("wildercord:lumen_stag")), "the stags met earlier should be in the field guide");
 			clear(player.level(), HARE, 8);
+			Spellbooks.setCord(player, new ItemStack(WildercordItems.TWINE_CORD));
 		});
+		// The Grimoire's field guide: met creatures by name, the rest as hints.
+		context.waitTicks(5);
+		context.setScreen(CordScreen::new);
+		context.waitTicks(5);
+		context.runOnClient(mc -> {
+			if (mc.gui.screen() instanceof CordScreen screen) {
+				screen.showFieldGuide();
+			}
+			mc.gui.toastManager().clear();
+		});
+		context.getInput().setCursorPos(4, 4);
+		context.waitTicks(5);
+		context.takeScreenshot(TestScreenshotOptions.of("wildlife_field_guide").disableCounterPrefix());
+		context.setScreen(() -> null);
+		context.waitTicks(2);
 	}
 
 	// ------------------------------------------------------------------ pictures
@@ -538,29 +556,31 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			player.setGameMode(GameType.SPECTATOR);
 			put(player, new Vec3(0.5, GROUND + 2, 12.5), 180);
 			ServerLevel level = player.level();
-			spawn(Wildlife.LUMEN_STAG, level, STAG, 125, true);
-			MossbackTortoise tortoise = spawn(Wildlife.MOSSBACK_TORTOISE, level, TORTOISE, 140, true);
+			spawn(Wildlife.LUMEN_STAG, level, STAG, 88, true);
+			MossbackTortoise tortoise = spawn(Wildlife.MOSSBACK_TORTOISE, level, TORTOISE, 95, true);
 			tortoise.setGarden(WildlifeRules.Garden.SWAMP);
-			spawn(Wildlife.CINDERFOX, level, FOX, 120, true);
-			spawn(Wildlife.RIMEHARE, level, HARE, 115, true);
+			spawn(Wildlife.CINDERFOX, level, FOX, 82, true);
+			// On top of the snow, not in it.
+			spawn(Wildlife.RIMEHARE, level, HARE.add(0, 0.125, 0), 85, true);
 			for (int i = 0; i < 5; i++) {
 				double a = i * 1.26;
 				Glimmerwing moth = spawn(Wildlife.GLIMMERWING, level, MOTHS.add(Math.cos(a) * 0.9, 1.2 + 0.35 * Math.sin(a * 2), -1 + Math.sin(a) * 0.9),
 					(float) Math.toDegrees(a) + 90, true);
 				moth.setVariant(i % 3);
 			}
-			spawn(Wildlife.SKYRAY, level, SKY, 140, true);
+			spawn(Wildlife.SKYRAY, level, SKY, 196, true);
 		});
 		context.waitTicks(20);
 		for (String time : new String[] {"day", "night"}) {
 			world.getServer().runCommand("time set " + (time.equals("day") ? 6000 : 18000));
 			context.waitTicks(5);
-			shot(context, world, "wildlife_lumen_stag_" + time, STAG.add(-3.4, 2.0, 4.0), STAG.add(0, 1.15, 0));
-			shot(context, world, "wildlife_mossback_tortoise_" + time, TORTOISE.add(-2.6, 2.3, 3.2), TORTOISE.add(0, 0.55, 0));
-			shot(context, world, "wildlife_cinderfox_" + time, FOX.add(-1.5, 0.95, 1.9), FOX.add(0, 0.42, 0));
-			shot(context, world, "wildlife_rimehare_" + time, HARE.add(-1.2, 0.75, 1.5), HARE.add(0, 0.33, 0));
-			shot(context, world, "wildlife_glimmerwing_" + time, MOTHS.add(-1.4, 2.2, 1.2), MOTHS.add(0, 1.3, -1));
-			shot(context, world, "wildlife_skyray_" + time, SKY.add(-4.2, 2.6, 5.0), SKY.add(0, 0.2, 0));
+			shot(context, world, "wildlife_lumen_stag_" + time, STAG.add(-2.6, 1.75, 3.0), STAG.add(0, 1.1, 0));
+			shot(context, world, "wildlife_mossback_tortoise_" + time, TORTOISE.add(-2.0, 2.0, 2.5), TORTOISE.add(0, 0.5, 0));
+			shot(context, world, "wildlife_cinderfox_" + time, FOX.add(-1.25, 0.8, 1.55), FOX.add(0, 0.4, 0));
+			shot(context, world, "wildlife_rimehare_" + time, HARE.add(-1.0, 0.7, 1.2), HARE.add(0, 0.35, 0));
+			shot(context, world, "wildlife_glimmerwing_" + time, MOTHS.add(-1.3, 2.0, 1.0), MOTHS.add(0, 1.3, -1));
+			// From above and behind, its wings spread across the picture and the stars on its back.
+			shot(context, world, "wildlife_skyray_" + time, SKY.add(-0.9, 2.5, 3.2), SKY.add(0, -0.1, -0.5));
 		}
 
 		// A few poses: the stag bowing over its shed antler, a tortoise in its shell, a cinderfox sitting at night.
@@ -581,13 +601,15 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			}
 		});
 		context.waitTicks(25);
-		shot(context, world, "wildlife_lumen_stag_grazing_night", STAG.add(-3.4, 2.0, 4.0), STAG.add(0, 1.0, 0));
-		shot(context, world, "wildlife_mossback_tortoise_hidden_night", TORTOISE.add(-2.6, 2.3, 3.2), TORTOISE.add(0, 0.4, 0));
-		shot(context, world, "wildlife_cinderfox_sitting_night", FOX.add(-1.5, 0.95, 1.9), FOX.add(0, 0.42, 0));
+		shot(context, world, "wildlife_lumen_stag_grazing_night", STAG.add(-2.6, 1.75, 3.0), STAG.add(0, 0.9, 0));
+		shot(context, world, "wildlife_mossback_tortoise_hidden_night", TORTOISE.add(-2.0, 2.0, 2.5), TORTOISE.add(0, 0.4, 0));
+		shot(context, world, "wildlife_cinderfox_sitting_night", FOX.add(-1.25, 0.8, 1.55), FOX.add(0, 0.42, 0));
 		world.getServer().runCommand("time set 6000");
 		context.waitTicks(5);
-		shot(context, world, "wildlife_cinderfox_sitting_day", FOX.add(-1.5, 0.95, 1.9), FOX.add(0, 0.42, 0));
-		shot(context, world, "wildlife_lumen_stag_grazing_day", STAG.add(-3.4, 2.0, 4.0), STAG.add(0, 1.0, 0));
+		// The way most will first see one: from below, against the sky.
+		shot(context, world, "wildlife_skyray_below_day", SKY.add(-1.7, -3.0, 2.2), SKY.add(0, 0, 0));
+		shot(context, world, "wildlife_cinderfox_sitting_day", FOX.add(-1.25, 0.8, 1.55), FOX.add(0, 0.42, 0));
+		shot(context, world, "wildlife_lumen_stag_grazing_day", STAG.add(-2.6, 1.75, 3.0), STAG.add(0, 0.9, 0));
 		cut(context);
 	}
 

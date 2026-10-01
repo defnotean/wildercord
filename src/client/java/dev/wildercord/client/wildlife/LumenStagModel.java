@@ -51,10 +51,10 @@ public final class LumenStagModel extends EntityModel<WildlifeRenderState> {
 		PartDefinition root = mesh.getRoot();
 		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
 			.texOffs(0, 0).addBox(-4, -4, -9, 8, 8, 17)
-			.texOffs(0, 25).addBox(-3.5F, 1, -10, 7, 5, 4), PartPose.offset(0, 10, 1));
+			.texOffs(0, 25).addBox(-3, 1, -9.5F, 6, 4, 3), PartPose.offset(0, 10, 1));
 		PartDefinition neck = body.addOrReplaceChild("neck", CubeListBuilder.create()
 			.texOffs(50, 0).addBox(-2, -8, -2.5F, 4, 9, 5)
-			.texOffs(68, 0).addBox(-2.5F, -5, -3.4F, 5, 6, 2), PartPose.offsetAndRotation(0, -3, -8, NECK_REST, 0, 0));
+			.texOffs(68, 0).addBox(-2, -4.5F, -3, 4, 4, 1), PartPose.offsetAndRotation(0, -3, -8, NECK_REST, 0, 0));
 		PartDefinition head = neck.addOrReplaceChild("head", CubeListBuilder.create()
 			.texOffs(82, 0).addBox(-2.5F, -3, -5, 5, 5, 6)
 			.texOffs(104, 0).addBox(-1.5F, -1.5F, -9, 3, 3, 4), PartPose.offsetAndRotation(0, -8, -0.5F, -NECK_REST, 0, 0));
@@ -76,12 +76,14 @@ public final class LumenStagModel extends EntityModel<WildlifeRenderState> {
 	/** One antler: a beam leaning up, back and out, with its brow tine, forward tine, fork and swept-back tip. */
 	private static void antler(PartDefinition head, String side, int out) {
 		boolean mirror = out < 0;
-		PartDefinition beam = head.addOrReplaceChild(side + "_antler", cube(112, 7, 1, 8, mirror),
-			PartPose.offsetAndRotation(out * 1.5F, -3, -2, -0.3F, 0, -out * 0.38F));
-		beam.addOrReplaceChild(side + "_brow", cube(116, 12, 1, 3, mirror), PartPose.offsetAndRotation(0, -1.5F, 0, -1.25F, 0, out * 0.1F));
-		beam.addOrReplaceChild(side + "_tine", cube(116, 7, 1, 4, mirror), PartPose.offsetAndRotation(0, -4, 0, -0.9F, 0, out * 0.15F));
-		beam.addOrReplaceChild(side + "_fork", cube(120, 7, 1, 4, mirror), PartPose.offsetAndRotation(0, -6, 0, 0.1F, 0, -out * 0.85F));
-		beam.addOrReplaceChild(side + "_tip", cube(124, 7, 1, 3, mirror), PartPose.offsetAndRotation(0, -8, 0, 0.45F, 0, out * 0.12F));
+		PartDefinition beam = head.addOrReplaceChild(side + "_antler", cube(112, 7, 1, 10, mirror),
+			PartPose.offsetAndRotation(out * 1.5F, -3, -2, -0.35F, 0, out * 0.6F));
+		// Along each beam: a brow tine low and forward, a tine up and forward, a fork flaring outward, and a tip curling
+		// back in over the head, so the pair makes a lyre.
+		beam.addOrReplaceChild(side + "_brow", cube(116, 13, 1, 3, mirror), PartPose.offsetAndRotation(0, -1.5F, 0, -1.3F, 0, 0));
+		beam.addOrReplaceChild(side + "_tine", cube(116, 7, 1, 5, mirror), PartPose.offsetAndRotation(0, -4.5F, 0, -1.0F, 0, -out * 0.2F));
+		beam.addOrReplaceChild(side + "_fork", cube(120, 7, 1, 5, mirror), PartPose.offsetAndRotation(0, -7, 0, -0.15F, 0, out * 0.55F));
+		beam.addOrReplaceChild(side + "_tip", cube(124, 7, 1, 4, mirror), PartPose.offsetAndRotation(0, -10, 0, 0.25F, 0, -out * 0.5F));
 	}
 
 	/** A length of antler (a column one pixel thick, rising from its pivot). */

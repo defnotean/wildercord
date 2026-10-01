@@ -73,6 +73,7 @@
   * [Magic that Changes the World](world/world-magic.md)
   * [Residues and Reagents](world/residues.md)
   * [Places and Times of Power](world/places-of-power.md)
+  * [Creatures](world/creatures.md)
   * [Runes of the World and Attunement](world/runes-of-the-world.md)
 * [Companions and Style](companions/index.md)
   * [Familiars](companions/familiars.md)

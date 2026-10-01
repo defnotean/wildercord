@@ -18,7 +18,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.PanicGoal;
@@ -86,8 +85,7 @@ public class LumenStag extends Animal {
 	protected void registerGoals() {
 		goalSelector.addGoal(0, new FloatGoal(this));
 		goalSelector.addGoal(1, new PanicGoal(this, 2.4));
-		goalSelector.addGoal(2, new AvoidEntityGoal<>(this, Player.class, p -> stance(p) == WildlifeRules.Stance.FLEE,
-			(float) WildlifeRules.STAG_NOTICE, 1.7, 2.3, p -> true));
+		goalSelector.addGoal(2, new FleeGoal(this, p -> stance(p) == WildlifeRules.Stance.FLEE, WildlifeRules.STAG_NOTICE, 1.7, 2.3));
 		goalSelector.addGoal(3, new WatchGoal());
 		goalSelector.addGoal(5, new GrazeGoal());
 		goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.75));

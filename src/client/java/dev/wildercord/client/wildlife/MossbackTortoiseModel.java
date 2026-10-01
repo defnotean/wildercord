@@ -57,8 +57,8 @@ public final class MossbackTortoiseModel extends EntityModel<WildlifeRenderState
 		shell.addOrReplaceChild("moss_back", CubeListBuilder.create().texOffs(88, 25).mirror().addBox(-9, 1.5F, 12.02F, 18, 5, 0, SHEET), PartPose.ZERO);
 		root.addOrReplaceChild("head", CubeListBuilder.create()
 			.texOffs(76, 71).addBox(-2.5F, -2, -4.5F, 5, 5, 5)
-			.texOffs(96, 71).addBox(-3, -4.5F, -9.5F, 6, 6, 6)
-			.texOffs(76, 81).addBox(-2, 0.5F, -10, 4, 2, 2), PartPose.offset(0, 15, -11.5F));
+			.texOffs(96, 71).addBox(-2.5F, -4, -9.5F, 5, 5, 6)
+			.texOffs(76, 81).addBox(-1.5F, -1.5F, -10.5F, 3, 2, 2), PartPose.offset(0, 15, -11.5F));
 		root.addOrReplaceChild("tail", CubeListBuilder.create().texOffs(24, 94).addBox(-1.5F, -1, 0, 3, 2, 4), PartPose.offset(0, 16, 11.5F));
 		leg(root, "front_left", 7.5F, -7.5F, false);
 		leg(root, "front_right", -7.5F, -7.5F, true);
