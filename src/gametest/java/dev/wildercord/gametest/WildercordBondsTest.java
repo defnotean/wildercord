@@ -78,6 +78,7 @@ public class WildercordBondsTest implements FabricClientGameTest {
 			WorldResonances.of(server).stream().filter(WorldBonds::crossingBound).findFirst());
 		if (bound.isEmpty()) {
 			// Seeds draw names, and names decide which are bound: this world happens to have none.
+			System.out.println("[bonds] this world has no crossing-bound harmony to test");
 			return;
 		}
 		Resonance harmony = bound.get();
@@ -87,6 +88,7 @@ public class WildercordBondsTest implements FabricClientGameTest {
 			failures.add("no ley crossing within " + SEARCH + " blocks to test at");
 			return;
 		}
+		System.out.println("[bonds] testing " + harmony.name() + ": asleep at " + plain + ", awake at the crossing at " + crossing);
 		stand(context, world, plain);
 		boolean placeOfPower = world.getServer().computeOnServer(server -> PowerPlaces.isPlaceOfPower(server.overworld(), player(server).blockPosition()));
 		if (placeOfPower) {
