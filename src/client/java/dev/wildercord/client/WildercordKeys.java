@@ -44,6 +44,11 @@ public final class WildercordKeys {
 		return cast.getTranslatedKeyMessage();
 	}
 
+	/** The cast key itself (tests hold it to charge, as a player would). */
+	public static KeyMapping castMapping() {
+		return cast;
+	}
+
 	public static net.minecraft.network.chat.Component nextKey() {
 		return next.getTranslatedKeyMessage();
 	}
@@ -121,6 +126,8 @@ public final class WildercordKeys {
 			} else {
 				if (client.player != null) {
 					if (charging) {
+						// How well its glyph was traced goes first, so it's there when the release arrives.
+						SigilTrace.release();
 						ClientPlayNetworking.send(new WildercordNetworking.ChargeSpell(-1, false));
 					} else {
 						ClientPlayNetworking.send(new WildercordNetworking.CastSpell(-1));

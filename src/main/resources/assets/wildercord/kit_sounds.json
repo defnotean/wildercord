@@ -132,6 +132,9 @@
     "arcane_yip": {
       "part": "arcane"
     },
+    "beat_release": {
+      "part": "neutral"
+    },
     "blood_cleave": {
       "part": "blood"
     },
@@ -417,6 +420,9 @@
     "gesture_slash": {
       "part": "neutral"
     },
+    "incant_whisper": {
+      "part": "neutral"
+    },
     "life_bond": {
       "part": "life"
     },
@@ -535,6 +541,12 @@
       "part": "neutral"
     },
     "note_shape": {
+      "part": "neutral"
+    },
+    "overchannel_backfire": {
+      "part": "neutral"
+    },
+    "overchannel_crack": {
       "part": "neutral"
     },
     "ready_ping": {

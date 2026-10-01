@@ -134,7 +134,8 @@ public final class TraceGlyph {
 
 	// ------------------------------------------------------------------ geometry
 
-	static double distance(double[] a, double[] b) {
+	/** The straight distance between two points. */
+	public static double distance(double[] a, double[] b) {
 		return Math.hypot(a[0] - b[0], a[1] - b[1]);
 	}
 

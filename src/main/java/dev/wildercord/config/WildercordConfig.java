@@ -41,6 +41,7 @@ import java.util.Set;
  * @param affinityGain       how fast affinity points come, times this (the daily allowances count what's done, not what it's worth)
  * @param travel             the travel commands ({@code /home}, {@code /warp}, {@code /tpa}...): see {@link TravelSettings}
  * @param defence            how players stand up to spells (armour, the bonus cap, the spellguard): see {@link DefenceSettings}
+ * @param channeling         how a charge can be pushed and steadied (overchannel, the beat, sigil tracing): see {@link ChannelingSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -65,10 +66,11 @@ public record WildercordConfig(
 	boolean playerAffinity,
 	double affinityGain,
 	TravelSettings travel,
-	DefenceSettings defence
+	DefenceSettings defence,
+	ChannelingSettings channeling
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS);
+		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, ChannelingSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -102,6 +104,32 @@ public record WildercordConfig(
 	 */
 	public record DefenceSettings(boolean spellguard, double spellguardHealth, int spellguardRechargeSeconds, double maxBonus, double armourRate) {
 		public static final DefenceSettings DEFAULTS = new DefenceSettings(true, 0.8, 60, 2.5, 0.55);
+	}
+
+	/**
+	 * How a charge can be pushed and steadied (the {@code channeling} section). A file written before the
+	 * section existed reads as these defaults. Overchannel and tracing bonuses count inside
+	 * {@link DefenceSettings#maxBonus} against players.
+	 *
+	 * @param overchannel          whether a charge held past full climbs overchannel stages (off: it just waits, as before)
+	 * @param powerPerStage        the power each stage adds (0.2: +20%, +40%, +60%)
+	 * @param drainPerSecond       the share of the spell's mana price each second of overchannel drains (never the price itself)
+	 * @param surgeChancePerStage  the chance of a wild surge on release each stage adds (wild magic must be on)
+	 * @param beatBonus            the power added by letting go on the beat (as the charge fills or a stage lands)
+	 * @param backfireStunSeconds  how long a channel held too long dazes its caster (at most 2)
+	 * @param backfireManaBurn     the share of full mana a channel held too long burns away
+	 * @param sigilTracing         whether a glyph traced while charging (holding sneak) steadies the spell
+	 * @param tracePower           the power a perfectly traced glyph adds
+	 */
+	public record ChannelingSettings(boolean overchannel, double powerPerStage, double drainPerSecond, double surgeChancePerStage, double beatBonus,
+			double backfireStunSeconds, double backfireManaBurn, boolean sigilTracing, double tracePower) {
+		public static final ChannelingSettings DEFAULTS = new ChannelingSettings(true, 0.2, 0.15, 0.07, 0.1, 1.5, 0.3, true, 0.08);
+
+		/** These settings as the overchannel rules read them. */
+		public dev.wildercord.spell.Overchannel.Tuning tuning() {
+			return new dev.wildercord.spell.Overchannel.Tuning(overchannel, powerPerStage, drainPerSecond, surgeChancePerStage, beatBonus,
+				(int) Math.round(backfireStunSeconds * 20), backfireManaBurn, sigilTracing, tracePower);
+		}
 	}
 
 	/** The file's format version, written so later versions can migrate it. */
@@ -165,7 +193,17 @@ public record WildercordConfig(
 				r.number("defence", "spellguard_health", d.defence.spellguardHealth(), 0.1, 1),
 				r.integer("defence", "spellguard_recharge_seconds", d.defence.spellguardRechargeSeconds(), 0, 3600),
 				r.number("defence", "max_bonus", d.defence.maxBonus(), 1, 100),
-				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)));
+				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)),
+			new ChannelingSettings(
+				r.bool("channeling", "overchannel", d.channeling.overchannel()),
+				r.number("channeling", "power_per_stage", d.channeling.powerPerStage(), 0, 1),
+				r.number("channeling", "drain_per_second", d.channeling.drainPerSecond(), 0, 2),
+				r.number("channeling", "surge_chance_per_stage", d.channeling.surgeChancePerStage(), 0, 0.33),
+				r.number("channeling", "beat_bonus", d.channeling.beatBonus(), 0, 0.5),
+				r.number("channeling", "backfire_stun_seconds", d.channeling.backfireStunSeconds(), 0, 2),
+				r.number("channeling", "backfire_mana_burn", d.channeling.backfireManaBurn(), 0, 1),
+				r.bool("channeling", "sigil_tracing", d.channeling.sigilTracing()),
+				r.number("channeling", "trace_power", d.channeling.tracePower(), 0, 0.25)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -184,6 +222,8 @@ public record WildercordConfig(
 		KEYS.put("affinity", Set.of("gain_multiplier"));
 		KEYS.put("travel", Set.of("enabled", "max_homes", "warmup_seconds", "cooldown_seconds", "rtp_cooldown_seconds", "rtp_radius", "tpa_timeout_seconds"));
 		KEYS.put("defence", Set.of("spellguard", "spellguard_health", "spellguard_recharge_seconds", "max_bonus", "armour_rate"));
+		KEYS.put("channeling", Set.of("overchannel", "power_per_stage", "drain_per_second", "surge_chance_per_stage", "beat_bonus",
+			"backfire_stun_seconds", "backfire_mana_burn", "sigil_tracing", "trace_power"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -376,6 +416,24 @@ public record WildercordConfig(
 		defenceSection.addProperty("max_bonus", defence.maxBonus());
 		defenceSection.addProperty("armour_rate", defence.armourRate());
 		root.add("defence", defenceSection);
+
+		JsonObject channelingSection = new JsonObject();
+		channelingSection.addProperty("_about", "Casting as a performance. Held past full, a charge overchannels: every 1.2 seconds it climbs a stage (one "
+			+ "for a young heart, up to three from the 4th Heart Circle), adding power_per_stage and surge_chance_per_stage while it drains "
+			+ "drain_per_second of the spell's price (never the price itself). Letting go just as the charge fills or a stage lands adds beat_bonus. "
+			+ "Held too long past the last stage it tears loose: the spell fizzles and the caster is dazed for backfire_stun_seconds and loses "
+			+ "backfire_mana_burn of their mana, never their health. Holding sneak while charging traces the spell's glyph (sigil_tracing): "
+			+ "accuracy steadies the channel and adds up to trace_power. Against players these bonuses count inside defence.max_bonus.");
+		channelingSection.addProperty("overchannel", channeling.overchannel());
+		channelingSection.addProperty("power_per_stage", channeling.powerPerStage());
+		channelingSection.addProperty("drain_per_second", channeling.drainPerSecond());
+		channelingSection.addProperty("surge_chance_per_stage", channeling.surgeChancePerStage());
+		channelingSection.addProperty("beat_bonus", channeling.beatBonus());
+		channelingSection.addProperty("backfire_stun_seconds", channeling.backfireStunSeconds());
+		channelingSection.addProperty("backfire_mana_burn", channeling.backfireManaBurn());
+		channelingSection.addProperty("sigil_tracing", channeling.sigilTracing());
+		channelingSection.addProperty("trace_power", channeling.tracePower());
+		root.add("channeling", channelingSection);
 		return GSON.toJson(root) + "\n";
 	}
 

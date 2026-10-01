@@ -61,6 +61,8 @@ public final class Cast {
 		Trigger origin;
 		/** Whether the caster's affinities count on this spell (see {@link #withAffinity}). */
 		boolean affinity;
+		/** What how it was cast added to its power (overchannel, the beat, a traced glyph), already in {@link #power}. */
+		double performance = 1.0;
 
 		Shared() {
 			this(new Paid());
@@ -78,6 +80,7 @@ public final class Cast {
 			copy.gear = gear;
 			copy.origin = origin;
 			copy.affinity = affinity;
+			copy.performance = performance;
 			return copy;
 		}
 	}
@@ -283,6 +286,21 @@ public final class Cast {
 	/** Whether the caster's affinities count on this spell: see {@link #withAffinity}. */
 	public boolean affinity() {
 		return budget.shared.affinity;
+	}
+
+	/**
+	 * Notes what the way it was cast added to this spell's power (an overchannel stage, a release on the
+	 * beat, a traced glyph), which {@link #power} already holds. Against a player that share counts inside
+	 * the bonus cap ({@link SpellDefenceRules#capBonus(double, double, double)}). Copies keep it.
+	 */
+	public Cast performance(double multiplier) {
+		budget.shared.performance = Double.isNaN(multiplier) ? 1.0 : Math.max(1.0, multiplier);
+		return this;
+	}
+
+	/** What the way it was cast added to this spell's power (1 for none): see {@link #performance(double)}. */
+	public double performance() {
+		return budget.shared.performance;
 	}
 
 	/**

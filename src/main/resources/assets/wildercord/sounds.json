@@ -2431,6 +2431,12 @@
       "wildercord:kit/blood/blood_twang_3"
     ]
   },
+  "beat_release": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/beat_release"
+    ]
+  },
   "field_pulse": {
     "subtitle": "subtitles.wildercord.kit.field",
     "sounds": [
@@ -2511,6 +2517,14 @@
       "wildercord:kit/neutral/gesture_slash_2"
     ]
   },
+  "incant_whisper": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/incant_whisper_1",
+      "wildercord:kit/neutral/incant_whisper_2",
+      "wildercord:kit/neutral/incant_whisper_3"
+    ]
+  },
   "link_ting": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
@@ -2539,6 +2553,19 @@
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
       "wildercord:kit/neutral/note_shape"
+    ]
+  },
+  "overchannel_backfire": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/neutral/overchannel_backfire"
+    ]
+  },
+  "overchannel_crack": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/neutral/overchannel_crack_1",
+      "wildercord:kit/neutral/overchannel_crack_2"
     ]
   },
   "ready_ping": {

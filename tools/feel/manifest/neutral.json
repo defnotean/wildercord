@@ -1,5 +1,12 @@
 {
   "events": {
+    "beat_release": {
+      "attenuation": 0,
+      "files": [
+        "kit/neutral/beat_release"
+      ],
+      "subtitle": "tell"
+    },
     "field_pulse": {
       "attenuation": 0,
       "files": [
@@ -92,6 +99,15 @@
       ],
       "subtitle": "cast"
     },
+    "incant_whisper": {
+      "attenuation": 0,
+      "files": [
+        "kit/neutral/incant_whisper_1",
+        "kit/neutral/incant_whisper_2",
+        "kit/neutral/incant_whisper_3"
+      ],
+      "subtitle": "tell"
+    },
     "link_ting": {
       "attenuation": 0,
       "files": [
@@ -124,6 +140,21 @@
       "attenuation": 0,
       "files": [
         "kit/neutral/note_shape"
+      ],
+      "subtitle": "tell"
+    },
+    "overchannel_backfire": {
+      "attenuation": 0,
+      "files": [
+        "kit/neutral/overchannel_backfire"
+      ],
+      "subtitle": "hit"
+    },
+    "overchannel_crack": {
+      "attenuation": 0,
+      "files": [
+        "kit/neutral/overchannel_crack_1",
+        "kit/neutral/overchannel_crack_2"
       ],
       "subtitle": "tell"
     },

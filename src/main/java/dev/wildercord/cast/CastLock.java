@@ -40,6 +40,24 @@ public final class CastLock {
 		interrupt(who, ticks);
 	}
 
+	/**
+	 * Dazes a player who let their own channel tear loose: no casting or charging for {@code ticks} (at
+	 * most {@link #PLAYER_LOCK_CAP}). Quietly, since the backfire says what happened, and with no
+	 * recovery window: it was their own doing, not a foe's seal, so it shouldn't shield them from one.
+	 */
+	public static void daze(ServerPlayer player, int ticks) {
+		if (ticks <= 0) {
+			return;
+		}
+		long now = player.level().getGameTime();
+		long until = now + Math.min(ticks, PLAYER_LOCK_CAP);
+		var previous = PLAYER_WINDOWS.get(player);
+		if (previous != null && previous.until >= until) {
+			return;
+		}
+		PLAYER_WINDOWS.put(player, new PlayerWindow(until, previous == null ? until : Math.max(until, previous.readyAt)));
+	}
+
 	/** Whether {@code who} may not cast right now. */
 	public static boolean locked(LivingEntity who) {
 		if (who instanceof ServerPlayer player) {

@@ -236,6 +236,61 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void channelingDefaultsAreTheOverchannelNumbers() {
+		WildercordConfig.ChannelingSettings c = D.channeling();
+		assertTrue(c.overchannel() && c.sigilTracing());
+		assertEquals(dev.wildercord.spell.Overchannel.Tuning.DEFAULTS, c.tuning(), "the file's defaults are the rules' defaults");
+		assertEquals(30, c.tuning().stunTicks(), "a second and a half");
+		assertTrue(D.toJson().contains("\"channeling\"") && D.toJson().contains("\"sigil_tracing\": true"));
+	}
+
+	@Test
+	void channelingSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"channeling\": {\"overchannel\": false, \"power_per_stage\": 0.3, "
+			+ "\"surge_chance_per_stage\": 2, \"backfire_stun_seconds\": 60, \"backfire_mana_burn\": -1, \"trace_power\": 0.1, \"stages\": 5}}");
+		WildercordConfig.ChannelingSettings c = parsed.config().channeling();
+		assertFalse(c.overchannel());
+		assertEquals(0.3, c.powerPerStage(), 1e-9);
+		// Three stages can never be a sure surge, nor a daze longer than two seconds, nor a burn below nothing.
+		assertEquals(0.33, c.surgeChancePerStage(), 1e-9);
+		assertEquals(2.0, c.backfireStunSeconds(), 1e-9);
+		assertEquals(0.0, c.backfireManaBurn(), 1e-9);
+		assertEquals(0.1, c.tracePower(), 1e-9);
+		assertTrue(c.sigilTracing(), "untouched settings keep their defaults");
+		// Three out of range, one unknown key.
+		assertEquals(4, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(0, c.tuning().enabled() ? 1 : 0, "switched off reaches the rules");
+		assertEquals(0, dev.wildercord.spell.Overchannel.stagesFor(7, c.tuning().enabled()));
+		assertEquals(WildercordConfig.DefenceSettings.DEFAULTS, parsed.config().defence());
+		// Changed settings survive being written out and read back.
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config());
+	}
+
+	@Test
+	void aFileFromBeforeTheChannelingSectionGainsIt() {
+		// Written by 0.7.1, before casting became a performance.
+		String old = "{\"version\": 1, \"features\": {\"wild_magic\": false}, \"defence\": {\"max_bonus\": 3.0}}";
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertEquals(WildercordConfig.ChannelingSettings.DEFAULTS, parsed.config().channeling());
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"channeling\"", "\"overchannel\"", "\"power_per_stage\"", "\"drain_per_second\"", "\"surge_chance_per_stage\"",
+				"\"beat_bonus\"", "\"backfire_stun_seconds\"", "\"backfire_mana_burn\"", "\"sigil_tracing\"", "\"trace_power\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		WildercordConfig regrown = WildercordConfig.parse(grown).config();
+		assertFalse(regrown.wildMagic(), "the owner's settings stay");
+		assertEquals(3.0, regrown.defence().maxBonus(), 1e-9);
+		assertEquals(WildercordConfig.ChannelingSettings.DEFAULTS, regrown.channeling());
+		// A channeling section missing one setting gets just that one back.
+		String partial = D.toJson().replace("\"beat_bonus\": 0.1,", "").replace("\"trace_power\": 0.08", "\"trace_power\": 0.02");
+		assertFalse(partial.contains("\"beat_bonus\""), partial);
+		WildercordConfig.ChannelingSettings fixed = WildercordConfig.parse(WildercordConfig.addMissing(partial).orElseThrow()).config().channeling();
+		assertEquals(0.1, fixed.beatBonus(), 1e-9);
+		assertEquals(0.02, fixed.tracePower(), 1e-9);
+	}
+
+	@Test
 	void chancesScaleAndStayWithinAHundred() {
 		assertEquals(35, WildercordConfig.scaledChance(35, 1.0));
 		assertEquals(70, WildercordConfig.scaledChance(35, 2.0));

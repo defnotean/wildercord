@@ -73,6 +73,15 @@ public final class SpellCaster {
 	 *               {@link Charging#POWER} more power
 	 */
 	public static void cast(ServerPlayer player, int requested, double charge) {
+		cast(player, requested, charge, Charging.Performance.NONE);
+	}
+
+	/**
+	 * Casts a spell that was charged and let go with some performance: an overchannel stage, the beat, a
+	 * traced glyph ({@link Charging.Performance}). Its power is in the cast's (and noted, so it counts
+	 * inside the bonus cap against players), and its surge chance is rolled as the spell leaves.
+	 */
+	public static void cast(ServerPlayer player, int requested, double charge, Charging.Performance performance) {
 		if (!player.isAlive() || player.isSpectator()) {
 			return;
 		}
@@ -192,7 +201,7 @@ public final class SpellCaster {
 		PlayerAffinities.onCast(player, compiled.root(), spent, blood);
 		double rhythm = Rhythm.onCast(player, now, cooldown);
 		double charged = 1 + Charging.POWER * Math.max(0, Math.min(1, charge));
-		bonuses = bonuses.withPower(bonuses.power() * rhythm * charged);
+		bonuses = bonuses.withPower(bonuses.power() * rhythm * charged * performance.power());
 		if (charge >= 1.0) {
 			Grimoire.feat(player, dev.wildercord.spell.Feats.CHARGED);
 		}
@@ -223,6 +232,7 @@ public final class SpellCaster {
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear)
 			.withAffinity();
 		cast.charge(charge);
+		cast.performance(performance.power());
 		if (!cast.info.root().groups.isEmpty()) {
 			var first = cast.info.root().groups.getFirst();
 			dev.wildercord.cast.feel.Feels.cue(cast, cast.feel(first), cast.theme(first));
@@ -243,13 +253,14 @@ public final class SpellCaster {
 				CastEngine.cast(sung.cast(), sung.root());
 			}
 		};
-		// Wild magic: an overcast spell may twist into something else.
-		final float releaseOvercastMana = overcastMana;
-		final int releaseOvercastCost = overcastCost;
+		// Wild magic: an overcast spell, or an overchanneled one, may twist into something else (both at once roll as one chance).
+		final double surgeChance = overcastCost >= 0
+			? dev.wildercord.spell.Overchannel.combined(WildSurge.overcastChance(player, overcastMana, overcastCost), performance.surgeChance())
+			: performance.surgeChance();
 		// The formation completes before any ordinary or wild release leaves the caster.
 		Scheduler.later(3, () -> {
 			if (!cast.alive()) return;
-			if (releaseOvercastCost < 0 || !WildSurge.overcast(cast, runes, secret.isPresent(), releaseOvercastMana, releaseOvercastCost, release)) {
+			if (surgeChance <= 0 || !WildSurge.roll(cast, runes, secret.isPresent(), surgeChance, release)) {
 				release.accept(cast);
 			}
 		});
@@ -511,6 +522,12 @@ public final class SpellCaster {
 			Effects.clearWards();
 		});
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			// A charge in hand is looked after every tick: its overchannel's beats must land where the HUD says.
+			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+				if (player.hasAttached(dev.wildercord.player.WildercordAttachments.CHARGE)) {
+					Charging.everyTick(player);
+				}
+			}
 			if (server.getTickCount() % 5 != 0) {
 				return;
 			}

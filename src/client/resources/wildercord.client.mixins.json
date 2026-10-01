@@ -20,7 +20,8 @@
 		"BossHealthOverlayAccessor",
 		"SubtitleOverlayMixin",
 		"ServerStatusPingerMixin",
-		"QuadParticleRenderStateMixin"
+		"QuadParticleRenderStateMixin",
+		"MouseHandlerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -740,6 +740,7 @@ def write_lang(runes):
     lang.update(LOADOUT_LANG)
     lang.update(SIGNATURE_LANG)
     lang.update(DEFENCE_LANG)
+    lang.update(PERFORMANCE_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1417,6 +1418,30 @@ DEFENCE_LANG = {
     "screen.wildercord.defence.way.focus": "Focus of Resolve: 20% less damage, 15% weaker spell effects",
     "screen.wildercord.defence.way.shield": "A Shield spell stops a spell outright, and a parry turns it back",
     "screen.wildercord.defence.way.resistance": "Resistance and Protection work against spells too",
+}
+
+# Casting as a performance: overchannel, the beat, sigil tracing and incantations (cast.Charging, client.SigilTrace,
+# client.fx.Incantations, client.CastingOptions).
+PERFORMANCE_LANG = {
+    "message.wildercord.overchannel.stage": "Overchannel %s",
+    "message.wildercord.overchannel.beat": "on the beat",
+    "message.wildercord.overchannel.steady": "steadied %s%%",
+    "message.wildercord.overchannel.power": " (+%s%% power)",
+    "message.wildercord.overchannel.backfire": "The channel tears loose! The gathered mana scatters and your hands shake",
+    "hud.wildercord.trace_hint": "Hold %s to steady your hands and trace",
+    "screen.wildercord.casting.tracing": "Sigil tracing: %s",
+    "screen.wildercord.casting.tracing.tip": "Hold sneak while charging to steady your hands: the camera holds still and the mouse traces the spell's glyph. A good trace steadies an overchannel and adds a little power. Turned off, nothing is lost.",
+    "screen.wildercord.casting.assist": "Trace assist: %s",
+    "screen.wildercord.casting.assist.none": "None",
+    "screen.wildercord.casting.assist.light": "Light",
+    "screen.wildercord.casting.assist.strong": "Strong",
+    "screen.wildercord.casting.assist.tip": "How far off the glyph's line still counts as on it, and how strongly the tracing point is drawn back onto it.",
+    "screen.wildercord.casting.incantations": "Incantations: %s",
+    "screen.wildercord.casting.incantations.all": "Shown",
+    "screen.wildercord.casting.incantations.hide_mine": "Hide mine",
+    "screen.wildercord.casting.incantations.hide_others": "Hide others'",
+    "screen.wildercord.casting.incantations.none": "Hidden",
+    "screen.wildercord.casting.incantations.tip": "The syllables that rise from a charging caster, one for each rune: anyone close enough can read the spell coming. Hidden ones are silent too.",
 }
 
 
