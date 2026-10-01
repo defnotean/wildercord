@@ -40,7 +40,8 @@ import java.util.stream.Collectors;
  *
  * <p>The two ambient fliers spawn where vanilla's ambient spawning lands: anywhere in a column, mostly underground,
  * where bats live. Their rules only accept open air near the surface (glimmerwings at night, in reach of the ground;
- * skyrays on an open summit, to climb from), so they're no threat to the bats' share.</p>
+ * skyrays on an open summit, to climb from), so few tries are theirs, and they share the ambient cap with the bats
+ * rather than adding to how many creatures can be about.</p>
  */
 public final class WildlifeSpawns {
 	private WildlifeSpawns() {}

@@ -1173,7 +1173,9 @@ generic subtitles; a creature's names itself (`core.CREATURE_SUBTITLES`, their t
   cinderfox tames with rabbit, sits, bites a polar bear 4.5 and sets it alight but a cow only 3, and gives one tuft a
   day to the brush; that two tortoises fed melon raise a baby and a struck one hides and takes 40%; that a rimehare bolts
   unless berries are held out; that a skyray climbs to its cruise and sheds a membrane; that a glimmerwing finds a
-  lantern at night; and that creatures seen go into the field guide. Then it photographs each creature close up by day
+  lantern at night and comes to a player casting; that creatures seen go into the field guide (and the Grimoire page
+  shows them, `wildlife_field_guide`); and, end to end, that glimmerwings spawn on their own once a stretch of the flat
+  world is turned to forest at night with mob spawning on. Then it photographs each creature close up by day
   and night (`wildlife_<creature>_day`/`_night`) and a few poses (a stag grazing beside its shed antler, a tortoise in
   its shell, a cinderfox sitting). `WildlifeRulesTest` covers the pure rules and the field guide, `WildercordConfigTest`
   the `creatures` section.

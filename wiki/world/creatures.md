@@ -153,7 +153,7 @@ A quick white hare of the snowy lands, with long dark-tipped ears and frost glin
 
 - **It goes in bounds**, and every landing leaves a pair of **frost prints** that fade in a few seconds.
 - **Hard to catch.** It bolts from anyone who comes near, faster than you can sprint. Hold out **sweet berries** and
-  it'll stay, or even come to you, as long as you don't run at it.
+  stand still, and it'll hop up to you. Move, or even turn your head, once it's close and it takes fright for a while.
 - **Breeding.** Feed two rimehares sweet berries and they'll raise a leveret.
 
 **Rime Fur** can be woven into **Rimebound armour** in place of packed ice (the leather piece, a Rime Fur and a Mana

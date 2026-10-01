@@ -42,8 +42,10 @@ element and a land, and each leaves something behind that's worth a little.
   little mana toward your next circle). The Grimoire lists every creature you've met with a short entry, and the rest as
   a hint of where to look.
 - **Server settings**: a new `creatures` section in `wildercord.json` switches wildlife's natural spawns off
-  (`wildlife`), scales them (`wildlife_spawn_multiplier`) and switches each creature on its own. They spawn in vanilla's
-  own pools, so the mob caps hold, and the rare ones stay rare and keep their distance from each other.
+  (`wildlife`, on), scales them (`wildlife_spawn_multiplier`, 1.0) and switches each creature on its own
+  (`glimmerwing`, `lumen_stag`, `mossback_tortoise`, `cinderfox`, `skyray`, `rimehare`). An older config file gains the
+  section at its defaults. They spawn in vanilla's own pools, so the mob caps hold, and the rare ones stay rare and keep
+  their distance from each other.
 
 ## [0.8.0-alpha] - 2026-10-01
 

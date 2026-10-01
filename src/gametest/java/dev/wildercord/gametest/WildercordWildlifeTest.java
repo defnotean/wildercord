@@ -1,17 +1,17 @@
 package dev.wildercord.gametest;
 
+import dev.wildercord.api.WildercordEvents;
 import dev.wildercord.client.CordScreen;
 import dev.wildercord.config.Config;
-import dev.wildercord.content.WildercordItems;
-import dev.wildercord.player.Spellbooks;
 import dev.wildercord.config.WildercordConfig;
+import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Heart;
+import dev.wildercord.player.Spellbooks;
 import dev.wildercord.spell.FieldGuide;
 import dev.wildercord.wildlife.Cinderfox;
 import dev.wildercord.wildlife.Glimmerwing;
 import dev.wildercord.wildlife.LumenStag;
 import dev.wildercord.wildlife.MossbackTortoise;
-import dev.wildercord.wildlife.Rimehare;
 import dev.wildercord.wildlife.Skyray;
 import dev.wildercord.wildlife.Wildlife;
 import dev.wildercord.wildlife.WildlifeRules;
@@ -64,7 +64,8 @@ import java.util.Set;
  * calm sneaking player and sheds one antler a day for them, and curses whoever kills it; a cinderfox tames with rabbit,
  * sits, spark-bites a fire-weak creature harder and gives a tuft to the brush once a day; two tortoises fed melon raise
  * a baby, and one struck hides and takes less; a rimehare bolts unless berries are held out; a skyray climbs to its
- * cruise and sheds a membrane; glimmerwings find a lantern; and creatures met go into the Grimoire. Then each is
+ * cruise and sheds a membrane; glimmerwings find a lantern and come to a caster; creatures met go into the Grimoire;
+ * and glimmerwings spawn on their own in a forest at night. Then each is
  * photographed close up by day and by night ({@code wildlife_<creature>_day} / {@code _night}, plus a few poses).
  *
  * <p>Runs in the full suite; skipped by {@code WILDERCORD_TOUR_ONLY}, {@code WILDERCORD_CORDS_ONLY} and
@@ -108,6 +109,7 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 			skyray(context, world);
 			glimmerwing(context, world);
 			fieldGuide(context, world);
+			naturalSpawns(context, world);
 
 			photographs(context, world);
 		} finally {
@@ -453,14 +455,27 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 				hare.discard();
 			}
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.SWEET_BERRIES));
-			return spawn(Wildlife.RIMEHARE, player.level(), HARE, 0, false).getId();
+			// Further off than the first: a tempted creature that first notices the player inside six blocks takes
+			// fright straight away (vanilla's skittish tempting compares against a look it hasn't recorded yet).
+			return spawn(Wildlife.RIMEHARE, player.level(), HARE.add(0, 0, -4), 0, false).getId();
 		});
-		context.waitTicks(50);
+		// A tempted hare hops up to the berries, but it's still skittish: the least shift of the player startles it off
+		// again for a while, and then it may wander. So what's checked is that it came close, not where it ends up.
+		double closest = Double.MAX_VALUE;
+		for (int i = 0; i < 40; i++) {
+			context.waitTicks(2);
+			double distance = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = player(server);
+				Entity hare = player.level().getEntity(tempted);
+				return hare == null ? Double.MAX_VALUE : (double) hare.distanceTo(player);
+			});
+			closest = Math.min(closest, distance);
+		}
+		double came = closest;
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			Entity hare = player.level().getEntity(tempted);
-			check(hare != null && hare.distanceTo(player) < 5.5, "a rimehare should stay for a player holding out sweet berries (distance "
-				+ (hare == null ? "?" : String.format("%.1f", hare.distanceTo(player))) + ")");
+			check(came < 3.5, "a rimehare should hop up to a player holding out sweet berries (closest "
+				+ (came == Double.MAX_VALUE ? "?" : String.format("%.1f", came)) + ")");
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 			clear(player.level(), HARE, 16);
 		});
@@ -511,6 +526,24 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		}
 		check(nearest <= 3.2, "a glimmerwing should find the lantern and circle it (nearest " + String.format("%.1f", nearest) + ")");
 		world.getServer().runOnServer(server -> clear(player(server).level(), MOTHS, 12));
+
+		// Fresh magic draws them more than any lamp: a player who keeps casting has them round their head.
+		int drawn = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			put(player, MOTHS.add(0, 0, 10), 180);
+			return spawn(Wildlife.GLIMMERWING, player.level(), MOTHS.add(5, 2, 10), 0, false).getId();
+		});
+		double fromCaster = Double.MAX_VALUE;
+		for (int i = 0; i < 15 && fromCaster > 3.5; i++) {
+			world.getServer().runOnServer(server -> WildercordEvents.AFTER_CAST.invoker().afterCast(player(server), 0, List.of(), 10));
+			context.waitTicks(20);
+			fromCaster = world.getServer().computeOnServer(server -> {
+				Entity found = player(server).level().getEntity(drawn);
+				return found == null ? Double.MAX_VALUE : found.position().distanceTo(player(server).getEyePosition());
+			});
+		}
+		check(fromCaster <= 3.5, "a glimmerwing should come to a player casting spells (nearest " + String.format("%.1f", fromCaster) + ")");
+		world.getServer().runOnServer(server -> clear(player(server).level(), MOTHS.add(0, 0, 10), 12));
 		world.getServer().runCommand("time set 6000");
 	}
 
@@ -546,6 +579,42 @@ public class WildercordWildlifeTest implements FabricClientGameTest {
 		context.takeScreenshot(TestScreenshotOptions.of("wildlife_field_guide").disableCounterPrefix());
 		context.setScreen(() -> null);
 		context.waitTicks(2);
+	}
+
+	// ------------------------------------------------------------------ the world's own spawning
+
+	/**
+	 * End to end: a stretch of the flat world turned to forest, at night, with mob spawning on, fills with glimmerwings
+	 * by vanilla's own spawning (biome entry, spawn rule, the ambient pool) within a few seconds.
+	 */
+	private void naturalSpawns(ClientGameTestContext context, TestSingleplayerContext world) {
+		int x = 400;
+		int z = 400;
+		var server = world.getServer();
+		server.runCommand("time set 18000");
+		server.runOnServer(s -> {
+			ServerPlayer player = player(s);
+			player.setGameMode(GameType.SURVIVAL);
+			player.teleportTo(player.level(), x + 0.5, -60, z + 0.5, Set.<Relative>of(), 0, 0, false);
+		});
+		context.waitTicks(60);
+		// In pieces (the command changes only so much at once), once the ground there has loaded.
+		for (int dx = -48; dx < 48; dx += 32) {
+			for (int dz = -48; dz < 48; dz += 32) {
+				server.runCommand("fillbiome " + (x + dx) + " -64 " + (z + dz) + " " + (x + dx + 31) + " -56 " + (z + dz + 31) + " minecraft:forest");
+			}
+		}
+		context.waitTicks(5);
+		server.runCommand("gamerule spawn_mobs true");
+		int moths = 0;
+		for (int i = 0; i < 20 && moths == 0; i++) {
+			context.waitTicks(20);
+			moths = server.computeOnServer(s -> player(s).level().getEntitiesOfClass(Glimmerwing.class, player(s).getBoundingBox().inflate(80, 16, 80)).size());
+		}
+		server.runCommand("gamerule spawn_mobs false");
+		check(moths > 0, "glimmerwings should spawn on their own in a forest at night");
+		server.runCommand("kill @e[type=wildercord:glimmerwing]");
+		server.runCommand("time set 6000");
 	}
 
 	// ------------------------------------------------------------------ pictures
