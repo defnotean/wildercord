@@ -196,7 +196,8 @@ public final class SpellHud {
 		boolean creative = player.isCreative();
 		boolean blood = compiled != null && compiled.paysInHealth();
 		// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
-		double secretCost = dev.wildercord.player.Heart.secretCost(player, runes);
+		// A found secret, and the traits the spell has grown, change its price (as when it is cast).
+		double secretCost = dev.wildercord.player.Heart.secretCost(player, runes) * dev.wildercord.cast.Mastery.costFactor(player, runes);
 		int manaCost = compiled == null ? 0 : dev.wildercord.player.Heart.manaCost(player, compiled, secretCost);
 		int healthCost = compiled == null ? 0 : dev.wildercord.player.Heart.healthCost(player, compiled, secretCost);
 		boolean affordable = compiled == null || creative || (blood ? player.getHealth() > healthCost : mana >= manaCost);
@@ -301,7 +302,7 @@ public final class SpellHud {
 			g.fill(bx + 3, by + 3, bx + 17, by + 17, (alpha << 24) | 0xF5D56A);
 		}
 		if (cooling) {
-			int total = Math.max(1, dev.wildercord.player.Heart.cooldownTicks(player, compiled, dev.wildercord.player.Heart.secretCooldown(player, runes)));
+			int total = Math.max(1, dev.wildercord.player.Heart.cooldownTicks(player, compiled, dev.wildercord.player.Heart.secretCooldown(player, runes) * dev.wildercord.cast.Mastery.cooldownFactor(player, runes)));
 			int shade = (int) Math.ceil(14 * Math.min(1.0, remaining / (double) total));
 			g.fill(bx + 3, by + 3 + (14 - shade), bx + 17, by + 17, 0x90000000);
 		}

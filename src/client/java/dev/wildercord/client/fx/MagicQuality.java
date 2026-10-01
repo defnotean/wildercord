@@ -12,6 +12,8 @@ public final class MagicQuality {
 	private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("wildercord-visuals.json");
 	public static Level own = Level.BALANCED, others = Level.BALANCED;
 	public static boolean reducedFlash, cameraShake = true;
+	/** Whether the names of mastered spells others cast nearby (and your own) show as a brief title by the caster. */
+	public static boolean spellTitles = true;
 	private MagicQuality() {}
 	public static void preset(String name) {
 		switch(name) {
@@ -28,12 +30,14 @@ public final class MagicQuality {
 			if (json.has("others")) others = Level.valueOf(json.get("others").getAsString());
 			if (json.has("reduced_flash")) reducedFlash = json.get("reduced_flash").getAsBoolean();
 			if (json.has("camera_shake")) cameraShake = json.get("camera_shake").getAsBoolean();
+			if (json.has("spell_titles")) spellTitles = json.get("spell_titles").getAsBoolean();
 		} catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Invalid local magic preferences: {}", e.toString()); }
 	}
 	public static void save() {
 		var json = new com.google.gson.JsonObject();
 		json.addProperty("own", own.name()); json.addProperty("others", others.name());
 		json.addProperty("reduced_flash", reducedFlash); json.addProperty("camera_shake", cameraShake);
+		json.addProperty("spell_titles", spellTitles);
 		try { Files.createDirectories(FILE.getParent()); Files.writeString(FILE, new GsonBuilder().setPrettyPrinting().create().toJson(json)); }
 		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Cannot save local magic preferences: {}", e.toString()); }
 	}

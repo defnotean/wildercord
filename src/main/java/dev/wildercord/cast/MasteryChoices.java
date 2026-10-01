@@ -63,11 +63,11 @@ public final class MasteryChoices {
 	}
 
 	/** Server to client: one of your spells reached a rank (the client shows a toast, and the Cord screen offers the trait). */
-	public record Rise(String name, int rank, int color, boolean choice) implements CustomPacketPayload {
+	public record Rise(String name, int rank, int color, boolean choice, long seed) implements CustomPacketPayload {
 		public static final Type<Rise> TYPE = new Type<>(Wildercord.id("mastery_rise"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Rise> CODEC = StreamCodec.composite(
 			ByteBufCodecs.stringUtf8(128), Rise::name, ByteBufCodecs.VAR_INT, Rise::rank, ByteBufCodecs.INT, Rise::color, ByteBufCodecs.BOOL, Rise::choice,
-			Rise::new).cast();
+			ByteBufCodecs.VAR_LONG, Rise::seed, Rise::new).cast();
 
 		@Override
 		public Type<Rise> type() {
@@ -153,7 +153,7 @@ public final class MasteryChoices {
 			}
 		}
 		if (ServerPlayNetworking.canSend(player, Rise.TYPE)) {
-			ServerPlayNetworking.send(player, new Rise(name, entry.rank(), color, entry.pendingSlot() >= 0));
+			ServerPlayNetworking.send(player, new Rise(name, entry.rank(), color, entry.pendingSlot() >= 0, entry.seed()));
 		}
 		Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.8F + 0.1F * entry.rank());
 		Fx.sound(player.level(), player.position(), SoundEvents.PLAYER_LEVELUP, 0.35F, 1.4F);

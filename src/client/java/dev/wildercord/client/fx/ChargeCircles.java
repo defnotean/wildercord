@@ -156,6 +156,7 @@ public final class ChargeCircles {
 		private final Player caster;
 		private final long start;
 		private final float scale;
+		private final java.util.List<RuneDef> spell = new java.util.ArrayList<>();
 		private int fading = -1;
 
 		Circle(ClientLevel level, Player caster, WildercordAttachments.Charge charge, int color, float scale) {
@@ -163,6 +164,9 @@ public final class ChargeCircles {
 			this.caster = caster;
 			this.start = charge.start();
 			this.scale = scale;
+			for (String id : charge.runes()) {
+				Runes.get(id).ifPresent(spell::add);
+			}
 			move(0);
 			xo = x;
 			yo = y;
@@ -234,6 +238,13 @@ public final class ChargeCircles {
 		protected Quaternionf orientation(float partial) {
 			return new Quaternionf().rotationYXZ((float) Math.toRadians(-caster.getViewYRot(partial)),
 				(float) Math.toRadians(caster.getViewXRot(partial)), 0);
+		}
+
+		/** The caster's own mastery of the spell they're charging (its rank and sigil), from the public look of the spell they have ready. */
+		@Override
+		protected dev.wildercord.player.MasteryAttachments.Look look() {
+			dev.wildercord.player.MasteryAttachments.Look look = dev.wildercord.player.MasteryAttachments.lookOf(caster, spell);
+			return look.rank() > 0 ? look : super.look();
 		}
 	}
 }

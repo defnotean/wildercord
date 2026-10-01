@@ -180,8 +180,9 @@ public final class SpellFormations {
  /** Keep a turning caster's own assembly glyph behind their shoulders until it fades. */
  private static final class CasterCircle extends SpellCircleParticle {
   final LivingEntity caster;
+  final java.util.List<String> runeIds;
   CasterCircle(ClientLevel world, LivingEntity caster, Vec3 at, SpellCircleOption option) {
-   super(world,at.x,at.y,at.z,option);this.caster=caster;
+   super(world,at.x,at.y,at.z,option);this.caster=caster;this.runeIds=option.runes();
   }
   @Override public void tick() {
    if(caster.isRemoved()||!caster.isAlive()||caster.level()!=level){remove();return;}
@@ -198,6 +199,11 @@ public final class SpellFormations {
   @Override protected Vec3 centre(float partial) {
    // Interpolating between opposite rear anchors would sweep a 180-degree turn through the camera.
    return caster.getEyePosition(partial).subtract(caster.getLookAngle().scale(1.8)).add(0,-.3,0);
+  }
+  /** The caster's own mastery of this spell (its rank and sigil), from the public look of the spell they have ready. */
+  @Override protected dev.wildercord.player.MasteryAttachments.Look look() {
+   var look=caster.getAttachedOrElse(dev.wildercord.player.MasteryAttachments.LOOK,dev.wildercord.player.MasteryAttachments.Look.NONE);
+   return look.of(runeIds)?look:super.look();
   }
  }
 }

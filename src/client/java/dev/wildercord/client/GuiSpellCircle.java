@@ -1,6 +1,9 @@
 package dev.wildercord.client;
 
 import dev.wildercord.Wildercord;
+import dev.wildercord.player.MasteryAttachments;
+import dev.wildercord.spell.MasteryRules;
+import dev.wildercord.spell.MasterySigil;
 import dev.wildercord.spell.RuneColors;
 import dev.wildercord.spell.RuneDef;
 import dev.wildercord.spell.RuneFamily;
@@ -60,6 +63,16 @@ public final class GuiSpellCircle {
 	 * @param open   0 to 1: how far it has opened
 	 */
 	public static void draw(GuiGraphicsExtractor g, float cx, float cy, float radius, List<RuneDef> runes, float time, float open) {
+		draw(g, cx, cy, radius, runes, time, open, MasteryAttachments.Look.NONE);
+	}
+
+	/**
+	 * As {@link #draw(GuiGraphicsExtractor, float, float, float, List, float, float)}, for a spell with {@code look}'s
+	 * mastery: its owner's sigil in place of the seal, a deeper colour from Adept, and the rings mastery adds outside
+	 * the frame (a fine ring from Practised, a second with ticks from Master, a slow shimmer at Mythic).
+	 */
+	public static void draw(GuiGraphicsExtractor g, float cx, float cy, float radius, List<RuneDef> runes, float time, float open,
+			MasteryAttachments.Look look) {
 		if (runes.isEmpty() || open <= 0) {
 			return;
 		}
@@ -72,6 +85,11 @@ public final class GuiSpellCircle {
 			}
 		}
 		int color = RuneColors.of(pattern);
+		if (look.rank() >= MasteryRules.ADEPT || look.has(MasteryAttachments.Look.HUE)) {
+			float depth = (look.rank() >= MasteryRules.MYTHIC ? 0.3F : look.rank() >= MasteryRules.MASTER ? 0.22F : look.rank() >= MasteryRules.ADEPT ? 0.14F : 0F)
+				+ (look.has(MasteryAttachments.Look.HUE) ? 0.12F : 0F);
+			color = dev.wildercord.client.fx.SpellCircleParticle.deeper(color, depth);
+		}
 		float r = radius * (0.6F + 0.4F * ease(part(open, 0, 0.3F)));
 		float fine = Math.max(1F, radius * SpellSigil.FINE);
 		float heavy = Math.max(1.5F, radius * SpellSigil.HEAVY);
@@ -89,6 +107,7 @@ public final class GuiSpellCircle {
 			line(g, cx + Mth.cos(a) * r, cy + Mth.sin(a) * r, cx + Mth.cos(a) * r * (1 + 0.08F * frame), cy + Mth.sin(a) * r * (1 + 0.08F * frame), fine,
 				argb(frame, color));
 		}
+		masteryRings(g, cx, cy, r, fine, frame, color, look.rank(), time);
 		// The script: the spell's emblems, round and round.
 		float writing = part(open, 0.1F, 0.3F);
 		float scriptR = r * SpellSigil.SCRIPT;
@@ -133,10 +152,19 @@ public final class GuiSpellCircle {
 		float middle = part(open, 0.3F, 0.3F);
 		ring(g, cx, cy, r * SpellSigil.INNER, fine, argb(middle, color));
 		ring(g, cx, cy, r * SpellSigil.MEDALLION, fine, argb(middle, lighter(color, 0.3F)));
-		float seal = r * SpellSigil.SEAL * (0.6F + 0.4F * middle);
-		quad(g, mark(runes.getFirst()), cx, cy, -spin * 0.4F, seal, seal, argb(middle, RuneColors.of(runes.getFirst())));
-		if (RuneColors.second(runes.getFirst()) >= 0) {
-			quad(g, second(runes.getFirst(), "mark2"), cx, cy, -spin * 0.4F, seal, seal, argb(middle, RuneColors.second(runes.getFirst())));
+		if (look.seed() != 0) {
+			// The owner's own sigil, where the seal would be.
+			boolean bright = look.rank() >= MasteryRules.ADEPT;
+			if (bright) {
+				quad(g, GLOW, cx, cy, 0, r * 0.7F, r * 0.7F, argb(0.35F * middle, color));
+			}
+			sigil(g, cx, cy, r * 0.26F * (0.6F + 0.4F * middle), look.seed(), argb(middle, lighter(color, bright ? 0.55F : 0.3F)), fine * (bright ? 1.4F : 1.1F));
+		} else {
+			float seal = r * SpellSigil.SEAL * (0.6F + 0.4F * middle);
+			quad(g, mark(runes.getFirst()), cx, cy, -spin * 0.4F, seal, seal, argb(middle, RuneColors.of(runes.getFirst())));
+			if (RuneColors.second(runes.getFirst()) >= 0) {
+				quad(g, second(runes.getFirst(), "mark2"), cx, cy, -spin * 0.4F, seal, seal, argb(middle, RuneColors.second(runes.getFirst())));
+			}
 		}
 		// The roundels, one by one.
 		float s = r * SpellSigil.roundel(n);
@@ -160,6 +188,59 @@ public final class GuiSpellCircle {
 				quad(g, second(rune, "mark2"), u, v, a + Mth.HALF_PI, rs, rs, argb(shown, lighter(second, 0.15F)));
 			}
 		}
+	}
+
+	/** The rings mastery adds outside the frame of a circle of radius {@code r}. */
+	private static void masteryRings(GuiGraphicsExtractor g, float cx, float cy, float r, float fine, float shown, int color, int rank, float time) {
+		if (rank < 2 || shown <= 0) {
+			return;
+		}
+		ring(g, cx, cy, r * 1.12F, fine, argb(shown * 0.7F, color));
+		if (rank >= MasteryRules.MASTER) {
+			ring(g, cx, cy, r * 1.19F, fine * 0.8F, argb(shown * 0.5F, lighter(color, 0.2F)));
+			for (int k = 0; k < 24; k++) {
+				float a = Mth.TWO_PI * k / 24;
+				float inner = k % 2 == 0 ? 1.12F : 1.15F;
+				line(g, cx + Mth.cos(a) * r * inner, cy + Mth.sin(a) * r * inner, cx + Mth.cos(a) * r * 1.19F, cy + Mth.sin(a) * r * 1.19F, fine * 0.8F,
+					argb(shown * 0.45F, color));
+			}
+		}
+		if (rank >= MasteryRules.MYTHIC) {
+			float head = time * 0.9F;
+			int bright = argb(shown * 0.85F, lighter(color, 0.65F));
+			for (int i = 0; i < 8; i++) {
+				float a0 = head + i * 0.09F;
+				float a1 = a0 + 0.09F;
+				line(g, cx + Mth.cos(a0) * r * 1.155F, cy + Mth.sin(a0) * r * 1.155F, cx + Mth.cos(a1) * r * 1.155F, cy + Mth.sin(a1) * r * 1.155F, fine * 1.6F, bright);
+			}
+			quad(g, GLOW, cx + Mth.cos(head + 0.72F) * r * 1.155F, cy + Mth.sin(head + 0.72F) * r * 1.155F, 0, r * 0.16F, r * 0.16F, argb(shown * 0.6F, lighter(color, 0.7F)));
+		}
+	}
+
+	/** A spell's personal sigil (see {@link MasterySigil}) centred on (cx, cy), {@code rad} from its middle to its edge. */
+	public static void sigil(GuiGraphicsExtractor g, float cx, float cy, float rad, long seed, int argb, float width) {
+		if (seed == 0 || rad <= 0) {
+			return;
+		}
+		MasterySigil.Glyph glyph = glyph(seed);
+		for (MasterySigil.Stroke s : glyph.strokes()) {
+			// The screen's y runs down; the sigil's up.
+			line(g, cx + s.x0() * rad, cy - s.y0() * rad, cx + s.x1() * rad, cy - s.y1() * rad, width, argb);
+		}
+		for (MasterySigil.Dot d : glyph.dots()) {
+			ring(g, cx + d.x() * rad, cy - d.y() * rad, Math.max(width, d.r() * rad), width, argb);
+		}
+	}
+
+	private static final java.util.Map<Long, MasterySigil.Glyph> GLYPHS = new java.util.LinkedHashMap<>(16, 0.75F, true) {
+		@Override
+		protected boolean removeEldestEntry(java.util.Map.Entry<Long, MasterySigil.Glyph> eldest) {
+			return size() > 64;
+		}
+	};
+
+	private static MasterySigil.Glyph glyph(long seed) {
+		return GLYPHS.computeIfAbsent(seed, MasterySigil::glyph);
 	}
 
 	private static float part(float open, float from, float length) {
