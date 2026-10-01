@@ -112,12 +112,23 @@ stops a server. Every default is the number the mod used before.
 | `defence.spellguard_recharge_seconds` | 60 | How long the spellguard takes to come back after it holds (counted from when it held, so a shorter value applies to one already recharging) |
 | `defence.max_bonus` | 2.5 | The most a hit's bonuses together (Execute, Trial Key, reactions, hexes, Decree, Drowse, Veil, Fortune, affinities, add-on reactions...) may multiply a spell against a player; creatures are uncapped |
 | `defence.armour_rate` | 0.55 | How much of armour's worth against a blade counts against spells that bypass armour (magic, frost, sonic boom), players only; vanilla's armour formula times this |
+| `residues.enabled` | true | Whether big magic leaves residues (ash, everfrost, storm-glass, wildblooms, void scars...). Residues already left still fade on time |
+| `residues.min_spell_cost` | 30 | The mana a spell must cost (its list price) to leave one; an overcast always does (1 to 1000) |
+| `residues.lifetime_multiplier` | 1.0 | How long residues last (0.05 to 10; never under a minute) |
+| `residues.max_per_chunk` | 12 | The most residue blocks one chunk holds (1 to 256) |
+| `residues.max_per_dimension` | 1024 | The most residue blocks one dimension holds (0 to 100000) |
+| `places_of_power.ley_crossings` | true | Whether a ley crossing strengthens and cheapens every spell (and shimmers). Part of the elemental climate: off with it |
+| `places_of_power.crossing_bonus` | 0.1 | How much: every element this much stronger, every spell this much cheaper (0 to 0.5; cheaper by at most half) |
+| `places_of_power.celestial` | true | Whether the moon, the hour and rain favour elements (full moon arcane and void, new moon blood, noon fire, dawn and dusk time, rain frost) |
+| `places_of_power.celestial_multiplier` | 1.0 | Those bonuses, scaled (0 to 2) |
 
 `world_events`, `world_changing_magic`, `creature_affinities` and `elemental_climate` take effect at once on `/wildercord reload`. The `duels` and
 `wild_magic` switches are there for those features to read (`Config.get().duels()` and so on).
 The travel settings are described in [travel.md](travel.md). The defence settings are read by `cast.SpellDefence` (the
 one path every spell's damage takes; the pure numbers are in `cast.SpellDefenceRules`), and are sent to clients for the
-Cord screen's spell-defence badge. Loot chances apply when loot tables load (world start or `/reload`). Structure spacing isn't in the file:
+Cord screen's spell-defence badge. The residue settings are read by `cast.Residues` at each cast (and the caps as each
+residue is left), the places-of-power settings by `cast.Climate`, which sends their tuning to each player with the
+climate (see [ARCHITECTURE.md](../ARCHITECTURE.md#a-world-that-remembers-magic-residues-powerplaces)). Loot chances apply when loot tables load (world start or `/reload`). Structure spacing isn't in the file:
 it's data, in `data/wildercord/worldgen/structure_set/archives.json`, which a datapack can override. The
 cost and regeneration multipliers are sent to each player on joining and after every reload, so what the
 screens show is what the server charges.

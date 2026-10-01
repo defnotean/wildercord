@@ -63,7 +63,7 @@ over the creature already told you. A discovery only counts once. Many of them a
 
 ## Every feat
 
-There are **36 feats**. Each is worth **250 mana** toward your next circle the first time, unless noted.
+There are **38 feats**. Each is worth **250 mana** toward your next circle the first time, unless noted.
 
 ### Casting
 
@@ -100,6 +100,8 @@ There are **36 feats**. Each is worth **250 mana** toward your next circle the f
 |---|---|
 | **Ley Walker** | Stand on a ley line while wearing a Cord. See [Ley Lines](ley-lines.md). |
 | **Wellkeeper** | Wake a Wellstone by setting it on a ley line (the nearest player within 10 blocks earns it). |
+| **Crossroads** | Stand where two ley lines cross while wearing a Cord. See [Places and Times of Power](../world/places-of-power.md). |
+| **Lasting Mark** | Harvest a residue big magic left on the world. See [Residues and Reagents](../world/residues.md). |
 | **Conductor** | Shock five creatures at once through the water they stand in. See [Magic in the World](../world/world-magic.md). |
 | **Icebridge** | Walk across water you froze with a spell, before it thaws. |
 | **Runebreaker** | Slay a Runebound, a monster that casts spells. See [Runebound](../world/runebound.md). |
@@ -134,7 +136,7 @@ There are **36 feats**. Each is worth **250 mana** toward your next circle the f
 ## A full Grimoire
 
 The **Every Page Filled** challenge asks for a full Grimoire: all **11 reactions**, all **10 secret
-spells**, and **32 of the 36 feats**. The four you're let off are the ones nobody can be sure of
+spells**, and **34 of the 38 feats**. The four you're let off are the ones nobody can be sure of
 earning alone: **Mirrorfrost** (only its innate rune earns it) and **Unison**, **Domain Clash** and
 **Chorus** (they need other casters). Fusions, attunements, affinities and riddles don't count toward it. The
 reward is 500 experience, 3 Mana Crystals and 8 Blank Runes.

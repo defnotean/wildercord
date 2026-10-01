@@ -5,7 +5,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ## [Unreleased]
 
 The world now remembers magic. Big spells leave lasting marks where they land, the marks give reagents that steady
-or strengthen fusions, and some places and hours make every spell a little stronger.
+or strengthen fusions, and some places and hours make every spell a little stronger. Players need this version to
+join a server running it (it adds blocks and items).
 
 - **Residues: big magic leaves a mark.** A spell whose mana price is 30 or more, any overcast, a boss's spell and now
   and then an element reaction leave a residue of their element where they land: **Smouldering Ash** that stays warm

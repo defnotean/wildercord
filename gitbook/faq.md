@@ -310,6 +310,8 @@ never stops the server.
 | `features` | Switches for whole features: world events, duels, wild magic, magic that changes the world, creature affinities and elemental climate (all on at first) |
 | `travel` | The travel commands: whether they exist at all, how many homes each player may have, the warmup, the cooldowns, how far `/rtp` goes and how long a teleport request waits. See [Getting Around](social/travel.md#for-server-owners) |
 | `defence` | How players stand up to spells: whether the spellguard is on, how much health it needs (80% at first) and how long it takes to come back (a minute), how far a spell's bonuses may multiply it against a player (two and a half times), and how much armour counts against magic (a little over half). See [Defending Against Magic](progression/defence.md) |
+| `residues` | Whether big magic leaves residues at all, how much a spell must cost to leave one (30 mana at first), how long they last, and how many a chunk and a dimension hold. See [Residues and Reagents](world/residues.md) |
+| `places_of_power` | Whether ley crossings make spells stronger and cheaper and by how much (10% at first), and whether the moon, the hour and the rain favour elements and how strongly. See [Places and Times of Power](world/places-of-power.md) |
 
 ### Will players flying with Soar be kicked if flying is turned off?
 No. A player soaring on [Soar](runes/effects/wind.md#soar) is allowed to fly, as a creative

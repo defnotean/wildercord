@@ -359,6 +359,61 @@ the synced note (`client.fx.SoarWings`).
   `Spellbooks.set`/`setCord`. Moments (a cast, a long cast, a passive, a glyph going off, an Adept
   slain) are fired where they happen.
 
+### A world that remembers magic: `Residues`, `PowerPlaces`
+
+The design and its numbers are in DESIGN.md's [A world that remembers magic](DESIGN.md#a-world-that-remembers-magic).
+
+- **The pure rules.** `world.ResidueRules` holds the ten `Kind`s (element, block path, whether it takes the ground's
+  place (`COVER`) or lies on it (`REST`), lifetime, reagent), when a cast leaves one (`strength`: price ÷ the
+  threshold, an overcast, a boss, a reaction), how many blocks and how far (`cells`, `spread`), how long (`lifetime`),
+  the caps, and where one may go (`judge` over a `Site`: never anything built, never a block with contents, a spell's
+  passing block, a ward or a place the caster may not edit). `world.ResidueLedger<P>` is one dimension's record,
+  indexed by position, by chunk (the caps, and what waits for a chunk) and by the time each fades (a `TreeMap`), so the
+  server only ever reads the residues whose time has come. Positions pack exactly as `BlockPos.asLong` and chunks as
+  `ChunkPos.pack`. Both are unit-tested (`ResidueRulesTest`, `ResidueLedgerTest`).
+- **When.** `Effects.apply` calls `Residues.onSpell` after `WorldMagic.onSpell`: a player's (or a boss's) cast strong
+  enough, rested (5 s a caster) and the first of its cast (`cast.once("residue")`) leaves its effect's element where it
+  landed. The cast's price is `Cast.weight()`; an overcast is marked by `SpellCaster` (`Cast.markOvercast`, kept by
+  copies). Every reaction in `Reactions` (and Blackspark in `Techniques`) calls `Residues.reaction`, which rolls 35%.
+- **Placing.** `Residues.leave` picks columns round the impact (its own first), finds each column's surface
+  (`groundFor`), and asks `judge` (the pure rule, then `DungeonWards.warded`, then permission last, so a claim mod only
+  hears about blocks a residue could really take: `Casters.mayEdit` for a player, `spells_edit_blocks` and mob griefing
+  for a boss) and the ledger's caps. Natural ground is the `wildercord:residue_ground` block tag. It reuses the terrain
+  spells' rules: never over a `TemporaryBlocks` record, `Effects.isTemporary` now counts residues (so pistons and other
+  spells leave them alone), loaded ground only.
+- **Fading.** `Residues.Record` is a `SavedData` per dimension (codec of `Row`s). Every 20 ticks the sweep takes up to 64
+  due residues: in loaded ground each fades (the replaced state back, only if the residue still stands), otherwise it's
+  `park`ed by chunk; `ServerChunkEvents.CHUNK_LOAD` notes chunks with parked residues and the next sweep fades them.
+  Harvested by a player (`PlayerBlockBreakEvents.AFTER`, or a bottle on an eddy) the record goes and a `COVER` residue's
+  ground comes back; gone any other way (`ResidueBlock.affectNeighborsAfterRemoval`) the record goes at the end of the tick.
+  `Residues.fastForward` moves every residue's clock (tests).
+- **Blocks.** `content.ResidueBlocks` registers the ten (no items; `COVER` ones `IMMOVEABLE`, `REST` ones `POPPED`; void
+  scar and bloodmoss get path types through Fabric's `LandPathTypeRegistry`). `ResidueBlock` is one class switching on its
+  kind: shapes, `entityInside` (ash thaws, fulgurite's Speed, the eddy's updraft on both sides, the glyph's Glowing,
+  stilled sand's Slowness and unlimited item lifetime), random ticks (a wildbloom's seeding through `Residues.seed`,
+  bloodmoss feeding wart), a void scar's scheduled tick every 4 ticks (pull, stage from its record, animals nudged
+  away). `ResidueAmbience` is the client-side display tick: the mod's `MaterialOption` and `MoteOption` particles and a
+  kit sound (`<element>_smoulder`, `_glint`, `_fizz`...).
+- **Reagents.** `content.Reagents` registers the ten `ReagentItem`s (Cinder Ash carries `COOKING_FUEL`, the Bottled Gale a
+  `CONSUMABLE` with Slow Falling) and the `wildercord:reagents` item tag; `ReagentItem` holds the small uses (Geode Grit
+  calls `CraftedRunes.prospect(player, ...)`, Star Dust writes its light to `TemporaryBlocks`). At the altar,
+  `spell.AltarReagents` (pure, `AltarReagentsTest`) turns the plan `Fusions.plan` would make into the reagent's
+  (`Result`: the plan, copies, whether the catalyst or a rune socket is kept, health paid); `FusionAltarMenu` reads a
+  reagent from any rune socket (it reads as empty to `Fusions.plan`), shows `plan()` with the change, and on Fuse pays,
+  keeps and multiplies as the result says. `FusionAltarScreen` writes the reagent's line in the panel.
+- **Places and times of power.** `spell.ClimateRules` gained `LEY_CROSSING`, `FULL_MOON`, `NEW_MOON`, `NOON`, `DAWN`
+  and `DUSK`, celestial `Shift`s, and a `Tuning` (a crossing's bonus, the celestial scale). `Surroundings` carries the
+  crossing, the moon's phase (`moonPhase(dayClock)`) and the celestial switch; its old 12-argument constructor knows
+  none of them. `cast.Climate` fills them in (`surroundings(level, feet, head, ley, crossing)`), applies `tuning()` from
+  the `places_of_power` settings, sends the tuning with the conditions, and answers `costFactor(player)` on both sides,
+  which `Heart.rawCost` multiplies in. `world.LeyLines` runs two weaves (`first`, `second`; `strength` is the larger) and
+  finds crossings (`crossing`, `atCrossing`, `crossingIn(chunk)`, `nearestCrossing`); `LeyWalker` tells a Cord wearer on
+  stepping onto one (and grants Crossroads).
+- **The hooks** other features call: `Residues.leave(level, element, at, strength, by)` (a mastery trait leaving
+  residues), `Residues.kindAt`, `PowerPlaces.isPlaceOfPower(level, pos)`, `PowerPlaces.at(level, pos)` and
+  `PowerPlaces.of(player)` (what's favoured there now: conditions and factors; a resonance waking only at a place of
+  power), and `#wildercord:reagents` / `Reagents.kindOf(stack)`.
+
 ### Visuals: `Vfx`, `TechniqueVfx`, `ExpansionVfx`, `ElementFx`, `Fx`, `Sigils`, `Light`, `BlockFx`, `ScreenFx`
 
 Visuals are sent from the server, so everyone sees the same show. `Vfx.Theme` gives each element
@@ -560,8 +615,9 @@ Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the clie
 `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
 `ScreenFx(kind, strength, ticks)` (a camera shake, field-of-view kick, punch or Domain tint; see
 `cast.ScreenFx`). The travel commands send `Waypoints.Track` (the tracked waypoint, for `WaypointHud`), and
-`cast.Climate.Sync(conditions)` tells each player the elemental climate where they stand (once a second, only
-when it changes) for the HUD's marks, and `cast.PlayerAffinities.Rise(element, level)` tells a player an
+`cast.Climate.Sync(conditions, crossing, celestial)` tells each player the elemental climate where they stand and the
+server's tuning of places and times of power (once on joining, then once a second only when it changes) for the HUD's
+marks and lines and a spell's price at a ley crossing, and `cast.PlayerAffinities.Rise(element, level)` tells a player an
 affinity reached a new level (the client shows its toast).
 Everything else travels through synced attachments; `CHARGE` is synced to everyone nearby so they
 can draw the circle.
@@ -584,7 +640,8 @@ can draw the circle.
 - **`SpellHud`**: the panel beside the hotbar: selected spell, its runes and cost, the mana bar
   with a cost mark, cooldown, and passive drain (or the charge, while charging); above it the
   spell's name, rhythm notes and cracked circles (✦), the elemental climate after the name (a mark
-  per element from `ElementGlyphs`, with a green ▲ or red ▼), and a beat ring that closes on the badge
+  per element from `ElementGlyphs`, with a green ▲ or red ▼; for 8 seconds after `Climate.changedAt()` the lines saying
+  why, `SpellHud.whyLines`, which the Grimoire page reuses), and a beat ring that closes on the badge
   as the beat comes. Laid out by measuring, and shrinks to fit (short of room beside an offhand slot
   or attack indicator, it sits on top of them: `SpellHud.place`). A spell's reading is remembered
   by its runes (`SpellHud.read`) rather than compiled every frame.
@@ -610,7 +667,8 @@ can draw the circle.
   `AimPreview` (the reticle or dotted line while charging); `LeyMotes` (ley lines, worked out on
   the client from the ley seed: it traces a few blocks of a line's heart over the ground and lays a
   `LeyRibbon` along it, a streak of pale violet light that flows the length of its path; a few dozen
-  at most). Client-only lights, made straight into the particle engine and never sent:
+  at most; and at each ley crossing within 56 blocks, found chunk by chunk with `LeyLines.crossingIn` and remembered, a
+  flat `RingGlow` of rings and crossed lines, a `Glimmer` shaft and rising motes). Client-only lights, made straight into the particle engine and never sent:
   `Glimmer` (a drifting mote, a faint shaft of lamplight, a flickering firelight glow, or a haze that
   follows an entity), `RingGlow` (rings and lines of soft light in a plane, flat or leaning and
   swinging round, with beads running along). `RuneAura` gives every Runebound a haze and drifting
@@ -696,7 +754,8 @@ can draw the circle.
   `Mana.enchantLevel` with the keys in `Mana` and `Heart`.
 - **Blocks** (`WildercordBlocks`): the Wellstone (a block entity that checks the ley line under it
   and boosts players nearby), the Rune Seal (element and lit state; `cast.RuneSeals` opens doors)
-  and the Archive Lectern (wakes the Archivist).
+  and the Archive Lectern (wakes the Archivist). The ten residues are `ResidueBlocks` and their reagents `Reagents`
+  (see [A world that remembers magic](#a-world-that-remembers-magic-residues-powerplaces)).
 - **More items**: Spell Scroll (a `wildercord:scroll` component holds the spell, its name and
   author; casting it builds a `Cast` with base bonuses), Torn Page (a riddle from
   `Grimoire.hint`, and the distance and direction to the nearest Archive), Training Dummy.
@@ -763,6 +822,12 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
    titles, the reward loot tables and the tab's background (`world_art.advancement_background`).
    Feat advancements take their title and text from `Feats.java` unless given their own. See
    `docs/features/advancements.md`.
+
+11. **Residues and reagents** (`residue_art.py`, called last): the ten residue blocks' textures (what glows on its own
+   cut-out layer, lit by the model's `light_emission`, most of them animated), their models and blockstates (a void
+   scar's per stage, some turned at random), the reagent icons, the loot tables, the `wildercord:residue_ground` and
+   `wildercord:reagents` tags, the mining and bees' flower tags, and their English text (`residue_art.LANG`).
+   `python tools/residue_art.py` renders a review sheet into `build/art-preview/`.
 
 Run `python tools/item_art.py` on its own to render review sheets of every icon into
 `build/art-preview/` (`circle_art.py --preview` does the same for every rune's ring and emblem).
@@ -849,6 +914,16 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   and a Weigh ground a flier; a flight saved in a crash is tidied at login; death leaves nothing; and a real save
   and reload saves the player unable to fly, gives the flight back and lets it run out safely. Screenshots `soar_*`.
 
+- **`WildercordResidueTest`** casts a 60-mana spell of each element at grass (each leaves its residue), and checks a
+  small spell, planks, the `residues.enabled` switch (reloaded) and a ward leave none, a reaction leaves one, everfrost
+  is slick, a void scar draws a stick in and narrows, harvesting gives reagents and the grass back, a bottle takes an
+  eddy, an Everfrost Shard halves a weave's XP and Geode Grit keeps the amethyst, a full moon makes Harm 15% stronger, a
+  thunderstorm makes storm 25% stronger, and a ley crossing makes Fire 10% stronger and Burst · Explode 10% cheaper
+  (and the `PowerPlaces` hook agrees); then a real save and reload keeps every residue, and `Residues.fastForward`
+  fades them, one in unloaded ground waiting for its chunk. Screenshots `residue_gallery_day`/`_night`, each
+  `residue_<kind>`, `residue_hud_full_moon` and `residue_ley_crossing`. `AltarReagentsTest`, `PowerTableTest` and
+  `LeyCrossingTest` cover the pure rules.
+
 ## 10. Rules that keep it safe
 
 - **The server decides everything.** Edits and casts are validated in `SpellCaster`; the client
@@ -866,6 +941,10 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   any way at all (a player, a piston, an explosion) drops nothing (`TemporaryBlockDropsMixin`; a crust
   broken early gives its lava back);
   block-display visuals are removed as their chunk loads; wards aren't saved at all.
+- **Residues never grief.** Only natural ground or open air over it, never a built, placed or contents-holding block,
+  a spell's passing block or a ward; a spell's own permission (a boss's: `spells_edit_blocks` and mob griefing); caps
+  per chunk, area, dimension and caster; a saved fade that gives back the ground taken, read from a schedule, never a
+  scan, and never loading a chunk for it.
 - **Bosses are only ever slowed**, never frozen, swapped or held in place, so their fights can't
   break.
 
