@@ -6,6 +6,12 @@ plugins:
   - jekyll-seo-tag
 permalink: pretty
 color_scheme: dark
+defaults:
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: default
 logo: "/assets/images/logo.png"
 search_enabled: true
 search:
