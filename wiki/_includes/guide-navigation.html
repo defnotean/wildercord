@@ -1,0 +1,54 @@
+<div class="nav-start">
+  <p class="nav-label">Start Here</p>
+  {% assign start_urls = '/|/getting-started/|/installing/' | split: '|' %}
+  {% assign start_names = 'Home|Getting Started|Installation' | split: '|' %}
+  {% assign start_icons = 'home|book|download' | split: '|' %}
+  {% for target in start_urls %}
+  <a class="nav-link{% if page.url == target %} active{% endif %}" href="{{ target | relative_url }}"{% if page.url == target %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-{{ start_icons[forloop.index0] }}"/></svg>{{ start_names[forloop.index0] }}</a>
+  {% endfor %}
+</div>
+{% assign guide_roots = site.html_pages | where_exp: 'item', 'item.parent == nil' | sort: 'nav_order' %}
+{% for item in guide_roots %}
+  {% if item.nav_order > 2.1 and item.nav_order < 12 %}
+    {% assign display_title = item.title %}{% assign icon = 'book' %}
+    {% case item.title %}
+      {% when 'Spellcraft' %}{% assign icon = 'spell' %}
+      {% when 'Runes' %}{% assign display_title = 'Rune Reference' %}{% assign icon = 'rune' %}
+      {% when 'The Fusion Altar' %}{% assign display_title = 'Fusion Altar' %}{% assign icon = 'fusion' %}
+      {% when 'The World' %}{% assign icon = 'world' %}
+      {% when 'Growing Stronger' %}{% assign icon = 'growth' %}
+      {% when 'Companions and Style' %}{% assign display_title = 'Companions' %}{% assign icon = 'paw' %}
+      {% when 'Friends and Rivals' %}{% assign display_title = 'Playing Together' %}{% assign icon = 'people' %}
+      {% when 'Casting Gear' %}{% assign icon = 'gear' %}
+      {% when 'Items and Crafting' %}{% assign display_title = 'Items & Crafting' %}{% assign icon = 'gear' %}
+      {% when 'Controls' %}{% assign icon = 'controls' %}
+    {% endcase %}
+    {% if item.has_children %}
+    <details class="nav-group"{% if page.parent == item.title or page.grand_parent == item.title or page.url == item.url %} open{% endif %}>
+      <summary><svg class="icon"><use href="#i-{{ icon }}"/></svg><span>{{ display_title }}</span><svg class="icon chevron"><use href="#i-chevron"/></svg></summary>
+      <div class="nav-children">
+        <a class="nav-link{% if page.url == item.url %} active{% endif %}" href="{{ item.url | relative_url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>Overview</a>
+        {% assign children = site.html_pages | where: 'parent', item.title | sort: 'nav_order' %}
+        {% for child in children %}
+          <a class="nav-link{% if page.url == child.url %} active{% endif %}" href="{{ child.url | relative_url }}"{% if page.url == child.url %} aria-current="page"{% endif %}>{{ child.title }}</a>
+          {% if child.has_children %}
+            {% assign grandchildren = site.html_pages | where: 'parent', child.title | where: 'grand_parent', item.title | sort: 'nav_order' %}
+            <div class="nav-grandchildren">
+            {% for grandchild in grandchildren %}<a class="nav-link{% if page.url == grandchild.url %} active{% endif %}" href="{{ grandchild.url | relative_url }}"{% if page.url == grandchild.url %} aria-current="page"{% endif %}>{{ grandchild.title }}</a>{% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </details>
+    {% else %}
+    <a class="nav-link{% if page.url == item.url %} active{% endif %}" href="{{ item.url | relative_url }}"{% if page.url == item.url %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-{{ icon }}"/></svg>{{ display_title }}</a>
+    {% endif %}
+  {% endif %}
+{% endfor %}
+<div class="nav-utility">
+  <a class="nav-link{% if page.url == '/troubleshooting/' %} active{% endif %}" href="{{ '/troubleshooting/' | relative_url }}"><svg class="icon"><use href="#i-help"/></svg>Troubleshooting</a>
+  <a class="nav-link" href="{{ '/performance/' | relative_url }}">Visual settings</a>
+  <a class="nav-link" href="{{ '/whats-new/' | relative_url }}">What's new in 0.7</a>
+  <a class="nav-link" href="{{ '/faq/' | relative_url }}">Frequently asked questions</a>
+  <a class="nav-link" href="{{ '/DEVELOPING/' | relative_url }}">About this guide</a>
+</div>

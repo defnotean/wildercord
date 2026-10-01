@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111b1d">
+  {% seo %}
+  <link rel="icon" href="{{ '/assets/images/logo.png' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/assets/css/guide.css' | relative_url }}">
+  <script src="{{ '/assets/js/guide.js' | relative_url }}" defer></script>
+</head>
+<body class="{% if page.url == '/' %}guide-home{% else %}guide-article{% endif %}" data-baseurl="{{ site.baseurl }}">
+  {% include guide-icons.html %}
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="guide-header">
+    <button class="icon-button menu-button" id="menu-button" aria-label="Open guide navigation" aria-expanded="false" aria-controls="guide-sidebar"><svg class="icon"><use href="#i-menu"/></svg></button>
+    <a class="guide-brand" href="{{ '/' | relative_url }}"><img src="{{ '/assets/images/logo.png' | relative_url }}" width="44" height="44" alt=""><span>Wildercord</span></a>
+    <span class="brand-description">Player Guide</span>
+    <button class="search-trigger" id="search-trigger"><svg class="icon"><use href="#i-search"/></svg><span>Search the player guide…</span><kbd>Ctrl K</kbd></button>
+    <a class="header-github" href="https://github.com/defnotean/wildercord">GitHub</a>
+    <a class="button button-gold header-download" href="https://github.com/defnotean/wildercord/releases/tag/v0.7.0-alpha">Download</a>
+  </header>
+  <button class="nav-backdrop" id="nav-backdrop" aria-label="Close navigation" hidden></button>
+  <aside class="guide-sidebar" id="guide-sidebar">
+    <nav aria-label="Player guide">{% include guide-navigation.html %}</nav>
+    <div class="sidebar-note">Same game. More magic.<br>Together.</div>
+  </aside>
+  <div class="guide-main">
+    <main id="main-content" tabindex="-1">
+      {% if page.url != '/' %}<div class="article-context"><a href="{{ '/' | relative_url }}">Player Guide</a><span>/</span><span>{{ page.parent | default: page.title }}</span></div>{% endif %}
+      <div class="reading-layout">
+        <article class="article-content{% if page.url == '/' %} home-content{% endif %}">{{ content }}
+        {% if page.next_url %}<nav class="article-pager" aria-label="Related guides"><a href="{{ page.previous_url | relative_url }}"><svg class="icon" style="transform:rotate(180deg)"><use href="#i-arrow"/></svg><div><span>Previous</span>{{ page.previous_title }}</div></a><a href="{{ page.next_url | relative_url }}"><div><span>Next</span>{{ page.next_title }}</div><svg class="icon"><use href="#i-arrow"/></svg></a></nav>{% endif %}
+        </article>
+        {% if page.url != '/' %}<aside class="page-outline" aria-label="On this page"><p>On this page</p><nav id="page-outline"></nav></aside>{% endif %}
+      </div>
+    </main>
+    <footer class="guide-footer"><a href="{{ '/whats-new/' | relative_url }}">Wildercord 0.7.0-alpha</a><span>Minecraft 26.3 · Fabric · Java 25</span><a href="#main-content">Back to top</a><p>Open source under the MIT License. Not an official Minecraft product.</p></footer>
+  </div>
+  <dialog class="search-dialog" id="search-dialog" aria-labelledby="search-title">
+    <form method="dialog" class="search-dialog-header"><label id="search-title" for="guide-search">Search the player guide</label><button class="icon-button" aria-label="Close search"><svg class="icon"><use href="#i-close"/></svg></button></form>
+    <div class="search-field"><svg class="icon"><use href="#i-search"/></svg><input id="guide-search" type="search" placeholder="Try “circle”, “Cinnamon” or “fusion”…" autocomplete="off"></div>
+    <p class="search-status" id="search-status" role="status">Type to find a guide, rune or recipe.</p>
+    <ul class="search-results" id="search-results" aria-label="Search results"></ul>
+  </dialog>
+</body>
+</html>

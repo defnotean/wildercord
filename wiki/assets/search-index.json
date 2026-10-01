@@ -1,0 +1,8 @@
+---
+layout: null
+---
+[
+{% assign indexed_pages = site.html_pages | sort: 'title' %}{% for item in indexed_pages %}
+{"title":{{ item.title | jsonify }},"url":{{ item.url | relative_url | jsonify }},"section":{{ item.parent | default: 'Player Guide' | jsonify }},"text":{{ item.content | strip_html | normalize_whitespace | jsonify }}}{% unless forloop.last %},{% endunless %}
+{% endfor %}
+]

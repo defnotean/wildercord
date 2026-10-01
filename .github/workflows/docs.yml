@@ -37,6 +37,8 @@ jobs:
       - name: Build the player guide
         working-directory: wiki
         run: bundle exec jekyll build --destination ../_site --trace
+      - name: Verify the rendered guide
+        run: python tools/check_player_site.py _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

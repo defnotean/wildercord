@@ -2,36 +2,60 @@
 title: Cinnamon
 nav_order: 1.1
 parent: Companions and Style
+previous_url: /companions/
+previous_title: Companions overview
+next_url: /companions/jobs-and-echoes/
+next_title: Familiar jobs and event echoes
 ---
 
 # Cinnamon
 
-Cinnamon is a custom small dog inspired by the supplied photographs: a dark, rounded body, tan face and legs, long floppy ears, and shaggy paws. Her entity, model and texture are separate from Minecraft's wolf. Her in-game name is **Cinnamon**.
+A small companion with a big personality. Cinnamon has her own model, an immortal heart, and one player to call home.
+
+![Cinnamon, the small custom dog, waiting near her owner.]({{ '/assets/images/cinnamon-front.jpg' | relative_url }})
+
+Small paws. A dark coat. Always by your side.
+{: .caption }
 
 ## Choose her owner
 
-Start the game or server once to create `config/wildercord-cinnamon.json`, then set `owner` to the one player's exact Minecraft username or UUID:
+Set one player's username or UUID in `config/wildercord-cinnamon.json`. Cinnamon arrives already tamed.
 
 ```json
 { "owner": "PlayerName" }
 ```
 
-The default value is empty, so Cinnamon waits for an owner. On an integrated singleplayer dev session, `"owner": "@singleplayer"` follows that world's owner even if Fabric changes its temporary dev username between launches. A dedicated server should use a username or UUID. The file is checked again about every five seconds, so a restart is unnecessary after editing it.
+> Only her owner can ask her to sit or follow.
 
-Cinnamon appears at a safe, loaded position near her owner already tamed. `/summon wildercord:cinnamon` also works: when the configured owner is online in that dimension, the summoned Cinnamon is bound to that player and replaces her previous body. Only her owner can click her to switch between sitting and following. That choice is saved on her owner and survives direct replacement, rejoining, death, and dimension travel. Her replaceable body returns near her owner after travel; it does not stay behind in another dimension.
+Start the game or server once to create the file. Its default owner is empty, so she waits until an owner is configured. The file reloads about every five seconds; a restart is unnecessary after editing it.
 
-She takes no damage from combat, fire, falls or magic. A companion that falls into the void or gets trapped in a solid block is moved back to a safe nearby surface. If there is no safe surface, she waits for one instead of appearing inside a hazard.
+In an integrated singleplayer development session, `"owner": "@singleplayer"` follows the world's owner even when Fabric changes its temporary dev username. Use an exact username or UUID on a dedicated server.
 
-Sneak-click to pet her without changing her sit setting. Her greeting and petting have an eager tail wag, and she occasionally tilts her head while idle. After sitting quietly for ten seconds she curls down and closes her eyes. Click her with Cinnamon's Red Bone to wake her and play; the toy is reusable and does not change ownership or her sitting preference. Craft it from a bone, red dye, and a slime ball.
+Cinnamon appears at a safe, loaded position near that player. `/summon wildercord:cinnamon` also works: with the configured owner online in the same dimension, the summoned body binds to that player and replaces her previous body. Summoning does not transfer ownership to another player.
 
-## In game
+## Sit, follow and play
 
-![Cinnamon rests after sitting quietly; her owner can wake her to play.]({{ '/assets/images/cinnamon-resting.jpg' | relative_url }})
+Interact with Cinnamon in a few simple ways.
 
-Cinnamon rests after sitting quietly; her owner can wake her to play.
+| Action | Result |
+|---|---|
+| Click | Switch between sitting and following |
+| Sneak-click | Pet her without changing her sit preference |
+| Use Cinnamon's Red Bone | Wake her and play |
 
-## In game
+Her sitting preference is saved on her owner and survives replacement, rejoining, death and dimension travel. Greetings and petting bring an eager tail wag. She occasionally tilts her head, and after sitting quietly for ten seconds curls down and closes her eyes.
 
-![Cinnamon has a small, round body, dark coat and tan face, with her own model.]({{ '/assets/images/cinnamon-front.jpg' | relative_url }})
+Craft her reusable Red Bone from a **bone, red dye and slime ball**. It never changes her owner or her saved sitting preference.
 
-Cinnamon has a small, round body, dark coat and tan face, with her own model.
+![Cinnamon curled up and resting after sitting quietly.]({{ '/assets/images/cinnamon-resting.jpg' | relative_url }})
+
+A little rest between adventures.
+{: .caption }
+
+## Keeping her safe
+
+Cinnamon takes no damage from combat, fire, falls or magic. If she falls into the void or becomes trapped in a solid block, she returns to a safe nearby surface. When no safe surface exists, she waits instead of spawning inside a hazard.
+
+Her replaceable body returns near her owner after dimension travel, rather than staying behind. Her dark, rounded body, tan face and legs, floppy ears and shaggy paws use a separate entity, model and texture from Minecraft's wolf.
+
+If she spawns but does not respond to a click, check the configured owner and use the [troubleshooting guide]({{ '/troubleshooting/' | relative_url }}).

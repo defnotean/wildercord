@@ -3,6 +3,18 @@ name: Build
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'wiki/**'
+      - 'gitbook/**'
+      - '.gitbook.yaml'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - 'docs/audit/**'
+      - 'docs/features/**'
+      - 'docs/releases/**'
+      - 'tools/player_docs.py'
+      - 'tools/check_player_site.py'
+      - '.github/workflows/docs.yml'
   pull_request:
 
 permissions:
