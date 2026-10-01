@@ -150,6 +150,24 @@
     "arcane_yip": {
       "part": "arcane"
     },
+    "aura_backlash": {
+      "part": "aura"
+    },
+    "aura_breakthrough": {
+      "part": "aura"
+    },
+    "aura_breath": {
+      "part": "aura"
+    },
+    "aura_guard": {
+      "part": "aura"
+    },
+    "aura_perfect_guard": {
+      "part": "aura"
+    },
+    "aura_slash": {
+      "part": "aura"
+    },
     "beat_release": {
       "part": "neutral"
     },

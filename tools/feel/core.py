@@ -25,7 +25,7 @@ if str(TOOLS) not in sys.path:
 import sound_art as sa  # noqa: E402  (the DSP primitives, ROOT_HZ, note(), the scale degrees D E FS A B)
 
 ELEMENTS = sa.ELEMENTS
-PARTS = ELEMENTS + ("neutral",)
+PARTS = ELEMENTS + ("neutral", "aura")
 NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 
 # The four subtitle texts every kit event picks from (generate_assets.py NEW_LANG): a sound never needs its own line.

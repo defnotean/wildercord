@@ -2897,5 +2897,48 @@
       "wildercord:kit/neutral/tell_zap_2",
       "wildercord:kit/neutral/tell_zap_3"
     ]
+  },
+  "aura_backlash": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_backlash"
+    ]
+  },
+  "aura_breakthrough": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_breakthrough",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_breath": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_breath"
+    ]
+  },
+  "aura_guard": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_guard"
+    ]
+  },
+  "aura_perfect_guard": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_perfect_guard",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_slash": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_slash_1",
+      "wildercord:kit/aura/aura_slash_2"
+    ]
   }
 }

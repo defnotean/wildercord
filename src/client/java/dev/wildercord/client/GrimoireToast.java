@@ -82,7 +82,7 @@ public class GrimoireToast implements Toast {
 	public GrimoireToast(String key) {
 		this.glyph = null;
 		this.token = NO_TOKEN;
-		this.title =Component.translatable(key.startsWith("hint:") ? "toast.wildercord.riddle" : "toast.wildercord.grimoire");
+		this.title =Component.translatable(key.startsWith("hint:") ? "toast.wildercord.riddle" : key.startsWith("aura:") ? "toast.wildercord.aura" : "toast.wildercord.grimoire");
 		String id = key.substring(key.indexOf(':') + 1);
 		if (key.startsWith("reaction:")) {
 			this.name = Component.translatable("reaction.wildercord." + id);
@@ -137,6 +137,21 @@ public class GrimoireToast implements Toast {
 			this.name = Component.translatable("toast.wildercord.bestiary", creature, Component.translatable("element.wildercord." + entry.element()));
 			this.icon = type == null ? new ItemStack(Items.BOOK) : SpawnEggItem.byId(type).map(ItemStack::new).orElseGet(() -> new ItemStack(Items.BOOK));
 			this.color = RuneColors.element(entry.element());
+		} else if (key.startsWith("aura:")) {
+			// Aura's milestones: a method learned (its manual), a breakthrough or the first perfect guard (a blade in the aura's colour).
+			dev.wildercord.aura.BreathingMethod method = id.startsWith("method_")
+				? dev.wildercord.aura.BreathingMethods.byId(id.substring("method_".length()).replace('.', ':')).orElse(null) : null;
+			net.minecraft.client.player.LocalPlayer local = net.minecraft.client.Minecraft.getInstance().player;
+			if (method != null) {
+				this.name = Component.translatable(method.nameKey());
+				this.icon = dev.wildercord.aura.BreathingManualItem.of(method.id());
+				this.color = method.color();
+			} else {
+				this.name = Component.translatable("toast.wildercord.aura." + id);
+				this.icon = new ItemStack(Items.IRON_SWORD);
+				int aura = local == null ? 0 : dev.wildercord.aura.Aura.color(local);
+				this.color = aura == 0 ? 0xF5C46A : aura;
+			}
 		} else if (key.startsWith("hint:")) {
 			this.name = Component.translatable("toast.wildercord.riddle_hint");
 			this.icon = new ItemStack(dev.wildercord.content.WildercordItems.TORN_PAGE);

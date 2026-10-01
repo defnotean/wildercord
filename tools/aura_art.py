@@ -284,7 +284,6 @@ def _methods_lang():
         out[f"aura.wildercord.method.{method_id}"] = name
         out[f"aura.wildercord.method.{method_id}.lore"] = lore
         out[f"aura.wildercord.method.{method_id}.flavour"] = flavour
-        out[f"toast.wildercord.aura.method_{method_id}"] = name
     return out
 
 

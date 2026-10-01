@@ -21,7 +21,11 @@
 		"SubtitleOverlayMixin",
 		"ServerStatusPingerMixin",
 		"QuadParticleRenderStateMixin",
-		"MouseHandlerMixin"
+		"MouseHandlerMixin",
+		"ItemInHandLayerAuraMixin",
+		"FirstPersonAuraMixin",
+		"ItemLayerAuraMixin",
+		"EntityRendererAuraSenseMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
