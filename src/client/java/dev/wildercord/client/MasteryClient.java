@@ -145,9 +145,17 @@ public final class MasteryClient {
 			}
 		}
 
-		/** The names showing right now (for the game tests). */
+		/**
+		 * The names showing right now (for the game tests): only those still within their time, and none while titles are
+		 * switched off, whether or not the HUD has drawn since (a hidden HUD never prunes the list).
+		 */
 		public static List<String> showing() {
-			return SHOWN.stream().map(Shown::name).toList();
+			Minecraft mc = Minecraft.getInstance();
+			if (!MagicQuality.spellTitles || mc.level == null) {
+				return List.of();
+			}
+			long now = mc.level.getGameTime();
+			return SHOWN.stream().filter(s -> now >= s.start() && now - s.start() <= TICKS).map(Shown::name).toList();
 		}
 
 		static void extract(GuiGraphicsExtractor g, DeltaTracker delta) {
