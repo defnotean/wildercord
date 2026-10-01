@@ -88,6 +88,19 @@ public final class SpellDefenceRules {
 		return Math.min(bonus, Math.max(1.0, cap));
 	}
 
+	/**
+	 * As {@link #capBonus(double, double)}, for a hit whose power already carries what the cast's
+	 * performance added ({@code performance}: an overchannel stage, a release on the beat, a traced
+	 * glyph). That share counts toward the cap like any other bonus, so the two together never multiply
+	 * a spell against a player past it. The answer still multiplies the hit as it is (performance in it).
+	 */
+	public static double capBonus(double bonus, double performance, double cap) {
+		if (Double.isNaN(performance) || performance <= 1.0) {
+			return capBonus(bonus, cap);
+		}
+		return capBonus(Double.isNaN(bonus) ? performance : bonus * performance, cap) / performance;
+	}
+
 	// ------------------------------------------------------------------ the spellguard
 
 	/** The share of full health a player must have for the spellguard to hold: the default for defence.spellguard_health. */

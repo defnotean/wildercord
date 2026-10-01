@@ -90,6 +90,26 @@ class SpellDefenceRulesTest {
 	}
 
 	@Test
+	void aPerformedCastsBonusCountsInsideTheCap() {
+		double cap = SpellDefenceRules.MAX_BONUS;
+		// An overchannel at stage III, on the beat, with a traced glyph: under the cap alone, untouched.
+		double performed = dev.wildercord.spell.Overchannel.power(3, true, 1.0, dev.wildercord.spell.Overchannel.Tuning.DEFAULTS);
+		assertTrue(performed > 1.8 && performed < cap, "the performance alone stays under the cap: " + performed);
+		assertEquals(1.0, SpellDefenceRules.capBonus(1.0, performed, cap), 1e-9);
+		// With an execute on top, the two together are held to the cap: the hit (performance in it) times the answer is the cap.
+		double answer = SpellDefenceRules.capBonus(2.0, performed, cap);
+		assertEquals(cap, answer * performed, 1e-9);
+		assertTrue(answer < 2.0, "the execute's share gives way: " + answer);
+		// Small bonuses still pass whole, and weakening ones are never lifted.
+		assertEquals(1.2, SpellDefenceRules.capBonus(1.2, 1.2, cap), 1e-9);
+		assertEquals(0.5, SpellDefenceRules.capBonus(0.5, 1.6, cap), 1e-9);
+		// No performance, or a creature (no cap): exactly as before.
+		assertEquals(SpellDefenceRules.capBonus(4.0, cap), SpellDefenceRules.capBonus(4.0, 1.0, cap), 1e-9);
+		assertEquals(4.0, SpellDefenceRules.capBonus(4.0, 1.9, Double.POSITIVE_INFINITY), 1e-9);
+		assertEquals(1.0, SpellDefenceRules.capBonus(Double.NaN, 1.6, cap), 1e-9);
+	}
+
+	@Test
 	void theSpellguardHoldsOnlyFromHighHealthAndOnlyWhenCharged() {
 		long now = 10_000;
 		int recharge = SpellDefenceRules.GUARD_RECHARGE;

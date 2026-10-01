@@ -118,6 +118,31 @@ public final class WildMagic {
 		return last;
 	}
 
+	/**
+	 * The outcomes an overchannel that tears loose can surge into: the ones that need no spell to go off
+	 * and never hurt anyone (no Backfire: tearing loose already costs the caster mana and a daze).
+	 */
+	public static final java.util.Set<Surge> FIZZLES = java.util.Collections.unmodifiableSet(
+		java.util.EnumSet.of(Surge.BUTTERFLIES, Surge.HEAL_ALL, Surge.BLINK, Surge.LEVITATE, Surge.SLOW_TIME));
+
+	/** The outcome of a torn channel for a roll in [0, 1), by weight among {@link #FIZZLES}. */
+	public static Surge pickFizzle(double roll) {
+		int total = 0;
+		for (Surge surge : FIZZLES) {
+			total += surge.weight;
+		}
+		double at = Math.max(0, Math.min(0.999999, roll)) * total;
+		Surge last = Surge.BUTTERFLIES;
+		for (Surge surge : FIZZLES) {
+			last = surge;
+			at -= surge.weight;
+			if (at < 0) {
+				return surge;
+			}
+		}
+		return last;
+	}
+
 	/** The elements a spell can swap to: every one with a harmful effect rune (innate runes aside). */
 	public static List<String> elements() {
 		TreeSet<String> found = new TreeSet<>();
