@@ -132,6 +132,7 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 				player.setItemInHand(InteractionHand.MAIN_HAND, net.minecraft.world.item.ItemStack.EMPTY);
 				check(player.getAttachedOrElse(dev.wildercord.pet.CinnamonState.BOW, false), "her owner should remember the bow");
 				dog.showOff(200);
+				dog.setCustomNameVisible(false);
 			});
 			context.waitTicks(3);
 			world.getServer().runOnServer(server -> {
