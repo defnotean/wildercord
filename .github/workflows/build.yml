@@ -30,13 +30,7 @@ jobs:
       - name: Check generated files are up to date
         run: |
           pip install pillow
-          python tools/generate_assets.py
-          if [ -n "$(git status --porcelain --untracked-files=all -- src/main/resources docs/RECIPES.md)" ]; then
-            echo "::error::Generated files are out of date. Run 'python tools/generate_assets.py' and commit the result."
-            git --no-pager diff --stat -- src/main/resources docs/RECIPES.md
-            git status --short --untracked-files=all -- src/main/resources docs/RECIPES.md
-            exit 1
-          fi
+          python tools/check_generated_assets.py
 
       - name: Build and run unit tests
         run: ./gradlew build --stacktrace
