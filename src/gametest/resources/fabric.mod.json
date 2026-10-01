@@ -71,7 +71,7 @@
 			"dev.wildercord.cast.PhysicalMagicTest",
 			"dev.wildercord.cast.CircleDisciplineTest",
 			"dev.wildercord.gametest.WildercordResidueTest",
-			"dev.wildercord.gametest.WildercordMonstersTest"
+			"dev.wildercord.gametest.WildercordMonstersTest",
 			"dev.wildercord.gametest.WildercordWildlifeTest"
 		]
 	},
