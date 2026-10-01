@@ -632,4 +632,66 @@ class WildercordConfigTest {
 		assertEquals(0.6, fixed.pvpScale(), 1e-9);
 		assertEquals(0.4, fixed.guardShare(), 1e-9);
 	}
+	@Test
+	void auraWorldDefaultsAreTheRulesNumbers() {
+		WildercordConfig.AuraWorldSettings w = D.auraWorld();
+		assertTrue(w.duelists() && w.knights() && w.forgedGear() && w.duelistCamps());
+		assertTrue(w.duelistsSpawn() && w.knightsSpawn());
+		assertEquals(1.0, w.duelistSpawnRate(), 1e-9);
+		assertEquals(2, w.maxDuelists());
+		assertEquals(1.0, w.knightSpawnRate(), 1e-9);
+		assertEquals(2, w.maxKnightsNearby());
+		assertEquals(dev.wildercord.aura.world.AuraWorldRules.LUMENEDGE_GAIN, w.lumenedgeGain(), 1e-9);
+		assertEquals(dev.wildercord.aura.world.AuraWorldRules.SKYREND_SLASH, w.skyrendSlash(), 1e-9);
+		assertEquals(dev.wildercord.aura.world.AuraWorldRules.BULWARK_GUARD_COST, w.bulwarkGuardCost(), 1e-9);
+		assertEquals(dev.wildercord.aura.world.AuraWorldRules.SASH_CAPACITY, w.sashCapacity(), 1e-9);
+		assertTrue(D.toJson().contains("\"aura_world\"") && D.toJson().contains("\"max_knights_nearby\""), "a fresh file lists the aura_world section");
+	}
+
+	@Test
+	void auraWorldSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura_world\": {\"duelists\": false, \"duelist_spawn_rate\": 9, \"max_duelists\": 3,"
+			+ " \"duelist_camps\": false, \"knights\": true, \"knight_spawn_rate\": 0.5, \"max_knights_nearby\": 20, \"forged_gear\": false,"
+			+ " \"lumenedge_gain\": 2, \"skyrend_slash\": 0.5, \"bulwark_guard_cost\": 0.25, \"sash_capacity\": 1.5, \"knight_rate\": 1}}");
+		WildercordConfig.AuraWorldSettings w = parsed.config().auraWorld();
+		assertFalse(w.duelists());
+		assertFalse(w.duelistsSpawn());
+		assertEquals(4.0, w.duelistSpawnRate(), 1e-9, "clamped to 4");
+		assertEquals(3, w.maxDuelists());
+		assertFalse(w.duelistCamps());
+		assertEquals(0.5, w.knightSpawnRate(), 1e-9);
+		assertEquals(8, w.maxKnightsNearby(), "clamped to 8");
+		assertFalse(w.forgedGear());
+		assertEquals(2.0, w.lumenedgeGain(), 1e-9);
+		assertEquals(1.0, w.skyrendSlash(), 1e-9, "never weaker than an unforged slash");
+		assertEquals(0.25, w.bulwarkGuardCost(), 1e-9);
+		assertEquals(1.5, w.sashCapacity(), 1e-9);
+		assertEquals(4, parsed.warnings().size(), parsed.warnings().toString());
+		assertTrue(parsed.warnings().stream().anyMatch(w2 -> w2.contains("aura_world.knight_rate")), "a typo is reported");
+		WildercordConfig changed = parsed.config();
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config(), "the written file keeps every changed setting");
+		assertFalse(WildercordConfig.parse("{\"aura_world\": {\"knight_spawn_rate\": 0}}").config().auraWorld().knightsSpawn(), "a rate of 0 stops them");
+		assertFalse(WildercordConfig.parse("{\"aura_world\": {\"max_duelists\": 0}}").config().auraWorld().duelistsSpawn(), "room for none stops them");
+	}
+
+	@Test
+	void aFileFromBeforeTheWorldOfAuraGainsTheSection() {
+		String old = D.toJson().replaceAll("(?s),\\s*\"aura_world\": \\{.*$", "\n}\n");
+		assertFalse(old.contains("\"aura_world\""), old);
+		assertTrue(old.contains("\"aura\""), "only the newer section is gone");
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraWorldSettings.DEFAULTS, parsed.config().auraWorld());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"aura_world\"", "\"duelists\"", "\"duelist_spawn_rate\"", "\"max_duelists\"", "\"duelist_camps\"", "\"knights\"",
+				"\"knight_spawn_rate\"", "\"max_knights_nearby\"", "\"forged_gear\"", "\"lumenedge_gain\"", "\"skyrend_slash\"", "\"bulwark_guard_cost\"",
+				"\"sash_capacity\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		String partial = D.toJson().replace("\"max_duelists\": 2", "\"max_duelists\": 5").replace("\"knight_spawn_rate\": 1.0,", "");
+		WildercordConfig.AuraWorldSettings fixed = WildercordConfig.parse(WildercordConfig.addMissing(partial).orElseThrow()).config().auraWorld();
+		assertEquals(1.0, fixed.knightSpawnRate(), 1e-9);
+		assertEquals(5, fixed.maxDuelists());
+	}
 }
