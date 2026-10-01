@@ -1295,6 +1295,19 @@ BREWS = [("minecraft:awkward", "wildercord:shadow_pelt", "minecraft:invisibility
          ("minecraft:thick", "wildercord:bog_gland", "minecraft:leaping")]
 
 LANG = {
+    # The field guide's notes on each monster, and where to look before one is met (spell/FieldGuide.java).
+    "guide.wildercord.bramblewalker": "A walking thicket of the night forests. It rears back before its vines lash out to root you: step aside. Fire makes it burn and run",
+    "guide.wildercord.bramblewalker.hint": "A bush that wasn't there by daylight",
+    "guide.wildercord.gloomstalker": "A shadow panther, all but invisible in the dark until it pounces. Light, glow and any spell of fire, storm, arcane or life lay it bare",
+    "guide.wildercord.gloomstalker.hint": "Two violet eyes in the dark woods and deep caves",
+    "guide.wildercord.thunderwing_harpy": "A storm-feathered hunter of the peaks. It shrieks before it dives, and in a storm marks the ground before the lightning falls. Earth drags it down",
+    "guide.wildercord.thunderwing_harpy.hint": "A shriek above the mountains, worse in a storm",
+    "guide.wildercord.geode_crawler": "A crystal-backed beetle of the caves that curls up when struck and rolls at you. Blunt blows and shocks crack it open",
+    "guide.wildercord.geode_crawler.hint": "Something rattling near the amethyst",
+    "guide.wildercord.bog_witch_frog": "A huge swamp frog that lobs poison bubbles and swallows small creatures whole. Pop a bubble before it lands; a shield stops its tongue",
+    "guide.wildercord.bog_witch_frog.hint": "A croak in the swamp at night",
+    "guide.wildercord.mana_ooze": "A slime that drinks magic: spells feed it until it bursts in two. Blades, arrows and fire do what spells can't",
+    "guide.wildercord.mana_ooze.hint": "A glow in the deep places where the ley lines run",
     "entity.wildercord.bramblewalker": "Bramblewalker",
     "entity.wildercord.gloomstalker": "Gloomstalker",
     "entity.wildercord.thunderwing_harpy": "Thunderwing Harpy",

@@ -1,6 +1,7 @@
 {
   "values": [
     "#minecraft:arthropod",
-    "minecraft:phantom"
+    "minecraft:phantom",
+    "wildercord:glimmerwing"
   ]
 }

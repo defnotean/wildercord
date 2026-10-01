@@ -1,6 +1,8 @@
 {
   "values": [
     "minecraft:breeze",
+    "wildercord:skyray",
+    "wildercord:mossback_tortoise",
     "wildercord:thunderwing_harpy"
   ]
 }

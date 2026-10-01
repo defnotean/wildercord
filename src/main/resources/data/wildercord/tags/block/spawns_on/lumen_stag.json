@@ -1,0 +1,8 @@
+{
+  "values": [
+    "#minecraft:wolves_spawnable_on",
+    "#minecraft:animals_spawnable_on",
+    "minecraft:podzol",
+    "minecraft:coarse_dirt"
+  ]
+}

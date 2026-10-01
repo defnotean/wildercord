@@ -1,0 +1,178 @@
+{
+  "events": {
+    "wildlife_cinderfox_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_cinderfox_death"
+      ],
+      "subtitle": "cinderfox_death"
+    },
+    "wildlife_cinderfox_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_cinderfox_hurt_1",
+        "kit/wildlife/wildlife_cinderfox_hurt_2"
+      ],
+      "subtitle": "cinderfox_hurt"
+    },
+    "wildlife_cinderfox_spark": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_cinderfox_spark_1",
+        "kit/wildlife/wildlife_cinderfox_spark_2"
+      ],
+      "subtitle": "cinderfox_spark"
+    },
+    "wildlife_cinderfox_yip": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_cinderfox_yip_1",
+        "kit/wildlife/wildlife_cinderfox_yip_2",
+        "kit/wildlife/wildlife_cinderfox_yip_3"
+      ],
+      "subtitle": "cinderfox_yip"
+    },
+    "wildlife_glimmerwing_flutter": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_glimmerwing_flutter_1",
+        "kit/wildlife/wildlife_glimmerwing_flutter_2",
+        "kit/wildlife/wildlife_glimmerwing_flutter_3"
+      ],
+      "subtitle": "glimmerwing_flutter"
+    },
+    "wildlife_glimmerwing_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_glimmerwing_hurt_1",
+        "kit/wildlife/wildlife_glimmerwing_hurt_2"
+      ],
+      "subtitle": "glimmerwing_hurt"
+    },
+    "wildlife_rimehare_hop": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_rimehare_hop_1",
+        "kit/wildlife/wildlife_rimehare_hop_2",
+        "kit/wildlife/wildlife_rimehare_hop_3"
+      ],
+      "subtitle": "rimehare_hop"
+    },
+    "wildlife_rimehare_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_rimehare_hurt_1",
+        "kit/wildlife/wildlife_rimehare_hurt_2"
+      ],
+      "subtitle": "rimehare_hurt"
+    },
+    "wildlife_rimehare_squeak": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_rimehare_squeak_1",
+        "kit/wildlife/wildlife_rimehare_squeak_2"
+      ],
+      "subtitle": "rimehare_squeak"
+    },
+    "wildlife_skyray_call": {
+      "attenuation": 64,
+      "files": [
+        "kit/wildlife/wildlife_skyray_call_1",
+        "kit/wildlife/wildlife_skyray_call_2"
+      ],
+      "subtitle": "skyray_call"
+    },
+    "wildlife_skyray_death": {
+      "attenuation": 48,
+      "files": [
+        "kit/wildlife/wildlife_skyray_death"
+      ],
+      "subtitle": "skyray_death"
+    },
+    "wildlife_skyray_hurt": {
+      "attenuation": 48,
+      "files": [
+        "kit/wildlife/wildlife_skyray_hurt_1",
+        "kit/wildlife/wildlife_skyray_hurt_2"
+      ],
+      "subtitle": "skyray_hurt"
+    },
+    "wildlife_stag_call": {
+      "attenuation": 32,
+      "files": [
+        "kit/wildlife/wildlife_stag_call_1",
+        "kit/wildlife/wildlife_stag_call_2"
+      ],
+      "subtitle": "stag_call"
+    },
+    "wildlife_stag_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_stag_death"
+      ],
+      "subtitle": "stag_death"
+    },
+    "wildlife_stag_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_stag_hurt_1",
+        "kit/wildlife/wildlife_stag_hurt_2"
+      ],
+      "subtitle": "stag_hurt"
+    },
+    "wildlife_stag_shed": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_stag_shed"
+      ],
+      "subtitle": "stag_shed"
+    },
+    "wildlife_tortoise_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_tortoise_death"
+      ],
+      "subtitle": "tortoise_death"
+    },
+    "wildlife_tortoise_grumble": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_tortoise_grumble_1",
+        "kit/wildlife/wildlife_tortoise_grumble_2"
+      ],
+      "subtitle": "tortoise_grumble"
+    },
+    "wildlife_tortoise_hide": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_tortoise_hide"
+      ],
+      "subtitle": "tortoise_hide"
+    },
+    "wildlife_tortoise_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_tortoise_hurt_1",
+        "kit/wildlife/wildlife_tortoise_hurt_2"
+      ],
+      "subtitle": "tortoise_hurt"
+    },
+    "wildlife_tortoise_scute": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_tortoise_scute"
+      ],
+      "subtitle": "tortoise_scute"
+    },
+    "wildlife_tortoise_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/wildlife/wildlife_tortoise_step_1",
+        "kit/wildlife/wildlife_tortoise_step_2",
+        "kit/wildlife/wildlife_tortoise_step_3"
+      ],
+      "subtitle": "tortoise_step"
+    }
+  },
+  "part": "wildlife"
+}

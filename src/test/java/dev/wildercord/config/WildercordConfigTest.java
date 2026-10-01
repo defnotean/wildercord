@@ -506,4 +506,69 @@ class WildercordConfigTest {
 		assertEquals(0, WildercordConfig.scaledChance(35, 0.0));
 		assertEquals(18, WildercordConfig.scaledChance(35, 0.5));
 	}
+
+	@Test
+	void wildlifeSpawnsEverywhereByDefault() {
+		WildercordConfig.WildlifeSettings w = D.wildlife();
+		assertEquals(WildercordConfig.WildlifeSettings.DEFAULTS, w);
+		assertTrue(w.enabled());
+		assertEquals(1.0, w.spawnMultiplier(), 1e-9);
+		for (String creature : List.of("glimmerwing", "lumen_stag", "mossback_tortoise", "cinderfox", "skyray", "rimehare")) {
+			assertTrue(w.spawns(creature), creature + " should spawn by default");
+		}
+		assertFalse(w.spawns("zombie"), "only wildlife has a switch here");
+		assertTrue(D.toJson().contains("\"creatures\"") && D.toJson().contains("\"wildlife_spawn_multiplier\""), "a fresh file lists the section");
+	}
+
+	@Test
+	void wildlifeSwitchesAndMultiplierAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"creatures\": {\"wildlife\": true, \"wildlife_spawn_multiplier\": 40,"
+			+ " \"lumen_stag\": false, \"skyray\": false, \"bogus\": 1}}");
+		WildercordConfig.WildlifeSettings w = parsed.config().wildlife();
+		assertEquals(10.0, w.spawnMultiplier(), 1e-9, "clamped to 10");
+		assertFalse(w.spawns("lumen_stag"));
+		assertFalse(w.spawns("skyray"));
+		assertTrue(w.spawns("glimmerwing") && w.spawns("rimehare") && w.spawns("cinderfox") && w.spawns("mossback_tortoise"));
+		assertTrue(parsed.warnings().stream().anyMatch(x -> x.contains("creatures.wildlife_spawn_multiplier")), parsed.warnings().toString());
+		assertTrue(parsed.warnings().stream().anyMatch(x -> x.contains("creatures.bogus")), parsed.warnings().toString());
+		// The master switch, and a multiplier of nothing, stop every creature.
+		WildercordConfig.WildlifeSettings off = WildercordConfig.parse("{\"creatures\": {\"wildlife\": false}}").config().wildlife();
+		assertFalse(off.spawns("glimmerwing") || off.spawns("rimehare"));
+		WildercordConfig.WildlifeSettings none = WildercordConfig.parse("{\"creatures\": {\"wildlife_spawn_multiplier\": 0}}").config().wildlife();
+		assertFalse(none.spawns("cinderfox"));
+		WildercordConfig.Parsed wrong = WildercordConfig.parse("{\"creatures\": {\"rimehare\": \"no\"}}");
+		assertTrue(wrong.config().wildlife().rimehare(), "a wrong type keeps the default");
+		assertFalse(wrong.warnings().isEmpty());
+	}
+
+	@Test
+	void theWrittenFileKeepsChangedWildlifeSettings() {
+		WildercordConfig changed = WildercordConfig.parse("{\"creatures\": {\"wildlife_spawn_multiplier\": 0.25, \"cinderfox\": false}}").config();
+		WildercordConfig again = WildercordConfig.parse(changed.toJson()).config();
+		assertEquals(0.25, again.wildlife().spawnMultiplier(), 1e-9);
+		assertFalse(again.wildlife().cinderfox());
+		assertEquals(changed, again);
+	}
+
+	@Test
+	void aFileFromBeforeWildlifeGainsTheCreaturesSection() {
+		// Written by 0.8.0, before wildlife.
+		String old = D.toJson().replaceAll("(?s),\\s*\"creatures\": \\{.*$", "\n}\n");
+		assertFalse(old.contains("\"creatures\""), old);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.WildlifeSettings.DEFAULTS, parsed.config().wildlife());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"creatures\"", "\"wildlife\"", "\"wildlife_spawn_multiplier\"", "\"glimmerwing\"", "\"lumen_stag\"",
+				"\"mossback_tortoise\"", "\"cinderfox\"", "\"skyray\"", "\"rimehare\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		// A creatures section missing one switch gets just that one back, keeping the owner's others.
+		String partial = D.toJson().replace("\"skyray\": true,", "").replace("\"wildlife_spawn_multiplier\": 1.0", "\"wildlife_spawn_multiplier\": 0.5");
+		assertFalse(partial.contains("\"skyray\""), partial);
+		WildercordConfig.WildlifeSettings fixed = WildercordConfig.parse(WildercordConfig.addMissing(partial).orElseThrow()).config().wildlife();
+		assertTrue(fixed.skyray());
+		assertEquals(0.5, fixed.spawnMultiplier(), 1e-9);
+	}
 }

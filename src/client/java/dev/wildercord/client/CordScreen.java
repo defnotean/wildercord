@@ -136,6 +136,9 @@ public class CordScreen extends Screen {
 	/** The Grimoire page: everything discovered, in place of the rows, Codex and readout. */
 	private boolean grimoirePage;
 	private int grimoireScroll;
+	/** Where the field guide's heading falls among the Grimoire's lines, and whether to scroll there on the next draw. */
+	private int fieldGuideAt;
+	private boolean toFieldGuide;
 	private int editingPassive;
 	/** Renaming the selected spell: the name as typed so far. */
 	private boolean renaming;
@@ -2423,6 +2426,12 @@ public class CordScreen extends Screen {
 		renaming = false;
 	}
 
+	/** The Grimoire page, scrolled to its field guide (for tests and the guide's pictures). */
+	public void showFieldGuide() {
+		showPage(2);
+		toFieldGuide = true;
+	}
+
 	private int toolX(int i) {
 		return W - 16 - TOOLS_W + i * (TOOL + 2);
 	}
@@ -2617,6 +2626,8 @@ public class CordScreen extends Screen {
 		addWorldRunes(lines);
 		// The elemental climate where you stand, and the Bestiary: creatures met and what's known of their affinities.
 		addClimateAndBestiary(lines, found);
+		// The field guide: the creatures of the world met so far, and a hint of where to find the rest.
+		addFieldGuide(lines, found);
 		// Feats.
 		int feats = dev.wildercord.spell.Feats.count(found, "feat:");
 		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.feats", feats, dev.wildercord.spell.Feats.FEATS.size()), 0, GOLD, null));
@@ -2627,6 +2638,10 @@ public class CordScreen extends Screen {
 					Component.literal(feat.description()).withStyle(ChatFormatting.GRAY))));
 		}
 		int visible = (bottom - top) / LINE;
+		if (toFieldGuide) {
+			grimoireScroll = fieldGuideAt * LINE;
+			toFieldGuide = false;
+		}
 		grimoireScroll = Math.max(0, Math.min(grimoireScroll, Math.max(0, lines.size() * LINE - visible * LINE)));
 		int first = grimoireScroll / LINE;
 		List<Component> tip = null;
@@ -2987,6 +3002,39 @@ public class CordScreen extends Screen {
 			tip.add(Component.translatable("screen.wildercord.grimoire.bestiary_hint").withStyle(ChatFormatting.DARK_GRAY));
 			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.bestiary_line", name, weakText, resistText), 8,
 				unknown == 0 ? 0xFF9CE08C : TEXT, tip));
+		}
+	}
+
+	/**
+	 * The field guide ({@code spell.FieldGuide}): every creature listed, group by group. One met shows its name in its
+	 * colour with its entry on hover; one not met yet shows only a hint of where to look.
+	 */
+	private void addFieldGuide(List<GrimoireLine> lines, List<String> found) {
+		List<dev.wildercord.spell.FieldGuide.Entry> all = dev.wildercord.spell.FieldGuide.all();
+		List<dev.wildercord.spell.FieldGuide.Entry> met = dev.wildercord.spell.FieldGuide.met(found);
+		List<Component> about = List.of(Component.translatable("screen.wildercord.grimoire.field_guide_about").withStyle(ChatFormatting.GRAY));
+		fieldGuideAt = lines.size();
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.field_guide", met.size(), all.size()), 0, GOLD, about));
+		for (dev.wildercord.spell.FieldGuide.Group group : dev.wildercord.spell.FieldGuide.Group.values()) {
+			List<dev.wildercord.spell.FieldGuide.Entry> entries = dev.wildercord.spell.FieldGuide.group(group);
+			if (entries.isEmpty()) {
+				continue;
+			}
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.field_guide_" + (group == dev.wildercord.spell.FieldGuide.Group.WILDLIFE
+				? "wildlife" : "monsters")), 4, DIM, about));
+			for (dev.wildercord.spell.FieldGuide.Entry entry : entries) {
+				net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(Identifier.tryParse(entry.type()))
+					.flatMap(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);
+				Component name = type == null ? Component.literal(entry.type()) : type.getDescription();
+				if (met.contains(entry)) {
+					lines.add(new GrimoireLine(name.copy().withColor(entry.color()), 8, 0xFF000000 | entry.color(), List.of(
+						name.copy().withColor(entry.color()), Component.translatable(entry.noteKey()).withStyle(ChatFormatting.GRAY))));
+				} else {
+					Component hint = Component.translatable(entry.hintKey()).withStyle(ChatFormatting.ITALIC);
+					lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.field_guide_unknown", hint), 8, FAINT,
+						List.of(hint.copy().withStyle(ChatFormatting.GRAY))));
+				}
+			}
 		}
 	}
 

@@ -12,6 +12,7 @@
     "minecraft:zombified_piglin",
     "#minecraft:aquatic",
     "minecraft:drowned",
-    "wildercord:cinder_warden"
+    "wildercord:cinder_warden",
+    "wildercord:cinderfox"
   ]
 }

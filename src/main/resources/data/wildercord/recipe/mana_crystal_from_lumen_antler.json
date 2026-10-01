@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": "minecraft:lapis_lazuli",
+    "A": "minecraft:amethyst_shard",
+    "X": "wildercord:lumen_antler"
+  },
+  "pattern": [
+    "LAL",
+    "AXA",
+    "LAL"
+  ],
+  "result": {
+    "id": "wildercord:mana_crystal"
+  }
+}

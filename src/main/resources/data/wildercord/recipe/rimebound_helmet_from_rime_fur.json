@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_helmet",
+    "wildercord:rime_fur",
+    "wildercord:mana_crystal"
+  ],
+  "result": {
+    "id": "wildercord:rimebound_helmet",
+    "count": 1
+  }
+}

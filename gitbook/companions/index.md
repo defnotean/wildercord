@@ -15,6 +15,12 @@ time, and call them from a **Wisp Lantern**.
 **[Familiars](familiars.md)** covers where wisps appear, how to tame each element,
 what every familiar does at each level, and how to look after them.
 
+## A cinderfox
+
+Out in the deserts and badlands lives the **cinderfox**, a big-eared fox with a living ember for a tail. Feed one a
+rabbit and it may become yours: it follows you, sits when told, and its ember-hot bite sets anything weak to fire
+alight. See [Creatures](../world/creatures.md#cinderfox).
+
 ## Cord cosmetics
 
 The Cord screen's **Cosmetics** page changes how your Cord looks to everyone: the **beads** it's strung with, their

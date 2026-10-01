@@ -392,6 +392,8 @@ def main():
     residue_art.write(sys.modules[__name__])
     import monster_art  # The magical monsters of the wilds: skins, drops, eggs, loot and brews.
     monster_art.write(sys.modules[__name__])
+    import wildlife_art  # Magical wildlife: skins, glow layers, drops, spawn eggs, the frost print, loot, recipes and brews.
+    wildlife_art.write(sys.modules[__name__])
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -753,6 +755,8 @@ def write_lang(runes):
     lang.update(BONDS_LANG)
     import monster_art
     lang.update(monster_art.LANG)
+    import wildlife_art
+    lang.update(wildlife_art.LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"

@@ -3,6 +3,8 @@
     "minecraft:evoker",
     "minecraft:illusioner",
     "wildercord:archivist",
+    "wildercord:lumen_stag",
+    "wildercord:glimmerwing",
     "wildercord:geode_crawler"
   ]
 }

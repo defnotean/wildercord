@@ -99,6 +99,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.pet.CinnamonContent.init();
 		// The magical monsters of the wilds (after the config, which their spawns read).
 		dev.wildercord.monster.Monsters.init();
+		// Magical wildlife: glimmerwings, lumen stags, mossback tortoises, cinderfoxes, skyrays and rimehares.
+		dev.wildercord.wildlife.Wildlife.init();
 		dev.wildercord.cast.Dungeons.init();
 		dev.wildercord.world.dungeons.DungeonWards.init();
 		SpellCaster.init();

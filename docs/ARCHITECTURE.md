@@ -921,6 +921,15 @@ can draw the circle.
   model again, emissive (`RenderTypes.eyes`), with white marks tinted by the spell's colour; the
   colour and brightness reach the render state as Fabric render-state data. Babies (their own
   models in 26.x) and monsters of other shapes get the aura only.
+- **`wildlife/`** (the client's half of magical wildlife): a model per creature (`LumenStagModel`, `GlimmerwingModel`...,
+  hand-written boxes posed in `setupAnim` from one shared `WildlifeRenderState`) and `WildlifeRenderer`, which draws a
+  baby small and adds a glow layer (`RenderTypes.eyes` with a texture of only what glows, at the strength the renderer
+  works out: the moon's phase for a stag, the night for the rest, so it's safe under shader packs). Flat parts (wings,
+  moss) are zero-thickness boxes grown by 0.001 so their two faces never fight. `MossbackTortoiseRenderer` draws the
+  garden: three real plant block models (through the context's `BlockModelResolver`, as the mooshroom's mushrooms are)
+  set on the shell's crown and following it as it rocks and settles. `FrostPrint` is a rimehare's print, a flat quad in
+  vanilla's translucent particle layer, made straight into the particle engine by its renderer when the hare lands.
+  Dust, sparks and motes are the mod's `MoteOption`, spawned by each creature's own client tick.
 - **Mixins**: the Cord slot is added to the inventory menu on both sides (`InventoryMenuMixin`,
   menu index 46, and the gear slots and the Backpack slot after it), synced from creative mode (`ServerGamePacketListenerImplMixin`,
   for any `PlacedSlot`), drawn in the survival inventory (`InventoryScreenMixin`, with `SlotWell` for the
@@ -1004,6 +1013,27 @@ can draw the circle.
   on the tray (`GearLayout.traySlots()`); `client.BackpackScreen` draws the menu; `client.render.GearLayer` draws the
   worn pack (`BackpackModel`) under a slotted staff. The bigger backpacks are `content.UpgradeRecipe`s, shared with
   the Cords; `mixin.ShulkerBoxBlockEntityMixin` keeps hoppers from feeding backpacks into shulker boxes.
+- **Magical wildlife** (`wildlife/`; the design is DESIGN.md's [Magical wildlife](DESIGN.md#magical-wildlife)):
+  - `WildlifeRules` is pure (and unit-tested): each `Kind` (its pool, weight, group size, rarity, crowding and biomes),
+    the multiplier's effect on weight and chance, the moon's glow on a stag's antlers, a stag's `Stance` toward a player,
+    gardens by biome, the intervals for scutes and membranes, the spark-bite, a skyray's cruise and bank, and `approach`
+    (how poses ease on the client).
+  - `Wildlife` registers the six entity types, their drops (`WildlifeItem`: a lore line and a use line in the tooltip;
+    the Ember Tuft carries `COOKING_FUEL`) and spawn eggs, adds the Skyray Membrane to the elytra's `REPAIRABLE` through
+    `DefaultItemComponentEvents`, remembers each player's last cast (`AFTER_CAST`, for the glimmerwings), and once a
+    second per player writes a field-guide key for any guide creature in sight within 14 blocks (`Grimoire.unlock`).
+    Sounds are the feel kit's `wildlife_*` events, looked up by `Wildlife.sound(name)`.
+  - `WildlifeSpawns`: each kind joins its biomes through a Fabric biome modification (read as the world loads: switched
+    off, it's not added at all; its weight grows with a multiplier above 1), and its `SpawnPlacements` rule decides every
+    natural try live from `Config.get().wildlife()`: ground tag, light, the kind's chance and its crowding. Eggs, summons
+    and spawners skip the config, chance and crowding.
+  - The creatures: `Glimmerwing` and `Skyray` are `AmbientCreature`s that fly by steering their own velocity in
+    `customServerAiStep` (no pathfinding, so a swarm costs little); a glimmerwing samples five spots for block light
+    every two seconds, keeping the brightest, so a swarm finds a lamp over a few tries. `LumenStag`, `MossbackTortoise`
+    and `Rimehare` are `Animal`s, `Cinderfox` a `TamableAnimal`. The shy ones run with `FleeGoal` (vanilla's avoid goal
+    targets as for a fight, which Peaceful switches off). Synced data carries only what a model needs (a stag's pose and
+    shed day, a tortoise's garden and hiding, a moth's colouring); each creature eases its poses on the client
+    (`graze`, `hide`, `sit`, `air`, `flapPhase`...), with last tick's value beside it for the renderer to blend.
 - **The Archive** (`world/`): `ArchiveStructure` finds a spot and sinks the piece so its stairway
   meets the ground; `ArchivePiece` builds the whole dungeon in its own coordinates (every
   terrain-dependent part is worked out per column, so chunks can generate in any order) and places
@@ -1056,6 +1086,12 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
    the drops' icons and the spawn eggs, their item models, the loot tables (`entities/<id>`), the brewing recipes for the
    Shadow Pelt and the Bog Gland, and the English text (`monster_art.LANG`). `python tools/monster_art.py` renders a
    review sheet into `build/art-preview/`.
+12. **Magical wildlife** (`wildlife_art.py`): every creature's skin and glow layer, painted box by box onto the exact UV
+   layouts of the models in `client/wildlife/` (each box is painted from a function of the point on it, so a stripe down
+   a spine lands on every face it crosses; a box that would overlap another on the sheet is refused), the drops' icons,
+   the spawn eggs, the frost print, the entities' loot tables, the `wildercord:spawns_on/<creature>` ground tags, the
+   brews and recipes, and their English text (`wildlife_art.LANG`, with the creatures' sound subtitles).
+   `python tools/wildlife_art.py` renders a review sheet into `build/art-preview/`.
 
 Run `python tools/item_art.py` on its own to render review sheets of every icon into
 `build/art-preview/` (`circle_art.py --preview` does the same for every rune's ring and emblem).
@@ -1092,6 +1128,9 @@ The feel kit (`tools/feel/`, built by `python tools/feel/build.py --only <part>`
 `monster` part: the monsters' own voices (`monster_<creature>_<sound>`), whose subtitles name the creature
 (`subtitles.wildercord.kit.<creature>.<sound>`, their text in `monster_art.LANG`) rather than the four spell subtitles.
 The creatures play them through `MonsterMagic.sound` and `kit`, from the hostile sound source.
+The feel kit (`tools/feel/`, built with `python tools/feel/build.py --only <part>`) has one part that isn't an element:
+`wildlife`, the creatures' voices (wings, calls, footfalls, a crystal antler falling). Magic's kit sounds share four
+generic subtitles; a creature's names itself (`core.CREATURE_SUBTITLES`, their text in `wildlife_art.SUBTITLES`).
 
 ## 9. Testing
 
@@ -1175,6 +1214,20 @@ The creatures play them through `MonsterMagic.sound` and `kit`, from the hostile
   as a dungeon piece files its arena) won't let it lift anyone and sets down a flier who comes in; a monster's Pull
   and a Weigh ground a flier; a flight saved in a crash is tidied at login; death leaves nothing; and a real save
   and reload saves the player unable to fly, gives the flight back and lets it run out safely. Screenshots `soar_*`.
+- **`WildercordWildlifeTest`** builds a lawn in the sky with a strip of each creature's ground and checks that every
+  creature is in each of its biomes' spawn lists (read from the biome's `NATURAL_MOB_SPAWNS` attribute) and not in a
+  wrong one; that a spawn rule passes on the right ground (a stag about a third of the time), fails on the wrong one and
+  with `creatures.wildlife` off (reloaded), and never stops an egg; that a stag bolts from a player walking up, trusts
+  one sneaking still beside it and sheds one antler a day for them, and curses its killer and frightens its kin; that a
+  cinderfox tames with rabbit, sits, bites a polar bear 4.5 and sets it alight but a cow only 3, and gives one tuft a
+  day to the brush; that two tortoises fed melon raise a baby and a struck one hides and takes 40%; that a rimehare bolts
+  unless berries are held out; that a skyray climbs to its cruise and sheds a membrane; that a glimmerwing finds a
+  lantern at night and comes to a player casting; that creatures seen go into the field guide (and the Grimoire page
+  shows them, `wildlife_field_guide`); and, end to end, that glimmerwings spawn on their own once a stretch of the flat
+  world is turned to forest at night with mob spawning on. Then it photographs each creature close up by day
+  and night (`wildlife_<creature>_day`/`_night`) and a few poses (a stag grazing beside its shed antler, a tortoise in
+  its shell, a cinderfox sitting). `WildlifeRulesTest` covers the pure rules and the field guide, `WildercordConfigTest`
+  the `creatures` section.
 
 ## Hooks for other systems
 
