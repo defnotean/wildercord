@@ -46,6 +46,7 @@
   {% endif %}
 {% endfor %}
 <div class="nav-utility">
+  <a class="nav-link{% if page.url == '/controls/' %} active{% endif %}" href="{{ '/controls/' | relative_url }}"><svg class="icon"><use href="#i-controls"/></svg>Controls</a>
   <a class="nav-link{% if page.url == '/troubleshooting/' %} active{% endif %}" href="{{ '/troubleshooting/' | relative_url }}"><svg class="icon"><use href="#i-help"/></svg>Troubleshooting</a>
   <a class="nav-link" href="{{ '/performance/' | relative_url }}">Visual settings</a>
   <a class="nav-link" href="{{ '/whats-new/' | relative_url }}">What's new in 0.7</a>

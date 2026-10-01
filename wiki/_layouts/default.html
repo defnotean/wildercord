@@ -27,7 +27,6 @@
   </aside>
   <div class="guide-main">
     <main id="main-content" tabindex="-1">
-      {% if page.url != '/' %}<div class="article-context"><a href="{{ '/' | relative_url }}">Player Guide</a><span>/</span><span>{{ page.parent | default: page.title }}</span></div>{% endif %}
       <div class="reading-layout">
         <article class="article-content{% if page.url == '/' %} home-content{% endif %}">{{ content }}
         {% if page.next_url %}<nav class="article-pager" aria-label="Related guides"><a href="{{ page.previous_url | relative_url }}"><svg class="icon" style="transform:rotate(180deg)"><use href="#i-arrow"/></svg><div><span>Previous</span>{{ page.previous_title }}</div></a><a href="{{ page.next_url | relative_url }}"><div><span>Next</span>{{ page.next_title }}</div><svg class="icon"><use href="#i-arrow"/></svg></a></nav>{% endif %}
