@@ -161,6 +161,9 @@ public class ThunderwingHarpyModel extends EntityModel<MonsterRenderState> {
 
 		rightWing.zRot = wing;
 		leftWing.zRot = -wing;
+		// Shrieking or calling, it mantles: the wings turned to face what it threatens, every feather on show.
+		rightWing.xRot = -0.85F * shriek - 0.4F * call;
+		leftWing.xRot = -0.85F * shriek - 0.4F * call;
 		rightWing.yRot = sweep;
 		leftWing.yRot = -sweep;
 		rightOuter.zRot = outer;

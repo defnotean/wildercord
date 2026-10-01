@@ -46,62 +46,94 @@ def rgba(c, a=255):
     return (c[0], c[1], c[2], a)
 
 
+def smooth(x, y, seed, cell=3.0):
+    """Value noise in [0, 1) that changes over about `cell` pixels: soft clusters rather than salt and pepper."""
+    fx, fy = x / cell, y / cell
+    ix, iy = math.floor(fx), math.floor(fy)
+    tx, ty = fx - ix, fy - iy
+    tx, ty = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
+    a, b = noise(ix, iy, seed), noise(ix + 1, iy, seed)
+    c, d = noise(ix, iy + 1, seed), noise(ix + 1, iy + 1, seed)
+    return (a + (b - a) * tx) * (1 - ty) + (c + (d - c) * tx) * ty
+
+
 def bark(cv, area, tones, seed, face, base=2):
-    """Bark: vertical grain in ridges and dark grooves, knots now and then; a top or bottom shows rings."""
+    """Bark: long vertical ridges split by dark grooves (a ridge lit on its left edge), a knot now and then; a top or bottom
+    shows rings."""
     x0, y0, w, h = area
     light = LIGHT[face]
     if face in ("top", "bottom"):
         cx, cy = (w - 1) / 2, (h - 1) / 2
         for x, y, px, py in cells(area):
-            r = math.hypot(x - cx, y - cy) + noise(px, py, seed) * 0.8
-            t = base + light + (1 if int(r) % 2 == 0 else 0) - (1 if noise(px, py, seed + 3) < 0.12 else 0)
+            r = math.hypot(x - cx, y - cy) + smooth(px, py, seed, 2) * 0.9
+            t = base + light + (1 if int(r) % 2 == 0 else 0)
             cv.put(px, py, shade(tones, t))
         return
     for x, y, px, py in cells(area):
-        column = noise(px, 0, seed)
-        groove = noise(px, y // 4, seed + 1) < 0.28 or column < 0.18
+        # Grooves run down the face, wandering a pixel now and then.
+        wander = 1 if smooth(px * 3.0, y, seed + 7, 5) > 0.62 else 0
+        col = px + wander
+        groove = noise(col, 0, seed) < 0.3
+        lit = noise(col - 1, 0, seed) < 0.3 and not groove
         t = base + light
         if groove:
-            t -= 2
-        elif noise(px, py, seed + 2) > 0.8:
+            t -= 2 if noise(col, y // 5, seed + 1) > 0.15 else 0
+        elif lit:
+            t += 1
+        if smooth(px, py, seed + 3, 3) > 0.78:
             t += 1
         if y == 0:
             t += 1
-        if noise(px // 3, py // 3, seed + 5) > 0.94:
-            t -= 1
         cv.put(px, py, shade(tones, t))
+    # A knot or two: a dark eye ringed lighter.
+    for k in range(max(0, (w * h) // 90)):
+        kx, ky = int(noise(k, 1, seed + 11) * w), int(noise(k, 2, seed + 11) * h)
+        for dx, dy, dt in ((0, 0, -2), (1, 0, -1), (-1, 0, 1), (0, -1, 1), (0, 1, -1)):
+            if 0 <= kx + dx < w and 0 <= ky + dy < h:
+                cv.put(x0 + kx + dx, y0 + ky + dy, shade(tones, base + light + dt))
 
 
 def moss(cv, area, tones, seed, face, cover=0.55, base=2):
-    """Patches of moss over whatever is there: soft, lumpy, lighter on top."""
+    """Moss in soft cushions, thickest toward the top of a face (it grows where the rain sits), each cushion darker at its
+    rim and lit at its crown."""
+    x0, y0, w, h = area
     for x, y, px, py in cells(area):
-        n = noise(px // 2, py // 2, seed) * 0.7 + noise(px, py, seed + 1) * 0.3
-        reach = cover + (0.2 if face == "top" else 0) - (0.25 if face == "bottom" else 0)
+        n = smooth(px, py, seed, 3.2)
+        top = 1 - y / max(1, h - 1) if face not in ("top", "bottom") else 1.0
+        reach = cover * (0.45 + 0.75 * top) + (0.15 if face == "top" else 0) - (0.4 if face == "bottom" else 0)
         if n < reach:
-            t = base + LIGHT[face] + (1 if noise(px, py, seed + 2) > 0.7 else 0) - (1 if n < reach * 0.25 else 0)
+            depth = (reach - n) / max(0.01, reach)
+            t = base + LIGHT[face] + (1 if depth > 0.55 else 0) + (1 if depth > 0.8 and (px + py) % 2 == 0 else 0) - (1 if depth < 0.15 else 0)
             cv.put(px, py, shade(tones, t))
 
 
 def leaves(cv, area, tones, seed, face, holes=0.0):
-    """Clumped leaves: each a small blob lit from the top left, dark gaps between, and a few holes at the edge."""
+    """Clumped leaves: rounded clusters lit from the top left with dark gaps between, and holes at the ragged edge."""
     x0, y0, w, h = area
     for x, y, px, py in cells(area):
         edge = min(x, w - 1 - x, y, h - 1 - y)
-        if holes and edge == 0 and noise(px, py, seed + 9) < holes:
+        if holes and edge == 0 and smooth(px, py, seed + 9, 1.6) < holes:
             continue
-        blob = noise(px // 2, py // 2, seed)
-        sub = (px + py) % 2
-        t = 2 + LIGHT[face] + (1 if blob > 0.6 else 0) + (1 if sub == 0 and blob > 0.8 else 0) - (2 if noise(px, py, seed + 1) < 0.12 else 0)
+        n = smooth(px, py, seed, 2.2)
+        lit = smooth(px - 1, py - 1, seed, 2.2)
+        t = 2 + LIGHT[face]
+        if n < 0.3:
+            t -= 2
+        elif lit > n + 0.08:
+            t -= 1
+        elif n > 0.62:
+            t += 1
+            if n > 0.8 and (px + py) % 2 == 0:
+                t += 1
         cv.put(px, py, shade(tones, t))
 
 
 def fur(cv, area, tones, seed, face, base=2, along_y=False):
-    """Short fur, stroked one way: streaks a few pixels long, a sheen on top."""
-    x0, y0, w, h = area
+    """Short fur, stroked one way: soft streaks a few pixels long, a sheen where it catches the light."""
     for x, y, px, py in cells(area):
-        a, b = (px, py // 3) if along_y else (px // 3, py)
-        streak = noise(a, b, seed)
-        t = base + LIGHT[face] + (1 if streak > 0.72 else 0) - (1 if streak < 0.2 else 0)
+        a, b = (px * 2.5, py * 0.6) if along_y else (px * 0.6, py * 2.5)
+        streak = smooth(a, b, seed, 2.0)
+        t = base + LIGHT[face] + (1 if streak > 0.7 else 0) - (1 if streak < 0.22 else 0)
         cv.put(px, py, shade(tones, t))
 
 
@@ -156,13 +188,13 @@ def crystal(cv, area, tones, seed, face):
 
 
 def mottle(cv, area, tones, blotch, seed, face, base=2, blotchiness=0.25):
-    """Mottled skin: big soft blotches of a second colour over the first."""
+    """Mottled skin: big soft blotches of a second colour over the first, darker at their hearts."""
     for x, y, px, py in cells(area):
-        n = noise(px // 3, py // 3, seed) * 0.65 + noise(px, py, seed + 1) * 0.35
-        t = base + LIGHT[face] + (1 if noise(px, py, seed + 2) > 0.8 else 0)
+        n = smooth(px, py, seed, 3.5)
+        t = base + LIGHT[face] + (1 if smooth(px, py, seed + 2, 1.7) > 0.72 else 0)
         c = shade(tones, t)
         if n < blotchiness:
-            c = shade(blotch, t - 1)
+            c = shade(blotch, t - (2 if n < blotchiness * 0.5 else 1))
         cv.put(px, py, c)
 
 
@@ -193,20 +225,26 @@ def dots(cv, area, pixels, colour):
 
 
 def vine_strand(cv, area, seed, stem, leaf, glow=None, glow_cv=None, slope=0.5):
-    """A vine winding across a face: a stem one pixel wide, a leaf now and then (and, on a glow sheet, its sap)."""
+    """A vine winding across a face: a stem with a shadow beside it, a pair of leaves now and then (and, on a glow sheet,
+    the sap running in it)."""
     x0, y0, w, h = area
     rng = random.Random(seed)
     x = rng.uniform(0, w - 1)
+    shadow = mix(stem, (0, 0, 0), 0.5)
     for y in range(h):
         x += math.sin(y * 0.7 + seed) * slope
         xi = int(round(x)) % w
         cv.put(x0 + xi, y0 + y, stem)
+        if w > 2:
+            cv.put(x0 + (xi + 1) % w, y0 + y, shadow)
         if glow_cv is not None and glow is not None and y % 3 != 1:
             glow_cv.put(x0 + xi, y0 + y, glow)
-        if rng.random() < 0.3:
+        if y % 3 == 1 and rng.random() < 0.7:
             side = 1 if rng.random() < 0.5 else -1
-            lx = (xi + side) % w
-            cv.put(x0 + lx, y0 + y, leaf)
+            for k in (1, 2):
+                lx = xi + side * k
+                if 0 <= lx < w:
+                    cv.put(x0 + lx, y0 + y - (k - 1), leaf if k == 1 else mix(leaf, (255, 255, 200), 0.25))
 
 
 def strands(cv, area, colours, seed, density=0.55, alpha=255):
@@ -274,7 +312,7 @@ def bramblewalker_texture():
                 if abs(math.sin(ang * 3 + 0.4)) > 0.75 and math.hypot(dx, dy) > 1.5:
                     cv.put(px, py, hexc("#2E2216"))
     # Moss over its shoulders, back and the tops of everything; leaves in clumps.
-    for part, seed, cover in ((B_TORSO, 11, 0.38), (B_HEAD, 12, 0.3), (B_ARM, 13, 0.25), (B_LEG, 14, 0.2)):
+    for part, seed, cover in ((B_TORSO, 11, 0.42), (B_HEAD, 12, 0.4), (B_ARM, 13, 0.3), (B_LEG, 14, 0.18)):
         for name, area in faces(part):
             if name != "bottom":
                 moss(cv, area, MOSS, seed + len(name), name, cover=cover)
@@ -291,8 +329,10 @@ def bramblewalker_texture():
     for part in (B_BRANCH, B_TWIG):
         for name, area in faces(part, "front", "right", "left", "back"):
             x0, y0, w, h = area
-            for y in range(0, h, 3):
-                cv.put(x0 + (y // 3) % w, y0 + y, THORN)
+            rng = random.Random(x0 * 31 + y0)
+            for y in range(1, h, 4):
+                if rng.random() < 0.6:
+                    cv.put(x0 + rng.randrange(w), y0 + y + rng.randrange(2), THORN)
     for name, area in faces(B_TWIG, "top"):
         fill(cv, area, THORN)
     # The hanging vine curtains: strands of vine and leaf on transparency.
@@ -434,9 +474,25 @@ def gloomstalker_eyes_texture():
     hx, hy, _, _ = G_HEAD["front"]
     for (x, y) in G_EYES:
         core = x in (1, 4)
-        cv.put(hx + x, hy + y, (255, 255, 255, 255) if core else (224, 176, 255, 255))
-    for (x, y) in ((0, 0), (1, 0), (4, 0), (5, 0), (0, 2), (5, 2)):
-        cv.put(hx + x, hy + y, (180, 90, 240, 90))
+        cv.put(hx + x, hy + y, (255, 255, 255, 255) if core else (232, 190, 255, 255))
+    for (x, y) in ((0, 0), (1, 0), (4, 0), (5, 0), (0, 2), (1, 2), (4, 2), (5, 2)):
+        cv.put(hx + x, hy + y, (190, 110, 255, 140))
+    # From the side, a glint where each eye wraps round.
+    for name, ex in (("right", G_HEAD["right"]), ("left", G_HEAD["left"])):
+        x0, y0, w, h = ex
+        cv.put(x0 + (w - 1 if name == "right" else 0), y0 + 1, (220, 170, 255, 220))
+    return cv.image()
+
+
+def gloomstalker_flare_texture():
+    """A wider burn of violet round the eyes, shown as it crouches to pounce."""
+    cv = Sheet(128, 64)
+    hx, hy, hw, hh = G_HEAD["front"]
+    for x in range(hw):
+        for y in range(3):
+            near = min(abs(x - 1), abs(x - 4))
+            if near <= 1:
+                cv.put(hx + x, hy + y, (255, 230, 255, 255) if (y == 1 and near == 0) else (210, 140, 255, 200 if near == 0 else 130))
     return cv.image()
 
 
@@ -719,9 +775,9 @@ def frog_skin(cv, area, seed, face, belly_from=None):
     if belly_from is not None:
         for x, y, px, py in cells(area):
             if y >= belly_from + (1 if noise(px, 0, seed) > 0.5 else 0):
-                cv.put(px, py, shade(BELLY, 2 + (1 if noise(px, py, seed + 4) > 0.7 else 0) - (1 if y == h - 1 else 0)))
+                cv.put(px, py, shade(BELLY, 2 + (1 if smooth(px, py, seed + 4, 2.5) > 0.66 else 0) - (1 if y == h - 1 else 0)))
     if face in ("top", "front", "right", "left", "back"):
-        warts(cv, area, WART_RIM, WART_TOP, seed + 7, max(1, w * h // 14))
+        warts(cv, area, WART_RIM, WART_TOP, seed + 7, max(1, w * h // 26))
 
 
 def bog_witch_frog_texture():
@@ -774,9 +830,9 @@ def bog_witch_frog_texture():
     # The throat sac: pale, stretched thin, veined.
     for name, area in faces(F_SAC):
         for x, y, px, py in cells(area):
-            c = hexc("#B8C878") if noise(px, py, 50) > 0.15 else hexc("#8AA050")
+            c = hexc("#A8B474") if smooth(px, py, 50, 2) > 0.3 else hexc("#909C5E")
             if (x * 2 + y) % 5 == 0:
-                c = hexc("#8AA858")
+                c = hexc("#7E8C4E")
             cv.put(px, py, c)
     # Legs: green with darker bands; webbed feet.
     for part, seed in ((F_FORELEG, 60), (F_THIGH, 70)):
@@ -1320,6 +1376,7 @@ def skins():
         "gloomstalker": gloomstalker_texture(),
         "gloomstalker_eyes": gloomstalker_eyes_texture(),
         "gloomstalker_glow": gloomstalker_glow_texture(),
+        "gloomstalker_flare": gloomstalker_flare_texture(),
         "thunderwing_harpy": harpy_paint(),
         "thunderwing_harpy_glow": harpy_paint(glow=True),
         "thunderwing_harpy_eyes": harpy_eyes_texture(),

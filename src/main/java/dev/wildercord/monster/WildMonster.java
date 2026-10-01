@@ -59,6 +59,14 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		}
 	}
 
+	/**
+	 * Holds a creature that has no AI (its AI would set them again each tick) in a pose: its flags exactly these. For the
+	 * tests' pictures and the guide's.
+	 */
+	public void holdPose(int flags) {
+		entityData.set(DATA_STATE, (byte) flags);
+	}
+
 	/** Whether one of the flags above is on, on either side. */
 	public boolean state(int flag) {
 		return (entityData.get(DATA_STATE) & flag) != 0;

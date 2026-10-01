@@ -140,7 +140,7 @@ public class BogWitchFrogModel extends EntityModel<MonsterRenderState> {
 
 		// The throat sac: a slow pulse at rest, swelling huge before a spit, fat after a meal, bulging as it swallows.
 		float pulse = 1 + Mth.sin(t * 0.3F) * 0.07F;
-		float size = pulse * (1 + 0.95F * swell + 0.4F * gulp + (state.engorged ? 0.25F : 0));
+		float size = pulse * (1 + 0.6F * swell + 0.3F * gulp + (state.engorged ? 0.2F : 0));
 		sac.xScale = size;
 		sac.yScale = size;
 		sac.zScale = size;

@@ -97,6 +97,20 @@ public class GeodeCrawlerModel extends EntityModel<MonsterRenderState> {
 		for (int i = 0; i < BALL_CRYSTALS.length; i++) {
 			crystal(ball, "crystal_" + i, BALL_CRYSTALS[i], -4.6F);
 		}
+		// And round its sides, leaning out.
+		float[][] sides = {{-4.6F, 0.5F, -1.0F, 0, -1.25F}, {4.6F, -0.5F, 1.5F, 1, 1.3F}, {0.0F, 0.0F, 4.6F, 1, 0.0F}, {-1.5F, 1.0F, -4.6F, 2, 0.0F},
+			{3.0F, 2.0F, -3.0F, 2, 0.9F}};
+		for (int i = 0; i < sides.length; i++) {
+			float[] c = sides[i];
+			CubeListBuilder cube = CubeListBuilder.create();
+			switch ((int) c[3]) {
+				case 0 -> cube.texOffs(90, 0).addBox(-1.5F, -7.0F, -1.5F, 3.0F, 7.0F, 3.0F);
+				case 1 -> cube.texOffs(102, 0).addBox(-1.0F, -5.0F, -1.0F, 2.0F, 5.0F, 2.0F);
+				default -> cube.texOffs(110, 0).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 3.0F, 2.0F);
+			}
+			float xRot = c[2] > 4 ? 1.3F : c[2] < -4 ? -1.3F : 0.0F;
+			ball.addOrReplaceChild("side_" + i, cube, PartPose.offsetAndRotation(c[0], c[1], c[2], xRot, 0.0F, c[4]));
+		}
 		return LayerDefinition.create(mesh, 128, 64);
 	}
 

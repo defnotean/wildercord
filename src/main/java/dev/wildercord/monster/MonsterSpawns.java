@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.attribute.EnvironmentAttributes;
@@ -91,7 +92,10 @@ public final class MonsterSpawns {
 					|| pos.getY() < MonsterRules.LEY_OOZE_Y && !level.canSeeSky(pos) && onLey(level, pos)));
 
 		// Their places among each biome's monsters. Read as each world loads, so the spawn rate counts from then.
-		BiomeModifications.create(Wildercord.id("monsters")).add(ModificationPhase.ADDITIONS, BiomeSelectors.foundInOverworld(), MonsterSpawns::add);
+		// Every overworld biome, by the vanilla tag as well as by where they generate, so a world whose overworld makes only a few
+		// (a superflat one) still knows them all.
+		BiomeModifications.create(Wildercord.id("monsters")).add(ModificationPhase.ADDITIONS,
+			BiomeSelectors.foundInOverworld().or(BiomeSelectors.tag(BiomeTags.IS_OVERWORLD)), MonsterSpawns::add);
 	}
 
 	private static void add(BiomeSelectionContext biome, BiomeModificationContext context) {

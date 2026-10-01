@@ -59,7 +59,13 @@ public final class MonsterClient {
 	/** Its eyes, and the lightning streaks in its feathers: crackling as it shrieks or calls a bolt, brighter in a storm. */
 	private static WildMonsterRenderer<ThunderwingHarpy, ThunderwingHarpyModel> harpy(EntityRendererProvider.Context context) {
 		WildMonsterRenderer<ThunderwingHarpy, ThunderwingHarpyModel> renderer = new WildMonsterRenderer<>(context,
-			new ThunderwingHarpyModel(context.bakeLayer(THUNDERWING_HARPY)), 0.5F, Wildercord.id("textures/entity/thunderwing_harpy.png"));
+			new ThunderwingHarpyModel(context.bakeLayer(THUNDERWING_HARPY)), 0.5F, Wildercord.id("textures/entity/thunderwing_harpy.png")) {
+			@Override
+			protected void scale(MonsterRenderState state, com.mojang.blaze3d.vertex.PoseStack poseStack) {
+				// A little bigger than its box: it's all wing.
+				poseStack.scale(1.2F, 1.2F, 1.2F);
+			}
+		};
 		renderer.glow(Wildercord.id("textures/entity/thunderwing_harpy_glow.png"), state -> {
 			Minecraft mc = Minecraft.getInstance();
 			float storm = mc.level != null && mc.level.isThundering() ? 0.25F : 0;

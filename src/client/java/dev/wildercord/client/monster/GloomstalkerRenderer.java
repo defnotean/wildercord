@@ -21,7 +21,9 @@ public class GloomstalkerRenderer extends WildMonsterRenderer<Gloomstalker, Gloo
 
 	public GloomstalkerRenderer(EntityRendererProvider.Context context) {
 		super(context, new GloomstalkerModel(context.bakeLayer(LAYER)), 0.5F, TEXTURE);
-		glow(Wildercord.id("textures/entity/gloomstalker_eyes.png"), state -> white((0.55F + 0.45F * Math.max(state.windup, state.acting)) * alive(state)));
+		glow(Wildercord.id("textures/entity/gloomstalker_eyes.png"), state -> white(0.9F * alive(state)));
+		// The tell: as it crouches to pounce, its eyes flare.
+		glow(Wildercord.id("textures/entity/gloomstalker_flare.png"), state -> white(Math.max(state.windup, state.acting * 0.6F) * alive(state)));
 		// The violet seams in its fur, faint, and only where it can be seen at all.
 		glow(Wildercord.id("textures/entity/gloomstalker_glow.png"), state -> white(0.35F * (1 - state.veil) * alive(state)));
 	}

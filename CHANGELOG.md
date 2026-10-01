@@ -4,6 +4,52 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Monsters of the wilds
+Six new magical monsters make the wilds dangerous again, each with its own model, glow, voice and way of fighting, a
+tell before its big attack and a way to beat it. They spawn on their own where they belong (a few in fifty of the
+monsters where they live, inside the game's own monster cap), never on Peaceful.
+- **Bramblewalker** (forests at night, most of all dark forests and the pale garden): a hunched, walking thicket of bark,
+  moss and thorn. It rears back, its vines glowing, and lashes a vine along the ground at where you stood: caught, you're
+  rooted where you stand for a breath (a second and a half on Normal). Step aside as it rears. It's dry wood: fire hurts
+  it half again as much, and set alight it panics and runs. Drops **Living Bramble**: throw it and it roots what it hits
+  for two seconds (it composts well, too).
+- **Gloomstalker** (dark forests at night, and the deep caves below 0 anywhere): a shadow panther that's all but
+  invisible in the dark, two violet eyes hanging in the gloom. It circles, crouches (its eyes flare: the tell), pounces,
+  and slinks away into the dark to try again; a missed pounce leaves it sprawled. Light undoes it: a torch's glow, day,
+  standing close, glowing, or a spell of fire, storm, arcane or life (which lays it bare for six seconds). Drops
+  **Shadow Pelt**, which brews a Potion of Invisibility straight from an Awkward Potion.
+- **Thunderwing Harpy** (the bare peaks and windswept hills, from 90 up, at night or in a storm): a storm-feathered hunter
+  that circles out of reach, hangs a moment and shrieks with its wings flung wide, then dives. A dive that misses ploughs
+  into the ground and leaves it stunned: dodge, then punish. In a thunderstorm it calls lightning on a ring of light
+  where you stand. Any earth spell drags it out of the sky; frost stiffens its feathers. Drops **Storm Feathers**: use
+  one and a gust lifts you a few blocks and lets you drift down.
+- **Geode Crawler** (caves below 50, mostly near amethyst geodes): a crystal-backed beetle. Struck, it curls into a ball
+  of crystal that only a fifth of a blow gets through, rattles, and rolls at you; a roll into a wall dazes it. A mace, a
+  pickaxe, a blast or a shock (storm magic, lightning) cracks it open. Drops **Geode Grit** (the earth reagent) and
+  amethyst shards.
+- **Bog Witch-Frog** (swamps and mangrove swamps at night): a frog the size of a cow, a lily pad on its head for a hat.
+  Its throat swells and glows before it lobs a slow bubble of bog poison that bursts where it lands; shoot or strike the
+  bubble in the air and it pops harmlessly. Its tongue snatches chickens, rabbits, bats, silverfish and the smallest
+  slimes, and it swallows them whole, healing, its next bubble fatter; up close it lashes its tongue at you to drag you
+  in (a raised shield turns it). Drops **Bog Gland**: with an Awkward Potion it brews Water Breathing, with a Thick Potion
+  Leaping.
+- **Mana Ooze** (the deep caves below 0, or caves below 40 under a ley line): a slime of clear jelly that eats spells. A
+  spell's harm sinks into it and only fills it; full, it grows a size, healed, and full at its biggest it bursts into
+  two. Its touch drinks a little of a caster's mana. Blades, arrows and fire (spells or flames) beat it; it never splits
+  when it dies. Drops **Mana Gel**: eat it for 15 mana at once.
+- **Any of them can be Runebound**, carrying a spell that suits it (a Bramblewalker's roots, a harpy's lightning bolt, a
+  Mana Ooze's silence), with the Runebound's nameplate, aura and drops.
+- **Every monster has its affinities** (a Bramblewalker weak to fire, a Gloomstalker to arcane, a harpy to earth and
+  frost, a Geode Crawler to storm, a frog to frost, a Mana Ooze to fire, and their resistances), which the Grimoire's
+  Bestiary learns as you fight them.
+- **Their magic lands like any spell**: a harpy's lightning, a frog's poison and an ooze's burst go through armour,
+  Warding, the Potion of Warding and the spellguard.
+- **A spawn egg for each**, in the Wildercord tab and the Spawn Eggs tab.
+- **Server settings**: a new `monsters` section with a master switch (`enabled`), `spawn_rate` (0 to 4, read when a
+  world loads) and a switch for each monster (at once, with `/wildercord reload`). An older config file gains it at its
+  defaults.
+- **The feel kit has a monster part** for the creatures' own voices, with subtitles that name them.
+
 ## [0.8.0-alpha] - 2026-10-01
 
 Magic that feels like your own. Every world answers to harmonies of its own and bends a few runes its own way, runes
