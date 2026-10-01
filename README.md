@@ -12,7 +12,7 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.7.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.7.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
+**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.7.1-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.7.1-alpha)** · [GitBook export](gitbook/SUMMARY.md)
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -430,7 +430,7 @@ every push, checks generated resources, and runs the client game suites under Xv
 
 ## September 30 expansion and audit fixes
 
-The 0.7.0-alpha release adds three expeditions (Clockwork Crypt, Living Greenhouse and Moving Sky Ruin), Root Guardian and Storm Conductor encounters, three elemental armour sets, two defensive foci, Mirror-thread Mantle and three dungeon handling charms. Cinnamon now retains her sitting preference and has sleeping, greeting, petting and toy behaviour.
+The 0.7.1-alpha release adds three expeditions (Clockwork Crypt, Living Greenhouse and Moving Sky Ruin), Root Guardian and Storm Conductor encounters, three elemental armour sets, two defensive foci, Mirror-thread Mantle and three dungeon handling charms. Cinnamon now retains her sitting preference and has sleeping, greeting, petting and toy behaviour.
 
 Formation circles sit behind the caster while each of the 39 shapes assembles its own release. Named and exact woven fusions carry their ingredient materials into formations. Client visual settings include three presets, reduced flashing, camera motion controls and a local frame sampler.
 

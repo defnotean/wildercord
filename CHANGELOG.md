@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.7.1-alpha] - 2026-10-01
+
+- New detailed project icon shared by the mod JAR, player guide and CurseForge: a braided Cord, luminous elemental rune beads and a mint-and-gold magic circle.
+- Rewritten CurseForge description and summary, current feature counts, gameplay images, player guide link and updated gallery.
+- All gameplay changes from 0.7.0-alpha are included. This patch changes branding and publication materials.
+
 ## [0.7.0-alpha] - 2026-10-01
 
 Full release notes: [0.7.0-alpha](docs/releases/0.7.0-alpha.md). This release also adds physical terrain spells, twelve circle disciplines, multi-effect weaving, Cinnamon, defensive equipment, expeditions, practice, research, home projects, performance profiles and a reworked player guide. See the release notes for current counts and tradeoffs.
