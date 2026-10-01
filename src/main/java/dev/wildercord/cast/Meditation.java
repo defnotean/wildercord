@@ -2,7 +2,6 @@ package dev.wildercord.cast;
 
 import dev.wildercord.player.Spellbooks;
 import dev.wildercord.player.WildercordAttachments;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -31,7 +30,8 @@ public final class Meditation {
 		State previous = STATES.get(player.getUUID());
 		Vec3 pos = player.position();
 		boolean still = previous != null && previous.lastPos().distanceToSqr(pos) < 0.0025;
-		boolean posed = wearing && player.isShiftKeyDown() && player.onGround() && !player.isUsingItem() && !player.isSpectator();
+		boolean posed = wearing && player.isShiftKeyDown() && player.onGround() && !player.isUsingItem() && !player.isSpectator()
+			&& !player.hasAttached(WildercordAttachments.CHARGE);
 		int checks = posed && still ? (previous == null ? 0 : previous.stillChecks()) + 1 : 0;
 		STATES.put(player.getUUID(), new State(pos, checks));
 
@@ -48,20 +48,19 @@ public final class Meditation {
 		}
 	}
 
-	/** A slow ring of soft lights turning round the player's feet, and glyphs drifting in toward them. */
+	/** A few soft lights at ankle height, with inward wisps that stay below the knees. */
 	private static void show(ServerPlayer player) {
 		ServerLevel level = player.level();
 		Vec3 feet = player.position().add(0, 0.12, 0);
 		double spin = level.getGameTime() * 0.05;
 		for (int i = 0; i < 5; i++) {
 			double a = spin + Math.PI * 2 * i / 5;
-			Motes.glow(level, feet.add(Math.cos(a) * 1.1, 0, Math.sin(a) * 1.1), i % 2 == 0 ? 0xB8A8FF : 0xE4DCFF, 0.13, 14, new Vec3(0, 0.012, 0), 0.0);
+			Motes.glow(level, feet.add(Math.cos(a) * 0.75, 0, Math.sin(a) * 0.75), i % 2 == 0 ? 0xB8A8FF : 0xE4DCFF, 0.08, 12, new Vec3(0, 0.004, 0), 0.0);
 		}
 		for (int i = 0; i < 2; i++) {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
-			Vec3 from = feet.add(Math.cos(a) * 1.4, 0.3 + level.getRandom().nextDouble() * 0.6, Math.sin(a) * 1.4);
-			Vec3 dir = feet.add(0, 0.8, 0).subtract(from);
-			Fx.send(level, ParticleTypes.ENCHANT, from.x, from.y, from.z, 0, dir.x, dir.y, dir.z, 0.6);
+			Vec3 from = feet.add(Math.cos(a) * 0.9, 0.08, Math.sin(a) * 0.9);
+			Motes.seek(level, from, feet, 0xB8A8FF, 0.06, 12, 0.15);
 		}
 	}
 

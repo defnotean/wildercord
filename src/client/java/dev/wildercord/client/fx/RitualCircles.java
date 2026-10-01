@@ -85,7 +85,7 @@ public final class RitualCircles {
 			Vec3 down = right.cross(look).normalize().scale(-1);
 			boolean main = player.getMainHandItem().is(WildercordItems.BLANK_RUNE) || !player.getOffhandItem().is(WildercordItems.BLANK_RUNE);
 			boolean rightHand = main == (player.getMainArm() == HumanoidArm.RIGHT);
-			return eye.add(look.scale(1.05)).add(right.scale(rightHand ? 0.36 : -0.36)).add(down.scale(0.3));
+			return eye.add(look.scale(1.05)).add(right.scale(rightHand ? 0.48 : -0.48)).add(down.scale(0.55));
 		}
 		float yaw = Mth.lerp(partial, player.yBodyRotO, player.yBodyRot) * Mth.DEG_TO_RAD;
 		Vec3 forward = new Vec3(-Mth.sin(yaw), 0, Mth.cos(yaw));
@@ -100,6 +100,17 @@ public final class RitualCircles {
 	private static float busy() {
 		ParticleStatus status = Minecraft.getInstance().options.particles().get();
 		return status == ParticleStatus.ALL ? 1F : status == ParticleStatus.DECREASED ? 0.5F : 0.2F;
+	}
+
+	/** A point {@code distance} ahead of the player's feet, the way their body faces. */
+	static Vec3 ahead(LivingEntity player, double distance) {
+		double yaw = player.getYRot() * Mth.DEG_TO_RAD;
+		return player.position().add(-Mth.sin((float) yaw) * distance, 0.07, Mth.cos((float) yaw) * distance);
+	}
+
+	private static boolean ownView(LivingEntity player) {
+		Minecraft mc = Minecraft.getInstance();
+		return player == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson();
 	}
 
 	/** The land's circle under one player. */
@@ -199,18 +210,27 @@ public final class RitualCircles {
 			}
 		}
 
-		/** Motes of the land drifting up off the circle and spiralling into the hand, more as it builds. */
+		/**
+		 * Motes of the land drifting up off the circle and spiralling into the hand, more as it builds. In your own first-person
+		 * view the hand is just under your eyes, so there they only lift a little off the circle and fade, low and few.
+		 */
 		private void rise() {
 			Minecraft mc = Minecraft.getInstance();
-			motes += (0.55F + 2.6F * shown) * busy();
+			boolean own = ownView(player);
+			motes += (0.55F + 2.6F * shown) * busy() * (own ? 0.15F : 1F);
 			Vec3 into = hand(player, 1);
-			float r = RADIUS * (1 + 0.12F * shown);
+			float r = (own ? 0.75F : RADIUS) * (1 + 0.12F * shown);
 			while (motes >= 1) {
 				motes -= 1;
 				float a = random.nextFloat() * Mth.TWO_PI;
 				float d = r * (0.45F + 0.6F * random.nextFloat());
 				Vec3 from = new Vec3(x + Mth.cos(a) * d, y + 0.02 + random.nextFloat() * 0.1, z + Mth.sin(a) * d);
 				int tint = random.nextInt(4) == 0 ? lighter(color, 0.65F) : color;
+				if (own) {
+					mc.particleEngine.add(MoteParticle.glow(level, from, tint, 0.04F + 0.02F * shown, 16 + random.nextInt(8), new Vec3(0, 0.012, 0),
+						Vec3.ZERO, 0.0F));
+					continue;
+				}
 				mc.particleEngine.add(MoteParticle.seek(level, from, into, tint, 0.09F + 0.06F * shown + random.nextFloat() * 0.04F,
 					26 + random.nextInt(14), 0.45F + random.nextFloat() * 0.5F));
 			}
@@ -221,10 +241,11 @@ public final class RitualCircles {
 			finishing = 0;
 			progress = 1;
 			Minecraft mc = Minecraft.getInstance();
-			Vec3 at = hand(player, 1);
 			boolean own = player == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson();
-			float speck = own ? 0.07F : 0.12F;
-			int n = Math.max(6, Math.round(26 * busy()));
+			// In your own view the light bursts from the circle at your feet, a little ahead, where you can look down at it.
+			Vec3 at = own ? ahead(player, 0.9).add(0, 0.25, 0) : hand(player, 1);
+			float speck = own ? 0.05F : 0.12F;
+			int n = Math.max(3, Math.round((own ? 6 : 26) * busy()));
 			for (int i = 0; i < n; i++) {
 				float yy = 1 - (i + 0.5F) * 2F / n;
 				float s = Mth.sqrt(Math.max(0, 1 - yy * yy));
@@ -262,7 +283,8 @@ public final class RitualCircles {
 				flare = Math.max(flare, Mth.clamp(1 - f / 8F, 0, 1));
 				out = Mth.clamp(1 - (f - 8) / (FINISH - 8), 0, 1);
 			}
-			return in * out * Math.min(1.35F, bright + 0.35F * flare);
+			// Quieter in your own view: it's underfoot, and you're meant to be able to see past it.
+			return in * out * Math.min(1.35F, bright + 0.35F * flare) * (ownView(player) ? 0.6F : 1F);
 		}
 
 		@Override
@@ -272,7 +294,7 @@ public final class RitualCircles {
 				float f = Mth.clamp((finishing + partial) / 10F, 0, 1);
 				grow *= 1 + 0.18F * (1 - (1 - f) * (1 - f));
 			}
-			return RADIUS * grow;
+			return (ownView(player) ? 0.75F : RADIUS) * grow;
 		}
 
 		@Override
@@ -347,9 +369,11 @@ public final class RitualCircles {
 			Vec3 cam = camera.position();
 			float beat = 0.85F + 0.15F * Mth.sin((age + partial) * 0.5F);
 			Minecraft mc = Minecraft.getInstance();
-			// In your own first-person view it's right in front of you: smaller, so it never fills the screen.
-			boolean own = player == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson();
-			float size = (0.06F + 0.12F * gathered) * beat * (own ? 0.45F : 1F);
+			// In your own first-person view the hand is right under your eyes: the gathering light is left to everyone else.
+			if (player == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson()) {
+				return;
+			}
+			float size = (0.06F + 0.12F * gathered) * beat;
 			billboard(state, soft, (float) (at.x - cam.x), (float) (at.y - cam.y), (float) (at.z - cam.z), size * 2.2F,
 				argb(Math.min(1, a) * 0.55F, color));
 			billboard(state, glow, (float) (at.x - cam.x), (float) (at.y - cam.y), (float) (at.z - cam.z), size,
@@ -410,7 +434,7 @@ public final class RitualCircles {
 			xo = x;
 			yo = y;
 			zo = z;
-			Vec3 at = hand(player, 1).add(0, 0.3 + age * 0.012, 0);
+			Vec3 at = ownView(player) ? ahead(player, 0.9).add(0, 0.2 + age * 0.006, 0) : hand(player, 1).add(0, 0.3 + age * 0.012, 0);
 			x = at.x;
 			y = at.y;
 			z = at.z;
@@ -429,7 +453,7 @@ public final class RitualCircles {
 			}
 			Minecraft mc = Minecraft.getInstance();
 			boolean own = player == mc.getCameraEntity() && mc.options.getCameraType().isFirstPerson();
-			float half = (own ? 0.16F : 0.24F) * (0.4F + 0.6F * (1 - (1 - grow) * (1 - grow)));
+			float half = (own ? 0.09F : 0.24F) * (0.4F + 0.6F * (1 - (1 - grow) * (1 - grow)));
 			Vec3 cam = camera.position();
 			float px = (float) (Mth.lerp(partial, xo, x) - cam.x);
 			float py = (float) (Mth.lerp(partial, yo, y) - cam.y);

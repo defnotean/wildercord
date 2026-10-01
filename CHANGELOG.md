@@ -244,6 +244,10 @@ Swordsmen of the world to meet, fight and learn from, gear forged with aura, and
 ### Fixed
 - **Blooms and fallen stars take grass again.** Minecraft 26.3 took grass blocks out of the dirt tag, so the blooms that
   life magic leaves and the ground fallen stars land on had quietly stopped counting grass as ground.
+- **Meditation you can see through.** In your own first-person view the ritual circle sits smaller and further out, the
+  rising light and the gathered-light orb stay out of your face, and formation rings show only to others while you get a
+  quiet progress arc at your feet. Other players still see the whole ritual.
+- **Tracing a sigil no longer counts as meditating.** Sneaking while you charge a spell kept starting meditation.
 
 ## [0.8.0-alpha] - 2026-10-01
 

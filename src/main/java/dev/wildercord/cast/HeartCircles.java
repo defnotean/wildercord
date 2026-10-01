@@ -10,7 +10,6 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
@@ -130,8 +129,8 @@ public final class HeartCircles {
 			player.sendSystemMessage(Component.translatable("message.wildercord.circle_ready", Circles.ordinal(next)).withColor(0xF5C46A));
 			Fx.sound(player.level(), player.position(), SoundEvents.AMETHYST_BLOCK_RESONATE, 0.8F, 0.6F);
 		}
-		if (meditating && circles > 0) {
-			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F, true);
+		if (meditating && circles > 0 && !ready) {
+			rings(player, circles, player.level().getGameTime() * 0.05, 0.45F);
 		}
 		if (!ready || !meditating) {
 			FORMING.remove(id);
@@ -161,10 +160,14 @@ public final class HeartCircles {
 		// The new circle breaks out of the heart in light, a circle opening under it: for everyone, you included.
 		Sigils.ground(level, player.position(), COLORS[n - 1], COLORS[Circles.MAX - 1], 1.6F, 40);
 		ElementFx.groundRing(level, player.position(), COLORS[n - 1], 0.3, 4.2, 0.09, 18);
-		Fx.sendAll(level, ElementFx.ringOption(UP, COLORS[n - 1], 0.3 + 0.09 * (n - 1), 3.0, 0.04, 12), heart, 1, 0.0, 0.0);
+		Fx.sendOthers(level, player, ElementFx.ringOption(UP, COLORS[n - 1], 0.3 + 0.09 * (n - 1), 3.0, 0.04, 12), heart);
 		for (int t = 0; t < 10; t++) {
 			int tick = t;
-			Scheduler.later(t + 1, () -> rings(player, n, tick * 0.6, 0.5F + (10 - tick) * 0.05F, true));
+			Scheduler.later(t + 1, () -> {
+				if (!player.isRemoved()) {
+					rings(player, n, tick * 0.6, 0.5F + (10 - tick) * 0.05F);
+				}
+			});
 		}
 		Fx.sound(level, heart, dev.wildercord.content.WildercordSounds.CIRCLE_FORMED, 1.0F, 1.0F);
 		Component title = Component.translatable("title.wildercord.circle", Circles.ordinal(n)).withColor(COLORS[n - 1]);
@@ -254,11 +257,12 @@ public final class HeartCircles {
 	/**
 	 * The rings: one per circle around the heart, each on its own tilt and turning its own way,
 	 * like a gyroscope. Inner rings are deep blue; the outer ones burn toward white gold.
+	 * Only onlookers receive these chest effects; in first person they overlap the camera.
 	 */
-	static void rings(ServerPlayer player, int circles, double spin, float size, boolean self) {
+	static void rings(ServerPlayer player, int circles, double spin, float size) {
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);
-		ring(level, player, self, new DustParticleOptions(0xFFE0A0, 0.8F), heart);
+		Fx.sendOthers(level, player, new DustParticleOptions(0xFFE0A0, 0.8F), heart);
 		for (int i = 0; i < Math.min(Circles.MAX, circles); i++) {
 			double r = 0.3 + 0.09 * i;
 			Vec3 normal = ringNormal(i, spin);
@@ -270,7 +274,7 @@ public final class HeartCircles {
 			DustParticleOptions dust = new DustParticleOptions(ringColor(player, i), size);
 			for (int k = 0; k < points; k++) {
 				double a = turn + Math.PI * 2 * k / points;
-				ring(level, player, self, dust, heart.add(u.scale(Math.cos(a) * r)).add(v.scale(Math.sin(a) * r)));
+				Fx.sendOthers(level, player, dust, heart.add(u.scale(Math.cos(a) * r)).add(v.scale(Math.sin(a) * r)));
 			}
 		}
 	}
@@ -280,14 +284,6 @@ public final class HeartCircles {
 		double phi = spin * (1 + 0.25 * i) + i * 0.8;
 		double tilt = 0.3 + 0.14 * (i % 3);
 		return new Vec3(Math.cos(phi) * Math.sin(tilt), Math.cos(tilt), Math.sin(phi) * Math.sin(tilt)).normalize();
-	}
-
-	private static void ring(ServerLevel level, ServerPlayer player, boolean self, ParticleOptions particle, Vec3 at) {
-		if (self) {
-			Fx.sendAll(level, particle, at, 1, 0.0, 0.0);
-		} else {
-			Fx.sendOthers(level, player, particle, at);
-		}
 	}
 
 	/** A ring's colour: blue to white gold from the inside out, drawn halfway toward the element the caster leans to. */
@@ -309,26 +305,31 @@ public final class HeartCircles {
 		ServerLevel level = player.level();
 		Vec3 heart = heartOf(player);
 		double t = progress / (double) Circles.FORM_TICKS;
-		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F, true);
+		rings(player, circles, level.getGameTime() * (0.05 + 0.25 * t), 0.45F);
 		double r = 0.3 + 0.09 * circles;
 		int points = (int) Math.round((12 + 3 * circles) * t);
 		DustParticleOptions dust = new DustParticleOptions(COLORS[Math.min(Circles.MAX - 1, circles)], 0.55F);
 		for (int k = 0; k < points; k++) {
 			double a = Math.PI * 2 * k / (12 + 3 * circles);
-			Fx.sendAll(level, dust, heart.add(Math.cos(a) * r, 0, Math.sin(a) * r), 1, 0.0, 0.0);
+			Fx.sendOthers(level, player, dust, heart.add(Math.cos(a) * r, 0, Math.sin(a) * r));
 		}
 		for (int i = 0; i < 3; i++) {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 from = heart.add(Math.cos(a) * 1.6, (level.getRandom().nextDouble() - 0.3) * 1.2, Math.sin(a) * 1.6);
-			Fx.send(level, new net.minecraft.core.particles.TrailParticleOption(heart, COLORS[Math.min(Circles.MAX - 1, circles)], 12),
-				from.x, from.y, from.z, 1, 0, 0, 0, 0);
+			// A safe starting point alone does not keep a trail's destination out of the camera.
+			Fx.sendOthers(level, player, new net.minecraft.core.particles.TrailParticleOption(heart, COLORS[Math.min(Circles.MAX - 1, circles)], 12), from);
 		}
 		if (progress % 20 == 0) {
 			Fx.sound(level, heart, SoundEvents.AMETHYST_BLOCK_CHIME, 0.7F, 0.6F + (float) t);
 			// Once a second the new ring draws itself in light, as far round as it has come.
 			double mid = Math.PI * t;
-			Fx.sendAll(level, ElementFx.slashOption(UP, new Vec3(Math.cos(mid), 0, Math.sin(mid)), COLORS[Math.min(Circles.MAX - 1, circles)], r,
-				Math.PI * 2 * t, 0.02, 6, 12), heart, 1, 0.0, 0.0);
+			Fx.sendOthers(level, player, ElementFx.slashOption(UP, new Vec3(Math.cos(mid), 0, Math.sin(mid)), COLORS[Math.min(Circles.MAX - 1, circles)], r,
+				Math.PI * 2 * t, 0.02, 6, 12), heart);
+			// One thin progress arc at the feet replaces the stack of rings in the owner's view.
+			Vec3 feet = player.position().add(0, 0.06, 0);
+			Fx.sendParticles(level, player, ElementFx.slashOption(UP, new Vec3(Math.cos(mid), 0, Math.sin(mid)),
+				COLORS[Math.min(Circles.MAX - 1, circles)], 0.65, Math.PI * 2 * t, 0.012, 6, 12),
+				false, false, feet.x, feet.y, feet.z, 1, 0, 0, 0, 0);
 		}
 	}
 

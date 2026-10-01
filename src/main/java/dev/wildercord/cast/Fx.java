@@ -57,7 +57,7 @@ public final class Fx {
 		}
 	}
 
-	/** Like {@link #send}, but also to the player it's around: for effects that sit below the eyes, like Heart Circles. */
+	/** Like {@link #send}, but without eye clearance: only for effects kept away from the camera, such as ground rituals. */
 	public static void sendAll(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {
 		if (muted) {
 			return;

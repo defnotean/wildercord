@@ -6,6 +6,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"fabric-client-gametest": [
+			"dev.wildercord.gametest.WildercordMeditationTest",
 			"dev.wildercord.cast.ControlMatchupsTest",
 			"dev.wildercord.cast.PerformanceProfilesTest",
 			"dev.wildercord.familiar.ContentSystemsTest",
