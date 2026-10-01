@@ -30,7 +30,7 @@ public final class WildlifeRules {
 	 */
 	public record Kind(String id, Pool pool, int weight, int minGroup, int maxGroup, double chance, int crowd, int crowdRange, List<String> biomes) {}
 
-	public static final Kind GLIMMERWING = new Kind("glimmerwing", Pool.AMBIENT, 8, 3, 5, 1 / 16.0, 9, 40, List.of(
+	public static final Kind GLIMMERWING = new Kind("glimmerwing", Pool.AMBIENT, 8, 3, 5, 1 / 4.0, 9, 40, List.of(
 		"minecraft:forest", "minecraft:flower_forest", "minecraft:birch_forest", "minecraft:old_growth_birch_forest", "minecraft:dark_forest",
 		"minecraft:meadow", "minecraft:sunflower_plains", "minecraft:cherry_grove"));
 	public static final Kind LUMEN_STAG = new Kind("lumen_stag", Pool.CREATURE, 2, 1, 1, 1 / 3.0, 0, 80, List.of(
@@ -40,7 +40,7 @@ public final class WildlifeRules {
 		"minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle"));
 	public static final Kind CINDERFOX = new Kind("cinderfox", Pool.CREATURE, 6, 1, 3, 1.0, 5, 48, List.of(
 		"minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands"));
-	public static final Kind SKYRAY = new Kind("skyray", Pool.AMBIENT, 3, 1, 1, 1 / 400.0, 1, 112, List.of(
+	public static final Kind SKYRAY = new Kind("skyray", Pool.AMBIENT, 3, 1, 1, 1 / 800.0, 1, 112, List.of(
 		"minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest", "minecraft:meadow",
 		"minecraft:jagged_peaks", "minecraft:stony_peaks", "minecraft:snowy_slopes"));
 	public static final Kind RIMEHARE = new Kind("rimehare", Pool.CREATURE, 6, 2, 3, 1.0, 6, 48, List.of(
@@ -274,5 +274,10 @@ public final class WildlifeRules {
 
 	static float clamp(float value, float min, float max) {
 		return value < min ? min : Math.min(value, max);
+	}
+
+	/** Moves {@code value} toward {@code target} by at most {@code step}: how the creatures ease into and out of a pose. */
+	public static float approach(float value, float target, float step) {
+		return value < target ? Math.min(target, value + step) : Math.max(target, value - step);
 	}
 }
