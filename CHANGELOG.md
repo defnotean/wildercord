@@ -4,6 +4,32 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Sword strings
+- **Your swings are a language.** With an aura weapon in hand, play a short string of ordinary swings, each in time with
+  the one before, and your blade answers with an art, one for each stage:
+  - **First Art** (Glow): swing, swing, then a low (crouching) swing. An arc of aura in front of you.
+  - **Second Art** (Flow): a leaping swing, then a low swing. A rising arc that throws the foes in front into the air.
+  - **Third Art** (Edge): a counter, your first swing straight after a perfect Aura Guard. A cut that staggers that foe again.
+  - **Fourth Art** (Form): a step cut, your first swing straight after an Aura Step. A line of aura five blocks ahead.
+  - **Final Art** (Sovereign): three full swings, then a low swing, with your aura full. A whirl of cuts and a ring round
+    you that throws foes back.
+
+  Every method strikes these five the same way for now; each method's own arts, on the same strings, come next. Arts cost a
+  little aura and rest a few seconds (the Final Art half a minute), never spend past empty, and carry your element like the
+  slash.
+- **Paced to your blade.** Each swing must come within half a second of your blade being ready again: about a swing a second
+  with a sword, longer with an axe or a mace, and quick half swings always keep up. Pause and the string breaks. Swings at
+  the air count only in a fight, and digging never does, so nothing goes off by accident.
+- **When strings overlap,** the art that asks the most goes (three full swings and a low one are the Final Art, not the
+  First). If it's resting or your aura is short, the next art the same swings spell goes instead; if none can, you're told why.
+- **A small row of marks below your crosshair** shows each swing as it lands, with a thin line for the time left. It lights
+  gold when an art goes, and shakes red for a fumble, a finishing swing that came too late. Soft ticks climb with each swing,
+  an art chimes and a fumble clanks. Magic visual settings moves it above the aura bar or hides it.
+- **The Aura page has a Sword strings tab** with your arts, their strings, prices and rests, and what every mark means.
+- **The server checks every art:** your stage, its rest and price, a blade in hand, and that the swings, guard or step
+  really happened. Server owners can switch strings off (`aura.strings`) or change how long each swing may wait
+  (`aura.string_window_seconds`).
+
 ### Cinnamon
 - **Truer to the real Cinnamon.** A rounder head with a small snout, plain black eyes under little angry brows, shorter
   ears, fluffy legs that fade to cream at the feet instead of skinny legs on big paws, a white belly that starts at her

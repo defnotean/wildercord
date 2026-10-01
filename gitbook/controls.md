@@ -22,7 +22,7 @@ keys.
 | Cast spell 4 | not set | The same for spell 4. |
 | Cast spell 5 (the tome's) | not set | The same for the fifth spell, while the Tome of the Fifth Page is in its slot (or your offhand). |
 | Next loadout | not set | Loads your next saved loadout and names it above your hotbar. Refused while you charge a spell, duel or are sealed in ice. See [Loadouts](spellcraft/loadouts.md#switching-with-a-key). |
-| Magic visual settings | not set | Opens your own magic settings: how spells look (yours and others'), reduced flash, camera motion, and how you cast: [sigil tracing](spellcraft/casting.md#sigil-tracing) on or off, how much it helps, and whose [incantations](spellcraft/casting.md#incantations) you see. |
+| Magic visual settings | not set | Opens your own magic settings: how spells look (yours and others'), reduced flash, camera motion, where the [sword string](progression/aura.md#sword-strings) indicator shows (by the crosshair, by the hotbar, or hidden), and how you cast: [sigil tracing](spellcraft/casting.md#sigil-tracing) on or off, how much it helps, and whose [incantations](spellcraft/casting.md#incantations) you see. |
 
 A key press counts as a **hold** once it's been down for a quarter of a second. Shorter than that is a tap.
 

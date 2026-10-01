@@ -730,6 +730,7 @@ player, synced to that player only, and copied through death where noted.
 | `aura_look` | `AuraAttachments.Look` (colour, stage, lit, guarding, breathing) | no (not saved) | How a player's aura looks; synced to **everyone** nearby, who draw the blade's glow |
 | `aura_presence` | `AuraPresence.Look` (shell up, shell struck at, the colour of a spell on the blade and until when) | no (not saved) | The top stages' look: aura armour's shell and the spellblade; synced to **everyone** nearby |
 | `aura_timers` | `AuraPresence.Timers` (step ready at, Dominion ready at, Dominion until) | yes, and kept through death (game time, so a relog never resets a rest) | The top stages' cooldowns, for the owner's HUD |
+| `aura_arts` | `SwordStrings.Cooldowns` (when each art is ready again, by id) | yes, and kept through death (game time) | Sword strings' arts' rests, for the owner's reader and Aura page |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
 new instance, which is what makes the attachment save and sync it. Rune ids are kept as strings
@@ -862,6 +863,36 @@ package follows the mod's layers: the rules are pure, the runtime is server side
   and the sky above), counted to `stillnessTicks(next)`; `foeTrial` picks the guardian's (a boss, `GUARDIAN_WINDOW`) or the
   stronger foe's; and `DUEL` is a trial id left for the duelists.
 
+### Sword strings: `aura.SwordString`, `StringReader`, `SwordStrings`
+
+Arts set off by a short run of ordinary swings (see [DESIGN.md](DESIGN.md#sword-strings) for the rules and numbers). The
+client reads, the server judges:
+
+- **Pure parts** (no Minecraft types, unit-tested by `SwordStringsTest`): `SwordString` (the grammar: `Token`s `swing`,
+  `full`, `low`, `leap`, `run`, `counter`, `step`, each a bit in a swing's marks and a weight; `parse`/`text`, `endsIn` and
+  `fits`, and `cutBy`, whether a shorter string is played on the way to a longer one), `StringReader<T extends Spelled>` (the
+  detector: `stroke(now, marks, recover, candidates, usable)` answers `Landed`, `Completed`, `Refused` or `Fumbled`, `tick`
+  answers `Lapsed`, `cue(GUARD|STEP, now)` marks the next swing a counter or a step cut; `best` and `compare` rank strings that
+  fit the same swings) and `StringRules` (windows by the blade's `recover`, the cue windows, the late grace, the server's
+  slack, the request allowance, and the placeholder arts' prices).
+- **Client** (`client/`): `mixin.MinecraftStringsMixin` on `Minecraft.startAttack` (its head notes what the player was doing:
+  attack strength, sneak, airborne, sprint, what's under the crosshair; the punch packet's send, or `piercingAttack`, says the
+  swing really went) hands each swing to `SwordStringsClient`, which reads it (aura weapon, method, strings on, no screen, not
+  charging; a creature under the crosshair, or nothing within `ENGAGED_TICKS` of a blow, a perfect guard or a step; never a
+  block), checks an art's rest (`SwordStrings.COOLDOWNS`, plus its own prediction), price and condition, and sends
+  `SwordStrings.Perform(art, marks)`. It plays `aura_string_tick` (up the scale), `aura_string_complete` and
+  `aura_string_fumble` for the player alone, and drives `StringHud`: the row of marks after vanilla's crosshair element (or,
+  with `MagicQuality.stringIndicator` HOTBAR, above the aura strip through `AuraHud.draw`), its phases (live with the window's
+  line, done, fumble, refused, lapse) and a cue's waiting mark. `StringHud.glyph` and `string` draw the marks anywhere (the
+  Aura page's Sword strings tab uses them).
+- **Server** (`SwordStrings`): the payloads (`Perform` in; `Cue` and `Refused` out), the saved and synced `aura_arts`
+  attachment (`Cooldowns`: rests by art id, game time, kept through death), what it saw (`swung`, from
+  `mixin.SwordStringsSeenMixin` on `handlePunch` and `mixin.PiercingWeaponStringsMixin` on `PiercingWeapon.attack`; `cue`, from
+  `AuraGuard.feedback` and `AuraStep.go`), `check` (closed, no weapon, not ready, condition, no aura, unseen), and `perform`
+  (the performer, then the price through `Aura.spend` never past empty, the rest, the hooks, the Grimoire's
+  `aura:sword_string`). `PlaceholderArts` registers the five arts every method shares for now, on `AuraVfx.artArc`,
+  `artCounter`, `artLine`, `artRing` and `artHit` and the existing aura sounds.
+
 ### Hooks for the next wave: `api.AuraApi`
 
 The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in
@@ -879,6 +910,11 @@ through them, all on the server thread unless noted, registered at start-up:
 | `addMethodSource(new MethodSources.Source(id, lootTable, chance, weights))` | Another place manuals turn up: a loot table (read as tables load), or a source in code with `lootTable` "" that draws with `Source.draw(random)`. |
 | `grantMethod(player, methodId, sourceId)` | Teach a method outright (a duelist's lesson): as reading its manual, switching cost included, without asking twice. `manual(methodId)` makes the item. |
 | `stage`, `method`, `aura`, `capacity`, `color` | Reading a player's aura (both sides; a client knows only its own player's, and everyone's `Aura.look`). |
+| `registerString(new StringArt(id, string, stage, cost, cooldownTicks, available, condition, performer))` / `StringArt.of(id, "swing swing low", stage, cost, cooldown, performer)` | An art set off by a sword string, on both sides (the client reads strings against the registry). `available` (both sides) says whether the player has it at all besides the stage (`forMethod(id)` for a method's own); `condition` (an `ArtCondition`, both sides, with a `hintKey` line) what else it waits on (`PlaceholderArts.FULL_POOL` for the Final Art); `performer(player, StringContext)` acts on the server and returns whether it went off: the mod then spends `cost` (never past empty), rests it `cooldownTicks`, and tells the hooks. Its name and description are `aura.wildercord.art.<id>` and `.desc`. Same id replaces; `unregisterString(id)` takes one out (the placeholders, `PlaceholderArts.IDS`, once a method's own arrive). Registering logs any `conflicts`. |
+| `strings()`, `string(id)`, `stringsOf(player)`, `allStringsOf(player)`, `artOf(player, id)`, `artReadyAt(player, id)` | The registry by stage; what a player can play now (stage reached, available: the reader's candidates); everything open to them whatever their stage (the Aura page); one by id including their own; when an art is ready again. Both sides. |
+| `conflicts(string, exceptId)` | The registered arts that would get in a string's way: the same swings, or a shorter string played on the way to it, or a longer one it cuts short (`SwordString.cutBy`). For a writing screen to warn before a player settles on a string. |
+| `addStringSource(player -> arts)` | Arts a player has of their own (techniques they wrote): asked on both sides each time a string is read or checked, so it reads only synced data and is quick. |
+| `onString((player, art, context) -> ...)` | Hears of every art performed, after it's paid for (momentum, a bonded blade's resonance, a trial). `StringContext` carries the swings' marks (`released(token)`), the creature the last swing struck (the server's own `lastHurtMob`, or null) and the time. |
 
 Other seams: `AuraCombat.blow` and `landed` (where aura marks and Dominion's chain join a blow), `AuraCombat.projected`
 (aura damage at anything, with the spell defences), `AuraRules.capBonus`, `AuraCombat.againstPlayer` and
