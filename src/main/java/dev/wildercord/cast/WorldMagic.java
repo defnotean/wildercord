@@ -1196,7 +1196,9 @@ public final class WorldMagic {
 				}
 				for (int dy = 1; dy >= -1; dy--) {
 					BlockPos pos = centre.offset(dx, dy, dz);
-					if (level.getBlockState(pos).isAir() && level.getBlockState(pos.below()).is(BlockTags.DIRT)) {
+					// Grass left the dirt tag in 26.3: both are ground a bloom can take.
+					net.minecraft.world.level.block.state.BlockState ground = level.getBlockState(pos.below());
+					if (level.getBlockState(pos).isAir() && (ground.is(BlockTags.DIRT) || ground.is(BlockTags.GRASS_BLOCKS))) {
 						spots.add(pos);
 						break;
 					}
