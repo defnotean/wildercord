@@ -134,6 +134,14 @@
       ],
       "subtitle": "hit"
     },
+    "time_trickle": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_trickle_1",
+        "kit/time/time_trickle_2"
+      ],
+      "subtitle": "field"
+    },
     "time_wind": {
       "attenuation": 0,
       "files": [

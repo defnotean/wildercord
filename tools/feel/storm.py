@@ -251,3 +251,18 @@ EVENTS += [
     event("storm_crown_zap", storm_crown_zap, variants=3, role="impact", subtitle="hit"),
     event("storm_crackle_wake", storm_crackle_wake, variants=3, role="impact", subtitle="hit"),
 ]
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def storm_fizz(v, rng):
+    """Fulgurite: the old lightning still in the glass, a short dry fizz and a snap."""
+    dur = 0.5
+    buzz = sa.norm(sa.bandpass(sa.noise(0.32, rng), 1500, 5800)) * sa.chopper(0.32, rng, rate=(70, 140), floor=0.1)
+    buzz = buzz * sa.env(0.32, (0, 0), (0.03, 1), (0.25, 0.5), (0.32, 0))
+    snap = sa.norm(sa.bandpass(sa.noise(0.02, rng), 2500, 6500)) * sa.decay(0.02, 0.003, 0.0002)
+    pip = sa.sine(sa.note((sa.A, sa.B, sa.D)[v % 3], 2), 0.12) * sa.decay(0.12, 0.03, 0.002) * 0.25
+    x = sa.mix(0.55 * buzz, (0.27, 0.8 * snap), (0.27, pip))
+    return sa.finish(sa.reverb(x, 0.3, 0.06), "tell")
+
+
+EVENTS += [event("storm_fizz", storm_fizz, variants=3, role="tell", subtitle="field")]

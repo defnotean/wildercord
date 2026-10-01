@@ -1,0 +1,107 @@
+{
+  "parent": "minecraft:block/thin_block",
+  "textures": {
+    "particle": "wildercord:block/residue/bloodmoss",
+    "moss": "wildercord:block/residue/bloodmoss",
+    "glow": "wildercord:block/residue/bloodmoss_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        1,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#moss"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#moss",
+          "cullface": "down"
+        },
+        "north": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#moss",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#moss",
+          "cullface": "south"
+        },
+        "west": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#moss",
+          "cullface": "west"
+        },
+        "east": {
+          "uv": [
+            0,
+            15,
+            16,
+            16
+          ],
+          "texture": "#moss",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        1.02,
+        0
+      ],
+      "to": [
+        16,
+        1.02,
+        16
+      ],
+      "light_emission": 7,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    }
+  ]
+}

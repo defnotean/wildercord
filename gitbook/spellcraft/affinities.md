@@ -107,13 +107,21 @@ Where you cast nudges how hard each element hits. It's modest on purpose (10 to 
 | **The Nether** | Fire **+20%** | Frost **-25%** |
 | **The End** | Void **+20%** | |
 | **A thunderstorm** over you (under the open sky) | Storm **+25%** | |
-| **Rain** falling on you | | Fire **-10%** |
+| **Rain** falling on you | Frost **+10%** | Fire **-10%** |
 | **Snow and frost**: snowy and frozen lands, and high peaks where it's cold enough to snow | Frost **+20%** | Fire **-10%** |
 | **Hot, dry land**: deserts, badlands, savannas | Fire **+15%** | Frost **-10%** |
 | **Night**, under the open sky | Void **+10%** | |
 | **Sunlight**: day, under the open sky, not raining | Life **+10%** | |
 | **Deep underground**: below y 0 in the Overworld | Earth **+15%** | |
 | **On a ley line**, or under a mana storm | Arcane **+15%** | |
+| **A ley crossing**, where two ley lines meet | Every element **+10%**, and spells cost 10% less | |
+| **A full moon**, on a clear night under the open sky | Arcane **+15%**, Void **+15%** | |
+| **A new moon**, on a clear night under the open sky | Blood **+15%**, Void **+10%** | |
+| **The noon sun**, around midday, not raining | Fire **+15%** | |
+| **Dawn** and **dusk**, under the open sky | Time **+15%** | |
+
+The last five are places and times of power: see [Places and Times of Power](../world/places-of-power.md)
+for how to find a ley crossing and when the moon is full.
 
 - **They stack.** A thunderstorm at night in the rain: storm +25%, void +10%, fire -10%. However they stack, no
   element goes past +50% or below half.
@@ -137,7 +145,9 @@ stand, with a green **▲** (it hits harder here) or a red **▼** (softer). The
 | Wind | gusts | Time | an hourglass |
 | Earth | a mountain | Blood | a drop |
 
-The Grimoire page says it in words under **Where you stand**: *"The Nether: Fire +20%, Frost -25%"*.
+For a few seconds after something new comes into force where you stand (the moon rising, rain starting, a ley crossing
+underfoot), lines over the spell panel say why, one for each thing holding there: *"Full moon: Arcane +15%, Void +15%"*.
+The Grimoire page says the same under **Where you stand**, for as long as it holds: *"The Nether: Fire +20%, Frost -25%"*.
 
 ## Tips
 

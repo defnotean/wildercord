@@ -69,6 +69,14 @@
       ],
       "subtitle": "tell"
     },
+    "wind_lingering_eddy": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_lingering_eddy_1",
+        "kit/wind/wind_lingering_eddy_2"
+      ],
+      "subtitle": "field"
+    },
     "wind_muffle": {
       "attenuation": 0,
       "files": [

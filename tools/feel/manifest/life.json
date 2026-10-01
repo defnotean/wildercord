@@ -1,5 +1,13 @@
 {
   "events": {
+    "life_bloom": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_bloom_1",
+        "kit/life/life_bloom_2"
+      ],
+      "subtitle": "field"
+    },
     "life_bond": {
       "attenuation": 0,
       "files": [

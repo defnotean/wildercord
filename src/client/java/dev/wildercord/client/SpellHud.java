@@ -274,7 +274,8 @@ public final class SpellHud {
 			lx += font.width(crack) + 3;
 		}
 		// Where you stand: a mark for each element it favours or hinders, after the spell's name.
-		java.util.Map<String, Double> climate = dev.wildercord.spell.ClimateRules.factors(dev.wildercord.cast.Climate.shown());
+		java.util.Map<String, Double> climate = dev.wildercord.spell.ClimateRules.factors(dev.wildercord.cast.Climate.shown(),
+			dev.wildercord.cast.Climate.shownTuning());
 		int climateW = ElementGlyphs.rowWidth(climate.size());
 		boolean nameRow = rhythm.stacks() > 0 || cracked > 0 || compiled != null || !climate.isEmpty();
 		int right = Math.max(x0 + width, lx);
@@ -444,6 +445,11 @@ public final class SpellHud {
 			top = sy;
 			right = Math.max(right, x0 + 11 + font.width(text));
 		}
+		// ---- above that, for a few seconds after something new comes into force where you stand: why each element is favoured.
+		int whyTop = why(g, font, x0, top, g.guiWidth());
+		if (whyTop < top) {
+			top = whyTop;
+		}
 		drawnTop = top;
 		drawnRight = right;
 		drawnAt = System.nanoTime();
@@ -477,6 +483,65 @@ public final class SpellHud {
 		int alpha = (int) (0x60 + 0x9F * (1 - Math.min(1, until / 16.0)));
 		int tint = tear ? 0xFF5A4A : 0xD8D0FF;
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, bx + 10 - size / 2, by + 10 - size / 2, size, size, (alpha << 24) | tint);
+	}
+
+	/** How long (ms) the reasons stay up after a new condition comes into force, and how long of that they spend fading. */
+	private static final long WHY_SHOWN = 8000;
+	private static final long WHY_FADE = 1500;
+
+	/**
+	 * The reasons behind the climate marks ("Full moon: Arcane +15%, Void +15%"), one line per condition holding
+	 * here, stacked up from {@code above}, for a few seconds after a new one comes into force (a full moon rising, a
+	 * ley crossing underfoot), then fading. The Grimoire's page keeps them for good. Returns the top of the highest line.
+	 */
+	private static int why(GuiGraphicsExtractor g, Font font, int x0, int above, int guiWidth) {
+		long since = System.currentTimeMillis() - dev.wildercord.cast.Climate.changedAt();
+		java.util.Set<dev.wildercord.spell.ClimateRules.Condition> here = dev.wildercord.cast.Climate.shown();
+		if (since < 0 || since > WHY_SHOWN || here.isEmpty()) {
+			return above;
+		}
+		float fade = since < WHY_SHOWN - WHY_FADE ? 1.0F : (WHY_SHOWN - since) / (float) WHY_FADE;
+		int alpha = Math.max(8, (int) (255 * fade)) << 24;
+		dev.wildercord.spell.ClimateRules.Tuning tuning = dev.wildercord.cast.Climate.shownTuning();
+		List<net.minecraft.network.chat.Component> lines = whyLines(here, tuning);
+		if (lines.size() > 5) {
+			lines = lines.subList(0, 5);
+		}
+		int widest = 0;
+		for (net.minecraft.network.chat.Component line : lines) {
+			widest = Math.max(widest, font.width(line));
+		}
+		// Beside the panel when there's room, moved left as far as the longest line needs when there isn't.
+		int x = Math.max(2, Math.min(x0 + 3, guiWidth - 3 - widest));
+		int y = above;
+		for (net.minecraft.network.chat.Component line : lines) {
+			y -= 10;
+			String text = font.plainSubstrByWidth(line.getString(), Math.max(40, guiWidth - x - 3));
+			g.text(font, text, x, y, alpha | 0xD8D0F0, true);
+		}
+		return y;
+	}
+
+	/** One line per condition holding here that changes some element, in the table's order: "Full moon: Arcane +15%, Void +15%". */
+	public static List<net.minecraft.network.chat.Component> whyLines(java.util.Set<dev.wildercord.spell.ClimateRules.Condition> here,
+			dev.wildercord.spell.ClimateRules.Tuning tuning) {
+		List<net.minecraft.network.chat.Component> out = new java.util.ArrayList<>();
+		java.util.function.Function<String, String> name = e -> net.minecraft.network.chat.Component.translatable("element.wildercord." + e).getString();
+		for (dev.wildercord.spell.ClimateRules.Condition condition : dev.wildercord.spell.ClimateRules.Condition.values()) {
+			if (!here.contains(condition)) {
+				continue;
+			}
+			String shifts = dev.wildercord.spell.ClimateRules.describe(condition, name, tuning);
+			if (shifts.isEmpty()) {
+				continue;
+			}
+			net.minecraft.network.chat.Component what = condition == dev.wildercord.spell.ClimateRules.Condition.LEY_CROSSING
+				? net.minecraft.network.chat.Component.translatable("hud.wildercord.crossing_cost", shifts, Math.round((1 - tuning.crossingCost()) * 100))
+				: net.minecraft.network.chat.Component.literal(shifts);
+			out.add(net.minecraft.network.chat.Component.translatable("hud.wildercord.climate_line",
+				net.minecraft.network.chat.Component.translatable("climate.wildercord." + condition.id), what));
+		}
+		return out;
 	}
 
 	/** A small hexagon outline, 7 pixels across: the Shield's mark. */

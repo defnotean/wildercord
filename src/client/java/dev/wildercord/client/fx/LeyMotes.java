@@ -48,6 +48,100 @@ public final class LeyMotes {
 	public static void forget() {
 		seed = 0;
 		known = false;
+		CROSSINGS.clear();
+		SHIMMERING.clear();
+		nearCrossings = List.of();
+	}
+
+	// ------------------------------------------------------------------ ley crossings
+
+	/** How far off a ley crossing's shimmer shows (it's a place to find, so further than the ribbons). */
+	private static final double CROSSING_RANGE = 56;
+	/** How long one shimmer's rings last before the next takes over. */
+	private static final int SHIMMER_LIFE = 160;
+	/** Each chunk's crossing heart, worked out once ({@link #NO_CROSSING} where there's none): crossings never move. */
+	private static final java.util.Map<Long, double[]> CROSSINGS = new java.util.HashMap<>();
+	private static final double[] NO_CROSSING = new double[0];
+	/** The crossings shimmering now, and the tick each one's rings end. */
+	private static final java.util.Map<Long, Integer> SHIMMERING = new java.util.HashMap<>();
+	private static final Glimmer.Budget CROSSING_MOTES = new Glimmer.Budget(30);
+	private static List<double[]> nearCrossings = List.of();
+	private static int clock;
+
+	/**
+	 * Where two ley lines cross, a place of power: rings of pale light turning flat on the ground round its heart,
+	 * a faint column of light over it and motes of mana lifting off. Seen from further than the ribbons, so a
+	 * crossing can be found by following a line to it.
+	 */
+	private static void crossings(Minecraft mc, ClientLevel level, LocalPlayer player, RandomSource random) {
+		clock++;
+		CROSSING_MOTES.tick();
+		if (clock % 20 == 0) {
+			nearCrossings = findCrossings(player);
+			if (CROSSINGS.size() > 4096) {
+				CROSSINGS.clear();
+			}
+		}
+		for (double[] heart : nearCrossings) {
+			long key = (long) Math.floor(heart[0]) << 32 ^ (long) Math.floor(heart[1]) & 0xFFFFFFFFL;
+			Double y = ground(level, heart[0], heart[1]);
+			if (y == null || Math.abs(y - player.getY()) > 32) {
+				continue;
+			}
+			Vec3 at = new Vec3(heart[0], y - 0.1, heart[1]);
+			Integer ends = SHIMMERING.get(key);
+			if (ends == null || clock >= ends - 20) {
+				mc.particleEngine.add(new RingGlow(level, at.add(0, 0.04, 0), 0, 0, SHIMMER_LIFE)
+					.ring(2.4F, 0.09F, 0xE6DEFF, 0.8F)
+					.ring(2.4F, 0.5F, 0xA890F0, 0.22F)
+					.ring(1.2F, 0.05F, 0xFFFFFF, 0.55F)
+					.line(-2.4F, 0, 2.4F, 0, 0.05F, 0xD8CCFF, 0.45F)
+					.line(0, -2.4F, 0, 2.4F, 0.05F, 0xD8CCFF, 0.45F)
+					.beads(4, 0.045F, 0xFFFFFF));
+				mc.particleEngine.add(Glimmer.shaft(level, at.add(0, 7, 0), 0xC8B8FF, 0.9F, 7.0F, 0.16F, SHIMMER_LIFE));
+				SHIMMERING.put(key, clock + SHIMMER_LIFE);
+			}
+			if (random.nextInt(3) == 0 && CROSSING_MOTES.hasRoom()) {
+				double a = random.nextDouble() * Math.PI * 2;
+				double r = random.nextDouble() * 2.2;
+				int life = 50 + random.nextInt(30);
+				mc.particleEngine.add(Glimmer.mote(level, at.add(Math.cos(a) * r, 0.15, Math.sin(a) * r), random.nextBoolean() ? 0xE6DEFF : 0xB8A0FF, 0.13F,
+					0.6F, life, 0, 0.03 + random.nextDouble() * 0.02, 0, 0.004F));
+				CROSSING_MOTES.spend(life);
+			}
+		}
+		SHIMMERING.values().removeIf(end -> end < clock - 40);
+	}
+
+	/** The ley crossings within reach, from the chunks round the player (each chunk worked out once). */
+	private static List<double[]> findCrossings(LocalPlayer player) {
+		List<double[]> found = new ArrayList<>();
+		int pcx = (int) Math.floor(player.getX()) >> 4;
+		int pcz = (int) Math.floor(player.getZ()) >> 4;
+		int reach = (int) Math.ceil(CROSSING_RANGE / 16);
+		for (int cx = pcx - reach; cx <= pcx + reach; cx++) {
+			for (int cz = pcz - reach; cz <= pcz + reach; cz++) {
+				long key = (long) cx << 32 ^ cz & 0xFFFFFFFFL;
+				int x = cx;
+				int z = cz;
+				double[] heart = CROSSINGS.computeIfAbsent(key, k -> {
+					double[] h = LeyLines.crossingIn(seed, x, z);
+					return h == null ? NO_CROSSING : h;
+				});
+				if (heart.length == 0 || Math.hypot(heart[0] - player.getX(), heart[1] - player.getZ()) > CROSSING_RANGE) {
+					continue;
+				}
+				// A crossing on a chunk's edge shows in both: keep the first.
+				boolean twin = false;
+				for (double[] other : found) {
+					twin |= Math.hypot(other[0] - heart[0], other[1] - heart[1]) < 8;
+				}
+				if (!twin) {
+					found.add(heart);
+				}
+			}
+		}
+		return found;
 	}
 
 	public static boolean known() {
@@ -73,6 +167,10 @@ public final class LeyMotes {
 			return;
 		}
 		RandomSource random = player.getRandom();
+		// Ley crossings shimmer (unless the server doesn't count them).
+		if (dev.wildercord.cast.Climate.shownTuning().crossing() > 0) {
+			crossings(mc, level, player, random);
+		}
 		// Under a mana storm the lines surge: more ribbons, brighter, wider and quicker.
 		float storm = StormSky.surge();
 		for (int i = 0; i < 24; i++) {

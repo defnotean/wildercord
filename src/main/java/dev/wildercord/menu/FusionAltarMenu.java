@@ -7,6 +7,7 @@ import dev.wildercord.content.WildercordBlocks;
 import dev.wildercord.content.WildercordItems;
 import dev.wildercord.player.Spellbook;
 import dev.wildercord.player.Spellbooks;
+import dev.wildercord.spell.AltarReagents;
 import dev.wildercord.spell.Feats;
 import dev.wildercord.spell.Fusions;
 import dev.wildercord.spell.Knots;
@@ -36,6 +37,9 @@ import java.util.Optional;
  * shows what the runes on the altar would make ({@link #plan}); pressing its button asks the server,
  * which works the plan out again from the same slots, checks the XP and the result slot, and only then
  * uses anything up. Button 0 fuses; buttons 1 to 4 tie that spell into a Knot.
+ *
+ * <p>A reagent (what a residue gives) may lie in the third rune socket while two effects fuse or weave: it
+ * changes the plan as {@link AltarReagents} says, and is used up with the fusion.</p>
  */
 public class FusionAltarMenu extends AbstractContainerMenu {
 	public static final int RUNE_SLOTS = 3;
@@ -64,6 +68,8 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 		}
 	};
 	private final Container result = new SimpleContainer(1);
+	/** Who's at the altar (for a reagent that asks about their Grimoire or their health). */
+	private final Player user;
 
 	/** The client's side of the menu: the server's holds where the altar is. */
 	public FusionAltarMenu(int containerId, Inventory inventory) {
@@ -73,6 +79,7 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 	public FusionAltarMenu(int containerId, Inventory inventory, ContainerLevelAccess access) {
 		super(WildercordMenus.FUSION_ALTAR, containerId);
 		this.access = access;
+		this.user = inventory.player;
 		for (int i = 0; i < RUNE_SLOTS; i++) {
 			addSlot(new Slot(inputs, i, RUNE_POS[i][0], RUNE_POS[i][1]) {
 				@Override
@@ -96,9 +103,10 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 		addStandardInventorySlots(inventory, INVENTORY_X, INVENTORY_Y);
 	}
 
-	/** What can go on the altar: a rune (not a Knot) or a Blank Rune. Woven runes may be ranked up. */
+	/** What can go on the altar: a rune (not a Knot), a Blank Rune, or a reagent. Woven runes may be ranked up. */
 	public static boolean fusible(ItemStack stack) {
-		return stack.is(WildercordItems.BLANK_RUNE) || stack.is(WildercordItems.RUNE) || stack.is(WildercordItems.WOVEN_RUNE);
+		return stack.is(WildercordItems.BLANK_RUNE) || stack.is(WildercordItems.RUNE) || stack.is(WildercordItems.WOVEN_RUNE)
+			|| dev.wildercord.content.Reagents.is(stack);
 	}
 
 	public static Fusions.Catalyst catalyst(ItemStack stack) {
@@ -115,7 +123,8 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 	}
 
 	public static Fusions.Slot slotOf(ItemStack stack) {
-		if (stack.isEmpty()) {
+		// A reagent's socket reads as empty to the fusion itself: it only changes what comes out (see reagent()).
+		if (stack.isEmpty() || dev.wildercord.content.Reagents.is(stack)) {
 			return Fusions.Slot.EMPTY;
 		}
 		if (stack.is(WildercordItems.BLANK_RUNE)) {
@@ -126,13 +135,59 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 		return rune.isEmpty() ? Fusions.Slot.SILENT : Fusions.Slot.of(rune.get(), RuneItem.rankOf(stack));
 	}
 
-	/** What the altar would do with what's on it now. The screen shows it; the server checks it again before fusing. */
+	/** What the altar would do with what's on it now (a reagent's change included). The screen shows it; the server checks it again before fusing. */
 	public Fusions.Plan plan() {
+		if (reagentSlots() > 1) {
+			return new Fusions.Plan(Fusions.Kind.COMBINE, null, 0, 0, "One reagent at a time.", null);
+		}
+		AltarReagents.Result reagent = reagent();
+		return reagent == null ? basePlan() : reagent.plan();
+	}
+
+	private List<Fusions.Slot> slots() {
 		List<Fusions.Slot> slots = new ArrayList<>();
 		for (int i = 0; i < RUNE_SLOTS; i++) {
 			slots.add(slotOf(inputs.getItem(i)));
 		}
-		return Fusions.plan(slots, catalyst(inputs.getItem(CATALYST)));
+		return slots;
+	}
+
+	/** What the altar would do without the reagent. */
+	private Fusions.Plan basePlan() {
+		return Fusions.plan(slots(), catalyst(inputs.getItem(CATALYST)));
+	}
+
+	/** The rune socket the reagent lies in, or -1. */
+	public int reagentSlot() {
+		for (int i = 0; i < RUNE_SLOTS; i++) {
+			if (dev.wildercord.content.Reagents.is(inputs.getItem(i))) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private int reagentSlots() {
+		int n = 0;
+		for (int i = 0; i < RUNE_SLOTS; i++) {
+			if (dev.wildercord.content.Reagents.is(inputs.getItem(i))) {
+				n++;
+			}
+		}
+		return n;
+	}
+
+	/** What the reagent on the altar does to the fusion, or null if there's none. */
+	public AltarReagents.Result reagent() {
+		int slot = reagentSlot();
+		if (slot < 0) {
+			return null;
+		}
+		var kind = dev.wildercord.content.Reagents.kindOf(inputs.getItem(slot)).orElseThrow();
+		AltarReagents.Effect effect = AltarReagents.of(kind.element).orElseThrow();
+		List<String> grimoire = user == null ? List.of() : user.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.GRIMOIRE, List.of());
+		float health = user == null || user.hasInfiniteMaterials() ? Float.MAX_VALUE : user.getHealth();
+		return AltarReagents.apply(effect, basePlan(), slots(), new AltarReagents.Context(grimoire, health));
 	}
 
 	/**
@@ -179,15 +234,27 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 			return false;
 		}
 		if (button == BUTTON_FUSE && (plan.kind() == Fusions.Kind.UPGRADE || plan.kind() == Fusions.Kind.COMBINE)) {
+			AltarReagents.Result reagent = plan.kind() == Fusions.Kind.COMBINE ? reagent() : null;
 			if (!pay(server, plan.xp())) {
 				return false;
 			}
+			if (reagent != null && reagent.health() > 0 && !server.hasInfiniteMaterials()) {
+				// Bloodbound: the rest of the price, in blood.
+				server.setHealth(server.getHealth() - reagent.health());
+				server.level().playSound(null, server.blockPosition(), net.minecraft.sounds.SoundEvents.PLAYER_HURT, net.minecraft.sounds.SoundSource.PLAYERS, 0.6F, 0.7F);
+			}
 			ItemStack made = RuneItem.stack(plan.result(), plan.rank());
+			made.setCount(reagent == null ? 1 : reagent.copies());
 			for (int i = 0; i < RUNE_SLOTS; i++) {
-				inputs.removeItem(i, 1);
+				// Hollow Dust keeps one rune on the altar; the reagent itself is used up like the runes.
+				if (reagent == null || i != reagent.keepSlot()) {
+					inputs.removeItem(i, 1);
+				}
 			}
 			if (plan.kind() == Fusions.Kind.COMBINE) {
-				inputs.removeItem(CATALYST, 1);
+				if (reagent == null || !reagent.keepCatalyst()) {
+					inputs.removeItem(CATALYST, 1);
+				}
 				if (plan.recipe() != null) {
 					Grimoire.unlock(server, plan.recipe().key());
 				}
@@ -283,6 +350,18 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 		if (index < INVENTORY_START) {
 			// Off the altar, into the inventory.
 			if (!moveItemStackTo(stack, INVENTORY_START, INVENTORY_END, true)) {
+				return ItemStack.EMPTY;
+			}
+		} else if (dev.wildercord.content.Reagents.is(stack)) {
+			// One reagent, into the first empty rune socket: a fusion takes one at a time.
+			boolean moved = false;
+			for (int i = 0; i < RUNE_SLOTS && !moved; i++) {
+				if (inputs.getItem(i).isEmpty()) {
+					inputs.setItem(i, stack.split(1));
+					moved = true;
+				}
+			}
+			if (!moved) {
 				return ItemStack.EMPTY;
 			}
 		} else if (fusible(stack)) {

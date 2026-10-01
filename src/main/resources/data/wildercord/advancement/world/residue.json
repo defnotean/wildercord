@@ -1,0 +1,30 @@
+{
+  "parent": "wildercord:world/ley_line",
+  "criteria": {
+    "residue": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "residue"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:everfrost_shard"
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.residue.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.residue.description"
+    }
+  },
+  "requirements": [
+    [
+      "residue"
+    ]
+  ],
+  "rewards": {
+    "experience": 20
+  }
+}

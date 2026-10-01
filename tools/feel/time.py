@@ -210,3 +210,16 @@ EVENTS += [
     event("time_slow_hour", time_slow_hour, variants=1, role="effect", subtitle="field"),
     event("time_toll", time_toll, variants=2, role="impact", subtitle="hit"),
 ]
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def time_trickle(v, rng):
+    """Stilled sand: a thin trickle of grains, and two soft ticks a long beat apart."""
+    dur = 1.3
+    trickle = sa.norm(sa.bandpass(sa.grains(dur, 120, rng, length=(0.0006, 0.002), shape=[(0, 0.2), (0.3, 1), (dur, 0.3)]), 2500, 6500)) * 0.35
+    ticks = [(t, sa.clock_bell(sa.note(sa.A, 2), 0.25, 0.05) * 0.45) for t in (0.2, 0.85)]
+    x = sa.mix(trickle, *ticks)
+    return sa.finish(sa.reverb(x, 0.6, 0.18), "tell", fade_out=0.3)
+
+
+EVENTS += [event("time_trickle", time_trickle, variants=2, role="tell", subtitle="field")]

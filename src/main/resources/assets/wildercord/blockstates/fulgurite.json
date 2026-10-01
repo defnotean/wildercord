@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "wildercord:block/residue/fulgurite"
+      },
+      {
+        "model": "wildercord:block/residue/fulgurite",
+        "y": 90
+      },
+      {
+        "model": "wildercord:block/residue/fulgurite",
+        "y": 180
+      },
+      {
+        "model": "wildercord:block/residue/fulgurite",
+        "y": 270
+      }
+    ]
+  }
+}

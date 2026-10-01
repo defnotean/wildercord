@@ -489,3 +489,18 @@ EVENTS += [
     event("void_upfall", void_upfall, variants=1, role="effect", subtitle="field"),
     event("void_soul_wisp", void_soul_wisp, variants=2, role="effect", subtitle="hit"),
 ]
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def void_hum(v, rng):
+    """A void scar: a low hum, slowly beating, and air being drawn in towards it."""
+    dur = 1.8
+    f = sa.note(sa.D, -1)
+    hum = sa.mix(sa.soft_saw(f, dur, harmonics=8, limit=1600) * 0.5, sa.sine(f * 1.007, dur) * 0.5, sa.sine(f * 2.0, dur) * 0.25)
+    hum = sa.lowpass(hum, 900) * sa.swell(dur, 0.5, 1.5)
+    draw = sa.moving_band(dur, [(0, 2200), (dur, 500)], 0.7, rng) * sa.env(dur, (0, 0), (0.8, 0.35), (dur, 0))
+    x = sa.mix(hum, draw)
+    return sa.finish(sa.reverb(x, 1.0, 0.2), "tell", fade_in=0.2, fade_out=0.4)
+
+
+EVENTS += [event("void_hum", void_hum, variants=2, role="tell", subtitle="field")]

@@ -153,6 +153,8 @@ See [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}) and
 |---|---|---|---|---|
 | **Ley Walker** | task | Wildercord | Stand on a ley line, where the world's mana runs close to the surface | 10 XP |
 | **Wellkeeper** | task | Ley Walker | Wake a Wellstone by setting it on a ley line | 30 XP |
+| **Crossroads** | task | Ley Walker | Stand where two ley lines cross, a place of power | 25 XP |
+| **Lasting Mark** | task | Ley Walker | Harvest a residue that big magic left on the world | 20 XP |
 | **Kindred** | task | Ley Walker | Bond with a wisp | 25 XP |
 | **Menagerie** | challenge | Kindred | Bond with a wisp of every element | 150 XP |
 | **Stormcaller** | task | Ley Walker | Cast 20 spells under a mana storm | 30 XP |

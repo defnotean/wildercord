@@ -912,6 +912,11 @@ set on a ley line: circles turning on the ground around it, a leaning ring of li
 it and slowly swinging round with beads of light running along it, and +50% regeneration for
 everyone within 12 blocks.
 
+Lines of one noise field never cross, so the lines run in **two weaves** (two seeds, the second a
+little sparser and broader). Where a line of each meets is a **ley crossing**, a place of power a few
+hundred blocks from the next: every spell is 10% stronger and 10% cheaper there. See
+[A world that remembers magic](#a-world-that-remembers-magic).
+
 ### Spell Scrolls and the Training Dummy
 - **Spell Scroll:** inscribe any of your spells from the Cord screen (paper, an ink sac and twice the
   spell's mana). Anyone can cast it once, with or without a Cord or its runes, at base power.
@@ -1046,6 +1051,124 @@ carries it past the start of its next phase. Slain, it sinks into its robe.
 It drops a Tier IV rune its killer doesn't know yet, two Torn Pages, three Mana Crystals and 200
 experience, and counts as a boss for the 7th Circle and as the 8th Circle's feat for everyone
 within 64 blocks.
+
+## A world that remembers magic
+
+You're casting your own magic, and the world answers. Big magic leaves lasting marks of its element
+where it lands, the marks give reagents that feed back into fusing runes, and some places and hours
+make every spell a little stronger. Nothing here is a lot of power: it's texture, something to learn
+and seek out, never a must-have.
+
+### Residues
+**When.** A spell whose list price (its mana before discounts) reaches **30** leaves a residue of its
+element once a cast, at its first landing; an **overcast** always does (strength at least 1, plus
+0.5); a **boss's** spell (the Riftcaller, the Archivist, a dungeon's master) counts at least 1.5; and
+an **element reaction** has a **35%** chance of leaving a strength-1 residue. Strength is price ÷ 30,
+read up to 3. One caster leaves at most one residue every **5 s** (a boss every 10 s). A rune with no
+element leaves nothing.
+
+**How much.** Strength 1 leaves 1 block, and each half beyond adds one, **5 at most** (1.5 → 2,
+2 → 3, 3 → 5), scattered within 2 to 3 blocks of the impact (the impact's own column first). Each
+lasts its kind's lifetime × (0.75 + 0.25 × strength): up to **half again** for the strongest, never
+under a minute.
+
+| Residue | Element | Kind | Lifetime | Behaviour | Reagent |
+|---|---|---|---|---|---|
+| Smouldering Ash | Fire | lies on the ground | 12,000 ticks (half a day) | warm: thaws whatever stands in it; light 6 | Cinder Ash |
+| Everfrost | Frost | takes the ground's place | 24,000 (a day) | friction 0.98 (slick as ice); never melts | Everfrost Shard |
+| Fulgurite | Storm | lies on the ground | 36,000 | brushing it gives Speed I for 3 s; light 5 | Fulgurite Shard |
+| Lingering Eddy | Wind | in the air over the ground | 6,000 (5 min) | an updraft that lifts and cancels falls; bottled, not broken | Bottled Gale |
+| Riven Stone | Earth | takes the ground's place | 24,000 | dust and a rumble underfoot; light 3 | Geode Grit |
+| Wildbloom | Life | lies on the ground | 24,000 | bees' flower; seeds a seedling within 2 blocks now and then (2 generations, never outliving its parent, only while its caster is online and allowed) | Wildbloom Petal |
+| Void Scar | Void | takes the ground's place | 6,000 (5 min) | draws items and orbs in from 5 blocks; animals path round it and are nudged away; narrows through 4 stages | Hollow Dust |
+| Star Glyph | Arcane | lies on the ground | 12,000 | a player on it makes invisible creatures within 8 blocks glow; light 7 | Star Dust |
+| Stilled Sand | Time | lies on the ground | 12,000 | Slowness I on whatever walks it; items on it never despawn | Hourglass Sand |
+| Bloodmoss | Blood | lies on the ground | 12,000 | grows nether wart beside it; animals path round it | Sanguine Bead |
+
+**Rules.** A residue never replaces anything a player built or placed: one that takes the ground's
+place takes only natural ground (the `wildercord:residue_ground` block tag: dirt, grass, sand,
+gravel, clay, overworld and nether stone, snow, nylium, soul soil, end stone...) with open air above,
+and one that lies on the ground takes only open air (or something as easily replaced that grew there)
+over sturdy natural ground. Never a block with contents, never a spell's passing block or another
+residue, never in a dungeon's ward. Permission is a spell's own (`Casters.mayEdit`: building rights,
+spawn protection, claims, `spells_edit_blocks`); a boss's residue follows `spells_edit_blocks` and the
+mob-griefing rule. Caps: **12 a chunk**, **6 within 4 blocks**, **1,024 a dimension**, **64 a caster**
+(new ones simply aren't left). A residue that took the ground's place gives it back when it fades or is
+harvested. Their records are saved and fade on a schedule (never a scan of every residue); one in
+unloaded ground waits for its chunk to load. Other spells and pistons leave residues alone. The server
+can switch residues off and change the threshold, lifetimes and caps (`residues` settings).
+
+### Reagents
+Harvesting a residue gives its reagent (one or two from the ground ones; an eddy only by bottling). Each
+has a small use of its own, kept modest:
+
+| Reagent | Use |
+|---|---|
+| Cinder Ash | Furnace fuel: 800 ticks (4 items) at 1.25× speed |
+| Everfrost Shard | Freezes still water into ice, cools still lava into obsidian |
+| Fulgurite Shard | Scrapes a stage of weathering off copper |
+| Bottled Gale | Drink: Slow Falling for 30 s (the bottle comes back) |
+| Geode Grit | Prospect from where you stand: ore within 8 blocks glows for 10 s (2 s cooldown) |
+| Wildbloom Petal | Bone meal |
+| Hollow Dust | Draws every item and orb within 10 blocks to you (1 s cooldown) |
+| Star Dust | A mote of starlight (a light block, level 12) beside the block used on, for 5 minutes, saved as a temporary block |
+| Hourglass Sand | A smelting furnace jumps up to 10 s ahead (never finishing it); a young animal ages 2 minutes |
+| Sanguine Bead | Grows nether wart a stage |
+
+Every reagent is in the `wildercord:reagents` item tag.
+
+### Reagents at the Fusion Altar
+A reagent in the free third rune socket while two effects **fuse** (shard) or **weave** (block) changes
+the result one way, and is used up with it. One that would change nothing is refused before anything
+is spent.
+
+| Reagent | Effect | Rule |
+|---|---|---|
+| Cinder Ash | Tempered | the result keeps the higher of the two ranks put in, not the lower |
+| Everfrost Shard | Stilled | XP levels halved, rounded up (a weave of eight: 21 → 11) |
+| Fulgurite Shard | Charged | a rank I result comes out rank II |
+| Bottled Gale | Unbound | a signature pair makes its elements' fusion instead |
+| Geode Grit | Grounded | the amethyst stays on the altar |
+| Wildbloom Petal | Bountiful | two of the result |
+| Hollow Dust | Hollowed | the lower-tier rune stays on the altar (extending a weave, the lone rune) |
+| Star Dust | Exalted | one rank higher (up to III), for 3 more XP levels |
+| Hourglass Sand | Familiar | a named fusion already in your Grimoire costs no XP |
+| Sanguine Bead | Bloodbound | up to 6 XP levels paid as health instead (1 health a level), never below 2 health |
+
+The ranked ones are rare enough (a residue is a strong spell's leftover, five seconds apart at best)
+that a rank or two from them doesn't undercut ranking up by copies; the cost ones matter most to big
+weaves.
+
+### Places and times of power
+Built on the elemental climate (`ClimateRules`), so it goes through the same damage path
+(`Affinities.multiplier` in `Effects.hurt`) and the same ×2.5 bonus cap against players, and the HUD
+and Grimoire read the same table.
+
+| Condition | When | Shift |
+|---|---|---|
+| Ley crossing | where both weaves of ley lines run (each at least 0.3 strong) | every element +10%, every spell 10% cheaper |
+| Full moon | a clear night under the open sky, moon phase 0 | arcane +15%, void +15% |
+| New moon | a clear night under the open sky, moon phase 4 | blood +15%, void +10% |
+| Noon | 4,800 to 7,200 on the day clock, open sky, not raining | fire +15% |
+| Dawn | 22,800 to 1,200, open sky | time +15% |
+| Dusk | 11,800 to 13,400, open sky | time +15% |
+| Rain (existing) | rain falling on you | frost +10% (fire -10% as before) |
+| Thunderstorm, the Nether, the End (existing) | | storm +25%, fire +20% / frost -25%, void +20% |
+
+The sky's shifts (the moon, the hours, rain's frost) are *celestial*: the server can switch them off or
+scale them, and a ley crossing's bonus too (`places_of_power` settings); `elemental_climate` off turns
+all of it off. Stepping onto a crossing tells you so (and the first time earns **Crossroads**), and it
+shimmers on the client: flat rings and lines of light round its heart, a faint column and rising motes,
+seen from 56 blocks. For 8 seconds after a new condition comes into force, the HUD lists every
+condition holding and what it shifts ("Full moon: Arcane +15%, Void +15%"); the Grimoire keeps them.
+
+### Hooks for other features
+- `Residues.leave(level, element, at, strength, by)`: leave a residue (a mastery trait, an event), every
+  rule applying.
+- `PowerPlaces.isPlaceOfPower(level, pos)`, `PowerPlaces.at(level, pos)` and `PowerPlaces.of(player)`:
+  whether a spot is a ley crossing, and what's favoured there now and why (a resonance that wakes only
+  at a place of power, a rite that wants a full moon).
+- `#wildercord:reagents`, `Reagents.kindOf(stack)`: whether an item is a reagent, and its element.
 
 ## Passives
 
@@ -1335,7 +1458,8 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
 - A slim mana bar with a cooldown ring, and the selected spell's name and icons,
   above the hotbar on the right.
 - After the spell's name, a small mark for each element the elemental climate favours (▲) or
-  hinders (▼) where you stand.
+  hinders (▼) where you stand; for a few seconds after something new comes into force, lines over the
+  panel say why ("Full moon: Arcane +15%, Void +15%").
 - Each element has its own particle colour and cast sound.
 
 ## Server rules and safety
@@ -1366,6 +1490,10 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   out of the cast's block budget, 24 world changes a cast at most. Monsters' spells never change
   blocks (they still shock through water, heave the ground as block displays and blow arrows
   away), and never charge creepers, cure zombie villagers or grow up young animals.
+- **Residues** take only natural ground or open air over it, never anything built, placed or holding
+  contents, ask a spell's own permission (a boss's: `spells_edit_blocks` and mob griefing), keep out of
+  dungeon wards, are capped per chunk, area, dimension and caster, fade on a saved schedule and give back
+  the ground they took. See [A world that remembers magic](#a-world-that-remembers-magic).
 - **Validation:** the server checks every cast and every edit (runes learned,
   socket count, cost). The client never decides anything that matters.
 - **Flight (Soar):** only ever takes back a flight it gave (a saved note says it gave one), never touches

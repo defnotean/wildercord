@@ -237,6 +237,10 @@ public final class SpellCaster {
 		cast.performance(performance.power());
 		// What this spell learns from the cast, and the traits it has grown (see Mastery).
 		Mastery.onCast(player, spell, runes, cast, spent);
+		if (overcast) {
+			// Magic paid for with a cracked circle marks the world where it lands (see Residues).
+			cast.markOvercast();
+		}
 		if (!cast.info.root().groups.isEmpty()) {
 			var first = cast.info.root().groups.getFirst();
 			dev.wildercord.cast.feel.Feels.cue(cast, cast.feel(first), cast.theme(first));

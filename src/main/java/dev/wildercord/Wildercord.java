@@ -30,7 +30,9 @@ public final class Wildercord implements ModInitializer {
 		WildercordComponents.init();
 		WildercordEffects.init();
 		WildercordBlocks.init();
+		dev.wildercord.content.ResidueBlocks.init();
 		WildercordItems.init();
+		dev.wildercord.content.Reagents.init();
 		dev.wildercord.content.UpgradeRecipe.init();
 		dev.wildercord.menu.WildercordMenus.init();
 		dev.wildercord.gear.GearItems.init();
@@ -75,6 +77,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.Thaws.init();
 		dev.wildercord.cast.TemporaryBlocks.init();
 		dev.wildercord.cast.PhysicalMagic.init();
+		dev.wildercord.cast.Residues.init();
 		dev.wildercord.cast.WorldMagic.init();
 		dev.wildercord.cast.Innates.init();
 		dev.wildercord.cast.Unison.init();

@@ -68,7 +68,8 @@
 			"dev.wildercord.gametest.WildercordResonanceTest",
 			"dev.wildercord.gametest.WildercordShowcase",
 			"dev.wildercord.cast.PhysicalMagicTest",
-			"dev.wildercord.cast.CircleDisciplineTest"
+			"dev.wildercord.cast.CircleDisciplineTest",
+			"dev.wildercord.gametest.WildercordResidueTest"
 		]
 	},
 	"depends": {

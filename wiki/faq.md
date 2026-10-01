@@ -242,6 +242,18 @@ only spreads where fire spreads anyway, frozen water always thaws, and a crust a
 melts back. Two things to mind: a fire spell lights TNT, and a storm spell can charge a creeper. See
 [World Magic]({{ '/world/world-magic/' | relative_url }}).
 
+### My spell left ash (or frost, or a strange flower) on the ground.
+That's a **residue**: a strong spell (30 mana or more), any overcast, and now and then a reaction leave a mark of
+their element where they land. Each fades on its own (a void scar in minutes, everfrost in about a day), and each gives
+a **reagent** when you break it (bottle an eddy instead). Reagents have small uses, and at the Fusion Altar they steady
+or strengthen a fusion. See [Residues and Reagents]({{ '/world/residues/' | relative_url }}).
+
+### Will residues mess up my base?
+No. They only ever take natural ground (grass, dirt, sand, stone, snow...) or the air just above it, never anything
+built or placed, never a chest, never inside a claim you can't build in or a dungeon's ward, and a residue that took
+the ground's place gives it back when it fades or when you harvest it. There are only a few in any one place, and
+other spells and pistons leave them alone.
+
 ## Cords and progress
 
 ### Do I lose anything when I die?
@@ -328,6 +340,17 @@ back. See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}
 You need to be wearing a Cord, and to be in the Overworld. They're thin ribbons of violet light running along
 the ground. See [Ley Lines]({{ '/progression/ley-lines/' | relative_url }}).
 
+### Why do my spells hit harder some nights?
+The sky favours some elements: a clear full moon strengthens arcane and void, a new moon blood, the noon sun fire,
+dawn and dusk time, rain frost and a thunderstorm storm. Lines over your spell panel say why for a few seconds after
+something comes into force, and the Grimoire page keeps them. See
+[Places and Times of Power]({{ '/world/places-of-power/' | relative_url }}).
+
+### What's a ley crossing, and where do I find one?
+Where two ley lines cross: every spell is 10% stronger and 10% cheaper there. Wearing a Cord you'll see it shimmer, with
+rings of light on the ground and a faint column over it, from about 50 blocks. Follow a ley line until another crosses
+it; they're a few hundred blocks apart. See [Places and Times of Power]({{ '/world/places-of-power/' | relative_url }}).
+
 ### Where are the dungeons?
 The Archive is buried under the Overworld (Torn Pages sketch the way to the nearest one); the Ember Sanctum is
 in the Nether, the Astral Observatory in the End, and the Drowned Scriptorium on the deep sea floor. See
@@ -362,12 +385,16 @@ never stops the server.
 | `features` | Switches for whole features: world events, duels, wild magic, magic that changes the world, creature affinities and elemental climate (all on at first) |
 | `travel` | The travel commands: whether they exist at all, how many homes each player may have, the warmup, the cooldowns, how far `/rtp` goes and how long a teleport request waits. See [Getting Around]({{ '/social/travel/' | relative_url }}#for-server-owners) |
 | `defence` | How players stand up to spells: whether the spellguard is on, how much health it needs (80% at first) and how long it takes to come back (a minute), how far a spell's bonuses may multiply it against a player (two and a half times), and how much armour counts against magic (a little over half). See [Defending Against Magic]({{ '/progression/defence/' | relative_url }}) |
+| `mastery` | Spell mastery: whether spells grow at all and how fast, whether the traits players chose take effect, whether a named spell's name is spoken to players nearby, and whether spells can be inscribed onto scrolls. See [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}) |
 | `channeling` | Casting as a performance: whether a charge can overchannel at all, how much power and surge chance each stage adds and how much spare mana it drains, the bonus for letting go on the beat, how long tearing loose dazes a caster and how much mana it burns, and whether sigil tracing counts and how much power it adds. Against players, whatever a performance adds counts inside the defence bonus limit. See [Overchannel]({{ '/spellcraft/casting/' | relative_url }}#overchannel-holding-on-past-full) |
+| `residues` | Whether big magic leaves residues at all, how much a spell must cost to leave one (30 mana at first), how long they last, and how many a chunk and a dimension hold. See [Residues and Reagents]({{ '/world/residues/' | relative_url }}) |
+| `places_of_power` | Whether ley crossings make spells stronger and cheaper and by how much (10% at first), and whether the moon, the hour and the rain favour elements and how strongly. See [Places and Times of Power]({{ '/world/places-of-power/' | relative_url }}) |
 
 A world's own magic has settings of its own as well: a server can switch its harmonies and quirks off, choose
 how many harmonies a world holds, draw the world a fresh set (forgetting the old ones and who found them), keep finds
 out of chat, and switch reading runes off so every rune is understood the moment it's learned. See
 [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}#for-server-owners).
+
 
 ### Will players flying with Soar be kicked if flying is turned off?
 No. A player soaring on [Soar]({{ '/runes/effects/wind/' | relative_url }}#soar) is allowed to fly, as a creative

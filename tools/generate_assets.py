@@ -388,6 +388,8 @@ def main():
     hearth_art.write(sys.modules[__name__])
     import relic_art
     relic_art.write(sys.modules[__name__])
+    import residue_art  # Residues big magic leaves on the world, and the reagents they give.
+    residue_art.write(sys.modules[__name__])
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -744,6 +746,8 @@ def write_lang(runes):
     lang.update(mastery_trait_lang())
     lang.update(PERFORMANCE_LANG)
     lang.update(WORLD_OWN_LANG)
+    import residue_art
+    lang.update(residue_art.LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -2670,7 +2674,9 @@ def write_new_content(runes):
     unlock_advancement("wildercord:training_dummy", "wildercord:twine_cord")
 
     # ---- mining
-    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]})
+    import residue_art
+    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]
+        + residue_art.RESIDUE_PICKAXE})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
     write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": [
         "wildercord:rune_seal", "wildercord:archive_lectern", "wildercord:dungeon_altar", "wildercord:fallen_star"]})
@@ -2879,6 +2885,8 @@ adv("discovery/grimoire", "discovery/all_secrets", item("spell_scroll"), "Every 
 # ---- the World
 feat_adv("ley_line", "root", rune("vein"), description="Stand on a ley line, where the world's mana runs close to the surface", branch="world", xp=10)
 feat_adv("wellstone", "world/ley_line", item("wellstone"), description="Wake a Wellstone by setting it on a ley line", xp=30)
+feat_adv("ley_crossing", "world/ley_line", rune("vein"), description="Stand where two ley lines cross, a place of power", xp=25)
+feat_adv("residue", "world/ley_line", item("everfrost_shard"), description="Harvest a residue that big magic left on the world", xp=20)
 adv("world/archive", "world/ley_line", item("minecraft:chiseled_bookshelf"), "The Buried Library", "Find an Archive", in_structure("wildercord:archive"), xp=25)
 feat_adv("seal", "world/archive", item("rune_seal"), description="Open a Rune Seal door in an Archive", xp=30)
 feat_adv("archivist", "world/seal", item("archive_lectern"), description="Defeat the Archivist", frame="challenge", xp=500, loot=["mana_crystals"])

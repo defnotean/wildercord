@@ -287,3 +287,16 @@ EVENTS += [
     event("frost_tide_surge", frost_tide_surge, variants=2, role="impact", subtitle="hit"),
     event("frost_rime_step", frost_rime_step, variants=3, role="tell", subtitle="tell"),
 ]
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def frost_glint(v, rng):
+    """Everfrost: a few far-off glass glints over a breath of cold air, as the crust catches the light."""
+    dur = 1.2
+    glints = sa.sparkle(0.6, 5, rng, [sa.note(d, 2) for d in (sa.FS, sa.A, sa.B)] + [sa.note(sa.D, 3)], tau=(0.08, 0.2))
+    air = sa.norm(sa.bandpass(sa.noise(dur, rng), 2500, 6500)) * sa.swell(dur, 0.4) * 0.12
+    x = sa.mix(sa.norm(glints) * 0.8, air)
+    return sa.finish(sa.reverb(x, 0.8, 0.25), "tell", fade_out=0.3)
+
+
+EVENTS += [event("frost_glint", frost_glint, variants=3, role="tell", subtitle="field")]

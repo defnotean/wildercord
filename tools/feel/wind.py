@@ -242,3 +242,19 @@ EVENTS += [
     event("wind_spirit_gallop", wind_spirit_gallop, variants=1, role="effect", subtitle="cast"),
     event("wind_eddy", wind_eddy, variants=2, role="effect", subtitle="field"),
 ]
+
+
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def wind_lingering_eddy(v, rng):
+    """A lingering eddy: air going round and round, rising and falling as it turns."""
+    dur = 1.6
+    turn = sa.moving_band(dur, [(0, 500), (0.5, 1400 + 200 * v), (1.0, 700), (dur, 1200)], 0.8, rng)
+    turn = turn * sa.env(dur, (0, 0), (0.4, 1), (0.9, 0.6), (1.3, 0.9), (dur, 0))
+    whistle = sa.sine(sa.glide(dur, (0, sa.note(sa.A, 1)), (0.8, sa.note(sa.B, 1)), (dur, sa.note(sa.A, 1)))) * sa.swell(dur, 0.5) * 0.06
+    x = sa.mix(turn, whistle)
+    return sa.finish(sa.reverb(x, 0.6, 0.15), "tell", fade_out=0.3)
+
+
+EVENTS += [event("wind_lingering_eddy", wind_lingering_eddy, variants=2, role="tell", subtitle="field")]

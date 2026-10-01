@@ -1,0 +1,161 @@
+{
+  "parent": "minecraft:block/thin_block",
+  "textures": {
+    "particle": "wildercord:block/residue/stilled_sand",
+    "sand": "wildercord:block/residue/stilled_sand",
+    "glow": "wildercord:block/residue/stilled_sand_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        3,
+        15
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#sand"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#sand"
+        },
+        "north": {
+          "uv": [
+            1,
+            13,
+            15,
+            16
+          ],
+          "texture": "#sand"
+        },
+        "south": {
+          "uv": [
+            1,
+            13,
+            15,
+            16
+          ],
+          "texture": "#sand"
+        },
+        "west": {
+          "uv": [
+            1,
+            13,
+            15,
+            16
+          ],
+          "texture": "#sand"
+        },
+        "east": {
+          "uv": [
+            1,
+            13,
+            15,
+            16
+          ],
+          "texture": "#sand"
+        }
+      }
+    },
+    {
+      "from": [
+        3,
+        3,
+        3
+      ],
+      "to": [
+        13,
+        4,
+        13
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#sand"
+        },
+        "north": {
+          "uv": [
+            3,
+            12,
+            13,
+            13
+          ],
+          "texture": "#sand"
+        },
+        "south": {
+          "uv": [
+            3,
+            12,
+            13,
+            13
+          ],
+          "texture": "#sand"
+        },
+        "west": {
+          "uv": [
+            3,
+            12,
+            13,
+            13
+          ],
+          "texture": "#sand"
+        },
+        "east": {
+          "uv": [
+            3,
+            12,
+            13,
+            13
+          ],
+          "texture": "#sand"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        4.02,
+        0
+      ],
+      "to": [
+        16,
+        4.02,
+        16
+      ],
+      "light_emission": 8,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow"
+        }
+      }
+    }
+  ]
+}

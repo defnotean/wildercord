@@ -42,7 +42,28 @@ Two-leaf weaves need at least their highest component tier. Three or four need T
 
 ## How to finish a fusion
 
-Read the preview, leave the unused third socket empty for a combine, and press **Fuse**. Ingredients and XP are charged when the operation succeeds. Take the output before starting another operation. The native mouse handling is corrected for Minecraft 26.3 in this release.
+Read the preview, leave the unused third socket empty for a combine (or lay a reagent in it, below), and press **Fuse**. Ingredients and XP are charged when the operation succeeds. Take the output before starting another operation. The native mouse handling is corrected for Minecraft 26.3 in this release.
+
+## Add a reagent
+
+Reagents come from the [residues](../world/residues.md) big magic leaves on the world. Lay one in
+the free third socket while two effects fuse (shard) or weave (block), and it changes the result in one way of its
+element's. It's used up with the fusion.
+
+| Reagent | Does |
+|---|---|
+| Cinder Ash | Keeps the higher of the two ranks |
+| Everfrost Shard | Half the XP levels |
+| Fulgurite Shard | A rank I result comes out rank II |
+| Bottled Gale | A signature pair makes its elements' fusion instead |
+| Geode Grit | The amethyst stays on the altar |
+| Wildbloom Petal | Two of the result |
+| Hollow Dust | The lower-tier rune stays on the altar |
+| Star Dust | One rank higher, for 3 more XP levels |
+| Hourglass Sand | No XP for a named fusion you've made before |
+| Sanguine Bead | Up to 6 XP levels paid in health instead |
+
+The panel says what it will do, and refuses one that would change nothing, so a reagent is never wasted.
 
 ## Imprint an innate
 

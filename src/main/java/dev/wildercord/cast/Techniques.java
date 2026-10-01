@@ -188,6 +188,7 @@ final class Techniques {
 			cast.caster.addEffect(new MobEffectInstance(MobEffects.STRENGTH, 120, 0, false, true));
 			cast.caster.addEffect(new MobEffectInstance(MobEffects.SPEED, 120, 0, false, true));
 			Reactions.callout(cast, "blackspark", 0xD2283C);
+			Residues.reaction(cast, "blood", t);
 			// The spark arcs on to the next enemy near it.
 			LivingEntity next = null;
 			double best = Double.MAX_VALUE;

@@ -349,3 +349,17 @@ EVENTS += [
     event("arcane_aurora", arcane_aurora, variants=1, role="grand", subtitle="field"),
     event("arcane_great_bell", arcane_great_bell, variants=1, role="grand", subtitle="field", attenuation=32),
 ]
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def arcane_glyph(v, rng):
+    """A star glyph: starlight rising off its lines, a little rising run of glass notes."""
+    dur = 1.2
+    notes = [sa.note(d, 2) for d in (sa.D, sa.E, sa.FS, sa.A, sa.B)]
+    run = sa.sparkle(0.8, 7, rng, notes, tau=(0.06, 0.16), rising=True)
+    shimmer = sa.norm(sa.bandpass(sa.noise(dur, rng), 3000, 6500)) * sa.swell(dur, 0.6) * 0.08
+    x = sa.mix(sa.norm(run) * 0.8, shimmer)
+    return sa.finish(sa.reverb(x, 1.0, 0.3), "tell", fade_out=0.35)
+
+
+EVENTS += [event("arcane_glyph", arcane_glyph, variants=2, role="tell", subtitle="field")]

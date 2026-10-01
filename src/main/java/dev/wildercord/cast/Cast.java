@@ -65,6 +65,8 @@ public final class Cast {
 		Mastery.Tally mastery;
 		/** What how it was cast added to its power (overchannel, the beat, a traced glyph), already in {@link #power}. */
 		double performance = 1.0;
+		/** Whether it was paid for by cracking a Heart Circle (an overcast always leaves a residue). */
+		boolean overcast;
 
 		Shared() {
 			this(new Paid());
@@ -84,6 +86,7 @@ public final class Cast {
 			copy.affinity = affinity;
 			copy.mastery = mastery;
 			copy.performance = performance;
+			copy.overcast = overcast;
 			return copy;
 		}
 	}
@@ -315,6 +318,17 @@ public final class Cast {
 	/** What the way it was cast added to this spell's power (1 for none): see {@link #performance(double)}. */
 	public double performance() {
 		return budget.shared.performance;
+	}
+
+	/** Marks this as paid for by cracking a Heart Circle; copies of the cast keep it. */
+	public Cast markOvercast() {
+		budget.shared.overcast = true;
+		return this;
+	}
+
+	/** Whether it was overcast (see {@link #markOvercast}): an overcast always leaves a residue. */
+	public boolean overcast() {
+		return budget.shared.overcast;
 	}
 
 	/**

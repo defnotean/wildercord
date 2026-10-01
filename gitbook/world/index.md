@@ -17,6 +17,8 @@ rows need nothing but a Twine Cord and a few runes; the later ones want a strong
 |---|---|---|---|---|
 | 1 | [Runebound monsters](runebound.md) | Everywhere monsters spawn, from your first night | A zombie, skeleton, witch or illager that casts a real spell | A rune from its Cord, sometimes a Torn Page |
 | 2 | [Magic that changes the world](world-magic.md) | Wherever your spells land | Nothing: it's how fire, frost, storm and the rest meet the ground and water | Frozen bridges, steam cover, arrows knocked away |
+| 2b | [Residues and reagents](residues.md) | Wherever a strong spell of yours lands | Nothing: big magic leaves a mark of its element that slowly fades | Reagents for the Fusion Altar, and small uses of their own |
+| 2c | [Places and times of power](places-of-power.md) | Ley crossings, and the sky (the moon, the hour, the weather) | Nothing: they favour some elements | Stronger, cheaper spells at a crossing; stronger arcane and void under a full moon |
 | 3 | [Mana storms](world-events.md) | Over ley lines, now and then | Nothing hostile, but your spells may surge | Faster mana and cheaper spells for a few minutes, and now and then a rune (Manaburn or Manatide) |
 | 4 | [Runes of the world](runes-of-the-world.md) | Vanilla structures' chests, biomes by **Attunement**, and a fishing line in open water | Whatever guards the structure | 53 runes nobody can craft |
 | 5 | [Fallen stars](world-events.md) | At night, 60 to 150 blocks from you | 2 to 4 Runebound guards, one an Adept | A Tier III or IV rune, a Mana Crystal |

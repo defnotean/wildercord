@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "wildercord:block/residue/star_glyph"
+      },
+      {
+        "model": "wildercord:block/residue/star_glyph",
+        "y": 90
+      },
+      {
+        "model": "wildercord:block/residue/star_glyph",
+        "y": 180
+      },
+      {
+        "model": "wildercord:block/residue/star_glyph",
+        "y": 270
+      }
+    ]
+  }
+}

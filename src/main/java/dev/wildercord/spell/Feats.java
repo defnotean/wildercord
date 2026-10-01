@@ -24,6 +24,10 @@ public final class Feats {
 	public static final String ARCHIVIST = "archivist";
 	public static final String LEY_LINE = "ley_line";
 	public static final String WELLSTONE = "wellstone";
+	/** Stood where two ley lines cross (see world.LeyLines). */
+	public static final String LEY_CROSSING = "ley_crossing";
+	/** Harvested a residue big magic left on the world (see cast.Residues). */
+	public static final String RESIDUE = "residue";
 	public static final String SEAL = "seal";
 	public static final String LEANING = "leaning";
 	public static final String INNATE = "innate";
@@ -73,6 +77,8 @@ public final class Feats {
 		new Feat(MIRROR, "Mirrorfrost", "Turned an enemy's own spell back on them."),
 		new Feat(LEY_LINE, "Ley Walker", "Stood on a ley line, where the world's mana runs close to the surface."),
 		new Feat(WELLSTONE, "Wellkeeper", "Woke a Wellstone on a ley line."),
+		new Feat(LEY_CROSSING, "Crossroads", "Stood where two ley lines cross, a place of power where every spell is stronger and cheaper."),
+		new Feat(RESIDUE, "Lasting Mark", "Harvested a residue, a mark that big magic left on the world."),
 		new Feat(SEAL, "Sealbreaker", "Opened a Rune Seal in the Archive."),
 		new Feat(ARCHIVIST, "The Last Page", "Defeated the Archivist."),
 		new Feat(LEANING, "Leaning", "Grew one affinity so far past the rest that your magic leans toward it."),
