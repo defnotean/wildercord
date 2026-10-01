@@ -241,3 +241,49 @@ EVENTS = [
     event("frost_hook", frost_hook, variants=3, role="impact", subtitle="hit"),
     event("frost_breath", frost_breath, variants=2, role="cast", subtitle="cast"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def frost_glass_fall(v, rng):
+    """Glass Rain, one strike: a hiss of falling glass, a shatter, and shards tinkling down after it."""
+    fall = sa.moving_band(0.25, [(0, 5000), (0.25, 2600)], 0.6, rng) * sa.env(0.25, (0, 0), (0.2, 0.6), (0.25, 0))
+    crash = sa.shatter(rng, count=26, band=(2200 + 300 * v, 7000), spread=0.2)
+    tinkle = sa.sparkle(0.6, 14, rng, [sa.note(d, 3) for d in (sa.D, sa.FS, sa.A, sa.B)], tau=(0.04, 0.12), shape=[(0, 1), (0.6, 0.2)])
+    x = sa.mix(0.35 * fall, (0.2, crash), (0.25, 0.4 * tinkle))
+    return sa.finish(sa.reverb(sa.lowpass(x, 7500), 0.6, 0.12), "impact")
+
+
+def frost_mirror_ring(v, rng):
+    """Mirror Shards: a cold glass bell, a shimmer over it; Java climbs a step for each shard spent."""
+    dur = 1.2
+    ring = sa.glass(sa.note((sa.A, sa.B, sa.D)[v], 2 if v < 2 else 3), dur, 0.35)
+    shimmer = sa.chorus(sa.bell(sa.note(sa.E, 3), dur, 0.25, ratio=3.0, brightness=0.9), voices=3, depth=0.002)
+    ping = sa.norm(sa.bandpass(sa.noise(0.02, rng), 3000, 7000)) * sa.decay(0.02, 0.003, 0.0002)
+    return sa.finish(sa.reverb(sa.mix(0.9 * ring, 0.4 * shimmer, 0.3 * ping), 0.9, 0.18), "effect")
+
+
+def frost_tide_surge(v, rng):
+    """Turning Tide: a low whump of water, the surge of a wave running out, spray and bubbles."""
+    dur = 1.2
+    whump = sa.thump(110 - 10 * v, 45, 0.6, 0.12, drive=1.3)
+    surge = sa.moving_band(dur, [(0, 400), (0.15, 1800), (dur, 700)], 1.4, rng) * sa.env(dur, (0, 0), (0.08, 1), (0.5, 0.5), (dur, 0))
+    spray = sa.norm(sa.bandpass(sa.grains(0.8, 220, rng, length=(0.001, 0.006), shape=[(0, 1), (0.8, 0)]), 1500, 6500))
+    bubbles = sa.mix(*[(rng.uniform(0.1, 0.9), 0.5 * sa.blip(rng)) for _ in range(9)])
+    return sa.finish(sa.reverb(sa.mix(0.7 * whump, 0.8 * surge, (0.05, 0.35 * spray), bubbles), 0.7, 0.12), "impact")
+
+
+def frost_rime_step(v, rng):
+    """Rime Steps: a crisp crunch of frost underfoot and a tiny chime; three, a step apart."""
+    dur = 0.4
+    crunch = sa.norm(sa.bandpass(sa.grains(0.12, 600, rng, length=(0.0005, 0.002)), 1800, 5500))[:sa.samples(0.12)] * sa.decay(0.12, 0.04, 0.001)
+    chime = sa.glass(sa.note((sa.D, sa.FS, sa.A)[v], 2), dur, 0.08)
+    return sa.finish(sa.reverb(sa.lowpass(sa.mix(0.7 * crunch, (0.02, 0.35 * chime)), 5000, order=4), 0.3, 0.08), "tell")
+
+
+EVENTS += [
+    event("frost_glass_fall", frost_glass_fall, variants=3, role="impact", subtitle="hit"),
+    event("frost_mirror_ring", frost_mirror_ring, variants=3, role="effect", subtitle="hit"),
+    event("frost_tide_surge", frost_tide_surge, variants=2, role="impact", subtitle="hit"),
+    event("frost_rime_step", frost_rime_step, variants=3, role="tell", subtitle="tell"),
+]

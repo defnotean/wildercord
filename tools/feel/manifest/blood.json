@@ -1,5 +1,14 @@
 {
   "events": {
+    "blood_blade_fall": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_blade_fall_1",
+        "kit/blood/blood_blade_fall_2",
+        "kit/blood/blood_blade_fall_3"
+      ],
+      "subtitle": "hit"
+    },
     "blood_cleave": {
       "attenuation": 0,
       "files": [
@@ -52,6 +61,13 @@
       "attenuation": 0,
       "files": [
         "kit/blood/blood_mist"
+      ],
+      "subtitle": "field"
+    },
+    "blood_moon_toll": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_moon_toll"
       ],
       "subtitle": "field"
     },

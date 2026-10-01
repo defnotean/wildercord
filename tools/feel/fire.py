@@ -284,3 +284,31 @@ EVENTS = [
     event("fire_pyre", fire_pyre, variants=1, role="effect", subtitle="cast"),
     event("fire_out", fire_out, variants=2, role="tell", subtitle="tell"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def fire_kindly(v, rng):
+    """Kindly Flame: a warm crackle under a soft major chord and a bell: fire that mends."""
+    dur = 1.4
+    chord = sum(sa.sine(sa.note(d, 1), dur) * w for d, w in ((sa.D, 1.0), (sa.FS, 0.6), (sa.A, 0.5))) * sa.swell(dur, 0.25)
+    bell = sa.bell(sa.note((sa.A, sa.B)[v % 2], 2), dur, 0.4, ratio=2.0, brightness=0.8)
+    crackle = sa.norm(sa.bandpass(sa.grains(dur, 60, rng, shape=[(0, 1), (dur, 0.2)]), 1200, 5000)) * 0.3
+    breath = sa.moving_band(dur, [(0, 500), (0.4, 1100), (dur, 600)], 1.0, rng) * sa.swell(dur, 0.3) * 0.3
+    return sa.finish(sa.reverb(sa.mix(0.5 * chord, 0.5 * bell, crackle, breath), 0.9, 0.18), "effect")
+
+
+def fire_sun_seal(v, rng):
+    """Sun Seal: a bright flare catching, a low gong under it, and the seal's long hum."""
+    dur = 1.8
+    flare = sa.moving_band(0.6, [(0, 600), (0.25, 3200), (0.6, 1400)], 1.0, rng) * sa.env(0.6, (0, 0), (0.12, 1), (0.6, 0))
+    gong = sa.bell(sa.note(sa.D, -1), dur, 0.7, ratio=1.41, brightness=1.2)
+    halo = sa.chorus(sa.sine(sa.note(sa.A, 1), dur) * sa.swell(dur, 0.5), voices=2)
+    roar = sa.norm(sa.lowpass(sa.noise(dur, rng), 500)) * sa.swell(dur, 0.4) * 0.4
+    return sa.finish(sa.reverb(sa.mix(0.8 * flare, 0.7 * gong, 0.3 * halo, roar), 1.1, 0.2), "grand")
+
+
+EVENTS += [
+    event("fire_kindly", fire_kindly, variants=2, role="effect", subtitle="field"),
+    event("fire_sun_seal", fire_sun_seal, variants=1, role="grand", subtitle="field"),
+]

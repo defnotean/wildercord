@@ -1,5 +1,8 @@
 {
   "events": {
+    "arcane_aurora": {
+      "part": "arcane"
+    },
     "arcane_comet": {
       "part": "arcane"
     },
@@ -22,6 +25,9 @@
       "part": "arcane"
     },
     "arcane_gong": {
+      "part": "arcane"
+    },
+    "arcane_great_bell": {
       "part": "arcane"
     },
     "arcane_halo": {
@@ -66,6 +72,9 @@
     "arcane_open": {
       "part": "arcane"
     },
+    "arcane_page_storm": {
+      "part": "arcane"
+    },
     "arcane_ping": {
       "part": "arcane"
     },
@@ -91,6 +100,9 @@
       "part": "arcane"
     },
     "arcane_stamp_burst": {
+      "part": "arcane"
+    },
+    "arcane_star_chime": {
       "part": "arcane"
     },
     "arcane_starfall": {
@@ -129,11 +141,17 @@
     "arcane_twin_echo": {
       "part": "arcane"
     },
+    "arcane_wingflock": {
+      "part": "arcane"
+    },
     "arcane_yip": {
       "part": "arcane"
     },
     "beat_release": {
       "part": "neutral"
+    },
+    "blood_blade_fall": {
+      "part": "blood"
     },
     "blood_cleave": {
       "part": "blood"
@@ -154,6 +172,9 @@
       "part": "blood"
     },
     "blood_mist": {
+      "part": "blood"
+    },
+    "blood_moon_toll": {
       "part": "blood"
     },
     "blood_moss": {
@@ -222,6 +243,9 @@
     "earth_hiss": {
       "part": "earth"
     },
+    "earth_menhir_rise": {
+      "part": "earth"
+    },
     "earth_ping": {
       "part": "earth"
     },
@@ -288,6 +312,9 @@
     "fire_hop": {
       "part": "fire"
     },
+    "fire_kindly": {
+      "part": "fire"
+    },
     "fire_launch": {
       "part": "fire"
     },
@@ -319,6 +346,9 @@
       "part": "fire"
     },
     "fire_sun": {
+      "part": "fire"
+    },
+    "fire_sun_seal": {
       "part": "fire"
     },
     "fire_ward": {
@@ -354,6 +384,9 @@
     "frost_drag": {
       "part": "frost"
     },
+    "frost_glass_fall": {
+      "part": "frost"
+    },
     "frost_hail": {
       "part": "frost"
     },
@@ -369,7 +402,13 @@
     "frost_mirror": {
       "part": "frost"
     },
+    "frost_mirror_ring": {
+      "part": "frost"
+    },
     "frost_needle": {
+      "part": "frost"
+    },
+    "frost_rime_step": {
       "part": "frost"
     },
     "frost_splat": {
@@ -379,6 +418,9 @@
       "part": "frost"
     },
     "frost_tick": {
+      "part": "frost"
+    },
+    "frost_tide_surge": {
       "part": "frost"
     },
     "frost_ward": {
@@ -445,6 +487,12 @@
       "part": "life"
     },
     "life_fang": {
+      "part": "life"
+    },
+    "life_firefly_hush": {
+      "part": "life"
+    },
+    "life_frost_bloom": {
       "part": "life"
     },
     "life_gasp": {
@@ -516,7 +564,13 @@
     "life_stitch": {
       "part": "life"
     },
+    "life_thicket_burst": {
+      "part": "life"
+    },
     "life_thorn": {
+      "part": "life"
+    },
+    "life_thorn_crown": {
       "part": "life"
     },
     "life_thorn_grow": {
@@ -562,6 +616,12 @@
       "part": "storm"
     },
     "storm_crack": {
+      "part": "storm"
+    },
+    "storm_crackle_wake": {
+      "part": "storm"
+    },
+    "storm_crown_zap": {
       "part": "storm"
     },
     "storm_cry": {
@@ -642,6 +702,9 @@
     "time_doomtick": {
       "part": "time"
     },
+    "time_reecho": {
+      "part": "time"
+    },
     "time_resume": {
       "part": "time"
     },
@@ -660,6 +723,9 @@
     "time_scratch": {
       "part": "time"
     },
+    "time_slow_hour": {
+      "part": "time"
+    },
     "time_stop": {
       "part": "time"
     },
@@ -673,6 +739,9 @@
       "part": "time"
     },
     "time_tock": {
+      "part": "time"
+    },
+    "time_toll": {
       "part": "time"
     },
     "time_wind": {
@@ -783,6 +852,9 @@
     "void_sonic_crack": {
       "part": "void"
     },
+    "void_soul_wisp": {
+      "part": "void"
+    },
     "void_spark_crit": {
       "part": "void"
     },
@@ -804,6 +876,9 @@
     "void_unzip": {
       "part": "void"
     },
+    "void_upfall": {
+      "part": "void"
+    },
     "void_veil_fade": {
       "part": "void"
     },
@@ -823,6 +898,9 @@
       "part": "wind"
     },
     "wind_deflect": {
+      "part": "wind"
+    },
+    "wind_eddy": {
       "part": "wind"
     },
     "wind_feather": {
@@ -862,6 +940,9 @@
       "part": "wind"
     },
     "wind_soar_takeoff": {
+      "part": "wind"
+    },
+    "wind_spirit_gallop": {
       "part": "wind"
     },
     "wind_thump": {

@@ -175,3 +175,38 @@ EVENTS = [
     event("time_doomtick", time_doomtick, variants=3, role="impact", subtitle="tell"),
     event("time_ring", time_ring, variants=1, role="impact", subtitle="hit"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def time_reecho(v, rng):
+    """Second Voice: a bell heard backwards, swelling in, then struck, and its echo."""
+    b = sa.bell(sa.note(sa.A, 1), 0.9, 0.3, ratio=2.0, brightness=1.0)
+    swell_in = sa.reverse(sa.reverb(b, 0.6, 0.4))[-sa.samples(0.7):]
+    strike = sa.clock_bell(sa.note(sa.A, 1), 1.0, 0.35)
+    echo = sa.clock_bell(sa.note(sa.A, 1), 0.8, 0.25) * 0.4
+    return sa.finish(sa.reverb(sa.mix(0.6 * swell_in, (0.7, strike), (1.0, echo)), 0.9, 0.2), "effect")
+
+
+def time_slow_hour(v, rng):
+    """Slow Hour: ticks spreading further and further apart, each a little lower, over a sagging drone."""
+    dur = 2.4
+    ticks = sa.mix(*[(t, sa.tick(sa.note(sa.A, 1) * (1 - 0.08 * k), rng, 1.0 - 0.12 * k)) for k, t in enumerate((0.0, 0.35, 0.8, 1.4, 2.1))])
+    drone = sa.sine(sa.glide(dur, (0, sa.note(sa.D, -1)), (dur, sa.note(sa.D, -1) * 0.94))) * sa.swell(dur, 0.6) * 0.35
+    bell = sa.clock_bell(sa.note(sa.D, 1), dur, 0.8) * 0.4
+    return sa.finish(sa.reverb(sa.mix(ticks, drone, bell), 1.3, 0.25), "effect")
+
+
+def time_toll(v, rng):
+    """Tolling Hour: a knock and one deep toll of a clock."""
+    dur = 2.2
+    toll = sa.clock_bell(sa.note((sa.D, sa.A)[v % 2], -1), dur, 0.9)
+    knock = sa.tick(sa.note(sa.D, 0), rng, 0.6)
+    return sa.finish(sa.reverb(sa.mix(0.5 * knock, toll), 1.2, 0.22), "impact")
+
+
+EVENTS += [
+    event("time_reecho", time_reecho, variants=1, role="effect", subtitle="cast"),
+    event("time_slow_hour", time_slow_hour, variants=1, role="effect", subtitle="field"),
+    event("time_toll", time_toll, variants=2, role="impact", subtitle="hit"),
+]

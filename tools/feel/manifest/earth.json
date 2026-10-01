@@ -86,6 +86,14 @@
       ],
       "subtitle": "field"
     },
+    "earth_menhir_rise": {
+      "attenuation": 24,
+      "files": [
+        "kit/earth/earth_menhir_rise_1",
+        "kit/earth/earth_menhir_rise_2"
+      ],
+      "subtitle": "hit"
+    },
     "earth_ping": {
       "attenuation": 0,
       "files": [

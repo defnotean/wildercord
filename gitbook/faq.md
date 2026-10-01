@@ -86,6 +86,12 @@ Tier IV runes (from bosses, dungeon vaults and rare structures), the 51
 [fused runes](runes/fused.md) (made at the Fusion Altar) and the ten
 [innate runes](runes/innate.md) (one wakes in your heart).
 
+### Why does a rune I just learned only show a hint?
+A rune you've just learned is **unread**: the Codex shows its name, family, tier, element and cost, but only a hint
+of what it does. Cast it once and you **glimpse** it (its text, with the numbers veiled); see it at work a few times
+and you **understand** it, numbers and all. Runes you already knew, and the three your first Cord teaches you, are
+understood. See [Reading runes](spellcraft/resonances.md#reading-runes).
+
 ### What do I do with a rune I already know?
 Keep it for the [Fusion Altar](fusion-altar/index.md), where three of a rune make its next
 rank; sell it to a [Runesmith](social/runesmith.md), or swap two for one you don't know;
@@ -268,6 +274,17 @@ Yes: switch **Spell titles** off in the magic visual settings. It only changes w
 Form your 1st Heart Circle for the first passive slot, and your 5th for the second. Thread them on the Cord
 screen's Passives page. See [Passive Spells](spellcraft/passives.md).
 
+### Someone found a resonance. What's that?
+Every world has about a dozen **resonances** of its own: exact rune sequences that only your world answers, each
+with a twist (rain that lands as glass, a pale horse, birds of light...). Casting one finds it, and the server says
+so by name, but never which runes it was. Torn Pages can carry their riddles. See
+[Resonances and Reading Runes](spellcraft/resonances.md).
+
+### Why does Shock behave differently here than in my other world?
+Your world has a few **quirks**: small tweaks to particular runes in particular conditions, such as at night, in the
+rain or deep underground. They differ from world to world, and each goes into your Grimoire the first time it matters
+to one of your spells. See [Quirks](spellcraft/resonances.md#quirks).
+
 ### What's my innate rune, and how do I get it?
 One of ten runes that wakes in your heart, chosen at random, when you form your 1st Heart Circle. It can't be
 crafted, found or learned from an item, it's Tier I so any Cord holds it, and it grows stronger with every
@@ -337,6 +354,11 @@ never stops the server.
 | `travel` | The travel commands: whether they exist at all, how many homes each player may have, the warmup, the cooldowns, how far `/rtp` goes and how long a teleport request waits. See [Getting Around](social/travel.md#for-server-owners) |
 | `defence` | How players stand up to spells: whether the spellguard is on, how much health it needs (80% at first) and how long it takes to come back (a minute), how far a spell's bonuses may multiply it against a player (two and a half times), and how much armour counts against magic (a little over half). See [Defending Against Magic](progression/defence.md) |
 | `channeling` | Casting as a performance: whether a charge can overchannel at all, how much power and surge chance each stage adds and how much spare mana it drains, the bonus for letting go on the beat, how long tearing loose dazes a caster and how much mana it burns, and whether sigil tracing counts and how much power it adds. Against players, whatever a performance adds counts inside the defence bonus limit. See [Overchannel](spellcraft/casting.md#overchannel-holding-on-past-full) |
+
+A world's own magic has settings of its own as well: a server can switch its resonances and quirks off, choose
+how many resonances a world holds, draw the world a fresh set (forgetting the old ones and who found them), keep finds
+out of chat, and switch reading runes off so every rune is understood the moment it's learned. See
+[Resonances and Reading Runes](spellcraft/resonances.md#for-server-owners).
 
 ### Will players flying with Soar be kicked if flying is turned off?
 No. A player soaring on [Soar](runes/effects/wind.md#soar) is allowed to fly, as a creative

@@ -20,7 +20,8 @@ import java.util.function.Consumer;
 
 /**
  * A Torn Page from an old grimoire: read it to learn the riddle of a secret spell you haven't
- * found yet. The riddle goes into your Grimoire, where it waits until you solve it.
+ * found yet, or of one of this world's own resonances (half the time, while both are left). The
+ * riddle goes into your Grimoire, where it waits until you solve it.
  */
 public class TornPageItem extends Item {
 	public TornPageItem(Properties properties) {
@@ -31,15 +32,22 @@ public class TornPageItem extends Item {
 	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (player instanceof ServerPlayer serverPlayer) {
-			Secrets.Secret secret = Grimoire.hint(serverPlayer);
-			if (secret == null) {
+			// A riddle of this world's own magic half the time while there are both kinds left, or whichever is.
+			boolean worldLeft = dev.wildercord.cast.WorldResonances.hintsLeft(serverPlayer);
+			java.util.Optional<dev.wildercord.spell.Resonance> resonance = worldLeft && (!Grimoire.hintsLeft(serverPlayer) || serverPlayer.getRandom().nextBoolean())
+				? dev.wildercord.cast.WorldResonances.hint(serverPlayer) : java.util.Optional.empty();
+			Secrets.Secret secret = resonance.isPresent() ? null : Grimoire.hint(serverPlayer);
+			if (secret == null && resonance.isEmpty()) {
 				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.page_nothing").withStyle(ChatFormatting.GRAY));
 				return InteractionResult.FAIL;
 			}
 			stack.consume(1, player);
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 0.8F);
 			serverPlayer.sendSystemMessage(Component.translatable("message.wildercord.page_read").withColor(0xC8B89A).withStyle(ChatFormatting.ITALIC));
-			serverPlayer.sendSystemMessage(Component.literal("  “" + secret.riddle() + "”").withColor(0xE8D8B0).withStyle(ChatFormatting.ITALIC));
+			String riddle = resonance.map(dev.wildercord.spell.Resonance::riddle).orElseGet(() -> secret.riddle());
+			serverPlayer.sendSystemMessage(Component.literal("  “" + riddle + "”").withColor(0xE8D8B0).withStyle(ChatFormatting.ITALIC));
+			resonance.ifPresent(r -> serverPlayer.sendSystemMessage(Component.translatable("message.wildercord.page_resonance",
+				Component.literal(r.name()).withColor(r.color())).withColor(0xC8B8F0).withStyle(ChatFormatting.ITALIC)));
 			// The margin: a sketch of the way to the nearest Archive, in the overworld.
 			if (serverPlayer.level().dimension() == Level.OVERWORLD) {
 				net.minecraft.core.BlockPos archive = serverPlayer.level().findNearestMapStructure(dev.wildercord.world.WildercordWorldgen.ARCHIVES,

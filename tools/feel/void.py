@@ -463,3 +463,29 @@ EVENTS = [
     event("void_starmaw_gulp", void_starmaw_gulp, variants=1, role="impact", subtitle="hit"),
     event("void_wither_rot", void_wither_rot, variants=2, role="effect", subtitle="hit"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def void_upfall(v, rng):
+    """Upfall: a whoosh played backwards, a tone rising under it, the ground's rumble letting go."""
+    dur = 1.6
+    whoosh = sa.reverse(sa.moving_band(dur, [(0, 2400), (dur, 300)], 1.2, rng) * sa.decay(dur, 0.5, 0.01))
+    rise = sa.sine(sa.glide(dur, (0, sa.note(sa.D, -1)), (dur, sa.note(sa.D, 1)))) * sa.swell(dur, 1.2) * 0.5
+    under = sa.norm(sa.lowpass(sa.brown(dur, rng), 200)) * sa.swell(dur, 0.8) * 0.4
+    return sa.finish(sa.reverb(sa.mix(0.8 * whoosh, rise, under), 1.0, 0.2), "effect")
+
+
+def void_soul_wisp(v, rng):
+    """Soul Lanterns: a breathy, hollow tone drifting upward, and a far chime as it arrives."""
+    dur = 1.4
+    breath = sa.moving_band(dur, [(0, 700), (dur, 1400)], 0.15, rng) * sa.swell(dur, 0.5) * 0.7
+    hollow = sa.sine(sa.glide(dur, (0, sa.note(sa.FS, 0)), (dur, sa.note(sa.A, 0)))) * sa.swell(dur, 0.6) * 0.4
+    chime = sa.glass(sa.note(sa.B, 2), 0.8, 0.2) * 0.4
+    return sa.finish(sa.reverb(sa.mix(breath, hollow, (0.6, chime)), 1.0, 0.25), "effect")
+
+
+EVENTS += [
+    event("void_upfall", void_upfall, variants=1, role="effect", subtitle="field"),
+    event("void_soul_wisp", void_soul_wisp, variants=2, role="effect", subtitle="hit"),
+]

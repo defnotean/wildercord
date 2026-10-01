@@ -536,6 +536,8 @@ public final class CastEngine {
 				});
 			}
 		}
+		// A world's resonance riding this cast may add its twist to the hit (see TwistMagic).
+		TwistMagic.onHit(cast, g, hit);
 		cast.siphon(aliveBefore.stream().filter(e -> Targets.canHarm(cast.caster, e) || !e.isAlive()).count());
 		// Allies helped, a caster moved: what the spell learns from it, and the traits that answer it (see Mastery).
 		Mastery.afterHit(cast, g, hit);

@@ -26,6 +26,13 @@
       ],
       "subtitle": "tell"
     },
+    "time_reecho": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_reecho"
+      ],
+      "subtitle": "cast"
+    },
     "time_resume": {
       "attenuation": 0,
       "files": [
@@ -71,6 +78,13 @@
       ],
       "subtitle": "tell"
     },
+    "time_slow_hour": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_slow_hour"
+      ],
+      "subtitle": "field"
+    },
     "time_stop": {
       "attenuation": 0,
       "files": [
@@ -111,6 +125,14 @@
         "kit/time/time_tock_3"
       ],
       "subtitle": "tell"
+    },
+    "time_toll": {
+      "attenuation": 0,
+      "files": [
+        "kit/time/time_toll_1",
+        "kit/time/time_toll_2"
+      ],
+      "subtitle": "hit"
     },
     "time_wind": {
       "attenuation": 0,

@@ -592,7 +592,7 @@ public class CordScreen extends Screen {
 			// Descriptions only count for longer words, so "fire" doesn't match every rune that "fires".
 			if (token.length() >= 5) {
 				if (description == null) {
-					description = RuneItem.runeDescription(rune).getString().toLowerCase(Locale.ROOT);
+					description = RuneReadingText.searchable(rune);
 				}
 				if (description.contains(token)) {
 					continue;
@@ -981,6 +981,7 @@ public class CordScreen extends Screen {
 							sprite(g, SPR_SOCKET_HOVER, cx, y, CELL, CELL);
 						}
 						g.item(RuneItem.stack(rune), cx + 1, y + 1);
+						readingMark(g, rune, cx, y);
 						if (!usable) {
 							g.fill(cx + 1, y + 1, cx + 17, y + 17, 0xB0100C18);
 							sprite(g, SPR_LOCK, cx + 10, y + 9, 7, 8);
@@ -1432,11 +1433,17 @@ public class CordScreen extends Screen {
 		boolean knownSecret = secret.isPresent();
 		String spellName = renaming ? renameText + ((System.currentTimeMillis() / 500) % 2 == 0 ? "_" : " ")
 			: SpellCaster.nameOf(minecraft.player, book(), editing, runes, SpellHud.read(runes));
-		int nameColor = renaming ? TEXT : knownSecret ? 0xFF000000 | secret.get().color() : GOLD;
+		java.util.Optional<dev.wildercord.spell.ResonanceLore.View> resonance = knownSecret ? java.util.Optional.empty()
+			: Heart.foundResonance(minecraft.player, runes);
+		int nameColor = renaming ? TEXT : knownSecret ? 0xFF000000 | secret.get().color() : resonance.isPresent() ? 0xFF000000 | resonance.get().color() : GOLD;
 		out.add(new ReadoutLine(Component.literal(font.plainSubstrByWidth(spellName, width - TOOLS_W - 6)).getVisualOrderText(), TEXT_X, nameColor));
 		refusal(out, width);
 		if (knownSecret && !renaming) {
 			wrap(out, Component.translatable("screen.wildercord.secret_line", secret.get().description()), 0, width, 0xFF000000 | secret.get().color());
+		}
+		if (resonance.isPresent() && !renaming) {
+			String does = dev.wildercord.spell.ResonanceTwists.byId(resonance.get().twist()).map(dev.wildercord.spell.ResonanceTwists.Twist::description).orElse("");
+			wrap(out, Component.translatable("screen.wildercord.resonance_line", does), 0, width, 0xFF000000 | resonance.get().color());
 		}
 		int maxMana = Mana.max(minecraft.player);
 		// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
@@ -1832,23 +1839,30 @@ public class CordScreen extends Screen {
 				lines.add(Component.translatable("screen.wildercord.knot_holds", def.description()).withStyle(ChatFormatting.GRAY));
 				lines.add(Component.translatable("tooltip.wildercord.knot.rules", Math.round((1 - Knots.DISCOUNT) * 100)).withStyle(ChatFormatting.DARK_GRAY));
 			} else {
-				lines.add(RuneItem.runeDescription(def).withStyle(ChatFormatting.GRAY));
+				lines.add(RuneReadingText.describe(def).withStyle(ChatFormatting.GRAY));
+				Component reading = RuneReadingText.stageLine(def);
+				if (reading != null) {
+					lines.add(reading);
+				}
 			}
+			lines.add(costLine(def));
+			// What it does to the world, and the marks it leaves, are told once it's understood: they're full of numbers.
+			boolean unread = RuneReadingText.stage(def) != dev.wildercord.spell.RuneReading.Stage.UNDERSTOOD;
 			if (rank > 1) {
 				lines.add(Component.translatable("tooltip.wildercord.rank", RuneItem.roman(rank), Math.round((Ranks.power(rank) - 1) * 100)).withColor(GOLD));
 			}
 			// What it does to the ground it lands on: burns grass, freezes water...
 			dev.wildercord.spell.WorldRules.Interaction world = dev.wildercord.spell.WorldRules.of(def);
-			if (world != dev.wildercord.spell.WorldRules.Interaction.NONE) {
+			if (world != dev.wildercord.spell.WorldRules.Interaction.NONE && !unread) {
 				lines.add(Component.translatable(world.tooltipKey()).withStyle(ChatFormatting.DARK_GREEN));
 			}
 			// The part it plays in the newer reactions: the mark it leaves, and what its damage sets off.
-			String mark = dev.wildercord.spell.ReactionRules.marks(def);
+			String mark = unread ? null : dev.wildercord.spell.ReactionRules.marks(def);
 			if (mark != null) {
 				lines.add(Component.translatable(dev.wildercord.spell.ReactionRules.markKey(mark))
 					.withColor(dev.wildercord.spell.ReactionRules.color(dev.wildercord.spell.ReactionRules.reactionFor(mark))));
 			}
-			String reaction = dev.wildercord.spell.ReactionRules.triggers(def);
+			String reaction = unread ? null : dev.wildercord.spell.ReactionRules.triggers(def);
 			if (reaction != null) {
 				lines.add(Component.translatable(dev.wildercord.spell.ReactionRules.triggerKey(reaction)).withColor(dev.wildercord.spell.ReactionRules.color(reaction)));
 			}
@@ -1860,6 +1874,31 @@ public class CordScreen extends Screen {
 			lines.add(extra.copy().withStyle(warn ? ChatFormatting.RED : ChatFormatting.DARK_AQUA));
 		}
 		return lines;
+	}
+
+	/** What a rune costs: its mana, or for a modifier the multiple it puts on what it changes (and a shape on its effects). */
+	private static Component costLine(RuneDef def) {
+		String cost = trimNumber(def.cost());
+		Component text = switch (def.family()) {
+			case MODIFIER -> Component.translatable("screen.wildercord.rune_cost_mult", trimNumber(def.multiplier()));
+			case SHAPE -> Component.translatable("screen.wildercord.rune_cost_shape", cost, trimNumber(def.multiplier()));
+			default -> Component.translatable("screen.wildercord.rune_cost", cost);
+		};
+		return text.copy().withColor(0xFF7FA8C8);
+	}
+
+	private static String trimNumber(double v) {
+		return Math.abs(v - Math.rint(v)) < 1e-6 ? Long.toString(Math.round(v)) : String.format(Locale.ROOT, "%.2f", v).replaceAll("0+$", "");
+	}
+
+	/** A small mark in a Codex cell's corner for a rune not yet understood: a "?" while unread, a dot once glimpsed. */
+	private void readingMark(GuiGraphicsExtractor g, RuneDef rune, int cx, int cy) {
+		switch (RuneReadingText.stage(rune)) {
+			case UNREAD -> g.text(font, "?", cx + 1, cy, 0xFFC8B4FF, true);
+			case GLIMPSED -> g.fill(cx + 2, cy + 2, cx + 4, cy + 4, 0xFFB8A8E8);
+			case UNDERSTOOD -> {
+			}
+		}
 	}
 
 	// ------------------------------------------------------------------ keyboard: the search box
@@ -2537,6 +2576,9 @@ public class CordScreen extends Screen {
 				lines.add(new GrimoireLine(Component.literal("???"), 8, FAINT, List.of(Component.translatable("screen.wildercord.grimoire.secret_unknown").withStyle(ChatFormatting.GRAY))));
 			}
 		}
+		// This world's own magic: its resonances and quirks, and the runes still being read.
+		addWorldMagic(lines);
+		addReading(lines);
 		// Duels fought (see /duel): wins and losses, once there's been one.
 		dev.wildercord.duel.Duels.Record duels = minecraft.player == null ? dev.wildercord.duel.Duels.Record.NONE
 			: minecraft.player.getAttachedOrElse(dev.wildercord.duel.Duels.RECORD, dev.wildercord.duel.Duels.Record.NONE);
@@ -2626,6 +2668,91 @@ public class CordScreen extends Screen {
 	 * Signature fusions: found ones by name and their two runes; the rest as ??? + ???, with the elements of the
 	 * two runes as the hint (never the runes themselves: finding the pair is the puzzle).
 	 */
+	/**
+	 * This world's resonances (found ones in full, read ones as their riddle, others' finds by name and finder, and how many
+	 * nobody has found) and the quirks met so far: only what the server has told this player (see {@code spell.ResonanceLore}).
+	 */
+	private void addWorldMagic(List<GrimoireLine> lines) {
+		Player player = minecraft.player;
+		dev.wildercord.player.WildercordAttachments.WorldLore lore = player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.WORLD_LORE,
+			dev.wildercord.player.WildercordAttachments.WorldLore.NONE);
+		if (lore.total() == 0) {
+			return;
+		}
+		int mine = (int) lore.resonances().stream().filter(dev.wildercord.spell.ResonanceLore.View::found).count();
+		List<Component> about = List.of(Component.translatable("screen.wildercord.grimoire.resonances_hint").withStyle(ChatFormatting.GRAY));
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.resonances", mine, lore.total()), 0, GOLD, about));
+		for (dev.wildercord.spell.ResonanceLore.View view : lore.resonances()) {
+			String name = capital(view.name());
+			List<Component> tip = new ArrayList<>();
+			tip.add(Component.literal(name).withColor(view.color()));
+			Component finder = view.finder().isEmpty() ? null : Component.translatable("screen.wildercord.grimoire.resonance_finder", view.finder()).withStyle(ChatFormatting.DARK_AQUA);
+			if (view.found()) {
+				StringBuilder runes = new StringBuilder();
+				for (String id : view.runes()) {
+					runes.append(runes.isEmpty() ? "" : " \u00B7 ").append(Runes.get(id).map(r -> RuneItem.runeName(r).getString()).orElse(id));
+				}
+				tip.add(Component.literal(runes.toString()).withStyle(ChatFormatting.GRAY));
+				dev.wildercord.spell.ResonanceTwists.byId(view.twist()).ifPresent(twist -> tip.add(Component.literal(twist.description()).withStyle(ChatFormatting.DARK_GRAY)));
+				tip.add(Component.literal("\u201C" + view.riddle() + "\u201D").withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY));
+				if (finder != null) {
+					tip.add(finder);
+				}
+				lines.add(new GrimoireLine(Component.literal(name), 8, 0xFF000000 | view.color(), tip));
+			} else if (view.hinted()) {
+				tip.add(Component.translatable("screen.wildercord.grimoire.resonance_riddle").withStyle(ChatFormatting.GRAY));
+				if (finder != null) {
+					tip.add(finder);
+				}
+				lines.add(new GrimoireLine(Component.literal("\u201C" + view.riddle() + "\u201D").withStyle(ChatFormatting.ITALIC), 8, 0xFFC8B89A, tip));
+			} else {
+				tip.add(Component.translatable("screen.wildercord.grimoire.resonance_heard").withStyle(ChatFormatting.GRAY));
+				if (finder != null) {
+					tip.add(finder);
+				}
+				lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.resonance_other", name, view.finder()), 8, DIM, tip));
+			}
+		}
+		int unheard = lore.total() - lore.resonances().size();
+		if (unheard > 0) {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.resonance_unknown", unheard), 8, FAINT,
+				List.of(Component.translatable("screen.wildercord.grimoire.resonance_unknown_hint").withStyle(ChatFormatting.GRAY))));
+		}
+		List<Component> quirkAbout = List.of(Component.translatable("screen.wildercord.grimoire.quirks_hint").withStyle(ChatFormatting.GRAY));
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.quirks", lore.quirks().size()), 0, GOLD, quirkAbout));
+		if (lore.quirks().isEmpty()) {
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.quirks_none"), 8, DIM, quirkAbout));
+		}
+		for (dev.wildercord.spell.ResonanceLore.QuirkView quirk : lore.quirks()) {
+			lines.add(new GrimoireLine(Component.literal(quirk.text()), 8, 0xFFB8C8E8, quirkAbout));
+		}
+	}
+
+	/** Runes still being read (see {@code spell.RuneReading}): how many, and which, once there are any. */
+	private void addReading(List<GrimoireLine> lines) {
+		Player player = minecraft.player;
+		List<RuneDef> reading = new ArrayList<>();
+		for (String id : dev.wildercord.cast.RuneReadings.reading(player).keySet()) {
+			Runes.get(id).filter(rune -> RuneReadingText.stage(rune) != dev.wildercord.spell.RuneReading.Stage.UNDERSTOOD).ifPresent(reading::add);
+		}
+		if (reading.isEmpty()) {
+			return;
+		}
+		reading.sort(java.util.Comparator.comparing(RuneDef::name));
+		List<Component> tip = new ArrayList<>();
+		tip.add(Component.translatable("screen.wildercord.grimoire.reading_hint").withStyle(ChatFormatting.GRAY));
+		for (RuneDef rune : reading) {
+			Component stage = RuneReadingText.stageLine(rune);
+			tip.add(RuneItem.runeName(rune).withColor(RuneColors.of(rune)).append(Component.literal(" \u2014 ").withStyle(ChatFormatting.DARK_GRAY))
+				.append(stage == null ? Component.empty() : stage));
+		}
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.reading", reading.size()), 0, GOLD, tip));
+	}
+
+	private static String capital(String text) {
+		return text.isEmpty() ? text : Character.toUpperCase(text.charAt(0)) + text.substring(1);
+	}
+
 	private void addSignatures(List<GrimoireLine> lines, List<String> found) {
 		if (Fusions.SIGNATURES.isEmpty()) {
 			return;

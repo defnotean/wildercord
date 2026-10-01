@@ -74,6 +74,16 @@ public final class Grimoire {
 		}
 	}
 
+	/** Whether a secret is left that {@code player} hasn't found or read the riddle of. */
+	public static boolean hintsLeft(ServerPlayer player) {
+		for (Secrets.Secret secret : Secrets.ALL) {
+			if (!Heart.discovered(player, secret.key()) && !Heart.discovered(player, "hint:" + secret.id())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/** A Torn Page: the riddle of a secret not found or hinted yet, or null if none are left. */
 	public static Secrets.Secret hint(ServerPlayer player) {
 		List<Secrets.Secret> left = new ArrayList<>();

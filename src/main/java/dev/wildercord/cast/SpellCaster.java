@@ -247,6 +247,9 @@ public final class SpellCaster {
 		}
 		if (secret.isPresent()) {
 			SecretSpells.discover(player, secret.get());
+		} else {
+			// This world's own magic: if these runes are one of its resonances, it wakes, and its twist rides the cast.
+			WorldResonances.wake(player, runes, cast);
 		}
 		java.util.function.Consumer<Cast> release = c -> {
 			if (secret.isPresent()) {
@@ -366,7 +369,13 @@ public final class SpellCaster {
 		if (!custom.isEmpty()) {
 			return custom;
 		}
-		return Heart.foundSecret(player, runes).map(Secrets.Secret::name).orElseGet(auto);
+		return Heart.foundSecret(player, runes).map(Secrets.Secret::name)
+			.or(() -> Heart.foundResonance(player, runes).map(resonance -> dev.wildercord.spell.SpellNames.clean(capital(resonance.name()))))
+			.orElseGet(auto);
+	}
+
+	private static String capital(String text) {
+		return text.isEmpty() ? text : Character.toUpperCase(text.charAt(0)) + text.substring(1);
 	}
 
 	/** Casts of each spell so far this session, per player, for Combo. */

@@ -234,14 +234,46 @@ public final class Heart {
 		return dev.wildercord.spell.Secrets.match(runes).filter(secret -> discovered(player, secret.key()));
 	}
 
-	/** The factor on a spell's price for this player: a found secret's power, otherwise 1. */
+	/** The factor on a spell's price for this player: a found secret's power, a found resonance's {@link dev.wildercord.spell.Resonance#COST}, otherwise 1. */
 	public static double secretCost(Player player, List<dev.wildercord.spell.RuneDef> runes) {
-		return foundSecret(player, runes).map(dev.wildercord.spell.Secrets.Secret::power).orElse(1.0);
+		return foundSecret(player, runes).map(dev.wildercord.spell.Secrets.Secret::power)
+			.orElseGet(() -> foundResonance(player, runes).isPresent() ? dev.wildercord.spell.Resonance.COST : 1.0);
 	}
 
-	/** The factor on a spell's cooldown for this player: {@link dev.wildercord.spell.Secrets#COOLDOWN} for a found secret, otherwise 1. */
+	/**
+	 * The factor on a spell's cooldown for this player: {@link dev.wildercord.spell.Secrets#COOLDOWN} for a found secret,
+	 * {@link dev.wildercord.spell.Resonance#COOLDOWN} for a found resonance, otherwise 1.
+	 */
 	public static double secretCooldown(Player player, List<dev.wildercord.spell.RuneDef> runes) {
-		return foundSecret(player, runes).isPresent() ? dev.wildercord.spell.Secrets.COOLDOWN : 1.0;
+		if (foundSecret(player, runes).isPresent()) {
+			return dev.wildercord.spell.Secrets.COOLDOWN;
+		}
+		return foundResonance(player, runes).isPresent() ? dev.wildercord.spell.Resonance.COOLDOWN : 1.0;
+	}
+
+	// ------------------------------------------------------------------ this world's resonances
+
+	/**
+	 * The resonance of this world {@code runes} spell out, if this player has found it: read from what the server told
+	 * them of the world ({@code world_lore}), the same on both sides. As with a secret, until it's found everything
+	 * shows (and the finding cast charges) the ordinary spell, and a resonance they haven't found isn't known here at all.
+	 */
+	public static java.util.Optional<dev.wildercord.spell.ResonanceLore.View> foundResonance(Player player, List<dev.wildercord.spell.RuneDef> runes) {
+		if (runes.size() < 3 || runes.size() > 4) {
+			return java.util.Optional.empty();
+		}
+		List<dev.wildercord.spell.ResonanceLore.View> known = player.getAttachedOrElse(WildercordAttachments.WORLD_LORE, WildercordAttachments.WorldLore.NONE)
+			.resonances();
+		if (known.isEmpty()) {
+			return java.util.Optional.empty();
+		}
+		List<String> ids = runes.stream().map(dev.wildercord.spell.RuneDef::id).toList();
+		for (dev.wildercord.spell.ResonanceLore.View view : known) {
+			if (view.matchesIds(ids)) {
+				return java.util.Optional.of(view);
+			}
+		}
+		return java.util.Optional.empty();
 	}
 
 	/** Mana per second to keep a passive running. */

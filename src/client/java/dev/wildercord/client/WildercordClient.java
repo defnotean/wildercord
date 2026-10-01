@@ -82,6 +82,11 @@ public final class WildercordClient implements ClientModInitializer {
 
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.Discovery.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(new GrimoireToast(payload.key())));
+		// This world's magic revealed (a resonance found, a quirk met): a toast with the name just shown.
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.WorldResonances.Revealed.TYPE, (payload, context) ->
+			context.client().gui.toastManager().addToast(GrimoireToast.revealed(payload.kind(), payload.name(), payload.color())));
+		// A rune's text, everywhere it's shown, only as far as the player has read it.
+		RuneReadingText.init();
 		// An affinity reached a new level: a toast in its element's colour.
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.PlayerAffinities.Rise.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(GrimoireToast.affinity(payload.element(), payload.level())));

@@ -22,6 +22,7 @@
   * [Imbuing and Glyphs](spellcraft/imbuing.md)
   * [Overcasting and Wild Magic](spellcraft/overcasting.md)
   * [Secret Spells](spellcraft/secret-spells.md)
+  * [Resonances and Reading Runes](spellcraft/resonances.md)
   * [Loadouts](spellcraft/loadouts.md)
   * [Spell Mastery](spellcraft/mastery.md)
 * [Runes](runes/index.md)

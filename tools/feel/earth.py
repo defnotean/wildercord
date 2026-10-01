@@ -201,3 +201,19 @@ EVENTS = [
     event("earth_dig", earth_dig, variants=3, role="impact", subtitle="hit"),
     event("earth_rattle", earth_rattle, variants=3, role="impact", subtitle="hit"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def earth_menhir_rise(v, rng):
+    """Standing Stones: the ground rumbling, stone grinding up out of it, and a heavy thud as they stand."""
+    dur = 1.6
+    rumble = sa.norm(sa.lowpass(sa.brown(dur, rng), 160)) * sa.swell(dur, 0.5) * 0.4
+    grind = sa.norm(sa.bandpass(sa.grains(dur, 300, rng, length=(0.003, 0.012), shape=[(0, 0.2), (0.5, 1), (dur, 0)]), 500, 3000)) * 0.9
+    thud = sa.thump(90 - 10 * v, 40, 0.7, 0.15, drive=1.6, knock=0.6)
+    return sa.finish(sa.reverb(sa.mix(0.8 * rumble, grind, (0.45, thud)), 0.8, 0.15), "impact")
+
+
+EVENTS += [
+    event("earth_menhir_rise", earth_menhir_rise, variants=2, role="impact", subtitle="hit", attenuation=24),
+]

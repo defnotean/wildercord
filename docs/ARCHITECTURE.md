@@ -15,6 +15,7 @@ asset pipeline and testing. For *what* each rune does and why, see [DESIGN.md](D
 - [7. Content: items, loot, effects](#7-content-items-loot-effects)
 - [8. The asset pipeline (`tools/`)](#8-the-asset-pipeline-tools)
 - [9. Testing](#9-testing)
+- [Hooks for other systems](#hooks-for-other-systems)
 - [10. Rules that keep it safe](#10-rules-that-keep-it-safe)
 - [11. Minecraft 26.x notes](#11-minecraft-26x-notes)
 
@@ -165,6 +166,15 @@ cooldown and duration. Both are pure, so both are unit-tested.
 - **`Incantation`**: every rune's syllable (hand-tuned for the best known, otherwise an onset, vowel and ending
   made from the id, never an English word or a rune's name, unique within the roster, given in roster order so a
   new rune never changes an old one's), and a spell's incantation (`of`, `line`).
+- **Each world's own magic** (see [DESIGN.md](DESIGN.md#each-worlds-own-magic)): `Resonance` (one resonance: id,
+  name, riddle, runes, twist, colour), `ResonanceTwists` (the 27 twists: name stems, omen, description, and the `Fit` of
+  spells each can ride), `ResonanceForge` (the draw: SHA-256 of the world seed and reroll salt into a `java.util.Random`,
+  the pool of crafted Tier I-III runes, templates, `problem` for what can't be a resonance, names and riddles),
+  `RuneQuirks` (the quirks, their conditions over an `Attunements.Place`, and their draw on a stream of its own) and
+  `ResonanceLore` (the one place that decides what a client may know: found, read, announced, or nothing).
+- **`RuneReading`** and **`RuneHints`**: a rune's reading stage from its progress (absent means understood), and what an
+  unread rune shows (a hint from its element, family, kind and description words, or a written one) and a glimpsed one
+  (its text cut into pieces with the numbers veiled).
 - **`SpellSigil`**: the layout of a spell's magic circle, as fractions of its radius: the frame and
   its rays, the script band, the pattern band, the star ({p/q} with `points`/`step`, a point per
   rune), the roundels on its points (`pointOf`, `roundel`), the inner ring and the seal. The size
@@ -346,6 +356,24 @@ the synced note (`client.fx.SoarWings`).
   toast. `Grimoire.hint` picks a riddle for a Torn Page.
 - **`SecretSpells`**: what each secret spell does, and `discover` (the Grimoire entry and a title
   on the first cast). Rebirth's death save is an `ALLOW_DEATH` hook.
+- **`WorldResonances`**: this world's resonances and quirks at runtime. `Ledger` (saved data with the overworld) holds
+  the draw, the seed and settings it was drawn under, and who found each first; `ledger(server)` draws it again only
+  when the count, the reroll salt or the seed changes, or a rune it used is gone. `SpellCaster.cast` calls `wake` for a
+  spell that isn't a secret: a match (and every wake condition passing) is found (`discover`: Grimoire, title, the
+  `Revealed` toast payload, the announcement) and `TwistMagic.ride` marks the cast. `refresh(player)` works out the
+  player's `world_lore` view at login, respawn and after any change; `hint` serves Torn Pages.
+- **`TwistMagic`** and **`TwistVfx`**: what each twist does and how it looks. A ride is keyed by `Cast.identity()` in a
+  weak map: its set piece goes off as the spell leaves the hands (3 ticks after the press, as the spell does), and
+  `CastEngine.onHit` hands each hit to `TwistMagic.onHit`. A twist's lasting parts book one step at a time on the
+  `Scheduler`; Second Voice runs the root again on `cast.again(0.5)` (a new identity, so it never echoes again); Pale
+  Steed's horse carries `spirit_until`, as a summoned wolf does.
+- **`WorldQuirks`**: `Effects.applyEffect` multiplies an effect's power and duration by `WorldQuirks.power` and
+  `duration`, and `Effects.apply` calls `after` for a quirk's faint second strike. The place is read where the effect
+  lands; the first time a quirk holds for a player's spell it's written into their Grimoire.
+- **`RuneReadings`**: reading runes at runtime. `RuneItem.use` and `Innates.awaken` call `learned` for a rune newly
+  learned (progress 0 in `rune_reading`); the add-on events `AFTER_CAST` (each rune of the cast, Knots and weaves
+  untied, +1) and `SPELL_HIT` (the last cast's runes, +1 once, when it lands on something) move it on; understood, the
+  entry is dropped. `stage(player, rune)` answers on both sides.
 - **`Innates`**: awakens a random innate rune three seconds after the 1st Circle forms (and for
   anyone with circles but no innate), and runs all ten. Their state (threads, stacks, debts,
   afterimages) is kept here per caster and dropped when the server stops.
@@ -601,6 +629,8 @@ player, synced to that player only, and copied through death where noted.
 | `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
 | `mastery` | `MasteryBook` | yes | Every spell's mastery record (see [Spell mastery](#spell-mastery-mastery-masterychoices-inscriptions)) |
 | `mastery_look` | spell hash, rank, sigil seed, flags | no (not saved) | The public look of the spell a player has ready; synced to **everyone** nearby, who draw its rank and sigil on its circle |
+| `rune_reading` | map of string to int | yes | Runes still being read, and how far (see `spell.RuneReading`); a rune absent is understood |
+| `world_lore` | `WorldLore` | no (not saved) | What the player may know of their world's resonances and quirks (`spell.ResonanceLore`'s view), worked out by the server |
 | `soaring` | end time, speed before, falling | no (ended at death) | A Soar flight or its gentle descent: the note that Soar gave the flight, saved so a logout, restart or crash is tidied at login; synced to **everyone** nearby, who draw the wings |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
@@ -669,7 +699,9 @@ Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the clie
 `cast.ScreenFx`). The travel commands send `Waypoints.Track` (the tracked waypoint, for `WaypointHud`), and
 `cast.Climate.Sync(conditions)` tells each player the elemental climate where they stand (once a second, only
 when it changes) for the HUD's marks, and `cast.PlayerAffinities.Rise(element, level)` tells a player an
-affinity reached a new level (the client shows its toast).
+affinity reached a new level (the client shows its toast). `cast.WorldResonances.Revealed(kind, name, colour)` carries
+the name of a resonance just found or a quirk just met, for its toast. `Config.Sync` also says whether runes start
+unread.
 Everything else travels through synced attachments; `CHARGE` is synced to everyone nearby so they
 can draw the circle.
 
@@ -757,6 +789,11 @@ can draw the circle.
   in `SpellFormations` and `ChargeCircles`, from the caster's synced `mastery_look` through an overridden `look()`),
   draws the sigil in place of the seal, deepens its colour from Adept, and adds the outer rings and Mythic's shimmer;
   `GuiSpellCircle` draws the same in screens, and its `sigil` draws a sigil anywhere.
+- **`RuneReadingText`**: a rune's text as the local player has read it (a hint, the glimpse with its numbers drawn
+  obfuscated, or in full). The Codex's tooltips and search, its corner marks (a ? unread, a dot glimpsed) and, through
+  `RuneItem.describe`, every rune item's tooltip go through it. The Grimoire page adds *This world's resonances*, *This
+  world's quirks* and *Runes you're still reading* from `world_lore` and `rune_reading`; the readout names a found
+  resonance (`Heart.foundResonance`) and says what its twist does.
 - **`GrimoireToast`** (and `GrimoireToast.affinity`, a level reached, with the element's mark from
   `ElementGlyphs`), and the Grimoire page inside `CordScreen`, whose Affinities section draws each element's
   mark, level and a bar toward the next level (`GrimoireLine`'s `glyph` and `points`).
@@ -1000,12 +1037,36 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   (ranks I, III and V side by side). `MasteryRulesTest`, `MasteryTraitsTest` and `MasterySigilTest` cover the pure rules
   (thresholds, worth, the moment, repetition, practice, the tuning worked through, the catalogue and its filters,
   offers, determinism, the sigil's symmetry and variety), and `WildercordConfigTest` the `mastery` section.
+- **`ResonanceTest`** and **`RuneReadingTest`** cover the pure parts: the draw is deterministic, a reroll salt and
+  another seed change it, the first resonances never move with the count, every resonance is a clean affordable spell of
+  crafted runes that fits its twist and collides with nothing, riddles name every rune, the privacy filter, quirks, the
+  reading stages and the hints and glimpses of every rune.
+- **`WildercordResonanceTest`** draws three worlds (two seeds alike, one not), casts a resonance for real (Grimoire, first
+  finder, toast, announcement, price), reads a Torn Page riddle, checks the client holds nothing undiscovered, films a
+  few twists (`resonance_twist_*`), and takes a rune learned from its item from unread to glimpsed to understood in the
+  Codex (`resonance_codex_*`).
 - **`WildercordFlightTest`** casts Soar for real on a platform in the sky: casting gives flight and a double-tap of
   jump takes off; a flight running out 64 blocks up warns, then lands the player with no damage and nothing left;
   creative players are left alone; an ally a Burst reaches flies and a stranger doesn't; a dungeon's ward (filed
   as a dungeon piece files its arena) won't let it lift anyone and sets down a flier who comes in; a monster's Pull
   and a Weigh ground a flier; a flight saved in a crash is tidied at login; death leaves nothing; and a real save
   and reload saves the player unable to fly, gives the flight back and lets it run out safely. Screenshots `soar_*`.
+
+## Hooks for other systems
+
+Each world's own magic is built to be joined later (by spell mastery, by places of power, by residues). The API is in
+`cast.WorldResonances`:
+
+| Call | What it's for |
+|---|---|
+| `discovered(player, id)` | Whether a player has found resonance `id` (both sides: it reads the synced Grimoire key `resonance:<id>`) |
+| `of(server)` / `quirks(server)` | This world's resonances and rune quirks (server side; never send them to a client) |
+| `match(server, runes)` | The resonance a rune sequence spells out exactly, if any |
+| `addWakeCondition(id, condition)` / `removeWakeCondition(id)` | An extra condition every resonance must meet to wake, asked as `(ServerPlayer caster, Resonance resonance) -> boolean`; a condition that doesn't concern a resonance answers true. A resonance held back isn't found and has no twist (the cast is only the ordinary spell, with a faint shimmer). A place of power can hold back the resonances it chooses unless cast inside it; a residue system can ask for a reagent in hand. |
+| `onFound(listener)` | Told `(player, resonance, firstInWorld)` for each resonance a player finds, the first time they do |
+
+Nothing in the draw changes when a condition is added: conditions only decide whether a cast wakes what it matched.
+To give a resonance's riddle a line about its condition, a system can keep its own note against the resonance's id.
 
 ## 10. Rules that keep it safe
 

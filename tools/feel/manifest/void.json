@@ -272,6 +272,14 @@
       ],
       "subtitle": "hit"
     },
+    "void_soul_wisp": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_soul_wisp_1",
+        "kit/void/void_soul_wisp_2"
+      ],
+      "subtitle": "hit"
+    },
     "void_spark_crit": {
       "attenuation": 0,
       "files": [
@@ -327,6 +335,13 @@
         "kit/void/void_unzip"
       ],
       "subtitle": "cast"
+    },
+    "void_upfall": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_upfall"
+      ],
+      "subtitle": "field"
     },
     "void_veil_fade": {
       "attenuation": 0,
