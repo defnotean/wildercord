@@ -29,7 +29,8 @@ The power comes from the order you put them in.
    pick up the key ingredient (grab a blaze rod and the Fire rune recipe appears).
    Rarer runes come from structures, bosses and a few world events.
 2. **Learn them.** Right-click a rune to learn it forever. It goes into your
-   **Codex** and survives death. Spare copies are for fusion or trading.
+   **Codex** and survives death. Spare copies are for fusion or trading. A new rune starts
+   **unread** (a hint of what it does) until you've cast it and seen it at work.
 3. **Thread spells.** Open the Cord screen (K) and click or drag runes into a spell's
    sockets. A live readout explains exactly what the spell will do.
 4. **Cast.** R casts your selected spell. Hold V for the spell wheel.
@@ -620,6 +621,57 @@ read one to learn the riddle of a secret you haven't found, and its margin sketc
 the nearest Archive.) Torn Pages turn up in stronghold libraries (45%), ancient cities
 and woodland mansions (25%), trial vaults (15%), dungeons and desert pyramids (12%), and in the
 Archive; Runebound and the Archivist drop them too.
+
+### Each world's own magic
+The secret spells are the same everywhere; the point of these is that they aren't. A world should feel like it has
+a nature of its own, and casting should feel like finding magic, not looking it up.
+
+- **Resonances.** At server start each world draws **12** (0-24, `resonances.count`) resonances from its seed, hashed
+  through SHA-256 with a label of its own and the owner's `reroll_salt`: the same seed and salt give the same ones, and
+  nothing a client sees (the ley seed included) leads back to them. One is an exact sequence of **3 or 4 runes** plus a
+  **twist**. Its runes are crafted runes of Tiers I-III (lower tiers drawn 3:2:1), built from a template (a shape, one
+  to three effects, perhaps a modifier or an On Hit) that the twist can ride; it must read cleanly as an ordinary spell
+  (no warnings, nothing unattached), cost at most **70** mana, and be neither a secret, nor hold both runes of a
+  signature fusion, nor repeat another resonance. Each world uses a twist at most once. Its **name** is a twist word, an
+  element word and a rite ("the Glasswind Rite"); its **riddle** is the twist's omen and the runes in order (shapes and
+  modifiers by what they do, effects by name). The draw is saved with the overworld, so new runes in a later version
+  never shift it.
+- **Twists** (27, `spell.ResonanceTwists`), each a modest extra with its own visuals and kit sound: Glass Rain (each
+  rain strike shatters as glass: 2 damage and Slowness I in 1.8 blocks, ten strikes a cast), Kindly Flame (allies within
+  4 of a fire spell's hits mend 2.5, once each, eight a cast), Birds of Light (five birds from the first strike, 2 each
+  on the nearest foes), Winter Blossom (flowers bloom where frost lands, Regeneration I for 3 s to allies among them,
+  three patches), Upfall (foes within 4.5 fall up, hang and slam down for 3), Pale Steed (a spectral horse for 30 s,
+  Self and a helpful effect), Second Voice (the whole spell again from where it landed at half power, a second later,
+  once), Slow Hour (6 s: hostile projectiles within 8 crawl), Paper Storm (three whirls of pages, 1.5 and Glowing to foes
+  within 5), Star Wake (three small stars, 2.5 each), Crown of Thorns (six foes a cast: Slowness I and 1 damage three
+  times), Mirror Shards (three shards for 10 s, 3 damage each to the next foe within 3.5), Soul Lanterns (a foe the
+  spell ends mends you 2, three a cast), Aurora (two hearts of absorption to you and allies within 8 for 10 s), Turning
+  Tide (a ring of seawater: soaked and shoved, friends put out, twice a cast), Standing Stones (3 damage and a toss in
+  3.2), Storm Crown (four foes: a cloud zaps each three times for 1.5), Red Moon (six foes: each mends you 1), Sun Seal
+  (3 s seal: alight and 1 a second in 2.5), Falling Blades (the three nearest foes: 3 each, bleeding), Whirling Eddy (2 s
+  whirl in 3.5, then flung out for 2), Lantern Flies (Night Vision to allies, Glowing to foes within 12), Tolling Hour
+  (four foes: a clock, then 3 damage three seconds later), Rime Steps (6 s of footsteps that slow foes), Crackling Wake
+  (four bursts back along the path, 2 each), Sudden Thicket (foes in 3 held a moment and 1 damage) and Great Bell (foes
+  within 6 slowed and weakened, allies quickened). Damage goes through `Effects.hurt` (Shields, `SpellDefence`, PvP
+  scale), scales with the caster's power, takes the cast's creature budget, and no twist moves a boss. A found
+  resonance costs **1.15x** the spell and recharges **1.2x** as long; until then everything shows the ordinary spell.
+- **Finding one** (casting its runes, from the Cord): a title, a toast, 400 condensed mana, and, if nobody had found it
+  (`announce`), a chat line to the server with its name, never its runes. Torn Pages tell a resonance's name and riddle
+  half the time while any are left. The Grimoire lists this world's resonances and quirks.
+- **Quirks.** **4** (0-8, `resonances.quirks`) runes get a quirk, drawn on a stream of their own: **x1.2** power, **x1.35**
+  duration, or a faint second strike (30% power, half a second later, once a cast), each in a condition that suits the
+  element (night, day, rain, snow, a full or new moon, the deep, the heights, underground, the Nether, the End), read where
+  the effect lands. Found the first time they matter (100 mana).
+- **Privacy.** A client only ever holds `spell.ResonanceLore`'s view: what its player found (everything), read (name
+  and riddle) or heard announced (name and finder), the quirks they met, and the count.
+
+### Reading runes
+A newly learned rune is **unread** (the Codex shows its name, family, tier, element and cost, and a hint), **glimpsed**
+after the first cast (its text, numbers veiled), and **understood** at 5 progress: a cast that holds it is 1, and the
+cast landing on something 1 more (three landing casts, or five that don't). Runes known before reading existed, starter runes and
+anything learned with `features.unread_runes` off are understood; weaves follow their least read rune, Knots are always
+understood, and creative players see everything. The hints come from each rune's element, family, kind and words in its
+description, with hand-written ones for about forty common runes.
 
 ### The Grimoire
 A third page of the Cord screen: your innate rune and leaning, your affinities, the eleven reactions, the secret
