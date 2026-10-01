@@ -173,6 +173,11 @@ public final class Shields {
 				}
 			}
 		}
+		// A perfect aura guard (see aura.AuraGuard) turns a spell as a Shield raised at the last moment does: negated, and answered.
+		if (Parry.parriable(Effects.isLingering()) && dev.wildercord.aura.AuraGuard.parries(target)) {
+			guardParry(cast, target, from);
+			return true;
+		}
 		SpellShield shield = target.getAttached(WildercordAttachments.SPELL_SHIELD);
 		if (shield == null) {
 			return false;
@@ -377,12 +382,31 @@ public final class Shields {
 		// A parry stops the spell too, whatever it weighs: add-ons hear of it like any block.
 		dev.wildercord.api.WildercordEvents.SPELL_BLOCKED.invoker().onBlocked(cast.caster, target, cast.weight(), shield.strength());
 		if (counter) {
-			counter(cast, target, at, shield);
+			counter(cast, target, at, shield.color());
 		}
 	}
 
+	/**
+	 * A spell parried by a perfect aura guard: stopped at the blade (the rest of it too), and answered with a lance of the
+	 * guard's light at its caster, as a parried spell that doesn't fly is. The guard's own flash and words are its own.
+	 */
+	private static void guardParry(Cast cast, LivingEntity target, Vec3 from) {
+		long now = cast.level.getGameTime();
+		BLOCKED.computeIfAbsent(target.getUUID(), k -> new ArrayList<>()).add(new Blocked(cast.identity(), now + BLOCK_MEMORY));
+		Vec3 dir = impact(target, from);
+		Vec3 at = target.getBoundingBox().getCenter().add(dir.scale(offset(target)));
+		Light.ring(cast.level, at, dir, PARRY_COLOR, 0.2, radius(target) * 2.2, 0.08, 9);
+		if (target instanceof ServerPlayer defender) {
+			Grimoire.feat(defender, dev.wildercord.spell.Feats.PARRY);
+		}
+		Casters.tell(cast.caster, net.minecraft.network.chat.Component.translatable("message.wildercord.parried_you").withColor(0xFF8A6A));
+		dev.wildercord.api.WildercordEvents.SPELL_BLOCKED.invoker().onBlocked(cast.caster, target, cast.weight(), 0);
+		int color = target instanceof ServerPlayer player ? dev.wildercord.aura.Aura.color(player) : PARRY_COLOR;
+		counter(cast, target, at, color == 0 ? PARRY_COLOR : color);
+	}
+
 	/** A spell that doesn't fly (a beam, a blast) is answered instead: a lance of the Shield's light strikes its caster. */
-	private static void counter(Cast cast, LivingEntity defender, Vec3 at, SpellShield shield) {
+	private static void counter(Cast cast, LivingEntity defender, Vec3 at, int color) {
 		LivingEntity caster = cast.caster;
 		if (!caster.isAlive() || caster.level() != cast.level || caster.distanceTo(defender) > Parry.COUNTER_RANGE
 			|| !Targets.canHarm(defender, caster)) {
@@ -390,7 +414,6 @@ public final class Shields {
 		}
 		Cast turned = cast.reflected(defender);
 		Vec3 hit = caster.getBoundingBox().getCenter();
-		int color = shield.color();
 		Light.ray(cast.level, at, hit, color, 0.16, 8);
 		Light.ray(cast.level, at, hit, PARRY_COLOR, 0.07, 6);
 		Sigils.flash(cast.level, hit, 0xFF000000 | color, 1.4F);

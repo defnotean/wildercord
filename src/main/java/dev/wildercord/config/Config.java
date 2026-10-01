@@ -26,8 +26,8 @@ import java.util.List;
  * it needs a value (it's cheap), so a reload takes effect at once, except loot chances, which apply
  * when loot tables next load.
  *
- * <p>The few settings a client shows (the cost and regeneration multipliers, whether affinities and spell mastery are on,
- * the spell defences, and whether runes start unread, for the Cord screen and HUD) are sent to each player
+ * <p>The few settings a client shows (the cost and regeneration multipliers, whether affinities, spell mastery and aura are on,
+ * the spell defences, Aura Slash's price, and whether runes start unread, for the Cord screen and HUD) are sent to each player
  * when they join and after every reload; {@link #costMultiplier}, {@link #regenMultiplier},
  * {@link #playerAffinity}, {@link #defence} and {@link #unreadRunes} answer with those on the client.</p>
  */
@@ -42,8 +42,9 @@ public final class Config {
 
 	/** Server to client: the settings a client needs to show costs, regeneration, affinities and spell defences truthfully. */
 	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence, boolean mastery,
-			boolean masteryTraits, boolean unreadRunes) implements CustomPacketPayload {
-		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true);
+			boolean masteryTraits, boolean unreadRunes, boolean aura, float slashCost) implements CustomPacketPayload {
+		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
+			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost());
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
 		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
@@ -53,11 +54,12 @@ public final class Config {
 		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC = StreamCodec.composite(
 			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity,
 			DEFENCE_CODEC, Sync::defence, ByteBufCodecs.BOOL, Sync::mastery, ByteBufCodecs.BOOL, Sync::masteryTraits, ByteBufCodecs.BOOL,
-			Sync::unreadRunes, Sync::new).cast();
+			Sync::unreadRunes, ByteBufCodecs.BOOL, Sync::aura, ByteBufCodecs.FLOAT, Sync::slashCost, Sync::new).cast();
 
 		static Sync of(WildercordConfig config) {
 			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity(), config.defence(),
-				config.mastery().enabled(), config.mastery().enabled() && config.mastery().traits(), config.unreadRunes());
+				config.mastery().enabled(), config.mastery().enabled() && config.mastery().traits(), config.unreadRunes(), config.aura().enabled(),
+				(float) config.aura().slashCost());
 		}
 
 		@Override
@@ -168,6 +170,16 @@ public final class Config {
 	/** Whether newly learned runes start unread (see {@code spell.RuneReading}): the server's own switch, or on a client the one it was sent. */
 	public static boolean unreadRunes(Player player) {
 		return player != null && player.level().isClientSide() ? synced.unreadRunes() : get().unreadRunes();
+	}
+
+	/** Whether aura (the swordsman's path) works: the server's own switch, or on a client the one it was sent. */
+	public static boolean aura(Player player) {
+		return player != null && player.level().isClientSide() ? synced.aura() : get().aura().enabled();
+	}
+
+	/** Aura Slash's price: the server's own, or on a client the one it was sent (the HUD marks it on the aura bar). */
+	public static double slashCost(Player player) {
+		return player != null && player.level().isClientSide() ? synced.slashCost() : get().aura().slashCost();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */
