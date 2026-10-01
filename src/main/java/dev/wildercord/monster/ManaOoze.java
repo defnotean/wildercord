@@ -227,7 +227,8 @@ public class ManaOoze extends AbstractCubeMob implements Enemy, RuneboundKin {
 			}
 		}
 		dev.wildercord.cast.Sigils.flash(level, c, PINK, 3.0F);
-		ElementFx.arcaneImpact(level, c, 1.4);
+		ElementFx.ring(level, c, new Vec3(0, 1, 0), PINK, 0.4, 3.2, 0.12, 12);
+		Motes.burst(level, c, 16, PINK, 0.18, 24, 0.16);
 		MonsterMagic.sound(level, c, "monster_ooze_split", 1.3F, 1.0F);
 		discard();
 	}
@@ -252,7 +253,7 @@ public class ManaOoze extends AbstractCubeMob implements Enemy, RuneboundKin {
 
 	@Override
 	protected @Nullable ParticleOptions getParticleType() {
-		return ParticleTypes.WITCH;
+		return ParticleTypes.PORTAL;
 	}
 
 	@Override

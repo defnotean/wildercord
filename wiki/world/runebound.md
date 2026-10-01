@@ -15,7 +15,7 @@ most common source of runes before you can craft many of your own.
 
 ## Which monsters, and how often
 
-Only four kinds of monster can be Runebound:
+Four kinds of vanilla monster can be Runebound, and so can every one of the [monsters of the wilds]({{ '/world/monsters/' | relative_url }}):
 
 | Monster | Includes |
 |---|---|
@@ -23,6 +23,7 @@ Only four kinds of monster can be Runebound:
 | Skeletons | Skeletons of every kind: strays, bogged and wither skeletons too |
 | Witches | |
 | Illagers | Pillagers and vindicators |
+| Monsters of the wilds | Bramblewalkers, Gloomstalkers, Thunderwing Harpies, Geode Crawlers, Bog Witch-Frogs and Mana Oozes, each with spells that suit it (a Bramblewalker's roots, a harpy's lightning) |
 
 Each of these is rolled **once**, the first time it appears in the world:
 

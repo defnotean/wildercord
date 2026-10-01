@@ -442,6 +442,7 @@ public class WildercordMonstersTest implements FabricClientGameTest {
 		shot(context, "bramblewalker_rear_live");
 		check(await(context, world, 20, server -> player(server).level().getEntity(id) instanceof Bramblewalker w && w.state(WildMonster.ACTING)),
 			"its lash should crack");
+		context.waitTicks(2);
 		shot(context, "bramblewalker_lash_live");
 		check(await(context, world, 10, server -> MonsterMagic.rooted(player(server))), "its lash should root the player");
 		float hurt = world.getServer().computeOnServer(server -> player(server).getHealth());

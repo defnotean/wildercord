@@ -13,7 +13,7 @@ import net.minecraft.util.ARGB;
  * The Gloomstalker (see {@link GloomstalkerModel}). Hidden, it's drawn almost clear, a ripple in the dark, through the
  * same translucent entity pass vanilla uses for a creature that's invisible to everyone but its team: shader packs know it,
  * and nothing about it is blended any other way. Its eyes are drawn apart, through the glowing-eyes pass, so they always
- * hang in the gloom (dim while it stalks, flaring as it crouches to pounce: the tell).
+ * hang in the gloom (lit while it stalks, flaring as it crouches to pounce: the tell).
  */
 public class GloomstalkerRenderer extends WildMonsterRenderer<Gloomstalker, GloomstalkerModel> {
 	public static final ModelLayerLocation LAYER = new ModelLayerLocation(Wildercord.id("gloomstalker"), "main");

@@ -273,7 +273,12 @@ public class ThunderwingHarpy extends WildMonster {
 	private Vec3 wanderPoint(ServerLevel level) {
 		double x = home.x + (getRandom().nextDouble() - 0.5) * 24;
 		double z = home.z + (getRandom().nextDouble() - 0.5) * 24;
-		int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, BlockPos.containing(x, 0, z).getX(), BlockPos.containing(x, 0, z).getZ());
+		BlockPos column = BlockPos.containing(x, getY(), z);
+		if (!level.hasChunkAt(column)) {
+			// Never a reason to load ground: drift back toward where it began instead.
+			return new Vec3(home.x, Math.max(getY(), home.y), home.z);
+		}
+		int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, column.getX(), column.getZ());
 		return new Vec3(x, Math.max(ground + 5 + getRandom().nextDouble() * 6, level.getMinY() + 4), z);
 	}
 

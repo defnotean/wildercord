@@ -84,7 +84,10 @@ public abstract class WildMonster extends Monster implements RuneboundKin {
 		if (level().isClientSide()) {
 			for (int i = 0; i < FLAGS; i++) {
 				poseO[i] = pose[i];
-				pose[i] = Mth.approach(pose[i], state(1 << i) ? 1 : 0, EASE[i]);
+				boolean on = state(1 << i);
+				// The veil drifts in slowly but is torn away at once (a pounce, a light).
+				float ease = (1 << i) == VEILED && !on ? 0.3F : EASE[i];
+				pose[i] = Mth.approach(pose[i], on ? 1 : 0, ease);
 			}
 		}
 	}

@@ -35,7 +35,7 @@ public class ManaOozeRenderer extends AbstractCubeMobRenderer<ManaOoze, ManaOoze
 				if (state.isInvisible) {
 					return;
 				}
-				float strength = Mth.clamp(0.45F + 0.4F * state.fill + 0.5F * state.flash, 0, 1) * (state.deathTime > 0 ? 0.4F : 1);
+				float strength = Mth.clamp(0.7F + 0.3F * state.fill + 0.5F * state.flash, 0, 1) * (state.deathTime > 0 ? 0.4F : 1);
 				int argb = ((int) (strength * 255) << 24) | 0xFFFFFF;
 				collector.order(1).submitModel(getParentModel(), state, poseStack, RenderTypes.eyes(GLOW), light, OverlayTexture.NO_OVERLAY, argb, null,
 					state.outlineColor);

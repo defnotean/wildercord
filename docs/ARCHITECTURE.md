@@ -7,6 +7,7 @@ asset pipeline and testing. For *what* each rune does and why, see [DESIGN.md](D
 - [The big picture](#the-big-picture)
 - [1. The spell engine (`spell/`)](#1-the-spell-engine-spell)
 - [2. Casting (`cast/`)](#2-casting-cast)
+  - [Monsters of the wilds](#monsters-of-the-wilds-monster)
   - [Spell mastery](#spell-mastery-mastery-masterychoices-inscriptions) and [its hooks](#mastery-hooks-for-other-systems-apispellmasteryapi)
 - [3. Player state (`player/`)](#3-player-state-player)
 - [4. Heart Circles and passives](#4-heart-circles-and-passives)
@@ -428,6 +429,36 @@ the synced note (`client.fx.SoarWings`).
   join, after a data pack reload, and from `Grimoire.unlock`, `HeartCircles.form` and
   `Spellbooks.set`/`setCord`. Moments (a cast, a long cast, a passive, a glyph going off, an Adept
   slain) are fired where they happen.
+
+### Monsters of the wilds: `monster/`
+
+Six creatures that spawn on their own (the design and every number are in DESIGN.md's
+[Monsters of the wilds](DESIGN.md#monsters-of-the-wilds)). The package keeps out of `cast/` except through three small
+seams: `Effects.apply` calls `Monsters.onSpell(cast, hit, effect)` after every effect (light shows a Gloomstalker, earth
+grounds a harpy, even for spells that do no harm), `Effects.currentElementNow()` is public so a creature's `hurtServer`
+can ask which element is landing (with `Dungeons.spellLanding()`, read through `MonsterMagic`), and `Runebound.pool`
+asks any `RuneboundKin` for its spells.
+
+- **`MonsterRules`** (pure, `MonsterRulesTest`): the six `Kind`s (id, weight, pack size), the spawn rate's weights,
+  root time by difficulty, when a Gloomstalker hides (`veiled`) and how opaque it draws, what a curled Geode Crawler
+  takes, how a Mana Ooze fills, grows and splits (`feed`), and the lob that lands a bubble exactly (`lob`, flown as the
+  bubble flies: move, then fall).
+- **`WildMonster`**: the shared base (a `Monster`): a synced byte of pose flags (`WINDUP`, `ACTING`, `GUARD`, `STUNNED`,
+  `VEILED`, `ALT`) eased on the client into `pose(flag, partial)` for the models, as `DungeonBoss` does; `holdPose`
+  holds a creature without AI in a pose for the tests' pictures.
+- **The creatures**: `Bramblewalker`, `Gloomstalker`, `ThunderwingHarpy`, `GeodeCrawler`, `BogWitchFrog` (each a
+  `WildMonster`, its signature a small state machine in `customServerAiStep` or one goal, so nothing else moves it
+  mid-attack) and `ManaOoze` (an `AbstractCubeMob`, hopping like a slime, its death split turned off). The harpy flies by
+  its own steering (no paths): it eases its velocity toward a goal each tick and `travelFlying`s while airborne.
+  `BogBubble` is the frog's projectile (pickable, so anything that strikes it pops it); `ThrownBramble` the thrown drop.
+- **`MonsterMagic`**: monster spell damage (`hurt`: `indirectMagic` from the monster through `SpellDefence`), the vine
+  root (the Root rune's Slowness VII and its visuals), shoves and knockback that sync to a player's client, kit sounds.
+- **`MonsterContent`**: the entity types (`notInPeaceful`, so vanilla discards them on Peaceful and refuses their spawns),
+  attributes, the drops (`MonsterDropItem` and its three with uses), the spawn eggs and the creative tabs.
+- **`MonsterSpawns`**: each type's spawn rule (`SpawnPlacements`: the vanilla monster check, its own ground, and the
+  server's switch for natural spawns) and one Fabric biome modification over every overworld biome (by where they
+  generate and by the vanilla `is_overworld` tag) that adds each to its biomes' monsters, its weight scaled by
+  `monsters.spawn_rate` as the world loads. `monstersIn(biome)` reads a biome's spawns back (the tests).
 
 ### Spell mastery: `Mastery`, `MasteryChoices`, `Inscriptions`
 
@@ -868,6 +899,13 @@ can draw the circle.
   charging, then a motion for the shape (a thrust, a Crescent's sweep, a Barrage's alternating blows,
   arms flung up for the great circles, a push, arms swept back for a Blitz). Arms that point where
   you look follow the head's turn, as vanilla's bow pose does.
+- **`monster/`**: the monsters' models (hand-built `LayerDefinition`s with `setupAnim` reading `MonsterRenderState`'s eased
+  poses, each layout in its javadoc) and renderers. `WildMonsterRenderer` adds glow layers through `RenderTypes.eyes`
+  (each a texture of only what glows, its strength per frame). The Gloomstalker draws through vanilla's translucent
+  entity pass with its alpha as the model tint (`MonsterRules.opacity`), the way vanilla draws a creature invisible to all
+  but its team, so it's shader-safe; its eyes are a separate glow layer, always lit. The Mana Ooze draws its inside and
+  its clear outside translucent (as a slime's outer jelly) and its heart through `eyes`; the frog's bubble likewise.
+  `MonsterClient.init` registers them all.
 - **`render/`**: `CordLayer` (added to every player renderer through
   `LivingEntityRenderLayerRegistrationCallback`) draws the worn Cord on the right wrist from the
   synced `cord_look`: a band in its tier's material (`CordModel.band`, textures from `wear_art.py`)
@@ -915,6 +953,8 @@ can draw the circle.
   shows the cue. The odds are pure data in `content.FishingRules`. Only vanilla's own tables are
   touched, so a datapack that replaces a table keeps full control of it. Runebound and the Archivist
   drop their loot in code.
+- **Monsters** (`monster.MonsterContent`): the six monsters of the wilds, the frog's bubble and the thrown bramble,
+  their drops and spawn eggs; their loot tables, brews and icons come from `tools/monster_art.py`.
 - **Entities** (`cast.WildercordEntities`): the bolt (`RuneBolt`, drawn by nothing but its
   particles), the Archivist and the Training Dummy.
 - **Particles** (`WildercordParticles`): `wildercord:sigil` (a `SigilOption`),
@@ -1011,6 +1051,12 @@ mixin configs. `python tools/generate_assets.py` rebuilds it all from the code:
    `wildercord:reagents` tags, the mining and bees' flower tags, and their English text (`residue_art.LANG`).
    `python tools/residue_art.py` renders a review sheet into `build/art-preview/`.
 
+12. **The monsters of the wilds** (`monster_art.py`): the six skins (painted face by face on each model's box UV from
+   materials: bark, moss, leaves, fur, feathers, chitin, crystal, frog skin, jelly), their glow layers, the frog's bubble,
+   the drops' icons and the spawn eggs, their item models, the loot tables (`entities/<id>`), the brewing recipes for the
+   Shadow Pelt and the Bog Gland, and the English text (`monster_art.LANG`). `python tools/monster_art.py` renders a
+   review sheet into `build/art-preview/`.
+
 Run `python tools/item_art.py` on its own to render review sheets of every icon into
 `build/art-preview/` (`circle_art.py --preview` does the same for every rune's ring and emblem).
 
@@ -1041,6 +1087,11 @@ pitch rising from 0.8 to 1.3), `charge_full` and `release` (played by `Charging`
 interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_select` and
 `discovery`; and the heart's `circle_formed` and `overcast`. Subtitle text lives in
 `generate_assets.py` (`NEW_LANG`) with the rest of `en_us.json`.
+
+The feel kit (`tools/feel/`, built by `python tools/feel/build.py --only <part>`) holds a part per element and a
+`monster` part: the monsters' own voices (`monster_<creature>_<sound>`), whose subtitles name the creature
+(`subtitles.wildercord.kit.<creature>.<sound>`, their text in `monster_art.LANG`) rather than the four spell subtitles.
+The creatures play them through `MonsterMagic.sound` and `kit`, from the hostile sound source.
 
 ## 9. Testing
 
@@ -1140,6 +1191,16 @@ Each world's own magic is built to be joined later (by spell mastery, by places 
 
 Nothing in the draw changes when a condition is added: conditions only decide whether a cast wakes what it matched.
 To give a resonance's riddle a line about its condition, a system can keep its own note against the resonance's id.
+- **`WildercordMonstersTest`** plays each monster of the wilds for real on stages east of spawn: a Bramblewalker rears and
+  roots the player and runs once set alight; a Gloomstalker hides in the dark, shows under glowing and stays shown after a
+  fire spell, then crouches and pounces; a harpy is grounded by an earth spell, shrieks and dives (striking or crashing),
+  and its lightning lands softer under the Potion of Warding and is held by the spellguard; a Geode Crawler curls, takes
+  little from a plain blow, cracks under a pickaxe and a shock, and rolls; a Bog Witch-Frog swallows a chicken, swells,
+  spits a bubble that poisons the player, and a bubble struck in the air pops; a Mana Ooze drinks a spell unharmed,
+  grows, burns under fire and bursts in two when overfed. Then the biome entries (by the biome registry), the spawn
+  rules and their switch (written to the config and reloaded), Runebound spells that compile, and Peaceful sending them
+  all away. Screenshots `monster_<creature>` in each pose (held, from a three-quarter view) and `monster_*_live` mid-attack.
+  `MonsterRulesTest` and `WildercordConfigTest` cover the pure parts.
 - **`WildercordResidueTest`** casts a 60-mana spell of each element at grass (each leaves its residue), and checks a
   small spell, planks, the `residues.enabled` switch (reloaded) and a ward leave none, a reaction leaves one, everfrost
   is slick, a void scar draws a stick in and narrows, harvesting gives reagents and the grass back, a bottle takes an

@@ -387,20 +387,20 @@ def bramblewalker_eyes_texture():
 
 GLOOM = ramp("#060309", "#0C0714", "#140C22", "#1E1232", "#2A1A46", "#3A2660", "#523A84")
 SHEEN = hexc("#6A4CA8")
-G_CHEST = box(0, 0, 7, 7, 8)
-G_HIPS = box(0, 16, 6, 6, 9)
-G_HEAD = box(48, 0, 6, 5, 6)
-G_SNOUT = box(72, 0, 4, 3, 3)
-G_EAR = box(86, 0, 2, 3, 1)
-G_JAW = box(92, 0, 4, 1, 3)
-G_LEG = box(48, 12, 3, 9, 3)
-G_PAW = box(60, 12, 4, 2, 4)
-G_TAIL = box(76, 12, 2, 2, 10)
-G_TIP = box(100, 12, 2, 2, 8)
-G_CREST = box(0, 32, 0, 3, 14)
-G_WISP = box(30, 32, 0, 4, 5)
+G_CHEST = box(0, 0, 7, 6, 9)
+G_HIPS = box(0, 16, 6, 5, 10)
+G_HEAD = box(48, 0, 5, 4, 5)
+G_SNOUT = box(72, 0, 3, 2, 3)
+G_EAR = box(86, 0, 2, 2, 1)
+G_JAW = box(92, 0, 3, 1, 3)
+G_LEG = box(48, 12, 3, 7, 3)
+G_PAW = box(60, 12, 3, 2, 4)
+G_TAIL = box(76, 12, 2, 2, 12)
+G_TIP = box(104, 12, 2, 2, 8)
+G_CREST = box(0, 32, 0, 3, 16)
+G_WISP = box(34, 32, 0, 4, 5)
 # Its eyes on the head's front: slanted, wide apart.
-G_EYES = [(1, 1), (0, 1), (4, 1), (5, 1)]
+G_EYES = [(1, 1), (0, 1), (3, 1), (4, 1)]
 
 
 def gloomstalker_texture():
@@ -473,9 +473,9 @@ def gloomstalker_eyes_texture():
     cv = Sheet(128, 64)
     hx, hy, _, _ = G_HEAD["front"]
     for (x, y) in G_EYES:
-        core = x in (1, 4)
+        core = x in (1, 3)
         cv.put(hx + x, hy + y, (255, 255, 255, 255) if core else (232, 190, 255, 255))
-    for (x, y) in ((0, 0), (1, 0), (4, 0), (5, 0), (0, 2), (1, 2), (4, 2), (5, 2)):
+    for (x, y) in ((0, 0), (1, 0), (3, 0), (4, 0), (0, 2), (1, 2), (3, 2), (4, 2)):
         cv.put(hx + x, hy + y, (190, 110, 255, 140))
     # From the side, a glint where each eye wraps round.
     for name, ex in (("right", G_HEAD["right"]), ("left", G_HEAD["left"])):
@@ -490,7 +490,7 @@ def gloomstalker_flare_texture():
     hx, hy, hw, hh = G_HEAD["front"]
     for x in range(hw):
         for y in range(3):
-            near = min(abs(x - 1), abs(x - 4))
+            near = min(abs(x - 1), abs(x - 3))
             if near <= 1:
                 cv.put(hx + x, hy + y, (255, 230, 255, 255) if (y == 1 and near == 0) else (210, 140, 255, 200 if near == 0 else 130))
     return cv.image()
@@ -679,7 +679,7 @@ def harpy_eyes_texture():
 # ============================================================== the Geode Crawler (GeodeCrawlerModel, 128x64)
 
 CHITIN = ramp("#0C0911", "#151020", "#1F182E", "#2B2240", "#3A2F56", "#4D3F70")
-AMETHYST = ramp("#2E1A4E", "#4E3384", "#7556B8", "#9C7CDA", "#C6B0F2", "#EEE6FF")
+AMETHYST = ramp("#2A1450", "#47288A", "#6A44BC", "#8E66E0", "#B996F4", "#E2D2FF")
 C_BODY = box(0, 0, 12, 5, 14)
 C_HEAD = box(52, 0, 8, 4, 5)
 C_MANDIBLE = box(78, 0, 2, 1, 4)
@@ -740,8 +740,8 @@ def geode_crawler_paint(glow=False):
             x0, y0, w, h = area
             for x, y, px, py in cells(area):
                 d = x - y * (w / max(1, h))
-                bright = abs(d) < 0.8 or (name == "top")
-                g.put(px, py, (238, 228, 255, 255) if bright else (170, 130, 240, 120))
+                edge = abs(d) < 0.7
+                g.put(px, py, (232, 214, 255, 230) if edge else (150, 100, 240, 70 if name != "top" else 140))
     return g.image() if glow else cv.image()
 
 

@@ -58,7 +58,6 @@ public class Bramblewalker extends WildMonster {
 	static final double LASH_MIN = 2.6;
 	static final float LASH_DAMAGE = 3.0F;
 	private static final int VINE = 0x4E9A3C;
-	private static final int BARK = 0xA07A48;
 
 	/** When the lash cracks (0: none coming). */
 	private long lashAt;
@@ -209,9 +208,8 @@ public class Bramblewalker extends WildMonster {
 			t.hurtServer(level, source, LASH_DAMAGE);
 			MonsterMagic.root(level, t, ticks);
 		}
-		// The vine itself: bark under a thread of green light, leaves torn off along it.
-		ElementFx.ray(level, from, end, BARK, 0.16, 7);
-		ElementFx.ray(level, from, end, VINE, 0.07, 9);
+		// The vine itself: a thread of green sap-light, leaves torn off along it.
+		ElementFx.ray(level, from, end, VINE, 0.07, 8);
 		double length = from.distanceTo(end);
 		for (double s = 0.8; s < length; s += 0.9) {
 			Vec3 at = from.add(dir.scale(s));
