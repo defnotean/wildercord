@@ -131,11 +131,11 @@ public class SpellScrollItem extends Item {
 			Cast cast = new Cast(serverPlayer, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), runes.size(), "", List.copyOf(runes)))
 				.weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
 			Vfx.castCircle(serverPlayer, secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst())), runes);
-			if (secret.isPresent()) {
-				SecretSpells.cast(cast, secret.get());
-			} else {
-				CastEngine.cast(cast, compiled.root());
-			}
+			dev.wildercord.cast.Scheduler.later(3, () -> {
+				if (!cast.alive()) return;
+				if (secret.isPresent()) SecretSpells.cast(cast, secret.get());
+				else CastEngine.cast(cast, compiled.root());
+			});
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.4F);
 			stack.consume(1, player);
 			player.getCooldowns().addCooldown(stack, 20);

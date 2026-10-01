@@ -36,23 +36,37 @@ public final class Vfx {
 	private Vfx() {}
 
 	public record Theme(int primary, int secondary, ParticleOptions mote, ParticleOptions spark, SoundEvent cast, SoundEvent impact,
-			dev.wildercord.cast.feel.Feel feel) {
+			dev.wildercord.cast.feel.Feel feel, java.util.List<String> elements) {
+		public Theme {
+			elements = java.util.List.copyOf(elements);
+		}
 		/** A plain element theme, with no {@link dev.wildercord.cast.feel.Feel} yet. */
 		public Theme(int primary, int secondary, ParticleOptions mote, ParticleOptions spark, SoundEvent cast, SoundEvent impact) {
-			this(primary, secondary, mote, spark, cast, impact, null);
+			this(primary, secondary, mote, spark, cast, impact, null, java.util.List.of());
+		}
+
+		public Theme(int primary, int secondary, ParticleOptions mote, ParticleOptions spark, SoundEvent cast, SoundEvent impact,
+				dev.wildercord.cast.feel.Feel feel) {
+			this(primary, secondary, mote, spark, cast, impact, feel, java.util.List.of());
 		}
 
 		/** The same look carrying the feel of the spell it is drawn for (see {@code dev.wildercord.cast.feel}). */
 		public Theme with(dev.wildercord.cast.feel.Feel feel) {
-			return new Theme(primary, secondary, mote, spark, cast, impact, feel);
+			return new Theme(primary, secondary, mote, spark, cast, impact, feel, elements);
 		}
 
-		DustParticleOptions dust(float scale) {
-			return new DustParticleOptions(primary, scale);
+		public Theme withElements(java.util.List<String> elements) {
+			return new Theme(primary, secondary, mote, spark, cast, impact, feel, elements);
 		}
 
-		DustColorTransitionOptions fade(float scale) {
-			return new DustColorTransitionOptions(primary, secondary, scale);
+		ParticleOptions dust(float scale) {
+			return mote instanceof dev.wildercord.content.MaterialOption material
+				? new dev.wildercord.content.MaterialOption(material.style(),primary,Math.max(.02F,Math.min(.8F,scale*.09F)),material.lifetime())
+				: SpellMaterials.of(elements.isEmpty() ? "arcane" : elements.getFirst(), primary, scale * .09F);
+		}
+
+		ParticleOptions fade(float scale) {
+			return dust(scale);
 		}
 
 		TrailParticleOption trail(Vec3 target, int duration) {
@@ -63,24 +77,24 @@ public final class Vfx {
 			return SigilOption.glow(primary, 1.8F);
 		}
 
-		SpellParticleOption sparkle() {
-			return SpellParticleOption.create(ParticleTypes.INSTANT_EFFECT, 0xFF000000 | primary, 1.0F);
+		ParticleOptions sparkle() {
+			return dust(.8F);
 		}
 	}
 
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
-	private static final Theme FIRE = new Theme(0xF06E32, 0xFFD060, ParticleTypes.FLAME, ParticleTypes.LAVA, dev.wildercord.content.WildercordSounds.cast("fire"), dev.wildercord.content.WildercordSounds.impact("fire"));
-	private static final Theme FROST = new Theme(0x8CDCFF, 0xFFFFFF, ParticleTypes.SNOWFLAKE, new ItemParticleOption(ParticleTypes.ITEM, Items.BLUE_ICE), dev.wildercord.content.WildercordSounds.cast("frost"), dev.wildercord.content.WildercordSounds.impact("frost"));
-	private static final Theme STORM = new Theme(0xFFE650, 0xFFFFFF, ParticleTypes.ELECTRIC_SPARK, ParticleTypes.END_ROD, dev.wildercord.content.WildercordSounds.cast("storm"), dev.wildercord.content.WildercordSounds.impact("storm"));
-	private static final Theme WIND = new Theme(0xC8F0DC, 0xFFFFFF, ParticleTypes.SMALL_GUST, ParticleTypes.CLOUD, dev.wildercord.content.WildercordSounds.cast("wind"), dev.wildercord.content.WildercordSounds.impact("wind"));
-	private static final Theme EARTH = new Theme(0xB48C5A, 0x6E5436, ParticleTypes.CRIT, new ItemParticleOption(ParticleTypes.ITEM, Items.COBBLESTONE), dev.wildercord.content.WildercordSounds.cast("earth"), dev.wildercord.content.WildercordSounds.impact("earth"));
-	private static final Theme LIFE = new Theme(0x6EDC64, 0xE8FFB0, ParticleTypes.HAPPY_VILLAGER, ParticleTypes.TOTEM_OF_UNDYING, dev.wildercord.content.WildercordSounds.cast("life"), dev.wildercord.content.WildercordSounds.impact("life"));
-	private static final Theme VOID = new Theme(0xB45AF0, 0x3A1060, ParticleTypes.PORTAL, ParticleTypes.REVERSE_PORTAL, dev.wildercord.content.WildercordSounds.cast("void"), dev.wildercord.content.WildercordSounds.impact("void"));
-	private static final Theme ARCANE = new Theme(0xE678DC, 0xFFD8FA, ParticleTypes.ENCHANT, ParticleTypes.ENCHANTED_HIT, dev.wildercord.content.WildercordSounds.cast("arcane"), dev.wildercord.content.WildercordSounds.impact("arcane"));
-	private static final Theme TIME = new Theme(0xF2D98A, 0xFFFFFF, ParticleTypes.WAX_OFF, ParticleTypes.END_ROD, dev.wildercord.content.WildercordSounds.cast("time"), dev.wildercord.content.WildercordSounds.impact("time"));
-	private static final Theme BLOOD = new Theme(0xD2283C, 0x5A0A14, ParticleTypes.CRIMSON_SPORE, new DustParticleOptions(0x8A0A1A, 1.1F), dev.wildercord.content.WildercordSounds.cast("blood"), dev.wildercord.content.WildercordSounds.impact("blood"));
-	private static final Theme SHAPE = new Theme(RuneColors.SHAPE, 0xC8FFF8, ParticleTypes.GLOW, ParticleTypes.END_ROD, dev.wildercord.content.WildercordSounds.cast("arcane"), dev.wildercord.content.WildercordSounds.impact("arcane"));
+	private static final Theme FIRE = new Theme(0xF06E32, 0xFFD060, SpellMaterials.of("fire", 0xF06E32, .14F), SpellMaterials.of("fire", 0xFFD060, .09F), dev.wildercord.content.WildercordSounds.cast("fire"), dev.wildercord.content.WildercordSounds.impact("fire"));
+	private static final Theme FROST = new Theme(0x8CDCFF, 0xFFFFFF, SpellMaterials.of("frost", 0x8CDCFF, .14F), SpellMaterials.of("frost", 0xFFFFFF, .09F), dev.wildercord.content.WildercordSounds.cast("frost"), dev.wildercord.content.WildercordSounds.impact("frost"));
+	private static final Theme STORM = new Theme(0xFFE650, 0xFFFFFF, SpellMaterials.of("storm", 0xFFE650, .14F), SpellMaterials.of("storm", 0xFFFFFF, .09F), dev.wildercord.content.WildercordSounds.cast("storm"), dev.wildercord.content.WildercordSounds.impact("storm"));
+	private static final Theme WIND = new Theme(0xC8F0DC, 0xFFFFFF, SpellMaterials.of("wind", 0xC8F0DC, .14F), SpellMaterials.of("wind", 0xFFFFFF, .09F), dev.wildercord.content.WildercordSounds.cast("wind"), dev.wildercord.content.WildercordSounds.impact("wind"));
+	private static final Theme EARTH = new Theme(0xB48C5A, 0x6E5436, SpellMaterials.of("earth", 0xB48C5A, .14F), SpellMaterials.of("earth", 0x6E5436, .09F), dev.wildercord.content.WildercordSounds.cast("earth"), dev.wildercord.content.WildercordSounds.impact("earth"));
+	private static final Theme LIFE = new Theme(0x6EDC64, 0xE8FFB0, SpellMaterials.of("life", 0x6EDC64, .14F), SpellMaterials.of("life", 0xE8FFB0, .09F), dev.wildercord.content.WildercordSounds.cast("life"), dev.wildercord.content.WildercordSounds.impact("life"));
+	private static final Theme VOID = new Theme(0xB45AF0, 0x3A1060, SpellMaterials.of("void", 0xB45AF0, .14F), SpellMaterials.of("void", 0x3A1060, .09F), dev.wildercord.content.WildercordSounds.cast("void"), dev.wildercord.content.WildercordSounds.impact("void"));
+	private static final Theme ARCANE = new Theme(0xE678DC, 0xFFD8FA, SpellMaterials.of("arcane", 0xE678DC, .14F), SpellMaterials.of("arcane", 0xFFD8FA, .09F), dev.wildercord.content.WildercordSounds.cast("arcane"), dev.wildercord.content.WildercordSounds.impact("arcane"));
+	private static final Theme TIME = new Theme(0xF2D98A, 0xFFFFFF, SpellMaterials.of("time", 0xF2D98A, .14F), SpellMaterials.of("time", 0xFFFFFF, .09F), dev.wildercord.content.WildercordSounds.cast("time"), dev.wildercord.content.WildercordSounds.impact("time"));
+	private static final Theme BLOOD = new Theme(0xD2283C, 0x5A0A14, SpellMaterials.of("blood", 0xD2283C, .14F), SpellMaterials.of("blood", 0x5A0A14, .09F), dev.wildercord.content.WildercordSounds.cast("blood"), dev.wildercord.content.WildercordSounds.impact("blood"));
+	private static final Theme SHAPE = new Theme(RuneColors.SHAPE, 0xC8FFF8, SpellMaterials.of("arcane", RuneColors.SHAPE, .14F), SpellMaterials.of("arcane", 0xC8FFF8, .09F), dev.wildercord.content.WildercordSounds.cast("arcane"), dev.wildercord.content.WildercordSounds.impact("arcane"));
 
 	public static Theme theme(String element) {
 		return switch (element) {
@@ -101,7 +115,7 @@ public final class Vfx {
 	/** A theme in any colour, for secret spells: arcane motes and sounds, tinted. */
 	public static Theme themeOf(int color) {
 		int light = ((((color >> 16) & 0xFF) + 255) / 2 << 16) | ((((color >> 8) & 0xFF) + 255) / 2 << 8) | (((color & 0xFF) + 255) / 2);
-		return new Theme(color, light, ParticleTypes.END_ROD, ParticleTypes.ENCHANTED_HIT, dev.wildercord.content.WildercordSounds.cast("arcane"), dev.wildercord.content.WildercordSounds.impact("arcane"));
+		return new Theme(color, light, SpellMaterials.of("arcane", color, .14F), SpellMaterials.of("arcane", light, .09F), dev.wildercord.content.WildercordSounds.cast("arcane"), dev.wildercord.content.WildercordSounds.impact("arcane"));
 	}
 
 	public static Theme theme(RuneDef rune) {
@@ -110,7 +124,8 @@ public final class Vfx {
 
 	/** A group's look: its first effect's element. */
 	public static Theme theme(SpellPlan.Group g) {
-		return g.effects.isEmpty() ? SHAPE : theme(g.effects.getFirst().effect);
+		Theme base = g.effects.isEmpty() ? SHAPE : theme(g.effects.getFirst().effect);
+		return base.withElements(dev.wildercord.spell.VisualElements.of(g.effects.stream().map(node -> node.effect).toList()));
 	}
 
 	// ------------------------------------------------------------------ primitives
@@ -180,28 +195,28 @@ public final class Vfx {
 		}
 	}
 
+	/** Every supporting element keeps its own particles at the shape's visible point. */
+	public static void supporting(ServerLevel level, Vec3 at, Theme theme, int phase, double radius) {
+		for (int i = 1; i < theme.elements().size(); i++) {
+			Theme layer = theme(theme.elements().get(i));
+			double angle = (i - 1) * 2.39996 + phase * 0.7;
+			Vec3 orbit = at.add(Math.cos(angle) * radius, 0.12 + Math.sin(angle * 0.7) * radius * 0.2,
+				Math.sin(angle) * radius);
+			emit(level, layer.mote(), orbit, 2, 0.06, 0.01);
+			emit(level, layer.spark(), orbit, 1, 0.025, 0.005);
+		}
+	}
+
 	// ------------------------------------------------------------------ casting
 
 	/**
-	 * The spell's own magic circle under the caster (a ring and icon per rune, so it can be read:
-	 * see {@link dev.wildercord.spell.SpellSigil}), glyphs rising from it and a spark in the hand.
+	 * The spell's own magic circle behind the caster (a ring and icon per rune, so it can be read:
+	 * see {@link dev.wildercord.spell.SpellSigil}), with strands gathering at one point ahead.
 	 * Played on every cast. Nothing here may fly outward from the caster: dust rings and potion
 	 * sparkles used to, and scattered across the caster's own first-person view on every cast.
 	 */
 	public static void castCircle(LivingEntity caster, Theme theme, java.util.List<dev.wildercord.spell.RuneDef> runes) {
-		ServerLevel level = (ServerLevel) caster.level();
-		Vec3 feet = caster.position();
-		// The circle's size follows the spell's scale: a Spark opens a small one, a charged ten-rune spell a great one (band M is 1.0).
-		float r = theme.feel() == null ? 1.0F : (float) dev.wildercord.cast.feel.Feels.circleRadius(theme.feel());
-		Sigils.spell(level, feet.add(0, 0.06, 0), new Vec3(0, 1, 0), runes, theme.primary, r, 28 + runes.size());
-		for (int i = 0; i < 6; i++) {
-			double a = Math.PI * 2 * i / 6;
-			fling(level, ParticleTypes.ENCHANT, feet.add(Math.cos(a) * r, 0.1, Math.sin(a) * r), new Vec3(0, 1, 0), 0.6);
-		}
-		Vec3 hand = caster.getEyePosition().add(caster.getLookAngle().scale(0.9)).add(0, -0.3, 0);
-		emit(level, SigilOption.glow(theme.primary, 0.3F), hand, 1, 0.0, 0.0);
-		Fx.sound(level, caster.position(), dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.35F, 1.0F);
-		Fx.sound(level, caster.position(), theme.cast, 0.55F, 1.0F);
+		FormationVfx.send(caster, theme, runes);
 	}
 
 	// ------------------------------------------------------------------ shapes
@@ -217,6 +232,7 @@ public final class Vfx {
 		emit(level, SigilOption.glow(theme.primary, 1.4F), feet.add(0, 1.1, 0), 1, 0.0, 0.0);
 		helix(level, feet, 0.7, 2.0, theme, 8);
 		radial(level, theme.mote, feet.add(0, 1, 0), 8, 0.08);
+		supporting(level, feet.add(0, 1, 0), theme, 0, 0.55);
 	}
 
 	/** One tick of a bolt's flight: a bright core, a coloured streak behind it, and a spiral. */
@@ -259,6 +275,7 @@ public final class Vfx {
 		radial(level, theme.spark, at, (int) (8 * size), 0.2 * size);
 		radial(level, theme.mote, at, (int) (6 * size), 0.1 * size);
 		emit(level, theme.sparkle(), at, (int) Math.max(1, 3 * size), 0.3 * size, 0.0);
+		supporting(level, at, theme, 0, Math.max(0.2, size * 0.45));
 		if (sound) {
 			Fx.sound(level, at, theme.impact, 0.7F, 1.0F);
 		}
@@ -273,13 +290,21 @@ public final class Vfx {
 		double length = delta.length();
 		Vec3 dir = length > 1.0E-6 ? delta.scale(1 / length) : new Vec3(0, 0, 1);
 		Light.ray(level, from, to, theme.primary, 0.16, 12);
-		Sigils.layer(level, from, dir, SigilOption.CIRCLE, theme.primary, 0.42F, 12, 0.25F);
-		Sigils.layer(level, from.add(dir.scale(0.04)), dir, SigilOption.RING, theme.secondary, 0.58F, 12, -0.3F);
-		for (double d = 2.0; d < length - 0.5; d += 2.6) {
-			Vec3 p = from.add(dir.scale(d));
-			Scheduler.later(1 + (int) (d / 10), () -> Light.ring(level, p, dir, theme.primary, 0.12, 0.7, 0.035, 9));
+		if (theme.elements().size() > 1) {
+			Vec3 side = dir.cross(UP);
+			if (side.lengthSqr() < 1.0E-4) side = new Vec3(1, 0, 0);
+			side = side.normalize();
+			Vec3 rise = dir.cross(side).normalize();
+			int count = 0;
+			for (double d = 0.5; d < length && count < 80; d += 0.75, count++) {
+				int index = 1 + count % (theme.elements().size() - 1);
+				Theme support = theme(theme.elements().get(index));
+				double angle = d * 3.2 + index * 2.39996;
+				Vec3 orbit = from.add(dir.scale(d)).add(side.scale(Math.cos(angle) * 0.22)).add(rise.scale(Math.sin(angle) * 0.22));
+				emit(level, support.mote(), orbit, 1, 0.02, 0.005);
+			}
 		}
-		Light.ring(level, to, dir, theme.secondary, 0.1, 1.1, 0.05, 9);
+		Light.ring(level, to, dir, theme.secondary, 0.1, 0.45, 0.025, 7);
 		Fx.send(level, theme.trail(to, 8), from.x, from.y, from.z, 4, 0.08, 0.08, 0.08, 0);
 		Fx.sound(level, from, dev.wildercord.content.WildercordSounds.BEAM_FIRE, 0.8F, 1.0F);
 	}
@@ -289,6 +314,7 @@ public final class Vfx {
 		Light.ray(level, from, to, theme.primary, 0.05, 4);
 		emit(level, SigilOption.glow(theme.primary, 0.5F), from, 1, 0.0, 0.0);
 		emit(level, theme.mote, from, 2, 0.1, 0.01);
+		supporting(level, to, theme, 0, 0.16);
 	}
 
 	/** Burst: a flare, a shell of light (two crossed rings racing out) and a shockwave along the ground. */
@@ -302,6 +328,7 @@ public final class Vfx {
 		}
 		Light.ring(level, center, UP, theme.secondary, 0.3, radius * 0.9, 0.05, 9);
 		Light.groundRing(level, center.subtract(0, 0.95, 0), theme.primary, 0.4, radius * 1.15, 0.1, 13);
+		supporting(level, center, theme, 0, Math.min(2, radius * 0.45));
 		radial(level, theme.mote, center, 20, 0.25);
 		radial(level, theme.spark, center, 12, 0.35);
 		Fx.sound(level, center, SoundEvents.BREEZE_WIND_CHARGE_BURST, 0.8F, 1.3F);
@@ -311,6 +338,7 @@ public final class Vfx {
 	/** A Zone opens: its ornate circle on the ground for as long as it lasts. */
 	public static void zoneOpen(ServerLevel level, Vec3 center, double radius, Theme theme, int lifetime) {
 		Sigils.ground(level, center, theme.primary, theme.secondary, (float) radius, lifetime);
+		supporting(level, center.add(0, 0.3, 0), theme, 0, radius * 0.65);
 		Sigils.flash(level, center.add(0, 0.5, 0), theme.primary, (float) Math.min(5, radius));
 		Fx.sound(level, center, dev.wildercord.content.WildercordSounds.CIRCLE_OPEN, 0.6F, 1.0F);
 	}
@@ -319,6 +347,7 @@ public final class Vfx {
 	public static void zonePulse(ServerLevel level, Vec3 center, double radius, Theme theme, int pulse) {
 		Vec3 c = center.add(0, 0.1, 0);
 		Light.groundRing(level, c, theme.primary, radius * 0.15, radius, 0.06, 12);
+		supporting(level, c, theme, pulse, radius * 0.6);
 		for (int i = 0; i < 6; i++) {
 			double a = pulse * 0.4 + Math.PI * 2 * i / 6;
 			fling(level, ParticleTypes.ENCHANT, c.add(Math.cos(a) * radius * 0.8, 0, Math.sin(a) * radius * 0.8), UP, 0.4);
@@ -337,12 +366,14 @@ public final class Vfx {
 		Sigils.layer(level, sky, down, SigilOption.CIRCLE, theme.primary, (float) (radius * 0.8), lifetime, 0.04F);
 		Sigils.layer(level, sky.add(0, -0.05, 0), down, SigilOption.RING, theme.secondary, (float) radius, lifetime, -0.05F);
 		Sigils.target(level, center, theme.primary, (float) radius, lifetime);
+		supporting(level, sky, theme, 0, radius * 0.5);
 	}
 
 	/** A Rain strike: a streak of light from the sky and a splash of light where it lands. */
 	public static void rainStrike(ServerLevel level, Vec3 target, Theme theme) {
 		Vec3 top = target.add(0, 12, 0);
 		Light.ray(level, top, target, theme.primary, 0.17, 9);
+		for (int i = 0; i < 3; i++) supporting(level, top.lerp(target, (i + 1) / 4.0), theme, i, 0.3);
 		Scheduler.later(4, () -> {
 			Sigils.flash(level, target.add(0, 0.3, 0), theme.primary, 1.6F);
 			Light.groundRing(level, target, theme.primary, 0.2, 1.8, 0.06, 9);
@@ -628,12 +659,14 @@ public final class Vfx {
 			double yaw = (level.getRandom().nextDouble() - 0.5) * Math.toRadians(56);
 			fling(level, theme.mote, start, aim.add(side.scale(Math.tan(yaw))).normalize(), 0.4 + level.getRandom().nextDouble() * 0.3);
 		}
+		supporting(level, origin.add(aim.scale(length * 0.6)), theme, 0, length * 0.2);
 	}
 
 	public static void trailPatch(ServerLevel level, Vec3 patch, Theme theme, int tick) {
 		if (tick % 30 == 0) {
 			// A small glowing seal burned into the ground.
 			Sigils.send(level, SigilOption.flat(SigilOption.CIRCLE, theme.primary, 0.5F, 34, 0.08F), patch.add(0, 0.07, 0));
+			supporting(level, patch, theme, tick, 0.35);
 		}
 		if (tick % 4 == 0) {
 			emit(level, theme.dust(1.0F), patch.add(0, 0.08, 0), 1, 0.25, 0.0);
@@ -648,6 +681,7 @@ public final class Vfx {
 		Vec3 ab = b.subtract(a);
 		int posts = (int) Math.max(3, ab.length() / 1.5);
 		if (tick % 8 == 0) {
+			supporting(level, a.add(ab.scale(0.5)).add(0, 1.5, 0), theme, tick, 0.8);
 			for (int i = 0; i <= posts; i++) {
 				Vec3 base = a.add(ab.scale(i / (double) posts));
 				Light.ray(level, base, base.add(0, 3.0, 0), theme.primary, 0.22, 14);
@@ -673,6 +707,7 @@ public final class Vfx {
 		emit(level, theme.dust(1.3F), orb, 1, 0.0, 0.0);
 		if (tick % 3 == 0) {
 			emit(level, theme.mote, orb, 1, 0.05, 0.0);
+			supporting(level, orb, theme, tick, 0.26);
 		}
 	}
 
@@ -876,6 +911,7 @@ public final class Vfx {
 	/** Ring: a band of light racing out along the ground, throwing motes. */
 	public static void ringFront(ServerLevel level, Vec3 origin, double r, Theme theme) {
 		Light.groundRing(level, origin.add(0, 0.07, 0), theme.primary, Math.max(0.2, r - 0.4), r + 0.6, 0.09, 5);
+		supporting(level, origin, theme, (int) (r * 2), r);
 		if (((int) (r * 2)) % 2 == 0) {
 			int points = (int) Math.max(8, r * 3);
 			for (int i = 0; i < points; i++) {
@@ -890,6 +926,7 @@ public final class Vfx {
 		ScreenFx.shake(level, base, 0.35F, 14);
 		Sigils.ground(level, base, theme.primary, theme.secondary, (float) (radius + 0.4), 26);
 		Light.ray(level, base, base.add(0, 7, 0), theme.primary, radius * 0.55, 16);
+		for (int i = 1; i <= 3; i++) supporting(level, base.add(0, i * 1.8, 0), theme, i, radius * 0.6);
 		for (int t = 0; t < 6; t++) {
 			double y = t * 1.1;
 			Scheduler.later(t + 1, () -> {
@@ -914,11 +951,13 @@ public final class Vfx {
 			fling(level, theme.mote, front.add(side.scale(k * width)).add(0, 0.4, 0), UP, 0.06);
 		}
 		emit(level, ParticleTypes.SPLASH, front, 6, width / 3, 0.1);
+		supporting(level, front, theme, (int) (front.x + front.z), width * 0.25);
 	}
 
 	public static void mineArm(ServerLevel level, Vec3 point, Theme theme) {
 		Sigils.target(level, point, theme.primary, 0.8F, 60);
 		Light.groundRing(level, point, theme.primary, 1.2, 0.3, 0.05, 8);
+		supporting(level, point, theme, 0, 0.5);
 		Fx.sound(level, point, SoundEvents.TRIPWIRE_ATTACH, 0.8F, 1.4F);
 	}
 
@@ -946,6 +985,7 @@ public final class Vfx {
 
 	public static void totemPulse(ServerLevel level, Vec3 base, double radius, Theme theme) {
 		Light.groundRing(level, base, theme.primary, 0.3, radius, 0.08, 12);
+		supporting(level, base.add(0, 1, 0), theme, 0, radius * 0.5);
 		Light.ray(level, base.add(0, 1.6, 0), base, theme.secondary, 0.1, 6);
 		Sigils.flash(level, base.add(0, 1.6, 0), theme.primary, 1.8F);
 	}

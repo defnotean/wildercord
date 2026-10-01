@@ -10,7 +10,7 @@ nav_order: 3
 
 A **modifier** changes the closest rune on its *left* that it can change. Amplify needs something with power, so in `Bolt · Fire · Amplify` it strengthens Fire; Split needs something that can split, so in `Bolt · Fire · Split` it skips Fire and doubles the Bolt. A modifier never reaches back past a link. Modifiers multiply the cost of what they change.
 
-21 modifiers, by tier.
+33 modifiers, by tier.
 
 ### <img src="{{ '/assets/runes/amplify.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Amplify
 {: #amplify}
@@ -51,6 +51,28 @@ Half the mana, but 40% weaker and shorter.
 
 **Attaches to:** the closest rune on its left that is any effect.
 
+### <img src="{{ '/assets/runes/reservoir_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Reservoir Circle
+{: #reservoir_circle}
+
+*Tier I · cost x0.75 · needs any Cord*
+
+Filling concentric basins: 25% less mana, 20% less power and 15% shorter effect durations.
+
+**How to get it:** Craft: a Blank Rune, Glass Bottle and Lapis Lazuli. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_reservoir_circle.png' | relative_url }}" alt="Crafting Reservoir Circle: a Blank Rune and Glass Bottle and Lapis Lazuli" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/anchor_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Anchor Circle
+{: #anchor_circle}
+
+*Tier II · cost x1.25 · needs a Copper Cord or better*
+
+A locked square lattice: effect durations last 40% longer at 15% less power. Costs 25% more mana; terrain lifetime caps still apply.
+
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_anchor_circle.png' | relative_url }}" alt="Crafting Anchor Circle: a Blank Rune and Iron Ingot and Stone, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/belated.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Belated
 {: #belated}
 
@@ -64,6 +86,17 @@ The effect lands 1.5 seconds late, but 25% stronger.
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
 
+### <img src="{{ '/assets/runes/bloom_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bloom Circle
+{: #bloom_circle}
+
+*Tier II · cost x1.15 · needs a Copper Cord or better*
+
+Six unfolding petals: 35% larger shape radius, 20% less power. Costs 15% more mana.
+
+**How to get it:** Craft: a Blank Rune, Pink Petals and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_bloom_circle.png' | relative_url }}" alt="Crafting Bloom Circle: a Blank Rune and Pink Petals and Bone Meal, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Bounce
 {: #bounce}
 
@@ -76,6 +109,17 @@ Bounces off blocks up to 3 times.
 <img src="{{ '/assets/recipes/rune_bounce.png' | relative_url }}" alt="Crafting Bounce: a Blank Rune and Slime Block, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is projectiles.
+
+### <img src="{{ '/assets/runes/crucible_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Crucible Circle
+{: #crucible_circle}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+A breathing furnace hexagon: 15% more power and 25% shorter effect durations. Costs 20% more mana.
+
+**How to get it:** Craft: a Blank Rune, Blaze Powder and Brick, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_crucible_circle.png' | relative_url }}" alt="Crafting Crucible Circle: a Blank Rune and Blaze Powder and Brick, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/execute.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Execute
 {: #execute}
@@ -103,6 +147,17 @@ Half the radius, +50% power.
 
 **Attaches to:** the closest rune on its left that is anything with an area.
 
+### <img src="{{ '/assets/runes/gyre_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Gyre Circle
+{: #gyre_circle}
+
+*Tier II · cost x1.15 · needs a Copper Cord or better*
+
+Counter-turning turbines: flying shapes travel 30% faster at 15% less power. Costs 15% more mana.
+
+**How to get it:** Craft: a Blank Rune, Feather and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_gyre_circle.png' | relative_url }}" alt="Crafting Gyre Circle: a Blank Rune and Feather and Copper Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/kindred.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Kindred
 {: #kindred}
 
@@ -129,6 +184,28 @@ The effect lands twice more, a second apart.
 
 **Attaches to:** the closest rune on its left that is effects that can land again over time.
 
+### <img src="{{ '/assets/runes/mercy_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Mercy Circle
+{: #mercy_circle}
+
+*Tier II · cost x1.15 · needs a Copper Cord or better*
+
+Paired sheltering crescents: helpful effects gain 20% power; other effects lose 25%. Costs 15% more mana.
+
+**How to get it:** Craft: a Blank Rune, Honey Bottle and Poppy, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_mercy_circle.png' | relative_url }}" alt="Crafting Mercy Circle: a Blank Rune and Honey Bottle and Poppy, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/needle_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Needle Circle
+{: #needle_circle}
+
+*Tier II · cost x1.2 · needs a Copper Cord or better*
+
+A closing iris: 35% smaller shape radius, 20% more power. Costs 20% more mana. One circle discipline per shape.
+
+**How to get it:** Craft: a Blank Rune, Flint and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_needle_circle.png' | relative_url }}" alt="Crafting Needle Circle: a Blank Rune and Flint and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/pierce.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pierce
 {: #pierce}
 
@@ -141,6 +218,17 @@ Passes through up to 3 targets.
 <img src="{{ '/assets/recipes/rune_pierce.png' | relative_url }}" alt="Crafting Pierce: a Blank Rune and 2x Arrow, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is projectiles and beams.
+
+### <img src="{{ '/assets/runes/pilgrim_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Pilgrim Circle
+{: #pilgrim_circle}
+
+*Tier II · cost x1.1 · needs a Copper Cord or better*
+
+A rolling compass: 15% more power when released while moving horizontally, otherwise 10% less; 10% shorter effect durations. Costs 10% more mana.
+
+**How to get it:** Craft: a Blank Rune, Compass and Feather, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_pilgrim_circle.png' | relative_url }}" alt="Crafting Pilgrim Circle: a Blank Rune and Compass and Feather, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/quicken.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Quicken
 {: #quicken}
@@ -178,6 +266,17 @@ You heal for a quarter of the damage the effect deals.
 <img src="{{ '/assets/recipes/rune_thirst.png' | relative_url }}" alt="Crafting Thirst: a Blank Rune and Spider Eye and Glass Bottle, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is anything with power (damage, healing, force).
+
+### <img src="{{ '/assets/runes/vigil_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vigil Circle
+{: #vigil_circle}
+
+*Tier II · cost x1.15 · needs a Copper Cord or better*
+
+An opening watchful eye: 20% more power if crouching on release, otherwise 10% less. Flying shapes move 15% slower. Costs 15% more mana.
+
+**How to get it:** Craft: a Blank Rune, Spider Eye and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_vigil_circle.png' | relative_url }}" alt="Crafting Vigil Circle: a Blank Rune and Spider Eye and Iron Nugget, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/volley.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Volley
 {: #volley}
@@ -229,6 +328,28 @@ After a hit, jumps to up to 3 more enemies within 6 blocks.
 
 **Attaches to:** the closest rune on its left that is anything that can jump to a new target.
 
+### <img src="{{ '/assets/runes/confluence_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Confluence Circle
+{: #confluence_circle}
+
+*Tier III · cost x1.2 · needs an Amethyst Cord or better*
+
+Braided elemental satellites: power starts at 90%, gaining 8% per distinct visual element in this group, up to 130%. Costs 20% more mana.
+
+**How to get it:** Craft: a Blank Rune, Amethyst Shard and Prismarine Shard, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_confluence_circle.png' | relative_url }}" alt="Crafting Confluence Circle: a Blank Rune and Amethyst Shard and Prismarine Shard, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
+### <img src="{{ '/assets/runes/eclipse_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Eclipse Circle
+{: #eclipse_circle}
+
+*Tier III · cost x1.15 · needs an Amethyst Cord or better*
+
+A moon passing its sun: 20% more power at night on release, otherwise 10% less. Costs 15% more mana.
+
+**How to get it:** Craft: a Blank Rune, Ender Pearl and Gold Nugget, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_eclipse_circle.png' | relative_url }}" alt="Crafting Eclipse Circle: a Blank Rune and Ender Pearl and Gold Nugget, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
+
 ### <img src="{{ '/assets/runes/homing.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Homing
 {: #homing}
 
@@ -267,6 +388,17 @@ Three copies of the shape.
 <img src="{{ '/assets/recipes/rune_split.png' | relative_url }}" alt="Crafting Split: a Blank Rune and 2x Prismarine Crystals, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 **Attaches to:** the closest rune on its left that is projectiles and beams.
+
+### <img src="{{ '/assets/runes/tempest_circle.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tempest Circle
+{: #tempest_circle}
+
+*Tier III · cost x1.2 · needs an Amethyst Cord or better*
+
+Forked storm spokes: 20% more power when wet or exposed to rain on release, otherwise 10% less. Flying shapes move 10% faster. Costs 20% more mana.
+
+**How to get it:** Craft: a Blank Rune, Breeze Rod and Copper Ingot, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid.
+
+<img src="{{ '/assets/recipes/rune_tempest_circle.png' | relative_url }}" alt="Crafting Tempest Circle: a Blank Rune and Breeze Rod and Copper Ingot, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
 ### <img src="{{ '/assets/runes/vow.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Vow
 {: #vow}

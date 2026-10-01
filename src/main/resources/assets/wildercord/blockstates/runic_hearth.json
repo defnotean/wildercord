@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "charge=0": {
+      "model": "wildercord:block/runic_hearth_0"
+    },
+    "charge=1": {
+      "model": "wildercord:block/runic_hearth_1"
+    },
+    "charge=2": {
+      "model": "wildercord:block/runic_hearth_2"
+    },
+    "charge=3": {
+      "model": "wildercord:block/runic_hearth_3"
+    }
+  }
+}

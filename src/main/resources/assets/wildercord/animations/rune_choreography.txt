@@ -297,3 +297,12 @@ prolong|CLOCK|SEAL|HALO
 umbra|MIST|SHELL|EYE
 disarm|CRESCENT|CHAIN|SHARD
 soar|WING|PILLAR|STAR
+strata_rise|CRACK|PILLAR|SHELL
+tidal_lift|DROPLET|TIDE|LANCE
+wind_steps|WING|STEP|CLOUD
+cinder_bulwark|CRACK|FLAME|PILLAR
+root_bulwark|ROOTS|PILLAR|HEART
+boiling_surge|FOAM|FLAME|TIDE
+thunder_tide|DROPLET|FORK|TIDE
+rime_causeway|WING|SHARD|STEP
+thunder_walk|STEP|GEAR|FORK

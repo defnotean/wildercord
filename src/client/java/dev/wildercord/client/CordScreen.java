@@ -1820,7 +1820,7 @@ public class CordScreen extends Screen {
 		}
 		searchFocused = inside(mx, my, searchX(), TABS_TOP, SEARCH_W, 13);
 		if (searchFocused) {
-			if (event.button() == 1) {
+			if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
 				query = "";
 				codexScroll = 0;
 			}
@@ -2339,6 +2339,12 @@ public class CordScreen extends Screen {
 			}
 		}
 		addSignatures(lines, found);
+		var woven=Spellbooks.get(player).learned().stream().map(Runes::get).flatMap(Optional::stream).filter(WovenRunes::isWoven).toList();
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.woven",woven.size()),0,GOLD,List.of(Component.translatable("screen.wildercord.grimoire.woven_how"))));
+		for(var rune:woven){var pair=WovenRunes.contents(rune);List<Component> tip=new ArrayList<>();tip.add(RuneItem.runeDescription(rune));
+			for(var ingredient:pair)tip.add(RuneItem.runeName(ingredient).append(": ").append(RuneItem.runeDescription(ingredient)).withStyle(ChatFormatting.GRAY));
+			tip.add(Component.translatable("screen.wildercord.grimoire.woven_how"));
+			lines.add(new GrimoireLine(RuneItem.runeName(rune),8,TEXT,tip));}
 		// Attunements: found ones by their land and rune, the rest as riddles.
 		addAttunements(lines, found);
 		// The runes of the world, by where they're found: known ones by name, the rest as a hint.

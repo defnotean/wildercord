@@ -45,7 +45,7 @@ public final class Statuses {
 	public static void silence(LivingEntity target, int ticks) {
 		boolean fresh = !CastLock.locked(target);
 		CastLock.lock(target, Math.max(1, ticks));
-		if (fresh && target.level() instanceof ServerLevel level) {
+		if (fresh && CastLock.locked(target) && target.level() instanceof ServerLevel level) {
 			StatusVfx.silenced(level, target);
 			// A crown halo every halo period while it lasts, so the state can be read on the creature (at most 16 beats).
 			for (int beat = MarkHalos.PERIOD; beat <= Math.min(ticks, 160); beat += MarkHalos.PERIOD) {

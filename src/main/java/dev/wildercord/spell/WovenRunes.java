@@ -8,11 +8,12 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** A pair of effects bound into one socket. The id carries both inputs, so it survives saves and trades. */
+/** Up to eight effects bound into one socket, stored as a flat, canonical list of registered rune ids. */
 public final class WovenRunes {
 	private WovenRunes() {}
 
 	public static final String PREFIX = "wildercord:weave/";
+	public static final int MAX_EFFECTS = 8;
 	private static final int MAX_ID_LENGTH = Knots.MAX_ID_LENGTH;
 	private static final Map<String, Optional<RuneDef>> CACHE = new ConcurrentHashMap<>();
 
@@ -26,12 +27,17 @@ public final class WovenRunes {
 
 	/** Input order does not matter: the same two effects always make the same rune. */
 	public static RuneDef bind(RuneDef a, RuneDef b) {
-		if (!Fusions.fusible(a) || !Fusions.fusible(b)) {
+		if (!Fusions.weavable(a) || !Fusions.weavable(b)) {
 			throw new IllegalArgumentException("Only elemental effects can be woven");
 		}
-		String first = a.id().compareTo(b.id()) <= 0 ? a.id() : b.id();
-		String second = a.id().compareTo(b.id()) <= 0 ? b.id() : a.id();
-		String id = PREFIX + Knots.encode((first + "\n" + second).getBytes(StandardCharsets.UTF_8));
+		java.util.ArrayList<String> ids = new java.util.ArrayList<>();
+		for (RuneDef input : List.of(a, b)) {
+			if (isWoven(input)) contents(input).forEach(r -> ids.add(r.id()));
+			else ids.add(input.id());
+		}
+		if (ids.size() > MAX_EFFECTS) throw new IllegalArgumentException("A weave holds at most eight effects");
+		ids.sort(String::compareTo);
+		String id = PREFIX + Knots.encode(String.join("\n", ids).getBytes(StandardCharsets.UTF_8));
 		return def(id).orElseThrow(() -> new IllegalArgumentException("Woven rune id is too long"));
 	}
 
@@ -51,17 +57,24 @@ public final class WovenRunes {
 
 	private static Optional<RuneDef> read(String id) {
 		List<RuneDef> pair = readContents(id);
-		if (pair.size() != 2) {
+		if (pair.size() < 2) {
 			return Optional.empty();
 		}
 		RuneDef a = pair.get(0);
-		RuneDef b = pair.get(1);
-		Set<String> traits = new HashSet<>(a.traits());
-		traits.addAll(b.traits());
-		EffectKind kind = a.kind() == EffectKind.HARMFUL || b.kind() == EffectKind.HARMFUL ? EffectKind.HARMFUL : a.kind();
-		return Optional.of(new RuneDef(id, a.name() + " & " + b.name(), RuneFamily.EFFECT,
-			Math.max(a.tier(), b.tier()), a.cost() + b.cost(), 1.0, a.element(), kind, traits, "",
-			"Casts " + a.name() + " and " + b.name() + " together from one socket at their full combined mana cost. Woven from those two runes and an amethyst block at a Fusion Altar.", "fusion"));
+		Set<String> traits = new HashSet<>();
+		pair.forEach(r -> traits.addAll(r.traits()));
+		if(pair.stream().filter(Runes::innate).map(RuneDef::id).distinct().count()>1)return Optional.empty();
+		boolean soul = pair.stream().anyMatch(Runes::innate);
+		if(soul)traits.remove(Trait.POWER); // Innates grow with the heart, never through rune ranks.
+		EffectKind kind = pair.stream().anyMatch(r -> r.kind() == EffectKind.HARMFUL) ? EffectKind.HARMFUL : a.kind();
+		int tier = Math.max(pair.stream().mapToInt(RuneDef::tier).max().orElse(1), pair.size() > 4 ? 4 : pair.size() > 2 ? 3 : 1);
+		if(soul)tier=4;
+		String name = a.name() + " & " + pair.get(1).name() + (pair.size() > 2 ? " + " + (pair.size() - 2) : "");
+		return Optional.of(new RuneDef(id, name, RuneFamily.EFFECT, tier,
+			pair.stream().mapToDouble(RuneDef::cost).sum(), 1.0, a.element(), kind, traits, "",
+			"Casts " + String.join(", ", pair.stream().map(RuneDef::name).toList())
+				+ " together at their full combined mana cost. Add an elemental rune with an amethyst block to weave up to eight effects. Three or four effects need tier III; five to eight need tier IV."
+				+ (soul ? " This soul weave needs tier IV and only works for a caster whose heart owns its innate rune." : ""), "fusion"));
 	}
 
 	private static List<RuneDef> readContents(String id) {
@@ -73,14 +86,16 @@ public final class WovenRunes {
 			return List.of();
 		}
 		String[] parts = new String(bytes, StandardCharsets.UTF_8).split("\n", -1);
-		if (parts.length != 2 || parts[0].compareTo(parts[1]) > 0 || isWoven(parts[0]) || isWoven(parts[1])) {
+		if (parts.length < 2 || parts.length > MAX_EFFECTS) {
 			return List.of();
 		}
-		Optional<RuneDef> a = Runes.get(parts[0]);
-		Optional<RuneDef> b = Runes.get(parts[1]);
-		if (a.isEmpty() || b.isEmpty() || !Fusions.fusible(a.get()) || !Fusions.fusible(b.get())) {
-			return List.of();
+		java.util.ArrayList<RuneDef> runes = new java.util.ArrayList<>();
+		for (int i = 0; i < parts.length; i++) {
+			if (isWoven(parts[i]) || i > 0 && parts[i - 1].compareTo(parts[i]) > 0) return List.of();
+			Optional<RuneDef> rune = Runes.get(parts[i]);
+			if (rune.isEmpty() || !Fusions.weavable(rune.get())) return List.of();
+			runes.add(rune.get());
 		}
-		return List.of(a.get(), b.get());
+		return List.copyOf(runes);
 	}
 }

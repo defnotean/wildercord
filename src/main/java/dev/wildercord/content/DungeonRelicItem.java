@@ -53,7 +53,7 @@ public class DungeonRelicItem extends Item {
 			for (Mob mob : level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(5), m -> m instanceof Enemy)) {
 				mob.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 1), player);
 			}
-			server.sendParticles(ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1, player.getZ(), 32, 2, 1, 2, 0.1);
+			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.HAPPY_VILLAGER, player.getX(), player.getY() + 1, player.getZ(), 32, 2, 1, 2, 0.1);
 			level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1, 0.75F);
 		} else {
 			player.addEffect(new MobEffectInstance(MobEffects.SPEED, 160, 1));
@@ -64,7 +64,7 @@ public class DungeonRelicItem extends Item {
 					mob.push(away.x / Math.sqrt(away.horizontalDistanceSqr()) * 1.1, 0.45, away.z / Math.sqrt(away.horizontalDistanceSqr()) * 1.1);
 				}
 			}
-			server.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + 1, player.getZ(), 24, 2, 1, 2, 0.08);
+			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.END_ROD, player.getX(), player.getY() + 1, player.getZ(), 24, 2, 1, 2, 0.08);
 			level.playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1, 1.25F);
 		}
 		player.getCooldowns().addCooldown(stack, 20 * 30);

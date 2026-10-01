@@ -37,6 +37,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.gear.GearSlots.init();
 		dev.wildercord.backpack.Backpacks.init();
 		dev.wildercord.config.Config.init();
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(server -> dev.wildercord.spell.CompiledSpellCache.clear());
 		dev.wildercord.content.WildercordParticles.init();
 		dev.wildercord.content.WildercordSounds.init();
 		WildercordLoot.init();
@@ -47,6 +48,11 @@ public final class Wildercord implements ModInitializer {
 		WildercordNetworking.init();
 		dev.wildercord.net.VersionCheck.init();
 		Scheduler.init();
+		dev.wildercord.cast.PracticeRoom.init();
+		dev.wildercord.command.RuneLabCommand.init();
+		dev.wildercord.cast.VisualMetrics.init();
+		dev.wildercord.gear.ElementalArmor.init();
+		dev.wildercord.cast.ArmorResponses.init();
 		dev.wildercord.cast.Spirits.init();
 		dev.wildercord.cast.Wards.init();
 		dev.wildercord.cast.Shields.init();
@@ -66,6 +72,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cast.CraftedRunes.init();
 		dev.wildercord.cast.Thaws.init();
 		dev.wildercord.cast.TemporaryBlocks.init();
+		dev.wildercord.cast.PhysicalMagic.init();
 		dev.wildercord.cast.WorldMagic.init();
 		dev.wildercord.cast.Innates.init();
 		dev.wildercord.cast.Unison.init();
@@ -84,6 +91,7 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.cosmetic.CordCosmetics.init();
 		dev.wildercord.familiar.FamiliarContent.init();
 		dev.wildercord.familiar.Familiars.init();
+		dev.wildercord.pet.CinnamonContent.init();
 		dev.wildercord.cast.Dungeons.init();
 		dev.wildercord.world.dungeons.DungeonWards.init();
 		SpellCaster.init();

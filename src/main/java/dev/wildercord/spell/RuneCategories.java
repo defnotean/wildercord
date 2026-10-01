@@ -11,7 +11,7 @@ public final class RuneCategories {
 
 	public static final List<String> SHAPE = List.of("personal", "direct", "projectile", "area", "lingering");
 	public static final List<String> EFFECT = List.of("damage", "control", "support", "movement", "time", "world", "summon", "innate");
-	public static final List<String> MODIFIER = List.of("power", "area", "timing", "projectile");
+	public static final List<String> MODIFIER = List.of("power", "area", "timing", "projectile", "circle");
 	public static final List<String> LINK = List.of("timing", "trigger", "reactive", "condition");
 	public static final List<String> KNOT = List.of("knot");
 
@@ -89,7 +89,8 @@ public final class RuneCategories {
 				case "prospect", "galvanize" -> "world";
 				case "prolong" -> "time";
 				// Flight.
-				case "soar" -> "movement";
+				case "soar", "wind_steps", "rime_causeway", "thunder_walk" -> "movement";
+				case "strata_rise", "cinder_bulwark", "root_bulwark" -> "world";
 				// Signature fusions (see Fusions.SIGNATURES); the rest of them are damage.
 				case "seethe", "dust_devil", "malison" -> "control";
 				case "stitchtime", "halo", "riposte" -> "support";
@@ -98,7 +99,7 @@ public final class RuneCategories {
 					"stormheart" -> "innate";
 				default -> "damage";
 			};
-			case MODIFIER -> switch (path) {
+			case MODIFIER -> path.endsWith("_circle") ? "circle" : switch (path) {
 				case "amplify", "overcharge", "frugal", "vow", "blood_price", "execute", "trial_key", "kindled", "unstable" -> "power";
 				case "widen", "focus", "split" -> "area";
 				case "extend", "linger", "rapid" -> "timing";

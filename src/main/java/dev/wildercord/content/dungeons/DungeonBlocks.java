@@ -39,4 +39,14 @@ public final class DungeonBlocks {
 	}
 
 	public static void init() {}
+	public static final ExpeditionMechanism CLOCK = mechanism("clockwork_control",ExpeditionMechanism.Kind.CLOCK);
+	public static final ExpeditionMechanism GARDEN = mechanism("greenhouse_heart",ExpeditionMechanism.Kind.GARDEN);
+	public static final ExpeditionMechanism SKY = mechanism("sky_anchor",ExpeditionMechanism.Kind.SKY);
+	public static final BlockEntityType<ExpeditionMechanismEntity> MECHANISM_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,
+		Wildercord.id("expedition_mechanism"),FabricBlockEntityTypeBuilder.create(ExpeditionMechanismEntity::new,CLOCK,GARDEN,SKY).build());
+	private static ExpeditionMechanism mechanism(String path,ExpeditionMechanism.Kind kind) {
+		var key=ResourceKey.create(Registries.BLOCK,Wildercord.id(path));
+		return Registry.register(BuiltInRegistries.BLOCK,key,new ExpeditionMechanism(kind,BlockBehaviour.Properties.of().setId(key)
+			.mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST).strength(-1,3600000).noLootTable().lightLevel(s->8)));
+	}
 }

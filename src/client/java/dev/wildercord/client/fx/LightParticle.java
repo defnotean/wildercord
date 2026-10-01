@@ -25,6 +25,7 @@ import org.joml.Vector3f;
  */
 public class LightParticle extends SingleQuadParticle implements SigilGroup.Extent {
 	private final int kind;
+	private final boolean ownOutbound;
 	private final int color;
 	/** Drawn as darkness (void): its halo takes light away, under a thin glowing rim. */
 	private final boolean dark;
@@ -59,6 +60,11 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 	protected LightParticle(ClientLevel level, double x, double y, double z, LightOption option) {
 		super(level, x, y, z, SpellCircleParticle.particleSprite("sigil_beam"));
 		this.kind = option.kind();
+		var local = net.minecraft.client.Minecraft.getInstance().player;
+		Vec3 delta = new Vec3(option.a(), option.b(), option.c());
+		ownOutbound = option.kind() == LightOption.RAY && local != null
+			&& new Vec3(x,y,z).distanceToSqr(local.getEyePosition()) < 2.25
+			&& delta.normalize().dot(local.getLookAngle()) > .9;
 		this.color = option.color() & 0xFFFFFF;
 		this.dark = (option.color() & GlowLayers.DARK_FLAG) != 0;
 		this.a = option.a();
@@ -115,6 +121,7 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 	}
 
 	private static int argb(float alpha, int rgb) {
+		if (MagicQuality.reducedFlash) alpha *= 0.45F;
 		return (Mth.clamp((int) (alpha * 255), 0, 255) << 24) | (rgb & 0xFFFFFF);
 	}
 
@@ -161,11 +168,22 @@ public class LightParticle extends SingleQuadParticle implements SigilGroup.Exte
 		float reach = Mth.clamp(t / 2F, 0, 1);
 		float fade = f < 0.3F ? 1 : 1 - (f - 0.3F) / 0.7F;
 		float w = width * (0.35F + 0.65F * fade);
+		boolean firstPerson = ownOutbound && net.minecraft.client.Minecraft.getInstance().options.getCameraType().isFirstPerson();
+		if (firstPerson) w = Math.min(w, .045F);
 		Vector3f from = new Vector3f(cx, cy, cz);
 		Vector3f to = new Vector3f(cx + a * reach, cy + b * reach, cz + c * reach);
+		if (firstPerson) {
+			Vector3f direction = new Vector3f(a,b,c);
+			float length = direction.length();
+			if (length > .001F) {
+				float trim = Math.min(2F, length * .8F);
+				if (length * reach <= trim) return;
+				from.add(direction.normalize().mul(trim));
+			}
+		}
 		ribbon(from, to, w * 2.8F, halo(0.5F * fade, color));
 		ribbon(from, to, w, core(fade, hot(color, 0.75F)));
-		billboard(from, w * 2.2F, halo(0.8F * fade, hot(color, 0.3F)));
+		if (!firstPerson) billboard(from, w * 2.2F, halo(0.8F * fade, hot(color, 0.3F)));
 		billboard(to, w * 2.6F * reach, halo(0.8F * fade * reach, hot(color, 0.3F)));
 	}
 

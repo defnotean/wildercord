@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "wildercord:block/greenhouse_heart_side",
+    "down": "wildercord:block/greenhouse_heart_side",
+    "up": "wildercord:block/greenhouse_heart_2",
+    "north": "wildercord:block/greenhouse_heart_side",
+    "south": "wildercord:block/greenhouse_heart_side",
+    "west": "wildercord:block/greenhouse_heart_side",
+    "east": "wildercord:block/greenhouse_heart_side"
+  }
+}

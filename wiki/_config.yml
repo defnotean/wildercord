@@ -1,5 +1,5 @@
-title: Wildercord Wiki
-description: Everything about Wildercord, the rune-threading magic mod for Minecraft Java.
+title: Wildercord Player Guide
+description: "Wildercord 0.7.0-alpha: build spells, shape terrain, explore dungeons and master magic circles."
 remote_theme: just-the-docs/just-the-docs@v0.10.1
 plugins:
   - jekyll-remote-theme
@@ -26,3 +26,9 @@ aux_links_new_tab: true
 footer_content: "Wildercord is open source under the MIT License. Not an official Minecraft product; not approved by or associated with Mojang or Microsoft."
 exclude:
   - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+
+url: https://defnotean.github.io
+baseurl: /wildercord

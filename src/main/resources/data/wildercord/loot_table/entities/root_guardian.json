@@ -1,0 +1,267 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rootbound_relic"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:mana_crystal",
+          "weight": 1,
+          "modifier": {
+            "count": {
+              "type": "minecraft:uniform",
+              "min": 3,
+              "max": 3
+            },
+            "type": "minecraft:set_count"
+          }
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:torn_page",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:shield"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:break"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:regrowth"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:cleanse"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:stoneskin"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:root"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:tremor"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:venom"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:excavate"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:aftershock"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:weigh"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:shackle"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:restore"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:rampart"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:haven"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:tunnel"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:vein"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:fell"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:strata_rise"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 1,
+          "modifier": {
+            "components": {
+              "wildercord:rune": "wildercord:drowse"
+            },
+            "type": "minecraft:set_components"
+          }
+        }
+      ]
+    }
+  ]
+}

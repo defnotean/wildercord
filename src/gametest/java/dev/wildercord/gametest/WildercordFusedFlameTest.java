@@ -405,7 +405,7 @@ public class WildercordFusedFlameTest implements FabricClientGameTest {
 		if (cast != null) {
 			return List.of(cast);
 		}
-		context.waitTicks(2);
+		context.waitTicks(4);
 		String lit =world.getServer().computeOnServer(server -> {
 			LivingEntity husk = get(server, ids[0]);
 			LivingEntity control = get(server, ids[1]);

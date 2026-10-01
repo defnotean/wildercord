@@ -70,7 +70,7 @@ final class Techniques {
 			if (replaced == null || !state.is(RAMPART_BLOCK.getBlock())) {
 				return true;
 			}
-			server.levelEvent(2001, pos, Block.getId(state));
+			Vfx.emit(server, SpellMaterials.of("earth", 0xBAA17A, .14F), Vec3.atCenterOf(pos), 10, .35, .04);
 			server.setBlockAndUpdate(pos, replaced);
 			TemporaryBlocks.remove(server, pos);
 			return false;

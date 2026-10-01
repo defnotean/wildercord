@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_chestplate",
+    "minecraft:echo_shard",
+    "wildercord:mana_crystal"
+  ],
+  "result": {
+    "id": "wildercord:mirror_thread_mantle",
+    "count": 1
+  }
+}

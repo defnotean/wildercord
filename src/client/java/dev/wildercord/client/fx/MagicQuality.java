@@ -1,0 +1,40 @@
+package dev.wildercord.client.fx;
+
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParser;
+import net.fabricmc.loader.api.FabricLoader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+/** Local visual preferences; gameplay and hostile warnings never depend on these. */
+public final class MagicQuality {
+	public enum Level { FULL, BALANCED, MINIMAL; public Level next() { return values()[(ordinal() + 1) % values().length]; } }
+	private static final Path FILE = FabricLoader.getInstance().getConfigDir().resolve("wildercord-visuals.json");
+	public static Level own = Level.BALANCED, others = Level.BALANCED;
+	public static boolean reducedFlash, cameraShake = true;
+	private MagicQuality() {}
+	public static void preset(String name) {
+		switch(name) {
+			case "performance" -> {own=Level.BALANCED;others=Level.MINIMAL;reducedFlash=true;cameraShake=false;}
+			case "cinematic" -> {own=Level.FULL;others=Level.FULL;reducedFlash=false;cameraShake=true;}
+			default -> {own=Level.BALANCED;others=Level.BALANCED;reducedFlash=false;cameraShake=true;}
+		}save();
+	}
+	public static void load() {
+		try {
+			if (!Files.exists(FILE)) { save(); return; }
+			var json = JsonParser.parseString(Files.readString(FILE)).getAsJsonObject();
+			if (json.has("own")) own = Level.valueOf(json.get("own").getAsString());
+			if (json.has("others")) others = Level.valueOf(json.get("others").getAsString());
+			if (json.has("reduced_flash")) reducedFlash = json.get("reduced_flash").getAsBoolean();
+			if (json.has("camera_shake")) cameraShake = json.get("camera_shake").getAsBoolean();
+		} catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Invalid local magic preferences: {}", e.toString()); }
+	}
+	public static void save() {
+		var json = new com.google.gson.JsonObject();
+		json.addProperty("own", own.name()); json.addProperty("others", others.name());
+		json.addProperty("reduced_flash", reducedFlash); json.addProperty("camera_shake", cameraShake);
+		try { Files.createDirectories(FILE.getParent()); Files.writeString(FILE, new GsonBuilder().setPrettyPrinting().create().toJson(json)); }
+		catch (Exception e) { dev.wildercord.Wildercord.LOGGER.warn("Cannot save local magic preferences: {}", e.toString()); }
+	}
+}

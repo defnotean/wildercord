@@ -71,6 +71,7 @@ public class WildercordFireBloodShots implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		if (!"1".equals(System.getenv("WILDERCORD_FIREBLOOD_SHOTS"))) {
+			dev.wildercord.Wildercord.LOGGER.info("[TEST SKIP] WildercordFireBloodShots: set WILDERCORD_FIREBLOOD_SHOTS=1 for the additional fire/blood close-up gallery");
 			return;
 		}
 		String only = System.getenv("WILDERCORD_FIREBLOOD_ONLY");

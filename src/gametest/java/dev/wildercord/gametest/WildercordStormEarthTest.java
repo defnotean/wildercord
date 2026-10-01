@@ -156,6 +156,8 @@ public class WildercordStormEarthTest implements FabricClientGameTest {
 
 	/** {@code Touch} and then {@code effects}, one hit landing on every one of {@code targets} at once, as a Burst's does. */
 	private static void castAt(ServerPlayer player, List<RuneDef> effects, List<? extends Entity> targets) {
+		effects.stream().filter(Runes::innate).findFirst()
+			.ifPresent(r -> player.setAttached(dev.wildercord.player.WildercordAttachments.INNATE, r.id()));
 		List<RuneDef> runes = new ArrayList<>();
 		runes.add(Runes.TOUCH);
 		runes.addAll(effects);

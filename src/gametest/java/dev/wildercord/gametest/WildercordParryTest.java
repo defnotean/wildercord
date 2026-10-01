@@ -194,11 +194,15 @@ public class WildercordParryTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			stand(player);
-			// Six blocks off, a 1.6-a-tick bolt reaches the Shield's front circle in about three ticks: inside the window.
-			Mob husk = husk(player.level(), 6, 0);
-			fireBolt(player, husk);
+			husk(player.level(), 6, 0);
 			SpellCaster.cast(player, 0);
+		});
+		context.waitTicks(4);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
 			check(player.hasAttached(WildercordAttachments.SPELL_SHIELD), "casting Self Shield should raise a Shield");
+			// Six blocks off, a 1.6-a-tick bolt reaches the fresh Shield within its parry window.
+			fireBolt(player, testHusk(server));
 		});
 		int turned = world.getServer().waitFor(server -> {
 			Mob husk = testHusk(server);
@@ -240,8 +244,11 @@ public class WildercordParryTest implements FabricClientGameTest {
 			stand(player);
 			Mob husk = husk(player.level(), 7, 0);
 			SpellCaster.cast(player, 0);
-			// A beam lands at once: the Shield went up this very tick, so it parries, and answers with a counter-burst.
-			CastEngine.cast(new Cast(husk), SpellCompiler.compile(List.of(Runes.BEAM, Runes.HARM)).root());
+		});
+		context.waitTicks(4);
+		world.getServer().runOnServer(server -> {
+			// A beam lands at once while the newly raised Shield is inside its parry window.
+			CastEngine.cast(new Cast(testHusk(server)), SpellCompiler.compile(List.of(Runes.BEAM, Runes.HARM)).root());
 		});
 		context.waitTicks(5);
 		world.getServer().runOnServer(server -> {
@@ -329,10 +336,17 @@ public class WildercordParryTest implements FabricClientGameTest {
 				check(Heart.cracked(player) == 0, surge.id + ": the first press only asks");
 				SpellCaster.cast(player, 1);
 				check(Heart.cracked(player) == 1, surge.id + ": the second press should overcast");
+			});
+			context.waitTicks(5);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
+				Mob near = player.level().getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(spot, spot).inflate(12),
+					e -> e.isAlive() && e.entityTags().contains(TAG) && e.getX() > spot.x + 1).stream().findFirst().orElse(null);
 				check(player.isAlive() && player.getHealth() >= 1, surge.id + ": wild magic must never kill its caster");
 				switch (surge) {
 					case BACKFIRE -> check(player.getHealth() < player.getMaxHealth(), "a backfire should hurt a little");
-					case HEAL_ALL -> check(near.getHealth() > 10, "Heal All should heal the husk nearby");
+					case HEAL_ALL -> check(near != null && near.getHealth() > 10, "Heal All should heal the husk nearby (health "
+						+ (near == null ? "missing" : near.getHealth()) + ")");
 					case LEVITATE -> check(player.hasEffect(MobEffects.LEVITATION) && player.hasEffect(MobEffects.SLOW_FALLING),
 						"gravity flipping should float you, and let you down gently");
 					case SLOW_TIME -> check(player.hasEffect(MobEffects.SLOWNESS) && near.hasEffect(MobEffects.SLOWNESS), "time slowing should slow everyone near");

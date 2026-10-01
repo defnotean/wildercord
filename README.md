@@ -12,7 +12,7 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[Read the Wildercord Wiki](https://defnotean.github.io/wildercord/)**: every rune, recipe, dungeon, boss and mechanic, for players.
+**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.7.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.7.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -59,9 +59,9 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 
 | | |
 |---|---|
-| **328 runes** | 204 you can craft (36 shapes, 133 effects, 21 modifiers and 14 links across four tiers), **53 runes of the world** found only in their own places (two of them only on a fishing line), **55 fused runes**, one for every pair of elements, and 16 **signature fusions** of two particular effects, all made at the Fusion Altar. Each has a hand-drawn icon (Tier III, Tier IV and innate runes are animated). Ten of the effects are **innate runes**: one wakes in each caster's heart and nobody else can have it. See [docs/RECIPES.md](docs/RECIPES.md). |
-| **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle opens in front of them, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
-| **Magic circles you can read** | Every spell writes its own magic circle: a band of script made of its runes, a star with a point for every rune, a roundel on each point with that rune's own emblem, and its first rune's emblem as the seal in the middle. Learn the emblems and you can read what a Runebound, or another player, is about to cast. |
+| **350 named runes** | 39 shapes, 258 effects, 36 modifiers and 17 links across four tiers. **199 are craftable**, **53 runes of the world** come from their particular places, and the remaining ordinary Tier IV runes come from bosses and rare treasure. The Fusion Altar makes **55 elemental fusions** and **22 signature fusions**; exact weaves of two to eight effects extend these further. Ten effects are **innate runes**: one wakes in each caster's heart. Each named rune has its own icon; Tier III, Tier IV and innate icons are animated. See [docs/RECIPES.md](docs/RECIPES.md). |
+| **Charged casting** | Tap to cast, or hold to charge: you raise your hands and a magic circle assembles behind your shoulders and a shape-specific focus forms ahead, for up to 40% more power. While you charge, a reticle shows where the spell will land. |
+| **Magic circles you can read and build around** | Twelve animated mechanisms give different shapes their own casting circles, preserving rune script and illustrated roundels. Twelve craftable [circle disciplines](docs/features/circle-disciplines.md) change coverage, flight speed, effect duration, support power, elemental fusion, movement, stance, weather or night bonuses with explicit costs. Circles follow the caster's rear plane; the outgoing spell retains its shape and materials. |
 | **Spells drawn in light** | All magic glows: light adds to what's behind it, and void magic is drawn as darkness. Beams with a white-hot core fired through a magic circle, bolts that glide as comets, crescents that sweep like blades, bursts that throw shells of light, rain from a circle in the sky, and a Domain whose floor is the spell's own circle under a dome of light. Every element has its own visual language, from branching lightning to imploding darkness. |
 | **Magic you can feel** | Casters raise their hands to charge and move with each shape when it goes off; big impacts shake the camera, a charged release kicks the view, heavy hits land with a punch, and a Domain tints the edges of your screen. The Cord shows on every player's wrist, a bead for each rune of the spell they have ready, glowing as they put it on, charge and cast. |
 | **Its own sound** | Every cast, impact, circle, beam, shield and Domain has its own synthesised sound, all in one key so they harmonise, and charging hums higher as it builds. |
@@ -70,16 +70,17 @@ modifier attaches to, and prices it in mana and cooldown before you ever cast it
 | **Secret spells** | Ten exact rune sequences become something new (a sun that falls from the sky, a lance of ice, a black star that swallows everything). Nothing lists them: experiment, or read the riddles on Torn Pages. |
 | **The Grimoire** | Every reaction, secret, feat and riddle you discover, written into a page of the Cord screen. Each new reaction, secret and feat condenses mana toward your next Heart Circle. |
 | **Runebound and the Archive** | Some monsters carry Cords and cast real spells, glowing with rune marks in their spell's colour and telegraphed by the spell's own circle and a readable nameplate. Deep underground, the Archive holds Rune Seal doors, the Archivist (a hooded, hovering three-phase boss with a floating tome, who rewrites its Cord) and a vault of Tier IV runes. |
-| **Runes of the world** | Fifty-one runes nobody can craft: in vanilla structures' chests, on bosses, in fallen-star craters and rift sieges, or taken from the land itself by **Attunement** (meditate with a Blank Rune in the right biome at the right moment). The Grimoire lists where each is found, with a riddle for the ones you haven't learned. See [docs/features/new-runes.md](docs/features/new-runes.md). |
-| **Dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor each have a three phase boss. The Rootbound Maze in swamps and Storm Spire on peaks add guarded side caches, sealed vaults and reusable relics. See [docs/features/dungeons.md](docs/features/dungeons.md). |
+| **Runes of the world** | Fifty-three runes nobody can craft: in vanilla structures' chests, on bosses, in fallen-star craters and rift sieges, or taken from the land itself by **Attunement** (meditate with a Blank Rune in the right biome at the right moment). The Grimoire lists where each is found, with a riddle for the ones you haven't learned. See [docs/features/new-runes.md](docs/features/new-runes.md). |
+| **Dungeons** | The Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium on the deep sea floor each have a three phase boss. The Rootbound Maze in swamps and Storm Spire on peaks add custom bosses, guarded side caches, sealed vaults and reusable relics. Clockwork Crypt, Living Greenhouse and Moving Sky Ruin each add three layouts and a distinct handling relic. See [docs/features/dungeons.md](docs/features/dungeons.md). |
 | **World events** | Mana storms over the ley lines (faster mana, cheaper spells, wild surges), fallen stars that leave a guarded crater, and rift sieges that end with the Riftcaller. See [docs/features/world-events.md](docs/features/world-events.md). |
-| **Magic that changes the world** | Fire lights the grass and boils water into blinding steam, frost freezes a pond you can walk on, storm arcs through water to everyone in it, wind knocks arrows back, earth heaves the ground and life makes flowers bloom. See [docs/features/world-magic.md](docs/features/world-magic.md). |
-| **The Fusion Altar** | Three of a rune make its next rank, any two elemental effects fuse into one of 55 fused runes (every pair of elements, and each element with itself) or, for sixteen particular pairs, a **signature fusion** of their own, and a Blank Rune and string tie a whole spell into one **Knot** that takes a single socket. See [docs/features/fusion-altar.md](docs/features/fusion-altar.md). |
+| **Magic that changes the world** | Fire lights the grass and boils water into blinding steam, frost freezes a pond you can walk on, storm arcs through water to everyone in it, wind knocks arrows back, earth heaves the ground and life makes flowers bloom. Real temporary walls, borrowed water attacks and wind stepping stones add terrain interactions. See [physical magic](docs/features/physical-magic.md) and [world magic](docs/features/world-magic.md). |
+| **The Fusion Altar** | Three of a rune make its next rank, any two elemental effects fuse into one of 55 fused runes (every pair of elements, and each element with itself) or, for twenty-two particular pairs, a **signature fusion** of their own, and a Blank Rune and string tie a whole spell into one **Knot** that takes a single socket. Amethyst blocks weave up to eight exact elemental effects, including the owner’s imprinted innate at Tier IV. See [docs/features/fusion-altar.md](docs/features/fusion-altar.md). |
 | **Familiars** | Wisps of light rise from the ley lines at night. Tame one with its own element and it floats at your shoulder, quickens your mana, casts a little spell of its own and levels up as you fight together. Dress your Cord in beads and glow colours on the Cosmetics page. See [docs/features/familiars-and-cosmetics.md](docs/features/familiars-and-cosmetics.md). |
+| **Cinnamon** | A small, immortal companion with her own model and skin. The server chooses her one owner in `config/wildercord-cinnamon.json`; she arrives already tamed and follows or sits on that player's click. See [docs/features/cinnamon.md](docs/features/cinnamon.md). |
 | **Parry and wild magic** | A Shield raised at the last moment turns a flying spell back at its caster. An overcast may surge into something wild. See [docs/features/parry-and-wild-magic.md](docs/features/parry-and-wild-magic.md). |
 | **The Runesmith, duels and chorus** | A villager who sells runes, buys your duplicates or swaps them for runes you don't know, and posts daily contracts; formal duels that put everything back afterwards; and allies casting together in a chorus. See [docs/features/runesmith-duels-chorus.md](docs/features/runesmith-duels-chorus.md). |
 | **Travel commands** | For servers: homes, public warps, personal waypoints with an arrow on screen and a beam only you can see, teleport requests with clickable answers, `/back`, `/spawn` and `/rtp`. Every teleport is a short warmup in a forming magic circle, with a cooldown and a safe landing. See [docs/features/travel.md](docs/features/travel.md). |
-| **Casting gear** | Elemental and greater staffs, the Tome of the Fifth Page (a fifth spell) and four foci, each worn in its own inventory slot (staff, focus, tome) and shown on your character, or held as before while its slot is empty. See [docs/features/gear-config-api.md](docs/features/gear-config-api.md). |
+| **Casting gear** | Elemental and greater staffs, the Tome of the Fifth Page (a fifth spell) and seven foci, each worn in its own inventory slot (staff, focus, tome) and shown on your character, or held as before while its slot is empty. See [docs/features/gear-config-api.md](docs/features/gear-config-api.md). |
 | **Advancements** | A Wildercord tab from your first Blank Rune to the 8th Heart Circle. See [docs/features/advancements.md](docs/features/advancements.md). |
 | **Ley lines** | Veins of world mana, visible to Cord-wearers as flowing ribbons of violet light: mana flows twice as fast on them. A Wellstone set on one becomes a well for everyone nearby. |
 | **Play together** | Paste a spell code (`wc:bolt.frost.split`) in chat and it becomes a readable spell card; inscribe spells onto scrolls anyone can cast; hit the foe another player just hit, with a different element, for **Unison**; win **domain clashes**; shoot enemy bolts out of the air. |
@@ -295,12 +296,14 @@ The jar is in `build/libs/`. Useful tasks:
 | `./gradlew runClient` | Starts a dev client with the mod loaded |
 | `./gradlew test` | Runs the spell-engine unit tests (pure Java, no Minecraft needed, a few seconds) |
 | `./gradlew runClientGameTest` | Starts a real client, builds a world, checks the mechanics and saves screenshots |
+| `WILDERCORD_CINNAMON_SUITE=1 ./gradlew -PcinnamonSuite runClientGameTest` | Runs Cinnamon's focused in-world checks and saves `cinnamon_front.png` and `cinnamon_summoned.png` |
+| `./gradlew -PaltBuild -PmagicSuite runClientGameTest` | Casts the eight motion families in a real client and saves formation, first-person, and release screenshots as `magic_*.png` |
 | `python tools/generate_assets.py` | Regenerates textures, models, language, recipes, enchantments and `docs/RECIPES.md` |
 | `./gradlew -PaltBuild compileJava` | Compiles into `build-alt/`, so you can check code while a dev client is running |
 
-> **Heads up:** Loom's dev client loads classes straight from `build/`. Don't run `build`,
-> `runClientGameTest` or a second `runClient` while a dev client is open: use `-PaltBuild` to
-> compile-check instead, then restart the client.
+> **Heads up:** Loom's dev client loads classes straight from `build/`. Use `-PaltBuild` for
+> compile checks or focused game tests while a dev client is open, then restart the client to
+> load the new classes.
 
 ## Project layout
 
@@ -423,7 +426,25 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
     run just the tour; the images in [Screenshots](#screenshots) come from it.
 
 Screenshots land in `build/run/clientGameTest/screenshots/`. CI runs the build and unit tests on
-every push.
+every push, checks generated resources, and runs the client game suites under Xvfb with screenshots and logs retained as artifacts.
+
+## September 30 expansion and audit fixes
+
+The 0.7.0-alpha release adds three expeditions (Clockwork Crypt, Living Greenhouse and Moving Sky Ruin), Root Guardian and Storm Conductor encounters, three elemental armour sets, two defensive foci, Mirror-thread Mantle and three dungeon handling charms. Cinnamon now retains her sitting preference and has sleeping, greeting, petting and toy behaviour.
+
+Formation circles sit behind the caster while each of the 39 shapes assembles its own release. Named and exact woven fusions carry their ingredient materials into formations. Client visual settings include three presets, reduced flashing, camera motion controls and a local frame sampler.
+
+New player tools are available through `/runelab`:
+
+* `practice enter` / `practice leave`: enter a separate practice dimension and return.
+* `research`: permanent experiments and a learned-ingredient fusion hint.
+* `builds save|load|delete "Name" <slot>`: a 24-build library; deletion takes only the name.
+* `familiar companion|scout|guardian|gardener`: choose elemental assistance or a utility job.
+* `trial precision|variety|fusion`: optional Survival practice challenges.
+
+A craftable Runic Hearth supports a reading lantern, bloom planter, fall-protection chime and a cooperative ritual with a solo completion path. Completed world events leave temporary saved echoes to explore.
+
+Feature guides: [expeditions](docs/features/expeditions.md), [elemental armour](docs/features/elemental-armor.md), [defensive foci](docs/features/defensive-foci.md), [research and library](docs/features/research-library.md), [home projects](docs/features/home-projects.md), [familiar jobs, echoes and trials](docs/features/familiars-events-trials.md), [visual presets](profiles/README.md). Verification and remaining limits are recorded in the [implementation ledger](docs/audit/implementation-progress.md).
 
 ## Roadmap
 

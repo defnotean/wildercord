@@ -20,7 +20,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:shield"
+              "wildercord:rune": "wildercord:domain"
             },
             "type": "minecraft:set_components"
           }
@@ -31,7 +31,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:break"
+              "wildercord:rune": "wildercord:sonic_boom"
             },
             "type": "minecraft:set_components"
           }
@@ -42,7 +42,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:regrowth"
+              "wildercord:rune": "wildercord:wither"
             },
             "type": "minecraft:set_components"
           }
@@ -53,7 +53,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:cleanse"
+              "wildercord:rune": "wildercord:dragon_breath"
             },
             "type": "minecraft:set_components"
           }
@@ -64,7 +64,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:stoneskin"
+              "wildercord:rune": "wildercord:summon"
             },
             "type": "minecraft:set_components"
           }
@@ -75,7 +75,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:root"
+              "wildercord:rune": "wildercord:starfall"
             },
             "type": "minecraft:set_components"
           }
@@ -86,7 +86,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:tremor"
+              "wildercord:rune": "wildercord:hollow"
             },
             "type": "minecraft:set_components"
           }
@@ -97,7 +97,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:venom"
+              "wildercord:rune": "wildercord:infinity"
             },
             "type": "minecraft:set_components"
           }
@@ -108,7 +108,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:excavate"
+              "wildercord:rune": "wildercord:reversal"
             },
             "type": "minecraft:set_components"
           }
@@ -119,7 +119,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:aftershock"
+              "wildercord:rune": "wildercord:stasis"
             },
             "type": "minecraft:set_components"
           }
@@ -130,95 +130,7 @@
           "weight": 1,
           "modifier": {
             "components": {
-              "wildercord:rune": "wildercord:weigh"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:shackle"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:restore"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:rampart"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:haven"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:tunnel"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:vein"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:fell"
-            },
-            "type": "minecraft:set_components"
-          }
-        },
-        {
-          "type": "minecraft:item",
-          "name": "wildercord:rune",
-          "weight": 1,
-          "modifier": {
-            "components": {
-              "wildercord:rune": "wildercord:drowse"
+              "wildercord:rune": "wildercord:rewind"
             },
             "type": "minecraft:set_components"
           }

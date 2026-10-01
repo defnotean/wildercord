@@ -97,6 +97,7 @@ public final class WildSurge {
 	 * @return true if it surged (and the surge decided what, if anything, was cast); false to cast it as usual
 	 */
 	static boolean overcast(Cast cast, List<RuneDef> runes, boolean secret, double mana, double cost, Consumer<Cast> release) {
+		if (!cast.alive()) return true;
 		if (!(cast.caster instanceof ServerPlayer player)) {
 			return false;
 		}

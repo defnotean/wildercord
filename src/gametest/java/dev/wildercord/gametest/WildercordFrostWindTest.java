@@ -405,7 +405,7 @@ public class WildercordFrostWindTest implements FabricClientGameTest {
 		if (cast != null) {
 			return cast;
 		}
-		context.waitTicks(2);
+		context.waitTicks(4);
 		return world.getServer().computeOnServer(server -> mob(server, id[0]) != null && Runebound.casting(mob(server, id[0]))
 			? "a Windcut should break the spell a Runebound is telegraphing" : null);
 	}
@@ -471,7 +471,7 @@ public class WildercordFrostWindTest implements FabricClientGameTest {
 		if (cast != null) {
 			return cast;
 		}
-		context.waitTicks(3);
+		context.waitTicks(6);
 		return world.getServer().computeOnServer(server -> {
 			Mob h = mob(server, id[0]);
 			if (h == null) {
@@ -499,7 +499,7 @@ public class WildercordFrostWindTest implements FabricClientGameTest {
 			if (cast != null) {
 				return cast;
 			}
-			context.waitTicks(2);
+			context.waitTicks(4);
 			int at = i;
 			levels[at] = world.getServer().computeOnServer(server -> {
 				MobEffectInstance slow = mob(server, id[0]).getEffect(MobEffects.SLOWNESS);

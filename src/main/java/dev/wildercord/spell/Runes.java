@@ -67,6 +67,19 @@ public final class Runes {
 	public static final RuneDef TRIGGER = new RuneDef("wildercord:trigger", "Target", RuneFamily.SHAPE, 0, 0, 1.0, "", EffectKind.NONE, Set.of(), "", "Whatever triggered the link.", "personal");
 
 	// ---- Effects
+	// ---- Selectable circle disciplines. Kept on one line for asset/recipe generation.
+	public static final RuneDef NEEDLE_CIRCLE = modifier("needle_circle", "Needle Circle", 2, 1.2, Trait.CIRCLE, "A closing iris: 35% smaller shape radius, 20% more power. Costs 20% more mana. One circle discipline per shape.");
+	public static final RuneDef BLOOM_CIRCLE = modifier("bloom_circle", "Bloom Circle", 2, 1.15, Trait.CIRCLE, "Six unfolding petals: 35% larger shape radius, 20% less power. Costs 15% more mana.");
+	public static final RuneDef GYRE_CIRCLE = modifier("gyre_circle", "Gyre Circle", 2, 1.15, Trait.CIRCLE, "Counter-turning turbines: flying shapes travel 30% faster at 15% less power. Costs 15% more mana.");
+	public static final RuneDef ANCHOR_CIRCLE = modifier("anchor_circle", "Anchor Circle", 2, 1.25, Trait.CIRCLE, "A locked square lattice: effect durations last 40% longer at 15% less power. Costs 25% more mana; terrain lifetime caps still apply.");
+	public static final RuneDef RESERVOIR_CIRCLE = modifier("reservoir_circle", "Reservoir Circle", 1, 0.75, Trait.CIRCLE, "Filling concentric basins: 25% less mana, 20% less power and 15% shorter effect durations.");
+	public static final RuneDef CRUCIBLE_CIRCLE = modifier("crucible_circle", "Crucible Circle", 2, 1.2, Trait.CIRCLE, "A breathing furnace hexagon: 15% more power and 25% shorter effect durations. Costs 20% more mana.");
+	public static final RuneDef CONFLUENCE_CIRCLE = modifier("confluence_circle", "Confluence Circle", 3, 1.2, Trait.CIRCLE, "Braided elemental satellites: power starts at 90%, gaining 8% per distinct visual element in this group, up to 130%. Costs 20% more mana.");
+	public static final RuneDef PILGRIM_CIRCLE = modifier("pilgrim_circle", "Pilgrim Circle", 2, 1.1, Trait.CIRCLE, "A rolling compass: 15% more power when released while moving horizontally, otherwise 10% less; 10% shorter effect durations. Costs 10% more mana.");
+	public static final RuneDef VIGIL_CIRCLE = modifier("vigil_circle", "Vigil Circle", 2, 1.15, Trait.CIRCLE, "An opening watchful eye: 20% more power if crouching on release, otherwise 10% less. Flying shapes move 15% slower. Costs 15% more mana.");
+	public static final RuneDef MERCY_CIRCLE = modifier("mercy_circle", "Mercy Circle", 2, 1.15, Trait.CIRCLE, "Paired sheltering crescents: helpful effects gain 20% power; other effects lose 25%. Costs 15% more mana.");
+	public static final RuneDef TEMPEST_CIRCLE = modifier("tempest_circle", "Tempest Circle", 3, 1.2, Trait.CIRCLE, "Forked storm spokes: 20% more power when wet or exposed to rain on release, otherwise 10% less. Flying shapes move 10% faster. Costs 20% more mana.");
+	public static final RuneDef ECLIPSE_CIRCLE = modifier("eclipse_circle", "Eclipse Circle", 3, 1.15, Trait.CIRCLE, "A moon passing its sun: 20% more power at night on release, otherwise 10% less. Costs 15% more mana.");
 	public static final RuneDef FEATHER_FALL = effect("feather_fall", "Feather Fall", 1, 6, "wind", EffectKind.HELPFUL, "Slow falling and no fall damage for 12 seconds, and you drift the way you look while you fall (sneak to stop).", DURATION);
 	public static final RuneDef SWIFT = effect("swift", "Swift", 1, 6, "wind", EffectKind.HELPFUL, "Speed III for 10 seconds, and it shakes off Slowness and frozen skin.", DURATION, POWER);
 	public static final RuneDef NIGHT_EYE = effect("night_eye", "Night Eye", 1, 3, "arcane", EffectKind.HELPFUL, "Night vision for 60 seconds.", DURATION);
@@ -302,6 +315,18 @@ public final class Runes {
 		return FUSED.contains(rune) || SIGNATURE.contains(rune) || WovenRunes.isWoven(rune);
 	}
 
+
+	// Physical magic: cover, borrowed source water, and collision platforms.
+	public static final RuneDef STRATA_RISE = effect("strata_rise", "Strata Rise", 2, 9, "earth", EffectKind.WORLD, "Raises a real five-wide, three-high stone wall over seven ticks. Lasts eight seconds, drops no material, respects protected land and cannot trap creatures.", DURATION);
+	public static final RuneDef TIDAL_LIFT = effect("tidal_lift", "Tidal Lift", 2, 12, "frost", EffectKind.HARMFUL, "Borrows up to three real water sources within four blocks, lifts them along a ten-block arc, then returns them. Each enemy takes 4 damage once and is soaked for five seconds. Needs nearby source water.", POWER);
+	public static final RuneDef WIND_STEPS = effect("wind_steps", "Wind Steps", 2, 8, "wind", EffectKind.WORLD, "Forms five real wind platforms ahead, ascending one block every two steps. Lasts eight seconds; allies standing on expiring steps get three seconds of slow falling.", DURATION);
+	public static final RuneDef CINDER_BULWARK = effect("cinder_bulwark", "Cinder Bulwark", 3, 16, "fire", EffectKind.WORLD, "Raises a cracked, glowing wall. Enemies brushing against it take 2 magic damage once per cast. Lasts eight seconds and drops nothing.", DURATION);
+	public static final RuneDef ROOT_BULWARK = effect("root_bulwark", "Root Bulwark", 3, 16, "life", EffectKind.WORLD, "Raises a living root wall that gives nearby allies brief Regeneration I. Lasts eight seconds, respects land protections and drops no wood.", DURATION);
+	public static final RuneDef BOILING_SURGE = effect("boiling_surge", "Boiling Surge", 3, 19, "fire", EffectKind.HARMFUL, "Lifts nearby real water through a scalding arc, returning each source afterwards. Each enemy takes 5 damage once and two seconds of Weakness. Original steam curls trace the crest.", POWER);
+	public static final RuneDef THUNDER_TIDE = effect("thunder_tide", "Thunder Tide", 3, 19, "storm", EffectKind.HARMFUL, "Suspends real borrowed water inside electrical rings and drives it forward. Each enemy takes 5 damage once, is soaked and slowed for one second. Water returns safely.", POWER);
+	public static final RuneDef RIME_CAUSEWAY = effect("rime_causeway", "Rime Causeway", 3, 16, "frost", EffectKind.WORLD, "Condenses wind into an ascending three-wide ice causeway. Lasts eight seconds, leaves no farmable ice and cushions allies when it fades.", DURATION);
+	public static final RuneDef THUNDER_WALK = effect("thunder_walk", "Thunder Walk", 3, 16, "storm", EffectKind.WORLD, "Builds five copper-lit wind stepping stones. Each enemy touching a stone takes 2 magic damage once per cast; allies receive slow falling before expiry.", DURATION);
+
 	// ---- Signature fusions: each made only from two particular effects at the Fusion Altar (see Fusions.SIGNATURES),
 	// before their elements' own fusion. Never crafted or found. Fused runes take no designs from the others' circles,
 	// so where these sit changes no older rune's.
@@ -325,7 +350,7 @@ public final class Runes {
 
 	/** Signature fused effects: made only from their own two runes at the Fusion Altar. */
 	public static final java.util.List<RuneDef> SIGNATURE = java.util.List.of(FROSTWIRE, SEETHE, BLOOMSTEP, SKYBURST, STITCHTIME, PARASITE, RAZORGALE,
-		DOOMCLOCK, THUNDERSTEP, HALO, THUNDERQUAKE, COMETFALL, RIPOSTE, DUST_DEVIL, MALISON, AVALANCHE);
+		DOOMCLOCK, THUNDERSTEP, HALO, THUNDERQUAKE, COMETFALL, RIPOSTE, DUST_DEVIL, MALISON, AVALANCHE, CINDER_BULWARK, ROOT_BULWARK, BOILING_SURGE, THUNDER_TIDE, RIME_CAUSEWAY, THUNDER_WALK);
 	// ---- Runes of the world: never crafted, only found in particular places (see RuneSources and
 	// Attunements). Defined after everything else, so their magic circles never change an older rune's.
 	// Vanilla structures.
@@ -500,6 +525,7 @@ public final class Runes {
 	private static RuneDef shape(String path, String name, int tier, double cost, double effectMultiplier, String desc, String... traits) {
 		java.util.Set<String> all = new java.util.HashSet<>(Set.of(traits));
 		all.add(Trait.COOLDOWN);
+		all.add(Trait.CIRCLE);
 		return register(new RuneDef(id(path), name, RuneFamily.SHAPE, tier, cost, effectMultiplier, "", EffectKind.NONE, all, "", desc,
 			RuneCategories.categoryFor(path, RuneFamily.SHAPE)));
 	}

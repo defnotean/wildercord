@@ -583,6 +583,24 @@ def elements_runes(runes, elements, tiers, innate):
 
 # The dungeons: their structure data, where they grow, and what their chests and bosses hold.
 DUNGEONS = {
+    "clockwork_crypt": {
+        "elements": ("time", "arcane"), "name": "the Clockwork Crypt", "relic": "wildercord:keepers_hourglass",
+        "step": "surface_structures", "biomes": ["minecraft:desert", "minecraft:badlands"],
+        "spacing": 34, "separation": 12, "salt": 20261003, "spawns": [],
+        "extras": [("minecraft:clock", 2, 1, 1), ("minecraft:gold_ingot", 4, 2, 5), ("minecraft:redstone", 3, 3, 8)],
+    },
+    "living_greenhouse": {
+        "elements": ("life", "earth"), "name": "the Living Greenhouse", "relic": "wildercord:living_seedpod",
+        "step": "surface_structures", "biomes": ["minecraft:flower_forest", "minecraft:birch_forest", "minecraft:dark_forest"],
+        "spacing": 32, "separation": 10, "salt": 20261004, "spawns": [],
+        "extras": [("minecraft:bone_meal", 5, 3, 8), ("minecraft:glow_berries", 3, 2, 6), ("minecraft:shears", 2, 1, 1)],
+    },
+    "moving_sky_ruin": {
+        "elements": ("wind", "storm"), "name": "the Moving Sky Ruin", "relic": "wildercord:sky_feather",
+        "step": "surface_structures", "biomes": ["minecraft:windswept_hills", "minecraft:windswept_forest", "minecraft:meadow"],
+        "spacing": 38, "separation": 12, "salt": 20261005, "spawns": [],
+        "extras": [("minecraft:feather", 4, 3, 8), ("minecraft:phantom_membrane", 2, 1, 3), ("minecraft:amethyst_shard", 3, 2, 5)],
+    },
     "ember_sanctum": {
         "boss": "cinder_warden", "trophy": "cinder_heart", "elements": ("fire", "earth"), "name": "the Ember Sanctum",
         # Built after the basalt deltas' columns and lava sheets (surface_structures), which would otherwise grow inside
@@ -611,6 +629,7 @@ DUNGEONS = {
                    ("minecraft:heart_of_the_sea", 1, 1, 1)],
     },
     "rootbound_maze": {
+        "boss": "root_guardian", "trophy": "rootbound_relic",
         "elements": ("life", "earth"), "name": "the Rootbound Maze", "relic": "wildercord:rootbound_relic",
         "step": "surface_structures", "biomes": ["minecraft:swamp", "minecraft:mangrove_swamp"],
         "spacing": 28, "separation": 9, "salt": 20261001, "spawns": [],
@@ -618,6 +637,7 @@ DUNGEONS = {
                    ("minecraft:amethyst_block", 2, 1, 2), ("minecraft:golden_apple", 1, 1, 1)],
     },
     "storm_spire": {
+        "boss": "storm_conductor", "trophy": "stormglass_relic",
         "elements": ("storm", "wind"), "name": "the Storm Spire", "relic": "wildercord:stormglass_relic",
         "step": "surface_structures", "biomes": ["minecraft:jagged_peaks", "minecraft:frozen_peaks", "minecraft:stony_peaks"],
         "spacing": 32, "separation": 10, "salt": 20261002, "spawns": [],
@@ -631,6 +651,10 @@ def main(g, runes):
     """Writes everything. `g` is generate_assets (for its writers and the rune list's helpers)."""
     tex = g.ASSETS / "textures"
     data = g.DATA
+    import encounter_art
+    encounter_art.write(g)
+    import expedition_art
+    expedition_art.write(g)
     # ---- skins
     g.save(cinder_warden_texture(), tex / "entity/cinder_warden.png")
     g.save(cinder_warden_glow_texture(), tex / "entity/cinder_warden_glow.png")
@@ -653,7 +677,9 @@ def main(g, runes):
     # ---- the altar: one model per kind, borrowing the dungeons' own stone
     kinds = {"cinder": ("minecraft:block/polished_blackstone_bricks", "minecraft:block/magma", "minecraft:block/polished_blackstone"),
              "astral": ("minecraft:block/purpur_pillar_side", "minecraft:block/end_portal_frame_top", "minecraft:block/end_stone_bricks"),
-             "tide": ("minecraft:block/prismarine_bricks", "minecraft:block/sea_lantern", "minecraft:block/dark_prismarine")}
+             "tide": ("minecraft:block/prismarine_bricks", "minecraft:block/sea_lantern", "minecraft:block/dark_prismarine"),
+             "root": ("minecraft:block/mossy_stone_bricks", "minecraft:block/shroomlight", "minecraft:block/rooted_dirt"),
+             "storm": ("minecraft:block/chiseled_stone_bricks", "minecraft:block/sea_lantern", "minecraft:block/polished_andesite")}
     face = lambda t, uv=(2, 2, 14, 14): {"texture": f"#{t}", "uv": list(uv)}
     variants = {}
     for kind, (side, top, bottom) in kinds.items():
@@ -709,8 +735,8 @@ def main(g, runes):
             {"rolls": 1, "entries": [g.item_entry("wildercord:torn_page", 1)]},
             {"rolls": 1, "entries": [g.rune_entry(p, 1) for p in second_third]},
             # The boss's own rune, found nowhere else, and half the time one of its dungeon's.
-            found_pool(d["boss"]),
-            found_pool(key, 0.5),
+            *([found_pool(d["boss"])] if d["boss"] in sources else []),
+            *([found_pool(key, 0.5)] if key in sources else []),
             ]})
         # ---- where it grows
         g.write_json(data / f"worldgen/structure/{key}.json", {

@@ -93,7 +93,7 @@ public class FallenStarBlockEntity extends BlockEntity {
 		Vec3 top = Vec3.atBottomCenterOf(pos).add(0, 0.75, 0);
 		if (now % 5 == 0) {
 			// Starlight sparkles off it.
-			server.sendParticles(ParticleTypes.END_ROD, top.x, top.y, top.z, 1, 0.3, 0.25, 0.3, 0.02);
+			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.END_ROD, top.x, top.y, top.z, 1, 0.3, 0.25, 0.3, 0.02);
 		}
 		if ((now + pos.asLong()) % 20 != 0) {
 			return;

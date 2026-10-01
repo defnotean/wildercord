@@ -116,6 +116,9 @@ public final class SpellCaster {
 			return;
 		}
 		List<RuneDef> runes = activeRunes(book, spell, tier);
+		if(!SoulWeaving.owns(player,runes)){
+			fail(player,Component.literal("This soul weave contains an innate rune that does not belong to your heart."));return;
+		}
 		SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
 		if (runes.isEmpty() || compiled.isEmpty()) {
 			fail(player, Component.translatable("message.wildercord.spell_empty", spell + 1));
@@ -204,6 +207,8 @@ public final class SpellCaster {
 			theme = theme.with(dev.wildercord.cast.feel.Signatures.adjust(dev.wildercord.cast.feel.Feel.of(compiled.root().groups.getFirst(), compiled.cost(), charge)));
 		}
 		Vfx.castCircle(player, theme, runes);
+		dev.wildercord.player.RuneResearch.cast(player,runes);
+		SpellTrials.cast(player,runes,cost);
 		// Casting gear, read from the hands now: a staff's flourish on a charged cast, and its power on every part of the spell.
 		dev.wildercord.gear.GearBonuses gear = dev.wildercord.gear.Gear.of(player);
 		dev.wildercord.gear.Gear.flourish(player, gear, dev.wildercord.gear.GearBonuses.elements(compiled.root()), charge);
@@ -239,9 +244,15 @@ public final class SpellCaster {
 			}
 		};
 		// Wild magic: an overcast spell may twist into something else.
-		if (overcastCost < 0 || !WildSurge.overcast(cast, runes, secret.isPresent(), overcastMana, overcastCost, release)) {
-			release.accept(cast);
-		}
+		final float releaseOvercastMana = overcastMana;
+		final int releaseOvercastCost = overcastCost;
+		// The formation completes before any ordinary or wild release leaves the caster.
+		Scheduler.later(3, () -> {
+			if (!cast.alive()) return;
+			if (releaseOvercastCost < 0 || !WildSurge.overcast(cast, runes, secret.isPresent(), releaseOvercastMana, releaseOvercastCost, release)) {
+				release.accept(cast);
+			}
+		});
 		dev.wildercord.runesmith.Contracts.onCast(player, runes);
 		// The copies below go off for the same payment: they share its Siphon cap and once-per-cast
 		// things (a second Imbue would store the spell twice for one price), and its casting gear.
@@ -256,7 +267,7 @@ public final class SpellCaster {
 		// Twin Star: the next spell goes off a second time, a moment later.
 		if (Innates.consumeTwin(player)) {
 			Scheduler.later(8, () -> {
-				if (!player.isRemoved() && player.isAlive()) {
+				if (cast.alive()) {
 					TechniqueVfx.twinStar(player.level(), player);
 					// The twin is a shade weaker than the caster (75%): a free second cast is not a free double.
 					Cast again = cast.again(Innates.TWIN_POWER);
@@ -271,7 +282,7 @@ public final class SpellCaster {
 		// Focus of Echoes: now and then the spell goes off again, a moment later, at no cost.
 		if (dev.wildercord.gear.Gear.echoes(player, gear)) {
 			Scheduler.later(10, () -> {
-				if (!player.isRemoved() && player.isAlive()) {
+				if (cast.alive()) {
 					HeartCircles.onCast(player);
 					Cast again = cast.again(1.0);
 					if (secret.isPresent()) {

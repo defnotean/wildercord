@@ -45,8 +45,16 @@ public final class DungeonEntities {
 			.build(TIDE_SCRIBE_KEY));
 
 	public static void init() {
+		FabricDefaultAttributeRegistry.register(ROOT_GUARDIAN, RootGuardian.createAttributes());
+		FabricDefaultAttributeRegistry.register(STORM_CONDUCTOR, StormConductor.createAttributes());
 		FabricDefaultAttributeRegistry.register(CINDER_WARDEN, CinderWarden.createAttributes());
 		FabricDefaultAttributeRegistry.register(STAR_EATER, StarEater.createAttributes());
 		FabricDefaultAttributeRegistry.register(TIDE_SCRIBE, TideScribe.createAttributes());
 	}
+	private static final ResourceKey<EntityType<?>> ROOT_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("root_guardian"));
+	public static final EntityType<RootGuardian> ROOT_GUARDIAN = Registry.register(BuiltInRegistries.ENTITY_TYPE, ROOT_KEY,
+		EntityType.Builder.<RootGuardian>of(RootGuardian::new, MobCategory.MONSTER).sized(1.5F, 2.8F).eyeHeight(2.4F).clientTrackingRange(10).build(ROOT_KEY));
+	private static final ResourceKey<EntityType<?>> STORM_KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("storm_conductor"));
+	public static final EntityType<StormConductor> STORM_CONDUCTOR = Registry.register(BuiltInRegistries.ENTITY_TYPE, STORM_KEY,
+		EntityType.Builder.<StormConductor>of(StormConductor::new, MobCategory.MONSTER).sized(1.3F, 2.4F).eyeHeight(2.0F).clientTrackingRange(10).build(STORM_KEY));
 }

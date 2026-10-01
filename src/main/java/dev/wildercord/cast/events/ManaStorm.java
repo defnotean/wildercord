@@ -261,6 +261,7 @@ public final class ManaStorm {
 
 	/** It blows over: everyone under it is told, and their storm bonuses stop. */
 	void finish() {
+		EventAftermath.leave(level,BlockPos.containing(centre),"storm");
 		for (UUID id : inside) {
 			if (level.getServer().getPlayerList().getPlayer(id) instanceof ServerPlayer player) {
 				player.removeAttached(STORM_UNTIL);
@@ -311,7 +312,7 @@ public final class ManaStorm {
 			case ECHO -> {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.surge.echo").withColor(VIOLET));
 				Scheduler.later(10, () -> {
-					if (!player.isRemoved() && player.isAlive()) {
+					if (!player.isRemoved() && player.isAlive() && player.level() == level) {
 						ElementFx.ring(level, player.position().add(0, 1, 0), new Vec3(0, 1, 0), CORE, 0.2, 1.6, 0.06, 8);
 						again.run();
 					}

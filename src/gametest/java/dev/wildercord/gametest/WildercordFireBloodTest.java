@@ -158,6 +158,9 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 	}
 
 	private static String cast(ServerPlayer player, RuneDef... runes) {
+		// Innate scenarios use the matching awakened heart, as Survival casting requires.
+		java.util.Arrays.stream(runes).filter(Runes::innate).findFirst()
+			.ifPresent(r -> player.setAttached(WildercordAttachments.INNATE, r.id()));
 		List<String> ids = java.util.Arrays.stream(runes).map(RuneDef::id).toList();
 		SpellCaster.edit(player, 0, List.of());
 		SpellCaster.edit(player, 0, ids);
@@ -405,7 +408,7 @@ public class WildercordFireBloodTest implements FabricClientGameTest {
 		if (cast != null) {
 			return cast;
 		}
-		context.waitTicks(1);
+		context.waitTicks(4);
 		return world.getServer().computeOnServer(server -> {
 			int ticks = living(server, id[0]).getRemainingFireTicks();
 			return ticks >= 150 ? null : "Ember should add 3 seconds to a burn of 5, not restart it at 3 (" + ticks + " ticks left)";

@@ -71,3 +71,15 @@ figure.recipe figcaption {
   font-size: 0.85rem;
   opacity: 0.8;
 }
+
+// Player handbook: legible long-form pages and a restrained rune-gold accent.
+.main-content { font-size: 1rem; line-height: 1.75; }
+.main-content h1 { letter-spacing: -0.035em; line-height: 1.15; }
+.main-content h2 { margin-top: 2.5rem; border-bottom: 1px solid #3c3547; padding-bottom: .5rem; }
+.main-content img { max-width: 100%; height: auto; border-radius: 8px; }
+.main-content table { font-size: .94rem; }
+.main-content th { color: #f0d194; }
+.main-content blockquote { border-left: 3px solid #cead71; padding: .4rem 1rem; margin-left: 0; background: #282331; }
+.main-content code { overflow-wrap: anywhere; }
+.site-title { letter-spacing: -.025em; }
+@media (min-width: 66.5rem) { .main { max-width: 66rem; } }

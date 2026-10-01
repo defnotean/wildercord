@@ -35,4 +35,6 @@ public final class WildercordParticles {
 		FabricParticleTypes.complex(true, RitualOption.CODEC, RitualOption.STREAM_CODEC));
 
 	public static void init() {}
+	public static final ParticleType<MaterialOption> MATERIAL = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("material"),
+		FabricParticleTypes.complex(false, MaterialOption.CODEC, MaterialOption.STREAM_CODEC));
 }

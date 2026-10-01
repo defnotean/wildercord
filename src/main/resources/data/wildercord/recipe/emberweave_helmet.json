@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_helmet",
+    "minecraft:blaze_powder",
+    "wildercord:mana_crystal"
+  ],
+  "result": {
+    "id": "wildercord:emberweave_helmet",
+    "count": 1
+  }
+}

@@ -445,12 +445,6 @@ public final class FusedEffects {
 	/** Tempest: lightning on the spot, then a gale that throws everything struck far away (once, however many strikes land round it). */
 	private static void tempest(Cast cast, Vec3 at, Cast.Hit hit, double power) {
 		ServerLevel level = cast.level;
-		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
-		if (bolt != null) {
-			bolt.setVisualOnly(true);
-			bolt.snapTo(at.x, at.y, at.z);
-			level.addFreshEntity(bolt);
-		}
 		FusionVfx.tempest(level, at);
 		for (Entity e : level.getEntities((Entity) null, new AABB(at, at).inflate(1.5, 2.5, 1.5), e -> Targets.canHarm(cast.caster, e))) {
 			LivingEntity t = (LivingEntity) e;

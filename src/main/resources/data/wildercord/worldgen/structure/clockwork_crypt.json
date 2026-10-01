@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:dungeon",
+  "dungeon": "clockwork_crypt",
+  "biomes": "#wildercord:has_structure/clockwork_crypt",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

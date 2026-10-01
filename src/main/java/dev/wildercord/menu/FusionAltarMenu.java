@@ -168,7 +168,13 @@ public class FusionAltarMenu extends AbstractContainerMenu {
 			return false;
 		}
 		Fusions.Plan plan = plan();
-		if (plan.kind() == Fusions.Kind.NONE || plan.problem() != null || !resultFree()) {
+		if (plan.kind() == Fusions.Kind.NONE || plan.problem() != null) {
+			server.sendOverlayMessage(Component.literal(plan.problem() == null ? Fusions.HOW : plan.problem()).withColor(0xE05050));
+			refuse(server);
+			return false;
+		}
+		if (!resultFree()) {
+			server.sendOverlayMessage(Component.translatable("screen.wildercord.altar.take_result").withColor(0xE05050));
 			refuse(server);
 			return false;
 		}

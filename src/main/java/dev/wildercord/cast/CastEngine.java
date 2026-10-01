@@ -206,6 +206,7 @@ public final class CastEngine {
 	// ------------------------------------------------------------------ shapes
 
 	private static void deliver(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored) {
+		cast.prepareCircle(g);
 		LivingEntity caster = cast.caster;
 		String shape = g.shape.id();
 		int copies = SpellNumbers.copies(g);
@@ -509,16 +510,17 @@ public final class CastEngine {
 		java.util.Map<Entity, Integer> watched = CraftedShapes.watch(anchored, entities);
 		double groupPower = SpellNumbers.groupPower(g) * hit.power();
 		for (SpellPlan.EffectNode effect : stasisFirst(g.effects)) {
+			Cast effectCast=cast.circleEffect(g,effect.effect.kind());
 			// Belated: it (and each lingering landing after it) comes a moment late, on whatever it struck that's still there.
 			int late = SpellNumbers.belatedTicks(effect);
 			if (late == 0) {
-				Effects.apply(cast, effect, hit, groupPower);
+				Effects.apply(effectCast, effect, hit, groupPower);
 			} else {
 				Cast.Hit first = hit;
 				CraftedRunes.belated(cast, hit, late);
 				Scheduler.later(late, () -> {
 					if (cast.alive()) {
-						Effects.apply(cast, effect, still(cast, first), groupPower);
+						Effects.apply(effectCast, effect, still(cast, first), groupPower);
 					}
 				});
 			}
@@ -530,7 +532,7 @@ public final class CastEngine {
 					if (!cast.alive()) {
 						return;
 					}
-					Effects.apply(cast, effect, still(cast, first), groupPower * SpellNumbers.LINGER_POWER);
+					Effects.apply(effectCast, effect, still(cast, first), groupPower * SpellNumbers.LINGER_POWER);
 				});
 			}
 		}

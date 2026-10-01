@@ -24,7 +24,7 @@ The same circle, built from the same runes, appears everywhere a spell does:
 | Where | What it is |
 |---|---|
 | Under your feet when you cast | A flat circle about two blocks across, for a moment |
-| In front of your hands while you charge | A small circle that opens as the charge builds (a smaller seal low on the right in your own first-person view) |
+| Behind your shoulders while you charge | A full circle follows your rear plane; a smaller forward focus forms the chosen delivery |
 | In a Runebound's or a boss's hand | Its **telegraph**: the spell it's about to cast (see [below](#telegraphs)) |
 | On the ground under a Domain | The Domain's floor is the spell's own circle, as wide as the Domain |
 | In front of someone with a Shield | The Shield's circles are the circle of the spell that raised it (see [Shields]({{ '/spellcraft/shields/' | relative_url }})) |
@@ -198,3 +198,7 @@ lasts, the ring a charged spell's reticle draws, a Rain's circle opening in the 
 effects like a Sandstorm or a Vortex, the circle that turns under you while you attune a Blank Rune, and the
 circle that turns over the Fusion Altar as it works. They're drawn in the same thin lines of light, but only a
 spell's own circle, with its star and roundels, spells out its runes.
+
+## Choose a mechanism and a tradeoff
+
+Twelve [circle disciplines]({{ '/spellcraft/circle-disciplines/' | relative_url }}) give their own iris, petals, turbine, lattice, basins, furnace, braid, compass, eye, crescents, storm forks or eclipse. Plain shapes also select these mechanisms for presentation, without a gameplay bonus.

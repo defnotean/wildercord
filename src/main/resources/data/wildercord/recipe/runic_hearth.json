@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GBG",
+    "SMS",
+    "SSS"
+  ],
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "B": "minecraft:book",
+    "S": "minecraft:stone_bricks",
+    "M": "wildercord:mana_crystal"
+  },
+  "result": {
+    "id": "wildercord:runic_hearth"
+  }
+}

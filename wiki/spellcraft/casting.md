@@ -36,7 +36,7 @@ Nothing is spent when a cast fails. If you're short of mana but have a Heart Cir
 **overcast** instead: press again within two seconds and a circle cracks to pay for it (see
 [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }})).
 
-When a spell goes off, a copy of its magic circle opens on the ground under you, you move with the spell's
+When a spell goes off, its casting circle opens behind your shoulders and tracks your turns, you move with the spell's
 shape (a thrust for a bolt, arms flung up for a zone or a burst, a sweep for a crescent), the beads on your
 wrist flare, and everyone nearby hears it. Magic can't be cast while you're dead or spectating, and a cast
 key held while a screen is open (chat, the pause menu) simply waits, like a drawn bow.
@@ -45,16 +45,15 @@ In **creative** mode spells cost no mana and passives no upkeep, but cooldowns s
 
 ## Tap or charge
 
-<img src="{{ '/assets/images/charge.jpg' | relative_url }}" alt="A player with raised hands charging a spell, its magic circle open in front of them" class="shot">
+<img src="{{ '/assets/images/circle-bloom.jpg' | relative_url }}" alt="A player with raised hands charging a spell, its authored magic circle behind the shoulders" class="shot">
 
 **Tap `R`** and the spell goes off at once, at its normal power.
 
 **Hold `R`** and after a quarter of a second you start to **charge**:
 
-- You raise both hands and the spell's **magic circle** opens in front of them as the charge builds: the
+- You raise both hands and the spell's **magic circle** opens behind your shoulders as the charge builds: the
   frame first, then its script and star drawing themselves, then a roundel for each rune in turn. Everyone
-  around you sees it. In your own first-person view it's a small seal low on the right, so it never blocks
-  your aim.
+  around you sees it. In first person the large circle is behind you; a smaller shape-specific focus forms ahead without replacing the spell's delivery.
 - A **full charge** takes a second and a half. The circle flares and a chime sounds, and your spell panel
   shows the charge climbing ("40%", "80%") until it blinks **FULL**.
 - The beads on your wrist burn brighter, and a hum rises as the charge builds.
@@ -261,7 +260,7 @@ Every spell reads from how it's built:
 Casting is meant to be read by everyone around you:
 
 - the Cord on your wrist, with a bead for each rune of your ready spell,
-- your hands raised and your spell's circle opening in front of them while you charge,
+- your hands raised and your spell's circle opening behind your shoulders while you charge,
 - the circle under your feet and the shape's pose when a spell goes off,
 - your Heart Circles' rings turning round you as you cast and meditate.
 

@@ -21,7 +21,7 @@ class RuneChoreographyTest {
 				"/assets/wildercord/textures/particle/circle/" + rune.path() + "_mark.png"),
 				rune.id() + " needs its own illustrated emblem");
 		}
-		assertEquals(288, roster.size());
+		assertEquals(297, roster.size());
 		assertEquals(roster, RuneChoreography.all().keySet(), "scripts must be kept in sync with the rune roster");
 	}
 

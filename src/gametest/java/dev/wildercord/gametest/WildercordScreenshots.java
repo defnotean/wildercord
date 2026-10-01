@@ -57,6 +57,15 @@ public class WildercordScreenshots implements FabricClientGameTest {
 				Spellbooks.setMana(player, 180);
 			});
 			context.waitTicks(10);
+			if (System.getenv("WILDERCORD_MECHANICS_ONLY") != null) {
+				world.getServer().runOnServer(server -> {
+					ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+					resetStage(player);
+				});
+				context.waitTicks(5);
+				mechanicsChecks(context, world);
+				return;
+			}
 			// The mana badge's tooltip, at 1920x1080 and GUI scale 2 (window pixel = 2x GUI unit).
 			context.runOnClient(mc -> {
 				mc.getWindow().setWindowed(1920, 1080);
@@ -81,7 +90,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			context.waitTicks(2);
 			// Effects tab: panel left 294 + tab x (12 + All 32 + Shapes 54) ~ 400 GUI units, row y 124 + 120 + 6.
 			context.getInput().setCursorPos((294 + 12 + 34 + 54 + 20) * 2, (124 + 120 + 6) * 2);
-			context.getInput().pressMouse(0);
+			context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 			context.waitTicks(3);
 			context.getInput().setCursorPos(4, 4);
 			context.waitTicks(2);
@@ -538,7 +547,8 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		java.util.UUID carried = server.computeOnServer(WildercordScreenshots::freshHusk);
 		context.waitTicks(3);
 		server.runOnServer(s -> castAs(s, 2, Runes.BEAM, Runes.STASIS));
-		context.waitTicks(2);
+		// A cast forms behind the caster before release; the beam lands after that short formation.
+		context.waitTicks(6);
 		server.runOnServer(s -> {
 			var husk = husk(s, carried);
 			check(husk.isNoGravity(), "A husk held in Stasis should float");
@@ -561,31 +571,34 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		context.waitTicks(3);
 
 		// Reflect: the husk hurts the player and takes some of it back.
+		server.runOnServer(s -> castAs(s, 2, Runes.SELF, Runes.REFLECT));
+		context.waitTicks(6);
 		server.runOnServer(s -> {
 			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
 			var husk = husk(s, huskId[0]);
-			castAs(s, 2, Runes.SELF, Runes.REFLECT);
 			float huskBefore = husk.getHealth();
 			player.hurtServer(player.level(), player.level().damageSources().mobAttack(husk), 4.0F);
 			check(husk.getHealth() < huskBefore, "Reflect should hurt the attacker");
 		});
 
 		// Foresight: the next two attacks miss.
+		server.runOnServer(s -> castAs(s, 2, Runes.SELF, Runes.FORESIGHT));
+		context.waitTicks(6);
 		server.runOnServer(s -> {
 			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
 			var husk = husk(s, huskId[0]);
 			player.setHealth(player.getMaxHealth());
-			castAs(s, 2, Runes.SELF, Runes.FORESIGHT);
 			player.setInvulnerableTime(0);
 			player.hurtServer(player.level(), player.level().damageSources().mobAttack(husk), 4.0F);
 			check(player.getHealth() == player.getMaxHealth(), "Foresight should dodge the first attack");
 		});
 
 		// Reversal: a killing blow leaves the player at half health.
+		server.runOnServer(s -> castAs(s, 2, Runes.SELF, Runes.REVERSAL));
+		context.waitTicks(6);
 		server.runOnServer(s -> {
 			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
 			player.setHealth(player.getMaxHealth());
-			castAs(s, 2, Runes.SELF, Runes.REVERSAL);
 			player.setInvulnerableTime(0);
 			player.hurtServer(player.level(), player.level().damageSources().generic(), 1000.0F);
 			check(player.isAlive() && Math.abs(player.getHealth() - player.getMaxHealth() / 2) < 0.01F,
@@ -605,15 +618,16 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		});
 
 		// Combo: the rest fires on the third cast only.
-		server.runOnServer(s -> {
-			ServerPlayer player = s.getPlayerList().getPlayers().getFirst();
-			player.removeAllEffects();
-			for (int i = 1; i <= 3; i++) {
-				castAs(s, 0, Runes.SELF, Runes.COMBO, Runes.SWIFT);
-				boolean fast = player.hasEffect(net.minecraft.world.effect.MobEffects.SPEED);
-				check(fast == (i == 3), "Combo cast " + i + ": expected Speed " + (i == 3) + " but was " + fast);
-			}
-		});
+		server.runOnServer(s -> s.getPlayerList().getPlayers().getFirst().removeAllEffects());
+		for (int i = 1; i <= 3; i++) {
+			int castNumber = i;
+			server.runOnServer(s -> castAs(s, 0, Runes.SELF, Runes.COMBO, Runes.SWIFT));
+			context.waitTicks(6);
+			server.runOnServer(s -> {
+				boolean fast = s.getPlayerList().getPlayers().getFirst().hasEffect(net.minecraft.world.effect.MobEffects.SPEED);
+				check(fast == (castNumber == 3), "Combo cast " + castNumber + ": expected Speed " + (castNumber == 3) + " but was " + fast);
+			});
+		}
 
 		// Only links use up a cast's eight links: a shape's own parts don't. Four On Hits deep, the fifth Lance (each
 		// Lance runs through the husk the last one struck) used to die before it landed, its hits a step too deep.
@@ -622,7 +636,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		float whole = server.computeOnServer(s -> health(s, huskId[0]));
 		server.runOnServer(s -> castAs(s, 1, Runes.LANCE, Runes.ON_HIT, Runes.LANCE, Runes.ON_HIT, Runes.LANCE, Runes.ON_HIT, Runes.LANCE,
 			Runes.ON_HIT, Runes.LANCE, Runes.HARM));
-		context.waitTicks(5);
+		context.waitTicks(8);
 		float lanced = server.computeOnServer(s -> health(s, huskId[0]));
 		check(lanced < whole, "The fifth Lance, four On Hits deep, should strike, but the husk's health went " + whole + " -> " + lanced);
 
@@ -910,7 +924,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 			click[3] = (top + 14) * scale;
 		});
 		context.getInput().setCursorPos(click[0], click[1]);
-		context.getInput().pressMouse(0);
+		context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 		context.waitTicks(3);
 		context.getInput().setCursorPos(4, 4);
 		context.waitTicks(2);
@@ -941,7 +955,7 @@ public class WildercordScreenshots implements FabricClientGameTest {
 		context.setScreen(CordScreen::new);
 		context.waitTicks(3);
 		context.getInput().setCursorPos((294 + 12 + 34 + 54 + 20) * 2, (124 + 120 + 6) * 2);
-		context.getInput().pressMouse(0);
+		context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 		context.waitTicks(3);
 		context.getInput().setCursorPos(4, 4);
 		context.waitTicks(2);

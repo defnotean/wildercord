@@ -135,6 +135,17 @@
           "weight": 3,
           "modifier": {
             "components": {
+              "wildercord:rune": "wildercord:wind_steps"
+            },
+            "type": "minecraft:set_components"
+          }
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wildercord:rune",
+          "weight": 3,
+          "modifier": {
+            "components": {
               "wildercord:rune": "wildercord:disarm"
             },
             "type": "minecraft:set_components"

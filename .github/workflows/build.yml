@@ -31,17 +31,60 @@ jobs:
         run: |
           pip install pillow
           python tools/generate_assets.py
-          if ! git diff --quiet -- '*.json' docs/RECIPES.md; then
+          if [ -n "$(git status --porcelain --untracked-files=all -- src/main/resources docs/RECIPES.md)" ]; then
             echo "::error::Generated files are out of date. Run 'python tools/generate_assets.py' and commit the result."
-            git --no-pager diff --stat -- '*.json' docs/RECIPES.md
+            git --no-pager diff --stat -- src/main/resources docs/RECIPES.md
+            git status --short --untracked-files=all -- src/main/resources docs/RECIPES.md
             exit 1
           fi
 
       - name: Build and run unit tests
         run: ./gradlew build --stacktrace
 
+      - name: Package pinned launcher profiles
+        run: |
+          task_release_jar=$(find build/libs -maxdepth 1 -name 'wildercord-*.jar' ! -name '*-sources.jar' -print -quit)
+          python tools/build_profiles.py --jar "$task_release_jar"
+
       - name: Upload the mod jar
         uses: actions/upload-artifact@v7
         with:
           name: wildercord
           path: build/libs/*.jar
+
+      - name: Upload launcher profiles
+        uses: actions/upload-artifact@v7
+        with:
+          name: wildercord-profiles
+          path: artifacts/profiles/*.mrpack
+
+  game-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Install virtual display
+        run: sudo apt-get update && sudo apt-get install -y xvfb libgl1-mesa-dri
+      - name: Run gameplay and complete rune animation gallery
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+          WILDERCORD_ANIMATION_GALLERY: "1"
+        run: xvfb-run -a ./gradlew runClientGameTest --stacktrace 2>&1 | tee client-game-tests.log
+      - name: Record full descriptor and optional suite outcomes
+        if: always()
+        run: python tools/test_manifest.py --log client-game-tests.log --gallery
+      - name: Preserve gameplay evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gameplay-evidence
+          path: |
+            build/run/clientGameTest/logs/
+            build/run/clientGameTest/screenshots/
+            client-game-tests.log
+            artifacts/review/test-manifest.json

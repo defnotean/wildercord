@@ -300,6 +300,12 @@ def item_model(path, texture):
 
 
 def main():
+    import cinnamon_art  # Rebuild both companion skins and her hand-painted red toy with the rest of the pack.
+    item_model("cinnamon_toy", "cinnamon_toy")
+    write_json(ASSETS / "items/cinnamon_toy.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/cinnamon_toy"}})
+    write_json(DATA / "recipe/cinnamon_toy.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+        "ingredients": ["minecraft:bone", "minecraft:red_dye", "minecraft:slime_ball"], "result": {"id": "wildercord:cinnamon_toy"}})
+    unlock_advancement("wildercord:cinnamon_toy", "minecraft:bone")
     runes = read_runes()
     tex = ASSETS / "textures/item"
 
@@ -360,6 +366,10 @@ def main():
     shield_art.main()
     import mote_art  # Soft lights and vapours: motes, butterflies of light, steam and smoke.
     mote_art.main()
+    import material_art
+    material_art.main()
+    import physical_art
+    physical_art.main()
     import circle_art  # Every rune's own ring and emblem for magic circles (imported here: it reads the runes from this file).
     circle_art.main()
     import wear_art  # The Cord players wear on the wrist.
@@ -374,6 +384,10 @@ def main():
     write_gear_content()
     write_backpack_content()
     dungeon_assets.main(sys.modules[__name__], runes)
+    import hearth_art
+    hearth_art.write(sys.modules[__name__])
+    import relic_art
+    relic_art.write(sys.modules[__name__])
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -429,6 +443,20 @@ REACTIONS_LANG = {
 
 def write_lang(runes):
     lang = {
+        "tooltip.wildercord.armor.emberweave": "Each worn piece softens spells by 3% while you sprint and move (12% with four pieces).",
+        "tooltip.wildercord.armor.rimebound": "Begin crouching to guard for 0.6 seconds: 4% spell protection per piece. Recharges in 4 seconds.",
+        "tooltip.wildercord.armor.stonebound": "Each piece gives 4% spell protection and 10% less spell knockback, but 3% less movement speed.",
+        "tooltip.wildercord.armor.mirror_thread": "Begin crouching to guard for 0.6 seconds. Soften one spell by half and return a fragment (at most 2 damage). Recharges in 5 seconds.",
+        "message.wildercord.armor_guard": "Guard ready - catch the next spell!",
+        **{f"item.wildercord.{kind}_{slot}": f"{kind.title()} {slot.title()}" for kind in ("emberweave", "rimebound", "stonebound") for slot in ("helmet", "chestplate", "leggings", "boots")},
+        "item.wildercord.mirror_thread_mantle": "Mirror-thread Mantle",
+        "entity.wildercord.cinnamon": "Cinnamon",
+        "item.wildercord.cinnamon_toy": "Cinnamon's Red Bone",
+        "message.wildercord.cinnamon.toy": "Cinnamon wiggles with her favourite red bone.",
+        "message.wildercord.cinnamon.owner": "Cinnamon is waiting for her owner. Set owner in wildercord-cinnamon.json.",
+        "message.wildercord.cinnamon.pet": "Cinnamon leans into your hand.",
+        "message.wildercord.cinnamon.sit": "Cinnamon will sit. She keeps this choice when you rejoin or travel.",
+        "message.wildercord.cinnamon.follow": "Cinnamon will follow you.",
         "itemGroup.wildercord": "Wildercord",
         "item.wildercord.rune": "Rune",
         "item.wildercord.rune.named": "%s Rune",
@@ -641,6 +669,7 @@ def write_lang(runes):
         "category.wildercord.modifier.area": "Area",
         "category.wildercord.modifier.timing": "Timing",
         "category.wildercord.modifier.projectile": "Projectile",
+        "category.wildercord.modifier.circle": "Circle disciplines",
         "category.wildercord.link.timing": "Timing",
         "category.wildercord.link.trigger": "Trigger",
         "category.wildercord.link.reactive": "Reactive",
@@ -1190,6 +1219,23 @@ NEW_RUNES_2_RECIPES = {
 RUNE_RECIPES.update(NEW_RUNES_2_RECIPES)
 # Flight (Runes.java, after batch 2): wings of wind from a phantom's membrane, a feather and a breeze's rod.
 RUNE_RECIPES["soar"] = ["minecraft:phantom_membrane", "minecraft:feather", "minecraft:breeze_rod"]
+RUNE_RECIPES["strata_rise"] = ["minecraft:stone", "minecraft:packed_mud", "minecraft:flint"]
+RUNE_RECIPES["tidal_lift"] = ["minecraft:prismarine_shard", "minecraft:kelp", "minecraft:clay_ball"]
+RUNE_RECIPES["wind_steps"] = ["minecraft:feather", "minecraft:breeze_rod", "minecraft:string"]
+RUNE_RECIPES.update({
+    "needle_circle": ["minecraft:flint", "minecraft:iron_nugget"],
+    "bloom_circle": ["minecraft:pink_petals", "minecraft:bone_meal"],
+    "gyre_circle": ["minecraft:feather", "minecraft:copper_ingot"],
+    "anchor_circle": ["minecraft:iron_ingot", "minecraft:stone"],
+    "reservoir_circle": ["minecraft:glass_bottle", "minecraft:lapis_lazuli"],
+    "crucible_circle": ["minecraft:blaze_powder", "minecraft:brick"],
+    "confluence_circle": ["minecraft:amethyst_shard", "minecraft:prismarine_shard"],
+    "pilgrim_circle": ["minecraft:compass", "minecraft:feather"],
+    "vigil_circle": ["minecraft:spider_eye", "minecraft:iron_nugget"],
+    "mercy_circle": ["minecraft:honey_bottle", "minecraft:poppy"],
+    "tempest_circle": ["minecraft:breeze_rod", "minecraft:copper_ingot"],
+    "eclipse_circle": ["minecraft:ender_pearl", "minecraft:gold_nugget"],
+})
 
 
 def rune_result(path):
@@ -1223,6 +1269,8 @@ def unlock_advancement(recipe_id, trigger_item):
 
 
 def write_recipes(runes):
+    import armor_art
+    armor_art.write(sys.modules[__name__])
     out = DATA / "recipe"
     by_path = {r["path"]: r for r in runes}
     # The runes of the world are found only in their own places (RuneSources.java): never crafted.
@@ -1886,6 +1934,106 @@ DUNGEON_LANG = {
     "boss.wildercord.star_eater_volley": "loosing star shards",
     # The Drowned Scriptorium and the Tide Scribe
     "entity.wildercord.tide_scribe": "The Tide Scribe",
+    "block.wildercord.clockwork_control": "Clockwork Control",
+    "block.wildercord.greenhouse_heart": "Greenhouse Heart",
+    "block.wildercord.sky_anchor": "Sky Anchor",
+    "message.wildercord.clock_paused": "The mechanism pauses. Stored attacks release after the warning circle.",
+    "screen.wildercord.altar.preview_mana": "Base effect mana: %s (shape, rank and modifiers change the final cost)",
+    "screen.wildercord.altar.preview_material": "Formation ingredient: %s",
+    "message.wildercord.library_name": "Give your build a name.",
+    "screen.wildercord.grimoire.woven": "Exact woven pairs learned: %s",
+    "screen.wildercord.grimoire.woven_how": "Fuse any two exact effects with an Amethyst Block and 3 XP levels. Both effects share one socket; their combined mana cost still applies.",
+    "item.wildercord.keepers_hourglass": "Keeper's Hourglass",
+    "item.wildercord.keepers_hourglass.desc": "Off-hand: spell duration +30%, spell power -15%.",
+    "item.wildercord.living_seedpod": "Living Seedpod",
+    "item.wildercord.living_seedpod.desc": "Off-hand: mana cost -10%, spell power -15%, cooldown +10%.",
+    "item.wildercord.sky_feather": "Sky Feather",
+    "item.wildercord.sky_feather.desc": "Off-hand: cooldown -15%, mana cost +15%.",
+    "screen.wildercord.profile.performance": "Performance",
+    "screen.wildercord.profile.balanced": "Balanced",
+    "screen.wildercord.profile.cinematic": "Cinematic",
+    "screen.wildercord.profile.benchmark": "Benchmark this scene for 30 seconds",
+    "message.wildercord.frame_start": "Frame sampling started. Run the same scene for 30 seconds; pausing or changing worlds cancels it. Results appear in chat and logs.",
+    "trial.wildercord.precision": "Precision: five casts and five dummy hits, each at most 6 damage",
+    "trial.wildercord.variety": "Variety: four different shapes and five dummy hits",
+    "trial.wildercord.fusion": "Fusion: three different fusions and five dummy hits",
+    "message.wildercord.trial_start_hint": "Enter the practice dimension in Survival to start precision, variety or fusion trials.",
+    "message.wildercord.trial_started": "%s. You have 90 seconds and a total spell budget of 100 mana.",
+    "message.wildercord.trial_ended": "Trial ended: time expired, you left the arena or you fell. Try again any time.",
+    "message.wildercord.trial_precision_failed": "Precision trial ended: a hit exceeded 6 damage.",
+    "message.wildercord.trial_mana_failed": "Trial ended: you spent more than 100 mana.",
+    "message.wildercord.trial_won": "Trial complete: %s · %s mana. The first completion awards a Torn Page.",
+    "message.wildercord.aftermath": "You discover a %s echo and receive its temporary boon.",
+    "aftermath.wildercord.star": "fallen star",
+    "aftermath.wildercord.rift": "sealed rift",
+    "aftermath.wildercord.storm": "mana storm",
+    "block.wildercord.runic_hearth": "Runic Hearth",
+    "project.wildercord.lantern": "Reading Lantern (charge with fire or arcane)",
+    "project.wildercord.garden": "Bloom Planter (charge with life)",
+    "project.wildercord.chime": "Ward Chime (charge with wind)",
+    "project.wildercord.ritual": "Threefold Ritual",
+    "message.wildercord.hearth_owner": "The hearth's owner configures its project. Teammates may charge it.",
+    "message.wildercord.hearth_status": "%s · %s / 3 charges. Configure with amethyst, wheat, a feather or an ender pearl; use a book for research.",
+    "message.wildercord.hearth_ritual": "Ritual begun: cast three different elements at the hearth. One player finishes in 20 seconds; two contributing teammates finish in 10. Remain nearby.",
+    "message.wildercord.hearth_complete": "The threefold ritual blooms! Participants regenerate, and the owner receives a Torn Page.",
+    "screen.wildercord.notebook": "Rune research & build library",
+    "screen.wildercord.notebook.name": "Build name",
+    "screen.wildercord.notebook.slot": "Spell slot %s",
+    "screen.wildercord.notebook.save": "Save slot",
+    "screen.wildercord.notebook.load": "Load build",
+    "screen.wildercord.notebook.delete": "Delete build",
+    "screen.wildercord.notebook.build": "%s · %s runes",
+    "screen.wildercord.notebook.shapes": "Try five spell shapes: %s / 5 · Torn Page",
+    "screen.wildercord.notebook.fusions": "Cast three fusions: %s / 3 · two Blank Runes",
+    "screen.wildercord.notebook.garden": "Cleanse a greenhouse heart: %s · Mana Crystal",
+    "screen.wildercord.notebook.saved": "Saved builds: %s / 24 · select a name below",
+    "screen.wildercord.notebook.done": "Complete",
+    "screen.wildercord.notebook.pending": "Pending",
+    "screen.wildercord.notebook.hint": "Fusion hint",
+    "message.wildercord.control_lock": "Casting sealed briefly. Repeated seals cannot extend it; a recovery window follows.",
+    "message.wildercord.familiar_role": "Familiar job: %s. Its job replaces elemental assistance; choose Companion to restore it.",
+    "role.wildercord.companion": "Companion",
+    "role.wildercord.scout": "Scout",
+    "role.wildercord.guardian": "Guardian",
+    "role.wildercord.gardener": "Gardener",
+    "message.wildercord.familiar_harvest": "Your familiar has found ripe crops nearby.",
+    "message.wildercord.library_empty": "That spell slot is empty.",
+    "message.wildercord.library_full": "Your library holds 24 builds. Delete one before adding another.",
+    "message.wildercord.library_missing": "No build with that name is saved.",
+    "message.wildercord.library_locked": "That spell slot needs a stronger Cord or the Fifth Page tome.",
+    "message.wildercord.library_fit": "That build exceeds this Cord's sockets or rune tier.",
+    "message.wildercord.library_unknown": "Learn every rune in that build before loading it.",
+    "message.wildercord.library_saved": "Saved build: %s.",
+    "message.wildercord.library_loaded": "Loaded %s into spell slot %s.",
+    "message.wildercord.library_deleted": "Deleted build: %s.",
+    "message.wildercord.library_list": "Spell library: %s / 24 builds.",
+    "message.wildercord.library_row": "%s · %s runes",
+    "message.wildercord.research_shapes": "Five different shapes tested! Research awards a Torn Page.",
+    "message.wildercord.research_fusions": "Three different fusions tested! Research awards two Blank Runes.",
+    "message.wildercord.research_garden": "Living Greenhouse restored! Research awards a Mana Crystal.",
+    "message.wildercord.research_board": "Research notebook: shapes %s / 5 · fusions %s / 3 · garden %s",
+    "message.wildercord.research_hint": "Experiment: fuse %s with %s using an Amethyst Shard and %s XP levels.",
+    "message.wildercord.clock_stored": "Clockwork stores %s damage. Use the control to release it into the gallery.",
+    "message.wildercord.garden_hint": "Life magic or bone meal restores this heart. Shears harvest it instead. Choose once.",
+    "message.wildercord.garden_growth": "The heart recovers: %s / 3.",
+    "message.wildercord.garden_cleanse": "The heart is cleansed. A moss path grows across the garden.",
+    "message.wildercord.garden_harvest": "You harvest the heart's stored mana. Its path remains broken.",
+    "message.wildercord.sky_shift": "The stepping stones shift. Wind magic can turn the anchor too.",
+    "message.wildercord.sky_blocked": "The stepping stones cannot shift: clear their next landing spaces.",
+    "entity.wildercord.root_guardian": "The Root Guardian",
+    "entity.wildercord.storm_conductor": "The Storm Conductor",
+    "message.wildercord.root_guardian_wakes": "The heartwood stirs. Prune its three bindings with shears, or burn them away!",
+    "message.wildercord.root_pruned": "Root bindings remaining: %s",
+    "message.wildercord.root_guardian_phase": "Fresh roots wrap the guardian's heart.",
+    "message.wildercord.storm_conductor_wakes": "The copper coils sing. Stand beside the sparking arena rod to ground the charge!",
+    "message.wildercord.storm_grounded": "Charge grounded! The conductor's core is exposed.",
+    "message.wildercord.storm_conductor_phase": "The charge shifts. Find the next sparking rod!",
+    "boss.wildercord.root_open": "heart exposed!",
+    "boss.wildercord.root_bound": "%s root bindings - prune or burn",
+    "boss.wildercord.storm_grounded": "grounded - core exposed!",
+    "boss.wildercord.storm_charged": "charged - seek the sparking rod",
+    "boss.wildercord.shifting.root_guardian": "%s · growing fresh roots",
+    "boss.wildercord.shifting.storm_conductor": "%s · rerouting the charge",
     "item.wildercord.drowned_quill": "Drowned Quill",
     "item.wildercord.drowned_quill.lore": "The Tide Scribe's quill. It has never once been dry.",
     "item.wildercord.drowned_quill.use": "Hold it up: breathe and swim like the drowned for 3 minutes (then it rests for 5)",
@@ -2026,6 +2174,10 @@ TRAVEL_LANG = {
 # Loadouts: saved Cord setups, from the Cord screen's panel, the quick-switch key and /loadout.
 LOADOUT_LANG = {
     "key.wildercord.next_loadout": "Next loadout",
+    "key.wildercord.magic_settings": "Magic visual settings",
+    "message.wildercord.practice.restart": "The practice dimension is not loaded. Restart the world after installing this version.",
+    "message.wildercord.practice.enter": "Practice arena: use your spells on the dummies. /wildercord practice moving, stress <1-24>, benchmark, or leave.",
+    "message.wildercord.practice.benchmark": "Cast for 10 seconds. The result reports server particle deliveries, decorations limited, and plan cache work.",
     # The server's answers (above the hotbar, or in chat for /loadout)
     "message.wildercord.loadout.saved": "Saved your Cord as %s (%s of %s)",
     "message.wildercord.loadout.replaced": "Saved your Cord over %s",
@@ -2591,6 +2743,8 @@ if SIGNATURES:
 feat_adv("cinder_warden", "world/archivist", rune("inferno"), description="Defeat the Cinder Warden in its Ember Sanctum", frame="challenge", xp=300)
 feat_adv("star_eater", "world/archivist", rune("eclipse"), description="Defeat the Star-Eater in its Astral Observatory", frame="challenge", xp=300)
 feat_adv("tide_scribe", "world/archivist", rune("tidecall"), description="Defeat the Tide Scribe in its Drowned Scriptorium", frame="challenge", xp=300)
+feat_adv("root_guardian", "world/archivist", rune("rootsnare"), description="Prune the Root Guardian and defeat it in the Rootbound Maze", frame="challenge", xp=300)
+feat_adv("storm_conductor", "world/archivist", rune("thunderclap"), description="Ground the Storm Conductor and defeat it in the Storm Spire", frame="challenge", xp=300)
 adv("shields/glyph", "shields/imbue", rune("mine"), "Tripwire", "Have one of your glyphs go off", moment("glyph"), xp=25)
 
 
@@ -2673,7 +2827,7 @@ def write_world_events():
 # (the numbers live in src/main/java/dev/wildercord/gear/GearDef.java; the art in gear_art.py)
 
 GEAR_ELEMENTS = ["fire", "frost", "storm", "wind", "earth", "life", "void", "arcane", "time", "blood"]
-FOCI = ["haste", "thrift", "the_deep_well", "echoes", "resolve"]
+FOCI = ["haste", "thrift", "the_deep_well", "echoes", "resolve", "reprieve", "grounding"]
 
 # A staff: its core (two of it, up the diagonal), two of its element's material, and a Mana Crystal at the head.
 STAFF_MATERIALS = {
@@ -2690,6 +2844,8 @@ FOCUS_RECIPES = {
     "the_deep_well": ({"L": "minecraft:lapis_block", "D": "minecraft:polished_deepslate"}, [" L ", "DCD", " D "]),
     "echoes": ({"E": "minecraft:echo_shard", "A": "minecraft:amethyst_shard"}, [" E ", "ACA", " A "]),
     "resolve": ({"A": "minecraft:amethyst_shard", "I": "minecraft:iron_ingot"}, [" I ", "ACA", " I "]),
+    "reprieve": ({"A": "minecraft:amethyst_shard", "T": "minecraft:clock"}, [" A ", "ACA", " T "]),
+    "grounding": ({"I": "minecraft:iron_ingot", "L": "minecraft:lightning_rod"}, [" L ", "ICI", " I "]),
 }
 
 GEAR_LANG = {
@@ -2699,6 +2855,13 @@ GEAR_LANG = {
     "item.wildercord.focus_of_the_deep_well": "Focus of the Deep Well",
     "item.wildercord.focus_of_echoes": "Focus of Echoes",
     "item.wildercord.focus_of_resolve": "Focus of Resolve",
+    "item.wildercord.focus_of_reprieve": "Focus of Reprieve",
+    "item.wildercord.focus_of_grounding": "Focus of Grounding",
+    "tooltip.wildercord.gear.reprieve": "Delay 35% of a large spell hit into four real wounds. 8s recharge; 10% weaker spells.",
+    "tooltip.wildercord.gear.grounding": "Resist 70% of a spell push or pull and gain a 2s escape gust. 8s recharge; 10% weaker spells.",
+    "message.wildercord.reprieve.held": "Reprieve held %s damage; the debt begins in 1s",
+    "message.wildercord.reprieve.debt": "Reprieve: %s damage remains",
+    "message.wildercord.grounding": "Grounded! Escape gust released; recharging for 8s",
     "tooltip.wildercord.gear.staff": "%s spells: +%s%% power, %s%% less mana",
     "tooltip.wildercord.gear.tome": "A fifth spell, to thread and cast",
     "tooltip.wildercord.gear.haste": "Charged casts fill %s%% faster",

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "wildercord:emberweave_chestplate",
+    "wildercord:rimebound_chestplate",
+    "wildercord:stonebound_chestplate",
+    "wildercord:mirror_thread_mantle"
+  ]
+}

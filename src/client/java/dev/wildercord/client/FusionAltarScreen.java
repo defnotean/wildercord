@@ -423,6 +423,14 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 				}
 			}
 		}
+		if(plan.result()!=null && inside(mouseX-leftPos,mouseY-topPos,PANEL_X,PANEL_Y,PANEL_W,PANEL_H)) {
+			List<Component> lines=new ArrayList<>();
+			lines.add(RuneItem.runeName(plan.result()));
+			lines.add(Component.literal(plan.result().description()).withStyle(ChatFormatting.GRAY));
+			lines.add(Component.translatable("screen.wildercord.altar.preview_mana",String.format(java.util.Locale.ROOT,"%.1f",plan.result().cost())));
+			for(var element:dev.wildercord.spell.VisualElements.of(List.of(plan.result())))lines.add(Component.translatable("screen.wildercord.altar.preview_material",element));
+			g.setTooltipForNextFrame(font,Tooltips.fit(font,lines,width,height),mouseX,mouseY);return;
+		}
 		if (plan.kind() != Fusions.Kind.NONE && inside(mouseX - leftPos, mouseY - topPos, buttonX(), buttonY(), BUTTON_W, BUTTON_H)) {
 			Component blocked = blocked(plan);
 			if (blocked != null) {
@@ -436,7 +444,7 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 		double mx = event.x() - leftPos;
 		double my = event.y() - topPos;
 		Fusions.Plan plan = plan();
-		if (event.button() == 0 && plan.kind() == Fusions.Kind.KNOT && plan.problem() == null) {
+		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && plan.kind() == Fusions.Kind.KNOT && plan.problem() == null) {
 			for (int s = 0; s < CordTier.MAX_SPELLS; s++) {
 				if (inside(mx, my, PANEL_X + 3, rowY(s) - 1, PANEL_W - 6, ROW_H)) {
 					if (knotProblem(s) == null) {
@@ -447,10 +455,14 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 				}
 			}
 		}
-		if (event.button() == 0 && plan.kind() != Fusions.Kind.NONE && inside(mx, my, buttonX(), buttonY(), BUTTON_W, BUTTON_H)) {
-			if (blocked(plan) == null) {
-				int button = plan.kind() == Fusions.Kind.KNOT ? FusionAltarMenu.BUTTON_KNOT + chosenSpell() : FusionAltarMenu.BUTTON_FUSE;
-				minecraft.gameMode.handleInventoryButtonClick(menu.containerId, button);
+		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT && plan.kind() != Fusions.Kind.NONE && inside(mx, my, buttonX(), buttonY(), BUTTON_W, BUTTON_H)) {
+			int chosen = plan.kind() == Fusions.Kind.KNOT ? chosenSpell() : 0;
+			if (plan.kind() == Fusions.Kind.KNOT && chosen < 0) {
+				if (minecraft.player != null) minecraft.player.sendOverlayMessage(Component.translatable("screen.wildercord.altar.no_spell").withColor(BAD));
+			} else {
+				// Let the server decide from its current slots and XP. A stale client view must not silence a valid click.
+				minecraft.gameMode.handleInventoryButtonClick(menu.containerId,
+					plan.kind() == Fusions.Kind.KNOT ? FusionAltarMenu.BUTTON_KNOT + chosen : FusionAltarMenu.BUTTON_FUSE);
 				click();
 			}
 			return true;

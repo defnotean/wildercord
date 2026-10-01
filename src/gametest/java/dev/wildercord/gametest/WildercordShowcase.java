@@ -126,6 +126,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		if (!"1".equals(System.getenv("WILDERCORD_SHOWCASE"))) {
+			LOG.info("[TEST SKIP] WildercordShowcase: set WILDERCORD_SHOWCASE=1 for the optional staged showcase");
 			return;
 		}
 		TAKEN.clear();
@@ -470,7 +471,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 			if (row != null) {
 				context.getInput().setCursorPos(row[0] * scale, row[1] * scale);
 				context.waitTicks(1);
-				context.getInput().pressMouse(0);
+				context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 				context.waitTicks(2);
 				context.getInput().setCursorPos(4, 4);
 			}
@@ -1144,7 +1145,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 		double[] tab = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).pagePoint(3));
 		context.getInput().setCursorPos(tab[0] * scale, tab[1] * scale);
 		context.waitTicks(1);
-		context.getInput().pressMouse(0);
+		context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 		context.waitTicks(10);
 		for (String key : List.of("material:amethyst", "trail:embers")) {
 			attempt("cosmetics_page " + key, () -> {
@@ -1424,7 +1425,7 @@ public class WildercordShowcase implements FabricClientGameTest {
 			double[] row = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).rowPoint(SpellSlots.TOME));
 			context.getInput().setCursorPos(row[0] * scale, row[1] * scale);
 			context.waitTicks(1);
-			context.getInput().pressMouse(0);
+			context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 			context.waitTicks(3);
 			context.getInput().setCursorPos(4, 4);
 			context.waitTicks(10);

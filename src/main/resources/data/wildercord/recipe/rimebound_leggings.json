@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_leggings",
+    "minecraft:packed_ice",
+    "wildercord:mana_crystal"
+  ],
+  "result": {
+    "id": "wildercord:rimebound_leggings",
+    "count": 1
+  }
+}

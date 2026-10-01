@@ -35,7 +35,7 @@ public final class SpellNumbers {
 
 	/** Focus and Vow on a shape, times the shape's own strength per hit (Barrage hits often, so softer). */
 	public static double groupPower(SpellPlan.Group g) {
-		return Math.pow(1.5, g.count(Runes.FOCUS_MOD)) * Math.pow(2.0, g.count(Runes.VOW_MOD)) * shapeStrength(g.shape);
+		return Math.pow(1.5, g.count(Runes.FOCUS_MOD)) * Math.pow(2.0, g.count(Runes.VOW_MOD)) * shapeStrength(g.shape) * CircleDisciplines.profile(g).power();
 	}
 
 	/** Power per hit for shapes that hit many times (Barrage, Stream), and for the cheap Spark. */
@@ -122,7 +122,7 @@ public final class SpellNumbers {
 
 	/** A flying shape's speed factor from Quicken: {@code each} per Quicken, up to {@link #MAX_QUICKEN}. */
 	private static double quickened(SpellPlan.Group g, double each) {
-		return Math.min(MAX_QUICKEN, Math.pow(each, g.count(Runes.QUICKEN)));
+		return Math.min(MAX_QUICKEN, Math.pow(each, g.count(Runes.QUICKEN)) * CircleDisciplines.profile(g).speed());
 	}
 
 	/** Domain radius: 9 blocks, widened up to 24 at most (beyond that it can't be seen or kept up). */
@@ -264,7 +264,7 @@ public final class SpellNumbers {
 
 	/** Radius factor on a shape from Widen and Focus (and add-on radius modifiers). */
 	public static double shapeRadius(SpellPlan.Group g) {
-		return Math.pow(1.5, g.count(Runes.WIDEN)) * Math.pow(0.5, g.count(Runes.FOCUS_MOD)) * RuneNumbers.radius(g.shapeMods);
+		return Math.pow(1.5, g.count(Runes.WIDEN)) * Math.pow(0.5, g.count(Runes.FOCUS_MOD)) * RuneNumbers.radius(g.shapeMods) * CircleDisciplines.profile(g).radius();
 	}
 
 	public static double duration(SpellPlan.EffectNode e) {

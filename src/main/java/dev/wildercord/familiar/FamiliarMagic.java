@@ -37,6 +37,10 @@ public final class FamiliarMagic {
 	private static final double REACH = 16.0;
 
 	static void tick(ServerLevel level, Wisp wisp, ServerPlayer owner, int familiarLevel) {
+		if(FamiliarRoles.get(owner)!=FamiliarRoles.Role.COMPANION) {
+			if(--wisp.helpCooldown<=0)wisp.helpCooldown=FamiliarRoles.help(owner,wisp)?WispRules.helpInterval(familiarLevel):40;
+			return;
+		}
 		if (--wisp.watchCooldown <= 0) {
 			wisp.watchCooldown = 20;
 			watch(level, wisp, owner, familiarLevel);

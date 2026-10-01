@@ -39,6 +39,18 @@ public final class WildercordCommand {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(
 			Commands.literal("wildercord")
 				.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+				.then(Commands.literal("practice")
+					.then(Commands.literal("enter").executes(ctx -> dev.wildercord.cast.PracticeRoom.enter(ctx.getSource().getPlayerOrException())))
+					.then(Commands.literal("leave").executes(ctx -> dev.wildercord.cast.PracticeRoom.leave(ctx.getSource().getPlayerOrException())))
+					.then(Commands.literal("moving").executes(ctx -> dev.wildercord.cast.PracticeRoom.targets(ctx.getSource().getLevel(),3,true)))
+					.then(Commands.literal("reset").executes(ctx -> dev.wildercord.cast.PracticeRoom.targets(ctx.getSource().getLevel(),3,false)))
+					.then(Commands.literal("stress").then(Commands.argument("targets",IntegerArgumentType.integer(1,24))
+						.executes(ctx -> dev.wildercord.cast.PracticeRoom.targets(ctx.getSource().getLevel(),IntegerArgumentType.getInteger(ctx,"targets"),true))))
+					.then(Commands.literal("benchmark").executes(ctx -> dev.wildercord.cast.PracticeRoom.benchmark(ctx.getSource().getPlayerOrException()))))
+				.then(Commands.literal("visualstats").executes(ctx -> {
+					ctx.getSource().sendSuccess(() -> Component.literal(dev.wildercord.cast.VisualMetrics.report()), false);
+					return 1;
+				}).then(Commands.literal("reset").executes(ctx -> { dev.wildercord.cast.VisualMetrics.reset(); return 1; })))
 				.then(Commands.literal("learnall").executes(ctx -> {
 					ServerPlayer player = ctx.getSource().getPlayerOrException();
 					Spellbook book = Spellbooks.get(player);
@@ -161,6 +173,7 @@ public final class WildercordCommand {
 
 	/** Reads the config file again, and says what was wrong with it (each already fixed). */
 	private static int reload(CommandContext<CommandSourceStack> ctx) {
+		dev.wildercord.spell.CompiledSpellCache.clear();
 		List<String> warnings = dev.wildercord.config.Config.reload(ctx.getSource().getServer());
 		ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.reloaded", dev.wildercord.config.Config.FILE), true);
 		for (String warning : warnings) {

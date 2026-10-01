@@ -215,7 +215,7 @@ public final class DungeonWards extends SavedData {
 	}
 
 	private static void refuse(ServerLevel level, Player player, BlockPos pos) {
-		level.sendParticles(ParticleTypes.ENCHANT, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 12, 0.35, 0.35, 0.35, 0.4);
+		dev.wildercord.cast.Fx.sendParticles(level, ParticleTypes.ENCHANT, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 12, 0.35, 0.35, 0.35, 0.4);
 		long now = level.getGameTime();
 		Long last = TOLD.get(player.getUUID());
 		if (last != null && now - last < 30 && now >= last) {

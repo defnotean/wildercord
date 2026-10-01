@@ -10,6 +10,8 @@ reads your slots and hands at the moment of casting; the Cord screen's readout s
 the spell being edited (its cost line already includes it), and the mana badge lists everything that counts.
 See [Gear slots](#gear-slots) below.
 
+The two newer [defensive foci](defensive-foci.md) bring the focus roster to seven: Reprieve delays part of a substantial spell hit, while Grounding resists a spell impulse. Both trade outgoing power for their response and have a recharge. [Elemental armour and Mirror-thread Mantle](elemental-armor.md) provide additional slot-based defensive choices with distinct timing and movement tradeoffs.
+
 | Item | Slot (held instead) | What it does | How to get it |
 |---|---|---|---|
 | **Elemental staff** (Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time, Blood) | Staff (either hand) | Effects of its element: +20% power. A spell with an effect of its element: 10% less mana. A charged cast (20% or more) of its element leaves it with the element's flourish | Craft: 2 sticks (Fire: 2 blaze rods), 2 of the element's material, a Mana Crystal |

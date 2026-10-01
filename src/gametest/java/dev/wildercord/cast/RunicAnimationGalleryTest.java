@@ -29,7 +29,10 @@ public class RunicAnimationGalleryTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
-		if (!"1".equals(System.getenv("WILDERCORD_ANIMATION_GALLERY"))) return;
+		if (!"1".equals(System.getenv("WILDERCORD_ANIMATION_GALLERY"))) {
+			dev.wildercord.Wildercord.LOGGER.info("[TEST SKIP] RunicAnimationGalleryTest: set WILDERCORD_ANIMATION_GALLERY=1 to capture the full authored gallery");
+			return;
+		}
 		try (TestSingleplayerContext world = context.worldBuilder().create()) {
 			context.waitTicks(40);
 			context.runOnClient(mc -> {

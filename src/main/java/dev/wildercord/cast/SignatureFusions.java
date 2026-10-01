@@ -557,12 +557,6 @@ final class SignatureFusions {
 			spot = found;
 			SignatureVfx.thunderstepLeave(level, from);
 		}
-		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
-		if (bolt != null) {
-			bolt.setVisualOnly(true);
-			bolt.snapTo(spot.x, spot.y, spot.z);
-			level.addFreshEntity(bolt);
-		}
 		double r = SignatureRules.THUNDERSTEP_RADIUS * radius;
 		List<LivingEntity> caught = take(cast, around(cast, spot, r), new HashSet<>(hit.entities()));
 		SignatureVfx.thunderstep(level, spot, r, !caught.isEmpty());

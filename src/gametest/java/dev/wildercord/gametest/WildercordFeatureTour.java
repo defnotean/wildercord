@@ -80,6 +80,15 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			world.getServer().runCommand("gamerule spawn_mobs false");
 			setup(world);
 			context.waitTicks(20);
+			String section = System.getenv("WILDERCORD_TOUR_SECTION");
+			if (section != null) {
+				switch (section) {
+					case "shields" -> shields(context, world);
+					case "imbuing" -> imbuing(context, world);
+					default -> throw new IllegalArgumentException("Unknown tour section: " + section);
+				}
+				return;
+			}
 			charging(context, world);
 			wheelAndScreens(context, world);
 			secrets(context, world);
@@ -760,11 +769,14 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			SpellCaster.edit(player, 2, ids(Runes.SELF, Runes.SHIELD, Runes.AMPLIFY, Runes.AMPLIFY));
 			Spellbooks.setReadyAt(player, 2, 0);
 			SpellCaster.cast(player, 2);
+		});
+		context.waitTicks(8);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
 			WildercordAttachments.SpellShield own = player.getAttached(WildercordAttachments.SPELL_SHIELD);
 			check(own != null && Math.abs(own.strength() - SpellCompiler.compile(List.of(Runes.SELF, Runes.SHIELD, Runes.AMPLIFY, Runes.AMPLIFY)).cost()) < 1e-3,
 				"a Shield should be as strong as the spell that raised it cost");
 		});
-		context.waitTicks(8);
 		shot(context, "shield_raised");
 		camera(context, CameraType.FIRST_PERSON);
 		world.getServer().runOnServer(server -> player(server).removeAttached(WildercordAttachments.SPELL_SHIELD));
@@ -833,16 +845,26 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 		context.waitTicks(20);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
 			SpellCaster.edit(player, 0, List.of());
 			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.BOLT, Runes.HARM));
-			for (int i = 0; i <= Imbuing.MAX_ITEMS; i++) {
+		});
+		for (int i = 0; i <= Imbuing.MAX_ITEMS; i++) {
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
 				player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STICK));
 				Spellbooks.setReadyAt(player, 0, 0);
 				SpellCaster.cast(player, 0);
+			});
+			context.waitTicks(8);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = player(server);
 				sticks.add(player.getMainHandItem());
 				player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-			}
+			});
+		}
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
 			check(sticks.stream().allMatch(s -> s.has(WildercordComponents.IMBUED)), "every stick should take the spell");
 			check(Imbuing.Ledger.of(level).count(player.getUUID()) == Imbuing.MAX_ITEMS, "only the newest " + Imbuing.MAX_ITEMS + " imbued items should count");
 			// The first one's magic has faded: using it releases nothing and leaves a plain stick.
@@ -943,6 +965,10 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.FIRE));
 			Spellbooks.setReadyAt(player, 0, 0);
 			SpellCaster.cast(player, 0);
+		});
+		context.waitTicks(8);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
 			Imbued imbued = player.getMainHandItem().get(WildercordComponents.IMBUED);
 			check(imbued != null && imbued.charges() == 3 && imbued.runes().equals(List.of(Runes.FIRE.id())), "Self Imbue Fire should imbue the held sword with 3 charges");
 		});
@@ -1004,6 +1030,11 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			SpellCaster.edit(player, 0, List.of());
 			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.FROST));
 			SpellCaster.cast(player, 0);
+		});
+		context.waitTicks(8);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
 			ItemStack plank = player.getMainHandItem();
 			check(plank.has(WildercordComponents.IMBUED) && Imbued.release(plank) == Imbued.Release.PLACE, "a block item in hand should take the magic");
 			BlockPos under = BlockPos.containing(at.add(2, -1, 0));
@@ -1040,6 +1071,7 @@ public class WildercordFeatureTour implements FabricClientGameTest {
 			Spellbooks.setReadyAt(player, 1, 0);
 			SpellCaster.cast(player, 1);
 		});
+		context.waitTicks(8);
 		BlockPos glyph = world.getServer().computeOnServer(server -> {
 			List<Imbuing.Glyph> mine = Imbuing.Glyphs.of(player(server).level()).all().stream()
 				.filter(g -> g.owner().equals(player(server).getUUID())).toList();

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "wildercord:emberweave"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "wildercord:emberweave"
+      }
+    ]
+  }
+}

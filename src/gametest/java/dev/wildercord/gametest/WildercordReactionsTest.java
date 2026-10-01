@@ -207,7 +207,7 @@ public class WildercordReactionsTest implements FabricClientGameTest {
 			SpellCaster.cast(player, 0);
 			return husk.getId();
 		});
-		context.waitTicks(2);
+		context.waitTicks(4);
 		String failure = onServer(world, server -> {
 			ServerPlayer player = player(server);
 			Entity husk = player.level().getEntity(id);

@@ -77,7 +77,6 @@ public final class GuiSpellCircle {
 		float heavy = Math.max(1.5F, radius * SpellSigil.HEAVY);
 		float spin = time * 0.35F;
 		int points = SpellSigil.points(n);
-		int step = SpellSigil.step(points);
 
 		// A soft glow behind it all.
 		quad(g, GLOW, cx, cy, 0, r * 2.6F, r * 2.6F, argb(0.25F * open, color));
@@ -118,15 +117,18 @@ public final class GuiSpellCircle {
 		float drawn = part(open, 0.2F, 0.35F);
 		float starR = r * SpellSigil.STAR;
 		ring(g, cx, cy, starR, fine, argb(drawn * 0.7F, color));
-		for (int k = 0; k < points; k++) {
-			float a0 = spin * 0.2F - Mth.HALF_PI + Mth.TWO_PI * k / points;
-			float a1 = spin * 0.2F - Mth.HALF_PI + Mth.TWO_PI * (k + step) / points;
-			float x0 = cx + Mth.cos(a0) * starR;
-			float y0 = cy + Mth.sin(a0) * starR;
-			float x1 = cx + Mth.cos(a1) * starR;
-			float y1 = cy + Mth.sin(a1) * starR;
-			line(g, x0, y0, x0 + (x1 - x0) * drawn, y0 + (y1 - y0) * drawn, fine, argb(Math.min(1, drawn * 1.5F), lighter(color, 0.35F)));
+		var defs=dev.wildercord.spell.Knots.flatten(runes);
+		var circle=dev.wildercord.spell.CircleDisciplines.design(defs);
+		java.util.List<Integer> colors=new java.util.ArrayList<>();
+		for(var def:defs)if(def.family()==RuneFamily.EFFECT){
+			for(var leaf:WovenRunes.isWoven(def)?WovenRunes.contents(def):List.of(def)){
+				int primary=RuneColors.of(leaf),secondary=RuneColors.second(leaf);
+				int ink=argb(drawn*.8F,primary);if(!colors.contains(ink)&&colors.size()<10)colors.add(ink);
+				if(secondary>=0){ink=argb(drawn*.8F,secondary);if(!colors.contains(ink)&&colors.size()<10)colors.add(ink);}
+			}
 		}
+		dev.wildercord.spell.CircleGeometry.draw(circle,starR,drawn,fine,spin*.2F,time*20,argb(drawn,lighter(color,.35F)),colors,
+			(x0,y0,x1,y1,width,ink)->line(g,cx+x0,cy-y0,cx+x1,cy-y1,width,ink));
 		// The inner rings and the seal.
 		float middle = part(open, 0.3F, 0.3F);
 		ring(g, cx, cy, r * SpellSigil.INNER, fine, argb(middle, color));

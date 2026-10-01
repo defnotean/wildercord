@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:dungeon",
+  "dungeon": "living_greenhouse",
+  "biomes": "#wildercord:has_structure/living_greenhouse",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

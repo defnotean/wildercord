@@ -162,3 +162,8 @@ the heart, shows your spell defence. Hover it for:
   Protection, Warded, Focus of Resolve, and Resistance;
 - whether your spellguard is ready, or how many seconds until it is (a small dot on the shield while it recharges);
 - every way to stand up to spells.
+
+## New in 0.7
+
+- [Elemental Armour]({{ '/progression/elemental-armour/' | relative_url }})
+- [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }})

@@ -35,6 +35,7 @@ public final class Sigils {
 				if (packet == null) {
 					packet = Fx.packet(sigil, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 				}
+				VisualMetrics.recipient();
 				player.connection.send(packet);
 			}
 		}

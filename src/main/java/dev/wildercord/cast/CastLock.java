@@ -18,9 +18,23 @@ public final class CastLock {
 	private CastLock() {}
 
 	private static final Map<UUID, Long> UNTIL = new HashMap<>();
+	private record PlayerWindow(long until, long readyAt) {}
+	private static final Map<ServerPlayer, PlayerWindow> PLAYER_WINDOWS = new java.util.WeakHashMap<>();
+	/** Players get a two-second maximum cast lock followed by two seconds to respond. */
+	public static final int PLAYER_LOCK_CAP = 40, PLAYER_RECOVERY = 40;
 
 	/** Locks {@code who} out of casting for {@code ticks}, and cuts whatever they were casting short. */
 	public static void lock(LivingEntity who, int ticks) {
+		if (who instanceof ServerPlayer player) {
+			long now = who.level().getGameTime();
+			var previous = PLAYER_WINDOWS.get(player);
+			if (previous != null && now < previous.readyAt) return;
+			int duration = Math.clamp(ticks, 1, PLAYER_LOCK_CAP);
+			PLAYER_WINDOWS.put(player, new PlayerWindow(now + duration, now + duration + PLAYER_RECOVERY));
+			interrupt(who, duration);
+			player.sendOverlayMessage(net.minecraft.network.chat.Component.translatable("message.wildercord.control_lock"));
+			return;
+		}
 		long until = who.level().getGameTime() + ticks;
 		UNTIL.merge(who.getUUID(), until, Math::max);
 		interrupt(who, ticks);
@@ -28,6 +42,13 @@ public final class CastLock {
 
 	/** Whether {@code who} may not cast right now. */
 	public static boolean locked(LivingEntity who) {
+		if (who instanceof ServerPlayer player) {
+			var window = PLAYER_WINDOWS.get(player);
+			if (window == null) return false;
+			long now = who.level().getGameTime();
+			if (now >= window.readyAt) PLAYER_WINDOWS.remove(player);
+			return now < window.until;
+		}
 		Long until = UNTIL.get(who.getUUID());
 		if (until == null) {
 			return false;
@@ -50,5 +71,6 @@ public final class CastLock {
 
 	static void clear() {
 		UNTIL.clear();
+		PLAYER_WINDOWS.clear();
 	}
 }

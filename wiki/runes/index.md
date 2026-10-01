@@ -10,7 +10,7 @@ permalink: /runes/
 <img src="{{ '/assets/images/rune-icons.png' | relative_url }}" alt="A grid of rune icons: round shapes, eight-sided gem effects, square modifiers and hexagonal links" class="shot">
 
 A **rune** is a small tablet you thread onto your Cord. Each one does one simple thing, and a spell is simply the
-runes in its sockets, read from left to right. There are **328** of them.
+runes in its sockets, read from left to right. There are **350** of them.
 
 ## The four families
 

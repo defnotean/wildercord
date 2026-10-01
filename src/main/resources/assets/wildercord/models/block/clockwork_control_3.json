@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "wildercord:block/clockwork_control_side",
+    "down": "wildercord:block/clockwork_control_side",
+    "up": "wildercord:block/clockwork_control_3",
+    "north": "wildercord:block/clockwork_control_side",
+    "south": "wildercord:block/clockwork_control_side",
+    "west": "wildercord:block/clockwork_control_side",
+    "east": "wildercord:block/clockwork_control_side"
+  }
+}

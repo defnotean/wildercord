@@ -98,7 +98,7 @@ Restores 6 hunger and some saturation, and ends Hunger. Fed pets heal 6 and are 
 
 Washes away harmful effects, fire and every elemental mark.
 
-**How to get it:** Craft: a Blank Rune, Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
+**How to get it:** Craft: a Blank Rune, Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Living Greenhouse; Rootbound Maze.
 
 <img src="{{ '/assets/recipes/rune_cleanse.png' | relative_url }}" alt="Crafting Cleanse: a Blank Rune and Milk Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -111,7 +111,7 @@ Washes away harmful effects, fire and every elemental mark.
 
 Raises a 4-block dome of light for 8 seconds: enemies inside are shoved out once a second, and enemy projectiles glance off it.
 
-**How to get it:** Craft: a Blank Rune, Shield and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Shield and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Living Greenhouse; Rootbound Maze.
 
 <img src="{{ '/assets/recipes/rune_haven.png' | relative_url }}" alt="Crafting Haven: a Blank Rune and Shield and Glistering Melon Slice, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ Raises a 4-block dome of light for 8 seconds: enemies inside are shoved out once
 
 Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 health).
 
-**How to get it:** Craft: a Blank Rune, Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
+**How to get it:** Craft: a Blank Rune, Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Living Greenhouse; Rootbound Maze.
 
 <img src="{{ '/assets/recipes/rune_regrowth.png' | relative_url }}" alt="Crafting Regrowth: a Blank Rune and Ghast Tear, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -137,7 +137,7 @@ Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 heal
 
 2 damage now and 0.75 a second for 4 seconds, with Poison I: it can kill and works on undead and spiders. The poisoned pass it on, once, to up to 3 enemies within 2.5 blocks.
 
-**How to get it:** Craft: a Blank Rune, Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
+**How to get it:** Craft: a Blank Rune, Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Living Greenhouse; Rootbound Maze.
 
 <img src="{{ '/assets/recipes/rune_venom.png' | relative_url }}" alt="Crafting Venom: a Blank Rune and Poisonous Potato, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -150,7 +150,7 @@ Regeneration that takes hold: I for 3 seconds, II for 3, III for 2 (about 7 heal
 
 Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't move or fight back, but any damage wakes it, and the blow that does deals 75% more. Bosses only grow drowsy.
 
-**How to get it:** Craft: a Blank Rune, Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities.
+**How to get it:** Craft: a Blank Rune, Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Ancient cities; Living Greenhouse; Rootbound Maze.
 
 <img src="{{ '/assets/recipes/rune_drowse.png' | relative_url }}" alt="Crafting Drowse: a Blank Rune and Spore Blossom and Honey Bottle, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -163,7 +163,7 @@ Sleepy pollen lulls each target to sleep for 6 seconds (2 on players): it can't 
 
 Puts things back: heals 4, puts out fire, and mends 8% of every worn and held item's durability (an item once a minute).
 
-**How to get it:** Craft: a Blank Rune, Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Stronghold libraries.
+**How to get it:** Craft: a Blank Rune, Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Stronghold libraries; Living Greenhouse; Rootbound Maze.
 
 <img src="{{ '/assets/recipes/rune_restore.png' | relative_url }}" alt="Crafting Restore: a Blank Rune and Iron Ingot and Glistering Melon Slice, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

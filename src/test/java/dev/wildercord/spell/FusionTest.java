@@ -167,7 +167,7 @@ class FusionTest {
 
 	@Test
 	void everySignatureIsAFusedRuneOfItsOwnFromTwoRunesACasterCanFind() {
-		assertEquals(16, Fusions.SIGNATURES.size());
+		assertEquals(22, Fusions.SIGNATURES.size());
 		assertEquals(Runes.SIGNATURE.size(), Fusions.SIGNATURES.size());
 		java.util.Set<java.util.Set<String>> pairs = new java.util.HashSet<>();
 		java.util.Map<String, Integer> uses = new java.util.HashMap<>();
@@ -193,7 +193,7 @@ class FusionTest {
 				uses.merge(rune.element(), 1, Integer::sum);
 			}
 			assertNotEquals(signature.a(), signature.b());
-			assertTrue(pairs.add(java.util.Set.of(signature.first(), signature.second())), made.name() + ": two signatures share a pair of elements");
+			assertTrue(pairs.add(java.util.Set.of(signature.a().id(), signature.b().id())), made.name() + ": two signatures share the same input runes");
 			assertNotEquals(made, signature.overrides().orElseThrow().result());
 		}
 		assertEquals(Fusions.SIGNATURES.size(), Fusions.SIGNATURES.stream().map(s -> s.result().id()).distinct().count());
@@ -254,7 +254,7 @@ class FusionTest {
 		assertEquals(List.of(FIRE, HEAL), WovenRunes.contents(first));
 		assertEquals(first, Runes.get(first.id()).orElseThrow());
 		assertEquals(RuneFamily.EFFECT, first.family());
-		assertFalse(Fusions.fusible(first), "woven pairs cannot nest indefinitely");
+		assertTrue(Fusions.fusible(first), "validated weaves can extend within the eight-effect cap");
 		Fusions.Plan woven = plan(Fusions.Catalyst.BLOCK, Fusions.Slot.of(FIRE, 2), Fusions.Slot.of(HEAL, 3), Fusions.Slot.EMPTY);
 		assertTrue(woven.ready(), String.valueOf(woven.problem()));
 		assertEquals(first, woven.result());

@@ -1,0 +1,84 @@
+{
+  "variants": {
+    "facing=north,stage=0": {
+      "model": "wildercord:block/greenhouse_heart_0",
+      "y": 0
+    },
+    "facing=east,stage=0": {
+      "model": "wildercord:block/greenhouse_heart_0",
+      "y": 90
+    },
+    "facing=south,stage=0": {
+      "model": "wildercord:block/greenhouse_heart_0",
+      "y": 180
+    },
+    "facing=west,stage=0": {
+      "model": "wildercord:block/greenhouse_heart_0",
+      "y": 270
+    },
+    "facing=north,stage=1": {
+      "model": "wildercord:block/greenhouse_heart_1",
+      "y": 0
+    },
+    "facing=east,stage=1": {
+      "model": "wildercord:block/greenhouse_heart_1",
+      "y": 90
+    },
+    "facing=south,stage=1": {
+      "model": "wildercord:block/greenhouse_heart_1",
+      "y": 180
+    },
+    "facing=west,stage=1": {
+      "model": "wildercord:block/greenhouse_heart_1",
+      "y": 270
+    },
+    "facing=north,stage=2": {
+      "model": "wildercord:block/greenhouse_heart_2",
+      "y": 0
+    },
+    "facing=east,stage=2": {
+      "model": "wildercord:block/greenhouse_heart_2",
+      "y": 90
+    },
+    "facing=south,stage=2": {
+      "model": "wildercord:block/greenhouse_heart_2",
+      "y": 180
+    },
+    "facing=west,stage=2": {
+      "model": "wildercord:block/greenhouse_heart_2",
+      "y": 270
+    },
+    "facing=north,stage=3": {
+      "model": "wildercord:block/greenhouse_heart_3",
+      "y": 0
+    },
+    "facing=east,stage=3": {
+      "model": "wildercord:block/greenhouse_heart_3",
+      "y": 90
+    },
+    "facing=south,stage=3": {
+      "model": "wildercord:block/greenhouse_heart_3",
+      "y": 180
+    },
+    "facing=west,stage=3": {
+      "model": "wildercord:block/greenhouse_heart_3",
+      "y": 270
+    },
+    "facing=north,stage=4": {
+      "model": "wildercord:block/greenhouse_heart_4",
+      "y": 0
+    },
+    "facing=east,stage=4": {
+      "model": "wildercord:block/greenhouse_heart_4",
+      "y": 90
+    },
+    "facing=south,stage=4": {
+      "model": "wildercord:block/greenhouse_heart_4",
+      "y": 180
+    },
+    "facing=west,stage=4": {
+      "model": "wildercord:block/greenhouse_heart_4",
+      "y": 270
+    }
+  }
+}

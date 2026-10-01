@@ -82,6 +82,7 @@ public final class SecretSpells {
 	}
 
 	public static void cast(Cast cast, Secrets.Secret secret) {
+		if (!cast.alive()) return;
 		double power = cast.power;
 		switch (secret.id()) {
 			case "glacial_lance" -> glacialLance(cast, power);

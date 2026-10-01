@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "I": "minecraft:iron_ingot",
+    "L": "minecraft:lightning_rod"
+  },
+  "pattern": [
+    " L ",
+    "ICI",
+    " I "
+  ],
+  "result": {
+    "id": "wildercord:focus_of_grounding"
+  }
+}

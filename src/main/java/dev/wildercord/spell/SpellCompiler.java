@@ -74,6 +74,10 @@ public final class SpellCompiler {
 	}
 
 	private static Compiled compile(List<RuneDef> runes, RuneDef implicitShape, Ranks.Lookup ranks) {
+		return CompiledSpellCache.get(runes, implicitShape, ranks, () -> compileFresh(runes, implicitShape, ranks));
+	}
+
+	private static Compiled compileFresh(List<RuneDef> runes, RuneDef implicitShape, Ranks.Lookup ranks) {
 		Reader reader = new Reader(expand(runes), runes.size(), true, implicitShape, ranks);
 		SpellPlan.Segment root = reader.segment(0, implicitShape, List.of(), false);
 		double cost = cost(root);
@@ -213,6 +217,9 @@ public final class SpellCompiler {
 							if (entry.scope() == 0) {
 								mark(entry.outer(), UNATTACHED);
 							}
+						} else if (CircleDisciplines.isCircle(rune) && target.mods().stream().anyMatch(CircleDisciplines::isCircle)) {
+							warn("Only one circle discipline can shape a group; " + rune.name() + " is ignored.");
+							if(entry.scope()==0) mark(entry.outer(), UNATTACHED);
 						} else {
 							target.mods().add(rune);
 							if (entry.scope() == 0) {
@@ -513,6 +520,16 @@ public final class SpellCompiler {
 			}
 			String vow = g.count(Runes.VOW_MOD) > 0 ? " (vowed: x" + trim(Math.pow(2.0, g.count(Runes.VOW_MOD))) + " power)" : "";
 			lines.add(indent + shapePhrase(g) + vow + ": " + effectsPhrase(g));
+			RuneDef circle=CircleDisciplines.selected(g.shapeMods);
+			if(circle!=null) {
+				String prefix=indent+circle.name()+": ", remaining=circle.description();
+				// The Cord readout scrolls vertically; short lines keep every tradeoff visible.
+				while(!remaining.isEmpty()) {
+					int limit=Math.max(20,56-prefix.length()),end=Math.min(limit,remaining.length());
+					if(end<remaining.length()){int space=remaining.lastIndexOf(' ',end);if(space>0)end=space;}
+					lines.add(prefix+remaining.substring(0,end));remaining=remaining.substring(end).stripLeading();prefix=indent+"  ";
+				}
+			}
 		}
 		if (seg.link == null) {
 			return;

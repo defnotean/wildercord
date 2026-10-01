@@ -321,7 +321,7 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 		double[] tab = context.computeOnClient(mc -> ((CordScreen) mc.gui.screen()).pagePoint(3));
 		context.getInput().setCursorPos(tab[0] * scale, tab[1] * scale);
 		context.waitTicks(1);
-		context.getInput().pressMouse(0);
+		context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 		context.waitTicks(5);
 		boolean page = context.computeOnClient(mc -> mc.gui.screen() instanceof CordStyleScreen);
 		check(page, "the Cosmetics tab should open the Cosmetics page");
@@ -333,7 +333,7 @@ public class WildercordFamiliarTest implements FabricClientGameTest {
 		double[] glass = context.computeOnClient(mc -> ((CordStyleScreen) mc.gui.screen()).optionPoint("material:glass"));
 		context.getInput().setCursorPos(glass[0] * scale, glass[1] * scale);
 		context.waitTicks(1);
-		context.getInput().pressMouse(0);
+		context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
 		context.waitTicks(5);
 		String material = world.getServer().computeOnServer(server -> CordCosmetics.style(player(server)).material());
 		check(material.equals("glass"), "clicking glass beads should wear them (wears " + material + ")");

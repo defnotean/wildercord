@@ -37,7 +37,7 @@ public abstract class LightningRodBlockMixin {
 			charged.setCount(item.getItem().getCount());
 			item.setItem(charged);
 			item.setGlowingTag(true);
-			server.sendParticles(ParticleTypes.ELECTRIC_SPARK, item.getX(), item.getY() + 0.3, item.getZ(), 30, 0.3, 0.3, 0.3, 0.2);
+			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ELECTRIC_SPARK, item.getX(), item.getY() + 0.3, item.getZ(), 30, 0.3, 0.3, 0.3, 0.2);
 			server.playSound(null, item.getX(), item.getY(), item.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.BLOCKS, 1.0F, 1.6F);
 		}
 	}

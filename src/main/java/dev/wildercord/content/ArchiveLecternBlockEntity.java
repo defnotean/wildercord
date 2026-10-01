@@ -66,7 +66,7 @@ public class ArchiveLecternBlockEntity extends BlockEntity {
 		long time = server.getGameTime();
 		Vec3 top = Vec3.atCenterOf(pos).add(0, 0.7, 0);
 		if (time % 4 == 0) {
-			server.sendParticles(ParticleTypes.ENCHANT, top.x, top.y + 0.5, top.z, 4, 0.6, 0.4, 0.6, 0.6);
+			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ENCHANT, top.x, top.y + 0.5, top.z, 4, 0.6, 0.4, 0.6, 0.6);
 		}
 		if (time % 20 != 0) {
 			return;

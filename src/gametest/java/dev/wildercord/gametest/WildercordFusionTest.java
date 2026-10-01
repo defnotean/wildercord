@@ -25,6 +25,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +38,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -64,15 +66,22 @@ public class WildercordFusionTest implements FabricClientGameTest {
 			for (String failure : world.getServer().computeOnServer(WildercordFusionTest::checks)) {
 				failures.add(failure);
 			}
-			context.waitTicks(40);
+			// The mechanical checks earn several advancements; let their toasts clear so the screen is readable.
+			context.waitTicks(130);
 			// The screen: open the altar with runes on it and look.
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = player(server);
 				BlockPos pos = altar(player);
-				player.openMenu(player.level().getBlockState(pos).getMenuProvider(player.level(), pos));
+				player.setItemInHand(InteractionHand.MAIN_HAND, RuneItem.stack(Runes.FIRE));
+				player.gameMode.useItemOn(player, player.level(), player.getMainHandItem(), InteractionHand.MAIN_HAND,
+					new BlockHitResult(Vec3.atCenterOf(pos).add(0, 0.5, 0), Direction.UP, pos, false));
 				if (player.containerMenu instanceof FusionAltarMenu menu) {
-					for (int i = 0; i < FusionAltarMenu.RUNE_SLOTS; i++) {
-						menu.getSlot(i).set(RuneItem.stack(Runes.FIRE));
+					ItemStack stack = RuneItem.stack(Runes.FIRE);
+					stack.setCount(3);
+					menu.getSlot(5).set(stack);
+					menu.quickMoveStack(player, 5);
+					if (!menu.plan().ready()) {
+						failures.add("shift-clicking a stack of three matching runes should fill the altar sockets");
 					}
 					menu.broadcastChanges();
 				}
@@ -83,6 +92,22 @@ public class WildercordFusionTest implements FabricClientGameTest {
 				failures.add("right-clicking the altar should open its screen");
 			}
 			context.takeScreenshot(TestScreenshotOptions.of("fusion_altar").disableCounterPrefix());
+			if (open) {
+				double scale = context.computeOnClient(mc -> mc.getWindow().getGuiScale());
+				double[] button = context.computeOnClient(mc -> ((FusionAltarScreen) mc.gui.screen()).buttonPoint());
+				context.getInput().setCursorPos(button[0] * scale, button[1] * scale);
+				context.waitTicks(2);
+				context.getInput().pressMouse(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT);
+				context.waitTicks(5);
+				boolean fused = world.getServer().computeOnServer(server -> {
+					ServerPlayer player = player(server);
+					return player.containerMenu instanceof FusionAltarMenu menu
+						&& RuneItem.runeOf(menu.getSlot(FusionAltarMenu.RESULT).getItem()).map(r -> r.is(Runes.FIRE.id())).orElse(false)
+						&& RuneItem.rankOf(menu.getSlot(FusionAltarMenu.RESULT).getItem()) == 2;
+				});
+				if (!fused) failures.add("clicking Fuse in the screen should produce Fire II on the server");
+				context.takeScreenshot(TestScreenshotOptions.of("fusion_altar_result").disableCounterPrefix());
+			}
 			context.runOnClient(mc -> mc.player.closeContainer());
 			context.waitTicks(5);
 			if (!failures.isEmpty()) {

@@ -45,3 +45,7 @@ other.
 - [Familiars]({{ '/companions/familiars/' | relative_url }}) follow the same friendly fire rules as your spells.
 - The [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) makes ranked runes, fused runes and Knots you can give away.
 - [World events]({{ '/world/world-events/' | relative_url }}) like rift sieges and fallen stars are easier with company.
+
+## New in 0.7
+
+- [Runic Hearth]({{ '/social/runic-hearth/' | relative_url }})

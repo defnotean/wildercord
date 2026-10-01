@@ -151,11 +151,10 @@ public class WildercordFlightTest implements FabricClientGameTest {
 
 	/** Self · Soar gives mayfly and a gentler speed; a double-tap of jump takes off, and holding jump climbs. */
 	private static String castingGivesFlight(ClientGameTestContext context, TestSingleplayerContext world) {
+		String cast = on(world, player -> cast(player, Runes.SELF, Runes.SOAR));
+		if (cast != null) return cast;
+		context.waitTicks(4);
 		String given = on(world, player -> {
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
 			Soaring note = player.getAttached(WildercordAttachments.SOARING);
 			long left = note == null ? -1 : note.until() - player.level().getGameTime();
 			if (!player.getAbilities().mayfly || !Soar.soaring(player)) {
@@ -229,12 +228,13 @@ public class WildercordFlightTest implements FabricClientGameTest {
 	 */
 	private static String runningOut(ClientGameTestContext context, TestSingleplayerContext world) {
 		double top = STAGE.getY() + 64;
-		String up = on(world, player -> {
+		String cast = on(world, player -> {
 			hover(player, 64);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
+			return cast(player, Runes.SELF, Runes.SOAR);
+		});
+		if (cast != null) return cast;
+		context.waitTicks(4);
+		String up = on(world, player -> {
 			fly(player);
 			// Its end brought close, so the warning comes almost at once.
 			long now = player.level().getGameTime();
@@ -299,12 +299,13 @@ public class WildercordFlightTest implements FabricClientGameTest {
 
 	/** Creative: Soar leaves its flight and speed alone; turning creative mid-flight hands the flight to the game mode. */
 	private static String creative(ClientGameTestContext context, TestSingleplayerContext world) {
-		String inCreative = on(world, player -> {
+		String cast = on(world, player -> {
 			player.setGameMode(GameType.CREATIVE);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
+			return cast(player, Runes.SELF, Runes.SOAR);
+		});
+		if (cast != null) return cast;
+		context.waitTicks(4);
+		String inCreative = on(world, player -> {
 			if (player.hasAttached(WildercordAttachments.SOARING)) {
 				return "a creative player shouldn't get a flight from Soar";
 			}
@@ -317,11 +318,10 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		if (inCreative != null) {
 			return inCreative;
 		}
+		cast = on(world, player -> cast(player, Runes.SELF, Runes.SOAR));
+		if (cast != null) return cast;
+		context.waitTicks(4);
 		String turned = on(world, player -> {
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
 			player.setGameMode(GameType.CREATIVE);
 			return Soar.soaring(player) ? null : "the flight should have begun before turning creative";
 		});
@@ -396,6 +396,7 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		if (cast != null) {
 			return cast;
 		}
+		context.waitTicks(4);
 		return on(world, player -> {
 			if (!(player.level().getEntity(wolf[0]) instanceof Wolf pet)) {
 				return "the wolf went missing (test setup)";
@@ -413,12 +414,13 @@ public class WildercordFlightTest implements FabricClientGameTest {
 	 */
 	private static String grounding(ClientGameTestContext context, TestSingleplayerContext world) {
 		int[] husk = {0};
-		String pulled = on(world, player -> {
+		String cast = on(world, player -> {
 			hover(player, 12);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
+			return cast(player, Runes.SELF, Runes.SOAR);
+		});
+		if (cast != null) return cast;
+		context.waitTicks(4);
+		String pulled = on(world, player -> {
 			fly(player);
 			Mob caster = husk(player.level(), 0, 6);
 			husk[0] = caster.getId();
@@ -429,14 +431,14 @@ public class WildercordFlightTest implements FabricClientGameTest {
 			if (!Soar.descending(player)) {
 				return "grounded, the player should still come down gently";
 			}
-			cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
-			return Soar.soaring(player) || player.getAbilities().mayfly ? "grounded, the wind shouldn't lift them again straight away" : null;
+			return cast(player, Runes.SELF, Runes.SOAR);
 		});
 		if (pulled != null) {
 			return pulled;
+		}
+		context.waitTicks(4);
+		if (on(world, player -> Soar.soaring(player) || player.getAbilities().mayfly)) {
+			return "grounded, the wind shouldn't lift them again straight away";
 		}
 		context.runOnClient(mc -> {
 			mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
@@ -445,12 +447,13 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		context.waitTicks(1);
 		shot(context, "soar_grounded");
 		context.waitTicks(SoarRules.REST_TICKS);
-		String weighed = on(world, player -> {
+		String waitedCast = on(world, player -> {
 			hover(player, 12);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
+			return cast(player, Runes.SELF, Runes.SOAR);
+		});
+		if (waitedCast != null) return waitedCast;
+		context.waitTicks(4);
+		String weighed = on(world, player -> {
 			if (!Soar.soaring(player)) {
 				return "30 seconds after a grounding the wind should lift them again";
 			}
@@ -474,29 +477,28 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		BoundingBox room = new BoundingBox(STAGE.getX() + 40, STAGE.getY() - 10, STAGE.getZ() - 10, STAGE.getX() + 60, STAGE.getY() + 30, STAGE.getZ() + 10);
 		world.getServer().runOnServer(server -> DungeonWards.remember(player(server).level(), () -> List.of(room)));
 		context.waitTicks(3);
-		String inside = on(world, player -> {
+		String insideCast = on(world, player -> {
 			if (!DungeonWards.warded(player.level(), room.getCenter())) {
 				return "the ward should be filed (test setup)";
 			}
 			player.teleportTo(player.level(), room.getCenter().getX() + 0.5, STAGE.getY() + 4, room.getCenter().getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 			player.setOnGround(false);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
-			return Soar.soaring(player) || player.getAbilities().mayfly ? "Soar shouldn't lift anyone inside a ward" : null;
+			return cast(player, Runes.SELF, Runes.SOAR);
 		});
-		if (inside != null) {
-			return inside;
+		if (insideCast != null) return insideCast;
+		context.waitTicks(4);
+		if (on(world, player -> Soar.soaring(player) || player.getAbilities().mayfly)) {
+			return "Soar shouldn't lift anyone inside a ward";
 		}
-		String outside = on(world, player -> {
+		String outsideCast = on(world, player -> {
 			player.teleportTo(player.level(), room.minX() - 8.5, STAGE.getY() + 4, room.getCenter().getZ() + 0.5, Set.<Relative>of(), 0.0F, 0.0F, false);
 			player.setDeltaMovement(Vec3.ZERO);
 			player.setOnGround(false);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
+			return cast(player, Runes.SELF, Runes.SOAR);
+		});
+		if (outsideCast != null) return outsideCast;
+		context.waitTicks(4);
+		String outside = on(world, player -> {
 			if (!Soar.soaring(player)) {
 				return "outside the ward Soar should lift as usual";
 			}
@@ -548,12 +550,13 @@ public class WildercordFlightTest implements FabricClientGameTest {
 
 	/** Dying mid-flight: the new body has no flight, no note of one and the usual speed. */
 	private static String death(ClientGameTestContext context, TestSingleplayerContext world) {
-		String up = on(world, player -> {
+		String cast = on(world, player -> {
 			hover(player, 10);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
+			return cast(player, Runes.SELF, Runes.SOAR);
+		});
+		if (cast != null) return cast;
+		context.waitTicks(4);
+		String up = on(world, player -> {
 			if (!Soar.soaring(player)) {
 				return "the flight should have begun before dying (test setup)";
 			}
@@ -588,12 +591,13 @@ public class WildercordFlightTest implements FabricClientGameTest {
 
 	/** Before the save: soaring, hovering 20 blocks up, with 5 seconds of flight left. */
 	private static String beforeTheSave(ClientGameTestContext context, TestSingleplayerContext world) {
-		String up = on(world, player -> {
+		String cast = on(world, player -> {
 			hover(player, 20);
-			String cast = cast(player, Runes.SELF, Runes.SOAR);
-			if (cast != null) {
-				return cast;
-			}
+			return cast(player, Runes.SELF, Runes.SOAR);
+		});
+		if (cast != null) return cast;
+		context.waitTicks(4);
+		String up = on(world, player -> {
 			if (!Soar.soaring(player)) {
 				return "the flight should have begun before the save (test setup)";
 			}

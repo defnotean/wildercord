@@ -69,7 +69,7 @@ import java.util.Set;
  * <p>Runs in the full suite; skipped with {@code WILDERCORD_TOUR_ONLY} or {@code WILDERCORD_CORDS_ONLY}.</p>
  */
 public class WildercordGearTest implements FabricClientGameTest {
-	private static final int LEFT = 0;
+	private static final int LEFT = com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT;
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -85,7 +85,7 @@ public class WildercordGearTest implements FabricClientGameTest {
 					() -> fireStaff(context, world),
 					() -> tome(context, world),
 					() -> cordUpgrade(world),
-					() -> imbuedTripleShot(world),
+					() -> imbuedTripleShot(context, world),
 					() -> configReload(context, world))) {
 				try {
 					check.run();
@@ -166,6 +166,10 @@ public class WildercordGearTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ a Fire Staff
 
 	private static void fireStaff(ClientGameTestContext context, TestSingleplayerContext world) {
+		float[] spent = new float[2];
+		float[] damage = new float[2];
+		int[] costs = new int[2];
+		int[] targetId = new int[1];
 		String result = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
@@ -180,37 +184,50 @@ public class WildercordGearTest implements FabricClientGameTest {
 			// Never a random Runebound (it would have more health and cast back): tests pick their monsters.
 			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
+			targetId[0] = husk.getId();
 
 			SpellCompiler.Compiled compiled = SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 0, CordTier.ECHO));
-			int plainCost = Heart.manaCost(player, compiled);
-			float plainSpent = castFresh(player, 0);
-			float plainDamage = husk.getMaxHealth() - husk.getHealth();
-
+			costs[0] = Heart.manaCost(player, compiled);
+			spent[0] = castFresh(player, 0);
+			return null;
+		});
+		check(result == null, result);
+		context.waitTicks(4);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Mob husk = (Mob) player.level().getEntity(targetId[0]);
+			damage[0] = husk.getMaxHealth() - husk.getHealth();
 			husk.setHealth(husk.getMaxHealth());
 			husk.clearFire();
 			player.setItemInHand(InteractionHand.MAIN_HAND, gear(GearDef.staff("fire")));
-			int staffCost = Heart.manaCost(player, compiled);
-			float staffSpent = castFresh(player, 0);
-			float staffDamage = husk.getMaxHealth() - husk.getHealth();
+			costs[1] = Heart.manaCost(player, SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 0, CordTier.ECHO)));
+			spent[1] = castFresh(player, 0);
+		});
+		context.waitTicks(4);
+		result = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			Mob husk = (Mob) player.level().getEntity(targetId[0]);
+			damage[1] = husk.getMaxHealth() - husk.getHealth();
 			husk.discard();
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 
-			if (plainSpent < 0 || staffSpent < 0) {
-				return "Touch · Fire should cast, with and without the staff (spent " + plainSpent + " and " + staffSpent + ")";
+			if (spent[0] < 0 || spent[1] < 0) {
+				return "Touch · Fire should cast, with and without the staff (spent " + spent[0] + " and " + spent[1] + ")";
 			}
-			if (plainDamage <= 0) {
-				return "Touch · Fire should hurt the husk in front (it took " + plainDamage + ")";
+			if (damage[0] <= 0) {
+				return "Touch · Fire should hurt the husk in front (it took " + damage[0] + ")";
 			}
-			double ratio = staffDamage / plainDamage;
+			double ratio = damage[1] / damage[0];
 			if (ratio < 1.15 || ratio > 1.25) {
-				return "a Fire Staff should make fire hit 20% harder (" + plainDamage + " -> " + staffDamage + ")";
+				return "a Fire Staff should make fire hit 20% harder (" + damage[0] + " -> " + damage[1] + ")";
 			}
 			// 10% off, rounded up, and always at least one mana saved.
-			if (staffCost != Math.min((int) Math.ceil(compiled.cost() * GearDef.STAFF_COST - 1e-9), plainCost - 1) || staffCost >= plainCost) {
-				return "a Fire Staff should take 10% off a fire spell's cost (" + plainCost + " -> " + staffCost + ")";
+			SpellCompiler.Compiled compiled = SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 0, CordTier.ECHO));
+			if (costs[1] != Math.min((int) Math.ceil(compiled.cost() * GearDef.STAFF_COST - 1e-9), costs[0] - 1) || costs[1] >= costs[0]) {
+				return "a Fire Staff should take 10% off a fire spell's cost (" + costs[0] + " -> " + costs[1] + ")";
 			}
-			if (Math.round(plainSpent) != plainCost || Math.round(staffSpent) != staffCost) {
-				return "the mana spent should be the cost shown (" + plainSpent + "/" + plainCost + ", " + staffSpent + "/" + staffCost + ")";
+			if (Math.round(spent[0]) != costs[0] || Math.round(spent[1]) != costs[1]) {
+				return "the mana spent should be the cost shown (" + spent[0] + "/" + costs[0] + ", " + spent[1] + "/" + costs[1] + ")";
 			}
 			// A frost spell gets nothing from it.
 			SpellCaster.edit(player, 1, ids(Runes.TOUCH, Runes.FROST));
@@ -359,14 +376,18 @@ public class WildercordGearTest implements FabricClientGameTest {
 	 * An imbued crossbow's triple shot (three arrows leaving it in the same tick, as Multishot fires
 	 * them): one charge spent, and only one of the arrows carries the spell.
 	 */
-	private static void imbuedTripleShot(TestSingleplayerContext world) {
-		String problem = world.getServer().computeOnServer(server -> {
+	private static void imbuedTripleShot(ClientGameTestContext context, TestSingleplayerContext world) {
+		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
-			ServerLevel level = player.level();
 			ready(player, new ItemStack(WildercordItems.ECHO_CORD));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.CROSSBOW));
 			SpellCaster.edit(player, 0, ids(Runes.SELF, Runes.IMBUE, Runes.FIRE));
 			castFresh(player, 0);
+		});
+		context.waitTicks(4);
+		String problem = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			ServerLevel level = player.level();
 			ItemStack crossbow = player.getMainHandItem();
 			Imbued imbued = crossbow.get(WildercordComponents.IMBUED);
 			if (imbued == null) {
@@ -499,7 +520,7 @@ public class WildercordGearTest implements FabricClientGameTest {
 		BlockPos stone = BlockPos.containing(at.x, at.y + 1, at.z + 2);
 		player.level().setBlockAndUpdate(stone, Blocks.STONE.defaultBlockState());
 		SpellCaster.edit(player, 0, ids(Runes.TOUCH, Runes.BREAK));
-		castFresh(player, 0);
+		CastEngine.cast(new Cast(player), SpellCompiler.compile(List.of(Runes.TOUCH, Runes.BREAK)).root());
 		return player.level().getBlockState(stone).isAir();
 	}
 

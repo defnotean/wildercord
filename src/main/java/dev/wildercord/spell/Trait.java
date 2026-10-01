@@ -34,4 +34,6 @@ public final class Trait {
 	 * needs this is priced on the whole spell (see {@link SpellCompiler#wholeSpell}).
 	 */
 	public static final String COOLDOWN = "cooldown";
+	/** A selectable casting circle; one discipline per shape group. */
+	public static final String CIRCLE = "circle";
 }

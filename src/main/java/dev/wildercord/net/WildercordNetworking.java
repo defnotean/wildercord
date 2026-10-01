@@ -212,6 +212,8 @@ public final class WildercordNetworking {
 			CASTING.clear();
 		});
 		PayloadTypeRegistry.clientboundPlay().register(ScreenFx.TYPE, ScreenFx.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(FormationPayload.TYPE, FormationPayload.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(NotebookPayload.TYPE, NotebookPayload.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(EditPassive.TYPE, EditPassive.CODEC);
 		PayloadTypeRegistry.serverboundPlay().register(TogglePassive.TYPE, TogglePassive.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(TogglePassive.TYPE, (payload, context) -> {

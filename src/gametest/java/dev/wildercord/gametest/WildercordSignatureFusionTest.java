@@ -360,13 +360,13 @@ public class WildercordSignatureFusionTest implements FabricClientGameTest {
 			player.setHealth(8.0F);
 			// Too hungry to heal by itself, which would add to what the stitch gives back.
 			player.getFoodData().setFoodLevel(6);
-			String c = cast(player, Runes.SELF, Runes.STITCHTIME);
-			healed[0] = player.getHealth();
-			return c;
+			return cast(player, Runes.SELF, Runes.STITCHTIME);
 		});
 		if (cast != null) {
 			return List.of(cast);
 		}
+		context.waitTicks(4);
+		healed[0] = on(world, ServerPlayer::getHealth);
 		if (healed[0] < 11.5F) {
 			return List.of("it should heal 4 at once (at " + healed[0] + " from 8)");
 		}

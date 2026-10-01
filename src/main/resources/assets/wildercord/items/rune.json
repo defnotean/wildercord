@@ -236,6 +236,90 @@
         }
       },
       {
+        "when": "wildercord:needle_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/needle_circle"
+        }
+      },
+      {
+        "when": "wildercord:bloom_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/bloom_circle"
+        }
+      },
+      {
+        "when": "wildercord:gyre_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/gyre_circle"
+        }
+      },
+      {
+        "when": "wildercord:anchor_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/anchor_circle"
+        }
+      },
+      {
+        "when": "wildercord:reservoir_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/reservoir_circle"
+        }
+      },
+      {
+        "when": "wildercord:crucible_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/crucible_circle"
+        }
+      },
+      {
+        "when": "wildercord:confluence_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/confluence_circle"
+        }
+      },
+      {
+        "when": "wildercord:pilgrim_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/pilgrim_circle"
+        }
+      },
+      {
+        "when": "wildercord:vigil_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/vigil_circle"
+        }
+      },
+      {
+        "when": "wildercord:mercy_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/mercy_circle"
+        }
+      },
+      {
+        "when": "wildercord:tempest_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tempest_circle"
+        }
+      },
+      {
+        "when": "wildercord:eclipse_circle",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/eclipse_circle"
+        }
+      },
+      {
         "when": "wildercord:feather_fall",
         "model": {
           "type": "minecraft:model",
@@ -1689,6 +1773,69 @@
         "model": {
           "type": "minecraft:model",
           "model": "wildercord:item/rune/chronoshift"
+        }
+      },
+      {
+        "when": "wildercord:strata_rise",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/strata_rise"
+        }
+      },
+      {
+        "when": "wildercord:tidal_lift",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/tidal_lift"
+        }
+      },
+      {
+        "when": "wildercord:wind_steps",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/wind_steps"
+        }
+      },
+      {
+        "when": "wildercord:cinder_bulwark",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/cinder_bulwark"
+        }
+      },
+      {
+        "when": "wildercord:root_bulwark",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/root_bulwark"
+        }
+      },
+      {
+        "when": "wildercord:boiling_surge",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/boiling_surge"
+        }
+      },
+      {
+        "when": "wildercord:thunder_tide",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thunder_tide"
+        }
+      },
+      {
+        "when": "wildercord:rime_causeway",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/rime_causeway"
+        }
+      },
+      {
+        "when": "wildercord:thunder_walk",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/rune/thunder_walk"
         }
       },
       {

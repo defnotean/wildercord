@@ -1,66 +1,60 @@
 ---
 title: Home
 nav_order: 1
-description: "The Wildercord wiki: every rune, spell, dungeon, boss and recipe in the rune-threading magic mod for Minecraft."
 permalink: /
 ---
 
-# Wildercord Wiki
-{: .fs-9 }
+# Make magic your own
 
-Thread runes onto a Cord. Cast the whole sequence with one key.
-{: .fs-6 .fw-300 }
+**Wildercord 0.7.0-alpha · Minecraft Java 26.3 · Fabric · Java 25**
 
-[Get started]({{ '/getting-started/' | relative_url }}){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[Browse every rune]({{ '/runes/' | relative_url }}){: .btn .fs-5 .mb-4 .mb-md-0 }
+Wear a Cord, thread runes from left to right, and cast the sequence with one key. Build a cheap knockback bolt, a mixed-element beam, a healing circle, a temporary bridge or a linked spell that changes when it lands.
 
-<img src="{{ '/assets/images/hero.gif' | relative_url }}" alt="A magic circle opens ring by ring, then a nova of fire bursts out" class="shot">
+[Start playing]({{ '/getting-started/' | relative_url }}) · [Install the release]({{ '/installing/' | relative_url }}) · [Browse runes]({{ '/runes/' | relative_url }}) · [What changed]({{ '/whats-new/' | relative_url }})
 
-**Wildercord** is a spell-crafting magic mod for Minecraft Java Edition. There are no fixed spells to unlock and
-no skill trees to grind. You wear a **Cord**, thread small, simple **runes** onto it in any order, and the Cord reads
-them left to right as one spell:
+![The Cord editor previews an authored circle while explaining the spell.]({{ '/assets/images/circle-editor.jpg' | relative_url }})
+
+## Choose your next adventure
+
+| I want to… | Go here |
+|---|---|
+| Cast my first spell | [Getting Started]({{ '/getting-started/' | relative_url }}) and [Controls]({{ '/controls/' | relative_url }}) |
+| Understand what rune order changes | [Reading Spells]({{ '/spellcraft/reading-spells/' | relative_url }}) and [Builds to Try]({{ '/spellcraft/build-examples/' | relative_url }}) |
+| Change how a circle behaves | [Circle Disciplines]({{ '/spellcraft/circle-disciplines/' | relative_url }}) |
+| Raise terrain or move water | [Physical Magic]({{ '/spellcraft/physical-magic/' | relative_url }}) |
+| Make any elemental combination | [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) |
+| Survive another caster | [Defending Against Magic]({{ '/progression/defence/' | relative_url }}), [Elemental Armour]({{ '/progression/elemental-armour/' | relative_url }}) and [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }}) |
+| Explore and earn new relics | [Dungeons]({{ '/world/' | relative_url }}) and [Expeditions]({{ '/world/expeditions/' | relative_url }}) |
+| Test and save a favourite build | [Practice]({{ '/progression/practice/' | relative_url }}) and [Research Notebook]({{ '/progression/research/' | relative_url }}) |
+| Meet Cinnamon | [Cinnamon and owner setup]({{ '/companions/cinnamon/' | relative_url }}) |
+| Build a magical home | [Runic Hearth]({{ '/social/runic-hearth/' | relative_url }}) |
+| Improve readability or frame rate | [Performance and Visual Settings]({{ '/performance/' | relative_url }}) |
+| Fix a problem | [Troubleshooting]({{ '/troubleshooting/' | relative_url }}) |
+
+## What is in this release?
+
+| System | Current content |
+|---|---|
+| Rune language | **350 named runes:** 39 shapes, 258 effects, 36 modifiers and 17 links |
+| Obtaining runes | **199 craftable**, **53 world runes**, rare loot, innate awakening and fusion |
+| Named fusions | **55 elemental combinations + 22 signature recipes** |
+| Exact weaving | Two to eight effect leaves in one socket; duplicates and exact ingredients survive |
+| Circles | Twelve authored mechanisms and twelve craftable disciplines with explicit tradeoffs |
+| Animation | 297 authored shape/effect sequences; mixed spells use their ingredients' materials and motion |
+| Exploration | The Archive plus eight registered dungeon families, including three expeditions with three layout variants each |
+| Companions | Bonded wisps with utility jobs, plus Cinnamon: a custom immortal dog assigned to one configured owner |
+| Life between fights | Practice arena, optional trials, research, named spell builds, home projects and cooperative rituals |
+
+## A spell you can read
 
 `Bolt · Fire · Split · On Hit · Burst · Explode`
 
-> Three bolts of fire. Wherever one lands, an explosion goes off around it.
+Three fire bolts. Wherever one hits, a burst carries Explode. The Cord editor explains compatible modifiers, warns about empty groups, and shows the actual mana price and cooldown before you cast.
 
-A handful of runes already makes thousands of spells, and every spell draws its own magic circle that anyone who
-knows the runes can read. This wiki covers everything a player needs: how spells are put together, every rune and
-where to get it, every recipe, the dungeons and their bosses, the world's events, and all the ways to grow stronger.
+The large caster circle assembles **behind the shoulders**. A smaller forward focus forms the chosen delivery: a beam gathers and fires, a projectile forms and travels, rain opens overhead, and Self acts on its caster. Fire and wind remain visible as fire and wind, rather than becoming only a blended colour. Linked circles open at their trigger locations.
 
-## Where to start
+## Keep experimenting
 
-| If you want to... | Read |
-|---|---|
-| Make your first Cord and cast your first spell | [Getting Started]({{ '/getting-started/' | relative_url }}) |
-| Understand how runes combine into a spell | [How a Spell Is Read]({{ '/spellcraft/reading-spells/' | relative_url }}) |
-| Look up a rune: what it does, how to get it | [Runes]({{ '/runes/' | relative_url }}) |
-| Find a recipe | [Items and Crafting]({{ '/items/' | relative_url }}) and [Rune Recipes]({{ '/items/rune-recipes/' | relative_url }}) |
-| Get stronger: mana, Heart Circles, feats | [Growing Stronger]({{ '/progression/' | relative_url }}) |
-| Make fused runes and Knots | [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}) |
-| Find the dungeons and beat their bosses | [The World]({{ '/world/' | relative_url }}) |
-| Tame a familiar or dress up your Cord | [Companions and Style]({{ '/companions/' | relative_url }}) |
-| Trade, duel and cast with friends | [Friends and Rivals]({{ '/social/' | relative_url }}) |
-| Check the keys | [Controls]({{ '/controls/' | relative_url }}) |
+A wider spell may be weaker per target. A defensive focus may reduce your outgoing damage. A temporary bridge expires. Learn the tradeoffs, bring more than one kind of spell, and try new combinations in the practice arena before taking them into a dungeon.
 
-## At a glance
-
-| | |
-|---|---|
-| **328 runes** | 204 you can craft, 53 found only out in the world (two of them only on a fishing line), 55 fused at the Fusion Altar, one for every pair of elements, and 16 signature fusions of two particular effects. |
-| **Ten elements** | Fire, Frost, Storm, Wind, Earth, Life, Void, Arcane, Time and Blood, each with its own look and sound. Eleven reactions play them off each other, creatures are weak to some and resist others, and where you stand favours some over the rest. |
-| **Four Cords** | Twine, Copper, Amethyst and Echo: more sockets, more spells, higher rune tiers, more mana. |
-| **Readable magic** | Every spell writes its own magic circle. Learn the emblems and you can read what a monster, or another player, is about to cast. |
-| **Four dungeons** | The Archive under the Overworld, the Ember Sanctum in the Nether, the Astral Observatory in the End and the Drowned Scriptorium under the sea, each with a boss. |
-| **A living world** | Mana storms, falling stars, rift sieges, ley lines, and magic that sets grass alight and freezes ponds. |
-| **Growing stronger** | Eight Heart Circles, feats, the Grimoire, Mana Crystals, enchantments, casting gear and familiars. |
-| **Friends and rivals** | Spell codes, scrolls, duels, chorus casting, the Runesmith's trades, daily contracts, and homes, warps, waypoints and teleports for servers. |
-
-## Installing
-
-Wildercord runs on **Minecraft Java 26.3** with **Fabric Loader** and **Fabric API**, on **Java 25**. Install it on
-the server and on every player's game. Download it from
-[CurseForge](https://www.curseforge.com/minecraft/mc-mods/wildercord) or
-[GitHub](https://github.com/defnotean/wildercord/releases).
-
-This wiki describes the latest version. Wildercord is in **alpha**, so numbers can change between versions.
+This is an alpha. Read the release notes before updating a world, keep backups, and use the guide for the version you installed.

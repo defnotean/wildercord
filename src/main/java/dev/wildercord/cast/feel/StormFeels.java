@@ -16,6 +16,8 @@ final class StormFeels {
 	static final int BLUE = 0xA8C8FF;
 
 	static void register() {
+		Signature.of("thunder_tide").accent(0x91DDEE).sound(Phase.CUE,"storm_dive",.4F,.84F).register();
+		Signature.of("thunder_walk").accent(0xD8FBE2).sound(Phase.CUE,"storm_dive",.35F,1.26F).register();
 		// A tether that seeks conductors: white-hot, a dry zap at the hand.
 		Signature.of("shock").accent(WHITE).sound(Phase.CUE, "storm_zap", 0.5F, 1.0F).register();
 		// The counter-spell: pale blue, a lower zap; the stun ring and clamp are its own (StormEarthFx.stunRing).

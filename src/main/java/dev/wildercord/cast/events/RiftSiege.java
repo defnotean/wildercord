@@ -595,6 +595,7 @@ public final class RiftSiege {
 			}
 		}
 		if (won) {
+			EventAftermath.leave(level,net.minecraft.core.BlockPos.containing(base),"rift");
 			reward();
 		}
 		bar.removeAllPlayers();

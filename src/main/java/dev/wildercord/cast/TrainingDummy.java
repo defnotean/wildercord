@@ -43,6 +43,9 @@ public class TrainingDummy extends LivingEntity {
 	private float total;
 	private long lastHit;
 	private long firstHit;
+	private boolean practiceMoving;
+	private double practiceX, practiceZ;
+	public void setPracticeMoving(boolean moving) { practiceMoving=moving; practiceX=getX(); practiceZ=getZ(); }
 
 	public TrainingDummy(EntityType<? extends TrainingDummy> type, Level level) {
 		super(type, level);
@@ -74,6 +77,7 @@ public class TrainingDummy extends LivingEntity {
 	}
 
 	private void record(ServerLevel level, float dealt, DamageSource source) {
+		if(source.getEntity() instanceof ServerPlayer player&&(source.is(DamageTypes.MAGIC)||source.is(DamageTypes.INDIRECT_MAGIC)))SpellTrials.hit(player,dealt);
 		long now = level.getGameTime();
 		if (now - lastHit > 60) {
 			hits.clear();
@@ -163,6 +167,10 @@ public class TrainingDummy extends LivingEntity {
 	@Override
 	public void tick() {
 		super.tick();
+		if (practiceMoving && level() instanceof ServerLevel level) {
+			setDeltaMovement(Vec3.ZERO);
+			setPos(practiceX + Math.sin(level.getGameTime()*.045+getId())*1.3,81,practiceZ);
+		}
 		if (level() instanceof ServerLevel level && lastHit > 0 && level.getGameTime() - lastHit > 80) {
 			lastHit = 0;
 			hits.clear();
@@ -192,11 +200,15 @@ public class TrainingDummy extends LivingEntity {
 		super.addAdditionalSaveData(output);
 		// So a DPS nameplate saved mid-fight still clears once the dummy loads again.
 		output.putLong("last_hit", lastHit);
+		output.putBoolean("practice_moving", practiceMoving);
+		output.putDouble("practice_x", practiceX); output.putDouble("practice_z", practiceZ);
 	}
 
 	@Override
 	protected void readAdditionalSaveData(ValueInput input) {
 		super.readAdditionalSaveData(input);
 		lastHit = input.getLongOr("last_hit", 0L);
+		practiceMoving=input.getBooleanOr("practice_moving",false);
+		practiceX=input.getDoubleOr("practice_x",getX()); practiceZ=input.getDoubleOr("practice_z",getZ());
 	}
 }

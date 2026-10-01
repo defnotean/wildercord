@@ -45,7 +45,7 @@ import java.util.List;
  * {@code WILDERCORD_SHOWCASE}.</p>
  */
 public class WildercordLoadoutsTest implements FabricClientGameTest {
-	private static final int LEFT = 0;
+	private static final int LEFT = com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT;
 	private static final int LOAD = 0;
 	private static final int RENAME = 2;
 	private static final int DELETE = 3;

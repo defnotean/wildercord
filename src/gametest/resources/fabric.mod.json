@@ -6,6 +6,19 @@
 	"environment": "*",
 	"entrypoints": {
 		"fabric-client-gametest": [
+			"dev.wildercord.cast.ControlMatchupsTest",
+			"dev.wildercord.cast.PerformanceProfilesTest",
+			"dev.wildercord.familiar.ContentSystemsTest",
+			"dev.wildercord.cast.HomeProjectsTest",
+			"dev.wildercord.player.ResearchLibraryTest",
+			"dev.wildercord.world.dungeons.ExpeditionsTest",
+			"dev.wildercord.cast.ArmorResponsesTest",
+			"dev.wildercord.cast.NewEncountersTest",
+			"dev.wildercord.cast.PracticeRoomTest",
+			"dev.wildercord.cast.DefensiveFociTest",
+			"dev.wildercord.cast.WildercordRuneGapsTest",
+			"dev.wildercord.gametest.WildercordCinnamonTest",
+			"dev.wildercord.gametest.WildercordMagicReleaseTest",
 			"dev.wildercord.cast.RunicAnimationGalleryTest",
 			"dev.wildercord.gametest.WildercordScreenshots",
 			"dev.wildercord.gametest.WildercordFeatureTour",
@@ -50,7 +63,9 @@
 			"dev.wildercord.gametest.WildercordFlightTest",
 			"dev.wildercord.gametest.WildercordShaderTest",
 			"dev.wildercord.gametest.WildercordDefenceTest",
-			"dev.wildercord.gametest.WildercordShowcase"
+			"dev.wildercord.gametest.WildercordShowcase",
+			"dev.wildercord.cast.PhysicalMagicTest",
+			"dev.wildercord.cast.CircleDisciplineTest"
 		]
 	},
 	"depends": {

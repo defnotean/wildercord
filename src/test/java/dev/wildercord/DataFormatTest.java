@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -237,13 +239,35 @@ class DataFormatTest {
 	void everyKindOfDataIsChecked() throws IOException {
 		Set<String> checked = Set.of("wildercord/advancement", "wildercord/loot_table", "wildercord/enchantment", "wildercord/recipe",
 			"wildercord/villager_trade", "wildercord/trade_set", "wildercord/worldgen/structure", "wildercord/worldgen/structure_set",
-			"wildercord/tags", "minecraft/tags");
+			"wildercord/tags", "minecraft/tags", "wildercord/dimension");
 		List<Path> all = files("");
 		assertTrue(!all.isEmpty(), "there should be data files to check");
 		for (Path file : all) {
 			String path = DATA.relativize(file).toString().replace('\\', '/');
 			assertTrue(checked.stream().anyMatch(kind -> path.startsWith(kind + "/")),
 				file + " is a kind of data nothing checks: compare it with Minecraft's codec and add it to DataFormatTest");
+		}
+	}
+
+	@Test
+	void practiceDimensionUsesAValidFlatGenerator() throws IOException {
+		for (Path file : files("wildercord/dimension")) {
+			JsonObject dimension = read(file);
+			assertEquals("minecraft:overworld", dimension.get("type").getAsString());
+			JsonObject generator = dimension.getAsJsonObject("generator");
+			assertEquals("minecraft:flat", generator.get("type").getAsString());
+			JsonObject settings = generator.getAsJsonObject("settings");
+			assertEquals("minecraft:plains",settings.get("biome").getAsString());
+			assertFalse(settings.get("features").getAsBoolean());
+			assertFalse(settings.get("lakes").getAsBoolean());
+			int height = 0;
+			for (var layer : settings.getAsJsonArray("layers")) {
+				int thickness = layer.getAsJsonObject().get("height").getAsInt();
+				assertTrue(thickness > 0); height += thickness;
+				assertTrue(layer.getAsJsonObject().get("block").getAsString().startsWith("minecraft:"));
+			}
+			assertTrue(height <= 384);
+			assertTrue(settings.getAsJsonArray("structure_overrides").isEmpty());
 		}
 	}
 

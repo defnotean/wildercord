@@ -32,7 +32,10 @@ public final class WildercordItems {
 		new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
 	public static final Item STORMGLASS_RELIC = register("stormglass_relic", p -> new DungeonRelicItem(DungeonRelicItem.Kind.STORM, p),
 		new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
-	public static final Item BLANK_RUNE = register("blank_rune", Item::new, new Item.Properties());
+	public static final Item BLANK_RUNE = register("blank_rune", BlankRuneItem::new, new Item.Properties());
+	public static final Item KEEPERS_HOURGLASS=register("keepers_hourglass",p->new RelicCharmItem(RelicCharmItem.Kind.HOURGLASS,p),new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+	public static final Item LIVING_SEEDPOD=register("living_seedpod",p->new RelicCharmItem(RelicCharmItem.Kind.SEEDPOD,p),new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+	public static final Item SKY_FEATHER=register("sky_feather",p->new RelicCharmItem(RelicCharmItem.Kind.SKY_FEATHER,p),new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
 	public static final Item MANA_CRYSTAL = register("mana_crystal", ManaCrystalItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON));
 	public static final CordItem TWINE_CORD = cord(CordTier.TWINE, Rarity.COMMON);
 	public static final CordItem COPPER_CORD = cord(CordTier.COPPER, Rarity.COMMON);
@@ -57,9 +60,11 @@ public final class WildercordItems {
 				output.accept(AMETHYST_CORD);
 				output.accept(ECHO_CORD);
 				output.accept(BLANK_RUNE);
+				dev.wildercord.gear.ElementalArmor.ALL.forEach(output::accept);
 				output.accept(MANA_CRYSTAL);
 				output.accept(TORN_PAGE);
 				output.accept(TRAINING_DUMMY);
+				output.accept(dev.wildercord.pet.CinnamonContent.TOY);
 				output.accept(BACKPACK);
 				output.accept(REINFORCED_BACKPACK);
 				output.accept(RUNEWOVEN_BACKPACK);
@@ -70,6 +75,8 @@ public final class WildercordItems {
 				output.accept(WildercordBlocks.RUNE_SEAL);
 				output.accept(WildercordBlocks.ARCHIVE_LECTERN);
 				output.accept(WildercordBlocks.FUSION_ALTAR);
+				output.accept(WildercordBlocks.RUNIC_HEARTH);
+				output.accept(KEEPERS_HOURGLASS);output.accept(LIVING_SEEDPOD);output.accept(SKY_FEATHER);
 				for (var potion : java.util.List.of(WildercordEffects.CLARITY_POTION, WildercordEffects.LONG_CLARITY_POTION, WildercordEffects.STRONG_CLARITY_POTION,
 						WildercordEffects.MANA_POTION, WildercordEffects.STRONG_MANA_POTION, WildercordEffects.WARDED_POTION, WildercordEffects.LONG_WARDED_POTION,
 						WildercordEffects.STRONG_WARDED_POTION)) {

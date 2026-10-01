@@ -96,7 +96,7 @@ public final class Feels {
 	public static Vfx.Theme themed(Vfx.Theme base, Feel feel) {
 		Signature s = Signatures.of(feel);
 		if (s != null && s.accent != null) {
-			return new Vfx.Theme(base.primary(), s.accent, base.mote(), base.spark(), base.cast(), base.impact(), feel);
+			return new Vfx.Theme(base.primary(), s.accent, base.mote(), base.spark(), base.cast(), base.impact(), feel, base.elements());
 		}
 		return base.with(feel);
 	}
@@ -150,6 +150,21 @@ public final class Feels {
 			return true;
 		}
 		Vec3 d = to.subtract(from);
+		if (theme.elements().size() > 1 && d.lengthSqr() > 1.0E-6) {
+			// Supporting effects ride around the main projectile in their own material.
+			Vec3 forward = d.normalize();
+			Vec3 side = forward.cross(new Vec3(0, 1, 0));
+			if (side.lengthSqr() < 1.0E-4) side = new Vec3(1, 0, 0);
+			side = side.normalize();
+			Vec3 rise = forward.cross(side).normalize();
+			int supports = theme.elements().size() - 1;
+			for (int i = 0; i < Math.min(2, supports); i++) {
+				int index = 1 + Math.floorMod(tick + i, supports);
+				double angle = tick * 0.9 + index * 2.39996;
+				Vec3 satellite = to.add(side.scale(Math.cos(angle) * 0.2)).add(rise.scale(Math.sin(angle) * 0.2));
+				Vfx.emit(level, Vfx.theme(theme.elements().get(index)).mote(), satellite, 2, 0.025, 0.005);
+			}
+		}
 		return run(Phase.TRAVEL, feel, theme, level, to, d.lengthSqr() > 1.0E-6 ? d.normalize() : null, null, null, tick);
 	}
 

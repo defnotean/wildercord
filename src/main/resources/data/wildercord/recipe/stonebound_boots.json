@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "minecraft:leather_boots",
+    "minecraft:mossy_cobblestone",
+    "wildercord:mana_crystal"
+  ],
+  "result": {
+    "id": "wildercord:stonebound_boots",
+    "count": 1
+  }
+}

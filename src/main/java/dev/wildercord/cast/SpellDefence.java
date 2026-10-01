@@ -80,8 +80,22 @@ public final class SpellDefence {
 	private static Landing landing;
 	/** Short lived protection for the remaining hits of the cast the guard stopped. */
 	private static final Map<ServerPlayer, Grace> grace = new WeakHashMap<>();
+	private static final class Burst {
+		long tick=Long.MIN_VALUE;
+		final java.util.IdentityHashMap<Object,Float> health=new java.util.IdentityHashMap<>();
+	}
+	private static final Map<ServerPlayer,Burst> BURSTS=new WeakHashMap<>();
+	private static float firstHealth(LivingEntity target,Object identity){
+		if(!(target instanceof ServerPlayer p))return target.getHealth();
+		Burst burst=BURSTS.computeIfAbsent(p,k->new Burst());long tick=p.level().getServer().getTickCount();
+		if(burst.tick!=tick){burst.health.clear();burst.tick=tick;}
+		Float first=burst.health.get(identity);if(first!=null)return first;
+		if(burst.health.size()>=128)burst.health.remove(burst.health.keySet().iterator().next());
+		burst.health.put(identity,target.getHealth());return target.getHealth();
+	}
 
 	public static void init() {
+		DefensiveFoci.init();
 		// The guard is a limit on one hit, not a way back from death: a hit it stops never killed anyone, so nothing that
 		// answers a death (Reversal, Rebirth, Second Wind, a duel's knockout, a totem) is spent on it. It goes first.
 		ServerLivingEntityEvents.ALLOW_DEATH.addPhaseOrdering(GUARD_PHASE, Event.DEFAULT_PHASE);
@@ -91,7 +105,7 @@ public final class SpellDefence {
 				grace.values().removeIf(saved -> server.getTickCount() - saved.serverTick > GUARD_GRACE);
 			}
 		});
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> grace.clear());
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {grace.clear();BURSTS.clear();});
 	}
 
 	// ------------------------------------------------------------------ landing
@@ -117,6 +131,18 @@ public final class SpellDefence {
 			return target.hurtServer(level, spell, amount);
 		}
 		float left = reduce(level, player, spell, amount);
+		if (ArmorResponses.mirrorReady(player)) {
+			boolean hurt = guarded(target, castIdentity, () -> target.hurtServer(level, spell, left*.5F));
+			if(hurt) ArmorResponses.fragment(level,player,spell,left);
+			return hurt;
+		}
+		if (player instanceof ServerPlayer serverPlayer && DefensiveFoci.available(serverPlayer, left)) {
+			float delayed = left * DefensiveFoci.DELAY_SHARE;
+			float immediate = left - delayed;
+			boolean hurt = guarded(target, castIdentity, () -> target.hurtServer(level, spell, immediate));
+			if (hurt) DefensiveFoci.defer(serverPlayer, delayed,spell);
+			return hurt;
+		}
 		return guarded(target, castIdentity, () -> target.hurtServer(level, spell, left));
 	}
 
@@ -135,7 +161,7 @@ public final class SpellDefence {
 		Landing outer = landing;
 		// A hit inside a hit on the same player (a dodge letting part of it through) keeps the health it first found.
 		landing = outer != null && outer.target == target && outer.castIdentity == castIdentity
-			? outer : new Landing(target, target.getHealth(), castIdentity);
+			? outer : new Landing(target, firstHealth(target,castIdentity), castIdentity);
 		try {
 			return hit.getAsBoolean();
 		} finally {
@@ -179,6 +205,7 @@ public final class SpellDefence {
 		if (Gear.of(player).pieces().contains(GearDef.RESOLVE)) {
 			left *= 1 - GearDef.RESOLVE_PROTECTION;
 		}
+		left *= ArmorResponses.factor(player);
 		return (float) left;
 	}
 

@@ -80,7 +80,7 @@ public final class CordTrails {
 			double z = at.z + (random.nextDouble() - 0.5) * spread;
 			double speed = burst ? 0.05 + random.nextDouble() * 0.08 : 0.01;
 			Vec3 v = look.scale(speed).add((random.nextDouble() - 0.5) * 0.04, (random.nextDouble() - 0.3) * 0.04, (random.nextDouble() - 0.5) * 0.04);
-			mc.level.addParticle(particle(trail, random), x, y, z, v.x, v.y + lift(trail), v.z);
+			mc.level.addParticle(dev.wildercord.cast.SpellMaterials.custom(particle(trail, random),new Vec3(x,y,z)), x, y, z, v.x, v.y + lift(trail), v.z);
 		}
 	}
 

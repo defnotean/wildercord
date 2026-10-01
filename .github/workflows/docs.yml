@@ -1,0 +1,45 @@
+name: Player Guide
+
+on:
+  push:
+    branches: [main]
+    paths: ["wiki/**", "gitbook/**", ".gitbook.yaml", "tools/player_docs.py", ".github/workflows/docs.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Check guide links and GitBook export
+        run: python tools/player_docs.py --check
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          working-directory: wiki
+          bundler-cache: true
+      - uses: actions/configure-pages@v5
+      - name: Build the player guide
+        working-directory: wiki
+        run: bundle exec jekyll build --destination ../_site --trace
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4

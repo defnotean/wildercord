@@ -241,3 +241,8 @@ Everything that counts works together: your slots, and the hands where a slot is
   [fused runes]({{ '/runes/fused/' | relative_url }}) count as the element shown in their entry.
 
 All the gear recipes are also listed in [Items and Crafting]({{ '/items/' | relative_url }}#casting-gear).
+
+## New in 0.7
+
+- [Elemental Armour]({{ '/progression/elemental-armour/' | relative_url }})
+- [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }})

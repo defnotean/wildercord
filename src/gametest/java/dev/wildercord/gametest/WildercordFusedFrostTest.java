@@ -207,11 +207,9 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 		});
 		// Ten seconds on from the last one asked for, it seals again.
 		context.waitTicks(206);
+		String recast = on(world, player -> cast(player, Runes.SELF, Runes.CRYOSTASIS));
+		context.waitTicks(4);
 		String after = on(world, player -> {
-			String again = cast(player, Runes.SELF, Runes.CRYOSTASIS);
-			if (again != null) {
-				return again;
-			}
 			float before = player.getHealth();
 			Effects.readyToHurt(player);
 			player.hurtServer(player.level(), player.level().damageSources().mobAttack(mob(player, husk)), 2.0F);
@@ -220,7 +218,7 @@ public class WildercordFusedFrostTest implements FabricClientGameTest {
 		});
 		// Let it open before the next rune.
 		context.waitTicks(45);
-		return found(untouchable, held, opened, locked, noIce, after);
+		return found(untouchable, held, opened, locked, noIce, recast, after);
 	}
 
 	/**

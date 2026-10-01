@@ -10,7 +10,7 @@ a **Blank Rune** plus the items below, plus a cost that grows with the tier:
 Recipes appear in the crafting recipe book once you hold a Blank Rune
 (Blank Rune: 4 Cobblestone around 1 Lapis Lazuli, makes 4). Tier IV runes can't be crafted.
 
-## Tier I (51 runes, + nothing extra)
+## Tier I (52 runes, + nothing extra)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -57,6 +57,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Amplify | Modifier | Gold Ingot |
 | Extend | Modifier | 2x Redstone |
 | Frugal | Modifier | Emerald |
+| Reservoir Circle | Modifier | Glass Bottle, Lapis Lazuli |
 | Arc | Shape | 2x Snowball |
 | Bolt | Shape | Arrow |
 | Imprint | Shape | Clay Ball, Gunpowder |
@@ -66,7 +67,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Spark | Shape | Flint, Glowstone Dust |
 | Touch | Shape | Leather |
 
-## Tier II (91 runes, + 2 Lapis Lazuli and a Gold Ingot)
+## Tier II (102 runes, + 2 Lapis Lazuli and a Gold Ingot)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -112,13 +113,16 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Span | Effect | 2x Magenta Stained Glass |
 | Spellbrand | Effect | Book, Gunpowder |
 | Stoneskin | Effect | Armadillo Scute |
+| Strata Rise | Effect | Stone, Packed Mud, Flint |
 | Swap | Effect | 2x Ender Pearl |
 | Thunderclap | Effect | Goat Horn |
+| Tidal Lift | Effect | Prismarine Shard, Kelp, Clay Ball |
 | Tunnel | Effect | Iron Pickaxe, Rail |
 | Veil | Effect | Golden Carrot, Fermented Spider Eye |
 | Vein | Effect | Iron Pickaxe, Raw Iron |
 | Venom | Effect | Poisonous Potato |
 | Weigh | Effect | Iron Block |
+| Wind Steps | Effect | Feather, Breeze Rod, String |
 | Zipper | Effect | 2x Iron Nugget, String |
 | If Airborne | Link | Feather, Phantom Membrane |
 | If Sneaking | Link | Leather Boots |
@@ -128,16 +132,24 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | On Land | Link | Hay Block |
 | On Weakness | Link | Fermented Spider Eye, Target |
 | Pulse | Link | Repeater |
+| Anchor Circle | Modifier | Iron Ingot, Stone |
 | Belated | Modifier | Clock, Cobweb |
+| Bloom Circle | Modifier | Pink Petals, Bone Meal |
 | Bounce | Modifier | Slime Block |
+| Crucible Circle | Modifier | Blaze Powder, Brick |
 | Execute | Modifier | Iron Axe |
 | Focus | Modifier | Glass Pane, Gold Nugget |
+| Gyre Circle | Modifier | Feather, Copper Ingot |
 | Kindred | Modifier | Cake |
 | Linger | Modifier | Honey Bottle |
+| Mercy Circle | Modifier | Honey Bottle, Poppy |
+| Needle Circle | Modifier | Flint, Iron Nugget |
 | Pierce | Modifier | 2x Arrow |
+| Pilgrim Circle | Modifier | Compass, Feather |
 | Quicken | Modifier | Breeze Rod |
 | Rapid | Modifier | Sugar, Redstone |
 | Thirst | Modifier | Spider Eye, Glass Bottle |
+| Vigil Circle | Modifier | Spider Eye, Iron Nugget |
 | Volley | Modifier | Crossbow |
 | Widen | Modifier | 2x Amethyst Shard |
 | Barrage | Shape | Leather, Iron Ingot |
@@ -162,7 +174,7 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | Wave | Shape | 2x Kelp |
 | Wisp | Shape | Glow Berries, Amethyst Shard |
 
-## Tier III (42 runes, + a Mana Crystal and a Diamond)
+## Tier III (45 runes, + a Mana Crystal and a Diamond)
 
 | Rune | Family | Items |
 |---|---|---|
@@ -198,9 +210,12 @@ Recipes appear in the crafting recipe book once you hold a Blank Rune
 | On Reaction | Link | Brewing Stand |
 | Blood Price | Modifier | Ghast Tear, Redstone |
 | Chain | Modifier | Iron Chain, Redstone |
+| Confluence Circle | Modifier | Amethyst Shard, Prismarine Shard |
+| Eclipse Circle | Modifier | Ender Pearl, Gold Nugget |
 | Homing | Modifier | Compass |
 | Overcharge | Modifier | 2x Glowstone |
 | Split | Modifier | 2x Prismarine Crystals |
+| Tempest Circle | Modifier | Breeze Rod, Copper Ingot |
 | Vow | Modifier | Paper, Gold Block |
 | Orb | Shape | Slime Block |
 | Orbit | Shape | Ender Eye |
@@ -288,7 +303,7 @@ Any effect of an element counts.
 | Prismatic Burst | Arcane + Arcane | 5 damage, and 4 more for every mark on the target (burning, frozen, windswept, pulled, soaked, wet, cracked, shadowed, bleeding or exposed), up to 5, each used up and passed on to up to 3 enemies within 4 blocks: up to 25. |
 | Chronoshift | Time + Time | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
 
-## Signature fusions (16, made only at the Fusion Altar)
+## Signature fusions (22, made only at the Fusion Altar)
 
 Two particular effects, an amethyst shard and 3 XP levels. The pair makes its signature rune instead of its elements' fusion; any other effects of those elements still make that.
 
@@ -310,6 +325,12 @@ Two particular effects, an amethyst shard and 3 XP levels. The pair makes its si
 | Summit Wind + Sandstorm | **Dust Devil** | Wind | IV | 26 | A dust devil touches down where it lands and chases the nearest enemy for 5 seconds. Enemies within 2 blocks of it are caught up and whirled round it, blinded and scoured for 3 damage a second; when it blows out it flings them high. | Downdraft |
 | Hex + Resonance | **Malison** | Void | III | 16 | 4 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, 5% stronger each time (up to 45%), for the time it had left, to up to 3 enemies within 6 blocks of it. | Nullify |
 | Coldsnap + Stalactite | **Avalanche** | Frost | III | 18 | Snow and ice crash down round where it lands: 6 damage to every enemy within 3 blocks (half again on a bare head), buried in snow (Slowness III for 3 seconds). Drifts of snow lie where it fell for 10 seconds. | Glacier |
+| Strata Rise + Fire | **Cinder Bulwark** | Fire | III | 16 | Raises a cracked, glowing wall. Enemies brushing against it take 2 magic damage once per cast. Lasts eight seconds and drops nothing. | Magma |
+| Strata Rise + Grow | **Root Bulwark** | Life | III | 16 | Raises a living root wall that gives nearby allies brief Regeneration I. Lasts eight seconds, respects land protections and drops no wood. | Bloom |
+| Tidal Lift + Fire | **Boiling Surge** | Fire | III | 19 | Lifts nearby real water through a scalding arc, returning each source afterwards. Each enemy takes 5 damage once and two seconds of Weakness. Original steam curls trace the crest. | Steam |
+| Tidal Lift + Shock | **Thunder Tide** | Storm | III | 19 | Suspends real borrowed water inside electrical rings and drives it forward. Each enemy takes 5 damage once, is soaked and slowed for one second. Water returns safely. | Hail |
+| Wind Steps + Frost | **Rime Causeway** | Frost | III | 16 | Condenses wind into an ascending three-wide ice causeway. Lasts eight seconds, leaves no farmable ice and cushions allies when it fades. | Blizzard |
+| Wind Steps + Shock | **Thunder Walk** | Storm | III | 16 | Builds five copper-lit wind stepping stones. Each enemy touching a stone takes 2 magic damage once per cast; allies receive slow falling before expiry. | Tempest |
 
 The Fusion Altar itself: 4 Amethyst Blocks, 4 Deepslate Tiles and a Lodestone (tiles in the corners, the lodestone in the middle).
 

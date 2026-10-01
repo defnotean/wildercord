@@ -3179,9 +3179,13 @@ def _shimmer(cv: Canvas, stone: Stone, lit: set, frame: int):
 
 
 def _render_rune(path, family, element, tier, frame=0) -> Canvas:
+    import physical_art
+    import circle_discipline_art
     stone = family_stone(family, element)
     cv = stone.canvas.copy()
-    text = GLYPHS.get(path, FALLBACK_GLYPH)
+    text = '\n'.join(physical_art.GLYPHS[path]) if path in physical_art.GLYPHS else GLYPHS.get(path, FALLBACK_GLYPH)
+    if path in circle_discipline_art.GLYPHS:
+        text = '\n'.join(circle_discipline_art.GLYPHS[path])
     boost = 0.0
     if tier >= 4:
         boost = 0.5 - 0.5 * math.cos(2 * math.pi * frame / ANIM_FRAMES)

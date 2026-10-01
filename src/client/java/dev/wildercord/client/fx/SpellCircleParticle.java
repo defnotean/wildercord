@@ -67,7 +67,6 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	protected final float yaw;
 	protected final float pitch;
 	private final int points;
-	private final int step;
 	/** A secret spell's id: its circle gets a centrepiece of its own instead of the star. */
 	private final String secret;
 	private final float roundel;
@@ -77,6 +76,8 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	/** A smooth round glow, for the big soft light behind the whole circle (the other has a sparkle and steps). */
 	protected final TextureAtlasSprite soft;
 	private final TextureAtlasSprite[] script;
+	private final dev.wildercord.spell.CircleDisciplines.Design design;
+	private final List<Integer> materials = new ArrayList<>();
 
 	/** How far each part has turned: the script band, the pattern band (the other way) and the star. */
 	private float scriptTurn;
@@ -119,9 +120,17 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 			runes.add(new Rune(particleSprite("circle/_shape_band"), particleSprite("circle/_shape_mark"), 0xFFFFFF));
 		}
 		this.pattern = firstEffect != null ? firstEffect : runes.getFirst();
+		List<RuneDef> flat=dev.wildercord.spell.Knots.flatten(defs);
+		this.design = dev.wildercord.spell.CircleDisciplines.design(flat);
+		for(RuneDef def:flat) if(def.family()==RuneFamily.EFFECT) {
+			for(RuneDef leaf:dev.wildercord.spell.WovenRunes.isWoven(def)?dev.wildercord.spell.WovenRunes.contents(def):List.of(def)) {
+				int primary=RuneColors.of(leaf), secondary=RuneColors.second(leaf);
+				if(!materials.contains(primary)&&materials.size()<10)materials.add(primary);
+				if(secondary>=0&&!materials.contains(secondary)&&materials.size()<10)materials.add(secondary);
+			}
+		}
 		this.secret = defs.size() == option.runes().size() ? Secrets.match(defs).map(Secrets.Secret::id).orElse(null) : null;
 		this.points = SpellSigil.points(runes.size());
-		this.step = SpellSigil.step(points);
 		this.roundel = SpellSigil.roundel(runes.size());
 		this.line = particleSprite("sigil_band");
 		this.glow = particleSprite("sigil_glow");
@@ -164,11 +173,11 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		yo = y;
 		zo = z;
 		oScriptTurn = scriptTurn;
-		scriptTurn += 0.012F;
+		scriptTurn += switch(design) { case GYRE -> .035F; case ANCHOR,VIGIL -> .003F; case ECLIPSE -> -.009F; default -> .012F; };
 		oPatternTurn = patternTurn;
-		patternTurn -= 0.018F;
+		patternTurn -= switch(design) { case TEMPEST -> .045F; case RESERVOIR,MERCY -> .008F; default -> .018F; };
 		oStarTurn = starTurn;
-		starTurn += 0.006F;
+		starTurn += switch(design) { case ANCHOR -> 0; case GYRE,PILGRIM -> .024F; case CONFLUENCE -> -.016F; default -> .006F; };
 		if (age++ >= lifetime) {
 			remove();
 		}
@@ -176,7 +185,10 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 
 	/** How far the circle has opened, 0 to 1. */
 	protected float opening(float partial) {
-		return Mth.clamp((age + partial) / (6F + runes.size()), 0, 1);
+		// Short-lived cast and telegraph circles must finish drawing before their spell
+		// releases. Ritual, shield and display circles keep their slower unfolding.
+		float openingTicks = lifetime <= 50 ? 2.5F : 6F + runes.size();
+		return Mth.clamp((age + partial) / openingTicks, 0, 1);
 	}
 
 	/** Its brightness: quickly in, and out over the last part of its life. */
@@ -281,16 +293,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 			return;
 		}
 		ring(0, 0, r * SpellSigil.STAR, fine, argb(a * drawn * 0.7F, color), 0.004F);
-		int starColor = argb(a * Math.min(1, drawn * 1.5F), lighter(color, 0.35F));
-		for (int k = 0; k < points; k++) {
-			float a0 = star + Mth.HALF_PI - Mth.TWO_PI * k / points;
-			float a1 = star + Mth.HALF_PI - Mth.TWO_PI * (k + step) / points;
-			float x0 = Mth.cos(a0) * r * SpellSigil.STAR;
-			float y0 = Mth.sin(a0) * r * SpellSigil.STAR;
-			float x1 = Mth.cos(a1) * r * SpellSigil.STAR;
-			float y1 = Mth.sin(a1) * r * SpellSigil.STAR;
-			line(x0, y0, x0 + (x1 - x0) * drawn, y0 + (y1 - y0) * drawn, fine, starColor, 0.004F);
-		}
+		circleCentre(r * SpellSigil.STAR, drawn, a, fine, star, age+partial);
 
 		// The inner rings and the seal.
 		float middle = part(open, 0.3F, 0.3F);
@@ -342,6 +345,13 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	 * The centrepiece of a secret spell's circle, drawn inside the script and pattern bands in place
 	 * of the star and roundels: every secret has a design no ordinary spell can make.
 	 */
+	/** Use the same authored mechanism as the Cord screen preview. */
+	private void circleCentre(float r,float open,float alpha,float fine,float turn,float time) {
+		var colors=materials.stream().map(rgb->argb(alpha*open*.8F,rgb)).toList();
+		dev.wildercord.spell.CircleGeometry.draw(design,r,open,fine,turn,time,argb(alpha*open,lighter(color,.3F)),colors,
+			(x0,y0,x1,y1,width,ink)->line(x0,y0,x1,y1,width,ink,.005F));
+	}
+
 	private void secretCentre(String id, float r, float drawn, float a, float fine, float heavy, float star, float partial) {
 		int main = argb(a * Math.min(1, drawn * 1.5F), lighter(color, 0.35F));
 		int soft = argb(a * drawn * 0.7F, color);

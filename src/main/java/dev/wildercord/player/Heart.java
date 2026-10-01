@@ -144,11 +144,11 @@ public final class Heart {
 	/** @param overflow the spell is cast at full mana (7th Circle: Overflow) */
 	public static Bonuses bonuses(Player player, boolean overflow) {
 		int circles = active(player);
-		return new Bonuses(
+		return dev.wildercord.content.RelicCharmItem.apply(player,new Bonuses(
 			Circles.power(Mana.enchantLevel(player, POTENCY), circles, overflow),
 			Circles.duration(Mana.enchantLevel(player, PERSISTENCE)),
 			Circles.cost(Mana.enchantLevel(player, THRIFT), circles),
-			Circles.cooldown(Mana.enchantLevel(player, CELERITY), circles));
+			Circles.cooldown(Mana.enchantLevel(player, CELERITY), circles)));
 	}
 
 	public static int manaCost(Player player, SpellCompiler.Compiled compiled) {

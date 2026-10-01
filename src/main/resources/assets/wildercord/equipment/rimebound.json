@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "wildercord:rimebound"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "wildercord:rimebound"
+      }
+    ]
+  }
+}

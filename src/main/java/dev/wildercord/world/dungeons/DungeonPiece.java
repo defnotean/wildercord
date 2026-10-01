@@ -34,6 +34,10 @@ import java.util.List;
  */
 public abstract class DungeonPiece extends ScatteredFeaturePiece implements WardedPiece {
 	protected static final BlockState AIR = Blocks.AIR.defaultBlockState();
+	/** Stable across chunk order and reloads, including rotated layouts. */
+	public int variant(){return Math.floorMod(getBoundingBox().minX()*31+getBoundingBox().minZ()*17,3);}
+	/** Immutable authoring/debug position in the piece's rotated local frame. */
+	public BlockPos localPosition(int x,int y,int z){return getWorldPos(x,y,z).immutable();}
 
 	protected DungeonPiece(StructurePieceType type, int x, int y, int z, int width, int height, int depth, Direction facing) {
 		super(type, x, y, z, width, height, depth, facing);
@@ -122,6 +126,14 @@ public abstract class DungeonPiece extends ScatteredFeaturePiece implements Ward
 	/** The altar its boss rises from. */
 	protected void altar(WorldGenLevel level, BoundingBox bb, DungeonAltarBlock.Kind kind, int x, int y, int z) {
 		set(level, bb, DungeonBlocks.ALTAR.defaultBlockState().setValue(DungeonAltarBlock.KIND, kind), x, y, z);
+	}
+	/** Mechanisms face the next local z coordinate; derive the world direction once, without a second state rotation. */
+	protected net.minecraft.core.Direction inward(int x,int z) {
+		BlockPos from=getWorldPos(x,1,z),to=getWorldPos(x,1,z+1);
+		return to.getX()>from.getX()?Direction.EAST:to.getX()<from.getX()?Direction.WEST:to.getZ()>from.getZ()?Direction.SOUTH:Direction.NORTH;
+	}
+	protected void mechanism(WorldGenLevel level,BoundingBox bb,dev.wildercord.content.dungeons.ExpeditionMechanism block,int x,int y,int z) {
+		BlockPos at=getWorldPos(x,y,z);if(bb.isInside(at))level.setBlock(at,block.defaultBlockState().setValue(dev.wildercord.content.dungeons.ExpeditionMechanism.FACING,inward(x,z)),2);
 	}
 
 	/** A Runebound guard carrying {@code spell}, placed once: by the chunk its feet are in. */

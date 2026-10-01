@@ -26,6 +26,8 @@ final class FrostFeels {
 	}
 
 	static void register() {
+		frost("tidal_lift",1,0x67D5EB,"frost_surge",.4F,.84F).register();
+		frost("rime_causeway",1.1,0xE1FAFF,"frost_crust",.35F,1.12F).register();
 		// Rime: creeping, rising, slow.
 		frost("chill", 0.85, RIME, "frost_crust", 0.3F, 1.4F).hook(Phase.AFTERMATH, FrostWindFx::frostPatch).register();
 		frost("frost", 1.0, RIME, "frost_needle", 0.3F, 1.0F).hook(Phase.AFTERMATH, FrostWindFx::frostPatch).register();

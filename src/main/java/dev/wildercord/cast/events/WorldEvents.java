@@ -80,6 +80,7 @@ public final class WorldEvents {
 	private static final Set<UUID> LIVE = new HashSet<>();
 
 	public static void init() {
+		EventAftermath.init();
 		EventSounds.init();
 		EventContent.init();
 		EventCommand.init();
@@ -394,8 +395,8 @@ public final class WorldEvents {
 	/** An event's monster goes back where it came from, in a puff of violet, leaving anything it picked up. */
 	static void vanish(ServerLevel level, Entity entity) {
 		Vec3 at = entity.position().add(0, entity.getBbHeight() * 0.5, 0);
-		level.sendParticles(ParticleTypes.REVERSE_PORTAL, at.x, at.y, at.z, 20, 0.3, 0.5, 0.3, 0.05);
-		level.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 6, 0.3, 0.5, 0.3, 0.03);
+		dev.wildercord.cast.Fx.sendParticles(level, ParticleTypes.REVERSE_PORTAL, at.x, at.y, at.z, 20, 0.3, 0.5, 0.3, 0.05);
+		dev.wildercord.cast.Fx.sendParticles(level, ParticleTypes.END_ROD, at.x, at.y, at.z, 6, 0.3, 0.5, 0.3, 0.03);
 		if (entity instanceof Mob mob) {
 			mob.dropPreservedEquipment(level);
 		}
@@ -459,7 +460,7 @@ public final class WorldEvents {
 	static void far(ServerLevel level, ParticleOptions particle, Vec3 at) {
 		for (ServerPlayer player : level.players()) {
 			if (player.position().distanceToSqr(at) <= 400 * 400 && player.getEyePosition().distanceToSqr(at) > 2.0) {
-				level.sendParticles(player, particle, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
+				dev.wildercord.cast.Fx.sendParticles(level, player, particle, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 			}
 		}
 	}

@@ -42,7 +42,7 @@ public class ManaCrystalItem extends Item {
 		ServerLevel server = serverPlayer.level();
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 1.0F, 1.2F);
 		server.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5F, 1.6F);
-		server.sendParticles(ParticleTypes.ENCHANT, player.getX(), player.getY() + 0.2, player.getZ(), 40, 0.6, 0.2, 0.6, 0.6);
+		dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.ENCHANT, player.getX(), player.getY() + 0.2, player.getZ(), 40, 0.6, 0.2, 0.6, 0.6);
 		serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.crystal_used", Mana.CRYSTAL_MANA, crystals + 1, Mana.MAX_CRYSTALS)
 			.withColor(0xB8A8FF));
 		return InteractionResult.SUCCESS;

@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "wildercord:stonebound"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "wildercord:stonebound"
+      }
+    ]
+  }
+}

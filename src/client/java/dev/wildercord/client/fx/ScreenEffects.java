@@ -28,6 +28,7 @@ public final class ScreenEffects {
 	private static float tintAlpha;
 
 	public static void receive(WildercordNetworking.ScreenFx fx) {
+		if (!MagicQuality.cameraShake && fx.kind() != WildercordNetworking.ScreenFx.TINT) return;
 		switch (fx.kind()) {
 			case WildercordNetworking.ScreenFx.SHAKE -> {
 				if (fx.strength() >= remaining(shake, shakeTicks, shakeTotal)) {
@@ -84,6 +85,7 @@ public final class ScreenEffects {
 	}
 
 	private static float scale() {
+		if (MagicQuality.reducedFlash) return 0.15F;
 		Minecraft mc = Minecraft.getInstance();
 		return mc.options == null ? 1 : mc.options.screenEffectScale().get().floatValue();
 	}

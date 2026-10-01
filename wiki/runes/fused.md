@@ -8,7 +8,7 @@ nav_order: 6
 
 # Fused runes
 
-55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (16 more).
+55 runes made only at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}): one for every pair of the ten elements, and one for each element with itself. Put any effect of one element and any effect of the other in the altar with an amethyst shard. Read the grid by row and column: Fire with Wind makes Firestorm. A few particular pairs of effects make [signature fusions](#signature-fusions) instead (22 more).
 
 | | Fire | Frost | Storm | Wind | Earth | Life | Void | Arcane | Time | Blood |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -632,10 +632,16 @@ A warm breeze that clears the air: allies within 4 blocks get Speed I, Jump Boos
 
 ## Signature fusions
 
-16 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
+22 more fused runes, each made from two *particular* effects rather than any two of their elements. The altar asks for a signature first, so the pair below makes its own rune **in place of** its elements' fusion, while any other effects of those two elements still make that one. They take modifiers, ranks and further fusions like every fused rune. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions).
 
 | | Put in | Makes | Counts as | In place of |
 |---|---|---|---|---|
+| <img src="{{ '/assets/runes/cinder_bulwark.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Strata Rise]({{ '/runes/effects/earth/' | relative_url }}#strata_rise) + [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) | [Cinder Bulwark](#cinder_bulwark) | Fire | Magma |
+| <img src="{{ '/assets/runes/root_bulwark.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Strata Rise]({{ '/runes/effects/earth/' | relative_url }}#strata_rise) + [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) | [Root Bulwark](#root_bulwark) | Life | Bloom |
+| <img src="{{ '/assets/runes/boiling_surge.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidal Lift]({{ '/runes/effects/frost/' | relative_url }}#tidal_lift) + [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) | [Boiling Surge](#boiling_surge) | Fire | Steam |
+| <img src="{{ '/assets/runes/thunder_tide.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidal Lift]({{ '/runes/effects/frost/' | relative_url }}#tidal_lift) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Thunder Tide](#thunder_tide) | Storm | Hail |
+| <img src="{{ '/assets/runes/rime_causeway.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Wind Steps]({{ '/runes/effects/wind/' | relative_url }}#wind_steps) + [Frost]({{ '/runes/effects/frost/' | relative_url }}#frost) | [Rime Causeway](#rime_causeway) | Frost | Blizzard |
+| <img src="{{ '/assets/runes/thunder_walk.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Wind Steps]({{ '/runes/effects/wind/' | relative_url }}#wind_steps) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Thunder Walk](#thunder_walk) | Storm | Tempest |
 | <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Chill]({{ '/runes/effects/frost/' | relative_url }}#chill) + [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) | [Frostwire](#frostwire) | Storm | Hail |
 | <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Bubble]({{ '/runes/effects/frost/' | relative_url }}#bubble) + [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) | [Seethe](#seethe) | Fire | Steam |
 | <img src="{{ '/assets/runes/bloomstep.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) + [Blink]({{ '/runes/effects/void/' | relative_url }}#blink) | [Bloomstep](#bloomstep) | Life | Lifesteal |
@@ -674,6 +680,28 @@ Steps you through a door of blossoms to where the spell landed (up to 32 blocks)
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) and [Blink]({{ '/runes/effects/void/' | relative_url }}#blink) themselves, with an amethyst shard (3 XP levels). Any other Life and Void effects make Lifesteal instead.
 
 **Modifiers that work on it:** Extend, Widen, Frugal, Focus
+
+### <img src="{{ '/assets/runes/boiling_surge.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Boiling Surge
+{: #boiling_surge}
+
+*Tier III · Fire · Harms enemies · 19 mana · needs an Amethyst Cord or better*
+
+Lifts nearby real water through a scalding arc, returning each source afterwards. Each enemy takes 5 damage once and two seconds of Weakness. Original steam curls trace the crest.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Tidal Lift]({{ '/runes/effects/frost/' | relative_url }}#tidal_lift) and [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) themselves, with an amethyst shard (3 XP levels). Any other Frost and Fire effects make Steam instead.
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/cinder_bulwark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cinder Bulwark
+{: #cinder_bulwark}
+
+*Tier III · Fire · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Raises a cracked, glowing wall. Enemies brushing against it take 2 magic damage once per cast. Lasts eight seconds and drops nothing.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Strata Rise]({{ '/runes/effects/earth/' | relative_url }}#strata_rise) and [Fire]({{ '/runes/effects/fire/' | relative_url }}#fire) themselves, with an amethyst shard (3 XP levels). Any other Earth and Fire effects make Magma instead.
+
+**Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/frostwire.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Frostwire
 {: #frostwire}
@@ -730,6 +758,17 @@ A whirl of blades round where it lands: every enemy within 3 blocks is cut for 2
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
+### <img src="{{ '/assets/runes/rime_causeway.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Rime Causeway
+{: #rime_causeway}
+
+*Tier III · Frost · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Condenses wind into an ascending three-wide ice causeway. Lasts eight seconds, leaves no farmable ice and cushions allies when it fades.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Wind Steps]({{ '/runes/effects/wind/' | relative_url }}#wind_steps) and [Frost]({{ '/runes/effects/frost/' | relative_url }}#frost) themselves, with an amethyst shard (3 XP levels). Any other Wind and Frost effects make Blizzard instead.
+
+**Modifiers that work on it:** Extend, Frugal
+
 ### <img src="{{ '/assets/runes/riposte.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Riposte
 {: #riposte}
 
@@ -740,6 +779,17 @@ For 10 seconds the ally sees the next 2 blows coming: each is sidestepped, and a
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Reflect]({{ '/runes/effects/arcane/' | relative_url }}#reflect) and [Foresight]({{ '/runes/effects/time/' | relative_url }}#foresight) themselves, with an amethyst shard (3 XP levels). Any other Arcane and Time effects make Timesteal instead.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/root_bulwark.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Root Bulwark
+{: #root_bulwark}
+
+*Tier III · Life · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Raises a living root wall that gives nearby allies brief Regeneration I. Lasts eight seconds, respects land protections and drops no wood.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Strata Rise]({{ '/runes/effects/earth/' | relative_url }}#strata_rise) and [Grow]({{ '/runes/effects/life/' | relative_url }}#grow) themselves, with an amethyst shard (3 XP levels). Any other Earth and Life effects make Bloom instead.
+
+**Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/seethe.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Seethe
 {: #seethe}
@@ -773,6 +823,28 @@ Heals the ally 4 and stitches the next 4 seconds: every wound they take meanwhil
 **How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Heal]({{ '/runes/effects/life/' | relative_url }}#heal) and [Countdown]({{ '/runes/effects/time/' | relative_url }}#countdown) themselves, with an amethyst shard (3 XP levels). Any other Life and Time effects make Second Wind instead.
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Kindred, Thirst, Belated
+
+### <img src="{{ '/assets/runes/thunder_tide.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunder Tide
+{: #thunder_tide}
+
+*Tier III · Storm · Harms enemies · 19 mana · needs an Amethyst Cord or better*
+
+Suspends real borrowed water inside electrical rings and drives it forward. Each enemy takes 5 damage once, is soaked and slowed for one second. Water returns safely.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Tidal Lift]({{ '/runes/effects/frost/' | relative_url }}#tidal_lift) and [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) themselves, with an amethyst shard (3 XP levels). Any other Frost and Storm effects make Hail instead.
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/thunder_walk.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunder Walk
+{: #thunder_walk}
+
+*Tier III · Storm · Works on the world · 16 mana · needs an Amethyst Cord or better*
+
+Builds five copper-lit wind stepping stones. Each enemy touching a stone takes 2 magic damage once per cast; allies receive slow falling before expiry.
+
+**How to get it:** A signature fusion: fused at the [Fusion Altar]({{ '/fusion-altar/' | relative_url }}) from [Wind Steps]({{ '/runes/effects/wind/' | relative_url }}#wind_steps) and [Shock]({{ '/runes/effects/storm/' | relative_url }}#shock) themselves, with an amethyst shard (3 XP levels). Any other Wind and Storm effects make Tempest instead.
+
+**Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/thunderquake.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Thunderquake
 {: #thunderquake}

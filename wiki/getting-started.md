@@ -77,7 +77,7 @@ learned or threaded.
 
 ## Step 4: cast your first spell
 
-Look at a creature and **tap `R`**. A small magic circle opens at your feet, a bolt flies out, and whatever
+Look at a creature and **tap `R`**. A casting circle opens behind you and a smaller focus forms ahead, a bolt flies out, and whatever
 it hits is thrown back.
 
 <img src="{{ '/assets/images/hud.png' | relative_url }}" alt="The spell panel to the right of the hotbar: a badge with the spell's number, its rune icons and cost, a mana bar and the mana count" class="shot">
@@ -100,11 +100,11 @@ If nothing happens, a line above your hotbar says why:
 ## Step 5: hold to charge
 
 Tap `R` and the spell goes off at once. **Hold `R`** instead and you raise both hands: the spell's magic
-circle opens in front of them, a ring at a time, a roundel for each rune. Let go to cast. A full charge
-takes a second and a half, flares and chimes when it's ready, and makes the spell **25% stronger**. You walk
+circle opens behind their shoulders, a ring at a time, a roundel for each rune. Let go to cast. A full charge
+takes a second and a half, flares and chimes when it's ready, and makes the spell **40% stronger**. You walk
 slower while you charge, and while you do, a faint line or ring shows you where the spell will go.
 
-<img src="{{ '/assets/images/charge.jpg' | relative_url }}" alt="A player with raised hands charging a spell, its magic circle open in front of them" class="shot">
+<img src="{{ '/assets/images/circle-bloom.jpg' | relative_url }}" alt="A player with raised hands charging a spell, its authored magic circle behind the shoulders" class="shot">
 
 Charging is never required. Tap for speed, charge for power. Details are on
 [Casting]({{ '/spellcraft/casting/' | relative_url }}#tap-or-charge).
@@ -127,7 +127,7 @@ explained on [The Cord Screen]({{ '/spellcraft/cord-screen/' | relative_url }}).
 
 ## Step 7: craft and learn more runes
 
-Three runes don't go far. Every rune up to Tier III can be crafted from a **Blank Rune** and a few items
+Three runes don't go far. Craftable runes up to Tier III are made from a **Blank Rune** and a few items
 that suit it, in any layout (the recipes are shapeless). Once you've held a Blank Rune they're all in your
 recipe book, and every rune's tooltip says how to craft it and where it's found.
 
@@ -236,7 +236,7 @@ There's no fixed path, but this order works well:
    riddles on Torn Pages to [secret spells]({{ '/spellcraft/secret-spells/' | relative_url }}).
 7. **Find the Archive**, a buried library in the Overworld, and defeat the **Archivist** for a Tier IV rune.
    See [The Archive]({{ '/world/archive/' | relative_url }}).
-8. **Build a Fusion Altar** to rank runes up, fuse two elements into one of 55 fused runes (or a signature rune, for sixteen particular pairs), and tie whole spells
+8. **Build a Fusion Altar** to rank runes up, fuse two elements into one of 55 fused runes (or a signature rune, for twenty-two particular pairs), and tie whole spells
    into single-socket Knots. See [The Fusion Altar]({{ '/fusion-altar/' | relative_url }}).
 9. **Make an Echo Cord** for four spells of twelve runes and Tier IV runes, then take on the dimension
    dungeons: the [Ember Sanctum]({{ '/world/ember-sanctum/' | relative_url }}) in the Nether, the

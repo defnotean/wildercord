@@ -450,7 +450,7 @@ public final class Runebound {
 		int color = elementColor(spell);
 		Vec3 look = target.getBoundingBox().getCenter().subtract(mob.getEyePosition()).normalize();
 		// The spell's own circle, readable ring by ring: learn the runes and you know what's coming.
-		Sigils.spell(level, hands(mob, look, TELEGRAPH_RADIUS), look, spell, color, TELEGRAPH_RADIUS, ticks + 4);
+		Sigils.spell(level, mob.getEyePosition().subtract(look.scale(0.7)).add(0, -0.3, 0), look, spell, color, TELEGRAPH_RADIUS, ticks + 4);
 		String shape = spell.getFirst().path();
 		if (shape.equals("zone") || shape.equals("rain") || shape.equals("mine") || shape.equals("domain")) {
 			Sigils.target(level, CastEngine.ground(level, target.position().add(0, 1, 0)), color, 3.0F, ticks + 10);
@@ -466,7 +466,6 @@ public final class Runebound {
 		}
 		Heart.Bonuses bonuses = new Heart.Bonuses(power, 1.0, 1.0, 1.0);
 		Cast cast = new Cast(mob, 1, bonuses, false, null, new Cast.Info(compiled.root(), spell.size(), "", List.copyOf(spell)));
-		Vfx.castCircle(mob, compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst()), spell);
 		CastEngine.cast(cast, compiled.root());
 	}
 

@@ -556,6 +556,7 @@ public final class FallenStars {
 		drop(level, at, new ItemStack(WildercordItems.MANA_CRYSTAL));
 		ExperienceOrb.award(level, at, EventRules.STAR_XP);
 		Grimoire.feat(player, Feats.STARGAZER);
+		EventAftermath.leave(level,pos,"star");
 		player.sendOverlayMessage(Component.translatable("message.wildercord.star_looted").withColor(STAR_LIGHT));
 		crumble(level, pos, entity, true);
 	}

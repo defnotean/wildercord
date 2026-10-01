@@ -9,6 +9,7 @@ final class EarthFeels {
 	private EarthFeels() {}
 
 	static void register() {
+		Signature.of("strata_rise").accent(0xD5C8AE).sound(Phase.CUE,"earth_grind",.6F,.84F).register();
 		// The mining runes: one crunch, pitched by the work (a careful tick to a low double).
 		Signature.of("chisel").accent(0xF0F0E8).sound(Phase.CUE, "earth_dig", 0.6F, 1.26F).register();
 		Signature.of("break").accent(0xA0968A).sound(Phase.CUE, "earth_dig", 0.7F, 1.0F).register();

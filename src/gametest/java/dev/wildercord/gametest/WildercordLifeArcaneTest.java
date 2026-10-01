@@ -374,7 +374,7 @@ public class WildercordLifeArcaneTest implements FabricClientGameTest {
 		if (cast != null) {
 			return cast;
 		}
-		context.waitTicks(2);
+		context.waitTicks(4);
 		return world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			// Spell 1 is threaded again by cast(): full mana first, then the spell's cost comes off and a quarter returns.

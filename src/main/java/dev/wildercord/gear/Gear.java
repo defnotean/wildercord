@@ -166,6 +166,8 @@ public final class Gear {
 				percent(piece.elementPower() - 1), percent(1 - piece.elementCost()));
 			case TOME -> Component.translatable("tooltip.wildercord.gear.tome");
 			case FOCUS -> piece.chargeSpeed() > 1 ? Component.translatable("tooltip.wildercord.gear.haste", percent(piece.chargeSpeed() - 1))
+				: piece == GearDef.REPRIEVE ? Component.translatable("tooltip.wildercord.gear.reprieve")
+				: piece == GearDef.GROUNDING ? Component.translatable("tooltip.wildercord.gear.grounding")
 				: piece == GearDef.RESOLVE ? Component.translatable("tooltip.wildercord.gear.resolve", percent(GearDef.RESOLVE_PROTECTION), percent(1 - piece.power()))
 				: piece.cost() < 1 ? Component.translatable("tooltip.wildercord.gear.thrift", percent(1 - piece.cost()), percent(1 - piece.power()))
 				: piece.mana() > 0 ? Component.translatable("tooltip.wildercord.gear.deep_well", piece.mana())

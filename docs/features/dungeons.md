@@ -1,5 +1,7 @@
 # The dimension dungeons
 
+The current roster also includes the [Clockwork Crypt, Living Greenhouse and Moving Sky Ruin](expeditions.md), each with three layouts and its own reusable relic. The Rootbound Maze and Storm Spire now have [Root Guardian and Storm Conductor encounters](new-encounters.md). These guides describe their controls, ordinary alternatives, rewards and recovery mechanics.
+
 Beyond the Archive, each of the other dimensions keeps a dungeon of its own, with a keeper that
 fights like a caster and one trick that teaches you something about magic. Each is laid out the
 way the Archive is: a way in you can read from a distance, a Rune Seal door, a hall of Runebound
@@ -18,7 +20,7 @@ Two smaller Overworld dungeons also generate: the **Rootbound Maze** in swamps a
 two elemental seals. Their vaults always hold their own reusable relic, plus runes and materials. The Rootbound
 Relic heals its bearer and slows nearby monsters; the Stormglass Relic pushes monsters away and grants speed and
 slow falling. Both rest for 30 seconds after use. Their loot can include amethyst blocks for weaving exact pairs
-of effects at the Fusion Altar. Use `/place structure wildercord:rootbound_maze` or `storm_spire` to build one.
+of effects at the Fusion Altar. Their boss altars add heart-exposure and rod-grounding encounters in newly generated structures. Use `/place structure wildercord:rootbound_maze` or `storm_spire` to build one.
 
 Every boss has a boss bar that names the spell it's casting, telegraphs each spell with its own
 circle, fights in three phases (it changes at two thirds and one third of its health, and can't be

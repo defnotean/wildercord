@@ -163,14 +163,14 @@ public final class TemporaryBlocks extends SavedData {
 				if (placed.due() + GRACE > now) {
 					// Gone early, and not by its spell (an explosion, say): the lava or water it held back comes back
 					// into the gap at once, rather than never.
-					if (!standing.is(placed.placed().getBlock()) && standing.canBeReplaced() && !placed.replaced().getFluidState().isEmpty()) {
+					if (!standing.equals(placed.placed()) && standing.canBeReplaced() && !placed.replaced().getFluidState().isEmpty()) {
 						level.setBlockAndUpdate(placed.pos(), placed.replaced());
 						it.remove();
 						changed = true;
 					}
 					continue;
 				}
-				if (standing.is(placed.placed().getBlock())) {
+				if (standing.equals(placed.placed())) {
 					level.setBlockAndUpdate(placed.pos(), placed.replaced());
 				}
 				it.remove();

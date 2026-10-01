@@ -8,11 +8,11 @@ nav_order: 2
 
 # Rune recipes
 
-Every rune up to Tier III can be crafted: a **Blank Rune** plus a few items that suit it, in any crafting grid (the recipes are shapeless, so the layout doesn't matter). Higher tiers cost a little extra. Recipes show up in the recipe book once you've held a Blank Rune. Tier IV runes, runes of the world, fused runes and innate runes can't be crafted.
+Craftable runes up to Tier III use a **Blank Rune** plus a few items that suit them, in any crafting grid (the recipes are shapeless, so the layout doesn't matter). Higher tiers cost a little extra. Recipes show up in the recipe book once you've held a Blank Rune. Tier IV runes, runes of the world, fused runes and innate runes can't be crafted.
 
 **Blank Rune:** 4 Cobblestone around 1 Lapis Lazuli, makes 4.
 
-## Tier I (51 runes)
+## Tier I (52 runes)
 
 Each needs a Blank Rune and its own items, plus **nothing else**.
 
@@ -190,6 +190,10 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 <figcaption><img src="{{ '/assets/runes/frugal.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#frugal">Frugal</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_reservoir_circle.png' | relative_url }}" alt="Crafting Reservoir Circle: a Blank Rune and Glass Bottle and Lapis Lazuli" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/reservoir_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#reservoir_circle">Reservoir Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_arc.png' | relative_url }}" alt="Crafting Arc: a Blank Rune and 2x Snowball" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/arc.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/shapes/' | relative_url }}#arc">Arc</a><br><span class="recipe-family">Shape</span></figcaption>
 </figure>
@@ -223,7 +227,7 @@ Each needs a Blank Rune and its own items, plus **nothing else**.
 </figure>
 </div>
 
-## Tier II (91 runes)
+## Tier II (102 runes)
 
 Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingot**.
 
@@ -397,12 +401,20 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/stoneskin.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#stoneskin">Stoneskin</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_strata_rise.png' | relative_url }}" alt="Crafting Strata Rise: a Blank Rune and Stone, Packed Mud and Flint" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/strata_rise.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#strata_rise">Strata Rise</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_swap.png' | relative_url }}" alt="Crafting Swap: a Blank Rune and 2x Ender Pearl" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/swap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/arcane/' | relative_url }}#swap">Swap</a><br><span class="recipe-family">Effect, Arcane</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_thunderclap.png' | relative_url }}" alt="Crafting Thunderclap: a Blank Rune and Goat Horn" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/thunderclap.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/storm/' | relative_url }}#thunderclap">Thunderclap</a><br><span class="recipe-family">Effect, Storm</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_tidal_lift.png' | relative_url }}" alt="Crafting Tidal Lift: a Blank Rune and Prismarine Shard, Kelp and Clay Ball" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/tidal_lift.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/frost/' | relative_url }}#tidal_lift">Tidal Lift</a><br><span class="recipe-family">Effect, Frost</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_tunnel.png' | relative_url }}" alt="Crafting Tunnel: a Blank Rune and Iron Pickaxe and Rail" class="recipe-grid" loading="lazy">
@@ -423,6 +435,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_weigh.png' | relative_url }}" alt="Crafting Weigh: a Blank Rune and Block of Iron" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/weigh.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/earth/' | relative_url }}#weigh">Weigh</a><br><span class="recipe-family">Effect, Earth</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_wind_steps.png' | relative_url }}" alt="Crafting Wind Steps: a Blank Rune and Feather, Breeze Rod and String" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/wind_steps.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/effects/wind/' | relative_url }}#wind_steps">Wind Steps</a><br><span class="recipe-family">Effect, Wind</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_zipper.png' | relative_url }}" alt="Crafting Zipper: a Blank Rune and 2x Iron Nugget and String" class="recipe-grid" loading="lazy">
@@ -461,12 +477,24 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/pulse.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/links/' | relative_url }}#pulse">Pulse</a><br><span class="recipe-family">Link</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_anchor_circle.png' | relative_url }}" alt="Crafting Anchor Circle: a Blank Rune and Iron Ingot and Stone" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/anchor_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#anchor_circle">Anchor Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_belated.png' | relative_url }}" alt="Crafting Belated: a Blank Rune and Clock and Cobweb" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/belated.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#belated">Belated</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_bloom_circle.png' | relative_url }}" alt="Crafting Bloom Circle: a Blank Rune and Pink Petals and Bone Meal" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/bloom_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#bloom_circle">Bloom Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_bounce.png' | relative_url }}" alt="Crafting Bounce: a Blank Rune and Slime Block" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/bounce.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#bounce">Bounce</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_crucible_circle.png' | relative_url }}" alt="Crafting Crucible Circle: a Blank Rune and Blaze Powder and Brick" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/crucible_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#crucible_circle">Crucible Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_execute.png' | relative_url }}" alt="Crafting Execute: a Blank Rune and Iron Axe" class="recipe-grid" loading="lazy">
@@ -477,6 +505,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/focus.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#focus">Focus</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_gyre_circle.png' | relative_url }}" alt="Crafting Gyre Circle: a Blank Rune and Feather and Copper Ingot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/gyre_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#gyre_circle">Gyre Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_kindred.png' | relative_url }}" alt="Crafting Kindred: a Blank Rune and Cake" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/kindred.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#kindred">Kindred</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
@@ -485,8 +517,20 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figcaption><img src="{{ '/assets/runes/linger.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#linger">Linger</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_mercy_circle.png' | relative_url }}" alt="Crafting Mercy Circle: a Blank Rune and Honey Bottle and Poppy" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/mercy_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#mercy_circle">Mercy Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_needle_circle.png' | relative_url }}" alt="Crafting Needle Circle: a Blank Rune and Flint and Iron Nugget" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/needle_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#needle_circle">Needle Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_pierce.png' | relative_url }}" alt="Crafting Pierce: a Blank Rune and 2x Arrow" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/pierce.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#pierce">Pierce</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_pilgrim_circle.png' | relative_url }}" alt="Crafting Pilgrim Circle: a Blank Rune and Compass and Feather" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/pilgrim_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#pilgrim_circle">Pilgrim Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_quicken.png' | relative_url }}" alt="Crafting Quicken: a Blank Rune and Breeze Rod" class="recipe-grid" loading="lazy">
@@ -499,6 +543,10 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_thirst.png' | relative_url }}" alt="Crafting Thirst: a Blank Rune and Spider Eye and Glass Bottle" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/thirst.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#thirst">Thirst</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_vigil_circle.png' | relative_url }}" alt="Crafting Vigil Circle: a Blank Rune and Spider Eye and Iron Nugget" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/vigil_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#vigil_circle">Vigil Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_volley.png' | relative_url }}" alt="Crafting Volley: a Blank Rune and Crossbow" class="recipe-grid" loading="lazy">
@@ -594,7 +642,7 @@ Each needs a Blank Rune and its own items, plus **2 Lapis Lazuli and a Gold Ingo
 </figure>
 </div>
 
-## Tier III (42 runes)
+## Tier III (45 runes)
 
 Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**.
 
@@ -728,6 +776,14 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figcaption><img src="{{ '/assets/runes/chain.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#chain">Chain</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_confluence_circle.png' | relative_url }}" alt="Crafting Confluence Circle: a Blank Rune and Amethyst Shard and Prismarine Shard" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/confluence_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#confluence_circle">Confluence Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_eclipse_circle.png' | relative_url }}" alt="Crafting Eclipse Circle: a Blank Rune and Ender Pearl and Gold Nugget" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/eclipse_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#eclipse_circle">Eclipse Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_homing.png' | relative_url }}" alt="Crafting Homing: a Blank Rune and Compass" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/homing.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#homing">Homing</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
@@ -738,6 +794,10 @@ Each needs a Blank Rune and its own items, plus **a Mana Crystal and a Diamond**
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_split.png' | relative_url }}" alt="Crafting Split: a Blank Rune and 2x Prismarine Crystals" class="recipe-grid" loading="lazy">
 <figcaption><img src="{{ '/assets/runes/split.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#split">Split</a><br><span class="recipe-family">Modifier</span></figcaption>
+</figure>
+<figure class="recipe-card">
+<img src="{{ '/assets/recipes/rune_tempest_circle.png' | relative_url }}" alt="Crafting Tempest Circle: a Blank Rune and Breeze Rod and Copper Ingot" class="recipe-grid" loading="lazy">
+<figcaption><img src="{{ '/assets/runes/tempest_circle.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> <a href="{{ '/runes/modifiers/' | relative_url }}#tempest_circle">Tempest Circle</a><br><span class="recipe-family">Modifier</span></figcaption>
 </figure>
 <figure class="recipe-card">
 <img src="{{ '/assets/recipes/rune_vow.png' | relative_url }}" alt="Crafting Vow: a Blank Rune and Paper and Block of Gold" class="recipe-grid" loading="lazy">

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": "wildercord:mana_crystal",
+    "A": "minecraft:amethyst_shard",
+    "T": "minecraft:clock"
+  },
+  "pattern": [
+    " A ",
+    "ACA",
+    " T "
+  ],
+  "result": {
+    "id": "wildercord:focus_of_reprieve"
+  }
+}

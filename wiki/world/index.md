@@ -154,3 +154,8 @@ Three events happen on their own in the Overworld, near players. They're covered
 - **Mana.** Mana Crystals, potions and Heart Circles all help; see [Mana]({{ '/progression/mana/' | relative_url }}).
 - **Blank Runes**, for Attunement on the way.
 - For the Drowned Scriptorium, a way to breathe under water (Tidebreath, a potion, or a Respiration helmet).
+
+## New in 0.7
+
+- [Root Guardian and Storm Conductor]({{ '/world/root-and-storm-bosses/' | relative_url }})
+- [Expeditions and Relics]({{ '/world/expeditions/' | relative_url }})

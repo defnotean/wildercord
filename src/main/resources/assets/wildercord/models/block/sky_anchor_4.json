@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "wildercord:block/sky_anchor_side",
+    "down": "wildercord:block/sky_anchor_side",
+    "up": "wildercord:block/sky_anchor_4",
+    "north": "wildercord:block/sky_anchor_side",
+    "south": "wildercord:block/sky_anchor_side",
+    "west": "wildercord:block/sky_anchor_side",
+    "east": "wildercord:block/sky_anchor_side"
+  }
+}

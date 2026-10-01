@@ -677,12 +677,6 @@ public final class Innates {
 			return;
 		}
 		STORM_LAST.put(entity.getUUID(), now);
-		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
-		if (bolt != null) {
-			bolt.setVisualOnly(true);
-			bolt.snapTo(attacker.getX(), attacker.getY(), attacker.getZ());
-			level.addFreshEntity(bolt);
-		}
 		Vfx.shockArc(level, entity.getBoundingBox().getCenter(), attacker.getBoundingBox().getCenter());
 		echoing = true;
 		try {

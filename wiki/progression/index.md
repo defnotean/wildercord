@@ -60,3 +60,10 @@ A spell's strength is its runes' own numbers multiplied by everything below. The
 5. **Craft Mana Crystals and enchant your Cord.** Crystals are +10 max mana each, forever.
 6. **Explore.** Torn Pages lead to secret spells; the 7th and 8th Circles need them, a boss, and in the
    end the Archivist.
+
+## New in 0.7
+
+- [Elemental Armour]({{ '/progression/elemental-armour/' | relative_url }})
+- [Defensive Foci]({{ '/progression/defensive-foci/' | relative_url }})
+- [Practice and Trials]({{ '/progression/practice/' | relative_url }})
+- [Research Notebook]({{ '/progression/research/' | relative_url }})

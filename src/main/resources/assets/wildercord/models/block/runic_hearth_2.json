@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "wildercord:block/runic_hearth_side",
+    "bottom": "wildercord:block/runic_hearth_side",
+    "top": "wildercord:block/runic_hearth_2"
+  }
+}

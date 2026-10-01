@@ -172,11 +172,23 @@ public final class Fusions {
 		new Signature(Runes.REFLECT, Runes.FORESIGHT, Runes.RIPOSTE),
 		new Signature(Runes.SUMMIT_WIND, Runes.SANDSTORM, Runes.DUST_DEVIL),
 		new Signature(Runes.HEX, Runes.RESONANCE, Runes.MALISON),
-		new Signature(Runes.COLDSNAP, Runes.STALACTITE, Runes.AVALANCHE));
+		new Signature(Runes.COLDSNAP, Runes.STALACTITE, Runes.AVALANCHE),
+		new Signature(Runes.STRATA_RISE, Runes.FIRE, Runes.CINDER_BULWARK),
+		new Signature(Runes.STRATA_RISE, Runes.GROW, Runes.ROOT_BULWARK),
+		new Signature(Runes.TIDAL_LIFT, Runes.FIRE, Runes.BOILING_SURGE),
+		new Signature(Runes.TIDAL_LIFT, Runes.SHOCK, Runes.THUNDER_TIDE),
+		new Signature(Runes.WIND_STEPS, Runes.FROST, Runes.RIME_CAUSEWAY),
+		new Signature(Runes.WIND_STEPS, Runes.SHOCK, Runes.THUNDER_WALK));
 
 	/** Whether a rune can go into a fusion: an effect with an element, and not an innate rune. */
 	public static boolean fusible(RuneDef rune) {
-		return rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty() && !Runes.innate(rune) && !WovenRunes.isWoven(rune);
+		return rune.family() == RuneFamily.EFFECT && !rune.element().isEmpty() && !Runes.innate(rune)
+			&& (!WovenRunes.isWoven(rune) || !WovenRunes.contents(rune).isEmpty());
+	}
+	/** Exact weaving also supports innate magic; its heart ownership is checked when cast. */
+	public static boolean weavable(RuneDef rune) {
+		return rune.family()==RuneFamily.EFFECT && !rune.element().isEmpty()
+			&& (!WovenRunes.isWoven(rune) || !WovenRunes.contents(rune).isEmpty());
 	}
 
 	/**
@@ -184,7 +196,7 @@ public final class Fusions {
 	 * fusion of their two elements.
 	 */
 	public static Optional<Fusion> recipe(RuneDef a, RuneDef b) {
-		if (!fusible(a) || !fusible(b)) {
+		if (!fusible(a) || !fusible(b) || WovenRunes.isWoven(a) || WovenRunes.isWoven(b)) {
 			return Optional.empty();
 		}
 		Optional<Signature> signature = signature(a, b);
@@ -292,7 +304,7 @@ public final class Fusions {
 		}
 	}
 
-	public static final String HOW = "Three matching runes rank up. Two effects and an amethyst shard make an elemental fusion; an amethyst block weaves their exact effects together. A Blank Rune and string tie a Knot.";
+	public static final String HOW = "Three matching runes rank up. Two effects and an amethyst shard make a named fusion; an amethyst block weaves up to eight exact effects, including an existing weave. A Blank Rune and string tie a Knot. Sneak-use a Blank Rune on the altar to imprint your innate for three XP levels.";
 
 	/** Works out which fusion three rune slots and a catalyst mean, and whether it can go ahead. */
 	public static Plan plan(List<Slot> slots, Catalyst catalyst) {
@@ -346,7 +358,7 @@ public final class Fusions {
 			}
 			RuneDef a = filled.get(0).rune();
 			RuneDef b = filled.get(1).rune();
-			if (!fusible(a) || !fusible(b)) {
+			if (catalyst==Catalyst.BLOCK ? !weavable(a)||!weavable(b) : !fusible(a)||!fusible(b)) {
 				return Plan.refuse(Kind.COMBINE, "Only effects with an element fuse.");
 			}
 			if (catalyst == Catalyst.BLOCK) {
@@ -354,10 +366,10 @@ public final class Fusions {
 				try {
 					made = WovenRunes.bind(a, b);
 				} catch (IllegalArgumentException exception) {
-					return Plan.refuse(Kind.COMBINE, "These rune ids are too long to weave together.");
+					return Plan.refuse(Kind.COMBINE, "A weave holds at most eight elemental effects; these inputs cannot fit.");
 				}
 				int kept = Ranks.rankable(made) ? Math.min(filled.get(0).rank(), filled.get(1).rank()) : 1;
-				return new Plan(Kind.COMBINE, made, kept, COMBINE_XP, null, null);
+				return new Plan(Kind.COMBINE, made, kept, COMBINE_XP * (WovenRunes.contents(made).size() - 1), null, null);
 			}
 			// A signature fusion of these two particular runes comes first; any other pair makes its elements' fusion.
 			Optional<Fusion> recipe = recipe(a, b);

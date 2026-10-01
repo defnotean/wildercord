@@ -79,6 +79,8 @@ public class StormSpirePiece extends DungeonPiece {
 		sealDoorAcross(level, bb, 15, 9, 13, 22, 25, RuneSealBlock.Element.STORM, RuneSealBlock.Element.WIND);
 		chest(level, bb, 6, 22, 19, DungeonWorldgen.STORM_VAULT, Direction.EAST, 203);
 		chest(level, bb, 17, 22, 19, DungeonWorldgen.STORM_VAULT, Direction.WEST, 204);
+		altar(level, bb, dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.STORM, 11, 22, 18);
+		for (int x : new int[] {6, 11, 16}) set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), x, 22, 17);
 		for (int x : new int[] {5, 11, 17}) {
 			set(level, bb, Blocks.LIGHTNING_ROD.weathering().unaffected().defaultBlockState(), x, 28, 11);
 		}

@@ -20,6 +20,8 @@ final class FireFeels {
 	}
 
 	static void register() {
+		Signature.of("cinder_bulwark").accent(0xFFA26A).sound(Phase.CUE,"earth_crack",.45F,.75F).register();
+		Signature.of("boiling_surge").accent(0xFFCF9A).sound(Phase.CUE,"frost_surge",.45F,1.12F).register();
 		// The simple ones: a cinder, a burn, a flash.
 		own("ember").motion(Motion.FLICK).scale(0.85).accent(0xFFD060).register();
 		own("fire").accent(0xFFB040).register();

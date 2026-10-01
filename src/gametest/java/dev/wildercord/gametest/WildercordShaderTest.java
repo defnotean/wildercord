@@ -45,6 +45,7 @@ public class WildercordShaderTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
 		if (!FabricLoader.getInstance().isModLoaded("iris")) {
+			dev.wildercord.Wildercord.LOGGER.info("[TEST SKIP] WildercordShaderTest: Iris is not installed in this test profile");
 			return;
 		}
 		context.runOnClient(mc -> TestPack.switchOn(true));

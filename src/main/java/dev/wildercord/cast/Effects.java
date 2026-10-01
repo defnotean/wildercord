@@ -115,6 +115,12 @@ public final class Effects {
 
 	/** @param groupPower extra power from the shape (Focus on a shape) */
 	public static void apply(Cast cast, SpellPlan.EffectNode node, Cast.Hit hit, double groupPower) {
+		if(Runes.innate(node.effect) && cast.caster instanceof ServerPlayer owner && !owner.isCreative()
+			&& !dev.wildercord.player.Heart.innate(owner).equals(node.effect.id()))return;
+		if(PhysicalMagic.interact(cast,node.effect,hit))return;
+		if(hit.block()!=null && cast.level.getBlockEntity(hit.block()) instanceof dev.wildercord.content.RunicHearthEntity hearth && hearth.onSpell(cast,node))return;
+		if(hit.block()!=null && cast.level.getBlockEntity(hit.block()) instanceof dev.wildercord.content.dungeons.ExpeditionMechanismEntity mechanism
+			&& mechanism.onSpell(cast,node))return;
 		double outerBonus = executeBonus;
 		String outerElement = currentElement;
 		double outerOpening = openingBonus;
@@ -227,6 +233,7 @@ public final class Effects {
 		List<LivingEntity> moved = hit.self() ? List.of(caster) : harmed;
 		List<LivingEntity> targetsHit = harmed;
 		RunicAnimations.land(cast, rune, hit);
+		if (PhysicalMagic.apply(cast,rune,hit,power,duration)) return;
 
 		// Wildercord's own runes by name; an add-on's (another namespace) never, even one called example:bleed.
 		switch (builtIn(rune) ? rune.path() : "") {
@@ -810,6 +817,8 @@ public final class Effects {
 			return;
 		}
 		double resist = target.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+		impulse = DefensiveFoci.resist(target, impulse);
+		if(target instanceof Player) impulse=impulse.scale(1-.10*dev.wildercord.gear.ElementalArmor.count(target,dev.wildercord.gear.ElementalArmor.Kind.STONEBOUND));
 		Vec3 scaled = target instanceof Player ? impulse : impulse.scale(Math.max(0.0, 1.0 - resist));
 		target.setDeltaMovement(target.getDeltaMovement().add(scaled));
 		target.needsSync = true;
@@ -954,12 +963,6 @@ public final class Effects {
 	ServerLevel level = cast.level;
 	// The first three strikes of a cast are the whole show; the rest a lighter bolt, so a crowd doesn't fill the sky.
 	if (full) {
-		LightningBolt bolt = EntityTypes.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
-		if (bolt != null) {
-			bolt.setVisualOnly(true);
-			bolt.snapTo(at.x, at.y, at.z);
-			level.addFreshEntity(bolt);
-		}
 		Vfx.lightning(level, at);
 	} else {
 		ElementFx.bolt(level, at.add(0, 10, 0), at, 0.08, 1, 2);
@@ -1585,11 +1588,7 @@ public final class Effects {
 					}
 					// Bosses feel the pull (and the crush) but are never dragged: a boss held in the well is out of its fight.
 					if (!Spirits.isBoss(victim) && !VoidTime.anchored(victim)) {
-						victim.setDeltaMovement(victim.getDeltaMovement().scale(0.5).add(towards.normalize().scale(Math.min(0.6, 0.12 + distance * 0.05))));
-						victim.needsSync = true;
-						if (victim instanceof ServerPlayer player) {
-							player.connection.send(new ClientboundSetEntityMotionPacket(player));
-						}
+						push(victim,towards.normalize().scale(Math.min(0.6, 0.12 + distance * 0.05)).subtract(victim.getDeltaMovement().scale(.5)));
 					}
 					// It has weight: whatever hangs above the point is dragged down with the rest, and the mark outlasts the well.
 					Reactions.mark(victim, Reactions.Mark.PULLED, tick >= total - 1 ? 60 : 50);
@@ -2584,7 +2583,8 @@ public final class Effects {
 	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall, frost's crust on lava, a Galvanize spark): pistons can't move it. */
 	public static boolean isTemporary(ServerLevel level, BlockPos pos) {
 		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos) || WorldMagic.isCrust(level, pos)
-			|| CraftedRunes.isSpark(level, pos);
+			|| CraftedRunes.isSpark(level, pos) || TemporaryBlocks.recorded(level,pos)
+			|| dev.wildercord.content.PhysicalBlocks.isConstruct(level.getBlockState(pos));
 	}
 
 	/** Span bridges still standing, and what each of their blocks replaced. */
@@ -2646,7 +2646,7 @@ public final class Effects {
 		// Out of loaded ground now: it's put back as its chunk loads (see TemporaryBlocks), never loaded just for this.
 		if (level.isLoaded(pos)) {
 			if (level.getBlockState(pos).is(SPAN_BLOCK.getBlock())) {
-				level.levelEvent(2001, pos, Block.getId(SPAN_BLOCK));
+				Vfx.emit(level, SpellMaterials.of("arcane", 0xB4E6F0, .12F), Vec3.atCenterOf(pos), 10, .35, .04);
 				level.setBlockAndUpdate(pos, replaced);
 			}
 			TemporaryBlocks.remove(level, pos);

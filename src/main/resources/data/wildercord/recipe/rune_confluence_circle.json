@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:blank_rune",
+    "minecraft:amethyst_shard",
+    "minecraft:prismarine_shard",
+    "wildercord:mana_crystal",
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "wildercord:rune",
+    "components": {
+      "wildercord:rune": "wildercord:confluence_circle"
+    }
+  }
+}

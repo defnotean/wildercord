@@ -46,7 +46,7 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 4 lightning damage that stuns for 1 second: no moving or fighting back. A caster caught mid-charge loses the spell.
 
-**How to get it:** Craft: a Blank Rune, Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_jolt.png' | relative_url }}" alt="Crafting Jolt: a Blank Rune and Lightning Rod and Iron Ingot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -59,7 +59,7 @@ Sets a spark of raw power against the block it strikes for 5 seconds: it powers 
 
 Sunlight through the body: 6 damage, doubled against undead, and you heal a quarter of what it took. Half a second later it ripples out: 3 to every other enemy within 2.5 blocks, and you heal 1 for each.
 
-**How to get it:** Craft: a Blank Rune, Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_ripple.png' | relative_url }}" alt="Crafting Ripple: a Blank Rune and Sunflower and Glowstone Dust, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ Sunlight through the body: 6 damage, doubled against undead, and you heal a quar
 
 A flash, then a crack of thunder: 5 damage within 3 blocks, and everything hit is stunned for half a second and, if it is a monster, forgets who it was hunting.
 
-**How to get it:** Craft: a Blank Rune, Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_thunderclap.png' | relative_url }}" alt="Crafting Thunderclap: a Blank Rune and Goat Horn, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -85,7 +85,7 @@ A flash, then a crack of thunder: 5 damage within 3 blocks, and everything hit i
 
 A 12-damage lightning strike on each target that slows and burns. An enemy takes the strongest strike of a cast once, however many land beside it. You and your allies are immune.
 
-**How to get it:** Craft: a Blank Rune, Block of Copper and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Trail ruins (brushing); Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Block of Copper and Glowstone, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Trail ruins (brushing); Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_lightning.png' | relative_url }}" alt="Crafting Lightning: a Blank Rune and Block of Copper and Glowstone, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -98,7 +98,7 @@ A 12-damage lightning strike on each target that slows and burns. An enemy takes
 
 A storm bird circles above you for 12 seconds. Every 2 seconds it marks the enemy you last hit (or the nearest within 12 blocks) and dives on that spot for 4.5 damage: step aside and it misses. Two at most.
 
-**How to get it:** Craft: a Blank Rune, Feather and Lightning Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+**How to get it:** Craft: a Blank Rune, Feather and Lightning Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Drowned Scriptorium; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_thunderbird.png' | relative_url }}" alt="Crafting Thunderbird: a Blank Rune and Feather and Lightning Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

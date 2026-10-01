@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "wildercord:mirror_thread"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "wildercord:mirror_thread"
+      }
+    ]
+  }
+}

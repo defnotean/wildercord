@@ -35,6 +35,12 @@ public final class DungeonWorldgen {
 
 	/** Every dimension dungeon (not the Archive): inside one, a third of the monsters carry Cords. */
 	public static final TagKey<Structure> DUNGEONS = TagKey.create(Registries.STRUCTURE, Wildercord.id("dungeon"));
+	public static final StructurePieceType CLOCKWORK_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("clockwork_crypt"),(StructurePieceType.ContextlessType)ClockworkCryptPiece::new);
+	public static final StructurePieceType GREENHOUSE_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("living_greenhouse"),(StructurePieceType.ContextlessType)LivingGreenhousePiece::new);
+	public static final StructurePieceType SKY_RUIN_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("moving_sky_ruin"),(StructurePieceType.ContextlessType)MovingSkyRuinPiece::new);
+	public static final ResourceKey<LootTable> CLOCK_HALL=loot("chests/clockwork_crypt_hall"),CLOCK_VAULT=loot("chests/clockwork_crypt_vault");
+	public static final ResourceKey<LootTable> GARDEN_HALL=loot("chests/living_greenhouse_hall"),GARDEN_VAULT=loot("chests/living_greenhouse_vault");
+	public static final ResourceKey<LootTable> SKY_HALL=loot("chests/moving_sky_ruin_hall"),SKY_VAULT=loot("chests/moving_sky_ruin_vault");
 
 	public static final ResourceKey<LootTable> EMBER_HALL = loot("chests/ember_sanctum_hall");
 	public static final ResourceKey<LootTable> EMBER_VAULT = loot("chests/ember_sanctum_vault");

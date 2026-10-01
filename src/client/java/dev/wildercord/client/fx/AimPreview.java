@@ -138,7 +138,7 @@ public final class AimPreview {
 		long phase = mc.level.getGameTime() / 2 % 3;
 		for (double d = 2.5 + phase * 0.5; d < length; d += 1.5) {
 			Vec3 p = from.add(dir.scale(d)).add(0, -0.15, 0);
-			mc.level.addParticle(new DustParticleOptions(color, 0.45F), p.x, p.y, p.z, 0, 0, 0);
+			mc.level.addParticle(dev.wildercord.cast.SpellMaterials.of("arcane",color,.04F), p.x, p.y, p.z, 0, 0, 0);
 		}
 		if (hit.getType() != HitResult.Type.MISS) {
 			SigilOption mark = new SigilOption(SigilOption.TARGET, color, 0.5F, 0, 0, 3, 0.1F);

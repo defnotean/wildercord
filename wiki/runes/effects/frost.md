@@ -11,7 +11,7 @@ nav_order: 2
 
 Cold, ice and water. Frost slows, freezes and shatters, and freezes water you can walk on.
 
-10 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
+11 frost effects you can craft or find in the usual way. Frost also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/chill.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Chill
 {: #chill}
@@ -129,6 +129,19 @@ A cold snap racing out from the point: 4 freeze damage and Slowness II for 4 sec
 <img src="{{ '/assets/recipes/rune_frost.png' | relative_url }}" alt="Crafting Frost: a Blank Rune and Powder Snow Bucket, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Extend, Frugal, Linger, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/tidal_lift.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Tidal Lift
+{: #tidal_lift}
+
+*Tier II · Frost · Harms enemies · 12 mana · needs a Copper Cord or better*
+
+Borrows up to three real water sources within four blocks, lifts them along a ten-block arc, then returns them. Each enemy takes 4 damage once and is soaked for five seconds. Needs nearby source water.
+
+**How to get it:** Craft: a Blank Rune, Prismarine Shard, Kelp and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Drowned Scriptorium.
+
+<img src="{{ '/assets/recipes/rune_tidal_lift.png' | relative_url }}" alt="Crafting Tidal Lift: a Blank Rune and Prismarine Shard, Kelp and Clay Ball, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Amplify, Frugal, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
 
 ### <img src="{{ '/assets/runes/freeze.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Freeze
 {: #freeze}

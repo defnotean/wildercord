@@ -22,8 +22,8 @@ import java.util.Map;
 /**
  * The magic circle a caster holds out while charging a spell, drawn on every client from the synced
  * charge: the spell's own circle (see {@link SpellCircleParticle}), opening as the charge builds, so
- * its roundels appear one by one and it flares when full. For everyone else it's a small circle in
- * front of the caster's raised hands; in your own first-person view, a smaller one low and to the right.
+ * its roundels appear one by one and it flares when full. It floats behind the caster's shoulders,
+ * leaving the view and the path of the spell clear.
  */
 public final class ChargeCircles {
 	private ChargeCircles() {}
@@ -33,9 +33,8 @@ public final class ChargeCircles {
 	/** How many notes of each charging caster's melody have played, by entity id. */
 	private static final Map<Integer, Integer> SUNG = new HashMap<>();
 
-	/** The circle's radius at the hand, and in your own first-person view. */
+	/** The circle's radius behind the shoulders. */
 	private static final float RADIUS = 0.42F;
-	private static final float FIRST_PERSON = 0.2F;
 
 	public static void tick(Minecraft mc) {
 		ClientLevel level = mc.level;
@@ -179,21 +178,11 @@ public final class ChargeCircles {
 			return Mth.clamp((caster.level().getGameTime() - start + partial) / (double) Charging.fullTicks(caster), 0, 1);
 		}
 
-		/**
-		 * Out in front of the caster's hands (both raised while charging, see AvatarRendererMixin), as
-		 * if they were pushing it open; in your own first person view, low and to the right so it never
-		 * hides what you're aiming at.
-		 */
+		/** Behind the caster's shoulders, facing the same direction as the spell. */
 		private Vec3 anchor(float partial) {
 			Vec3 eye = caster.getEyePosition(partial);
 			Vec3 look = caster.getViewVector(partial);
-			Vec3 right = look.cross(new Vec3(0, 1, 0));
-			right = right.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : right.normalize();
-			Vec3 down = right.cross(look).normalize().scale(-1);
-			if (firstPerson()) {
-				return eye.add(look.scale(1.2)).add(right.scale(0.42)).add(down.scale(0.3));
-			}
-			return eye.add(look.scale(1.0)).add(right.scale(0.14)).add(down.scale(0.3));
+			return eye.subtract(look.scale(1.55)).add(0, -0.3, 0);
 		}
 
 		private void move(float partial) {
@@ -233,7 +222,7 @@ public final class ChargeCircles {
 		protected float size(float partial) {
 			// A flare when the charge is full.
 			float full = progress(partial) >= 1 ? 1.06F : 1F;
-			return (firstPerson() ? FIRST_PERSON : RADIUS * scale) * full;
+			return RADIUS * scale * full;
 		}
 
 		@Override

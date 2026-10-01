@@ -44,7 +44,7 @@ its emblem is split down the middle between the two elements' glyphs.
 
 ### Signature fusions
 
-Sixteen pairs of **particular** effects fuse into a rune of their own instead of their elements'
+Twenty-two pairs of **particular** effects fuse into a rune of their own instead of their elements'
 fusion: the altar asks for a signature (`Fusions.SIGNATURES`) before the element grid. Chill with
 Shock makes **Frostwire**, while Chill with Jolt, or Icicle with Shock, still makes Hail. Everything
 else is a Combine's: an amethyst shard, 3 XP levels, the lower of the two ranks put in, and the rune
@@ -58,11 +58,11 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 - **Their ingredients are runes a caster can come by**, never innate or fused ones: mostly crafted,
   and four pairs use runes of the world or Tier IV runes (Stasis, Starfall, Summit Wind, Sandstorm,
   Stalactite). Three of those make Tier IV runes (Doomclock, Cometfall, Dust Devil); the rest are Tier III.
-- **No two share a pair of elements**, and every element is in at least two pairs. Their circles
+- **Each has its own exact pair of ingredient runes**, and every element is in at least two pairs. Multiple signatures may share an element pairing while keeping distinct mechanics and emblems. Their circles
   braid their two runes' elements like any fused rune, with a star added: a four-pointed star in each
   half of the ring and the points of one behind the emblem, so a signature is told from its elements'
   fusion at a glance.
-- **The Grimoire lists them apart**, as *Signature fusions (n of 16)* under the fusions, each still
+- **The Grimoire lists them apart**, as *Signature fusions (n of 22)* under the fusions, each still
   hidden as `??? + ???` with its two runes' elements (*a rune of Frost, and one of Storm*); found, it
   names both runes and the element fusion it replaces. A signature is recorded as `fusion:<rune>` like
   any fusion and condenses the same 150 mana, but the element count (*Fusions (n of 55)*) leaves it out.
@@ -142,7 +142,7 @@ Frostwire with any Fire effect makes Plasma). The altar's panel says **Signature
 | Time | **Chronoshift** | Turns an ally's clock forward: their other spells come off cooldown 3 seconds sooner, a third of the mana they spent in the last 5 seconds comes back (30 at most), and they get Haste I and Speed I for 5 seconds. |
 | Blood | **Sanguine Rite** | You pay 3 of your own health (never your last; more with Amplify, Overcharge and a crowd) for 12 damage that ignores armour. |
 
-### Signature fusions (16)
+### Signature fusions (22)
 
 Each of these pairs of particular runes makes its own rune, in place of the element fusion in the grid above (which any other effects of those two elements still make).
 
@@ -164,6 +164,12 @@ Each of these pairs of particular runes makes its own rune, in place of the elem
 | Summit Wind + Sandstorm | **Dust Devil** | Wind | IV | 26 | A dust devil touches down where it lands and chases the nearest enemy for 5 seconds. Enemies within 2 blocks of it are caught up and whirled round it, blinded and scoured for 3 damage a second; when it blows out it flings them high. | Downdraft |
 | Hex + Resonance | **Malison** | Void | III | 16 | 4 damage and a curse for 8 seconds: your spells hit it 25% harder, and it's shadowed. If it dies cursed, the curse passes on, 5% stronger each time (up to 45%), for the time it had left, to up to 3 enemies within 6 blocks of it. | Nullify |
 | Coldsnap + Stalactite | **Avalanche** | Frost | III | 18 | Snow and ice crash down round where it lands: 6 damage to every enemy within 3 blocks (half again on a bare head), buried in snow (Slowness III for 3 seconds). Drifts of snow lie where it fell for 10 seconds. | Glacier |
+| Strata Rise + Fire | **Cinder Bulwark** | Fire | III | 16 | Raises a cracked, glowing wall. Enemies brushing against it take 2 magic damage once per cast. Lasts eight seconds and drops nothing. | Magma |
+| Strata Rise + Grow | **Root Bulwark** | Life | III | 16 | Raises a living root wall that gives nearby allies brief Regeneration I. Lasts eight seconds, respects land protections and drops no wood. | Bloom |
+| Tidal Lift + Fire | **Boiling Surge** | Fire | III | 19 | Lifts nearby real water through a scalding arc, returning each source afterwards. Each enemy takes 5 damage once and two seconds of Weakness. Original steam curls trace the crest. | Steam |
+| Tidal Lift + Shock | **Thunder Tide** | Storm | III | 19 | Suspends real borrowed water inside electrical rings and drives it forward. Each enemy takes 5 damage once, is soaked and slowed for one second. Water returns safely. | Hail |
+| Wind Steps + Frost | **Rime Causeway** | Frost | III | 16 | Condenses wind into an ascending three-wide ice causeway. Lasts eight seconds, leaves no farmable ice and cushions allies when it fades. | Blizzard |
+| Wind Steps + Shock | **Thunder Walk** | Storm | III | 16 | Builds five copper-lit wind stepping stones. Each enemy touching a stone takes 2 magic damage once per cast; allies receive slow falling before expiry. | Tempest |
 
 <!-- fusions:end -->
 
@@ -197,3 +203,10 @@ it's tied into a **Knot**: one rune holding the whole spell.
 
 Signature fusions have no feat of their own: the advancements **Signature** (the first found) and
 **Hallmarks** (five found) count them instead, so a full Grimoire never needs every one.
+
+
+## Exact weaving and innate imprinting
+
+An amethyst **block** preserves the exact input effects, instead of selecting the shard’s named element-grid fusion. Extend an existing weave to two through eight total effects; three or four require at least Tier III, five through eight require Tier IV. The fee is three XP levels per extra effect and mana is the complete combined cost. Existing exact weaves cannot be reduced through the shard recipe.
+
+Every elemental effect has this route, including innate magic. Crouch-use a Blank Rune on the altar to imprint your awakened innate for one blank and three XP levels. Soul weaves require Tier IV and your own innate identity; different innate identities cannot be combined. Shapes, modifiers and links are composed through valid Knots. See [physical magic and expanded weaving](physical-magic.md) for the new six signatures, restrictions and terrain interactions.

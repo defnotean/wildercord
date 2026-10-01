@@ -72,5 +72,7 @@ public final class WildercordBlocks {
 		return block;
 	}
 
+	public static final RunicHearthBlock RUNIC_HEARTH=register("runic_hearth",RunicHearthBlock::new,BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).sound(SoundType.AMETHYST).strength(3.5F,9).lightLevel(s->3+s.getValue(RunicHearthBlock.CHARGE)*4),Rarity.UNCOMMON);
+	public static final BlockEntityType<RunicHearthEntity> HEARTH_ENTITY=Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE,Wildercord.id("runic_hearth"),FabricBlockEntityTypeBuilder.create(RunicHearthEntity::new,RUNIC_HEARTH).build());
 	public static void init() {}
 }

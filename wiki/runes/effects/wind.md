@@ -11,7 +11,7 @@ nav_order: 4
 
 Air and motion. Wind throws, lifts, dashes, turns arrows aside and carries you through the sky.
 
-15 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
+16 wind effects you can craft or find in the usual way. Wind also has runes of the world, fused runes and innate runes: see their own pages.
 
 ### <img src="{{ '/assets/runes/cushion.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Cushion
 {: #cushion}
@@ -111,7 +111,7 @@ A cutting wind: 4 damage and a light shove, and it breaks what the target is win
 
 A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, then flings them all the way you were facing for 3 damage.
 
-**How to get it:** Craft: a Blank Rune, Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_cyclone.png' | relative_url }}" alt="Crafting Cyclone: a Blank Rune and Wind Charge and Breeze Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -124,7 +124,7 @@ A whirlwind spins every enemy within 3 blocks around the point for 2 seconds, th
 
 Shoves targets the way you're facing. On Self it's a precise dash of about ten blocks: level, and it stops where it should.
 
-**How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
+**How to get it:** Craft: a Blank Rune, Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_dash.png' | relative_url }}" alt="Crafting Dash: a Blank Rune and Rabbit's Foot, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -137,7 +137,7 @@ Shoves targets the way you're facing. On Self it's a precise dash of about ten b
 
 For 8 seconds a whirl of wind sends arrows and other projectiles coming at the target back at whoever shot them.
 
-**How to get it:** Craft: a Blank Rune, Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_deflect.png' | relative_url }}" alt="Crafting Deflect: a Blank Rune and Shield and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -150,7 +150,7 @@ For 8 seconds a whirl of wind sends arrows and other projectiles coming at the t
 
 A snatching gust tears the weapon from each creature's hand for 5 seconds, then it drifts back. Bosses keep hold; a player keeps hold too, but can't use what they're holding for 3 seconds.
 
-**How to get it:** Craft: a Blank Rune, Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid.
+**How to get it:** Craft: a Blank Rune, Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_disarm.png' | relative_url }}" alt="Crafting Disarm: a Blank Rune and Wind Charge and Fishing Rod, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -163,7 +163,7 @@ A snatching gust tears the weapon from each creature's hand for 5 seconds, then 
 
 Flings targets high into the air, where every spell hits them harder. On Self it rockets you up and forward.
 
-**How to get it:** Craft: a Blank Rune, Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
+**How to get it:** Craft: a Blank Rune, Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_launch.png' | relative_url }}" alt="Crafting Launch: a Blank Rune and Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -176,7 +176,7 @@ Flings targets high into the air, where every spell hits them harder. On Self it
 
 Targets hang in the air for 3 seconds, their drift stopped, and every spell hits them harder while they're off the ground. On Self you float.
 
-**How to get it:** Craft: a Blank Rune, Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; End cities.
+**How to get it:** Craft: a Blank Rune, Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Fished from open water; Shipwrecks; Buried treasure; Trial vaults; End cities; Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_levitate.png' | relative_url }}" alt="Crafting Levitate: a Blank Rune and Phantom Membrane, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
@@ -189,11 +189,24 @@ Targets hang in the air for 3 seconds, their drift stopped, and every spell hits
 
 A violent outward blast: 4 damage and hurls everything within 3 blocks away (light creatures far, heavy ones barely). On enemies just pulled in, it sets off Collapse.
 
-**How to get it:** Craft: a Blank Rune, 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Breezes (8%).
+**How to get it:** Craft: a Blank Rune, 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Breezes (8%); Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_repel.png' | relative_url }}" alt="Crafting Repel: a Blank Rune and 2x Wind Charge, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
 
 **Modifiers that work on it:** Amplify, Widen, Frugal, Linger, Focus, Overcharge, Execute, Trial Key, Kindled, Unstable, Thirst, Belated
+
+### <img src="{{ '/assets/runes/wind_steps.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Wind Steps
+{: #wind_steps}
+
+*Tier II · Wind · Works on the world · 8 mana · needs a Copper Cord or better*
+
+Forms five real wind platforms ahead, ascending one block every two steps. Lasts eight seconds; allies standing on expiring steps get three seconds of slow falling.
+
+**How to get it:** Craft: a Blank Rune, Feather, Breeze Rod and String, plus 2 Lapis Lazuli and a Gold Ingot. The recipe is shapeless: any layout, any crafting grid. Also found: Moving Sky Ruin; Storm Spire.
+
+<img src="{{ '/assets/recipes/rune_wind_steps.png' | relative_url }}" alt="Crafting Wind Steps: a Blank Rune and Feather, Breeze Rod and String, plus 2 Lapis Lazuli and a Gold Ingot" class="recipe-grid" loading="lazy">
+
+**Modifiers that work on it:** Extend, Frugal
 
 ### <img src="{{ '/assets/runes/soar.png' | relative_url }}" alt="" width="32" height="32" class="rune-icon"> Soar
 {: #soar}
@@ -202,7 +215,7 @@ A violent outward blast: 4 damage and hurls everything within 3 blocks away (lig
 
 Wings of wind let you fly for 20 seconds: double-tap jump to take off, then jump and sneak to rise and sink. It can't be renewed mid-flight, and when the wind fades it sets you down gently, then your wings need 30 seconds' rest. A pull or a grounding wind tears it away, and it won't lift anyone in a warded arena.
 
-**How to get it:** Craft: a Blank Rune, Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; End cities.
+**How to get it:** Craft: a Blank Rune, Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Trial vaults; End cities; Moving Sky Ruin; Storm Spire.
 
 <img src="{{ '/assets/recipes/rune_soar.png' | relative_url }}" alt="Crafting Soar: a Blank Rune and Phantom Membrane, Feather and Breeze Rod, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

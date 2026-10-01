@@ -35,17 +35,48 @@ public final class RunicAnimations {
 			runes.add(node.effect);
 		}
 		Vec3 dir = safe(trigger.dir());
+		RuneDef discipline=dev.wildercord.spell.CircleDisciplines.selected(group.shapeMods);
+		if(discipline!=null && !trigger.fromCaster(cast.caster)) {
+			List<RuneDef> circuit=new ArrayList<>();
+			circuit.add(group.shape.is(Runes.TRIGGER.id())?Runes.SELF:group.shape);
+			circuit.add(discipline);group.effects.forEach(node->circuit.add(node.effect));
+			float yaw=(float)Math.toDegrees(Math.atan2(-dir.x,dir.z)),pitch=(float)-Math.toDegrees(Math.asin(Math.clamp(dir.y,-1,1)));
+			Fx.particle(cast.level,new dev.wildercord.content.SpellCircleOption(circuit.stream().map(RuneDef::id).limit(16).toList(),
+				cast.theme(group).primary(),.7F,yaw,pitch,18),trigger.pos().add(0,.4,0),1,0,0);
+		}
 		Vec3 side = side(dir);
 		Vec3 high = side.cross(dir).normalize();
+		// The cast's rune panels belong with the rear formation circle. In front of
+		// the caster they sat directly over the first-person aim just as the spell fired.
 		Vec3 base = trigger.fromCaster(cast.caster)
-			? cast.caster.getEyePosition().add(dir.scale(1.65)).add(0, -0.35, 0)
+			? cast.caster.getEyePosition().subtract(dir.scale(1.7)).add(0, -0.35, 0)
 			: trigger.pos().add(0, 0.7, 0);
 		int count = runes.size();
 		for (int i = 0; i < count; i++) {
 			RuneDef rune = runes.get(i);
 			double spread = (i - (count - 1) * 0.5) * Math.min(0.46, 3.0 / count);
+			if(trigger.fromCaster(cast.caster)){
+				// The client's tracking formation already draws every rune's emblem. A second,
+				// fixed world circle stayed at the old rear position after a sudden turn.
+				casterBeats(cast,rune,spread,i%2==0?1:-1);
+				continue;
+			}
 			Vec3 at = base.add(side.scale(spread)).add(high.scale((i % 2 == 0 ? 1 : -1) * 0.12));
 			show(cast.level, rune, at, dir, 0.46, false, cast);
+		}
+	}
+	private static void casterBeats(Cast cast,RuneDef rune,double spread,int sign){
+		var sequence=RuneChoreography.of(rune);
+		var beats=List.of(sequence.opening(),sequence.middle(),sequence.finish());
+		for(int i=0;i<3;i++){
+			int phase=i;
+			Runnable beat=()->{
+				if(!cast.alive())return;
+				Vec3 dir=safe(cast.caster.getLookAngle()),side=side(dir),high=side.cross(dir).normalize();
+				Vec3 at=cast.caster.getEyePosition().subtract(dir.scale(1.8)).add(0,-.35,0).add(side.scale(spread)).add(high.scale(sign*.12));
+				draw(cast.level,at,dir,RuneColors.of(rune),beats.get(phase),.46,phase,false,3);
+			};
+			if(i==0)beat.run();else Scheduler.later(i*3,beat);
 		}
 	}
 
@@ -78,9 +109,13 @@ public final class RunicAnimations {
 	/** Each beat draws a specific object or motion; the sequence belongs to the named rune. */
 	private static void draw(ServerLevel level, Vec3 at, Vec3 normal, int color,
 			RuneChoreography.Gesture gesture, double scale, int phase, boolean landing) {
+		draw(level,at,normal,color,gesture,scale,phase,landing,9);
+	}
+	private static void draw(ServerLevel level, Vec3 at, Vec3 normal, int color,
+			RuneChoreography.Gesture gesture, double scale, int phase, boolean landing,int life) {
 		int bright = phase == 2 ? tint(color, 11) : color;
 		Canvas c = new Canvas(level, at.add(normal.scale(phase * 0.045)), normal, bright,
-			scale * (1.08 + phase * 0.08), 9);
+			scale * (1.08 + phase * 0.08), life);
 		switch (gesture) {
 			case SEAL -> { c.ring(0.75, 0.75); c.ring(0.33, 0.33); c.line(-0.24, 0, 0.24, 0); }
 			case HALO -> { c.ring(0.43, 0.92); c.orb(0, 0.94, 0.13); }

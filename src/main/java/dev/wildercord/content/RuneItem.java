@@ -194,6 +194,9 @@ public class RuneItem extends Item {
 		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			RuneDef def = rune.get();
+			if(!dev.wildercord.cast.SoulWeaving.owns(serverPlayer,java.util.List.of(def))){
+				serverPlayer.sendOverlayMessage(Component.literal("This innate magic belongs to a different heart."));return InteractionResult.FAIL;
+			}
 			if (Runes.innate(def) && !serverPlayer.isCreative()) {
 				serverPlayer.sendOverlayMessage(Component.translatable("message.wildercord.innate_item").withStyle(ChatFormatting.GRAY));
 				return InteractionResult.FAIL;

@@ -372,7 +372,7 @@ def main():
         rec += ["</div>", ""]
     page(WIKI / "items/rune-recipes.md", {"title": "Rune Recipes", "parent": "Items and Crafting", "nav_order": 2},
          ["# Rune recipes", "",
-          "Every rune up to Tier III can be crafted: a **Blank Rune** plus a few items that suit it, in any crafting grid "
+          "Craftable runes up to Tier III use a **Blank Rune** plus a few items that suit them, in any crafting grid "
           "(the recipes are shapeless, so the layout doesn't matter). Higher tiers cost a little extra. Recipes show up in "
           "the recipe book once you've held a Blank Rune. Tier IV runes, runes of the world, fused runes and innate runes "
           "can't be crafted.", "",

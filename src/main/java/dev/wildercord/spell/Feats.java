@@ -49,6 +49,8 @@ public final class Feats {
 	public static final String CINDER_WARDEN = "cinder_warden";
 	public static final String STAR_EATER = "star_eater";
 	public static final String TIDE_SCRIBE = "tide_scribe";
+	public static final String ROOT_GUARDIAN = "root_guardian";
+	public static final String STORM_CONDUCTOR = "storm_conductor";
 	public static final String REELED_IN = "reeled_in";
 
 	/** A feat in the Grimoire: its id, its title and how it was earned. */
@@ -94,6 +96,8 @@ public final class Feats {
 		new Feat(CINDER_WARDEN, "Tempered", "Broke the Cinder Warden's armour with reactions and brought it down."),
 		new Feat(STAR_EATER, "Starbreaker", "Shattered the Star-Eater's shield and brought it down."),
 		new Feat(TIDE_SCRIBE, "Low Tide", "Turned the Tide Scribe's own flood against it and brought it down."),
+		new Feat(ROOT_GUARDIAN, "Heartwood", "Pruned the Root Guardian's bindings and defeated it."),
+		new Feat(STORM_CONDUCTOR, "Grounded", "Grounded the Storm Conductor and defeated it."),
 		new Feat(REELED_IN, "Reeled In", "Fished a rune out of open water."));
 
 	/** The element reactions, in the order the Grimoire lists them: the first five, then the newer ones of {@link ReactionRules}. */
@@ -121,7 +125,7 @@ public final class Feats {
 		if (key.equals("feat:" + ARCHIVIST)) {
 			return 2000;
 		}
-		if (key.equals("feat:" + CINDER_WARDEN) || key.equals("feat:" + STAR_EATER) || key.equals("feat:" + TIDE_SCRIBE)) {
+		if (key.equals("feat:" + CINDER_WARDEN) || key.equals("feat:" + STAR_EATER) || key.equals("feat:" + TIDE_SCRIBE) || key.equals("feat:" + ROOT_GUARDIAN) || key.equals("feat:" + STORM_CONDUCTOR)) {
 			return 1500;
 		}
 		return 250;

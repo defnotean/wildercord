@@ -549,6 +549,10 @@ def main(preview=False):
             mark, mark2 = signature_mark(mark, mark2)
         bands[r["path"]], marks[r["path"]] = band, mark
         second[r["path"]] = (band2, mark2, second_color(own, partner))
+    import physical_art
+    physical_art.circles(bands, marks, second)
+    import circle_discipline_art
+    circle_discipline_art.circles(bands, marks)
     # Every rune's ring and emblem must be its own (a fused rune's counted with both halves).
     def whole(table, path, index):
         return frozenset(table[path]) | (frozenset(second[path][index]) if path in second else frozenset())

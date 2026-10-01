@@ -31,6 +31,15 @@ replay_*.log
 # python
 __pycache__/
 *.pyc
+_site/
+wiki/.jekyll-cache/
+wiki/.bundle/
+wiki/vendor/
 
 # local tool state
 .claude/
+
+# Local visual and benchmark review evidence
+artifacts/review/
+artifacts/profiling/
+artifacts/profiles/

@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 public final class WildercordClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		dev.wildercord.client.fx.SpellFormations.init();
 		// Bolts are drawn entirely with particles sent from the server.
 		EntityRendererRegistry.register(WildercordEntities.RUNE_BOLT, NoopRenderer::new);
 		ModelLayerRegistry.registerModelLayer(ArchivistRenderer.LAYER, ArchivistModel::createLayer);
@@ -58,6 +59,8 @@ public final class WildercordClient implements ClientModInitializer {
 		dev.wildercord.client.render.DungeonRenderers.register();
 		RuneMarksLayer.register();
 		dev.wildercord.client.familiar.FamiliarClient.init();
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.pet.CinnamonRenderer.LAYER, dev.wildercord.client.pet.CinnamonModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.pet.CinnamonContent.CINNAMON, dev.wildercord.client.pet.CinnamonRenderer::new);
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.cosmetic.CordTrails::tick);
 		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.
 		dev.wildercord.client.compat.ShaderCompat.init();
@@ -68,6 +71,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.LIGHT, new dev.wildercord.client.fx.LightParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.SHIELD, new dev.wildercord.client.fx.ShieldCircles.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.MOTE, new dev.wildercord.client.fx.MoteParticle.Provider());
+		ParticleProviderRegistry.getInstance().register(WildercordParticles.MATERIAL, new dev.wildercord.client.fx.MaterialParticle.Provider());
 		ParticleProviderRegistry.getInstance().register(WildercordParticles.RITUAL, new dev.wildercord.client.fx.RitualCircles.Provider());
 		ImbuedTooltip.init();
 		net.minecraft.client.gui.screens.MenuScreens.register(dev.wildercord.menu.WildercordMenus.FUSION_ALTAR, FusionAltarScreen::new);
@@ -81,6 +85,10 @@ public final class WildercordClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.cast.PlayerAffinities.Rise.TYPE, (payload, context) ->
 			context.client().gui.toastManager().addToast(GrimoireToast.affinity(payload.element(), payload.level())));
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.LeySeed.TYPE, (payload, context) -> LeyMotes.setSeed(payload.seed()));
+		ClientPlayNetworking.registerGlobalReceiver(dev.wildercord.net.NotebookPayload.TYPE, (payload, context) -> {
+			var previous = context.client().gui.screen() instanceof RuneNotebookScreen board ? board : null;
+			context.client().gui.setScreen(new RuneNotebookScreen(payload, previous));
+		});
 		// The server's Wildercord version: a word in chat if it isn't ours (runes one of us doesn't know go silent).
 		VersionWatch.init();
 		ClientPlayNetworking.registerGlobalReceiver(WildercordNetworking.ScreenFx.TYPE,
@@ -130,6 +138,7 @@ public final class WildercordClient implements ClientModInitializer {
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.fx.ChargeHum::tick);
 		WildercordKeys.init();
 		SpellHud.init();
+		dev.wildercord.client.fx.FrameBenchmark.init();
 		WaypointHud.init();
 		Wildercord.LOGGER.info("Wildercord client initialized");
 	}

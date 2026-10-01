@@ -31,6 +31,7 @@ public final class WildercordKeys {
 	private static KeyMapping backpack;
 	/** Loads the next saved loadout (the server checks it may, and names it above the hotbar). */
 	private static KeyMapping nextLoadout;
+	private static KeyMapping magicSettings;
 	/** "Cast spell N": the Cord's four, and the tome's fifth. */
 	private static final KeyMapping[] CAST_N = new KeyMapping[dev.wildercord.gear.SpellSlots.ALL];
 
@@ -75,6 +76,8 @@ public final class WildercordKeys {
 	}
 
 	public static void init() {
+		magicSettings = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.magic_settings",
+			InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
 		cast = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast", InputConstants.KEY_R, CATEGORY));
 		next = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_spell", InputConstants.KEY_V, CATEGORY));
 		open = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.open_cord", InputConstants.KEY_K, CATEGORY));
@@ -89,6 +92,7 @@ public final class WildercordKeys {
 	}
 
 	private static void tick(Minecraft client) {
+		while (magicSettings.consumeClick()) if (client.player != null) client.gui.setScreen(new MagicSettingsScreen());
 		if (client.player == null || !client.player.isAlive()) {
 			// Dead or out of the world: whatever was held is dropped, and nothing is cast.
 			castHeld = -1;

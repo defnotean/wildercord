@@ -9,6 +9,10 @@ public final class DungeonRenderers {
 	private DungeonRenderers() {}
 
 	public static void register() {
+		ModelLayerRegistry.registerModelLayer(RootGuardianRenderer.LAYER, RootGuardianModel::createLayer);
+		EntityRendererRegistry.register(DungeonEntities.ROOT_GUARDIAN, RootGuardianRenderer::new);
+		ModelLayerRegistry.registerModelLayer(StormConductorRenderer.LAYER, StormConductorModel::createLayer);
+		EntityRendererRegistry.register(DungeonEntities.STORM_CONDUCTOR, StormConductorRenderer::new);
 		ModelLayerRegistry.registerModelLayer(CinderWardenRenderer.LAYER, CinderWardenModel::createLayer);
 		EntityRendererRegistry.register(DungeonEntities.CINDER_WARDEN, CinderWardenRenderer::new);
 		ModelLayerRegistry.registerModelLayer(StarEaterRenderer.LAYER, StarEaterModel::createLayer);

@@ -52,6 +52,7 @@ public final class Cast {
 		double charge;
 		/** The feel of each group of the plan, worked out once. */
 		final java.util.Map<dev.wildercord.spell.SpellPlan.Group, dev.wildercord.cast.feel.Feel> feels = new java.util.IdentityHashMap<>();
+		final java.util.Map<dev.wildercord.spell.SpellPlan.Group, Double> circleConditions = new java.util.IdentityHashMap<>();
 		/** The mana the spell asks, as a Shield weighs it; worked out from the plan when nobody set it. */
 		double weight = -1;
 		/** The casting gear in the caster's hands when it was cast (staffs and foci). */
@@ -167,6 +168,27 @@ public final class Cast {
 	/** How charged the spell was when released, 0 to 1. */
 	public double charge() {
 		return budget.shared.charge;
+	}
+
+	/** Sample environmental/stance choices once when this group releases. */
+	public void prepareCircle(dev.wildercord.spell.SpellPlan.Group group) {
+		if(dev.wildercord.spell.CircleDisciplines.selected(group.shapeMods)==null)return;
+		budget.shared.circleConditions.computeIfAbsent(group,g -> {
+			Vec3 velocity=caster.getDeltaMovement();
+			long day=Math.floorMod(level.getOverworldClockTime(),24000);
+			boolean night=level.dimensionType().hasSkyLight() && !level.dimensionType().hasFixedTime() && day>=13000 && day<23000;
+			return dev.wildercord.spell.CircleDisciplines.conditional(g,
+				velocity.x*velocity.x+velocity.z*velocity.z>=.0025,caster.isShiftKeyDown(),
+				caster.isInWater() || level.isRainingAt(caster.blockPosition()),night);
+		});
+	}
+	/** An effect-local view sharing payment and budgets; its bonuses never leak into a linked group. */
+	public Cast circleEffect(dev.wildercord.spell.SpellPlan.Group group, dev.wildercord.spell.EffectKind kind) {
+		if(dev.wildercord.spell.CircleDisciplines.selected(group.shapeMods)==null)return this;
+		prepareCircle(group);
+		double factor=budget.shared.circleConditions.get(group)*dev.wildercord.spell.CircleDisciplines.role(group,kind);
+		return new Cast(caster,level,depth,budget,castNumber,power*factor,
+			duration*dev.wildercord.spell.CircleDisciplines.profile(group).duration(),passive,wanted,info,repeated);
 	}
 
 	/** The feel of a group of this cast's plan (motion, element, role, scale band, modifiers), worked out once and adjusted by signatures. */

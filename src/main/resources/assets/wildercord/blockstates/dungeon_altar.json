@@ -17,6 +17,18 @@
     },
     "awake=true,kind=tide": {
       "model": "wildercord:block/dungeon_altar_tide"
+    },
+    "awake=false,kind=root": {
+      "model": "wildercord:block/dungeon_altar_root"
+    },
+    "awake=true,kind=root": {
+      "model": "wildercord:block/dungeon_altar_root"
+    },
+    "awake=false,kind=storm": {
+      "model": "wildercord:block/dungeon_altar_storm"
+    },
+    "awake=true,kind=storm": {
+      "model": "wildercord:block/dungeon_altar_storm"
     }
   }
 }

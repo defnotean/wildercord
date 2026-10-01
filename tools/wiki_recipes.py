@@ -90,6 +90,14 @@ def _block_model(ns, name):
     """A block model's resolved textures and whether it's a full cube, following its parents."""
     textures, parents = {}, []
     ref = f"{ns}:block/{name}"
+    # Item definitions can point to a state-specific block model (the hearth).
+    if ns == "wildercord":
+        item_definition = ROOT / f"src/main/resources/assets/wildercord/items/{name}.json"
+        if item_definition.exists():
+            item_model = json.loads(item_definition.read_text(encoding="utf-8")).get("model", {})
+            candidate = item_model.get("model", "")
+            if candidate.startswith("wildercord:block/"):
+                ref = candidate
     for _ in range(8):
         ns2, path = ref.split(":", 1) if ":" in ref else ("minecraft", ref)
         if ns2 == "minecraft":

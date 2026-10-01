@@ -83,7 +83,7 @@ import java.util.Set;
  */
 public class WildercordGearSlotsTest implements FabricClientGameTest {
 	/** The Cord screen takes its own buttons (0 left); the container screens take Minecraft's (1 left). */
-	private static final int CORD_LEFT = 0;
+	private static final int CORD_LEFT = com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT;
 	private static final int LEFT = com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT;
 
 	@Override
@@ -112,7 +112,7 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			if (checks) {
 				steps.add(() -> menuClicks(world));
 				steps.add(() -> creativePacket(world));
-				steps.add(() -> spellsThroughASlot(world));
+				steps.add(() -> spellsThroughASlot(context, world));
 				steps.add(() -> tomeSlot(context, world));
 				steps.add(() -> realMouse(context, world));
 				steps.add(() -> seenByTheClient(context, world));
@@ -435,7 +435,11 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 
 	// ------------------------------------------------------------------ what a slotted piece does
 
-	private static void spellsThroughASlot(TestSingleplayerContext world) {
+	private static void spellsThroughASlot(ClientGameTestContext context, TestSingleplayerContext world) {
+		float[] damage = new float[2];
+		int[] costs = new int[2];
+		float[] slotSpent = new float[1];
+		int[] targetId = new int[1];
 		String problem = world.getServer().computeOnServer(server -> {
 			ServerPlayer player = player(server);
 			ServerLevel level = player.level();
@@ -450,32 +454,46 @@ public class WildercordGearSlotsTest implements FabricClientGameTest {
 			husk.setNoAi(true);
 			husk.addTag("wildercord.rolled");
 			level.addFreshEntity(husk);
+			targetId[0] = husk.getId();
 
 			SpellCompiler.Compiled fire = SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 0, CordTier.ECHO));
-			int plainCost = Heart.manaCost(player, fire);
+			costs[0] = Heart.manaCost(player, fire);
 			castFresh(player, 0);
-			float plainDamage = husk.getMaxHealth() - husk.getHealth();
+			return null;
+		});
+		check(problem == null, problem);
+		context.waitTicks(4);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			Mob husk = (Mob) player.level().getEntity(targetId[0]);
+			damage[0] = husk.getMaxHealth() - husk.getHealth();
 			husk.setHealth(husk.getMaxHealth());
 			husk.clearFire();
 
 			// The staff in its slot, nothing in either hand.
 			GearSlots.set(player, GearSlot.STAFF, gear(GearDef.staff("fire")));
+			costs[1] = Heart.manaCost(player, SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 0, CordTier.ECHO)));
+			slotSpent[0] = castFresh(player, 0);
+		});
+		context.waitTicks(4);
+		problem = world.getServer().computeOnServer(server -> {
+			ServerPlayer player = player(server);
+			Mob husk = (Mob) player.level().getEntity(targetId[0]);
+			damage[1] = husk.getMaxHealth() - husk.getHealth();
+			husk.discard();
 			if (!player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty()) {
 				return "the hands should be empty";
 			}
-			int slotCost = Heart.manaCost(player, fire);
-			float slotSpent = castFresh(player, 0);
-			float slotDamage = husk.getMaxHealth() - husk.getHealth();
-			husk.discard();
-			if (slotSpent < 0 || plainDamage <= 0) {
-				return "Touch · Fire should cast and hurt the husk (spent " + slotSpent + ", plain damage " + plainDamage + ")";
+			if (slotSpent[0] < 0 || damage[0] <= 0) {
+				return "Touch · Fire should cast and hurt the husk (spent " + slotSpent[0] + ", plain damage " + damage[0] + ")";
 			}
-			double ratio = slotDamage / plainDamage;
+			double ratio = damage[1] / damage[0];
 			if (ratio < 1.15 || ratio > 1.25) {
-				return "a Fire Staff in its slot should make fire hit 20% harder with nothing held (" + plainDamage + " -> " + slotDamage + ")";
+				return "a Fire Staff in its slot should make fire hit 20% harder with nothing held (" + damage[0] + " -> " + damage[1] + ")";
 			}
-			if (slotCost != Math.min((int) Math.ceil(fire.cost() * GearDef.STAFF_COST - 1e-9), plainCost - 1) || Math.round(slotSpent) != slotCost) {
-				return "a Fire Staff in its slot should take 10% off a fire spell's cost (" + plainCost + " -> " + slotCost + ", spent " + slotSpent + ")";
+			SpellCompiler.Compiled fire = SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 0, CordTier.ECHO));
+			if (costs[1] != Math.min((int) Math.ceil(fire.cost() * GearDef.STAFF_COST - 1e-9), costs[0] - 1) || Math.round(slotSpent[0]) != costs[1]) {
+				return "a Fire Staff in its slot should take 10% off a fire spell's cost (" + costs[0] + " -> " + costs[1] + ", spent " + slotSpent[0] + ")";
 			}
 			SpellCompiler.Compiled frost = SpellCompiler.compile(SpellCaster.activeRunes(Spellbooks.get(player), 1, CordTier.ECHO));
 			GearSlots.clear(player, GearSlot.STAFF);

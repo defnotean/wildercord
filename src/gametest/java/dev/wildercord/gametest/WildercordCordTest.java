@@ -29,8 +29,8 @@ import java.util.List;
  * <p>Runs in the full suite; {@code WILDERCORD_CORDS_ONLY=1} runs just this.</p>
  */
 public class WildercordCordTest implements FabricClientGameTest {
-	private static final int LEFT = 0;
-	private static final int RIGHT = 1;
+	private static final int LEFT = com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT;
+	private static final int RIGHT = com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT;
 
 	@Override
 	public void runTest(ClientGameTestContext context) {

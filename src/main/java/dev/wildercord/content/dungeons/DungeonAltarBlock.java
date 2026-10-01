@@ -34,7 +34,9 @@ public class DungeonAltarBlock extends Block implements EntityBlock {
 		/** The Astral Observatory's star-altar: the Star-Eater. */
 		ASTRAL(14),
 		/** The Drowned Scriptorium's core: the Tide Scribe. */
-		TIDE(14);
+		TIDE(14),
+		ROOT(5),
+		STORM(4);
 
 		/** How near a player must come to wake it. */
 		public final int reach;
@@ -54,6 +56,8 @@ public class DungeonAltarBlock extends Block implements EntityBlock {
 				case CINDER -> dev.wildercord.cast.CinderWarden.rise(level, pos);
 				case ASTRAL -> dev.wildercord.cast.StarEater.rise(level, pos);
 				case TIDE -> dev.wildercord.cast.TideScribe.rise(level, pos);
+				case ROOT -> dev.wildercord.cast.RootGuardian.rise(level, pos);
+				case STORM -> dev.wildercord.cast.StormConductor.rise(level, pos);
 			};
 		}
 	}

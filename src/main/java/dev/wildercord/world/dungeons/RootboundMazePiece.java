@@ -83,6 +83,7 @@ public class RootboundMazePiece extends DungeonPiece {
 		sealDoorAcross(level, bb, 32, 13, 17, 1, 4, RuneSealBlock.Element.LIFE, RuneSealBlock.Element.EARTH);
 		chest(level, bb, 12, 1, 39, DungeonWorldgen.ROOT_VAULT, Direction.NORTH, 103);
 		chest(level, bb, 18, 1, 39, DungeonWorldgen.ROOT_VAULT, Direction.NORTH, 104);
+		altar(level, bb, dev.wildercord.content.dungeons.DungeonAltarBlock.Kind.ROOT, 15, 1, 37);
 		guard(level, bb, EntityTypes.ZOMBIE, 8, 1, 18, List.of(Runes.TOUCH, Runes.ROOTSNARE), false);
 		guard(level, bb, EntityTypes.WITCH, 22, 1, 18, List.of(Runes.BOLT, Runes.VENOM), false);
 		guard(level, bb, EntityTypes.BOGGED, 15, 1, 28, List.of(Runes.ARC, Runes.MIRE), true);

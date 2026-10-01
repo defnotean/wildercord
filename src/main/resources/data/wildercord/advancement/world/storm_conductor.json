@@ -1,0 +1,34 @@
+{
+  "parent": "wildercord:world/archivist",
+  "criteria": {
+    "storm_conductor": {
+      "trigger": "wildercord:feat",
+      "conditions": {
+        "feat": "storm_conductor"
+      }
+    }
+  },
+  "display": {
+    "icon": {
+      "id": "wildercord:rune",
+      "components": {
+        "wildercord:rune": "wildercord:thunderclap"
+      }
+    },
+    "title": {
+      "translate": "advancements.wildercord.world.storm_conductor.title"
+    },
+    "description": {
+      "translate": "advancements.wildercord.world.storm_conductor.description"
+    },
+    "frame": "challenge"
+  },
+  "requirements": [
+    [
+      "storm_conductor"
+    ]
+  ],
+  "rewards": {
+    "experience": 300
+  }
+}

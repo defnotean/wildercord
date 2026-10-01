@@ -52,7 +52,7 @@ public class WellstoneBlockEntity extends BlockEntity {
 			} else {
 				server.playSound(null, pos, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 1.0F, 1.2F);
 			}
-			server.sendParticles(ParticleTypes.END_ROD, top.x, top.y, top.z, 12, 0.3, 0.3, 0.3, 0.05);
+			dev.wildercord.cast.Fx.sendParticles(server, ParticleTypes.END_ROD, top.x, top.y, top.z, 12, 0.3, 0.3, 0.3, 0.05);
 		}
 		if (!onLine) {
 			return;
@@ -72,9 +72,9 @@ public class WellstoneBlockEntity extends BlockEntity {
 			double a = server.getRandom().nextDouble() * Math.PI * 2;
 			double r = 2 + server.getRandom().nextDouble() * 3;
 			Vec3 from = base.add(Math.cos(a) * r, -0.9, Math.sin(a) * r);
-			server.sendParticles(new TrailParticleOption(base.add(0, 0.2, 0), PURPLE, 20), from.x, from.y, from.z, 1, 0, 0, 0, 0);
+			dev.wildercord.cast.Fx.sendParticles(server, new TrailParticleOption(base.add(0, 0.2, 0), PURPLE, 20), from.x, from.y, from.z, 1, 0, 0, 0, 0);
 		}
-		server.sendParticles(new DustParticleOptions(0xE8E0FF, 1.0F), base.x, base.y + 0.4, base.z, 3, 0.25, 0.3, 0.25, 0);
+		dev.wildercord.cast.Fx.sendParticles(server, new DustParticleOptions(0xE8E0FF, 1.0F), base.x, base.y + 0.4, base.z, 3, 0.25, 0.3, 0.25, 0);
 		if (time % 80 == 0) {
 			server.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.6F, 0.9F);
 		}

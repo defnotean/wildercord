@@ -13,7 +13,7 @@ description: "How spells work in Wildercord: Cords, the Cord screen, how runes c
 A spell in Wildercord is nothing more than the runes on your Cord, read from left to right. There are no
 fixed spells to unlock: you choose the runes, you choose the order, and the Cord screen tells you exactly
 what you've made before you ever cast it. This section explains every part of that, from the Cord on your
-wrist to the magic circle in front of your hands.
+wrist to the magic circle behind your shoulders.
 
 ## The pages
 
@@ -62,3 +62,9 @@ wrist to the magic circle in front of your hands.
 | **Cooldown** | How long a spell takes to be ready again after you cast it. Every spell has its own. |
 | **Upkeep** | What a passive spell costs in mana every second. |
 | **Loadout** | Your whole Cord (spells, names, passives and the selected spell) saved under a name, to load again later. |
+
+## New in 0.7
+
+- [Builds to Try]({{ '/spellcraft/build-examples/' | relative_url }})
+- [Circle Disciplines]({{ '/spellcraft/circle-disciplines/' | relative_url }})
+- [Physical Magic]({{ '/spellcraft/physical-magic/' | relative_url }})

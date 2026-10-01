@@ -24,6 +24,7 @@ final class WindFeels {
 	}
 
 	static void register() {
+		wind("wind_steps",.9,0xB1EDD9,"wind_rise",.35F,1.26F).register();
 		// Displace: slabs, slash lines, domes; outward and straight.
 		wind("push", 0.9, GUST, "wind_thump", 0.3F, 1.0F).hook(Phase.AFTERMATH, FrostWindFx::settle).register();
 		wind("windcut", 0.9, 0xFFFFFF, "wind_slash", 0.3F, 1.0F).hook(Phase.AFTERMATH, FrostWindFx::settle).register();

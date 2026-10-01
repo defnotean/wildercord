@@ -298,6 +298,21 @@ public class WildercordNewRunesTest implements FabricClientGameTest {
 			Spellbooks.setReadyAt(player, 0, 0);
 			Spellbooks.setMana(player, Mana.max(player));
 			SpellCaster.cast(player, 0);
+			return null;
+		});
+		if (cast != null) {
+			cleanup(context, world);
+			return cast;
+		}
+		context.waitTicks(4);
+		cast = world.getServer().computeOnServer(server -> {
+			ServerLevel level = player(server).level();
+			List<Mob> mobs = level.getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(STAGE).inflate(12),
+				e -> e.entityTags().contains("wildercord.new_runes") && e.isAlive());
+			Mob target = mobs.stream().filter(e -> e.getType() == EntityTypes.HUSK && !e.entityTags().contains("wildercord.bystander")).findFirst().orElse(null);
+			Mob wolf = mobs.stream().filter(e -> e.getType() == EntityTypes.WOLF).findFirst().orElse(null);
+			Mob bystander = mobs.stream().filter(e -> e.entityTags().contains("wildercord.bystander")).findFirst().orElse(null);
+			if (target == null || wolf == null || bystander == null) return "the husks and wolf should be present when the fangs rise";
 			List<net.minecraft.world.entity.projectile.EvokerFangs> fangs = level.getEntitiesOfClass(net.minecraft.world.entity.projectile.EvokerFangs.class,
 				target.getBoundingBox().inflate(3));
 			if (fangs.size() < 2) {

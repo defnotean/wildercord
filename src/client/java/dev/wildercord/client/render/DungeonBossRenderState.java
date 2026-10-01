@@ -16,4 +16,5 @@ public class DungeonBossRenderState extends LivingEntityRenderState {
 	public float slamming;
 	/** Its phase, 1 to 3. */
 	public int phase = 1;
+	public int rootBindings = 3;
 }

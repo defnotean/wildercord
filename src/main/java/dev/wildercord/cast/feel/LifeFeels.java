@@ -18,6 +18,7 @@ final class LifeFeels {
 	}
 
 	static void register() {
+		Signature.of("root_bulwark").accent(0xD4E895).sound(Phase.CUE,"earth_grind",.35F,1.12F).register();
 		// Restoring: two soft notes up a third; the accent is a warm gold-green.
 		cue("life_stinger_restore", 0xC8F090, "heal", "regrowth", "restore", "remedy", "cleanse", "bloom", "lifebloom", "stitchtime", "nourish");
 		// Wards: a low warm swell and a click.

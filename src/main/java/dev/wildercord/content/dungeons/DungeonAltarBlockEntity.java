@@ -67,8 +67,10 @@ public class DungeonAltarBlockEntity extends BlockEntity {
 				case CINDER -> ParticleTypes.SMALL_FLAME;
 				case ASTRAL -> ParticleTypes.END_ROD;
 				case TIDE -> ParticleTypes.BUBBLE_POP;
+				case ROOT -> ParticleTypes.HAPPY_VILLAGER;
+				case STORM -> ParticleTypes.ELECTRIC_SPARK;
 			};
-			server.sendParticles(mote, top.x, top.y + 0.4, top.z, 2, 0.5, 0.3, 0.5, 0.02);
+			dev.wildercord.cast.Fx.sendParticles(server, mote, top.x, top.y + 0.4, top.z, 2, 0.5, 0.3, 0.5, 0.02);
 		}
 		if (time % 20 != 0) {
 			return;

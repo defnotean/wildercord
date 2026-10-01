@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20261005,
+    "separation": 12,
+    "spacing": 38
+  },
+  "structures": [
+    {
+      "structure": "wildercord:moving_sky_ruin",
+      "weight": 1
+    }
+  ]
+}

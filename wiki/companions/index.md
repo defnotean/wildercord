@@ -39,3 +39,8 @@ once with materials.
 | **Changes your power?** | Yes, a little | No, looks only |
 | **Feats** | Kindred (your first), Menagerie (all eight elements) | |
 | **Needs** | A Cord for the mana boost; a [Wisp Lantern]({{ '/items/' | relative_url }}#wisp-lantern) to manage several | A Cord to see it on |
+
+## New in 0.7
+
+- [Cinnamon]({{ '/companions/cinnamon/' | relative_url }})
+- [Familiar Jobs and Event Echoes]({{ '/companions/jobs-and-echoes/' | relative_url }})

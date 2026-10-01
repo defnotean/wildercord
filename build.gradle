@@ -3,8 +3,8 @@ plugins {
 	id 'maven-publish'
 }
 
-// `-PaltBuild` builds into build-alt/ instead of build/. The dev client loads classes straight
-// from build/, so this lets code be compiled and tested while a dev session is still running.
+// `-PaltBuild` uses build-alt/. Finish/stop every dev client before switching output folders:
+// Gradle can clean a task's previous output directory when its configured location changes.
 if (project.hasProperty('altBuild')) {
 	layout.buildDirectory = file('build-alt')
 }
@@ -83,6 +83,62 @@ processResources {
 
 	filesMatching("fabric.mod.json") {
 		expand "version": version
+	}
+}
+
+// Focused in-world screenshot suites keep iteration fast while the full descriptor remains available.
+tasks.named('processGametestResources') {
+	inputs.property('focusedSuite', project.findProperty('focusedSuite') ?: '')
+	inputs.property('encounterSuite', project.hasProperty('encounterSuite'))
+	inputs.property('cinnamonSuite', project.hasProperty('cinnamonSuite'))
+	inputs.property('defensiveSuite', project.hasProperty('defensiveSuite'))
+	inputs.property('practiceSuite', project.hasProperty('practiceSuite'))
+	inputs.property('magicSuite', project.hasProperty('magicSuite'))
+	inputs.property('fusionSuite', project.hasProperty('fusionSuite'))
+	inputs.property('runeSuite', project.hasProperty('runeSuite'))
+	inputs.property('mechanicsSuite', project.hasProperty('mechanicsSuite'))
+	inputs.property('tourSuite', project.hasProperty('tourSuite'))
+	inputs.property('parrySuite', project.hasProperty('parrySuite'))
+	inputs.property('signatureSuite', project.hasProperty('signatureSuite'))
+	inputs.property('tailSuite', project.hasProperty('tailSuite'))
+	inputs.property('tailFrom', project.findProperty('tailFrom') ?: '')
+	doLast {
+		if(project.hasProperty('focusedSuite')) {
+			def descriptor=file("${destinationDir}/fabric.mod.json")
+			def data=new groovy.json.JsonSlurper().parse(descriptor)
+			def selected=data.entrypoints['fabric-client-gametest'].findAll { it == project.property('focusedSuite') }
+			if(selected.size()!=1) throw new GradleException('focusedSuite must name one registered client game test')
+			data.entrypoints['fabric-client-gametest']=selected
+			descriptor.text=groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
+			return
+		}
+		if (!project.hasProperty('encounterSuite') && !project.hasProperty('practiceSuite') && !project.hasProperty('defensiveSuite') && !project.hasProperty('cinnamonSuite') && !project.hasProperty('magicSuite') && !project.hasProperty('fusionSuite') && !project.hasProperty('runeSuite') && !project.hasProperty('mechanicsSuite') && !project.hasProperty('tourSuite') && !project.hasProperty('parrySuite') && !project.hasProperty('signatureSuite') && !project.hasProperty('tailSuite')) return
+		def descriptor = file("${destinationDir}/fabric.mod.json")
+		def data = new groovy.json.JsonSlurper().parse(descriptor)
+		data.entrypoints['fabric-client-gametest'] = project.hasProperty('tailSuite')
+			? data.entrypoints['fabric-client-gametest'].dropWhile { it != 'dev.wildercord.gametest.' + (project.findProperty('tailFrom') ?: 'WildercordGearTest') }
+			: [project.hasProperty('encounterSuite')
+			? 'dev.wildercord.cast.NewEncountersTest'
+			: project.hasProperty('practiceSuite')
+			? 'dev.wildercord.cast.PracticeRoomTest'
+			: project.hasProperty('defensiveSuite')
+			? 'dev.wildercord.cast.DefensiveFociTest'
+			: project.hasProperty('signatureSuite')
+			? 'dev.wildercord.gametest.WildercordSignatureFusionTest'
+			: project.hasProperty('parrySuite')
+			? 'dev.wildercord.gametest.WildercordParryTest'
+			: project.hasProperty('tourSuite')
+			? 'dev.wildercord.gametest.WildercordFeatureTour'
+			: project.hasProperty('mechanicsSuite')
+			? 'dev.wildercord.gametest.WildercordScreenshots'
+			: project.hasProperty('runeSuite')
+			? 'dev.wildercord.cast.WildercordRuneGapsTest'
+			: project.hasProperty('fusionSuite')
+			? 'dev.wildercord.gametest.WildercordFusionTest'
+			: project.hasProperty('magicSuite')
+			? 'dev.wildercord.gametest.WildercordMagicReleaseTest'
+			: 'dev.wildercord.gametest.WildercordCinnamonTest']
+		descriptor.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(data))
 	}
 }
 

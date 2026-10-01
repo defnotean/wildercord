@@ -47,10 +47,11 @@ public final class Fx {
 		}
 		Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			if (player != except && inRange(level, player, false, at.x, at.y, at.z)) {
+			if (player != except && inRange(level, player, false, at.x, at.y, at.z) && DecorationBudget.accept(player,1)) {
 				if (packet == null) {
 					packet = packet(particle, false, false, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 				}
+				VisualMetrics.recipient();
 				player.connection.send(packet);
 			}
 		}
@@ -63,10 +64,11 @@ public final class Fx {
 		}
 		Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			if (inRange(level, player, false, at.x, at.y, at.z)) {
+			if (inRange(level, player, false, at.x, at.y, at.z) && DecorationBudget.accept(player,count)) {
 				if (packet == null) {
 					packet = packet(particle, false, false, at.x, at.y, at.z, count, spread, spread, spread, speed);
 				}
+				VisualMetrics.recipient();
 				player.connection.send(packet);
 			}
 		}
@@ -90,9 +92,11 @@ public final class Fx {
 			if (ex * ex + ey * ey + ez * ez < clearance * clearance || !inRange(level, player, false, x, y, z)) {
 				continue;
 			}
+			if(!DecorationBudget.accept(player,count))continue;
 			if (packet == null) {
 				packet = packet(particle, false, false, x, y, z, count, dx, dy, dz, speed);
 			}
+			VisualMetrics.recipient();
 			player.connection.send(packet);
 		}
 	}
@@ -113,9 +117,11 @@ public final class Fx {
 			if (ex * ex + ey * ey + ez * ez < EYE_CLEARANCE * EYE_CLEARANCE || !inRange(level, player, true, at.x, at.y, at.z)) {
 				continue;
 			}
+			if(!DecorationBudget.accept(player,1))continue;
 			if (packet == null) {
 				packet = packet(particle, true, false, at.x, at.y, at.z, 1, 0, 0, 0, 0);
 			}
+			VisualMetrics.recipient();
 			player.connection.send(packet);
 		}
 	}
@@ -138,11 +144,21 @@ public final class Fx {
 	/** The packet {@code ServerLevel.sendParticles} would build for these arguments. */
 	static Packet<?> packet(ParticleOptions particle, boolean far, boolean alwaysShow, double x, double y, double z, int count, double dx, double dy,
 			double dz, double speed) {
-		return new ClientboundLevelParticlesPacket(particle, far, alwaysShow, x, y, z, (float) dx, (float) dy, (float) dz, (float) speed, count);
+		VisualMetrics.particle();
+		return new ClientboundLevelParticlesPacket(SpellMaterials.custom(particle,new Vec3(x,y,z)), far, alwaysShow, x, y, z, (float) dx, (float) dy, (float) dz, (float) speed, count);
 	}
 
 	public static void send(ServerLevel level, ParticleOptions particle, Vec3 at, int count, double spread, double speed) {
 		send(level, particle, at.x, at.y, at.z, count, spread, spread, spread, speed);
+	}
+	/** Decorative world features share custom materials and recipient budgets with casts. */
+	public static void sendParticles(ServerLevel level, ParticleOptions particle, double x,double y,double z,int count,double dx,double dy,double dz,double speed){
+		send(level,particle,x,y,z,count,dx,dy,dz,speed);
+	}
+	public static void sendParticles(ServerLevel level,ServerPlayer player,ParticleOptions particle,boolean far,boolean always,double x,double y,double z,int count,double dx,double dy,double dz,double speed){
+		if(!muted && inRange(level,player,far,x,y,z) && DecorationBudget.accept(player,count)){
+			player.connection.send(packet(particle,far,always,x,y,z,count,dx,dy,dz,speed)); VisualMetrics.recipient();
+		}
 	}
 
 	public static DustParticleOptions dust(int color, float scale) {
@@ -159,9 +175,11 @@ public final class Fx {
 
 	/** The most times one sound event may play in a level in one tick: a Burst on thirty mobs plays a few of each sound, not thirty. */
 	public static final int VOICES_PER_TICK = 3;
-	private static final java.util.Map<SoundEvent, Integer> VOICES = new java.util.IdentityHashMap<>();
-	private static long voiceTick = Long.MIN_VALUE;
-	private static ServerLevel voiceLevel;
+	private static final java.util.Map<ServerLevel, VoiceTick> VOICES = new java.util.WeakHashMap<>();
+	private static final class VoiceTick {
+		long tick = Long.MIN_VALUE;
+		final java.util.Map<SoundEvent, Integer> counts = new java.util.IdentityHashMap<>();
+	}
 
 	/**
 	 * The per-tick voice limit: false once {@code sound} has already played {@link #VOICES_PER_TICK} times in this level this tick.
@@ -169,12 +187,12 @@ public final class Fx {
 	 */
 	static boolean voiceFree(ServerLevel level, SoundEvent sound) {
 		long now = level.getGameTime();
-		if (now != voiceTick || level != voiceLevel) {
-			VOICES.clear();
-			voiceTick = now;
-			voiceLevel = level;
+		VoiceTick voices = VOICES.computeIfAbsent(level, key -> new VoiceTick());
+		if (now != voices.tick) {
+			voices.counts.clear();
+			voices.tick = now;
 		}
-		return VOICES.merge(sound, 1, Integer::sum) <= VOICES_PER_TICK;
+		return voices.counts.merge(sound, 1, Integer::sum) <= VOICES_PER_TICK;
 	}
 
 	public static void sound(ServerLevel level, Vec3 pos, SoundEvent sound, float volume, float pitch) {

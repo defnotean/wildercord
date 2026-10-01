@@ -88,10 +88,10 @@ final class TravelFx {
 	static void beam(ServerPlayer viewer, Vec3 at, boolean withShaft) {
 		ServerLevel level = viewer.level();
 		if (withShaft) {
-			level.sendParticles(viewer, new LightOption(LightOption.RAY, SECONDARY, 0F, 24F, 0F, 0.06F, 0F, 0F, 0F, 24), true, true,
+			dev.wildercord.cast.Fx.sendParticles(level, viewer, new LightOption(LightOption.RAY, SECONDARY, 0F, 24F, 0F, 0.06F, 0F, 0F, 0F, 24), true, true,
 				at.x, at.y, at.z, 1, 0, 0, 0, 0);
 		}
 		MoteOption mote = new MoteOption(MoteOption.GLOW, PRIMARY, 0.14F, 50, 0F, 0.06F, 0F, 0.01F);
-		level.sendParticles(viewer, mote, true, false, at.x, at.y + 0.5, at.z, 2, 0.15, 0.3, 0.15, 0.01);
+		dev.wildercord.cast.Fx.sendParticles(level, viewer, mote, true, false, at.x, at.y + 0.5, at.z, 2, 0.15, 0.3, 0.15, 0.01);
 	}
 }

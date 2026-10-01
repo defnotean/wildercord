@@ -53,6 +53,7 @@ public abstract class DungeonBossRenderer<T extends DungeonBoss, M extends Entit
 		state.exposed = boss.exposedPose(partial);
 		state.slamming = boss.slamPose(partial);
 		state.phase = boss.phase();
+		state.rootBindings = boss instanceof dev.wildercord.cast.RootGuardian root ? root.bindings() : 3;
 	}
 
 	@Override

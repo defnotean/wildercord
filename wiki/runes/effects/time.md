@@ -33,7 +33,7 @@ Marks targets: 1.5 seconds later the moment catches up with them for 6 damage. I
 
 Time runs faster for 10 seconds: Speed II, Haste III, Jump Boost II and Regeneration, and your spells charge 40% faster and your bolts and arcs fly 50% faster.
 
-**How to get it:** Craft: a Blank Rune, Clock and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults.
+**How to get it:** Craft: a Blank Rune, Clock and Sugar, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Clockwork Crypt.
 
 <img src="{{ '/assets/recipes/rune_accelerate.png' | relative_url }}" alt="Crafting Accelerate: a Blank Rune and Clock and Sugar, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -46,7 +46,7 @@ Time runs faster for 10 seconds: Speed II, Haste III, Jump Boost II and Regenera
 
 Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep. A dodge turns away 12 damage at most, and casting it again in the same spell doesn't refill it.
 
-**How to get it:** Craft: a Blank Rune, Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Stronghold libraries.
+**How to get it:** Craft: a Blank Rune, Spyglass, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: Shipwrecks; Buried treasure; Trial vaults; Stronghold libraries; Clockwork Crypt.
 
 <img src="{{ '/assets/recipes/rune_foresight.png' | relative_url }}" alt="Crafting Foresight: a Blank Rune and Spyglass, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -59,7 +59,7 @@ Sees the next 2 attacks coming (for 15 seconds): each is dodged with a sidestep.
 
 Every good effect on the target (Speed, Strength, Regeneration, a potion's...) lasts 15 seconds longer, up to 5 minutes.
 
-**How to get it:** Craft: a Blank Rune, Clock and 2x Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities.
+**How to get it:** Craft: a Blank Rune, Clock and 2x Redstone Dust, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities; Clockwork Crypt.
 
 <img src="{{ '/assets/recipes/rune_prolong.png' | relative_url }}" alt="Crafting Prolong: a Blank Rune and Clock and 2x Redstone Dust, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 
@@ -72,7 +72,7 @@ Every good effect on the target (Speed, Strength, Regeneration, a potion's...) l
 
 Time skips ahead: you vanish, reappear up to 8 blocks forward on safe ground, and nearby monsters lose track of you. For a moment after, nothing can hurt you (not again for 5 seconds).
 
-**How to get it:** Craft: a Blank Rune, Clock and Ender Pearl, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities; Endermen (1%).
+**How to get it:** Craft: a Blank Rune, Clock and Ender Pearl, plus a Mana Crystal and a Diamond. The recipe is shapeless: any layout, any crafting grid. Also found: End cities; Endermen (1%); Clockwork Crypt.
 
 <img src="{{ '/assets/recipes/rune_time_skip.png' | relative_url }}" alt="Crafting Time Skip: a Blank Rune and Clock and Ender Pearl, plus a Mana Crystal and a Diamond" class="recipe-grid" loading="lazy">
 

@@ -65,6 +65,8 @@ public record GearDef(String path, GearKind kind, String element, double element
 	public static final GearDef ECHOES = register(focus("focus_of_echoes", 1, 1, 1, 0, ECHO_CHANCE));
 	/** A defensive focus trades spell power for protection from incoming spell hits. */
 	public static final GearDef RESOLVE = register(focus("focus_of_resolve", RESOLVE_POWER, 1, 1, 0, 0));
+	public static final GearDef REPRIEVE = register(focus("focus_of_reprieve", 0.90, 1, 1, 0, 0));
+	public static final GearDef GROUNDING = register(focus("focus_of_grounding", 0.90, 1, 1, 0, 0));
 
 	static {
 		for (String element : ELEMENTS) {
