@@ -441,6 +441,67 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void auraDefaultsAreTheRulesNumbers() {
+		WildercordConfig.AuraSettings a = D.aura();
+		assertTrue(a.enabled());
+		assertEquals(1.0, a.xpMultiplier(), 1e-9);
+		assertEquals(1.0, a.gainMultiplier(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.COAT_BONUS, a.coatBonus(), 1e-9);
+		assertEquals(1.0, a.damageScale(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.SLASH_FACTOR, a.slashDamage(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.SLASH_COST, a.slashCost(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.SLASH_COOLDOWN, a.slashCooldownTicks());
+		assertEquals(0.6, a.pvpScale(), 1e-9, "aura against players starts where spells do");
+		assertEquals(dev.wildercord.aura.AuraRules.BACKLASH_TICKS, a.backlashTicks());
+		assertEquals(dev.wildercord.aura.AuraRules.GUARD_SHARE, a.guardShare(), 1e-9);
+		assertTrue(D.toJson().contains("\"aura\"") && D.toJson().contains("\"slash_cooldown_seconds\""), "a fresh file lists the aura section");
+	}
+
+	@Test
+	void auraSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"enabled\": false, \"xp_multiplier\": 3, \"gain_multiplier\": -1,"
+			+ " \"coat_bonus\": 0.25, \"damage_scale\": 40, \"slash_damage\": 2, \"slash_cost\": 30, \"slash_cooldown_seconds\": 0.5,"
+			+ " \"pvp_scale\": 0.3, \"backlash_seconds\": 100, \"guard_share\": 0.75, \"slashh_cost\": 1}}");
+		WildercordConfig.AuraSettings a = parsed.config().aura();
+		assertFalse(a.enabled());
+		assertEquals(3.0, a.xpMultiplier(), 1e-9);
+		assertEquals(0.0, a.gainMultiplier(), 1e-9, "clamped to nothing, never negative");
+		assertEquals(0.25, a.coatBonus(), 1e-9);
+		assertEquals(10.0, a.damageScale(), 1e-9);
+		assertEquals(2.0, a.slashDamage(), 1e-9);
+		assertEquals(30.0, a.slashCost(), 1e-9);
+		assertEquals(10, a.slashCooldownTicks());
+		assertEquals(0.3, a.pvpScale(), 1e-9);
+		assertEquals(30.0, a.backlashSeconds(), 1e-9);
+		assertEquals(0.75, a.guardShare(), 1e-9);
+		assertEquals(4, parsed.warnings().size(), parsed.warnings().toString());
+		assertTrue(parsed.warnings().stream().anyMatch(w -> w.contains("aura.slashh_cost")), "a typo is reported");
+		WildercordConfig changed = parsed.config();
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config(), "the written file keeps every changed setting");
+	}
+
+	@Test
+	void aFileFromBeforeAuraGainsTheSection() {
+		// Written by 0.8.0, before aura.
+		String old = D.toJson().replaceAll("(?s),\\s*\"aura\": \\{.*$", "\n}\n");
+		assertFalse(old.contains("\"aura\""), old);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"aura\"", "\"xp_multiplier\"", "\"gain_multiplier\"", "\"coat_bonus\"", "\"damage_scale\"", "\"slash_damage\"",
+				"\"slash_cost\"", "\"slash_cooldown_seconds\"", "\"pvp_scale\"", "\"backlash_seconds\"", "\"guard_share\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		// A section missing one setting gets just that one back, and keeps the owner's others.
+		String partial = D.toJson().replace("\"guard_share\": 0.5", "\"guard_share\": 0.4").replace("\"pvp_scale\": 0.6,", "");
+		WildercordConfig.AuraSettings fixed = WildercordConfig.parse(WildercordConfig.addMissing(partial).orElseThrow()).config().aura();
+		assertEquals(0.6, fixed.pvpScale(), 1e-9);
+		assertEquals(0.4, fixed.guardShare(), 1e-9);
+	}
+
+	@Test
 	void chancesScaleAndStayWithinAHundred() {
 		assertEquals(35, WildercordConfig.scaledChance(35, 1.0));
 		assertEquals(70, WildercordConfig.scaledChance(35, 2.0));
