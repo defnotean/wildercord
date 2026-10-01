@@ -3021,6 +3021,8 @@
   "screen.wildercord.aura.stance": "Breathing stance",
   "screen.wildercord.aura.stance_how": "Sneak and stand still with a blade in hand. Let sneak up and press it again as the ring closes: a breath on the beat draws in more.",
   "screen.wildercord.aura.flavour": "Passive",
+  "command.wildercord.aura.state": "Aura: %s, %s, %s experience, %s / %s aura",
+  "command.wildercord.aura.no_method": "No such breathing method (or none learned yet)",
   "death.attack.wildercord.aura": "%1$s was cut down by %2$s's aura",
   "death.attack.wildercord.aura.player": "%1$s was cut down by %2$s's aura",
   "death.attack.wildercord.aura.item": "%1$s was cut down by %2$s's aura through %3$s",

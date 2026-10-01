@@ -192,6 +192,21 @@ def white(size=4):
     return Image.new("RGBA", (size, size), (255, 255, 255, 255))
 
 
+def soft():
+    """The haze round the whole weapon: a soft, long glow, brightest along its middle and fading to nothing at its edges and
+    ends, so drawn stretched along the blade it reads as aura hanging round it rather than a shape."""
+    w, h = 32, 64
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    for y in range(h):
+        v = (y + 0.5) / h * 2 - 1
+        for x in range(w):
+            u = (x + 0.5) / w * 2 - 1
+            d = min(1.0, (u * u + v * v * 0.55) ** 0.5)
+            a = (1 - d) ** 1.7
+            img.putpixel((x, y), (255, 255, 255, int(round(255 * a))))
+    return img
+
+
 def crystal():
     """The Edge's crystal blade, white for the client to tint: bright facet edges, a ridge down the middle, a clear body
     with faint inner planes, a few glints. 32 across (u: from one edge of a face to the other) by 64 along the blade."""
@@ -233,6 +248,7 @@ def write(g):
     glow = g.ASSETS / "textures/entity/aura"
     g.save(white(), glow / "haze.png")
     g.save(crystal(), glow / "crystal.png")
+    g.save(soft(), glow / "soft.png")
 
     # What carries aura: servers and add-ons extend it.
     g.write_json(g.DATA / "tags/item/aura_weapons.json", {"replace": False, "values": [
@@ -376,6 +392,8 @@ LANG = {
     "screen.wildercord.aura.stance": "Breathing stance",
     "screen.wildercord.aura.stance_how": "Sneak and stand still with a blade in hand. Let sneak up and press it again as the ring closes: a breath on the beat draws in more.",
     "screen.wildercord.aura.flavour": "Passive",
+    "command.wildercord.aura.state": "Aura: %s, %s, %s experience, %s / %s aura",
+    "command.wildercord.aura.no_method": "No such breathing method (or none learned yet)",
     "death.attack.wildercord.aura": "%1$s was cut down by %2$s's aura",
     "death.attack.wildercord.aura.player": "%1$s was cut down by %2$s's aura",
     "death.attack.wildercord.aura.item": "%1$s was cut down by %2$s's aura through %3$s",

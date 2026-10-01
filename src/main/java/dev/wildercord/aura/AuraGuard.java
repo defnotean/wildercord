@@ -98,9 +98,47 @@ public final class AuraGuard {
 		if (!projectile && !blow) {
 			return false;
 		}
-		Vec3 toward = direct.position().subtract(player.position());
+		return facing(player, direct.position());
+	}
+
+	/** Whether {@code from} is in front of the player (the guard's half). */
+	static boolean facing(ServerPlayer player, Vec3 from) {
+		Vec3 toward = from.subtract(player.position());
 		Vec3 look = player.getViewVector(1.0F);
 		return toward.horizontalDistanceSqr() < 1.0E-4 || look.x * toward.x + look.z * toward.z > 0;
+	}
+
+	/**
+	 * A projectile reaching a player in their perfect guard's moment, from in front: turned back at whoever loosed it, a quarter
+	 * faster, through vanilla's own deflection (as a breeze turns arrows), and the guard's from the next tick. Asked by
+	 * {@code mixin.EntityAuraDeflectMixin} before the projectile hits; null when it isn't turned.
+	 */
+	public static net.minecraft.world.entity.projectile.ProjectileDeflection deflection(Entity entity, Projectile projectile) {
+		if (!(entity instanceof ServerPlayer player) || !perfectNow(player) || !facing(player, projectile.position())) {
+			return null;
+		}
+		long now = player.level().getGameTime();
+		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
+		feedback(player);
+		Grimoire.unlock(player, "aura:perfect_guard");
+		Entity shooter = projectile.getOwner();
+		double speed = Math.min(3.0, Math.max(0.6, projectile.getDeltaMovement().length()) * Parry.REFLECT_SPEED);
+		Scheduler.later(1, () -> {
+			if (!projectile.isRemoved()) {
+				projectile.setOwner(player);
+			}
+		});
+		return (turned, by, random, power) -> {
+			Vec3 at = turned.position();
+			Vec3 aim = shooter != null && shooter.isAlive() && shooter.level() == turned.level() && shooter.distanceTo(player) < Parry.COUNTER_RANGE
+				? shooter.getBoundingBox().getCenter().subtract(at)
+				: player.getViewVector(1.0F);
+			if (aim.lengthSqr() < 1.0E-4) {
+				aim = player.getViewVector(1.0F);
+			}
+			turned.setDeltaMovement(aim.normalize().scale(speed));
+			turned.needsSync = true;
+		};
 	}
 
 	/**

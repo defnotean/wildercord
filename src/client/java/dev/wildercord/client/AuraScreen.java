@@ -29,7 +29,7 @@ import java.util.Locale;
  */
 public class AuraScreen extends Screen {
 	private static final int W = 320;
-	private static final int H = 220;
+	private static final int H = 300;
 	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
 	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
 	private static final Identifier SPR_BAR = Wildercord.id("hud/bar_frame");
@@ -115,23 +115,29 @@ public class AuraScreen extends Screen {
 		BreathingMethod method = Aura.method(player).orElse(null);
 		int stage = Aura.stage(player);
 		if (method == null || stage <= AuraRules.NONE) {
-			g.centeredText(font, Component.translatable("screen.wildercord.aura.none"), W / 2, 60, TEXT);
-			int y = 78;
+			g.centeredText(font, Component.translatable("screen.wildercord.aura.none"), W / 2, 96, TEXT);
+			int y = 114;
 			for (net.minecraft.util.FormattedCharSequence line : font.split(Component.translatable("screen.wildercord.aura.none_hint"), W - 60)) {
 				g.centeredText(font, line, W / 2, y, DIM);
 				y += 10;
 			}
 			// Every method's cover, in a row: what there is to find.
 			List<BreathingMethod> all = dev.wildercord.aura.BreathingMethods.BUILT_IN;
-			int x = W / 2 - all.size() * 10;
+			// Two rows of five, twice their size.
 			List<Component> tip = null;
-			for (BreathingMethod m : all) {
-				g.item(BreathingManualItem.of(m.id()), x + 2, y + 10);
-				if (inside(mx, my, x + 2, y + 10, 16, 16)) {
+			for (int i = 0; i < all.size(); i++) {
+				BreathingMethod m = all.get(i);
+				int x = W / 2 - 5 * 18 + (i % 5) * 36;
+				int iy = y + 14 + (i / 5) * 38;
+				g.pose().pushMatrix();
+				g.pose().translate(x + 2, iy);
+				g.pose().scale(2, 2);
+				g.item(BreathingManualItem.of(m.id()), 0, 0);
+				g.pose().popMatrix();
+				if (inside(mx, my, x + 2, iy, 32, 32)) {
 					tip = List.of(Component.translatable(m.nameKey()).withColor(m.color()),
 						Component.translatable(m.nameKey() + ".flavour").withStyle(ChatFormatting.GRAY));
 				}
-				x += 20;
 			}
 			return tip;
 		}
@@ -238,15 +244,17 @@ public class AuraScreen extends Screen {
 				tooltip = tip;
 			}
 			y += 10;
-			if (y > H - 24) {
+			if (y > H - 40) {
 				break;
 			}
 		}
 		// ---- the passive, at the foot.
 		Component flavour = Component.translatable(method.nameKey() + ".flavour");
-		g.text(font, font.plainSubstrByWidth(flavour.getString(), W - 28), 14, H - 16, 0xFFB8A8D8, false);
-		if (inside(mx, my, 14, H - 17, W - 28, 10)) {
-			tooltip = List.of(Component.translatable("screen.wildercord.aura.flavour").withColor(color), flavour.copy().withStyle(ChatFormatting.GRAY));
+		int fy = H - 30;
+		g.text(font, Component.translatable("screen.wildercord.aura.flavour"), 14, fy, GOLD, true);
+		for (net.minecraft.util.FormattedCharSequence line : font.split(flavour, W - 28 - font.width(Component.translatable("screen.wildercord.aura.flavour")) - 6)) {
+			g.text(font, line, 20 + font.width(Component.translatable("screen.wildercord.aura.flavour")), fy, 0xFFB8A8D8, false);
+			fy += 10;
 		}
 		return tooltip;
 	}

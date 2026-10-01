@@ -89,8 +89,8 @@ public final class AuraVfx {
 	/** The slash leaving the blade: a bright crescent at the hand and a flash. */
 	static void slashStart(ServerPlayer player, Vec3 origin, Vec3 aim, Vec3 side, int color) {
 		ServerLevel level = player.level();
-		Vec3 normal = UP.add(side.scale(0.18)).normalize();
-		Light.slash(level, origin.add(aim.scale(0.6)), normal, aim, hot(color, 0.3), 1.0, 2.4, 0.3, 1, 4);
+		Vec3 normal = UP.add(side.scale(0.75)).normalize();
+		Light.slash(level, origin.add(aim.scale(0.6)), normal, aim, hot(color, 0.3), 1.0, 2.4, 0.4, 1, 4);
 		Sigils.flash(level, origin.add(aim.scale(0.9)), 0xFF000000 | color, 1.2F);
 	}
 
@@ -99,12 +99,13 @@ public final class AuraVfx {
 		double width = AuraRules.SLASH_WIDTH * (weak ? 0.75 : 1.0);
 		double radius = width * 0.62;
 		double span = 2 * Math.asin(Math.min(0.99, width / 2 / radius));
-		Vec3 normal = UP.add(side.scale(0.18)).normalize();
+		// Tilted like a real cut across the body, so it reads from behind the blade as well as from the side.
+		Vec3 normal = UP.add(side.scale(0.75)).normalize();
 		Vec3 centre = front.subtract(aim.scale(radius * 0.8));
-		Light.slash(level, centre, normal, aim, color, radius, span, tick == 0 ? 0.44 : 0.36, tick == 0 ? 2 : 1, 4);
-		if (tick % 2 == 0) {
-			Light.slash(level, centre.add(aim.scale(0.15)), normal, aim, hot(color, 0.65), radius * 0.96, span * 0.85, 0.12, 1, 3);
-		}
+		// A broad crescent of the aura's colour, a narrower brighter one inside it, and a white-hot edge: it trails a little as it flies.
+		Light.slash(level, centre, normal, aim, color, radius, span, tick == 0 ? 0.75 : 0.66, tick == 0 ? 2 : 1, 6);
+		Light.slash(level, centre.add(aim.scale(0.1)), normal, aim, hot(color, 0.3), radius * 0.97, span * 0.9, 0.34, 1, 5);
+		Light.slash(level, centre.add(aim.scale(0.18)), normal, aim, hot(color, 0.75), radius * 0.95, span * 0.82, 0.12, 1, 4);
 		if (tick % 3 == 0) {
 			Motes.glows(level, front, 2, width * 0.2, hot(color, 0.3), 0.08, 12, aim.scale(-0.02), 0.01);
 		}
@@ -140,8 +141,9 @@ public final class AuraVfx {
 		Light.groundRing(level, feet, color, 0.3, size * 2, 0.12, 16);
 		Light.groundRing(level, feet, hot(color, 0.5), 0.2, size * 1.4, 0.05, 12);
 		Light.ring(level, heart, flat(player), color, 0.3, size, 0.08, 12);
-		Light.ray(level, feet, feet.add(0, 6 + stage * 2, 0), color, 0.3, 14);
-		Light.ray(level, feet, feet.add(0, 5 + stage * 2, 0), hot(color, 0.7), 0.1, 12);
+		Light.ray(level, feet, feet.add(0, 6 + stage * 2, 0), color, 0.55, 16);
+		Light.ray(level, feet, feet.add(0, 5 + stage * 2, 0), hot(color, 0.6), 0.07, 12);
+		Light.groundRing(level, feet, color, 0.5, size * 1.1, 0.2, 18);
 		Sigils.flash(level, heart, 0xFF000000 | hot(color, 0.3), 3.0F);
 		Motes.burst(level, heart, 28, hot(color, 0.2), 0.12, 34, 0.28);
 		ScreenFx.shake(level, feet, 0.25F, 16);

@@ -28,7 +28,8 @@
 		"ServerExplosionMixin",
 		"ShulkerBoxBlockEntityMixin",
 		"PlayerAuraMixin",
-		"LivingEntityAuraMixin"
+		"LivingEntityAuraMixin",
+		"EntityAuraDeflectMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

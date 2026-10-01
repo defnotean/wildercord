@@ -2062,7 +2062,7 @@ public class CordScreen extends Screen {
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mx = localX(event.x());
 		double my = localY(event.y());
-		if (event.button() == 0 && inside(mx, my, auraX(), 7, 14, 14) && !loadouts.isOpen() && !mastery.isOpen()) {
+		if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && inside(mx, my, auraX(), 7, 14, 14) && !loadouts.isOpen() && !mastery.isOpen()) {
 			openAura();
 			return true;
 		}

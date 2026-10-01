@@ -43,7 +43,7 @@ import java.util.function.Supplier;
  * their spread gives the line of the blade (its point is the end toward the top of the sprite, where every handheld weapon's
  * is). A weapon drawn by a model of its own (the trident in hand) gets the glow along its length instead.
  *
- * <p>Everything is vanilla's translucent emissive entity type, so it draws under shader packs as it does without, and is left
+ * <p>Everything is vanilla's glowing-eyes type ({@code RenderTypes.eyes}), so it draws under shader packs as it does without, and is left
  * out of a pack's shadows: it's light, not a thing (see {@link ShaderCompat}). Drawn from the synced aura look: everyone sees
  * everyone's blade.</p>
  */
@@ -52,8 +52,11 @@ public final class AuraBlade {
 
 	private static final Identifier HAZE = Wildercord.id("textures/entity/aura/haze.png");
 	private static final Identifier CRYSTAL = Wildercord.id("textures/entity/aura/crystal.png");
-	private static final RenderType HAZE_TYPE = RenderTypes.entityTranslucentEmissive(HAZE);
-	private static final RenderType CRYSTAL_TYPE = RenderTypes.entityTranslucentEmissive(CRYSTAL);
+	private static final Identifier SOFT = Wildercord.id("textures/entity/aura/soft.png");
+	/** Vanilla's glowing eyes: full bright, no shading by the light's direction, laid over what's behind. */
+	private static final RenderType HAZE_TYPE = RenderTypes.eyes(HAZE);
+	private static final RenderType CRYSTAL_TYPE = RenderTypes.eyes(CRYSTAL);
+	private static final RenderType SOFT_TYPE = RenderTypes.eyes(SOFT);
 	private static final int FULL = LightCoordsUtil.FULL_BRIGHT;
 
 	/** How a blade's aura looks this frame. */
@@ -122,6 +125,7 @@ public final class AuraBlade {
 		Minecraft mc = Minecraft.getInstance();
 		float time = mc.level == null ? 0 : mc.level.getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		Shape s = shape;
+		collector.order(1).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> soft(p, buffer, s, glow, time));
 		collector.order(1).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time));
 		if (glow.stage() >= AuraRules.EDGE) {
 			collector.order(2).submitCustomGeometry(pose, CRYSTAL_TYPE, (p, buffer) -> crystal(p, buffer, s, glow, time));
@@ -257,6 +261,50 @@ public final class AuraBlade {
 
 	// ------------------------------------------------------------------ drawing
 
+	/**
+	 * The aura hanging round the whole weapon: a soft glow stretched along the blade's line, in the sprite's plane and across
+	 * it (so it holds its shape from every side), breathing slowly; longer from Edge, where the crystal reaches past the point.
+	 */
+	private static void soft(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
+		int stage = glow.stage();
+		float strength = glow.strength() * (glow.guarding() ? 1.3F : 1.0F);
+		float breath = 0.85F + 0.15F * Mth.sin(time * 0.11F);
+		float alpha = (stage >= AuraRules.EDGE ? 0.42F : stage >= AuraRules.FLOW ? 0.5F : 0.38F) * strength * breath;
+		float len = s.length();
+		float from = -0.12F * len;
+		float to = len * (stage >= AuraRules.EDGE ? 1.45F : 1.12F);
+		float half = s.spread() + (stage >= AuraRules.FLOW ? 0.2F : 0.14F);
+		float ax = s.axisX();
+		float ay = s.axisY();
+		float px = -ay;
+		float py = ax;
+		float b0x = s.baseX() + ax * from;
+		float b0y = s.baseY() + ay * from;
+		float t0x = s.baseX() + ax * to;
+		float t0y = s.baseY() + ay * to;
+		float z = s.z();
+		int color = glow.color();
+		// In the sprite's plane, its middle over the blade...
+		textured(buffer, pose, b0x - px * half, b0y - py * half, z, t0x - px * half, t0y - py * half, z, t0x + px * half, t0y + py * half, z,
+			b0x + px * half, b0y + py * half, z, color, alpha);
+		// ...and across it, for a weapon seen edge on.
+		float deep = half * 0.8F;
+		textured(buffer, pose, b0x, b0y, z - deep, t0x, t0y, z - deep, t0x, t0y, z + deep, b0x, b0y, z + deep, color, alpha * 0.8F);
+	}
+
+	/** A quad over the whole of its texture, seen from both sides, one colour and alpha. */
+	private static void textured(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2,
+			float x3, float y3, float z3, int color, float alpha) {
+		vertex(buffer, pose, x0, y0, z0, 0, 1, color, alpha);
+		vertex(buffer, pose, x1, y1, z1, 0, 0, color, alpha);
+		vertex(buffer, pose, x2, y2, z2, 1, 0, color, alpha);
+		vertex(buffer, pose, x3, y3, z3, 1, 1, color, alpha);
+		vertex(buffer, pose, x3, y3, z3, 1, 1, color, alpha);
+		vertex(buffer, pose, x2, y2, z2, 1, 0, color, alpha);
+		vertex(buffer, pose, x1, y1, z1, 0, 0, color, alpha);
+		vertex(buffer, pose, x0, y0, z0, 0, 1, color, alpha);
+	}
+
 	/** The haze (Glow), and from Flow its wider rim, the light running along it and the ripples leaving it. */
 	private static void haze(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
 		int stage = glow.stage();
@@ -267,8 +315,8 @@ public final class AuraBlade {
 			rod(pose, buffer, s, color, 0.55F * strength, stage >= AuraRules.FLOW ? 0.16F : 0.11F, time);
 			return;
 		}
-		float rim = stage >= AuraRules.FLOW ? 0.085F : 0.06F;
-		float base = (stage >= AuraRules.FLOW ? 0.62F : 0.5F) * strength;
+		float rim = stage >= AuraRules.FLOW ? 0.12F : 0.09F;
+		float base = (stage >= AuraRules.FLOW ? 0.8F : 0.7F) * strength;
 		float[] e = s.edges();
 		for (int i = 0; i < e.length; i += 6) {
 			float ax = e[i];
@@ -329,6 +377,11 @@ public final class AuraBlade {
 		vertex(buffer, pose, bx + nx * from, by + ny * from, z, 1, 0, color, bIn);
 		vertex(buffer, pose, bx + nx * to, by + ny * to, z, 1, 1, color, bOut);
 		vertex(buffer, pose, ax + nx * to, ay + ny * to, z, 0, 1, color, aOut);
+		// Seen from both sides: vanilla's glowing eyes leave out faces turned away.
+		vertex(buffer, pose, ax + nx * to, ay + ny * to, z, 0, 1, color, aOut);
+		vertex(buffer, pose, bx + nx * to, by + ny * to, z, 1, 1, color, bOut);
+		vertex(buffer, pose, bx + nx * from, by + ny * from, z, 1, 0, color, bIn);
+		vertex(buffer, pose, ax + nx * from, ay + ny * from, z, 0, 0, color, aIn);
 	}
 
 	/** A weapon of its own model: two crossed soft ribbons along its length, glowing at the middle and fading out to the sides. */
@@ -357,11 +410,11 @@ public final class AuraBlade {
 	private static void crystal(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
 		float strength = glow.strength();
 		int color = mix(glow.color(), 0xFFFFFF, 0.22F);
-		float alpha = 0.6F * strength * (0.9F + 0.1F * Mth.sin(time * 0.15F));
+		float alpha = 0.7F * strength * (0.9F + 0.1F * Mth.sin(time * 0.15F));
 		float len = s.length();
 		float start = s.flat() ? 0.3F * len : 0.15F * len;
 		float end = len * 1.32F;
-		float half = Math.max(0.05F, Math.min(0.13F, s.spread() * 0.32F + 0.03F));
+		float half = Math.max(0.08F, Math.min(0.17F, s.spread() * 0.4F + 0.05F));
 		float thick = half * 0.42F;
 		float[] at = {start, start + (end - start) * 0.28F, end};
 		float[] widths = {half * 0.55F, half, 0};
@@ -392,6 +445,11 @@ public final class AuraBlade {
 				vertexUv(buffer, pose, b, 1, 1 - v0, col, alpha);
 				vertexUv(buffer, pose, c, 1, 1 - v1, col, alpha);
 				vertexUv(buffer, pose, d, 0, 1 - v1, col, alpha);
+				// Its far facets too, through the clear crystal.
+				vertexUv(buffer, pose, d, 0, 1 - v1, col, alpha * 0.7F);
+				vertexUv(buffer, pose, c, 1, 1 - v1, col, alpha * 0.7F);
+				vertexUv(buffer, pose, b, 1, 1 - v0, col, alpha * 0.7F);
+				vertexUv(buffer, pose, a, 0, 1 - v0, col, alpha * 0.7F);
 			}
 		}
 		// The bright ridge down the blade's middle, catching the light.
@@ -433,6 +491,10 @@ public final class AuraBlade {
 		vertex(buffer, pose, x1, y1, z1, 1, 0, color, a1);
 		vertex(buffer, pose, x2, y2, z2, 1, 1, color, a2);
 		vertex(buffer, pose, x3, y3, z3, 0, 1, color, a3);
+		vertex(buffer, pose, x3, y3, z3, 0, 1, color, a3);
+		vertex(buffer, pose, x2, y2, z2, 1, 1, color, a2);
+		vertex(buffer, pose, x1, y1, z1, 1, 0, color, a1);
+		vertex(buffer, pose, x0, y0, z0, 0, 0, color, a0);
 	}
 
 	static int mix(int a, int b, float t) {

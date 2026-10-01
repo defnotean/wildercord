@@ -133,7 +133,9 @@ public final class AuraCombat {
 		}
 		if (hurtIt) {
 			float swing = first ? SWINGS.getOrDefault(player, 1.0F) : 0.5F;
-			landed(player, living, Math.max(0, before - Math.max(0, living.getHealth())), swing, coated, false);
+			float taken = Math.max(0, before - Math.max(0, living.getHealth()));
+			// A training dummy heals at once: what the blow dealt is what it's measured by there.
+			landed(player, living, living instanceof TrainingDummy ? Math.max(taken, amount) : taken, swing, coated, false);
 		}
 		return hurtIt;
 	}
@@ -157,7 +159,7 @@ public final class AuraCombat {
 	}
 
 	/** An aura bonus against a player: held to the spell-defence cap, then scaled by the aura PvP scale. Unchanged against anything else. */
-	static double againstPlayer(LivingEntity target, double bonus) {
+	public static double againstPlayer(LivingEntity target, double bonus) {
 		if (!(target instanceof Player)) {
 			return bonus;
 		}
@@ -181,7 +183,8 @@ public final class AuraCombat {
 			amount *= bonus;
 		}
 		float before = target.getHealth();
-		target.setInvulnerableTime(0);
+		// Aura off the blade lands through a foe's moment of invulnerability, as a spell does.
+		dev.wildercord.cast.Effects.readyToHurt(target);
 		float dealt = (float) amount;
 		boolean hurt = target instanceof Player ? SpellDefence.hurt(level, target, source, dealt) : target.hurtServer(level, source, dealt);
 		float taken = Math.max(0, before - Math.max(0, target.getHealth()));

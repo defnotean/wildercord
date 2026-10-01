@@ -23,6 +23,7 @@ keys.
 | Cast spell (hold to charge) | `R` | **Tap** to cast your selected spell at once. **Hold** to charge it (up to +40% power at a full charge), then let go to cast. Keep holding past full to [overchannel]({{ '/spellcraft/casting/' | relative_url }}#overchannel-holding-on-past-full), and let go on the beat for a little more. See [Casting]({{ '/spellcraft/casting/' | relative_url }}#tap-or-charge). |
 | Next spell (hold for the wheel) | `V` | **Tap** to select your next spell. **Hold** for the spell wheel (with two or more spells). See [Switching spells]({{ '/spellcraft/casting/' | relative_url }}#switching-spells). |
 | Open Cord | `K` | Opens the [Cord screen]({{ '/spellcraft/cord-screen/' | relative_url }}). |
+| Aura (tap: slash, sneak: guard) | `Z` | Once you've learned a breathing method: **tap** to loose an Aura Slash (from Edge); **sneak and press** to raise your Aura Guard (from Flow), held while you keep sneaking. See [Aura]({{ '/progression/aura/' | relative_url }}). |
 | Open backpack | `B` | Opens the backpack in your Backpack slot, in the world or from your inventory. Press it again (or `E`) to close it. See [Backpacks]({{ '/items/backpacks/' | relative_url }}). |
 | Cast spell 1 | not set | Casts spell 1 straight away, without selecting it. Taps only: no charging. |
 | Cast spell 2 | not set | The same for spell 2. |
@@ -47,6 +48,8 @@ A key press counts as a **hold** once it's been down for a quarter of a second. 
 | Use a Mana Crystal | Absorb it: +10 max mana, up to 10 crystals |
 | Use a Spell Scroll | Cast the spell on it, once |
 | Use a Torn Page | Read the riddle of a secret spell |
+| Use a Breathing Manual | Learn its breathing method (read another method's manual twice to switch). See [Aura]({{ '/progression/aura/' | relative_url }}) |
+| Sneak and stand still with a blade in hand, once you know a breathing method | The breathing stance: aura flows in. Let sneak up and press it again as the ring on the aura bar closes for a breath on the beat |
 | Sneak and stand still, wearing a Cord | Meditate: mana comes back twice as fast. When your heart is ready, meditate for 10 seconds without getting hurt to form a Heart Circle |
 | Hold sneak while charging a spell | Steady your hands: the camera holds still and the mouse traces the spell's glyph round the crosshair. See [Sigil tracing]({{ '/spellcraft/casting/' | relative_url }}#sigil-tracing) |
 | Meditate with a Blank Rune in hand, in the right land at the right moment | Attune it (see [Runes of the World]({{ '/runes/world/' | relative_url }})) |

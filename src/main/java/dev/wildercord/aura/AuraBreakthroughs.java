@@ -32,10 +32,13 @@ public final class AuraBreakthroughs {
 	public static final String STILLNESS = "stillness";
 	public static final String STRONGER_FOE = "stronger_foe";
 
-	/** A stronger foe under way: which, until when, and whether a spell of the player's has touched it. */
-	private record Foe(UUID target, long until, boolean tainted) {}
+	/** A stronger foe under way: until when, and whether a spell of the player's has touched it. */
+	private record Foe(long until, boolean tainted) {}
 
-	private static final Map<UUID, Foe> FOES = new HashMap<>();
+	/** The stronger foes each player has struck lately, by foe: a sweep or a slash can open several at once. */
+	private static final Map<UUID, Map<UUID, Foe>> FOES = new HashMap<>();
+	/** The most foes one player's trial keeps track of at once. */
+	private static final int MAX_FOES = 8;
 	/** Stillness held so far, by player (written into the synced state a few times a second). */
 	private static final Map<UUID, Integer> STILL = new HashMap<>();
 
@@ -106,29 +109,43 @@ public final class AuraBreakthroughs {
 			return;
 		}
 		long now = player.level().getGameTime();
-		Foe foe = FOES.get(player.getUUID());
-		if (foe == null || !foe.target().equals(target.getUUID()) || now > foe.until()) {
-			foe = new Foe(target.getUUID(), now + AuraRules.TRIAL_WINDOW, false);
-			FOES.put(player.getUUID(), foe);
-			Aura.state(player, Aura.state(player).trial(foe.until()));
+		Map<UUID, Foe> foes = FOES.computeIfAbsent(player.getUUID(), k -> new HashMap<>());
+		foes.values().removeIf(f -> now > f.until());
+		Foe foe = foes.get(target.getUUID());
+		if (foe == null) {
+			if (foes.size() >= MAX_FOES) {
+				return;
+			}
+			foe = new Foe(now + AuraRules.TRIAL_WINDOW, false);
+			foes.put(target.getUUID(), foe);
 			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.trial_begins").withColor(0xFF000000 | Aura.color(player)));
 		}
 		if (killed) {
-			FOES.remove(player.getUUID());
-			Aura.state(player, Aura.state(player).trial(-1));
+			foes.remove(target.getUUID());
 			if (foe.tainted()) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.aura.trial_tainted").withColor(0xC8A0A0));
-			} else if (now <= foe.until()) {
-				complete(player, STRONGER_FOE);
+			} else if (now <= foe.until() && complete(player, STRONGER_FOE)) {
+				return;
 			}
 		}
+		// The HUD counts down the trial that runs out last.
+		long last = foes.values().stream().filter(f -> !f.tainted()).mapToLong(Foe::until).max().orElse(-1);
+		Aura.state(player, Aura.state(player).trial(last));
 	}
 
-	/** A spell of the player's touched {@code target}: if it's their trial's foe, the trial can't be won on it. */
+	/** Whether a spell of the player's has spoiled their trial on {@code target} (the server's view). */
+	public static boolean spoiled(net.minecraft.world.entity.player.Player player, LivingEntity target) {
+		Map<UUID, Foe> foes = FOES.get(player.getUUID());
+		Foe foe = foes == null ? null : foes.get(target.getUUID());
+		return foe != null && foe.tainted();
+	}
+
+	/** A spell of the player's touched {@code target}: if it's a foe of their trial, the trial can't be won on it. */
 	static void tainted(ServerPlayer player, LivingEntity target) {
-		Foe foe = FOES.get(player.getUUID());
-		if (foe != null && foe.target().equals(target.getUUID()) && !foe.tainted()) {
-			FOES.put(player.getUUID(), new Foe(foe.target(), foe.until(), true));
+		Map<UUID, Foe> foes = FOES.get(player.getUUID());
+		Foe foe = foes == null ? null : foes.get(target.getUUID());
+		if (foe != null && !foe.tainted()) {
+			foes.put(target.getUUID(), new Foe(foe.until(), true));
 		}
 	}
 
@@ -143,7 +160,7 @@ public final class AuraBreakthroughs {
 		return true;
 	}
 
-	/** The breakthrough itself (also {@code /wildercord aura breakthrough} and the game tests): the next stage, full aura, and the moment. */
+	/** The breakthrough itself (also the game tests): the next stage, full aura, and the moment. */
 	public static void breakThrough(ServerPlayer player) {
 		AuraAttachments.Data data = Aura.data(player);
 		int next = Math.min(AuraStages.highest(), data.stage() + 1);
