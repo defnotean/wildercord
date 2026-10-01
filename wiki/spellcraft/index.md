@@ -3,7 +3,7 @@ title: Spellcraft
 nav_order: 3
 has_children: true
 permalink: /spellcraft/
-description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, creature affinities and climate, imbuing, overcasting, secret spells and loadouts."
+description: "How spells work in Wildercord: Cords, the Cord screen, how runes combine, casting, magic circles, passives, shields, reactions, creature affinities and climate, imbuing, overcasting, secret spells, loadouts and spell mastery."
 ---
 
 # Spellcraft
@@ -32,6 +32,7 @@ wrist to the magic circle behind your shoulders.
 | [Overcasting and wild magic]({{ '/spellcraft/overcasting/' | relative_url }}) | Casting past your mana by cracking a Heart Circle, and what a surge can do. |
 | [Secret Spells]({{ '/spellcraft/secret-spells/' | relative_url }}) | Ten exact rune sequences that become something grander, and how to find them. |
 | [Loadouts]({{ '/spellcraft/loadouts/' | relative_url }}) | Your whole Cord saved under a name: swap between up to six setups from the Cord screen, a key or `/loadout`. |
+| [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}) | Your spells grow with you: five ranks earned by casts that matter, a trait you choose at each, your own sigil, spoken names and inscribing a mastered spell for a friend. |
 
 ## The rules at a glance
 

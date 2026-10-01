@@ -820,6 +820,81 @@ everyone within 12 blocks.
   as a number coloured by damage type, and its name shows DPS over the last 5 s and the burst's
   total. Sneak and punch it to pick it up.
 
+### Spell mastery
+Your spells grow with you. A spell is its exact runes in order as they fire (Knots untied), and each player keeps a
+record for each spell they've used to some purpose, the 48 most recently used (one threaded on the Cord is never
+forgotten). Editing a spell makes it a new one; the old record waits for it to come back.
+
+| Rank | Experience | Brings |
+|---|---|---|
+| **Kindled** | 0 | the owner's sigil at the heart of the circle |
+| **Practised** | 100 | the first trait; a fine ring outside the frame |
+| **Adept** | 350 | the second trait; a deeper colour, a brighter sigil; the name spoken when cast; inscribable |
+| **Master** | 1,000 | the third trait; a second, ticked ring |
+| **Mythic** | 3,000 | the fourth trait; a slow shimmer round the rings |
+
+Tuned so a spell used as a main attack reaches Practised in under half an hour of real play, Master in about three
+to four hours and Mythic in about ten: two meaningful casts a minute, each striking one or two monsters for a third of
+their health, is about 280 experience an hour.
+
+**Experience comes from outcomes, never from pressing the key:**
+- a foe struck: 1 for the strike, up to 2 more for the share of its full health the hit took, 1 more for the kill;
+  a Runebound is worth 1.5×, a boss 2×, a player (PvP on) 0.5×; animals and anything not hunting you nothing;
+- a heal: 0.25 per point of health truly restored to someone missing it, at most 2 (yourself only in danger, at half);
+- an ally helped who needed it (hurt, or in a fight): 1 per ally per cast; yourself in danger: 0.6;
+- a spell that moves you or works the world: 0.35 per cast that does its job (double in danger).
+
+**What surrounds the cast:** low health (under 35%) 1.5×, four foes within 16 blocks 1.3× (eight 1.5×), a boss within
+48 blocks 1.5×, inside a dungeon (the mod's Archives and dungeons, ancient cities, trial chambers, strongholds,
+fortresses, bastions, end cities, mansions, monuments) 1.25×, together at most 3×. A kind of foe the spell hasn't
+struck among the last 12 it remembers: 1.25×. **Repetition:** each recent cast at the same kind of foe in the same
+16-block cube takes 6% off the next (down to a tenth of its worth), and a place is half forgotten every ten minutes;
+boss fights are exempt. One cast (links, pulses and echoes together) earns at most 20. **Practice:** training dummies
+and anything in the practice arena teach at half rate, at most 60 in all (just over half of Practised). Scrolls,
+imbued releases, glyphs and passives teach nothing. The server's `mastery.xp_multiplier` scales it all.
+
+**Traits.** At ranks II to V the caster chooses one of three offered traits; the offer is drawn by weight from a
+catalogue of 53, the same every time for the same spell, rank and re-roll:
+- filtered by **makeup**: its elements, its shape categories, and whether it harms, only helps, moves its caster or
+  works the world;
+- weighted by **use**: every counted cast (one that earned real experience) counts the circumstances it was cast in
+  (rain, thunder, night, day, underground, deep, water, the Nether, the End, low health, beside allies, against the
+  undead, spiders and kin or bosses, in a dungeon, against a crowd, cold, heat, in the air). A trait that asks for a
+  circumstance is only offered once at least a seventh of the spell's counted casts (and six at least) were in it, and
+  is likelier the more there were. Element traits get a little extra weight; they're the flavourful ones.
+
+What they do, by kind: a price factor (10% off; 15% off in one place: the Nether, the End, water or rain,
+underground; 15% off for a spell that works the world), a cooldown factor (10%, or 15% for a movement spell), 15%
+faster charging, 20% more reach for bolts, beams and aimed shapes, a damage bonus (6% always, or 10-15% when a
+condition holds: a weak or unhurt target, the undead, arthropods, bosses, the Nether or End, a crowd, low health,
+night, day, underground, rain), a leap to one more foe (15% chance, 40% strength), a drink of 5% of the damage (at
+most 4 health a cast), 4 mana a kill (at most 3 kills a cast), a small mark on a foe struck (slowed, glowing, alight,
+pushed, Soaked, Shadowed, Bleeding), a short buff on allies helped (regeneration, speed, resistance, night vision,
+or poison and wither cleansed), 3 mana for helping an ally (twice a cast), slow falling after a movement spell, fire at
+full strength on the wet, a third of the mana back when cast in danger, looks and sounds (a bell, starlight, a deeper
+hue, embers, frost, petals) and a residue left where it lands (the residue system's to fill in).
+
+**Limits:** damage traits multiply into the hit's bonuses in `Effects.hurt`, together at most ×1.2, and against a
+player they give half their bonus, all under the spell-defence cap (×2.5); price and cooldown traits together go no
+lower than 85%; a leap never leaps again. **Changing your mind:** each rank allows one change for 3 experience levels:
+re-roll the waiting offer (excluding what was offered), or unbind a chosen trait (a fresh offer excluding it).
+
+**Sigils.** A deterministic glyph from the spell's key and its owner's UUID: strokes between the points of two rings
+(5, 6 or 8 points) and the centre, mirrored left to right, with a dot or two and sometimes a small ring. It replaces the
+first rune's seal at the circle's heart. A spell taught by a scroll keeps its teacher's sigil.
+
+**Spoken names.** A custom-named spell at Adept or higher sends its name to every player within 32 blocks (the caster
+too) when cast: a brief title over the caster, or a subtitle-like line when they're out of view. Each client can hide
+them (Spell titles, in the magic visual settings).
+
+**Inscription.** An Adept (or higher) spell inscribed onto a Spell Scroll carries its earned traits (never borrowed
+ones), its sigil and its rank. Read aloud it casts once with them (and teaches nobody). Studied (used while sneaking)
+by someone who knows its runes and whose Cord holds them, it threads the spell into an empty row, names it, and starts
+the reader's record at Kindled with the traits borrowed: they work at once, and at each rank the borrowed trait is
+offered as a fourth card to keep. A reader with any record of the spell can't study it again; no experience travels.
+Chosen so a friend gets the feel of your spell straight away but grows it themselves, and nothing can be farmed or
+stacked through scrolls.
+
 ### How magic looks
 - **Your own view stays clear.** Particles that would sit right in front of a player's eyes are
   left out for that player (everyone else still sees them). The circle under every cast is the
@@ -1195,6 +1270,8 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   creative or spectator players, is taken away before a leaving player is saved (and given back on login),
   ends at death, sets you down in another dimension and inside a dungeon's ward, and never gets a player
   kicked on a server with flying turned off (vanilla only counts a player as floating when they may not fly).
+- **Spell mastery's traits** go through the ordinary cast: their damage bonus is one more factor under the cap
+  above (and only half of it against a player), never more than ×1.2 together; prices and cooldowns go no lower than 85%.
 - **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
   blocks, the PvP scale, the spell defences, mana-regen and cost multipliers, Runebound and loot
   chances, imbue limits and feature switches; `/wildercord reload` reads it again (see

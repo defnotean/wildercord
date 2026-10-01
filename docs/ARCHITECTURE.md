@@ -7,6 +7,7 @@ asset pipeline and testing. For *what* each rune does and why, see [DESIGN.md](D
 - [The big picture](#the-big-picture)
 - [1. The spell engine (`spell/`)](#1-the-spell-engine-spell)
 - [2. Casting (`cast/`)](#2-casting-cast)
+  - [Spell mastery](#spell-mastery-mastery-masterychoices-inscriptions) and [its hooks](#mastery-hooks-for-other-systems-apispellmasteryapi)
 - [3. Player state (`player/`)](#3-player-state-player)
 - [4. Heart Circles and passives](#4-heart-circles-and-passives)
 - [5. Networking](#5-networking)
@@ -144,6 +145,14 @@ cooldown and duration. Both are pure, so both are unit-tested.
   it, and its runes. `forSource(id)` is what dungeons, bosses and events use.
 - **`Attunements`**: the Attunement rules (a biome, a condition over a `Place`, a riddle), matched
   by `cast.Attunement` every 5 ticks while a player meditates with a Blank Rune in hand.
+- **`MasteryRules`**, **`MasteryTraits`** and **`MasterySigil`**: spell mastery's pure parts. `MasteryRules` holds a
+  spell's identity (`key`: its rune ids in order, Knots untied, hashed past 512 characters), the five ranks and their
+  thresholds (0, 100, 350, 1,000, 3,000), what each kind of outcome is worth (`strike`, `heal`, `HELP`, `UTILITY`), the
+  moment (`situation`), repetition (`repetition`, `forget`), practice (`practice`, capped at 60) and the trait caps
+  (`traitPower`, `COST_FLOOR`...). `MasteryTraits` is the catalogue (one `trait(...)` line each, read by the asset
+  generator for the language file), a spell's makeup (`Profile.of`), and the weighted, seeded offer (`offer`).
+  `MasterySigil` draws the personal sigil from a seed (`seed(owner, key)`, `glyph(seed)`). See
+  [Spell mastery](#spell-mastery-mastery-masterychoices-inscriptions).
 - **`SpellSigil`**: the layout of a spell's magic circle, as fractions of its radius: the frame and
   its rays, the script band, the pattern band, the star ({p/q} with `points`/`step`, a point per
   rune), the roundels on its points (`pointOf`, `roundel`), the inner ring and the seal. The size
@@ -359,6 +368,69 @@ the synced note (`client.fx.SoarWings`).
   `Spellbooks.set`/`setCord`. Moments (a cast, a long cast, a passive, a glyph going off, an Adept
   slain) are fired where they happen.
 
+### Spell mastery: `Mastery`, `MasteryChoices`, `Inscriptions`
+
+Spells grow with their caster (see [DESIGN.md](DESIGN.md#spell-mastery) for the rules and numbers). The state is two
+attachments in `player.MasteryAttachments`: the private `MasteryBook` (a record per spell key: experience, practice,
+four trait slots with borrowed and changed bits, the waiting offer, circumstance counts, the sigil's seed, when it was
+last used and who taught it) and the public `Look` of the spell a player has ready (a hash of its key, its rank, its
+sigil's seed, and flags for the looks its traits give it), which is all anyone else's client learns.
+
+The flow of one cast:
+
+1. **At the gate.** `SpellCaster.cast` multiplies the price by `Mastery.costFactor` and the cooldown by
+   `Mastery.cooldownFactor` (passed as the factor `Heart.manaCost` and `Heart.cooldownTicks` already take, so the Cord
+   screen, HUD and wheel, which call the same functions, agree), and a helpful-only spell's power by
+   `Mastery.powerFactor`. Then `Mastery.onCast` gives the `Cast` its **`Tally`**: the spell's key and runes, the traits
+   that work on it, the moment (`MasteryRules.situation`), its circumstances, and what it has earned so far. The tally
+   rides on `Cast`'s shared state, so links, pulses, a storm's echo and Twin Star share it (and its per-cast cap); a
+   parried spell drops it (`Cast.reflected`). `onCast` also sets the public look, rings Bellsong, sends motes for the
+   cosmetic traits and, for a custom-named spell at Adept or higher, the `MasteryChoices.Title` to every player within 32
+   blocks.
+2. **As it lands.** `Effects.hurt` multiplies the hit's bonuses by `Mastery.damageBonus` (before `SpellDefenceRules.capBonus`,
+   so the defence cap holds), skips the wet penalty for Undying Flame (`Mastery.wetFire`), and after the hit calls
+   `Mastery.afterDamage`: experience by the foe's worth and what the hit took (or practice, for a dummy or the practice
+   arena), and the traits that answer a strike (Soul Sip, Mana Harvest, a mark, a leap through `Effects.hurt` again with
+   a guard so it never leaps twice). `CastEngine.onHit` calls `Mastery.afterHit` after a group's effects (allies helped,
+   a caster moved, a block worked), and `mixin.LivingEntityHealMixin` reports health a spell restores through
+   `Mastery.healed` (the cast being applied is `Effects.applyingCast()`). `RuneBolt`, `CastEngine.beam` and `aimPoint`
+   stretch their reach by `Mastery.range`; `Charging.fullTicks` by `Mastery.chargeSpeed`.
+3. **Once a second.** What casts earned waits in `Mastery`'s pending map (with each spell's memory of recent places and
+   kinds of foe, for repetition and variety) and is written into the book by `Mastery.flush`, also on leaving, on death
+   and as the server stops. A rank reached gets an offer (`MasteryChoices.offerIfDue`: three from
+   `MasteryTraits.offer`, plus a borrowed trait to keep) and a `MasteryChoices.Rise` toast. The same tick refreshes each
+   player's look from their selected spell (`Mastery.refreshLook`), leaving a look set by a cast alone for two seconds
+   so its circle can find it.
+
+**Choices** come from the Cord screen as `MasteryChoices.Request(kind, spell, slot, trait)`: the server reads the spell
+from its own spellbook, finds the record, and chooses (the trait must be on offer), re-rolls or unbinds (once per
+slot, for `MasteryRules.CHANGE_LEVELS` levels).
+
+**Inscription** (`Inscriptions`): `SpellScrollItem.inscribe` asks `Inscriptions.inscribe` to add an `Inscription` component
+(key, the inscriber's own traits, sigil seed, rank, author) when the spell is Adept or higher. Using the scroll casts it
+with those traits through `Mastery.onScrollCast` (a tally that learns nothing); using it while sneaking runs
+`Inscriptions.study`, which checks the runes match the inscription, the reader knows them and their Cord holds them,
+and that they have no record of the spell, then threads it into an empty row and writes a fresh record with the traits
+borrowed and the teacher's seed.
+
+### Mastery hooks for other systems: `api.SpellMasteryApi`
+
+Three small hooks let other parts of the mod (or add-ons) feed spell mastery without touching it:
+
+- **`addCircumstance(id, (caster, spell) -> boolean)`**: a new circumstance a spell's casts are counted in, checked as
+  each spell is cast (beside the built-in ones in `MasteryTraits.CIRCUMSTANCES`). A trait can ask for it with
+  `.when(id)`, exactly as Undying Flame asks for `rain`. A world's rune quirk or standing in a place of power is one
+  line each.
+- **`registerTrait(MasteryTraits.custom(...))`** and **`addOfferSource((caster, key, spell, rank) -> List<Weighted>)`**:
+  traits from outside the catalogue (namespaced ids) and when to offer them. Offered traits join the catalogue's in
+  the same seeded draw, each with its weight, and must fit the spell. Their hooks are the catalogue's (`Hook.DAMAGE`,
+  `ON_STRIKE`, `COSMETIC`...), so they work through the same code and caps.
+- **`setResidueSink((level, at, caster, spell, element, trait) -> ...)`**: what a trait with `Hook.RESIDUE` (Lingering
+  Mark) leaves where its spell first lands each cast. Until a residue system sets one, the default leaves a faint
+  glimmer in the element's colour.
+
+Everything registered is called on the server thread; a hook that throws is logged and skipped.
+
 ### Visuals: `Vfx`, `TechniqueVfx`, `ExpansionVfx`, `ElementFx`, `Fx`, `Sigils`, `Light`, `BlockFx`, `ScreenFx`
 
 Visuals are sent from the server, so everyone sees the same show. `Vfx.Theme` gives each element
@@ -499,6 +571,8 @@ player, synced to that player only, and copied through death where noted.
 | `travel` | `TravelData` | yes | Homes, waypoints, where `/back` goes, teleport requests on or off, the tracked waypoint (server only; see [features/travel.md](features/travel.md)) |
 | `loadouts` | `LoadoutData` | yes | Saved Cord setups (up to 6) and the one last loaded, synced for the Cord screen's panel (see [features/loadouts.md](features/loadouts.md)) |
 | `rune_marks` | colour, adept, cast time | on the mob (not saved) | How a Runebound's rune marks look; synced to **everyone** tracking it |
+| `mastery` | `MasteryBook` | yes | Every spell's mastery record (see [Spell mastery](#spell-mastery-mastery-masterychoices-inscriptions)) |
+| `mastery_look` | spell hash, rank, sigil seed, flags | no (not saved) | The public look of the spell a player has ready; synced to **everyone** nearby, who draw its rank and sigil on its circle |
 | `soaring` | end time, speed before, falling | no (ended at death) | A Soar flight or its gentle descent: the note that Soar gave the flight, saved so a logout, restart or crash is tidied at login; synced to **everyone** nearby, who draw the wings |
 
 `Spellbook` is an immutable record with `withSpell`, `withPassive`, `learn`... Every edit returns a
@@ -555,7 +629,11 @@ anything that matters; each handler calls into `SpellCaster`, which validates.
 | `RenameSpell(spell, name)` | `SpellCaster.rename` |
 | `InscribeScroll(spell)` | `SpellScrollItem.inscribe` |
 | `LoadoutRequest(kind, index, name)` | `Loadouts.request`: save as new, save over, load, rename, delete, or load the next one (no runes travel: the server saves its own spellbook) |
+| `MasteryChoices.Request(kind, spell, slot, trait)` | `MasteryChoices.request`: choose a trait, re-roll the offer or unbind a trait (registered by `MasteryChoices`, with its own throttle) |
 
+Spell mastery sends two notices of its own: `MasteryChoices.Rise(name, rank, colour, choice, seed)` (one of your spells
+reached a rank: a toast with its sigil, and the Cord screen opens the choice) and `MasteryChoices.Title(caster, name,
+rank, colour)` (a named Adept spell cast nearby: its title by the caster).
 Three notices go the other way: `Discovery(key)` (a new Grimoire entry; the client shows a toast),
 `LeySeed(seed)` (sent at login: a one-way hash of the world seed that ley lines grow from) and
 `ScreenFx(kind, strength, ticks)` (a camera shake, field-of-view kick, punch or Domain tint; see
@@ -622,6 +700,19 @@ can draw the circle.
   of wind (strokes of `LightParticle` carried along with the body) and the wake off their wingtips, from the
   synced `soaring` note. Each spawner keeps a small
   budget of lights out at once (`Glimmer.Budget`).
+- **Spell mastery on the client.** `MasteryPanel` is the Cord screen's mastery panel (drawn in its local space like
+  `LoadoutPanel`): the spell's circle through `GuiSpellCircle.draw(..., look)`, its rank and bar, the four trait slots,
+  the waiting offer as cards, re-roll and unbind, and what it's been used in most; it sends `MasteryChoices.Request`.
+  `CordScreen` draws a rank badge and bar on each row (`drawRankBadge`), mastery lines in the readout, the side circle
+  with the spell's look, opens the panel from a badge or `Ctrl`+`M`, and by itself when a rank was just reached
+  (`MasteryClient.takePrompt`). `MasteryClient` shows the rank toast (`RankToast`, the sigil as its icon), the spoken
+  names (`Titles`: a HUD element that projects the caster's head with `GameRenderer.projectPointToScreen`, or falls back
+  to a line low on the screen; hidden by `MagicQuality.spellTitles`), and an inscribed scroll's sigil under its tooltip
+  (`SigilTooltip`, through Fabric's `ClientTooltipComponentCallback`). The circles themselves: `SpellCircleParticle`
+  takes a mastery look (from `SpellCircleOption`'s `rank`, `sigil` and `flags`, or, for the circles that follow a caster
+  in `SpellFormations` and `ChargeCircles`, from the caster's synced `mastery_look` through an overridden `look()`),
+  draws the sigil in place of the seal, deepens its colour from Adept, and adds the outer rings and Mythic's shimmer;
+  `GuiSpellCircle` draws the same in screens, and its `sigil` draws a sigil anywhere.
 - **`GrimoireToast`** (and `GrimoireToast.affinity`, a level reached, with the element's mark from
   `ElementGlyphs`), and the Grimoire page inside `CordScreen`, whose Affinities section draws each element's
   mark, level and a bar toward the next level (`GrimoireLine`'s `glyph` and `points`).
@@ -697,6 +788,8 @@ can draw the circle.
 - **Blocks** (`WildercordBlocks`): the Wellstone (a block entity that checks the ley line under it
   and boosts players nearby), the Rune Seal (element and lit state; `cast.RuneSeals` opens doors)
   and the Archive Lectern (wakes the Archivist).
+- **`wildercord:inscription`** (`content.Inscription`): on a Spell Scroll inscribed from an Adept spell, the spell's key, its
+  inscriber's own traits, its sigil's seed, its rank and its author; it's also the scroll's tooltip image.
 - **More items**: Spell Scroll (a `wildercord:scroll` component holds the spell, its name and
   author; casting it builds a `Cast` with base bonuses), Torn Page (a riddle from
   `Grimoire.hint`, and the distance and direction to the nearest Archive), Training Dummy.
@@ -842,6 +935,19 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   water or out of open water, and at its rate under a mana storm, on a ley line and in a
   thunderstorm; Reeled In), then casts Tidehook at a husk and Current in water, in the rain and on
   dry land.
+- **`WildercordMasteryTest`** checks spell mastery in a real world: real hits on husks earn experience and casts at
+  nothing don't; training dummies stop at the practice cap; Practised offers three fitting traits, shows its toast, opens
+  the choice in the Cord screen by itself, and clicking Thrifty Weave's card with the real mouse lowers the price in the
+  readout and in a real cast; re-rolls and unbinding cost levels and are allowed once per rank; an edited spell starts
+  its own record and changing back finds the old one; an inscribed scroll carries the spell's own traits, sigil and
+  rank, a second player (a `FakePlayer`) studies it into Kindled with the traits borrowed, a second study is refused, a
+  Kindled spell inscribes nothing, a forged scroll teaches nothing and a scroll read aloud teaches nobody; a named Adept
+  spell's title goes to a second player added to the world beside the caster (for the moment of the cast) but not to
+  one beyond 32 blocks, shows on the caster's screen, and not with spell titles off; a scroll's tooltip has its sigil.
+  Screenshots `mastery_choice`, `mastery_cord_screen`, `mastery_panel_mythic`, `mastery_title` and `mastery_circles`
+  (ranks I, III and V side by side). `MasteryRulesTest`, `MasteryTraitsTest` and `MasterySigilTest` cover the pure rules
+  (thresholds, worth, the moment, repetition, practice, the tuning worked through, the catalogue and its filters,
+  offers, determinism, the sigil's symmetry and variety), and `WildercordConfigTest` the `mastery` section.
 - **`WildercordFlightTest`** casts Soar for real on a platform in the sky: casting gives flight and a double-tap of
   jump takes off; a flight running out 64 blocks up warns, then lands the player with no damage and nothing left;
   creative players are left alone; an ally a Burst reaches flies and a stranger doesn't; a dungeon's ward (filed
@@ -868,6 +974,11 @@ interface's `rune_thread`, `rune_unthread`, `wheel_open`, `wheel_hover`, `wheel_
   block-display visuals are removed as their chunk loads; wards aren't saved at all.
 - **Bosses are only ever slowed**, never frozen, swapped or held in place, so their fights can't
   break.
+- **Spell mastery can't be farmed or stacked.** Experience comes from outcomes (`Mastery.afterDamage`, `healed`,
+  `afterHit`), never from casting; repetition fades a place, dummies cap out, and one cast earns at most 20. Traits
+  apply inside the ordinary cast and their damage sits under the spell-defence cap. Nothing about a player's records
+  leaves the server except to them; others see only a spell's rank, sigil and looks. Inscriptions carry no experience
+  and teach only a spell the reader has no record of.
 
 ## 11. Minecraft 26.x notes
 

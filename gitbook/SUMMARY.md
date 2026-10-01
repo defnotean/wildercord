@@ -23,6 +23,7 @@
   * [Overcasting and Wild Magic](spellcraft/overcasting.md)
   * [Secret Spells](spellcraft/secret-spells.md)
   * [Loadouts](spellcraft/loadouts.md)
+  * [Spell Mastery](spellcraft/mastery.md)
 * [Runes](runes/index.md)
   * [Shapes](runes/shapes.md)
   * [Effects](runes/effects/index.md)
