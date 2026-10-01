@@ -2,12 +2,19 @@
   'use strict';
   const menu = document.querySelector('#menu-button');
   const backdrop = document.querySelector('#nav-backdrop');
+  const sidebar = document.querySelector('#guide-sidebar');
+  const mobileLayout = window.matchMedia('(max-width:720px)');
   const setMenu = open => {
+    const wasOpen = document.body.classList.contains('nav-open');
     document.body.classList.toggle('nav-open', open);
     menu.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-label', open ? 'Close guide navigation' : 'Open guide navigation');
     backdrop.hidden = !open;
+    sidebar.inert = mobileLayout.matches && !open;
+    if (wasOpen && !open && mobileLayout.matches) menu.focus();
   };
+  setMenu(false);
+  mobileLayout.addEventListener('change', () => setMenu(false));
   menu.addEventListener('click', () => setMenu(menu.getAttribute('aria-expanded') !== 'true'));
   backdrop.addEventListener('click', () => setMenu(false));
   document.querySelectorAll('#guide-sidebar a').forEach(link => link.addEventListener('click', () => setMenu(false)));
