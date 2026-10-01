@@ -249,16 +249,140 @@ class AuraRulesTest {
 	}
 
 	@Test
-	void theStageRegistryOpensGlowToEdgeAndKeepsTheRoadReady() {
-		assertEquals(AuraRules.EDGE, AuraStages.highest());
-		assertEquals(3, AuraStages.open().size());
-		assertTrue(AuraStages.canBreakThrough(AuraRules.GLOW));
-		assertTrue(AuraStages.canBreakThrough(AuraRules.FLOW));
-		assertFalse(AuraStages.canBreakThrough(AuraRules.EDGE), "Form isn't open until a later wave registers it");
-		assertEquals(AuraRules.threshold(AuraRules.FORM), AuraStages.cap(AuraRules.EDGE), "the road to Form still fills, and waits");
+	void theStageRegistryOpensAllFiveStages() {
+		assertEquals(AuraRules.SOVEREIGN, AuraStages.highest());
+		assertEquals(5, AuraStages.open().size());
+		for (int s = AuraRules.GLOW; s < AuraRules.SOVEREIGN; s++) {
+			assertTrue(AuraStages.canBreakThrough(s), "stage " + s + " can break through");
+		}
+		assertFalse(AuraStages.canBreakThrough(AuraRules.SOVEREIGN), "Sovereign is the last");
+		assertEquals(AuraRules.threshold(AuraRules.FORM), AuraStages.cap(AuraRules.EDGE));
+		assertEquals(AuraRules.threshold(AuraRules.SOVEREIGN), AuraStages.cap(AuraRules.FORM));
 		assertEquals(-1, AuraStages.cap(AuraRules.SOVEREIGN));
 		assertEquals(70, AuraStages.capacity(AuraRules.EDGE));
-		assertEquals(110, AuraStages.capacity(AuraRules.FORM), "an unopened stage keeps its default");
+		assertEquals(110, AuraStages.capacity(AuraRules.FORM));
+		assertEquals(160, AuraStages.capacity(AuraRules.SOVEREIGN));
+		assertEquals("form", AuraStages.id(AuraRules.FORM));
+		assertEquals("sovereign", AuraStages.id(AuraRules.SOVEREIGN));
 		assertThrows(IllegalArgumentException.class, () -> new AuraStages.Stage(9, "nine", 1, 1));
+	}
+
+	@Test
+	void theTopStagesTakeLongerAndAskHarderTrials() {
+		// About 300 an hour: Form in about six hours, Sovereign in about fifteen.
+		double formHours = AuraRules.threshold(AuraRules.FORM) / 300.0;
+		double sovereignHours = AuraRules.threshold(AuraRules.SOVEREIGN) / 300.0;
+		assertTrue(formHours >= 5 && formHours <= 7, "Form in " + formHours + " h");
+		assertTrue(sovereignHours >= 13 && sovereignHours <= 17, "Sovereign in " + sovereignHours + " h");
+		assertEquals(AuraRules.STILLNESS_TICKS, AuraRules.stillnessTicks(AuraRules.FLOW));
+		assertEquals(AuraRules.STILLNESS_TICKS, AuraRules.stillnessTicks(AuraRules.EDGE));
+		assertTrue(AuraRules.stillnessTicks(AuraRules.FORM) > AuraRules.STILLNESS_TICKS, "the tempest is held longer than stillness");
+		assertTrue(AuraRules.stillnessTicks(AuraRules.SOVEREIGN) > AuraRules.stillnessTicks(AuraRules.FORM));
+		assertTrue(AuraRules.GUARDIAN_WINDOW > AuraRules.TRIAL_WINDOW, "a boss fight takes longer");
+		assertEquals(4, AuraRules.Trial.values().length);
+	}
+
+	@Test
+	void theTrialRegistryOpensEachStageByItsOwnTrials() {
+		for (int s = AuraRules.FLOW; s <= AuraRules.EDGE; s++) {
+			assertEquals(java.util.Set.of(AuraBreakthroughs.STILLNESS, AuraBreakthroughs.STRONGER_FOE), dev.wildercord.api.AuraApi.trials(s));
+		}
+		for (int s = AuraRules.FORM; s <= AuraRules.SOVEREIGN; s++) {
+			java.util.Set<String> trials = dev.wildercord.api.AuraApi.trials(s);
+			assertTrue(trials.contains(AuraBreakthroughs.TEMPEST) && trials.contains(AuraBreakthroughs.GUARDIAN), "stage " + s + ": " + trials);
+			assertFalse(trials.contains(AuraBreakthroughs.STILLNESS) || trials.contains(AuraBreakthroughs.STRONGER_FOE),
+				"the top stages ask harder trials than the first ones");
+			assertFalse(trials.contains(AuraBreakthroughs.DUEL), "the duelists allow their own trial");
+		}
+	}
+
+	@Test
+	void aStepIsAQuickShortDashWithAMomentOfSafety() {
+		assertTrue(AuraRules.STEP_DISTANCE >= 5 && AuraRules.STEP_DISTANCE <= 7, "about six blocks");
+		assertTrue(AuraRules.STEP_COST < AuraRules.capacity(AuraRules.FORM) / 5.0, "Form holds several steps");
+		assertTrue(AuraRules.STEP_COOLDOWN >= 20, "a cooldown of a second or more");
+		assertTrue(AuraRules.STEP_GUARD_TICKS >= AuraRules.STEP_TICKS, "untouchable for the whole dash");
+		assertTrue(AuraRules.STEP_GUARD_TICKS <= 10, "but only for a moment");
+		assertTrue(AuraRules.STEP_PROBE <= 0.25, "fine enough that no wall is skipped over");
+	}
+
+	@Test
+	void auraArmourTakesAShareAndNeverSpendsBelowItsFloor() {
+		assertEquals(0, AuraRules.armourAbsorb(10, AuraRules.ARMOUR_MIN - 1, AuraRules.ARMOUR_SHARE), 1e-9, "below the floor it's down");
+		assertEquals(2.5, AuraRules.armourAbsorb(10, 100, 0.25), 1e-9, "a quarter");
+		double justAbove = AuraRules.armourAbsorb(100, AuraRules.ARMOUR_MIN + 1, 0.25);
+		assertEquals(1 / AuraRules.ARMOUR_COST_PER_POINT, justAbove, 1e-6, "only as far as the aura above the floor pays");
+		assertEquals(0, AuraRules.armourAbsorb(0, 100, 0.25), 1e-9);
+		assertTrue(AuraRules.ARMOUR_MIN < AuraRules.capacity(AuraRules.FORM), "there's room above the floor at Form");
+		assertTrue(AuraRules.ARMOUR_SHARE <= 0.3, "a share, never a wall");
+	}
+
+	@Test
+	void intentPressesOnlyOnTheWeaker() {
+		assertTrue(AuraRules.intimidated(false, -1, AuraRules.FORM, 10, 20), "a husk with less health than you");
+		assertFalse(AuraRules.intimidated(false, -1, AuraRules.FORM, 20, 20), "an equal isn't");
+		assertFalse(AuraRules.intimidated(false, -1, AuraRules.FORM, 80, 20), "a stronger one isn't");
+		assertFalse(AuraRules.intimidated(true, -1, AuraRules.SOVEREIGN, 10, 20), "a boss never is");
+		assertTrue(AuraRules.intimidated(false, AuraRules.FLOW, AuraRules.FORM, 40, 20), "an aura user of a lower stage, whatever their health");
+		assertFalse(AuraRules.intimidated(false, AuraRules.FORM, AuraRules.FORM, 10, 20), "an aura user of the same stage isn't");
+		assertTrue(AuraRules.INTENT_PVP_SLOW <= 0.1, "modest against players");
+		assertEquals(AuraRules.SENSE_RANGE, AuraRules.senseRange(AuraRules.EDGE), 1e-9);
+		assertTrue(AuraRules.senseRange(AuraRules.FORM) > AuraRules.senseRange(AuraRules.EDGE), "sense grows at Form");
+	}
+
+	@Test
+	void dominionIsABigMomentWithALongRest() {
+		assertEquals(3.0, AuraRules.DOMINION_RADIUS, 1e-9, "six blocks across");
+		assertTrue(AuraRules.DOMINION_TICKS >= 140 && AuraRules.DOMINION_TICKS <= 180, "about eight seconds");
+		assertTrue(AuraRules.DOMINION_COOLDOWN >= 20 * 80, "a long rest, about a minute and a half");
+		assertTrue(AuraRules.DOMINION_COST <= AuraRules.capacity(AuraRules.SOVEREIGN) / 2.0);
+		assertEquals(7.0, AuraRules.dominionWeakened(10, 0.3, false, 0.6), 1e-9, "foes inside hit 30% weaker");
+		assertEquals(10 * (1 - 0.3 * 0.6), AuraRules.dominionWeakened(10, 0.3, true, 0.6), 1e-9, "a player inside only by the PvP scale");
+		assertEquals(1.0, AuraRules.dominionWeakened(10, 5.0, false, 0.6), 1e-9, "never to nothing");
+		assertTrue(AuraRules.DOMINION_CHAIN_SHARE < 1, "the chain carries part of a blow");
+		assertTrue(AuraRules.DOMINION_FLOW > 1);
+	}
+
+	@Test
+	void aCarriedSpellLandsOnAFewFoesEachALittleWeaker() {
+		assertEquals(1.0, AuraRules.spellbladePower(0), 1e-9);
+		assertEquals(0.85, AuraRules.spellbladePower(1), 1e-9);
+		assertTrue(AuraRules.spellbladePower(AuraRules.SPELLBLADE_TARGETS - 1) > 0);
+		assertEquals(0, AuraRules.spellbladePower(AuraRules.SPELLBLADE_TARGETS), 1e-9, "no more than a few");
+		assertEquals(0, AuraRules.spellbladePower(-1), 1e-9);
+		assertTrue(AuraRules.SPELLBLADE_TARGETS < AuraRules.SLASH_TARGETS, "fewer than the slash itself cuts");
+		assertEquals(100, AuraRules.SPELLBLADE_TICKS, "about five seconds");
+	}
+
+	@Test
+	void auraMarksAreModestAndEachElementLeavesWhatAnotherAnswers() {
+		assertEquals(0, AuraRules.markChance(AuraRules.NONE), 1e-9);
+		assertEquals(0.15, AuraRules.markChance(AuraRules.GLOW), 1e-9);
+		assertEquals(0.35, AuraRules.markChance(AuraRules.SOVEREIGN), 1e-9);
+		for (int s = AuraRules.GLOW; s < AuraRules.MAX_STAGE; s++) {
+			assertTrue(AuraRules.markChance(s + 1) > AuraRules.markChance(s));
+		}
+		assertTrue(AuraRules.markChance(AuraRules.MAX_STAGE) < 0.5, "a chance, not a certainty");
+		assertTrue(AuraRules.MARK_TICKS <= 80, "shorter than a spell's marks");
+		assertEquals("frozen", AuraRules.markFor("frost"));
+		assertEquals("windswept", AuraRules.markFor("wind"));
+		assertEquals("shadowed", AuraRules.markFor("void"));
+		assertEquals("bleeding", AuraRules.markFor("blood"));
+		assertEquals("exposed", AuraRules.markFor("arcane"));
+		assertEquals("burning", AuraRules.markFor("fire"));
+		assertEquals("poisoned", AuraRules.markFor("life"));
+		assertEquals("", AuraRules.markFor("earth"));
+		assertEquals("", AuraRules.markFor("time"));
+		assertEquals("", AuraRules.markFor("storm"), "a Thunder blade would conduct through its own mark");
+		assertEquals("", AuraRules.markFor(null));
+		// No method's blade sets off its own mark: the element that answers each mark is never the one that left it.
+		Map<String, String> answers = Map.of("frozen", "fire", "windswept", "fire", "shadowed", "life", "bleeding", "wind", "exposed", "arcane",
+			"burning", "storm", "poisoned", "time");
+		for (BreathingMethod m : BreathingMethods.BUILT_IN) {
+			String mark = AuraRules.markFor(m.element());
+			if (!mark.isEmpty() && !mark.equals("exposed")) {
+				assertNotEquals(m.element(), answers.get(mark), m.id() + " would set off its own " + mark);
+			}
+		}
 	}
 }

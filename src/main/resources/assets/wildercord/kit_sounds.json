@@ -150,6 +150,9 @@
     "arcane_yip": {
       "part": "arcane"
     },
+    "aura_armour": {
+      "part": "aura"
+    },
     "aura_backlash": {
       "part": "aura"
     },
@@ -159,13 +162,28 @@
     "aura_breath": {
       "part": "aura"
     },
+    "aura_dominion": {
+      "part": "aura"
+    },
+    "aura_dominion_fade": {
+      "part": "aura"
+    },
     "aura_guard": {
+      "part": "aura"
+    },
+    "aura_intent": {
       "part": "aura"
     },
     "aura_perfect_guard": {
       "part": "aura"
     },
     "aura_slash": {
+      "part": "aura"
+    },
+    "aura_spellblade": {
+      "part": "aura"
+    },
+    "aura_step": {
       "part": "aura"
     },
     "beat_release": {

@@ -17,23 +17,40 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Breakthroughs: at each stage's threshold aura waits, full to its limit, for a trial. Either of the built-in trials makes it:
+ * Breakthroughs: at each stage's threshold aura waits, full to its limit, for a trial. For Flow and Edge either of these makes
+ * it:
  * <ul>
  * <li>{@link #STILLNESS}: the breathing stance held unbroken for half a minute at a place of power (a ley crossing);</li>
  * <li>{@link #STRONGER_FOE}: a foe stronger than you (a boss, a Runebound, or one with twice your health or more) felled by
  * your blade within a minute of your first blow on it, with no spell of yours touching it.</li>
  * </ul>
- * A later stage can allow these or bring its own ({@link AuraApi#allowTrial}, {@link AuraApi#completeTrial}). Success is a
- * moment: a burst of aura in the method's colour, a title, a sound, and a Grimoire entry ({@code aura:<stage>}).
+ * The top stages ask more. For Form and Sovereign:
+ * <ul>
+ * <li>{@link #TEMPEST}: the stance held unbroken at a ley crossing through a thunderstorm, open to the sky (45 seconds for
+ * Form, a minute for Sovereign); a lightning strike breaks it, as any blow does;</li>
+ * <li>{@link #GUARDIAN}: a boss (a dungeon's guardian, the Wither, the Warden...) felled by blade and aura alone within three
+ * minutes of your first blow on it, no spell of yours touching it;</li>
+ * <li>and the duelists' {@link #DUEL}, which they allow for the stages they teach.</li>
+ * </ul>
+ * Any stage can allow these or bring its own ({@link AuraApi#allowTrial}, {@link AuraApi#completeTrial}). Success is a moment:
+ * a burst of aura in the method's colour, a title, a sound, and a Grimoire entry ({@code aura:<stage>}).
  */
 public final class AuraBreakthroughs {
 	private AuraBreakthroughs() {}
 
 	public static final String STILLNESS = "stillness";
 	public static final String STRONGER_FOE = "stronger_foe";
+	public static final String TEMPEST = "tempest";
+	public static final String GUARDIAN = "guardian";
+	/**
+	 * An aura duel won against a duelist: not allowed for any stage here; the duelists allow it ({@link AuraApi#allowTrial}) for the
+	 * stages they teach and complete it ({@link AuraApi#completeTrial}) when a duel is won. Its line on the Aura page is
+	 * {@code screen.wildercord.aura.trial.duel}.
+	 */
+	public static final String DUEL = "duel";
 
-	/** A stronger foe under way: until when, and whether a spell of the player's has touched it. */
-	private record Foe(long until, boolean tainted) {}
+	/** A worthy foe under way: until when, whether a spell of the player's has touched it, and the trial it's for. */
+	private record Foe(long until, boolean tainted, String trial) {}
 
 	/** The stronger foes each player has struck lately, by foe: a sweep or a slash can open several at once. */
 	private static final Map<UUID, Map<UUID, Foe>> FOES = new HashMap<>();
@@ -65,15 +82,39 @@ public final class AuraBreakthroughs {
 		int next = Aura.stage(player) + 1;
 		Component stage = Component.translatable("aura.wildercord.stage." + AuraStages.id(next)).withColor(0xFF000000 | Aura.color(player));
 		player.sendSystemMessage(Component.translatable("message.wildercord.aura.waiting", stage).withColor(0xE8D8B0));
-		player.sendSystemMessage(Component.translatable("message.wildercord.aura.waiting_how").withColor(0xB8A8D8));
+		player.sendSystemMessage(Component.translatable(next >= AuraRules.FORM ? "message.wildercord.aura.waiting_how_top"
+			: "message.wildercord.aura.waiting_how").withColor(0xB8A8D8));
 		Aura.sound(player, "aura_breath", 0.8F, dev.wildercord.cast.feel.Feels.step(4));
 	}
 
 	// ------------------------------------------------------------------ stillness
 
+	/**
+	 * The stillness trial the stance is held toward now, if any: the ley crossing's own ({@link #STILLNESS}), or at the top stages
+	 * the tempest's ({@link #TEMPEST}: a ley crossing under a thunderstorm, open to the sky). Null when neither can be met here.
+	 */
+	static String stillTrial(ServerPlayer player) {
+		if (!ready(player) || !PowerPlaces.isPlaceOfPower(player.level(), player.blockPosition())) {
+			return null;
+		}
+		if (allowed(player, STILLNESS)) {
+			return STILLNESS;
+		}
+		if (allowed(player, TEMPEST) && tempest(player)) {
+			return TEMPEST;
+		}
+		return null;
+	}
+
+	/** Whether a thunderstorm rages over the player, with nothing between them and the sky. */
+	static boolean tempest(ServerPlayer player) {
+		return player.level().isThundering() && player.level().canSeeSky(player.blockPosition().above());
+	}
+
 	/** Called every tick while the player is in the breathing stance. */
 	static void stillness(ServerPlayer player, long now) {
-		if (!ready(player) || !allowed(player, STILLNESS) || !PowerPlaces.isPlaceOfPower(player.level(), player.blockPosition())) {
+		String trial = stillTrial(player);
+		if (trial == null) {
 			if (STILL.remove(player.getUUID()) != null) {
 				Aura.state(player, Aura.state(player).stillness(0));
 			}
@@ -81,11 +122,12 @@ public final class AuraBreakthroughs {
 		}
 		int held = STILL.merge(player.getUUID(), 1, Integer::sum);
 		if (held == 1) {
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.stillness_begins").withColor(0xFF000000 | Aura.color(player)));
+			player.sendOverlayMessage(Component.translatable(trial.equals(TEMPEST) ? "message.wildercord.aura.tempest_begins"
+				: "message.wildercord.aura.stillness_begins").withColor(0xFF000000 | Aura.color(player)));
 		}
-		if (held >= AuraRules.STILLNESS_TICKS) {
+		if (held >= AuraRules.stillnessTicks(Aura.stage(player) + 1)) {
 			STILL.remove(player.getUUID());
-			complete(player, STILLNESS);
+			complete(player, trial);
 		} else if (held % 5 == 0) {
 			Aura.state(player, Aura.state(player).stillness(held));
 		}
@@ -98,14 +140,29 @@ public final class AuraBreakthroughs {
 
 	// ------------------------------------------------------------------ a stronger foe
 
+	/**
+	 * The foe trial a blow on {@code target} could open toward the waiting breakthrough: a boss for the guardian's (the top
+	 * stages), a stronger foe for the earlier stages', or null when it's neither.
+	 */
+	static String foeTrial(ServerPlayer player, LivingEntity target) {
+		boolean boss = Spirits.isBoss(target);
+		if (boss && allowed(player, GUARDIAN)) {
+			return GUARDIAN;
+		}
+		if (allowed(player, STRONGER_FOE) && AuraRules.stronger(boss, target.hasAttached(WildercordAttachments.RUNEBOUND), target.getMaxHealth(),
+				player.getMaxHealth())) {
+			return STRONGER_FOE;
+		}
+		return null;
+	}
+
 	/** A blow of the player's landed on {@code target} (from {@link AuraCombat}). */
 	static void struck(ServerPlayer player, LivingEntity target, boolean killed, boolean practice) {
-		if (practice || !ready(player) || !allowed(player, STRONGER_FOE)) {
+		if (practice || !ready(player)) {
 			return;
 		}
-		boolean stronger = AuraRules.stronger(Spirits.isBoss(target), target.hasAttached(WildercordAttachments.RUNEBOUND), target.getMaxHealth(),
-			player.getMaxHealth());
-		if (!stronger) {
+		String trial = foeTrial(player, target);
+		if (trial == null) {
 			return;
 		}
 		long now = player.level().getGameTime();
@@ -116,15 +173,16 @@ public final class AuraBreakthroughs {
 			if (foes.size() >= MAX_FOES) {
 				return;
 			}
-			foe = new Foe(now + AuraRules.TRIAL_WINDOW, false);
+			foe = new Foe(now + (trial.equals(GUARDIAN) ? AuraRules.GUARDIAN_WINDOW : AuraRules.TRIAL_WINDOW), false, trial);
 			foes.put(target.getUUID(), foe);
-			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.trial_begins").withColor(0xFF000000 | Aura.color(player)));
+			player.sendOverlayMessage(Component.translatable(trial.equals(GUARDIAN) ? "message.wildercord.aura.guardian_begins"
+				: "message.wildercord.aura.trial_begins").withColor(0xFF000000 | Aura.color(player)));
 		}
 		if (killed) {
 			foes.remove(target.getUUID());
 			if (foe.tainted()) {
 				player.sendOverlayMessage(Component.translatable("message.wildercord.aura.trial_tainted").withColor(0xC8A0A0));
-			} else if (now <= foe.until() && complete(player, STRONGER_FOE)) {
+			} else if (now <= foe.until() && complete(player, foe.trial())) {
 				return;
 			}
 		}
@@ -145,7 +203,7 @@ public final class AuraBreakthroughs {
 		Map<UUID, Foe> foes = FOES.get(player.getUUID());
 		Foe foe = foes == null ? null : foes.get(target.getUUID());
 		if (foe != null && !foe.tainted()) {
-			foes.put(target.getUUID(), new Foe(foe.until(), true));
+			foes.put(target.getUUID(), new Foe(foe.until(), true, foe.trial()));
 		}
 	}
 

@@ -6,6 +6,12 @@
     aura_breakthrough   a stage broken through: breath drawn in, then a rising chord blooming out
     aura_backlash       spent past empty: a dull falling exhale and a dry crackle (nothing hurts)
     aura_breath         the breathing stance: a soft breath with a hum under it (played at the pentatonic steps for the beat)
+    aura_step           Aura Step: a rush of air drawn through in an instant, an edge riding it, a soft landing
+    aura_armour         aura armour takes a blow: the close ring of a struck shell and a shimmer over it
+    aura_intent         Intent takes hold: a low pressure in the air, more felt than heard
+    aura_dominion       Dominion: a deep strike into the ground and a chord rising out of it as the circle opens
+    aura_dominion_fade  a Dominion ending: its ring falling away down the scale, a breath let out
+    aura_spellblade     a spell drawn into the blade: its breath pulled in, then the blade ringing as it takes it
 
 Tonal sounds are tuned to D so the pentatonic ratios make a scale from one sample.
 """
@@ -81,6 +87,69 @@ def aura_breath(v, rng):
     return _clean(sa.mix(0.55 * sa.norm(air), 0.4 * hum, (0.3, glint)), "ui", 0.5, 0.12, 6500)
 
 
+def aura_step(v, rng):
+    """Aura Step: a hard rush of air drawn through in an instant, a bright edge riding it, and a soft landing thud."""
+    dur = 0.5
+    gone = 0.16
+    rush = sa.moving_band(dur, [(0, 800), (gone, 4200), (0.3, 1800), (dur, 600)], 0.7, rng) * sa.env(dur, (0, 0), (0.03, 0.7), (gone, 1), (0.32, 0.25), (dur, 0))
+    edge = sa.sine(sa.sweep(sa.note(D, 2), sa.note(A, 2), gone, 1.4), gone) * sa.env(gone, (0, 0), (gone * 0.8, 1), (gone, 0))
+    ring = sa.glass(sa.note((A, FS)[v], 2), 0.4, 0.1)
+    land = sa.thump(160, 70, 0.2, 0.05, drive=1.2)
+    x = sa.mix(0.9 * sa.norm(rush), 0.25 * edge, (gone, 0.2 * ring), (gone, 0.3 * land))
+    return _clean(x, "cast", 0.35, 0.1, 5500)
+
+
+def aura_armour(v, rng):
+    """Aura armour takes a blow: a dull, close ring of a struck shell, a shimmer spreading over it."""
+    dur = 0.45
+    knock = sa.norm(sa.lowpass(sa.noise(0.06, rng), 2200)) * sa.decay(0.06, 0.012, 0.0005)
+    shell = sa.partials(sa.note(D, 1), dur, ((1.0, 1.0, 1.0), (2.2, 0.5, 0.6), (3.7, 0.3, 0.35)), 0.12)
+    shimmer = sa.sparkle(0.35, 22, rng, [sa.note(d, 3) for d in (D, FS, A)], tau=(0.03, 0.08), shape=[(0, 1), (0.35, 0)])
+    return _clean(sa.mix(0.5 * knock, 0.45 * shell, (0.02, 0.18 * sa.norm(shimmer))), "effect", 0.3, 0.08, 7000)
+
+
+def aura_intent(v, rng):
+    """Intent takes hold: a low pressure in the air, a slow throb under hearing more felt than heard."""
+    dur = 1.4
+    throb = (sa.sine(sa.note(D, 0), dur) + 0.5 * sa.sine(sa.note(D, 0) * 1.006, dur) + 0.4 * sa.sine(sa.note(A, 0), dur))
+    throb = throb * sa.env(dur, (0, 0), (0.35, 1), (0.8, 0.6), (dur, 0))
+    weight = sa.moving_band(dur, [(0, 350), (0.5, 900), (dur, 400)], 0.9, rng) * sa.env(dur, (0, 0), (0.4, 1), (dur, 0))
+    return _clean(sa.mix(0.6 * sa.saturate(throb, 1.6), 0.4 * sa.norm(weight)), "effect", 0.6, 0.12, 3500)
+
+
+def aura_dominion(v, rng):
+    """Dominion: a deep strike into the ground, a chord rising out of it, and a long ringing as the circle opens."""
+    dur = 3.4
+    hit = 0.18
+    draw = sa.moving_band(hit, [(0, 400), (hit, 3000)], 0.8, rng) * sa.env(hit, (0, 0), (hit * 0.9, 1), (hit, 0)) ** 2
+    boom = sa.thump(90, 34, 1.1, 0.32, 2.2)
+    drone = (sa.sine(sa.note(D, -2), dur) + 0.6 * sa.sine(sa.note(A, -2), dur) + 0.3 * sa.sine(sa.note(D, -1), dur))
+    drone = sa.saturate(drone, 1.6) * sa.env(dur, (0, 0), (hit, 1), (1.2, 0.6), (dur, 0))
+    chord = sa.mix(*[(hit + 0.05 * i, (1 - 0.12 * i) * sa.bell(sa.note(*n), 2.6, 1.3, 2.0, 1.8, attack=0.006))
+                     for i, n in enumerate(((D, 0), (A, 0), (D, 1), (FS, 1), (A, 1)))])
+    ring = sa.glass(sa.note(D, 3), 2.4, 0.9)
+    x = sa.mix(0.35 * sa.norm(draw), (hit, 0.75 * boom), 0.3 * drone, 0.55 * sa.norm(chord), (hit + 0.3, 0.2 * ring))
+    return _clean(x, "grand", 2.6, 0.32, 6000)
+
+
+def aura_dominion_fade(v, rng):
+    """A Dominion ending: the circle's ring falling away down the scale, and a breath let out."""
+    steps = ((A, 2), (FS, 2), (D, 2), (A, 1), (FS, 1), (D, 1))
+    fall = sa.mix(*[(0.06 * i, (0.7 - 0.07 * i) * sa.glass(sa.note(*n), 0.6, 0.22)) for i, n in enumerate(steps)])
+    exhale = sa.moving_band(0.9, [(0, 1800), (0.9, 400)], 0.9, rng) * sa.decay(0.9, 0.35, 0.02)
+    return _clean(sa.mix(0.55 * fall, 0.35 * sa.norm(exhale)), "effect", 1.0, 0.25, 6000)
+
+
+def aura_spellblade(v, rng):
+    """A spell drawn into the blade: the spell's breath pulled in, then a bright metallic ring as the blade takes it."""
+    dur = 0.9
+    pull = sa.reverse(sa.moving_band(0.3, [(0, 4500), (0.3, 900)], 0.7, rng) * sa.decay(0.3, 0.1, 0.004))
+    ring = sa.partials(sa.note(A, 1), dur, ((1.0, 1.0, 1.0), (2.41, 0.6, 0.55), (3.9, 0.35, 0.35), (5.6, 0.2, 0.25)), 0.25)
+    chime = sa.glass(sa.note(D, 3), dur, 0.3)
+    x = sa.mix(0.55 * sa.norm(pull), (0.28, 0.45 * ring), (0.3, 0.3 * chime))
+    return _clean(x, "effect", 0.6, 0.14, 9000)
+
+
 EVENTS = [
     event("aura_slash", aura_slash, variants=2, role="cast", subtitle="cast"),
     event("aura_guard", aura_guard, role="effect", subtitle="tell"),
@@ -88,4 +157,10 @@ EVENTS = [
     event("aura_breakthrough", aura_breakthrough, role="grand", subtitle="field", attenuation=32),
     event("aura_backlash", aura_backlash, role="effect", subtitle="tell"),
     event("aura_breath", aura_breath, role="ui", subtitle="tell"),
+    event("aura_step", aura_step, variants=2, role="cast", subtitle="cast"),
+    event("aura_armour", aura_armour, role="effect", subtitle="hit"),
+    event("aura_intent", aura_intent, role="effect", subtitle="tell"),
+    event("aura_dominion", aura_dominion, role="grand", subtitle="field", attenuation=40),
+    event("aura_dominion_fade", aura_dominion_fade, role="effect", subtitle="field", attenuation=24),
+    event("aura_spellblade", aura_spellblade, role="effect", subtitle="cast"),
 ]

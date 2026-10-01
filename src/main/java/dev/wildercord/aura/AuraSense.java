@@ -17,14 +17,15 @@ import java.util.List;
 
 /**
  * Aura sense (Glow): with each breath of the breathing stance, the hostile creatures within {@link #RANGE} blocks are
- * outlined, for the breather alone, briefly (a little longer than a breath, so they stay lit while the stance holds). The
- * server finds them and tells only that player which; their client draws the outlines in the aura's colour.
+ * outlined, for the breather alone, briefly (a little longer than a breath, so they stay lit while the stance holds). From
+ * Form it reaches further ({@link AuraRules#SENSE_RANGE_FORM}) and pulses on its own every few seconds while in a fight,
+ * stance or not. The server finds them and tells only that player which; their client draws the outlines in the aura's colour.
  */
 public final class AuraSense {
 	private AuraSense() {}
 
-	/** How far aura sense reaches, in blocks. */
-	public static final double RANGE = 16.0;
+	/** How far aura sense reaches, in blocks, before Form. */
+	public static final double RANGE = AuraRules.SENSE_RANGE;
 	/** How long an outline lasts (ticks): a breath and a little more. */
 	public static final int TICKS = AuraRules.BREATH_PERIOD + 14;
 	/** The most creatures one breath outlines. */
@@ -49,14 +50,27 @@ public final class AuraSense {
 
 	/** The hostile creatures a breath would sense round {@code player} now. */
 	public static List<Mob> sensed(ServerPlayer player) {
-		List<Mob> found = player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(RANGE),
+		double range = AuraRules.senseRange(Aura.stage(player));
+		List<Mob> found = player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(range),
 			m -> m.isAlive() && !m.isInvisibleTo(player) && (m instanceof Enemy || m.getTarget() == player) && !Targets.playerPet(m)
-				&& m.distanceToSqr(player) <= RANGE * RANGE);
+				&& m.distanceToSqr(player) <= range * range);
 		return found.size() > MAX ? found.subList(0, MAX) : found;
+	}
+
+	/** Every tick: from Form, a pulse of sense every few seconds while in a fight (the stance's own breaths aside). */
+	static void combat(ServerPlayer player, long now) {
+		if (Aura.stage(player) >= AuraRules.FORM && (now + player.getId()) % AuraRules.SENSE_COMBAT_PERIOD == 0 && Aura.inFight(player)
+				&& !Aura.state(player).breathing()) {
+			pulse(player, AuraRules.SENSE_COMBAT_PERIOD + 14);
+		}
 	}
 
 	/** One breath's sense: tells the player what's out there. */
 	static void pulse(ServerPlayer player) {
+		pulse(player, TICKS);
+	}
+
+	private static void pulse(ServerPlayer player, int ticks) {
 		if (Aura.stage(player) < AuraRules.GLOW || !ServerPlayNetworking.canSend(player, Sensed.TYPE)) {
 			return;
 		}
@@ -64,6 +78,6 @@ public final class AuraSense {
 		for (Mob mob : sensed(player)) {
 			ids.add(mob.getId());
 		}
-		ServerPlayNetworking.send(player, new Sensed(ids, Aura.color(player), TICKS));
+		ServerPlayNetworking.send(player, new Sensed(ids, Aura.color(player), ticks));
 	}
 }

@@ -29,7 +29,7 @@ import java.util.Locale;
  */
 public class AuraScreen extends Screen {
 	private static final int W = 320;
-	private static final int H = 300;
+	private static final int H = 340;
 	private static final Identifier SPR_PANEL = Wildercord.id("cord/panel");
 	private static final Identifier SPR_INSET = Wildercord.id("cord/inset");
 	private static final Identifier SPR_BAR = Wildercord.id("hud/bar_frame");
@@ -208,7 +208,7 @@ public class AuraScreen extends Screen {
 				}
 			}
 			if (state.stillness() > 0) {
-				g.text(font, Component.translatable("screen.wildercord.aura.trial.progress", state.stillness() / 20, AuraRules.STILLNESS_TICKS / 20),
+				g.text(font, Component.translatable("screen.wildercord.aura.trial.progress", state.stillness() / 20, AuraRules.stillnessTicks(next) / 20),
 					22, y, color, true);
 				y += 10;
 			} else if (state.trialUntil() > now) {
@@ -271,6 +271,16 @@ public class AuraScreen extends Screen {
 			Component.translatable("aura.wildercord.technique.sweep.desc")));
 		rows.add(new Row(Component.translatable("aura.wildercord.technique.edge"), AuraRules.EDGE, always, 0,
 			Component.translatable("aura.wildercord.technique.edge.desc")));
+		// Aura marks, the spellblade, and Form's own: aura armour and Intent.
+		rows.add(new Row(Component.translatable("aura.wildercord.technique.marks"), AuraRules.GLOW, always, 0,
+			Component.translatable("aura.wildercord.technique.marks.desc")));
+		rows.add(new Row(Component.translatable("aura.wildercord.technique.spellblade"), AuraRules.EDGE,
+			Component.translatable("screen.wildercord.aura.key_spellblade", WildercordKeys.castKey(), WildercordKeys.auraKey()), 0,
+			Component.translatable("aura.wildercord.technique.spellblade.desc")));
+		rows.add(new Row(Component.translatable("aura.wildercord.technique.armour"), AuraRules.FORM, always, 0,
+			Component.translatable("aura.wildercord.technique.armour.desc")));
+		rows.add(new Row(Component.translatable("aura.wildercord.technique.intent"), AuraRules.FORM, always, 0,
+			Component.translatable("aura.wildercord.technique.intent.desc")));
 		Component key = WildercordKeys.auraKey();
 		for (AuraApi.Technique t : AuraApi.techniques()) {
 			Component how = switch (t.trigger()) {

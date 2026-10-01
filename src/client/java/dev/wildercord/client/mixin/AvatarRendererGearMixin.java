@@ -18,5 +18,7 @@ public abstract class AvatarRendererGearMixin {
 		GearLook.extract(avatar, state);
 		// The aura on the weapon in their main hand.
 		dev.wildercord.client.fx.AuraBlade.extract(avatar, state);
+		// Aura armour's shell round them, and a step's afterimages.
+		dev.wildercord.client.render.AuraShellLayer.extract(avatar, state, partial);
 	}
 }

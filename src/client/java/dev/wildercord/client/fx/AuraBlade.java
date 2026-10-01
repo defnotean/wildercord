@@ -59,8 +59,16 @@ public final class AuraBlade {
 	private static final RenderType SOFT_TYPE = RenderTypes.eyes(SOFT);
 	private static final int FULL = LightCoordsUtil.FULL_BRIGHT;
 
-	/** How a blade's aura looks this frame. */
-	public record Glow(int color, int stage, float strength, boolean guarding, HumanoidArm arm) {}
+	/**
+	 * How a blade's aura looks this frame.
+	 *
+	 * @param spell the colour of a spell riding the blade (the spellblade), or 0
+	 */
+	public record Glow(int color, int stage, float strength, boolean guarding, HumanoidArm arm, int spell) {
+		public Glow(int color, int stage, float strength, boolean guarding, HumanoidArm arm) {
+			this(color, stage, strength, guarding, arm, 0);
+		}
+	}
 
 	/** The glow a player's main-hand weapon has, carried into their render state (absent: none). */
 	public static final RenderStateDataKey<Glow> GLOW = RenderStateDataKey.create(() -> "wildercord:aura_blade");
@@ -78,7 +86,9 @@ public final class AuraBlade {
 		if (look.stage() <= AuraRules.NONE) {
 			return null;
 		}
-		return new Glow(look.color(), look.stage(), look.lit() ? 1.0F : 0.35F, look.guarding(), player.getMainArm());
+		dev.wildercord.aura.AuraPresence.Look presence = dev.wildercord.aura.AuraPresence.look(player);
+		int spell = presence.spellHeld(player.level().getGameTime()) ? presence.bladeSpell() : 0;
+		return new Glow(look.color(), look.stage(), look.lit() ? 1.0F : 0.35F, look.guarding(), player.getMainArm(), spell);
 	}
 
 	/** Carries a player's blade glow into their render state as it's extracted. */
@@ -129,6 +139,76 @@ public final class AuraBlade {
 		collector.order(1).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time));
 		if (glow.stage() >= AuraRules.EDGE) {
 			collector.order(2).submitCustomGeometry(pose, CRYSTAL_TYPE, (p, buffer) -> crystal(p, buffer, s, glow, time));
+		}
+		if (glow.spell() != 0) {
+			collector.order(3).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> spellGlow(p, buffer, s, glow, time));
+			collector.order(3).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> spellBands(p, buffer, s, glow, time));
+		}
+	}
+
+	// ------------------------------------------------------------------ a spell riding the blade
+
+	/** A spell riding the blade: a soft glow of its colour all along the weapon, beating quickly, as if it can barely be held. */
+	private static void spellGlow(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
+		float beat = 0.7F + 0.3F * Mth.sin(time * 0.6F);
+		float len = s.length();
+		float from = -0.05F * len;
+		float to = len * (glow.stage() >= AuraRules.EDGE ? 1.4F : 1.1F);
+		float half = s.spread() + 0.24F;
+		float ax = s.axisX();
+		float ay = s.axisY();
+		float px = -ay;
+		float py = ax;
+		float b0x = s.baseX() + ax * from;
+		float b0y = s.baseY() + ay * from;
+		float t0x = s.baseX() + ax * to;
+		float t0y = s.baseY() + ay * to;
+		float z = s.z();
+		int color = glow.spell();
+		textured(buffer, pose, b0x - px * half, b0y - py * half, z, t0x - px * half, t0y - py * half, z, t0x + px * half, t0y + py * half, z,
+			b0x + px * half, b0y + py * half, z, color, 0.55F * beat);
+		float deep = half * 0.8F;
+		textured(buffer, pose, b0x, b0y, z - deep, t0x, t0y, z - deep, t0x, t0y, z + deep, b0x, b0y, z + deep, color, 0.45F * beat);
+	}
+
+	/**
+	 * A spell riding the blade: two bands of its colour winding up the blade from hilt to tip, white-hot at their middle, over
+	 * and over, in the blade's plane and across it.
+	 */
+	private static void spellBands(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
+		float len = s.length() * (glow.stage() >= AuraRules.EDGE ? 1.3F : 1.05F);
+		float ax = s.axisX();
+		float ay = s.axisY();
+		float px = -ay;
+		float py = ax;
+		float width = s.spread() + 0.09F;
+		int color = glow.spell();
+		int hot = mix(color, 0xFFFFFF, 0.55F);
+		int pieces = 14;
+		for (int band = 0; band < 2; band++) {
+			float phase = band * Mth.PI;
+			for (int i = 0; i < pieces; i++) {
+				float t0 = i / (float) pieces;
+				float t1 = (i + 1) / (float) pieces;
+				// Winding round the blade: across it in the sprite's plane and in depth, a quarter turn out of step.
+				float w0 = Mth.sin(t0 * 9.0F - time * 0.45F + phase);
+				float w1 = Mth.sin(t1 * 9.0F - time * 0.45F + phase);
+				float d0 = Mth.cos(t0 * 9.0F - time * 0.45F + phase);
+				float d1 = Mth.cos(t1 * 9.0F - time * 0.45F + phase);
+				float x0 = s.baseX() + ax * len * t0 + px * width * w0;
+				float y0 = s.baseY() + ay * len * t0 + py * width * w0;
+				float x1 = s.baseX() + ax * len * t1 + px * width * w1;
+				float y1 = s.baseY() + ay * len * t1 + py * width * w1;
+				float z0 = s.z() + width * 0.7F * d0;
+				float z1 = s.z() + width * 0.7F * d1;
+				// Brighter on the near side of each turn, fading toward the tip.
+				float a0 = (0.45F + 0.35F * Math.max(0, d0)) * (1 - 0.5F * t0);
+				float a1 = (0.45F + 0.35F * Math.max(0, d1)) * (1 - 0.5F * t1);
+				float th = 0.035F;
+				quadRaw(buffer, pose, x0 - px * th, y0 - py * th, z0, x1 - px * th, y1 - py * th, z1, x1 + px * th, y1 + py * th, z1,
+					x0 + px * th, y0 + py * th, z0, i % 3 == 0 ? hot : color, a0, a1, a1, a0);
+				quadRaw(buffer, pose, x0, y0, z0 - th, x1, y1, z1 - th, x1, y1, z1 + th, x0, y0, z0 + th, i % 3 == 0 ? hot : color, a0, a1, a1, a0);
+			}
 		}
 	}
 

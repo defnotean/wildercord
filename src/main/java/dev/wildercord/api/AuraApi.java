@@ -28,13 +28,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * says otherwise; register while the mod initialises (the client reads the registries too, for the Aura page).
  *
  * <ul>
- *   <li><b>Stages</b> ({@link #registerStage}, {@link #allowTrial}, {@link #completeTrial}): Glow, Flow and Edge are open;
- *       Form (4) and Sovereign (5) wait for a later wave to register them. A stage needs a breakthrough trial to be reached:
- *       the built-in ones ({@link AuraBreakthroughs#STILLNESS}, {@link AuraBreakthroughs#STRONGER_FOE}) can be allowed for a
- *       new stage, or the stage's own trial can call {@link #completeTrial} when it's met.</li>
+ *   <li><b>Stages</b> ({@link #registerStage}, {@link #allowTrial}, {@link #completeTrial}): all five are open, Glow to
+ *       Sovereign. A stage needs a breakthrough trial to be reached: the built-in ones (see {@link #allowTrial}) can be allowed
+ *       for any stage, or a trial of your own can call {@link #completeTrial} when it's met.</li>
  *   <li><b>Techniques</b> ({@link #registerTechnique}): what the Aura key does. A tap, a tap while sneaking, a double tap and
  *       a hold each go to the highest-stage technique for that trigger the player has reached. Built in: Aura Guard (Flow,
- *       sneak and tap) and Aura Slash (Edge, tap). Double tap and hold are kept for Aura Step and Dominion.</li>
+ *       sneak and tap), Aura Slash (Edge, tap), Aura Step (Form, double tap) and Dominion (Sovereign, hold).</li>
  *   <li><b>Aura</b> ({@link #gain}, {@link #spend}, {@link #onGain}, {@link #onSpend}): fill or spend a player's aura with
  *       every rule applying (the server's rate, the method's passive, the stage's capacity, backlash when spent past empty),
  *       and hear of or change each change.</li>
@@ -115,7 +114,7 @@ public final class AuraApi {
 
 	// ------------------------------------------------------------------ stages and trials
 
-	/** Opens a stage (Form and Sovereign, in a later wave), or changes one. */
+	/** Opens a stage, or changes one (all five are open already: their capacity and threshold can be changed this way). */
 	public static void registerStage(AuraStages.Stage stage) {
 		AuraStages.register(stage);
 	}
@@ -123,16 +122,24 @@ public final class AuraApi {
 	private static final Map<Integer, Set<String>> TRIALS = new LinkedHashMap<>();
 
 	static {
-		for (int s = AuraRules.FLOW; s <= AuraRules.BUILT_IN_STAGES; s++) {
+		for (int s = AuraRules.FLOW; s <= AuraRules.EDGE; s++) {
 			allowTrial(s, AuraBreakthroughs.STILLNESS);
 			allowTrial(s, AuraBreakthroughs.STRONGER_FOE);
+		}
+		// The top stages ask more: the stance held through a thunderstorm at a ley crossing, or a boss felled by the blade.
+		for (int s = AuraRules.FORM; s <= AuraRules.SOVEREIGN; s++) {
+			allowTrial(s, AuraBreakthroughs.TEMPEST);
+			allowTrial(s, AuraBreakthroughs.GUARDIAN);
 		}
 	}
 
 	/**
 	 * Lets {@code trial} make the breakthrough into {@code stage}. The built-in trials are {@link AuraBreakthroughs#STILLNESS}
 	 * (the breathing stance held unbroken at a place of power) and {@link AuraBreakthroughs#STRONGER_FOE} (a stronger foe felled
-	 * by melee and aura alone); any other id is a trial of the caller's own, met by calling {@link #completeTrial}.
+	 * by melee and aura alone) for Flow and Edge, and {@link AuraBreakthroughs#TEMPEST} (the stance held through a thunderstorm at
+	 * a ley crossing) and {@link AuraBreakthroughs#GUARDIAN} (a boss felled by blade and aura alone) for Form and Sovereign. Any
+	 * other id is a trial of the caller's own, met by calling {@link #completeTrial}: a won aura duel, for one, is
+	 * {@link AuraBreakthroughs#DUEL}, which the duelists allow for the stage they teach.
 	 */
 	public static synchronized void allowTrial(int stage, String trial) {
 		TRIALS.computeIfAbsent(stage, k -> new LinkedHashSet<>()).add(trial);

@@ -8,15 +8,16 @@ import dev.wildercord.spell.Parry;
  * Aura, the swordsman's path, the pure part: mana drawn into the body and out along a blade. A player who learns a
  * breathing method holds aura (a small pool that never decays) which fills from landing real blows and from the breathing
  * stance, and is spent on coated hits and on techniques. It climbs in stages, each a leap: a haze on the weapon (Glow), then
- * aura that flows (Flow), then a solid blade (Edge); Form and Sovereign follow in a later wave. Experience comes from
- * meaningful melee and fills toward each stage's threshold, where a breakthrough waits for a trial.
+ * aura that flows (Flow), then a solid blade (Edge), then aura that leaves the body (Form), and last a presence that claims
+ * the ground round you (Sovereign). Experience comes from meaningful melee and fills toward each stage's threshold, where a
+ * breakthrough waits for a trial.
  *
  * <p>Shared by the server ({@link Aura} and friends), the HUD and the Aura page, and the unit tests. Every number a server
  * owner may want to change is also in the {@code aura} config section; the defaults live here.</p>
  *
  * <p>Tuned alongside spell mastery ({@link MasteryRules}), whose moment, repetition and practice rules this reuses: a player
- * who fights with a blade about a third of their play reaches Flow in about half an hour, Edge in about two hours, and the
- * later stages (when they open) in about six and fifteen. A kill of an ordinary monster in four full swings is worth about
+ * who fights with a blade about a third of their play reaches Flow in about half an hour, Edge in about two hours, Form in
+ * about six and Sovereign in about fifteen. A kill of an ordinary monster in four full swings is worth about
  * 2.5 experience; meaningful fighting earns about 300 an hour once repetition has had its say.</p>
  */
 public final class AuraRules {
@@ -31,8 +32,8 @@ public final class AuraRules {
 	public static final int FORM = 4;
 	public static final int SOVEREIGN = 5;
 	public static final int MAX_STAGE = SOVEREIGN;
-	/** The stages this wave opens (their breakthrough trials are built in); the stage registry can open more. */
-	public static final int BUILT_IN_STAGES = EDGE;
+	/** The stages the mod opens itself (their breakthrough trials are built in): all five. */
+	public static final int BUILT_IN_STAGES = SOVEREIGN;
 
 	private static final String[] IDS = {"none", "glow", "flow", "edge", "form", "sovereign"};
 	/** How much aura each stage holds: the stage's leap is in what it can do, and in how much it can do it. */
@@ -295,8 +296,8 @@ public final class AuraRules {
 
 	// ------------------------------------------------------------------ breakthroughs
 
-	/** The two trials a breakthrough can be made by. */
-	public enum Trial { STILLNESS, STRONGER_FOE }
+	/** The built-in trials a breakthrough can be made by: the first two for Flow and Edge, the last two for Form and Sovereign. */
+	public enum Trial { STILLNESS, STRONGER_FOE, TEMPEST, GUARDIAN }
 
 	/** Stillness: hold the breathing stance unbroken this long (ticks) at a place of power. */
 	public static final int STILLNESS_TICKS = 600;
@@ -308,6 +309,165 @@ public final class AuraRules {
 	/** Whether a foe is stronger than you, for the trial. */
 	public static boolean stronger(boolean boss, boolean runebound, double foeMaxHealth, double ownMaxHealth) {
 		return boss || runebound || foeMaxHealth >= STRONGER_HEALTH * Math.max(1, ownMaxHealth) - 1.0E-6;
+	}
+
+	/**
+	 * The top stages' trials are harder. The tempest: the breathing stance held unbroken at a ley crossing under a
+	 * thunderstorm, open to the sky (a strike of lightning breaks it, as any blow does), longer for Sovereign than for Form.
+	 * The guardian: a dungeon boss (or any boss) felled by blade and aura alone, with a longer window for a longer fight.
+	 */
+	public static final int TEMPEST_FORM_TICKS = 900;
+	public static final int TEMPEST_SOVEREIGN_TICKS = 1200;
+	public static final int GUARDIAN_WINDOW = 3600;
+
+	/** How long the stance must hold for a stillness trial into {@code nextStage}: the ley crossing alone, or the tempest's. */
+	public static int stillnessTicks(int nextStage) {
+		return nextStage >= SOVEREIGN ? TEMPEST_SOVEREIGN_TICKS : nextStage >= FORM ? TEMPEST_FORM_TICKS : STILLNESS_TICKS;
+	}
+
+	// ------------------------------------------------------------------ Form: aura leaves the body
+
+	/**
+	 * Aura Step (Form, a double tap): a dash of {@link #STEP_DISTANCE} blocks the way you're moving (ahead when standing),
+	 * over {@link #STEP_TICKS} ticks, stopped by anything solid and by a dungeon ward's edge, untouchable for
+	 * {@link #STEP_GUARD_TICKS} ticks from its start.
+	 */
+	public static final double STEP_DISTANCE = 6.0;
+	public static final double STEP_COST = 12.0;
+	public static final int STEP_COOLDOWN = 40;
+	public static final int STEP_TICKS = 3;
+	public static final int STEP_GUARD_TICKS = 6;
+	/** The finest steps the dash's path is checked in, in blocks, and how high it climbs a step on the way (a slab, a stair). */
+	public static final double STEP_PROBE = 0.2;
+	public static final double STEP_CLIMB = 0.6;
+
+	/**
+	 * Aura Armour (Form, always on): while you hold at least {@link #ARMOUR_MIN} aura it takes {@code share} of what reaches you,
+	 * paying {@link #ARMOUR_COST_PER_POINT} aura for each point it takes, never more than the aura above that floor pays for.
+	 */
+	public static final double ARMOUR_SHARE = 0.25;
+	public static final double ARMOUR_COST_PER_POINT = 0.5;
+	public static final double ARMOUR_MIN = 20.0;
+
+	/** What aura armour takes off a blow of {@code incoming}, holding {@code aura}. */
+	public static double armourAbsorb(double incoming, double aura, double share) {
+		if (incoming <= 0 || aura < ARMOUR_MIN - 1.0E-9) {
+			return 0;
+		}
+		return Math.max(0, Math.min(incoming * Math.max(0, Math.min(1, share)), (aura - ARMOUR_MIN) / ARMOUR_COST_PER_POINT + 1.0E-9));
+	}
+
+	/** Intent (Form, always on): how far it reaches, how often it presses, and how long a weaker creature stays slowed. */
+	public static final double INTENT_RADIUS = 8.0;
+	public static final int INTENT_PERIOD = 20;
+	public static final int INTENT_SLOW_TICKS = 30;
+	/** The chance each press makes a creature falter: it stops where it stands for a moment. */
+	public static final double INTENT_FALTER = 0.25;
+	/** Against a player, by default: their speed taken down this share (a modest slow, never Slowness), and the vignette's length. */
+	public static final double INTENT_PVP_SLOW = 0.05;
+	public static final int INTENT_VIGNETTE_TICKS = 30;
+
+	/**
+	 * Whether Intent presses on a creature: never a boss; another aura user if their stage is below yours; anything else if its
+	 * whole health is below yours.
+	 *
+	 * @param foeStage the creature's aura stage, or a negative number for one that carries no aura
+	 */
+	public static boolean intimidated(boolean boss, int foeStage, int ownStage, double foeMaxHealth, double ownMaxHealth) {
+		if (boss) {
+			return false;
+		}
+		if (foeStage > NONE) {
+			return foeStage < ownStage;
+		}
+		return foeMaxHealth < ownMaxHealth - 1.0E-6;
+	}
+
+	/** Aura sense from Form: further, and a pulse every {@link #SENSE_COMBAT_PERIOD} ticks while in a fight, stance or not. */
+	public static final double SENSE_RANGE = 16.0;
+	public static final double SENSE_RANGE_FORM = 24.0;
+	public static final int SENSE_COMBAT_PERIOD = 60;
+
+	/** How far aura sense reaches at {@code stage}. */
+	public static double senseRange(int stage) {
+		return stage >= FORM ? SENSE_RANGE_FORM : SENSE_RANGE;
+	}
+
+	// ------------------------------------------------------------------ Sovereign: a presence that claims the ground
+
+	/**
+	 * Dominion (Sovereign, a hold): a circle {@link #DOMINION_RADIUS} blocks out from where you stand, for {@link #DOMINION_TICKS}
+	 * ticks. Foes inside are slowed and hit {@link #DOMINION_WEAKEN} weaker; your strikes inside chain once to another foe inside
+	 * for {@link #DOMINION_CHAIN_SHARE} of the blow; and while you stand in it aura comes {@link #DOMINION_FLOW} times as fast,
+	 * with a trickle of {@link #DOMINION_TRICKLE} a second besides.
+	 */
+	public static final double DOMINION_RADIUS = 3.0;
+	public static final int DOMINION_TICKS = 160;
+	public static final int DOMINION_COOLDOWN = 1800;
+	public static final double DOMINION_COST = 40.0;
+	public static final double DOMINION_WEAKEN = 0.3;
+	public static final double DOMINION_CHAIN_SHARE = 0.5;
+	public static final double DOMINION_FLOW = 2.0;
+	public static final double DOMINION_TRICKLE = 2.0;
+	/** Slowness's level on a foe inside (0 is Slowness I): creatures II, players I. */
+	public static final int DOMINION_SLOW_CREATURE = 1;
+	public static final int DOMINION_SLOW_PLAYER = 0;
+
+	/**
+	 * What a blow struck from inside a foe's Dominion lands at: {@code weaken} less, or against a player scaled as aura's other
+	 * bonuses are (only {@code pvpScale} of it).
+	 */
+	public static double dominionWeakened(double damage, double weaken, boolean againstPlayer, double pvpScale) {
+		double w = Math.max(0, Math.min(0.9, weaken));
+		if (againstPlayer) {
+			w *= Math.max(0, pvpScale);
+		}
+		return damage * (1 - Math.min(0.9, w));
+	}
+
+	// ------------------------------------------------------------------ Spellblade (Edge and up)
+
+	/** A spell cast while sneaking with an aura weapon rides the next Aura Slash for this long (ticks); unused, it leaves as cast. */
+	public static final int SPELLBLADE_TICKS = 100;
+	/** The most foes a carried spell lands on, and how much weaker each one after the first is (On Hit's falloff). */
+	public static final int SPELLBLADE_TARGETS = 4;
+	public static final double SPELLBLADE_FALLOFF = 0.85;
+
+	/** The power a carried spell lands with on the {@code n}th foe the slash cuts (0 for the first), or 0 past the last. */
+	public static double spellbladePower(int n) {
+		if (n < 0 || n >= SPELLBLADE_TARGETS) {
+			return 0;
+		}
+		return Math.pow(SPELLBLADE_FALLOFF, n);
+	}
+
+	// ------------------------------------------------------------------ aura marks
+
+	/** The chance an elemental aura strike leaves its element's mark: 10%, and 5% more at each stage (15% at Glow, 35% at Sovereign). */
+	public static double markChance(int stage) {
+		return stage <= NONE ? 0 : 0.10 + 0.05 * clampStage(stage);
+	}
+
+	/** How long an aura mark lasts (ticks): shorter than a spell's, and a foe takes another from the same striker only after a rest. */
+	public static final int MARK_TICKS = 60;
+	public static final int MARK_REST = 40;
+
+	/**
+	 * The reaction mark an element's aura leaves: frost leaves frozen, wind windswept, void shadowed, blood bleeding, arcane
+	 * exposed, fire burning and life poison. Earth, storm and time set reactions off and leave nothing (""): storm's own mark
+	 * (ionised) is one its next blow would conduct through, and a mark is for someone else to answer.
+	 */
+	public static String markFor(String element) {
+		return switch (element == null ? "" : element) {
+			case "frost" -> "frozen";
+			case "wind" -> "windswept";
+			case "void" -> "shadowed";
+			case "blood" -> "bleeding";
+			case "arcane" -> "exposed";
+			case "fire" -> "burning";
+			case "life" -> "poisoned";
+			default -> "";
+		};
 	}
 
 	// ------------------------------------------------------------------ the methods' flavours

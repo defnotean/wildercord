@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The stage registry: which stages of aura are open, and what each holds and needs. Glow, Flow and Edge are registered
- * here; Form and Sovereign keep their numbers in {@link AuraRules} (and their default capacity and threshold) until a later
- * wave registers them with their trials and techniques. A stage that isn't registered can't be broken through to, but the
- * experience toward it still fills (and waits at its threshold), so nothing earned is lost when it opens.
+ * The stage registry: which stages of aura are open, and what each holds and needs. All five (Glow, Flow, Edge, Form and
+ * Sovereign) are registered here from the numbers in {@link AuraRules}; an add-on can change one. A stage that isn't
+ * registered can't be broken through to, but the experience toward it still fills (and waits at its threshold), so nothing
+ * earned is lost when it opens.
  *
  * <p>Pure, so the HUD, the Aura page, the server and the tests agree. Registration happens at start-up, on the main
  * thread (see {@code api.AuraApi.registerStage}).</p>

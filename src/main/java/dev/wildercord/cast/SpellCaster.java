@@ -264,6 +264,17 @@ public final class SpellCaster {
 				CastEngine.cast(sung.cast(), sung.root());
 			}
 		};
+		// Cast sneaking with an aura weapon in hand (Edge and up), the spell flows into the blade instead of leaving, and rides
+		// the next Aura Slash (see aura.Spellblade); if the blade can't take it by then, it leaves as usual. An overchanneled spell
+		// (sneak there steadies the charge) always leaves as usual.
+		final java.util.function.Consumer<Cast> leave = performance.stage() == 0
+			&& dev.wildercord.aura.Spellblade.wants(player, compiled.root(), secret.isPresent())
+			? c -> {
+				if (!dev.wildercord.aura.Spellblade.draw(player, c, compiled.root(), release)) {
+					release.accept(c);
+				}
+			}
+			: release;
 		// Wild magic: an overcast spell, or an overchanneled one, may twist into something else (both at once roll as one chance).
 		final double surgeChance = overcastCost >= 0
 			? dev.wildercord.spell.Overchannel.combined(WildSurge.overcastChance(player, overcastMana, overcastCost), performance.surgeChance())
@@ -271,8 +282,8 @@ public final class SpellCaster {
 		// The formation completes before any ordinary or wild release leaves the caster.
 		Scheduler.later(3, () -> {
 			if (!cast.alive()) return;
-			if (surgeChance <= 0 || !WildSurge.roll(cast, runes, secret.isPresent(), surgeChance, release)) {
-				release.accept(cast);
+			if (surgeChance <= 0 || !WildSurge.roll(cast, runes, secret.isPresent(), surgeChance, leave)) {
+				leave.accept(cast);
 			}
 		});
 		dev.wildercord.runesmith.Contracts.onCast(player, runes);

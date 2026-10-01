@@ -372,6 +372,9 @@ public final class Aura {
 				if (player.hasAttached(AuraAttachments.LOOK)) {
 					player.removeAttached(AuraAttachments.LOOK);
 				}
+				if (player.hasAttached(AuraPresence.LOOK)) {
+					player.removeAttached(AuraPresence.LOOK);
+				}
 				continue;
 			}
 			stance(player, now);
@@ -380,7 +383,14 @@ public final class Aura {
 				modifiers(player);
 			}
 			refreshLook(player, now);
+			// The top stages: Intent's pressure, sense in a fight, and aura armour's shell.
+			AuraIntent.tick(player, now);
+			AuraSense.combat(player, now);
+			AuraPresence.look(player, AuraPresence.look(player).withShell(AuraArmour.up(player)));
 		}
+		AuraIntent.release(server, server.getTickCount());
+		AuraDominion.tick(server);
+		Spellblade.tick(server);
 	}
 
 	// ------------------------------------------------------------------ the Aura key
@@ -432,8 +442,11 @@ public final class Aura {
 
 	public static void init() {
 		AuraAttachments.init();
+		AuraPresence.init();
 		PayloadTypeRegistry.serverboundPlay().register(Key.TYPE, Key.CODEC);
 		AuraSense.init();
+		AuraStep.init();
+		AuraDominion.init();
 		ServerPlayNetworking.registerGlobalReceiver(Key.TYPE, (payload, context) -> {
 			AuraApi.Trigger[] triggers = AuraApi.Trigger.values();
 			if (payload.trigger() < 0 || payload.trigger() >= triggers.length) {
@@ -445,6 +458,8 @@ public final class Aura {
 		});
 		AuraApi.registerTechnique(new AuraApi.Technique("guard", AuraRules.FLOW, AuraApi.Trigger.SNEAK_TAP, AuraRules.GUARD_RAISE_COST, AuraGuard::raise));
 		AuraApi.registerTechnique(new AuraApi.Technique("slash", AuraRules.EDGE, AuraApi.Trigger.TAP, AuraRules.SLASH_COST, AuraSlash::loose));
+		AuraApi.registerTechnique(new AuraApi.Technique("step", AuraRules.FORM, AuraApi.Trigger.DOUBLE_TAP, AuraRules.STEP_COST, AuraStep::step));
+		AuraApi.registerTechnique(new AuraApi.Technique("dominion", AuraRules.SOVEREIGN, AuraApi.Trigger.HOLD, AuraRules.DOMINION_COST, AuraDominion::raise));
 		AuraMethods.init();
 		AuraCombat.init();
 		AuraBreakthroughs.init();
@@ -474,6 +489,12 @@ public final class Aura {
 			KEYS.forget(id);
 			AuraCombat.forget(id);
 			AuraMethods.forget(id);
+			AuraStep.forget(id);
+			AuraIntent.forget(id);
+			AuraDominion.forget(id);
+			AuraMarks.forget(id);
+			// A spell riding the blade leaves with its caster (its cast is no longer alive).
+			Spellblade.forget(id);
 		});
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			STANCES.clear();
@@ -481,11 +502,17 @@ public final class Aura {
 			KEYS.clear();
 			AuraCombat.clear();
 			AuraBreakthroughs.clear();
+			AuraStep.clear();
+			AuraIntent.clear();
+			AuraDominion.clear();
+			AuraMarks.clear();
+			Spellblade.clear();
 		});
 	}
 
 	/** Every kit sound aura plays, for the tests. */
-	public static final List<String> SOUNDS = List.of("aura_slash", "aura_guard", "aura_perfect_guard", "aura_breakthrough", "aura_backlash", "aura_breath");
+	public static final List<String> SOUNDS = List.of("aura_slash", "aura_guard", "aura_perfect_guard", "aura_breakthrough", "aura_backlash", "aura_breath",
+		"aura_step", "aura_armour", "aura_intent", "aura_dominion", "aura_dominion_fade", "aura_spellblade");
 
 	/** Plays one of aura's sounds where {@code player} is. */
 	static void sound(ServerPlayer player, String name, float volume, float pitch) {

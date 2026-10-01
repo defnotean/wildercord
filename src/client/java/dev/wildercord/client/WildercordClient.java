@@ -49,10 +49,14 @@ public final class WildercordClient implements ClientModInitializer {
 		// A worn backpack, on the back with its straps down the chest.
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK, dev.wildercord.client.render.BackpackModel::createPack);
 		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.GearLayer.BACKPACK_STRAP, dev.wildercord.client.render.BackpackModel::createStrap);
+		// Aura armour's shell, the body drawn again a little larger.
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SHELL, dev.wildercord.client.render.AuraShellLayer::createShell);
+		ModelLayerRegistry.registerModelLayer(dev.wildercord.client.render.AuraShellLayer.SLIM_SHELL, dev.wildercord.client.render.AuraShellLayer::createSlimShell);
 		net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((type, renderer, helper, context) -> {
 			if (renderer instanceof net.minecraft.client.renderer.entity.player.AvatarRenderer<?> avatar) {
 				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.GearLayer(avatar, context));
+				helper.register(new dev.wildercord.client.render.AuraShellLayer(avatar, context));
 			}
 		});
 		EntityRendererRegistry.register(WildercordEntities.TRAINING_DUMMY, TrainingDummyRenderer::new);

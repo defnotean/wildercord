@@ -25,7 +25,9 @@ import net.minecraft.world.entity.HumanoidArm;
  * The diamonds are the stages (filled as reached; the next one pulses gold while a breakthrough waits), the bar is the aura
  * held (a gold mark at Aura Slash's price from Edge), and the number what's held. In the breathing stance a ring closes on the
  * diamonds with each breath (let sneak up and press it again as it closes: a breath on the beat), and the bar shimmers; a
- * trial under way writes its progress above the strip; backlash dims it; a raised guard edges it in gold.
+ * trial under way writes its progress above the strip; backlash dims it; a raised guard edges it in gold. At the top stages
+ * Form's diamond dims while Aura Step recharges and Sovereign's burns while a Dominion stands (a thread under it filling back
+ * as it rests); a spell riding the blade and a Dominion's time left are written above the strip.
  */
 public final class AuraHud {
 	private AuraHud() {}
@@ -36,7 +38,7 @@ public final class AuraHud {
 
 	/** The strip's height, and its width when it stands alone. */
 	public static final int HEIGHT = 12;
-	private static final int ALONE_WIDTH = 78;
+	private static final int ALONE_WIDTH = 90;
 	private static final int GOLD = 0xFFE8C46A;
 
 	/** Smoothed aura, so the bar glides. */
@@ -99,14 +101,25 @@ public final class AuraHud {
 		}
 
 		// ---- the stages: a diamond for each open one, filled as reached; the next pulses gold while a breakthrough waits.
+		// Form's diamond dims while Aura Step recharges; Sovereign's burns while a Dominion stands and fills back as it rests.
 		int open = Math.max(AuraStages.highest(), stage);
+		int step = open >= 5 ? 6 : 7;
 		int px = x + 4;
 		int py = y + 3;
 		boolean ready = AuraBreakthroughs.ready(player);
+		dev.wildercord.aura.AuraPresence.Timers timers = dev.wildercord.aura.AuraPresence.timers(player);
 		for (int s = 1; s <= open; s++) {
 			int fill;
 			if (s <= stage) {
 				fill = 0xFF000000 | color;
+				if (s == AuraRules.FORM && now < timers.stepReadyAt()) {
+					fill = 0xFF000000 | mix(color, 0x2A2438, 0.65);
+				} else if (s == AuraRules.SOVEREIGN && now <= timers.dominionUntil()) {
+					double pulse = 0.5 + 0.5 * Math.sin((now + partial) * 0.5);
+					fill = 0xFF000000 | mix(color, 0xFFFFFF, 0.25 + 0.45 * pulse);
+				} else if (s == AuraRules.SOVEREIGN && now < timers.dominionReadyAt()) {
+					fill = 0xFF000000 | mix(color, 0x2A2438, 0.65);
+				}
 			} else if (s == stage + 1 && ready) {
 				double pulse = 0.5 + 0.5 * Math.sin((now + partial) * 0.3);
 				fill = 0xFF000000 | mix(0x6A5A3A, 0xF5D56A, pulse);
@@ -114,7 +127,14 @@ public final class AuraHud {
 				fill = 0xFF3A3450;
 			}
 			diamond(g, px, py, fill, s <= stage ? 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 3) : 0xFF6A6080);
-			px += 7;
+			if (s == AuraRules.SOVEREIGN && stage >= AuraRules.SOVEREIGN && now > timers.dominionUntil() && now < timers.dominionReadyAt()) {
+				// Dominion resting: a thread under its diamond, filling back as the rest runs out.
+				double rest = AuraRules.DOMINION_COOLDOWN;
+				double share = 1 - (timers.dominionReadyAt() - now) / rest;
+				g.fill(px, py + 6, px + 5, py + 7, 0xFF2A2438);
+				g.fill(px, py + 6, px + (int) Math.round(5 * Math.max(0, Math.min(1, share))), py + 7, 0xFF000000 | color);
+			}
+			px += step;
 		}
 		int pipsRight = px;
 		// The breath's beat: a ring closing on the diamonds as each breath comes, glowing on it.
@@ -122,7 +142,7 @@ public final class AuraHud {
 			long next = AuraRules.nextBeat(state.settledAt(), now);
 			double until = next - now - partial;
 			boolean onBeat = AuraRules.onBeat(state.settledAt(), now);
-			int cx = x + 4 + (open * 7) / 2 - 1;
+			int cx = x + 4 + (open * step) / 2 - 1;
 			int cy = y + HEIGHT / 2;
 			if (onBeat) {
 				g.blitSprite(RenderPipelines.GUI_TEXTURED, BEAT, cx - 9, cy - 9, 18, 18, 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 4));
@@ -165,18 +185,34 @@ public final class AuraHud {
 		}
 		g.text(font, count, x + width - 4 - countW, y + 2, backlash ? 0xFFC8A0A0 : 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 3), true);
 
-		// ---- above the strip: a trial under way.
+		// ---- above the strip: a trial under way, a spell riding the blade, a Dominion standing.
 		int top = y;
 		String trial = null;
 		if (state.stillness() > 0) {
 			trial = net.minecraft.network.chat.Component.translatable("screen.wildercord.aura.trial.progress", state.stillness() / 20,
-				AuraRules.STILLNESS_TICKS / 20).getString();
+				AuraRules.stillnessTicks(stage + 1) / 20).getString();
 		} else if (state.trialUntil() > now) {
 			trial = net.minecraft.network.chat.Component.translatable("screen.wildercord.aura.trial.foe_left", (state.trialUntil() - now + 19) / 20).getString();
 		}
+		int lineColor = 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 3);
 		if (trial != null) {
-			top = y - 10;
-			g.text(font, font.plainSubstrByWidth(trial, Math.max(40, g.guiWidth() - x - 4)), x + 3, top, 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 3), true);
+			top -= 10;
+			g.text(font, font.plainSubstrByWidth(trial, Math.max(40, g.guiWidth() - x - 4)), x + 3, top, lineColor, true);
+		}
+		dev.wildercord.aura.AuraPresence.Look presence = dev.wildercord.aura.AuraPresence.look(player);
+		if (presence.spellHeld(now)) {
+			top -= 10;
+			String held = net.minecraft.network.chat.Component.translatable("screen.wildercord.aura.spellblade_held",
+				String.format(java.util.Locale.ROOT, "%.1f", Math.max(0, presence.bladeUntil() - now - partial) / 20.0)).getString();
+			double pulse = 0.5 + 0.5 * Math.sin((now + partial) * 0.6);
+			g.text(font, font.plainSubstrByWidth(held, Math.max(40, g.guiWidth() - x - 4)), x + 3, top,
+				0xFF000000 | mix(presence.bladeSpell(), 0xFFFFFF, 0.2 + 0.3 * pulse), true);
+		}
+		if (now <= timers.dominionUntil()) {
+			top -= 10;
+			String dominion = net.minecraft.network.chat.Component.translatable("screen.wildercord.aura.dominion_left",
+				(timers.dominionUntil() - now + 19) / 20).getString();
+			g.text(font, font.plainSubstrByWidth(dominion, Math.max(40, g.guiWidth() - x - 4)), x + 3, top, lineColor, true);
 		}
 		return top;
 	}

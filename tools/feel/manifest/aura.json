@@ -1,5 +1,12 @@
 {
   "events": {
+    "aura_armour": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_armour"
+      ],
+      "subtitle": "hit"
+    },
     "aura_backlash": {
       "attenuation": 0,
       "files": [
@@ -21,10 +28,31 @@
       ],
       "subtitle": "tell"
     },
+    "aura_dominion": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_dominion"
+      ],
+      "subtitle": "field"
+    },
+    "aura_dominion_fade": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_dominion_fade"
+      ],
+      "subtitle": "field"
+    },
     "aura_guard": {
       "attenuation": 0,
       "files": [
         "kit/aura/aura_guard"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_intent": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_intent"
       ],
       "subtitle": "tell"
     },
@@ -40,6 +68,21 @@
       "files": [
         "kit/aura/aura_slash_1",
         "kit/aura/aura_slash_2"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_spellblade": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_spellblade"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_step_1",
+        "kit/aura/aura_step_2"
       ],
       "subtitle": "cast"
     }
