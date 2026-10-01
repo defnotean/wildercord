@@ -110,7 +110,8 @@ public class LumenStag extends Animal {
 		return entityData.get(DATA_POSE);
 	}
 
-	private void setPoseState(byte pose, int ticks) {
+	/** Holds a pose for {@code ticks} (its own goals set these; tests and the guide's pictures may too). */
+	public void setPoseState(byte pose, int ticks) {
 		entityData.set(DATA_POSE, pose);
 		poseTicks = ticks;
 	}
