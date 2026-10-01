@@ -2646,7 +2646,7 @@
   "screen.wildercord.altar.reagent.hollowed": "the lower-tier rune stays",
   "screen.wildercord.altar.reagent.exalted": "one rank higher, 3 more XP",
   "screen.wildercord.altar.reagent.familiar": "no XP: you've made it before",
-  "screen.wildercord.altar.reagent.bloodbound": "%s of the XP in health",
+  "screen.wildercord.altar.reagent.bloodbound": "%s XP levels paid in health",
   "climate.wildercord.ley_crossing": "A ley crossing",
   "climate.wildercord.full_moon": "Full moon",
   "climate.wildercord.new_moon": "New moon",

@@ -918,7 +918,7 @@ LANG = {
     "screen.wildercord.altar.reagent.hollowed": "the lower-tier rune stays",
     "screen.wildercord.altar.reagent.exalted": "one rank higher, 3 more XP",
     "screen.wildercord.altar.reagent.familiar": "no XP: you've made it before",
-    "screen.wildercord.altar.reagent.bloodbound": "%s of the XP in health",
+    "screen.wildercord.altar.reagent.bloodbound": "%s XP levels paid in health",
     # Places and times of power: the climate's new conditions, and the HUD's lines.
     "climate.wildercord.ley_crossing": "A ley crossing",
     "climate.wildercord.full_moon": "Full moon",

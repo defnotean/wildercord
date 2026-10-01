@@ -329,6 +329,15 @@ public class FusionAltarScreen extends AbstractContainerScreen<FusionAltarMenu> 
 					Component.translatable("element.wildercord." + plan.recipe().first()), Component.translatable("element.wildercord." + plan.recipe().second()));
 			}
 			y = wrap(g, what, x, y, width, DIM, 3);
+			// A reagent on the altar: what it changes.
+			dev.wildercord.spell.AltarReagents.Result reagent = menu.reagent();
+			if (reagent != null && reagent.ready()) {
+				Component change = reagent.effect() == dev.wildercord.spell.AltarReagents.Effect.BLOODBOUND
+					? Component.translatable("screen.wildercord.altar.reagent.bloodbound", reagent.health())
+					: Component.translatable("screen.wildercord.altar.reagent." + reagent.effect().id());
+				y = wrap(g, Component.translatable("screen.wildercord.altar.reagent", menu.input(menu.reagentSlot()).getHoverName(), change), x, y + 1, width,
+					0xFFC8A8F0, 2);
+			}
 			Component blocked = blocked(plan);
 			int levels = cost(plan);
 			Component price = blocked != null ? blocked : Component.translatable("screen.wildercord.altar.cost", levels);
