@@ -6,7 +6,8 @@ import java.util.List;
  * The Grimoire: everything a caster has discovered. Entries are plain string keys, grouped by
  * a prefix: {@code reaction:shatter}, {@code secret:sunfall}, {@code feat:overcast}, {@code fusion:firestorm},
  * {@code bestiary:minecraft:blaze|weak|frost} (see {@link Bestiary}), {@code affinity:frost} (see
- * {@link PlayerAffinity}). Each first
+ * {@link PlayerAffinity}), and a world's own {@code resonance:<id>} and {@code quirk:<id>} (see {@link Resonance},
+ * {@link RuneQuirks}). Each first
  * discovery condenses a little mana toward the next Heart Circle. Pure data, shared by the
  * server (which grants entries) and the Grimoire page (which lists them).
  */
@@ -116,8 +117,11 @@ public final class Feats {
 		if (key.startsWith(PlayerAffinity.KEY_PREFIX)) {
 			return PlayerAffinity.REWARD;
 		}
-		if (key.startsWith("secret:")) {
+		if (key.startsWith("secret:") || key.startsWith(Resonance.KEY_PREFIX)) {
 			return 400;
+		}
+		if (key.startsWith(RuneQuirks.KEY_PREFIX)) {
+			return 100;
 		}
 		if (key.startsWith("reaction:") || key.startsWith(Fusions.KEY_PREFIX)) {
 			return 150;

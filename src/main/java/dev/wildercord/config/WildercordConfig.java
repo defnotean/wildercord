@@ -22,7 +22,7 @@ import java.util.Set;
  *
  * <p>The feature switches ({@code world_events}, {@code duels}, {@code wild_magic},
  * {@code world_changing_magic}, {@code creature_affinities}, {@code elemental_climate},
- * {@code player_affinity}) are read by those features; each defaults to on.</p>
+ * {@code player_affinity}, {@code unread_runes}) are read by those features; each defaults to on.</p>
  *
  * @param maxCreatures       creatures one cast may touch (links and echoes included)
  * @param maxBlocks          blocks one cast may change
@@ -41,6 +41,8 @@ import java.util.Set;
  * @param affinityGain       how fast affinity points come, times this (the daily allowances count what's done, not what it's worth)
  * @param travel             the travel commands ({@code /home}, {@code /warp}, {@code /tpa}...): see {@link TravelSettings}
  * @param defence            how players stand up to spells (armour, the bonus cap, the spellguard): see {@link DefenceSettings}
+ * @param unreadRunes        whether a newly learned rune starts unread, its text a hint until it's been cast and seen at work
+ * @param resonances         each world's own resonances and rune quirks: see {@link ResonanceSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -65,10 +67,12 @@ public record WildercordConfig(
 	boolean playerAffinity,
 	double affinityGain,
 	TravelSettings travel,
-	DefenceSettings defence
+	DefenceSettings defence,
+	boolean unreadRunes,
+	ResonanceSettings resonances
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS);
+		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, true, ResonanceSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -102,6 +106,23 @@ public record WildercordConfig(
 	 */
 	public record DefenceSettings(boolean spellguard, double spellguardHealth, int spellguardRechargeSeconds, double maxBonus, double armourRate) {
 		public static final DefenceSettings DEFAULTS = new DefenceSettings(true, 0.8, 60, 2.5, 0.55);
+	}
+
+	/**
+	 * Each world's own magic (the {@code resonances} section): its resonances, drawn from the world's seed, and its rune
+	 * quirks. A file written before the section existed reads as these defaults.
+	 *
+	 * @param enabled    whether resonances and quirks wake at all (off: casting their runes is only the ordinary spell)
+	 * @param count      how many resonances the world holds (0 to {@link dev.wildercord.spell.ResonanceForge#MAX_COUNT})
+	 * @param rerollSalt any text: changing it draws the world a fresh set (and forgets who found the old ones); empty keeps the seed's own
+	 * @param announce   whether the server tells everyone in chat when someone finds a resonance
+	 * @param quirks     how many runes have a quirk in this world (0 to {@link dev.wildercord.spell.RuneQuirks#MAX_COUNT})
+	 */
+	public record ResonanceSettings(boolean enabled, int count, String rerollSalt, boolean announce, int quirks) {
+		public static final ResonanceSettings DEFAULTS = new ResonanceSettings(true, dev.wildercord.spell.ResonanceForge.DEFAULT_COUNT, "", true,
+			dev.wildercord.spell.RuneQuirks.DEFAULT_COUNT);
+		/** The longest reroll salt kept (a longer one is cut short, with a warning). */
+		public static final int MAX_SALT = 64;
 	}
 
 	/** The file's format version, written so later versions can migrate it. */
@@ -165,7 +186,14 @@ public record WildercordConfig(
 				r.number("defence", "spellguard_health", d.defence.spellguardHealth(), 0.1, 1),
 				r.integer("defence", "spellguard_recharge_seconds", d.defence.spellguardRechargeSeconds(), 0, 3600),
 				r.number("defence", "max_bonus", d.defence.maxBonus(), 1, 100),
-				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)));
+				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)),
+			r.bool("features", "unread_runes", d.unreadRunes),
+			new ResonanceSettings(
+				r.bool("resonances", "enabled", d.resonances.enabled()),
+				r.integer("resonances", "count", d.resonances.count(), 0, dev.wildercord.spell.ResonanceForge.MAX_COUNT),
+				r.string("resonances", "reroll_salt", d.resonances.rerollSalt(), ResonanceSettings.MAX_SALT),
+				r.bool("resonances", "announce", d.resonances.announce()),
+				r.integer("resonances", "quirks", d.resonances.quirks(), 0, dev.wildercord.spell.RuneQuirks.MAX_COUNT)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -180,10 +208,11 @@ public record WildercordConfig(
 		KEYS.put("loot", Set.of("rune_chance_multiplier", "crystal_chance_multiplier", "page_chance_multiplier", "gear_chance_multiplier"));
 		KEYS.put("imbuing", Set.of("max_items", "max_glyphs"));
 		KEYS.put("features", Set.of("world_events", "duels", "wild_magic", "world_changing_magic", "creature_affinities", "elemental_climate",
-			"player_affinity"));
+			"player_affinity", "unread_runes"));
 		KEYS.put("affinity", Set.of("gain_multiplier"));
 		KEYS.put("travel", Set.of("enabled", "max_homes", "warmup_seconds", "cooldown_seconds", "rtp_cooldown_seconds", "rtp_radius", "tpa_timeout_seconds"));
 		KEYS.put("defence", Set.of("spellguard", "spellguard_health", "spellguard_recharge_seconds", "max_bonus", "armour_rate"));
+		KEYS.put("resonances", Set.of("enabled", "count", "reroll_salt", "announce", "quirks"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -271,6 +300,23 @@ public record WildercordConfig(
 			return p.getAsBoolean();
 		}
 
+		String string(String section, String key, String fallback, int maxLength) {
+			JsonPrimitive p = field(section, key);
+			if (p == null) {
+				return fallback;
+			}
+			if (!p.isString()) {
+				warnings.add(section + "." + key + " should be text in quotes; using \"" + fallback + "\"");
+				return fallback;
+			}
+			String value = p.getAsString();
+			if (value.length() > maxLength) {
+				warnings.add(section + "." + key + " may be at most " + maxLength + " characters; using the first " + maxLength);
+				return value.substring(0, maxLength);
+			}
+			return value;
+		}
+
 		/** Warns about keys nobody reads (usually a typo), so they aren't silently ignored. */
 		void unknown() {
 			for (Map.Entry<String, JsonElement> section : root.entrySet()) {
@@ -340,7 +386,8 @@ public record WildercordConfig(
 		root.add("imbuing", imbuing);
 
 		JsonObject features = new JsonObject();
-		features.addProperty("_about", "Switch whole features off: world events, duels, wild magic, world-changing magic, creature affinities, elemental climate and players' own affinities.");
+		features.addProperty("_about", "Switch whole features off: world events, duels, wild magic, world-changing magic, creature affinities, elemental climate, players' own affinities, "
+			+ "and unread runes (a newly learned rune's text is a hint until it has been cast and seen at work).");
 		features.addProperty("world_events", worldEvents);
 		features.addProperty("duels", duels);
 		features.addProperty("wild_magic", wildMagic);
@@ -348,6 +395,7 @@ public record WildercordConfig(
 		features.addProperty("creature_affinities", creatureAffinities);
 		features.addProperty("elemental_climate", elementalClimate);
 		features.addProperty("player_affinity", playerAffinity);
+		features.addProperty("unread_runes", unreadRunes);
 		root.add("features", features);
 
 		JsonObject affinity = new JsonObject();
@@ -376,6 +424,17 @@ public record WildercordConfig(
 		defenceSection.addProperty("max_bonus", defence.maxBonus());
 		defenceSection.addProperty("armour_rate", defence.armourRate());
 		root.add("defence", defenceSection);
+
+		JsonObject resonanceSection = new JsonObject();
+		resonanceSection.addProperty("_about", "Each world's own magic, drawn from its seed: count resonances (exact rune sequences the world answers with a twist) "
+			+ "and quirks (small tweaks to runes). Change reroll_salt to any other text to draw a fresh set (the old ones and who found them are forgotten). "
+			+ "announce tells the whole server in chat when someone finds one.");
+		resonanceSection.addProperty("enabled", resonances.enabled());
+		resonanceSection.addProperty("count", resonances.count());
+		resonanceSection.addProperty("reroll_salt", resonances.rerollSalt());
+		resonanceSection.addProperty("announce", resonances.announce());
+		resonanceSection.addProperty("quirks", resonances.quirks());
+		root.add("resonances", resonanceSection);
 		return GSON.toJson(root) + "\n";
 	}
 

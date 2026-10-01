@@ -236,6 +236,63 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void resonanceDefaultsAndTheUnreadSwitch() {
+		assertTrue(D.unreadRunes());
+		WildercordConfig.ResonanceSettings r = D.resonances();
+		assertTrue(r.enabled());
+		assertEquals(dev.wildercord.spell.ResonanceForge.DEFAULT_COUNT, r.count());
+		assertEquals("", r.rerollSalt());
+		assertTrue(r.announce());
+		assertEquals(dev.wildercord.spell.RuneQuirks.DEFAULT_COUNT, r.quirks());
+		assertTrue(D.toJson().contains("\"resonances\""), "a fresh file should list the resonance settings");
+		assertTrue(D.toJson().contains("\"unread_runes\""));
+		assertFalse(WildercordConfig.parse("{\"features\": {\"unread_runes\": false}}").config().unreadRunes());
+	}
+
+	@Test
+	void resonanceSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(
+			"{\"resonances\": {\"enabled\": false, \"count\": 400, \"reroll_salt\": \"second age\", \"announce\": false, \"quirks\": -2, \"riddles\": 1}}");
+		WildercordConfig.ResonanceSettings r = parsed.config().resonances();
+		assertFalse(r.enabled());
+		assertEquals(dev.wildercord.spell.ResonanceForge.MAX_COUNT, r.count());
+		assertEquals("second age", r.rerollSalt());
+		assertFalse(r.announce());
+		assertEquals(0, r.quirks());
+		// Two out of range, one unknown key.
+		assertEquals(3, parsed.warnings().size(), parsed.warnings().toString());
+		// A salt that isn't text, or is far too long, is reported and fixed.
+		WildercordConfig.Parsed number = WildercordConfig.parse("{\"resonances\": {\"reroll_salt\": 7}}");
+		assertEquals("", number.config().resonances().rerollSalt());
+		assertEquals(1, number.warnings().size(), number.warnings().toString());
+		String longSalt = "s".repeat(200);
+		assertEquals(WildercordConfig.ResonanceSettings.MAX_SALT,
+			WildercordConfig.parse("{\"resonances\": {\"reroll_salt\": \"" + longSalt + "\"}}").config().resonances().rerollSalt().length());
+		// The written file keeps every changed setting.
+		WildercordConfig changed = parsed.config();
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config());
+		assertEquals(WildercordConfig.TravelSettings.DEFAULTS, changed.travel());
+	}
+
+	@Test
+	void aFileFromBeforeResonancesGainsThem() {
+		// Written by 0.7.1, before the resonances section and the unread switch existed.
+		String old = "{\"version\": 1, \"features\": {\"duels\": false}}";
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.ResonanceSettings.DEFAULTS, parsed.config().resonances());
+		assertTrue(parsed.config().unreadRunes());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"resonances\"", "\"reroll_salt\"", "\"count\"", "\"announce\"", "\"quirks\"", "\"unread_runes\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		WildercordConfig regrown = WildercordConfig.parse(grown).config();
+		assertFalse(regrown.duels());
+		assertEquals(WildercordConfig.ResonanceSettings.DEFAULTS, regrown.resonances());
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty());
+	}
+
+	@Test
 	void chancesScaleAndStayWithinAHundred() {
 		assertEquals(35, WildercordConfig.scaledChance(35, 1.0));
 		assertEquals(70, WildercordConfig.scaledChance(35, 2.0));
