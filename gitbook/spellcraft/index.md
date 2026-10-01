@@ -24,6 +24,7 @@ wrist to the magic circle behind your shoulders.
 | [Overcasting and wild magic](overcasting.md) | Casting past your mana by cracking a Heart Circle, and what a surge can do. |
 | [Secret Spells](secret-spells.md) | Ten exact rune sequences that become something grander, and how to find them. |
 | [Loadouts](loadouts.md) | Your whole Cord saved under a name: swap between up to six setups from the Cord screen, a key or `/loadout`. |
+| [Spell Mastery](mastery.md) | Your spells grow with you: five ranks earned by casts that matter, a trait you choose at each, your own sigil, spoken names and inscribing a mastered spell for a friend. |
 
 ## The rules at a glance
 

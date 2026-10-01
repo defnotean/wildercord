@@ -8,6 +8,9 @@ import dev.wildercord.spell.RuneFamily;
 import dev.wildercord.spell.Secrets;
 import dev.wildercord.spell.Runes;
 import dev.wildercord.spell.SpellSigil;
+import dev.wildercord.player.MasteryAttachments;
+import dev.wildercord.spell.MasteryRules;
+import dev.wildercord.spell.MasterySigil;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -62,7 +65,15 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	}
 
 	protected final List<Rune> runes = new ArrayList<>();
-	protected final int color;
+	/** The circle's colour: its spell's, deepened as the spell's mastery rises (see {@link #look()}). */
+	protected int color;
+	/** Its spell's own colour, before mastery deepens it. */
+	protected final int baseColor;
+	/** The spell's mastery: its rank, its owner's sigil and the looks its traits give it ({@link MasteryAttachments.Look#NONE} for none). */
+	private MasteryAttachments.Look look;
+	/** Whether {@link #look} is settled (a circle following its caster finds it from them as it opens). */
+	private boolean lookKnown;
+	private MasterySigil.Glyph glyph;
 	protected final float radius;
 	protected final float yaw;
 	protected final float pitch;
@@ -100,6 +111,11 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 	protected SpellCircleParticle(ClientLevel level, double x, double y, double z, SpellCircleOption option) {
 		super(level, x, y, z, particleSprite("sigil_band"));
 		this.color = option.color() & 0xFFFFFF;
+		this.baseColor = this.color;
+		this.look = option.rank() > 0 ? new MasteryAttachments.Look(0, option.rank(), option.sigil(), option.flags()) : MasteryAttachments.Look.NONE;
+		if (option.rank() > 0) {
+			settle(this.look);
+		}
 		this.radius = option.radius();
 		this.yaw = option.yaw();
 		this.pitch = option.pitch();
@@ -167,8 +183,42 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		return atlas.getSprite(Wildercord.id("circle/_" + family + "_" + part));
 	}
 
+	/**
+	 * The mastery of the spell this circle writes out, as far as it's known right now: from its option, unless a kind
+	 * of circle that follows its caster finds it from them (the public look of the spell they have ready).
+	 */
+	protected MasteryAttachments.Look look() {
+		return look;
+	}
+
+	/** Settles the circle's mastery: its rank deepens its colour, and its sigil is worked out once. */
+	private void settle(MasteryAttachments.Look found) {
+		look = found;
+		lookKnown = true;
+		glyph = found.seed() != 0 ? MasterySigil.glyph(found.seed()) : null;
+		if (found.rank() >= MasteryRules.ADEPT || found.has(MasteryAttachments.Look.HUE)) {
+			float depth = (found.rank() >= MasteryRules.MYTHIC ? 0.3F : found.rank() >= MasteryRules.MASTER ? 0.22F : found.rank() >= MasteryRules.ADEPT ? 0.14F : 0F)
+				+ (found.has(MasteryAttachments.Look.HUE) ? 0.12F : 0F);
+			color = deeper(baseColor, depth);
+		}
+	}
+
+	/** {@code rgb} richer and a little darker: more saturated, by {@code t} (0 to 1). */
+	public static int deeper(int rgb, float t) {
+		float[] hsb = java.awt.Color.RGBtoHSB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF, null);
+		float saturation = Math.min(1F, hsb[1] + (1F - hsb[1]) * t * 1.6F);
+		float brightness = Math.max(0.35F, hsb[2] * (1F - t * 0.35F));
+		return java.awt.Color.HSBtoRGB(hsb[0], saturation, brightness) & 0xFFFFFF;
+	}
+
 	@Override
 	public void tick() {
+		if (!lookKnown) {
+			MasteryAttachments.Look found = look();
+			if (found.rank() > 0) {
+				settle(found);
+			}
+		}
 		xo = x;
 		yo = y;
 		zo = z;
@@ -263,6 +313,7 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 				Mth.cos(ang) * r * (SpellSigil.FRAME + (SpellSigil.RAYS - SpellSigil.FRAME) * frame),
 				Mth.sin(ang) * r * (SpellSigil.FRAME + (SpellSigil.RAYS - SpellSigil.FRAME) * frame), fine, argb(a * frame, color), 0.002F);
 		}
+		masteryRings(r, a * frame, fine, partial);
 
 		// The script: the spell's emblems, in order, round and round.
 		float writing = part(open, 0.1F, 0.25F);
@@ -295,14 +346,18 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		ring(0, 0, r * SpellSigil.STAR, fine, argb(a * drawn * 0.7F, color), 0.004F);
 		circleCentre(r * SpellSigil.STAR, drawn, a, fine, star, age+partial);
 
-		// The inner rings and the seal.
+		// The inner rings and the seal: the first rune's emblem, or the owner's own sigil once the spell is theirs.
 		float middle = part(open, 0.3F, 0.3F);
 		ring(0, 0, r * SpellSigil.INNER, fine, argb(a * middle, color), 0.004F);
-		ring(0, 0, r * SpellSigil.MEDALLION, fine, argb(a * middle, lighter(color, 0.3F)), 0.004F);
-		Rune first = runes.getFirst();
-		piece(first.mark, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, first.color), 0.007F);
-		if (first.mark2 != null) {
-			piece(first.mark2, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, first.color2), 0.0071F);
+		if (glyph != null) {
+			sigil(r * SIGIL, a * middle, fine, middle);
+		} else {
+			ring(0, 0, r * SpellSigil.MEDALLION, fine, argb(a * middle, lighter(color, 0.3F)), 0.004F);
+			Rune first = runes.getFirst();
+			piece(first.mark, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, first.color), 0.007F);
+			if (first.mark2 != null) {
+				piece(first.mark2, 0, 0, -star * 2, r * SpellSigil.SEAL / 2 * (0.6F + 0.4F * middle), argb(a * middle, first.color2), 0.0071F);
+			}
 		}
 
 		// The roundels, one by one: a rune's pattern around its emblem, on its star point.
@@ -331,6 +386,56 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 		}
 		extras(r, a, fine, partial);
 		this.state = null;
+	}
+
+	/** The sigil's radius, as a share of the circle's: inside the inner ring, where the seal would be. */
+	private static final float SIGIL = 0.26F;
+
+	/**
+	 * The rings mastery adds outside the frame: a fine ring from Practised, a second with ticks from Master, and at
+	 * Mythic a slow shimmer of light running round them. Quiet enough that the spell can still be read.
+	 */
+	private void masteryRings(float r, float a, float fine, float partial) {
+		int rank = look.rank();
+		if (rank < 2 || a <= 0.01F) {
+			return;
+		}
+		ring(0, 0, r * 1.12F, fine, argb(a * 0.7F, color), 0.002F);
+		if (rank >= MasteryRules.MASTER) {
+			ring(0, 0, r * 1.19F, fine * 0.8F, argb(a * 0.5F, lighter(color, 0.2F)), 0.002F);
+			for (int k = 0; k < 24; k++) {
+				float ang = Mth.TWO_PI * k / 24;
+				float inner = k % 2 == 0 ? 1.12F : 1.15F;
+				line(Mth.cos(ang) * r * inner, Mth.sin(ang) * r * inner, Mth.cos(ang) * r * 1.19F, Mth.sin(ang) * r * 1.19F, fine * 0.8F,
+					argb(a * 0.45F, color), 0.002F);
+			}
+		}
+		if (rank >= MasteryRules.MYTHIC) {
+			// The shimmer: a bright arc and its glow running slowly round the outer ring.
+			float head = (age + partial) * 0.045F;
+			arc(0, 0, r * 1.155F, head, head + 0.7F, fine * 1.6F, argb(a * 0.8F, lighter(color, 0.65F)), 0.0025F);
+			piece(glow, Mth.cos(head + 0.7F) * r * 1.155F, Mth.sin(head + 0.7F) * r * 1.155F, 0, r * 0.07F, argb(a * 0.6F, lighter(color, 0.7F)), 0.003F);
+		}
+	}
+
+	/** The owner's sigil at the centre, {@code rad} across from its middle: brighter, with a glow behind it, from Adept. */
+	private void sigil(float rad, float a, float fine, float shown) {
+		if (glyph == null || a <= 0.01F) {
+			return;
+		}
+		boolean bright = look.rank() >= MasteryRules.ADEPT;
+		int ink = argb(a, lighter(color, bright ? 0.55F : 0.3F));
+		if (bright) {
+			piece(soft, 0, 0, 0, rad * 1.3F, argb(a * 0.35F, color), 0.0065F);
+		}
+		float s = rad * (0.6F + 0.4F * shown);
+		float width = fine * (bright ? 1.4F : 1.1F);
+		for (MasterySigil.Stroke stroke : glyph.strokes()) {
+			line(stroke.x0() * s, stroke.y0() * s, stroke.x1() * s, stroke.y1() * s, width, ink, 0.0075F);
+		}
+		for (MasterySigil.Dot dot : glyph.dots()) {
+			ring(dot.x() * s, dot.y() * s, Math.max(width, dot.r() * s), width, ink, 0.0075F);
+		}
 	}
 
 	/**
@@ -626,7 +731,8 @@ public class SpellCircleParticle extends SingleQuadParticle implements SigilGrou
 
 	@Override
 	public double reach() {
-		return radius * 1.3 + 0.5;
+		// Mastery's rings reach a little past the frame's rays.
+		return radius * 1.35 + 0.5;
 	}
 
 	public static class Provider implements ParticleProvider<SpellCircleOption> {

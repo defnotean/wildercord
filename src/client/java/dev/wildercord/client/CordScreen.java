@@ -161,6 +161,8 @@ public class CordScreen extends Screen {
 	private boolean dragging;
 	/** The loadouts panel, opened from the list badge at the end of the tabs row (or Ctrl+L). */
 	private final LoadoutPanel loadouts = new LoadoutPanel();
+	/** The mastery panel, opened from a spell's rank badge (or Ctrl+M), and by itself when a trait is waiting. */
+	private final MasteryPanel mastery = new MasteryPanel();
 
 	public CordScreen() {
 		super(Component.translatable("screen.wildercord.cord"));
@@ -198,7 +200,69 @@ public class CordScreen extends Screen {
 		// A resize runs this again: reading the book then would undo an edit the server hasn't sent back yet.
 		if (!copied) {
 			readBook();
+			offerWaitingTrait();
 		}
+	}
+
+	/**
+	 * When the screen opens with a trait waiting to be chosen (a spell just reached a rank), its choice opens: the edited
+	 * spell's if it's waiting, else the first threaded spell that is.
+	 */
+	private void offerWaitingTrait() {
+		boolean prompted = MasteryClient.takePrompt();
+		if (tier() == null || !dev.wildercord.config.Config.mastery(minecraft.player)) {
+			return;
+		}
+		List<Integer> order = new ArrayList<>();
+		order.add(editing);
+		for (int s = 0; s < rowCount(); s++) {
+			if (s != editing) {
+				order.add(s);
+			}
+		}
+		for (int s : order) {
+			if (!spellOpen(s)) {
+				continue;
+			}
+			MasteryPanel.Spell shown = masterySpell(s);
+			if (shown != null && shown.entry() != null && shown.entry().pendingSlot() >= 0 && (prompted || s == editing)) {
+				if (s != editing) {
+					editing = s;
+					ClientPlayNetworking.send(new WildercordNetworking.SelectSpell(s));
+				}
+				mastery.open(s);
+				return;
+			}
+		}
+	}
+
+	/** What the mastery panel shows for Cord slot {@code row}: its runes as they fire, its name and its record (null when it holds no runes). */
+	private MasteryPanel.Spell masterySpell(int row) {
+		CordTier tier = tier();
+		if (tier == null || minecraft.player == null || row < 0 || row >= spells.size()) {
+			return null;
+		}
+		List<String> spell = spells.get(row);
+		List<RuneDef> runes = runesAt(spell, SpellCaster.activeSockets(spell, book(), row, tier));
+		if (runes.isEmpty()) {
+			return null;
+		}
+		String key = dev.wildercord.cast.Mastery.keyOf(runes);
+		dev.wildercord.player.MasteryBook.Entry entry = dev.wildercord.player.MasteryAttachments.book(minecraft.player).entry(key).orElse(null);
+		long seed = entry != null ? entry.seed() : dev.wildercord.spell.MasterySigil.seed(minecraft.player.getUUID(), key);
+		String name = SpellCaster.nameOf(minecraft.player, book(), row, runes, SpellHud.read(runes));
+		return new MasteryPanel.Spell(row, runes, name, entry, seed);
+	}
+
+	/** The look of the spell on row {@code row}: its rank and sigil, for its circle. */
+	private dev.wildercord.player.MasteryAttachments.Look masteryLook(int row) {
+		MasteryPanel.Spell shown = masterySpell(row);
+		if (shown == null || !dev.wildercord.config.Config.mastery(minecraft.player)) {
+			return dev.wildercord.player.MasteryAttachments.Look.NONE;
+		}
+		int rank = shown.entry() == null ? dev.wildercord.spell.MasteryRules.FIRST : shown.entry().rank();
+		boolean hue = shown.entry() != null && shown.entry().active().contains(dev.wildercord.spell.MasteryTraits.DEEP_HUE.id());
+		return new dev.wildercord.player.MasteryAttachments.Look(0, rank, shown.seed(), hue ? dev.wildercord.player.MasteryAttachments.Look.HUE : 0);
 	}
 
 	/** Copies the spells and passives to edit from the synced spellbook: on opening, and after a loadout is loaded. */
@@ -323,6 +387,23 @@ public class CordScreen extends Screen {
 	/** Whether the loadouts panel is open. */
 	public boolean loadoutsOpen() {
 		return loadouts.isOpen();
+	}
+
+	/** Whether the mastery panel is open, and for which spell row (-1 when it isn't). */
+	public int masteryOpen() {
+		return mastery.isOpen() ? mastery.spell() : -1;
+	}
+
+	/** The middle of spell row {@code row}'s rank badge, on screen. */
+	public double[] masteryBadgePoint(int row) {
+		return onScreen(BADGE_X + 7, SPELL_TOP + row * SPELL_ROW + 1 + 7);
+	}
+
+	/** The middle of offered trait {@code i}'s card in the open mastery panel, on screen; null when nothing is offered. */
+	public double[] masteryCardPoint(int i) {
+		MasteryPanel.Spell shown = masterySpell(mastery.spell());
+		double[] local = shown == null ? null : mastery.cardPoint(shown, i, W);
+		return local == null ? null : onScreen(local[0], local[1]);
 	}
 
 	/** The middle of button {@code button} (0 load, 1 save here, 2 rename, 3 delete) on loadout {@code row} in the open panel, on screen; null if there's no such loadout. */
@@ -711,7 +792,8 @@ public class CordScreen extends Screen {
 		}
 		float time = (now + partial) / 20F;
 		float open = Math.min(1, (now - circleOpened + partial) / 14F);
-		GuiSpellCircle.draw(g, cx, cy, radius, runes, time, open);
+		// The edited spell's circle wears its mastery: your sigil, its rank's rings and colour.
+		GuiSpellCircle.draw(g, cx, cy, radius, runes, time, open, grimoirePage ? dev.wildercord.player.MasteryAttachments.Look.NONE : masteryLook(editing));
 		if (caption != null) {
 			g.centeredText(font, caption, Math.round(cx), Math.round(cy + radius + 8), 0xFFFFFFFF);
 		}
@@ -719,6 +801,15 @@ public class CordScreen extends Screen {
 
 	/** Draws the window in local coordinates and returns the tooltip under the mouse, if any. */
 	private List<Component> draw(GuiGraphicsExtractor g, int mx, int my) {
+		if (mastery.isOpen() && !loadouts.isOpen()) {
+			MasteryPanel.Spell shown = tier() == null || passivePage || grimoirePage ? null : masterySpell(mastery.spell());
+			if (shown == null) {
+				mastery.close();
+			} else {
+				drawWindow(g, Integer.MIN_VALUE / 2, Integer.MIN_VALUE / 2);
+				return mastery.draw(g, mx, my, W, H, shown);
+			}
+		}
 		if (!loadouts.isOpen()) {
 			return drawWindow(g, mx, my);
 		}
@@ -1075,14 +1166,72 @@ public class CordScreen extends Screen {
 				tooltip = runeTooltip(id, quiet != null ? quiet : Component.translatable("screen.wildercord.socket_hint"), quiet != null);
 			}
 		}
+		boolean badge = !spell.isEmpty() && dev.wildercord.config.Config.mastery(minecraft.player);
 		if (spell.size() <= tier.sockets && tier.sockets < CordTier.MAX_SOCKETS) {
 			Component more = Component.translatable("screen.wildercord.more_sockets");
 			int hintX = SOCKET_X + tier.sockets * PITCH + 4;
-			if (hintX + font.width(more) <= W - 16) {
+			if (hintX + font.width(more) <= (badge ? BADGE_X - 4 : W - 16)) {
 				g.text(font, more, hintX, ry + 5, 0xFF4A4460, false);
 			}
 		}
+		if (badge) {
+			List<Component> badgeTip = drawRankBadge(g, s, ry, mx, my);
+			if (badgeTip != null) {
+				tooltip = badgeTip;
+			}
+		}
 		return tooltip;
+	}
+
+	/** Where each row's rank badge sits: at the end of the row, past the longest Cord's sockets. */
+	private static final int BADGE_X = W - 32;
+
+	/**
+	 * A spell's rank badge at the end of its row (its rank's numeral in its colour, a glinting dot while a trait waits) and
+	 * a fine bar under its sockets toward the next rank. Clicking the badge opens the mastery panel.
+	 */
+	private List<Component> drawRankBadge(GuiGraphicsExtractor g, int s, int ry, int mx, int my) {
+		MasteryPanel.Spell shown = masterySpell(s);
+		if (shown == null) {
+			return null;
+		}
+		dev.wildercord.player.MasteryBook.Entry entry = shown.entry();
+		int rank = entry == null ? dev.wildercord.spell.MasteryRules.FIRST : entry.rank();
+		int color = MasteryPanel.rankColor(rank);
+		int bx = BADGE_X;
+		int by = ry + 1;
+		boolean hover = inside(mx, my, bx, by, 14, 14);
+		sprite(g, SPR_BADGE, bx, by, 14, 14);
+		String numeral = RuneItem.roman(rank);
+		g.text(font, numeral, bx + 7 - font.width(numeral) / 2, by + 3, hover ? 0xFFFFFFFF : color, true);
+		boolean waiting = entry != null && entry.pendingSlot() >= 0;
+		if (waiting && (System.currentTimeMillis() / 400) % 2 == 0) {
+			g.fill(bx + 11, by + 1, bx + 13, by + 3, 0xFFF5C46A);
+		}
+		// The bar toward the next rank, along the foot of the row.
+		double total = entry == null ? 0 : entry.total();
+		int barX = SOCKET_X;
+		int barW = bx - 4 - barX;
+		g.fill(barX, ry + 18, barX + barW, ry + 19, 0x50FFFFFF);
+		g.fill(barX, ry + 18, barX + (int) Math.round(barW * dev.wildercord.spell.MasteryRules.progress(total)), ry + 19, color);
+		if (!hover) {
+			return null;
+		}
+		List<Component> tip = new ArrayList<>();
+		tip.add(Component.translatable("screen.wildercord.mastery.badge", MasteryPanel.rankName(rank)).withColor(color));
+		tip.add(rank >= dev.wildercord.spell.MasteryRules.MAX_RANK ? Component.translatable("screen.wildercord.mastery.max").withStyle(ChatFormatting.GRAY)
+			: Component.translatable("screen.wildercord.mastery.xp", (int) Math.floor(total), dev.wildercord.spell.MasteryRules.threshold(rank + 1))
+				.withStyle(ChatFormatting.GRAY));
+		if (entry != null) {
+			for (String trait : entry.active()) {
+				tip.add(Component.literal("• ").append(MasteryPanel.traitName(trait)).withColor(entry.own().contains(trait) ? GOLD : LAVENDER));
+			}
+		}
+		if (waiting) {
+			tip.add(Component.translatable("screen.wildercord.mastery.badge.waiting").withColor(WARN));
+		}
+		tip.add(Component.translatable("screen.wildercord.mastery.badge.hint").withStyle(ChatFormatting.DARK_GRAY));
+		return tip;
 	}
 
 	/** One passive row: its runes, an upkeep readout and an on/off switch. */
@@ -1291,15 +1440,18 @@ public class CordScreen extends Screen {
 		}
 		int maxMana = Mana.max(minecraft.player);
 		// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
-		double secretCost = Heart.secretCost(minecraft.player, runes);
+		// ...and the traits it has grown (a little cheaper, a little quicker) count, as they do when it's cast.
+		double secretCost = Heart.secretCost(minecraft.player, runes) * dev.wildercord.cast.Mastery.costFactor(minecraft.player, runes);
 		int manaCost = Heart.manaCost(minecraft.player, compiled, secretCost);
 		int healthCost = Heart.healthCost(minecraft.player, compiled, secretCost);
-		String cooldown = String.format(Locale.ROOT, "%.1f", Heart.cooldownTicks(minecraft.player, compiled, Heart.secretCooldown(minecraft.player, runes)) / 20.0);
+		String cooldown = String.format(Locale.ROOT, "%.1f", Heart.cooldownTicks(minecraft.player, compiled,
+			Heart.secretCooldown(minecraft.player, runes) * dev.wildercord.cast.Mastery.cooldownFactor(minecraft.player, runes)) / 20.0);
 		boolean tooCostly = compiled.paysInHealth() ? healthCost >= minecraft.player.getMaxHealth() : manaCost > maxMana;
 		Component header = compiled.paysInHealth()
 			? Component.translatable("screen.wildercord.cost_health", healthCost, cooldown)
 			: Component.translatable("screen.wildercord.cost", manaCost, cooldown, maxMana);
 		wrap(out, header, 0, width, tooCostly ? QUIET : CYAN);
+		masteryLines(out, width);
 		gearLines(out, compiled, width);
 		affinityLines(out, compiled, width);
 		for (String text : compiled.lines()) {
@@ -1318,6 +1470,40 @@ public class CordScreen extends Screen {
 			wrap(out, Component.literal("! " + warning), 0, width, WARN);
 		}
 		return out;
+	}
+
+	/** The edited spell's mastery: its rank, how far to the next, and the traits it has grown (or a note that it's new). */
+	private void masteryLines(List<ReadoutLine> out, int width) {
+		if (!dev.wildercord.config.Config.mastery(minecraft.player)) {
+			return;
+		}
+		MasteryPanel.Spell shown = masterySpell(editing);
+		if (shown == null) {
+			return;
+		}
+		dev.wildercord.player.MasteryBook.Entry entry = shown.entry();
+		int rank = entry == null ? dev.wildercord.spell.MasteryRules.FIRST : entry.rank();
+		Component progress = rank >= dev.wildercord.spell.MasteryRules.MAX_RANK ? Component.translatable("screen.wildercord.mastery.max")
+			: Component.translatable("screen.wildercord.mastery.xp", (int) Math.floor(entry == null ? 0 : entry.total()), dev.wildercord.spell.MasteryRules.threshold(rank + 1));
+		wrap(out, Component.translatable("screen.wildercord.mastery.line", MasteryPanel.rankName(rank), progress), 0, width, MasteryPanel.rankColor(rank));
+		if (entry != null && !entry.active().isEmpty()) {
+			net.minecraft.network.chat.MutableComponent traits = Component.empty();
+			for (int i = 0; i < entry.active().size(); i++) {
+				if (i > 0) {
+					traits.append(", ");
+				}
+				traits.append(MasteryPanel.traitName(entry.active().get(i)));
+			}
+			wrap(out, Component.translatable("screen.wildercord.mastery.traits_line", traits), 0, width, GOLD);
+		}
+		if (entry != null && entry.pendingSlot() >= 0) {
+			wrap(out, Component.translatable("screen.wildercord.mastery.badge.waiting"), 0, width, WARN);
+		}
+		List<String> spell = spells.get(editing);
+		if (SpellCaster.activeSockets(spell, book(), editing, tier()).size() < spell.size()) {
+			// Quiet runes don't fire, so what's cast (and grows) is the spell without them.
+			wrap(out, Component.translatable("screen.wildercord.mastery.quiet"), 0, width, DIM);
+		}
 	}
 
 	/** Casting gear in hand that changes this spell, and the server's cost multiplier (the cost above includes both). */
@@ -1687,6 +1873,9 @@ public class CordScreen extends Screen {
 			loadouts.charTyped(event);
 			return true;
 		}
+		if (mastery.isOpen()) {
+			return true;
+		}
 		if (renaming) {
 			if (renameText.length() < dev.wildercord.spell.SpellNames.MAX_LENGTH) {
 				renameText += event.codepointAsString();
@@ -1709,6 +1898,16 @@ public class CordScreen extends Screen {
 	public boolean keyPressed(KeyEvent event) {
 		if (loadouts.isOpen()) {
 			loadouts.key(event);
+			return true;
+		}
+		if (mastery.isOpen()) {
+			mastery.key(event);
+			return true;
+		}
+		if (tier() != null && event.hasControlDown() && event.key() == InputConstants.KEY_M && !passivePage && !grimoirePage
+				&& masterySpell(editing) != null && dev.wildercord.config.Config.mastery(minecraft.player)) {
+			mastery.open(editing);
+			click();
 			return true;
 		}
 		if (tier() != null && event.hasControlDown() && event.key() == InputConstants.KEY_L) {
@@ -1784,6 +1983,31 @@ public class CordScreen extends Screen {
 			// Over everything: a click outside it (the badge included) closes it.
 			loadouts.click(mx, my, W);
 			return true;
+		}
+		if (mastery.isOpen()) {
+			MasteryPanel.Spell shown = masterySpell(mastery.spell());
+			if (shown == null) {
+				mastery.close();
+			} else {
+				mastery.click(mx, my, W, H, shown);
+			}
+			return true;
+		}
+		if (!passivePage && !grimoirePage && dev.wildercord.config.Config.mastery(minecraft.player)) {
+			for (int s = 0; s < rowCount(); s++) {
+				int ry = SPELL_TOP + s * SPELL_ROW;
+				if (spellOpen(s) && !spells.get(s).isEmpty() && inside(mx, my, BADGE_X, ry + 1, 14, 14) && masterySpell(s) != null) {
+					if (s != editing) {
+						editing = s;
+						readoutScroll = 0;
+						renaming = false;
+						ClientPlayNetworking.send(new WildercordNetworking.SelectSpell(s));
+					}
+					mastery.open(s);
+					click();
+					return true;
+				}
+			}
 		}
 		if (!grimoirePage && inside(mx, my, loadoutsX(), TABS_TOP - 1, 14, 14)) {
 			openLoadouts();
@@ -2026,7 +2250,7 @@ public class CordScreen extends Screen {
 	public boolean mouseScrolled(double x, double y, double scrollX, double scrollY) {
 		double my = localY(y);
 		int step = (int) Math.signum(scrollY);
-		if (loadouts.isOpen()) {
+		if (loadouts.isOpen() || mastery.isOpen()) {
 			return true;
 		}
 		if (grimoirePage) {

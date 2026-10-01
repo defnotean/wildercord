@@ -38,7 +38,8 @@ import java.util.function.Consumer;
  * A Spell Scroll: one spell, inscribed from a Cord onto paper, that anyone can cast once, with
  * or without a Cord and whether or not they know its runes. Inscribing takes a sheet of paper, an
  * ink sac and twice the spell's mana. Good for trading, and for handing a friend your best spell
- * for one fight.
+ * for one fight. A spell of Adept mastery or higher carries its traits and sigil, and can be studied
+ * (used while sneaking) to learn it (see {@link dev.wildercord.cast.Inscriptions}).
  */
 public class SpellScrollItem extends Item {
 	public SpellScrollItem(Properties properties) {
@@ -89,12 +90,15 @@ public class SpellScrollItem extends Item {
 		ItemStack scroll = new ItemStack(WildercordItems.SPELL_SCROLL);
 		scroll.set(WildercordComponents.SCROLL, new ScrollSpell(runes.stream().map(RuneDef::id).toList(), SpellCaster.nameOf(player, book, spell, runes),
 			player.getGameProfile().name()));
+		// An Adept spell carries its traits and sigil with it (see cast.Inscriptions).
+		boolean mastered = dev.wildercord.cast.Inscriptions.inscribe(player, runes, scroll);
 		if (!player.getInventory().add(scroll)) {
 			player.drop(scroll, false, net.minecraft.util.Prediction.SERVER_ONLY);
 		}
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0F, 1.0F);
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.PLAYERS, 0.8F, 1.2F);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.inscribed", SpellCaster.nameOf(player, book, spell, runes)).withColor(0xE8D8B0));
+		player.sendOverlayMessage(Component.translatable(mastered ? "message.wildercord.inscribed_mastery" : "message.wildercord.inscribed",
+			SpellCaster.nameOf(player, book, spell, runes)).withColor(0xE8D8B0));
 		Grimoire.feat(player, Feats.SCROLL);
 	}
 
@@ -120,6 +124,15 @@ public class SpellScrollItem extends Item {
 		if (scroll == null) {
 			return InteractionResult.PASS;
 		}
+		if (player instanceof ServerPlayer serverPlayer && player.isShiftKeyDown() && stack.has(Inscription.TYPE)) {
+			// Studied rather than read: an inscribed scroll teaches its spell (see cast.Inscriptions).
+			Component refused = dev.wildercord.cast.Inscriptions.study(serverPlayer, stack);
+			if (refused != null) {
+				serverPlayer.sendOverlayMessage(refused);
+				return InteractionResult.FAIL;
+			}
+			return InteractionResult.SUCCESS;
+		}
 		if (player instanceof ServerPlayer serverPlayer) {
 			List<RuneDef> runes = runesOf(scroll);
 			SpellCompiler.Compiled compiled = SpellCompiler.compile(runes);
@@ -130,6 +143,7 @@ public class SpellScrollItem extends Item {
 			// Against a Shield a secret weighs its full price, as it does cast from a Cord.
 			Cast cast = new Cast(serverPlayer, 1, Heart.Bonuses.NONE, false, null, new Cast.Info(compiled.root(), runes.size(), "", List.copyOf(runes)))
 				.weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0));
+			dev.wildercord.cast.Inscriptions.onRead(serverPlayer, stack, runes, cast);
 			Vfx.castCircle(serverPlayer, secret.map(s -> Vfx.themeOf(s.color())).orElse(compiled.root().groups.isEmpty() ? Vfx.theme("") : Vfx.theme(compiled.root().groups.getFirst())), runes);
 			dev.wildercord.cast.Scheduler.later(3, () -> {
 				if (!cast.alive()) return;
@@ -169,6 +183,13 @@ public class SpellScrollItem extends Item {
 			builder.accept(Component.translatable("tooltip.wildercord.scroll_author", scroll.author()).withStyle(ChatFormatting.DARK_GRAY));
 		}
 		builder.accept(Component.translatable("tooltip.wildercord.scroll_use").withStyle(ChatFormatting.DARK_AQUA));
+		dev.wildercord.cast.Inscriptions.tooltip(stack, builder);
+	}
+
+	/** An inscribed scroll shows its spell's sigil under its tooltip. */
+	@Override
+	public Optional<net.minecraft.world.inventory.tooltip.TooltipComponent> getTooltipImage(ItemStack stack) {
+		return Optional.ofNullable(stack.get(Inscription.TYPE));
 	}
 
 	@Override

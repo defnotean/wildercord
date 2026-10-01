@@ -25,8 +25,15 @@ public final class MagicSettingsScreen extends Screen {
   addRenderableWidget(Button.builder(Component.literal("Camera motion: " + MagicQuality.cameraShake), b -> {
    MagicQuality.cameraShake = !MagicQuality.cameraShake; MagicQuality.save(); b.setMessage(Component.literal("Camera motion: " + MagicQuality.cameraShake));
   }).bounds(x, y + 75, 220, 20).build());
-  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();onClose();}).bounds(x,y+110,220,20).build());
-  addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose()).bounds(x, y + 135, 220, 20).build());
+  addRenderableWidget(Button.builder(titles(), b -> {
+   MagicQuality.spellTitles = !MagicQuality.spellTitles; MagicQuality.save(); b.setMessage(titles());
+  }).bounds(x, y + 100, 220, 20).build());
+  addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();onClose();}).bounds(x,y+135,220,20).build());
+  addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose()).bounds(x, y + 160, 220, 20).build());
+ }
+ /** The spell titles switch: the names of mastered spells, shown briefly by whoever casts them. */
+ private static Component titles() {
+  return Component.translatable(MagicQuality.spellTitles ? "screen.wildercord.spell_titles.on" : "screen.wildercord.spell_titles.off");
  }
  @Override public void extractRenderState(GuiGraphicsExtractor g, int mouseX, int mouseY, float partial) {
   super.extractRenderState(g, mouseX, mouseY, partial);

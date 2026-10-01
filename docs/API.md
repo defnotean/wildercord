@@ -217,6 +217,22 @@ piece in its slot works with nothing held and takes the place of held pieces of 
 
 An unknown slot id throws `IllegalArgumentException`. Since 1.1.
 
+## Spell mastery
+
+Players' spells grow with them (see [DESIGN.md](DESIGN.md#spell-mastery)). `SpellMasteryApi` lets an add-on feed
+that, all on the server thread:
+
+- `SpellMasteryApi.addCircumstance("mymod:moonlit", (caster, spell) -> ...)`: a circumstance a spell's casts are
+  counted in. A trait can ask for it (`.when("mymod:moonlit")`) to be offered only to spells used often in it.
+- `SpellMasteryApi.registerTrait(MasteryTraits.custom("mymod:silvered", "Silvered", "Deals 10% more damage at night.",
+  MasteryTraits.Hook.DAMAGE, 1.1).param("night").harmful().when("mymod:moonlit"))` and `SpellMasteryApi.addOfferSource((caster, key, spell, rank) -> List.of(
+  new MasteryTraits.Weighted("mymod:silvered", 2.0)))`: a trait of your own, and when to offer it. It joins the
+  catalogue's own in the same draw, must fit the spell, and works through the built-in hooks and their caps. A trait
+  id needs your namespace.
+- `SpellMasteryApi.setResidueSink(...)`: what a trait with the `RESIDUE` hook leaves where its spell lands.
+
+A hook that throws is logged and skipped. Since 0.8.
+
 ## Names, icons and recipes
 
 - **Names and descriptions** come from the rune (`name`, `description`), and can be translated with

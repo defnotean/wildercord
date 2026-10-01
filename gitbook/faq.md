@@ -206,14 +206,39 @@ melts back. Two things to mind: a fire spell lights TNT, and a storm spell can c
 ## Cords and progress
 
 ### Do I lose anything when I die?
-Your Cord, your learned runes, your spells, your Heart Circles and your cooldowns are all kept; the Cord is
-never dropped. You come back with an empty mana pool, which refills as usual.
+Your Cord, your learned runes, your spells, your spells' mastery (their ranks and traits), your Heart Circles and
+your cooldowns are all kept; the Cord is never dropped. You come back with an empty mana pool, which refills as usual.
 
 ### Do I lose my spells when I change Cords?
 No. Spells and runes are saved on you, not on the Cord. A better Cord just opens more sockets and spell rows,
 and one crafted from your old Cord keeps its enchantments and name. A smaller Cord deletes nothing either: runes past its
 sockets, rows it doesn't have and runes too strong for it stay threaded but quiet, and wake again when you put
 the bigger Cord back on. See [Upgrading](spellcraft/cords.md#upgrading).
+
+### What's the numeral at the end of each spell row?
+Its **rank**. Your spells grow with you: from Kindled (I) to Mythic (V), through casts that matter, and at each rank
+from Practised on you choose one of three traits for it. Click the numeral to see the spell's traits, your sigil and
+how far it has to go. See [Spell Mastery](spellcraft/mastery.md).
+
+### My spell lost its rank when I changed it.
+A spell is its exact runes in order, so a changed spell is a new one and starts from Kindled. The old one is
+remembered: change it back and its rank and traits are there again. See
+[One spell, its exact runes](spellcraft/mastery.md#one-spell-its-exact-runes).
+
+### How do I rank a spell up faster?
+Use it where it matters: on real foes (Runebound and bosses count for more), to heal or ward allies who need it, and
+in danger (low health, a crowd, a boss, a dungeon). A kind of foe it hasn't struck lately is worth more. Casting at
+the same thing in the same place earns less and less, and training dummies only teach a little. See
+[How a spell grows](spellcraft/mastery.md#how-a-spell-grows).
+
+### Can I give a friend my mastered spell?
+Once it's Adept, inscribe it onto a scroll from the Cord screen: the scroll carries its traits and your sigil. Your
+friend can read it to cast it once, or sneak and use it to learn the spell at Kindled with your traits borrowed. See
+[Inscribing a mastered spell](spellcraft/mastery.md#inscribing-a-mastered-spell).
+
+### Can I hide the spell names other players' casts show?
+Yes: switch **Spell titles** off in the magic visual settings. It only changes what you see. See
+[Spoken names](spellcraft/mastery.md#spoken-names).
 
 ### How do I get passive spells?
 Form your 1st Heart Circle for the first passive slot, and your 5th for the second. Thread them on the Cord

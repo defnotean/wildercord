@@ -37,7 +37,7 @@ From top to bottom:
 1. **The header:** your Cord's name, the page tabs (**Spells**, **Passives**, **Grimoire**, **Cosmetics**),
    your Cord's limits ("12 sockets · 4 spells · Tier IV", when there's room) and four badges on the right:
    the amber **shield**, the **heart**, the **mana** crystal and the **help** mark.
-2. **The spell rows:** one row per spell, numbered, with a socket for each rune.
+2. **The spell rows:** one row per spell, numbered, with a socket for each rune and, at the right end, the spell's **rank badge**.
 3. **The family tabs and the search box:** All, Shapes, Effects, Modifiers, Links, a box to type in, and at the
    end of the row the **loadouts** badge (a little list).
 4. **The category chips:** the categories of the chosen family, and how many runes match.
@@ -79,6 +79,14 @@ Each row is one spell: its number on the left, then the cord threaded through it
 rune it changes. A modifier with **nothing** to change gets a small red mark instead (and the readout warns
 you). This is the quickest way to check your order is right. See
 [How modifiers find their rune]({{ '/spellcraft/reading-spells/' | relative_url }}#modifiers-find-their-rune).
+
+At the right end of every spell row that holds runes is its **rank badge**: the numeral of the rank the spell has
+reached (I for Kindled up to V for Mythic) in that rank's colour, with a fine **bar** along the foot of the row
+toward the next rank. A gold dot glints on the badge while a trait is waiting to be chosen. Hover the badge for the
+rank, the progress and the spell's traits; **click it** (or press `Ctrl`+`M` for the selected spell) to open the
+**mastery panel**: the spell's circle with your sigil, its four trait slots, the trait cards to choose from when one
+is waiting, re-roll and unbind, and what the spell has been used in most. When a spell has just reached a rank, the
+panel opens by itself the next time you open the screen. Everything about it is on [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}).
 
 A threaded rune with a **red corner** is **quiet**: it's kept, but it won't fire. Hover it to see why (too
 strong for your Cord, past your Cord's last socket, not learned, or from an add-on mod that's missing). See
@@ -178,15 +186,18 @@ The box at the bottom explains the selected spell, line by line:
    just that. If the spell costs more than your whole mana pool,
    the line turns red and a warning says it "can't be cast" (you'd have to
    [overcast]({{ '/spellcraft/overcasting/' | relative_url }})). A spell with Blood Price shows its price in
-   health instead.
-3. **Casting gear** (in its slots, or held) that changes the spell, in violet ("Arcane Staff: Arcane spells: +20%
+   health instead. The traits your spell has grown (Thrifty Weave, Quick Return...) are counted in too.
+3. **Its mastery**, in its rank's colour: the rank and how far it is to the next ("Adept · 412 / 1000"), then its
+   traits, a note when one is waiting to be chosen, and a note when quiet runes mean the spell that grows is the one
+   without them. See [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}).
+4. **Casting gear** (in its slots, or held) that changes the spell, in violet ("Arcane Staff: Arcane spells: +20%
    power, 10% less mana"), and a line if the server makes spells cost more or less than usual. Then, quietly,
    your [affinity]({{ '/progression/affinity/' | relative_url }}) with each of the spell's elements that you have
    one with ("Fire affinity III: +9% power").
-4. **What it does**, one line for each group of the spell: what the shape hits, then its effects and what the
+5. **What it does**, one line for each group of the spell: what the shape hits, then its effects and what the
    modifiers did to them ("3 bolts (homing): Fire (+50% power)"). After a link, a header line ("On hit:",
    "After 1s:", "When something hurts you:") and the rest indented beneath it.
-5. **Warnings**, in yellow, each starting with **!**.
+6. **Warnings**, in yellow, each starting with **!**.
 
 Scroll the readout with the mouse wheel when it's longer than the box; small gold arrows show there's more.
 How to read the lines, and every rule behind them, is on
@@ -210,7 +221,8 @@ The warnings you'll see:
 ### The magic circle beside the window
 
 When your game window has room to the right of the Cord screen, the selected spell's **magic circle** is
-drawn there, laid out just like the circle you'll cast. It opens again, ring by ring, every time you change the
+drawn there, laid out just like the circle you'll cast, with your own sigil at its heart and the rings its rank has
+earned. It opens again, ring by ring, every time you change the
 spell, so you can watch what each rune adds. It's the best way to learn to
 [read magic circles]({{ '/spellcraft/magic-circles/' | relative_url }}).
 
@@ -274,6 +286,10 @@ setting and a found secret's price all count). The scroll is called "Scroll of"
 and the spell's name, and says who inscribed it. Right-click it to cast it; it's used up. It goes off at
 plain strength: nobody's Heart Circles or enchantments count. In creative, inscribing is free. See
 [Playing Together]({{ '/social/playing-together/' | relative_url }}).
+
+A spell of **Adept** rank or higher carries its traits and your sigil onto the scroll as well, and a friend can
+**study** it (use it while sneaking) to learn the spell at Kindled with those traits borrowed. See
+[Inscribing a mastered spell]({{ '/spellcraft/mastery/' | relative_url }}#inscribing-a-mastered-spell).
 
 ## Loadouts
 
@@ -362,4 +378,7 @@ Every option and its price is on [Cosmetics]({{ '/companions/cosmetics/' | relat
 | Renaming | `Enter` / `Esc` | Save the name / cancel |
 | Passives page | Click On/Off | Switch that passive |
 | Spells or Passives page | Click the list badge, or `Ctrl`+`L` | Open the loadouts panel |
+| Spell row | Click the rank badge, or `Ctrl`+`M` | Open the spell's mastery panel |
+| Mastery panel | Click a trait card | Choose that trait for the waiting rank |
+| Mastery panel | `Esc` | Close it |
 | Loadouts panel | `↑`/`↓`, `Enter`, `Ctrl`+`R`, `Delete` | Pick a loadout, load it, rename it, delete it |

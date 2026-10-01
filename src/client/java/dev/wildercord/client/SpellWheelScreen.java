@@ -224,7 +224,7 @@ public class SpellWheelScreen extends Screen {
 			g.fill(x - 9, y + 10, x + 9, y + 11, color);
 			long remaining = Spellbooks.readyAt(minecraft.player, slot) - now;
 			if (!runes.isEmpty() && remaining > 0) {
-				int total = Math.max(1, Heart.cooldownTicks(minecraft.player, SpellHud.read(runes), Heart.secretCooldown(minecraft.player, runes)));
+				int total = Math.max(1, Heart.cooldownTicks(minecraft.player, SpellHud.read(runes), Heart.secretCooldown(minecraft.player, runes) * dev.wildercord.cast.Mastery.cooldownFactor(minecraft.player, runes)));
 				int shade = (int) Math.ceil(24 * Math.min(1.0, remaining / (double) total));
 				g.fill(x - 12, y - 12 + (24 - shade), x + 12, y + 12, 0x90000000);
 			}
@@ -259,11 +259,11 @@ public class SpellWheelScreen extends Screen {
 			if (!runes.isEmpty()) {
 				SpellCompiler.Compiled compiled = SpellHud.read(runes);
 				// A secret spell you've found costs and recharges as one (before that, as the ordinary spell).
-				double secretCost = Heart.secretCost(minecraft.player, runes);
+				double secretCost = Heart.secretCost(minecraft.player, runes) * dev.wildercord.cast.Mastery.costFactor(minecraft.player, runes);
 				String cost = compiled.paysInHealth()
 					? Heart.healthCost(minecraft.player, compiled, secretCost) + "❤"
 					: Heart.manaCost(minecraft.player, compiled, secretCost) + " mana";
-				String cooldown = String.format(Locale.ROOT, "%.1fs", Heart.cooldownTicks(minecraft.player, compiled, Heart.secretCooldown(minecraft.player, runes)) / 20.0);
+				String cooldown = String.format(Locale.ROOT, "%.1fs", Heart.cooldownTicks(minecraft.player, compiled, Heart.secretCooldown(minecraft.player, runes) * dev.wildercord.cast.Mastery.cooldownFactor(minecraft.player, runes)) / 20.0);
 				g.centeredText(font, Component.literal(cost), cx, cy - 8, 0xFFB8A8FF);
 				g.centeredText(font, Component.literal(cooldown), cx, cy + 2, DIM);
 			}

@@ -4,6 +4,55 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+Your spells grow with you. Every spell you thread keeps a record of how you've used it, rises through five ranks
+from casts that matter, takes a trait of your choosing at each rank and wears a sigil that is yours alone. Players
+need this version to join a server running it (it adds a scroll component and new notices).
+
+- **Spell mastery.** A spell is its exact runes in order; each one you use keeps its own record (the 48 you used most
+  recently, and never one threaded on your Cord). Change a spell and you're growing a new one, but the old record
+  waits: change it back and its rank and traits return. Mastery is kept through death and travels with loadouts.
+- **Five ranks: Kindled, Practised, Adept, Master and Mythic**, at 100, 350, 1,000 and 3,000 experience. A spell
+  used as your main attack reaches Practised in under half an hour of real play, Master in about three to four
+  hours, Mythic in about ten.
+- **Experience from casts that matter, not from casting.** Striking a real foe (more for the share of its health the
+  hit takes, more again for the kill; Runebound half again as much, bosses twice, players with PvP on half), healing
+  someone who's hurt, warding an ally in a fight, a little for a spell that moves you or works the world. Danger
+  (low health, a crowd, a boss nearby, a dungeon) multiplies it up to three times, a kind of foe the spell hasn't met
+  lately is worth a quarter more, and doing the same thing in the same place is worth less each time until the place
+  is forgotten (boss fights don't wear out). Training dummies and the practice arena teach at half the rate and only
+  up to 60, a little over half the way to Practised. One cast earns at most 20. Scrolls, imbued items, glyphs and
+  passives teach nothing, and nothing grows in creative mode.
+- **Traits: one of three at each of ranks II to V**, from a catalogue of 53, filtered by what the spell is made of
+  (its elements, its shapes, whether it harms or only helps) and by how it was used: each spell counts its casts in
+  the rain, at night, underground, in the Nether or the End, at low health, beside allies, against the undead or a
+  crowd, and more, and some traits are only offered to a spell used often enough in theirs. A fire spell cast a lot
+  in the rain may be offered Undying Flame (its fire burns at full strength on the wet); one cast at night,
+  Nightshade. Traits are modest: a little cheaper or quicker, a chance to leap to one more foe, a mark that sets up a
+  reaction, a bell, starlight from the circle. Their damage together adds at most a fifth to a hit, half that against
+  a player and always under the spell-defence cap; they take at most 15% off a price or a cooldown. Each rank allows
+  one change of mind for 3 experience levels: re-roll the offer, or unbind the trait chosen.
+- **A personal sigil** drawn from the spell's runes and its owner, the same every time, at the heart of the spell's
+  circle (cast, charged and beside the Cord screen) and on inscribed scrolls. **Circles grow richer with rank:** a
+  fine ring at Practised, a deeper colour and brighter sigil at Adept, a second ticked ring at Master and a slow
+  shimmer at Mythic. Everyone nearby sees your sigil and rank, never your traits or numbers.
+- **Spoken names.** A spell you've named shows its name to everyone within 32 blocks once it's Adept: a brief title
+  over the caster that drifts up and fades (or a line low on the screen when they're out of view). Spell titles can
+  be switched off in the magic visual settings.
+- **Inscribing a mastered spell.** An Adept spell's scroll carries its earned traits and its sigil. Read it to cast
+  it once with them; sneak and use it to study it: the spell is threaded into an empty row of your Cord and you
+  start your own record at Kindled with the traits borrowed (they work at once; at each rank you may keep a borrowed
+  trait or choose another). No experience travels, a spell you already have can't be studied again, and borrowed
+  traits are never inscribed.
+- **On the Cord screen:** a rank badge and growth bar on every spell row, the mastery panel (`Ctrl`+`M`, or click the
+  badge) with the spell's circle and sigil, its four trait slots, the waiting offer as cards, re-roll and unbind and
+  what it's been used in most, and rank and trait lines in the readout. Prices and cooldowns there, on the HUD and
+  on the spell wheel include the traits. Reaching a rank pops a toast with the spell's sigil, and the next time the
+  Cord screen opens, the choice opens with it.
+- **Server settings** in a new `mastery` section: `enabled`, `xp_multiplier` (1.0), `traits`, `spoken_names` and
+  `inscription`, all on at first. An older config file gains the section at its defaults.
+- **For other parts of the mod and add-ons:** `api.SpellMasteryApi` adds circumstances a spell's casts are counted
+  in, offers traits from outside the catalogue, and sets what a residue trait leaves where its spell lands.
+
 ## [0.7.1-alpha] - 2026-10-01
 
 - New detailed project icon shared by the mod JAR, player guide and CurseForge: a braided Cord, luminous elemental rune beads and a mint-and-gold magic circle.

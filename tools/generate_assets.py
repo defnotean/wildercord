@@ -740,6 +740,8 @@ def write_lang(runes):
     lang.update(LOADOUT_LANG)
     lang.update(SIGNATURE_LANG)
     lang.update(DEFENCE_LANG)
+    lang.update(MASTERY_LANG)
+    lang.update(mastery_trait_lang())
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1392,6 +1394,115 @@ def write_mana_data():
         "type": "minecraft:crafting_shaped", "category": "misc",
         "key": {"L": "minecraft:lapis_lazuli", "A": "minecraft:amethyst_shard", "D": "minecraft:diamond"},
         "pattern": ["LAL", "ADA", "LAL"], "result": {"id": "wildercord:mana_crystal"}})
+
+
+# ---------------------------------------------------------------- spell mastery (cast/Mastery.java, spell/MasteryTraits.java)
+
+MASTERY_LANG = {
+    # The five ranks
+    "mastery.wildercord.rank.1": "Kindled",
+    "mastery.wildercord.rank.2": "Practised",
+    "mastery.wildercord.rank.3": "Adept",
+    "mastery.wildercord.rank.4": "Master",
+    "mastery.wildercord.rank.5": "Mythic",
+    # Where and how a spell was cast (what shapes the traits it is offered)
+    "mastery.wildercord.circumstance.rain": "In the rain",
+    "mastery.wildercord.circumstance.thunder": "In a thunderstorm",
+    "mastery.wildercord.circumstance.night": "At night",
+    "mastery.wildercord.circumstance.day": "By day",
+    "mastery.wildercord.circumstance.underground": "Underground",
+    "mastery.wildercord.circumstance.deep": "Deep below",
+    "mastery.wildercord.circumstance.water": "In water",
+    "mastery.wildercord.circumstance.nether": "In the Nether",
+    "mastery.wildercord.circumstance.end": "In the End",
+    "mastery.wildercord.circumstance.low_health": "At low health",
+    "mastery.wildercord.circumstance.allies": "Beside allies",
+    "mastery.wildercord.circumstance.undead": "Against the undead",
+    "mastery.wildercord.circumstance.arthropod": "Against spiders and their kin",
+    "mastery.wildercord.circumstance.boss": "Against bosses",
+    "mastery.wildercord.circumstance.dungeon": "In dungeons",
+    "mastery.wildercord.circumstance.crowd": "Against crowds",
+    "mastery.wildercord.circumstance.cold": "In the cold",
+    "mastery.wildercord.circumstance.hot": "In the heat",
+    "mastery.wildercord.circumstance.airborne": "In the air",
+    # The server's answers
+    "message.wildercord.mastery.rank": "%s has grown with you: it is %s now",
+    "message.wildercord.mastery.off": "Spell mastery is switched off on this server",
+    "message.wildercord.mastery.no_record": "This spell hasn't grown yet: cast it where it matters first",
+    "message.wildercord.mastery.not_offered": "That trait isn't on offer for this spell",
+    "message.wildercord.mastery.changed": "This rank has already used its one change",
+    "message.wildercord.mastery.cant_change": "There's nothing to change there right now",
+    "message.wildercord.mastery.levels": "Changing your mind about a trait takes %s experience levels",
+    "message.wildercord.mastery.chosen": "Your spell takes a trait: %s",
+    "message.wildercord.mastery.rerolled": "The offer is drawn again",
+    "message.wildercord.mastery.unbound": "The trait lets go. Choose another from a fresh offer",
+    "message.wildercord.inscribed_mastery": "Inscribed %s, with its traits and sigil",
+    "message.wildercord.inscription.none": "This scroll holds no inscribed mastery",
+    "message.wildercord.inscription.unreadable": "The inscription is unreadable: its runes don't match it",
+    "message.wildercord.inscription.unknown": "You don't know %s of its runes yet. Learn them to study it",
+    "message.wildercord.inscription.own": "You already have your own way with this spell. A scroll can't add to it",
+    "message.wildercord.inscription.no_row": "Clear a spell row on your Cord to study this scroll into it",
+    "message.wildercord.inscription.learned": "You learn %s from %s's scroll, threaded on spell %s: Kindled, with its traits borrowed until you earn them",
+    "message.wildercord.inscription.someone": "someone",
+    # An inscribed scroll's tooltip
+    "tooltip.wildercord.inscription.rank": "Inscribed with mastery: %s",
+    "tooltip.wildercord.inscription.traits": "Traits: %s",
+    "tooltip.wildercord.inscription.study": "Sneak and use to study it: learn the spell, Kindled, with these traits borrowed",
+    # The toast
+    "toast.wildercord.mastery": "Your spell grows: %s",
+    "toast.wildercord.mastery.choose": "%s: choose a trait (K)",
+    # The magic settings
+    "screen.wildercord.spell_titles.on": "Spell titles: shown",
+    "screen.wildercord.spell_titles.off": "Spell titles: hidden",
+    # The Cord screen: the rank badge, the readout and the mastery panel
+    "screen.wildercord.mastery.badge": "Mastery: %s",
+    "screen.wildercord.mastery.badge.waiting": "A trait is waiting to be chosen",
+    "screen.wildercord.mastery.badge.hint": "Click (or Ctrl+M) for its traits, sigil and growth",
+    "screen.wildercord.mastery.line": "%s \u00B7 %s",
+    "screen.wildercord.mastery.traits_line": "Traits: %s",
+    "screen.wildercord.mastery.quiet": "Its quiet runes don't fire, so what grows is the spell without them",
+    "screen.wildercord.mastery.title": "Spell mastery: %s",
+    "screen.wildercord.mastery.close": "Close (Esc)",
+    "screen.wildercord.mastery.rank_of": "Rank %s of %s",
+    "screen.wildercord.mastery.max": "Fully grown",
+    "screen.wildercord.mastery.xp": "%s / %s",
+    "screen.wildercord.mastery.next": "%s more to reach %s",
+    "screen.wildercord.mastery.practice": "Learned from practice: %s of the most it can teach (%s)",
+    "screen.wildercord.mastery.taught": "Taught by %s's scroll",
+    "screen.wildercord.mastery.sigil": "Your sigil",
+    "screen.wildercord.mastery.sigil.hint": "Drawn from this spell's runes and from you alone: nobody else's is the same. It sits at the heart of the spell's circle and on the scrolls you inscribe",
+    "screen.wildercord.mastery.traits": "Traits",
+    "screen.wildercord.mastery.choose_below": "Waiting: choose one below",
+    "screen.wildercord.mastery.locked": "Opens at %s",
+    "screen.wildercord.mastery.borrowed": "Borrowed from a scroll: it works now, and when the spell reaches %s you may keep it or choose another",
+    "screen.wildercord.mastery.slot": "The %s trait",
+    "screen.wildercord.mastery.slot.waiting": "This rank's trait is waiting: choose one of the cards below",
+    "screen.wildercord.mastery.slot.hint": "Reached through casts that matter. You'll choose one of three traits for it then",
+    "screen.wildercord.mastery.unbind": "Unbind",
+    "screen.wildercord.mastery.unbind.hint": "Let this trait go and choose again from a fresh offer. Costs %s experience levels, and each rank allows one change",
+    "screen.wildercord.mastery.unbind.wait": "Choose the trait that's waiting first",
+    "screen.wildercord.mastery.choose": "Choose a trait for %s",
+    "screen.wildercord.mastery.keep": "Keep %s (borrowed)",
+    "screen.wildercord.mastery.card_hint": "Click to choose it",
+    "screen.wildercord.mastery.reroll": "Re-roll (%s levels)",
+    "screen.wildercord.mastery.reroll.hint": "Draw three other traits instead. Costs %s experience levels, and uses this rank's one change",
+    "screen.wildercord.mastery.usage": "How you have used it",
+    "screen.wildercord.mastery.usage.none": "Nothing counted yet. Where and how you cast it (in the rain, at night, underground, against the undead...) shapes the traits it is offered",
+    "screen.wildercord.mastery.usage.line": "%s: %s%%",
+    "screen.wildercord.mastery.usage.hint": "How you use it shapes what it is offered",
+    "screen.wildercord.mastery.help": "Grows from hits on real foes, help for allies in need and casting in danger. Repeating yourself in one place earns less; dummies teach only a little",
+}
+
+
+def mastery_trait_lang():
+    """Every built-in trait's name and description, read from MasteryTraits.java (one line each, like the runes)."""
+    src = (ROOT / "src/main/java/dev/wildercord/spell/MasteryTraits.java").read_text(encoding="utf-8")
+    lang = {}
+    for tid, name, desc in re.findall(r'trait\("([a-z_]+)", "((?:[^"\\]|\\.)*)", "((?:[^"\\]|\\.)*)"', src):
+        lang[f"mastery.wildercord.trait.{tid}"] = name
+        lang[f"mastery.wildercord.trait.{tid}.desc"] = desc
+    assert len(lang) >= 80, "MasteryTraits.java: expected at least 40 traits"
+    return lang
 
 
 # ---------------------------------------------------------------- standing up to spells (SpellDefence.java)

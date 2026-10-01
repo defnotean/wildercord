@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  *   <li>a creature under a Gash can't heal at all (setting health outright, as a death save does, isn't
  *       healing, so that still works);</li>
  *   <li>healing others feeds life: health a player's spell restores to someone else (an ally, a pet) while
- *       it's being applied counts toward the caster's life affinity, by what it actually restored.</li>
+ *       it's being applied counts toward the caster's life affinity, by what it actually restored;</li>
+ *   <li>and toward the spell's mastery (see {@code cast.Mastery}), which also counts healing yourself in danger.</li>
  * </ul>
  */
 @Mixin(LivingEntity.class)
@@ -30,6 +31,9 @@ public abstract class LivingEntityHealMixin {
 		}
 		if (amount > 0 && !self.level().isClientSide() && Effects.applying() instanceof ServerPlayer healer && healer != self && self.isAlive()) {
 			PlayerAffinities.healed(healer, self, Math.min(amount, self.getMaxHealth() - self.getHealth()));
+		}
+		if (amount > 0 && !self.level().isClientSide() && Effects.applyingCast() != null && self.isAlive()) {
+			dev.wildercord.cast.Mastery.healed(Effects.applyingCast(), self, Math.min(amount, self.getMaxHealth() - self.getHealth()));
 		}
 	}
 }
