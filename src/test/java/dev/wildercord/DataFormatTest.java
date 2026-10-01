@@ -224,6 +224,18 @@ class DataFormatTest {
 	}
 
 	@Test
+	void damageTypes() throws IOException {
+		Set<String> scalings = Set.of("never", "when_caused_by_living_non_player", "always");
+		for (Path file : files("wildercord/damage_type")) {
+			JsonObject type = read(file);
+			allowed(type, file, "message_id", "scaling", "exhaustion", "effects", "death_message_type");
+			required(type, file, "message_id", "scaling", "exhaustion");
+			assertTrue(scalings.contains(type.get("scaling").getAsString()), file + " has an unknown scaling");
+			type.get("exhaustion").getAsFloat();
+		}
+	}
+
+	@Test
 	void tags() throws IOException {
 		for (String root : List.of("wildercord/tags", "minecraft/tags")) {
 			for (Path file : files(root)) {
@@ -239,7 +251,7 @@ class DataFormatTest {
 	void everyKindOfDataIsChecked() throws IOException {
 		Set<String> checked = Set.of("wildercord/advancement", "wildercord/loot_table", "wildercord/enchantment", "wildercord/recipe",
 			"wildercord/villager_trade", "wildercord/trade_set", "wildercord/worldgen/structure", "wildercord/worldgen/structure_set",
-			"wildercord/tags", "minecraft/tags", "wildercord/dimension");
+			"wildercord/tags", "minecraft/tags", "wildercord/dimension", "wildercord/damage_type");
 		List<Path> all = files("");
 		assertTrue(!all.isEmpty(), "there should be data files to check");
 		for (Path file : all) {

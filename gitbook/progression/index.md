@@ -14,6 +14,7 @@ things that feed your magic.
 |---|---|---|
 | **Heart Circles** | Eight rings of condensed mana: more mana, faster regeneration, more power, passive slots, your innate rune, and four perks. | [Heart Circles](heart-circles.md) |
 | **The Grimoire and feats** | A record of everything you've discovered. Every first discovery condenses mana toward your next circle. | [The Grimoire and Feats](grimoire.md) |
+| **Aura** | The swordsman's path: a breathing method, aura gathered from real blows and a steady breath, and three stages (Glow, Flow, Edge) reached by breakthroughs. No Cord needed. | [Aura](aura.md) |
 | **Your affinities** | An affinity with each of the ten elements, grown by casting it and by everyday things that fit it (smelting, fishing, mining...): up to +15% power with it, a resistance to it from level III, cheaper spells at V. | [Your Affinities](affinity.md) |
 | **Advancements** | Wildercord's own advancement tab: experience, Blank Runes and Mana Crystals. | [Advancements](advancements.md) |
 | **Mana** | Max mana and regeneration from your Cord, Mana Crystals, potions, meditation and more. | [Mana](mana.md) |

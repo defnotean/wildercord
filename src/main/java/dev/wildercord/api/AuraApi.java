@@ -138,9 +138,9 @@ public final class AuraApi {
 		TRIALS.computeIfAbsent(stage, k -> new LinkedHashSet<>()).add(trial);
 	}
 
-	/** The trials that can make the breakthrough into {@code stage}. Safe on both sides. */
+	/** The trials that can make the breakthrough into {@code stage}, in the order they were allowed. Safe on both sides. */
 	public static synchronized Set<String> trials(int stage) {
-		return Set.copyOf(TRIALS.getOrDefault(stage, Set.of()));
+		return java.util.Collections.unmodifiableSet(new LinkedHashSet<>(TRIALS.getOrDefault(stage, Set.of())));
 	}
 
 	/**

@@ -153,7 +153,9 @@ public final class AuraCombat {
 		if (Aura.stage(player) >= AuraRules.EDGE && !source.is(DamageTypeTags.BYPASSES_ARMOR) && amount > 0) {
 			float after = CombatRules.getDamageAfterAbsorb(target, (float) amount, source, target.getArmorValue(),
 				(float) target.getAttributeValue(Attributes.ARMOR_TOUGHNESS));
-			amount = AuraRules.pierced(amount, AuraRules.EDGE_PIERCE, after / amount);
+			// Against another player the bite through armour is a bonus like the rest: scaled as they are.
+			double pierce = target instanceof Player ? AuraRules.EDGE_PIERCE * settings.pvpScale() : AuraRules.EDGE_PIERCE;
+			amount = AuraRules.pierced(amount, pierce, after / amount);
 		}
 		return (float) amount;
 	}

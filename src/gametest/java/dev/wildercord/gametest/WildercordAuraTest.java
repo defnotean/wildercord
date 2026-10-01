@@ -5,6 +5,7 @@ import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraBreakthroughs;
 import dev.wildercord.aura.AuraCombat;
+import dev.wildercord.aura.AuraGuard;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.AuraSlash;
 import dev.wildercord.aura.BreathingManualItem;
@@ -434,14 +435,23 @@ public class WildercordAuraTest implements FabricClientGameTest {
 		context.getInput().releaseKey(o -> o.keyShift);
 		context.waitTicks(AuraRules.GUARD_REST + 5);
 
-		// An arrow loosed at a perfect guard flies back at its shooter.
+		// An arrow loosed at a perfect guard flies back at its shooter. It's loosed once the server has the guard in its perfect
+		// moment, so the moment can't run out while the arrow is still on its way.
 		raiseGuard(context);
+		for (int t = 0; t < 4 && !on(world, player -> AuraGuard.perfectNow(player)); t++) {
+			context.waitTicks(1);
+		}
+		String raised = on(world, player -> AuraGuard.perfectNow(player) ? null
+			: "the guard should be in its perfect moment (guarding " + AuraGuard.guarding(player) + ")");
+		check(raised == null, raised);
 		int arrowId = on(world, player -> {
 			player.setHealth(player.getMaxHealth());
-			Mob shooter = spawn(player.level(), EntityTypes.SKELETON, at(0, 9), 200);
+			// Off to one side, so the husk standing in front of the player isn't in the arrow's way.
+			Mob shooter = spawn(player.level(), EntityTypes.SKELETON, at(5, 5), 200);
 			shooter.addTag("wildercord.aura_shooter");
 			Arrow arrow = new Arrow(player.level(), shooter, new ItemStack(Items.ARROW), null);
-			Vec3 from = shooter.getEyePosition().add(0, 0, -0.8);
+			Vec3 eye = shooter.getEyePosition();
+			Vec3 from = eye.add(player.getBoundingBox().getCenter().subtract(eye).normalize().scale(0.8));
 			arrow.setPos(from);
 			Vec3 to = player.getBoundingBox().getCenter().subtract(from);
 			arrow.shoot(to.x, to.y, to.z, 2.6F, 0);
@@ -451,6 +461,7 @@ public class WildercordAuraTest implements FabricClientGameTest {
 		// Followed a tick at a time: where it is, who owns it, and whether the shooter has been hit yet.
 		StringBuilder flight = new StringBuilder();
 		boolean struckBack = false;
+		boolean hurt = false;
 		for (int t = 0; t < 16 && !struckBack; t++) {
 			context.waitTicks(1);
 			String step = on(world, player -> {
@@ -459,13 +470,14 @@ public class WildercordAuraTest implements FabricClientGameTest {
 				String where = shot == null ? "gone" : String.format(java.util.Locale.ROOT, "%.1f,%.1f,%.1f v%.2f,%.2f,%.2f owner %s",
 					shot.getX(), shot.getY(), shot.getZ(), shot.getDeltaMovement().x, shot.getDeltaMovement().y, shot.getDeltaMovement().z,
 					shot instanceof Arrow a && a.getOwner() != null ? a.getOwner().getType().toShortString() : "none");
-				return where + (shooter.getHealth() < shooter.getMaxHealth() ? " HIT" : "");
+				return where + (player.getHealth() < player.getMaxHealth() ? " (player hurt)" : "")
+					+ (shooter.getHealth() < shooter.getMaxHealth() ? " HIT" : "");
 			});
 			flight.append("\n      ").append(step);
 			struckBack = step.endsWith("HIT");
+			hurt |= step.contains("(player hurt)");
 		}
-		boolean unhurt = on(world, player -> player.getHealth() >= player.getMaxHealth());
-		String arrow = !unhurt ? "a perfect guard should turn the arrow aside"
+		String arrow = hurt ? "a perfect guard should turn the arrow aside; its flight:" + flight
 			: struckBack ? null : "the arrow should fly back into its shooter; its flight:" + flight;
 		check(arrow == null, arrow);
 		context.getInput().releaseKey(o -> o.keyShift);
@@ -574,11 +586,35 @@ public class WildercordAuraTest implements FabricClientGameTest {
 		context.waitTicks(10);
 		double weapon = on(world, player -> player.getAttributeValue(Attributes.ATTACK_DAMAGE));
 		double life = on(world, player -> dev.wildercord.cast.PowerPlaces.of(player).factor("life"));
+		on(world, player -> {
+			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(6.5);
+			return null;
+		});
 		context.getInput().pressKey(WildercordKeys.auraMapping());
-		context.waitTicks(4);
-		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(2);
+		// Filmed from high behind, looking down on the crescent's face as it flies into the line.
+		context.runOnClient(mc -> {
+			mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+			mc.player.setXRot(58);
+			mc.player.xRotO = 58;
+			if (!mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+		});
+		context.waitTicks(1);
 		shot(context, "aura_slash");
-		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+		on(world, player -> {
+			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
+			return null;
+		});
+		context.runOnClient(mc -> {
+			mc.options.setCameraType(CameraType.FIRST_PERSON);
+			mc.player.setXRot(8);
+			mc.player.xRotO = 8;
+			if (mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+		});
 		world.getServer().runCommand("time set 3000");
 		context.waitTicks(10);
 		String slash = on(world, player -> {
@@ -786,6 +822,8 @@ public class WildercordAuraTest implements FabricClientGameTest {
 		context.getInput().holdKey(o -> o.keyShift);
 		context.waitTicks(AuraRules.SETTLE_TICKS + AuraRules.STILLNESS_TICKS - 40);
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		// The moment itself is filmed at night, where its colour reads.
+		world.getServer().runCommand("time set 18000");
 		int stage = AuraRules.GLOW;
 		for (int i = 0; i < 120 && stage == AuraRules.GLOW; i++) {
 			context.waitTicks(1);
@@ -793,6 +831,7 @@ public class WildercordAuraTest implements FabricClientGameTest {
 		}
 		context.waitTicks(4);
 		shot(context, "aura_breakthrough");
+		world.getServer().runCommand("time set 3000");
 		context.getInput().releaseKey(o -> o.keyShift);
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
 		check(stage == AuraRules.FLOW, "half a minute of stillness at a ley crossing should break through to Flow (stage " + stage + ")");
