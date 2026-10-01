@@ -306,6 +306,11 @@ def main():
     write_json(DATA / "recipe/cinnamon_toy.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
         "ingredients": ["minecraft:bone", "minecraft:red_dye", "minecraft:slime_ball"], "result": {"id": "wildercord:cinnamon_toy"}})
     unlock_advancement("wildercord:cinnamon_toy", "minecraft:bone")
+    item_model("cinnamon_bow", "cinnamon_bow")
+    write_json(ASSETS / "items/cinnamon_bow.json", {"model": {"type": "minecraft:model", "model": "wildercord:item/cinnamon_bow"}})
+    write_json(DATA / "recipe/cinnamon_bow.json", {"type": "minecraft:crafting_shapeless", "category": "misc",
+        "ingredients": ["minecraft:string", "minecraft:string", "minecraft:pink_dye"], "result": {"id": "wildercord:cinnamon_bow"}})
+    unlock_advancement("wildercord:cinnamon_bow", "minecraft:pink_dye")
     runes = read_runes()
     tex = ASSETS / "textures/item"
 
@@ -462,6 +467,9 @@ def write_lang(runes):
         "item.wildercord.mirror_thread_mantle": "Mirror-thread Mantle",
         "entity.wildercord.cinnamon": "Cinnamon",
         "item.wildercord.cinnamon_toy": "Cinnamon's Red Bone",
+        "item.wildercord.cinnamon_bow": "Cinnamon's Bow",
+        "message.wildercord.cinnamon.bow_on": "Cinnamon wears her bow. Shears take it off again.",
+        "message.wildercord.cinnamon.bow_off": "You untie Cinnamon's bow.",
         "message.wildercord.cinnamon.toy": "Cinnamon wiggles with her favourite red bone.",
         "message.wildercord.cinnamon.owner": "Cinnamon is waiting for her owner. Set owner in wildercord-cinnamon.json.",
         "message.wildercord.cinnamon.pet": "Cinnamon leans into your hand.",

@@ -19,7 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 
-/** Focused in-world suite for Cinnamon: configuration, direct summon, ownership, sitting, immortality and rendering. */
+/**
+ * Focused in-world suite for Cinnamon: configuration, direct summon, ownership, sitting, immortality, rendering, her bow,
+ * her tongue and bell, and defending her owner.
+ */
 public final class WildercordCinnamonTest implements FabricClientGameTest {
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -119,6 +122,50 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 				check((dog.mood() & 2) != 0 && (dog.mood() & 1) == 0, "her favourite toy must wake her and start a playful wag");
 			});
 			context.takeScreenshot(TestScreenshotOptions.of("cinnamon_toy_play").disableCounterPrefix());
+
+			// Her bow: put on with the item, kept when her body is replaced, and untied with shears.
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				CinnamonDog dog = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48)).getFirst();
+				player.setItemInHand(InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(CinnamonContent.BOW));
+				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS, "her bow should go on");
+				player.setItemInHand(InteractionHand.MAIN_HAND, net.minecraft.world.item.ItemStack.EMPTY);
+				check(player.getAttachedOrElse(dev.wildercord.pet.CinnamonState.BOW, false), "her owner should remember the bow");
+				dog.showOff(200);
+			});
+			context.waitTicks(3);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				CinnamonDog dog = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48)).getFirst();
+				int mood = dog.mood();
+				check((mood & CinnamonDog.BOW) != 0, "she should be wearing her bow (mood " + mood + ")");
+				check((mood & CinnamonDog.TONGUE) != 0 && (mood & CinnamonDog.RINGING) != 0, "her tongue and bell should show (mood " + mood + ")");
+			});
+			context.waitTicks(60);
+			context.takeScreenshot(TestScreenshotOptions.of("cinnamon_bow_tongue").disableCounterPrefix());
+			world.getServer().runCommand("summon wildercord:cinnamon 1 99 2");
+			context.waitTicks(50);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				var dogs = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48));
+				check(dogs.size() == 1 && (dogs.getFirst().mood() & CinnamonDog.BOW) != 0, "a new body should still wear her bow");
+				CinnamonDog dog = dogs.getFirst();
+				player.getInventory().clearContent();
+				player.setItemInHand(InteractionHand.MAIN_HAND, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SHEARS));
+				check(dog.mobInteract(player, InteractionHand.MAIN_HAND) == InteractionResult.SUCCESS, "shears should untie her bow");
+				check(!player.getAttachedOrElse(dev.wildercord.pet.CinnamonState.BOW, true), "untying should be remembered");
+				check(player.getInventory().countItem(CinnamonContent.BOW) == 1, "her bow should come back to her owner");
+				player.getInventory().clearContent();
+			});
+			context.waitTicks(2);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				CinnamonDog dog = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48)).getFirst();
+				check((dog.mood() & CinnamonDog.BOW) == 0, "the bow should be off");
+				dog.setNoAi(true);
+				dog.teleportTo(0.5, 99, 3.5);
+				dog.setYRot(180); dog.setYBodyRot(180); dog.setYHeadRot(180);
+			});
 			world.getServer().runOnServer(server -> {
 				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
 				player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48)).getFirst()
@@ -130,6 +177,34 @@ public final class WildercordCinnamonTest implements FabricClientGameTest {
 				var dogs = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48));
 				check(dogs.size() == 1 && dogs.getFirst().isAlive(), "Cinnamon must be rescued from the void");
 				check(dogs.getFirst().isOrderedToSit(), "rescue must preserve sitting");
+			});
+
+			// Anyone who hurts her owner gets bitten: a husk (it won't burn at noon) strikes the owner, and she goes for it.
+			world.getServer().runCommand("difficulty normal");
+			int husk = world.getServer().computeOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				player.setGameMode(GameType.SURVIVAL);
+				player.setHealth(player.getMaxHealth());
+				CinnamonDog dog = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48)).getFirst();
+				dog.setNoAi(false);
+				dog.setOrderedToSit(false);
+				var attacker = net.minecraft.world.entity.EntityTypes.HUSK.create(player.level(), net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+				attacker.snapTo(player.getX() + 3, player.getY(), player.getZ() + 1, 0, 0);
+				attacker.setNoAi(true);
+				player.level().addFreshEntity(attacker);
+				player.hurtServer(player.level(), player.damageSources().mobAttack(attacker), 1);
+				return attacker.getId();
+			});
+			context.waitTicks(80);
+			world.getServer().runOnServer(server -> {
+				ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+				CinnamonDog dog = player.level().getEntitiesOfClass(CinnamonDog.class, player.getBoundingBox().inflate(48)).getFirst();
+				var attacker = player.level().getEntity(husk) instanceof net.minecraft.world.entity.LivingEntity living ? living : null;
+				check(attacker == null || !attacker.isAlive() || attacker.getHealth() < attacker.getMaxHealth(),
+					"Cinnamon should bite whoever hurt her owner (target " + dog.getTarget() + ", husk health "
+						+ (attacker == null ? "gone" : attacker.getHealth()) + ")");
+				if (attacker != null) attacker.discard();
+				player.setGameMode(GameType.CREATIVE);
 			});
 		} finally {
 			try {

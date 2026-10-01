@@ -4,6 +4,23 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Cinnamon
+- **Truer to the real Cinnamon.** A rounder head with a small snout, plain black eyes under little angry brows, shorter
+  ears, fluffy legs that fade to cream at the feet instead of skinny legs on big paws, a white belly that starts at her
+  chest, and a little black nub of a tail.
+- **Her collar bell** jingles every 20 to 40 seconds, loud enough to find her by ear. Put `"bell": false` in
+  `config/wildercord-cinnamon.json` to quiet it.
+- **Now and then she sticks the tip of her tongue out** for a few seconds, asleep or awake.
+- **She defends you.** Anyone who hurts her owner gets bitten (not while she's sitting, and never creepers, your other
+  pets, or players you can't fight).
+- **Cinnamon's Bow**, her "armour": two string and pink dye. Use it on her and she wears it, even after she's
+  re-summoned; shears take it off again.
+
+### Fixed
+- **The Aura badge no longer hides under the Cosmetics tab.** The Cord screen's header ran out of room once 0.9.0 added
+  the Aura badge. Its page tabs now tighten to fit, and a long Cord name is cut short (hover it to read it whole). The
+  Cosmetics page lays its header out the same way, so the tabs don't jump when you switch.
+
 ## [0.9.0-alpha] - 2026-10-01
 
 The wilds come alive and the sword finds its path. Twelve new creatures (six monsters with tells and counterplay, six

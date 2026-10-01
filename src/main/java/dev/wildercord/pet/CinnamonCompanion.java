@@ -22,6 +22,7 @@ final class CinnamonCompanion {
 	private static final Path CONFIG = FabricLoader.getInstance().getConfigDir().resolve("wildercord-cinnamon.json");
 	private static final Map<UUID, CinnamonDog> LIVE = new HashMap<>();
 	private static String owner = "";
+	private static boolean bell = true;
 	private static UUID ownerId;
 	private static long lastModified = -1;
 	private CinnamonCompanion() {}
@@ -106,6 +107,11 @@ final class CinnamonCompanion {
 		return null;
 	}
 
+	/** Whether her collar bell jingles now and then ({@code "bell": false} in the config quiets it). */
+	static boolean bell() {
+		return bell;
+	}
+
 	private static void readConfig() {
 		try {
 			if (Files.notExists(CONFIG)) {
@@ -115,7 +121,9 @@ final class CinnamonCompanion {
 			}
 			long modified = Files.getLastModifiedTime(CONFIG).toMillis();
 			if (modified == lastModified) return;
-			owner = JsonParser.parseString(Files.readString(CONFIG, StandardCharsets.UTF_8)).getAsJsonObject().get("owner").getAsString().trim();
+			var json = JsonParser.parseString(Files.readString(CONFIG, StandardCharsets.UTF_8)).getAsJsonObject();
+			owner = json.get("owner").getAsString().trim();
+			bell = !json.has("bell") || json.get("bell").getAsBoolean();
 			try { ownerId = UUID.fromString(owner); } catch (IllegalArgumentException ignored) { ownerId = null; }
 			lastModified = modified;
 		} catch (IOException | RuntimeException e) {

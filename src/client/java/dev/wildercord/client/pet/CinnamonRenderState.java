@@ -4,5 +4,5 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 
 public final class CinnamonRenderState extends LivingEntityRenderState {
 	public boolean sitting;
-	public boolean sleeping, playing, greeting;
+	public boolean sleeping, playing, greeting, ringing, tongue, wearingBow;
 }

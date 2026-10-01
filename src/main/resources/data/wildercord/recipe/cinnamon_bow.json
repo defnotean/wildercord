@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:string",
+    "minecraft:string",
+    "minecraft:pink_dye"
+  ],
+  "result": {
+    "id": "wildercord:cinnamon_bow"
+  }
+}

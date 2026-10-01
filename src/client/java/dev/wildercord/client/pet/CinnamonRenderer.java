@@ -21,8 +21,12 @@ public final class CinnamonRenderer extends MobRenderer<CinnamonDog, CinnamonRen
 	@Override public void extractRenderState(CinnamonDog dog, CinnamonRenderState state, float partial) {
 		super.extractRenderState(dog, state, partial);
 		state.sitting = dog.isOrderedToSit();
-		state.sleeping = (dog.mood() & 1) != 0;
-		state.playing = (dog.mood() & 2) != 0;
-		state.greeting = (dog.mood() & 4) != 0;
+		int mood = dog.mood();
+		state.sleeping = (mood & CinnamonDog.SLEEPING) != 0;
+		state.playing = (mood & CinnamonDog.PLAYING) != 0;
+		state.greeting = (mood & CinnamonDog.GREETING) != 0;
+		state.ringing = (mood & CinnamonDog.RINGING) != 0;
+		state.tongue = (mood & CinnamonDog.TONGUE) != 0;
+		state.wearingBow = (mood & CinnamonDog.BOW) != 0;
 	}
 }

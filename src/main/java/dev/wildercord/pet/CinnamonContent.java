@@ -16,6 +16,11 @@ public final class CinnamonContent {
 	public static final net.minecraft.world.item.Item TOY = Registry.register(BuiltInRegistries.ITEM, TOY_KEY,
 		new net.minecraft.world.item.Item(new net.minecraft.world.item.Item.Properties().setId(TOY_KEY).stacksTo(1)));
 
+	private static final ResourceKey<net.minecraft.world.item.Item> BOW_KEY = ResourceKey.create(Registries.ITEM, Wildercord.id("cinnamon_bow"));
+	/** Her "armour": a ribbon bow for her head. Use it on her to put it on; shears take it off again. */
+	public static final net.minecraft.world.item.Item BOW = Registry.register(BuiltInRegistries.ITEM, BOW_KEY,
+		new net.minecraft.world.item.Item(new net.minecraft.world.item.Item.Properties().setId(BOW_KEY).stacksTo(1)));
+
 	private static final ResourceKey<EntityType<?>> KEY = ResourceKey.create(Registries.ENTITY_TYPE, Wildercord.id("cinnamon"));
 	public static final EntityType<CinnamonDog> CINNAMON = Registry.register(BuiltInRegistries.ENTITY_TYPE, KEY,
 		EntityType.Builder.<CinnamonDog>of(CinnamonDog::new, MobCategory.CREATURE)

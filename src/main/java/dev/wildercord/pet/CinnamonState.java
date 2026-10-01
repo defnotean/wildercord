@@ -11,4 +11,7 @@ public final class CinnamonState {
 	public static void init() {}
 	public static final AttachmentType<Boolean> SITTING = AttachmentRegistry.create(Wildercord.id("cinnamon_sitting"),
 		builder -> builder.initializer(() -> false).persistent(Codec.BOOL).copyOnDeath());
+	/** Whether she's wearing her bow, kept with the owner because her body is replaced whenever it's needed. */
+	public static final AttachmentType<Boolean> BOW = AttachmentRegistry.create(Wildercord.id("cinnamon_bow"),
+		builder -> builder.initializer(() -> false).persistent(Codec.BOOL).copyOnDeath());
 }
