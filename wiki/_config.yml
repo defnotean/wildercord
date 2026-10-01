@@ -1,5 +1,5 @@
 title: Wildercord Player Guide
-description: "Wildercord 0.8.0-alpha: build spells that grow with you, find your world's own magic, shape terrain and master magic circles."
+description: "Wildercord 0.9.0-alpha: build spells that grow with you, walk the swordsman's path of aura, and meet the creatures of an enchanted world."
 remote_theme: just-the-docs/just-the-docs@v0.10.1
 plugins:
   - jekyll-remote-theme

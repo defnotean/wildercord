@@ -12,7 +12,7 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.8.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
+**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.9.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.9.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -427,6 +427,14 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
 
 Screenshots land in `build/run/clientGameTest/screenshots/`. CI runs the build and unit tests on
 every push, checks generated resources, and runs the client game suites under Xvfb with screenshots and logs retained as artifacts.
+
+## 0.9.0: the wilds and the sword
+
+Twelve new creatures, six monsters with tells and counterplay and six enchanted animals, fill the world, and a field guide
+in the Grimoire records the ones you meet. **Aura** opens a swordsman's path beside the Cord: ten breathing methods, five
+stages from a haze on the blade to a Dominion, breakthroughs, the spellblade, wandering duelists who teach their methods,
+fallen knights and aura-forged gear. See the [changelog](CHANGELOG.md#090-alpha---2026-10-01) and
+[What's New](https://defnotean.github.io/wildercord/whats-new/).
 
 ## 0.8.0: magic of your own
 

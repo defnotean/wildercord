@@ -4,6 +4,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.9.0-alpha] - 2026-10-01
+
+The wilds come alive and the sword finds its path. Twelve new creatures (six monsters with tells and counterplay, six
+enchanted animals) and a field guide in the Grimoire, and **Aura**: a swordsman's path beside the Cord, from a haze on
+the blade to a domain of your own, with ten breathing methods, breakthroughs, duelists who teach them, fallen knights,
+aura-forged gear and a spell that rides your slash. Players need 0.9.0 to join a 0.9.0 server (it adds creatures, items,
+sounds and synced data). Back up your worlds before updating.
+Full release notes: [0.9.0-alpha](docs/releases/0.9.0-alpha.md).
+
 ### Monsters of the wilds
 Six new magical monsters make the wilds dangerous again, each with its own model, glow, voice and way of fighting, a
 tell before its big attack and a way to beat it. They spawn on their own where they belong (a few in fifty of the
@@ -91,12 +100,12 @@ element and a land, and each leaves something behind that's worth a little.
   (`glimmerwing`, `lumen_stag`, `mossback_tortoise`, `cinderfox`, `skyray`, `rimehare`). An older config file gains the
   section at its defaults. They spawn in vanilla's own pools, so the mob caps hold, and the rare ones stay rare and keep
   their distance from each other.
+### Aura: the swordsman's path
 The swordsman's path. Aura is mana drawn into the body and out along a blade: learn a breathing method, gather aura from
 real blows and a still, steady breath, and climb in leaps from a haze on the weapon to a blade of solid light. It's open
 to everyone alongside the Cord, needs no Cord at all, and the two paths combine. Players need this version to join a
 server running it (it adds an item, sounds and synced data).
 
-### Aura: the swordsman's path
 - **Breathing methods.** Ten Breathing Manuals, one per element: Ember, Rime, Thunder, Gale, Stone, Verdant, Hollow,
   Starlit, Hourglass and Crimson Breath. Read one to learn its method: your aura takes its element's colour and its
   element, so a blade meets a creature's weakness or resistance and the elemental climate as a spell of that element
@@ -231,6 +240,10 @@ Swordsmen of the world to meet, fight and learn from, gear forged with aura, and
   `knights`, `knight_spawn_rate`, `max_knights_nearby`, `forged_gear`, `lumenedge_gain`, `skyrend_slash`,
   `bulwark_guard_cost` and `sash_capacity`. An older config file gains it at its defaults. The structures knights haunt
   are the `wildercord:knight_haunts` structure tag.
+
+### Fixed
+- **Blooms and fallen stars take grass again.** Minecraft 26.3 took grass blocks out of the dirt tag, so the blooms that
+  life magic leaves and the ground fallen stars land on had quietly stopped counting grass as ground.
 
 ## [0.8.0-alpha] - 2026-10-01
 

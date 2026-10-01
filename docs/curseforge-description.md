@@ -8,6 +8,16 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 **[Read the player guide](https://defnotean.github.io/wildercord/) · [Browse the changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md) · [Report an issue](https://github.com/defnotean/wildercord/issues)**
 
+## New in 0.9: the wilds and the sword
+
+- **Aura, the swordsman's path.** Learn one of ten breathing methods and climb five stages from a haze on your blade to a Dominion of your own: coated blows, Aura Guard and perfect-guard counters, a crystal blade and the Aura Slash, Aura Step, Intent and more. Cast while sneaking and your spell rides the slash.
+- **The world of aura.** Wandering duelists who teach their method when you beat them, fallen knights in old places, aura-forged weapons and slashes that clash in mid-air.
+- **Twelve new creatures.** Six monsters with tells and counterplay (a root-lashing Bramblewalker, a near-invisible Gloomstalker, a spell-drinking Mana Ooze...) and six enchanted animals (glowing moths, a crystal-antlered stag, a tameable ember fox...), with a field guide in your Grimoire.
+
+![A crystal aura blade](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-edge-blade.jpg)
+
+![The Lumen Stag by moonlight](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/creature-lumen-stag-night.jpg)
+
 ## New in 0.8: magic of your own
 
 - **Your world has spells of its own.** Every world hides about a dozen *harmonies*: rune sequences only it answers, each with a twist (glass rain, birds of light, a pale steed...). Find them by experiment or from Torn Page riddles; some only wake where ley lines cross. A few runes bend your world's way too, and new runes must be read before you understand them.
@@ -60,11 +70,11 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.8.0-alpha
+## Install 0.9.0-alpha
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.
-3. Install matching versions on the server and every client: a 0.8.0 server needs 0.8.0 players. The sources JAR is for development.
+3. Install matching versions on the server and every client: a 0.9.0 server needs 0.9.0 players. The sources JAR is for development.
 
 Sodium and Iris are optional visual/performance additions; no shader pack is bundled. Your own and other players' spell detail can be adjusted separately, with reduced flash and camera-motion options.
 

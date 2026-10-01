@@ -1,54 +1,37 @@
-# What's new in 0.8.0-alpha
+# What's new in 0.9.0-alpha
 
-Magic that feels like your own. Your world has spells of its own, runes have to be read before they're understood,
-your spells grow with you, casting is a performance with a risk in it, and the world remembers big magic where it
-lands. Players and servers update together: a 0.8.0 server needs 0.8.0 players. Back up your worlds first.
+The wilds come alive and the sword finds its path. Twelve new creatures roam the world, and **Aura** opens a swordsman's
+path beside the Cord. Players and servers update together: a 0.9.0 server needs 0.9.0 players. Back up your worlds first.
 
-## Your world's own magic
+## Monsters of the wilds
 
-- **Harmonies.** Every world draws about a dozen hidden rune sequences from its seed, ordinary spells anywhere else
-  that here carry a twist of their own: rain that lands as glass, a flame that mends your friends, a bolt that bursts
-  into birds of light. Nobody can look them up: find them by experimenting, or from riddles on Torn Pages, and the
-  whole server hears when someone does. Some only wake the first time where ley lines cross. See
-  [Harmonies and Reading Runes](spellcraft/harmonies.md).
-- **Quirks.** A few runes bend a little differently in each world, in their own conditions (under a full moon, deep
-  underground, in the rain...).
-- **Reading runes.** A rune you've just learned starts unread: the Codex gives you a hint, the numbers shimmer once
-  you've cast it, and its full text is yours once you've seen it at work. Runes you already knew are understood.
+Six magical monsters, each with a tell before its big attack and a way to beat it: the **Bramblewalker** that roots you
+with its vines, the **Gloomstalker** you only see when light finds it, the **Thunderwing Harpy** that calls lightning in a
+storm, the **Geode Crawler** that curls up and rolls, the **Bog Witch-Frog** that lobs poison and swallows small creatures,
+and the **Mana Ooze** that drinks your spells. See [Monsters](world/monsters.md).
 
-## Spells that grow with you
+## Magical wildlife
 
-- **Five ranks**, Kindled to Mythic, earned by casts that matter (real foes, allies in need, danger), not by spamming.
-- **A trait at each rank**, one of three offered from what the spell is made of and how you've used it: a fire spell
-  you cast in the rain may learn to burn through it.
-- **A sigil that's yours alone** at the heart of the spell's circle, which grows richer as it ranks up. Name a spell and,
-  once it's Adept, people nearby see its name when you cast it. Inscribe it on a scroll to pass it to a friend.
-  See [Spell Mastery](spellcraft/mastery.md).
+Six enchanted animals: **Glimmerwings** drawn to light and to spellcasters, the **Lumen Stag** that sheds a crystal antler
+for a patient, sneaking visitor, the **Mossback Tortoise** with a garden on its shell, the tameable **Cinderfox**, the
+**Skyray** gliding high above the mountains and the **Rimehare** leaving frost prints in the snow. Every creature you meet
+up close goes into the **field guide** in your Grimoire. See [Creatures](world/creatures.md).
 
-## Casting as a performance
+## Aura: the swordsman's path
 
-- **Overchannel.** Keep holding past full charge and the circle climbs up to three cracking stages of power, with a
-  growing chance of a wild surge. Let go on the beat for a little more; hold too long and it tears loose (it never costs
-  health).
-- **Trace the sigil.** Hold sneak while charging to steady your hands and trace the spell's glyph: accuracy steadies an
-  overchannel and adds a little power.
-- **Incantations.** Every rune has a syllable, and your spell's words rise as glowing script while you charge, readable
-  by anyone close enough. See [Casting](spellcraft/casting.md).
+- **Learn a breathing method** (ten, one per element) from a manual found in old vaults and libraries, or from a duelist
+  you beat. Your aura takes its colour and element.
+- **Gather aura** from real blows and a still, steady breath, and **climb five stages**, each earned by a breakthrough:
+  Glow, Flow, Edge, Form and Sovereign. Your blade hazes, flows, then becomes solid crystal; you guard and counter, loose
+  slashes of aura, step through the air, press weaker foes with your intent, and at the top raise a **Dominion** of your own.
+- **Blade and Cord together**: cast a spell while sneaking with your blade and it rides your next slash, and elemental
+  strikes leave marks a mage's spells set off.
+- **The world of aura**: wandering **duelists** to challenge, **fallen knights** in strongholds and ancient cities,
+  **aura-forged weapons**, the **Breath Sash**, and slashes that clash in mid-air.
 
-## A world that remembers magic
+One key does it all (Z by default): tap to slash, sneak to guard, double-tap to step, hold for Dominion. See
+[Aura](progression/aura.md).
 
-- **Residues.** Big spells leave lasting marks of their element: storm-glass, everfrost, cinder ash, wildblooms, void
-  scars and more. They fade on their own, never touch your builds, and give reagents that steady or strengthen a fusion
-  at the Fusion Altar. See [Residues and Reagents](world/residues.md).
-- **Places and times of power.** Where ley lines cross every spell is stronger and cheaper, and the moon, the hour and
-  the weather favour different elements. The HUD tells you what's favoured and why. See
-  [Places and Times of Power](world/places-of-power.md).
-
-## Where they meet
-
-- The **Lingering Mark** trait leaves a real residue where its spell lands.
-- **World-Tuned**, a trait only your world can offer, makes a spell with one of its quirked runes strike harder while
-  that quirk holds.
-
-Everything from 0.7 is still here: see the [0.7.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.7.0-alpha)
-and the full [changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md).
+Everything from 0.8 is still here: harmonies, spell mastery, overchannelling and residues. See the
+[0.8.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha) and the full
+[changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md).
