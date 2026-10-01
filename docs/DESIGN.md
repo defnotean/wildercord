@@ -851,7 +851,8 @@ struck among the last 12 it remembers: 1.25×. **Repetition:** each recent cast 
 16-block cube takes 6% off the next (down to a tenth of its worth), and a place is half forgotten every ten minutes;
 boss fights are exempt. One cast (links, pulses and echoes together) earns at most 20. **Practice:** training dummies
 and anything in the practice arena teach at half rate, at most 60 in all (just over half of Practised). Scrolls,
-imbued releases, glyphs and passives teach nothing. The server's `mastery.xp_multiplier` scales it all.
+imbued releases, glyphs and passives teach nothing, and creative players earn nothing. The server's
+`mastery.xp_multiplier` scales it all.
 
 **Traits.** At ranks II to V the caster chooses one of three offered traits; the offer is drawn by weight from a
 catalogue of 53, the same every time for the same spell, rank and re-roll:

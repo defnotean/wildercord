@@ -151,10 +151,7 @@ public final class Mastery {
 	}
 
 	private static boolean traitsOn(Player player) {
-		if (player.level().isClientSide()) {
-			return Config.mastery(player);
-		}
-		return Config.get().mastery().enabled() && Config.get().mastery().traits();
+		return Config.masteryTraits(player);
 	}
 
 	// ------------------------------------------------------------------ factors at the gate (both sides, so the readout matches)
@@ -271,7 +268,8 @@ public final class Mastery {
 		Set<String> circumstances = circumstances(player, runes, foes, boss);
 		double situation = MasteryRules.situation(health, foes, boss, circumstances.contains("dungeon"));
 		boolean practice = level.dimension() == PracticeRoom.DIMENSION;
-		Tally tally = new Tally(player.getUUID(), key, runes, traits, settings.enabled() && !player.isSpectator(), situation,
+		// A creative player's spells don't grow: nothing they do is earned.
+		Tally tally = new Tally(player.getUUID(), key, runes, traits, settings.enabled() && !player.isSpectator() && !player.isCreative(), situation,
 			MasteryRules.danger(health, foes), foes, circumstances, place(player.blockPosition()));
 		if (practice) {
 			tally.circumstances.add("practice");

@@ -112,10 +112,18 @@ stops a server. Every default is the number the mod used before.
 | `defence.spellguard_recharge_seconds` | 60 | How long the spellguard takes to come back after it holds (counted from when it held, so a shorter value applies to one already recharging) |
 | `defence.max_bonus` | 2.5 | The most a hit's bonuses together (Execute, Trial Key, reactions, hexes, Decree, Drowse, Veil, Fortune, affinities, add-on reactions...) may multiply a spell against a player; creatures are uncapped |
 | `defence.armour_rate` | 0.55 | How much of armour's worth against a blade counts against spells that bypass armour (magic, frost, sonic boom), players only; vanilla's armour formula times this |
+| `mastery.enabled` | true | Spell mastery: spells gain experience, ranks and traits from casts that matter (records already earned are kept while it's off, and the Cord screen hides ranks) |
+| `mastery.xp_multiplier` | 1.0 | How fast spells gain experience, times this (0 to 100) |
+| `mastery.traits` | true | Whether the traits players chose take effect (switching it off keeps them for later) |
+| `mastery.spoken_names` | true | Whether a named spell of Adept rank or higher shows its name to players within 32 blocks when cast |
+| `mastery.inscription` | true | Whether an Adept spell inscribed onto a scroll carries its traits and sigil, and can be studied |
 
 `world_events`, `world_changing_magic`, `creature_affinities` and `elemental_climate` take effect at once on `/wildercord reload`. The `duels` and
 `wild_magic` switches are there for those features to read (`Config.get().duels()` and so on).
-The travel settings are described in [travel.md](travel.md). The defence settings are read by `cast.SpellDefence` (the
+The mastery settings are read by `cast.Mastery`, `MasteryChoices` and `Inscriptions` (see
+[ARCHITECTURE.md](../ARCHITECTURE.md#spell-mastery-mastery-masterychoices-inscriptions)); `mastery.enabled` and the traits
+switch are sent to clients, so the Cord screen shows ranks only while mastery is on and prices with traits only while
+they work. The travel settings are described in [travel.md](travel.md). The defence settings are read by `cast.SpellDefence` (the
 one path every spell's damage takes; the pure numbers are in `cast.SpellDefenceRules`), and are sent to clients for the
 Cord screen's spell-defence badge. Loot chances apply when loot tables load (world start or `/reload`). Structure spacing isn't in the file:
 it's data, in `data/wildercord/worldgen/structure_set/archives.json`, which a datapack can override. The

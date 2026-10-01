@@ -65,7 +65,8 @@ What surrounds the cast counts too:
   half the way to Practised. After that, it needs the real thing.
 - **One cast can only earn so much**, however many foes it hits.
 
-A spell read from a scroll, a spell let go from an imbued item or a glyph, and your passives don't grow anything.
+A spell read from a scroll, a spell let go from an imbued item or a glyph, and your passives don't grow anything, and
+nothing grows in creative mode.
 
 ## Traits
 

@@ -21,7 +21,7 @@ need this version to join a server running it (it adds a scroll component and ne
   lately is worth a quarter more, and doing the same thing in the same place is worth less each time until the place
   is forgotten (boss fights don't wear out). Training dummies and the practice arena teach at half the rate and only
   up to 60, a little over half the way to Practised. One cast earns at most 20. Scrolls, imbued items, glyphs and
-  passives teach nothing.
+  passives teach nothing, and nothing grows in creative mode.
 - **Traits: one of three at each of ranks II to V**, from a catalogue of 53, filtered by what the spell is made of
   (its elements, its shapes, whether it harms or only helps) and by how it was used: each spell counts its casts in
   the rain, at night, underground, in the Nether or the End, at low health, beside allies, against the undead or a

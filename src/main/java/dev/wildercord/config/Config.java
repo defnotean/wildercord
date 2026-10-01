@@ -41,9 +41,9 @@ public final class Config {
 	private static volatile Sync synced = Sync.DEFAULT;
 
 	/** Server to client: the settings a client needs to show costs, regeneration, affinities and spell defences truthfully. */
-	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence, boolean mastery)
-			implements CustomPacketPayload {
-		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true);
+	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence, boolean mastery,
+			boolean masteryTraits) implements CustomPacketPayload {
+		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true);
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
 		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
@@ -52,11 +52,11 @@ public final class Config {
 			ByteBufCodecs.DOUBLE, WildercordConfig.DefenceSettings::armourRate, WildercordConfig.DefenceSettings::new);
 		public static final StreamCodec<RegistryFriendlyByteBuf, Sync> CODEC = StreamCodec.composite(
 			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity,
-			DEFENCE_CODEC, Sync::defence, ByteBufCodecs.BOOL, Sync::mastery, Sync::new).cast();
+			DEFENCE_CODEC, Sync::defence, ByteBufCodecs.BOOL, Sync::mastery, ByteBufCodecs.BOOL, Sync::masteryTraits, Sync::new).cast();
 
 		static Sync of(WildercordConfig config) {
 			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity(), config.defence(),
-				config.mastery().enabled());
+				config.mastery().enabled(), config.mastery().enabled() && config.mastery().traits());
 		}
 
 		@Override
@@ -155,6 +155,11 @@ public final class Config {
 	/** Whether spell mastery is on: the server's own switch, or on a client the one it was sent (the Cord screen shows ranks only then). */
 	public static boolean mastery(Player player) {
 		return player != null && player.level().isClientSide() ? synced.mastery() : get().mastery().enabled();
+	}
+
+	/** Whether the traits players chose for their spells take effect: the server's own switches, or on a client the one it was sent. */
+	public static boolean masteryTraits(Player player) {
+		return player != null && player.level().isClientSide() ? synced.masteryTraits() : get().mastery().enabled() && get().mastery().traits();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */
