@@ -3,38 +3,57 @@ title: What's New
 nav_order: 1.1
 ---
 
-# What's new in 0.7.0-alpha
+# What's new in 0.8.0-alpha
 
-This release brings together the gameplay expansion, fixes and visual work completed since 0.6.1. All players and servers should update together.
+Magic that feels like your own. Your world has spells of its own, runes have to be read before they're understood,
+your spells grow with you, casting is a performance with a risk in it, and the world remembers big magic where it
+lands. Players and servers update together: a 0.8.0 server needs 0.8.0 players. Back up your worlds first.
 
-## Build spells with more personality
+## Your world's own magic
 
-- **350 named runes**: 39 shapes, 258 effects, 36 modifiers, 17 links. The 297 shape/effect animations have individually authored three-beat sequences.
-- Twelve circle disciplines alter coverage, flying speed, duration, support, mixed elements, movement, crouching, weather and night conditions, with costs and drawbacks shown in the editor.
-- Large circles remain behind the caster during turns. The forward assembly keeps the delivery shape. Fire, wind, frost and the other materials carry their own motion, rather than just a mixed colour.
-- Strata Rise, Tidal Lift and Wind Steps create temporary collision terrain or borrow real water. Six signature fusions extend them. Friendly and hostile elements can transform or dispel that terrain.
-- Exact elemental weaves extend to two through eight effect leaves, preserve duplicates and canonical ordering, and support owner-bound innate soul weaving at Tier IV. Named fusion recipes now total 77.
+- **Harmonies.** Every world draws about a dozen hidden rune sequences from its seed, ordinary spells anywhere else
+  that here carry a twist of their own: rain that lands as glass, a flame that mends your friends, a bolt that bursts
+  into birds of light. Nobody can look them up: find them by experimenting, or from riddles on Torn Pages, and the
+  whole server hears when someone does. Some only wake the first time where ley lines cross. See
+  [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}).
+- **Quirks.** A few runes bend a little differently in each world, in their own conditions (under a full moon, deep
+  underground, in the rain...).
+- **Reading runes.** A rune you've just learned starts unread: the Codex gives you a hint, the numbers shimmer once
+  you've cast it, and its full text is yours once you've seen it at work. Runes you already knew are understood.
 
-## Explore, practise and settle down
+## Spells that grow with you
 
-- Clockwork Crypt, Living Greenhouse and Moving Sky Ruin each have three layout variants, interactive mechanisms and a guaranteed handling relic.
-- Root Guardian and Storm Conductor have custom models, staged fights and physical counterplay.
-- A dedicated practice arena supports moving targets, stress scenarios, damage readouts and three optional 90-second trials.
-- A native Research Notebook records permanent experiments and up to 24 named spell builds. Runic Hearth projects and cooperative rituals give magic uses at home.
-- Familiars can scout, guard or help with gardens. Ended world events leave finite, once-per-player echoes.
-- Cinnamon is a small custom dog with a darker body, tan features, immortal rescue behaviour, configured ownership, remembered sitting, petting, rest and toy play.
+- **Five ranks**, Kindled to Mythic, earned by casts that matter (real foes, allies in need, danger), not by spamming.
+- **A trait at each rank**, one of three offered from what the spell is made of and how you've used it: a fire spell
+  you cast in the rain may learn to burn through it.
+- **A sigil that's yours alone** at the heart of the spell's circle, which grows richer as it ranks up. Name a spell and,
+  once it's Adept, people nearby see its name when you cast it. Inscribe it on a scroll to pass it to a friend.
+  See [Spell Mastery]({{ '/spellcraft/mastery/' | relative_url }}).
 
-## Survive and read a fight
+## Casting as a performance
 
-- Emberweave, Rimebound and Stonebound armour, a Mirror-thread mantle, and Reprieve/Grounding foci offer defence with timing, movement and outgoing-power tradeoffs.
-- Reprieve debt survives swaps/logout; casting locks have capped duration and recovery. The same-cast spellguard loophole is corrected.
-- Fuse button handling and Cord mouse interactions are fixed for Minecraft 26.3. Backpack storage, worn presentation and interaction safeguards have been tightened.
-- Cord, backpack, relic, armour and rune art has more detail, with original animated material textures for spells.
+- **Overchannel.** Keep holding past full charge and the circle climbs up to three cracking stages of power, with a
+  growing chance of a wild surge. Let go on the beat for a little more; hold too long and it tears loose (it never costs
+  health).
+- **Trace the sigil.** Hold sneak while charging to steady your hands and trace the spell's glyph: accuracy steadies an
+  overchannel and adds a little power.
+- **Incantations.** Every rune has a syllable, and your spell's words rise as glowing script while you charge, readable
+  by anyone close enough. See [Casting]({{ '/spellcraft/casting/' | relative_url }}).
 
-## Performance, release and guide
+## A world that remembers magic
 
-- Bounded compiler caching, decorative delivery limits, local visual settings and diagnostics support busy scenes.
-- Performance, Balanced and Cinematic launcher profiles pin dependencies and package the same release jar. Shader packs are not bundled.
-- The player guide now covers installation, practical builds, all new systems, troubleshooting, tested limits and curated real gameplay screenshots. A GitBook-compatible export shares the same source.
+- **Residues.** Big spells leave lasting marks of their element: storm-glass, everfrost, cinder ash, wildblooms, void
+  scars and more. They fade on their own, never touch your builds, and give reagents that steady or strengthen a fusion
+  at the Fusion Altar. See [Residues and Reagents]({{ '/world/residues/' | relative_url }}).
+- **Places and times of power.** Where ley lines cross every spell is stronger and cheaper, and the moon, the hour and
+  the weather favour different elements. The HUD tells you what's favoured and why. See
+  [Places and Times of Power]({{ '/world/places-of-power/' | relative_url }}).
 
-See the repository CHANGELOG and docs/audit reports for the engineering history. New dungeon generation requires new terrain; installed alpha worlds should be backed up before updating.
+## Where they meet
+
+- The **Lingering Mark** trait leaves a real residue where its spell lands.
+- **World-Tuned**, a trait only your world can offer, makes a spell with one of its quirked runes strike harder while
+  that quirk holds.
+
+Everything from 0.7 is still here: see the [0.7.0 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.7.0-alpha)
+and the full [changelog](https://github.com/defnotean/wildercord/blob/main/CHANGELOG.md).

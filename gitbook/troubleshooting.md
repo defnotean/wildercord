@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Start with the symptom below. These instructions describe 0.7.0-alpha; older jars do not include the mouse, ownership and casting fixes.
+Start with the symptom below. These instructions describe 0.8.0-alpha; jars older than 0.7.0 do not include the mouse, ownership and casting fixes.
 
 ## The Fusion Altar opens, but Fuse does nothing
 

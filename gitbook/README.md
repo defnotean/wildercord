@@ -1,6 +1,6 @@
 # Make magic your own
 
-**Wildercord 0.7.0-alpha · Minecraft Java 26.3 · Fabric · Java 25**
+**Wildercord 0.8.0-alpha · Minecraft Java 26.3 · Fabric · Java 25**
 
 Wear a Cord, thread runes from left to right, and cast the sequence with one key. Build a cheap knockback bolt, a mixed-element beam, a healing circle, a temporary bridge or a linked spell that changes when it lands.
 

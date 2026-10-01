@@ -4,10 +4,52 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
-Your spells grow with you. Every spell you thread keeps a record of how you've used it, rises through five ranks
-from casts that matter, takes a trait of your choosing at each rank and wears a sigil that is yours alone. Players
-need this version to join a server running it (it adds a scroll component and new notices).
+## [0.8.0-alpha] - 2026-10-01
 
+Magic that feels like your own. Every world answers to harmonies of its own and bends a few runes its own way, runes
+have to be read before they're understood, spells grow with the one who casts them, casting is a performance with a
+risk in it, and the world remembers big magic where it lands. Players need 0.8.0 to join a 0.8.0 server (it adds
+blocks, items, sounds and synced data). Back up your worlds before updating.
+Full release notes: [0.8.0-alpha](docs/releases/0.8.0-alpha.md).
+
+### Every world's magic is its own
+- **Harmonies: spells only your world answers.** Each world draws about a dozen hidden harmonies from its seed: exact
+  sequences of three or four craftable runes (Tier I to III) that are ordinary spells anywhere else, but here carry a
+  twist of their own. There are 27 twists, each with its own look and its own synthesised sound: rain that lands as
+  falling glass, a flame that mends your friends as it burns your foes, a bolt bursting into birds of light, flowers
+  blooming out of frost, gravity turning over, a pale steed rising under you, the whole spell sounding again from where
+  it landed, a slow hour for arrows, a storm of written pages, standing stones, a red moon, a great bell and more. A
+  twist is a modest extra on the spell (a few points of damage, a little mending, a set piece around you), dealt through
+  the spell defences and the cast's budget, never at you or your friends, never moving a boss. Casting one finds it:
+  its name fills the screen ("the Glasswind Rite"), it goes into the Grimoire with its runes and riddle (400 mana toward
+  your next circle), and the server tells everyone its name, but never its runes. Once found it costs 15% more mana
+  and recharges a fifth slower, and the Cord screen names it and says what its twist does. No harmony is a secret
+  spell or holds a signature fusion's pair, and the ten secret spells are unchanged.
+- **Rune quirks.** A few runes bend a little differently in each world, in their own conditions ("Here, Shock cracks
+  harder in the rain", "Here, Veil lasts longer at night"): a little stronger, longer, or striking again, faintly, a
+  moment later. Nobody is told; each shows itself the first time it matters to one of your spells, with a glint, a line
+  in chat and a Grimoire entry (100 mana).
+- **Torn Pages carry this world's riddles too.** Half the time, while any are left, a page tells one of your world's
+  harmonies, by name, and its riddle, instead of a secret's. A riddle speaks of every rune in order.
+- **This world's harmonies in the Grimoire**: those you found (hover for the runes, the twist, the riddle and who
+  found it first), the riddles you read, those other players found (by name and finder), and how many nobody has found;
+  then the quirks you've met. A client is never sent a harmony its player hasn't found, read or heard announced.
+- **Reading runes.** A rune you've just learned starts unread: the Codex shows its name, family, tier, element and cost,
+  but only a hint of what it does, written by hand for the runes everyone meets first and made from each rune's own
+  nature for the rest. The first cast glimpses it (its text, every number veiled in a shimmer); three casts that land,
+  or five that don't, and you understand it. A small ? and a dot mark the runes still being read, the Grimoire lists
+  them, and rune item tooltips follow the same rule. Every rune you knew before this version, and the starter runes,
+  are understood, and creative players see everything. The wiki keeps the full reference.
+- **The Codex's tooltips show each rune's cost.**
+- **Server settings** for all of it: a new `harmonies` section (`enabled`, `count` of 12, `reroll_salt` to draw a
+  world a fresh set, `announce`, and `quirks` of 4) and `features.unread_runes`. An older config file gains them at
+  their defaults.
+- **Hooks for other systems** in `cast.WorldResonances`: whether a player found a harmony, this world's harmonies,
+  a harmony matching some runes, an extra condition a harmony must meet to wake, and a listener for each find.
+- **A world's draw is saved with it**, so a later version adding runes never moves a world's harmonies under its
+  players; it's drawn again only when the owner changes the count or the reroll salt.
+
+### Spells that grow with you
 - **Spell mastery.** A spell is its exact runes in order; each one you use keeps its own record (the 48 you used most
   recently, and never one threaded on your Cord). Change a spell and you're growing a new one, but the old record
   waits: change it back and its rank and traits return. Mastery is kept through death and travels with loadouts.
@@ -52,9 +94,8 @@ need this version to join a server running it (it adds a scroll component and ne
   `inscription`, all on at first. An older config file gains the section at its defaults.
 - **For other parts of the mod and add-ons:** `api.SpellMasteryApi` adds circumstances a spell's casts are counted
   in, offers traits from outside the catalogue, and sets what a residue trait leaves where its spell lands.
-Casting is a performance now, with a risk in it. Players need this version to join a server running it (charging
-sends and syncs more than it did).
 
+### Casting as a performance
 - **Overchannel.** Keep holding a charged spell past full and it climbs into overchannel stages, one every 1.2 seconds:
   +20%, +40% and +60% power on top of the full charge's +40%. Each stage drains a little of your spare mana (15% of
   the spell's price a second, never the price itself), cracks the circle behind your shoulders a little further, throws
@@ -86,51 +127,8 @@ sends and syncs more than it did).
   (0.3), `sigil_tracing` (on) and `trace_power` (0.08). With `features.wild_magic` off nothing surges. Against players,
   everything a performance adds counts inside `defence.max_bonus`, so it never stacks a spell past the cap. An older
   config file gains the section at its defaults.
-Every world's magic is its own now: spells only your world answers, runes that bend its way, and runes you learn to
-read before you understand them.
 
-### Added
-- **Harmonies: spells only your world answers.** Each world draws about a dozen hidden harmonies from its seed: exact
-  sequences of three or four craftable runes (Tier I to III) that are ordinary spells anywhere else, but here carry a
-  twist of their own. There are 27 twists, each with its own look and its own synthesised sound: rain that lands as
-  falling glass, a flame that mends your friends as it burns your foes, a bolt bursting into birds of light, flowers
-  blooming out of frost, gravity turning over, a pale steed rising under you, the whole spell sounding again from where
-  it landed, a slow hour for arrows, a storm of written pages, standing stones, a red moon, a great bell and more. A
-  twist is a modest extra on the spell (a few points of damage, a little mending, a set piece around you), dealt through
-  the spell defences and the cast's budget, never at you or your friends, never moving a boss. Casting one finds it:
-  its name fills the screen ("the Glasswind Rite"), it goes into the Grimoire with its runes and riddle (400 mana toward
-  your next circle), and the server tells everyone its name, but never its runes. Once found it costs 15% more mana
-  and recharges a fifth slower, and the Cord screen names it and says what its twist does. No harmony is a secret
-  spell or holds a signature fusion's pair, and the ten secret spells are unchanged.
-- **Rune quirks.** A few runes bend a little differently in each world, in their own conditions ("Here, Shock cracks
-  harder in the rain", "Here, Veil lasts longer at night"): a little stronger, longer, or striking again, faintly, a
-  moment later. Nobody is told; each shows itself the first time it matters to one of your spells, with a glint, a line
-  in chat and a Grimoire entry (100 mana).
-- **Torn Pages carry this world's riddles too.** Half the time, while any are left, a page tells one of your world's
-  harmonies, by name, and its riddle, instead of a secret's. A riddle speaks of every rune in order.
-- **This world's harmonies in the Grimoire**: those you found (hover for the runes, the twist, the riddle and who
-  found it first), the riddles you read, those other players found (by name and finder), and how many nobody has found;
-  then the quirks you've met. A client is never sent a harmony its player hasn't found, read or heard announced.
-- **Reading runes.** A rune you've just learned starts unread: the Codex shows its name, family, tier, element and cost,
-  but only a hint of what it does, written by hand for the runes everyone meets first and made from each rune's own
-  nature for the rest. The first cast glimpses it (its text, every number veiled in a shimmer); three casts that land,
-  or five that don't, and you understand it. A small ? and a dot mark the runes still being read, the Grimoire lists
-  them, and rune item tooltips follow the same rule. Every rune you knew before this version, and the starter runes,
-  are understood, and creative players see everything. The wiki keeps the full reference.
-- **The Codex's tooltips show each rune's cost.**
-- **Server settings** for all of it: a new `harmonies` section (`enabled`, `count` of 12, `reroll_salt` to draw a
-  world a fresh set, `announce`, and `quirks` of 4) and `features.unread_runes`. An older config file gains them at
-  their defaults.
-- **Hooks for other systems** in `cast.WorldResonances`: whether a player found a harmony, this world's harmonies,
-  a harmony matching some runes, an extra condition a harmony must meet to wake, and a listener for each find.
-
-### Changed
-- **A world's draw is saved with it**, so a later version adding runes never moves a world's harmonies under its
-  players; it's drawn again only when the owner changes the count or the reroll salt.
-The world now remembers magic. Big spells leave lasting marks where they land, the marks give reagents that steady
-or strengthen fusions, and some places and hours make every spell a little stronger. Players need this version to
-join a server running it (it adds blocks and items).
-
+### A world that remembers magic
 - **Residues: big magic leaves a mark.** A spell whose mana price is 30 or more, any overcast, a boss's spell and now
   and then an element reaction leave a residue of their element where they land: **Smouldering Ash** that stays warm
   and glows (fire), **Everfrost** that holds about a day and is slick as ice (frost), **Fulgurite**, storm-glass that
@@ -173,11 +171,18 @@ join a server running it (it adds blocks and items).
   `max_per_chunk` 12, `max_per_dimension` 1024) and a new `places_of_power` section (`ley_crossings`, `crossing_bonus`
   0.1, `celestial`, `celestial_multiplier` 1.0). An older config file gains both at their defaults. Switching
   `elemental_climate` off turns places and times of power off too.
-
-### Changed
 - **More ley lines.** The second weave adds lines where there were none, so a little more of the Overworld lies on a
   ley line (faster mana, quicker Heart Circles, Wellstones that wake).
 - Other spells leave residues alone (they count as a spell's passing block, so pistons can't move them either).
+
+### Where they meet
+- **Lingering Mark leaves a real residue.** The mastery trait now leaves a small residue of its spell's element where
+  it lands, at most once every 8 seconds for each caster (a faint glimmer where none can be left).
+- **World-Tuned**, a trait only your world offers: a harmful spell with one of your world's quirked runes, cast often
+  where that quirk holds, may be offered it at a new rank, and then strikes 15% harder while the quirk holds.
+- **Some harmonies are bound to a place of power.** About one in four of a world's harmonies wakes the first time only
+  where ley lines cross. Cast one anywhere else and its runes stir and a line over your hotbar says *not here*; once
+  found, it answers anywhere. A server with ley crossings switched off frees them.
 
 ## [0.7.1-alpha] - 2026-10-01
 

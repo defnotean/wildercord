@@ -12,7 +12,7 @@ A spell-crafting magic mod for Minecraft Java **26.3** on **Fabric**.
 ![Java 25](https://img.shields.io/badge/Java-25-E76F00)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.7.1-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.7.1-alpha)** · [GitBook export](gitbook/SUMMARY.md)
+**[Read the Wildercord Player Guide](https://defnotean.github.io/wildercord/)** · **[Download 0.8.0-alpha](https://github.com/defnotean/wildercord/releases/tag/v0.8.0-alpha)** · [GitBook export](gitbook/SUMMARY.md)
 
 <img src="docs/images/hero.gif" alt="A caster raises their hands and a magic circle opens ring by ring, then a nova of fire bursts out; then a Domain's spell circle spreads across the ground under a dome of light" width="720">
 
@@ -427,6 +427,15 @@ no other changes. Walk through it in [docs/ADDING_RUNES.md](docs/ADDING_RUNES.md
 
 Screenshots land in `build/run/clientGameTest/screenshots/`. CI runs the build and unit tests on
 every push, checks generated resources, and runs the client game suites under Xvfb with screenshots and logs retained as artifacts.
+
+## 0.8.0: magic of your own
+
+Every world draws its own hidden harmonies and rune quirks from its seed, and new runes have to be read before
+they're understood. Spells grow with their casters through five ranks of mastery, with a chosen trait at each rank, a
+personal sigil, spoken names and inscribed scrolls. Casting is a performance: overchannel past full charge, trace the
+spell's glyph, and watch its incantation rise. Big magic leaves residues that give Fusion Altar reagents, and ley
+crossings, the moon, the hour and the weather favour different elements. See the
+[changelog](CHANGELOG.md#080-alpha---2026-10-01) and [What's New](https://defnotean.github.io/wildercord/whats-new/).
 
 ## September 30 expansion and audit fixes
 
