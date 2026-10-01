@@ -592,7 +592,7 @@ public class CordScreen extends Screen {
 			// Descriptions only count for longer words, so "fire" doesn't match every rune that "fires".
 			if (token.length() >= 5) {
 				if (description == null) {
-					description = RuneReadingText.searchable(rune);
+					description = RuneReadingText.searchable(minecraft.player, rune);
 				}
 				if (description.contains(token)) {
 					continue;

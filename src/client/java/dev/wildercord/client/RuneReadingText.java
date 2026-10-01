@@ -24,7 +24,12 @@ public final class RuneReadingText {
 	private static final int VEIL = 0xB8A8E8;
 
 	public static RuneReading.Stage stage(RuneDef rune) {
-		return RuneReadings.stage(Minecraft.getInstance().player, rune);
+		return stage(Minecraft.getInstance().player, rune);
+	}
+
+	/** How far {@code player} has read the rune (a screen passes its own player, so it can be asked from any thread). */
+	public static RuneReading.Stage stage(net.minecraft.world.entity.player.Player player, RuneDef rune) {
+		return RuneReadings.stage(player, rune);
 	}
 
 	/** The rune's text, as far as it's been read. */
@@ -55,8 +60,8 @@ public final class RuneReadingText {
 	}
 
 	/** What a search may match in a rune's text: only what the player can read of it. */
-	public static String searchable(RuneDef rune) {
-		return switch (stage(rune)) {
+	public static String searchable(net.minecraft.world.entity.player.Player player, RuneDef rune) {
+		return switch (stage(player, rune)) {
 			case UNDERSTOOD -> RuneItem.runeDescription(rune).getString().toLowerCase(Locale.ROOT);
 			case GLIMPSED -> RuneHints.glimpseText(RuneItem.runeDescription(rune).getString(), " ").toLowerCase(Locale.ROOT);
 			case UNREAD -> RuneHints.hint(rune).toLowerCase(Locale.ROOT);
