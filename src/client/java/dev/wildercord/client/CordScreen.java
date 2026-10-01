@@ -3082,8 +3082,7 @@ public class CordScreen extends Screen {
 			if (entries.isEmpty()) {
 				continue;
 			}
-			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.field_guide_" + (group == dev.wildercord.spell.FieldGuide.Group.WILDLIFE
-				? "wildlife" : "monsters")), 4, DIM, about));
+			lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.field_guide_" + group.key), 4, DIM, about));
 			for (dev.wildercord.spell.FieldGuide.Entry entry : entries) {
 				net.minecraft.world.entity.EntityType<?> type = Optional.ofNullable(Identifier.tryParse(entry.type()))
 					.flatMap(net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE::getOptional).orElse(null);

@@ -346,7 +346,7 @@ public final class Duels {
 			from.sendSystemMessage(Component.translatable("message.wildercord.duel_self").withStyle(ChatFormatting.RED));
 			return 0;
 		}
-		if (inDuel(from) || inDuel(to)) {
+		if (inDuel(from) || inDuel(to) || dev.wildercord.aura.world.DuelistDuels.inDuel(from) || dev.wildercord.aura.world.DuelistDuels.inDuel(to)) {
 			from.sendSystemMessage(Component.translatable("message.wildercord.duel_busy").withStyle(ChatFormatting.RED));
 			return 0;
 		}
@@ -405,7 +405,7 @@ public final class Duels {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_disabled").withStyle(ChatFormatting.RED));
 			return 0;
 		}
-		if (inDuel(from) || inDuel(to)) {
+		if (inDuel(from) || inDuel(to) || dev.wildercord.aura.world.DuelistDuels.inDuel(from) || dev.wildercord.aura.world.DuelistDuels.inDuel(to)) {
 			to.sendSystemMessage(Component.translatable("message.wildercord.duel_busy").withStyle(ChatFormatting.RED));
 			return 0;
 		}

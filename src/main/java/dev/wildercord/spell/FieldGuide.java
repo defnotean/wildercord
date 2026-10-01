@@ -23,8 +23,17 @@ public final class FieldGuide {
 	/** Mana condensed toward the next Heart Circle by each creature met for the first time: a little, for getting out there. */
 	public static final int REWARD = 40;
 
-	/** Which part of the guide a creature is listed in. */
-	public enum Group { WILDLIFE, MONSTER }
+	/** Which part of the guide a creature is listed in: wildlife, monsters, and the wanderers of the world (the duelists). */
+	public enum Group {
+		WILDLIFE("wildlife"), MONSTER("monsters"), WANDERER("wanderers");
+
+		/** The heading's language key's last part ({@code screen.wildercord.grimoire.field_guide_<key>}). */
+		public final String key;
+
+		Group(String key) {
+			this.key = key;
+		}
+	}
 
 	/**
 	 * One creature in the guide.

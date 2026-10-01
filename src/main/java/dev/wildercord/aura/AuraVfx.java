@@ -23,7 +23,7 @@ public final class AuraVfx {
 	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** A colour lifted toward white, for a light's hot core. */
-	static int hot(int color, double t) {
+	public static int hot(int color, double t) {
 		return AuraRules.mix(color, 0xFFFFFF, t);
 	}
 
@@ -88,7 +88,13 @@ public final class AuraVfx {
 
 	/** The slash leaving the blade: a bright crescent at the hand and a flash. */
 	static void slashStart(ServerPlayer player, Vec3 origin, Vec3 aim, Vec3 side, int color) {
-		ServerLevel level = player.level();
+		slashStart(player.level(), origin, aim, color);
+	}
+
+	/** The slash leaving whatever blade loosed it (a player's, a duelist's, a knight's, or a guard sending one back). */
+	public static void slashStart(ServerLevel level, Vec3 origin, Vec3 aim, int color) {
+		Vec3 side = aim.cross(UP);
+		side = side.lengthSqr() < 1.0E-4 ? new Vec3(1, 0, 0) : side.normalize();
 		Vec3 normal = UP.add(side.scale(0.75)).normalize();
 		Light.slash(level, origin.add(aim.scale(0.6)), normal, aim, hot(color, 0.3), 1.0, 2.4, 0.4, 1, 4);
 		Sigils.flash(level, origin.add(aim.scale(0.9)), 0xFF000000 | color, 1.2F);
@@ -102,10 +108,15 @@ public final class AuraVfx {
 		// Tilted like a real cut across the body, so it reads from behind the blade as well as from the side.
 		Vec3 normal = UP.add(side.scale(0.75)).normalize();
 		Vec3 centre = front.subtract(aim.scale(radius * 0.8));
+		double width0 = tick == 0 ? 0.75 : 0.66;
+		// Under the light, a rim of shadow a little wider than its halo. Added light alone washes out against a bright sky; the
+		// darkness gives the crescent an edge to read by there, and takes nothing from a dark sky, so at night it can't be seen.
+		// It's the mod's darkness (as void magic is drawn), so shader packs draw it too.
+		Light.slash(level, centre.subtract(aim.scale(0.04)), normal, aim, color | Light.DARK, radius * 1.01, span * 0.97, width0 * 1.3, tick == 0 ? 2 : 1, 6);
 		// A broad crescent of the aura's colour, a narrower brighter one inside it, and a white-hot edge: it trails a little as it flies.
-		Light.slash(level, centre, normal, aim, color, radius, span, tick == 0 ? 0.75 : 0.66, tick == 0 ? 2 : 1, 6);
+		Light.slash(level, centre, normal, aim, color, radius, span, width0, tick == 0 ? 2 : 1, 6);
 		Light.slash(level, centre.add(aim.scale(0.1)), normal, aim, hot(color, 0.3), radius * 0.97, span * 0.9, 0.34, 1, 5);
-		Light.slash(level, centre.add(aim.scale(0.18)), normal, aim, hot(color, 0.75), radius * 0.95, span * 0.82, 0.12, 1, 4);
+		Light.slash(level, centre.add(aim.scale(0.18)), normal, aim, hot(color, 0.85), radius * 0.95, span * 0.82, 0.14, 1, 4);
 		if (tick % 3 == 0) {
 			Motes.glows(level, front, 2, width * 0.2, hot(color, 0.3), 0.08, 12, aim.scale(-0.02), 0.01);
 		}
@@ -116,6 +127,23 @@ public final class AuraVfx {
 		Sigils.flash(level, at, 0xFF000000 | color, 1.4F);
 		Light.ring(level, at, aim, color, 0.2, 1.4, 0.06, 7);
 		Motes.burst(level, at, 6, hot(color, 0.3), 0.08, 14, 0.08);
+	}
+
+	/**
+	 * Two slashes meeting in the air: a white flash where they meet, a ring of each one's colour racing out across their
+	 * path, a ring along the ground between, and their light flung off in sparks.
+	 */
+	static void clash(ServerLevel level, Vec3 at, Vec3 aim, int a, int b) {
+		Vec3 flatAim = new Vec3(aim.x, 0, aim.z);
+		flatAim = flatAim.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flatAim.normalize();
+		Sigils.flash(level, at, 0xFFFFFFFF, 2.6F);
+		Light.ring(level, at, flatAim, a, 0.2, 2.8, 0.1, 10);
+		Light.ring(level, at, flatAim, b, 0.3, 3.4, 0.08, 12);
+		Light.ring(level, at, UP, hot(AuraRules.mix(a, b, 0.5), 0.5), 0.2, 2.2, 0.06, 9);
+		Light.ray(level, at.subtract(0, 0.9, 0), at.add(0, 1.6, 0), 0xFFFFFF, 0.1, 6);
+		Motes.burst(level, at, 16, hot(a, 0.3), 0.12, 22, 0.32);
+		Motes.burst(level, at, 16, hot(b, 0.3), 0.12, 22, 0.32);
+		Fx.send(level, ParticleTypes.CRIT, at, 16, 0.5, 0.45);
 	}
 
 	/** The slash cutting a foe. */

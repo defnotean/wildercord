@@ -37,8 +37,8 @@ public final class GearSlot {
 	public static final GearSlot STAFF = register("staff", Look.BACK, GearKind.STAFF, GearKind.GREATER_STAFF);
 	/** Any focus. */
 	public static final GearSlot FOCUS = register("focus", Look.SHOULDER, GearKind.FOCUS);
-	/** The Tome of the Fifth Page. */
-	public static final GearSlot TOME = register("tome", Look.HIP, GearKind.TOME);
+	/** The Tome of the Fifth Page, or the Breath Sash: a fifth spell or a steadier breath. */
+	public static final GearSlot TOME = register("tome", Look.HIP, GearKind.TOME, GearKind.SASH);
 
 	private final String id;
 	private final int index;

@@ -99,7 +99,8 @@ public final class Aura {
 	/** How much aura the player can hold. */
 	public static int capacity(Player player) {
 		int stage = stage(player);
-		return stage <= AuraRules.NONE ? 0 : AuraStages.capacity(stage);
+		// The Breath Sash, worn, holds more.
+		return stage <= AuraRules.NONE ? 0 : dev.wildercord.aura.world.ForgedGear.capacity(player, AuraStages.capacity(stage));
 	}
 
 	public static float aura(Player player) {
@@ -273,7 +274,8 @@ public final class Aura {
 				stance.releasedAt = -1;
 			}
 			stance.still++;
-			if (!state.breathing() && stance.still >= AuraRules.SETTLE_TICKS) {
+			// The Breath Sash, worn, settles it sooner.
+			if (!state.breathing() && stance.still >= dev.wildercord.aura.world.ForgedGear.settleTicks(player)) {
 				state = state.settled(now);
 				state(player, state);
 				Feels.sound(player.level(), pos, "aura_breath", 0.45F, 1.0F);
@@ -446,6 +448,7 @@ public final class Aura {
 		AuraApi.registerTechnique(new AuraApi.Technique("guard", AuraRules.FLOW, AuraApi.Trigger.SNEAK_TAP, AuraRules.GUARD_RAISE_COST, AuraGuard::raise));
 		AuraApi.registerTechnique(new AuraApi.Technique("slash", AuraRules.EDGE, AuraApi.Trigger.TAP, AuraRules.SLASH_COST, AuraSlash::loose));
 		AuraMethods.init();
+		Crescents.init();
 		AuraCombat.init();
 		AuraBreakthroughs.init();
 		AuraLoot.init();

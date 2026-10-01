@@ -165,6 +165,7 @@ public final class Gear {
 			case STAFF, GREATER_STAFF -> Component.translatable("tooltip.wildercord.gear.staff", Component.translatable("element.wildercord." + piece.element()),
 				percent(piece.elementPower() - 1), percent(1 - piece.elementCost()));
 			case TOME -> Component.translatable("tooltip.wildercord.gear.tome");
+			case SASH -> Component.translatable("tooltip.wildercord.gear.sash");
 			case FOCUS -> piece.chargeSpeed() > 1 ? Component.translatable("tooltip.wildercord.gear.haste", percent(piece.chargeSpeed() - 1))
 				: piece == GearDef.REPRIEVE ? Component.translatable("tooltip.wildercord.gear.reprieve")
 				: piece == GearDef.GROUNDING ? Component.translatable("tooltip.wildercord.gear.grounding")

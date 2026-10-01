@@ -35,7 +35,9 @@ public record GearDef(String path, GearKind kind, String element, double element
 		/** A staff from a boss: stronger. */
 		GREATER_STAFF,
 		TOME,
-		FOCUS;
+		FOCUS,
+		/** The Breath Sash: nothing for spells, but it steadies the breath of aura (see {@code aura.world.ForgedGear}). */
+		SASH;
 
 		public boolean staff() {
 			return this == STAFF || this == GREATER_STAFF;
@@ -67,6 +69,8 @@ public record GearDef(String path, GearKind kind, String element, double element
 	public static final GearDef RESOLVE = register(focus("focus_of_resolve", RESOLVE_POWER, 1, 1, 0, 0));
 	public static final GearDef REPRIEVE = register(focus("focus_of_reprieve", 0.90, 1, 1, 0, 0));
 	public static final GearDef GROUNDING = register(focus("focus_of_grounding", 0.90, 1, 1, 0, 0));
+	/** Worn where the tome goes (a swordsman's choice against a fifth spell): more aura, and a steadier breathing stance. */
+	public static final GearDef BREATH_SASH = register(new GearDef("breath_sash", GearKind.SASH, "", 1, 1, 1, 1, 1, 0, 0, false));
 
 	static {
 		for (String element : ELEMENTS) {

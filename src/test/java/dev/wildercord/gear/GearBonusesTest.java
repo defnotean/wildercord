@@ -22,8 +22,8 @@ class GearBonusesTest {
 			assertEquals(GearDef.GearKind.STAFF, GearDef.staff(element).kind());
 			assertEquals(GearDef.GearKind.GREATER_STAFF, GearDef.greaterStaff(element).kind());
 		}
-		// 20 staffs, the tome and seven foci.
-		assertEquals(28, GearDef.all().size());
+		// 20 staffs, the tome, seven foci and the Breath Sash.
+		assertEquals(29, GearDef.all().size());
 		assertTrue(GearDef.get("focus_of_the_deep_well").isPresent());
 	}
 

@@ -175,9 +175,17 @@ public final class AuraCombat {
 	 * Returns what it took.
 	 */
 	public static float projected(ServerPlayer player, LivingEntity target, double damage, boolean answer) {
+		return projected(player, target, damage, 1.0, answer);
+	}
+
+	/**
+	 * Projected aura with a bonus of its own on top of the element (an aura-forged glaive's slash): the two together are held
+	 * to the spell-defence cap against a player.
+	 */
+	public static float projected(ServerPlayer player, LivingEntity target, double damage, double extra, boolean answer) {
 		ServerLevel level = player.level();
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, player, player);
-		double bonus = AuraElements.bonus(player, target, source, Aura.element(player));
+		double bonus = AuraElements.bonus(player, target, source, Aura.element(player)) * Math.max(0, extra);
 		double amount = damage;
 		if (target instanceof Player) {
 			amount *= AuraRules.capBonus(bonus, Config.get().defence().maxBonus()) * Config.get().aura().pvpScale();

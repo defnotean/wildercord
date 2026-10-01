@@ -54,6 +54,10 @@ class GearSlotsTest {
 		}
 		assertTrue(GearSlot.TOME.accepts(GearDef.TOME));
 		assertFalse(GearSlot.FOCUS.accepts(GearDef.TOME) || GearSlot.STAFF.accepts(GearDef.TOME));
+		// The Breath Sash is worn where the tome goes: a fifth spell, or a steadier breath.
+		assertTrue(GearSlot.TOME.accepts(GearDef.BREATH_SASH));
+		assertFalse(GearSlot.FOCUS.accepts(GearDef.BREATH_SASH) || GearSlot.STAFF.accepts(GearDef.BREATH_SASH));
+		assertFalse(GearBonuses.of(slots(null, null, GearDef.BREATH_SASH), null, null).fifthSpell(), "the sash opens no spell");
 		assertFalse(GearSlot.STAFF.accepts(null));
 		assertNull(GearSlot.of((GearDef) null));
 	}
