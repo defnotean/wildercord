@@ -135,6 +135,10 @@ public final class Feats {
 		if (key.startsWith("reaction:") || key.startsWith(Fusions.KEY_PREFIX)) {
 			return 150;
 		}
+		// Aura's milestones (a method learned, a breakthrough, the first perfect guard): the body's path feeds the heart a little too.
+		if (key.startsWith("aura:")) {
+			return 150;
+		}
 		if (key.equals("feat:" + ARCHIVIST)) {
 			return 2000;
 		}

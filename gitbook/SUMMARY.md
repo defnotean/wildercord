@@ -46,6 +46,7 @@
 * [Growing Stronger](progression/index.md)
   * [Heart Circles](progression/heart-circles.md)
   * [The Grimoire and Feats](progression/grimoire.md)
+  * [Aura](progression/aura.md)
   * [Your Affinities](progression/affinity.md)
   * [Advancements](progression/advancements.md)
   * [Mana](progression/mana.md)

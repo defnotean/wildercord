@@ -91,6 +91,8 @@ public final class WildercordCommand {
 						ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.circles", count), false);
 						return 1;
 					})))
+				// Aura, the swordsman's path: a method, a stage, experience, a full pool, a breakthrough.
+				.then(dev.wildercord.aura.AuraCommand.node())
 				.then(Commands.literal("condense").then(Commands.argument("mana", IntegerArgumentType.integer(0))
 					.executes(ctx -> {
 						ServerPlayer player = ctx.getSource().getPlayerOrException();

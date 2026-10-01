@@ -154,6 +154,8 @@ public final class WildercordClient implements ClientModInitializer {
 		CastingOptions.load();
 		WildercordKeys.init();
 		SpellHud.init();
+		// Aura: what aura sense outlines (the bar is SpellHud's, the blade's glow AuraBlade's).
+		AuraClient.init();
 		dev.wildercord.client.fx.FrameBenchmark.init();
 		WaypointHud.init();
 		Wildercord.LOGGER.info("Wildercord client initialized");

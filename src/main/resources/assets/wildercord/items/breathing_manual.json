@@ -1,0 +1,83 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "wildercord:breathing_method",
+    "cases": [
+      {
+        "when": "ember",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/ember"
+        }
+      },
+      {
+        "when": "rime",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/rime"
+        }
+      },
+      {
+        "when": "thunder",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/thunder"
+        }
+      },
+      {
+        "when": "gale",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/gale"
+        }
+      },
+      {
+        "when": "stone",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/stone"
+        }
+      },
+      {
+        "when": "verdant",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/verdant"
+        }
+      },
+      {
+        "when": "hollow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/hollow"
+        }
+      },
+      {
+        "when": "starlit",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/starlit"
+        }
+      },
+      {
+        "when": "hourglass",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/hourglass"
+        }
+      },
+      {
+        "when": "crimson",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/breathing_manual/crimson"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "wildercord:item/breathing_manual/unknown"
+    }
+  }
+}

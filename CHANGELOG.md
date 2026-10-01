@@ -91,6 +91,59 @@ element and a land, and each leaves something behind that's worth a little.
   (`glimmerwing`, `lumen_stag`, `mossback_tortoise`, `cinderfox`, `skyray`, `rimehare`). An older config file gains the
   section at its defaults. They spawn in vanilla's own pools, so the mob caps hold, and the rare ones stay rare and keep
   their distance from each other.
+The swordsman's path. Aura is mana drawn into the body and out along a blade: learn a breathing method, gather aura from
+real blows and a still, steady breath, and climb in leaps from a haze on the weapon to a blade of solid light. It's open
+to everyone alongside the Cord, needs no Cord at all, and the two paths combine. Players need this version to join a
+server running it (it adds an item, sounds and synced data).
+
+### Aura: the swordsman's path
+- **Breathing methods.** Ten Breathing Manuals, one per element: Ember, Rime, Thunder, Gale, Stone, Verdant, Hollow,
+  Starlit, Hourglass and Crimson Breath. Read one to learn its method: your aura takes its element's colour and its
+  element, so a blade meets a creature's weakness or resistance and the elemental climate as a spell of that element
+  would, and sets off the reactions waiting on its marks (a frozen foe shatters under an Ember blade). Each method has a
+  small passive that grows as you do: Ember sets foes alight from Flow (always from Edge), Rime slows, Thunder throws
+  sparks to the next foe, Gale lends speed in a fight, Stone steadies you against knockback, Verdant mends a little with
+  each blow, Hollow draws nearby foes together, Starlit gathers aura faster, Hourglass quickens your swings, Crimson
+  drinks a little of what it takes. Switching methods keeps your stage but costs the road to your next breakthrough (and
+  your aura), so the manual asks to be read twice.
+- **Where manuals are found**: the Archive's library and vault, every expedition's vault (each favouring its element's
+  method), trial chambers' vaults, stronghold libraries and ancient cities; master weaponsmiths and clerics sell one for
+  emeralds and a book.
+- **Aura** is a small pool that never fades: 20 at Glow, 40 at Flow, 70 at Edge. Full swings of a sword, axe, spear,
+  trident or mace on real foes fill it (spam, farming one spot and training dummies much less), and so does the
+  **breathing stance**: sneak and stand still with your blade in hand. A ring closes on the aura bar with each breath; let
+  sneak up and press it again as it closes for a breath on the beat, worth a burst more. You meditate for mana at the same
+  time.
+- **Glow**: every blow of an aura weapon is coated, landing 10% harder in your element, and each breath of the stance
+  senses hostile creatures within 16 blocks, outlined for you alone. The blade wears a haze of your aura.
+- **Flow**: every aura weapon sweeps, wider and further than a sword ever did, and your blade can **guard**: sneak and
+  press the Aura key. A held guard halves blows and arrows from in front, paying aura for what it takes. Raised just as
+  the blow comes, it's a **perfect guard**, timed like a Shield's parry: the blow is turned aside and the attacker
+  staggered, an arrow flies back at whoever loosed it, and a spell is parried and answered. The blade's aura flows, light
+  running along it and ripples leaving it.
+- **Edge**: a blade of solid, translucent crystal along your weapon, reaching past its point: a block more reach, and a
+  quarter of each coated blow goes through armour. Tap the Aura key for an **Aura Slash**, a crescent of aura that cuts
+  everything in its path for your weapon's damage in your element (12 aura, every 2 seconds).
+- **Backlash**: spend past empty and you're slowed and weakened for a few seconds. It never hurts.
+- **Breakthroughs.** Aura experience comes from meaningful fighting (more in danger, against bosses and stronger foes,
+  nothing from spam), and at each stage's threshold a breakthrough waits for a trial: hold the breathing stance unbroken
+  for half a minute where ley lines cross, or fell a foe stronger than you (a boss, a Runebound or anything with twice
+  your health) by your blade alone. A breakthrough bursts out of you in your aura's colour, with its name on screen, a
+  sound and a Grimoire entry. Flow takes about half an hour of real play, Edge about two hours. Form and Sovereign come
+  later.
+- **The Aura key** (Z, under Wildercord in the controls; V is still the spell key): tap for the slash, sneak and press
+  for the guard. A double tap and a hold are kept for the techniques still to come.
+- **The aura bar** sits on top of the spell panel (or alone, without a Cord): your stages, the next pulsing gold while a
+  breakthrough waits, your aura in your method's colour with the slash's price marked, and the breath's beat ring. The
+  **Aura page**, from the Cord screen's new Aura badge (it opens without a Cord too), shows your method, stage, aura, the
+  road to your next breakthrough and its trials, and every technique.
+- **Fair in PvP.** Aura blows are melee, so armour applies. Against players aura's bonuses sit under the spell-defence
+  cap and a PvP scale, and the slash meets the spell defences in full, spellguard included.
+- **Server settings**: a new `aura` section (`enabled`, `xp_multiplier`, `gain_multiplier`, `coat_bonus`, `damage_scale`,
+  `slash_damage`, `slash_cost`, `slash_cooldown_seconds`, `pvp_scale`, `backlash_seconds`, `guard_share`). An older config
+  file gains it at its defaults. Servers and add-ons can add weapons to the `wildercord:aura_weapons` item tag.
+- **Hooks for what comes next** in `api.AuraApi`: a stage registry and trials, a technique registry for the Aura key, hooks
+  on aura gained and spent, and breathing methods and the places manuals are found (and a way to teach one outright).
 
 ## [0.8.0-alpha] - 2026-10-01
 

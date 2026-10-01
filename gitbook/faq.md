@@ -307,6 +307,35 @@ Ten exact rune sequences become something grander. Nothing lists them: experimen
 **Torn Pages** (found in old chests and dropped by Runebound). Once you've cast one, it's in your Grimoire.
 See [Secret Spells](spellcraft/secret-spells.md).
 
+## Aura
+
+### What's aura? Do I need a Cord for it?
+Aura is the swordsman's path: mana drawn into your body and out along a blade. You don't need a Cord: read a **Breathing
+Manual** to learn a method, then fight with a sword, axe, spear, trident or mace, or sneak and stand still with one in
+hand to breathe aura in. It works alongside your spells. See [Aura](progression/aura.md).
+
+### Where do I find a Breathing Manual?
+In old battlegrounds: the Archive's library and vault, expedition vaults, trial chamber vaults, stronghold libraries and
+ancient cities. Master weaponsmiths and clerics sell one for emeralds and a book. See
+[Where to find manuals](progression/aura.md#where-to-find-manuals).
+
+### My aura bar isn't filling when I hit things.
+Only **full swings** on real foes count: wait for your attack to recharge between swings. Hitting the same kind of foe in
+the same spot for a long time gives less and less, and a Training Dummy only gives a quarter. Or stand in the breathing
+stance (sneak and stand still with your blade in hand).
+
+### Why can't I break through to the next stage?
+When your aura reaches a stage's limit, a breakthrough waits for a trial: hold the breathing stance for half a minute where
+ley lines cross, or fell a foe stronger than you (a boss, a Runebound or anything with twice your health) with your blade
+alone, no spells. The Aura page (the Aura badge in the Cord screen) shows how far you've got.
+
+### I pressed the Aura key and got slowed.
+That's backlash: you used a technique without enough aura. It wears off in a few seconds and never hurts.
+
+### Can I change my breathing method?
+Yes: read another method's manual twice. You keep your stage, but lose the road to your next breakthrough and the aura
+you hold.
+
 ## The world
 
 ### Some monsters are glowing and casting spells.

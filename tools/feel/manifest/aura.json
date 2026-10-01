@@ -1,0 +1,48 @@
+{
+  "events": {
+    "aura_backlash": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_backlash"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_breakthrough": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_breakthrough"
+      ],
+      "subtitle": "field"
+    },
+    "aura_breath": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_breath"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_guard": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_guard"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_perfect_guard": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_perfect_guard"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_slash": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_slash_1",
+        "kit/aura/aura_slash_2"
+      ],
+      "subtitle": "cast"
+    }
+  },
+  "part": "aura"
+}

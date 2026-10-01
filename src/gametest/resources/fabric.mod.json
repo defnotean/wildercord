@@ -72,7 +72,8 @@
 			"dev.wildercord.cast.CircleDisciplineTest",
 			"dev.wildercord.gametest.WildercordResidueTest",
 			"dev.wildercord.gametest.WildercordMonstersTest",
-			"dev.wildercord.gametest.WildercordWildlifeTest"
+			"dev.wildercord.gametest.WildercordWildlifeTest",
+			"dev.wildercord.gametest.WildercordAuraTest"
 		]
 	},
 	"depends": {

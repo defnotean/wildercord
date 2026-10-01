@@ -494,7 +494,7 @@ public final class Mastery {
 		BuiltinStructures.END_CITY, BuiltinStructures.WOODLAND_MANSION, BuiltinStructures.OCEAN_MONUMENT);
 
 	/** Inside a dungeon: the mod's Archives and dungeons (their warded rooms too) and the great structures of the world. */
-	static boolean inDungeon(ServerLevel level, BlockPos pos) {
+	public static boolean inDungeon(ServerLevel level, BlockPos pos) {
 		if (dev.wildercord.world.dungeons.DungeonWards.warded(level, pos)) {
 			return true;
 		}

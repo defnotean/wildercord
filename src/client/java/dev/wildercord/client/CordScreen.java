@@ -397,6 +397,59 @@ public class CordScreen extends Screen {
 		return mastery.isOpen() ? mastery.spell() : -1;
 	}
 
+	/** The middle of the Aura badge, on screen (with a Cord or without). */
+	public double[] auraBadgePoint() {
+		return onScreen(auraX() + 7, 7 + 7);
+	}
+
+	/** The Aura badge's x: left of the defence badge with a Cord, in the corner without one. */
+	private int auraX() {
+		return tier() == null ? W - 27 : W - 27 - 18 * 4;
+	}
+
+	/** Opens the Aura page, coming back here when it closes. */
+	private void openAura() {
+		click();
+		minecraft.gui.setScreen(new AuraScreen(this));
+	}
+
+	/**
+	 * The Aura badge: a blade in the aura's colour (grey before a method is learned), a gold dot while a breakthrough waits.
+	 * Returns its tooltip when the mouse is over it.
+	 */
+	private List<Component> drawAuraBadge(GuiGraphicsExtractor g, int mx, int my) {
+		int x = auraX();
+		int y = 7;
+		sprite(g, SPR_BADGE, x, y, 14, 14);
+		int color = dev.wildercord.aura.Aura.stage(minecraft.player) > 0 ? 0xFF000000 | dev.wildercord.aura.Aura.color(minecraft.player) : 0xFF8A84A0;
+		int bright = 0xFF000000 | AuraHud.mix(color & 0xFFFFFF, 0xFFFFFF, 0.5);
+		// A blade rising to the upper right, a guard across it and a short grip.
+		for (int i = 0; i < 6; i++) {
+			g.fill(x + 6 + i, y + 7 - i, x + 7 + i, y + 8 - i, i == 5 ? bright : color);
+		}
+		g.fill(x + 4, y + 7, x + 5, y + 8, 0xFFB08A3E);
+		g.fill(x + 5, y + 8, x + 6, y + 9, 0xFFE8C46A);
+		g.fill(x + 6, y + 9, x + 7, y + 10, 0xFFB08A3E);
+		g.fill(x + 4, y + 9, x + 5, y + 10, 0xFF6A4E2A);
+		g.fill(x + 3, y + 10, x + 4, y + 11, 0xFF6A4E2A);
+		if (dev.wildercord.aura.AuraBreakthroughs.ready(minecraft.player) && (System.currentTimeMillis() / 400) % 2 == 0) {
+			g.fill(x + 11, y + 1, x + 13, y + 3, 0xFFF5C46A);
+		}
+		if (!inside(mx, my, x, y, 14, 14)) {
+			return null;
+		}
+		List<Component> tip = new ArrayList<>();
+		tip.add(Component.translatable("screen.wildercord.aura.badge").withColor(GOLD));
+		int stage = dev.wildercord.aura.Aura.stage(minecraft.player);
+		if (stage > 0) {
+			tip.add(Component.translatable("screen.wildercord.aura.stage", Component.translatable("aura.wildercord.stage."
+				+ dev.wildercord.aura.AuraStages.id(stage)).withColor(color)).withStyle(ChatFormatting.GRAY));
+		} else {
+			tip.add(Component.translatable("screen.wildercord.aura.none").withStyle(ChatFormatting.GRAY));
+		}
+		return tip;
+	}
+
 	/** The middle of spell row {@code row}'s rank badge, on screen. */
 	public double[] masteryBadgePoint(int row) {
 		return onScreen(BADGE_X + 7, SPELL_TOP + row * SPELL_ROW + 1 + 7);
@@ -837,7 +890,8 @@ public class CordScreen extends Screen {
 		if (tier == null) {
 			g.centeredText(font, Component.translatable("screen.wildercord.no_cord"), W / 2, H / 2 - 10, TEXT);
 			g.centeredText(font, Component.translatable("screen.wildercord.no_cord_hint"), W / 2, H / 2 + 4, DIM);
-			return null;
+			// Aura needs no Cord: its page is open to everyone.
+			return drawAuraBadge(g, mx, my);
 		}
 		List<Component> tooltip = null;
 
@@ -880,6 +934,10 @@ public class CordScreen extends Screen {
 		if (inside(mx, my, wardX, helpY, 14, 14)) {
 			tooltip = defenceTooltip();
 		}
+		List<Component> auraTip = drawAuraBadge(g, mx, my);
+		if (auraTip != null) {
+			tooltip = auraTip;
+		}
 		Component name = Component.translatable(tier.itemKey());
 		Component spellsLabel = Component.translatable(tier.spells == 1 ? "screen.wildercord.spells.one" : "screen.wildercord.spells.many", tier.spells);
 		Component stats = Component.translatable("screen.wildercord.stats", tier.sockets, spellsLabel, RuneItem.roman(tier.maxRuneTier));
@@ -897,7 +955,7 @@ public class CordScreen extends Screen {
 			g.text(font, label, pageX + 5, 10, active ? GOLD : inside(mx, my, pageX, 7, w, 13) ? TEXT : DIM, false);
 			pageX += w + 2;
 		}
-		int statsRight = wardX - 6;
+		int statsRight = auraX() - 6;
 		int statsW = font.width(stats);
 		if (pageX + 8 + statsW <= statsRight) {
 			g.text(font, stats, statsRight - statsW, 10, DIM, false);
@@ -2007,6 +2065,10 @@ public class CordScreen extends Screen {
 	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
 		double mx = localX(event.x());
 		double my = localY(event.y());
+		if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && inside(mx, my, auraX(), 7, 14, 14) && !loadouts.isOpen() && !mastery.isOpen()) {
+			openAura();
+			return true;
+		}
 		if (tier() == null) {
 			return super.mouseClicked(event, doubleClick);
 		}

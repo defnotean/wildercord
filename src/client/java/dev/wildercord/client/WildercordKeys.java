@@ -14,8 +14,9 @@ import net.minecraft.client.Minecraft;
 /**
  * R casts (tap) or charges (hold, then let go); V moves to the next spell (tap) or opens the spell
  * wheel (hold); K opens the Cord screen; B opens the backpack worn in the Backpack slot (in the inventory
- * too, and closes an open backpack). Casting spells 1-4 directly, and loading the next loadout, are
- * unbound by default.
+ * too, and closes an open backpack); Z is the Aura key (a tap, a press while sneaking, a double tap and a
+ * hold each go to the server, which picks the technique: see {@code api.AuraApi}). Casting spells 1-4
+ * directly, and loading the next loadout, are unbound by default.
  */
 public final class WildercordKeys {
 	private WildercordKeys() {}
@@ -34,6 +35,15 @@ public final class WildercordKeys {
 	private static KeyMapping magicSettings;
 	/** "Cast spell N": the Cord's four, and the tome's fifth. */
 	private static final KeyMapping[] CAST_N = new KeyMapping[dev.wildercord.gear.SpellSlots.ALL];
+
+	/** The Aura key: its ways of being pressed go to the server as {@code aura.Aura.Key}. */
+	private static KeyMapping aura;
+	/** Two taps of the Aura key this close together (ticks) are a double tap. */
+	private static final int DOUBLE_TAP = 8;
+	private static int auraHeld = -1;
+	/** Whether the Aura key's press already went (sneaking, or held into a hold): letting it go then sends nothing more. */
+	private static boolean auraSent;
+	private static long auraTapAt = Long.MIN_VALUE / 2;
 
 	private static int castHeld = -1;
 	private static boolean charging;
@@ -76,6 +86,19 @@ public final class WildercordKeys {
 		ClientPlayNetworking.send(new WildercordNetworking.OpenBackpack());
 	}
 
+	/** The Aura key itself (tests press it as a player would). */
+	public static KeyMapping auraMapping() {
+		return aura;
+	}
+
+	public static net.minecraft.network.chat.Component auraKey() {
+		return aura.getTranslatedKeyMessage();
+	}
+
+	private static void sendAura(dev.wildercord.api.AuraApi.Trigger trigger) {
+		ClientPlayNetworking.send(new dev.wildercord.aura.Aura.Key(trigger.ordinal()));
+	}
+
 	public static net.minecraft.network.chat.Component nextLoadoutKey() {
 		return nextLoadout.getTranslatedKeyMessage();
 	}
@@ -87,6 +110,8 @@ public final class WildercordKeys {
 		next = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.next_spell", InputConstants.KEY_V, CATEGORY));
 		open = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.open_cord", InputConstants.KEY_K, CATEGORY));
 		backpack = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.open_backpack", InputConstants.KEY_B, CATEGORY));
+		// Z, not V: V is already the spell key (tap to switch, hold for the wheel).
+		aura = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.aura", InputConstants.KEY_Z, CATEGORY));
 		for (int i = 0; i < CAST_N.length; i++) {
 			CAST_N[i] = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.wildercord.cast_" + (i + 1),
 				InputConstants.UNKNOWN.getType(), InputConstants.UNKNOWN.getValue(), CATEGORY));
@@ -96,6 +121,44 @@ public final class WildercordKeys {
 		ClientTickEvents.END_CLIENT_TICK.register(WildercordKeys::tick);
 	}
 
+	/**
+	 * The Aura key: pressed while sneaking it goes at once (a guard can't wait for the key to come up); otherwise a tap goes
+	 * when it's let go (and a second tap soon after is a double tap too), and held it goes once as the hold begins.
+	 */
+	private static void auraKey(Minecraft client, boolean playing) {
+		while (aura.consumeClick()) {
+			if (auraHeld < 0 && playing) {
+				auraHeld = 0;
+				auraSent = client.player.isShiftKeyDown();
+				if (auraSent) {
+					sendAura(dev.wildercord.api.AuraApi.Trigger.SNEAK_TAP);
+				}
+			}
+		}
+		if (auraHeld < 0 || !playing) {
+			return;
+		}
+		if (aura.isDown()) {
+			auraHeld++;
+			if (!auraSent && auraHeld == HOLD) {
+				auraSent = true;
+				sendAura(dev.wildercord.api.AuraApi.Trigger.HOLD);
+			}
+			return;
+		}
+		if (!auraSent) {
+			long now = client.level == null ? 0 : client.level.getGameTime();
+			sendAura(dev.wildercord.api.AuraApi.Trigger.TAP);
+			if (now - auraTapAt <= DOUBLE_TAP) {
+				sendAura(dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP);
+				auraTapAt = Long.MIN_VALUE / 2;
+			} else {
+				auraTapAt = now;
+			}
+		}
+		auraHeld = -1;
+	}
+
 	private static void tick(Minecraft client) {
 		while (magicSettings.consumeClick()) if (client.player != null) client.gui.setScreen(new MagicSettingsScreen());
 		if (client.player == null || !client.player.isAlive()) {
@@ -103,7 +166,11 @@ public final class WildercordKeys {
 			castHeld = -1;
 			charging = false;
 			nextHeld = -1;
+			auraHeld = -1;
 			while (cast.consumeClick()) {
+				// Discarded.
+			}
+			while (aura.consumeClick()) {
 				// Discarded.
 			}
 		}
@@ -160,6 +227,7 @@ public final class WildercordKeys {
 				nextHeld = -1;
 			}
 		}
+		auraKey(client, playing);
 		while (open.consumeClick()) {
 			if (client.player != null && client.gui.screen() == null) {
 				client.gui.setScreen(new CordScreen());

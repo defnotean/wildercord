@@ -156,6 +156,7 @@ public final class SpellHud {
 	/** On leaving a world: the next one's mana bar starts from its own mana, not glides from this one's. */
 	static void forget() {
 		shownMana = -1;
+		AuraHud.forget();
 	}
 
 	/** {@code runes} read as a spell, remembered while they stay the same (the HUD and the wheel draw every frame). */
@@ -185,6 +186,8 @@ public final class SpellHud {
 		CordTier tier = Spellbooks.tier(player);
 		if (tier == null) {
 			shownMana = -1;
+			// No Cord: the aura bar alone, where the spell panel would be.
+			AuraHud.alone(g, delta);
 			return;
 		}
 		Font font = mc.font;
@@ -228,6 +231,8 @@ public final class SpellHud {
 		Place place = place(g.guiWidth(), aside, narrowest);
 		int x0 = place.x();
 		int y0 = g.guiHeight() - HEIGHT - (place.raised() ? RAISE : 0);
+		// The aura bar rides on top of the panel, as wide as it.
+		int auraLift = AuraHud.height(player);
 		int avail = g.guiWidth() - x0 - 2;
 
 		// ---- how wide: measured, then shrunk to fit.
@@ -256,12 +261,14 @@ public final class SpellHud {
 		}
 
 		sprite(g, FRAME, x0, y0, width, HEIGHT);
+		int auraTop = auraLift > 0 ? AuraHud.draw(g, player, x0, y0 - auraLift, width, delta.getGameTimeDeltaPartialTick(false)) : y0;
+		int panelTop = Math.min(y0 - auraLift, auraTop);
 
 		// ---- above the panel: the spell's name, rhythm notes and cracked circles.
 		long gameTime = player.level().getGameTime();
 		dev.wildercord.player.WildercordAttachments.Rhythm rhythm = player.getAttachedOrElse(dev.wildercord.player.WildercordAttachments.RHYTHM,
 			dev.wildercord.player.WildercordAttachments.Rhythm.NONE);
-		int above = y0 - 10;
+		int above = panelTop - 10;
 		int lx = x0 + 3;
 		for (int i = 0; i < rhythm.stacks(); i++) {
 			g.text(font, "\u266A", lx, above, GOLD, true);
@@ -295,7 +302,7 @@ public final class SpellHud {
 				right = Math.max(right, cx + climateW);
 			}
 		}
-		int top = nameRow ? above : y0;
+		int top = nameRow ? above : panelTop;
 
 		// ---- badge: spell number, cooldown shade, and one dot per spell.
 		int bx = x0 + 4;
@@ -437,7 +444,7 @@ public final class SpellHud {
 		if (shield != null && shield.until() > gameTime) {
 			int color = 0xFF000000 | shield.color();
 			// A line above the spell's name when there is one, so the two don't write over each other.
-			int sy = nameRow ? y0 - 21 : y0 - 11;
+			int sy = nameRow ? panelTop - 21 : panelTop - 11;
 			String text = net.minecraft.network.chat.Component.translatable("hud.wildercord.shield", Math.round(shield.strength()),
 				(shield.until() - gameTime + 19) / 20).getString();
 			hexagon(g, x0 + 2, sy + 1, color);

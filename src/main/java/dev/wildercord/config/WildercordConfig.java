@@ -49,6 +49,7 @@ import java.util.Set;
  * @param power              places and times of power (ley crossings, the moon, the hour, the weather): see {@link PowerSettings}
  * @param monsters           the magical monsters of the wilds (Bramblewalkers, Gloomstalkers...): see {@link MonsterSettings}
  * @param wildlife           magical wildlife spawning in its biomes (the wildlife keys of the {@code creatures} section): see {@link WildlifeSettings}
+ * @param aura               aura, the swordsman's path (breathing methods, stages, techniques): see {@link AuraSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -81,12 +82,13 @@ public record WildercordConfig(
 	ResidueSettings residues,
 	PowerSettings power,
 	MonsterSettings monsters,
-	WildlifeSettings wildlife
+	WildlifeSettings wildlife,
+	AuraSettings aura
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
 		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, MasterySettings.DEFAULTS,
 		ChannelingSettings.DEFAULTS, true, ResonanceSettings.DEFAULTS, ResidueSettings.DEFAULTS, PowerSettings.DEFAULTS, MonsterSettings.DEFAULTS,
-		WildlifeSettings.DEFAULTS);
+		WildlifeSettings.DEFAULTS, AuraSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -287,6 +289,39 @@ public record WildercordConfig(
 		}
 	}
 
+	/**
+	 * Aura, the swordsman's path (the {@code aura} section). A file written before the section existed reads as these
+	 * defaults. The numbers' meaning is in {@code aura.AuraRules}, whose defaults these are.
+	 *
+	 * @param enabled              whether aura works at all (manuals still drop; nothing is learned, gained or spent while it's off)
+	 * @param xpMultiplier         how fast aura experience comes, times this
+	 * @param gainMultiplier       how fast aura itself comes (from blows and the breathing stance), times this
+	 * @param coatBonus            what a coated blow adds (0.1 is 10%)
+	 * @param damageScale          every bonus aura adds to damage (the coat, sparks, the slash), times this
+	 * @param slashDamage          Aura Slash's strength, as a share of the weapon's damage
+	 * @param slashCost            Aura Slash's price in aura
+	 * @param slashCooldownSeconds how long before another Aura Slash
+	 * @param pvpScale             aura's bonuses and the slash against other players, as a fraction
+	 * @param backlashSeconds      how long backlash (spending past empty) slows and weakens, never damaging
+	 * @param guardShare           how much of a blow a held Aura Guard takes off (0.5 is half)
+	 */
+	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare) {
+		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
+			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
+			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE);
+
+		/** The slash's cooldown in ticks. */
+		public int slashCooldownTicks() {
+			return (int) Math.round(slashCooldownSeconds * 20);
+		}
+
+		/** Backlash's length in ticks. */
+		public int backlashTicks() {
+			return (int) Math.round(backlashSeconds * 20);
+		}
+	}
+
 	/** The file's format version, written so later versions can migrate it. */
 	public static final int VERSION = 1;
 
@@ -400,7 +435,19 @@ public record WildercordConfig(
 				r.bool("creatures", "mossback_tortoise", d.wildlife.mossbackTortoise()),
 				r.bool("creatures", "cinderfox", d.wildlife.cinderfox()),
 				r.bool("creatures", "skyray", d.wildlife.skyray()),
-				r.bool("creatures", "rimehare", d.wildlife.rimehare())));
+				r.bool("creatures", "rimehare", d.wildlife.rimehare())),
+			new AuraSettings(
+				r.bool("aura", "enabled", d.aura.enabled()),
+				r.number("aura", "xp_multiplier", d.aura.xpMultiplier(), 0, 100),
+				r.number("aura", "gain_multiplier", d.aura.gainMultiplier(), 0, 100),
+				r.number("aura", "coat_bonus", d.aura.coatBonus(), 0, 1),
+				r.number("aura", "damage_scale", d.aura.damageScale(), 0, 10),
+				r.number("aura", "slash_damage", d.aura.slashDamage(), 0, 5),
+				r.number("aura", "slash_cost", d.aura.slashCost(), 0, 1000),
+				r.number("aura", "slash_cooldown_seconds", d.aura.slashCooldownSeconds(), 0, 60),
+				r.number("aura", "pvp_scale", d.aura.pvpScale(), 0, 10),
+				r.number("aura", "backlash_seconds", d.aura.backlashSeconds(), 0, 30),
+				r.number("aura", "guard_share", d.aura.guardShare(), 0, 1)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -429,6 +476,8 @@ public record WildercordConfig(
 			"mana_ooze"));
 		KEYS.put("creatures", Set.of("wildlife", "wildlife_spawn_multiplier", "glimmerwing", "lumen_stag", "mossback_tortoise", "cinderfox", "skyray",
 			"rimehare"));
+		KEYS.put("aura", Set.of("enabled", "xp_multiplier", "gain_multiplier", "coat_bonus", "damage_scale", "slash_damage", "slash_cost",
+			"slash_cooldown_seconds", "pvp_scale", "backlash_seconds", "guard_share"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -727,6 +776,25 @@ public record WildercordConfig(
 		creaturesSection.addProperty("skyray", wildlife.skyray());
 		creaturesSection.addProperty("rimehare", wildlife.rimehare());
 		root.add("creatures", creaturesSection);
+		JsonObject auraSection = new JsonObject();
+		auraSection.addProperty("_about", "Aura, the swordsman's path: a breathing method draws mana into the body and out along a blade (swords, axes, spears, "
+			+ "the trident and the mace, or anything in the wildercord:aura_weapons item tag). xp_multiplier and gain_multiplier change how fast its stages "
+			+ "and aura itself come. coat_bonus is what a coated blow adds (0.1 is 10%); damage_scale scales every bonus aura adds to damage; slash_damage "
+			+ "is Aura Slash's share of the weapon's damage, at slash_cost aura every slash_cooldown_seconds. Against other players aura's bonuses and the "
+			+ "slash are pvp_scale as strong and count inside defence.max_bonus. Spending past empty brings backlash_seconds of exhaustion, never damage. "
+			+ "guard_share is how much of a blow a held Aura Guard takes off.");
+		auraSection.addProperty("enabled", aura.enabled());
+		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
+		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
+		auraSection.addProperty("coat_bonus", aura.coatBonus());
+		auraSection.addProperty("damage_scale", aura.damageScale());
+		auraSection.addProperty("slash_damage", aura.slashDamage());
+		auraSection.addProperty("slash_cost", aura.slashCost());
+		auraSection.addProperty("slash_cooldown_seconds", aura.slashCooldownSeconds());
+		auraSection.addProperty("pvp_scale", aura.pvpScale());
+		auraSection.addProperty("backlash_seconds", aura.backlashSeconds());
+		auraSection.addProperty("guard_share", aura.guardShare());
+		root.add("aura", auraSection);
 		return GSON.toJson(root) + "\n";
 	}
 

@@ -26,7 +26,10 @@
 		"ZombieVillagerAccessor",
 		"AbstractFurnaceBlockEntityAccessor",
 		"ServerExplosionMixin",
-		"ShulkerBoxBlockEntityMixin"
+		"ShulkerBoxBlockEntityMixin",
+		"PlayerAuraMixin",
+		"LivingEntityAuraMixin",
+		"EntityAuraDeflectMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

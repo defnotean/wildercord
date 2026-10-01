@@ -1234,6 +1234,116 @@ wind and is weak to storm; a rimehare resists frost and is weak to fire.
 **The field guide.** A creature of the guide seen up close (within 14 blocks, in sight) goes into the Grimoire the
 first time (40 mana toward the next circle, a toast with its spawn egg). The Grimoire lists every creature met with its
 short entry, and the rest as a hint of where to look. It's one list, `spell.FieldGuide`, that any creature can join.
+## Aura: the swordsman's path
+
+The Cord is the mage's path. **Aura** is the melee counterpart: mana drawn into the body and out along a blade. Both paths
+are open to everyone, they combine rather than compete (a mage with a blade, a swordsman with a Cord), and time invested
+is the only limit. The pure rules and every number are `aura.AuraRules`; the server's `aura` settings change the main ones.
+
+### The resource
+- **Aura** is a small pool that never decays, held by anyone who has learned a **breathing method**. Its capacity grows by
+  stage: Glow 20, Flow 40, Edge 70 (Form 110 and Sovereign 160 are kept for the next wave).
+- **It fills from real blows**: a full swing (vanilla's attack strength at 90% or more) of an aura weapon on a real foe
+  gives 0.4 aura per point of damage it took, at most 4 a blow. A half swing gives nothing. Repetition fades it (the same
+  kind of foe in the same 16-block cube, as spell mastery remembers places; a blow counts a quarter of a cast toward
+  it), and a training dummy or the practice arena gives a quarter.
+- **And from the breathing stance**: sneak and stand still with an aura weapon in the main hand (not charging a spell).
+  After a second the breath takes hold and draws in 1.5 aura a second. A breath comes every two seconds: the HUD's beat
+  ring closes on the aura bar's stage marks, and letting sneak up and pressing it again as it closes (a breath on the
+  beat, at most half a second up) draws in 3 more at once. Moving, standing up for good, or being hurt breaks the stance.
+  Sneaking still is also meditation for mana: you breathe and meditate at once.
+- **Spending past empty is backlash**: a technique short of its price spends everything there (a slash goes out
+  weakened) and leaves you slowed and weakened for 3 seconds. It never damages.
+- **Aura weapons** are the item tag `#wildercord:aura_weapons`: swords, axes, spears, the trident and the mace. Servers and
+  add-ons extend it.
+
+### Breathing methods
+Each element has a method, learned from its **Breathing Manual** (one item, its method a component; use it to learn).
+The method gives the aura its colour (the element's own, burning toward its highlight as the stage climbs) and its
+element: a coated blow and the slash meet a creature's affinity and the elemental climate as a spell of that element
+would, and set off the reactions waiting on its marks (a frozen foe shatters under an Ember blade, a soaked one conducts
+a Thunder blade). Each also has one passive that grows with the stage:
+
+| Method | Element | Passive (by stage) |
+|---|---|---|
+| Ember Breath | fire | from Flow a coated blow may set its foe alight (15%, 1 s); from Edge it always does (2 s, +1 s a stage) |
+| Rime Breath | frost | a coated blow slows its foe (1 s at Glow, +0.5 s a stage) |
+| Thunder Breath | storm | a coated blow may throw a spark to the nearest other foe within 5 blocks (8%, +4% a stage) for 30% of the blow |
+| Gale Breath | wind | a little speed while in a fight (struck or striking in the last 4 s): +4% a stage |
+| Stone Breath | earth | knockback resistance with an aura weapon in hand: +12% a stage |
+| Verdant Breath | life | a coated blow mends 0.4 health (+0.15 a stage), at most twice a second |
+| Hollow Breath | void | foes within 3.5 blocks of the one struck are drawn toward it (bosses never) |
+| Starlit Breath | arcane | aura comes faster: +15% a stage, blows and the stance alike |
+| Hourglass Breath | time | a little attack speed with an aura weapon in hand: +2.5% a stage |
+| Crimson Breath | blood | a coated blow drinks 10% of what it took (+5% a stage, at most 2 health) for 1 more aura |
+
+**Switching** to another method keeps the stage but costs the road to the next breakthrough: experience goes back to the
+start of the stage, and the aura held empties. A player already breathing one way reads the manual twice to be sure.
+
+**Where manuals are found** (`aura.MethodSources`; each place favours its methods three to one): the Archive's library
+(10%) and vault (30%); each expedition's vault (25%, its element's method and a neighbour's); the trial chambers' rare
+vault (10%) and ominous vault (20%); stronghold libraries (15%); ancient cities (12%). Master weaponsmiths (Ember,
+Thunder, Stone, Gale, Crimson) and clerics (Verdant, Starlit, Hourglass, Hollow, Rime) sell one for emeralds and a book.
+The rune loot multiplier scales the chests' chances.
+
+### Stages
+Aura climbs in leaps. Each stage keeps everything below it.
+
+| Stage | Capacity | Experience | What it brings |
+|---|---|---|---|
+| **Glow** | 20 | (with the method) | **Aura Coat**: with aura held, every blow of an aura weapon is coated: +10% and the method's element, for 0.5 aura. **Aura Sense**: each breath of the stance outlines the hostile creatures within 16 blocks, for you alone |
+| **Flow** | 40 | 150 | **Flowing Cut**: every aura weapon sweeps (vanilla sweeps only with a sword), reaching 1.6 blocks round the struck foe and 3.75 from you (vanilla: 1 and 3), carrying 40% more of the blow. **Aura Guard**: sneak and press the Aura key |
+| **Edge** | 70 | 600 | **Crystal Edge**: a blade of solid aura: +1 block of reach, and a quarter of each coated blow goes through armour. **Aura Slash**: tap the Aura key |
+| Form | 110 | 1,800 | the next wave: Aura Step, aura armour, Intent |
+| Sovereign | 160 | 4,500 | the next wave: Dominion |
+
+**Aura Guard** (Flow): it holds while sneak is held, two seconds at most, then rests a second. It halves blows and
+projectiles from in front, paying 0.6 aura a point it takes off; at nothing it breaks, with backlash. Raised within 7
+ticks of a blow (the parry's own moment, `spell.Parry`), it's a **perfect guard**: the blow is turned aside whole and the
+attacker staggered (thrown back, Slowness III and Weakness for 2 s; a boss is only slowed), a projectile flies back at
+whoever loosed it, now yours, a quarter faster, and a spell is parried as a Shield raised at the last moment parries one
+(negated, and answered with a lance of light at its caster). The first perfect guard goes into the Grimoire.
+
+**Aura Slash** (Edge): a crescent of aura flies ahead at chest height, 14 blocks at 1.6 a tick, cutting each foe in its
+3-block path once (six at most) for the weapon's damage × 1.2, in the method's element. It costs 12 aura and recharges in
+2 seconds; spent past empty it goes out weakened, with backlash. It's the Crescent shape's flight and crescents of
+shaped light, without a spell.
+
+### Experience and breakthroughs
+**Experience comes from meaningful melee**, on spell mastery's rules: a full swing on a real foe is worth 0.25, plus 1.0
+for the share of its health the blow took, plus 0.5 for the kill (an ordinary monster felled in four swings: about 2.5).
+A foe is worth more the stronger it is (the square root of its health over yours, from half to twice); a Runebound at
+least 1.5, a boss 2, a player (PvP on) half. The moment multiplies it as for mastery (low health 1.5, a crowd 1.3 or a
+horde 1.5, a boss near 1.5, a dungeon 1.25, at most 3); repetition fades it; one blow earns at most 6. Dummies and the
+practice arena teach at half rate, 40 in all. Creative players earn nothing. Meaningful fighting earns about 300 an hour:
+Flow in about half an hour of play, Edge in about two hours.
+
+Experience fills toward the next stage's threshold and **waits there**: a breakthrough waits for a **trial**, either:
+- **Stillness**: hold the breathing stance unbroken for 30 seconds where ley lines cross (a place of power); or
+- **A stronger foe**: fell a boss, a Runebound or a creature with twice your health or more, with your blade (melee and
+  the slash) within a minute of your first blow on it, no spell of yours touching it.
+
+A breakthrough is a moment: a burst of aura in your colour (rings, a column of light, motes), the stage's name as a title,
+a rising chord, a full new pool of aura, and a Grimoire entry (150 mana toward your next Heart Circle).
+
+### How it looks
+The weapon carries the aura in first and third person, for everyone: at Glow a haze hugging the weapon's own silhouette
+(traced from its model) that shimmers along it; at Flow the rim wider and brighter, light running along it from hilt to
+tip, and ripples leaving the blade one after another; at Edge a solid, translucent crystal blade, four-faceted, reaching
+past the point, bright at its facets and ridge. An empty aura shows only faintly. It's drawn with vanilla's glowing-eyes
+type, so it renders the same under shader packs and stays out of their shadows. The stance draws slow
+rings at the feet and motes drawn into the body; a breath on the beat, the guard, a perfect guard (the parry's gold), the
+sweep, the slash and a breakthrough each have their shaped light. Sounds: `aura_slash`, `aura_guard`,
+`aura_perfect_guard`, `aura_breakthrough`, `aura_backlash` and `aura_breath` (the feel kit's `tools/feel/aura.py`).
+
+### Fairness
+- Aura blows are melee, so armour applies to them as to any blow; only the Edge's quarter goes through.
+- Against another player a blow's aura bonuses (the coat, the element) are one factor under the spell-defence cap
+  (`defence.max_bonus`), then scaled by `aura.pvp_scale` (0.6).
+- **Projected** aura (the slash and a Thunder spark) is the damage type `wildercord:aura`; against players it goes
+  through the spell defences (`cast.SpellDefence`): armour, Warding and Warded, the cap, the PvP scale and the spellguard.
+- The server's `aura` section: `enabled`, `xp_multiplier`, `gain_multiplier`, `coat_bonus`, `damage_scale`,
+  `slash_damage`, `slash_cost`, `slash_cooldown_seconds`, `pvp_scale`, `backlash_seconds` and `guard_share`.
 
 ## Passives
 
@@ -1502,6 +1612,7 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
 | **Sneak** (while charging) | Steady the hands: the camera holds still and the mouse traces the spell's glyph |
 | **V** | Tap: select the next spell. Hold: the spell wheel; point at a spell and let go to select it. Let go without pointing and it stays open until you click a spell, press `V` or Enter, press a number, or press Esc |
 | **K** | Open the Cord screen |
+| **Z** | Aura: tap for Aura Slash (Edge); sneak and press for Aura Guard (Flow). A double tap and a hold are kept for the next wave's techniques |
 | (unbound) | Cast spell 1 / 2 / 3 / 4 directly |
 
 ### Cord screen
@@ -1526,6 +1637,9 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   hinders (▼) where you stand; for a few seconds after something new comes into force, lines over the
   panel say why ("Full moon: Arcane +15%, Void +15%").
 - Each element has its own particle colour and cast sound.
+- Once you've learned a breathing method, a slim aura bar on top of the spell panel (or alone in its place without a
+  Cord): a diamond for each stage (the next pulses gold while a breakthrough waits), the aura held in the method's colour
+  with a gold mark at Aura Slash's price, and in the breathing stance a ring closing on the diamonds with each breath.
 
 ## Server rules and safety
 
@@ -1565,6 +1679,8 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   creative or spectator players, is taken away before a leaving player is saved (and given back on login),
   ends at death, sets you down in another dimension and inside a dungeon's ward, and never gets a player
   kicked on a server with flying turned off (vanilla only counts a player as floating when they may not fly).
+- **Aura** (see [Aura](#aura-the-swordsmans-path)): its blows are melee, so armour applies; against players its bonuses sit
+  under the spell-defence cap and the aura PvP scale, and the slash meets the spell defences in full, spellguard included.
 - **Spell mastery's traits** go through the ordinary cast: their damage bonus is one more factor under the cap
   above (and only half of it against a player), never more than ×1.2 together; prices and cooldowns go no lower than 85%.
 - **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
