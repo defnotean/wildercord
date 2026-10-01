@@ -33,6 +33,24 @@
       ],
       "subtitle": "hit"
     },
+    "storm_crackle_wake": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_crackle_wake_1",
+        "kit/storm/storm_crackle_wake_2",
+        "kit/storm/storm_crackle_wake_3"
+      ],
+      "subtitle": "hit"
+    },
+    "storm_crown_zap": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_crown_zap_1",
+        "kit/storm/storm_crown_zap_2",
+        "kit/storm/storm_crown_zap_3"
+      ],
+      "subtitle": "hit"
+    },
     "storm_cry": {
       "attenuation": 32,
       "files": [

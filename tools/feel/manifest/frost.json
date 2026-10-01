@@ -70,6 +70,15 @@
       ],
       "subtitle": "tell"
     },
+    "frost_glass_fall": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_glass_fall_1",
+        "kit/frost/frost_glass_fall_2",
+        "kit/frost/frost_glass_fall_3"
+      ],
+      "subtitle": "hit"
+    },
     "frost_hail": {
       "attenuation": 0,
       "files": [
@@ -113,6 +122,15 @@
       ],
       "subtitle": "cast"
     },
+    "frost_mirror_ring": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_mirror_ring_1",
+        "kit/frost/frost_mirror_ring_2",
+        "kit/frost/frost_mirror_ring_3"
+      ],
+      "subtitle": "hit"
+    },
     "frost_needle": {
       "attenuation": 0,
       "files": [
@@ -121,6 +139,15 @@
         "kit/frost/frost_needle_3"
       ],
       "subtitle": "hit"
+    },
+    "frost_rime_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_rime_step_1",
+        "kit/frost/frost_rime_step_2",
+        "kit/frost/frost_rime_step_3"
+      ],
+      "subtitle": "tell"
     },
     "frost_splat": {
       "attenuation": 0,
@@ -147,6 +174,14 @@
         "kit/frost/frost_tick_2"
       ],
       "subtitle": "tell"
+    },
+    "frost_tide_surge": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_tide_surge_1",
+        "kit/frost/frost_tide_surge_2"
+      ],
+      "subtitle": "hit"
     },
     "frost_ward": {
       "attenuation": 0,

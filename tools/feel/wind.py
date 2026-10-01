@@ -3,6 +3,8 @@
 Names must start with 'wind_' (see tools/feel/core.py; tools/feel/fire.py has worked examples to copy).
 Moving bands, whistles and thumps of air, with a little glass for the chimes.
 """
+import math
+
 import numpy as np
 
 from feel.core import sa, event
@@ -213,4 +215,30 @@ EVENTS = [
     event("wind_soar_takeoff", wind_soar_takeoff, variants=3, role="cast", subtitle="cast"),
     event("wind_soar_gust", wind_soar_gust, variants=4, role="effect", subtitle="field"),
     event("wind_soar_fade", wind_soar_fade, variants=3, role="tell", subtitle="tell"),
+]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def wind_spirit_gallop(v, rng):
+    """Pale Steed: hoofbeats galloping out of nothing, the air rushing past, and a ghostly tone rising."""
+    dur = 1.6
+    beats = [0.0, 0.12, 0.35, 0.47, 0.70, 0.82, 1.05, 1.17]
+    hooves = sa.mix(*[(t, 0.7 * (1 - t / 2) * sa.thump(170, 80, 0.12, 0.03, drive=1.2, knock=0.4)) for t in beats])
+    air = sa.moving_band(dur, [(0, 600), (0.8, 2200), (dur, 900)], 1.0, rng) * sa.swell(dur, 0.6) * 0.5
+    ghost = sa.chorus(sa.sine(sa.glide(dur, (0, sa.note(sa.A, 0)), (dur, sa.note(sa.E, 1)))) * sa.swell(dur, 0.7), voices=3) * 0.25
+    return sa.finish(sa.reverb(sa.mix(hooves, air, ghost), 0.8, 0.18), "effect")
+
+
+def wind_eddy(v, rng):
+    """Whirling Eddy: wind circling, its whistle rising and falling as it turns, and grit in it."""
+    dur = 2.0
+    swirl = sa.moving_band(dur, [(i * dur / 20, 1000 + 700 * math.sin(i * 1.6)) for i in range(21)], 0.8, rng) * sa.swell(dur, 0.4)
+    grit = sa.norm(sa.bandpass(sa.grains(dur, 120, rng, shape=[(0, 0.5), (1.0, 1), (dur, 0)]), 2000, 6500)) * 0.3
+    return sa.finish(sa.reverb(sa.mix(swirl, grit), 0.7, 0.12), "effect")
+
+
+EVENTS += [
+    event("wind_spirit_gallop", wind_spirit_gallop, variants=1, role="effect", subtitle="cast"),
+    event("wind_eddy", wind_eddy, variants=2, role="effect", subtitle="field"),
 ]

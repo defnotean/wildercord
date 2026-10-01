@@ -98,6 +98,14 @@
       ],
       "subtitle": "hit"
     },
+    "fire_kindly": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_kindly_1",
+        "kit/fire/fire_kindly_2"
+      ],
+      "subtitle": "field"
+    },
     "fire_launch": {
       "attenuation": 0,
       "files": [
@@ -178,6 +186,13 @@
         "kit/fire/fire_sun"
       ],
       "subtitle": "hit"
+    },
+    "fire_sun_seal": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_sun_seal"
+      ],
+      "subtitle": "field"
     },
     "fire_ward": {
       "attenuation": 0,

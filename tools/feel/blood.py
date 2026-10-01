@@ -225,3 +225,29 @@ EVENTS = [
     event("blood_triple", blood_triple, variants=1, role="impact", subtitle="hit"),
     event("blood_cleave", blood_cleave, variants=2, role="impact", subtitle="hit"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def blood_moon_toll(v, rng):
+    """Red Moon: a low, dark gong and a heartbeat under it."""
+    dur = 2.4
+    gong = sa.bell(sa.note(sa.D, -1), dur, 0.9, ratio=1.41, brightness=1.6) + 0.45 * sa.bell(sa.note(sa.A, 0), dur, 0.6, ratio=2.0, brightness=0.8)
+    beat = sa.mix((0.3, sa.thump(70, 45, 0.25, 0.06, drive=1.4, knock=0.6)), (0.55, 0.7 * sa.thump(65, 42, 0.25, 0.06, drive=1.4, knock=0.6)))
+    air = sa.moving_band(dur, 900, 0.6, rng) * sa.swell(dur, 0.9) * 0.3
+    return sa.finish(sa.reverb(sa.mix(gong, 0.8 * beat, air), 1.3, 0.22), "grand")
+
+
+def blood_blade_fall(v, rng):
+    """Falling Blades: a whoosh down, a blade's ring and the chop as it lands; three, a step apart."""
+    dur = 0.7
+    whoosh = sa.moving_band(0.25, [(0, 1200), (0.25, 4500)], 0.7, rng) * sa.env(0.25, (0, 0), (0.2, 1), (0.25, 0))
+    ring = sa.partials(1800 + 150 * v, dur, ((1.0, 1.0, 1.0), (2.41, 0.5, 0.5), (3.9, 0.3, 0.3)), 0.12)
+    chop = sa.norm(sa.bandpass(sa.noise(0.05, rng), 800, 5000)) * sa.decay(0.05, 0.01, 0.0005)
+    return sa.finish(sa.reverb(sa.mix(0.6 * whoosh, (0.22, 0.5 * ring), (0.22, 0.8 * chop)), 0.5, 0.1), "impact")
+
+
+EVENTS += [
+    event("blood_moon_toll", blood_moon_toll, variants=1, role="grand", subtitle="field"),
+    event("blood_blade_fall", blood_blade_fall, variants=3, role="impact", subtitle="hit"),
+]

@@ -307,3 +307,50 @@ EVENTS = [
     event("life_stinger_world", stinger("world"), variants=2, role="tick", subtitle="cast"),
     event("life_stinger_thorn", stinger("thorn"), variants=2, role="tick", subtitle="cast"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def life_frost_bloom(v, rng):
+    """Winter Blossom: flowers opening out of the cold, a tone rising and crystal chimes climbing."""
+    dur = 1.6
+    bloom = sa.sine(sa.glide(dur, (0, sa.note(sa.D, 1)), (0.8, sa.note(sa.A, 1)), (dur, sa.note(sa.A, 1)))) * sa.swell(dur, 0.6) * 0.5
+    crystals = sa.sparkle(1.0, 12, rng, [sa.note(d, 3) for d in (sa.D, sa.FS, sa.A, sa.B)], tau=(0.08, 0.25), rising=True)
+    leaves = sa.moving_band(dur, [(0, 2500), (dur, 4000)], 0.6, rng) * sa.swell(dur, 0.5) * 0.2
+    return sa.finish(sa.reverb(sa.mix(bloom, 0.6 * crystals, leaves), 1.0, 0.2), "effect")
+
+
+def life_thorn_crown(v, rng):
+    """Crown of Thorns: wood creaking as the crown tightens, twigs snapping."""
+    dur = 0.8
+    creak = sa.soft_saw(sa.glide(0.5, (0, 140 + 20 * v), (0.5, 90)), 0.5, harmonics=10) * sa.chopper(0.5, rng, rate=(30, 60), floor=0.3)
+    creak = creak * sa.decay(0.5, 0.18, 0.02)
+    snaps = sa.norm(sa.bandpass(sa.grains(dur, 40, rng, length=(0.001, 0.004)), 1500, 6000))
+    tone = sa.bell(sa.note(sa.E, 1), dur, 0.2, ratio=2.0, brightness=0.6) * 0.3
+    return sa.finish(sa.reverb(sa.mix(0.5 * sa.lowpass(creak, 2500), 0.6 * snaps, tone), 0.5, 0.1), "impact")
+
+
+def life_firefly_hush(v, rng):
+    """Lantern Flies: soft twinkles over the hush of a summer night."""
+    dur = 2.2
+    twinkles = sa.sparkle(dur, 9, rng, [sa.note(d, 3) for d in (sa.D, sa.E, sa.FS, sa.A, sa.B)], tau=(0.05, 0.15))
+    night = sa.moving_band(dur, 3600, 0.25, rng) * sa.chopper(dur, rng, rate=(14, 22), floor=0.0) * sa.swell(dur, 0.6) * 0.15
+    hum = sa.sine(sa.note(sa.A, -1), dur) * sa.swell(dur, 0.8) * 0.2
+    return sa.finish(sa.reverb(sa.mix(0.6 * twinkles, night, hum), 1.0, 0.2), "effect")
+
+
+def life_thicket_burst(v, rng):
+    """Sudden Thicket: a thud of roots breaking ground, a rustle of leaves, a creak of wood."""
+    dur = 1.0
+    thud = sa.thump(130 - 15 * v, 60, 0.5, 0.08, drive=1.3)
+    rustle = sa.norm(sa.bandpass(sa.grains(0.7, 500, rng, length=(0.002, 0.008), shape=[(0, 1), (0.7, 0)]), 1200, 6000))
+    creak = sa.soft_saw(sa.glide(0.6, (0, 220), (0.6, 130)), 0.6, harmonics=8) * sa.decay(0.6, 0.2, 0.01) * 0.3
+    return sa.finish(sa.reverb(sa.mix(0.7 * thud, (0.02, 0.7 * rustle), (0.05, sa.lowpass(creak, 2000))), 0.5, 0.1), "impact")
+
+
+EVENTS += [
+    event("life_frost_bloom", life_frost_bloom, variants=2, role="effect", subtitle="field"),
+    event("life_thorn_crown", life_thorn_crown, variants=2, role="impact", subtitle="hit"),
+    event("life_firefly_hush", life_firefly_hush, variants=1, role="effect", subtitle="field"),
+    event("life_thicket_burst", life_thicket_burst, variants=2, role="impact", subtitle="hit"),
+]

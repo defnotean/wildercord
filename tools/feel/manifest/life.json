@@ -56,6 +56,21 @@
       ],
       "subtitle": "hit"
     },
+    "life_firefly_hush": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_firefly_hush"
+      ],
+      "subtitle": "field"
+    },
+    "life_frost_bloom": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_frost_bloom_1",
+        "kit/life/life_frost_bloom_2"
+      ],
+      "subtitle": "field"
+    },
     "life_gasp": {
       "attenuation": 0,
       "files": [
@@ -226,11 +241,27 @@
       ],
       "subtitle": "field"
     },
+    "life_thicket_burst": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_thicket_burst_1",
+        "kit/life/life_thicket_burst_2"
+      ],
+      "subtitle": "hit"
+    },
     "life_thorn": {
       "attenuation": 0,
       "files": [
         "kit/life/life_thorn_1",
         "kit/life/life_thorn_2"
+      ],
+      "subtitle": "hit"
+    },
+    "life_thorn_crown": {
+      "attenuation": 0,
+      "files": [
+        "kit/life/life_thorn_crown_1",
+        "kit/life/life_thorn_crown_2"
       ],
       "subtitle": "hit"
     },

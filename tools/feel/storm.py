@@ -225,3 +225,29 @@ EVENTS = [
     event("storm_pip", storm_pip, variants=3, role="tick", subtitle="tell"),
     event("storm_sun", storm_sun, variants=2, role="impact", subtitle="hit"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def storm_crown_zap(v, rng):
+    """Storm Crown: a small cloud's zap, a crack and a grumble; three, a step apart."""
+    dur = 0.35
+    zap = sa.soft_saw(sa.glide(0.2, (0, 900 + 200 * v), (0.2, 300)), 0.2, harmonics=14) * sa.chopper(0.2, rng, rate=(80, 200)) * sa.decay(0.2, 0.06, 0.001)
+    crack = sa.norm(sa.bandpass(sa.noise(0.03, rng), 2500, 7000)) * sa.decay(0.03, 0.005, 0.0002)
+    rumble = sa.norm(sa.lowpass(sa.noise(dur, rng), 300)) * sa.decay(dur, 0.1, 0.01) * 0.3
+    return sa.finish(sa.reverb(sa.mix(0.6 * zap, 0.8 * crack, rumble), 0.4, 0.08), "impact")
+
+
+def storm_crackle_wake(v, rng):
+    """Crackling Wake, one burst: a snap and a spray of sparks."""
+    dur = 0.5
+    sparks = sa.norm(sa.bandpass(sa.grains(0.35, 300, rng, length=(0.0005, 0.003), shape=[(0, 1), (0.35, 0)]), 2000, 7500))
+    snap = sa.norm(sa.bandpass(sa.noise(0.04, rng), 1500, 7000)) * sa.decay(0.04, 0.006, 0.0003)
+    ping = sa.sine(sa.note((sa.D, sa.FS, sa.A)[v], 3), dur) * sa.decay(dur, 0.06, 0.001) * 0.2
+    return sa.finish(sa.reverb(sa.mix(snap, 0.7 * sparks, ping), 0.35, 0.08), "impact")
+
+
+EVENTS += [
+    event("storm_crown_zap", storm_crown_zap, variants=3, role="impact", subtitle="hit"),
+    event("storm_crackle_wake", storm_crackle_wake, variants=3, role="impact", subtitle="hit"),
+]

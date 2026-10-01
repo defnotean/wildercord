@@ -26,6 +26,14 @@
       ],
       "subtitle": "hit"
     },
+    "wind_eddy": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_eddy_1",
+        "kit/wind/wind_eddy_2"
+      ],
+      "subtitle": "field"
+    },
     "wind_feather": {
       "attenuation": 0,
       "files": [
@@ -139,6 +147,13 @@
         "kit/wind/wind_soar_takeoff_1",
         "kit/wind/wind_soar_takeoff_2",
         "kit/wind/wind_soar_takeoff_3"
+      ],
+      "subtitle": "cast"
+    },
+    "wind_spirit_gallop": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_spirit_gallop"
       ],
       "subtitle": "cast"
     },

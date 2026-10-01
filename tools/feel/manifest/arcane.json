@@ -1,5 +1,12 @@
 {
   "events": {
+    "arcane_aurora": {
+      "attenuation": 0,
+      "files": [
+        "kit/arcane/arcane_aurora"
+      ],
+      "subtitle": "field"
+    },
     "arcane_comet": {
       "attenuation": 0,
       "files": [
@@ -56,6 +63,13 @@
         "kit/arcane/arcane_gong"
       ],
       "subtitle": "hit"
+    },
+    "arcane_great_bell": {
+      "attenuation": 32,
+      "files": [
+        "kit/arcane/arcane_great_bell"
+      ],
+      "subtitle": "field"
     },
     "arcane_halo": {
       "attenuation": 0,
@@ -158,6 +172,13 @@
       ],
       "subtitle": "cast"
     },
+    "arcane_page_storm": {
+      "attenuation": 0,
+      "files": [
+        "kit/arcane/arcane_page_storm"
+      ],
+      "subtitle": "field"
+    },
     "arcane_ping": {
       "attenuation": 0,
       "files": [
@@ -222,6 +243,15 @@
         "kit/arcane/arcane_stamp_burst_1",
         "kit/arcane/arcane_stamp_burst_2",
         "kit/arcane/arcane_stamp_burst_3"
+      ],
+      "subtitle": "hit"
+    },
+    "arcane_star_chime": {
+      "attenuation": 0,
+      "files": [
+        "kit/arcane/arcane_star_chime_1",
+        "kit/arcane/arcane_star_chime_2",
+        "kit/arcane/arcane_star_chime_3"
       ],
       "subtitle": "hit"
     },
@@ -312,6 +342,14 @@
         "kit/arcane/arcane_twin_echo"
       ],
       "subtitle": "cast"
+    },
+    "arcane_wingflock": {
+      "attenuation": 0,
+      "files": [
+        "kit/arcane/arcane_wingflock_1",
+        "kit/arcane/arcane_wingflock_2"
+      ],
+      "subtitle": "hit"
     },
     "arcane_yip": {
       "attenuation": 0,

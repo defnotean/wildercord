@@ -292,3 +292,60 @@ EVENTS = [
     event("arcane_stinger_step", stinger("step"), variants=2, role="tick", subtitle="cast"),
     event("arcane_stinger_summon", stinger("summon"), role="tick", subtitle="cast"),
 ]
+
+
+# ---------------------------------------------------------------- a world's resonances: the twists' voices (cast/TwistVfx)
+
+def arcane_wingflock(v, rng):
+    """Birds of Light: a flutter of wings and chirps of glass climbing the scale."""
+    dur = 1.0
+    flutter = sa.moving_band(dur, [(0, 900), (dur, 1800)], 0.9, rng) * sa.chopper(dur, rng, rate=(18, 30), floor=0.2) * sa.swell(dur, 0.1)
+    chirps = sa.sparkle(0.8, 16, rng, [sa.note(d, 3) for d in (sa.D, sa.E, sa.FS, sa.A, sa.B)], tau=(0.03, 0.08), rising=True)
+    burst = sa.norm(sa.bandpass(sa.noise(0.08, rng), 1500, 6000)) * sa.decay(0.08, 0.02, 0.001)
+    return sa.finish(sa.reverb(sa.mix(0.6 * flutter, 0.5 * chirps, 0.4 * burst), 0.6, 0.15), "effect")
+
+
+def arcane_page_storm(v, rng):
+    """Paper Storm: pages rustling round and round, a whisper in them, and a few glyphs chiming."""
+    dur = 2.0
+    rustle = sa.norm(sa.bandpass(sa.grains(dur, 400, rng, length=(0.002, 0.01), shape=[(0, 0.3), (0.3, 1), (dur, 0.4)]), 1800, 6500))
+    whisper = sa.moving_band(dur, [(0, 1500), (1.0, 3000), (dur, 2000)], 0.5, rng) * sa.swell(dur, 0.6) * 0.4
+    glyphs = sa.sparkle(dur, 6, rng, [sa.note(d, 2) for d in (sa.D, sa.FS, sa.A)], tau=(0.1, 0.3))
+    return sa.finish(sa.reverb(sa.mix(0.7 * rustle, whisper, 0.4 * glyphs), 0.9, 0.16), "effect")
+
+
+def arcane_star_chime(v, rng):
+    """Star Wake, one star: a falling whistle and a bright chime where it bursts."""
+    dur = 1.0
+    whistle = sa.sine(sa.glide(0.3, (0, 2600), (0.3, 900))) * sa.env(0.3, (0, 0), (0.2, 0.3), (0.3, 0)) * 0.4
+    chime = sa.glass(sa.note((sa.D, sa.FS, sa.A)[v], 3), dur, 0.25) + 0.5 * sa.bell(sa.note(sa.D, 2), dur, 0.3, ratio=3.0)
+    pop = sa.norm(sa.bandpass(sa.noise(0.05, rng), 1500, 6000)) * sa.decay(0.05, 0.008, 0.0005)
+    return sa.finish(sa.reverb(sa.mix(whistle, (0.28, 0.8 * chime), (0.28, 0.5 * pop)), 0.8, 0.15), "impact")
+
+
+def arcane_aurora(v, rng):
+    """Aurora: a slow shimmering chord swelling in, and glitter falling through it."""
+    dur = 2.6
+    pad = sum(sa.soft_saw(sa.note(d, o), dur, harmonics=6) * w for d, o, w in ((sa.D, 0, 0.5), (sa.A, 0, 0.4), (sa.FS, 1, 0.35), (sa.B, 1, 0.25)))
+    pad = sa.chorus(sa.lowpass(pad, 2400), voices=4, depth=0.004, rate=0.3)
+    pad = pad[:sa.samples(dur)] * sa.swell(dur, 0.9, 1.5)
+    glitter = sa.sparkle(dur, 7, rng, [sa.note(d, 3) for d in (sa.D, sa.E, sa.A, sa.B)], tau=(0.1, 0.3))
+    return sa.finish(sa.reverb(sa.mix(pad, 0.35 * glitter), 1.4, 0.25), "grand")
+
+
+def arcane_great_bell(v, rng):
+    """Great Bell: one great bell struck, its hum an octave below hanging on."""
+    dur = 3.0
+    bell = sa.clock_bell(sa.note(sa.D, -1), dur, 1.1)
+    hum = sa.sine(sa.note(sa.D, -2), dur) * sa.decay(dur, 1.2, 0.01) * 0.3
+    strike = sa.norm(sa.bandpass(sa.noise(0.04, rng), 300, 2500)) * sa.decay(0.04, 0.008, 0.0005)
+    return sa.finish(sa.reverb(sa.mix(bell, hum, 0.4 * strike), 1.6, 0.25), "grand")
+
+
+EVENTS += [
+    event("arcane_wingflock", arcane_wingflock, variants=2, role="effect", subtitle="hit"),
+    event("arcane_page_storm", arcane_page_storm, variants=1, role="effect", subtitle="field"),
+    event("arcane_star_chime", arcane_star_chime, variants=3, role="impact", subtitle="hit"),
+    event("arcane_aurora", arcane_aurora, variants=1, role="grand", subtitle="field"),
+    event("arcane_great_bell", arcane_great_bell, variants=1, role="grand", subtitle="field", attenuation=32),
+]
