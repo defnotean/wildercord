@@ -64,6 +64,8 @@ public final class Incantations {
 		final List<String> runes;
 		final List<Word> words = new ArrayList<>();
 		int fading = -1;
+		/** How many lines high it stands as drawn (easing toward the lines it has). */
+		float stack;
 
 		Utterance(long start, List<String> runes) {
 			this.start = start;
@@ -178,6 +180,8 @@ public final class Incantations {
 			float leaving = u.fading >= 0 ? Math.max(0, (u.fading - partial) / FADE) : 1;
 			float lift = (1 - leaving) * 0.25F;
 			int lines = (u.words.size() + PER_LINE - 1) / PER_LINE;
+			// The stack eases up when a new line starts, rather than jumping.
+			u.stack = u.stack <= 0 ? lines : u.stack + (lines - u.stack) * 0.15F;
 			for (int line = 0; line < lines; line++) {
 				int from = line * PER_LINE;
 				int to = Math.min(u.words.size(), from + PER_LINE);
@@ -198,7 +202,8 @@ public final class Incantations {
 					float risen = Mth.clamp(age / RISE, 0, 1);
 					float eased = 1 - (1 - risen) * (1 - risen);
 					// It rises from shoulder height into its place; the whole line sways gently, as if on a breath.
-					float y = -line * 11 + (1 - eased) * -28 + Mth.sin((float) now * 0.08F + i * 0.9F) * 0.8F;
+					// A longer incantation stacks upward from the anchor, its first line highest, so no line ever sinks into the head.
+					float y = (u.stack - 1 - line) * 11 + (1 - eased) * -28 + Mth.sin((float) now * 0.08F + i * 0.9F) * 0.8F;
 					float alpha = far * leaving * Math.min(1, risen * 1.6F);
 					if (alpha > 0.02F) {
 						drawWord(context, pose, camera, anchor.add(0, lift, 0), texts.get(i - from), x, y, word.color(), alpha);

@@ -63,6 +63,7 @@
 			"dev.wildercord.gametest.WildercordFlightTest",
 			"dev.wildercord.gametest.WildercordShaderTest",
 			"dev.wildercord.gametest.WildercordDefenceTest",
+			"dev.wildercord.gametest.WildercordPerformanceCastTest",
 			"dev.wildercord.gametest.WildercordShowcase",
 			"dev.wildercord.cast.PhysicalMagicTest",
 			"dev.wildercord.cast.CircleDisciplineTest"

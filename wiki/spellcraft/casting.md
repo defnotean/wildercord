@@ -99,6 +99,8 @@ While you charge, **you** (and only you) see where the spell will go, for the sp
 
 ## Overchannel: holding on past full
 
+<img src="{{ '/assets/images/overchannel.png' | relative_url }}" alt="A caster seen from behind at the third overchannel stage: the fire bolt's circle cracked from its frame inward and shedding sparks, the incantation over it, the screen's edges closing in and the panel showing the third stage" class="shot">
+
 A full charge doesn't have to be the end. **Keep holding** and the charge **overchannels**: you pour your spare mana
 into the circle, and it climbs a **stage** a little over every second.
 
