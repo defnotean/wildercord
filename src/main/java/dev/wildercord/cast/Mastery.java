@@ -564,7 +564,8 @@ public final class Mastery {
 			case "low_health" -> cast.caster.getHealth() < cast.caster.getMaxHealth() / 3F;
 			case "night", "day", "underground", "rain" -> tally.circumstances.contains(condition)
 				|| condition.equals("rain") && tally.circumstances.contains("thunder");
-			default -> false;
+			// Any other circumstance it was cast in, including those added through the API (a world's quirk holding).
+			default -> tally.circumstances.contains(condition);
 		};
 	}
 

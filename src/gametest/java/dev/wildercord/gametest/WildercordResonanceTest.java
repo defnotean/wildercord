@@ -124,7 +124,9 @@ public class WildercordResonanceTest implements FabricClientGameTest {
 	/** Casting a resonance's exact runes finds it: Grimoire, first finder, toast and announcement, and it's priced as found. */
 	private static List<String> discovery(ClientGameTestContext context, TestSingleplayerContext world) {
 		List<String> out = new ArrayList<>();
-		Resonance target = on(world, player -> WorldResonances.of(server(player)).getFirst());
+		// One that wakes anywhere: a few first wake only at a ley crossing (see WorldBonds and WildercordBondsTest).
+		Resonance target = on(world, player -> WorldResonances.of(server(player)).stream().filter(r -> !dev.wildercord.cast.WorldBonds.crossingBound(r))
+			.findFirst().orElseThrow());
 		MESSAGES.clear();
 		cast(context, world, target);
 		context.waitTicks(20);
@@ -200,7 +202,8 @@ public class WildercordResonanceTest implements FabricClientGameTest {
 	 */
 	private static List<String> twists(ClientGameTestContext context, TestSingleplayerContext world) {
 		List<String> out = new ArrayList<>();
-		List<Resonance> all = on(world, player -> WorldResonances.of(server(player)));
+		List<Resonance> all = on(world, player -> WorldResonances.of(server(player)).stream()
+			.filter(r -> !dev.wildercord.cast.WorldBonds.crossingBound(r)).toList());
 		on(world, player -> {
 			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(6.5);
 			return null;

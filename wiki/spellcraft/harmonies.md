@@ -49,6 +49,11 @@ The first time you cast a harmony:
 
 From then on, whenever you thread it, the Cord screen names it in its colour and says what its twist does.
 
+**Some harmonies are bound to a place of power.** About one in four of your world's harmonies only wakes the first time
+where [ley lines cross]({{ '/world/places-of-power/' | relative_url }}#ley-crossings). Cast one anywhere else and its
+runes stir, a shimmer of its colour rises, and a line over your hotbar says the world would answer, *but not here*.
+Take it to a crossing and cast it again. Once found, it answers anywhere.
+
 ### How they behave
 
 - **A twist is a little extra, never a second spell.** It adds a few points of damage, some mending, a moment of

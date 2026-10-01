@@ -166,7 +166,7 @@ public final class MasteryTraits {
 	public static final Trait BELLSONG = trait("bellsong", "Bellsong", "A clear bell rings out each time you cast it.", Hook.COSMETIC, 1).param("bell");
 	public static final Trait STARLIT = trait("starlit", "Starlit Circle", "Specks of starlight drift up from its circle.", Hook.COSMETIC, 1).param("stars");
 	public static final Trait DEEP_HUE = trait("deep_hue", "Deep Hue", "Its circle burns in a deeper, richer colour.", Hook.COSMETIC, 1).param("hue");
-	public static final Trait LINGERING_MARK = trait("lingering_mark", "Lingering Mark", "Leaves a faint trace of its magic where it lands.", Hook.RESIDUE, 1);
+	public static final Trait LINGERING_MARK = trait("lingering_mark", "Lingering Mark", "Leaves a small residue of its magic where it lands, at most once every 8 seconds.", Hook.RESIDUE, 1);
 	public static final Trait SECOND_WIND = trait("second_wind", "Second Wind", "Cast in danger, a third of its mana comes back.", Hook.SECOND_WIND, 0.33).when("low_health");
 	public static final Trait FAR_REACH = trait("far_reach", "Far Reach", "Its bolts, beams and aimed shapes reach 20% farther.", Hook.RANGE, 1.2).shapes("projectile", "direct", "area", "lingering");
 	public static final Trait EMBERBORN = trait("emberborn", "Emberborn", "In the Nether it costs 15% less mana.", Hook.COST, 0.85).param("nether").when("nether");

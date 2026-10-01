@@ -748,6 +748,7 @@ def write_lang(runes):
     lang.update(WORLD_OWN_LANG)
     import residue_art
     lang.update(residue_art.LANG)
+    lang.update(BONDS_LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -1509,6 +1510,16 @@ def mastery_trait_lang():
         lang[f"mastery.wildercord.trait.{tid}.desc"] = desc
     assert len(lang) >= 80, "MasteryTraits.java: expected at least 40 traits"
     return lang
+
+
+# ---------------------------------------------------------------- where the world's magic, mastery and residues meet (WorldBonds.java)
+
+BONDS_LANG = {
+    "mastery.wildercord.trait.wildercord.world_tuned": "World-Tuned",
+    "mastery.wildercord.trait.wildercord.world_tuned.desc": "Strikes 15% harder while this world's quirk on one of its runes holds where you cast it.",
+    "mastery.wildercord.circumstance.world_quirk": "While this world's quirk holds",
+    "message.wildercord.harmony_needs_crossing": "The runes stir, as if this world would answer... but not here. Somewhere the ley lines cross.",
+}
 
 
 # ---------------------------------------------------------------- standing up to spells (SpellDefence.java)

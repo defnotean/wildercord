@@ -16,6 +16,7 @@ line of one meets a line of the other is a **ley crossing**: a place of power.
 | **Every element** | **+10%** to every spell's damage |
 | **Every spell's price** | **10% cheaper** in mana (or health, for Blood Price) |
 | **Mana and Heart Circles** | As on any ley line: mana twice as fast, circles twice as quick to form |
+| **Harmonies** | Some of your world's [harmonies](../spellcraft/harmonies.md#finding-one) wake for the first time only here |
 
 ### Finding one
 

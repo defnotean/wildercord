@@ -118,7 +118,8 @@ look or a sound. However they add up:
 | **Bellsong** | A clear bell rings out each time you cast it. | Any spell |
 | **Starlit Circle** | Specks of starlight drift up from its circle. | Any spell |
 | **Deep Hue** | Its circle burns in a deeper, richer colour. | Any spell |
-| **Lingering Mark** | Leaves a faint trace of its magic where it lands. | Any spell |
+| **Lingering Mark** | Leaves a small [residue](../world/residues.md) of its magic where it lands, at most once every 8 seconds (a faint glimmer when none can be left there). | Any spell |
+| **World-Tuned** | Strikes 15% harder while your world's [quirk](harmonies.md#quirks) on one of its runes holds where you cast it. | A harmful spell with one of your world's quirked runes, cast often where its quirk holds |
 | **Second Wind** | Cast in danger, a third of its mana comes back. | Any spell, cast often at low health |
 | **Far Reach** | Its bolts, beams and aimed shapes reach 20% farther. | A spell with a bolt, beam or aimed shape |
 | **Emberborn** | In the Nether it costs 15% less mana. | Any spell, cast often in the Nether |

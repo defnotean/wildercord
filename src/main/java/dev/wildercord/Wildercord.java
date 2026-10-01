@@ -104,6 +104,8 @@ public final class Wildercord implements ModInitializer {
 		dev.wildercord.travel.Travel.init();
 		dev.wildercord.loadout.Loadouts.init();
 		dev.wildercord.cast.Mastery.init();
+		// The world's own magic, spells that grow and the marks magic leaves, tied to each other.
+		dev.wildercord.cast.WorldBonds.init();
 		// Last: add-ons (the "wildercord" entrypoint) extend everything above.
 		dev.wildercord.api.WildercordApi.loadAddons();
 		dev.wildercord.cast.feel.Feels.init();

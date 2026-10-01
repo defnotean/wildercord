@@ -356,6 +356,10 @@ the synced note (`client.fx.SoarWings`).
   toast. `Grimoire.hint` picks a riddle for a Torn Page.
 - **`SecretSpells`**: what each secret spell does, and `discover` (the Grimoire entry and a title
   on the first cast). Rebirth's death save is an `ALLOW_DEATH` hook.
+- **`WorldBonds`**: ties the world's own magic, mastery and residues together through their hooks: the Lingering Mark
+  trait's residue sink (`Residues.leave`, one per caster every 8 s), the `world_quirk` mastery circumstance and the
+  World-Tuned trait (offered to spells with a quirked rune), and a wake condition binding about one in four harmonies
+  (by name hash) to a ley crossing for their first waking.
 - **`WorldResonances`**: this world's resonances and quirks at runtime. (Players and the server config call resonances
   **harmonies**, since an arcane rune is already named Resonance; the code keeps the older word.) `Ledger` (saved data with the overworld) holds
   the draw, the seed and settings it was drawn under, and who found each first; `ledger(server)` draws it again only
