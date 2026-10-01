@@ -1212,8 +1212,8 @@ public class CordScreen extends Screen {
 		double total = entry == null ? 0 : entry.total();
 		int barX = SOCKET_X;
 		int barW = bx - 4 - barX;
-		g.fill(barX, ry + 17, barX + barW, ry + 18, 0x22FFFFFF);
-		g.fill(barX, ry + 17, barX + (int) Math.round(barW * dev.wildercord.spell.MasteryRules.progress(total)), ry + 18, (color & 0x00FFFFFF) | 0xB0000000);
+		g.fill(barX, ry + 18, barX + barW, ry + 19, 0x50FFFFFF);
+		g.fill(barX, ry + 18, barX + (int) Math.round(barW * dev.wildercord.spell.MasteryRules.progress(total)), ry + 19, color);
 		if (!hover) {
 			return null;
 		}

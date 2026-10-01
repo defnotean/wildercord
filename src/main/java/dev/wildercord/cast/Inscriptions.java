@@ -37,8 +37,9 @@ import java.util.function.Consumer;
  * </ul>
  *
  * <p>Nothing can be duplicated or stacked: experience never travels; a reader who already has their own progress with
- * the spell can't study it (borrowed traits only ever fill empty slots of a fresh record, one per slot); borrowed traits
- * can't be inscribed again; and an inscription needs Adept rank earned with the spell itself.</p>
+ * the spell (or who studied it already) can't study it again, so borrowed traits only ever fill the slots of a fresh
+ * record, one per slot; borrowed traits can't be inscribed again; and an inscription needs Adept rank earned with the
+ * spell itself.</p>
  */
 public final class Inscriptions {
 	private Inscriptions() {}
@@ -118,8 +119,8 @@ public final class Inscriptions {
 		}
 		MasteryBook mastery = MasteryAttachments.book(player);
 		MasteryBook.Entry mine = mastery.entry(inscription.key()).orElse(null);
-		if (mine != null && (mine.total() > 0 || !mine.own().isEmpty())) {
-			// Their own progress with it stands: a scroll can't add to it, or stack traits on it.
+		if (mine != null) {
+			// Their own way with it stands (or a scroll already taught it): a scroll can't add to it, or stack traits on it.
 			return refuse("message.wildercord.inscription.own");
 		}
 		int row = -1;

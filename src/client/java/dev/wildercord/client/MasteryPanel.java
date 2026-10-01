@@ -45,8 +45,9 @@ final class MasteryPanel {
 	private static final int PAD = 8;
 	private static final int BUTTON = 14;
 	private static final int LEFT_W = 112;
-	private static final int SLOT_H = 22;
-	private static final int CARD_H = 64;
+	private static final int SLOT_H = 20;
+	/** The help at the foot: up to this many lines. */
+	private static final int HELP_LINES = 3;
 
 	private static final int GOLD = 0xFFE8C46A;
 	private static final int TEXT = 0xFFE8E4F4;
@@ -130,20 +131,27 @@ final class MasteryPanel {
 		return choiceTop() + 12;
 	}
 
-	/** The cards' x and width: the waiting offer's traits side by side across the right column. */
-	private static int cardX(int i, int n, int windowW) {
-		int gap = 4;
-		int w = (columnW(windowW) - gap * (n - 1)) / Math.max(1, n);
-		return columnX() + i * (w + gap);
+	/** A card's height: its name and two lines of what it does (one line when a borrowed trait makes four cards). */
+	private static int cardH(int n) {
+		return n <= MasteryRules.OFFER ? 29 : 20;
 	}
 
-	private static int cardW(int n, int windowW) {
-		int gap = 4;
-		return (columnW(windowW) - gap * (n - 1)) / Math.max(1, n);
+	/** The cards stack down the right column, one under another, so each trait's words have room. */
+	private static int cardY(int i, int n) {
+		return cardTop() + i * (cardH(n) + 2);
+	}
+
+	/** The re-roll button sits in the left column, under the bar, while a trait is waiting. */
+	private static int rerollX(int windowW, Font font) {
+		return X + PAD + 4;
+	}
+
+	private static int rerollW(Font font) {
+		return LEFT_W - 8;
 	}
 
 	private static int rerollY() {
-		return cardTop() + CARD_H + 4;
+		return TOP + 24 + 96 + 56;
 	}
 
 	private static int unbindX(int windowW) {
@@ -157,12 +165,12 @@ final class MasteryPanel {
 			return null;
 		}
 		int n = entry.offer().size();
-		return new double[] {cardX(i, n, windowW) + cardW(n, windowW) / 2.0, cardTop() + CARD_H / 2.0};
+		return new double[] {columnX() + columnW(windowW) / 2.0, cardY(i, n) + cardH(n) / 2.0};
 	}
 
 	/** The middle of the re-roll button, in local space. */
-	double[] rerollPoint() {
-		return new double[] {columnX() + 50, rerollY() + 6.5};
+	double[] rerollPoint(int windowW) {
+		return new double[] {rerollX(windowW, mc().font) + rerollW(mc().font) / 2.0, rerollY() + 6.5};
 	}
 
 	// ------------------------------------------------------------------ drawing
@@ -229,7 +237,7 @@ final class MasteryPanel {
 
 		// Left: the spell's circle with your sigil, its rank and the bar toward the next.
 		int left = X + PAD;
-		sprite(g, SPR_INSET, left, TOP + 24, LEFT_W, bottom - TOP - 24 - PAD - 22);
+		sprite(g, SPR_INSET, left, TOP + 24, LEFT_W, bottom - TOP - 24 - PAD - HELP_LINES * 9 - 4);
 		float circleX = left + LEFT_W / 2F;
 		float circleY = TOP + 24 + 50;
 		float time = (mc().level == null ? 0 : mc().level.getGameTime()) / 20F;
@@ -287,8 +295,8 @@ final class MasteryPanel {
 
 		// The foot: what experience comes from.
 		List<FormattedCharSequence> help = font.split(Component.translatable("screen.wildercord.mastery.help"), right - X - 2 * PAD - 4);
-		int helpY = bottom - PAD - 18;
-		for (int i = 0; i < Math.min(2, help.size()); i++) {
+		int helpY = bottom - PAD - HELP_LINES * 9;
+		for (int i = 0; i < Math.min(HELP_LINES, help.size()); i++) {
 			g.text(font, help.get(i), X + PAD + 2, helpY + i * 9, FAINT, false);
 		}
 		return tip;
@@ -313,7 +321,7 @@ final class MasteryPanel {
 		List<Component> tip = null;
 		if (!trait.isEmpty()) {
 			fitText(g, font, traitName(trait), textX, y + 2, textW, borrowed ? LAVENDER : GOLD, false);
-			fitText(g, font, traitDesc(trait), textX, y + 11, textW, DIM, false);
+			fitText(g, font, traitDesc(trait), textX, y + 10, textW, DIM, false);
 		} else if (waiting) {
 			fitText(g, font, Component.translatable("screen.wildercord.mastery.choose_below"), textX, y + 6, textW, WARN, false);
 		} else {
@@ -336,9 +344,9 @@ final class MasteryPanel {
 		if (settled) {
 			int bx = unbindX(windowW);
 			boolean can = !entry.changed(slot) && pending < 0;
-			boolean hover = inside(mx, my, bx, y + 3, BUTTON, BUTTON);
-			sprite(g, hover && can ? SPR_TAB_ACTIVE : SPR_TAB, bx, y + 3, BUTTON, BUTTON);
-			g.text(font, "↺", bx + BUTTON / 2 - font.width("↺") / 2 + 1, y + 6, can ? hover ? TEXT : DIM : FAINT, false);
+			boolean hover = inside(mx, my, bx, y + 2, BUTTON, BUTTON);
+			sprite(g, hover && can ? SPR_TAB_ACTIVE : SPR_TAB, bx, y + 2, BUTTON, BUTTON);
+			g.text(font, "✎", bx + BUTTON / 2 - font.width("✎") / 2 + 1, y + 5, can ? hover ? TEXT : DIM : FAINT, false);
 			if (hover) {
 				tip = List.of(Component.translatable("screen.wildercord.mastery.unbind").withColor(GOLD),
 					Component.translatable(can ? "screen.wildercord.mastery.unbind.hint" : entry.changed(slot)
@@ -352,32 +360,30 @@ final class MasteryPanel {
 		List<Component> tip = null;
 		int x = columnX();
 		int pulse = (net.minecraft.util.Util.getMillis() / 500) % 2 == 0 ? WARN : GOLD;
-		fitText(g, font, Component.translatable("screen.wildercord.mastery.choose", rankName(MasteryRules.rankOf(slot))), x, choiceTop(), columnW(windowW), pulse, false);
+		fitText(g, font, Component.translatable("screen.wildercord.mastery.choose", rankName(MasteryRules.rankOf(slot))), x, choiceTop(),
+			columnW(windowW), pulse, false);
 		List<String> offer = entry.offer();
 		int n = offer.size();
 		String borrowed = entry.borrowed(slot) ? entry.traits().get(slot) : "";
+		int cw = columnW(windowW);
 		for (int i = 0; i < n; i++) {
 			String id = offer.get(i);
-			int cx = cardX(i, n, windowW);
-			int cw = cardW(n, windowW);
-			boolean hover = inside(mx, my, cx, cardTop(), cw, CARD_H);
+			int cy = cardY(i, n);
+			int ch = cardH(n);
+			boolean hover = inside(mx, my, x, cy, cw, ch);
 			boolean keep = id.equals(borrowed);
-			sprite(g, hover ? SPR_ROW_SELECTED : SPR_ROW, cx, cardTop(), cw, CARD_H);
-			int ty = cardTop() + 4;
-			if (keep) {
-				fitText(g, font, Component.translatable("screen.wildercord.mastery.keep"), cx + 4, ty, cw - 8, LAVENDER, false);
-				ty += 9;
-			}
-			List<FormattedCharSequence> name = font.split(traitName(id), cw - 8);
-			for (int k = 0; k < Math.min(2, name.size()); k++) {
-				g.text(font, name.get(k), cx + 4, ty, keep ? LAVENDER : GOLD, false);
-				ty += 9;
-			}
-			List<FormattedCharSequence> desc = font.split(traitDesc(id), cw - 8);
-			int room = Math.max(0, (cardTop() + CARD_H - 3 - ty) / 9);
-			for (int k = 0; k < Math.min(room, desc.size()); k++) {
-				g.text(font, desc.get(k), cx + 4, ty, TEXT, false);
-				ty += 9;
+			sprite(g, hover ? SPR_ROW_SELECTED : SPR_ROW, x, cy, cw, ch);
+			Component name = keep ? Component.translatable("screen.wildercord.mastery.keep", traitName(id)) : traitName(id);
+			fitText(g, font, name, x + 5, cy + 2, cw - 10, keep ? LAVENDER : GOLD, false);
+			List<FormattedCharSequence> desc = font.split(traitDesc(id), cw - 10);
+			int lines = (ch - 11) / 9;
+			for (int k = 0; k < Math.min(lines, desc.size()); k++) {
+				boolean last = k == lines - 1 && desc.size() > lines;
+				if (last) {
+					fitText(g, font, Component.literal(remainder(font, desc, k)), x + 5, cy + 11 + k * 9, cw - 10, TEXT, false);
+				} else {
+					g.text(font, desc.get(k), x + 5, cy + 11 + k * 9, TEXT, false);
+				}
 			}
 			if (hover) {
 				tip = new ArrayList<>(List.of(traitName(id).copy().withColor(GOLD), traitDesc(id).copy().withStyle(ChatFormatting.GRAY),
@@ -387,15 +393,33 @@ final class MasteryPanel {
 		// The one change this rank allows, before choosing: a fresh offer.
 		boolean can = !entry.changed(slot);
 		Component label = Component.translatable("screen.wildercord.mastery.reroll", MasteryRules.CHANGE_LEVELS);
-		int bw = font.width(label) + 12;
-		boolean hover = inside(mx, my, x, rerollY(), bw, 13);
-		sprite(g, hover && can ? SPR_TAB_ACTIVE : SPR_TAB, x, rerollY(), bw, 13);
-		g.text(font, label, x + 6, rerollY() + 3, can ? hover ? TEXT : DIM : FAINT, false);
+		int bw = rerollW(font);
+		int bx = rerollX(windowW, font);
+		boolean hover = inside(mx, my, bx, rerollY(), bw, 13);
+		sprite(g, hover && can ? SPR_TAB_ACTIVE : SPR_TAB, bx, rerollY(), bw, 13);
+		g.centeredText(font, label, bx + bw / 2, rerollY() + 3, can ? hover ? TEXT : DIM : FAINT);
 		if (hover) {
 			tip = List.of(label.copy().withColor(GOLD), Component.translatable(can ? "screen.wildercord.mastery.reroll.hint" : "screen.wildercord.mastery.changed",
 				MasteryRules.CHANGE_LEVELS).withStyle(ChatFormatting.GRAY));
 		}
 		return tip;
+	}
+
+	/** What's left of a trait's description from wrapped line {@code from} on, as one line (to be cut short with an ellipsis). */
+	private static String remainder(Font font, List<FormattedCharSequence> lines, int from) {
+		StringBuilder out = new StringBuilder();
+		for (int k = from; k < lines.size(); k++) {
+			StringBuilder line = new StringBuilder();
+			lines.get(k).accept((index, style, codepoint) -> {
+				line.appendCodePoint(codepoint);
+				return true;
+			});
+			if (out.length() > 0) {
+				out.append(' ');
+			}
+			out.append(line.toString().strip());
+		}
+		return out.toString();
 	}
 
 	/** How the spell has been used: the circumstances most of its casts were in, which shape what traits are offered. */
@@ -460,22 +484,21 @@ final class MasteryPanel {
 		if (pending >= 0 && !entry.offer().isEmpty()) {
 			int n = entry.offer().size();
 			for (int i = 0; i < n; i++) {
-				if (inside(mx, my, cardX(i, n, windowW), cardTop(), cardW(n, windowW), CARD_H)) {
+				if (inside(mx, my, columnX(), cardY(i, n), columnW(windowW), cardH(n))) {
 					send(MasteryChoices.CHOOSE, shown.spell(), pending, entry.offer().get(i));
 					sound(SoundEvents.AMETHYST_BLOCK_CHIME, 1.2F);
 					return;
 				}
 			}
 			Font font = mc().font;
-			int bw = font.width(Component.translatable("screen.wildercord.mastery.reroll", MasteryRules.CHANGE_LEVELS)) + 12;
-			if (inside(mx, my, columnX(), rerollY(), bw, 13) && !entry.changed(pending)) {
+			if (inside(mx, my, rerollX(windowW, font), rerollY(), rerollW(font), 13) && !entry.changed(pending)) {
 				send(MasteryChoices.REROLL, shown.spell(), pending, "");
 				sound(SoundEvents.BOOK_PAGE_TURN, 1.0F);
 				return;
 			}
 		}
 		for (int slot = 0; slot < MasteryRules.SLOTS; slot++) {
-			if (entry.settled(slot) && inside(mx, my, unbindX(windowW), slotY(slot) + 3, BUTTON, BUTTON) && !entry.changed(slot) && pending < 0) {
+			if (entry.settled(slot) && inside(mx, my, unbindX(windowW), slotY(slot) + 2, BUTTON, BUTTON) && !entry.changed(slot) && pending < 0) {
 				send(MasteryChoices.UNBIND, shown.spell(), slot, "");
 				sound(SoundEvents.BOOK_PAGE_TURN, 0.8F);
 				return;

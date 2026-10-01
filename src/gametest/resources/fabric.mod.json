@@ -57,6 +57,7 @@
 			"dev.wildercord.gametest.WildercordAffinitiesTest",
 			"dev.wildercord.gametest.WildercordPlayerAffinityTest",
 			"dev.wildercord.gametest.WildercordLoadoutsTest",
+			"dev.wildercord.gametest.WildercordMasteryTest",
 			"dev.wildercord.gametest.WildercordFishingTest",
 			"dev.wildercord.gametest.WildercordFrostWindTest",
 			"dev.wildercord.gametest.WildercordCordGlowTest",

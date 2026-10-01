@@ -67,7 +67,7 @@ public final class MasteryClient {
 	// ------------------------------------------------------------------ the toast
 
 	/** "Your spell grows: Adept", with the spell's name in its colour and its sigil where an item would sit. */
-	static final class RankToast implements Toast {
+	public static final class RankToast implements Toast {
 		private static final Identifier BACKGROUND = Wildercord.id("toast/grimoire");
 		private static final long SHOW_MS = 6000;
 		private final MasteryChoices.Rise rise;
@@ -78,7 +78,7 @@ public final class MasteryClient {
 		}
 
 		/** The token a rank's toast carries, so it can be found among the toasts (the game tests look for it). */
-		static String token(String name, int rank) {
+		public static String token(String name, int rank) {
 			return "mastery:" + name + ":" + rank;
 		}
 
