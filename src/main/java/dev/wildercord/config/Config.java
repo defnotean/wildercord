@@ -128,6 +128,8 @@ public final class Config {
 			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
 				ServerPlayNetworking.send(player, Sync.of(get()));
 			}
+			// The world's own magic may have been switched, counted or rerolled: everyone's view of it is worked out again.
+			dev.wildercord.cast.WorldResonances.reloaded(server);
 		}
 		return warnings;
 	}

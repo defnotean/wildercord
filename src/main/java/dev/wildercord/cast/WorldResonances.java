@@ -405,6 +405,12 @@ public final class WorldResonances {
 		}
 	}
 
+	/** After {@code /wildercord reload}: the world's draw follows the settings, and every player's view is worked out again. */
+	public static void reloaded(MinecraftServer server) {
+		ledger(server);
+		refreshAll(server);
+	}
+
 	static void refreshAll(MinecraftServer server) {
 		for (ServerPlayer player : List.copyOf(server.getPlayerList().getPlayers())) {
 			refresh(player);

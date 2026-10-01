@@ -1660,13 +1660,13 @@ public class CordScreen extends Screen {
 				}
 			}
 			lines.add(costLine(def));
-			boolean unread = RuneReadingText.stage(def) == dev.wildercord.spell.RuneReading.Stage.UNREAD;
+			// What it does to the world, and the marks it leaves, are told once it's understood: they're full of numbers.
+			boolean unread = RuneReadingText.stage(def) != dev.wildercord.spell.RuneReading.Stage.UNDERSTOOD;
 			if (rank > 1) {
 				lines.add(Component.translatable("tooltip.wildercord.rank", RuneItem.roman(rank), Math.round((Ranks.power(rank) - 1) * 100)).withColor(GOLD));
 			}
 			// What it does to the ground it lands on: burns grass, freezes water...
 			dev.wildercord.spell.WorldRules.Interaction world = dev.wildercord.spell.WorldRules.of(def);
-			// An unread rune keeps what it does to the world, and the marks it leaves, to itself.
 			if (world != dev.wildercord.spell.WorldRules.Interaction.NONE && !unread) {
 				lines.add(Component.translatable(world.tooltipKey()).withStyle(ChatFormatting.DARK_GREEN));
 			}
