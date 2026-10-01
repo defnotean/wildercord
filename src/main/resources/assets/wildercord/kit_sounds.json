@@ -237,6 +237,36 @@
     "blood_twang": {
       "part": "blood"
     },
+    "duelist_bow": {
+      "part": "duelist"
+    },
+    "duelist_challenge": {
+      "part": "duelist"
+    },
+    "duelist_clash": {
+      "part": "duelist"
+    },
+    "duelist_knight_ambient": {
+      "part": "duelist"
+    },
+    "duelist_knight_death": {
+      "part": "duelist"
+    },
+    "duelist_knight_hurt": {
+      "part": "duelist"
+    },
+    "duelist_knight_step": {
+      "part": "duelist"
+    },
+    "duelist_knight_windup": {
+      "part": "duelist"
+    },
+    "duelist_sheathe": {
+      "part": "duelist"
+    },
+    "duelist_yield": {
+      "part": "duelist"
+    },
     "earth_bloop": {
       "part": "earth"
     },

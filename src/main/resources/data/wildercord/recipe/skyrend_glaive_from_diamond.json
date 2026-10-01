@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": "wildercord:aura_shard",
+  "base": "minecraft:diamond_spear",
+  "addition": "wildercord:fulgurite_shard",
+  "result": {
+    "id": "minecraft:diamond_spear",
+    "components": {
+      "wildercord:aura_forged": "skyrend_glaive",
+      "minecraft:item_model": "wildercord:skyrend_glaive",
+      "minecraft:item_name": {
+        "translate": "item.wildercord.skyrend_glaive"
+      },
+      "minecraft:rarity": "rare"
+    }
+  }
+}

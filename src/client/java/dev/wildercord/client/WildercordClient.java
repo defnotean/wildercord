@@ -63,6 +63,7 @@ public final class WildercordClient implements ClientModInitializer {
 		EntityRendererRegistry.register(dev.wildercord.pet.CinnamonContent.CINNAMON, dev.wildercord.client.pet.CinnamonRenderer::new);
 		// The magical monsters of the wilds.
 		dev.wildercord.client.monster.MonsterClient.init();
+		dev.wildercord.client.auraworld.AuraWorldClient.init();
 		dev.wildercord.client.wildlife.WildlifeClient.init();
 		ClientTickEvents.END_CLIENT_TICK.register(dev.wildercord.client.cosmetic.CordTrails::tick);
 		// Magic drawn the plain way under a shader pack (Iris), so the pack's lighting doesn't break on it.

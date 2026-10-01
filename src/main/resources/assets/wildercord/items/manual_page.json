@@ -1,0 +1,83 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "wildercord:breathing_method",
+    "cases": [
+      {
+        "when": "ember",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/ember"
+        }
+      },
+      {
+        "when": "rime",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/rime"
+        }
+      },
+      {
+        "when": "thunder",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/thunder"
+        }
+      },
+      {
+        "when": "gale",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/gale"
+        }
+      },
+      {
+        "when": "stone",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/stone"
+        }
+      },
+      {
+        "when": "verdant",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/verdant"
+        }
+      },
+      {
+        "when": "hollow",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/hollow"
+        }
+      },
+      {
+        "when": "starlit",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/starlit"
+        }
+      },
+      {
+        "when": "hourglass",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/hourglass"
+        }
+      },
+      {
+        "when": "crimson",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/manual_page/crimson"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "wildercord:item/manual_page/unknown"
+    }
+  }
+}

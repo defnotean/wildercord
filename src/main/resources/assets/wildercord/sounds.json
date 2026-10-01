@@ -3364,5 +3364,75 @@
       "wildercord:kit/aura/aura_slash_1",
       "wildercord:kit/aura/aura_slash_2"
     ]
+  },
+  "duelist_bow": {
+    "subtitle": "subtitles.wildercord.kit.duelist.bow",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_bow"
+    ]
+  },
+  "duelist_challenge": {
+    "subtitle": "subtitles.wildercord.kit.duelist.challenge",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_challenge"
+    ]
+  },
+  "duelist_clash": {
+    "subtitle": "subtitles.wildercord.kit.duelist.clash",
+    "sounds": [
+      {
+        "name": "wildercord:kit/duelist/duelist_clash",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "duelist_knight_ambient": {
+    "subtitle": "subtitles.wildercord.kit.fallen_knight.ambient",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_knight_ambient_1",
+      "wildercord:kit/duelist/duelist_knight_ambient_2"
+    ]
+  },
+  "duelist_knight_death": {
+    "subtitle": "subtitles.wildercord.kit.fallen_knight.death",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_knight_death"
+    ]
+  },
+  "duelist_knight_hurt": {
+    "subtitle": "subtitles.wildercord.kit.fallen_knight.hurt",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_knight_hurt_1",
+      "wildercord:kit/duelist/duelist_knight_hurt_2"
+    ]
+  },
+  "duelist_knight_step": {
+    "subtitle": "subtitles.wildercord.kit.fallen_knight.step",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_knight_step_1",
+      "wildercord:kit/duelist/duelist_knight_step_2",
+      "wildercord:kit/duelist/duelist_knight_step_3"
+    ]
+  },
+  "duelist_knight_windup": {
+    "subtitle": "subtitles.wildercord.kit.fallen_knight.windup",
+    "sounds": [
+      {
+        "name": "wildercord:kit/duelist/duelist_knight_windup",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "duelist_sheathe": {
+    "subtitle": "subtitles.wildercord.kit.duelist.sheathe",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_sheathe"
+    ]
+  },
+  "duelist_yield": {
+    "subtitle": "subtitles.wildercord.kit.duelist.yield",
+    "sounds": [
+      "wildercord:kit/duelist/duelist_yield"
+    ]
   }
 }

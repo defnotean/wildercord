@@ -213,6 +213,7 @@ public class Duelist extends AuraFighter {
 		}
 		if (level() instanceof ServerLevel level) {
 			Feels.sound(level, position().add(0, 1, 0), "duelist_sheathe", 0.9F, 1.0F);
+			Feels.sound(level, position().add(0, 1, 0), "duelist_bow", 0.8F, 1.0F);
 		}
 	}
 
