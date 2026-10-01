@@ -167,6 +167,10 @@ public final class Runebound {
 
 	/** The spells a monster of this kind may carry. Empty for monsters that never become Runebound. */
 	static List<List<RuneDef>> pool(Mob mob) {
+		// The monsters of the wilds each say which spells suit them (a Bramblewalker's vines, a harpy's lightning...).
+		if (mob instanceof dev.wildercord.monster.RuneboundKin kin) {
+			return kin.runeboundSpells();
+		}
 		if (mob instanceof AbstractSkeleton) {
 			return List.of(List.of(Runes.BOLT, Runes.FROST), List.of(Runes.BOLT, Runes.SHOCK), List.of(Runes.ARC, Runes.FIRE),
 				List.of(Runes.BEAM, Runes.HARM), List.of(Runes.BOLT, Runes.VENOM));

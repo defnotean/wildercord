@@ -603,6 +603,120 @@
     "link_ting": {
       "part": "neutral"
     },
+    "monster_bramble_ambient": {
+      "part": "monster"
+    },
+    "monster_bramble_death": {
+      "part": "monster"
+    },
+    "monster_bramble_hurt": {
+      "part": "monster"
+    },
+    "monster_bramble_lash": {
+      "part": "monster"
+    },
+    "monster_bramble_rear": {
+      "part": "monster"
+    },
+    "monster_bubble_pop": {
+      "part": "monster"
+    },
+    "monster_frog_ambient": {
+      "part": "monster"
+    },
+    "monster_frog_croak": {
+      "part": "monster"
+    },
+    "monster_frog_death": {
+      "part": "monster"
+    },
+    "monster_frog_gulp": {
+      "part": "monster"
+    },
+    "monster_frog_hurt": {
+      "part": "monster"
+    },
+    "monster_frog_spit": {
+      "part": "monster"
+    },
+    "monster_frog_swell": {
+      "part": "monster"
+    },
+    "monster_frog_tongue": {
+      "part": "monster"
+    },
+    "monster_geode_ambient": {
+      "part": "monster"
+    },
+    "monster_geode_crack": {
+      "part": "monster"
+    },
+    "monster_geode_curl": {
+      "part": "monster"
+    },
+    "monster_geode_death": {
+      "part": "monster"
+    },
+    "monster_geode_hurt": {
+      "part": "monster"
+    },
+    "monster_geode_rattle": {
+      "part": "monster"
+    },
+    "monster_geode_roll": {
+      "part": "monster"
+    },
+    "monster_gloom_ambient": {
+      "part": "monster"
+    },
+    "monster_gloom_death": {
+      "part": "monster"
+    },
+    "monster_gloom_growl": {
+      "part": "monster"
+    },
+    "monster_gloom_hurt": {
+      "part": "monster"
+    },
+    "monster_gloom_pounce": {
+      "part": "monster"
+    },
+    "monster_gloom_reveal": {
+      "part": "monster"
+    },
+    "monster_harpy_ambient": {
+      "part": "monster"
+    },
+    "monster_harpy_death": {
+      "part": "monster"
+    },
+    "monster_harpy_dive": {
+      "part": "monster"
+    },
+    "monster_harpy_hurt": {
+      "part": "monster"
+    },
+    "monster_harpy_shriek": {
+      "part": "monster"
+    },
+    "monster_ooze_absorb": {
+      "part": "monster"
+    },
+    "monster_ooze_ambient": {
+      "part": "monster"
+    },
+    "monster_ooze_death": {
+      "part": "monster"
+    },
+    "monster_ooze_grow": {
+      "part": "monster"
+    },
+    "monster_ooze_hurt": {
+      "part": "monster"
+    },
+    "monster_ooze_split": {
+      "part": "monster"
+    },
     "note_effect": {
       "part": "neutral"
     },

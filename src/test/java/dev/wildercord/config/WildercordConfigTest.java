@@ -441,6 +441,64 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void monstersDefaultToSpawningEverywhereTheyLive() {
+		WildercordConfig.MonsterSettings m = D.monsters();
+		assertEquals(WildercordConfig.MonsterSettings.DEFAULTS, m);
+		assertTrue(m.enabled());
+		assertEquals(1.0, m.spawnRate(), 1e-9);
+		for (String id : List.of("bramblewalker", "gloomstalker", "thunderwing_harpy", "geode_crawler", "bog_witch_frog", "mana_ooze")) {
+			assertTrue(m.spawns(id), id + " should spawn by default");
+		}
+		assertFalse(m.spawns("zombie"), "only the six are asked about");
+		assertTrue(D.toJson().contains("\"monsters\""), "a fresh file lists the section");
+	}
+
+	@Test
+	void monsterSettingsAreReadKeptInRangeAndSwitchEachCreature() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"monsters\": {\"spawn_rate\": 9, \"gloomstalker\": false, \"mana_ooze\": false,"
+			+ " \"griffin\": true}}");
+		WildercordConfig.MonsterSettings m = parsed.config().monsters();
+		assertTrue(m.enabled());
+		assertEquals(WildercordConfig.MonsterSettings.MAX_SPAWN_RATE, m.spawnRate(), 1e-9);
+		assertFalse(m.spawns("gloomstalker"));
+		assertFalse(m.spawns("mana_ooze"));
+		assertTrue(m.spawns("bramblewalker") && m.spawns("thunderwing_harpy") && m.spawns("geode_crawler") && m.spawns("bog_witch_frog"));
+		assertEquals(2, parsed.warnings().size(), parsed.warnings().toString());
+		assertTrue(parsed.warnings().stream().anyMatch(w -> w.contains("monsters.griffin")));
+		assertTrue(parsed.warnings().stream().anyMatch(w -> w.contains("monsters.spawn_rate")));
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config(), "the written file keeps every changed setting");
+		// The master switch, or a rate of nothing, stops them all.
+		WildercordConfig.MonsterSettings off = WildercordConfig.parse("{\"monsters\": {\"enabled\": false}}").config().monsters();
+		assertFalse(off.spawns("bramblewalker"));
+		WildercordConfig.MonsterSettings none = WildercordConfig.parse("{\"monsters\": {\"spawn_rate\": 0}}").config().monsters();
+		assertFalse(none.spawns("bog_witch_frog"));
+		assertEquals(0.0, WildercordConfig.parse("{\"monsters\": {\"spawn_rate\": -2}}").config().monsters().spawnRate(), 1e-9);
+	}
+
+	@Test
+	void aFileFromBeforeTheMonstersGainsTheirSection() {
+		// Written by 0.8.0, before the monsters of the wilds.
+		String old = D.toJson().replaceAll("(?s),\\s*\"monsters\": \\{.*$", "\n}\n");
+		assertFalse(old.contains("\"monsters\""), old);
+		assertTrue(old.contains("\"places_of_power\""), "only the monsters section is gone");
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.MonsterSettings.DEFAULTS, parsed.config().monsters());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"monsters\"", "\"spawn_rate\"", "\"bramblewalker\"", "\"gloomstalker\"", "\"thunderwing_harpy\"", "\"geode_crawler\"",
+				"\"bog_witch_frog\"", "\"mana_ooze\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		// A section missing one setting gets just that one back, and keeps the owner's others.
+		String partial = D.toJson().replace("\"geode_crawler\": true,", "").replace("\"spawn_rate\": 1.0", "\"spawn_rate\": 0.5");
+		assertFalse(partial.contains("\"geode_crawler\""), partial);
+		WildercordConfig.MonsterSettings fixed = WildercordConfig.parse(WildercordConfig.addMissing(partial).orElseThrow()).config().monsters();
+		assertTrue(fixed.geodeCrawler());
+		assertEquals(0.5, fixed.spawnRate(), 1e-9);
+	}
+
+	@Test
 	void chancesScaleAndStayWithinAHundred() {
 		assertEquals(35, WildercordConfig.scaledChance(35, 1.0));
 		assertEquals(70, WildercordConfig.scaledChance(35, 2.0));

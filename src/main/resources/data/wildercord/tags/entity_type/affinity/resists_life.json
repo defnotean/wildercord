@@ -1,6 +1,8 @@
 {
   "values": [
     "#minecraft:arthropod",
-    "minecraft:witch"
+    "minecraft:witch",
+    "wildercord:bramblewalker",
+    "wildercord:bog_witch_frog"
   ]
 }

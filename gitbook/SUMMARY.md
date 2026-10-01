@@ -63,6 +63,7 @@
   * [Knots](fusion-altar/knots.md)
 * [The World](world/index.md)
   * [Runebound](world/runebound.md)
+  * [Monsters of the Wilds](world/monsters.md)
   * [The Archive](world/archive.md)
   * [The Ember Sanctum](world/ember-sanctum.md)
   * [The Astral Observatory](world/astral-observatory.md)

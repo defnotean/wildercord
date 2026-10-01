@@ -2,6 +2,7 @@
   "values": [
     "minecraft:evoker",
     "minecraft:illusioner",
-    "wildercord:archivist"
+    "wildercord:archivist",
+    "wildercord:geode_crawler"
   ]
 }

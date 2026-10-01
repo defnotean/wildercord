@@ -10,10 +10,10 @@ permalink: /world/
 <img src="{{ '/assets/images/world-tide-flood.jpg' | relative_url }}" alt="The Tide Scribe, a drowned sorcerer, swimming in its flooded pit under a glass dome, with sea-lantern pedestals standing out of the water" class="shot">
 <span class="caption">The Tide Scribe's pit in the Drowned Scriptorium, with the tide in.</span>
 
-Wildercord's magic doesn't stay on your Cord. Some monsters out in the world carry Cords of their own, old
-buildings hide doors that only spells can open, every dimension keeps a dungeon with a keeper that fights like a
-caster, the world's own mana boils up in storms, stars fall, rifts tear open, and your spells change the ground they
-land on. This section is your map to all of it.
+Wildercord's magic doesn't stay on your Cord. Magical monsters roam the forests, peaks, swamps and caves, some
+monsters carry Cords of their own, old buildings hide doors that only spells can open, every dimension keeps a
+dungeon with a keeper that fights like a caster, the world's own mana boils up in storms, stars fall, rifts tear
+open, and your spells change the ground they land on. This section is your map to all of it.
 
 ## Where to go, roughly in order
 
@@ -23,6 +23,7 @@ rows need nothing but a Twine Cord and a few runes; the later ones want a strong
 | | What | Where | What you face | What it gives |
 |---|---|---|---|---|
 | 1 | [Runebound monsters]({{ '/world/runebound/' | relative_url }}) | Everywhere monsters spawn, from your first night | A zombie, skeleton, witch or illager that casts a real spell | A rune from its Cord, sometimes a Torn Page |
+| 1b | [Monsters of the wilds]({{ '/world/monsters/' | relative_url }}) | Forests, peaks, swamps and caves, mostly at night | Six magical monsters, each with a tell and a counter: walking thickets, shadow panthers, storm harpies, crystal beetles, poison frogs, spell-eating oozes | Drops for brewing and a few small magics: rooting brambles, gusting feathers, mana gel |
 | 2 | [Magic that changes the world]({{ '/world/world-magic/' | relative_url }}) | Wherever your spells land | Nothing: it's how fire, frost, storm and the rest meet the ground and water | Frozen bridges, steam cover, arrows knocked away |
 | 2b | [Residues and reagents]({{ '/world/residues/' | relative_url }}) | Wherever a strong spell of yours lands | Nothing: big magic leaves a mark of its element that slowly fades | Reagents for the Fusion Altar, and small uses of their own |
 | 2c | [Places and times of power]({{ '/world/places-of-power/' | relative_url }}) | Ley crossings, and the sky (the moon, the hour, the weather) | Nothing: they favour some elements | Stronger, cheaper spells at a crossing; stronger arcane and void under a full moon |

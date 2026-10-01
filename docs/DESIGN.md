@@ -873,7 +873,7 @@ overchannelled spell rolls the same table at 7% a stage, and both together roll 
 
 ### Runebound
 About 2-6% of zombies and skeletons of every kind (husks, drowned, zombie villagers, strays,
-bogged...), witches, pillagers and vindicators spawn **Runebound** (more where the local difficulty
+bogged...), witches, pillagers, vindicators and the [monsters of the wilds](#monsters-of-the-wilds) spawn **Runebound** (more where the local difficulty
 is higher, none on Peaceful, and 35% of the monsters inside an Archive), carrying a spell that
 suits them; one in six is an **Adept**, whose spell gains a Split or an Amplify. They have 60% more
 health (Adepts 120%).
@@ -889,6 +889,31 @@ health (Adepts 120%).
   never change blocks. Power 0.6/0.8/1.0 by difficulty (Adepts ×1.15).
 - Slain by a player: a 35% chance (Adepts 60%) of a rune from their Cord, a 6% chance (Adepts
   20%) of a Torn Page, 10 extra experience (Adepts 20), and it counts toward the 6th Circle.
+
+### Monsters of the wilds
+Six magical monsters spawn on their own beside the vanilla ones, each with a tell before its signature attack and a
+counter a player can learn. They join their biomes' monster lists (inside the vanilla monster cap) with weights of 7 to
+14 against a zombie's 95 or a skeleton's 100, so a meeting now and then, never a crowd; all need the dark monsters need
+and none spawns on Peaceful.
+
+| Monster | Where | Signature (tell → attack) | Counter | Drop and its use | Affinities |
+|---|---|---|---|---|---|
+| **Bramblewalker** (30 health, armour 4) | Forest floors at night (dark forest, pale garden ×1.4) | Rears back, vines glowing (0.8 s) → a vine lash along a line at where you stood 0.25 s before it cracks, 7 blocks: 3 damage and rooted (Slowness VII, as the Root rune: 1 / 1.5 / 2 s by difficulty) | Step aside; fire (+50% from any fire), and burning makes it flee until 2 s after the flames | Living Bramble: thrown, roots what it hits for 2 s; composts | weak fire; resists earth, life |
+| **Gloomstalker** (24, armour 2) | Dark forest and pale garden surface at night; below 0 anywhere | Hidden in the dark (drawn at 12% opacity, eyes always lit); stalks at 6 blocks, crouches (eyes flare, 0.7 s) → pounces (6 damage), slinks off to the darkest spot near; a miss leaves it sprawled 1.5 s | Light ≥ 8 where it stands, a player within 3 blocks, Glowing, or a fire/storm/arcane/life spell (or Light, Reveal) shows it: 6 s for a light spell, 2 s for any wound | Shadow Pelt: Awkward Potion → Invisibility | weak arcane; resists void |
+| **Thunderwing Harpy** (22, armour 1) | Peaks and windswept hills, y ≥ 90, at night or in a storm | Circles 8 up, 7 out; shrieks, wings wide (0.8 s) → dives in a straight line at where you are and are heading (6 damage); a miss into the ground stuns it 2.5 s. In a thunderstorm: a ring under you (1.3 s) → lightning there (5 magic damage within 1.8 blocks, through the spell defences) | Dodge, punish the stun; any earth spell grounds it 3 s; shoot it while it circles | Storm Feather: use for a gust up (and 2 s of slow falling), 1 s cooldown | weak earth, frost; resists storm, wind |
+| **Geode Crawler** (26, armour 6) | Caves below 50; away from amethyst only a quarter of its spawns go ahead | Struck, curls for 2 s (a fifth of any blow gets through), rattles (0.6 s) → rolls at its target (6 damage); a wall dazes it 2 s | A mace, a pickaxe, a blast, lightning or a storm spell: ×1.25 and cracks it open, dazed | Geode Grit (the earth reagent) and amethyst | weak storm; resists earth, arcane |
+| **Bog Witch-Frog** (32, armour 2) | Swamps and mangrove swamps at night | Throat swells (0.9 s) → lobs a bubble (12 to 34 ticks of flight, 4 to 16 blocks): 3 magic damage and Poison 5 s within 1.7 blocks, and a poisoned mist. Mouth gapes (0.5 s) → tongue yanks a player 3 to 6 blocks off (2 damage). Swallows small, wild, nameless creatures within 6 blocks (heals 6; next bubble ×1.5 wide, ×1.5 harm, Poison II) | Pop the bubble in the air (any hit); a raised shield turns the tongue | Bog Gland: Awkward → Water Breathing; Thick → Leaping | weak frost; resists life |
+| **Mana Ooze** (6 / 14 / 24 / 36 by size 1 to 4) | Below 0 anywhere; below 40 under a ley line | Drinks every spell's harm except fire's: 8 × size fills it; full, it grows a size (healed); full at 4, bursts into two size 2 (3 magic damage within 3 blocks). Its touch drains 4 mana from a Cord wearer | Blades, arrows, fire (+50%, never drunk); it never splits on death | Mana Gel: eaten, 15 mana | weak fire |
+
+- **Monster magic is spell damage.** A harpy's lightning, a frog's bubble and an ooze's burst are magic from the monster
+  through `SpellDefence` (armour at its spell rate, Warding, Warded, the spellguard); claws, bites, dives, rolls and the
+  vine's thorns are ordinary blows. The game scales both by difficulty as it does any monster's harm.
+- **Runebound.** Each rolls Runebound like a zombie does (the same chance and Adept odds), with spells that suit it:
+  Wave or Ring · Root, Bolt · Venom (Bramblewalker); Bolt · Blind or Wither, Touch · Harm (Gloomstalker); Bolt · Shock or
+  Jolt, Crescent · Windcut (harpy); Bolt · Pelt or Shackle, Ring · Tremor (crawler); Zone or Orb · Venom, Bolt · Bleed
+  (frog); Orb or Bolt · Harm, Bolt · Silence (ooze).
+- **Server settings** (`monsters`): `enabled`, `spawn_rate` (0 to 4, scales their weights when a world loads) and a switch
+  for each, read by their spawn rules at once. Spawn eggs, spawners and commands aren't stopped by the switches.
 
 ### Collisions, clashes and Unison
 - **Spell collision:** a bolt that meets an enemy caster's bolt in the air bursts with it. Different
@@ -1504,8 +1529,9 @@ five). The full list is in [features/fusion-altar.md](features/fusion-altar.md).
   above (and only half of it against a player), never more than ×1.2 together; prices and cooldowns go no lower than 85%.
 - **Config file:** `config/wildercord.json` holds the caps above, whether spells may edit
   blocks, the PvP scale, the spell defences, mana-regen and cost multipliers, Runebound and loot
-  chances, imbue limits, feature switches and the overchannel and tracing tuning (`channeling`);
-  `/wildercord reload` reads it again (see
+  chances, the monsters of the wilds (`monsters`: their switches and spawn rate), imbue limits,
+  feature switches and the overchannel and tracing tuning (`channeling`); `/wildercord reload`
+  reads it again (see
   [features/gear-config-api.md](features/gear-config-api.md)).
 
 ## Add-on compatibility contract

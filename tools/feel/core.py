@@ -1,6 +1,7 @@
 """What an element's sound file needs: the DSP of tools/sound_art.py and a way to declare an event.
 
-A file `tools/feel/<part>.py` (a part is an element, or `neutral`) defines builder functions and lists them:
+A file `tools/feel/<part>.py` (a part is an element, `neutral`, or `monster`: the creatures' own voices) defines builder
+functions and lists them:
 
     from feel.core import sa, event
 
@@ -25,11 +26,13 @@ if str(TOOLS) not in sys.path:
 import sound_art as sa  # noqa: E402  (the DSP primitives, ROOT_HZ, note(), the scale degrees D E FS A B)
 
 ELEMENTS = sa.ELEMENTS
-PARTS = ELEMENTS + ("neutral",)
+PARTS = ELEMENTS + ("neutral", "monster")
 NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 
-# The four subtitle texts every kit event picks from (generate_assets.py NEW_LANG): a sound never needs its own line.
+# The four subtitle texts every spell's kit event picks from (generate_assets.py NEW_LANG): a sound never needs its own line.
+# A creature's own sounds (the monster part) name what makes them instead, "<creature>.<sound>" (monster_art.py LANG).
 SUBTITLES = ("cast", "hit", "field", "tell")
+CREATURE_SUBTITLE = re.compile(r"^[a-z_]+\.[a-z_]+$")
 
 
 @dataclass(frozen=True)
@@ -39,15 +42,15 @@ class Event:
     variants: int = 1
     role: str = "effect"      # informational: the role given to sa.finish inside the builder
     attenuation: int = 0      # blocks it can be heard from (0: Minecraft's 16)
-    subtitle: str = "hit"     # one of SUBTITLES
+    subtitle: str = "hit"     # one of SUBTITLES, or a creature's "<creature>.<sound>"
     loop: bool = False        # seamless loop (checked as one)
 
 
 def event(name, build, variants=1, role="effect", attenuation=0, subtitle="hit", loop=False):
     if not NAME.match(name):
         raise ValueError(f"event name {name!r}: lower-case letters, digits and underscores, starting with a letter")
-    if subtitle not in SUBTITLES:
-        raise ValueError(f"event {name}: subtitle must be one of {SUBTITLES}")
+    if subtitle not in SUBTITLES and not CREATURE_SUBTITLE.match(subtitle):
+        raise ValueError(f"event {name}: subtitle must be one of {SUBTITLES}, or a creature's '<creature>.<sound>'")
     if not 1 <= variants <= 6:
         raise ValueError(f"event {name}: 1 to 6 variants")
     return Event(name, build, variants, role, attenuation, subtitle, loop)
