@@ -284,3 +284,19 @@ EVENTS = [
     event("fire_pyre", fire_pyre, variants=1, role="effect", subtitle="cast"),
     event("fire_out", fire_out, variants=2, role="tell", subtitle="tell"),
 ]
+
+
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def fire_smoulder(v, rng):
+    """Smouldering ash: embers still popping in it, one or two at a time, over a warm breath of heat."""
+    dur = 1.3
+    pops = sa.norm(sa.bandpass(sa.grains(dur, 14 + 4 * v, rng, length=(0.001, 0.005), shape=[(0, 1), (dur, 0.6)]), 1400, 5200))
+    breath = sa.norm(sa.lowpass(sa.noise(dur, rng), 900)) * sa.swell(dur, 0.45)
+    glow = sa.sine(sa.note(sa.D, -1), dur) * sa.swell(dur, 0.5) * 0.15
+    x = sa.mix(0.8 * pops, 0.35 * breath, glow)
+    return sa.finish(sa.reverb(x, 0.4, 0.08), "tell", fade_out=0.25)
+
+
+EVENTS += [event("fire_smoulder", fire_smoulder, variants=2, role="tell", subtitle="field")]

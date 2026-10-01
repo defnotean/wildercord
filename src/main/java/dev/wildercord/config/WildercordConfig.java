@@ -41,6 +41,8 @@ import java.util.Set;
  * @param affinityGain       how fast affinity points come, times this (the daily allowances count what's done, not what it's worth)
  * @param travel             the travel commands ({@code /home}, {@code /warp}, {@code /tpa}...): see {@link TravelSettings}
  * @param defence            how players stand up to spells (armour, the bonus cap, the spellguard): see {@link DefenceSettings}
+ * @param residues           the lasting marks big magic leaves on the world: see {@link ResidueSettings}
+ * @param power              places and times of power (ley crossings, the moon, the hour, the weather): see {@link PowerSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -65,10 +67,12 @@ public record WildercordConfig(
 	boolean playerAffinity,
 	double affinityGain,
 	TravelSettings travel,
-	DefenceSettings defence
+	DefenceSettings defence,
+	ResidueSettings residues,
+	PowerSettings power
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
-		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS);
+		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, ResidueSettings.DEFAULTS, PowerSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -102,6 +106,38 @@ public record WildercordConfig(
 	 */
 	public record DefenceSettings(boolean spellguard, double spellguardHealth, int spellguardRechargeSeconds, double maxBonus, double armourRate) {
 		public static final DefenceSettings DEFAULTS = new DefenceSettings(true, 0.8, 60, 2.5, 0.55);
+	}
+
+	/**
+	 * The lasting marks big magic leaves (the {@code residues} section): ash, everfrost, storm-glass, strange flowers, a
+	 * scar of void... each fading on its own. They only ever take natural ground or open air, and they ask the same
+	 * permission any spell's block change does ({@code casting.spells_edit_blocks} and claims). A file written before the
+	 * section existed reads as these defaults.
+	 *
+	 * @param enabled            whether magic leaves residues at all
+	 * @param minSpellCost       the mana a spell must cost (its list price) to leave one; an overcast always does
+	 * @param lifetimeMultiplier how long residues last, times this (everfrost holds about a day at 1.0)
+	 * @param maxPerChunk        the most residue blocks one chunk holds
+	 * @param maxPerDimension    the most residue blocks one dimension holds
+	 */
+	public record ResidueSettings(boolean enabled, double minSpellCost, double lifetimeMultiplier, int maxPerChunk, int maxPerDimension) {
+		public static final ResidueSettings DEFAULTS = new ResidueSettings(true, dev.wildercord.world.ResidueRules.MIN_SPELL_COST, 1.0,
+			dev.wildercord.world.ResidueRules.PER_CHUNK, dev.wildercord.world.ResidueRules.PER_DIMENSION);
+	}
+
+	/**
+	 * Places and times of power (the {@code places_of_power} section), on top of the elemental climate (switching
+	 * {@code features.elemental_climate} off turns these off too). A file written before the section existed reads as
+	 * these defaults.
+	 *
+	 * @param leyCrossings        whether standing where two ley lines cross strengthens and cheapens every spell
+	 * @param crossingBonus       how much: 0.1 is every element 10% stronger and every spell 10% cheaper
+	 * @param celestial           whether the moon, the hour and the weather favour elements (a full moon arcane and void,
+	 *                            noon fire, dawn and dusk time, rain frost...)
+	 * @param celestialMultiplier those bonuses, scaled: 1 as designed, 0.5 half as strong, 2 twice
+	 */
+	public record PowerSettings(boolean leyCrossings, double crossingBonus, boolean celestial, double celestialMultiplier) {
+		public static final PowerSettings DEFAULTS = new PowerSettings(true, dev.wildercord.spell.ClimateRules.CROSSING_BONUS, true, 1.0);
 	}
 
 	/** The file's format version, written so later versions can migrate it. */
@@ -165,7 +201,18 @@ public record WildercordConfig(
 				r.number("defence", "spellguard_health", d.defence.spellguardHealth(), 0.1, 1),
 				r.integer("defence", "spellguard_recharge_seconds", d.defence.spellguardRechargeSeconds(), 0, 3600),
 				r.number("defence", "max_bonus", d.defence.maxBonus(), 1, 100),
-				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)));
+				r.number("defence", "armour_rate", d.defence.armourRate(), 0, 1)),
+			new ResidueSettings(
+				r.bool("residues", "enabled", d.residues.enabled()),
+				r.number("residues", "min_spell_cost", d.residues.minSpellCost(), 1, 1000),
+				r.number("residues", "lifetime_multiplier", d.residues.lifetimeMultiplier(), 0.05, 10),
+				r.integer("residues", "max_per_chunk", d.residues.maxPerChunk(), 1, 256),
+				r.integer("residues", "max_per_dimension", d.residues.maxPerDimension(), 0, 100000)),
+			new PowerSettings(
+				r.bool("places_of_power", "ley_crossings", d.power.leyCrossings()),
+				r.number("places_of_power", "crossing_bonus", d.power.crossingBonus(), 0, 0.5),
+				r.bool("places_of_power", "celestial", d.power.celestial()),
+				r.number("places_of_power", "celestial_multiplier", d.power.celestialMultiplier(), 0, 2)));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -184,6 +231,8 @@ public record WildercordConfig(
 		KEYS.put("affinity", Set.of("gain_multiplier"));
 		KEYS.put("travel", Set.of("enabled", "max_homes", "warmup_seconds", "cooldown_seconds", "rtp_cooldown_seconds", "rtp_radius", "tpa_timeout_seconds"));
 		KEYS.put("defence", Set.of("spellguard", "spellguard_health", "spellguard_recharge_seconds", "max_bonus", "armour_rate"));
+		KEYS.put("residues", Set.of("enabled", "min_spell_cost", "lifetime_multiplier", "max_per_chunk", "max_per_dimension"));
+		KEYS.put("places_of_power", Set.of("ley_crossings", "crossing_bonus", "celestial", "celestial_multiplier"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -376,6 +425,27 @@ public record WildercordConfig(
 		defenceSection.addProperty("max_bonus", defence.maxBonus());
 		defenceSection.addProperty("armour_rate", defence.armourRate());
 		root.add("defence", defenceSection);
+
+		JsonObject residueSection = new JsonObject();
+		residueSection.addProperty("_about", "The lasting marks big magic leaves where it lands (ash, everfrost, storm-glass, strange flowers, a scar of void...). "
+			+ "A spell leaves one when its mana price reaches min_spell_cost (an overcast always does). They take only natural ground or open air, follow "
+			+ "casting.spells_edit_blocks and claims, fade on their own (lifetime_multiplier 2.0 keeps them twice as long) and give reagents when harvested.");
+		residueSection.addProperty("enabled", residues.enabled());
+		residueSection.addProperty("min_spell_cost", residues.minSpellCost());
+		residueSection.addProperty("lifetime_multiplier", residues.lifetimeMultiplier());
+		residueSection.addProperty("max_per_chunk", residues.maxPerChunk());
+		residueSection.addProperty("max_per_dimension", residues.maxPerDimension());
+		root.add("residues", residueSection);
+
+		JsonObject powerSection = new JsonObject();
+		powerSection.addProperty("_about", "Places and times of power, part of the elemental climate (features.elemental_climate turns them off too). Where two "
+			+ "ley lines cross every spell is crossing_bonus stronger and cheaper (0.1 is 10%). With celestial on, the moon, the hour and the weather favour "
+			+ "elements (a full moon arcane and void, noon fire, dawn and dusk time, rain frost); celestial_multiplier scales those bonuses.");
+		powerSection.addProperty("ley_crossings", power.leyCrossings());
+		powerSection.addProperty("crossing_bonus", power.crossingBonus());
+		powerSection.addProperty("celestial", power.celestial());
+		powerSection.addProperty("celestial_multiplier", power.celestialMultiplier());
+		root.add("places_of_power", powerSection);
 		return GSON.toJson(root) + "\n";
 	}
 

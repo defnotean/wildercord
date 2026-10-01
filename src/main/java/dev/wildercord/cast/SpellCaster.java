@@ -223,6 +223,10 @@ public final class SpellCaster {
 		Cast cast = new Cast(player, castNumber, bonuses, false, null, info).weigh(compiled.cost() * secret.map(Secrets.Secret::power).orElse(1.0)).gear(gear)
 			.withAffinity();
 		cast.charge(charge);
+		if (overcast) {
+			// Magic paid for with a cracked circle marks the world where it lands (see Residues).
+			cast.markOvercast();
+		}
 		if (!cast.info.root().groups.isEmpty()) {
 			var first = cast.info.root().groups.getFirst();
 			dev.wildercord.cast.feel.Feels.cue(cast, cast.feel(first), cast.theme(first));

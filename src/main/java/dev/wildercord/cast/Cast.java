@@ -61,6 +61,8 @@ public final class Cast {
 		Trigger origin;
 		/** Whether the caster's affinities count on this spell (see {@link #withAffinity}). */
 		boolean affinity;
+		/** Whether it was paid for by cracking a Heart Circle (an overcast always leaves a residue). */
+		boolean overcast;
 
 		Shared() {
 			this(new Paid());
@@ -78,6 +80,7 @@ public final class Cast {
 			copy.gear = gear;
 			copy.origin = origin;
 			copy.affinity = affinity;
+			copy.overcast = overcast;
 			return copy;
 		}
 	}
@@ -283,6 +286,17 @@ public final class Cast {
 	/** Whether the caster's affinities count on this spell: see {@link #withAffinity}. */
 	public boolean affinity() {
 		return budget.shared.affinity;
+	}
+
+	/** Marks this as paid for by cracking a Heart Circle; copies of the cast keep it. */
+	public Cast markOvercast() {
+		budget.shared.overcast = true;
+		return this;
+	}
+
+	/** Whether it was overcast (see {@link #markOvercast}): an overcast always leaves a residue. */
+	public boolean overcast() {
+		return budget.shared.overcast;
 	}
 
 	/**

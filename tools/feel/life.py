@@ -307,3 +307,19 @@ EVENTS = [
     event("life_stinger_world", stinger("world"), variants=2, role="tick", subtitle="cast"),
     event("life_stinger_thorn", stinger("thorn"), variants=2, role="tick", subtitle="cast"),
 ]
+
+
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def life_bloom(v, rng):
+    """A wildbloom: a soft three-note chime opening upward, and a rustle of petals."""
+    dur = 1.4
+    notes = ((sa.D, 1), (sa.FS, 1), (sa.A, 1)) if v == 0 else ((sa.E, 1), (sa.A, 1), (sa.B, 1))
+    chime = [((i * 0.14), sa.bell(sa.note(*n), 0.9, 0.3, ratio=2.0, brightness=0.8, attack=0.02) * (0.5 - i * 0.1)) for i, n in enumerate(notes)]
+    rustle = sa.norm(sa.bandpass(sa.grains(dur, 40, rng, length=(0.002, 0.008), shape=[(0, 0.5), (0.5, 1), (dur, 0)]), 1800, 5000)) * 0.15
+    x = sa.mix(*chime, rustle)
+    return sa.finish(sa.reverb(x, 0.9, 0.25), "tell", fade_out=0.35)
+
+
+EVENTS += [event("life_bloom", life_bloom, variants=2, role="tell", subtitle="field")]

@@ -1,0 +1,73 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "wildercord:block/residue/void_scar_side",
+    "top": "wildercord:block/residue/void_scar_top_2",
+    "side": "wildercord:block/residue/void_scar_side",
+    "rim": "wildercord:block/residue/void_scar_rim_2"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#side",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#top",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        16.01,
+        0
+      ],
+      "to": [
+        16,
+        16.01,
+        16
+      ],
+      "light_emission": 11,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#rim"
+        }
+      }
+    }
+  ]
+}

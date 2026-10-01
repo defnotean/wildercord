@@ -70,6 +70,15 @@
       ],
       "subtitle": "tell"
     },
+    "frost_glint": {
+      "attenuation": 0,
+      "files": [
+        "kit/frost/frost_glint_1",
+        "kit/frost/frost_glint_2",
+        "kit/frost/frost_glint_3"
+      ],
+      "subtitle": "field"
+    },
     "frost_hail": {
       "attenuation": 0,
       "files": [

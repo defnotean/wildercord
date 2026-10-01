@@ -145,6 +145,8 @@ public final class Effects {
 		}
 		RuneSeals.onSpell(cast, hit, node.effect.element());
 		WorldMagic.onSpell(cast, node, hit, groupPower);
+		// Strong magic leaves a lasting mark of its element where it lands.
+		Residues.onSpell(cast, node, hit);
 		dev.wildercord.cast.events.WorldEvents.onSpell(cast, hit, node.effect.element());
 		dev.wildercord.familiar.Familiars.onSpell(cast, hit, node.effect.element());
 		Dungeons.onSpell(cast, hit, node.effect.element());
@@ -2580,11 +2582,14 @@ public final class Effects {
 	/** Light's invisible light blocks still lit, so they go out when the server stops (and, saved in {@link TemporaryBlocks}, even if it doesn't stop cleanly). */
 	private static final java.util.Set<GlobalPos> LIGHTS = new java.util.HashSet<>();
 
-	/** Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall, frost's crust on lava, a Galvanize spark): pistons can't move it. */
+	/**
+	 * Whether the block at {@code pos} is only there for a while (a Span's glass, a Rampart's wall, frost's crust on lava, a Galvanize spark,
+	 * a residue): pistons can't move it, and other spells leave it alone.
+	 */
 	public static boolean isTemporary(ServerLevel level, BlockPos pos) {
 		return !SPAN.isEmpty() && SPAN.containsKey(GlobalPos.of(level.dimension(), pos)) || Techniques.isRampart(level, pos) || WorldMagic.isCrust(level, pos)
 			|| CraftedRunes.isSpark(level, pos) || TemporaryBlocks.recorded(level,pos)
-			|| dev.wildercord.content.PhysicalBlocks.isConstruct(level.getBlockState(pos));
+			|| dev.wildercord.content.PhysicalBlocks.isConstruct(level.getBlockState(pos)) || Residues.isResidue(level, pos);
 	}
 
 	/** Span bridges still standing, and what each of their blocks replaced. */

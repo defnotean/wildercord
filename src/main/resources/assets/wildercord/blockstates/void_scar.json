@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "stage=0": {
+      "model": "wildercord:block/residue/void_scar_0"
+    },
+    "stage=1": {
+      "model": "wildercord:block/residue/void_scar_1"
+    },
+    "stage=2": {
+      "model": "wildercord:block/residue/void_scar_2"
+    },
+    "stage=3": {
+      "model": "wildercord:block/residue/void_scar_3"
+    }
+  }
+}

@@ -388,6 +388,8 @@ def main():
     hearth_art.write(sys.modules[__name__])
     import relic_art
     relic_art.write(sys.modules[__name__])
+    import residue_art  # Residues big magic leaves on the world, and the reagents they give.
+    residue_art.write(sys.modules[__name__])
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -740,6 +742,8 @@ def write_lang(runes):
     lang.update(LOADOUT_LANG)
     lang.update(SIGNATURE_LANG)
     lang.update(DEFENCE_LANG)
+    import residue_art
+    lang.update(residue_art.LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"
@@ -2499,7 +2503,9 @@ def write_new_content(runes):
     unlock_advancement("wildercord:training_dummy", "wildercord:twine_cord")
 
     # ---- mining
-    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]})
+    import residue_art
+    write_json(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"replace": False, "values": ["wildercord:wellstone", "wildercord:fusion_altar"]
+        + residue_art.RESIDUE_PICKAXE})
     # The Wither's skulls and charge break anything not in this tag (unbreakable or not).
     write_json(RES / "data/minecraft/tags/block/wither_immune.json", {"replace": False, "values": [
         "wildercord:rune_seal", "wildercord:archive_lectern", "wildercord:dungeon_altar", "wildercord:fallen_star"]})

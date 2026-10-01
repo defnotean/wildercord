@@ -144,6 +144,14 @@
       ],
       "subtitle": "cast"
     },
+    "fire_smoulder": {
+      "attenuation": 0,
+      "files": [
+        "kit/fire/fire_smoulder_1",
+        "kit/fire/fire_smoulder_2"
+      ],
+      "subtitle": "field"
+    },
     "fire_soul": {
       "attenuation": 0,
       "files": [

@@ -121,6 +121,14 @@
       ],
       "subtitle": "hit"
     },
+    "earth_rumble": {
+      "attenuation": 0,
+      "files": [
+        "kit/earth/earth_rumble_1",
+        "kit/earth/earth_rumble_2"
+      ],
+      "subtitle": "field"
+    },
     "earth_sink": {
       "attenuation": 32,
       "files": [

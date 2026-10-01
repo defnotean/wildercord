@@ -2,6 +2,9 @@
   "replace": false,
   "values": [
     "wildercord:wellstone",
-    "wildercord:fusion_altar"
+    "wildercord:fusion_altar",
+    "wildercord:everfrost",
+    "wildercord:fulgurite",
+    "wildercord:riven_stone"
   ]
 }

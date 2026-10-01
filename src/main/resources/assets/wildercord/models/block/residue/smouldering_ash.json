@@ -1,0 +1,107 @@
+{
+  "parent": "minecraft:block/thin_block",
+  "textures": {
+    "particle": "wildercord:block/residue/smouldering_ash",
+    "ash": "wildercord:block/residue/smouldering_ash",
+    "embers": "wildercord:block/residue/smouldering_ash_embers"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        2,
+        16
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ash"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#ash",
+          "cullface": "down"
+        },
+        "north": {
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ],
+          "texture": "#ash",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ],
+          "texture": "#ash",
+          "cullface": "south"
+        },
+        "west": {
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ],
+          "texture": "#ash",
+          "cullface": "west"
+        },
+        "east": {
+          "uv": [
+            0,
+            14,
+            16,
+            16
+          ],
+          "texture": "#ash",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        2.02,
+        0
+      ],
+      "to": [
+        16,
+        2.02,
+        16
+      ],
+      "light_emission": 13,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#embers"
+        }
+      }
+    }
+  ]
+}

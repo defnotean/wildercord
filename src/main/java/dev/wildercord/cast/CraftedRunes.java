@@ -358,6 +358,11 @@ public final class CraftedRunes {
 		}
 	}
 
+	/** Prospect from a pinch of Geode Grit rather than a spell: the same glow through the rock, round where {@code who} stands. */
+	public static void prospect(net.minecraft.server.level.ServerPlayer who, double radius, int ticks) {
+		prospect(new Cast(who), new Cast.Hit(List.of(), who.position(), who.getLookAngle(), who.position(), null, null, true), radius, ticks);
+	}
+
 	private static boolean isOre(BlockState state) {
 		return state.is(BlockTags.ORES) || state.is(ConventionalBlockTags.ORES);
 	}

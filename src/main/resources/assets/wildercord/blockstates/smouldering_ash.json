@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "wildercord:block/residue/smouldering_ash"
+      },
+      {
+        "model": "wildercord:block/residue/smouldering_ash",
+        "y": 90
+      },
+      {
+        "model": "wildercord:block/residue/smouldering_ash",
+        "y": 180
+      },
+      {
+        "model": "wildercord:block/residue/smouldering_ash",
+        "y": 270
+      }
+    ]
+  }
+}

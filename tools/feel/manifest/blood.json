@@ -62,6 +62,14 @@
       ],
       "subtitle": "hit"
     },
+    "blood_pulse": {
+      "attenuation": 0,
+      "files": [
+        "kit/blood/blood_pulse_1",
+        "kit/blood/blood_pulse_2"
+      ],
+      "subtitle": "field"
+    },
     "blood_race": {
       "attenuation": 0,
       "files": [

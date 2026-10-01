@@ -1,0 +1,105 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "wildercord:block/residue/riven_stone_top",
+    "top": "wildercord:block/residue/riven_stone_top",
+    "side": "wildercord:block/residue/riven_stone_side",
+    "veins": "wildercord:block/residue/riven_stone_veins",
+    "side_veins": "wildercord:block/residue/riven_stone_side_veins"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        0,
+        0
+      ],
+      "to": [
+        16,
+        16,
+        16
+      ],
+      "faces": {
+        "down": {
+          "texture": "#side",
+          "cullface": "down"
+        },
+        "up": {
+          "texture": "#top",
+          "cullface": "up"
+        },
+        "north": {
+          "texture": "#side",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#side",
+          "cullface": "east"
+        }
+      }
+    },
+    {
+      "from": [
+        0,
+        16.01,
+        0
+      ],
+      "to": [
+        16,
+        16.01,
+        16
+      ],
+      "light_emission": 10,
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#veins"
+        }
+      }
+    },
+    {
+      "from": [
+        -0.01,
+        0,
+        -0.01
+      ],
+      "to": [
+        16.01,
+        16,
+        16.01
+      ],
+      "light_emission": 10,
+      "faces": {
+        "north": {
+          "texture": "#side_veins",
+          "cullface": "north"
+        },
+        "south": {
+          "texture": "#side_veins",
+          "cullface": "south"
+        },
+        "west": {
+          "texture": "#side_veins",
+          "cullface": "west"
+        },
+        "east": {
+          "texture": "#side_veins",
+          "cullface": "east"
+        }
+      }
+    }
+  ]
+}

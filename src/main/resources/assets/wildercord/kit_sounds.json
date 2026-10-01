@@ -21,6 +21,9 @@
     "arcane_glint_ping": {
       "part": "arcane"
     },
+    "arcane_glyph": {
+      "part": "arcane"
+    },
     "arcane_gong": {
       "part": "arcane"
     },
@@ -156,6 +159,9 @@
     "blood_moss": {
       "part": "blood"
     },
+    "blood_pulse": {
+      "part": "blood"
+    },
     "blood_race": {
       "part": "blood"
     },
@@ -231,6 +237,9 @@
     "earth_rattle": {
       "part": "earth"
     },
+    "earth_rumble": {
+      "part": "earth"
+    },
     "earth_sink": {
       "part": "earth"
     },
@@ -303,6 +312,9 @@
     "fire_pyre": {
       "part": "fire"
     },
+    "fire_smoulder": {
+      "part": "fire"
+    },
     "fire_soul": {
       "part": "fire"
     },
@@ -349,6 +361,9 @@
       "part": "frost"
     },
     "frost_drag": {
+      "part": "frost"
+    },
+    "frost_glint": {
       "part": "frost"
     },
     "frost_hail": {
@@ -416,6 +431,9 @@
     },
     "gesture_slash": {
       "part": "neutral"
+    },
+    "life_bloom": {
+      "part": "life"
     },
     "life_bond": {
       "part": "life"
@@ -558,6 +576,9 @@
     "storm_dive": {
       "part": "storm"
     },
+    "storm_fizz": {
+      "part": "storm"
+    },
     "storm_flash": {
       "part": "storm"
     },
@@ -663,6 +684,9 @@
     "time_tock": {
       "part": "time"
     },
+    "time_trickle": {
+      "part": "time"
+    },
     "time_wind": {
       "part": "time"
     },
@@ -724,6 +748,9 @@
       "part": "void"
     },
     "void_hound_growl": {
+      "part": "void"
+    },
+    "void_hum": {
       "part": "void"
     },
     "void_hush_dome": {
@@ -811,6 +838,9 @@
       "part": "wind"
     },
     "wind_deflect": {
+      "part": "wind"
+    },
+    "wind_eddy": {
       "part": "wind"
     },
     "wind_feather": {

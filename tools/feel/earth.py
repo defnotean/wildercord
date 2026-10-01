@@ -201,3 +201,20 @@ EVENTS = [
     event("earth_dig", earth_dig, variants=3, role="impact", subtitle="hit"),
     event("earth_rattle", earth_rattle, variants=3, role="impact", subtitle="hit"),
 ]
+
+
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def earth_rumble(v, rng):
+    """Riven stone settling: a low grind under the feet and a trickle of grit."""
+    dur = 1.2
+    grind = sa.norm(sa.bandpass(sa.brown(dur, rng), 120, 700)) * sa.env(dur, (0, 0), (0.3, 1), (0.8, 0.7), (dur, 0))
+    scrape = sa.moving_band(dur, [(0, 500), (0.6, 1100), (dur, 700)], 0.9, rng) * sa.env(dur, (0, 0), (0.35, 0.8), (dur, 0))
+    grit = sa.norm(sa.bandpass(sa.grains(dur, 45, rng, shape=[(0, 0.3), (0.4, 1), (dur, 0)]), 500, 3000))
+    knock = sa.thump(110 - 10 * v, 70, 0.4, 0.08, drive=1.2, knock=0.8) * 0.4
+    x = sa.mix(0.5 * grind, 0.45 * scrape, 0.7 * grit, (0.15, knock))
+    return sa.finish(sa.reverb(x, 0.5, 0.1), "tell", fade_out=0.25)
+
+
+EVENTS += [event("earth_rumble", earth_rumble, variants=2, role="tell", subtitle="field")]

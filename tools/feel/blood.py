@@ -225,3 +225,21 @@ EVENTS = [
     event("blood_triple", blood_triple, variants=1, role="impact", subtitle="hit"),
     event("blood_cleave", blood_cleave, variants=2, role="impact", subtitle="hit"),
 ]
+
+
+# ---------------------------------------------------------------- residues: what's left behind
+
+
+def blood_pulse(v, rng):
+    """Bloodmoss: a slow heartbeat under it, lub and dub, wet."""
+    dur = 1.0
+    lub = sa.thump(72, 46, 0.35, 0.07, drive=1.8, knock=0.9)
+    dub = sa.thump(64, 42, 0.3, 0.06, drive=1.6, knock=0.8) * 0.7
+    # The body of each beat where small speakers can play it, and the wet of the moss over it.
+    body = sa.norm(sa.bandpass(sa.noise(0.12, rng), 250, 900)) * sa.decay(0.12, 0.03, 0.004)
+    wet = sa.norm(sa.bandpass(sa.noise(0.1, rng), 700, 2400)) * sa.decay(0.1, 0.02, 0.003)
+    x = sa.mix(0.45 * lub, (0.22 + 0.02 * v, 0.45 * dub), body, (0.22 + 0.02 * v, 0.7 * body), (0.02, 0.6 * wet))
+    return sa.finish(sa.reverb(x, 0.5, 0.12), "tell", fade_out=0.3)
+
+
+EVENTS += [event("blood_pulse", blood_pulse, variants=2, role="tell", subtitle="field")]

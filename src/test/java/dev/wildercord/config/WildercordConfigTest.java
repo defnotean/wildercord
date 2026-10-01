@@ -236,6 +236,66 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void residuesAndPlacesOfPowerDefaultToTheirDesign() {
+		WildercordConfig.ResidueSettings r = D.residues();
+		assertTrue(r.enabled());
+		assertEquals(dev.wildercord.world.ResidueRules.MIN_SPELL_COST, r.minSpellCost(), 1e-9);
+		assertEquals(1.0, r.lifetimeMultiplier(), 1e-9);
+		assertEquals(dev.wildercord.world.ResidueRules.PER_CHUNK, r.maxPerChunk());
+		assertEquals(dev.wildercord.world.ResidueRules.PER_DIMENSION, r.maxPerDimension());
+		WildercordConfig.PowerSettings p = D.power();
+		assertTrue(p.leyCrossings() && p.celestial());
+		assertEquals(dev.wildercord.spell.ClimateRules.CROSSING_BONUS, p.crossingBonus(), 1e-9);
+		assertEquals(1.0, p.celestialMultiplier(), 1e-9);
+		assertTrue(D.toJson().contains("\"residues\"") && D.toJson().contains("\"places_of_power\""), "a fresh file lists both sections");
+	}
+
+	@Test
+	void residueAndPowerSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"residues\": {\"enabled\": false, \"min_spell_cost\": 0, \"lifetime_multiplier\": 50,"
+			+ " \"max_per_chunk\": 4, \"max_per_dimension\": -3, \"bogus\": 1},"
+			+ " \"places_of_power\": {\"ley_crossings\": false, \"crossing_bonus\": 0.9, \"celestial\": false, \"celestial_multiplier\": 1.5}}");
+		WildercordConfig.ResidueSettings r = parsed.config().residues();
+		assertFalse(r.enabled());
+		assertEquals(1, r.minSpellCost(), 1e-9);
+		assertEquals(10, r.lifetimeMultiplier(), 1e-9);
+		assertEquals(4, r.maxPerChunk());
+		assertEquals(0, r.maxPerDimension());
+		WildercordConfig.PowerSettings p = parsed.config().power();
+		assertFalse(p.leyCrossings());
+		assertFalse(p.celestial());
+		assertEquals(0.5, p.crossingBonus(), 1e-9);
+		assertEquals(1.5, p.celestialMultiplier(), 1e-9);
+		assertEquals(5, parsed.warnings().size(), parsed.warnings().toString());
+		assertTrue(parsed.warnings().stream().anyMatch(w -> w.contains("residues.bogus")));
+		WildercordConfig changed = parsed.config();
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config(), "the written file keeps every changed setting");
+	}
+
+	@Test
+	void aFileFromBeforeResiduesGainsBothSections() {
+		// Written by 0.7.1, before residues and places of power.
+		String old = D.toJson().replaceAll("(?s),\\s*\"residues\": \\{.*$", "\n}\n");
+		assertFalse(old.contains("\"residues\"") || old.contains("\"places_of_power\""), old);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.ResidueSettings.DEFAULTS, parsed.config().residues());
+		assertEquals(WildercordConfig.PowerSettings.DEFAULTS, parsed.config().power());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : List.of("\"residues\"", "\"min_spell_cost\"", "\"lifetime_multiplier\"", "\"max_per_chunk\"", "\"max_per_dimension\"",
+				"\"places_of_power\"", "\"ley_crossings\"", "\"crossing_bonus\"", "\"celestial\"", "\"celestial_multiplier\"")) {
+			assertTrue(grown.contains(key), key + " should have been added");
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		// A section missing one setting gets just that one back, and keeps the owner's others.
+		String partial = D.toJson().replace("\"max_per_chunk\": 12,", "").replace("\"lifetime_multiplier\": 1.0", "\"lifetime_multiplier\": 3.0");
+		assertFalse(partial.contains("\"max_per_chunk\""), partial);
+		WildercordConfig.ResidueSettings fixed = WildercordConfig.parse(WildercordConfig.addMissing(partial).orElseThrow()).config().residues();
+		assertEquals(12, fixed.maxPerChunk());
+		assertEquals(3.0, fixed.lifetimeMultiplier(), 1e-9);
+	}
+
+	@Test
 	void chancesScaleAndStayWithinAHundred() {
 		assertEquals(35, WildercordConfig.scaledChance(35, 1.0));
 		assertEquals(70, WildercordConfig.scaledChance(35, 2.0));

@@ -1,0 +1,184 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "wildercord:block/residue/wildbloom",
+    "flower": "wildercord:block/residue/wildbloom",
+    "glow": "wildercord:block/residue/wildbloom_glow"
+  },
+  "elements": [
+    {
+      "from": [
+        0.8,
+        0,
+        8
+      ],
+      "to": [
+        15.2,
+        16,
+        8
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "y",
+        "angle": 45,
+        "rescale": true
+      },
+      "shade_direction_override": "up",
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#flower"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#flower"
+        }
+      }
+    },
+    {
+      "from": [
+        8,
+        0,
+        0.8
+      ],
+      "to": [
+        8,
+        16,
+        15.2
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "y",
+        "angle": 45,
+        "rescale": true
+      },
+      "shade_direction_override": "up",
+      "faces": {
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#flower"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#flower"
+        }
+      }
+    },
+    {
+      "from": [
+        0.75,
+        0,
+        8
+      ],
+      "to": [
+        15.25,
+        16,
+        8
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "y",
+        "angle": 45,
+        "rescale": true
+      },
+      "shade_direction_override": "up",
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow"
+        }
+      },
+      "light_emission": 11
+    },
+    {
+      "from": [
+        8,
+        0,
+        0.75
+      ],
+      "to": [
+        8,
+        16,
+        15.25
+      ],
+      "rotation": {
+        "origin": [
+          8,
+          8,
+          8
+        ],
+        "axis": "y",
+        "angle": 45,
+        "rescale": true
+      },
+      "shade_direction_override": "up",
+      "faces": {
+        "west": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#glow"
+        }
+      },
+      "light_emission": 11
+    }
+  ]
+}

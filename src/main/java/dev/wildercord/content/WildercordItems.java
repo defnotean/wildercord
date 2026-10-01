@@ -77,6 +77,7 @@ public final class WildercordItems {
 				output.accept(WildercordBlocks.FUSION_ALTAR);
 				output.accept(WildercordBlocks.RUNIC_HEARTH);
 				output.accept(KEEPERS_HOURGLASS);output.accept(LIVING_SEEDPOD);output.accept(SKY_FEATHER);
+				Reagents.all().forEach(output::accept);
 				for (var potion : java.util.List.of(WildercordEffects.CLARITY_POTION, WildercordEffects.LONG_CLARITY_POTION, WildercordEffects.STRONG_CLARITY_POTION,
 						WildercordEffects.MANA_POTION, WildercordEffects.STRONG_MANA_POTION, WildercordEffects.WARDED_POTION, WildercordEffects.LONG_WARDED_POTION,
 						WildercordEffects.STRONG_WARDED_POTION)) {

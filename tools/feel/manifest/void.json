@@ -158,6 +158,14 @@
       ],
       "subtitle": "cast"
     },
+    "void_hum": {
+      "attenuation": 0,
+      "files": [
+        "kit/void/void_hum_1",
+        "kit/void/void_hum_2"
+      ],
+      "subtitle": "field"
+    },
     "void_hush_dome": {
       "attenuation": 0,
       "files": [

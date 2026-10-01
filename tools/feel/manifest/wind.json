@@ -26,6 +26,14 @@
       ],
       "subtitle": "hit"
     },
+    "wind_eddy": {
+      "attenuation": 0,
+      "files": [
+        "kit/wind/wind_eddy_1",
+        "kit/wind/wind_eddy_2"
+      ],
+      "subtitle": "field"
+    },
     "wind_feather": {
       "attenuation": 0,
       "files": [

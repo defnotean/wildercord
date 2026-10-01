@@ -50,6 +50,14 @@
       ],
       "subtitle": "field"
     },
+    "arcane_glyph": {
+      "attenuation": 0,
+      "files": [
+        "kit/arcane/arcane_glyph_1",
+        "kit/arcane/arcane_glyph_2"
+      ],
+      "subtitle": "field"
+    },
     "arcane_gong": {
       "attenuation": 0,
       "files": [

@@ -166,6 +166,7 @@ public final class Reactions {
 			ReactionVfx.shatter(level, target);
 			Fx.sound(level, c, SoundEvents.GLASS_BREAK, 1.0F, 0.7F);
 			callout(cast, "shatter", 0x8CDCFF);
+			Residues.reaction(cast, "frost", target);
 		}
 		if (has(target, Mark.WINDSWEPT)) {
 			clear(target, Mark.WINDSWEPT);
@@ -179,6 +180,7 @@ public final class Reactions {
 			}
 			ReactionVfx.wildfire(level, target);
 			callout(cast, "wildfire", 0xF06E32);
+			Residues.reaction(cast, "fire", target);
 		}
 		return multiplier;
 	}
@@ -206,6 +208,7 @@ public final class Reactions {
 		}
 		ReactionVfx.conduct(level, target);
 		callout(cast, "conduct", 0xFFE650);
+		Residues.reaction(cast, "storm", target);
 		return 1.5;
 	}
 
@@ -239,6 +242,7 @@ public final class Reactions {
 			}
 		}
 		callout(cast, ReactionRules.OVERLOAD, ReactionRules.color(ReactionRules.OVERLOAD));
+		Residues.reaction(cast, "storm", target);
 		return ReactionRules.OVERLOAD_BONUS;
 	}
 
@@ -259,6 +263,7 @@ public final class Reactions {
 		}
 		ReactionVfx.implode(cast.level, center, radius);
 		callout(cast, "implode", 0xB45AF0);
+		Residues.reaction(cast, "void", center);
 		return 1.5;
 	}
 
@@ -274,6 +279,7 @@ public final class Reactions {
 		reacted(target);
 		TechniqueVfx.collapse(cast.level, target.getBoundingBox().getCenter());
 		callout(cast, "collapse", 0xB45AF0);
+		Residues.reaction(cast, "void", target);
 		return 2.0;
 	}
 
@@ -329,6 +335,7 @@ public final class Reactions {
 		reacted(target);
 		ReactionVfx.fracture(cast.level, target);
 		callout(cast, ReactionRules.FRACTURE, ReactionRules.color(ReactionRules.FRACTURE));
+		Residues.reaction(cast, "earth", target);
 		return ReactionRules.FRACTURE_BONUS;
 	}
 
@@ -361,6 +368,7 @@ public final class Reactions {
 		}
 		heal(cast, ReactionRules.BLIGHT, ReactionRules.BLIGHT_HEAL * rotting.size());
 		callout(cast, ReactionRules.BLIGHT, ReactionRules.color(ReactionRules.BLIGHT));
+		Residues.reaction(cast, "life", target);
 		return 1.0;
 	}
 
@@ -373,6 +381,7 @@ public final class Reactions {
 		reacted(target);
 		ReactionVfx.unweave(cast.level, target, used);
 		callout(cast, ReactionRules.UNWEAVE, ReactionRules.color(ReactionRules.UNWEAVE));
+		Residues.reaction(cast, "arcane", target);
 		return ReactionRules.unweave(used.size());
 	}
 
@@ -388,6 +397,7 @@ public final class Reactions {
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), ReactionRules.RUPTURE_DAMAGE);
 		heal(cast, ReactionRules.RUPTURE, ReactionRules.RUPTURE_HEAL);
 		callout(cast, ReactionRules.RUPTURE, ReactionRules.color(ReactionRules.RUPTURE));
+		Residues.reaction(cast, "wind", target);
 		return ReactionRules.RUPTURE_BONUS;
 	}
 
@@ -419,6 +429,7 @@ public final class Reactions {
 		ReactionVfx.elapse(level, target, fire > 0, poison != null, wither != null);
 		Effects.hurt(cast, target, level.damageSources().indirectMagic(cast.caster, cast.caster), damage);
 		callout(cast, ReactionRules.ELAPSE, ReactionRules.color(ReactionRules.ELAPSE));
+		Residues.reaction(cast, "time", target);
 		return 1.0;
 	}
 

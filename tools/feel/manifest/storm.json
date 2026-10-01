@@ -50,6 +50,15 @@
       ],
       "subtitle": "tell"
     },
+    "storm_fizz": {
+      "attenuation": 0,
+      "files": [
+        "kit/storm/storm_fizz_1",
+        "kit/storm/storm_fizz_2",
+        "kit/storm/storm_fizz_3"
+      ],
+      "subtitle": "field"
+    },
     "storm_flash": {
       "attenuation": 0,
       "files": [
