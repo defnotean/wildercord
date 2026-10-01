@@ -47,6 +47,7 @@ import java.util.Set;
  * @param resonances         each world's own resonances and rune quirks: see {@link ResonanceSettings}
  * @param residues           the lasting marks big magic leaves on the world: see {@link ResidueSettings}
  * @param power              places and times of power (ley crossings, the moon, the hour, the weather): see {@link PowerSettings}
+ * @param wildlife           magical wildlife spawning in its biomes (the wildlife keys of the {@code creatures} section): see {@link WildlifeSettings}
  */
 public record WildercordConfig(
 	int maxCreatures,
@@ -77,11 +78,12 @@ public record WildercordConfig(
 	boolean unreadRunes,
 	ResonanceSettings resonances,
 	ResidueSettings residues,
-	PowerSettings power
+	PowerSettings power,
+	WildlifeSettings wildlife
 ) {
 	public static final WildercordConfig DEFAULTS = new WildercordConfig(64, 32, true, 0.6, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 6, 12,
 		true, true, true, true, true, true, true, 1.0, TravelSettings.DEFAULTS, DefenceSettings.DEFAULTS, MasterySettings.DEFAULTS,
-		ChannelingSettings.DEFAULTS, true, ResonanceSettings.DEFAULTS, ResidueSettings.DEFAULTS, PowerSettings.DEFAULTS);
+		ChannelingSettings.DEFAULTS, true, ResonanceSettings.DEFAULTS, ResidueSettings.DEFAULTS, PowerSettings.DEFAULTS, WildlifeSettings.DEFAULTS);
 
 	/**
 	 * The travel commands' settings (the {@code travel} section). A file written before the section
@@ -206,6 +208,45 @@ public record WildercordConfig(
 		public static final PowerSettings DEFAULTS = new PowerSettings(true, dev.wildercord.spell.ClimateRules.CROSSING_BONUS, true, 1.0);
 	}
 
+	/**
+	 * Magical wildlife (the wildlife keys of the {@code creatures} section): glimmerwings, lumen stags, mossback tortoises,
+	 * cinderfoxes, skyrays and rimehares, each spawning on its own in its biomes. Spawn eggs and {@code /summon} work
+	 * whatever these say. A file written before the settings existed reads as these defaults.
+	 *
+	 * @param enabled          whether wildlife spawns naturally at all
+	 * @param spawnMultiplier  how often it spawns, times this: below 1 fewer spawns are let through at once; above 1 their
+	 *                         spawn weights grow too, from the next time the world loads. 0 is the same as switching it off
+	 * @param glimmerwing      whether glimmerwings spawn (forests and flower fields, at night)
+	 * @param lumenStag        whether lumen stags spawn (old forests, taigas and cherry groves; rare)
+	 * @param mossbackTortoise whether mossback tortoises spawn (swamps, mangroves and jungles)
+	 * @param cinderfox        whether cinderfoxes spawn (deserts and badlands)
+	 * @param skyray           whether skyrays spawn (mountains, windswept hills and meadows; rare)
+	 * @param rimehare         whether rimehares spawn (snowy biomes)
+	 */
+	public record WildlifeSettings(boolean enabled, double spawnMultiplier, boolean glimmerwing, boolean lumenStag, boolean mossbackTortoise,
+			boolean cinderfox, boolean skyray, boolean rimehare) {
+		public static final WildlifeSettings DEFAULTS = new WildlifeSettings(true, 1.0, true, true, true, true, true, true);
+
+		/**
+		 * Whether one creature spawns naturally, by its id ({@code "lumen_stag"}): the master switch, a multiplier above 0 and
+		 * its own switch. An id that isn't wildlife never does.
+		 */
+		public boolean spawns(String creature) {
+			if (!enabled || spawnMultiplier <= 0) {
+				return false;
+			}
+			return switch (creature) {
+				case "glimmerwing" -> glimmerwing;
+				case "lumen_stag" -> lumenStag;
+				case "mossback_tortoise" -> mossbackTortoise;
+				case "cinderfox" -> cinderfox;
+				case "skyray" -> skyray;
+				case "rimehare" -> rimehare;
+				default -> false;
+			};
+		}
+	}
+
 	/** The file's format version, written so later versions can migrate it. */
 	public static final int VERSION = 1;
 
@@ -301,7 +342,16 @@ public record WildercordConfig(
 				r.bool("places_of_power", "ley_crossings", d.power.leyCrossings()),
 				r.number("places_of_power", "crossing_bonus", d.power.crossingBonus(), 0, 0.5),
 				r.bool("places_of_power", "celestial", d.power.celestial()),
-				r.number("places_of_power", "celestial_multiplier", d.power.celestialMultiplier(), 0, 2)));
+				r.number("places_of_power", "celestial_multiplier", d.power.celestialMultiplier(), 0, 2)),
+			new WildlifeSettings(
+				r.bool("creatures", "wildlife", d.wildlife.enabled()),
+				r.number("creatures", "wildlife_spawn_multiplier", d.wildlife.spawnMultiplier(), 0, 10),
+				r.bool("creatures", "glimmerwing", d.wildlife.glimmerwing()),
+				r.bool("creatures", "lumen_stag", d.wildlife.lumenStag()),
+				r.bool("creatures", "mossback_tortoise", d.wildlife.mossbackTortoise()),
+				r.bool("creatures", "cinderfox", d.wildlife.cinderfox()),
+				r.bool("creatures", "skyray", d.wildlife.skyray()),
+				r.bool("creatures", "rimehare", d.wildlife.rimehare())));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -326,6 +376,8 @@ public record WildercordConfig(
 		KEYS.put("harmonies", Set.of("enabled", "count", "reroll_salt", "announce", "quirks"));
 		KEYS.put("residues", Set.of("enabled", "min_spell_cost", "lifetime_multiplier", "max_per_chunk", "max_per_dimension"));
 		KEYS.put("places_of_power", Set.of("ley_crossings", "crossing_bonus", "celestial", "celestial_multiplier"));
+		KEYS.put("creatures", Set.of("wildlife", "wildlife_spawn_multiplier", "glimmerwing", "lumen_stag", "mossback_tortoise", "cinderfox", "skyray",
+			"rimehare"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -595,6 +647,21 @@ public record WildercordConfig(
 		powerSection.addProperty("celestial", power.celestial());
 		powerSection.addProperty("celestial_multiplier", power.celestialMultiplier());
 		root.add("places_of_power", powerSection);
+
+		JsonObject creaturesSection = new JsonObject();
+		creaturesSection.addProperty("_about", "Creatures of the world. wildlife switches the magical wildlife's natural spawns on or off (glimmerwings, lumen "
+			+ "stags, mossback tortoises, cinderfoxes, skyrays and rimehares; spawn eggs and /summon still work). wildlife_spawn_multiplier scales how "
+			+ "often they spawn: below 1 it lets fewer through at once, above 1 it also raises their spawn weights from the next world load, and the "
+			+ "rare ones stay rare and kept apart either way. Each creature has its own switch too.");
+		creaturesSection.addProperty("wildlife", wildlife.enabled());
+		creaturesSection.addProperty("wildlife_spawn_multiplier", wildlife.spawnMultiplier());
+		creaturesSection.addProperty("glimmerwing", wildlife.glimmerwing());
+		creaturesSection.addProperty("lumen_stag", wildlife.lumenStag());
+		creaturesSection.addProperty("mossback_tortoise", wildlife.mossbackTortoise());
+		creaturesSection.addProperty("cinderfox", wildlife.cinderfox());
+		creaturesSection.addProperty("skyray", wildlife.skyray());
+		creaturesSection.addProperty("rimehare", wildlife.rimehare());
+		root.add("creatures", creaturesSection);
 		return GSON.toJson(root) + "\n";
 	}
 

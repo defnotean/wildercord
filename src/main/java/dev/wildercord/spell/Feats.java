@@ -120,6 +120,9 @@ public final class Feats {
 		if (key.startsWith(Bestiary.PREFIX)) {
 			return Bestiary.reward(key);
 		}
+		if (FieldGuide.isKey(key)) {
+			return FieldGuide.REWARD;
+		}
 		if (key.startsWith(PlayerAffinity.KEY_PREFIX)) {
 			return PlayerAffinity.REWARD;
 		}
