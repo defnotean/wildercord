@@ -85,6 +85,27 @@
         "kit/aura/aura_step_2"
       ],
       "subtitle": "cast"
+    },
+    "aura_string_complete": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_string_complete"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_string_fumble": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_string_fumble"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_string_tick": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_string_tick"
+      ],
+      "subtitle": "tell"
     }
   },
   "part": "aura"

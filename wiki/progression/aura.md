@@ -2,7 +2,7 @@
 title: Aura
 parent: Growing Stronger
 nav_order: 2.2
-description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, the spellblade, aura marks, and breakthroughs."
+description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, sword strings and their arts, the spellblade, aura marks, and breakthroughs."
 ---
 
 # Aura: the swordsman's path
@@ -30,6 +30,7 @@ only limit is the time you put in.
 | **Spend aura** | Every coated blow, the guard, the slash, the step, aura armour and Dominion |
 | **Grow** | Fight. At each stage's limit a **breakthrough** waits for a trial |
 | **The Aura key** | `Z`: sneak and press for the guard (from Flow), tap for the slash (from Edge), double-tap for the step (from Form), hold for Dominion (Sovereign) |
+| **Sword strings** | Short runs of ordinary swings (a low swing, a leaping one, a counter...) that set off an **art**: one at each stage. See [Sword strings](#sword-strings) |
 | **Spells and blades** | From Edge, cast a spell **while sneaking** with your blade in hand and your next slash carries it |
 | **See it** | The aura bar on top of your spell panel, and the **Aura** page (the Aura badge in the Cord screen, `K`) |
 
@@ -170,6 +171,79 @@ Your aura claims the ground itself.
 <img src="{{ '/assets/images/aura-dominion.jpg' | relative_url }}" alt="Seen from above at night: a wide orange magic circle on a stone platform round a player, husks standing inside it" class="shot">
 <span class="caption">Dominion with Ember Breath.</span>
 
+## Sword strings
+
+Your ordinary swings are a language. Play a short **string** of them, each in time with the one before, and your blade
+answers with an **art**. There's nothing new to press: you swing as you always do, and choose *how*.
+
+### The swings
+
+Every swing you make with an aura weapon is read as one or more of these:
+
+| Mark | Swing | How |
+|---|---|---|
+| a small diamond | **a swing** | any swing at all |
+| a full diamond | **a full swing** | wait for your blade to recover first (the attack indicator full) |
+| pointing down | **a low swing** | crouching (hold sneak) |
+| pointing up | **a leaping swing** | in the air: jump, and swing on the way up or down |
+| pointing ahead | **a running swing** | sprinting |
+| a gold ring | **a counter** | your first swing straight after a perfect [Aura Guard](#flow) |
+| two chevrons | **a step cut** | your first swing straight after an [Aura Step](#form) |
+
+A swing can be several at once: a full swing struck crouching is a full swing and a low swing.
+
+**Keep time.** Each swing must come within about half a second of your blade being ready again. With a sword that's a swing
+about every second (quicker is always fine); an axe or a mace, slower to recover, gets longer. Pause any longer and the
+string breaks. A perfect guard or a step in the middle of a string keeps it going.
+
+**What counts.** Swings at a creature, or at the air while you're in a fight (you struck or were struck in the last few
+seconds). Waving your blade at nothing in peace, or digging, never counts, so a string can't go off by accident while you
+build.
+
+### The arts
+
+There's an art for each stage, played on the same strings whatever your method, so you learn them once.
+
+| Art | Opens at | String | What it does | Aura | Rests |
+|---|---|---|---|---|---|
+| **First Art** | Glow | swing, swing, **low** swing | An arc of aura in front of you, cutting up to four foes | 6 | 3 s |
+| **Second Art** | Flow | **leaping** swing, **low** swing | A rising arc that throws the foes in front into the air (never a boss) | 8 | 4 s |
+| **Third Art** | Edge | a **counter** | A cut on the foe you countered that staggers it again | 8 | 4 s |
+| **Fourth Art** | Form | a **step cut** | A line of aura cut five blocks ahead, through every foe in it | 10 | 5 s |
+| **Final Art** | Sovereign | **full**, **full**, **full**, **low** | A ring of aura round you that cuts every foe near and throws them back. Only with your aura full | 40 | 30 s |
+
+Arts are aura off the blade, in your method's element, like the slash: they set off your method's gift and can leave aura
+marks. For now every method strikes these five the same way; each method will have arts of its own on the same strings.
+
+<img src="{{ '/assets/images/aura-string-first-art.jpg' | relative_url }}" alt="Seen from above and behind: a player with an orange-bladed diamond sword, a wide orange crescent of light cut low in front of them across three husks" class="shot">
+<span class="caption">The First Art with Ember Breath.</span>
+
+**When strings overlap.** Three full swings and a low one are also "swing, swing, low swing". When the same swings spell more
+than one art, the one that asks the most of you goes: a counter or a step cut first, then the string with the harder swings,
+then the longer one. If that art can't go (it's resting, your aura is short, or the Final Art without a full pool), the next
+art the same swings spell goes instead, if there is one. If none can, nothing happens and you're told why above the hotbar.
+An art never spends past empty, so it never brings backlash.
+
+### The string indicator
+
+While you play a string, a short row of marks appears a little below your crosshair: each swing's mark as it lands, and a
+thin line under them that shrinks as your time for the next swing runs out. A string played lights up gold; a **fumble** (a
+finishing swing that came too late) shakes and falls away in red; an art that can't go greys out. A string you leave alone
+fades quietly. After a perfect guard or a step, a faint mark of the counter or step cut waits for your swing. Each swing
+ticks softly, rising as the string grows; an art chimes, a fumble clanks.
+
+<img src="{{ '/assets/images/aura-string-indicator.jpg' | relative_url }}" alt="Close up of a crosshair over a husk: below it, two small pale orange diamonds side by side with a thin line under them" class="shot">
+<span class="caption">Two full swings into a string, the line showing the time left for the next.</span>
+
+You can move the indicator above the aura bar, or hide it (its ticks go quiet too), with **Magic visual settings** (assign it
+a key in Minecraft's Controls).
+
+### Fair play
+
+Your own game reads your swings, but the server checks every art: your stage, its rest and its price, that your blade is in
+hand, and that the swings, guard or step really happened. Against other players arts meet the spell defences and are scaled
+down like the slash, and server owners can switch strings off or change how long each swing may wait.
+
 ## The spellblade
 
 From **Edge**, a sword and a Cord work as one. **Cast a spell while sneaking** with your blade in hand, and instead of
@@ -231,12 +305,17 @@ Heart Circle too.
 
 Open the Cord screen (`K`) and click the **Aura badge** (a little blade, top right; it's there even without a Cord). The
 page shows your method, element and stage, your aura, the road to your next breakthrough and its trials (with your progress
-in one), and every technique: what it does (hover it), how it's set off, what it costs, and the stage it opens at.
+in one), and every technique: what it does (hover it), how it's set off, what it costs, and the stage it opens at. Its
+**Sword strings** tab lists your arts instead: each string drawn in the indicator's marks, its price (or how long it still
+rests), and on hover what it does and its string in words, with what every mark means at the foot.
 
 On the aura bar, the Form diamond dims while the step recharges, and the Sovereign diamond burns while a Dominion stands.
 Above the bar you'll see how long a spell has left on your blade and how long a Dominion holds.
 
 <img src="{{ '/assets/images/aura-page.jpg' | relative_url }}" alt="The Aura page: a Rime Breath manual's cover, Method, Element, Stage and Aura lines, the road to Edge with a breakthrough waiting and its two trials, and the list of techniques" class="shot">
+
+<img src="{{ '/assets/images/aura-string-page.jpg' | relative_url }}" alt="The Aura page on its Sword strings tab: the First to the Final Art, each with its string drawn in small marks and its price in aura, a line on keeping time, and the seven marks with their names" class="shot">
+<span class="caption">The Sword strings tab, Hollow Breath at Sovereign.</span>
 
 ## Duels with a duelist
 

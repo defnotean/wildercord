@@ -19,7 +19,7 @@ public final class MagicSettingsScreen extends Screen {
 
  @Override protected void init() {
   boolean twoColumns = width >= 470;
-  int rows = twoColumns ? 6 : 11;
+  int rows = twoColumns ? 7 : 12;
   top = Math.max(34, height / 2 - rows * 25 / 2);
   int x = twoColumns ? width / 2 - 225 : width / 2 - 110, y = top;
   for(int i=0;i<3;i++){String preset=java.util.List.of("performance","balanced","cinematic").get(i);
@@ -36,8 +36,12 @@ public final class MagicSettingsScreen extends Screen {
   addRenderableWidget(Button.builder(Component.literal("Camera motion: " + MagicQuality.cameraShake), b -> {
    MagicQuality.cameraShake = !MagicQuality.cameraShake; MagicQuality.save(); b.setMessage(Component.literal("Camera motion: " + MagicQuality.cameraShake));
   }).bounds(x, y + 100, 220, 20).build());
+  // Where the sword string indicator shows (by the crosshair, by the hotbar, or hidden).
+  addRenderableWidget(Button.builder(stringIndicator(), b -> {
+   MagicQuality.stringIndicator = MagicQuality.stringIndicator.next(); MagicQuality.save(); b.setMessage(stringIndicator());
+  }).bounds(x, y + 125, 220, 20).tooltip(net.minecraft.client.gui.components.Tooltip.create(Component.translatable("screen.wildercord.string_indicator.tip"))).build());
   // Casting: the right-hand column, or under the visuals on a narrow screen.
-  int cx = twoColumns ? width / 2 + 5 : x, cy = twoColumns ? y + 25 : y + 125;
+  int cx = twoColumns ? width / 2 + 5 : x, cy = twoColumns ? y + 25 : y + 150;
   CastingOptions.ensureLoaded();
   addRenderableWidget(Button.builder(CastingOptions.tracingLabel(), b -> {
    CastingOptions.tracing = !CastingOptions.tracing; CastingOptions.save(); b.setMessage(CastingOptions.tracingLabel());
@@ -51,9 +55,14 @@ public final class MagicSettingsScreen extends Screen {
   addRenderableWidget(Button.builder(titles(), b -> {
    MagicQuality.spellTitles = !MagicQuality.spellTitles; MagicQuality.save(); b.setMessage(titles());
   }).bounds(cx, cy + 75, 220, 20).build());
-  int by = twoColumns ? y + 135 : y + 230, bx = width / 2 - 110;
+  int by = twoColumns ? y + 160 : y + 255, bx = width / 2 - 110;
   addRenderableWidget(Button.builder(Component.translatable("screen.wildercord.profile.benchmark"),b->{dev.wildercord.client.fx.FrameBenchmark.start();onClose();}).bounds(bx,by,220,20).build());
   addRenderableWidget(Button.builder(Component.translatable("gui.done"), b -> onClose()).bounds(bx, by + 25, 220, 20).build());
+ }
+ /** Where the sword string indicator shows. */
+ private static Component stringIndicator() {
+  return Component.translatable("screen.wildercord.string_indicator",
+   Component.translatable("screen.wildercord.string_indicator." + MagicQuality.stringIndicator.name().toLowerCase(java.util.Locale.ROOT)));
  }
  /** The spell titles switch: the names of mastered spells, shown briefly by whoever casts them. */
  private static Component titles() {

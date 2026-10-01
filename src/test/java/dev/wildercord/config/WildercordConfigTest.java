@@ -699,6 +699,61 @@ class WildercordConfigTest {
 		assertEquals(0.6, fixed.pvpScale(), 1e-9);
 		assertEquals(0.4, fixed.guardShare(), 1e-9);
 	}
+
+	@Test
+	void swordStringsDefaultsAreTheRulesNumbers() {
+		WildercordConfig.AuraStrings s = D.aura().strings();
+		assertTrue(s.enabled());
+		assertEquals(dev.wildercord.aura.StringRules.WINDOW, s.windowTicks());
+		assertEquals(dev.wildercord.aura.StringRules.WINDOW / 20.0, s.windowSeconds(), 1e-9);
+		for (String key : List.of("strings", "string_window_seconds")) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS,
+			1.0, dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0,
+			0.6, dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, WildercordConfig.AuraHeights.DEFAULTS),
+			"the constructor from before sword strings takes their defaults");
+		assertEquals(WildercordConfig.AuraStrings.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			null, null).strings(), "a missing part reads as its defaults");
+	}
+
+	@Test
+	void swordStringsSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"strings\": false, \"string_window_seconds\": 5}}");
+		WildercordConfig.AuraStrings s = parsed.config().aura().strings();
+		assertFalse(s.enabled());
+		assertEquals(dev.wildercord.aura.StringRules.MAX_WINDOW_SECONDS, s.windowSeconds(), 1e-9, "held to two seconds");
+		assertEquals(40, s.windowTicks());
+		assertEquals(1, parsed.warnings().size(), parsed.warnings().toString());
+		WildercordConfig.AuraStrings quick = WildercordConfig.parse("{\"aura\": {\"string_window_seconds\": 0}}").config().aura().strings();
+		assertEquals(dev.wildercord.aura.StringRules.MIN_WINDOW_SECONDS, quick.windowSeconds(), 1e-9, "a tenth of a second at least");
+		assertEquals(2, quick.windowTicks());
+		assertEquals(14, WildercordConfig.parse("{\"aura\": {\"string_window_seconds\": 0.7}}").config().aura().strings().windowTicks());
+		WildercordConfig changed = parsed.config();
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config(), "the written file keeps every changed setting");
+	}
+
+	@Test
+	void aFileFromBeforeSwordStringsGainsTheirKeys() {
+		// An aura section written by 0.9.0, before sword strings.
+		String old = D.toJson();
+		for (String key : List.of("strings", "string_window_seconds")) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		assertFalse(old.contains("\"strings\"") || old.contains("\"string_window_seconds\""), old);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraStrings.DEFAULTS, parsed.config().aura().strings());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura(), "everything else as it was");
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		assertTrue(grown.contains("\"strings\"") && grown.contains("\"string_window_seconds\""), grown);
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		// The owner's own aura settings are kept as they were.
+		String theirs = old.replace("\"guard_share\": 0.5", "\"guard_share\": 0.3");
+		WildercordConfig.AuraSettings kept = WildercordConfig.parse(WildercordConfig.addMissing(theirs).orElseThrow()).config().aura();
+		assertEquals(0.3, kept.guardShare(), 1e-9);
+		assertEquals(WildercordConfig.AuraStrings.DEFAULTS, kept.strings());
+	}
 	@Test
 	void auraWorldDefaultsAreTheRulesNumbers() {
 		WildercordConfig.AuraWorldSettings w = D.auraWorld();

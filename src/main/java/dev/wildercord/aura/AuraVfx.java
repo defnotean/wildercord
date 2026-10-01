@@ -360,6 +360,146 @@ public final class AuraVfx {
 		Light.ring(level, at, UP, hot(color, 0.3), 0.9, 0.2, 0.05, 8);
 	}
 
+	// ------------------------------------------------------------------ sword strings: the placeholder arts
+
+	/*
+	 * By day, under the open sky, added light alone washes out: each placeholder art lays a rim of the mod's darkness a little
+	 * wider than its light under it (as the slash's crescent does), so it reads against a bright sky or pale stone too. In the
+	 * dark the light reads on its own.
+	 *
+	 * Shaped light opening within a block and a quarter of someone's eyes isn't sent to them (Sigils.send: in first person it
+	 * would fill the screen), so every crescent here is centred out in front of the swordsman, never on their body, and reaches
+	 * back toward them from there. Beams start at them freely; circles on the ground at their feet show to everyone else, and to
+	 * the swordsman only standing (crouching brings the eyes within reach of them).
+	 */
+
+	/**
+	 * A placeholder art's arc (the First and Second Arts): a wide crescent of the aura's colour cut in front at the height of the
+	 * blow, white-hot at its edge, sparks thrown off its tips; {@code rising}, a crescent cut upward across the foes in front,
+	 * from low on the off hand's side to high on the blade's, facing the swordsman (so it reads from behind and in first person
+	 * alike), for the art that lifts.
+	 */
+	static void artArc(ServerPlayer player, int color, boolean rising) {
+		ServerLevel level = player.level();
+		Vec3 look = flat(player);
+		Vec3 feet = player.position();
+		boolean day = brightBehind(level, feet.add(0, 1.5, 0).add(look.scale(2)));
+		if (rising) {
+			// A crescent sweeps the way its plane's angles climb: facing the swordsman that's from their left, over the top, to
+			// their right, so a right-handed cut faces them and a left-handed one faces away, each starting low on the off hand's
+			// side and ending high on the blade's.
+			// Small enough that its top stays under a standing swordsman's eyes: in first person it rises across the lower view.
+			Vec3 centre = feet.add(0, 0.3, 0).add(look.scale(2.2));
+			boolean righty = player.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT;
+			Vec3 offHand = righty ? new Vec3(look.z, 0, -look.x) : new Vec3(-look.z, 0, look.x);
+			Vec3 facing = righty ? look : look.scale(-1);
+			Vec3 toward = UP.scale(0.87).add(offHand.scale(0.5)).normalize();
+			if (day) {
+				Light.slash(level, centre.subtract(look.scale(0.03)), facing, toward, color | Light.DARK, 1.18, 2.0, 0.6, 1, 9);
+			}
+			Light.slash(level, centre, facing, toward, color, 1.15, 2.1, 0.5, 1, 9);
+			Light.slash(level, centre.subtract(look.scale(0.04)), facing, toward, hot(color, 0.6), 1.11, 1.8, 0.15, 1, 8);
+			Motes.glows(level, centre.add(0, 1.0, 0), 6, 0.5, hot(color, 0.3), 0.08, 16, new Vec3(0, 0.06, 0), 0.01);
+		} else {
+			// Its circle's centre a block and a half ahead, so the crescent opens round the foes in front, its tips beside you.
+			Vec3 centre = feet.add(0, 0.85, 0).add(look.scale(1.4));
+			double r = StringRules.ARC_REACH - 1.4;
+			double span = Math.toRadians(StringRules.ARC_DEGREES + 40);
+			if (day) {
+				Light.slash(level, centre.subtract(0, 0.02, 0), UP, look, color | Light.DARK, r * 1.04, span * 0.97, 0.7, 1, 9);
+			}
+			Light.slash(level, centre, UP, look, color, r, span, 0.6, 1, 9);
+			Light.slash(level, centre.add(0, 0.03, 0), UP, look, hot(color, 0.6), r * 0.96, span * 0.85, 0.16, 1, 8);
+			for (int tip = -1; tip <= 1; tip += 2) {
+				double a = Math.atan2(look.z, look.x) + tip * span / 2;
+				Vec3 end = centre.add(Math.cos(a) * r, 0, Math.sin(a) * r);
+				Motes.fling(level, end, new Vec3(Math.cos(a), 0.2, Math.sin(a)), 0.12, hot(color, 0.3), 0.08, 12, new Vec3(0, -0.01, 0));
+			}
+		}
+		Sigils.flash(level, feet.add(0, 0.9, 0).add(look.scale(1.8)), 0xFF000000 | hot(color, 0.3), 1.0F);
+	}
+
+	/**
+	 * The Third Art, a counter: the parry's gold ring snapping out round the foe ahead, kept small and low enough to leave a
+	 * first-person view clear, and the aura's crescent cut through it.
+	 */
+	static void artCounter(ServerPlayer player, int color) {
+		ServerLevel level = player.level();
+		Vec3 look = flat(player);
+		Vec3 at = player.position().add(0, 0.9, 0).add(look.scale(2.0));
+		boolean day = brightBehind(level, at);
+		Vec3 side = look.cross(UP).normalize();
+		Vec3 normal = UP.add(side.scale(0.9)).normalize();
+		Vec3 centre = at.subtract(look.scale(0.1));
+		if (day) {
+			Light.ring(level, at.subtract(look.scale(0.03)), look, AuraGuard.PERFECT_COLOR | Light.DARK, 0.15, 1.2, 0.12, 8);
+			Light.slash(level, centre.subtract(look.scale(0.03)), normal, look, color | Light.DARK, 1.25, 2.5, 0.5, 1, 7);
+		}
+		Light.ring(level, at, look, AuraGuard.PERFECT_COLOR, 0.15, 1.15, 0.09, 8);
+		Light.slash(level, centre, normal, look, color, 1.2, 2.6, 0.44, 1, 7);
+		Light.slash(level, centre.add(look.scale(0.04)), normal, look, hot(color, 0.7), 1.16, 2.2, 0.14, 1, 6);
+		Sigils.flash(level, at, 0xFF000000 | AuraGuard.PERFECT_COLOR, 1.0F);
+	}
+
+	/** The Fourth Art: a line of the aura's light cut low and straight ahead, {@code length} blocks, white-hot down its middle. */
+	static void artLine(ServerPlayer player, int color, Vec3 ahead, double length) {
+		ServerLevel level = player.level();
+		Vec3 from = player.position().add(0, 0.95, 0).add(ahead.scale(0.6));
+		Vec3 to = from.add(ahead.scale(length));
+		if (brightBehind(level, to)) {
+			Light.ray(level, from, to, color | Light.DARK, 0.44, 8);
+			Light.ray(level, from.subtract(0, 0.85, 0), to.subtract(0, 0.85, 0), color | Light.DARK, 0.26, 10);
+		}
+		Light.ray(level, from, to, color, 0.36, 8);
+		Light.ray(level, from, to, hot(color, 0.6), 0.09, 6);
+		Light.ray(level, from.subtract(0, 0.85, 0), to.subtract(0, 0.85, 0), color, 0.2, 10);
+		Light.ring(level, to, ahead, hot(color, 0.3), 0.2, 1.2, 0.07, 7);
+		Motes.glows(level, to, 5, 0.4, hot(color, 0.3), 0.08, 14, ahead.scale(0.03), 0.01);
+	}
+
+	/**
+	 * The Final Art: a ring of the aura racing out over the ground, a second inside it, six cuts whirling round at the height of
+	 * the blow (each centred out toward the ring, so they show to the swordsman too) and motes flung up off the rim.
+	 */
+	static void artRing(ServerPlayer player, int color, double radius) {
+		ServerLevel level = player.level();
+		Vec3 feet = player.position();
+		Vec3 look = flat(player);
+		boolean day = brightBehind(level, feet.add(0, 1, 0));
+		if (day) {
+			Light.groundRing(level, feet.subtract(0, 0.01, 0), color | Light.DARK, 0.4, radius * 1.18, 0.42, 12);
+		}
+		Light.groundRing(level, feet, color, 0.4, radius * 1.15, 0.34, 12);
+		Light.groundRing(level, feet, hot(color, 0.55), 0.3, radius, 0.1, 10);
+		double base = Math.atan2(look.z, look.x);
+		for (int i = 0; i < 6; i++) {
+			double a = base + Math.PI * 2 * i / 6;
+			Vec3 out = new Vec3(Math.cos(a), 0, Math.sin(a));
+			Vec3 centre = feet.add(0, 0.9, 0).add(out.scale(radius - 1.5));
+			// Each cut sweeps on round the circle, the way the whirl turns, overlapping the next into a ring of cuts.
+			Vec3 toward = out.add(new Vec3(-out.z, 0, out.x).scale(0.5)).normalize();
+			if (day) {
+				Light.slash(level, centre.subtract(0, 0.02, 0), UP, toward, color | Light.DARK, 1.55, 2.1, 0.5, 2, 9);
+			}
+			Light.slash(level, centre, UP, toward, color, 1.5, 2.2, 0.42, 2, 9);
+			Light.slash(level, centre.add(0, 0.03, 0), UP, toward, hot(color, 0.6), 1.46, 1.8, 0.12, 2, 8);
+		}
+		Sigils.flash(level, feet.add(0, 0.3, 0).add(look.scale(1.6)), 0xFF000000 | hot(color, 0.35), 2.0F);
+		for (int i = 0; i < 12; i++) {
+			double a = Math.PI * 2 * i / 12;
+			Vec3 rim = feet.add(Math.cos(a) * radius * 0.85, 0.3, Math.sin(a) * radius * 0.85);
+			Motes.fling(level, rim, new Vec3(Math.cos(a), 0.6, Math.sin(a)), 0.15, hot(color, 0.25), 0.09, 20, new Vec3(0, 0.02, 0));
+		}
+		ScreenFx.shake(level, feet, 0.18F, 10);
+	}
+
+	/** An art landing on a foe: a flash of the given colour and a few sparks. */
+	static void artHit(ServerLevel level, net.minecraft.world.entity.LivingEntity target, int color) {
+		Vec3 at = target.getBoundingBox().getCenter();
+		Sigils.flash(level, at, 0xFF000000 | hot(color, 0.3), 1.0F);
+		Fx.send(level, ParticleTypes.CRIT, at, 5, 0.25, 0.2);
+	}
+
 	private static Vec3 flat(ServerPlayer player) {
 		Vec3 look = player.getViewVector(1.0F);
 		Vec3 flat = new Vec3(look.x, 0, look.z);

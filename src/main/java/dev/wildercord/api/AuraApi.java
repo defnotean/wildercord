@@ -8,7 +8,11 @@ import dev.wildercord.aura.BreathingManualItem;
 import dev.wildercord.aura.BreathingMethod;
 import dev.wildercord.aura.BreathingMethods;
 import dev.wildercord.aura.MethodSources;
+import dev.wildercord.aura.StringReader;
+import dev.wildercord.aura.SwordString;
+import dev.wildercord.aura.SwordStrings;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -21,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 
 /**
  * Aura, the swordsman's path, for the rest of the mod and for add-ons: the stage registry, the technique registry, hooks on
@@ -39,6 +44,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *       and hear of or change each change.</li>
  *   <li><b>Methods</b> ({@link #registerMethod}, {@link #addMethodSource}, {@link #grantMethod}, {@link #manual}): more
  *       breathing methods, more places manuals turn up, and a way to teach one outright (a duelist's lesson).</li>
+ *   <li><b>Sword strings</b> ({@link #registerString}, {@link #onString}, {@link #addStringSource}): arts set off by a short
+ *       run of ordinary swings ({@link SwordString}), read by the player's client and checked and performed by the server.
+ *       Built in, until each method's own arts arrive: five placeholder arts, one a stage ({@code aura.PlaceholderArts}).</li>
  * </ul>
  *
  * @since 0.9
@@ -244,6 +252,270 @@ public final class AuraApi {
 	/** A manual of {@code methodId}. */
 	public static ItemStack manual(String methodId) {
 		return BreathingManualItem.of(methodId);
+	}
+
+	// ------------------------------------------------------------------ sword strings
+
+	/**
+	 * What an art does when its string is played, on the server: returns whether it went off. Its price and rest are paid only
+	 * then, by the mod ({@link StringArt#cost} from the player's aura, never past empty, and {@link StringArt#cooldownTicks});
+	 * a refusal of its own (nothing to act on) should say why above the hotbar and return false.
+	 */
+	@FunctionalInterface
+	public interface ArtPerformer {
+		boolean perform(ServerPlayer player, StringContext context);
+	}
+
+	/**
+	 * Something an art waits on besides its stage, its rest and its price: a full aura pool, peak momentum, awakening. It's
+	 * checked on both sides (the client before it asks, the server before it performs), so it must read only what the player's
+	 * own client knows too: their synced attachments.
+	 */
+	@FunctionalInterface
+	public interface ArtCondition {
+		/** Never anything to wait on. */
+		ArtCondition ALWAYS = player -> true;
+
+		boolean met(Player player);
+
+		/** The language key of the line that says what it waits on (given the art's name as {@code %s}), shown when it isn't met. */
+		default String hintKey() {
+			return "message.wildercord.aura.art.condition";
+		}
+
+		/** A condition with its own line. */
+		static ArtCondition of(Predicate<Player> test, String hintKey) {
+			return new ArtCondition() {
+				@Override
+				public boolean met(Player player) {
+					return test.test(player);
+				}
+
+				@Override
+				public String hintKey() {
+					return hintKey;
+				}
+			};
+		}
+	}
+
+	/**
+	 * An art set off by a sword string. Its name and description are the language keys {@code aura.wildercord.art.<id>} and
+	 * {@code .desc} (with ':' as '.').
+	 *
+	 * @param id            its id (a plain word for the mod's own, {@code namespace:path} for an add-on's)
+	 * @param string        the swings that set it off
+	 * @param stage         the stage it opens at (Glow to Sovereign)
+	 * @param cost          its price in aura, paid when it goes off (the client won't ask with less, and nothing spends past empty)
+	 * @param cooldownTicks how long it rests after going off
+	 * @param available     whether the player has it at all, besides the stage (a method's own art: {@link #forMethod}); both sides
+	 * @param condition     what else it waits on before it can go ({@link ArtCondition}); both sides
+	 * @param performer     what it does, on the server
+	 */
+	public record StringArt(String id, SwordString string, int stage, double cost, int cooldownTicks, Predicate<Player> available,
+			ArtCondition condition, ArtPerformer performer) implements StringReader.Spelled {
+		public StringArt {
+			if (id == null || id.isBlank()) {
+				throw new IllegalArgumentException("an art needs an id");
+			}
+			if (string == null) {
+				throw new IllegalArgumentException("art " + id + " needs a sword string");
+			}
+			stage = Math.max(AuraRules.GLOW, AuraRules.clampStage(stage));
+			cost = Math.max(0, cost);
+			cooldownTicks = Math.max(0, cooldownTicks);
+			available = available == null ? player -> true : available;
+			condition = condition == null ? ArtCondition.ALWAYS : condition;
+			performer = performer == null ? (player, context) -> false : performer;
+		}
+
+		/** An art open to everyone who reaches its stage, waiting on nothing else. {@code string} is written as {@link SwordString#parse} reads it. */
+		public static StringArt of(String id, String string, int stage, double cost, int cooldownTicks, ArtPerformer performer) {
+			return new StringArt(id, SwordString.parse(string), stage, cost, cooldownTicks, null, null, performer);
+		}
+
+		/** The same art, open only to players {@code available} lets through (besides its stage). */
+		public StringArt onlyFor(Predicate<Player> available) {
+			return new StringArt(id, string, stage, cost, cooldownTicks, available, condition, performer);
+		}
+
+		/** The same art, open only to players who breathe {@code methodId}: a method's own art. */
+		public StringArt forMethod(String methodId) {
+			return onlyFor(player -> Aura.data(player).method().equals(methodId));
+		}
+
+		/** The same art, waiting on {@code condition} too. */
+		public StringArt when(ArtCondition condition) {
+			return new StringArt(id, string, stage, cost, cooldownTicks, available, condition, performer);
+		}
+
+		/** The language key of its name. */
+		public String nameKey() {
+			return "aura.wildercord.art." + id.replace(':', '.');
+		}
+	}
+
+	/**
+	 * What an art is told as it's performed.
+	 *
+	 * @param art    the art
+	 * @param marks  its string's swings as the player's client read them, oldest first ({@link SwordString.Token#bit}s: whether
+	 *               each was full, low, leaping, running, a counter or a step cut)
+	 * @param struck the creature the string's last swing struck, by the server's own record (null for a swing at nothing); it may
+	 *               have died of the blow
+	 * @param at     the game time
+	 */
+	public record StringContext(StringArt art, List<Integer> marks, LivingEntity struck, long at) {
+		public StringContext {
+			marks = List.copyOf(marks);
+		}
+
+		/** Whether the string's last swing was of this kind. */
+		public boolean released(SwordString.Token token) {
+			return !marks.isEmpty() && token.fits(marks.getLast());
+		}
+	}
+
+	/** Hears of every art performed (after it went off and was paid for): momentum, a bonded blade's resonance, a trial. */
+	@FunctionalInterface
+	public interface StringHook {
+		void performed(ServerPlayer player, StringArt art, StringContext context);
+	}
+
+	/**
+	 * Arts a player has of their own, besides the registered ones (techniques they wrote, say): asked on both sides each time a
+	 * string is read or checked, so it must read only what the player's own client knows too, and be quick.
+	 */
+	@FunctionalInterface
+	public interface StringSource {
+		List<StringArt> strings(Player player);
+	}
+
+	private static final Map<String, StringArt> ARTS = new LinkedHashMap<>();
+	private static final List<StringSource> STRING_SOURCES = new CopyOnWriteArrayList<>();
+	private static final List<StringHook> STRING_HOOKS = new CopyOnWriteArrayList<>();
+
+	/**
+	 * Adds an art set off by a sword string (or replaces the one with its id). Register while the mod initialises, on both
+	 * sides: the client reads strings and the server performs them. A string that a shorter one cuts short (see
+	 * {@link SwordString#cutBy}), or that another art already uses at a stage both reach, is allowed but logged: check
+	 * {@link #conflicts} first.
+	 */
+	public static synchronized void registerString(StringArt art) {
+		for (StringArt other : conflicts(art.string(), art.id())) {
+			dev.wildercord.Wildercord.LOGGER.warn("Sword string '{}' of art {} meets '{}' of art {}: one may never be played as written",
+				art.string(), art.id(), other.string(), other.id());
+		}
+		ARTS.put(art.id(), art);
+	}
+
+	/** Takes an art out (the placeholder arts, once a method's own replace them). Returns whether there was one. */
+	public static synchronized boolean unregisterString(String id) {
+		return ARTS.remove(id) != null;
+	}
+
+	/** Every registered art, by stage then registration. Safe on both sides. */
+	public static synchronized List<StringArt> strings() {
+		List<StringArt> out = new ArrayList<>(ARTS.values());
+		out.sort(Comparator.comparingInt(StringArt::stage));
+		return out;
+	}
+
+	public static synchronized Optional<StringArt> string(String id) {
+		return Optional.ofNullable(ARTS.get(id));
+	}
+
+	/**
+	 * Every art {@code player} can play now (their stage reached, open to them), the registered ones by stage, then their own
+	 * from the sources: what their strings are read against. Safe on both sides.
+	 */
+	public static List<StringArt> stringsOf(Player player) {
+		int stage = Aura.stage(player);
+		List<StringArt> out = new ArrayList<>();
+		for (StringArt art : withSources(player)) {
+			if (art.stage() <= stage && art.available().test(player)) {
+				out.add(art);
+			}
+		}
+		return out;
+	}
+
+	/**
+	 * Every art open to {@code player} whatever their stage (registered, then their own), by stage: what the Aura page lists, the
+	 * ones not yet reached faint. Safe on both sides.
+	 */
+	public static List<StringArt> allStringsOf(Player player) {
+		List<StringArt> out = new ArrayList<>();
+		for (StringArt art : withSources(player)) {
+			if (art.available().test(player)) {
+				out.add(art);
+			}
+		}
+		out.sort(Comparator.comparingInt(StringArt::stage));
+		return out;
+	}
+
+	/** The art with this id that {@code player} could have (registered, or one of their own), whatever their stage. */
+	public static Optional<StringArt> artOf(Player player, String id) {
+		for (StringArt art : withSources(player)) {
+			if (art.id().equals(id)) {
+				return Optional.of(art);
+			}
+		}
+		return Optional.empty();
+	}
+
+	private static List<StringArt> withSources(Player player) {
+		List<StringArt> all = strings();
+		for (StringSource source : STRING_SOURCES) {
+			try {
+				List<StringArt> own = source.strings(player);
+				if (own != null) {
+					all.addAll(own);
+				}
+			} catch (RuntimeException e) {
+				dev.wildercord.Wildercord.LOGGER.warn("A sword string source threw; skipping it", e);
+			}
+		}
+		return all;
+	}
+
+	/**
+	 * The registered arts whose strings would get in the way of {@code string}: the same swings, a shorter string that cuts it
+	 * short, or a longer one it cuts short ({@link SwordString#cutBy}). An art with id {@code except} is left out (the one being
+	 * replaced). For a writing screen to warn before a player settles on a string.
+	 */
+	public static synchronized List<StringArt> conflicts(SwordString string, String except) {
+		List<StringArt> out = new ArrayList<>();
+		for (StringArt other : ARTS.values()) {
+			if (other.id().equals(except)) {
+				continue;
+			}
+			if (other.string().equals(string) || string.cutBy(other.string()) || other.string().cutBy(string)) {
+				out.add(other);
+			}
+		}
+		return out;
+	}
+
+	/** Adds arts players have of their own (see {@link StringSource}). */
+	public static void addStringSource(StringSource source) {
+		STRING_SOURCES.add(source);
+	}
+
+	/** Hears of every art performed. */
+	public static void onString(StringHook hook) {
+		STRING_HOOKS.add(hook);
+	}
+
+	/** The string hooks registered, in order (the mod's own use). */
+	public static List<StringHook> stringHooks() {
+		return STRING_HOOKS;
+	}
+
+	/** When {@code player}'s art {@code id} is ready again (game time; past or 0 when it's ready). Safe on both sides for the player's own client. */
+	public static long artReadyAt(Player player, String id) {
+		return SwordStrings.readyAt(player, id);
 	}
 
 	// ------------------------------------------------------------------ reading (both sides)

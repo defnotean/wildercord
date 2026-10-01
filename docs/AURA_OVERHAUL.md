@@ -67,7 +67,7 @@ and documented, not a first draft.
 
 | # | Step | Status |
 |---|---|---|
-| 1 | Sword strings: the input language | planned |
+| 1 | Sword strings: the input language | done |
 | 2 | Feel and spectacle: the shared visual and sound language | planned |
 | 3 | Arts I: the framework, and Ember, Rime, Thunder, Gale, Stone | planned |
 | 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | planned |
@@ -290,3 +290,95 @@ Cord.
 ## Notes for later steps
 
 (Each step adds what the next ones need to know: APIs, names, gotchas.)
+
+### From step 1: sword strings
+
+The full rules are in `docs/DESIGN.md` ("Sword strings"), the code map in `docs/ARCHITECTURE.md`, the player's view in
+`wiki/progression/aura.md#sword-strings`.
+
+**The language (settled).** Seven tokens, written as plain ids (`SwordString.parse("swing swing low")`, `text()`):
+
+| Token | Id | A swing that... | Weight |
+|---|---|---|---|
+| a swing | `swing` | any swing | 0 |
+| a full swing | `full` | attack strength ≥ `AuraRules.FULL_SWING` (0.9) | 1 |
+| a low swing | `low` | sneak held (`isShiftKeyDown`) | 2 |
+| a leaping swing | `leap` | off the ground, not in water or lava, climbing, riding, flying or gliding | 2 |
+| a running swing | `run` | sprinting (read before vanilla's attack ends the sprint) | 2 |
+| a counter | `counter` | the first swing within `StringRules.COUNTER_TICKS` (16) of a perfect Aura Guard | 4 |
+| a step cut | `step` | the first swing within `StringRules.STEP_CUT_TICKS` (14) of an Aura Step | 4 |
+
+A swing carries every mark it earns (bits, `Token.bit()`); a token fits a swing that has its bit, and `swing` fits all. At
+most 6 tokens (`SwordString.MAX_LENGTH`).
+
+**Windows.** Each swing within `base + recover` ticks of the one before: `base` is the server's
+`aura.string_window_seconds` (default 0.5 s = `StringRules.WINDOW` 10 ticks, 0.1 to 2, synced in `Config.Sync`), `recover`
+the weapon's ticks to a full swing (`StringRules.recover(delay)`: sword 11, iron axe 20, mace 30, fist 4, capped 60). A
+perfect guard or step (a `StringReader.Cue`) inside a string keeps it open at least its cue window. A swing that would have
+completed a 2+ swing string with a deliberate release (last token weight > 0) up to `LATE_GRACE` (10) ticks after it lapsed
+is a fumble.
+
+**Which art wins.** Every art whose string the last swings fit completes; `StringReader.best` ranks by the last token's
+weight, then total weight, then length, then stage, then registration order. Of those the client thinks can go now (rested,
+aura ≥ cost, condition met) the best goes; otherwise it **falls through** to the next art the same swings fit; with none,
+the best is refused (reason above the hotbar). A completed or refused string uses its swings up.
+
+**What counts as a swing** (client, `SwordStringsClient.reading`): aura weapon in hand, stage ≥ Glow, aura and
+`aura.strings` on, no screen, not a spectator, not using an item, no `CHARGE` (casting) attachment. At a living entity under
+the crosshair, or at nothing within `ENGAGED_TICKS` (80) of a blow given or taken, a perfect guard or a step. A block never.
+
+**The five strings and the placeholder arts.** Ids in `PlaceholderArts.IDS`: `first_art` (Glow, `swing swing low`),
+`second_art` (Flow, `leap low`), `third_art` (Edge, `counter`), `fourth_art` (Form, `step`), `final_art` (Sovereign,
+`full full full low`). None of the five is played on the way to another (`SwordString.cutBy`, unit-tested). They're
+placeholders every method shares: projected aura bursts (`AuraCombat.projected`, so element, marks, experience, PvP
+defences) shaped as an arc, a rising arc, a staggering counter, a line, a ring (`AuraVfx.artArc/artCounter/artLine/artRing`),
+priced in `StringRules` (`FIRST_COST`... `FINAL_COOLDOWN`). Steps 3 and 4: `AuraApi.unregisterString(id)` for each and
+register each method's own on the **same five strings and stages** with `.forMethod(methodId)`; lang keys
+`aura.wildercord.art.<id>` and `.desc` (':' as '.'). The Final Art waits on `PlaceholderArts.FULL_POOL` (aura ≥ 90% of
+capacity: the string's own coated swings spend a little); steps 5 and 6 replace that condition (peak momentum or awakened)
+through `StringArt.when(ArtCondition.of(test, hintKey))`.
+
+**The API** (`api.AuraApi`, both sides unless noted):
+- `StringArt(id, SwordString string, stage, cost, cooldownTicks, Predicate<Player> available, ArtCondition condition,
+  ArtPerformer performer)`, or `StringArt.of(id, "swing swing low", stage, cost, cooldown, performer)` then `.forMethod(id)`,
+  `.onlyFor(pred)`, `.when(condition)`. `available` = has it at all (method); `condition` = can it go now (both sides, so read
+  only synced data; `hintKey()` is the refusal line, given the art's name as `%s`).
+- `ArtPerformer.perform(ServerPlayer, StringContext)` returns whether it went off; **the framework** then spends `cost`
+  (never past empty, so no backlash), sets the rest (`SwordStrings.COOLDOWNS`, attachment `aura_arts`, saved, synced to the
+  owner, kept through death) and calls the hooks. `StringContext`: `marks()` (the swings as read), `released(Token)`,
+  `struck()` (the server's `getLastHurtMob` if within 2 ticks, may be dead), `at()`.
+- `registerString`, `unregisterString`, `strings()`, `string(id)`, `stringsOf(player)` (stage + available: the reader's
+  candidates), `allStringsOf(player)` (available only: the Aura page tab), `artOf(player, id)`, `artReadyAt(player, id)`.
+- `conflicts(string, exceptId)`: arts with the same swings or that cut/are cut by it. Step 8's writing screen should call it.
+- `addStringSource(player -> List<StringArt>)`: per-player arts (step 8's techniques); asked on both sides on every swing
+  read and every request checked, so keep it cheap and read synced attachments.
+- `onString((player, art, context) -> ...)`: every art performed, after payment (step 5's momentum, step 9's resonance).
+
+**Server checks** (`SwordStrings.check`): closed (aura/strings off, dead, spectator, stage, not available, marks don't fit
+the string), no weapon, not ready, condition, no aura, unseen. "Unseen": the server keeps each player's last 8 swings
+(`mixin.SwordStringsSeenMixin` on `handlePunch`, `mixin.PiercingWeaponStringsMixin` on `PiercingWeapon.attack`) and needs
+at least the string's length within its longest span + `SEEN_SLACK`, the last within `LAST_SWING_SLACK`, and a recent perfect
+guard / step for `counter` / `step` tokens (`SwordStrings.cue`, called from `AuraGuard.feedback` and `AuraStep.go`, which
+also tells the client). Full/low/leap/run marks are trusted (network timing blurs them). Requests: `PacketThrottle(4, 5)`.
+
+**Feedback.** `client.StringHud` draws the row of marks (7 px glyphs, `BELOW_CROSSHAIR` 19 px under the crosshair, or
+above the aura strip with `MagicQuality.stringIndicator` HOTBAR, or hidden), its phases (live with the window's shrinking
+line, done gold, fumble red shake, refused grey, lapse fade) and a cue's waiting mark; `StringHud.glyph` and `string` draw
+marks anywhere (the Aura page uses them). Sounds `aura_string_tick` (played at `Feels.step(chain size - 1)`),
+`aura_string_complete`, `aura_string_fumble`, for the player alone. Step 2's banners and trails should hang off
+`SwordStringsClient.handle` (client) and `SwordStrings.perform` / `onString` (server).
+
+**Gotchas.**
+- 26.3 sends a `ServerboundPunchPacket` for every swing (after the attack packet for a hit) but none for a spear thrust
+  (a `STAB` action): hence the two server hooks. `Player.attack` resets attack strength itself (`onAttack`) and ends a
+  sprint, so the client samples both at the head of `Minecraft.startAttack`.
+- The guard holds while sneaking, so a counter is also a low swing: ranking by the release's weight is what makes the Third
+  Art beat the First. Keep counters and step cuts weightier than any plain kind.
+- Playing low swings while standing still settles the breathing stance after a second (aura sense outlines appear): harmless.
+- `Sigils.send` never sends shaped light centred within 1.25 blocks of a player's eyes to that player (first-person comfort),
+  so an art's own crescents must be centred ahead of the body; a ground ring at the feet doesn't show to a crouching player.
+- Additive shaped light washes out by day: lay a `Light.DARK` rim under it when `AuraVfx.brightBehind` (the slash does too).
+- The perfect guard's own flash fills the first-person view in gold (`AuraVfx.perfect`): step 2 may want to tone it down.
+- Game test `WildercordSwordStringsTest` plays every string with the real keys (`swing`, `lowSwing`, jump, the Aura key) and
+  checks the server through an `onString` hook and `AFTER_DAMAGE` on `Aura.DAMAGE`; husks there have no AI, so lifts and
+  knockback don't show.

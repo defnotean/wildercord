@@ -29,7 +29,9 @@
 		"ShulkerBoxBlockEntityMixin",
 		"PlayerAuraMixin",
 		"LivingEntityAuraMixin",
-		"EntityAuraDeflectMixin"
+		"EntityAuraDeflectMixin",
+		"SwordStringsSeenMixin",
+		"PiercingWeaponStringsMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

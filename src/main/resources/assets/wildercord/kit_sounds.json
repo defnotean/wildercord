@@ -186,6 +186,15 @@
     "aura_step": {
       "part": "aura"
     },
+    "aura_string_complete": {
+      "part": "aura"
+    },
+    "aura_string_fumble": {
+      "part": "aura"
+    },
+    "aura_string_tick": {
+      "part": "aura"
+    },
     "beat_release": {
       "part": "neutral"
     },

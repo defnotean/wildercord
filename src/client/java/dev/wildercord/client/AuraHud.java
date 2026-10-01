@@ -214,6 +214,8 @@ public final class AuraHud {
 				(timers.dominionUntil() - now + 19) / 20).getString();
 			g.text(font, font.plainSubstrByWidth(dominion, Math.max(40, g.guiWidth() - x - 4)), x + 3, top, lineColor, true);
 		}
+		// The sword string indicator, when the player keeps it by the hotbar.
+		top = StringHud.aboveStrip(g, player, x + 3, top, partial);
 		return top;
 	}
 

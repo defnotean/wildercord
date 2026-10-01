@@ -1337,6 +1337,77 @@ you stand in it aura comes twice as fast, plus 2 a second. 40 aura, and a 90-sec
 timers are saved in game time). It's raised with a great circle of the aura's colour on the ground, a column of light, a
 camera shake and `aura_dominion`; its rim breathes light while it holds and breaks up into motes as it ends.
 
+### Sword strings
+Ordinary swings are a language. A **string** is a short run of swings (one to six), each of a kind (a **token**), each within
+its window of the one before; played, it sets off an **art**. Nothing new to press: the swordsman swings as always, and
+chooses how.
+
+| Token | Written | A swing that... | Weight |
+|---|---|---|---|
+| a swing | `swing` | any swing at all | 0 |
+| a full swing | `full` | the blade had recovered (attack strength 0.9 or more, aura's own "meaningful blow") | 1 |
+| a low swing | `low` | struck crouching | 2 |
+| a leaping swing | `leap` | struck in the air (not swimming, climbing, riding, flying or gliding) | 2 |
+| a running swing | `run` | struck sprinting | 2 |
+| a counter | `counter` | the first swing within 16 ticks of a perfect Aura Guard | 4 |
+| a step cut | `step` | the first swing within 14 ticks of an Aura Step | 4 |
+
+A swing can be several kinds at once (a full low swing straight after a perfect guard is a full swing, a low swing and a
+counter), and a token asks for one kind: any swing that has it fits, and `swing` fits every swing.
+
+**Windows.** Each swing must come within the window of the moment the blade is ready again: half a second
+(`aura.string_window_seconds`, 0.1 to 2) plus the weapon's recovery (the ticks to a full swing: a sword 11, an iron axe 20, a
+mace 30, a fist 4, at most 60). A sword's string keeps going at a swing every 1.05 seconds or quicker, an axe's every 1.5, a
+mace's every 2; quick half-strength swings always keep up. A perfect guard or an Aura Step in the middle of a string keeps it
+open at least for its counter's or step cut's moment. A string left past its window lapses quietly.
+
+**Which art.** After each swing, every art whose string the last swings fit is complete. The one that asks the most wins:
+the heaviest last token (the release), then the heaviest string, then the longest, then the highest stage, then the first
+registered. Of those that can go now (rested, its price held, its condition met) the best goes: so a string whose best art
+is resting or unaffordable **falls through** to the next art the same swings spell (three full swings and a low one without a
+full pool are the First Art). If none can go, the best is **refused**, with the reason above the hotbar. A completed or refused
+string uses its swings up. A swing that would have finished a string of two or more with a deliberate release (anything but a
+plain `swing`), had it come in time, and comes no more than 10 ticks late, is a **fumble**. Strings are written so that none of
+the five arts' strings is played on the way to another's (`SwordString.cutBy`).
+
+**What counts.** A swing with an aura weapon, aura and strings on, a method learned, no screen open, not a spectator, not
+charging a spell or using an item: at a living creature under the crosshair, or at nothing within 4 seconds of a blow given or
+taken, a perfect guard or a step. A swing at a block (digging) never counts.
+
+**The arts.** One a stage, the same strings for every method so a player learns them once. Until each method's own arts
+arrive (the aura overhaul's steps 3 and 4) every method plays the same five **placeholder arts**: projected aura off the
+blade (the damage type `wildercord:aura`, the method's element, armour, and against a player the spell defences and the PvP
+scale, as the slash), at the weapon's damage × the art's factor × `damage_scale`, landing through a foe's moment of
+invulnerability; their hits answer as the slash's do (the method's passive, aura marks, experience, never aura back).
+
+| Art | Stage | String | Placeholder | Aura | Rest |
+|---|---|---|---|---|---|
+| **First Art** | Glow | `swing swing low` | an arc 3.5 blocks out, 130° wide, up to 4 foes (the one the low swing struck first), × 0.6 | 6 | 3 s |
+| **Second Art** | Flow | `leap low` | the same arc, rising: × 0.8, and each foe (never a boss) thrown up | 8 | 4 s |
+| **Third Art** | Edge | `counter` | a cut on the foe the counter struck (or the nearest in the arc), × 1.0, staggered again | 8 | 4 s |
+| **Fourth Art** | Form | `step` | a line 5 blocks ahead, 2.5 wide, up to 5 foes, × 1.0 | 10 | 5 s |
+| **Final Art** | Sovereign | `full full full low` | a ring 4 blocks round, up to 8 foes, × 2.0, thrown back (never a boss); only with a full pool (nine tenths or more) until momentum and awakening exist | 40 | 30 s |
+
+An art's price is paid when it goes off, never past empty (no backlash), and its rest is saved in game time
+(`aura_arts`), kept through death. The first string played goes into the Grimoire (`aura:sword_string`).
+
+**Server-authoritative.** The client reads strings (exact input timing, free of network jitter) and asks; the server checks
+aura and strings on, alive, not a spectator, an aura weapon in hand, the art the player's (stage, method), the swings as read
+fitting its string, rested, its condition met, its price held, and that the swings happened: at least that many of the
+player's own swings (punches and spear thrusts, as the server receives them) within the string's longest span plus a second,
+the last within half a second, and the perfect guard or Aura Step a counter or step cut needs. How full a swing was and
+whether it crouched, leapt or ran is taken from the client (the network blurs those by a tick, and a lie would only gain an
+art a moment sooner). Requests: a burst of 4, then one every 5 ticks.
+
+**How it shows.** A row of 7-pixel marks 19 pixels below the crosshair, clear of vanilla's attack indicator (or above the
+aura bar, or hidden: the player's `string_indicator` in `config/wildercord-visuals.json`), one per swing of the string being
+played, in the aura's colour; a thin line under them shrinks as the window runs out. A completed string flashes white-gold and fades over a second; a
+fumble shakes, turns dull red and drops away; a refusal greys; a lapse fades. After a perfect guard or a step, the counter's
+(gold) or step cut's mark breathes faintly where the next swing will land. Sounds, for the player alone: `aura_string_tick`
+(climbing the pentatonic scale with each swing), `aura_string_complete` and `aura_string_fumble`. The placeholder arts use the
+existing aura sounds and simple shaped light (an arc, a rising arc, a gold ring, a line, a ground ring), nothing drawn at the
+swordsman's own eyes.
+
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
 choice is the sneak: a spell cast standing goes out as usual, sword or not). The next **Aura Slash** within 5 seconds
@@ -1399,7 +1470,8 @@ sweep, the slash and a breakthrough each have their shaped light. From Form the 
 aura armour is up) and a step leaves afterimages, both drawn on every client with vanilla's glowing-eyes and emissive
 translucent types, like the blade, so they hold under shader packs. Sounds: `aura_slash`, `aura_guard`,
 `aura_perfect_guard`, `aura_breakthrough`, `aura_backlash`, `aura_breath`, `aura_step`, `aura_armour`, `aura_intent`,
-`aura_dominion`, `aura_dominion_fade` and `aura_spellblade` (the feel kit's `tools/feel/aura.py`).
+`aura_dominion`, `aura_dominion_fade`, `aura_spellblade`, and for sword strings `aura_string_tick`, `aura_string_complete` and
+`aura_string_fumble` (the feel kit's `tools/feel/aura.py`).
 
 ### Fairness
 - Aura blows are melee, so armour applies to them as to any blow; only the Edge's quarter goes through.
@@ -1414,7 +1486,9 @@ translucent types, like the blade, so they hold under shader packs. Sounds: `aur
   `slash_damage`, `slash_cost`, `slash_cooldown_seconds`, `pvp_scale`, `backlash_seconds` and `guard_share`; and for the top
   stages, the spellblade and marks `step_cost`, `step_cooldown_seconds`, `step_distance`, `armour_share`, `intent_pvp`,
   `intent_pvp_slow`, `dominion_cost`, `dominion_seconds`, `dominion_cooldown_seconds`, `dominion_weaken`,
-  `spellblade_seconds` and `mark_chance_multiplier`.
+  `spellblade_seconds` and `mark_chance_multiplier`; and for sword strings `strings` and `string_window_seconds`.
+- Sword strings' arts are projected aura (the spell defences and the PvP scale against a player), never spend past empty, and
+  are checked by the server against swings it saw itself.
 
 ### The world of aura
 Swordsmen to meet and learn from, swordsmen to fear, gear forged with aura, and what happens when two slashes meet. The
