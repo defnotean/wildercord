@@ -126,6 +126,16 @@ public class Duelist extends AuraFighter {
 		return opponent != null && DuelistDuels.fighting(this) && slashAt == 0 && !guarding() && !staggered() && dashAt == 0 && dashUntil == 0;
 	}
 
+	/** Its campfire, if it made one. */
+	public @Nullable BlockPos camp() {
+		return camp;
+	}
+
+	/** When it takes another challenge (game time). */
+	public long restingUntil() {
+		return restUntil;
+	}
+
 	public boolean inDuel() {
 		return opponent != null;
 	}
@@ -415,7 +425,7 @@ public class Duelist extends AuraFighter {
 	}
 
 	/** It goes: a swirl of its aura, and nothing left behind (its campfire goes too). */
-	void vanish(ServerLevel level) {
+	public void vanish(ServerLevel level) {
 		Vec3 heart = position().add(0, 1.0, 0);
 		Light.groundRing(level, position(), auraColor(), 0.2, 2.0, 0.08, 16);
 		Light.ray(level, position(), position().add(0, 3.5, 0), auraColor(), 0.3, 12);

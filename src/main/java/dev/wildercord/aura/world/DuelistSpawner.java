@@ -114,7 +114,7 @@ public final class DuelistSpawner {
 	// ------------------------------------------------------------------ places
 
 	/** A few blocks from the nearest village bell within 96 blocks, if there is one. */
-	static @Nullable Spot village(ServerLevel level, BlockPos near, RandomSource random) {
+	public static @Nullable Spot village(ServerLevel level, BlockPos near, RandomSource random) {
 		Optional<BlockPos> bell = level.getPoiManager().findClosest(p -> p.is(PoiTypes.MEETING), near, 96, PoiManager.Occupancy.ANY);
 		if (bell.isEmpty()) {
 			return null;
@@ -132,7 +132,7 @@ public final class DuelistSpawner {
 	}
 
 	/** A dirt path 16 to 48 blocks from the player. */
-	static @Nullable Spot road(ServerLevel level, BlockPos near, RandomSource random) {
+	public static @Nullable Spot road(ServerLevel level, BlockPos near, RandomSource random) {
 		for (int i = 0; i < 40; i++) {
 			BlockPos column = ring(near, 16, 48, random);
 			if (!level.hasChunkAt(column)) {
@@ -147,7 +147,7 @@ public final class DuelistSpawner {
 	}
 
 	/** Open ground under the sky 20 to 40 blocks from the player, room beside it for a fire. */
-	static @Nullable Spot camp(ServerLevel level, BlockPos near, RandomSource random) {
+	public static @Nullable Spot camp(ServerLevel level, BlockPos near, RandomSource random) {
 		for (int i = 0; i < 24; i++) {
 			BlockPos column = ring(near, 20, 40, random);
 			BlockPos stand = surface(level, column);

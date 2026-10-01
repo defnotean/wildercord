@@ -97,12 +97,12 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 
 	/** An emissive copy of the model with a texture of only what glows, its strength and colour per frame. */
 	private static final class Glow<M extends HumanoidModel<AuraFighterRenderState>> extends RenderLayer<AuraFighterRenderState, M> {
-		private final Identifier texture;
+		private final net.minecraft.client.renderer.rendertype.RenderType renderType;
 		private final ToIntFunction<AuraFighterRenderState> color;
 
 		Glow(RenderLayerParent<AuraFighterRenderState, M> parent, Identifier texture, ToIntFunction<AuraFighterRenderState> color) {
 			super(parent);
-			this.texture = texture;
+			this.renderType = RenderTypes.eyes(texture);
 			this.color = color;
 		}
 
@@ -115,7 +115,7 @@ public class AuraFighterRenderer<T extends AuraFighter, M extends HumanoidModel<
 			if ((argb >>> 24) < 4) {
 				return;
 			}
-			collector.order(1).submitModel(getParentModel(), state, poseStack, RenderTypes.eyes(texture), light, OverlayTexture.NO_OVERLAY, argb, null,
+			collector.order(1).submitModel(getParentModel(), state, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, argb, null,
 				state.outlineColor);
 		}
 	}

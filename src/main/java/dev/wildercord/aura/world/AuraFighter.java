@@ -234,7 +234,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	}
 
 	/** Raises its guard (the tell is the pose, a ring of its light braced in front, and the guard's hum). */
-	protected boolean raiseGuard() {
+	public boolean raiseGuard() {
 		long now = level().getGameTime();
 		if (guarding() || now < guardReadyAt || slashAt > 0 || now < staggerUntil) {
 			return false;
@@ -255,7 +255,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	}
 
 	/** Lets its guard drop (and rest before the next). */
-	protected void dropGuard() {
+	public void dropGuard() {
 		if (guardRaised >= 0) {
 			guardRaised = -1;
 			guardUntil = -1;
@@ -386,7 +386,7 @@ public abstract class AuraFighter extends PathfinderMob implements Crescents.Gua
 	}
 
 	/** Raises its blade for a slash at {@code target}, landing in {@code windup} ticks (the tell). */
-	protected void windUp(LivingEntity target, int windup, int cooldown) {
+	public void windUp(LivingEntity target, int windup, int cooldown) {
 		long now = level().getGameTime();
 		slashAt = now + windup;
 		nextSlashAt = now + windup + cooldown;
