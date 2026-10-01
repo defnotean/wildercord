@@ -688,7 +688,7 @@ C_FEELER = box(118, 0, 1, 1, 4)
 C_LEG = box(0, 20, 7, 2, 2)
 C_SHIN = box(18, 20, 2, 6, 2)
 C_SHELL = box(40, 20, 13, 2, 12)
-C_BALL = box(0, 36, 10, 10, 10)
+C_BALL = box(0, 36, 12, 12, 12)
 
 
 def crystal_spots(cv, area, seed, count, glow_cv=None):

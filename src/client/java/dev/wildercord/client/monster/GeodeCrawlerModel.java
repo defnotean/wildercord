@@ -20,10 +20,12 @@ import net.minecraft.util.Mth;
  * <p>Laid out on a 128x64 skin (see {@code geode_crawler} in {@code tools/monster_art.py}):</p>
  * <pre>
  *   body (0,0) 12x5x14    head (52,0) 8x4x5     mandible (78,0) 2x1x4   crystal (90,0) 3x7x3 / (102,0) 2x5x2 / (110,0) 2x3x2
- *   feeler (118,0) 1x1x4  leg (0,20) 7x2x2      shin (18,20) 2x6x2      shell (40,20) 13x2x12   ball (0,36) 10x10x10
+ *   feeler (118,0) 1x1x4  leg (0,20) 7x2x2      shin (18,20) 2x6x2      shell (40,20) 13x2x12   ball (0,36) 12x12x12
  * </pre>
  */
 public class GeodeCrawlerModel extends EntityModel<MonsterRenderState> {
+	/** The ball's middle: it sits on the ground, as wide as the beetle. */
+	private static final float BALL_Y = 18.0F;
 	/** The crystals on its back: x, z, size (0 big, 1 middling, 2 small), tilt forward, tilt sideways. */
 	private static final float[][] CRYSTALS = {
 		{-2.0F, 0.5F, 0, 0.15F, -0.3F}, {2.2F, -1.5F, 0, -0.1F, 0.35F}, {0.0F, 3.5F, 0, 0.35F, 0.05F},
@@ -92,14 +94,14 @@ public class GeodeCrawlerModel extends EntityModel<MonsterRenderState> {
 		}
 
 		// Curled up: a ball of shell studded with crystal.
-		PartDefinition ball = root.addOrReplaceChild("ball", CubeListBuilder.create().texOffs(0, 36).addBox(-5.0F, -5.0F, -5.0F, 10.0F, 10.0F, 10.0F),
-			PartPose.offset(0.0F, 19.0F, 0.0F));
+		PartDefinition ball = root.addOrReplaceChild("ball", CubeListBuilder.create().texOffs(0, 36).addBox(-6.0F, -6.0F, -6.0F, 12.0F, 12.0F, 12.0F),
+			PartPose.offset(0.0F, BALL_Y, 0.0F));
 		for (int i = 0; i < BALL_CRYSTALS.length; i++) {
-			crystal(ball, "crystal_" + i, BALL_CRYSTALS[i], -4.6F);
+			crystal(ball, "crystal_" + i, BALL_CRYSTALS[i], -5.6F);
 		}
 		// And round its sides, leaning out.
-		float[][] sides = {{-4.6F, 0.5F, -1.0F, 0, -1.25F}, {4.6F, -0.5F, 1.5F, 1, 1.3F}, {0.0F, 0.0F, 4.6F, 1, 0.0F}, {-1.5F, 1.0F, -4.6F, 2, 0.0F},
-			{3.0F, 2.0F, -3.0F, 2, 0.9F}};
+		float[][] sides = {{-5.6F, 0.5F, -1.0F, 0, -1.25F}, {5.6F, -0.5F, 1.5F, 1, 1.3F}, {0.0F, 0.0F, 5.6F, 1, 0.0F}, {-1.5F, 1.0F, -5.6F, 2, 0.0F},
+			{3.5F, 2.0F, -3.5F, 2, 0.9F}};
 		for (int i = 0; i < sides.length; i++) {
 			float[] c = sides[i];
 			CubeListBuilder cube = CubeListBuilder.create();
@@ -108,7 +110,7 @@ public class GeodeCrawlerModel extends EntityModel<MonsterRenderState> {
 				case 1 -> cube.texOffs(102, 0).addBox(-1.0F, -5.0F, -1.0F, 2.0F, 5.0F, 2.0F);
 				default -> cube.texOffs(110, 0).addBox(-1.0F, -3.0F, -1.0F, 2.0F, 3.0F, 2.0F);
 			}
-			float xRot = c[2] > 4 ? 1.3F : c[2] < -4 ? -1.3F : 0.0F;
+			float xRot = c[2] > 5 ? 1.3F : c[2] < -5 ? -1.3F : 0.0F;
 			ball.addOrReplaceChild("side_" + i, cube, PartPose.offsetAndRotation(c[0], c[1], c[2], xRot, 0.0F, c[4]));
 		}
 		return LayerDefinition.create(mesh, 128, 64);
@@ -145,7 +147,7 @@ public class GeodeCrawlerModel extends EntityModel<MonsterRenderState> {
 			ball.xScale = squash;
 			ball.yScale = squash;
 			ball.zScale = squash;
-			ball.y = 19.0F + (1 - squash) * 5;
+			ball.y = BALL_Y + (1 - squash) * 6;
 			// Rattling, it shivers; rolling, it spins forward.
 			ball.x = Mth.sin(t * 3.1F) * 0.35F * rattle;
 			ball.zRot = Mth.sin(t * 2.7F) * 0.08F * rattle;

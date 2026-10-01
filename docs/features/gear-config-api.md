@@ -126,6 +126,9 @@ stops a server. Every default is the number the mod used before.
 | `places_of_power.crossing_bonus` | 0.1 | How much: every element this much stronger, every spell this much cheaper (0 to 0.5; cheaper by at most half) |
 | `places_of_power.celestial` | true | Whether the moon, the hour and rain favour elements (full moon arcane and void, new moon blood, noon fire, dawn and dusk time, rain frost) |
 | `places_of_power.celestial_multiplier` | 1.0 | Those bonuses, scaled (0 to 2) |
+| `monsters.enabled` | true | Whether the monsters of the wilds spawn on their own at all (spawn eggs, spawners and commands still work) |
+| `monsters.spawn_rate` | 1.0 | How often they spawn, times this (0 to 4; 0 stops them). Sets their weight among a biome's monsters, so it's read when a world loads |
+| `monsters.bramblewalker`, `gloomstalker`, `thunderwing_harpy`, `geode_crawler`, `bog_witch_frog`, `mana_ooze` | true | Each monster's own switch, read by its spawn rule at once (`/wildercord reload`) |
 
 `world_events`, `world_changing_magic`, `creature_affinities` and `elemental_climate` take effect at once on `/wildercord reload`. The `duels` and
 `wild_magic` switches are there for those features to read (`Config.get().duels()` and so on).
@@ -136,7 +139,8 @@ they work. The travel settings are described in [travel.md](travel.md). The defe
 one path every spell's damage takes; the pure numbers are in `cast.SpellDefenceRules`), and are sent to clients for the
 Cord screen's spell-defence badge. The residue settings are read by `cast.Residues` at each cast (and the caps as each
 residue is left), the places-of-power settings by `cast.Climate`, which sends their tuning to each player with the
-climate (see [ARCHITECTURE.md](../ARCHITECTURE.md#a-world-that-remembers-magic-residues-powerplaces)). Loot chances apply when loot tables load (world start or `/reload`). Structure spacing isn't in the file:
+climate (see [ARCHITECTURE.md](../ARCHITECTURE.md#a-world-that-remembers-magic-residues-powerplaces)). The monster settings are read
+by `monster.MonsterSpawns` (see [ARCHITECTURE.md](../ARCHITECTURE.md#monsters-of-the-wilds-monster)). Loot chances apply when loot tables load (world start or `/reload`). Structure spacing isn't in the file:
 it's data, in `data/wildercord/worldgen/structure_set/archives.json`, which a datapack can override. The
 cost and regeneration multipliers are sent to each player on joining and after every reload, so what the
 screens show is what the server charges.
