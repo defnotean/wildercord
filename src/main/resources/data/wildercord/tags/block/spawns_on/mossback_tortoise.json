@@ -1,0 +1,11 @@
+{
+  "values": [
+    "#minecraft:frogs_spawnable_on",
+    "#minecraft:animals_spawnable_on",
+    "#minecraft:parrots_spawnable_on",
+    "minecraft:moss_block",
+    "minecraft:mud",
+    "minecraft:podzol",
+    "minecraft:clay"
+  ]
+}

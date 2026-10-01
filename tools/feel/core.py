@@ -25,11 +25,18 @@ if str(TOOLS) not in sys.path:
 import sound_art as sa  # noqa: E402  (the DSP primitives, ROOT_HZ, note(), the scale degrees D E FS A B)
 
 ELEMENTS = sa.ELEMENTS
-PARTS = ELEMENTS + ("neutral",)
+# The elements, the neutral sounds, and the creatures of the wild (tools/feel/wildlife.py), which speak in voices of their own.
+PARTS = ELEMENTS + ("neutral", "wildlife")
 NAME = re.compile(r"^[a-z][a-z0-9_]*$")
 
-# The four subtitle texts every kit event picks from (generate_assets.py NEW_LANG): a sound never needs its own line.
-SUBTITLES = ("cast", "hit", "field", "tell")
+# The four subtitle texts every magic event picks from (generate_assets.py NEW_LANG): a sound never needs its own line.
+# Creatures are the exception: a stag's call should say so, so each creature sound has its own (their text is in
+# tools/wildlife_art.py, SUBTITLES).
+CREATURE_SUBTITLES = ("glimmerwing_flutter", "glimmerwing_hurt", "stag_call", "stag_hurt", "stag_death", "stag_shed", "tortoise_grumble",
+                      "tortoise_hurt", "tortoise_death", "tortoise_hide", "tortoise_step", "tortoise_scute", "cinderfox_yip", "cinderfox_hurt",
+                      "cinderfox_death", "cinderfox_spark", "skyray_call", "skyray_hurt", "skyray_death", "rimehare_squeak", "rimehare_hurt",
+                      "rimehare_hop")
+SUBTITLES = ("cast", "hit", "field", "tell") + CREATURE_SUBTITLES
 
 
 @dataclass(frozen=True)

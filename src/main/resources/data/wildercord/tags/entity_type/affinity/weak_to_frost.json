@@ -11,6 +11,8 @@
     "minecraft:piglin_brute",
     "minecraft:zombified_piglin",
     "minecraft:slime",
-    "wildercord:cinder_warden"
+    "wildercord:cinder_warden",
+    "wildercord:cinderfox",
+    "wildercord:mossback_tortoise"
   ]
 }

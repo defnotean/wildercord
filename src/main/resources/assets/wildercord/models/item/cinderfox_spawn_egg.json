@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "wildercord:item/cinderfox_spawn_egg"
+  }
+}

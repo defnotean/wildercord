@@ -2897,5 +2897,177 @@
       "wildercord:kit/neutral/tell_zap_2",
       "wildercord:kit/neutral/tell_zap_3"
     ]
+  },
+  "wildlife_cinderfox_death": {
+    "subtitle": "subtitles.wildercord.kit.cinderfox_death",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_cinderfox_death"
+    ]
+  },
+  "wildlife_cinderfox_hurt": {
+    "subtitle": "subtitles.wildercord.kit.cinderfox_hurt",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_cinderfox_hurt_1",
+      "wildercord:kit/wildlife/wildlife_cinderfox_hurt_2"
+    ]
+  },
+  "wildlife_cinderfox_spark": {
+    "subtitle": "subtitles.wildercord.kit.cinderfox_spark",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_cinderfox_spark_1",
+      "wildercord:kit/wildlife/wildlife_cinderfox_spark_2"
+    ]
+  },
+  "wildlife_cinderfox_yip": {
+    "subtitle": "subtitles.wildercord.kit.cinderfox_yip",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_cinderfox_yip_1",
+      "wildercord:kit/wildlife/wildlife_cinderfox_yip_2",
+      "wildercord:kit/wildlife/wildlife_cinderfox_yip_3"
+    ]
+  },
+  "wildlife_glimmerwing_flutter": {
+    "subtitle": "subtitles.wildercord.kit.glimmerwing_flutter",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_glimmerwing_flutter_1",
+      "wildercord:kit/wildlife/wildlife_glimmerwing_flutter_2",
+      "wildercord:kit/wildlife/wildlife_glimmerwing_flutter_3"
+    ]
+  },
+  "wildlife_glimmerwing_hurt": {
+    "subtitle": "subtitles.wildercord.kit.glimmerwing_hurt",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_glimmerwing_hurt_1",
+      "wildercord:kit/wildlife/wildlife_glimmerwing_hurt_2"
+    ]
+  },
+  "wildlife_rimehare_hop": {
+    "subtitle": "subtitles.wildercord.kit.rimehare_hop",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_rimehare_hop_1",
+      "wildercord:kit/wildlife/wildlife_rimehare_hop_2",
+      "wildercord:kit/wildlife/wildlife_rimehare_hop_3"
+    ]
+  },
+  "wildlife_rimehare_hurt": {
+    "subtitle": "subtitles.wildercord.kit.rimehare_hurt",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_rimehare_hurt_1",
+      "wildercord:kit/wildlife/wildlife_rimehare_hurt_2"
+    ]
+  },
+  "wildlife_rimehare_squeak": {
+    "subtitle": "subtitles.wildercord.kit.rimehare_squeak",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_rimehare_squeak_1",
+      "wildercord:kit/wildlife/wildlife_rimehare_squeak_2"
+    ]
+  },
+  "wildlife_skyray_call": {
+    "subtitle": "subtitles.wildercord.kit.skyray_call",
+    "sounds": [
+      {
+        "name": "wildercord:kit/wildlife/wildlife_skyray_call_1",
+        "attenuation_distance": 64
+      },
+      {
+        "name": "wildercord:kit/wildlife/wildlife_skyray_call_2",
+        "attenuation_distance": 64
+      }
+    ]
+  },
+  "wildlife_skyray_death": {
+    "subtitle": "subtitles.wildercord.kit.skyray_death",
+    "sounds": [
+      {
+        "name": "wildercord:kit/wildlife/wildlife_skyray_death",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "wildlife_skyray_hurt": {
+    "subtitle": "subtitles.wildercord.kit.skyray_hurt",
+    "sounds": [
+      {
+        "name": "wildercord:kit/wildlife/wildlife_skyray_hurt_1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "wildercord:kit/wildlife/wildlife_skyray_hurt_2",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "wildlife_stag_call": {
+    "subtitle": "subtitles.wildercord.kit.stag_call",
+    "sounds": [
+      {
+        "name": "wildercord:kit/wildlife/wildlife_stag_call_1",
+        "attenuation_distance": 32
+      },
+      {
+        "name": "wildercord:kit/wildlife/wildlife_stag_call_2",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "wildlife_stag_death": {
+    "subtitle": "subtitles.wildercord.kit.stag_death",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_stag_death"
+    ]
+  },
+  "wildlife_stag_hurt": {
+    "subtitle": "subtitles.wildercord.kit.stag_hurt",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_stag_hurt_1",
+      "wildercord:kit/wildlife/wildlife_stag_hurt_2"
+    ]
+  },
+  "wildlife_stag_shed": {
+    "subtitle": "subtitles.wildercord.kit.stag_shed",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_stag_shed"
+    ]
+  },
+  "wildlife_tortoise_death": {
+    "subtitle": "subtitles.wildercord.kit.tortoise_death",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_tortoise_death"
+    ]
+  },
+  "wildlife_tortoise_grumble": {
+    "subtitle": "subtitles.wildercord.kit.tortoise_grumble",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_tortoise_grumble_1",
+      "wildercord:kit/wildlife/wildlife_tortoise_grumble_2"
+    ]
+  },
+  "wildlife_tortoise_hide": {
+    "subtitle": "subtitles.wildercord.kit.tortoise_hide",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_tortoise_hide"
+    ]
+  },
+  "wildlife_tortoise_hurt": {
+    "subtitle": "subtitles.wildercord.kit.tortoise_hurt",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_tortoise_hurt_1",
+      "wildercord:kit/wildlife/wildlife_tortoise_hurt_2"
+    ]
+  },
+  "wildlife_tortoise_scute": {
+    "subtitle": "subtitles.wildercord.kit.tortoise_scute",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_tortoise_scute"
+    ]
+  },
+  "wildlife_tortoise_step": {
+    "subtitle": "subtitles.wildercord.kit.tortoise_step",
+    "sounds": [
+      "wildercord:kit/wildlife/wildlife_tortoise_step_1",
+      "wildercord:kit/wildlife/wildlife_tortoise_step_2",
+      "wildercord:kit/wildlife/wildlife_tortoise_step_3"
+    ]
   }
 }

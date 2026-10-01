@@ -918,6 +918,72 @@
     "void_zeno_beat": {
       "part": "void"
     },
+    "wildlife_cinderfox_death": {
+      "part": "wildlife"
+    },
+    "wildlife_cinderfox_hurt": {
+      "part": "wildlife"
+    },
+    "wildlife_cinderfox_spark": {
+      "part": "wildlife"
+    },
+    "wildlife_cinderfox_yip": {
+      "part": "wildlife"
+    },
+    "wildlife_glimmerwing_flutter": {
+      "part": "wildlife"
+    },
+    "wildlife_glimmerwing_hurt": {
+      "part": "wildlife"
+    },
+    "wildlife_rimehare_hop": {
+      "part": "wildlife"
+    },
+    "wildlife_rimehare_hurt": {
+      "part": "wildlife"
+    },
+    "wildlife_rimehare_squeak": {
+      "part": "wildlife"
+    },
+    "wildlife_skyray_call": {
+      "part": "wildlife"
+    },
+    "wildlife_skyray_death": {
+      "part": "wildlife"
+    },
+    "wildlife_skyray_hurt": {
+      "part": "wildlife"
+    },
+    "wildlife_stag_call": {
+      "part": "wildlife"
+    },
+    "wildlife_stag_death": {
+      "part": "wildlife"
+    },
+    "wildlife_stag_hurt": {
+      "part": "wildlife"
+    },
+    "wildlife_stag_shed": {
+      "part": "wildlife"
+    },
+    "wildlife_tortoise_death": {
+      "part": "wildlife"
+    },
+    "wildlife_tortoise_grumble": {
+      "part": "wildlife"
+    },
+    "wildlife_tortoise_hide": {
+      "part": "wildlife"
+    },
+    "wildlife_tortoise_hurt": {
+      "part": "wildlife"
+    },
+    "wildlife_tortoise_scute": {
+      "part": "wildlife"
+    },
+    "wildlife_tortoise_step": {
+      "part": "wildlife"
+    },
     "wind_crash": {
       "part": "wind"
     },

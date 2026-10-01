@@ -18,36 +18,42 @@ METAL = ["minecraft:iron_golem", "minecraft:copper_golem"]
 
 AFFINITIES = {
     # The cold's own creatures thaw and melt; the Creaking is dry wood.
-    "weak_to_fire": ["minecraft:stray", "minecraft:snow_golem", "minecraft:polar_bear", "minecraft:creaking"],
+    "weak_to_fire": ["minecraft:stray", "minecraft:snow_golem", "minecraft:polar_bear", "minecraft:creaking",
+                     # Moths to a flame; a hare of the frost.
+                     "wildercord:glimmerwing", "wildercord:rimehare"],
     # The Nether's creatures, and anything that lives in water (being wet doesn't dull fire on them any further).
-    "resists_fire": NETHER + ["#minecraft:aquatic", "minecraft:drowned", "wildercord:cinder_warden"],
+    "resists_fire": NETHER + ["#minecraft:aquatic", "minecraft:drowned", "wildercord:cinder_warden", "wildercord:cinderfox"],
     # The Nether's creatures, and slimes, whose jelly sets hard.
-    "weak_to_frost": NETHER + ["minecraft:slime", "wildercord:cinder_warden"],
-    "resists_frost": ["minecraft:stray", "minecraft:polar_bear", "wildercord:tide_scribe"],
+    "weak_to_frost": NETHER + ["minecraft:slime", "wildercord:cinder_warden",
+                               # An ember-tailed fox, and a cold-blooded tortoise.
+                               "wildercord:cinderfox", "wildercord:mossback_tortoise"],
+    "resists_frost": ["minecraft:stray", "minecraft:polar_bear", "wildercord:tide_scribe", "wildercord:rimehare"],
     # A snow golem is made of the stuff.
     "immune_to_frost": ["minecraft:snow_golem"],
     # Metal conducts. (Water creatures are wet already, so Conduct covers them; the Tide Scribe takes five times a shock
     # through its own flood, which is weakness enough.)
-    "weak_to_storm": METAL,
+    "weak_to_storm": METAL + ["wildercord:skyray"],  # and a skyray, high in the storm's own sky
     # Lightning only charges a creeper up.
     "resists_storm": ["minecraft:creeper"],
     # Small and light, or all wing: blown about.
-    "weak_to_wind": ["#minecraft:arthropod", "minecraft:phantom"],
-    "resists_wind": ["minecraft:breeze"],
+    "weak_to_wind": ["#minecraft:arthropod", "minecraft:phantom", "wildercord:glimmerwing"],
+    "resists_wind": ["minecraft:breeze", "wildercord:skyray", "wildercord:mossback_tortoise"],  # born to it; too heavy to shift
     "weak_to_earth": ["minecraft:breeze"],
     # Solid metal, and bouncing jelly.
-    "resists_earth": METAL + ["minecraft:slime", "minecraft:magma_cube"],
+    "resists_earth": METAL + ["minecraft:slime", "minecraft:magma_cube", "wildercord:mossback_tortoise"],  # and a shell like stone
     # Life's harm burns the undead (the Tide Scribe is a drowned sorcerer), and the Star-Eater, a knot of void.
     "weak_to_life": ["#minecraft:undead", "wildercord:tide_scribe", "wildercord:star_eater"],
     # Venomous things shrug off venom; a witch drinks her own remedies.
     "resists_life": ["#minecraft:arthropod", "minecraft:witch"],
     # What's written can be unwritten.
-    "weak_to_void": ["wildercord:archivist"],
+    "weak_to_void": ["wildercord:archivist", "wildercord:lumen_stag"],  # and a stag's light, snuffed
     "resists_void": END + ["minecraft:ender_dragon", "minecraft:wither", "minecraft:warden", "wildercord:star_eater"],
     # A summoned spirit comes apart under raw magic.
     "weak_to_arcane": ["minecraft:vex"],
     # Fellow spellcasters.
-    "resists_arcane": ["minecraft:evoker", "minecraft:illusioner", "wildercord:archivist"],
+    "resists_arcane": ["minecraft:evoker", "minecraft:illusioner", "wildercord:archivist",
+                       # Creatures half made of magic themselves.
+                       "wildercord:lumen_stag", "wildercord:glimmerwing"],
     "weak_to_time": END,
     # Blood magic can't draw on the bloodless: bones, metal, snow, living fire and wind, and spirits.
     "resists_blood": ["#minecraft:skeletons", "minecraft:wither"] + METAL + ["minecraft:snow_golem", "minecraft:blaze", "minecraft:breeze", "minecraft:vex"],

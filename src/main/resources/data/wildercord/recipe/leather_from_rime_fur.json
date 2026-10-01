@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "wildercord:rime_fur"
+  },
+  "pattern": [
+    "FF",
+    "FF"
+  ],
+  "result": {
+    "id": "minecraft:leather"
+  }
+}

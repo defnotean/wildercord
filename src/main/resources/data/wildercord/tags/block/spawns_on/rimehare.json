@@ -1,0 +1,12 @@
+{
+  "values": [
+    "#minecraft:rabbits_spawnable_on",
+    "minecraft:snow",
+    "minecraft:snow_block",
+    "minecraft:powder_snow",
+    "minecraft:ice",
+    "minecraft:packed_ice",
+    "minecraft:podzol",
+    "minecraft:stone"
+  ]
+}

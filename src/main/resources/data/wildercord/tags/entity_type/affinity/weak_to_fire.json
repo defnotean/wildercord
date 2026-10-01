@@ -3,6 +3,8 @@
     "minecraft:stray",
     "minecraft:snow_golem",
     "minecraft:polar_bear",
-    "minecraft:creaking"
+    "minecraft:creaking",
+    "wildercord:glimmerwing",
+    "wildercord:rimehare"
   ]
 }
