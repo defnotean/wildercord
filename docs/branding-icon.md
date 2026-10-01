@@ -1,0 +1,7 @@
+# Wildercord project icon
+
+Created with the built-in image generation tool on 2026-10-01. The master artwork is `docs/images/wildercord-icon-2026.png`; copies are used by the mod metadata, documentation and CurseForge project logo. This is promotional branding artwork, not a gameplay screenshot or an item texture.
+
+## Final prompt
+
+Use case: logo-brand. Create a completely new square app icon for Wildercord, a Minecraft spellcrafting mod where runes are threaded onto a cord to form spells. A beautifully detailed stylized voxel fantasy illustration, crisp crafted pixel edges with rich material shading. Central subject: a thick circular braided dark leather magic cord bracelet seen at a three-quarter angle, with ornate antique gold clasp and five luminous carved rune beads threaded onto it (teal, ember orange, icy blue, amethyst, warm gold). Behind it, a single elegant luminous golden magic circle with geometric star and tiny abstract rune marks, mint energy wisps weaving through the bracelet and circling the beads. Dark forest-green background, warm cream-gold highlights, deep shadows, controlled magical glow. Strong large centered silhouette occupying 80% of canvas, intentional breathing space, readable at 64 px, exquisite detail at large size. This is a premium cohesive mod icon, not a scene or screenshot. No lettering, no words, no title, no watermark, no outer UI frame, no other objects. Square composition, fully opaque background.
