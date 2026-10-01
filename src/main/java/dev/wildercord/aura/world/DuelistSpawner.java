@@ -155,7 +155,7 @@ public final class DuelistSpawner {
 				continue;
 			}
 			BlockState ground = level.getBlockState(stand.below());
-			if (!ground.is(BlockTags.DIRT) && !ground.is(BlockTags.SAND) && !ground.is(Blocks.SNOW_BLOCK) && !ground.is(Blocks.GRAVEL)) {
+			if (!ground.is(BlockTags.SUBSTRATE_OVERWORLD) && !ground.is(BlockTags.SAND) && !ground.is(Blocks.SNOW_BLOCK) && !ground.is(Blocks.GRAVEL)) {
 				continue;
 			}
 			BlockPos fire = stand.offset(2, 0, 0);

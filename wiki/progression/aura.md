@@ -65,6 +65,11 @@ Breathing Manuals turn up where fighting is old, each place favouring the method
 - **Stronghold libraries** (Starlit, Hourglass, Rime) and **ancient cities** (Hollow, Rime, Crimson).
 - **Master weaponsmiths** (Ember, Thunder, Stone, Gale, Crimson) and **master clerics** (Verdant, Starlit, Hourglass,
   Hollow, Rime) sell one for emeralds and a book.
+- **Wandering duelists** teach theirs to anyone who beats them in a duel (see [below](#duels-with-a-duelist)).
+- **Fallen knights** drop **Manual Pages** of their method: four pages of one method and a book bind into its manual at a
+  crafting table.
+
+{% include recipe.html id="breathing_manual_from_pages" alt="Four Manual Pages and a book in a crafting grid, making a Breathing Manual" caption="Four pages of one method and a book: that method's manual." %}
 
 ### Changing your method
 
@@ -126,7 +131,8 @@ rippling light at Flow, a crystal blade at Edge, in your method's colour, for ev
 
 ### Form and Sovereign
 
-The fourth and fifth stages are still to come.
+The fourth and fifth stages are still to come. When they open, winning a duel against a
+[wandering duelist](#duels-with-a-duelist) without magic will be one way to break through to them.
 
 ## Breakthroughs
 
@@ -156,9 +162,82 @@ in one), and every technique: what it does (hover it), how it's set off, what it
 
 <img src="{{ '/assets/images/aura-page.jpg' | relative_url }}" alt="The Aura page: a Rime Breath manual's cover, Method, Element, Stage and Aura lines, the road to Edge with a breakthrough waiting and its two trials, and the list of techniques" class="shot">
 
+## Duels with a duelist
+
+<img src="{{ '/assets/images/aura-duelist-guard.jpg' | relative_url }}" alt="A hooded duelist holding a sword wreathed in orange aura across its body in guard" class="shot">
+<span class="caption">A duelist in guard, its blade's aura at Edge.</span>
+
+[Wandering duelists]({{ '/world/creatures/#wandering-duelist' | relative_url }}) are sword masters who teach their
+breathing method to anyone who can beat them. Use one with a blade in hand and it offers you a duel; use it again within
+ten seconds to accept. A countdown in circles of light, then you fight: just the two of you. It never harms anyone else,
+nothing else can harm it, and another player striking you calls the duel off.
+
+- **It meets you at your own stage.** Without a method you face a Glow duelist; at Edge, an Edge one. It fights with what
+  its stage brings, and every move has a tell:
+  - **coated blows**, always;
+  - from **Flow**, a **guard**: its blade comes up across its body, often right after you've landed a blow. A rushed swing
+    into it is turned aside and leaves you staggered; the held guard halves your blows. Wait it out, circle round, or
+    break it with an axe;
+  - from **Edge**, the **slash**: when you're a few blocks off it raises its blade high and holds it, then looses a
+    crescent at you. Step aside after it raises its blade, clash it with your own slash, or turn it back with a perfect
+    guard;
+  - from **Form**, once Aura Step arrives, a **dash**: it crouches low, then darts at you.
+- **Nobody dies.** Bring it low and it **yields**, kneeling. Get knocked down yourself and you're **knocked out** on one
+  heart instead of killed. Either way you're put back as you began, your health given back, so losing costs nothing but
+  pride. Leaving the area or logging off forfeits; after five minutes it's a draw.
+- **Winning teaches.** If you haven't learned a method, it teaches you its own. If you already breathe another way it
+  hands you its manual instead, so switching stays your choice. You also get a little aura experience and a Grimoire
+  entry. Then it bows and goes on its way. If you beat it without magic, the duel counts as a breakthrough trial for the
+  later stages.
+- **Lose, and it waits.** It rests for half a minute, then you can challenge it again.
+
+## Aura-forged gear
+
+Fallen knights sometimes drop an **Aura Shard**, a sliver of their aura set hard as crystal. At a **smithing table** a
+shard forges a diamond or netherite weapon with a reagent of the world. The weapon stays exactly what it was (its damage,
+its enchantments, its durability) but gains its own look and one gift for your aura:
+
+| Forging | From | With | Its gift |
+|---|---|---|---|
+| **Lumenedge** | A diamond or netherite sword | A Lumen Antler | Half again as much aura from every blow |
+| **Skyrend Glaive** | A diamond or netherite spear | A Fulgurite Shard | Your Aura Slash hits much harder, flies further and wider, and cuts more foes |
+| **Bulwark Maul** | A diamond or netherite axe | Geode Grit | Your Aura Guard costs much less aura |
+
+<div class="recipe-gallery">
+{% include recipe-card.html id="lumenedge_from_netherite" name="Lumenedge" %}
+{% include recipe-card.html id="skyrend_glaive_from_netherite" name="Skyrend Glaive" %}
+{% include recipe-card.html id="bulwark_maul_from_netherite" name="Bulwark Maul" %}
+</div>
+
+<img src="{{ '/assets/images/aura-forged-items.jpg' | relative_url }}" alt="Item frames on a wooden wall holding an Aura Shard, five Manual Pages with coloured seals, the three aura-forged weapons, a Breath Sash and two spawn eggs" class="shot">
+<span class="caption">An Aura Shard, Manual Pages, the three forged weapons, the Breath Sash and the spawn eggs.</span>
+
+### The Breath Sash
+
+A sash worn where the Tome of the Fifth Page goes, in the gear tray above your inventory (or held in your off-hand with
+that slot empty). It holds a quarter more aura, and your breathing stance settles twice as fast and breathes in half again
+as much. A swordsman's choice against a fifth spell. Made from four white wool, two string and an Aura Shard.
+
+{% include recipe.html id="breath_sash" alt="Four white wool, two string and an Aura Shard in a crafting grid, making a Breath Sash" caption="The Breath Sash." %}
+
+## Aura clash
+
+Two Aura Slashes meeting in the air break together in a burst of both colours. It harms nobody, but it shoves anyone
+close back. Meet a duelist's or a fallen knight's slash with your own and neither lands.
+
+<img src="{{ '/assets/images/aura-clash.jpg' | relative_url }}" alt="Two armoured knights facing each other across a stone platform, an orange and a pale blue crescent of aura meeting between them in a white flash" class="shot">
+<span class="caption">Two slashes meeting in the air.</span>
+
 ## Aura and other players
 
 Aura blows are ordinary blows, so armour counts against them. Against another player, what aura adds is held to the same
 cap as a spell's bonuses and scaled down, and the slash meets a player's spell defences in full: armour, Warding, and the
 spellguard that stops one hit killing you from high health (see
-[Defending Against Magic]({{ '/progression/defence/' | relative_url }})). Server owners can turn aura off or tune it.
+[Defending Against Magic]({{ '/progression/defence/' | relative_url }})). A forged glaive's stronger slash is held to the
+same cap. Server owners can turn aura off or tune it.
+
+- **A held guard catches a slash** coming at you from in front: it halves it, and nothing behind you is cut.
+- **A perfect guard sends a slash back** at whoever loosed it, as your own.
+- **Two slashes clash** and break, so a slash can always be answered with one of your own.
+
+By day the slash's crescent has a dark rim under its light, so it's easy to see against a bright sky.

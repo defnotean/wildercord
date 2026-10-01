@@ -84,6 +84,8 @@ public final class DuelistDuels {
 		final Set<Holder<MobEffect>> hadBefore = new HashSet<>();
 		/** The health the duelist's blows and slashes took, and the harmful effects it laid on, to give back and take off. */
 		float taken;
+		/** The challenger's health as a blow of the duelist's began to land (at a knockout, what it found is what it took). */
+		float landing = -1;
 		final Set<Holder<MobEffect>> harms = new HashSet<>();
 		/** Whether any magic of the challenger's touched the duelist (the duel still teaches, but isn't a trial). */
 		boolean magic;
@@ -111,13 +113,23 @@ public final class DuelistDuels {
 		AuraApi.allowTrial(AuraRules.FORM, TRIAL);
 		AuraApi.allowTrial(AuraRules.SOVEREIGN, TRIAL);
 		ServerTickEvents.END_SERVER_TICK.register(DuelistDuels::tick);
+		// The challenger's health as each of the duelist's blows begins to land.
+		ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+			if (!BY_PLAYER.isEmpty() && entity instanceof ServerPlayer player && BY_PLAYER.get(player.getUUID()) instanceof Active active
+					&& source.getEntity() instanceof Duelist duelist && duelist.getUUID().equals(active.duelist)) {
+				active.landing = player.getHealth();
+			}
+			return true;
+		});
 		// Brought down by the duelist: knocked out, not killed.
 		ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> {
 			if (!(entity instanceof ServerPlayer player) || !(BY_PLAYER.get(player.getUUID()) instanceof Active active) || !active.duel.fighting()
 					|| !(source.getEntity() instanceof Duelist duelist) || !duelist.getUUID().equals(active.duelist)) {
 				return true;
 			}
-			active.taken += Math.max(0, player.getHealth() - 1.0F);
+			// All the health the last blow found, less the one they're left with (by now their health already reads nothing).
+			active.taken += Math.max(0, (active.landing >= 0 ? active.landing : amount) - 1.0F);
+			active.landing = -1;
 			player.setHealth(1.0F);
 			active.duel.knockout(player.getUUID());
 			finish(active, player.level().getServer());
@@ -129,6 +141,7 @@ public final class DuelistDuels {
 			}
 			if (source.getEntity() instanceof Duelist duelist && duelist.getUUID().equals(active.duelist)) {
 				active.taken += Math.max(0, taken);
+				active.landing = -1;
 			} else if (playerBehind(source) instanceof Player other && other != player) {
 				// Another player striking the challenger: the duel is off.
 				active.duel.interrupt();

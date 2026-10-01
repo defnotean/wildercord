@@ -33,6 +33,8 @@ TAG_ITEMS = {"#minecraft:logs": "minecraft:oak_log", "#minecraft:saplings": "min
 # Items whose inventory sprite isn't item/<name> (animated, or drawn from a block or entity texture).
 SPRITES = {"minecraft:clock": "item/clock_00", "minecraft:compass": "item/compass_00", "minecraft:crossbow": "item/crossbow_standby",
            "minecraft:glass_pane": "block/glass", "minecraft:sunflower": "block/sunflower_front"}
+# Items whose model is picked by a component (one item, many looks): drawn as one of them.
+COMPONENT_SPRITES = {"wildercord:manual_page": "item/manual_page/gale", "wildercord:breathing_manual": "item/breathing_manual/gale"}
 # Slabs: a half-height cube of this block's texture.
 SLABS = {"minecraft:oak_slab": "block/oak_planks"}
 POTION_COLOURS = {"minecraft:awkward": 0x385DC6, "minecraft:water": 0x385DC6, "wildercord:clarity": 0xB8A8FF,
@@ -260,6 +262,8 @@ def icon(item, rune=None, potion=None, kind="potion"):
         img = _potion(name if name != "potion" else kind, potion)
     elif item in SPRITES:
         img = _flat(_vanilla(SPRITES[item]))
+    elif item in COMPONENT_SPRITES:
+        img = _flat(_mod(COMPONENT_SPRITES[item]))
     elif item in SLABS:
         face = _vanilla(SLABS[item])
         img = _cube(face, face, face, half=True)
@@ -389,6 +393,24 @@ def crafting(recipe):
     return img
 
 
+def smithing(recipe):
+    """A smithing recipe as the smithing table lays it out: template, base and addition in a row, an arrow, the result (drawn
+    with the look its components give it, as an aura-forged weapon's)."""
+    w, h = 7 + 54 + 4 + 22 + 7 + 26 + 7, 7 + 26 + 7
+    img, d = _panel(w, h)
+    y = 7 + 4
+    for i, part in enumerate(("template", "base", "addition")):
+        _slot(img, d, 7 + i * 18, y)
+        _put(img, icon(_ingredient(recipe[part])), 7 + i * 18, y)
+    _arrow(d, 7 + 54 + 4, y + 1)
+    rx, ry = 7 + 54 + 4 + 22 + 7, 7
+    _slot(img, d, rx, ry, 26)
+    model = recipe["result"].get("components", {}).get("minecraft:item_model")
+    picture = _flat(_mod("item/" + model.split(":", 1)[1])) if model and model.startswith("wildercord:") else icon(recipe["result"]["id"])
+    _put(img, picture, rx, ry, 26)
+    return img
+
+
 def brewing(recipe):
     """A brewing recipe: the potion in, the ingredient above, the potion out."""
     def potion(entry):
@@ -417,8 +439,11 @@ def render(out_dir):
     made = {}
     for f in sorted(RECIPES.glob("*.json")):
         recipe = json.loads(f.read_text(encoding="utf-8"))
-        if recipe["type"] in ("minecraft:crafting_shaped", "minecraft:crafting_shapeless", "wildercord:upgrade"):
+        if recipe["type"] in ("minecraft:crafting_shaped", "minecraft:crafting_shapeless", "wildercord:upgrade", "wildercord:manual_pages"):
             crafting(recipe).save(out_dir / f"{f.stem}.png")
+            made[f.stem] = recipe
+        elif recipe["type"] == "minecraft:smithing_transform":
+            smithing(recipe).save(out_dir / f"{f.stem}.png")
             made[f.stem] = recipe
     for f in sorted((RECIPES / "brewing").glob("*.json")):
         recipe = json.loads(f.read_text(encoding="utf-8"))

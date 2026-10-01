@@ -174,11 +174,23 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ duelists come
 
 	private static void spawning(ClientGameTestContext context, TestSingleplayerContext world) {
+		int lawn = STAGE.getY() - 20;
+		world.getServer().runCommand("fill -48 " + lawn + " -48 48 " + lawn + " 48 minecraft:grass_block");
+		context.waitTicks(5);
 		String camp = on(world, player -> {
 			ServerLevel level = player.level();
 			Duelist duelist = DuelistSpawner.spawnNear(level, player, true, level.getRandom());
 			if (duelist == null) {
-				return "a duelist should find a camp on the open ground below";
+				StringBuilder why = new StringBuilder();
+				for (int[] c : new int[][] {{30, 0}, {0, -30}, {-30, 10}, {25, 25}}) {
+					BlockPos column = player.blockPosition().offset(c[0], 0, c[1]);
+					BlockPos top = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
+					why.append(" [").append(column.getX()).append(",").append(column.getZ()).append(": loaded ").append(level.hasChunkAt(column))
+						.append(" top ").append(top.getY()).append(" ground ").append(level.getBlockState(top.below()).getBlock())
+						.append(" sky ").append(level.canSeeSky(top)).append(" near ")
+						.append(DuelistSpawner.camp(level, player.blockPosition(), level.getRandom())).append("]");
+				}
+				return "a duelist should find a camp on the open ground below:" + why;
 			}
 			duelist.addTag(TAG);
 			BlockPos fire = duelist.camp();
@@ -197,8 +209,7 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		check(camp == null, camp);
 		String road = on(world, player -> {
 			ServerLevel level = player.level();
-			int ground = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, player.blockPosition().offset(40, 0, 40))
-				.getY() - 1;
+			int ground = STAGE.getY() - 20;
 			player.level().getServer().getCommands().performPrefixedCommand(player.level().getServer().createCommandSourceStack(),
 				"fill -48 " + ground + " -48 48 " + ground + " 48 minecraft:dirt_path");
 			DuelistSpawner.Spot spot = DuelistSpawner.road(level, player.blockPosition(), level.getRandom());
@@ -227,6 +238,7 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		});
 		context.waitTicks(45);
 		boolean met = on(world, player -> Heart.grimoire(player).contains(FieldGuide.key("wildercord:duelist")));
+		world.getServer().runCommand("fill -48 " + lawn + " -48 48 " + lawn + " 48 minecraft:air");
 		check(met, "a duelist seen up close should go into the field guide");
 	}
 
@@ -814,24 +826,11 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 			AuraSlash.loose(player);
 			return null;
 		});
-		context.runOnClient(mc -> {
-			mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
-			if (!mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
-			}
-		});
 		boolean met = false;
 		for (int t = 0; t < 14 && !met; t++) {
 			context.waitTicks(1);
 			met = on(world, player -> Crescents.inFlight().isEmpty());
 		}
-		shot(context, "aura_world_clash");
-		context.runOnClient(mc -> {
-			mc.options.setCameraType(CameraType.FIRST_PERSON);
-			if (mc.gui.hud.isHidden()) {
-				mc.gui.hud.toggle();
-			}
-		});
 		context.waitTicks(20);
 		String clashed = on(world, player -> {
 			Mob a = tagged(player, "wildercord.behind_player");
@@ -850,38 +849,99 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ the slash by day
 
 	private static void daylight(ClientGameTestContext context, TestSingleplayerContext world) {
+		for (String time : List.of("day", "night")) {
+			world.getServer().runCommand(time.equals("day") ? "time set 6000" : "time set 18000");
+			for (String method : List.of("gale", "thunder", "ember")) {
+				on(world, player -> {
+					stand(player);
+					setAura(player, method, AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE), AuraRules.threshold(AuraRules.EDGE));
+					player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
+					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, -8.0F, false);
+					return null;
+				});
+				// Off to the side and low, looking up across the crescent's path: the sky behind it.
+				director(context, world, at(5.5, 3.2).add(0, 0.4, 0), at(0, 6.6).add(0, 1.9, 0));
+				context.waitTicks(4);
+				boolean loosed = on(world, player -> AuraSlash.loose(player));
+				context.waitTicks(3);
+				boolean flying = on(world, player -> !Crescents.inFlight().isEmpty());
+				shot(context, "aura_world_slash_" + time + "_" + method);
+				cut(context);
+				check(loosed && flying, "the slash should be loosed and in flight for its picture (" + method + " by " + time + ")");
+				context.waitTicks(20);
+			}
+		}
 		world.getServer().runCommand("time set 6000");
-		for (String method : List.of("gale", "thunder")) {
-			on(world, player -> {
-				stand(player);
-				setAura(player, method, AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE), AuraRules.threshold(AuraRules.EDGE));
-				player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
-				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 0.0F, -14.0F, false);
-				player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(5.0);
-				return null;
-			});
-			context.waitTicks(6);
-			context.getInput().pressKey(WildercordKeys.auraMapping());
-			context.runOnClient(mc -> {
-				mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+		// A clash, seen from the side: two knights' crescents meeting.
+		on(world, player -> {
+			stand(player);
+			FallenKnight a = knight(player, "ember", 3, -6, 8, 270);
+			FallenKnight b = knight(player, "rime", 3, 6, 8, 90);
+			a.setNoAi(true);
+			b.setNoAi(true);
+			a.addTag("wildercord.clash_a");
+			b.addTag("wildercord.clash_b");
+			return null;
+		});
+		director(context, world, at(0, -1.5).add(0, 2.2, 0), at(0, 8).add(0, 1.3, 0));
+		context.waitTicks(4);
+		on(world, player -> {
+			for (String tag : List.of("wildercord.clash_a", "wildercord.clash_b")) {
+				FallenKnight k = (FallenKnight) tagged(player, tag);
+				Vec3 from = k.getEyePosition().subtract(0, 0.45, 0);
+				Vec3 aim = new Vec3(tag.endsWith("a") ? 1 : -1, 0, 0);
+				Crescents.launch(k, from, aim, k.auraColor(), 6, 1, AuraWorldRules.KNIGHT_SLASH_SPEED * 1.3, 14, 3, 6, false,
+					e -> e instanceof ServerPlayer, (flight, target) -> k.projected(target, flight.damage()));
+			}
+			return null;
+		});
+		boolean met = false;
+		for (int t = 0; t < 12 && !met; t++) {
+			context.waitTicks(1);
+			met = on(world, player -> Crescents.inFlight().isEmpty());
+		}
+		shot(context, "aura_world_clash");
+		cut(context);
+		check(met, "the two knights' crescents should meet and break");
+	}
+
+	/** Watches from a camera of its own at {@code eye}, looking at {@code target} (the HUD hidden). */
+	private static void director(ClientGameTestContext context, TestSingleplayerContext world, Vec3 eye, Vec3 target) {
+		int id = on(world, player -> {
+			ServerLevel level = player.level();
+			level.getEntitiesOfClass(net.minecraft.world.entity.Display.TextDisplay.class, player.getBoundingBox().inflate(128),
+				e -> e.entityTags().contains("wildercord.camera")).forEach(Entity::discard);
+			net.minecraft.world.entity.Display.TextDisplay camera = EntityTypes.TEXT_DISPLAY.create(level, EntitySpawnReason.COMMAND);
+			Vec3 d = target.subtract(eye);
+			float yaw = (float) Math.toDegrees(Math.atan2(-d.x, d.z));
+			float pitch = (float) -Math.toDegrees(Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)));
+			camera.snapTo(eye.x, eye.y, eye.z, yaw, pitch);
+			camera.addTag("wildercord.camera");
+			camera.addTag(TAG);
+			level.addFreshEntity(camera);
+			return camera.getId();
+		});
+		context.waitTicks(3);
+		context.runOnClient(mc -> {
+			Entity camera = mc.level.getEntity(id);
+			if (camera != null) {
+				mc.options.setCameraType(CameraType.FIRST_PERSON);
+				mc.setCameraEntity(camera);
 				if (!mc.gui.hud.isHidden()) {
 					mc.gui.hud.toggle();
 				}
-			});
-			context.waitTicks(4);
-			shot(context, "aura_world_slash_day_" + method);
-			context.runOnClient(mc -> {
-				mc.options.setCameraType(CameraType.FIRST_PERSON);
-				if (mc.gui.hud.isHidden()) {
-					mc.gui.hud.toggle();
-				}
-			});
-			on(world, player -> {
-				player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
-				return null;
-			});
-			context.waitTicks(20);
-		}
+			}
+		});
+	}
+
+	private static void cut(ClientGameTestContext context) {
+		context.runOnClient(mc -> {
+			mc.setCameraEntity(mc.player);
+			mc.options.setCameraType(CameraType.FIRST_PERSON);
+			if (mc.gui.hud.isHidden()) {
+				mc.gui.hud.toggle();
+			}
+		});
 	}
 
 	// ------------------------------------------------------------------ pictures
@@ -893,17 +953,14 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 			stand(player);
 			int i = 0;
 			for (var method : BreathingMethods.BUILT_IN) {
-				Duelist d = duelist(player, method.id(), -6.75 + 1.5 * i, 7);
+				Duelist d = duelist(player, method.id(), -6.75 + 1.5 * i, 7.5);
 				d.setNoAi(true);
 				d.holdPose(0);
-				d.setYRot(180);
-				d.setYHeadRot(180);
-				d.setYBodyRot(180);
 				i++;
 			}
 			return null;
 		});
-		frame(context, world, -5, 6, "aura_world_duelists");
+		frame(context, world, 0, 9, "aura_world_duelists");
 		on(world, player -> {
 			kill(player, TAG);
 			return null;
@@ -911,10 +968,9 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		// Close up, a few methods.
 		for (String method : List.of("ember", "rime", "verdant", "hollow")) {
 			on(world, player -> {
-				Duelist d = duelist(player, method, 0, 3);
+				Duelist d = duelist(player, method, 0, 3, 180 + 25);
 				d.setNoAi(true);
 				d.holdPose(0);
-				face(d, 180 + 25);
 				return null;
 			});
 			frame(context, world, 0, 12, "aura_world_duelist_" + method);
@@ -929,14 +985,13 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 				new Pose("bow", AuraFighter.BOW, false, 200), new Pose("yield", AuraFighter.DRAWN | AuraFighter.YIELD, true, 150),
 				new Pose("sit", AuraFighter.SIT, false, 215))) {
 			on(world, player -> {
-				Duelist d = duelist(player, "ember", 0, 3);
+				Duelist d = duelist(player, "ember", 0, 3, pose.yaw());
 				d.setNoAi(true);
 				d.setStage(AuraRules.EDGE);
 				if (pose.sword()) {
 					d.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.DIAMOND_SWORD));
 				}
 				d.holdPose(pose.flags());
-				face(d, pose.yaw());
 				if (pose.name().equals("sit")) {
 					player.level().setBlockAndUpdate(BlockPos.containing(at(1.7, 3.6)), Blocks.CAMPFIRE.defaultBlockState());
 				}
@@ -954,10 +1009,9 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		for (KnightPose pose : List.of(new KnightPose("", AuraFighter.DRAWN, 205), new KnightPose("_windup", AuraFighter.DRAWN | AuraFighter.WINDUP, 160),
 				new KnightPose("_guard", AuraFighter.DRAWN | AuraFighter.GUARD, 160))) {
 			on(world, player -> {
-				FallenKnight k = knight(player, "hollow", 3, 0, 3);
+				FallenKnight k = knight(player, "hollow", 3, 0, 3, pose.yaw());
 				k.setNoAi(true);
 				k.holdPose(pose.flags());
-				face(k, pose.yaw());
 				return null;
 			});
 			frame(context, world, 0, 12, "aura_world_knight" + pose.name());
@@ -968,10 +1022,9 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		}
 		world.getServer().runCommand("time set 18000");
 		on(world, player -> {
-			FallenKnight k = knight(player, "crimson", 3, 0, 3);
+			FallenKnight k = knight(player, "crimson", 3, 0, 3, 200);
 			k.setNoAi(true);
 			k.holdPose(AuraFighter.DRAWN);
-			face(k, 200);
 			return null;
 		});
 		frame(context, world, 0, 12, "aura_world_knight_night");
@@ -1047,9 +1100,11 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 				}
 			});
 			context.waitTicks(3);
+			// A glaive is held point first, as a lance: seen from the side, or it's only a line.
+			float body = forged == AuraWorldRules.Forged.SKYREND_GLAIVE ? 95 : 48;
 			context.runOnClient(mc -> {
-				mc.player.setYBodyRot(48);
-				mc.player.yBodyRotO = 48;
+				mc.player.setYBodyRot(body);
+				mc.player.yBodyRotO = body;
 			});
 			context.waitTicks(2);
 			shot(context, "aura_world_" + forged.id + "_in_hand");
@@ -1146,10 +1201,17 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 
 	/** A duelist of {@code method} on the platform, facing the player. */
 	private static Duelist duelist(ServerPlayer player, String method, double side, double ahead) {
+		return duelist(player, method, side, ahead, 180);
+	}
+
+	/** A duelist of {@code method} on the platform, facing {@code yaw}. */
+	private static Duelist duelist(ServerPlayer player, String method, double side, double ahead, float yaw) {
 		ServerLevel level = player.level();
 		Duelist duelist = AuraWorld.DUELIST.create(level, EntitySpawnReason.COMMAND);
 		Vec3 p = at(side, ahead);
-		duelist.snapTo(p.x, p.y, p.z, 180, 0);
+		duelist.snapTo(p.x, p.y, p.z, yaw, 0);
+		duelist.setYHeadRot(yaw);
+		duelist.setYBodyRot(yaw);
 		duelist.finalizeSpawn(level, level.getCurrentDifficultyAt(BlockPos.containing(p)), EntitySpawnReason.COMMAND, null);
 		duelist.setMethod(BreathingMethods.byId(method).orElseThrow());
 		duelist.addTag(TAG);
@@ -1159,10 +1221,16 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 
 	/** A fallen knight of {@code method} and {@code rank} on the platform, hunting the player. */
 	private static FallenKnight knight(ServerPlayer player, String method, int rank, double side, double ahead) {
+		return knight(player, method, rank, side, ahead, 180);
+	}
+
+	private static FallenKnight knight(ServerPlayer player, String method, int rank, double side, double ahead, float yaw) {
 		ServerLevel level = player.level();
 		FallenKnight knight = AuraWorld.FALLEN_KNIGHT.create(level, EntitySpawnReason.COMMAND);
 		Vec3 p = at(side, ahead);
-		knight.snapTo(p.x, p.y, p.z, 180, 0);
+		knight.snapTo(p.x, p.y, p.z, yaw, 0);
+		knight.setYHeadRot(yaw);
+		knight.setYBodyRot(yaw);
 		knight.finalizeSpawn(level, level.getCurrentDifficultyAt(BlockPos.containing(p)), EntitySpawnReason.COMMAND, null);
 		knight.setMethod(BreathingMethods.byId(method).orElseThrow());
 		knight.setRank(rank);

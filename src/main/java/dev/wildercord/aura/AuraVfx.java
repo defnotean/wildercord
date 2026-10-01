@@ -109,10 +109,14 @@ public final class AuraVfx {
 		Vec3 normal = UP.add(side.scale(0.75)).normalize();
 		Vec3 centre = front.subtract(aim.scale(radius * 0.8));
 		double width0 = tick == 0 ? 0.75 : 0.66;
-		// Under the light, a rim of shadow a little wider than its halo. Added light alone washes out against a bright sky; the
-		// darkness gives the crescent an edge to read by there, and takes nothing from a dark sky, so at night it can't be seen.
-		// It's the mod's darkness (as void magic is drawn), so shader packs draw it too.
-		Light.slash(level, centre.subtract(aim.scale(0.04)), normal, aim, color | Light.DARK, radius * 1.01, span * 0.97, width0 * 1.3, tick == 0 ? 2 : 1, 6);
+		if (brightBehind(level, front)) {
+			// Under the light, a rim of shadow a little wider than its halo. Added light alone washes out against a bright sky;
+			// the darkness gives the crescent an edge to read by. Only where it's bright behind (by day, under the open sky): in
+			// the dark the light reads on its own, and darkness there would only cut black corners out of the night. It's the
+			// mod's darkness (as void magic is drawn), so shader packs draw it too.
+			Light.slash(level, centre.subtract(aim.scale(0.04)), normal, aim, color | Light.DARK, radius * 1.01, span * 0.97, width0 * 1.15,
+				tick == 0 ? 2 : 1, 6);
+		}
 		// A broad crescent of the aura's colour, a narrower brighter one inside it, and a white-hot edge: it trails a little as it flies.
 		Light.slash(level, centre, normal, aim, color, radius, span, width0, tick == 0 ? 2 : 1, 6);
 		Light.slash(level, centre.add(aim.scale(0.1)), normal, aim, hot(color, 0.3), radius * 0.97, span * 0.9, 0.34, 1, 5);
@@ -120,6 +124,11 @@ public final class AuraVfx {
 		if (tick % 3 == 0) {
 			Motes.glows(level, front, 2, width * 0.2, hot(color, 0.3), 0.08, 12, aim.scale(-0.02), 0.01);
 		}
+	}
+
+	/** Whether the sky is bright behind a point: day, in a world with a sky, and nothing overhead. */
+	static boolean brightBehind(ServerLevel level, Vec3 at) {
+		return level.isBrightOutside() && level.canSeeSky(net.minecraft.core.BlockPos.containing(at));
 	}
 
 	/** The slash breaking on a wall. */

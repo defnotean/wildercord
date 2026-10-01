@@ -53,7 +53,7 @@ public class DuelistModel extends HumanoidModel<AuraFighterRenderState> {
 			PartPose.ZERO);
 		// The scabbard at the left hip, slung back, its hilt forward and up.
 		PartDefinition scabbard = body.addOrReplaceChild("scabbard", CubeListBuilder.create().texOffs(54, 32).addBox(-0.5F, 0.0F, -1.0F, 1.0F, 12.0F, 2.0F),
-			PartPose.offsetAndRotation(4.7F, 10.0F, -0.6F, 1.05F, 0.0F, -0.12F));
+			PartPose.offsetAndRotation(4.7F, 10.0F, 0.2F, -0.95F, 0.0F, -0.2F));
 		PartDefinition hilt = scabbard.addOrReplaceChild("hilt", CubeListBuilder.create().texOffs(60, 32).addBox(-0.5F, -4.0F, -0.5F, 1.0F, 4.0F, 1.0F),
 			PartPose.ZERO);
 		hilt.addOrReplaceChild("guard", CubeListBuilder.create().texOffs(54, 46).addBox(-0.5F, -0.5F, -1.5F, 1.0F, 1.0F, 3.0F), PartPose.offset(0.0F, -0.3F, 0.0F));
@@ -111,11 +111,13 @@ public class DuelistModel extends HumanoidModel<AuraFighterRenderState> {
 		leftArm.xRot = Mth.lerp(stagger, leftArm.xRot, -0.3F);
 
 		// A bow: bent forward from the waist, one hand to the chest, the other behind.
-		lean(0.45F * bow + 0.28F * kneel + 0.42F * dash);
-		head.xRot += 0.4F * bow + 0.4F * kneel;
-		rightArm.xRot = Mth.lerp(bow, rightArm.xRot, -0.95F);
-		rightArm.yRot = Mth.lerp(bow, rightArm.yRot, 0.55F);
-		leftArm.xRot = Mth.lerp(bow, leftArm.xRot, 0.45F);
+		lean(0.6F * bow + 0.28F * kneel + 0.42F * dash);
+		head.xRot += 0.45F * bow + 0.4F * kneel;
+		rightArm.xRot = Mth.lerp(bow, rightArm.xRot, -1.25F);
+		rightArm.yRot = Mth.lerp(bow, rightArm.yRot, 0.95F);
+		rightArm.zRot = Mth.lerp(bow, rightArm.zRot, -0.2F);
+		leftArm.xRot = Mth.lerp(bow, leftArm.xRot, 0.55F);
+		leftArm.zRot = Mth.lerp(bow, leftArm.zRot, -0.15F);
 
 		// Yielding: down on the right knee, the left foot planted, the blade's point to the ground.
 		rightLeg.xRot = Mth.lerp(kneel, rightLeg.xRot, 0.2F);
