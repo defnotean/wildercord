@@ -227,6 +227,12 @@ public final class AuraCombat {
 		}
 		if (coated && !practice || coated && target instanceof TrainingDummy) {
 			flavour(player, target, taken, now);
+			// An elemental strike may leave its element's reaction mark, for a mage's spell to set off.
+			AuraMarks.strike(player, target);
+		}
+		if (!projected && !practice) {
+			// In the striker's Dominion a blow chains once to another foe inside.
+			AuraDominion.chain(player, target, taken);
 		}
 		AuraBreakthroughs.struck(player, target, killed, practice);
 	}

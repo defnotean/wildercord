@@ -304,12 +304,24 @@ public record WildercordConfig(
 	 * @param pvpScale             aura's bonuses and the slash against other players, as a fraction
 	 * @param backlashSeconds      how long backlash (spending past empty) slows and weakens, never damaging
 	 * @param guardShare           how much of a blow a held Aura Guard takes off (0.5 is half)
+	 * @param heights              the top stages (Form and Sovereign), the spellblade and aura marks: see {@link AuraHeights}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
-			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare) {
+			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
-			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE);
+			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS);
+
+		/** A file's aura section before the top stages: the same, with their defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, AuraHeights.DEFAULTS);
+		}
+
+		public AuraSettings {
+			heights = heights == null ? AuraHeights.DEFAULTS : heights;
+		}
 
 		/** The slash's cooldown in ticks. */
 		public int slashCooldownTicks() {
@@ -319,6 +331,49 @@ public record WildercordConfig(
 		/** Backlash's length in ticks. */
 		public int backlashTicks() {
 			return (int) Math.round(backlashSeconds * 20);
+		}
+	}
+
+	/**
+	 * The top stages of aura, the spellblade and aura marks (more keys of the {@code aura} section, each named for the
+	 * technique it tunes). The numbers' meaning is in {@code aura.AuraRules}, whose defaults these are.
+	 *
+	 * @param stepCost                Aura Step's price in aura
+	 * @param stepCooldownSeconds     how long before another Aura Step
+	 * @param stepDistance            how far an Aura Step carries you, in blocks
+	 * @param armourShare             how much of what reaches you aura armour takes (0.25 is a quarter), while aura enough is held
+	 * @param intentPvp               whether Intent presses on other players too (a vignette and a slight slow)
+	 * @param intentPvpSlow           how much Intent slows a player it presses on (0.05 is 5%)
+	 * @param dominionCost            Dominion's price in aura
+	 * @param dominionSeconds         how long a Dominion lasts
+	 * @param dominionCooldownSeconds how long before another Dominion
+	 * @param dominionWeaken          how much weaker foes inside a Dominion hit (0.3 is 30%; against players scaled by the PvP scale)
+	 * @param spellbladeSeconds       how long a spell rides the blade, waiting for an Aura Slash, before it leaves as cast
+	 * @param markChanceMultiplier    the chance an elemental aura strike leaves its mark, times this (0 never)
+	 */
+	public record AuraHeights(double stepCost, double stepCooldownSeconds, double stepDistance, double armourShare, boolean intentPvp,
+			double intentPvpSlow, double dominionCost, double dominionSeconds, double dominionCooldownSeconds, double dominionWeaken,
+			double spellbladeSeconds, double markChanceMultiplier) {
+		public static final AuraHeights DEFAULTS = new AuraHeights(dev.wildercord.aura.AuraRules.STEP_COST,
+			dev.wildercord.aura.AuraRules.STEP_COOLDOWN / 20.0, dev.wildercord.aura.AuraRules.STEP_DISTANCE, dev.wildercord.aura.AuraRules.ARMOUR_SHARE, true,
+			dev.wildercord.aura.AuraRules.INTENT_PVP_SLOW, dev.wildercord.aura.AuraRules.DOMINION_COST, dev.wildercord.aura.AuraRules.DOMINION_TICKS / 20.0,
+			dev.wildercord.aura.AuraRules.DOMINION_COOLDOWN / 20.0, dev.wildercord.aura.AuraRules.DOMINION_WEAKEN,
+			dev.wildercord.aura.AuraRules.SPELLBLADE_TICKS / 20.0, 1.0);
+
+		public int stepCooldownTicks() {
+			return (int) Math.round(stepCooldownSeconds * 20);
+		}
+
+		public int dominionTicks() {
+			return Math.max(1, (int) Math.round(dominionSeconds * 20));
+		}
+
+		public int dominionCooldownTicks() {
+			return (int) Math.round(dominionCooldownSeconds * 20);
+		}
+
+		public int spellbladeTicks() {
+			return (int) Math.round(spellbladeSeconds * 20);
 		}
 	}
 
@@ -447,7 +502,20 @@ public record WildercordConfig(
 				r.number("aura", "slash_cooldown_seconds", d.aura.slashCooldownSeconds(), 0, 60),
 				r.number("aura", "pvp_scale", d.aura.pvpScale(), 0, 10),
 				r.number("aura", "backlash_seconds", d.aura.backlashSeconds(), 0, 30),
-				r.number("aura", "guard_share", d.aura.guardShare(), 0, 1)));
+				r.number("aura", "guard_share", d.aura.guardShare(), 0, 1),
+				new AuraHeights(
+					r.number("aura", "step_cost", d.aura.heights().stepCost(), 0, 1000),
+					r.number("aura", "step_cooldown_seconds", d.aura.heights().stepCooldownSeconds(), 0, 60),
+					r.number("aura", "step_distance", d.aura.heights().stepDistance(), 1, 12),
+					r.number("aura", "armour_share", d.aura.heights().armourShare(), 0, 0.75),
+					r.bool("aura", "intent_pvp", d.aura.heights().intentPvp()),
+					r.number("aura", "intent_pvp_slow", d.aura.heights().intentPvpSlow(), 0, 0.3),
+					r.number("aura", "dominion_cost", d.aura.heights().dominionCost(), 0, 1000),
+					r.number("aura", "dominion_seconds", d.aura.heights().dominionSeconds(), 1, 30),
+					r.number("aura", "dominion_cooldown_seconds", d.aura.heights().dominionCooldownSeconds(), 0, 600),
+					r.number("aura", "dominion_weaken", d.aura.heights().dominionWeaken(), 0, 0.9),
+					r.number("aura", "spellblade_seconds", d.aura.heights().spellbladeSeconds(), 1, 30),
+					r.number("aura", "mark_chance_multiplier", d.aura.heights().markChanceMultiplier(), 0, 3))));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -477,7 +545,10 @@ public record WildercordConfig(
 		KEYS.put("creatures", Set.of("wildlife", "wildlife_spawn_multiplier", "glimmerwing", "lumen_stag", "mossback_tortoise", "cinderfox", "skyray",
 			"rimehare"));
 		KEYS.put("aura", Set.of("enabled", "xp_multiplier", "gain_multiplier", "coat_bonus", "damage_scale", "slash_damage", "slash_cost",
-			"slash_cooldown_seconds", "pvp_scale", "backlash_seconds", "guard_share"));
+			"slash_cooldown_seconds", "pvp_scale", "backlash_seconds", "guard_share",
+			// The top stages, the spellblade and aura marks.
+			"step_cost", "step_cooldown_seconds", "step_distance", "armour_share", "intent_pvp", "intent_pvp_slow", "dominion_cost",
+			"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -782,7 +853,11 @@ public record WildercordConfig(
 			+ "and aura itself come. coat_bonus is what a coated blow adds (0.1 is 10%); damage_scale scales every bonus aura adds to damage; slash_damage "
 			+ "is Aura Slash's share of the weapon's damage, at slash_cost aura every slash_cooldown_seconds. Against other players aura's bonuses and the "
 			+ "slash are pvp_scale as strong and count inside defence.max_bonus. Spending past empty brings backlash_seconds of exhaustion, never damage. "
-			+ "guard_share is how much of a blow a held Aura Guard takes off.");
+			+ "guard_share is how much of a blow a held Aura Guard takes off. The top stages: Aura Step costs step_cost aura every step_cooldown_seconds "
+			+ "and carries you step_distance blocks; aura armour takes armour_share of what reaches you; Intent presses on other players only with "
+			+ "intent_pvp, slowing them intent_pvp_slow; Dominion costs dominion_cost, lasts dominion_seconds every dominion_cooldown_seconds, and foes "
+			+ "inside hit dominion_weaken weaker. A spell rides the blade for spellblade_seconds; mark_chance_multiplier scales the chance an elemental "
+			+ "aura strike leaves its reaction mark.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -794,6 +869,19 @@ public record WildercordConfig(
 		auraSection.addProperty("pvp_scale", aura.pvpScale());
 		auraSection.addProperty("backlash_seconds", aura.backlashSeconds());
 		auraSection.addProperty("guard_share", aura.guardShare());
+		AuraHeights heights = aura.heights();
+		auraSection.addProperty("step_cost", heights.stepCost());
+		auraSection.addProperty("step_cooldown_seconds", heights.stepCooldownSeconds());
+		auraSection.addProperty("step_distance", heights.stepDistance());
+		auraSection.addProperty("armour_share", heights.armourShare());
+		auraSection.addProperty("intent_pvp", heights.intentPvp());
+		auraSection.addProperty("intent_pvp_slow", heights.intentPvpSlow());
+		auraSection.addProperty("dominion_cost", heights.dominionCost());
+		auraSection.addProperty("dominion_seconds", heights.dominionSeconds());
+		auraSection.addProperty("dominion_cooldown_seconds", heights.dominionCooldownSeconds());
+		auraSection.addProperty("dominion_weaken", heights.dominionWeaken());
+		auraSection.addProperty("spellblade_seconds", heights.spellbladeSeconds());
+		auraSection.addProperty("mark_chance_multiplier", heights.markChanceMultiplier());
 		root.add("aura", auraSection);
 		return GSON.toJson(root) + "\n";
 	}

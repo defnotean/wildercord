@@ -336,10 +336,19 @@ stance (sneak and stand still with your blade in hand).
 ### Why can't I break through to the next stage?
 When your aura reaches a stage's limit, a breakthrough waits for a trial: hold the breathing stance for half a minute where
 ley lines cross, or fell a foe stronger than you (a boss, a Runebound or anything with twice your health) with your blade
-alone, no spells. The Aura page (the Aura badge in the Cord screen) shows how far you've got.
+alone, no spells. Form and Sovereign ask more: hold the stance where ley lines cross **through a thunderstorm**, or fell a
+**boss** with your blade alone. The Aura page (the Aura badge in the Cord screen) shows how far you've got.
 
 ### I pressed the Aura key and got slowed.
 That's backlash: you used a technique without enough aura. It wears off in a few seconds and never hurts.
+
+### My slash comes out a moment late since I reached Form.
+From Form a double tap of the Aura key is Aura Step, so a single tap waits a moment to be sure it isn't the first of two.
+That way a step never looses a slash as well.
+
+### How do I put a spell on my blade?
+From Edge, cast the spell **while sneaking** with your blade in hand, then stand up and slash within 5 seconds. Cast
+standing and the spell goes out as usual. See [The spellblade]({{ '/progression/aura/' | relative_url }}#the-spellblade).
 
 ### Can I change my breathing method?
 Yes: read another method's manual twice. You keep your stage, but lose the road to your next breakthrough and the aura

@@ -1,4 +1,4 @@
-"""Aura, the swordsman's path: its manuals' covers, the blade's glow textures, its data and its English text.
+"""Aura, the swordsman's path: its manuals' covers, the blade's glow textures, aura armour's shell, its data and its English text.
 
 Called by generate_assets.py (write(g) with the rest of the pack, LANG with the language file). Everything here is drawn by
 code, like the rest of the mod's art: 16x16 pixel covers lit from the top left with a one-pixel outline, and soft white
@@ -230,6 +230,37 @@ def crystal():
     return img
 
 
+# The player model's boxes on its skin (texture offset, then width, height, depth in pixels), as vanilla lays them out: the
+# head, the body, the arms (four wide, or three for the slim model) and the legs. The shell is the same model a little larger.
+def _player_boxes(slim):
+    arm = 3 if slim else 4
+    return [((0, 0), (8, 8, 8)), ((16, 16), (8, 12, 4)), ((40, 16), (arm, 12, 4)), ((32, 48), (arm, 12, 4)),
+            ((0, 16), (4, 12, 4)), ((16, 48), (4, 12, 4))]
+
+
+def _faces(u, v, w, h, d):
+    """A box's six faces on its texture, as (x, y, width, height): top, bottom, then its four sides round from the right."""
+    return [(u + d, v, w, d), (u + d + w, v, w, d), (u, v + d, d, h), (u + d, v + d, w, h), (u + d + w, v + d, d, h),
+            (u + d + w + d, v + d, w, h)]
+
+
+def shell(slim=False):
+    """Aura armour's shell, laid over the player's skin layout (64x64), white for the client to tint: every face of the body
+    clear and faint in its middle and bright toward its edges, so drawn over the body the shell reads as light gathering at
+    its outline, the way a glow does, rather than a skin of colour."""
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    for (u, v), (w, h, d) in _player_boxes(slim):
+        for fx, fy, fw, fh in _faces(u, v, w, h, d):
+            for y in range(fy, fy + fh):
+                for x in range(fx, fx + fw):
+                    # How far in from the face's nearest edge, in pixels (0 on the edge itself).
+                    inward = min(x - fx, fx + fw - 1 - x, y - fy, fy + fh - 1 - y)
+                    a = 0.16 + 0.84 * (0.5 ** (inward * 1.6))
+                    v_ = 236 + int(19 * (0.5 ** inward))
+                    img.putpixel((x, y), (v_, v_, 255, int(round(255 * min(1.0, a)))))
+    return img
+
+
 # ---------------------------------------------------------------- writing it out
 
 def write(g):
@@ -249,6 +280,8 @@ def write(g):
     g.save(white(), glow / "haze.png")
     g.save(crystal(), glow / "crystal.png")
     g.save(soft(), glow / "soft.png")
+    g.save(shell(), glow / "shell.png")
+    g.save(shell(slim=True), glow / "shell_slim.png")
 
     # What carries aura: servers and add-ons extend it.
     g.write_json(g.DATA / "tags/item/aura_weapons.json", {"replace": False, "values": [
@@ -319,8 +352,8 @@ LANG = {
     "aura.wildercord.stage.glow.desc": "Aura coats the blade: coated blows land harder. In the breathing stance you sense hostile creatures nearby.",
     "aura.wildercord.stage.flow.desc": "Aura flows: every aura weapon sweeps, wider and further, and your blade can guard.",
     "aura.wildercord.stage.edge.desc": "Aura sets into a blade of its own: more reach, part of each blow through armour, and the slash.",
-    "aura.wildercord.stage.form.desc": "Not yet open.",
-    "aura.wildercord.stage.sovereign.desc": "Not yet open.",
+    "aura.wildercord.stage.form.desc": "Aura leaves the body: you can step through the air in an instant, aura armours you, and weaker foes falter before you.",
+    "aura.wildercord.stage.sovereign.desc": "Your aura claims the ground itself: raise a Dominion, where foes are slowed and weakened and your blows chain.",
     "aura.wildercord.technique.coat": "Aura Coat",
     "aura.wildercord.technique.coat.desc": "With aura held, every blow of an aura weapon is coated: it lands 10% harder and carries your method's element, for half a point of aura.",
     "aura.wildercord.technique.sense": "Aura Sense",
@@ -333,7 +366,34 @@ LANG = {
     "aura.wildercord.technique.edge.desc": "A blade of solid aura: a block more reach, and a quarter of each coated blow goes through armour.",
     "aura.wildercord.technique.slash": "Aura Slash",
     "aura.wildercord.technique.slash.desc": "Tap the Aura key: the blade looses a crescent of aura that cuts everything in its path, carrying your element. Against players it meets their spell defences.",
-    "key.wildercord.aura": "Aura (tap: slash, sneak: guard)",
+    "aura.wildercord.technique.marks": "Aura Marks",
+    "aura.wildercord.technique.marks.desc": "An elemental strike sometimes leaves its element's reaction mark (frozen, windswept, shadowed, bleeding, exposed, burning or poisoned) for a mage's spell to set off. Earth, storm and time leave none. A better chance at each stage.",
+    "aura.wildercord.technique.spellblade": "Spellblade",
+    "aura.wildercord.technique.spellblade.desc": "Cast a spell while sneaking with a blade in hand: it flows into the blade instead of leaving. Your next Aura Slash within 5 seconds carries it, landing it on the first foes it cuts. You pay both prices. Unused, it leaves as cast.",
+    "aura.wildercord.technique.step": "Aura Step",
+    "aura.wildercord.technique.step.desc": "Double-tap the Aura key: aura carries you about six blocks in an instant, the way you're moving, leaving afterimages behind. Nothing can touch you for a moment. It never passes through walls or a dungeon's warded doors.",
+    "aura.wildercord.technique.armour": "Aura Armour",
+    "aura.wildercord.technique.armour.desc": "While you hold 20 aura or more, a faint shell of aura takes a quarter of the harm that reaches you, paying aura for it.",
+    "aura.wildercord.technique.intent": "Intent",
+    "aura.wildercord.technique.intent.desc": "With a blade in hand, weaker hostile creatures nearby (less health than you, or a lower aura stage) are slowed and falter. Other players feel it as a shadow at the edge of sight and a slight slow.",
+    "aura.wildercord.technique.dominion": "Dominion",
+    "aura.wildercord.technique.dominion.desc": "Hold the Aura key: a circle of your aura six blocks across holds for 8 seconds. Foes inside are slowed and hit weaker, your blows on them chain to another foe inside, and your aura flows back twice as fast. Rests for 90 seconds.",
+    "key.wildercord.aura": "Aura (tap: slash, sneak: guard, double-tap: step, hold: dominion)",
+    "message.wildercord.aura.step_blocked": "There's no room to step that way",
+    "message.wildercord.aura.dominion": "Dominion",
+    "message.wildercord.aura.dominion_resting": "Your Dominion gathers again: %s s",
+    "message.wildercord.aura.spellblade": "The spell flows into your blade: Aura Slash to loose it",
+    "message.wildercord.aura.tempest_begins": "The storm breaks over the ley lines: hold still",
+    "message.wildercord.aura.guardian_begins": "A guardian: fell it with your blade alone",
+    "message.wildercord.aura.waiting_how_top": "Break through: hold the breathing stance where ley lines cross through a thunderstorm, or fell a dungeon's guardian (or any boss) with your blade alone.",
+    "screen.wildercord.aura.trial.tempest": "The tempest: hold the breathing stance where ley lines cross, under a thunderstorm and open to the sky (45 s for Form, 60 s for Sovereign)",
+    "screen.wildercord.aura.trial.guardian": "A guardian: fell a boss, a dungeon's guardian or another, by blade alone, within three minutes",
+    "screen.wildercord.aura.trial.duel": "A duel: win an aura duel against a duelist",
+    "screen.wildercord.aura.key_spellblade": "Sneak + %s, then %s",
+    "screen.wildercord.aura.spellblade_held": "Spell on the blade: %s s",
+    "screen.wildercord.aura.dominion_left": "Dominion: %s s",
+    "toast.wildercord.aura.dominion": "Dominion",
+    "toast.wildercord.aura.spellblade": "Spellblade",
     "message.wildercord.aura.disabled": "Aura is switched off on this server",
     "message.wildercord.aura.no_method": "You haven't learned a breathing method: read a Breathing Manual",
     "message.wildercord.aura.no_weapon": "Your aura needs a blade in hand (a sword, axe, spear, trident or mace)",

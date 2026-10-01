@@ -590,6 +590,73 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void theTopStagesDefaultsAreTheRulesNumbers() {
+		WildercordConfig.AuraHeights h = D.aura().heights();
+		assertEquals(dev.wildercord.aura.AuraRules.STEP_COST, h.stepCost(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.STEP_COOLDOWN, h.stepCooldownTicks());
+		assertEquals(dev.wildercord.aura.AuraRules.STEP_DISTANCE, h.stepDistance(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.ARMOUR_SHARE, h.armourShare(), 1e-9);
+		assertTrue(h.intentPvp());
+		assertEquals(dev.wildercord.aura.AuraRules.INTENT_PVP_SLOW, h.intentPvpSlow(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.DOMINION_COST, h.dominionCost(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.DOMINION_TICKS, h.dominionTicks());
+		assertEquals(dev.wildercord.aura.AuraRules.DOMINION_COOLDOWN, h.dominionCooldownTicks());
+		assertEquals(dev.wildercord.aura.AuraRules.DOMINION_WEAKEN, h.dominionWeaken(), 1e-9);
+		assertEquals(dev.wildercord.aura.AuraRules.SPELLBLADE_TICKS, h.spellbladeTicks());
+		assertEquals(1.0, h.markChanceMultiplier(), 1e-9);
+		for (String key : List.of("step_cost", "step_cooldown_seconds", "step_distance", "armour_share", "intent_pvp", "intent_pvp_slow", "dominion_cost",
+				"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier")) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS,
+			1.0, dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0,
+			0.6, dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE), "the older constructor takes the top stages' defaults");
+	}
+
+	@Test
+	void theTopStagesSettingsAreReadAndKeptInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"step_cost\": 20, \"step_cooldown_seconds\": 0.5, \"step_distance\": 40,"
+			+ " \"armour_share\": 0.9, \"intent_pvp\": false, \"intent_pvp_slow\": 0.1, \"dominion_cost\": 60, \"dominion_seconds\": 0,"
+			+ " \"dominion_cooldown_seconds\": 30, \"dominion_weaken\": 0.5, \"spellblade_seconds\": 8, \"mark_chance_multiplier\": -2}}");
+		WildercordConfig.AuraHeights h = parsed.config().aura().heights();
+		assertEquals(20.0, h.stepCost(), 1e-9);
+		assertEquals(10, h.stepCooldownTicks());
+		assertEquals(12.0, h.stepDistance(), 1e-9, "a step never carries further than twelve blocks");
+		assertEquals(0.75, h.armourShare(), 1e-9, "aura armour never takes everything");
+		assertFalse(h.intentPvp());
+		assertEquals(0.1, h.intentPvpSlow(), 1e-9);
+		assertEquals(60.0, h.dominionCost(), 1e-9);
+		assertEquals(20, h.dominionTicks(), "a Dominion lasts a second at least");
+		assertEquals(600, h.dominionCooldownTicks());
+		assertEquals(0.5, h.dominionWeaken(), 1e-9);
+		assertEquals(160, h.spellbladeTicks());
+		assertEquals(0.0, h.markChanceMultiplier(), 1e-9, "clamped to never, not below");
+		assertEquals(4, parsed.warnings().size(), parsed.warnings().toString());
+		WildercordConfig changed = parsed.config();
+		assertEquals(changed, WildercordConfig.parse(changed.toJson()).config(), "the written file keeps every changed setting");
+	}
+
+	@Test
+	void aFileFromBeforeTheTopStagesGainsTheirKeys() {
+		// An aura section written before Form and Sovereign: the top stages' keys are missing.
+		String old = D.toJson();
+		for (String key : List.of("step_cost", "step_cooldown_seconds", "step_distance", "armour_share", "intent_pvp", "intent_pvp_slow", "dominion_cost",
+				"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier")) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		assertFalse(old.contains("\"step_cost\"") || old.contains("\"mark_chance_multiplier\""), old);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraHeights.DEFAULTS, parsed.config().aura().heights());
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		assertTrue(grown.contains("\"step_cost\"") && grown.contains("\"dominion_cooldown_seconds\"") && grown.contains("\"mark_chance_multiplier\""), grown);
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		// The owner's own aura settings are kept as they were.
+		String theirs = old.replace("\"guard_share\": 0.5", "\"guard_share\": 0.3");
+		assertEquals(0.3, WildercordConfig.parse(WildercordConfig.addMissing(theirs).orElseThrow()).config().aura().guardShare(), 1e-9);
+	}
+
+	@Test
 	void auraSettingsAreReadAndKeptInRange() {
 		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"enabled\": false, \"xp_multiplier\": 3, \"gain_multiplier\": -1,"
 			+ " \"coat_bonus\": 0.25, \"damage_scale\": 40, \"slash_damage\": 2, \"slash_cost\": 30, \"slash_cooldown_seconds\": 0.5,"

@@ -2,7 +2,7 @@
 title: Aura
 parent: Growing Stronger
 nav_order: 2.2
-description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, Glow, Flow and Edge, the guard and the slash, and breakthroughs."
+description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, the spellblade, aura marks, and breakthroughs."
 ---
 
 # Aura: the swordsman's path
@@ -10,8 +10,9 @@ description: "Aura, the swordsman's path: breathing methods and where to find th
 
 The Cord is the mage's path. **Aura** is the swordsman's: mana drawn into your body and out along your blade. Learn a
 **breathing method**, gather aura from real blows and a still, steady breath, and climb in leaps, from a haze on your
-weapon to aura that flows to a blade of solid light. Anyone can walk it, with or without a Cord, and it combines with
-everything you do with spells. The only limit is the time you put in.
+weapon to aura that flows, to a blade of solid light, to aura that leaves your body, and at last to a presence that claims
+the ground you stand on. Anyone can walk it, with or without a Cord, and it combines with everything you do with spells. The
+only limit is the time you put in.
 
 <img src="{{ '/assets/images/aura-edge-blade.jpg' | relative_url }}" alt="A player holding a netherite sword wrapped in a violet haze, a translucent crystal blade of the same colour reaching past its point" class="shot">
 <span class="caption">Hollow Breath at Edge: a crystal blade of aura along the sword.</span>
@@ -26,9 +27,10 @@ everything you do with spells. The only limit is the time you put in.
 | **How to start** | Read (use) a **Breathing Manual**. Your first method brings the first stage, **Glow** |
 | **Aura weapons** | Swords, axes, spears, the trident and the mace |
 | **Gather aura** | Land **full swings** on real foes, or stand in the **breathing stance** (sneak and stand still with your blade in hand) |
-| **Spend aura** | Every coated blow, the guard and the slash |
+| **Spend aura** | Every coated blow, the guard, the slash, the step, aura armour and Dominion |
 | **Grow** | Fight. At each stage's limit a **breakthrough** waits for a trial |
-| **The Aura key** | `Z`: tap for the slash (from Edge), sneak and press for the guard (from Flow) |
+| **The Aura key** | `Z`: sneak and press for the guard (from Flow), tap for the slash (from Edge), double-tap for the step (from Form), hold for Dominion (Sovereign) |
+| **Spells and blades** | From Edge, cast a spell **while sneaking** with your blade in hand and your next slash carries it |
 | **See it** | The aura bar on top of your spell panel, and the **Aura** page (the Aura badge in the Cord screen, `K`) |
 
 ## Breathing methods
@@ -36,8 +38,9 @@ everything you do with spells. The only limit is the time you put in.
 There are ten methods, one for each element. A method gives your aura its **colour** and its **element**: your coated
 blows and your slash meet a creature's weakness or resistance to that element (a Verdant blade cuts the undead half again
 as hard), the weather and places favour it as they favour spells, and it sets off the reactions waiting on a creature (a
-frozen foe shatters under an Ember blade, a soaked one conducts a Thunder blade's charge). Each method also has a small
-gift of its own that grows with every stage.
+frozen foe shatters under an Ember blade, a soaked one conducts a Thunder blade's charge). Your strikes can also leave
+their element's mark for a mage's spell to set off (see [Aura marks](#aura-marks)). Each method also has a small gift of
+its own that grows with every stage.
 
 | Method | Element | Its gift |
 |---|---|---|
@@ -75,7 +78,7 @@ brings its own colour, element and gift at once.
 ## Aura
 
 Aura is a small pool that **never fades**. How much you can hold grows with your stage: 20 at Glow, 40 at Flow, 70 at
-Edge.
+Edge, 110 at Form and 160 at Sovereign.
 
 - **Full swings fill it.** Land a full-strength swing of an aura weapon on a real foe (a monster, something hunting you, an
   enemy player) and aura flows in, more for a harder blow. Spamming half-charged swings gives nothing, hitting the same kind
@@ -93,7 +96,8 @@ Edge.
 ## The stages
 
 Aura climbs in leaps, and each stage keeps everything below it. Your weapon shows how far you've come: a haze at Glow,
-rippling light at Flow, a crystal blade at Edge, in your method's colour, for everyone to see.
+rippling light at Flow, a crystal blade from Edge, in your method's colour, for everyone to see. From Form a faint shell of
+aura wraps your whole body.
 
 ### Glow
 
@@ -124,23 +128,91 @@ rippling light at Flow, a crystal blade at Edge, in your method's colour, for ev
 
 <img src="{{ '/assets/images/aura-slash.jpg' | relative_url }}" alt="A crescent of green aura flying away from a player toward a line of husks" class="shot">
 
-### Form and Sovereign
+### Form
 
-The fourth and fifth stages are still to come.
+Aura leaves your body.
+
+- **Aura Step**: **double-tap the Aura key** and aura carries you about **six blocks** in an instant, the way you're moving
+  (straight ahead if you're standing still), leaving afterimages of you in your colour along the way. For its first moments
+  nothing can touch you, so it's a dodge as much as a rush. It never passes through anything solid (it climbs a slab or a
+  stair on the way, as walking would), never carries you into or out of a dungeon's warded room, and stops short of lava and
+  fire. It costs 12 aura and is ready again two seconds later. Once you have it, a single tap of the Aura key waits a moment
+  in case it's the first of two, so stepping never looses a slash as well.
+- **Aura Armour**: while you hold **20 aura or more**, a faint shell of aura wraps you and takes **a quarter** of the harm
+  that reaches you (blows, arrows, spells, fire), paying half a point of aura for each point it takes. It never spends you
+  below 20, so it fades rather than breaks. Falling, drowning and starving are your body's own troubles: it takes none of those.
+- **Intent**: with your blade in hand, your presence presses on what's weaker. Hostile creatures within 8 blocks with less
+  health than you (or, if they carry aura, a lower stage) are slowed for a moment, and now and then falter where they stand.
+  Bosses never feel it.
+- **Aura Sense** grows: it reaches 24 blocks, and while you're fighting it pulses on its own every few seconds, stance or not.
+
+<img src="{{ '/assets/images/aura-step.jpg' | relative_url }}" alt="A player at night a few blocks down a stone platform, a row of fading cyan afterimages of them behind, and streaks of light along the way they came" class="shot">
+<span class="caption">Aura Step with Rime Breath: afterimages along the way.</span>
+
+<img src="{{ '/assets/images/aura-shell.jpg' | relative_url }}" alt="A player holding a diamond sword with a green crystal blade, a faint green shell of light along the edges of their body" class="shot">
+<span class="caption">Aura armour's shell (Verdant Breath).</span>
+
+### Sovereign
+
+Your aura claims the ground itself.
+
+- **Dominion**: **hold the Aura key** and a great circle of your aura, **six blocks across**, opens round where you stand
+  for **8 seconds**. Foes inside are slowed and **hit 30% weaker**; every blow you land on a foe inside **chains once** to
+  another foe inside, carrying half of it; and while you stand in it your aura flows back **twice as fast**, with a trickle
+  besides. It costs 40 aura and rests for **a minute and a half** (the Sovereign diamond on your aura bar fills back as it
+  does).
+
+<img src="{{ '/assets/images/aura-dominion.jpg' | relative_url }}" alt="Seen from above at night: a wide orange magic circle on a stone platform round a player, husks standing inside it" class="shot">
+<span class="caption">Dominion with Ember Breath.</span>
+
+## The spellblade
+
+From **Edge**, a sword and a Cord work as one. **Cast a spell while sneaking** with your blade in hand, and instead of
+leaving, the spell flows into the blade: it glows in the spell's colour and coils of light wind up it. Your next **Aura
+Slash** within **5 seconds** carries it: the slash takes the place of the spell's own shape, and the spell lands on the
+first few foes the slash cuts (each a little weaker than the one before), or bursts where the slash breaks if it cuts none.
+You pay both prices: the spell's mana and cooldown when you cast it, the slash's aura when you loose it.
+
+Everything that applies to a spell applies here: a foe's Shield, a player's spell defences, your mastery of the spell. If
+you don't slash in time, the spell slips off the blade and leaves as you cast it. Spells cast standing go out as usual,
+sword or not; spells that only act on you (Self), secret spells and overchannelled spells never ride a blade.
+
+<img src="{{ '/assets/images/aura-spellblade.jpg' | relative_url }}" alt="A player at night holding a diamond sword with a yellow crystal blade of aura, pale blue coils of light winding up and round it" class="shot">
+<span class="caption">A frost spell riding a Thunder blade, waiting for the slash.</span>
+
+## Aura marks
+
+An elemental strike (a coated blow or the slash) sometimes leaves its element's
+[reaction mark]({{ '/spellcraft/reactions/' | relative_url }}) on a foe, so a mage's spell can set it off: a Rime blade
+leaves a foe **frozen** for a fire spell's Shatter, a Gale blade **windswept** for Wildfire, a Crimson blade **bleeding**
+for Rupture, a Hollow blade **shadowed** for Blight, a Starlit blade **exposed** for Unweave, an Ember blade **burning**
+and a Verdant blade a touch of **poison** for Overload and Elapse. Earth, storm and time set reactions off but leave no mark.
+
+The chance is modest: 15% at Glow, 5% more at each stage, and a foe takes another mark from you only after a moment's
+rest. A method never sets off its own mark, so the reward is in fighting beside a mage, or casting as one. Another player
+is never set alight or poisoned by a mark.
 
 ## Breakthroughs
 
 You grow by fighting well: landing full swings on real foes, more when you're in danger (low on health, against a crowd,
 near a boss, in a dungeon), against bosses and against foes stronger than you. Nothing comes from spam, and a Training
-Dummy only teaches a little. Fighting steadily, **Flow** takes about half an hour of play and **Edge** about two hours.
+Dummy only teaches a little. Fighting steadily, **Flow** takes about half an hour of play, **Edge** about two hours,
+**Form** about six and **Sovereign** about fifteen.
 
 When you reach a stage's limit your aura presses against it, the next diamond on the aura bar pulses gold, and a
-**breakthrough** waits. Make it with either trial:
+**breakthrough** waits. For **Flow** and **Edge**, make it with either trial:
 
 - **Stillness**: hold the breathing stance unbroken for **half a minute where ley lines cross** (see
   [Ley Lines]({{ '/progression/ley-lines/' | relative_url }})).
 - **A stronger foe**: fell a boss, a Runebound or a creature with **twice your health or more** with your blade alone
   (swings and the slash), within a minute of your first blow on it. A spell of yours touching it spoils the trial.
+
+**Form** and **Sovereign** ask more:
+
+- **The tempest**: hold the breathing stance unbroken where ley lines cross **through a thunderstorm**, open to the sky:
+  45 seconds for Form, a full minute for Sovereign. A lightning strike breaks the stance, as any blow does.
+- **A guardian**: fell a **boss** (a dungeon's guardian, the Wither, the Warden, and the like) with your blade alone, within
+  three minutes of your first blow on it. A spell of yours touching it (a spell carried on your slash included) spoils it.
 
 A breakthrough bursts out of you in your aura's colour, with its name on screen, and fills your new, deeper pool of aura.
 It goes into your [Grimoire]({{ '/progression/grimoire/' | relative_url }}), and condenses a little mana toward your next
@@ -154,6 +226,9 @@ Open the Cord screen (`K`) and click the **Aura badge** (a little blade, top rig
 page shows your method, element and stage, your aura, the road to your next breakthrough and its trials (with your progress
 in one), and every technique: what it does (hover it), how it's set off, what it costs, and the stage it opens at.
 
+On the aura bar, the Form diamond dims while the step recharges, and the Sovereign diamond burns while a Dominion stands.
+Above the bar you'll see how long a spell has left on your blade and how long a Dominion holds.
+
 <img src="{{ '/assets/images/aura-page.jpg' | relative_url }}" alt="The Aura page: a Rime Breath manual's cover, Method, Element, Stage and Aura lines, the road to Edge with a breakthrough waiting and its two trials, and the list of techniques" class="shot">
 
 ## Aura and other players
@@ -161,4 +236,10 @@ in one), and every technique: what it does (hover it), how it's set off, what it
 Aura blows are ordinary blows, so armour counts against them. Against another player, what aura adds is held to the same
 cap as a spell's bonuses and scaled down, and the slash meets a player's spell defences in full: armour, Warding, and the
 spellguard that stops one hit killing you from high health (see
-[Defending Against Magic]({{ '/progression/defence/' | relative_url }})). Server owners can turn aura off or tune it.
+[Defending Against Magic]({{ '/progression/defence/' | relative_url }})). A spell carried on a slash meets them too, as
+any spell does.
+
+The top stages stay fair between players: Intent presses on another player only if their stage is lower (or, without aura,
+their health is), as a shadow at the edge of their sight and a slight slow; a player inside a foe's Dominion hits only a
+little weaker and is slowed less than a creature; and a Dominion's chain onto a player is aura off the blade, which meets
+their spell defences. Server owners can turn aura off or tune it, Intent against players included.

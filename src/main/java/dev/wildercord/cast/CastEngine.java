@@ -57,6 +57,15 @@ public final class CastEngine {
 			SpellPlan.Link anchored = seg.link != null && seg.link.anchor == group ? seg.link : null;
 			deliver(cast, group, at, anchored);
 		}
+		runLink(cast, seg, at);
+	}
+
+	/**
+	 * The segment's own link (Delay, On Land, a condition, Echo...), once its groups have been delivered; On Hit and its kin
+	 * fire from {@link #onHit} instead. Split from {@link #runSegment} so a spell carried on a blade (see {@code BladeCasting})
+	 * can deliver its groups its own way and still follow on as written.
+	 */
+	static void runLink(Cast cast, SpellPlan.Segment seg, Cast.Trigger at) {
 		SpellPlan.Link link = seg.link;
 		if (link == null) {
 			return;
@@ -205,7 +214,7 @@ public final class CastEngine {
 
 	// ------------------------------------------------------------------ shapes
 
-	private static void deliver(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored) {
+	static void deliver(Cast cast, SpellPlan.Group g, Cast.Trigger at, SpellPlan.Link anchored) {
 		cast.prepareCircle(g);
 		LivingEntity caster = cast.caster;
 		String shape = g.shape.id();

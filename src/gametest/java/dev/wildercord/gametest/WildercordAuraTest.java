@@ -750,7 +750,9 @@ public class WildercordAuraTest implements FabricClientGameTest {
 		on(world, player -> {
 			kill(player, TAG);
 			stand(player);
-			setAura(player, "ember", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW), AuraRules.threshold(AuraRules.EDGE));
+			// A Stone blade: it sets nothing alight (an Ember blade's fire, or its burning mark, would finish a foe left on one heart
+			// before the killing blow).
+			setAura(player, "stone", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW), AuraRules.threshold(AuraRules.EDGE));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.NETHERITE_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(-1, 2.2), 60).addTag("wildercord.aura_tainted");
 			spawn(player.level(), EntityTypes.HUSK, at(1, 2.2), 60).addTag("wildercord.aura_worthy");
