@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#111b1d">
   {% seo %}
   <link rel="icon" href="{{ '/assets/images/logo.png' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/guide.css' | relative_url }}">
-  <script src="{{ '/assets/js/guide.js' | relative_url }}" defer></script>
+  <link rel="stylesheet" href="{{ '/assets/css/guide.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+  <script src="{{ '/assets/js/guide.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
 </head>
 <body class="{% if page.url == '/' %}guide-home{% else %}guide-article{% endif %}" data-baseurl="{{ site.baseurl }}">
   {% include guide-icons.html %}
