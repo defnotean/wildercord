@@ -763,6 +763,42 @@ public final class AuraApi {
 		STRING_SOURCES.add(source);
 	}
 
+	/**
+	 * Names an art for whoever is shown it: an art a player has of their own (from a {@link StringSource}) has no language key of its own,
+	 * so its source names it. Returns null for an art that isn't one of its own. Both sides; quick.
+	 */
+	@FunctionalInterface
+	public interface ArtNamer {
+		net.minecraft.network.chat.Component name(Player player, StringArt art);
+	}
+
+	private static final List<ArtNamer> NAMERS = new CopyOnWriteArrayList<>();
+
+	/** Adds a namer for arts of a source of yours (see {@link ArtNamer}). The mod's own techniques name theirs this way. */
+	public static void nameArts(ArtNamer namer) {
+		NAMERS.add(namer);
+	}
+
+	/**
+	 * {@code art}'s name as {@code player} (its owner) is shown it, and as everyone near sees it in its banner: a technique's as its writer
+	 * named it, any other art's from its language key ({@link StringArt#nameKey}). Both sides.
+	 */
+	public static net.minecraft.network.chat.Component artName(Player player, StringArt art) {
+		if (player != null) {
+			for (ArtNamer namer : NAMERS) {
+				try {
+					net.minecraft.network.chat.Component name = namer.name(player, art);
+					if (name != null) {
+						return name;
+					}
+				} catch (RuntimeException e) {
+					dev.wildercord.Wildercord.LOGGER.warn("An art namer threw; skipping it", e);
+				}
+			}
+		}
+		return net.minecraft.network.chat.Component.translatable(art.nameKey());
+	}
+
 	/** Hears of every art performed. */
 	public static void onString(StringHook hook) {
 		STRING_HOOKS.add(hook);
@@ -1147,6 +1183,115 @@ public final class AuraApi {
 
 	public static List<WayHook> wayHooks() {
 		return WAY_HOOKS;
+	}
+
+	// ------------------------------------------------------------------ techniques of one's own
+
+	/**
+	 * Hears of techniques of one's own: one written into a slot ({@code slot} 0 the first), one reaching a rank (Honed 2 to Peerless 5), a
+	 * part learned for good ({@code source}: "scroll", "duelist", or an add-on's own). Every one performed is heard through
+	 * {@link #onString} as any art is (its id {@code technique_1} to {@code technique_3}).
+	 */
+	public interface TechniqueHook {
+		default void written(ServerPlayer player, int slot, dev.wildercord.aura.Techniques.Written technique) {}
+
+		default void ranked(ServerPlayer player, int slot, dev.wildercord.aura.Techniques.Written technique, int rank) {}
+
+		default void learned(ServerPlayer player, String part, String source) {}
+	}
+
+	private static final List<TechniqueHook> TECHNIQUE_HOOKS = new CopyOnWriteArrayList<>();
+
+	public static void onTechnique(TechniqueHook hook) {
+		TECHNIQUE_HOOKS.add(hook);
+	}
+
+	public static List<TechniqueHook> techniqueHooks() {
+		return TECHNIQUE_HOOKS;
+	}
+
+	/**
+	 * What an add-on's intent does to each foe a technique of it strikes, once the strike has landed ({@code taken} what it took; 0 when it
+	 * was turned aside). The strike itself, its price, its rest, the PvP caps on it and the method's element are the mod's; keep anything
+	 * you add inside {@code aura.ArtRules}' caps (holds, throws) as the built-in intents do (see {@code aura.arts.ArtKit}).
+	 */
+	@FunctionalInterface
+	public interface IntentEffect {
+		void struck(ServerPlayer player, LivingEntity foe, float taken, dev.wildercord.aura.TechniqueRules.Profile profile);
+	}
+
+	private static final Map<String, IntentEffect> INTENT_EFFECTS = new java.util.concurrent.ConcurrentHashMap<>();
+
+	/**
+	 * Adds an intent of your own for swordsmen to write with ({@code aura.TechniqueRules.Intent.own}: its id namespaced, what it leaves of
+	 * the blow, and what its effect is worth, so it's priced like the rest), and what it does ({@code effect}). Register on both sides while
+	 * the mod initialises. Its name and line are {@code aura.wildercord.technique_part.<id>} and {@code .desc} (':' as '.'). A swordsman
+	 * learns it as any part: give it out through {@link #teachPart}, a scroll ({@link #techniqueScroll}) or a scroll source of yours.
+	 */
+	public static void registerTechniqueIntent(dev.wildercord.aura.TechniqueRules.Intent intent, IntentEffect effect) {
+		dev.wildercord.aura.TechniqueRules.registerIntent(intent);
+		if (effect != null) {
+			INTENT_EFFECTS.put(intent.id(), effect);
+		}
+	}
+
+	/** What an add-on's intent {@code id} does, or null (a built-in intent, or none). */
+	public static IntentEffect intentEffect(String id) {
+		return id == null ? null : INTENT_EFFECTS.get(id);
+	}
+
+	/** Every part of {@code family} there is (built in, and an add-on's intents), in the writing page's order. Both sides. */
+	public static List<String> techniqueParts(dev.wildercord.aura.TechniqueRules.Family family) {
+		return dev.wildercord.aura.TechniqueRules.parts(family);
+	}
+
+	/** Whether {@code player} may write with part {@code partId} now: learned for good, one every blade knows from Edge, or lent by their Way. Both sides. */
+	public static boolean knowsPart(Player player, String partId) {
+		return dev.wildercord.aura.Techniques.knows(player, partId);
+	}
+
+	/** Every part {@code player} may write with now. Both sides. */
+	public static List<String> partsOf(Player player) {
+		return dev.wildercord.aura.Techniques.known(player);
+	}
+
+	/**
+	 * Teaches {@code player} part {@code partId} for good, from {@code sourceId} (a sword tomb's guardian, a master's lesson): said in chat,
+	 * heard, written in the Grimoire the first time, and told to {@link #onTechnique}. Returns whether it was new.
+	 */
+	public static boolean teachPart(ServerPlayer player, String partId, String sourceId) {
+		return dev.wildercord.aura.Techniques.teach(player, partId, sourceId);
+	}
+
+	/** A technique scroll carrying part {@code partId}: read, it teaches it. */
+	public static ItemStack techniqueScroll(String partId) {
+		return dev.wildercord.aura.world.TechniqueScrollItem.of(partId);
+	}
+
+	/**
+	 * Adds a place technique scrolls turn up ({@code aura.ScrollSources.Source}): a loot table (a pool added as the tables load, so register
+	 * before the world starts) with its chance out of 100, or a source in code (no table) drawn from with {@link #drawScrollPart} or the
+	 * loot function {@code wildercord:random_technique_part} ({@code "source": "<id>"}). A source named {@code sword_tomb} is ready for the
+	 * sword tombs: its weights favour the parts hardest to find elsewhere.
+	 */
+	public static dev.wildercord.aura.ScrollSources.Source registerScrollSource(dev.wildercord.aura.ScrollSources.Source source) {
+		return dev.wildercord.aura.ScrollSources.register(source);
+	}
+
+	/** A part drawn from scroll source {@code sourceId}'s weights, or empty (no such source, or it gives none). */
+	public static Optional<String> drawScrollPart(String sourceId, java.util.Random random) {
+		return dev.wildercord.aura.ScrollSources.byId(sourceId).flatMap(s -> s.draw(random));
+	}
+
+	/** {@code player}'s written techniques by slot (an empty one {@code Written.NONE}). Both sides for the player's own client. */
+	public static List<dev.wildercord.aura.Techniques.Written> writtenTechniques(Player player) {
+		return dev.wildercord.aura.Techniques.book(player).slots();
+	}
+
+	/** The rank of the technique in {@code player}'s slot {@code slot} (Raw 1 to Peerless 5; 0 for an empty slot). Both sides. */
+	public static int techniqueRank(Player player, int slot) {
+		dev.wildercord.aura.Techniques.Written w = dev.wildercord.aura.Techniques.book(player).slot(slot);
+		return w.empty() ? 0 : dev.wildercord.aura.Techniques.rank(player, w);
 	}
 
 	// ------------------------------------------------------------------ feel

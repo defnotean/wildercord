@@ -80,6 +80,11 @@ public final class AuraClient {
 		}
 		long now = mc.level.getGameTime();
 		List<Afterimage> list = AFTERIMAGES.computeIfAbsent(payload.entity(), k -> new ArrayList<>());
+		if (payload.from().distanceToSqr(payload.to()) < 0.01) {
+			// Left standing where it was (a technique's afterimage): one image, for as long as it lingers.
+			list.add(new Afterimage(payload.from(), payload.yaw(), payload.color(), now, AFTERIMAGE_TICKS + Math.max(0, payload.linger())));
+			return;
+		}
 		for (int i = 0; i < AFTERIMAGES_PER_STEP; i++) {
 			double t = i / (double) AFTERIMAGES_PER_STEP;
 			Vec3 at = payload.from().lerp(payload.to(), t);

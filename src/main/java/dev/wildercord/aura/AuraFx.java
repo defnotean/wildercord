@@ -369,8 +369,8 @@ public final class AuraFx {
 	 * (from a string source: a technique they wrote) is a technique. The Final Art's banner is grand.
 	 */
 	public static void banner(ServerPlayer player, AuraApi.StringArt art) {
-		banner(player, Component.translatable(art.nameKey()), kicker(player, art),
-			art.stage() >= AuraRules.SOVEREIGN ? AuraFxRules.BannerKind.GRAND : AuraFxRules.BannerKind.ART);
+		boolean grand = art.stage() >= AuraRules.SOVEREIGN || Techniques.peerless(player, art);
+		banner(player, AuraApi.artName(player, art), kicker(player, art), grand ? AuraFxRules.BannerKind.GRAND : AuraFxRules.BannerKind.ART);
 	}
 
 	/** The small line over an art's name. */
@@ -379,8 +379,9 @@ public final class AuraFx {
 		if (PlaceholderArts.IDS.contains(art.id())) {
 			return method;
 		}
+		Component ranked = Techniques.kicker(player, art);
 		Component which = AuraApi.string(art.id()).isPresent() ? Component.translatable(AuraFxRules.ordinalKey(art.stage()))
-			: Component.translatable("aura.wildercord.banner.technique");
+			: ranked != null ? ranked : Component.translatable("aura.wildercord.banner.technique");
 		return Component.translatable("aura.wildercord.banner.kicker", method, which);
 	}
 

@@ -357,7 +357,7 @@ public final class AuraCombat {
 	}
 
 	/** The moment, as spell mastery reads it (low health, a crowd, a boss near, a dungeon), worked out at most once a second. */
-	private static double moment(ServerPlayer player, long now) {
+	static double moment(ServerPlayer player, long now) {
 		double[] cached = MOMENT.get(player.getUUID());
 		if (cached != null && now - (long) cached[1] < 20) {
 			return cached[0];

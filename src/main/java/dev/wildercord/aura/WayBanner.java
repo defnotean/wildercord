@@ -72,7 +72,7 @@ public final class WayBanner {
 	}
 
 	/** {@code bearer}'s allied swordsmen within {@code range}: allies with a breathing method learned and aura working. */
-	static List<ServerPlayer> swordsmen(ServerPlayer bearer, double range) {
+	public static List<ServerPlayer> swordsmen(ServerPlayer bearer, double range) {
 		List<ServerPlayer> out = new ArrayList<>();
 		for (ServerPlayer other : bearer.level().players()) {
 			if (other != bearer && other.distanceToSqr(bearer) <= range * range && Aura.stage(other) >= AuraRules.GLOW && Aura.enabled(other)
@@ -84,7 +84,7 @@ public final class WayBanner {
 	}
 
 	/** {@code bearer} and everyone fighting beside them within {@code range}: allied players, and their own pets and their team's. */
-	static List<LivingEntity> company(ServerPlayer bearer, double range) {
+	public static List<LivingEntity> company(ServerPlayer bearer, double range) {
 		List<LivingEntity> out = new ArrayList<>();
 		out.add(bearer);
 		for (ServerPlayer other : bearer.level().players()) {
@@ -134,7 +134,7 @@ public final class WayBanner {
 	// ------------------------------------------------------------------ steadied
 
 	/** Steadies {@code body} by {@code reduction} for {@code ticks} (the strongest steadying holds; a weaker one never shortens it). */
-	static void steady(LivingEntity body, double reduction, int ticks) {
+	public static void steady(LivingEntity body, double reduction, int ticks) {
 		long now = body.level().getGameTime();
 		double[] cur = STEADY.get(body.getUUID());
 		boolean active = cur != null && now < cur[0];

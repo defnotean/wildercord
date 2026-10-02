@@ -306,7 +306,8 @@ public final class ArtKit {
 		/** The art these strikes belong to (null for strikes outside one), how hard momentum makes them, and how they wear stance. */
 		private final AuraApi.StringArt art;
 		private final double strength;
-		private final double stanceWeight;
+		private double stanceWeight;
+		private double scaling = scale();
 
 		Hits(ServerPlayer player, AuraFx.Art fx) {
 			this.player = player;
@@ -323,6 +324,26 @@ public final class ArtKit {
 			return strength;
 		}
 
+		/**
+		 * These strikes wear a stance at {@code weight} against an art's ordinary 1 (a technique's: its stroke, its intent and its method
+		 * together, see {@code aura.TechniqueRules#stance}), within the same caps on another player.
+		 */
+		public Hits wearing(double weight) {
+			this.stanceWeight = Math.max(1.0, weight);
+			return this;
+		}
+
+		/** What these strikes' weapon damage is scaled by (every art's {@link #scale}; a technique's own setting instead, see {@link #scaled}). */
+		public double scaling() {
+			return scaling;
+		}
+
+		/** These strikes scaled by {@code scale} instead of the arts' (a technique's: {@code damage_scale} and {@code technique_damage}). */
+		public Hits scaled(double scale) {
+			this.scaling = Math.max(0, scale);
+			return this;
+		}
+
 		public ServerPlayer player() {
 			return player;
 		}
@@ -337,7 +358,7 @@ public final class ArtKit {
 		}
 
 		public float strike(LivingEntity foe, double factor, AuraFxRules.Weight weight) {
-			return raw(foe, weapon(player) * factor * scale(), weight);
+			return raw(foe, weapon(player) * factor * scaling, weight);
 		}
 
 		/** A strike of {@code damage} (already scaled), landing with {@code weight} ({@code null} for no impact). */
@@ -757,7 +778,7 @@ public final class ArtKit {
 				}
 				boolean moving = foe.position().distanceToSqr(last[0]) > 0.04;
 				last[0] = foe.position();
-				float taken = hits.raw(foe, weapon(player) * factor * scale() * (moving ? ArtRules.BLEED_MOVING : 1.0), null);
+				float taken = hits.raw(foe, weapon(player) * factor * hits.scaling() * (moving ? ArtRules.BLEED_MOVING : 1.0), null);
 				if (drip != null) {
 					drip.accept(foe);
 				}

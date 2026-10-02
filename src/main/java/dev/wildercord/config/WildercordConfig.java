@@ -311,14 +311,23 @@ public record WildercordConfig(
 	 * @param momentum             momentum, stance and finishers: see {@link AuraMomentum}
 	 * @param awakening            awakening and the spent state after it: see {@link AuraAwakening}
 	 * @param ways                 Ways, chosen at the crossroads at the Edge breakthrough: see {@link AuraWays}
+	 * @param techniques           techniques a swordsman writes of their own, from Edge: see {@link AuraTechniques}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
 			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
-			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways) {
+			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways, AuraTechniques techniques) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
 			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS,
-			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS, AuraWays.DEFAULTS);
+			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS, AuraWays.DEFAULTS, AuraTechniques.DEFAULTS);
+
+		/** A file's aura section before techniques of one's own: the same, with their defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
+				AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, heights, strings, momentum, awakening, ways, AuraTechniques.DEFAULTS);
+		}
 
 		/** A file's aura section before Ways: the same, with their defaults. */
 		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
@@ -364,6 +373,7 @@ public record WildercordConfig(
 			momentum = momentum == null ? AuraMomentum.DEFAULTS : momentum;
 			awakening = awakening == null ? AuraAwakening.DEFAULTS : awakening;
 			ways = ways == null ? AuraWays.DEFAULTS : ways;
+			techniques = techniques == null ? AuraTechniques.DEFAULTS : techniques;
 		}
 
 		/** The slash's cooldown in ticks. */
@@ -509,6 +519,21 @@ public record WildercordConfig(
 	public record AuraWays(boolean ways, double settleXp, boolean changeAtPower, double bannerRange, double bannerShare, double bannerAuraShare) {
 		public static final AuraWays DEFAULTS = new AuraWays(true, dev.wildercord.aura.WayRules.SETTLE_XP, true, dev.wildercord.aura.WayRules.BANNER_RANGE,
 			dev.wildercord.aura.WayRules.BANNER_MOMENTUM, dev.wildercord.aura.WayRules.BANNER_AURA);
+	}
+
+	/**
+	 * Techniques of one's own (more keys of the {@code aura} section): from Edge a swordsman writes techniques from a stroke, a release and
+	 * an intent on the Aura page's writing page, names them, gives each a sword string, and they rank up as they land. The parts come from
+	 * technique scrolls found in old places, from duelists beaten, and from Ways. The numbers' meaning is in {@code aura.TechniqueRules},
+	 * whose defaults these are.
+	 *
+	 * @param techniques      whether techniques of one's own work at all (off: nothing is written or played; what was written is kept)
+	 * @param techniqueDamage every technique's damage, times this (on top of {@code damage_scale})
+	 * @param techniqueXp     how fast techniques rank up, times this (0 never)
+	 * @param scrollChance    how likely a chest of an old place holds a technique scroll, times this (0 never; a fallen knight's too)
+	 */
+	public record AuraTechniques(boolean techniques, double techniqueDamage, double techniqueXp, double scrollChance) {
+		public static final AuraTechniques DEFAULTS = new AuraTechniques(true, 1.0, 1.0, 1.0);
 	}
 
 	/**
@@ -715,7 +740,12 @@ public record WildercordConfig(
 					r.bool("aura", "way_change_at_power", d.aura.ways().changeAtPower()),
 					r.number("aura", "banner_range", d.aura.ways().bannerRange(), 2, 48),
 					r.number("aura", "banner_share", d.aura.ways().bannerShare(), 0, 1),
-					r.number("aura", "banner_aura_share", d.aura.ways().bannerAuraShare(), 0, 1))),
+					r.number("aura", "banner_aura_share", d.aura.ways().bannerAuraShare(), 0, 1)),
+				new AuraTechniques(
+					r.bool("aura", "techniques", d.aura.techniques().techniques()),
+					r.number("aura", "technique_damage", d.aura.techniques().techniqueDamage(), 0, 5),
+					r.number("aura", "technique_xp_multiplier", d.aura.techniques().techniqueXp(), 0, 100),
+					r.number("aura", "technique_scroll_chance", d.aura.techniques().scrollChance(), 0, 10))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -770,7 +800,9 @@ public record WildercordConfig(
 			"awakening", "awakening_momentum", "awakening_duration", "awakening_cooldown_seconds", "spent_seconds", "awakening_art_price",
 			"awakening_damage", "awakening_speed",
 			// Ways, chosen at the crossroads.
-			"ways", "way_settle_xp", "way_change_at_power", "banner_range", "banner_share", "banner_aura_share"));
+			"ways", "way_settle_xp", "way_change_at_power", "banner_range", "banner_share", "banner_aura_share",
+			// Techniques of one's own.
+			"techniques", "technique_damage", "technique_xp_multiplier", "technique_scroll_chance"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -1099,7 +1131,10 @@ public record WildercordConfig(
 			+ "Bulwark, the Shadowstep or the Banner), which gives them a node at Edge, Form and Sovereign. Changing Way takes a Crossroads Incense, "
 			+ "burned at a place of power if way_change_at_power, and the new Way's Form and Sovereign nodes wake only after way_settle_xp experience "
 			+ "(Form at half). The Way of the Banner reaches allies within banner_range blocks: each allied swordsman builds banner_share of the "
-			+ "momentum a Banner builds and gathers banner_aura_share of the aura it gathers.");
+			+ "momentum a Banner builds and gathers banner_aura_share of the aura it gathers. Techniques of one's own (techniques): from Edge a "
+			+ "swordsman writes techniques from a stroke, a release and an intent on the Aura page, names them and gives each a sword string; "
+			+ "technique_damage scales every technique's damage, technique_xp_multiplier how fast they rank up, and technique_scroll_chance how "
+			+ "likely an old place's chest (or a fallen knight) holds a technique scroll.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -1153,6 +1188,11 @@ public record WildercordConfig(
 		auraSection.addProperty("banner_range", ways.bannerRange());
 		auraSection.addProperty("banner_share", ways.bannerShare());
 		auraSection.addProperty("banner_aura_share", ways.bannerAuraShare());
+		AuraTechniques techniques = aura.techniques();
+		auraSection.addProperty("techniques", techniques.techniques());
+		auraSection.addProperty("technique_damage", techniques.techniqueDamage());
+		auraSection.addProperty("technique_xp_multiplier", techniques.techniqueXp());
+		auraSection.addProperty("technique_scroll_chance", techniques.scrollChance());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

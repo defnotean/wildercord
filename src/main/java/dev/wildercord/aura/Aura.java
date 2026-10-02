@@ -522,6 +522,9 @@ public final class Aura {
 		Awakening.init();
 		// Ways, chosen at the crossroads at the Edge breakthrough: a node at Edge, Form and Sovereign changing a technique.
 		Ways.init();
+		// Techniques of one's own, written from Edge out of a stroke, a release and an intent, played as sword strings (after Ways: a Way
+		// lends a part).
+		Techniques.init();
 		AuraMethods.init();
 		Crescents.init();
 		AuraCombat.init();
@@ -563,6 +566,7 @@ public final class Aura {
 			Momentum.forget(id);
 			dev.wildercord.aura.Stance.forget(id);
 			dev.wildercord.aura.arts.MethodArts.forget(id);
+			Techniques.forget(id);
 			// A spell riding the blade leaves with its caster (its cast is no longer alive).
 			Spellblade.forget(id);
 		});
@@ -582,6 +586,7 @@ public final class Aura {
 			Momentum.clear();
 			dev.wildercord.aura.Stance.clear();
 			dev.wildercord.aura.arts.MethodArts.clear();
+			Techniques.clear();
 			Spellblade.clear();
 		});
 	}
@@ -590,7 +595,7 @@ public final class Aura {
 	public static final List<String> SOUNDS = List.of("aura_slash", "aura_guard", "aura_perfect_guard", "aura_breakthrough", "aura_backlash", "aura_breath",
 		"aura_step", "aura_armour", "aura_intent", "aura_dominion", "aura_dominion_fade", "aura_spellblade", "aura_string_tick", "aura_string_complete",
 		"aura_string_fumble", "aura_momentum_rise", "aura_momentum_peak", "aura_stance_break", "aura_finisher", "aura_awaken", "aura_awaken_fed",
-		"aura_spent", "aura_recovered");
+		"aura_spent", "aura_recovered", "aura_technique_write", "aura_technique_learn", "aura_technique_rank");
 
 	/** Plays one of aura's sounds where {@code player} is. */
 	public static void sound(ServerPlayer player, String name, float volume, float pitch) {
