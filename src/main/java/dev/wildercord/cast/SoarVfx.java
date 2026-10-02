@@ -19,7 +19,7 @@ import java.util.List;
  * take-off, wisps peeling away as it fades, feathers as it sets them down, the wind torn away by a grounding
  * hit, and a ward stilling it. The wings themselves, and the wake behind a flier on the move, are drawn by
  * every client for every flier ({@code client.fx.SoarWings}), so they keep up with the body they're on; their
- * shape is {@link #wing}, shared with the take-off's wingbeat here.
+ * feathered geometry is authored in the client. The brief wind strokes in {@link #wing} accent the take-off.
  */
 public final class SoarVfx {
 	private SoarVfx() {}
