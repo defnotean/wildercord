@@ -145,16 +145,37 @@ public final class Awakenings {
 				show.tongues(feet, 0.6, 2.2, 8, color, ElementFx.LIFE.secondary(), 16);
 			}
 			case HOLLOW -> {
-				HollowArts.hole(show, heart.add(0, 0.2, 0), 0.55, color, 6);
-				show.shade(heart.add(0, 0.2, 0), 0x1A0830 | ArtLight.DARK, 1.6F);
-				Scheduler.later(3, () -> {
+				// A black point at the heart that swallows light for a breath (darkness drawn in along tendrils), then bursts.
+				world.ground(feet, SigilOption.RING, 0x1A0830 | ArtLight.DARK, 2.6, 40, -0.02);
+				double phase = r.nextDouble() * Math.PI * 2;
+				for (int k = 0; k < 3; k++) {
+					double radius = 0.5 + 0.12 * k;
+					int beat = k;
+					Scheduler.later(k * 3, () -> {
+						if (!player.isAlive()) {
+							return;
+						}
+						Vec3 c = player.position().add(0, 1.2, 0);
+						ArtLight sh = ArtLight.spectacle(player);
+						HollowArts.hole(sh, c, radius, color, 4);
+						sh.shade(c, 0x1A0830 | ArtLight.DARK, (float) (1.4 + 0.3 * beat));
+						for (int i = 0; i < 4; i++) {
+							double a = phase + Math.PI / 2 * i + beat * 0.4;
+							HollowArts.tendril(sh, c.add(Math.cos(a) * 2.6, -0.6 + 0.4 * beat, Math.sin(a) * 2.6), c, color, 4);
+						}
+					});
+				}
+				Scheduler.later(9, () -> {
 					if (player.isAlive()) {
 						Vec3 c = player.position().add(0, 1.2, 0);
-						ArtLight.spectacle(player).bare().ring(c, ArtKit.UP, ElementFx.VOID.secondary(), 0.4, 3.0, 0.06, 10);
-						ArtLight.spectacle(player).groundRing(player.position(), color, 0.4, 3.4, 0.12, 12);
+						ArtLight sh = ArtLight.spectacle(player);
+						sh.bare().flash(c, ElementFx.VOID.secondary(), 2.2F);
+						sh.bare().ring(c, ArtKit.UP, ElementFx.VOID.secondary(), 0.4, 3.2, 0.07, 10);
+						sh.bare().ring(c, ElementFx.tilted(1.0, phase), color, 0.3, 2.6, 0.05, 9);
+						sh.groundRing(player.position(), color, 0.4, 3.4, 0.12, 12);
+						Feels.sound(level, c, "aura_hollow_impact", 0.9F, 0.7F);
 					}
 				});
-				world.ground(feet, SigilOption.RING, 0x1A0830 | ArtLight.DARK, 2.6, 40, -0.02);
 			}
 			case STARLIT -> {
 				Vec3 over = heart.add(0, 1.6, 0);

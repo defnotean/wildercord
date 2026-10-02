@@ -490,8 +490,8 @@ and for you in third person.
 
 When it ends, whatever aura you had left **burns away**, your momentum empties, and you're **spent** for **30 seconds**: slowed
 (drinking milk won't wash it off) and gathering **no aura at all**, from blows, the breathing stance, Dominion or finishers alike.
-With an empty pool you have no coat, no guard, no slash, no step, no aura armour and no arts until it passes, so awaken when it
-counts, and finish what you start. Your aura shows only as a faint ash-grey haze, and your aura bar is greyed with the time you're
+With an empty pool you have no coat, no guard, no slash, no step, no aura armour and no arts until it passes (reaching for one
+brings backlash, as running dry always does), so awaken when it counts, and finish what you start. Your aura shows only as a faint ash-grey haze, and your aura bar is greyed with the time you're
 still spent above it. Then your aura stirs again; the next awakening waits **three minutes** from the end of the last (the flame on
 your aura bar fills back as it rests). Dying ends an awakening (your new body isn't spent), but its rest still runs.
 

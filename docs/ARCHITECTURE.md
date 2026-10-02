@@ -1079,7 +1079,7 @@ Awakening, the spent state and the Sovereign's awakened Dominion (the rules and 
 - **Tests**: `AwakeningRulesTest` (and the lang and voices), `WildercordConfigTest` (the keys, ranges, old files, the sync bits), game
   test `WildercordAwakeningTest` (the key and its refusals, a double tap, a press let go early, a lone hold; what it gives; the moment
   filmed; each stage's form and each method's flourish; finishers feeding it; the Final Art; the end, spent, recovered, resting; a
-  duel; all eleven awakened Dominions; the HUD and the page).
+  death; a duel; all eleven awakened Dominions; the HUD and the page).
 
 ### Hooks for the next wave: `api.AuraApi`
 

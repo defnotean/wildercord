@@ -76,7 +76,8 @@ import java.util.function.Function;
  *       through the swordsman's own eyes only the edges glow, once;</li>
  *   <li>each stage's awakened form, and each method's flourish;</li>
  *   <li><b>Finishers feed it</b> a second each; <b>it ends</b>: what aura is left burns away, the swordsman is spent (slowed, gathering
- *       nothing, momentum empty, the slow coming back after milk), recovers, and rests until the next;</li>
+ *       nothing, momentum empty, the slow coming back after milk), recovers, and rests until the next; a death ends it (the new
+ *       body not spent, the rest still running);</li>
  *   <li><b>A duel</b>: half the damage bonus against a player, an awakened rival drawn on the swordsman's own client;</li>
  *   <li><b>The Sovereign's awakened Dominion</b>, each method's: wider, named, and doing its method's thing to the husks inside;</li>
  *   <li>the HUD's mark at each phase and the Aura page.</li>
@@ -84,7 +85,7 @@ import java.util.function.Function;
  * Screenshots: {@code awakening_*} and {@code dominion_*}.
  *
  * <p>{@code WILDERCORD_TOUR_ONLY}, {@code WILDERCORD_CORDS_ONLY} and {@code WILDERCORD_SHOWCASE} skip it; {@code WILDERCORD_AWAKENING=a,b}
- * plays only the scenes named (input, gives, moment, forms, methods, fed, final, spent, duel, dominions, pages).</p>
+ * plays only the scenes named (input, gives, moment, forms, methods, fed, final, spent, death, duel, dominions, pages).</p>
  */
 public class WildercordAwakeningTest implements FabricClientGameTest {
 	private static final BlockPos STAGE = new BlockPos(0, 190, 0);
@@ -153,6 +154,7 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 			scene(scenes, "fed", failures, "finishers feed it", () -> fed(context, world));
 			scene(scenes, "final", failures, "the Final Art while awakened", () -> finalArt(context, world));
 			scene(scenes, "spent", failures, "it ends, the swordsman is spent, recovers and rests", () -> spent(context, world));
+			scene(scenes, "death", failures, "a death ends it", () -> death(context, world));
 			scene(scenes, "duel", failures, "a duel", () -> duel(context, world));
 			if (scenes == null || scenes.contains("dominions")) {
 				for (String method : METHODS) {
@@ -740,6 +742,46 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 		shot(context, "awakening_resting_hud");
 		calm(context, world);
 		world.getServer().runCommand("time set 3000");
+	}
+
+	// ------------------------------------------------------------------ a death ends it
+
+	private static void death(ClientGameTestContext context, TestSingleplayerContext world) {
+		reset(context, world);
+		long[] before = on(world, player -> {
+			setAura(player, "ember", AuraRules.FORM);
+			setMomentumNow(player, 60);
+			check(AuraApi.awaken(player), "it should awaken");
+			return new long[] {player.level().getGameTime(), Awakening.state(player).readyAt()};
+		});
+		context.waitTicks(AwakeningRules.RISE);
+		world.getServer().runOnServer(server -> player(server).kill(player(server).level()));
+		context.waitTicks(5);
+		context.runOnClient(mc -> {
+			mc.player.respawn();
+			mc.gui.setScreen(null);
+		});
+		context.waitTicks(15);
+		String after = on(world, player -> {
+			Awakening.State s = Awakening.state(player);
+			long now = player.level().getGameTime();
+			if (Awakening.awakened(player) || Awakening.spent(player)) {
+				return "a death should end it, and the new body shouldn't be spent (" + s + ")";
+			}
+			if (s.stage() != AwakeningRules.Phase.RESTING) {
+				return "after a death it should rest (" + s.stage() + ")";
+			}
+			if (!s.resting(now) || s.readyAt() > before[1]) {
+				return "its rest should still run, from the death at the latest (" + s.readyAt() + " against " + before[1] + ")";
+			}
+			if (player.hasEffect(MobEffects.SLOWNESS)) {
+				return "the new body shouldn't be slowed";
+			}
+			return AuraApi.gain(player, 5, "test") > 0 ? null : "the new body should gather aura";
+		});
+		check(after == null, after);
+		check(!context.computeOnClient(mc -> Awakening.awakened(mc.player)), "the swordsman's own client should know it ended");
+		calm(context, world);
 	}
 
 	// ------------------------------------------------------------------ a duel

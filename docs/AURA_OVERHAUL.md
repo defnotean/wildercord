@@ -795,7 +795,7 @@ The player's view is `wiki/progression/aura.md#awakening`; the rules and every n
 ARCHITECTURE.md's. Pure rules: `aura.AwakeningRules` (unit-tested by `AwakeningRulesTest`); runtime: `aura.Awakening`; looks:
 `aura.AwakeningFx` (the frame) and `aura.arts.Awakenings` (each method's flourish and the awakened Dominion's `Ground`); client:
 `client.AwakeningHud`, `AuraHud` (the mark), `AuraFxClient.awakenedForm`, `render.AuraBodyLayer` (the awakened form); game test
-`WildercordAwakeningTest` (`WILDERCORD_AWAKENING=input,gives,moment,forms,methods,fed,final,spent,duel,dominions,pages` plays only those).
+`WildercordAwakeningTest` (`WILDERCORD_AWAKENING=input,gives,moment,forms,methods,fed,final,spent,death,duel,dominions,pages` plays only those).
 
 **The input (settled).** `AuraApi.Trigger.TAP_HOLD`, the Aura key's fifth way: a tap, then a second press within the double tap's 8
 ticks held `AwakeningRules.HOLD_TICKS` (14). In `WildercordKeys.auraKey`: a second press after a tap (for a player with a TAP_HOLD
