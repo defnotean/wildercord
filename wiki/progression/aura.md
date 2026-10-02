@@ -526,7 +526,7 @@ ground in your method's own shape instead of the usual circle, named in a banner
 
 It keeps its shape to its end even if your awakening ends first. Bosses are only slowed by its holds, as by any art's.
 
-<img src="{{ '/assets/images/awakening-dominion.jpg' | relative_url }}" alt="Seen from above at night: a swordsman at the heart of a great clock face of gold light laid over the stone, husks standing still inside it" class="shot">
+<img src="{{ '/assets/images/awakening-dominion.jpg' | relative_url }}" alt="Seen from above at night: a swordsman at the heart of a great clock face of pale gold light laid over the stone, its hands stopped, husks standing still inside it" class="shot">
 <span class="caption">Stilled Hour, Hourglass Breath's awakened Dominion.</span>
 
 ### Fair play

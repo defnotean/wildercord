@@ -162,8 +162,28 @@ public class WildercordShaderTest implements FabricClientGameTest {
 		context.waitTicks(8);
 		shot(context, prefix + "_aura_art_line");
 		context.waitTicks(30);
+		// Awakened (step 6): the awakened form (taller corona, streamers rising, burning eyes) from the front, under the pack too.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.setAttached(dev.wildercord.aura.AuraAttachments.AURA, dev.wildercord.aura.Aura.data(player)
+				.withAura(dev.wildercord.aura.AuraRules.capacity(dev.wildercord.aura.AuraRules.SOVEREIGN)));
+			player.setAttached(dev.wildercord.aura.Momentum.MOMENTUM, new dev.wildercord.aura.Momentum.State(60, player.level().getGameTime() + 100000, 0, 0, 0));
+			check(dev.wildercord.api.AuraApi.awaken(player), "the swordsman should awaken (" + dev.wildercord.aura.Awakening.refusal(player) + ")");
+		});
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(40);
+		shot(context, prefix + "_aura_awakened");
+		world.getServer().runOnServer(server -> dev.wildercord.api.AuraApi.endAwakening(player(server)));
+		context.waitTicks(3);
 		world.getServer().runCommand("kill @e[tag=wildercord.shader_aura]");
-		world.getServer().runOnServer(server -> player(server).removeAttached(dev.wildercord.aura.AuraAttachments.AURA));
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.removeAttached(dev.wildercord.aura.Awakening.AWAKENING);
+			player.removeAttached(dev.wildercord.aura.Momentum.MOMENTUM);
+			player.removeAllEffects();
+			player.removeAttached(dev.wildercord.aura.AuraAttachments.AURA);
+		});
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
 		context.waitTicks(5);
 	}
 

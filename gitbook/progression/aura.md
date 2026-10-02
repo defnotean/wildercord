@@ -20,9 +20,10 @@ only limit is the time you put in.
 | **Gather aura** | Land **full swings** on real foes, or stand in the **breathing stance** (sneak and stand still with your blade in hand) |
 | **Spend aura** | Every coated blow, the guard, the slash, the step, aura armour and Dominion |
 | **Grow** | Fight. At each stage's limit a **breakthrough** waits for a trial |
-| **The Aura key** | `Z`: sneak and press for the guard (from Flow), tap for the slash (from Edge), double-tap for the step (from Form), hold for Dominion (Sovereign) |
+| **The Aura key** | `Z`: sneak and press for the guard (from Flow), tap for the slash (from Edge), double-tap for the step (from Form), hold for Dominion (Sovereign), and tap then hold to **awaken** (from Edge) |
 | **Sword strings** | Short runs of ordinary swings (a low swing, a leaping one, a counter...) that set off an **art**: one at each stage, each method its own. See [Sword strings](#sword-strings) and [Sword Arts](sword-arts.md) |
 | **Momentum and openings** | A clean fight builds **momentum** (cheaper, stronger arts; the Final Art at its peak). Your blows wear a foe's **stance**; broken, it's **opened**, and your next full swing is your method's **finisher**. See [Momentum and openings](#momentum-and-openings) |
+| **Awakening** | With a full pool and your momentum at half or more, let it all go: free arts, momentum at its peak, a little faster and harder-hitting, then **spent** for a while. See [Awakening](#awakening) |
 | **See and hear it** | Your blade trails light, your body shows your stage, blows land with a hit-stop, techniques name themselves, and every method sounds its own. See [How aura looks and sounds](#how-aura-looks-and-sounds) |
 | **Spells and blades** | From Edge, cast a spell **while sneaking** with your blade in hand and your next slash carries it |
 | **See it** | The aura bar on top of your spell panel, and the **Aura** page (the Aura badge in the Cord screen, `K`) |
@@ -164,6 +165,9 @@ Your aura claims the ground itself.
 
 ![Seen from above at night: a wide orange magic circle on a stone platform round a player, husks standing inside it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-dominion.jpg)
 <span>Dominion with Ember Breath.</span>
+
+Raised while you're [awakened](#awakening), Dominion becomes your method's own: see
+[The Sovereign's awakened Dominion](#the-sovereigns-awakened-dominion).
 
 ## Sword strings
 
@@ -398,6 +402,136 @@ Server owners can switch momentum off (the Final Art then waits on a full aura p
 stance and finishers off, scale how fast stance wears and what finishers deal, and give players a stance or not (`aura.momentum`,
 `momentum_gain`, `momentum_ebb`, `stance`, `stance_damage`, `finisher_damage`, `pvp_stance`).
 
+## Awakening
+
+From **Edge**, when your aura is full and your fight is going well, you can let everything you hold go at once and **awaken**.
+For a while you burn at your strongest. Then you pay for it.
+
+### How to awaken
+
+**Tap the Aura key, then press it again at once and hold it** (about two thirds of a second). A thin ring of your aura's colour
+fills round your crosshair as you hold, and snaps out as you awaken; let go before it closes and nothing happens at all. You need:
+
+- your **aura pool full** (nineteen twentieths of it is enough),
+- your **momentum at half or more** (its second tier),
+- an aura blade in hand, and the last awakening's rest run out.
+
+A quick double tap is still the step, a lone hold is still Dominion, and pressing while sneaking is still the guard, so no ordinary
+move of a fight can awaken you by accident. When you could awaken, a small flame after the stage diamonds on your aura bar breathes
+gold, and a single tap of the Aura key waits a moment (as it always does from Form) so that the tap of a tap-and-hold never looses a
+slash first. If you can't, the line above your hotbar says why.
+
+### While you're awakened
+
+It lasts **12 seconds at Edge, 16 at Form and 20 at Sovereign**:
+
+| | |
+|---|---|
+| **Your arts** | cost **nothing** |
+| **Momentum** | held at its **peak**: your arts strike their hardest and wear stance fastest, and your **Final Art** opens |
+| **Your blows** | coated blows land **15% harder** |
+| **Speed** | a tenth faster on foot, and a tenth faster with the blade |
+| **Finishers** | each one you land feeds the awakening **another second** (four at most) |
+
+Aura still comes in from your blows, and the guard, the slash, the step, aura armour and Dominion cost what they always do. Your aura
+bar is edged in your aura's fire, a light races along it, and the time left is written above it.
+
+![At night, seen from behind and to the side: a swordsman at the heart of a burst of orange light, a column of light rising out of them into the sky, crescents of flame round them and rings racing out over the stone](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/awakening-burst.jpg)
+<span>The moment of awakening, Ember Breath at Form.</span>
+
+### The moment
+
+Your aura draws in (rings of its light closing on you, motes rushing to your heart), then **bursts**: a flash, a column of light
+into the sky, a shockwave racing out over the ground, foes standing close thrown back a step (it never hurts them), and your
+method's own flourish with its own voice. "Awakening" slides in at the edge of your screen, over your method and stage.
+
+| Method | Its flourish |
+|---|---|
+| Ember | flame licking up round you and a scorched ring of fire on the ground |
+| Rime | ice bursting outward in shards, frost creeping over the ground in a star |
+| Thunder | three bolts out of a clear sky round you, arcs leaping to them |
+| Gale | a wind spiralling up round you and gusts wheeling off it |
+| Stone | the ground cracking under you and slabs of it heaving up round you |
+| Verdant | a flower of light opening at your feet, leaves loosed |
+| Hollow | a black point at your heart, swallowing light, then bursting |
+| Starlit | a star bursting over your head, rays of light racing from it |
+| Hourglass | a great clock face on the ground under you |
+| Crimson | crescents of blood whirling round you and a heartbeat ring |
+
+![Ten small night views of a swordsman awakening, each in a different colour and shape: flame, ice shards, lightning bolts, a swirl of wind, cracked stone, a pink flower, a dark ring, a star, a clock face, red crescents](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/awakening-methods.jpg)
+<span>Each method's awakening, a moment after the burst.</span>
+
+Your body's aura then climbs past your stage into its **awakened form**: your eyes burn (whatever your stage), an Edge swordsman
+takes on a mantle and a low corona, a Form swordsman a corona, a Sovereign's stands taller past the head, streamers of light race up
+round you and the pool of aura under you spreads wide. In its last two seconds it gutters, flickering down, so everyone can see it
+ending.
+
+![Four night views of a swordsman from the front in pale blue aura: a soft haze at Edge in a fight; then awakened at Edge with burning eyes and a low flame, at Form with a taller flame, and at Sovereign with a towering corona](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/awakening-forms.jpg)
+<span>Rime Breath: Edge in a fight, then awakened at Edge, Form and Sovereign.</span>
+
+**Through your own eyes** none of it fills your view: as it bursts the edges of your screen glow once, faintly, in your aura's
+colour, and are gone within two seconds; after that only the faint glow at the very bottom of the screen your aura always leaves,
+your banner, and your aura bar. The column, the rings racing out from under you and your burning body are for everyone watching,
+and for you in third person.
+
+![A first-person view at night as the swordsman awakens: an empty stone platform, the banner Ember Breath, Form, Awakening at the left edge, a faint glow at the edges of the screen, and the aura bar with Awakened: 16 s above it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/awakening-first-person.jpg)
+<span>Awakening in first person: a banner, a faint glow at the edges, the time left by the aura bar.</span>
+
+### Spent
+
+When it ends, whatever aura you had left **burns away**, your momentum empties, and you're **spent** for **30 seconds**: slowed
+(drinking milk won't wash it off) and gathering **no aura at all**, from blows, the breathing stance, Dominion or finishers alike.
+With an empty pool you have no coat, no guard, no slash, no step, no aura armour and no arts until it passes, so awaken when it
+counts, and finish what you start. Your aura shows only as a faint ash-grey haze, and your aura bar is greyed with the time you're
+still spent above it. Then your aura stirs again; the next awakening waits **three minutes** from the end of the last (the flame on
+your aura bar fills back as it rests). Dying ends an awakening (your new body isn't spent), but its rest still runs.
+
+![Four views of the aura bar: a pale flame after the stage diamonds when ready; the bar edged in pink with Awakened: 19 s above it; the bar empty and grey with Spent: 29 s above it; and the flame dark with a thin thread under it while it rests](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/awakening-hud.jpg)
+<span>The aura bar ready, awakened, spent, and resting.</span>
+
+### Awakening, the Final Art and finishers
+
+At Sovereign, awakening **opens your Final Art and makes it free**. Its release still spends momentum, but the awakening holds you at
+the peak, so you stay at your strongest after it. Its half-minute rest outlasts any awakening, so you play it **once per awakening**
+at most: awakening is how you call your Final Art up from a fight half won, and the spent state after is its price. While you're
+awakened foes open faster (your momentum is at its peak), and every finisher you land keeps the awakening burning a second longer.
+
+### The Sovereign's awakened Dominion
+
+Hold the Aura key while you're awakened and your Dominion is the Sovereign's own: **half again as wide** (nine blocks across) and as
+long (12 seconds), its foes **hit 40% weaker**, your blows inside chain to **two** foes, your aura flows back faster, and it claims the
+ground in your method's own shape instead of the usual circle, named in a banner over "Awakened Dominion":
+
+| Method | Its Dominion | What it does |
+|---|---|---|
+| Ember | **Throne of Cinders** | every foe inside set alight each second; a ring of flame round its edge |
+| Rime | **Court of Winter** | as it's raised every foe inside freezes solid for a moment; then they're chilled hard |
+| Thunder | **Seat of Storms** | each second a bolt falls on a foe inside, cutting it and breaking what it was winding up |
+| Gale | **Windward Ground** | every other second an updraft throws the foes inside up (your blows land harder on them in the air); standing in it, the wind turns shots aside from you |
+| Stone | **Unmoving Mountain** | standing in it you're hardened (you take less from every blow and nothing moves you); each second it wears every foe's stance |
+| Verdant | **Wildwood Court** | as it's raised roots seize every foe inside; each second it mends you and your allies in it |
+| Hollow | **Sunken Hall** | as it's raised every foe inside is silenced; the ground keeps drawing them toward its heart |
+| Starlit | **Field of Stars** | each second a star falls on a foe inside and marks it, and a marked one's bursts for twice as much; your aura flows back three times as fast |
+| Hourglass | **Stilled Hour** | as it's raised every foe inside is held still a moment; then time drags for them, slowing them and their shots |
+| Crimson | **Crimson Court** | every other second the foes inside bleed, and you drink a share of every blow you land on a foe inside |
+
+It keeps its shape to its end even if your awakening ends first. Bosses are only slowed by its holds, as by any art's.
+
+![Seen from above at night: a swordsman at the heart of a great clock face of pale gold light laid over the stone, its hands stopped, husks standing still inside it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/awakening-dominion.jpg)
+<span>Stilled Hour, Hourglass Breath's awakened Dominion.</span>
+
+### Fair play
+
+Against another player an awakening is modest: its harder blows count half and inside the same cap and PvP scale as aura's other
+bonuses (a few percent in the end), its speed is a tenth, and every hold, throw, burn, drag and silence of an awakened Dominion is
+held to what any art may do to a player (a moment at most, and not again at once). Its strikes together deal a player no more than one
+art could. Teams and the server's PvP rule are respected. And a spent swordsman is easy prey for half a minute.
+
+Server owners can switch awakening off or change what it asks and gives: the momentum it needs, how long it lasts, its rest, how long
+a swordsman is spent, what arts cost while it lasts (a share of their price), and its damage and speed (`aura.awakening`,
+`awakening_momentum`, `awakening_duration`, `awakening_cooldown_seconds`, `spent_seconds`, `awakening_art_price`, `awakening_damage`,
+`awakening_speed`).
+
 ## How aura looks and sounds
 
 Aura shows. Your blade leaves light where it cuts, your body carries your aura's colour, your blows land with weight, your
@@ -440,6 +574,7 @@ Every stage shows on your body, for everyone to see:
 | **Edge** | A steady haze round your whole body, and your aura pooling faintly on the ground at your feet |
 | **Form** | A flowing mantle: ribbons of light streaming up and back off your shoulders, blown back as you run (and aura armour's shell) |
 | **Sovereign** | A blazing corona: tongues of your aura's fire round you, embers flying off it, and eyes that burn with it |
+| **Awakened** | Past your stage: burning eyes, a mantle and a corona of your aura's fire, streamers of light racing up round you (see [Awakening](#awakening)) |
 
 It's **calm at rest** and **flares in a fight** (for a few seconds after a blow given or taken); an art, a perfect guard, a
 step or a Dominion makes it **surge** for a moment. While your aura is too low to coat a blow it's only faint. In first
@@ -458,7 +593,7 @@ flash. Seen down your own blade in first person the flash is small and quick.
 
 ### Technique banners
 
-When an art goes off or you raise a Dominion, its **name** slides in at the left edge of your screen, a little above the
+When an art goes off, you raise a Dominion or you awaken, its **name** slides in at the left edge of your screen, a little above the
 middle, in your method's colour, with your method and which art it is above it. The Final Art and Dominion are grand, edged in
 gold. Other swordsmen's banners float briefly over their heads.
 

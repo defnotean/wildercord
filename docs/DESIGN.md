@@ -1628,7 +1628,7 @@ lone tap goes as the slash and spends the pool, and the line should name what wa
 - **momentum is held at the peak** (`Momentum.hold(player, 95, duration)`: no ebb, a hit knocks nothing off below it), so arts are
   at their strongest (×1.2) and wear stance fastest (×1.45), and **the Final Art opens** (`AuraApi.openFinalArt`);
 - **coated blows land 15% harder** (`awakening_damage`; against a player half of it, as one more bonus under their `max_bonus` cap
-  and the `pvp_scale`: about 4% in the end with the defaults);
+  and the `pvp_scale`: about 5% in the end with the defaults);
 - **a tenth faster** on foot (movement speed, base) and with the blade (attack speed, total) (`awakening_speed`);
 - **each finisher landed feeds it a second** (20 ticks), four at most (80 ticks), its rest moved on with it;
 - aura still comes in from blows, and the techniques (guard, slash, step, Dominion, aura armour) cost as usual.
