@@ -159,7 +159,9 @@ public final class AuraDominion {
 		AuraPresence.timers(player, timers.dominion(now + settings.dominionCooldownTicks(), now + ticks));
 		Aura.sound(player, "aura_dominion", 1.4F, sovereign ? 0.85F : 1.0F);
 		AuraFx.sound(player, AuraFx.Sound.ART, 1.0F, 0.7F);
-		AuraVfx.dominionRise(level, field.centre(), field.radius(), field.color(), ticks);
+		// An awakened one draws its method's own ground in place of the ordinary circle (the plain one keeps it).
+		AuraVfx.dominionRise(level, field.centre(), field.radius(), field.color(), ticks,
+			!sovereign || ground.flavour() == AwakeningRules.Flavour.PLAIN);
 		ScreenFx.shake(level, field.centre(), sovereign ? 0.5F : 0.35F, 14);
 		Component method = Aura.method(player).<Component>map(m -> Component.translatable(m.nameKey())).orElse(Component.empty());
 		if (sovereign) {

@@ -38,6 +38,7 @@ public final class AwakeningFx {
 		"aura_awaken_starlit", "aura_awaken_hourglass", "aura_awaken_crimson", "aura_awaken_steel");
 
 	private static final int WHITE = 0xFFFFFF;
+	private static final Vec3 UP = new Vec3(0, 1, 0);
 
 	/** The method's own voice for its awakening ({@code aura_awaken_<method>}, plain steel for a method without one). */
 	public static String voice(String methodId) {
@@ -57,6 +58,13 @@ public final class AwakeningFx {
 		Component stage = Component.translatable("aura.wildercord.stage." + AuraStages.id(Aura.stage(player)));
 		AuraFx.banner(player, Component.translatable("aura.wildercord.awakening"), Component.translatable("aura.wildercord.banner.kicker", method, stage),
 			AuraFxRules.BannerKind.GRAND);
+		// The gathering: rings of its light closing in on the body, over the ground and round the waist, as the burst draws breath (for
+		// everyone watching, and the swordsman in third person; each client draws the motes drawn in).
+		int color = Aura.color(player);
+		ArtLight show = ArtLight.spectacle(player);
+		show.groundRing(player.position(), color, 3.4, 0.3, 0.1, AwakeningRules.BURST_AT + 1);
+		show.bare().groundRing(player.position(), ArtKit.hot(color, 0.5), 2.4, 0.2, 0.05, AwakeningRules.BURST_AT);
+		show.bare().ring(heart, UP, ArtKit.hot(color, 0.3), 2.0, 0.2, 0.05, AwakeningRules.BURST_AT);
 		Scheduler.later(AwakeningRules.BURST_AT, () -> {
 			if (player.isAlive() && !player.isRemoved() && Awakening.awakened(player)) {
 				burst(player);
@@ -71,19 +79,16 @@ public final class AwakeningFx {
 		int hot = ArtKit.hot(color, 0.45);
 		Vec3 feet = player.position();
 		Vec3 heart = feet.add(0, 1.0, 0);
-		// A flash, rings and an echo at the heart (a whisper low in the swordsman's own view).
-		AuraFx.burst(level, player, heart, Vec3.ZERO, color, 2.6F, AuraFx.Burst.FLASH | AuraFx.Burst.RING | AuraFx.Burst.STAR | AuraFx.Burst.SPARKS
-			| AuraFx.Burst.ECHO);
-		// A shockwave racing out over the ground, in two rings.
-		ArtLight world = ArtLight.world(player);
-		world.groundRing(feet, color, 0.5, 5.0, 0.2, 14);
-		world.bare().groundRing(feet, WHITE, 0.4, 3.6, 0.06, 10);
-		Scheduler.later(3, () -> ArtLight.world(player).groundRing(feet, hot, 0.6, 6.0, 0.08, 12));
-		// A column of light through them, for everyone else (and themselves in third person).
+		// A flash and a ring at the heart (a whisper low in the swordsman's own view): kept modest, so the method's own flourish carries it.
+		AuraFx.burst(level, player, heart, Vec3.ZERO, color, 1.9F, AuraFx.Burst.FLASH | AuraFx.Burst.RING | AuraFx.Burst.SPARKS);
+		// A shockwave racing out over the ground, in two rings, and a column of light through them: for everyone else, and the swordsman
+		// only in third person (through their own eyes rings racing out from under them would sweep across the view).
 		ArtLight show = ArtLight.spectacle(player);
-		show.ray(feet, feet.add(0, 8.0, 0), color, 0.65, 18);
-		show.bare().ray(feet, feet.add(0, 7.0, 0), hot, 0.22, 14);
-		show.bare().ray(feet, feet.add(0, 6.0, 0), WHITE, 0.08, 12);
+		show.groundRing(feet, color, 0.5, 5.0, 0.16, 14);
+		Scheduler.later(3, () -> ArtLight.spectacle(player).groundRing(feet, hot, 0.6, 6.0, 0.06, 12));
+		show.ray(feet, feet.add(0, 8.0, 0), color, 0.4, 16);
+		show.bare().ray(feet, feet.add(0, 7.0, 0), hot, 0.18, 14);
+		show.bare().ray(feet, feet.add(0, 6.0, 0), WHITE, 0.07, 12);
 		Awakenings.flourish(player);
 		// Foes standing close are thrown back a step (no harm: room to fight in).
 		for (LivingEntity foe : ArtKit.around(player, feet, 3.5, 1.0, 2.5, 16)) {

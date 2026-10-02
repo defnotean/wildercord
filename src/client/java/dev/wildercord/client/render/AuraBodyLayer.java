@@ -234,22 +234,26 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		int color = b.color();
 		int hot = mix(color, 0xFFFFFF, 0.55F);
 		// The haze round the silhouette: soft glows standing in the body (the body itself hides their middles, so only a halo shows).
+		// The haze stops growing past a full flare (a surge or an awakening blazes in the flames, not in a glare over the face).
+		float kh = Math.min(1.15F, k);
 		float haze = switch (stage) {
-			case AuraRules.GLOW -> Math.max(0, k - 0.4F) * 0.3F;
-			case AuraRules.FLOW -> Math.max(0, k - 0.3F) * 0.34F;
-			case AuraRules.EDGE -> 0.13F + 0.22F * k;
-			case AuraRules.FORM -> 0.14F + 0.24F * k;
-			default -> 0.15F + 0.26F * k;
+			case AuraRules.GLOW -> Math.max(0, kh - 0.4F) * 0.3F;
+			case AuraRules.FLOW -> Math.max(0, kh - 0.3F) * 0.34F;
+			case AuraRules.EDGE -> 0.13F + 0.22F * kh;
+			case AuraRules.FORM -> 0.14F + 0.24F * kh;
+			default -> 0.15F + 0.26F * kh;
 		} * breath;
 		if (ink.deep()) {
 			// Laid over a pale sky the haze's own colour must carry it (added light alone turns white there).
 			haze *= 1.5F;
 		}
 		if (haze > 0.01F) {
-			float grow = 1 + 0.15F * k;
+			float grow = 1 + 0.15F * kh;
 			billboard(buffer, pose, f, 0, 0.5F, 0, 0.5F * grow, 0.62F * grow, HAZE, ink.of(color, haze));
 			billboard(buffer, pose, f, 0, 1.08F, 0, 0.64F * grow, 0.72F * grow, HAZE, ink.of(color, haze * 1.1F));
-			billboard(buffer, pose, f, 0, 1.6F, 0, 0.44F * grow, 0.46F * grow, HAZE, ink.of(hot, haze * 0.8F));
+			// Round the head softer where the eyes burn (from Sovereign, or awakened), so they show through it.
+			boolean eyes = stage >= AuraRules.SOVEREIGN || b.awakened();
+			billboard(buffer, pose, f, 0, 1.6F, 0, 0.44F * grow, 0.46F * grow, HAZE, ink.of(eyes ? color : hot, haze * (eyes ? 0.5F : 0.8F)));
 		}
 		if (b.spent()) {
 			// Spent: only the faint haze above, in ash.
@@ -352,9 +356,11 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		float k = b.intensity();
 		float t = b.time();
 		int color = b.color();
-		int hot = mix(color, 0xFFFFFF, b.awakened() ? 0.72F : 0.6F);
-		// Awakened it blazes higher (a Sovereign's past the head); an Edge or Form swordsman's borrowed corona stays lower.
-		float blaze = Math.min(b.awakened() ? 1.75F : 1.4F, k) * share;
+		int hot = mix(color, 0xFFFFFF, b.awakened() ? 0.68F : 0.6F);
+		// How bright it burns (held where a Sovereign's corona always is, so the burning eyes still show through it), and awakened how
+		// much taller it stands (a Sovereign's past the head; an Edge or Form swordsman's borrowed corona lower).
+		float blaze = Math.min(1.4F, k) * share;
+		float tall = b.awakened() ? 1 + 0.3F * Math.min(1, b.awaken()) : 1;
 		int count = 16;
 		for (int i = 0; i < count; i++) {
 			float a = Mth.TWO_PI * i / count + t * 0.01F;
@@ -368,11 +374,14 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			float base = 0.02F + 0.95F * h1 * h1;
 			float flicker = 0.78F + 0.22F * Mth.sin(t * 0.9F + i * 2.1F) * Mth.sin(t * 0.37F + i);
 			// Calm, they lick round the legs; in a fight they climb past the shoulders; surging, over the head.
-			float height = (0.7F + 0.55F * h2) * (0.35F + 0.95F * blaze) * flicker;
+			float height = (0.7F + 0.55F * h2) * (0.35F + 0.95F * blaze) * flicker * tall;
 			float width = (0.34F + 0.1F * hash(i * 3 + 3)) * (0.85F + 0.2F * blaze);
 			int frame = Math.floorMod((int) (t * 0.45F + i * 1.7F), 4);
-			flame(buffer, pose, f, x, base, z, width, height, FLAMES[frame], ink.of(color, (0.26F + 0.26F * blaze) * Math.min(1, share * 1.3F)));
-			flame(buffer, pose, f, x, base, z, width * 0.55F, height * 0.72F, FLAMES[(frame + 2) % 4], ink.of(hot, (0.24F + 0.24F * blaze) * Math.min(1, share * 1.3F)));
+			// The tongues standing in front of the face burn lower, so the eyes read through the fire.
+			float face = fore > 0.12F && base + height * 0.5F > 1.1F ? 0.45F : 1.0F;
+			float strength = Math.min(1, share * 1.3F) * face;
+			flame(buffer, pose, f, x, base, z, width, height, FLAMES[frame], ink.of(color, (0.26F + 0.26F * blaze) * strength));
+			flame(buffer, pose, f, x, base, z, width * 0.55F, height * 0.72F, FLAMES[(frame + 2) % 4], ink.of(hot, (0.24F + 0.24F * blaze) * strength));
 		}
 		// A crown of three behind the head, taller.
 		for (int i = 0; i < 3; i++) {
@@ -380,7 +389,7 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			float x = f.rx() * side - f.fx() * 0.16F;
 			float z = f.rz() * side - f.fz() * 0.16F;
 			float flicker = 0.8F + 0.2F * Mth.sin(t * 0.7F + i * 2.6F);
-			float height = (0.7F + 0.25F * (i == 1 ? 1 : 0)) * (0.4F + 0.85F * blaze) * flicker;
+			float height = (0.7F + 0.25F * (i == 1 ? 1 : 0)) * (0.4F + 0.85F * blaze) * flicker * tall;
 			int frame = Math.floorMod((int) (t * 0.4F + i * 2.3F), 4);
 			flame(buffer, pose, f, x, 1.2F, z, 0.4F, height, FLAMES[frame], ink.of(color, 0.24F + 0.26F * blaze));
 		}

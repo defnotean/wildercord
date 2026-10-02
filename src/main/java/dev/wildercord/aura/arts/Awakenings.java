@@ -47,8 +47,9 @@ public final class Awakenings {
 	// ------------------------------------------------------------------ the transformation's flourish
 
 	/**
-	 * The burst of {@code player}'s awakening in their method's element, round their body. What stands up round them is spectacle (seen
-	 * by everyone else, and by them only in third person); what lies on the ground everyone sees.
+	 * The burst of {@code player}'s awakening in their method's element, round their body. What stands up round them, and every ring
+	 * racing out from under them, is spectacle (seen by everyone else, and by them only in third person: through their own eyes a ring
+	 * racing out from their feet sweeps across the view); what lies still on the ground everyone sees.
 	 */
 	public static void flourish(ServerPlayer player) {
 		ServerLevel level = player.level();
@@ -64,7 +65,7 @@ public final class Awakenings {
 				int red = ElementFx.FIRE.accent();
 				show.tongues(feet, 0.85, 2.6, 12, color, red, 18);
 				show.tongues(feet, 0.55, 3.2, 6, gold, color, 14);
-				world.groundRing(feet, red, 0.6, 3.4, 0.16, 16);
+				show.groundRing(feet, red, 0.6, 3.4, 0.16, 16);
 				world.ground(feet, SigilOption.CRACKED, red | ArtLight.DARK, 2.6, 50, 0);
 				for (int i = 0; i < 18; i++) {
 					Vec3 dir = ElementFx.randomDir(r).add(0, 1.1, 0).normalize();
@@ -75,7 +76,7 @@ public final class Awakenings {
 			case RIME -> {
 				int frost = ElementFx.FROST.primary();
 				show.shards(heart, 2.8, 18, frost, WHITE);
-				world.ring(feet.add(0, 0.12, 0), ArtKit.UP, ElementFx.FROST.accent(), 0.4, 3.2, 0.12, 14);
+				show.ring(feet.add(0, 0.12, 0), ArtKit.UP, ElementFx.FROST.accent(), 0.4, 3.2, 0.12, 14);
 				world.ground(feet, SigilOption.STAR, frost, 2.8, 50, 0.02);
 				ElementFx.frostCreep(level, feet, 2.6, 50);
 				RimeArts.chips(level, heart, 14, 0.28);
@@ -83,21 +84,46 @@ public final class Awakenings {
 			case THUNDER -> {
 				int pale = ElementFx.STORM.secondary();
 				double phase = r.nextDouble() * Math.PI * 2;
-				for (int i = 0; i < 3; i++) {
-					double a = phase + Math.PI * 2 * i / 3;
-					Vec3 at = feet.add(Math.cos(a) * 2.6, 0, Math.sin(a) * 2.6);
-					ElementFx.bolt(level, at.add(0, 12, 0), at, 0.1, 2, 2, WHITE, color);
-					world.groundRing(at, color, 0.2, 1.4, 0.08, 8);
-					world.bare().arc(heart, at.add(0, 0.2, 0), pale, 0.06, 1, false, 5);
+				world.ground(feet, SigilOption.TARGET, pale, 2.6, 40, 0.05);
+				// Bolts out of a clear sky round them, in two waves, each leaving a scorch and an arc back to the heart.
+				for (int wave = 0; wave < 2; wave++) {
+					double offset = phase + wave * Math.PI / 3;
+					Scheduler.later(wave * 5, () -> {
+						if (!player.isAlive()) {
+							return;
+						}
+						Vec3 f = player.position();
+						Vec3 h = f.add(0, 1.0, 0);
+						ArtLight w = ArtLight.world(player);
+						ArtLight sh = ArtLight.spectacle(player);
+						for (int i = 0; i < 3; i++) {
+							double a = offset + Math.PI * 2 * i / 3;
+							Vec3 at = f.add(Math.cos(a) * 2.6, 0, Math.sin(a) * 2.6);
+							ElementFx.bolt(level, at.add(0, 12, 0), at, 0.1, 2, 2, WHITE, color);
+							w.groundRing(at, color, 0.2, 1.4, 0.08, 8);
+							w.ground(at, SigilOption.CRACKED, color | ArtLight.DARK, 1.1, 36, 0);
+							sh.bare().arc(h, at.add(0, 0.2, 0), pale, 0.06, 1, false, 8);
+						}
+						Feels.sound(level, h, "storm_boom", 0.8F, 1.15F + 0.1F * level.getRandom().nextFloat());
+					});
 				}
-				world.groundRing(feet, pale, 0.4, 3.4, 0.1, 10);
-				Feels.sound(level, heart, "storm_boom", 0.9F, 1.2F);
+				show.groundRing(feet, pale, 0.4, 3.4, 0.1, 10);
 			}
 			case GALE -> {
 				show.swirl(feet, 1.25, 3.4, 7, color, WHITE);
 				show.whirl(heart, 1.6, 6, color, WHITE, ElementFx.WIND.accent());
-				world.groundRing(feet, color, 0.5, 4.0, 0.1, 14);
-				world.bare().groundRing(feet, WHITE, 0.3, 2.8, 0.04, 10);
+				world.ground(feet, SigilOption.RING, ElementFx.WIND.secondary(), 2.8, 40, 0.12);
+				world.ground(feet.add(0, 0.01, 0), SigilOption.RING, ElementFx.WIND.accent(), 1.7, 40, -0.16);
+				// The wind keeps winding up round them a moment after the burst.
+				for (int k = 1; k <= 2; k++) {
+					Scheduler.later(4 * k, () -> {
+						if (player.isAlive()) {
+							ArtLight.spectacle(player).swirl(player.position(), 1.1, 3.0, 5, color, WHITE);
+						}
+					});
+				}
+				show.groundRing(feet, color, 0.5, 4.0, 0.1, 14);
+				show.bare().groundRing(feet, WHITE, 0.3, 2.8, 0.04, 10);
 				for (int i = 0; i < 12; i++) {
 					double a = Math.PI * 2 * i / 12;
 					Vec3 rim = feet.add(Math.cos(a) * 1.2, 0.2, Math.sin(a) * 1.2);
@@ -111,7 +137,7 @@ public final class Awakenings {
 					double a = Math.PI * 2 * i / 8 + Math.PI / 8;
 					ArtBlocks.slab(level, feet.add(Math.cos(a) * 1.5, 0, Math.sin(a) * 1.5), earth, (float) (a + Math.PI / 2), 0.55F, -0.4F, 1 + i % 2, 18);
 				}
-				world.groundRing(feet, ElementFx.EARTH.secondary(), 0.4, 3.6, 0.14, 12);
+				show.groundRing(feet, ElementFx.EARTH.secondary(), 0.4, 3.6, 0.14, 12);
 			}
 			case VERDANT -> {
 				VerdantArts.bloom(world, feet, color, 1.5, 50);
@@ -125,13 +151,19 @@ public final class Awakenings {
 					if (player.isAlive()) {
 						Vec3 c = player.position().add(0, 1.2, 0);
 						ArtLight.spectacle(player).bare().ring(c, ArtKit.UP, ElementFx.VOID.secondary(), 0.4, 3.0, 0.06, 10);
-						ArtLight.world(player).groundRing(player.position(), color, 0.4, 3.4, 0.12, 12);
+						ArtLight.spectacle(player).groundRing(player.position(), color, 0.4, 3.4, 0.12, 12);
 					}
 				});
 				world.ground(feet, SigilOption.RING, 0x1A0830 | ArtLight.DARK, 2.6, 40, -0.02);
 			}
 			case STARLIT -> {
-				StarlitArts.burst(player, heart.add(0, 0.9, 0), color, 2.2, 4);
+				Vec3 over = heart.add(0, 1.6, 0);
+				show.flash(over, WHITE, 2.6F);
+				show.ring(over, ArtKit.UP, color, 0.2, 2.6, 0.07, 9);
+				show.bare().ring(over, ElementFx.tilted(1.1, feet.x + feet.z), ElementFx.ARCANE.secondary(), 0.2, 1.9, 0.03, 8);
+				show.sigil(over, ArtKit.UP, SigilOption.STAR, color, 1.3, 14, 0.2);
+				Motes.burst(level, over, 14, ElementFx.ARCANE.secondary(), 0.07, 18, 0.32);
+				Feels.sound(level, over, "arcane_star_chime", 0.7F, 1.25F);
 				world.ground(feet, SigilOption.STAR, color, 2.6, 50, 0.03);
 				for (int i = 0; i < 5; i++) {
 					double a = Math.PI * 2 * i / 5;
@@ -141,7 +173,7 @@ public final class Awakenings {
 			case HOURGLASS -> {
 				int gold = HourglassArts.gold(player);
 				HourglassArts.clockFace(world, feet.add(0, 0.08, 0), ArtKit.UP, 2.4, r.nextDouble() * Math.PI * 2, gold, 50);
-				world.groundRing(feet, gold, 0.3, 3.2, 0.1, 12);
+				show.groundRing(feet, gold, 0.3, 3.2, 0.1, 12);
 				Motes.burst(level, heart, 10, ElementFx.TIME.secondary(), 0.07, 18, 0.12);
 			}
 			case CRIMSON -> {
@@ -152,12 +184,12 @@ public final class Awakenings {
 					Vec3 out = new Vec3(Math.cos(a), 0, Math.sin(a));
 					show.slash(heart.add(out.scale(0.4)), ArtKit.UP, out, i % 2 == 0 ? color : pale, 1.4, 1.5, 0.14, 2, 10);
 				}
-				ElementFx.pulse(level, feet.add(0, 0.1, 0), ArtKit.UP, 2.8);
-				world.groundRing(feet, ElementFx.BLOOD.accent() | ArtLight.DARK, 0.4, 3.0, 0.16, 14);
+				show.ring(feet.add(0, 0.1, 0), ArtKit.UP, pale, 0.3, 2.8, 0.08, 10);
+				show.groundRing(feet, ElementFx.BLOOD.accent() | ArtLight.DARK, 0.4, 3.0, 0.16, 14);
 				CrimsonArts.drops(level, heart, 0.7, 14);
 			}
 			case PLAIN -> {
-				world.groundRing(feet, color, 0.4, 3.4, 0.12, 14);
+				show.groundRing(feet, color, 0.4, 3.4, 0.12, 14);
 				world.bare().ground(feet, SigilOption.CIRCLE, ArtKit.hot(color, 0.4), 2.4, 40, 0.02);
 				show.tongues(feet, 0.7, 2.4, 8, color, WHITE, 14);
 			}
@@ -202,23 +234,26 @@ public final class Awakenings {
 		public void raised(ServerPlayer owner, List<LivingEntity> foes, int ticks) {
 			ServerLevel level = owner.level();
 			ArtLight world = ArtLight.world(owner);
+			ground(owner, ticks);
 			switch (flavour) {
-				case EMBER -> {
-					world.ground(centre, SigilOption.CRACKED, ElementFx.FIRE.accent() | ArtLight.DARK, radius * 1.05, ticks, 0);
-					rim(owner, ElementFx.FIRE.accent());
-				}
+				case EMBER -> rim(owner, ElementFx.FIRE.accent());
 				case RIME -> {
-					world.ground(centre, SigilOption.STAR, ElementFx.FROST.secondary(), radius * 0.9, ticks, 0.01);
 					ElementFx.frostCreep(level, centre, radius, ticks);
 					for (LivingEntity foe : foes) {
 						RimeArts.freezeSolid(owner, foe, AwakeningRules.Sovereign.RIME_FREEZE);
 					}
 				}
-				case THUNDER -> world.ground(centre, SigilOption.TARGET, ElementFx.STORM.secondary(), radius * 0.9, ticks, 0.03);
-				case GALE -> world.ground(centre, SigilOption.RING, ElementFx.WIND.secondary(), radius * 0.95, ticks, 0.06);
-				case STONE -> world.ground(centre, SigilOption.CRACKED, ElementFx.EARTH.secondary(), radius * 1.05, ticks, 0);
+				case STONE -> {
+					// Slabs of the ground heaving up round its edge.
+					BlockState earth = ArtBlocks.ground(level, centre);
+					int slabs = 12;
+					for (int i = 0; i < slabs; i++) {
+						double a = Math.PI * 2 * i / slabs;
+						ArtBlocks.slab(level, centre.add(Math.cos(a) * radius, 0, Math.sin(a) * radius), earth, (float) (a + Math.PI / 2), 0.6F, -0.3F,
+							1 + i % 3, Math.min(ticks, 160));
+					}
+				}
 				case VERDANT -> {
-					VerdantArts.bloom(world, centre, color, radius / 2.4, Math.min(ticks, 60));
 					for (LivingEntity foe : foes) {
 						if (ArtKit.root(owner, foe, AwakeningRules.Sovereign.VERDANT_ROOT)) {
 							VerdantArts.rootsOn(owner, foe, AwakeningRules.Sovereign.VERDANT_ROOT, 3, 1.0F);
@@ -226,27 +261,78 @@ public final class Awakenings {
 					}
 				}
 				case HOLLOW -> {
-					world.ground(centre, SigilOption.RING, 0x1A0830 | ArtLight.DARK, radius * 0.9, ticks, -0.03);
 					for (LivingEntity foe : foes) {
 						if (ArtWards.silence(foe, AwakeningRules.Sovereign.HOLLOW_SILENCE) > 0) {
 							HollowArts.silencedLook(owner, foe, AwakeningRules.Sovereign.HOLLOW_SILENCE);
 						}
 					}
 				}
-				case STARLIT -> world.ground(centre, SigilOption.STAR, color, radius * 0.95, ticks, 0.02);
 				case HOURGLASS -> {
-					int gold = HourglassArts.gold(owner);
-					HourglassArts.clockFace(world, centre.add(0, 0.06, 0), ArtKit.UP, radius * 0.8, level.getRandom().nextDouble() * Math.PI * 2, gold,
-						Math.min(ticks, 200));
 					for (LivingEntity foe : foes) {
 						ArtKit.hold(owner, foe, AwakeningRules.Sovereign.HOURGLASS_HOLD);
 					}
 				}
-				case CRIMSON -> {
-					world.ground(centre, SigilOption.CIRCLE, ElementFx.BLOOD.accent() | ArtLight.DARK, radius * 1.0, ticks, 0.01);
-					ElementFx.pulse(level, centre.add(0, 0.1, 0), ArtKit.UP, radius);
+				case CRIMSON -> world.ring(centre.add(0, 0.1, 0), ArtKit.UP, ElementFx.BLOOD.secondary(), 0.3, radius, 0.1, 12);
+				default -> {
+					// Thunder, Gale, Starlit and the plain one: their ground is all they raise.
 				}
-				case PLAIN -> world.ground(centre, SigilOption.BAND, ArtKit.hot(color, 0.3), radius, ticks, 0.01);
+			}
+		}
+
+		/**
+		 * The ground it claims, drawn in its method's own shape in place of the ordinary rune circle, for its whole time: Ember's scorched
+		 * and cracked in flame, Rime's a star of frost, Thunder's a target ringed in storm light, Gale's rings turning against each
+		 * other, Stone's cracked earth, Verdant's a flower of light, Hollow's dark rings, Starlit's a star, Hourglass's a great clock
+		 * face, Crimson's cracked in blood. The plain one keeps the ordinary circle ({@code AuraDominion} draws it).
+		 */
+		private void ground(ServerPlayer owner, int ticks) {
+			ArtLight world = ArtLight.world(owner);
+			Vec3 at = centre.add(0, 0.04, 0);
+			int life = Math.min(ticks, 200);
+			switch (flavour) {
+				case EMBER -> {
+					world.ground(at, SigilOption.CRACKED, ElementFx.FIRE.accent() | ArtLight.DARK, radius * 1.02, ticks, 0);
+					world.bare().ground(at.add(0, 0.01, 0), SigilOption.CRACKED, color, radius * 0.86, ticks, 0);
+					world.ground(at, SigilOption.RING, ElementFx.FIRE.secondary(), radius * 1.0, ticks, 0.01);
+				}
+				case RIME -> {
+					world.ground(at, SigilOption.STAR, ElementFx.FROST.secondary(), radius * 0.96, ticks, 0.01);
+					world.ground(at, SigilOption.RING, ElementFx.FROST.accent(), radius * 1.0, ticks, -0.01);
+				}
+				case THUNDER -> {
+					world.ground(at, SigilOption.TARGET, ElementFx.STORM.secondary(), radius * 0.96, ticks, 0.03);
+					world.ground(at, SigilOption.RING, color, radius * 1.0, ticks, -0.02);
+				}
+				case GALE -> {
+					world.ground(at, SigilOption.RING, ElementFx.WIND.secondary(), radius * 1.0, ticks, 0.08);
+					world.ground(at.add(0, 0.01, 0), SigilOption.RING, ElementFx.WIND.accent(), radius * 0.62, ticks, -0.11);
+				}
+				case STONE -> {
+					world.ground(at, SigilOption.CRACKED, ElementFx.EARTH.secondary(), radius * 1.02, ticks, 0);
+					world.ground(at.add(0, 0.01, 0), SigilOption.CRACKED, ElementFx.EARTH.accent() | ArtLight.DARK, radius * 0.7, ticks, 0);
+				}
+				case VERDANT -> {
+					VerdantArts.bloom(world, centre, color, radius / 1.7, life);
+					world.ground(at, SigilOption.RING, ElementFx.LIFE.primary(), radius * 1.0, ticks, 0.01);
+				}
+				case HOLLOW -> {
+					world.bare().ground(at, SigilOption.RING, 0x1A0830 | ArtLight.DARK, radius * 1.0, ticks, -0.03);
+					world.ground(at.add(0, 0.01, 0), SigilOption.RING, color, radius * 0.8, ticks, 0.04);
+					world.bare().ground(at.add(0, 0.02, 0), SigilOption.RING, 0x1A0830 | ArtLight.DARK, radius * 0.5, ticks, -0.06);
+				}
+				case STARLIT -> {
+					world.ground(at, SigilOption.STAR, color, radius * 0.98, ticks, 0.02);
+					world.ground(at, SigilOption.RING, ElementFx.ARCANE.secondary(), radius * 1.0, ticks, -0.01);
+				}
+				case HOURGLASS -> HourglassArts.clockFace(world, at, ArtKit.UP, radius * 0.94, owner.level().getRandom().nextDouble() * Math.PI * 2,
+					HourglassArts.gold(owner), ticks);
+				case CRIMSON -> {
+					world.ground(at, SigilOption.CRACKED, color, radius * 1.0, ticks, 0);
+					world.ground(at, SigilOption.RING, ElementFx.BLOOD.accent() | ArtLight.DARK, radius * 1.02, ticks, 0.01);
+				}
+				case PLAIN -> {
+					// The ordinary circle, drawn by AuraDominion.
+				}
 			}
 		}
 
@@ -309,6 +395,10 @@ public final class Awakenings {
 					}
 				}
 				case VERDANT -> {
+					if (age % 40 == 0) {
+						// The flower of light opening again and again, a breath at a time.
+						VerdantArts.bloom(ArtLight.world(owner), centre, color, radius / 1.7, 44);
+					}
 					if (beat) {
 						for (LivingEntity ally : allies(owner)) {
 							if (ArtKit.mend(owner, ally, AwakeningRules.Sovereign.VERDANT_MEND) > 0) {

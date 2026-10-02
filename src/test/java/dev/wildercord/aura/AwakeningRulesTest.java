@@ -40,6 +40,8 @@ class AwakeningRulesTest {
 		assertEquals(AwakeningRules.Refusal.NO_WEAPON, AwakeningRules.refusal(true, AuraRules.FORM, false, false, false, false, 110, 110, true, 100, 50));
 		assertEquals(AwakeningRules.Refusal.POOL, AwakeningRules.refusal(true, AuraRules.FORM, false, false, false, true, 90, 110, true, 100, 50));
 		assertEquals(AwakeningRules.Refusal.MOMENTUM, AwakeningRules.refusal(true, AuraRules.FORM, false, false, false, true, 110, 110, true, 49.9, 50));
+		// Momentum before the pool: short of it, a lone tap looses the slash, which spends the pool; the momentum is what's really missing.
+		assertEquals(AwakeningRules.Refusal.MOMENTUM, AwakeningRules.refusal(true, AuraRules.EDGE, false, false, false, true, 58, 70, true, 0, 50));
 		// Where the server has momentum off, a full pool alone is enough.
 		assertNull(AwakeningRules.refusal(true, AuraRules.FORM, false, false, false, true, 110, 110, false, 0, 50));
 		// Its message keys are the refusal's name.

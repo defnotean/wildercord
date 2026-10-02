@@ -154,10 +154,13 @@ public final class AwakeningRules {
 		RESTING,
 		/** No aura weapon in hand. */
 		NO_WEAPON,
+		/**
+		 * Momentum short of what it asks for. Asked before the pool: short of it, a lone tap of the Aura key goes at once (the slash),
+		 * which spends the pool, and "your pool isn't full" would hide what the swordsman really lacks.
+		 */
+		MOMENTUM,
 		/** The pool isn't full. */
-		POOL,
-		/** Momentum short of what it asks for. */
-		MOMENTUM;
+		POOL;
 
 		public String key() {
 			return "message.wildercord.aura.awaken." + name().toLowerCase(Locale.ROOT);
@@ -188,11 +191,11 @@ public final class AwakeningRules {
 		if (!weapon) {
 			return Refusal.NO_WEAPON;
 		}
-		if (!full(aura, capacity)) {
-			return Refusal.POOL;
-		}
 		if (momentumOn && momentum < needed - 1.0E-6) {
 			return Refusal.MOMENTUM;
+		}
+		if (!full(aura, capacity)) {
+			return Refusal.POOL;
 		}
 		return null;
 	}

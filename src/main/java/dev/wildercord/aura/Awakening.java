@@ -227,6 +227,16 @@ public final class Awakening {
 		}
 	}
 
+	/** Ends {@code player}'s awakening now, if they're awakened: it runs out on the next tick as if its time had come (spent after). */
+	public static void endNow(ServerPlayer player) {
+		long now = player.level().getGameTime();
+		State s = state(player);
+		if (s.awakened(now)) {
+			write(player, new State(s.phase(), s.since(), now, s.spentUntil(), Math.min(s.readyAt(), now + Config.get().aura().awakening().cooldownTicks()),
+				s.price(), s.extended()));
+		}
+	}
+
 	/** A finisher landed by {@code player} while awakened: the awakening is fed a moment more (up to its limit). */
 	static void fed(ServerPlayer player) {
 		long now = player.level().getGameTime();

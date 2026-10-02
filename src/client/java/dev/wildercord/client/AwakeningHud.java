@@ -18,7 +18,7 @@ import net.minecraft.util.Mth;
  * <ul>
  * <li>while the Aura key's tap-and-hold charges, a thin ring of the aura's colour filling round the crosshair (and a ring snapping
  *     out as it completes), so a held press can be let go in time;</li>
- * <li>as they awaken, in first person, the edges of the view glowing once in the aura's colour (at most a quarter opaque at the very
+ * <li>as they awaken, in first person, the edges of the view glowing once in the aura's colour (at most a sixth opaque at the very
  *     edge, nothing in the middle), gone within two seconds; while it lasts only the faint glow at the bottom edge the body's aura
  *     always leaves ({@code AuraFxClient.whisper}) and the strip's own marks;</li>
  * <li>{@link #mark}: the awakening's mark on the aura strip, after the stage diamonds (ready, burning, spent or resting).</li>
@@ -60,7 +60,9 @@ public final class AwakeningHud {
 				double a = -Math.PI / 2 + Math.PI * 2 * i / segments;
 				int x = cx + Math.round((float) Math.cos(a) * radius);
 				int y = cy + Math.round((float) Math.sin(a) * radius);
-				int c = i < lit ? 0xE0000000 | AuraHud.mix(color, 0xFFFFFF, 0.25 + 0.5 * charge) : 0x50000000 | AuraHud.mix(color, 0x1A1420, 0.5);
+				// Each segment on a dark backing, so it reads against fire and a bright sky alike.
+				g.fill(x - 2, y - 2, x + 2, y + 2, i < lit ? 0x70100C18 : 0x38100C18);
+				int c = i < lit ? 0xF0000000 | AuraHud.mix(color, 0xFFFFFF, 0.35 + 0.55 * charge) : 0x60000000 | AuraHud.mix(color, 0x1A1420, 0.45);
 				g.fill(x - 1, y - 1, x + 1, y + 1, c);
 			}
 			return;
@@ -85,7 +87,7 @@ public final class AwakeningHud {
 
 	/**
 	 * Your own awakening in first person: the edges of the view glow once in the aura's colour as it bursts (a band down each side and
-	 * along the top and bottom, at most a quarter opaque at the edge and fading to nothing inward), gone in under two seconds.
+	 * along the top and bottom, at most a sixth opaque at the edge and fading to nothing inward), gone in under two seconds.
 	 */
 	static void glow(GuiGraphicsExtractor g, DeltaTracker delta) {
 		Minecraft mc = Minecraft.getInstance();
@@ -103,14 +105,15 @@ public final class AwakeningHud {
 		}
 		glowFrames++;
 		float alpha = strength * (MagicQuality.reducedFlash ? 0.5F : 1.0F);
-		int color = AuraHud.mix(Aura.color(player), 0xFFFFFF, 0.2);
+		// Light, not a frame: the colour taken well toward white, so over a dark scene it reads as a glow and not as a tint.
+		int color = AuraHud.mix(Aura.color(player), 0xFFFFFF, 0.45);
 		int w = g.guiWidth();
 		int h = g.guiHeight();
-		int side = Math.max(10, w / 11);
-		int band = Math.max(8, h / 12);
+		int side = Math.max(8, w / 16);
+		int band = Math.max(6, h / 18);
 		int foot = Math.round(alpha * 255);
-		// Top and bottom: one gradient each, from the edge inward.
-		g.fillGradient(0, 0, w, band, (foot << 24) | color, color);
+		// Top (fainter) and bottom: one gradient each, from the edge inward.
+		g.fillGradient(0, 0, w, band, ((foot / 2) << 24) | color, color);
 		g.fillGradient(0, h - band, w, h, color, (foot << 24) | color);
 		// The sides, in thin steps fading inward (the GUI draws only vertical gradients).
 		int steps = 10;
@@ -127,17 +130,20 @@ public final class AwakeningHud {
 		}
 	}
 
-	/** How strongly the edges glow {@code age} ticks into an awakening: nothing while it gathers, a quarter at the burst, gone by 36. */
+	/** The most the edges glow (at the very edge, as the burst lands). */
+	static final float EDGE_PEAK = 0.17F;
+
+	/** How strongly the edges glow {@code age} ticks into an awakening: nothing while it gathers, {@link #EDGE_PEAK} at the burst, gone by 36. */
 	static float edge(float age) {
 		float burst = AwakeningRules.BURST_AT;
 		if (age < burst - 1 || age > burst + 30) {
 			return 0;
 		}
 		if (age < burst + 2) {
-			return 0.24F * Mth.clamp((age - burst + 1) / 3F, 0, 1);
+			return EDGE_PEAK * Mth.clamp((age - burst + 1) / 3F, 0, 1);
 		}
 		float t = (age - burst - 2) / 28F;
-		return 0.24F * (1 - t) * (1 - t);
+		return EDGE_PEAK * (1 - t) * (1 - t);
 	}
 
 	// ------------------------------------------------------------------ the mark on the aura strip

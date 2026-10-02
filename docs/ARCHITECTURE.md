@@ -1042,6 +1042,45 @@ Momentum, stance, openings and finishers (the rules and numbers are DESIGN.md's
   sync bits), game test `WildercordMomentumTest` (momentum built, lost, ebbing, its tiers, the gate, the farming guards; stance worn,
   opened, finished; all eleven finishers filmed; a boss; a duel with a second player; the HUD and the page).
 
+### Awakening: `aura.Awakening`, `AwakeningRules`, `AwakeningFx`, `aura.arts.Awakenings`
+
+Awakening, the spent state and the Sovereign's awakened Dominion (the rules and numbers are DESIGN.md's
+[Awakening](DESIGN.md#awakening); notes for the later steps in [AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-6-awakening)):
+
+- **Pure part** (unit-tested by `AwakeningRulesTest`): `aura.AwakeningRules`: `full`, the input's `HOLD_TICKS`/`CHARGE_SHOWS`/`charge`,
+  `ticks(stage, scale)`, `extend`, `SPENT_TICKS`/`COOLDOWN_TICKS`, `price`, `damage`, `Phase`, `awakened`/`spent`/`ended` (`Ending`),
+  `Refusal` and `refusal` (in order; `key()` its line), the look's `BURST_AT`/`RISE`/`GUTTER`/`GLOW`/`SPENT_GLOW` and `form`, and the
+  awakened Dominion's `Sovereign` numbers and the ten `Flavour`s (`of(methodId)`, `nameKey()`).
+- **`aura.Awakening`**: the `AWAKENING` attachment (`State`: phase, since, until, spent until, ready at, the art price share, ticks fed;
+  saved, synced to everyone near, kept through death), read on both sides by `awakened`/`spent`/`left`/`age`/`refusal`/`ready`/
+  `priceShare`/`damage`; on the server `awaken` (the `awaken` technique on `TAP_HOLD`, from Edge), `begin`, `fed` (an `onFinisher`
+  hook), `endNow`, `tick` (from `Aura.tick`: the end, the spent state's slow put back, the recovery) and `end` (the pool burned,
+  momentum emptied, the slow, the hooks); the speed modifiers (`aura_awakened_speed`, `aura_awakened_attack`); `init` registers the
+  Final Art opener, the finisher hook, the death rule (`AFTER_RESPAWN`) and momentum held again after a change of world or a return.
+- **`aura.AwakeningFx`**: the moment on the server (`transform`: stinger, voice, banner, flare, the gathering rings, then `burst`),
+  `burning`, `fed`, `spent`, `recovered`; `SOUNDS`, `voice(methodId)`.
+- **`aura.arts.Awakenings`**: `flourish` (each method's burst, in the arts' own looks) and `Ground` (the awakened Dominion: `ground`
+  draws the method's own ground, `raised` what it does at once, `tick` its beat, `struck` Crimson's drink; one `ArtKit.Hits` for the
+  whole of it).
+- **Where it touches the rest**: `Aura` (the technique, `Awakening.init` after momentum, the tick, `gain` and `giveBack` refused while
+  spent), `SwordStrings.price` (the share), `AuraCombat.coat` (the damage), `AuraDominion` (`Field.ground`, `sovereign`, `radius`, the
+  wider and longer field, the weaker foes, the two-foe chain, the faster flow, the ground in place of the circle via
+  `AuraVfx.dominionRise(..., circle)`), `AuraApi` (`Trigger.TAP_HOLD`, `AwakeningHook`/`onAwakening`, `awakened`, `spent`,
+  `awakeningLeft`, `awakeningRefusal`, `awaken`, `endAwakening`), `config.WildercordConfig.AuraAwakening` and `Config.Sync.combat`
+  (`Config.awakening`, `Config.awakeningMomentum` on the client).
+- **Client**: `WildercordKeys` (the tap-and-hold: `auraSecond`, `awakeningCharge`, `tapHoldSentAt`; a lone tap waits while an
+  awakening is ready), `client.AwakeningHud` (the charge ring by the crosshair, the first-person edge glow, the strip's `mark`;
+  `counts()` for the tests), `AuraHud` (the mark, the rim and racing light while awakened, the lines above, the spent ash),
+  `AuraFxClient` (`awakenedForm`, `bodyIntensity`, `awakeningMotes`: gathering, embers, ash), `render.AuraBodyLayer` (`Body.awaken`
+  and `spent`: eyes from Edge, the borrowed mantle and corona, `updraft`, the taller corona, the ash), `AuraScreen` (the trigger's
+  line, the awakening's state at the end of the aura line).
+- **Assets**: `tools/aura_art.py` `LANG` (the technique, the lines, the refusals, the ten Dominions' names and descriptions),
+  `tools/feel/aura_awakening.py` (`aura_awaken`, `aura_awaken_<method>` and `_steel`, `aura_awaken_fed`, `aura_spent`, `aura_recovered`).
+- **Tests**: `AwakeningRulesTest` (and the lang and voices), `WildercordConfigTest` (the keys, ranges, old files, the sync bits), game
+  test `WildercordAwakeningTest` (the key and its refusals, a double tap, a press let go early, a lone hold; what it gives; the moment
+  filmed; each stage's form and each method's flourish; finishers feeding it; the Final Art; the end, spent, recovered, resting; a
+  duel; all eleven awakened Dominions; the HUD and the page).
+
 ### Hooks for the next wave: `api.AuraApi`
 
 The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in
@@ -1052,7 +1091,7 @@ through them, all on the server thread unless noted, registered at start-up:
 | `registerStage(new AuraStages.Stage(4, "form", 110, 1800))` | Opens or changes a stage (all five are registered from `AuraRules`). An unregistered stage's threshold still caps experience, so nothing earned is lost; `AuraStages.highest()` and `canBreakThrough` follow the registry. Its name and description are `aura.wildercord.stage.<id>` and `.desc`, its Grimoire entry `aura:<id>` (toast `toast.wildercord.aura.<id>`). |
 | `allowTrial(stage, trial)` / `trials(stage)` | Which trials make the breakthrough into a stage. Built in: `AuraBreakthroughs.STILLNESS` and `STRONGER_FOE` (allowed for Flow and Edge), `TEMPEST` and `GUARDIAN` (allowed for Form and Sovereign). `DUEL` is an id left for the duelists, allowed nowhere until they allow it; any other id is a trial of your own. The Aura page lists them (`screen.wildercord.aura.trial.<id>`; `duel`'s line is already there). |
 | `completeTrial(player, trial)` | Your trial was met: the waiting breakthrough is made, if the trial is allowed for it. |
-| `registerTechnique(new Technique(id, stage, trigger, cost, performer))` | A technique of the Aura key. `Trigger.TAP` (Aura Slash), `SNEAK_TAP` (Aura Guard), `DOUBLE_TAP` (Aura Step) and `HOLD` (Dominion): the client sends every trigger (a lone tap waits out the double tap's moment when the player has a double-tap technique), and the server runs the highest-stage technique for it that the player has reached (`techniqueFor`). The performer pays through `spend`. Its name and description are `aura.wildercord.technique.<id>` and `.desc`; the Aura page lists it with its key and cost. Safe to read on both sides. |
+| `registerTechnique(new Technique(id, stage, trigger, cost, performer))` | A technique of the Aura key. `Trigger.TAP` (Aura Slash), `SNEAK_TAP` (Aura Guard), `DOUBLE_TAP` (Aura Step), `HOLD` (Dominion) and `TAP_HOLD` (Awakening: a tap, then a held press): the client sends every trigger (a lone tap waits out the double tap's moment when the player has a double-tap technique, or an awakening is ready), and the server runs the highest-stage technique for it that the player has reached (`techniqueFor`). The performer pays through `spend`. Its name and description are `aura.wildercord.technique.<id>` and `.desc`; the Aura page lists it with its key and cost. Safe to read on both sides. |
 | `gain(player, amount, source)` / `onGain(hook)` | Fill aura with every rule applying (the server's rate, Starlit, the capacity), or hear of (and change) each gain: `hook.modify(player, amount, source)` returns the amount. Sources: `hit`, `stance`, `beat`, or yours. |
 | `spend(player, cost, reason)` / `onSpend(hook)` / `backlash(player)` | Spend aura (short of the price: everything there, and backlash, never damage), hear of each spend (`paid`, `reason`, `backlash`), or bring backlash outright. |
 | `registerMethod(method)` | Another breathing method (a namespaced id; its manual, loot and trades work at once; give it lang keys `aura.wildercord.method.<namespace>.<path>`, `.lore`, `.flavour`). Passives of your own: `Flavour.NONE` and your own code in `onGain` or the blow. |
@@ -1065,6 +1104,7 @@ through them, all on the server thread unless noted, registered at start-up:
 | `conflicts(string, exceptId)` | The registered arts that would get in a string's way: the same swings, or a shorter string played on the way to it, or a longer one it cuts short (`SwordString.cutBy`). For a writing screen to warn before a player settles on a string. |
 | `addStringSource(player -> arts)` | Arts a player has of their own (techniques they wrote): asked on both sides each time a string is read or checked, so it reads only synced data and is quick. |
 | `registerSounds(methodId, new AuraFx.SoundFamily(swing, impact, art))` | A method's swing, impact and art sounds, by feel kit name (`AuraFx.SoundFamily.named("ember")` is `aura_ember_swing`, `_impact` and `_art`, so another method's family can be borrowed); a method without one plays the neutral `aura_steel_*`. |
+| `onAwakening(new AwakeningHook() { awakened(player, ticks); ended(player); })`, `awakened`, `spent`, `awakeningLeft`, `awakeningRefusal`, `awaken`, `endAwakening` | Awakening: hear of one begun and one ended (spent after), read it on both sides, awaken a swordsman through every check, or end one now. |
 | `onString((player, art, context) -> ...)` | Hears of every art performed, after it's paid for (momentum, a bonded blade's resonance, a trial). `StringContext` carries the swings' marks (`released(token)`), the creature the last swing struck (the server's own `lastHurtMob`, or null) and the time. |
 
 Other seams: `AuraCombat.blow` and `landed` (where aura marks and Dominion's chain join a blow), `AuraCombat.projected`

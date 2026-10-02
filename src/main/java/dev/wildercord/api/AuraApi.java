@@ -1007,6 +1007,11 @@ public final class AuraApi {
 		return dev.wildercord.aura.Awakening.awaken(player);
 	}
 
+	/** Ends {@code player}'s awakening now (they're spent after it, as when it runs out), if they're awakened. */
+	public static void endAwakening(ServerPlayer player) {
+		dev.wildercord.aura.Awakening.endNow(player);
+	}
+
 	// ------------------------------------------------------------------ feel
 
 	/**
