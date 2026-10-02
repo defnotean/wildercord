@@ -312,14 +312,23 @@ public record WildercordConfig(
 	 * @param awakening            awakening and the spent state after it: see {@link AuraAwakening}
 	 * @param ways                 Ways, chosen at the crossroads at the Edge breakthrough: see {@link AuraWays}
 	 * @param techniques           techniques a swordsman writes of their own, from Edge: see {@link AuraTechniques}
+	 * @param bonds                the bonded blade, bonded from Edge at a ley crossing: see {@link AuraBonds}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
 			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
-			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways, AuraTechniques techniques) {
+			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways, AuraTechniques techniques, AuraBonds bonds) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
 			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS,
-			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS, AuraWays.DEFAULTS, AuraTechniques.DEFAULTS);
+			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS, AuraWays.DEFAULTS, AuraTechniques.DEFAULTS, AuraBonds.DEFAULTS);
+
+		/** A file's aura section before bonded blades: the same, with their defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
+				AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways, AuraTechniques techniques) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, heights, strings, momentum, awakening, ways, techniques, AuraBonds.DEFAULTS);
+		}
 
 		/** A file's aura section before techniques of one's own: the same, with their defaults. */
 		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
@@ -374,6 +383,7 @@ public record WildercordConfig(
 			awakening = awakening == null ? AuraAwakening.DEFAULTS : awakening;
 			ways = ways == null ? AuraWays.DEFAULTS : ways;
 			techniques = techniques == null ? AuraTechniques.DEFAULTS : techniques;
+			bonds = bonds == null ? AuraBonds.DEFAULTS : bonds;
 		}
 
 		/** The slash's cooldown in ticks. */
@@ -534,6 +544,22 @@ public record WildercordConfig(
 	 */
 	public record AuraTechniques(boolean techniques, double techniqueDamage, double techniqueXp, double scrollChance) {
 		public static final AuraTechniques DEFAULTS = new AuraTechniques(true, 1.0, 1.0, 1.0);
+	}
+
+	/**
+	 * The bonded blade (more keys of the {@code aura} section): from Edge a swordsman bonds one blade in a ceremony (the breathing stance,
+	 * the blade in hand, at a ley crossing); it gathers resonance in every fight, grows from Bonded to Named, Awakened and Soulforged, takes a
+	 * name and a trait drawn from how its swordsman fights, and keeps its story. The numbers' meaning is in {@code aura.BladeRules}, whose
+	 * defaults these are. Switched off, no new bonds are made and blades gather and give nothing, but a blade already bonded keeps its
+	 * protections (kept through death, never breaking, only its swordsman's), so nobody loses one to a setting.
+	 *
+	 * @param bonds         whether swordsmen can bond blades, and bonded blades grow and give their gifts
+	 * @param resonanceGain how fast blades gather resonance, times this (0 never)
+	 * @param bondAtPower   whether the bond ceremony must be held at a place of power (a ley crossing)
+	 * @param traits        whether an Awakened blade's trait works (its name and look stay either way)
+	 */
+	public record AuraBonds(boolean bonds, double resonanceGain, boolean bondAtPower, boolean traits) {
+		public static final AuraBonds DEFAULTS = new AuraBonds(true, 1.0, true, true);
 	}
 
 	/**
@@ -745,7 +771,12 @@ public record WildercordConfig(
 					r.bool("aura", "techniques", d.aura.techniques().techniques()),
 					r.number("aura", "technique_damage", d.aura.techniques().techniqueDamage(), 0, 5),
 					r.number("aura", "technique_xp_multiplier", d.aura.techniques().techniqueXp(), 0, 100),
-					r.number("aura", "technique_scroll_chance", d.aura.techniques().scrollChance(), 0, 10))),
+					r.number("aura", "technique_scroll_chance", d.aura.techniques().scrollChance(), 0, 10)),
+				new AuraBonds(
+					r.bool("aura", "bonded_blades", d.aura.bonds().bonds()),
+					r.number("aura", "resonance_gain", d.aura.bonds().resonanceGain(), 0, 100),
+					r.bool("aura", "bond_at_power", d.aura.bonds().bondAtPower()),
+					r.bool("aura", "blade_traits", d.aura.bonds().traits()))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -802,7 +833,9 @@ public record WildercordConfig(
 			// Ways, chosen at the crossroads.
 			"ways", "way_settle_xp", "way_change_at_power", "banner_range", "banner_share", "banner_aura_share",
 			// Techniques of one's own.
-			"techniques", "technique_damage", "technique_xp_multiplier", "technique_scroll_chance"));
+			"techniques", "technique_damage", "technique_xp_multiplier", "technique_scroll_chance",
+			// The bonded blade.
+			"bonded_blades", "resonance_gain", "bond_at_power", "blade_traits"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -1134,7 +1167,11 @@ public record WildercordConfig(
 			+ "momentum a Banner builds and gathers banner_aura_share of the aura it gathers. Techniques of one's own (techniques): from Edge a "
 			+ "swordsman writes techniques from a stroke, a release and an intent on the Aura page, names them and gives each a sword string; "
 			+ "technique_damage scales every technique's damage, technique_xp_multiplier how fast they rank up, and technique_scroll_chance how "
-			+ "likely an old place's chest (or a fallen knight) holds a technique scroll.");
+			+ "likely an old place's chest (or a fallen knight) holds a technique scroll. Bonded blades (bonded_blades): from Edge a swordsman "
+			+ "bonds one blade (a sword, axe, spear or mace, or anything in the wildercord:bondable_blades item tag) by holding it in the breathing "
+			+ "stance, at a ley crossing if bond_at_power; it gathers resonance in every fight (resonance_gain scales how fast), takes a name, a trait "
+			+ "(blade_traits switches what traits do) and its fullest look as it grows, is kept through death, never breaks, and only its swordsman "
+			+ "can pick it up or use its aura. Switched off, blades already bonded keep those protections.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -1193,6 +1230,11 @@ public record WildercordConfig(
 		auraSection.addProperty("technique_damage", techniques.techniqueDamage());
 		auraSection.addProperty("technique_xp_multiplier", techniques.techniqueXp());
 		auraSection.addProperty("technique_scroll_chance", techniques.scrollChance());
+		AuraBonds bonds = aura.bonds();
+		auraSection.addProperty("bonded_blades", bonds.bonds());
+		auraSection.addProperty("resonance_gain", bonds.resonanceGain());
+		auraSection.addProperty("bond_at_power", bonds.bondAtPower());
+		auraSection.addProperty("blade_traits", bonds.traits());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

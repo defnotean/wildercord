@@ -68,6 +68,11 @@ import java.util.function.Predicate;
  *       two at Form, three at Sovereign); they're priced like the arts and rank up as they land. The parts come from technique scrolls,
  *       duelists beaten and Ways. Each plays as a sword string of its writer's own ({@link #addStringSource}), named through
  *       {@link #artName}.</li>
+ *   <li><b>The bonded blade</b> ({@link #onBlade}, {@link #allowBladePassing}, {@link #passBlade}, {@link #bondBlade},
+ *       {@link #addResonance}, {@link #registerBladeTrait}, {@link #bladeBond}, {@link #bladeTier}, {@link #bladeTrait}): from Edge a
+ *       swordsman bonds one blade in a ceremony at a ley crossing; it gathers resonance in every real fight, takes a name and then a
+ *       trait drawn from how it was used, is kept through death and is only ever its swordsman's. A master passes it to a disciple in
+ *       a ceremony of its own, when a passing rule ({@link #allowBladePassing}) says the disciple may receive it.</li>
  *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
  *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
  *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,
@@ -413,7 +418,7 @@ public final class AuraApi {
 		}
 	}
 
-	/** Hears of every art performed (after it went off and was paid for): momentum, a bonded blade's resonance, a trial. */
+	/** Hears of every art performed (after it went off and was paid for): momentum, a trial, an add-on's own record. */
 	@FunctionalInterface
 	public interface StringHook {
 		void performed(ServerPlayer player, StringArt art, StringContext context);
@@ -1298,6 +1303,141 @@ public final class AuraApi {
 	public static int techniqueRank(Player player, int slot) {
 		dev.wildercord.aura.Techniques.Written w = dev.wildercord.aura.Techniques.book(player).slot(slot);
 		return w.empty() ? 0 : dev.wildercord.aura.Techniques.rank(player, w);
+	}
+
+	// ------------------------------------------------------------------ the bonded blade
+
+	/**
+	 * Hears of bonded blades: resonance about to be gathered ({@link #resonance}, which may change it: return what it should be), a blade
+	 * bonded, reaching a tier (Named 2, Awakened 3, Soulforged 4), named, taking a trait, a bond released, and a blade passed from master to
+	 * disciple. {@code blade} is the blade as it is now (read it, don't keep it).
+	 */
+	public interface BladeHook {
+		default double resonance(ServerPlayer player, double amount, String source) {
+			return amount;
+		}
+
+		default void bonded(ServerPlayer player, ItemStack blade) {}
+
+		default void tiered(ServerPlayer player, ItemStack blade, int tier) {}
+
+		default void named(ServerPlayer player, ItemStack blade, String name) {}
+
+		default void traited(ServerPlayer player, ItemStack blade, String trait) {}
+
+		default void released(ServerPlayer player, java.util.UUID bond) {}
+
+		default void passed(ServerPlayer from, ServerPlayer to, ItemStack blade) {}
+	}
+
+	/** Who may receive a master's bonded blade in the passing ceremony: {@code disciple} kneeling before {@code master}. */
+	@FunctionalInterface
+	public interface BladePassing {
+		boolean may(ServerPlayer master, ServerPlayer disciple);
+	}
+
+	private static final List<BladeHook> BLADE_HOOKS = new CopyOnWriteArrayList<>();
+	private static final List<BladePassing> BLADE_PASSING = new CopyOnWriteArrayList<>();
+
+	public static void onBlade(BladeHook hook) {
+		BLADE_HOOKS.add(hook);
+	}
+
+	public static List<BladeHook> bladeHooks() {
+		return BLADE_HOOKS;
+	}
+
+	/**
+	 * Lets {@code rule} say who may receive a master's bonded blade: the passing ceremony (the master in the breathing stance with their
+	 * blade, the disciple kneeling before them) begins only when a rule says yes. None is registered by the mod itself: step 10's masters
+	 * and disciples register "the disciple is this master's". An operator can always pass one ({@code /wildercord aura blade pass}).
+	 */
+	public static void allowBladePassing(BladePassing rule) {
+		BLADE_PASSING.add(rule);
+	}
+
+	/** Whether any passing rule lets {@code disciple} receive {@code master}'s blade. */
+	public static boolean mayPassBlade(ServerPlayer master, ServerPlayer disciple) {
+		for (BladePassing rule : BLADE_PASSING) {
+			try {
+				if (rule.may(master, disciple)) {
+					return true;
+				}
+			} catch (RuntimeException e) {
+				dev.wildercord.Wildercord.LOGGER.warn("A blade passing rule threw; skipping it", e);
+			}
+		}
+		return false;
+	}
+
+	/** Whether {@code stack} could be bonded (a bondable weapon, one of it, carrying no bond). Both sides. */
+	public static boolean canBondBlade(ItemStack stack) {
+		return dev.wildercord.aura.BondedBlades.canBond(stack);
+	}
+
+	/** The bond {@code stack} carries, if it's a bonded blade. Both sides: the bond travels on the blade. */
+	public static Optional<dev.wildercord.aura.BladeBond> bladeBond(ItemStack stack) {
+		return Optional.ofNullable(dev.wildercord.aura.BondedBlades.bond(stack));
+	}
+
+	/** {@code player}'s own bonded blade if it's about them now, or empty. Both sides for the player's own client. */
+	public static ItemStack bondedBlade(Player player) {
+		return dev.wildercord.aura.BondedBlades.carried(player);
+	}
+
+	/** The tier the blade in {@code player}'s hand gives them now (0 none; 1 Bonded to 4 Soulforged). Both sides. */
+	public static int bladeTier(Player player) {
+		return dev.wildercord.aura.BondedBlades.heldTier(player);
+	}
+
+	/** The trait the blade in {@code player}'s hand gives them now ("" none). An add-on's own trait does what it does by asking this. */
+	public static String bladeTrait(Player player) {
+		return dev.wildercord.aura.BondedBlades.heldTrait(player);
+	}
+
+	/**
+	 * Bonds the blade in {@code player}'s {@code hand} to them at once, for an add-on's own rite ({@code how}: a word for its story, as
+	 * "drawn from the rock"), with every check but the ceremony: Edge or above, a bondable blade, no bond already standing. Returns whether
+	 * it bonded.
+	 */
+	public static boolean bondBlade(ServerPlayer player, net.minecraft.world.InteractionHand hand, String how) {
+		return dev.wildercord.aura.BondedBlades.bond(player, hand, how);
+	}
+
+	/**
+	 * Passes {@code master}'s bonded blade to {@code disciple} at once (the end of step 10's own ceremony, if it has one): moved from one
+	 * inventory to the other, its tier, name, trait and story kept, the passing written in its lineage. The passing rules must allow it
+	 * ({@link #allowBladePassing}). Returns whether it passed; {@link #bladePassingRefusal} says why not.
+	 */
+	public static boolean passBlade(ServerPlayer master, ServerPlayer disciple) {
+		return dev.wildercord.aura.BondedBlades.pass(master, disciple, true);
+	}
+
+	/** Why {@code master} can't pass their blade to {@code disciple} now (a language key), or null when they can. */
+	public static String bladePassingRefusal(ServerPlayer master, ServerPlayer disciple) {
+		return dev.wildercord.aura.BondedBlades.passRefusal(master, disciple, true);
+	}
+
+	/** Releases {@code player}'s bond (the blade is only steel again). Returns whether there was one. */
+	public static boolean releaseBlade(ServerPlayer player) {
+		return dev.wildercord.aura.BondedBlades.release(player);
+	}
+
+	/**
+	 * Adds resonance to {@code player}'s bonded blade from outside a fight (an old battlefield's lingering intent, a sleeping blade's
+	 * shrine), if they carry it: {@code amount} through the server's {@code resonance_gain} and the hooks. Returns what it gathered.
+	 */
+	public static double addResonance(ServerPlayer player, double amount, String source) {
+		return dev.wildercord.aura.BondedBlades.addResonance(player, amount, source);
+	}
+
+	/**
+	 * Adds a trait a blade can take at Awakened ({@code aura.BladeRules.Trait}: its id namespaced, the habit it's drawn from, its worth).
+	 * What it does is yours: ask {@link #bladeTrait} where its effect lives. Its name and lines are
+	 * {@code aura.wildercord.blade_trait.<id>}, {@code .desc} and {@code .habit} (':' as '.'). Register on both sides.
+	 */
+	public static void registerBladeTrait(dev.wildercord.aura.BladeRules.Trait trait) {
+		dev.wildercord.aura.BladeRules.register(trait);
 	}
 
 	// ------------------------------------------------------------------ feel

@@ -341,7 +341,7 @@ public final class SwordStrings {
 		}
 		if (art.cooldownTicks() > 0) {
 			Cooldowns rests = player.getAttachedOrElse(COOLDOWNS, Cooldowns.NONE);
-			player.setAttached(COOLDOWNS, rests.rest(art.id(), now + art.cooldownTicks(), now));
+			player.setAttached(COOLDOWNS, rests.rest(art.id(), now + rest(player, art), now));
 		}
 		for (AuraApi.StringHook hook : AuraApi.stringHooks()) {
 			try {
@@ -371,7 +371,14 @@ public final class SwordStrings {
 	 */
 	public static double price(Player player, AuraApi.StringArt art) {
 		double price = Momentum.on(player) ? Momentum.price(player, art) : art.cost();
+		// A bonded blade's trait: its favourite art (Well-Worn Verse) or a technique (Inkbound Steel) a little cheaper.
+		price *= BladeTraits.price(player, art);
 		return AwakeningRules.price(price, Awakening.priceShare(player));
+	}
+
+	/** How long {@code art} rests for {@code player} once performed (ticks): its own rest, shorter on a bonded blade's favourite. Both sides. */
+	public static int rest(Player player, AuraApi.StringArt art) {
+		return BladeTraits.restTicks(player, art);
 	}
 
 	/** The Grimoire entry a method's own art writes the first time it's played (see {@link ArtRules#grimoireKey}). */

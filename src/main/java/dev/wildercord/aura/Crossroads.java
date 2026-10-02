@@ -266,7 +266,8 @@ public final class Crossroads {
 	 * since the stance settled (and no stillness trial under way), calls it.
 	 */
 	static void breathing(ServerPlayer player, AuraAttachments.State state, long now) {
-		if (state.stillness() > 0 || now - state.settledAt() < WayRules.CALL_TICKS || !Ways.wayless(player) || standing(player)) {
+		if (state.stillness() > 0 || now - state.settledAt() < WayRules.CALL_TICKS || !Ways.wayless(player) || standing(player)
+				|| BladeCeremony.busy(player)) {
 			return;
 		}
 		Long rest = REST.get(player.getUUID());

@@ -127,7 +127,88 @@ public final class AuraCommand {
 				.then(Commands.literal("clear").executes(ctx -> {
 					Techniques.clear(ctx.getSource().getPlayerOrException());
 					return techniques(ctx);
-				})));
+				})))
+			// The bonded blade: what it stands at, the held blade bonded at once (no ceremony), its resonance or tier set, a name or a trait
+			// given outright, the bond released, or the blade passed to another player (no disciple needed).
+			.then(Commands.literal("blade")
+				.executes(AuraCommand::blade)
+				.then(Commands.literal("bond").executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					if (!BondedBlades.bond(player, net.minecraft.world.InteractionHand.MAIN_HAND, "command")) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.blade.cant_bond"));
+						return 0;
+					}
+					return blade(ctx);
+				}))
+				.then(Commands.literal("resonance").then(Commands.argument("amount", DoubleArgumentType.doubleArg(0)).executes(ctx -> {
+					if (!BondedBlades.setResonance(ctx.getSource().getPlayerOrException(), DoubleArgumentType.getDouble(ctx, "amount"))) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.blade.not_carried"));
+						return 0;
+					}
+					return blade(ctx);
+				})))
+				.then(Commands.literal("tier").then(Commands.argument("tier", IntegerArgumentType.integer(BladeRules.BONDED, BladeRules.MAX_TIER)).executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					int tier = IntegerArgumentType.getInteger(ctx, "tier");
+					if (tier >= BladeRules.SOULFORGED) {
+						BondedBlades.addHistory(player, java.util.Map.of(BladeRules.BOSSES, BladeRules.SOULFORGED_BOSSES), java.util.Map.of());
+					}
+					if (!BondedBlades.setResonance(player, BladeRules.threshold(tier))) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.blade.not_carried"));
+						return 0;
+					}
+					return blade(ctx);
+				})))
+				.then(Commands.literal("name").then(Commands.argument("name", StringArgumentType.greedyString()).executes(ctx -> {
+					if (!BondedBlades.rename(ctx.getSource().getPlayerOrException(), StringArgumentType.getString(ctx, "name"))) {
+						return 0;
+					}
+					return blade(ctx);
+				})))
+				.then(Commands.literal("trait").then(Commands.argument("trait", StringArgumentType.word())
+					.suggests((ctx, builder) -> SharedSuggestionProvider.suggest(BladeRules.traits().stream().map(BladeRules.Trait::id), builder))
+					.executes(ctx -> {
+						String trait = StringArgumentType.getString(ctx, "trait");
+						if (!BondedBlades.forceTrait(ctx.getSource().getPlayerOrException(), trait)) {
+							ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.blade.unknown_trait", trait));
+							return 0;
+						}
+						return blade(ctx);
+					})))
+				.then(Commands.literal("release").executes(ctx -> {
+					if (!BondedBlades.release(ctx.getSource().getPlayerOrException())) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.blade.none"));
+						return 0;
+					}
+					return 1;
+				}))
+				.then(Commands.literal("pass").then(Commands.argument("player", net.minecraft.commands.arguments.EntityArgument.player()).executes(ctx -> {
+					ServerPlayer from = ctx.getSource().getPlayerOrException();
+					ServerPlayer to = net.minecraft.commands.arguments.EntityArgument.getPlayer(ctx, "player");
+					String why = BondedBlades.passRefusal(from, to, false);
+					if (why != null || !BondedBlades.pass(from, to, false)) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.blade.cant_pass", Component.translatable(why == null ? "-" : why)));
+						return 0;
+					}
+					return 1;
+				}))));
+	}
+
+	/** What a player's bonded blade stands at: its name (or the weapon's), its tier, its resonance and its trait. */
+	private static int blade(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+		ServerPlayer player = ctx.getSource().getPlayerOrException();
+		net.minecraft.world.item.ItemStack stack = BondedBlades.carried(player);
+		BladeBond b = BondedBlades.bond(stack);
+		if (b == null) {
+			ctx.getSource().sendSuccess(() -> Component.translatable(BondedBlades.state(player).bonded() ? "command.wildercord.aura.blade.not_carried"
+				: "command.wildercord.aura.blade.none"), false);
+			return BondedBlades.state(player).bonded() ? 1 : 0;
+		}
+		Component trait = b.growth().trait().isEmpty() ? Component.literal("-") : Component.translatable(BladeRules.trait(b.growth().trait())
+			.map(BladeRules.Trait::nameKey).orElse(b.growth().trait()));
+		ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.aura.blade.state", BondedBlades.name(stack, b),
+			Component.translatable("aura.wildercord.blade.tier." + BladeRules.tierId(b.tier())), (int) b.growth().resonance(), trait), false);
+		return 1;
 	}
 
 	/** What a player's techniques stand at: the parts they may write with, then each slot's technique and its rank. */

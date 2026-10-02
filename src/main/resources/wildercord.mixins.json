@@ -31,7 +31,19 @@
 		"LivingEntityAuraMixin",
 		"EntityAuraDeflectMixin",
 		"SwordStringsSeenMixin",
-		"PiercingWeaponStringsMixin"
+		"PiercingWeaponStringsMixin",
+		"BondedBladeDeathMixin",
+		"BondedBladeDropMixin",
+		"ItemEntityBondMixin",
+		"EntityBondBelowWorldMixin",
+		"HopperBondMixin",
+		"SlotBondMixin",
+		"ItemStackBondMixin",
+		"BondedBladeSmithingMixin",
+		"BondedBladeMendingMixin",
+		"BondedBladeRepairMixin",
+		"BondedBladeIngredientMixin",
+		"BondedBladeSmeltingMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

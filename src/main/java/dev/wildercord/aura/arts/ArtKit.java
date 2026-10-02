@@ -374,10 +374,14 @@ public final class ArtKit {
 					return 0;
 				}
 			}
-			float taken = AuraCombat.artStrike(player, foe, damage * strength, cap, answer);
+			// A bonded blade's Mountainfeller: harder on a boss or a Runebound foe (never a player).
+			float taken = AuraCombat.artStrike(player, foe, damage * strength * dev.wildercord.aura.BladeTraits.art(player, foe), cap, answer);
 			double dealt = AuraCombat.lastAmount();
 			if (foe instanceof Player) {
 				pvp.merge(foe.getUUID(), dealt, Double::sum);
+			}
+			if (taken > 0 && !answer && (!foe.isAlive() || foe.isDeadOrDying())) {
+				dev.wildercord.aura.BondedBlades.artFelled(player, foe);
 			}
 			if (taken > 0) {
 				boolean first = hurt.add(foe.getUUID());
@@ -393,6 +397,8 @@ public final class ArtKit {
 				}
 				if (first) {
 					Momentum.artLanded(player, art, hurt.size(), foe);
+					// The bonded blade in hand gathers resonance from an art that lands (and remembers which).
+					dev.wildercord.aura.BondedBlades.artLanded(player, art, hurt.size(), foe);
 				}
 			}
 			return taken;

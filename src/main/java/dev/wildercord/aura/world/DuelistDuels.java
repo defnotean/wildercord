@@ -428,6 +428,8 @@ public final class DuelistDuels {
 		Grimoire.unlock(player, "aura:duelist");
 		// And a part of a technique of their own: one the challenger doesn't know yet, its method's favourites likelier.
 		dev.wildercord.aura.Techniques.duelistLesson(player, method, name);
+		// A bonded blade in hand remembers the duel won.
+		dev.wildercord.aura.BondedBlades.dueled(player, method.id());
 		if (active.magic) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.duelist.magic", name).withColor(0xC8A0A0));
 		} else {

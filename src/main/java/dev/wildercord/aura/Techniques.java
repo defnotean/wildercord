@@ -847,6 +847,8 @@ public final class Techniques {
 			double xp = first ? TechniqueRules.strike(worth, share, !foe.isAlive())
 				: worth * (TechniqueRules.DAMAGE * Math.min(1, share) + (!foe.isAlive() ? TechniqueRules.KILL : 0));
 			xp *= moment * repeat * Math.max(0, Config.get().aura().techniques().techniqueXp());
+			// A bonded blade's Inkbound Steel: techniques rank faster with it.
+			xp *= BladeTraits.techniqueXp(player);
 			xp = Math.max(0, Math.min(xp, TechniqueRules.MAX_PER_USE - earned));
 			if (xp <= 0) {
 				return;

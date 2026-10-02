@@ -189,6 +189,8 @@ public final class AuraCombat {
 		bonus *= dev.wildercord.aura.arts.ArtWards.juggle(player, target);
 		// Awakened: a little harder (half that against a player, and that too under their cap and the PvP scale).
 		bonus *= Awakening.damage(player, target);
+		// A bonded blade's trait (Riposte after a perfect guard, Mountainfeller on a boss, Gravewarden on the undead), under the same cap.
+		bonus *= BladeTraits.coat(player, target);
 		double amount = damage * againstPlayer(target, bonus);
 		if (Aura.stage(player) >= AuraRules.EDGE && !source.is(DamageTypeTags.BYPASSES_ARMOR) && amount > 0) {
 			float after = CombatRules.getDamageAfterAbsorb(target, (float) amount, source, target.getArmorValue(),
@@ -322,6 +324,10 @@ public final class AuraCombat {
 		if (!projected && !practice) {
 			// In the striker's Dominion a blow chains once to another foe inside.
 			AuraDominion.chain(player, target, taken);
+		}
+		if (killed) {
+			// A worthy foe felled by the blade: its bonded blade remembers it.
+			BondedBlades.killed(player, target, worth, repetition, practice);
 		}
 		AuraBreakthroughs.struck(player, target, killed, practice);
 	}

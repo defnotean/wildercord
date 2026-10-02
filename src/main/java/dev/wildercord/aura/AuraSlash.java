@@ -33,8 +33,10 @@ public final class AuraSlash {
 		}
 		WildercordConfig.AuraSettings settings = Config.get().aura();
 		// Awakened on the Way of the Blade at Sovereign, it's free and quick.
-		double price = WayEffects.slashPrice(player, settings.slashCost());
+		// A bonded blade's Long Crescent: cheaper, and it flies further.
+		double price = WayEffects.slashPrice(player, settings.slashCost()) * BladeTraits.slashPrice(player);
 		AuraRules.Spend paid = Aura.spend(player, price, "slash");
+		BondedBlades.slashed(player);
 		Aura.state(player, Aura.state(player).slashReady(now + WayEffects.slashRest(player, settings.slashCooldownTicks())));
 		double weapon = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
 		double damage = AuraRules.slashDamage(weapon, settings.slashDamage(), Math.max(price, 1.0E-6), price <= 0 ? 1 : paid.paid())
@@ -45,8 +47,8 @@ public final class AuraSlash {
 		}
 		// An aura-forged glaive's slash: harder (a bonus counted with the element, so held to the cap against a player), further,
 		// wider, and through more foes. A spell riding the blade (Spellblade) goes with it.
-		fly(player, damage, paid.backlash(), ForgedGear.slashBonus(player), ForgedGear.slashReach(player), ForgedGear.slashTargets(player),
-			Spellblade.take(player));
+		fly(player, damage, paid.backlash(), ForgedGear.slashBonus(player), ForgedGear.slashReach(player) * BladeTraits.slashReach(player),
+			ForgedGear.slashTargets(player), Spellblade.take(player));
 		return true;
 	}
 

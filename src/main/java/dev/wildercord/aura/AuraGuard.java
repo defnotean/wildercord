@@ -137,6 +137,7 @@ public final class AuraGuard {
 		caught(player, shooter instanceof LivingEntity living ? living : null, 0);
 		feedback(player);
 		Momentum.guarded(player, false);
+		BondedBlades.guarded(player, shooter instanceof LivingEntity living ? living : null);
 		Grimoire.unlock(player, "aura:perfect_guard");
 		return turnBack(player, projectile, shooter);
 	}
@@ -236,6 +237,8 @@ public final class AuraGuard {
 			WayEffects.slip(player, slipFrom, slipTo);
 		}
 		Momentum.guarded(player, direct instanceof LivingEntity && !source.is(Aura.DAMAGE));
+		// The bonded blade remembers it (and a Riposte readies the next blow).
+		BondedBlades.guarded(player, source.getEntity() instanceof LivingEntity attacker && attacker != player ? attacker : null);
 		// The first one goes into the Grimoire.
 		Grimoire.unlock(player, "aura:perfect_guard");
 	}

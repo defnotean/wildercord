@@ -126,9 +126,13 @@ public final class Aura {
 		return Config.aura(player);
 	}
 
-	/** Whether {@code entity} holds something that carries aura in its main hand. */
+	/**
+	 * Whether {@code entity} holds something that carries aura in its main hand: anything aura weapons are, but never another swordsman's
+	 * bonded blade (in anyone else's hands it's only steel).
+	 */
 	public static boolean holdsWeapon(LivingEntity entity) {
-		return entity.getMainHandItem().is(WEAPONS);
+		net.minecraft.world.item.ItemStack stack = entity.getMainHandItem();
+		return stack.is(WEAPONS) && !BondedBlades.foreign(entity, stack);
 	}
 
 	/** Whether a blow struck now would be coated: aura works, a method is learned, an aura weapon is in hand, and there's aura for it. */
@@ -270,6 +274,8 @@ public final class Aura {
 			stance.anchor = player.position();
 		}
 		AuraBreakthroughs.broken(player);
+		// A bonded blade's ceremony asks the stance unbroken to its end.
+		BladeCeremony.broken(player);
 		AuraAttachments.State state = state(player);
 		if (state.breathing() || state.stillness() > 0) {
 			state(player, state.settled(-1).stillness(0));
@@ -334,6 +340,8 @@ public final class Aura {
 			AuraVfx.breathe(player, color(player));
 		}
 		AuraBreakthroughs.stillness(player, now);
+		// A blade held in the stance at a ley crossing is bonded (or, its own blade before a kneeling disciple, passed on).
+		BladeCeremony.breathing(player, state(player), now);
 		// A swordsman past the crossroads with no Way calls it by breathing a few seconds.
 		Crossroads.breathing(player, state(player), now);
 	}
@@ -525,6 +533,8 @@ public final class Aura {
 		// Techniques of one's own, written from Edge out of a stroke, a release and an intent, played as sword strings (after Ways: a Way
 		// lends a part).
 		Techniques.init();
+		// The bonded blade: one blade bonded from Edge, growing with every fight, kept through death and only ever its swordsman's.
+		BondedBlades.init();
 		AuraMethods.init();
 		Crescents.init();
 		AuraCombat.init();
