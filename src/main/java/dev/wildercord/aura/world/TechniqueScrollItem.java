@@ -119,7 +119,7 @@ public class TechniqueScrollItem extends Item {
 		TechniqueRules.Family family = TechniqueRules.family(part).orElseThrow();
 		builder.accept(Component.translatable("item.wildercord.technique_scroll.lore").withStyle(ChatFormatting.ITALIC).withColor(0xC8B89A));
 		builder.accept(Component.translatable("tooltip.wildercord.technique_scroll.kind",
-			Component.translatable("screen.wildercord.aura.writing." + family.id).withColor(0xFF000000 | Techniques.familyColor(family))).withStyle(ChatFormatting.GRAY));
+			Component.translatable("screen.wildercord.aura.writing." + family.id + ".word").withColor(0xFF000000 | Techniques.familyColor(family))).withStyle(ChatFormatting.GRAY));
 		builder.accept(Component.translatable(TechniqueRules.nameKey(part) + ".desc").withColor(0xB8A8D8));
 		builder.accept(Component.translatable("tooltip.wildercord.technique_scroll.use").withStyle(ChatFormatting.DARK_GRAY));
 	}

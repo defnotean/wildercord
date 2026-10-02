@@ -463,7 +463,8 @@ public final class Techniques {
 			}
 		}
 		for (AuraApi.StringArt other : others) {
-			if (other.id().equals(self) || TechniqueRules.clash(string, other.string()) || !TechniqueRules.overlap(string, other.string())) {
+			if (other.id().equals(self) || TechniqueRules.clash(string, other.string()) || !TechniqueRules.overlap(string, other.string())
+					|| TechniqueRules.incidentalCue(string, other.string())) {
 				continue;
 			}
 			out.add(new Overlap(other, StringReader.compare(other, mine) > 0));
@@ -505,7 +506,7 @@ public final class Techniques {
 		TechniqueRules.Family[] families = TechniqueRules.Family.values();
 		for (int k = 0; k < 3; k++) {
 			if (!TechniqueRules.is(parts[k], families[k])) {
-				return new Refusal("message.wildercord.aura.technique.not_part", Component.translatable("screen.wildercord.aura.writing." + families[k].id));
+				return new Refusal("message.wildercord.aura.technique.not_part", Component.translatable("screen.wildercord.aura.writing." + families[k].id + ".word"));
 			}
 			if (!knows(player, parts[k])) {
 				return new Refusal("message.wildercord.aura.technique.unknown", Component.translatable(TechniqueRules.nameKey(parts[k])));
@@ -752,7 +753,7 @@ public final class Techniques {
 		}
 		set(player, book(player).withLearned(part));
 		Component name = Component.translatable(TechniqueRules.nameKey(part)).withColor(0xFF000000 | familyColor(family.get()));
-		Component kind = Component.translatable("screen.wildercord.aura.writing." + family.get().id);
+		Component kind = Component.translatable("screen.wildercord.aura.writing." + family.get().id + ".word");
 		player.sendSystemMessage(Component.translatable("message.wildercord.aura.technique.learned", name, kind).withColor(0xE8D8B0));
 		if (Aura.stage(player) < TechniqueRules.FROM) {
 			player.sendSystemMessage(Component.translatable("message.wildercord.aura.technique.learned_later",

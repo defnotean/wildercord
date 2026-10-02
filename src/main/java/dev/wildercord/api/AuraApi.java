@@ -62,6 +62,12 @@ import java.util.function.Predicate;
  *   <li><b>Ways</b> ({@link #registerWay}, {@link #wayOf}, {@link #hasWayNode}, {@link #onWay}, {@link #openCrossroads}): at the Edge
  *       breakthrough a swordsman chooses a Way at the crossroads (the Blade, the Bulwark, the Shadowstep, the Banner, or an add-on's),
  *       which forks their path with a node at Edge, Form and Sovereign: a passive and a change to a technique they know.</li>
+ *   <li><b>Techniques of one's own</b> ({@link #teachPart}, {@link #techniqueScroll}, {@link #registerScrollSource},
+ *       {@link #registerTechniqueIntent}, {@link #onTechnique}, {@link #writtenTechniques}): from Edge a swordsman writes techniques of
+ *       their own on the Aura page out of a stroke, a release and an intent, names them and gives each a sword string (one slot at Edge,
+ *       two at Form, three at Sovereign); they're priced like the arts and rank up as they land. The parts come from technique scrolls,
+ *       duelists beaten and Ways. Each plays as a sword string of its writer's own ({@link #addStringSource}), named through
+ *       {@link #artName}.</li>
  *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
  *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
  *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,

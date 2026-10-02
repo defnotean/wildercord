@@ -226,9 +226,11 @@ public final class TechniqueArts {
 				case TechniqueRules.THRUST -> {
 					Vec3 hand = eyeAt.subtract(0, 0.35, 0).add(look3.scale(0.6));
 					show.ray(hand, hand.add(look3.scale(r)), c, 0.09 * w, 8).bare().ray(hand, hand.add(look3.scale(r)), 0xFFFFFF, 0.03 * w, 6);
-					// Low along the ground, a streak of light out to its reach (what the swordsman sees of it).
+					// Low along the ground, a streak scorched out to its reach (seen from outside: through the swordsman's own eyes it would
+					// run straight up the middle of the view, where the trail already is); a small mark where its point stops is theirs too.
 					Vec3 low = from.add(0, 0.06, 0);
-					world.ray(low.add(dir.scale(1.4)), low.add(dir.scale(r)), c, 0.16 * w, 9);
+					show.ray(low.add(dir.scale(1.4)), low.add(dir.scale(r)), c, 0.14 * w, 9);
+					world.groundRing(low.add(dir.scale(r)), c, 0.1, 0.55, 0.05 * w, 8);
 				}
 				case TechniqueRules.RISING -> {
 					Vec3 centre = from.add(0, 0.35, 0).add(dir.scale(Math.min(2.2, r * 0.6)));

@@ -804,6 +804,23 @@ public final class TechniqueRules {
 		return true;
 	}
 
+	/**
+	 * Whether the only way the same swings finish both strings is a counter or a step cut that {@code mine} doesn't ask for (the other's
+	 * cue lined up against a swing of mine that isn't that cue): a perfect guard or an Aura Step is something its swordsman means, never
+	 * something that happens on the way, so the page doesn't warn of it.
+	 */
+	public static boolean incidentalCue(SwordString mine, SwordString other) {
+		int n = Math.min(mine.length(), other.length());
+		for (int i = 1; i <= n; i++) {
+			SwordString.Token theirs = other.token(other.length() - i);
+			SwordString.Token own = mine.token(mine.length() - i);
+			if ((theirs == SwordString.Token.COUNTER || theirs == SwordString.Token.STEP) && own != theirs) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// ================================================================== names
 
 	/** The longest name a technique may have (in letters). */
@@ -855,6 +872,11 @@ public final class TechniqueRules {
 			letters++;
 		}
 		return out.toString().trim();
+	}
+
+	/** Whether a character typed may go into a name at all (the writing page takes only these): a space, or anything shown. */
+	public static boolean nameCharacter(int cp) {
+		return cp != 0xA7 && (cp == ' ' || shown(cp) && !Character.isWhitespace(cp));
 	}
 
 	/** Whether a character may stand in a name (a space is kept, as one). */

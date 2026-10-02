@@ -70,8 +70,8 @@ public final class TechniquePage {
 	private static final Identifier SPR_ROW_LOCKED = Wildercord.id("cord/row_locked");
 	private static final Identifier SPR_SOCKET = Wildercord.id("cord/socket");
 	private static final Identifier SPR_SOCKET_HOVER = Wildercord.id("cord/socket_hover");
-	private static final Identifier SPR_SOCKET_QUIET = Wildercord.id("cord/socket_quiet");
 	private static final Identifier SPR_THREAD = Wildercord.id("cord/thread");
+	private static final Identifier SPR_LOCK = Wildercord.id("cord/lock");
 	private static final Identifier SPR_SEAL = Wildercord.id("technique/seal");
 	private static final Identifier SPR_SEAL_OPEN = Wildercord.id("technique/seal_open");
 
@@ -86,8 +86,8 @@ public final class TechniquePage {
 	static final int SEAL = 26;
 	static final int PICKER_Y = 146;
 	static final int READOUT_Y = 172;
-	static final int KATA_X = 198;
-	static final int KATA_W = 104;
+	static final int KATA_X = 206;
+	static final int KATA_W = 96;
 	static final int KATA_H = 60;
 	static final int STRING_Y = 240;
 	static final int TOKENS_Y = 256;
@@ -556,11 +556,12 @@ public final class TechniquePage {
 			boolean known = Techniques.knows(player, part);
 			boolean hover = inside(mx, my, x, y, cell, cell);
 			boolean selected = part.equals(chosen);
-			g.blitSprite(RenderPipelines.GUI_TEXTURED, !known ? SPR_SOCKET_QUIET : hover || selected ? SPR_SOCKET_HOVER : SPR_SOCKET, x, y, cell, cell);
-			int tint = known ? 0xFF000000 | AuraHud.mix(fam, 0xFFFFFF, selected ? 0.5 : 0.2) : 0x883A3450;
+			g.blitSprite(RenderPipelines.GUI_TEXTURED, hover || selected ? SPR_SOCKET_HOVER : SPR_SOCKET, x, y, cell, cell);
+			int tint = known ? 0xFF000000 | AuraHud.mix(fam, 0xFFFFFF, selected ? 0.5 : 0.2) : 0x664A4458;
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, glyph(part), x + 1, y + 1, 16, 16, tint);
 			if (!known) {
-				small(g, Component.literal("?"), x + cell - 5, y + cell - 7, DIM, 0.75F);
+				// Not known yet: dark, a lock on it.
+				g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_LOCK, x + cell - 7, y + cell - 8, 7, 8);
 			} else if (Techniques.lent(player, part) && !Techniques.learned(player, part)) {
 				// Lent by a Way: a dot of its colour in the corner.
 				int wc = 0xFF000000 | wayColor(TechniqueRules.lendingWay(part));
@@ -591,7 +592,7 @@ public final class TechniquePage {
 		int x = 20;
 		int y = READOUT_Y;
 		int width = KATA_X - x - 8;
-		float s = 0.8F;
+		float s = 0.75F;
 		int pitch = 8;
 		if (p == null) {
 			small(g, Component.translatable("screen.wildercord.aura.writing.broken"), x, y, RED, s);
@@ -604,7 +605,7 @@ public final class TechniquePage {
 		Component price = Component.translatable("screen.wildercord.aura.writing.price", trim(cost), trim(rest / 20.0));
 		g.text(font, price, x, y, LAVENDER, true);
 		y += 11;
-		double blade = Math.max(1.0, player.getAttributeValue(Attributes.ATTACK_DAMAGE));
+		double blade = blade(player);
 		List<Component> lines = new ArrayList<>();
 		lines.add(switch (p.shape()) {
 			case LINE -> Component.translatable("screen.wildercord.aura.writing.shape.line", trim(p.reach()), p.targets());
@@ -628,18 +629,24 @@ public final class TechniquePage {
 				continue;
 			}
 			for (FormattedCharSequence part : font.split(line, Math.round(width / s))) {
-				if (y > READOUT_Y + 52) {
+				if (y > READOUT_Y + 44) {
 					break;
 				}
 				small(g, part, x, y, TEXT, s);
 				y += pitch;
 			}
 		}
-		// Where it sits against the arts: a scale of the four, its worth a mark on it.
+		// Where it sits against the arts: a scale of the four, its worth a mark on it, the nearest named beside it.
 		double worth = TechniqueRules.worth(p);
-		int gx = x;
-		int gy = READOUT_Y + 58;
-		int gw = width - 4;
+		int near = TechniqueRules.momentumSlot(worth);
+		Component like = Component.translatable("screen.wildercord.aura.writing.worth", Component.translatable(dev.wildercord.aura.AuraFxRules.ordinalKey(near + 1)));
+		int gy = READOUT_Y + 57;
+		small(g, Component.translatable("screen.wildercord.aura.writing.worth_label"), x, gy, DIM, 0.7F);
+		int gx = x + (int) (font.width(Component.translatable("screen.wildercord.aura.writing.worth_label")) * 0.7F) + 4;
+		int likeW = (int) (font.width(like) * 0.7F);
+		int gw = Math.max(30, width - (gx - x) - likeW - 8);
+		small(g, like, gx + gw + 6, gy, 0xFFC8C0E0, 0.7F);
+		gy -= 1;
 		g.fill(gx, gy + 2, gx + gw, gy + 3, 0xFF3A3450);
 		double lo = 0.8;
 		double hi = 2.7;
@@ -649,12 +656,18 @@ public final class TechniquePage {
 		}
 		int wx = gx + (int) Math.round(Math.max(0, Math.min(1, (worth - lo) / (hi - lo))) * gw);
 		g.fill(wx - 1, gy - 1, wx + 2, gy + 6, 0xFF000000 | AuraHud.mix(color, 0xFFFFFF, 0.3));
-		int near = TechniqueRules.momentumSlot(worth);
-		Component like = Component.translatable("screen.wildercord.aura.writing.worth", Component.translatable(dev.wildercord.aura.AuraFxRules.ordinalKey(near + 1)));
-		if (inside(mx, my, gx - 2, gy - 3, gw + 4, 10)) {
+		if (inside(mx, my, x - 2, gy - 3, width + 4, 10)) {
 			tip = List.of(like.copy().withColor(TEXT), Component.translatable("screen.wildercord.aura.writing.worth_tip", trim2(worth)).withStyle(ChatFormatting.GRAY));
 		}
 		return tip;
+	}
+
+	/** What the blade in hand strikes for (its own modifiers on the player's base): the client's attribute doesn't carry the hand's. */
+	private static double blade(LocalPlayer player) {
+		double base = player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
+		double held = player.getMainHandItem().getOrDefault(net.minecraft.core.component.DataComponents.ATTRIBUTE_MODIFIERS,
+			net.minecraft.world.item.component.ItemAttributeModifiers.EMPTY).compute(Attributes.ATTACK_DAMAGE, base, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+		return Math.max(1.0, Math.max(held, player.getAttributeValue(Attributes.ATTACK_DAMAGE)));
 	}
 
 	private static Component intentLine(TechniqueRules.Profile p) {
@@ -735,7 +748,7 @@ public final class TechniquePage {
 			reachNow = p.reach() * Math.min(1, t / 6.0);
 		}
 		// The shape it strikes, filled, brightest as it's struck.
-		double base = 0.18 + 0.4 * flash;
+		double base = 0.26 + 0.4 * flash;
 		fillShape(g, p, x, y, ox, oy, scale, reachNow, 0, argb(color, base));
 		if (wave) {
 			// The wave racing on past the stroke's reach.
@@ -1164,10 +1177,10 @@ public final class TechniquePage {
 			}
 			draft = d.part(open, part);
 			click(1.0F + 0.08F * TechniqueRules.parts(open).indexOf(part));
-			// Picked a stroke: on to its release; a release: on to its intent.
-			if (open == TechniqueRules.Family.STROKE && d.of(TechniqueRules.Family.STROKE).equals(part)) {
+			// Picked a stroke: on to its release; a release: on to its intent (a seal clicked goes back).
+			if (open == TechniqueRules.Family.STROKE) {
 				open = TechniqueRules.Family.RELEASE;
-			} else if (open == TechniqueRules.Family.RELEASE && d.of(TechniqueRules.Family.RELEASE).equals(part)) {
+			} else if (open == TechniqueRules.Family.RELEASE) {
 				open = TechniqueRules.Family.INTENT;
 			}
 			return true;
@@ -1297,7 +1310,11 @@ public final class TechniquePage {
 		if (!typing || draft == null || !event.isAllowedChatCharacter()) {
 			return false;
 		}
-		String next = draft.name() + event.codepointAsString();
+		String typed = event.codepointAsString();
+		if (typed.codePoints().anyMatch(cp -> !TechniqueRules.nameCharacter(cp))) {
+			return true;
+		}
+		String next = draft.name() + typed;
 		if (TechniqueRules.cleanName(next).length() <= TechniqueRules.MAX_NAME && next.length() <= TechniqueRules.MAX_NAME * 2) {
 			draft = draft.name(next);
 		}
