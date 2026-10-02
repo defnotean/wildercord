@@ -691,6 +691,43 @@ public class WildercordTechniquesTest implements FabricClientGameTest {
 		});
 		check(on(world, p -> Techniques.duelistLesson(p, dev.wildercord.aura.BreathingMethods.EMBER, net.minecraft.network.chat.Component.literal("Duelist"))
 			.isEmpty()), "nothing left to show");
+		// Scrolls in the world: an ancient city's chests (14%) and an expedition's vault (20%), rolled as a chest would be.
+		String loot = on(world, player -> {
+			StringBuilder out = new StringBuilder();
+			for (String[] table : List.of(new String[] {"minecraft", "chests/ancient_city", "14"},
+					new String[] {"wildercord", "chests/ember_sanctum_vault", "20"})) {
+				net.minecraft.world.level.storage.loot.LootTable chest = player.level().getServer().reloadableRegistries().getLootTable(
+					net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.LOOT_TABLE,
+						net.minecraft.resources.Identifier.fromNamespaceAndPath(table[0], table[1])));
+				int rolls = 400;
+				int with = 0;
+				for (int i = 0; i < rolls; i++) {
+					net.minecraft.world.level.storage.loot.LootParams params = new net.minecraft.world.level.storage.loot.LootParams.Builder(player.level())
+						.withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, player.position())
+						.create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.CHEST);
+					boolean found = false;
+					for (ItemStack stack : chest.getRandomItems(params)) {
+						if (stack.is(TechniqueScrollItem.SCROLL)) {
+							String part = TechniqueScrollItem.partOf(stack).orElse("");
+							if (!TechniqueRules.scrollable(part)) {
+								return table[1] + " gave a scroll of " + part + ", which no scroll should carry";
+							}
+							found = true;
+						}
+					}
+					with += found ? 1 : 0;
+				}
+				double expected = Integer.parseInt(table[2]) / 100.0;
+				double share = with / (double) rolls;
+				out.append(table[1]).append(' ').append(with).append('/').append(rolls).append(' ');
+				if (share < expected * 0.5 || share > expected * 1.6) {
+					return table[1] + " should hold a scroll about " + table[2] + "% of the time (" + out + ")";
+				}
+			}
+			dev.wildercord.Wildercord.LOGGER.info("Technique scrolls rolled: {}", out);
+			return null;
+		});
+		check(loot == null, loot);
 		// The page before Edge: every part found waits, the slots locked.
 		context.runOnClient(mc -> AuraScreen.showWriting(true, 0));
 		context.setScreen(() -> new AuraScreen(null));
