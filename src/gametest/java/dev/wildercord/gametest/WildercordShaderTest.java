@@ -33,7 +33,8 @@ import java.util.List;
 
 /**
  * Magic under a shader pack: spells whose light glows and whose void darkens, a Shield's circles, a
- * wisp, a Cord just put on, and aura's feel (a Sovereign body aura, an art's trail, impact and banner), each photographed with a
+ * wisp, a Cord just put on, and aura's feel (a Sovereign body aura, an art's trail, impact and banner, an awakened body, the
+ * crossroads' standards), each photographed with a
  * pack drawing the world. Only runs with Iris
  * installed ({@code ./gradlew runClientGameTest -Pshaders}).
  *
@@ -182,6 +183,17 @@ public class WildercordShaderTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> dev.wildercord.api.AuraApi.endAwakening(player(server)));
 		context.waitTicks(3);
 		world.getServer().runCommand("kill @e[tag=wildercord.shader_aura]");
+		// The crossroads (step 7): its standards of light from behind, under the pack too; closed again after (its state taken away).
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			dev.wildercord.aura.Ways.set(player, "");
+			check(dev.wildercord.api.AuraApi.openCrossroads(player), "the crossroads should rise round a swordsman with no Way");
+		});
+		context.waitTicks(30);
+		shot(context, prefix + "_aura_crossroads");
+		world.getServer().runOnServer(server -> player(server).removeAttached(dev.wildercord.aura.Crossroads.CROSSROADS));
+		context.waitTicks(12);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.removeAttached(dev.wildercord.aura.Awakening.AWAKENING);

@@ -47,8 +47,9 @@ public final class WayHud {
 		long now = mc.level.getGameTime();
 		Font font = mc.font;
 		int cx = g.guiWidth() / 2;
-		// Low: above the hotbar and the line over it, well clear of the middle of the view and the standards in it.
-		int y = g.guiHeight() - 98;
+		// Low: above the hotbar, the held item's name and the action bar (a lean's own line lands there), well clear of the middle of
+		// the view and the standards in it.
+		int y = g.guiHeight() - 110;
 		Crossroads.Standard aimed = Crossroads.aimed(player, s);
 		AuraApi.Way way = aimed == null ? null : AuraApi.way(aimed.way()).orElse(null);
 		if (way == null) {

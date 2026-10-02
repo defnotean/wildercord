@@ -568,17 +568,20 @@ public class AuraScreen extends Screen {
 				dy = details(g, player, w, node, state, dy, stage);
 			}
 		}
-		// ---- how to change it.
-		int fy = Math.max(dy + 3, H - 30);
-		if (fy <= H - 20) {
-			Component how = Component.translatable(walking != null ? "screen.wildercord.aura.way.change" : "screen.wildercord.aura.way.how",
-				Component.translatable("item.wildercord.crossroads_incense"));
-			for (net.minecraft.util.FormattedCharSequence part : font.split(how, W - 30)) {
-				if (fy > H - 20) {
-					break;
-				}
-				g.text(font, part, 16, fy, FAINT, false);
-				fy += 10;
+		// ---- how to change it: small, at the foot, drawn whole or not at all (never a sentence cut off at the frame).
+		Component how = Component.translatable(walking != null ? "screen.wildercord.aura.way.change" : "screen.wildercord.aura.way.how",
+			Component.translatable("item.wildercord.crossroads_incense"));
+		float small = 0.8F;
+		List<net.minecraft.util.FormattedCharSequence> howLines = font.split(how, Math.round((W - 30) / small));
+		int fy = Math.max(dy + 3, H - 18 - (howLines.size() - 1) * 8);
+		if (fy + (howLines.size() - 1) * 8 <= H - 18) {
+			for (net.minecraft.util.FormattedCharSequence part : howLines) {
+				g.pose().pushMatrix();
+				g.pose().translate(16, fy);
+				g.pose().scale(small, small);
+				g.text(font, part, 0, 0, FAINT, false);
+				g.pose().popMatrix();
+				fy += 8;
 			}
 		}
 		return tooltip;
@@ -658,25 +661,34 @@ public class AuraScreen extends Screen {
 		};
 		g.text(font, font.plainSubstrByWidth(where.getString(), W - 32), 18, y, whereColor, false);
 		y += 11;
-		int limit = H - 32;
+		// The passive and the change come before the foot's line (which gives way to them): at full size when they fit above the frame,
+		// a little smaller when a long node wouldn't, so no node's words are ever cut off.
+		int bottom = H - 12;
 		Component passive = Component.translatable("screen.wildercord.aura.way.passive", Component.translatable(node.passiveKey()));
-		for (net.minecraft.util.FormattedCharSequence part : font.split(passive, W - 34)) {
-			if (y > limit) {
-				return y;
-			}
-			g.text(font, part, 18, y, TEXT, false);
-			y += 10;
-		}
 		String change = dev.wildercord.aura.WayRules.CHANGES.get(node.id());
 		Component changes = change == null ? Component.translatable("screen.wildercord.aura.way.change_line", Component.translatable(node.changeKey()))
 			: Component.translatable("screen.wildercord.aura.way.changes", Component.translatable("aura.wildercord.technique." + change),
 				Component.translatable(node.changeKey()));
-		for (net.minecraft.util.FormattedCharSequence part : font.split(changes, W - 34)) {
-			if (y > limit) {
+		float scale = 1.0F;
+		List<net.minecraft.util.FormattedCharSequence> passiveLines = font.split(passive, W - 34);
+		List<net.minecraft.util.FormattedCharSequence> changeLines = font.split(changes, W - 34);
+		if (y + (passiveLines.size() + changeLines.size()) * 10 - 1 > bottom) {
+			scale = 0.8F;
+			passiveLines = font.split(passive, Math.round((W - 34) / scale));
+			changeLines = font.split(changes, Math.round((W - 34) / scale));
+		}
+		int step = scale < 1.0F ? 8 : 10;
+		for (int i = 0; i < passiveLines.size() + changeLines.size(); i++) {
+			if (y + step - 1 > bottom) {
 				return y;
 			}
-			g.text(font, part, 18, y, 0xFFC8C0E0, false);
-			y += 10;
+			boolean isPassive = i < passiveLines.size();
+			g.pose().pushMatrix();
+			g.pose().translate(18, y);
+			g.pose().scale(scale, scale);
+			g.text(font, isPassive ? passiveLines.get(i) : changeLines.get(i - passiveLines.size()), 0, 0, isPassive ? TEXT : 0xFFC8C0E0, false);
+			g.pose().popMatrix();
+			y += step;
 		}
 		return y;
 	}

@@ -1,12 +1,5 @@
----
-title: Ways
-parent: Growing Stronger
-nav_order: 2.4
-description: "The four Ways a swordsman chooses at the Edge breakthrough (the Blade, the Bulwark, the Shadowstep and the Banner), the crossroads where the choice is made, every node at Edge, Form and Sovereign, who counts as an ally, changing your Way with a Crossroads Incense, and the Way tab on the Aura page."
----
-
 # Ways: where the path forks
-{: .no_toc }
+
 
 Up to **Edge**, every swordsman walks the same road: a method of their own, but the same techniques. At the Edge breakthrough the
 road forks. A **crossroads** rises round you, a standard of light for each **Way**, and you strike the one you mean to walk. Your Way
@@ -15,11 +8,9 @@ already know** (the slash, the guard, the step, Intent, finishers, awakening, Do
 different: a Blade cuts through what stops other swordsmen, a Bulwark stands where others give ground, a Shadowstep is never where
 the blow lands, and a Banner makes everyone beside them better.
 
-<img src="{{ '/assets/images/ways-crossroads.jpg' | relative_url }}" alt="The same scene by day and by night: four standards of light in an arc in front of a player seen from behind, a red sword planted point-down, a blue shield on a pole, a dark pillar with three pale afterimages beside it under a crescent, and a gold pennant on a pole, each with a ring of light at its foot" class="shot">
-<span class="caption">The crossroads, just after the Edge breakthrough, by day and by night.</span>
+![The same scene by day and by night: four standards of light in an arc in front of a player seen from behind, a red sword planted point-down, a blue shield on a pole, a dark pillar with three pale afterimages beside it under a crescent, and a gold pennant on a pole, each with a ring of light at its foot](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-crossroads.jpg)
+<span>The crossroads, just after the Edge breakthrough, by day and by night.</span>
 
-1. TOC
-{:toc}
 
 ## At a glance
 
@@ -43,8 +34,8 @@ you, one for each Way: the **Blade**'s sword planted point-down in red, the **Bu
 gold. Everyone near sees them too. They stand for a minute; walk more than a dozen blocks away and they fade (so does a death, or a
 change of world), and you can call them again (below).
 
-<img src="{{ '/assets/images/ways-first-person.jpg' | relative_url }}" alt="Through the player's own eyes: the four standards of light in a row ahead, the blue shield in the middle under the crosshair, and above the hotbar the words Way of the Bulwark, Strike to lean toward it, and the names of its three nodes" class="shot">
-<span class="caption">Looking at a standard names its Way, what a strike does now, and its three nodes, low on the screen.</span>
+![Through the player's own eyes: the four standards of light in a row ahead, the blue shield in the middle under the crosshair, and above the hotbar the words Way of the Bulwark, Strike to lean toward it, and the names of its three nodes](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-first-person.jpg)
+<span>Looking at a standard names its Way, what a strike does now, and its three nodes, low on the screen.</span>
 
 ### Choosing
 
@@ -56,8 +47,8 @@ nodes and which are yours already. The choice goes into your Grimoire.
 
 Take your time: the Aura page's **Way** tab (below) shows every node in full, and you can open it while the crossroads stands.
 
-<img src="{{ '/assets/images/ways-moments.jpg' | relative_url }}" alt="Four night scenes of a player choosing a Way: beams of light pour from the chosen standard into the player, the other standards burst apart in sparks, and rings of the chosen Way's colour circle the player: red for the Blade, blue for the Bulwark, pale violet for the Shadowstep, gold for the Banner" class="shot">
-<span class="caption">Each Way chosen: the Blade, the Bulwark, the Shadowstep and the Banner.</span>
+![Four night scenes of a player choosing a Way: beams of light pour from the chosen standard into the player, the other standards burst apart in sparks, and rings of the chosen Way's colour circle the player: red for the Blade, blue for the Bulwark, pale violet for the Shadowstep, gold for the Banner](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-moments.jpg)
+<span>Each Way chosen: the Blade, the Bulwark, the Shadowstep and the Banner.</span>
 
 ### Already past Edge?
 
@@ -83,8 +74,8 @@ Each table lists a Way's nodes: the stage that opens each, its passive, and the 
 Play it by wearing a crowd down evenly (sweeps, arts) and then finishing one: the cascade carries on from foe to foe. Awakened at
 Sovereign, a Blade throws piercing crescents every second.
 
-<img src="{{ '/assets/images/ways-blade.jpg' | relative_url }}" alt="Left: a player's crescent of orange aura cutting through one husk and flying on to the husk behind it. Right: a finisher landing on a husk in a ring of light, and a sweep of aura carrying on to open a second husk beside it" class="shot">
-<span class="caption">Keen Edge's slash cutting through, and a Cascade.</span>
+![Left: a player's crescent of orange aura cutting through one husk and flying on to the husk behind it. Right: a finisher landing on a husk in a ring of light, and a sweep of aura carrying on to open a second husk beside it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-blade.jpg)
+<span>Keen Edge's slash cutting through, and a Cascade.</span>
 
 ### Way of the Bulwark
 *Stand where you are, and let nothing through.* Defence: a guard that turns everything, a body that won't fall, a Dominion nothing crosses.
@@ -98,8 +89,8 @@ Sovereign, a Blade throws piercing crescents every second.
 Play it by holding the guard more than you would: it covers your back, pays you back for every blow, and staggers what hits it. In a
 group, your Intent keeps the creatures on you and off your friends.
 
-<img src="{{ '/assets/images/ways-bulwark.jpg' | relative_url }}" alt="A player standing in a Dominion's circle of runes with a ring of pale blue light at its rim, a skeleton beyond it, and three of its arrows turned back in flashes of light at the Dominion's edge" class="shot">
-<span class="caption">A bastion: shots turned back at its edge.</span>
+![A player standing in a Dominion's circle of runes with a ring of pale blue light at its rim, a skeleton beyond it, and three of its arrows turned back in flashes of light at the Dominion's edge](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-bulwark.jpg)
+<span>A bastion: shots turned back at its edge.</span>
 
 ### Way of the Shadowstep
 *Be where the blow isn't, and strike where the eye isn't.* Movement: get behind, and let your afterimage do the rest.
@@ -113,8 +104,8 @@ group, your Intent keeps the creatures on you and off your friends.
 Play it as a loop: step through a pack (the afterimage cuts where you were), every blow after it from behind, the stance breaks, the
 finisher lands from behind and the step is ready again. A perfect guard is a way out from in front of anything.
 
-<img src="{{ '/assets/images/ways-shadowstep.jpg' | relative_url }}" alt="Left: a player who has just slipped round a husk's blow to stand at its back, a violet arc on the ground tracing the way they went and a flash where the blow met their guard. Right: a violet afterimage of the player left standing between two husks, striking them as the player stands clear" class="shot">
-<span class="caption">A slip behind its striker, and an afterimage striking where the swordsman stepped from.</span>
+![Left: a player who has just slipped round a husk's blow to stand at its back, a violet arc on the ground tracing the way they went and a flash where the blow met their guard. Right: a violet afterimage of the player left standing between two husks, striking them as the player stands clear](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-shadowstep.jpg)
+<span>A slip behind its striker, and an afterimage striking where the swordsman stepped from.</span>
 
 ### Way of the Banner
 *No one fights alone while your banner stands.* Together: share what you build, rally your friends, and shelter them.
@@ -128,8 +119,8 @@ finisher lands from behind and the step is ready again. A perfect guard is a way
 "Near" is **twelve blocks**. Alone, the Banner is the quietest Way (its cries and presence still steady you, and its Dominion
 shelters you); with friends, it's the strongest thing on the field.
 
-<img src="{{ '/assets/images/ways-banner.jpg' | relative_url }}" alt="Left: a player landing a finisher on a rival, a gold pennant of light over their head, a ring of gold at their feet and a thread of gold running to an ally ringed in gold. Right: the player's Dominion, the ally inside it in a ring of gold while the rival stands in the same circle without one" class="shot">
-<span class="caption">A rallying cry, and a sheltering Dominion.</span>
+![Left: a player landing a finisher on a rival, a gold pennant of light over their head, a ring of gold at their feet and a thread of gold running to an ally ringed in gold. Right: the player's Dominion, the ally inside it in a ring of gold while the rival stands in the same circle without one](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-banner.jpg)
+<span>A rallying cry, and a sheltering Dominion.</span>
 
 ## Allies and the Banner
 
@@ -158,8 +149,8 @@ A Way is meant to be lived with, so changing it costs something, three ways at o
 Why all three: the shards make it a fight, the ley crossing makes it a journey, and the settling means a new Way is walked into rather
 than bought, even by a Sovereign with shards to spare. Nothing is lost for good: you can walk any Way again, at the same price.
 
-<img src="{{ '/assets/images/ways-incense.jpg' | relative_url }}" alt="Left: a player burning a Crossroads Incense at a ley crossing, a ring of their Way's red drawn on the ground round them inside the crossing's pale circle. Right: the incense burned and their Way gone, a pale column of light rising over them" class="shot">
-<span class="caption">A Crossroads Incense burning at a ley crossing, and the Way burned away.</span>
+![Left: a player burning a Crossroads Incense at a ley crossing, a ring of their Way's red drawn on the ground round them inside the crossing's pale circle. Right: the incense burned and their Way gone, a pale column of light rising over them](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-incense.jpg)
+<span>A Crossroads Incense burning at a ley crossing, and the Way burned away.</span>
 
 ## The Way tab
 
@@ -177,8 +168,8 @@ you:
 Click a node (or hover it) to read it in full under the tree: its name and stage, where it stands, its passive and what it changes.
 At the foot, how to change your Way.
 
-<img src="{{ '/assets/images/ways-page.jpg' | relative_url }}" alt="The Aura page's Way tab: Your Way: Way of the Banner and its creed, then four columns of emblems (a sword, a shield, a crescent and a pennant) over three rows, Edge, Form and Sovereign, the Banner's column framed in gold and lit, and under it Shelter, Sovereign, in force, with its passive and what it changes" class="shot">
-<span class="caption">The Way tab of a Sovereign walking the Way of the Banner.</span>
+![The Aura page's Way tab: Your Way: Way of the Banner and its creed, then four columns of emblems (a sword, a shield, a crescent and a pennant) over three rows, Edge, Form and Sovereign, the Banner's column framed in gold and lit, and under it Shelter, Sovereign, in force, with its passive and what it changes](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/ways-page.jpg)
+<span>The Way tab of a Sovereign walking the Way of the Banner.</span>
 
 ## Ways and other players
 

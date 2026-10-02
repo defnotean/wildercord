@@ -73,7 +73,7 @@ and documented, not a first draft.
 | 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | done |
 | 5 | Momentum and openings | done |
 | 6 | Awakening | done |
-| 7 | Ways | planned |
+| 7 | Ways | done |
 | 8 | Your own techniques | planned |
 | 9 | The bonded blade | planned |
 | 10 | Masters, disciples, sparring and the clash | planned |
@@ -878,3 +878,92 @@ extra, art strength and every PvP cap are as step 5 left them.
   `calm()` (`endAwakening`, two ticks, then remove the attachment and the effects, refill the pool); an awakening burns the pool to 0
   when it ends. FakePlayer rivals aren't in the player list, so `Awakening.tick` never ends theirs and their `AuraAttachments.LOOK` must
   be set by hand to be drawn.
+
+### From step 7: Ways
+
+The player's view is `wiki/progression/ways.md` (a page of its own beside Sword Arts); the rules and every number are DESIGN.md's
+"Ways"; the code map is ARCHITECTURE.md's. Pure rules: `aura.WayRules` (unit-tested by `WayRulesTest`); runtime: `aura.Ways` (the
+state), `aura.Crossroads` (the choosing), `aura.WayEffects` (the Blade's, the Bulwark's and the Shadowstep's nodes), `aura.WayBanner`
+(the Banner's, allies, and the steadying in the damage path), `aura.CrossroadsIncense` (changing); client: `client.WayHud`, the
+`AuraScreen` Way tab; game test `WildercordWaysTest` (`WILDERCORD_WAYS=crossroads,called,moments,blade,bulwark,shadowstep,banner,incense,death,pages`),
+and `WildercordShaderTest` films the standards under its pack (`*_aura_crossroads`).
+
+**What was decided, and why.**
+- **The choice is the crossroads**: standards of light rise round the swordsman 50 ticks after the Edge breakthrough and they **strike**
+  one (lean), then strike it again (walk it). Strikes are swings the server saw (the punch), tested against each standard's axis along
+  the look (`WayRules.strike`). Not a menu: the blade chooses, in the world, seen by everyone near, and two strikes keep a swing at a mob
+  from choosing for you. The Aura page's Way tab can be read while it stands.
+- **Swordsmen already at Edge or above** call the crossroads by holding the **breathing stance** 60 ticks after it settles (never during
+  a stillness trial); their **first choice is free** and gives every node they've reached at once. They're told on joining.
+- **Changing** is a **Crossroads Incense** (two Aura Shards, an amethyst shard, blaze powder) burned at a **place of power**
+  (`way_change_at_power`), then **settling**: the new Way's Form node waits on half of `way_settle_xp` (240) experience earned walking
+  it, its Sovereign node on all of it (counted before the stage's cap). The old Way is gone at once.
+- **The twelve nodes** (DESIGN.md has the table): two Ways change **awakening** at Sovereign (Blade: free, quick slashes; Shadowstep:
+  free, quick steps, double afterimage) and two change **Dominion** (Bulwark: a bastion that turns shots at its edge; Banner: a shelter
+  for the party). At Edge two change the **guard** (Bulwark: every side, longer perfect, throws back, turns shots; Shadowstep: a perfect
+  guard slips behind the striker), one the **slash** (Blade: pierces) and one **finishers** (Banner: a rallying cry). At Form one changes
+  **finishers** (Blade: Cascade), one the **step** (Shadowstep: a striking afterimage) and two **Intent** (Bulwark: challenges foes off
+  allies; Banner: steadies allies while it presses).
+- **Allies** are `WayBanner.ally` (the rule chorus casting keeps: never duellists against each other; teammates; or two who couldn't harm
+  each other either way, `canHarmPlayer` both ways and the mod's `Targets.canHarm`). Pets share in steadying (`Targets.canHelp`).
+- **Steadying** (cries, presence, shelter, an unbroken Bulwark) is one store per body (`WayBanner.steady`, the strongest holding) plus
+  the shelter and the Bulwark, combined in `WayBanner.harm` (`WayRules.steadied`, capped at 0.3; against a player's harm times the PvP
+  scale), applied in `mixin.LivingEntityAuraMixin` after Dominion's weakening and before the guard. Only harm a foe deals (a source
+  entity): never falls, the void, hunger.
+- **Balance** is `WayRules.WORTH` (each node in shares of a swordsman's strength, the reasoning beside each) held by `WayRulesTest`:
+  alone, Blade, Bulwark and Shadowstep within 15%; the Banner the quietest alone (about 57% of their mean) but within a fifth of them
+  with one ally and leading with two; each Way leading its own term (offence, defence, mobility, support). If you change a node's
+  numbers, change its `Worth` and its reasoning with it.
+
+**The Way API** (`api.AuraApi`; reads are both sides, from the synced `Ways.WAY`):
+- `registerWay(new Way(id, color, List.of(new WayNode(nodeId, stage), ...)))`, `ways()`, `way(id)`: an add-on's Way gets a standard at
+  the crossroads (up to six; a plain pillar in its colour) and a column on the page (the plain emblem `aura/way_unknown`: `AuraScreen.emblem`
+  only knows the built-ins' sprites, so an add-on's own emblem needs a lookup there). Lang: `aura.wildercord.way.<id>`, `.creed`,
+  `.short`; `aura.wildercord.way_node.<node>`, `.passive`, `.change`.
+- `wayOf(player)`, `hasWayNode(player, nodeId)` (walked, the node's stage reached, awake after a change), `wayNodeState(player, way, node)`.
+- `chooseWay(serverPlayer, wayId)` (an add-on's own rite; owes the settling after a change), `unbindWay(serverPlayer)`,
+  `openCrossroads(serverPlayer)`, `onWay(new WayHook() { chosen(player, way, first); unbound(player, way); })`.
+- **A node's effect is its Way's own code.** The built-in nodes ask `Ways.has(player, WayRules.X)` where the technique lives (see
+  ARCHITECTURE.md's list), or go through the hooks (`onMomentum`, `onStance`, `onFinisher`, `onAwakening`, `onGain`). An add-on's node
+  does the same through the public hooks and `hasWayNode`.
+
+**For the later steps.**
+- **Step 8 (your own techniques)**: Ways are a natural **source of technique parts** ("from Ways" is already in the plan). Give each
+  built-in Way a part (a stroke, release or intent) learned once the Way's Edge node is theirs (check `hasWayNode`, not the Way, so a
+  change of Way and its settling apply), and decide whether a part is kept after a change of Way (say so in the guide). Parts that fit:
+  Blade, an intent *pierce* (the slash's own); Bulwark, an intent *ward* or a release *on the guard*; Shadowstep, a release *afterimage*
+  (reuse `AuraStep.Stepped.linger` and `WayEffects.afterimageStrikes`); Banner, an intent *rally* (`WayBanner.steady`, `company`). A
+  technique's strikes through `ArtKit.Hits` already meet the Shadowstep's from-behind stance (an `onStance` hook); the Blade's momentum
+  boost answers only "hit", not "art". The Way tab could list the parts a Way gives.
+- **Step 9 (bonded blade)**: a trait "drawn from how its wielder fought (most-used arts, Way, method)": read `Ways.state(player).way()`
+  (and `former`, `changes` if the blade remembers a past Way). `onWay` hears of choices and unbindings.
+- **Step 10 (masters, sparring, the clash)**: **the clash** meets the Blade's pierce: today a piercing crescent wins a crescent clash
+  outright (`Crescents.clash`: the winner flies on at `BLADE_CLASH_CARRY`). When the clash becomes a timed struggle, decide whether the
+  pierce becomes an edge in it (a wider window, a head start) rather than an automatic win, and move that rule out of `Crescents.clash`.
+  **Sparring**: keep Ways in a spar (they're how people fight), but if spar partners aren't `Duels` duellists, add the spar to
+  `WayBanner.ally` so partners never shelter or steady each other. The Bulwark's challenge and stagger never touch players. A Way is
+  chosen, not taught; a master could raise the crossroads for a disciple at a ceremony (`AuraApi.openCrossroads`).
+- **Step 11 (world)**: sword tombs' intent gates or a tournament could ask for a Way; a shrine of the four Ways could be a place to change
+  Way once without an incense (`Ways.unbind` then `Crossroads.open`). Aura beasts: the Shadowstep's "behind" reads a creature's `yBodyRot`;
+  a beast that doesn't turn its body to its target would count every blow as from behind.
+- **Step 12 (mage and swordsman)**: the Banner's allies are chorus casting's allies, so a Banner beside a mage is the same "together"; a
+  resonant strike "from one player or two" can ask `WayBanner.ally`. Unity must respect the spent state (the Banner's aura share goes
+  through `Aura.giveBack`, which refuses a spent ally).
+
+**Gotchas.**
+- **`Crossroads` and `Ways` hold attachments**: a unit test that loads them fails (`AttachmentRegistry` needs the game). The numbers, the
+  voices (`WayRules.voice`, `WayRules.SOUNDS`) and the balance live in `WayRules` for that reason.
+- **A perfect guard's slip skips the stagger's knockback** (`AuraGuard.stagger(player, attacker, knock)`): thrown back after the swordsman
+  slipped behind it, the striker landed on top of them. The slip's spot is found before the stagger (`WayEffects.slipSpot`).
+- **"The perfect moment answers once"** moves the guard's raised time back past the window: with the Bulwark's longer window that's
+  `now - WayEffects.perfectWindow(player) - 1` (all three places in `AuraGuard`).
+- **`Momentum.add` multiplies by `momentum_gain`**, so a share of what was built is divided by it before it's added to an ally (or the ally
+  gets the gain twice). Shares never share again (source "banner" is skipped). The aura share uses `Aura.giveBack` for the same reason.
+- **The standards are server-sent shaped light**, redrawn every 4 ticks with a 9-tick life; what was sent lingers up to 9 ticks after a
+  crossroads closes. In first person all four fit a 16:9 view (24 degrees apart, 4.2 blocks out); the Banner's pennant flies toward the
+  middle of the arc so it never leaves the view. A lean's big flash is spectacle; the swordsman's own view gets a small one.
+- **In the game test the third-person camera turns the player**: set the player's yaw to face the foes before they act (a swing, a
+  slash, a step), and turn the camera only after (a slash's flight is fixed as it's loosed). FakePlayer allies and rivals need scoreboard
+  teams for the ally rule (`board.addPlayerToTeam`); the test's `reset` drops them and takes the swordsman off any team.
+- **The Way tab hides the method's passive footer** to make room for a node in full; keep node texts to about three lines at the page's
+  width.

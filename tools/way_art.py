@@ -331,8 +331,8 @@ LANG = {
     "screen.wildercord.aura.way.passive": "Passive: %s",
     "screen.wildercord.aura.way.changes": "Changes %s. %s",
     "screen.wildercord.aura.way.change_line": "Changes: %s",
-    "screen.wildercord.aura.way.change": "To change Way, burn a %s at a place of power. Your new Way's Form and Sovereign nodes wake as you earn experience walking it.",
-    "screen.wildercord.aura.way.how": "Changing Way later takes a %s, burned at a place of power.",
+    "screen.wildercord.aura.way.change": "To change Way, burn a %s at a place of power.",
+    "screen.wildercord.aura.way.how": "A Way can be changed later: a %s at a place of power.",
     # ---- the incense
     "item.wildercord.crossroads_incense": "Crossroads Incense",
     "item.wildercord.crossroads_incense.lore": "Its smoke curls four ways at once, and none of them is yours.",
