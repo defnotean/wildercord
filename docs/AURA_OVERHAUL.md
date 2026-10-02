@@ -870,6 +870,10 @@ extra, art strength and every PvP cap are as step 5 left them.
 - **The tap-and-hold needs the tap to wait at Edge**: if `Awakening.ready` disagrees between client and server (a server with odd
   settings mid-sync), the tap goes as a slash and the awakening is refused for the pool. That's why momentum is refused before the pool:
   the line names what was really missing.
+- **Fabric copies copy-on-death attachments in its own `AFTER_RESPAWN` listener, after ours**: a respawn handler that changes such an
+  attachment on the new body must register in `Aura.AFTER_COPY` (a phase ordered after the default), or the copy undoes it. The
+  awakening's death rule and the old "a new body starts with its aura empty" rule both do now; the latter had been silently undone
+  since 0.9 (the death scene of `WildercordAwakeningTest` caught it).
 - **In the game test**: `AuraApi.awaken` goes through every check (give a full pool and `Momentum.State` at 60+); clear with
   `calm()` (`endAwakening`, two ticks, then remove the attachment and the effects, refill the pool); an awakening burns the pool to 0
   when it ends. FakePlayer rivals aren't in the player list, so `Awakening.tick` never ends theirs and their `AuraAttachments.LOOK` must

@@ -69,6 +69,13 @@ public final class Aura {
 	private static final Identifier HASTE = Wildercord.id("aura_hourglass");
 	private static final Identifier SWIFT = Wildercord.id("aura_gale");
 
+	/**
+	 * A phase of {@code ServerPlayerEvents.AFTER_RESPAWN} after the default one. Fabric copies a player's copy-on-death attachments to
+	 * the new body in the default phase, and not always before a mod's own listener there: anything that changes such an attachment on
+	 * the new body (the aura held emptied, an awakening ended) must run after the copy, in this phase, or the copy undoes it.
+	 */
+	public static final Identifier AFTER_COPY = Wildercord.id("after_attachments_copied");
+
 	// ------------------------------------------------------------------ reading (both sides)
 
 	public static AuraAttachments.Data data(Player player) {
@@ -522,8 +529,9 @@ public final class Aura {
 				fighting(player);
 			}
 		});
-		// A new body starts with its aura empty (the path itself is kept) and nothing under way.
-		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+		// A new body starts with its aura empty (the path itself is kept) and nothing under way: after Fabric has copied the path over.
+		ServerPlayerEvents.AFTER_RESPAWN.addPhaseOrdering(net.fabricmc.fabric.api.event.Event.DEFAULT_PHASE, AFTER_COPY);
+		ServerPlayerEvents.AFTER_RESPAWN.register(AFTER_COPY, (oldPlayer, newPlayer, alive) -> {
 			if (!alive) {
 				AuraAttachments.Data data = data(newPlayer);
 				if (data.aura() > 0) {

@@ -365,8 +365,9 @@ public final class Awakening {
 				fed(attacker);
 			}
 		});
-		// A death ends it: the new body isn't spent (it starts empty anyway), and the rest runs from now.
-		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+		// A death ends it: the new body isn't spent (it starts empty anyway), and the rest runs from now. After Fabric has copied the
+		// state over to the new body (see Aura.AFTER_COPY), or the copy would put the awakening back.
+		ServerPlayerEvents.AFTER_RESPAWN.register(Aura.AFTER_COPY, (oldPlayer, newPlayer, alive) -> {
 			if (alive) {
 				return;
 			}

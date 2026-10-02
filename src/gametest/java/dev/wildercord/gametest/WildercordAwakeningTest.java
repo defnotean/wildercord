@@ -777,6 +777,9 @@ public class WildercordAwakeningTest implements FabricClientGameTest {
 			if (player.hasEffect(MobEffects.SLOWNESS)) {
 				return "the new body shouldn't be slowed";
 			}
+			if (Aura.data(player).aura() > 0) {
+				return "a new body starts with its aura empty (" + Aura.data(player).aura() + ")";
+			}
 			return AuraApi.gain(player, 5, "test") > 0 ? null : "the new body should gather aura";
 		});
 		check(after == null, after);

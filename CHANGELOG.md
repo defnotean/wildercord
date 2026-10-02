@@ -198,6 +198,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   re-summoned; shears take it off again.
 
 ### Fixed
+- **A new body starts with its aura empty again.** After a death the aura you held was copied back onto your new body (the
+  path is kept through death; the aura held never was meant to be). It now empties as it should.
 - **The Aura badge no longer hides under the Cosmetics tab.** The Cord screen's header ran out of room once 0.9.0 added
   the Aura badge. Its page tabs now tighten to fit, and a long Cord name is cut short (hover it to read it whole). The
   Cosmetics page lays its header out the same way, so the tabs don't jump when you switch.
