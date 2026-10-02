@@ -24,7 +24,8 @@ Tonal sounds are tuned to D so the pentatonic ratios make a scale from one sampl
 
 Each breathing method's own family (a blade's swing, a blow landing, a technique loosed: aura_<method>_swing, _impact, _art) is
 in tools/feel/aura_methods.py and added to these events; each method's arts' own voices (aura_art_<art>) are in tools/feel/aura_arts.py,
-and each method's finisher's (aura_finisher_<method>, over aura_finisher) in tools/feel/aura_finishers.py.
+and each method's finisher's (aura_finisher_<method>, over aura_finisher) in tools/feel/aura_finishers.py. Awakening's (the shared
+aura_awaken, each method's aura_awaken_<method> over it, and the spent state's) are in tools/feel/aura_awakening.py.
 """
 import numpy as np
 
@@ -32,6 +33,7 @@ from feel.core import sa, event
 from feel.aura_methods import METHOD_EVENTS
 from feel.aura_arts import ART_EVENTS
 from feel.aura_finishers import FINISHER_EVENTS
+from feel.aura_awakening import AWAKENING_EVENTS
 
 D, E, FS, A, B = sa.D, sa.E, sa.FS, sa.A, sa.B
 
@@ -266,4 +268,4 @@ EVENTS = [
     event("aura_momentum_peak", aura_momentum_peak, role="effect", subtitle="tell", attenuation=24),
     event("aura_stance_break", aura_stance_break, role="impact", subtitle="hit", attenuation=32),
     event("aura_finisher", aura_finisher, role="grand", subtitle="hit", attenuation=40),
-] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS
+] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS

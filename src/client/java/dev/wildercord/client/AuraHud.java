@@ -27,7 +27,9 @@ import net.minecraft.world.entity.HumanoidArm;
  * diamonds with each breath (let sneak up and press it again as it closes: a breath on the beat), and the bar shimmers; a
  * trial under way writes its progress above the strip; backlash dims it; a raised guard edges it in gold. At the top stages
  * Form's diamond dims while Aura Step recharges and Sovereign's burns while a Dominion stands (a thread under it filling back
- * as it rests); a spell riding the blade and a Dominion's time left are written above the strip.
+ * as it rests); a spell riding the blade and a Dominion's time left are written above the strip. From Edge a small flame after the
+ * diamonds is the awakening ({@link AwakeningHud#mark}): breathing gold while one is ready, blazing while it burns (the strip
+ * edged in its fire, a light racing along the bar, its time written above), ash while spent, dark and filling back while it rests.
  */
 public final class AuraHud {
 	private AuraHud() {}
@@ -136,7 +138,21 @@ public final class AuraHud {
 			}
 			px += step;
 		}
+		// The awakening's mark, after the diamonds.
+		px += AwakeningHud.mark(g, player, px, py, color, now, partial);
 		int pipsRight = px;
+		dev.wildercord.aura.Awakening.State waking = dev.wildercord.aura.Awakening.state(player);
+		boolean awakened = waking.awakened(now);
+		boolean spent = waking.spent(now);
+		if (awakened) {
+			// Awakened: the strip edged in its fire, flickering.
+			double flicker = 0.5 + 0.5 * Math.sin((now + partial) * 0.8) * Math.sin((now + partial) * 0.33);
+			int rim = 0xFF000000 | mix(color, 0xFFFFFF, 0.35 + 0.35 * flicker);
+			g.fill(x + 1, y, x + width - 1, y + 1, rim);
+			g.fill(x + 1, y + HEIGHT - 1, x + width - 1, y + HEIGHT, rim);
+			g.fill(x, y + 1, x + 1, y + HEIGHT - 1, rim);
+			g.fill(x + width - 1, y + 1, x + width, y + HEIGHT - 1, rim);
+		}
 		// The breath's beat: a ring closing on the diamonds as each breath comes, glowing on it.
 		if (state.breathing()) {
 			long next = AuraRules.nextBeat(state.settledAt(), now);
@@ -162,11 +178,19 @@ public final class AuraHud {
 		int inner = bw - 2;
 		int filled = (int) (inner * Math.max(0, Math.min(1, shown / capacity)));
 		if (filled > 0) {
-			int c = backlash ? mix(color, 0x5A4A5A, 0.6) : color;
+			int c = backlash || spent ? mix(color, 0x5A4A5A, 0.6) : color;
 			g.fill(bx + 1, y + 4, bx + 1 + filled, y + 5, 0xFF000000 | AuraRules.color(c, 0xFFFFFF, 4));
 			g.fill(bx + 1, y + 5, bx + 1 + filled, y + 7, 0xFF000000 | c);
 			g.fill(bx + 1, y + 7, bx + 1 + filled, y + 8, 0xFF000000 | mix(c, 0x000000, 0.35));
-			if (state.breathing()) {
+			if (awakened) {
+				// Awakened: a white light racing along the bar, quick.
+				int sweep = (int) ((now * 5 + partial * 5) % (inner + 16)) - 8;
+				int from = Math.max(0, sweep);
+				int to = Math.min(filled, sweep + 8);
+				if (to > from) {
+					g.fill(bx + 1 + from, y + 4, bx + 1 + to, y + 8, 0xA0FFFFFF);
+				}
+			} else if (state.breathing()) {
 				// Breathing in: a soft highlight sweeping along the bar.
 				int sweep = (int) ((now * 2) % (inner + 12)) - 6;
 				int from = Math.max(0, sweep);
@@ -183,7 +207,7 @@ public final class AuraHud {
 				g.fill(mark, y + 2, mark + 1, y + 10, aura >= price ? GOLD : 0xFFE06060);
 			}
 		}
-		g.text(font, count, x + width - 4 - countW, y + 2, backlash ? 0xFFC8A0A0 : 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 3), true);
+		g.text(font, count, x + width - 4 - countW, y + 2, backlash || spent ? 0xFFC8A0A0 : 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 3), true);
 		// ---- momentum, a thin line under the bar (its quarters notched, gold at the peak); your own stance in a duel, along the top edge.
 		momentum(g, player, bx + 1, inner, y + HEIGHT - 2, color, now, partial);
 		StanceHud.ownOnStrip(g, player, x + 2, y + 1, width - 4, now + partial);
@@ -210,6 +234,16 @@ public final class AuraHud {
 			double pulse = 0.5 + 0.5 * Math.sin((now + partial) * 0.6);
 			g.text(font, font.plainSubstrByWidth(held, Math.max(40, g.guiWidth() - x - 4)), x + 3, top,
 				0xFF000000 | mix(presence.bladeSpell(), 0xFFFFFF, 0.2 + 0.3 * pulse), true);
+		}
+		if (awakened || spent) {
+			// The awakening's time left (blazing), or the spent time left (ash).
+			top -= 10;
+			String line = awakened
+				? net.minecraft.network.chat.Component.translatable("screen.wildercord.aura.awakened_left", (waking.until() - now + 19) / 20).getString()
+				: net.minecraft.network.chat.Component.translatable("screen.wildercord.aura.spent_left", (waking.spentUntil() - now + 19) / 20).getString();
+			double pulse = 0.5 + 0.5 * Math.sin((now + partial) * 0.5);
+			int c = awakened ? 0xFF000000 | mix(color, 0xFFFFFF, 0.3 + 0.35 * pulse) : 0xFFC8A0A0;
+			g.text(font, font.plainSubstrByWidth(line, Math.max(40, g.guiWidth() - x - 4)), x + 3, top, c, true);
 		}
 		if (now <= timers.dominionUntil()) {
 			top -= 10;

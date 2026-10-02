@@ -55,6 +55,10 @@ import java.util.function.Predicate;
  *       {@link #openFinalArt}; {@link #onStance}, {@link #onStanceBroken}, {@link #onFinisher}, {@link #registerFinisher},
  *       {@link #wearStance}): a clean fight fills a swordsman's momentum (its tiers make arts cheaper and stronger, its peak opens
  *       the Final Art); blades and arts wear a foe's stance until it breaks, opening it for the method's finisher.</li>
+ *   <li><b>Awakening</b> ({@link #awakened}, {@link #spent}, {@link #awaken}, {@link #onAwakening}): from Edge, a full pool and
+ *       momentum enough let a swordsman awaken (the Aura key tapped, then held): arts cost little or nothing, momentum holds at its
+ *       peak, and they're faster and harder-hitting for a while, then spent. At Sovereign a Dominion raised while awakened is the
+ *       method's own.</li>
  *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
  *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
  *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,
@@ -82,7 +86,13 @@ public final class AuraApi {
 		 */
 		DOUBLE_TAP,
 		/** Held a quarter of a second or more: sent once as the hold begins. */
-		HOLD
+		HOLD,
+		/**
+		 * A tap, then pressed again at once (within the double tap's moment) and held ({@code aura.AwakeningRules#HOLD_TICKS}): sent
+		 * once as the hold completes. The waiting tap goes with it (no slash first); a second press let go quickly is still a double
+		 * tap, and one let go after its hold began and before it completed sends nothing. Awakening (Edge) is set off this way.
+		 */
+		TAP_HOLD
 	}
 
 	/** What a technique does when set off; returns whether it went off (a refusal says why above the hotbar itself). */
@@ -948,6 +958,53 @@ public final class AuraApi {
 	 */
 	public static double wearStance(ServerPlayer attacker, LivingEntity target, double wear) {
 		return dev.wildercord.aura.Stance.wear(attacker, target, wear, dev.wildercord.aura.StanceRules.Source.ART);
+	}
+
+	// ------------------------------------------------------------------ awakening
+
+	/**
+	 * Hears of awakenings: one begun ({@code ticks} long, as it began; finishers may feed it more) and one ended (the swordsman is spent
+	 * now). Step 7's Way of the Banner could share an ally's awakening here; a bonded blade could gather resonance from it.
+	 */
+	public interface AwakeningHook {
+		default void awakened(ServerPlayer player, int ticks) {}
+
+		default void ended(ServerPlayer player) {}
+	}
+
+	private static final List<AwakeningHook> AWAKENING_HOOKS = new CopyOnWriteArrayList<>();
+
+	public static void onAwakening(AwakeningHook hook) {
+		AWAKENING_HOOKS.add(hook);
+	}
+
+	public static List<AwakeningHook> awakeningHooks() {
+		return AWAKENING_HOOKS;
+	}
+
+	/** Whether {@code player} is awakened now. Both sides (everyone near is told). */
+	public static boolean awakened(Player player) {
+		return dev.wildercord.aura.Awakening.awakened(player);
+	}
+
+	/** Whether {@code player} is spent now (an awakening just ended): slowed, gathering no aura. Both sides. */
+	public static boolean spent(Player player) {
+		return dev.wildercord.aura.Awakening.spent(player);
+	}
+
+	/** Ticks of {@code player}'s awakening left (0 when not awakened). Both sides. */
+	public static long awakeningLeft(Player player) {
+		return dev.wildercord.aura.Awakening.left(player);
+	}
+
+	/** Why {@code player} can't awaken now, or null when they can. Both sides for the player's own client. */
+	public static dev.wildercord.aura.AwakeningRules.Refusal awakeningRefusal(Player player) {
+		return dev.wildercord.aura.Awakening.refusal(player);
+	}
+
+	/** Awakens {@code player} as the Aura key would (every check applies; a refusal says why above the hotbar). Returns whether it did. */
+	public static boolean awaken(ServerPlayer player) {
+		return dev.wildercord.aura.Awakening.awaken(player);
 	}
 
 	// ------------------------------------------------------------------ feel

@@ -45,12 +45,18 @@ public final class Config {
 	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence, boolean mastery,
 			boolean masteryTraits, boolean unreadRunes, boolean aura, float slashCost, boolean forgedGear, float sashCapacity, boolean strings,
 			int stringWindow, int combat) implements CustomPacketPayload {
-		/** Bits of {@link #combat}: momentum works; foes have a stance (and finishers). Later parts of aura's fighting add their own. */
+		/**
+		 * Bits of {@link #combat}: momentum works; foes have a stance (and finishers); swordsmen can awaken. Later parts of aura's fighting
+		 * add their own in the free low bits. Bits 8 to 15 carry the momentum an awakening asks for (0 to 100), which the swordsman's own
+		 * client needs to know when an awakening is ready (its HUD, and whether a lone tap of the Aura key waits for a second).
+		 */
 		public static final int MOMENTUM = 1;
 		public static final int STANCE = 2;
+		public static final int AWAKENING = 4;
+		private static final int AWAKENING_MOMENTUM_SHIFT = 8;
 		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
 			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity(), true,
-			WildercordConfig.AuraStrings.DEFAULTS.windowTicks(), MOMENTUM | STANCE);
+			WildercordConfig.AuraStrings.DEFAULTS.windowTicks(), combat(WildercordConfig.AuraSettings.DEFAULTS));
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
 		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
@@ -69,7 +75,19 @@ public final class Config {
 				config.mastery().enabled(), config.mastery().enabled() && config.mastery().traits(), config.unreadRunes(), config.aura().enabled(),
 				(float) config.aura().slashCost(), config.auraWorld().forgedGear(), (float) config.auraWorld().sashCapacity(),
 				config.aura().strings().enabled(), config.aura().strings().windowTicks(),
-				(config.aura().momentum().momentum() ? MOMENTUM : 0) | (config.aura().momentum().stance() ? STANCE : 0));
+				combat(config.aura()));
+		}
+
+		/** The {@link #combat} bits for {@code aura}'s settings. */
+		static int combat(WildercordConfig.AuraSettings aura) {
+			int needed = (int) Math.round(Math.max(0, Math.min(100, aura.awakening().awakeningMomentum())));
+			return (aura.momentum().momentum() ? MOMENTUM : 0) | (aura.momentum().stance() ? STANCE : 0) | (aura.awakening().awakening() ? AWAKENING : 0)
+				| needed << AWAKENING_MOMENTUM_SHIFT;
+		}
+
+		/** The momentum an awakening asks for, as the bits carry it. */
+		public int awakeningMomentum() {
+			return (combat >> AWAKENING_MOMENTUM_SHIFT) & 0xFF;
 		}
 
 		@Override
@@ -220,6 +238,16 @@ public final class Config {
 	/** Whether foes have a stance (and finishers): the server's own setting, or on a client the one it was sent. */
 	public static boolean stance(Player player) {
 		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.STANCE) != 0 : get().aura().momentum().stance();
+	}
+
+	/** Whether swordsmen can awaken: the server's own setting, or on a client the one it was sent. */
+	public static boolean awakening(Player player) {
+		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.AWAKENING) != 0 : get().aura().awakening().awakening();
+	}
+
+	/** The momentum an awakening asks for: the server's own setting, or on a client the one it was sent. */
+	public static double awakeningMomentum(Player player) {
+		return player != null && player.level().isClientSide() ? synced.awakeningMomentum() : get().aura().awakening().awakeningMomentum();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */

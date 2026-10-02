@@ -7,6 +7,8 @@ import dev.wildercord.aura.AuraFx;
 import dev.wildercord.aura.AuraFxRules;
 import dev.wildercord.aura.AuraPresence;
 import dev.wildercord.aura.AuraRules;
+import dev.wildercord.aura.Awakening;
+import dev.wildercord.aura.AwakeningRules;
 import dev.wildercord.aura.SwordString;
 import dev.wildercord.client.fx.AuraBurst;
 import dev.wildercord.client.fx.AuraTrail;
@@ -104,6 +106,7 @@ public final class AuraFxClient {
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("aura_whisper"), AuraFxClient::whisper);
 		AuraBanners.init();
 		StanceHud.init();
+		AwakeningHud.init();
 	}
 
 	private static void reset() {
@@ -338,19 +341,42 @@ public final class AuraFxClient {
 		return s == null ? 0 : AuraFxRules.surgeLeft(s.strength(), time - s.start(), s.ticks());
 	}
 
-	/** How strongly {@code player}'s body aura shows at {@code time}: calm, flaring in a fight, surging, faint while low. */
+	/**
+	 * How strongly {@code player}'s body aura shows at {@code time}: calm, flaring in a fight, surging, faint while low; blazing while
+	 * awakened, and embers while spent.
+	 */
 	public static float bodyIntensity(Player player, float time) {
 		AuraAttachments.Look look = Aura.look(player);
 		if (look.stage() <= AuraRules.NONE || MagicQuality.bodyAura == MagicQuality.BodyAura.OFF) {
 			return 0;
 		}
+		float spent = Awakening.spent(player) ? AwakeningRules.SPENT_GLOW : 1.0F;
 		if (MagicQuality.bodyAura == MagicQuality.BodyAura.CALM) {
-			return AuraFxRules.intensity(look.lit(), false, 0);
+			return (AuraFxRules.intensity(look.lit(), false, 0) + 0.3F * Math.min(1, awakenedForm(player, time))) * spent;
 		}
 		AuraPresence.Look presence = AuraPresence.look(player);
 		boolean fighting = presence.fighting(player.level().getGameTime());
-		// Momentum burns it brighter at each tier, blazing at the peak.
-		return AuraFxRules.intensity(look.lit(), fighting, surge(player.getId(), time)) + AuraFxRules.momentumGlow(presence.momentum(), look.lit());
+		// Momentum burns it brighter at each tier, blazing at the peak; an awakening more than any of it.
+		float k = AuraFxRules.intensity(look.lit(), fighting, surge(player.getId(), time)) + AuraFxRules.momentumGlow(presence.momentum(), look.lit());
+		return (k + AwakeningRules.GLOW * Math.min(1.1F, awakenedForm(player, time))) * spent;
+	}
+
+	/**
+	 * How far into its awakened form {@code player}'s body aura is at {@code time} (0 when not awakened, about 1 while it burns, up to
+	 * 1.25 in the surge at its burst): {@link AwakeningRules#form}, and in its last two seconds a flicker as it gutters.
+	 */
+	public static float awakenedForm(Player player, float time) {
+		Awakening.State s = Awakening.state(player);
+		if (s.stage() != AwakeningRules.Phase.AWAKENED || s.since() < 0) {
+			return 0;
+		}
+		float age = time - s.since();
+		float left = s.until() - time;
+		float form = AwakeningRules.form(age, left);
+		if (form > 0 && left < AwakeningRules.GUTTER) {
+			form *= 0.55F + 0.45F * Math.abs(Mth.sin(time * 1.7F) * Mth.sin(time * 0.61F + player.getId()));
+		}
+		return form;
 	}
 
 	static void tick(Minecraft mc) {
@@ -386,6 +412,59 @@ public final class AuraFxClient {
 				continue;
 			}
 			motes(mc, level, player, look, bodyIntensity(player, now));
+			awakeningMotes(mc, level, player, look, now);
+		}
+	}
+
+	/**
+	 * Awakening's moving light: while it gathers, motes drawn in to the body from all round; while it burns, embers streaming up off it
+	 * thick and fast; while spent, a little grey ash drifting off.
+	 */
+	private static void awakeningMotes(Minecraft mc, ClientLevel level, AbstractClientPlayer player, AuraAttachments.Look look, long now) {
+		Awakening.State s = Awakening.state(player);
+		RandomSource random = player.getRandom();
+		int color = look.color();
+		int hot = mix(color, 0xFFFFFF, 0.55F);
+		if (s.spent(now)) {
+			if (BODY.hasRoom() && random.nextFloat() < 0.12F) {
+				Vec3 at = player.position().add((random.nextDouble() - 0.5) * 0.6, 0.4 + random.nextDouble() * 1.3, (random.nextDouble() - 0.5) * 0.6);
+				int life = 26 + random.nextInt(14);
+				mc.particleEngine.add(Glimmer.mote(level, at, random.nextBoolean() ? 0x7A7080 : 0x5A5060, 0.05F, 0.45F, life, 0, 0.008, 0, 0.002F));
+				BODY.spend(life);
+				bodyMotes++;
+			}
+			return;
+		}
+		if (s.stage() != AwakeningRules.Phase.AWAKENED || !s.awakened(now)) {
+			return;
+		}
+		long age = now - s.since();
+		Vec3 heart = player.position().add(0, 1.0, 0);
+		if (age >= 0 && age < AwakeningRules.BURST_AT) {
+			// Gathering: motes drawn in from a wide ring, quickly, to the heart.
+			for (int i = 0; i < 6 && BODY.hasRoom(); i++) {
+				double a = random.nextDouble() * Math.PI * 2;
+				double r = 2.2 + random.nextDouble() * 1.4;
+				Vec3 from = heart.add(Math.cos(a) * r, (random.nextDouble() - 0.4) * 2.2, Math.sin(a) * r);
+				Vec3 v = heart.subtract(from).scale(1.0 / (AwakeningRules.BURST_AT - age + 2));
+				int life = (int) (AwakeningRules.BURST_AT - age + 2);
+				mc.particleEngine.add(Glimmer.mote(level, from, random.nextInt(3) == 0 ? 0xFFFFFF : hot, 0.07F, 0.85F, life, v.x, v.y, v.z, 0.0F));
+				BODY.spend(life);
+				bodyMotes++;
+			}
+			return;
+		}
+		// Burning: embers streaming up off the body, thick.
+		float form = awakenedForm(player, now);
+		int count = random.nextFloat() < 0.6F * form ? (form > 0.9F ? 2 : 1) : 0;
+		for (int i = 0; i < count && BODY.hasRoom(); i++) {
+			double a = random.nextDouble() * Math.PI * 2;
+			Vec3 at = player.position().add(Math.cos(a) * 0.45, 0.1 + random.nextDouble() * 1.6, Math.sin(a) * 0.45);
+			int life = 14 + random.nextInt(10);
+			mc.particleEngine.add(Glimmer.mote(level, at, random.nextInt(3) == 0 ? 0xFFFFFF : random.nextBoolean() ? hot : color,
+				0.05F + random.nextFloat() * 0.035F, 0.9F, life, Math.cos(a) * 0.004, 0.07 + random.nextDouble() * 0.05, Math.sin(a) * 0.004, 0.003F));
+			BODY.spend(life);
+			bodyMotes++;
 		}
 	}
 

@@ -13,6 +13,8 @@ import dev.wildercord.aura.AuraAttachments;
 import dev.wildercord.aura.AuraFxRules;
 import dev.wildercord.aura.AuraPresence;
 import dev.wildercord.aura.AuraRules;
+import dev.wildercord.aura.Awakening;
+import dev.wildercord.aura.AwakeningRules;
 import dev.wildercord.client.AuraFxClient;
 import dev.wildercord.client.compat.ShaderCompat;
 import dev.wildercord.client.fx.MagicQuality;
@@ -54,6 +56,12 @@ import org.joml.Vector3f;
  * perfect guard surges it ({@link AuraFxRules#intensity}); faint while the aura is too low to coat a blow. Never drawn in your
  * own first-person view (the body isn't), where a whisper at the bottom edge of the screen stands for it ({@code AuraFxClient}).
  *
+ * <p><b>Awakened</b> ({@code aura.Awakening}) it climbs past its stage into its awakened form: drawn in for a breath, then bursting
+ * up into it ({@link AwakeningRules#form}): the eyes burn from Edge, a mantle streams off an Edge swordsman's shoulders and a low
+ * corona licks round them, a Form swordsman's corona rises, a Sovereign's blazes past the head, and streamers of the aura's light
+ * race up round the body from the feet, the pool under them wide and bright. In its last two seconds it gutters, flickering down.
+ * <b>Spent</b>, all of it falls to a faint ash-grey haze.</p>
+ *
  * <p>It's light: added to the world, left out of a shader pack's shadows, and under a pack drawn as vanilla's glowing eyes are
  * (see {@link ShaderCompat}). The player's "Body aura" setting calms it or switches it off.</p>
  */
@@ -89,9 +97,16 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
 	/**
 	 * How a player's body aura looks this frame: its colour and stage, how strongly it shows ({@link AuraFxRules#intensity}), the
-	 * time (ticks) for its motion, how fast they move (blocks a tick, level) and whether they stand on the ground.
+	 * time (ticks) for its motion, how fast they move (blocks a tick, level), whether they stand on the ground, how far into its
+	 * awakened form it is ({@code awaken}, 0 to about 1.25: {@link AwakeningRules#form}, guttering already in) and whether they're
+	 * spent.
 	 */
-	public record Body(int color, int stage, float intensity, float time, float speed, boolean grounded) {}
+	public record Body(int color, int stage, float intensity, float time, float speed, boolean grounded, float awaken, boolean spent) {
+		/** Whether it burns in its awakened form now. */
+		boolean awakened() {
+			return awaken > 0.02F;
+		}
+	}
 
 	public static final RenderStateDataKey<Body> BODY = RenderStateDataKey.create(() -> "wildercord:aura_body");
 
@@ -118,8 +133,11 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		}
 		double dx = player.getX() - player.xo;
 		double dz = player.getZ() - player.zo;
-		state.setData(BODY, new Body(look.color(), look.stage(), intensity, time + player.getId() * 7.3F, (float) Math.sqrt(dx * dx + dz * dz),
-			player.onGround()));
+		float awaken = AuraFxClient.awakenedForm(player, time);
+		boolean spent = Awakening.spent(player);
+		int color = spent ? mix(look.color(), 0x7A7080, 0.6F) : look.color();
+		state.setData(BODY, new Body(color, look.stage(), intensity, time + player.getId() * 7.3F, (float) Math.sqrt(dx * dx + dz * dz),
+			player.onGround(), awaken, spent));
 	}
 
 	// ------------------------------------------------------------------ drawing
@@ -134,8 +152,8 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 		// and light added to it (so it glows by night). Under a pack, the laid-over colour alone, as vanilla's glowing eyes are drawn.
 		boolean shaders = ShaderCompat.active();
 		Ink[] inks = shaders ? new Ink[] {new Ink(true, 1.0F, false)} : new Ink[] {new Ink(true, 0.5F, true), new Ink(false, 0.85F, false)};
-		if (body.stage() >= AuraRules.SOVEREIGN) {
-			// The eyes, in the head's own frame so they turn with it.
+		if (body.stage() >= AuraRules.SOVEREIGN && !body.spent() || body.awakened()) {
+			// The eyes (Sovereign's, and anyone's awakened), in the head's own frame so they turn with it.
 			pose.pushPose();
 			getParentModel().head.translateAndRotate(pose);
 			for (Ink ink : inks) {
@@ -233,17 +251,59 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			billboard(buffer, pose, f, 0, 1.08F, 0, 0.64F * grow, 0.72F * grow, HAZE, ink.of(color, haze * 1.1F));
 			billboard(buffer, pose, f, 0, 1.6F, 0, 0.44F * grow, 0.46F * grow, HAZE, ink.of(hot, haze * 0.8F));
 		}
+		if (b.spent()) {
+			// Spent: only the faint haze above, in ash.
+			return;
+		}
+		float w = Math.min(1.25F, b.awaken());
 		if (stage >= AuraRules.EDGE && b.grounded()) {
-			// The aura pooling on the ground under the feet.
-			float pool = (0.09F + 0.09F * k + 0.03F * (stage - AuraRules.EDGE)) * breath;
-			float r = 0.8F + 0.25F * k + 0.1F * (stage - AuraRules.EDGE);
+			// The aura pooling on the ground under the feet (wide and bright while awakened).
+			float pool = (0.09F + 0.09F * k + 0.03F * (stage - AuraRules.EDGE) + 0.08F * w) * breath;
+			float r = 0.8F + 0.25F * k + 0.1F * (stage - AuraRules.EDGE) + 0.55F * w;
 			ground(buffer, pose, r, POOL, ink.of(color, pool));
 		}
-		if (stage >= AuraRules.FORM) {
-			mantle(buffer, pose, b, f, ink, stage >= AuraRules.SOVEREIGN ? 0.7F : 1.0F);
+		// Awakened, it climbs past its stage: an Edge swordsman takes on a mantle, a Form swordsman a corona.
+		float mantle = stage >= AuraRules.FORM ? (stage >= AuraRules.SOVEREIGN ? 0.7F : 1.0F) : stage >= AuraRules.EDGE ? 0.8F * Math.min(1, w) : 0;
+		if (mantle > 0.02F) {
+			mantle(buffer, pose, b, f, ink, mantle);
 		}
-		if (stage >= AuraRules.SOVEREIGN) {
-			corona(buffer, pose, b, f, ink);
+		float corona = stage >= AuraRules.SOVEREIGN ? 1.0F : stage >= AuraRules.FORM ? 0.85F * Math.min(1, w) : stage >= AuraRules.EDGE ? 0.55F * Math.min(1, w) : 0;
+		if (corona > 0.02F) {
+			corona(buffer, pose, b, f, ink, corona);
+		}
+		if (b.awakened()) {
+			updraft(buffer, pose, b, f, ink, w);
+		}
+	}
+
+	/**
+	 * Awakened: streamers of the aura's light racing up round the body from the feet past the head, each fading in low and out high,
+	 * a hot white heart down each, turning slowly round as they rise.
+	 */
+	private static void updraft(VertexConsumer buffer, PoseStack.Pose pose, Body b, Frame f, Ink ink, float w) {
+		float t = b.time();
+		int color = b.color();
+		int hot = mix(color, 0xFFFFFF, 0.65F);
+		int count = 12;
+		float top = 2.5F + 0.15F * (b.stage() - AuraRules.EDGE);
+		for (int i = 0; i < count; i++) {
+			float h1 = hash(i * 5 + 11);
+			float h2 = hash(i * 5 + 12);
+			// Each rises at its own pace, starting over at the feet.
+			float phase = (t * (0.045F + 0.03F * h2) + h1) % 1.0F;
+			float a = Mth.TWO_PI * i / count + t * 0.02F + h1;
+			float out = 0.42F + 0.14F * h2 + 0.1F * phase;
+			float x = Mth.cos(a) * out;
+			float z = Mth.sin(a) * out * 0.8F;
+			float wx = f.rx() * x + f.fx() * z;
+			float wz = f.rz() * x + f.fz() * z;
+			float y = phase * top - 0.3F;
+			float length = (0.55F + 0.45F * h1) * (0.7F + 0.3F * Math.min(1, w));
+			float fade = Mth.sin(Mth.PI * phase);
+			float strength = (0.3F + 0.25F * Math.min(1.2F, w)) * fade * fade;
+			int frame = Math.floorMod((int) (t * 0.6F + i * 1.3F), 4);
+			flame(buffer, pose, f, wx, Math.max(0.0F, y), wz, 0.13F, length, FLAMES[frame], ink.of(color, strength));
+			flame(buffer, pose, f, wx, Math.max(0.0F, y) + 0.05F, wz, 0.06F, length * 0.8F, FLAMES[(frame + 1) % 4], ink.of(hot, strength * 0.9F));
 		}
 	}
 
@@ -288,12 +348,13 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	 * Sovereign: a corona, tongues of the aura's fire standing round the body from the feet, flickering and licking up past the
 	 * shoulders in a fight (low and calm at rest), a hotter heart inside each, and a crown of them behind the head.
 	 */
-	private static void corona(VertexConsumer buffer, PoseStack.Pose pose, Body b, Frame f, Ink ink) {
+	private static void corona(VertexConsumer buffer, PoseStack.Pose pose, Body b, Frame f, Ink ink, float share) {
 		float k = b.intensity();
 		float t = b.time();
 		int color = b.color();
-		int hot = mix(color, 0xFFFFFF, 0.6F);
-		float blaze = Math.min(1.4F, k);
+		int hot = mix(color, 0xFFFFFF, b.awakened() ? 0.72F : 0.6F);
+		// Awakened it blazes higher (a Sovereign's past the head); an Edge or Form swordsman's borrowed corona stays lower.
+		float blaze = Math.min(b.awakened() ? 1.75F : 1.4F, k) * share;
 		int count = 16;
 		for (int i = 0; i < count; i++) {
 			float a = Mth.TWO_PI * i / count + t * 0.01F;
@@ -310,8 +371,8 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 			float height = (0.7F + 0.55F * h2) * (0.35F + 0.95F * blaze) * flicker;
 			float width = (0.34F + 0.1F * hash(i * 3 + 3)) * (0.85F + 0.2F * blaze);
 			int frame = Math.floorMod((int) (t * 0.45F + i * 1.7F), 4);
-			flame(buffer, pose, f, x, base, z, width, height, FLAMES[frame], ink.of(color, 0.26F + 0.26F * blaze));
-			flame(buffer, pose, f, x, base, z, width * 0.55F, height * 0.72F, FLAMES[(frame + 2) % 4], ink.of(hot, 0.24F + 0.24F * blaze));
+			flame(buffer, pose, f, x, base, z, width, height, FLAMES[frame], ink.of(color, (0.26F + 0.26F * blaze) * Math.min(1, share * 1.3F)));
+			flame(buffer, pose, f, x, base, z, width * 0.55F, height * 0.72F, FLAMES[(frame + 2) % 4], ink.of(hot, (0.24F + 0.24F * blaze) * Math.min(1, share * 1.3F)));
 		}
 		// A crown of three behind the head, taller.
 		for (int i = 0; i < 3; i++) {
@@ -329,14 +390,22 @@ public class AuraBodyLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 	private static void eyes(PoseStack.Pose pose, VertexConsumer buffer, Body b, Ink ink) {
 		float k = Math.min(1.3F, b.intensity());
 		float pulse = 0.85F + 0.15F * Mth.sin(b.time() * 0.23F);
-		int hot = mix(b.color(), 0xFFFFFF, 0.6F);
+		float w = Math.min(1.0F, b.awaken());
+		int hot = mix(b.color(), 0xFFFFFF, 0.6F + 0.25F * w);
 		float z = -4.15F / 16F;
 		float y = -3.5F / 16F;
-		float strength = (0.55F + 0.45F * k) * pulse;
+		// Awakened, below Sovereign they open as the form rises; at any stage they burn brighter and their glow spreads.
+		float open = b.stage() >= AuraRules.SOVEREIGN ? 1.0F : w;
+		float strength = (0.55F + 0.45F * k) * pulse * open * (1 + 0.25F * w);
+		float spread = 1 + 0.45F * w;
 		for (int side = -1; side <= 1; side += 2) {
 			float x = side * 2.0F / 16F;
 			face(buffer, pose, x, y, z, 0.07F, 0.055F, EYE, ink.of(hot, strength));
-			face(buffer, pose, x, y, z - 0.002F, 0.16F, 0.1F, EYE, ink.of(b.color(), strength * 0.55F));
+			face(buffer, pose, x, y, z - 0.002F, 0.16F * spread, 0.1F * spread, EYE, ink.of(b.color(), strength * 0.55F));
+			if (w > 0.02F) {
+				// A wisp of light trailing back off each eye.
+				face(buffer, pose, x + side * 0.1F * w, y - 0.01F, z + 0.02F, 0.12F * w, 0.035F, EYE, ink.of(b.color(), strength * 0.35F));
+			}
 		}
 	}
 
