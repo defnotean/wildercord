@@ -206,7 +206,9 @@ build.
 
 There's an art for each stage, played on the same strings whatever your method, so you learn them once. What your blade does
 when you play one is your method's own: Ember's arts set the field alight, Rime's slow, freeze and shatter, Thunder's leap
-from foe to foe, Gale's reach far and throw foes into the air, Stone's hit hardest and stand firm.
+from foe to foe, Gale's reach far and throw foes into the air, Stone's hit hardest and stand firm, Verdant's root foes and mend
+allies, Hollow's draw foes in and silence them, Starlit's set stars that burst and give aura back, Hourglass's echo, rewind and
+hold foes still in time, and Crimson's bleed foes and drink from them.
 
 | Art | Opens at | String | Aura | Rests |
 |---|---|---|---|---|
@@ -223,13 +225,18 @@ from foe to foe, Gale's reach far and throw foes into the air, Stone's hit harde
 | **Thunder Breath** | Crackle | Skyfall | Static Riposte | Bolt Step | Heaven's Spear |
 | **Gale Breath** | Cutting Breeze | Updraft | Eye of the Storm | Tailwind | Hundred Winds |
 | **Stone Breath** | Rockbreaker | Avalanche | Unmoved | Landslide | Mountain Splitter |
+| **Verdant Breath** | Thorn Lash | Blossom Fall | Rooted Parry | Wild Growth | Grove's Heart |
+| **Hollow Breath** | Void Cut | Collapse | Null Parry | Rift Step | Event Horizon |
+| **Starlit Breath** | Star Needle | Meteor Shower | Constellation Guard | Comet Dash | Nova |
+| **Hourglass Breath** | Echo Cut | Rewind Leap | Stopped Moment | Blur | Thousand Moments |
+| **Crimson Breath** | Bloodletting | Red Rain | Sanguine Parry | Frenzy | Crimson Moon |
 
 What every one of them does, with its numbers, is on the [Sword Arts]({{ '/progression/sword-arts/' | relative_url }}) page.
 
-The other five methods (Verdant, Hollow, Starlit, Hourglass and Crimson) play the five **common arts** until their own
-arrive: an arc of aura in front of you, cutting up to four foes (First); a rising arc that throws the foes in front into the
-air, never a boss (Second); a cut on the foe you countered that staggers it again (Third); a line of aura cut five blocks
-ahead, through every foe in it (Fourth); and a ring of aura round you that cuts every foe near and throws them back (Final).
+A breathing method without arts of its own (an add-on's) plays the five **common arts**: an arc of aura in front of you,
+cutting up to four foes (First); a rising arc that throws the foes in front into the air, never a boss (Second); a cut on the
+foe you countered that staggers it again (Third); a line of aura cut five blocks ahead, through every foe in it (Fourth); and
+a ring of aura round you that cuts every foe near and throws them back (Final).
 
 Arts are aura off the blade, in your method's element, like the slash: they set off your method's gift and can leave aura
 marks. Each art names itself in a [banner](#technique-banners) as it goes off, makes your aura surge, cuts its own
@@ -429,8 +436,8 @@ page shows your method, element and stage, your aura, the road to your next brea
 in one), and every technique: what it does (hover it), how it's set off, what it costs, and the stage it opens at. Its
 **Sword strings** tab lists your arts instead: each one's name, its string drawn in the indicator's marks, the stage that opens
 it, its price (or how long it still rests), and on hover what it does and its string in words, with what every mark means at
-the foot. A row of every method's colour sits above them: click one to read that method's arts (a method still playing the
-common arts is dimmed).
+the foot. A row of every method's colour sits above them: click one to read that method's arts (an add-on's method playing
+the common arts is dimmed).
 
 On the aura bar, the Form diamond dims while the step recharges, and the Sovereign diamond burns while a Dominion stands.
 Above the bar you'll see how long a spell has left on your blade and how long a Dominion holds.

@@ -159,6 +159,19 @@ public final class ArtKit {
 		return out.size() > max ? new ArrayList<>(out.subList(0, max)) : out;
 	}
 
+	/** The foes in an arc from {@code at} facing {@code look} (level: an afterimage's cut where its swordsman stood), nearest first. */
+	public static List<LivingEntity> arcFrom(ServerPlayer player, Vec3 at, Vec3 look, double reach, double degrees, int max) {
+		List<LivingEntity> out = new ArrayList<>();
+		for (Entity e : player.level().getEntities(player, new AABB(at, at).inflate(reach + 1, 2.2, reach + 1), e -> harmable(player, e))) {
+			Vec3 to = e.position().subtract(at);
+			if (Math.abs(to.y) <= 2.2 && ArtRules.inCone(to.x, to.z, look.x, look.z, reach + e.getBbWidth() / 2, degrees)) {
+				out.add((LivingEntity) e);
+			}
+		}
+		out.sort(Comparator.comparingDouble(e -> e.distanceToSqr(at)));
+		return out.size() > max ? new ArrayList<>(out.subList(0, max)) : out;
+	}
+
 	/** The foes along a line from {@code from} down {@code dir} (level), {@code length} long and {@code half} wide each side, nearest the start first. */
 	public static List<LivingEntity> line(ServerPlayer player, Vec3 from, Vec3 dir, double length, double half, double height, int max) {
 		Vec3 flat = new Vec3(dir.x, 0, dir.z);
@@ -402,6 +415,19 @@ public final class ArtKit {
 		MonsterMagic.sync(foe);
 	}
 
+	/**
+	 * Takes the push out of {@code foe}'s motion: every strike carries vanilla knockback, so an art that means to keep its foes where
+	 * they are (in its rain, in its echo's reach, where its well gathered them) steadies them after it strikes. A player's own motion is
+	 * theirs, and left alone.
+	 */
+	public static void steady(LivingEntity foe) {
+		if (foe.isAlive() && !(foe instanceof Player)) {
+			Vec3 v = foe.getDeltaMovement();
+			foe.setDeltaMovement(v.x * 0.15, Math.min(v.y, 0.1), v.z * 0.15);
+			MonsterMagic.sync(foe);
+		}
+	}
+
 	// ------------------------------------------------------------------ what they suffer
 
 	/** Sets {@code foe} alight for {@code ticks} (a player at most {@link ArtRules#PVP_IGNITE_TICKS}); nothing for one fire can't touch. */
@@ -520,6 +546,192 @@ public final class ArtKit {
 		Reactions.mark(foe, Reactions.Mark.IONISED, ArtRules.IONISED_TICKS);
 	}
 
+	/**
+	 * Roots {@code foe} where it stands for {@code ticks}: it can turn and strike back but not walk away (as the Root rune holds;
+	 * the art draws its own roots). On another player a root is a hold, held to {@link ArtRules#PVP_HOLD_TICKS} and not again within
+	 * {@link ArtRules#PVP_HOLD_REST} (a player held lately is only slowed); a boss is only slowed. Returns whether it rooted.
+	 */
+	public static boolean root(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!foe.isAlive()) {
+			return false;
+		}
+		if (boss(foe)) {
+			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 1, false, true), player);
+			return false;
+		}
+		int t = holdFor(foe, ticks);
+		if (t <= 0) {
+			slow(player, foe, ticks, 1);
+			return false;
+		}
+		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, t, 6, false, false, true), player);
+		foe.setDeltaMovement(0, Math.min(0, foe.getDeltaMovement().y), 0);
+		MonsterMagic.sync(foe);
+		return true;
+	}
+
+	/** Whether {@code foe} is rooted now (the slow only a root or a hold gives). */
+	public static boolean rooted(LivingEntity foe) {
+		return MonsterMagic.rooted(foe);
+	}
+
+	/**
+	 * A steady pull, one beat of it: {@code foe} carried toward {@code to} at {@code speed} blocks a tick, its own sideways motion
+	 * replaced. For pulls that beat every tick or two (a well, a black sphere): another player at most {@link ArtRules#PVP_DRAG}, under
+	 * a sprint, so they can always run out of it; never a boss. Within {@code stop} of the point it's let be.
+	 */
+	public static void drag(LivingEntity foe, Vec3 to, double speed, double stop) {
+		Vec3 toward = to.subtract(foe.position());
+		toward = new Vec3(toward.x, 0, toward.z);
+		double length = toward.length();
+		double allowed = ArtRules.dragged(speed, foe instanceof Player, boss(foe));
+		if (length <= stop || allowed <= 0 || !foe.isAlive()) {
+			return;
+		}
+		Vec3 v = foe.getDeltaMovement();
+		Vec3 pull = toward.scale(Math.min(allowed, (length - stop) * 0.5) / length);
+		if (foe instanceof Player) {
+			// A player keeps their own motion and is only leaned on: they can always walk out of it.
+			foe.setDeltaMovement(v.add(pull.scale(0.5)));
+		} else {
+			foe.setDeltaMovement(pull.x, Math.max(v.y, foe.onGround() ? 0.0 : v.y), pull.z);
+		}
+		MonsterMagic.sync(foe);
+	}
+
+	// ------------------------------------------------------------------ mending, drinking and aura given back
+
+	/** What arts have mended each body lately: the bucket's level and when it was last filled (see {@link ArtRules#mendRoom}). */
+	private static final Map<UUID, double[]> MENDED = new HashMap<>();
+
+	/**
+	 * Mends {@code target} by {@code amount} health (Verdant's mending; {@link #drink} for Crimson's), if the swordsman may help it
+	 * (themselves, their pets, their team) and it's hurt: held, with every other art's mending of it, to {@link ArtRules#MEND_CAP}
+	 * (the bucket {@link ArtRules#mendRoom} drains a health a second). Returns the health it took.
+	 */
+	public static float mend(ServerPlayer player, LivingEntity target, double amount) {
+		if (target == null || !target.isAlive() || amount <= 0 || !helpable(player, target) || target.getHealth() >= target.getMaxHealth()) {
+			return 0;
+		}
+		long now = target.level().getGameTime();
+		double[] bucket = MENDED.computeIfAbsent(target.getUUID(), k -> new double[] {0, now});
+		double level = ArtRules.mendLevel(bucket[0], now - (long) bucket[1]);
+		double room = Math.max(0, ArtRules.MEND_CAP - level);
+		float before = target.getHealth();
+		target.heal((float) Math.min(amount, room));
+		float took = Math.max(0, target.getHealth() - before);
+		bucket[0] = level + took;
+		bucket[1] = now;
+		if (MENDED.size() > 256) {
+			MENDED.values().removeIf(b -> ArtRules.mendLevel(b[0], now - (long) b[1]) <= 0);
+		}
+		return took;
+	}
+
+	/** Crimson's drink: the swordsman mended by {@code amount} (a share of what an art dealt), in the same bucket as any mending. */
+	public static float drink(ServerPlayer player, double amount) {
+		return mend(player, player, amount);
+	}
+
+	/** How much more arts may mend {@code target} now (for the tests). */
+	public static double mendRoom(LivingEntity target) {
+		double[] bucket = MENDED.get(target.getUUID());
+		return bucket == null ? ArtRules.MEND_CAP : ArtRules.mendRoom(bucket[0], target.level().getGameTime() - (long) bucket[1]);
+	}
+
+	/**
+	 * Gives {@code amount} aura back to the swordsman (a Starlit art), a tick later, so it never lands before the art's own price is
+	 * paid (a full pool would waste it). Never past their capacity, never scaled as a gain is.
+	 */
+	public static void giveBack(ServerPlayer player, double amount) {
+		if (amount <= 0) {
+			return;
+		}
+		Scheduler.later(1, () -> {
+			if (player.isAlive()) {
+				givenBack += Aura.giveBack(player, amount);
+			}
+		});
+	}
+
+	/** All the aura arts have given back since the server started (for the tests). */
+	private static double givenBack;
+
+	public static double givenBack() {
+		return givenBack;
+	}
+
+	// ------------------------------------------------------------------ wounds
+
+	/**
+	 * What an art drinks (Crimson's): a share of what its strikes and wounds take, held to a cap over the whole art, each drink drawn
+	 * by {@code look} from the foe it came from. One per performance, shared by everything the art lands.
+	 */
+	public static final class Drink {
+		private final ServerPlayer player;
+		private final double share;
+		private final double cap;
+		private final java.util.function.Consumer<LivingEntity> look;
+		private double drunk;
+
+		public Drink(ServerPlayer player, double share, double cap, java.util.function.Consumer<LivingEntity> look) {
+			this.player = player;
+			this.share = share;
+			this.cap = cap;
+			this.look = look;
+		}
+
+		/** Drinks its share of {@code taken} from {@code foe}; returns the health it gave its swordsman. */
+		public float from(LivingEntity foe, float taken) {
+			if (taken <= 0 || drunk >= cap || !player.isAlive()) {
+				return 0;
+			}
+			float got = drink(player, ArtRules.drink(taken, share, cap - drunk));
+			drunk += got;
+			if (got > 0 && look != null) {
+				look.accept(foe);
+			}
+			return got;
+		}
+
+		/** What it has drunk so far. */
+		public double drunk() {
+			return drunk;
+		}
+	}
+
+	/**
+	 * A wound in {@code foe} that bleeds {@code times} times, every {@link ArtRules#BLEED_PERIOD} ticks, {@code factor} weapons each
+	 * ({@link ArtRules#BLEED_MOVING} times as much while it's on the move, as the Bleed spell's), through the art's own strikes (so a
+	 * player's cap still holds), left marked bleeding for a wind spell's Rupture. {@code drink} (or null) drinks from each bleed;
+	 * {@code drip} (or null) draws it.
+	 */
+	public static void wound(Hits hits, LivingEntity foe, double factor, int times, Drink drink, java.util.function.Consumer<LivingEntity> drip) {
+		ServerPlayer player = hits.player();
+		if (foe == null || !foe.isAlive() || times <= 0 || factor <= 0) {
+			return;
+		}
+		Reactions.mark(foe, Reactions.Mark.BLEEDING, times * ArtRules.BLEED_PERIOD + 10);
+		Vec3[] last = {foe.position()};
+		ServerLevel level = player.level();
+		for (int i = 1; i <= times; i++) {
+			Scheduler.later(i * ArtRules.BLEED_PERIOD, () -> {
+				if (!foe.isAlive() || !player.isAlive() || foe.level() != level) {
+					return;
+				}
+				boolean moving = foe.position().distanceToSqr(last[0]) > 0.04;
+				last[0] = foe.position();
+				float taken = hits.raw(foe, weapon(player) * factor * scale() * (moving ? ArtRules.BLEED_MOVING : 1.0), null);
+				if (drip != null) {
+					drip.accept(foe);
+				}
+				if (drink != null) {
+					drink.from(foe, taken);
+				}
+			});
+		}
+	}
+
 	// ------------------------------------------------------------------ moving the swordsman
 
 	/** Where a dash along {@code dir} can go ({@link AuraStep#path}: never through anything solid, over a ward's edge, into lava or fire). */
@@ -564,11 +776,26 @@ public final class ArtKit {
 	 * ward (or none) they stand in now, within the world border and clear of lava and fire; null if there's none.
 	 */
 	public static Vec3 beside(ServerPlayer player, LivingEntity foe, Vec3 from) {
+		return beside(player, foe, from, foe.getBbWidth() / 2 + 0.75);
+	}
+
+	/**
+	 * A spot behind {@code foe}, on its far side from the swordsman, {@code gap} past its middle, where the swordsman's body fits (the
+	 * same rules as {@link #beside}); null if there's none.
+	 */
+	public static Vec3 behind(ServerPlayer player, LivingEntity foe, double gap) {
+		Vec3 away = foe.position().subtract(player.position());
+		away = new Vec3(away.x, 0, away.z);
+		away = away.lengthSqr() < 1.0E-4 ? flat(player) : away.normalize();
+		return beside(player, foe, foe.position().add(away.scale(4)), foe.getBbWidth() / 2 + gap);
+	}
+
+	/** {@link #beside}, {@code gap} from the foe's middle. */
+	public static Vec3 beside(ServerPlayer player, LivingEntity foe, Vec3 from, double gap) {
 		ServerLevel level = player.level();
 		Vec3 toward = from.subtract(foe.position());
 		toward = new Vec3(toward.x, 0, toward.z);
 		toward = toward.lengthSqr() < 1.0E-4 ? flat(player).scale(-1) : toward.normalize();
-		double gap = foe.getBbWidth() / 2 + 0.75;
 		boolean warded = DungeonWards.warded(level, player.blockPosition());
 		for (double turn : new double[] {0, 0.6, -0.6, 1.2, -1.2}) {
 			Vec3 dir = new Vec3(toward.x * Math.cos(turn) - toward.z * Math.sin(turn), 0, toward.x * Math.sin(turn) + toward.z * Math.cos(turn));
@@ -614,9 +841,11 @@ public final class ArtKit {
 
 	static void forget(UUID id) {
 		HELD.remove(id);
+		MENDED.remove(id);
 	}
 
 	static void clear() {
 		HELD.clear();
+		MENDED.clear();
 	}
 }

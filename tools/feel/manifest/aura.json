@@ -21,10 +21,59 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_bloodletting": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_bloodletting"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_blossom_fall": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_blossom_fall"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_blur": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_blur"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_bolt_step": {
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_bolt_step"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_collapse": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_collapse"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_comet_dash": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_comet_dash"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_comet_dash_burst": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_comet_dash_burst"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_art_constellation_guard": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_constellation_guard"
       ],
       "subtitle": "cast"
     },
@@ -35,6 +84,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_crimson_moon": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_crimson_moon"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_cutting_breeze": {
       "attenuation": 24,
       "files": [
@@ -42,10 +98,38 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_echo_cut": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_echo_cut"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_event_horizon": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_event_horizon"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_event_horizon_crush": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_event_horizon_crush"
+      ],
+      "subtitle": "hit"
+    },
     "aura_art_eye_of_the_storm": {
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_eye_of_the_storm"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_frenzy": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_frenzy"
       ],
       "subtitle": "cast"
     },
@@ -60,6 +144,13 @@
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_glacier_mirror"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_groves_heart": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_groves_heart"
       ],
       "subtitle": "cast"
     },
@@ -98,10 +189,52 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_meteor_shower": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_meteor_shower"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_mountain_splitter": {
       "attenuation": 40,
       "files": [
         "kit/aura/aura_art_mountain_splitter"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_nova": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_nova"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_null_parry": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_null_parry"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_red_rain": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_red_rain"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_rewind_leap": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_rewind_leap"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_rift_step": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_rift_step"
       ],
       "subtitle": "cast"
     },
@@ -119,6 +252,20 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_rooted_parry": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_rooted_parry"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_sanguine_parry": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_sanguine_parry"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_skate": {
       "attenuation": 24,
       "files": [
@@ -133,10 +280,24 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_star_needle": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_star_needle"
+      ],
+      "subtitle": "cast"
+    },
     "aura_art_static_riposte": {
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_static_riposte"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_stopped_moment": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_stopped_moment"
       ],
       "subtitle": "cast"
     },
@@ -161,6 +322,27 @@
       ],
       "subtitle": "cast"
     },
+    "aura_art_thorn_lash": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_thorn_lash"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_thousand_moments": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_thousand_moments"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_thousand_moments_release": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_thousand_moments_release"
+      ],
+      "subtitle": "hit"
+    },
     "aura_art_unmoved": {
       "attenuation": 24,
       "files": [
@@ -172,6 +354,20 @@
       "attenuation": 24,
       "files": [
         "kit/aura/aura_art_updraft"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_void_cut": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_void_cut"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_wild_growth": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_wild_growth"
       ],
       "subtitle": "cast"
     },

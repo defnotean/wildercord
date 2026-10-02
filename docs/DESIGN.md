@@ -1412,8 +1412,8 @@ the shared feel below: each its own trail (a cut, a rising cut, an X, a thrust, 
 banner, a flare and the method's technique sound.
 
 ### The methods' arts
-Each method answers the five strings its own way, on one rule: **every method's art in a slot costs and rests the same and is
-worth about the same.** The string is the same for everyone, so a method is a different answer to the same question, never a
+Each of the ten methods answers the five strings its own way (fifty arts), on one rule: **every method's art in a slot costs and
+rests the same and is worth about the same.** The string is the same for everyone, so a method is a different answer to the same question, never a
 better one. Prices and rests by slot: 6 aura / 3 s, 8 / 4 s, 8 / 4 s, 10 / 5 s, 40 / 30 s (Crackle rests 2.5 s for being
 lighter). The Final Arts wait on one shared gate (`AuraApi.FINAL_GATE`: a full pool until momentum and awakening exist).
 
@@ -1422,17 +1422,42 @@ projected aura (armour applies; a player's spell defences and the PvP scale appl
 through its moment of invulnerability.
 
 **The balance model** (`ArtRules.power`, unit-tested): an art's worth is its main foe's damage (fire counted at a seventh of a W
-a second, a bonus it often earns at about a third), plus three fifths of what it may do to the others it reaches, plus a quarter
-of a W for each second of control (a hold, slow, throw, a hardening or a speed), plus 0.07 W for each block it reaches past a
-sword's three. Each slot's arts sit within 12% of the slot's worth: First 1.3 W, Second 1.8, Third 1.9 (the counter needs a
+a second, a wound at what it bleeds, a bonus it often earns at about a third), plus three fifths of what it may do to the others
+it reaches and of what it mends (in W, a W being about seven health), plus a quarter of a W for each second of control (a hold,
+root, slow, throw, silence, a hardening or a speed), plus 0.07 W for each block it reaches past a sword's three, plus a tenth of
+a W for each point of aura it gives back, less the health it costs its own swordsman. Each slot's arts sit within 12% of the slot's worth: First 1.3 W, Second 1.8, Third 1.9 (the counter needs a
 perfect guard, the hardest thing to time), Fourth 2.15 (the step before it costs 12 aura of its own), Final 4.35. Against the
 techniques: Aura Slash is 12 aura every 2 s for 1.2 W down a 14-block line, so it stays the reach weapon; an art does more in
 its moment and rests longer. A Final Art lands about what a strong high-circle spell does (around 15 with a diamond blade).
+Each method's five arts together sit within 10% of every other's (the fifty: 11.3 to 11.9 W, 5.8% apart).
+
+**Each method leads in its own thing** (`ArtRulesTest` holds it, in the model's sums and in each art's kinds, `ArtRules.Kind`):
+Ember the most damage, Rime the most control, Thunder the most to the others, Gale the most reach, Verdant the most mending (and
+roots), Hollow the pulls and the only silence, Starlit the only aura given back (and the stars), Hourglass the echoes, rewinds and
+moments held still (second in control), Crimson the bleeding and drinking (second in damage and in mending) and the only price
+in health. Each method's own kinds are on every one of its arts, and another method borrows one at most once, so a later art that
+takes another's signature fails a test.
+
+**Mending and drinking.** Whatever arts mend (Verdant's mending, Crimson's drinking) goes through one bucket a body
+(`ArtKit.mend`): at most 10 health at once, and 10 over the 10 s after (it drains a health a second), so arts buy time in a fight
+and never out-heal it. Mending is in health, not W: a better blade doesn't mend more and `aura.art_damage` doesn't touch it. A
+drink is a share of what an art dealt (a quarter to a half), held to a cap an art.
+
+**Crimson Moon's price** is a quarter of its swordsman's greatest health, taken straight off their health (`setHealth`, never
+damage: no armour, no totem, no death message), and never past a heart: a swordsman at a heart or less pays nothing more, so it
+can never kill (`ArtRules.moonToll`).
 
 **Fair to players.** One art deals one player at most `PVP_ART_CAP` 8 in all (after the PvP scale, before armour and defences);
-holds (a freeze, a stun) a player at most 15 ticks and no art's hold takes the same player again for 80; sets a player alight
-at most 60 ticks; throws, lifts or pulls a player at most 0.6 a tick. A player the swordsman can't harm (`canHarmPlayer`, the
-mod's targeting) is never touched. Bosses are only ever slowed: never frozen, held, lifted, thrown or pulled.
+holds (a freeze, a stun, a root, a moment stopped) a player at most 15 ticks and no art's hold takes the same player again for
+80; sets a player alight at most 60 ticks; throws, lifts or pulls a player at most 0.6 a tick, and a steady drag (a well, a
+sphere) pulls one at most 0.08 a tick, under a sprint, so it can always be run out of; silences a player at most 30 ticks and
+not again for 100. A player the swordsman can't harm (`canHarmPlayer`, the mod's targeting) is never touched, and is never mended
+by a foe's art. Bosses are only ever slowed: never frozen, held, rooted, lifted, thrown, pulled or silenced (a silence on a boss
+only interrupts it).
+
+**Silence** (Null Parry): a silenced creature can't cast (the cast lock, `Statuses.silence`), is interrupted, a creeper's fuse
+goes out and a drawn bow is lowered; a silenced player can't play an art (`Refusal.SILENCED`, with a line saying so) or use
+the Aura key but for the guard (sneak-tap), so they can still defend themselves.
 
 **No griefing.** Fire on the ground, ice paths, mirrors and rising stone are light and block displays (`ArtBlocks`, tagged so a
 restart's leftovers are cleared as their chunk loads). The one real block change is Skate's frosted ice over water: through
@@ -1448,27 +1473,59 @@ restart's leftovers are cleared as their chunk loads). The one real block change
 | Ember | **Sunfall** | V | a leap (0.95 up, 9 ticks), a dive (1.6), the blast 4.5 round: 2.2 at the heart to 1.5 at the edge, up to 10, alight 5 s, thrown 0.9; a ring of fire 5 out, 1 wide, 5 s, 0.15 every half second |
 | Rime | **Frostbite** | I | a cut 3.3 out, 120°, up to 4, 0.6, slow 3 s; a crust each, kept 8 s; the third freezes 1.5 s |
 | Rime | **Hailfall** | II | a cut 3 out, 0.5; a cloud 2.6 round over the foe struck (or 3.6 ahead): 7 stones over 18 ticks, 0.28 each, at most 3 on one, slowing |
-| Rime | **Glacier Mirror** | III | the attacker 0.9, frozen 2 s; others within 3 chilled 2 s; a mirror 2.5 s turning projectiles from in front back |
+| Rime | **Glacier Mirror** | III | the attacker 0.9, frozen 2.5 s; others within 3 chilled 2 s; a mirror 2.5 s turning projectiles from in front back |
 | Rime | **Skate** | IV | a glide 8 blocks over 4 ticks, 1.4 wide, up to 5, 0.7 and a crust; a frozen foe shatters (1.5, shards 0.3 within 2); the path 5 s: allies faster, foes slowed |
-| Rime | **Winter's Hush** | V | a cone 7.5 long, 100°, up to 10, 0.8, frozen 2.5 s; 30 ticks later the still-frozen shatter, 1.7, shards 0.35 within 2.2 |
+| Rime | **Winter's Hush** | V | a cone 7.5 long, 100°, up to 10, 0.8, frozen 2.5 s; 30 ticks later the still-frozen shatter, 1.7, shards 0.35 within 2.2 (a foe cut by shards once an art) |
 | Thunder | **Crackle** | I | 3 cuts 2 ticks apart, 0.27 each, each a spark to another within 4 (0.15); the first interrupts |
-| Thunder | **Skyfall** | II | a bolt 6 ticks later on the foe struck (or 4 ahead), 1.6 round, 0.95, held 0.5 s; arcs to 2 more within 4.5, 0.35 |
+| Thunder | **Skyfall** | II | a bolt 6 ticks later on the foe struck (or 4 ahead), 1.6 round, 0.95, held 0.5 s; arcs to 2 more within 4.5, 0.4 |
 | Thunder | **Static Riposte** | III | the attacker 0.8, then 4 jumps within 5, each 0.85 of the last, each held 0.4 s |
 | Thunder | **Bolt Step** | IV | blinks to up to 4 foes within 8 and in sight, 3 ticks apart, 0.75 each, held 0.3 s |
-| Thunder | **Heaven's Spear** | V | a 14-tick charge, then a lance 20 long (level unless aimed past 12°, at most 30°), 0.8 each side, up to 8, 2.0, held 1 s; the sky strikes each |
-| Gale | **Cutting Breeze** | I | a wind blade 10 out at 2 a tick, 2 wide, up to 4, 0.5, pushed 0.8 |
+| Thunder | **Heaven's Spear** | V | a 14-tick charge, then a lance 18 long (level unless aimed past 12°, at most 30°), 0.8 each side, up to 8, 2.0, held 1 s; the sky strikes each |
+| Gale | **Cutting Breeze** | I | a wind blade 12 out at 2 a tick, 2 wide, up to 4, 0.45, pushed 0.8 |
 | Gale | **Updraft** | II | a cut 3.3 out, 120°, up to 4, 0.65, lifted 0.95; the swordsman 0.75 up, floating 1.5 s; coated blows on them while up × 1.25 |
-| Gale | **Eye of the Storm** | III | a spin 3.2 round, up to 6, 0.8, thrown 0.75; 3 s of projectiles turned aside and foes within 2.5 blown off |
-| Gale | **Tailwind** | IV | a dash 11 blocks over 5 ticks, 1.6 wide, up to 5, 0.6, shoved 0.8; speed 5 s for the swordsman and allies within 5 of the way |
-| Gale | **Hundred Winds** | V | 3 s, 5 round: every 5 ticks each foe (up to 8) 0.22 and drawn in; at the end 0.5 and lifted 1.0 |
+| Gale | **Eye of the Storm** | III | a spin 3.5 round, up to 6, 0.8, thrown 0.75; 3 s of projectiles turned aside and foes within 2.5 blown off |
+| Gale | **Tailwind** | IV | a dash 13 blocks over 5 ticks, 1.6 wide, up to 5, 0.6, shoved 0.8; speed 5 s for the swordsman and allies within 5 of the way |
+| Gale | **Hundred Winds** | V | 3 s, 5.5 round: every 5 ticks each foe (up to 8) 0.24 and drawn in; at the end 0.5 and lifted 1.0 |
 | Stone | **Rockbreaker** | I | a cut 3.3 out, 0.8, held 0.4 s, slowed 1.5 s, cracked 3 s; 0.3 to others within 1.8 |
 | Stone | **Avalanche** | II | driven down if airborne; a shockwave 4.2 round over 6 ticks, up to 8, 0.9 to 0.5, thrown 0.5, slowed 2 s |
-| Stone | **Unmoved** | III | the attacker 0.9, thrown 1.6, stunned 1 s on landing; the swordsman hardened 4 s (blows a fifth lighter, no knockback) |
+| Stone | **Unmoved** | III | the attacker 1.0, thrown 1.6, stunned 1 s on landing; the swordsman hardened 4 s (blows a fifth lighter, no knockback) |
 | Stone | **Landslide** | IV | a charge 8 blocks over 8 ticks, 1.6 wide, up to 4 carried along; at the end 0.9, thrown 1.0, stunned 0.5 s; into a wall 1.35, stunned 1 s |
 | Stone | **Mountain Splitter** | V | a split 15 long at 1.25 a tick, stone every 1.5; within 1.4 of it up to 10, 2.1, lifted 0.75, stunned 0.75 s |
+| Verdant | **Thorn Lash** | I | a lash 4.5 out, 70°, up to 3, 0.45; the first rooted 1.5 s and pricked 0.07 every half second, 3 times |
+| Verdant | **Blossom Fall** | II | a falling cut 3.3 out, 120°, up to 4, 0.75; a carpet of blossom 3.5 round, 1.8 ahead, 4 s: you and allies mended 2, then 1 a second; foes slowed |
+| Verdant | **Rooted Parry** | III | the attacker 0.95, rooted 1.5 s; thorns 2.5 round, 0.3; you mend three quarters of the caught blow (3 to 6 health) |
+| Verdant | **Wild Growth** | IV | a rush 7 blocks over 5 ticks, 1.4 wide, up to 5, 0.65, snagged 0.5 s; brambles 5 s: foes slowed and 0.05 a second, allies mended 1 a second |
+| Verdant | **Grove's Heart** | V | roots under every foe within 6, up to 10, 1.5, rooted 2.5 s; a grove 8 s: allies mended 1 a second, foes slowed and 0.05 a second |
+| Hollow | **Void Cut** | I | a cut 5.5 out, 70°, up to 3, 0.6, each drawn in to 1.6 in front, slowed 1 s, shadowed |
+| Hollow | **Collapse** | II | a falling cut; a well 2.5 ahead drags everything within 4.5 in for 16 ticks (0.3 a tick), then collapses 2.2 round: 0.8 to 0.55, up to 8 |
+| Hollow | **Null Parry** | III | the attacker 1.0, held 0.4 s, silenced 3 s (a player 1.5 s); others within 3 shoved 0.5 and 0.25 |
+| Hollow | **Rift Step** | IV | through a rift to 0.9 past the back of the nearest foe within 8 in a 70° cone ahead, 1.0; the rifts' edges drag in and cut 2.5 round, 0.35, up to 4, slowed 1.5 s |
+| Hollow | **Event Horizon** | V | a sphere 4.5 ahead drags everything within 7 in for 2 s (0.3 a tick); within 2.5 slowed hard and 0.12 every 5 ticks; then a crush 3.5 round, 1.4 to 0.9, up to 12 |
+| Starlit | **Star Needle** | I | 3 darts 8° apart, 9 out at 1.5 a tick, seeking; 0.22 each, a star on each foe struck, 0.5 aura back a dart |
+| Starlit | **Meteor Shower** | II | 5 stars over 18 ticks on a circle 3 round (the foe struck, or 4 ahead): 0.25 within 1.4, at most 3 on one; a great star 0.4 within 2, starring; 1 aura back a foe, up to 4 |
+| Starlit | **Constellation Guard** | III | the attacker 0.6, then 4 stars on it burst 1.5 s on, 4 ticks apart, 0.2 and 0.75 aura back each; foes within 6 already starred burst at once, 0.35 |
+| Starlit | **Comet Dash** | IV | a rush 8 blocks over 4 ticks, 1.4 wide, up to 5, 0.6 and a star; 12 ticks on the trail bursts, 0.45 within 1.5, 1 aura back a foe, up to 5 |
+| Starlit | **Nova** | V | 12 ticks gathering (slowed), then a ring 7 round, 1.9 to 1.3, up to 12, thrown 0.6; a starred foe 0.4 more; 2.5 aura back a foe struck, up to 20 |
+| Hourglass | **Echo Cut** | I | a cut 3.3 out, 120°, up to 4, 0.5; 12 ticks later the afterimage cuts again, 0.5, reaching 4 |
+| Hourglass | **Rewind Leap** | II | a falling cut 3.3 out, 120°, up to 4, 0.95, slowed hard 2 s; 6 ticks on, you snap back to where the leap left the ground (at most 10 blocks, 2.5 s back) |
+| Hourglass | **Stopped Moment** | III | the attacker 0.8, held 2.5 s (a player 0.75 s), then 0.25 and thrown 0.6 as time starts again; others within 3 slowed 1 s |
+| Hourglass | **Blur** | IV | a rush 7 blocks in 3 ticks, 1.4 wide, up to 5, 0.7, slowed; 3 s of drag 5 round: foes slowed, projectiles to 35% speed, you quickened |
+| Hourglass | **Thousand Moments** | V | everything within 7 (up to 10) held 2.5 s (a player 0.75 s) while 10 cuts gather; then 2.2 each, plus half of each of your blows on them while held (up to 1 W) |
+| Crimson | **Bloodletting** | I | a cut 3.3 out, 90°, up to 3, 0.55; a wound bleeding 0.08 every half second for 3 s (half again on the move); drinks a quarter, up to 3 health |
+| Crimson | **Red Rain** | II | a falling cut bursting 3.5 round, 2 ahead, up to 6, 0.7; a red rain there 2 s, 0.08 every half second; drinks 30%, up to 4 health |
+| Crimson | **Sanguine Parry** | III | the attacker 0.7, held 0.4 s, and the caught blow (up to 1 W, at least 0.3) bled back out over 3 s; others within 2.5 0.25; drinks half, up to 6 health |
+| Crimson | **Frenzy** | IV | a rush 7 blocks over 4 ticks, 1.4 wide, up to 5, 0.7; each cut, and each of your blows after, quickens the blade 5% (up to 20%) for 5 s |
+| Crimson | **Crimson Moon** | V | costs a quarter of your greatest health (never past a heart); a 180° arc 6 out, up to 10, 2.5, bleeding 0.1 six times; drinks half, up to 10 health |
+
+**The balance pass** (step 4, weighing all fifty together) moved eight of the first twenty-five: Glacier Mirror's freeze 2 s to
+2.5 s, Unmoved 0.9 to 1.0, Eye of the Storm 3.2 round to 3.5, Skyfall's arcs 0.35 to 0.4 and Hundred Winds 5 round and 0.22 to
+5.5 and 0.24 (each sat 5% to 7% under its slot once the new arts set the standard); Cutting Breeze 10 out to 12 (and 0.5 to 0.45)
+and Tailwind 11 blocks to 13, with Heaven's Spear 20 to 18, so Gale leads reach again (44 against Thunder's 43); and Winter's
+Hush's shards cut a foe once an art, not once a shattering foe near it.
 
 **How they show.** Every art has its own trail (`AuraFx` strokes), impacts by weight, its banner, a body flare, its method's
-technique sound and a voice of its own (`aura_art_<id>`, feel kit). Its shapes are server-sent light: the swordsman's own view
+technique sound and a voice of its own (`aura_art_<id>`, feel kit; fifty voices, and five more for an art's second beat:
+Sunfall's landing, Winter's Hush's shattering, Event Horizon's crush, Comet Dash's bursting trail, Thousand Moments' release). Its shapes are server-sent light: the swordsman's own view
 gets only what keeps clear of the middle of their sight (the trail thin and low, marks on foes, light on the ground ahead),
 while the big shapes near the body (a lance, a mirror, a near crescent, a gout of flame) go to everyone else and to the
 swordsman only in third person (`AuraFx.Shown`). By day the light lays a thin dark rim under itself.

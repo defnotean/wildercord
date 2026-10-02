@@ -70,7 +70,7 @@ and documented, not a first draft.
 | 1 | Sword strings: the input language | done |
 | 2 | Feel and spectacle: the shared visual and sound language | done |
 | 3 | Arts I: the framework, and Ember, Rime, Thunder, Gale, Stone | done |
-| 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | planned |
+| 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | done |
 | 5 | Momentum and openings | planned |
 | 6 | Awakening | planned |
 | 7 | Ways | planned |
@@ -585,3 +585,111 @@ middle. Look at every art's `_fp` shot.
   range; knockback scatters them, so `regroup()` puts them back between the first-person and third-person plays; the platform
   is refilled with air before each scene (Skate's ice, a Sunfall ring). `WILDERCORD_ARTS=a,b` plays only those (the Aura page
   always). Back up `src/gametest/resources/fabric.mod.json` before running a subset and restore it after.
+
+### From step 4: Arts II
+
+All ten methods have their five arts now (fifty); the player's view is `wiki/progression/sword-arts.md`, the rules and every
+art's numbers DESIGN.md's "The methods' arts", the code map ARCHITECTURE.md's. The common arts (`PlaceholderArts`) are only for
+an add-on's method with none of its own; the game tests play them with `gametest.TestMethods.plain()` ("Plain Breath").
+
+**What each method is now** (an identity a later step should keep, and `ArtRulesTest` holds):
+- **Verdant**: the least damage, the most mending, and roots (a root is a hold that leaves the foe turning: Slowness VII, under
+  the player hold cap). Its fields (blossom, brambles, grove) mend allies and slow foes.
+- **Hollow**: pulls (a single draw is a throw; a steady drag is held to `PVP_DRAG` on a player) and the only silence.
+- **Starlit**: the only aura given back, and stars: a star an art sets on a foe (`ArtWards.star`, 5 s) bursts for more under
+  the next Starlit art. The least control of any method.
+- **Hourglass**: echoes (an art that repeats), a rewind, moments held still (Stopped Moment, Thousand Moments: holds under the
+  player cap) and drag (time slowed round you, projectiles too). Second in control to Rime.
+- **Crimson**: wounds that bleed on (`ArtKit.wound`, marked `BLEEDING`, half again while their bearer moves), drinking a share
+  of what it deals, a frenzy (attack speed) and the only price in health. Second in damage to Ember, second in mending to
+  Verdant.
+
+**The decisions on the hard cases.**
+- **Healing never outpaces danger.** Every art's mending and every drink goes through one bucket a body (`ArtKit.mend`): 10
+  health at once at most, draining a health a second (`MEND_CAP`, `MEND_WINDOW`), so all arts together mend a body a health a
+  second in a long fight. Mending is in health, not W: a better blade or a higher
+  `art_damage` never mends more. A foe's art never mends a player its swordsman can't help (`helpable`).
+- **Lifesteal never makes a swordsman unkillable.** Crimson's drinks are shares (a quarter to a half) held to a cap an art (3 to
+  10 health), all in the same bucket as Verdant's mending: a Crimson swordsman lasts longer, and still dies to a pack.
+- **Crimson Moon's floor**: the toll is a quarter of the greatest health, taken with `setHealth` (not damage: no armour, no
+  totem, no death message) and never past a heart (`MOON_FLOOR` 2): at a heart or less it costs nothing more, so it can never
+  kill. It's a gamble because it's paid before it lands: on a miss you're a quarter down.
+- **Hourglass holds** go through `ArtKit.hold`: a player at most `PVP_HOLD_TICKS` 15 and not again for 80 (the same budget a
+  freeze, a stun or a root spends). Thousand Moments still stores a player's blows taken while held, up to a weapon.
+- **Silence** (`ArtWards.silence`): a creature 3 s, a player 1.5 s and not again for 5 s, a boss only interrupted. A silenced
+  creature can't cast (`Statuses.silence`), a creeper's fuse goes out, a drawn bow is lowered. A silenced player is refused
+  arts (`SwordStrings.Refusal.SILENCED`, with a line) and the Aura key but the guard (`Aura.press`), so they can still defend.
+- **First person**: the spectacle shapes (a sphere, a moon, a column of light, a stopped clock behind a foe) are
+  `ArtLight.spectacle`; the swordsman's own view keeps low, flat shapes (ground rings, faces on the ground, rays from 2.5 out).
+
+**Final balance** (all fifty, `ArtRules.power`; the slot's worth 1.3 / 1.8 / 1.9 / 2.15 / 4.35, each art within 12%, each
+method's five within 10% of every other's: 5.8% apart). The sums show who leads in what.
+
+| Method | I | II | III | IV | V | Five | Damage | To others | Control (s) | Reach | Mends | Aura back |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Ember | 1.38 | 1.85 | 2.03 | 2.25 | 4.42 | 11.93 | **7.83** | 3.90 | 3.0 | 29.5 | 0 | 0 |
+| Rime | 1.26 | 1.88 | 1.90 | 2.20 | 4.40 | 11.63 | 6.06 | 3.10 | **10.7** | 29.8 | 0 | 0 |
+| Thunder | 1.26 | 1.74 | 1.96 | 2.07 | 4.26 | 11.28 | 5.31 | **5.10** | 3.8 | 43.0 | 0 | 0 |
+| Gale | 1.42 | 1.78 | 1.82 | 2.25 | 4.30 | 11.57 | 5.22 | 3.40 | 9.1 | **44.0** | 0 | 0 |
+| Stone | 1.30 | 1.77 | 1.90 | 2.16 | 4.49 | 11.63 | 5.90 | 3.70 | 8.0 | 36.5 | 0 | 0 |
+| Verdant | 1.35 | 1.72 | 1.92 | 2.10 | 4.42 | 11.51 | 5.06 | 2.95 | 7.7 | 27.0 | **3.20** | 0 |
+| Hollow | 1.29 | 1.78 | 1.95 | 2.17 | 4.54 | 11.73 | 5.76 | 3.55 | 8.9 | 38.0 | 0 | 0 |
+| Starlit | 1.35 | 1.88 | 1.85 | 2.23 | 4.47 | 11.78 | 6.56 | 3.35 | 0.5 | 35.5 | 0 | **16.5** |
+| Hourglass | 1.29 | 1.77 | 1.94 | 2.09 | 4.37 | 11.45 | 6.20 | 3.10 | 10.3 | 26.6 | 0 | 0 |
+| Crimson | 1.27 | 1.86 | 1.88 | 2.09 | 4.24 | 11.34 | 7.75 | 3.25 | 0.4 | 27.8 | 2.26 | 0 |
+
+(Damage and to-others in W; mending in W, a W about seven health; Crimson Moon's toll, 5 health on 20, is taken off its
+worth.) How the new terms are weighed: mending at three fifths, as damage to the others (it doesn't always find a wound); aura
+given back at a tenth of a W a point (Nova's up to 20 is 2 W at most, and it only comes back if it lands); a wound at what it
+bleeds; a toll whole.
+
+**The balance pass** moved eight step-3 arts: five that sat 5% to 7% under their slot once the fifty set the standard (Glacier
+Mirror's freeze 2 to 2.5 s, Unmoved 0.9 to 1.0, Eye of the Storm 3.2 to 3.5 round, Skyfall's arcs 0.35 to 0.4, Hundred Winds 5
+to 5.5 round and 0.22 to 0.24 a beat), and Gale's reach lead restored (Cutting Breeze 10 to 12 out and 0.5 to 0.45, Tailwind
+11 to 13 blocks; Heaven's Spear 20 to 18), and Winter's Hush's shards now cut a foe once an art (two frozen foes side by side
+were cutting each other's neighbours twice, beyond its worth). Cutting Breeze sits highest of the fifty in its slot (+9%): it
+buys Gale's reach, and its damage is the slot's least.
+
+**Hooks for step 5 (momentum, stance, finishers).**
+- Every art blow goes through `ArtKit.Hits` (`strike`, `raw`; each returns what it took, `hurt(foe)` and `count()`): the one
+  place to feed momentum ("arts that land") and wear down stance. Give `Hits` a hook rather than touching fifty performers.
+  `AuraApi.onString` fires once an art is performed (with `StringContext.struck`), for momentum that counts arts, not blows.
+- Stance by kind: `ArtRules.Art.kinds` says what an art does (`QUAKE` for Stone's heavy blows, `HOLD`, `ROOT`, `STILL`, `FREEZE`
+  for holds); a stance weight could be derived from `primary` and the kinds instead of a new number per art.
+- States a finisher can read: `ArtKit.rooted`, `ArtWards.stopped`, `silenced`, `starred`, `frenzyStacks`, `crusts`,
+  `juggled`, `Reactions.has(foe, BLEEDING)` and `SHADOWED`. "Opened" should be another `ArtWards` state, cleared by `forget`.
+- The Final Art's gate is `AuraApi.FINAL_GATE` (a full pool now): `gateFinalArts` swaps it for peak momentum in one place.
+- Aura back for momentum or a finisher: `ArtKit.giveBack` (a tick later, after the art's own price; no multipliers or hooks,
+  through `Aura.giveBack`). Healing from a finisher: `ArtKit.mend`, so the bucket holds it too.
+- Each method's finisher should look its own: the new methods' looks are in `HourglassArts.clockFace`/`resume`/`gold`,
+  `CrimsonArts.gash`/`drops`/`splash`, `StarlitArts.burst`/`starLook`, `HollowArts`' sphere (an orb over `ArtLight.shade`),
+  `VerdantArts.rootsOn`/`bloom`.
+
+**Gotchas from step 4.**
+- **Vanilla particles draw with the wrong picture in the game test client** (a probe of each, side by side, in the arts
+  test's world): block, item and crit particles (`ParticleTypes.BLOCK`, `ITEM`, `CRIT`, whatever block or item) all draw as
+  the same small tan cube, and tinted leaves, the composter's specks, spore blossom and enchanted hits as white or pink rune
+  glyphs; cherry leaves and happy-villager sparks draw as pale crystals. It looks like a particle atlas mix-up rather than how a
+  player's game draws them, but it's unconfirmed outside the tests. The arts don't depend on it: they use the mod's own motes,
+  dust and shaped light (`CrimsonArts.drops` for blood, `HourglassArts.resume` for time breaking, `VerdantArts.petals`, `leaves`
+  and `impact`, `ArtBlocks.spire(..., false)` for a root or a trunk), which always draw right. `ElementFx.drip`, `bloodImpact`,
+  `crack`, `petals`' leaves, `TimeFx.stasisRelease` and a spire's dust are best left out of new arts. The tan cubes round husks
+  struck by a life method are the affinity cue's crits (`Affinities.notice`, "Weak!"), not the art.
+- **No `ElementFx` (or anything that touches the particle registry) in a static field** of an arts class: `ArtRulesTest` loads
+  the class without a bootstrapped game and fails with `ExceptionInInitializerError`. A dark colour is `0xRRGGBB | ArtLight.DARK`.
+- **The strike's knockback carries foes out of a field or an echo's reach**: call `ArtKit.steady(foe)` after the strike when an
+  art means to keep them where they are (Red Rain, Collapse, Echo Cut, Meteor Shower's small stars).
+- **A root drawn at `foe.position()` hangs in the air** if a strike lifted the foe: draw it on `ArtKit.floor` below.
+- **`SigilOption.CIRCLE` reads as a generic white rune circle by day**; give a method its own ground shape (Verdant's bloom
+  and rings, Hollow's dark circle, Hourglass's clock face).
+- **`SigilOption.GLOW` is always a billboard**, even through `ArtLight.ground`: a big one stands up facing the camera as a
+  jagged glare, never a pool of light on the ground. Keep glows small (`flash`, `shade`); lay a field's bounds as rings.
+- **A pale aura washes out** (Hourglass burns near white at high stages): draw its arts in `HourglassArts.gold(player)`.
+- **Aura given back must land after the art's price**: `SwordStrings.perform` pays after the performer, so a refund in the
+  performer lands in a full pool and is lost. `ArtKit.giveBack` waits a tick.
+- **Long-lived light lingers into the next test scene** (a grove stands 8 s): `WildercordArtsTest.lingerTicks` waits it out,
+  and `reset` kills block displays.
+- **`ArtBlocks.live` leaked** when a display was removed early; `discard` now always counts it down.
+- **Lambdas in loops** (a delayed tree, a staggered strike) need effectively final copies of the loop's values.
+- **The arts game test now runs fifty scenes** (about ten minutes): use `WILDERCORD_ARTS=a,b` while working, and run the whole
+  thing once before merging. Scenes that mend need a hurt ally (a tamed wolf, `wolf()`) and a hurt swordsman (`HURT`).

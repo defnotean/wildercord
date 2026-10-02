@@ -54,7 +54,9 @@ import java.util.function.Function;
  * Sword strings, played with the real keys as a player would (the attack key, sneak, jump, and the Aura key for the guard and
  * the step), on a stone platform in the sky, against husks that stand still:
  * <ul>
- *   <li>the five arts are on both sides, on their strings;</li>
+ *   <li>the five common arts are on both sides, on their strings, played here by a method the test makes without arts of its
+ *       own ({@link TestMethods#PLAIN}: every built-in method has its own); a Verdant swordsman's same swings play Verdant's own
+ *       First Art instead;</li>
  *   <li>swing, swing, low swing plays the First Art: the client reads it and asks, the server performs it (the hook hears it),
  *       spends its price, rests it, and writes the first string in the Grimoire; the indicator shows the marks and lights;</li>
  *   <li>played again at once, it's resting: the client refuses it itself, with the reason;</li>
@@ -88,6 +90,8 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null || System.getenv("WILDERCORD_SHOWCASE") != null) {
 			return;
 		}
+		// Every built-in method has arts of its own: the common arts are played by a method the test makes, without any.
+		TestMethods.plain();
 		if (!hooked) {
 			hooked = true;
 			AuraApi.onString((player, art, ctx) -> PERFORMED.add(art.id()));
@@ -118,6 +122,8 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			List<String> failures = new ArrayList<>();
 			run(failures, "the arts and their strings", () -> registry(context));
 			run(failures, "the First Art", () -> first(context, world));
+			reset(context, world);
+			run(failures, "a method's own art on the same string", () -> own(context, world));
 			reset(context, world);
 			run(failures, "pauses, fumbles and swings that count for nothing", () -> fumbles(context, world));
 			reset(context, world);
@@ -189,7 +195,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void first(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "verdant", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
+			setAura(player, TestMethods.PLAIN, AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
@@ -258,11 +264,43 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		check(PERFORMED.size() == 1, "nothing more should have been performed (" + PERFORMED + ")");
 	}
 
+	// ------------------------------------------------------------------ a method's own art
+
+	/**
+	 * The same swings from a swordsman whose method has arts of its own (Verdant): its own First Art goes, never the common one, and
+	 * the common arts aren't among what their strings are read against at all.
+	 */
+	private static void own(ClientGameTestContext context, TestSingleplayerContext world) {
+		on(world, player -> {
+			setAura(player, "verdant", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
+			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
+			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
+			return null;
+		});
+		context.waitTicks(20);
+		String offered = context.computeOnClient(mc -> {
+			List<String> ids = AuraApi.stringsOf(mc.player).stream().map(AuraApi.StringArt::id).toList();
+			return ids.contains(dev.wildercord.aura.arts.VerdantArts.THORN_LASH) && !ids.contains(PlaceholderArts.FIRST) ? null
+				: "a Verdant swordsman's strings should be read against Thorn Lash, not the common First Art (" + ids + ")";
+		});
+		check(offered == null, offered);
+		PERFORMED.clear();
+		swing(context);
+		context.waitTicks(FULL);
+		swing(context);
+		context.waitTicks(FULL - 5);
+		lowSwing(context);
+		context.waitTicks(4);
+		context.getInput().releaseKey(o -> o.keyShift);
+		check(PERFORMED.equals(List.of(dev.wildercord.aura.arts.VerdantArts.THORN_LASH)),
+			"swing, swing, low swing should play Verdant's own First Art (" + PERFORMED + ")");
+	}
+
 	// ------------------------------------------------------------------ fumbles and swings that don't count
 
 	private static void fumbles(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "hollow", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
+			setAura(player, TestMethods.PLAIN, AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
@@ -362,7 +400,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void second(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "starlit", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
+			setAura(player, TestMethods.PLAIN, AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
@@ -400,7 +438,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void third(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "hourglass", AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
+			setAura(player, TestMethods.PLAIN, AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 1.6), 200).addTag("wildercord.string_target");
 			return null;
@@ -450,7 +488,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void fourth(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "verdant", AuraRules.FORM, AuraRules.capacity(AuraRules.FORM));
+			setAura(player, TestMethods.PLAIN, AuraRules.FORM, AuraRules.capacity(AuraRules.FORM));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			// Past where the step lands (six blocks on), a line of husks for the cut ahead.
 			for (int i = 0; i < 3; i++) {
@@ -491,7 +529,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void last(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "crimson", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
+			setAura(player, TestMethods.PLAIN, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.string_target");
 			spawn(player.level(), EntityTypes.HUSK, at(-2.5, 0.5), 200).addTag("wildercord.string_ring");
@@ -537,7 +575,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		// Without a full pool the same swings fall through to the First Art.
 		on(world, player -> {
 			player.removeAttached(SwordStrings.COOLDOWNS);
-			setAura(player, "crimson", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN) * 0.5F);
+			setAura(player, TestMethods.PLAIN, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN) * 0.5F);
 			return null;
 		});
 		context.waitTicks(20);
@@ -557,7 +595,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void server(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "starlit", AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
+			setAura(player, TestMethods.PLAIN, AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			return null;
 		});
@@ -580,7 +618,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 			String b = SwordStrings.check(player, art, List.of(plain, plain, marks)).map(Enum::name).orElse("none");
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
-			setAura(player, "starlit", AuraRules.EDGE, 2);
+			setAura(player, TestMethods.PLAIN, AuraRules.EDGE, 2);
 			String c = SwordStrings.check(player, art, List.of(plain, plain, marks)).map(Enum::name).orElse("none");
 			return a.equals("UNSEEN") && b.equals("NO_WEAPON") && c.equals("NO_AURA") ? null
 				: "the server should refuse unseen swings, an empty hand and too little aura (" + a + ", " + b + ", " + c + ")";
@@ -589,7 +627,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 		// Strings switched off: nothing is read on the client. (Written into the live settings and told to the client as a reload would.)
 		on(world, player -> {
-			setAura(player, "starlit", AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
+			setAura(player, TestMethods.PLAIN, AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
 			return null;
 		});
 		swapStrings(world, false);
@@ -691,15 +729,14 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 	// ------------------------------------------------------------------ how the arts look
 
 	/**
-	 * Each art in a different method's colour, from above and behind, by day (where its dark rim has to carry it against the
-	 * sky) and by night, then in first person by day (how much of the view it takes). Performed on the server directly: the
-	 * keys that play them are tested above.
+	 * Each common art, from above and behind, by day (where its dark rim has to carry it against the sky) and by night, then in
+	 * first person by day (how much of the view it takes), played by the test's own method without arts (every built-in method has
+	 * its own now: see WildercordArtsTest for them). Performed on the server directly: the keys that play them are tested above.
 	 */
 	private static void looks(ClientGameTestContext context, TestSingleplayerContext world) {
-		String[] methods = {"verdant", "hollow", "starlit", "hourglass", "crimson"};
 		for (int i = 0; i < PlaceholderArts.IDS.size(); i++) {
 			String id = PlaceholderArts.IDS.get(i);
-			String method = methods[i];
+			String method = TestMethods.PLAIN;
 			boolean line = id.equals(PlaceholderArts.FOURTH);
 			for (int view = 0; view < 3; view++) {
 				boolean night = view == 1;
