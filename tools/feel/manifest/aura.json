@@ -477,6 +477,83 @@
       ],
       "subtitle": "cast"
     },
+    "aura_finisher": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_finisher"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_crimson": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_crimson"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_ember": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_ember"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_gale": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_gale"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_hollow": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_hollow"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_hourglass": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_hourglass"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_rime": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_rime"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_starlit": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_starlit"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_stone": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_stone"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_thunder": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_finisher_thunder"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_finisher_verdant": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_finisher_verdant"
+      ],
+      "subtitle": "hit"
+    },
     "aura_gale_art": {
       "attenuation": 24,
       "files": [
@@ -566,6 +643,20 @@
       ],
       "subtitle": "tell"
     },
+    "aura_momentum_peak": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_momentum_peak"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_momentum_rise": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_momentum_rise"
+      ],
+      "subtitle": "tell"
+    },
     "aura_perfect_guard": {
       "attenuation": 24,
       "files": [
@@ -612,6 +703,13 @@
         "kit/aura/aura_spellblade"
       ],
       "subtitle": "cast"
+    },
+    "aura_stance_break": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_stance_break"
+      ],
+      "subtitle": "hit"
     },
     "aura_starlit_art": {
       "attenuation": 24,

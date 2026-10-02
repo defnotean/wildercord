@@ -405,6 +405,8 @@ public class AuraScreen extends Screen {
 				tip.add(Component.translatable(m.nameKey()).withColor(m.color()));
 				tip.add(Component.translatable(AuraApi.hasArts(m.id()) ? "screen.wildercord.aura.method_arts" : "screen.wildercord.aura.method_common")
 					.withStyle(ChatFormatting.GRAY));
+				tip.add(Component.translatable("aura.wildercord.banner.kicker", Component.translatable("aura.wildercord.banner.finisher"),
+					Component.translatable(AuraApi.finisher(m.id()).nameKey())).withStyle(ChatFormatting.DARK_GRAY));
 				tooltip = tip;
 			}
 			x += 13;
@@ -449,7 +451,10 @@ public class AuraScreen extends Screen {
 				if (art.cooldownTicks() > 0) {
 					tip.add(Component.translatable("screen.wildercord.aura.art_rest", trim(art.cooldownTicks() / 20.0)).withStyle(ChatFormatting.DARK_GRAY));
 				}
-				if (art.condition() == AuraApi.FINAL_GATE || art.condition() == dev.wildercord.aura.PlaceholderArts.FULL_POOL) {
+				if (art.condition() == AuraApi.FINAL_GATE) {
+					tip.add(Component.translatable(dev.wildercord.config.Config.momentum(player) ? "screen.wildercord.aura.art_needs_peak"
+						: "screen.wildercord.aura.art_needs_full").withStyle(ChatFormatting.DARK_GRAY));
+				} else if (art.condition() == dev.wildercord.aura.PlaceholderArts.FULL_POOL) {
 					tip.add(Component.translatable("screen.wildercord.aura.art_needs_full").withStyle(ChatFormatting.DARK_GRAY));
 				}
 				if (!mine && method != null) {
@@ -465,7 +470,33 @@ public class AuraScreen extends Screen {
 				break;
 			}
 		}
+		// The method's finisher, under its arts: what a full swing on an opened foe becomes.
+		if (method != null && y <= H - 70) {
+			AuraApi.Finisher finisher = AuraApi.finisher(method.id());
+			Component fname = Component.translatable(finisher.nameKey());
+			g.fill(16, y + 2, 20, y + 6, 0xFF000000 | (dev.wildercord.aura.Stance.OPENED_COLOR & 0xFFFFFF));
+			g.text(font, font.plainSubstrByWidth(fname.getString(), 92), 24, y, mine ? TEXT : DIM, false);
+			Component when = Component.translatable("screen.wildercord.aura.finisher_when");
+			g.text(font, font.plainSubstrByWidth(when.getString(), W - 14 - 122 - 50), 122, y, FAINT, false);
+			String which = Component.translatable("aura.wildercord.banner.finisher").getString();
+			g.text(font, which, W - 14 - font.width(which), y, 0xFF000000 | (dev.wildercord.aura.Stance.OPENED_COLOR & 0xFFFFFF), false);
+			if (inside(mx, my, 14, y - 1, W - 28, 10)) {
+				tooltip = List.of(fname.copy().withColor(methodColor), Component.translatable(finisher.nameKey() + ".desc").withStyle(ChatFormatting.GRAY));
+			}
+			y += 10;
+		}
 		y += 3;
+		// Momentum as it stands: what its tier takes off every price and adds to every strike.
+		int tier = dev.wildercord.aura.Momentum.tier(player);
+		if (mine && tier > 0) {
+			String off = trim(Math.round((1 - dev.wildercord.aura.MomentumRules.priceFactor(tier)) * 100));
+			String harder = trim(Math.round((dev.wildercord.aura.MomentumRules.strength(tier) - 1) * 100));
+			Component line = tier >= dev.wildercord.aura.MomentumRules.PEAK_TIER
+				? Component.translatable("screen.wildercord.aura.momentum_peak", off, harder)
+				: Component.translatable("screen.wildercord.aura.momentum_line", tier, off, harder);
+			g.text(font, font.plainSubstrByWidth(line.getString(), W - 32), 16, y, 0xFF000000 | AuraRules.color(methodColor, 0xFFD86A, 4), false);
+			y += 11;
+		}
 		String window = trim(dev.wildercord.config.Config.stringWindow(player) / 20.0);
 		for (net.minecraft.util.FormattedCharSequence line : font.split(Component.translatable("screen.wildercord.aura.arts_hint", window), W - 32)) {
 			g.text(font, line, 16, y, DIM, false);
@@ -513,6 +544,11 @@ public class AuraScreen extends Screen {
 			Component.translatable("aura.wildercord.technique.armour.desc")));
 		rows.add(new Row(Component.translatable("aura.wildercord.technique.intent"), AuraRules.FORM, always, 0,
 			Component.translatable("aura.wildercord.technique.intent.desc")));
+		// Momentum, and the openings it helps make.
+		rows.add(new Row(Component.translatable("aura.wildercord.technique.momentum"), AuraRules.GLOW, always, 0,
+			Component.translatable("aura.wildercord.technique.momentum.desc")));
+		rows.add(new Row(Component.translatable("aura.wildercord.technique.finisher"), AuraRules.GLOW, always, 0,
+			Component.translatable("aura.wildercord.technique.finisher.desc")));
 		Component key = WildercordKeys.auraKey();
 		for (AuraApi.Technique t : AuraApi.techniques()) {
 			Component how = switch (t.trigger()) {

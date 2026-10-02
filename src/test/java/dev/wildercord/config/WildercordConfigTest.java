@@ -791,6 +791,75 @@ class WildercordConfigTest {
 	}
 
 	@Test
+	void momentumAndStanceSettingsHaveDefaultsAndRanges() {
+		WildercordConfig.AuraMomentum m = D.aura().momentum();
+		assertEquals(WildercordConfig.AuraMomentum.DEFAULTS, m);
+		assertTrue(m.momentum() && m.stance() && m.pvpStance());
+		assertEquals(1.0, m.momentumGain(), 1e-9);
+		assertEquals(1.0, m.momentumEbb(), 1e-9);
+		assertEquals(1.0, m.stanceDamage(), 1e-9);
+		assertEquals(1.0, m.finisherDamage(), 1e-9);
+		for (String key : List.of("momentum", "momentum_gain", "momentum_ebb", "stance", "stance_damage", "finisher_damage", "pvp_stance")) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"momentum\": false, \"momentum_gain\": 9, \"momentum_ebb\": -2, "
+			+ "\"stance\": false, \"stance_damage\": 0.5, \"finisher_damage\": 7, \"pvp_stance\": false}}");
+		WildercordConfig.AuraMomentum read = parsed.config().aura().momentum();
+		assertFalse(read.momentum());
+		assertFalse(read.stance());
+		assertFalse(read.pvpStance());
+		assertEquals(5.0, read.momentumGain(), 1e-9, "held to five times");
+		assertEquals(0.0, read.momentumEbb(), 1e-9, "never below nothing (no ebb at all)");
+		assertEquals(0.5, read.stanceDamage(), 1e-9);
+		assertEquals(3.0, read.finisherDamage(), 1e-9, "held to three times");
+		assertEquals(3, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config(), "the written file keeps them");
+		// The constructor from before momentum (and a missing part) take its defaults.
+		WildercordConfig.AuraSettings before = new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			WildercordConfig.AuraHeights.DEFAULTS, WildercordConfig.AuraStrings.DEFAULTS);
+		assertEquals(WildercordConfig.AuraMomentum.DEFAULTS, before.momentum());
+		assertEquals(WildercordConfig.AuraMomentum.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			null, null, null).momentum());
+	}
+
+	@Test
+	void aFileFromBeforeMomentumGainsItsKeys() {
+		// An aura section written with the methods' arts but before momentum.
+		List<String> keys = List.of("momentum", "momentum_gain", "momentum_ebb", "stance", "stance_damage", "finisher_damage", "pvp_stance");
+		String old = D.toJson();
+		for (String key : keys) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		for (String key : keys) {
+			assertFalse(old.contains("\"" + key + "\""), key + " gone: " + old);
+		}
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura(), "momentum's settings read as their defaults");
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : keys) {
+			assertTrue(grown.contains("\"" + key + "\""), key + " added: " + grown);
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		// The owner's own settings are kept as they were.
+		String theirs = old.replace("\"guard_share\": 0.5", "\"guard_share\": 0.3");
+		WildercordConfig.AuraSettings kept = WildercordConfig.parse(WildercordConfig.addMissing(theirs).orElseThrow()).config().aura();
+		assertEquals(0.3, kept.guardShare(), 1e-9);
+		assertEquals(WildercordConfig.AuraMomentum.DEFAULTS, kept.momentum());
+	}
+
+	@Test
+	void momentumAndStanceTravelToTheClient() {
+		Config.Sync on = Config.Sync.of(D);
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE, on.combat());
+		assertEquals(Config.Sync.DEFAULT.combat(), on.combat(), "the default before the server speaks is the same");
+		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"momentum\": false}}").config();
+		assertEquals(Config.Sync.STANCE, Config.Sync.of(off).combat());
+		WildercordConfig neither = WildercordConfig.parse("{\"aura\": {\"momentum\": false, \"stance\": false}}").config();
+		assertEquals(0, Config.Sync.of(neither).combat());
+	}
+
+	@Test
 	void auraWorldDefaultsAreTheRulesNumbers() {
 		WildercordConfig.AuraWorldSettings w = D.auraWorld();
 		assertTrue(w.duelists() && w.knights() && w.forgedGear() && w.duelistCamps());

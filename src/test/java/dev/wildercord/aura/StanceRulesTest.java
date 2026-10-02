@@ -171,6 +171,42 @@ class StanceRulesTest {
 		assertTrue(StanceRules.STARLIT_AURA > 1, "Starlit's more");
 	}
 
+	// ------------------------------------------------------------------ named, described, voiced
+
+	@Test
+	void everyFinisherIsNamedDescribedAndVoiced() throws java.io.IOException {
+		com.google.gson.JsonObject lang = read("/assets/wildercord/lang/en_us.json");
+		java.util.Set<String> names = new java.util.HashSet<>();
+		for (String id : dev.wildercord.aura.arts.Finishers.IDS) {
+			String key = "aura.wildercord.finisher." + id;
+			assertTrue(lang.has(key), key);
+			assertTrue(lang.has(key + ".desc"), key + ".desc");
+			assertTrue(names.add(lang.get(key).getAsString()), id + " has a name of its own");
+		}
+		assertEquals(11, dev.wildercord.aura.arts.Finishers.IDS.size(), "the ten methods' and the common one");
+		for (String key : java.util.List.of("message.wildercord.aura.art.peak", "message.wildercord.aura.guard_broken", "message.wildercord.aura.opened",
+				"aura.wildercord.banner.finisher", "toast.wildercord.aura.peak_momentum", "toast.wildercord.aura.finisher",
+				"toast.wildercord.aura.stance_break", "aura.wildercord.technique.momentum", "aura.wildercord.technique.momentum.desc",
+				"aura.wildercord.technique.finisher", "aura.wildercord.technique.finisher.desc", "screen.wildercord.aura.art_needs_peak",
+				"screen.wildercord.aura.momentum_line", "screen.wildercord.aura.momentum_peak", "screen.wildercord.aura.finisher_when")) {
+			assertTrue(lang.has(key), key);
+		}
+		com.google.gson.JsonObject kit = read("/assets/wildercord/kit_sounds.json").getAsJsonObject("events");
+		java.util.List<String> sounds = new java.util.ArrayList<>(dev.wildercord.aura.arts.Finishers.SOUNDS);
+		sounds.addAll(java.util.List.of("aura_momentum_rise", "aura_momentum_peak", "aura_stance_break", "aura_finisher"));
+		for (String sound : sounds) {
+			assertTrue(kit.has(sound), sound + " isn't in the feel kit: run python tools/feel/build.py --only aura");
+		}
+		assertEquals(10, dev.wildercord.aura.arts.Finishers.SOUNDS.size(), "a voice for each method's finisher");
+	}
+
+	private static com.google.gson.JsonObject read(String path) throws java.io.IOException {
+		try (java.io.InputStream in = StanceRulesTest.class.getResourceAsStream(path)) {
+			assertNotNull(in, path);
+			return com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+		}
+	}
+
 	// ------------------------------------------------------------------ how fights play out
 
 	/** Full diamond blows (and every {@code artEvery}th an art) on a foe until its stance breaks: how many it took. */
