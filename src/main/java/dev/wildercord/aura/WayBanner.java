@@ -162,12 +162,26 @@ public final class WayBanner {
 		}
 		ServerLevel level = player.level();
 		double range = range();
+		Vec3 chest = player.position().add(0, 1.2, 0);
 		for (LivingEntity body : company(player, range)) {
 			steady(body, WayRules.CRY_STEADY, WayRules.CRY_TICKS);
 			if (body != player) {
-				ArtLight.world(player).flash(body.getBoundingBox().getCenter(), AuraVfx.hot(WayRules.BANNER_COLOR, 0.3), 0.9F);
+				// The cry reaching each ally: a thread of gold from the Banner, and a ring rising round them.
+				Vec3 heart = body.getBoundingBox().getCenter();
+				ArtLight.world(player).ray(chest, heart, AuraVfx.hot(WayRules.BANNER_COLOR, 0.25), 0.045, 9)
+					.flash(heart, AuraVfx.hot(WayRules.BANNER_COLOR, 0.3), 0.9F)
+					.groundRing(body.position(), WayRules.BANNER_COLOR, 0.2, 1.0, 0.06, 12);
 			}
 		}
+		// Over the Banner's head, a pennant of light snapping out (seen from outside).
+		Vec3 top = player.position().add(0, 2.4, 0);
+		Vec3 out = ArtKit.flat(player);
+		Vec3 aside = ArtKit.right(out);
+		ArtLight.spectacle(player).ray(player.position().add(0, 1.6, 0), top.add(0, 0.6, 0), AuraVfx.hot(WayRules.BANNER_COLOR, 0.4), 0.05, 12)
+			.ray(top.add(0, 0.55, 0), top.add(aside.scale(0.9)).add(0, 0.4, 0), WayRules.BANNER_COLOR, 0.06, 12)
+			.ray(top.add(aside.scale(0.9)).add(0, 0.4, 0), top.add(aside.scale(0.6)).add(0, 0.2, 0), WayRules.BANNER_COLOR, 0.06, 12)
+			.ray(top.add(aside.scale(0.6)).add(0, 0.2, 0), top.add(aside.scale(0.9)), WayRules.BANNER_COLOR, 0.06, 12)
+			.ray(top.add(aside.scale(0.9)), top.add(0, 0.05, 0), WayRules.BANNER_COLOR, 0.06, 12);
 		double aura = StanceRules.finisherAura(Aura.stage(player), Momentum.practice(player, foe)) * WayRules.CRY_AURA;
 		for (ServerPlayer ally : swordsmen(player, range)) {
 			Momentum.add(ally, WayRules.CRY_MOMENTUM, "banner", MomentumRules.MAX);
@@ -242,7 +256,8 @@ public final class WayBanner {
 				Aura.gain(ally, AuraRules.DOMINION_TRICKLE / 2, "dominion");
 				Momentum.engaged(ally);
 				if (age % 20 == 5) {
-					ArtLight.world(owner).flash(ally.position().add(0, 0.2, 0), AuraVfx.hot(WayRules.BANNER_COLOR, 0.2), 0.7F);
+					// Sheltered: a ring of the Banner's gold at their feet.
+					ArtLight.world(owner).groundRing(ally.position(), WayRules.BANNER_COLOR, 0.3, 0.8, 0.05, 14);
 				}
 			}
 		}

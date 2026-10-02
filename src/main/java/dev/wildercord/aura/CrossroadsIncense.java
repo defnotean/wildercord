@@ -90,11 +90,15 @@ public class CrossroadsIncense extends Item {
 
 	@Override
 	public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remaining) {
-		// Smoke curling up from the incense as it burns.
-		if (level instanceof ServerLevel server && entity instanceof ServerPlayer player && remaining % 4 == 0) {
-			Vec3 hand = player.getEyePosition().add(player.getViewVector(1.0F).scale(0.5)).subtract(0, 0.35, 0);
+		// Smoke curling up from the incense as it burns, in the colour of the Way it's burning away, and a ring of it round the feet.
+		if (level instanceof ServerLevel server && entity instanceof ServerPlayer player && remaining % 2 == 0) {
+			Vec3 hand = player.getEyePosition().add(player.getViewVector(1.0F).scale(0.55)).subtract(0, 0.4, 0);
 			int color = Ways.way(player).map(AuraApi.Way::color).orElse(0xB8A8C8);
-			Motes.clouds(server, hand, 2, 0.08, AuraRules.mix(color, 0x5A5468, 0.6), 0.22, 30, new Vec3(0, 0.04, 0), 0.015, 0.4);
+			Motes.clouds(server, hand, 2, 0.06, AuraRules.mix(color, 0x6A6478, 0.3), 0.55, 38, new Vec3(0, 0.05, 0), 0.018, 0.55);
+			if (remaining % 10 == 0) {
+				Motes.clouds(server, player.position().add(0, 0.2, 0), 5, 0.7, AuraRules.mix(color, 0x5A5468, 0.45), 0.9, 44, new Vec3(0, 0.025, 0), 0.02, 0.5);
+				ArtLight.world(player).groundRing(player.position(), color, 0.6, 1.6, 0.05, 12);
+			}
 		}
 	}
 

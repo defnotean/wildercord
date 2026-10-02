@@ -246,6 +246,13 @@ public final class WayEffects {
 	 */
 	static int bastion(ServerPlayer owner, ServerLevel level, Vec3 centre, double radius) {
 		int turned = 0;
+		if (level.getGameTime() % 10 == 0) {
+			// Its edge stands as a faint wall of the Bulwark's light: rings at the rim, one over another.
+			for (double h : new double[] {0.15, 1.0, 1.9}) {
+				ArtLight.world(owner).ring(centre.add(0, h, 0), new Vec3(0, 1, 0), AuraVfx.hot(WayRules.BULWARK_COLOR, h > 1.5 ? 0.4 : 0.15), radius - 0.08,
+					radius, h > 0.5 ? 0.035 : 0.06, 13);
+			}
+		}
 		AABB box = new AABB(centre, centre).inflate(radius + 3, 6, radius + 3);
 		for (Projectile p : level.getEntitiesOfClass(Projectile.class, box, Entity::isAlive)) {
 			Entity shooter = p.getOwner();
@@ -308,24 +315,31 @@ public final class WayEffects {
 	}
 
 	/**
-	 * {@code player}'s perfect guard just turned {@code attacker}'s blow aside (Slip): they slip behind it, facing its back, so the counter
-	 * that follows falls there. Never through a wall, a ward's edge or into lava; nothing happens where there's no room.
+	 * Where {@code player}'s perfect guard against {@code attacker}'s blow slips them (Slip): behind it, on its far side, where their body
+	 * fits and nothing solid stands between it and the spot (never through a wall, a ward's edge or into lava). Null without the node or
+	 * where there's no room.
 	 */
-	static void slip(ServerPlayer player, LivingEntity attacker) {
+	static Vec3 slipSpot(ServerPlayer player, LivingEntity attacker) {
 		if (!Ways.has(player, WayRules.SHADOWSTEP_EDGE) || attacker == null || !attacker.isAlive() || attacker.level() != player.level()
 				|| player.isPassenger() || player.isSleeping() || attacker.distanceTo(player) > 6) {
-			return;
+			return null;
 		}
 		Vec3 spot = ArtKit.behind(player, attacker, WayRules.SLIP_GAP);
 		if (spot == null) {
-			return;
+			return null;
 		}
+		Vec3 heart = attacker.getBoundingBox().getCenter();
+		HitResult through = player.level().clip(new ClipContext(heart, spot.add(0, 0.9, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, attacker));
+		return through.getType() == HitResult.Type.MISS ? spot : null;
+	}
+
+	/**
+	 * {@code player}'s perfect guard just turned {@code attacker}'s blow aside (Slip): they slip to {@code spot} behind it ({@link #slipSpot}),
+	 * facing its back, so the counter that follows falls there, and it loses them a moment.
+	 */
+	static void slip(ServerPlayer player, LivingEntity attacker, Vec3 spot) {
 		ServerLevel level = player.level();
 		Vec3 heart = attacker.getBoundingBox().getCenter();
-		HitResult through = level.clip(new ClipContext(heart, spot.add(0, 0.9, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, attacker));
-		if (through.getType() != HitResult.Type.MISS) {
-			return;
-		}
 		Vec3 from = player.position();
 		Vec3 look = heart.subtract(spot.add(0, player.getEyeHeight(), 0));
 		float yaw = (float) Math.toDegrees(Math.atan2(-look.x, look.z));

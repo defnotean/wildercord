@@ -386,7 +386,10 @@ public class AuraScreen extends Screen {
 				break;
 			}
 		}
-		// ---- the passive, at the foot.
+		// ---- the passive, at the foot (the Way tab uses the room for its nodes in full).
+		if (way && wayRight > wayLeft) {
+			return tooltip;
+		}
 		Component flavour = Component.translatable(method.nameKey() + ".flavour");
 		int fy = H - 30;
 		g.text(font, Component.translatable("screen.wildercord.aura.flavour"), 14, fy, GOLD, true);
@@ -439,6 +442,9 @@ public class AuraScreen extends Screen {
 
 	// ------------------------------------------------------------------ the Way tab
 
+	/** The Way tree's rows apart (a node stage each). */
+	private static final int ROW = 22;
+
 	/** A Way's emblem sprite (an add-on's Way, without one of its own, gets the plain one). */
 	private static Identifier emblem(String wayId) {
 		return dev.wildercord.aura.WayRules.BUILT_IN.contains(wayId) ? Wildercord.id("aura/way_" + wayId) : Wildercord.id("aura/way_unknown");
@@ -488,7 +494,7 @@ public class AuraScreen extends Screen {
 			int wc = w.color();
 			if (mine) {
 				// The chosen column: a soft band of its colour behind it.
-				g.fill(cx - colW / 2 + 2, headerY - 2, cx + colW / 2 - 2, headerY + 22 + 3 * 26, 0x1E000000 | (wc & 0xFFFFFF));
+				g.fill(cx - colW / 2 + 2, headerY - 2, cx + colW / 2 - 2, headerY + 24 + 3 * ROW, 0x1E000000 | (wc & 0xFFFFFF));
 			}
 			int tint = other ? 0xFF000000 | AuraHud.mix(wc, 0x2A2438, 0.65) : 0xFF000000 | wc;
 			g.blitSprite(RenderPipelines.GUI_TEXTURED, emblem(w.id()), cx - 8, headerY, 16, 16, tint);
@@ -510,9 +516,13 @@ public class AuraScreen extends Screen {
 		int[] stages = dev.wildercord.aura.WayRules.NODE_STAGES;
 		String auto = null;
 		for (int r = 0; r < stages.length; r++) {
-			int ry = rowsY + r * 26;
+			int ry = rowsY + r * ROW;
 			Component label = Component.translatable("aura.wildercord.stage." + AuraStages.id(stages[r]));
-			g.text(font, font.plainSubstrByWidth(label.getString(), gridLeft - rowLabel - 4), rowLabel, ry + 5, stage >= stages[r] ? TEXT : FAINT, false);
+			g.pose().pushMatrix();
+			g.pose().translate(rowLabel, ry + 6);
+			g.pose().scale(0.8F, 0.8F);
+			g.text(font, font.plainSubstrByWidth(label.getString(), Math.round((gridLeft - rowLabel - 2) / 0.8F)), 0, 0, stage >= stages[r] ? TEXT : FAINT, false);
+			g.pose().popMatrix();
 			for (int i = 0; i < ways.size(); i++) {
 				AuraApi.Way w = ways.get(i);
 				AuraApi.WayNode node = w.node(stages[r]).orElse(null);
@@ -525,7 +535,7 @@ public class AuraScreen extends Screen {
 				if (r > 0) {
 					// The line down the column from the node above.
 					boolean lit = ns == dev.wildercord.aura.WayRules.NodeState.CHOSEN;
-					g.fill(cx, ry - 8, cx + 1, ry - 1, lit ? 0xFF000000 | w.color() : 0xFF3A3450);
+					g.fill(cx, ry - (ROW - cell) + 2, cx + 1, ry - 1, lit ? 0xFF000000 | w.color() : 0xFF3A3450);
 				}
 				node(g, ns, w, node, x0, ry, cell, state, now);
 				cells.put(node.id(), new int[] {x0, ry, cell});
@@ -543,7 +553,7 @@ public class AuraScreen extends Screen {
 		// ---- the picked node, in full.
 		String shown = picked != null && cells.containsKey(picked) ? picked : auto != null ? auto : walking != null ? walking.nodes().getFirst().id()
 			: ways.getFirst().nodes().getFirst().id();
-		int dy = rowsY + stages.length * 26 + 2;
+		int dy = rowsY + stages.length * ROW + 1;
 		for (AuraApi.Way w : ways) {
 			for (AuraApi.WayNode node : w.nodes()) {
 				if (!node.id().equals(shown)) {
@@ -559,12 +569,12 @@ public class AuraScreen extends Screen {
 			}
 		}
 		// ---- how to change it.
-		int fy = Math.max(dy + 2, H - 52);
-		if (fy <= H - 42) {
+		int fy = Math.max(dy + 3, H - 30);
+		if (fy <= H - 20) {
 			Component how = Component.translatable(walking != null ? "screen.wildercord.aura.way.change" : "screen.wildercord.aura.way.how",
 				Component.translatable("item.wildercord.crossroads_incense"));
 			for (net.minecraft.util.FormattedCharSequence part : font.split(how, W - 30)) {
-				if (fy > H - 42) {
+				if (fy > H - 20) {
 					break;
 				}
 				g.text(font, part, 16, fy, FAINT, false);
@@ -648,7 +658,7 @@ public class AuraScreen extends Screen {
 		};
 		g.text(font, font.plainSubstrByWidth(where.getString(), W - 32), 18, y, whereColor, false);
 		y += 11;
-		int limit = H - 44;
+		int limit = H - 32;
 		Component passive = Component.translatable("screen.wildercord.aura.way.passive", Component.translatable(node.passiveKey()));
 		for (net.minecraft.util.FormattedCharSequence part : font.split(passive, W - 34)) {
 			if (y > limit) {

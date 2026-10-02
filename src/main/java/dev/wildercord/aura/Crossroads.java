@@ -323,8 +323,10 @@ public final class Crossroads {
 		int color = way.color();
 		int index = s.standards().indexOf(standard);
 		Vec3 head = standard.foot().add(0, WayRules.STANDARD_HEIGHT, 0);
-		ArtLight.world(player).flash(head, AuraVfx.hot(color, 0.4), 1.6F).groundRing(standard.foot(), color, 0.2, 1.4, 0.08, 14)
-			.ray(standard.foot(), head.add(0, 0.6, 0), AuraVfx.hot(color, 0.6), 0.09, 10);
+		// It flares: a great flash at its head for everyone else (and in third person), a small one through the swordsman's own eyes.
+		ArtLight.spectacle(player).flash(head, AuraVfx.hot(color, 0.4), 1.6F);
+		ArtLight.world(player).flash(head, AuraVfx.hot(color, 0.4), 0.6F).groundRing(standard.foot(), color, 0.2, 1.4, 0.08, 14)
+			.ray(standard.foot(), head.add(0, 0.6, 0), AuraVfx.hot(color, 0.6), 0.07, 10);
 		Feels.sound(player.level(), head, "aura_way_lean", 1.0F, Feels.step(index));
 		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.way.lean", Component.translatable(way.nameKey())
 			.withColor(0xFF000000 | color)).withColor(0xE8D8B0));
@@ -341,14 +343,27 @@ public final class Crossroads {
 		int color = way.color();
 		Vec3 chest = player.position().add(0, 1.1, 0);
 		Vec3 heart = chosen.foot().add(0, 1.4, 0);
-		// The chosen standard streams into its swordsman (seen from outside: rays converging on the body; in their own view, only the
-		// standard flaring and a whisper of light low in the view).
-		for (int i = 0; i < 5; i++) {
-			double k = (i - 2) * 0.35;
-			Vec3 from = chosen.foot().add(0, 0.5 + 0.45 * i, 0);
-			ArtLight.spectacle(player).ray(from, chest.add(0, k * 0.4, 0), AuraVfx.hot(color, 0.3 + 0.1 * i), 0.07, 12 + i);
+		// The chosen standard pours into its swordsman over a few moments, sinking as it goes (seen from outside: its light streaming
+		// into the body; through their own eyes, the standard flaring out where it stood and a whisper of light low in the view).
+		Vec3 foot = chosen.foot();
+		for (int k = 0; k < 4; k++) {
+			int step = k;
+			Scheduler.later(step * 2, () -> {
+				if (!player.isAlive() || player.level() != level) {
+					return;
+				}
+				double top = WayRules.STANDARD_HEIGHT * (1 - 0.22 * step);
+				Vec3 body = player.position().add(0, 1.1, 0);
+				ArtLight.world(player).ray(foot, foot.add(0, top, 0), AuraVfx.hot(color, 0.5 + 0.1 * step), 0.09, 6);
+				for (int i = 0; i < 3; i++) {
+					Vec3 from = foot.add(0, top * (0.35 + 0.3 * i), 0);
+					ArtLight.spectacle(player).ray(from, body.add(0, (i - 1) * 0.25, 0), AuraVfx.hot(color, 0.35 + 0.1 * i), 0.1 - 0.02 * step, 7);
+				}
+				Motes.fling(level, foot.add(0, top * 0.6, 0), body.subtract(foot.add(0, top * 0.6, 0)).normalize(), 0.35, AuraVfx.hot(color, 0.3), 0.12, 12,
+					Vec3.ZERO);
+			});
 		}
-		ArtLight.world(player).flash(heart, AuraVfx.hot(color, 0.5), 2.4F).groundRing(chosen.foot(), color, 0.2, 2.2, 0.1, 18);
+		ArtLight.world(player).flash(heart, AuraVfx.hot(color, 0.5), 1.4F).groundRing(chosen.foot(), color, 0.2, 2.2, 0.1, 18);
 		AuraFx.burst(level, player, chest, Vec3.ZERO, color, 1.8F, AuraFx.Burst.FLASH | AuraFx.Burst.RING | AuraFx.Burst.STAR);
 		AuraFx.burst(level, player, player.position().add(0, 0.08, 0), new Vec3(0, 1, 0), color, 2.6F, AuraFx.Burst.RING | AuraFx.Burst.ECHO);
 		AuraFx.bodyAuraFlare(player, 60, 1.0F);
@@ -506,8 +521,13 @@ public final class Crossroads {
 				}
 			}
 			case WayRules.BANNER -> {
-				// A pennant of light on its pole, stirring as if in a wind.
+				// A pennant of light on its pole, stirring as if in a wind, flying in toward the middle of the arc (an outer standard's
+				// would fly out of a first-person view).
 				double pole = 2.75 * rise;
+				Vec3 toMiddle = s.standards().get(s.standards().size() / 2).foot().subtract(foot);
+				if (toMiddle.x * side.x + toMiddle.z * side.z < 0) {
+					side = side.scale(-1);
+				}
 				light.ray(foot, foot.add(0, pole, 0), AuraRules.mix(color, 0x403018, 0.25), 0.04 * w, LIFE);
 				if (rise >= 1) {
 					double stir = Math.sin(age * 0.35) * 0.07;

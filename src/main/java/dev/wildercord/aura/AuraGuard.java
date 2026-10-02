@@ -214,6 +214,7 @@ public final class AuraGuard {
 		caught(player, source.getEntity() instanceof LivingEntity attacker && attacker != player ? attacker : null, damage);
 		Entity direct = source.getDirectEntity();
 		LivingEntity slipFrom = null;
+		Vec3 slipTo = null;
 		if (source.is(Aura.DAMAGE)) {
 			// Aura off a blade (a slash, a spark): a crescent is sent back at whoever loosed it, as the guard's own. Nobody is
 			// staggered from across a field.
@@ -221,15 +222,18 @@ public final class AuraGuard {
 		} else if (direct instanceof Projectile projectile) {
 			reflect(player, projectile);
 		} else if (source.getEntity() instanceof LivingEntity attacker && attacker != player) {
-			stagger(player, attacker);
+			// The Way of the Shadowstep slips behind the one who struck: it staggers where it stands then (thrown back, it would be
+			// thrown into the swordsman behind it).
+			slipTo = WayEffects.slipSpot(player, attacker);
+			stagger(player, attacker, slipTo == null);
 			// A blow turned aside whole breaks into its striker's stance.
 			Stance.guardBreak(player, attacker);
 			slipFrom = attacker;
 		}
 		feedback(player);
-		if (slipFrom != null) {
-			// The Way of the Shadowstep: the swordsman slips behind the one who struck, for the counter to fall on its back.
-			WayEffects.slip(player, slipFrom);
+		if (slipTo != null) {
+			// The swordsman slips behind the one who struck, for the counter to fall on its back.
+			WayEffects.slip(player, slipFrom, slipTo);
 		}
 		Momentum.guarded(player, direct instanceof LivingEntity && !source.is(Aura.DAMAGE));
 		// The first one goes into the Grimoire.
@@ -281,9 +285,14 @@ public final class AuraGuard {
 
 	/** A staggered attacker: thrown back, slowed and weakened for a moment (a boss is only slowed, as every boss is). */
 	public static void stagger(ServerPlayer player, LivingEntity attacker) {
+		stagger(player, attacker, true);
+	}
+
+	/** The same, thrown back only if {@code knock} (not when the guard slips behind it: the Way of the Shadowstep). */
+	public static void stagger(ServerPlayer player, LivingEntity attacker, boolean knock) {
 		Vec3 away = attacker.position().subtract(player.position());
 		Vec3 flat = new Vec3(away.x, 0, away.z);
-		if (flat.lengthSqr() > 1.0E-4) {
+		if (knock && flat.lengthSqr() > 1.0E-4) {
 			attacker.knockback(0.9, -flat.x, -flat.z, player.damageSources().playerAttack(player), 0.0F);
 			attacker.syncVelocity = true;
 		}

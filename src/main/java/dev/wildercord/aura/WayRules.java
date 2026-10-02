@@ -174,9 +174,9 @@ public final class WayRules {
 	/** A standard leaned toward waits this long (ticks) for the second strike that walks it. */
 	public static final int LEAN_TICKS = 160;
 	/** How far the standards stand from the swordsman (blocks), trying nearer where there's no room. */
-	public static final double[] RADII = {3.4, 2.6, 2.0};
+	public static final double[] RADII = {4.2, 3.2, 2.4};
 	/** How far apart they stand (degrees round the swordsman), centred on the way they face: four all in view at once. */
-	public static final double SPREAD = 30.0;
+	public static final double SPREAD = 24.0;
 	/** A standard's height (blocks): its light from its foot to its head. */
 	public static final double STANDARD_HEIGHT = 2.6;
 	/** A strike reaches a standard this far off (blocks, from the eyes), and counts within this much of its axis. */

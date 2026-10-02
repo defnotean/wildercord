@@ -47,14 +47,15 @@ public final class WayHud {
 		long now = mc.level.getGameTime();
 		Font font = mc.font;
 		int cx = g.guiWidth() / 2;
-		// Low: well under the crosshair (clear of the sword string marks just under it), above the hotbar's words.
-		int y = g.guiHeight() / 2 + 34;
+		// Low: above the hotbar and the line over it, well clear of the middle of the view and the standards in it.
+		int y = g.guiHeight() - 98;
 		Crossroads.Standard aimed = Crossroads.aimed(player, s);
 		AuraApi.Way way = aimed == null ? null : AuraApi.way(aimed.way()).orElse(null);
 		if (way == null) {
 			long left = Math.max(0, (s.until() - now + 19) / 20);
 			Component hint = Component.translatable("hud.wildercord.crossroads.hint", left);
-			g.centeredText(font, hint, cx, y, 0x99E8D8B0);
+			back(g, cx, y + 20, font.width(hint), 9);
+			g.centeredText(font, hint, cx, y + 20, 0xCCE8D8B0);
 			return;
 		}
 		labelFrames++;
@@ -62,18 +63,29 @@ public final class WayHud {
 		boolean leaning = way.id().equals(s.leaningAt(now));
 		int color = 0xFF000000 | way.color();
 		Component name = Component.translatable(way.nameKey());
-		g.centeredText(font, name, cx, y, color);
 		Component what = Component.translatable(leaning ? "hud.wildercord.crossroads.walk" : "hud.wildercord.crossroads.lean");
-		g.centeredText(font, what, cx, y + 11, leaning ? 0xFFFFE7A0 : 0xCCE8E0F0);
 		List<String> nodes = new ArrayList<>();
 		for (AuraApi.WayNode node : way.nodes()) {
 			nodes.add(Component.translatable(node.nameKey()).getString());
 		}
+		String line = String.join("  ·  ", nodes);
+		int wide = Math.max(Math.max(font.width(name), font.width(what)), Math.round(font.width(line) * 0.75F));
+		back(g, cx, y, wide, 29);
+		g.centeredText(font, name, cx, y, color);
+		g.centeredText(font, what, cx, y + 11, leaning ? 0xFFFFE7A0 : 0xDDE8E0F0);
 		g.pose().pushMatrix();
 		g.pose().translate(cx, y + 22);
 		g.pose().scale(0.75F, 0.75F);
-		g.centeredText(font, String.join("  ·  ", nodes), 0, 0, 0xAAB8A8D8);
+		g.centeredText(font, line, 0, 0, 0xCCB8A8D8);
 		g.pose().popMatrix();
+	}
+
+	/** A soft dark backing under {@code height} pixels of words {@code width} across, centred on {@code cx}, so they read over bright light. */
+	private static void back(GuiGraphicsExtractor g, int cx, int y, int width, int height) {
+		int half = width / 2 + 6;
+		g.fill(cx - half, y - 3, cx + half, y + height + 1, 0x55000000);
+		g.fill(cx - half + 2, y - 4, cx + half - 2, y - 3, 0x33000000);
+		g.fill(cx - half + 2, y + height + 1, cx + half - 2, y + height + 2, 0x33000000);
 	}
 
 	/** How many frames a standard's label has been drawn, and the last Way it named (for the game tests). */

@@ -383,9 +383,14 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			swing(context);
 			context.waitTicks(FULL);
 			aim(context, world, way);
-			// The camera turned square to the swordsman, the standard beside them, as the second swing lands.
 			swing(context);
-			context.waitTicks(5);
+			context.waitTicks(1);
+			// The camera turned aside as the second swing lands, the chosen standard pouring into the swordsman beside them.
+			on(world, player -> {
+				player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), player.getYRot() - 62, 14, false);
+				return null;
+			});
+			context.waitTicks(3);
 			shot(context, "ways_moment_" + way + "_tp");
 			check(on(world, p -> Ways.state(p).way()).equals(way), way + " should be walked");
 			context.waitTicks(40);
@@ -433,11 +438,14 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			return null;
 		});
 		context.waitTicks(10);
-		thirdPerson(context, world, -50, 14, 6.5, false);
+		thirdPerson(context, world, 0, 12, 6.5, false);
 		float[] behind = on(world, player -> {
 			Mob husk = foes(player).getFirst();
 			float hp = husk.getHealth();
 			check(AuraSlash.loose(player), "the slash should go");
+			// Its flight is set as it's loosed: the camera can rise over the swordsman's shoulder to watch it.
+			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(7.5);
+			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -18, 30, false);
 			return new float[] {hp};
 		});
 		context.waitTicks(3);
@@ -529,7 +537,7 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			Stance.wear(player, second, StanceRules.pool(StanceRules.Kind.CREATURE, 80, 0) * 0.6, StanceRules.Source.BLOW);
 			return null;
 		});
-		thirdPerson(context, world, -30, 20, 6.0, false);
+		thirdPerson(context, world, 0, 16, 6.0, false);
 		context.waitTicks(FULL);
 		int cascades = WayEffects.counted("cascade");
 		EXTRAS.clear();
@@ -803,7 +811,8 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			check(AuraDominion.raise(player), "a Dominion should rise");
 			return null;
 		});
-		context.waitTicks(4);
+		// Past its rising column, so its edge shows.
+		context.waitTicks(26);
 		int bastions = WayEffects.counted("bastion");
 		double radius = on(world, AuraDominion::radius);
 		on(world, player -> {
@@ -915,7 +924,7 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			steady(spawn(player.level(), EntityTypes.HUSK, at(1.5, 0.3), 100, 270));
 			return null;
 		});
-		thirdPerson(context, world, 140, 24, 6.0, false);
+		thirdPerson(context, world, 0, 16, 6.0, false);
 		context.waitTicks(4);
 		int images = WayEffects.counted("afterimage");
 		String stepped = on(world, player -> {
@@ -923,9 +932,14 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			return null;
 		});
 		check(stepped == null, stepped);
-		context.waitTicks(2);
+		context.waitTicks(3);
 		check(on(world, p -> WayEffects.unseen(p)), "just after a step, a Shadowstep's blows count as from behind");
-		context.waitTicks(WayRules.AFTERIMAGE_DELAY - 1);
+		// Turned back to look at where the step set off: the afterimage lingering there among the husks.
+		on(world, player -> {
+			player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), 180, 22, false);
+			return null;
+		});
+		context.waitTicks(WayRules.AFTERIMAGE_DELAY - 3);
 		shot(context, "ways_shadowstep_afterimage_tp");
 		context.waitTicks(3);
 		String struck = on(world, player -> {
@@ -1097,7 +1111,7 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			ally(player).setAttached(AuraAttachments.AURA, Aura.data(ally(player)).withAura(0));
 			return null;
 		});
-		thirdPerson(context, world, -20, 26, 7.0, false);
+		thirdPerson(context, world, 0, 18, 7.0, false);
 		context.waitTicks(FULL);
 		int cries = WayBanner.cries();
 		swing(context);
@@ -1510,6 +1524,8 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		context.getInput().releaseKey(o -> o.keyShift);
 		calm(context, world);
 		kill(world);
+		dropRival(world);
+		dropAlly(world);
 		world.getServer().runCommand("kill @e[type=item]");
 		world.getServer().runCommand("kill @e[type=experience_orb]");
 		world.getServer().runCommand("kill @e[type=arrow]");
@@ -1519,6 +1535,10 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			stand(player);
+			// Off any team a scene before put the swordsman on.
+			if (player.level().getScoreboard().getPlayersTeam(player.getScoreboardName()) != null) {
+				player.level().getScoreboard().removePlayerFromTeam(player.getScoreboardName());
+			}
 			player.removeAttached(AuraAttachments.STATE);
 			player.removeAttached(SwordStrings.COOLDOWNS);
 			player.removeAttached(Momentum.MOMENTUM);
