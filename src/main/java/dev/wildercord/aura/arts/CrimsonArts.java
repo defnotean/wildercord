@@ -89,8 +89,8 @@ public final class CrimsonArts {
 	}
 
 	/**
-	 * Blood thrown off {@code at}: drops of red light flicked out and falling, a little darker dust. (Never the item or block
-	 * particles the old blood drip used: they draw as dull tan cubes.)
+	 * Blood thrown off {@code at}: drops of red light flicked out and falling, a little darker dust. (Not the redstone item
+	 * particles the old blood drip used: the game test client draws item particles as tan cubes.)
 	 */
 	static void drops(ServerLevel level, Vec3 at, double spread, int count) {
 		RandomSource r = level.getRandom();
@@ -200,20 +200,26 @@ public final class CrimsonArts {
 			}
 		}
 		// The rain: a red mist overhead, drops falling, a heartbeat over the ground; every foe under it bleeds, and you drink.
-		Vec3 sky = centre.add(0, 3.6, 0);
+		Vec3 sky = centre.add(0, 3.2, 0);
 		Motes.clouds(level, sky, 7, ArtRules.RAIN_RADIUS * 0.6, 0x7A1424, 1.0, ArtRules.RAIN_TICKS + 8, Vec3.ZERO, 0.01, 0.5);
 		ArtFields.open(player, RAIN, ArtFields.disc(() -> centre, ArtRules.RAIN_RADIUS, 2.5), ArtRules.RAIN_TICKS, 2, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			RandomSource r = lv.getRandom();
-			for (int i = 0; i < 4; i++) {
+			ArtLight rain = ArtLight.world(owner);
+			for (int i = 0; i < 7; i++) {
 				double a = r.nextDouble() * Math.PI * 2;
 				double d = Math.sqrt(r.nextDouble()) * ArtRules.RAIN_RADIUS;
-				Vec3 drop = centre.add(Math.cos(a) * d, 3.2 + r.nextDouble() * 0.4, Math.sin(a) * d);
-				// Drops of red light falling fast, streaking (and a little dust where they hang).
-				Motes.glow(lv, drop, i % 2 == 0 ? 0xD2283C : PALE, 0.05, 15, new Vec3(0, -0.22, 0), 0.0);
+				// Streaks of red light falling through the air at every height, the rain itself (and a little dust where it hangs).
+				Vec3 top = centre.add(Math.cos(a) * d, 0.4 + r.nextDouble() * 2.8, Math.sin(a) * d);
+				rain.ray(top, top.subtract(0, 0.9, 0), i % 2 == 0 ? 0xD2283C : PALE, 0.07, 4);
 				if (i == 0) {
-					Vfx.emit(lv, new DustParticleOptions(DEEP, 1.0F), drop.subtract(0, 1.4, 0), 1, 0.1, 0.0);
+					Vfx.emit(lv, new DustParticleOptions(DEEP, 1.0F), top, 1, 0.1, 0.0);
 				}
+			}
+			if (age % 4 == 0) {
+				// Where it lands: small rings of red spreading on the ground.
+				Vec3 splash = centre.add((r.nextDouble() - 0.5) * 2 * ArtRules.RAIN_RADIUS * 0.8, 0, (r.nextDouble() - 0.5) * 2 * ArtRules.RAIN_RADIUS * 0.8);
+				rain.bare().groundRing(splash, 0xD2283C, 0.05, 0.45, 0.04, 6);
 			}
 			if (age % ArtRules.BLEED_PERIOD == 0) {
 				ElementFx.pulse(lv, centre.add(0, 0.1, 0), ArtKit.UP, ArtRules.RAIN_RADIUS * 0.9);
@@ -346,13 +352,14 @@ public final class CrimsonArts {
 			drops(level, feet.add(0, 1.1, 0), 0.3, 6);
 		}
 		ArtKit.Drink drink = new ArtKit.Drink(player, ArtRules.MOON_DRINK, ArtRules.MOON_DRINK_MAX, f -> drinkLook(player, f));
-		// The moon rising over you (seen from outside): a great crescent of blood-light, dark at its edge, pale at its heart.
+		// The moon rising before you (seen from outside): a great crescent of blood-light standing over the foes ahead, its horns
+		// down to their knees, dark at its edge, pale at its heart.
 		ArtLight show = ArtLight.spectacle(player);
-		Vec3 moon = feet.add(0, 2.7, 0).add(look.scale(3.0));
-		show.slash(moon, look, ArtKit.UP, DARK, 3.4, 2.5, 1.1, 3, 16);
-		show.slash(moon.add(look.scale(0.02)), look, ArtKit.UP, color, 3.25, 2.4, 0.75, 3, 15);
-		show.bare().slash(moon.add(look.scale(0.04)), look, ArtKit.UP, PALE, 3.05, 2.1, 0.2, 3, 14);
-		show.flash(moon, color, 3.0F);
+		Vec3 moon = feet.add(0, 0.5, 0).add(look.scale(3.6));
+		show.slash(moon, look, ArtKit.UP, DARK, 2.8, 2.5, 0.95, 3, 16);
+		show.slash(moon.add(look.scale(0.02)), look, ArtKit.UP, color, 2.68, 2.4, 0.65, 3, 15);
+		show.bare().slash(moon.add(look.scale(0.04)), look, ArtKit.UP, PALE, 2.5, 2.1, 0.18, 3, 14);
+		show.flash(moon.add(0, 2.4, 0), color, 3.0F);
 		// The arc: crescents of it rolling out low over the ground before you, wider as they go.
 		ArtLight world = ArtLight.world(player);
 		double span = Math.toRadians(ArtRules.MOON_DEGREES);

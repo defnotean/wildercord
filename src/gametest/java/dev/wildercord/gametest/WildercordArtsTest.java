@@ -653,8 +653,10 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		}));
 		out.add(new Scene(HollowArts.RIFT_STEP, "hollow", AuraApi.ArtSlot.FOURTH, List.of(foe(0, 9.4), foe(1.8, 7.6)), 3, 6, (p, b) -> {
 			Mob a = foes(p).getFirst();
-			if (p.getZ() < a.getZ() + 0.4 || p.position().distanceTo(a.position()) > 3) {
-				return "the swordsman should come out just past the husk ahead (" + (p.getZ() - a.getZ()) + ")";
+			// Where it stood when the swordsman went through (the cut in its back knocks it on, back the way they came).
+			Vec3 stood = b.at(a);
+			if (p.getZ() < stood.z + 0.4 || horizontal(p.position(), stood) > 2.5) {
+				return "the swordsman should come out just past the husk ahead (" + (p.getZ() - stood.z) + ")";
 			}
 			if (a.getHealth() >= b.health(a)) {
 				return "and cut it as they pass";
@@ -677,7 +679,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				return crushed == 4 ? null : "the sphere should drag in and crush every husk near it (" + crushed + ":" + seen + ")";
 			}));
 		// ------------------------------------------------------------ Starlit
-		out.add(new Scene(StarlitArts.STAR_NEEDLE, "starlit", AuraApi.ArtSlot.FIRST, List.of(foe(0, 2.2), foe(1.5, 6.0)), 3, 4, (p, b) -> {
+		out.add(new Scene(StarlitArts.STAR_NEEDLE, "starlit", AuraApi.ArtSlot.FIRST, List.of(foe(0, 3.4), foe(1.5, 6.5)), 2, 1, (p, b) -> {
 			Mob a = foes(p).getFirst();
 			if (a.getHealth() >= b.health(a) || !ArtWards.starred(p, a)) {
 				return "the darts should strike the husk in front and set a star on it";
@@ -775,7 +777,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			return ArtFields.count(p, HourglassArts.DRAG) == 1 ? null : "time should drag round the swordsman";
 		}));
 		out.add(new Scene(HourglassArts.THOUSAND_MOMENTS, "hourglass", AuraApi.ArtSlot.FINAL, List.of(foe(0, 2.2), foe(-2.6, 1.4), foe(2.8, -0.6), foe(0.4, 4.6)),
-			20, 54, (p, b) -> {
+			20, 38, (p, b) -> {
 				int landed = 0;
 				StringBuilder seen = new StringBuilder();
 				for (Mob m : foes(p)) {

@@ -109,8 +109,8 @@ public final class VerdantArts {
 			}
 		}
 		world.groundRing(base, VINE, r * 2.2, r * 0.8, 0.07, 10);
-		Vfx.emit(level, ParticleTypes.COMPOSTER, base.add(0, 0.3, 0), 8, 0.35, 0.03);
-		ElementFx.petals(level, base.add(0, 0.6, 0), 0.3, 3);
+		leaves(level, base.add(0, 0.3, 0), 0.35, 5);
+		petals(level, base.add(0, 0.6, 0), 0.3, 3);
 		Feels.sound(level, base, "life_thorn_grow", 0.8F, 0.95F + rand.nextFloat() * 0.1F);
 	}
 
@@ -132,11 +132,48 @@ public final class VerdantArts {
 		light.ring(heart, ArtKit.UP, color, 1.45 * size, 1.5 * size, 0.06, Math.min(40, life));
 	}
 
+	/**
+	 * Green flecks shaken loose round {@code at}, drifting down: soft motes of leaf-green light. (The mod's own motes, not the
+	 * tinted-leaves or composter particles, which the game test client draws with the wrong picture.)
+	 */
+	static void leaves(ServerLevel level, Vec3 at, double spread, int count) {
+		RandomSource r = level.getRandom();
+		for (int i = 0; i < count; i++) {
+			Vec3 p = at.add((r.nextDouble() - 0.5) * 2 * spread, (r.nextDouble() - 0.5) * spread, (r.nextDouble() - 0.5) * 2 * spread);
+			Vec3 drift = new Vec3(r.nextDouble() - 0.5, 0.5, r.nextDouble() - 0.5).normalize();
+			Motes.fling(level, p, drift, 0.06, i % 2 == 0 ? 0x8CE06A : 0x5EBE4A, 0.07, 26 + r.nextInt(14), new Vec3(0, -0.025, 0));
+		}
+	}
+
+	/**
+	 * Petals and leaves loosed round {@code at}: cherry petals and a pink light or two drifting down, and green flecks (in place
+	 * of {@code ElementFx.petals}' tinted leaves).
+	 */
+	static void petals(ServerLevel level, Vec3 at, double spread, int count) {
+		Vfx.emit(level, ParticleTypes.CHERRY_LEAVES, at, (count + 1) / 2, spread, 0.0);
+		RandomSource r = level.getRandom();
+		for (int i = 0; i < Math.max(1, count / 4); i++) {
+			Vec3 p = at.add((r.nextDouble() - 0.5) * 2 * spread, (r.nextDouble() - 0.5) * spread, (r.nextDouble() - 0.5) * 2 * spread);
+			Vec3 drift = new Vec3(r.nextDouble() - 0.5, 0.4, r.nextDouble() - 0.5).normalize();
+			Motes.fling(level, p, drift, 0.05, PINK, 0.075, 30 + r.nextInt(16), new Vec3(0, -0.02, 0));
+		}
+		leaves(level, at, spread, count / 2);
+	}
+
+	/** Where a Verdant cut lands on {@code foe}: a pale flash, a ring of green, petals loosed. */
+	static void impact(ServerPlayer player, LivingEntity foe, double size) {
+		Vec3 c = foe.getBoundingBox().getCenter();
+		ArtLight world = ArtLight.world(player);
+		world.flash(c, PALE, (float) (1.1 * size));
+		world.bare().ring(c, ArtKit.UP, ArtKit.color(player), 0.15 * size, 1.0 * size, 0.05 * size, 12);
+		petals(player.level(), c, 0.3 * size, (int) Math.max(2, 4 * size));
+	}
+
 	/** Thorns pricking: a few small pink and green splinters out of {@code foe}, and a tick of sound. */
 	static void prick(ServerPlayer player, LivingEntity foe) {
 		Vec3 c = foe.getBoundingBox().getCenter().subtract(0, foe.getBbHeight() * 0.2, 0);
 		ArtLight.world(player).bare().shards(c, 0.45, 4, PINK, VINE);
-		Vfx.emit(player.level(), ParticleTypes.COMPOSTER, c, 3, 0.25, 0.02);
+		leaves(player.level(), c, 0.25, 2);
 		Feels.sound(player.level(), c, "life_thorn", 0.35F, 1.3F + player.level().getRandom().nextFloat() * 0.2F);
 	}
 
@@ -189,13 +226,13 @@ public final class VerdantArts {
 		Vec3 tip = centre.add(look.scale(ArtRules.THORN_REACH));
 		Scheduler.later(2, () -> {
 			world.flash(tip, PALE, 0.9F);
-			ElementFx.petals(level, tip, 0.3, 4);
+			petals(level, tip, 0.3, 4);
 		});
 		List<LivingEntity> foes = ArtKit.arc(player, context.struck(), ArtRules.THORN_REACH, ArtRules.THORN_DEGREES, ArtRules.THORN_TARGETS);
 		for (int i = 0; i < foes.size(); i++) {
 			LivingEntity foe = foes.get(i);
 			hits.strike(foe, ArtRules.THORN_FACTOR, i == 0 ? AuraFxRules.Weight.HEAVY : AuraFxRules.Weight.FULL);
-			ElementFx.petals(level, foe.getBoundingBox().getCenter(), 0.3, 3);
+			petals(level, foe.getBoundingBox().getCenter(), 0.3, 3);
 		}
 		if (!foes.isEmpty()) {
 			// The first it caught: bound where it stands, the thorns pricking it while the roots hold.
@@ -228,20 +265,20 @@ public final class VerdantArts {
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_blossom_fall", 1.0F, 1.0F);
 		for (LivingEntity foe : ArtKit.arc(player, context.struck(), ArtRules.BLOSSOM_REACH, ArtRules.BLOSSOM_DEGREES, ArtRules.BLOSSOM_TARGETS)) {
 			hits.strike(foe, ArtRules.BLOSSOM_FACTOR);
-			ElementFx.lifeImpact(level, foe.getBoundingBox().getCenter(), 0.8);
+			impact(player, foe, 0.8);
 		}
 		// Where the cut lands, a carpet of blossom bursts open.
 		Vec3 ahead = feet.add(look.scale(ArtRules.BLOSSOM_AHEAD));
 		Vec3 ground = ArtKit.floor(level, ahead.add(0, 1, 0), 1.5, 3);
 		Vec3 centre = ground == null ? ahead : ground;
 		ArtLight world = ArtLight.world(player);
-		// A flower of light opening on the ground: five petals of pink light unfolding from its heart, a soft glow of blossom under
-		// it, rings of green spreading out.
+		// A flower of light opening on the ground: five petals of pink light unfolding from its heart, a ring of blossom round the
+		// carpet while it lies, rings of green spreading out.
 		bloom(world, centre, color, 1.0, ArtRules.BLOSSOM_TICKS);
-		world.ground(centre, SigilOption.GLOW, PINK, ArtRules.BLOSSOM_RADIUS * 2.0, ArtRules.BLOSSOM_TICKS, 0.0);
+		world.groundRing(centre, PINK, ArtRules.BLOSSOM_RADIUS, ArtRules.BLOSSOM_RADIUS, 0.07, ArtRules.BLOSSOM_TICKS);
 		world.groundRing(centre, color, 0.3, ArtRules.BLOSSOM_RADIUS * 1.1, 0.16, 12);
 		world.groundRing(centre, PINK, 0.2, ArtRules.BLOSSOM_RADIUS * 0.85, 0.06, 10);
-		ElementFx.petals(level, centre.add(0, 1.2, 0), 1.6, 30);
+		petals(level, centre.add(0, 1.2, 0), 1.6, 30);
 		RandomSource r = level.getRandom();
 		for (int i = 0; i < 18; i++) {
 			Vec3 at = centre.add((r.nextDouble() - 0.5) * 1.2, 0.2, (r.nextDouble() - 0.5) * 1.2);
@@ -272,7 +309,7 @@ public final class VerdantArts {
 			if (age % 5 == 0) {
 				double a = rr.nextDouble() * Math.PI * 2;
 				double d = Math.sqrt(rr.nextDouble()) * ArtRules.BLOSSOM_RADIUS;
-				ElementFx.petals(lv, centre.add(Math.cos(a) * d, 1.4 + rr.nextDouble(), Math.sin(a) * d), 0.4, 3);
+				petals(lv, centre.add(Math.cos(a) * d, 1.4 + rr.nextDouble(), Math.sin(a) * d), 0.4, 3);
 			}
 			if (age == 40) {
 				// The flower of light holds while the blossom does.
@@ -336,7 +373,7 @@ public final class VerdantArts {
 		ArtLight world = ArtLight.world(player);
 		world.groundRing(feet, VINE, 0.4, ArtRules.ROOTED_THORNS * 1.1, 0.14, 10);
 		world.groundRing(feet, PINK, 0.3, ArtRules.ROOTED_THORNS * 0.9, 0.05, 8);
-		ElementFx.petals(level, feet.add(0, 0.6, 0), 1.0, 8);
+		petals(level, feet.add(0, 0.6, 0), 1.0, 8);
 		for (LivingEntity other : ArtKit.around(player, feet, ArtRules.ROOTED_THORNS, 1.0, 2.5, 6)) {
 			if (other != foe) {
 				hits.strike(other, ArtRules.ROOTED_THORN_FACTOR, AuraFxRules.Weight.LIGHT);
@@ -349,7 +386,7 @@ public final class VerdantArts {
 			if (foe.isAlive()) {
 				ArtKit.root(player, foe, ArtRules.ROOTED_ROOT);
 				rootsOn(player, foe, ArtRules.ROOTED_ROOT, 5, 1.25F);
-				ElementFx.lifeImpact(level, foe.getBoundingBox().getCenter(), 1.0);
+				impact(player, foe, 1.0);
 			}
 		}
 		// And you mend by what your guard caught: the blow drawn up through the roots into you.
@@ -385,7 +422,7 @@ public final class VerdantArts {
 			// A green streak low along the way, leaves torn up behind it.
 			world.ray(a.add(0, 0.12, 0), b.add(0, 0.12, 0), color, 0.42, 14);
 			world.bare().ray(a.add(0, 0.14, 0), b.add(0, 0.14, 0), PALE, 0.1, 10);
-			ElementFx.petals(level, b.add(0, 0.6, 0), 0.5, 4);
+			petals(level, b.add(0, 0.6, 0), 0.5, 4);
 			Vec3 seg = b.subtract(a);
 			for (LivingEntity foe : ArtKit.line(player, a, seg, Math.max(0.5, seg.horizontalDistance()) + 0.8, ArtRules.WILD_WIDTH / 2 + 0.3, 2.2,
 					ArtRules.WILD_TARGETS)) {
@@ -426,8 +463,8 @@ public final class VerdantArts {
 			if (age % 10 == 0) {
 				RandomSource rr = lv.getRandom();
 				Vec3 p = trail.get(rr.nextInt(trail.size()));
-				ElementFx.petals(lv, p.add(0, 0.8, 0), 0.4, 2);
-				Vfx.emit(lv, ParticleTypes.COMPOSTER, p.add(0, 0.4, 0), 2, 0.35, 0.01);
+				petals(lv, p.add(0, 0.8, 0), 0.4, 2);
+				leaves(lv, p.add(0, 0.4, 0), 0.35, 1);
 				// A glow of green light running low along the brambles while they stand.
 				ArtLight w = ArtLight.world(owner);
 				int glow = field.left() < 20 ? ArtKit.mix(ArtKit.color(owner), 0x203018, 0.5) : ArtKit.color(owner);
@@ -469,8 +506,9 @@ public final class VerdantArts {
 		ArtLight world = ArtLight.world(player);
 		ArtLight show = ArtLight.spectacle(player);
 		Vec3 heart = feet.add(look.scale(0.9));
-		// The grove's light pooled on the ground, a flower of it opening where the blade went in.
-		world.ground(feet, SigilOption.GLOW, color, ArtRules.GROVE_RADIUS * 2.2, ArtRules.GROVE_TICKS, 0.0);
+		// The grove's bounds drawn on the ground while it stands, a flower of light opening where the blade went in.
+		world.groundRing(feet, color, ArtRules.GROVE_RADIUS, ArtRules.GROVE_RADIUS, 0.08, ArtRules.GROVE_TICKS);
+		world.bare().groundRing(feet, PINK, ArtRules.GROVE_RADIUS * 0.96, ArtRules.GROVE_RADIUS * 0.96, 0.03, ArtRules.GROVE_TICKS);
 		bloom(world, heart, color, 1.3, 40);
 		world.groundRing(feet, color, 0.5, ArtRules.GROVE_RADIUS * 1.2, 0.3, 14);
 		world.groundRing(feet, PALE, 0.4, ArtRules.GROVE_RADIUS, 0.1, 12);
@@ -506,7 +544,7 @@ public final class VerdantArts {
 			Scheduler.later(delay, () -> {
 				ArtBlocks.spire(level, floor, Blocks.OAK_LOG.defaultBlockState(), 0.42F, height, (float) (r.nextDouble() * Math.PI), (float) ((r.nextDouble() - 0.5) * 0.15),
 					ArtRules.GROVE_TICKS - delay - 10, false);
-				ElementFx.petals(level, floor.add(0, height, 0), 0.8, 6);
+				petals(level, floor.add(0, height, 0), 0.8, 6);
 				ArtBlocks.sprout(level, floor, canopy, 1.7F + 0.4F * r.nextFloat(), height * 0.82F, (float) (r.nextDouble() * Math.PI), 3,
 					ArtRules.GROVE_TICKS - delay - 18);
 				Feels.sound(level, floor, "life_regrow", 0.6F, 0.9F + 0.05F * delay);
@@ -518,7 +556,7 @@ public final class VerdantArts {
 			// Blossom drifting down from the canopies, and pollen of light rising through the grove.
 			if (!trees.isEmpty()) {
 				Vec3 tree = trees.get(rr.nextInt(trees.size()));
-				ElementFx.petals(lv, tree.add(0, 2.6, 0), 0.8, 3);
+				petals(lv, tree.add(0, 2.6, 0), 0.8, 3);
 			}
 			Vec3 mote = feet.add((rr.nextDouble() - 0.5) * ArtRules.GROVE_RADIUS * 1.6, 0.2, (rr.nextDouble() - 0.5) * ArtRules.GROVE_RADIUS * 1.6);
 			Motes.glow(lv, mote, rr.nextBoolean() ? PALE : PINK, 0.07, 30, new Vec3(0, 0.03, 0), 0.01);

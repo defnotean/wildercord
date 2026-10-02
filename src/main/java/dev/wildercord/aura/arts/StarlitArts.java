@@ -175,7 +175,7 @@ public final class StarlitArts {
 					ArtWards.star(player, struck);
 					ArtKit.giveBack(player, ArtRules.NEEDLE_AURA);
 					paid.add(struck.getUUID());
-					burst(player, struck.getBoundingBox().getCenter(), color, 0.55, index);
+					burst(player, struck.getBoundingBox().getCenter(), color, 0.45, index);
 					return;
 				}
 				at[0] = next;
@@ -231,6 +231,8 @@ public final class StarlitArts {
 					}
 					struckBy.put(foe.getUUID(), n + 1);
 					hits.strike(foe, ArtRules.METEOR_FACTOR, AuraFxRules.Weight.LIGHT);
+					// Pinned under the shower (each star's knock would scatter them out from under the great one).
+					ArtKit.steady(foe);
 					if (paid.size() < ArtRules.METEOR_AURA_FOES && paid.add(foe.getUUID())) {
 						ArtKit.giveBack(player, ArtRules.METEOR_AURA);
 					}
@@ -371,8 +373,8 @@ public final class StarlitArts {
 			world.flash(at, PALE, 0.7F);
 			world.sigil(at, facing, SigilOption.STAR, color, 0.42, life + 1, 0.0);
 			if (prev != null) {
-				world.ray(prev, at, color, 0.05, life);
-				world.bare().ray(prev, at, WHITE, 0.018, life);
+				world.ray(prev, at, color, 0.07, life);
+				world.bare().ray(prev, at, WHITE, 0.025, life);
 			}
 			prev = at;
 		}
