@@ -95,14 +95,16 @@ public final class AuraStep {
 			AuraVfx.stepBlocked(player, Aura.color(player), dir);
 			return false;
 		}
-		// Awakened on the Way of the Shadowstep at Sovereign, it's free and quick.
-		AuraRules.Spend paid = Aura.spend(player, WayEffects.stepPrice(player, settings.stepCost()), "step");
-		AuraPresence.timers(player, AuraPresence.timers(player).stepReady(now + WayEffects.stepRest(player, settings.stepCooldownTicks())));
+		// Awakened on the Way of the Shadowstep at Sovereign, it's free and quick (and a bonded blade's Wind Step, cheaper and quicker).
+		AuraRules.Spend paid = Aura.spend(player, WayEffects.stepPrice(player, settings.stepCost()) * BladeTraits.stepPrice(player), "step");
+		AuraPresence.timers(player, AuraPresence.timers(player).stepReady(now + Math.round(WayEffects.stepRest(player, settings.stepCooldownTicks())
+			* BladeTraits.stepRest(player))));
 		if (paid.backlash()) {
 			// Spent past empty: the step never forms.
 			return false;
 		}
 		go(player, path, dir);
+		BondedBlades.stepped(player);
 		return true;
 	}
 

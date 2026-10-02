@@ -74,6 +74,40 @@ public final class LeyLines {
 	}
 
 	/**
+	 * The way each weave's line runs through a spot (radians on the ground, x by the cosine and z by the sine; a line runs both ways),
+	 * read off two rings round it: for drawing a crossing's two lines meeting (a bonded blade's ceremony lights them). Two lines that
+	 * happen to run nearly together are drawn a quarter turn apart, so the crossing always reads as one.
+	 */
+	public static double[] directions(long seed, double x, double z) {
+		double a = direction(seed, x, z, true);
+		double b = direction(seed, x, z, false);
+		double apart = Math.abs(Math.IEEEremainder(a - b, Math.PI));
+		if (apart < Math.toRadians(20)) {
+			b = a + Math.PI / 2;
+		}
+		return new double[] {a, b};
+	}
+
+	private static double direction(long seed, double x, double z, boolean firstWeave) {
+		double best = 0;
+		double most = -1;
+		for (int i = 0; i < 36; i++) {
+			double a = Math.PI * i / 36;
+			double s = 0;
+			for (double r : new double[] {2.5, 4.5}) {
+				double dx = Math.cos(a) * r;
+				double dz = Math.sin(a) * r;
+				s += firstWeave ? first(seed, x + dx, z + dz) + first(seed, x - dx, z - dz) : second(seed, x + dx, z + dz) + second(seed, x - dx, z - dz);
+			}
+			if (s > most) {
+				most = s;
+				best = a;
+			}
+		}
+		return best;
+	}
+
+	/**
 	 * The heart of the ley crossing in one chunk, if one lies there: {x, z, strength}, the strongest spot on a
 	 * two-block grid (a crossing on a chunk's edge can show in both chunks), or null.
 	 */

@@ -50,6 +50,7 @@
   * [Sword Arts](progression/sword-arts.md)
   * [Ways](progression/ways.md)
   * [Techniques of Your Own](progression/techniques.md)
+  * [The Bonded Blade](progression/bonded-blade.md)
   * [Your Affinities](progression/affinity.md)
   * [Advancements](progression/advancements.md)
   * [Mana](progression/mana.md)

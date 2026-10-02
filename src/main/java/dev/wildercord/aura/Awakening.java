@@ -211,7 +211,8 @@ public final class Awakening {
 		int stage = Aura.stage(player);
 		int ticks = AwakeningRules.ticks(stage, settings.awakeningDuration());
 		long until = now + ticks;
-		write(player, new State(AwakeningRules.Phase.AWAKENED.ordinal(), now, until, 0, until + settings.cooldownTicks(),
+		// A bonded blade's Second Blaze brings the next one sooner (never this one longer).
+		write(player, new State(AwakeningRules.Phase.AWAKENED.ordinal(), now, until, 0, until + Math.round(settings.cooldownTicks() * BladeTraits.awakeningRest(player)),
 			(float) settings.awakeningArtPrice(), 0));
 		// Momentum holds at its peak for the whole of it: arts at their strongest, stance worn fastest, the Final Art open.
 		Momentum.hold(player, AwakeningRules.HOLD, ticks);
@@ -290,7 +291,8 @@ public final class Awakening {
 	private static void end(ServerPlayer player, State s, long now) {
 		WildercordConfig.AuraAwakening settings = Config.get().aura().awakening();
 		// The spent time runs from when it ran out (a swordsman who left mid-awakening comes back to what's left of it).
-		AwakeningRules.Ending ending = AwakeningRules.ended(s.until(), s.readyAt(), settings.spentTicks(), settings.cooldownTicks(), now);
+		AwakeningRules.Ending ending = AwakeningRules.ended(s.until(), s.readyAt(), (int) Math.round(settings.spentTicks() * BladeTraits.awakeningSpent(player)),
+			(int) Math.round(settings.cooldownTicks() * BladeTraits.awakeningRest(player)), now);
 		boolean still = ending.phase() == AwakeningRules.Phase.SPENT;
 		long spentUntil = ending.spentUntil();
 		write(player, new State(ending.phase().ordinal(), s.since(), s.until(), spentUntil, ending.readyAt(), s.price(), s.extended()));

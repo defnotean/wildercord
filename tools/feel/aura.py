@@ -28,7 +28,8 @@ and each method's finisher's (aura_finisher_<method>, over aura_finisher) in too
 aura_awaken, each method's aura_awaken_<method> over it, and the spent state's) are in tools/feel/aura_awakening.py. The Ways' (the
 crossroads, each Way's voice as it's chosen, the incense and what the nodes do: aura_crossroads, aura_way_*) are in tools/feel/aura_ways.py.
 Techniques of one's own (the writing page, a part learned, a rank reached, each release's voice: aura_technique_*) are in
-tools/feel/aura_techniques.py.
+tools/feel/aura_techniques.py. The bonded blade's (its ceremony, a tier reached, a name, a trait, going home, released, passed on:
+aura_bond_*) are in tools/feel/aura_bonds.py.
 """
 import numpy as np
 
@@ -39,6 +40,7 @@ from feel.aura_finishers import FINISHER_EVENTS
 from feel.aura_awakening import AWAKENING_EVENTS
 from feel.aura_ways import WAY_EVENTS
 from feel.aura_techniques import TECHNIQUE_EVENTS
+from feel.aura_bonds import BOND_EVENTS
 
 D, E, FS, A, B = sa.D, sa.E, sa.FS, sa.A, sa.B
 
@@ -273,4 +275,4 @@ EVENTS = [
     event("aura_momentum_peak", aura_momentum_peak, role="effect", subtitle="tell", attenuation=24),
     event("aura_stance_break", aura_stance_break, role="impact", subtitle="hit", attenuation=32),
     event("aura_finisher", aura_finisher, role="grand", subtitle="hit", attenuation=40),
-] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS
+] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS + AWAKENING_EVENTS + WAY_EVENTS + TECHNIQUE_EVENTS + BOND_EVENTS

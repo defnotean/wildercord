@@ -405,6 +405,8 @@ public final class Stance {
 		if (Aura.method(attacker).map(BreathingMethod::flavour).orElse(null) == BreathingMethod.Flavour.STARLIT) {
 			aura *= StanceRules.STARLIT_AURA;
 		}
+		// A bonded blade's Closing Stroke gives back more.
+		aura *= BladeTraits.finisherAura(attacker);
 		dev.wildercord.aura.arts.ArtKit.giveBack(attacker, aura);
 		AuraApi.Finisher finisher = AuraApi.finisher(Aura.data(attacker).method());
 		try {

@@ -490,6 +490,77 @@
       ],
       "subtitle": "tell"
     },
+    "aura_bond_fail": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bond_fail"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_bond_home": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_bond_home_1",
+        "kit/aura/aura_bond_home_2"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_bond_join": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_bond_join"
+      ],
+      "subtitle": "field"
+    },
+    "aura_bond_kindle": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_bond_kindle"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_bond_name": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bond_name"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_bond_pass": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_bond_pass"
+      ],
+      "subtitle": "field"
+    },
+    "aura_bond_release": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bond_release"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_bond_seal": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_bond_seal"
+      ],
+      "subtitle": "field"
+    },
+    "aura_bond_tier": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_bond_tier"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_bond_trait": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_bond_trait"
+      ],
+      "subtitle": "tell"
+    },
     "aura_breakthrough": {
       "attenuation": 32,
       "files": [

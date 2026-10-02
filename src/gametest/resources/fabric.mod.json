@@ -83,7 +83,8 @@
 			"dev.wildercord.gametest.WildercordMomentumTest",
 			"dev.wildercord.gametest.WildercordAwakeningTest",
 			"dev.wildercord.gametest.WildercordWaysTest",
-			"dev.wildercord.gametest.WildercordTechniquesTest"
+			"dev.wildercord.gametest.WildercordTechniquesTest",
+			"dev.wildercord.gametest.WildercordBondedBladeTest"
 		]
 	},
 	"depends": {

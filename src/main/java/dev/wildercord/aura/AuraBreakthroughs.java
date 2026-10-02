@@ -238,6 +238,8 @@ public final class AuraBreakthroughs {
 		Aura.sound(player, "aura_breakthrough", 1.0F, 1.0F);
 		AuraVfx.breakthrough(player, color, next);
 		Grimoire.unlock(player, "aura:" + AuraStages.id(next));
+		// A bonded blade carried through it remembers it (and may wake to a tier the new stage allows).
+		BondedBlades.brokeThrough(player, next);
 		if (next == WayRules.FROM) {
 			// The path forks here: once the moment has settled, the crossroads rises for the swordsman to choose their Way.
 			Crossroads.brokeThrough(player);

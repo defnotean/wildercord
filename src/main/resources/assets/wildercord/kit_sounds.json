@@ -360,6 +360,36 @@
     "aura_backlash": {
       "part": "aura"
     },
+    "aura_bond_fail": {
+      "part": "aura"
+    },
+    "aura_bond_home": {
+      "part": "aura"
+    },
+    "aura_bond_join": {
+      "part": "aura"
+    },
+    "aura_bond_kindle": {
+      "part": "aura"
+    },
+    "aura_bond_name": {
+      "part": "aura"
+    },
+    "aura_bond_pass": {
+      "part": "aura"
+    },
+    "aura_bond_release": {
+      "part": "aura"
+    },
+    "aura_bond_seal": {
+      "part": "aura"
+    },
+    "aura_bond_tier": {
+      "part": "aura"
+    },
+    "aura_bond_trait": {
+      "part": "aura"
+    },
     "aura_breakthrough": {
       "part": "aura"
     },

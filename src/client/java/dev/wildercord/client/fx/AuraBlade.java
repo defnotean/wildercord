@@ -92,29 +92,41 @@ public final class AuraBlade {
 		return new Glow(look.color(), look.stage(), look.lit() ? 1.0F : 0.35F, look.guarding(), player.getMainArm(), spell);
 	}
 
-	/** Carries a player's blade glow into their render state as it's extracted. */
+	/** Carries a player's blade glow into their render state as it's extracted (and their part in a bonded blade's, {@link BondGlow}). */
 	public static void extract(net.minecraft.world.entity.Avatar avatar, EntityRenderState state) {
 		state.setData(GLOW, avatar instanceof Player player ? of(player) : null);
+		BondGlow.extract(avatar, state);
 	}
 
-	/** A hand's item is about to be drawn in third person: its aura goes with it if it's the main hand's. */
+	/** A hand's item is about to be drawn in third person: its aura goes with it if it's the main hand's (a bonded blade's own glow either way). */
 	public static void beginThirdPerson(EntityRenderState state, HumanoidArm arm, ItemStack stack) {
 		Glow glow = state.getData(GLOW);
 		current = glow != null && glow.arm() == arm && stack.is(Aura.WEAPONS) ? glow : null;
+		BondGlow.beginThirdPerson(state, state instanceof net.minecraft.client.renderer.entity.state.ArmedEntityRenderState armed && armed.mainArm == arm, stack);
 		drawn = false;
 		firstPerson = false;
 	}
 
-	/** The local player's main-hand item is about to be drawn in first person. */
+	/** The local player's item is about to be drawn in first person (the main hand's aura; a bonded blade's own glow in either hand). */
 	public static void beginFirstPerson(boolean mainHand, ItemStack stack) {
 		Glow glow = mainHand ? of(Minecraft.getInstance().player) : null;
 		current = glow != null && stack.is(Aura.WEAPONS) ? glow : null;
+		BondGlow.beginFirstPerson(mainHand, stack);
 		drawn = false;
 		firstPerson = true;
 	}
 
+	/** A bonded blade lying on the ground is about to be drawn ({@code look} from its render state, or null for any other item). */
+	public static void beginGround(BondGlow.Look look) {
+		current = null;
+		BondGlow.beginGround(look);
+		drawn = false;
+		firstPerson = false;
+	}
+
 	public static void end() {
 		current = null;
+		BondGlow.clear();
 		drawn = false;
 	}
 
@@ -124,7 +136,8 @@ public final class AuraBlade {
 	 */
 	public static void layer(PoseStack pose, SubmitNodeCollector collector, ItemQuads quads, Supplier<Vector3fc[]> extents) {
 		Glow glow = current;
-		if (glow == null || drawn || ShaderCompat.shadowPass()) {
+		BondGlow.Look bond = BondGlow.current();
+		if (glow == null && bond == null || drawn || ShaderCompat.shadowPass()) {
 			return;
 		}
 		drawn = true;
@@ -141,6 +154,13 @@ public final class AuraBlade {
 		// Your own blade in first person sits right before your eyes and sweeps across them as you swing or guard: its glow there is
 		// held close and soft (a whisper of the third-person glow), so a swing or a perfect guard never fills the view with it.
 		boolean fp = firstPerson;
+		if (bond != null) {
+			// A bonded blade's own glow, over the aura's (and on its own, in anyone's hands or lying on the ground).
+			BondGlow.draw(pose, collector, s, bond, time, fp);
+		}
+		if (glow == null) {
+			return;
+		}
 		collector.order(1).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> soft(p, buffer, s, glow, time, fp));
 		collector.order(1).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time, fp));
 		if (glow.stage() >= AuraRules.EDGE) {
@@ -379,7 +399,7 @@ public final class AuraBlade {
 	}
 
 	/** A quad over the whole of its texture, seen from both sides, one colour and alpha. */
-	private static void textured(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2,
+	static void textured(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2,
 			float x3, float y3, float z3, int color, float alpha) {
 		vertex(buffer, pose, x0, y0, z0, 0, 1, color, alpha);
 		vertex(buffer, pose, x1, y1, z1, 0, 0, color, alpha);
@@ -561,7 +581,7 @@ public final class AuraBlade {
 		};
 	}
 
-	private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float z, float u, float v, int color, float alpha) {
+	static void vertex(VertexConsumer buffer, PoseStack.Pose pose, float x, float y, float z, float u, float v, int color, float alpha) {
 		int a = Mth.clamp(Math.round(alpha * 255), 0, 255);
 		buffer.addVertex(pose, x, y, z).setColor((a << 24) | (color & 0xFFFFFF)).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(FULL)
 			.setNormal(pose, 0, 0, 1);
@@ -571,7 +591,7 @@ public final class AuraBlade {
 		vertex(buffer, pose, p[0], p[1], p[2], u, v, color, alpha);
 	}
 
-	private static void quadRaw(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2,
+	static void quadRaw(VertexConsumer buffer, PoseStack.Pose pose, float x0, float y0, float z0, float x1, float y1, float z1, float x2, float y2, float z2,
 			float x3, float y3, float z3, int color, float a0, float a1, float a2, float a3) {
 		vertex(buffer, pose, x0, y0, z0, 0, 0, color, a0);
 		vertex(buffer, pose, x1, y1, z1, 1, 0, color, a1);

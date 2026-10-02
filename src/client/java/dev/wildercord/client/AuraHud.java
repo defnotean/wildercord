@@ -201,7 +201,8 @@ public final class AuraHud {
 			}
 		}
 		if (stage >= AuraRules.EDGE) {
-			double price = dev.wildercord.config.Config.slashCost(player);
+			// (A bonded blade's Long Crescent makes it cheaper.)
+			double price = dev.wildercord.config.Config.slashCost(player) * dev.wildercord.aura.BladeTraits.slashPrice(player);
 			if (price > 0 && price < capacity) {
 				int mark = bx + 1 + (int) Math.min(inner - 1, inner * price / capacity);
 				g.fill(mark, y + 2, mark + 1, y + 10, aura >= price ? GOLD : 0xFFE06060);
@@ -250,6 +251,22 @@ public final class AuraHud {
 			String dominion = net.minecraft.network.chat.Component.translatable("screen.wildercord.aura.dominion_left",
 				(timers.dominionUntil() - now + 19) / 20).getString();
 			g.text(font, font.plainSubstrByWidth(dominion, Math.max(40, g.guiWidth() - x - 4)), x + 3, top, lineColor, true);
+		}
+		dev.wildercord.aura.BondedBlades.Rite rite = player.getAttached(dev.wildercord.aura.BondedBlades.RITE);
+		if (rite != null && rite.ticks() > 0) {
+			// A bonded blade's ceremony under way: its name and the seconds left, a thread under it filling as it goes.
+			top -= 12;
+			long left = Math.max(0, rite.start() + rite.ticks() - now);
+			String line = net.minecraft.network.chat.Component.translatable(rite.kind() == dev.wildercord.aura.BondedBlades.Rite.PASS
+				? "screen.wildercord.aura.blade.rite_pass" : "screen.wildercord.aura.blade.rite_bond", (left + 19) / 20).getString();
+			line = font.plainSubstrByWidth(line, Math.max(40, g.guiWidth() - x - 4));
+			double pulse = 0.5 + 0.5 * Math.sin((now + partial) * 0.3);
+			int riteColor = rite.color() == 0 ? color : rite.color();
+			g.text(font, line, x + 3, top, 0xFF000000 | mix(riteColor, 0xFFFFFF, 0.25 + 0.3 * pulse), true);
+			int lineW = font.width(line);
+			float k = rite.progress(now) + partial / Math.max(1, rite.ticks());
+			g.fill(x + 3, top + 9, x + 3 + lineW, top + 10, 0xFF1A1420);
+			g.fill(x + 3, top + 9, x + 3 + Math.round(lineW * Math.min(1, k)), top + 10, 0xFF000000 | riteColor);
 		}
 		// The sword string indicator, when the player keeps it by the hotbar.
 		top = StringHud.aboveStrip(g, player, x + 3, top, partial);

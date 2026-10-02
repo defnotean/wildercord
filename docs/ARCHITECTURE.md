@@ -1181,6 +1181,79 @@ A swordsman's own techniques from Edge, a stroke, a release and an intent on a s
   `WildercordTechniquesTest` (the page written by hand, each release and intent, every element, ranks, scrolls, slots and a forged name,
   the awakened and fair, a Way's lent part; `WILDERCORD_TECHNIQUES` picks scenes).
 
+### The bonded blade: `aura.BondedBlades`, `BladeRules`, `BladeBond`, `BladeRegistry`, `BladeCeremony`, `BladeTraits`
+
+One blade a swordsman bonds from Edge, growing with them (the rules and numbers are DESIGN.md's
+[The bonded blade](DESIGN.md#the-bonded-blade); notes for the later steps in
+[AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-9-the-bonded-blade)):
+
+- **Pure part** (unit-tested by `BladeRulesTest`): `aura.BladeRules`: tiers (`NONE` to `SOULFORGED`, `FROM`, `threshold`, `gate`,
+  `SOULFORGED_BOSSES`, `earned`, `allowed`, `tier`, `effective`, `progress`, `Waiting`/`waiting`), each tier's gifts (`hitGain`,
+  `traitStrength`, `scaled`), the ceremonies' timing (`SETTLE_BEFORE`, `BOND_TICKS`, `KINDLE_END`, `JOIN_END`, `PASS_TICKS`,
+  `PASS_REACH`, `PASS_FACING`, `AFTER_CEREMONY`, `phase`), resonance (`kill`, `art`, `FINISHER`, `BOSS_FINISHER`, `BROKEN`, `GUARD`,
+  `AWAKENING`, `DUEL`, `PEERLESS`, `breakthrough`, `foeCap`, `PLAYER_KILL_REST`), the history (the count ids and `COUNTS`,
+  `SHOWN_COUNTS`, `MAX_ARTS`, `MAX_DEEDS`, `MAX_LINEAGE`, the deed kinds, `countArt`, `favourite`), the traits (ids, each one's numbers,
+  `History`, `Trait`, `traits`, `trait`, `register`, `methodLean`, `wayLean`, `weight`, `OFFER`, `offer`, `worths`, `RECHOOSE_LEVELS`),
+  names (`MAX_NAME`, `cleanName`, `NameSeed`, `suggest`, `artWord`, `foeKind`) and `bondable`.
+- **`aura.BladeBond`**: the record on the blade (the `wildercord:bonded_blade` component: `Who` (bond id, owner, owner's name,
+  lineage), `Growth` (colour, tier, resonance, name, trait, its art, the offer, a free change), `Origin`, `History` with `Deed`s;
+  `Former` for `wildercord:former_bond`), codecs and stream codecs, and its readings (`shownName`, `seed`, `habits`, `nameSeed`,
+  `fresh`). Everything a client shows (glow, tooltip, page) reads from here: the bond travels on the blade.
+- **`aura.BladeRegistry`**: the world's `SavedData` (`bonded_blades`, in the overworld): each bond id to its owner, their name, whether
+  it's live and since when (`register`, `end`, `moveTo`, `active`, `activeFor`, `standing(owner)`), and blades held for an offline
+  swordsman (`holdFor`, `takeFor`, `waitingFor`). The one place that says which copy of a bond is real.
+- **`aura.BondedBlades`**: the components (`BOND`, `FORMER`, `ignoreSwapAnimation` so a resonance write never replays the raise in
+  first person), the tag (`BONDABLE`), the attachments (`STATE`: the swordsman's own record (bond id, a `Shown` copy of the blade's
+  look for the page while it's away, where it was last), synced to its owner, copied on death; `KEPT`: blades kept through a death;
+  `RITE`: a ceremony under way, synced to everyone for the HUD and the kindling glow); reading on both sides (`bond`, `bonded`,
+  `canBond`, `state`, `on`, `foreign`, `held`, `heldTier`, `heldTrait`, `heldStrength`, `slotOf`, `carried`); resonance (`gain` with the
+  per-foe cap and the hooks, the deed sources `killed`, `artLanded`, `artFelled`, `finished`, `broke`, `guarded`, `stepped`, `slashed`,
+  `awakened`, `brokeThrough`, `dueled`, written once a second by `flush` and `grow`, `tierUp` for each tier's name, offer, moment and
+  Grimoire entry); keeping it safe (`tick`: `scan` every player every tick, `deep` into shulker boxes and bundles every ten, `look` and
+  `flush` every twenty; `end`, `lapse`, `homeward`, `deliver`, `give`, `collect`, `fellOut`, `stands`, `mayPickUp`, `mayTake`, `dying`,
+  `keepFromDead`, `respawned`); the bond itself (`bondRefusal`, `bond`, `nameRefusal`, `rename`, `choose`, `release`, `passRefusal`,
+  `pass`, the operators' `addResonance`, `setResonance`, `addHistory`, `forceTrait`, `reoffer`); the payloads (`Name`, `Choose`,
+  `Release`, one `PacketThrottle`); counters for the game test (`bondsMade`, `tierUps`, `returns`, `passes`, `deathsKept`).
+- **`aura.BladeCeremony`**: the two ceremonies (`breathing` from `Aura`'s stance each tick, `broken`, `tick`, `busy`, `underWay`;
+  `Rite`, `begin`, `advance`, `end`, `cancel`, `kneeling`, `kneelsBefore`), how they look (`bondLook` along `LeyLines.directions`,
+  `sealed`, `passLook`) and the blade's moments (`tierMoment`, `namedMoment`, `traitMoment`, `releaseMoment`, `passedMoment`, `homeFx`).
+- **`aura.BladeTraits`**: each trait where it acts, all reading `BondedBlades.heldTrait`/`heldStrength`: `price`, `rest`/`restTicks`
+  (`SwordStrings`, Well-Worn Verse and Inkbound Steel), `stepPrice`/`stepRest` (`AuraStep`), `slashPrice`/`slashReach` (`AuraSlash`,
+  `AuraHud`), `techniqueXp` (`Techniques.Use`), `awakeningRest`/`awakeningSpent` (`Awakening`), `coat` (`AuraCombat.coat`: Riposte,
+  Mountainfeller, Gravewarden), `art` (`ArtKit.Hits.raw`: Mountainfeller), `stance` (an `AuraApi.onStance` hook: Sundering Steel,
+  Mountainfeller), `finisherAura` (`Stance.finished`), `finished` (Closing Stroke's momentum, Rallying Steel), `hitGain` (an `onGain`
+  hook: the tiers' gift and Moonwake), `harm` (`LivingEntityAuraMixin`: Last Light), `guarded`/`riposteReady`.
+- **Mixins** (`wildercord.mixins.json`): `BondedBladeDeathMixin` (`Player.dropEquipment`: kept before the inventory drops),
+  `BondedBladeDropMixin` (`LivingEntity.drop`: a carried blade a dying body would drop), `ItemEntityBondMixin` (on the ground: only its
+  swordsman picks it up, never despawns, fireproof, no blast; a lapsed bond made plain), `EntityBondBelowWorldMixin` (the void sends it
+  home), `HopperBondMixin` (hoppers and hopper minecarts leave it be), `SlotBondMixin` (`Slot.mayPickup`: only its swordsman takes it
+  from any menu), `ItemStackBondMixin` (its name as given, in its colour; wear stops at its last point), `BondedBladeSmithingMixin`
+  (an anvil never uses it up, and never renames it), `BondedBladeMendingMixin` (a grindstone never melts it into another),
+  `BondedBladeRepairMixin` (the repair recipe never takes it), `BondedBladeIngredientMixin` (`ShapedRecipe`/`ShapelessRecipe.matches`:
+  never a crafting ingredient), `BondedBladeSmeltingMixin` (`SingleItemRecipe.matches`: never smelted or cut).
+- **Where it touches the rest**: `Aura` (`BondedBlades.init` after Techniques; the stance calls `BladeCeremony.breathing` before
+  `Crossroads.breathing`, which waits while a ceremony runs; `breakStance`; `holdsWeapon` refuses someone else's blade), `AuraCombat`
+  (`landed` counts a kill, `coat` the traits), `ArtKit.Hits.raw` (an art landing, a kill by a later strike, Mountainfeller), `AuraGuard`
+  (a perfect guard or a deflection), `AuraStep`, `AuraSlash`, `AuraBreakthroughs.breakThrough`, `DuelistDuels.teach`, `SwordStrings`
+  (`rest(player, art)`, also the client's prediction), `Stance.finished`, `Awakening`, `Techniques.Use.landed`, `LeyLines.directions`
+  (new: the two lines' bearings at a crossing), `config.WildercordConfig.AuraBonds` and `Config.Sync.combat` bits 32 and 64
+  (`Config.bonds`, `Config.bladeTraits`), `AuraCommand` (`/wildercord aura blade ...`), `AuraApi` (below).
+- **Client**: `client.fx.BondGlow` (the glow on the blade by tier, cold in another's hands, the kindling; on the ground the pool, a
+  shade by day, the glow facing the camera, the Soulforged column, motes), drawn through `client.fx.AuraBlade`'s layer hook (in hand,
+  first and third person) and `client.mixin.ItemEntityRendererBondMixin` (on the ground); `client.BladeTooltip` (its story, Shift for
+  the rest); `client.BladePage` (the Blade tab: its own input, `draftName` for the tests) inside `client.AuraScreen` (`showBlade`,
+  `showingBlade`, `bladeTabPoint`, `bladePoint`, the tab breathing gold while a trait waits); `client.AuraHud` (the ceremony's line
+  and thread).
+- **Assets**: `tools/blade_art.py` (each tier's and trait's glyph, the crossing and kneeling glyphs, and `LANG`),
+  `tools/feel/aura_bonds.py` (`aura_bond_*`, added to the aura part), `data/wildercord/tags/item/bondable_blades.json`.
+- **Tests**: `BladeRulesTest` (tiers and gates, a passed blade sleeping, what's waited on, the gifts, the ceremony's parts, what every
+  deed is worth, the pace, the history's limits, each trait from its habit and its words and glyph, the leans, the offer, the balance
+  and PvP fairness, an add-on's trait, names clean, short, varied and speaking of the story, which weapons, the codecs),
+  `WildercordConfigTest` (the keys, ranges, old files, the sync bits), game test `WildercordBondedBladeTest` (the ceremony at a real
+  ley crossing in both views, each tier's glow, resonance from real swings, the Blade tab, the traits at work, lying on the ground
+  through lava, a blast and a hopper, home from the void, kept through death, theft and duplication refused, the smithing table, the
+  passing to a disciple, the tooltip; `WILDERCORD_BLADE` picks scenes).
+
 ### Hooks for the next wave: `api.AuraApi`
 
 The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in
@@ -1205,7 +1278,7 @@ through them, all on the server thread unless noted, registered at start-up:
 | `addStringSource(player -> arts)` | Arts a player has of their own (techniques they wrote): asked on both sides each time a string is read or checked, so it reads only synced data and is quick. |
 | `registerSounds(methodId, new AuraFx.SoundFamily(swing, impact, art))` | A method's swing, impact and art sounds, by feel kit name (`AuraFx.SoundFamily.named("ember")` is `aura_ember_swing`, `_impact` and `_art`, so another method's family can be borrowed); a method without one plays the neutral `aura_steel_*`. |
 | `onAwakening(new AwakeningHook() { awakened(player, ticks); ended(player); })`, `awakened`, `spent`, `awakeningLeft`, `awakeningRefusal`, `awaken`, `endAwakening` | Awakening: hear of one begun and one ended (spent after), read it on both sides, awaken a swordsman through every check, or end one now. |
-| `onString((player, art, context) -> ...)` | Hears of every art performed, after it's paid for (momentum, a bonded blade's resonance, a trial). `StringContext` carries the swings' marks (`released(token)`), the creature the last swing struck (the server's own `lastHurtMob`, or null) and the time. |
+| `onString((player, art, context) -> ...)` | Hears of every art performed, after it's paid for (momentum, a trial, an add-on's own record). `StringContext` carries the swings' marks (`released(token)`), the creature the last swing struck (the server's own `lastHurtMob`, or null) and the time. |
 | `registerWay(new Way(id, color, List.of(new WayNode(nodeId, stage), ...)))`, `ways()`, `way(id)`, `wayOf(player)`, `hasWayNode(player, nodeId)`, `wayNodeState`, `chooseWay`, `unbindWay`, `openCrossroads`, `onWay(new WayHook() { chosen(player, way, first); unbound(player, way); })` | Ways: add one (the crossroads raises a standard for it, up to six; the Aura page draws a column; names `aura.wildercord.way.<id>`, `.creed`, `.short`, nodes `aura.wildercord.way_node.<id>`, `.passive`, `.change`), read a player's on both sides, ask whether a node is in force (walked, reached, settled), set or take one outright for a rite of your own, raise the crossroads, hear of choices and unbindings. A node's effect is its Way's own code, through the hooks here, asking `hasWayNode`. |
 | `nameArts((player, art) -> name)`, `artName(player, art)` | A name for an art of a player's own (techniques use it: the writer's name, cleaned), asked before its lang key wherever an art is named to its player or others (the banner, refusals). Return null to pass. Both sides. |
 | `onTechnique(new TechniqueHook() { written(player, slot, technique); ranked(player, slot, technique, rank); learned(player, part, source); })` | Techniques of one's own: one written, one reaching a rank (Honed 2 to Peerless 5), a part learned for good (`scroll`, `duelist`, or yours). Every one performed is heard through `onString` (its id `technique_1` to `technique_3`). |
@@ -1214,6 +1287,11 @@ through them, all on the server thread unless noted, registered at start-up:
 | `teachPart(player, part, sourceId)` | Teach a part for good (a master's lesson, a tomb's inscription): the line, the sound, the Grimoire and the hooks, as a scroll does. False if it's known, or no part. |
 | `techniqueScroll(part)` | A technique scroll of a part, for loot of your own. |
 | `registerScrollSource(new ScrollSources.Source(id, lootTable, chance, weights))`, `drawScrollPart(sourceId, random)` | Another place scrolls turn up: a loot table (its chance a percent, scaled by `technique_scroll_chance`), or a source in code with `lootTable` "" that draws with `drawScrollPart`. Built in for step 11: `sword_tomb`. |
+| `onBlade(new BladeHook() { resonance(player, amount, source); bonded(player, blade); tiered(player, blade, tier); named(player, blade, name); traited(player, blade, trait); released(player, bond); passed(from, to, blade); })` | Bonded blades: change (return) resonance about to be gathered (sources `kill`, `art`, `technique`, `finisher`, `stance`, `guard`, `awakening`, `duel`, `peerless`, `breakthrough`, or an add-on's), hear of a bond made, a tier reached (2 Named to 4 Soulforged), a name given, a trait taken, a bond released, a blade passed on. |
+| `allowBladePassing((master, disciple) -> ...)`, `mayPassBlade`, `bladePassingRefusal(master, disciple)`, `passBlade(master, disciple)` | Who may receive a master's blade: the passing ceremony (the master in the breathing stance with their blade, the disciple sneaking within 2.75 blocks, the two facing) begins only when a rule says yes. Nobody until step 10 registers its masters and disciples. `passBlade` passes one at once (an add-on's own ceremony's end), the rules applying; the refusal is a language key. |
+| `bondBlade(player, hand, how)`, `releaseBlade(player)`, `addResonance(player, amount, source)` | Bond a blade at once for a rite of your own (`how` is a word for its story: "drawn from the rock"), with every check but the ceremony; release a bond; add resonance from outside a fight (through `resonance_gain` and the hooks). |
+| `canBondBlade(stack)`, `bladeBond(stack)`, `bondedBlade(player)`, `bladeTier(player)`, `bladeTrait(player)` | Reading, both sides: whether a stack could be bonded, the bond a stack carries (`BladeBond`), a player's own blade about them, the tier and trait the blade in their hand gives them now. |
+| `registerBladeTrait(new BladeRules.Trait(id, habit, worth, pvp, reason))` | A trait of your own a blade can offer at Awakened (a namespaced id; the habit scores a blade's `BladeRules.History` 0 to 1). What it does is your code, asking `bladeTrait(player)`. Lang `aura.wildercord.blade_trait.<namespace>.<path>`, `.desc`, `.short`, `.habit`. Both sides. |
 
 Other seams: `AuraCombat.blow` and `landed` (where aura marks and Dominion's chain join a blow), `AuraCombat.projected`
 (aura damage at anything, with the spell defences), `AuraRules.capBonus`, `AuraCombat.againstPlayer` and

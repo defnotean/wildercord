@@ -33,7 +33,7 @@ public abstract class LivingEntityAuraMixin {
 		if (AuraStep.untouchable(self, source)) {
 			return false;
 		}
-		float weakened = WayBanner.harm(self, source, AuraDominion.weakened(self, source, damage));
+		float weakened = dev.wildercord.aura.BladeTraits.harm(self, source, WayBanner.harm(self, source, AuraDominion.weakened(self, source, damage)));
 		float through = AuraGuard.incoming(self, source, weakened);
 		if (through < 0) {
 			return false;
