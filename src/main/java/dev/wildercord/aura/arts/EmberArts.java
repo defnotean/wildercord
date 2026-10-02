@@ -172,9 +172,10 @@ public final class EmberArts {
 		Vec3 offHand = ArtKit.bladeSide(player, look).scale(-1);
 		Vec3 facing = player.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT ? look : look.scale(-1);
 		Vec3 toward = ArtKit.UP.scale(0.87).add(offHand.scale(0.5)).normalize();
-		ArtLight world = ArtLight.world(player);
-		world.slash(centre, facing, toward, color, 1.15, 2.2, 0.5, 1, 10);
-		world.slash(centre.subtract(look.scale(0.04)), facing, toward, GOLD, 1.1, 1.9, 0.15, 1, 9);
+		// Seen from outside: in your own first person it would rise through the middle of the view, where the trail already is.
+		ArtLight show = ArtLight.spectacle(player);
+		show.slash(centre, facing, toward, color, 1.15, 2.2, 0.5, 1, 10);
+		show.slash(centre.subtract(look.scale(0.04)), facing, toward, GOLD, 1.1, 1.9, 0.15, 1, 9);
 		// A fountain of embers off the cut.
 		for (int i = 0; i < 10; i++) {
 			Vec3 at = centre.add((level.getRandom().nextDouble() - 0.5) * 1.6, 0.4 + level.getRandom().nextDouble() * 0.6, (level.getRandom().nextDouble() - 0.5) * 1.6);

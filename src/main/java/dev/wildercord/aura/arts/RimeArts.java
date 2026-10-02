@@ -88,12 +88,13 @@ public final class RimeArts {
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CUT, true, 1.4F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
-		// A crescent of frost cut across in front, hard white at its edge, and ice flung off its tips.
-		ArtLight world = ArtLight.world(player);
+		// A crescent of frost cut across in front, hard white at its edge (seen from outside: in your own first person it would
+		// cut across the middle of the view), and ice flung off its tips for everyone.
+		ArtLight show = ArtLight.spectacle(player);
 		Vec3 centre = feet.add(0, 0.7, 0).add(look.scale(1.2));
 		Vec3 normal = ArtKit.UP.add(ArtKit.bladeSide(player, look).scale(0.35)).normalize();
-		world.slash(centre, normal, look, color, 2.0, 2.5, 0.4, 1, 10);
-		world.slash(centre.add(0, 0.03, 0), normal, look, WHITE, 1.94, 2.2, 0.1, 1, 9);
+		show.slash(centre, normal, look, color, 2.0, 2.5, 0.4, 1, 10);
+		show.slash(centre.add(0, 0.03, 0), normal, look, WHITE, 1.94, 2.2, 0.1, 1, 9);
 		for (int tip = -1; tip <= 1; tip += 2) {
 			double a = Math.atan2(look.z, look.x) + tip * 1.25;
 			ice(level, centre.add(Math.cos(a) * 1.8, 0, Math.sin(a) * 1.8), 0.6, 3);
