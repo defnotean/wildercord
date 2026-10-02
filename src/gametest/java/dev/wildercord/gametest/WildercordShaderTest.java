@@ -162,7 +162,13 @@ public class WildercordShaderTest implements FabricClientGameTest {
 		context.waitTicks(8);
 		shot(context, prefix + "_aura_art_line");
 		context.waitTicks(30);
-		// Awakened (step 6): the awakened form (taller corona, streamers rising, burning eyes) from the front, under the pack too.
+		// Awakened (step 6): the awakened form (taller corona, streamers rising, burning eyes) from the front, under the pack too (the
+		// art's husk out of the way first, without a death's puff: it stood between the swordsman and the camera).
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.level().getEntitiesOfClass(net.minecraft.world.entity.Entity.class, player.getBoundingBox().inflate(16),
+				e -> e.entityTags().contains("wildercord.shader_aura")).forEach(net.minecraft.world.entity.Entity::discard);
+		});
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.setAttached(dev.wildercord.aura.AuraAttachments.AURA, dev.wildercord.aura.Aura.data(player)
