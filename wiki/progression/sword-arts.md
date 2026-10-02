@@ -29,7 +29,7 @@ Hourglass echoes, rewinds and holds foes still in time, and Crimson bleeds its f
 | **Second Art** | Flow | **leaping** swing, **low** swing | 8 | 4 s |
 | **Third Art** | Edge | a **counter** (your first swing after a perfect Aura Guard) | 8 | 4 s |
 | **Fourth Art** | Form | a **step cut** (your first swing after an Aura Step) | 10 | 5 s |
-| **Final Art** | Sovereign | **full**, **full**, **full**, **low**, with your aura full | 40 | 30 s |
+| **Final Art** | Sovereign | **full**, **full**, **full**, **low**, at the peak of your momentum | 40 | 30 s |
 
 Every method's art in a slot costs and rests the same and is worth about as much: a method is a different answer, never a
 better one. (Thunder's Crackle rests a little less, 2.5 s, for being lighter.) All fifty were weighed against each other on one
@@ -53,6 +53,10 @@ method's five outweigh another's.
   the middle of your view.
 - **An art with nowhere to go** (a rush against a wall, a blink with nobody near) doesn't go and costs nothing; you're told
   why above the hotbar.
+- **Momentum makes every art cheaper and stronger**: up to a quarter off its price and a fifth harder at the peak, where the
+  Final Art opens (see [Momentum]({{ '/progression/aura/' | relative_url }}#momentum)). An art that lands builds momentum, and
+  its strikes wear a foe's stance twice as fast as a blow (Stone's quakes faster still), toward an opening and your method's
+  [finisher]({{ '/progression/aura/' | relative_url }}#finishers).
 
 ## Ember Breath
 
@@ -250,7 +254,8 @@ aura five blocks ahead (Fourth), and a ring of aura that throws every foe near b
 ## Arts, other players and the world
 
 - **Never a one-shot.** An art deals one player at most 8 damage in all (after the PvP scale, before their armour and spell
-  defences), and every art meets armour, Warding and the spellguard like a spell. A totem still saves.
+  defences), even at the peak of momentum, and every art meets armour, Warding and the spellguard like a spell. A totem still
+  saves. An art wears at most half of a player's stance (see [Duels]({{ '/progression/aura/' | relative_url }}#duels)).
 - **Holds are short.** An art freezes, stuns, roots or holds a player still in time for at most three quarters of a second,
   and no art can hold the same player again for 4 seconds; it sets a player alight for at most 3 s and throws a player only so
   hard. A steady pull (Collapse's well, Event Horizon) drags a player slower than they can sprint. Bosses are only ever slowed:

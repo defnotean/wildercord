@@ -2,7 +2,7 @@
 title: Aura
 parent: Growing Stronger
 nav_order: 2.2
-description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, sword strings and each method's own arts, how aura looks and sounds (blade trails, the body's aura, impacts, banners, each method's sounds), the spellblade, aura marks, and breakthroughs."
+description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, sword strings and each method's own arts, momentum, stance, openings and each method's finisher, how aura looks and sounds (blade trails, the body's aura, impacts, banners, each method's sounds), the spellblade, aura marks, and breakthroughs."
 ---
 
 # Aura: the swordsman's path
@@ -31,6 +31,7 @@ only limit is the time you put in.
 | **Grow** | Fight. At each stage's limit a **breakthrough** waits for a trial |
 | **The Aura key** | `Z`: sneak and press for the guard (from Flow), tap for the slash (from Edge), double-tap for the step (from Form), hold for Dominion (Sovereign) |
 | **Sword strings** | Short runs of ordinary swings (a low swing, a leaping one, a counter...) that set off an **art**: one at each stage, each method its own. See [Sword strings](#sword-strings) and [Sword Arts]({{ '/progression/sword-arts/' | relative_url }}) |
+| **Momentum and openings** | A clean fight builds **momentum** (cheaper, stronger arts; the Final Art at its peak). Your blows wear a foe's **stance**; broken, it's **opened**, and your next full swing is your method's **finisher**. See [Momentum and openings](#momentum-and-openings) |
 | **See and hear it** | Your blade trails light, your body shows your stage, blows land with a hit-stop, techniques name themselves, and every method sounds its own. See [How aura looks and sounds](#how-aura-looks-and-sounds) |
 | **Spells and blades** | From Edge, cast a spell **while sneaking** with your blade in hand and your next slash carries it |
 | **See it** | The aura bar on top of your spell panel, and the **Aura** page (the Aura badge in the Cord screen, `K`) |
@@ -216,7 +217,7 @@ hold foes still in time, and Crimson's bleed foes and drink from them.
 | **Second Art** | Flow | **leaping** swing, **low** swing | 8 | 4 s |
 | **Third Art** | Edge | a **counter** | 8 | 4 s |
 | **Fourth Art** | Form | a **step cut** | 10 | 5 s |
-| **Final Art** | Sovereign | **full**, **full**, **full**, **low**, only with your aura full | 40 | 30 s |
+| **Final Art** | Sovereign | **full**, **full**, **full**, **low**, only at the [peak of your momentum](#momentum) | 40 | 30 s |
 
 | Method | First Art | Second Art | Third Art | Fourth Art | Final Art |
 |---|---|---|---|---|---|
@@ -248,7 +249,7 @@ goes into your [Grimoire]({{ '/progression/grimoire/' | relative_url }}).
 
 **When strings overlap.** Three full swings and a low one are also "swing, swing, low swing". When the same swings spell more
 than one art, the one that asks the most of you goes: a counter or a step cut first, then the string with the harder swings,
-then the longer one. If that art can't go (it's resting, your aura is short, or the Final Art without a full pool), the next
+then the longer one. If that art can't go (it's resting, your aura is short, or the Final Art short of the peak of your momentum), the next
 art the same swings spell goes instead, if there is one. If none can, nothing happens and you're told why above the hotbar.
 An art never spends past empty, so it never brings backlash.
 
@@ -273,6 +274,135 @@ hand, and that the swings, guard or step really happened. Against other players 
 down like the slash, never deal one player more than 8 damage, and hold a player still only briefly (see
 [Sword Arts]({{ '/progression/sword-arts/' | relative_url }}#arts-other-players-and-the-world)). Server owners can switch
 strings off, change how long each swing may wait, or scale the arts' damage.
+
+## Momentum and openings
+
+A fight builds. Clean play fills your **momentum**, momentum wears your foes down faster, a foe worn through is **opened**, and
+an opened foe can be **finished**.
+
+### Momentum
+
+Momentum is the thin line under your aura bar. It fills as you fight well:
+
+| What you do | Momentum |
+|---|---|
+| A **clean hit**: a full swing of your blade that lands on a real foe | 3.5 (a falling, critical one 5) |
+| An **art that lands** | 6 for a First Art, 8 for a Second, 10 for a Third or Fourth (a little more for each extra foe it reaches) |
+| A **perfect guard** | 12 against a blow, 6 against an arrow or a spell |
+| An **Aura Step through an attack** (its untouchable moment turned a blow or a shot aside) | 10 |
+| **Breaking a foe's stance**, and the **finisher** after | 8, then 14 |
+| Felling a foe | 3 |
+
+A hit you take knocks a share off (more for a heavy one, half as much through a held guard), and out of a fight it ebbs away:
+it holds a few seconds after your last blow given or taken, then drains. Swings short of full, a sweep's other blows, the slash
+and anything from a bow or a spell build nothing.
+
+| Tier | At | Arts cost | Arts strike | Stance worn |
+|---|---|---|---|---|
+| 1 | 25 | 10% less | 5% harder | 10% faster |
+| 2 | 50 | 15% less | 10% harder | 20% faster |
+| 3 | 75 | 20% less | 15% harder | 30% faster |
+| **Peak** | 95 | 25% less | 20% harder | 45% faster |
+
+At the **peak** the line turns gold with a spark running along it, your aura blazes for everyone to see, and your **Final Art**
+opens. Playing it spends 40 momentum, so it has to be earned again. The Aura page's prices follow your momentum, and its Sword
+strings tab says what your tier gives you.
+
+<img src="{{ '/assets/images/momentum-bar.jpg' | relative_url }}" alt="Two views of the aura strip: at the second tier a thin orange line part way along under the bar, and at the peak the same line full and gold with a bright spark on it" class="shot">
+<span class="caption">Momentum under the aura bar: the second tier, and the peak.</span>
+
+**Each method's momentum moves its own way**, and every method builds fastest on foes in the state its own arts leave them in:
+
+| Method | Builds fastest on | Its way |
+|---|---|---|
+| Ember | burning foes | the most from blows, but it ebbs the fastest: hot, then out |
+| Rime | frozen and chilled foes | more from perfect guards; it ebbs the slowest |
+| Thunder | ionised foes | every foe an art reaches counts double |
+| Gale | foes thrown into the air | the most from steps through attacks; arts from afar count whole |
+| Stone | cracked foes | a hit takes half as much off, a guarded one nothing; the most from perfect guards |
+| Verdant | rooted foes | more from arts; holds long and ebbs the slowest |
+| Hollow | silenced and shadowed foes | more from arts |
+| Starlit | starred foes | the most from arts |
+| Hourglass | foes stopped or held | holds the longest before it ebbs at all |
+| Crimson | bleeding foes | more from blows, little lost to a hit, and a hit taken at half health or less builds it |
+
+**It can't be farmed.** A foe that can't fight back (one with no mind of its own, or sitting in a boat or a cart) gives nothing;
+each foe's blows give only so much until you break its stance; an art landing far off counts half (Gale's whole); a training
+dummy teaches momentum only to the third tier (the [practice arena]({{ '/progression/practice/' | relative_url }}) lets you
+reach the peak, and leaving it empties it); and out of a fight it's gone in a few seconds, so you can't bring it to a boss.
+
+### Stance and openings
+
+Every foe has a **stance**: how much pressure it can take before its footing goes. Once you start wearing it down, a thin bar
+shows over its head, filling from the middle out as it gives (pale gold, warming to amber, running hot and beating near the end;
+the small diamonds at its ends are where it breaks). It comes back if you leave the foe alone a few seconds.
+
+- **Your blows** wear it by what they deal (a falling, critical one more; a short swing, a sweep's other blows or a blade with no
+  aura less), **arts** twice as fast (more still for an art that shakes the ground or holds its foe), and a **perfect guard** a
+  third of it at once. **Stone** wears it most of all: its every blow a quarter more, and its arts shake the ground.
+- **Weak foes** have about as much stance as health, so plain blows usually fell them first: technique (arts, perfect guards,
+  Stone) opens them. Strong foes open part way through a fight; Runebound monsters, duelists and fallen knights hold a quarter more.
+
+<img src="{{ '/assets/images/stance-bar.jpg' | relative_url }}" alt="First-person view of a burning husk up close; over its head a thin dark bar with a pale gold fill in its middle and small diamonds at its ends" class="shot">
+<span class="caption">A husk's stance, two blows in.</span>
+
+When a stance breaks the foe is **opened** for a few seconds: it staggers where it stands (a boss is only slowed), a gold flash
+and ring burst from it, and a cracked gold seal beats over its head with a thread under it running out. When the foe under your
+crosshair is opened, two small gold brackets close in either side of your crosshair: dim while your swing recharges, bright once
+it's full.
+
+<img src="{{ '/assets/images/stance-opened.jpg' | relative_url }}" alt="Seen from the side: a swordsman wreathed in orange flames facing a burning husk; over the husk's head a cracked gold diamond seal with a gold line under it" class="shot">
+<span class="caption">An opened husk, its seal over its head.</span>
+
+### Finishers
+
+Your next **full swing** on an opened foe is your method's **finisher**: a grand strike with the longest hit-stop, named in a
+banner. It deals the blow plus about a third of what the foe has already lost (at most four times your blade's damage), gives
+aura back (8 at Glow up to 16 at Sovereign) and builds momentum. Then the foe stands steady a moment, its stance whole, so it
+can't be opened again at once. An opening you let pass ends the same way.
+
+| Method | Finisher | How it lands |
+|---|---|---|
+| Ember | **Pyrebrand** | an X of fire branded across the foe, a pillar of flame through it; it burns |
+| Rime | **Winterbreak** | frost locks the foe, then bursts outward in shards; spires of ice round its feet; it's left chilled |
+| Thunder | **Skysunder** | a bolt from the sky through the foe, arcs racing over the ground; it's left ionised |
+| Gale | **Windscour** | a spiral of wind wraps the foe and lifts it |
+| Stone | **Faultline** | the ground cracks round the foe and stone bursts up behind it; it's left cracked and slowed |
+| Verdant | **Thornbloom** | roots seize the foe and a flower of light opens under it, mending you and your allies near |
+| Hollow | **Nullfall** | everything falls into a black point at the foe's heart and bursts; foes near are drawn in |
+| Starlit | **Starbreak** | a star bursts in the foe in rays of light, and gives back half again the aura |
+| Hourglass | **Hour's End** | a clock face stands behind the foe and lies under it; the hour strikes and a second cut falls |
+| Crimson | **Heartrend** | a crimson crescent tears through and back; it bleeds, and you drink |
+| any other | **Decisive Cut** | two white-gold crescents crossing through the foe |
+
+<img src="{{ '/assets/images/finisher-hours-end.jpg' | relative_url }}" alt="From the side: a swordsman in gold light, a husk beside them struck, a great clock face of gold light standing behind it with its hands at the hour and rings on the ground under it" class="shot">
+<span class="caption">Hour's End, Hourglass Breath's finisher.</span>
+
+<img src="{{ '/assets/images/finisher-banner.jpg' | relative_url }}" alt="First-person view of a husk just struck; at the left edge of the screen a banner reads Hourglass Breath, Finisher, Hour's End; a clock face of gold light lies on the ground round the husk's feet" class="shot">
+<span class="caption">The same finisher through your own eyes: its banner, and the clock on the ground.</span>
+
+In first person you see the banner at the edge of your screen, the hit-stop, a small flash where your blade bites and the shapes
+that lie low on the ground; the great shapes standing over the foe are for everyone watching, and for you in third person.
+
+### Bosses
+
+Bosses have far more stance, take less from every blow and recover quickly, so opening one takes a real fight. Opened, a boss is
+only slowed (never held), takes a smaller finisher (an eighth of what it has lost), then stands steady for ten seconds and grows a
+quarter steadier each time it's broken, up to twice. Breakable, never trivial.
+
+### Duels
+
+Players have a stance too, so a duel rewards pressure and guarding. No blow wears more than a third of a player's stance (an art
+no more than half), so it takes three blows or more. A blow caught on a held Aura Guard or a raised shield wears the guarding
+player's stance instead, so a player who only ever blocks breaks in the end, and a perfect guard breaks into the attacker's.
+Opened, a player is slowed and their guard broken (no Aura Guard, their shield down) for a second and a half, never held still,
+and the line along the top of their aura strip beats gold. A finisher on a player adds at most a quarter of what they've lost
+(and never more than a few hearts, or a quarter of their health), through their armour and their totem, as any blow. Never a
+one-shot. Teams and the server's PvP rule are respected.
+
+Server owners can switch momentum off (the Final Art then waits on a full aura pool), scale how fast it builds and ebbs, switch
+stance and finishers off, scale how fast stance wears and what finishers deal, and give players a stance or not (`aura.momentum`,
+`momentum_gain`, `momentum_ebb`, `stance`, `stance_damage`, `finisher_damage`, `pvp_stance`).
 
 ## How aura looks and sounds
 
@@ -435,12 +565,14 @@ Open the Cord screen (`K`) and click the **Aura badge** (a little blade, top rig
 page shows your method, element and stage, your aura, the road to your next breakthrough and its trials (with your progress
 in one), and every technique: what it does (hover it), how it's set off, what it costs, and the stage it opens at. Its
 **Sword strings** tab lists your arts instead: each one's name, its string drawn in the indicator's marks, the stage that opens
-it, its price (or how long it still rests), and on hover what it does and its string in words, with what every mark means at
-the foot. A row of every method's colour sits above them: click one to read that method's arts (an add-on's method playing
-the common arts is dimmed).
+it, its price at your momentum (or how long it still rests), and on hover what it does and its string in words, with what every
+mark means at the foot. Under the arts is your method's finisher, and while you have momentum a line says what its tier gives
+you. A row of every method's colour sits above them: click one to read that method's arts and see its finisher (an add-on's
+method playing the common arts is dimmed).
 
-On the aura bar, the Form diamond dims while the step recharges, and the Sovereign diamond burns while a Dominion stands.
-Above the bar you'll see how long a spell has left on your blade and how long a Dominion holds.
+On the aura bar, the Form diamond dims while the step recharges, and the Sovereign diamond burns while a Dominion stands. The
+thin line under the bar is your [momentum](#momentum), and in a duel the line along its top is your own
+[stance](#duels). Above the bar you'll see how long a spell has left on your blade and how long a Dominion holds.
 
 <img src="{{ '/assets/images/aura-page.jpg' | relative_url }}" alt="The Aura page: a Rime Breath manual's cover, Method, Element, Stage and Aura lines, the road to Edge with a breakthrough waiting and its two trials, and the list of techniques" class="shot">
 
@@ -519,7 +651,8 @@ Aura blows are ordinary blows, so armour counts against them. Against another pl
 cap as a spell's bonuses and scaled down, and the slash meets a player's spell defences in full: armour, Warding, and the
 spellguard that stops one hit killing you from high health (see
 [Defending Against Magic]({{ '/progression/defence/' | relative_url }})). A spell carried on a slash meets them too, as
-any spell does.
+any spell does. Players have a stance too, so pressure and guarding pay off, and a finisher on a player is always capped (see
+[Duels](#duels)).
 
 The top stages stay fair between players: Intent presses on another player only if their stage is lower (or, without aura,
 their health is), as a shadow at the edge of their sight and a slight slow; a player inside a foe's Dominion hits only a
