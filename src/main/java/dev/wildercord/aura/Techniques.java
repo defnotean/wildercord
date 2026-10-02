@@ -515,7 +515,7 @@ public final class Techniques {
 		try {
 			sword = SwordString.parse(string);
 		} catch (IllegalArgumentException e) {
-			return new Refusal("message.wildercord.aura.technique.string_short");
+			return new Refusal("message.wildercord.aura.technique.string_too_short", TechniqueRules.MIN_STRING, TechniqueRules.MAX_STRING);
 		}
 		Optional<TechniqueRules.StringProblem> problem = TechniqueRules.problem(sword);
 		if (problem.isPresent()) {

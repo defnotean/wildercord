@@ -4410,6 +4410,108 @@
       "wildercord:kit/aura/aura_string_tick"
     ]
   },
+  "aura_technique_afterimage": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_technique_afterimage"
+    ]
+  },
+  "aura_technique_afterimage_strike": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_technique_afterimage_strike_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "wildercord:kit/aura/aura_technique_afterimage_strike_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_technique_burst": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_technique_burst_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "wildercord:kit/aura/aura_technique_burst_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_technique_echo": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_technique_echo_1",
+      "wildercord:kit/aura/aura_technique_echo_2"
+    ]
+  },
+  "aura_technique_learn": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_technique_learn"
+    ]
+  },
+  "aura_technique_on_the_blade": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_technique_on_the_blade_1",
+      "wildercord:kit/aura/aura_technique_on_the_blade_2"
+    ]
+  },
+  "aura_technique_rally": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_technique_rally",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_technique_rank": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_technique_rank",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_technique_sunder": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_technique_sunder_1",
+      "wildercord:kit/aura/aura_technique_sunder_2"
+    ]
+  },
+  "aura_technique_ward": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_technique_ward"
+    ]
+  },
+  "aura_technique_wave": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_technique_wave_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "wildercord:kit/aura/aura_technique_wave_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_technique_write": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_technique_write"
+    ]
+  },
   "aura_thunder_art": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [

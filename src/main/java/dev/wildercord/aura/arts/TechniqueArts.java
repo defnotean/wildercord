@@ -70,6 +70,16 @@ public final class TechniqueArts {
 		return last;
 	}
 
+	/** Each release's own voice (tools/feel/aura_techniques.py), under the method's technique sound. */
+	static String voice(String release) {
+		return switch (release) {
+			case TechniqueRules.WAVE -> "aura_technique_wave";
+			case TechniqueRules.BURST -> "aura_technique_burst";
+			case TechniqueRules.AFTERIMAGE -> "aura_technique_afterimage";
+			default -> "aura_technique_on_the_blade";
+		};
+	}
+
 	/** The performer every written technique plays through. */
 	public static boolean perform(ServerPlayer player, AuraApi.StringContext context) {
 		int slot = TechniqueRules.slotOf(context.art().id());
@@ -140,7 +150,7 @@ public final class TechniqueArts {
 		}
 
 		void play() {
-			Feels.sound(level, feet.add(0, 1, 0), "aura_technique_" + p.release().id(), 1.0F, pitch());
+			Feels.sound(level, feet.add(0, 1, 0), voice(p.release().id()), 1.0F, pitch());
 			switch (p.release().id()) {
 				case TechniqueRules.WAVE -> wave();
 				case TechniqueRules.BURST -> burst();
