@@ -128,21 +128,30 @@ public final class AuraCombat {
 			coated = at != null && at == now;
 		}
 		float amount = coated ? coat(player, living, source, damage) : damage;
+		float swing = first ? SWINGS.getOrDefault(player, 1.0F) : 0.5F;
+		// A full swing on an opened foe is a finisher: it adds a share of what the foe has lost to the blow itself (armour and every
+		// defence still have their say), and its method's strike plays once it lands (see Stance).
+		double extra = Stance.finisher(player, living, swing, first);
 		float before = living.getHealth();
 		boolean critical = first && critical(player);
-		boolean hurtIt = hurt.apply(amount);
+		boolean hurtIt = hurt.apply((float) (amount + extra));
 		if (first && coated) {
 			Aura.spend(player, AuraRules.COAT_COST, "coat");
 		}
+		boolean finisher = Stance.finished(player, living, hurtIt);
 		if (hurtIt) {
-			float swing = first ? SWINGS.getOrDefault(player, 1.0F) : 0.5F;
-			if (coated) {
+			if (coated && !finisher) {
 				felt(player, living, swing, critical, first);
 			}
 			float taken = Math.max(0, before - Math.max(0, living.getHealth()));
 			// A training dummy heals at once: what the blow dealt is what it's measured by there.
 			landed(player, living, living instanceof TrainingDummy ? Math.max(taken, amount) : taken, swing, coated, false);
+			if (!finisher) {
+				// The blow wears the foe's stance (a finisher's blow ends its opening instead).
+				Stance.blow(player, living, amount, swing, critical, coated, first);
+			}
 		}
+		Momentum.hit(player, living, swing, critical, first, hurtIt, !living.isAlive() || living.isDeadOrDying());
 		return hurtIt;
 	}
 
@@ -217,6 +226,22 @@ public final class AuraCombat {
 
 	/** What the last projected strike dealt before its target's defences (the server thread's; an art keeps its PvP tally with it). */
 	private static double lastAmount;
+	/** Whether the projected strike landing now is an art's ({@link #artStrike}): an art wears stance itself, by its own weight. */
+	private static boolean artStrike;
+
+	/**
+	 * An art's strike ({@code ArtKit.Hits}): projected aura held to {@code playerCap} against a player, as {@link #projected}, the art
+	 * itself answering for the stance it wears. Returns what it took.
+	 */
+	public static float artStrike(ServerPlayer player, LivingEntity target, double damage, double playerCap, boolean answer) {
+		boolean outer = artStrike;
+		artStrike = true;
+		try {
+			return projected(player, target, damage, 1.0, answer, playerCap);
+		} finally {
+			artStrike = outer;
+		}
+	}
 
 	public static double lastAmount() {
 		return lastAmount;
@@ -250,6 +275,10 @@ public final class AuraCombat {
 		float taken = Math.max(0, before - Math.max(0, target.getHealth()));
 		if (hurt && answer) {
 			landed(player, target, taken, 1.0F, true, true);
+		}
+		if (hurt && !artStrike) {
+			// Aura off the blade that isn't an art (a slash, a spark) wears a foe's stance a little.
+			Stance.slash(player, target, amount);
 		}
 		return taken;
 	}

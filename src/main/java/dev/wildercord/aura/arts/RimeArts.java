@@ -135,7 +135,7 @@ public final class RimeArts {
 	 * Chips of ice: bright motes thrown out and falling, glinting, and snowflakes. (Not block or item fragments: those draw as
 	 * dull little cubes, which read as clods of earth, not ice.)
 	 */
-	private static void chips(ServerLevel level, Vec3 at, int count, double speed) {
+	static void chips(ServerLevel level, Vec3 at, int count, double speed) {
 		RandomSource r = level.getRandom();
 		for (int i = 0; i < count; i++) {
 			Vec3 dir = ElementFx.randomDir(r).add(0, 0.5, 0).normalize();
@@ -146,7 +146,7 @@ public final class RimeArts {
 	}
 
 	/** Ice flying apart: thin bright splinters out from {@code at}, and chips of ice. */
-	private static void ice(ServerLevel level, Vec3 at, double reach, int count) {
+	static void ice(ServerLevel level, Vec3 at, double reach, int count) {
 		RandomSource r = level.getRandom();
 		for (int i = 0; i < count; i++) {
 			Vec3 dir = ElementFx.randomDir(r).add(0, 0.25, 0).normalize();

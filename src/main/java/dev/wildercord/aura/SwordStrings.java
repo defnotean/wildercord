@@ -289,7 +289,7 @@ public final class SwordStrings {
 		if (!art.condition().met(player)) {
 			return Optional.of(Refusal.CONDITION);
 		}
-		if (Aura.aura(player) < art.cost() - 1.0E-4) {
+		if (Aura.aura(player) < price(player, art) - 1.0E-4) {
 			return Optional.of(Refusal.NO_AURA);
 		}
 		if (!saw(player, art)) {
@@ -317,19 +317,25 @@ public final class SwordStrings {
 	public static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
 		long now = player.level().getGameTime();
 		AuraApi.StringContext context = new AuraApi.StringContext(art, marks, struck(player), now);
+		// Its price as it goes, before what it does builds momentum (a tier reached by the art itself makes the next one cheaper).
+		double cost = price(player, art);
 		boolean done;
+		AuraApi.StringArt outer = performing;
+		performing = art;
 		try {
 			done = art.performer().perform(player, context);
 		} catch (RuntimeException e) {
 			Wildercord.LOGGER.warn("Art {} threw", art.id(), e);
 			done = false;
+		} finally {
+			performing = outer;
 		}
 		if (!done) {
 			refuse(player, art.id(), art, Refusal.CLOSED);
 			return false;
 		}
 		// Checked to be there, so this never spends past empty (an art that spent some itself takes what's left).
-		double price = Math.min(art.cost(), Aura.aura(player));
+		double price = Math.min(cost, Aura.aura(player));
 		if (price > 0) {
 			Aura.spend(player, price, "art:" + art.id());
 		}
@@ -352,6 +358,18 @@ public final class SwordStrings {
 		return true;
 	}
 
+	/** The art being performed now (on the server thread, while its performer runs), or null: what an art's strikes belong to. */
+	private static AuraApi.StringArt performing;
+
+	public static AuraApi.StringArt performing() {
+		return performing;
+	}
+
+	/** What {@code art} costs {@code player} now: its price, less at each tier of momentum ({@link Momentum#price}). Both sides. */
+	public static double price(Player player, AuraApi.StringArt art) {
+		return Momentum.on(player) ? Momentum.price(player, art) : art.cost();
+	}
+
 	/** The Grimoire entry a method's own art writes the first time it's played (see {@link ArtRules#grimoireKey}). */
 	public static String grimoireKey(String artId) {
 		return ArtRules.grimoireKey(artId);
@@ -368,7 +386,7 @@ public final class SwordStrings {
 		if (ServerPlayNetworking.canSend(player, Refused.TYPE)) {
 			ServerPlayNetworking.send(player, new Refused(id, why.ordinal()));
 		}
-		Component line = art == null ? null : refusal(art, why);
+		Component line = art == null ? null : refusal(player, art, why);
 		if (line != null) {
 			player.sendOverlayMessage(line);
 		}
@@ -376,12 +394,18 @@ public final class SwordStrings {
 
 	/** The line that says why {@code art} didn't go, or null for a refusal with nothing to say. Both sides. */
 	public static Component refusal(AuraApi.StringArt art, Refusal why) {
+		return refusal(null, art, why);
+	}
+
+	/** The same, for {@code player} (their price at their momentum, and what the condition waits on for them). Both sides. */
+	public static Component refusal(Player player, AuraApi.StringArt art, Refusal why) {
 		Component name = Component.translatable(art.nameKey());
 		return switch (why) {
 			case NO_WEAPON -> Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8);
 			case NOT_READY -> Component.translatable("message.wildercord.aura.art.not_ready", name).withColor(0xA89CC8);
-			case NO_AURA -> Component.translatable("message.wildercord.aura.art.no_aura", name, trim(art.cost())).withColor(0xA89CC8);
-			case CONDITION -> Component.translatable(art.condition().hintKey(), name).withColor(0xA89CC8);
+			case NO_AURA -> Component.translatable("message.wildercord.aura.art.no_aura", name, trim(player == null ? art.cost() : price(player, art)))
+				.withColor(0xA89CC8);
+			case CONDITION -> Component.translatable(art.condition().hintKey(player), name).withColor(0xA89CC8);
 			case SILENCED -> Component.translatable("message.wildercord.aura.art.silenced", name).withColor(0xA89CC8);
 			case CLOSED, UNSEEN -> null;
 		};

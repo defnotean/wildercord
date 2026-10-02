@@ -44,10 +44,13 @@ public final class Config {
 	/** Server to client: the settings a client needs to show costs, regeneration, affinities and spell defences truthfully. */
 	public record Sync(float costMultiplier, float regenMultiplier, boolean playerAffinity, WildercordConfig.DefenceSettings defence, boolean mastery,
 			boolean masteryTraits, boolean unreadRunes, boolean aura, float slashCost, boolean forgedGear, float sashCapacity, boolean strings,
-			int stringWindow) implements CustomPacketPayload {
+			int stringWindow, int combat) implements CustomPacketPayload {
+		/** Bits of {@link #combat}: momentum works; foes have a stance (and finishers). Later parts of aura's fighting add their own. */
+		public static final int MOMENTUM = 1;
+		public static final int STANCE = 2;
 		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
 			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity(), true,
-			WildercordConfig.AuraStrings.DEFAULTS.windowTicks());
+			WildercordConfig.AuraStrings.DEFAULTS.windowTicks(), MOMENTUM | STANCE);
 		public static final Type<Sync> TYPE = new Type<>(Wildercord.id("config_sync"));
 		/** The spell defences as they travel, for the Cord screen's readout. Here, before CODEC, so it exists when CODEC is made. */
 		private static final StreamCodec<io.netty.buffer.ByteBuf, WildercordConfig.DefenceSettings> DEFENCE_CODEC = StreamCodec.composite(
@@ -58,13 +61,15 @@ public final class Config {
 			ByteBufCodecs.FLOAT, Sync::costMultiplier, ByteBufCodecs.FLOAT, Sync::regenMultiplier, ByteBufCodecs.BOOL, Sync::playerAffinity,
 			DEFENCE_CODEC, Sync::defence, ByteBufCodecs.BOOL, Sync::mastery, ByteBufCodecs.BOOL, Sync::masteryTraits, ByteBufCodecs.BOOL,
 			Sync::unreadRunes, ByteBufCodecs.BOOL, Sync::aura, ByteBufCodecs.FLOAT, Sync::slashCost, ByteBufCodecs.BOOL, Sync::forgedGear,
-			ByteBufCodecs.FLOAT, Sync::sashCapacity, ByteBufCodecs.BOOL, Sync::strings, ByteBufCodecs.VAR_INT, Sync::stringWindow, Sync::new).cast();
+			ByteBufCodecs.FLOAT, Sync::sashCapacity, ByteBufCodecs.BOOL, Sync::strings, ByteBufCodecs.VAR_INT, Sync::stringWindow, ByteBufCodecs.VAR_INT,
+			Sync::combat, Sync::new).cast();
 
 		static Sync of(WildercordConfig config) {
 			return new Sync((float) config.manaCostMultiplier(), (float) config.manaRegenMultiplier(), config.playerAffinity(), config.defence(),
 				config.mastery().enabled(), config.mastery().enabled() && config.mastery().traits(), config.unreadRunes(), config.aura().enabled(),
 				(float) config.aura().slashCost(), config.auraWorld().forgedGear(), (float) config.auraWorld().sashCapacity(),
-				config.aura().strings().enabled(), config.aura().strings().windowTicks());
+				config.aura().strings().enabled(), config.aura().strings().windowTicks(),
+				(config.aura().momentum().momentum() ? MOMENTUM : 0) | (config.aura().momentum().stance() ? STANCE : 0));
 		}
 
 		@Override
@@ -205,6 +210,16 @@ public final class Config {
 	/** Sword strings' window (ticks after the blade is ready again): the server's own, or on a client the one it was sent. */
 	public static int stringWindow(Player player) {
 		return player != null && player.level().isClientSide() ? synced.stringWindow() : get().aura().strings().windowTicks();
+	}
+
+	/** Whether momentum works: the server's own setting, or on a client the one it was sent. */
+	public static boolean momentum(Player player) {
+		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.MOMENTUM) != 0 : get().aura().momentum().momentum();
+	}
+
+	/** Whether foes have a stance (and finishers): the server's own setting, or on a client the one it was sent. */
+	public static boolean stance(Player player) {
+		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.STANCE) != 0 : get().aura().momentum().stance();
 	}
 
 	/** Client side: the server's numbers arrived (or, with {@code null}, the connection closed). */

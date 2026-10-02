@@ -430,7 +430,7 @@ public class AuraScreen extends Screen {
 			long rest = mine ? dev.wildercord.aura.SwordStrings.readyAt(player, art.id()) - now : 0;
 			String right = reached && rest > 0
 				? Component.translatable("screen.wildercord.aura.art_resting", (rest + 19) / 20).getString()
-				: Component.translatable("screen.wildercord.aura.cost", trim(art.cost())).getString();
+				: Component.translatable("screen.wildercord.aura.cost", trim(mine ? dev.wildercord.aura.SwordStrings.price(player, art) : art.cost())).getString();
 			g.text(font, right, W - 14 - font.width(right), y, !reached ? FAINT : rest > 0 ? DIM : 0xFFB8A8FF, false);
 			if (inside(mx, my, 14, y - 1, W - 28, 10)) {
 				List<Component> tip = new ArrayList<>();

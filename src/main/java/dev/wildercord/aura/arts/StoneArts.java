@@ -180,7 +180,7 @@ public final class StoneArts {
 	 * {@code ElementFx.crack}, but its chips thrown low and outward from the rim (crack's fly straight up from all over the seal,
 	 * through the swordsman's own eyes).
 	 */
-	private static void crackUnder(ServerPlayer player, Vec3 feet, double radius, int lifetime, BlockState earth) {
+	static void crackUnder(ServerPlayer player, Vec3 feet, double radius, int lifetime, BlockState earth) {
 		ServerLevel level = player.level();
 		ArtLight world = ArtLight.world(player);
 		world.ground(feet, SigilOption.CRACKED, ElementFx.EARTH.secondary(), radius, lifetime, 0.0);

@@ -217,6 +217,8 @@ public final class AuraStep {
 			UNTOUCHABLE.remove(player.getUUID());
 			return false;
 		}
+		// Stepping through a real blow or shot builds momentum (once a step).
+		Momentum.stepThrough(player, source);
 		return true;
 	}
 }

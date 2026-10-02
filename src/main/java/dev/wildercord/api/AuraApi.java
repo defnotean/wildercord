@@ -292,6 +292,11 @@ public final class AuraApi {
 			return "message.wildercord.aura.art.condition";
 		}
 
+		/** The same, for {@code player} (a condition that waits on something else where the server has switched it off). */
+		default String hintKey(Player player) {
+			return hintKey();
+		}
+
 		/** A condition with its own line. */
 		static ArtCondition of(Predicate<Player> test, String hintKey) {
 			return new ArtCondition() {
@@ -482,8 +487,10 @@ public final class AuraApi {
 	private static volatile ArtCondition finalGate = null;
 
 	/**
-	 * What every Final Art waits on: a full aura pool by default (nine tenths, as {@code aura.PlaceholderArts.FULL_POOL}). One
-	 * condition for them all, so the momentum and awakening still to come change it in one place ({@link #gateFinalArts}).
+	 * What every Final Art waits on: one condition for them all, changed in one place ({@link #gateFinalArts}). The mod gives it
+	 * the peak of momentum ({@code aura.Momentum.FINAL_GATE}: where the server has momentum off, a full pool of aura, nine tenths as
+	 * {@code aura.PlaceholderArts.FULL_POOL}); anything else that should open the Final Art too (step 6's awakening) adds itself
+	 * through {@link #openFinalArt}.
 	 */
 	public static final ArtCondition FINAL_GATE = new ArtCondition() {
 		@Override
@@ -495,7 +502,36 @@ public final class AuraApi {
 		public String hintKey() {
 			return gate().hintKey();
 		}
+
+		@Override
+		public String hintKey(Player player) {
+			return gate().hintKey(player);
+		}
 	};
+
+	private static final List<Predicate<Player>> FINAL_OPENERS = new CopyOnWriteArrayList<>();
+
+	/**
+	 * Something besides peak momentum that opens the Final Art (an awakened swordsman's, say): asked on both sides each time the
+	 * Final Art's gate is, so it must read only what the player's own client knows too, and be quick.
+	 */
+	public static void openFinalArt(Predicate<Player> opener) {
+		FINAL_OPENERS.add(opener);
+	}
+
+	/** Whether anything added through {@link #openFinalArt} opens the Final Art for {@code player} now. Both sides. */
+	public static boolean finalArtOpen(Player player) {
+		for (Predicate<Player> opener : FINAL_OPENERS) {
+			try {
+				if (opener.test(player)) {
+					return true;
+				}
+			} catch (RuntimeException e) {
+				dev.wildercord.Wildercord.LOGGER.warn("A Final Art opener threw; skipping it", e);
+			}
+		}
+		return false;
+	}
 
 	private static ArtCondition gate() {
 		ArtCondition gate = finalGate;
@@ -723,6 +759,191 @@ public final class AuraApi {
 	/** When {@code player}'s art {@code id} is ready again (game time; past or 0 when it's ready). Safe on both sides for the player's own client. */
 	public static long artReadyAt(Player player, String id) {
 		return SwordStrings.readyAt(player, id);
+	}
+
+	/** What {@code art} costs {@code player} now: its price, less at each tier of their momentum. Both sides. */
+	public static double artPrice(Player player, StringArt art) {
+		return SwordStrings.price(player, art);
+	}
+
+	// ------------------------------------------------------------------ momentum
+
+	/**
+	 * Changes momentum a player is about to build ({@code source}: "hit", "art", "guard", "step", "break", "finisher", "bloodied", or
+	 * an add-on's own), already by their method's temper; returns what it should be. A Way that builds faster from hits (step 7)
+	 * answers "hit" with more.
+	 */
+	@FunctionalInterface
+	public interface MomentumHook {
+		double modify(ServerPlayer player, double amount, String source);
+	}
+
+	private static final List<MomentumHook> MOMENTUM_HOOKS = new CopyOnWriteArrayList<>();
+
+	/** Hears of (and may change) every gain of momentum. */
+	public static void onMomentum(MomentumHook hook) {
+		MOMENTUM_HOOKS.add(hook);
+	}
+
+	public static List<MomentumHook> momentumHooks() {
+		return MOMENTUM_HOOKS;
+	}
+
+	/** {@code player}'s momentum now, 0 to 100 (0 where momentum is off). Both sides for the player's own client. */
+	public static double momentum(Player player) {
+		return dev.wildercord.aura.Momentum.value(player);
+	}
+
+	/** Its tier: 0, then 1 to 3 at 25, 50 and 75, and 4 at the peak (95), which opens the Final Art. Both sides. */
+	public static int momentumTier(Player player) {
+		return dev.wildercord.aura.Momentum.tier(player);
+	}
+
+	public static boolean peakMomentum(Player player) {
+		return dev.wildercord.aura.Momentum.peak(player);
+	}
+
+	/** Builds {@code amount} momentum for {@code player} (through the hooks and the server's rate); returns what it built. */
+	public static double addMomentum(ServerPlayer player, double amount, String source) {
+		return dev.wildercord.aura.Momentum.add(player, amount, source, dev.wildercord.aura.MomentumRules.MAX);
+	}
+
+	/**
+	 * Holds {@code player}'s momentum at {@code floor} or above, without ebbing, for {@code ticks} (an awakening: momentum holds high
+	 * while it lasts). What's there is lifted to the floor at once; gains still build above it; a hit taken still knocks some off,
+	 * but never below the floor until the hold ends. {@code ticks} 0 lets go of a hold.
+	 */
+	public static void holdMomentum(ServerPlayer player, double floor, int ticks) {
+		dev.wildercord.aura.Momentum.hold(player, floor, ticks);
+	}
+
+	// ------------------------------------------------------------------ stance and finishers
+
+	/**
+	 * Changes what a swordsman's blow, art or guard is about to wear off a foe's stance ({@code wear}, already by the rules); returns
+	 * what it should be. A Way that makes stance hard to break (step 7's Bulwark) answers a player target with less; one that opens
+	 * foes faster from behind answers more.
+	 */
+	@FunctionalInterface
+	public interface StanceHook {
+		double modify(ServerPlayer attacker, LivingEntity target, double wear, dev.wildercord.aura.StanceRules.Source source);
+	}
+
+	/** Hears of a foe's stance broken: it stands opened for its finisher. */
+	@FunctionalInterface
+	public interface BreakHook {
+		void broken(ServerPlayer attacker, LivingEntity target);
+	}
+
+	/**
+	 * Hears of finishers: {@link #extra} may change what one adds to its blow before it lands (step 7's Way of the Blade: harder);
+	 * {@link #landed} hears of one landed (a bonded blade's resonance, a rune that wakes on finishers).
+	 */
+	public interface FinisherHook {
+		default double extra(ServerPlayer attacker, LivingEntity target, double extra) {
+			return extra;
+		}
+
+		default void landed(ServerPlayer attacker, LivingEntity target, Finisher finisher, float dealt) {}
+	}
+
+	/**
+	 * What a finisher's look is told, once it has landed: what the blow took in all ({@code dealt}), what the finisher added to it
+	 * ({@code extra}), whether it felled the foe, and whether the foe was a practice target.
+	 */
+	public record FinisherContext(float dealt, double extra, boolean killed, boolean practice) {}
+
+	/** How a finisher looks and sounds, on the server, once it has landed (its banner, aura back and momentum come by themselves). */
+	@FunctionalInterface
+	public interface FinisherLook {
+		void play(ServerPlayer player, LivingEntity foe, FinisherContext context);
+	}
+
+	/**
+	 * A breathing method's finisher: its look. Its name and description are the language keys {@code aura.wildercord.finisher.<id>}
+	 * and {@code .desc} (':' as '.').
+	 */
+	public record Finisher(String id, FinisherLook look) {
+		public Finisher {
+			if (id == null || id.isBlank()) {
+				throw new IllegalArgumentException("a finisher needs an id");
+			}
+			look = look == null ? (player, foe, context) -> {} : look;
+		}
+
+		public String nameKey() {
+			return "aura.wildercord.finisher." + id.replace(':', '.');
+		}
+	}
+
+	private static final List<StanceHook> STANCE_HOOKS = new CopyOnWriteArrayList<>();
+	private static final List<BreakHook> BREAK_HOOKS = new CopyOnWriteArrayList<>();
+	private static final List<FinisherHook> FINISHER_HOOKS = new CopyOnWriteArrayList<>();
+	private static final Map<String, Finisher> FINISHERS = new LinkedHashMap<>();
+	/** The finisher of a method without one of its own (the common one), once registered. */
+	private static volatile Finisher commonFinisher = new Finisher("decisive_cut", null);
+
+	public static void onStance(StanceHook hook) {
+		STANCE_HOOKS.add(hook);
+	}
+
+	public static List<StanceHook> stanceHooks() {
+		return STANCE_HOOKS;
+	}
+
+	public static void onStanceBroken(BreakHook hook) {
+		BREAK_HOOKS.add(hook);
+	}
+
+	public static List<BreakHook> breakHooks() {
+		return BREAK_HOOKS;
+	}
+
+	public static void onFinisher(FinisherHook hook) {
+		FINISHER_HOOKS.add(hook);
+	}
+
+	public static List<FinisherHook> finisherHooks() {
+		return FINISHER_HOOKS;
+	}
+
+	/** Gives breathing method {@code methodId} its own finisher (or replaces it). Register while the mod initialises. */
+	public static synchronized void registerFinisher(String methodId, Finisher finisher) {
+		FINISHERS.put(methodId, finisher);
+	}
+
+	/** Sets the finisher of every method without one of its own. */
+	public static void commonFinisher(Finisher finisher) {
+		commonFinisher = finisher;
+	}
+
+	/** The finisher a swordsman of {@code methodId} lands: the method's own, or the common one. Both sides. */
+	public static synchronized Finisher finisher(String methodId) {
+		Finisher own = methodId == null ? null : FINISHERS.get(methodId);
+		return own == null ? commonFinisher : own;
+	}
+
+	/** Every method's own finisher, by method (the common one isn't in it). */
+	public static synchronized Map<String, Finisher> finishers() {
+		return Map.copyOf(FINISHERS);
+	}
+
+	/** How much of {@code entity}'s stance is left now (0 to 1; 1 for one never worn). Both sides (everyone near is told). */
+	public static double stanceLeft(LivingEntity entity) {
+		return dev.wildercord.aura.Stance.left(entity);
+	}
+
+	/** Whether {@code entity} is opened now: the next full swing of a swordsman's blade on it is a finisher. Both sides. */
+	public static boolean opened(LivingEntity entity) {
+		return dev.wildercord.aura.Stance.opened(entity);
+	}
+
+	/**
+	 * Wears {@code wear} off {@code target}'s stance by {@code attacker} (a technique of an add-on's own), through the hooks; it
+	 * breaks when it's all worn. Returns what it wore.
+	 */
+	public static double wearStance(ServerPlayer attacker, LivingEntity target, double wear) {
+		return dev.wildercord.aura.Stance.wear(attacker, target, wear, dev.wildercord.aura.StanceRules.Source.ART);
 	}
 
 	// ------------------------------------------------------------------ feel

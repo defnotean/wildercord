@@ -409,6 +409,8 @@ public final class Aura {
 			AuraIntent.tick(player, now);
 			AuraSense.combat(player, now);
 			AuraPresence.look(player, AuraPresence.look(player).withShell(AuraArmour.up(player)));
+			// Momentum's tier, as everyone sees it in the body's aura, follows its ebb.
+			Momentum.tick(player, now);
 		}
 		AuraIntent.release(server);
 		AuraDominion.tick(server);
@@ -447,6 +449,11 @@ public final class Aura {
 		// Silenced (a Hollow swordsman's Null Parry): nothing but the guard until it passes.
 		if (trigger != AuraApi.Trigger.SNEAK_TAP && dev.wildercord.aura.arts.ArtWards.silenced(player)) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.silenced").withColor(0xA89CC8));
+			return false;
+		}
+		// Opened in a duel (their stance broken): the guard is broken until the opening passes.
+		if (trigger == AuraApi.Trigger.SNEAK_TAP && dev.wildercord.aura.Stance.opened(player)) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.guard_broken").withColor(0xE08A60));
 			return false;
 		}
 		Optional<AuraApi.Technique> technique = AuraApi.techniqueFor(stage, trigger);
@@ -491,6 +498,10 @@ public final class Aura {
 		SwordStrings.init();
 		// Aura's feel: trails, impacts, banners, bursts and the body's aura, drawn by each client as it sees them.
 		AuraFx.init();
+		// Momentum (a clean fight fills it; the Final Art waits on its peak) and stance (worn by blade and aura, broken into an opening
+		// and a finisher).
+		Momentum.init();
+		dev.wildercord.aura.Stance.init();
 		AuraMethods.init();
 		Crescents.init();
 		AuraCombat.init();
@@ -528,6 +539,8 @@ public final class Aura {
 			SwordStrings.forget(id);
 			AuraFx.forget(id);
 			AuraGuard.forget(id);
+			Momentum.forget(id);
+			dev.wildercord.aura.Stance.forget(id);
 			dev.wildercord.aura.arts.MethodArts.forget(id);
 			// A spell riding the blade leaves with its caster (its cast is no longer alive).
 			Spellblade.forget(id);
@@ -545,6 +558,8 @@ public final class Aura {
 			SwordStrings.clear();
 			AuraFx.clear();
 			AuraGuard.clear();
+			Momentum.clear();
+			dev.wildercord.aura.Stance.clear();
 			dev.wildercord.aura.arts.MethodArts.clear();
 			Spellblade.clear();
 		});
@@ -553,7 +568,7 @@ public final class Aura {
 	/** Every kit sound aura plays, for the tests. */
 	public static final List<String> SOUNDS = List.of("aura_slash", "aura_guard", "aura_perfect_guard", "aura_breakthrough", "aura_backlash", "aura_breath",
 		"aura_step", "aura_armour", "aura_intent", "aura_dominion", "aura_dominion_fade", "aura_spellblade", "aura_string_tick", "aura_string_complete",
-		"aura_string_fumble");
+		"aura_string_fumble", "aura_momentum_rise", "aura_momentum_peak", "aura_stance_break", "aura_finisher");
 
 	/** Plays one of aura's sounds where {@code player} is. */
 	public static void sound(ServerPlayer player, String name, float volume, float pitch) {

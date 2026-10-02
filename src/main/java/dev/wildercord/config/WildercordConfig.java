@@ -308,13 +308,23 @@ public record WildercordConfig(
 	 * @param guardShare           how much of a blow a held Aura Guard takes off (0.5 is half)
 	 * @param heights              the top stages (Form and Sovereign), the spellblade and aura marks: see {@link AuraHeights}
 	 * @param strings              sword strings, the arts set off by a run of swings: see {@link AuraStrings}
+	 * @param momentum             momentum, stance and finishers: see {@link AuraMomentum}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
 			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
-			AuraStrings strings) {
+			AuraStrings strings, AuraMomentum momentum) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
-			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS);
+			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS,
+			AuraMomentum.DEFAULTS);
+
+		/** A file's aura section before momentum: the same, with momentum's defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
+				AuraStrings strings) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, heights, strings, AuraMomentum.DEFAULTS);
+		}
 
 		/** A file's aura section before the top stages: the same, with their defaults (and sword strings' too). */
 		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
@@ -333,6 +343,7 @@ public record WildercordConfig(
 		public AuraSettings {
 			heights = heights == null ? AuraHeights.DEFAULTS : heights;
 			strings = strings == null ? AuraStrings.DEFAULTS : strings;
+			momentum = momentum == null ? AuraMomentum.DEFAULTS : momentum;
 		}
 
 		/** The slash's cooldown in ticks. */
@@ -411,6 +422,24 @@ public record WildercordConfig(
 		public int windowTicks() {
 			return dev.wildercord.aura.StringRules.windowTicks(windowSeconds);
 		}
+	}
+
+	/**
+	 * Momentum, stance and finishers (more keys of the {@code aura} section). A clean fight fills a swordsman's momentum (cheaper,
+	 * stronger arts at each tier, the Final Art at its peak); blade and aura wear a foe's stance until it breaks, opening it for a
+	 * finisher. The numbers' meaning is in {@code aura.MomentumRules} and {@code aura.StanceRules}, whose defaults these are.
+	 *
+	 * @param momentum       whether momentum works at all (off: no tiers, and the Final Art waits on a full pool of aura instead)
+	 * @param momentumGain   how fast momentum builds, times this
+	 * @param momentumEbb    how fast it ebbs out of a fight, times this (0 never)
+	 * @param stance         whether foes have a stance to break, and finishers
+	 * @param stanceDamage   how fast blades, arts and perfect guards wear a stance, times this
+	 * @param finisherDamage what a finisher adds to its blow, times this
+	 * @param pvpStance      whether players have a stance too (a duel's pressure and guarding; a finisher on a player is always capped)
+	 */
+	public record AuraMomentum(boolean momentum, double momentumGain, double momentumEbb, boolean stance, double stanceDamage, double finisherDamage,
+			boolean pvpStance) {
+		public static final AuraMomentum DEFAULTS = new AuraMomentum(true, 1.0, 1.0, true, 1.0, 1.0, true);
 	}
 
 	/**
@@ -593,7 +622,15 @@ public record WildercordConfig(
 					r.number("aura", "string_window_seconds", d.aura.strings().windowSeconds(), dev.wildercord.aura.StringRules.MIN_WINDOW_SECONDS,
 						dev.wildercord.aura.StringRules.MAX_WINDOW_SECONDS),
 					r.number("aura", "art_damage", d.aura.strings().artDamage(), 0, 5),
-					r.bool("aura", "art_terrain", d.aura.strings().artTerrain()))),
+					r.bool("aura", "art_terrain", d.aura.strings().artTerrain())),
+				new AuraMomentum(
+					r.bool("aura", "momentum", d.aura.momentum().momentum()),
+					r.number("aura", "momentum_gain", d.aura.momentum().momentumGain(), 0, 5),
+					r.number("aura", "momentum_ebb", d.aura.momentum().momentumEbb(), 0, 5),
+					r.bool("aura", "stance", d.aura.momentum().stance()),
+					r.number("aura", "stance_damage", d.aura.momentum().stanceDamage(), 0, 5),
+					r.number("aura", "finisher_damage", d.aura.momentum().finisherDamage(), 0, 3),
+					r.bool("aura", "pvp_stance", d.aura.momentum().pvpStance()))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -641,7 +678,9 @@ public record WildercordConfig(
 			"step_cost", "step_cooldown_seconds", "step_distance", "armour_share", "intent_pvp", "intent_pvp_slow", "dominion_cost",
 			"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier",
 			// Sword strings, and the methods' arts.
-			"strings", "string_window_seconds", "art_damage", "art_terrain"));
+			"strings", "string_window_seconds", "art_damage", "art_terrain",
+			// Momentum, stance and finishers.
+			"momentum", "momentum_gain", "momentum_ebb", "stance", "stance_damage", "finisher_damage", "pvp_stance"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -955,7 +994,12 @@ public record WildercordConfig(
 			+ "aura strike leaves its reaction mark. Sword strings (strings) set off arts from a short run of ordinary swings; each swing must come "
 			+ "within string_window_seconds of the moment the blade is ready again, or the string breaks. Each breathing method's arts deal "
 			+ "art_damage times their damage; art_terrain lets an art lay its passing frost on water (Skate's ice path: frosted ice that thaws, only "
-			+ "where the swordsman may build, and never with casting.spells_edit_blocks or features.world_changing_magic off).");
+			+ "where the swordsman may build, and never with casting.spells_edit_blocks or features.world_changing_magic off). Momentum (momentum) "
+			+ "builds from clean hits, arts that land, perfect guards and steps through an attack, falls with hits taken and ebbs out of a fight: "
+			+ "each tier makes arts cheaper and stronger, and its peak opens the Final Art (with momentum off, a full pool does). momentum_gain and "
+			+ "momentum_ebb scale how fast it builds and ebbs. Foes have a stance (stance) that blades, arts and perfect guards wear down "
+			+ "(stance_damage scales how fast); broken, a foe is opened, and a full swing on it is a finisher dealing a share of what it has lost "
+			+ "(finisher_damage scales it). pvp_stance gives players a stance too: a finisher on a player is always capped, through armour and totems.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -985,6 +1029,14 @@ public record WildercordConfig(
 		auraSection.addProperty("string_window_seconds", strings.windowSeconds());
 		auraSection.addProperty("art_damage", strings.artDamage());
 		auraSection.addProperty("art_terrain", strings.artTerrain());
+		AuraMomentum momentum = aura.momentum();
+		auraSection.addProperty("momentum", momentum.momentum());
+		auraSection.addProperty("momentum_gain", momentum.momentumGain());
+		auraSection.addProperty("momentum_ebb", momentum.momentumEbb());
+		auraSection.addProperty("stance", momentum.stance());
+		auraSection.addProperty("stance_damage", momentum.stanceDamage());
+		auraSection.addProperty("finisher_damage", momentum.finisherDamage());
+		auraSection.addProperty("pvp_stance", momentum.pvpStance());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

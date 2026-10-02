@@ -60,6 +60,8 @@ public final class MethodArts {
 		AuraApi.registerArts(StarlitArts.METHOD, StarlitArts.arts());
 		AuraApi.registerArts(HourglassArts.METHOD, HourglassArts.arts());
 		AuraApi.registerArts(CrimsonArts.METHOD, CrimsonArts.arts());
+		// Each method's finisher, the strike that falls on an opened foe (and the common one for a method without its own).
+		Finishers.init();
 	}
 
 	/**
