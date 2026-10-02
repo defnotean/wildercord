@@ -176,6 +176,8 @@ public final class AuraCombat {
 		WildercordConfig.AuraSettings settings = Config.get().aura();
 		double bonus = 1.0 + settings.coatBonus() * settings.damageScale();
 		bonus *= AuraElements.bonus(player, target, source, Aura.element(player));
+		// A foe a Gale swordsman's Updraft threw, still in the air: the juggle (one more bonus, under the cap against a player).
+		bonus *= dev.wildercord.aura.arts.ArtWards.juggle(player, target);
 		double amount = damage * againstPlayer(target, bonus);
 		if (Aura.stage(player) >= AuraRules.EDGE && !source.is(DamageTypeTags.BYPASSES_ARMOR) && amount > 0) {
 			float after = CombatRules.getDamageAfterAbsorb(target, (float) amount, source, target.getArmorValue(),
@@ -210,15 +212,36 @@ public final class AuraCombat {
 	 * to the spell-defence cap against a player.
 	 */
 	public static float projected(ServerPlayer player, LivingEntity target, double damage, double extra, boolean answer) {
+		return projected(player, target, damage, extra, answer, Double.MAX_VALUE);
+	}
+
+	/** What the last projected strike dealt before its target's defences (the server thread's; an art keeps its PvP tally with it). */
+	private static double lastAmount;
+
+	public static double lastAmount() {
+		return lastAmount;
+	}
+
+	/**
+	 * Projected aura held, against another player, to {@code playerCap} after their bonuses' cap and the PvP scale (before their
+	 * armour and spell defences): an art's share of what it may deal one player ({@code aura.ArtRules#PVP_ART_CAP}).
+	 */
+	public static float projected(ServerPlayer player, LivingEntity target, double damage, double extra, boolean answer, double playerCap) {
 		ServerLevel level = player.level();
 		DamageSource source = level.damageSources().source(Aura.DAMAGE, player, player);
 		double bonus = AuraElements.bonus(player, target, source, Aura.element(player)) * Math.max(0, extra);
 		double amount = damage;
 		if (target instanceof Player) {
 			amount *= AuraRules.capBonus(bonus, Config.get().defence().maxBonus()) * Config.get().aura().pvpScale();
+			amount = Math.min(amount, Math.max(0, playerCap));
+			if (amount <= 0) {
+				lastAmount = 0;
+				return 0;
+			}
 		} else {
 			amount *= bonus;
 		}
+		lastAmount = amount;
 		float before = target.getHealth();
 		// Aura off the blade lands through a foe's moment of invulnerability, as a spell does.
 		dev.wildercord.cast.Effects.readyToHurt(target);

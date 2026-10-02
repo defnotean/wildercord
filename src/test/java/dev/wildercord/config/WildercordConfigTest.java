@@ -754,6 +754,42 @@ class WildercordConfigTest {
 		assertEquals(0.3, kept.guardShare(), 1e-9);
 		assertEquals(WildercordConfig.AuraStrings.DEFAULTS, kept.strings());
 	}
+
+	@Test
+	void theMethodsArtsSettingsHaveDefaultsAndRanges() {
+		WildercordConfig.AuraStrings s = D.aura().strings();
+		assertEquals(1.0, s.artDamage(), 1e-9);
+		assertTrue(s.artTerrain());
+		for (String key : List.of("art_damage", "art_terrain")) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+		assertEquals(WildercordConfig.AuraStrings.DEFAULTS, new WildercordConfig.AuraStrings(true, dev.wildercord.aura.StringRules.WINDOW / 20.0),
+			"the constructor from before the arts takes their defaults");
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"art_damage\": 9, \"art_terrain\": false}}");
+		WildercordConfig.AuraStrings read = parsed.config().aura().strings();
+		assertEquals(5.0, read.artDamage(), 1e-9, "held to five times");
+		assertFalse(read.artTerrain());
+		assertEquals(1, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(0.0, WildercordConfig.parse("{\"aura\": {\"art_damage\": -1}}").config().aura().strings().artDamage(), 1e-9);
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config(), "the written file keeps them");
+	}
+
+	@Test
+	void aFileFromBeforeTheArtsGainsTheirKeys() {
+		// An aura section written with sword strings but before the methods' arts.
+		String old = D.toJson();
+		for (String key : List.of("art_damage", "art_terrain")) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		assertFalse(old.contains("\"art_damage\"") || old.contains("\"art_terrain\""), old);
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura(), "the arts' settings read as their defaults");
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		assertTrue(grown.contains("\"art_damage\"") && grown.contains("\"art_terrain\""), grown);
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+	}
+
 	@Test
 	void auraWorldDefaultsAreTheRulesNumbers() {
 		WildercordConfig.AuraWorldSettings w = D.auraWorld();

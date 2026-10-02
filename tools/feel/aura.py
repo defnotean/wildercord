@@ -19,12 +19,13 @@
 Tonal sounds are tuned to D so the pentatonic ratios make a scale from one sample.
 
 Each breathing method's own family (a blade's swing, a blow landing, a technique loosed: aura_<method>_swing, _impact, _art) is
-in tools/feel/aura_methods.py and added to these events.
+in tools/feel/aura_methods.py and added to these events; each method's arts' own voices (aura_art_<art>) are in tools/feel/aura_arts.py.
 """
 import numpy as np
 
 from feel.core import sa, event
 from feel.aura_methods import METHOD_EVENTS
+from feel.aura_arts import ART_EVENTS
 
 D, E, FS, A, B = sa.D, sa.E, sa.FS, sa.A, sa.B
 
@@ -207,4 +208,4 @@ EVENTS = [
     event("aura_string_tick", aura_string_tick, role="ui", subtitle="tell"),
     event("aura_string_complete", aura_string_complete, role="effect", subtitle="cast"),
     event("aura_string_fumble", aura_string_fumble, role="ui", subtitle="tell"),
-] + METHOD_EVENTS
+] + METHOD_EVENTS + ART_EVENTS

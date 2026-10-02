@@ -153,11 +153,14 @@ public class WildercordShaderTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.removeAttached(dev.wildercord.aura.SwordStrings.COOLDOWNS);
-			dev.wildercord.api.AuraApi.StringArt art = dev.wildercord.api.AuraApi.string(dev.wildercord.aura.PlaceholderArts.FIRST).orElseThrow();
+			dev.wildercord.api.AuraApi.StringArt art = dev.wildercord.api.AuraApi.string(dev.wildercord.aura.arts.EmberArts.KINDLING_DRAW).orElseThrow();
 			dev.wildercord.aura.SwordStrings.perform(player, art, art.string().tokens().stream().map(t -> dev.wildercord.aura.SwordString.Token.marks(t)).toList());
 		});
 		context.waitTicks(3);
 		shot(context, prefix + "_aura_art");
+		// Its line of fire burning on ahead: light over the ground, under the pack too.
+		context.waitTicks(8);
+		shot(context, prefix + "_aura_art_line");
 		context.waitTicks(30);
 		world.getServer().runCommand("kill @e[tag=wildercord.shader_aura]");
 		world.getServer().runOnServer(server -> player(server).removeAttached(dev.wildercord.aura.AuraAttachments.AURA));

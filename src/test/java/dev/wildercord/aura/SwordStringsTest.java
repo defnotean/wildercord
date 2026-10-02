@@ -443,7 +443,7 @@ class SwordStringsTest {
 			assertEquals(AuraRules.GLOW, first.stage());
 			assertEquals(StringRules.FIRST_COST, first.cost(), 1e-9);
 			assertEquals("aura.wildercord.art.first_art", first.nameKey());
-			assertEquals(PlaceholderArts.FULL_POOL, AuraApi.string(PlaceholderArts.FINAL).orElseThrow().condition());
+			assertEquals(AuraApi.FINAL_GATE, AuraApi.string(PlaceholderArts.FINAL).orElseThrow().condition(), "the Final Art waits on the gate every Final Art shares");
 			assertEquals("message.wildercord.aura.art.full_pool", PlaceholderArts.FULL_POOL.hintKey());
 			assertEquals("message.wildercord.aura.art.condition", AuraApi.ArtCondition.ALWAYS.hintKey());
 

@@ -189,7 +189,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void first(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "ember", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
+			setAura(player, "verdant", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
@@ -262,7 +262,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void fumbles(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "rime", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
+			setAura(player, "hollow", AuraRules.GLOW, AuraRules.capacity(AuraRules.GLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
@@ -362,7 +362,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void second(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "gale", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
+			setAura(player, "starlit", AuraRules.FLOW, AuraRules.capacity(AuraRules.FLOW));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 200).addTag("wildercord.string_target");
 			return null;
@@ -400,7 +400,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void third(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "thunder", AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
+			setAura(player, "hourglass", AuraRules.EDGE, AuraRules.capacity(AuraRules.EDGE));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 1.6), 200).addTag("wildercord.string_target");
 			return null;
@@ -491,7 +491,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 
 	private static void last(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
-			setAura(player, "ember", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
+			setAura(player, "crimson", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.string_target");
 			spawn(player.level(), EntityTypes.HUSK, at(-2.5, 0.5), 200).addTag("wildercord.string_ring");
@@ -537,7 +537,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		// Without a full pool the same swings fall through to the First Art.
 		on(world, player -> {
 			player.removeAttached(SwordStrings.COOLDOWNS);
-			setAura(player, "ember", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN) * 0.5F);
+			setAura(player, "crimson", AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN) * 0.5F);
 			return null;
 		});
 		context.waitTicks(20);
@@ -696,7 +696,7 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 	 * keys that play them are tested above.
 	 */
 	private static void looks(ClientGameTestContext context, TestSingleplayerContext world) {
-		String[] methods = {"ember", "rime", "thunder", "verdant", "hollow"};
+		String[] methods = {"verdant", "hollow", "starlit", "hourglass", "crimson"};
 		for (int i = 0; i < PlaceholderArts.IDS.size(); i++) {
 			String id = PlaceholderArts.IDS.get(i);
 			String method = methods[i];

@@ -21,6 +21,11 @@ public final class Sigils {
 	private static final double RANGE = 128.0;
 
 	public static void send(ServerLevel level, net.minecraft.core.particles.ParticleOptions sigil, Vec3 at) {
+		send(level, sigil, at, null);
+	}
+
+	/** As {@link #send(ServerLevel, net.minecraft.core.particles.ParticleOptions, Vec3)}, to everyone but {@code except} (who sees it another way). */
+	public static void send(ServerLevel level, net.minecraft.core.particles.ParticleOptions sigil, Vec3 at, ServerPlayer except) {
 		if (Fx.muted()) {
 			return;
 		}
@@ -30,7 +35,7 @@ public final class Sigils {
 		// One packet for everyone it reaches, built only if someone does (see Fx.inRange).
 		net.minecraft.network.protocol.Packet<?> packet = null;
 		for (ServerPlayer player : level.players()) {
-			if (player.distanceToSqr(at) <= RANGE * RANGE && (beam || eyeDistanceSqr(player, at) > EYE_CLEARANCE * EYE_CLEARANCE)
+			if (player != except && player.distanceToSqr(at) <= RANGE * RANGE && (beam || eyeDistanceSqr(player, at) > EYE_CLEARANCE * EYE_CLEARANCE)
 					&& Fx.inRange(level, player, true, at.x, at.y, at.z)) {
 				if (packet == null) {
 					packet = Fx.packet(sigil, true, true, at.x, at.y, at.z, 1, 0, 0, 0, 0);

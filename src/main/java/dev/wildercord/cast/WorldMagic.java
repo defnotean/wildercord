@@ -585,6 +585,41 @@ public final class WorldMagic {
 		Thaws.schedule(level, frozen, level.getGameTime() + WorldRules.THAW_TICKS + level.getRandom().nextInt(60));
 	}
 
+	/**
+	 * Frost laid on water by a swordsman's art (Skate's path over a lake): each still water source in {@code spots} with air above
+	 * it becomes frosted ice, exactly as frost magic freezes water (vanilla's own ice, which melts back by itself, and is thawed on
+	 * time anyway, saved with the world: {@link Thaws}). Only where {@code player} may build ({@link Casters#mayEdit}: never in a
+	 * claim or spawn protection), never inside a dungeon's ward, never round a creature swimming there, and never with
+	 * world-changing magic or spells' block changes switched off. Returns what was frozen.
+	 */
+	public static List<BlockPos> frostWater(ServerPlayer player, List<BlockPos> spots, int max) {
+		ServerLevel level = player.level();
+		List<BlockPos> frozen = new ArrayList<>();
+		if (!dev.wildercord.config.Config.get().worldChangingMagic() || !Casters.mayBuild(player)) {
+			return frozen;
+		}
+		BlockState ice = Blocks.FROSTED_ICE.defaultBlockState();
+		for (BlockPos spot : spots) {
+			if (frozen.size() >= max) {
+				break;
+			}
+			BlockPos pos = spot.immutable();
+			BlockState state = level.getBlockState(pos);
+			if (!state.is(Blocks.WATER) || !state.getFluidState().isSource() || !level.getBlockState(pos.above()).isAir()
+					|| dev.wildercord.world.dungeons.DungeonWards.warded(level, pos) || !level.isUnobstructed(ice, pos, CollisionContext.empty())
+					|| !Casters.mayEdit(player, level, pos)) {
+				continue;
+			}
+			level.setBlockAndUpdate(pos, ice);
+			level.scheduleTick(pos, Blocks.FROSTED_ICE, 60 + level.getRandom().nextInt(60));
+			frozen.add(pos);
+		}
+		if (!frozen.isEmpty()) {
+			thawLater(level, frozen);
+		}
+		return frozen;
+	}
+
 	/** Ice each player froze, for Icebridge: walk on it before it thaws. */
 	private static final Map<UUID, Set<BlockPos>> BRIDGES = new HashMap<>();
 	/** Until when each player's ice is being watched (game time). */

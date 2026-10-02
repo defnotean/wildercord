@@ -7,6 +7,195 @@
       ],
       "subtitle": "hit"
     },
+    "aura_art_avalanche": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_avalanche"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_backdraft": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_backdraft"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_bolt_step": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_bolt_step"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_crackle": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_crackle"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_cutting_breeze": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_cutting_breeze"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_eye_of_the_storm": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_eye_of_the_storm"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_frostbite": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_frostbite"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_glacier_mirror": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_glacier_mirror"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_hailfall": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_hailfall"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_heavens_spear": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_heavens_spear"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_hundred_winds": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_hundred_winds"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_kindling_draw": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_kindling_draw"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_landslide": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_landslide"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_mountain_splitter": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_art_mountain_splitter"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_rising_cinders": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_rising_cinders"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_rockbreaker": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_rockbreaker"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_skate": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_skate"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_skyfall": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_skyfall"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_static_riposte": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_static_riposte"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_sunfall": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_sunfall"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_sunfall_impact": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_sunfall_impact"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_art_tailwind": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_tailwind"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_unmoved": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_unmoved"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_updraft": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_updraft"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_wildfire_rush": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_art_wildfire_rush"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_winters_hush": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_winters_hush"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_art_winters_hush_shatter": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_art_winters_hush_shatter"
+      ],
+      "subtitle": "hit"
+    },
     "aura_backlash": {
       "attenuation": 0,
       "files": [

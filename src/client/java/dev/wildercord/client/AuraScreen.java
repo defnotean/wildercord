@@ -125,6 +125,19 @@ public class AuraScreen extends Screen {
 					return true;
 				}
 			}
+			// A method's swatch on the Sword strings tab: its arts.
+			if (arts && chipsY >= 0) {
+				for (int i = 0; i < chips.size(); i++) {
+					int[] c = chips.get(i);
+					if (inside(mx, my, c[0], c[1], c[2], c[3])) {
+						String id = chipIds.get(i);
+						browsing = id.equals(Aura.data(minecraft.player).method()) ? null : id;
+						minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(
+							net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.2F));
+						return true;
+					}
+				}
+			}
 		}
 		return super.mouseClicked(event, doubleClick);
 	}
@@ -132,6 +145,17 @@ public class AuraScreen extends Screen {
 	/** Opens the page on its Sword strings tab ({@code true}) or its techniques (the game tests put it back as they found it). */
 	public static void listArts(boolean show) {
 		arts = show;
+	}
+
+	/** The middle of {@code methodId}'s swatch on the Sword strings tab, in screen coordinates (the game tests click it), or null. */
+	public double[] chipPoint(String methodId) {
+		int i = chipIds.indexOf(methodId);
+		if (i < 0) {
+			return null;
+		}
+		int[] c = chips.get(i);
+		float s = scale();
+		return new double[] {left() + (c[0] + c[2] / 2.0) * s, top() + (c[1] + c[3] / 2.0) * s};
 	}
 
 	/** The middle of the Sword strings tab, in screen coordinates (the game tests click it), or null before it's drawn. */
@@ -328,28 +352,93 @@ public class AuraScreen extends Screen {
 		return y + 13;
 	}
 
+	/** Whose arts the Sword strings tab shows: a method's id, or null for the player's own (kept while the game runs). */
+	private static String browsing;
+	/** Where the methods' swatches were drawn last (the page's own coordinates), for a click. */
+	private int chipsY = -1;
+	private final List<int[]> chips = new ArrayList<>();
+	private final List<String> chipIds = new ArrayList<>();
+
+	/** Shows {@code methodId}'s arts on the Sword strings tab (null: the player's own); the game tests turn the pages this way. */
+	public static void browse(String methodId) {
+		browsing = methodId;
+	}
+
 	/**
-	 * The sword strings' arts the player has, by stage: each one's name, its string drawn in the indicator's marks (faint until its
-	 * stage is reached), its price (or how long it still rests), and on hover what it does, its string in words, its rest and what
-	 * else it waits on. Under them, a line on how strings work and what each mark means. Returns the tooltip, if any.
+	 * The breathing methods' arts, one method at a time: a row of every method's swatch to choose whose (your own to begin with),
+	 * then that method's five arts by stage: each one's name, its string drawn in the indicator's marks, the stage that opens it,
+	 * and its price (or how long it still rests); on hover what it does, its string in words, its rest and what else it waits on.
+	 * Another method's arts are shown fainter, to read and choose by. Under them, a line on how strings work and what each mark
+	 * means. Returns the tooltip, if any.
 	 */
 	private List<Component> arts(GuiGraphicsExtractor g, LocalPlayer player, int y, int mx, int my, int color, int stage, long now) {
 		List<Component> tooltip = null;
-		int lit = 0xFF000000 | AuraRules.color(color & 0xFFFFFF, 0xFFFFFF, 3);
-		for (AuraApi.StringArt art : AuraApi.allStringsOf(player)) {
-			boolean reached = stage >= art.stage();
-			g.fill(16, y + 2, 20, y + 6, reached ? color : 0xFF3A3450);
+		String own = Aura.data(player).method();
+		List<BreathingMethod> methods = dev.wildercord.aura.BreathingMethods.all();
+		String shown = browsing == null || dev.wildercord.aura.BreathingMethods.byId(browsing).isEmpty() ? own : browsing;
+		boolean mine = shown.equals(own);
+		BreathingMethod method = dev.wildercord.aura.BreathingMethods.byId(shown).orElse(null);
+		int methodColor = method == null ? color & 0xFFFFFF : method.color(mine ? stage : AuraRules.EDGE);
+		// The swatches: one a method, its colour, the one shown framed in gold, your own marked beneath.
+		chips.clear();
+		chipIds.clear();
+		chipsY = y;
+		int x = 16;
+		for (BreathingMethod m : methods) {
+			if (x + 11 > W - 120) {
+				break;
+			}
+			boolean selected = m.id().equals(shown);
+			g.fill(x - 1, y - 1, x + 10, y + 10, selected ? GOLD : 0xFF2A2438);
+			g.fill(x, y, x + 9, y + 9, 0xFF000000 | m.color(AuraRules.EDGE));
+			if (!AuraApi.hasArts(m.id())) {
+				// A method still playing the common arts: its swatch dimmed.
+				g.fill(x, y, x + 9, y + 9, 0x88201C2C);
+			}
+			if (m.id().equals(own)) {
+				g.fill(x + 3, y + 11, x + 6, y + 12, TEXT);
+			}
+			chips.add(new int[] {x - 1, y - 1, 11, 11});
+			chipIds.add(m.id());
+			if (inside(mx, my, x - 1, y - 1, 11, 11)) {
+				List<Component> tip = new ArrayList<>();
+				tip.add(Component.translatable(m.nameKey()).withColor(m.color()));
+				tip.add(Component.translatable(AuraApi.hasArts(m.id()) ? "screen.wildercord.aura.method_arts" : "screen.wildercord.aura.method_common")
+					.withStyle(ChatFormatting.GRAY));
+				tooltip = tip;
+			}
+			x += 13;
+		}
+		if (method != null) {
+			Component label = Component.translatable(method.nameKey()).withColor(methodColor);
+			int lx = Math.max(x + 6, W - 14 - font.width(label));
+			g.text(font, label, lx, y + 1, TEXT, true);
+		}
+		y += 16;
+		int lit = 0xFF000000 | AuraRules.color(methodColor, 0xFFFFFF, 3);
+		for (AuraApi.StringArt art : AuraApi.arts(shown)) {
+			boolean reached = mine && stage >= art.stage();
+			int dot = reached ? 0xFF000000 | methodColor : mine ? 0xFF3A3450 : 0xFF000000 | AuraHud.mix(methodColor, 0x2A2438, 0.55);
+			g.fill(16, y + 2, 20, y + 6, dot);
 			Component name = Component.translatable(art.nameKey());
-			g.text(font, name, 24, y, reached ? TEXT : FAINT, false);
-			StringHud.string(g, art.string(), 120, y, reached ? lit & 0xFFFFFF : 0x5A5470, reached ? 1.0F : 0.75F);
-			long rest = dev.wildercord.aura.SwordStrings.readyAt(player, art.id()) - now;
+			String fitted = font.plainSubstrByWidth(name.getString(), 92);
+			g.text(font, fitted, 24, y, reached ? TEXT : mine ? FAINT : DIM, false);
+			StringHud.string(g, art.string(), 122, y, reached || !mine ? lit & 0xFFFFFF : 0x5A5470, reached ? 1.0F : mine ? 0.75F : 0.85F);
+			// What opens it: its stage, lit once reached.
+			Component opens = Component.translatable("aura.wildercord.stage." + AuraStages.id(art.stage()));
+			g.text(font, opens, 182, y, reached ? 0xFF000000 | AuraHud.mix(methodColor, 0xFFFFFF, 0.4) : FAINT, false);
+			long rest = mine ? dev.wildercord.aura.SwordStrings.readyAt(player, art.id()) - now : 0;
 			String right = reached && rest > 0
 				? Component.translatable("screen.wildercord.aura.art_resting", (rest + 19) / 20).getString()
 				: Component.translatable("screen.wildercord.aura.cost", trim(art.cost())).getString();
 			g.text(font, right, W - 14 - font.width(right), y, !reached ? FAINT : rest > 0 ? DIM : 0xFFB8A8FF, false);
 			if (inside(mx, my, 14, y - 1, W - 28, 10)) {
 				List<Component> tip = new ArrayList<>();
-				tip.add(name.copy().withColor(reached ? color : DIM));
+				tip.add(name.copy().withColor(methodColor));
+				if (method != null) {
+					tip.add(Component.translatable("aura.wildercord.banner.kicker", Component.translatable(method.nameKey()),
+						Component.translatable(dev.wildercord.aura.AuraFxRules.ordinalKey(art.stage()))).withStyle(ChatFormatting.DARK_GRAY));
+				}
 				tip.add(Component.translatable(art.nameKey() + ".desc").withStyle(ChatFormatting.GRAY));
 				List<Component> words = new ArrayList<>();
 				for (dev.wildercord.aura.SwordString.Token token : art.string().tokens()) {
@@ -360,10 +449,12 @@ public class AuraScreen extends Screen {
 				if (art.cooldownTicks() > 0) {
 					tip.add(Component.translatable("screen.wildercord.aura.art_rest", trim(art.cooldownTicks() / 20.0)).withStyle(ChatFormatting.DARK_GRAY));
 				}
-				if (art.condition() == dev.wildercord.aura.PlaceholderArts.FULL_POOL) {
+				if (art.condition() == AuraApi.FINAL_GATE || art.condition() == dev.wildercord.aura.PlaceholderArts.FULL_POOL) {
 					tip.add(Component.translatable("screen.wildercord.aura.art_needs_full").withStyle(ChatFormatting.DARK_GRAY));
 				}
-				if (!reached) {
+				if (!mine && method != null) {
+					tip.add(Component.translatable("screen.wildercord.aura.art_other", Component.translatable(method.nameKey())).withStyle(ChatFormatting.DARK_GRAY));
+				} else if (!reached) {
 					tip.add(Component.translatable("screen.wildercord.aura.locked",
 						Component.translatable("aura.wildercord.stage." + AuraStages.id(art.stage()))).withStyle(ChatFormatting.DARK_GRAY));
 				}
@@ -382,7 +473,7 @@ public class AuraScreen extends Screen {
 		}
 		// What each mark means: the mark, then its word, wrapping as the page runs out.
 		y += 2;
-		int x = 16;
+		x = 16;
 		for (dev.wildercord.aura.SwordString.Token token : dev.wildercord.aura.SwordString.Token.values()) {
 			String word = token.id;
 			int w = StringHud.GLYPH + 3 + font.width(word) + 9;

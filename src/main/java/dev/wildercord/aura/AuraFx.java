@@ -138,6 +138,21 @@ public final class AuraFx {
 		}
 	}
 
+	/**
+	 * To a swordsman's own client: a piece of an art's spectacle ({@code particle}, shaped light or a circle) at {@code at}, drawn
+	 * only while they aren't looking through their own eyes. Everyone else was sent it as it is ({@link #spectacle}).
+	 */
+	public record Shown(net.minecraft.core.particles.ParticleOptions particle, Vec3 at) implements CustomPacketPayload {
+		public static final Type<Shown> TYPE = new Type<>(Wildercord.id("aura_fx_shown"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, Shown> CODEC = StreamCodec.composite(
+			net.minecraft.core.particles.ParticleTypes.STREAM_CODEC, Shown::particle, Vec3.STREAM_CODEC, Shown::at, Shown::new);
+
+		@Override
+		public Type<Shown> type() {
+			return TYPE;
+		}
+	}
+
 	/** What a burst is made of: bits, combined freely. */
 	public static final class Burst {
 		private Burst() {}
@@ -162,6 +177,7 @@ public final class AuraFx {
 		PayloadTypeRegistry.clientboundPlay().register(Banner.TYPE, Banner.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(BurstCue.TYPE, BurstCue.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Flare.TYPE, Flare.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(Shown.TYPE, Shown.CODEC);
 		// Every art: its name, the body's aura blazing up and the method's technique sound (an art adds its own on top).
 		AuraApi.onString((player, art, context) -> performed(player, art));
 	}
@@ -376,6 +392,22 @@ public final class AuraFx {
 			AuraFxRules.SEEN);
 	}
 
+	/**
+	 * A piece of an art's spectacle round its swordsman ({@code particle}: shaped light or a circle, as {@code cast.Light} and
+	 * {@code cast.Sigils} make): everyone else sees it (unless it would open in front of their own eyes), and the swordsman sees it
+	 * only in third person, never through their own eyes, where a whirlwind round them or a lance down their line of sight would
+	 * fill the view. For the big shapes about the body; what lands out in the world can be sent to everyone as usual.
+	 */
+	public static void spectacle(ServerPlayer owner, net.minecraft.core.particles.ParticleOptions particle, Vec3 at) {
+		if (Fx.muted()) {
+			return;
+		}
+		dev.wildercord.cast.Sigils.send(owner.level(), particle, at, owner);
+		if (owner.distanceToSqr(at) <= 128 * 128 && ServerPlayNetworking.canSend(owner, Shown.TYPE)) {
+			ServerPlayNetworking.send(owner, new Shown(particle, at));
+		}
+	}
+
 	/** The player's body aura blazing up for {@code ticks}, {@code strength} (0 to 1) over its flare (an art, a perfect guard). */
 	public static void bodyAuraFlare(ServerPlayer player, int ticks, float strength) {
 		send(player, new Flare(player.getId(), Math.max(1, ticks), Math.max(0, Math.min(1, strength))), true, AuraFxRules.SEEN);
@@ -474,7 +506,9 @@ public final class AuraFx {
 		banner(player, art);
 		boolean grand = art.stage() >= AuraRules.SOVEREIGN;
 		bodyAuraFlare(player, grand ? 50 : 30, grand ? 1.0F : 0.7F);
-		sound(player, Sound.ART, grand ? 1.1F : 0.85F, grand ? 0.85F : 1.0F);
+		// A method's own art carries a voice of its own (see aura.arts): the method's technique sound sits under it.
+		float under = AuraApi.artMethod(art.id()).isEmpty() ? 1.0F : 0.55F;
+		sound(player, Sound.ART, (grand ? 1.1F : 0.85F) * under, grand ? 0.85F : 1.0F);
 	}
 
 	/**

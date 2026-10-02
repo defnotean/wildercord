@@ -46,8 +46,11 @@ import java.util.function.Predicate;
  *   <li><b>Methods</b> ({@link #registerMethod}, {@link #addMethodSource}, {@link #grantMethod}, {@link #manual}): more
  *       breathing methods, more places manuals turn up, and a way to teach one outright (a duelist's lesson).</li>
  *   <li><b>Sword strings</b> ({@link #registerString}, {@link #onString}, {@link #addStringSource}): arts set off by a short
- *       run of ordinary swings ({@link SwordString}), read by the player's client and checked and performed by the server.
- *       Built in, until each method's own arts arrive: five placeholder arts, one a stage ({@code aura.PlaceholderArts}).</li>
+ *       run of ordinary swings ({@link SwordString}), read by the player's client and checked and performed by the server.</li>
+ *   <li><b>A method's arts</b> ({@link #registerArts}, {@link ArtSlot}, {@link #arts}, {@link #gateFinalArts}): each breathing
+ *       method answers the five art strings (one a stage, the same for everyone) with arts of its own; a method without any
+ *       plays the five common arts ({@code aura.PlaceholderArts}). Ember, Rime, Thunder, Gale and Stone have theirs
+ *       ({@code aura.arts}).</li>
  *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
  *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
  *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,
@@ -405,19 +408,191 @@ public final class AuraApi {
 	 * Adds an art set off by a sword string (or replaces the one with its id). Register while the mod initialises, on both
 	 * sides: the client reads strings and the server performs them. A string that a shorter one cuts short (see
 	 * {@link SwordString#cutBy}), or that another art already uses at a stage both reach, is allowed but logged: check
-	 * {@link #conflicts} first.
+	 * {@link #conflicts} first. A breathing method's own arts go in through {@link #registerArts} instead.
 	 */
 	public static synchronized void registerString(StringArt art) {
-		for (StringArt other : conflicts(art.string(), art.id())) {
+		for (StringArt other : conflicts(art.string(), art.id(), OWNERS.getOrDefault(art.id(), ""))) {
 			dev.wildercord.Wildercord.LOGGER.warn("Sword string '{}' of art {} meets '{}' of art {}: one may never be played as written",
 				art.string(), art.id(), other.string(), other.id());
 		}
 		ARTS.put(art.id(), art);
 	}
 
-	/** Takes an art out (the placeholder arts, once a method's own replace them). Returns whether there was one. */
+	/** Takes an art out (a method's own leaves its set too). Returns whether there was one. */
 	public static synchronized boolean unregisterString(String id) {
+		String method = OWNERS.remove(id);
+		if (method != null) {
+			List<String> set = METHOD_ARTS.get(method);
+			if (set != null) {
+				set.remove(id);
+				if (set.isEmpty()) {
+					METHOD_ARTS.remove(method);
+				}
+			}
+		}
 		return ARTS.remove(id) != null;
+	}
+
+	// ------------------------------------------------------------------ a breathing method's own arts
+
+	/**
+	 * The five arts' places, one a stage, the same strings for every method so a swordsman learns them once: each method answers
+	 * them its own way ({@link #registerArts}). A method without its own arts plays the five common ones ({@code aura.PlaceholderArts})
+	 * on the same strings.
+	 */
+	public enum ArtSlot {
+		/** The First Art (Glow): swing, swing, a low swing. */
+		FIRST("swing swing low", AuraRules.GLOW),
+		/** The Second Art (Flow): a leaping swing, then a low swing. */
+		SECOND("leap low", AuraRules.FLOW),
+		/** The Third Art (Edge): a counter, the first swing after a perfect Aura Guard. */
+		THIRD("counter", AuraRules.EDGE),
+		/** The Fourth Art (Form): a step cut, the first swing after an Aura Step. */
+		FOURTH("step", AuraRules.FORM),
+		/** The Final Art (Sovereign): three full swings and a low one, gated by {@link #FINAL_GATE}. */
+		FINAL("full full full low", AuraRules.SOVEREIGN);
+
+		/** The slot's string. */
+		public final SwordString string;
+		/** The stage it opens at. */
+		public final int stage;
+
+		ArtSlot(String string, int stage) {
+			this.string = SwordString.parse(string);
+			this.stage = stage;
+		}
+
+		/** An art in this slot: its string and stage, the price and rest given, and for the Final Art its gate ({@link #FINAL_GATE}). */
+		public StringArt art(String id, double cost, int cooldownTicks, ArtPerformer performer) {
+			StringArt art = new StringArt(id, string, stage, cost, cooldownTicks, null, null, performer);
+			return this == FINAL ? art.when(FINAL_GATE) : art;
+		}
+
+		/** The slot an art sits in (its string and stage), if it sits in one. */
+		public static Optional<ArtSlot> of(StringArt art) {
+			for (ArtSlot slot : values()) {
+				if (slot.string.equals(art.string()) && slot.stage == art.stage()) {
+					return Optional.of(slot);
+				}
+			}
+			return Optional.empty();
+		}
+	}
+
+	private static volatile ArtCondition finalGate = null;
+
+	/**
+	 * What every Final Art waits on: a full aura pool by default (nine tenths, as {@code aura.PlaceholderArts.FULL_POOL}). One
+	 * condition for them all, so the momentum and awakening still to come change it in one place ({@link #gateFinalArts}).
+	 */
+	public static final ArtCondition FINAL_GATE = new ArtCondition() {
+		@Override
+		public boolean met(Player player) {
+			return gate().met(player);
+		}
+
+		@Override
+		public String hintKey() {
+			return gate().hintKey();
+		}
+	};
+
+	private static ArtCondition gate() {
+		ArtCondition gate = finalGate;
+		return gate == null ? dev.wildercord.aura.PlaceholderArts.FULL_POOL : gate;
+	}
+
+	/** Changes what every Final Art waits on (null puts the full pool back). Both sides must agree: call it while the mod initialises. */
+	public static void gateFinalArts(ArtCondition gate) {
+		finalGate = gate;
+	}
+
+	/** Each method's own arts (by method, in slot order) and whose each art is. */
+	private static final Map<String, List<String>> METHOD_ARTS = new LinkedHashMap<>();
+	private static final Map<String, String> OWNERS = new LinkedHashMap<>();
+
+	/**
+	 * Gives breathing method {@code methodId} its own arts (normally five, one a slot: {@link ArtSlot#art}), replacing any it had.
+	 * Each is registered as a sword string open only to the method's swordsmen ({@link StringArt#forMethod}), and the common arts
+	 * step aside for them. Register on both sides while the mod initialises. Returns the arts as registered.
+	 */
+	public static synchronized List<StringArt> registerArts(String methodId, List<StringArt> arts) {
+		if (methodId == null || methodId.isBlank()) {
+			throw new IllegalArgumentException("a method's arts need its id");
+		}
+		List<String> old = METHOD_ARTS.remove(methodId);
+		if (old != null) {
+			for (String id : old) {
+				OWNERS.remove(id);
+				ARTS.remove(id);
+			}
+		}
+		List<StringArt> registered = new ArrayList<>();
+		List<String> ids = new ArrayList<>();
+		for (StringArt art : arts) {
+			StringArt own = art.forMethod(methodId);
+			OWNERS.put(own.id(), methodId);
+			ids.add(own.id());
+			registerString(own);
+			registered.add(own);
+		}
+		METHOD_ARTS.put(methodId, ids);
+		return List.copyOf(registered);
+	}
+
+	/** Whether breathing method {@code methodId} has arts of its own (otherwise its swordsmen play the common ones). Both sides. */
+	public static synchronized boolean hasArts(String methodId) {
+		return methodId != null && METHOD_ARTS.containsKey(methodId);
+	}
+
+	/**
+	 * The arts a swordsman of {@code methodId} plays, by stage: the method's own, or the common arts for a method without any.
+	 * Safe on both sides (the Aura page lists every method's this way).
+	 */
+	public static synchronized List<StringArt> arts(String methodId) {
+		List<String> ids = methodId == null ? null : METHOD_ARTS.get(methodId);
+		List<StringArt> out = new ArrayList<>();
+		if (ids == null) {
+			for (String id : dev.wildercord.aura.PlaceholderArts.IDS) {
+				StringArt art = ARTS.get(id);
+				if (art != null) {
+					out.add(art);
+				}
+			}
+		} else {
+			for (String id : ids) {
+				StringArt art = ARTS.get(id);
+				if (art != null) {
+					out.add(art);
+				}
+			}
+		}
+		out.sort(Comparator.comparingInt(StringArt::stage));
+		return out;
+	}
+
+	/** The breathing method whose own art {@code artId} is, or "" (a common art, or anything else). */
+	public static synchronized String artMethod(String artId) {
+		return OWNERS.getOrDefault(artId, "");
+	}
+
+	/** Whether {@code id} is one of the common arts a method without its own plays. */
+	private static boolean common(String id) {
+		return dev.wildercord.aura.PlaceholderArts.IDS.contains(id);
+	}
+
+	/**
+	 * Whether two arts could ever be open to the same swordsman: the same method, or one open to every method; a common art steps
+	 * aside for a method's own (it's only played where there are none).
+	 */
+	private static boolean overlap(String idA, String methodA, String idB, String methodB) {
+		if (!methodA.isEmpty() && !methodB.isEmpty()) {
+			return methodA.equals(methodB);
+		}
+		if (common(idA) && !methodB.isEmpty() || common(idB) && !methodA.isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 
 	/** Every registered art, by stage then registration. Safe on both sides. */
@@ -492,8 +667,34 @@ public final class AuraApi {
 	 * replaced). For a writing screen to warn before a player settles on a string.
 	 */
 	public static synchronized List<StringArt> conflicts(SwordString string, String except) {
+		return conflicts(string, except, "");
+	}
+
+	/**
+	 * The registered arts whose strings would get in the way of {@code string} for a swordsman of {@code method} ("" for an art
+	 * open to every method): the other methods' own arts never do.
+	 */
+	public static synchronized List<StringArt> conflicts(SwordString string, String except, String method) {
 		List<StringArt> out = new ArrayList<>();
+		String own = method == null ? "" : method;
 		for (StringArt other : ARTS.values()) {
+			if (other.id().equals(except) || !overlap(except, own, other.id(), OWNERS.getOrDefault(other.id(), ""))) {
+				continue;
+			}
+			if (other.string().equals(string) || string.cutBy(other.string()) || other.string().cutBy(string)) {
+				out.add(other);
+			}
+		}
+		return out;
+	}
+
+	/**
+	 * The arts {@code player} has (registered and their own, whatever their stage) whose strings would get in the way of
+	 * {@code string}: what a screen for writing a technique of one's own should warn of. Safe on both sides.
+	 */
+	public static List<StringArt> conflicts(Player player, SwordString string, String except) {
+		List<StringArt> out = new ArrayList<>();
+		for (StringArt other : allStringsOf(player)) {
 			if (other.id().equals(except)) {
 				continue;
 			}

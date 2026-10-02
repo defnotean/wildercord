@@ -340,7 +340,16 @@ public final class SwordStrings {
 			}
 		}
 		Grimoire.unlock(player, "aura:sword_string");
+		// A method's own art goes into the Grimoire the first time it's played.
+		if (!AuraApi.artMethod(art.id()).isEmpty()) {
+			Grimoire.unlock(player, grimoireKey(art.id()));
+		}
 		return true;
+	}
+
+	/** The Grimoire entry a method's own art writes the first time it's played (see {@link ArtRules#grimoireKey}). */
+	public static String grimoireKey(String artId) {
+		return ArtRules.grimoireKey(artId);
 	}
 
 	/** The creature the player's last swing struck, by the server's own record (set as a blow lands), if it was just now. */
@@ -397,6 +406,8 @@ public final class SwordStrings {
 			}
 		});
 		PlaceholderArts.register();
+		// Each method's own arts, on the same strings (the common ones step aside for them).
+		dev.wildercord.aura.arts.MethodArts.init();
 	}
 
 	static void forget(UUID id) {

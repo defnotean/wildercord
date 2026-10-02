@@ -16,13 +16,14 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * PLACEHOLDER ARTS. The five arts every breathing method plays until each method gets its own (the aura overhaul's steps 3 and
- * 4 replace these: unregister the ids in {@link #IDS} and register each method's, on the same five strings). They're simple on
- * purpose: a burst of aura off the blade, in the method's element, landing as projected aura (the slash's rules: armour, and
- * against a player the spell defences and the PvP scale), shaped a little differently a stage so each string can be seen to
- * work. Each cuts its own trail ({@link AuraFx}): the First a cut, the Second a rising cut, the Third an X, the Fourth a thrust,
- * the Final a whole turn, and lands heavily on each foe; its banner, the body's flare and the method's technique sound come with
- * every art performed.
+ * The common arts: the five a breathing method without arts of its own plays (Verdant, Hollow, Starlit, Hourglass and Crimson
+ * until the aura overhaul's step 4 gives them theirs, and any add-on's method that registers none). They step aside for a
+ * method's own ({@link AuraApi#registerArts}: Ember, Rime, Thunder, Gale and Stone have theirs in {@code aura.arts}). They're
+ * simple on purpose: a burst of aura off the blade, in the method's element, landing as projected aura (the slash's rules:
+ * armour, and against a player the spell defences and the PvP scale), shaped a little differently a stage so each string can be
+ * seen to work. Each cuts its own trail ({@link AuraFx}): the First a cut, the Second a rising cut, the Third an X, the Fourth a
+ * thrust, the Final a whole turn, and lands heavily on each foe; its banner, the body's flare and the method's technique sound
+ * come with every art performed.
  *
  * <p>The strings are the language every method shares, learned once:</p>
  * <ul>
@@ -45,28 +46,36 @@ public final class PlaceholderArts {
 	/** The placeholder arts' ids, Art I to the Final Art. */
 	public static final List<String> IDS = List.of(FIRST, SECOND, THIRD, FOURTH, FINAL);
 
-	/** The five strings, one a stage, the same for every method. */
-	public static final SwordString FIRST_STRING = SwordString.parse("swing swing low");
-	public static final SwordString SECOND_STRING = SwordString.parse("leap low");
-	public static final SwordString THIRD_STRING = SwordString.parse("counter");
-	public static final SwordString FOURTH_STRING = SwordString.parse("step");
-	public static final SwordString FINAL_STRING = SwordString.parse("full full full low");
+	/** The five strings, one a stage, the same for every method ({@link AuraApi.ArtSlot}). */
+	public static final SwordString FIRST_STRING = AuraApi.ArtSlot.FIRST.string;
+	public static final SwordString SECOND_STRING = AuraApi.ArtSlot.SECOND.string;
+	public static final SwordString THIRD_STRING = AuraApi.ArtSlot.THIRD.string;
+	public static final SwordString FOURTH_STRING = AuraApi.ArtSlot.FOURTH.string;
+	public static final SwordString FINAL_STRING = AuraApi.ArtSlot.FINAL.string;
 
-	/** The Final Art's condition, until momentum and awakening: a full aura pool. */
+	/**
+	 * The Final Art's condition, until momentum and awakening: a full aura pool. Every Final Art waits on
+	 * {@link AuraApi#FINAL_GATE}, which is this until something changes it ({@link AuraApi#gateFinalArts}).
+	 */
 	public static final AuraApi.ArtCondition FULL_POOL = AuraApi.ArtCondition.of(
 		player -> StringRules.poolFull(Aura.aura(player), Aura.capacity(player)), "message.wildercord.aura.art.full_pool");
 
-	static void register() {
-		AuraApi.registerString(new AuraApi.StringArt(FIRST, FIRST_STRING, AuraRules.GLOW, StringRules.FIRST_COST, StringRules.FIRST_COOLDOWN, null,
-			null, PlaceholderArts::first));
-		AuraApi.registerString(new AuraApi.StringArt(SECOND, SECOND_STRING, AuraRules.FLOW, StringRules.SECOND_COST, StringRules.SECOND_COOLDOWN, null,
-			null, PlaceholderArts::second));
-		AuraApi.registerString(new AuraApi.StringArt(THIRD, THIRD_STRING, AuraRules.EDGE, StringRules.THIRD_COST, StringRules.THIRD_COOLDOWN, null,
-			null, PlaceholderArts::third));
-		AuraApi.registerString(new AuraApi.StringArt(FOURTH, FOURTH_STRING, AuraRules.FORM, StringRules.FOURTH_COST, StringRules.FOURTH_COOLDOWN, null,
-			null, PlaceholderArts::fourth));
-		AuraApi.registerString(new AuraApi.StringArt(FINAL, FINAL_STRING, AuraRules.SOVEREIGN, StringRules.FINAL_COST, StringRules.FINAL_COOLDOWN, null,
-			FULL_POOL, PlaceholderArts::last));
+	/** Whether {@code player} plays the common arts: their method has none of its own. Both sides. */
+	public static boolean playsCommon(net.minecraft.world.entity.player.Player player) {
+		return !AuraApi.hasArts(Aura.data(player).method());
+	}
+
+	public static void register() {
+		AuraApi.registerString(AuraApi.ArtSlot.FIRST.art(FIRST, StringRules.FIRST_COST, StringRules.FIRST_COOLDOWN, PlaceholderArts::first)
+			.onlyFor(PlaceholderArts::playsCommon));
+		AuraApi.registerString(AuraApi.ArtSlot.SECOND.art(SECOND, StringRules.SECOND_COST, StringRules.SECOND_COOLDOWN, PlaceholderArts::second)
+			.onlyFor(PlaceholderArts::playsCommon));
+		AuraApi.registerString(AuraApi.ArtSlot.THIRD.art(THIRD, StringRules.THIRD_COST, StringRules.THIRD_COOLDOWN, PlaceholderArts::third)
+			.onlyFor(PlaceholderArts::playsCommon));
+		AuraApi.registerString(AuraApi.ArtSlot.FOURTH.art(FOURTH, StringRules.FOURTH_COST, StringRules.FOURTH_COOLDOWN, PlaceholderArts::fourth)
+			.onlyFor(PlaceholderArts::playsCommon));
+		AuraApi.registerString(AuraApi.ArtSlot.FINAL.art(FINAL, StringRules.FINAL_COST, StringRules.FINAL_COOLDOWN, PlaceholderArts::last)
+			.onlyFor(PlaceholderArts::playsCommon));
 	}
 
 	// ------------------------------------------------------------------ the five
