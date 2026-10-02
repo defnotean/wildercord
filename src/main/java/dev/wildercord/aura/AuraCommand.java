@@ -191,7 +191,81 @@ public final class AuraCommand {
 						return 0;
 					}
 					return 1;
+				}))))
+			// Sparring: a spar begun at once with another player (every check but the salute), or the one under way called off; the record.
+			.then(Commands.literal("spar")
+				.executes(AuraCommand::spar)
+				.then(Commands.literal("with").then(Commands.argument("player", net.minecraft.commands.arguments.EntityArgument.player()).executes(ctx -> {
+					ServerPlayer a = ctx.getSource().getPlayerOrException();
+					ServerPlayer b = net.minecraft.commands.arguments.EntityArgument.getPlayer(ctx, "player");
+					SparRules.Refusal why = Spars.refusal(a, b);
+					if (why != null || !Spars.start(a, b)) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.spar.cant",
+							why == null ? Component.translatable("command.wildercord.aura.spar.not_ready") : Component.translatable(why.key(), b.getDisplayName())));
+						return 0;
+					}
+					return 1;
+				})))
+				.then(Commands.literal("off").executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					if (!Spars.sparring(player)) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.spar.none"));
+						return 0;
+					}
+					Spars.callOff(player);
+					return 1;
+				})))
+			// Masters and disciples: who's whose, a disciple taken at once (no ceremony), a bond ended.
+			.then(Commands.literal("lineage")
+				.executes(AuraCommand::lineage)
+				.then(Commands.literal("take").then(Commands.argument("player", net.minecraft.commands.arguments.EntityArgument.player()).executes(ctx -> {
+					ServerPlayer master = ctx.getSource().getPlayerOrException();
+					ServerPlayer disciple = net.minecraft.commands.arguments.EntityArgument.getPlayer(ctx, "player");
+					LineageRules.Refusal why = Lineage.refusal(master, disciple);
+					if (why != null || !Lineage.take(master, disciple, true)) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.lineage.cant",
+							Component.translatable(why == null ? "command.wildercord.aura.lineage.self" : why.key(), disciple.getDisplayName(), master.getDisplayName())));
+						return 0;
+					}
+					return lineage(ctx);
+				})))
+				.then(Commands.literal("end").then(Commands.argument("player", net.minecraft.commands.arguments.EntityArgument.player()).executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					ServerPlayer other = net.minecraft.commands.arguments.EntityArgument.getPlayer(ctx, "player");
+					if (!Lineage.end(player, other.getUUID())) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.lineage.no_bond", other.getDisplayName()));
+						return 0;
+					}
+					return lineage(ctx);
 				}))));
+	}
+
+	/** A player's sparring record, and the spar they're in. */
+	private static int spar(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+		ServerPlayer player = ctx.getSource().getPlayerOrException();
+		SparRules.Log log = Spars.log(player);
+		ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.aura.spar.record", log.wins(), log.losses(), log.evens()), false);
+		java.util.UUID partner = Spars.partner(player);
+		if (partner != null) {
+			net.minecraft.world.entity.player.Player other = player.level().getPlayerByUUID(partner);
+			ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.aura.spar.with", other == null ? Component.literal("?")
+				: other.getDisplayName()), false);
+		}
+		return 1;
+	}
+
+	/** Who a player's master is, and their disciples. */
+	private static int lineage(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+		ServerPlayer player = ctx.getSource().getPlayerOrException();
+		LineageRegistry r = LineageRegistry.of(player.level().getServer());
+		Component master = r.masterOf(player.getUUID()).<Component>map(b -> Component.literal(b.masterName())).orElse(Component.literal("-"));
+		java.util.List<Component> disciples = new java.util.ArrayList<>();
+		for (LineageRegistry.Bond b : r.disciplesOf(player.getUUID())) {
+			disciples.add(Component.literal(b.discipleName()));
+		}
+		ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.aura.lineage.state", master,
+			disciples.isEmpty() ? Component.literal("-") : net.minecraft.network.chat.ComponentUtils.formatList(disciples, Component.literal(", "))), false);
+		return 1;
 	}
 
 	/** What a player's bonded blade stands at: its name (or the weapon's), its tier, its resonance and its trait. */

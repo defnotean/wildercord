@@ -228,9 +228,11 @@ public final class WayRules {
 
 	/** Clean hits build momentum this many times as fast (Keen Edge). */
 	public static final double BLADE_HIT_MOMENTUM = 1.35;
-	/** The piercing slash cuts this many more foes, and a crescent of the Blade that wins a clash flies on at this share of its harm. */
+	/**
+	 * The piercing slash cuts this many more foes. In a clash it has an edge ({@code aura.ClashRules#EDGE}: each beat's window a tick wider, and an
+	 * even struggle is its), never an automatic win.
+	 */
 	public static final int BLADE_SLASH_TARGETS = 4;
-	public static final double BLADE_CLASH_CARRY = 0.5;
 	/** Finishers add this many times as much (Cascade), a player's cap still holding. */
 	public static final double BLADE_FINISHER = 1.4;
 	/** A finisher opens the nearest creature this close (blocks) to the finished foe whose stance is at least this worn. */
@@ -425,8 +427,8 @@ public final class WayRules {
 	 * fight against foes weaker than you, the slash about a sixth of a swordsman's output at Edge.
 	 */
 	public static final Map<String, Worth> WORTH = Map.ofEntries(
-		// Momentum a third faster from hits (tempo); the slash through guards and four more foes, and winning clashes (a fifth more
-		// out of a sixth of the output).
+		// Momentum a third faster from hits (tempo); the slash through guards and four more foes, and an edge in its clashes (a fifth
+		// more out of a sixth of the output).
 		Map.entry(BLADE_EDGE, new Worth(BLADE_EDGE, 0.035, 0.0, 0.35, 0.0, 0.0)),
 		// Finishers (about a sixth of the damage) two fifths harder; cascades open a worn crowd for more finishers and openings.
 		Map.entry(BLADE_FORM, new Worth(BLADE_FORM, 0.09, 0.0, 0.2, 0.0, 0.0)),

@@ -172,7 +172,7 @@ class WayRulesTest {
 		assertFalse(WayRules.cascades(0.51), "less than half worn doesn't");
 		assertTrue(WayRules.BLADE_HIT_MOMENTUM > 1 && WayRules.BLADE_HIT_MOMENTUM < 1.5);
 		assertTrue(WayRules.BLADE_SLASH_TARGETS > 0);
-		assertTrue(WayRules.BLADE_CLASH_CARRY > 0 && WayRules.BLADE_CLASH_CARRY < 1, "a crescent that wins a clash flies on weaker");
+		assertTrue(ClashRules.EDGE > 0 && ClashRules.EDGE < ClashRules.PERFECT, "a Blade's slash has an edge in a clash, never a win of its own");
 	}
 
 	@Test

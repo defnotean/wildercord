@@ -274,8 +274,9 @@ public final class Aura {
 			stance.anchor = player.position();
 		}
 		AuraBreakthroughs.broken(player);
-		// A bonded blade's ceremony asks the stance unbroken to its end.
+		// A bonded blade's ceremony asks the stance unbroken to its end, and so do a master's rites.
 		BladeCeremony.broken(player);
+		Lineage.broken(player);
 		AuraAttachments.State state = state(player);
 		if (state.breathing() || state.stillness() > 0) {
 			state(player, state.settled(-1).stillness(0));
@@ -342,6 +343,8 @@ public final class Aura {
 		AuraBreakthroughs.stillness(player, now);
 		// A blade held in the stance at a ley crossing is bonded (or, its own blade before a kneeling disciple, passed on).
 		BladeCeremony.breathing(player, state(player), now);
+		// One kneeling before a master in the stance asks to be their disciple (or, already theirs, for a lesson).
+		Lineage.breathing(player, state(player), now);
 		// A swordsman past the crossroads with no Way calls it by breathing a few seconds.
 		Crossroads.breathing(player, state(player), now);
 	}
@@ -537,6 +540,10 @@ public final class Aura {
 		BondedBlades.init();
 		AuraMethods.init();
 		Crescents.init();
+		// The clash (after the crescents: it holds the ones that meet), sparring (on the duel's own rules) and masters and disciples.
+		Clashes.init();
+		Spars.init();
+		Lineage.init();
 		AuraCombat.init();
 		AuraBreakthroughs.init();
 		AuraLoot.init();
@@ -605,7 +612,10 @@ public final class Aura {
 	public static final List<String> SOUNDS = List.of("aura_slash", "aura_guard", "aura_perfect_guard", "aura_breakthrough", "aura_backlash", "aura_breath",
 		"aura_step", "aura_armour", "aura_intent", "aura_dominion", "aura_dominion_fade", "aura_spellblade", "aura_string_tick", "aura_string_complete",
 		"aura_string_fumble", "aura_momentum_rise", "aura_momentum_peak", "aura_stance_break", "aura_finisher", "aura_awaken", "aura_awaken_fed",
-		"aura_spent", "aura_recovered", "aura_technique_write", "aura_technique_learn", "aura_technique_rank");
+		"aura_spent", "aura_recovered", "aura_technique_write", "aura_technique_learn", "aura_technique_rank", "aura_spar_salute", "aura_spar_ring",
+		"aura_spar_count", "aura_spar_begin", "aura_spar_win", "aura_spar_end", "aura_spar_out", "aura_lineage_ask", "aura_lineage_bind",
+		"aura_lineage_seal", "aura_lineage_lesson", "aura_lineage_release", "aura_lineage_graduate", "aura_lineage_share", "aura_clash_lock",
+		"aura_clash_beat", "aura_clash_perfect", "aura_clash_good", "aura_clash_miss", "aura_clash_win", "aura_clash_even");
 
 	/** Plays one of aura's sounds where {@code player} is. */
 	public static void sound(ServerPlayer player, String name, float volume, float pitch) {

@@ -67,6 +67,21 @@ public final class AuraWorldRules {
 		return stage >= AuraRules.SOVEREIGN ? 70 : stage >= AuraRules.FORM ? 85 : 100;
 	}
 
+	/** How quickly a duelist answers a crescent of its challenger's with one of its own (ticks: its blade snaps up), so the two meet in the air. */
+	public static final int ANSWER_WINDUP = 3;
+	/** It answers a crescent no nearer than this and no further (blocks), coming at it (its flight's dot with the way to it at least this). */
+	public static final double ANSWER_NEAR = 3.0;
+	public static final double ANSWER_FAR = 11.0;
+	public static final double ANSWER_ONCOMING = 0.75;
+
+	/**
+	 * The chance a duelist with its slash ready answers a crescent coming at it with one of its own, so the two clash (decided once a crescent):
+	 * never below Edge, a third of the time at Edge, rising to two in three at Sovereign. Otherwise it guards or steps aside as it would.
+	 */
+	public static double duelistAnswerChance(int stage) {
+		return stage < AuraRules.EDGE ? 0 : Math.min(0.65, 0.35 + 0.15 * (stage - AuraRules.EDGE));
+	}
+
 	/** A duelist's crescent: slower than a player's, so it can be stepped aside from. */
 	public static final double DUELIST_SLASH_SPEED = 1.3;
 	public static final double DUELIST_SLASH_RANGE = 12.0;

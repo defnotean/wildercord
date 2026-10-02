@@ -388,6 +388,10 @@ public final class ArtKit {
 				if (weight != null) {
 					fx.impact(foe, weight);
 				}
+				if (art != null && foe instanceof Player) {
+					// A swordsman struck by an art may answer it with one of their own in the same breath: the two lock (a clash).
+					dev.wildercord.aura.Clashes.artStruck(player, foe, taken, dealt);
+				}
 				// The strike wears its foe's stance as an art does (another player's held to half of it over the whole art).
 				double stanceCap = foe instanceof Player ? Math.max(0, StanceRules.PLAYER_POOL * StanceRules.PVP_ART_CAP
 					- pvpStance.getOrDefault(foe.getUUID(), 0.0)) : Double.MAX_VALUE;

@@ -240,6 +240,8 @@ public final class AuraBreakthroughs {
 		Grimoire.unlock(player, "aura:" + AuraStages.id(next));
 		// A bonded blade carried through it remembers it (and may wake to a tier the new stage allows).
 		BondedBlades.brokeThrough(player, next);
+		// A disciple's master earns a share of the road walked; a disciple who has reached their master's stage graduates.
+		Lineage.brokeThrough(player, next);
 		if (next == WayRules.FROM) {
 			// The path forks here: once the moment has settled, the crossroads rises for the swordsman to choose their Way.
 			Crossroads.brokeThrough(player);

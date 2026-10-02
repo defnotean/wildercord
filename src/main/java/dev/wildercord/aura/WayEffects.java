@@ -64,7 +64,7 @@ public final class WayEffects {
 
 	// ------------------------------------------------------------------ the Blade
 
-	/** Whether {@code player}'s Aura Slash pierces (Keen Edge): through guards, through more foes, winning a clash. */
+	/** Whether {@code player}'s Aura Slash pierces (Keen Edge): through guards, through more foes, an edge in a clash. */
 	public static boolean pierces(ServerPlayer player) {
 		return Ways.has(player, WayRules.BLADE_EDGE);
 	}

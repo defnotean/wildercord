@@ -67,9 +67,44 @@ import java.util.UUID;
  * forfeits; another player striking either duellist calls the duel off (and the blow lands). Nobody
  * hurt in the last few seconds, or fresh from a fight with another player or a duel, can start one.
  * The rules live in {@link DuelRules}.
+ *
+ * <p>A duel can also be fought on other terms ({@link #startBout}): a swordsmen's spar is one, in a small ring that ends at one heart, with
+ * a {@link Watcher} of its own that says what harm counts and puts on its own words, light and sound in place of a duel's. Everything else
+ * is a duel's: the two harm only each other, anyone else's blow calls it off, nobody dies, and both are put back as they began.</p>
  */
 public final class Duels {
 	private Duels() {}
+
+	/**
+	 * Who looks on a duel fought on other terms (a spar): what harm counts, and its own way of showing it in place of a duel's titles, circles
+	 * and chat. Its calls come on the server thread, after the duel's own rules have done their part.
+	 */
+	public interface Watcher {
+		/** Whether harm from {@code source} dealt by {@code attacker} reaches {@code victim} (both duellists, once the fight is on). */
+		default boolean counts(Player attacker, ServerPlayer victim, DamageSource source) {
+			return true;
+		}
+
+		/** Whether the duellists' spells may harm each other (asked while a spell's harm is being applied). */
+		default boolean spells() {
+			return true;
+		}
+
+		/** The countdown's second ({@code second}: 3, 2, 1) has come. */
+		default void counting(int second) {}
+
+		/** The fight is on. */
+		default void began() {}
+
+		/** Each tick while it lasts (after the duel's own). */
+		default void tick(long now) {}
+
+		/**
+		 * It's over, and both are already put back as they began: the winner and loser (either null for an ending with neither, or one who has
+		 * gone), and how it ended in {@code duel}.
+		 */
+		void ended(DuelRules.Duel duel, ServerPlayer winner, ServerPlayer loser);
+	}
 
 	/** Duels are on unless the server's config switches them off (features.duels); the {@code wildercord:allow_duels} game rule turns them off per world. */
 	private static boolean enabled() {
@@ -135,12 +170,15 @@ public final class Duels {
 		/** The server tick each duellist was last struck by the other (a blow, a shot, a pet or a spell), and who was burning last tick. */
 		final Map<UUID, Long> struck = new HashMap<>();
 		final Set<UUID> alight = new HashSet<>();
+		/** Who looks on it, for a duel on other terms (null for a duel). */
+		final Watcher watcher;
 		int shown = -1;
 
-		Active(DuelRules.Duel duel, ServerLevel level, Vec3 centre) {
+		Active(DuelRules.Duel duel, ServerLevel level, Vec3 centre, Watcher watcher) {
 			this.duel = duel;
 			this.level = level;
 			this.centre = centre;
+			this.watcher = watcher;
 		}
 	}
 
@@ -187,6 +225,10 @@ public final class Duels {
 				return true;
 			}
 			if (active.duel.involves(attacker.getUUID())) {
+				if (active.duel.fighting() && active.watcher != null && !active.watcher.counts(attacker, victim, source)) {
+					// Fought on other terms (a spar: blades and aura only): this harm doesn't reach them, and calls nothing off.
+					return false;
+				}
 				if (active.duel.fighting()) {
 					active.landing.put(victim.getUUID(), victim.getHealth());
 				}
@@ -211,6 +253,15 @@ public final class Duels {
 					active.taken.merge(victim.getUUID(), Math.max(0F, before - victim.getHealth()), Float::sum);
 				}
 				active.struck.put(victim.getUUID(), now);
+				if (active.duel.fighting() && active.duel.terms.knockedOut(victim.getHealth()) && victim.isAlive()) {
+					// Brought to the health that ends it (a spar's one heart): held there, and the duel is over.
+					if (victim.getHealth() < active.duel.terms.leftOn()) {
+						active.taken.merge(victim.getUUID(), -Math.max(0F, active.duel.terms.leftOn() - victim.getHealth()), Float::sum);
+						victim.setHealth(active.duel.terms.leftOn());
+					}
+					active.duel.knockout(victim.getUUID());
+					finish(active, victim.level().getServer());
+				}
 			}
 			if (attacker != null && attacker != victim && !opponents(attacker.getUUID(), victim.getUUID())) {
 				LAST_PVP.put(victim.getUUID(), now);
@@ -233,11 +284,12 @@ public final class Duels {
 			if (active == null || !active.duel.fighting() || !byOpponent(active, victim, source)) {
 				return true;
 			}
-			victim.setHealth(1.0F);
+			float left = active.duel.terms.leftOn();
+			victim.setHealth(left);
 			// The last blow is given back with the rest (the duel ends before it's counted after the damage): all the health
-			// it found, less the 1 they're left with. Its damage before armour would give back more than the blow took.
+			// it found, less what they're left with. Its damage before armour would give back more than the blow took.
 			Float before = active.landing.remove(victim.getUUID());
-			active.taken.merge(victim.getUUID(), Math.max(0F, (before != null ? before : amount) - 1.0F), Float::sum);
+			active.taken.merge(victim.getUUID(), Math.max(0F, (before != null ? before : amount) - left), Float::sum);
 			active.duel.knockout(victim.getUUID());
 			finish(active, victim.level().getServer());
 			return false;
@@ -265,7 +317,7 @@ public final class Duels {
 				BY_PLAYER.remove(active.duel.b, active);
 				long elapsed = active.level.getGameTime() - active.duel.start;
 				for (UUID id : List.of(active.duel.a, active.duel.b)) {
-					ServerPlayer player = server.getPlayerList().getPlayer(id);
+					ServerPlayer player = find(server, active, id);
 					if (player != null && player.isAlive() && active.before.get(id) != null) {
 						restore(player, active, id, elapsed);
 					}
@@ -293,6 +345,51 @@ public final class Duels {
 
 	public static boolean inDuel(Player player) {
 		return BY_PLAYER.containsKey(player.getUUID());
+	}
+
+	/** Whether {@code player} is in a duel fought on other terms whose watcher is of {@code kind} (a spar's), countdown included. */
+	public static boolean watchedBy(Player player, Class<? extends Watcher> kind) {
+		Active active = BY_PLAYER.get(player.getUUID());
+		return active != null && active.watcher != null && kind.isInstance(active.watcher);
+	}
+
+	/** The duel {@code player} is in (its rules: phase, terms, opponent, start), or null. */
+	public static DuelRules.Duel duelOf(Player player) {
+		Active active = BY_PLAYER.get(player.getUUID());
+		return active == null ? null : active.duel;
+	}
+
+	/** Where {@code player}'s duel began (the middle of a spar's ring), or null. */
+	public static Vec3 centreOf(Player player) {
+		Active active = BY_PLAYER.get(player.getUUID());
+		return active == null ? null : active.centre;
+	}
+
+	/**
+	 * Why {@code player} can't start a duel (or a spar) now: hurt too lately, fresh from a fight with another player, or from a duel's end; or
+	 * {@link DuelRules.Refusal#NONE}.
+	 */
+	public static DuelRules.Refusal readiness(ServerPlayer player) {
+		long now = player.level().getServer().getTickCount();
+		UUID id = player.getUUID();
+		return DuelRules.ready(now, LAST_HURT.getOrDefault(id, DuelRules.NEVER), LAST_PVP.getOrDefault(id, DuelRules.NEVER),
+			LAST_DUEL.getOrDefault(id, DuelRules.NEVER));
+	}
+
+	/** Calls {@code player}'s duel off (for nobody: an operator, a test). */
+	public static void callOff(ServerPlayer player) {
+		Active active = BY_PLAYER.get(player.getUUID());
+		if (active != null) {
+			active.duel.interrupt();
+			finish(active, player.level().getServer());
+		}
+	}
+
+	/** Forgets when {@code player} was last hurt, fought another player or ended a duel (an operator, a test): they're ready at once. */
+	public static void rested(ServerPlayer player) {
+		LAST_HURT.remove(player.getUUID());
+		LAST_PVP.remove(player.getUUID());
+		LAST_DUEL.remove(player.getUUID());
 	}
 
 	/**
@@ -326,6 +423,10 @@ public final class Duels {
 		}
 		Active mine = BY_PLAYER.get(player.getUUID());
 		if (mine != null) {
+			if (mine.watcher != null && !mine.watcher.spells() && dev.wildercord.cast.Effects.applying() != null) {
+				// On terms that keep spells out (a spar): a spell harms nobody, the opponent included.
+				return false;
+			}
 			return target == victim && mine.duel.opponent(player.getUUID()).equals(victim.getUUID()) && mine.duel.fighting() && victim.isAlive();
 		}
 		return null;
@@ -446,13 +547,37 @@ public final class Duels {
 	public static void start(ServerPlayer a, ServerPlayer b) {
 		ServerLevel level = a.level();
 		Vec3 centre = a.position().add(b.position()).scale(0.5);
-		Active active = new Active(new DuelRules.Duel(a.getUUID(), b.getUUID(), level.getGameTime()), level, centre);
+		Active active = new Active(new DuelRules.Duel(a.getUUID(), b.getUUID(), level.getGameTime()), level, centre, null);
 		BY_PLAYER.put(a.getUUID(), active);
 		BY_PLAYER.put(b.getUUID(), active);
 		for (ServerPlayer player : List.of(a, b)) {
 			active.before.put(player.getUUID(), Snapshot.of(player));
 			player.sendSystemMessage(Component.translatable("message.wildercord.duel_begins", (player == a ? b : a).getDisplayName()).withStyle(ChatFormatting.GOLD));
 		}
+	}
+
+	/**
+	 * Starts a duel on other {@code terms} between two players standing in the same world (neither in a duel already), round {@code centre},
+	 * shown by {@code watcher} (a spar): counting down, nothing about them changed, how they are noted to put them back that way at the end.
+	 * Returns its rules.
+	 */
+	public static DuelRules.Duel startBout(ServerPlayer a, ServerPlayer b, DuelRules.Terms terms, Vec3 centre, Watcher watcher) {
+		ServerLevel level = a.level();
+		Active active = new Active(new DuelRules.Duel(a.getUUID(), b.getUUID(), level.getGameTime(), terms), level, centre, watcher);
+		BY_PLAYER.put(a.getUUID(), active);
+		BY_PLAYER.put(b.getUUID(), active);
+		active.before.put(a.getUUID(), Snapshot.of(a));
+		active.before.put(b.getUUID(), Snapshot.of(b));
+		return active.duel;
+	}
+
+	/** A duellist by id: online, or (a stand-in the game tests add to the world) in the duel's own world; null if neither. */
+	private static ServerPlayer find(MinecraftServer server, Active active, UUID id) {
+		ServerPlayer online = server.getPlayerList().getPlayer(id);
+		if (online != null) {
+			return online;
+		}
+		return active.level.getPlayerByUUID(id) instanceof ServerPlayer there && !there.isRemoved() ? there : null;
 	}
 
 	// ------------------------------------------------------------------ the fight
@@ -467,8 +592,8 @@ public final class Duels {
 		}
 		for (Active active : List.copyOf(new java.util.LinkedHashSet<>(BY_PLAYER.values()))) {
 			DuelRules.Duel duel = active.duel;
-			ServerPlayer a = server.getPlayerList().getPlayer(duel.a);
-			ServerPlayer b = server.getPlayerList().getPlayer(duel.b);
+			ServerPlayer a = find(server, active, duel.a);
+			ServerPlayer b = find(server, active, duel.b);
 			if (a == null || b == null) {
 				duel.forfeit(a == null ? duel.a : duel.b, DuelRules.Ending.LOGGED_OFF);
 				finish(active, server);
@@ -485,9 +610,10 @@ public final class Duels {
 					active.alight.remove(player.getUUID());
 				}
 			}
-			if (server.getTickCount() % 10 == 0) {
+			// A small ring (a spar's) is watched closely; a duel's wide ground every half second.
+			if (server.getTickCount() % (active.watcher != null ? 2 : 10) == 0) {
 				for (ServerPlayer player : List.of(a, b)) {
-					if (player.level() != active.level || DuelRules.outside(active.centre.x, active.centre.z, player.getX(), player.getZ())) {
+					if (player.level() != active.level || duel.terms.outside(active.centre.x, active.centre.z, player.getX(), player.getZ())) {
 						duel.forfeit(player.getUUID(), DuelRules.Ending.LEFT_AREA);
 						break;
 					}
@@ -499,7 +625,10 @@ public final class Duels {
 			}
 			if (duel.phase() == DuelRules.Phase.COUNTDOWN) {
 				int second = duel.countdown(now);
-				if (second != active.shown && second > 0) {
+				if (second != active.shown && second > 0 && active.watcher != null) {
+					active.shown = second;
+					active.watcher.counting(second);
+				} else if (second != active.shown && second > 0) {
 					active.shown = second;
 					for (ServerPlayer player : List.of(a, b)) {
 						title(player, Component.literal(Integer.toString(second)).withColor(GOLD), null);
@@ -510,7 +639,9 @@ public final class Duels {
 				}
 			}
 			if (duel.tick(now)) {
-				if (duel.fighting()) {
+				if (duel.fighting() && active.watcher != null) {
+					active.watcher.began();
+				} else if (duel.fighting()) {
 					for (ServerPlayer player : List.of(a, b)) {
 						title(player, Component.translatable("message.wildercord.duel_fight").withColor(GOLD).withStyle(ChatFormatting.BOLD), null);
 						Light.groundRing(active.level, player.position(), GOLD, 0.5, 4.0, 0.12, 12);
@@ -518,7 +649,11 @@ public final class Duels {
 					Fx.sound(active.level, active.centre, SoundEvents.BELL_BLOCK, 1.2F, 1.0F);
 				} else {
 					finish(active, server);
+					continue;
 				}
+			}
+			if (active.watcher != null && BY_PLAYER.get(duel.a) == active) {
+				active.watcher.tick(now);
 			}
 		}
 	}
@@ -582,15 +717,24 @@ public final class Duels {
 		long tick = server.getTickCount();
 		LAST_DUEL.put(duel.a, tick);
 		LAST_DUEL.put(duel.b, tick);
-		ServerPlayer winner = duel.winner() == null ? null : online(server, duel.winner(), leaving);
-		ServerPlayer loser = duel.loser() == null ? null : online(server, duel.loser(), leaving);
+		ServerPlayer winner = duel.winner() == null ? null : online(server, active, duel.winner(), leaving);
+		ServerPlayer loser = duel.loser() == null ? null : online(server, active, duel.loser(), leaving);
 		long elapsed = active.level.getGameTime() - duel.start;
 		for (UUID id : List.of(duel.a, duel.b)) {
 			// The one logging off too: they're saved as they began, not as the duel left them.
-			ServerPlayer player = online(server, id, leaving);
+			ServerPlayer player = online(server, active, id, leaving);
 			if (player != null && player.isAlive() && active.before.get(id) != null) {
 				restore(player, active, id, elapsed);
 			}
+		}
+		if (active.watcher != null) {
+			// Fought on other terms: its watcher says how it ended, in its own way (and nothing goes into the duel record).
+			try {
+				active.watcher.ended(duel, winner == leaving ? null : winner, loser == leaving ? null : loser);
+			} catch (RuntimeException e) {
+				Wildercord.LOGGER.warn("A duel's watcher failed as it ended", e);
+			}
+			return;
 		}
 		Component result;
 		if (duel.ending() == DuelRules.Ending.INTERRUPTED) {
@@ -626,11 +770,11 @@ public final class Duels {
 		Fx.sound(active.level, active.centre, SoundEvents.PLAYER_LEVELUP, 1.0F, 0.9F);
 	}
 
-	private static ServerPlayer online(MinecraftServer server, UUID id, ServerPlayer leaving) {
+	private static ServerPlayer online(MinecraftServer server, Active active, UUID id, ServerPlayer leaving) {
 		if (leaving != null && leaving.getUUID().equals(id)) {
 			return leaving;
 		}
-		return server.getPlayerList().getPlayer(id);
+		return find(server, active, id);
 	}
 
 	/**
