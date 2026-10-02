@@ -148,7 +148,7 @@ The roots, brambles, flowers and trees are only shapes: nothing grows in the wor
 | Art | What it does |
 |---|---|
 | **Thorn Lash** (First) | **A lash of thorned vine** flicked out 4.5 blocks, past your sword's reach, across a narrow cone in front (up to 3 foes, 0.45×). The first it catches is **rooted** for 1.5 s and pricked by the thorns three times while it's held (0.07× each). |
-| **Blossom Fall** (Second) | A falling cut (0.75×, up to 4 foes), and where it lands **a carpet of blossom** 3.5 blocks across opens for 4 s: you and your allies on it are **mended** 2 health at once and 1 more each second, and foes on it are slowed. |
+| **Blossom Fall** (Second) | A falling cut (0.75×, up to 4 foes), and where it lands **a carpet of blossom** 7 blocks across opens for 4 s: you and your allies on it are **mended** 2 health at once and 1 more each second, and foes on it are slowed. |
 | **Rooted Parry** (Third) | The counter: **roots seize whoever struck** (0.95×, rooted 1.5 s), thorns burst up round you and prick the foes within 2.5 blocks (0.3×), and **you mend by what your guard caught**: three quarters of the blow, at least 3 health, at most 6. |
 | **Wild Growth** (Fourth) | Straight after your step, **a second rush** 7 blocks on, the foes in the way cut (0.65×, up to 5) and snagged by roots a moment, and **brambles** spring up behind you for 5 s: foes in them are slowed and pricked, your allies in them mended a health a second. |
 | **Grove's Heart** (Final) | You **plant your blade in the ground**: roots burst up under every foe within 6 blocks (1.5×, up to 10), binding them for 2.5 s, and **a grove rises** round you for 8 s: you and your allies in it are mended a health a second, and foes still in it are slowed and pricked. |
@@ -156,6 +156,9 @@ The roots, brambles, flowers and trees are only shapes: nothing grows in the wor
 **Mending is held.** Whatever arts mend one body, Verdant's or anyone else's, comes to at most 10 health at once and a health a
 second after that: arts buy you time in a fight, but they never outpace it. (Verdant's own passive, a little health back from
 each coated blow, is separate.)
+
+<img src="{{ '/assets/images/arts-groves-heart.jpg' | relative_url }}" alt="Seen from above and behind a player wreathed in green light: a ring of young trees, cherry pink and flowering green, standing round a stone platform, roots twisting up round four husks, rings of green light on the ground and a tamed wolf beside the player" class="shot">
+<span class="caption">Grove's Heart.</span>
 
 ## Hollow Breath
 
@@ -174,6 +177,9 @@ the far side of a foe. What it strikes is left **shadowed** (a life spell on it 
 A boss is never drawn, dragged or silenced; it's only slowed, and what it was winding up broken. Another player is drawn only
 gently, and any steady pull is slower than a sprint, so a player can always run out of it.
 
+<img src="{{ '/assets/images/arts-event-horizon.jpg' | relative_url }}" alt="Seen from behind a player wreathed in violet light: a black sphere hanging over the stone ahead, a bright violet core inside it and rings of light tilted round it, a dark magic circle on the ground beneath, a husk caught against it" class="shot">
+<span class="caption">Event Horizon.</span>
+
 ## Starlit Breath
 
 Stars that burst, and aura given back: a Starlit swordsman fights from a little further off with darts and falling stars, sets
@@ -187,6 +193,9 @@ back after the art's own price is paid).
 | **Constellation Guard** (Third) | The counter: whoever struck is cut (0.6×) and set with **a constellation of four stars** that burst one by one a moment and a half later (0.2× each, or on whoever stands where it fell), each giving you 0.75 aura back. **Every foe near already carrying a star bursts at once** (0.35×). |
 | **Comet Dash** (Fourth) | Straight after your step, **a second rush** 8 blocks on trailing stars, the foes in the way cut (0.6×) and starred. A moment later **the trail bursts** star by star along its length (0.45× to everything within 1.5 blocks), an aura back for each foe it catches (up to five). |
 | **Nova** (Final) | You gather starlight on your blade for a moment, then **it bursts out in a ring** over everything within 7 blocks (1.9× at the heart, 1.3× at the edge, up to 12 foes), throwing it back; starred foes burst with it (0.4× more). You get **2.5 aura back for every foe struck**, up to 20, half of what it cost. |
+
+<img src="{{ '/assets/images/arts-nova.jpg' | relative_url }}" alt="At night, from above: a column of white light rising from a player, a ring of pink-white starlight bursting out over the stone, rays of light running out low across the ground and three husks thrown back with stars over their heads" class="shot">
+<span class="caption">Nova, at night.</span>
 
 ## Hourglass Breath
 
@@ -203,6 +212,9 @@ Echoes, rewinds and moments held still: an Hourglass swordsman fights a moment a
 Holding another player still in time is a hold like any other art's: three quarters of a second at most, and not again for 4
 seconds. What was gathered on them still lands when time moves.
 
+<img src="{{ '/assets/images/arts-thousand-moments.jpg' | relative_url }}" alt="Seen from behind a player wreathed in gold light: a great clock face of gold light on the stone round them, its hours ticked and one hand stopped, four husks standing frozen in pale columns, gold crescents hanging round each" class="shot">
+<span class="caption">Thousand Moments, while time stands still.</span>
+
 ## Crimson Breath
 
 Bleeding, drinking, frenzy, and the price of it: Crimson hurts the most of any method but Ember. Its cuts open **wounds** that
@@ -213,7 +225,7 @@ longer in a fight, but can always be killed.
 | Art | What it does |
 |---|---|
 | **Bloodletting** (First) | A deep cut (0.55×) that **opens a wound** in up to three foes in front: it bleeds for 3 s (0.08× every half second, half again while they run), and you **drink** a quarter of what it bleeds. |
-| **Red Rain** (Second) | A falling cut that bursts 2 blocks ahead, striking everything within 3 blocks (0.7×), and **a red rain** falls there for 2 s: every foe under it bleeds (0.08× every half second), and you drink back three tenths of all of it (up to 4 health). |
+| **Red Rain** (Second) | A falling cut that bursts 2 blocks ahead, striking everything within 3.5 blocks (0.7×), and **a red rain** falls there for 2 s: every foe under it bleeds (0.08× every half second), and you drink back three tenths of all of it (up to 4 health). |
 | **Sanguine Parry** (Third) | The counter: the blow you caught becomes **a wound in whoever struck it**: cut (0.7×), stunned a moment, and bleeding the blow's worth back out over 3 s (up to a whole weapon's worth). You **drink half** of all of it (up to 6 health), and blood off the parry nicks the foes beside you. |
 | **Frenzy** (Fourth) | Straight after your step, **a second rush** 7 blocks on through the foes in the way (0.7×, up to 5). Each one cut, and each blow of yours that lands after, **quickens your blade** a twentieth, up to a fifth faster, until five seconds from the rush. |
 | **Crimson Moon** (Final) | **A gamble.** It takes **a quarter of your health** (5 of 20), then a great arc of blood-light strikes every foe before you, 6 blocks out (2.5×, up to 10), opens wounds in them (0.1× every half second for 3 s), and **drinks back half** of everything it deals, up to 10 health. Against a crowd you come out ahead; against nothing you've only paid. |
@@ -221,6 +233,9 @@ longer in a fight, but can always be killed.
 **Crimson Moon never kills you.** Its price is taken straight from your health (not dealt as damage, so armour and absorption
 don't change it and a totem never needs to save you), and it never leaves you with less than **a heart** (2 health). If you're
 already down to a heart, it costs nothing more.
+
+<img src="{{ '/assets/images/arts-crimson-moon.jpg' | relative_url }}" alt="Seen from behind a player wreathed in red light: a great crescent of blood-red light standing over four husks ahead, crescents of red rolling out low over the stone, rings of red round each husk" class="shot">
+<span class="caption">Crimson Moon.</span>
 
 ## The common arts
 

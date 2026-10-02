@@ -888,10 +888,10 @@ client reads, the server judges:
 - **Server** (`SwordStrings`): the payloads (`Perform` in; `Cue` and `Refused` out), the saved and synced `aura_arts`
   attachment (`Cooldowns`: rests by art id, game time, kept through death), what it saw (`swung`, from
   `mixin.SwordStringsSeenMixin` on `handlePunch` and `mixin.PiercingWeaponStringsMixin` on `PiercingWeapon.attack`; `cue`, from
-  `AuraGuard.feedback` and `AuraStep.go`), `check` (closed, no weapon, not ready, condition, no aura, unseen), and `perform`
+  `AuraGuard.feedback` and `AuraStep.go`), `check` (closed, no weapon, silenced, not ready, condition, no aura, unseen), and `perform`
   (the performer, then the price through `Aura.spend` never past empty, the rest, the hooks, the Grimoire's
   `aura:sword_string`, and a method's own art's `aura:art_<id>`). `PlaceholderArts` registers the five common arts a method
-  without its own plays, on `AuraVfx.artArc`, `artCounter`, `artLine` and `artRing`, each with its own `AuraFx` trail and
+  without its own plays (every built-in method has its own now: an add-on's method plays them), on `AuraVfx.artArc`, `artCounter`, `artLine` and `artRing`, each with its own `AuraFx` trail and
   impacts (below); a method's own arts (`aura.arts`, below that) step them aside.
 
 ### Feel and spectacle: `aura.AuraFx`, `AuraFxRules`, `client.AuraFxClient`
@@ -927,23 +927,26 @@ its own camera sees it:
 
 ### The methods' arts: `aura.ArtRules`, `aura.arts`
 
-Each breathing method's own five arts on the sword strings (the rules and numbers are DESIGN.md's
-[The methods' arts](DESIGN.md#the-methods-arts); notes for the next methods in
-[AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-3-arts-i)):
+Each of the ten breathing methods' own five arts on the sword strings (the rules and numbers are DESIGN.md's
+[The methods' arts](DESIGN.md#the-methods-arts); notes for the later steps in
+[AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-4-arts-ii)):
 
 - **Pure parts** (`aura.ArtRules`, unit-tested by `ArtRulesTest`): the slots' prices and rests, every art's numbers, its
-  record in `ARTS` (`Art`: id, method, slot, cost, cooldown and the balance model's primary, area, control and reach) and
-  `power`, `SLOT_POWER` and `POWER_SPREAD` (the test holds each art to its slot's worth); the PvP rules (`pvpLeft`, `hold`,
-  `thrown`, `ignite`), shapes (`inCone`, `alongAcross`), `falloff`, `chain`, `crusts`, `backdraft`, `spearTilt`, and the
-  Grimoire key `grimoireKey(id)` (`aura:art_<id>`).
+  record in `ARTS` (`Art`: id, method, slot, cost, cooldown, the balance model's primary, area, control, reach, mend, aura and
+  toll, and its `Kind`s) and `power`, `SLOT_POWER` and `POWER_SPREAD` (the test holds each art to its slot's worth, each
+  method's five within 10% of the others', each method leading in its own thing and keeping its own kinds); the PvP rules
+  (`pvpLeft`, `hold`, `thrown`, `ignite`, `dragged`, `silence`), the mending bucket (`MEND_CAP`, `MEND_WINDOW`, `mendLevel`,
+  `mendRoom`, `drink`), shapes (`inCone`, `alongAcross`), `falloff`, `chain`, `crusts`, `backdraft`, `spearTilt`, `rootedMend`,
+  `novaAura`, `stored`, `sanguineWound`, `frenzy`, `moonToll`, and the Grimoire key `grimoireKey(id)` (`aura:art_<id>`).
 - **The framework**: `api.AuraApi.ArtSlot` (the five strings and stages; `slot.art(id, cost, cooldown, performer)`, the Final
   Art gated by `FINAL_GATE`), `registerArts(method, arts)` (each art `forMethod(method)` and registered as a string; the common
   arts' `available` skips a method with arts of its own, so `stringsOf` never offers both), `hasArts`, `arts(method)` (its own
   or the common five, by stage, both sides: the Aura page and the Grimoire read it), `artMethod(artId)`, `gateFinalArts(gate)`,
   and `conflicts(string, except, method)` (arts of two different methods never conflict). `SwordStrings.perform` writes the
   Grimoire entry; `Feats.reward` gives it 60; `client.GrimoireToast` names it under its method's manual.
-- **`aura.arts.MethodArts`**: `init` registers the five methods' lists (`EmberArts`, `RimeArts`, `ThunderArts`, `GaleArts`,
-  `StoneArts`, each `arts()` built with `MethodArts.art(slot, id, performer)`, which takes the price and rest from
+- **`aura.arts.MethodArts`**: `init` registers the ten methods' lists (`EmberArts`, `RimeArts`, `ThunderArts`, `GaleArts`,
+  `StoneArts`, `VerdantArts`, `HollowArts`, `StarlitArts`, `HourglassArts`, `CrimsonArts`, each `arts()` built with
+  `MethodArts.art(slot, id, performer)`, which takes the price and rest from
   `ArtRules.art(id)` and checks the slot), `blocked` (an art with nowhere to go), `whenLanded` (where a leap comes down, its
   fall forgotten), `SOUNDS` (each art's voice, checked by the tests), and the lifecycle (`forget`, `clear`).
 - **The shared kit** (all server side):
@@ -951,33 +954,47 @@ Each breathing method's own five arts on the sword strings (the rules and number
     whom (`around`, `arc`, `line`, `beam`, `primary`, `attacker`, `nearest`), damage (`hits(player, fx)` returns `Hits`:
     `strike(foe, factor[, weight])` and `raw`, each through `AuraCombat.projected` with the `PVP_ART_CAP` ledger per player and
     the impact drawn by weight; `weapon`, `scale`), what it does to them (`lift`, `knock`, `shove`, `pull`, `draw`, `ignite`,
-    `chill`, `slow`, `freeze`, `hold`, `holdLater`, `shock`, all capped by `ArtRules` for players and bosses; holds rest 80
-    ticks a player), and moving the swordsman (`path`, `dash(player, path, ticks, stretch)`, `beside`, `fits`, `blink`,
-    `launch`).
+    `chill`, `slow`, `freeze`, `hold`, `holdLater`, `shock`, `root`/`rooted` (a hold that leaves the foe turning), `drag` (a
+    steady pull, `PVP_DRAG` on a player), `steady` (the strike's knock taken back off a creature, so a field or an echo keeps
+    it), `wound` (bleeds through `Hits.raw`, marked `BLEEDING`, harder on the move, each drop drunk by a `Drink`), all capped
+    by `ArtRules` for players and bosses; holds rest 80 ticks a player), what it gives (`mend` through the one bucket a body,
+    `drink`, `mendRoom`; `giveBack` aura a tick after the art, once its own price is paid, `givenBack` for
+    the tests), and moving the swordsman (`path`, `dash(player, path, ticks, stretch)`, `beside`, `behind`, `fits`, `blink`,
+    `launch`); `arcFrom` is `arc` from another spot (an echo).
   - `ArtLight`: shaped light for an art (`world(player)` for everyone, `spectacle(player)` for others and the owner's third
     person only, through `AuraFx.spectacle`/`Shown`), with a thin dark rim under it by day (`bare()` without): `ring`,
     `groundRing`, `ray`, `slash`, `tongues` (flames), `whirl`, `swirl`, `shards`, `orb`, `arc` (lightning), `sigil`, `ground`,
-    `flash`.
+    `flash`, and `shade` (a soft disc of darkness: under an orb, a black sphere's edge).
   - `ArtFields`: what an art leaves on the ground for a while (`open(owner, kind, shape, ticks, period, pulse)` with `strip`,
     `disc`, `ring` shapes; `foes`/`allies` inside; `count`, `inside`; ticked on `END_SERVER_TICK`).
-  - `ArtBlocks`: stone and ice that rise and sink as block displays (`spire`, `slab`, `sheet`), tagged through `BlockFx.fresh`
-    so a restart's leftovers are removed as their chunk loads.
+  - `ArtBlocks`: stone, ice, roots and trees that rise and sink as block displays (`spire`, with or without its dust; `slab`,
+    `sheet`, `sprout` for a bush or a crown of leaves grown from nothing), tagged through `BlockFx.fresh` so a restart's
+    leftovers are removed as their chunk loads. The arts draw with the mod's own motes, dust and light, never block or
+    item particles (in the game test client those draw as tan cubes: see AURA_OVERHAUL.md's notes from step 4).
   - `ArtWards`: what an art leaves on its swordsman or a foe: `mirror`/`mirrored` and `eye`/`inEye`, whose `deflection`
     `AuraGuard.deflection` asks when no perfect guard turns a projectile (from `mixin.EntityAuraDeflectMixin`); `juggled` and
     `juggle`, the bonus `AuraCombat.blow` multiplies in; `harden`/`hardened` (Resistance I and full knockback resistance, a
-    transient modifier taken off when it ends); `crust`/`crusts`.
-- **Elsewhere**: `AuraGuard.caught(player)` (the blow a perfect guard just caught, for Backdraft), `AuraStep.path` and
+    transient modifier taken off when it ends); `crust`/`crusts`; `silence`/`silenced` (Null Parry: `Statuses.silence` and an
+    interrupt, a creeper's fuse put out; a player held to `SILENCE_PLAYER_TICKS`, refused arts by `SwordStrings.check`'s
+    `SILENCED` and the Aura key but the guard by `Aura.press`); `star`/`starred`/`burstStar` (Starlit's stars, drawn every half
+    second); `frenzy`/`frenzyStacks` (a transient attack speed modifier, fed by the swordsman's own melee blows through
+    `AFTER_DAMAGE`); `stop`/`stopped`/`release` (Thousand Moments' stored blows); `leapedFrom` (where an Hourglass swordsman
+    last left the ground, for Rewind Leap).
+- **Elsewhere**: `AuraGuard.caught(player)` (the blow a perfect guard just caught, for Backdraft, Rooted Parry and Sanguine
+  Parry), `Aura.giveBack` (aura back with no multipliers or hooks), `AuraStep.path` and
   `afterimages` (the rushes), `cast.WorldMagic.frostWater` (Skate over water, the terrain spells' checks), `cast.Sigils.send`
   (an `except` for spectacle), `config` `aura.art_damage` and `art_terrain`, `client.AuraFxClient` (draws `Shown` only out of
   first person), `client.AuraScreen.browse` and the methods' swatches (the Sword strings tab), `client.CordScreen.addArts`
   (the Grimoire's sword arts).
 - **Sounds**: `tools/feel/aura_arts.py` (part of the feel kit's `aura` part) makes `aura_art_<id>` for each art, and
-  `aura_art_sunfall_impact` and `aura_art_winters_hush_shatter`. Lang: `tools/aura_art.py` `LANG` (`aura.wildercord.art.<id>`
+  `aura_art_sunfall_impact`, `aura_art_winters_hush_shatter`, `aura_art_event_horizon_crush`, `aura_art_comet_dash_burst` and
+  `aura_art_thousand_moments_release`. Lang: `tools/aura_art.py` `LANG` (`aura.wildercord.art.<id>`
   and `.desc`).
-- **Tests**: `ArtRulesTest` (prices, slots, the balance model, PvP caps, shapes, the lang and sounds for every art),
-  `SwordStringsTest` (the common arts and a method's own side by side), game test `WildercordArtsTest` (every art played with
-  the real keys, checked on the server and filmed in first and third person, the Aura page's tab browsed; `WILDERCORD_ARTS=a,b`
-  plays only those).
+- **Tests**: `ArtRulesTest` (prices, slots, the balance model, identities and kinds, PvP caps, silence and drag, the mending
+  bucket, drinks, Crimson Moon's floor, shapes, the lang and sounds for every art), `SwordStringsTest` (the common arts and a
+  method's own side by side), game test `WildercordArtsTest` (all fifty played with the real keys, checked on the server and
+  filmed in first and third person, the Aura page's tab browsed; `WILDERCORD_ARTS=a,b` plays only those). The common arts are
+  played in the game tests by a method the tests register (`gametest.TestMethods.plain()`, "Plain Breath", no arts of its own).
 
 ### Hooks for the next wave: `api.AuraApi`
 

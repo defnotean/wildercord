@@ -5,8 +5,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 ## [Unreleased]
 
 ### Sword arts
-- **Ember, Rime, Thunder, Gale and Stone Breath each have five arts of their own**, on the same five sword strings, so you
-  learn the strings once and your method decides what they do:
+- **Every breathing method has five arts of its own**, fifty in all, on the same five sword strings, so you learn the strings
+  once and your method decides what they do:
   - **Ember**, fire that spreads and lingers: *Kindling Draw* (a draw-cut and a line of fire racing on ahead), *Rising
     Cinders* (foes thrown up in flames, cinders raining off them), *Backdraft* (the blow you caught thrown back as a gout of
     flame), *Wildfire Rush* (a second rush through foes, the ground burning behind) and *Sunfall* (a leap, a sun on the blade,
@@ -16,28 +16,54 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
     shatters frozen foes, across water too) and *Winter's Hush* (a cone that freezes everything, then shatters it).
   - **Thunder**, faster than the eye: *Crackle* (three cuts in a blink, sparks leaping off), *Skyfall* (a bolt called down),
     *Static Riposte* (lightning leaping on through the foes near), *Bolt Step* (blinking from foe to foe) and *Heaven's Spear*
-    (a charged lance of lightning twenty blocks down your line of sight, the sky striking everything it ran through).
-  - **Gale**, reach and the air under them: *Cutting Breeze* (a wind blade flying ten blocks on), *Updraft* (foes thrown high
+    (a charged lance of lightning eighteen blocks down your line of sight, the sky striking everything it ran through).
+  - **Gale**, reach and the air under them: *Cutting Breeze* (a wind blade flying twelve blocks on), *Updraft* (foes thrown high
     and your blade biting harder while they're up), *Eye of the Storm* (a spinning counter, then arrows turned aside), *Tailwind*
     (a long dash that speeds you and your allies) and *Hundred Winds* (a whirlwind of cuts that draws foes in and throws them up).
   - **Stone**, weight and footing: *Rockbreaker* (a heavy cut that shakes a foe's footing), *Avalanche* (a slam and a rolling
     shockwave), *Unmoved* (whoever struck hurled back, and you hardened like stone), *Landslide* (a charge that carries foes
     along and crushes them against walls) and *Mountain Splitter* (the ground split in a line of rising stone).
+  - **Verdant**, mending and binding: *Thorn Lash* (a thorned vine flicked past your sword's reach that roots its foe),
+    *Blossom Fall* (a carpet of blossom where you land that mends you and your allies and slows foes), *Rooted Parry* (whoever
+    struck seized by roots, and you mended by the blow you caught), *Wild Growth* (a rush that leaves brambles behind) and
+    *Grove's Heart* (the blade planted, roots bursting under every foe near and a grove of trees standing round you a while).
+  - **Hollow**, drawing in and silencing: *Void Cut* (a tear at the blade's end that draws foes to you), *Collapse* (a well
+    that drags everything near into it, then collapses), *Null Parry* (the blow swallowed, whoever struck silenced), *Rift
+    Step* (through a rift to behind the foe ahead, cutting its back) and *Event Horizon* (a black sphere that drags everything
+    in and crushes it).
+  - **Starlit**, stars that burst and aura given back: *Star Needle* (three seeking darts of starlight), *Meteor Shower* (stars
+    brought down over a circle, a great one last), *Constellation Guard* (whoever struck set with stars that burst one by
+    one), *Comet Dash* (a rush whose trail of stars bursts behind you) and *Nova* (starlight gathered on the blade and burst
+    out in a ring). Their stars set on foes burst for more under the next Starlit art.
+  - **Hourglass**, time bent: *Echo Cut* (your cut repeated by an afterimage), *Rewind Leap* (a falling cut, then time snaps
+    you back to where you leapt from), *Stopped Moment* (whoever struck held still in time, then flung back as it moves
+    again), *Blur* (a rush faster than any, and time dragging round you: foes and arrows slowed) and *Thousand Moments* (time
+    stopped round you while your cuts gather, landing all at once).
+  - **Crimson**, blood and its price: *Bloodletting* (a cut that leaves a bleeding wound you drink from), *Red Rain* (a red
+    rain where you land that bleeds every foe under it), *Sanguine Parry* (the blow you caught bled back out of whoever
+    struck), *Frenzy* (a rush whose every cut quickens your blade) and *Crimson Moon* (a great arc of blood-light that drinks
+    deeply, paid for with a quarter of your health).
 - **Every art looks and sounds like itself**: its own trail, light, impacts and voice over your method's. The big shapes are for
   everyone watching you and for you in third person; in first person you see a thin, low version that keeps the middle of your
   view clear.
 - **Balanced slot by slot.** Every method's art in a slot costs and rests the same and is worth about the same, so a method is a
-  different answer, never a better one. Damage follows your blade.
+  different answer, never a better one, and each method leads in its own thing: Ember the most damage, Rime the most hold,
+  Thunder the most foes, Gale the most reach, Verdant the most mending, Hollow its pulls and silence, Starlit its aura back,
+  Hourglass its moments held still, Crimson its bleeding and drinking. Damage follows your blade.
+- **Healing that never outpaces a fight.** Everything arts mend, Verdant's mending and Crimson's drinking together, gives one
+  body at most five hearts at once and half a heart a second after, so a mending swordsman lasts longer but can still fall.
+- **Crimson Moon can't kill you.** Its price comes straight off your health but never below a heart.
 - **Fair to other players**: an art never deals one player more than 8 damage, meets armour and the spell defences, holds a
-  player still for at most three quarters of a second (and not again for 4 s), and respects teams and the PvP rule. Bosses are
-  only ever slowed.
+  player still for at most three quarters of a second (and not again for 4 s; a root or a stopped moment counts), drags a player
+  slower than they can run, silences one for at most a second and a half (their guard still works), and respects teams and the
+  PvP rule. Bosses are only ever slowed.
 - **Nothing is griefed.** Fire, ice and stone left by an art are light and shapes. Skate's ice over water is real so you can glide
   across, only where you could build, and it thaws.
 - **The Aura page's Sword strings tab** shows every method's arts: click a method's colour to read its five, with their strings,
   stages and prices. **Your Grimoire** records each art the first time you play it, with a toast.
 - **A new guide page, Sword Arts**, lists every art with its numbers. Server owners can scale arts' damage
   (`aura.art_damage`) and stop Skate freezing water (`aura.art_terrain`).
-- Verdant, Hollow, Starlit, Hourglass and Crimson Breath play the common arts until theirs arrive.
+- An add-on's breathing method with no arts of its own plays the common arts.
 
 ### How aura looks and sounds
 - **Your blade leaves light where it cuts.** With aura enough to coat a blow, every swing trails a ribbon of your aura's
