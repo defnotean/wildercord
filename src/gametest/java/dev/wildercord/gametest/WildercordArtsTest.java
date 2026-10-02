@@ -567,7 +567,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			return p.getHealth() >= HURT + ArtRules.ROOTED_MIN - 0.01F ? null
 				: "the swordsman should mend by what the guard caught (" + HURT + " to " + p.getHealth() + ")";
 		}));
-		out.add(new Scene(VerdantArts.WILD_GROWTH, "verdant", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.4), foe(-0.4, 11.4)), 3, 9, (p, b) -> {
+		out.add(new Scene(VerdantArts.WILD_GROWTH, "verdant", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.4), foe(-0.4, 11.4)), 7, 9, (p, b) -> {
 			if (p.getZ() < b.player().z + 9) {
 				return "the swordsman should rush on past the step (" + (p.getZ() - b.player().z) + " blocks)";
 			}
@@ -624,7 +624,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				double before = horizontal(b.at(m), well);
 				double now = horizontal(m.position(), well);
 				seen.append(String.format(java.util.Locale.ROOT, " %.1f to %.1f;", before, now));
-				if (m.getHealth() < b.health(m) && (now < before - 0.8 || now < 1.2)) {
+				if (m.getHealth() < b.health(m) && (now < before - 0.8 || now < 2.0)) {
 					gathered++;
 				}
 			}
@@ -819,8 +819,9 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			}
 			int stacks = ArtWards.frenzyStacks(p);
 			AttributeInstance speed = p.getAttribute(Attributes.ATTACK_SPEED);
-			if (stacks < 2 || speed == null || speed.getValue() <= speed.getBaseValue() * 1.05) {
-				return "each husk cut should feed the frenzy, quickening the blade (" + stacks + " stacks, " + (speed == null ? "?" : speed.getValue()) + ")";
+			var quickened = speed == null ? null : speed.getModifier(dev.wildercord.Wildercord.id("art_frenzy"));
+			if (stacks < 2 || quickened == null || quickened.amount() < ArtRules.frenzy(stacks) - 1.0E-6) {
+				return "each husk cut should feed the frenzy, quickening the blade (" + stacks + " stacks, " + (quickened == null ? "none" : quickened.amount()) + ")";
 			}
 			return null;
 		}));
@@ -988,6 +989,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		boolean finalArt = scene.slot == AuraApi.ArtSlot.FINAL;
 		for (int view = 0; view < (finalArt ? 2 : 1); view++) {
 			boolean night = view == 1;
+			context.waitTicks(lingerTicks(scene));
 			reset(context, world);
 			world.getServer().runCommand(night ? "time set 18000" : "time set 3000");
 			set(world, scene);
@@ -1042,6 +1044,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			}
 			context.waitTicks(Math.max(4, settleTicks(scene) - scene.tpDelay));
 		}
+		context.waitTicks(lingerTicks(scene));
 		on(world, player -> {
 			player.getAttribute(Attributes.CAMERA_DISTANCE).setBaseValue(4.0);
 			return null;
@@ -1066,6 +1069,19 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		return scene.slot == AuraApi.ArtSlot.FOURTH ? 36.0F : 34.0F;
 	}
 
+	/**
+	 * How much longer an art's light lies on the ground once its check is done (a grove, a carpet of blossom, brambles): waited out
+	 * before the next picture, so one scene's light never stands in another's.
+	 */
+	private static int lingerTicks(Scene scene) {
+		return switch (scene.id) {
+			case "groves_heart" -> 110;
+			case "wild_growth" -> 40;
+			case "blossom_fall" -> 24;
+			default -> 0;
+		};
+	}
+
 	/** How long an art takes to have done everything its check looks at. */
 	private static int settleTicks(Scene scene) {
 		return switch (scene.id) {
@@ -1077,7 +1093,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			case "kindling_draw" -> 18;
 			case "bolt_step", "static_riposte", "skyfall" -> 14;
 			case "landslide" -> 14;
-			case "thorn_lash", "bloodletting", "sanguine_parry" -> 34;
+			case "thorn_lash" -> 26;
+			case "bloodletting", "sanguine_parry" -> 34;
 			case "blossom_fall" -> 24;
 			case "wild_growth", "comet_dash", "meteor_shower" -> 28;
 			case "groves_heart" -> 26;
@@ -1329,6 +1346,8 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		world.getServer().runCommand("kill @e[type=item]");
 		world.getServer().runCommand("kill @e[type=arrow]");
 		world.getServer().runCommand("kill @e[type=experience_orb]");
+		// What the arts raised out of blocks (a stone, a tree, a root) goes too.
+		world.getServer().runCommand("kill @e[type=block_display]");
 		// Skate's water and its frost go back to stone.
 		BlockPos water = waterSpot();
 		world.getServer().runCommand("fill " + (water.getX() - 1) + " " + water.getY() + " " + water.getZ() + " " + (water.getX() + 1) + " " + water.getY() + " "

@@ -82,6 +82,51 @@ public final class HourglassArts {
 	// ------------------------------------------------------------------ the look they share
 
 	/**
+	 * The gold Hourglass's arts are drawn in: its aura's own colour taken halfway to deep gold. (Its aura burns nearly white at the
+	 * high stages, and pale light alone washes out against a bright sky: the arts' shapes keep their gold.)
+	 */
+	static int gold(ServerPlayer player) {
+		return ArtKit.mix(ArtKit.color(player), DEEP, 0.5);
+	}
+
+	/**
+	 * A clock face of light at {@code centre} facing {@code normal}, standing still: a gold rim and a pale one inside it, the twelve
+	 * hours ticked in deep gold, two hands stopped at {@code hand} radians, a bright heart. Drawn rimmed by day, so it reads against
+	 * the sky. Holds {@code life} ticks.
+	 */
+	static void clockFace(ArtLight light, Vec3 centre, Vec3 normal, double radius, double hand, int color, int life) {
+		Vec3 n = normal.lengthSqr() < 1.0E-6 ? ArtKit.UP : normal.normalize();
+		Vec3 u = ElementFx.perp(n);
+		Vec3 v = n.cross(u);
+		light.ring(centre, n, color, radius, radius, 0.09, life);
+		light.bare().ring(centre.add(n.scale(0.01)), n, SAND, radius * 0.86, radius * 0.86, 0.03, life);
+		for (int h = 0; h < 12; h++) {
+			double a = Math.PI * 2 * h / 12;
+			Vec3 dir = u.scale(Math.cos(a)).add(v.scale(Math.sin(a)));
+			double in = h % 3 == 0 ? 0.72 : 0.8;
+			light.ray(centre.add(dir.scale(radius * in)), centre.add(dir.scale(radius * 0.94)), h % 3 == 0 ? color : DEEP, h % 3 == 0 ? 0.07 : 0.045, life);
+		}
+		Vec3 longHand = u.scale(Math.cos(hand)).add(v.scale(Math.sin(hand)));
+		Vec3 shortHand = u.scale(Math.cos(hand + 2.1)).add(v.scale(Math.sin(hand + 2.1)));
+		light.ray(centre, centre.add(longHand.scale(radius * 0.78)), color, 0.07, life);
+		light.ray(centre, centre.add(shortHand.scale(radius * 0.5)), DEEP, 0.09, life);
+		light.bare().orb(centre, WHITE, Math.max(0.05, radius * 0.07), Math.min(4, life));
+	}
+
+	/** Time moving again where {@code foe} was held: a white flash, a gold ring snapping out, sparks of light and its toll. */
+	static void resume(ServerPlayer player, LivingEntity foe, int color) {
+		ServerLevel level = player.level();
+		Vec3 c = foe.getBoundingBox().getCenter();
+		ArtLight world = ArtLight.world(player);
+		world.flash(c, WHITE, 2.0F);
+		world.ring(c, ArtKit.UP, color, 0.3, 2.2, 0.08, 8);
+		world.groundRing(foe.position(), DEEP, 0.4, 2.0, 0.08, 9);
+		Vfx.radial(level, ParticleTypes.END_ROD, c, 10, 0.3);
+		ElementFx.goldenTicks(level, c, 0.4, 6);
+		Feels.sound(level, c, "time_resume", 0.9F, 1.0F);
+	}
+
+	/**
 	 * A cut of gold in front of {@code feet} facing {@code look}: low and flat over the ground for everyone (your own view keeps it
 	 * under the middle), and an upright crescent across the front seen from outside.
 	 */
@@ -109,7 +154,7 @@ public final class HourglassArts {
 
 	static boolean echoCut(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
-		int color = ArtKit.color(player);
+		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CUT, false, 1.35F);
@@ -118,6 +163,9 @@ public final class HourglassArts {
 		goldCut(player, feet, look, color, false, ArtRules.ECHO_REACH, 1.0F);
 		for (LivingEntity foe : ArtKit.arc(player, context.struck(), ArtRules.ECHO_REACH, ArtRules.ECHO_DEGREES, ArtRules.ECHO_TARGETS)) {
 			hits.strike(foe, ArtRules.ECHO_FACTOR);
+			// Held a moment in time where it stood, so its echo finds it there.
+			ArtKit.steady(foe);
+			ElementFx.goldenTicks(level, foe.getBoundingBox().getCenter(), 0.3, 3);
 		}
 		// The afterimage, left where you stood, and a small face ticking at its feet.
 		AuraStep.afterimages(player, feet, feet, look, color);
@@ -131,7 +179,7 @@ public final class HourglassArts {
 			hits.fx().trail(AuraFxRules.Stroke.CUT, true, 1.2F);
 			goldCut(player, feet, look, ArtKit.mix(color, SAND, 0.35), true, ArtRules.ECHO_REACH, 0.8F);
 			Feels.sound(level, feet.add(0, 1, 0), "time_reecho", 0.8F, 1.1F);
-			for (LivingEntity foe : ArtKit.arcFrom(player, feet, look, ArtRules.ECHO_REACH, ArtRules.ECHO_DEGREES, ArtRules.ECHO_TARGETS)) {
+			for (LivingEntity foe : ArtKit.arcFrom(player, feet, look, ArtRules.ECHO_REPEAT_REACH, ArtRules.ECHO_DEGREES, ArtRules.ECHO_TARGETS)) {
 				hits.strike(foe, ArtRules.ECHO_REPEAT, AuraFxRules.Weight.FULL);
 				ElementFx.timeImpact(level, foe.getBoundingBox().getCenter(), 0.7);
 			}
@@ -143,7 +191,7 @@ public final class HourglassArts {
 
 	static boolean rewindLeap(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
-		int color = ArtKit.color(player);
+		int color = gold(player);
 		Vec3 look = ArtKit.flat(player);
 		Vec3 feet = player.position();
 		Vec3 leapt = ArtWards.leapedFrom(player);
@@ -159,8 +207,8 @@ public final class HourglassArts {
 				// Dragged in time: heavy-footed, a still face behind it, sand trickling off.
 				ArtKit.slow(player, foe, ArtRules.REWIND_DRAG, 2);
 				Vec3 c = foe.getBoundingBox().getCenter();
-				TimeFx.stoppedFace(level, c.add(TimeFx.toward(c, feet).scale(-0.5)), TimeFx.toward(c, feet), Math.max(0.55, foe.getBbWidth() * 0.8), 1.2,
-					ArtRules.REWIND_DRAG / 2);
+				Vec3 face = TimeFx.toward(c, feet);
+				clockFace(world, c.subtract(face.scale(0.5)), face, Math.max(0.6, foe.getBbHeight() * 0.42), 1.2, color, ArtRules.REWIND_DRAG / 2);
 				Vfx.emit(level, ParticleTypes.WAX_ON, c, 5, 0.3, 0.0);
 			}
 		}
@@ -180,8 +228,11 @@ public final class HourglassArts {
 				TimeFx.rewindPath(level, from, leapt);
 				ElementFx.goldenTicks(level, leapt.add(0, 1.0, 0), 0.5, 8);
 				ArtLight w = ArtLight.world(player);
+				// A thread of gold back along the way time ran, and a face on the ground where you come to stand, its hands turned back.
+				w.ray(from.add(0, 0.1, 0), leapt.add(0, 0.1, 0), color, 0.16, 14);
+				w.bare().ray(from.add(0, 0.12, 0), leapt.add(0, 0.12, 0), SAND, 0.05, 12);
+				clockFace(w, leapt.add(0, 0.07, 0), ArtKit.UP, 1.0, -1.9, color, 16);
 				w.groundRing(leapt, color, 1.6, 0.2, 0.08, 9);
-				w.bare().groundRing(leapt, SAND, 1.2, 0.2, 0.03, 8);
 				Feels.sound(level, leapt, "time_rewind", 0.9F, 1.1F);
 			});
 		}
@@ -192,7 +243,7 @@ public final class HourglassArts {
 
 	static boolean stoppedMoment(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
-		int color = ArtKit.color(player);
+		int color = gold(player);
 		Vec3 feet = player.position();
 		LivingEntity foe = ArtKit.attacker(player, context, 4.0);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.4F);
@@ -219,7 +270,10 @@ public final class HourglassArts {
 		if (ticks > 0) {
 			Vec3 c = foe.getBoundingBox().getCenter();
 			Vec3 face = TimeFx.toward(c, feet);
-			TimeFx.stoppedFace(level, c.subtract(face.scale(0.45)).add(0, 0.2, 0), face, Math.max(0.8, foe.getBbHeight() * 0.55), 2.2, ticks);
+			// A great still face standing behind it, a smaller one on the ground under it, both stopped.
+			ArtLight world = ArtLight.world(player);
+			clockFace(world, c.subtract(face.scale(0.55)).add(0, 0.25, 0), face, Math.max(1.0, foe.getBbHeight() * 0.62), 2.2, color, ticks);
+			clockFace(world, foe.position().add(0, 0.07, 0), ArtKit.UP, Math.max(0.7, foe.getBbWidth() + 0.3), 0.4, color, ticks);
 			TimeFx.stasisColumn(level, foe, ticks);
 			RandomSource r = level.getRandom();
 			for (int i = 0; i < 10; i++) {
@@ -237,7 +291,7 @@ public final class HourglassArts {
 			}
 			hits.strike(foe, ArtRules.STOPPED_SNAP, AuraFxRules.Weight.FULL);
 			ArtKit.knock(foe, player.position(), ArtRules.STOPPED_THROW, 0.25);
-			TimeFx.stasisRelease(level, foe, ticks > 0 ? 6 : 2);
+			resume(player, foe, color);
 			ArtLight.world(player).ring(foe.getBoundingBox().getCenter(), TimeFx.toward(foe.position(), player.position()), color, 0.3, 1.8, 0.08, 8);
 		});
 		return true;
@@ -247,7 +301,7 @@ public final class HourglassArts {
 
 	static boolean blur(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
-		int color = ArtKit.color(player);
+		int color = gold(player);
 		Vec3 dir = ArtKit.flat(player);
 		List<Vec3> path = ArtKit.path(player, dir, ArtRules.BLUR_DISTANCE);
 		if (path.size() < 2 || path.getLast().distanceTo(player.position()) < 1.5) {
@@ -293,7 +347,7 @@ public final class HourglassArts {
 	private static void drag(ServerPlayer owner, ArtFields.Field field, long age, Set<UUID> slowed) {
 		ServerLevel level = field.level();
 		Vec3 at = owner.position();
-		int color = ArtKit.color(owner);
+		int color = gold(owner);
 		for (Entity e : level.getEntities(owner, new AABB(at, at).inflate(ArtRules.BLUR_RADIUS, 3.0, ArtRules.BLUR_RADIUS),
 				e -> e instanceof Projectile p && !slowed.contains(e.getUUID()) && !(p.getOwner() != null && ArtKit.helpable(owner, p.getOwner())))) {
 			if (e.position().distanceToSqr(at.add(0, 1, 0)) > ArtRules.BLUR_RADIUS * ArtRules.BLUR_RADIUS) {
@@ -324,8 +378,8 @@ public final class HourglassArts {
 			// The bubble of slowed time, seen from outside: rings round you on three tilts.
 			ArtLight show = ArtLight.spectacle(owner);
 			for (int k = 0; k < 3; k++) {
-				show.bare().ring(at.add(0, 1.0, 0), ElementFx.tilted(k == 0 ? 0 : 1.2, age * 0.05 + k * 2.1), k == 0 ? color : SAND, ArtRules.BLUR_RADIUS * 0.95,
-					ArtRules.BLUR_RADIUS * 0.95, 0.025, 11);
+				show.ring(at.add(0, 1.0, 0), ElementFx.tilted(k == 0 ? 0 : 1.2, age * 0.05 + k * 2.1), k == 1 ? SAND : color, ArtRules.BLUR_RADIUS * 0.95,
+					ArtRules.BLUR_RADIUS * 0.95, 0.045, 11);
 			}
 		}
 		if (age % 20 == 0) {
@@ -337,7 +391,7 @@ public final class HourglassArts {
 
 	static boolean thousandMoments(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
-		int color = ArtKit.color(player);
+		int color = gold(player);
 		Vec3 feet = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.6F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
@@ -346,8 +400,8 @@ public final class HourglassArts {
 		// Time stops: a great face on the ground whose hands sweep once and stand still, motes of gold hanging in the air, everything
 		// near held where it stands.
 		ElementFx.clock(level, feet.add(0, 0.06, 0), ArtKit.UP, ArtRules.THOUSAND_RADIUS, 8, false);
-		Scheduler.later(8, () -> ElementFx.stoppedClock(level, feet.add(0, 0.06, 0), ArtKit.UP, ArtRules.THOUSAND_RADIUS, 1.1, ArtRules.THOUSAND_HOLD - 6));
 		ArtLight world = ArtLight.world(player);
+		Scheduler.later(8, () -> clockFace(world, feet.add(0, 0.07, 0), ArtKit.UP, ArtRules.THOUSAND_RADIUS * 0.92, 1.1, color, ArtRules.THOUSAND_HOLD - 6));
 		world.groundRing(feet, color, 0.5, ArtRules.THOUSAND_RADIUS * 1.1, 0.3, 12);
 		world.groundRing(feet, SAND, 0.4, ArtRules.THOUSAND_RADIUS, 0.08, 10);
 		world.ground(feet, SigilOption.RING, DEEP, ArtRules.THOUSAND_RADIUS * 0.6, ArtRules.THOUSAND_HOLD, 0.0);
@@ -394,7 +448,7 @@ public final class HourglassArts {
 					Vec3 normal = ElementFx.randomDir(rr);
 					Vec3 toward = ElementFx.inPlane(normal, rr.nextDouble() * Math.PI * 2);
 					int life = ArtRules.THOUSAND_HOLD - 2 - cut * gap + 2;
-					w.bare().slash(c, normal, toward, cut % 2 == 0 ? color : SAND, 0.75 + 0.1 * rr.nextDouble(), 2.0, 0.05, 1, Math.max(3, life));
+					w.slash(c, normal, toward, cut % 2 == 0 ? color : DEEP, 0.75 + 0.1 * rr.nextDouble(), 2.0, 0.07, 1, Math.max(3, life));
 					cuts.get(i).add(new Vec3[] {c, normal, toward});
 				}
 				if (cut % 2 == 0) {
@@ -426,7 +480,7 @@ public final class HourglassArts {
 				if (stored > 0) {
 					hits.raw(foe, stored, AuraFxRules.Weight.FULL);
 				}
-				TimeFx.stasisRelease(level, foe, (float) (4 + cuts.get(i).size()));
+				resume(player, foe, color);
 			}
 		});
 		return true;

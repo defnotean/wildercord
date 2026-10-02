@@ -140,16 +140,22 @@ public final class HollowArts {
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CUT, true, 1.35F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_void_cut", 1.0F, 1.0F);
-		// The tear at the blade's end, low and ahead: a hole in the air with darkness falling into it. The dark crescent of the cut
-		// itself is seen from outside (in your own view it would cut across the middle).
-		Vec3 tear = feet.add(0, 0.7, 0).add(look.scale(2.0));
+		// The tear at the blade's end: a hole in the air with darkness falling into it, at the height of the cut for everyone else, and
+		// low and small in your own view (where the foes it draws come to rest). The dark crescent of the cut is seen from outside (in
+		// your own view it would cut across the middle).
 		ArtLight world = ArtLight.world(player);
+		ArtLight show = ArtLight.spectacle(player);
+		Vec3 tear = feet.add(0, 1.05, 0).add(look.scale(2.0));
+		Vec3 low = feet.add(0, 0.35, 0).add(look.scale(2.2));
 		for (int t = 0; t < 10; t += 3) {
 			int tick = t;
-			Scheduler.later(1 + t, () -> hole(world, tear, 0.18 + 0.03 * tick, color, 4));
+			Scheduler.later(1 + t, () -> {
+				hole(show, tear, 0.28 + 0.04 * tick, color, 4);
+				show.shade(tear, ABYSS, (float) (1.2 + 0.1 * tick));
+				hole(world, low, 0.1 + 0.015 * tick, color, 4);
+			});
 		}
-		ElementFx.implode(level, tear, 1.4, 8);
-		ArtLight show = ArtLight.spectacle(player);
+		ElementFx.implode(level, low, 1.4, 8);
 		Vec3 centre = feet.add(0, 1.0, 0).add(look.scale(1.2));
 		Vec3 normal = ArtKit.UP.add(ArtKit.bladeSide(player, look).scale(-0.35)).normalize();
 		show.slash(centre, normal, look, ABYSS, 2.0, 2.4, 0.5, 1, 9);
@@ -189,15 +195,17 @@ public final class HollowArts {
 		Vec3 well = ground == null ? ahead : ground;
 		Vec3 core = well.add(0, 0.55, 0);
 		ArtLight world = ArtLight.world(player);
-		world.ground(well, SigilOption.CIRCLE, color, ArtRules.COLLAPSE_PULL * 0.75, ArtRules.COLLAPSE_TICKS + 8, 0.25);
-		world.ground(well, SigilOption.RING, ABYSS, ArtRules.COLLAPSE_PULL, ArtRules.COLLAPSE_TICKS + 8, -0.18);
+		// A seal of darkness spinning fast on the ground round the well, a violet ring round it turning the other way.
+		world.bare().ground(well, SigilOption.CIRCLE, ABYSS, ArtRules.COLLAPSE_PULL * 0.75, ArtRules.COLLAPSE_TICKS + 8, 0.25);
+		world.ground(well, SigilOption.RING, color, ArtRules.COLLAPSE_PULL, ArtRules.COLLAPSE_TICKS + 8, -0.18);
 		ArtFields.open(player, WELL, ArtFields.disc(() -> well, ArtRules.COLLAPSE_PULL, 2.5), ArtRules.COLLAPSE_TICKS, 1, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			ArtLight w = ArtLight.world(owner);
 			int c = ArtKit.color(owner);
 			double grow = Math.min(1.0, age / (double) ArtRules.COLLAPSE_TICKS);
 			if (age % 3 == 1) {
-				hole(w, core, 0.25 + 0.5 * grow, c, 4);
+				hole(w, core, 0.2 + 0.35 * grow, c, 4);
+				w.shade(core, ABYSS, (float) (0.9 + 1.2 * grow));
 			}
 			if (age % 4 == 1) {
 				// Darkness falling in from the rim, over and over.
@@ -227,8 +235,8 @@ public final class HollowArts {
 					hits.strike(foe, ArtRules.falloff(ArtRules.COLLAPSE_CENTRE, ArtRules.COLLAPSE_EDGE, d, ArtRules.COLLAPSE_RADIUS), AuraFxRules.Weight.HEAVY);
 					if (foe.isAlive()) {
 						shadow(owner, foe, 0.6);
-						// The collapse leaves them where it gathered them: knocked back no further than the well's edge.
-						foe.setDeltaMovement(foe.getDeltaMovement().multiply(0.2, 1, 0.2));
+						// The collapse leaves them where it gathered them, for the next cut.
+						ArtKit.steady(foe);
 					}
 				}
 			}
@@ -310,7 +318,7 @@ public final class HollowArts {
 		Vec3 look = ArtKit.flat(player);
 		Vec3 from = player.position();
 		// The foe ahead to pass through: the nearest in front and in sight.
-		List<LivingEntity> ahead = new ArrayList<>(ArtKit.arc(player, null, ArtRules.RIFT_REACH, 100, 8));
+		List<LivingEntity> ahead = new ArrayList<>(ArtKit.arc(player, null, ArtRules.RIFT_REACH, ArtRules.RIFT_DEGREES, 8));
 		ahead.removeIf(e -> !player.hasLineOfSight(e));
 		ahead.sort(Comparator.comparingDouble(e -> e.distanceToSqr(player)));
 		LivingEntity foe = null;
@@ -402,8 +410,8 @@ public final class HollowArts {
 		// small black core and a seal of darkness on the ground.
 		Vec3 low = base.add(0, 0.45, 0);
 		ArtLight world = ArtLight.world(player);
-		world.ground(base, SigilOption.CIRCLE, color, ArtRules.HORIZON_PULL * 0.7, ArtRules.HORIZON_TICKS + 10, 0.2);
-		world.bare().ground(base, SigilOption.RING, ABYSS, ArtRules.HORIZON_PULL, ArtRules.HORIZON_TICKS + 10, -0.12);
+		world.bare().ground(base, SigilOption.CIRCLE, ABYSS, ArtRules.HORIZON_PULL * 0.7, ArtRules.HORIZON_TICKS + 10, 0.2);
+		world.ground(base, SigilOption.RING, color, ArtRules.HORIZON_PULL, ArtRules.HORIZON_TICKS + 10, -0.12);
 		RandomSource r = level.getRandom();
 		ArtFields.open(player, HORIZON, ArtFields.disc(() -> base, ArtRules.HORIZON_PULL, 3.5), ArtRules.HORIZON_TICKS, 1, (field, owner, age) -> {
 			ServerLevel lv = field.level();
@@ -414,10 +422,12 @@ public final class HollowArts {
 			if (age % 3 == 1 && age < ArtRules.HORIZON_TICKS) {
 				// The sphere (seen from outside): a hole in the world, an accretion ring of violet light wheeling round it.
 				double radius = 0.4 + 0.9 * grow;
-				show.bare().orb(heart, ABYSS, radius, 4);
+				// A soft disc of darkness for its body (smooth at its edge), a smaller hard core in it, and the accretion rings.
+				show.shade(heart, ABYSS, (float) (radius * 2.6));
+				show.bare().orb(heart, ABYSS, radius * 0.7, 4);
 				show.bare().ring(heart, ElementFx.tilted(1.3, age * 0.15), c, radius * 2.1, radius * 1.5, 0.06, 4);
 				show.bare().ring(heart, ElementFx.tilted(1.1, age * 0.15 + 1.7), LILAC, radius * 1.8, radius * 1.4, 0.03, 4);
-				show.flash(heart, c, (float) (radius * 1.6));
+				show.flash(heart, c, (float) (radius * 1.2));
 				hole(w, low, 0.2 + 0.12 * grow, c, 4);
 			}
 			if (age % 4 == 2) {

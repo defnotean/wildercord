@@ -85,7 +85,29 @@ public final class CrimsonArts {
 		ArtLight world = ArtLight.world(player);
 		world.slash(c.subtract(bulge.scale(r * 0.6)), normal, bulge, ArtKit.color(player), r, 2.2, 0.16, 1, 7);
 		world.bare().slash(c.subtract(bulge.scale(r * 0.6)).add(toward.scale(0.03)), normal, bulge, PALE, r * 0.92, 1.9, 0.05, 1, 6);
-		ElementFx.drip(level, c, 0.25, 6);
+		drops(level, c, 0.25, 5);
+	}
+
+	/**
+	 * Blood thrown off {@code at}: drops of red light flicked out and falling, a little darker dust. (Never the item or block
+	 * particles the old blood drip used: they draw as dull tan cubes.)
+	 */
+	static void drops(ServerLevel level, Vec3 at, double spread, int count) {
+		RandomSource r = level.getRandom();
+		for (int i = 0; i < count; i++) {
+			Vec3 p = at.add((r.nextDouble() - 0.5) * 2 * spread, (r.nextDouble() - 0.5) * spread, (r.nextDouble() - 0.5) * 2 * spread);
+			Vec3 flick = new Vec3((r.nextDouble() - 0.5) * 0.8, 0.35 + r.nextDouble() * 0.3, (r.nextDouble() - 0.5) * 0.8);
+			Motes.fling(level, p, flick, 0.09, i % 3 == 0 ? PALE : i % 3 == 1 ? 0xD2283C : 0xA8142C, 0.055, 13 + r.nextInt(5), new Vec3(0, -0.075, 0));
+		}
+		Vfx.emit(level, new DustParticleOptions(DEEP, 0.8F), at, Math.max(1, count / 2), spread, 0.0);
+	}
+
+	/** A splash of blood where a great cut lands on {@code at}: a red flash, a heartbeat ring, drops thrown. */
+	static void splash(ServerPlayer player, Vec3 at, double size) {
+		ServerLevel level = player.level();
+		ArtLight.world(player).flash(at, ArtKit.color(player), (float) (1.1 * size));
+		ElementFx.pulse(level, at, ArtKit.UP, 0.9 * size);
+		drops(level, at, 0.2 * size, (int) Math.max(3, 5 * size));
 	}
 
 	/** Blood drawn to the swordsman: a thin thread of dark red from {@code foe}, drops of it sailing in. */
@@ -109,7 +131,7 @@ public final class CrimsonArts {
 	/** A bleed: drops falling off {@code foe}. */
 	static void drip(LivingEntity foe) {
 		if (foe.level() instanceof ServerLevel level) {
-			ElementFx.drip(level, foe.getBoundingBox().getCenter(), 0.2, 3);
+			drops(level, foe.getBoundingBox().getCenter(), 0.2, 2);
 		}
 	}
 
@@ -166,12 +188,14 @@ public final class CrimsonArts {
 		world.groundRing(centre, PALE, 0.2, ArtRules.RAIN_RADIUS, 0.08, 9);
 		world.bare().groundRing(centre, DARK, 0.4, ArtRules.RAIN_RADIUS * 1.35, 0.12, 12);
 		world.ground(centre, SigilOption.CRACKED, DEEP, ArtRules.RAIN_RADIUS * 0.8, ArtRules.RAIN_TICKS + 10, 0);
-		ElementFx.bloodImpact(level, centre.add(0, 0.5, 0), 1.3);
+		splash(player, centre.add(0, 0.5, 0), 1.3);
 		ScreenFx.shake(level, centre, 0.12F, 8);
 		for (LivingEntity foe : ArtKit.around(player, centre, ArtRules.RAIN_RADIUS, 1.5, 3.0, ArtRules.RAIN_TARGETS)) {
 			float took = hits.strike(foe, ArtRules.RAIN_FACTOR);
 			drink.from(foe, took);
 			if (foe.isAlive()) {
+				// Held where the rain falls (the strike's knock would carry it out from under it).
+				ArtKit.steady(foe);
 				gash(player, foe, foe.getId() % 2 == 0);
 			}
 		}
@@ -181,12 +205,15 @@ public final class CrimsonArts {
 		ArtFields.open(player, RAIN, ArtFields.disc(() -> centre, ArtRules.RAIN_RADIUS, 2.5), ArtRules.RAIN_TICKS, 2, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			RandomSource r = lv.getRandom();
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 4; i++) {
 				double a = r.nextDouble() * Math.PI * 2;
 				double d = Math.sqrt(r.nextDouble()) * ArtRules.RAIN_RADIUS;
-				Vec3 drop = centre.add(Math.cos(a) * d, 3.2, Math.sin(a) * d);
-				ElementFx.drip(lv, drop, 0.15, 2);
-				Vfx.emit(lv, new DustParticleOptions(i == 0 ? 0xD2283C : 0x8A0E22, 1.1F), drop.subtract(0, 1.2, 0), 1, 0.1, 0.0);
+				Vec3 drop = centre.add(Math.cos(a) * d, 3.2 + r.nextDouble() * 0.4, Math.sin(a) * d);
+				// Drops of red light falling fast, streaking (and a little dust where they hang).
+				Motes.glow(lv, drop, i % 2 == 0 ? 0xD2283C : PALE, 0.05, 15, new Vec3(0, -0.22, 0), 0.0);
+				if (i == 0) {
+					Vfx.emit(lv, new DustParticleOptions(DEEP, 1.0F), drop.subtract(0, 1.4, 0), 1, 0.1, 0.0);
+				}
 			}
 			if (age % ArtRules.BLEED_PERIOD == 0) {
 				ElementFx.pulse(lv, centre.add(0, 0.1, 0), ArtKit.UP, ArtRules.RAIN_RADIUS * 0.9);
@@ -248,7 +275,7 @@ public final class CrimsonArts {
 			double weapon = ArtKit.weapon(player);
 			double wound = Math.max(weapon * 0.3, ArtRules.sanguineWound(weapon, blow));
 			ArtKit.wound(hits, foe, wound / weapon / ArtRules.SANGUINE_BLEEDS, ArtRules.SANGUINE_BLEEDS, drink, CrimsonArts::drip);
-			ElementFx.bloodImpact(level, foe.getBoundingBox().getCenter(), 1.0);
+			splash(player, foe.getBoundingBox().getCenter(), 1.0);
 		}
 		return true;
 	}
@@ -277,7 +304,7 @@ public final class CrimsonArts {
 			world.ray(a.add(0, 0.9, 0), b.add(0, 0.9, 0), color, 0.3, 9);
 			world.bare().ray(a.add(0, 0.9, 0), b.add(0, 0.9, 0), PALE, 0.07, 7);
 			world.bare().ray(a.add(0, 0.12, 0), b.add(0, 0.12, 0), DARK, 0.4, 14);
-			ElementFx.drip(level, b.add(0, 0.8, 0), 0.3, 2);
+			drops(level, b.add(0, 0.8, 0), 0.3, 2);
 			Vec3 seg = b.subtract(a);
 			for (LivingEntity foe : ArtKit.line(player, a, seg, Math.max(0.5, seg.horizontalDistance()) + 0.8, ArtRules.FRENZY_WIDTH / 2 + 0.3, 2.2,
 					ArtRules.FRENZY_TARGETS)) {
@@ -316,12 +343,12 @@ public final class CrimsonArts {
 			ScreenFx.tint(player, DEEP, 24);
 			Feels.sound(level, feet.add(0, 1, 0), "blood_heart", 1.0F, 0.85F);
 			ArtLight.spectacle(player).ring(feet.add(0, 1.1, 0), look, color, 0.2, 1.4, 0.1, 8);
-			ElementFx.drip(level, feet.add(0, 1.1, 0), 0.3, 8);
+			drops(level, feet.add(0, 1.1, 0), 0.3, 6);
 		}
 		ArtKit.Drink drink = new ArtKit.Drink(player, ArtRules.MOON_DRINK, ArtRules.MOON_DRINK_MAX, f -> drinkLook(player, f));
 		// The moon rising over you (seen from outside): a great crescent of blood-light, dark at its edge, pale at its heart.
 		ArtLight show = ArtLight.spectacle(player);
-		Vec3 moon = feet.add(0, 3.3, 0).add(look.scale(0.6));
+		Vec3 moon = feet.add(0, 2.7, 0).add(look.scale(3.0));
 		show.slash(moon, look, ArtKit.UP, DARK, 3.4, 2.5, 1.1, 3, 16);
 		show.slash(moon.add(look.scale(0.02)), look, ArtKit.UP, color, 3.25, 2.4, 0.75, 3, 15);
 		show.bare().slash(moon.add(look.scale(0.04)), look, ArtKit.UP, PALE, 3.05, 2.1, 0.2, 3, 14);
@@ -352,7 +379,7 @@ public final class CrimsonArts {
 				drink.from(foe, took);
 				if (foe.isAlive()) {
 					gash(player, foe, index % 2 == 0);
-					ElementFx.bloodImpact(level, foe.getBoundingBox().getCenter(), 1.2);
+					splash(player, foe.getBoundingBox().getCenter(), 1.2);
 					ArtKit.wound(hits, foe, ArtRules.MOON_BLEED, ArtRules.MOON_BLEEDS, drink, CrimsonArts::drip);
 				}
 			});

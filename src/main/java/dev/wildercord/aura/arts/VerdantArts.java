@@ -85,8 +85,10 @@ public final class VerdantArts {
 	 */
 	static void rootsOn(ServerPlayer player, LivingEntity foe, int ticks, int stalks, float height) {
 		ServerLevel level = player.level();
-		Vec3 base = foe.position();
-		double r = Math.max(0.4, foe.getBbWidth() * 0.5) + 0.35;
+		// Out of the ground under it, even if a blow has thrown it up: it comes down into them.
+		Vec3 floor = ArtKit.floor(level, foe.position().add(0, 0.3, 0), 0.3, 5);
+		Vec3 base = floor == null ? foe.position() : floor;
+		double r = Math.max(0.4, foe.getBbWidth() * 0.5) + 0.3;
 		RandomSource rand = level.getRandom();
 		double phase = rand.nextDouble() * Math.PI * 2;
 		BlockState roots = Blocks.MANGROVE_ROOTS.defaultBlockState();
@@ -95,7 +97,7 @@ public final class VerdantArts {
 			Vec3 at = base.add(Math.cos(a) * r, 0, Math.sin(a) * r);
 			// Leaning in over the foe: the display's yaw turns its lean toward the middle.
 			float yaw = (float) (Math.atan2(-Math.cos(a), -Math.sin(a)));
-			ArtBlocks.spire(level, at, roots, 0.26F, height * (0.85F + 0.3F * rand.nextFloat()), yaw, 0.42F, Math.max(4, ticks - 10));
+			ArtBlocks.spire(level, at, roots, 0.2F, height * (0.9F + 0.3F * rand.nextFloat()), yaw, 0.5F, Math.max(4, ticks - 10), false);
 		}
 		ArtLight world = ArtLight.world(player);
 		for (int vine = 0; vine < 3; vine++) {
@@ -107,9 +109,27 @@ public final class VerdantArts {
 			}
 		}
 		world.groundRing(base, VINE, r * 2.2, r * 0.8, 0.07, 10);
-		Vfx.emit(level, new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK, Blocks.MOSS_BLOCK.defaultBlockState()),
-			base.add(0, 0.2, 0), 6, 0.3, 0.05);
+		Vfx.emit(level, ParticleTypes.COMPOSTER, base.add(0, 0.3, 0), 8, 0.35, 0.03);
+		ElementFx.petals(level, base.add(0, 0.6, 0), 0.3, 3);
 		Feels.sound(level, base, "life_thorn_grow", 0.8F, 0.95F + rand.nextFloat() * 0.1F);
+	}
+
+	/**
+	 * A flower of light opening flat on the ground at {@code centre}: five broad petals of pink light unfolding outward from a pale
+	 * heart, a ring of leaf-green round them. {@code size} 1 is a blossom about three blocks across; it holds {@code life} ticks.
+	 */
+	static void bloom(ArtLight light, Vec3 centre, int color, double size, int life) {
+		double phase = light.level().getRandom().nextDouble() * Math.PI * 2;
+		Vec3 heart = centre.add(0, 0.12, 0);
+		for (int i = 0; i < 5; i++) {
+			double a = phase + Math.PI * 2 * i / 5;
+			Vec3 out = new Vec3(Math.cos(a), 0, Math.sin(a));
+			// Each petal a short broad crescent lying on the ground, its middle out from the heart, opening over a few ticks.
+			light.slash(heart.add(out.scale(0.55 * size)), ArtKit.UP, out, PINK, 0.75 * size, 2.0, 0.45 * size, 3, Math.min(40, life));
+			light.bare().slash(heart.add(out.scale(0.55 * size)).add(0, 0.02, 0), ArtKit.UP, out, PALE, 0.62 * size, 1.5, 0.1 * size, 3, Math.min(36, life));
+		}
+		light.bare().ring(heart.add(0, 0.03, 0), ArtKit.UP, PALE, 0.05, 0.32 * size, 0.08, Math.min(40, life));
+		light.ring(heart, ArtKit.UP, color, 1.45 * size, 1.5 * size, 0.06, Math.min(40, life));
 	}
 
 	/** Thorns pricking: a few small pink and green splinters out of {@code foe}, and a tick of sound. */
@@ -215,28 +235,30 @@ public final class VerdantArts {
 		Vec3 ground = ArtKit.floor(level, ahead.add(0, 1, 0), 1.5, 3);
 		Vec3 centre = ground == null ? ahead : ground;
 		ArtLight world = ArtLight.world(player);
-		world.ground(centre, SigilOption.STAR, PINK, 1.5, ArtRules.BLOSSOM_TICKS, 0.03);
-		world.ground(centre, SigilOption.CIRCLE, color, ArtRules.BLOSSOM_RADIUS, ArtRules.BLOSSOM_TICKS, -0.015);
+		// A flower of light opening on the ground: five petals of pink light unfolding from its heart, a soft glow of blossom under
+		// it, rings of green spreading out.
+		bloom(world, centre, color, 1.0, ArtRules.BLOSSOM_TICKS);
+		world.ground(centre, SigilOption.GLOW, PINK, ArtRules.BLOSSOM_RADIUS * 2.0, ArtRules.BLOSSOM_TICKS, 0.0);
 		world.groundRing(centre, color, 0.3, ArtRules.BLOSSOM_RADIUS * 1.1, 0.16, 12);
 		world.groundRing(centre, PINK, 0.2, ArtRules.BLOSSOM_RADIUS * 0.85, 0.06, 10);
-		ElementFx.petals(level, centre.add(0, 1.2, 0), 1.6, 26);
+		ElementFx.petals(level, centre.add(0, 1.2, 0), 1.6, 30);
 		RandomSource r = level.getRandom();
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < 18; i++) {
 			Vec3 at = centre.add((r.nextDouble() - 0.5) * 1.2, 0.2, (r.nextDouble() - 0.5) * 1.2);
-			Motes.fling(level, at, new Vec3((r.nextDouble() - 0.5) * 1.4, 1.0, (r.nextDouble() - 0.5) * 1.4).normalize(), 0.16 + r.nextDouble() * 0.1,
-				i % 3 == 0 ? PALE : PINK, 0.08, 30, new Vec3(0, -0.004, 0));
+			Motes.fling(level, at, new Vec3((r.nextDouble() - 0.5) * 1.4, 1.0, (r.nextDouble() - 0.5) * 1.4).normalize(), 0.16 + r.nextDouble() * 0.12,
+				i % 3 == 0 ? PALE : PINK, 0.09, 36, new Vec3(0, -0.004, 0));
 		}
-		// Flowers spring up across it, and wither when it's gone.
+		// Flowers spring up across it at once, and wither when it's gone.
 		BlockState[] flowers = {Blocks.PINK_TULIP.defaultBlockState(), Blocks.ALLIUM.defaultBlockState(), Blocks.OXEYE_DAISY.defaultBlockState(),
-			Blocks.CORNFLOWER.defaultBlockState(), Blocks.LILY_OF_THE_VALLEY.defaultBlockState()};
-		for (int i = 0; i < 7; i++) {
-			double a = r.nextDouble() * Math.PI * 2;
-			double d = 0.6 + Math.sqrt(r.nextDouble()) * (ArtRules.BLOSSOM_RADIUS - 0.9);
+			Blocks.AZURE_BLUET.defaultBlockState(), Blocks.LILY_OF_THE_VALLEY.defaultBlockState(), Blocks.CORNFLOWER.defaultBlockState()};
+		for (int i = 0; i < 10; i++) {
+			double a = Math.PI * 2 * i / 10 + (r.nextDouble() - 0.5) * 0.5;
+			double d = 0.8 + Math.sqrt(r.nextDouble()) * (ArtRules.BLOSSOM_RADIUS - 1.1);
 			Vec3 at = centre.add(Math.cos(a) * d, 0, Math.sin(a) * d);
 			Vec3 floor = ArtKit.floor(level, at.add(0, 1, 0), 1.2, 2);
 			if (floor != null) {
-				ArtBlocks.sprout(level, floor, flowers[i % flowers.length], 0.55F + 0.2F * r.nextFloat(), 0.0F, (float) (r.nextDouble() * Math.PI * 2), 1 + i,
-					ArtRules.BLOSSOM_TICKS - 10);
+				ArtBlocks.sprout(level, floor, flowers[i % flowers.length], 0.75F + 0.3F * r.nextFloat(), 0.0F, (float) (r.nextDouble() * Math.PI * 2), 1 + i / 3,
+					ArtRules.BLOSSOM_TICKS - 8);
 			}
 		}
 		Feels.sound(level, centre, "life_bloom", 0.9F, 1.05F);
@@ -251,6 +273,10 @@ public final class VerdantArts {
 				double a = rr.nextDouble() * Math.PI * 2;
 				double d = Math.sqrt(rr.nextDouble()) * ArtRules.BLOSSOM_RADIUS;
 				ElementFx.petals(lv, centre.add(Math.cos(a) * d, 1.4 + rr.nextDouble(), Math.sin(a) * d), 0.4, 3);
+			}
+			if (age == 40) {
+				// The flower of light holds while the blossom does.
+				bloom(ArtLight.world(owner), centre, ArtKit.color(owner), 1.0, ArtRules.BLOSSOM_TICKS - 40);
 			}
 			if (age % 20 == 0) {
 				ArtLight.world(owner).groundRing(centre, field.left() < 20 ? ArtKit.mix(PINK, 0x402030, 0.5) : PINK, ArtRules.BLOSSOM_RADIUS * 0.4,
@@ -299,12 +325,14 @@ public final class VerdantArts {
 		BlockState roots = Blocks.MANGROVE_ROOTS.defaultBlockState();
 		RandomSource r = level.getRandom();
 		double phase = r.nextDouble() * Math.PI * 2;
-		for (int i = 0; i < 6; i++) {
-			double a = phase + Math.PI * 2 * i / 6;
-			Vec3 at = feet.add(Math.cos(a) * 1.25, 0, Math.sin(a) * 1.25);
+		for (int i = 0; i < 7; i++) {
+			double a = phase + Math.PI * 2 * i / 7;
+			Vec3 at = feet.add(Math.cos(a) * 1.2, 0, Math.sin(a) * 1.2);
 			float yaw = (float) Math.atan2(Math.cos(a), Math.sin(a));
-			ArtBlocks.spire(level, at, roots, 0.24F, 0.55F + 0.25F * r.nextFloat(), yaw, 0.5F, 18);
+			ArtBlocks.spire(level, at, roots, 0.18F, 0.8F + 0.3F * r.nextFloat(), yaw, 0.55F, 18, false);
 		}
+		// Thorns of light bursting off them (seen from outside: from your own feet they'd come up through your view).
+		ArtLight.spectacle(player).bare().shards(feet.add(0, 0.4, 0), 1.6, 8, PINK, VINE);
 		ArtLight world = ArtLight.world(player);
 		world.groundRing(feet, VINE, 0.4, ArtRules.ROOTED_THORNS * 1.1, 0.14, 10);
 		world.groundRing(feet, PINK, 0.3, ArtRules.ROOTED_THORNS * 0.9, 0.05, 8);
@@ -382,8 +410,14 @@ public final class VerdantArts {
 			Vec3 floor = ArtKit.floor(level, p.add(side).add(0, 0.8, 0), 1.0, 2);
 			if (floor != null) {
 				int index = trail.size();
-				ArtBlocks.sprout(level, floor, index % 3 == 1 ? young : bush, 0.85F + 0.3F * r.nextFloat(), 0.0F, (float) (r.nextDouble() * Math.PI * 2),
+				ArtBlocks.sprout(level, floor, index % 3 == 1 ? young : bush, 1.05F + 0.35F * r.nextFloat(), 0.0F, (float) (r.nextDouble() * Math.PI * 2),
 					1 + index, ArtRules.WILD_FIELD - index - 12);
+				if (index % 2 == 0) {
+					// A thorned stalk of root among them, leaning out over the way.
+					float yaw = (float) (Math.atan2(dir.x, dir.z) + (r.nextBoolean() ? 1.3 : -1.3));
+					ArtBlocks.spire(level, floor.add(ArtKit.right(dir).scale(r.nextBoolean() ? 0.6 : -0.6)), Blocks.MANGROVE_ROOTS.defaultBlockState(), 0.18F,
+						0.9F + 0.4F * r.nextFloat(), yaw, 0.45F, ArtRules.WILD_FIELD - index - 16, false);
+				}
 			}
 		}
 		trail.add(to);
@@ -394,6 +428,12 @@ public final class VerdantArts {
 				Vec3 p = trail.get(rr.nextInt(trail.size()));
 				ElementFx.petals(lv, p.add(0, 0.8, 0), 0.4, 2);
 				Vfx.emit(lv, ParticleTypes.COMPOSTER, p.add(0, 0.4, 0), 2, 0.35, 0.01);
+				// A glow of green light running low along the brambles while they stand.
+				ArtLight w = ArtLight.world(owner);
+				int glow = field.left() < 20 ? ArtKit.mix(ArtKit.color(owner), 0x203018, 0.5) : ArtKit.color(owner);
+				for (int i = 1; i < trail.size(); i++) {
+					w.ray(trail.get(i - 1).add(0, 0.06, 0), trail.get(i).add(0, 0.06, 0), glow, 0.3, 12);
+				}
 			}
 			if (age % 20 == 0) {
 				for (LivingEntity foe : field.foes(owner)) {
@@ -429,8 +469,9 @@ public final class VerdantArts {
 		ArtLight world = ArtLight.world(player);
 		ArtLight show = ArtLight.spectacle(player);
 		Vec3 heart = feet.add(look.scale(0.9));
-		world.ground(feet, SigilOption.CIRCLE, color, ArtRules.GROVE_RADIUS, ArtRules.GROVE_TICKS, 0.01);
-		world.ground(feet, SigilOption.STAR, PINK, 2.4, ArtRules.GROVE_TICKS, -0.02);
+		// The grove's light pooled on the ground, a flower of it opening where the blade went in.
+		world.ground(feet, SigilOption.GLOW, color, ArtRules.GROVE_RADIUS * 2.2, ArtRules.GROVE_TICKS, 0.0);
+		bloom(world, heart, color, 1.3, 40);
 		world.groundRing(feet, color, 0.5, ArtRules.GROVE_RADIUS * 1.2, 0.3, 14);
 		world.groundRing(feet, PALE, 0.4, ArtRules.GROVE_RADIUS, 0.1, 12);
 		show.ray(heart, heart.add(0, 7, 0), color, 0.8, 16);
@@ -443,7 +484,6 @@ public final class VerdantArts {
 			if (foe.isAlive()) {
 				ArtKit.root(player, foe, ArtRules.GROVE_ROOT);
 				rootsOn(player, foe, ArtRules.GROVE_ROOT, 3, 1.5F);
-				ElementFx.crack(level, foe.position(), 1.0, 30);
 				// A thread of root light from the heart of the grove to it, low over the ground.
 				world.ray(feet.add(0, 0.08, 0), foe.position().add(0, 0.08, 0), VINE, 0.12, 16);
 			}
@@ -465,7 +505,8 @@ public final class VerdantArts {
 			BlockState canopy = (i % 2 == 0 ? Blocks.CHERRY_LEAVES : Blocks.FLOWERING_AZALEA_LEAVES).defaultBlockState();
 			Scheduler.later(delay, () -> {
 				ArtBlocks.spire(level, floor, Blocks.OAK_LOG.defaultBlockState(), 0.42F, height, (float) (r.nextDouble() * Math.PI), (float) ((r.nextDouble() - 0.5) * 0.15),
-					ArtRules.GROVE_TICKS - delay - 10);
+					ArtRules.GROVE_TICKS - delay - 10, false);
+				ElementFx.petals(level, floor.add(0, height, 0), 0.8, 6);
 				ArtBlocks.sprout(level, floor, canopy, 1.7F + 0.4F * r.nextFloat(), height * 0.82F, (float) (r.nextDouble() * Math.PI), 3,
 					ArtRules.GROVE_TICKS - delay - 18);
 				Feels.sound(level, floor, "life_regrow", 0.6F, 0.9F + 0.05F * delay);
@@ -481,6 +522,9 @@ public final class VerdantArts {
 			}
 			Vec3 mote = feet.add((rr.nextDouble() - 0.5) * ArtRules.GROVE_RADIUS * 1.6, 0.2, (rr.nextDouble() - 0.5) * ArtRules.GROVE_RADIUS * 1.6);
 			Motes.glow(lv, mote, rr.nextBoolean() ? PALE : PINK, 0.07, 30, new Vec3(0, 0.03, 0), 0.01);
+			if (age % 40 == 0 && field.left() > 30) {
+				bloom(ArtLight.world(owner), heart, ArtKit.color(owner), 1.3, 40);
+			}
 			if (age % 20 == 0) {
 				ArtLight.world(owner).groundRing(feet, field.left() < 30 ? ArtKit.mix(ArtKit.color(owner), 0x203018, 0.5) : ArtKit.color(owner),
 					ArtRules.GROVE_RADIUS * 0.3, ArtRules.GROVE_RADIUS, 0.06, 16);

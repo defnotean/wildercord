@@ -598,6 +598,8 @@ public final class ArtRules {
 
 	/** Rift Step (IV): through a rift to behind the foe ahead and a cut in its back; the rifts' edges drag in and cut those near them. */
 	public static final double RIFT_REACH = 8.0;
+	/** The foe it goes through: the nearest in this cone ahead (narrow, so it's the one you face, not one off to the side). */
+	public static final double RIFT_DEGREES = 70;
 	/** You come out of the far rift this far past the foe's back. */
 	public static final double RIFT_BEHIND = 0.9;
 	public static final double RIFT_FACTOR = 1.0;
@@ -630,7 +632,7 @@ public final class ArtRules {
 	/** Star Needle (I): a thrust that looses three darts of starlight; each that strikes gives aura back and sets a star on its foe. */
 	public static final int NEEDLE_DARTS = 3;
 	public static final double NEEDLE_RANGE = 9.0;
-	public static final double NEEDLE_SPEED = 2.2;
+	public static final double NEEDLE_SPEED = 1.5;
 	/** Degrees between the darts as they leave, and how hard each turns toward the foe nearest its path, a tick. */
 	public static final double NEEDLE_SPREAD = 8.0;
 	public static final double NEEDLE_SEEK = 0.35;
@@ -699,6 +701,8 @@ public final class ArtRules {
 	public static final int ECHO_TARGETS = 4;
 	public static final int ECHO_DELAY = 12;
 	public static final double ECHO_REPEAT = 0.5;
+	/** The echo's cut reaches a little further than the cut (a foe the first knocked back a step is still in it). */
+	public static final double ECHO_REPEAT_REACH = 4.0;
 
 	/** Rewind Leap (II): a falling cut that drags its foes in time, then time snaps you back to where you leapt from. */
 	public static final double REWIND_REACH = 3.3;
@@ -762,7 +766,7 @@ public final class ArtRules {
 
 	/** Red Rain (II): a falling cut that bursts where it lands, and a red rain there a while: foes bleed, and you drink from all of it. */
 	public static final double RAIN_AHEAD = 2.0;
-	public static final double RAIN_RADIUS = 3.0;
+	public static final double RAIN_RADIUS = 3.5;
 	public static final double RAIN_FACTOR = 0.7;
 	public static final int RAIN_TARGETS = 6;
 	public static final int RAIN_TICKS = 40;
@@ -1012,7 +1016,7 @@ public final class ArtRules {
 		art("thousand_moments", "hourglass", 4, THOUSAND_FACTOR + 0.3, 1.6, THOUSAND_HOLD / 20.0, THOUSAND_RADIUS, Kind.STILL, Kind.ECHO),
 		// Crimson: bleeding and drinking, the most damage after Ember's, and a price.
 		art("bloodletting", "crimson", 0, BLOOD_FACTOR + BLOOD_BLEEDS * BLOOD_BLEED, 0.25, 0.0, BLOOD_REACH, Kind.BLEED, Kind.DRINK).mends(0.12),
-		art("red_rain", "crimson", 1, RAIN_FACTOR + 4 * RAIN_BLEED, 0.7, 0.0, RAIN_AHEAD + 3, Kind.BLEED, Kind.DRINK, Kind.FIELD).mends(0.4),
+		art("red_rain", "crimson", 1, RAIN_FACTOR + 4 * RAIN_BLEED, 0.7, 0.0, RAIN_AHEAD + RAIN_RADIUS, Kind.BLEED, Kind.DRINK, Kind.FIELD).mends(0.4),
 		art("sanguine_parry", "crimson", 2, SANGUINE_FACTOR + 0.6, SANGUINE_SPRAY_FACTOR - 0.05, SANGUINE_HOLD / 20.0, 3.0, Kind.BLEED, Kind.DRINK, Kind.HOLD)
 			.mends(0.6),
 		art("frenzy", "crimson", 3, FRENZY_FACTOR + 0.6, 0.5, 0.0, FRENZY_DISTANCE + 3, Kind.MOVE, Kind.FRENZY),

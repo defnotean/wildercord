@@ -415,6 +415,19 @@ public final class ArtKit {
 		MonsterMagic.sync(foe);
 	}
 
+	/**
+	 * Takes the push out of {@code foe}'s motion: every strike carries vanilla knockback, so an art that means to keep its foes where
+	 * they are (in its rain, in its echo's reach, where its well gathered them) steadies them after it strikes. A player's own motion is
+	 * theirs, and left alone.
+	 */
+	public static void steady(LivingEntity foe) {
+		if (foe.isAlive() && !(foe instanceof Player)) {
+			Vec3 v = foe.getDeltaMovement();
+			foe.setDeltaMovement(v.x * 0.15, Math.min(v.y, 0.1), v.z * 0.15);
+			MonsterMagic.sync(foe);
+		}
+	}
+
 	// ------------------------------------------------------------------ what they suffer
 
 	/** Sets {@code foe} alight for {@code ticks} (a player at most {@link ArtRules#PVP_IGNITE_TICKS}); nothing for one fire can't touch. */

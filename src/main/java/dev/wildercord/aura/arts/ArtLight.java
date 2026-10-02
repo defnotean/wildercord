@@ -206,4 +206,13 @@ public final class ArtLight {
 		send(SigilOption.glow(0xFF000000 | color, size), at);
 		return this;
 	}
+
+	/**
+	 * A soft disc of darkness {@code size} blocks across, facing whoever sees it (the flash's opposite: light taken away). Laid under an
+	 * orb, it gives a black sphere a smooth edge.
+	 */
+	public ArtLight shade(Vec3 at, int color, float size) {
+		send(SigilOption.glow((color & 0xFFFFFF) | DARK, size), at);
+		return this;
+	}
 }

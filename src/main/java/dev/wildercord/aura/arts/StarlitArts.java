@@ -148,9 +148,14 @@ public final class StarlitArts {
 				BlockPos pos = BlockPos.containing(next);
 				boolean wall = !level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
 				ArtLight world = ArtLight.world(player);
-				world.bare().ray(from, wall ? from.add(dir[0].scale(0.5)) : next, PALE, 0.05, 5);
-				world.ray(from, wall ? from.add(dir[0].scale(0.5)) : next, color, 0.12, 4);
-				world.bare().orb(next, WHITE, 0.11, 3);
+				// A needle of light with a long tail: the streak reaches back past where it was a tick ago, so the darts read as
+				// three lines of light crossing the air, not specks.
+				Vec3 head = wall ? from.add(dir[0].scale(0.5)) : next;
+				Vec3 tail = from.subtract(dir[0].scale(flown[0] <= ArtRules.NEEDLE_SPEED ? 0.2 : 1.2));
+				world.ray(tail, head, color, 0.17, 6);
+				world.bare().ray(tail.lerp(head, 0.3), head, WHITE, 0.06, 5);
+				world.bare().orb(head, WHITE, 0.13, 3);
+				world.flash(head, PALE, 0.55F);
 				// What it strikes: the first foe its path runs through.
 				LivingEntity struck = null;
 				double best = Double.MAX_VALUE;
@@ -170,13 +175,13 @@ public final class StarlitArts {
 					ArtWards.star(player, struck);
 					ArtKit.giveBack(player, ArtRules.NEEDLE_AURA);
 					paid.add(struck.getUUID());
-					burst(player, struck.getBoundingBox().getCenter(), color, 0.7, index);
+					burst(player, struck.getBoundingBox().getCenter(), color, 0.55, index);
 					return;
 				}
 				at[0] = next;
 				if (wall || flown[0] >= ArtRules.NEEDLE_RANGE) {
 					done[0] = true;
-					burst(player, at[0], color, 0.45, index);
+					burst(player, at[0], color, 0.4, index);
 				}
 			});
 		}
@@ -280,7 +285,7 @@ public final class StarlitArts {
 	// ------------------------------------------------------------------ III. Constellation Guard
 
 	/** The constellation's stars round a foe, in its own frame: across, up and toward (blocks from its middle). */
-	private static final double[][] CONSTELLATION = {{-0.75, 0.55, 0.1}, {0.15, 0.95, -0.2}, {0.8, 0.35, 0.15}, {0.25, -0.4, 0.3}};
+	private static final double[][] CONSTELLATION = {{-1.05, 0.7, 0.1}, {0.15, 1.3, -0.2}, {1.1, 0.45, 0.15}, {0.35, -0.5, 0.3}};
 
 	static boolean constellationGuard(ServerPlayer player, AuraApi.StringContext context) {
 		ServerLevel level = player.level();
@@ -361,10 +366,13 @@ public final class StarlitArts {
 		int first = ArtRules.CONSTELLATION_STARS - count;
 		for (int i = first; i < ArtRules.CONSTELLATION_STARS; i++) {
 			Vec3 at = starAt(centre, player, i);
-			world.bare().orb(at, WHITE, 0.09, Math.min(4, life));
-			world.bare().ring(at, at.subtract(player.getEyePosition()), color, 0.22, 0.16, 0.025, life);
+			Vec3 facing = at.subtract(player.getEyePosition());
+			world.bare().orb(at, WHITE, 0.12, Math.min(4, life));
+			world.flash(at, PALE, 0.7F);
+			world.sigil(at, facing, SigilOption.STAR, color, 0.42, life + 1, 0.0);
 			if (prev != null) {
-				world.bare().ray(prev, at, PALE, 0.025, life);
+				world.ray(prev, at, color, 0.05, life);
+				world.bare().ray(prev, at, WHITE, 0.018, life);
 			}
 			prev = at;
 		}
@@ -411,13 +419,22 @@ public final class StarlitArts {
 				ElementFx.arcaneImpact(level, foe.getBoundingBox().getCenter(), 0.7);
 			}
 		});
-		// The trail of stars twinkling while it waits.
+		// The trail of stars hanging where it ran, twinkling while they wait: each a five-pointed star of light standing across the
+		// way (so it shows its face to anyone looking along the trail), a bright heart and a glow.
+		Scheduler.later(ArtRules.COMET_TICKS, () -> {
+			ArtLight w = ArtLight.world(player);
+			for (int i = 0; i < stars.size(); i++) {
+				w.sigil(stars.get(i), along, SigilOption.STAR, color, 0.62, ArtRules.COMET_DELAY + 1 + i, i % 2 == 0 ? 0.08 : -0.08);
+			}
+		});
 		for (int t = ArtRules.COMET_TICKS; t < ArtRules.COMET_TICKS + ArtRules.COMET_DELAY; t += 3) {
+			int tick = t;
 			Scheduler.later(t, () -> {
 				ArtLight w = ArtLight.world(player);
-				for (Vec3 s : stars) {
-					w.bare().orb(s, WHITE, 0.1, 4);
-					w.bare().ring(s, ArtKit.UP, color, 0.24, 0.18, 0.03, 4);
+				for (int i = 0; i < stars.size(); i++) {
+					Vec3 s = stars.get(i);
+					w.bare().orb(s, WHITE, (i + tick / 3) % 2 == 0 ? 0.1 : 0.07, 4);
+					w.flash(s, PALE, (i + tick / 3) % 2 == 0 ? 0.9F : 0.6F);
 				}
 			});
 		}
@@ -508,7 +525,7 @@ public final class StarlitArts {
 		for (int i = 0; i < 8; i++) {
 			double a = phase + Math.PI * 2 * i / 8;
 			Vec3 out = new Vec3(Math.cos(a), 0, Math.sin(a));
-			world.ray(feet.add(out.scale(1.2)).add(0, 0.15, 0), feet.add(out.scale(ArtRules.NOVA_RADIUS)).add(0, 0.15, 0), i % 2 == 0 ? color : PALE, 0.16, 12);
+			world.ray(feet.add(out.scale(2.5)).add(0, 0.12, 0), feet.add(out.scale(ArtRules.NOVA_RADIUS)).add(0, 0.12, 0), i % 2 == 0 ? color : PALE, 0.11, 12);
 		}
 		// About the body, seen from outside: a star flaring, a column of light.
 		Vec3 chest = feet.add(0, 1.2, 0);
