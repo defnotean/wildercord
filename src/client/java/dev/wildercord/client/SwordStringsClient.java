@@ -195,7 +195,7 @@ public final class SwordStringsClient {
 				}
 				ASKED.put(art.id(), now);
 				if (art.cooldownTicks() > 0) {
-					PREDICTED.put(art.id(), now + art.cooldownTicks());
+					PREDICTED.put(art.id(), now + SwordStrings.rest(player, art));
 				}
 				lastAsked = art.id();
 				asked++;

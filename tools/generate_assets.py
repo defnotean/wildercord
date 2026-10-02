@@ -407,6 +407,8 @@ def main():
     way_art.write(sys.modules[__name__])
     import technique_art  # Techniques of one's own: each part's glyph, the writing page's seals, the technique scroll.
     technique_art.write(sys.modules[__name__])
+    import blade_art  # The bonded blade: each tier's emblem, each trait's glyph, the ceremony's steps on the Blade tab.
+    blade_art.write(sys.modules[__name__])
     print(f"generated art for {len(runes)} runes, {len(CORDS)} cords")
 
 
@@ -781,6 +783,8 @@ def write_lang(runes):
     lang.update(way_art.LANG)
     import technique_art
     lang.update(technique_art.LANG)
+    import blade_art
+    lang.update(blade_art.LANG)
     # In rune order, not set order: set order changes from run to run and the file must not.
     for path in (r["path"] for r in runes if r["path"] in INNATE):
         lang[f"rune.wildercord.{path}.found"] = "Innate: wakes in one caster's heart at the 1st Circle"

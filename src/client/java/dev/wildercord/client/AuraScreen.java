@@ -18,6 +18,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +50,8 @@ public class AuraScreen extends Screen {
 	private static boolean way;
 	/** Whether it shows the writing page instead (kept while the game runs; wins over the others). */
 	private static boolean writing;
+	/** Whether it shows the bonded blade's page instead (kept while the game runs; wins over all of them). */
+	private static boolean blade;
 	/** Where the tabs were drawn last (the page's own coordinates), for a click: their row, and each one's left and right. */
 	private int tabsY = -1;
 	private int techLeft;
@@ -59,8 +62,12 @@ public class AuraScreen extends Screen {
 	private int wayRight;
 	private int writeLeft;
 	private int writeRight;
+	private int bladeLeft;
+	private int bladeRight;
 	/** The writing page (techniques of one's own), drawn in place of everything under the tabs while it's open. */
 	private TechniquePage page;
+	/** The bonded blade's page, drawn in place of everything under the tabs while it's open. */
+	private BladePage bladePage;
 	/** The Way tree's cells as drawn last (the page's own coordinates: x, y, size), by node id, for a click. */
 	private final java.util.Map<String, int[]> cells = new java.util.LinkedHashMap<>();
 	/** The node picked on the Way tab (its details shown under the tree), or null for the one that matters most now. */
@@ -75,7 +82,8 @@ public class AuraScreen extends Screen {
 	protected void init() {
 		super.init();
 		page = new TechniquePage(minecraft, font);
-		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here.
+		bladePage = new BladePage(minecraft, font);
+		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here (and the blade's).
 		minecraft.textInputManager().startTextInput(this);
 	}
 
@@ -92,6 +100,9 @@ public class AuraScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
+		if (bladeOpen() && bladePage.keyPressed(event)) {
+			return true;
+		}
 		if (writingOpen() && page.keyPressed(event)) {
 			return true;
 		}
@@ -100,6 +111,9 @@ public class AuraScreen extends Screen {
 
 	@Override
 	public boolean charTyped(net.minecraft.client.input.CharacterEvent event) {
+		if (bladeOpen() && bladePage.charTyped(event)) {
+			return true;
+		}
 		if (writingOpen() && page.charTyped(event)) {
 			return true;
 		}
@@ -108,7 +122,14 @@ public class AuraScreen extends Screen {
 
 	/** Whether the writing page is showing (it's open, and techniques work for the player). */
 	private boolean writingOpen() {
-		return writing && page != null && minecraft.player != null && Techniques.on(minecraft.player) && Aura.stage(minecraft.player) > AuraRules.NONE;
+		return writing && !bladeOpen() && page != null && minecraft.player != null && Techniques.on(minecraft.player)
+			&& Aura.stage(minecraft.player) > AuraRules.NONE;
+	}
+
+	/** Whether the bonded blade's page is showing (it's open, and bonded blades work for the player). */
+	private boolean bladeOpen() {
+		return blade && bladePage != null && minecraft.player != null && dev.wildercord.aura.BondedBlades.on(minecraft.player)
+			&& Aura.stage(minecraft.player) > AuraRules.NONE;
 	}
 
 	@Override
@@ -170,23 +191,32 @@ public class AuraScreen extends Screen {
 				boolean toTech = mx >= techLeft && mx < techRight;
 				boolean toWay = wayRight > wayLeft && mx >= wayLeft && mx < wayRight;
 				boolean toWrite = writeRight > writeLeft && mx >= writeLeft && mx < writeRight;
+				boolean toBlade = bladeRight > bladeLeft && mx >= bladeLeft && mx < bladeRight;
+				boolean onBlade = bladeOpen();
 				boolean onWrite = writingOpen();
-				boolean onArts = arts && !way && !onWrite;
-				boolean onTech = !arts && !way && !onWrite;
-				boolean onWay = way && !onWrite;
-				if (toArts && !onArts || toTech && !onTech || toWay && !onWay || toWrite && !onWrite) {
+				boolean onArts = arts && !way && !onWrite && !onBlade;
+				boolean onTech = !arts && !way && !onWrite && !onBlade;
+				boolean onWay = way && !onWrite && !onBlade;
+				if (toArts && !onArts || toTech && !onTech || toWay && !onWay || toWrite && !onWrite || toBlade && !onBlade) {
 					arts = toArts;
 					way = toWay;
 					writing = toWrite;
+					blade = toBlade;
 					if (toWrite) {
 						TechniquePage.opened(minecraft.level.getGameTime());
+					}
+					if (toBlade) {
+						BladePage.opened();
 					}
 					minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(
 						net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.0F));
 					return true;
 				}
 			}
-			// The writing page: everything under the tabs is its own.
+			// The blade's page and the writing page: everything under the tabs is their own.
+			if (bladeOpen() && bladePage.mouseClicked(minecraft.player, mx, my, event.button())) {
+				return true;
+			}
 			if (writingOpen() && page.mouseClicked(minecraft.player, mx, my, event.button())) {
 				return true;
 			}
@@ -233,6 +263,7 @@ public class AuraScreen extends Screen {
 		arts = show;
 		way = false;
 		writing = false;
+		blade = false;
 	}
 
 	/** Opens the page on its Way tab ({@code true}), or back on the techniques, with {@code node} picked (null for the default). */
@@ -240,6 +271,7 @@ public class AuraScreen extends Screen {
 		way = show;
 		arts = false;
 		writing = false;
+		blade = false;
 		picked = node;
 	}
 
@@ -248,9 +280,51 @@ public class AuraScreen extends Screen {
 		writing = show;
 		arts = false;
 		way = false;
+		blade = false;
 		if (show) {
 			TechniquePage.select(slot);
 		}
+	}
+
+	/** Opens the page on its Blade tab ({@code true}), or back on the techniques. */
+	public static void showBlade(boolean show) {
+		blade = show;
+		arts = false;
+		way = false;
+		writing = false;
+		if (show) {
+			BladePage.opened();
+		}
+	}
+
+	/** Whether the page is on its Blade tab (the game tests ask). */
+	public static boolean showingBlade() {
+		return blade;
+	}
+
+	/** The middle of the Blade tab, in screen coordinates (the game tests click it), or null before it's drawn. */
+	public double[] bladeTabPoint() {
+		if (tabsY < 0 || bladeRight <= bladeLeft) {
+			return null;
+		}
+		float s = scale();
+		return new double[] {left() + (bladeLeft + bladeRight) / 2.0 * s, top() + (tabsY + 4) * s};
+	}
+
+	/**
+	 * The middle of something clickable on the Blade tab, in screen coordinates (the game tests click them): "name", "suggest", "name_it",
+	 * "trait:riposte", "release", "blade"; null if it isn't drawn.
+	 */
+	public double[] bladePoint(String key) {
+		if (bladePage == null) {
+			return null;
+		}
+		int[] r = bladePage.targets.get(key);
+		if (r == null) {
+			return null;
+		}
+		float s = scale();
+		return new double[] {left() + (r[0] + r[2] / 2.0) * s, top() + (r[1] + r[3] / 2.0) * s};
 	}
 
 	/** Whether the page is on its writing page (the game tests ask). */
@@ -366,6 +440,9 @@ public class AuraScreen extends Screen {
 		AuraAttachments.Data data = Aura.data(player);
 		AuraAttachments.State state = Aura.state(player);
 		long now = player.level().getGameTime();
+		if (bladeOpen()) {
+			return bladeView(g, player, method, stage, mx, my, partial, color);
+		}
 		if (writingOpen()) {
 			return writingPage(g, player, method, stage, mx, my, partial, color);
 		}
@@ -517,11 +594,14 @@ public class AuraScreen extends Screen {
 		Component strings = Component.translatable("screen.wildercord.aura.arts");
 		Component wayTab = Component.translatable("screen.wildercord.aura.way");
 		Component writeTab = Component.translatable("screen.wildercord.aura.writing");
+		Component bladeTab = Component.translatable("screen.wildercord.aura.blade");
 		boolean ways = dev.wildercord.aura.Ways.on(minecraft.player) && !dev.wildercord.api.AuraApi.ways().isEmpty();
 		boolean writes = Techniques.on(minecraft.player);
-		boolean onWrite = writing && writes;
-		boolean onWay = way && ways && !onWrite;
-		boolean onArts = arts && !onWay && !onWrite;
+		boolean blades = dev.wildercord.aura.BondedBlades.on(minecraft.player);
+		boolean onBlade = blade && blades;
+		boolean onWrite = writing && writes && !onBlade;
+		boolean onWay = way && ways && !onWrite && !onBlade;
+		boolean onArts = arts && !onWay && !onWrite && !onBlade;
 		tabsY = y;
 		techLeft = 14;
 		techRight = techLeft + font.width(tech);
@@ -531,11 +611,14 @@ public class AuraScreen extends Screen {
 		wayRight = ways ? wayLeft + font.width(wayTab) : wayLeft;
 		writeLeft = (ways ? wayRight : artsRight) + 14;
 		writeRight = writes ? writeLeft + font.width(writeTab) : writeLeft;
+		bladeLeft = (writes ? writeRight : ways ? wayRight : artsRight) + 14;
+		bladeRight = blades ? bladeLeft + font.width(bladeTab) : bladeLeft;
 		boolean overTech = inside(mx, my, techLeft, y - 2, techRight - techLeft, 12);
 		boolean overArts = inside(mx, my, artsLeft, y - 2, artsRight - artsLeft, 12);
 		boolean overWay = ways && inside(mx, my, wayLeft, y - 2, wayRight - wayLeft, 12);
 		boolean overWrite = writes && inside(mx, my, writeLeft, y - 2, writeRight - writeLeft, 12);
-		g.text(font, tech, techLeft, y, !onArts && !onWay && !onWrite ? GOLD : overTech ? TEXT : DIM, true);
+		boolean overBlade = blades && inside(mx, my, bladeLeft, y - 2, bladeRight - bladeLeft, 12);
+		g.text(font, tech, techLeft, y, !onArts && !onWay && !onWrite && !onBlade ? GOLD : overTech ? TEXT : DIM, true);
 		g.text(font, strings, artsLeft, y, onArts ? GOLD : overArts ? TEXT : DIM, true);
 		g.fill(techRight + 6, y + 1, techRight + 7, y + 8, FAINT);
 		if (ways) {
@@ -558,10 +641,43 @@ public class AuraScreen extends Screen {
 			g.text(font, writeTab, writeLeft, y, writeColor, true);
 			g.fill(writeLeft - 8, y + 1, writeLeft - 7, y + 8, FAINT);
 		}
-		int under = onWrite ? writeLeft : onWay ? wayLeft : onArts ? artsLeft : techLeft;
-		int underRight = onWrite ? writeRight : onWay ? wayRight : onArts ? artsRight : techRight;
+		if (blades) {
+			int bladeColor = onBlade ? GOLD : overBlade ? TEXT : DIM;
+			if (!onBlade && waitsOnBlade()) {
+				// A trait waits to be chosen (or a blade can be bonded at Edge and none is): the tab breathes gold.
+				double pulse = 0.5 + 0.5 * Math.sin(minecraft.level.getGameTime() * 0.2);
+				bladeColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
+			}
+			g.text(font, bladeTab, bladeLeft, y, bladeColor, true);
+			g.fill(bladeLeft - 8, y + 1, bladeLeft - 7, y + 8, FAINT);
+		}
+		int under = onBlade ? bladeLeft : onWrite ? writeLeft : onWay ? wayLeft : onArts ? artsLeft : techLeft;
+		int underRight = onBlade ? bladeRight : onWrite ? writeRight : onWay ? wayRight : onArts ? artsRight : techRight;
 		g.fill(under, y + 9, underRight, y + 10, 0xFF000000 | (GOLD & 0xFFFFFF));
 		return y + 13;
+	}
+
+	/** Whether the bonded blade asks something of its swordsman now: a trait to choose. */
+	private boolean waitsOnBlade() {
+		ItemStack blade = dev.wildercord.aura.BondedBlades.carried(minecraft.player);
+		dev.wildercord.aura.BladeBond b = dev.wildercord.aura.BondedBlades.bond(blade);
+		return b != null && b.growth().trait().isEmpty() && !b.growth().offer().isEmpty()
+			&& dev.wildercord.aura.BladeRules.effective(b.tier(), Aura.stage(minecraft.player)) >= dev.wildercord.aura.BladeRules.AWAKENED;
+	}
+
+	/** The blade's page: the method, stage and aura in one line by the title (as the writing page), the tabs, then the page ({@link BladePage}). */
+	private List<Component> bladeView(GuiGraphicsExtractor g, LocalPlayer player, BreathingMethod method, int stage, int mx, int my, float partial, int color) {
+		Component stageName = Component.translatable("aura.wildercord.stage." + AuraStages.id(stage));
+		Component line = Component.translatable("screen.wildercord.aura.writing.header", Component.translatable(method.nameKey()), stageName,
+			(int) Aura.aura(player), Aura.capacity(player));
+		int lw = (int) (font.width(line) * 0.8F);
+		g.pose().pushMatrix();
+		g.pose().translate(W - 14 - lw, 11);
+		g.pose().scale(0.8F, 0.8F);
+		g.text(font, line, 0, 0, color, false);
+		g.pose().popMatrix();
+		tabs(g, 24, mx, my, color);
+		return bladePage.draw(g, player, mx, my, partial, color & 0xFFFFFF, 38);
 	}
 
 	/**

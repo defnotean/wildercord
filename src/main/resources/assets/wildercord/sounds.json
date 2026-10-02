@@ -3946,6 +3946,88 @@
       "wildercord:kit/aura/aura_backlash"
     ]
   },
+  "aura_bond_fail": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_bond_fail"
+    ]
+  },
+  "aura_bond_home": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_bond_home_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "wildercord:kit/aura/aura_bond_home_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_bond_join": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_bond_join",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_bond_kindle": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_bond_kindle",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_bond_name": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_bond_name"
+    ]
+  },
+  "aura_bond_pass": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_bond_pass",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_bond_release": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_bond_release"
+    ]
+  },
+  "aura_bond_seal": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_bond_seal",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "aura_bond_tier": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_bond_tier",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_bond_trait": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_bond_trait"
+    ]
+  },
   "aura_breakthrough": {
     "subtitle": "subtitles.wildercord.kit.field",
     "sounds": [
