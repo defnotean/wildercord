@@ -1404,9 +1404,10 @@ aura bar, or hidden: the player's `string_indicator` in `config/wildercord-visua
 played, in the aura's colour; a thin line under them shrinks as the window runs out. A completed string flashes white-gold and fades over a second; a
 fumble shakes, turns dull red and drops away; a refusal greys; a lapse fades. After a perfect guard or a step, the counter's
 (gold) or step cut's mark breathes faintly where the next swing will land. Sounds, for the player alone: `aura_string_tick`
-(climbing the pentatonic scale with each swing), `aura_string_complete` and `aura_string_fumble`. The placeholder arts use the
-existing aura sounds and simple shaped light (an arc, a rising arc, a gold ring, a line, a ground ring), nothing drawn at the
-swordsman's own eyes.
+(climbing the pentatonic scale with each swing), `aura_string_complete` and `aura_string_fumble`. The placeholder arts use
+simple shaped light (an arc, a rising arc, a gold ring, a line, a ground ring), nothing drawn at the swordsman's own eyes, and
+the shared feel below: each its own trail (a cut, a rising cut, an X, a thrust, a whole turn), an impact on each foe hurt, its
+banner, a flare and the method's technique sound.
 
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
@@ -1472,6 +1473,33 @@ translucent types, like the blade, so they hold under shader packs. Sounds: `aur
 `aura_perfect_guard`, `aura_breakthrough`, `aura_backlash`, `aura_breath`, `aura_step`, `aura_armour`, `aura_intent`,
 `aura_dominion`, `aura_dominion_fade`, `aura_spellblade`, and for sword strings `aura_string_tick`, `aura_string_complete` and
 `aura_string_fumble` (the feel kit's `tools/feel/aura.py`).
+
+**One language for every art.** Whatever a swordsman does with aura draws and sounds the same way, so fifty arts read as one
+path:
+- **Trails.** A coated swing leaves a ribbon of light along the blade's arc in the aura's colour, its shape by the swing (a cut,
+  mirrored back in a run; a low sweep across the legs crouching; overhead leaping; a straight lance running, stepping or
+  thrusting a spear; an X for a counter; wide and level for a Flow sweep). It grows with the stage: wider, longer, brighter, motes
+  from Flow, a bright edge from Edge, an echo from Form, sparks at Sovereign. Never at a block being dug.
+- **The body's aura**, by stage: Glow a faint shimmer, Flow wisps from the shoulders and the blade, Edge a haze and a glow
+  underfoot, Form a mantle from the shoulders, Sovereign a corona of flame round the whole body and glowing eyes. Calm (35%)
+  out of a fight, flaring (80%) for five seconds after any blow given or taken, surging higher as an art goes off; dim while
+  aura is too low to coat.
+- **Impacts.** A coated blow flashes where it met the foe, by its weight: a light one (a half swing) just a flash; a full one
+  sparks and holds the striker's and a struck player's view for 45 ms with a slight nudge of the camera; a heavy one (a
+  critical, the slash, the arts) 70 ms and a ring; a grand one (the Final Art) 110 ms and an echo ring.
+- **Banners.** An art's name slides in at the left edge of the swordsman's own screen (a third of the way down, never mid-view)
+  under its kicker (the method, and which art), in the method's colour; others see it small over the swordsman's head.
+- **Sounds.** Each method has its own swing, impact and technique sounds (Ember roars and crackles, Rime rings like ice, Thunder
+  snaps, Gale whistles, Stone thuds, Verdant rustles, Hollow pulls, Starlit chimes, Hourglass ticks, Crimson beats; plain steel
+  for a method without).
+- **Your own view.** In first person your own effects are thin, short and low: a trail a third as wide, half as bright, part
+  of its arc only, low and toward the blade hand, tipped with the look and fading out before the middle of the view; your own
+  impacts a small flash; a perfect guard a thin gold arc low in the view; no body aura on yourself but a faint band at the bottom
+  edge while it flares. Third person and everyone else get the whole spectacle.
+- **Settings** (Magic visual settings): blade trails full, subtle (plain ribbons, and others' ordinary swings left out;
+  techniques always show) or off; body aura full, calm or off; impact full, soft (half the hit-stop) or off; banners all, your
+  own or off; camera motion off also stops the nudge; reduced flash halves the flashes. The performance preset sets subtle,
+  calm, soft and your own.
 
 ### Fairness
 - Aura blows are melee, so armour applies to them as to any blow; only the Edge's quarter goes through.

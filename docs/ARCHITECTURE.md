@@ -826,7 +826,7 @@ package follows the mod's layers: the rules are pure, the runtime is server side
   (`data/wildercord/villager_trade/aura/`, added to the weaponsmith's and cleric's level 5 tags).
 - **`AuraSense`**: the breath's sense, sent to the breather alone as `AuraSense.Sensed(entity ids, colour, ticks)`; from Form
   further (`senseRange`) and pulsed every 3 seconds in a fight (`combat`).
-- **`AuraVfx`**: the server's shaped light for the stance, the beat, the guard, the perfect guard, the sweep, the slash,
+- **`AuraVfx`**: the server's shaped light for the stance, the beat, the guard, the perfect guard, the slash,
   a breakthrough, and the top stages: the step's start, streak and landing, the shell struck, Intent's ring and a creature
   faltering, Dominion's rising (a great `Sigils.ground` circle for its whole length and a band round it), its pulse, its end and
   its chain, a spell drawn into the blade, riding it and slipping off, the slash carrying a spell, and an aura mark.
@@ -891,7 +891,38 @@ client reads, the server judges:
   `AuraGuard.feedback` and `AuraStep.go`), `check` (closed, no weapon, not ready, condition, no aura, unseen), and `perform`
   (the performer, then the price through `Aura.spend` never past empty, the rest, the hooks, the Grimoire's
   `aura:sword_string`). `PlaceholderArts` registers the five arts every method shares for now, on `AuraVfx.artArc`,
-  `artCounter`, `artLine`, `artRing` and `artHit` and the existing aura sounds.
+  `artCounter`, `artLine` and `artRing`, each with its own `AuraFx` trail and impacts (below).
+
+### Feel and spectacle: `aura.AuraFx`, `AuraFxRules`, `client.AuraFxClient`
+
+How aura looks and sounds, one toolkit for every art (the notes for later steps are in
+[AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-2-feel-and-spectacle)). The server says what happened, each client draws it as
+its own camera sees it:
+
+- **Pure numbers** (`AuraFxRules`, unit-tested by `AuraFxRulesTest`): the `Stroke`s (an arc's tilt, start, end, height, reach,
+  sweep and life; `THRUST` a straight lance), which stroke a swing's string marks make (`stroke`), whether a swing is a Flow
+  sweep (`sweeps`, the same test as `mixin.PlayerAuraMixin`'s), mirroring in a run, the trail's growth by stage and its
+  first-person shape (`OWN_*`), the blow's `Weight` (hit-stop, nudge, flash) and `blow(swing, critical)`, the body aura's
+  `intensity` and fight window, the `BannerKind`s and their slide.
+- **Server** (`AuraFx`): five clientbound payloads (`Trail`, `Impact`, `Banner`, `BurstCue`, `Flare`) and the calls that send
+  them (`trail`, `impact`, `banner`, `burst`, `bodyAuraFlare`, `sound`; `art(player)` chains them in the player's colour), the
+  method sound families (`SoundFamily`, `family`, `registerFamily`), the ordinary swing's trail for onlookers (`swingBegins`
+  from `AuraCombat.swing`, `swung` from the two sword string mixins, `swept` from `AuraCombat.sweep`), the fight window
+  (`fighting`, into `AuraPresence.Look.fightUntil`) and `performed`, an `AuraApi.onString` hook giving every art its banner,
+  flare and `ART` sound. `AuraCombat.blow` (coated blows), `AuraVfx.perfect`, `AuraSlash`, `AuraStep`, `AuraDominion` and
+  `PlaceholderArts` call it. `mixin.PlayerAuraMixin` drops vanilla's sweep particle under a Flow sweep.
+- **Client** (`client/`): `AuraFxClient` receives them and decides per viewer (own first person thin and low, a struck
+  player sees no flash of their own; `MagicQuality`'s `trails`, `bodyAura`, `impact`, `banners`, `others`, `cameraShake`),
+  draws the player's own ordinary swing trail at once (`attackBegins`/`swung` from `mixin.MinecraftStringsMixin`, predicting
+  the sweep), the body's motes and the first-person `whisper` band; its `counts()` are for the game test. `fx.AuraTrail` (a
+  ribbon walked in half-piece steps, carried with the entity), `fx.AuraBurst` (flash, star, ring, echo, sparks; a whisper near
+  the owner's eyes), `fx.AuraWisp` and `fx.LightStrokes` (the painting they share) are particles; `fx.HitStop` with
+  `mixin.EntityRenderDispatcherHitStopMixin` holds a struck or striking entity's pose (`Pose`) for a few milliseconds;
+  `ScreenEffects.nudge` turns the camera a touch; `AuraBanners` draws the technique name (own screen's left edge, over others'
+  heads); `render.AuraBodyLayer` (on every `AvatarRenderer`, data from `AvatarRendererGearMixin`) draws the stage's body aura
+  from `textures/entity/aura/body.png` (`tools/aura_art.py`), in two inks without shaders and `GLOW_PIPELINE` under Iris.
+- **Sounds**: `tools/feel/aura_methods.py` (part of the feel kit's `aura` part) makes `aura_<method>_swing`, `_impact` and
+  `_art` for each built-in method and `aura_steel_*`.
 
 ### Hooks for the next wave: `api.AuraApi`
 
@@ -914,6 +945,7 @@ through them, all on the server thread unless noted, registered at start-up:
 | `strings()`, `string(id)`, `stringsOf(player)`, `allStringsOf(player)`, `artOf(player, id)`, `artReadyAt(player, id)` | The registry by stage; what a player can play now (stage reached, available: the reader's candidates); everything open to them whatever their stage (the Aura page); one by id including their own; when an art is ready again. Both sides. |
 | `conflicts(string, exceptId)` | The registered arts that would get in a string's way: the same swings, or a shorter string played on the way to it, or a longer one it cuts short (`SwordString.cutBy`). For a writing screen to warn before a player settles on a string. |
 | `addStringSource(player -> arts)` | Arts a player has of their own (techniques they wrote): asked on both sides each time a string is read or checked, so it reads only synced data and is quick. |
+| `registerSounds(methodId, new AuraFx.SoundFamily(swing, impact, art))` | A method's swing, impact and art sounds, by feel kit name (`AuraFx.SoundFamily.named("ember")` is `aura_ember_swing`, `_impact` and `_art`, so another method's family can be borrowed); a method without one plays the neutral `aura_steel_*`. |
 | `onString((player, art, context) -> ...)` | Hears of every art performed, after it's paid for (momentum, a bonded blade's resonance, a trial). `StringContext` carries the swings' marks (`released(token)`), the creature the last swing struck (the server's own `lastHurtMob`, or null) and the time. |
 
 Other seams: `AuraCombat.blow` and `landed` (where aura marks and Dominion's chain join a blow), `AuraCombat.projected`
