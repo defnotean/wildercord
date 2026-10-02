@@ -1766,6 +1766,117 @@ Storm of Edges (400 + 160 ticks < its 600-tick rest).
 **Settings** (`aura` section): `ways`, `way_settle_xp` (0 to 10000), `way_change_at_power`, `banner_range` (2 to 48), `banner_share` (0 to 1),
 `banner_aura_share` (0 to 1). The client learns whether Ways are on (`Config.Sync.combat` bit 8, `Config.ways`).
 
+### Techniques of your own
+**From Edge a swordsman writes their own.** A technique is three **parts**, a **stroke** (how the blade moves), a **release** (how its
+force leaves the swordsman) and an **intent** (what it's for), with the method's **element** in all of it, a **name** its writer chose
+and a **string** of swings. It's played like an art (it is a string art, the player's own) and ranks up as it lands. The rules and every
+number are `aura.TechniqueRules` (pure, unit-tested by `TechniqueRulesTest`); the state, the string source, the writing and the ranks are
+`aura.Techniques` (the `aura_techniques` attachment, a `Book`: the parts learned, three slots, and the records of up to twelve techniques
+written; saved, synced to its owner, kept through death); the performance is `aura.arts.TechniqueArts`; scrolls are
+`aura.world.TechniqueScrollItem` and `aura.ScrollSources`; the page is `client.TechniquePage` inside `client.AuraScreen`.
+
+**The parts.** Six strokes, four releases, seven intents (an add-on can register more intents, `AuraApi.registerTechniqueIntent`):
+
+| Stroke | Shape | Reach | Width | First foe | Foes | Others | Its own |
+|---|---|---|---|---|---|---|---|
+| **Thrust** | line | 5.5 | 0.7 | ×1.0 | 3 | ×0.7 | long and narrow |
+| **Rising Cut** | cone | 3.4 | 100° | ×0.8 | 4 | ×1 | lifts 0.55 |
+| **Falling Cut** | cone | 3.6 | 60° | ×1.12 | 2 | ×0.6 | stance ×1.4 |
+| **Sweep** | cone | 3.3 | 170° | ×0.62 | 6 | ×1 | |
+| **Spin** | ring | 3.0 | 360° | ×0.58 | 8 | ×1 | |
+| **Draw** | cone | 3.8 | 110° | ×0.72 | 4 | ×1 | innate |
+
+Releases: **On the Blade** ×1.0 (innate); **Wave** ×0.75, flying 7 blocks past the reach at 1.4 a tick (a spin's a ring racing 5 more),
+foes ×1.25, stopped by the first solid block; **Burst** ×0.72, the stroke made a ring round the feet (a cone's reach ×0.85, a spin's +1),
+foes ×1.5; **Afterimage** ×0.62 now and an afterimage (`AuraStep.afterimages`, lingering) that strikes the stroke again from where it was
+played 12 ticks later for ×0.55 of the stroke (from where the swordsman stood, wherever they've gone since; seen by them too). Intents:
+**Pierce** ×0.92, +3 foes and +1.5 reach (half on a ring); **Sunder** ×0.88, stance ×2.5; **Bind** ×0.85, roots 24 ticks
+(`ArtKit.root`, the arts' player cap and immunity); **Echo** ×0.85, every foe struck struck again 10 ticks later for half, if within
+reach + 2.5; **Ward** ×0.88, the swordsman steadied a fifth for 80 ticks (`WayBanner.steady`, inside the 0.3 cap); **Rally** ×0.88, the
+swordsman and allies within 8 steadied a tenth for 100 ticks and allied swordsmen +5 momentum; **Infuse** ×0.95, the element ×2. At
+**Tempered** each intent deepens a little (pierce +4 foes, sunder ×2.65, bind 27 ticks, echo 0.54, ward 90 ticks, rally 110 ticks over 9
+blocks, infuse ×2.15).
+
+**The element** (`TechniqueRules.Flavour`, by the method's passive): Ember sets foes alight 24 ticks; Rime chills 30; Thunder interrupts
+the first foe and, once the stroke has struck all it will, a spark leaps to the nearest foe within 4 blocks it didn't strike for 0.35 of
+the blow; Gale throws back 0.45 and reaches a block further; Stone wears a stance ×1.4 and staggers a creature 12 ticks; Verdant mends
+the swordsman 1 a foe (3 at most); Hollow draws foes in 0.3; Starlit gives back 1 aura a foe (2.67 at most); Hourglass echoes the first
+two foes 6 ticks later for 0.18; Crimson opens a wound (two bleeds of 0.05 of the weapon) and drinks 12% (1.5 at most); an add-on's
+method with no element strikes ×1.12. Each is about a seventh of a W in the model, so the methods' techniques sit within 8% of each
+other (`TechniqueRulesTest`), a different answer each.
+
+**Worth, price and rest: the arts' own model.** `TechniqueRules.model` turns a technique's profile into an `ArtRules.Art` (its first
+foe's blow with the afterimage's and the echo's share, the rest at the stroke's others share times its "fair" share, lift, stance past
+an art's, holds, steadying and the element as control, mend and aura) and `ArtRules.power` weighs it, exactly as the fifty arts were
+weighed. Price is that worth at **Tempered** (with its temper and edge) times **4.32 aura** a W, rest **43.2 ticks** a W: a shade under
+the arts' mean rate across the First to Fourth Arts (4.444 and 44.23), so a Tempered technique is about as good a bargain as an average
+art, a Raw one a little worse and a Peerless one a little better. Both are held to 3 to 13 aura and 30 to 130 ticks, and a string's
+**effort** (`effortOf`: its tokens' weights and half a point a swing past the first) moves both by at most 2% (cheaper for a demanding
+string). `TechniqueRulesTest` holds every combination at every rank, temper, edge, method and string: worth per aura and per tick inside
+the arts' own band (slots I to IV: 0.2065 to 0.2536 W an aura), as written from about two thirds of a First Art's worth to a little over
+a Fourth Art's, at most 2.7 W, far under the Final Art; never strictly better or worse than an art. Why the arts' model: techniques are
+played beside the arts, on the same strings and the same momentum; anything else would make one of the two a trap.
+
+**Strings.** Two to five swings, at least one mark (low, leap, run, counter or step: full swings alone would play themselves in any
+fight), weight at least 3 (`SwordString` weights: swing 0, full 1, low/leap/run 2, counter/step 4), no low and run together (a sneak
+can't sprint). A string can't `clash` with any of the swordsman's arts' strings or another technique's (`AuraApi.conflicts`: one would
+never be playable as written); one that merely `overlap`s an art is allowed and the page says which goes first (`StringReader.compare`:
+last token's weight, total weight, length), except an overlap only an art's counter or step would meet in passing (`incidentalCue`).
+
+**Slots** (`TechniqueRules.slots`): one at Edge, two at Form, three at Sovereign; art ids `technique_1` to `technique_3`. A technique is
+written into a slot over the `technique_write` payload (`Techniques.write`; both sides refuse from `Techniques.refusal`: off, before
+Edge, a closed slot, an unknown part, the string's problems, a clash, and never in a fight); `technique_erase`, `technique_choose`
+(temper, edge) and `technique_inscribe` do the rest, all under one `PacketThrottle` (4 in 10 ticks).
+
+**Names.** `TechniqueRules.cleanName`: section signs and the character after them, control and C1 characters, bidirectional controls
+and isolates, zero-width characters, line and paragraph separators, the byte-order mark, lone surrogates and every format, private-use
+and unassigned code point are dropped; runs of spaces collapse; 24 code points at most. Empty, it's named from its parts (`autoName`:
+"Sundering Thrust Wave", "Blazing Draw"). It's shown everywhere as a literal `Component` (`AuraApi.artName`: the banner and the refusal
+lines), never parsed, so a name can't carry formatting, a click event or a translation key to another player. The page filters typing
+to `nameCharacter`; the server cleans again whatever arrives.
+
+**Where parts come from.** Innate from Edge: the Draw, On the Blade and Infuse (so a first technique can be written the moment Edge
+arrives). **Scrolls** (`wildercord:technique_scroll`, the part in the `wildercord:technique_part` component, its art by family): one of
+the 12 scrollable parts, drawn by `ScrollSources` (each a loot table, a chance and three favourite parts at three times the weight,
+scaled by `technique_scroll_chance`) through the `wildercord:random_technique_part` loot function, added to trial chambers' rare reward
+vaults (12%; ominous 25%), ancient cities 14, stronghold libraries 10, bastion treasure 16, jungle temples 10, desert pyramids 8,
+woodland mansions 15, pillager outposts 8, every expedition vault 20, and a fallen knight's drops 6. Read with a method; a part already
+known refuses (not used up); one learned before Edge waits. **Duelists**: a beaten duelist shows a part the challenger doesn't know, its
+method's three favourites three times as likely (`TechniqueRules.duelistWeights`). **Ways** lend one each while walked
+(`TechniqueRules.WAY_PARTS`: Blade pierce, Bulwark ward, Shadowstep afterimage, Banner rally); ward and rally are Way-only (never on a
+scroll), so a Way's identity reaches into techniques without being something another Way can buy. A technique missing a part (a Way
+left) rests: its string plays the arts. The `sword_tomb` source is registered for step 11's tombs (spin, burst, afterimage, sunder and
+echo favoured).
+
+**Ranks** (`TechniqueRules.RANKS`): Raw 0, Honed 60, Tempered 200, Keen 520, Peerless 1300 experience, strength ×0.965, 0.98, 1.0,
+1.02, 1.04. Experience per foe struck is the foe's worth (`AuraCombat.worth`: a monster 1, stronger more) times (1 + 2 × the share of
+its health taken + 1 for a kill), times the moment (`AuraCombat.moment`, more in danger), at most 12 a use, falling with repetition in
+the same place (`REPEAT` 0.08 a recent use, floored at spell mastery's floor), and nothing on a helpless foe; training dummies give
+half, 40 at most a technique. Why its own and not spell mastery: a technique isn't a spell (no mana, no cast to measure, and its parts
+are what change), but it keeps mastery's shape (earned on real foes, more in danger, less for grinding, a capped practice share), so a
+player who knows one knows the other. **Honed** opens a temper (**Swift** ×0.8, its holds and burns too, or **Heavy** ×1.25), **Keen**
+an edge (**Long**: reach ×1.25, wave ×1.2, ×0.93; **Broad**: +40°, a line ×1.4 wide, a ring ×1.15, fair ×1.3, +2 foes, ×0.9), both
+repriced through the model; the first choice is free, changing costs 2 levels. **Peerless** rings its name in gold (a grand banner) and
+its scrollable parts can be set down on scrolls (a paper and an Aura Shard each): a master's knowledge passed on, in the world. Records
+survive erasing, so writing the same technique again brings its rank back.
+
+**Playing one** (`TechniqueArts`): its voice by release, a stroke's light by stroke (the big shapes as spectacle, the swordsman's own
+view keeping a thin low version: a thrust's ground streak, a falling cut's crescent turned about 40° toward the swordsman's back so it
+reads from behind, a still ring at a spin's reach), strikes through one `ArtKit.Hits` (`technique_damage` × `damage_scale`, the PvP cap
+of 8 a player, stance worn as an art's times its weight), then the intent and the element per foe. Momentum, stance, finishers and
+awakening treat it as an art (free while awakened; momentum built as the art slot nearest its worth, `TechniqueRules.momentumSlot`);
+its banner names it under "<method> · <rank> technique".
+
+**The writing page.** The Aura page's fourth tab. The Cord is a ring of rune sockets; the writing page borrows its vocabulary (a cord
+threaded through three seals, parts as sockets, a lock on an unknown part) but composes left to right like a sentence: stroke, release,
+intent, then the readout and a **kata** diagram animating its shape over a grid (foes lit, a wave flying, a burst breaking out, an
+afterimage striking), the string composed from the seven swings in the indicator's marks, and the rank strip (temper, edge, inscribe).
+The name is inked as it's typed. Everything the server would refuse is said on the page first.
+
+**Settings** (`aura` section): `techniques`, `technique_damage` (0 to 5), `technique_xp_multiplier` (0 to 100), `technique_scroll_chance`
+(0 to 10). The client learns whether techniques are on (`Config.Sync.combat` bit 16, `Config.techniques`). Operators:
+`/wildercord aura technique learn|forget <part|all>`, `xp <slot> <amount>`, `clear`.
+
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
 choice is the sneak: a spell cast standing goes out as usual, sword or not). The next **Aura Slash** within 5 seconds

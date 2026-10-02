@@ -163,7 +163,7 @@ def glyph(part):
         g.px(7, 8, 2)
         g.px(8, 8, 2)
     elif part == "draw":
-        # A fast level slash out of the sheathe, the air streaming behind it.
+        # A fast level slash out of the sheath, the air streaming behind it.
         g.line(6, 8, 14, 7, 4)
         g.line(6, 9, 13, 8, 3)
         g.px(15, 7, 4)
@@ -391,7 +391,7 @@ PART_TEXT = {
     "falling_cut": ("Falling Cut", "Overhead and down onto one or two: narrow and heavy, and hard on a stance."),
     "sweep": ("Sweep", "Wide and level round the front: many foes, a little each."),
     "spin": ("Spin", "A whole turn: every foe round about you."),
-    "draw": ("Draw", "A fast level cut out of the sheathe: the lightest stroke, and the cheapest. Every blade knows it from Edge."),
+    "draw": ("Draw", "A fast level cut out of the sheath: the lightest stroke, and the cheapest. Every blade knows it from Edge."),
     # ---- releases
     "on_the_blade": ("On the Blade", "The stroke lands at once, where your blade reaches. Every blade knows it from Edge."),
     "wave": ("Wave", "The stroke thrown on as a crescent of aura flying seven blocks past its reach (a spin's as a ring racing out), a little "
@@ -403,7 +403,7 @@ PART_TEXT = {
     "pierce": ("Pierce", "Through whatever stands in the way: further, and three more foes, a little lighter. The Way of the Blade lends it."),
     "sunder": ("Sunder", "Wears a stance two and a half times as hard as an art, to open a foe for your finisher."),
     "bind": ("Bind", "Roots each foe it strikes where it stands for a moment (a player only briefly)."),
-    "echo": ("Echo", "Strikes each foe again for half a moment later, wherever it has gone, if it's still near."),
+    "echo": ("Echo", "Strikes each foe again a moment later for half as much, wherever it has gone, if it's still near."),
     "ward": ("Ward", "You take a fifth less from foes for four seconds after. The Way of the Bulwark's own: only it lends it."),
     "rally": ("Rally", "You and your allies near take a tenth less from foes for five seconds, and allied swordsmen build momentum. The "
                        "Way of the Banner's own: only it lends it."),
@@ -461,7 +461,7 @@ LANG = {
     "screen.wildercord.aura.writing.release.burst": "Breaks out all round you at once",
     "screen.wildercord.aura.writing.release.afterimage": "Its afterimage strikes again %s s later for %s",
     "screen.wildercord.aura.writing.intent.pierce": "Pierces: up to %s foes, %s blocks out",
-    "screen.wildercord.aura.writing.intent.sunder": "Wears a stance %s times as an art does",
+    "screen.wildercord.aura.writing.intent.sunder": "Wears a stance %s times as hard as an art",
     "screen.wildercord.aura.writing.intent.bind": "Roots each foe it strikes for %s s",
     "screen.wildercord.aura.writing.intent.echo": "Strikes each foe again for %s a moment later",
     "screen.wildercord.aura.writing.intent.ward": "You take %s%% less from foes for %s s",
@@ -471,7 +471,7 @@ LANG = {
     "screen.wildercord.aura.writing.element": "%s: %s",
     "screen.wildercord.aura.writing.element.ignite": "sets foes alight %s s",
     "screen.wildercord.aura.writing.element.chill": "chills foes %s s",
-    "screen.wildercord.aura.writing.element.spark": "a spark leaps on for %s, the first foe interrupted",
+    "screen.wildercord.aura.writing.element.spark": "interrupts, and a spark leaps to a foe it missed for %s",
     "screen.wildercord.aura.writing.element.gale": "throws foes back, and reaches %s block further",
     "screen.wildercord.aura.writing.element.stone": "wears a stance harder, a creature staggered %s s",
     "screen.wildercord.aura.writing.element.mend": "mends you %s for each foe, up to %s",
@@ -505,7 +505,7 @@ LANG = {
     "screen.wildercord.aura.writing.rank": "Rank: %s",
     "screen.wildercord.aura.writing.rank_tip": "Earned as it lands on real foes, more in danger and against stronger ones; less doing the same in "
                                                "the same place, and only a little on training dummies.",
-    "screen.wildercord.aura.writing.inscribe": "Set down on a scroll:",
+    "screen.wildercord.aura.writing.inscribe": "Inscribe:",
     "screen.wildercord.aura.writing.inscribe_tip": "Click to set this part down on a technique scroll for another swordsman (a paper and an Aura "
                                                    "Shard).",
     "screen.wildercord.aura.writing.inscribe_no": "Every blade knows it, or only a Way gives it: no scroll can carry it.",

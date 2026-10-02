@@ -131,6 +131,12 @@ shelters you); with friends, it's the strongest thing on the field.
 <img src="{{ '/assets/images/ways-banner.jpg' | relative_url }}" alt="Left: a player landing a finisher on a rival, a gold pennant of light over their head, a ring of gold at their feet and a thread of gold running to an ally ringed in gold. Right: the player's Dominion, the ally inside it in a ring of gold while the rival stands in the same circle without one" class="shot">
 <span class="caption">A rallying cry, and a sheltering Dominion.</span>
 
+## A Way's part
+
+Each Way also **lends** you a part for [techniques of your own]({{ '/progression/techniques/' | relative_url }}) while you walk it:
+the Blade **Pierce**, the Bulwark **Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. Ward and Rally are found nowhere
+else. Leave the Way and the part goes with it: a technique written with it rests until you walk the Way again.
+
 ## Allies and the Banner
 
 Everything the Banner gives reaches only your **allies**, by the same rule chorus casting uses:

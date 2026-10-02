@@ -241,6 +241,12 @@ already down to a heart, it costs nothing more.
 <img src="{{ '/assets/images/arts-crimson-moon.jpg' | relative_url }}" alt="Seen from behind a player wreathed in red light: a great crescent of blood-red light standing over four husks ahead, crescents of red rolling out low over the stone, rings of red round each husk" class="shot">
 <span class="caption">Crimson Moon.</span>
 
+## Techniques of your own
+
+From Edge a swordsman can write techniques of their own beside these: a stroke, a release and an intent, their method's element in
+each, on a string of their choosing. Each is weighed on the same scale as the fifty arts, so it's another answer to them rather than
+a better one. See [Techniques of your own]({{ '/progression/techniques/' | relative_url }}).
+
 ## The common arts
 
 A breathing method without arts of its own (an add-on's) plays the five **common arts** on the same strings: an arc of aura in

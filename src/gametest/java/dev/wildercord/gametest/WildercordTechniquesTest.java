@@ -400,11 +400,18 @@ public class WildercordTechniquesTest implements FabricClientGameTest {
 				context.runOnClient(mc -> AuraClient.afterimageCount());
 				playFullFullLow(context);
 				String id = play.name().toLowerCase(java.util.Locale.ROOT).replace(' ', '_');
-				context.waitTicks(play.release().equals(TechniqueRules.AFTERIMAGE) ? 6 : 3);
+				context.waitTicks(play.release().equals(TechniqueRules.AFTERIMAGE) ? 4 : 3);
 				shot(context, "technique_" + play.release() + "_" + id + (fp ? "_fp" : "_tp"));
 				if (play.release().equals(TechniqueRules.AFTERIMAGE)) {
 					check(context.computeOnClient(mc -> AuraClient.afterimageCount()) > 0, "an afterimage should stand where it was struck");
-					context.waitTicks(TechniqueRules.AFTERIMAGE_RELEASE.delay());
+					// Step back and aside from it, as a swordsman would: the afterimage is left standing ahead (in view past the shoulder),
+					// and strikes from there.
+					on(world, player -> {
+						player.teleportTo(player.level(), player.getX() - 1.5, player.getY(), player.getZ() - 2.4, Set.<Relative>of(), player.getYRot(),
+							player.getXRot(), false);
+						return null;
+					});
+					context.waitTicks(TechniqueRules.AFTERIMAGE_RELEASE.delay() - 2);
 					shot(context, "technique_afterimage_strike" + (fp ? "_fp" : "_tp"));
 				}
 				context.waitTicks(16);
@@ -779,12 +786,18 @@ public class WildercordTechniquesTest implements FabricClientGameTest {
 		});
 		context.waitTicks(10);
 		float before = on(world, Aura::aura);
+		// What it would cost unawakened: the three coated swings spend less than that between them, so a technique charged would show.
+		double price = on(world, player -> {
+			Techniques.Written w = Techniques.book(player).slot(0);
+			return TechniqueRules.cost(Techniques.pricedWorth(player, w), w.sword().orElseThrow());
+		});
 		PERFORMED.clear();
 		playFullFullLow(context);
 		context.waitTicks(6);
 		check(PERFORMED.contains(TechniqueRules.artId(0)), "it plays while awakened (" + PERFORMED + ")");
 		float after = on(world, Aura::aura);
-		check(after >= before - 2.5, "free while awakened, as the arts are (" + before + " to " + after + ": only the coated swings spend)");
+		check(before - after < price, "free while awakened, as the arts are (" + before + " to " + after + ", its price " + price
+			+ ": only the coated swings spend)");
 		calm(context, world);
 	}
 

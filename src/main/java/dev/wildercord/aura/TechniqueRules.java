@@ -404,7 +404,8 @@ public final class TechniqueRules {
 	 *
 	 * @param ignite  ticks a foe struck burns (Ember)
 	 * @param chill   ticks a foe struck is slowed under frost (Rime)
-	 * @param spark   a spark leaping from the first foe to the nearest other, as a share of the blow, and the first foe interrupted (Thunder)
+	 * @param spark   a spark leaping from the first foe, once the stroke has struck, to the nearest foe it didn't strike, as a share of the blow,
+	 *                and the first foe interrupted (Thunder)
 	 * @param knock   how much further foes are thrown back, and the blocks more it reaches ({@code reach}) (Gale)
 	 * @param stance  how much harder it wears a stance, and the ticks a creature struck staggers ({@code stagger}) (Stone)
 	 * @param mend    health it mends its swordsman for each foe struck, at most {@code mendCap} a technique (Verdant)

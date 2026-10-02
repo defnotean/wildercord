@@ -624,16 +624,31 @@ public final class TechniquePage {
 		lines.add(intentLine(p));
 		lines.add(elementLine(player, p));
 		List<Component> tip = null;
+		boolean cut = false;
 		for (Component line : lines) {
 			if (line == null) {
 				continue;
 			}
 			for (FormattedCharSequence part : font.split(line, Math.round(width / s))) {
 				if (y > READOUT_Y + 44) {
+					cut = true;
 					break;
 				}
 				small(g, part, x, y, TEXT, s);
 				y += pitch;
+			}
+		}
+		if (cut) {
+			// More than fits: a mark at its foot, and every line in full on hover.
+			small(g, Component.literal("..."), x + width - 10, READOUT_Y + 49, DIM, s);
+			if (inside(mx, my, x, READOUT_Y + 10, width, 44)) {
+				List<Component> all = new ArrayList<>();
+				for (Component line : lines) {
+					if (line != null) {
+						all.add(line.copy().withColor(TEXT));
+					}
+				}
+				tip = all;
 			}
 		}
 		// Where it sits against the arts: a scale of the four, its worth a mark on it, the nearest named beside it.

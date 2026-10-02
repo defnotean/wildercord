@@ -122,7 +122,11 @@ public final class TechniqueArts {
 		final Set<UUID> wounded = new HashSet<>();
 		double mended;
 		double given;
+		/** Thunder: the first foe it touched (the spark leaps from there once the stroke has struck all it will). */
+		LivingEntity sparkAt;
 		boolean sparked;
+		/** A wave's spark waits for the wave to have flown. */
+		boolean sparkLater;
 		int echoed;
 		final ArtKit.Drink drink;
 
@@ -194,6 +198,9 @@ public final class TechniqueArts {
 			for (int i = 0; i < foes.size(); i++) {
 				strike(foes.get(i), i == 0 ? factor : factor * p.others(), heart, weight);
 			}
+			if (!sparkLater) {
+				spark();
+			}
 		}
 
 		/** One strike: its blow, its experience, then the intent's and the element's touch on the foe (only on one it hurt). */
@@ -239,9 +246,12 @@ public final class TechniqueArts {
 					world.slash(from.add(0, 0.08, 0).add(dir.scale(1.4)), ArtKit.UP, dir, c, Math.max(1.2, r * 0.55), 2.0, 0.22 * w, 2, 9);
 				}
 				case TechniqueRules.FALLING -> {
+					// Brought down in a plane turned a little toward the swordsman's back (straight down their line it would be edge on
+					// from behind, a line and no crescent), so it reads as a cut falling from wherever it's watched.
 					Vec3 centre = from.add(0, 1.2, 0).add(dir.scale(Math.min(2.4, r * 0.65)));
-					show.slash(centre, ArtKit.right(dir), dir.scale(0.5).add(ArtKit.UP.scale(0.85)).normalize(), c, 1.35, 2.4, 0.46 * w, 2, 10)
-						.bare().slash(centre, ArtKit.right(dir), ArtKit.UP, hot, 1.3, 2.0, 0.13 * w, 2, 9);
+					Vec3 plane = ArtKit.right(dir).add(dir.scale(0.8)).normalize();
+					show.slash(centre, plane, dir.scale(0.5).add(ArtKit.UP.scale(0.85)).normalize(), c, 1.35, 2.4, 0.46 * w, 2, 10)
+						.bare().slash(centre, plane, ArtKit.UP, hot, 1.3, 2.0, 0.13 * w, 2, 9);
 					Vec3 land = ArtKit.floor(level, from.add(dir.scale(Math.min(r - 0.6, 2.8))), 1.0, 2.0);
 					if (land != null) {
 						world.groundRing(land, c, 0.15, 1.3, 0.09 * w, 10).ray(land.add(ArtKit.right(dir).scale(-0.9)).add(0, 0.05, 0),
@@ -277,10 +287,14 @@ public final class TechniqueArts {
 
 		/** The stroke thrown on: struck where it reaches, then flying on past it (a spin's ring racing out), each foe once, stopped by a wall. */
 		void wave() {
+			sparkLater = true;
 			blade(feet, look, aim, eye, p.factor(), true);
 			double start = p.reach();
 			double end = p.total();
 			int ticks = (int) Math.ceil((end - start) / TechniqueRules.WAVE_SPEED);
+			if (ticks <= 0) {
+				spark();
+			}
 			boolean ring = p.shape() == TechniqueRules.Shape.RING;
 			double half = switch (p.shape()) {
 				case LINE -> p.width();
@@ -298,8 +312,15 @@ public final class TechniqueArts {
 			for (int t = 1; t <= ticks; t++) {
 				double from = start + TechniqueRules.WAVE_SPEED * (t - 1);
 				double to = Math.min(end, start + TechniqueRules.WAVE_SPEED * t);
+				boolean last = t == ticks;
 				Scheduler.later(t, () -> {
-					if (!player.isAlive() || player.level() != level || stopped[0]) {
+					if (!player.isAlive() || player.level() != level) {
+						return;
+					}
+					if (stopped[0]) {
+						if (last) {
+							spark();
+						}
 						return;
 					}
 					List<LivingEntity> band;
@@ -331,6 +352,9 @@ public final class TechniqueArts {
 						}
 						count[0]++;
 						strike(foe, count[0] == 1 ? p.factor() : p.factor() * p.others(), feet.add(flat.scale(to)), AuraFxRules.Weight.FULL);
+					}
+					if (last) {
+						spark();
 					}
 				});
 			}
@@ -488,7 +512,7 @@ public final class TechniqueArts {
 		void swordsman() {
 			if (p.ward() > 0) {
 				WayBanner.steady(player, p.ward(), p.wardTicks());
-				int blue = ArtKit.mix(color, WayRules.BULWARK_COLOR, 0.45);
+				int blue = ArtKit.mix(color, WayRules.BULWARK_COLOR, 0.65);
 				ArtLight.spectacle(player).ring(feet.add(0, 1.0, 0), ArtKit.UP, blue, 0.9, 0.9, 0.1, 14).ring(feet.add(0, 0.4, 0), ArtKit.UP, blue, 0.8, 0.8, 0.06, 12)
 					.ring(feet.add(0, 1.6, 0), ArtKit.UP, blue, 0.7, 0.7, 0.06, 12);
 				ArtLight.world(player).ring(feet.add(0, 0.07, 0), ArtKit.UP, blue, 1.0, 1.0, 0.07, 14);
@@ -517,6 +541,23 @@ public final class TechniqueArts {
 
 		// ---------------------------------------------------------------- the method's element, on each foe
 
+		/** Thunder's spark, once the stroke has struck all it will: from the first foe it touched to the nearest one it didn't. */
+		void spark() {
+			if (sparked || sparkAt == null) {
+				return;
+			}
+			sparked = true;
+			Vec3 centre = sparkAt.getBoundingBox().getCenter();
+			LivingEntity next = ArtKit.nearest(player, centre, 4.0, struck);
+			if (next == null) {
+				return;
+			}
+			double k = p.flavourScale() * p.temperScale();
+			ArtLight.world(player).arc(centre, next.getBoundingBox().getCenter(), 0xFFF4A0, 0.06, 1, false, 5);
+			float got = hits.strike(next, p.factor() * p.flavour().spark() * k, AuraFxRules.Weight.LIGHT);
+			use.landed(next, got);
+		}
+
 		void element(LivingEntity foe, float taken, Vec3 heart) {
 			TechniqueRules.Flavour fl = p.flavour();
 			double k = p.flavourScale() * p.temperScale();
@@ -533,16 +574,10 @@ public final class TechniqueArts {
 					world.shards(centre, infused ? 0.9 : 0.6, infused ? 6 : 3, 0xBFEFFF, 0xFFFFFF);
 				}
 				case SPARK -> {
-					if (!sparked) {
-						sparked = true;
+					if (sparkAt == null) {
+						sparkAt = foe;
 						Statuses.interrupt(foe);
-						LivingEntity next = ArtKit.nearest(player, centre, 4.0, List.of(foe));
-						if (next != null) {
-							Vec3 to = next.getBoundingBox().getCenter();
-							world.arc(centre, to, 0xFFF4A0, 0.06, 1, false, 5);
-							float got = hits.strike(next, p.factor() * fl.spark() * k, AuraFxRules.Weight.LIGHT);
-							use.landed(next, got);
-						}
+						world.flash(centre, 0xFFF4A0, infused ? 1.0F : 0.7F);
 					}
 				}
 				case GALE -> {
