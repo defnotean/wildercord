@@ -153,6 +153,87 @@
     "aura_armour": {
       "part": "aura"
     },
+    "aura_art_avalanche": {
+      "part": "aura"
+    },
+    "aura_art_backdraft": {
+      "part": "aura"
+    },
+    "aura_art_bolt_step": {
+      "part": "aura"
+    },
+    "aura_art_crackle": {
+      "part": "aura"
+    },
+    "aura_art_cutting_breeze": {
+      "part": "aura"
+    },
+    "aura_art_eye_of_the_storm": {
+      "part": "aura"
+    },
+    "aura_art_frostbite": {
+      "part": "aura"
+    },
+    "aura_art_glacier_mirror": {
+      "part": "aura"
+    },
+    "aura_art_hailfall": {
+      "part": "aura"
+    },
+    "aura_art_heavens_spear": {
+      "part": "aura"
+    },
+    "aura_art_hundred_winds": {
+      "part": "aura"
+    },
+    "aura_art_kindling_draw": {
+      "part": "aura"
+    },
+    "aura_art_landslide": {
+      "part": "aura"
+    },
+    "aura_art_mountain_splitter": {
+      "part": "aura"
+    },
+    "aura_art_rising_cinders": {
+      "part": "aura"
+    },
+    "aura_art_rockbreaker": {
+      "part": "aura"
+    },
+    "aura_art_skate": {
+      "part": "aura"
+    },
+    "aura_art_skyfall": {
+      "part": "aura"
+    },
+    "aura_art_static_riposte": {
+      "part": "aura"
+    },
+    "aura_art_sunfall": {
+      "part": "aura"
+    },
+    "aura_art_sunfall_impact": {
+      "part": "aura"
+    },
+    "aura_art_tailwind": {
+      "part": "aura"
+    },
+    "aura_art_unmoved": {
+      "part": "aura"
+    },
+    "aura_art_updraft": {
+      "part": "aura"
+    },
+    "aura_art_wildfire_rush": {
+      "part": "aura"
+    },
+    "aura_art_winters_hush": {
+      "part": "aura"
+    },
+    "aura_art_winters_hush_shatter": {
+      "part": "aura"
+    },
     "aura_backlash": {
       "part": "aura"
     },

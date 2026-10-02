@@ -548,7 +548,7 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 
 	/** Each placeholder art performed (its keys are tested in WildercordSwordStringsTest): its trail, banner and impacts. */
 	private static void arts(ClientGameTestContext context, TestSingleplayerContext world) {
-		String[] methods = {"ember", "rime", "thunder", "verdant", "starlit"};
+		String[] methods = {"verdant", "hollow", "starlit", "hourglass", "crimson"};
 		String[] strokes = {"cut", "rising", "cross", "thrust", "spin"};
 		for (int i = 0; i < PlaceholderArts.IDS.size(); i++) {
 			String id = PlaceholderArts.IDS.get(i);

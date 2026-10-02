@@ -395,9 +395,17 @@ public record WildercordConfig(
 	 *
 	 * @param enabled       whether sword strings set off their arts at all (the swings themselves stay ordinary swings either way)
 	 * @param windowSeconds how long after the blade is ready again the next swing of a string may come; a pause any longer breaks it
+	 * @param artDamage     every art's damage, times this (on top of {@code damage_scale})
+	 * @param artTerrain    whether arts may lay their passing frost on water (Skate's ice path over a lake: frosted ice, thawed in
+	 *                      time, only where the swordsman may build); everything else an art leaves on the ground is only light
 	 */
-	public record AuraStrings(boolean enabled, double windowSeconds) {
-		public static final AuraStrings DEFAULTS = new AuraStrings(true, dev.wildercord.aura.StringRules.WINDOW / 20.0);
+	public record AuraStrings(boolean enabled, double windowSeconds, double artDamage, boolean artTerrain) {
+		public static final AuraStrings DEFAULTS = new AuraStrings(true, dev.wildercord.aura.StringRules.WINDOW / 20.0, 1.0, true);
+
+		/** A file's sword strings before the methods' arts: the same, with the arts' defaults. */
+		public AuraStrings(boolean enabled, double windowSeconds) {
+			this(enabled, windowSeconds, DEFAULTS.artDamage(), DEFAULTS.artTerrain());
+		}
 
 		/** The window in ticks. */
 		public int windowTicks() {
@@ -583,7 +591,9 @@ public record WildercordConfig(
 				new AuraStrings(
 					r.bool("aura", "strings", d.aura.strings().enabled()),
 					r.number("aura", "string_window_seconds", d.aura.strings().windowSeconds(), dev.wildercord.aura.StringRules.MIN_WINDOW_SECONDS,
-						dev.wildercord.aura.StringRules.MAX_WINDOW_SECONDS))),
+						dev.wildercord.aura.StringRules.MAX_WINDOW_SECONDS),
+					r.number("aura", "art_damage", d.aura.strings().artDamage(), 0, 5),
+					r.bool("aura", "art_terrain", d.aura.strings().artTerrain()))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -630,8 +640,8 @@ public record WildercordConfig(
 			// The top stages, the spellblade and aura marks.
 			"step_cost", "step_cooldown_seconds", "step_distance", "armour_share", "intent_pvp", "intent_pvp_slow", "dominion_cost",
 			"dominion_seconds", "dominion_cooldown_seconds", "dominion_weaken", "spellblade_seconds", "mark_chance_multiplier",
-			// Sword strings.
-			"strings", "string_window_seconds"));
+			// Sword strings, and the methods' arts.
+			"strings", "string_window_seconds", "art_damage", "art_terrain"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -943,7 +953,9 @@ public record WildercordConfig(
 			+ "intent_pvp, slowing them intent_pvp_slow; Dominion costs dominion_cost, lasts dominion_seconds every dominion_cooldown_seconds, and foes "
 			+ "inside hit dominion_weaken weaker. A spell rides the blade for spellblade_seconds; mark_chance_multiplier scales the chance an elemental "
 			+ "aura strike leaves its reaction mark. Sword strings (strings) set off arts from a short run of ordinary swings; each swing must come "
-			+ "within string_window_seconds of the moment the blade is ready again, or the string breaks.");
+			+ "within string_window_seconds of the moment the blade is ready again, or the string breaks. Each breathing method's arts deal "
+			+ "art_damage times their damage; art_terrain lets an art lay its passing frost on water (Skate's ice path: frosted ice that thaws, only "
+			+ "where the swordsman may build, and never with casting.spells_edit_blocks or features.world_changing_magic off).");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -971,6 +983,8 @@ public record WildercordConfig(
 		AuraStrings strings = aura.strings();
 		auraSection.addProperty("strings", strings.enabled());
 		auraSection.addProperty("string_window_seconds", strings.windowSeconds());
+		auraSection.addProperty("art_damage", strings.artDamage());
+		auraSection.addProperty("art_terrain", strings.artTerrain());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

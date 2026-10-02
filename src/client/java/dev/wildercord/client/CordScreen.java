@@ -2663,6 +2663,58 @@ public class CordScreen extends Screen {
 	/** How long an affinity's bar is on the Grimoire page. */
 	private static final int AFFINITY_BAR = 64;
 
+	/**
+	 * The breathing methods' arts on the Grimoire page: every one played so far (each goes in the first time it's played), by
+	 * method, and the swordsman's own method's still to play as a hint of which string plays them. Nothing for someone who has
+	 * neither played an art nor learned a method with arts of its own.
+	 */
+	private void addArts(List<GrimoireLine> lines, List<String> found, Player player) {
+		List<dev.wildercord.aura.BreathingMethod> methods = new ArrayList<>();
+		for (dev.wildercord.aura.BreathingMethod m : dev.wildercord.aura.BreathingMethods.all()) {
+			if (dev.wildercord.api.AuraApi.hasArts(m.id())) {
+				methods.add(m);
+			}
+		}
+		int total = 0;
+		int played = 0;
+		for (dev.wildercord.aura.BreathingMethod m : methods) {
+			for (dev.wildercord.api.AuraApi.StringArt art : dev.wildercord.api.AuraApi.arts(m.id())) {
+				total++;
+				if (found.contains(dev.wildercord.aura.ArtRules.grimoireKey(art.id()))) {
+					played++;
+				}
+			}
+		}
+		String own = dev.wildercord.aura.Aura.data(player).method();
+		if (total == 0 || played == 0 && !dev.wildercord.api.AuraApi.hasArts(own)) {
+			return;
+		}
+		lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.arts", played, total), 0, GOLD,
+			List.of(Component.translatable("screen.wildercord.grimoire.arts_hint").withStyle(ChatFormatting.GRAY))));
+		for (dev.wildercord.aura.BreathingMethod m : methods) {
+			List<dev.wildercord.api.AuraApi.StringArt> arts = dev.wildercord.api.AuraApi.arts(m.id());
+			boolean mine = m.id().equals(own);
+			boolean any = arts.stream().anyMatch(a -> found.contains(dev.wildercord.aura.ArtRules.grimoireKey(a.id())));
+			if (!mine && !any) {
+				continue;
+			}
+			Component method = Component.translatable(m.nameKey()).withColor(m.color());
+			for (dev.wildercord.api.AuraApi.StringArt art : arts) {
+				boolean known = found.contains(dev.wildercord.aura.ArtRules.grimoireKey(art.id()));
+				Component ordinal = Component.translatable(dev.wildercord.aura.AuraFxRules.ordinalKey(art.stage()));
+				if (known) {
+					lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.art", Component.translatable(art.nameKey()).withColor(m.color()),
+						ordinal), 8, TEXT, List.of(Component.translatable(art.nameKey()).withColor(m.color()),
+						Component.translatable("aura.wildercord.banner.kicker", method, ordinal).withStyle(ChatFormatting.DARK_GRAY),
+						Component.translatable(art.nameKey() + ".desc").withStyle(ChatFormatting.GRAY))));
+				} else {
+					lines.add(new GrimoireLine(Component.translatable("screen.wildercord.grimoire.art", Component.literal("???"), ordinal), 8, FAINT,
+						List.of(Component.translatable("screen.wildercord.grimoire.art_unknown", method, ordinal).withStyle(ChatFormatting.GRAY))));
+				}
+			}
+		}
+	}
+
 	/** Everything discovered: your innate rune, leaning and affinities, reactions, secret spells (and riddles), feats... */
 	private List<Component> drawGrimoire(GuiGraphicsExtractor g, int mx, int my) {
 		Player player = minecraft.player;
@@ -2716,6 +2768,8 @@ public class CordScreen extends Screen {
 				lines.add(new GrimoireLine(Component.literal("???"), 8, FAINT, List.of(Component.translatable("screen.wildercord.grimoire.secret_unknown").withStyle(ChatFormatting.GRAY))));
 			}
 		}
+		// The breathing methods' arts played so far, and the swordsman's own method's still to play.
+		addArts(lines, found, player);
 		// This world's own magic: its resonances and quirks, and the runes still being read.
 		addWorldMagic(lines);
 		addReading(lines);

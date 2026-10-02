@@ -505,6 +505,8 @@ public final class Aura {
 			AuraMarks.forget(id);
 			SwordStrings.forget(id);
 			AuraFx.forget(id);
+			AuraGuard.forget(id);
+			dev.wildercord.aura.arts.MethodArts.forget(id);
 			// A spell riding the blade leaves with its caster (its cast is no longer alive).
 			Spellblade.forget(id);
 		});
@@ -520,6 +522,8 @@ public final class Aura {
 			AuraMarks.clear();
 			SwordStrings.clear();
 			AuraFx.clear();
+			AuraGuard.clear();
+			dev.wildercord.aura.arts.MethodArts.clear();
 			Spellblade.clear();
 		});
 	}
@@ -530,7 +534,7 @@ public final class Aura {
 		"aura_string_fumble");
 
 	/** Plays one of aura's sounds where {@code player} is. */
-	static void sound(ServerPlayer player, String name, float volume, float pitch) {
+	public static void sound(ServerPlayer player, String name, float volume, float pitch) {
 		Feels.sound(player.level(), player.position().add(0, 1, 0), name, volume, pitch);
 	}
 }

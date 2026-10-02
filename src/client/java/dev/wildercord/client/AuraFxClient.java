@@ -87,6 +87,9 @@ public final class AuraFxClient {
 	private static int flares;
 	private static int bodyMotes;
 	private static int whispers;
+	/** Pieces of your own arts' spectacle drawn (in third person) and left out (through your own eyes). */
+	private static int shown;
+	private static int spared;
 	private static String lastOwnStroke = "";
 
 	public static void init() {
@@ -95,6 +98,7 @@ public final class AuraFxClient {
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.BurstCue.TYPE, (payload, context) -> burst(payload));
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Flare.TYPE, (payload, context) -> flare(payload));
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Banner.TYPE, (payload, context) -> AuraBanners.receive(payload));
+		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Shown.TYPE, (payload, context) -> shown(payload));
 		ClientTickEvents.END_CLIENT_TICK.register(AuraFxClient::tick);
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> reset());
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("aura_whisper"), AuraFxClient::whisper);
@@ -297,6 +301,25 @@ public final class AuraFxClient {
 		mc.particleEngine.add(new AuraBurst(level, payload.at(), payload.facing(), payload.color(), payload.size(), payload.style(), whisper, strength));
 	}
 
+	/**
+	 * A piece of your own art's spectacle (a whirlwind round you, a lance down your line of sight): drawn as everyone else sees it
+	 * while you watch yourself in third person, and left out through your own eyes, where it would fill the view.
+	 */
+	static void shown(AuraFx.Shown payload) {
+		Minecraft mc = Minecraft.getInstance();
+		ClientLevel level = mc.level;
+		if (level == null) {
+			return;
+		}
+		if (mc.getCameraEntity() == mc.player && mc.options.getCameraType().isFirstPerson()) {
+			spared++;
+			return;
+		}
+		shown++;
+		Vec3 at = payload.at();
+		level.addParticle(payload.particle(), true, true, at.x, at.y, at.z, 0, 0, 0);
+	}
+
 	static void flare(AuraFx.Flare payload) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null) {
@@ -476,6 +499,11 @@ public final class AuraFxClient {
 	 */
 	public static int[] counts() {
 		return new int[] {trails, ownTrails, impacts, bursts, flares, bodyMotes, whispers};
+	}
+
+	/** Pieces of your own arts' spectacle drawn in third person, and left out through your own eyes, since the game started. */
+	public static int[] spectacle() {
+		return new int[] {shown, spared};
 	}
 
 	/** The stroke of your last own trail ("cut", "sweep"...). */

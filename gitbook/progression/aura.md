@@ -21,7 +21,7 @@ only limit is the time you put in.
 | **Spend aura** | Every coated blow, the guard, the slash, the step, aura armour and Dominion |
 | **Grow** | Fight. At each stage's limit a **breakthrough** waits for a trial |
 | **The Aura key** | `Z`: sneak and press for the guard (from Flow), tap for the slash (from Edge), double-tap for the step (from Form), hold for Dominion (Sovereign) |
-| **Sword strings** | Short runs of ordinary swings (a low swing, a leaping one, a counter...) that set off an **art**: one at each stage. See [Sword strings](#sword-strings) |
+| **Sword strings** | Short runs of ordinary swings (a low swing, a leaping one, a counter...) that set off an **art**: one at each stage, each method its own. See [Sword strings](#sword-strings) and [Sword Arts](sword-arts.md) |
 | **See and hear it** | Your blade trails light, your body shows your stage, blows land with a hit-stop, techniques name themselves, and every method sounds its own. See [How aura looks and sounds](#how-aura-looks-and-sounds) |
 | **Spells and blades** | From Edge, cast a spell **while sneaking** with your blade in hand and your next slash carries it |
 | **See it** | The aura bar on top of your spell panel, and the **Aura** page (the Aura badge in the Cord screen, `K`) |
@@ -195,24 +195,40 @@ build.
 
 ### The arts
 
-There's an art for each stage, played on the same strings whatever your method, so you learn them once.
+There's an art for each stage, played on the same strings whatever your method, so you learn them once. What your blade does
+when you play one is your method's own: Ember's arts set the field alight, Rime's slow, freeze and shatter, Thunder's leap
+from foe to foe, Gale's reach far and throw foes into the air, Stone's hit hardest and stand firm.
 
-| Art | Opens at | String | What it does | Aura | Rests |
+| Art | Opens at | String | Aura | Rests |
+|---|---|---|---|---|
+| **First Art** | Glow | swing, swing, **low** swing | 6 | 3 s |
+| **Second Art** | Flow | **leaping** swing, **low** swing | 8 | 4 s |
+| **Third Art** | Edge | a **counter** | 8 | 4 s |
+| **Fourth Art** | Form | a **step cut** | 10 | 5 s |
+| **Final Art** | Sovereign | **full**, **full**, **full**, **low**, only with your aura full | 40 | 30 s |
+
+| Method | First Art | Second Art | Third Art | Fourth Art | Final Art |
 |---|---|---|---|---|---|
-| **First Art** | Glow | swing, swing, **low** swing | An arc of aura in front of you, cutting up to four foes | 6 | 3 s |
-| **Second Art** | Flow | **leaping** swing, **low** swing | A rising arc that throws the foes in front into the air (never a boss) | 8 | 4 s |
-| **Third Art** | Edge | a **counter** | A cut on the foe you countered that staggers it again | 8 | 4 s |
-| **Fourth Art** | Form | a **step cut** | A line of aura cut five blocks ahead, through every foe in it | 10 | 5 s |
-| **Final Art** | Sovereign | **full**, **full**, **full**, **low** | A ring of aura round you that cuts every foe near and throws them back. Only with your aura full | 40 | 30 s |
+| **Ember Breath** | Kindling Draw | Rising Cinders | Backdraft | Wildfire Rush | Sunfall |
+| **Rime Breath** | Frostbite | Hailfall | Glacier Mirror | Skate | Winter's Hush |
+| **Thunder Breath** | Crackle | Skyfall | Static Riposte | Bolt Step | Heaven's Spear |
+| **Gale Breath** | Cutting Breeze | Updraft | Eye of the Storm | Tailwind | Hundred Winds |
+| **Stone Breath** | Rockbreaker | Avalanche | Unmoved | Landslide | Mountain Splitter |
+
+What every one of them does, with its numbers, is on the [Sword Arts](sword-arts.md) page.
+
+The other five methods (Verdant, Hollow, Starlit, Hourglass and Crimson) play the five **common arts** until their own
+arrive: an arc of aura in front of you, cutting up to four foes (First); a rising arc that throws the foes in front into the
+air, never a boss (Second); a cut on the foe you countered that staggers it again (Third); a line of aura cut five blocks
+ahead, through every foe in it (Fourth); and a ring of aura round you that cuts every foe near and throws them back (Final).
 
 Arts are aura off the blade, in your method's element, like the slash: they set off your method's gift and can leave aura
-marks. For now every method strikes these five the same way; each method will have arts of its own on the same strings.
-Each art names itself in a [banner](#technique-banners) as it goes off, makes your aura surge, and cuts its own
-[trail](#blade-trails): the First a cut, the Second a rising cut, the Third an X, the Fourth a thrust, and the Final a whole
-turn round you.
+marks. Each art names itself in a [banner](#technique-banners) as it goes off, makes your aura surge, cuts its own
+[trail](#blade-trails) and has a voice of its own over your method's. The first time you play each of your method's arts it
+goes into your [Grimoire](grimoire.md).
 
-![Seen from above and behind: a player with an orange-bladed diamond sword, a wide orange crescent of light cut low in front of them across three husks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-string-first-art.jpg)
-<span>The First Art with Ember Breath.</span>
+![Seen from above and behind: a player wreathed in orange light, an arc of flame cut low in front of them, a burning husk ahead with a ring of light round it](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-string-first-art.jpg)
+<span>Kindling Draw, Ember Breath's First Art.</span>
 
 **When strings overlap.** Three full swings and a low one are also "swing, swing, low swing". When the same swings spell more
 than one art, the one that asks the most of you goes: a counter or a step cut first, then the string with the harder swings,
@@ -238,7 +254,9 @@ a key in Minecraft's Controls).
 
 Your own game reads your swings, but the server checks every art: your stage, its rest and its price, that your blade is in
 hand, and that the swings, guard or step really happened. Against other players arts meet the spell defences and are scaled
-down like the slash, and server owners can switch strings off or change how long each swing may wait.
+down like the slash, never deal one player more than 8 damage, and hold a player still only briefly (see
+[Sword Arts](sword-arts.md#arts-other-players-and-the-world)). Server owners can switch
+strings off, change how long each swing may wait, or scale the arts' damage.
 
 ## How aura looks and sounds
 
@@ -400,16 +418,18 @@ Heart Circle too.
 Open the Cord screen (`K`) and click the **Aura badge** (a little blade, top right; it's there even without a Cord). The
 page shows your method, element and stage, your aura, the road to your next breakthrough and its trials (with your progress
 in one), and every technique: what it does (hover it), how it's set off, what it costs, and the stage it opens at. Its
-**Sword strings** tab lists your arts instead: each string drawn in the indicator's marks, its price (or how long it still
-rests), and on hover what it does and its string in words, with what every mark means at the foot.
+**Sword strings** tab lists your arts instead: each one's name, its string drawn in the indicator's marks, the stage that opens
+it, its price (or how long it still rests), and on hover what it does and its string in words, with what every mark means at
+the foot. A row of every method's colour sits above them: click one to read that method's arts (a method still playing the
+common arts is dimmed).
 
 On the aura bar, the Form diamond dims while the step recharges, and the Sovereign diamond burns while a Dominion stands.
 Above the bar you'll see how long a spell has left on your blade and how long a Dominion holds.
 
 ![The Aura page: a Rime Breath manual's cover, Method, Element, Stage and Aura lines, the road to Edge with a breakthrough waiting and its two trials, and the list of techniques](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-page.jpg)
 
-![The Aura page on its Sword strings tab: the First to the Final Art, each with its string drawn in small marks and its price in aura, a line on keeping time, and the seven marks with their names](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-string-page.jpg)
-<span>The Sword strings tab, Hollow Breath at Sovereign.</span>
+![The Aura page on its Sword strings tab: a row of ten coloured swatches, then Ember Breath's five arts, Kindling Draw to Sunfall, each with its string drawn in small marks, the stage that opens it and its price in aura, a line on keeping time, and the seven marks with their names](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-string-page.jpg)
+<span>The Sword strings tab, Ember Breath at Edge: the Fourth and Final Arts still to come.</span>
 
 ## Duels with a duelist
 

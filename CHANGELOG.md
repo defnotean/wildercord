@@ -4,6 +4,41 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Sword arts
+- **Ember, Rime, Thunder, Gale and Stone Breath each have five arts of their own**, on the same five sword strings, so you
+  learn the strings once and your method decides what they do:
+  - **Ember**, fire that spreads and lingers: *Kindling Draw* (a draw-cut and a line of fire racing on ahead), *Rising
+    Cinders* (foes thrown up in flames, cinders raining off them), *Backdraft* (the blow you caught thrown back as a gout of
+    flame), *Wildfire Rush* (a second rush through foes, the ground burning behind) and *Sunfall* (a leap, a sun on the blade,
+    a blazing landing and a ring of fire).
+  - **Rime**, slow, freeze, shatter: *Frostbite* (crusts that freeze at the third), *Hailfall* (a cloud of hail over the foe),
+    *Glacier Mirror* (whoever struck frozen, and a mirror of ice that turns arrows back), *Skate* (a glide on a path of ice that
+    shatters frozen foes, across water too) and *Winter's Hush* (a cone that freezes everything, then shatters it).
+  - **Thunder**, faster than the eye: *Crackle* (three cuts in a blink, sparks leaping off), *Skyfall* (a bolt called down),
+    *Static Riposte* (lightning leaping on through the foes near), *Bolt Step* (blinking from foe to foe) and *Heaven's Spear*
+    (a charged lance of lightning twenty blocks down your line of sight, the sky striking everything it ran through).
+  - **Gale**, reach and the air under them: *Cutting Breeze* (a wind blade flying ten blocks on), *Updraft* (foes thrown high
+    and your blade biting harder while they're up), *Eye of the Storm* (a spinning counter, then arrows turned aside), *Tailwind*
+    (a long dash that speeds you and your allies) and *Hundred Winds* (a whirlwind of cuts that draws foes in and throws them up).
+  - **Stone**, weight and footing: *Rockbreaker* (a heavy cut that shakes a foe's footing), *Avalanche* (a slam and a rolling
+    shockwave), *Unmoved* (whoever struck hurled back, and you hardened like stone), *Landslide* (a charge that carries foes
+    along and crushes them against walls) and *Mountain Splitter* (the ground split in a line of rising stone).
+- **Every art looks and sounds like itself**: its own trail, light, impacts and voice over your method's. The big shapes are for
+  everyone watching you and for you in third person; in first person you see a thin, low version that keeps the middle of your
+  view clear.
+- **Balanced slot by slot.** Every method's art in a slot costs and rests the same and is worth about the same, so a method is a
+  different answer, never a better one. Damage follows your blade.
+- **Fair to other players**: an art never deals one player more than 8 damage, meets armour and the spell defences, holds a
+  player still for at most three quarters of a second (and not again for 4 s), and respects teams and the PvP rule. Bosses are
+  only ever slowed.
+- **Nothing is griefed.** Fire, ice and stone left by an art are light and shapes. Skate's ice over water is real so you can glide
+  across, only where you could build, and it thaws.
+- **The Aura page's Sword strings tab** shows every method's arts: click a method's colour to read its five, with their strings,
+  stages and prices. **Your Grimoire** records each art the first time you play it, with a toast.
+- **A new guide page, Sword Arts**, lists every art with its numbers. Server owners can scale arts' damage
+  (`aura.art_damage`) and stop Skate freezing water (`aura.art_terrain`).
+- Verdant, Hollow, Starlit, Hourglass and Crimson Breath play the common arts until theirs arrive.
+
 ### How aura looks and sounds
 - **Your blade leaves light where it cuts.** With aura enough to coat a blow, every swing trails a ribbon of your aura's
   colour along the blade's arc, cut the way you swung: a cut down across you (each swing of a quick run cutting back the other
@@ -40,9 +75,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   - **Final Art** (Sovereign): three full swings, then a low swing, with your aura full. A whirl of cuts and a ring round
     you that throws foes back.
 
-  Every method strikes these five the same way for now; each method's own arts, on the same strings, come next. Arts cost a
-  little aura and rest a few seconds (the Final Art half a minute), never spend past empty, and carry your element like the
-  slash.
+  These are the common arts; five methods now answer the strings with arts of their own (see Sword arts). Arts cost a little
+  aura and rest a few seconds (the Final Art half a minute), never spend past empty, and carry your element like the slash.
 - **Paced to your blade.** Each swing must come within half a second of your blade being ready again: about a swing a second
   with a sword, longer with an axe or a mace, and quick half swings always keep up. Pause and the string breaks. Swings at
   the air count only in a fight, and digging never does, so nothing goes off by accident.

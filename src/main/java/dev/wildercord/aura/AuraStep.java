@@ -119,7 +119,7 @@ public final class AuraStep {
 	 * or a stair climbed, and stopped by anything solid, a dungeon ward's edge, the world border, lava or fire. The first point is
 	 * where the player stands.
 	 */
-	static List<Vec3> path(ServerPlayer player, Vec3 dir, double distance) {
+	public static List<Vec3> path(ServerPlayer player, Vec3 dir, double distance) {
 		ServerLevel level = player.level();
 		Vec3 start = player.position();
 		boolean warded = DungeonWards.warded(level, player.blockPosition());
@@ -158,17 +158,7 @@ public final class AuraStep {
 		Vec3 from = path.getFirst();
 		Vec3 to = path.getLast();
 		UNTOUCHABLE.put(player.getUUID(), now + AuraRules.STEP_GUARD_TICKS);
-		float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
-		// Everyone who can see the player draws the afterimages; the player too (seen in third person).
-		Stepped stepped = new Stepped(player.getId(), from, to, yaw, color);
-		for (ServerPlayer viewer : PlayerLookup.tracking(player)) {
-			if (ServerPlayNetworking.canSend(viewer, Stepped.TYPE)) {
-				ServerPlayNetworking.send(viewer, stepped);
-			}
-		}
-		if (ServerPlayNetworking.canSend(player, Stepped.TYPE)) {
-			ServerPlayNetworking.send(player, stepped);
-		}
+		afterimages(player, from, to, dir, color);
 		Aura.sound(player, "aura_step", 1.0F, 1.0F);
 		AuraFx.sound(player, AuraFx.Sound.SWING, 0.55F, 1.35F);
 		AuraFx.bodyAuraFlare(player, 16, 0.55F);
@@ -194,6 +184,23 @@ public final class AuraStep {
 					AuraVfx.stepEnd(level, point, dir, color);
 				}
 			});
+		}
+	}
+
+	/**
+	 * Afterimages of {@code player} in {@code color} along a dash from {@code from} to {@code to}, facing {@code dir}: for everyone
+	 * who can see them, and the player too (seen in third person). A step's, and an art's rush or blink.
+	 */
+	public static void afterimages(ServerPlayer player, Vec3 from, Vec3 to, Vec3 dir, int color) {
+		float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
+		Stepped stepped = new Stepped(player.getId(), from, to, yaw, color);
+		for (ServerPlayer viewer : PlayerLookup.tracking(player)) {
+			if (ServerPlayNetworking.canSend(viewer, Stepped.TYPE)) {
+				ServerPlayNetworking.send(viewer, stepped);
+			}
+		}
+		if (ServerPlayNetworking.canSend(player, Stepped.TYPE)) {
+			ServerPlayNetworking.send(player, stepped);
 		}
 	}
 

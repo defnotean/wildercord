@@ -103,7 +103,7 @@ public final class AuraGuard {
 	}
 
 	/** Whether {@code from} is in front of the player (the guard's half). */
-	static boolean facing(ServerPlayer player, Vec3 from) {
+	public static boolean facing(ServerPlayer player, Vec3 from) {
 		Vec3 toward = from.subtract(player.position());
 		Vec3 look = player.getViewVector(1.0F);
 		return toward.horizontalDistanceSqr() < 1.0E-4 || look.x * toward.x + look.z * toward.z > 0;
@@ -115,14 +115,19 @@ public final class AuraGuard {
 	 * {@code mixin.EntityAuraDeflectMixin} before the projectile hits; null when it isn't turned.
 	 */
 	public static net.minecraft.world.entity.projectile.ProjectileDeflection deflection(Entity entity, Projectile projectile) {
-		if (!(entity instanceof ServerPlayer player) || !perfectNow(player) || !facing(player, projectile.position())) {
+		if (!(entity instanceof ServerPlayer player)) {
 			return null;
+		}
+		if (!perfectNow(player) || !facing(player, projectile.position())) {
+			// No perfect guard: an art's ward may still turn it (Glacier Mirror's ice, the Eye of the Storm's wind).
+			return dev.wildercord.aura.arts.ArtWards.deflection(player, projectile);
 		}
 		long now = player.level().getGameTime();
 		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
+		Entity shooter = projectile.getOwner();
+		caught(player, shooter instanceof LivingEntity living ? living : null, 0);
 		feedback(player);
 		Grimoire.unlock(player, "aura:perfect_guard");
-		Entity shooter = projectile.getOwner();
 		double speed = Math.min(3.0, Math.max(0.6, projectile.getDeltaMovement().length()) * Parry.REFLECT_SPEED);
 		Scheduler.later(1, () -> {
 			if (!projectile.isRemoved()) {
@@ -152,7 +157,7 @@ public final class AuraGuard {
 		}
 		long now = player.level().getGameTime();
 		if (perfectNow(player)) {
-			perfect(player, source);
+			perfect(player, source, damage);
 			return -1;
 		}
 		double share = Config.get().aura().guardShare();
@@ -179,11 +184,13 @@ public final class AuraGuard {
 	}
 
 	/** A perfect guard: a blow turned aside whole and its attacker staggered, or a projectile sent back at whoever loosed it. */
-	private static void perfect(ServerPlayer player, DamageSource source) {
+	private static void perfect(ServerPlayer player, DamageSource source, float damage) {
 		ServerLevel level = player.level();
 		long now = level.getGameTime();
 		// The perfect moment answers once.
 		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
+		// What it caught, for the counter that may follow (a Third Art answers the one who struck, and some throw the blow back).
+		caught(player, source.getEntity() instanceof LivingEntity attacker && attacker != player ? attacker : null, damage);
 		Entity direct = source.getDirectEntity();
 		if (source.is(Aura.DAMAGE)) {
 			// Aura off a blade (a slash, a spark): a crescent is sent back at whoever loosed it, as the guard's own. Nobody is
@@ -210,8 +217,40 @@ public final class AuraGuard {
 		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.perfect_guard").withColor(PERFECT_COLOR));
 	}
 
+	/**
+	 * What a perfect guard last caught: who struck (null for a spell or a projectile with no shooter near), how hard the blow was
+	 * (0 for a projectile, whose harm isn't known until it lands), and when.
+	 */
+	public record Caught(LivingEntity attacker, float damage, long at) {}
+
+	private static final java.util.Map<java.util.UUID, Caught> CAUGHT = new java.util.HashMap<>();
+
+	private static void caught(ServerPlayer player, LivingEntity attacker, float damage) {
+		CAUGHT.put(player.getUUID(), new Caught(attacker, Math.max(0, damage), player.level().getGameTime()));
+	}
+
+	/**
+	 * What {@code player}'s last perfect guard caught, if it was within a counter's moment (and a little for the network): for a
+	 * Third Art, which answers the one who struck. Null otherwise.
+	 */
+	public static Caught caught(ServerPlayer player) {
+		Caught caught = CAUGHT.get(player.getUUID());
+		if (caught == null || player.level().getGameTime() - caught.at() > StringRules.COUNTER_TICKS + StringRules.SEEN_SLACK) {
+			return null;
+		}
+		return caught;
+	}
+
+	static void forget(java.util.UUID id) {
+		CAUGHT.remove(id);
+	}
+
+	static void clear() {
+		CAUGHT.clear();
+	}
+
 	/** A staggered attacker: thrown back, slowed and weakened for a moment (a boss is only slowed, as every boss is). */
-	static void stagger(ServerPlayer player, LivingEntity attacker) {
+	public static void stagger(ServerPlayer player, LivingEntity attacker) {
 		Vec3 away = attacker.position().subtract(player.position());
 		Vec3 flat = new Vec3(away.x, 0, away.z);
 		if (flat.lengthSqr() > 1.0E-4) {
@@ -265,6 +304,7 @@ public final class AuraGuard {
 		}
 		long now = player.level().getGameTime();
 		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
+		caught(player, null, 0);
 		feedback(player);
 		return true;
 	}

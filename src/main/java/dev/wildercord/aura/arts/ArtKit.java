@@ -1,0 +1,622 @@
+package dev.wildercord.aura.arts;
+
+import dev.wildercord.api.AuraApi;
+import dev.wildercord.aura.ArtRules;
+import dev.wildercord.aura.Aura;
+import dev.wildercord.aura.AuraCombat;
+import dev.wildercord.aura.AuraFx;
+import dev.wildercord.aura.AuraFxRules;
+import dev.wildercord.aura.AuraGuard;
+import dev.wildercord.aura.AuraStep;
+import dev.wildercord.cast.Reactions;
+import dev.wildercord.cast.Scheduler;
+import dev.wildercord.cast.Spirits;
+import dev.wildercord.cast.Statuses;
+import dev.wildercord.cast.Targets;
+import dev.wildercord.config.Config;
+import dev.wildercord.monster.MonsterMagic;
+import dev.wildercord.world.dungeons.DungeonWards;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ * What every art does with the world, in one place, so each method's arts read as what they mean: who an art may touch, where its
+ * foes are (an arc, a cone, a line, a circle), its strikes (projected aura with the PvP cap, an impact on each foe), and what it
+ * does to them (lift, throw, pull, set alight, chill, freeze, shake, shock) and to its swordsman (a dash, a blink, a leap), every
+ * one keeping the rules of {@link ArtRules}: a boss is only ever slowed and hurt, a player is held, thrown and burned less, and
+ * nobody the swordsman may not harm is touched.
+ */
+public final class ArtKit {
+	private ArtKit() {}
+
+	static final Vec3 UP = new Vec3(0, 1, 0);
+
+	// ------------------------------------------------------------------ who
+
+	/** Whether an art of {@code player}'s may harm {@code entity}: alive, not them, a foe by the mod's rules, and the game's team rule too. */
+	public static boolean harmable(ServerPlayer player, Entity entity) {
+		return entity instanceof LivingEntity living && living.isAlive() && entity != player && !entity.isSpectator() && Targets.canHarm(player, entity)
+			&& (!(entity instanceof Player other) || player.canHarmPlayer(other));
+	}
+
+	/** Whether an art of {@code player}'s may help {@code entity} (themselves, their pets, their team). */
+	public static boolean helpable(ServerPlayer player, Entity entity) {
+		return Targets.canHelp(player, entity) && !entity.isSpectator();
+	}
+
+	public static boolean boss(Entity entity) {
+		return Spirits.isBoss(entity);
+	}
+
+	// ------------------------------------------------------------------ where
+
+	/** The way the swordsman faces, level. */
+	public static Vec3 flat(Entity player) {
+		Vec3 look = player.getViewVector(1.0F);
+		Vec3 flat = new Vec3(look.x, 0, look.z);
+		return flat.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flat.normalize();
+	}
+
+	/** Square to {@code flat}, toward the swordsman's right hand. */
+	public static Vec3 right(Vec3 flat) {
+		return new Vec3(-flat.z, 0, flat.x);
+	}
+
+	/** Toward the side the swordsman holds their blade (their main arm). */
+	public static Vec3 bladeSide(ServerPlayer player, Vec3 flat) {
+		return player.getMainArm() == HumanoidArm.RIGHT ? right(flat) : right(flat).scale(-1);
+	}
+
+	/** Where the blade is, near enough. */
+	public static Vec3 hand(ServerPlayer player) {
+		Vec3 look = flat(player);
+		return player.position().add(0, 1.05, 0).add(look.scale(0.45)).add(bladeSide(player, look).scale(0.35));
+	}
+
+	/** A colour lifted toward white. */
+	public static int hot(int color, double t) {
+		return mix(color, 0xFFFFFF, t);
+	}
+
+	public static int mix(int a, int b, double t) {
+		int r = (int) Math.round(((a >> 16) & 0xFF) * (1 - t) + ((b >> 16) & 0xFF) * t);
+		int g = (int) Math.round(((a >> 8) & 0xFF) * (1 - t) + ((b >> 8) & 0xFF) * t);
+		int bl = (int) Math.round((a & 0xFF) * (1 - t) + (b & 0xFF) * t);
+		return (r << 16) | (g << 8) | bl;
+	}
+
+	/** The top of the ground at or under {@code at} (searching {@code up} above and {@code down} below), or null with nothing to stand on. */
+	public static Vec3 floor(ServerLevel level, Vec3 at, double up, double down) {
+		BlockPos start = BlockPos.containing(at.x, at.y + up, at.z);
+		int steps = (int) Math.ceil(up + down) + 1;
+		for (int i = 0; i <= steps; i++) {
+			BlockPos pos = start.below(i);
+			if (!level.getBlockState(pos).getCollisionShape(level, pos).isEmpty() && level.getBlockState(pos.above()).getCollisionShape(level, pos.above()).isEmpty()) {
+				double top = level.getBlockState(pos).getCollisionShape(level, pos).max(net.minecraft.core.Direction.Axis.Y);
+				return new Vec3(at.x, pos.getY() + top, at.z);
+			}
+		}
+		return null;
+	}
+
+	// ------------------------------------------------------------------ finding foes
+
+	/** The foes within {@code radius} of {@code centre} (level), from {@code below} under it to {@code above} over it, nearest first. */
+	public static List<LivingEntity> around(ServerPlayer player, Vec3 centre, double radius, double below, double above, int max) {
+		List<LivingEntity> out = new ArrayList<>();
+		AABB box = new AABB(centre.x - radius - 1, centre.y - below, centre.z - radius - 1, centre.x + radius + 1, centre.y + above, centre.z + radius + 1);
+		for (Entity e : player.level().getEntities(player, box, e -> harmable(player, e))) {
+			double dx = e.getX() - centre.x;
+			double dz = e.getZ() - centre.z;
+			double reach = radius + e.getBbWidth() / 2;
+			if (dx * dx + dz * dz <= reach * reach) {
+				out.add((LivingEntity) e);
+			}
+		}
+		out.sort(Comparator.comparingDouble(e -> e.distanceToSqr(centre)));
+		return out.size() > max ? new ArrayList<>(out.subList(0, max)) : out;
+	}
+
+	/** The foes in an arc in front ({@code reach} long, {@code degrees} wide), {@code first} first if it's still standing near; nearest first. */
+	public static List<LivingEntity> arc(ServerPlayer player, LivingEntity first, double reach, double degrees, int max) {
+		Vec3 look = flat(player);
+		Vec3 at = player.position();
+		List<LivingEntity> out = new ArrayList<>();
+		for (Entity e : player.level().getEntities(player, player.getBoundingBox().inflate(reach + 1, 1.8, reach + 1), e -> harmable(player, e))) {
+			Vec3 to = e.position().subtract(at);
+			if (Math.abs(to.y) <= 2.2 && ArtRules.inCone(to.x, to.z, look.x, look.z, reach + e.getBbWidth() / 2, degrees)) {
+				out.add((LivingEntity) e);
+			}
+		}
+		out.sort(Comparator.comparingDouble(e -> e.distanceToSqr(player)));
+		if (first != null && first.isAlive() && harmable(player, first) && first.distanceToSqr(player) < (reach + 2.5) * (reach + 2.5)) {
+			out.remove(first);
+			out.addFirst(first);
+		}
+		return out.size() > max ? new ArrayList<>(out.subList(0, max)) : out;
+	}
+
+	/** The foes along a line from {@code from} down {@code dir} (level), {@code length} long and {@code half} wide each side, nearest the start first. */
+	public static List<LivingEntity> line(ServerPlayer player, Vec3 from, Vec3 dir, double length, double half, double height, int max) {
+		Vec3 flat = new Vec3(dir.x, 0, dir.z);
+		flat = flat.lengthSqr() < 1.0E-4 ? flat(player) : flat.normalize();
+		Vec3 to = from.add(flat.scale(length));
+		AABB box = new AABB(from, to).inflate(half + 1, height, half + 1);
+		List<LivingEntity> out = new ArrayList<>();
+		Map<LivingEntity, Double> along = new HashMap<>();
+		for (Entity e : player.level().getEntities(player, box, e -> harmable(player, e))) {
+			Vec3 rel = e.position().subtract(from);
+			double[] aa = ArtRules.alongAcross(rel.x, rel.z, flat.x, flat.z);
+			if (aa[0] >= -0.6 && aa[0] <= length + 0.6 && aa[1] <= half + e.getBbWidth() / 2 && Math.abs(rel.y) <= height) {
+				out.add((LivingEntity) e);
+				along.put((LivingEntity) e, aa[0]);
+			}
+		}
+		out.sort(Comparator.comparingDouble(along::get));
+		return out.size() > max ? new ArrayList<>(out.subList(0, max)) : out;
+	}
+
+	/** The foes along a line in 3D (it follows the pitch), from {@code from} to {@code to}, within {@code half} of it. */
+	public static List<LivingEntity> beam(ServerPlayer player, Vec3 from, Vec3 to, double half, int max) {
+		Vec3 d = to.subtract(from);
+		double length = d.length();
+		if (length < 1.0E-3) {
+			return new ArrayList<>();
+		}
+		Vec3 u = d.scale(1 / length);
+		List<LivingEntity> out = new ArrayList<>();
+		Map<LivingEntity, Double> along = new HashMap<>();
+		for (Entity e : player.level().getEntities(player, new AABB(from, to).inflate(half + 1), e -> harmable(player, e))) {
+			Vec3 c = e.getBoundingBox().getCenter();
+			Vec3 rel = c.subtract(from);
+			double t = rel.dot(u);
+			if (t < -0.5 || t > length + 0.5) {
+				continue;
+			}
+			double off = rel.subtract(u.scale(t)).length();
+			if (off <= half + Math.max(e.getBbWidth(), e.getBbHeight() * 0.5) * 0.6) {
+				out.add((LivingEntity) e);
+				along.put((LivingEntity) e, t);
+			}
+		}
+		out.sort(Comparator.comparingDouble(along::get));
+		return out.size() > max ? new ArrayList<>(out.subList(0, max)) : out;
+	}
+
+	/**
+	 * The foe an art fastens on: the one the string's last swing struck if it still stands near, or else the nearest in an arc in
+	 * front; null with nobody there.
+	 */
+	public static LivingEntity primary(ServerPlayer player, AuraApi.StringContext context, double reach, double degrees) {
+		LivingEntity struck = context.struck();
+		if (struck != null && struck.isAlive() && harmable(player, struck) && struck.distanceToSqr(player) < (reach + 2.5) * (reach + 2.5)) {
+			return struck;
+		}
+		List<LivingEntity> arc = arc(player, null, reach, degrees, 1);
+		return arc.isEmpty() ? null : arc.getFirst();
+	}
+
+	/**
+	 * The foe a counter answers: the one the counter struck, or the one whose blow the perfect guard just caught (if it's near
+	 * enough to answer), or the nearest in front.
+	 */
+	public static LivingEntity attacker(ServerPlayer player, AuraApi.StringContext context, double reach) {
+		LivingEntity struck = context.struck();
+		if (struck != null && struck.isAlive() && harmable(player, struck)) {
+			return struck;
+		}
+		AuraGuard.Caught caught = AuraGuard.caught(player);
+		if (caught != null && caught.attacker() != null && caught.attacker().isAlive() && harmable(player, caught.attacker())
+				&& caught.attacker().distanceToSqr(player) <= (reach + 2) * (reach + 2)) {
+			return caught.attacker();
+		}
+		List<LivingEntity> arc = arc(player, null, reach, 120, 1);
+		return arc.isEmpty() ? null : arc.getFirst();
+	}
+
+	/** The nearest foe to {@code from} within {@code reach}, leaving out {@code except}; null with none. */
+	public static LivingEntity nearest(ServerPlayer player, Vec3 from, double reach, Collection<? extends Entity> except) {
+		LivingEntity best = null;
+		double bestD = reach * reach;
+		for (Entity e : player.level().getEntities(player, new AABB(from, from).inflate(reach), e -> harmable(player, e) && !except.contains(e))) {
+			double d = e.getBoundingBox().getCenter().distanceToSqr(from);
+			if (d < bestD) {
+				bestD = d;
+				best = (LivingEntity) e;
+			}
+		}
+		return best;
+	}
+
+	// ------------------------------------------------------------------ strikes
+
+	/** The swordsman's weapon damage ({@code W}: at least 1). */
+	public static double weapon(ServerPlayer player) {
+		return Math.max(1.0, player.getAttributeValue(Attributes.ATTACK_DAMAGE));
+	}
+
+	/** Every art's damage times the server's {@code aura.damage_scale} and {@code aura.art_damage}. */
+	public static double scale() {
+		return Config.get().aura().damageScale() * Config.get().aura().strings().artDamage();
+	}
+
+	/** An art's strikes, as it lands them: see {@link Hits}. */
+	public static Hits hits(ServerPlayer player, AuraFx.Art fx) {
+		return new Hits(player, fx);
+	}
+
+	/**
+	 * One performance's strikes. Each lands as projected aura (the slash's rules) at the weapon's damage times a factor, with an
+	 * impact on the foe; each foe answers the art once (its experience, aura marks and the trials come from the first strike on
+	 * it), and another player takes no more than {@link ArtRules#PVP_ART_CAP} from all of the art's strikes together.
+	 */
+	public static final class Hits {
+		private final ServerPlayer player;
+		private final AuraFx.Art fx;
+		private final Map<UUID, Double> pvp = new HashMap<>();
+		private final Set<UUID> answered = new HashSet<>();
+		private final Set<UUID> hurt = new HashSet<>();
+
+		Hits(ServerPlayer player, AuraFx.Art fx) {
+			this.player = player;
+			this.fx = fx;
+		}
+
+		public ServerPlayer player() {
+			return player;
+		}
+
+		public AuraFx.Art fx() {
+			return fx;
+		}
+
+		/** A heavy strike of the weapon's damage times {@code factor}. Returns what it took. */
+		public float strike(LivingEntity foe, double factor) {
+			return strike(foe, factor, AuraFxRules.Weight.HEAVY);
+		}
+
+		public float strike(LivingEntity foe, double factor, AuraFxRules.Weight weight) {
+			return raw(foe, weapon(player) * factor * scale(), weight);
+		}
+
+		/** A strike of {@code damage} (already scaled), landing with {@code weight} ({@code null} for no impact). */
+		public float raw(LivingEntity foe, double damage, AuraFxRules.Weight weight) {
+			if (foe == null || !foe.isAlive() || damage <= 0 || !harmable(player, foe)) {
+				return 0;
+			}
+			boolean answer = answered.add(foe.getUUID());
+			double cap = Double.MAX_VALUE;
+			if (foe instanceof Player) {
+				cap = ArtRules.pvpLeft(Double.MAX_VALUE, pvp.getOrDefault(foe.getUUID(), 0.0));
+				if (cap <= 0) {
+					return 0;
+				}
+			}
+			float taken = AuraCombat.projected(player, foe, damage, 1.0, answer, cap);
+			if (foe instanceof Player) {
+				pvp.merge(foe.getUUID(), AuraCombat.lastAmount(), Double::sum);
+			}
+			if (taken > 0) {
+				hurt.add(foe.getUUID());
+				if (weight != null) {
+					fx.impact(foe, weight);
+				}
+			}
+			return taken;
+		}
+
+		/** Whether this art has hurt {@code foe} yet. */
+		public boolean hurt(LivingEntity foe) {
+			return foe != null && hurt.contains(foe.getUUID());
+		}
+
+		/** How many foes it has hurt. */
+		public int count() {
+			return hurt.size();
+		}
+	}
+
+	// ------------------------------------------------------------------ moving them
+
+	/** Throws {@code foe} upward by {@code up} (never a boss; a player at most {@link ArtRules#PVP_THROW}) and marks it airborne. */
+	public static void lift(LivingEntity foe, double up, int airborneTicks) {
+		double power = ArtRules.thrown(up, foe instanceof Player, boss(foe));
+		if (power <= 0 || !foe.isAlive()) {
+			return;
+		}
+		Vec3 v = foe.getDeltaMovement();
+		foe.setDeltaMovement(v.x * 0.5, Math.max(v.y, power), v.z * 0.5);
+		foe.needsSync = true;
+		MonsterMagic.sync(foe);
+		if (airborneTicks > 0) {
+			Statuses.airborne(foe, airborneTicks);
+		}
+	}
+
+	/** Throws {@code foe} away from {@code from}, {@code power} hard and {@code up} upward (held to the rules for players and bosses). */
+	public static void knock(LivingEntity foe, Vec3 from, double power, double up) {
+		Vec3 away = foe.position().subtract(from);
+		away = new Vec3(away.x, 0, away.z);
+		away = away.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : away.normalize();
+		shove(foe, new Vec3(away.x * power, up, away.z * power));
+	}
+
+	/** Pushes {@code foe} by {@code impulse}, its strength held to the rules for players and bosses (and its knockback resistance). */
+	public static void shove(LivingEntity foe, Vec3 impulse) {
+		double length = impulse.length();
+		double allowed = ArtRules.thrown(length, foe instanceof Player, boss(foe));
+		if (allowed <= 0 || !foe.isAlive()) {
+			return;
+		}
+		MonsterMagic.shove(foe, length > allowed ? impulse.scale(allowed / length) : impulse);
+	}
+
+	/** Draws {@code foe} toward {@code to}, {@code power} hard (never a boss; a player gently). */
+	public static void pull(LivingEntity foe, Vec3 to, double power) {
+		Vec3 toward = to.subtract(foe.position());
+		toward = new Vec3(toward.x, 0, toward.z);
+		if (toward.lengthSqr() < 0.25) {
+			return;
+		}
+		shove(foe, toward.normalize().scale(power).add(0, 0.04, 0));
+	}
+
+	/**
+	 * Draws {@code foe} in toward {@code to} at {@code speed} blocks a tick, its own sideways motion replaced (so a strike's
+	 * knockback a moment before doesn't carry it away): a whirlwind's pull. Never a boss; a player only gently.
+	 */
+	public static void draw(LivingEntity foe, Vec3 to, double speed) {
+		Vec3 toward = to.subtract(foe.position());
+		toward = new Vec3(toward.x, 0, toward.z);
+		double length = toward.length();
+		double allowed = ArtRules.thrown(speed, foe instanceof Player, boss(foe));
+		if (length < 0.6 || allowed <= 0 || !foe.isAlive()) {
+			return;
+		}
+		Vec3 v = foe.getDeltaMovement();
+		Vec3 pull = toward.scale(Math.min(allowed, length * 0.5) / length);
+		foe.setDeltaMovement(pull.x, Math.max(v.y, 0.02), pull.z);
+		MonsterMagic.sync(foe);
+	}
+
+	// ------------------------------------------------------------------ what they suffer
+
+	/** Sets {@code foe} alight for {@code ticks} (a player at most {@link ArtRules#PVP_IGNITE_TICKS}); nothing for one fire can't touch. */
+	public static void ignite(LivingEntity foe, int ticks) {
+		if (!foe.isAlive() || foe.fireImmune() || foe.isInWaterOrRain() && foe.isInWater()) {
+			return;
+		}
+		int t = ArtRules.ignite(ticks, foe instanceof Player);
+		if (t > 0) {
+			foe.igniteForTicks(Math.max(foe.getRemainingFireTicks(), t));
+		}
+	}
+
+	/** Slows {@code foe} ({@code amplifier} 0 is Slowness I), and frost creeps over it to see (never enough to hurt). */
+	public static void chill(ServerPlayer player, LivingEntity foe, int ticks, int amplifier) {
+		if (!foe.isAlive()) {
+			return;
+		}
+		int amp = foe instanceof Player ? Math.min(amplifier, 1) : amplifier;
+		foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, amp, false, true), player);
+		int frost = Math.min(foe.getTicksRequiredToFreeze() - 1, foe.getTicksFrozen() + 60);
+		foe.setTicksFrozen(Math.max(foe.getTicksFrozen(), frost));
+	}
+
+	/** A plain slow. */
+	public static void slow(ServerPlayer player, LivingEntity foe, int ticks, int amplifier) {
+		if (foe.isAlive()) {
+			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, foe instanceof Player ? Math.min(1, amplifier) : amplifier, false, true), player);
+		}
+	}
+
+	/** When each player was last held by an art (so another art's hold waits {@link ArtRules#PVP_HOLD_REST}). */
+	private static final Map<UUID, Long> HELD = new HashMap<>();
+
+	/** How long a hold may take {@code foe} now: the rules' length, and nothing for a player held by an art too lately. */
+	private static int holdFor(LivingEntity foe, int ticks) {
+		int t = ArtRules.hold(ticks, foe instanceof Player, boss(foe));
+		if (t > 0 && foe instanceof Player) {
+			long now = foe.level().getGameTime();
+			Long last = HELD.get(foe.getUUID());
+			if (last != null && now - last < ArtRules.PVP_HOLD_REST && now >= last) {
+				return 0;
+			}
+			HELD.put(foe.getUUID(), now);
+		}
+		return t;
+	}
+
+	/**
+	 * Freezes {@code foe} solid for {@code ticks} (the mod's freeze: still, iced over, and frozen for a fire spell's Shatter); a
+	 * player briefly, a boss only slowed hard. Returns whether it froze.
+	 */
+	public static boolean freeze(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!foe.isAlive()) {
+			return false;
+		}
+		if (boss(foe)) {
+			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 3, false, true), player);
+			Reactions.mark(foe, Reactions.Mark.FROZEN, ticks);
+			return false;
+		}
+		int t = holdFor(foe, ticks);
+		if (t <= 0) {
+			chill(player, foe, ticks, 1);
+			return false;
+		}
+		Spirits.freeze(foe, t);
+		return true;
+	}
+
+	/** Shakes {@code foe}'s footing: it can't act for {@code ticks} (a player is slowed to a crawl that long; a boss only slowed). */
+	public static boolean hold(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!foe.isAlive()) {
+			return false;
+		}
+		if (boss(foe)) {
+			foe.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, ticks, 1, false, true), player);
+			return false;
+		}
+		int t = holdFor(foe, ticks);
+		if (t <= 0) {
+			return false;
+		}
+		Spirits.hold(foe, t);
+		return true;
+	}
+
+	/**
+	 * A hold for a foe just thrown: it waits until the foe comes down (at least {@code delay} ticks, at most two seconds), since a
+	 * hold at once would leave it hanging in the air (a held creature doesn't move), then stuns it where it lands.
+	 */
+	public static void holdLater(ServerPlayer player, LivingEntity foe, int delay, int ticks) {
+		int[] waited = {0};
+		Runnable[] step = new Runnable[1];
+		step[0] = () -> {
+			if (!foe.isAlive() || !player.isAlive() || foe.level() != player.level()) {
+				return;
+			}
+			waited[0]++;
+			if (waited[0] >= delay && (foe.onGround() || foe.isInWater()) || waited[0] >= 40) {
+				hold(player, foe, ticks);
+				return;
+			}
+			Scheduler.later(1, step[0]);
+		};
+		Scheduler.later(1, step[0]);
+	}
+
+	/** Lightning through {@code foe}: what it was winding up breaks, it twitches still for {@code ticks}, and it's left ionised for a storm spell. */
+	public static void shock(ServerPlayer player, LivingEntity foe, int ticks) {
+		if (!foe.isAlive()) {
+			return;
+		}
+		Statuses.interrupt(foe);
+		hold(player, foe, ticks);
+		Reactions.mark(foe, Reactions.Mark.IONISED, ArtRules.IONISED_TICKS);
+	}
+
+	// ------------------------------------------------------------------ moving the swordsman
+
+	/** Where a dash along {@code dir} can go ({@link AuraStep#path}: never through anything solid, over a ward's edge, into lava or fire). */
+	public static List<Vec3> path(ServerPlayer player, Vec3 dir, double distance) {
+		return AuraStep.path(player, dir, distance);
+	}
+
+	/** One stretch of a dash: from where to where, which stretch (1 to {@code ticks}), and whether it's the last. */
+	@FunctionalInterface
+	public interface Stretch {
+		void moved(Vec3 from, Vec3 to, int step, boolean last);
+	}
+
+	/**
+	 * Carries the swordsman along {@code path} over {@code ticks} ticks, a short teleport each (the view stays theirs), calling
+	 * {@code stretch} after each; it stops if they die, change world or mount up. Fall distance is forgotten on the way.
+	 */
+	public static void dash(ServerPlayer player, List<Vec3> path, int ticks, Stretch stretch) {
+		ServerLevel level = player.level();
+		int n = Math.max(1, ticks);
+		for (int i = 1; i <= n; i++) {
+			Vec3 point = path.get(Math.min(path.size() - 1, (int) Math.round((path.size() - 1) * i / (double) n)));
+			Vec3 prev = path.get(Math.min(path.size() - 1, (int) Math.round((path.size() - 1) * (i - 1) / (double) n)));
+			int step = i;
+			boolean last = i == n;
+			Scheduler.later(i - 1, () -> {
+				if (!player.isAlive() || player.level() != level || player.isPassenger()) {
+					return;
+				}
+				player.teleportTo(level, point.x, point.y, point.z, Relative.ROTATION, 0.0F, 0.0F, false);
+				player.resetFallDistance();
+				if (last) {
+					player.setDeltaMovement(Vec3.ZERO);
+				}
+				stretch.moved(prev, point, step, last);
+			});
+		}
+	}
+
+	/**
+	 * A spot beside {@code foe} for a blink, on the side toward {@code from}, where the swordsman's whole body fits, inside the same
+	 * ward (or none) they stand in now, within the world border and clear of lava and fire; null if there's none.
+	 */
+	public static Vec3 beside(ServerPlayer player, LivingEntity foe, Vec3 from) {
+		ServerLevel level = player.level();
+		Vec3 toward = from.subtract(foe.position());
+		toward = new Vec3(toward.x, 0, toward.z);
+		toward = toward.lengthSqr() < 1.0E-4 ? flat(player).scale(-1) : toward.normalize();
+		double gap = foe.getBbWidth() / 2 + 0.75;
+		boolean warded = DungeonWards.warded(level, player.blockPosition());
+		for (double turn : new double[] {0, 0.6, -0.6, 1.2, -1.2}) {
+			Vec3 dir = new Vec3(toward.x * Math.cos(turn) - toward.z * Math.sin(turn), 0, toward.x * Math.sin(turn) + toward.z * Math.cos(turn));
+			for (double dy : new double[] {0, 0.6, -0.6, 1.0}) {
+				Vec3 spot = foe.position().add(dir.scale(gap)).add(0, dy, 0);
+				if (fits(player, spot, warded)) {
+					return spot;
+				}
+			}
+		}
+		return null;
+	}
+
+	/** Whether the swordsman's body fits at {@code spot}: nothing solid, the same ward, inside the border, no lava or fire. */
+	public static boolean fits(ServerPlayer player, Vec3 spot, boolean warded) {
+		ServerLevel level = player.level();
+		AABB body = player.getBoundingBox().move(spot.subtract(player.position()));
+		return level.noCollision(player, body) && DungeonWards.warded(level, BlockPos.containing(spot)) == warded
+			&& level.getWorldBorder().isWithinBounds(spot.x, spot.z)
+			&& level.getBlockStates(body.inflate(0, 0.25, 0)).noneMatch(s -> s.getFluidState().is(FluidTags.LAVA) || s.is(BlockTags.FIRE));
+	}
+
+	/** Moves the swordsman to {@code spot} at once (the view stays theirs). */
+	public static void blink(ServerPlayer player, Vec3 spot) {
+		player.teleportTo(player.level(), spot.x, spot.y, spot.z, Relative.ROTATION, 0.0F, 0.0F, false);
+		player.resetFallDistance();
+		player.setDeltaMovement(Vec3.ZERO);
+	}
+
+	/** Sets the swordsman's own motion (a leap, a dive), told to their client at once. */
+	public static void launch(ServerPlayer player, Vec3 velocity) {
+		player.setDeltaMovement(velocity);
+		player.needsSync = true;
+		MonsterMagic.sync(player);
+	}
+
+	/** The aura's colour and a stage-scaled size, for an art's look. */
+	public static int color(ServerPlayer player) {
+		return Aura.color(player);
+	}
+
+	// ------------------------------------------------------------------ lifecycle
+
+	static void forget(UUID id) {
+		HELD.remove(id);
+	}
+
+	static void clear() {
+		HELD.clear();
+	}
+}

@@ -145,6 +145,14 @@ public class GrimoireToast implements Toast {
 			this.name = Component.translatable("toast.wildercord.creature", creature);
 			this.icon = type == null ? new ItemStack(Items.BOOK) : SpawnEggItem.byId(type).map(ItemStack::new).orElseGet(() -> new ItemStack(Items.BOOK));
 			this.color = dev.wildercord.spell.FieldGuide.byType(typeId).map(dev.wildercord.spell.FieldGuide.Entry::color).orElse(0xF5C46A);
+		} else if (key.startsWith(dev.wildercord.aura.ArtRules.GRIMOIRE_ART)) {
+			// A method's art, played for the first time: its name, under its method's manual, in its method's colour.
+			String art = key.substring(dev.wildercord.aura.ArtRules.GRIMOIRE_ART.length()).replace('.', ':');
+			String methodId = dev.wildercord.api.AuraApi.artMethod(art);
+			dev.wildercord.aura.BreathingMethod method = dev.wildercord.aura.BreathingMethods.byId(methodId).orElse(null);
+			this.name = Component.translatable("toast.wildercord.aura.art", Component.translatable("aura.wildercord.art." + art.replace(':', '.')));
+			this.icon = method == null ? new ItemStack(Items.IRON_SWORD) : dev.wildercord.aura.BreathingManualItem.of(method.id());
+			this.color = method == null ? 0xF5C46A : method.color();
 		} else if (key.startsWith("aura:")) {
 			// Aura's milestones: a method learned (its manual), a breakthrough or the first perfect guard (a blade in the aura's colour).
 			dev.wildercord.aura.BreathingMethod method = id.startsWith("method_")
