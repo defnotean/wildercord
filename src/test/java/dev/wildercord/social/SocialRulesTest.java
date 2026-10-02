@@ -426,4 +426,47 @@ class SocialRulesTest {
 		assertNull(duel.winner(), "an interrupted duel counts for nobody");
 		assertNull(duel.loser());
 	}
+
+	@Test
+	void aDuelsTermsAreAsTheyAlwaysWere() {
+		DuelRules.Terms duel = DuelRules.Terms.DUEL;
+		assertEquals(DuelRules.ARENA_RADIUS, duel.radius(), 1e-9);
+		assertEquals(DuelRules.COUNTDOWN_TICKS, duel.countdownTicks());
+		assertEquals(DuelRules.MAX_FIGHT_TICKS, duel.maxFightTicks());
+		assertFalse(duel.knockedOut(1.0F), "a duel is ended only by a blow that would kill");
+		assertEquals(1.0F, duel.leftOn(), "and leaves the loser on their last health");
+		assertTrue(duel.recorded());
+		assertEquals(duel, new DuelRules.Duel(A, B, 0).terms, "a duel made the old way fights on a duel's terms");
+		assertTrue(duel.outside(0, 0, 41, 0));
+		assertFalse(duel.outside(0, 0, 40, 0));
+	}
+
+	@Test
+	void aSparsTermsEndItAtOneHeartInASmallerRing() {
+		DuelRules.Terms spar = new DuelRules.Terms(7, 60, 2400, 2.0F, 2.0F, false);
+		assertTrue(spar.knockedOut(2.0F), "one heart is the end");
+		assertTrue(spar.knockedOut(0.5F));
+		assertFalse(spar.knockedOut(2.5F));
+		assertFalse(spar.recorded(), "a spar isn't a duel won or lost");
+		assertTrue(spar.outside(0, 0, 5, 5));
+		assertFalse(spar.outside(0, 0, 4, 4));
+		// Its countdown and its length are its own.
+		DuelRules.Duel bout = new DuelRules.Duel(A, B, 100, new DuelRules.Terms(7, 40, 200, 2.0F, 2.0F, false));
+		assertEquals(2, bout.countdown(100));
+		assertFalse(bout.tick(139));
+		assertTrue(bout.tick(140));
+		assertTrue(bout.fighting());
+		assertEquals(0, DuelRules.fought(bout, 140));
+		assertEquals(150, DuelRules.fought(bout, 290));
+		assertFalse(bout.tick(339));
+		assertTrue(bout.tick(340), "two hundred ticks of fighting and it's even");
+		assertEquals(DuelRules.Ending.DRAW, bout.ending());
+		// Terms are held sane: the health left is never below the knockout, nor below one.
+		DuelRules.Terms odd = new DuelRules.Terms(-3, -5, 0, 4.0F, 1.0F, true);
+		assertEquals(1, odd.radius(), 1e-9);
+		assertEquals(0, odd.countdownTicks());
+		assertEquals(1, odd.maxFightTicks());
+		assertEquals(4.0F, odd.leftOn());
+		assertEquals(1.0F, new DuelRules.Terms(7, 60, 2400, 0F, 0F, false).leftOn());
+	}
 }

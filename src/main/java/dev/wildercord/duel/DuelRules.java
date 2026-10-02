@@ -97,6 +97,33 @@ public final class DuelRules {
 		return duration < 0 ? duration : (int) Math.max(0, duration - elapsed);
 	}
 
+	/**
+	 * The terms a duel is fought on: how far from where it began either duellist may go, the countdown, how long it may run before it's a draw,
+	 * the health that ends it ({@code knockoutAt}: 0 when only a blow that would kill does, as in a duel; a spar ends at one heart), the health a
+	 * duellist brought down is left on, and whether it goes into the duel record. A duel's are {@link #DUEL}.
+	 */
+	public record Terms(double radius, int countdownTicks, int maxFightTicks, float knockoutAt, float leftOn, boolean recorded) {
+		public static final Terms DUEL = new Terms(ARENA_RADIUS, COUNTDOWN_TICKS, MAX_FIGHT_TICKS, 0F, 1.0F, true);
+
+		public Terms {
+			radius = Math.max(1, radius);
+			countdownTicks = Math.max(0, countdownTicks);
+			maxFightTicks = Math.max(1, maxFightTicks);
+			knockoutAt = Math.max(0, knockoutAt);
+			leftOn = Math.max(1.0F, Math.max(leftOn, knockoutAt));
+		}
+
+		/** Whether a duellist left on {@code health} by their opponent has lost (never on these terms when only a killing blow ends it). */
+		public boolean knockedOut(float health) {
+			return knockoutAt > 0 && health <= knockoutAt + 1.0E-4F;
+		}
+
+		/** Whether a point is outside the ground that began at the centre (horizontal distance only). */
+		public boolean outside(double centreX, double centreZ, double x, double z) {
+			return DuelRules.outside(centreX, centreZ, x, z, radius);
+		}
+	}
+
 	/** A challenge from one player to another, made at {@code made} (game time). */
 	public record Challenge(UUID from, UUID to, long made) {
 		public boolean expired(long now) {
@@ -109,18 +136,24 @@ public final class DuelRules {
 		public final UUID a;
 		public final UUID b;
 		public final long start;
+		public final Terms terms;
 		private Phase phase = Phase.COUNTDOWN;
 		private UUID winner;
 		private UUID loser;
 		private Ending ending;
 
 		public Duel(UUID a, UUID b, long start) {
+			this(a, b, start, Terms.DUEL);
+		}
+
+		public Duel(UUID a, UUID b, long start, Terms terms) {
 			if (a.equals(b)) {
 				throw new IllegalArgumentException("a player can't duel themselves");
 			}
 			this.a = a;
 			this.b = b;
 			this.start = start;
+			this.terms = terms == null ? Terms.DUEL : terms;
 		}
 
 		public Phase phase() {
@@ -137,7 +170,7 @@ public final class DuelRules {
 
 		/** The countdown's second still to come (3, 2, 1), or 0 once the fight has begun. */
 		public int countdown(long now) {
-			long left = start + COUNTDOWN_TICKS - now;
+			long left = start + terms.countdownTicks() - now;
 			return left <= 0 ? 0 : (int) ((left + 19) / 20);
 		}
 
@@ -146,11 +179,11 @@ public final class DuelRules {
 		 * ends in a draw. Returns true when the phase changed.
 		 */
 		public boolean tick(long now) {
-			if (phase == Phase.COUNTDOWN && now >= start + COUNTDOWN_TICKS) {
+			if (phase == Phase.COUNTDOWN && now >= start + terms.countdownTicks()) {
 				phase = Phase.FIGHTING;
 				return true;
 			}
-			if (phase == Phase.FIGHTING && now - start - COUNTDOWN_TICKS >= MAX_FIGHT_TICKS) {
+			if (phase == Phase.FIGHTING && now - start - terms.countdownTicks() >= terms.maxFightTicks()) {
 				end(null, null, Ending.DRAW);
 				return true;
 			}
@@ -205,8 +238,18 @@ public final class DuelRules {
 
 	/** Whether a point is outside the arena that began at the centre (horizontal distance only). */
 	public static boolean outside(double centreX, double centreZ, double x, double z) {
+		return outside(centreX, centreZ, x, z, ARENA_RADIUS);
+	}
+
+	/** Whether a point is more than {@code radius} from the centre (horizontal distance only). */
+	public static boolean outside(double centreX, double centreZ, double x, double z, double radius) {
 		double dx = x - centreX;
 		double dz = z - centreZ;
-		return dx * dx + dz * dz > ARENA_RADIUS * ARENA_RADIUS;
+		return dx * dx + dz * dz > radius * radius;
+	}
+
+	/** How long a duel on {@code terms} has been fought at {@code now} (ticks; 0 during the countdown). */
+	public static long fought(Duel duel, long now) {
+		return Math.max(0, now - duel.start - duel.terms.countdownTicks());
 	}
 }

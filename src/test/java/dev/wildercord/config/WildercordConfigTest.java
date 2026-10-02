@@ -853,12 +853,12 @@ class WildercordConfigTest {
 		// The low bits are the switches; the awakening's momentum rides higher up (see awakeningTravelsToTheClient).
 		int switches = 0xFF;
 		Config.Sync on = Config.Sync.of(D);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS, on.combat() & switches);
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS | Config.Sync.SPARRING, on.combat() & switches);
 		assertEquals(Config.Sync.DEFAULT.combat(), on.combat(), "the default before the server speaks is the same");
 		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"momentum\": false}}").config();
-		assertEquals(Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS, Config.Sync.of(off).combat() & switches);
+		assertEquals(Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS | Config.Sync.SPARRING, Config.Sync.of(off).combat() & switches);
 		WildercordConfig neither = WildercordConfig.parse("{\"aura\": {\"momentum\": false, \"stance\": false}}").config();
-		assertEquals(Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS, Config.Sync.of(neither).combat() & switches);
+		assertEquals(Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS | Config.Sync.SPARRING, Config.Sync.of(neither).combat() & switches);
 	}
 
 	@Test
@@ -947,7 +947,7 @@ class WildercordConfigTest {
 		for (int needed : new int[] {0, 1, 37, 80, 100}) {
 			WildercordConfig set = WildercordConfig.parse("{\"aura\": {\"awakening_momentum\": " + needed + "}}").config();
 			assertEquals(needed, Config.Sync.of(set).awakeningMomentum(), "momentum " + needed);
-			assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS, Config.Sync.of(set).combat() & 0xFF);
+			assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS | Config.Sync.SPARRING, Config.Sync.of(set).combat() & 0xFF);
 		}
 	}
 
@@ -1024,7 +1024,7 @@ class WildercordConfigTest {
 		assertTrue((Config.Sync.DEFAULT.combat() & Config.Sync.WAYS) != 0, "on until the server says otherwise");
 		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"ways\": false}}").config();
 		assertEquals(0, Config.Sync.of(off).combat() & Config.Sync.WAYS);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS, Config.Sync.of(off).combat() & 0xFF,
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.TECHNIQUES | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS | Config.Sync.SPARRING, Config.Sync.of(off).combat() & 0xFF,
 			"the other switches stay as they were");
 		assertEquals(Config.Sync.of(D).awakeningMomentum(), Config.Sync.of(off).awakeningMomentum(), "the momentum an awakening asks for is untouched");
 		// Its bit is one of the free low ones, clear of the awakening's momentum (bits 8 to 15).
@@ -1101,7 +1101,7 @@ class WildercordConfigTest {
 		assertTrue((Config.Sync.DEFAULT.combat() & Config.Sync.TECHNIQUES) != 0, "on until the server says otherwise");
 		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"techniques\": false}}").config();
 		assertEquals(0, Config.Sync.of(off).combat() & Config.Sync.TECHNIQUES);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS, Config.Sync.of(off).combat() & 0xFF,
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.BONDS | Config.Sync.BLADE_TRAITS | Config.Sync.SPARRING, Config.Sync.of(off).combat() & 0xFF,
 			"the other switches stay as they were");
 		assertEquals(Config.Sync.of(D).awakeningMomentum(), Config.Sync.of(off).awakeningMomentum(), "the momentum an awakening asks for is untouched");
 		// Its bit is one of the free low ones, clear of the awakening's momentum (bits 8 to 15) and the other switches.
@@ -1180,7 +1180,7 @@ class WildercordConfigTest {
 		assertTrue((Config.Sync.of(off).combat() & Config.Sync.BLADE_TRAITS) != 0, "the traits' own switch is its own");
 		WildercordConfig noTraits = WildercordConfig.parse("{\"aura\": {\"blade_traits\": false}}").config();
 		assertEquals(0, Config.Sync.of(noTraits).combat() & Config.Sync.BLADE_TRAITS);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES,
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES | Config.Sync.SPARRING,
 			Config.Sync.of(off).combat() & 0xFF & ~Config.Sync.BLADE_TRAITS, "the other switches stay as they were");
 		assertEquals(Config.Sync.of(D).awakeningMomentum(), Config.Sync.of(off).awakeningMomentum(), "the momentum an awakening asks for is untouched");
 		// Both bits are free low ones, clear of the awakening's momentum (bits 8 to 15) and the other switches.
@@ -1189,6 +1189,97 @@ class WildercordConfigTest {
 			assertEquals(0, bit & (Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES));
 		}
 		assertNotEquals(Config.Sync.BONDS, Config.Sync.BLADE_TRAITS);
+	}
+
+	private static final List<String> SPARRING_KEYS = List.of("sparring", "spar_ring_radius", "spars_per_day", "spar_xp", "mentorship", "max_disciples",
+		"disciple_gain", "master_share", "clashes", "clash_carry");
+
+	@Test
+	void sparringSettingsAreTheRulesNumbers() {
+		WildercordConfig.AuraSparring s = D.aura().sparring();
+		assertEquals(WildercordConfig.AuraSparring.DEFAULTS, s);
+		assertTrue(s.sparring() && s.mentorship() && s.clashes(), "all three are on by default");
+		assertEquals(dev.wildercord.aura.SparRules.RING_RADIUS, s.ringRadius(), 1e-9);
+		assertEquals(dev.wildercord.aura.SparRules.DAILY, s.sparsPerDay());
+		assertEquals(1.0, s.sparXp(), 1e-9);
+		assertEquals(dev.wildercord.aura.LineageRules.MAX_DISCIPLES, s.maxDisciples());
+		assertEquals(dev.wildercord.aura.LineageRules.NEAR_GAIN, s.discipleGain(), 1e-9);
+		assertEquals(dev.wildercord.aura.LineageRules.SHARE, s.masterShare(), 1e-9);
+		assertEquals(dev.wildercord.aura.ClashRules.CARRY, s.clashCarry(), 1e-9);
+		for (String key : SPARRING_KEYS) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+	}
+
+	@Test
+	void sparringSettingsAreReadAndHeldInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"sparring\": false, \"spar_ring_radius\": 40, \"spars_per_day\": 7, "
+			+ "\"spar_xp\": 2.5, \"mentorship\": false, \"max_disciples\": 0, \"disciple_gain\": 0.5, \"master_share\": 3, \"clashes\": false, "
+			+ "\"clash_carry\": 1.2}}");
+		WildercordConfig.AuraSparring read = parsed.config().aura().sparring();
+		assertFalse(read.sparring());
+		assertEquals(dev.wildercord.aura.SparRules.MAX_RADIUS, read.ringRadius(), 1e-9, "a ring no wider than sixteen blocks");
+		assertEquals(7, read.sparsPerDay());
+		assertEquals(2.5, read.sparXp(), 1e-9);
+		assertFalse(read.mentorship());
+		assertEquals(1, read.maxDisciples(), "a master keeps at least one disciple");
+		assertEquals(1.0, read.discipleGain(), 1e-9, "never slower near a master");
+		assertEquals(1.0, read.masterShare(), 1e-9, "never more than the whole road");
+		assertFalse(read.clashes());
+		assertEquals(1.2, read.clashCarry(), 1e-9);
+		assertEquals(4, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config(), "the written file keeps them");
+		assertEquals(dev.wildercord.aura.SparRules.MIN_RADIUS, WildercordConfig.parse("{\"aura\": {\"spar_ring_radius\": 1}}").config().aura().sparring()
+			.ringRadius(), 1e-9, "a ring at least four blocks from its middle");
+		assertEquals(0, WildercordConfig.parse("{\"aura\": {\"spars_per_day\": -2}}").config().aura().sparring().sparsPerDay(), "none counting at the least");
+		WildercordConfig.AuraSparring fine = WildercordConfig.parse("{\"aura\": {\"spar_xp\": 0}}").config().aura().sparring();
+		assertEquals(0.0, fine.sparXp(), 1e-9);
+		assertTrue(fine.sparring() && fine.mentorship() && fine.clashes(), "what isn't given stays at its default");
+		// The constructor from before sparring (and a missing part) take their defaults.
+		WildercordConfig.AuraSettings before = new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			WildercordConfig.AuraHeights.DEFAULTS, WildercordConfig.AuraStrings.DEFAULTS, WildercordConfig.AuraMomentum.DEFAULTS,
+			WildercordConfig.AuraAwakening.DEFAULTS, WildercordConfig.AuraWays.DEFAULTS, WildercordConfig.AuraTechniques.DEFAULTS,
+			WildercordConfig.AuraBonds.DEFAULTS);
+		assertEquals(WildercordConfig.AuraSparring.DEFAULTS, before.sparring());
+		assertEquals(WildercordConfig.AuraSparring.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			null, null, null, null, null, null, null, null).sparring());
+	}
+
+	@Test
+	void aFileFromBeforeSparringGainsItsKeys() {
+		String old = D.toJson();
+		for (String key : SPARRING_KEYS) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		for (String key : SPARRING_KEYS) {
+			assertFalse(old.contains("\"" + key + "\""), key + " gone: " + old);
+		}
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura(), "sparring's settings read as their defaults");
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : SPARRING_KEYS) {
+			assertTrue(grown.contains("\"" + key + "\""), key + " added: " + grown);
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		String theirs = old.replace("\"resonance_gain\": 1.0", "\"resonance_gain\": 3.0");
+		WildercordConfig.AuraSettings kept = WildercordConfig.parse(WildercordConfig.addMissing(theirs).orElseThrow()).config().aura();
+		assertEquals(3.0, kept.bonds().resonanceGain(), 1e-9, "the owner's bonded blade settings are kept");
+		assertEquals(WildercordConfig.AuraSparring.DEFAULTS, kept.sparring());
+	}
+
+	@Test
+	void sparringTravelsToTheClient() {
+		assertTrue((Config.Sync.of(D).combat() & Config.Sync.SPARRING) != 0);
+		assertTrue((Config.Sync.DEFAULT.combat() & Config.Sync.SPARRING) != 0, "on until the server says otherwise");
+		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"sparring\": false}}").config();
+		assertEquals(0, Config.Sync.of(off).combat() & Config.Sync.SPARRING);
+		assertEquals(Config.Sync.of(D).combat() & 0xFF & ~Config.Sync.SPARRING, Config.Sync.of(off).combat() & 0xFF, "the other switches stay as they were");
+		assertEquals(Config.Sync.of(D).awakeningMomentum(), Config.Sync.of(off).awakeningMomentum(), "the momentum an awakening asks for is untouched");
+		// The last free low bit, clear of the awakening's momentum (bits 8 to 15) and every other switch.
+		assertTrue(Config.Sync.SPARRING < 1 << 8);
+		assertEquals(0, Config.Sync.SPARRING & (Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES
+			| Config.Sync.BONDS | Config.Sync.BLADE_TRAITS));
 	}
 
 	@Test
