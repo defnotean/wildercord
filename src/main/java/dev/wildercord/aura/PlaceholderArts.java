@@ -31,9 +31,11 @@ import java.util.List;
  * <li><b>Second Art</b> (Flow) {@code leap low}: a rising arc that lifts what it cuts (never a boss).</li>
  * <li><b>Third Art</b> (Edge) {@code counter}: straight after a perfect guard, a cut that staggers its foe again.</li>
  * <li><b>Fourth Art</b> (Form) {@code step}: straight after an Aura Step, a line cut ahead through everything in it.</li>
- * <li><b>Final Art</b> (Sovereign) {@code full full full low}: a ring of aura round you that throws foes back; only with a full
- *     pool (until momentum and awakening exist to gate it).</li>
+ * <li><b>Final Art</b> (Sovereign) {@code full full full low}: a ring of aura round you that throws foes back; only at the peak of
+ *     momentum, as every Final Art ({@link AuraApi#FINAL_GATE}; a full pool where the server has momentum off).</li>
  * </ul>
+ * <p>Their strikes go through {@code aura.arts.ArtKit.Hits} as every method's do, so momentum strengthens them, they wear stance
+ * and they build momentum alike.</p>
  */
 public final class PlaceholderArts {
 	private PlaceholderArts() {}
@@ -54,8 +56,9 @@ public final class PlaceholderArts {
 	public static final SwordString FINAL_STRING = AuraApi.ArtSlot.FINAL.string;
 
 	/**
-	 * The Final Art's condition, until momentum and awakening: a full aura pool. Every Final Art waits on
-	 * {@link AuraApi#FINAL_GATE}, which is this until something changes it ({@link AuraApi#gateFinalArts}).
+	 * A full aura pool: what the Final Art waits on where the server has momentum off (and what it waited on before momentum).
+	 * Every Final Art waits on {@link AuraApi#FINAL_GATE}, which is the peak of momentum ({@code Momentum.FINAL_GATE}) with this as
+	 * its fallback.
 	 */
 	public static final AuraApi.ArtCondition FULL_POOL = AuraApi.ArtCondition.of(
 		player -> StringRules.poolFull(Aura.aura(player), Aura.capacity(player)), "message.wildercord.aura.art.full_pool");
@@ -84,12 +87,11 @@ public final class PlaceholderArts {
 	private static boolean first(ServerPlayer player, AuraApi.StringContext context) {
 		int color = Aura.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CUT);
+		dev.wildercord.aura.arts.ArtKit.Hits hits = dev.wildercord.aura.arts.ArtKit.hits(player, fx);
 		AuraVfx.artArc(player, color, false);
 		Aura.sound(player, "aura_slash", 0.8F, 1.3F);
 		for (LivingEntity foe : arc(player, context.struck())) {
-			if (AuraCombat.projected(player, foe, damage(player, StringRules.FIRST_FACTOR), true) > 0) {
-				fx.impact(foe);
-			}
+			hits.raw(foe, damage(player, StringRules.FIRST_FACTOR), AuraFxRules.Weight.HEAVY);
 		}
 		return true;
 	}
@@ -98,13 +100,12 @@ public final class PlaceholderArts {
 	private static boolean second(ServerPlayer player, AuraApi.StringContext context) {
 		int color = Aura.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING);
+		dev.wildercord.aura.arts.ArtKit.Hits hits = dev.wildercord.aura.arts.ArtKit.hits(player, fx);
 		AuraVfx.artArc(player, color, true);
 		Aura.sound(player, "aura_slash", 0.9F, 1.15F);
 		Aura.sound(player, "aura_step", 0.4F, 1.5F);
 		for (LivingEntity foe : arc(player, context.struck())) {
-			if (AuraCombat.projected(player, foe, damage(player, StringRules.SECOND_FACTOR), true) > 0) {
-				fx.impact(foe);
-			}
+			hits.raw(foe, damage(player, StringRules.SECOND_FACTOR), AuraFxRules.Weight.HEAVY);
 			if (foe.isAlive() && !Spirits.isBoss(foe)) {
 				Vec3 v = foe.getDeltaMovement();
 				foe.setDeltaMovement(v.x * 0.5, Math.max(v.y, StringRules.SECOND_LIFT), v.z * 0.5);
@@ -120,14 +121,13 @@ public final class PlaceholderArts {
 		List<LivingEntity> foes = arc(player, context.struck());
 		// An X cut in the aura's colour; where it lands, the parry's gold.
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CROSS).color(AuraGuard.PERFECT_COLOR);
+		dev.wildercord.aura.arts.ArtKit.Hits hits = dev.wildercord.aura.arts.ArtKit.hits(player, fx);
 		AuraVfx.artCounter(player, color);
 		Aura.sound(player, "aura_perfect_guard", 0.7F, 1.25F);
 		Aura.sound(player, "aura_slash", 0.8F, 1.0F);
 		if (!foes.isEmpty()) {
 			LivingEntity foe = foes.getFirst();
-			if (AuraCombat.projected(player, foe, damage(player, StringRules.THIRD_FACTOR), true) > 0) {
-				fx.impact(foe);
-			}
+			hits.raw(foe, damage(player, StringRules.THIRD_FACTOR), AuraFxRules.Weight.HEAVY);
 			if (foe.isAlive()) {
 				AuraGuard.stagger(player, foe);
 			}
@@ -141,6 +141,7 @@ public final class PlaceholderArts {
 		Vec3 ahead = flat(player);
 		Vec3 from = player.position();
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.6F);
+		dev.wildercord.aura.arts.ArtKit.Hits hits = dev.wildercord.aura.arts.ArtKit.hits(player, fx);
 		AuraVfx.artLine(player, color, ahead, StringRules.FOURTH_LENGTH);
 		Aura.sound(player, "aura_step", 0.7F, 1.3F);
 		Aura.sound(player, "aura_slash", 0.9F, 0.9F);
@@ -157,9 +158,7 @@ public final class PlaceholderArts {
 		}
 		line.sort(Comparator.comparingDouble(e -> e.distanceToSqr(player)));
 		for (LivingEntity foe : line.subList(0, Math.min(line.size(), StringRules.ARC_TARGETS + 1))) {
-			if (AuraCombat.projected(player, foe, damage(player, StringRules.FOURTH_FACTOR), true) > 0) {
-				fx.impact(foe);
-			}
+			hits.raw(foe, damage(player, StringRules.FOURTH_FACTOR), AuraFxRules.Weight.HEAVY);
 		}
 		return true;
 	}
@@ -168,6 +167,7 @@ public final class PlaceholderArts {
 	private static boolean last(ServerPlayer player, AuraApi.StringContext context) {
 		int color = Aura.color(player);
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.4F);
+		dev.wildercord.aura.arts.ArtKit.Hits hits = dev.wildercord.aura.arts.ArtKit.hits(player, fx);
 		AuraVfx.artRing(player, color, StringRules.FINAL_RADIUS);
 		Aura.sound(player, "aura_dominion", 0.7F, 1.3F);
 		Aura.sound(player, "aura_slash", 1.0F, 0.8F);
@@ -181,9 +181,7 @@ public final class PlaceholderArts {
 		}
 		ring.sort(Comparator.comparingDouble(e -> e.distanceToSqr(player)));
 		for (LivingEntity foe : ring.subList(0, Math.min(ring.size(), StringRules.FINAL_TARGETS))) {
-			if (AuraCombat.projected(player, foe, damage(player, StringRules.FINAL_FACTOR), true) > 0) {
-				fx.impact(foe, AuraFxRules.Weight.GRAND);
-			}
+			hits.raw(foe, damage(player, StringRules.FINAL_FACTOR), AuraFxRules.Weight.GRAND);
 			Vec3 away = foe.position().subtract(player.position());
 			if (foe.isAlive() && !Spirits.isBoss(foe) && away.horizontalDistanceSqr() > 1.0E-4) {
 				foe.knockback(0.9, -away.x, -away.z, player.damageSources().playerAttack(player), 0.0F);

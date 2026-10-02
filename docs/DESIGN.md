@@ -1415,7 +1415,8 @@ banner, a flare and the method's technique sound.
 Each of the ten methods answers the five strings its own way (fifty arts), on one rule: **every method's art in a slot costs and
 rests the same and is worth about the same.** The string is the same for everyone, so a method is a different answer to the same question, never a
 better one. Prices and rests by slot: 6 aura / 3 s, 8 / 4 s, 8 / 4 s, 10 / 5 s, 40 / 30 s (Crackle rests 2.5 s for being
-lighter). The Final Arts wait on one shared gate (`AuraApi.FINAL_GATE`: a full pool until momentum and awakening exist).
+lighter). The Final Arts wait on one shared gate (`AuraApi.FINAL_GATE`: the peak of momentum, below; a full pool where the server
+has momentum off).
 
 **Damage** is in the weapon's own damage (W), times `damage_scale` and the server's `aura.art_damage` (0 to 5, default 1), as
 projected aura (armour applies; a player's spell defences and the PvP scale apply; a totem saves). Each art's main foe is struck
@@ -1529,6 +1530,76 @@ Sunfall's landing, Winter's Hush's shattering, Event Horizon's crush, Comet Dash
 gets only what keeps clear of the middle of their sight (the trail thin and low, marks on foes, light on the ground ahead),
 while the big shapes near the body (a lance, a mirror, a near crescent, a gout of flame) go to everyone else and to the
 swordsman only in third person (`AuraFx.Shown`). By day the light lays a thin dark rim under itself.
+
+### Momentum and openings
+**A fight builds.** Clean play fills a swordsman's **momentum**, momentum wears foes' **stance** faster, a broken stance **opens**
+a foe, and an opened foe can be **finished**. All of it is server-side and synced only when it changes: both sides work out the
+ebb and the recovery from the same rules (`aura.MomentumRules`, `aura.StanceRules`, unit-tested).
+
+**Momentum** (0 to 100, `aura.Momentum`). It builds from a clean hit (a full swing of a swordsman's blade that hurt a real foe:
+3.5, a falling critical 5), an art landing (6, 8, 10, 10 by slot for its first foe, then 1.5 for each of up to three more; the
+Final Art builds nothing), a perfect guard (12 against a blow, 6 against a shot or a spell), an Aura Step taken through a real
+attack (10, once a step), a stance broken (8), a finisher (14) and a worthy foe felled (3). A hit taken knocks off 12% to 40% of
+it by how heavy the blow was (a held guard halves that) and 2 more. It holds four seconds after the last blow given or taken, then
+ebbs 8 a second. Its tiers (25, 50, 75, and the peak at 95) make every art cheaper (10%, 15%, 20%, then 25% off) and stronger
+(5% a tier, 20% at the peak: another player's art cap still holds) and wear stance faster (×1.1, 1.2, 1.3, 1.45). The peak opens
+the Final Art (`Momentum.FINAL_GATE`, or anything step 6 adds through `AuraApi.openFinalArt`), and playing it spends 40. A clean
+fight (a full swing every 0.65 s, a foe felled every fourth, an art every 3 s, nothing taken) peaks in ten to fifteen seconds; a
+zombie's blow every two seconds keeps it from the peak for good (`MomentumRulesTest` plays both).
+
+**Each method's temper** (`MomentumRules.TEMPERS`): how much each kind of play builds, how much a hit knocks off, how long it holds
+and how fast it ebbs, and the foe state its blows feed on (×1.4 on a foe in it, the state its own arts leave):
+
+| Method | Feeds on | Its way |
+|---|---|---|
+| Ember | burning | the most from blows (×1.15), the fastest ebb (×1.4, holds 3 s): hot, then out |
+| Rime | chilled or frozen | perfect guards ×1.25, the slowest ebb (×0.6, holds 5 s) |
+| Thunder | ionised | each foe an art reaches past the first counts double; a quick ebb |
+| Gale | thrown up | steps through attacks ×1.5; an art from afar counts whole |
+| Stone | cracked | a hit knocks off half, a guarded one nothing; perfect guards ×1.4 |
+| Verdant | rooted | arts ×1.15, holds 6 s, the slowest ebb |
+| Hollow | silenced or shadowed | arts ×1.15 |
+| Starlit | starred | arts ×1.2 (the most) |
+| Hourglass | stopped in time or held | holds 8 s (the longest) and ebbs slowly |
+| Crimson | bleeding | blows ×1.1, a hit knocks off least but Stone's, and a hit taken at half health or under builds 3 |
+
+**Keeping it honest.** Weak swings and a sweep's other blows build nothing (they hold what's there); the slash, bows and spells
+build nothing at all. A foe that can't fight back (a mob with no mind of its own that nothing holds, one riding a boat or a cart)
+gives nothing. Each foe's blows give only so much (`budget`: 12 to 40 by its health, a boss 60, a player or a dummy 30, forgotten
+after twenty seconds) until its stance is broken. An art landing six blocks off or further counts half (Gale's whole). On a
+training dummy or anything in the practice arena it builds at 60% and only to 74 (a tier short of the peak); in the arena itself
+it may reach the peak, and changing world empties it. Out of a fight it falls from the peak within five seconds and is gone in under
+twenty, so it can't be carried to a boss from anywhere.
+
+**Stance** (`aura.Stance`). Every foe a swordsman may fight has one: a creature 0.8 of its health, 20 to 100 (so a weak foe
+usually dies to plain blows before it opens: technique opens it); a Runebound, a duelist or a fallen knight a quarter more; a
+boss 0.3 of its health, 60 to 150, taking 0.7 of every wear, a quarter steadier after each break (up to twice); a player 30; a
+training dummy 40. A full swing wears what it was dealt at (a fall's critical ×1.35, a glance or a sweep's other blows ×0.35, a
+blade with no aura ×0.6), an art's strike twice what it deals (×1.6 more for an art that quakes, ×1.2 for one that holds,
+freezes, roots, stops or shocks), aura that isn't an art (the slash, a spark) half, a perfect guard 35% of the attacker's stance
+at once (a boss 20%); Stone's blades a quarter more on every blow; the striker's momentum; and the server's `stance_damage`. It
+comes back after three seconds (a boss's 1.5 s, a player's 2 s) at a fifth of it a second (a boss a tenth, a player a quarter).
+
+**Opened.** Broken, a foe stands opened (a creature 3 s, held still; a boss 2 s, slowed hard, never held; a player 1.5 s, slowed,
+their swing spent, shield and Aura Guard broken, never held) and marked (a gold flash and ring as it breaks, then a glint over its
+head every half second and a ring at its feet every second, and each client's seal over it). The next full swing of a swordsman's blade on it
+is a **finisher**: the blow plus a share of what the foe has lost (a creature 35%, at most four times the blade's damage; a boss
+12%, at most 2.5 blades; a player 25%, at most 8 under the PvP scale and a quarter of their health), as part of the blow, so armour,
+a totem and every defence have their say; then aura back (6 + 2 a stage, Starlit's half again, a quarter on a practice target),
+momentum (14), and the foe stands steady (a creature 3 s, a player 5 s, a boss 10 s) with its stance whole. An opening let pass
+ends the same way. Each method's finisher looks and sounds its own (`aura.arts.Finishers`, names in the guide), and leaves a
+touch of its element no stronger than its arts would: Ember sets alight, Rime chills, Thunder ionises, Gale lifts, Stone cracks
+and slows, Verdant roots and mends (3 health each, in the arts' mending bucket), Hollow draws foes near in, Starlit gives the most
+aura back, Hourglass cuts a second time (to look at), Crimson leaves its foe bleeding and drinks (in the bucket).
+
+**Players.** With `pvp_stance` on (the default), duels reward pressure and guarding: no blow (or art's strikes together) wears
+more than a third of a player's stance (half over a whole art), so it takes three blows or more; a blow caught on a held Aura
+Guard or a raised shield wears the guard's own stance (0.6 of what it caught), so a turtle breaks in the end; a perfect guard
+breaks into the attacker's. Teams and the PvP rule are respected (`ArtKit.harmable`). A finisher on a player is never a one-shot:
+from full health it adds nothing, and at most a quarter of their health.
+
+**Settings** (`aura` section): `momentum`, `momentum_gain` (0 to 5), `momentum_ebb` (0 to 5, 0 never), `stance`, `stance_damage`
+(0 to 5), `finisher_damage` (0 to 3), `pvp_stance`. The client learns whether momentum and stance are on (`Config.Sync.combat`).
 
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the

@@ -291,6 +291,17 @@ public final class AuraFxRules {
 		return lit ? level : level * 0.4F;
 	}
 
+	/** How much brighter the body's aura burns at each tier of momentum (a seen sign of a swordsman in their stride), and at the peak. */
+	public static final float MOMENTUM_GLOW = 0.07F;
+	public static final float PEAK_GLOW = 0.3F;
+
+	/** What momentum's {@code tier} (0 to 4) adds to the body's aura: a little a tier, more at the peak; a little while the aura is low. */
+	public static float momentumGlow(int tier, boolean lit) {
+		int t = Math.max(0, Math.min(MomentumRules.PEAK_TIER, tier));
+		float glow = t >= MomentumRules.PEAK_TIER ? PEAK_GLOW : MOMENTUM_GLOW * t;
+		return lit ? glow : glow * 0.4F;
+	}
+
 	/** What is left of a surge {@code age} ticks into its {@code ticks}: easing away to nothing. */
 	public static float surgeLeft(float strength, double age, int ticks) {
 		if (ticks <= 0 || age < 0 || age >= ticks) {

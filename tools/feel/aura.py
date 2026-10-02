@@ -15,17 +15,23 @@
     aura_string_tick    a swing landing on a sword string: a small bright knock of steel and a glassy ping (played up the scale as it grows)
     aura_string_complete a sword string played to its end: a swish, two rising glassy notes, a blade's ring and a shimmer
     aura_string_fumble  a sword string broken: a dull, muted clank and a short note sliding down off the scale
+    aura_momentum_rise  a tier of momentum gained: two soft glassy notes stepping up and a breath of shimmer (played up the scale by tier)
+    aura_momentum_peak  momentum at its peak: a bright chord climbing, a warm swell under it and a glitter over it
+    aura_stance_break   a foe's stance giving way: a sharp crack, something brittle breaking, a deep blow under it
+    aura_finisher       a finisher landing: a blade's ring cut off by a deep blow, the air torn, a long shimmering tail
 
 Tonal sounds are tuned to D so the pentatonic ratios make a scale from one sample.
 
 Each breathing method's own family (a blade's swing, a blow landing, a technique loosed: aura_<method>_swing, _impact, _art) is
-in tools/feel/aura_methods.py and added to these events; each method's arts' own voices (aura_art_<art>) are in tools/feel/aura_arts.py.
+in tools/feel/aura_methods.py and added to these events; each method's arts' own voices (aura_art_<art>) are in tools/feel/aura_arts.py,
+and each method's finisher's (aura_finisher_<method>, over aura_finisher) in tools/feel/aura_finishers.py.
 """
 import numpy as np
 
 from feel.core import sa, event
 from feel.aura_methods import METHOD_EVENTS
 from feel.aura_arts import ART_EVENTS
+from feel.aura_finishers import FINISHER_EVENTS
 
 D, E, FS, A, B = sa.D, sa.E, sa.FS, sa.A, sa.B
 
@@ -192,6 +198,54 @@ def aura_string_fumble(v, rng):
     return _clean(x, "ui", 0.2, 0.06, 5000)
 
 
+def aura_momentum_rise(v, rng):
+    """A tier of momentum gained: two soft glassy notes stepping up (D, then A), a breath of air and a shimmer. Played up the
+    scale (Feels.step) with each tier, quiet enough to sit under a fight."""
+    dur = 0.6
+    first = sa.glass(sa.note(D, 2), 0.35, 0.09)
+    second = sa.glass(sa.note(A, 2), 0.5, 0.16)
+    air = sa.moving_band(0.3, [(0, 1200), (0.3, 4200)], 0.6, rng) * sa.swell(0.3, 0.25)
+    shimmer = sa.sparkle(0.35, 20, rng, [sa.note(d, 3) for d in (D, FS, A)], tau=(0.02, 0.06), shape=[(0, 0.6), (0.35, 0)], rising=True)
+    x = sa.mix(0.5 * first, (0.07, 0.6 * second), 0.2 * sa.norm(air), (0.08, 0.15 * sa.norm(shimmer)))
+    return _clean(x, "ui", 0.45, 0.12, 9500)
+
+
+def aura_momentum_peak(v, rng):
+    """Momentum at its peak: a bright chord climbing (D, F#, A, D), a warm swell rising under it and glitter over the top."""
+    dur = 1.6
+    chord = sa.mix(*[(0.06 * i, (1 - 0.12 * i) * sa.bell(sa.note(*n), 1.2, 0.5, 2.0, 1.6, attack=0.01))
+                     for i, n in enumerate(((D, 1), (FS, 1), (A, 1), (D, 2)))])
+    swell = (sa.sine(sa.note(D, 0), dur) + 0.5 * sa.sine(sa.note(A, 0), dur)) * sa.env(dur, (0, 0), (0.25, 1), (dur, 0))
+    rush = sa.moving_band(0.45, [(0, 800), (0.45, 5000)], 0.6, rng) * sa.swell(0.45, 0.4)
+    glitter = sa.sparkle(1.0, 32, rng, [sa.note(d, 3) for d in (D, E, FS, A, B)], tau=(0.03, 0.1), shape=[(0, 1), (1.0, 0.1)], rising=True)
+    x = sa.mix(0.6 * sa.norm(sa.chorus(chord, voices=2)), 0.25 * swell, 0.25 * sa.norm(rush), (0.1, 0.25 * sa.norm(glitter)))
+    return _clean(x, "effect", 0.8, 0.18, 9500)
+
+
+def aura_stance_break(v, rng):
+    """A foe's stance giving way: a sharp crack like a guard splitting, something brittle breaking apart, a deep blow under it."""
+    dur = 0.95
+    crack = sa.norm(sa.bandpass(sa.noise(0.07, rng), 1400, 9000)) * sa.decay(0.07, 0.008, 0.0003)
+    brittle = sa.norm(sa.bandpass(sa.grains(0.45, 260, rng, length=(0.002, 0.008), shape=[(0, 1), (0.45, 0.05)]), 1800, 7500))
+    body = sa.partials(sa.note(A, 0) * 1.02, 0.6, ((1.0, 1.0, 1.0), (2.3, 0.6, 0.5), (3.7, 0.35, 0.35)), 0.12)
+    blow = sa.thump(85, 32, 0.6, 0.15, drive=2.2, knock=0.4)
+    slide = sa.sine(sa.sweep(sa.note(D, 1), sa.note(A, -1), 0.5, 0.7), 0.5) * sa.decay(0.5, 0.18, 0.003)
+    x = sa.mix(0.85 * crack, (0.01, 0.55 * brittle), 0.3 * body, 0.6 * sa.highpass(blow, 45), (0.04, 0.25 * slide))
+    return _clean(x, "impact", 0.5, 0.13, 8000)
+
+
+def aura_finisher(v, rng):
+    """A finisher landing: a blade's ring cut off by a deep blow, the air torn round it, and a long shimmering ring after."""
+    dur = 1.9
+    shing = sa.moving_band(0.18, [(0, 3000), (0.05, 8000), (0.18, 2500)], 0.5, rng) * sa.decay(0.18, 0.05, 0.002)
+    blow = sa.thump(72, 26, 1.1, 0.28, drive=2.6, knock=0.5)
+    tear = sa.norm(sa.bandpass(sa.noise(0.4, rng), 600, 5000)) * sa.decay(0.4, 0.09, 0.002)
+    ring = sa.partials(sa.note(D, 1), 1.6, ((1.0, 1.0, 1.0), (2.41, 0.6, 0.55), (3.9, 0.35, 0.35), (5.6, 0.2, 0.25)), 0.55)
+    tail = sa.mix(sa.glass(sa.note(D, 3), 1.5, 0.6), (0.04, 0.6 * sa.glass(sa.note(A, 3), 1.4, 0.55)))
+    x = sa.mix(0.6 * sa.norm(shing), (0.02, 0.75 * sa.highpass(blow, 32)), (0.02, 0.5 * tear), (0.03, 0.3 * ring), (0.05, 0.25 * tail))
+    return _clean(x, "grand", 1.1, 0.2, 8000)
+
+
 EVENTS = [
     event("aura_slash", aura_slash, variants=2, role="cast", subtitle="cast"),
     event("aura_guard", aura_guard, role="effect", subtitle="tell"),
@@ -208,4 +262,8 @@ EVENTS = [
     event("aura_string_tick", aura_string_tick, role="ui", subtitle="tell"),
     event("aura_string_complete", aura_string_complete, role="effect", subtitle="cast"),
     event("aura_string_fumble", aura_string_fumble, role="ui", subtitle="tell"),
-] + METHOD_EVENTS + ART_EVENTS
+    event("aura_momentum_rise", aura_momentum_rise, role="ui", subtitle="tell"),
+    event("aura_momentum_peak", aura_momentum_peak, role="effect", subtitle="tell", attenuation=24),
+    event("aura_stance_break", aura_stance_break, role="impact", subtitle="hit", attenuation=32),
+    event("aura_finisher", aura_finisher, role="grand", subtitle="hit", attenuation=40),
+] + METHOD_EVENTS + ART_EVENTS + FINISHER_EVENTS

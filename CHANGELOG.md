@@ -4,6 +4,47 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Momentum and openings
+- **Momentum.** A clean fight now builds momentum, a thin line under your aura bar: full swings that land, arts that land,
+  perfect guards and Aura Steps taken through an attack all fill it. A hit you take knocks a share off, and out of a fight it
+  ebbs away in a few seconds. At each quarter your arts cost less (up to a quarter off) and strike harder (up to a fifth), and
+  wear your foes down faster. At the peak the line turns gold and your aura blazes for everyone to see.
+- **The Final Art waits on peak momentum** now, not a full pool of aura, and playing it spends some of it. (A server with
+  momentum switched off keeps the full pool.)
+- **Each method's momentum moves its own way**: Ember burns hot and out, Rime and Verdant hold theirs longest, Stone barely gives
+  ground to a blow, Thunder feeds on crowds, Gale on steps, Hourglass holds the moment, and Crimson feeds on blood, its own too.
+  Every method builds fastest on foes in the state its own arts leave them in: burning, frozen, ionised, thrown up, cracked,
+  rooted, silenced, starred, stopped in time or bleeding.
+- **It can't be farmed.** Weak swings, the slash and anything from a bow or a spell build nothing; a foe that can't fight back
+  (with no mind of its own, or stuck in a boat or a cart) gives nothing; each foe gives only so much until you break its stance;
+  a training dummy teaches it only to the third tier (the practice arena to the peak, emptied when you leave); and it's gone a
+  few seconds out of a fight.
+- **Stance and openings.** Every foe has a stance, a thin bar over its head once you start wearing it down: blows wear it by what
+  they deal, arts twice as fast, a perfect guard a third of it at once, and Stone's blades most of all. When it breaks the foe
+  is **opened**: staggered for a few seconds, a cracked gold seal beating over its head, and two small brackets closing in round
+  your crosshair. Your next full swing on it is your method's **finisher**: a grand, named strike that deals a third of what the
+  foe has already lost on top of the blow, gives aura back and builds momentum. Then the foe stands steady a moment.
+- **Ten finishers**, each its method's own look and voice: *Pyrebrand* (Ember: an X of fire and a pillar of flame), *Winterbreak*
+  (Rime: frost bursting into shards and spires of ice), *Skysunder* (Thunder: a bolt out of the sky), *Windscour* (Gale: a spiral
+  of wind that lifts its foe), *Faultline* (Stone: the ground cracking and stone bursting up), *Thornbloom* (Verdant: roots and a
+  flower of light that mends you and your allies), *Nullfall* (Hollow: everything falling into a black point, then bursting),
+  *Starbreak* (Starlit: a star bursting in rays, the most aura back), *Hour's End* (Hourglass: a clock face striking the hour and
+  a second cut) and *Heartrend* (Crimson: a tearing crescent that bleeds its foe while you drink). A method without its own lands
+  *Decisive Cut*.
+- **Bosses** have far more stance, take less from each blow and recover quickly, are only slowed when opened (never held), take
+  a smaller finisher, and stand steady long after, a little steadier each time: breakable, never trivial.
+- **Players have a stance too**, so a duel rewards pressure and guarding: no blow wears more than a third of it, a held Aura
+  Guard or a raised shield takes the wear itself (so a player who only blocks breaks in the end), and a perfect guard breaks into
+  the attacker's. Opened, a player is slowed and their guard broken for a moment, never held still, and a finisher on them adds
+  at most a few hearts, through their armour and their totem. Never a one-shot. Teams and the PvP rule are respected.
+- **On the Aura page**: momentum and finishers among the techniques, your method's finisher under its arts, a line on what your
+  momentum gives you, and your arts' prices at your momentum.
+- **Server settings**: `aura.momentum`, `momentum_gain`, `momentum_ebb`, `stance`, `stance_damage`, `finisher_damage` and
+  `pvp_stance`.
+- **For add-ons** (`api.AuraApi`): read, add and hold a swordsman's momentum, open the Final Art some other way, change what
+  wears a stance, hear of every stance broken and finisher landed (and change what a finisher deals), and give a method its own
+  finisher.
+
 ### Sword arts
 - **Every breathing method has five arts of its own**, fifty in all, on the same five sword strings, so you learn the strings
   once and your method decides what they do:

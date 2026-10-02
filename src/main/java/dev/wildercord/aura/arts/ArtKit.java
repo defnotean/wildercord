@@ -8,6 +8,11 @@ import dev.wildercord.aura.AuraFx;
 import dev.wildercord.aura.AuraFxRules;
 import dev.wildercord.aura.AuraGuard;
 import dev.wildercord.aura.AuraStep;
+import dev.wildercord.aura.Momentum;
+import dev.wildercord.aura.MomentumRules;
+import dev.wildercord.aura.Stance;
+import dev.wildercord.aura.StanceRules;
+import dev.wildercord.aura.SwordStrings;
 import dev.wildercord.cast.Reactions;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.Spirits;
@@ -285,17 +290,37 @@ public final class ArtKit {
 	 * One performance's strikes. Each lands as projected aura (the slash's rules) at the weapon's damage times a factor, with an
 	 * impact on the foe; each foe answers the art once (its experience, aura marks and the trials come from the first strike on
 	 * it), and another player takes no more than {@link ArtRules#PVP_ART_CAP} from all of the art's strikes together.
+	 *
+	 * <p>Momentum and stance ride every strike: they land harder at each tier of the swordsman's momentum as the art began
+	 * ({@link MomentumRules#strength}), wear the foe's stance as an art does (more for an art that quakes or holds; another player's
+	 * at most {@link StanceRules#PVP_ART_CAP} of it over the whole art), and each foe the art hurts builds momentum
+	 * ({@code Momentum.artLanded}: the first by the art's slot, a few more a little).</p>
 	 */
 	public static final class Hits {
 		private final ServerPlayer player;
 		private final AuraFx.Art fx;
 		private final Map<UUID, Double> pvp = new HashMap<>();
+		private final Map<UUID, Double> pvpStance = new HashMap<>();
 		private final Set<UUID> answered = new HashSet<>();
 		private final Set<UUID> hurt = new HashSet<>();
+		/** The art these strikes belong to (null for strikes outside one), how hard momentum makes them, and how they wear stance. */
+		private final AuraApi.StringArt art;
+		private final double strength;
+		private final double stanceWeight;
 
 		Hits(ServerPlayer player, AuraFx.Art fx) {
 			this.player = player;
 			this.fx = fx;
+			this.art = SwordStrings.performing();
+			this.strength = Momentum.on(player) ? MomentumRules.strength(Momentum.tier(player)) : 1.0;
+			ArtRules.Art numbers = art == null ? null : ArtRules.find(art.id());
+			this.stanceWeight = numbers == null ? 1.0 : StanceRules.artWeight(numbers.is(ArtRules.Kind.QUAKE), numbers.is(ArtRules.Kind.HOLD)
+				|| numbers.is(ArtRules.Kind.FREEZE) || numbers.is(ArtRules.Kind.ROOT) || numbers.is(ArtRules.Kind.STILL) || numbers.is(ArtRules.Kind.SHOCK));
+		}
+
+		/** How hard momentum makes these strikes (1 at none). */
+		public double strength() {
+			return strength;
 		}
 
 		public ServerPlayer player() {
@@ -328,14 +353,25 @@ public final class ArtKit {
 					return 0;
 				}
 			}
-			float taken = AuraCombat.projected(player, foe, damage, 1.0, answer, cap);
+			float taken = AuraCombat.artStrike(player, foe, damage * strength, cap, answer);
+			double dealt = AuraCombat.lastAmount();
 			if (foe instanceof Player) {
-				pvp.merge(foe.getUUID(), AuraCombat.lastAmount(), Double::sum);
+				pvp.merge(foe.getUUID(), dealt, Double::sum);
 			}
 			if (taken > 0) {
-				hurt.add(foe.getUUID());
+				boolean first = hurt.add(foe.getUUID());
 				if (weight != null) {
 					fx.impact(foe, weight);
+				}
+				// The strike wears its foe's stance as an art does (another player's held to half of it over the whole art).
+				double stanceCap = foe instanceof Player ? Math.max(0, StanceRules.PLAYER_POOL * StanceRules.PVP_ART_CAP
+					- pvpStance.getOrDefault(foe.getUUID(), 0.0)) : Double.MAX_VALUE;
+				double wore = Stance.art(player, foe, dealt, stanceWeight, stanceCap);
+				if (foe instanceof Player && wore > 0) {
+					pvpStance.merge(foe.getUUID(), wore, Double::sum);
+				}
+				if (first) {
+					Momentum.artLanded(player, art, hurt.size(), foe);
 				}
 			}
 			return taken;

@@ -184,6 +184,9 @@ public final class AuraHud {
 			}
 		}
 		g.text(font, count, x + width - 4 - countW, y + 2, backlash ? 0xFFC8A0A0 : 0xFF000000 | AuraRules.color(color, 0xFFFFFF, 3), true);
+		// ---- momentum, a thin line under the bar (its quarters notched, gold at the peak); your own stance in a duel, along the top edge.
+		momentum(g, player, bx + 1, inner, y + HEIGHT - 2, color, now, partial);
+		StanceHud.ownOnStrip(g, player, x + 2, y + 1, width - 4, now + partial);
 
 		// ---- above the strip: a trial under way, a spell riding the blade, a Dominion standing.
 		int top = y;
@@ -219,6 +222,60 @@ public final class AuraHud {
 		return top;
 	}
 
+	/** Smoothed momentum, so its line glides, and the tier last drawn and when it last rose (a tier gained flashes the line). */
+	private static float shownMomentum = 0;
+	private static int lastTier;
+	private static long roseAt = Long.MIN_VALUE / 4;
+	private static final int PEAK_GOLD = 0xFFE7A0;
+
+	/**
+	 * Momentum: a thin line along the strip's bottom edge under the bar ({@code x}, {@code width}, at {@code y}), filling with it in
+	 * the aura's colour, warmer at each tier and gold at the peak, with the tiers' thresholds notched; it flashes as a tier is gained,
+	 * and at the peak a soft glow rides over it with a spark running along. Nothing at all while there's none.
+	 */
+	private static void momentum(GuiGraphicsExtractor g, LocalPlayer player, int x, int width, int y, int color, long now, float partial) {
+		double value = dev.wildercord.aura.Momentum.value(player);
+		shownMomentum += (float) (value - shownMomentum) * 0.35F;
+		int tier = dev.wildercord.aura.MomentumRules.tier(value);
+		if (tier > lastTier) {
+			roseAt = now;
+		}
+		lastTier = tier;
+		if (shownMomentum < 0.3F && value <= 0) {
+			return;
+		}
+		float time = now + partial;
+		g.fill(x, y, x + width, y + 1, 0xFF1A1420);
+		int filled = Math.round(width * Math.max(0, Math.min(1, shownMomentum / (float) dev.wildercord.aura.MomentumRules.MAX)));
+		int c = switch (tier) {
+			case 0 -> mix(color, 0x2A2438, 0.45);
+			case 1 -> color;
+			case 2 -> mix(color, 0xFFFFFF, 0.25);
+			case 3 -> mix(color, 0xFFD86A, 0.45);
+			default -> mix(PEAK_GOLD, 0xFFFFFF, 0.25 + 0.25 * Math.sin(time * 0.5));
+		};
+		float rose = now - roseAt < 12 ? 1 - (now - roseAt + partial) / 12F : 0;
+		if (rose > 0) {
+			c = mix(c, 0xFFFFFF, 0.6 * rose);
+		}
+		if (filled > 0) {
+			g.fill(x, y, x + filled, y + 1, 0xFF000000 | c);
+			// A soft second row over it, so the line reads at a glance without growing.
+			g.fill(x, y - 1, x + filled, y, (tier >= dev.wildercord.aura.MomentumRules.PEAK_TIER ? 0x90000000 : 0x60000000) | c);
+		}
+		for (double t : dev.wildercord.aura.MomentumRules.TIERS) {
+			int nx = x + (int) Math.round(width * t / dev.wildercord.aura.MomentumRules.MAX);
+			g.fill(nx, y, nx + 1, y + 1, value >= t ? 0xFF000000 | mix(c, 0xFFFFFF, 0.5) : 0xFF4A4058);
+		}
+		int peakX = x + (int) Math.round(width * dev.wildercord.aura.MomentumRules.PEAK / dev.wildercord.aura.MomentumRules.MAX);
+		g.fill(peakX, y + 1, peakX + 1, y + 2, tier >= dev.wildercord.aura.MomentumRules.PEAK_TIER ? 0xFF000000 | PEAK_GOLD : 0xFF6A5A3A);
+		if (tier >= dev.wildercord.aura.MomentumRules.PEAK_TIER && filled > 2) {
+			// The peak: a spark running along the line.
+			int spark = x + (int) ((time * 1.6F) % Math.max(1, filled));
+			g.fill(spark, y - 1, spark + 2, y + 1, 0xE0FFFFFF);
+		}
+	}
+
 	/** A small diamond, 5 pixels across, filled with {@code fill} and edged with {@code edge}. */
 	private static void diamond(GuiGraphicsExtractor g, int x, int y, int fill, int edge) {
 		g.fill(x + 2, y, x + 3, y + 1, edge);
@@ -241,5 +298,7 @@ public final class AuraHud {
 	/** On leaving a world. */
 	static void forget() {
 		shown = -1;
+		shownMomentum = 0;
+		lastTier = 0;
 	}
 }

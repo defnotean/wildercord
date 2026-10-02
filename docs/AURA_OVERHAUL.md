@@ -71,7 +71,7 @@ and documented, not a first draft.
 | 2 | Feel and spectacle: the shared visual and sound language | done |
 | 3 | Arts I: the framework, and Ember, Rime, Thunder, Gale, Stone | done |
 | 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | done |
-| 5 | Momentum and openings | planned |
+| 5 | Momentum and openings | done |
 | 6 | Awakening | planned |
 | 7 | Ways | planned |
 | 8 | Your own techniques | planned |
@@ -693,3 +693,98 @@ buys Gale's reach, and its damage is the slot's least.
 - **Lambdas in loops** (a delayed tree, a staggered strike) need effectively final copies of the loop's values.
 - **The arts game test now runs fifty scenes** (about ten minutes): use `WILDERCORD_ARTS=a,b` while working, and run the whole
   thing once before merging. Scenes that mend need a hurt ally (a tamed wolf, `wolf()`) and a hurt swordsman (`HURT`).
+
+### From step 5: momentum and openings
+
+The player's view is `wiki/progression/aura.md#momentum-and-openings`; the rules and every number are DESIGN.md's "Momentum and
+openings"; the code map is ARCHITECTURE.md's. Pure rules: `aura.MomentumRules` and `aura.StanceRules` (unit-tested by
+`MomentumRulesTest` and `StanceRulesTest`); runtime: `aura.Momentum`, `aura.Stance`, `aura.arts.Finishers`; client:
+`client.StanceHud` and `AuraHud.momentum`; game test `WildercordMomentumTest`.
+
+**Momentum, in numbers** (0 to 100). Builds: a clean hit 3.5 (critical 5), an art landing 6/8/10/10 by slot for its first foe and
+1.5 for each of up to three more (the Final Art builds nothing), a perfect guard 12 (a shot or a spell 6), an Aura Step through an
+attack 10 (once a step), a stance broken 8, a finisher 14, a worthy kill 3; all times the method's temper and `momentum_gain`, and
+through `AuraApi.onMomentum` hooks (source "hit", "art", "guard", "step", "break", "finisher", "bloodied"). A hit taken knocks
+off 12% to 40% (by its share of max health) plus 2, half through a held guard. It holds `GRACE` 80 ticks (a temper's own: Ember
+60, Hourglass 160) after the last blow given or taken, then ebbs 8 a second (times the temper and `momentum_ebb`). Tiers 25, 50,
+75, peak 95: price ×0.9/0.85/0.8/0.75, art strength ×1.05/1.1/1.15/1.2, stance worn ×1.1/1.2/1.3/1.45. The Final Art's release
+spends 40.
+
+**The momentum API** (`api.AuraApi`; reads are both sides, from the owner-only synced `Momentum.MOMENTUM`):
+- `momentum(player)`, `momentumTier(player)`, `peakMomentum(player)`, `artPrice(player, art)`.
+- `addMomentum(serverPlayer, amount, source)` (through the hooks, never past 100), `onMomentum((player, amount, source) -> amount)`.
+- `holdMomentum(serverPlayer, floor, ticks)`: never below `floor` and no ebb until `ticks` run out; what's there is lifted to the
+  floor at once; gains build above it; a hit still knocks some off but never below the floor while it holds. `ticks` 0 lets go.
+- `openFinalArt(player -> bool)`: something besides the peak that opens every Final Art (both sides: read a synced flag).
+
+**How step 6 (awakening) should use it.** On awakening, `AuraApi.holdMomentum(player, MomentumRules.PEAK, duration)` (momentum
+stays at the peak, unebbing, for the whole awakening: arts at their cheapest and strongest, stance worn fastest) and
+`AuraApi.openFinalArt(p -> <your synced awakened flag>)` once at init (the Final Art opens while awakened even if a hit took the
+meter down, as it can't take it below the floor anyway). The Final Art's release still spends 40, but the floor keeps it at the
+peak, so an awakened swordsman can play it again once its 30 s rest is over. When the awakening ends and the swordsman is spent,
+call `holdMomentum(player, 0, 0)` and then either `Momentum.reset(player)` (spent: nothing left) or a big `Momentum.lose`; I'd
+reset, since spent means "unable to gather aura for a while", and the meter emptying says so. "Arts cost nothing or little" is
+not momentum's job: the one price function is `SwordStrings.price(player, art)` (both sides: the client's reader and the
+server's check and payment all call it, and the Aura page shows it); multiply in an awakening factor there from a synced flag.
+The body's glow already burns brighter at the peak (`AuraPresence.Look.momentum`, `AuraFxRules.momentumGlow`, +0.3 at the peak):
+awakening's own state should add to `AuraFxClient.bodyIntensity` beside it.
+
+**Stance, in numbers** (`Stance.STANCE` on any living entity, synced to everyone near, removed once whole again). Pools: a
+creature 0.8 of its health, 20 to 100; sturdy (Runebound, `aura.world.AuraFighter`) ×1.25; a boss 0.3 of its health, 60 to 150,
+×1.25 after each break up to ×2; a player 30; a training dummy 40. Wear: a full coated swing what it was dealt at (critical ×1.35,
+glance or sweep ×0.35, no aura ×0.6), an art's strike ×2.0 (and ×1.6 for `QUAKE`, ×1.2 for `HOLD`/`FREEZE`/`ROOT`/`STILL`/
+`SHOCK`, from `ArtRules.Art.kinds`), the slash or a spark ×0.5, a perfect guard 35% of the attacker's pool at once (a boss 20%),
+Stone's blows ×1.25, times the striker's momentum and `stance_damage`; a boss takes ×0.7. Recovery after 60 ticks (a boss 30, a
+player 40) at 20% of the pool a second (a boss 10%, a player 25%). Opened: a creature 60 ticks (held: `Spirits.hold`), a boss 40
+(slowness III), a player 30 (slowness I, attack strength reset, shield cooldown, Aura Guard dropped and refused by `Aura.press`).
+Steady after (nothing wears it): a creature 60 ticks, a player 100, a boss 200. Finisher: a full swing on an opened foe; extra =
+a creature 35% of missing health (≤ 4 W), a boss 12% (≤ 2.5 W), a player 25% (≤ 8 × pvp_scale and ≤ 25% of max health), times
+`finisher_damage`, added to the melee blow itself (`AuraCombat.blow`: armour, a totem, every defence apply); aura back 6 + 2 × stage
+(Starlit ×1.5, practice ×0.25) through `ArtKit.giveBack`; momentum 14.
+
+**The stance and finisher hooks** (for steps 7, 9, 10, 12):
+- `AuraApi.onStance((attacker, target, wear, source) -> wear)`: every wear before it lands. Step 7's Way of the Bulwark ("stance is
+  hard to break") answers a Bulwark *target* with less; the Shadowstep ("blows from behind open foes faster") answers an attacker
+  behind its target (compare `target.getYRot()` with the direction to the attacker) with more. `StanceRules.Source` tells a blow
+  from an art, a perfect guard (`GUARD`) or a held guard's catch (`GUARDED`).
+- `AuraApi.onStanceBroken((attacker, target) -> ...)`: a stance broken (the Banner's rallying cry could hang off it).
+- `AuraApi.onFinisher(new FinisherHook() { extra(...); landed(...); })`: `extra` changes what a finisher adds before it lands (the
+  Way of the Blade: "finishers hit harder"; keep the player cap: `StanceRules.finisher` already held it, so scale and re-cap for a
+  `Player` target), `landed` hears of every finisher landed with what it dealt (step 9's resonance, step 12's rune-etched blades
+  waking on finishers).
+- `AuraApi.registerFinisher(methodId, new AuraApi.Finisher(id, look))` gives an add-on's method its own; `commonFinisher(...)` the
+  default; `finisher(methodId)`, `finishers()`. A finisher's name is `aura.wildercord.finisher.<id>` (and `.desc`).
+- `AuraApi.wearStance(attacker, target, wear)`, `stanceLeft(entity)`, `opened(entity)` for an add-on's technique (step 8's
+  "sunder" intent should call `wearStance` with a multiple of what its strike dealt, through `ArtKit.Hits` if it's an art: `Hits`
+  already wears stance by the art's weight, so add only the intent's bonus).
+- The momentum budget per foe and the "helpless" test (`Momentum.helpless`: no AI and not held, or riding a boat or a cart) are
+  where step 11's aura beasts or tournaments might need exceptions.
+
+**Gotchas.**
+- **`Aura.java` has its own private class `Stance`** (the breathing stance's memory). Inside `Aura.java`, the openings' class is
+  `dev.wildercord.aura.Stance`, written out in full.
+- **Hits know their art by `SwordStrings.performing()`**, set only while a performer runs. A `Hits` made later (in a delayed task)
+  has no art: its strikes still wear stance (as an art) but build no art momentum. All fifty arts make theirs at the top of their
+  performer, and `PlaceholderArts` now strike through `Hits` too. Strength is the tier as the art began.
+- **The finisher rides the blow.** `Stance.finisher` is asked in `AuraCombat.blow` before the blow lands (it adds the extra) and
+  `Stance.finished` after (if it hurt; turned aside, the opening stands). A finisher skips the blow's ordinary `felt` impact (its
+  own grand one plays) and the blow's stance wear.
+- **A held foe is thawed by its finisher** (`FROZEN_UNTIL` at or before the opening's end is removed and NoAI lifted), or a lift or
+  a throw in the finisher would leave it frozen in place till the opening's time ran out.
+- **Ebb and recovery are worked out on both sides**: the server writes `Momentum.State` (with its own ebb a tick, so the server's
+  `momentum_ebb` reaches the client) and `Stance.State` only on a change; `engaged` rewrites the hold only when it moves on by half
+  a second. Don't tick them.
+- **`Config.Sync` is full** (fourteen fields, `StreamCodec.composite`'s most). Step 5 added `combat`, a bitfield (`MOMENTUM` 1,
+  `STANCE` 2): later client-side flags go in its free bits.
+- **The stance bars are a HUD element** (`StanceHud`, projected over heads like others' banners): hidden with the HUD, not hidden
+  by blocks. Only the nearest eight (and the crosshair's) are drawn. A mark rides higher over a player or a named creature (over
+  its name tag), and is held at the top edge of the screen when a foe close in front has its head above it.
+- **Other game tests' foes stand steady**: `WildercordArtsTest` gives every husk a stance steady for the whole scene (so no art
+  check meets an opened, held foe); do the same (`Stance.STANCE` with `steadyUntil` far off) for a test about something else.
+  Final Arts in tests need the peak: set `Momentum.MOMENTUM` to `new Momentum.State(100, now + 100000, 0, 0, 0)`.
+- **Fabric's `FakePlayer` can't be hurt** (`isInvulnerableTo` is always true) and has no team: `WildercordMomentumTest.Rival`
+  overrides both for a duel. To show it on the client, send `ClientboundPlayerInfoUpdatePacket.createPlayerInitializing` before
+  `level.addNewPlayer` (and the remove packet after). It isn't ticked, so reset its invulnerability by hand between blows
+  (`Effects.readyToHurt`).
+- **In the test client** the Crimson finisher's drops (the mod's motes) draw as rune glyphs, as other tinted particles do (see the
+  notes from step 4).

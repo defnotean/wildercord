@@ -166,7 +166,7 @@ public final class SwordStringsClient {
 		if (!art.condition().met(player)) {
 			return SwordStrings.Refusal.CONDITION;
 		}
-		if (Aura.aura(player) < art.cost() - 1.0E-4) {
+		if (Aura.aura(player) < SwordStrings.price(player, art) - 1.0E-4) {
 			return SwordStrings.Refusal.NO_AURA;
 		}
 		return null;
@@ -206,7 +206,7 @@ public final class SwordStringsClient {
 			case StringReader.Refused<?> no -> {
 				AuraApi.StringArt art = (AuraApi.StringArt) no.art();
 				SwordStrings.Refusal why = why(player, art);
-				Component line = SwordStrings.refusal(art, why == null ? SwordStrings.Refusal.CLOSED : why);
+				Component line = SwordStrings.refusal(player, art, why == null ? SwordStrings.Refusal.CLOSED : why);
 				Long told = TOLD.get(art.id());
 				if (line != null && (told == null || now - told >= TELL_AGAIN || now < told)) {
 					player.sendOverlayMessage(line);

@@ -103,6 +103,7 @@ public final class AuraFxClient {
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> reset());
 		HudElementRegistry.attachElementBefore(VanillaHudElements.HOTBAR, Wildercord.id("aura_whisper"), AuraFxClient::whisper);
 		AuraBanners.init();
+		StanceHud.init();
 	}
 
 	private static void reset() {
@@ -346,8 +347,10 @@ public final class AuraFxClient {
 		if (MagicQuality.bodyAura == MagicQuality.BodyAura.CALM) {
 			return AuraFxRules.intensity(look.lit(), false, 0);
 		}
-		boolean fighting = AuraPresence.look(player).fighting(player.level().getGameTime());
-		return AuraFxRules.intensity(look.lit(), fighting, surge(player.getId(), time));
+		AuraPresence.Look presence = AuraPresence.look(player);
+		boolean fighting = presence.fighting(player.level().getGameTime());
+		// Momentum burns it brighter at each tier, blazing at the peak.
+		return AuraFxRules.intensity(look.lit(), fighting, surge(player.getId(), time)) + AuraFxRules.momentumGlow(presence.momentum(), look.lit());
 	}
 
 	static void tick(Minecraft mc) {

@@ -1034,6 +1034,11 @@ public final class ArtRules {
 		return art;
 	}
 
+	/** An art's numbers by its id, or null for one that isn't here (an add-on's, a common art). */
+	public static Art find(String id) {
+		return id == null ? null : BY_ID.get(id);
+	}
+
 	/** The arts of a method, First to Final. */
 	public static List<Art> of(String method) {
 		return ARTS.stream().filter(a -> a.method().equals(method)).toList();

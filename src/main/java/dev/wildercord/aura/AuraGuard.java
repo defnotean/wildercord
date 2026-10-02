@@ -127,6 +127,7 @@ public final class AuraGuard {
 		Entity shooter = projectile.getOwner();
 		caught(player, shooter instanceof LivingEntity living ? living : null, 0);
 		feedback(player);
+		Momentum.guarded(player, false);
 		Grimoire.unlock(player, "aura:perfect_guard");
 		double speed = Math.min(3.0, Math.max(0.6, projectile.getDeltaMovement().length()) * Parry.REFLECT_SPEED);
 		Scheduler.later(1, () -> {
@@ -170,6 +171,10 @@ public final class AuraGuard {
 		}
 		Aura.spend(player, absorbed * AuraRules.GUARD_COST_PER_POINT * cost, "guard");
 		AuraVfx.held(player, Aura.color(player), source);
+		// In a duel the guard takes the wear itself: pressure on a held guard breaks it in the end.
+		if (source.getEntity() instanceof LivingEntity attacker && source.getDirectEntity() == attacker) {
+			Stance.guarded(player, attacker, absorbed);
+		}
 		if (Aura.aura(player) <= 1.0E-3 && absorbed < damage * share - 1.0E-3) {
 			// It took what it could and has nothing left: it breaks.
 			breaks(player, now);
@@ -200,8 +205,11 @@ public final class AuraGuard {
 			reflect(player, projectile);
 		} else if (source.getEntity() instanceof LivingEntity attacker && attacker != player) {
 			stagger(player, attacker);
+			// A blow turned aside whole breaks into its striker's stance.
+			Stance.guardBreak(player, attacker);
 		}
 		feedback(player);
+		Momentum.guarded(player, direct instanceof LivingEntity && !source.is(Aura.DAMAGE));
 		// The first one goes into the Grimoire.
 		Grimoire.unlock(player, "aura:perfect_guard");
 	}
@@ -306,6 +314,7 @@ public final class AuraGuard {
 		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
 		caught(player, null, 0);
 		feedback(player);
+		Momentum.guarded(player, false);
 		return true;
 	}
 }

@@ -530,6 +530,9 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 	private static void last(ClientGameTestContext context, TestSingleplayerContext world) {
 		on(world, player -> {
 			setAura(player, TestMethods.PLAIN, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
+			// The Final Art waits on the peak of momentum: there, and held there.
+			player.setAttached(dev.wildercord.aura.Momentum.MOMENTUM,
+				new dev.wildercord.aura.Momentum.State(100, player.level().getGameTime() + 100000, 0, 0, 0));
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 			spawn(player.level(), EntityTypes.HUSK, at(0, 2.2), 400).addTag("wildercord.string_target");
 			spawn(player.level(), EntityTypes.HUSK, at(-2.5, 0.5), 200).addTag("wildercord.string_ring");
@@ -555,12 +558,14 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		context.waitTicks(3);
 		context.getInput().releaseKey(o -> o.keyShift);
 		world.getServer().runCommand("time set 3000");
-		check(PERFORMED.equals(List.of(PlaceholderArts.FINAL)), "three full swings and a low one, with a full pool, should play the Final Art ("
+		check(PERFORMED.equals(List.of(PlaceholderArts.FINAL)), "three full swings and a low one, at the peak of momentum, should play the Final Art ("
 			+ PERFORMED + ")");
 		String ring = on(world, player -> {
 			float spent = aura - Aura.aura(player);
-			if (spent < StringRules.FINAL_COST - 0.05) {
-				return "the Final Art should cost " + StringRules.FINAL_COST + " (spent " + spent + ")";
+			// At the peak every art costs a quarter less.
+			double price = StringRules.FINAL_COST * dev.wildercord.aura.MomentumRules.priceFactor(dev.wildercord.aura.MomentumRules.PEAK_TIER);
+			if (spent < price - 0.05) {
+				return "the Final Art should cost " + price + " at the peak (spent " + spent + ")";
 			}
 			int hurt = 0;
 			for (Mob husk : player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(8), m -> m.entityTags().contains("wildercord.string_ring"))) {
@@ -572,10 +577,12 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		});
 		check(ring == null, ring);
 
-		// Without a full pool the same swings fall through to the First Art.
+		// Short of the peak (a full pool or not) the same swings fall through to the First Art.
 		on(world, player -> {
 			player.removeAttached(SwordStrings.COOLDOWNS);
-			setAura(player, TestMethods.PLAIN, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN) * 0.5F);
+			setAura(player, TestMethods.PLAIN, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
+			player.setAttached(dev.wildercord.aura.Momentum.MOMENTUM,
+				new dev.wildercord.aura.Momentum.State(60, player.level().getGameTime() + 100000, 0, 0, 0));
 			return null;
 		});
 		context.waitTicks(20);
@@ -587,8 +594,12 @@ public class WildercordSwordStringsTest implements FabricClientGameTest {
 		lowSwing(context);
 		context.waitTicks(4);
 		context.getInput().releaseKey(o -> o.keyShift);
-		check(PERFORMED.equals(List.of(PlaceholderArts.FIRST)), "with half a pool the Final Art's swings should fall through to the First Art ("
+		check(PERFORMED.equals(List.of(PlaceholderArts.FIRST)), "short of the peak the Final Art's swings should fall through to the First Art ("
 			+ PERFORMED + ")");
+		on(world, player -> {
+			player.removeAttached(dev.wildercord.aura.Momentum.MOMENTUM);
+			return null;
+		});
 	}
 
 	// ------------------------------------------------------------------ the server's checks
