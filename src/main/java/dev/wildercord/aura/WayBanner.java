@@ -194,7 +194,7 @@ public final class WayBanner {
 	// ------------------------------------------------------------------ Shelter (Sovereign)
 
 	/** Whether an ally of {@code player}'s walking the Banner at Sovereign stands near them: hits take less of their momentum. */
-	static boolean bannerNear(ServerPlayer player) {
+	public static boolean bannerNear(ServerPlayer player) {
 		double range = range();
 		for (ServerPlayer other : player.level().players()) {
 			if (other != player && other.distanceToSqr(player) <= range * range && Ways.has(other, WayRules.BANNER_SOVEREIGN) && ally(other, player)) {

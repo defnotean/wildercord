@@ -108,8 +108,8 @@ class WayRulesTest {
 		assertEquals(-WayRules.angle(3, 4), WayRules.angle(0, 4), 1e-9, "four stand evenly either side of ahead");
 		assertEquals(WayRules.SPREAD, WayRules.angle(2, 4) - WayRules.angle(1, 4), 1e-9);
 		assertTrue(Math.abs(WayRules.angle(0, 4)) < 90, "all four in front, in view");
-		// The arc's outer standards stay within a usual field of view of the middle.
-		assertTrue(Math.abs(WayRules.angle(0, 4)) <= 60);
+		// The arc's outer standards stay inside a usual first-person view (about fifty degrees either side at sixteen by nine).
+		assertTrue(Math.abs(WayRules.angle(0, 4)) <= 46);
 		assertTrue(WayRules.RADII[0] < WayRules.REACH, "a standard at its usual place is in reach");
 		for (int i = 1; i < WayRules.RADII.length; i++) {
 			assertTrue(WayRules.RADII[i] < WayRules.RADII[i - 1], "nearer where there's no room");

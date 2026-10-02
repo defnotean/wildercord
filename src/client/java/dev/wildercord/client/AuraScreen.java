@@ -179,6 +179,11 @@ public class AuraScreen extends Screen {
 		picked = node;
 	}
 
+	/** Whether the page is on its Way tab (the game tests ask). */
+	public static boolean showingWay() {
+		return way;
+	}
+
 	/** The middle of the Way tab, in screen coordinates (the game tests click it), or null before it's drawn. */
 	public double[] wayTabPoint() {
 		if (tabsY < 0 || wayRight <= wayLeft) {
