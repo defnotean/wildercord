@@ -51,6 +51,10 @@ import java.util.function.Predicate;
  *       method answers the five art strings (one a stage, the same for everyone) with arts of its own; a method without any
  *       plays the five common arts ({@code aura.PlaceholderArts}). Ember, Rime, Thunder, Gale and Stone have theirs
  *       ({@code aura.arts}).</li>
+ *   <li><b>Momentum and openings</b> ({@link #momentum}, {@link #addMomentum}, {@link #holdMomentum}, {@link #onMomentum},
+ *       {@link #openFinalArt}; {@link #onStance}, {@link #onStanceBroken}, {@link #onFinisher}, {@link #registerFinisher},
+ *       {@link #wearStance}): a clean fight fills a swordsman's momentum (its tiers make arts cheaper and stronger, its peak opens
+ *       the Final Art); blades and arts wear a foe's stance until it breaks, opening it for the method's finisher.</li>
  *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
  *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
  *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,

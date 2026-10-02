@@ -120,7 +120,9 @@ public final class StanceHud {
 	/** One foe's bar or seal over its head. Returns whether it drew. */
 	private static boolean draw(GuiGraphicsExtractor g, Minecraft mc, Camera camera, Foe foe, long now, float time, float partial, boolean firstPerson) {
 		LivingEntity e = foe.entity();
-		Vec3 over = new Vec3(Mth.lerp(partial, e.xo, e.getX()), Mth.lerp(partial, e.yo, e.getY()) + e.getBbHeight() + 0.42, Mth.lerp(partial, e.zo, e.getZ()));
+		// Over its head, and over its name tag when it shows one (a player's, a named creature's).
+		double lift = e.getBbHeight() + 0.42 + (e instanceof net.minecraft.world.entity.player.Player || e.shouldShowName() ? 0.38 : 0);
+		Vec3 over = new Vec3(Mth.lerp(partial, e.xo, e.getX()), Mth.lerp(partial, e.yo, e.getY()) + lift, Mth.lerp(partial, e.zo, e.getZ()));
 		float[] at = screen(mc, camera, over, g.guiWidth(), g.guiHeight());
 		if (at == null) {
 			return false;
@@ -134,7 +136,8 @@ public final class StanceHud {
 		boolean boss = s.kindOf() == StanceRules.Kind.BOSS;
 		int width = (int) Math.round(Mth.clamp(150 / Math.max(1.5, foe.distance()), 22, 40) * (boss ? 1.4 : 1.0));
 		int cx = Math.round(at[0]);
-		int cy = Math.round(at[1]);
+		// A foe close in front can have its head off the top of the screen: hold the mark at the edge, never off it.
+		int cy = Math.max(Math.round(at[1]), s.opened(now) ? 14 : 4);
 		if (s.opened(now)) {
 			seal(g, cx, cy, width, s, now, time, alpha);
 			seals++;

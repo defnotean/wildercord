@@ -308,7 +308,7 @@ At the **peak** the line turns gold with a spark running along it, your aura bla
 opens. Playing it spends 40 momentum, so it has to be earned again. The Aura page's prices follow your momentum, and its Sword
 strings tab says what your tier gives you.
 
-<img src="{{ '/assets/images/momentum-bar.jpg' | relative_url }}" alt="Two views of the aura strip: at the second tier a thin orange line part way along under the bar, and at the peak the same line full and gold with a bright spark on it" class="shot">
+<img src="{{ '/assets/images/momentum-bar.jpg' | relative_url }}" alt="Two views of the aura bar: at the second tier a thin pale orange line part way along under it, and at the peak the same line full and pale gold with a bright spark on it" class="shot">
 <span class="caption">Momentum under the aura bar: the second tier, and the peak.</span>
 
 **Each method's momentum moves its own way**, and every method builds fastest on foes in the state its own arts leave them in:
@@ -343,7 +343,7 @@ the small diamonds at its ends are where it breaks). It comes back if you leave 
 - **Weak foes** have about as much stance as health, so plain blows usually fell them first: technique (arts, perfect guards,
   Stone) opens them. Strong foes open part way through a fight; Runebound monsters, duelists and fallen knights hold a quarter more.
 
-<img src="{{ '/assets/images/stance-bar.jpg' | relative_url }}" alt="First-person view of a burning husk up close; over its head a thin dark bar with a pale gold fill in its middle and small diamonds at its ends" class="shot">
+<img src="{{ '/assets/images/stance-bar.jpg' | relative_url }}" alt="First-person view of a husk a few steps off; over its head a thin dark bar with a short pale gold fill in its middle and small diamonds at its ends" class="shot">
 <span class="caption">A husk's stance, two blows in.</span>
 
 When a stance breaks the foe is **opened** for a few seconds: it staggers where it stands (a boss is only slowed), a gold flash
@@ -399,6 +399,9 @@ Opened, a player is slowed and their guard broken (no Aura Guard, their shield d
 and the line along the top of their aura strip beats gold. A finisher on a player adds at most a quarter of what they've lost
 (and never more than a few hearts, or a quarter of their health), through their armour and their totem, as any blow. Never a
 one-shot. Teams and the server's PvP rule are respected.
+
+<img src="{{ '/assets/images/stance-duel.jpg' | relative_url }}" alt="Seen from the side: a swordsman wreathed in crimson flames facing another player; over the other player's name a cracked gold diamond seal with a gold line under it" class="shot">
+<span class="caption">Another player opened in a duel, the seal over their name.</span>
 
 Server owners can switch momentum off (the Final Art then waits on a full aura pool), scale how fast it builds and ebbs, switch
 stance and finishers off, scale how fast stance wears and what finishers deal, and give players a stance or not (`aura.momentum`,

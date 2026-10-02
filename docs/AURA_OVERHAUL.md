@@ -777,7 +777,8 @@ a creature 35% of missing health (≤ 4 W), a boss 12% (≤ 2.5 W), a player 25%
 - **`Config.Sync` is full** (fourteen fields, `StreamCodec.composite`'s most). Step 5 added `combat`, a bitfield (`MOMENTUM` 1,
   `STANCE` 2): later client-side flags go in its free bits.
 - **The stance bars are a HUD element** (`StanceHud`, projected over heads like others' banners): hidden with the HUD, not hidden
-  by blocks. Only the nearest eight (and the crosshair's) are drawn.
+  by blocks. Only the nearest eight (and the crosshair's) are drawn. A mark rides higher over a player or a named creature (over
+  its name tag), and is held at the top edge of the screen when a foe close in front has its head above it.
 - **Other game tests' foes stand steady**: `WildercordArtsTest` gives every husk a stance steady for the whole scene (so no art
   check meets an opened, held foe); do the same (`Stance.STANCE` with `steadyUntil` far off) for a test about something else.
   Final Arts in tests need the peak: set `Momentum.MOMENTUM` to `new Momentum.State(100, now + 100000, 0, 0, 0)`.

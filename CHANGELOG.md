@@ -41,6 +41,9 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   momentum gives you, and your arts' prices at your momentum.
 - **Server settings**: `aura.momentum`, `momentum_gain`, `momentum_ebb`, `stance`, `stance_damage`, `finisher_damage` and
   `pvp_stance`.
+- **For add-ons** (`api.AuraApi`): read, add and hold a swordsman's momentum, open the Final Art some other way, change what
+  wears a stance, hear of every stance broken and finisher landed (and change what a finisher deals), and give a method its own
+  finisher.
 
 ### Sword arts
 - **Every breathing method has five arts of its own**, fifty in all, on the same five sword strings, so you learn the strings

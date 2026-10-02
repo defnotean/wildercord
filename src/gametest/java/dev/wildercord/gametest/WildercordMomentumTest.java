@@ -334,6 +334,26 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 		}
 		double dummy = on(world, Momentum::value);
 		check(dummy > 70 && dummy <= MomentumRules.PRACTICE_CEILING + 1.0E-4, "a dummy should build only to the practice ceiling (" + dummy + ")");
+		// What's built in the practice arena stays there: changing world empties it.
+		double goingIn = on(world, player -> {
+			setMomentumNow(player, 90);
+			check(dev.wildercord.cast.PracticeRoom.enter(player) == 1, "the practice arena should open");
+			return Momentum.value(player);
+		});
+		check(goingIn == 0, "going into the practice arena should empty momentum (" + goingIn + ")");
+		context.waitTicks(30);
+		double comingOut = on(world, player -> {
+			setMomentumNow(player, 90);
+			check(dev.wildercord.cast.PracticeRoom.leave(player) == 1, "the practice arena should let the player go home");
+			return Momentum.value(player);
+		});
+		check(comingOut == 0, "coming out of the practice arena should empty momentum (" + comingOut + ")");
+		context.waitTicks(30);
+		try {
+			world.getConnection().waitForChunksRender();
+		} catch (RuntimeException e) {
+			// Slow chunks only make the next scene's first frames bare; the checks don't need them.
+		}
 		// A husk with no mind of its own, and one in a boat: nothing.
 		for (String which : List.of("mindless", "boat")) {
 			reset(context, world);
@@ -417,6 +437,17 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			if (i == 0) {
 				int[] drawn = context.computeOnClient(mc -> StanceHud.drawn());
 				check(drawn[0] >= 1, "the swordsman's client should draw the worn husk's stance bar (" + drawn[0] + ")");
+				// For the pictures: the husk a step back and still, its flames out, so its bar reads against the sky.
+				on(world, player -> {
+					Mob husk = foes(player).getFirst();
+					Vec3 p = at(0, 3.4);
+					husk.setNoAi(true);
+					husk.teleportTo(p.x, p.y, p.z);
+					husk.setDeltaMovement(Vec3.ZERO);
+					husk.clearFire();
+					return null;
+				});
+				context.waitTicks(10);
 				shot(context, "stance_bar_fp");
 				thirdPerson(context, world, -55, 24, true);
 				context.waitTicks(3);
@@ -717,12 +748,20 @@ public class WildercordMomentumTest implements FabricClientGameTest {
 			return wore == 0 ? null : "a teammate's stance should never be worn (" + wore + ")";
 		});
 		check(team == null, team);
-		// The rival's own stance bar over their head as their opponent sees it, then the seal once it breaks.
+		// The rival's own stance bar over their head as their opponent sees it, then the seal once it breaks: a step further off,
+		// as a duel is fought, once the finisher's banner and the totem's sparks have gone.
 		on(world, player -> {
 			Rival rival = rival(player);
 			rival.removeAttached(Stance.STANCE);
 			rival.removeAllEffects();
-			AuraApi.wearStance(player, rival, StanceRules.PLAYER_POOL * 0.7);
+			Vec3 p = at(0, 3.0);
+			rival.snapTo(p.x, p.y, p.z, 180, 0);
+			rival.setYHeadRot(180);
+			return null;
+		});
+		context.waitTicks(50);
+		on(world, player -> {
+			AuraApi.wearStance(player, rival(player), StanceRules.PLAYER_POOL * 0.7);
 			return null;
 		});
 		context.waitTicks(6);
