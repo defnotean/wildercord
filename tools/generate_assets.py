@@ -401,6 +401,8 @@ def main():
     wildlife_art.write(sys.modules[__name__])
     import aura_art  # Aura, the swordsman's path: manuals, the blade's glow, its data.
     aura_art.write(sys.modules[__name__])
+    import soar_art
+    soar_art.write(sys.modules[__name__])
     import aura_world_art  # The world of aura: duelists, fallen knights, pages, forged gear, the sash, their recipes and loot.
     aura_world_art.write(sys.modules[__name__])
     import way_art  # Ways: the four Ways' emblems, the Crossroads Incense and its recipe.

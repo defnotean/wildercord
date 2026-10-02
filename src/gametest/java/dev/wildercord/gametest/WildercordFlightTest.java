@@ -95,6 +95,12 @@ public class WildercordFlightTest implements FabricClientGameTest {
 			world.getServer().runCommand("weather clear");
 			stage(world);
 			context.waitTicks(10);
+			if (System.getenv("WILDERCORD_FLIGHT_VISUALS_ONLY") != null) {
+				String failure = castingGivesFlight(context, world);
+				cleanup(context, world);
+				if (failure != null) throw new AssertionError(failure);
+				return;
+			}
 			List<Object[]> checks = List.of(
 				new Object[] {"Casting gives flight", (Check) WildercordFlightTest::castingGivesFlight},
 				new Object[] {"Running out lets you down gently", (Check) WildercordFlightTest::runningOut},
@@ -179,6 +185,15 @@ public class WildercordFlightTest implements FabricClientGameTest {
 			mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
 			hideHud(mc);
 		});
+		context.waitTicks(4);
+		context.runOnClient(mc -> {
+			var atlas = mc.getAtlasManager().getAtlasOrThrow(net.minecraft.data.AtlasIds.PARTICLES);
+			if (atlas.getSprite(dev.wildercord.Wildercord.id("soar_feather")) == atlas.missingSprite())
+				throw new AssertionError("Soar's flight feather must be in the particle atlas");
+			if (dev.wildercord.client.fx.SoarWings.showing() != 1)
+				throw new AssertionError("Soar must retain one wing model for its flier");
+		});
+		shot(context, "soar_wings_folded");
 		// Take off as in creative: a double-tap of jump (each tap held for a tick, so the movement input sees it).
 		context.getInput().holdKeyFor(options -> options.keyJump, 1);
 		context.waitTicks(2);
@@ -211,6 +226,11 @@ public class WildercordFlightTest implements FabricClientGameTest {
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
 		context.waitTicks(6);
 		shot(context, "soar_wings_front");
+		if (!context.computeOnClient(mc -> dev.wildercord.client.fx.SoarWings.showing() == 1))
+			return "flight wings should refresh one model without stacking copies";
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.FIRST_PERSON));
+		context.waitTicks(4);
+		shot(context, "soar_wings_first_person");
 		// On the move: the wake off the wingtips.
 		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
 		context.getInput().holdKey(options -> options.keyUp);

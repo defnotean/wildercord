@@ -4,6 +4,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Feathered Soar wings
+
+- Soar now grows a pair of articulated feathered wings with layered shoulder feathers and long flight feathers. They fold on the ground, spread in flight, beat faster while moving, and fold and fade as flight ends.
+- Wings follow the player's interpolated position and body rotation, remain visible from either side, and stay outside the owner's first-person view. One persistent model replaces repeated light-stroke particles; feather detail reduces with distance and calmer settings.
+
 ### Aura standards and pressure effects
 
 - The crossroads now raises four animated cloth standards with stitched edging, swallowtail hems, bronze poles and distinct sword, shield, crescent and rallying crests. The selected standard gains pressure streamers; the others dim.
