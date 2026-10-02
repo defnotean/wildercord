@@ -313,14 +313,24 @@ public record WildercordConfig(
 	 * @param ways                 Ways, chosen at the crossroads at the Edge breakthrough: see {@link AuraWays}
 	 * @param techniques           techniques a swordsman writes of their own, from Edge: see {@link AuraTechniques}
 	 * @param bonds                the bonded blade, bonded from Edge at a ley crossing: see {@link AuraBonds}
+	 * @param sparring             sparring, masters and disciples, and the clash: see {@link AuraSparring}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
 			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
-			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways, AuraTechniques techniques, AuraBonds bonds) {
+			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways, AuraTechniques techniques, AuraBonds bonds,
+			AuraSparring sparring) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
 			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS,
-			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS, AuraWays.DEFAULTS, AuraTechniques.DEFAULTS, AuraBonds.DEFAULTS);
+			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS, AuraWays.DEFAULTS, AuraTechniques.DEFAULTS, AuraBonds.DEFAULTS, AuraSparring.DEFAULTS);
+
+		/** A file's aura section before sparring, masters and disciples: the same, with their defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
+				AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways, AuraTechniques techniques, AuraBonds bonds) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, heights, strings, momentum, awakening, ways, techniques, bonds, AuraSparring.DEFAULTS);
+		}
 
 		/** A file's aura section before bonded blades: the same, with their defaults. */
 		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
@@ -384,6 +394,7 @@ public record WildercordConfig(
 			ways = ways == null ? AuraWays.DEFAULTS : ways;
 			techniques = techniques == null ? AuraTechniques.DEFAULTS : techniques;
 			bonds = bonds == null ? AuraBonds.DEFAULTS : bonds;
+			sparring = sparring == null ? AuraSparring.DEFAULTS : sparring;
 		}
 
 		/** The slash's cooldown in ticks. */
@@ -560,6 +571,30 @@ public record WildercordConfig(
 	 */
 	public record AuraBonds(boolean bonds, double resonanceGain, boolean bondAtPower, boolean traits) {
 		public static final AuraBonds DEFAULTS = new AuraBonds(true, 1.0, true, true);
+	}
+
+	/**
+	 * Sparring, masters and disciples, and the clash (more keys of the {@code aura} section). Two swordsmen salute each other with their blades
+	 * and spar in a ring of light, nobody dying or losing anything, both learning a little; a swordsman from Form takes disciples two stages
+	 * below in a ceremony; and two strikes meeting lock into a struggle won on timing. The numbers' meaning is in {@code aura.SparRules},
+	 * {@code aura.LineageRules} and {@code aura.ClashRules}, whose defaults these are.
+	 *
+	 * @param sparring     whether swordsmen can spar (a salute answered opens the ring)
+	 * @param ringRadius   the ring's radius in blocks
+	 * @param sparsPerDay  how many spars a day count for any one pair (teach aura experience); more can be fought for their own sake
+	 * @param sparXp       what a counted spar teaches, times this (0 nothing)
+	 * @param mentorship   whether masters take disciples (bonds already made are kept either way, and do nothing while it's off)
+	 * @param maxDisciples the most disciples one master keeps
+	 * @param discipleGain how much faster a disciple earns aura experience near their master (1 no faster)
+	 * @param masterShare  the share of each road a disciple walks that their master earns (0 none)
+	 * @param clashes      whether two strikes meeting lock into a clash (off: two crescents meeting break each other, as they always did)
+	 * @param clashCarry   the share of its harm a crescent that wins a clash flies on with
+	 */
+	public record AuraSparring(boolean sparring, double ringRadius, int sparsPerDay, double sparXp, boolean mentorship, int maxDisciples,
+			double discipleGain, double masterShare, boolean clashes, double clashCarry) {
+		public static final AuraSparring DEFAULTS = new AuraSparring(true, dev.wildercord.aura.SparRules.RING_RADIUS, dev.wildercord.aura.SparRules.DAILY,
+			1.0, true, dev.wildercord.aura.LineageRules.MAX_DISCIPLES, dev.wildercord.aura.LineageRules.NEAR_GAIN, dev.wildercord.aura.LineageRules.SHARE,
+			true, dev.wildercord.aura.ClashRules.CARRY);
 	}
 
 	/**
@@ -776,7 +811,19 @@ public record WildercordConfig(
 					r.bool("aura", "bonded_blades", d.aura.bonds().bonds()),
 					r.number("aura", "resonance_gain", d.aura.bonds().resonanceGain(), 0, 100),
 					r.bool("aura", "bond_at_power", d.aura.bonds().bondAtPower()),
-					r.bool("aura", "blade_traits", d.aura.bonds().traits()))),
+					r.bool("aura", "blade_traits", d.aura.bonds().traits())),
+				new AuraSparring(
+					r.bool("aura", "sparring", d.aura.sparring().sparring()),
+					r.number("aura", "spar_ring_radius", d.aura.sparring().ringRadius(), dev.wildercord.aura.SparRules.MIN_RADIUS,
+						dev.wildercord.aura.SparRules.MAX_RADIUS),
+					r.integer("aura", "spars_per_day", d.aura.sparring().sparsPerDay(), 0, 50),
+					r.number("aura", "spar_xp", d.aura.sparring().sparXp(), 0, 20),
+					r.bool("aura", "mentorship", d.aura.sparring().mentorship()),
+					r.integer("aura", "max_disciples", d.aura.sparring().maxDisciples(), 1, 12),
+					r.number("aura", "disciple_gain", d.aura.sparring().discipleGain(), 1, 4),
+					r.number("aura", "master_share", d.aura.sparring().masterShare(), 0, 1),
+					r.bool("aura", "clashes", d.aura.sparring().clashes()),
+					r.number("aura", "clash_carry", d.aura.sparring().clashCarry(), 0, 1.5))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -835,7 +882,10 @@ public record WildercordConfig(
 			// Techniques of one's own.
 			"techniques", "technique_damage", "technique_xp_multiplier", "technique_scroll_chance",
 			// The bonded blade.
-			"bonded_blades", "resonance_gain", "bond_at_power", "blade_traits"));
+			"bonded_blades", "resonance_gain", "bond_at_power", "blade_traits",
+			// Sparring, masters and disciples, and the clash.
+			"sparring", "spar_ring_radius", "spars_per_day", "spar_xp", "mentorship", "max_disciples", "disciple_gain", "master_share", "clashes",
+			"clash_carry"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -1171,7 +1221,15 @@ public record WildercordConfig(
 			+ "bonds one blade (a sword, axe, spear or mace, or anything in the wildercord:bondable_blades item tag) by holding it in the breathing "
 			+ "stance, at a ley crossing if bond_at_power; it gathers resonance in every fight (resonance_gain scales how fast), takes a name, a trait "
 			+ "(blade_traits switches what traits do) and its fullest look as it grows, is kept through death, never breaks, and only its swordsman "
-			+ "can pick it up or use its aura. Switched off, blades already bonded keep those protections.");
+			+ "can pick it up or use its aura. Switched off, blades already bonded keep those protections. Sparring (sparring): two swordsmen "
+			+ "salute each other (sneak and use the blade on the other; the other salutes back) and spar in a ring of light spar_ring_radius blocks "
+			+ "from its middle, blades and aura only, until one is brought to one heart or steps out; nobody dies and both are put back as they "
+			+ "began. The first spars_per_day spars a day between any two teach aura experience (spar_xp scales how much). Masters and disciples "
+			+ "(mentorship): a swordsman from Form takes up to max_disciples disciples two stages below in a ceremony (the master in the breathing "
+			+ "stance, the disciple kneeling before them); a disciple learns disciple_gain times as fast near their master and can break through by "
+			+ "besting them in a spar, and the master earns master_share of each road a disciple walks. Clashes (clashes): two crescents (or an art "
+			+ "and a crescent, or two arts in the same breath) meeting lock into a struggle won on timing; the winner's crescent flies on at "
+			+ "clash_carry of its harm.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -1235,6 +1293,17 @@ public record WildercordConfig(
 		auraSection.addProperty("resonance_gain", bonds.resonanceGain());
 		auraSection.addProperty("bond_at_power", bonds.bondAtPower());
 		auraSection.addProperty("blade_traits", bonds.traits());
+		AuraSparring sparring = aura.sparring();
+		auraSection.addProperty("sparring", sparring.sparring());
+		auraSection.addProperty("spar_ring_radius", sparring.ringRadius());
+		auraSection.addProperty("spars_per_day", sparring.sparsPerDay());
+		auraSection.addProperty("spar_xp", sparring.sparXp());
+		auraSection.addProperty("mentorship", sparring.mentorship());
+		auraSection.addProperty("max_disciples", sparring.maxDisciples());
+		auraSection.addProperty("disciple_gain", sparring.discipleGain());
+		auraSection.addProperty("master_share", sparring.masterShare());
+		auraSection.addProperty("clashes", sparring.clashes());
+		auraSection.addProperty("clash_carry", sparring.clashCarry());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "
