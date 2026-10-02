@@ -194,6 +194,36 @@ public class WildercordShaderTest implements FabricClientGameTest {
 		shot(context, prefix + "_aura_crossroads");
 		world.getServer().runOnServer(server -> player(server).removeAttached(dev.wildercord.aura.Crossroads.CROSSROADS));
 		context.waitTicks(12);
+		// The bonded blade (step 9) under the pack: a Soulforged blade's glow in hand from the front, then lying on the ground.
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD));
+			check(dev.wildercord.aura.BondedBlades.bond(player, net.minecraft.world.InteractionHand.MAIN_HAND, "test"),
+				"the blade should bond (" + dev.wildercord.aura.BondedBlades.bondRefusal(player) + ")");
+			dev.wildercord.aura.BondedBlades.addHistory(player, java.util.Map.of(dev.wildercord.aura.BladeRules.BOSSES, 1), java.util.Map.of());
+			dev.wildercord.aura.BondedBlades.setResonance(player, dev.wildercord.aura.BladeRules.threshold(dev.wildercord.aura.BladeRules.SOULFORGED));
+		});
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(40);
+		shot(context, prefix + "_aura_bonded_blade");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			ItemStack blade = player.getMainHandItem().copy();
+			player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+			net.minecraft.world.entity.item.ItemEntity e = new net.minecraft.world.entity.item.ItemEntity(player.level(), player.getX(),
+				player.getY() + 0.2, player.getZ() + 2.0, blade, 0, 0, 0);
+			player.level().addFreshEntity(e);
+		});
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		context.waitTicks(20);
+		shot(context, prefix + "_aura_bonded_ground");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			dev.wildercord.aura.BondedBlades.release(player);
+			player.level().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, player.getBoundingBox().inflate(8),
+				e -> e.getItem().is(net.minecraft.world.item.Items.DIAMOND_SWORD)).forEach(net.minecraft.world.entity.Entity::discard);
+		});
+		context.waitTicks(5);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);
 			player.removeAttached(dev.wildercord.aura.Awakening.AWAKENING);
