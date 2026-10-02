@@ -246,8 +246,18 @@ public final class AuraVfx {
 	 * edge, a column of light at the heart, and motes thrown up round the rim.
 	 */
 	static void dominionRise(ServerLevel level, Vec3 centre, double radius, int color, int ticks) {
+		dominionRise(level, centre, radius, color, ticks, true);
+	}
+
+	/**
+	 * A Dominion rising: its circle ({@code circle}: the ordinary rune circle; an awakened one draws its method's own ground instead,
+	 * see {@code aura.arts.Awakenings.Ground}), its rim, rings racing out, a column of light and motes off the edge.
+	 */
+	static void dominionRise(ServerLevel level, Vec3 centre, double radius, int color, int ticks, boolean circle) {
 		Vec3 heart = centre.add(0, 1.1, 0);
-		Sigils.ground(level, centre, color, hot(color, 0.15), (float) radius, ticks);
+		if (circle) {
+			Sigils.ground(level, centre, color, hot(color, 0.15), (float) radius, ticks);
+		}
 		Sigils.layer(level, centre.add(0, 0.09, 0), UP, dev.wildercord.content.SigilOption.BAND, hot(color, 0.3), (float) (radius * 1.04), ticks, 0.01F);
 		Light.groundRing(level, centre, hot(color, 0.4), 0.3, radius * 1.15, 0.22, 14);
 		Light.groundRing(level, centre, color, 0.3, radius * 1.6, 0.1, 20);

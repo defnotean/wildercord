@@ -246,6 +246,20 @@ public class AuraScreen extends Screen {
 		float held = Aura.aura(player);
 		g.text(font, Component.translatable("screen.wildercord.aura.held", (int) held, capacity), tx, 64, TEXT, true);
 		bar(g, tx, 75, W - tx - 14, held / capacity, color);
+		// Awakening as it stands (from Edge), at the end of the same line: burning, spent, resting, ready, or what it waits on.
+		Component waking = awakening(player, stage, now);
+		if (waking != null) {
+			int ww = font.width(waking);
+			int wx = W - 14 - ww;
+			dev.wildercord.aura.Awakening.State ws = dev.wildercord.aura.Awakening.state(player);
+			int wc = ws.awakened(now) ? 0xFF000000 | AuraHud.mix(color, 0xFFFFFF, 0.35 + 0.25 * Math.sin((now + partial) * 0.4))
+				: ws.spent(now) ? 0xFFC8A0A0 : dev.wildercord.aura.Awakening.ready(player) ? GOLD : DIM;
+			g.text(font, waking, wx, 64, wc, true);
+			if (inside(mx, my, wx, 63, ww, 10)) {
+				tooltip = List.of(Component.translatable("aura.wildercord.technique.awaken").withColor(color),
+					Component.translatable("aura.wildercord.technique.awaken.desc").withStyle(ChatFormatting.GRAY));
+			}
+		}
 
 		// ---- the road to the next stage.
 		int y = 92;
@@ -522,6 +536,36 @@ public class AuraScreen extends Screen {
 		return tooltip;
 	}
 
+	/**
+	 * Awakening as it stands for {@code player}, in a few words (null below Edge or where it's off): how long it still burns, how long
+	 * they're spent, how long it rests, or that it's ready (or what it waits on: a full pool, momentum).
+	 */
+	private static Component awakening(LocalPlayer player, int stage, long now) {
+		if (stage < dev.wildercord.aura.AwakeningRules.FROM || !dev.wildercord.config.Config.awakening(player)) {
+			return null;
+		}
+		dev.wildercord.aura.Awakening.State s = dev.wildercord.aura.Awakening.state(player);
+		if (s.awakened(now)) {
+			return Component.translatable("screen.wildercord.aura.awakened_left", (s.until() - now + 19) / 20);
+		}
+		if (s.spent(now)) {
+			return Component.translatable("screen.wildercord.aura.spent_left", (s.spentUntil() - now + 19) / 20);
+		}
+		if (s.resting(now)) {
+			return Component.translatable("screen.wildercord.aura.awakening_rests", (s.readyAt() - now + 19) / 20);
+		}
+		dev.wildercord.aura.AwakeningRules.Refusal why = dev.wildercord.aura.Awakening.refusal(player);
+		if (why == null) {
+			return Component.translatable("screen.wildercord.aura.awakening_ready");
+		}
+		return switch (why) {
+			case POOL -> Component.translatable("screen.wildercord.aura.awakening_pool");
+			case MOMENTUM -> Component.translatable("screen.wildercord.aura.awakening_momentum",
+				(int) Math.round(dev.wildercord.config.Config.awakeningMomentum(player)));
+			default -> Component.translatable("screen.wildercord.aura.awakening_waits");
+		};
+	}
+
 	/** Every technique: the always-on ones of each stage, then the Aura key's (the registry's, so later stages' show too). */
 	private List<Row> rows() {
 		List<Row> rows = new ArrayList<>();
@@ -556,6 +600,7 @@ public class AuraScreen extends Screen {
 				case SNEAK_TAP -> Component.translatable("screen.wildercord.aura.key_sneak", key);
 				case DOUBLE_TAP -> Component.translatable("screen.wildercord.aura.key_double", key);
 				case HOLD -> Component.translatable("screen.wildercord.aura.key_hold", key);
+				case TAP_HOLD -> Component.translatable("screen.wildercord.aura.key_tap_hold", key);
 			};
 			double cost = t.id().equals("slash") ? dev.wildercord.config.Config.slashCost(minecraft.player) : t.cost();
 			rows.add(new Row(Component.translatable(t.nameKey()), t.stage(), how, cost, Component.translatable(t.nameKey() + ".desc")));

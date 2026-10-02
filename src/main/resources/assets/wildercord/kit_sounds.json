@@ -318,6 +318,45 @@
     "aura_art_winters_hush_shatter": {
       "part": "aura"
     },
+    "aura_awaken": {
+      "part": "aura"
+    },
+    "aura_awaken_crimson": {
+      "part": "aura"
+    },
+    "aura_awaken_ember": {
+      "part": "aura"
+    },
+    "aura_awaken_fed": {
+      "part": "aura"
+    },
+    "aura_awaken_gale": {
+      "part": "aura"
+    },
+    "aura_awaken_hollow": {
+      "part": "aura"
+    },
+    "aura_awaken_hourglass": {
+      "part": "aura"
+    },
+    "aura_awaken_rime": {
+      "part": "aura"
+    },
+    "aura_awaken_starlit": {
+      "part": "aura"
+    },
+    "aura_awaken_steel": {
+      "part": "aura"
+    },
+    "aura_awaken_stone": {
+      "part": "aura"
+    },
+    "aura_awaken_thunder": {
+      "part": "aura"
+    },
+    "aura_awaken_verdant": {
+      "part": "aura"
+    },
     "aura_backlash": {
       "part": "aura"
     },
@@ -426,6 +465,9 @@
     "aura_perfect_guard": {
       "part": "aura"
     },
+    "aura_recovered": {
+      "part": "aura"
+    },
     "aura_rime_art": {
       "part": "aura"
     },
@@ -439,6 +481,9 @@
       "part": "aura"
     },
     "aura_spellblade": {
+      "part": "aura"
+    },
+    "aura_spent": {
       "part": "aura"
     },
     "aura_stance_break": {

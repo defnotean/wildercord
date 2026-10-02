@@ -72,7 +72,7 @@ and documented, not a first draft.
 | 3 | Arts I: the framework, and Ember, Rime, Thunder, Gale, Stone | done |
 | 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | done |
 | 5 | Momentum and openings | done |
-| 6 | Awakening | planned |
+| 6 | Awakening | done |
 | 7 | Ways | planned |
 | 8 | Your own techniques | planned |
 | 9 | The bonded blade | planned |
@@ -788,3 +788,93 @@ a creature 35% of missing health (≤ 4 W), a boss 12% (≤ 2.5 W), a player 25%
   (`Effects.readyToHurt`).
 - **In the test client** the Crimson finisher's drops (the mod's motes) draw as rune glyphs, as other tinted particles do (see the
   notes from step 4).
+
+### From step 6: awakening
+
+The player's view is `wiki/progression/aura.md#awakening`; the rules and every number are DESIGN.md's "Awakening"; the code map is
+ARCHITECTURE.md's. Pure rules: `aura.AwakeningRules` (unit-tested by `AwakeningRulesTest`); runtime: `aura.Awakening`; looks:
+`aura.AwakeningFx` (the frame) and `aura.arts.Awakenings` (each method's flourish and the awakened Dominion's `Ground`); client:
+`client.AwakeningHud`, `AuraHud` (the mark), `AuraFxClient.awakenedForm`, `render.AuraBodyLayer` (the awakened form); game test
+`WildercordAwakeningTest` (`WILDERCORD_AWAKENING=input,gives,moment,forms,methods,fed,final,spent,death,duel,dominions,pages` plays only those).
+
+**The input (settled).** `AuraApi.Trigger.TAP_HOLD`, the Aura key's fifth way: a tap, then a second press within the double tap's 8
+ticks held `AwakeningRules.HOLD_TICKS` (14). In `WildercordKeys.auraKey`: a second press after a tap (for a player with a TAP_HOLD
+technique, so from Edge) is marked `auraSecond`; the tap held back for it (if it waited) goes with the pair; let go before `HOLD` (5)
+it's a double tap (plus the tap it was where there's no step), held to 14 it's the TAP_HOLD (never a HOLD as well), let go between it
+sends nothing. `tapsWait` is now "has a double-tap technique, or has a TAP_HOLD technique and `Awakening.ready`": an Edge swordsman's
+slash waits 8 ticks only while an awakening is ready. Below Edge the key behaves exactly as before. **Changed behaviour**: a Sovereign's
+"tap, then hold within 8 ticks" used to raise Dominion and then slash; now it's the awakening (or its refusal). The charge shows
+(`WildercordKeys.awakeningCharge`, `AwakeningHud.charge`) from the second press's 4th tick (`CHARGE_SHOWS`), so a double tap never
+flashes it. Step 10's challenge gesture should stay clear of all five: tap, sneak+press, double tap, hold, tap-then-hold.
+
+**The state** (`Awakening.AWAKENING`, saved, synced to everyone near, copied on death): `State(phase, since, until, spentUntil, readyAt,
+price, extended)`, phases `NONE`, `AWAKENED`, `SPENT`, `RESTING` (`AwakeningRules.Phase`); `awakened(now)` = phase AWAKENED and now
+before `until`; `spent(now)` = phase SPENT and before `spentUntil`; `resting(now)` = before `readyAt`. `price` is the art price share
+written as it began (both sides read it: don't read the config for it on the client). `extended` is what finishers have fed it.
+`Awakening.tick` (from `Aura.tick`) ends it (pool emptied, momentum `hold(0,0)` then `reset`, Slowness I, the hooks), puts the spent
+slow back if washed off, and moves SPENT to RESTING. A death sets RESTING (the rest runs from the death if it was burning). Momentum is
+held again on a change of world and on joining (`holdAgain`).
+
+**The API** (`api.AuraApi`): `awakened(player)`, `spent(player)`, `awakeningLeft(player)`, `awakeningRefusal(player)` (an
+`AwakeningRules.Refusal` or null; both sides), `awaken(serverPlayer)` (every check, says why), `endAwakening(serverPlayer)` (ends it on the
+next tick, spent after), `onAwakening(new AwakeningHook() { awakened(player, ticks); ended(player); })`. Reading only: `Awakening.state`,
+`priceShare`, `damage(player, target)`.
+
+**The numbers** (`AwakeningRules`, server-tunable in the `aura` section):
+
+| What | Default | Config |
+|---|---|---|
+| Opens at | Edge | |
+| Asks | a pool 95% full, momentum 50 (none if the server's momentum is off) | `awakening_momentum` |
+| Lasts | 240 / 320 / 400 ticks at Edge / Form / Sovereign | `awakening_duration` (×) |
+| Fed | 20 ticks a finisher, 80 at most | |
+| Arts cost | 0 × their price (after momentum's discount) | `awakening_art_price` |
+| Momentum | held at 95 (the peak) for the whole of it | |
+| Coated blows | ×1.15 (×1.075 against a player, then the player cap and `pvp_scale`) | `awakening_damage` |
+| Speed | +10% movement (base), +10% attack speed (total) | `awakening_speed` |
+| Spent | 600 ticks: pool emptied at the end, Slowness I, `Aura.gain` and `Aura.giveBack` refuse everything | `spent_seconds` |
+| Rest | 3600 ticks from its end (the spent time inside it) | `awakening_cooldown_seconds` |
+| Awakened Dominion | radius ×1.5, time ×1.5, weaken +0.1, chain 2, flow ×2.5 (Starlit 3) | |
+
+**Interactions decided.** The Final Art opens while awakened (`openFinalArt(Awakening::awakened)`) and is free; its release spends 40
+but the hold lifts momentum straight back to the peak; its 600-tick rest outlasts a fully fed Sovereign awakening (480), so it comes at
+most once per awakening (`AwakeningRulesTest.theFinalArtComesAtMostOncePerAwakening` holds it: keep it true if you change either).
+Finishers come faster (peak stance wear) and each feeds the awakening (an `onFinisher` hook). Nothing else multiplies: a finisher's
+extra, art strength and every PvP cap are as step 5 left them.
+
+**For the later steps.**
+- **Step 7 (Ways)**: natural hooks. The Blade: `onFinisher` already feeds the awakening; a Blade node could raise `AwakeningRules.extend`'s
+  share (add a hook rather than editing the constant). The Bulwark: the spent state is the weak point, a node could soften the slow
+  (`Awakening.tick` puts Slowness back: make it ask a hook). The Banner: `onAwakening.awakened` is where a rallying awakening could
+  `holdMomentum` nearby allies for part of it. Any Way that gives aura must remember `Aura.gain` refuses it while spent (by design).
+- **Step 8 (techniques)**: a technique from a string source is priced through `SwordStrings.price`, so it's free while awakened too.
+  If techniques should cost something awakened, give `StringArt` a flag and check it in `SwordStrings.price`.
+- **Step 9 (bonded blade)**: `onAwakening` for resonance; the awakened body look is `AuraBodyLayer`'s, a bonded blade's glow could
+  read `Awakening.awakened(player)` on the client to blaze too.
+- **Step 10 (sparring, the clash)**: a spar should probably end any awakening (`endAwakening`) or forbid it; decide there. Two
+  awakened swordsmen clashing is a natural spectacle moment.
+- **Step 12 (Unity)**: letting mana and aura feed each other must respect the spent state (no aura in while spent).
+
+**Gotchas.**
+- **`Config.Sync.combat` now carries more than switches**: bit 4 `AWAKENING`, and bits 8 to 15 the momentum an awakening asks for
+  (`Sync.awakeningMomentum()`). Later client-side flags go in bits 3 to 7 (8, 16, 32, 64, 128); don't use bits 8 and up.
+- **Rings racing out from a swordsman's own feet sweep across their first-person view**: everything the burst throws out over the
+  ground is `ArtLight.spectacle`; only still marks on the ground (a cracked seal, a clock face) are `ArtLight.world`. The first run of
+  the game test caught it (`awakening_burst_fp`).
+- **The body haze no longer grows past a full flare** (`kh`, 1.15 in `AuraBodyLayer.body`), the head's haze is softer where eyes burn,
+  and corona tongues in front of the face burn at 45%: a brighter body (a surge, momentum, awakening) blazes in its flames, never as a
+  glare over the face. Add later looks the same way.
+- **An awakened Dominion draws its own ground, not the rune circle** (`AuraVfx.dominionRise(..., circle)`): the generic circle drowned
+  every method's shape. Its `Ground` keeps one `ArtKit.Hits` made at the raise, so its strikes have no art (no art momentum, stance
+  worn as an art's, one PvP cap for the whole Dominion).
+- **The tap-and-hold needs the tap to wait at Edge**: if `Awakening.ready` disagrees between client and server (a server with odd
+  settings mid-sync), the tap goes as a slash and the awakening is refused for the pool. That's why momentum is refused before the pool:
+  the line names what was really missing.
+- **Fabric copies copy-on-death attachments in its own `AFTER_RESPAWN` listener, after ours**: a respawn handler that changes such an
+  attachment on the new body must register in `Aura.AFTER_COPY` (a phase ordered after the default), or the copy undoes it. The
+  awakening's death rule and the old "a new body starts with its aura empty" rule both do now; the latter had been silently undone
+  since 0.9 (the death scene of `WildercordAwakeningTest` caught it).
+- **In the game test**: `AuraApi.awaken` goes through every check (give a full pool and `Momentum.State` at 60+); clear with
+  `calm()` (`endAwakening`, two ticks, then remove the attachment and the effects, refill the pool); an awakening burns the pool to 0
+  when it ends. FakePlayer rivals aren't in the player list, so `Awakening.tick` never ends theirs and their `AuraAttachments.LOOK` must
+  be set by hand to be drawn.

@@ -392,6 +392,97 @@
       ],
       "subtitle": "hit"
     },
+    "aura_awaken": {
+      "attenuation": 48,
+      "files": [
+        "kit/aura/aura_awaken"
+      ],
+      "subtitle": "field"
+    },
+    "aura_awaken_crimson": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_crimson"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_ember": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_ember"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_fed": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_awaken_fed"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_awaken_gale": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_gale"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_hollow": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_hollow"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_hourglass": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_hourglass"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_rime": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_rime"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_starlit": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_starlit"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_steel": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_steel"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_stone": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_stone"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_thunder": {
+      "attenuation": 48,
+      "files": [
+        "kit/aura/aura_awaken_thunder"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_awaken_verdant": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_awaken_verdant"
+      ],
+      "subtitle": "cast"
+    },
     "aura_backlash": {
       "attenuation": 0,
       "files": [
@@ -664,6 +755,13 @@
       ],
       "subtitle": "hit"
     },
+    "aura_recovered": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_recovered"
+      ],
+      "subtitle": "tell"
+    },
     "aura_rime_art": {
       "attenuation": 24,
       "files": [
@@ -703,6 +801,13 @@
         "kit/aura/aura_spellblade"
       ],
       "subtitle": "cast"
+    },
+    "aura_spent": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spent"
+      ],
+      "subtitle": "tell"
     },
     "aura_stance_break": {
       "attenuation": 32,

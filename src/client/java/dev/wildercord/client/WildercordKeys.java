@@ -14,9 +14,9 @@ import net.minecraft.client.Minecraft;
 /**
  * R casts (tap) or charges (hold, then let go); V moves to the next spell (tap) or opens the spell
  * wheel (hold); K opens the Cord screen; B opens the backpack worn in the Backpack slot (in the inventory
- * too, and closes an open backpack); Z is the Aura key (a tap, a press while sneaking, a double tap and a
- * hold each go to the server, which picks the technique: see {@code api.AuraApi}). Casting spells 1-4
- * directly, and loading the next loadout, are unbound by default.
+ * too, and closes an open backpack); Z is the Aura key (a tap, a press while sneaking, a double tap, a
+ * hold, and a tap then a held press each go to the server, which picks the technique: see {@code api.AuraApi}).
+ * Casting spells 1-4 directly, and loading the next loadout, are unbound by default.
  */
 public final class WildercordKeys {
 	private WildercordKeys() {}
@@ -44,6 +44,18 @@ public final class WildercordKeys {
 	/** Whether the Aura key's press already went (sneaking, or held into a hold): letting it go then sends nothing more. */
 	private static boolean auraSent;
 	private static long auraTapAt = Long.MIN_VALUE / 2;
+	/**
+	 * Whether the press held now came straight after a tap (within the double tap's moment), for a player with a tap-and-hold technique
+	 * (awakening, from Edge): let go quickly it's a double tap; held {@link dev.wildercord.aura.AwakeningRules#HOLD_TICKS} it's the
+	 * tap-and-hold; let go between, nothing.
+	 */
+	private static boolean auraSecond;
+	/** Whether the tap before that second press was held back waiting for it (so it goes with the pair, never on its own). */
+	private static boolean auraFirstWaited;
+	/** How long the second press of a tap-and-hold has been held (ticks), for its charge by the crosshair; 0 when none is. */
+	private static int auraCharge;
+	/** When the last tap-and-hold went (game time), for its ring snapping out by the crosshair. */
+	private static long auraTapHoldAt = Long.MIN_VALUE / 4;
 
 	private static int castHeld = -1;
 	private static boolean charging;
@@ -99,6 +111,19 @@ public final class WildercordKeys {
 		ClientPlayNetworking.send(new dev.wildercord.aura.Aura.Key(trigger.ordinal()));
 	}
 
+	/**
+	 * How far a tap-and-hold of the Aura key has come toward awakening (0 to 1; 0 while none is being held), with the partial tick, for
+	 * its charge by the crosshair.
+	 */
+	public static float awakeningCharge(float partial) {
+		return auraCharge <= 0 ? 0 : dev.wildercord.aura.AwakeningRules.charge(auraCharge + partial);
+	}
+
+	/** When the last tap-and-hold of the Aura key went (game time). */
+	public static long tapHoldSentAt() {
+		return auraTapHoldAt;
+	}
+
 	public static net.minecraft.network.chat.Component nextLoadoutKey() {
 		return nextLoadout.getTranslatedKeyMessage();
 	}
@@ -129,8 +154,20 @@ public final class WildercordKeys {
 	 * (Aura Step, from Form), so a double tap is a step alone and never looses a slash first.
 	 */
 	private static boolean tapsWait(Minecraft client) {
-		return client.player != null && dev.wildercord.api.AuraApi.techniqueFor(dev.wildercord.aura.Aura.stage(client.player),
-			dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP).isPresent();
+		if (client.player == null) {
+			return false;
+		}
+		if (has(client, dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP)) {
+			return true;
+		}
+		// From Edge, while an awakening is ready, a lone tap waits too: a tap then a held press must awaken with a full pool, never
+		// loose a slash first (which would spend it).
+		return has(client, dev.wildercord.api.AuraApi.Trigger.TAP_HOLD) && dev.wildercord.aura.Awakening.ready(client.player);
+	}
+
+	/** Whether the player has a technique for {@code trigger} at their stage. */
+	private static boolean has(Minecraft client, dev.wildercord.api.AuraApi.Trigger trigger) {
+		return client.player != null && dev.wildercord.api.AuraApi.techniqueFor(dev.wildercord.aura.Aura.stage(client.player), trigger).isPresent();
 	}
 
 	/**
@@ -138,6 +175,11 @@ public final class WildercordKeys {
 	 * when it's let go, and held it goes once as the hold begins. A second tap soon after is a double tap: with a double-tap
 	 * technique (from Form) a lone tap waits out that moment first and the pair goes as the double tap alone; without one the
 	 * first tap goes at once and the second goes as a tap and a double tap.
+	 *
+	 * <p>From Edge (a tap-and-hold technique: awakening) a second press straight after a tap that's held instead
+	 * ({@link dev.wildercord.aura.AwakeningRules#HOLD_TICKS}) goes as the tap-and-hold, the waiting tap with it, and never as a hold
+	 * (Dominion) too; let go before it completes (and after it was clearly held) it sends nothing. A lone tap waits for that second
+	 * press while an awakening is ready (always from Form, for the step).</p>
 	 */
 	private static void auraKey(Minecraft client, boolean playing) {
 		long gameTime = client.level == null ? 0 : client.level.getGameTime();
@@ -152,20 +194,57 @@ public final class WildercordKeys {
 			if (auraHeld < 0 && playing) {
 				auraHeld = 0;
 				auraSent = client.player.isShiftKeyDown();
+				auraSecond = false;
 				if (auraSent) {
 					sendAura(dev.wildercord.api.AuraApi.Trigger.SNEAK_TAP);
+				} else if (gameTime - auraTapAt <= DOUBLE_TAP && has(client, dev.wildercord.api.AuraApi.Trigger.TAP_HOLD)) {
+					// Straight after a tap: a double tap, or held, a tap-and-hold. A tap held back goes with the pair either way.
+					auraSecond = true;
+					auraFirstWaited = auraTapWaiting;
+					auraTapWaiting = false;
 				}
 			}
 		}
 		if (auraHeld < 0 || !playing) {
+			auraCharge = 0;
+			if (!playing) {
+				auraSecond = false;
+			}
 			return;
 		}
 		if (aura.isDown()) {
 			auraHeld++;
+			if (auraSecond) {
+				auraCharge = auraSent ? 0 : auraHeld;
+				if (!auraSent && auraHeld >= dev.wildercord.aura.AwakeningRules.HOLD_TICKS) {
+					auraSent = true;
+					auraCharge = 0;
+					auraTapAt = Long.MIN_VALUE / 2;
+					auraTapHoldAt = gameTime;
+					sendAura(dev.wildercord.api.AuraApi.Trigger.TAP_HOLD);
+				}
+				return;
+			}
 			if (!auraSent && auraHeld == HOLD) {
 				auraSent = true;
 				sendAura(dev.wildercord.api.AuraApi.Trigger.HOLD);
 			}
+			return;
+		}
+		auraCharge = 0;
+		if (auraSecond) {
+			auraSecond = false;
+			if (!auraSent && auraHeld < HOLD) {
+				// Let go quickly: a double tap after all. A tap held back for it goes with it as the slash it was where there's no step
+				// (Edge); one that went already goes again, as before.
+				if (!auraFirstWaited || !has(client, dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP)) {
+					sendAura(dev.wildercord.api.AuraApi.Trigger.TAP);
+				}
+				sendAura(dev.wildercord.api.AuraApi.Trigger.DOUBLE_TAP);
+			}
+			// Let go after it was clearly held but before it completed: nothing at all (an awakening called off).
+			auraTapAt = Long.MIN_VALUE / 2;
+			auraHeld = -1;
 			return;
 		}
 		if (!auraSent) {
@@ -201,6 +280,8 @@ public final class WildercordKeys {
 			charging = false;
 			nextHeld = -1;
 			auraHeld = -1;
+			auraSecond = false;
+			auraCharge = 0;
 			while (cast.consumeClick()) {
 				// Discarded.
 			}

@@ -309,14 +309,23 @@ public record WildercordConfig(
 	 * @param heights              the top stages (Form and Sovereign), the spellblade and aura marks: see {@link AuraHeights}
 	 * @param strings              sword strings, the arts set off by a run of swings: see {@link AuraStrings}
 	 * @param momentum             momentum, stance and finishers: see {@link AuraMomentum}
+	 * @param awakening            awakening and the spent state after it: see {@link AuraAwakening}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
 			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
-			AuraStrings strings, AuraMomentum momentum) {
+			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
 			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS,
-			AuraMomentum.DEFAULTS);
+			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS);
+
+		/** A file's aura section before awakening: the same, with awakening's defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
+				AuraStrings strings, AuraMomentum momentum) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, heights, strings, momentum, AuraAwakening.DEFAULTS);
+		}
 
 		/** A file's aura section before momentum: the same, with momentum's defaults. */
 		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
@@ -344,6 +353,7 @@ public record WildercordConfig(
 			heights = heights == null ? AuraHeights.DEFAULTS : heights;
 			strings = strings == null ? AuraStrings.DEFAULTS : strings;
 			momentum = momentum == null ? AuraMomentum.DEFAULTS : momentum;
+			awakening = awakening == null ? AuraAwakening.DEFAULTS : awakening;
 		}
 
 		/** The slash's cooldown in ticks. */
@@ -440,6 +450,37 @@ public record WildercordConfig(
 	public record AuraMomentum(boolean momentum, double momentumGain, double momentumEbb, boolean stance, double stanceDamage, double finisherDamage,
 			boolean pvpStance) {
 		public static final AuraMomentum DEFAULTS = new AuraMomentum(true, 1.0, 1.0, true, 1.0, 1.0, true);
+	}
+
+	/**
+	 * Awakening (more keys of the {@code aura} section): from Edge, with a full pool and momentum enough, a swordsman awakens (the Aura
+	 * key tapped, then held): their aura blazes, arts cost little or nothing, momentum holds at its peak, and they're a little faster and
+	 * harder-hitting, for a time that grows by stage. When it ends the rest of their aura burns away and they're spent: slowed and
+	 * gathering no aura for a while. The numbers' meaning is in {@code aura.AwakeningRules}, whose defaults these are.
+	 *
+	 * @param awakening                whether swordsmen can awaken at all
+	 * @param awakeningMomentum        the momentum it asks for (0 to 100; with momentum off on the server, a full pool alone)
+	 * @param awakeningDuration        how long it lasts (12, 16 and 20 seconds at Edge, Form and Sovereign), times this
+	 * @param awakeningCooldownSeconds how long from its end before the next
+	 * @param spentSeconds             how long a swordsman is spent after it: slowed, gathering no aura
+	 * @param awakeningArtPrice        what an art costs while awakened, as a share of its price (0 is free)
+	 * @param awakeningDamage          how much harder coated blows land while awakened (0.15 is 15%; half that against a player, inside
+	 *                                 their cap and the PvP scale)
+	 * @param awakeningSpeed           how much faster while awakened, on foot and with the blade (0.1 is 10%)
+	 */
+	public record AuraAwakening(boolean awakening, double awakeningMomentum, double awakeningDuration, double awakeningCooldownSeconds,
+			double spentSeconds, double awakeningArtPrice, double awakeningDamage, double awakeningSpeed) {
+		public static final AuraAwakening DEFAULTS = new AuraAwakening(true, dev.wildercord.aura.AwakeningRules.MOMENTUM, 1.0,
+			dev.wildercord.aura.AwakeningRules.COOLDOWN_TICKS / 20.0, dev.wildercord.aura.AwakeningRules.SPENT_TICKS / 20.0,
+			dev.wildercord.aura.AwakeningRules.ART_PRICE, dev.wildercord.aura.AwakeningRules.DAMAGE, dev.wildercord.aura.AwakeningRules.SPEED);
+
+		public int cooldownTicks() {
+			return (int) Math.round(awakeningCooldownSeconds * 20);
+		}
+
+		public int spentTicks() {
+			return (int) Math.round(spentSeconds * 20);
+		}
 	}
 
 	/**
@@ -630,7 +671,16 @@ public record WildercordConfig(
 					r.bool("aura", "stance", d.aura.momentum().stance()),
 					r.number("aura", "stance_damage", d.aura.momentum().stanceDamage(), 0, 5),
 					r.number("aura", "finisher_damage", d.aura.momentum().finisherDamage(), 0, 3),
-					r.bool("aura", "pvp_stance", d.aura.momentum().pvpStance()))),
+					r.bool("aura", "pvp_stance", d.aura.momentum().pvpStance())),
+				new AuraAwakening(
+					r.bool("aura", "awakening", d.aura.awakening().awakening()),
+					r.number("aura", "awakening_momentum", d.aura.awakening().awakeningMomentum(), 0, 100),
+					r.number("aura", "awakening_duration", d.aura.awakening().awakeningDuration(), 0.25, 4),
+					r.number("aura", "awakening_cooldown_seconds", d.aura.awakening().awakeningCooldownSeconds(), 0, 3600),
+					r.number("aura", "spent_seconds", d.aura.awakening().spentSeconds(), 0, 300),
+					r.number("aura", "awakening_art_price", d.aura.awakening().awakeningArtPrice(), 0, 1),
+					r.number("aura", "awakening_damage", d.aura.awakening().awakeningDamage(), 0, 1),
+					r.number("aura", "awakening_speed", d.aura.awakening().awakeningSpeed(), 0, 0.5))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -680,7 +730,10 @@ public record WildercordConfig(
 			// Sword strings, and the methods' arts.
 			"strings", "string_window_seconds", "art_damage", "art_terrain",
 			// Momentum, stance and finishers.
-			"momentum", "momentum_gain", "momentum_ebb", "stance", "stance_damage", "finisher_damage", "pvp_stance"));
+			"momentum", "momentum_gain", "momentum_ebb", "stance", "stance_damage", "finisher_damage", "pvp_stance",
+			// Awakening, and the spent state after it.
+			"awakening", "awakening_momentum", "awakening_duration", "awakening_cooldown_seconds", "spent_seconds", "awakening_art_price",
+			"awakening_damage", "awakening_speed"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -999,7 +1052,13 @@ public record WildercordConfig(
 			+ "each tier makes arts cheaper and stronger, and its peak opens the Final Art (with momentum off, a full pool does). momentum_gain and "
 			+ "momentum_ebb scale how fast it builds and ebbs. Foes have a stance (stance) that blades, arts and perfect guards wear down "
 			+ "(stance_damage scales how fast); broken, a foe is opened, and a full swing on it is a finisher dealing a share of what it has lost "
-			+ "(finisher_damage scales it). pvp_stance gives players a stance too: a finisher on a player is always capped, through armour and totems.");
+			+ "(finisher_damage scales it). pvp_stance gives players a stance too: a finisher on a player is always capped, through armour and totems. "
+			+ "Awakening (awakening): from Edge, with a full pool and at least awakening_momentum momentum, the Aura key tapped then held awakens a "
+			+ "swordsman for 12, 16 or 20 seconds at Edge, Form and Sovereign (times awakening_duration): arts cost awakening_art_price of their price, "
+			+ "momentum holds at its peak, and they're awakening_speed faster and hit awakening_damage harder (half that against a player, inside "
+			+ "max_bonus and pvp_scale). When it ends the rest of their aura burns away and they're spent for spent_seconds, slowed and gathering no "
+			+ "aura; the next awakening waits awakening_cooldown_seconds from its end. At Sovereign a Dominion raised while awakened is wider, "
+			+ "longer and shaped by the method.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -1037,6 +1096,15 @@ public record WildercordConfig(
 		auraSection.addProperty("stance_damage", momentum.stanceDamage());
 		auraSection.addProperty("finisher_damage", momentum.finisherDamage());
 		auraSection.addProperty("pvp_stance", momentum.pvpStance());
+		AuraAwakening awakening = aura.awakening();
+		auraSection.addProperty("awakening", awakening.awakening());
+		auraSection.addProperty("awakening_momentum", awakening.awakeningMomentum());
+		auraSection.addProperty("awakening_duration", awakening.awakeningDuration());
+		auraSection.addProperty("awakening_cooldown_seconds", awakening.awakeningCooldownSeconds());
+		auraSection.addProperty("spent_seconds", awakening.spentSeconds());
+		auraSection.addProperty("awakening_art_price", awakening.awakeningArtPrice());
+		auraSection.addProperty("awakening_damage", awakening.awakeningDamage());
+		auraSection.addProperty("awakening_speed", awakening.awakeningSpeed());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

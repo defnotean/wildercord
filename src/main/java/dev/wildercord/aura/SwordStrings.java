@@ -365,9 +365,13 @@ public final class SwordStrings {
 		return performing;
 	}
 
-	/** What {@code art} costs {@code player} now: its price, less at each tier of momentum ({@link Momentum#price}). Both sides. */
+	/**
+	 * What {@code art} costs {@code player} now: its price, less at each tier of momentum ({@link Momentum#price}), and only the
+	 * awakening's share of that while awakened ({@link Awakening#priceShare}: nothing, by default). Both sides.
+	 */
 	public static double price(Player player, AuraApi.StringArt art) {
-		return Momentum.on(player) ? Momentum.price(player, art) : art.cost();
+		double price = Momentum.on(player) ? Momentum.price(player, art) : art.cost();
+		return AwakeningRules.price(price, Awakening.priceShare(player));
 	}
 
 	/** The Grimoire entry a method's own art writes the first time it's played (see {@link ArtRules#grimoireKey}). */

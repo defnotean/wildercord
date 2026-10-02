@@ -1601,6 +1601,100 @@ from full health it adds nothing, and at most a quarter of their health.
 **Settings** (`aura` section): `momentum`, `momentum_gain` (0 to 5), `momentum_ebb` (0 to 5, 0 never), `stance`, `stance_damage`
 (0 to 5), `finisher_damage` (0 to 3), `pvp_stance`. The client learns whether momentum and stance are on (`Config.Sync.combat`).
 
+### Awakening
+**Everything let go at once.** From Edge, a swordsman whose pool is full and whose fight is going well can **awaken**: for a while
+they burn at their strongest, and then they pay for it. All of it is server-side (`aura.Awakening`), saved and synced to everyone
+near (the body's aura is drawn from it); the numbers are `aura.AwakeningRules` (unit-tested by `AwakeningRulesTest`).
+
+**The input.** The Aura key tapped, then pressed again at once (within the double tap's 8 ticks) and **held 14 ticks**
+(`AuraApi.Trigger.TAP_HOLD`, the key's fifth way). A quick second press is still the double tap (the step from Form); a second
+press let go after it was clearly held (5 ticks) but before it completed sends nothing; a lone hold is still Dominion; the press
+while sneaking is still the guard. The held press shows its charge as a thin ring of the aura's colour filling round the
+crosshair (from its 4th tick, so a double tap never flashes it), snapping out as it completes. While an awakening is ready a lone
+tap waits out the double tap's moment (as it always does from Form), so the tap of a tap-and-hold never looses a slash that
+would spend the pool; when it isn't ready (or below Form when no step waits) taps go at once and a tap-and-hold is refused with
+why. Why this and not a new key: it sits inside the key's grammar (tap, double tap, hold, and now tap then hold), needs both a
+tap and a deliberate hold, so no swing, guard, step or Dominion of a fight can set it off by accident, and the charge ring lets a
+press held by mistake be let go in time.
+
+**What it asks.** Stage Edge or higher; a full pool (95% of capacity, so a coated swing's half point never stands in the way);
+momentum at 50 or more (the second tier: `awakening_momentum`; with momentum off on the server, the pool alone); an aura weapon in
+hand; not awakened, not spent, and the last one's rest run out. Refused in that order (momentum before the pool: short of it the
+lone tap goes as the slash and spends the pool, and the line should name what was really missing).
+
+**While it lasts** (12 s at Edge, 16 at Form, 20 at Sovereign, times `awakening_duration`):
+- **arts cost nothing** (`awakening_art_price`, 0 by default; a share of the price written into the state as it begins, so both
+  sides price arts alike: `SwordStrings.price` multiplies it in after momentum's discount);
+- **momentum is held at the peak** (`Momentum.hold(player, 95, duration)`: no ebb, a hit knocks nothing off below it), so arts are
+  at their strongest (×1.2) and wear stance fastest (×1.45), and **the Final Art opens** (`AuraApi.openFinalArt`);
+- **coated blows land 15% harder** (`awakening_damage`; against a player half of it, as one more bonus under their `max_bonus` cap
+  and the `pvp_scale`: about 5% in the end with the defaults);
+- **a tenth faster** on foot (movement speed, base) and with the blade (attack speed, total) (`awakening_speed`);
+- **each finisher landed feeds it a second** (20 ticks), four at most (80 ticks), its rest moved on with it;
+- aura still comes in from blows, and the techniques (guard, slash, step, Dominion, aura armour) cost as usual.
+
+**Spent.** When it runs out (or ends early through `AuraApi.endAwakening`) whatever aura is left **burns away** (the pool is
+emptied), momentum is emptied, and the swordsman is **spent** for 30 s (`spent_seconds`): Slowness I (put back if milk washes it
+off) and **no aura comes in at all** (`Aura.gain` and `Aura.giveBack` refuse it: blows, the breathing stance and its beat,
+Dominion's flow and trickle, finishers' and Starlit's aura back). With no aura there's no coat, no guard, no slash, no step, no
+aura armour and no arts: a real window for a foe or a rival, and for a mob pack. Then the aura stirs again; the next awakening
+waits **three minutes from its end** (`awakening_cooldown_seconds`; the spent time runs inside it). A death ends it (the new body
+isn't spent; the rest runs from the death). Leaving mid-awakening and coming back later lands you in what's left of it (the times
+are game time, saved), momentum held again for what's left; a change of world holds momentum again too.
+
+**The Final Art, finishers and the peak, together.** A Sovereign's awakening opens the Final Art (the hold keeps momentum at the
+peak anyway; the opener covers a server with momentum off) and makes it free. Its release still spends 40 momentum, but the hold
+lifts it straight back to the peak, so the swordsman stays at full strength after it. Its rest (30 s) outlasts even a fully fed
+Sovereign awakening (24 s), so **the Final Art comes at most once per awakening**: awakening is the way to play it on demand from
+half momentum, and the price is the spent state after. Finishers come faster while awakened (stance worn ×1.45) and each one feeds
+the awakening a second, so a swordsman who keeps opening foes keeps it burning a little longer: up to four seconds. Nothing
+multiplies twice: a finisher's extra, the Final Art's damage and the PvP caps are as ever.
+
+**The Sovereign's awakened Dominion.** Dominion raised while awakened is the Sovereign's own (`aura.arts.Awakenings.Ground`): half
+again as wide (4.5 blocks) and as long (12 s), its foes 10% weaker still (`dominion_weaken` + 0.1, under the same cap and PvP
+scale), its chain leaping to two foes, aura flowing back 2.5 times as fast (Starlit's 3), its own ground drawn in place of the rune
+circle, its name in the banner over "Awakened Dominion", and shaped by the method (each beat a second):
+
+| Method | Its name | What it does |
+|---|---|---|
+| Ember | Throne of Cinders | foes inside set alight each second (a player at most 3 s at a time), a ring of flame round its edge |
+| Rime | Court of Winter | raised, every foe inside frozen solid a moment (2 s; a player held to the cap); then chilled hard each second |
+| Thunder | Seat of Storms | each second a bolt falls on a foe inside: 0.45 of the weapon, and a shock that interrupts it |
+| Gale | Windward Ground | every other second an updraft throws the foes inside up (juggled: coated blows land harder on them); the owner standing in it turns shots aside |
+| Stone | Unmoving Mountain | the owner standing in it hardened (Resistance I, unmovable); each second it wears every foe's stance (4) |
+| Verdant | Wildwood Court | raised, foes inside rooted (2 s); each second the owner and allies in it mended a health (in the arts' mending bucket) |
+| Hollow | Sunken Hall | raised, foes inside silenced (3 s, a player 1.5); every other tick they're dragged toward its heart (a player only leaned on) |
+| Starlit | Field of Stars | each second a star falls on a foe inside (0.3 of the weapon, marking it; a marked one's bursts for twice) |
+| Hourglass | Stilled Hour | raised, foes inside held still a moment (1.5 s); then slowed hard, and shots foes loose inside slowed to under half |
+| Crimson | Crimson Court | every other second foes inside bleed (0.25 of the weapon, marked bleeding); a quarter of every blow the owner lands inside drunk |
+| any other | Sovereign Ground | only stronger |
+
+Everything goes through `ArtKit` (holds, throws, drags, silences, burns held to the player caps and the boss rules) and its strikes
+through one `ArtKit.Hits` for the whole Dominion, so another player takes no more from all its strikes together than from one art
+(8). A Dominion raised awakened keeps its shape to its end even if the awakening ends first.
+
+**The moment.** The server sends the shared stinger and the method's own voice (`aura_awaken`, `aura_awaken_<method>`), its banner
+(grand: "Awakening" over "<method> · <stage>"), a long surge of the body's aura, rings closing in over the ground and round the
+waist (spectacle) while it gathers, then at 6 ticks the burst: a modest flash and ring at the heart (a whisper low in the owner's
+first person), a shockwave in two rings racing out over the ground and a column of light (spectacle: seen by the owner only in
+third person), the method's flourish (`Awakenings.flourish`: Ember a ring of flame, Rime ice bursting outward, Thunder three bolts
+out of the sky, Gale a rising wind, Stone the ground cracking and slabs heaving, Verdant a flower of light, Hollow a black point
+bursting, Starlit a star over the head, Hourglass a clock face on the ground, Crimson crescents of blood), foes within 3.5 blocks
+thrown back a step (no harm, the arts' throw caps) and a small shake. Every client draws the rest from the synced state
+(`AwakeningRules.form`): motes drawn in to the heart while it gathers; then the body's aura climbs past its stage into its
+awakened form, surging at the burst and settling by 26 ticks: eyes burning from Edge (Sovereign's brighter, with a wisp off each),
+an Edge swordsman's borrowed mantle and low corona, a Form swordsman's corona, a Sovereign's standing taller, streamers of light
+racing up round the body, the pool under it wide and bright, embers streaming off; in its last two seconds it gutters, flickering
+down. Spent, it falls to a faint ash-grey haze shedding ash. In the owner's own first person: the edges of the view glow once in
+the aura's colour (at most a sixth opaque at the edge, gone within two seconds); then only the bottom-edge whisper and the HUD
+(the strip edged in its fire, a light racing along the bar, "Awakened: n s" above; "Spent: n s" after; a small flame after the
+stage diamonds: breathing gold when ready, blazing, ash, dark and filling back while it rests). The Aura page writes its state at
+the end of the aura line.
+
+**Settings** (`aura` section): `awakening`, `awakening_momentum` (0 to 100), `awakening_duration` (0.25 to 4), `awakening_cooldown_seconds`
+(0 to 3600), `spent_seconds` (0 to 300), `awakening_art_price` (0 to 1), `awakening_damage` (0 to 1), `awakening_speed` (0 to 0.5). The
+client learns whether it's on and the momentum it asks for (`Config.Sync.combat`: bit 4, and bits 8 to 15).
+
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
 choice is the sneak: a spell cast standing goes out as usual, sword or not). The next **Aura Slash** within 5 seconds

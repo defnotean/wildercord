@@ -187,6 +187,8 @@ public final class AuraCombat {
 		bonus *= AuraElements.bonus(player, target, source, Aura.element(player));
 		// A foe a Gale swordsman's Updraft threw, still in the air: the juggle (one more bonus, under the cap against a player).
 		bonus *= dev.wildercord.aura.arts.ArtWards.juggle(player, target);
+		// Awakened: a little harder (half that against a player, and that too under their cap and the PvP scale).
+		bonus *= Awakening.damage(player, target);
 		double amount = damage * againstPlayer(target, bonus);
 		if (Aura.stage(player) >= AuraRules.EDGE && !source.is(DamageTypeTags.BYPASSES_ARMOR) && amount > 0) {
 			float after = CombatRules.getDamageAfterAbsorb(target, (float) amount, source, target.getArmorValue(),

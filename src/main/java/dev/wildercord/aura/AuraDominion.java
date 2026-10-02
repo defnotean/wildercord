@@ -37,12 +37,20 @@ import java.util.UUID;
  * </ul>
  * It's a big moment and costs like one: much aura and a long rest. Against other players it stays inside the PvP caps: the
  * weakening is scaled by the aura PvP scale, and the chain is projected aura, which meets their spell defences.
+ *
+ * <p>Raised while awakened ({@link Awakening}) it's the Sovereign's own: half again as wide and as long, its foes weaker still, its
+ * chain leaping to two, aura flowing back faster, and shaped by the method ({@code aura.arts.Awakenings.Ground}: a throne of
+ * cinders, a court of winter, a seat of storms...).</p>
  */
 public final class AuraDominion {
 	private AuraDominion() {}
 
-	/** A Dominion standing in the world. */
-	record Field(UUID owner, ServerLevel level, Vec3 centre, double radius, long start, long until, int color) {
+	/** A Dominion standing in the world ({@code ground}: an awakened one's method-shaped ground, or null for an ordinary one). */
+	record Field(UUID owner, ServerLevel level, Vec3 centre, double radius, long start, long until, int color, dev.wildercord.aura.arts.Awakenings.Ground ground) {
+		boolean sovereign() {
+			return ground != null;
+		}
+
 		boolean inside(Entity e) {
 			if (e.level() != level) {
 				return false;
@@ -59,10 +67,13 @@ public final class AuraDominion {
 	private static final Map<UUID, Long> CHAINED = new HashMap<>();
 
 	static void init() {
-		// Aura flows back faster for whoever stands in their own Dominion.
+		// Aura flows back faster for whoever stands in their own Dominion (faster still in an awakened one).
 		AuraApi.onGain((player, amount, source) -> {
 			Field field = FIELDS.get(player.getUUID());
-			return field != null && field.inside(player) ? amount * AuraRules.DOMINION_FLOW : amount;
+			if (field == null || !field.inside(player)) {
+				return amount;
+			}
+			return amount * (field.sovereign() ? AwakeningRules.Sovereign.flow(Aura.data(player).method()) : AuraRules.DOMINION_FLOW);
 		});
 	}
 
@@ -83,6 +94,18 @@ public final class AuraDominion {
 	public static boolean active(Player player) {
 		Field field = FIELDS.get(player.getUUID());
 		return field != null && player.level().getGameTime() <= field.until();
+	}
+
+	/** Whether the Dominion {@code player} holds now was raised while awakened (the Sovereign's own, shaped by the method). */
+	public static boolean sovereign(Player player) {
+		Field field = FIELDS.get(player.getUUID());
+		return field != null && player.level().getGameTime() <= field.until() && field.sovereign();
+	}
+
+	/** How far the Dominion {@code player} holds now reaches (0 for none). */
+	public static double radius(Player player) {
+		Field field = FIELDS.get(player.getUUID());
+		return field != null && player.level().getGameTime() <= field.until() ? field.radius() : 0;
 	}
 
 	/** Whether {@code entity} stands inside the Dominion {@code owner} holds now. */
@@ -121,21 +144,37 @@ public final class AuraDominion {
 			AuraPresence.timers(player, timers.dominion(now + 40, timers.dominionUntil()));
 			return false;
 		}
-		int ticks = settings.dominionTicks();
+		// Raised while awakened, it's the Sovereign's own: wider, longer, and shaped by the method.
+		boolean sovereign = Awakening.awakened(player);
+		int ticks = sovereign ? (int) Math.round(settings.dominionTicks() * AwakeningRules.Sovereign.TIME) : settings.dominionTicks();
+		double radius = sovereign ? AuraRules.DOMINION_RADIUS * AwakeningRules.Sovereign.RADIUS : AuraRules.DOMINION_RADIUS;
 		ServerLevel level = player.level();
-		Field field = new Field(player.getUUID(), level, player.position(), AuraRules.DOMINION_RADIUS, now, now + ticks, Aura.color(player));
+		Vec3 centre = player.position();
+		dev.wildercord.aura.arts.Awakenings.Ground ground = sovereign ? dev.wildercord.aura.arts.Awakenings.ground(player, centre, radius, ticks) : null;
+		Field field = new Field(player.getUUID(), level, centre, radius, now, now + ticks, Aura.color(player), ground);
 		Field old = FIELDS.put(player.getUUID(), field);
 		if (old != null) {
 			AuraVfx.dominionEnd(old.level(), old.centre(), old.radius(), old.color());
 		}
 		AuraPresence.timers(player, timers.dominion(now + settings.dominionCooldownTicks(), now + ticks));
-		Aura.sound(player, "aura_dominion", 1.4F, 1.0F);
+		Aura.sound(player, "aura_dominion", 1.4F, sovereign ? 0.85F : 1.0F);
 		AuraFx.sound(player, AuraFx.Sound.ART, 1.0F, 0.7F);
-		AuraVfx.dominionRise(level, field.centre(), field.radius(), field.color(), ticks);
-		ScreenFx.shake(level, field.centre(), 0.35F, 14);
-		// Its name, grand, in the aura's colour (by the side of the screen for you, over your head for everyone else).
-		AuraFx.banner(player, Component.translatable("aura.wildercord.technique.dominion"),
-			Aura.method(player).<Component>map(m -> Component.translatable(m.nameKey())).orElse(Component.empty()), AuraFxRules.BannerKind.GRAND);
+		// An awakened one draws its method's own ground in place of the ordinary circle (the plain one keeps it).
+		AuraVfx.dominionRise(level, field.centre(), field.radius(), field.color(), ticks,
+			!sovereign || ground.flavour() == AwakeningRules.Flavour.PLAIN);
+		ScreenFx.shake(level, field.centre(), sovereign ? 0.5F : 0.35F, 14);
+		Component method = Aura.method(player).<Component>map(m -> Component.translatable(m.nameKey())).orElse(Component.empty());
+		if (sovereign) {
+			// Its own name, grand, over "Awakened Dominion".
+			AuraFx.banner(player, Component.translatable(ground.flavour().nameKey()), Component.translatable("aura.wildercord.sovereign.kicker"),
+				AuraFxRules.BannerKind.GRAND);
+			dev.wildercord.cast.feel.Feels.sound(level, centre.add(0, 1, 0), AwakeningFx.voice(Aura.data(player).method()), 1.0F, 0.8F);
+			ground.raised(player, foes(player, field), ticks);
+			Grimoire.unlock(player, "aura:sovereign_dominion");
+		} else {
+			// Its name, grand, in the aura's colour (by the side of the screen for you, over your head for everyone else).
+			AuraFx.banner(player, Component.translatable("aura.wildercord.technique.dominion"), method, AuraFxRules.BannerKind.GRAND);
+		}
 		AuraFx.bodyAuraFlare(player, 60, 1.0F);
 		Grimoire.unlock(player, "aura:dominion");
 		return true;
@@ -162,6 +201,9 @@ public final class AuraDominion {
 			long age = now - field.start();
 			if (age % 10 == 0) {
 				press(owner, field);
+			}
+			if (field.sovereign()) {
+				field.ground().tick(owner, foes(owner, field), age, field.inside(owner));
 			}
 			if (age % 10 == 5 && field.inside(owner)) {
 				Aura.gain(owner, AuraRules.DOMINION_TRICKLE / 2, "dominion");
@@ -210,7 +252,7 @@ public final class AuraDominion {
 			if (owner == null || owner == striker || !Targets.canHarm(owner, striker)) {
 				continue;
 			}
-			double weaken = Config.get().aura().heights().dominionWeaken();
+			double weaken = Config.get().aura().heights().dominionWeaken() + (field.sovereign() ? AwakeningRules.Sovereign.WEAKEN : 0);
 			return (float) AuraRules.dominionWeakened(damage, weaken, striker instanceof Player, Config.get().aura().pvpScale());
 		}
 		return damage;
@@ -226,30 +268,32 @@ public final class AuraDominion {
 		if (field == null || now > field.until() || taken <= 0 || !field.inside(struck)) {
 			return;
 		}
+		if (field.sovereign()) {
+			// Crimson's court drinks from every blow inside.
+			field.ground().struck(player, struck, taken);
+		}
 		Long last = CHAINED.get(player.getUUID());
 		if (last != null && last == now) {
 			return;
 		}
-		LivingEntity next = null;
-		double best = Double.MAX_VALUE;
-		for (LivingEntity e : foes(player, field)) {
-			if (e == struck) {
-				continue;
-			}
-			double d = e.distanceToSqr(struck);
-			if (d < best) {
-				best = d;
-				next = e;
-			}
-		}
-		if (next == null) {
+		// The nearest other foes inside: one, or two in an awakened Dominion.
+		List<LivingEntity> others = new ArrayList<>(foes(player, field));
+		others.remove(struck);
+		if (others.isEmpty()) {
 			return;
 		}
+		others.sort(java.util.Comparator.comparingDouble(e -> e.distanceToSqr(struck)));
 		CHAINED.put(player.getUUID(), now);
-		AuraVfx.dominionChain(player.level(), struck, next, field.color());
-		Aura.sound(player, "aura_slash", 0.5F, 1.5F);
-		if (AuraCombat.projected(player, next, Math.max(1.0, taken * AuraRules.DOMINION_CHAIN_SHARE) * Config.get().aura().damageScale(), false) > 0) {
-			AuraFx.impact(player, next, field.color(), Aura.stage(player), AuraFxRules.Weight.FULL);
+		int chains = Math.min(others.size(), field.sovereign() ? AwakeningRules.Sovereign.CHAINS : 1);
+		LivingEntity from = struck;
+		for (int i = 0; i < chains; i++) {
+			LivingEntity next = others.get(i);
+			AuraVfx.dominionChain(player.level(), from, next, field.color());
+			if (AuraCombat.projected(player, next, Math.max(1.0, taken * AuraRules.DOMINION_CHAIN_SHARE) * Config.get().aura().damageScale(), false) > 0) {
+				AuraFx.impact(player, next, field.color(), Aura.stage(player), AuraFxRules.Weight.FULL);
+			}
+			from = next;
 		}
+		Aura.sound(player, "aura_slash", 0.5F, 1.5F);
 	}
 }

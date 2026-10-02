@@ -4,6 +4,34 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Awakening
+- **Awakening.** From Edge, with your aura full and your momentum at half or more, **tap the Aura key and then hold it** and you let
+  everything go at once: for 12 seconds at Edge, 16 at Form and 20 at Sovereign your arts cost nothing, your momentum holds at its
+  peak (and with it your Final Art opens), and you're a little faster and hit a little harder. Every finisher you land feeds it
+  another second. A ring fills round your crosshair as you hold, so you can let go in time; a quick double tap is still the step
+  and a lone hold still Dominion.
+- **The moment is worth seeing.** Your aura draws in, then bursts: a column of light, a shockwave racing out over the ground, foes
+  close by thrown back a step, and your method's own flourish and voice (a ring of flame, ice bursting, bolts from a clear sky, a
+  rising wind, the ground cracking, a flower of light, a black point bursting, a star, a clock face, crescents of blood). Your
+  body's aura climbs past your stage: your eyes burn, a mantle and a corona of fire, streamers of light racing up round you. In
+  first person it stays out of your way: a banner, a faint glow at the edges of the screen as it bursts, and the time left by
+  your aura bar.
+- **Then you're spent.** When it ends whatever aura you had left burns away and for half a minute you're slowed and can't gather
+  any aura at all: no guard, no slash, no arts until it passes. The next awakening waits three minutes.
+- **The Sovereign's awakened Dominion.** Raised while you're awakened, Dominion is wider, longer and harder on foes, chains to two,
+  and is your method's own: *Throne of Cinders* (Ember: foes inside burn), *Court of Winter* (Rime: they freeze, then chill),
+  *Seat of Storms* (Thunder: a bolt each second), *Windward Ground* (Gale: updrafts throw them up, shots turn aside from you),
+  *Unmoving Mountain* (Stone: you're hardened, their stance worn), *Wildwood Court* (Verdant: roots, and mending for you and your
+  allies), *Sunken Hall* (Hollow: silenced and drawn in), *Field of Stars* (Starlit: falling stars, aura back faster), *Stilled
+  Hour* (Hourglass: held still, then slowed, shots too) and *Crimson Court* (Crimson: they bleed, you drink).
+- **Fair against players**: its harder blows count half against a player and inside the usual caps (a few percent in the end),
+  and every hold and throw of an awakened Dominion is held to what an art may do.
+- **On your aura bar**, a small flame after the stage diamonds: breathing gold when you could awaken, blazing while you are, ash
+  while you're spent, filling back while it rests. The Aura page shows it too, and lists Awakening with its key.
+- **For server owners**: `aura.awakening`, `awakening_momentum`, `awakening_duration`, `awakening_cooldown_seconds`, `spent_seconds`,
+  `awakening_art_price`, `awakening_damage` and `awakening_speed`. **For add-ons**: `AuraApi.onAwakening`, `awakened`, `spent`,
+  `awaken`, `endAwakening`, and the Aura key's new `Trigger.TAP_HOLD` for techniques of your own.
+
 ### Momentum and openings
 - **Momentum.** A clean fight now builds momentum, a thin line under your aura bar: full swings that land, arts that land,
   perfect guards and Aura Steps taken through an attack all fill it. A hit you take knocks a share off, and out of a fight it
@@ -170,6 +198,8 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
   re-summoned; shears take it off again.
 
 ### Fixed
+- **A new body starts with its aura empty again.** After a death the aura you held was copied back onto your new body (the
+  path is kept through death; the aura held never was meant to be). It now empties as it should.
 - **The Aura badge no longer hides under the Cosmetics tab.** The Cord screen's header ran out of room once 0.9.0 added
   the Aura badge. Its page tabs now tighten to fit, and a long Cord name is cut short (hover it to read it whole). The
   Cosmetics page lays its header out the same way, so the tabs don't jump when you switch.

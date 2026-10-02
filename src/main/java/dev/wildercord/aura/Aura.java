@@ -69,6 +69,13 @@ public final class Aura {
 	private static final Identifier HASTE = Wildercord.id("aura_hourglass");
 	private static final Identifier SWIFT = Wildercord.id("aura_gale");
 
+	/**
+	 * A phase of {@code ServerPlayerEvents.AFTER_RESPAWN} after the default one. Fabric copies a player's copy-on-death attachments to
+	 * the new body in the default phase, and not always before a mod's own listener there: anything that changes such an attachment on
+	 * the new body (the aura held emptied, an awakening ended) must run after the copy, in this phase, or the copy undoes it.
+	 */
+	public static final Identifier AFTER_COPY = Wildercord.id("after_attachments_copied");
+
 	// ------------------------------------------------------------------ reading (both sides)
 
 	public static AuraAttachments.Data data(Player player) {
@@ -144,7 +151,8 @@ public final class Aura {
 	/** Fills aura by {@code amount} (see {@link AuraApi#gain}); returns what was really gained. */
 	public static double gain(ServerPlayer player, double amount, String source) {
 		AuraAttachments.Data data = data(player);
-		if (!data.learned() || !enabled(player) || amount <= 0) {
+		// Spent (an awakening just burned out): nothing comes in at all, from anywhere, until it lets go.
+		if (!data.learned() || !enabled(player) || amount <= 0 || Awakening.spent(player)) {
 			return 0;
 		}
 		double a = amount * Config.get().aura().gainMultiplier();
@@ -172,7 +180,7 @@ public final class Aura {
 	 */
 	public static double giveBack(ServerPlayer player, double amount) {
 		AuraAttachments.Data data = data(player);
-		if (!data.learned() || !enabled(player) || amount <= 0) {
+		if (!data.learned() || !enabled(player) || amount <= 0 || Awakening.spent(player)) {
 			return 0;
 		}
 		float before = Math.min(data.aura(), capacity(player));
@@ -411,6 +419,8 @@ public final class Aura {
 			AuraPresence.look(player, AuraPresence.look(player).withShell(AuraArmour.up(player)));
 			// Momentum's tier, as everyone sees it in the body's aura, follows its ebb.
 			Momentum.tick(player, now);
+			// An awakening running out (the swordsman spent), a spent body recovering.
+			Awakening.tick(player, now);
 		}
 		AuraIntent.release(server);
 		AuraDominion.tick(server);
@@ -494,6 +504,8 @@ public final class Aura {
 		AuraApi.registerTechnique(new AuraApi.Technique("slash", AuraRules.EDGE, AuraApi.Trigger.TAP, AuraRules.SLASH_COST, AuraSlash::loose));
 		AuraApi.registerTechnique(new AuraApi.Technique("step", AuraRules.FORM, AuraApi.Trigger.DOUBLE_TAP, AuraRules.STEP_COST, AuraStep::step));
 		AuraApi.registerTechnique(new AuraApi.Technique("dominion", AuraRules.SOVEREIGN, AuraApi.Trigger.HOLD, AuraRules.DOMINION_COST, AuraDominion::raise));
+		// Awakening (a tap, then a held press): everything let go at once, for a while; spent after.
+		AuraApi.registerTechnique(new AuraApi.Technique("awaken", AwakeningRules.FROM, AuraApi.Trigger.TAP_HOLD, 0, Awakening::awaken));
 		// Sword strings: arts set off by a run of ordinary swings, read by the client, checked and performed here.
 		SwordStrings.init();
 		// Aura's feel: trails, impacts, banners, bursts and the body's aura, drawn by each client as it sees them.
@@ -502,6 +514,8 @@ public final class Aura {
 		// and a finisher).
 		Momentum.init();
 		dev.wildercord.aura.Stance.init();
+		// Awakening (after momentum: it holds momentum at its peak, and holds it again after momentum empties in a new world).
+		Awakening.init();
 		AuraMethods.init();
 		Crescents.init();
 		AuraCombat.init();
@@ -515,8 +529,9 @@ public final class Aura {
 				fighting(player);
 			}
 		});
-		// A new body starts with its aura empty (the path itself is kept) and nothing under way.
-		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+		// A new body starts with its aura empty (the path itself is kept) and nothing under way: after Fabric has copied the path over.
+		ServerPlayerEvents.AFTER_RESPAWN.addPhaseOrdering(net.fabricmc.fabric.api.event.Event.DEFAULT_PHASE, AFTER_COPY);
+		ServerPlayerEvents.AFTER_RESPAWN.register(AFTER_COPY, (oldPlayer, newPlayer, alive) -> {
 			if (!alive) {
 				AuraAttachments.Data data = data(newPlayer);
 				if (data.aura() > 0) {
@@ -568,7 +583,8 @@ public final class Aura {
 	/** Every kit sound aura plays, for the tests. */
 	public static final List<String> SOUNDS = List.of("aura_slash", "aura_guard", "aura_perfect_guard", "aura_breakthrough", "aura_backlash", "aura_breath",
 		"aura_step", "aura_armour", "aura_intent", "aura_dominion", "aura_dominion_fade", "aura_spellblade", "aura_string_tick", "aura_string_complete",
-		"aura_string_fumble", "aura_momentum_rise", "aura_momentum_peak", "aura_stance_break", "aura_finisher");
+		"aura_string_fumble", "aura_momentum_rise", "aura_momentum_peak", "aura_stance_break", "aura_finisher", "aura_awaken", "aura_awaken_fed",
+		"aura_spent", "aura_recovered");
 
 	/** Plays one of aura's sounds where {@code player} is. */
 	public static void sound(ServerPlayer player, String name, float volume, float pitch) {

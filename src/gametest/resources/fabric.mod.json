@@ -80,7 +80,8 @@
 			"dev.wildercord.gametest.WildercordSwordStringsTest",
 			"dev.wildercord.gametest.WildercordAuraFxTest",
 			"dev.wildercord.gametest.WildercordArtsTest",
-			"dev.wildercord.gametest.WildercordMomentumTest"
+			"dev.wildercord.gametest.WildercordMomentumTest",
+			"dev.wildercord.gametest.WildercordAwakeningTest"
 		]
 	},
 	"depends": {

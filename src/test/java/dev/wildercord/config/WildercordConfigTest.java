@@ -850,13 +850,105 @@ class WildercordConfigTest {
 
 	@Test
 	void momentumAndStanceTravelToTheClient() {
+		// The low bits are the switches; the awakening's momentum rides higher up (see awakeningTravelsToTheClient).
+		int switches = 0xFF;
 		Config.Sync on = Config.Sync.of(D);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE, on.combat());
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING, on.combat() & switches);
 		assertEquals(Config.Sync.DEFAULT.combat(), on.combat(), "the default before the server speaks is the same");
 		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"momentum\": false}}").config();
-		assertEquals(Config.Sync.STANCE, Config.Sync.of(off).combat());
+		assertEquals(Config.Sync.STANCE | Config.Sync.AWAKENING, Config.Sync.of(off).combat() & switches);
 		WildercordConfig neither = WildercordConfig.parse("{\"aura\": {\"momentum\": false, \"stance\": false}}").config();
-		assertEquals(0, Config.Sync.of(neither).combat());
+		assertEquals(Config.Sync.AWAKENING, Config.Sync.of(neither).combat() & switches);
+	}
+
+	@Test
+	void awakeningSettingsAreTheRulesNumbers() {
+		WildercordConfig.AuraAwakening a = D.aura().awakening();
+		assertEquals(WildercordConfig.AuraAwakening.DEFAULTS, a);
+		assertTrue(a.awakening());
+		assertEquals(dev.wildercord.aura.AwakeningRules.MOMENTUM, a.awakeningMomentum(), 1e-9);
+		assertEquals(1.0, a.awakeningDuration(), 1e-9);
+		assertEquals(dev.wildercord.aura.AwakeningRules.COOLDOWN_TICKS, a.cooldownTicks());
+		assertEquals(dev.wildercord.aura.AwakeningRules.SPENT_TICKS, a.spentTicks());
+		assertEquals(dev.wildercord.aura.AwakeningRules.ART_PRICE, a.awakeningArtPrice(), 1e-9);
+		assertEquals(dev.wildercord.aura.AwakeningRules.DAMAGE, a.awakeningDamage(), 1e-9);
+		assertEquals(dev.wildercord.aura.AwakeningRules.SPEED, a.awakeningSpeed(), 1e-9);
+		for (String key : List.of("awakening", "awakening_momentum", "awakening_duration", "awakening_cooldown_seconds", "spent_seconds",
+				"awakening_art_price", "awakening_damage", "awakening_speed")) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+	}
+
+	@Test
+	void awakeningSettingsAreReadAndHeldInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"awakening\": false, \"awakening_momentum\": 150, "
+			+ "\"awakening_duration\": 9, \"awakening_cooldown_seconds\": -5, \"spent_seconds\": 900, \"awakening_art_price\": 2, "
+			+ "\"awakening_damage\": 3, \"awakening_speed\": 0.9}}");
+		WildercordConfig.AuraAwakening read = parsed.config().aura().awakening();
+		assertFalse(read.awakening());
+		assertEquals(100.0, read.awakeningMomentum(), 1e-9, "at most the whole meter");
+		assertEquals(4.0, read.awakeningDuration(), 1e-9, "at most four times as long");
+		assertEquals(0.0, read.awakeningCooldownSeconds(), 1e-9, "never below nothing");
+		assertEquals(300.0, read.spentSeconds(), 1e-9, "at most five minutes spent");
+		assertEquals(1.0, read.awakeningArtPrice(), 1e-9, "never more than an art's own price");
+		assertEquals(1.0, read.awakeningDamage(), 1e-9, "at most twice as hard");
+		assertEquals(0.5, read.awakeningSpeed(), 1e-9, "at most half again as fast");
+		assertEquals(7, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config(), "the written file keeps them");
+		WildercordConfig.AuraAwakening fine = WildercordConfig.parse("{\"aura\": {\"awakening_momentum\": 75, \"awakening_duration\": 0.5, "
+			+ "\"awakening_art_price\": 0.25, \"spent_seconds\": 12}}").config().aura().awakening();
+		assertEquals(75.0, fine.awakeningMomentum(), 1e-9);
+		assertEquals(0.5, fine.awakeningDuration(), 1e-9);
+		assertEquals(0.25, fine.awakeningArtPrice(), 1e-9);
+		assertEquals(240, fine.spentTicks());
+		// The constructor from before awakening (and a missing part) take its defaults.
+		WildercordConfig.AuraSettings before = new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			WildercordConfig.AuraHeights.DEFAULTS, WildercordConfig.AuraStrings.DEFAULTS, WildercordConfig.AuraMomentum.DEFAULTS);
+		assertEquals(WildercordConfig.AuraAwakening.DEFAULTS, before.awakening());
+		assertEquals(WildercordConfig.AuraAwakening.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			null, null, null, null).awakening());
+	}
+
+	@Test
+	void aFileFromBeforeAwakeningGainsItsKeys() {
+		List<String> keys = List.of("awakening", "awakening_momentum", "awakening_duration", "awakening_cooldown_seconds", "spent_seconds",
+			"awakening_art_price", "awakening_damage", "awakening_speed");
+		String old = D.toJson();
+		for (String key : keys) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		for (String key : keys) {
+			assertFalse(old.contains("\"" + key + "\""), key + " gone: " + old);
+		}
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura(), "awakening's settings read as their defaults");
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : keys) {
+			assertTrue(grown.contains("\"" + key + "\""), key + " added: " + grown);
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		String theirs = old.replace("\"guard_share\": 0.5", "\"guard_share\": 0.3").replace("\"momentum_gain\": 1.0", "\"momentum_gain\": 2.0");
+		WildercordConfig.AuraSettings kept = WildercordConfig.parse(WildercordConfig.addMissing(theirs).orElseThrow()).config().aura();
+		assertEquals(0.3, kept.guardShare(), 1e-9);
+		assertEquals(2.0, kept.momentum().momentumGain(), 1e-9, "the owner's momentum settings are kept");
+		assertEquals(WildercordConfig.AuraAwakening.DEFAULTS, kept.awakening());
+	}
+
+	@Test
+	void awakeningTravelsToTheClient() {
+		Config.Sync on = Config.Sync.of(D);
+		assertTrue((on.combat() & Config.Sync.AWAKENING) != 0);
+		assertEquals((int) dev.wildercord.aura.AwakeningRules.MOMENTUM, on.awakeningMomentum(), "the momentum it asks for travels too");
+		assertEquals(on.awakeningMomentum(), Config.Sync.DEFAULT.awakeningMomentum());
+		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"awakening\": false}}").config();
+		assertEquals(0, Config.Sync.of(off).combat() & Config.Sync.AWAKENING);
+		assertTrue((Config.Sync.of(off).combat() & Config.Sync.MOMENTUM) != 0, "the other switches stay as they were");
+		for (int needed : new int[] {0, 1, 37, 80, 100}) {
+			WildercordConfig set = WildercordConfig.parse("{\"aura\": {\"awakening_momentum\": " + needed + "}}").config();
+			assertEquals(needed, Config.Sync.of(set).awakeningMomentum(), "momentum " + needed);
+			assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING, Config.Sync.of(set).combat() & 0xFF);
+		}
 	}
 
 	@Test
