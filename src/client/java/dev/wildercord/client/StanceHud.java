@@ -215,21 +215,32 @@ public final class StanceHud {
 			g.fill(cx + off + 2, cy, cx + half + off, cy + 3, argb(HOT, fade));
 		}
 		float beat = 0.5F + 0.5F * Mth.sin(time * 0.75F);
-		int r = 5 + (beat > 0.6F ? 1 : 0);
-		int y = cy - 3;
-		// The glow under it, then the seal: a gold diamond with a crack down it.
-		diamondFill(g, cx, y, r + 3, argb(GOLD, (0.12F + 0.1F * beat) * alpha));
-		diamondFill(g, cx, y, r + 1, argb(GOLD, (0.18F + 0.12F * beat) * alpha));
-		diamondFill(g, cx, y, r - 1, argb(0x2A1A0C, 0.7F * alpha));
-		diamondOutline(g, cx, y, r, argb(mix(GOLD, 0xFFFFFF, 0.3F * beat), alpha));
-		int crack = argb(0xFFFFFF, 0.95F * alpha);
-		g.fill(cx, y - r + 1, cx + 1, y - 1, crack);
-		g.fill(cx - 1, y - 1, cx, y + 1, crack);
-		g.fill(cx, y + 1, cx + 1, y + r - 1, crack);
+		// It lands big and settles: a seal that snaps in, then beats.
+		float pop = Mth.clamp(age / 4F, 0, 1);
+		int r = Math.round(8 + 3 * (1 - pop)) + (beat > 0.7F ? 1 : 0);
+		int y = cy - 6;
+		// A dark backing so it reads over fire and a bright sky, a soft gold glow round it, then the seal: a gold diamond, a hot rim
+		// inside it, cracked down the middle with its halves pulled apart.
+		diamondFill(g, cx, y, r + 5, argb(GOLD, (0.08F + 0.08F * beat) * alpha));
+		diamondFill(g, cx, y, r + 3, argb(GOLD, (0.16F + 0.12F * beat) * alpha));
+		diamondFill(g, cx, y, r + 1, argb(FRAME, 0.85F * alpha));
+		diamondFill(g, cx, y, r - 1, argb(0x3A2410, 0.9F * alpha));
+		diamondOutline(g, cx, y, r, argb(mix(GOLD, 0xFFFFFF, 0.35F * beat), alpha));
+		diamondOutline(g, cx, y, r - 2, argb(HOT, 0.75F * alpha));
+		int crack = argb(0xFFFFFF, alpha);
+		g.fill(cx, y - r + 1, cx + 1, y - 2, crack);
+		g.fill(cx - 1, y - 2, cx, y + 1, crack);
+		g.fill(cx, y + 1, cx + 1, y + 2, crack);
+		g.fill(cx + 1, y + 2, cx + 2, y + r - 1, crack);
+		// Two small shards breaking off its sides.
+		int fly = 3 + Math.round(2 * (1 - pop));
+		diamond(g, cx - r - fly, y, argb(GOLD, 0.9F * alpha));
+		diamond(g, cx + r + fly, y, argb(GOLD, 0.9F * alpha));
 		// The opening's time, running out under it.
 		int line = Math.round((width / 2F) * left);
 		if (line > 0) {
-			g.fill(cx - line, y + r + 3, cx + line, y + r + 4, argb(GOLD, 0.85F * alpha));
+			g.fill(cx - line - 1, y + r + 3, cx + line + 1, y + r + 6, argb(FRAME, 0.7F * alpha));
+			g.fill(cx - line, y + r + 4, cx + line, y + r + 5, argb(GOLD, alpha));
 		}
 	}
 
@@ -245,21 +256,29 @@ public final class StanceHud {
 		float strength = player.getAttackStrengthScale(0.5F);
 		boolean ready = strength >= AuraRules.FULL_SWING - 1.0E-4;
 		float beat = 0.5F + 0.5F * Mth.sin(time * 0.9F);
-		float a = ready ? 0.75F + 0.25F * beat : 0.35F;
-		int color = ready ? GOLD : 0xB8A890;
+		float a = ready ? 0.8F + 0.2F * beat : 0.6F;
+		int color = ready ? mix(GOLD, 0xFFFFFF, 0.25F * beat) : 0xC8BCA8;
 		int cx = g.guiWidth() / 2;
 		int cy = g.guiHeight() / 2;
-		// Closing in as the swing fills.
-		int gap = 7 + Math.round(4 * (1 - Math.min(1, strength / (float) AuraRules.FULL_SWING)));
-		int argb = argb(color, a);
-		// Left: a small chevron pointing in.
-		g.fill(cx - gap - 2, cy - 2, cx - gap - 1, cy - 1, argb);
-		g.fill(cx - gap - 1, cy - 1, cx - gap, cy, argb);
-		g.fill(cx - gap - 2, cy, cx - gap - 1, cy + 1, argb);
-		// Right.
-		g.fill(cx + gap + 1, cy - 2, cx + gap + 2, cy - 1, argb);
-		g.fill(cx + gap, cy - 1, cx + gap + 1, cy, argb);
-		g.fill(cx + gap + 1, cy, cx + gap + 2, cy + 1, argb);
+		// Closing in as the swing fills: wide while it recharges, snug and bright once a full swing is ready.
+		int gap = 7 + Math.round(5 * (1 - Math.min(1, strength / (float) AuraRules.FULL_SWING)));
+		chevron(g, cx - gap, cy, -1, argb(color, a), argb(FRAME, 0.7F * a));
+		chevron(g, cx + gap, cy, 1, argb(color, a), argb(FRAME, 0.7F * a));
+	}
+
+	/**
+	 * A small chevron pointing in toward the crosshair, its tip at ({@code x}, {@code y}): {@code side} -1 left of it (pointing right),
+	 * 1 right of it (pointing left), with a dark edge so it reads over anything.
+	 */
+	private static void chevron(GuiGraphicsExtractor g, int x, int y, int side, int argb, int edge) {
+		for (int i = 0; i < 3; i++) {
+			int px = side < 0 ? x - 1 - i : x + i;
+			// A dark pixel behind each arm, then the arm itself: two rows up and two down from the tip.
+			g.fill(px + side, y - i - 1, px + side + 1, y - i + 1, edge);
+			g.fill(px + side, y + i - 1, px + side + 1, y + i + 1, edge);
+			g.fill(px, y - i, px + 1, y - i + 1, argb);
+			g.fill(px, y + i, px + 1, y + i + 1, argb);
+		}
 	}
 
 	// ------------------------------------------------------------------ your own

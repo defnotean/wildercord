@@ -1111,12 +1111,19 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		};
 	}
 
-	/** The swordsman at the art's stage (all of it: the Final Art needs a full pool), a diamond sword, the husks where the scene puts them. */
+	/**
+	 * The swordsman at the art's stage (all of it), a diamond sword, the husks where the scene puts them; for a Final Art, momentum at
+	 * its peak and held there (the Final Art waits on it; see {@code WildercordMomentumTest}).
+	 */
 	private static void set(TestSingleplayerContext world, Scene scene) {
 		on(world, player -> {
 			kill(player);
 			stand(player);
 			setAura(player, scene.method, AuraRules.SOVEREIGN, AuraRules.capacity(AuraRules.SOVEREIGN));
+			if (scene.slot == AuraApi.ArtSlot.FINAL) {
+				player.setAttached(dev.wildercord.aura.Momentum.MOMENTUM,
+					new dev.wildercord.aura.Momentum.State(100, player.level().getGameTime() + 100000, 0, 0, 0));
+			}
 			player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
 			player.removeAttached(SwordStrings.COOLDOWNS);
 			ServerLevel level = player.level();
@@ -1363,6 +1370,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			stand(player);
 			player.removeAttached(AuraAttachments.STATE);
 			player.removeAttached(SwordStrings.COOLDOWNS);
+			player.removeAttached(dev.wildercord.aura.Momentum.MOMENTUM);
 			player.setAttached(AuraPresence.TIMERS, AuraPresence.Timers.NONE);
 			dev.wildercord.aura.arts.MethodArts.forget(player.getUUID());
 		});
@@ -1425,6 +1433,12 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		}
 		mob.setHealth((float) health);
 		level.addFreshEntity(mob);
+		// It stands steady the whole scene: nothing wears its stance, so no art's check meets an opened, staggered foe (stance and
+		// finishers are WildercordMomentumTest's).
+		long now = level.getGameTime();
+		mob.setAttached(dev.wildercord.aura.Stance.STANCE, new dev.wildercord.aura.Stance.State(0, now,
+			(float) dev.wildercord.aura.StanceRules.pool(dev.wildercord.aura.Stance.kind(mob), health, 0), dev.wildercord.aura.Stance.kind(mob).ordinal(), -1,
+			now + 1000000, 0));
 		return mob;
 	}
 

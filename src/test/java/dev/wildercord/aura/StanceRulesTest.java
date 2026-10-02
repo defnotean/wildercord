@@ -244,11 +244,11 @@ class StanceRulesTest {
 
 	@Test
 	void aBossIsBreakableButNeverTrivial() {
-		// The wither (300) with a diamond blade, an art every third blow.
-		int first = blowsToBreak(BOSS, 300, 0, 3, false);
+		// The wither (300) with a diamond blade, an art every fifth blow (as their rests allow).
+		int first = blowsToBreak(BOSS, 300, 0, 5, false);
 		int toKill = (int) Math.ceil(300 / DIAMOND);
 		assertTrue(first >= 10 && first <= toKill / 2, "its first opening takes a real fight: " + first + " blows of " + toKill);
-		int second = blowsToBreak(BOSS, 300, 1, 3, false);
+		int second = blowsToBreak(BOSS, 300, 1, 5, false);
 		assertTrue(second > first, "the second takes more (" + second + ")");
 		// What two finishers take off it, at most: well under half of it.
 		double finishers = StanceRules.finisher(BOSS, 300 * 0.5, 300, 7, 0.6, 1.0) + StanceRules.finisher(BOSS, 300 * 0.85, 300, 7, 0.6, 1.0);

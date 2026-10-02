@@ -996,6 +996,52 @@ Each of the ten breathing methods' own five arts on the sword strings (the rules
   filmed in first and third person, the Aura page's tab browsed; `WILDERCORD_ARTS=a,b` plays only those). The common arts are
   played in the game tests by a method the tests register (`gametest.TestMethods.plain()`, "Plain Breath", no arts of its own).
 
+### Momentum and openings: `aura.Momentum`, `aura.Stance`, `aura.arts.Finishers`
+
+Momentum, stance, openings and finishers (the rules and numbers are DESIGN.md's
+[Momentum and openings](DESIGN.md#momentum-and-openings); notes for the later steps in
+[AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-5-momentum-and-openings)):
+
+- **Pure parts** (unit-tested by `MomentumRulesTest` and `StanceRulesTest`): `aura.MomentumRules` (the meter, `tier`, `peak`,
+  `priceFactor`/`strength`/`stanceFactor` by tier, what builds it and `artFoe`, `reach`, `loss`, the ebb's `current`, `ceiling`
+  and `budget`, the methods' `Temper`s and the foe-state bits they feed on) and `aura.StanceRules` (`Kind`, `pool`, `Source` and
+  `wear`, `artWeight`, `guardBreak`, the PvP caps, `worn` and `left`, `openTicks`/`steadyTicks`, `finisher`, `finisherAura`).
+- **`aura.Momentum`**: the `MOMENTUM` attachment (`State`: value, held until, ebb a tick, an awakening's floor and its end; synced
+  to its owner only, not saved, gone with a death or a change of world), read on both sides by `value`/`tier`/`peak`/`price`
+  (`SwordStrings.price` and the client's `SwordStringsClient.why` ask it), changed on the server by `add` (through
+  `AuraApi.onMomentum` hooks and `momentum_gain`, held to a ceiling), `lose`, `engaged` (a fight holds it; written only when the
+  hold moves on half a second), `hold` (`AuraApi.holdMomentum`) and `reset`. Fed by `hit` (`AuraCombat.blow`: `worthy`,
+  `helpless`, `states`, the per-foe budget), `artLanded` (`ArtKit.Hits`), `guarded` (`AuraGuard`), `stepThrough`
+  (`AuraStep.untouchable`), `broke`/`finished` (`Stance`), `struck` (`AFTER_DAMAGE`) and `performed` (the Final Art's release, an
+  `onString` hook). `FINAL_GATE` is given to `AuraApi.gateFinalArts`. `refreshLook` keeps `AuraPresence.Look.momentum` (every
+  player's body aura burns brighter with it: `AuraFxRules.momentumGlow`) and `tick` (from `Aura.tick`) lets old budgets go.
+- **`aura.Stance`**: the `STANCE` attachment on any living entity (`State`: worn, when, pool, kind, opened until, steady until,
+  breaks; synced to everyone near, not saved), `kind`, `eligible` (a swordsman, `ArtKit.harmable`, a real foe or a practice
+  target, `pvp_stance` for players), `wear` (through `AuraApi.onStance` hooks; opens at the pool), `blow` (`AuraCombat.blow`),
+  `art` (`ArtKit.Hits`, with its PvP ledger), `slash` (`AuraCombat.projected` outside an art), `guardBreak` (a perfect guard),
+  `guarded` (a held guard's catch or a shield's block, players only), `open`/`stagger`, `finisher` and `finished` (asked by
+  `AuraCombat.blow` before and after the blow lands: the extra rides the blow itself), and the upkeep (opened marks; a stance
+  whole again let go). `AuraApi.Finisher`/`registerFinisher`/`finisher(method)` hold each method's look; `onFinisher` and
+  `onStanceBroken` hear of them.
+- **`aura.arts.Finishers`**: the ten methods' looks and the common one (`init`, from `MethodArts.init`), each `frame` (trail, grand
+  impact, flare, the shared stinger and its voice, a seal on the ground) and its own light; `IDS`, `SOUNDS`.
+- **Where it touches the rest**: `AuraCombat.blow` (the finisher's extra, the blow's wear, the clean hit) and `artStrike` (an art's
+  projected strike, so `projected` wears stance only for the slash and sparks); `ArtKit.Hits` (momentum's strength, the art's
+  wear and momentum, the art taken from `SwordStrings.performing`); `SwordStrings.price`, `check`, `perform` and `refusal(player,
+  ...)`; `PlaceholderArts` (now through `Hits`); `AuraGuard` (perfect guards, the held guard's wear); `AuraStep.untouchable`;
+  `Aura.press` (no guard while opened); `AuraApi.ArtCondition.hintKey(player)`; `config.WildercordConfig.AuraMomentum` and
+  `Config.Sync.combat` (`Config.momentum`, `Config.stance` on the client).
+- **Client**: `client.StanceHud` (the bars over foes, the opened seal, the crosshair cue, your own stance off the strip;
+  `drawn()`/`ownShown()` for the tests), `AuraHud.momentum` (the line under the aura bar) and `StanceHud.ownOnStrip` (your own
+  stance along its top edge), `AuraScreen` (the two technique rows, the finisher row and the momentum line on the Sword strings
+  tab, prices at your momentum), `AuraFxClient.bodyIntensity` (the momentum glow).
+- **Assets**: `tools/aura_art.py` `LANG` (the finishers' names and descriptions, the lines), `tools/feel/aura.py`
+  (`aura_momentum_rise`, `aura_momentum_peak`, `aura_stance_break`, `aura_finisher`) and `tools/feel/aura_finishers.py`
+  (`aura_finisher_<method>`).
+- **Tests**: `MomentumRulesTest`, `StanceRulesTest` (and the lang and voices), `WildercordConfigTest` (the keys, old files, the
+  sync bits), game test `WildercordMomentumTest` (momentum built, lost, ebbing, its tiers, the gate, the farming guards; stance worn,
+  opened, finished; all eleven finishers filmed; a boss; a duel with a second player; the HUD and the page).
+
 ### Hooks for the next wave: `api.AuraApi`
 
 The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in

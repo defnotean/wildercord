@@ -156,9 +156,10 @@ public final class Finishers {
 		show.tongues(w.feet(), 0.45 * w.size(), 1.9 * w.size(), 8, color, red, 14);
 		// The pillar, a moment after: flame rising through it, a white heart.
 		Scheduler.later(3, () -> {
-			show.ray(w.feet(), w.feet().add(0, 4.6 * w.size(), 0), color, 0.55 * w.size(), 12);
-			show.bare().ray(w.feet(), w.feet().add(0, 4.0 * w.size(), 0), WHITE, 0.16 * w.size(), 10);
-			show.flash(w.heart().add(0, 0.6, 0), gold, (float) (2.2 * w.size()));
+			show.bare().ray(w.feet(), w.feet().add(0, 3.4 * w.size(), 0), color, 0.3 * w.size(), 12);
+			show.bare().ray(w.feet(), w.feet().add(0, 3.0 * w.size(), 0), gold, 0.12 * w.size(), 10);
+			show.tongues(w.feet().add(0, 0.8, 0), 0.32 * w.size(), 2.6 * w.size(), 6, gold, color, 12);
+			show.flash(w.heart().add(0, 0.6, 0), gold, (float) (1.6 * w.size()));
 			ArtLight.world(player).ground(w.feet(), SigilOption.CRACKED, red | ArtLight.DARK, 1.6 * w.size(), 50, 0);
 			embers(level, w.heart(), 14, color, gold);
 		});

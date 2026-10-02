@@ -260,6 +260,8 @@ public final class AuraHud {
 		}
 		if (filled > 0) {
 			g.fill(x, y, x + filled, y + 1, 0xFF000000 | c);
+			// A soft second row over it, so the line reads at a glance without growing.
+			g.fill(x, y - 1, x + filled, y, (tier >= dev.wildercord.aura.MomentumRules.PEAK_TIER ? 0x90000000 : 0x60000000) | c);
 		}
 		for (double t : dev.wildercord.aura.MomentumRules.TIERS) {
 			int nx = x + (int) Math.round(width * t / dev.wildercord.aura.MomentumRules.MAX);
@@ -268,8 +270,7 @@ public final class AuraHud {
 		int peakX = x + (int) Math.round(width * dev.wildercord.aura.MomentumRules.PEAK / dev.wildercord.aura.MomentumRules.MAX);
 		g.fill(peakX, y + 1, peakX + 1, y + 2, tier >= dev.wildercord.aura.MomentumRules.PEAK_TIER ? 0xFF000000 | PEAK_GOLD : 0xFF6A5A3A);
 		if (tier >= dev.wildercord.aura.MomentumRules.PEAK_TIER && filled > 2) {
-			// The peak: a soft gold glow over the line, and a spark running along it.
-			g.fill(x, y - 1, x + filled, y, 0x50000000 | PEAK_GOLD);
+			// The peak: a spark running along the line.
 			int spark = x + (int) ((time * 1.6F) % Math.max(1, filled));
 			g.fill(spark, y - 1, spark + 2, y + 1, 0xE0FFFFFF);
 		}

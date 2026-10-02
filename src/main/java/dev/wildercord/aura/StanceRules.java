@@ -92,8 +92,8 @@ public final class StanceRules {
 		GLANCE(0.35),
 		/** A blow with no aura to coat it (an empty pool). */
 		BARE(0.6),
-		/** An art's strike (more for what kind of art: see {@link #artWeight}). */
-		ART(1.5),
+		/** An art's strike: twice what it deals (more for what kind of art: see {@link #artWeight}). */
+		ART(2.0),
 		/** Aura off the blade that isn't an art (a slash, a spark): from afar, it wears little. */
 		SLASH(0.5),
 		/** A perfect guard against the foe's own blow: a share of its whole stance at once (see {@link #guardBreak}). */

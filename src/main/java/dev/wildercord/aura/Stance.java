@@ -385,13 +385,19 @@ public final class Stance {
 		}
 		long now = target.level().getGameTime();
 		State s = state(target);
+		long openUntil = s == null ? now : s.openUntil();
 		if (s != null) {
 			StanceRules.Kind kind = s.kindOf();
 			target.setAttached(STANCE, new State(0, now, s.pool(), s.kind(), -1, now + StanceRules.steadyTicks(kind), s.breaks()));
 		}
-		if (target instanceof Mob mob && mob.hasAttached(WildercordAttachments.FROZEN_UNTIL)) {
-			// The stagger ends with the blow: a finished foe falls back or fights on, never stands frozen after.
-			mob.setAttached(WildercordAttachments.FROZEN_UNTIL, now);
+		if (target instanceof Mob mob && mob.isNoAi()) {
+			// The stagger ends with the blow: a finished foe is thrown, falls back or fights on, never stands frozen after (unless
+			// something else holds it longer than the opening did: a freeze, say).
+			Long frozen = mob.getAttached(WildercordAttachments.FROZEN_UNTIL);
+			if (frozen != null && frozen <= openUntil + 1) {
+				mob.removeAttached(WildercordAttachments.FROZEN_UNTIL);
+				mob.setNoAi(false);
+			}
 		}
 		float dealt = Math.max(0, p.before() - Math.max(0, target.getHealth()));
 		boolean practice = Momentum.practice(attacker, target);
