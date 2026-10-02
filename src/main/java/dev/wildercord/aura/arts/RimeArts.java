@@ -18,7 +18,6 @@ import dev.wildercord.cast.feel.Feels;
 import dev.wildercord.config.Config;
 import dev.wildercord.content.SigilOption;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -97,7 +96,7 @@ public final class RimeArts {
 		world.slash(centre.add(0, 0.03, 0), normal, look, WHITE, 1.94, 2.2, 0.1, 1, 9);
 		for (int tip = -1; tip <= 1; tip += 2) {
 			double a = Math.atan2(look.z, look.x) + tip * 1.25;
-			ElementFx.shards(level, centre.add(Math.cos(a) * 1.8, 0, Math.sin(a) * 1.8), 0.6, 3);
+			ice(level, centre.add(Math.cos(a) * 1.8, 0, Math.sin(a) * 1.8), 0.6, 3);
 		}
 		Vfx.emit(level, ParticleTypes.SNOWFLAKE, centre.add(look.scale(0.6)), 6, 0.8, 0.02);
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_frostbite", 1.0F, 1.0F);
@@ -126,8 +125,33 @@ public final class RimeArts {
 			world.ring(feet.add(0, 0.12 + 0.32 * i, 0), ArtKit.UP, i == crusts - 1 ? WHITE : ElementFx.FROST.primary(), w * 0.9, w * 0.62, 0.06, 26);
 		}
 		ElementFx.frostCreep(level, feet, w * 0.9, 24);
-		Vfx.radial(level, new net.minecraft.core.particles.ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.Items.BLUE_ICE),
-			feet.add(0, 0.5, 0), 3 + crusts * 2, 0.12);
+		chips(level, feet.add(0, 0.5, 0), 3 + crusts * 2, 0.16);
+	}
+
+	/**
+	 * Chips of ice: bright motes thrown out and falling, glinting, and snowflakes. (Not block or item fragments: those draw as
+	 * dull little cubes, which read as clods of earth, not ice.)
+	 */
+	private static void chips(ServerLevel level, Vec3 at, int count, double speed) {
+		RandomSource r = level.getRandom();
+		for (int i = 0; i < count; i++) {
+			Vec3 dir = ElementFx.randomDir(r).add(0, 0.5, 0).normalize();
+			Motes.fling(level, at, dir, speed * (0.6 + 0.8 * r.nextDouble()), i % 2 == 0 ? WHITE : ElementFx.FROST.primary(), 0.06,
+				14 + r.nextInt(8), new Vec3(0, -0.02, 0));
+		}
+		Vfx.radial(level, ParticleTypes.SNOWFLAKE, at, Math.max(2, count / 2), speed * 0.5);
+	}
+
+	/** Ice flying apart: thin bright splinters out from {@code at}, and chips of ice. */
+	private static void ice(ServerLevel level, Vec3 at, double reach, int count) {
+		RandomSource r = level.getRandom();
+		for (int i = 0; i < count; i++) {
+			Vec3 dir = ElementFx.randomDir(r).add(0, 0.25, 0).normalize();
+			double length = reach * (0.55 + 0.45 * r.nextDouble());
+			ElementFx.ray(level, at.add(dir.scale(0.12)), at.add(dir.scale(length)), i % 2 == 0 ? ElementFx.FROST.primary() : WHITE,
+				0.035 + 0.02 * r.nextDouble(), 7 + r.nextInt(3));
+		}
+		chips(level, at, count + 2, 0.2);
 	}
 
 	/** Frozen solid: still, iced over (a shell of ice closing round it, a player's only briefly), a ring snapping out. */
@@ -138,7 +162,10 @@ public final class RimeArts {
 			int t = foe instanceof Player ? ArtRules.PVP_HOLD_TICKS : ticks;
 			BlockFx.encase(level, foe, t);
 		}
-		ElementFx.frostImpact(level, foe.getBoundingBox().getCenter(), 1.0);
+		Vec3 heart = foe.getBoundingBox().getCenter();
+		ArtLight.world(player).flash(heart, ElementFx.FROST.primary(), 1.2F);
+		ElementFx.shatterRing(level, heart, 1.2);
+		ice(level, heart, 0.8, 5);
 		Feels.sound(level, foe.position(), "frost_lock", 0.8F, 1.1F);
 		return froze;
 	}
@@ -198,8 +225,7 @@ public final class RimeArts {
 		Vec3 ground = ArtKit.floor(level, at.add(0, 1, 0), 1.5, 3);
 		Vec3 p = ground == null ? at : ground;
 		ArtLight.world(player).ring(p.add(0, 0.1, 0), ArtKit.UP, WHITE, 0.1, 0.9, 0.05, 6);
-		ElementFx.shards(level, p.add(0, 0.2, 0), 0.5, 3);
-		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.PACKED_ICE.defaultBlockState()), p.add(0, 0.2, 0), 4, 0.2, 0.1);
+		ice(level, p.add(0, 0.2, 0), 0.5, 3);
 		Feels.sound(level, p, "frost_hail", 0.55F, 0.9F + level.getRandom().nextFloat() * 0.3F);
 		for (LivingEntity foe : ArtKit.around(player, p, ArtRules.HAIL_STONE_REACH, 1.0, 3.0, 4)) {
 			int n = struckBy.getOrDefault(foe.getUUID(), 0);
@@ -263,7 +289,7 @@ public final class RimeArts {
 	static void mirrorTurns(ServerPlayer player, Vec3 at) {
 		ServerLevel level = player.level();
 		ArtLight.world(player).ring(at, at.subtract(player.getEyePosition()), WHITE, 0.1, 0.8, 0.05, 6);
-		ElementFx.shards(level, at, 0.4, 3);
+		ice(level, at, 0.4, 3);
 		Feels.sound(level, at, "frost_mirror", 0.9F, 1.3F);
 	}
 
@@ -364,9 +390,9 @@ public final class RimeArts {
 		Vec3 c = foe.getBoundingBox().getCenter();
 		hits.strike(foe, factor, AuraFxRules.Weight.GRAND);
 		Spirits.thawNow(foe);
-		ElementFx.shards(level, c, 1.6, 9);
+		ice(level, c, 1.6, 9);
 		ElementFx.shatterRing(level, c, shards);
-		Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, Blocks.ICE.defaultBlockState()), c, 14, 0.4, 0.2);
+		chips(level, c, 12, 0.32);
 		ArtLight.world(player).flash(c, WHITE, 1.6F);
 		Feels.sound(level, c, "frost_break", 1.0F, 0.9F);
 		for (LivingEntity other : ArtKit.around(player, foe.position(), shards, 1.5, 3.0, 6)) {

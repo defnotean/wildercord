@@ -252,7 +252,8 @@ public final class EmberArts {
 			Motes.seek(level, hand.add(Math.cos(a) * 0.9, 0.3 + Math.sin(a) * 0.4, Math.sin(a) * 0.9), hand, i % 2 == 0 ? GOLD : color, 0.08, 4, 0.4);
 		}
 		Feels.sound(level, feet.add(0, 1, 0), "aura_art_backdraft", 1.1F, 1.0F);
-		// The gout: crescents of flame fanning out down the cone, the nearest seen only from outside (it would fill your own view).
+		// The gout: crescents of flame fanning out down the cone. The rings are seen only from outside (face-on they would
+		// fill your own view), and so is the nearest crescent; you see the outer crescents and the embers.
 		ArtLight show = ArtLight.spectacle(player);
 		ArtLight world = ArtLight.world(player);
 		Vec3 side = ArtKit.right(look);
@@ -266,7 +267,7 @@ public final class EmberArts {
 			int delay = k;
 			int edge = k % 2 == 0 ? RED : color;
 			dev.wildercord.cast.Scheduler.later(1 + delay, () -> {
-				l.ring(at, normal, c, radius * 0.3, radius * 1.15, 0.12 + 0.03 * delay, 7);
+				show.ring(at, normal, c, radius * 0.3, radius * 1.15, 0.12 + 0.03 * delay, 7);
 				l.slash(at, normal, side, edge, radius, 2.6, 0.18, 2, 7);
 				l.whirl(at, radius * 0.75, 3, GOLD, color, RED);
 				ElementFx.embers(level, at, radius * 0.5, 3);

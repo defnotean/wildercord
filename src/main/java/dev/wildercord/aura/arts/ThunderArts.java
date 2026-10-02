@@ -358,6 +358,8 @@ public final class ThunderArts {
 		show.ray(from, end, color, 0.75, 12);
 		show.bare().ray(from, end, WHITE, 0.22, 10);
 		show.arc(from, end, color, 0.14, 5, false, 9);
+		// Through your own eyes: a thin white thread down the line, so you see where it went without it filling the view.
+		ArtLight.world(player).bare().ray(from.add(dir.scale(1.6)), end, WHITE, 0.07, 8);
 		// Where it ends, for everyone: a burst of lightning against the wall or the open air.
 		ElementFx.stormImpact(level, end, 1.4);
 		ArtLight.world(player).ring(end, dir, color, 0.3, 2.4, 0.1, 9);

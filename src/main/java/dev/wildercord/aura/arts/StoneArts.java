@@ -134,7 +134,7 @@ public final class StoneArts {
 		BlockState earth = ArtBlocks.ground(level, base);
 		Feels.sound(level, base.add(0, 1, 0), "aura_art_avalanche", 1.2F, 1.0F);
 		AuraFx.sound(player, AuraFx.Sound.IMPACT, 0.9F, 0.8F);
-		ElementFx.crack(level, base, 2.2, 36);
+		crackUnder(player, base, 2.2, 36, earth);
 		ScreenFx.shake(level, base, 0.3F, 12);
 		ArtLight world = ArtLight.world(player);
 		Set<UUID> struck = new HashSet<>();
@@ -175,6 +175,29 @@ public final class StoneArts {
 		}
 	}
 
+	/**
+	 * The ground cracking under the swordsman's own feet: the cracked seal, a ring of dust and a puff of it, as
+	 * {@code ElementFx.crack}, but its chips thrown low and outward from the rim (crack's fly straight up from all over the seal,
+	 * through the swordsman's own eyes).
+	 */
+	private static void crackUnder(ServerPlayer player, Vec3 feet, double radius, int lifetime, BlockState earth) {
+		ServerLevel level = player.level();
+		ArtLight world = ArtLight.world(player);
+		world.ground(feet, SigilOption.CRACKED, ElementFx.EARTH.secondary(), radius, lifetime, 0.0);
+		world.groundRing(feet, ElementFx.EARTH.primary(), 0.3, radius * 1.15, 0.09, 10);
+		BlockParticleOption chip = new BlockParticleOption(ParticleTypes.BLOCK, earth);
+		RandomSource r = level.getRandom();
+		int chips = (int) Math.max(4, Math.min(12, radius * 4));
+		for (int i = 0; i < chips; i++) {
+			double a = r.nextDouble() * Math.PI * 2;
+			double out = radius * (0.7 + 0.3 * r.nextDouble());
+			Vfx.fling(level, chip, feet.add(Math.cos(a) * out, 0.1, Math.sin(a) * out), new Vec3(Math.cos(a), 0.35, Math.sin(a)),
+				0.16 + r.nextDouble() * 0.1);
+		}
+		Vfx.emit(level, new BlockParticleOption(ParticleTypes.DUST_PILLAR, earth), feet.add(0, 0.1, 0), (int) Math.max(3, Math.min(14, radius * 3)),
+			radius * 0.4, 0.08);
+	}
+
 	// ------------------------------------------------------------------ III. Unmoved
 
 	static boolean unmoved(ServerPlayer player, AuraApi.StringContext context) {
@@ -188,7 +211,7 @@ public final class StoneArts {
 		BlockState earth = ArtBlocks.ground(level, feet);
 		// Stone gathering round the swordsman's feet as they harden, the ground cracking under them.
 		ArtWards.harden(player, ArtRules.UNMOVED_TICKS);
-		ElementFx.crack(level, feet, 1.4, 30);
+		crackUnder(player, feet, 1.4, 30, earth);
 		for (int i = 0; i < 6; i++) {
 			double a = Math.PI * 2 * i / 6;
 			ArtBlocks.slab(level, feet.add(Math.cos(a) * 0.95, 0, Math.sin(a) * 0.95), earth, (float) (a + Math.PI / 2), 0.45F, -0.35F, 1 + i % 2, 14);
@@ -301,8 +324,9 @@ public final class StoneArts {
 			}
 			if (last) {
 				// The end: each one carried is thrown on, stunned a moment.
-				ElementFx.earthImpact(level, b.add(dir.scale(1.2)).add(0, 0.8, 0), 1.2);
-				ElementFx.crack(level, b.add(dir.scale(1.2)), 1.8, 30);
+				// (Ahead of the swordsman and low, so the burst and its chips stay out of their own eyes.)
+				ElementFx.earthImpact(level, b.add(dir.scale(2.0)).add(0, 0.5, 0), 1.2);
+				crackUnder(player, b.add(dir.scale(1.2)), 1.8, 30, earth);
 				ScreenFx.shake(level, b, 0.25F, 10);
 				Feels.sound(level, b, "earth_slam", 1.0F, 1.0F);
 				for (LivingEntity foe : carried) {
@@ -333,7 +357,7 @@ public final class StoneArts {
 		Vec3 start = feet.add(dir.scale(1.5));
 		List<Vec3> line = EmberArts.groundLine(level, start, dir, ArtRules.SPLITTER_LENGTH - 1.5, ArtRules.SPLITTER_SPACING);
 		ArtLight world = ArtLight.world(player);
-		ElementFx.crack(level, feet.add(dir.scale(1.2)), 1.2, 40);
+		crackUnder(player, feet.add(dir.scale(1.2)), 1.2, 40, ArtBlocks.ground(level, feet));
 		Set<UUID> struck = new HashSet<>();
 		double yaw = Math.atan2(dir.x, dir.z);
 		for (int i = 0; i < line.size(); i++) {
@@ -352,19 +376,23 @@ public final class StoneArts {
 					world.ray(prev.add(0, 0.06, 0), p.add(0, 0.06, 0), color, 0.48, 30);
 					world.bare().ray(prev.add(0, 0.08, 0), p.add(0, 0.08, 0), SAND, 0.12, 26);
 				}
-				ElementFx.crack(level, p, 1.0, 26);
+				if (index < 2) {
+					// Close in front: the chips thrown low and outward, not up through your own view.
+					crackUnder(player, p, 1.0, 26, earth);
+				} else {
+					ElementFx.crack(level, p, 1.0, 26);
+				}
 				RandomSource r = level.getRandom();
 				float lean = (float) ((r.nextDouble() - 0.5) * 0.5);
 				if (index >= 1) {
 					// Stone only from three blocks out, low at first, so none ever stands in your own view; taller as it runs on.
-					float height = index < 3 ? 0.45F + 0.35F * index : 1.5F + 0.3F * Math.min(4, index - 3);
+					float height = index < 3 ? 0.3F + 0.3F * index : 1.5F + 0.3F * Math.min(4, index - 3);
 					ArtBlocks.spire(level, p, earth, index < 3 ? 0.8F : 0.95F, height, (float) (yaw + r.nextDouble() * 0.8), lean, 30);
 					if (index % 2 == 0 && index >= 3) {
 						Vec3 side = ArtKit.right(dir).scale(r.nextBoolean() ? 0.8 : -0.8);
 						ArtBlocks.spire(level, p.add(side), earth, 0.6F, height * 0.6F, (float) (yaw + r.nextDouble()), -lean * 1.5F, 26);
 					}
 				}
-				ElementFx.stoneShards(level, p.add(0, 0.4, 0), earth, 3, 0.3);
 				if (index % 3 == 0) {
 					Feels.sound(level, p, "earth_menhir_rise", 0.7F, 0.9F + 0.04F * index);
 				}
