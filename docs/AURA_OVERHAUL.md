@@ -1165,3 +1165,40 @@ Not built yet: the client side (clash rhythm HUD, ring and lineage visuals, the 
 language strings, the game test, the guide page and the changelog. Whether the branch builds and its unit tests pass
 was not verified at handover. Whoever continues should first rebase it on main, build it, read
 its rules classes against the step 10 spec above, then build the client, test, document and merge.
+
+
+## Visual revision: cloth standards and rune-free Aura (2026-10-02)
+
+The crossroads and Rallying Cry use `AuraFx.Standard` and the client `AuraStandard` renderer. Each built-in Way has its own
+woven cloth texture and crest, drawn on a double-sided animated cloth grid with bronze poles. Refresh cues update the existing
+standard rather than piling up light-outline particles. The live cache is capped at 48 and cleared on disconnect. The rightmost
+crossroads standard flies inward; the owner cannot see the small rally standard in first person. Cloth reduces its mesh detail on calm/off settings and at distance; the choice stays visible. It uses vanilla translucent
+blending so it remains legible in daylight and follows the shader-compatible particle path.
+
+Technique-name banners use a stitched nameplate, a Way emblem and bounded names. The generator is `tools/aura_standard_art.py`,
+called by `tools/aura_art.py`. Add-on Ways use the neutral crest tinted in the supplied Way colour.
+
+Aura's rune-bearing CIRCLE and RING requests become partial slash strokes, and STAR motifs become crossed pressure glints.
+Dominion's default boundary uses fractured ground instead of `Sigils.ground` spell seals. `ArtLight` routes ground marks to physical
+scars to keep future arts consistent. Ordinary rune magic retains its casting circles. No damage, costs, hit volumes, Way selection
+rules or stage progression changed.
+
+
+### Physical ground effects (2026-10-02 revision)
+
+The owner clarified that Aura should break and cut the floor instead of painting magical light. `AuraFx.GroundScar` now carries
+fracture (0), crater impression (1) and blade gouge (2) cues. `client.fx.AuraGroundScar` projects authored non-emissive textures onto
+nearby solid block tops, samples world lighting, skips changed blocks and unsupported air, emits fragments of the actual floor,
+and fades the marks without deleting terrain. Its cache is capped at 24, with an eight-block radius and 600-tick lifetime cap;
+refreshes do not emit debris again. Calm/off settings reduce or omit fragments. The textures come from `aura_standard_art.py`.
+
+`ArtLight.ground` and `groundRing` now use physical scars, and airborne ring requests become sharp partial slash strokes. The default
+Dominion's light column and ground rings are removed; its boundary is fractured ground. AuraBurst's luminous RING/ECHO rendering is
+removed; those cues now produce floor scars. Heavy impacts add blade gouges. Ground-facing Hourglass motifs use gouges instead of
+a glowing clock face. Duelist arrival and duel ground cues use the same physical effects. This supersedes the pressure-band ground
+rendering used during the initial visual revision. Combat mechanics and actual terrain-changing arts retain their existing rules.
+
+The Dominion screenshot pass also found indirect spell seals inside shared elemental helpers. Aura now calls `arts.AuraPhysicalFx`
+for elemental impacts, frost creep, clock strokes and pressure rings. Each method keeps distinct cuts and timing while using floor
+fractures, gouges or crater impressions. The shared helpers remain available to actual spells. Floor block and lighting samples are
+cached and refreshed every five ticks rather than sampled on every rendered frame.

@@ -552,6 +552,10 @@ a swordsman is spent, what arts cost while it lasts (a share of their price), an
 
 ## How aura looks and sounds
 
+Aura uses blade trails, sharp pressure strokes, floor fractures, ragged impact depressions and stone fragments. It does not summon rune-covered casting circles.
+A Dominion marks its territory with fractured ground or its method's own physical ground effect, and an awakening
+shows the method's signature shapes. Floor scars fade away; their visual effects do not remove blocks. The crossroads and Rallying Cry use crested, rippling cloth standards on bronze poles.
+
 Aura shows. Your blade leaves light where it cuts, your body carries your aura's colour, your blows land with weight, your
 techniques name themselves, and every method has a voice of its own. All of it is a spectacle for everyone watching you,
 and kept small for you: in your own first-person view nothing ever fills the middle of the screen.
@@ -612,10 +616,10 @@ flash. Seen down your own blade in first person the flash is small and quick.
 ### Technique banners
 
 When an art goes off, you raise a Dominion or you awaken, its **name** slides in at the left edge of your screen, a little above the
-middle, in your method's colour, with your method and which art it is above it. The Final Art and Dominion are grand, edged in
+middle, on a stitched, woven nameplate in your method's colour. Your Way's crest sits beside the name, with your method and which art it is above it. Long names are shortened to keep the aiming area clear. The Final Art and Dominion are grand, edged in
 gold. Other swordsmen's banners float briefly over their heads.
 
-<img src="{{ '/assets/images/aura-banner.jpg' | relative_url }}" alt="A first-person view at night of three husks; at the left edge of the screen a violet brush-stroke banner reads Hollow Breath, Dominion" class="shot">
+<img src="{{ '/assets/images/aura-banner.jpg' | relative_url }}" alt="A first-person view at night of three husks; at the left edge of the screen a woven nameplate with stitched edging and a crest reads Hollow Breath, Dominion" class="shot">
 
 ### The sound of each method
 

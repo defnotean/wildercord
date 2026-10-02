@@ -6,6 +6,7 @@ import dev.wildercord.aura.AuraFx;
 import dev.wildercord.aura.AuraFxRules;
 import dev.wildercord.aura.AuraStep;
 import dev.wildercord.cast.ElementFx;
+import dev.wildercord.cast.Light;
 import dev.wildercord.cast.Motes;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.ScreenFx;
@@ -84,7 +85,8 @@ public final class StarlitArts {
 		}
 		Vec3 over = foe.position().add(0, foe.getBbHeight() + 0.45, 0);
 		double size = left < 30 ? 0.26 : 0.36;
-		ElementFx.sigil(level, over, ArtKit.UP, SigilOption.STAR, PINK, size, 11, 0.12);
+		Light.ray(level, over.add(-size, 0, 0), over.add(size, 0, 0), PINK, 0.035, 11);
+		Light.ray(level, over.add(0, 0, -size), over.add(0, 0, size), PINK, 0.035, 11);
 		Vfx.emit(level, ParticleTypes.END_ROD, over, 1, 0.12, 0.005);
 	}
 
@@ -310,7 +312,7 @@ public final class StarlitArts {
 			return true;
 		}
 		hits.strike(foe, ArtRules.CONSTELLATION_FACTOR);
-		ElementFx.arcaneImpact(level, foe.getBoundingBox().getCenter(), 0.9);
+		AuraPhysicalFx.arcaneImpact(level, foe.getBoundingBox().getCenter(), 0.9);
 		if (ArtWards.burstStar(player, foe)) {
 			hits.strike(foe, ArtRules.CONSTELLATION_STARRED, AuraFxRules.Weight.FULL);
 			ArtKit.giveBack(player, ArtRules.CONSTELLATION_AURA);
@@ -418,7 +420,7 @@ public final class StarlitArts {
 				}
 				hits.strike(foe, ArtRules.COMET_FACTOR);
 				ArtWards.star(player, foe);
-				ElementFx.arcaneImpact(level, foe.getBoundingBox().getCenter(), 0.7);
+				AuraPhysicalFx.arcaneImpact(level, foe.getBoundingBox().getCenter(), 0.7);
 			}
 		});
 		// The trail of stars hanging where it ran, twinkling while they wait: each a five-pointed star of light standing across the
@@ -520,7 +522,7 @@ public final class StarlitArts {
 		world.groundRing(feet, WHITE, 0.4, ArtRules.NOVA_RADIUS, 0.12, 12);
 		world.groundRing(feet, VIOLET, 0.6, ArtRules.NOVA_RADIUS * 1.3, 0.06, 16);
 		world.ground(feet, SigilOption.STAR, color, 3.2, 40, 0.06);
-		world.ground(feet, SigilOption.RING, VIOLET, 4.4, 40, -0.04);
+		world.ground(feet, SigilOption.BAND, VIOLET, 4.4, 40, -0.04);
 		// Rays of starlight shot out low over the ground (yours to see too: they run out from your feet, under the view).
 		RandomSource r = level.getRandom();
 		double phase = r.nextDouble() * Math.PI * 2;

@@ -162,7 +162,7 @@ public final class ThunderArts {
 				struck.add(next);
 				Vec3 to = next.getBoundingBox().getCenter();
 				ArtLight.world(player).arc(from, to, color, 0.08, 2, false, 6);
-				ElementFx.stormImpact(level, to, 0.5);
+				AuraPhysicalFx.stormImpact(level, to, 0.5);
 				hits.strike(next, ArtRules.SKYFALL_ARC_FACTOR, AuraFxRules.Weight.FULL);
 				ArtKit.shock(player, next, ArtRules.SKYFALL_SHOCK / 2);
 			}
@@ -206,7 +206,7 @@ public final class ThunderArts {
 		}
 		hits.strike(foe, ArtRules.RIPOSTE_FACTOR);
 		ArtKit.shock(player, foe, ArtRules.RIPOSTE_SHOCK);
-		ElementFx.stormImpact(level, foe.getBoundingBox().getCenter(), 0.8);
+		AuraPhysicalFx.stormImpact(level, foe.getBoundingBox().getCenter(), 0.8);
 		// The chain: a tick a jump, to the nearest not yet struck.
 		List<LivingEntity> chain = new ArrayList<>();
 		chain.add(foe);
@@ -361,7 +361,7 @@ public final class ThunderArts {
 		// Through your own eyes: a thin white thread down the line, so you see where it went without it filling the view.
 		ArtLight.world(player).bare().ray(from.add(dir.scale(1.6)), end, WHITE, 0.07, 8);
 		// Where it ends, for everyone: a burst of lightning against the wall or the open air.
-		ElementFx.stormImpact(level, end, 1.4);
+		AuraPhysicalFx.stormImpact(level, end, 1.4);
 		ArtLight.world(player).ring(end, dir, color, 0.3, 2.4, 0.1, 9);
 		ScreenFx.shake(level, player.position(), 0.3F, 12);
 		AuraFx.sound(player, AuraFx.Sound.IMPACT, 1.0F, 0.7F);

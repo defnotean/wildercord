@@ -4,6 +4,16 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Aura standards and pressure effects
+
+- The crossroads now raises four animated cloth standards with stitched edging, swallowtail hems, bronze poles and distinct sword, shield, crescent and rallying crests. The selected standard gains pressure streamers; the others dim.
+- Rallying Cry raises a small version of the Banner standard above the swordsman. It stays out of the owner's first-person view.
+- Technique announcements use a woven nameplate and Way crest, with smaller type and bounded long names to leave the aiming area clear.
+- Aura awakenings, Dominions, finishers, blade bonding and duelist boundaries use fractured floors, crater impressions, blade gouges, floor debris and sharp slash strokes. Rune-bearing circles and ritual stars are reserved for spell casting.
+- Ground effects use world lighting, skip open air and changed floor blocks, and fade without removing terrain. Ground scars are capped at 24 live effects.
+- Elemental sword impacts use dedicated Aura effects, removing the spell seals hidden inside shared frost and impact helpers. Each method keeps its own slash pattern and timing.
+- Standard refreshes update an existing cloth effect, with a bounded cache and cleanup when leaving the world. Add-on Ways receive a neutral crest tinted in their registered colour.
+
 ### The bonded blade
 - **Bond a blade of your own from Edge.** Kneel in the breathing stance at a **ley crossing** with a sword, an axe, a spear or the
   mace in hand (aura-forged ones too) and hold still: the ley lines light across the ground and run into you, the blade kindles from

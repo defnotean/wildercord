@@ -82,7 +82,7 @@ public final class StoneArts {
 		Vec3 base = ground == null ? where : ground;
 		BlockState earth = ArtBlocks.ground(level, base);
 		// The ground under it cracking, slabs of it heaved up round its feet, chips flung, dust.
-		ElementFx.crack(level, base, 1.7, 30);
+		AuraPhysicalFx.crack(level, base, 1.7, 30);
 		RandomSource r = level.getRandom();
 		for (int i = 0; i < 3; i++) {
 			double a = r.nextDouble() * Math.PI * 2;
@@ -100,7 +100,7 @@ public final class StoneArts {
 			ArtKit.hold(player, foe, ArtRules.ROCK_HOLD);
 			ArtKit.slow(player, foe, ArtRules.ROCK_SLOW, 2);
 			Reactions.mark(foe, Reactions.Mark.CRACKED, ArtRules.ROCK_CRACKED);
-			ElementFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.0);
+			AuraPhysicalFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.0);
 		}
 		for (LivingEntity other : ArtKit.around(player, foe.position(), ArtRules.ROCK_SHOCK_RADIUS, 1.0, 2.5, 5)) {
 			if (other != foe) {
@@ -224,7 +224,7 @@ public final class StoneArts {
 			// Stunned once it comes down (held in the air it would hang there).
 			ArtKit.holdLater(player, foe, 10, 20);
 			Vec3 at = foe.position();
-			ElementFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.1);
+			AuraPhysicalFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.1);
 			ArtLight.world(player).ground(at, SigilOption.CRACKED, SAND, 1.4, 30, 0);
 			Vec3 between = feet.add(at).scale(0.5);
 			ArtLight.world(player).ray(feet.add(0, 0.1, 0), at.add(0, 0.1, 0), color, 0.35, 12);
@@ -306,8 +306,8 @@ public final class StoneArts {
 					crushed.add(foe.getUUID());
 					hits.strike(foe, ArtRules.LANDSLIDE_FACTOR * ArtRules.LANDSLIDE_WALL, AuraFxRules.Weight.GRAND);
 					ArtKit.hold(player, foe, ArtRules.LANDSLIDE_WALL_HOLD);
-					ElementFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.3);
-					ElementFx.crack(level, foe.position(), 1.2, 24);
+					AuraPhysicalFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.3);
+					AuraPhysicalFx.crack(level, foe.position(), 1.2, 24);
 					ScreenFx.shake(level, foe.position(), 0.25F, 10);
 					Feels.sound(level, foe.position(), "earth_slam", 1.0F, 0.9F);
 					carried.remove(i--);
@@ -325,7 +325,7 @@ public final class StoneArts {
 			if (last) {
 				// The end: each one carried is thrown on, stunned a moment.
 				// (Ahead of the swordsman and low, so the burst and its chips stay out of their own eyes.)
-				ElementFx.earthImpact(level, b.add(dir.scale(2.0)).add(0, 0.5, 0), 1.2);
+				AuraPhysicalFx.earthImpact(level, b.add(dir.scale(2.0)).add(0, 0.5, 0), 1.2);
 				crackUnder(player, b.add(dir.scale(1.2)), 1.8, 30, earth);
 				ScreenFx.shake(level, b, 0.25F, 10);
 				Feels.sound(level, b, "earth_slam", 1.0F, 1.0F);
@@ -380,7 +380,7 @@ public final class StoneArts {
 					// Close in front: the chips thrown low and outward, not up through your own view.
 					crackUnder(player, p, 1.0, 26, earth);
 				} else {
-					ElementFx.crack(level, p, 1.0, 26);
+					AuraPhysicalFx.crack(level, p, 1.0, 26);
 				}
 				RandomSource r = level.getRandom();
 				float lean = (float) ((r.nextDouble() - 0.5) * 0.5);
@@ -403,7 +403,7 @@ public final class StoneArts {
 					hits.strike(foe, ArtRules.SPLITTER_FACTOR, AuraFxRules.Weight.GRAND);
 					ArtKit.lift(foe, ArtRules.SPLITTER_LIFT, 30);
 					ArtKit.holdLater(player, foe, 12, ArtRules.SPLITTER_HOLD);
-					ElementFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.0);
+					AuraPhysicalFx.earthImpact(level, foe.getBoundingBox().getCenter(), 1.0);
 				}
 			});
 		}

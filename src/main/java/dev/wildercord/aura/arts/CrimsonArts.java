@@ -106,7 +106,7 @@ public final class CrimsonArts {
 	static void splash(ServerPlayer player, Vec3 at, double size) {
 		ServerLevel level = player.level();
 		ArtLight.world(player).flash(at, ArtKit.color(player), (float) (1.1 * size));
-		ElementFx.pulse(level, at, ArtKit.UP, 0.9 * size);
+		AuraPhysicalFx.pulse(level, at, ArtKit.UP, 0.9 * size);
 		drops(level, at, 0.2 * size, (int) Math.max(3, 5 * size));
 	}
 
@@ -161,7 +161,7 @@ public final class CrimsonArts {
 			hits.strike(foe, ArtRules.BLOOD_FACTOR, i == 0 ? AuraFxRules.Weight.HEAVY : AuraFxRules.Weight.FULL);
 			if (foe.isAlive()) {
 				gash(player, foe, i % 2 == 1);
-				ElementFx.pulse(level, foe.getBoundingBox().getCenter(), ArtKit.UP, 0.9);
+				AuraPhysicalFx.pulse(level, foe.getBoundingBox().getCenter(), ArtKit.UP, 0.9);
 				ArtKit.wound(hits, foe, ArtRules.BLOOD_BLEED, ArtRules.BLOOD_BLEEDS, drink, CrimsonArts::drip);
 			}
 		}
@@ -222,7 +222,7 @@ public final class CrimsonArts {
 				rain.bare().groundRing(splash, 0xD2283C, 0.05, 0.45, 0.04, 6);
 			}
 			if (age % ArtRules.BLEED_PERIOD == 0) {
-				ElementFx.pulse(lv, centre.add(0, 0.1, 0), ArtKit.UP, ArtRules.RAIN_RADIUS * 0.9);
+				AuraPhysicalFx.pulse(lv, centre.add(0, 0.1, 0), ArtKit.UP, ArtRules.RAIN_RADIUS * 0.9);
 				for (LivingEntity foe : field.foes(owner)) {
 					float took = hits.strike(foe, ArtRules.RAIN_BLEED, null);
 					dev.wildercord.cast.Reactions.mark(foe, dev.wildercord.cast.Reactions.Mark.BLEEDING, 30);

@@ -78,7 +78,7 @@ public final class Awakenings {
 				show.shards(heart, 2.8, 18, frost, WHITE);
 				show.ring(feet.add(0, 0.12, 0), ArtKit.UP, ElementFx.FROST.accent(), 0.4, 3.2, 0.12, 14);
 				world.ground(feet, SigilOption.STAR, frost, 2.8, 50, 0.02);
-				ElementFx.frostCreep(level, feet, 2.6, 50);
+				AuraPhysicalFx.frostCreep(level, feet, 2.6, 50);
 				RimeArts.chips(level, heart, 14, 0.28);
 			}
 			case THUNDER -> {
@@ -112,8 +112,8 @@ public final class Awakenings {
 			case GALE -> {
 				show.swirl(feet, 1.25, 3.4, 7, color, WHITE);
 				show.whirl(heart, 1.6, 6, color, WHITE, ElementFx.WIND.accent());
-				world.ground(feet, SigilOption.RING, ElementFx.WIND.secondary(), 2.8, 40, 0.12);
-				world.ground(feet.add(0, 0.01, 0), SigilOption.RING, ElementFx.WIND.accent(), 1.7, 40, -0.16);
+				world.ground(feet, SigilOption.BAND, ElementFx.WIND.secondary(), 2.8, 40, 0.12);
+				world.ground(feet.add(0, 0.01, 0), SigilOption.BAND, ElementFx.WIND.accent(), 1.7, 40, -0.16);
 				// The wind keeps winding up round them a moment after the burst.
 				for (int k = 1; k <= 2; k++) {
 					Scheduler.later(4 * k, () -> {
@@ -146,7 +146,7 @@ public final class Awakenings {
 			}
 			case HOLLOW -> {
 				// A black point at the heart that swallows light for a breath (darkness drawn in along tendrils), then bursts.
-				world.ground(feet, SigilOption.RING, 0x1A0830 | ArtLight.DARK, 2.6, 40, -0.02);
+				world.ground(feet, SigilOption.BAND, 0x1A0830 | ArtLight.DARK, 2.6, 40, -0.02);
 				double phase = r.nextDouble() * Math.PI * 2;
 				for (int k = 0; k < 3; k++) {
 					double radius = 0.5 + 0.12 * k;
@@ -211,7 +211,7 @@ public final class Awakenings {
 			}
 			case PLAIN -> {
 				show.groundRing(feet, color, 0.4, 3.4, 0.12, 14);
-				world.bare().ground(feet, SigilOption.CIRCLE, ArtKit.hot(color, 0.4), 2.4, 40, 0.02);
+				world.bare().ground(feet, SigilOption.BAND, ArtKit.hot(color, 0.4), 2.4, 40, 0.02);
 				show.tongues(feet, 0.7, 2.4, 8, color, WHITE, 14);
 			}
 		}
@@ -259,7 +259,7 @@ public final class Awakenings {
 			switch (flavour) {
 				case EMBER -> rim(owner, ElementFx.FIRE.accent());
 				case RIME -> {
-					ElementFx.frostCreep(level, centre, radius, ticks);
+					AuraPhysicalFx.frostCreep(level, centre, radius, ticks);
 					for (LivingEntity foe : foes) {
 						RimeArts.freezeSolid(owner, foe, AwakeningRules.Sovereign.RIME_FREEZE);
 					}
@@ -301,7 +301,7 @@ public final class Awakenings {
 		}
 
 		/**
-		 * The ground it claims, drawn in its method's own shape in place of the ordinary rune circle, for its whole time: Ember's scorched
+		 * The ground it claims, drawn in its method's own shape in place of the ordinary pressure boundary, for its whole time: Ember's scorched
 		 * and cracked in flame, Rime's a star of frost, Thunder's a target ringed in storm light, Gale's rings turning against each
 		 * other, Stone's cracked earth, Verdant's a flower of light, Hollow's dark rings, Starlit's a star, Hourglass's a great clock
 		 * face, Crimson's cracked in blood. The plain one keeps the ordinary circle ({@code AuraDominion} draws it).
@@ -314,19 +314,19 @@ public final class Awakenings {
 				case EMBER -> {
 					world.ground(at, SigilOption.CRACKED, ElementFx.FIRE.accent() | ArtLight.DARK, radius * 1.02, ticks, 0);
 					world.bare().ground(at.add(0, 0.01, 0), SigilOption.CRACKED, color, radius * 0.86, ticks, 0);
-					world.ground(at, SigilOption.RING, ElementFx.FIRE.secondary(), radius * 1.0, ticks, 0.01);
+					world.ground(at, SigilOption.BAND, ElementFx.FIRE.secondary(), radius * 1.0, ticks, 0.01);
 				}
 				case RIME -> {
 					world.ground(at, SigilOption.STAR, ElementFx.FROST.secondary(), radius * 0.96, ticks, 0.01);
-					world.ground(at, SigilOption.RING, ElementFx.FROST.accent(), radius * 1.0, ticks, -0.01);
+					world.ground(at, SigilOption.BAND, ElementFx.FROST.accent(), radius * 1.0, ticks, -0.01);
 				}
 				case THUNDER -> {
 					world.ground(at, SigilOption.TARGET, ElementFx.STORM.secondary(), radius * 0.96, ticks, 0.03);
-					world.ground(at, SigilOption.RING, color, radius * 1.0, ticks, -0.02);
+					world.ground(at, SigilOption.BAND, color, radius * 1.0, ticks, -0.02);
 				}
 				case GALE -> {
-					world.ground(at, SigilOption.RING, ElementFx.WIND.secondary(), radius * 1.0, ticks, 0.08);
-					world.ground(at.add(0, 0.01, 0), SigilOption.RING, ElementFx.WIND.accent(), radius * 0.62, ticks, -0.11);
+					world.ground(at, SigilOption.BAND, ElementFx.WIND.secondary(), radius * 1.0, ticks, 0.08);
+					world.ground(at.add(0, 0.01, 0), SigilOption.BAND, ElementFx.WIND.accent(), radius * 0.62, ticks, -0.11);
 				}
 				case STONE -> {
 					world.ground(at, SigilOption.CRACKED, ElementFx.EARTH.secondary(), radius * 1.02, ticks, 0);
@@ -334,25 +334,25 @@ public final class Awakenings {
 				}
 				case VERDANT -> {
 					VerdantArts.bloom(world, centre, color, radius / 1.7, life);
-					world.ground(at, SigilOption.RING, ElementFx.LIFE.primary(), radius * 1.0, ticks, 0.01);
+					world.ground(at, SigilOption.BAND, ElementFx.LIFE.primary(), radius * 1.0, ticks, 0.01);
 				}
 				case HOLLOW -> {
-					world.bare().ground(at, SigilOption.RING, 0x1A0830 | ArtLight.DARK, radius * 1.0, ticks, -0.03);
-					world.ground(at.add(0, 0.01, 0), SigilOption.RING, color, radius * 0.8, ticks, 0.04);
-					world.bare().ground(at.add(0, 0.02, 0), SigilOption.RING, 0x1A0830 | ArtLight.DARK, radius * 0.5, ticks, -0.06);
+					world.bare().ground(at, SigilOption.BAND, 0x1A0830 | ArtLight.DARK, radius * 1.0, ticks, -0.03);
+					world.ground(at.add(0, 0.01, 0), SigilOption.BAND, color, radius * 0.8, ticks, 0.04);
+					world.bare().ground(at.add(0, 0.02, 0), SigilOption.BAND, 0x1A0830 | ArtLight.DARK, radius * 0.5, ticks, -0.06);
 				}
 				case STARLIT -> {
 					world.ground(at, SigilOption.STAR, color, radius * 0.98, ticks, 0.02);
-					world.ground(at, SigilOption.RING, ElementFx.ARCANE.secondary(), radius * 1.0, ticks, -0.01);
+					world.ground(at, SigilOption.BAND, ElementFx.ARCANE.secondary(), radius * 1.0, ticks, -0.01);
 				}
 				case HOURGLASS -> HourglassArts.clockFace(world, at, ArtKit.UP, radius * 0.94, owner.level().getRandom().nextDouble() * Math.PI * 2,
 					HourglassArts.gold(owner), ticks);
 				case CRIMSON -> {
 					world.ground(at, SigilOption.CRACKED, color, radius * 1.0, ticks, 0);
-					world.ground(at, SigilOption.RING, ElementFx.BLOOD.accent() | ArtLight.DARK, radius * 1.02, ticks, 0.01);
+					world.ground(at, SigilOption.BAND, ElementFx.BLOOD.accent() | ArtLight.DARK, radius * 1.02, ticks, 0.01);
 				}
 				case PLAIN -> {
-					// The ordinary circle, drawn by AuraDominion.
+					// The ordinary pressure boundary, drawn by AuraDominion.
 				}
 			}
 		}
@@ -515,7 +515,7 @@ public final class Awakenings {
 				}
 				shot.setDeltaMovement(shot.getDeltaMovement().scale(0.45));
 				shot.needsSync = true;
-				ElementFx.sigil(owner.level(), shot.position(), ArtKit.UP, SigilOption.RING, HourglassArts.gold(owner), 0.35, 8, 0.1);
+				ArtLight.world(owner).slash(shot.position(), ArtKit.UP, new Vec3(1, 0, 0), HourglassArts.gold(owner), 0.35, 1.4, 0.025, 2, 8);
 			}
 		}
 

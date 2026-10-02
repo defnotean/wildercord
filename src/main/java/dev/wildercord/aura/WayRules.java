@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * Ways, the pure part. At the Edge breakthrough a swordsman's path forks: they choose a <b>Way</b> at the <b>crossroads</b>, four
- * standards of light that rise round them as the breakthrough settles, by striking the one they mean to walk (once to lean toward it,
+ * crested standards that rise round them as the breakthrough settles, by striking the one they mean to walk (once to lean toward it,
  * again to walk it). Each Way has a <b>node</b> at Edge, Form and Sovereign: a passive, and a change to one of the techniques they
  * already know, so the Way changes how they fight rather than how hard.
  * <ul>

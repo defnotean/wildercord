@@ -1101,7 +1101,7 @@ the later steps in [AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-7-ways)):
   fades, the lean; told to its swordsman alone, not saved), `open(player, Reason)` (placing the standards: `place`, `ground`, `seen`),
   `breathing` (the stance calling it, from `Aura.stance`), `brokeThrough` (from `AuraBreakthroughs.breakThrough` at Edge), `swung`
   (from `mixin.SwordStringsSeenMixin`: a strike, through `aimed`, then `lean` or `choose`), `close`, the upkeep (`tick`: fading, drawing
-  every 4 ticks through `look`, each Way's shape in `ArtLight`), and the death, world-change and leaving rules.
+  every 4 ticks through `look` and `AuraFx.Standard`, with authored cloth in `client.fx.AuraStandard`), and the death, world-change and leaving rules.
 - **`aura.WayEffects`**: the Blade's, the Bulwark's and the Shadowstep's nodes: hooks registered in `init` (`onMomentum` for Keen Edge,
   `onStance` for Wide Guard, Unbroken and Slip, `onFinisher` for Cascade's extra and its cascade, and Thousand Shadows' ready step), and
   what the techniques ask: `pierces`, `slashPrice`/`slashRest` (`AuraSlash`), `feed` (`Awakening.fed`), `coversAll`/`perfectWindow`/
@@ -2009,3 +2009,35 @@ easy to trip over:
   and new classes. The build supports `-PaltBuild` (outputs to `build-alt/`) for compile checks
   while a client is open.
 
+
+
+### Authored Aura standards
+
+`AuraFx.Standard` sends the owner, position, facing, Way, colour, emphasis, scale and refresh lifetime. `Crossroads` refreshes each
+standard every four ticks; `WayBanner` raises a smaller Rallying Cry standard. `client.fx.AuraStandard` owns a capped live cache,
+updates standards in place, and extracts a double-sided rippling cloth grid, bronze pole and finial through vanilla translucent
+particle blending. It uses full extent culling and suppresses the owner's small rally flag in first person. Built-in textures
+have authored palettes; unknown Ways tint the neutral crest using their registered colour. `tools/aura_standard_art.py` generates
+these textures and the stitched technique nameplate, which `AuraBanners` pairs with the player's Way emblem.
+
+`ArtLight.sigil` renders ring requests as partial slash strokes and STAR as crossed strokes, so future arts do not accidentally
+draw a spell seal. `ArtLight.ground` projects physical floor marks instead.
+
+
+### Physical ground effects (2026-10-02 revision)
+
+The owner clarified that Aura should break and cut the floor instead of painting magical light. `AuraFx.GroundScar` now carries
+fracture (0), crater impression (1) and blade gouge (2) cues. `client.fx.AuraGroundScar` projects authored non-emissive textures onto
+nearby solid block tops, samples world lighting, skips changed blocks and unsupported air, emits fragments of the actual floor,
+and fades the marks without deleting terrain. Its cache is capped at 24, with an eight-block radius and 600-tick lifetime cap;
+refreshes do not emit debris again. Calm/off settings reduce or omit fragments. The textures come from `aura_standard_art.py`.
+
+`ArtLight.ground` and `groundRing` now use physical scars, and airborne ring requests become sharp partial slash strokes. The default
+Dominion's light column and ground rings are removed; its boundary is fractured ground. AuraBurst's luminous RING/ECHO rendering is
+removed; those cues now produce floor scars. Heavy impacts add blade gouges. Ground-facing Hourglass motifs use gouges instead of
+a glowing clock face. Duelist arrival and duel ground cues use the same physical effects. This supersedes the pressure-band ground
+rendering described earlier in this document. Combat mechanics and actual terrain-changing arts retain their existing rules.
+
+`arts.AuraPhysicalFx` supplies distinct sword-impact cuts and floor damage for elemental methods. Aura callers use these helpers
+instead of the shared `ElementFx` impact, frost-creep, clock and ring helpers, which can draw spell seals internally. Actual rune
+spells continue to use `ElementFx`. Floor block and lighting samples refresh every five ticks, outside the render loop.

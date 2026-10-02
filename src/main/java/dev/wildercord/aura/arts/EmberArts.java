@@ -281,7 +281,7 @@ public final class EmberArts {
 			hits.raw(foe, main, AuraFxRules.Weight.HEAVY);
 			ArtKit.ignite(foe, ArtRules.BACKDRAFT_IGNITE);
 			ArtKit.knock(foe, feet, ArtRules.BACKDRAFT_THROW, 0.25);
-			ElementFx.fireImpact(level, foe.getBoundingBox().getCenter(), 1.0);
+			AuraPhysicalFx.fireImpact(level, foe.getBoundingBox().getCenter(), 1.0);
 		}
 		for (LivingEntity other : ArtKit.arc(player, null, ArtRules.BACKDRAFT_REACH, ArtRules.BACKDRAFT_DEGREES, ArtRules.BACKDRAFT_TARGETS)) {
 			if (other == foe) {
@@ -326,12 +326,12 @@ public final class EmberArts {
 				if (!hits.hurt(foe) && hits.count() < ArtRules.WILDFIRE_TARGETS) {
 					hits.strike(foe, ArtRules.WILDFIRE_FACTOR);
 					ArtKit.ignite(foe, ArtRules.WILDFIRE_IGNITE);
-					ElementFx.fireImpact(level, foe.getBoundingBox().getCenter(), 0.8);
+					AuraPhysicalFx.fireImpact(level, foe.getBoundingBox().getCenter(), 0.8);
 					ArtKit.shove(foe, ArtKit.right(dir).scale(foe.position().subtract(b).dot(ArtKit.right(dir)) >= 0 ? 0.35 : -0.35).add(0, 0.2, 0));
 				}
 			}
 			if (last) {
-				ElementFx.fireImpact(level, b.add(0, 0.9, 0), 0.9);
+				AuraPhysicalFx.fireImpact(level, b.add(0, 0.9, 0), 0.9);
 				Feels.sound(level, b, "fire_whump", 0.7F, 1.1F);
 			}
 		});

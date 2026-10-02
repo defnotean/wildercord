@@ -190,7 +190,7 @@ public final class Finishers {
 		for (int i = 0; i < 3; i++) {
 			show.ring(w.feet().add(0, 0.25 + 0.6 * i * w.size(), 0), ArtKit.UP, i == 1 ? pale : frost, 0.95 * w.size(), 0.45 * w.size(), 0.07, 8);
 		}
-		ElementFx.frostCreep(level, w.feet(), 1.4 * w.size(), 40);
+		AuraPhysicalFx.frostCreep(level, w.feet(), 1.4 * w.size(), 40);
 		BlockState ice = Blocks.PACKED_ICE.defaultBlockState();
 		RandomSource r = level.getRandom();
 		double phase = Math.atan2(w.toward().z, w.toward().x);
@@ -305,7 +305,7 @@ public final class Finishers {
 				w.toward().x * Math.sin(turn) + w.toward().z * Math.cos(turn));
 			ArtBlocks.slab(level, w.feet().add(out.scale(1.0 * w.size())), earth, (float) Math.atan2(out.x, out.z), 0.5F, -0.4F, 2, 14);
 		}
-		ElementFx.earthImpact(level, w.heart(), 1.2 * w.size());
+		AuraPhysicalFx.earthImpact(level, w.heart(), 1.2 * w.size());
 		Feels.sound(level, w.feet(), "earth_quake", 1.0F, 0.9F);
 		if (foe.isAlive()) {
 			Reactions.mark(foe, Reactions.Mark.CRACKED, 100);
@@ -348,7 +348,7 @@ public final class Finishers {
 		Where w = frame(player, foe, AuraFxRules.Stroke.DRAW, false, color, "aura_finisher_hollow");
 		ArtLight show = ArtLight.spectacle(player);
 		ArtLight world = ArtLight.world(player);
-		world.ground(w.feet(), SigilOption.CIRCLE, abyss, 2.0 * w.size(), 40, -0.2);
+		world.ground(w.feet(), SigilOption.BAND, abyss, 2.0 * w.size(), 40, -0.2);
 		// Falling in: rings on every tilt closing on the point, a black heart.
 		for (int i = 0; i < 4; i++) {
 			show.bare().ring(w.heart(), ElementFx.tilted(0.9, i * Math.PI / 2), i % 2 == 0 ? color : lilac, 2.4 * w.size(), 0.15, 0.06, 6);
@@ -361,7 +361,7 @@ public final class Finishers {
 			show.ring(w.heart(), w.toward(), color, 0.2, 2.6 * w.size(), 0.12, 8);
 			show.bare().ring(w.heart(), ArtKit.UP, lilac, 0.2, 2.2 * w.size(), 0.05, 7);
 			world.groundRing(w.feet(), lilac, 0.3, 2.8 * w.size(), 0.06, 9);
-			ElementFx.voidImpact(level, w.heart(), 1.2 * w.size());
+			AuraPhysicalFx.voidImpact(level, w.heart(), 1.2 * w.size());
 			Feels.sound(level, w.heart(), "void_phantom_burst", 0.8F, 1.0F);
 		});
 		for (LivingEntity near : ArtKit.around(player, w.feet(), 4.0, 2, 2, 6)) {
@@ -450,7 +450,7 @@ public final class Finishers {
 				CrimsonArts.drops(level, w.heart(), 0.3, 8);
 			});
 		}
-		ElementFx.pulse(level, w.feet().add(0, 0.1, 0), ArtKit.UP, 1.4 * w.size());
+		AuraPhysicalFx.pulse(level, w.feet().add(0, 0.1, 0), ArtKit.UP, 1.4 * w.size());
 		ArtLight.world(player).groundRing(w.feet(), ElementFx.BLOOD.accent() | ArtLight.DARK, 0.3, 2.0 * w.size(), 0.1, 12);
 		if (foe.isAlive()) {
 			Reactions.mark(foe, Reactions.Mark.BLEEDING, 100);

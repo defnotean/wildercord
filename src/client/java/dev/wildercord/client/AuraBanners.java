@@ -27,7 +27,7 @@ import java.util.Locale;
  * Technique banners ({@link AuraFx#banner}): a named art, a Dominion, later a finisher, shown briefly in the method's colour.
  * <ul>
  * <li><b>Yours</b> slide in from the left edge of the screen a little above its middle, clear of the crosshair, the chat and the
- * hotbar: a brush-stroke band of the method's colour, a small line above (the method, and which art), the name large across it,
+ * hotbar: a woven nameplate with the Way's crest, a small line above (the method, and which art), the name across it,
  * a bright line wiping in under it; then gone. A grand one (the Final Art, a Dominion) is larger, longer and edged in gold.</li>
  * <li><b>Everyone else's</b> float over their heads, the name alone in their colour, drifting up as it fades (only while they're in
  * view and near; out of view there's nothing).</li>
@@ -113,28 +113,36 @@ public final class AuraBanners {
 			return;
 		}
 		boolean grand = s.kind() != AuraFxRules.BannerKind.ART;
-		float nameScale = grand ? 2.5F : 2.0F;
+		float nameScale = grand ? 1.7F : 1.5F;
 		float kickScale = 1.0F;
 		String kicker = s.kicker().getString().toUpperCase(Locale.ROOT);
 		String name = s.name().getString();
+		// Keep even a long player-written technique outside the central aiming area.
+		int available = Math.max(80, Math.round(g.guiWidth() * 0.42F) - 70);
+		if (font.width(name) * nameScale > available) {
+			name = font.plainSubstrByWidth(name, Math.max(20, (int) (available / nameScale) - font.width("..."))) + "...";
+		}
+		if (spacedWidth(font, kicker) > available) {
+			kicker = font.plainSubstrByWidth(kicker, available * 3 / 4) + "...";
+		}
 		int nameW = Math.round(font.width(name) * nameScale);
 		int kickW = Math.round(spacedWidth(font, kicker) * kickScale);
 		int textW = Math.max(nameW, kickW);
-		int pad = 12;
-		int bandW = textW + pad * 2 + 40;
+		int pad = 36;
+		int bandW = Math.min(Math.round(g.guiWidth() * 0.46F), textW + pad + 25);
 		int bandH = Math.round(9 * nameScale) + (kicker.isEmpty() ? 10 : 21);
 		int h = g.guiHeight();
 		int y = Math.round(h * 0.34F) - bandH / 2;
 		float slide = AuraFxRules.bannerSlide(age);
 		int x = Math.round(-(bandW + 8) * (1 - slide));
 		int color = s.color();
-		int deep = mix(color, 0x0C0814, 0.48F);
 		int hot = mix(color, 0xFFFFFF, 0.65F);
 		int accent = grand ? AuraGuard.PERFECT_COLOR : hot;
-		// The band: a brush stroke of the method's colour, deep enough for the name to read on any sky.
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, BAND, x, y, bandW, bandH, argb(deep, 0.9F * alpha));
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, BAND, x, y, bandW, 2, argb(accent, 0.75F * alpha));
-		g.blitSprite(RenderPipelines.GUI_TEXTURED, BAND, x, y + bandH - 1, Math.round(bandW * 0.8F), 1, argb(accent, 0.4F * alpha));
+		// Woven fabric and stitched edging, tinted by the method and dark enough for the name to read on any sky.
+		g.blitSprite(RenderPipelines.GUI_TEXTURED, BAND, x, y, bandW, bandH, argb(mix(color, 0xFFFFFF, 0.55F), alpha));
+		String way = dev.wildercord.api.AuraApi.wayOf(Minecraft.getInstance().player)
+			.map(dev.wildercord.api.AuraApi.Way::id).filter(dev.wildercord.aura.WayRules.BUILT_IN::contains).orElse("unknown");
+		g.blitSprite(RenderPipelines.GUI_TEXTURED, Wildercord.id("aura/way_" + way), x + 9, y + bandH / 2 - 10, 20, 20, argb(accent, alpha));
 		int tx = x + pad;
 		int ty = y + 6;
 		if (!kicker.isEmpty()) {

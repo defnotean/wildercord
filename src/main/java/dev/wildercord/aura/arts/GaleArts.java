@@ -95,7 +95,7 @@ public final class GaleArts {
 				BlockPos pos = BlockPos.containing(front);
 				if (!level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()) {
 					done[0] = true;
-					ElementFx.windImpact(level, front.subtract(aim.scale(0.4)), 1.0);
+					AuraPhysicalFx.windImpact(level, front.subtract(aim.scale(0.4)), 1.0);
 					return;
 				}
 				// The blade of wind: a pale crescent, white at its edge, a gust shed behind it.
@@ -121,7 +121,7 @@ public final class GaleArts {
 					hits.strike(foe, ArtRules.BREEZE_FACTOR, AuraFxRules.Weight.FULL);
 					Statuses.windPush(foe, new Vec3(aim.x, 0, aim.z).normalize().scale(ArtRules.BREEZE_PUSH).add(0, 0.15, 0));
 					Reactions.mark(foe, Reactions.Mark.WINDSWEPT, 50);
-					ElementFx.windImpact(level, foe.getBoundingBox().getCenter(), 0.8);
+					AuraPhysicalFx.windImpact(level, foe.getBoundingBox().getCenter(), 0.8);
 				}
 			};
 			if (i == 0) {
@@ -156,7 +156,7 @@ public final class GaleArts {
 		Vec3 v = player.getDeltaMovement();
 		ArtKit.launch(player, new Vec3(v.x * 0.5, Math.max(v.y, ArtRules.UPDRAFT_SELF), v.z * 0.5));
 		player.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, ArtRules.UPDRAFT_FLOAT, 0, false, false, true));
-		ElementFx.gustRing(level, player.position(), 2.2);
+		AuraPhysicalFx.gustRing(level, player.position(), 2.2);
 		for (int i = 0; i < 6; i++) {
 			RandomSource r = level.getRandom();
 			Motes.fling(level, player.position().add((r.nextDouble() - 0.5) * 1.2, 0.2, (r.nextDouble() - 0.5) * 1.2), new Vec3(0, 1, 0), 0.25,
@@ -181,13 +181,13 @@ public final class GaleArts {
 			away = new Vec3(away.x, 0, away.z);
 			away = away.lengthSqr() < 1.0E-4 ? ArtKit.flat(player) : away.normalize();
 			Statuses.windPush(foe, away.scale(ArtRules.EYE_PUSH).add(0, 0.25, 0));
-			ElementFx.windImpact(level, foe.getBoundingBox().getCenter(), 0.8);
+			AuraPhysicalFx.windImpact(level, foe.getBoundingBox().getCenter(), 0.8);
 		}
 		// The spin's wind racing out over the ground, and the eye: a ring of wind round the swordsman while it lasts.
 		ArtLight world = ArtLight.world(player);
 		world.groundRing(feet, color, 0.4, ArtRules.EYE_RADIUS * 1.3, 0.2, 10);
 		world.groundRing(feet, WHITE, 0.3, ArtRules.EYE_RADIUS, 0.06, 8);
-		ElementFx.gustRing(level, feet, ArtRules.EYE_RADIUS);
+		AuraPhysicalFx.gustRing(level, feet, ArtRules.EYE_RADIUS);
 		ArtWards.eye(player, ArtRules.EYE_TICKS);
 		ArtFields.open(player, EYE, ArtFields.disc(player::position, ArtRules.EYE_GUST_RADIUS, 2.5), ArtRules.EYE_TICKS, 3, (field, owner, age) -> {
 			ServerLevel lv = field.level();
@@ -225,7 +225,7 @@ public final class GaleArts {
 	/** A projectile turned aside by the eye: a puff of wind where it was swung round, and its whistle. */
 	static void eyeTurns(ServerPlayer player, Vec3 at) {
 		ServerLevel level = player.level();
-		ElementFx.windImpact(level, at, 0.7);
+		AuraPhysicalFx.windImpact(level, at, 0.7);
 		Feels.sound(level, at, "wind_deflect", 0.8F, 1.1F);
 	}
 
@@ -245,7 +245,7 @@ public final class GaleArts {
 		Vec3 from = path.getFirst();
 		Vec3 to = path.getLast();
 		AuraStep.afterimages(player, from, to, dir, color);
-		ElementFx.gustRing(level, from, 2.0);
+		AuraPhysicalFx.gustRing(level, from, 2.0);
 		Feels.sound(level, from.add(0, 1, 0), "aura_art_tailwind", 1.1F, 1.0F);
 		Vec3 right = ArtKit.right(dir);
 		ArtLight world = ArtLight.world(player);
@@ -264,10 +264,10 @@ public final class GaleArts {
 				hits.strike(foe, ArtRules.TAILWIND_FACTOR, AuraFxRules.Weight.FULL);
 				double sideOf = foe.position().subtract(b).dot(right);
 				Statuses.windPush(foe, right.scale(sideOf >= 0 ? ArtRules.TAILWIND_SHOVE : -ArtRules.TAILWIND_SHOVE).add(0, 0.2, 0));
-				ElementFx.windImpact(level, foe.getBoundingBox().getCenter(), 0.7);
+				AuraPhysicalFx.windImpact(level, foe.getBoundingBox().getCenter(), 0.7);
 			}
 			if (last) {
-				ElementFx.gustRing(level, b, 2.4);
+				AuraPhysicalFx.gustRing(level, b, 2.4);
 				sweep(player, path);
 			}
 		});
@@ -290,7 +290,7 @@ public final class GaleArts {
 				swept.add(e.getUUID());
 				LivingEntity ally = (LivingEntity) e;
 				ally.addEffect(new MobEffectInstance(MobEffects.SPEED, ArtRules.TAILWIND_SPEED, 1, false, true, true), player);
-				ElementFx.gustRing(level, ally.position(), 1.2);
+				AuraPhysicalFx.gustRing(level, ally.position(), 1.2);
 				ElementFx.swirl(level, ally.position(), 0.7, 1.8, 3);
 			}
 		}
@@ -304,7 +304,7 @@ public final class GaleArts {
 		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.5F);
 		ArtKit.Hits hits = ArtKit.hits(player, fx);
 		Feels.sound(level, player.position().add(0, 1, 0), "aura_art_hundred_winds", 1.3F, 1.0F);
-		ElementFx.gustRing(level, player.position(), ArtRules.WINDS_RADIUS);
+		AuraPhysicalFx.gustRing(level, player.position(), ArtRules.WINDS_RADIUS);
 		ArtFields.open(player, WINDS, ArtFields.disc(player::position, ArtRules.WINDS_RADIUS, 3.0), ArtRules.WINDS_TICKS, ArtRules.WINDS_PERIOD,
 			(field, owner, age) -> winds(owner, field, hits, age));
 		return true;

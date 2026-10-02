@@ -100,6 +100,8 @@ public final class AuraFxClient {
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.BurstCue.TYPE, (payload, context) -> burst(payload));
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Flare.TYPE, (payload, context) -> flare(payload));
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Banner.TYPE, (payload, context) -> AuraBanners.receive(payload));
+		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Standard.TYPE, (payload, context) -> dev.wildercord.client.fx.AuraStandard.receive(payload));
+		ClientPlayNetworking.registerGlobalReceiver(AuraFx.GroundScar.TYPE, (payload, context) -> dev.wildercord.client.fx.AuraGroundScar.receive(payload));
 		ClientPlayNetworking.registerGlobalReceiver(AuraFx.Shown.TYPE, (payload, context) -> shown(payload));
 		ClientTickEvents.END_CLIENT_TICK.register(AuraFxClient::tick);
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> reset());
@@ -118,6 +120,8 @@ public final class AuraFxClient {
 		lastOwnSweep = Long.MIN_VALUE / 4;
 		HitStop.clear();
 		AuraBanners.reset();
+		dev.wildercord.client.fx.AuraStandard.clear();
+		dev.wildercord.client.fx.AuraGroundScar.clear();
 	}
 
 	// ------------------------------------------------------------------ your own swings
@@ -268,6 +272,9 @@ public final class AuraFxClient {
 				case GRAND -> AuraFx.Burst.FLASH | AuraFx.Burst.STAR | AuraFx.Burst.RING | AuraFx.Burst.ECHO | AuraFx.Burst.SPARKS;
 			};
 			mc.particleEngine.add(new AuraBurst(level, payload.at(), Vec3.ZERO, payload.color(), size, style, false, own ? strength * 0.8F : strength));
+			if (weight == AuraFxRules.Weight.HEAVY || weight == AuraFxRules.Weight.GRAND) {
+				dev.wildercord.client.fx.AuraGroundScar.receive(new AuraFx.GroundScar(payload.at(), Math.min(3, size), 80, 2));
+			}
 		}
 		if (striker || struck) {
 			// The moment held for both, and the view nudged: down a hair into the cut for the striker, back from it for the struck.
@@ -304,6 +311,10 @@ public final class AuraFxClient {
 			whispers++;
 		}
 		float strength = MagicQuality.reducedFlash ? 0.5F : 1.0F;
+		if ((payload.style() & (AuraFx.Burst.RING | AuraFx.Burst.ECHO)) != 0) {
+			dev.wildercord.client.fx.AuraGroundScar.receive(new AuraFx.GroundScar(payload.at(),
+				Math.min(8, payload.size() * 0.7F), 60, payload.size() > 2 ? 1 : 0));
+		}
 		mc.particleEngine.add(new AuraBurst(level, payload.at(), payload.facing(), payload.color(), payload.size(), payload.style(), whisper, strength));
 	}
 

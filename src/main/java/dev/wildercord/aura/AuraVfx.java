@@ -14,10 +14,15 @@ import net.minecraft.world.phys.Vec3;
 /**
  * How aura looks when it acts, sent from the server so everyone sees the same: the stance's breath, the beat, the guard and its
  * perfect moment, Flow's sweep, the slash's flight (the Crescent's crescents of shaped light, in the aura's colour) and the
- * burst of a breakthrough. Built from the mod's shaped light ({@link Light}), circles' flashes and motes, like every spell;
+ * burst of a breakthrough. Built from the mod's shaped light ({@link Light}), physical ground scars, slash trails and motes;
  * the blade's own glow is drawn by each client from the synced look. Kept to a few strong shapes, never a cloud of particles.
  */
 public final class AuraVfx {
+	private static void pressureCut(ServerLevel level, Vec3 at, Vec3 normal, int color, double from, double to, double width, int life) {
+		if (Math.abs(normal.y) > 0.95) AuraFx.groundScar(level, at, Math.max(from, to), Math.max(40, life * 3), 2);
+		else Light.slash(level, at, normal, dev.wildercord.cast.ElementFx.perp(normal), color, Math.max(from, to), 1.8, width, 2, life);
+	}
+
 	private AuraVfx() {}
 
 	private static final Vec3 UP = new Vec3(0, 1, 0);
@@ -27,11 +32,11 @@ public final class AuraVfx {
 		return AuraRules.mix(color, 0xFFFFFF, t);
 	}
 
-	/** Each breath of the stance: a slow ring along the ground and a few motes drawn up into the body. */
+	/** Each breath of the stance: a small ground impression and a few motes drawn up into the body. */
 	static void breathe(ServerPlayer player, int color) {
 		ServerLevel level = player.level();
 		Vec3 feet = player.position();
-		Light.groundRing(level, feet, color, 0.3, 1.5, 0.05, 30);
+		AuraFx.groundScar(level, feet, Math.max(0.3, 1.5), Math.max(60, (30) * 3), 1);
 		for (int i = 0; i < 4; i++) {
 			double a = level.getRandom().nextDouble() * Math.PI * 2;
 			Vec3 from = feet.add(Math.cos(a) * 1.2, 0.2 + level.getRandom().nextDouble() * 0.5, Math.sin(a) * 1.2);
@@ -43,7 +48,7 @@ public final class AuraVfx {
 	static void beat(ServerPlayer player, int color) {
 		ServerLevel level = player.level();
 		Vec3 heart = player.position().add(0, 1.1, 0);
-		Light.groundRing(level, player.position(), hot(color, 0.35), 0.4, 2.2, 0.07, 14);
+		AuraFx.groundScar(level, player.position(), Math.max(0.4, 2.2), Math.max(60, (14) * 3), 1);
 		Sigils.flash(level, heart, 0xFF000000 | hot(color, 0.4), 1.1F);
 		Motes.burst(level, heart, 8, hot(color, 0.25), 0.08, 18, 0.06);
 	}
@@ -53,8 +58,8 @@ public final class AuraVfx {
 		ServerLevel level = player.level();
 		Vec3 look = flat(player);
 		Vec3 at = player.position().add(0, 1.1, 0).add(look.scale(0.8));
-		Light.ring(level, at, look, color, 0.2, 0.9, 0.06, 8);
-		Light.ring(level, at, look, hot(color, 0.5), 0.1, 0.6, 0.03, 6);
+		pressureCut(level, at, look, color, 0.2, 0.9, 0.06, 8);
+		pressureCut(level, at, look, hot(color, 0.5), 0.1, 0.6, 0.03, 6);
 	}
 
 	/** A blow caught on a held guard: a ripple where it met the blade. */
@@ -62,7 +67,7 @@ public final class AuraVfx {
 		ServerLevel level = player.level();
 		Vec3 look = flat(player);
 		Vec3 at = player.position().add(0, 1.1, 0).add(look.scale(0.8));
-		Light.ring(level, at, look, color, 0.1, 1.1, 0.05, 6);
+		pressureCut(level, at, look, color, 0.1, 1.1, 0.05, 6);
 		Fx.send(level, ParticleTypes.CRIT, at, 4, 0.2, 0.15);
 	}
 
@@ -128,7 +133,7 @@ public final class AuraVfx {
 	/** The slash breaking on a wall. */
 	static void slashEnd(ServerLevel level, Vec3 at, Vec3 aim, int color) {
 		Sigils.flash(level, at, 0xFF000000 | color, 1.4F);
-		Light.ring(level, at, aim, color, 0.2, 1.4, 0.06, 7);
+		pressureCut(level, at, aim, color, 0.2, 1.4, 0.06, 7);
 		Motes.burst(level, at, 6, hot(color, 0.3), 0.08, 14, 0.08);
 	}
 
@@ -140,9 +145,9 @@ public final class AuraVfx {
 		Vec3 flatAim = new Vec3(aim.x, 0, aim.z);
 		flatAim = flatAim.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : flatAim.normalize();
 		Sigils.flash(level, at, 0xFFFFFFFF, 2.6F);
-		Light.ring(level, at, flatAim, a, 0.2, 2.8, 0.1, 10);
-		Light.ring(level, at, flatAim, b, 0.3, 3.4, 0.08, 12);
-		Light.ring(level, at, UP, hot(AuraRules.mix(a, b, 0.5), 0.5), 0.2, 2.2, 0.06, 9);
+		pressureCut(level, at, flatAim, a, 0.2, 2.8, 0.1, 10);
+		pressureCut(level, at, flatAim, b, 0.3, 3.4, 0.08, 12);
+		pressureCut(level, at, UP, hot(AuraRules.mix(a, b, 0.5), 0.5), 0.2, 2.2, 0.06, 9);
 		Light.ray(level, at.subtract(0, 0.9, 0), at.add(0, 1.6, 0), 0xFFFFFF, 0.1, 6);
 		Motes.burst(level, at, 16, hot(a, 0.3), 0.12, 22, 0.32);
 		Motes.burst(level, at, 16, hot(b, 0.3), 0.12, 22, 0.32);
@@ -159,7 +164,7 @@ public final class AuraVfx {
 	static void learned(ServerPlayer player, int color) {
 		ServerLevel level = player.level();
 		Vec3 feet = player.position();
-		Light.groundRing(level, feet, color, 0.2, 2.0, 0.06, 20);
+		AuraFx.groundScar(level, feet, Math.max(0.2, 2.0), Math.max(60, (20) * 3), 1);
 		Motes.glows(level, feet.add(0, 0.8, 0), 12, 0.5, hot(color, 0.25), 0.09, 30, new Vec3(0, 0.03, 0), 0.01);
 	}
 
@@ -169,12 +174,12 @@ public final class AuraVfx {
 		Vec3 feet = player.position();
 		Vec3 heart = feet.add(0, 1.1, 0);
 		double size = 2.5 + stage * 0.8;
-		Light.groundRing(level, feet, color, 0.3, size * 2, 0.12, 16);
-		Light.groundRing(level, feet, hot(color, 0.5), 0.2, size * 1.4, 0.05, 12);
-		Light.ring(level, heart, flat(player), color, 0.3, size, 0.08, 12);
+		AuraFx.groundScar(level, feet, Math.max(0.3, size * 2), Math.max(60, (16) * 3), 1);
+		AuraFx.groundScar(level, feet, Math.max(0.2, size * 1.4), Math.max(60, (12) * 3), 1);
+		pressureCut(level, heart, flat(player), color, 0.3, size, 0.08, 12);
 		Light.ray(level, feet, feet.add(0, 6 + stage * 2, 0), color, 0.55, 16);
 		Light.ray(level, feet, feet.add(0, 5 + stage * 2, 0), hot(color, 0.6), 0.07, 12);
-		Light.groundRing(level, feet, color, 0.5, size * 1.1, 0.2, 18);
+		AuraFx.groundScar(level, feet, Math.max(0.5, size * 1.1), Math.max(60, (18) * 3), 1);
 		Sigils.flash(level, heart, 0xFF000000 | hot(color, 0.3), 3.0F);
 		Motes.burst(level, heart, 28, hot(color, 0.2), 0.12, 34, 0.28);
 		ScreenFx.shake(level, feet, 0.25F, 16);
@@ -184,7 +189,7 @@ public final class AuraVfx {
 
 	/** A step leaving: a ring snapping out at the feet and a few motes flung back the way it came. */
 	static void stepStart(ServerLevel level, Vec3 feet, Vec3 dir, int color) {
-		Light.groundRing(level, feet, hot(color, 0.3), 0.2, 1.6, 0.08, 8);
+		AuraFx.groundScar(level, feet, Math.max(0.2, 1.6), Math.max(60, (8) * 3), 1);
 		Sigils.flash(level, feet.add(0, 1.0, 0), 0xFF000000 | hot(color, 0.25), 1.6F);
 		for (int i = 0; i < 6; i++) {
 			Motes.fling(level, feet.add(0, 0.3 + i * 0.25, 0), dir.scale(-1).add(0, 0.15, 0), 0.25, hot(color, 0.3), 0.08, 14, new Vec3(0, 0.01, 0));
@@ -204,14 +209,14 @@ public final class AuraVfx {
 
 	/** A step arriving: a short burst where it lands. */
 	static void stepEnd(ServerLevel level, Vec3 feet, Vec3 dir, int color) {
-		Light.groundRing(level, feet, color, 0.3, 1.3, 0.06, 7);
+		AuraFx.groundScar(level, feet, Math.max(0.3, 1.3), Math.max(60, (7) * 3), 1);
 		Motes.burst(level, feet.add(0, 0.9, 0), 6, hot(color, 0.3), 0.07, 12, 0.06);
 	}
 
 	/** A step with nowhere to go: the aura bumping the wall in front, and nothing more. */
 	static void stepBlocked(ServerPlayer player, int color, Vec3 dir) {
 		Vec3 at = player.position().add(0, 1.0, 0).add(dir.scale(0.6));
-		Light.ring(player.level(), at, dir, color, 0.1, 0.7, 0.04, 5);
+		pressureCut(player.level(), at, dir, color, 0.1, 0.7, 0.04, 5);
 	}
 
 	// ------------------------------------------------------------------ Form: aura armour and Intent
@@ -224,13 +229,13 @@ public final class AuraVfx {
 		Vec3 toward = from == null ? flat(player) : from.subtract(centre);
 		Vec3 dir = toward.lengthSqr() < 1.0E-4 ? flat(player) : toward.normalize();
 		Vec3 at = centre.add(dir.scale(0.55));
-		Light.ring(level, at, dir, hot(color, 0.35), 0.05, 0.75, 0.05, 6);
+		pressureCut(level, at, dir, hot(color, 0.35), 0.05, 0.75, 0.05, 6);
 		Motes.glows(level, at, 3, 0.15, hot(color, 0.4), 0.06, 10, dir.scale(0.02), 0.01);
 	}
 
 	/** Intent takes hold: a slow, low ring of the aura's colour spreading from the feet, faint, like heat over the ground. */
 	static void intent(ServerPlayer player, int color) {
-		Light.groundRing(player.level(), player.position(), AuraRules.mix(color, 0x000000, 0.35), 0.6, AuraRules.INTENT_RADIUS * 0.85, 0.05, 18);
+		AuraFx.groundScar(player.level(), player.position(), Math.max(0.6, AuraRules.INTENT_RADIUS * 0.85), Math.max(60, (18) * 3), 1);
 	}
 
 	/** A creature falters under Intent: a cold shiver of dark motes falling off it. */
@@ -242,54 +247,28 @@ public final class AuraVfx {
 	// ------------------------------------------------------------------ Sovereign: Dominion
 
 	/**
-	 * A Dominion raised: a great circle of the aura's colour laid on the ground for its whole length, a ring racing out to its
-	 * edge, a column of light at the heart, and motes thrown up round the rim.
+	 * A Dominion raised: fractured ground and a ragged impact depression for its territory.
 	 */
 	static void dominionRise(ServerLevel level, Vec3 centre, double radius, int color, int ticks) {
 		dominionRise(level, centre, radius, color, ticks, true);
 	}
 
 	/**
-	 * A Dominion rising: its circle ({@code circle}: the ordinary rune circle; an awakened one draws its method's own ground instead,
-	 * see {@code aura.arts.Awakenings.Ground}), its rim, rings racing out, a column of light and motes off the edge.
+	 * A Dominion rising: ordinary fractures, or the awakened method's physical ground motif, with scattered floor debris.
 	 */
 	static void dominionRise(ServerLevel level, Vec3 centre, double radius, int color, int ticks, boolean circle) {
-		Vec3 heart = centre.add(0, 1.1, 0);
-		if (circle) {
-			Sigils.ground(level, centre, color, hot(color, 0.15), (float) radius, ticks);
-		}
-		Sigils.layer(level, centre.add(0, 0.09, 0), UP, dev.wildercord.content.SigilOption.BAND, hot(color, 0.3), (float) (radius * 1.04), ticks, 0.01F);
-		Light.groundRing(level, centre, hot(color, 0.4), 0.3, radius * 1.15, 0.22, 14);
-		Light.groundRing(level, centre, color, 0.3, radius * 1.6, 0.1, 20);
-		Light.ray(level, centre, centre.add(0, 9, 0), color, 0.7, 18);
-		Light.ray(level, centre, centre.add(0, 8, 0), hot(color, 0.7), 0.1, 14);
-		Sigils.flash(level, heart, 0xFF000000 | hot(color, 0.35), 3.4F);
-		for (int i = 0; i < 16; i++) {
-			double a = Math.PI * 2 * i / 16;
-			Vec3 rim = centre.add(Math.cos(a) * radius, 0.1, Math.sin(a) * radius);
-			Motes.glow(level, rim, hot(color, 0.3), 0.1, 30, new Vec3(0, 0.06, 0), 0.01);
-		}
+		AuraFx.groundScar(level, centre, radius, ticks, circle ? 0 : 1);
+		AuraFx.groundScar(level, centre, radius * 1.15, 60, 1);
 	}
 
-	/** While a Dominion stands: its rim breathing light every second, and motes rising off the edge, faster as its end nears. */
+	/** While a Dominion stands, renew the fractured ground defining its territory. */
 	static void dominionPulse(ServerLevel level, Vec3 centre, double radius, int color, long age, long left) {
-		if (age % 20 == 10) {
-			Light.groundRing(level, centre, color, radius * 0.92, radius * 1.02, 0.12, 14);
-		}
-		if (age % 4 == 0) {
-			double a = level.getRandom().nextDouble() * Math.PI * 2;
-			Vec3 rim = centre.add(Math.cos(a) * radius, 0.1, Math.sin(a) * radius);
-			Motes.glow(level, rim, hot(color, 0.25), 0.09, 26, new Vec3(0, 0.05, 0), 0.01);
-		}
-		if (left > 0 && left <= 40 && left % 10 == 0) {
-			// The last two seconds: the circle flickers as it thins.
-			Light.groundRing(level, centre, hot(color, 0.5), radius * 0.3, radius, 0.05, 8);
-		}
+		if (age % 40 == 10) AuraFx.groundScar(level, centre, radius, 60, 0);
 	}
 
-	/** A Dominion ending: the circle breaking up into motes that drift away. */
+	/** A Dominion ending: a last ground scar and scattered fragments. */
 	static void dominionEnd(ServerLevel level, Vec3 centre, double radius, int color) {
-		Light.groundRing(level, centre, hot(color, 0.3), radius, radius * 1.4, 0.08, 10);
+		AuraFx.groundScar(level, centre, Math.max(radius, radius * 1.4), Math.max(60, (10) * 3), 1);
 		for (int i = 0; i < 12; i++) {
 			double a = Math.PI * 2 * i / 12;
 			Vec3 rim = centre.add(Math.cos(a) * radius, 0.2, Math.sin(a) * radius);
@@ -321,7 +300,7 @@ public final class AuraVfx {
 			Motes.seek(level, from, hand, i % 2 == 0 ? spell : hot(spell, 0.4), 0.08, 10, 0.6);
 		}
 		Sigils.flash(level, hand, 0xFF000000 | hot(spell, 0.3), 1.2F);
-		Light.ring(level, hand, player.getViewVector(1.0F), aura, 0.05, 0.6, 0.04, 6);
+		pressureCut(level, hand, player.getViewVector(1.0F), aura, 0.05, 0.6, 0.04, 6);
 	}
 
 	/** While a spell rides the blade: sparks of its colour running off the weapon. */
@@ -361,7 +340,7 @@ public final class AuraVfx {
 	/** An aura mark left on a foe: a small ring of the aura's colour closing on it (the mark's own halo follows). */
 	static void marked(ServerLevel level, net.minecraft.world.entity.LivingEntity target, int color) {
 		Vec3 at = target.getBoundingBox().getCenter();
-		Light.ring(level, at, UP, hot(color, 0.3), 0.9, 0.2, 0.05, 8);
+		pressureCut(level, at, UP, hot(color, 0.3), 0.9, 0.2, 0.05, 8);
 	}
 
 	// ------------------------------------------------------------------ sword strings: the placeholder arts
@@ -436,10 +415,10 @@ public final class AuraVfx {
 		Vec3 normal = UP.add(side.scale(0.9)).normalize();
 		Vec3 centre = at.subtract(look.scale(0.1));
 		if (day) {
-			Light.ring(level, at.subtract(look.scale(0.03)), look, AuraGuard.PERFECT_COLOR | Light.DARK, 0.15, 1.2, 0.12, 8);
+			pressureCut(level, at.subtract(look.scale(0.03)), look, AuraGuard.PERFECT_COLOR | Light.DARK, 0.15, 1.2, 0.12, 8);
 			Light.slash(level, centre.subtract(look.scale(0.03)), normal, look, color | Light.DARK, 1.25, 2.5, 0.5, 1, 7);
 		}
-		Light.ring(level, at, look, AuraGuard.PERFECT_COLOR, 0.15, 1.15, 0.09, 8);
+		pressureCut(level, at, look, AuraGuard.PERFECT_COLOR, 0.15, 1.15, 0.09, 8);
 		Light.slash(level, centre, normal, look, color, 1.2, 2.6, 0.44, 1, 7);
 		Light.slash(level, centre.add(look.scale(0.04)), normal, look, hot(color, 0.7), 1.16, 2.2, 0.14, 1, 6);
 		Sigils.flash(level, at, 0xFF000000 | AuraGuard.PERFECT_COLOR, 1.0F);
@@ -457,7 +436,7 @@ public final class AuraVfx {
 		Light.ray(level, from, to, color, 0.36, 8);
 		Light.ray(level, from, to, hot(color, 0.6), 0.09, 6);
 		Light.ray(level, from.subtract(0, 0.85, 0), to.subtract(0, 0.85, 0), color, 0.2, 10);
-		Light.ring(level, to, ahead, hot(color, 0.3), 0.2, 1.2, 0.07, 7);
+		pressureCut(level, to, ahead, hot(color, 0.3), 0.2, 1.2, 0.07, 7);
 		Motes.glows(level, to, 5, 0.4, hot(color, 0.3), 0.08, 14, ahead.scale(0.03), 0.01);
 	}
 
@@ -471,10 +450,10 @@ public final class AuraVfx {
 		Vec3 look = flat(player);
 		boolean day = brightBehind(level, feet.add(0, 1, 0));
 		if (day) {
-			Light.groundRing(level, feet.subtract(0, 0.01, 0), color | Light.DARK, 0.4, radius * 1.18, 0.42, 12);
+			AuraFx.groundScar(level, feet.subtract(0, 0.01, 0), Math.max(0.4, radius * 1.18), Math.max(60, (12) * 3), 1);
 		}
-		Light.groundRing(level, feet, color, 0.4, radius * 1.15, 0.34, 12);
-		Light.groundRing(level, feet, hot(color, 0.55), 0.3, radius, 0.1, 10);
+		AuraFx.groundScar(level, feet, Math.max(0.4, radius * 1.15), Math.max(60, (12) * 3), 1);
+		AuraFx.groundScar(level, feet, Math.max(0.3, radius), Math.max(60, (10) * 3), 1);
 		double base = Math.atan2(look.z, look.x);
 		for (int i = 0; i < 6; i++) {
 			double a = base + Math.PI * 2 * i / 6;

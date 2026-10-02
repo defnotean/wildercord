@@ -92,7 +92,7 @@ public final class HollowArts {
 	/** Struck by the void: shadowed for a life spell's Blight, and darkness folding in on it. */
 	static void shadow(ServerPlayer player, LivingEntity foe, double size) {
 		Reactions.mark(foe, Reactions.Mark.SHADOWED, 80);
-		ElementFx.voidImpact(player.level(), foe.getBoundingBox().getCenter(), size);
+		AuraPhysicalFx.voidImpact(player.level(), foe.getBoundingBox().getCenter(), size);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public final class HollowArts {
 				hole(world, low, 0.1 + 0.015 * tick, color, 4);
 			});
 		}
-		ElementFx.implode(level, low, 1.4, 8);
+		AuraPhysicalFx.implode(level, low, 1.4, 8);
 		Vec3 centre = feet.add(0, 1.0, 0).add(look.scale(1.2));
 		Vec3 normal = ArtKit.UP.add(ArtKit.bladeSide(player, look).scale(-0.35)).normalize();
 		show.slash(centre, normal, look, ABYSS, 2.0, 2.4, 0.5, 1, 9);
@@ -196,8 +196,8 @@ public final class HollowArts {
 		Vec3 core = well.add(0, 0.55, 0);
 		ArtLight world = ArtLight.world(player);
 		// A seal of darkness spinning fast on the ground round the well, a violet ring round it turning the other way.
-		world.bare().ground(well, SigilOption.CIRCLE, ABYSS, ArtRules.COLLAPSE_PULL * 0.75, ArtRules.COLLAPSE_TICKS + 8, 0.25);
-		world.ground(well, SigilOption.RING, color, ArtRules.COLLAPSE_PULL, ArtRules.COLLAPSE_TICKS + 8, -0.18);
+		world.bare().ground(well, SigilOption.BAND, ABYSS, ArtRules.COLLAPSE_PULL * 0.75, ArtRules.COLLAPSE_TICKS + 8, 0.25);
+		world.ground(well, SigilOption.BAND, color, ArtRules.COLLAPSE_PULL, ArtRules.COLLAPSE_TICKS + 8, -0.18);
 		ArtFields.open(player, WELL, ArtFields.disc(() -> well, ArtRules.COLLAPSE_PULL, 2.5), ArtRules.COLLAPSE_TICKS, 1, (field, owner, age) -> {
 			ServerLevel lv = field.level();
 			ArtLight w = ArtLight.world(owner);
@@ -410,8 +410,8 @@ public final class HollowArts {
 		// small black core and a seal of darkness on the ground.
 		Vec3 low = base.add(0, 0.45, 0);
 		ArtLight world = ArtLight.world(player);
-		world.bare().ground(base, SigilOption.CIRCLE, ABYSS, ArtRules.HORIZON_PULL * 0.7, ArtRules.HORIZON_TICKS + 10, 0.2);
-		world.ground(base, SigilOption.RING, color, ArtRules.HORIZON_PULL, ArtRules.HORIZON_TICKS + 10, -0.12);
+		world.bare().ground(base, SigilOption.BAND, ABYSS, ArtRules.HORIZON_PULL * 0.7, ArtRules.HORIZON_TICKS + 10, 0.2);
+		world.ground(base, SigilOption.BAND, color, ArtRules.HORIZON_PULL, ArtRules.HORIZON_TICKS + 10, -0.12);
 		RandomSource r = level.getRandom();
 		ArtFields.open(player, HORIZON, ArtFields.disc(() -> base, ArtRules.HORIZON_PULL, 3.5), ArtRules.HORIZON_TICKS, 1, (field, owner, age) -> {
 			ServerLevel lv = field.level();

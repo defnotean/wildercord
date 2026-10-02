@@ -7,7 +7,6 @@ import dev.wildercord.cast.Grimoire;
 import dev.wildercord.cast.Motes;
 import dev.wildercord.cast.Scheduler;
 import dev.wildercord.cast.feel.Feels;
-import dev.wildercord.content.SigilOption;
 import io.netty.buffer.ByteBuf;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
@@ -40,14 +39,14 @@ import java.util.UUID;
 /**
  * The crossroads: where a swordsman chooses their Way (the rules are {@link WayRules}). As the Edge breakthrough settles (or when a
  * swordsman past it with no Way holds the breathing stance a few seconds, or burns a Crossroads Incense at a place of power), a
- * standard of light rises for each Way on an arc in front of them: the Blade a sword planted point-down, the Bulwark a shield on its
- * pole, the Shadowstep a pillar of shadow trailing afterimages under a crescent, the Banner a pennant on its pole. The swordsman
+ * crested cloth standard rises for each Way on an arc in front of them: a sword on red, a shield on blue, a crescent on violet
+ * and a rallying crest on gold, each stitched onto rippling fabric on a bronze pole. The swordsman
  * strikes the one they mean to walk: the first strike leans toward it (it flares, the others dim, and what it gives is shown), a
  * second strike on it within a few seconds walks it. The chosen standard pours into them; the others shatter.
  *
  * <p>Everything is the server's: where the standards stand is decided here and kept on the swordsman ({@link #CROSSROADS}, told to
  * their client alone, which only names the standard under the crosshair), each strike is a swing the server saw ({@link #swung},
- * from the punch every swing sends), tested against the standards along the swordsman's look. The light is sent to everyone near:
+ * from the punch every swing sends), tested against the standards along the swordsman's look. The visual cues are sent to everyone near:
  * others see a crossroads rise round them too.</p>
  */
 public final class Crossroads {
@@ -416,9 +415,9 @@ public final class Crossroads {
 		}
 	}
 
-	// ------------------------------------------------------------------ the standards' light
+	// ------------------------------------------------------------------ the standards' cloth
 
-	/** How often the standards are drawn again (ticks), and how long each drawing lasts (overlapping, so they burn steadily). */
+	/** Refresh the existing cloth standards every four ticks; allow missed refreshes before fading them out. */
 	private static final int PERIOD = 4;
 	private static final int LIFE = 9;
 
@@ -445,122 +444,31 @@ public final class Crossroads {
 			}
 			long age = now - s.opened();
 			if (age % PERIOD == 0) {
-				draw(player, s, age, now);
+				draw(player, s, now);
 			}
 		}
 	}
 
 	/** Draws every standard of {@code s}, rising for its first moments, the leaned one brighter and the rest dimmer. */
-	private static void draw(ServerPlayer player, State s, long age, long now) {
+	private static void draw(ServerPlayer player, State s, long now) {
 		String leaning = s.leaningAt(now);
-		float rise = (float) Math.min(1.0, (age + 2) / 12.0);
 		long left = s.until() - now;
 		for (Standard standard : s.standards()) {
 			float emphasis = leaning.isEmpty() ? 1.0F : standard.way().equals(leaning) ? 1.6F : 0.45F;
 			if (left < 60) {
-				// Its last three seconds: the light thins as it fades.
+				// Its last three seconds: the cloth loses its colour before fading.
 				emphasis *= (float) Math.max(0.3, left / 60.0);
 			}
-			look(player, s, standard, rise, emphasis, age);
+			look(player, s, standard, emphasis);
 		}
 	}
 
-	/** One standard's light: each built-in Way's shape, an add-on's a plain pillar in its colour. */
-	private static void look(ServerPlayer player, State s, Standard standard, float rise, float emphasis, long age) {
-		int base = color(standard.way());
-		int color = emphasis < 1 ? AuraRules.mix(base, 0x2A2438, 0.5) : emphasis > 1 ? AuraVfx.hot(base, 0.25) : base;
-		int core = AuraVfx.hot(color, 0.55);
-		ArtLight light = ArtLight.world(player);
-		Vec3 foot = standard.foot();
-		Vec3 up = new Vec3(0, 1, 0);
-		// Square to the way from the crossroads' heart to the standard: the standard's own left-right, as its swordsman sees it.
-		Vec3 out = foot.subtract(s.centre());
+	/** The standard is a cloth mesh on a bronze pole, with the Way's own stitched crest. */
+	private static void look(ServerPlayer player, State s, Standard standard, float emphasis) {
+		Vec3 out = standard.foot().subtract(s.centre());
 		out = new Vec3(out.x, 0, out.z);
-		out = out.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, 1) : out.normalize();
-		Vec3 side = new Vec3(-out.z, 0, out.x);
-		double h = WayRules.STANDARD_HEIGHT * rise;
-		double w = emphasis > 1 ? 1.45 : 1.0;
-		light.ground(foot, SigilOption.RING, color, 0.5 * (emphasis > 1 ? 1.25 : 1.0), LIFE + 2, 0.04);
-		switch (standard.way()) {
-			case WayRules.BLADE -> {
-				// A sword of light planted point-down: the blade, the guard across it, the grip and a bright pommel.
-				double guard = 1.72 * rise;
-				light.ray(foot.add(0, 0.02, 0), foot.add(0, guard, 0), core, 0.065 * w, LIFE);
-				if (rise >= 1) {
-					light.ray(at(foot, side, -0.42, guard), at(foot, side, 0.42, guard), color, 0.06 * w, LIFE)
-						.ray(foot.add(0, guard, 0), foot.add(0, guard + 0.42, 0), AuraRules.mix(color, 0x3A2420, 0.35), 0.045 * w, LIFE)
-						.flash(foot.add(0, guard + 0.5, 0), core, (float) (0.4 * w));
-				}
-			}
-			case WayRules.BULWARK -> {
-				// A kite shield of light on its pole: its rim, a cross on its face.
-				light.ray(foot, foot.add(0, h, 0), AuraRules.mix(color, 0x203040, 0.3), 0.035 * w, LIFE);
-				if (rise >= 1) {
-					Vec3 tl = at(foot, side, -0.42, 1.95);
-					Vec3 tr = at(foot, side, 0.42, 1.95);
-					Vec3 ml = at(foot, side, -0.42, 1.42);
-					Vec3 mr = at(foot, side, 0.42, 1.42);
-					Vec3 tip = at(foot, side, 0, 0.82);
-					double rim = 0.055 * w;
-					light.ray(tl, tr, core, rim, LIFE).ray(tl, ml, core, rim, LIFE).ray(tr, mr, core, rim, LIFE).ray(ml, tip, core, rim, LIFE)
-						.ray(mr, tip, core, rim, LIFE).ray(at(foot, side, 0, 1.88), at(foot, side, 0, 0.98), color, 0.04 * w, LIFE)
-						.ray(at(foot, side, -0.36, 1.6), at(foot, side, 0.36, 1.6), color, 0.04 * w, LIFE);
-				}
-			}
-			case WayRules.SHADOWSTEP -> {
-				// A pillar of shadow with a thin bright heart, afterimages trailing off it, a crescent over it.
-				light.bare().ray(foot, foot.add(0, h * 0.92, 0), color | ArtLight.DARK, 0.12 * w, LIFE);
-				light.ray(foot, foot.add(0, h * 0.92, 0), core, 0.022 * w, LIFE);
-				if (rise >= 1) {
-					for (int i = 1; i <= 3; i++) {
-						double off = -0.26 * i;
-						int ghost = AuraRules.mix(color, 0x1A1424, 0.2 + 0.2 * i);
-						light.ray(at(foot, side, off, 0.15), at(foot, side, off, 1.85 - 0.18 * i), ghost, 0.035 * w, LIFE);
-					}
-					Vec3 moon = foot.add(0, 2.25, 0);
-					light.slash(moon, out.scale(-1), side.scale(-0.6).add(up.scale(0.8)), core, 0.36, 2.4, 0.07 * w, 0, LIFE);
-				}
-			}
-			case WayRules.BANNER -> {
-				// A pennant of light on its pole, stirring as if in a wind, flying in toward the middle of the arc (an outer standard's
-				// would fly out of a first-person view).
-				double pole = 2.75 * rise;
-				Vec3 toMiddle = s.standards().get(s.standards().size() / 2).foot().subtract(foot);
-				if (toMiddle.x * side.x + toMiddle.z * side.z < 0) {
-					side = side.scale(-1);
-				}
-				light.ray(foot, foot.add(0, pole, 0), AuraRules.mix(color, 0x403018, 0.25), 0.04 * w, LIFE);
-				if (rise >= 1) {
-					double stir = Math.sin(age * 0.35) * 0.07;
-					Vec3 top = foot.add(0, 2.68, 0);
-					Vec3 bottom = foot.add(0, 2.06, 0);
-					Vec3 tip1 = at(foot, side, 0.92, 2.6).add(out.scale(stir));
-					Vec3 notch = at(foot, side, 0.64, 2.36).add(out.scale(stir * 0.6));
-					Vec3 tip2 = at(foot, side, 0.92, 2.13).add(out.scale(stir));
-					double edge = 0.045 * w;
-					light.ray(top, tip1, core, edge, LIFE).ray(tip1, notch, core, edge, LIFE).ray(notch, tip2, core, edge, LIFE).ray(tip2, bottom, core, edge, LIFE);
-					for (int i = 0; i < 3; i++) {
-						double y = 2.55 - 0.17 * i;
-						light.ray(foot.add(0, y, 0), at(foot, side, 0.66 - 0.08 * Math.abs(i - 1), y + 0.01).add(out.scale(stir * 0.7)), color, 0.07 * w, LIFE);
-					}
-					light.flash(foot.add(0, 2.86, 0), core, (float) (0.35 * w));
-				}
-			}
-			default -> {
-				light.ray(foot, foot.add(0, h, 0), core, 0.06 * w, LIFE);
-				if (rise >= 1) {
-					light.flash(foot.add(0, h + 0.1, 0), core, (float) (0.5 * w));
-				}
-			}
-		}
-		if (emphasis > 1 && age % (PERIOD * 4) == 0) {
-			// Leaned toward: rings rising round it now and then.
-			light.groundRing(foot, base, 0.25, 1.1, 0.05, 12);
-		}
-	}
-
-	private static Vec3 at(Vec3 foot, Vec3 side, double across, double up) {
-		return foot.add(side.scale(across)).add(0, up, 0);
+		out = out.lengthSqr() < 1.0E-4 ? new Vec3(0, 0, -1) : out.normalize().scale(-1);
+		AuraFx.standard(player, standard.foot(), out, standard.way(), color(standard.way()), emphasis, 1.0F, LIFE);
 	}
 
 	/** A Way's colour, by id (an add-on's own, or a pale gold for one unknown). */

@@ -290,7 +290,7 @@ LANG = {
     "aura.wildercord.crossroads": "The Crossroads",
     "aura.wildercord.crossroads.kicker": "Choose your Way",
     # ---- the crossroads
-    "message.wildercord.aura.way.crossroads": "Your path forks. A standard of light rises for each Way: strike the one you would walk.",
+    "message.wildercord.aura.way.crossroads": "Your path forks. A crested standard rises for each Way: strike the one you would walk.",
     "message.wildercord.aura.way.crossroads_how": "One strike leans toward a Way; strike it again to walk it. The Aura page's Way tab shows what each gives.",
     "message.wildercord.aura.way.waiting": "Your blade has come to its crossroads, but you walk no Way yet.",
     "message.wildercord.aura.way.waiting_how": "Hold the breathing stance a few seconds and the crossroads will rise round you.",
