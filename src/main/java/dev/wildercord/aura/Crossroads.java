@@ -126,8 +126,9 @@ public final class Crossroads {
 	}
 
 	/**
-	 * The standard {@code player}'s look meets now (within reach, nearest first), or null. Both sides: the server for a strike, the
-	 * swordsman's client to name the one under the crosshair. Blocks in the way aren't checked here (see {@link #seen}).
+	 * The standard {@code player}'s look meets now (within reach; of two, the one nearer the line of the look), or null. Both sides: the
+	 * server for a strike, the swordsman's client to name the one under the crosshair. Blocks in the way aren't checked here (see
+	 * {@link #seen}).
 	 */
 	public static Standard aimed(Player player, State s) {
 		Vec3 eye = player.getEyePosition();
@@ -137,9 +138,9 @@ public final class Crossroads {
 		Standard best = null;
 		double nearest = Double.MAX_VALUE;
 		for (Standard standard : s.standards()) {
-			double t = WayRules.strike(e, l, new double[] {standard.foot().x, standard.foot().y, standard.foot().z});
-			if (t >= 0 && t < nearest) {
-				nearest = t;
+			double[] hit = WayRules.strike(e, l, new double[] {standard.foot().x, standard.foot().y, standard.foot().z});
+			if (hit != null && hit[1] < nearest) {
+				nearest = hit[1];
 				best = standard;
 			}
 		}
@@ -548,13 +549,8 @@ public final class Crossroads {
 
 	/** Each built-in Way's own voice as it's chosen (over {@code aura_way_chosen}); an add-on's Way rings plain steel. */
 	public static String voice(String wayId) {
-		return WayRules.BUILT_IN.contains(wayId) ? "aura_way_" + wayId : "aura_awaken_steel";
+		return WayRules.voice(wayId);
 	}
-
-	/** Every kit sound the crossroads and the Ways play, for the tests. */
-	public static final List<String> SOUNDS = List.of("aura_crossroads", "aura_way_lean", "aura_way_chosen", "aura_way_blade", "aura_way_bulwark",
-		"aura_way_shadowstep", "aura_way_banner", "aura_way_unbound", "aura_way_slip", "aura_way_afterimage", "aura_way_cascade", "aura_way_reflect",
-		"aura_way_cry", "aura_way_bastion");
 
 	// ------------------------------------------------------------------ lifecycle
 

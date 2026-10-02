@@ -375,6 +375,9 @@
     "aura_crimson_swing": {
       "part": "aura"
     },
+    "aura_crossroads": {
+      "part": "aura"
+    },
     "aura_dominion": {
       "part": "aura"
     },
@@ -544,6 +547,45 @@
       "part": "aura"
     },
     "aura_verdant_swing": {
+      "part": "aura"
+    },
+    "aura_way_afterimage": {
+      "part": "aura"
+    },
+    "aura_way_banner": {
+      "part": "aura"
+    },
+    "aura_way_bastion": {
+      "part": "aura"
+    },
+    "aura_way_blade": {
+      "part": "aura"
+    },
+    "aura_way_bulwark": {
+      "part": "aura"
+    },
+    "aura_way_cascade": {
+      "part": "aura"
+    },
+    "aura_way_chosen": {
+      "part": "aura"
+    },
+    "aura_way_cry": {
+      "part": "aura"
+    },
+    "aura_way_lean": {
+      "part": "aura"
+    },
+    "aura_way_reflect": {
+      "part": "aura"
+    },
+    "aura_way_shadowstep": {
+      "part": "aura"
+    },
+    "aura_way_slip": {
+      "part": "aura"
+    },
+    "aura_way_unbound": {
       "part": "aura"
     },
     "beat_release": {

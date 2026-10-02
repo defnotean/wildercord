@@ -107,6 +107,8 @@ public final class AuraFxClient {
 		AuraBanners.init();
 		StanceHud.init();
 		AwakeningHud.init();
+		// The crossroads' words (a standard's name and what a strike does) for the swordsman choosing their Way.
+		WayHud.init();
 	}
 
 	private static void reset() {

@@ -163,11 +163,14 @@ public class AuraShellLayer extends RenderLayer<AvatarRenderState, PlayerModel> 
 		if (!images.isEmpty()) {
 			List<Image> out = new ArrayList<>(images.size());
 			for (AuraClient.Afterimage image : images) {
-				float age = (time - image.born()) / AuraClient.AFTERIMAGE_TICKS;
+				float age = (time - image.born()) / Math.max(1, image.life());
 				if (age < 0 || age >= 1) {
 					continue;
 				}
-				float alpha = 0.9F * (float) Math.pow(1 - age, 1.4);
+				// A lingering afterimage (one that strikes, the Way of the Shadowstep's) holds its light, then fades as an ordinary one does.
+				float tail = (float) AuraClient.AFTERIMAGE_TICKS / Math.max(1, image.life());
+				float fade = image.life() > AuraClient.AFTERIMAGE_TICKS ? Math.min(1.0F, (1 - age) / tail) : 1 - age;
+				float alpha = (image.life() > AuraClient.AFTERIMAGE_TICKS ? 0.75F : 0.9F) * (float) Math.pow(Math.max(0, fade), 1.4);
 				int rgb = mix(image.color(), 0xFFFFFF, 0.1F);
 				out.add(new Image(image.at().x - state.x, image.at().y - state.y, image.at().z - state.z, image.yaw(),
 					(Mth.clamp(Math.round(alpha * 255), 0, 255) << 24) | rgb));

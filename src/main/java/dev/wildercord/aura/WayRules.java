@@ -189,12 +189,13 @@ public final class WayRules {
 	}
 
 	/**
-	 * Where a strike along a look ray meets a standard: the ray from {@code eye} along unit {@code look}, the standard's axis rising
-	 * {@link #STANDARD_HEIGHT} from {@code foot} (each as x, y, z). Returns how far along the ray the closest approach is (blocks), or a
-	 * negative number when the ray passes it by: further than {@link #STRIKE_RADIUS} from the axis, outside the axis' height, behind the
-	 * eyes or out of {@link #REACH}.
+	 * How a strike along a look ray meets a standard: the ray from {@code eye} along unit {@code look}, the standard's axis rising
+	 * {@link #STANDARD_HEIGHT} from {@code foot} (each as x, y, z). Returns how far along the ray the closest approach is and how far
+	 * from the axis it passes (blocks), or null when it passes the standard by: further than {@link #STRIKE_RADIUS} from the axis,
+	 * outside the axis' height, behind the eyes or out of {@link #REACH}. Of two standards a strike could meet, the one nearer its line
+	 * is struck.
 	 */
-	public static double strike(double[] eye, double[] look, double[] foot) {
+	public static double[] strike(double[] eye, double[] look, double[] foot) {
 		// The closest approach between the ray and the vertical segment, solved in the horizontal plane first (a vertical axis).
 		double lx = look[0];
 		double lz = look[2];
@@ -204,23 +205,23 @@ public final class WayRules {
 		double t;
 		if (flat < 1.0E-8) {
 			// Looking straight up or down: only a standard right under or over the eyes, which never happens at the crossroads.
-			return -1;
+			return null;
 		}
 		t = (dx * lx + dz * lz) / flat;
 		if (t <= 0 || t > REACH) {
-			return -1;
+			return null;
 		}
 		double px = eye[0] + lx * t;
 		double pz = eye[2] + lz * t;
 		double miss = Math.hypot(px - foot[0], pz - foot[2]);
 		if (miss > STRIKE_RADIUS) {
-			return -1;
+			return null;
 		}
 		double y = eye[1] + look[1] * t;
 		if (y < foot[1] - 0.2 || y > foot[1] + STANDARD_HEIGHT + 0.3) {
-			return -1;
+			return null;
 		}
-		return t;
+		return new double[] {t, miss};
 	}
 
 	// ------------------------------------------------------------------ the Blade
@@ -341,7 +342,7 @@ public final class WayRules {
 	/** The share of the aura a Banner gathers that each allied swordsman near gathers too (the server's {@code banner_aura_share}). */
 	public static final double BANNER_AURA = 0.25;
 	/** A finisher's rallying cry (Battle Cry): steadied this much, this long (ticks); allied swordsmen build this much momentum and get this share of its aura. */
-	public static final double CRY_STEADY = 0.15;
+	public static final double CRY_STEADY = 1.0 / 6.0;
 	public static final int CRY_TICKS = 100;
 	public static final double CRY_MOMENTUM = 6.0;
 	public static final double CRY_AURA = 0.5;
@@ -386,6 +387,18 @@ public final class WayRules {
 	public static double share(double built, double share) {
 		return Math.max(0, built) * Math.max(0, Math.min(1, share));
 	}
+
+	// ------------------------------------------------------------------ the voices
+
+	/** Each built-in Way's own voice as it's chosen (over {@code aura_way_chosen}); an add-on's Way rings plain steel. */
+	public static String voice(String wayId) {
+		return BUILT_IN.contains(wayId) ? "aura_way_" + wayId : "aura_awaken_steel";
+	}
+
+	/** Every kit sound the crossroads and the Ways play (tools/feel/aura_ways.py), for the tests. */
+	public static final List<String> SOUNDS = List.of("aura_crossroads", "aura_way_lean", "aura_way_chosen", "aura_way_blade", "aura_way_bulwark",
+		"aura_way_shadowstep", "aura_way_banner", "aura_way_unbound", "aura_way_slip", "aura_way_afterimage", "aura_way_cascade", "aura_way_reflect",
+		"aura_way_cry", "aura_way_bastion");
 
 	// ------------------------------------------------------------------ the balance model
 

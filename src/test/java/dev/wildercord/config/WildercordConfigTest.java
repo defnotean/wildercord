@@ -853,12 +853,12 @@ class WildercordConfigTest {
 		// The low bits are the switches; the awakening's momentum rides higher up (see awakeningTravelsToTheClient).
 		int switches = 0xFF;
 		Config.Sync on = Config.Sync.of(D);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING, on.combat() & switches);
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS, on.combat() & switches);
 		assertEquals(Config.Sync.DEFAULT.combat(), on.combat(), "the default before the server speaks is the same");
 		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"momentum\": false}}").config();
-		assertEquals(Config.Sync.STANCE | Config.Sync.AWAKENING, Config.Sync.of(off).combat() & switches);
+		assertEquals(Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS, Config.Sync.of(off).combat() & switches);
 		WildercordConfig neither = WildercordConfig.parse("{\"aura\": {\"momentum\": false, \"stance\": false}}").config();
-		assertEquals(Config.Sync.AWAKENING, Config.Sync.of(neither).combat() & switches);
+		assertEquals(Config.Sync.AWAKENING | Config.Sync.WAYS, Config.Sync.of(neither).combat() & switches);
 	}
 
 	@Test
@@ -947,8 +947,89 @@ class WildercordConfigTest {
 		for (int needed : new int[] {0, 1, 37, 80, 100}) {
 			WildercordConfig set = WildercordConfig.parse("{\"aura\": {\"awakening_momentum\": " + needed + "}}").config();
 			assertEquals(needed, Config.Sync.of(set).awakeningMomentum(), "momentum " + needed);
-			assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING, Config.Sync.of(set).combat() & 0xFF);
+			assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS, Config.Sync.of(set).combat() & 0xFF);
 		}
+	}
+
+	@Test
+	void waysSettingsAreTheRulesNumbers() {
+		WildercordConfig.AuraWays w = D.aura().ways();
+		assertEquals(WildercordConfig.AuraWays.DEFAULTS, w);
+		assertTrue(w.ways());
+		assertTrue(w.changeAtPower(), "changing Way asks a place of power by default");
+		assertEquals(dev.wildercord.aura.WayRules.SETTLE_XP, w.settleXp(), 1e-9);
+		assertEquals(dev.wildercord.aura.WayRules.BANNER_RANGE, w.bannerRange(), 1e-9);
+		assertEquals(dev.wildercord.aura.WayRules.BANNER_MOMENTUM, w.bannerShare(), 1e-9);
+		assertEquals(dev.wildercord.aura.WayRules.BANNER_AURA, w.bannerAuraShare(), 1e-9);
+		for (String key : List.of("ways", "way_settle_xp", "way_change_at_power", "banner_range", "banner_share", "banner_aura_share")) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+	}
+
+	@Test
+	void waysSettingsAreReadAndHeldInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"ways\": false, \"way_settle_xp\": -10, \"way_change_at_power\": false, "
+			+ "\"banner_range\": 900, \"banner_share\": 4, \"banner_aura_share\": -1}}");
+		WildercordConfig.AuraWays read = parsed.config().aura().ways();
+		assertFalse(read.ways());
+		assertFalse(read.changeAtPower());
+		assertEquals(0.0, read.settleXp(), 1e-9, "never owing less than nothing");
+		assertEquals(48.0, read.bannerRange(), 1e-9, "at most three chunks");
+		assertEquals(1.0, read.bannerShare(), 1e-9, "never more than all of it");
+		assertEquals(0.0, read.bannerAuraShare(), 1e-9, "never less than none");
+		assertEquals(4, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config(), "the written file keeps them");
+		WildercordConfig.AuraWays fine = WildercordConfig.parse("{\"aura\": {\"way_settle_xp\": 600, \"banner_range\": 20, \"banner_share\": 0.5}}")
+			.config().aura().ways();
+		assertEquals(600.0, fine.settleXp(), 1e-9);
+		assertEquals(20.0, fine.bannerRange(), 1e-9);
+		assertEquals(0.5, fine.bannerShare(), 1e-9);
+		assertTrue(fine.ways() && fine.changeAtPower(), "what isn't given stays at its default");
+		// The constructor from before Ways (and a missing part) take their defaults.
+		WildercordConfig.AuraSettings before = new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			WildercordConfig.AuraHeights.DEFAULTS, WildercordConfig.AuraStrings.DEFAULTS, WildercordConfig.AuraMomentum.DEFAULTS,
+			WildercordConfig.AuraAwakening.DEFAULTS);
+		assertEquals(WildercordConfig.AuraWays.DEFAULTS, before.ways());
+		assertEquals(WildercordConfig.AuraWays.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			null, null, null, null, null).ways());
+	}
+
+	@Test
+	void aFileFromBeforeWaysGainsTheirKeys() {
+		List<String> keys = List.of("ways", "way_settle_xp", "way_change_at_power", "banner_range", "banner_share", "banner_aura_share");
+		String old = D.toJson();
+		for (String key : keys) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		for (String key : keys) {
+			assertFalse(old.contains("\"" + key + "\""), key + " gone: " + old);
+		}
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura(), "the Ways' settings read as their defaults");
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : keys) {
+			assertTrue(grown.contains("\"" + key + "\""), key + " added: " + grown);
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		String theirs = old.replace("\"awakening_duration\": 1.0", "\"awakening_duration\": 2.0");
+		WildercordConfig.AuraSettings kept = WildercordConfig.parse(WildercordConfig.addMissing(theirs).orElseThrow()).config().aura();
+		assertEquals(2.0, kept.awakening().awakeningDuration(), 1e-9, "the owner's awakening settings are kept");
+		assertEquals(WildercordConfig.AuraWays.DEFAULTS, kept.ways());
+	}
+
+	@Test
+	void waysTravelToTheClient() {
+		assertTrue((Config.Sync.of(D).combat() & Config.Sync.WAYS) != 0);
+		assertTrue((Config.Sync.DEFAULT.combat() & Config.Sync.WAYS) != 0, "on until the server says otherwise");
+		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"ways\": false}}").config();
+		assertEquals(0, Config.Sync.of(off).combat() & Config.Sync.WAYS);
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING, Config.Sync.of(off).combat() & 0xFF,
+			"the other switches stay as they were");
+		assertEquals(Config.Sync.of(D).awakeningMomentum(), Config.Sync.of(off).awakeningMomentum(), "the momentum an awakening asks for is untouched");
+		// Its bit is one of the free low ones, clear of the awakening's momentum (bits 8 to 15).
+		assertTrue(Config.Sync.WAYS < 1 << 8);
+		assertEquals(0, Config.Sync.WAYS & (Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING));
 	}
 
 	@Test
