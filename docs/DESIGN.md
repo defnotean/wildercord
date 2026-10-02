@@ -1878,6 +1878,140 @@ The name is inked as it's typed. Everything the server would refuse is said on t
 (0 to 10). The client learns whether techniques are on (`Config.Sync.combat` bit 16, `Config.techniques`). Operators:
 `/wildercord aura technique learn|forget <part|all>`, `xp <slot> <amount>`, `clear`.
 
+### The bonded blade
+**From Edge a swordsman bonds one blade, and it grows with them.** The bond is a ceremony at a place of power; the blade then gathers
+**resonance** from every real fight it's used in, rises through four **tiers** (Bonded, Named, Awakened, Soulforged), takes a **name**,
+then a **trait** drawn from how it was used, glows in its swordsman's colour (more by tier, in hand and lying on the ground), keeps its
+**story**, is kept through death, never breaks, and is only ever its swordsman's. The rules and every number are `aura.BladeRules` (pure,
+unit-tested by `BladeRulesTest`); the bond rides on the blade itself (`aura.BladeBond`, the `wildercord:bonded_blade` component); the
+world remembers which bonds are live (`aura.BladeRegistry`); the runtime is `aura.BondedBlades`, the ceremonies `aura.BladeCeremony`,
+the traits where they act `aura.BladeTraits`; the look is `client.fx.BondGlow`, the tooltip `client.BladeTooltip`, the page
+`client.BladePage` (the Aura page's fifth tab).
+
+**Which blades.** Anything in `wildercord:bondable_blades` that wears and stands alone in its slot: `#minecraft:swords`, `#minecraft:axes`,
+`#minecraft:spears` and the mace, so aura-forged gear (all swords, axes and spears) bonds too. Not the trident: it's thrown and left
+lying, and a blade that leaves the hand by design would make "only ever yours" a fight with the rules every throw. Not bows or tools:
+a bonded blade is the one the swordsman fights with.
+
+**The ceremony** (`BladeCeremony`, `BladeRules.BOND_TICKS` 200). Hold the breathing stance at a **ley crossing** (`PowerPlaces`, where
+two lines meet; anywhere with `bond_at_power` off) with an unbonded blade in the main hand, from Edge, with no blade bonded: after the
+stance settles (`SETTLE_BEFORE` 10 ticks) it begins instead of the crossroads (`Crossroads.breathing` waits while it runs). Three parts:
+**kindling** (60 ticks: motes of the aura rise out of the ground along both ley lines into the blade, which kindles from the hilt up),
+**joining** (to 140: the two lines (`LeyLines.directions`) light across the ground and run in to the swordsman, a ring turning under
+them), **sealing** (to 200: a ring closing in, the blade blazing) and the **seal** (a column of light, a ring racing out, the banner
+"Bonded", `aura_bond_seal`, and what it means in chat). The big shapes are spectacle; in first person the lines start a little way out
+and the HUD counts it down. Moving, leaving the stance, or the blade leaving the hand breaks it (`aura_bond_fail`). The first bond goes
+into the Grimoire (`aura:bond`). Why a ceremony and not a click: the blade is the one thing a swordsman keeps for good; bonding it should
+be a place and a moment, and the crossing is already where the stance means something (the Ways' crossroads).
+
+**Tiers** (`THRESHOLD`, `GATE`): Bonded 0, **Named 300**, **Awakened 1200**, **Soulforged 3600** resonance, each also waiting on its
+swordsman's stage (Named Edge, Awakened Form, Soulforged Sovereign) and Soulforged on a boss felled by the blade (`SOULFORGED_BOSSES`).
+Resonance keeps gathering while a tier waits, so it arrives the moment its swordsman is ready (the page says which it waits on). Each
+tier is a moment (`BladeCeremony.tierMoment`: a burst, the body's aura flaring, `aura_bond_tier`, a banner, Soulforged a column) and a
+Grimoire entry (`aura:blade_named` and on). What each gives: Named and up draw a little more aura from coated blows (×1.1, Soulforged
+×1.2: "it knows the hand", `hitGain`), Awakened its trait, Soulforged the trait half again as strong (`SOULFORGED_TRAIT` 1.5 through
+`scaled`) and a free change of trait. The pace (`BladeRulesTest`'s model of an hour of steady fighting: 180 to 320 resonance): Named in
+the first evening (0.8 to 2.5 hours), Awakened over a week of play (3 to 8), Soulforged a long road's end (10 to 22, with its
+breakthroughs and bosses).
+
+**Resonance** (`BondedBlades.gain`, only with the blade in the main hand, only on worthy foes, scaled by `resonance_gain`): a kill
+`KILL` 1 × the foe's worth (`AuraCombat.worth`) × its freshness (`AuraCombat`'s repetition), a boss +30; an art landing (First 0.6,
+Second and Third 0.8, Fourth 1, Final 3 on its first foe, 0.2 each for up to three more); a finisher 2 (a boss's 5); a stance broken
+0.4; a perfect guard 0.5; an awakening begun 4; a duelist beaten 15; a technique reaching Peerless 25; a breakthrough into Form 120,
+Sovereign 240. Everything a foe gives besides its kill is capped per foe (`foeCap`: 4 + 2 × worth, a boss 40), so pounding one patient
+foe never grows a blade; a training dummy or the practice room gives nothing; another player's fall counts once a day each
+(`PLAYER_KILL_REST`). It's gathered in a buffer and written onto the blade once a second (`flush`), never every hit.
+
+**Its history** (`BladeBond.History`): counts (kills, bosses, strong foes, players, undead, by night, at low health, beside an ally, arts,
+finishers, techniques, guards, steps, slashes, stances broken, awakenings, duels), the twelve arts it played most by name (`MAX_ARTS`),
+and its last ten notable deeds (`MAX_DEEDS`: a boss, a breakthrough, a tier, a duel, a Peerless technique, a Way chosen, a passing, a
+name), with where and when it was bonded (`Origin`) and whose it has been (`lineage`, eight at most). The tooltip and the page tell it.
+
+**Names.** At Named it suggests one of its own (`BladeRules.suggest`), built from its story: a first word from the element of its
+swordsman's method (Ember's Cinder, Ash, Pyre...), now and then from their Way, where it was bonded (the biome: Dune, Meadow, the Pines),
+what it fells most (Grave, Giant, Moon) or its favourite art's own word (Kindling, Sunfall); then an ending (Cinderwake, Rimesong), a
+second word (Ashen Vow, Meteor Oath) or "Oath of the Dunes". Every word is the mod's own; the same blade and the same ask give the same
+name; Suggest on the page asks again. Or its swordsman writes one: cleaned exactly as a technique's name (`TechniqueRules.cleanName`, 24
+characters, no formatting, controls or invisible marks) and shown everywhere as a literal (`getHoverName` through `ItemStackBondMixin`;
+an anvil can't rename it: `BondedBladeSmithingMixin` puts the old name back), so a name can't carry formatting or a click to anyone.
+
+**Traits** (`BladeRules.traits()`, `BladeTraits`): at Awakened the blade offers **three**, the ones its history shows most strongly
+(`offer`: each trait's `habit` scores the history 0 to 1, leaned a little by the method (`METHOD_LEAN`) and the Way (`WAY_LEAN`), ties
+by the blade's own seed; three that suit any blade if nothing shows). The first choice is free; changing for another it offered costs
+10 levels (`RECHOOSE_LEVELS`); at Soulforged it offers again and one change is free. Thirteen:
+
+| Trait | Drawn from | What it does (Awakened; Soulforged ×1.5 of the change) |
+|---|---|---|
+| **Well-Worn Verse** | its favourite art played 25+ times | that art costs and rests 15% less |
+| **Closing Stroke** | 15+ finishers | a finisher gives back half again its aura and 4 more momentum |
+| **Sundering Steel** | 25+ stances broken | stances worn 12% harder (half on a player) |
+| **Riposte** | 20+ perfect guards | the next coated blow within 2 s of a perfect guard 15% harder (half on a player) |
+| **Wind Step** | 30+ Aura Steps | Aura Step 25% cheaper, back 15% sooner |
+| **Long Crescent** | 40+ Aura Slashes | Aura Slash 20% cheaper and flies 20% further |
+| **Inkbound Steel** | 40+ techniques | techniques 10% cheaper and ranked 20% faster |
+| **Second Blaze** | 5+ awakenings | the awakening back a quarter sooner, a quarter less spent after it |
+| **Mountainfeller** | 2+ bosses or 15+ strong foes | 10% harder and stances worn 15% faster against bosses and Runebound foes (never a player) |
+| **Gravewarden** | 50+ undead, 40% of its kills | coated blows 12% harder against the undead (never a player) |
+| **Last Light** | 10+ foes felled below a third of health | below a third of health, 8% less harm |
+| **Moonwake** | 60+ foes by night, half its kills | 25% more aura from blows at night |
+| **Rallying Steel** | 30+ foes felled beside an ally | each finisher gives allied swordsmen within 10 blocks 5 momentum |
+
+**Balance and PvP fairness** (`Trait.worth`, `pvp`, `BladeRulesTest`): each is worth 2.5% to 4.5% of a swordsman's strength alone, none
+more than 1.8 times another; against a player at most 3% and never more than alone. Damage traits stay under +23% at Soulforged
+(Riposte and Sundering half on a player, inside the bonus cap: under +12% and +10%), discounts never under two thirds, Last Light never
+more than a seventh off. Mountainfeller and Gravewarden never touch a player; Second Blaze gives more awakenings, never a longer one (the
+Final Art still once in each). A trait an add-on registers (`AuraApi.registerBladeTrait`, a namespaced id) takes no built-in place; what
+it does is the add-on's own. `blade_traits` off: blades still offer and keep their traits, but none acts.
+
+**The look** (`BondGlow`, on the blade itself through `AuraBlade`'s layer hook, in its swordsman's colour): Bonded, a **vein** of light
+down the blade's middle beating like a heart (two quick pulses, a rest; quicker while awakened); Named, six **marks** lighting up it one
+after another, as if its name ran up the steel; Awakened, its aura **licking off the edges** in flickering tongues; Soulforged, a **ring**
+turning about the guard, two sparks winding up the blade and a **corona** round it. In first person all of it is held close, thin and
+low in the corner. Lying on the ground: a **pool** of its light under it (wider by tier, a shade of its colour under that by day so it
+reads on bright ground), a soft glow turned to whoever looks, motes drifting up, and from a Soulforged one a thin **column** of light to
+find it by. In anyone else's hands it's **cold**: a faint grey vein and nothing more. During the ceremony the blade kindles from the hilt.
+
+**Only ever yours** (the decisions, and why):
+- **Kept through death**, keepInventory or not, cursed with vanishing or not, on the cursor or in a slot (`BondedBladeDeathMixin`,
+  `BondedBladeDropMixin`: the `blade_kept` attachment, copied on death, given back in the slot it was in after respawn, `Aura.AFTER_COPY`).
+  Why: losing the blade to a death would make every death a quest to recover it, and the chase would be the whole feature.
+- **Never breaks**: wear stops at its last point (`ItemStackBondMixin` on `applyDamage`); it stays notched until mended (Mending, an anvil
+  with materials). It can't be eaten by an anvil, a grindstone or the repair recipe as the sacrifice (`BondedBladeSmithingMixin`,
+  `BondedBladeMendingMixin`, `BondedBladeRepairMixin`), no crafting recipe takes it as an ingredient (a rune's recipe asks for an
+  axe: `BondedBladeIngredientMixin`) and no furnace or stonecutter takes it (`BondedBladeSmeltingMixin`); a smithing table's upgrade
+  or forging carries the bond (it copies every component), so a bonded diamond sword made netherite or forged into a Lumenedge is the
+  same blade.
+- **On the ground** (`ItemEntityBondMixin`): only its swordsman can pick it up (no other player, no mob, no hopper: `HopperBondMixin`), it
+  never despawns, burns, melts in lava or breaks in a blast, and out of the world it comes home (`EntityBondBelowWorldMixin`).
+- **In a chest**: only its swordsman can take it out (`SlotBondMixin` on `Slot.mayPickup`, every menu, the client agreeing).
+- **In anyone else's hands** (inventory, cursor, a shulker box or a bundle inside them: `scan` every tick, `deep` every half second):
+  it **slips home** at once, into its swordsman's inventory, or at their feet, or (offline) held by the world until they join
+  (`BladeRegistry.homeward`). A stranger holding it has no aura weapon (`Aura.holdsWeapon`) and no trait, and sees it cold. Theft gives
+  nothing.
+- **No duplicate**: the registry knows the one live copy of each bond (`BladeRegistry`: bond id to owner and whether it's live), and a
+  blade is only ever moved, never copied, so there's no recall to race. A second copy (a creative clone) is ended where it's found; a
+  released, replaced or passed-on bond's copies lapse to plain steel (`lapse`, `wildercord:former_bond` keeps whose it was).
+
+**Passing it on** (`BladeCeremony`, `PASS_TICKS` 160; step 10's masters and disciples): the master holds the breathing stance with their
+blade in hand while a disciple kneels (sneaks) before them, within 2.75 blocks, the two facing each other (`PASS_FACING` 0.5): motes pass
+between them, a circle widens round them, the blade's light runs to the disciple, and at the end the blade moves from one inventory to
+the other in one go (`BondedBlades.pass`), bonded to the disciple with its tier, name, trait and story, the master in its lineage, a
+"passed" deed. Only whom the rules allow (`AuraApi.allowBladePassing`: nobody until step 10 says who), and never to someone already
+bonded. A passed blade **sleeps** for a disciple below its tier's stage (`effective`): a faint vein, no gifts, until they grow into it.
+
+**Releasing** (the page, clicked twice): the bond ends; the blade is plain steel that remembers whose it was; another may be bonded.
+
+**The Blade tab** (`BladePage`): before a bond, how to make one (the three steps, whether the blade in hand can be bonded, the ladder of
+tiers); bonded, the blade framed in its glow, its name, tier and resonance toward the next and what that waits on, the name to give
+(typed, or Suggest), its trait (before Awakened, the habits it reads so far and how strongly; then the three cards with why each is
+offered), its story, and Release. Away from it: where it was last with them, and that it's never lost. The tab breathes gold while a
+trait waits to be chosen.
+
+**Settings** (`aura` section): `bonded_blades` (off: no new bonds, no resonance, no traits; blades already bonded stay protected),
+`resonance_gain` (0 to 100), `bond_at_power`, `blade_traits`. The client learns two (`Config.Sync.combat` bits 32 and 64:
+`Config.bonds`, `Config.bladeTraits`). Operators: `/wildercord aura blade` (the report), `bond`, `resonance <amount>`, `tier <1-4>`,
+`name <name>`, `trait <id>`, `release`, `pass <player>`.
+
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
 choice is the sneak: a spell cast standing goes out as usual, sword or not). The next **Aura Slash** within 5 seconds

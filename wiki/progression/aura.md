@@ -2,7 +2,7 @@
 title: Aura
 parent: Growing Stronger
 nav_order: 2.2
-description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, sword strings and each method's own arts, momentum, stance, openings and each method's finisher, awakening and the spent state after it, the Ways chosen at the Edge breakthrough, techniques of your own, how aura looks and sounds (blade trails, the body's aura, impacts, banners, each method's sounds), the spellblade, aura marks, and breakthroughs."
+description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, sword strings and each method's own arts, momentum, stance, openings and each method's finisher, awakening and the spent state after it, the Ways chosen at the Edge breakthrough, techniques of your own, the bonded blade, how aura looks and sounds (blade trails, the body's aura, impacts, banners, each method's sounds), the spellblade, aura marks, and breakthroughs."
 ---
 
 # Aura: the swordsman's path
@@ -35,6 +35,7 @@ only limit is the time you put in.
 | **Awakening** | With a full pool and your momentum at half or more, let it all go: free arts, momentum at its peak, a little faster and harder-hitting, then **spent** for a while. See [Awakening](#awakening) |
 | **Ways** | At the Edge breakthrough a **crossroads** rises: strike the standard of the **Way** you'll walk (the Blade, the Bulwark, the Shadowstep or the Banner), which changes a technique and gives a passive at Edge, Form and Sovereign. See [Ways]({{ '/progression/ways/' | relative_url }}) |
 | **Techniques of your own** | From Edge, write your own from a **stroke**, a **release** and an **intent** found in the world, name them and give them a string; they rank up as they land. See [Techniques of your own]({{ '/progression/techniques/' | relative_url }}) |
+| **A bonded blade** | From Edge, bond one blade in a ceremony at a ley crossing: kept through death and only ever yours, it grows with every fight, takes a name and a trait drawn from how you fight. See [The bonded blade]({{ '/progression/bonded-blade/' | relative_url }}) |
 | **See and hear it** | Your blade trails light, your body shows your stage, blows land with a hit-stop, techniques name themselves, and every method sounds its own. See [How aura looks and sounds](#how-aura-looks-and-sounds) |
 | **Spells and blades** | From Edge, cast a spell **while sneaking** with your blade in hand and your next slash carries it |
 | **See it** | The aura bar on top of your spell panel, and the **Aura** page (the Aura badge in the Cord screen, `K`) |
@@ -141,6 +142,8 @@ aura wraps your whole body. Your body shows your stage too, from a shimmer at Gl
   once to lean toward it, again to walk it). Your Way gives you a node now, at Form and at Sovereign. See [Ways]({{ '/progression/ways/' | relative_url }}).
 - **Techniques of your own**: your first slot to write one in, from a stroke, a release and an intent (a second slot opens at Form,
   a third at Sovereign). See [Techniques of your own]({{ '/progression/techniques/' | relative_url }}).
+- **A bonded blade**: kneel in the breathing stance at a ley crossing with a blade in hand and it's bonded to you, kept through death
+  and only ever yours, growing with every fight. See [The bonded blade]({{ '/progression/bonded-blade/' | relative_url }}).
 
 <img src="{{ '/assets/images/aura-slash.jpg' | relative_url }}" alt="A crescent of green aura flying away from a player toward a line of husks" class="shot">
 
@@ -715,6 +718,8 @@ you. A row of every method's colour sits above them: click one to read that meth
 method playing the common arts is dimmed). A third tab, **Way**, shows the [Way tree]({{ '/progression/ways/' | relative_url }}#the-way-tab):
 your Way (or how to choose one) and every Way's nodes, in force, waking, still to come or another Way's, each in full when picked.
 A fourth, **Writing**, is where you write [techniques of your own]({{ '/progression/techniques/' | relative_url }}#writing-a-technique).
+A fifth, **Blade**, is your [bonded blade]({{ '/progression/bonded-blade/' | relative_url }}#the-blade-tab): how to bond one, then
+its name, tier, resonance, trait and story.
 
 On the aura bar, the Form diamond dims while the step recharges, and the Sovereign diamond burns while a Dominion stands. The
 thin line under the bar is your [momentum](#momentum), and in a duel the line along its top is your own

@@ -4,6 +4,38 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### The bonded blade
+- **Bond a blade of your own from Edge.** Kneel in the breathing stance at a **ley crossing** with a sword, an axe, a spear or the
+  mace in hand (aura-forged ones too) and hold still: the ley lines light across the ground and run into you, the blade kindles from
+  the hilt up, a ring closes in, and ten seconds later a column of light seals the bond. One blade at a time.
+- **It grows with every real fight.** Foes felled, arts and finishers landed, stances broken, perfect guards, awakenings, duelists
+  beaten, techniques reaching Peerless and your breakthroughs all give it **resonance** (never a training dummy, and never one patient
+  foe pounded for ever). It rises from Bonded to **Named**, **Awakened** and **Soulforged**, each waiting on your stage too (and
+  Soulforged on a boss felled with it): Named in your first evening with it, Soulforged at the end of a long road.
+- **At Named it takes a name**: one of its own, built from its story (your element, where it was bonded, what it fells, the art you
+  play most: Cinderwake, Oath of the Dunes, Meteor Oath), or one you give it. Its name is kept to 24 characters and shown to everyone
+  as plain text.
+- **At Awakened it takes a trait drawn from how you fought**: it offers the three your habits show most strongly, out of thirteen
+  (your favourite art cheaper, finishers giving back more aura, stances sundered sooner, a riposte after a perfect guard, a cheaper
+  Aura Step or a longer, cheaper Aura Slash, techniques ranked faster, a quicker awakening, more against bosses or the undead, less
+  harm at your last light, more aura by night, momentum for your allies). Each is small and even, and fair to other players. At
+  **Soulforged** it's half again as strong, and you may choose again.
+- **It glows in your aura's colour**, more by tier: a vein of light beating like a heart, then marks running up the steel as if its
+  name were written there, then its aura licking off the edges, then a white-hot edge, a ring about the guard and a corona. Lying on
+  the ground it lights a pool under itself (a Soulforged one a column you can see from afar); in anyone else's hand it's cold.
+- **Its tooltip tells its story**: where and when it was bonded, whose it has been, its deeds counted, the art it played most and its
+  latest great deeds (hold Shift for all of it). The Aura page's new **Blade** tab shows it all, lets you name it and choose its trait.
+- **Only ever yours.** It's kept through death (keepInventory or not), never breaks (it only notches), and can't be lost: nobody else
+  can pick it up or take it from a chest, hoppers and mobs leave it be, it never despawns, burns or melts, and from the void, or from
+  anyone else's hands, it comes straight home to you (held for you if you're away). In a stranger's hands it carries no aura and no
+  trait, so stealing it gives nothing.
+- **Pass it on**: a master in the breathing stance with their blade, a disciple kneeling before them, and in eight seconds it's theirs,
+  its tier, name, trait and story kept and its master written into its lineage. Who counts as a disciple comes with masters and
+  disciples; until then only an operator can pass one. Or release it, and it's only steel again.
+- **For server owners**: `aura.bonded_blades`, `resonance_gain`, `bond_at_power` and `blade_traits`, and `/wildercord aura blade`
+  (`bond`, `resonance`, `tier`, `name`, `trait`, `release`, `pass`). **For add-ons**: `AuraApi.onBlade`, `allowBladePassing`,
+  `passBlade`, `bondBlade`, `addResonance`, `registerBladeTrait` and the readers `bladeBond`, `bladeTier` and `bladeTrait`.
+
 ### Techniques of your own
 - **Write your own techniques from Edge.** A technique is a **stroke** (thrust, rising cut, falling cut, sweep, spin or draw), a
   **release** (on the blade, a **wave** flying on past it, a **burst** all round you, or an **afterimage** left standing where you

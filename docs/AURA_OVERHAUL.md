@@ -75,7 +75,7 @@ and documented, not a first draft.
 | 6 | Awakening | done |
 | 7 | Ways | done |
 | 8 | Your own techniques | done |
-| 9 | The bonded blade | planned |
+| 9 | The bonded blade | done |
 | 10 | Masters, disciples, sparring and the clash | planned |
 | 11 | The world of the sword | planned |
 | 12 | Mage and swordsman together | planned |
@@ -1052,3 +1052,98 @@ DESIGN.md's "Techniques of your own"; the code map is ARCHITECTURE.md's. Pure ru
   and aside before it strikes). `§` can't be typed through the client (it filters it), so the forged-name check writes server-side.
 - **The writing page's readout** shows five lines at most; a longer one ends in "..." and shows in full on hover. Keep new element and
   intent lines short.
+
+### From step 9: the bonded blade
+
+The player's view is `wiki/progression/bonded-blade.md` (beside Aura, Ways and Techniques); the rules and every number are DESIGN.md's
+"The bonded blade"; the code map is ARCHITECTURE.md's. Pure rules: `aura.BladeRules` (unit-tested by `BladeRulesTest`); the bond on the
+blade: `aura.BladeBond` (the `wildercord:bonded_blade` component); the world's record of live bonds: `aura.BladeRegistry` (SavedData
+`bonded_blades`); runtime: `aura.BondedBlades`, `aura.BladeCeremony`, `aura.BladeTraits`; client: `client.fx.BondGlow`,
+`client.BladeTooltip`, `client.BladePage` (the Aura page's Blade tab); game test `WildercordBondedBladeTest`
+(`WILDERCORD_BLADE=ceremony,glow,resonance,page,traits,dropped,death,theft,pass,tooltip`).
+
+**What was decided, and why.**
+- **The bond lives on the blade** (a data component: tier, resonance, name, trait, offer, origin, history, lineage), so the glow, the
+  tooltip and the page read it on any client with no extra sync, and the blade is the same blade in any chest or hand. **The world's
+  registry** (bond id to owner, live or not) is what makes it safe: a copy whose bond isn't live, or isn't its holder's, is ended or sent
+  home on the next scan. The swordsman's own `blade_bond` attachment holds a `Shown` copy of its look for the page while it's away.
+- **Weapons**: `wildercord:bondable_blades` = swords, axes, spears and the mace (aura-forged gear included, all of it swords, axes or
+  spears); never the trident (thrown and left lying). One of it, and it must wear.
+- **Ceremony at a ley crossing** (a place of power; `bond_at_power` off allows anywhere): the breathing stance with the blade in the main
+  hand, ten seconds, three parts (kindling, joining along the two lines' real bearings from `LeyLines.directions`, sealing) and the
+  seal. It runs **before** the Way crossroads in the stance (`Crossroads.breathing` waits while `BladeCeremony.busy`), so at a crossing
+  with a bondable blade in hand the bond comes first; a crossroads already raised stops a bond starting.
+- **Resonance only with the blade in the main hand, only on worthy foes**, everything but the kill capped per foe (`foeCap`), nothing in
+  practice, a player's fall once a day. Tiers wait on the stage (Named Edge, Awakened Form, Soulforged Sovereign and a boss felled by the
+  blade): resonance keeps gathering while one waits.
+- **Kept through death** whatever the gamerule or curse; **never breaks** (stops at its last point); **only its swordsman's** on the
+  ground (pickup, hoppers, mobs, despawn, fire, lava, blasts, the void), in a chest (`Slot.mayPickup`) and in anyone else's hands
+  (slips home at once; offline, the registry holds it until they join). A stranger holding it has no aura weapon and no trait. **No
+  recall**: a blade is only ever moved, never copied or summoned, so there's nothing to race or dupe. Anvils, grindstones and the repair
+  recipe can't consume it, no crafting recipe takes it as an ingredient (the rune recipes ask for axes and swords) and no furnace or
+  stonecutter takes it; a smithing upgrade or forging carries every component, so the bond goes with it. A new recipe type of the
+  mod's own that consumes weapons must refuse bonded blades too (`BondedBlades.bonded`).
+- **Names** suggested from the mod's own word banks by the blade's story (element, Way, place, foes, favourite art), cleaned exactly as a
+  technique's name and shown as a literal; an anvil can't rename it.
+- **Traits** (13): drawn from the blade's history by habit (each with a floor: no habit, no trait), leaned by method and Way, three
+  offered, first choice free, changes 10 levels, one free change at Soulforged; small and even (2.5 to 4.5% of a swordsman's strength),
+  fair to players (at most 3%, never more than alone; Mountainfeller, Gravewarden and Rallying Steel never touch a player).
+
+**The bond API** (`api.AuraApi`; reads are both sides, from the component):
+- `onBlade(BladeHook)`: `resonance(player, amount, source)` (return the amount: change or veto it), `bonded`, `tiered`, `named`,
+  `traited`, `released(player, bondId)`, `passed(from, to, blade)`.
+- `bondBlade(player, hand, how)`: bond at once for a rite of your own (every check but the ceremony: Edge, a bondable blade, no standing
+  bond); `how` is the story's word ("ceremony", "drawn from the rock").
+- `releaseBlade(player)`, `addResonance(player, amount, source)` (only while they carry their own blade, through `resonance_gain` and
+  the hooks), `registerBladeTrait(BladeRules.Trait)` (a namespaced id; what it does is your code asking `bladeTrait(player)`).
+- Reading: `canBondBlade(stack)`, `bladeBond(stack)`, `bondedBlade(player)`, `bladeTier(player)`, `bladeTrait(player)`.
+- Passing: `allowBladePassing(rule)`, `mayPassBlade(master, disciple)`, `bladePassingRefusal(master, disciple)`, `passBlade(master, disciple)`.
+
+**The passing contract for step 10 (what step 10 must provide).**
+- **Register who may receive a blade, once at start-up**: `AuraApi.allowBladePassing((master, disciple) -> <disciple is this master's>)`.
+  That's all the built-in ceremony needs. Nothing passes until a rule says yes (an operator can: `/wildercord aura blade pass <player>`).
+- **The built-in ceremony** (`BladeCeremony`, 8 seconds): the master holds the breathing stance with their own bonded blade in the main
+  hand; the disciple sneaks within 2.75 blocks; the two face each other (flat look dot ≥ 0.5 both ways). Moving, standing up, the
+  disciple leaving or turning away, or a rule changing its mind breaks it. Both see the countdown on the HUD (the `blade_rite`
+  attachment is synced to everyone).
+- **Or step 10's own ceremony**: check `bladePassingRefusal(master, disciple)` (a language key or null; refusals: nobody, bonds off, no
+  blade with the master, the disciple already bonded, a disciple with no aura, a rule's no) and call `passBlade(master, disciple)` at its
+  end (server thread; the rules still apply). It moves the blade from the master's inventory into the disciple's (their hand if empty,
+  else any slot, else at their feet, still theirs), rebinds the registry, writes the master into the lineage and a "passed" deed, plays
+  the moment and calls `BladeHook.passed`.
+- **A passed blade sleeps** below its tier's stage (`BladeRules.effective`): a Flow disciple's Soulforged blade gives nothing (a faint
+  vein) until they reach Edge (Bonded and Named), Form (Awakened) and Sovereign (Soulforged). Step 10 can say so in its own UI.
+- **Spars must not grow blades**: a spar partner is a player (worth `MasteryRules.PLAYER`) and their arts, guards and stances broken would
+  feed resonance (capped per foe, but still). Either make `AuraCombat.worth` 0 for a spar partner (which also keeps technique ranks and
+  mastery honest) or return 0 from `BladeHook.resonance` while a spar is on. No spar kills, so the once-a-day kill rule never comes in.
+- A master teaching a part at the ceremony (step 8's notes) and passing the blade are separate calls; do both if you like.
+
+**For the later steps.**
+- **Step 11 (the sleeping blade)**: when it's drawn, put the blade in the hand and call `AuraApi.bondBlade(player, hand, "drawn from the
+  rock")` (the blade must be in `bondable_blades`: a custom sword in `#minecraft:swords` already is). A swordsman already bonded must
+  release first (`bladeBond`/`bondedBlade` to check; say so in the world). To give it a head start, `addResonance(player, n,
+  "sleeping_blade")` after bonding (the tiers still wait on the stage). A fixed name: `BondedBlades.rename(player, name)` (public; cleaned).
+  **Old battlefields** can feed a carried blade through `addResonance` (keep it small and once per place). **A tomb's guardian** counts
+  toward Soulforged only if `Spirits.isBoss` says it's a boss (a `DungeonBoss` does); its kill then gives the boss bonus (30) and a deed.
+- **Step 12 (rune-etched blades)**: a bonded blade is an ordinary stack with components, so a rune component rides along. The anvil mixin
+  refuses a bonded blade as the **right** input and reverts a rename, nothing else: etching with the blade on the left keeps its bond.
+  A rune waking "on finishers" can read `bladeTrait` for a combination; keep the trait numbers in `BladeRules` and rerun
+  `BladeRulesTest`'s balance test if a rune changes what a trait touches.
+
+**Gotchas.**
+- **`Config.Sync.combat` bits 32 and 64 are taken** (bonds, blade traits); 128 is the last free one in that byte.
+- **Fake players aren't scanned** (`BondedBlades.tick` walks the server's player list) and aren't ticked: a fake player holding someone's
+  blade keeps it until `BondedBlades.scan(fake, registry, true)` is called by hand (the game test does); what it holds reaches the
+  client only if sent by hand (`ClientboundSetEquipmentPacket`), and its sneak never shows there at all (neither an entity-data packet
+  nor setting the client entity's pose made it kneel), so the passing pictures show the disciple standing. Step 10's two-player
+  tests with real clients won't have this problem.
+- **`Slot.mayPickup` runs on the client too**: `BondedBlades.mayTake` says no on the client for anything not the viewer's own, so the
+  client never predicts a take the server refuses.
+- **`ignoreSwapAnimation` on the component**: without it every once-a-second resonance write replays the raise in first person.
+- **The kept blade comes back in `Aura.AFTER_COPY`**, after Fabric's copy-on-death attachments: anything that clears a new body's
+  inventory must run before that phase.
+- **An art's later strikes** don't answer through `AuraCombat.landed` (only its first on each foe does), so a kill by an art's second
+  blow is counted by `ArtKit.Hits.raw` through `BondedBlades.artFelled`.
+- **In the game test**: a draw's knockback can throw a husk out of reach even with full resistance; set a foe squarely in front before
+  the felling blow. The ceremony's front view needs a negative pitch to look down on the ring. A tier moment's spectacle is filtered by
+  the camera when it arrives, so switch to third person before the tier is reached.
