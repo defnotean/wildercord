@@ -138,6 +138,31 @@ public final class ArtBlocks {
 		Scheduler.later(Math.max(1, delay) + life + 13, () -> discard(display));
 	}
 
+	/**
+	 * Something growing out of the ground at {@code base} (a bramble, a sapling's crown, a tuft of roots): {@code state} swelling from
+	 * nothing to {@code size} across, its bottom at {@code lift} over the ground, turned {@code yaw}, after {@code delay} ticks, standing
+	 * {@code hold}, then withering back to nothing in ten.
+	 */
+	public static void sprout(ServerLevel level, Vec3 base, BlockState state, float size, float lift, float yaw, int delay, int hold) {
+		Quaternionf turn = new Quaternionf().rotateY(yaw);
+		Display.BlockDisplay display = display(level, base, state, centred(turn, 0.01F, 0.01F, lift));
+		if (display == null) {
+			return;
+		}
+		Scheduler.later(Math.max(1, delay), () -> {
+			tween(display, centred(turn, size, size, lift), 4);
+			dev.wildercord.cast.Vfx.emit(level, new BlockParticleOption(ParticleTypes.BLOCK, state), base.add(0, lift + size * 0.4, 0), 4, size * 0.3, 0.06);
+		});
+		Scheduler.later(Math.max(1, delay) + 4 + hold, () -> tween(display, centred(turn, size * 0.2F, size * 0.05F, lift), 10));
+		Scheduler.later(Math.max(1, delay) + 15 + hold, () -> discard(display));
+	}
+
+	/** A block {@code width} across and {@code height} tall, turned by {@code turn} about its own middle, its bottom {@code lift} up. */
+	private static Transformation centred(Quaternionf turn, float width, float height, float lift) {
+		Vector3f corner = turn.transform(new Vector3f(-width / 2, 0, -width / 2));
+		return new Transformation(new Vector3f(corner.x, lift, corner.z), turn, new Vector3f(width, height, width), new Quaternionf());
+	}
+
 	/** Displays an art has standing now (for the tests). */
 	public static int live() {
 		return live;

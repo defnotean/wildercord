@@ -104,7 +104,9 @@ public final class SwordStrings {
 		/** Its condition unmet (the Final Art's full pool). */
 		CONDITION,
 		/** The server didn't see the swings, guard or step it needs (a slow connection, or a client that made them up). */
-		UNSEEN;
+		UNSEEN,
+		/** Silenced by a Hollow swordsman's Null Parry: no arts until it passes (the server alone knows; the client hears it here). */
+		SILENCED;
 
 		public static Refusal of(int ordinal) {
 			Refusal[] all = values();
@@ -278,6 +280,9 @@ public final class SwordStrings {
 		if (!Aura.holdsWeapon(player)) {
 			return Optional.of(Refusal.NO_WEAPON);
 		}
+		if (dev.wildercord.aura.arts.ArtWards.silenced(player)) {
+			return Optional.of(Refusal.SILENCED);
+		}
 		if (!rested(player, art)) {
 			return Optional.of(Refusal.NOT_READY);
 		}
@@ -377,6 +382,7 @@ public final class SwordStrings {
 			case NOT_READY -> Component.translatable("message.wildercord.aura.art.not_ready", name).withColor(0xA89CC8);
 			case NO_AURA -> Component.translatable("message.wildercord.aura.art.no_aura", name, trim(art.cost())).withColor(0xA89CC8);
 			case CONDITION -> Component.translatable(art.condition().hintKey(), name).withColor(0xA89CC8);
+			case SILENCED -> Component.translatable("message.wildercord.aura.art.silenced", name).withColor(0xA89CC8);
 			case CLOSED, UNSEEN -> null;
 		};
 	}

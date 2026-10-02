@@ -31,8 +31,10 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -338,6 +340,7 @@ public final class RimeArts {
 			}
 		}
 		ArtLight world = ArtLight.world(player);
+		Set<UUID> splintered = new HashSet<>();
 		ArtKit.dash(player, path, ArtRules.SKATE_TICKS, (a, b, step, last) -> {
 			world.ray(a.add(0, 0.08, 0), b.add(0, 0.08, 0), WHITE, 0.5, 16);
 			world.ray(a.add(0, 0.6, 0), b.add(0, 0.6, 0), color, 0.18, 7);
@@ -349,7 +352,7 @@ public final class RimeArts {
 					continue;
 				}
 				if (frozen(foe)) {
-					shatter(player, hits, foe, ArtRules.SKATE_SHATTER, ArtRules.SKATE_SHARDS, ArtRules.SKATE_SHARD_FACTOR);
+					shatter(player, hits, foe, ArtRules.SKATE_SHATTER, ArtRules.SKATE_SHARDS, ArtRules.SKATE_SHARD_FACTOR, splintered);
 				} else {
 					hits.strike(foe, ArtRules.SKATE_FACTOR);
 					ArtKit.chill(player, foe, 40, 1);
@@ -384,9 +387,10 @@ public final class RimeArts {
 
 	/**
 	 * A frozen foe shattered: it takes {@code factor} weapons, the ice flies off it and cuts whoever stands within {@code shards}
-	 * ({@code shardFactor}), and it thaws.
+	 * ({@code shardFactor}), and it thaws. Each foe is cut by flying ice once an art, however many shatter beside it ({@code cut}
+	 * remembers who was): the balance pass found a packed crowd under Winter's Hush taking every neighbour's shards on top of its own.
 	 */
-	static void shatter(ServerPlayer player, ArtKit.Hits hits, LivingEntity foe, double factor, double shards, double shardFactor) {
+	static void shatter(ServerPlayer player, ArtKit.Hits hits, LivingEntity foe, double factor, double shards, double shardFactor, Set<UUID> cut) {
 		ServerLevel level = player.level();
 		Vec3 c = foe.getBoundingBox().getCenter();
 		hits.strike(foe, factor, AuraFxRules.Weight.GRAND);
@@ -397,7 +401,7 @@ public final class RimeArts {
 		ArtLight.world(player).flash(c, WHITE, 1.6F);
 		Feels.sound(level, c, "frost_break", 1.0F, 0.9F);
 		for (LivingEntity other : ArtKit.around(player, foe.position(), shards, 1.5, 3.0, 6)) {
-			if (other != foe) {
+			if (other != foe && cut.add(other.getUUID())) {
 				hits.strike(other, shardFactor, AuraFxRules.Weight.LIGHT);
 			}
 		}
@@ -451,9 +455,10 @@ public final class RimeArts {
 				return;
 			}
 			boolean any = false;
+			Set<UUID> splintered = new HashSet<>();
 			for (LivingEntity foe : frozen) {
 				if (foe.isAlive()) {
-					shatter(player, hits, foe, ArtRules.HUSH_SHATTER, ArtRules.HUSH_SHARDS, ArtRules.HUSH_SHARD_FACTOR);
+					shatter(player, hits, foe, ArtRules.HUSH_SHATTER, ArtRules.HUSH_SHARDS, ArtRules.HUSH_SHARD_FACTOR, splintered);
 					any = true;
 				}
 			}

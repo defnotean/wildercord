@@ -166,6 +166,23 @@ public final class Aura {
 		return after - before;
 	}
 
+	/**
+	 * Gives {@code amount} aura straight back (a Starlit art's refund): up to the pool's capacity, and not scaled as a gain is (the
+	 * server's gain rate, Starlit's own passive, the gain hooks), since it gives back what an art was paid. Returns what came back.
+	 */
+	public static double giveBack(ServerPlayer player, double amount) {
+		AuraAttachments.Data data = data(player);
+		if (!data.learned() || !enabled(player) || amount <= 0) {
+			return 0;
+		}
+		float before = Math.min(data.aura(), capacity(player));
+		float after = (float) Math.min(capacity(player), before + amount);
+		if (after != data.aura()) {
+			set(player, data.withAura(after));
+		}
+		return after - before;
+	}
+
 	/** Spends {@code cost} (see {@link AuraApi#spend}): short of the price, everything there goes and backlash follows. */
 	public static AuraRules.Spend spend(ServerPlayer player, double cost, String reason) {
 		AuraAttachments.Data data = data(player);
@@ -425,6 +442,11 @@ public final class Aura {
 		int stage = stage(player);
 		if (stage <= AuraRules.NONE) {
 			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.no_method").withColor(0xA89CC8));
+			return false;
+		}
+		// Silenced (a Hollow swordsman's Null Parry): nothing but the guard until it passes.
+		if (trigger != AuraApi.Trigger.SNEAK_TAP && dev.wildercord.aura.arts.ArtWards.silenced(player)) {
+			player.sendOverlayMessage(Component.translatable("message.wildercord.aura.silenced").withColor(0xA89CC8));
 			return false;
 		}
 		Optional<AuraApi.Technique> technique = AuraApi.techniqueFor(stage, trigger);
