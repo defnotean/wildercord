@@ -1787,7 +1787,7 @@ written; saved, synced to its owner, kept through death); the performance is `au
 | **Draw** | cone | 3.8 | 110° | ×0.72 | 4 | ×1 | innate |
 
 Releases: **On the Blade** ×1.0 (innate); **Wave** ×0.75, flying 7 blocks past the reach at 1.4 a tick (a spin's a ring racing 5 more),
-foes ×1.25, stopped by the first solid block; **Burst** ×0.72, the stroke made a ring round the feet (a cone's reach ×0.85, a spin's +1),
+foes ×1.25, stopped by the first solid block; **Burst** ×0.72, the stroke made a ring round the feet (its reach ×0.85, a spin's +1),
 foes ×1.5; **Afterimage** ×0.62 now and an afterimage (`AuraStep.afterimages`, lingering) that strikes the stroke again from where it was
 played 12 ticks later for ×0.55 of the stroke (from where the swordsman stood, wherever they've gone since; seen by them too). Intents:
 **Pierce** ×0.92, +3 foes and +1.5 reach (half on a ring); **Sunder** ×0.88, stance ×2.5; **Bind** ×0.85, roots 24 ticks
@@ -1818,10 +1818,11 @@ a Fourth Art's, at most 2.7 W, far under the Final Art; never strictly better or
 played beside the arts, on the same strings and the same momentum; anything else would make one of the two a trap.
 
 **Strings.** Two to five swings, at least one mark (low, leap, run, counter or step: full swings alone would play themselves in any
-fight), weight at least 3 (`SwordString` weights: swing 0, full 1, low/leap/run 2, counter/step 4), no low and run together (a sneak
-can't sprint). A string can't `clash` with any of the swordsman's arts' strings or another technique's (`AuraApi.conflicts`: one would
-never be playable as written); one that merely `overlap`s an art is allowed and the page says which goes first (`StringReader.compare`:
-last token's weight, total weight, length), except an overlap only an art's counter or step would meet in passing (`incidentalCue`).
+fight), weight at least 3 (`SwordString` weights: swing 0, full 1, low/leap/run 2, counter/step 4). A string can't `clash` with any of
+the swordsman's arts' strings or another technique's (`AuraApi.conflicts`: one would never be playable as written); one that merely
+`overlap`s an art (the same swings could finish both; a low and a running swing never can, `together`) is allowed and the page says
+which goes first (`StringReader.compare`: last token's weight, total weight, length), except an overlap only an art's counter or step
+would meet in passing (`incidentalCue`).
 
 **Slots** (`TechniqueRules.slots`): one at Edge, two at Form, three at Sovereign; art ids `technique_1` to `technique_3`. A technique is
 written into a slot over the `technique_write` payload (`Techniques.write`; both sides refuse from `Techniques.refusal`: off, before

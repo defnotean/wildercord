@@ -484,11 +484,12 @@ public final class TechniqueArts {
 					if (ArtKit.root(player, foe, p.bind())) {
 						Vec3 floor = ArtKit.floor(level, foe.position(), 0.5, 3.0);
 						Vec3 at = floor == null ? foe.position() : floor;
-						world.ring(at.add(0, 0.08, 0), ArtKit.UP, color, foe.getBbWidth() + 0.9, foe.getBbWidth() * 0.5 + 0.15, 0.08, Math.max(6, p.bind()));
+						// Drawn in tight round the foe's feet (three foes bound close in front of you shouldn't paint the ground at yours).
+						world.ring(at.add(0, 0.08, 0), ArtKit.UP, color, foe.getBbWidth() * 0.5 + 0.7, foe.getBbWidth() * 0.5 + 0.15, 0.06, Math.max(6, p.bind()));
 						for (int i = 0; i < 4; i++) {
 							double a = Math.PI / 2 * i + level.getRandom().nextDouble() * 0.6;
-							Vec3 base = at.add(Math.cos(a) * (foe.getBbWidth() * 0.5 + 0.35), 0.05, Math.sin(a) * (foe.getBbWidth() * 0.5 + 0.35));
-							world.ray(base, at.add(0, foe.getBbHeight() * 0.45, 0), second, 0.04, Math.max(6, p.bind()));
+							Vec3 base = at.add(Math.cos(a) * (foe.getBbWidth() * 0.5 + 0.3), 0.05, Math.sin(a) * (foe.getBbWidth() * 0.5 + 0.3));
+							world.ray(base, at.add(0, foe.getBbHeight() * 0.4, 0), second, 0.03, Math.max(6, p.bind()));
 						}
 					}
 				}

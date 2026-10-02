@@ -4,6 +4,32 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Techniques of your own
+- **Write your own techniques from Edge.** A technique is a **stroke** (thrust, rising cut, falling cut, sweep, spin or draw), a
+  **release** (on the blade, a **wave** flying on past it, a **burst** all round you, or an **afterimage** left standing where you
+  struck that strikes again a moment later) and an **intent** (pierce, sunder, bind, echo, ward, rally or infuse), with your method's
+  element in every one: an Ember technique burns, a Rime one chills, a Thunder one throws a spark on to a foe it missed, a Verdant
+  one mends you, and so on. Name it, give it a string of swings, and it goes off when you play that string, naming itself in your
+  banner like an art.
+- **The Aura page's new Writing tab**: three seals on a cord for the stroke, the release and the intent, a readout of what it does
+  and costs beside a little diagram playing the shape it strikes, your name for it inked as you type, its string composed from the
+  seven swings, and a line saying whether it's ready (or what's in its way, and which goes first when an art's swings fit it too).
+  One slot at Edge, a second at Form, a third at Sovereign.
+- **Find the parts in the world.** The draw, on the blade and infuse are every swordsman's from Edge; the rest come on **technique
+  scrolls** in trial chambers, ancient cities, strongholds, bastions, temples, mansions, outposts and every expedition's vault (and
+  now and then a fallen knight's), each place likeliest to hold certain parts. A **duelist** you beat shows you a part before it
+  goes, and your **Way lends** you one while you walk it (the Bulwark's Ward and the Banner's Rally are found nowhere else).
+- **Techniques rank up as they land** on real foes, from Raw to Peerless: **Honed** lets you temper one (swift or heavy), **Keen**
+  gives it an edge (long or broad), and a **Peerless** technique rings its name out in gold and can have its parts set down on
+  scrolls for another swordsman.
+- **Never better or worse than an art**: every technique is weighed on the scale the fifty arts were, so the more it does, the more
+  aura it costs and the longer it rests. Momentum, stance, finishers and awakening (free while awakened) all treat it as an art.
+- **Fair and safe**: a technique deals a player at most 8, its holds are short, and its name is kept to 24 characters with
+  formatting and invisible characters taken out, shown to everyone as plain text.
+- **For server owners**: `aura.techniques`, `technique_damage`, `technique_xp_multiplier` and `technique_scroll_chance`, and
+  `/wildercord aura technique learn|forget|xp|clear`. **For add-ons**: `AuraApi.teachPart`, `techniqueScroll`,
+  `registerScrollSource`, `drawScrollPart`, `registerTechniqueIntent`, `onTechnique` and `nameArts`.
+
 ### Ways
 - **Your path forks at Edge.** When you break through to Edge a **crossroads** rises round you: four standards of light, one for
   each **Way**. Strike the one you mean to walk with your blade (once to lean toward it, again to walk it) and its light pours into

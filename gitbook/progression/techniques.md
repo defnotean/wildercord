@@ -1,12 +1,5 @@
----
-title: Techniques of Your Own
-parent: Growing Stronger
-nav_order: 2.45
-description: "Writing techniques of your own from Edge: a stroke, a release and an intent, your method's element in every one, a name and a string of swings, the writing page on the Aura page, what each part does and what it costs, where parts are found (technique scrolls, duelists, Ways), ranks earned as a technique lands, tempers and edges, setting a part down on a scroll, and how techniques treat other players."
----
-
 # Techniques of your own
-{: .no_toc }
+
 
 The fifty arts are every method's own answers. From **Edge** a swordsman writes their own as well. A technique is three
 **parts**: a **stroke** (how the blade moves), a **release** (how its force leaves you) and an **intent** (what it's for), with your
@@ -14,11 +7,9 @@ method's **element** in every one. You name it, give it a **string** of swings l
 string. The parts are found in the world, shown by duelists you beat, and lent by your Way, so no two swordsmen's techniques are
 quite the same. A technique **ranks up** as it lands on real foes, from Raw to Peerless.
 
-<img src="{{ '/assets/images/techniques-writing.jpg' | relative_url }}" alt="The Aura page's Writing tab: three slot cards, the first holding a technique named Ember Fang, its name inked over three round seals on a cord, Thrust, Wave and Sunder, a row of intent glyphs to pick from, a readout of its price and what it does beside a small diagram of the line it strikes, its string of three swing marks, the seven swings to compose it from, and Write and Erase buttons" class="shot">
-<span class="caption">The writing page: a technique composed, named and given its string.</span>
+![The Aura page's Writing tab: three slot cards, the first holding a technique named Ember Fang, its name inked over three round seals on a cord, Thrust, Wave and Sunder, a row of intent glyphs to pick from, a readout of its price and what it does beside a small diagram of the line it strikes, its string of three swing marks, the seven swings to compose it from, and Write and Erase buttons](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/techniques-writing.jpg)
+<span>The writing page: a technique composed, named and given its string.</span>
 
-1. TOC
-{:toc}
 
 ## At a glance
 
@@ -56,7 +47,7 @@ You can't write in the middle of a fight: catch your breath first.
 
 ### The string
 
-A technique's string follows the same rules as the arts' [sword strings]({{ '/progression/aura/' | relative_url }}#sword-strings),
+A technique's string follows the same rules as the arts' [sword strings](aura.md#sword-strings),
 with a few of its own:
 
 - **Two to five swings**, with **at least one mark**: a low, leaping or running swing, a counter or a step cut. Full swings alone
@@ -106,7 +97,7 @@ never a better or a worse one: the more it does, the more it costs and the longe
 | Intent | What it does |
 |---|---|
 | **Pierce** | Through whatever stands in the way: **1.5 blocks further and three more foes**, a little lighter. The Way of the Blade lends it |
-| **Sunder** | Wears a stance **two and a half times** as hard as an art, toward an [opening and your finisher]({{ '/progression/aura/' | relative_url }}#stance-and-openings) |
+| **Sunder** | Wears a stance **two and a half times** as hard as an art, toward an [opening and your finisher](aura.md#stance-and-openings) |
 | **Bind** | **Roots** each foe it strikes where it stands for **1.2 seconds** (a player only briefly) |
 | **Echo** | Strikes each foe **again half a second later** for half as much, wherever it has gone, if it's still near |
 | **Ward** | You take **a fifth less** from foes for **four seconds** after. Only the Way of the Bulwark lends it |
@@ -133,8 +124,8 @@ Every technique carries your method's element, so the same parts play differentl
 A method's element is weighed in with the rest, so a Starlit technique's aura or a Verdant one's mending is paid for in its price,
 not given free. Infuse doubles it.
 
-<img src="{{ '/assets/images/techniques-releases.jpg' | relative_url }}" alt="Four scenes of a player seen from behind among husks: three burning husks bound in rings of light; a wheel of pale blue rings breaking out all round them; a violet afterimage of the player left standing among the husks, striking with a falling crescent as the player stands clear behind it; and crescents of white aura rising across three husks as the wave flies on past them" class="shot">
-<span class="caption">On the Blade (Cinder Sweep), a Burst (Frost Wheel), an Afterimage (Falling Shade) and a Wave (Rising Gale).</span>
+![Four scenes of a player seen from behind among husks: three burning husks bound in rings of light; a wheel of pale blue rings breaking out all round them; a violet afterimage of the player left standing among the husks, striking with a falling crescent as the player stands clear behind it; and crescents of white aura rising across three husks as the wave flies on past them](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/techniques-releases.jpg)
+<span>On the Blade (Cinder Sweep), a Burst (Frost Wheel), an Afterimage (Falling Shade) and a Wave (Rising Gale).</span>
 
 ## Playing a technique
 
@@ -150,8 +141,8 @@ surge, cuts its stroke's trail and sounds its release. Everything the arts follo
 - If you don't know one of its parts any more (a Way's, after you've left the Way) it **rests**, and its swings play whatever art
   they'd play without it.
 
-<img src="{{ '/assets/images/techniques-first-person.jpg' | relative_url }}" alt="Through a player's own eyes: three husks close ahead thrown up into the air, thin crescents of white aura round them and low rings on the ground, and on the left a banner reading Gale Breath, Raw technique, Rising Gale" class="shot">
-<span class="caption">A wave through the swordsman's own eyes: thin and low, the banner naming it.</span>
+![Through a player's own eyes: three husks close ahead thrown up into the air, thin crescents of white aura round them and low rings on the ground, and on the left a banner reading Gale Breath, Raw technique, Rising Gale](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/techniques-first-person.jpg)
+<span>A wave through the swordsman's own eyes: thin and low, the banner naming it.</span>
 
 ## Ranks
 
@@ -200,24 +191,24 @@ They turn up in the world's old places of fighting, each place likeliest to hold
 | Desert pyramids | 8% | Sweep, Wave, Bind |
 | Woodland mansions | 15% | Spin, Echo, Afterimage |
 | Pillager outposts | 8% | Sweep, Rising Cut, Wave |
-| The [expeditions]({{ '/world/expeditions/' | relative_url }})' vaults (the Ember Sanctum, the Storm Spire, the Drowned Scriptorium, the Living Greenhouse, the Astral Observatory, the Clockwork Crypt, the Rootbound Maze, the Moving Sky Ruin and the Archive) | 20% | The parts that suit each one's element |
+| The [expeditions](../world/expeditions.md)' vaults (the Ember Sanctum, the Storm Spire, the Drowned Scriptorium, the Living Greenhouse, the Astral Observatory, the Clockwork Crypt, the Rootbound Maze, the Moving Sky Ruin and the Archive) | 20% | The parts that suit each one's element |
 | A **fallen knight** (dropped) | 6% | Any |
 
 ### Duelists
 
-Beat a [wandering duelist]({{ '/progression/aura/' | relative_url }}#duels-with-a-duelist) and, besides what it teaches you, it
+Beat a [wandering duelist](aura.md#duels-with-a-duelist) and, besides what it teaches you, it
 **shows you a part** you don't know yet before it goes, its own method's favourites likelier (a Thunder duelist's a thrust, a wave or
 a pierce; a Stone one's a falling cut, a burst or a sunder).
 
 ### Ways
 
-Your [Way]({{ '/progression/ways/' | relative_url }}) **lends** you a part while you walk it: the Blade **Pierce**, the Bulwark
+Your [Way](ways.md) **lends** you a part while you walk it: the Blade **Pierce**, the Bulwark
 **Ward**, the Shadowstep **Afterimage** and the Banner **Rally**. Ward and Rally are found nowhere else. Leave the Way and its part
 goes with it: a technique written with it rests until you walk that Way again (or learn the part another way, for Pierce and
 Afterimage).
 
-<img src="{{ '/assets/images/techniques-ward-rally.jpg' | relative_url }}" alt="Left: a player seen from behind with rings of pale blue light round their body after a technique, a husk ahead. Right: a player with a gold pennant of light over their head, a gold ring at their feet and a gold thread running to an ally ringed in gold" class="shot">
-<span class="caption">A Bulwark's Ward and a Banner's Rally.</span>
+![Left: a player seen from behind with rings of pale blue light round their body after a technique, a husk ahead. Right: a player with a gold pennant of light over their head, a gold ring at their feet and a gold thread running to an ally ringed in gold](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/techniques-ward-rally.jpg)
+<span>A Bulwark's Ward and a Banner's Rally.</span>
 
 ## Techniques and other players
 

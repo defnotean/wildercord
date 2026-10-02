@@ -74,7 +74,7 @@ and documented, not a first draft.
 | 5 | Momentum and openings | done |
 | 6 | Awakening | done |
 | 7 | Ways | done |
-| 8 | Your own techniques | planned |
+| 8 | Your own techniques | done |
 | 9 | The bonded blade | planned |
 | 10 | Masters, disciples, sparring and the clash | planned |
 | 11 | The world of the sword | planned |
@@ -967,3 +967,88 @@ and `WildercordShaderTest` films the standards under its pack (`*_aura_crossroad
   teams for the ally rule (`board.addPlayerToTeam`); the test's `reset` drops them and takes the swordsman off any team.
 - **The Way tab hides the method's passive footer** to make room for a node in full; keep node texts to about three lines at the page's
   width.
+
+### From step 8: techniques of your own
+
+The player's view is `wiki/progression/techniques.md` (a page of its own beside Sword Arts and Ways); the rules and every number are
+DESIGN.md's "Techniques of your own"; the code map is ARCHITECTURE.md's. Pure rules: `aura.TechniqueRules` (unit-tested by
+`TechniqueRulesTest`); runtime: `aura.Techniques` (the book, the string source, writing, ranks, payloads), `aura.arts.TechniqueArts`
+(the performance), `aura.ScrollSources` and `aura.world.TechniqueScrollItem` (scrolls); client: `client.TechniquePage` inside
+`AuraScreen` (the Writing tab); game test `WildercordTechniquesTest`
+(`WILDERCORD_TECHNIQUES=page,played,releases,intents,elements,ranks,scrolls,slots,awakened,fair,lent`).
+
+**What was decided, and why.**
+- **A technique is a string art of the player's own** (`AuraApi.addStringSource`, ids `technique_1` to `technique_3`), so the reader,
+  momentum, stance, finishers, awakening (free while awakened), the banner, the string HUD and `onString` all take it with no special
+  case. Its name reaches every place an art is named through `AuraApi.artName` (a namer asked before the lang key).
+- **Parts**: six strokes (thrust, rising cut, falling cut, sweep, spin, draw), four releases (on the blade, wave, burst, afterimage),
+  seven intents (pierce, sunder, bind, echo, ward, rally, infuse). **Innate from Edge**: draw, on the blade, infuse, so a swordsman can
+  write their first technique the moment they reach Edge. **Infuse** is the "or others" intent that makes the element the point; **ward**
+  and **rally** are the Bulwark's and the Banner's and only a Way lends them.
+- **Balance is the arts' own model**: `TechniqueRules.model` builds an `ArtRules.Art` and `ArtRules.power` weighs it; price and rest are
+  worth × 4.32 aura and × 43.2 ticks (the arts' mean rate, a shade under), at Tempered with its temper and edge, held to 3..13 aura and
+  30..130 ticks, nudged at most 2% by the string's effort. `TechniqueRulesTest` checks every combination at every rank, temper, edge,
+  method and string sits inside the arts' own worth-per-aura and worth-per-tick band. **If you change a part's numbers, rerun it**: the
+  band is tight (0.2065..0.2536 W an aura) and the test names the combination that leaves it.
+- **The element is in every technique** (`Flavour`, by the method's passive), each worth about a seventh of a W, so methods sit within 8%.
+- **Ranks are their own**, not spell mastery: a technique has no mana or cast to measure. Same shape as mastery (real foes, the moment,
+  repetition, a capped practice share). Raw 0, Honed 60 (a temper), Tempered 200, Keen 520 (an edge), Peerless 1300 (inscribe).
+  Strength ×0.965..1.04. Records (up to 12) survive erasing.
+- **Ways lend, never give**: a Way's part is known while `Ways.has(player, its Edge node)` (so a change of Way and its settling apply);
+  leave the Way and the part goes, and a technique written with it rests (its swings play the arts). Pierce and afterimage can also be
+  found on scrolls; ward and rally can't.
+- **Names** are cleaned on both sides (`TechniqueRules.cleanName`) and always shown as `Component.literal`: never parsed, so nothing a
+  player types can format, click or translate on another player's screen. The page filters typing to `nameCharacter`.
+- **Strings**: 2 to 5 swings, at least one mark, weight at least 3; never `clash` with an art or another technique
+  (`AuraApi.conflicts` and `TechniqueRules.clash`); an `overlap` is allowed and the page says which goes first, except one an art's
+  counter or step would only meet in passing (`incidentalCue`).
+
+**The technique API** (`api.AuraApi`; reads are both sides, from the synced book):
+- `techniqueParts(family)`, `knowsPart(player, part)`, `partsOf(player)`, `writtenTechniques(player)`, `techniqueRank(player, slot)`.
+- `teachPart(serverPlayer, part, sourceId)`: a part for good, with the line, the sound, the Grimoire (`aura:technique_part`) and the
+  hooks; false if known. `techniqueScroll(part)` makes the item.
+- **Scrolls for step 11's sword tombs**: `registerScrollSource(new ScrollSources.Source(id, lootTable, chance, weights))` adds a loot
+  table (the `wildercord:random_technique_part` loot function, its chance a percent times `technique_scroll_chance`), or a source in code
+  with `lootTable` "" drawn with `drawScrollPart(sourceId, random)`. **`sword_tomb` is already registered** (spin, burst, afterimage, sunder
+  and echo favoured): a tomb's chest can be a loot table with `{"function": "wildercord:random_technique_part", "source": "sword_tomb"}`
+  in a pool, or code calling `drawScrollPart("sword_tomb", random)` then `techniqueScroll(part)`. A guardian could `teachPart` outright.
+- `onTechnique(new TechniqueHook() { written(player, slot, technique); ranked(player, slot, technique, rank); learned(player, part, source); })`.
+- `registerTechniqueIntent(TechniqueRules.Intent.own(id, factor, control, area), effect)`, `intentEffect(id)`: an add-on's intent,
+  priced by what it says it's worth; learned only through `teachPart` (never on a scroll).
+- `nameArts(namer)`, `artName(player, art)`: any per-player art can be named the same way.
+
+**For the later steps.**
+- **Step 9 (bonded blade)**: resonance from techniques comes through `onString` (the art id starts with `technique_`; `Techniques.written(
+  player, art)` gives the `Written`: its parts and name) and from `onTechnique.ranked` (a Peerless technique is a story worth telling in
+  the blade's tooltip: "Ember Fang reached Peerless on this blade"). A trait "drawn from how its wielder fought" can read the most-used
+  technique's parts (a blade that thrust and pierced its whole life). Keep the bonded blade's damage bonus out of `TechniqueRules`: the
+  technique's blow is a share of the blade (`ArtKit.Hits`), so a stronger blade already carries every technique.
+- **Step 10 (masters and disciples)**: a master can **teach a part** (`teachPart(disciple, part, "master")`) at the ceremony; a
+  **Peerless** technique's parts already set down on scrolls (`Techniques.inscribe`), the in-world way to pass one on, and a master's
+  could cost nothing. A spar is the natural place for technique experience to count less (it's not danger): `Techniques.Use` reads
+  `AuraCombat.moment` and the foe's worth; a spar partner should be worth less, as a training dummy is (`TechniqueRules.practice`).
+  **The clash**: a technique's wave is not a `Crescents` flight (it strikes in bands from `TechniqueArts.wave`), so it doesn't clash today;
+  if the timed clash should take waves too, move the wave onto `Crescents` or give the clash a hook.
+- **Step 11 (world)**: see the scroll API above; the parts hardest to find elsewhere are the tomb's favourites. An intent gate can ask
+  `techniqueRank(player, slot) >= TechniqueRules.KEEN` as well as a stage. Tournaments could award a scroll of the winner's choosing.
+- **Step 12 (mage and swordsman)**: a technique is an art (aura off the blade, `ArtKit.Hits`, its element), so a resonant strike that
+  answers "an art" answers techniques too; `onString` tells them apart. A rune-etched blade's rune waking "on arts" wakes on techniques
+  unless it checks the id.
+
+**Gotchas.**
+- **`Techniques` and `TechniqueArts` hold attachments and the scheduler**: a unit test that loads them fails; the numbers, names, strings
+  and balance live in `TechniqueRules` for that reason (and `TechniqueRules.registerIntent` leaks between tests: the tests skip `:` ids).
+- **The client's string source reads only synced data** (the book, the method, the stage, the Way's node through the synced `WAY`): the
+  client predicts which technique a string plays and draws its rest from `SwordStringsClient.PREDICTED`; anything the server knows and the client doesn't
+  would make the HUD lie.
+- **An unknown part rests the technique, it doesn't break it**: `Techniques.usable` is the string art's `available`, so its swings fall
+  through to the next art that fits (`StringReader` already does that). A part an add-on removed shows "write it again" on the page.
+- **The momentum a technique builds** is the art slot nearest its worth (`TechniqueRules.momentumSlot`, `Momentum.artLanded`).
+- **Thunder's spark waits** until the stroke has struck all it will (`TechniqueArts.Cast.spark`; a wave's at its last band), or it leaps
+  to a foe the stroke strikes anyway.
+- **In the game test**: husks need knockback resistance 1 (a draw's knockback pushes them out of reach and the next swing misses), the
+  swordsman must wait for full attack strength after a weapon change before the first full swing, the third-person camera at yaw 0 and
+  pitch 12 keeps the crosshair on the husks, and an afterimage directly ahead is hidden behind the swordsman in third person (step back
+  and aside before it strikes). `§` can't be typed through the client (it filters it), so the forged-name check writes server-side.
+- **The writing page's readout** shows five lines at most; a longer one ends in "..." and shows in full on hover. Keep new element and
+  intent lines short.

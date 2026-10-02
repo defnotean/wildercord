@@ -384,7 +384,7 @@ public class WildercordTechniquesTest implements FabricClientGameTest {
 					spawn(level, EntityTypes.HUSK, at(1.6, 2.6), 60, 200);
 					spawn(level, EntityTypes.HUSK, at(-1.7, 2.2), 60, 160);
 					if (round) {
-						spawn(level, EntityTypes.HUSK, at(0.4, -2.4), 60, 0);
+						spawn(level, EntityTypes.HUSK, at(1.9, -1.6), 60, 0);
 					}
 					if (play.release().equals(TechniqueRules.WAVE)) {
 						spawn(level, EntityTypes.HUSK, at(0, 8.5), 60, 180);
@@ -660,7 +660,8 @@ public class WildercordTechniquesTest implements FabricClientGameTest {
 			player.getInventory().add(TechniqueScrollItem.of(TechniqueRules.BIND));
 			return null;
 		});
-		context.waitTicks(4);
+		// The hand comes up as the attack strength refills after the swap (a dozen ticks at most).
+		context.waitTicks(14);
 		shot(context, "technique_scroll_hand_fp");
 		context.getInput().pressKey(o -> o.keyUse);
 		context.waitTicks(4);
