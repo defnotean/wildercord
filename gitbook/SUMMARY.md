@@ -49,6 +49,7 @@
   * [Aura](progression/aura.md)
   * [Sword Arts](progression/sword-arts.md)
   * [Ways](progression/ways.md)
+  * [Techniques of Your Own](progression/techniques.md)
   * [Your Affinities](progression/affinity.md)
   * [Advancements](progression/advancements.md)
   * [Mana](progression/mana.md)

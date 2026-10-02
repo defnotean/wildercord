@@ -415,7 +415,9 @@ public final class Momentum {
 		if (!on(player) || art == null || !worthy(player, foe)) {
 			return;
 		}
-		int slot = AuraApi.ArtSlot.of(art).map(Enum::ordinal).orElse(ArtRules.slot(art.stage()));
+		// A method's art by its slot; a technique of the swordsman's own by what it's worth (the nearest of the first four).
+		int own = Techniques.momentumSlot(player, art);
+		int slot = AuraApi.ArtSlot.of(art).map(Enum::ordinal).orElse(own >= 0 ? own : ArtRules.slot(art.stage()));
 		MomentumRules.Temper temper = temper(player);
 		double amount = MomentumRules.artFoe(slot, n, temper) * MomentumRules.reach(player.distanceTo(foe), temper) * share(player, foe);
 		if (amount > 0) {

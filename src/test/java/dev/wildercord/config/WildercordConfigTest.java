@@ -853,12 +853,12 @@ class WildercordConfigTest {
 		// The low bits are the switches; the awakening's momentum rides higher up (see awakeningTravelsToTheClient).
 		int switches = 0xFF;
 		Config.Sync on = Config.Sync.of(D);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS, on.combat() & switches);
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES, on.combat() & switches);
 		assertEquals(Config.Sync.DEFAULT.combat(), on.combat(), "the default before the server speaks is the same");
 		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"momentum\": false}}").config();
-		assertEquals(Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS, Config.Sync.of(off).combat() & switches);
+		assertEquals(Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES, Config.Sync.of(off).combat() & switches);
 		WildercordConfig neither = WildercordConfig.parse("{\"aura\": {\"momentum\": false, \"stance\": false}}").config();
-		assertEquals(Config.Sync.AWAKENING | Config.Sync.WAYS, Config.Sync.of(neither).combat() & switches);
+		assertEquals(Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES, Config.Sync.of(neither).combat() & switches);
 	}
 
 	@Test
@@ -947,7 +947,7 @@ class WildercordConfigTest {
 		for (int needed : new int[] {0, 1, 37, 80, 100}) {
 			WildercordConfig set = WildercordConfig.parse("{\"aura\": {\"awakening_momentum\": " + needed + "}}").config();
 			assertEquals(needed, Config.Sync.of(set).awakeningMomentum(), "momentum " + needed);
-			assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS, Config.Sync.of(set).combat() & 0xFF);
+			assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS | Config.Sync.TECHNIQUES, Config.Sync.of(set).combat() & 0xFF);
 		}
 	}
 
@@ -1024,12 +1024,89 @@ class WildercordConfigTest {
 		assertTrue((Config.Sync.DEFAULT.combat() & Config.Sync.WAYS) != 0, "on until the server says otherwise");
 		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"ways\": false}}").config();
 		assertEquals(0, Config.Sync.of(off).combat() & Config.Sync.WAYS);
-		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING, Config.Sync.of(off).combat() & 0xFF,
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.TECHNIQUES, Config.Sync.of(off).combat() & 0xFF,
 			"the other switches stay as they were");
 		assertEquals(Config.Sync.of(D).awakeningMomentum(), Config.Sync.of(off).awakeningMomentum(), "the momentum an awakening asks for is untouched");
 		// Its bit is one of the free low ones, clear of the awakening's momentum (bits 8 to 15).
 		assertTrue(Config.Sync.WAYS < 1 << 8);
 		assertEquals(0, Config.Sync.WAYS & (Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING));
+	}
+
+	@Test
+	void techniquesSettingsAreTheirDefaults() {
+		WildercordConfig.AuraTechniques t = D.aura().techniques();
+		assertEquals(WildercordConfig.AuraTechniques.DEFAULTS, t);
+		assertTrue(t.techniques(), "techniques of one's own are on by default");
+		assertEquals(1.0, t.techniqueDamage(), 1e-9);
+		assertEquals(1.0, t.techniqueXp(), 1e-9);
+		assertEquals(1.0, t.scrollChance(), 1e-9);
+		for (String key : List.of("techniques", "technique_damage", "technique_xp_multiplier", "technique_scroll_chance")) {
+			assertTrue(D.toJson().contains("\"" + key + "\""), "a fresh file lists " + key);
+		}
+	}
+
+	@Test
+	void techniquesSettingsAreReadAndHeldInRange() {
+		WildercordConfig.Parsed parsed = WildercordConfig.parse("{\"aura\": {\"techniques\": false, \"technique_damage\": 9, "
+			+ "\"technique_xp_multiplier\": -2, \"technique_scroll_chance\": 50}}");
+		WildercordConfig.AuraTechniques read = parsed.config().aura().techniques();
+		assertFalse(read.techniques());
+		assertEquals(5.0, read.techniqueDamage(), 1e-9, "at most five times as hard");
+		assertEquals(0.0, read.techniqueXp(), 1e-9, "never ranking backwards");
+		assertEquals(10.0, read.scrollChance(), 1e-9, "at most ten times as likely");
+		assertEquals(3, parsed.warnings().size(), parsed.warnings().toString());
+		assertEquals(parsed.config(), WildercordConfig.parse(parsed.config().toJson()).config(), "the written file keeps them");
+		WildercordConfig.AuraTechniques fine = WildercordConfig.parse("{\"aura\": {\"technique_damage\": 0.5, \"technique_xp_multiplier\": 3}}")
+			.config().aura().techniques();
+		assertEquals(0.5, fine.techniqueDamage(), 1e-9);
+		assertEquals(3.0, fine.techniqueXp(), 1e-9);
+		assertTrue(fine.techniques(), "what isn't given stays at its default");
+		assertEquals(1.0, fine.scrollChance(), 1e-9);
+		// The constructor from before techniques (and a missing part) take their defaults.
+		WildercordConfig.AuraSettings before = new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			WildercordConfig.AuraHeights.DEFAULTS, WildercordConfig.AuraStrings.DEFAULTS, WildercordConfig.AuraMomentum.DEFAULTS,
+			WildercordConfig.AuraAwakening.DEFAULTS, WildercordConfig.AuraWays.DEFAULTS);
+		assertEquals(WildercordConfig.AuraTechniques.DEFAULTS, before.techniques());
+		assertEquals(WildercordConfig.AuraTechniques.DEFAULTS, new WildercordConfig.AuraSettings(true, 1.0, 1.0, 0.1, 1.0, 1.2, 12, 2, 0.6, 3, 0.5,
+			null, null, null, null, null, null).techniques());
+	}
+
+	@Test
+	void aFileFromBeforeTechniquesGainsTheirKeys() {
+		List<String> keys = List.of("techniques", "technique_damage", "technique_xp_multiplier", "technique_scroll_chance");
+		String old = D.toJson();
+		for (String key : keys) {
+			old = old.replaceAll(",\\s*\"" + key + "\": [^,\\n}]+", "");
+		}
+		for (String key : keys) {
+			assertFalse(old.contains("\"" + key + "\""), key + " gone: " + old);
+		}
+		WildercordConfig.Parsed parsed = WildercordConfig.parse(old);
+		assertTrue(parsed.warnings().isEmpty(), parsed.warnings().toString());
+		assertEquals(WildercordConfig.AuraSettings.DEFAULTS, parsed.config().aura(), "the techniques' settings read as their defaults");
+		String grown = WildercordConfig.addMissing(old).orElseThrow();
+		for (String key : keys) {
+			assertTrue(grown.contains("\"" + key + "\""), key + " added: " + grown);
+		}
+		assertTrue(WildercordConfig.addMissing(grown).isEmpty(), "nothing more to add the second time");
+		String theirs = old.replace("\"banner_range\": 12.0", "\"banner_range\": 20.0");
+		WildercordConfig.AuraSettings kept = WildercordConfig.parse(WildercordConfig.addMissing(theirs).orElseThrow()).config().aura();
+		assertEquals(20.0, kept.ways().bannerRange(), 1e-9, "the owner's Ways settings are kept");
+		assertEquals(WildercordConfig.AuraTechniques.DEFAULTS, kept.techniques());
+	}
+
+	@Test
+	void techniquesTravelToTheClient() {
+		assertTrue((Config.Sync.of(D).combat() & Config.Sync.TECHNIQUES) != 0);
+		assertTrue((Config.Sync.DEFAULT.combat() & Config.Sync.TECHNIQUES) != 0, "on until the server says otherwise");
+		WildercordConfig off = WildercordConfig.parse("{\"aura\": {\"techniques\": false}}").config();
+		assertEquals(0, Config.Sync.of(off).combat() & Config.Sync.TECHNIQUES);
+		assertEquals(Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS, Config.Sync.of(off).combat() & 0xFF,
+			"the other switches stay as they were");
+		assertEquals(Config.Sync.of(D).awakeningMomentum(), Config.Sync.of(off).awakeningMomentum(), "the momentum an awakening asks for is untouched");
+		// Its bit is one of the free low ones, clear of the awakening's momentum (bits 8 to 15) and the other switches.
+		assertTrue(Config.Sync.TECHNIQUES < 1 << 8);
+		assertEquals(0, Config.Sync.TECHNIQUES & (Config.Sync.MOMENTUM | Config.Sync.STANCE | Config.Sync.AWAKENING | Config.Sync.WAYS));
 	}
 
 	@Test

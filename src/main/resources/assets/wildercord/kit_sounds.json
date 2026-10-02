@@ -531,6 +531,42 @@
     "aura_string_tick": {
       "part": "aura"
     },
+    "aura_technique_afterimage": {
+      "part": "aura"
+    },
+    "aura_technique_afterimage_strike": {
+      "part": "aura"
+    },
+    "aura_technique_burst": {
+      "part": "aura"
+    },
+    "aura_technique_echo": {
+      "part": "aura"
+    },
+    "aura_technique_learn": {
+      "part": "aura"
+    },
+    "aura_technique_on_the_blade": {
+      "part": "aura"
+    },
+    "aura_technique_rally": {
+      "part": "aura"
+    },
+    "aura_technique_rank": {
+      "part": "aura"
+    },
+    "aura_technique_sunder": {
+      "part": "aura"
+    },
+    "aura_technique_ward": {
+      "part": "aura"
+    },
+    "aura_technique_wave": {
+      "part": "aura"
+    },
+    "aura_technique_write": {
+      "part": "aura"
+    },
     "aura_thunder_art": {
       "part": "aura"
     },

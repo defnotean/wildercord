@@ -10,6 +10,7 @@ import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.AuraStages;
 import dev.wildercord.aura.BreathingManualItem;
 import dev.wildercord.aura.BreathingMethod;
+import dev.wildercord.aura.Techniques;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -46,6 +47,8 @@ public class AuraScreen extends Screen {
 	private static boolean arts;
 	/** Whether it shows the Way tree instead (kept while the game runs; wins over {@link #arts}). */
 	private static boolean way;
+	/** Whether it shows the writing page instead (kept while the game runs; wins over the others). */
+	private static boolean writing;
 	/** Where the tabs were drawn last (the page's own coordinates), for a click: their row, and each one's left and right. */
 	private int tabsY = -1;
 	private int techLeft;
@@ -54,6 +57,10 @@ public class AuraScreen extends Screen {
 	private int artsRight;
 	private int wayLeft;
 	private int wayRight;
+	private int writeLeft;
+	private int writeRight;
+	/** The writing page (techniques of one's own), drawn in place of everything under the tabs while it's open. */
+	private TechniquePage page;
 	/** The Way tree's cells as drawn last (the page's own coordinates: x, y, size), by node id, for a click. */
 	private final java.util.Map<String, int[]> cells = new java.util.LinkedHashMap<>();
 	/** The node picked on the Way tab (its details shown under the tree), or null for the one that matters most now. */
@@ -65,8 +72,43 @@ public class AuraScreen extends Screen {
 	}
 
 	@Override
+	protected void init() {
+		super.init();
+		page = new TechniquePage(minecraft, font);
+		// Since 26.x typed characters only arrive while a screen asks for them: the writing page's name is typed here.
+		minecraft.textInputManager().startTextInput(this);
+	}
+
+	@Override
+	public void removed() {
+		minecraft.textInputManager().stopTextInput(this);
+		super.removed();
+	}
+
+	@Override
 	public void onClose() {
 		minecraft.gui.setScreen(parent);
+	}
+
+	@Override
+	public boolean keyPressed(net.minecraft.client.input.KeyEvent event) {
+		if (writingOpen() && page.keyPressed(event)) {
+			return true;
+		}
+		return super.keyPressed(event);
+	}
+
+	@Override
+	public boolean charTyped(net.minecraft.client.input.CharacterEvent event) {
+		if (writingOpen() && page.charTyped(event)) {
+			return true;
+		}
+		return super.charTyped(event);
+	}
+
+	/** Whether the writing page is showing (it's open, and techniques work for the player). */
+	private boolean writingOpen() {
+		return writing && page != null && minecraft.player != null && Techniques.on(minecraft.player) && Aura.stage(minecraft.player) > AuraRules.NONE;
 	}
 
 	@Override
@@ -127,15 +169,26 @@ public class AuraScreen extends Screen {
 				boolean toArts = mx >= artsLeft && mx < artsRight;
 				boolean toTech = mx >= techLeft && mx < techRight;
 				boolean toWay = wayRight > wayLeft && mx >= wayLeft && mx < wayRight;
-				boolean onArts = arts && !way;
-				boolean onTech = !arts && !way;
-				if (toArts && !onArts || toTech && !onTech || toWay && !way) {
+				boolean toWrite = writeRight > writeLeft && mx >= writeLeft && mx < writeRight;
+				boolean onWrite = writingOpen();
+				boolean onArts = arts && !way && !onWrite;
+				boolean onTech = !arts && !way && !onWrite;
+				boolean onWay = way && !onWrite;
+				if (toArts && !onArts || toTech && !onTech || toWay && !onWay || toWrite && !onWrite) {
 					arts = toArts;
 					way = toWay;
+					writing = toWrite;
+					if (toWrite) {
+						TechniquePage.opened(minecraft.level.getGameTime());
+					}
 					minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(
 						net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.0F));
 					return true;
 				}
+			}
+			// The writing page: everything under the tabs is its own.
+			if (writingOpen() && page.mouseClicked(minecraft.player, mx, my, event.button())) {
+				return true;
 			}
 			// A node on the Way tab: its details, kept under the tree.
 			if (way) {
@@ -163,6 +216,15 @@ public class AuraScreen extends Screen {
 				}
 			}
 		}
+		// A right click on the writing page (on the string's arrow: the whole string taken back).
+		if (event.button() == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT && writingOpen()) {
+			float s = scale();
+			int mx = (int) Math.floor((event.x() - left()) / s);
+			int my = (int) Math.floor((event.y() - top()) / s);
+			if (page.mouseClicked(minecraft.player, mx, my, event.button())) {
+				return true;
+			}
+		}
 		return super.mouseClicked(event, doubleClick);
 	}
 
@@ -170,13 +232,56 @@ public class AuraScreen extends Screen {
 	public static void listArts(boolean show) {
 		arts = show;
 		way = false;
+		writing = false;
 	}
 
 	/** Opens the page on its Way tab ({@code true}), or back on the techniques, with {@code node} picked (null for the default). */
 	public static void showWay(boolean show, String node) {
 		way = show;
 		arts = false;
+		writing = false;
 		picked = node;
+	}
+
+	/** Opens the page on its writing page ({@code true}) at slot {@code slot} (0 the first), or back on the techniques. */
+	public static void showWriting(boolean show, int slot) {
+		writing = show;
+		arts = false;
+		way = false;
+		if (show) {
+			TechniquePage.select(slot);
+		}
+	}
+
+	/** Whether the page is on its writing page (the game tests ask). */
+	public static boolean showingWriting() {
+		return writing;
+	}
+
+	/** The middle of the writing tab, in screen coordinates (the game tests click it), or null before it's drawn. */
+	public double[] writingTabPoint() {
+		if (tabsY < 0 || writeRight <= writeLeft) {
+			return null;
+		}
+		float s = scale();
+		return new double[] {left() + (writeLeft + writeRight) / 2.0 * s, top() + (tabsY + 4) * s};
+	}
+
+	/**
+	 * The middle of something clickable on the writing page, in screen coordinates (the game tests click them): "slot:0", "name",
+	 * "seal:stroke", "part:thrust", "token:low", "back", "write", "erase", "temper:swift", "edge:long", "inscribe:wave"; null if it isn't
+	 * drawn.
+	 */
+	public double[] writingPoint(String key) {
+		if (page == null) {
+			return null;
+		}
+		int[] r = page.targets.get(key);
+		if (r == null) {
+			return null;
+		}
+		float s = scale();
+		return new double[] {left() + (r[0] + r[2] / 2.0) * s, top() + (r[1] + r[3] / 2.0) * s};
 	}
 
 	/** Whether the page is on its Way tab (the game tests ask). */
@@ -261,6 +366,9 @@ public class AuraScreen extends Screen {
 		AuraAttachments.Data data = Aura.data(player);
 		AuraAttachments.State state = Aura.state(player);
 		long now = player.level().getGameTime();
+		if (writingOpen()) {
+			return writingPage(g, player, method, stage, mx, my, partial, color);
+		}
 
 		// ---- the method: its cover, large, in a frame of its colour.
 		g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_INSET, 12, 26, 58, 58);
@@ -408,9 +516,12 @@ public class AuraScreen extends Screen {
 		Component tech = Component.translatable("screen.wildercord.aura.techniques");
 		Component strings = Component.translatable("screen.wildercord.aura.arts");
 		Component wayTab = Component.translatable("screen.wildercord.aura.way");
+		Component writeTab = Component.translatable("screen.wildercord.aura.writing");
 		boolean ways = dev.wildercord.aura.Ways.on(minecraft.player) && !dev.wildercord.api.AuraApi.ways().isEmpty();
-		boolean onWay = way && ways;
-		boolean onArts = arts && !onWay;
+		boolean writes = Techniques.on(minecraft.player);
+		boolean onWrite = writing && writes;
+		boolean onWay = way && ways && !onWrite;
+		boolean onArts = arts && !onWay && !onWrite;
 		tabsY = y;
 		techLeft = 14;
 		techRight = techLeft + font.width(tech);
@@ -418,10 +529,13 @@ public class AuraScreen extends Screen {
 		artsRight = artsLeft + font.width(strings);
 		wayLeft = artsRight + 14;
 		wayRight = ways ? wayLeft + font.width(wayTab) : wayLeft;
+		writeLeft = (ways ? wayRight : artsRight) + 14;
+		writeRight = writes ? writeLeft + font.width(writeTab) : writeLeft;
 		boolean overTech = inside(mx, my, techLeft, y - 2, techRight - techLeft, 12);
 		boolean overArts = inside(mx, my, artsLeft, y - 2, artsRight - artsLeft, 12);
 		boolean overWay = ways && inside(mx, my, wayLeft, y - 2, wayRight - wayLeft, 12);
-		g.text(font, tech, techLeft, y, !onArts && !onWay ? GOLD : overTech ? TEXT : DIM, true);
+		boolean overWrite = writes && inside(mx, my, writeLeft, y - 2, writeRight - writeLeft, 12);
+		g.text(font, tech, techLeft, y, !onArts && !onWay && !onWrite ? GOLD : overTech ? TEXT : DIM, true);
 		g.text(font, strings, artsLeft, y, onArts ? GOLD : overArts ? TEXT : DIM, true);
 		g.fill(techRight + 6, y + 1, techRight + 7, y + 8, FAINT);
 		if (ways) {
@@ -434,10 +548,39 @@ public class AuraScreen extends Screen {
 			g.text(font, wayTab, wayLeft, y, wayColor, true);
 			g.fill(artsRight + 6, y + 1, artsRight + 7, y + 8, FAINT);
 		}
-		int under = onWay ? wayLeft : onArts ? artsLeft : techLeft;
-		int underRight = onWay ? wayRight : onArts ? artsRight : techRight;
+		if (writes) {
+			int writeColor = onWrite ? GOLD : overWrite ? TEXT : DIM;
+			if (!onWrite && Techniques.slots(minecraft.player) > 0 && Techniques.book(minecraft.player).slots().stream().allMatch(Techniques.Written::empty)) {
+				// An empty slot waiting at Edge and nothing written yet: the tab breathes gold too.
+				double pulse = 0.5 + 0.5 * Math.sin(minecraft.level.getGameTime() * 0.2);
+				writeColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
+			}
+			g.text(font, writeTab, writeLeft, y, writeColor, true);
+			g.fill(writeLeft - 8, y + 1, writeLeft - 7, y + 8, FAINT);
+		}
+		int under = onWrite ? writeLeft : onWay ? wayLeft : onArts ? artsLeft : techLeft;
+		int underRight = onWrite ? writeRight : onWay ? wayRight : onArts ? artsRight : techRight;
 		g.fill(under, y + 9, underRight, y + 10, 0xFF000000 | (GOLD & 0xFFFFFF));
 		return y + 13;
+	}
+
+	/**
+	 * The writing page: the method, stage and aura in one line by the title (the page needs the room the header takes on the other tabs),
+	 * the tabs under it, then the page itself ({@link TechniquePage}).
+	 */
+	private List<Component> writingPage(GuiGraphicsExtractor g, LocalPlayer player, BreathingMethod method, int stage, int mx, int my, float partial,
+			int color) {
+		Component stageName = Component.translatable("aura.wildercord.stage." + AuraStages.id(stage));
+		Component line = Component.translatable("screen.wildercord.aura.writing.header", Component.translatable(method.nameKey()), stageName,
+			(int) Aura.aura(player), Aura.capacity(player));
+		int lw = (int) (font.width(line) * 0.8F);
+		g.pose().pushMatrix();
+		g.pose().translate(W - 14 - lw, 11);
+		g.pose().scale(0.8F, 0.8F);
+		g.text(font, line, 0, 0, color, false);
+		g.pose().popMatrix();
+		tabs(g, 24, mx, my, color);
+		return page.draw(g, player, mx, my, partial, color & 0xFFFFFF);
 	}
 
 	// ------------------------------------------------------------------ the Way tab

@@ -403,7 +403,7 @@ public final class SwordStrings {
 
 	/** The same, for {@code player} (their price at their momentum, and what the condition waits on for them). Both sides. */
 	public static Component refusal(Player player, AuraApi.StringArt art, Refusal why) {
-		Component name = Component.translatable(art.nameKey());
+		Component name = AuraApi.artName(player, art);
 		return switch (why) {
 			case NO_WEAPON -> Component.translatable("message.wildercord.aura.no_weapon").withColor(0xA89CC8);
 			case NOT_READY -> Component.translatable("message.wildercord.aura.art.not_ready", name).withColor(0xA89CC8);

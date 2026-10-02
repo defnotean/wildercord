@@ -1133,6 +1133,54 @@ the later steps in [AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-7-ways)):
   (the crossroads at the breakthrough, its strikes and the moment; the stance calling it; each Way's moment; every node on husks, a rival
   and an ally; the incense; a death; the Aura page).
 
+### Techniques of your own: `aura.Techniques`, `TechniqueRules`, `arts.TechniqueArts`, `ScrollSources`, `world.TechniqueScrollItem`
+
+A swordsman's own techniques from Edge, a stroke, a release and an intent on a string of their own (the rules and numbers are DESIGN.md's
+[Techniques of your own](DESIGN.md#techniques-of-your-own); notes for the later steps in
+[AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-8-techniques-of-your-own)):
+
+- **Pure part** (unit-tested by `TechniqueRulesTest`): `aura.TechniqueRules`: the families and parts (`Stroke`, `Release`, `Intent`, their
+  ids, `STROKES`, `RELEASES`, `intents()`, `registerIntent` for an add-on's, `DEEP` at Tempered), where each comes from (`INNATE`,
+  `WAY_PARTS`, `WAY_ONLY`, `lendingNode`, `scrollable`, `scrollParts`, `duelistWeights`, `draw`), the method's element (`Flavour`,
+  `flavour(method)`), ranks (`RANKS`, `THRESHOLDS`, `RANK_STRENGTH`, `rank`, `progress`), tempers and edges (`TEMPERS`, `EDGES`,
+  `TEMPER_RANK`, `EDGE_RANK`, `CHANGE_LEVELS`, `INSCRIBE_RANK`, `validChoice`), the `Profile` (`profile(...)`: everything a technique does,
+  as performed), its worth through `ArtRules` (`model`, `worth`, `pricedWorth`) and price (`AURA_PER_W`, `TICKS_PER_W`, `effort`, `cost`,
+  `rest`), the strings (`MIN_STRING`, `MAX_STRING`, `MIN_WEIGHT`, `StringProblem`, `problem`, `clash`, `overlap`, `incidentalCue`), names
+  (`MAX_NAME`, `cleanName`, `nameCharacter`, `autoName`), slots (`MAX_SLOTS`, `slots(stage)`, `slotStage`, `artId`, `slotOf`, `key`,
+  `MAX_RECORDS`), the momentum slot (`momentumSlot`) and experience (`strike`, `repetition`, `practice`).
+- **`aura.Techniques`**: the `BOOK` attachment (`aura_techniques`: `Book` of the parts learned, three `Written` slots and the `Honing`
+  records; saved, synced to its owner, kept through death); reading on both sides (`on`, `book`, `slots`, `knows`, `known`, `lent`,
+  `usable`, `rank`, `profile`, `pricedWorth`, `whole`); the string source (`strings(player)`, one `AuraApi.StringArt` a written slot,
+  cached by book and method) and the namer (`name`, `kicker`, `momentumSlot` for the banner and momentum); the checks (`refusal`,
+  `clashes`, `overlaps`, both sides, so the page says first what the server would); the payloads (`Write`, `Erase`, `Choose`,
+  `Inscribe`, one `PacketThrottle`); on the server `write`, `erase`, `choose`, `inscribe`, `teach`, `forget`, `duelistLesson`, `set`,
+  `clear`, `setXp`, and the ranks (`Use`: one performance's experience as its strikes land; `gain`, `ranked`).
+- **`aura.arts.TechniqueArts`**: `perform(player, context)` (the string art's performer): a `Cast` holding where the swordsman stood and
+  faced, its `ArtKit.Hits`, then the release (`blade`, `wave`, `burst`, `afterimage`), `swordsman` (ward, rally), `echo`, and per foe struck
+  `intent` (an add-on's through `AuraApi.intentEffect`) and `element`; Thunder's `spark` waits until the stroke has struck all it will.
+  The stroke's light is `drawStroke` (spectacle for the big shapes, a thin low version in the swordsman's own view). `voice(release)`.
+- **`aura.ScrollSources`**: `Source(id, lootTable, chance, weights)` and `draw`, the built-in sources (the world's structures, the
+  expeditions' vaults, the fallen knight, and `sword_tomb` in code), `register`/`byId`/`all`/`forLootTable`, the `RandomPart` loot function
+  (`wildercord:random_technique_part`) and the pools added on `LootTableEvents.MODIFY`, scaled by `technique_scroll_chance`.
+- **`aura.world.TechniqueScrollItem`**: the item (`wildercord:technique_scroll`), the `PART` component (`wildercord:technique_part`),
+  `of(part)`, `partOf`, its name and tooltip by part, using it (refusals: aura off, techniques off, no method, known), the creative tab's.
+- **Where it touches the rest**: `Aura` (`Techniques.init` after Ways, `forget`/`clear`, the sounds), `AuraFx` (the banner names a
+  technique through `AuraApi.artName`, its kicker through `Techniques.kicker`, Peerless grand), `SwordStrings` (refusal lines through
+  `artName`), `Momentum.artLanded` (a technique builds as the slot nearest its worth), `AuraCombat` (`moment`, `worth`), `WayBanner`
+  (`steady`, `company`, `swordsmen` public for ward and rally), `ArtKit.Hits` (`wearing`, `scaled`, `scaling`), `DuelistDuels` (a
+  beaten duelist's lesson), `AuraClient` (a single afterimage where `from` and `to` meet), `AuraCommand` (`technique learn|forget|xp|
+  clear`, the report), `config.WildercordConfig.AuraTechniques` and `Config.Sync.combat` bit 16 (`Config.techniques`), `AuraApi` (below).
+- **Client**: `client.TechniquePage` (the writing page: slots, name, seals, picker, readout, kata, string, status, rank strip; its own
+  input), `AuraScreen` (the Writing tab, text input started and stopped with the screen; `showWriting`, `showingWriting`,
+  `writingTabPoint`, `writingPoint` for the tests).
+- **Assets**: `tools/technique_art.py` (each part's glyph `technique/<part>` and `technique/unknown`, the seals, the scroll's icons by family
+  and its item model, and `LANG`), `tools/feel/aura_techniques.py` (`aura_technique_*`, added to the aura part).
+- **Tests**: `TechniqueRulesTest` (the parts, shapes, releases, intents, elements, every combination's worth and price inside the arts'
+  band at every rank, temper, edge, method and string, the strings' rules, names, slots, ranks and experience, where parts come from, an
+  add-on's intent, the book's codecs), `WildercordConfigTest` (the keys, ranges, old files, the sync bit), game test
+  `WildercordTechniquesTest` (the page written by hand, each release and intent, every element, ranks, scrolls, slots and a forged name,
+  the awakened and fair, a Way's lent part; `WILDERCORD_TECHNIQUES` picks scenes).
+
 ### Hooks for the next wave: `api.AuraApi`
 
 The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in
@@ -1159,6 +1207,13 @@ through them, all on the server thread unless noted, registered at start-up:
 | `onAwakening(new AwakeningHook() { awakened(player, ticks); ended(player); })`, `awakened`, `spent`, `awakeningLeft`, `awakeningRefusal`, `awaken`, `endAwakening` | Awakening: hear of one begun and one ended (spent after), read it on both sides, awaken a swordsman through every check, or end one now. |
 | `onString((player, art, context) -> ...)` | Hears of every art performed, after it's paid for (momentum, a bonded blade's resonance, a trial). `StringContext` carries the swings' marks (`released(token)`), the creature the last swing struck (the server's own `lastHurtMob`, or null) and the time. |
 | `registerWay(new Way(id, color, List.of(new WayNode(nodeId, stage), ...)))`, `ways()`, `way(id)`, `wayOf(player)`, `hasWayNode(player, nodeId)`, `wayNodeState`, `chooseWay`, `unbindWay`, `openCrossroads`, `onWay(new WayHook() { chosen(player, way, first); unbound(player, way); })` | Ways: add one (the crossroads raises a standard for it, up to six; the Aura page draws a column; names `aura.wildercord.way.<id>`, `.creed`, `.short`, nodes `aura.wildercord.way_node.<id>`, `.passive`, `.change`), read a player's on both sides, ask whether a node is in force (walked, reached, settled), set or take one outright for a rite of your own, raise the crossroads, hear of choices and unbindings. A node's effect is its Way's own code, through the hooks here, asking `hasWayNode`. |
+| `nameArts((player, art) -> name)`, `artName(player, art)` | A name for an art of a player's own (techniques use it: the writer's name, cleaned), asked before its lang key wherever an art is named to its player or others (the banner, refusals). Return null to pass. Both sides. |
+| `onTechnique(new TechniqueHook() { written(player, slot, technique); ranked(player, slot, technique, rank); learned(player, part, source); })` | Techniques of one's own: one written, one reaching a rank (Honed 2 to Peerless 5), a part learned for good (`scroll`, `duelist`, or yours). Every one performed is heard through `onString` (its id `technique_1` to `technique_3`). |
+| `registerTechniqueIntent(TechniqueRules.Intent.own(id, factor, control, area), (player, foe, taken, profile) -> ...)`, `intentEffect(id)` | An intent of your own (a namespaced id): its factor on the blow and what it's worth (control seconds, area) for the balance model; the effect runs on each foe a technique struck. Lang `aura.wildercord.technique_part.<namespace>.<path>` and `.desc`. Learned only through `teachPart`. |
+| `techniqueParts(family)`, `knowsPart(player, part)`, `partsOf(player)`, `writtenTechniques(player)`, `techniqueRank(player, slot)` | Reading: every part of a family, whether a player knows one (learned, innate or lent), everything they know, their three slots, a slot's rank (1 to 5, 0 empty). Both sides. |
+| `teachPart(player, part, sourceId)` | Teach a part for good (a master's lesson, a tomb's inscription): the line, the sound, the Grimoire and the hooks, as a scroll does. False if it's known, or no part. |
+| `techniqueScroll(part)` | A technique scroll of a part, for loot of your own. |
+| `registerScrollSource(new ScrollSources.Source(id, lootTable, chance, weights))`, `drawScrollPart(sourceId, random)` | Another place scrolls turn up: a loot table (its chance a percent, scaled by `technique_scroll_chance`), or a source in code with `lootTable` "" that draws with `drawScrollPart`. Built in for step 11: `sword_tomb`. |
 
 Other seams: `AuraCombat.blow` and `landed` (where aura marks and Dominion's chain join a blow), `AuraCombat.projected`
 (aura damage at anything, with the spell defences), `AuraRules.capBonus`, `AuraCombat.againstPlayer` and

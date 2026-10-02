@@ -927,6 +927,96 @@
       ],
       "subtitle": "tell"
     },
+    "aura_technique_afterimage": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_technique_afterimage"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_technique_afterimage_strike": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_technique_afterimage_strike_1",
+        "kit/aura/aura_technique_afterimage_strike_2"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_technique_burst": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_technique_burst_1",
+        "kit/aura/aura_technique_burst_2"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_technique_echo": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_technique_echo_1",
+        "kit/aura/aura_technique_echo_2"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_technique_learn": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_technique_learn"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_technique_on_the_blade": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_technique_on_the_blade_1",
+        "kit/aura/aura_technique_on_the_blade_2"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_technique_rally": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_technique_rally"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_technique_rank": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_technique_rank"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_technique_sunder": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_technique_sunder_1",
+        "kit/aura/aura_technique_sunder_2"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_technique_ward": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_technique_ward"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_technique_wave": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_technique_wave_1",
+        "kit/aura/aura_technique_wave_2"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_technique_write": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_technique_write"
+      ],
+      "subtitle": "tell"
+    },
     "aura_thunder_art": {
       "attenuation": 24,
       "files": [

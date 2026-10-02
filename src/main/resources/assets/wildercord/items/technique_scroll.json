@@ -1,0 +1,132 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "minecraft:component",
+    "component": "wildercord:technique_part",
+    "cases": [
+      {
+        "when": "thrust",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/stroke"
+        }
+      },
+      {
+        "when": "rising_cut",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/stroke"
+        }
+      },
+      {
+        "when": "falling_cut",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/stroke"
+        }
+      },
+      {
+        "when": "sweep",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/stroke"
+        }
+      },
+      {
+        "when": "spin",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/stroke"
+        }
+      },
+      {
+        "when": "draw",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/stroke"
+        }
+      },
+      {
+        "when": "on_the_blade",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/release"
+        }
+      },
+      {
+        "when": "wave",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/release"
+        }
+      },
+      {
+        "when": "burst",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/release"
+        }
+      },
+      {
+        "when": "afterimage",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/release"
+        }
+      },
+      {
+        "when": "pierce",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/intent"
+        }
+      },
+      {
+        "when": "sunder",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/intent"
+        }
+      },
+      {
+        "when": "bind",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/intent"
+        }
+      },
+      {
+        "when": "echo",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/intent"
+        }
+      },
+      {
+        "when": "ward",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/intent"
+        }
+      },
+      {
+        "when": "rally",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/intent"
+        }
+      },
+      {
+        "when": "infuse",
+        "model": {
+          "type": "minecraft:model",
+          "model": "wildercord:item/technique_scroll/intent"
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "wildercord:item/technique_scroll/unknown"
+    }
+  }
+}
