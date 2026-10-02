@@ -171,6 +171,8 @@ public final class Aura {
 		if (after != data.aura()) {
 			set(player, data.withAura(after));
 		}
+		// The Way of the Banner at Form: a share flows to allied swordsmen near.
+		WayBanner.auraGained(player, after - before, source);
 		return after - before;
 	}
 
@@ -332,6 +334,8 @@ public final class Aura {
 			AuraVfx.breathe(player, color(player));
 		}
 		AuraBreakthroughs.stillness(player, now);
+		// A swordsman past the crossroads with no Way calls it by breathing a few seconds.
+		Crossroads.breathing(player, state(player), now);
 	}
 
 	/** A breath (sneak let up and pressed again) while in the stance: on the beat it draws in aura at once. */
@@ -516,6 +520,8 @@ public final class Aura {
 		dev.wildercord.aura.Stance.init();
 		// Awakening (after momentum: it holds momentum at its peak, and holds it again after momentum empties in a new world).
 		Awakening.init();
+		// Ways, chosen at the crossroads at the Edge breakthrough: a node at Edge, Form and Sovereign changing a technique.
+		Ways.init();
 		AuraMethods.init();
 		Crescents.init();
 		AuraCombat.init();

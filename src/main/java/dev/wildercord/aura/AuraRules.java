@@ -176,6 +176,11 @@ public final class AuraRules {
 		return Parry.timed(raisedAt, now);
 	}
 
+	/** The same, for a perfect moment {@code window} ticks long (a Way of the Bulwark's is longer). */
+	public static boolean perfect(long raisedAt, long now, int window) {
+		return raisedAt >= 0 && now >= raisedAt && now - raisedAt <= Math.max(0, window);
+	}
+
 	/**
 	 * What a held guard takes off a blow of {@code incoming}: {@code share} of it, as far as {@code aura} pays for at
 	 * {@link #GUARD_COST_PER_POINT} a point.
@@ -351,10 +356,16 @@ public final class AuraRules {
 
 	/** What aura armour takes off a blow of {@code incoming}, holding {@code aura}. */
 	public static double armourAbsorb(double incoming, double aura, double share) {
+		return armourAbsorb(incoming, aura, share, 1.0);
+	}
+
+	/** The same, its price a point times {@code costScale} (a Way of the Bulwark's is cheaper, so the same aura takes more). */
+	public static double armourAbsorb(double incoming, double aura, double share, double costScale) {
 		if (incoming <= 0 || aura < ARMOUR_MIN - 1.0E-9) {
 			return 0;
 		}
-		return Math.max(0, Math.min(incoming * Math.max(0, Math.min(1, share)), (aura - ARMOUR_MIN) / ARMOUR_COST_PER_POINT + 1.0E-9));
+		double cost = ARMOUR_COST_PER_POINT * Math.max(1.0E-3, costScale);
+		return Math.max(0, Math.min(incoming * Math.max(0, Math.min(1, share)), (aura - ARMOUR_MIN) / cost + 1.0E-9));
 	}
 
 	/** Intent (Form, always on): how far it reaches, how often it presses, and how long a weaker creature stays slowed. */

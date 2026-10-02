@@ -178,6 +178,8 @@ public final class Momentum {
 		double after = Math.max(before, Math.min(Math.min(MomentumRules.MAX, ceiling), before + Math.max(0, a)));
 		write(player, after, true);
 		climbed(player, MomentumRules.tier(before), MomentumRules.tier(after));
+		// The Way of the Banner: a share builds for allied swordsmen near too.
+		WayBanner.momentumBuilt(player, after - before, source);
 		return after - before;
 	}
 
@@ -471,7 +473,8 @@ public final class Momentum {
 		MomentumRules.Temper temper = temper(player);
 		long now = player.level().getGameTime();
 		double before = state(player).at(now);
-		double lost = MomentumRules.loss(before, taken, player.getMaxHealth(), guarded, temper);
+		// A Bulwark (and anyone with a Banner at Sovereign near) gives less of it up.
+		double lost = MomentumRules.loss(before, taken, player.getMaxHealth(), guarded, temper) * WayEffects.lossScale(player);
 		if (lost > 0) {
 			lose(player, lost, true);
 		} else {

@@ -244,7 +244,8 @@ public final class Awakening {
 		if (!s.awakened(now)) {
 			return;
 		}
-		int more = AwakeningRules.extend(s.extended());
+		// Twice as long a finisher on the Way of the Blade at Sovereign.
+		int more = WayEffects.feed(player, s.extended());
 		if (more <= 0) {
 			return;
 		}
@@ -278,8 +279,8 @@ public final class Awakening {
 				AwakeningFx.recovered(player);
 				return;
 			}
-			// The slow holds the whole spent time (milk doesn't wash a spent body clean).
-			if ((now + player.getId()) % 20 == 0 && !player.hasEffect(MobEffects.SLOWNESS)) {
+			// The slow holds the whole spent time (milk doesn't wash a spent body clean); the Way of the Bulwark at Sovereign keeps its feet.
+			if ((now + player.getId()) % 20 == 0 && !player.hasEffect(MobEffects.SLOWNESS) && WayEffects.spentSlows(player)) {
 				slow(player, (int) (s.spentUntil() - now));
 			}
 		}
@@ -301,7 +302,9 @@ public final class Awakening {
 		Momentum.hold(player, 0, 0);
 		Momentum.reset(player);
 		if (still) {
-			slow(player, (int) (spentUntil - now));
+			if (WayEffects.spentSlows(player)) {
+				slow(player, (int) (spentUntil - now));
+			}
 			AwakeningFx.spent(player);
 		}
 		for (AuraApi.AwakeningHook hook : AuraApi.awakeningHooks()) {

@@ -81,11 +81,11 @@ public final class AuraGuard {
 		return Aura.state(player).guarding(player.level().getGameTime());
 	}
 
-	/** Whether the guard is in its perfect moment now. */
+	/** Whether the guard is in its perfect moment now (half again as long on the Way of the Bulwark). */
 	public static boolean perfectNow(Player player) {
 		AuraAttachments.State state = Aura.state(player);
 		long now = player.level().getGameTime();
-		return state.guarding(now) && AuraRules.perfect(state.guardRaised(), now);
+		return state.guarding(now) && AuraRules.perfect(state.guardRaised(), now, WayEffects.perfectWindow(player));
 	}
 
 	/** Whether the guard covers this harm: a blow or a projectile, from in front. */
@@ -99,7 +99,7 @@ public final class AuraGuard {
 		if (!projectile && !blow) {
 			return false;
 		}
-		return facing(player, direct.position());
+		return faces(player, direct.position());
 	}
 
 	/** Whether {@code from} is in front of the player (the guard's half). */
@@ -107,6 +107,11 @@ public final class AuraGuard {
 		Vec3 toward = from.subtract(player.position());
 		Vec3 look = player.getViewVector(1.0F);
 		return toward.horizontalDistanceSqr() < 1.0E-4 || look.x * toward.x + look.z * toward.z > 0;
+	}
+
+	/** Whether the player's guard covers harm coming from {@code from}: in front, or from every side on the Way of the Bulwark. */
+	public static boolean faces(ServerPlayer player, Vec3 from) {
+		return facing(player, from) || WayEffects.coversAll(player);
 	}
 
 	/**
@@ -118,17 +123,26 @@ public final class AuraGuard {
 		if (!(entity instanceof ServerPlayer player)) {
 			return null;
 		}
-		if (!perfectNow(player) || !facing(player, projectile.position())) {
+		if (!perfectNow(player) || !faces(player, projectile.position())) {
+			// A held guard on the Way of the Bulwark turns shots back too (for a little aura each).
+			if (guarding(player) && faces(player, projectile.position()) && WayEffects.turnsShot(player)) {
+				return turnBack(player, projectile, projectile.getOwner());
+			}
 			// No perfect guard: an art's ward may still turn it (Glacier Mirror's ice, the Eye of the Storm's wind).
 			return dev.wildercord.aura.arts.ArtWards.deflection(player, projectile);
 		}
 		long now = player.level().getGameTime();
-		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
+		Aura.state(player, Aura.state(player).guard(now - WayEffects.perfectWindow(player) - 1, Aura.state(player).guardUntil()));
 		Entity shooter = projectile.getOwner();
 		caught(player, shooter instanceof LivingEntity living ? living : null, 0);
 		feedback(player);
 		Momentum.guarded(player, false);
 		Grimoire.unlock(player, "aura:perfect_guard");
+		return turnBack(player, projectile, shooter);
+	}
+
+	/** A shot turned back at whoever loosed it, a quarter faster, as the guard's own from the next tick. */
+	private static net.minecraft.world.entity.projectile.ProjectileDeflection turnBack(ServerPlayer player, Projectile projectile, Entity shooter) {
 		double speed = Math.min(3.0, Math.max(0.6, projectile.getDeltaMovement().length()) * Parry.REFLECT_SPEED);
 		Scheduler.later(1, () -> {
 			if (!projectile.isRemoved()) {
@@ -175,6 +189,8 @@ public final class AuraGuard {
 		if (source.getEntity() instanceof LivingEntity attacker && source.getDirectEntity() == attacker) {
 			Stance.guarded(player, attacker, absorbed);
 		}
+		// The Way of the Bulwark: the held guard throws a share back at its striker, and staggers a creature that struck it.
+		WayEffects.held(player, source, absorbed);
 		if (Aura.aura(player) <= 1.0E-3 && absorbed < damage * share - 1.0E-3) {
 			// It took what it could and has nothing left: it breaks.
 			breaks(player, now);
@@ -193,10 +209,11 @@ public final class AuraGuard {
 		ServerLevel level = player.level();
 		long now = level.getGameTime();
 		// The perfect moment answers once.
-		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
+		Aura.state(player, Aura.state(player).guard(now - WayEffects.perfectWindow(player) - 1, Aura.state(player).guardUntil()));
 		// What it caught, for the counter that may follow (a Third Art answers the one who struck, and some throw the blow back).
 		caught(player, source.getEntity() instanceof LivingEntity attacker && attacker != player ? attacker : null, damage);
 		Entity direct = source.getDirectEntity();
+		LivingEntity slipFrom = null;
 		if (source.is(Aura.DAMAGE)) {
 			// Aura off a blade (a slash, a spark): a crescent is sent back at whoever loosed it, as the guard's own. Nobody is
 			// staggered from across a field.
@@ -207,8 +224,13 @@ public final class AuraGuard {
 			stagger(player, attacker);
 			// A blow turned aside whole breaks into its striker's stance.
 			Stance.guardBreak(player, attacker);
+			slipFrom = attacker;
 		}
 		feedback(player);
+		if (slipFrom != null) {
+			// The Way of the Shadowstep: the swordsman slips behind the one who struck, for the counter to fall on its back.
+			WayEffects.slip(player, slipFrom);
+		}
 		Momentum.guarded(player, direct instanceof LivingEntity && !source.is(Aura.DAMAGE));
 		// The first one goes into the Grimoire.
 		Grimoire.unlock(player, "aura:perfect_guard");
@@ -311,7 +333,7 @@ public final class AuraGuard {
 			return false;
 		}
 		long now = player.level().getGameTime();
-		Aura.state(player, Aura.state(player).guard(now - AuraRules.PERFECT_TICKS - 1, Aura.state(player).guardUntil()));
+		Aura.state(player, Aura.state(player).guard(now - WayEffects.perfectWindow(player) - 1, Aura.state(player).guardUntil()));
 		caught(player, null, 0);
 		feedback(player);
 		Momentum.guarded(player, false);

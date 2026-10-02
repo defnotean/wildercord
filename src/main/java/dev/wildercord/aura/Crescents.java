@@ -87,6 +87,10 @@ public final class Crescents {
 		/** Where it ended against a wall, and the block it struck; null while it flies or for any other ending. */
 		Vec3 endAt;
 		BlockPos blockedAt;
+		/** Whether it pierces (the Way of the Blade): a held guard doesn't stop it, and it cuts through a crescent it meets. */
+		boolean pierce;
+		/** What's left of its harm (a piercing crescent that won a clash flies on weaker). */
+		double scale = 1.0;
 
 		Flight(LivingEntity caster, Vec3 origin, Vec3 aim, int color, double damage, double bonus, double speed, double range, double width, int targets,
 				boolean weak, Predicate<Entity> mayCut, Cut cut) {
@@ -118,7 +122,17 @@ public final class Crescents {
 
 		/** Its harm before the defences of whatever it cuts. */
 		public double damage() {
-			return damage;
+			return damage * scale;
+		}
+
+		/** Makes it pierce (the Way of the Blade's slash): a held guard doesn't stop it, and it cuts through a crescent it meets. */
+		public Flight pierce() {
+			this.pierce = true;
+			return this;
+		}
+
+		public boolean pierces() {
+			return pierce;
 		}
 
 		/** What multiplies its harm on top of the element, held to the spell-defence cap against a player (a forged glaive's). */
@@ -334,7 +348,10 @@ public final class Crescents {
 				cutting = before;
 			}
 			AuraVfx.slashCut(flight.level, target.getBoundingBox().getCenter(), flight.aim, flight.color);
-			if (catches && !flight.done) {
+			if (catches && !flight.done && flight.pierce) {
+				// A piercing crescent cuts through the guard (which still took its share) and flies on.
+				AuraVfx.slashCut(flight.level, front, flight.aim, AuraVfx.hot(flight.color, 0.5));
+			} else if (catches && !flight.done) {
 				// A held guard facing it takes the cut and stops it there: nothing behind the guard is reached.
 				flight.done = true;
 				AuraVfx.slashEnd(flight.level, front.subtract(flight.aim.scale(0.6)), flight.aim, flight.color);
@@ -345,17 +362,25 @@ public final class Crescents {
 	/** Whether {@code target}'s guard is up and facing the crescent's way. */
 	static boolean caught(LivingEntity target, Flight flight) {
 		if (target instanceof ServerPlayer player) {
-			return AuraGuard.guarding(player) && AuraGuard.facing(player, flight.origin);
+			return AuraGuard.guarding(player) && AuraGuard.faces(player, flight.origin);
 		}
 		return target instanceof Guarding guarding && guarding.catches(flight);
 	}
 
 	// ------------------------------------------------------------------ meeting
 
-	/** Two crescents meeting in the air: both break in a burst of their colours, shoving creatures back and harming nobody. */
+	/**
+	 * Two crescents meeting in the air: both break in a burst of their colours, shoving creatures back and harming nobody. A piercing
+	 * crescent (the Way of the Blade's) meeting one that doesn't cuts it apart and flies on, weaker.
+	 */
 	static void clash(Flight a, Flight b) {
+		Flight winner = a.pierce && !b.pierce ? a : b.pierce && !a.pierce ? b : null;
 		a.done = true;
 		b.done = true;
+		if (winner != null) {
+			winner.done = false;
+			winner.scale *= WayRules.BLADE_CLASH_CARRY;
+		}
 		ServerLevel level = a.level;
 		Vec3 at = a.front.add(b.front).scale(0.5);
 		AuraVfx.clash(level, at, a.aim, a.color, b.color);
@@ -390,7 +415,7 @@ public final class Crescents {
 		if (aim.lengthSqr() < 1.0E-4) {
 			aim = by.getViewVector(1.0F);
 		}
-		launch(by, origin, aim, color, flight.damage, flight.bonus, Math.min(2.4, flight.speed * 1.15), flight.range(), flight.width, flight.targets, false,
+		launch(by, origin, aim, color, flight.damage(), flight.bonus, Math.min(2.4, flight.speed * 1.15), flight.range(), flight.width, flight.targets, false,
 			mayCut, cut);
 		AuraVfx.slashStart(flight.level, origin, aim.normalize(), color);
 		return true;

@@ -252,6 +252,14 @@ public final class StanceRules {
 		return Math.max(0, extra * scale);
 	}
 
+	/**
+	 * The most a finisher may add against a player with {@code maxHealth}: {@link #PVP_FINISHER} under the PvP scale and a quarter of their
+	 * health, times the server's {@code finisher_damage} (anything that makes finishers harder, a Way's, holds to it too).
+	 */
+	public static double playerFinisherCap(double maxHealth, double pvpScale, double scale) {
+		return Math.max(0, Math.min(PVP_FINISHER * Math.max(0, pvpScale), PVP_FINISHER_HEALTH * Math.max(1, maxHealth)) * Math.max(0, scale));
+	}
+
 	/** The aura a finisher gives back: more at each stage (Glow 8 to Sovereign 16), a quarter of it on a practice target. */
 	public static double finisherAura(int stage, boolean practice) {
 		double a = 6.0 + 2.0 * AuraRules.clampStage(Math.max(AuraRules.GLOW, stage));

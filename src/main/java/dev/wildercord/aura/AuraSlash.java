@@ -32,9 +32,10 @@ public final class AuraSlash {
 			return false;
 		}
 		WildercordConfig.AuraSettings settings = Config.get().aura();
-		double price = settings.slashCost();
+		// Awakened on the Way of the Blade at Sovereign, it's free and quick.
+		double price = WayEffects.slashPrice(player, settings.slashCost());
 		AuraRules.Spend paid = Aura.spend(player, price, "slash");
-		Aura.state(player, Aura.state(player).slashReady(now + settings.slashCooldownTicks()));
+		Aura.state(player, Aura.state(player).slashReady(now + WayEffects.slashRest(player, settings.slashCooldownTicks())));
 		double weapon = player.getAttributeValue(Attributes.ATTACK_DAMAGE);
 		double damage = AuraRules.slashDamage(weapon, settings.slashDamage(), Math.max(price, 1.0E-6), price <= 0 ? 1 : paid.paid())
 			* settings.damageScale();
@@ -94,8 +95,14 @@ public final class AuraSlash {
 			}
 			return taken;
 		};
+		// The Way of the Blade's slash pierces: through a held guard, through more foes, and through a crescent it meets.
+		boolean pierces = WayEffects.pierces(player);
 		Crescents.Flight flight = Crescents.launch(player, origin, flat, color, damage, bonus, AuraRules.SLASH_SPEED, AuraRules.SLASH_RANGE * reach,
-			AuraRules.SLASH_WIDTH * reach, AuraRules.SLASH_TARGETS + extraTargets, weak, e -> Targets.canHarm(player, e), cut);
+			AuraRules.SLASH_WIDTH * reach, AuraRules.SLASH_TARGETS + extraTargets + (pierces ? WayRules.BLADE_SLASH_TARGETS : 0), weak,
+			e -> Targets.canHarm(player, e), cut);
+		if (pierces) {
+			flight.pierce();
+		}
 		if (carrying) {
 			flight.onStep(f -> AuraVfx.slashCarry(f.level, f.front, f.aim, f.side, edge, f.step));
 			flight.onEnd((f, at, blocked) -> {

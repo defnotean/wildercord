@@ -29,6 +29,8 @@ public abstract class SwordStringsSeenMixin {
 			SwordStrings.swung(this.player);
 			// Everyone else sees the swing's trail, if the blade has aura enough to coat a blow.
 			dev.wildercord.aura.AuraFx.swung(this.player, false);
+			// A swing at a standard of the swordsman's crossroads strikes it (leaning toward that Way, or walking it).
+			dev.wildercord.aura.Crossroads.swung(this.player);
 		}
 	}
 }

@@ -59,6 +59,9 @@ import java.util.function.Predicate;
  *       momentum enough let a swordsman awaken (the Aura key tapped, then held): arts cost little or nothing, momentum holds at its
  *       peak, and they're faster and harder-hitting for a while, then spent. At Sovereign a Dominion raised while awakened is the
  *       method's own.</li>
+ *   <li><b>Ways</b> ({@link #registerWay}, {@link #wayOf}, {@link #hasWayNode}, {@link #onWay}, {@link #openCrossroads}): at the Edge
+ *       breakthrough a swordsman chooses a Way at the crossroads (the Blade, the Bulwark, the Shadowstep, the Banner, or an add-on's),
+ *       which forks their path with a node at Edge, Form and Sovereign: a passive and a change to a technique they know.</li>
  *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
  *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
  *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,
@@ -1010,6 +1013,140 @@ public final class AuraApi {
 	/** Ends {@code player}'s awakening now (they're spent after it, as when it runs out), if they're awakened. */
 	public static void endAwakening(ServerPlayer player) {
 		dev.wildercord.aura.Awakening.endNow(player);
+	}
+
+	// ------------------------------------------------------------------ Ways
+
+	/**
+	 * One node of a Way: what a swordsman walking it gains at {@code stage} (a passive and a change to a technique they know). Its name
+	 * and texts are the language keys {@code aura.wildercord.way_node.<id>}, {@code .passive} and {@code .change} (':' as '.'). What it
+	 * does is its Way's own: the mod's built-in nodes ask {@link #hasWayNode} where the technique they change lives; an add-on's do the
+	 * same through the hooks here ({@link #onMomentum}, {@link #onStance}, {@link #onFinisher}, {@link #onString}, {@link #onAwakening}...).
+	 *
+	 * @param id    its id (a plain word for the mod's own, {@code namespace:path} for an add-on's)
+	 * @param stage the stage it opens at (normally Edge, Form or Sovereign: {@code aura.WayRules#NODE_STAGES})
+	 */
+	public record WayNode(String id, int stage) {
+		public WayNode {
+			if (id == null || id.isBlank()) {
+				throw new IllegalArgumentException("a Way's node needs an id");
+			}
+			stage = Math.max(AuraRules.GLOW, AuraRules.clampStage(stage));
+		}
+
+		public String nameKey() {
+			return "aura.wildercord.way_node." + id.replace(':', '.');
+		}
+
+		/** The language key of its passive's line. */
+		public String passiveKey() {
+			return nameKey() + ".passive";
+		}
+
+		/** The language key of the line saying what it changes. */
+		public String changeKey() {
+			return nameKey() + ".change";
+		}
+	}
+
+	/**
+	 * A Way: chosen at the crossroads at the Edge breakthrough, it forks a swordsman's path with a node at each later stage. Its name and
+	 * creed are the language keys {@code aura.wildercord.way.<id>} and {@code .creed} (':' as '.'); it shows in {@code color} (its
+	 * standard at the crossroads, its column on the Aura page).
+	 *
+	 * @param id    its id (a plain word for the mod's own, {@code namespace:path} for an add-on's)
+	 * @param color its colour, 0xRRGGBB
+	 * @param nodes its nodes, by stage (one a stage)
+	 */
+	public record Way(String id, int color, List<WayNode> nodes) {
+		public Way {
+			if (id == null || id.isBlank()) {
+				throw new IllegalArgumentException("a Way needs an id");
+			}
+			nodes = nodes == null ? List.of() : nodes.stream().sorted(Comparator.comparingInt(WayNode::stage)).toList();
+		}
+
+		public String nameKey() {
+			return "aura.wildercord.way." + id.replace(':', '.');
+		}
+
+		public String creedKey() {
+			return nameKey() + ".creed";
+		}
+
+		/** Its node at {@code stage}, if it has one there. */
+		public Optional<WayNode> node(int stage) {
+			return nodes.stream().filter(n -> n.stage() == stage).findFirst();
+		}
+	}
+
+	/** Hears of Ways chosen ({@code first}: not a change of Way) and unbound (with a Crossroads Incense, or {@link #unbindWay}). */
+	public interface WayHook {
+		default void chosen(ServerPlayer player, Way way, boolean first) {}
+
+		default void unbound(ServerPlayer player, Way way) {}
+	}
+
+	private static final Map<String, Way> WAYS = new LinkedHashMap<>();
+	private static final List<WayHook> WAY_HOOKS = new CopyOnWriteArrayList<>();
+
+	/**
+	 * Adds a Way (or replaces the one with its id). Register on both sides while the mod initialises: the crossroads raises a standard
+	 * for each (up to six), the Aura page draws a column for each. Built in: the Blade, the Bulwark, the Shadowstep and the Banner.
+	 */
+	public static synchronized void registerWay(Way way) {
+		WAYS.put(way.id(), way);
+	}
+
+	/** Every Way, in registration order. Safe on both sides. */
+	public static synchronized List<Way> ways() {
+		return List.copyOf(WAYS.values());
+	}
+
+	public static synchronized Optional<Way> way(String id) {
+		return Optional.ofNullable(id == null ? null : WAYS.get(id));
+	}
+
+	/** The Way {@code player} walks, if any. Both sides (everyone near is told). */
+	public static Optional<Way> wayOf(Player player) {
+		return dev.wildercord.aura.Ways.way(player);
+	}
+
+	/** Whether {@code player}'s Way gives them node {@code nodeId} now: walked, its stage reached, settled after a change. Both sides. */
+	public static boolean hasWayNode(Player player, String nodeId) {
+		return dev.wildercord.aura.Ways.has(player, nodeId);
+	}
+
+	/** Where {@code node} of {@code way} stands for {@code player}: open (no Way yet), chosen, waking, upcoming or locked. Both sides. */
+	public static dev.wildercord.aura.WayRules.NodeState wayNodeState(Player player, Way way, WayNode node) {
+		return dev.wildercord.aura.Ways.nodeState(player, way, node);
+	}
+
+	/**
+	 * Sets {@code player} on the Way {@code wayId} at once, for an add-on's own rite (the mod's own moment is the crossroads, see
+	 * {@link #openCrossroads}): only from Edge, and only while they walk none; a choice after an unbinding owes the settling as the
+	 * crossroads' would. Returns whether it was made.
+	 */
+	public static boolean chooseWay(ServerPlayer player, String wayId) {
+		return dev.wildercord.aura.Ways.choose(player, wayId);
+	}
+
+	/** Takes {@code player}'s Way from them, as a Crossroads Incense does (without asking for a place of power). Returns whether there was one. */
+	public static boolean unbindWay(ServerPlayer player) {
+		return dev.wildercord.aura.Ways.unbind(player).isPresent();
+	}
+
+	/** Raises the crossroads round {@code player} now (Edge or above, walking no Way, and room for it). Returns whether it rose. */
+	public static boolean openCrossroads(ServerPlayer player) {
+		return dev.wildercord.aura.Crossroads.open(player, dev.wildercord.aura.Crossroads.Reason.API);
+	}
+
+	public static void onWay(WayHook hook) {
+		WAY_HOOKS.add(hook);
+	}
+
+	public static List<WayHook> wayHooks() {
+		return WAY_HOOKS;
 	}
 
 	// ------------------------------------------------------------------ feel
