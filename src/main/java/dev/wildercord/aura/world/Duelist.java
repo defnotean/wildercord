@@ -427,7 +427,7 @@ public class Duelist extends AuraFighter {
 	/** It goes: a swirl of its aura, and nothing left behind (its campfire goes too). */
 	public void vanish(ServerLevel level) {
 		Vec3 heart = position().add(0, 1.0, 0);
-		Light.groundRing(level, position(), auraColor(), 0.2, 2.0, 0.08, 16);
+		dev.wildercord.aura.AuraFx.groundScar(level, position(), 2.0, 60, 0);
 		Light.ray(level, position(), position().add(0, 3.5, 0), auraColor(), 0.3, 12);
 		Motes.burst(level, heart, 18, AuraVfx.hot(auraColor(), 0.25), 0.1, 26, 0.18);
 		Feels.sound(level, heart, "aura_breath", 0.8F, Feels.step(4));

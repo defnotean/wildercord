@@ -246,7 +246,26 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		// Filmed: from behind and above (by day), then through the swordsman's own eyes, then by night.
 		thirdPerson(context, world, 0, 24, 6.0, false);
 		context.waitTicks(16);
+		check(context.computeOnClient(mc -> dev.wildercord.client.fx.AuraStandard.showing() == 4),
+			"Crossroads must refresh four authored standards without stacking copies");
+		context.runOnClient(mc -> {
+			var atlas = mc.getAtlasManager().getAtlasOrThrow(net.minecraft.data.AtlasIds.PARTICLES);
+			for (String way : WayRules.BUILT_IN) {
+				check(atlas.getSprite(dev.wildercord.Wildercord.id("aura_standard_" + way)) != atlas.missingSprite(),
+					"The woven standard texture must be in the particle atlas: " + way);
+			}
+			for (String part : List.of("pole", "finial", "unknown")) {
+				check(atlas.getSprite(dev.wildercord.Wildercord.id("aura_standard_" + part)) != atlas.missingSprite(),
+					"The standard's supporting texture must be in the particle atlas: " + part);
+			}
+		});
 		shot(context, "ways_crossroads_tp");
+		context.runOnClient(mc -> MagicQuality.bodyAura = MagicQuality.BodyAura.CALM);
+		context.waitTicks(3);
+		shot(context, "ways_crossroads_calm_tp");
+		check(context.computeOnClient(mc -> dev.wildercord.client.fx.AuraStandard.showing() == 4),
+			"Calm visuals must preserve the selectable standards");
+		context.runOnClient(mc -> MagicQuality.bodyAura = MagicQuality.BodyAura.FULL);
 		firstPerson(context, world);
 		context.waitTicks(8);
 		shot(context, "ways_crossroads_fp");
@@ -318,6 +337,9 @@ public class WildercordWaysTest implements FabricClientGameTest {
 		check(context.computeOnClient(mc -> Ways.way(mc.player).map(AuraApi.Way::id).orElse("")).equals(WayRules.BLADE),
 			"the swordsman's own client should know their Way");
 		check(context.computeOnClient(mc -> Ways.has(mc.player, WayRules.BLADE_EDGE)), "and read its node on the client");
+		context.waitTicks(6);
+		check(context.computeOnClient(mc -> dev.wildercord.client.fx.AuraStandard.showing() == 0),
+			"Cloth standards must expire when their crossroads closes");
 		firstPerson(context, world);
 	}
 
@@ -1135,6 +1157,12 @@ public class WildercordWaysTest implements FabricClientGameTest {
 			return WayBanner.steadiness(rival(player)) > 0 ? "the rival is never steadied" : null;
 		});
 		check(cry == null, cry);
+		context.waitTicks(10);
+		check(context.computeOnClient(mc -> dev.wildercord.client.fx.AuraStandard.showing() == 1),
+			"Rallying Cry must show one authored cloth standard");
+		shot(context, "ways_banner_standard_tp");
+		firstPerson(context, world);
+		shot(context, "ways_banner_standard_fp");
 
 		// Shelter: hits take less of an ally's momentum near a Banner at Sovereign; an awakening rallies the ally's momentum.
 		String near = on(world, player -> {
@@ -1731,7 +1759,10 @@ public class WildercordWaysTest implements FabricClientGameTest {
 	}
 
 	private static void shot(ClientGameTestContext context, String name) {
-		context.runOnClient(mc -> mc.gui.toastManager().clear());
+		context.runOnClient(mc -> {
+			mc.gui.toastManager().clear();
+			mc.gui.hud.getChat().clearMessages(false);
+		});
 		context.takeScreenshot(TestScreenshotOptions.of(name).disableCounterPrefix());
 	}
 

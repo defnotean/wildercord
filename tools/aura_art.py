@@ -384,7 +384,8 @@ def write(g):
     g.save(shell(slim=True), glow / "shell_slim.png")
     # The body's aura by stage (haze, flames, the mantle's ribbons, burning eyes, the pool at the feet) and the technique banner.
     g.save(body(), glow / "body.png")
-    g.save(banner_band(), g.ASSETS / "textures/gui/sprites/hud/aura_banner.png")
+    import aura_standard_art
+    aura_standard_art.write(g)
 
     # What carries aura: servers and add-ons extend it.
     g.write_json(g.DATA / "tags/item/aura_weapons.json", {"replace": False, "values": [

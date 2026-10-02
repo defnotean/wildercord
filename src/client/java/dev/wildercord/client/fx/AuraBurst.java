@@ -15,11 +15,11 @@ import org.joml.Vector3fc;
 
 /**
  * A burst of aura's light ({@link AuraFx.Burst}): a soft flash swelling and gone in a few ticks, a four-pointed glint across it, a
- * ring racing out (and a second behind it), and sparks flung off that slow and fall as streaks. An impact is one of these, sized
+ * sharp impact strokes and sparks flung off that slow and fall as streaks. Ground impact rings are handled as physical scars. An impact is one of these, sized
  * by its weight; a perfect guard another, in the parry's gold.
  *
  * <p>One that would open close to its owner's eyes in their own first-person view is drawn as a whisper of itself: small, faint,
- * moved down and aside to the bottom of the view, its ring only the lower arc of a ring. Everyone else, and the owner in third
+ * moved down and aside to the bottom of the view. Everyone else, and the owner in third
  * person, see it whole.</p>
  */
 public class AuraBurst extends SingleQuadParticle implements SigilGroup.Extent {
@@ -136,12 +136,6 @@ public class AuraBurst extends SingleQuadParticle implements SigilGroup.Extent {
 			star(paint, px, py, pz, right, reach, Math.max(0.01F, s * 0.03F), LightStrokes.argb(0.85F * fade * k, glint));
 			star(paint, px, py, pz, new Vector3f(up), reach * 0.6F, Math.max(0.01F, s * 0.026F), LightStrokes.argb(0.75F * fade * k, glint));
 		}
-		if ((style & AuraFx.Burst.RING) != 0 && t < RING_TICKS) {
-			ring(paint, centre, cam, right, up, t / RING_TICKS, s, k, hot);
-		}
-		if ((style & AuraFx.Burst.ECHO) != 0 && t >= 3 && t < RING_TICKS + 3) {
-			ring(paint, centre, cam, right, up, (t - 3) / RING_TICKS, s * 1.45F, k * 0.6F, color);
-		}
 		if (sparks > 0 && t < SPARK_TICKS) {
 			float fade = 1 - t / SPARK_TICKS;
 			int white = LightStrokes.hot(color, 0.7F);
@@ -178,44 +172,6 @@ public class AuraBurst extends SingleQuadParticle implements SigilGroup.Extent {
 			float mz = z + axis.z * reach * 0.45F * side;
 			paint.segment(true, x, y, z, mx, my, mz, width, argb);
 			paint.segment(true, mx, my, mz, ex, ey, ez, width * 0.55F, LightStrokes.argb(((argb >>> 24) / 255F) * 0.7F, argb));
-		}
-	}
-
-	/** A ring racing out to {@code size} at {@code f} (0 to 1) of its time; in a whisper only its lower arc. */
-	private void ring(LightStrokes paint, Vec3 centre, Vec3 cam, Vector3f right, Vector3f up, float f, float size, float k, int core) {
-		float ease = 1 - (1 - f) * (1 - f) * (1 - f);
-		float radius = size * (0.15F + 0.4F * ease);
-		float fade = (float) Math.pow(1 - f, 1.6);
-		float width = size * 0.05F * (1 - 0.5F * f);
-		// The ring's plane: its facing, or toward the camera.
-		Vec3 n = facing != null && !whisper ? facing : centre.subtract(cam).normalize();
-		Vec3 a = Math.abs(n.y) > 0.95 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0);
-		Vec3 u = a.cross(n).normalize();
-		Vec3 v = n.cross(u).normalize();
-		if (whisper || facing == null) {
-			// Lined up with the view, so "below" is down the screen.
-			u = new Vec3(right.x, right.y, right.z);
-			v = new Vec3(up.x, up.y, up.z);
-		}
-		int pieces = Math.max(16, (int) Math.ceil(Math.PI * 2 * radius / Math.max(0.04, width / LightStrokes.SOFT_SHOWS)));
-		float px = (float) (centre.x - cam.x);
-		float py = (float) (centre.y - cam.y);
-		float pz = (float) (centre.z - cam.z);
-		for (int i = 0; i < pieces; i++) {
-			double ang = Math.PI * 2 * (i + 0.5) / pieces;
-			double sin = Math.sin(ang);
-			if (whisper && sin > -0.25) {
-				continue;
-			}
-			double cos = Math.cos(ang);
-			float x = px + (float) ((u.x * cos + v.x * sin) * radius);
-			float y = py + (float) ((u.y * cos + v.y * sin) * radius);
-			float z = pz + (float) ((u.z * cos + v.z * sin) * radius);
-			float dx = (float) (-u.x * sin + v.x * cos);
-			float dy = (float) (-u.y * sin + v.y * cos);
-			float dz = (float) (-u.z * sin + v.z * cos);
-			paint.piece(false, x, y, z, dx, dy, dz, width * 2.6F, LightStrokes.argb(0.5F * fade * k, color));
-			paint.piece(true, x, y, z, dx, dy, dz, width, LightStrokes.argb(fade * k, core));
 		}
 	}
 

@@ -523,6 +523,13 @@ public class WildercordAuraFxTest implements FabricClientGameTest {
 		context.getInput().releaseKey(WildercordKeys.auraMapping());
 		context.waitTicks(2);
 		shot(context, "aurafx_dominion_tp");
+		check(context.computeOnClient(mc -> dev.wildercord.client.fx.AuraGroundScar.showing() > 0),
+			"Dominion must leave physical ground scars");
+		context.runOnClient(mc -> {
+			int scarsBefore = dev.wildercord.client.fx.AuraGroundScar.showing();
+			dev.wildercord.client.fx.AuraGroundScar.receive(new AuraFx.GroundScar(new Vec3(100, 250, 100), 3, 20, 1));
+			check(dev.wildercord.client.fx.AuraGroundScar.showing() == scarsBefore, "A ground scar must not float over open air");
+		});
 		String banner = context.computeOnClient(mc -> AuraBanners.ownShowing());
 		String expected = context.computeOnClient(mc -> Component.translatable("aura.wildercord.technique.dominion").getString());
 		check(banner.equals(expected), "Dominion should name itself in a banner (" + banner + ")");

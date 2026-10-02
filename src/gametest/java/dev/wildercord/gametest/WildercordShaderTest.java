@@ -192,6 +192,17 @@ public class WildercordShaderTest implements FabricClientGameTest {
 		});
 		context.waitTicks(30);
 		shot(context, prefix + "_aura_crossroads");
+		// Non-emissive floor damage must keep its normal alpha blending under a deferred pack.
+		context.runOnClient(mc -> dev.wildercord.client.fx.AuraGroundScar.clear());
+		world.getServer().runCommand("time set 3000");
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			dev.wildercord.aura.AuraFx.groundScar(player.level(), player.position(), 3.0, 100, 1);
+		});
+		context.waitTicks(4);
+		check(context.computeOnClient(mc -> dev.wildercord.client.fx.AuraGroundScar.showing() > 0), "physical floor scars should render under the pack");
+		shot(context, prefix + "_aura_ground_scar");
+		world.getServer().runCommand("time set 18000");
 		world.getServer().runOnServer(server -> player(server).removeAttached(dev.wildercord.aura.Crossroads.CROSSROADS));
 		context.waitTicks(12);
 		// The bonded blade (step 9) under the pack: a Soulforged blade's glow in hand from the front, then lying on the ground.

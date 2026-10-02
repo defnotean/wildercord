@@ -127,7 +127,7 @@ public final class RimeArts {
 		for (int i = 0; i < crusts; i++) {
 			world.ring(feet.add(0, 0.12 + 0.32 * i, 0), ArtKit.UP, i == crusts - 1 ? WHITE : ElementFx.FROST.primary(), w * 0.9, w * 0.62, 0.06, 26);
 		}
-		ElementFx.frostCreep(level, feet, w * 0.9, 24);
+		AuraPhysicalFx.frostCreep(level, feet, w * 0.9, 24);
 		chips(level, feet.add(0, 0.5, 0), 3 + crusts * 2, 0.16);
 	}
 
@@ -167,7 +167,7 @@ public final class RimeArts {
 		}
 		Vec3 heart = foe.getBoundingBox().getCenter();
 		ArtLight.world(player).flash(heart, ElementFx.FROST.primary(), 1.2F);
-		ElementFx.shatterRing(level, heart, 1.2);
+		AuraPhysicalFx.shatterRing(level, heart, 1.2);
 		ice(level, heart, 0.8, 5);
 		Feels.sound(level, foe.position(), "frost_lock", 0.8F, 1.1F);
 		return froze;
@@ -199,8 +199,8 @@ public final class RimeArts {
 		}
 		ArtLight world = ArtLight.world(player);
 		Vec3 sky = centre.add(0, 4.6, 0);
-		world.sigil(sky, ArtKit.UP, SigilOption.CIRCLE, color, ArtRules.HAIL_RADIUS * 1.1, ArtRules.HAIL_TICKS + 12, 0.05);
-		world.sigil(sky.add(0, -0.02, 0), ArtKit.UP, SigilOption.RING, WHITE, ArtRules.HAIL_RADIUS * 1.35, ArtRules.HAIL_TICKS + 12, -0.07);
+		world.sigil(sky, ArtKit.UP, SigilOption.BAND, color, ArtRules.HAIL_RADIUS * 1.1, ArtRules.HAIL_TICKS + 12, 0.05);
+		world.sigil(sky.add(0, -0.02, 0), ArtKit.UP, SigilOption.BAND, WHITE, ArtRules.HAIL_RADIUS * 1.35, ArtRules.HAIL_TICKS + 12, -0.07);
 		world.ground(centre, SigilOption.TARGET, color, ArtRules.HAIL_RADIUS, ArtRules.HAIL_TICKS + 8, 0.04);
 		Motes.clouds(level, sky, 8, ArtRules.HAIL_RADIUS * 0.7, 0xD8F0FF, 0.9, ArtRules.HAIL_TICKS + 10, Vec3.ZERO, 0.01, 0.45);
 		Map<UUID, Integer> struckBy = new HashMap<>();
@@ -261,7 +261,7 @@ public final class RimeArts {
 		for (LivingEntity other : ArtKit.arc(player, null, ArtRules.MIRROR_CHILL_REACH, 120, 6)) {
 			if (other != foe) {
 				ArtKit.chill(player, other, ArtRules.MIRROR_CHILL, 1);
-				ElementFx.frostCreep(level, other.position(), 0.7, 16);
+				AuraPhysicalFx.frostCreep(level, other.position(), 0.7, 16);
 			}
 		}
 		// The mirror: a pane of ice held before the swordsman while it lasts (seen from outside; in your own view, a cold glint low).
@@ -269,7 +269,7 @@ public final class RimeArts {
 		mirrorLook(player, color, true);
 		ArtFields.open(player, MIRROR, ArtFields.disc(player::position, 1.0, 2.0), ArtRules.MIRROR_TICKS, 5,
 			(field, owner, age) -> mirrorLook(owner, ArtKit.color(owner), false));
-		ElementFx.frostCreep(level, feet, 1.6, 30);
+		AuraPhysicalFx.frostCreep(level, feet, 1.6, 30);
 		return true;
 	}
 
@@ -364,8 +364,8 @@ public final class RimeArts {
 				}
 			}
 			if (last) {
-				ElementFx.frostCreep(level, b, 1.4, 30);
-				ElementFx.shatterRing(level, b.add(0, 0.2, 0), 1.6);
+				AuraPhysicalFx.frostCreep(level, b, 1.4, 30);
+				AuraPhysicalFx.shatterRing(level, b.add(0, 0.2, 0), 1.6);
 			}
 		});
 		ArtFields.open(player, ICE_PATH, ArtFields.strip(trail, 0.8, 1.5), ArtRules.SKATE_PATH_TICKS, 5, (field, owner, age) -> {
@@ -396,7 +396,7 @@ public final class RimeArts {
 		hits.strike(foe, factor, AuraFxRules.Weight.GRAND);
 		Spirits.thawNow(foe);
 		ice(level, c, 1.6, 9);
-		ElementFx.shatterRing(level, c, shards);
+		AuraPhysicalFx.shatterRing(level, c, shards);
 		chips(level, c, 12, 0.32);
 		ArtLight.world(player).flash(c, WHITE, 1.6F);
 		Feels.sound(level, c, "frost_break", 1.0F, 0.9F);

@@ -9,13 +9,13 @@ description: "The four Ways a swordsman chooses at the Edge breakthrough (the Bl
 {: .no_toc }
 
 Up to **Edge**, every swordsman walks the same road: a method of their own, but the same techniques. At the Edge breakthrough the
-road forks. A **crossroads** rises round you, a standard of light for each **Way**, and you strike the one you mean to walk. Your Way
+road forks. A **crossroads** rises round you, a crested cloth standard for each **Way**, and you strike the one you mean to walk. Your Way
 gives you a **node** at Edge, at Form and at Sovereign, and each node is two things: a **passive**, and a **change to a technique you
 already know** (the slash, the guard, the step, Intent, finishers, awakening, Dominion). A Way doesn't make you stronger so much as
 different: a Blade cuts through what stops other swordsmen, a Bulwark stands where others give ground, a Shadowstep is never where
 the blow lands, and a Banner makes everyone beside them better.
 
-<img src="{{ '/assets/images/ways-crossroads.jpg' | relative_url }}" alt="The same scene by day and by night: four standards of light in an arc in front of a player seen from behind, a red sword planted point-down, a blue shield on a pole, a dark pillar with three pale afterimages beside it under a crescent, and a gold pennant on a pole, each with a ring of light at its foot" class="shot">
+<img src="{{ '/assets/images/ways-crossroads.jpg' | relative_url }}" alt="The same scene by day and by night: four rippling cloth standards on bronze poles, with red sword, blue shield, violet crescent and gold rallying crests" class="shot">
 <span class="caption">The crossroads, just after the Edge breakthrough, by day and by night.</span>
 
 1. TOC
@@ -37,13 +37,13 @@ the blow lands, and a Banner makes everyone beside them better.
 
 ### At the Edge breakthrough
 
-Break through to Edge and, a couple of seconds after the title, four standards of light rise out of the ground in an arc in front of
-you, one for each Way: the **Blade**'s sword planted point-down in red, the **Bulwark**'s shield on its pole in blue, the
-**Shadowstep**'s pillar of shadow trailing afterimages under a crescent in violet, the **Banner**'s pennant stirring on its pole in
-gold. Everyone near sees them too. They stand for a minute; walk more than a dozen blocks away and they fade (so does a death, or a
+Break through to Edge and, a couple of seconds after the title, four woven standards rise out of the ground in an arc in front of
+you. Each flies from a bronze pole with stitched borders and a swallowtail hem: the **Blade** carries a sword on red cloth,
+the **Bulwark** a shield on blue, the **Shadowstep** a crescent and trailing marks on violet, and the **Banner** a rallying crest
+on gold. The fabric folds and ripples; the standard you lean toward gains small pressure streamers while the others dim. Everyone near sees them too. They stand for a minute; walk more than a dozen blocks away and they fade (so does a death, or a
 change of world), and you can call them again (below).
 
-<img src="{{ '/assets/images/ways-first-person.jpg' | relative_url }}" alt="Through the player's own eyes: the four standards of light in a row ahead, the blue shield in the middle under the crosshair, and above the hotbar the words Way of the Bulwark, Strike to lean toward it, and the names of its three nodes" class="shot">
+<img src="{{ '/assets/images/ways-first-person.jpg' | relative_url }}" alt="Through the player's own eyes: the four crested cloth standards in a row ahead, the blue shield standard under the crosshair, and above the hotbar the words Way of the Bulwark, Strike to lean toward it, and the names of its three nodes" class="shot">
 <span class="caption">Looking at a standard names its Way, what a strike does now, and its three nodes, low on the screen.</span>
 
 ### Choosing

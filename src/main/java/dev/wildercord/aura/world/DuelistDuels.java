@@ -323,8 +323,8 @@ public final class DuelistDuels {
 			if (active.duel.tick(now)) {
 				if (active.duel.fighting()) {
 					title(player, Component.translatable("message.wildercord.duel_fight").withColor(GOLD).withStyle(ChatFormatting.BOLD), null);
-					Light.groundRing(active.level, player.position(), GOLD, 0.5, 4.0, 0.12, 12);
-					Light.groundRing(active.level, duelist.position(), duelist.auraColor(), 0.5, 4.0, 0.12, 12);
+					dev.wildercord.aura.AuraFx.groundScar(active.level, player.position(), 4.0, 60, 1);
+					dev.wildercord.aura.AuraFx.groundScar(active.level, duelist.position(), 4.0, 60, 1);
 					Fx.sound(active.level, active.centre, SoundEvents.BELL_BLOCK, 1.2F, 1.0F);
 				} else {
 					finish(active, server);
@@ -335,8 +335,8 @@ public final class DuelistDuels {
 
 	/** A circle of light round each side while the countdown runs. */
 	private static void circle(ServerLevel level, Vec3 at) {
-		Sigils.send(level, SigilOption.flat(SigilOption.CIRCLE, GOLD, 2.0F, 24, 0.1F), at.add(0, 0.06, 0));
-		Light.groundRing(level, at, GOLD, 2.2, 2.0, 0.1, 22);
+		dev.wildercord.aura.AuraFx.groundScar(level, at, 2.0, 80, 0);
+		dev.wildercord.aura.AuraFx.groundScar(level, at, 2.2, 80, 1);
 	}
 
 	/** The duelist laid harmful effects on its challenger (its perfect guard's stagger): the end takes them off again. */

@@ -12,11 +12,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * An art's shaped light (the mod's {@code cast.Light}: rings, beams, crescents, orbs, arcs of lightning, circles and flashes),
+ * An art's shaped light (the mod's {@code cast.Light}: blade arcs, crescents, glints and method accents, with physical ground scars),
  * sent one of two ways:
  * <ul>
  * <li>{@link #world}: to everyone, the swordsman too (a shape that would open right in front of anyone's eyes is left out for
- * them, as all shaped light is). For what lands out in the world: a ring where a blow falls, a line of fire on the ground ahead,
+ * them, as all shaped light is). For what lands out in the world: a fracture where a blow falls, a line of fire on the ground ahead,
  * lightning striking a foe.</li>
  * <li>{@link #spectacle}: to everyone else, and to the swordsman only while they watch themselves in third person
  * ({@link AuraFx#spectacle}). For the big shapes about the body: a whirlwind round them, a lance down their line of sight, a sun
@@ -81,16 +81,17 @@ public final class ArtLight {
 
 	/** A shockwave racing out from {@code from} to {@code to} blocks in the plane facing {@code normal}. */
 	public ArtLight ring(Vec3 at, Vec3 normal, int color, double from, double to, double width, int life) {
-		if ((color & DARK) == 0 && rimAt(at)) {
-			send(ElementFx.ringOption(normal, color | DARK, from, to, width * 1.15, life), at.subtract(normal.normalize().scale(0.01)));
+		if (Math.abs(normal.y) > 0.95 && at.y < owner.position().y + 0.4) {
+			AuraFx.groundScar(owner.level(), at, Math.max(from, to), Math.max(40, life * 3), 0);
+			return this;
 		}
-		send(ElementFx.ringOption(normal, color, from, to, width, life), at);
-		return this;
+		return slash(at, normal, ElementFx.perp(normal), color, Math.max(from, to), 1.8, width, 2, life);
 	}
 
-	/** A shockwave over the ground. */
+	/** A ragged impact depression with fragments of the actual floor. */
 	public ArtLight groundRing(Vec3 at, int color, double from, double to, double width, int life) {
-		return ring(at.add(0, 0.08, 0), ArtKit.UP, color, from, to, width, life);
+		AuraFx.groundScar(owner.level(), at, Math.max(from, to), Math.max(60, life * 3), 1);
+		return this;
 	}
 
 	/** A beam from {@code from} to {@code to}. */
@@ -186,18 +187,25 @@ public final class ArtLight {
 		return this;
 	}
 
-	/** A magic circle's layer ({@link SigilOption} style) facing {@code normal}. */
+	/** An aura pressure mark or glint ({@link SigilOption} style) facing {@code normal}. */
 	public ArtLight sigil(Vec3 at, Vec3 normal, int style, int color, double size, int life, double spin) {
+		// Aura uses pressure edges; rune-bearing seals belong to spell casting.
+		if (style == SigilOption.CIRCLE || style == SigilOption.RING) style = SigilOption.BAND;
 		Vec3 n = normal.lengthSqr() < 1.0E-6 ? ArtKit.UP : normal.normalize();
-		float yaw = (float) Math.toDegrees(Math.atan2(-n.x, n.z));
-		float pitch = (float) Math.toDegrees(Math.asin(Math.max(-1, Math.min(1, -n.y))));
-		send(new SigilOption(style, SigilOption.tint(color), (float) size, yaw, pitch, life, (float) spin), at);
-		return this;
+		if (style == SigilOption.STAR) {
+			Vec3 u = n.cross(new Vec3(0, 0, 1));
+			u = u.lengthSqr() < 1.0E-5 ? new Vec3(1, 0, 0) : u.normalize();
+			Vec3 v = n.cross(u).normalize();
+			ray(at.subtract(u.scale(size)), at.add(u.scale(size)), color, 0.04, life);
+			ray(at.subtract(v.scale(size)), at.add(v.scale(size)), color, 0.04, life);
+			return this;
+		}
+		return slash(at, n, ElementFx.inPlane(n, spin), color, size, 1.4, 0.035, 2, life);
 	}
 
-	/** A circle lying on the ground. */
+	/** A physical fracture, impact depression or blade gouge projected onto solid ground. */
 	public ArtLight ground(Vec3 feet, int style, int color, double size, int life, double spin) {
-		send(SigilOption.flat(style, SigilOption.tint(color), (float) size, life, (float) spin), feet.add(0, 0.07, 0));
+		AuraFx.groundScar(owner.level(), feet, size, life, style == SigilOption.STAR ? 2 : style == SigilOption.CRACKED ? 0 : 1);
 		return this;
 	}
 

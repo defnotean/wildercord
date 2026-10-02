@@ -173,15 +173,9 @@ public final class WayBanner {
 					.groundRing(body.position(), WayRules.BANNER_COLOR, 0.2, 1.0, 0.06, 12);
 			}
 		}
-		// Over the Banner's head, a pennant of light snapping out (seen from outside).
-		Vec3 top = player.position().add(0, 2.4, 0);
-		Vec3 out = ArtKit.flat(player);
-		Vec3 aside = ArtKit.right(out);
-		ArtLight.spectacle(player).ray(player.position().add(0, 1.6, 0), top.add(0, 0.6, 0), AuraVfx.hot(WayRules.BANNER_COLOR, 0.4), 0.05, 12)
-			.ray(top.add(0, 0.55, 0), top.add(aside.scale(0.9)).add(0, 0.4, 0), WayRules.BANNER_COLOR, 0.06, 12)
-			.ray(top.add(aside.scale(0.9)).add(0, 0.4, 0), top.add(aside.scale(0.6)).add(0, 0.2, 0), WayRules.BANNER_COLOR, 0.06, 12)
-			.ray(top.add(aside.scale(0.6)).add(0, 0.2, 0), top.add(aside.scale(0.9)), WayRules.BANNER_COLOR, 0.06, 12)
-			.ray(top.add(aside.scale(0.9)), top.add(0, 0.05, 0), WayRules.BANNER_COLOR, 0.06, 12);
+		// A small woven rally standard above the swordsman, clear of their own first-person camera.
+		AuraFx.standard(player, player.position().add(0, 2.15, 0), ArtKit.flat(player).scale(-1),
+			WayRules.BANNER, WayRules.BANNER_COLOR, 1.4F, 0.45F, 30);
 		double aura = StanceRules.finisherAura(Aura.stage(player), Momentum.practice(player, foe)) * WayRules.CRY_AURA;
 		for (ServerPlayer ally : swordsmen(player, range)) {
 			Momentum.add(ally, WayRules.CRY_MOMENTUM, "banner", MomentumRules.MAX);

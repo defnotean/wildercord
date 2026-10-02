@@ -109,6 +109,25 @@ public final class AuraFx {
 		}
 	}
 
+	/** A temporary physical scar on solid ground; no block is removed by the visual cue. */
+	public record GroundScar(Vec3 at, float radius, int ticks, int kind) implements CustomPacketPayload {
+		public static final Type<GroundScar> TYPE = new Type<>(Wildercord.id("aura_fx_ground_scar"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, GroundScar> CODEC = StreamCodec.composite(
+			Vec3.STREAM_CODEC, GroundScar::at, ByteBufCodecs.FLOAT, GroundScar::radius,
+			ByteBufCodecs.VAR_INT, GroundScar::ticks, ByteBufCodecs.VAR_INT, GroundScar::kind, GroundScar::new).cast();
+		@Override public Type<GroundScar> type() { return TYPE; }
+	}
+
+	/** An authored cloth standard, refreshed in place rather than stacking particle outlines. */
+	public record Standard(int owner, Vec3 at, Vec3 facing, String way, int color, float emphasis, float scale, int ticks) implements CustomPacketPayload {
+		public static final Type<Standard> TYPE = new Type<>(Wildercord.id("aura_fx_standard"));
+		public static final StreamCodec<RegistryFriendlyByteBuf, Standard> CODEC = StreamCodec.composite(
+			ByteBufCodecs.VAR_INT, Standard::owner, Vec3.STREAM_CODEC, Standard::at, Vec3.STREAM_CODEC, Standard::facing,
+			ByteBufCodecs.STRING_UTF8, Standard::way, ByteBufCodecs.INT, Standard::color, ByteBufCodecs.FLOAT, Standard::emphasis,
+			ByteBufCodecs.FLOAT, Standard::scale, ByteBufCodecs.VAR_INT, Standard::ticks, Standard::new).cast();
+		@Override public Type<Standard> type() { return TYPE; }
+	}
+
 	/**
 	 * A burst of light at {@code at}, {@code size} blocks across, in {@code color}, facing {@code facing} (zero: whoever sees it),
 	 * of {@code style} ({@link Burst} bits). {@code owner} (or -1) is whose it is: in their own first-person view a burst close to
@@ -175,6 +194,8 @@ public final class AuraFx {
 		PayloadTypeRegistry.clientboundPlay().register(Trail.TYPE, Trail.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Impact.TYPE, Impact.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Banner.TYPE, Banner.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(Standard.TYPE, Standard.CODEC);
+		PayloadTypeRegistry.clientboundPlay().register(GroundScar.TYPE, GroundScar.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(BurstCue.TYPE, BurstCue.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Flare.TYPE, Flare.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(Shown.TYPE, Shown.CODEC);
@@ -348,6 +369,15 @@ public final class AuraFx {
 	}
 
 	// ------------------------------------------------------------------ banners
+
+	public static void standard(ServerPlayer owner, Vec3 at, Vec3 facing, String way, int color, float emphasis, float scale, int ticks) {
+		send(owner.level(), at, new Standard(owner.getId(), at, facing, way, color & 0xFFFFFF, emphasis, scale, ticks), AuraFxRules.SEEN);
+	}
+
+	/** Physical ground damage impressions: fracture (0), crater (1), or blade gouges (2). */
+	public static void groundScar(ServerLevel level, Vec3 at, double radius, int ticks, int kind) {
+		send(level, at, new GroundScar(at, (float) Math.min(8, Math.max(0.3, radius)), Math.min(600, Math.max(20, ticks)), kind), AuraFxRules.SEEN);
+	}
 
 	/** A technique's name over a player, in their aura's colour: {@code kicker} the small line above it (or empty). */
 	public static void banner(ServerPlayer player, Component name, Component kicker, AuraFxRules.BannerKind kind) {

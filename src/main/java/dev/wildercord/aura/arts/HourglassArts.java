@@ -96,6 +96,10 @@ public final class HourglassArts {
 	 */
 	static void clockFace(ArtLight light, Vec3 centre, Vec3 normal, double radius, double hand, int color, int life) {
 		Vec3 n = normal.lengthSqr() < 1.0E-6 ? ArtKit.UP : normal.normalize();
+		if (Math.abs(n.y) > 0.95) {
+			AuraFx.groundScar(light.level(), centre, radius, life, 2);
+			return;
+		}
 		Vec3 u = ElementFx.perp(n);
 		Vec3 v = n.cross(u);
 		light.ring(centre, n, color, radius, radius, 0.09, life);
@@ -169,7 +173,7 @@ public final class HourglassArts {
 		}
 		// The afterimage, left where you stood, and a small face ticking at its feet.
 		AuraStep.afterimages(player, feet, feet, look, color);
-		ElementFx.clock(level, feet.add(0, 0.06, 0), ArtKit.UP, 0.85, ArtRules.ECHO_DELAY, false);
+		AuraPhysicalFx.clock(level, feet.add(0, 0.06, 0), ArtKit.UP, 0.85, ArtRules.ECHO_DELAY, false);
 		ElementFx.goldenTicks(level, feet.add(0, 1.0, 0), 0.4, 5);
 		// A moment later it strikes again, from where you stood, the way you faced.
 		Scheduler.later(ArtRules.ECHO_DELAY, () -> {
@@ -181,7 +185,7 @@ public final class HourglassArts {
 			Feels.sound(level, feet.add(0, 1, 0), "time_reecho", 0.8F, 1.1F);
 			for (LivingEntity foe : ArtKit.arcFrom(player, feet, look, ArtRules.ECHO_REPEAT_REACH, ArtRules.ECHO_DEGREES, ArtRules.ECHO_TARGETS)) {
 				hits.strike(foe, ArtRules.ECHO_REPEAT, AuraFxRules.Weight.FULL);
-				ElementFx.timeImpact(level, foe.getBoundingBox().getCenter(), 0.7);
+				AuraPhysicalFx.timeImpact(level, foe.getBoundingBox().getCenter(), 0.7);
 			}
 		});
 		return true;
@@ -333,7 +337,7 @@ public final class HourglassArts {
 				}
 				hits.strike(foe, ArtRules.BLUR_FACTOR);
 				ArtKit.slow(player, foe, 30, 1);
-				ElementFx.timeImpact(level, foe.getBoundingBox().getCenter(), 0.7);
+				AuraPhysicalFx.timeImpact(level, foe.getBoundingBox().getCenter(), 0.7);
 			}
 		});
 		// Time dragging round you a while: foes slowed, projectiles slowed to a fraction as they cross into it, you quickened.
@@ -399,12 +403,12 @@ public final class HourglassArts {
 		long now = level.getGameTime();
 		// Time stops: a great face on the ground whose hands sweep once and stand still, motes of gold hanging in the air, everything
 		// near held where it stands.
-		ElementFx.clock(level, feet.add(0, 0.06, 0), ArtKit.UP, ArtRules.THOUSAND_RADIUS, 8, false);
+		AuraPhysicalFx.clock(level, feet.add(0, 0.06, 0), ArtKit.UP, ArtRules.THOUSAND_RADIUS, 8, false);
 		ArtLight world = ArtLight.world(player);
 		Scheduler.later(8, () -> clockFace(world, feet.add(0, 0.07, 0), ArtKit.UP, ArtRules.THOUSAND_RADIUS * 0.92, 1.1, color, ArtRules.THOUSAND_HOLD - 6));
 		world.groundRing(feet, color, 0.5, ArtRules.THOUSAND_RADIUS * 1.1, 0.3, 12);
 		world.groundRing(feet, SAND, 0.4, ArtRules.THOUSAND_RADIUS, 0.08, 10);
-		world.ground(feet, SigilOption.RING, DEEP, ArtRules.THOUSAND_RADIUS * 0.6, ArtRules.THOUSAND_HOLD, 0.0);
+		world.ground(feet, SigilOption.BAND, DEEP, ArtRules.THOUSAND_RADIUS * 0.6, ArtRules.THOUSAND_HOLD, 0.0);
 		RandomSource r = level.getRandom();
 		for (int i = 0; i < 24; i++) {
 			double a = r.nextDouble() * Math.PI * 2;

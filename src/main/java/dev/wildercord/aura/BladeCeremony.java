@@ -331,7 +331,7 @@ public final class BladeCeremony {
 				}
 			}
 			if (t % 8 == 0) {
-				show.ground(feet, SigilOption.RING, color, 2.6 + 0.4 * phase, 10, 0.4);
+				show.ground(feet, SigilOption.BAND, color, 2.6 + 0.4 * phase, 10, 0.4);
 			}
 		}
 		if (phase == 1 && t == BladeRules.KINDLE_END) {
@@ -403,7 +403,7 @@ public final class BladeCeremony {
 		}
 		if (t % 10 == 0) {
 			// A circle drawn round the two of them, widening as the passing goes.
-			ArtLight.spectacle(master).ground(middle, SigilOption.RING, both, 2.4 + 1.2 * grown, 12, 0.3);
+			ArtLight.spectacle(master).ground(middle, SigilOption.BAND, both, 2.4 + 1.2 * grown, 12, 0.3);
 		}
 		if (t % 20 == 0) {
 			AuraFx.bodyAuraFlare(master, 22, 0.5F);
