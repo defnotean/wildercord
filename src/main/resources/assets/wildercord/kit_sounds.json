@@ -159,22 +159,61 @@
     "aura_art_backdraft": {
       "part": "aura"
     },
+    "aura_art_bloodletting": {
+      "part": "aura"
+    },
+    "aura_art_blossom_fall": {
+      "part": "aura"
+    },
+    "aura_art_blur": {
+      "part": "aura"
+    },
     "aura_art_bolt_step": {
+      "part": "aura"
+    },
+    "aura_art_collapse": {
+      "part": "aura"
+    },
+    "aura_art_comet_dash": {
+      "part": "aura"
+    },
+    "aura_art_comet_dash_burst": {
+      "part": "aura"
+    },
+    "aura_art_constellation_guard": {
       "part": "aura"
     },
     "aura_art_crackle": {
       "part": "aura"
     },
+    "aura_art_crimson_moon": {
+      "part": "aura"
+    },
     "aura_art_cutting_breeze": {
       "part": "aura"
     },
+    "aura_art_echo_cut": {
+      "part": "aura"
+    },
+    "aura_art_event_horizon": {
+      "part": "aura"
+    },
+    "aura_art_event_horizon_crush": {
+      "part": "aura"
+    },
     "aura_art_eye_of_the_storm": {
+      "part": "aura"
+    },
+    "aura_art_frenzy": {
       "part": "aura"
     },
     "aura_art_frostbite": {
       "part": "aura"
     },
     "aura_art_glacier_mirror": {
+      "part": "aura"
+    },
+    "aura_art_groves_heart": {
       "part": "aura"
     },
     "aura_art_hailfall": {
@@ -192,7 +231,25 @@
     "aura_art_landslide": {
       "part": "aura"
     },
+    "aura_art_meteor_shower": {
+      "part": "aura"
+    },
     "aura_art_mountain_splitter": {
+      "part": "aura"
+    },
+    "aura_art_nova": {
+      "part": "aura"
+    },
+    "aura_art_null_parry": {
+      "part": "aura"
+    },
+    "aura_art_red_rain": {
+      "part": "aura"
+    },
+    "aura_art_rewind_leap": {
+      "part": "aura"
+    },
+    "aura_art_rift_step": {
       "part": "aura"
     },
     "aura_art_rising_cinders": {
@@ -201,13 +258,25 @@
     "aura_art_rockbreaker": {
       "part": "aura"
     },
+    "aura_art_rooted_parry": {
+      "part": "aura"
+    },
+    "aura_art_sanguine_parry": {
+      "part": "aura"
+    },
     "aura_art_skate": {
       "part": "aura"
     },
     "aura_art_skyfall": {
       "part": "aura"
     },
+    "aura_art_star_needle": {
+      "part": "aura"
+    },
     "aura_art_static_riposte": {
+      "part": "aura"
+    },
+    "aura_art_stopped_moment": {
       "part": "aura"
     },
     "aura_art_sunfall": {
@@ -219,10 +288,25 @@
     "aura_art_tailwind": {
       "part": "aura"
     },
+    "aura_art_thorn_lash": {
+      "part": "aura"
+    },
+    "aura_art_thousand_moments": {
+      "part": "aura"
+    },
+    "aura_art_thousand_moments_release": {
+      "part": "aura"
+    },
     "aura_art_unmoved": {
       "part": "aura"
     },
     "aura_art_updraft": {
+      "part": "aura"
+    },
+    "aura_art_void_cut": {
+      "part": "aura"
+    },
+    "aura_art_wild_growth": {
       "part": "aura"
     },
     "aura_art_wildfire_rush": {

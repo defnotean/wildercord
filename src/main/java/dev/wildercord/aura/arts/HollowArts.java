@@ -63,7 +63,7 @@ public final class HollowArts {
 
 	/** The void palette's lilac, and its abyss drawn as darkness. */
 	private static final int LILAC = 0xE0B0FF;
-	private static final int ABYSS = ElementFx.dark(0x1A0830);
+	private static final int ABYSS = 0x1A0830 | ArtLight.DARK;
 
 	public static List<AuraApi.StringArt> arts() {
 		return List.of(

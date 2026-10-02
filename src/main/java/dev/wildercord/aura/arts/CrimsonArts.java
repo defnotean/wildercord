@@ -57,7 +57,7 @@ public final class CrimsonArts {
 
 	/** The blood palette's pale red and its dark, drawn as darkness. */
 	private static final int PALE = 0xFF6474;
-	private static final int DARK = ElementFx.dark(0x5A0A14);
+	private static final int DARK = 0x5A0A14 | ArtLight.DARK;
 	private static final int DEEP = 0x8A0E22;
 
 	public static List<AuraApi.StringArt> arts() {

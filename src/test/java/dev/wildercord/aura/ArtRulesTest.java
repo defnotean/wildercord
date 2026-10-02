@@ -3,20 +3,27 @@ package dev.wildercord.aura;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.wildercord.api.AuraApi;
+import dev.wildercord.aura.arts.CrimsonArts;
 import dev.wildercord.aura.arts.EmberArts;
 import dev.wildercord.aura.arts.GaleArts;
+import dev.wildercord.aura.arts.HollowArts;
+import dev.wildercord.aura.arts.HourglassArts;
 import dev.wildercord.aura.arts.MethodArts;
 import dev.wildercord.aura.arts.RimeArts;
+import dev.wildercord.aura.arts.StarlitArts;
 import dev.wildercord.aura.arts.StoneArts;
 import dev.wildercord.aura.arts.ThunderArts;
+import dev.wildercord.aura.arts.VerdantArts;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,13 +31,14 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * The breathing methods' arts, the pure parts: each art's price and rest, the balance between them (by slot, by method, and
- * against the techniques), the rules an art keeps against players and bosses, the shapes they reach, and the framework that
- * registers them ({@link AuraApi#registerArts}: slots, whose each art is, the common arts stepping aside, conflicts, the Final
- * Art's gate), with every art's name, description and voice really there.
+ * The breathing methods' arts, the pure parts: each art's price and rest, the balance between all fifty (by slot, by method, against
+ * the techniques, and each method's own strength), the rules an art keeps against players and bosses (damage, holds, throws, drags,
+ * silence, mending), the shapes they reach, and the framework that registers them ({@link AuraApi#registerArts}: slots, whose each
+ * art is, the common arts stepping aside, conflicts, the Final Art's gate), with every art's name, description and voice really there.
  */
 class ArtRulesTest {
-	private static final List<String> METHODS = List.of("ember", "rime", "thunder", "gale", "stone");
+	private static final List<String> METHODS = List.of("ember", "rime", "thunder", "gale", "stone", "verdant", "hollow", "starlit", "hourglass",
+		"crimson");
 
 	// ------------------------------------------------------------------ the arts, priced
 
@@ -49,7 +57,8 @@ class ArtRulesTest {
 				assertSame(art, ArtRules.art(art.id()));
 			}
 		}
-		assertEquals(25, ArtRules.ARTS.size());
+		assertEquals(50, ArtRules.ARTS.size(), "ten methods, five arts each");
+		assertEquals(List.copyOf(MethodArts.METHODS), METHODS, "every built-in method has its arts");
 		assertThrows(IllegalArgumentException.class, () -> ArtRules.art("no_such_art"));
 	}
 
@@ -91,26 +100,103 @@ class ArtRulesTest {
 		assertTrue(high / low <= 1.1, "the methods' arts in all within a tenth of each other: " + totals);
 	}
 
-	@Test
-	void eachMethodHasItsOwnStrength() {
-		// Ember hurts most and holds least; Rime holds most; Thunder reaches most foes; Gale and Stone sit between.
-		Map<String, double[]> sums = new HashMap<>();
+	/** Each method's model sums: primary, area, control, reach, mend, aura, toll. */
+	private static Map<String, double[]> sums() {
+		Map<String, double[]> sums = new LinkedHashMap<>();
 		for (ArtRules.Art art : ArtRules.ARTS) {
-			double[] s = sums.computeIfAbsent(art.method(), k -> new double[3]);
+			double[] s = sums.computeIfAbsent(art.method(), k -> new double[7]);
 			s[0] += art.primary();
 			s[1] += art.area();
 			s[2] += art.control();
+			s[3] += art.reach();
+			s[4] += art.mend();
+			s[5] += art.aura();
+			s[6] += art.toll();
+		}
+		return sums;
+	}
+
+	/** Whether {@code method} has the most of measure {@code i} of all ten (strictly), naming the runner-up when not. */
+	private static void leads(Map<String, double[]> sums, String method, int i, String what) {
+		for (Map.Entry<String, double[]> e : sums.entrySet()) {
+			if (!e.getKey().equals(method)) {
+				assertTrue(sums.get(method)[i] > e.getValue()[i], method + " " + what + " (" + String.format("%.2f", sums.get(method)[i]) + "), more than "
+					+ e.getKey() + " (" + String.format("%.2f", e.getValue()[i]) + ")");
+			}
+		}
+	}
+
+	@Test
+	void eachMethodLeadsInItsOwnThing() {
+		// In the model's numbers: Ember hurts most, Rime holds most, Thunder reaches the most other foes, Gale reaches furthest,
+		// Verdant mends most, Starlit gives the most aura back; Crimson hurts most after Ember, mends most after Verdant, and alone pays
+		// in health; Hourglass holds most after Rime.
+		Map<String, double[]> sums = sums();
+		leads(sums, "ember", 0, "hurts the most");
+		leads(sums, "rime", 2, "holds the most");
+		leads(sums, "thunder", 1, "reaches the most other foes");
+		leads(sums, "gale", 3, "reaches the furthest");
+		leads(sums, "verdant", 4, "mends the most");
+		leads(sums, "starlit", 5, "gives the most aura back");
+		for (String method : METHODS) {
+			if (!method.equals("ember") && !method.equals("crimson")) {
+				assertTrue(sums.get("crimson")[0] > sums.get(method)[0], "Crimson hurts more than everyone but Ember: " + method);
+			}
+			if (!method.equals("verdant") && !method.equals("crimson")) {
+				assertTrue(sums.get("crimson")[4] > sums.get(method)[4], "Crimson mends (drinks) more than everyone but Verdant: " + method);
+			}
+			if (!method.equals("rime") && !method.equals("hourglass")) {
+				assertTrue(sums.get("hourglass")[2] > sums.get(method)[2], "Hourglass holds more than everyone but Rime: " + method);
+			}
+			if (!method.equals("crimson")) {
+				assertEquals(0, sums.get(method)[6], 1e-9, "only Crimson pays in health: " + method);
+			}
+			if (!method.equals("starlit")) {
+				assertEquals(0, sums.get(method)[5], 1e-9, "only Starlit gives aura back: " + method);
+			}
+		}
+		assertTrue(sums.get("crimson")[6] > 0, "Crimson Moon's price is in the model");
+	}
+
+	/** What each method's arts do that's its own: every one of its arts carries one of these, and another method borrows one at most once. */
+	private static final Map<String, Set<ArtRules.Kind>> OWN = Map.of(
+		"ember", EnumSet.of(ArtRules.Kind.FIRE),
+		"rime", EnumSet.of(ArtRules.Kind.FROST, ArtRules.Kind.FREEZE),
+		"thunder", EnumSet.of(ArtRules.Kind.SHOCK, ArtRules.Kind.CHAIN),
+		"gale", EnumSet.of(ArtRules.Kind.WIND),
+		"stone", EnumSet.of(ArtRules.Kind.QUAKE, ArtRules.Kind.HARDEN),
+		"verdant", EnumSet.of(ArtRules.Kind.ROOT, ArtRules.Kind.MEND),
+		"hollow", EnumSet.of(ArtRules.Kind.PULL, ArtRules.Kind.SILENCE),
+		"starlit", EnumSet.of(ArtRules.Kind.STAR, ArtRules.Kind.AURA),
+		"hourglass", EnumSet.of(ArtRules.Kind.ECHO, ArtRules.Kind.REWIND, ArtRules.Kind.STILL, ArtRules.Kind.DRAG),
+		"crimson", EnumSet.of(ArtRules.Kind.BLEED, ArtRules.Kind.DRINK, ArtRules.Kind.TOLL, ArtRules.Kind.FRENZY));
+
+	@Test
+	void eachMethodsArtsDoWhatsItsOwn() {
+		assertEquals(Set.copyOf(METHODS), OWN.keySet());
+		for (ArtRules.Art art : ArtRules.ARTS) {
+			Set<ArtRules.Kind> own = OWN.get(art.method());
+			assertTrue(art.kinds().stream().anyMatch(own::contains), art.id() + " does something only " + art.method() + " does (" + art.kinds() + ")");
 		}
 		for (String method : METHODS) {
-			if (!method.equals("ember")) {
-				assertTrue(sums.get("ember")[2] < sums.get(method)[2], "Ember holds the least: " + method);
+			for (String other : METHODS) {
+				if (other.equals(method)) {
+					continue;
+				}
+				long borrowed = ArtRules.of(other).stream().filter(a -> a.kinds().stream().anyMatch(OWN.get(method)::contains)).count();
+				assertTrue(borrowed <= 1, other + " borrows " + method + "'s own " + OWN.get(method) + " in " + borrowed + " arts");
 			}
-			if (!method.equals("rime") && !method.equals("stone")) {
-				assertTrue(sums.get("rime")[2] > sums.get(method)[2], "Rime holds more than " + method);
+		}
+		// A few that must never be borrowed at all: fire, silence, a health price, aura given back, time held still.
+		for (ArtRules.Kind sole : List.of(ArtRules.Kind.FIRE, ArtRules.Kind.SILENCE, ArtRules.Kind.TOLL, ArtRules.Kind.AURA, ArtRules.Kind.STILL,
+				ArtRules.Kind.ROOT, ArtRules.Kind.FREEZE)) {
+			Set<String> who = new HashSet<>();
+			for (ArtRules.Art art : ArtRules.ARTS) {
+				if (art.is(sole)) {
+					who.add(art.method());
+				}
 			}
-			if (!method.equals("thunder")) {
-				assertTrue(sums.get("thunder")[1] >= sums.get(method)[1], "Thunder reaches the most other foes: " + method);
-			}
+			assertEquals(1, who.size(), sole + " belongs to one method alone: " + who);
 		}
 	}
 
@@ -205,12 +291,105 @@ class ArtRulesTest {
 			"a huge blow comes back no harder than the blade itself");
 	}
 
+	// ------------------------------------------------------------------ mending, drinking and their price
+
+	@Test
+	void artsMendOneBodyOnlySoMuchSoFast() {
+		assertEquals(ArtRules.MEND_CAP, ArtRules.mendRoom(0, 0), 1e-9, "an unmended body takes a whole bucket");
+		assertEquals(0, ArtRules.mendRoom(ArtRules.MEND_CAP, 0), 1e-9, "a full bucket takes no more");
+		assertEquals(ArtRules.MEND_CAP / 2, ArtRules.mendRoom(ArtRules.MEND_CAP, ArtRules.MEND_WINDOW / 2), 1e-9, "half drained, half again");
+		assertEquals(ArtRules.MEND_CAP, ArtRules.mendRoom(ArtRules.MEND_CAP, ArtRules.MEND_WINDOW * 3), 1e-9, "drained away in time");
+		assertEquals(4, ArtRules.mendLevel(4, -50), 1e-9, "time never runs backward into a fuller bucket");
+		// Never outpacing a fight: at most a health a second for long, from every art together (Verdant's passive is its own).
+		double steady = ArtRules.MEND_CAP / ArtRules.MEND_WINDOW * 20;
+		assertTrue(steady <= 1.0 + 1e-9, "arts mend a body at most a health a second once the bucket is full (" + steady + ")");
+		assertTrue(ArtRules.MEND_CAP <= 10.0, "no more than five hearts at once from arts");
+		// Every mending an art does fits the bucket, even the grove's whole time.
+		assertTrue(ArtRules.BLOSSOM_MEND + ArtRules.BLOSSOM_PULSE * ArtRules.BLOSSOM_TICKS / 20.0 <= ArtRules.MEND_CAP);
+		assertTrue(ArtRules.GROVE_MEND * ArtRules.GROVE_TICKS / 20.0 <= ArtRules.MEND_CAP);
+		assertTrue(ArtRules.ROOTED_MAX <= ArtRules.MEND_CAP && ArtRules.MOON_DRINK_MAX <= ArtRules.MEND_CAP && ArtRules.RAIN_DRINK_MAX <= ArtRules.MEND_CAP);
+	}
+
+	@Test
+	void rootedParryMendsByWhatItCaught() {
+		assertEquals(ArtRules.ROOTED_MIN, ArtRules.rootedMend(0), 1e-9, "a projectile caught still mends a little");
+		assertEquals(6 * ArtRules.ROOTED_SHARE, ArtRules.rootedMend(6), 1e-9);
+		assertEquals(ArtRules.ROOTED_MAX, ArtRules.rootedMend(40), 1e-9, "a huge blow mends no more than six");
+	}
+
+	@Test
+	void aDrinkIsAShareHeldToItsCap() {
+		assertEquals(3.0, ArtRules.drink(10, 0.3, 4), 1e-9);
+		assertEquals(4.0, ArtRules.drink(100, 0.3, 4), 1e-9, "held to the cap");
+		assertEquals(0, ArtRules.drink(-5, 0.3, 4), 1e-9);
+		assertEquals(0, ArtRules.drink(5, 0.3, -1), 1e-9);
+	}
+
+	@Test
+	void crimsonMoonNeverKillsItsSwordsman() {
+		// A quarter of a full twenty, at full health.
+		assertEquals(5.0, ArtRules.moonToll(20, 20), 1e-9);
+		assertEquals(5.0, ArtRules.moonToll(9, 20), 1e-9, "the price is of the greatest health, so it costs the same hurt or whole");
+		assertEquals(4.0 - ArtRules.MOON_FLOOR, ArtRules.moonToll(4, 20), 1e-9, "never past the floor");
+		assertEquals(0, ArtRules.moonToll(ArtRules.MOON_FLOOR, 20), 1e-9, "at a heart it costs nothing more");
+		assertEquals(0, ArtRules.moonToll(1, 20), 1e-9);
+		for (double health = 0.5; health <= 40; health += 0.5) {
+			for (double max : new double[] {20, 40}) {
+				double left = Math.min(health, max) - ArtRules.moonToll(Math.min(health, max), max);
+				assertTrue(left >= Math.min(Math.min(health, max), ArtRules.MOON_FLOOR) - 1e-9, "never below a heart (or where it began): " + health + " of " + max);
+				assertTrue(left > 0, "never their life");
+			}
+		}
+	}
+
+	@Test
+	void woundsFrenziesAndStoresAreHeld() {
+		assertEquals(7, ArtRules.sanguineWound(7, 12), 1e-9, "Sanguine Parry's wound is no more than a weapon");
+		assertEquals(3, ArtRules.sanguineWound(7, 3), 1e-9);
+		assertEquals(0, ArtRules.frenzy(0), 1e-9);
+		assertEquals(ArtRules.FRENZY_SPEED * ArtRules.FRENZY_STACKS, ArtRules.frenzy(99), 1e-9, "a frenzy has its most");
+		assertTrue(ArtRules.frenzy(99) <= 0.2 + 1e-9, "never more than a fifth faster");
+		assertEquals(0.5, ArtRules.stored(0, 1, 5), 1e-9);
+		assertEquals(2.0, ArtRules.stored(1.8, 4, 2), 1e-9, "Thousand Moments stores only so much on one foe");
+		assertEquals(ArtRules.NOVA_AURA_MAX, ArtRules.novaAura(99), 1e-9);
+		assertTrue(ArtRules.NOVA_AURA_MAX <= ArtRules.SLOT_COST[4] / 2, "Nova gives back no more than half its price");
+		assertEquals(0, ArtRules.novaAura(0), 1e-9);
+	}
+
+	@Test
+	void silenceAndDragAreHeldForPlayersAndBosses() {
+		assertEquals(60, ArtRules.silence(60, false, false));
+		assertEquals(ArtRules.SILENCE_PLAYER_TICKS, ArtRules.silence(60, true, false), "a player only briefly");
+		assertEquals(0, ArtRules.silence(60, false, true), "a boss is never silenced");
+		assertTrue(ArtRules.SILENCE_PLAYER_TICKS <= dev.wildercord.cast.CastLock.PLAYER_LOCK_CAP, "no longer than any spell's seal on a player");
+		assertTrue(ArtRules.SILENCE_REST > ArtRules.SILENCE_PLAYER_TICKS * 3, "a player silenced can't be kept silent");
+		assertEquals(0.3, ArtRules.dragged(0.3, false, false), 1e-9);
+		assertEquals(ArtRules.PVP_DRAG, ArtRules.dragged(0.3, true, false), 1e-9);
+		assertEquals(0, ArtRules.dragged(0.3, false, true), 1e-9, "a boss is never dragged");
+		assertTrue(ArtRules.PVP_DRAG < 0.13, "slower than a sprint: a player can always run out of a pull");
+		// Every art that holds a player in place does it through the one hold, held to its cap.
+		for (int ticks : new int[] {ArtRules.THORN_ROOT, ArtRules.ROOTED_ROOT, ArtRules.GROVE_ROOT, ArtRules.STOPPED_HOLD, ArtRules.THOUSAND_HOLD,
+				ArtRules.NULL_HOLD, ArtRules.SANGUINE_HOLD}) {
+			assertTrue(ArtRules.hold(ticks, true, false) <= ArtRules.PVP_HOLD_TICKS);
+			assertEquals(0, ArtRules.hold(ticks, false, true));
+		}
+	}
+
 	// ------------------------------------------------------------------ the framework
 
 	@Test
 	void eachMethodsArtsRegisterInTheirSlots() {
-		Map<String, List<AuraApi.StringArt>> sets = Map.of(EmberArts.METHOD, EmberArts.arts(), RimeArts.METHOD, RimeArts.arts(),
-			ThunderArts.METHOD, ThunderArts.arts(), GaleArts.METHOD, GaleArts.arts(), StoneArts.METHOD, StoneArts.arts());
+		Map<String, List<AuraApi.StringArt>> sets = new LinkedHashMap<>();
+		sets.put(EmberArts.METHOD, EmberArts.arts());
+		sets.put(RimeArts.METHOD, RimeArts.arts());
+		sets.put(ThunderArts.METHOD, ThunderArts.arts());
+		sets.put(GaleArts.METHOD, GaleArts.arts());
+		sets.put(StoneArts.METHOD, StoneArts.arts());
+		sets.put(VerdantArts.METHOD, VerdantArts.arts());
+		sets.put(HollowArts.METHOD, HollowArts.arts());
+		sets.put(StarlitArts.METHOD, StarlitArts.arts());
+		sets.put(HourglassArts.METHOD, HourglassArts.arts());
+		sets.put(CrimsonArts.METHOD, CrimsonArts.arts());
 		assertEquals(Set.copyOf(MethodArts.METHODS), sets.keySet());
 		PlaceholderArts.register();
 		try {
@@ -234,8 +413,7 @@ class ArtRulesTest {
 						art.id() + " meets " + AuraApi.conflicts(art.string(), art.id(), set.getKey()));
 				}
 			}
-			assertFalse(AuraApi.hasArts("verdant"), "the methods still to come play the common arts");
-			assertEquals(PlaceholderArts.IDS, AuraApi.arts("verdant").stream().map(AuraApi.StringArt::id).toList());
+			assertFalse(AuraApi.hasArts("example:none"), "a method without arts of its own (an add-on's) plays the common arts");
 			assertEquals(PlaceholderArts.IDS, AuraApi.arts("example:none").stream().map(AuraApi.StringArt::id).toList());
 			assertEquals("", AuraApi.artMethod(PlaceholderArts.FIRST));
 			// A common art still warns an art open to everyone.
