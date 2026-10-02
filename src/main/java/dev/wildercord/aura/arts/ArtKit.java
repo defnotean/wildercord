@@ -636,9 +636,16 @@ public final class ArtKit {
 		}
 		Scheduler.later(1, () -> {
 			if (player.isAlive()) {
-				Aura.giveBack(player, amount);
+				givenBack += Aura.giveBack(player, amount);
 			}
 		});
+	}
+
+	/** All the aura arts have given back since the server started (for the tests). */
+	private static double givenBack;
+
+	public static double givenBack() {
+		return givenBack;
 	}
 
 	// ------------------------------------------------------------------ wounds

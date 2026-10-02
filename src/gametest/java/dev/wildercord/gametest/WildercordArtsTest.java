@@ -12,10 +12,16 @@ import dev.wildercord.aura.SwordString;
 import dev.wildercord.aura.SwordStrings;
 import dev.wildercord.aura.arts.ArtBlocks;
 import dev.wildercord.aura.arts.ArtFields;
+import dev.wildercord.aura.arts.ArtKit;
 import dev.wildercord.aura.arts.ArtWards;
+import dev.wildercord.aura.arts.CrimsonArts;
 import dev.wildercord.aura.arts.EmberArts;
 import dev.wildercord.aura.arts.GaleArts;
+import dev.wildercord.aura.arts.HollowArts;
+import dev.wildercord.aura.arts.HourglassArts;
 import dev.wildercord.aura.arts.RimeArts;
+import dev.wildercord.aura.arts.StarlitArts;
+import dev.wildercord.aura.arts.VerdantArts;
 import dev.wildercord.client.AuraFxClient;
 import dev.wildercord.client.AuraScreen;
 import dev.wildercord.client.SwordStringsClient;
@@ -61,27 +67,33 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * The breathing methods' arts, step 3 of the aura overhaul: all twenty-five of Ember, Rime, Thunder, Gale and Stone played with
- * the real keys (the attack key, sneak, jump, and the Aura key for the guard and the step), on a long stone platform in the sky,
- * against husks that stand their ground (their legs and their sight taken away, their AI left, so a lift or a throw shows):
+ * The breathing methods' arts, steps 3 and 4 of the aura overhaul: all fifty of the ten methods played with the real keys (the
+ * attack key, sneak, jump, and the Aura key for the guard and the step), on a long stone platform in the sky, against husks that
+ * stand their ground (their legs and their sight taken away, their AI left, so a lift, a throw or a pull shows):
  * <ul>
- *   <li>each method's five are registered on the five strings, and the common arts are left for a method without its own;</li>
+ *   <li>each method's five are registered on the five strings, and the common arts are left for a method without its own (one the
+ *       test makes: every built-in method has its own);</li>
  *   <li>each art, played by its string, is the one performed (never the common art, never another), its price spent and its rest
  *       begun, it goes in the Grimoire, and it does what it says to the husks: set alight, frozen, shattered, struck by lightning,
- *       chained, lifted, thrown, carried, cracked; the swordsman rushed, blinked, leapt or hardened; fields laid on the ground;
- *       Skate's frost on water (frosted ice), the mirror and the eye turning arrows;</li>
+ *       chained, lifted, thrown, carried, cracked, rooted, drawn in, silenced, starred, held in time, echoed, made to bleed; the
+ *       swordsman rushed, blinked, leapt, hardened, snapped back, mended, given aura back, quickened, or paying in health (never
+ *       below its floor); allies mended; fields laid on the ground; Skate's frost on water (frosted ice), the mirror and the eye
+ *       turning arrows and Blur slowing them;</li>
  *   <li>each art filmed from inside it (first person, as it's played) and from behind and above (third person, played again);</li>
- *   <li>the Aura page's Sword strings tab: your own method's arts, another method's, and the common arts of one still to come.</li>
+ *   <li>the Aura page's Sword strings tab: your own method's arts, another method's, and the common arts of a method without any.</li>
  * </ul>
  * Screenshots ({@code art_<id>_fp}, {@code art_<id>_tp}, the Final Arts also {@code _night}; {@code art_page_*}).
  *
- * <p>Runs in the full suite; {@code WILDERCORD_TOUR_ONLY}, {@code WILDERCORD_CORDS_ONLY} and {@code WILDERCORD_SHOWCASE} skip it.</p>
+ * <p>Runs in the full suite; {@code WILDERCORD_TOUR_ONLY}, {@code WILDERCORD_CORDS_ONLY} and {@code WILDERCORD_SHOWCASE} skip it.
+ * {@code WILDERCORD_ARTS=a,b} plays only those arts (the registry and the page always run).</p>
  */
 public class WildercordArtsTest implements FabricClientGameTest {
 	private static final BlockPos STAGE = new BlockPos(0, 190, 0);
 	private static final String TAG = "wildercord.arts_test";
 	/** The arts the server performed, in order. */
 	private static final List<String> PERFORMED = Collections.synchronizedList(new ArrayList<>());
+	/** How many times aura off a blade (an art's strike or bleed) landed on each husk, by its id. */
+	private static final Map<java.util.UUID, Integer> ART_HITS = new java.util.concurrent.ConcurrentHashMap<>();
 	private static boolean hooked;
 	/** A sword's full swing comes back in 11 ticks: a swing as soon as it's full again. */
 	private static final int FULL = 13;
@@ -91,9 +103,15 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		if (System.getenv("WILDERCORD_TOUR_ONLY") != null || System.getenv("WILDERCORD_CORDS_ONLY") != null || System.getenv("WILDERCORD_SHOWCASE") != null) {
 			return;
 		}
+		TestMethods.plain();
 		if (!hooked) {
 			hooked = true;
 			AuraApi.onString((player, art, ctx) -> PERFORMED.add(art.id()));
+			net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, base, taken, blocked) -> {
+				if (source.is(Aura.DAMAGE) && taken > 0 && entity.entityTags().contains(TAG)) {
+					ART_HITS.merge(entity.getUUID(), 1, Integer::sum);
+				}
+			});
 		}
 		context.runOnClient(mc -> {
 			mc.getWindow().setWindowed(1920, 1080);
@@ -160,7 +178,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 
 	private static void registry(ClientGameTestContext context) {
 		String problem = context.computeOnClient(mc -> {
-			for (String method : List.of("ember", "rime", "thunder", "gale", "stone")) {
+			for (String method : dev.wildercord.aura.arts.MethodArts.METHODS) {
 				List<AuraApi.StringArt> arts = AuraApi.arts(method);
 				if (arts.size() != 5 || !AuraApi.hasArts(method)) {
 					return method + " should have five arts of its own on the client (" + arts.size() + ")";
@@ -172,10 +190,16 @@ public class WildercordArtsTest implements FabricClientGameTest {
 					}
 				}
 			}
-			return AuraApi.hasArts("verdant") ? "verdant should still play the common arts" : null;
+			if (dev.wildercord.aura.arts.MethodArts.METHODS.size() != dev.wildercord.aura.BreathingMethods.BUILT_IN.size()) {
+				return "every built-in method should have arts of its own";
+			}
+			List<String> common = AuraApi.arts(TestMethods.PLAIN).stream().map(AuraApi.StringArt::id).toList();
+			return AuraApi.hasArts(TestMethods.PLAIN) || !common.equals(dev.wildercord.aura.PlaceholderArts.IDS)
+				? "a method without arts of its own should play the common arts (" + common + ")" : null;
 		});
 		check(problem == null, problem);
-		check(AuraApi.hasArts("ember") && AuraApi.arts("stone").size() == 5, "the arts should be registered on the server too");
+		check(AuraApi.hasArts("ember") && AuraApi.arts("stone").size() == 5 && AuraApi.arts("crimson").size() == 5,
+			"the arts should be registered on the server too");
 	}
 
 	// ------------------------------------------------------------------ the scenes
@@ -190,7 +214,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	}
 
 	/** What stood where before the art went: each husk's position and health, the swordsman's spot and aura. */
-	private record Before(Map<Integer, Vec3> at, Map<Integer, Float> health, Vec3 player, float aura) {
+	private record Before(Map<Integer, Vec3> at, Map<Integer, Float> health, Vec3 player, float aura, double givenBack) {
 		Vec3 at(LivingEntity e) {
 			return at.getOrDefault(e.getId(), e.position());
 		}
@@ -505,7 +529,352 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				}
 				return ArtBlocks.live() > 0 ? null : "the stone should still be standing";
 			}));
+		// ------------------------------------------------------------ Verdant
+		out.add(new Scene(VerdantArts.THORN_LASH, "verdant", AuraApi.ArtSlot.FIRST, List.of(foe(0, 2.2), foe(0.4, 4.1)), 3, 4, (p, b) -> {
+			List<Mob> foes = foes(p);
+			Mob bound = foes.getFirst();
+			if (bound.getHealth() >= b.health(bound) || !ArtKit.rooted(bound)) {
+				return "the lash should cut the husk in front and root it where it stands (rooted " + ArtKit.rooted(bound) + ")";
+			}
+			if (hits(bound) < 2) {
+				return "the thorns should prick the bound husk while it's held (" + hits(bound) + " hits)";
+			}
+			return foes.get(1).getHealth() < b.health(foes.get(1)) ? null : "the lash should reach the husk four blocks on, past a sword's reach";
+		}));
+		out.add(new Scene(VerdantArts.BLOSSOM_FALL, "verdant", AuraApi.ArtSlot.SECOND, List.of(foe(0, 2.2), foe(1.3, 2.6)), 5, 8, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			if (a.getHealth() >= b.health(a)) {
+				return "the falling cut should strike the husk in front";
+			}
+			if (ArtFields.count(p, VerdantArts.BLOSSOM) != 1) {
+				return "a carpet of blossom should lie where it landed";
+			}
+			Wolf wolf = wolf(p);
+			if (wolf == null || wolf.getHealth() <= b.health(wolf)) {
+				return "the ally on the blossom should be mended (" + (wolf == null ? "no wolf" : b.health(wolf) + " to " + wolf.getHealth()) + ")";
+			}
+			return a.hasEffect(MobEffects.SLOWNESS) ? null : "a foe on the blossom should be slowed";
+		}));
+		out.add(new Scene(VerdantArts.ROOTED_PARRY, "verdant", AuraApi.ArtSlot.THIRD, List.of(foe(0, 1.6), foe(1.6, 0.8)), 3, 4, (p, b) -> {
+			List<Mob> foes = foes(p);
+			Mob a = foes.getFirst();
+			if (a.getHealth() >= b.health(a) || !ArtKit.rooted(a)) {
+				return "whoever struck should be cut and rooted (rooted " + ArtKit.rooted(a) + ")";
+			}
+			if (foes.get(1).getHealth() >= b.health(foes.get(1))) {
+				return "the thorns round the swordsman should prick the husk beside them";
+			}
+			return p.getHealth() >= HURT + ArtRules.ROOTED_MIN - 0.01F ? null
+				: "the swordsman should mend by what the guard caught (" + HURT + " to " + p.getHealth() + ")";
+		}));
+		out.add(new Scene(VerdantArts.WILD_GROWTH, "verdant", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.4), foe(-0.4, 11.4)), 3, 9, (p, b) -> {
+			if (p.getZ() < b.player().z + 9) {
+				return "the swordsman should rush on past the step (" + (p.getZ() - b.player().z) + " blocks)";
+			}
+			int cut = 0;
+			for (Mob m : foes(p)) {
+				if (m.getHealth() < b.health(m)) {
+					cut++;
+				}
+			}
+			if (cut < 2) {
+				return "both husks in the way should be cut (" + cut + ")";
+			}
+			if (ArtFields.count(p, VerdantArts.BRAMBLES) != 1 || ArtBlocks.live() <= 0) {
+				return "brambles should stand along the way";
+			}
+			Wolf wolf = wolf(p);
+			return wolf != null && wolf.getHealth() > b.health(wolf) ? null : "the ally in the brambles should be mended";
+		}));
+		out.add(new Scene(VerdantArts.GROVES_HEART, "verdant", AuraApi.ArtSlot.FINAL, List.of(foe(0, 2.2), foe(-2.5, 1.0), foe(2.6, 0.5), foe(0.5, -2.2)), 10,
+			24, (p, b) -> {
+				int bound = 0;
+				for (Mob m : foes(p)) {
+					if (m.getHealth() < b.health(m) - 5 && ArtKit.rooted(m)) {
+						bound++;
+					}
+				}
+				if (bound < 4) {
+					return "roots should burst under every husk near, striking hard and binding them (" + bound + " of 4)";
+				}
+				if (ArtFields.count(p, VerdantArts.GROVE) != 1) {
+					return "the grove should stand round the swordsman";
+				}
+				Wolf wolf = wolf(p);
+				return wolf != null && wolf.getHealth() > b.health(wolf) ? null : "the ally in the grove should be mended";
+			}));
+		// ------------------------------------------------------------ Hollow
+		out.add(new Scene(HollowArts.VOID_CUT, "hollow", AuraApi.ArtSlot.FIRST, List.of(foe(0, 2.2), foe(0.3, 4.9)), 3, 5, (p, b) -> {
+			Mob far = foes(p).get(1);
+			double before = b.at(far).distanceTo(b.player());
+			double now = far.position().distanceTo(p.position());
+			if (now > before - 1.5) {
+				return "the husk five blocks off should be drawn in to the swordsman (" + String.format(java.util.Locale.ROOT, "%.1f to %.1f", before, now) + ")";
+			}
+			if (far.getHealth() >= b.health(far) || !dev.wildercord.cast.Reactions.has(far, dev.wildercord.cast.Reactions.Mark.SHADOWED)) {
+				return "and struck and shadowed";
+			}
+			return null;
+		}));
+		out.add(new Scene(HollowArts.COLLAPSE, "hollow", AuraApi.ArtSlot.SECOND, List.of(foe(0, 2.2), foe(-3.0, 3.6), foe(3.1, 2.2)), 10, 14, (p, b) -> {
+			Vec3 well = b.player().add(0, 0, ArtRules.COLLAPSE_AHEAD);
+			int gathered = 0;
+			StringBuilder seen = new StringBuilder();
+			for (Mob m : foes(p)) {
+				double before = horizontal(b.at(m), well);
+				double now = horizontal(m.position(), well);
+				seen.append(String.format(java.util.Locale.ROOT, " %.1f to %.1f;", before, now));
+				if (m.getHealth() < b.health(m) && (now < before - 0.8 || now < 1.2)) {
+					gathered++;
+				}
+			}
+			return gathered >= 3 ? null : "the well should drag every husk near into it and collapse on them (" + gathered + ":" + seen + ")";
+		}));
+		out.add(new Scene(HollowArts.NULL_PARRY, "hollow", AuraApi.ArtSlot.THIRD, List.of(foe(0, 1.6), foe(-1.8, 0.6)), 3, 4, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			if (a.getHealth() >= b.health(a)) {
+				return "whoever struck should be cut";
+			}
+			if (!ArtWards.silenced(a) || !dev.wildercord.cast.Statuses.silenced(a)) {
+				return "and silenced (art " + ArtWards.silenced(a) + ", cast lock " + dev.wildercord.cast.Statuses.silenced(a) + ")";
+			}
+			// A player silenced: no arts, no Aura key but the guard, and not silenced again at once.
+			int held = ArtWards.silence(p, ArtRules.NULL_SILENCE);
+			AuraApi.StringArt art = AuraApi.string(HollowArts.VOID_CUT).orElseThrow();
+			String why = SwordStrings.check(p, art, marks(art)).map(Enum::name).orElse("none");
+			boolean slash = Aura.press(p, AuraApi.Trigger.TAP);
+			boolean again = ArtWards.silence(p, ArtRules.NULL_SILENCE) > 0;
+			dev.wildercord.aura.arts.MethodArts.forget(p.getUUID());
+			if (held != ArtRules.SILENCE_PLAYER_TICKS || !why.equals("SILENCED") || slash || again) {
+				return "a silenced player should be held to " + ArtRules.SILENCE_PLAYER_TICKS + " ticks (" + held + "), refused arts (" + why + ") and the slash ("
+					+ slash + "), and not silenced again at once (" + again + ")";
+			}
+			return null;
+		}));
+		out.add(new Scene(HollowArts.RIFT_STEP, "hollow", AuraApi.ArtSlot.FOURTH, List.of(foe(0, 9.4), foe(1.8, 7.6)), 3, 6, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			if (p.getZ() < a.getZ() + 0.4 || p.position().distanceTo(a.position()) > 3) {
+				return "the swordsman should come out just past the husk ahead (" + (p.getZ() - a.getZ()) + ")";
+			}
+			if (a.getHealth() >= b.health(a)) {
+				return "and cut it as they pass";
+			}
+			Mob edge = foes(p).get(1);
+			return edge.getHealth() < b.health(edge) ? null : "the rift's edge should cut the husk standing near it";
+		}));
+		out.add(new Scene(HollowArts.EVENT_HORIZON, "hollow", AuraApi.ArtSlot.FINAL, List.of(foe(0, 3.0), foe(-3.0, 5.6), foe(3.1, 6.4), foe(0.5, 8.6)), 20, 30,
+			(p, b) -> {
+				int crushed = 0;
+				StringBuilder seen = new StringBuilder();
+				Vec3 heart = b.player().add(0, 0, ArtRules.HORIZON_AHEAD);
+				for (Mob m : foes(p)) {
+					float taken = b.health(m) - m.getHealth();
+					seen.append(String.format(java.util.Locale.ROOT, " %.1f taken, %.1f to %.1f from it;", taken, horizontal(b.at(m), heart), horizontal(m.position(), heart)));
+					if (taken > 8) {
+						crushed++;
+					}
+				}
+				return crushed == 4 ? null : "the sphere should drag in and crush every husk near it (" + crushed + ":" + seen + ")";
+			}));
+		// ------------------------------------------------------------ Starlit
+		out.add(new Scene(StarlitArts.STAR_NEEDLE, "starlit", AuraApi.ArtSlot.FIRST, List.of(foe(0, 2.2), foe(1.5, 6.0)), 3, 4, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			if (a.getHealth() >= b.health(a) || !ArtWards.starred(p, a)) {
+				return "the darts should strike the husk in front and set a star on it";
+			}
+			double back = ArtKit.givenBack() - b.givenBack();
+			return back >= ArtRules.NEEDLE_AURA * 2 - 1e-3 ? null : "each dart that strikes should give aura back (" + back + ")";
+		}));
+		out.add(new Scene(StarlitArts.METEOR_SHOWER, "starlit", AuraApi.ArtSlot.SECOND, List.of(foe(0, 2.2), foe(1.2, 3.4), foe(-1.4, 3.0)), 12, 16, (p, b) -> {
+			int struck = 0;
+			for (Mob m : foes(p)) {
+				if (m.getHealth() < b.health(m)) {
+					struck++;
+				}
+			}
+			if (struck < 3) {
+				return "the falling stars should strike all three husks (" + struck + ")";
+			}
+			if (!ArtWards.starred(p, foes(p).getFirst())) {
+				return "the great star should set a star on the husk at its heart";
+			}
+			double back = ArtKit.givenBack() - b.givenBack();
+			return back >= ArtRules.METEOR_AURA * 2 - 1e-3 ? null : "each foe struck should give aura back (" + back + ")";
+		}));
+		out.add(new Scene(StarlitArts.CONSTELLATION_GUARD, "starlit", AuraApi.ArtSlot.THIRD, List.of(foe(0, 1.6), foe(2.4, 2.6)), 6, 34, (p, b) -> {
+			List<Mob> foes = foes(p);
+			Mob a = foes.getFirst();
+			if (hits(a) < 1 + ArtRules.CONSTELLATION_STARS) {
+				return "whoever struck should be cut and then its constellation burst star by star (" + hits(a) + " hits)";
+			}
+			if (foes.get(1).getHealth() >= b.health(foes.get(1))) {
+				return "the husk already carrying a star should burst at once";
+			}
+			double back = ArtKit.givenBack() - b.givenBack();
+			return back >= ArtRules.CONSTELLATION_AURA * ArtRules.CONSTELLATION_STARS - 1e-3 ? null : "each burst should give aura back (" + back + ")";
+		}));
+		out.add(new Scene(StarlitArts.COMET_DASH, "starlit", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.4), foe(-0.4, 11.4)), 3, 15, (p, b) -> {
+			if (p.getZ() < b.player().z + 10) {
+				return "the swordsman should rush on past the step (" + (p.getZ() - b.player().z) + " blocks)";
+			}
+			for (Mob m : foes(p)) {
+				if (hits(m) < 2) {
+					return "each husk in the way should be cut, and then caught by the trail bursting (" + hits(m) + " hits)";
+				}
+			}
+			double back = ArtKit.givenBack() - b.givenBack();
+			return back >= ArtRules.COMET_AURA * 2 - 1e-3 ? null : "each foe the trail catches should give aura back (" + back + ")";
+		}));
+		out.add(new Scene(StarlitArts.NOVA, "starlit", AuraApi.ArtSlot.FINAL, List.of(foe(0, 2.2), foe(-3.0, 1.0), foe(3.4, -1.0), foe(1.0, 5.0)), 15, 15,
+			(p, b) -> {
+				int struck = 0;
+				for (Mob m : foes(p)) {
+					if (m.getHealth() < b.health(m) - 5) {
+						struck++;
+					}
+				}
+				if (struck < 4) {
+					return "the nova should strike every husk round the swordsman (" + struck + " of 4)";
+				}
+				double back = ArtKit.givenBack() - b.givenBack();
+				return back >= ArtRules.novaAura(4) - 1e-3 ? null : "aura should come back for every foe struck (" + back + ")";
+			}));
+		// ------------------------------------------------------------ Hourglass
+		out.add(new Scene(HourglassArts.ECHO_CUT, "hourglass", AuraApi.ArtSlot.FIRST, List.of(foe(0, 2.2)), 3, 14, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			return hits(a) >= 2 ? null : "the cut should strike the husk, and its afterimage strike it again (" + hits(a) + " hits)";
+		}));
+		out.add(new Scene(HourglassArts.REWIND_LEAP, "hourglass", AuraApi.ArtSlot.SECOND, List.of(foe(0, 3.4)), 3, 10, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			MobEffectInstance slow = a.getEffect(MobEffects.SLOWNESS);
+			if (a.getHealth() >= b.health(a) || slow == null || slow.getAmplifier() < 2) {
+				return "the falling cut should strike the husk and drag it in time (" + slow + ")";
+			}
+			return p.position().distanceTo(b.player()) < 1.2 ? null
+				: "time should snap the swordsman back to where they leapt from (" + String.format(java.util.Locale.ROOT, "%.2f", p.position().distanceTo(b.player())) + " off)";
+		}));
+		out.add(new Scene(HourglassArts.STOPPED_MOMENT, "hourglass", AuraApi.ArtSlot.THIRD, List.of(foe(0, 1.6), foe(1.6, 1.2)), 5, 6, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			if (hits(a) < 2) {
+				return "whoever struck should be cut, then struck again by the moment's snap (" + hits(a) + " hits)";
+			}
+			if (a.isNoAi()) {
+				return "time should have started again";
+			}
+			return a.position().distanceTo(p.position()) > b.at(a).distanceTo(b.player()) + 0.3 ? null : "and flung back";
+		}));
+		out.add(new Scene(HourglassArts.BLUR, "hourglass", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.0), foe(-0.4, 11.0)), 3, 6, (p, b) -> {
+			if (p.getZ() < b.player().z + 9) {
+				return "the swordsman should rush on past the step (" + (p.getZ() - b.player().z) + " blocks)";
+			}
+			for (Mob m : foes(p)) {
+				if (m.getHealth() >= b.health(m) || !m.hasEffect(MobEffects.SLOWNESS)) {
+					return "each husk in the way should be cut and slowed";
+				}
+			}
+			return ArtFields.count(p, HourglassArts.DRAG) == 1 ? null : "time should drag round the swordsman";
+		}));
+		out.add(new Scene(HourglassArts.THOUSAND_MOMENTS, "hourglass", AuraApi.ArtSlot.FINAL, List.of(foe(0, 2.2), foe(-2.6, 1.4), foe(2.8, -0.6), foe(0.4, 4.6)),
+			20, 54, (p, b) -> {
+				int landed = 0;
+				StringBuilder seen = new StringBuilder();
+				for (Mob m : foes(p)) {
+					float taken = b.health(m) - m.getHealth();
+					seen.append(String.format(java.util.Locale.ROOT, " %.1f;", taken));
+					if (taken > 10) {
+						landed++;
+					}
+				}
+				return landed == 4 ? null : "every husk held should take all the gathered cuts at once (" + landed + ":" + seen + ")";
+			}));
+		// ------------------------------------------------------------ Crimson
+		out.add(new Scene(CrimsonArts.BLOODLETTING, "crimson", AuraApi.ArtSlot.FIRST, List.of(foe(0, 2.2), foe(1.0, 2.6)), 3, 6, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			if (!dev.wildercord.cast.Reactions.has(a, dev.wildercord.cast.Reactions.Mark.BLEEDING)) {
+				return "the cut should leave the husk bleeding";
+			}
+			return hits(a) >= 4 ? null : "the wound should bleed on after the cut (" + hits(a) + " hits)";
+		}));
+		out.add(new Scene(CrimsonArts.RED_RAIN, "crimson", AuraApi.ArtSlot.SECOND, List.of(foe(0, 2.2), foe(1.6, 3.0), foe(-1.8, 2.4)), 8, 12, (p, b) -> {
+			for (Mob m : foes(p)) {
+				if (hits(m) < 2) {
+					return "every husk under the rain should be struck and bleed (" + hits(m) + " hits)";
+				}
+			}
+			if (ArtFields.count(p, CrimsonArts.RAIN) != 0) {
+				return "the rain should have passed";
+			}
+			return p.getHealth() > HURT + 1 ? null : "the swordsman should drink from it all (" + HURT + " to " + p.getHealth() + ")";
+		}));
+		out.add(new Scene(CrimsonArts.SANGUINE_PARRY, "crimson", AuraApi.ArtSlot.THIRD, List.of(foe(0, 1.6), foe(1.4, 1.0)), 3, 6, (p, b) -> {
+			Mob a = foes(p).getFirst();
+			if (hits(a) < 4 || !dev.wildercord.cast.Reactions.has(a, dev.wildercord.cast.Reactions.Mark.BLEEDING)) {
+				return "whoever struck should be cut and bleed the caught blow back out (" + hits(a) + " hits)";
+			}
+			return p.getHealth() > HURT + 1 ? null : "the swordsman should drink from it (" + HURT + " to " + p.getHealth() + ")";
+		}));
+		out.add(new Scene(CrimsonArts.FRENZY, "crimson", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.0), foe(-0.4, 10.6), foe(0.2, 12.2)), 3, 6, (p, b) -> {
+			if (p.getZ() < b.player().z + 9) {
+				return "the swordsman should rush on past the step (" + (p.getZ() - b.player().z) + " blocks)";
+			}
+			int stacks = ArtWards.frenzyStacks(p);
+			AttributeInstance speed = p.getAttribute(Attributes.ATTACK_SPEED);
+			if (stacks < 2 || speed == null || speed.getValue() <= speed.getBaseValue() * 1.05) {
+				return "each husk cut should feed the frenzy, quickening the blade (" + stacks + " stacks, " + (speed == null ? "?" : speed.getValue()) + ")";
+			}
+			return null;
+		}));
+		out.add(new Scene(CrimsonArts.CRIMSON_MOON, "crimson", AuraApi.ArtSlot.FINAL, List.of(foe(0, 2.2), foe(-2.5, 2.0), foe(2.8, 1.5), foe(0.6, 4.6)), 6,
+			10, (p, b) -> {
+				int struck = 0;
+				for (Mob m : foes(p)) {
+					if (m.getHealth() < b.health(m) - 8 && dev.wildercord.cast.Reactions.has(m, dev.wildercord.cast.Reactions.Mark.BLEEDING)) {
+						struck++;
+					}
+				}
+				if (struck < 4) {
+					return "the moon should strike every husk before the swordsman hard and open wounds in them (" + struck + " of 4)";
+				}
+				// The price: a quarter of the greatest health, never past a heart.
+				AuraApi.StringArt art = AuraApi.string(CrimsonArts.CRIMSON_MOON).orElseThrow();
+				p.removeAttached(SwordStrings.COOLDOWNS);
+				p.setHealth(p.getMaxHealth());
+				SwordStrings.perform(p, art, marks(art));
+				float whole = p.getHealth();
+				p.removeAttached(SwordStrings.COOLDOWNS);
+				p.setHealth(3.0F);
+				SwordStrings.perform(p, art, marks(art));
+				float low = p.getHealth();
+				p.removeAttached(SwordStrings.COOLDOWNS);
+				p.setHealth(1.5F);
+				SwordStrings.perform(p, art, marks(art));
+				float lowest = p.getHealth();
+				p.setHealth(p.getMaxHealth());
+				if (Math.abs(whole - p.getMaxHealth() * 0.75F) > 0.01F) {
+					return "it should cost a quarter of a whole swordsman's health (" + whole + ")";
+				}
+				return Math.abs(low - ArtRules.MOON_FLOOR) < 0.01F && Math.abs(lowest - 1.5F) < 0.01F ? null
+					: "it should never take a swordsman under a heart (3 to " + low + ", 1.5 to " + lowest + ")";
+			}));
 		return out;
+	}
+
+	/** The health the swordsman starts at in the scenes that mend or drink, so it shows. */
+	private static final float HURT = 10.0F;
+
+	/** How many times an art's aura landed on {@code foe} this scene. */
+	private static int hits(Mob foe) {
+		return ART_HITS.getOrDefault(foe.getUUID(), 0);
+	}
+
+	private static double horizontal(Vec3 a, Vec3 b) {
+		return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.z - b.z) * (a.z - b.z));
+	}
+
+	/** The scene's ally (a tamed wolf, sitting where the scene put it), or null. */
+	private static Wolf wolf(ServerPlayer player) {
+		List<Wolf> wolves = player.level().getEntitiesOfClass(Wolf.class, player.getBoundingBox().inflate(32), w -> w.entityTags().contains(TAG));
+		return wolves.isEmpty() ? null : wolves.getFirst();
 	}
 
 	// ------------------------------------------------------------------ playing a scene
@@ -515,6 +884,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		set(world, scene);
 		context.waitTicks(20);
 		PERFORMED.clear();
+		ART_HITS.clear();
 		Before before = on(world, player -> snapshot(player));
 		// ---- played with the keys, in first person.
 		boolean step = scene.slot == AuraApi.ArtSlot.FOURTH;
@@ -534,6 +904,11 @@ public class WildercordArtsTest implements FabricClientGameTest {
 					mc.player.xRotO = 25;
 				});
 				context.waitTicks(2);
+				// Rewind Leap snaps back to where the leap began: leap forward at the husk, so there's somewhere to go back to.
+				boolean forward = scene.id.equals(HourglassArts.REWIND_LEAP);
+				if (forward) {
+					context.getInput().holdKey(o -> o.keyUp);
+				}
 				context.getInput().holdKeyFor(o -> o.keyJump, 1);
 				context.waitTicks(4);
 				swing(context);
@@ -541,6 +916,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				for (int t = 0; t < 14 && !context.computeOnClient(mc -> mc.player.onGround()); t++) {
 					context.waitTicks(1);
 				}
+				context.getInput().releaseKey(o -> o.keyUp);
 				// Down again: the low swing at the husk in front, not the ground.
 				context.runOnClient(mc -> {
 					mc.player.setXRot(16);
@@ -595,6 +971,10 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			String turned = arrowTurned(context, world, scene.id.equals(RimeArts.GLACIER_MIRROR));
 			check(turned == null, scene.id + ": " + turned);
 		}
+		if (scene.id.equals(HourglassArts.BLUR)) {
+			String slowed = arrowSlowed(context, world);
+			check(slowed == null, scene.id + ": " + slowed);
+		}
 		String paid = on(world, player -> {
 			long now = player.level().getGameTime();
 			long ready = SwordStrings.readyAt(player, scene.id);
@@ -623,6 +1003,17 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				}
 			});
 			context.waitTicks(12);
+			if (scene.id.equals(HourglassArts.REWIND_LEAP)) {
+				// A leap forward first (from the server: the art snaps back to where it left the ground), then the cut as it lands.
+				on(world, player -> {
+					ArtKit.launch(player, new Vec3(0, 0.42, 0.32));
+					return null;
+				});
+				context.waitTicks(3);
+				for (int t = 0; t < 16 && !on(world, player -> player.onGround()); t++) {
+					context.waitTicks(1);
+				}
+			}
 			int[] spectacle = context.computeOnClient(mc -> AuraFxClient.spectacle());
 			String done = on(world, player -> {
 				AuraApi.StringArt art = AuraApi.string(scene.id).orElseThrow();
@@ -686,6 +1077,17 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			case "kindling_draw" -> 18;
 			case "bolt_step", "static_riposte", "skyfall" -> 14;
 			case "landslide" -> 14;
+			case "thorn_lash", "bloodletting", "sanguine_parry" -> 34;
+			case "blossom_fall" -> 24;
+			case "wild_growth", "comet_dash", "meteor_shower" -> 28;
+			case "groves_heart" -> 26;
+			case "void_cut", "star_needle", "blur" -> 10;
+			case "collapse", "crimson_moon" -> 22;
+			case "event_horizon", "constellation_guard", "red_rain" -> 48;
+			case "nova" -> 18;
+			case "echo_cut" -> 16;
+			case "rewind_leap" -> 12;
+			case "stopped_moment", "thousand_moments" -> 56;
 			default -> 8;
 		};
 	}
@@ -713,6 +1115,27 @@ public class WildercordArtsTest implements FabricClientGameTest {
 					level.setBlockAndUpdate(p.below(), Blocks.STONE.defaultBlockState());
 					level.setBlockAndUpdate(p, Blocks.WATER.defaultBlockState());
 				}
+			}
+			if (scene.id.equals(VerdantArts.ROOTED_PARRY) || scene.id.equals(CrimsonArts.RED_RAIN) || scene.id.equals(CrimsonArts.SANGUINE_PARRY)) {
+				// Hurt, so what it mends or drinks shows.
+				player.setHealth(HURT);
+			}
+			if (scene.id.equals(VerdantArts.BLOSSOM_FALL) || scene.id.equals(VerdantArts.WILD_GROWTH) || scene.id.equals(VerdantArts.GROVES_HEART)) {
+				// An ally, hurt, where the art mends: on the blossom, beside the way through the brambles, inside the grove.
+				Vec3 spot = scene.id.equals(VerdantArts.BLOSSOM_FALL) ? at(-1.2, 1.6) : scene.id.equals(VerdantArts.WILD_GROWTH) ? at(0.8, 10.0) : at(-1.5, -1.0);
+				Wolf ally = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
+				if (ally != null) {
+					ally.snapTo(spot.x, spot.y, spot.z, 180, 0);
+					ally.tame(player);
+					ally.setOrderedToSit(true);
+					ally.addTag(TAG);
+					level.addFreshEntity(ally);
+					ally.setHealth(ally.getMaxHealth() * 0.5F);
+				}
+			}
+			if (scene.id.equals(StarlitArts.CONSTELLATION_GUARD)) {
+				// The husk beside already carries a star (a dart's, say), for the counter to burst.
+				ArtWards.star(player, foes(player).get(1));
 			}
 			if (scene.id.equals(GaleArts.TAILWIND)) {
 				Wolf wolf = EntityTypes.WOLF.create(level, EntitySpawnReason.COMMAND);
@@ -791,6 +1214,32 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		});
 	}
 
+	/**
+	 * An arrow loosed at the swordsman from inside Blur's drag: it should slow to a fraction of its speed as it crosses in, and never
+	 * reach them hard.
+	 */
+	private static String arrowSlowed(ClientGameTestContext context, TestSingleplayerContext world) {
+		Object[] shot = on(world, player -> {
+			ServerLevel level = player.level();
+			Arrow arrow = new Arrow(EntityTypes.ARROW, level);
+			Vec3 from = player.getEyePosition().add(1.0, 0.2, 4.2);
+			Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();
+			arrow.snapTo(from.x, from.y, from.z);
+			arrow.setDeltaMovement(aim.scale(2.0));
+			level.addFreshEntity(arrow);
+			return new Object[] {arrow.getUUID(), 2.0};
+		});
+		context.waitTicks(1);
+		return on(world, player -> {
+			net.minecraft.world.entity.Entity arrow = player.level().getEntity((java.util.UUID) shot[0]);
+			if (arrow == null) {
+				return "the arrow should still be flying, slowed (it's gone)";
+			}
+			double speed = arrow.getDeltaMovement().length();
+			return speed < (double) shot[1] * 0.6 ? null : "an arrow crossing into the drag should slow to a fraction of its speed (" + speed + ")";
+		});
+	}
+
 	// ------------------------------------------------------------------ the Aura page
 
 	private static void page(ClientGameTestContext context, TestSingleplayerContext world) {
@@ -818,10 +1267,16 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		context.getInput().setCursorPos(4, 4);
 		context.waitTicks(2);
 		shot(context, "art_page_thunder");
-		// A method still to come: the common arts.
+		// One of the methods step 4 gave its arts, and a method without arts of its own (the test's): the common arts, its swatch dimmed.
 		context.runOnClient(mc -> AuraScreen.browse("verdant"));
 		context.waitTicks(3);
 		shot(context, "art_page_verdant");
+		context.runOnClient(mc -> AuraScreen.browse("crimson"));
+		context.waitTicks(3);
+		shot(context, "art_page_crimson");
+		context.runOnClient(mc -> AuraScreen.browse(TestMethods.PLAIN));
+		context.waitTicks(3);
+		shot(context, "art_page_common");
 		context.setScreen(() -> null);
 		context.runOnClient(mc -> {
 			AuraScreen.listArts(false);
@@ -901,7 +1356,12 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			at.put(m.getId(), m.position());
 			health.put(m.getId(), m.getHealth());
 		}
-		return new Before(at, health, player.position(), Aura.aura(player));
+		Wolf ally = wolf(player);
+		if (ally != null) {
+			at.put(ally.getId(), ally.position());
+			health.put(ally.getId(), ally.getHealth());
+		}
+		return new Before(at, health, player.position(), Aura.aura(player), ArtKit.givenBack());
 	}
 
 	private static List<Integer> marks(AuraApi.StringArt art) {
