@@ -76,7 +76,7 @@ and documented, not a first draft.
 | 7 | Ways | done |
 | 8 | Your own techniques | done |
 | 9 | The bonded blade | done |
-| 10 | Masters, disciples, sparring and the clash | planned |
+| 10 | Masters, disciples, sparring and the clash | in progress: server side on branch `aura-step10-wip`, not merged |
 | 11 | The world of the sword | planned |
 | 12 | Mage and swordsman together | planned |
 
@@ -1147,3 +1147,21 @@ blade: `aura.BladeBond` (the `wildercord:bonded_blade` component); the world's r
 - **In the game test**: a draw's knockback can throw a husk out of reach even with full resistance; set a foe squarely in front before
   the felling blow. The ceremony's front view needs a negative pitch to look down on the ring. A tier moment's spectacle is filtered by
   the camera when it arrives, so switch to third person before the tier is reached.
+
+### Step 10, partly built (branch `aura-step10-wip`, not merged)
+
+Work on step 10 stopped partway, on 2026-10-02, when the project was handed over. The branch holds two commits on top of
+the step 9 merge (e5a23153):
+
+- **The rules**, with unit tests: `ClashRules` (a clash judged over a rhythm of three beats, presses judged early, on
+  time or late, fumbles), `SparRules`, `LineageRules`, plus changes to `WayRules` and `AuraWorldRules`, and
+  `SocialRulesTest`.
+- **The server**: `Spars` (the salute challenge and its answer; the ring fought on the existing duel system in
+  `duel/`), `Lineage` and `LineageRegistry` (master and disciple), `Clashes` (wired into `Crescents`), and hooks in
+  `AuraApi`, `AuraBreakthroughs`, `AuraExperience`, `BondedBlades`, `Techniques`, `WayEffects`, `Duelist` and the
+  config.
+
+Not built yet: the client side (clash rhythm HUD, ring and lineage visuals, the Aura page's lineage panel), sounds,
+language strings, the game test, the guide page and the changelog. Whether the branch builds and its unit tests pass
+was not verified at handover. Whoever continues should first rebase it on main, build it, read
+its rules classes against the step 10 spec above, then build the client, test, document and merge.
