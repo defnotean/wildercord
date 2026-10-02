@@ -69,7 +69,7 @@ and documented, not a first draft.
 |---|---|---|
 | 1 | Sword strings: the input language | done |
 | 2 | Feel and spectacle: the shared visual and sound language | done |
-| 3 | Arts I: the framework, and Ember, Rime, Thunder, Gale, Stone | planned |
+| 3 | Arts I: the framework, and Ember, Rime, Thunder, Gale, Stone | done |
 | 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | planned |
 | 5 | Momentum and openings | planned |
 | 6 | Awakening | planned |
@@ -496,3 +496,92 @@ body motes. The performance profile sets SUBTLE / CALM / SOFT / OWN. New effects
   bursts, flares, body motes, whispers; `HitStop.stops()`, `ScreenEffects.nudging()`, `AuraBanners.ownShowing()`). A Dominion's
   circle lingers its full time on each client: wait it out before the next pictures. `WildercordShaderTest` films a Sovereign
   body and an art under its test pack (`shader_aura_*`).
+
+### From step 3: Arts I
+
+The player's view is `wiki/progression/sword-arts.md` (every art) and `wiki/progression/aura.md#the-arts`; the rules and every
+art's numbers are DESIGN.md's "The methods' arts"; the code map is ARCHITECTURE.md's "The methods' arts".
+
+**Giving a method its arts (step 4, for Verdant, Hollow, Starlit, Hourglass, Crimson).** Copy the shape of `EmberArts`:
+1. `aura.arts.<Method>Arts`: `METHOD` (the method's id), the five art ids as constants, and
+   `arts()` returning `List.of(MethodArts.art(AuraApi.ArtSlot.FIRST, ID, <Method>Arts::performer), ...)` (one a slot, First to
+   Final). A performer is `static boolean x(ServerPlayer player, AuraApi.StringContext context)`: it decides what happens,
+   draws it, and returns whether it went off (false: nothing is paid, nothing rests; call `MethodArts.blocked(player, id)` to
+   say why). The framework already gives every art its banner, body flare, the method's `ART` sound, its price and rest and its
+   Grimoire entry; the art adds only its own trail, strikes, light and voice.
+2. `aura.ArtRules`: the art's numbers as constants under a `// ===== <Method>` heading, and one `Art` record a slot in `ARTS`
+   (id, method, slot, the slot's cost and rest, and the balance model's `primary`, `area`, `control`, `reach`; see below).
+   `MethodArts.art` takes the price and rest from there by id and throws if the slot disagrees.
+3. `MethodArts.init`: `AuraApi.registerArts(<Method>Arts.METHOD, <Method>Arts.arts())`; add the method to `MethodArts.METHODS`
+   and its voices to `MethodArts.SOUNDS`; `ArtRulesTest.METHODS` lists the methods too.
+4. Lang in `tools/aura_art.py` `LANG`: `aura.wildercord.art.<id>` and `.desc` (what it does, in the guide's voice, numbers in
+   words); then `python tools/generate_assets.py` and `python tools/check_generated_assets.py` (on Windows it may rewrite a few
+   unrelated JSON files with only their line endings changed: `git checkout --` those).
+5. A voice per art in `tools/feel/aura_arts.py` (`aura_art_<id>`; see the existing recipes and the `_whoosh`, `_crackle`,
+   `_zap` and `_rubble` helpers), then `python tools/feel/build.py --only aura`, `--merge`, `--check`.
+6. A scene per art in `WildercordArtsTest.scenes()` (where the foes stand, the method and stage, how to play it, what to check
+   on the server), and the guide's tables.
+7. **Tests that assume five methods without arts**: `WildercordSwordStringsTest` plays the common arts as Verdant, Hollow,
+   Starlit, Hourglass and Crimson (and `SwordStringsTest`'s registry tests use "verdant"). Once every built-in method has arts,
+   play the common arts with a method registered by the test itself (`AuraApi.registerMethod`), or a player with no method
+   arts at all, and keep one test of a method's own art beside a common one. The Aura page's dimmed swatch and the Grimoire's
+   "Sword arts (n of m)" count follow `hasArts` by themselves.
+
+**The shared kit** (`aura.arts`; use these rather than reaching for `cast` directly, they carry the PvP and boss rules):
+- `ArtKit.hits(player, fx)` then `hits.strike(foe, factor[, Weight])` for every blow: projected aura at the weapon's damage
+  × factor × `damage_scale` × `art_damage`, its impact drawn, each foe answering once, a player capped at `PVP_ART_CAP` over
+  the whole art. `hits.raw` for a computed amount (Backdraft's caught blow), `hurt(foe)`/`count()` for "each foe once".
+- Who: `arc(player, first, reach, degrees, max)` (a cone in front, the foe struck first), `around`, `line`, `beam`, `primary`,
+  `attacker` (the one a counter answers: `AuraGuard.caught`'s, else the nearest in front), `nearest`. All filter through
+  `harmable` (targeting, teams, `canHarmPlayer`).
+- What to them: `lift`, `knock`, `shove`, `pull`, `draw` (a pull that overrides the velocity: see the gotchas), `ignite`,
+  `chill`, `slow`, `freeze` (the mod's freeze, Shatter-able), `hold` (stunned), `holdLater` (stunned once it lands), `shock`
+  (interrupt, a short hold, ionised). Each is already held for players (`PVP_HOLD_TICKS` 15, then 80 ticks before another art's
+  hold, `PVP_THROW` 0.6, `PVP_IGNITE_TICKS` 60) and bosses (only slowed).
+- Moving the swordsman: `path` (never through walls or wards, `AuraStep.path`), `dash(player, path, ticks, stretch)` (a
+  Fourth Art's rush, a callback per stretch), `beside`, `fits`, `blink`, `launch`; `MethodArts.whenLanded` for a leap's
+  landing (the fall forgotten). `AuraStep.afterimages` for the streak.
+- Light: `ArtLight.world(player)` (everyone, the owner too) and `ArtLight.spectacle(player)` (everyone else, and the owner only
+  in third person: `AuraFx.Shown`). Both lay a thin dark rim under additive light by day; `.bare()` for a white core over a
+  coloured stroke. Shapes: `ring`, `groundRing`, `ray`, `slash`, `tongues` (flames), `whirl`, `swirl`, `shards`, `orb`, `arc`
+  (lightning), `sigil`, `ground`, `flash`.
+- Ground: `ArtFields.open(owner, kind, shape, ticks, period, pulse)` with `strip`/`disc`/`ring` (Ember's fire line and ring,
+  Skate's path, Glacier Mirror's pane); `ArtBlocks.spire/slab/sheet` (block displays that rise and sink, cleaned up after a
+  restart); `ArtWards` for what stays on a body (mirror, eye, juggle, harden, crusts).
+- Real blocks: only through `WorldMagic` (Skate's `frostWater`), gated by `aura.art_terrain`, `Casters.mayEdit`, wards and
+  `world_changing_magic`. Verdant's brambles and Hollow's collapse should be `ArtBlocks` shapes or `ArtFields`, not blocks.
+
+**Balance numbers and why.** Every method's art in a slot costs and rests the same (`SLOT_COST` 6/8/8/10/40,
+`SLOT_COOLDOWN` 60/80/80/100/600 ticks; an art may rest a little less if it's lighter, as Crackle's 50) and is worth the same
+within `POWER_SPREAD` 12% of `SLOT_POWER` 1.3/1.8/1.9/2.15/4.35 W by `ArtRules.power`: primary + 0.6 × area + 0.25 × control
+seconds + 0.07 × blocks of reach past 3. `ArtRulesTest` enforces it (and that no method's five together outweigh another's by
+more than a tenth, and that each method leads in its own thing). Method identities so far: Ember the most damage with fire after and
+the least control; Rime the least damage and the most hold (only Stone's standing firm comes near); Thunder many foes a little each, and interrupts; Gale reach and the
+air under them; Stone the heaviest single blows and standing firm. For step 4, keep each method a different answer: count
+healing allies (Verdant, Crimson's drinking) as `area` at about its amount in W, aura given back (Starlit's Nova) as `primary`
+at about a W per 10 aura, and Crimson Moon's own health cost as negative `control` (or a lower primary), and add a test like
+`eachMethodHasItsOwnStrength` for the new identities. After step 4, the balance pass across all fifty is the same test with ten
+methods.
+
+**First person.** The swordsman's own view gets the thin trail (step 2), marks on foes, light on the ground ahead and anything
+out at a distance; whatever sits round the body or lies across the line of sight (a lance, a near crescent, a mirror, a gout of
+flame, a whirlwind, rising stone right in front) goes through `ArtLight.spectacle`. `Sigils.send` already drops shaped light
+centred within 1.25 blocks of the owner's eyes, which isn't enough for a crescent 1 to 2 blocks ahead: it still crosses the
+middle. Look at every art's `_fp` shot.
+
+**Gotchas.**
+- **Vanilla knockback rides every art strike** (projected aura goes through `hurt`, 0.4 back from the swordsman), so every hit
+  pushes foes away. A pull (Hundred Winds) must set the velocity after the strike (`ArtKit.draw`), not add to it; a carry
+  (Landslide) teleports mobs along; a throw adds on top of it.
+- **A hold is `Spirits.hold`/`freeze`: NoAI for a mob**, which freezes its motion too, so a foe held in the air hangs there.
+  Lift first, hold once it lands (`ArtKit.holdLater` waits up to 40 ticks for the ground).
+- **Additive light washes out by day**; the rim `ArtLight` lays is narrow on purpose (ring ×1.15 its width, ray +0.06, slash
+  ×1.15): wider rims read as black outlines. Night shots (`_night`) for the Final Arts check the other side.
+- **Block and item particles** (`ParticleTypes.BLOCK`, `ITEM`) of ice draw as small dull cubes that read as clods of earth:
+  Rime uses bright motes and snowflakes (`RimeArts.chips`). Earth chips are fine as cubes, but `ElementFx.crack` throws them
+  straight up from all over the seal, through the swordsman's view when it's at their feet: `StoneArts.crackUnder` throws them
+  low and outward.
+- **The game test**: `WildercordArtsTest` husks keep their AI (so lifts and throws carry them) with no speed and no follow
+  range; knockback scatters them, so `regroup()` puts them back between the first-person and third-person plays; the platform
+  is refilled with air before each scene (Skate's ice, a Sunfall ring). `WILDERCORD_ARTS=a,b` plays only those (the Aura page
+  always). Back up `src/gametest/resources/fabric.mod.json` before running a subset and restore it after.

@@ -890,8 +890,9 @@ client reads, the server judges:
   `mixin.SwordStringsSeenMixin` on `handlePunch` and `mixin.PiercingWeaponStringsMixin` on `PiercingWeapon.attack`; `cue`, from
   `AuraGuard.feedback` and `AuraStep.go`), `check` (closed, no weapon, not ready, condition, no aura, unseen), and `perform`
   (the performer, then the price through `Aura.spend` never past empty, the rest, the hooks, the Grimoire's
-  `aura:sword_string`). `PlaceholderArts` registers the five arts every method shares for now, on `AuraVfx.artArc`,
-  `artCounter`, `artLine` and `artRing`, each with its own `AuraFx` trail and impacts (below).
+  `aura:sword_string`, and a method's own art's `aura:art_<id>`). `PlaceholderArts` registers the five common arts a method
+  without its own plays, on `AuraVfx.artArc`, `artCounter`, `artLine` and `artRing`, each with its own `AuraFx` trail and
+  impacts (below); a method's own arts (`aura.arts`, below that) step them aside.
 
 ### Feel and spectacle: `aura.AuraFx`, `AuraFxRules`, `client.AuraFxClient`
 
@@ -924,6 +925,60 @@ its own camera sees it:
 - **Sounds**: `tools/feel/aura_methods.py` (part of the feel kit's `aura` part) makes `aura_<method>_swing`, `_impact` and
   `_art` for each built-in method and `aura_steel_*`.
 
+### The methods' arts: `aura.ArtRules`, `aura.arts`
+
+Each breathing method's own five arts on the sword strings (the rules and numbers are DESIGN.md's
+[The methods' arts](DESIGN.md#the-methods-arts); notes for the next methods in
+[AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-3-arts-i)):
+
+- **Pure parts** (`aura.ArtRules`, unit-tested by `ArtRulesTest`): the slots' prices and rests, every art's numbers, its
+  record in `ARTS` (`Art`: id, method, slot, cost, cooldown and the balance model's primary, area, control and reach) and
+  `power`, `SLOT_POWER` and `POWER_SPREAD` (the test holds each art to its slot's worth); the PvP rules (`pvpLeft`, `hold`,
+  `thrown`, `ignite`), shapes (`inCone`, `alongAcross`), `falloff`, `chain`, `crusts`, `backdraft`, `spearTilt`, and the
+  Grimoire key `grimoireKey(id)` (`aura:art_<id>`).
+- **The framework**: `api.AuraApi.ArtSlot` (the five strings and stages; `slot.art(id, cost, cooldown, performer)`, the Final
+  Art gated by `FINAL_GATE`), `registerArts(method, arts)` (each art `forMethod(method)` and registered as a string; the common
+  arts' `available` skips a method with arts of its own, so `stringsOf` never offers both), `hasArts`, `arts(method)` (its own
+  or the common five, by stage, both sides: the Aura page and the Grimoire read it), `artMethod(artId)`, `gateFinalArts(gate)`,
+  and `conflicts(string, except, method)` (arts of two different methods never conflict). `SwordStrings.perform` writes the
+  Grimoire entry; `Feats.reward` gives it 60; `client.GrimoireToast` names it under its method's manual.
+- **`aura.arts.MethodArts`**: `init` registers the five methods' lists (`EmberArts`, `RimeArts`, `ThunderArts`, `GaleArts`,
+  `StoneArts`, each `arts()` built with `MethodArts.art(slot, id, performer)`, which takes the price and rest from
+  `ArtRules.art(id)` and checks the slot), `blocked` (an art with nowhere to go), `whenLanded` (where a leap comes down, its
+  fall forgotten), `SOUNDS` (each art's voice, checked by the tests), and the lifecycle (`forget`, `clear`).
+- **The shared kit** (all server side):
+  - `ArtKit`: who (`harmable` with `canHarmPlayer`, `helpable`, `boss`), where (`flat`, `right`, `bladeSide`, `hand`, `floor`),
+    whom (`around`, `arc`, `line`, `beam`, `primary`, `attacker`, `nearest`), damage (`hits(player, fx)` returns `Hits`:
+    `strike(foe, factor[, weight])` and `raw`, each through `AuraCombat.projected` with the `PVP_ART_CAP` ledger per player and
+    the impact drawn by weight; `weapon`, `scale`), what it does to them (`lift`, `knock`, `shove`, `pull`, `draw`, `ignite`,
+    `chill`, `slow`, `freeze`, `hold`, `holdLater`, `shock`, all capped by `ArtRules` for players and bosses; holds rest 80
+    ticks a player), and moving the swordsman (`path`, `dash(player, path, ticks, stretch)`, `beside`, `fits`, `blink`,
+    `launch`).
+  - `ArtLight`: shaped light for an art (`world(player)` for everyone, `spectacle(player)` for others and the owner's third
+    person only, through `AuraFx.spectacle`/`Shown`), with a thin dark rim under it by day (`bare()` without): `ring`,
+    `groundRing`, `ray`, `slash`, `tongues` (flames), `whirl`, `swirl`, `shards`, `orb`, `arc` (lightning), `sigil`, `ground`,
+    `flash`.
+  - `ArtFields`: what an art leaves on the ground for a while (`open(owner, kind, shape, ticks, period, pulse)` with `strip`,
+    `disc`, `ring` shapes; `foes`/`allies` inside; `count`, `inside`; ticked on `END_SERVER_TICK`).
+  - `ArtBlocks`: stone and ice that rise and sink as block displays (`spire`, `slab`, `sheet`), tagged through `BlockFx.fresh`
+    so a restart's leftovers are removed as their chunk loads.
+  - `ArtWards`: what an art leaves on its swordsman or a foe: `mirror`/`mirrored` and `eye`/`inEye`, whose `deflection`
+    `AuraGuard.deflection` asks when no perfect guard turns a projectile (from `mixin.EntityAuraDeflectMixin`); `juggled` and
+    `juggle`, the bonus `AuraCombat.blow` multiplies in; `harden`/`hardened` (Resistance I and full knockback resistance, a
+    transient modifier taken off when it ends); `crust`/`crusts`.
+- **Elsewhere**: `AuraGuard.caught(player)` (the blow a perfect guard just caught, for Backdraft), `AuraStep.path` and
+  `afterimages` (the rushes), `cast.WorldMagic.frostWater` (Skate over water, the terrain spells' checks), `cast.Sigils.send`
+  (an `except` for spectacle), `config` `aura.art_damage` and `art_terrain`, `client.AuraFxClient` (draws `Shown` only out of
+  first person), `client.AuraScreen.browse` and the methods' swatches (the Sword strings tab), `client.CordScreen.addArts`
+  (the Grimoire's sword arts).
+- **Sounds**: `tools/feel/aura_arts.py` (part of the feel kit's `aura` part) makes `aura_art_<id>` for each art, and
+  `aura_art_sunfall_impact` and `aura_art_winters_hush_shatter`. Lang: `tools/aura_art.py` `LANG` (`aura.wildercord.art.<id>`
+  and `.desc`).
+- **Tests**: `ArtRulesTest` (prices, slots, the balance model, PvP caps, shapes, the lang and sounds for every art),
+  `SwordStringsTest` (the common arts and a method's own side by side), game test `WildercordArtsTest` (every art played with
+  the real keys, checked on the server and filmed in first and third person, the Aura page's tab browsed; `WILDERCORD_ARTS=a,b`
+  plays only those).
+
 ### Hooks for the next wave: `api.AuraApi`
 
 The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in
@@ -941,6 +996,7 @@ through them, all on the server thread unless noted, registered at start-up:
 | `addMethodSource(new MethodSources.Source(id, lootTable, chance, weights))` | Another place manuals turn up: a loot table (read as tables load), or a source in code with `lootTable` "" that draws with `Source.draw(random)`. |
 | `grantMethod(player, methodId, sourceId)` | Teach a method outright (a duelist's lesson): as reading its manual, switching cost included, without asking twice. `manual(methodId)` makes the item. |
 | `stage`, `method`, `aura`, `capacity`, `color` | Reading a player's aura (both sides; a client knows only its own player's, and everyone's `Aura.look`). |
+| `registerArts(methodId, List.of(ArtSlot.FIRST.art(id, cost, cooldown, performer), ...))` / `hasArts`, `arts(methodId)`, `artMethod(artId)`, `gateFinalArts(condition)` | A breathing method's own five arts, one an `ArtSlot` (the five strings and stages), replacing any it had; the common arts step aside for its swordsmen. `arts(methodId)` is its own or the common five, by stage, both sides. A method's own art goes into the Grimoire the first time it's played (`ArtRules.grimoireKey`). `gateFinalArts` changes what every Final Art waits on (`FINAL_GATE`; a full pool until then). |
 | `registerString(new StringArt(id, string, stage, cost, cooldownTicks, available, condition, performer))` / `StringArt.of(id, "swing swing low", stage, cost, cooldown, performer)` | An art set off by a sword string, on both sides (the client reads strings against the registry). `available` (both sides) says whether the player has it at all besides the stage (`forMethod(id)` for a method's own); `condition` (an `ArtCondition`, both sides, with a `hintKey` line) what else it waits on (`PlaceholderArts.FULL_POOL` for the Final Art); `performer(player, StringContext)` acts on the server and returns whether it went off: the mod then spends `cost` (never past empty), rests it `cooldownTicks`, and tells the hooks. Its name and description are `aura.wildercord.art.<id>` and `.desc`. Same id replaces; `unregisterString(id)` takes one out (the placeholders, `PlaceholderArts.IDS`, once a method's own arrive). Registering logs any `conflicts`. |
 | `strings()`, `string(id)`, `stringsOf(player)`, `allStringsOf(player)`, `artOf(player, id)`, `artReadyAt(player, id)` | The registry by stage; what a player can play now (stage reached, available: the reader's candidates); everything open to them whatever their stage (the Aura page); one by id including their own; when an art is ready again. Both sides. |
 | `conflicts(string, exceptId)` | The registered arts that would get in a string's way: the same swings, or a shorter string played on the way to it, or a longer one it cuts short (`SwordString.cutBy`). For a writing screen to warn before a player settles on a string. |

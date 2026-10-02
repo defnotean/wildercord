@@ -38,6 +38,7 @@ From top to bottom:
 | **This world's harmonies** | Each of your world's harmonies you've found, by name and in its colour (hover it for its runes, what its twist does, its riddle and who found it first); the riddles you've read from Torn Pages, in italics; the ones other players have found, by name and finder; and how many nobody has found yet. See [Harmonies and Reading Runes]({{ '/spellcraft/harmonies/' | relative_url }}). |
 | **This world's quirks** | The small ways your world bends a few runes, each as you first meet it: *"Here, Shock cracks harder in the rain."* |
 | **Runes you're still reading** | Once you've learned a rune you don't understand yet: how many, and (hover it) each one and how far you've read it. |
+| **Sword arts** (of 25) | Once you've played a breathing method's own art, or learned a method that has them: each art you've played, by method, as *"Backdraft · Third Art"* (hover it for what it does), and your own method's still to play as **???** with the art they are. See [Sword Arts]({{ '/progression/sword-arts/' | relative_url }}). |
 | **Duels** | Your duels won and lost, once you've fought one. See [Duels]({{ '/social/duels/' | relative_url }}). |
 | **Fusions** (of 55) | Each fusion you've made at the Fusion Altar, as *"Firestorm (Fire + Wind)"*. The rest show as **??? + ???** with one of their elements as a hint. See [Combining]({{ '/fusion-altar/combining/' | relative_url }}). |
 | **Signature fusions** (of 16) | Each signature fusion you've made, as *"Frostwire (Chill + Shock)"*. The rest show as **??? + ???** with the elements of their two runes as a hint. See [Signature fusions]({{ '/fusion-altar/combining/' | relative_url }}#signature-fusions). |
@@ -67,6 +68,7 @@ condenses mana toward your next Heart Circle:
 | A quirk of your world | *This world's nature:* what it does | 100 |
 | Tempered, Starbreaker or Low Tide (a dungeon boss) | *New in your Grimoire:* the feat | 1,500 |
 | The Last Page (the Archivist) | *New in your Grimoire: The Last Page* | 2,000 |
+| A breathing method's art, played for the first time | *New art: Kindling Draw* | 60 |
 | A creature's weakness, found | *New in your Grimoire: Blaze: weak to Frost* | 25 |
 | An affinity's first level | *An affinity awakens: Frost I* (every later level has a toast too: *Your affinity deepens: Frost II*) | 100 |
 | A riddle from a Torn Page (a secret's, or a harmony's) | *A riddle, found: See the Grimoire* | nothing |

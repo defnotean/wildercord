@@ -1374,13 +1374,14 @@ the five arts' strings is played on the way to another's (`SwordString.cutBy`).
 charging a spell or using an item: at a living creature under the crosshair, or at nothing within 4 seconds of a blow given or
 taken, a perfect guard or a step. A swing at a block (digging) never counts.
 
-**The arts.** One a stage, the same strings for every method so a player learns them once. Until each method's own arts
-arrive (the aura overhaul's steps 3 and 4) every method plays the same five **placeholder arts**: projected aura off the
-blade (the damage type `wildercord:aura`, the method's element, armour, and against a player the spell defences and the PvP
-scale, as the slash), at the weapon's damage × the art's factor × `damage_scale`, landing through a foe's moment of
-invulnerability; their hits answer as the slash's do (the method's passive, aura marks, experience, never aura back).
+**The arts.** One a stage, the same strings for every method so a player learns them once. Ember, Rime, Thunder, Gale and
+Stone have arts of their own ([The methods' arts](#the-methods-arts) below); the other five methods play the five **common
+arts** until theirs arrive (the aura overhaul's step 4): projected aura off the blade (the damage type `wildercord:aura`, the
+method's element, armour, and against a player the spell defences and the PvP scale, as the slash), at the weapon's damage ×
+the art's factor × `damage_scale`, landing through a foe's moment of invulnerability; their hits answer as the slash's do
+(the method's passive, aura marks, experience, never aura back).
 
-| Art | Stage | String | Placeholder | Aura | Rest |
+| Art | Stage | String | Common art | Aura | Rest |
 |---|---|---|---|---|---|
 | **First Art** | Glow | `swing swing low` | an arc 3.5 blocks out, 130° wide, up to 4 foes (the one the low swing struck first), × 0.6 | 6 | 3 s |
 | **Second Art** | Flow | `leap low` | the same arc, rising: × 0.8, and each foe (never a boss) thrown up | 8 | 4 s |
@@ -1389,7 +1390,8 @@ invulnerability; their hits answer as the slash's do (the method's passive, aura
 | **Final Art** | Sovereign | `full full full low` | a ring 4 blocks round, up to 8 foes, × 2.0, thrown back (never a boss); only with a full pool (nine tenths or more) until momentum and awakening exist | 40 | 30 s |
 
 An art's price is paid when it goes off, never past empty (no backlash), and its rest is saved in game time
-(`aura_arts`), kept through death. The first string played goes into the Grimoire (`aura:sword_string`).
+(`aura_arts`), kept through death. The first string played goes into the Grimoire (`aura:sword_string`), and so does each of
+a method's own arts the first time it's played (`aura:art_<id>`, 60 toward the next Heart Circle).
 
 **Server-authoritative.** The client reads strings (exact input timing, free of network jitter) and asks; the server checks
 aura and strings on, alive, not a spectator, an aura weapon in hand, the art the player's (stage, method), the swings as read
@@ -1408,6 +1410,68 @@ fumble shakes, turns dull red and drops away; a refusal greys; a lapse fades. Af
 simple shaped light (an arc, a rising arc, a gold ring, a line, a ground ring), nothing drawn at the swordsman's own eyes, and
 the shared feel below: each its own trail (a cut, a rising cut, an X, a thrust, a whole turn), an impact on each foe hurt, its
 banner, a flare and the method's technique sound.
+
+### The methods' arts
+Each method answers the five strings its own way, on one rule: **every method's art in a slot costs and rests the same and is
+worth about the same.** The string is the same for everyone, so a method is a different answer to the same question, never a
+better one. Prices and rests by slot: 6 aura / 3 s, 8 / 4 s, 8 / 4 s, 10 / 5 s, 40 / 30 s (Crackle rests 2.5 s for being
+lighter). The Final Arts wait on one shared gate (`AuraApi.FINAL_GATE`: a full pool until momentum and awakening exist).
+
+**Damage** is in the weapon's own damage (W), times `damage_scale` and the server's `aura.art_damage` (0 to 5, default 1), as
+projected aura (armour applies; a player's spell defences and the PvP scale apply; a totem saves). Each art's main foe is struck
+through its moment of invulnerability.
+
+**The balance model** (`ArtRules.power`, unit-tested): an art's worth is its main foe's damage (fire counted at a seventh of a W
+a second, a bonus it often earns at about a third), plus three fifths of what it may do to the others it reaches, plus a quarter
+of a W for each second of control (a hold, slow, throw, a hardening or a speed), plus 0.07 W for each block it reaches past a
+sword's three. Each slot's arts sit within 12% of the slot's worth: First 1.3 W, Second 1.8, Third 1.9 (the counter needs a
+perfect guard, the hardest thing to time), Fourth 2.15 (the step before it costs 12 aura of its own), Final 4.35. Against the
+techniques: Aura Slash is 12 aura every 2 s for 1.2 W down a 14-block line, so it stays the reach weapon; an art does more in
+its moment and rests longer. A Final Art lands about what a strong high-circle spell does (around 15 with a diamond blade).
+
+**Fair to players.** One art deals one player at most `PVP_ART_CAP` 8 in all (after the PvP scale, before armour and defences);
+holds (a freeze, a stun) a player at most 15 ticks and no art's hold takes the same player again for 80; sets a player alight
+at most 60 ticks; throws, lifts or pulls a player at most 0.6 a tick. A player the swordsman can't harm (`canHarmPlayer`, the
+mod's targeting) is never touched. Bosses are only ever slowed: never frozen, held, lifted, thrown or pulled.
+
+**No griefing.** Fire on the ground, ice paths, mirrors and rising stone are light and block displays (`ArtBlocks`, tagged so a
+restart's leftovers are cleared as their chunk loads). The one real block change is Skate's frosted ice over water: through
+`WorldMagic.frostWater` (the terrain spells' own path: `Casters.mayEdit`, dungeon wards, `world_changing_magic` and
+`spells_edit_blocks`), thawed in time, switched off by `aura.art_terrain`.
+
+| Method | Art | Slot | What it does (numbers in W) |
+|---|---|---|---|
+| Ember | **Kindling Draw** | I | a draw-cut 3.5 out, 120°, up to 4 foes, 0.55, alight 3 s; a fire line from 1.2 to 6.2 ahead, 1.5 wide, 3 s, setting alight 2 s |
+| Ember | **Rising Cinders** | II | a rising cut 3.3 out, 110°, up to 4, 0.7, lift 0.62, alight 3 s; 12 ticks later cinders off each onto others within 2.2, 0.25 |
+| Ember | **Backdraft** | III | the attacker: 0.75 + the caught blow (up to 1 W), alight 3 s, thrown 0.7; the rest of a 75° cone 4.5 long half that |
+| Ember | **Wildfire Rush** | IV | a second dash 7 blocks over 4 ticks, 1.4 wide, up to 5, 0.85, alight 3 s; the trail burns 4 s |
+| Ember | **Sunfall** | V | a leap (0.95 up, 9 ticks), a dive (1.6), the blast 4.5 round: 2.2 at the heart to 1.5 at the edge, up to 10, alight 5 s, thrown 0.9; a ring of fire 5 out, 1 wide, 5 s, 0.15 every half second |
+| Rime | **Frostbite** | I | a cut 3.3 out, 120°, up to 4, 0.6, slow 3 s; a crust each, kept 8 s; the third freezes 1.5 s |
+| Rime | **Hailfall** | II | a cut 3 out, 0.5; a cloud 2.6 round over the foe struck (or 3.6 ahead): 7 stones over 18 ticks, 0.28 each, at most 3 on one, slowing |
+| Rime | **Glacier Mirror** | III | the attacker 0.9, frozen 2 s; others within 3 chilled 2 s; a mirror 2.5 s turning projectiles from in front back |
+| Rime | **Skate** | IV | a glide 8 blocks over 4 ticks, 1.4 wide, up to 5, 0.7 and a crust; a frozen foe shatters (1.5, shards 0.3 within 2); the path 5 s: allies faster, foes slowed |
+| Rime | **Winter's Hush** | V | a cone 7.5 long, 100°, up to 10, 0.8, frozen 2.5 s; 30 ticks later the still-frozen shatter, 1.7, shards 0.35 within 2.2 |
+| Thunder | **Crackle** | I | 3 cuts 2 ticks apart, 0.27 each, each a spark to another within 4 (0.15); the first interrupts |
+| Thunder | **Skyfall** | II | a bolt 6 ticks later on the foe struck (or 4 ahead), 1.6 round, 0.95, held 0.5 s; arcs to 2 more within 4.5, 0.35 |
+| Thunder | **Static Riposte** | III | the attacker 0.8, then 4 jumps within 5, each 0.85 of the last, each held 0.4 s |
+| Thunder | **Bolt Step** | IV | blinks to up to 4 foes within 8 and in sight, 3 ticks apart, 0.75 each, held 0.3 s |
+| Thunder | **Heaven's Spear** | V | a 14-tick charge, then a lance 20 long (level unless aimed past 12°, at most 30°), 0.8 each side, up to 8, 2.0, held 1 s; the sky strikes each |
+| Gale | **Cutting Breeze** | I | a wind blade 10 out at 2 a tick, 2 wide, up to 4, 0.5, pushed 0.8 |
+| Gale | **Updraft** | II | a cut 3.3 out, 120°, up to 4, 0.65, lifted 0.95; the swordsman 0.75 up, floating 1.5 s; coated blows on them while up × 1.25 |
+| Gale | **Eye of the Storm** | III | a spin 3.2 round, up to 6, 0.8, thrown 0.75; 3 s of projectiles turned aside and foes within 2.5 blown off |
+| Gale | **Tailwind** | IV | a dash 11 blocks over 5 ticks, 1.6 wide, up to 5, 0.6, shoved 0.8; speed 5 s for the swordsman and allies within 5 of the way |
+| Gale | **Hundred Winds** | V | 3 s, 5 round: every 5 ticks each foe (up to 8) 0.22 and drawn in; at the end 0.5 and lifted 1.0 |
+| Stone | **Rockbreaker** | I | a cut 3.3 out, 0.8, held 0.4 s, slowed 1.5 s, cracked 3 s; 0.3 to others within 1.8 |
+| Stone | **Avalanche** | II | driven down if airborne; a shockwave 4.2 round over 6 ticks, up to 8, 0.9 to 0.5, thrown 0.5, slowed 2 s |
+| Stone | **Unmoved** | III | the attacker 0.9, thrown 1.6, stunned 1 s on landing; the swordsman hardened 4 s (blows a fifth lighter, no knockback) |
+| Stone | **Landslide** | IV | a charge 8 blocks over 8 ticks, 1.6 wide, up to 4 carried along; at the end 0.9, thrown 1.0, stunned 0.5 s; into a wall 1.35, stunned 1 s |
+| Stone | **Mountain Splitter** | V | a split 15 long at 1.25 a tick, stone every 1.5; within 1.4 of it up to 10, 2.1, lifted 0.75, stunned 0.75 s |
+
+**How they show.** Every art has its own trail (`AuraFx` strokes), impacts by weight, its banner, a body flare, its method's
+technique sound and a voice of its own (`aura_art_<id>`, feel kit). Its shapes are server-sent light: the swordsman's own view
+gets only what keeps clear of the middle of their sight (the trail thin and low, marks on foes, light on the ground ahead),
+while the big shapes near the body (a lance, a mirror, a near crescent, a gout of flame) go to everyone else and to the
+swordsman only in third person (`AuraFx.Shown`). By day the light lays a thin dark rim under itself.
 
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
