@@ -58,7 +58,31 @@ public final class AuraCommand {
 			.then(Commands.literal("breakthrough").executes(ctx -> {
 				AuraBreakthroughs.breakThrough(ctx.getSource().getPlayerOrException());
 				return report(ctx);
-			}));
+			}))
+			// A Way set outright (owing nothing), cleared ("none": as if never chosen), or the crossroads raised round the player.
+			.then(Commands.literal("way")
+				.then(Commands.literal("crossroads").executes(ctx -> {
+					ServerPlayer player = ctx.getSource().getPlayerOrException();
+					if (!Crossroads.open(player, Crossroads.Reason.API)) {
+						ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.way.no_crossroads"));
+						return 0;
+					}
+					return report(ctx);
+				}))
+				.then(Commands.argument("way", StringArgumentType.word())
+					.suggests((ctx, builder) -> SharedSuggestionProvider.suggest(java.util.stream.Stream.concat(java.util.stream.Stream.of("none"),
+						dev.wildercord.api.AuraApi.ways().stream().map(dev.wildercord.api.AuraApi.Way::id)), builder))
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayerOrException();
+						String id = StringArgumentType.getString(ctx, "way");
+						if (!id.equals("none") && dev.wildercord.api.AuraApi.way(id).isEmpty()) {
+							ctx.getSource().sendFailure(Component.translatable("command.wildercord.aura.way.unknown", id));
+							return 0;
+						}
+						Crossroads.close(player, false);
+						Ways.set(player, id.equals("none") ? "" : id);
+						return report(ctx);
+					})));
 	}
 
 	private static int report(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
@@ -68,6 +92,8 @@ public final class AuraCommand {
 		ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.aura.state", method,
 			Component.translatable("aura.wildercord.stage." + AuraStages.id(Aura.stage(player))), (int) data.xp(), (int) Aura.aura(player),
 			Aura.capacity(player)), false);
+		Ways.way(player).ifPresent(way -> ctx.getSource().sendSuccess(() -> Component.translatable("command.wildercord.aura.way.state",
+			Component.translatable(way.nameKey()).withColor(0xFF000000 | way.color())), false));
 		return 1;
 	}
 }

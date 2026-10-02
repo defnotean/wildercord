@@ -310,14 +310,23 @@ public record WildercordConfig(
 	 * @param strings              sword strings, the arts set off by a run of swings: see {@link AuraStrings}
 	 * @param momentum             momentum, stance and finishers: see {@link AuraMomentum}
 	 * @param awakening            awakening and the spent state after it: see {@link AuraAwakening}
+	 * @param ways                 Ways, chosen at the crossroads at the Edge breakthrough: see {@link AuraWays}
 	 */
 	public record AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
 			double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
-			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening) {
+			AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening, AuraWays ways) {
 		public static final AuraSettings DEFAULTS = new AuraSettings(true, 1.0, 1.0, dev.wildercord.aura.AuraRules.COAT_BONUS, 1.0,
 			dev.wildercord.aura.AuraRules.SLASH_FACTOR, dev.wildercord.aura.AuraRules.SLASH_COST, dev.wildercord.aura.AuraRules.SLASH_COOLDOWN / 20.0, 0.6,
 			dev.wildercord.aura.AuraRules.BACKLASH_TICKS / 20.0, dev.wildercord.aura.AuraRules.GUARD_SHARE, AuraHeights.DEFAULTS, AuraStrings.DEFAULTS,
-			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS);
+			AuraMomentum.DEFAULTS, AuraAwakening.DEFAULTS, AuraWays.DEFAULTS);
+
+		/** A file's aura section before Ways: the same, with their defaults. */
+		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
+				double slashCost, double slashCooldownSeconds, double pvpScale, double backlashSeconds, double guardShare, AuraHeights heights,
+				AuraStrings strings, AuraMomentum momentum, AuraAwakening awakening) {
+			this(enabled, xpMultiplier, gainMultiplier, coatBonus, damageScale, slashDamage, slashCost, slashCooldownSeconds, pvpScale, backlashSeconds,
+				guardShare, heights, strings, momentum, awakening, AuraWays.DEFAULTS);
+		}
 
 		/** A file's aura section before awakening: the same, with awakening's defaults. */
 		public AuraSettings(boolean enabled, double xpMultiplier, double gainMultiplier, double coatBonus, double damageScale, double slashDamage,
@@ -354,6 +363,7 @@ public record WildercordConfig(
 			strings = strings == null ? AuraStrings.DEFAULTS : strings;
 			momentum = momentum == null ? AuraMomentum.DEFAULTS : momentum;
 			awakening = awakening == null ? AuraAwakening.DEFAULTS : awakening;
+			ways = ways == null ? AuraWays.DEFAULTS : ways;
 		}
 
 		/** The slash's cooldown in ticks. */
@@ -481,6 +491,24 @@ public record WildercordConfig(
 		public int spentTicks() {
 			return (int) Math.round(spentSeconds * 20);
 		}
+	}
+
+	/**
+	 * Ways (more keys of the {@code aura} section): at the Edge breakthrough a swordsman chooses a Way at the crossroads (the Blade, the
+	 * Bulwark, the Shadowstep or the Banner), which gives them a node at Edge, Form and Sovereign. The numbers' meaning is in
+	 * {@code aura.WayRules}, whose defaults these are.
+	 *
+	 * @param ways            whether Ways work at all (off: no crossroads, and a Way already chosen does nothing until they're back on)
+	 * @param settleXp        after a change of Way, the experience the new Way asks before its later nodes wake (Form at half, Sovereign
+	 *                        at all of it); a first choice asks nothing
+	 * @param changeAtPower   whether a Crossroads Incense must be burned at a place of power (a ley crossing) to unbind a Way
+	 * @param bannerRange     how far the Way of the Banner reaches (blocks): allies this near share in it
+	 * @param bannerShare     the share of the momentum a Banner builds that each allied swordsman near builds too
+	 * @param bannerAuraShare the share of the aura a Banner gathers that each allied swordsman near gathers too
+	 */
+	public record AuraWays(boolean ways, double settleXp, boolean changeAtPower, double bannerRange, double bannerShare, double bannerAuraShare) {
+		public static final AuraWays DEFAULTS = new AuraWays(true, dev.wildercord.aura.WayRules.SETTLE_XP, true, dev.wildercord.aura.WayRules.BANNER_RANGE,
+			dev.wildercord.aura.WayRules.BANNER_MOMENTUM, dev.wildercord.aura.WayRules.BANNER_AURA);
 	}
 
 	/**
@@ -680,7 +708,14 @@ public record WildercordConfig(
 					r.number("aura", "spent_seconds", d.aura.awakening().spentSeconds(), 0, 300),
 					r.number("aura", "awakening_art_price", d.aura.awakening().awakeningArtPrice(), 0, 1),
 					r.number("aura", "awakening_damage", d.aura.awakening().awakeningDamage(), 0, 1),
-					r.number("aura", "awakening_speed", d.aura.awakening().awakeningSpeed(), 0, 0.5))),
+					r.number("aura", "awakening_speed", d.aura.awakening().awakeningSpeed(), 0, 0.5)),
+				new AuraWays(
+					r.bool("aura", "ways", d.aura.ways().ways()),
+					r.number("aura", "way_settle_xp", d.aura.ways().settleXp(), 0, 10000),
+					r.bool("aura", "way_change_at_power", d.aura.ways().changeAtPower()),
+					r.number("aura", "banner_range", d.aura.ways().bannerRange(), 2, 48),
+					r.number("aura", "banner_share", d.aura.ways().bannerShare(), 0, 1),
+					r.number("aura", "banner_aura_share", d.aura.ways().bannerAuraShare(), 0, 1))),
 			new AuraWorldSettings(
 				r.bool("aura_world", "duelists", d.auraWorld.duelists()),
 				r.number("aura_world", "duelist_spawn_rate", d.auraWorld.duelistSpawnRate(), 0, 4),
@@ -733,7 +768,9 @@ public record WildercordConfig(
 			"momentum", "momentum_gain", "momentum_ebb", "stance", "stance_damage", "finisher_damage", "pvp_stance",
 			// Awakening, and the spent state after it.
 			"awakening", "awakening_momentum", "awakening_duration", "awakening_cooldown_seconds", "spent_seconds", "awakening_art_price",
-			"awakening_damage", "awakening_speed"));
+			"awakening_damage", "awakening_speed",
+			// Ways, chosen at the crossroads.
+			"ways", "way_settle_xp", "way_change_at_power", "banner_range", "banner_share", "banner_aura_share"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
 			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity"));
 	}
@@ -1058,7 +1095,11 @@ public record WildercordConfig(
 			+ "momentum holds at its peak, and they're awakening_speed faster and hit awakening_damage harder (half that against a player, inside "
 			+ "max_bonus and pvp_scale). When it ends the rest of their aura burns away and they're spent for spent_seconds, slowed and gathering no "
 			+ "aura; the next awakening waits awakening_cooldown_seconds from its end. At Sovereign a Dominion raised while awakened is wider, "
-			+ "longer and shaped by the method.");
+			+ "longer and shaped by the method. Ways (ways): at the Edge breakthrough a swordsman chooses a Way at the crossroads (the Blade, the "
+			+ "Bulwark, the Shadowstep or the Banner), which gives them a node at Edge, Form and Sovereign. Changing Way takes a Crossroads Incense, "
+			+ "burned at a place of power if way_change_at_power, and the new Way's Form and Sovereign nodes wake only after way_settle_xp experience "
+			+ "(Form at half). The Way of the Banner reaches allies within banner_range blocks: each allied swordsman builds banner_share of the "
+			+ "momentum a Banner builds and gathers banner_aura_share of the aura it gathers.");
 		auraSection.addProperty("enabled", aura.enabled());
 		auraSection.addProperty("xp_multiplier", aura.xpMultiplier());
 		auraSection.addProperty("gain_multiplier", aura.gainMultiplier());
@@ -1105,6 +1146,13 @@ public record WildercordConfig(
 		auraSection.addProperty("awakening_art_price", awakening.awakeningArtPrice());
 		auraSection.addProperty("awakening_damage", awakening.awakeningDamage());
 		auraSection.addProperty("awakening_speed", awakening.awakeningSpeed());
+		AuraWays ways = aura.ways();
+		auraSection.addProperty("ways", ways.ways());
+		auraSection.addProperty("way_settle_xp", ways.settleXp());
+		auraSection.addProperty("way_change_at_power", ways.changeAtPower());
+		auraSection.addProperty("banner_range", ways.bannerRange());
+		auraSection.addProperty("banner_share", ways.bannerShare());
+		auraSection.addProperty("banner_aura_share", ways.bannerAuraShare());
 		root.add("aura", auraSection);
 		JsonObject auraWorldSection = new JsonObject();
 		auraWorldSection.addProperty("_about", "The world of aura. Wandering duelists (duelists) come now and then near villages, on roads and at small camps, "

@@ -44,12 +44,20 @@ public class AuraScreen extends Screen {
 	private final Screen parent;
 	/** Whether the list shows the sword strings' arts instead of the techniques (kept while the game runs). */
 	private static boolean arts;
-	/** Where the two tabs were drawn last (the page's own coordinates), for a click: their row, and each one's left and right. */
+	/** Whether it shows the Way tree instead (kept while the game runs; wins over {@link #arts}). */
+	private static boolean way;
+	/** Where the tabs were drawn last (the page's own coordinates), for a click: their row, and each one's left and right. */
 	private int tabsY = -1;
 	private int techLeft;
 	private int techRight;
 	private int artsLeft;
 	private int artsRight;
+	private int wayLeft;
+	private int wayRight;
+	/** The Way tree's cells as drawn last (the page's own coordinates: x, y, size), by node id, for a click. */
+	private final java.util.Map<String, int[]> cells = new java.util.LinkedHashMap<>();
+	/** The node picked on the Way tab (its details shown under the tree), or null for the one that matters most now. */
+	private static String picked;
 
 	public AuraScreen(Screen parent) {
 		super(Component.translatable("screen.wildercord.aura.title"));
@@ -118,11 +126,27 @@ public class AuraScreen extends Screen {
 			if (my >= tabsY - 2 && my < tabsY + 10) {
 				boolean toArts = mx >= artsLeft && mx < artsRight;
 				boolean toTech = mx >= techLeft && mx < techRight;
-				if ((toArts && !arts) || (toTech && arts)) {
+				boolean toWay = wayRight > wayLeft && mx >= wayLeft && mx < wayRight;
+				boolean onArts = arts && !way;
+				boolean onTech = !arts && !way;
+				if (toArts && !onArts || toTech && !onTech || toWay && !way) {
 					arts = toArts;
+					way = toWay;
 					minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(
 						net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.0F));
 					return true;
+				}
+			}
+			// A node on the Way tab: its details, kept under the tree.
+			if (way) {
+				for (java.util.Map.Entry<String, int[]> cell : cells.entrySet()) {
+					int[] c = cell.getValue();
+					if (inside(mx, my, c[0] - 2, c[1] - 2, c[2] + 4, c[2] + 4)) {
+						picked = cell.getKey().equals(picked) ? null : cell.getKey();
+						minecraft.getSoundManager().play(net.minecraft.client.resources.sounds.SimpleSoundInstance.forUI(
+							net.minecraft.sounds.SoundEvents.UI_BUTTON_CLICK, 1.2F));
+						return true;
+					}
 				}
 			}
 			// A method's swatch on the Sword strings tab: its arts.
@@ -145,6 +169,28 @@ public class AuraScreen extends Screen {
 	/** Opens the page on its Sword strings tab ({@code true}) or its techniques (the game tests put it back as they found it). */
 	public static void listArts(boolean show) {
 		arts = show;
+		way = false;
+	}
+
+	/** Opens the page on its Way tab ({@code true}), or back on the techniques, with {@code node} picked (null for the default). */
+	public static void showWay(boolean show, String node) {
+		way = show;
+		arts = false;
+		picked = node;
+	}
+
+	/** Whether the page is on its Way tab (the game tests ask). */
+	public static boolean showingWay() {
+		return way;
+	}
+
+	/** The middle of the Way tab, in screen coordinates (the game tests click it), or null before it's drawn. */
+	public double[] wayTabPoint() {
+		if (tabsY < 0 || wayRight <= wayLeft) {
+			return null;
+		}
+		float s = scale();
+		return new double[] {left() + (wayLeft + wayRight) / 2.0 * s, top() + (tabsY + 4) * s};
 	}
 
 	/** The middle of {@code methodId}'s swatch on the Sword strings tab, in screen coordinates (the game tests click it), or null. */
@@ -301,9 +347,14 @@ public class AuraScreen extends Screen {
 			y += 2;
 		}
 
-		// ---- the techniques, or (the second tab) the sword strings' arts.
+		// ---- the techniques, or (the second tab) the sword strings' arts, or (the third, from Edge or where Ways are on) the Way tree.
 		y = tabs(g, y, mx, my, color);
-		if (arts) {
+		if (way && wayRight > wayLeft) {
+			List<Component> tip = way(g, player, y, mx, my, color, stage, now);
+			if (tip != null) {
+				tooltip = tip;
+			}
+		} else if (arts) {
 			List<Component> tip = arts(g, player, y, mx, my, color, stage, now);
 			if (tip != null) {
 				tooltip = tip;
@@ -335,7 +386,10 @@ public class AuraScreen extends Screen {
 				break;
 			}
 		}
-		// ---- the passive, at the foot.
+		// ---- the passive, at the foot (the Way tab uses the room for its nodes in full).
+		if (way && wayRight > wayLeft) {
+			return tooltip;
+		}
 		Component flavour = Component.translatable(method.nameKey() + ".flavour");
 		int fy = H - 30;
 		g.text(font, Component.translatable("screen.wildercord.aura.flavour"), 14, fy, GOLD, true);
@@ -346,24 +400,297 @@ public class AuraScreen extends Screen {
 		return tooltip;
 	}
 
-	/** The two tabs over the list: Techniques and Sword strings, the open one in gold and underlined. Returns where the list starts. */
+	/**
+	 * The tabs over the list: Techniques, Sword strings and (where Ways are on) Way, the open one in gold and underlined, the Way tab
+	 * breathing gold while a swordsman past the crossroads walks none. Returns where the list starts.
+	 */
 	private int tabs(GuiGraphicsExtractor g, int y, int mx, int my, int color) {
 		Component tech = Component.translatable("screen.wildercord.aura.techniques");
 		Component strings = Component.translatable("screen.wildercord.aura.arts");
+		Component wayTab = Component.translatable("screen.wildercord.aura.way");
+		boolean ways = dev.wildercord.aura.Ways.on(minecraft.player) && !dev.wildercord.api.AuraApi.ways().isEmpty();
+		boolean onWay = way && ways;
+		boolean onArts = arts && !onWay;
 		tabsY = y;
 		techLeft = 14;
 		techRight = techLeft + font.width(tech);
 		artsLeft = techRight + 14;
 		artsRight = artsLeft + font.width(strings);
+		wayLeft = artsRight + 14;
+		wayRight = ways ? wayLeft + font.width(wayTab) : wayLeft;
 		boolean overTech = inside(mx, my, techLeft, y - 2, techRight - techLeft, 12);
 		boolean overArts = inside(mx, my, artsLeft, y - 2, artsRight - artsLeft, 12);
-		g.text(font, tech, techLeft, y, !arts ? GOLD : overTech ? TEXT : DIM, true);
-		g.text(font, strings, artsLeft, y, arts ? GOLD : overArts ? TEXT : DIM, true);
-		int under = arts ? artsLeft : techLeft;
-		int underRight = arts ? artsRight : techRight;
-		g.fill(under, y + 9, underRight, y + 10, 0xFF000000 | (GOLD & 0xFFFFFF));
+		boolean overWay = ways && inside(mx, my, wayLeft, y - 2, wayRight - wayLeft, 12);
+		g.text(font, tech, techLeft, y, !onArts && !onWay ? GOLD : overTech ? TEXT : DIM, true);
+		g.text(font, strings, artsLeft, y, onArts ? GOLD : overArts ? TEXT : DIM, true);
 		g.fill(techRight + 6, y + 1, techRight + 7, y + 8, FAINT);
+		if (ways) {
+			int wayColor = onWay ? GOLD : overWay ? TEXT : DIM;
+			if (!onWay && dev.wildercord.aura.Ways.wayless(minecraft.player)) {
+				// Past the crossroads with no Way: the tab breathes gold.
+				double pulse = 0.5 + 0.5 * Math.sin(minecraft.level.getGameTime() * 0.2);
+				wayColor = 0xFF000000 | AuraHud.mix(0x8A84A0, 0xFFE8A0, pulse);
+			}
+			g.text(font, wayTab, wayLeft, y, wayColor, true);
+			g.fill(artsRight + 6, y + 1, artsRight + 7, y + 8, FAINT);
+		}
+		int under = onWay ? wayLeft : onArts ? artsLeft : techLeft;
+		int underRight = onWay ? wayRight : onArts ? artsRight : techRight;
+		g.fill(under, y + 9, underRight, y + 10, 0xFF000000 | (GOLD & 0xFFFFFF));
 		return y + 13;
+	}
+
+	// ------------------------------------------------------------------ the Way tab
+
+	/** The Way tree's rows apart (a node stage each). */
+	private static final int ROW = 22;
+
+	/** A Way's emblem sprite (an add-on's Way, without one of its own, gets the plain one). */
+	private static Identifier emblem(String wayId) {
+		return dev.wildercord.aura.WayRules.BUILT_IN.contains(wayId) ? Wildercord.id("aura/way_" + wayId) : Wildercord.id("aura/way_unknown");
+	}
+
+	/**
+	 * The Way tree: what the swordsman walks (or how to choose one), then a column for each Way (its emblem and name) with its three
+	 * nodes under it, one row a stage (Edge, Form, Sovereign), each node drawn as it stands: in force (lit, framed in gold), waking after
+	 * a change (half lit, filling), still to come (outlined in its Way's colour), another Way's (dark), or open to choose. Under the tree,
+	 * the picked node in full: its name, its stage, where it stands, its passive and what it changes. At the foot, how to change Way.
+	 */
+	private List<Component> way(GuiGraphicsExtractor g, LocalPlayer player, int y, int mx, int my, int color, int stage, long now) {
+		List<Component> tooltip = null;
+		List<AuraApi.Way> ways = AuraApi.ways();
+		ways = ways.subList(0, Math.min(6, ways.size()));
+		dev.wildercord.aura.Ways.State state = dev.wildercord.aura.Ways.state(player);
+		AuraApi.Way walking = dev.wildercord.aura.Ways.way(player).orElse(null);
+		// ---- what they walk.
+		if (walking != null) {
+			int wc = 0xFF000000 | walking.color();
+			g.text(font, Component.translatable("screen.wildercord.aura.way.walking", Component.translatable(walking.nameKey()).withColor(wc)), 14, y, TEXT, true);
+			y += 11;
+			g.text(font, font.plainSubstrByWidth(Component.translatable(walking.creedKey()).getString(), W - 30), 18, y, 0xFFB8A8D8, false);
+			y += 12;
+		} else {
+			Component line = Component.translatable(stage >= dev.wildercord.aura.WayRules.FROM ? "screen.wildercord.aura.way.none_yet"
+				: "screen.wildercord.aura.way.before_edge", Component.translatable("aura.wildercord.stage." + AuraStages.id(dev.wildercord.aura.WayRules.FROM)));
+			int lc = stage >= dev.wildercord.aura.WayRules.FROM ? 0xFF000000 | AuraHud.mix(0xC8A050, 0xFFF0B0, 0.5 + 0.5 * Math.sin(now * 0.2)) : TEXT;
+			for (net.minecraft.util.FormattedCharSequence part : font.split(line, W - 28)) {
+				g.text(font, part, 14, y, lc, true);
+				y += 10;
+			}
+			y += 2;
+		}
+		// ---- the tree: a column a Way, a row a node stage.
+		int rowLabel = 14;
+		int gridLeft = 58;
+		int colW = (W - 14 - gridLeft) / Math.max(1, ways.size());
+		int cell = 18;
+		int headerY = y;
+		cells.clear();
+		for (int i = 0; i < ways.size(); i++) {
+			AuraApi.Way w = ways.get(i);
+			int cx = gridLeft + colW * i + colW / 2;
+			boolean mine = walking != null && walking.id().equals(w.id());
+			boolean other = walking != null && !mine;
+			int wc = w.color();
+			if (mine) {
+				// The chosen column: a soft band of its colour behind it.
+				g.fill(cx - colW / 2 + 2, headerY - 2, cx + colW / 2 - 2, headerY + 24 + 3 * ROW, 0x1E000000 | (wc & 0xFFFFFF));
+			}
+			int tint = other ? 0xFF000000 | AuraHud.mix(wc, 0x2A2438, 0.65) : 0xFF000000 | wc;
+			g.blitSprite(RenderPipelines.GUI_TEXTURED, emblem(w.id()), cx - 8, headerY, 16, 16, tint);
+			Component shortName = Component.translatable(w.nameKey() + ".short");
+			String fitted = font.plainSubstrByWidth(shortName.getString(), colW - 2);
+			g.pose().pushMatrix();
+			g.pose().translate(cx, headerY + 17);
+			g.pose().scale(0.75F, 0.75F);
+			g.centeredText(font, fitted, 0, 0, other ? FAINT : mine ? 0xFF000000 | AuraHud.mix(wc, 0xFFFFFF, 0.35) : TEXT);
+			g.pose().popMatrix();
+			if (inside(mx, my, cx - colW / 2, headerY - 2, colW, 24)) {
+				List<Component> tip = new ArrayList<>();
+				tip.add(Component.translatable(w.nameKey()).withColor(wc));
+				tip.add(Component.translatable(w.creedKey()).withStyle(ChatFormatting.ITALIC, ChatFormatting.GRAY));
+				tooltip = tip;
+			}
+		}
+		int rowsY = headerY + 26;
+		int[] stages = dev.wildercord.aura.WayRules.NODE_STAGES;
+		String auto = null;
+		for (int r = 0; r < stages.length; r++) {
+			int ry = rowsY + r * ROW;
+			Component label = Component.translatable("aura.wildercord.stage." + AuraStages.id(stages[r]));
+			g.pose().pushMatrix();
+			g.pose().translate(rowLabel, ry + 6);
+			g.pose().scale(0.8F, 0.8F);
+			g.text(font, font.plainSubstrByWidth(label.getString(), Math.round((gridLeft - rowLabel - 2) / 0.8F)), 0, 0, stage >= stages[r] ? TEXT : FAINT, false);
+			g.pose().popMatrix();
+			for (int i = 0; i < ways.size(); i++) {
+				AuraApi.Way w = ways.get(i);
+				AuraApi.WayNode node = w.node(stages[r]).orElse(null);
+				if (node == null) {
+					continue;
+				}
+				int cx = gridLeft + colW * i + colW / 2;
+				int x0 = cx - cell / 2;
+				dev.wildercord.aura.WayRules.NodeState ns = dev.wildercord.aura.Ways.nodeState(player, w, node);
+				if (r > 0) {
+					// The line down the column from the node above.
+					boolean lit = ns == dev.wildercord.aura.WayRules.NodeState.CHOSEN;
+					g.fill(cx, ry - (ROW - cell) + 2, cx + 1, ry - 1, lit ? 0xFF000000 | w.color() : 0xFF3A3450);
+				}
+				node(g, ns, w, node, x0, ry, cell, state, now);
+				cells.put(node.id(), new int[] {x0, ry, cell});
+				if (auto == null && (ns == dev.wildercord.aura.WayRules.NodeState.UPCOMING || ns == dev.wildercord.aura.WayRules.NodeState.WAKING)) {
+					auto = node.id();
+				}
+				if (inside(mx, my, x0 - 2, ry - 2, cell + 4, cell + 4)) {
+					List<Component> tip = new ArrayList<>();
+					tip.add(Component.translatable(node.nameKey()).withColor(w.color()));
+					tip.add(Component.translatable("screen.wildercord.aura.way.state." + ns.name().toLowerCase(Locale.ROOT)).withStyle(ChatFormatting.DARK_GRAY));
+					tooltip = tip;
+				}
+			}
+		}
+		// ---- the picked node, in full.
+		String shown = picked != null && cells.containsKey(picked) ? picked : auto != null ? auto : walking != null ? walking.nodes().getFirst().id()
+			: ways.getFirst().nodes().getFirst().id();
+		int dy = rowsY + stages.length * ROW + 1;
+		for (AuraApi.Way w : ways) {
+			for (AuraApi.WayNode node : w.nodes()) {
+				if (!node.id().equals(shown)) {
+					continue;
+				}
+				int[] c = cells.get(node.id());
+				if (c != null) {
+					// A gold corner round the node shown below.
+					g.fill(c[0] - 2, c[1] - 2, c[0] + c[2] + 2, c[1] - 1, GOLD);
+					g.fill(c[0] - 2, c[1] + c[2] + 1, c[0] + c[2] + 2, c[1] + c[2] + 2, GOLD);
+				}
+				dy = details(g, player, w, node, state, dy, stage);
+			}
+		}
+		// ---- how to change it: small, at the foot, drawn whole or not at all (never a sentence cut off at the frame).
+		Component how = Component.translatable(walking != null ? "screen.wildercord.aura.way.change" : "screen.wildercord.aura.way.how",
+			Component.translatable("item.wildercord.crossroads_incense"));
+		float small = 0.8F;
+		List<net.minecraft.util.FormattedCharSequence> howLines = font.split(how, Math.round((W - 30) / small));
+		int fy = Math.max(dy + 3, H - 18 - (howLines.size() - 1) * 8);
+		if (fy + (howLines.size() - 1) * 8 <= H - 18) {
+			for (net.minecraft.util.FormattedCharSequence part : howLines) {
+				g.pose().pushMatrix();
+				g.pose().translate(16, fy);
+				g.pose().scale(small, small);
+				g.text(font, part, 0, 0, FAINT, false);
+				g.pose().popMatrix();
+				fy += 8;
+			}
+		}
+		return tooltip;
+	}
+
+	/** One node's cell: framed and lit by how it stands for the swordsman. */
+	private void node(GuiGraphicsExtractor g, dev.wildercord.aura.WayRules.NodeState ns, AuraApi.Way w, AuraApi.WayNode node, int x, int y, int size,
+			dev.wildercord.aura.Ways.State state, long now) {
+		int wc = w.color() & 0xFFFFFF;
+		int frame;
+		int fill;
+		int tint;
+		switch (ns) {
+			case CHOSEN -> {
+				frame = GOLD;
+				fill = 0xFF000000 | AuraHud.mix(wc, 0x1A1424, 0.6);
+				tint = 0xFF000000 | AuraHud.mix(wc, 0xFFFFFF, 0.15);
+			}
+			case WAKING -> {
+				frame = 0xFF000000 | AuraHud.mix(wc, 0x2A2438, 0.3);
+				fill = 0xFF1E1A2A;
+				tint = 0xFF000000 | AuraHud.mix(wc, 0x2A2438, 0.35);
+			}
+			case UPCOMING -> {
+				frame = 0xFF000000 | AuraHud.mix(wc, 0x2A2438, 0.45);
+				fill = 0xFF16121F;
+				tint = 0x88000000 | wc;
+			}
+			case LOCKED -> {
+				frame = 0xFF2A2438;
+				fill = 0xFF141019;
+				tint = 0xFF000000 | AuraHud.mix(wc, 0x2A2438, 0.8);
+			}
+			default -> {
+				frame = 0xFF000000 | AuraHud.mix(wc, 0x8A84A0, 0.55);
+				fill = 0xFF1C1828;
+				tint = 0xDD000000 | wc;
+			}
+		}
+		g.fill(x - 1, y - 1, x + size + 1, y + size + 1, frame);
+		g.fill(x, y, x + size, y + size, fill);
+		g.blitSprite(RenderPipelines.GUI_TEXTURED, emblem(w.id()), x + 1, y + 1, size - 2, size - 2, tint);
+		// Its stage as pips in the corner: one at Edge, two at Form, three at Sovereign.
+		int pips = Math.max(1, node.stage() - dev.wildercord.aura.WayRules.FROM + 1);
+		for (int p = 0; p < pips; p++) {
+			g.fill(x + size - 3 - p * 3, y + size - 3, x + size - 1 - p * 3, y + size - 1, ns == dev.wildercord.aura.WayRules.NodeState.CHOSEN ? GOLD : frame);
+		}
+		if (ns == dev.wildercord.aura.WayRules.NodeState.WAKING) {
+			// How far it has come toward waking: a thread under the cell filling in its Way's colour.
+			double k = dev.wildercord.aura.WayRules.wakeProgress(node.stage(), state.owed(), state.settle());
+			g.fill(x, y + size + 2, x + size, y + size + 3, 0xFF2A2438);
+			g.fill(x, y + size + 2, x + (int) Math.round(size * k), y + size + 3, 0xFF000000 | wc);
+		}
+	}
+
+	/** The picked node in full, from {@code y}: name and stage, where it stands, its passive, what it changes. Returns where it ends. */
+	private int details(GuiGraphicsExtractor g, LocalPlayer player, AuraApi.Way w, AuraApi.WayNode node, dev.wildercord.aura.Ways.State state, int y,
+			int stage) {
+		int wc = 0xFF000000 | w.color();
+		dev.wildercord.aura.WayRules.NodeState ns = dev.wildercord.aura.Ways.nodeState(player, w, node);
+		Component title = Component.translatable("screen.wildercord.aura.way.node_title", Component.translatable(node.nameKey()).withColor(wc),
+			Component.translatable("aura.wildercord.stage." + AuraStages.id(node.stage())));
+		g.text(font, font.plainSubstrByWidth(title.getString(), W - 30).equals(title.getString()) ? title : Component.translatable(node.nameKey()).withColor(wc),
+			16, y, TEXT, true);
+		y += 11;
+		Component where = switch (ns) {
+			case WAKING -> Component.translatable("screen.wildercord.aura.way.detail.waking",
+				(int) Math.ceil(dev.wildercord.aura.WayRules.toWake(node.stage(), state.owed(), state.settle())));
+			case UPCOMING -> Component.translatable("screen.wildercord.aura.way.detail.upcoming",
+				Component.translatable("aura.wildercord.stage." + AuraStages.id(node.stage())));
+			default -> Component.translatable("screen.wildercord.aura.way.detail." + ns.name().toLowerCase(Locale.ROOT), Component.translatable(w.nameKey()));
+		};
+		int whereColor = switch (ns) {
+			case CHOSEN -> GOLD;
+			case WAKING -> 0xFF000000 | AuraHud.mix(w.color(), 0xFFFFFF, 0.3);
+			default -> DIM;
+		};
+		g.text(font, font.plainSubstrByWidth(where.getString(), W - 32), 18, y, whereColor, false);
+		y += 11;
+		// The passive and the change come before the foot's line (which gives way to them): at full size when they fit above the frame,
+		// a little smaller when a long node wouldn't, so no node's words are ever cut off.
+		int bottom = H - 12;
+		Component passive = Component.translatable("screen.wildercord.aura.way.passive", Component.translatable(node.passiveKey()));
+		String change = dev.wildercord.aura.WayRules.CHANGES.get(node.id());
+		Component changes = change == null ? Component.translatable("screen.wildercord.aura.way.change_line", Component.translatable(node.changeKey()))
+			: Component.translatable("screen.wildercord.aura.way.changes", Component.translatable("aura.wildercord.technique." + change),
+				Component.translatable(node.changeKey()));
+		float scale = 1.0F;
+		List<net.minecraft.util.FormattedCharSequence> passiveLines = font.split(passive, W - 34);
+		List<net.minecraft.util.FormattedCharSequence> changeLines = font.split(changes, W - 34);
+		if (y + (passiveLines.size() + changeLines.size()) * 10 - 1 > bottom) {
+			scale = 0.8F;
+			passiveLines = font.split(passive, Math.round((W - 34) / scale));
+			changeLines = font.split(changes, Math.round((W - 34) / scale));
+		}
+		int step = scale < 1.0F ? 8 : 10;
+		for (int i = 0; i < passiveLines.size() + changeLines.size(); i++) {
+			if (y + step - 1 > bottom) {
+				return y;
+			}
+			boolean isPassive = i < passiveLines.size();
+			g.pose().pushMatrix();
+			g.pose().translate(18, y);
+			g.pose().scale(scale, scale);
+			g.text(font, isPassive ? passiveLines.get(i) : changeLines.get(i - passiveLines.size()), 0, 0, isPassive ? TEXT : 0xFFC8C0E0, false);
+			g.pose().popMatrix();
+			y += step;
+		}
+		return y;
 	}
 
 	/** Whose arts the Sword strings tab shows: a method's id, or null for the player's own (kept while the game runs). */

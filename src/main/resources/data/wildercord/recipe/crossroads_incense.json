@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "wildercord:aura_shard",
+    "wildercord:aura_shard",
+    "minecraft:amethyst_shard",
+    "minecraft:blaze_powder"
+  ],
+  "result": {
+    "id": "wildercord:crossroads_incense"
+  }
+}

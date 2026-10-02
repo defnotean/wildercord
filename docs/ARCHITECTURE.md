@@ -1081,6 +1081,58 @@ Awakening, the spent state and the Sovereign's awakened Dominion (the rules and 
   filmed; each stage's form and each method's flourish; finishers feeding it; the Final Art; the end, spent, recovered, resting; a
   death; a duel; all eleven awakened Dominions; the HUD and the page).
 
+### Ways: `aura.Ways`, `WayRules`, `Crossroads`, `WayEffects`, `WayBanner`, `CrossroadsIncense`
+
+The four Ways, chosen at the crossroads at the Edge breakthrough (the rules and numbers are DESIGN.md's [Ways](DESIGN.md#ways); notes for
+the later steps in [AURA_OVERHAUL.md](AURA_OVERHAUL.md#from-step-7-ways)):
+
+- **Pure part** (unit-tested by `WayRulesTest`): `aura.WayRules`: the Ways' ids, colours and `node(way, stage)` ids, `CHANGES` (the
+  technique each node changes, for the page), `NodeState` and `state(...)`, the settling (`SETTLE_XP`, `FORM_WAKES`, `awake`, `toWake`,
+  `wakeProgress`, `settle`, `settles`), the crossroads (`OPEN_DELAY`, `CROSSROADS_TICKS`, `CALL_TICKS`, `CALL_REST`, `LEAVE`,
+  `LEAN_TICKS`, `RADII`, `SPREAD`, `angle`, `STANDARD_HEIGHT`, `REACH`, `STRIKE_RADIUS`, `strike` (the look ray against a standard's
+  axis)), every node's numbers and their formulas (`finisher`, `cascades`, `bulwarkStance`, `armourShare`, `behind`, `fromBehind`,
+  `harmLeft`, `steadied`, `lossScale`, `share`), the voices (`voice`, `SOUNDS`) and the balance model (`Worth`, `WORTH`, `worth`).
+- **`aura.Ways`**: the `WAY` attachment (`State`: the Way, when chosen, experience owed and what was owed, the Way left before, how many
+  changes; saved, synced to everyone near, kept through death), read on both sides by `on`/`way`/`wayless`/`has(player, nodeId)`/
+  `nodeState`; on the server `choose` (a first choice owes nothing), `unbind`, `set` (operators, tests), `earned` (settling, from
+  `AuraExperience.earn`, with a line as each node wakes); `builtIn()` and `init` (registers the four through `AuraApi.registerWay`, the
+  rest of the Ways' parts, and the line on joining for a swordsman past Edge with none).
+- **`aura.Crossroads`**: the `CROSSROADS` attachment (`State`: where it rose, the `Standard`s (a Way and a foot each), when it rose and
+  fades, the lean; told to its swordsman alone, not saved), `open(player, Reason)` (placing the standards: `place`, `ground`, `seen`),
+  `breathing` (the stance calling it, from `Aura.stance`), `brokeThrough` (from `AuraBreakthroughs.breakThrough` at Edge), `swung`
+  (from `mixin.SwordStringsSeenMixin`: a strike, through `aimed`, then `lean` or `choose`), `close`, the upkeep (`tick`: fading, drawing
+  every 4 ticks through `look`, each Way's shape in `ArtLight`), and the death, world-change and leaving rules.
+- **`aura.WayEffects`**: the Blade's, the Bulwark's and the Shadowstep's nodes: hooks registered in `init` (`onMomentum` for Keen Edge,
+  `onStance` for Wide Guard, Unbroken and Slip, `onFinisher` for Cascade's extra and its cascade, and Thousand Shadows' ready step), and
+  what the techniques ask: `pierces`, `slashPrice`/`slashRest` (`AuraSlash`), `feed` (`Awakening.fed`), `coversAll`/`perfectWindow`/
+  `held`/`turnsShot`/`slipSpot`/`slip` (`AuraGuard`), `armourShare`/`armourCost` (`AuraArmour`), `lossScale` (`Momentum.struck`),
+  `spentSlows` (`Awakening`), `challenge` (`AuraIntent.pulse`), `bastion` (`AuraDominion.tick`), `fromBehind`/`unseen`, `linger`/
+  `stepPrice`/`stepRest`/`stepped` (`AuraStep`); `counted(what)` for the tests.
+- **`aura.WayBanner`**: the Banner's: `ally` (the rule chorus casting keeps), `swordsmen`/`company`, `momentumBuilt` (from `Momentum.add`),
+  `auraGained` (from `Aura.gain`), the steadiness store (`steady`, `steadiness`), `cry` (an `onFinisher` hook), `presence` (`AuraIntent`),
+  `bannerNear`, `shelter`/`sheltering` (`AuraDominion`), the awakening's rally (an `onAwakening` hook), the allies' faster flow in a
+  Banner's Dominion (an `onGain` hook), and `harm` (in `mixin.LivingEntityAuraMixin`, after Dominion's weakening: all steadying together,
+  an unbroken Bulwark's too, capped and PvP-scaled).
+- **`aura.CrossroadsIncense`**: the item (`INCENSE`, a two-second `Consumable`), `refusal` (Ways off, below Edge, no Way, not at a place of
+  power), the unbinding and the crossroads after it, the smoke as it burns.
+- **Where it touches the rest**: `Aura` (`Ways.init` after awakening, the stance's call, `gain`'s share), `AuraBreakthroughs` (Edge raises
+  the crossroads), `AuraExperience.earn` (settling), `AuraSlash` and `Crescents` (`Flight.pierce`, `scale`, a pierced guard, a clash won),
+  `AuraGuard` (`faces`, the perfect window, `held`, shots turned, the slip and a stagger that doesn't throw back), `AuraRules`
+  (`perfect(raised, now, window)`, `armourAbsorb(..., costScale)`), `AuraArmour`, `AuraIntent`, `AuraDominion` (`fields()`, the bastion's
+  slow, the Ways' ticks), `AuraStep` (`Stepped.linger`), `Awakening` (`fed`, the spent slow), `Momentum` (`add`, `struck`), `StanceRules`
+  (`playerFinisherCap`), `AuraCommand` (`way <id|none>`, `way crossroads`), `AuraApi` (`Way`, `WayNode`, `WayHook`, `registerWay`, `ways`,
+  `way`, `wayOf`, `hasWayNode`, `wayNodeState`, `chooseWay`, `unbindWay`, `openCrossroads`, `onWay`), `config.WildercordConfig.AuraWays`
+  and `Config.Sync.combat` bit 8 (`Config.ways`).
+- **Client**: `client.WayHud` (a standard's name, what a strike does and its nodes above the hotbar, from the `CROSSROADS` attachment),
+  `AuraScreen` (the Way tab: `way`, `node`, `details`; `showWay`, `showingWay`, `wayTabPoint` for the tests), `AuraClient` (`Afterimage.life`,
+  the lingering afterimage), `render.AuraShellLayer` (a lingering afterimage holds its light).
+- **Assets**: `tools/way_art.py` (the emblems as GUI sprites `aura/way_<id>` and `way_unknown`, the incense's icon, model and recipe, and
+  `LANG`), `tools/feel/aura_ways.py` (`aura_crossroads`, `aura_way_*`, added to the aura part).
+- **Tests**: `WayRulesTest` (the Ways, nodes, states, settling, the crossroads' geometry and strike, every node's numbers and caps, the
+  balance, the lang, art and voices), `WildercordConfigTest` (the keys, ranges, old files, the sync bit), game test `WildercordWaysTest`
+  (the crossroads at the breakthrough, its strikes and the moment; the stance calling it; each Way's moment; every node on husks, a rival
+  and an ally; the incense; a death; the Aura page).
+
 ### Hooks for the next wave: `api.AuraApi`
 
 The top stages, the spellblade and aura marks use these too; duelists, aura-forged gear, aura knights and PvP tuning slot in
@@ -1106,6 +1158,7 @@ through them, all on the server thread unless noted, registered at start-up:
 | `registerSounds(methodId, new AuraFx.SoundFamily(swing, impact, art))` | A method's swing, impact and art sounds, by feel kit name (`AuraFx.SoundFamily.named("ember")` is `aura_ember_swing`, `_impact` and `_art`, so another method's family can be borrowed); a method without one plays the neutral `aura_steel_*`. |
 | `onAwakening(new AwakeningHook() { awakened(player, ticks); ended(player); })`, `awakened`, `spent`, `awakeningLeft`, `awakeningRefusal`, `awaken`, `endAwakening` | Awakening: hear of one begun and one ended (spent after), read it on both sides, awaken a swordsman through every check, or end one now. |
 | `onString((player, art, context) -> ...)` | Hears of every art performed, after it's paid for (momentum, a bonded blade's resonance, a trial). `StringContext` carries the swings' marks (`released(token)`), the creature the last swing struck (the server's own `lastHurtMob`, or null) and the time. |
+| `registerWay(new Way(id, color, List.of(new WayNode(nodeId, stage), ...)))`, `ways()`, `way(id)`, `wayOf(player)`, `hasWayNode(player, nodeId)`, `wayNodeState`, `chooseWay`, `unbindWay`, `openCrossroads`, `onWay(new WayHook() { chosen(player, way, first); unbound(player, way); })` | Ways: add one (the crossroads raises a standard for it, up to six; the Aura page draws a column; names `aura.wildercord.way.<id>`, `.creed`, `.short`, nodes `aura.wildercord.way_node.<id>`, `.passive`, `.change`), read a player's on both sides, ask whether a node is in force (walked, reached, settled), set or take one outright for a rite of your own, raise the crossroads, hear of choices and unbindings. A node's effect is its Way's own code, through the hooks here, asking `hasWayNode`. |
 
 Other seams: `AuraCombat.blow` and `landed` (where aura marks and Dominion's chain join a blow), `AuraCombat.projected`
 (aura damage at anything, with the spell defences), `AuraRules.capBonus`, `AuraCombat.againstPlayer` and

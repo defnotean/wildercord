@@ -529,6 +529,13 @@
       ],
       "subtitle": "cast"
     },
+    "aura_crossroads": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_crossroads"
+      ],
+      "subtitle": "field"
+    },
     "aura_dominion": {
       "attenuation": 40,
       "files": [
@@ -969,6 +976,101 @@
         "kit/aura/aura_verdant_swing_3"
       ],
       "subtitle": "cast"
+    },
+    "aura_way_afterimage": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_way_afterimage_1",
+        "kit/aura/aura_way_afterimage_2"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_way_banner": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_way_banner"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_way_bastion": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_way_bastion_1",
+        "kit/aura/aura_way_bastion_2"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_way_blade": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_way_blade"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_way_bulwark": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_way_bulwark"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_way_cascade": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_way_cascade"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_way_chosen": {
+      "attenuation": 40,
+      "files": [
+        "kit/aura/aura_way_chosen"
+      ],
+      "subtitle": "field"
+    },
+    "aura_way_cry": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_way_cry"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_way_lean": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_way_lean"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_way_reflect": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_way_reflect_1",
+        "kit/aura/aura_way_reflect_2"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_way_shadowstep": {
+      "attenuation": 32,
+      "files": [
+        "kit/aura/aura_way_shadowstep"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_way_slip": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_way_slip_1",
+        "kit/aura/aura_way_slip_2"
+      ],
+      "subtitle": "cast"
+    },
+    "aura_way_unbound": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_way_unbound"
+      ],
+      "subtitle": "tell"
     }
   },
   "part": "aura"

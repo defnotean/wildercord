@@ -44,12 +44,15 @@ import java.util.UUID;
 public final class AuraStep {
 	private AuraStep() {}
 
-	/** Server to client: {@code entity} stepped from {@code from} to {@code to}, facing {@code yaw}, in {@code color}: its afterimages. */
-	public record Stepped(int entity, Vec3 from, Vec3 to, float yaw, int color) implements CustomPacketPayload {
+	/**
+	 * Server to client: {@code entity} stepped from {@code from} to {@code to}, facing {@code yaw}, in {@code color}: its afterimages. The
+	 * first (where it set off) lingers {@code linger} ticks more (the Way of the Shadowstep's, which strikes there), 0 for none.
+	 */
+	public record Stepped(int entity, Vec3 from, Vec3 to, float yaw, int color, int linger) implements CustomPacketPayload {
 		public static final Type<Stepped> TYPE = new Type<>(Wildercord.id("aura_step"));
 		public static final StreamCodec<RegistryFriendlyByteBuf, Stepped> CODEC = StreamCodec.composite(
 			ByteBufCodecs.VAR_INT, Stepped::entity, Vec3.STREAM_CODEC, Stepped::from, Vec3.STREAM_CODEC, Stepped::to, ByteBufCodecs.FLOAT, Stepped::yaw,
-			ByteBufCodecs.INT, Stepped::color, Stepped::new).cast();
+			ByteBufCodecs.INT, Stepped::color, ByteBufCodecs.VAR_INT, Stepped::linger, Stepped::new).cast();
 
 		@Override
 		public Type<Stepped> type() {
@@ -92,8 +95,9 @@ public final class AuraStep {
 			AuraVfx.stepBlocked(player, Aura.color(player), dir);
 			return false;
 		}
-		AuraRules.Spend paid = Aura.spend(player, settings.stepCost(), "step");
-		AuraPresence.timers(player, AuraPresence.timers(player).stepReady(now + settings.stepCooldownTicks()));
+		// Awakened on the Way of the Shadowstep at Sovereign, it's free and quick.
+		AuraRules.Spend paid = Aura.spend(player, WayEffects.stepPrice(player, settings.stepCost()), "step");
+		AuraPresence.timers(player, AuraPresence.timers(player).stepReady(now + WayEffects.stepRest(player, settings.stepCooldownTicks())));
 		if (paid.backlash()) {
 			// Spent past empty: the step never forms.
 			return false;
@@ -158,7 +162,9 @@ public final class AuraStep {
 		Vec3 from = path.getFirst();
 		Vec3 to = path.getLast();
 		UNTOUCHABLE.put(player.getUUID(), now + AuraRules.STEP_GUARD_TICKS);
-		afterimages(player, from, to, dir, color);
+		afterimages(player, from, to, dir, color, WayEffects.linger(player));
+		// The Way of the Shadowstep at Form: blows count as from behind for a moment, and the afterimage left here strikes.
+		WayEffects.stepped(player, from);
 		Aura.sound(player, "aura_step", 1.0F, 1.0F);
 		AuraFx.sound(player, AuraFx.Sound.SWING, 0.55F, 1.35F);
 		AuraFx.bodyAuraFlare(player, 16, 0.55F);
@@ -192,8 +198,13 @@ public final class AuraStep {
 	 * who can see them, and the player too (seen in third person). A step's, and an art's rush or blink.
 	 */
 	public static void afterimages(ServerPlayer player, Vec3 from, Vec3 to, Vec3 dir, int color) {
+		afterimages(player, from, to, dir, color, 0);
+	}
+
+	/** The same, the first afterimage (where it set off) lingering {@code linger} ticks more. */
+	public static void afterimages(ServerPlayer player, Vec3 from, Vec3 to, Vec3 dir, int color, int linger) {
 		float yaw = (float) Math.toDegrees(Math.atan2(-dir.x, dir.z));
-		Stepped stepped = new Stepped(player.getId(), from, to, yaw, color);
+		Stepped stepped = new Stepped(player.getId(), from, to, yaw, color, Math.max(0, linger));
 		for (ServerPlayer viewer : PlayerLookup.tracking(player)) {
 			if (ServerPlayNetworking.canSend(viewer, Stepped.TYPE)) {
 				ServerPlayNetworking.send(viewer, stepped);

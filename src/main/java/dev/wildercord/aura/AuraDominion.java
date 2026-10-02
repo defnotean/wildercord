@@ -90,6 +90,11 @@ public final class AuraDominion {
 		CHAINED.clear();
 	}
 
+	/** Every Dominion standing now (a Way's shelter asks which a body stands in). */
+	static java.util.Collection<Field> fields() {
+		return FIELDS.values();
+	}
+
 	/** The Dominion {@code player} holds now, if any (the tests ask). */
 	public static boolean active(Player player) {
 		Field field = FIELDS.get(player.getUUID());
@@ -205,6 +210,11 @@ public final class AuraDominion {
 			if (field.sovereign()) {
 				field.ground().tick(owner, foes(owner, field), age, field.inside(owner));
 			}
+			// The Ways at Sovereign: the Bulwark's turns foes' shots back at its edge, the Banner's shelters the party inside.
+			if (Ways.has(owner, WayRules.BULWARK_SOVEREIGN)) {
+				WayEffects.bastion(owner, field.level(), field.centre(), field.radius());
+			}
+			WayBanner.sheltering(owner, field, age);
 			if (age % 10 == 5 && field.inside(owner)) {
 				Aura.gain(owner, AuraRules.DOMINION_TRICKLE / 2, "dominion");
 			}
@@ -214,9 +224,11 @@ public final class AuraDominion {
 
 	/** The foes inside: slowed, and players among them see the circle's colour at the edges of their sight. */
 	private static void press(ServerPlayer owner, Field field) {
+		// A bastion (the Way of the Bulwark at Sovereign) slows the creatures inside a step more (a player only as ever).
+		int more = Ways.has(owner, WayRules.BULWARK_SOVEREIGN) ? WayRules.BASTION_SLOW : 0;
 		for (LivingEntity e : foes(owner, field)) {
 			boolean player = e instanceof Player;
-			int level = player ? AuraRules.DOMINION_SLOW_PLAYER : Spirits.isBoss(e) ? 0 : AuraRules.DOMINION_SLOW_CREATURE;
+			int level = player ? AuraRules.DOMINION_SLOW_PLAYER : Spirits.isBoss(e) ? 0 : AuraRules.DOMINION_SLOW_CREATURE + more;
 			e.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 15, level, true, true), owner);
 			if (e instanceof ServerPlayer other) {
 				ScreenFx.tint(other, field.color(), 15);

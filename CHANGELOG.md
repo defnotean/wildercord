@@ -4,6 +4,39 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Ways
+- **Your path forks at Edge.** When you break through to Edge a **crossroads** rises round you: four standards of light, one for
+  each **Way**. Strike the one you mean to walk with your blade (once to lean toward it, again to walk it) and its light pours into
+  you while the other three break apart. Looking at a standard names its Way and its three nodes, low on your screen; you can open
+  the Aura page and read them in full while it stands.
+- **Four Ways, each a node at Edge, Form and Sovereign**, each node a passive and a change to something you already do:
+  - **The Blade** (offence): clean hits build momentum faster and your **slash pierces** (through a guard, through ten foes, and
+    through another crescent it meets); finishers hit harder and **cascade**, opening the next worn-down foe so a crowd falls one
+    after another; awakened, your slash is free and ready every second, and finishers feed your awakening twice as long.
+  - **The Bulwark** (defence): a stance that's hard to break and a **guard that covers every side**, stays perfect longer, throws a
+    third of every blow back and turns shots; sturdier aura armour and an Intent that **draws foes off your friends** and staggers
+    whatever hits your guard; awakened, nothing breaks you and blows land a fifth weaker, you're never slowed when spent, and your
+    Dominion turns back every shot fired into it.
+  - **The Shadowstep** (movement): blows from behind open foes faster and a **perfect guard slips you behind** whoever struck; after
+    an Aura Step every blow counts as from behind and the **afterimage you leave strikes** where you were; a finisher from behind
+    readies your step at once, and awakened your step is free, quick and its afterimage strikes twice.
+  - **The Banner** (together): your **momentum and aura are shared** with your allied swordsmen near you, every finisher lets out
+    a **rallying cry** that steadies you and your friends, your Intent steadies everyone near, your awakening holds your allies'
+    momentum high, and your **Dominion shelters the party**. It only ever helps allies (your team, or players who couldn't fight you
+    anyway), never anyone who could fight you.
+- **Already past Edge?** Hold the breathing stance for a few seconds and the crossroads rises for you; your first choice is free
+  and gives you every node you've reached at once.
+- **Changing your Way** takes a **Crossroads Incense** (two Aura Shards, an amethyst shard and blaze powder) burned at a **ley
+  crossing**: your Way is burned away, the crossroads rises again, and the new Way's Form and Sovereign nodes wake as you earn
+  experience walking it. Your Way is kept through death.
+- **The Aura page's new Way tab** shows the tree: every Way's nodes, yours in force framed in gold, waking ones filling, ones still
+  to come outlined, other Ways' dark, and the one you pick in full.
+- **Fair against players**: finishers and stance from behind stay inside the caps they always had, everything thrown back is aura
+  off the blade and meets a player's defences, and the Banner's steadying is held to three tenths and scaled down against players.
+- **For server owners**: `aura.ways`, `way_settle_xp`, `way_change_at_power`, `banner_range`, `banner_share` and `banner_aura_share`,
+  and `/wildercord aura way <way|none|crossroads>`. **For add-ons**: `AuraApi.registerWay`, `wayOf`, `hasWayNode`, `chooseWay`,
+  `unbindWay`, `openCrossroads` and `onWay`, to read a Way or add your own.
+
 ### Awakening
 - **Awakening.** From Edge, with your aura full and your momentum at half or more, **tap the Aura key and then hold it** and you let
   everything go at once: for 12 seconds at Edge, 16 at Form and 20 at Sovereign your arts cost nothing, your momentum holds at its

@@ -118,6 +118,9 @@ public final class AuraIntent {
 				Aura.sound(player, "aura_intent", 0.5F, 1.0F);
 			}
 		}
+		// The Ways at Form: the Bulwark's Intent draws foes off its allies, the Banner's steadies everyone near while it presses.
+		WayEffects.challenge(player);
+		WayBanner.presence(player, pressed);
 		return pressed;
 	}
 

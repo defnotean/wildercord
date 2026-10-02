@@ -53,6 +53,8 @@ public final class Config {
 		public static final int MOMENTUM = 1;
 		public static final int STANCE = 2;
 		public static final int AWAKENING = 4;
+		/** Ways work (the crossroads, and every node in force): the Aura page and the swordsman's own reading of their nodes. */
+		public static final int WAYS = 8;
 		private static final int AWAKENING_MOMENTUM_SHIFT = 8;
 		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
 			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity(), true,
@@ -82,7 +84,7 @@ public final class Config {
 		static int combat(WildercordConfig.AuraSettings aura) {
 			int needed = (int) Math.round(Math.max(0, Math.min(100, aura.awakening().awakeningMomentum())));
 			return (aura.momentum().momentum() ? MOMENTUM : 0) | (aura.momentum().stance() ? STANCE : 0) | (aura.awakening().awakening() ? AWAKENING : 0)
-				| needed << AWAKENING_MOMENTUM_SHIFT;
+				| (aura.ways().ways() ? WAYS : 0) | needed << AWAKENING_MOMENTUM_SHIFT;
 		}
 
 		/** The momentum an awakening asks for, as the bits carry it. */
@@ -243,6 +245,11 @@ public final class Config {
 	/** Whether swordsmen can awaken: the server's own setting, or on a client the one it was sent. */
 	public static boolean awakening(Player player) {
 		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.AWAKENING) != 0 : get().aura().awakening().awakening();
+	}
+
+	/** Whether Ways work (the crossroads, and every node in force): the server's own setting, or on a client the one it was sent. */
+	public static boolean ways(Player player) {
+		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.WAYS) != 0 : get().aura().ways().ways();
 	}
 
 	/** The momentum an awakening asks for: the server's own setting, or on a client the one it was sent. */

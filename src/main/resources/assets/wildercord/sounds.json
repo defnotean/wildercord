@@ -3986,6 +3986,15 @@
       "wildercord:kit/aura/aura_crimson_swing_3"
     ]
   },
+  "aura_crossroads": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_crossroads",
+        "attenuation_distance": 32
+      }
+    ]
+  },
   "aura_dominion": {
     "subtitle": "subtitles.wildercord.kit.field",
     "sounds": [
@@ -4449,6 +4458,121 @@
       "wildercord:kit/aura/aura_verdant_swing_1",
       "wildercord:kit/aura/aura_verdant_swing_2",
       "wildercord:kit/aura/aura_verdant_swing_3"
+    ]
+  },
+  "aura_way_afterimage": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_afterimage_1",
+        "attenuation_distance": 24
+      },
+      {
+        "name": "wildercord:kit/aura/aura_way_afterimage_2",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_way_banner": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_banner",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_way_bastion": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_way_bastion_1",
+      "wildercord:kit/aura/aura_way_bastion_2"
+    ]
+  },
+  "aura_way_blade": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_blade",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_way_bulwark": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_bulwark",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_way_cascade": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_cascade",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_way_chosen": {
+    "subtitle": "subtitles.wildercord.kit.field",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_chosen",
+        "attenuation_distance": 40
+      }
+    ]
+  },
+  "aura_way_cry": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_cry",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_way_lean": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_lean",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_way_reflect": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_way_reflect_1",
+      "wildercord:kit/aura/aura_way_reflect_2"
+    ]
+  },
+  "aura_way_shadowstep": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_shadowstep",
+        "attenuation_distance": 32
+      }
+    ]
+  },
+  "aura_way_slip": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_way_slip_1",
+      "wildercord:kit/aura/aura_way_slip_2"
+    ]
+  },
+  "aura_way_unbound": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_way_unbound",
+        "attenuation_distance": 24
+      }
     ]
   },
   "duelist_bow": {

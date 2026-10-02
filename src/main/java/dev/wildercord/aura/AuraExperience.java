@@ -21,7 +21,14 @@ public final class AuraExperience {
 			return 0;
 		}
 		double rate = Config.get().aura().xpMultiplier();
-		return rate <= 0 ? 0 : add(player, xp * rate, practice);
+		if (rate <= 0) {
+			return 0;
+		}
+		if (!practice) {
+			// A Way chosen after a change settles by what's earned walking it (before the stage's cap: one waiting at a threshold still does).
+			Ways.earned(player, xp * rate);
+		}
+		return add(player, xp * rate, practice);
 	}
 
 	/** Adds experience straight away, at no rate (commands, the game tests and wave 2's teachers). */

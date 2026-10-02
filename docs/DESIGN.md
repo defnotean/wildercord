@@ -1695,6 +1695,77 @@ the end of the aura line.
 (0 to 3600), `spent_seconds` (0 to 300), `awakening_art_price` (0 to 1), `awakening_damage` (0 to 1), `awakening_speed` (0 to 0.5). The
 client learns whether it's on and the momentum it asks for (`Config.Sync.combat`: bit 4, and bits 8 to 15).
 
+### Ways
+**The path forks at Edge.** At the Edge breakthrough a swordsman chooses a **Way**: the **Blade** (offence), the **Bulwark**
+(defence), the **Shadowstep** (movement) or the **Banner** (together). Each has a **node** at Edge, Form and Sovereign, and each node
+is a passive and a change to a technique the swordsman already has, so a Way changes how they fight more than how hard. The state is
+`aura.Ways` (the `WAY` attachment: saved, synced to everyone near, kept through death); the rules and every number are
+`aura.WayRules` (unit-tested by `WayRulesTest`); the choosing is `aura.Crossroads`; the node effects are `aura.WayEffects` and
+`aura.WayBanner`; changing is `aura.CrossroadsIncense`.
+
+**The choice is a moment: the crossroads.** 50 ticks after the Edge breakthrough (once its title has been read) a standard of light
+rises for each Way (up to six, add-ons' included) on an arc in front of the swordsman: 4.2 blocks out (nearer, 3.2 then 2.4, where
+there's no room; anywhere round them as a last resort; refused with a line in a tunnel), 24 degrees apart so all four are in a usual
+first-person view, each on ground with two blocks of air above it and in plain sight. They're server-sent shaped light (drawn every
+4 ticks, each drawing lasting 9, so they burn steadily), seen by everyone near: the Blade a sword planted point-down, the Bulwark a
+kite shield with a cross on its pole, the Shadowstep a pillar of shadow with a bright heart trailing three afterimages under a crescent,
+the Banner a swallowtail pennant stirring on its pole, an add-on's Way a plain pillar, each over a ring in its colour. The swordsman
+**strikes** one: every swing sends a punch (`mixin.SwordStringsSeenMixin` calls `Crossroads.swung`), and the server tests the look ray
+against each standard's axis (`WayRules.strike`: within 0.8 blocks of it, between its foot and head, within 5.5 blocks; of two, the one
+nearer the line; nothing solid between). A blade must be in hand. The first strike **leans** (the standard flares, rings rise round it,
+the others dim, the line over the hotbar names the Way: 160 ticks to strike again); a strike at another moves the lean; the second
+strike on the leaned standard **walks** it: `Ways.choose`, the standard pours into the swordsman over 8 ticks (rays streaming into the
+body as spectacle, its own light sinking in the world), the others shatter, a grand banner names the Way over "Your Way", the shared
+chord and the Way's own voice, a long body flare, chat lines with the creed and each node (yours now, waking, or yours at a later
+stage), Grimoire entries `aura:way` and `aura:way_<id>`. The swordsman's own client names the standard under the crosshair (its Way,
+what a strike does now, its three nodes) above the hotbar on a soft backing (`client.WayHud`), from the `CROSSROADS` attachment (where
+the standards stand and the lean, told to its swordsman alone). The crossroads stands 60 s; it fades if they walk 12 blocks from where
+it rose, change world, die or leave. Why strikes: choosing a Way is choosing how your blade fights, so the blade makes the choice, in
+the world, where others can see it; the two strikes keep a swing at a mob from choosing for you, and the Aura page can be read while it
+stands.
+
+**Swordsmen past Edge with no Way** (Ways came in after they got there, they unbound theirs, or let the crossroads fade) are told on
+joining, and call the crossroads by **holding the breathing stance** 60 ticks after it settles (never while a stillness trial is under
+way; 200 ticks' rest after one fades). Their **first choice is free**: every node they've reached is theirs at once. This keeps the moment
+for everyone (it's the same crossroads, called by the same meditation the stance always was) without punishing a Sovereign for having
+got there before Ways existed.
+
+**Changing Way: a Crossroads Incense, at a place of power, then settling.** Crafted from two Aura Shards, an amethyst shard and blaze
+powder (shapeless), held in use for 2 s (smoke curling up in the Way's colour, a ring round the feet) at a ley crossing's heart
+(`way_change_at_power`; anywhere else it won't catch and isn't used), it **unbinds** the Way (`Ways.unbind`: its nodes go dark, its
+standard rises out of the swordsman and breaks), and 30 ticks later the crossroads rises there. The new Way **settles**: its Edge node
+wakes at once, its Form node after half of `way_settle_xp` (240: 120) and its Sovereign node after all of it, counted from the
+experience meaningful blows earn (`AuraExperience.earn`, before the stage's cap, so a swordsman waiting at a threshold still settles;
+practice doesn't count). About three quarters of an hour of steady fighting at the mod's pace. Why these three: the shards are a fight
+(fallen knights), the ley crossing a journey and a deliberate act, and the settling makes a new Way walked into rather than bought,
+which still costs a rich Sovereign something. Nothing is lost for good. Operators: `/wildercord aura way <id|none>` and `way crossroads`.
+
+**The nodes** (`WayRules`, the numbers there; "near" is `banner_range`, 12 blocks):
+
+| Way | Edge | Form | Sovereign |
+|---|---|---|---|
+| **Blade** | **Keen Edge**: clean hits build momentum ×1.35 (an `onMomentum` hook on "hit"); Aura Slash pierces: a held guard doesn't stop it (`Crescents.Flight.pierce`; the guard still takes its share), 4 more foes (10), and it wins a clash, flying on at half its harm | **Cascade**: finishers' extra ×1.4 (`onFinisher.extra`; against a player re-capped at `StanceRules.playerFinisherCap`); a finisher opens the nearest creature within 5 blocks of the finished foe whose stance is half worn or more (`Stance.wear` of what's left; never a player or a boss) | **Storm of Edges**: each finisher feeds the awakening 40 ticks, 160 at most (`Awakening.fed` asks `WayEffects.feed`); awakened, Aura Slash costs nothing and rests 20 ticks |
+| **Bulwark** | **Wide Guard**: own stance wear ×0.6 (an `onStance` hook on a Bulwark target), momentum lost to hits ×0.67; Aura Guard covers every side (`AuraGuard.faces`), its perfect moment 10 ticks (7), a held guard throws a third of what it catches back at a melee striker as projected aura (once in 10 ticks a striker) and turns shots back (1.5 aura each) | **Living Wall**: aura armour takes 0.35 (0.25 + 0.10) for 0.8 of its price a point; Intent challenges: creatures within its reach targeting an ally (a player ally, a pet) turn on the Bulwark (never a boss), and a creature striking the raised guard staggers (Slowness II and Weakness 20 ticks, once in 40 a creature) | **Unbroken**: awakened, stance wear 0 and harm a fifth less (`WayBanner.harm`); spent, no slow; Dominion is a bastion: a foe's shots crossing in from outside are turned back at its rim (a reflection off the edge), rings of blue light stand at the rim, creatures inside slowed a level more |
+| **Shadowstep** | **Slip**: blows and arts from behind (the foe's rear 120 degrees and more off its front, or a foe that lost them) wear stance ×1.5 (re-capped at a third of a player's stance); a perfect guard against a blow slips behind its striker (`ArtKit.behind`, a clear line from it, never through walls or wards; the stagger then doesn't throw the striker back into them), facing its back, and the striker loses them 30 ticks | **Afterimage**: 40 ticks after an Aura Step every blow counts as from behind; the afterimage left where the step set off lingers 18 ticks more (`AuraStep.Stepped.linger`) and strikes 8 ticks after the step: every foe within 2.2 blocks for 0.6 of the weapon through one `ArtKit.Hits` (stance worn as an art's, the art PvP cap) | **Thousand Shadows**: a finisher from behind readies the step at once; awakened, the step costs nothing, rests 20 ticks, and its afterimage strikes again 8 ticks after the first |
+| **Banner** | **Battle Cry**: a third of the momentum built (after its hooks; never a share of a share) builds for each allied swordsman near; each finisher lets out a cry: the Banner and everyone allied near (pets too) steadied a sixth for 100 ticks, allied swordsmen +6 momentum and half the finisher's aura | **Rallying Presence**: a quarter of the aura gathered (through `Aura.gain`) is given to each allied swordsman near (`Aura.giveBack`: refused while spent); while Intent presses on a foe, the Banner and allies within its reach steadied a tenth (30 ticks a press) | **Shelter**: allied swordsmen near lose momentum to hits ×0.67; an awakening holds allied swordsmen's momentum at 50 while it burns (never an ally's own awakening); Dominion shelters: the Banner and allies inside steadied a fifth, allied swordsmen inside gather aura twice as fast with the trickle, their momentum doesn't ebb |
+
+**Allies** (`WayBanner.ally`, the rule chorus casting keeps): never two duelling each other; teammates; or two players who couldn't harm
+each other either way (`canHarmPlayer` and the mod's own `Targets.canHarm`, both ways). Pets of the Banner's (or its team's) share in
+steadying. **Steadying** from every source together (cries, presence, shelter, an unbroken Bulwark) never takes off more than 0.3, and
+against a player's harm only the PvP scale's share of that (0.18 at the defaults); only harm a foe deals (a creature, a player, their
+shot or spell), never a fall or the void (`WayBanner.harm`, in `LivingEntityAuraMixin` after a foe's Dominion has weakened the blow).
+
+**Balance.** `WayRules.WORTH` weighs each node in shares of a swordsman's strength (offence, defence, tempo at 0.15, mobility, and
+support counted once per ally near), with the reasoning beside each; `WayRulesTest` holds: alone, the Blade, the Bulwark and the
+Shadowstep within 15% of each other (about 0.27 to 0.31); alone, the Banner the quietest but no trap (0.17, between half and four
+fifths of theirs); with one ally all four within a fifth (0.30 to 0.32); with two the Banner leads (0.48 against 0.35), within half
+again; each Way leads in its own term; no single node worth more than 0.16. Every multiplier against a player stays inside the caps
+step 5 set (finishers, stance) or the spell defences (anything projected). The Final Art still comes at most once per awakening with
+Storm of Edges (400 + 160 ticks < its 600-tick rest).
+
+**Settings** (`aura` section): `ways`, `way_settle_xp` (0 to 10000), `way_change_at_power`, `banner_range` (2 to 48), `banner_share` (0 to 1),
+`banner_aura_share` (0 to 1). The client learns whether Ways are on (`Config.Sync.combat` bit 8, `Config.ways`).
+
 ### The spellblade
 From **Edge**, a spell cast **while sneaking** with an aura weapon in hand flows into the blade instead of leaving (the
 choice is the sneak: a spell cast standing goes out as usual, sword or not). The next **Aura Slash** within 5 seconds

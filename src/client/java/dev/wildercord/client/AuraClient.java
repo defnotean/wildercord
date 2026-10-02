@@ -26,8 +26,8 @@ public final class AuraClient {
 	private static final Map<Integer, Long> SENSED = new HashMap<>();
 	private static int color = 0xFFFFFF;
 
-	/** An afterimage of a step: where it stands, which way it faces, its colour, and the game time it was left. */
-	public record Afterimage(Vec3 at, float yaw, int color, long born) {}
+	/** An afterimage of a step: where it stands, which way it faces, its colour, the game time it was left, and how long it lasts (ticks). */
+	public record Afterimage(Vec3 at, float yaw, int color, long born, int life) {}
 
 	/** How long an afterimage takes to fade (ticks), and how many a step leaves. */
 	public static final int AFTERIMAGE_TICKS = 12;
@@ -51,7 +51,7 @@ public final class AuraClient {
 			long now = client.level.getGameTime();
 			SENSED.values().removeIf(until -> until < now);
 			AFTERIMAGES.values().removeIf(list -> {
-				list.removeIf(image -> now - image.born() > AFTERIMAGE_TICKS);
+				list.removeIf(image -> now - image.born() > image.life());
 				return list.isEmpty();
 			});
 		});
@@ -69,7 +69,10 @@ public final class AuraClient {
 		}
 	}
 
-	/** A step was taken: afterimages left along the way, each as the body passes it, the first where it set off. */
+	/**
+	 * A step was taken: afterimages left along the way, each as the body passes it, the first where it set off (lingering there longer
+	 * when the step's afterimage strikes: the Way of the Shadowstep's).
+	 */
 	static void stepped(AuraStep.Stepped payload) {
 		Minecraft mc = Minecraft.getInstance();
 		if (mc.level == null) {
@@ -80,7 +83,9 @@ public final class AuraClient {
 		for (int i = 0; i < AFTERIMAGES_PER_STEP; i++) {
 			double t = i / (double) AFTERIMAGES_PER_STEP;
 			Vec3 at = payload.from().lerp(payload.to(), t);
-			list.add(new Afterimage(at, payload.yaw(), payload.color(), now + Math.round(i * dev.wildercord.aura.AuraRules.STEP_TICKS / (double) AFTERIMAGES_PER_STEP)));
+			int life = i == 0 ? AFTERIMAGE_TICKS + Math.max(0, payload.linger()) : AFTERIMAGE_TICKS;
+			list.add(new Afterimage(at, payload.yaw(), payload.color(), now + Math.round(i * dev.wildercord.aura.AuraRules.STEP_TICKS / (double) AFTERIMAGES_PER_STEP),
+				life));
 		}
 	}
 
@@ -93,7 +98,7 @@ public final class AuraClient {
 		List<Afterimage> out = new ArrayList<>(list.size());
 		for (Afterimage image : list) {
 			float age = time - image.born();
-			if (age >= 0 && age < AFTERIMAGE_TICKS) {
+			if (age >= 0 && age < image.life()) {
 				out.add(image);
 			}
 		}

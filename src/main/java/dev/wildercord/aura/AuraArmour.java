@@ -40,7 +40,9 @@ public final class AuraArmour {
 		if (!(target instanceof ServerPlayer player) || damage <= 0 || !up(player) || !covers(source)) {
 			return 0;
 		}
-		return (float) AuraRules.armourAbsorb(damage, Aura.aura(player), Config.get().aura().heights().armourShare());
+		// The Way of the Bulwark at Form: sturdier, taking more for less.
+		return (float) AuraRules.armourAbsorb(damage, Aura.aura(player), WayEffects.armourShare(player, Config.get().aura().heights().armourShare()),
+			WayEffects.armourCost(player));
 	}
 
 	/** The blow landed with {@code absorbed} taken off it: the armour pays, and its shell flares. */
@@ -48,7 +50,7 @@ public final class AuraArmour {
 		if (!(target instanceof ServerPlayer player) || absorbed <= 0) {
 			return;
 		}
-		Aura.spend(player, absorbed * AuraRules.ARMOUR_COST_PER_POINT, "armour");
+		Aura.spend(player, absorbed * AuraRules.ARMOUR_COST_PER_POINT * WayEffects.armourCost(player), "armour");
 		long now = player.level().getGameTime();
 		AuraPresence.Look look = AuraPresence.look(player);
 		if (now - look.shellStruckAt() >= FLARE_REST) {
