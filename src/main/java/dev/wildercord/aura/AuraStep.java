@@ -170,6 +170,8 @@ public final class AuraStep {
 			ServerPlayNetworking.send(player, stepped);
 		}
 		Aura.sound(player, "aura_step", 1.0F, 1.0F);
+		AuraFx.sound(player, AuraFx.Sound.SWING, 0.55F, 1.35F);
+		AuraFx.bodyAuraFlare(player, 16, 0.55F);
 		AuraVfx.stepStart(level, from, dir, color);
 		// The swing straight after it is a step cut, for sword strings.
 		SwordStrings.cue(player, StringReader.Cue.STEP);

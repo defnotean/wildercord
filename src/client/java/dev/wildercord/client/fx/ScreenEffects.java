@@ -70,6 +70,7 @@ public final class ScreenEffects {
 			kickTicks = 0;
 			tintTicks = 0;
 			tintAlpha = 0;
+			nudgeMillis = 0;
 		}
 		if (shakeTicks > 0) {
 			shakeTicks--;
@@ -90,10 +91,56 @@ public final class ScreenEffects {
 		return mc.options == null ? 1 : mc.options.screenEffectScale().get().floatValue();
 	}
 
-	/** The camera's shake right now, as a small rotation to multiply into the view. */
+	/** Aura's nudge: a small turn of the view as a blow lands (degrees), and when it began (nanoseconds) and how long it lasts (ms). */
+	private static float nudgeYaw;
+	private static float nudgePitch;
+	private static long nudgeAt;
+	private static int nudgeMillis;
+
+	/**
+	 * A blow landing nudges the view: a quick turn of {@code yaw} and {@code pitch} degrees, eased back over {@code millis}. Left
+	 * out with camera motion switched off, and softened by the screen effect setting.
+	 */
+	public static void nudge(float yaw, float pitch, int millis) {
+		if (!MagicQuality.cameraShake || millis <= 0 || (yaw == 0 && pitch == 0)) {
+			return;
+		}
+		nudgeYaw = yaw;
+		nudgePitch = pitch;
+		nudgeAt = System.nanoTime();
+		nudgeMillis = millis;
+	}
+
+	/** Whether a blow's nudge is under way (the game tests read it). */
+	public static boolean nudging() {
+		return nudgeMillis > 0 && (System.nanoTime() - nudgeAt) / 1.0E6F < nudgeMillis;
+	}
+
+	/** How far through its nudge the view is (0 to 1, out fast and eased back), or 0 when none is under way. */
+	static float nudgeCurve() {
+		if (nudgeMillis <= 0) {
+			return 0;
+		}
+		float t = (System.nanoTime() - nudgeAt) / 1.0E6F / nudgeMillis;
+		if (t >= 1 || t < 0) {
+			nudgeMillis = 0;
+			return 0;
+		}
+		return t < 0.18F ? t / 0.18F : (1 - (t - 0.18F) / 0.82F) * (1 - (t - 0.18F) / 0.82F);
+	}
+
+	/** The camera's shake right now, as a small rotation to multiply into the view (and a blow's nudge). */
 	public static void applyShake(Matrix4f pose, float partial) {
 		// Paused, the world behind the menu holds still.
-		if (shakeTicks <= 0 || shakeTotal <= 0 || Minecraft.getInstance().isPaused()) {
+		if (Minecraft.getInstance().isPaused()) {
+			return;
+		}
+		float nudge = nudgeCurve() * scale();
+		if (nudge > 0.001F) {
+			pose.rotateX((float) Math.toRadians(nudgePitch * nudge));
+			pose.rotateY((float) Math.toRadians(nudgeYaw * nudge));
+		}
+		if (shakeTicks <= 0 || shakeTotal <= 0) {
 			return;
 		}
 		float t = (shakeTicks - partial) / shakeTotal;

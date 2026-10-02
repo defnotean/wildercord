@@ -243,31 +243,31 @@ public class Glimmer extends SingleQuadParticle implements SigilGroup.Extent {
 	 * early, as when the world changes, still frees its place in a moment). Spawners call
 	 * {@link #tick} once a client tick.
 	 */
-	static final class Budget {
+	public static final class Budget {
 		private final int max;
 		private final java.util.PriorityQueue<Long> ends = new java.util.PriorityQueue<>();
 		private long now;
 
-		Budget(int max) {
+		public Budget(int max) {
 			this.max = max;
 		}
 
-		void tick() {
+		public void tick() {
 			now++;
 			while (!ends.isEmpty() && ends.peek() <= now) {
 				ends.poll();
 			}
 		}
 
-		boolean hasRoom() {
+		public boolean hasRoom() {
 			return ends.size() < max;
 		}
 
-		int out() {
+		public int out() {
 			return ends.size();
 		}
 
-		void spend(int lifetime) {
+		public void spend(int lifetime) {
 			ends.add(now + lifetime + 1);
 		}
 	}

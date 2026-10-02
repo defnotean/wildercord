@@ -261,6 +261,106 @@ def shell(slim=False):
     return img
 
 
+# ---------------------------------------------------------------- the body's aura and the technique banner
+
+def _smooth(x):
+    x = max(0.0, min(1.0, x))
+    return x * x * (3 - 2 * x)
+
+
+def _flame(img, ox, w, h, frame):
+    """One tongue of fire, white for the client to tint, standing on the bottom of its cell: a rounded foot, widest a quarter
+    of the way up and filling most of the cell, licking to a point that leans one way and the other through the four frames, its
+    heart brighter low down."""
+    import math
+    phase = frame * math.pi / 2
+    for py in range(h):
+        y = 1.0 - (py + 0.5) / h  # 0 at the foot, 1 at the tip
+        if y < 0.26:
+            half = 0.86 * (y / 0.26) ** 0.5
+        else:
+            half = 0.86 * ((1 - y) / 0.74) ** 1.35
+        half *= 0.93 + 0.07 * math.sin(phase * 1.3 + 1.1 + y * 2)
+        centre = 0.2 * math.sin(y * 3.4 + phase) * y ** 1.2
+        for px in range(w):
+            x = (px + 0.5) / w * 2 - 1
+            if half <= 1e-4:
+                continue
+            edge = 1 - abs(x - centre) / half
+            if edge <= 0:
+                continue
+            a = _smooth(edge / 0.75) * (1 - 0.3 * y ** 2.2)
+            core = max(0.0, 1 - abs(x - centre) / (0.42 * half)) * (1 - y) ** 1.1
+            a = min(1.0, a * 0.72 + 0.4 * core)
+            a *= _smooth(y / 0.08)
+            img.putpixel((ox + px, py), (255, 255, 255, int(round(255 * a))))
+
+
+def body():
+    """The body's aura, white for the client to tint (render.AuraBodyLayer), its shapes side by side in one 128 by 64 sheet:
+    a soft round haze (0..32), four frames of a tongue of fire (32..96, 16 each), a soft band for the mantle's ribbons (96..128,
+    top 16 rows), a burning eye (96..112, the next 16) and the glow of aura pooling on the ground (96..128, the bottom 32)."""
+    import math
+    img = Image.new("RGBA", (128, 64), (0, 0, 0, 0))
+    # The haze: a soft round glow, brightest in the middle (the body hides that), its halo what shows round the silhouette.
+    for py in range(64):
+        v = (py + 0.5) / 64 * 2 - 1
+        for px in range(32):
+            u = (px + 0.5) / 32 * 2 - 1
+            d = min(1.0, math.sqrt(u * u + v * v))
+            a = (1 - d) ** 1.7
+            img.putpixel((px, py), (255, 255, 255, int(round(255 * a))))
+    for frame in range(4):
+        _flame(img, 32 + frame * 16, 16, 64, frame)
+    # The ribbon: a soft band across (v), the same all along (u).
+    for py in range(16):
+        v = (py + 0.5) / 16 * 2 - 1
+        a = max(0.0, 1 - abs(v)) ** 1.4
+        for px in range(96, 128):
+            img.putpixel((px, py), (255, 255, 255, int(round(255 * a))))
+    # A burning eye: a hot point inside a soft glow.
+    for py in range(16, 32):
+        v = (py - 16 + 0.5) / 16 * 2 - 1
+        for px in range(96, 112):
+            u = (px - 96 + 0.5) / 16 * 2 - 1
+            d = math.sqrt(u * u + v * v)
+            a = max(0.0, 1 - d) ** 1.3 * 0.75 + 0.6 * max(0.0, 1 - d / 0.38)
+            img.putpixel((px, py), (255, 255, 255, int(round(255 * min(1.0, a)))))
+    # Aura pooling on the ground: a soft glow with a faint ring at its edge.
+    for py in range(32, 64):
+        v = (py - 32 + 0.5) / 32 * 2 - 1
+        for px in range(96, 128):
+            u = (px - 96 + 0.5) / 32 * 2 - 1
+            d = math.sqrt(u * u + v * v)
+            a = max(0.0, 1 - d) ** 1.6 * 0.8 + 0.28 * math.exp(-((d - 0.74) / 0.09) ** 2)
+            if d >= 1:
+                a = 0
+            img.putpixel((px, py), (255, 255, 255, int(round(255 * min(1.0, a)))))
+    return img
+
+
+def banner_band():
+    """A technique banner's band (client.AuraBanners), white for the client to tint: a brush stroke laid from the left, full and
+    a little streaky with the bristles, its right end cut on a slant and frayed into nothing; soft along its top and bottom."""
+    import random
+    w, h = 128, 32
+    rng = random.Random(4091)
+    streak = [0.82 + 0.18 * rng.random() for _ in range(h)]
+    fray = [rng.random() * 0.1 for _ in range(h)]
+    img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    for py in range(h):
+        y = (py + 0.5) / h
+        soft = _smooth(min(y, 1 - y) / 0.16)
+        # The slanted end: further right at the top than the bottom, each bristle's own length.
+        end = 0.8 + (0.5 - y) * 0.16 - fray[py]
+        for px in range(w):
+            x = (px + 0.5) / w
+            tail = 1 - _smooth((x - (end - 0.2)) / 0.2)
+            a = soft * streak[py] * tail
+            img.putpixel((px, py), (255, 255, 255, int(round(255 * max(0.0, min(1.0, a))))))
+    return img
+
+
 # ---------------------------------------------------------------- writing it out
 
 def write(g):
@@ -282,6 +382,9 @@ def write(g):
     g.save(soft(), glow / "soft.png")
     g.save(shell(), glow / "shell.png")
     g.save(shell(slim=True), glow / "shell_slim.png")
+    # The body's aura by stage (haze, flames, the mantle's ribbons, burning eyes, the pool at the feet) and the technique banner.
+    g.save(body(), glow / "body.png")
+    g.save(banner_band(), g.ASSETS / "textures/gui/sprites/hud/aura_banner.png")
 
     # What carries aura: servers and add-ons extend it.
     g.write_json(g.DATA / "tags/item/aura_weapons.json", {"replace": False, "values": [
@@ -380,7 +483,6 @@ LANG = {
     "aura.wildercord.technique.dominion.desc": "Hold the Aura key: a circle of your aura six blocks across holds for 8 seconds. Foes inside are slowed and hit weaker, your blows on them chain to another foe inside, and your aura flows back twice as fast. Rests for 90 seconds.",
     "key.wildercord.aura": "Aura (tap: slash, sneak: guard, double-tap: step, hold: dominion)",
     "message.wildercord.aura.step_blocked": "There's no room to step that way",
-    "message.wildercord.aura.dominion": "Dominion",
     "message.wildercord.aura.dominion_resting": "Your Dominion gathers again: %s s",
     "message.wildercord.aura.spellblade": "The spell flows into your blade: Aura Slash to loose it",
     "message.wildercord.aura.tempest_begins": "The storm breaks over the ley lines: hold still",
@@ -492,6 +594,34 @@ LANG = {
     "screen.wildercord.string_indicator.hotbar": "by the hotbar",
     "screen.wildercord.string_indicator.hidden": "hidden",
     "screen.wildercord.string_indicator.tip": "Where the marks of a sword string you're playing show: a little below the crosshair, or above the aura bar. Hidden, the soft tick of each swing goes quiet too; a string completed or broken still sounds.",
+    # Aura's feel: technique banners, and the visual settings for trails, the body's aura, impacts and banners.
+    "aura.wildercord.banner.ordinal.1": "First Art",
+    "aura.wildercord.banner.ordinal.2": "Second Art",
+    "aura.wildercord.banner.ordinal.3": "Third Art",
+    "aura.wildercord.banner.ordinal.4": "Fourth Art",
+    "aura.wildercord.banner.ordinal.5": "Final Art",
+    "aura.wildercord.banner.kicker": "%s · %s",
+    "aura.wildercord.banner.technique": "Technique",
+    "screen.wildercord.blade_trails": "Blade trails: %s",
+    "screen.wildercord.blade_trails.full": "full",
+    "screen.wildercord.blade_trails.subtle": "subtle",
+    "screen.wildercord.blade_trails.off": "off",
+    "screen.wildercord.blade_trails.tip": "The ribbon of light an aura blade leaves as it cuts. Subtle keeps the ribbon but drops its extras (motes, sparks, echoes) and other players' ordinary swings; techniques always show. Your own trail in first person is always thin and low.",
+    "screen.wildercord.body_aura": "Body aura: %s",
+    "screen.wildercord.body_aura.full": "full",
+    "screen.wildercord.body_aura.calm": "calm",
+    "screen.wildercord.body_aura.off": "off",
+    "screen.wildercord.body_aura.tip": "The aura round a swordsman's body (a shimmer, wisps, a haze, a mantle, a corona), calm at rest and flaring in a fight. Calm keeps it at rest and drops its wisps and embers. Your own shows only as a faint glow at the bottom of the screen in first person.",
+    "screen.wildercord.impact": "Impact: %s",
+    "screen.wildercord.impact.full": "full",
+    "screen.wildercord.impact.soft": "soft",
+    "screen.wildercord.impact.off": "off",
+    "screen.wildercord.impact.tip": "How hard aura's blows land on screen: a brief hit-stop for you and whoever you strike, a nudge of the view and a flash. Soft halves them; off drops the hit-stop and the nudge and keeps a small flash. Camera motion off drops the nudge too.",
+    "screen.wildercord.banners": "Technique banners: %s",
+    "screen.wildercord.banners.all": "everyone's",
+    "screen.wildercord.banners.own": "yours only",
+    "screen.wildercord.banners.off": "off",
+    "screen.wildercord.banners.tip": "The name of an art or a Dominion, shown briefly as it goes off: yours by the left edge of the screen, other players' over their heads.",
 }
 
 

@@ -33,7 +33,8 @@ import java.util.List;
 
 /**
  * Magic under a shader pack: spells whose light glows and whose void darkens, a Shield's circles, a
- * wisp and a Cord just put on, each photographed with a pack drawing the world. Only runs with Iris
+ * wisp, a Cord just put on, and aura's feel (a Sovereign body aura, an art's trail, impact and banner), each photographed with a
+ * pack drawing the world. Only runs with Iris
  * installed ({@code ./gradlew runClientGameTest -Pshaders}).
  *
  * <p>The pack (in this test's resources, {@code shaderpack/}) is a tiny one that works like the big
@@ -115,6 +116,52 @@ public class WildercordShaderTest implements FabricClientGameTest {
 		world.getServer().runOnServer(server -> Spellbooks.setCord(player(server), new ItemStack(WildercordItems.AMETHYST_CORD)));
 		context.waitTicks(20);
 		shot(context, prefix + "_cord");
+		aura(context, world, prefix);
+	}
+
+	/**
+	 * Aura's feel under the pack: a Sovereign swordsman's body aura flaring (haze, mantle, corona, burning eyes) from the front, then
+	 * from behind an art's trail, its impact and its banner. All of it light, drawn the plain way under a pack.
+	 */
+	private static void aura(ClientGameTestContext context, TestSingleplayerContext world, String prefix) {
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.setAttached(dev.wildercord.aura.AuraAttachments.AURA, new dev.wildercord.aura.AuraAttachments.Data("ember",
+				dev.wildercord.aura.AuraRules.SOVEREIGN, dev.wildercord.aura.AuraRules.threshold(dev.wildercord.aura.AuraRules.SOVEREIGN),
+				dev.wildercord.aura.AuraRules.capacity(dev.wildercord.aura.AuraRules.SOVEREIGN), 0));
+			player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(net.minecraft.world.item.Items.DIAMOND_SWORD));
+			player.setAttached(dev.wildercord.aura.AuraPresence.LOOK, dev.wildercord.aura.AuraPresence.look(player)
+				.fightUntil(player.level().getGameTime() + 600));
+		});
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_FRONT));
+		context.waitTicks(30);
+		shot(context, prefix + "_aura_body");
+		context.runOnClient(mc -> mc.options.setCameraType(CameraType.THIRD_PERSON_BACK));
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			net.minecraft.world.entity.monster.zombie.Husk husk = net.minecraft.world.entity.EntityTypes.HUSK.create(player.level(),
+				net.minecraft.world.entity.EntitySpawnReason.COMMAND);
+			if (husk != null) {
+				Vec3 look = player.getLookAngle().multiply(1, 0, 1).normalize();
+				husk.snapTo(player.getX() + look.x * 2.4, player.getY(), player.getZ() + look.z * 2.4, 0, 0);
+				husk.setNoAi(true);
+				husk.addTag("wildercord.shader_aura");
+				player.level().addFreshEntity(husk);
+			}
+		});
+		context.waitTicks(10);
+		world.getServer().runOnServer(server -> {
+			ServerPlayer player = player(server);
+			player.removeAttached(dev.wildercord.aura.SwordStrings.COOLDOWNS);
+			dev.wildercord.api.AuraApi.StringArt art = dev.wildercord.api.AuraApi.string(dev.wildercord.aura.PlaceholderArts.FIRST).orElseThrow();
+			dev.wildercord.aura.SwordStrings.perform(player, art, art.string().tokens().stream().map(t -> dev.wildercord.aura.SwordString.Token.marks(t)).toList());
+		});
+		context.waitTicks(3);
+		shot(context, prefix + "_aura_art");
+		context.waitTicks(30);
+		world.getServer().runCommand("kill @e[tag=wildercord.shader_aura]");
+		world.getServer().runOnServer(server -> player(server).removeAttached(dev.wildercord.aura.AuraAttachments.AURA));
+		context.waitTicks(5);
 	}
 
 	private static void shot(ClientGameTestContext context, String name) {

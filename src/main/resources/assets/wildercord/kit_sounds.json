@@ -162,13 +162,58 @@
     "aura_breath": {
       "part": "aura"
     },
+    "aura_crimson_art": {
+      "part": "aura"
+    },
+    "aura_crimson_impact": {
+      "part": "aura"
+    },
+    "aura_crimson_swing": {
+      "part": "aura"
+    },
     "aura_dominion": {
       "part": "aura"
     },
     "aura_dominion_fade": {
       "part": "aura"
     },
+    "aura_ember_art": {
+      "part": "aura"
+    },
+    "aura_ember_impact": {
+      "part": "aura"
+    },
+    "aura_ember_swing": {
+      "part": "aura"
+    },
+    "aura_gale_art": {
+      "part": "aura"
+    },
+    "aura_gale_impact": {
+      "part": "aura"
+    },
+    "aura_gale_swing": {
+      "part": "aura"
+    },
     "aura_guard": {
+      "part": "aura"
+    },
+    "aura_hollow_art": {
+      "part": "aura"
+    },
+    "aura_hollow_impact": {
+      "part": "aura"
+    },
+    "aura_hollow_swing": {
+      "part": "aura"
+    },
+    "aura_hourglass_art": {
+      "part": "aura"
+    },
+    "aura_hourglass_impact": {
+      "part": "aura"
+    },
+    "aura_hourglass_swing": {
       "part": "aura"
     },
     "aura_intent": {
@@ -177,13 +222,49 @@
     "aura_perfect_guard": {
       "part": "aura"
     },
+    "aura_rime_art": {
+      "part": "aura"
+    },
+    "aura_rime_impact": {
+      "part": "aura"
+    },
+    "aura_rime_swing": {
+      "part": "aura"
+    },
     "aura_slash": {
       "part": "aura"
     },
     "aura_spellblade": {
       "part": "aura"
     },
+    "aura_starlit_art": {
+      "part": "aura"
+    },
+    "aura_starlit_impact": {
+      "part": "aura"
+    },
+    "aura_starlit_swing": {
+      "part": "aura"
+    },
+    "aura_steel_art": {
+      "part": "aura"
+    },
+    "aura_steel_impact": {
+      "part": "aura"
+    },
+    "aura_steel_swing": {
+      "part": "aura"
+    },
     "aura_step": {
+      "part": "aura"
+    },
+    "aura_stone_art": {
+      "part": "aura"
+    },
+    "aura_stone_impact": {
+      "part": "aura"
+    },
+    "aura_stone_swing": {
       "part": "aura"
     },
     "aura_string_complete": {
@@ -193,6 +274,24 @@
       "part": "aura"
     },
     "aura_string_tick": {
+      "part": "aura"
+    },
+    "aura_thunder_art": {
+      "part": "aura"
+    },
+    "aura_thunder_impact": {
+      "part": "aura"
+    },
+    "aura_thunder_swing": {
+      "part": "aura"
+    },
+    "aura_verdant_art": {
+      "part": "aura"
+    },
+    "aura_verdant_impact": {
+      "part": "aura"
+    },
+    "aura_verdant_swing": {
       "part": "aura"
     },
     "beat_release": {

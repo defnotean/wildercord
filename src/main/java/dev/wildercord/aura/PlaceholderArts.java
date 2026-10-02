@@ -20,7 +20,9 @@ import java.util.List;
  * 4 replace these: unregister the ids in {@link #IDS} and register each method's, on the same five strings). They're simple on
  * purpose: a burst of aura off the blade, in the method's element, landing as projected aura (the slash's rules: armour, and
  * against a player the spell defences and the PvP scale), shaped a little differently a stage so each string can be seen to
- * work.
+ * work. Each cuts its own trail ({@link AuraFx}): the First a cut, the Second a rising cut, the Third an X, the Fourth a thrust,
+ * the Final a whole turn, and lands heavily on each foe; its banner, the body's flare and the method's technique sound come with
+ * every art performed.
  *
  * <p>The strings are the language every method shares, learned once:</p>
  * <ul>
@@ -72,11 +74,13 @@ public final class PlaceholderArts {
 	/** The First Art: an arc of aura in front. */
 	private static boolean first(ServerPlayer player, AuraApi.StringContext context) {
 		int color = Aura.color(player);
+		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CUT);
 		AuraVfx.artArc(player, color, false);
 		Aura.sound(player, "aura_slash", 0.8F, 1.3F);
 		for (LivingEntity foe : arc(player, context.struck())) {
-			AuraVfx.artHit(player.level(), foe, color);
-			AuraCombat.projected(player, foe, damage(player, StringRules.FIRST_FACTOR), true);
+			if (AuraCombat.projected(player, foe, damage(player, StringRules.FIRST_FACTOR), true) > 0) {
+				fx.impact(foe);
+			}
 		}
 		return true;
 	}
@@ -84,12 +88,14 @@ public final class PlaceholderArts {
 	/** The Second Art: a rising arc that lifts what it cuts. */
 	private static boolean second(ServerPlayer player, AuraApi.StringContext context) {
 		int color = Aura.color(player);
+		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.RISING);
 		AuraVfx.artArc(player, color, true);
 		Aura.sound(player, "aura_slash", 0.9F, 1.15F);
 		Aura.sound(player, "aura_step", 0.4F, 1.5F);
 		for (LivingEntity foe : arc(player, context.struck())) {
-			AuraVfx.artHit(player.level(), foe, color);
-			AuraCombat.projected(player, foe, damage(player, StringRules.SECOND_FACTOR), true);
+			if (AuraCombat.projected(player, foe, damage(player, StringRules.SECOND_FACTOR), true) > 0) {
+				fx.impact(foe);
+			}
 			if (foe.isAlive() && !Spirits.isBoss(foe)) {
 				Vec3 v = foe.getDeltaMovement();
 				foe.setDeltaMovement(v.x * 0.5, Math.max(v.y, StringRules.SECOND_LIFT), v.z * 0.5);
@@ -103,13 +109,16 @@ public final class PlaceholderArts {
 	private static boolean third(ServerPlayer player, AuraApi.StringContext context) {
 		int color = Aura.color(player);
 		List<LivingEntity> foes = arc(player, context.struck());
+		// An X cut in the aura's colour; where it lands, the parry's gold.
+		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.CROSS).color(AuraGuard.PERFECT_COLOR);
 		AuraVfx.artCounter(player, color);
 		Aura.sound(player, "aura_perfect_guard", 0.7F, 1.25F);
 		Aura.sound(player, "aura_slash", 0.8F, 1.0F);
 		if (!foes.isEmpty()) {
 			LivingEntity foe = foes.getFirst();
-			AuraVfx.artHit(player.level(), foe, AuraGuard.PERFECT_COLOR);
-			AuraCombat.projected(player, foe, damage(player, StringRules.THIRD_FACTOR), true);
+			if (AuraCombat.projected(player, foe, damage(player, StringRules.THIRD_FACTOR), true) > 0) {
+				fx.impact(foe);
+			}
 			if (foe.isAlive()) {
 				AuraGuard.stagger(player, foe);
 			}
@@ -122,6 +131,7 @@ public final class PlaceholderArts {
 		int color = Aura.color(player);
 		Vec3 ahead = flat(player);
 		Vec3 from = player.position();
+		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.THRUST, false, 1.6F);
 		AuraVfx.artLine(player, color, ahead, StringRules.FOURTH_LENGTH);
 		Aura.sound(player, "aura_step", 0.7F, 1.3F);
 		Aura.sound(player, "aura_slash", 0.9F, 0.9F);
@@ -138,8 +148,9 @@ public final class PlaceholderArts {
 		}
 		line.sort(Comparator.comparingDouble(e -> e.distanceToSqr(player)));
 		for (LivingEntity foe : line.subList(0, Math.min(line.size(), StringRules.ARC_TARGETS + 1))) {
-			AuraVfx.artHit(level, foe, color);
-			AuraCombat.projected(player, foe, damage(player, StringRules.FOURTH_FACTOR), true);
+			if (AuraCombat.projected(player, foe, damage(player, StringRules.FOURTH_FACTOR), true) > 0) {
+				fx.impact(foe);
+			}
 		}
 		return true;
 	}
@@ -147,6 +158,7 @@ public final class PlaceholderArts {
 	/** The Final Art: a ring of aura round you that throws foes back. */
 	private static boolean last(ServerPlayer player, AuraApi.StringContext context) {
 		int color = Aura.color(player);
+		AuraFx.Art fx = AuraFx.art(player).trail(AuraFxRules.Stroke.SPIN, false, 1.4F);
 		AuraVfx.artRing(player, color, StringRules.FINAL_RADIUS);
 		Aura.sound(player, "aura_dominion", 0.7F, 1.3F);
 		Aura.sound(player, "aura_slash", 1.0F, 0.8F);
@@ -160,8 +172,9 @@ public final class PlaceholderArts {
 		}
 		ring.sort(Comparator.comparingDouble(e -> e.distanceToSqr(player)));
 		for (LivingEntity foe : ring.subList(0, Math.min(ring.size(), StringRules.FINAL_TARGETS))) {
-			AuraVfx.artHit(level, foe, color);
-			AuraCombat.projected(player, foe, damage(player, StringRules.FINAL_FACTOR), true);
+			if (AuraCombat.projected(player, foe, damage(player, StringRules.FINAL_FACTOR), true) > 0) {
+				fx.impact(foe, AuraFxRules.Weight.GRAND);
+			}
 			Vec3 away = foe.position().subtract(player.position());
 			if (foe.isAlive() && !Spirits.isBoss(foe) && away.horizontalDistanceSqr() > 1.0E-4) {
 				foe.knockback(0.9, -away.x, -away.z, player.damageSources().playerAttack(player), 0.0F);

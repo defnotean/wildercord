@@ -57,6 +57,7 @@ public final class WildercordClient implements ClientModInitializer {
 				helper.register(new dev.wildercord.client.render.CordLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.GearLayer(avatar, context));
 				helper.register(new dev.wildercord.client.render.AuraShellLayer(avatar, context));
+				helper.register(new dev.wildercord.client.render.AuraBodyLayer(avatar));
 			}
 		});
 		EntityRendererRegistry.register(WildercordEntities.TRAINING_DUMMY, TrainingDummyRenderer::new);
@@ -163,6 +164,8 @@ public final class WildercordClient implements ClientModInitializer {
 		AuraClient.init();
 		// Sword strings: the player's swings read into strings, their indicator and sounds.
 		SwordStringsClient.init();
+		// Aura's feel: blade trails, impacts and hit-stop, banners, bursts and the body's aura, as this client sees them.
+		AuraFxClient.init();
 		dev.wildercord.client.fx.FrameBenchmark.init();
 		WaypointHud.init();
 		Wildercord.LOGGER.info("Wildercord client initialized");

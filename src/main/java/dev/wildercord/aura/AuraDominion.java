@@ -130,9 +130,13 @@ public final class AuraDominion {
 		}
 		AuraPresence.timers(player, timers.dominion(now + settings.dominionCooldownTicks(), now + ticks));
 		Aura.sound(player, "aura_dominion", 1.4F, 1.0F);
+		AuraFx.sound(player, AuraFx.Sound.ART, 1.0F, 0.7F);
 		AuraVfx.dominionRise(level, field.centre(), field.radius(), field.color(), ticks);
 		ScreenFx.shake(level, field.centre(), 0.35F, 14);
-		player.sendOverlayMessage(Component.translatable("message.wildercord.aura.dominion").withColor(0xFF000000 | field.color()));
+		// Its name, grand, in the aura's colour (by the side of the screen for you, over your head for everyone else).
+		AuraFx.banner(player, Component.translatable("aura.wildercord.technique.dominion"),
+			Aura.method(player).<Component>map(m -> Component.translatable(m.nameKey())).orElse(Component.empty()), AuraFxRules.BannerKind.GRAND);
+		AuraFx.bodyAuraFlare(player, 60, 1.0F);
 		Grimoire.unlock(player, "aura:dominion");
 		return true;
 	}
@@ -244,6 +248,8 @@ public final class AuraDominion {
 		CHAINED.put(player.getUUID(), now);
 		AuraVfx.dominionChain(player.level(), struck, next, field.color());
 		Aura.sound(player, "aura_slash", 0.5F, 1.5F);
-		AuraCombat.projected(player, next, Math.max(1.0, taken * AuraRules.DOMINION_CHAIN_SHARE) * Config.get().aura().damageScale(), false);
+		if (AuraCombat.projected(player, next, Math.max(1.0, taken * AuraRules.DOMINION_CHAIN_SHARE) * Config.get().aura().damageScale(), false) > 0) {
+			AuraFx.impact(player, next, field.color(), Aura.stage(player), AuraFxRules.Weight.FULL);
+		}
 	}
 }

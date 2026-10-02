@@ -1,5 +1,6 @@
 package dev.wildercord.client.mixin;
 
+import dev.wildercord.client.AuraFxClient;
 import dev.wildercord.client.SwordStringsClient;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -11,12 +12,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * Sword strings read from the player's own swings, where vanilla makes them: as an attack begins (what the player was doing:
  * how full the swing was, crouching, in the air, sprinting, what's under the crosshair) and once the swing has really gone, its
  * packets sent (the punch every swing ends with, or a spear's thrust). An attack that doesn't swing (still recovering from a miss,
- * hands busy, a spectator) never reaches the second. See {@link SwordStringsClient}.
+ * hands busy, a spectator) never reaches the second. See {@link SwordStringsClient}; the same two moments draw the swing's blade
+ * trail ({@link AuraFxClient}).
  */
 @Mixin(Minecraft.class)
 public abstract class MinecraftStringsMixin {
 	@Inject(method = "startAttack", at = @At("HEAD"))
 	private void wildercord$strokeBegins(CallbackInfoReturnable<Boolean> cir) {
+		// Aura's trail first: it reads the cue marks the string reader is about to use up.
+		AuraFxClient.attackBegins((Minecraft) (Object) this);
 		SwordStringsClient.attackBegins((Minecraft) (Object) this);
 	}
 
@@ -24,6 +28,7 @@ public abstract class MinecraftStringsMixin {
 		target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;send(Lnet/minecraft/network/protocol/Packet;)V", shift = At.Shift.AFTER))
 	private void wildercord$stroke(CallbackInfoReturnable<Boolean> cir) {
 		SwordStringsClient.swung((Minecraft) (Object) this, false);
+		AuraFxClient.swung((Minecraft) (Object) this, false);
 	}
 
 	@Inject(method = "startAttack", at = @At(value = "INVOKE",
@@ -31,5 +36,6 @@ public abstract class MinecraftStringsMixin {
 		shift = At.Shift.AFTER))
 	private void wildercord$thrust(CallbackInfoReturnable<Boolean> cir) {
 		SwordStringsClient.swung((Minecraft) (Object) this, true);
+		AuraFxClient.swung((Minecraft) (Object) this, true);
 	}
 }

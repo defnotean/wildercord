@@ -66,24 +66,18 @@ public final class AuraVfx {
 		Fx.send(level, ParticleTypes.CRIT, at, 4, 0.2, 0.15);
 	}
 
-	/** A perfect guard: the parry's gold, flashing and racing out across the blade's ring. */
+	/**
+	 * A perfect guard: the parry's gold flashing out across the blade's ring, a glint across it and sparks flung off, and a ring
+	 * of the aura's own colour inside. Drawn by each client ({@link AuraFx#burst}): everyone else sees it whole where the blade
+	 * met the blow; in the guard's own first-person view it's a thin gold glint low across the view, never a flash filling it.
+	 */
 	static void perfect(ServerPlayer player, int color) {
 		ServerLevel level = player.level();
 		Vec3 look = flat(player);
 		Vec3 at = player.position().add(0, 1.1, 0).add(look.scale(0.8));
-		Sigils.flash(level, at, 0xFF000000 | AuraGuard.PERFECT_COLOR, 1.8F);
-		Light.ring(level, at, look, AuraGuard.PERFECT_COLOR, 0.2, 2.2, 0.08, 9);
-		Light.ring(level, at, look, color, 0.1, 1.5, 0.05, 7);
-		Fx.send(level, ParticleTypes.WAX_OFF, at, 12, 0.3, 0.4);
-	}
-
-	/** Flow's sweep: a wide crescent of the aura's colour round the player, at the height of the blow. */
-	static void sweep(ServerPlayer player, int color) {
-		ServerLevel level = player.level();
-		Vec3 look = flat(player);
-		Vec3 centre = player.position().add(0, 1.0, 0);
-		Light.slash(level, centre, UP, look, color, AuraRules.FLOW_SWEEP_RANGE * 0.7, 2.6, 0.32, 3, 6);
-		Light.slash(level, centre.add(0, 0.05, 0), UP, look, hot(color, 0.55), AuraRules.FLOW_SWEEP_RANGE * 0.68, 2.2, 0.12, 3, 5);
+		AuraFx.burst(level, player, at, look, AuraGuard.PERFECT_COLOR, 3.0F, AuraFx.Burst.GUARD | AuraFx.Burst.ECHO);
+		AuraFx.burst(level, player, at, look, color, 2.0F, AuraFx.Burst.RING);
+		AuraFx.bodyAuraFlare(player, 20, 0.6F);
 	}
 
 	/** The slash leaving the blade: a bright crescent at the hand and a flash. */
@@ -491,13 +485,6 @@ public final class AuraVfx {
 			Motes.fling(level, rim, new Vec3(Math.cos(a), 0.6, Math.sin(a)), 0.15, hot(color, 0.25), 0.09, 20, new Vec3(0, 0.02, 0));
 		}
 		ScreenFx.shake(level, feet, 0.18F, 10);
-	}
-
-	/** An art landing on a foe: a flash of the given colour and a few sparks. */
-	static void artHit(ServerLevel level, net.minecraft.world.entity.LivingEntity target, int color) {
-		Vec3 at = target.getBoundingBox().getCenter();
-		Sigils.flash(level, at, 0xFF000000 | hot(color, 0.3), 1.0F);
-		Fx.send(level, ParticleTypes.CRIT, at, 5, 0.25, 0.2);
 	}
 
 	private static Vec3 flat(ServerPlayer player) {

@@ -24,10 +24,12 @@ final class IrisBridge {
 		api.assignPipeline(GlowLayers.GLOW_PIPELINE, IrisProgram.PARTICLES_TRANSLUCENT);
 		api.assignPipeline(GlowLayers.DARK_PIPELINE, IrisProgram.PARTICLES_TRANSLUCENT);
 		api.assignPipeline(WispRenderer.GLOW_PIPELINE, IrisProgram.EMISSIVE_ENTITIES);
+		api.assignPipeline(dev.wildercord.client.render.AuraBodyLayer.GLOW_PIPELINE, IrisProgram.EMISSIVE_ENTITIES);
 		if (api.getMinorApiRevision() >= 4) {
 			api.assignPipelineShadow(GlowLayers.GLOW_PIPELINE, IrisShadowProgram.SHADOW);
 			api.assignPipelineShadow(GlowLayers.DARK_PIPELINE, IrisShadowProgram.SHADOW);
 			api.assignPipelineShadow(WispRenderer.GLOW_PIPELINE, IrisShadowProgram.SHADOW_ENTITIES);
+			api.assignPipelineShadow(dev.wildercord.client.render.AuraBodyLayer.GLOW_PIPELINE, IrisShadowProgram.SHADOW_ENTITIES);
 		}
 	}
 
