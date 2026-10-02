@@ -302,6 +302,14 @@ public final class AuraCombat {
 			return;
 		}
 		long now = player.level().getGameTime();
+		if (Spars.partners(player, target)) {
+			// A sparring partner: the method's passive still answers a coated blow (it's how swordsmen fight), but a spar gives no aura,
+			// experience, kill or trial: what it teaches it teaches at its end (Spars), so nothing in it can be farmed.
+			if (coated) {
+				flavour(player, target, taken, now);
+			}
+			return;
+		}
 		String kind = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString();
 		boolean boss = Spirits.isBoss(target);
 		double repetition = boss || practice ? 1.0 : repeat(player, target.blockPosition(), kind, now);

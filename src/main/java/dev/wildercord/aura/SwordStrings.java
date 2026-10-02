@@ -283,7 +283,8 @@ public final class SwordStrings {
 		if (dev.wildercord.aura.arts.ArtWards.silenced(player)) {
 			return Optional.of(Refusal.SILENCED);
 		}
-		if (!rested(player, art)) {
+		if (!rested(player, art) || Clashes.holding(player)) {
+			// (An art held back in a clash: the others wait for it.)
 			return Optional.of(Refusal.NOT_READY);
 		}
 		if (!art.condition().met(player)) {
@@ -313,8 +314,18 @@ public final class SwordStrings {
 		perform(player, art.get(), payload.marks());
 	}
 
-	/** Performs {@code art} (already checked): the art itself, then its price, its rest, the hooks and the Grimoire. */
+	/** Whether an art held in a clash is being let go now (it goes as it was loosed, and meets nothing more). */
+	private static boolean releasing;
+
+	/**
+	 * Performs {@code art} (already checked): the art itself, then its price, its rest, the hooks and the Grimoire. An art that meets an oncoming
+	 * crescent, or answers a foe's art that just struck, locks into a clash first ({@link Clashes#meets}) and waits for it: it goes if the clash
+	 * is won ({@link #release}) and is lost, still paid for, if not ({@link #forfeit}).
+	 */
 	public static boolean perform(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
+		if (!releasing && Clashes.meets(player, art, marks)) {
+			return true;
+		}
 		long now = player.level().getGameTime();
 		AuraApi.StringContext context = new AuraApi.StringContext(art, marks, struck(player), now);
 		// Its price as it goes, before what it does builds momentum (a tier reached by the art itself makes the next one cheaper).
@@ -356,6 +367,38 @@ public final class SwordStrings {
 			Grimoire.unlock(player, grimoireKey(art.id()));
 		}
 		return true;
+	}
+
+	/**
+	 * An art held in a clash that was won: it goes now, as it was loosed (if its swordsman can still play it: a blade in hand, not silenced,
+	 * aura for it; otherwise it's lost after all). Returns whether it went.
+	 */
+	static boolean release(ServerPlayer player, AuraApi.StringArt art, List<Integer> marks) {
+		if (!player.isAlive() || !Aura.holdsWeapon(player) || dev.wildercord.aura.arts.ArtWards.silenced(player)
+				|| Aura.aura(player) < price(player, art) - 1.0E-4) {
+			forfeit(player, art);
+			return false;
+		}
+		boolean outer = releasing;
+		releasing = true;
+		try {
+			return perform(player, art, marks);
+		} finally {
+			releasing = outer;
+		}
+	}
+
+	/** An art held in a clash that was lost: it doesn't go, but it's paid for and rests as if it had. */
+	static void forfeit(ServerPlayer player, AuraApi.StringArt art) {
+		long now = player.level().getGameTime();
+		double price = Math.min(price(player, art), Aura.aura(player));
+		if (price > 0) {
+			Aura.spend(player, price, "art:" + art.id());
+		}
+		if (art.cooldownTicks() > 0) {
+			Cooldowns rests = player.getAttachedOrElse(COOLDOWNS, Cooldowns.NONE);
+			player.setAttached(COOLDOWNS, rests.rest(art.id(), now + rest(player, art), now));
+		}
 	}
 
 	/** The art being performed now (on the server thread, while its performer runs), or null: what an art's strikes belong to. */
