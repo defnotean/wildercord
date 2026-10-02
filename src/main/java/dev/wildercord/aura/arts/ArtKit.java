@@ -384,6 +384,24 @@ public final class ArtKit {
 		shove(foe, toward.normalize().scale(power).add(0, 0.04, 0));
 	}
 
+	/**
+	 * Draws {@code foe} in toward {@code to} at {@code speed} blocks a tick, its own sideways motion replaced (so a strike's
+	 * knockback a moment before doesn't carry it away): a whirlwind's pull. Never a boss; a player only gently.
+	 */
+	public static void draw(LivingEntity foe, Vec3 to, double speed) {
+		Vec3 toward = to.subtract(foe.position());
+		toward = new Vec3(toward.x, 0, toward.z);
+		double length = toward.length();
+		double allowed = ArtRules.thrown(speed, foe instanceof Player, boss(foe));
+		if (length < 0.6 || allowed <= 0 || !foe.isAlive()) {
+			return;
+		}
+		Vec3 v = foe.getDeltaMovement();
+		Vec3 pull = toward.scale(Math.min(allowed, length * 0.5) / length);
+		foe.setDeltaMovement(pull.x, Math.max(v.y, 0.02), pull.z);
+		MonsterMagic.sync(foe);
+	}
+
 	// ------------------------------------------------------------------ what they suffer
 
 	/** Sets {@code foe} alight for {@code ticks} (a player at most {@link ArtRules#PVP_IGNITE_TICKS}); nothing for one fire can't touch. */

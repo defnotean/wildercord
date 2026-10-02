@@ -236,7 +236,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			}
 			return a.position().distanceTo(p.position()) > b.at(a).distanceTo(b.player()) + 0.4 ? null : "and be thrown back";
 		}));
-		out.add(new Scene(EmberArts.WILDFIRE_RUSH, "ember", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.5), foe(-0.4, 11.5)), 3, 3, (p, b) -> {
+		out.add(new Scene(EmberArts.WILDFIRE_RUSH, "ember", AuraApi.ArtSlot.FOURTH, List.of(foe(0.4, 9.5), foe(-0.4, 11.5)), 3, 8, (p, b) -> {
 			if (p.getZ() < b.player().z + 9) {
 				return "the swordsman should rush on past the step (" + (p.getZ() - b.player().z) + " blocks)";
 			}
@@ -279,11 +279,17 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			}
 			// Two more, and it freezes solid.
 			AuraApi.StringArt art = AuraApi.string(RimeArts.FROSTBITE).orElseThrow();
+			StringBuilder seen = new StringBuilder();
 			for (int i = 0; i < 2; i++) {
 				p.removeAttached(SwordStrings.COOLDOWNS);
-				SwordStrings.perform(p, art, marks(art));
+				// It comes back in (the blows threw it back), and takes the next.
+				Vec3 back = at(0, 2.2);
+				a.teleportTo(back.x, back.y, back.z);
+				boolean went = SwordStrings.perform(p, art, marks(art));
+				seen.append(String.format(java.util.Locale.ROOT, " %s, %d crusts at %.1f;", went, ArtWards.crusts(a), a.distanceTo(p)));
 			}
-			return RimeArts.frozen(a) && a.isNoAi() ? null : "the third crust should freeze it solid";
+			return RimeArts.frozen(a) && a.isNoAi() ? null : "the third crust should freeze it solid (" + seen + " frozen " + RimeArts.frozen(a)
+				+ ", held " + a.isNoAi() + ")";
 		}));
 		out.add(new Scene(RimeArts.HAILFALL, "rime", AuraApi.ArtSlot.SECOND, List.of(foe(0, 2.2), foe(0.8, 3.6), foe(-1.0, 3.9)), 10, 12, (p, b) -> {
 			int struck = 0;
@@ -303,9 +309,9 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (!ArtWards.mirrored(p)) {
 				return "the mirror should stand before the swordsman";
 			}
-			return arrowTurned(p, true);
+			return null;
 		}));
-		out.add(new Scene(RimeArts.SKATE, "rime", AuraApi.ArtSlot.FOURTH, List.of(foe(0.3, 9.6), foe(-0.3, 12.0)), 3, 3, (p, b) -> {
+		out.add(new Scene(RimeArts.SKATE, "rime", AuraApi.ArtSlot.FOURTH, List.of(foe(0.3, 9.6), foe(-0.3, 12.0)), 3, 8, (p, b) -> {
 			if (p.getZ() < b.player().z + 10) {
 				return "the swordsman should glide on past the step (" + (p.getZ() - b.player().z) + " blocks)";
 			}
@@ -363,7 +369,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				return struck >= 4 ? null : "the lightning should chain from whoever struck through the husks near (" + struck + " of 4)";
 			}));
 		out.add(new Scene(dev.wildercord.aura.arts.ThunderArts.BOLT_STEP, "thunder", AuraApi.ArtSlot.FOURTH,
-			List.of(foe(2.5, 9.0), foe(-2.5, 10.5), foe(0.5, 13.0)), 4, 4, (p, b) -> {
+			List.of(foe(2.5, 9.0), foe(-2.5, 10.5), foe(0.5, 13.0)), 4, 9, (p, b) -> {
 				int struck = 0;
 				for (Mob m : foes(p)) {
 					if (m.getHealth() < b.health(m)) {
@@ -416,9 +422,9 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			if (!ArtWards.inEye(p)) {
 				return "the eye should hold round the swordsman";
 			}
-			return arrowTurned(p, false);
+			return null;
 		}));
-		out.add(new Scene(GaleArts.TAILWIND, "gale", AuraApi.ArtSlot.FOURTH, List.of(foe(0.2, 10.0)), 3, 3, (p, b) -> {
+		out.add(new Scene(GaleArts.TAILWIND, "gale", AuraApi.ArtSlot.FOURTH, List.of(foe(0.2, 10.0)), 3, 7, (p, b) -> {
 			if (p.getZ() < b.player().z + 12) {
 				return "the swordsman should dash far on past the step (" + (p.getZ() - b.player().z) + " blocks)";
 			}
@@ -479,7 +485,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 			}
 			return null;
 		}));
-		out.add(new Scene(dev.wildercord.aura.arts.StoneArts.LANDSLIDE, "stone", AuraApi.ArtSlot.FOURTH, List.of(foe(0, 8.0)), 5, 5, (p, b) -> {
+		out.add(new Scene(dev.wildercord.aura.arts.StoneArts.LANDSLIDE, "stone", AuraApi.ArtSlot.FOURTH, List.of(foe(0, 8.0)), 5, 9, (p, b) -> {
 			Mob a = foes(p).getFirst();
 			if (a.getZ() < b.at(a).z + 4) {
 				return "the husk in front should be carried along and thrown on (" + (a.getZ() - b.at(a).z) + ")";
@@ -585,6 +591,10 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		Before b = before;
 		String verified = on(world, player -> scene.check.verify(player, b));
 		check(verified == null, scene.id + ": " + verified);
+		if (scene.id.equals(RimeArts.GLACIER_MIRROR) || scene.id.equals(GaleArts.EYE_OF_THE_STORM)) {
+			String turned = arrowTurned(context, world, scene.id.equals(RimeArts.GLACIER_MIRROR));
+			check(turned == null, scene.id + ": " + turned);
+		}
 		String paid = on(world, player -> {
 			long now = player.level().getGameTime();
 			long ready = SwordStrings.readyAt(player, scene.id);
@@ -623,7 +633,17 @@ public class WildercordArtsTest implements FabricClientGameTest {
 				return SwordStrings.perform(player, art, marks(art)) ? null : scene.id + " didn't go off on the server";
 			});
 			check(done == null, done);
-			context.waitTicks(scene.tpDelay);
+			if (scene.id.equals(dev.wildercord.aura.arts.ThunderArts.HEAVENS_SPEAR)) {
+				// Seen from straight behind, the lance hides behind its swordsman: once it's loosed, the view turns to look across it.
+				context.waitTicks(ArtRules.SPEAR_CHARGE + 1);
+				on(world, player -> {
+					player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), Set.<Relative>of(), -48.0F, 22.0F, false);
+					return null;
+				});
+				context.waitTicks(Math.max(1, scene.tpDelay - ArtRules.SPEAR_CHARGE - 1));
+			} else {
+				context.waitTicks(scene.tpDelay);
+			}
 			shot(context, "art_" + scene.id + (night ? "_night" : "_tp"));
 			if (!night && scene.id.equals(GaleArts.HUNDRED_WINDS) || scene.id.equals(dev.wildercord.aura.arts.ThunderArts.HEAVENS_SPEAR)) {
 				int[] after = context.computeOnClient(mc -> AuraFxClient.spectacle());
@@ -652,7 +672,7 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		if (scene.id.equals(dev.wildercord.aura.arts.ThunderArts.HEAVENS_SPEAR)) {
 			return 10.0F;
 		}
-		return scene.slot == AuraApi.ArtSlot.FOURTH ? 24.0F : 34.0F;
+		return scene.slot == AuraApi.ArtSlot.FOURTH ? 36.0F : 34.0F;
 	}
 
 	/** How long an art takes to have done everything its check looks at. */
@@ -736,32 +756,39 @@ public class WildercordArtsTest implements FabricClientGameTest {
 	 * An arrow loosed at the swordsman from in front, a few blocks off: Glacier Mirror's ice should send it back (it becomes theirs,
 	 * flying away); the eye's wind should turn it aside, past them. Either way it mustn't hurt them.
 	 */
-	private static String arrowTurned(ServerPlayer player, boolean back) {
-		ServerLevel level = player.level();
-		Arrow arrow = new Arrow(EntityTypes.ARROW, level);
-		// From in front and a little aside, clear of the husk that struck (frozen where it stands).
-		Vec3 from = player.getEyePosition().add(1.6, -0.3, 2.6);
-		Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();
-		arrow.snapTo(from.x, from.y, from.z);
-		arrow.setDeltaMovement(aim.scale(1.6));
-		level.addFreshEntity(arrow);
-		float health = player.getHealth();
-		// Run the world a few ticks right here: the arrow flies, meets the ward, turns.
-		for (int i = 0; i < 6 && !arrow.isRemoved(); i++) {
-			arrow.tick();
-		}
-		if (player.getHealth() < health) {
-			return "the arrow should never have hurt the swordsman";
-		}
-		Vec3 v = arrow.getDeltaMovement();
-		if (v.lengthSqr() < 1.0E-4) {
-			return "the arrow should still be flying, turned (" + v + ", " + (arrow.isRemoved() ? "gone" : "here") + ")";
-		}
-		double along = v.normalize().dot(aim);
-		if (back) {
-			return along < -0.3 ? null : "the mirror should have sent the arrow back the way it came (" + v + ")";
-		}
-		return along < 0.75 ? null : "the eye should have turned the arrow aside (" + v + ")";
+	private static String arrowTurned(ClientGameTestContext context, TestSingleplayerContext world, boolean back) {
+		Object[] shot = on(world, player -> {
+			ServerLevel level = player.level();
+			// A skeleton off to the left loosed it (the mirror sends it back at whoever loosed it), from in front and aside, clear of
+			// the husks.
+			Mob archer = spawn(level, EntityTypes.SKELETON, player.position().add(-4.5, 0, 9), 40);
+			archer.setNoAi(true);
+			Arrow arrow = new Arrow(EntityTypes.ARROW, level);
+			Vec3 from = player.getEyePosition().add(-1.6, -0.3, 2.6);
+			Vec3 aim = player.getEyePosition().subtract(0, 0.3, 0).subtract(from).normalize();
+			arrow.snapTo(from.x, from.y, from.z);
+			arrow.setOwner(archer);
+			arrow.setDeltaMovement(aim.scale(1.6));
+			level.addFreshEntity(arrow);
+			return new Object[] {arrow.getUUID(), aim, player.getHealth()};
+		});
+		context.waitTicks(6);
+		return on(world, player -> {
+			if (player.getHealth() < (float) shot[2]) {
+				return "the arrow should never have hurt the swordsman";
+			}
+			net.minecraft.world.entity.Entity arrow = player.level().getEntity((java.util.UUID) shot[0]);
+			if (arrow == null) {
+				return "the arrow should still be flying, turned (it's gone)";
+			}
+			Vec3 v = arrow.getDeltaMovement();
+			double along = v.lengthSqr() < 1.0E-6 ? 1 : v.normalize().dot((Vec3) shot[1]);
+			if (back) {
+				return along < -0.3 && ((Arrow) arrow).getOwner() == player ? null
+					: "the mirror should have sent the arrow back the way it came, as the swordsman's (" + v + ", " + ((Arrow) arrow).getOwner() + ")";
+			}
+			return along < 0.75 ? null : "the eye should have turned the arrow aside (" + v + ")";
+		});
 	}
 
 	// ------------------------------------------------------------------ the Aura page
@@ -851,6 +878,9 @@ public class WildercordArtsTest implements FabricClientGameTest {
 		BlockPos water = waterSpot();
 		world.getServer().runCommand("fill " + (water.getX() - 1) + " " + water.getY() + " " + water.getZ() + " " + (water.getX() + 1) + " " + water.getY() + " "
 			+ water.getZ() + " minecraft:stone");
+		// Clear air over the platform again: nothing the world grew there (a bloom, a fallen star) may catch a swing.
+		world.getServer().runCommand("fill " + (STAGE.getX() - 14) + " " + STAGE.getY() + " " + (STAGE.getZ() - 10) + " " + (STAGE.getX() + 14) + " "
+			+ (STAGE.getY() + 10) + " " + (STAGE.getZ() + 40) + " minecraft:air");
 		context.waitTicks(10);
 		world.getServer().runOnServer(server -> {
 			ServerPlayer player = player(server);

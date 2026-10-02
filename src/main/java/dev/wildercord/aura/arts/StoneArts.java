@@ -333,7 +333,7 @@ public final class StoneArts {
 		Vec3 start = feet.add(dir.scale(1.5));
 		List<Vec3> line = EmberArts.groundLine(level, start, dir, ArtRules.SPLITTER_LENGTH - 1.5, ArtRules.SPLITTER_SPACING);
 		ArtLight world = ArtLight.world(player);
-		ElementFx.crack(level, feet.add(dir.scale(0.8)), 1.6, 40);
+		ElementFx.crack(level, feet.add(dir.scale(1.2)), 1.2, 40);
 		Set<UUID> struck = new HashSet<>();
 		double yaw = Math.atan2(dir.x, dir.z);
 		for (int i = 0; i < line.size(); i++) {
@@ -347,19 +347,24 @@ public final class StoneArts {
 				}
 				BlockState earth = ArtBlocks.ground(level, p);
 				// The split running on: a crack in the ground, a seam of the aura's light along it, and stone bursting up.
-				world.ray(prev.add(0, 0.06, 0), p.add(0, 0.06, 0), color, 0.42, 30);
-				world.ray(prev.add(0, 0.08, 0), p.add(0, 0.08, 0), SAND, 0.1, 26);
+				if (index > 0) {
+					// The seam of light opens from where the stone begins, ahead, never up from under your own feet.
+					world.ray(prev.add(0, 0.06, 0), p.add(0, 0.06, 0), color, 0.48, 30);
+					world.bare().ray(prev.add(0, 0.08, 0), p.add(0, 0.08, 0), SAND, 0.12, 26);
+				}
 				ElementFx.crack(level, p, 1.0, 26);
-				// The first ones low, so they never stand in your own view; then taller as it runs away from you.
-				float height = index < 2 ? 0.9F + 0.3F * index : 1.6F + 0.35F * Math.min(4, index - 2);
 				RandomSource r = level.getRandom();
 				float lean = (float) ((r.nextDouble() - 0.5) * 0.5);
-				ArtBlocks.spire(level, p, earth, 0.95F, height, (float) (yaw + r.nextDouble() * 0.8), lean, 30);
-				if (index % 2 == 1) {
-					Vec3 side = ArtKit.right(dir).scale(r.nextBoolean() ? 0.8 : -0.8);
-					ArtBlocks.spire(level, p.add(side), earth, 0.6F, height * 0.6F, (float) (yaw + r.nextDouble()), -lean * 1.5F, 26);
+				if (index >= 1) {
+					// Stone only from three blocks out, low at first, so none ever stands in your own view; taller as it runs on.
+					float height = index < 3 ? 0.45F + 0.35F * index : 1.5F + 0.3F * Math.min(4, index - 3);
+					ArtBlocks.spire(level, p, earth, index < 3 ? 0.8F : 0.95F, height, (float) (yaw + r.nextDouble() * 0.8), lean, 30);
+					if (index % 2 == 0 && index >= 3) {
+						Vec3 side = ArtKit.right(dir).scale(r.nextBoolean() ? 0.8 : -0.8);
+						ArtBlocks.spire(level, p.add(side), earth, 0.6F, height * 0.6F, (float) (yaw + r.nextDouble()), -lean * 1.5F, 26);
+					}
 				}
-				ElementFx.stoneShards(level, p.add(0, 0.4, 0), earth, 6, 0.35);
+				ElementFx.stoneShards(level, p.add(0, 0.4, 0), earth, 3, 0.3);
 				if (index % 3 == 0) {
 					Feels.sound(level, p, "earth_menhir_rise", 0.7F, 0.9F + 0.04F * index);
 				}

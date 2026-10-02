@@ -268,7 +268,7 @@ public final class EmberArts {
 			dev.wildercord.cast.Scheduler.later(1 + delay, () -> {
 				l.ring(at, normal, c, radius * 0.3, radius * 1.15, 0.12 + 0.03 * delay, 7);
 				l.slash(at, normal, side, edge, radius, 2.6, 0.18, 2, 7);
-				ElementFx.flameBurst(level, at, radius * 0.7, 2);
+				l.whirl(at, radius * 0.75, 3, GOLD, color, RED);
 				ElementFx.embers(level, at, radius * 0.5, 3);
 			});
 		}
@@ -313,10 +313,10 @@ public final class EmberArts {
 		ArtLight world = ArtLight.world(player);
 		ArtKit.dash(player, path, ArtRules.WILDFIRE_TICKS, (a, b, step, last) -> {
 			// A streak of fire low along the way, white-gold down its middle, flames bursting off it.
-			world.ray(a.add(0, 0.9, 0), b.add(0, 0.9, 0), color, 0.32, 8);
-			world.ray(a.add(0, 0.9, 0), b.add(0, 0.9, 0), GOLD, 0.08, 6);
-			world.ray(a.add(0, 0.1, 0), b.add(0, 0.1, 0), color, 0.3, 14);
-			ElementFx.flames(level, b, 0.3, 1.0, 3);
+			world.ray(a.add(0, 0.9, 0), b.add(0, 0.9, 0), color, 0.36, 9);
+			world.bare().ray(a.add(0, 0.9, 0), b.add(0, 0.9, 0), GOLD, 0.09, 7);
+			world.ray(a.add(0, 0.1, 0), b.add(0, 0.1, 0), color, 0.5, 18);
+			world.tongues(b, 0.3, 1.0, 3, color, GOLD, 10);
 			ElementFx.embers(level, b.add(0, 0.5, 0), 0.4, 4);
 			Vec3 seg = b.subtract(a);
 			double length = Math.max(0.5, seg.horizontalDistance());
@@ -409,11 +409,10 @@ public final class EmberArts {
 		show.ray(base, base.add(0, 7, 0), color, 0.9, 14);
 		show.ray(base, base.add(0, 6, 0), GOLD, 0.25, 12);
 		show.flash(base.add(0, 1.2, 0), GOLD, 3.6F);
-		ElementFx.flameBurst(level, base.add(0, 0.8, 0), 2.2, 8);
-		RandomSource r = level.getRandom();
+		show.whirl(base.add(0, 0.8, 0), 2.2, 8, GOLD, color, RED);
 		for (int i = 0; i < 10; i++) {
 			double a = Math.PI * 2 * i / 10;
-			ElementFx.flames(level, base.add(Math.cos(a) * 2.6, 0, Math.sin(a) * 2.6), 0.3, 1.2, 2);
+			world.tongues(base.add(Math.cos(a) * 2.6, 0, Math.sin(a) * 2.6), 0.3, 1.2, 2, color, GOLD, 12);
 		}
 		ElementFx.embers(level, base.add(0, 0.4, 0), 2.5, 18);
 		ScreenFx.shake(level, base, 0.4F, 16);
@@ -432,10 +431,11 @@ public final class EmberArts {
 			ServerLevel lv = field.level();
 			RandomSource rr = lv.getRandom();
 			int c = ArtKit.color(owner);
+			ArtLight ring = ArtLight.world(owner);
 			for (int i = 0; i < 3; i++) {
 				double a = rr.nextDouble() * Math.PI * 2;
 				Vec3 p = centre.add(Math.cos(a) * ArtRules.SUNFALL_RING, 0, Math.sin(a) * ArtRules.SUNFALL_RING);
-				ElementFx.tongues(lv, p, 0.22, 0.9, 2, c, GOLD, 2, 8);
+				ring.tongues(p, 0.24, 1.0, 2, c, GOLD, 9);
 			}
 			if (age % 10 == 0) {
 				ArtLight w = ArtLight.world(owner);

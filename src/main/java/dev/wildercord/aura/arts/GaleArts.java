@@ -348,8 +348,9 @@ public final class GaleArts {
 				ArtKit.lift(foe, ArtRules.WINDS_LIFT, 40);
 				ElementFx.swirl(level, foe.position(), 0.8, foe.getBbHeight() + 2, 4, color, WHITE);
 			} else {
-				ArtKit.pull(foe, at, ArtRules.WINDS_PULL);
 				hits.strike(foe, ArtRules.WINDS_FACTOR, null);
+				// Drawn in after the cut, so the cut's own knockback never carries it out of the wind.
+				ArtKit.draw(foe, at, ArtRules.WINDS_PULL);
 				Vec3 c = foe.getBoundingBox().getCenter();
 				Vec3 n = new Vec3(r.nextDouble() - 0.5, 0.5, r.nextDouble() - 0.5).normalize();
 				world.slash(c, n, ElementFx.perp(n), WHITE, 0.6, 2.4, 0.06, 1, 3);

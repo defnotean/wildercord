@@ -82,7 +82,7 @@ public final class ArtLight {
 	/** A shockwave racing out from {@code from} to {@code to} blocks in the plane facing {@code normal}. */
 	public ArtLight ring(Vec3 at, Vec3 normal, int color, double from, double to, double width, int life) {
 		if ((color & DARK) == 0 && rimAt(at)) {
-			send(ElementFx.ringOption(normal, color | DARK, from, to, width * 1.35 + 0.03, life), at.subtract(normal.normalize().scale(0.01)));
+			send(ElementFx.ringOption(normal, color | DARK, from, to, width * 1.15, life), at.subtract(normal.normalize().scale(0.01)));
 		}
 		send(ElementFx.ringOption(normal, color, from, to, width, life), at);
 		return this;
@@ -100,7 +100,7 @@ public final class ArtLight {
 			return this;
 		}
 		if ((color & DARK) == 0 && rimAt(from.add(d.scale(0.5)))) {
-			send(new LightOption(LightOption.RAY, color | DARK, (float) d.x, (float) d.y, (float) d.z, (float) (width * 1.4 + 0.03), 0, 0, 0, life), from);
+			send(new LightOption(LightOption.RAY, color | DARK, (float) d.x, (float) d.y, (float) d.z, (float) Math.min(width * 1.1, width + 0.06), 0, 0, 0, life), from);
 		}
 		send(new LightOption(LightOption.RAY, color, (float) d.x, (float) d.y, (float) d.z, (float) width, 0, 0, 0, life), from);
 		return this;
@@ -109,7 +109,7 @@ public final class ArtLight {
 	/** A crescent round {@code centre} in the plane facing {@code normal}, its middle toward {@code toward}, sweeping in {@code sweep} ticks. */
 	public ArtLight slash(Vec3 centre, Vec3 normal, Vec3 toward, int color, double radius, double span, double width, int sweep, int life) {
 		if ((color & DARK) == 0 && rimAt(centre)) {
-			send(ElementFx.slashOption(normal, toward, color | DARK, radius * 1.02, span * 0.98, width * 1.3 + 0.03, sweep, life + 1), centre);
+			send(ElementFx.slashOption(normal, toward, color | DARK, radius * 1.02, span * 0.98, width * 1.15, sweep, life + 1), centre);
 		}
 		send(ElementFx.slashOption(normal, toward, color, radius, span, width, sweep, life), centre);
 		return this;
@@ -179,7 +179,7 @@ public final class ArtLight {
 	public ArtLight arc(Vec3 from, Vec3 to, int color, double width, int forks, boolean flat, int life) {
 		Vec3 d = to.subtract(from);
 		if ((color & DARK) == 0 && rimAt(from.add(d.scale(0.5)))) {
-			send(new LightOption(LightOption.ARC, color | DARK, (float) d.x, (float) d.y, (float) d.z, (float) (width * 2.2 + 0.03), forks, flat ? 1 : 0, 0,
+			send(new LightOption(LightOption.ARC, color | DARK, (float) d.x, (float) d.y, (float) d.z, (float) (width * 1.6), forks, flat ? 1 : 0, 0,
 				life), from);
 		}
 		send(new LightOption(LightOption.ARC, color, (float) d.x, (float) d.y, (float) d.z, (float) width, forks, flat ? 1 : 0, 0, life), from);

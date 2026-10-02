@@ -355,9 +355,9 @@ public final class ThunderArts {
 		fx.trail(AuraFxRules.Stroke.THRUST, false, 1.8F);
 		// The lance itself, seen from outside: a beam of the aura's lightning, white-hot down its heart, jagging as it holds.
 		ArtLight show = ArtLight.spectacle(player);
-		show.ray(from, end, color, 0.55, 10);
-		show.ray(from, end, WHITE, 0.16, 8);
-		show.arc(from, end, color, 0.12, 4, false, 7);
+		show.ray(from, end, color, 0.75, 12);
+		show.bare().ray(from, end, WHITE, 0.22, 10);
+		show.arc(from, end, color, 0.14, 5, false, 9);
 		// Where it ends, for everyone: a burst of lightning against the wall or the open air.
 		ElementFx.stormImpact(level, end, 1.4);
 		ArtLight.world(player).ring(end, dir, color, 0.3, 2.4, 0.1, 9);
