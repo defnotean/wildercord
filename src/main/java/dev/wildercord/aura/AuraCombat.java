@@ -94,10 +94,12 @@ public final class AuraCombat {
 
 	// ------------------------------------------------------------------ a blow
 
-	/** Notes how full a player's swing is, as it begins. */
+	/** Notes how full a player's swing is, as it begins (and what it was, for the trail everyone else sees). */
 	public static void swing(Player player) {
-		if (player instanceof ServerPlayer) {
-			SWINGS.put(player, player.isUsingItem() ? 1.0F : player.getAttackStrengthScale(0.5F));
+		if (player instanceof ServerPlayer server) {
+			float strength = player.isUsingItem() ? 1.0F : player.getAttackStrengthScale(0.5F);
+			SWINGS.put(player, strength);
+			AuraFx.swingBegins(server, strength);
 		}
 	}
 
@@ -127,17 +129,42 @@ public final class AuraCombat {
 		}
 		float amount = coated ? coat(player, living, source, damage) : damage;
 		float before = living.getHealth();
+		boolean critical = first && critical(player);
 		boolean hurtIt = hurt.apply(amount);
 		if (first && coated) {
 			Aura.spend(player, AuraRules.COAT_COST, "coat");
 		}
 		if (hurtIt) {
 			float swing = first ? SWINGS.getOrDefault(player, 1.0F) : 0.5F;
+			if (coated) {
+				felt(player, living, swing, critical, first);
+			}
 			float taken = Math.max(0, before - Math.max(0, living.getHealth()));
 			// A training dummy heals at once: what the blow dealt is what it's measured by there.
 			landed(player, living, living instanceof TrainingDummy ? Math.max(taken, amount) : taken, swing, coated, false);
 		}
 		return hurtIt;
+	}
+
+	/** Whether a player's blow now is a critical one, as vanilla judges it (falling, a full swing, not climbing, swimming or running). */
+	private static boolean critical(ServerPlayer player) {
+		return player.fallDistance > 0 && !player.onGround() && !player.onClimbable() && !player.isInWater() && !player.isPassenger()
+			&& !player.isSprinting() && SWINGS.getOrDefault(player, 0.0F) >= AuraRules.FULL_SWING;
+	}
+
+	/**
+	 * How a coated blow feels: a flash where it bit, the moment held for the striker (and a struck player) on a full swing, and the
+	 * method's sounds: its blow landing for everyone, its blade's swing for everyone but the swinger (whose own client played it at
+	 * once). A sweep's other blows only flash.
+	 */
+	private static void felt(ServerPlayer player, LivingEntity target, float swing, boolean critical, boolean first) {
+		AuraFxRules.Weight weight = first ? AuraFxRules.blow(swing, critical) : AuraFxRules.Weight.LIGHT;
+		AuraFx.impact(player, target, weight);
+		if (first) {
+			float volume = weight == AuraFxRules.Weight.LIGHT ? 0.45F : weight == AuraFxRules.Weight.HEAVY ? 0.9F : 0.7F;
+			AuraFx.sound(player, AuraFx.Sound.IMPACT, volume, weight == AuraFxRules.Weight.HEAVY ? 0.9F : 1.0F);
+			AuraFx.soundForOthers(player, AuraFx.Sound.SWING, 0.5F, 1.0F);
+		}
 	}
 
 	private static boolean harmable(ServerPlayer player, LivingEntity target) {
@@ -364,7 +391,9 @@ public final class AuraCombat {
 		Light.ray(level, from.getBoundingBox().getCenter(), next.getBoundingBox().getCenter(), color, 0.08, 5);
 		Light.ray(level, from.getBoundingBox().getCenter(), next.getBoundingBox().getCenter(), 0xFFFBE0, 0.03, 4);
 		dev.wildercord.cast.feel.Feels.sound(level, next.getBoundingBox().getCenter(), "tell_zap", 0.6F, 1.2F);
-		projected(player, next, Math.max(1.0, taken * AuraRules.THUNDER_SHARE) * Config.get().aura().damageScale(), false);
+		if (projected(player, next, Math.max(1.0, taken * AuraRules.THUNDER_SHARE) * Config.get().aura().damageScale(), false) > 0) {
+			AuraFx.impact(player, next, AuraFxRules.Weight.LIGHT);
+		}
 	}
 
 	// ------------------------------------------------------------------ Flow's sweep
@@ -384,10 +413,13 @@ public final class AuraCombat {
 		return flowSweeps(player) ? Math.max(vanilla, AuraRules.FLOW_SWEEP_RANGE * AuraRules.FLOW_SWEEP_RANGE) : vanilla;
 	}
 
-	/** A Flow sweep, seen: a wide crescent of the aura's colour round the player. */
+	/**
+	 * A Flow sweep, seen: a wide, level trail of the aura's light round the front of the player, for everyone, the sweeper too
+	 * (drawn low and thin in their own first-person view), and a broader whoosh of the method's blade under the swing's own.
+	 */
 	public static void sweep(Player player) {
 		if (player instanceof ServerPlayer server && flowSweeps(player)) {
-			AuraVfx.sweep(server, Aura.color(server));
+			AuraFx.swept(server);
 		}
 	}
 }

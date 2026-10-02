@@ -68,7 +68,7 @@ and documented, not a first draft.
 | # | Step | Status |
 |---|---|---|
 | 1 | Sword strings: the input language | done |
-| 2 | Feel and spectacle: the shared visual and sound language | planned |
+| 2 | Feel and spectacle: the shared visual and sound language | done |
 | 3 | Arts I: the framework, and Ember, Rime, Thunder, Gale, Stone | planned |
 | 4 | Arts II: Verdant, Hollow, Starlit, Hourglass, Crimson | planned |
 | 5 | Momentum and openings | planned |
@@ -378,7 +378,121 @@ marks anywhere (the Aura page uses them). Sounds `aura_string_tick` (played at `
 - `Sigils.send` never sends shaped light centred within 1.25 blocks of a player's eyes to that player (first-person comfort),
   so an art's own crescents must be centred ahead of the body; a ground ring at the feet doesn't show to a crouching player.
 - Additive shaped light washes out by day: lay a `Light.DARK` rim under it when `AuraVfx.brightBehind` (the slash does too).
-- The perfect guard's own flash fills the first-person view in gold (`AuraVfx.perfect`): step 2 may want to tone it down.
+- The perfect guard's own flash fills the first-person view in gold (`AuraVfx.perfect`): step 2 may want to tone it down. (Step 2:
+  it was mostly the blade's own glow swinging across the view in the guard's swing; see its notes.)
 - Game test `WildercordSwordStringsTest` plays every string with the real keys (`swing`, `lowSwing`, jump, the Aura key) and
   checks the server through an `onString` hook and `AFTER_DAMAGE` on `Aura.DAMAGE`; husks there have no AI, so lifts and
   knockback don't show.
+
+### From step 2: feel and spectacle
+
+The player's view is in `wiki/progression/aura.md#how-aura-looks-and-sounds`. Everything here is only how things look and
+sound: call it once what happens has been decided.
+
+**The shape of it.** The server says what happened (`aura.AuraFx`, five clientbound payloads); each client draws it as *it*
+sees it (`client.AuraFxClient`), because only the client knows its camera: your own effects in first person are thin, short
+and low, third person and everyone else get the whole spectacle. The server-sent shaped light of `AuraVfx` (crescents in
+flight, Dominion's circle, the placeholder arts' arcs) stays for the big world shapes; `Sigils.send` still leaves those out
+within 1.25 blocks of their own player's eyes.
+
+**The toolkit** (`aura.AuraFx`, server side; numbers in `aura.AuraFxRules`, unit-tested in `AuraFxRulesTest`):
+
+| Call | What everyone sees | Payload |
+|---|---|---|
+| `trail(player, Stroke)`, `trail(player, stroke, mirror, power)`, `trail(livingEntity, stroke, mirror, color, stage, power)` | a ribbon of light along the blade's arc, laid round the entity as it faces and carried with it | `Trail(entity, stroke, mirror, color, stage, power, flags)` to trackers and self |
+| `impact(player, target, Weight)`, `impact(attacker, target, color, stage, weight)` | a flash (and by weight sparks, a glint, a ring, an echo ring) where the blow met the foe (`struckAt`); on the striker's and a struck player's screens a hit-stop and a nudge | `Impact(attacker, target, at, color, stage, weight)` to the target's trackers and the target |
+| `banner(player, StringArt)`, `banner(livingEntity, name, kicker, color, BannerKind)` | the name at the left edge of the swordsman's own screen, over their head for others | `Banner(entity, name, kicker, color, kind)` (Components, translated on the client) |
+| `burst(level, owner, at, facing, color, size, Burst bits)` | a burst of light: `FLASH`, `RING` (in the plane facing `facing`, or toward the viewer when zero), `SPARKS`, `STAR`, `ECHO`; `GUARD` is the first four | `BurstCue(owner, at, facing, color, size, style)` to everyone within 64 |
+| `bodyAuraFlare(player, ticks, strength)` | the body's aura surging (0 to 1) and dying away | `Flare(entity, ticks, strength)` |
+| `sound(player, Sound.SWING / IMPACT / ART, volume, pitch)` | the method's own sound, for everyone near | (a kit sound) |
+
+`AuraFx.art(player)` returns an `Art` that remembers the player's colour and stage, so an art's look reads in one line:
+`AuraFx.art(player).trail(Stroke.DRAW).impact(foe).burst(at, 1.2F, Burst.RING)`; `.color(gold)` recolours what follows,
+`.flare(ticks, strength)`, `.sound(...)` and `.banner(name, kicker, kind)` are there too.
+
+**What every art gets for free.** `AuraFx.performed`, an `AuraApi.onString` hook: the art's banner (its name; the kicker is
+"<method> · <ordinal>" for a registered art, "<method>" for the placeholders, "<method> · Technique" for an art from a string
+source, so step 8's techniques need nothing; the Final Art's banner is `GRAND`), a body flare (30 ticks at 0.7, the Final Art 50
+at 1.0) and the method's `ART` sound. **So an art adds only its own trail, impacts, bursts and element light and sounds.**
+
+**Giving an art its look** (steps 3 and 4):
+- *Trail*: pick the `Stroke` that matches the art's motion: `CUT` (down across; `mirror` cuts back), `RISING`, `FALLING`
+  (overhead), `SWEEP` (wide and level), `LOW` (across the legs), `DRAW` (a fast level draw), `THRUST` (a straight lance that
+  follows the pitch), `SPIN` (a whole turn), `CROSS` (an X: two trails two ticks apart). `power` scales the width (arts use
+  1.25 to 1.6). The trail grows with the stage by itself (`trailWidth`, `trailTail`, `trailAlpha`; motes from Flow, an edge from
+  Edge, an echo from Form, sparks at Sovereign). A new stroke is one enum value (tilt, from, to, height, ahead, radius, sweep,
+  life, ownStart) and gets its own view for free (`OWN_*`; `ownStart` is where your own view's part of the arc begins, 0 for
+  the start, later when the start would cross the middle of the view, as `FALLING`'s 0.5); `THRUST` is the only special case.
+- *Impacts*: one `impact(foe, Weight)` per foe really hurt (`AuraCombat.projected` returned > 0). `LIGHT` (no hit-stop),
+  `FULL` (45 ms), `HEAVY` (70 ms, a ring), `GRAND` (110 ms, a ring and an echo). Stops within 150 ms are one, so a sweep through
+  many foes holds once. `Art.color(...)` for a special colour (the counter's gold).
+- *Bursts*: for the art's own moment (a landing slam, a detonation). Give the owner: a burst near their eyes in their first
+  person becomes a "whisper" (a third the size, faint, moved to the bottom of the view; a ring shows only its lower arc).
+- *Banners*: automatic for arts. Step 5's finishers: `AuraFx.banner(player, name, kicker, BannerKind.FINISHER)` (56 ticks).
+  Step 6's awakening: `BannerKind.GRAND` and a long `bodyAuraFlare`.
+- *Sounds*: the method's `ART` plays with the banner; add element sounds through `Feels.sound` as usual, and the method's
+  `IMPACT` on a big landing (`AuraFx.sound(player, Sound.IMPACT, ...)`).
+
+**The method sound families** (`tools/feel/aura_methods.py`, added to the `aura` part's events; `AuraFx.family(methodId)`):
+`aura_<method>_swing` (3 variants, role effect), `aura_<method>_impact` (3 variants, role impact) and `aura_<method>_art` (1,
+role cast, heard to 24 blocks) for `ember`, `rime`, `thunder`, `gale`, `stone`, `verdant`, `hollow`, `starlit`, `hourglass` and
+`crimson`, and the neutral `aura_steel_*` for a method without its own. Add-ons: `AuraApi.registerSounds(methodId, family)`.
+Where they play now: a coated blow plays `IMPACT` for everyone and `SWING` for everyone but the swinger (whose own client plays
+`SWING` the moment they swing, in `AuraFxClient.swung`); a Flow sweep `SWING` at 0.78 pitch; the slash `ART` under `aura_slash`;
+the step `SWING` at 1.35; Dominion `ART` at 0.7; every art `ART` with its banner.
+
+**Ordinary swings' trails.** Your own client draws yours (`AuraFxClient.attackBegins` and `swung`, from
+`mixin.MinecraftStringsMixin`) the moment you swing: only a blade with aura enough to coat (`Aura.coated`), never at a block
+(digging). The stroke comes from the swing's sword string marks (`AuraFxRules.stroke(marks, thrust)`), alternating in a run
+(`mirrored`, within 24 ticks), 1.3 times wider when the swing completed a string. Everyone else hears of it from the server:
+`AuraFx.swung` from the punch (`mixin.SwordStringsSeenMixin`) or a spear's thrust (`mixin.PiercingWeaponStringsMixin`), with
+the marks noted at the attack's head (`AuraFx.swingBegins` from `AuraCombat.swing`, before vanilla ends the sprint), flagged
+`ORDINARY` (onlookers on "subtle", or with others' effects on minimal, skip those, never a technique's). A Flow sweep replaces
+the ordinary trail: the swinger's client predicts it (`AuraFxRules.sweeps`, the same test as `PlayerAuraMixin`'s) and draws a
+`SWEEP`; the server's `AuraFx.swept` sends a `SWEEP` to everyone and the swinger's client ignores it within `SWEEP_ECHO` ticks of
+its own; vanilla's grey sweep particle is left out under a Flow sweep.
+
+**The body's aura** (`client.render.AuraBodyLayer`, a layer on every `AvatarRenderer`, and `AuraFxClient.motes`): the stage
+looks are in the guide; its strength is `AuraFxRules.intensity(lit, fighting, surge)`: `IDLE` 0.35, `FIGHTING` 0.8 (synced as
+`AuraPresence.Look.fightUntil`, set by `AuraFx.fighting` from `Aura.fighting` and renewed only when under 60 of its 100 ticks
+are left), plus up to 0.6 of a surge (`Flare`), times 0.4 while too low to coat. Drawn in two inks without shaders (a deeper
+shade laid over the world, for day, and added light, for night: `Ink`); under Iris the laid-over one alone (`IrisBridge`
+assigns `AuraBodyLayer.GLOW_PIPELINE`). Its sheet is `textures/entity/aura/body.png` from `tools/aura_art.py` `body()` (a haze,
+four flame frames, a ribbon band, an eye, a ground pool). Never drawn for your own body in first person; instead
+`AuraFxClient.whisper`, a faint band at the bottom edge from Edge while it flares (at most a seventh opaque). **Step 6
+(awakening):** a long `bodyAuraFlare` at 1.0 already lifts the corona over the head; for a lasting state add a synced flag
+beside `fightUntil` and fold it into `bodyIntensity` (the eyes are drawn from Sovereign only: open them for awakening there).
+
+**First person, everywhere.** Trails: `OWN_WIDTH` 0.34, `OWN_ALPHA` 0.55, `OWN_SPAN` 0.55 of the arc (from `Stroke.ownStart`),
+`OWN_DROP` 0.42 lower, `OWN_ASIDE` 0.22 toward the blade hand, `OWN_LIFE` 0.7, no extras and no shade rim; laid about the eyes
+in the look's own frame as it was when the swing began (a world-level arc came up through the crosshair when looking down at a
+foe), and faded out within `OWN_CLEAR` 12 to `OWN_CLEAR_FULL` 22 degrees of the middle of the view (`ownClear`), whatever a
+stroke does; decided every frame, so F5 mid-swing switches. An impact seen by its striker in first person is a flash only, at half size; a struck player sees none of
+their own. Bursts near their owner's eyes are whispers (`AuraBurst.nearOwnEyes`, 2.6 blocks). The blade's own glow
+(`AuraBlade`) in first person: its soft halo at 45% and held close, no guard brightening, the crystal and the rim at 80%. **That
+was step 1's "perfect guard fills the view in gold":** the guard's swing carried the blade's wide soft halo across the view (in
+Thunder's yellow); the guard's own burst now draws as a thin gold arc low in the view.
+
+**Hit-stop** (`client.fx.HitStop`, `mixin.EntityRenderDispatcherHitStopMixin` at the return of `extractEntity`): a held entity
+keeps the pose it had when the hold began (place, turn, walk, swing: the `Pose` record), laid over each fresh render state;
+nothing else is frozen. Never hand a stale render state back: its item states are reset each frame (it drew a held weapon
+blank). Real-time milliseconds, so it doesn't depend on the frame rate.
+
+**Settings** (`client.fx.MagicQuality`, `wildercord-visuals.json`): `blade_trails` FULL / SUBTLE / OFF, `body_aura` FULL / CALM
+/ OFF, `impact` FULL / SOFT / OFF (`hitStop` 1 / 0.5 / 0, `flash` 1 / 0.75 / 0.45), `banners` ALL / OWN / OFF; `camera_shake` also
+gates the nudge (`ScreenEffects.nudge`); `reduced_flash` halves flashes; `others` MINIMAL drops others' ordinary trails and
+body motes. The performance profile sets SUBTLE / CALM / SOFT / OWN. New effects should read `MagicQuality` the same way.
+
+**Gotchas.**
+- Particles built of square quads (`QuadParticleRenderState`) bead when the pieces only meet or overlap by chance: walk a
+  ribbon in steps of half a piece and give each piece a little over half the alpha (`AuraTrail.pass`). `LightStrokes` paints
+  the ribbons, cores and glows of all of aura's particles.
+- Additive light washes out by day: trails and wisps lay a `GlowLayers.DARK` rim under themselves when
+  `level.isBrightOutside() && canSeeSky` (not your own first-person trail).
+- The client's `ParticleEngine.add` only queues, so a particle may spawn others from its own `tick`.
+- A render layer's pose is the model's (flipped, scaled 0.9375): `AuraBodyLayer` backs out to the feet, level with the world,
+  as `AuraShellLayer`'s afterimages do; the eyes use `getParentModel().head.translateAndRotate` (the face is toward -z, y down).
+- Game test `WildercordAuraFxTest` checks and films all of it (counts in `AuraFxClient.counts()`: trails, own trails, impacts,
+  bursts, flares, body motes, whispers; `HitStop.stops()`, `ScreenEffects.nudging()`, `AuraBanners.ownShowing()`). A Dominion's
+  circle lingers its full time on each client: wait it out before the next pictures. `WildercordShaderTest` films a Sovereign
+  body and an art under its test pack (`shader_aura_*`).

@@ -21,7 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Aura in a player's blows (see {@link AuraCombat}): each blow is wrapped round the very call that hurts its foe, so a coated
  * blow lands at its coated strength and what it really took (killing blows too) is answered with aura and experience; a
- * spear's thrust likewise; and with Flow every aura weapon sweeps, wider and further.
+ * spear's thrust likewise; and with Flow every aura weapon sweeps, wider and further, drawn as the aura's own sweep rather than
+ * vanilla's grey crescent.
  */
 @Mixin(Player.class)
 public abstract class PlayerAuraMixin {
@@ -69,6 +70,17 @@ public abstract class PlayerAuraMixin {
 	@Inject(method = "doSweepAttack", at = @At("HEAD"))
 	private void wildercord$flowSweepSeen(Entity entity, float baseDamage, DamageSource source, float strength, CallbackInfo ci) {
 		AuraCombat.sweep((Player) (Object) this);
+	}
+
+	/** A Flow sweep is drawn as the aura's own wide trail (see {@code AuraFx}): vanilla's grey sweep crescent is left out under it. */
+	@WrapOperation(method = "doSweepAttack", at = @At(value = "INVOKE",
+		target = "Lnet/minecraft/server/level/ServerLevel;sendParticles(Lnet/minecraft/core/particles/ParticleOptions;DDDIDDDD)I"))
+	private int wildercord$flowSweepParticle(ServerLevel level, net.minecraft.core.particles.ParticleOptions particle, double x, double y, double z,
+			int count, double dx, double dy, double dz, double speed, Operation<Integer> original) {
+		if (AuraCombat.flowSweeps((Player) (Object) this)) {
+			return 0;
+		}
+		return original.call(level, particle, x, y, z, count, dx, dy, dz, speed);
 	}
 
 	@WrapOperation(method = "doSweepAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/phys/AABB;inflate(DDD)Lnet/minecraft/world/phys/AABB;"))

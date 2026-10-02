@@ -20,5 +20,7 @@ public abstract class AvatarRendererGearMixin {
 		dev.wildercord.client.fx.AuraBlade.extract(avatar, state);
 		// Aura armour's shell round them, and a step's afterimages.
 		dev.wildercord.client.render.AuraShellLayer.extract(avatar, state, partial);
+		// The body's aura by stage (a shimmer, a haze, a mantle, a corona and burning eyes), calm at rest and flaring in a fight.
+		dev.wildercord.client.render.AuraBodyLayer.extract(avatar, state, partial);
 	}
 }

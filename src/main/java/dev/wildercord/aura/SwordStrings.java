@@ -218,6 +218,26 @@ public final class SwordStrings {
 		}
 	}
 
+	/**
+	 * The counter and step-cut marks a swing now carries, as far as the server knows: a perfect guard or an Aura Step within its
+	 * moment (for how the swing's trail is cut, see {@link AuraFx#swung}; the reader on the client is what plays strings).
+	 */
+	static int cues(ServerPlayer player) {
+		Seen seen = SEEN.get(player.getUUID());
+		if (seen == null) {
+			return 0;
+		}
+		long now = player.level().getGameTime();
+		int marks = 0;
+		if (now - seen.guardAt <= StringRules.COUNTER_TICKS) {
+			marks |= SwordString.Token.COUNTER.bit();
+		}
+		if (now - seen.stepAt <= StringRules.STEP_CUT_TICKS) {
+			marks |= SwordString.Token.STEP.bit();
+		}
+		return marks;
+	}
+
 	/** Whether the server saw what {@code art}'s string needs, just now: enough swings in its time, the last just now, its guard or step. */
 	static boolean saw(ServerPlayer player, AuraApi.StringArt art) {
 		Seen seen = SEEN.get(player.getUUID());

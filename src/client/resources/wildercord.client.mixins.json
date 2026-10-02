@@ -26,7 +26,8 @@
 		"FirstPersonAuraMixin",
 		"ItemLayerAuraMixin",
 		"EntityRendererAuraSenseMixin",
-		"MinecraftStringsMixin"
+		"MinecraftStringsMixin",
+		"EntityRenderDispatcherHitStopMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

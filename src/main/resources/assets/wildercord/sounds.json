@@ -3349,6 +3349,31 @@
       "wildercord:kit/aura/aura_breath"
     ]
   },
+  "aura_crimson_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_crimson_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_crimson_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_crimson_impact_1",
+      "wildercord:kit/aura/aura_crimson_impact_2",
+      "wildercord:kit/aura/aura_crimson_impact_3"
+    ]
+  },
+  "aura_crimson_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_crimson_swing_1",
+      "wildercord:kit/aura/aura_crimson_swing_2",
+      "wildercord:kit/aura/aura_crimson_swing_3"
+    ]
+  },
   "aura_dominion": {
     "subtitle": "subtitles.wildercord.kit.field",
     "sounds": [
@@ -3367,10 +3392,110 @@
       }
     ]
   },
+  "aura_ember_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_ember_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_ember_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_ember_impact_1",
+      "wildercord:kit/aura/aura_ember_impact_2",
+      "wildercord:kit/aura/aura_ember_impact_3"
+    ]
+  },
+  "aura_ember_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_ember_swing_1",
+      "wildercord:kit/aura/aura_ember_swing_2",
+      "wildercord:kit/aura/aura_ember_swing_3"
+    ]
+  },
+  "aura_gale_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_gale_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_gale_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_gale_impact_1",
+      "wildercord:kit/aura/aura_gale_impact_2",
+      "wildercord:kit/aura/aura_gale_impact_3"
+    ]
+  },
+  "aura_gale_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_gale_swing_1",
+      "wildercord:kit/aura/aura_gale_swing_2",
+      "wildercord:kit/aura/aura_gale_swing_3"
+    ]
+  },
   "aura_guard": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
       "wildercord:kit/aura/aura_guard"
+    ]
+  },
+  "aura_hollow_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_hollow_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_hollow_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_impact_1",
+      "wildercord:kit/aura/aura_hollow_impact_2",
+      "wildercord:kit/aura/aura_hollow_impact_3"
+    ]
+  },
+  "aura_hollow_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_hollow_swing_1",
+      "wildercord:kit/aura/aura_hollow_swing_2",
+      "wildercord:kit/aura/aura_hollow_swing_3"
+    ]
+  },
+  "aura_hourglass_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_hourglass_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_hourglass_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_hourglass_impact_1",
+      "wildercord:kit/aura/aura_hourglass_impact_2",
+      "wildercord:kit/aura/aura_hourglass_impact_3"
+    ]
+  },
+  "aura_hourglass_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_hourglass_swing_1",
+      "wildercord:kit/aura/aura_hourglass_swing_2",
+      "wildercord:kit/aura/aura_hourglass_swing_3"
     ]
   },
   "aura_intent": {
@@ -3388,6 +3513,31 @@
       }
     ]
   },
+  "aura_rime_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_rime_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_rime_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_rime_impact_1",
+      "wildercord:kit/aura/aura_rime_impact_2",
+      "wildercord:kit/aura/aura_rime_impact_3"
+    ]
+  },
+  "aura_rime_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_rime_swing_1",
+      "wildercord:kit/aura/aura_rime_swing_2",
+      "wildercord:kit/aura/aura_rime_swing_3"
+    ]
+  },
   "aura_slash": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [
@@ -3401,11 +3551,86 @@
       "wildercord:kit/aura/aura_spellblade"
     ]
   },
+  "aura_starlit_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_starlit_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_starlit_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_starlit_impact_1",
+      "wildercord:kit/aura/aura_starlit_impact_2",
+      "wildercord:kit/aura/aura_starlit_impact_3"
+    ]
+  },
+  "aura_starlit_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_starlit_swing_1",
+      "wildercord:kit/aura/aura_starlit_swing_2",
+      "wildercord:kit/aura/aura_starlit_swing_3"
+    ]
+  },
+  "aura_steel_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_steel_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_steel_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_steel_impact_1",
+      "wildercord:kit/aura/aura_steel_impact_2",
+      "wildercord:kit/aura/aura_steel_impact_3"
+    ]
+  },
+  "aura_steel_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_steel_swing_1",
+      "wildercord:kit/aura/aura_steel_swing_2",
+      "wildercord:kit/aura/aura_steel_swing_3"
+    ]
+  },
   "aura_step": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [
       "wildercord:kit/aura/aura_step_1",
       "wildercord:kit/aura/aura_step_2"
+    ]
+  },
+  "aura_stone_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_stone_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_stone_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_stone_impact_1",
+      "wildercord:kit/aura/aura_stone_impact_2",
+      "wildercord:kit/aura/aura_stone_impact_3"
+    ]
+  },
+  "aura_stone_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_stone_swing_1",
+      "wildercord:kit/aura/aura_stone_swing_2",
+      "wildercord:kit/aura/aura_stone_swing_3"
     ]
   },
   "aura_string_complete": {
@@ -3424,6 +3649,56 @@
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
       "wildercord:kit/aura/aura_string_tick"
+    ]
+  },
+  "aura_thunder_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_thunder_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_thunder_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_thunder_impact_1",
+      "wildercord:kit/aura/aura_thunder_impact_2",
+      "wildercord:kit/aura/aura_thunder_impact_3"
+    ]
+  },
+  "aura_thunder_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_thunder_swing_1",
+      "wildercord:kit/aura/aura_thunder_swing_2",
+      "wildercord:kit/aura/aura_thunder_swing_3"
+    ]
+  },
+  "aura_verdant_art": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      {
+        "name": "wildercord:kit/aura/aura_verdant_art",
+        "attenuation_distance": 24
+      }
+    ]
+  },
+  "aura_verdant_impact": {
+    "subtitle": "subtitles.wildercord.kit.hit",
+    "sounds": [
+      "wildercord:kit/aura/aura_verdant_impact_1",
+      "wildercord:kit/aura/aura_verdant_impact_2",
+      "wildercord:kit/aura/aura_verdant_impact_3"
+    ]
+  },
+  "aura_verdant_swing": {
+    "subtitle": "subtitles.wildercord.kit.cast",
+    "sounds": [
+      "wildercord:kit/aura/aura_verdant_swing_1",
+      "wildercord:kit/aura/aura_verdant_swing_2",
+      "wildercord:kit/aura/aura_verdant_swing_3"
     ]
   },
   "duelist_bow": {

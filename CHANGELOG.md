@@ -4,6 +4,32 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### How aura looks and sounds
+- **Your blade leaves light where it cuts.** With aura enough to coat a blow, every swing trails a ribbon of your aura's
+  colour along the blade's arc, cut the way you swung: a cut down across you (each swing of a quick run cutting back the other
+  way), a low cut across the legs, a leaping cut from above, a straight thrust for a running swing or a spear, an X for a
+  counter. Trails grow with each stage: motes from Flow, a bright edge from Edge, an echo from Form, sparks at Sovereign. By
+  day a faint rim of shadow keeps them readable against the sky.
+- **Flow's sweep is yours to see now.** A full swing at a foe sweeps wide and level round you in your aura's colour, the
+  sweeper included, in place of the grey sweep crescent.
+- **Your body shows your stage.** A faint shimmer at Glow, wisps rising from your shoulders and blade at Flow, a steady haze
+  and a pool of light at your feet at Edge, a mantle of light streaming off your shoulders at Form, and at Sovereign a corona of
+  your aura's fire and burning eyes. It's calm at rest, flares in a fight, and surges with every art, perfect guard, step and
+  Dominion.
+- **Blows land with weight.** A coated blow flashes where it bites; a full swing holds the moment for a few frames (a
+  hit-stop, on your screen and the struck player's only) with a small nudge of the view; arts and the slash land heavier.
+- **Techniques name themselves.** An art or a Dominion slides its name in at the left edge of your screen in your method's
+  colour; other swordsmen's float over their heads.
+- **Every breathing method has its own voice**: its own swing, blow and technique sounds, from Ember's crackling roar to
+  Rime's ringing ice, Thunder's snap, Hollow's implosion and Crimson's heartbeat.
+- **Your own view stays clear.** In first person your trail is thin, short and low, down the side of the view and never across
+  its middle, even looking down at a foe; your body's aura is only a faint glow at the bottom edge while it flares; your impacts
+  are small; a perfect guard is a thin gold glint low in the view instead of a flash across it; and your blade's own glow sits
+  closer to the blade, so a swing or a guard no longer floods the screen.
+- **New visual settings** in Magic visual settings: blade trails, body aura, impact (hit-stop and flash) and technique
+  banners, each with a softer and an off choice. Camera motion off also stops the nudge, and the performance profile softens
+  them all.
+
 ### Sword strings
 - **Your swings are a language.** With an aura weapon in hand, play a short string of ordinary swings, each in time with
   the one before, and your blade answers with an art, one for each stage:

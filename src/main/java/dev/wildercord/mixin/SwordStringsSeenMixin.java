@@ -13,7 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 /**
  * Sword strings, what the server sees: every swing a client makes (at a creature, a block or nothing) ends with a punch, which
  * the server notes against the player (see {@link SwordStrings#swung}), so a string the client says was played can be checked
- * against swings that really happened. (A spear's thrust sends no punch: see {@link PiercingWeaponStringsMixin}.)
+ * against swings that really happened, and everyone else draws its trail ({@code AuraFx.swung}). (A spear's thrust sends no
+ * punch: see {@link PiercingWeaponStringsMixin}.)
  */
 @Mixin(ServerGamePacketListenerImpl.class)
 public abstract class SwordStringsSeenMixin {
@@ -26,6 +27,8 @@ public abstract class SwordStringsSeenMixin {
 	private void wildercord$swingSeen(ServerboundPunchPacket packet, CallbackInfo ci) {
 		if (!this.player.isSpectator()) {
 			SwordStrings.swung(this.player);
+			// Everyone else sees the swing's trail, if the blade has aura enough to coat a blow.
+			dev.wildercord.aura.AuraFx.swung(this.player, false);
 		}
 	}
 }

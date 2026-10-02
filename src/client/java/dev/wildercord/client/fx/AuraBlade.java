@@ -73,9 +73,10 @@ public final class AuraBlade {
 	/** The glow a player's main-hand weapon has, carried into their render state (absent: none). */
 	public static final RenderStateDataKey<Glow> GLOW = RenderStateDataKey.create(() -> "wildercord:aura_blade");
 
-	/** The blade being drawn now (the render thread only), and whether its aura has been drawn yet. */
+	/** The blade being drawn now (the render thread only), whether its aura has been drawn yet, and whether it's seen in first person. */
 	private static Glow current;
 	private static boolean drawn;
+	private static boolean firstPerson;
 
 	/** The glow {@code player}'s main-hand item has, or null. */
 	public static Glow of(Player player) {
@@ -101,6 +102,7 @@ public final class AuraBlade {
 		Glow glow = state.getData(GLOW);
 		current = glow != null && glow.arm() == arm && stack.is(Aura.WEAPONS) ? glow : null;
 		drawn = false;
+		firstPerson = false;
 	}
 
 	/** The local player's main-hand item is about to be drawn in first person. */
@@ -108,6 +110,7 @@ public final class AuraBlade {
 		Glow glow = mainHand ? of(Minecraft.getInstance().player) : null;
 		current = glow != null && stack.is(Aura.WEAPONS) ? glow : null;
 		drawn = false;
+		firstPerson = true;
 	}
 
 	public static void end() {
@@ -135,13 +138,16 @@ public final class AuraBlade {
 		Minecraft mc = Minecraft.getInstance();
 		float time = mc.level == null ? 0 : mc.level.getGameTime() + mc.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 		Shape s = shape;
-		collector.order(1).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> soft(p, buffer, s, glow, time));
-		collector.order(1).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time));
+		// Your own blade in first person sits right before your eyes and sweeps across them as you swing or guard: its glow there is
+		// held close and soft (a whisper of the third-person glow), so a swing or a perfect guard never fills the view with it.
+		boolean fp = firstPerson;
+		collector.order(1).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> soft(p, buffer, s, glow, time, fp));
+		collector.order(1).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> haze(p, buffer, s, glow, time, fp));
 		if (glow.stage() >= AuraRules.EDGE) {
-			collector.order(2).submitCustomGeometry(pose, CRYSTAL_TYPE, (p, buffer) -> crystal(p, buffer, s, glow, time));
+			collector.order(2).submitCustomGeometry(pose, CRYSTAL_TYPE, (p, buffer) -> crystal(p, buffer, s, glow, time, fp));
 		}
 		if (glow.spell() != 0) {
-			collector.order(3).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> spellGlow(p, buffer, s, glow, time));
+			collector.order(3).submitCustomGeometry(pose, SOFT_TYPE, (p, buffer) -> spellGlow(p, buffer, s, glow, time, fp));
 			collector.order(3).submitCustomGeometry(pose, HAZE_TYPE, (p, buffer) -> spellBands(p, buffer, s, glow, time));
 		}
 	}
@@ -149,12 +155,12 @@ public final class AuraBlade {
 	// ------------------------------------------------------------------ a spell riding the blade
 
 	/** A spell riding the blade: a soft glow of its colour all along the weapon, beating quickly, as if it can barely be held. */
-	private static void spellGlow(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
-		float beat = 0.7F + 0.3F * Mth.sin(time * 0.6F);
+	private static void spellGlow(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time, boolean fp) {
+		float beat = (0.7F + 0.3F * Mth.sin(time * 0.6F)) * (fp ? 0.6F : 1.0F);
 		float len = s.length();
 		float from = -0.05F * len;
 		float to = len * (glow.stage() >= AuraRules.EDGE ? 1.4F : 1.1F);
-		float half = s.spread() + 0.24F;
+		float half = s.spread() + (fp ? 0.1F : 0.24F);
 		float ax = s.axisX();
 		float ay = s.axisY();
 		float px = -ay;
@@ -345,15 +351,15 @@ public final class AuraBlade {
 	 * The aura hanging round the whole weapon: a soft glow stretched along the blade's line, in the sprite's plane and across
 	 * it (so it holds its shape from every side), breathing slowly; longer from Edge, where the crystal reaches past the point.
 	 */
-	private static void soft(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
+	private static void soft(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time, boolean fp) {
 		int stage = glow.stage();
-		float strength = glow.strength() * (glow.guarding() ? 1.3F : 1.0F);
+		float strength = glow.strength() * (glow.guarding() && !fp ? 1.3F : 1.0F);
 		float breath = 0.85F + 0.15F * Mth.sin(time * 0.11F);
-		float alpha = (stage >= AuraRules.EDGE ? 0.42F : stage >= AuraRules.FLOW ? 0.5F : 0.38F) * strength * breath;
+		float alpha = (stage >= AuraRules.EDGE ? 0.42F : stage >= AuraRules.FLOW ? 0.5F : 0.38F) * strength * breath * (fp ? 0.45F : 1.0F);
 		float len = s.length();
 		float from = -0.12F * len;
-		float to = len * (stage >= AuraRules.EDGE ? 1.45F : 1.12F);
-		float half = s.spread() + (stage >= AuraRules.FLOW ? 0.2F : 0.14F);
+		float to = len * (stage >= AuraRules.EDGE ? (fp ? 1.3F : 1.45F) : 1.12F);
+		float half = s.spread() + (fp ? 0.07F : stage >= AuraRules.FLOW ? 0.2F : 0.14F);
 		float ax = s.axisX();
 		float ay = s.axisY();
 		float px = -ay;
@@ -386,9 +392,9 @@ public final class AuraBlade {
 	}
 
 	/** The haze (Glow), and from Flow its wider rim, the light running along it and the ripples leaving it. */
-	private static void haze(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
+	private static void haze(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time, boolean fp) {
 		int stage = glow.stage();
-		float strength = glow.strength() * (glow.guarding() ? 1.25F : 1.0F);
+		float strength = glow.strength() * (glow.guarding() && !fp ? 1.25F : 1.0F) * (fp ? 0.8F : 1.0F);
 		int color = glow.color();
 		int hot = mix(color, 0xFFFFFF, 0.45F);
 		if (!s.flat()) {
@@ -487,8 +493,8 @@ public final class AuraBlade {
 	 * Edge: a crystal blade of solid aura along the weapon, from just past the grip to beyond the point, four-faceted (a
 	 * rhombus across), widest a quarter of the way up and drawn to a point, bright at its facets and ridge.
 	 */
-	private static void crystal(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time) {
-		float strength = glow.strength();
+	private static void crystal(PoseStack.Pose pose, VertexConsumer buffer, Shape s, Glow glow, float time, boolean fp) {
+		float strength = glow.strength() * (fp ? 0.8F : 1.0F);
 		int color = mix(glow.color(), 0xFFFFFF, 0.22F);
 		float alpha = 0.7F * strength * (0.9F + 0.1F * Mth.sin(time * 0.15F));
 		float len = s.length();

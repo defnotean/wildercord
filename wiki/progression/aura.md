@@ -2,7 +2,7 @@
 title: Aura
 parent: Growing Stronger
 nav_order: 2.2
-description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, sword strings and their arts, the spellblade, aura marks, and breakthroughs."
+description: "Aura, the swordsman's path: breathing methods and where to find them, the breathing stance, the five stages from Glow to Sovereign, the guard, the slash, the step and Dominion, sword strings and their arts, how aura looks and sounds (blade trails, the body's aura, impacts, banners, each method's sounds), the spellblade, aura marks, and breakthroughs."
 ---
 
 # Aura: the swordsman's path
@@ -31,6 +31,7 @@ only limit is the time you put in.
 | **Grow** | Fight. At each stage's limit a **breakthrough** waits for a trial |
 | **The Aura key** | `Z`: sneak and press for the guard (from Flow), tap for the slash (from Edge), double-tap for the step (from Form), hold for Dominion (Sovereign) |
 | **Sword strings** | Short runs of ordinary swings (a low swing, a leaping one, a counter...) that set off an **art**: one at each stage. See [Sword strings](#sword-strings) |
+| **See and hear it** | Your blade trails light, your body shows your stage, blows land with a hit-stop, techniques name themselves, and every method sounds its own. See [How aura looks and sounds](#how-aura-looks-and-sounds) |
 | **Spells and blades** | From Edge, cast a spell **while sneaking** with your blade in hand and your next slash carries it |
 | **See it** | The aura bar on top of your spell panel, and the **Aura** page (the Aura badge in the Cord screen, `K`) |
 
@@ -103,7 +104,8 @@ Edge, 110 at Form and 160 at Sovereign.
 
 Aura climbs in leaps, and each stage keeps everything below it. Your weapon shows how far you've come: a haze at Glow,
 rippling light at Flow, a crystal blade from Edge, in your method's colour, for everyone to see. From Form a faint shell of
-aura wraps your whole body.
+aura wraps your whole body. Your body shows your stage too, from a shimmer at Glow to a corona at Sovereign (see
+[Your aura](#your-aura)).
 
 ### Glow
 
@@ -214,6 +216,9 @@ There's an art for each stage, played on the same strings whatever your method, 
 
 Arts are aura off the blade, in your method's element, like the slash: they set off your method's gift and can leave aura
 marks. For now every method strikes these five the same way; each method will have arts of its own on the same strings.
+Each art names itself in a [banner](#technique-banners) as it goes off, makes your aura surge, and cuts its own
+[trail](#blade-trails): the First a cut, the Second a rising cut, the Third an X, the Fourth a thrust, and the Final a whole
+turn round you.
 
 <img src="{{ '/assets/images/aura-string-first-art.jpg' | relative_url }}" alt="Seen from above and behind: a player with an orange-bladed diamond sword, a wide orange crescent of light cut low in front of them across three husks" class="shot">
 <span class="caption">The First Art with Ember Breath.</span>
@@ -243,6 +248,104 @@ a key in Minecraft's Controls).
 Your own game reads your swings, but the server checks every art: your stage, its rest and its price, that your blade is in
 hand, and that the swings, guard or step really happened. Against other players arts meet the spell defences and are scaled
 down like the slash, and server owners can switch strings off or change how long each swing may wait.
+
+## How aura looks and sounds
+
+Aura shows. Your blade leaves light where it cuts, your body carries your aura's colour, your blows land with weight, your
+techniques name themselves, and every method has a voice of its own. All of it is a spectacle for everyone watching you,
+and kept small for you: in your own first-person view nothing ever fills the middle of the screen.
+
+<img src="{{ '/assets/images/aura-body-sovereign.jpg' | relative_url }}" alt="A player at night holding a diamond sword, tongues of violet aura standing round their body like fire, their eyes burning violet" class="shot">
+<span class="caption">Hollow Breath at Sovereign, in a fight: the corona and the burning eyes.</span>
+
+### Blade trails
+
+With aura enough to coat a blow, every swing leaves a ribbon of light along the blade's arc, cut the way you swung:
+
+- an ordinary swing cuts down across you, and each swing of a quick run cuts back the other way;
+- a **low** swing cuts low across the legs, a **leaping** one comes down from above, a **running** swing or a spear's thrust
+  drives straight ahead, and a **counter** crosses in an X;
+- from **Flow**, a full swing at a foe **sweeps** wide and level round you (the Flowing Cut), in your colour instead of
+  the usual grey crescent.
+
+Trails grow with you: thin at Glow; from Flow they shed motes, from Edge they carry a bright edge, from Form an echo follows
+them, and at Sovereign sparks fly off the tip. Techniques cut their own: the slash leaves a fast draw as it leaves the blade,
+and each art its own shape (see [the arts](#the-arts)). By day a faint rim of shadow lies under them, so they read against a
+bright sky.
+
+**Your own trail in first person is thin, short and low**: it keeps only part of its arc and runs down the side of your view,
+under your eye line, and never crosses the middle of your view, even looking down at a foe. Everyone else, and you in third
+person, see the whole of it.
+
+<img src="{{ '/assets/images/aura-trail.jpg' | relative_url }}" alt="Seen from behind at night: a player in violet aura, a ribbon of violet light curving away from their blade, bright at its head" class="shot">
+<span class="caption">The slash's draw, seen from behind.</span>
+
+### Your aura
+
+Every stage shows on your body, for everyone to see:
+
+| Stage | How it looks |
+|---|---|
+| **Glow** | A faint shimmer: a glint rising off you now and then, and a soft haze round you in a fight |
+| **Flow** | Wisps of light rising from your shoulders and your blade |
+| **Edge** | A steady haze round your whole body, and your aura pooling faintly on the ground at your feet |
+| **Form** | A flowing mantle: ribbons of light streaming up and back off your shoulders, blown back as you run (and aura armour's shell) |
+| **Sovereign** | A blazing corona: tongues of your aura's fire round you, embers flying off it, and eyes that burn with it |
+
+It's **calm at rest** and **flares in a fight** (for a few seconds after a blow given or taken); an art, a perfect guard, a
+step or a Dominion makes it **surge** for a moment. While your aura is too low to coat a blow it's only faint. In first
+person you don't see your own body: from Edge, while your aura flares, a faint glow of its colour rises at the very bottom of
+the screen, and that's all.
+
+<img src="{{ '/assets/images/aura-body-stages.jpg' | relative_url }}" alt="Five views of a player at night, each with a different aura: a faint orange shimmer, pale blue wisps, a yellow haze, green ribbons streaming off the shoulders, and violet flames with burning eyes" class="shot">
+<span class="caption">Glow to Sovereign, each in a fight, by night (Ember, Rime, Thunder, Verdant, Hollow).</span>
+
+### Impacts
+
+A coated blow flashes where it bites. A **full** swing lands with a brief **hit-stop** (the moment holds for a few frames,
+the blade bitten in) and a small nudge of your view; heavier strikes (the slash, the arts) land with a ring of light, and the
+Final Art holds longest. The hit-stop is only on your screen and on the screen of a player you strike: everyone else sees the
+flash. Seen down your own blade in first person the flash is small and quick.
+
+### Technique banners
+
+When an art goes off or you raise a Dominion, its **name** slides in at the left edge of your screen, a little above the
+middle, in your method's colour, with your method and which art it is above it. The Final Art and Dominion are grand, edged in
+gold. Other swordsmen's banners float briefly over their heads.
+
+<img src="{{ '/assets/images/aura-banner.jpg' | relative_url }}" alt="A first-person view at night of three husks; at the left edge of the screen a violet brush-stroke banner reads Hollow Breath, Dominion" class="shot">
+
+### The sound of each method
+
+Every method has its own swing, blow and technique, so you could tell them apart with your eyes shut:
+
+| Method | Sounds like |
+|---|---|
+| **Ember** | a roaring whoosh that crackles; a fiery thump and a spray of embers |
+| **Rime** | a cold whistle that fizzes with frost; an icy crack and tinkling shards |
+| **Thunder** | an electric zip; a sharp snap, a buzz and a rumble |
+| **Gale** | a long, airy swoosh with a whistle in it; a gust of a punch |
+| **Stone** | a heavy, low whoom with grit; a deep crunch and falling gravel |
+| **Verdant** | a rustling whoosh, warm under it; a woody knock, leaves and a soft chime |
+| **Hollow** | a whoosh drawn backwards into a drone; a muffled implosion |
+| **Starlit** | a whoosh glittering with pings over a soft hum; a bright bell struck with sparkle |
+| **Hourglass** | a whoosh ticking like clockwork; a clock bell's ding |
+| **Crimson** | a heavy, wet swish with a throb under it; a thick slash over a pulse |
+
+Your own swings sound for you the moment you swing; others hear your blade when it lands.
+
+### Settings
+
+All of it follows **Magic visual settings** (assign it a key in Minecraft's Controls):
+
+- **Blade trails**: full, subtle (the ribbons without their motes, sparks and echoes, and other players' ordinary swings left
+  out; techniques always show), or off.
+- **Body aura**: full, calm (always at rest, without its wisps and embers), or off.
+- **Impact**: full, soft (half the hit-stop, a smaller flash) or off (no hit-stop or nudge, a small flash).
+- **Technique banners**: everyone's, yours only, or off.
+- **Camera motion** off leaves out the nudge as well as every shake, and **Reduced flash** softens the flashes.
+
+The **performance** profile softens all of these at once.
 
 ## The spellblade
 

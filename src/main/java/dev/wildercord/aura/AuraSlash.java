@@ -75,6 +75,9 @@ public final class AuraSlash {
 			Aura.sound(player, "aura_spellblade", 1.0F, 1.25F);
 		}
 		AuraVfx.slashStart(player.level(), origin, flat, color);
+		// The blade's draw as the crescent leaves it, and the method's technique sound under the slash's own.
+		AuraFx.trail(player, AuraFxRules.Stroke.DRAW, false, weak ? 1.0F : 1.3F);
+		AuraFx.sound(player, AuraFx.Sound.ART, 0.6F, weak ? 0.85F : 1.1F);
 		Crescents.Cut base = cutter(player);
 		Crescents.Cut cut = !carrying ? base : (flight, target) -> {
 			float taken = base.cut(flight, target);
@@ -109,8 +112,17 @@ public final class AuraSlash {
 		}
 	}
 
-	/** What a player's crescent does to a creature it reaches: projected aura, through the spell defences against a player. */
+	/**
+	 * What a player's crescent does to a creature it reaches: projected aura, through the spell defences against a player, landing
+	 * heavily (a flash, and the moment held for the swordsman and a struck player).
+	 */
 	static Crescents.Cut cutter(ServerPlayer player) {
-		return (flight, target) -> AuraCombat.projected(player, target, flight.damage(), flight.bonus(), true);
+		return (flight, target) -> {
+			float taken = AuraCombat.projected(player, target, flight.damage(), flight.bonus(), true);
+			if (taken > 0) {
+				AuraFx.impact(player, target, flight.color(), Aura.stage(player), AuraFxRules.Weight.HEAVY);
+			}
+			return taken;
+		};
 	}
 }

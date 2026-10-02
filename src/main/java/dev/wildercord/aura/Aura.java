@@ -223,9 +223,10 @@ public final class Aura {
 	/** When each player last struck or was struck, for "in a fight" (Gale). */
 	private static final Map<UUID, Long> FIGHTING = new HashMap<>();
 
-	/** Notes that a player struck or was struck just now. */
+	/** Notes that a player struck or was struck just now (and their body's aura flares for it, see {@link AuraFx}). */
 	static void fighting(ServerPlayer player) {
 		FIGHTING.put(player.getUUID(), player.level().getGameTime());
+		AuraFx.fighting(player);
 	}
 
 	static boolean inFight(ServerPlayer player) {
@@ -466,6 +467,8 @@ public final class Aura {
 		AuraApi.registerTechnique(new AuraApi.Technique("dominion", AuraRules.SOVEREIGN, AuraApi.Trigger.HOLD, AuraRules.DOMINION_COST, AuraDominion::raise));
 		// Sword strings: arts set off by a run of ordinary swings, read by the client, checked and performed here.
 		SwordStrings.init();
+		// Aura's feel: trails, impacts, banners, bursts and the body's aura, drawn by each client as it sees them.
+		AuraFx.init();
 		AuraMethods.init();
 		Crescents.init();
 		AuraCombat.init();
@@ -501,6 +504,7 @@ public final class Aura {
 			AuraDominion.forget(id);
 			AuraMarks.forget(id);
 			SwordStrings.forget(id);
+			AuraFx.forget(id);
 			// A spell riding the blade leaves with its caster (its cast is no longer alive).
 			Spellblade.forget(id);
 		});
@@ -515,6 +519,7 @@ public final class Aura {
 			AuraDominion.clear();
 			AuraMarks.clear();
 			SwordStrings.clear();
+			AuraFx.clear();
 			Spellblade.clear();
 		});
 	}

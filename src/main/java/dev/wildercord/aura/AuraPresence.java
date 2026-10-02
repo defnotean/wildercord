@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
  * it, so the duelists and aura knights that read it see no change):
  * <ul>
  * <li>{@link #LOOK}: what everyone else's client needs to draw it (aura armour's shell and when it last took a blow, a spell
- * held on the blade). Not saved, synced to everyone nearby;</li>
+ * held on the blade, how long the body's aura flares for a fight). Not saved, synced to everyone nearby;</li>
  * <li>{@link #TIMERS}: when Aura Step and Dominion are ready again and when a Dominion ends. Saved (game time carries over a
  * restart, so leaving and coming back never resets a long cooldown) and kept through death, synced to its owner only.</li>
  * </ul>
@@ -32,29 +32,39 @@ public final class AuraPresence {
 	 * @param shellStruckAt when the shell last took a blow (it flares), or -1
 	 * @param bladeSpell    the colour of a spell riding the blade (0xRRGGBB), or 0 while none is
 	 * @param bladeUntil    when that spell slips off the blade, or -1
+	 * @param fightUntil    until when the body's aura flares, after a blow given or taken (see {@link AuraFx}), or 0
 	 */
-	public record Look(boolean shell, long shellStruckAt, int bladeSpell, long bladeUntil) {
-		public static final Look NONE = new Look(false, -1, 0, -1);
+	public record Look(boolean shell, long shellStruckAt, int bladeSpell, long bladeUntil, long fightUntil) {
+		public static final Look NONE = new Look(false, -1, 0, -1, 0);
 
 		public static final StreamCodec<ByteBuf, Look> STREAM_CODEC = StreamCodec.composite(
 			ByteBufCodecs.BOOL, Look::shell, ByteBufCodecs.VAR_LONG, Look::shellStruckAt, ByteBufCodecs.INT, Look::bladeSpell,
-			ByteBufCodecs.VAR_LONG, Look::bladeUntil, Look::new);
+			ByteBufCodecs.VAR_LONG, Look::bladeUntil, ByteBufCodecs.VAR_LONG, Look::fightUntil, Look::new);
 
 		/** Whether a spell rides the blade at {@code now}. */
 		public boolean spellHeld(long now) {
 			return bladeSpell != 0 && now <= bladeUntil;
 		}
 
+		/** Whether the body's aura flares for a fight at {@code now}. */
+		public boolean fighting(long now) {
+			return now < fightUntil;
+		}
+
 		public Look withShell(boolean on) {
-			return new Look(on, shellStruckAt, bladeSpell, bladeUntil);
+			return new Look(on, shellStruckAt, bladeSpell, bladeUntil, fightUntil);
 		}
 
 		public Look struck(long at) {
-			return new Look(shell, at, bladeSpell, bladeUntil);
+			return new Look(shell, at, bladeSpell, bladeUntil, fightUntil);
 		}
 
 		public Look blade(int color, long until) {
-			return new Look(shell, shellStruckAt, color, until);
+			return new Look(shell, shellStruckAt, color, until, fightUntil);
+		}
+
+		public Look fightUntil(long until) {
+			return new Look(shell, shellStruckAt, bladeSpell, bladeUntil, until);
 		}
 	}
 

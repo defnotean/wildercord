@@ -81,6 +81,8 @@ public final class SwordStringsClient {
 	private static int fumbles;
 	private static int refusals;
 	private static int strokes;
+	/** When the last string was played to its end (game time): its last swing's trail cuts brighter. */
+	private static long completedAt = Long.MIN_VALUE / 4;
 
 	public static void init() {
 		ClientPlayNetworking.registerGlobalReceiver(SwordStrings.Cue.TYPE, (payload, context) -> cue(payload));
@@ -197,6 +199,7 @@ public final class SwordStringsClient {
 				}
 				lastAsked = art.id();
 				asked++;
+				completedAt = now;
 				StringHud.completed(done.strokes());
 				sound(mc, "aura_string_complete", 0.7F, 1.0F);
 			}
@@ -303,6 +306,16 @@ public final class SwordStringsClient {
 			return;
 		}
 		mc.level.playLocalSound(player.getX(), player.getEyeY(), player.getZ(), event, SoundSource.PLAYERS, volume, pitch, false);
+	}
+
+	/** The counter and step-cut marks a swing struck at {@code now} would carry (without using them up). */
+	public static int cueMarks(long now) {
+		return READER.cueMarks(now);
+	}
+
+	/** When the last string was played to its end (game time). */
+	public static long completedAt() {
+		return completedAt;
 	}
 
 	// ------------------------------------------------------------------ for the game tests

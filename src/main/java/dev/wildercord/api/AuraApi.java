@@ -2,6 +2,7 @@ package dev.wildercord.api;
 
 import dev.wildercord.aura.Aura;
 import dev.wildercord.aura.AuraBreakthroughs;
+import dev.wildercord.aura.AuraFx;
 import dev.wildercord.aura.AuraRules;
 import dev.wildercord.aura.AuraStages;
 import dev.wildercord.aura.BreathingManualItem;
@@ -47,6 +48,11 @@ import java.util.function.Predicate;
  *   <li><b>Sword strings</b> ({@link #registerString}, {@link #onString}, {@link #addStringSource}): arts set off by a short
  *       run of ordinary swings ({@link SwordString}), read by the player's client and checked and performed by the server.
  *       Built in, until each method's own arts arrive: five placeholder arts, one a stage ({@code aura.PlaceholderArts}).</li>
+ *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
+ *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
+ *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,
+ *       small and low in a swordsman's own first-person view. An art performed through a sword string gets its banner, a flare and
+ *       its method's technique sound by itself; {@code AuraFx.art(player)} adds its trail, impacts and bursts.</li>
  * </ul>
  *
  * @since 0.9
@@ -516,6 +522,17 @@ public final class AuraApi {
 	/** When {@code player}'s art {@code id} is ready again (game time; past or 0 when it's ready). Safe on both sides for the player's own client. */
 	public static long artReadyAt(Player player, String id) {
 		return SwordStrings.readyAt(player, id);
+	}
+
+	// ------------------------------------------------------------------ feel
+
+	/**
+	 * Gives a breathing method its own sounds: a blade's swing, a blow landing and a technique loosed, as kit sound names (an
+	 * add-on's own, shipped in its sounds.json, or another method's). A method without any rings plain steel
+	 * ({@link AuraFx#STEEL}). The built-in methods have theirs ({@code aura_<method>_swing}, {@code _impact}, {@code _art}).
+	 */
+	public static void registerSounds(String methodId, AuraFx.SoundFamily family) {
+		AuraFx.registerFamily(methodId, family);
 	}
 
 	// ------------------------------------------------------------------ reading (both sides)
