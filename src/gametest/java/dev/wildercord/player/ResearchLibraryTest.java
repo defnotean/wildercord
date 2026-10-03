@@ -54,6 +54,18 @@ public final class ResearchLibraryTest implements FabricClientGameTest {
    context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("research_library_854x480").disableCounterPrefix());
    click(context,"screen.wildercord.notebook.delete");context.waitTicks(5);
    world.getServer().runOnServer(server->check(SpellLibrary.list(server.getPlayerList().getPlayers().getFirst()).isEmpty(),"native delete button removes just its named build"));
+   context.setScreen(dev.wildercord.client.CordScreen::new);context.waitTicks(5);
+   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.gui.screen()).savedSpellCount().getString().equals("Saved spells: 0 / 24")),"creation screen reflects native library deletion");
+   world.getServer().runOnServer(server->check(SpellLibrary.save(server.getPlayerList().getPlayers().getFirst(),"Counter build",0)==1,"save while creation screen remains open"));context.waitTicks(10);
+   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.gui.screen()).savedSpellCount().getString().equals("Saved spells: 1 / 24")),"live owner sync updates creation counter");
+   context.runOnClient(mc->{mc.getWindow().setWindowed(1600,900);mc.resizeGui();mc.gui.toastManager().clear();});context.waitTicks(5);
+   context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("saved_spell_counter").disableCounterPrefix());
+   world.getServer().runOnServer(server->SpellLibrary.save(server.getPlayerList().getPlayers().getFirst(),"COUNTER BUILD",0));context.waitTicks(5);
+   check(context.computeOnClient(mc->SpellLibrary.list(mc.player).size()==1),"replacing a named build does not inflate saved count");
+   context.runOnClient(mc->{mc.getWindow().setWindowed(854,480);mc.resizeGui();});context.waitTicks(5);
+   context.takeScreenshot(net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotOptions.of("saved_spell_counter_854x480").disableCounterPrefix());
+   world.getServer().runOnServer(server->SpellLibrary.delete(server.getPlayerList().getPlayers().getFirst(),"Counter build"));context.waitTicks(5);
+   check(context.computeOnClient(mc->((dev.wildercord.client.CordScreen)mc.gui.screen()).savedSpellCount().getString().equals("Saved spells: 0 / 24")),"counter updates after deletion while open");
    context.setScreen(()->null);
   }
  }

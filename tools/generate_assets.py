@@ -548,6 +548,7 @@ def write_lang(runes):
         "message.wildercord.too_strong": "%s is too strong for this Cord: it needs a %s",
         "tooltip.wildercord.cord.tier": "Holds runes up to Tier %s",
         "tooltip.wildercord.needs_cord": "Needs a %s or better",
+        "screen.wildercord.saved_spells": "Saved spells: %s / %s",
         "screen.wildercord.no_cord": "You aren't wearing a Cord",
         "screen.wildercord.no_cord_hint": "Put one in the slot above your offhand (E)",
         "screen.wildercord.locked_socket": "Needs a bigger Cord",

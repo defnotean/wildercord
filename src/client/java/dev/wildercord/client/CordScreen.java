@@ -68,10 +68,10 @@ import java.util.Optional;
  */
 public class CordScreen extends Screen {
 	private static final int W = 372;
-	private static final int BASE_H = 292;
+	private static final int BASE_H = 308;
 	private static final int CELL = 18;
 	private static final int PITCH = 20;
-	private static final int SPELL_TOP = 28;
+	private static final int SPELL_TOP = 44;
 	private static final int SPELL_ROW = 22;
 	private static final int SOCKET_X = 34;
 	private static final int CODEX_HEIGHT = 4 * CELL;
@@ -889,6 +889,13 @@ public class CordScreen extends Screen {
 	}
 
 	/** The loadouts badge's x: the end of the tabs row, right under the help badge. */
+	/** Reads the owner-only synced library each frame, keeping open screens current. */
+	public Component savedSpellCount() {
+		return Component.translatable("screen.wildercord.saved_spells",
+			dev.wildercord.player.SpellLibrary.list(minecraft.player).size(),
+			dev.wildercord.player.SpellLibrary.MAX_BUILDS);
+	}
+
 	private static int loadoutsX() {
 		return W - 27;
 	}
@@ -964,6 +971,10 @@ public class CordScreen extends Screen {
 		int statsW = font.width(stats);
 		if (pageX + 8 + statsW <= statsRight) {
 			g.text(font, stats, statsRight - statsW, 10, DIM, false);
+		}
+
+		if (!grimoirePage && !passivePage) {
+			g.text(font, savedSpellCount(), 14, 28, DIM, false);
 		}
 
 		if (grimoirePage) {

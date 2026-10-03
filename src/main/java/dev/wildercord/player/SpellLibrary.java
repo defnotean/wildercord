@@ -9,6 +9,8 @@ import dev.wildercord.spell.*;
 import net.fabricmc.fabric.api.attachment.v1.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.codec.ByteBufCodecs;
 import java.util.*;
 
 /** Twenty-four named builds, independent of currently equipped Cord spell slots. Loading is atomic. */
@@ -19,15 +21,17 @@ public final class SpellLibrary {
   public static final Codec<Build> CODEC=RecordCodecBuilder.create(i->i.group(Codec.string(1,32).fieldOf("name").forGetter(Build::name),
    Codec.string(1,Knots.MAX_ID_LENGTH).listOf(1,CordTier.MAX_SOCKETS).fieldOf("runes").forGetter(Build::runes)).apply(i,Build::new));
  }
- public static final AttachmentType<List<Build>> BUILDS=AttachmentRegistry.create(Wildercord.id("spell_library"),b->b.initializer(List::of).persistent(Build.CODEC.listOf(0,24)).copyOnDeath());
+ public static final int MAX_BUILDS=24;
+ public static final Codec<List<Build>> CODEC=Build.CODEC.listOf(0,MAX_BUILDS);
+ public static final AttachmentType<List<Build>> BUILDS=AttachmentRegistry.create(Wildercord.id("spell_library"),b->b.initializer(List::of).persistent(CODEC).syncWith(ByteBufCodecs.fromCodec(CODEC),AttachmentSyncPredicate.targetOnly()).copyOnDeath());
  public static void init() {}
- public static List<Build> list(ServerPlayer p){return p.getAttachedOrElse(BUILDS,List.of());}
+ public static List<Build> list(Player p){return p.getAttachedOrElse(BUILDS,List.of());}
  public static int save(ServerPlayer p,String name,int slot) {
   if(slot<0||slot>=dev.wildercord.gear.SpellSlots.ALL)return fail(p,"message.wildercord.library_locked");
   name=SpellNames.clean(name);if(name.isBlank())return fail(p,"message.wildercord.library_name");
   var runes=Spellbooks.get(p).spells().get(slot);if(runes.isEmpty())return fail(p,"message.wildercord.library_empty");
   var next=new ArrayList<>(list(p));String key=name;
-  next.removeIf(b->b.name.equalsIgnoreCase(key));if(next.size()>=24)return fail(p,"message.wildercord.library_full");
+  next.removeIf(b->b.name.equalsIgnoreCase(key));if(next.size()>=MAX_BUILDS)return fail(p,"message.wildercord.library_full");
   next.add(new Build(name,runes));p.setAttached(BUILDS,List.copyOf(next));p.sendSystemMessage(Component.translatable("message.wildercord.library_saved",name));return 1;
  }
  public static int load(ServerPlayer p,String name,int slot) {
