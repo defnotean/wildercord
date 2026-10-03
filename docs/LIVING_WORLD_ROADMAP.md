@@ -305,3 +305,5 @@ Updated wiki/GitBook deployment and live page version checks pass. VPS checksum 
 WildercordUpdate091 is queued and confirmed waiting for four online players to leave. Server
 activation is not complete. CI asset/unit Build job passes; separate full native CI still running.
 The full goal stays active.
+
+Final CurseForge inspection: file 9050277 is Approved. Saved description survives reload with corrected alpha.1 links; screenshot in artifacts/review/release-0.9.1/curseforge-files.png. Server remains queued for four players; activation still outstanding.

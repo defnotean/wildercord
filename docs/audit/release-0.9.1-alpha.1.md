@@ -6,8 +6,8 @@
 - Release code commit: 9195e475 (learnall implementation d761a9e0; generated tooltip correction 0a302610).
 - Five GitHub assets: ordinary mod, sources and Performance/Balanced/Cinematic launcher profiles.
 - Mod SHA-256: cdd7741d6a48f4a12cd2d1f04e9b61e7b202ed68f024b42fb297020d1283fd1a.
-- CurseForge upload accepted as file 9050277, project 1716203. Last inspected status: Processing File.
-  Submission is verified; moderation approval is not claimed.
+- CurseForge upload accepted as file 9050277, project 1716203. Final inspected status: Approved.
+  Author portal screenshot confirms moderation approval.
 - Initial 0.9.1 upload 9050083 is superseded by this distinct corrected build.
 - CurseForge summary/description updated with Aura, habitats, creatures, authored spells,
   damage limits, fusion command behavior, screenshots and current installation links.
