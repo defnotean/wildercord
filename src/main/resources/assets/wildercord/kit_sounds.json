@@ -396,6 +396,27 @@
     "aura_breath": {
       "part": "aura"
     },
+    "aura_clash_beat": {
+      "part": "aura"
+    },
+    "aura_clash_even": {
+      "part": "aura"
+    },
+    "aura_clash_good": {
+      "part": "aura"
+    },
+    "aura_clash_lock": {
+      "part": "aura"
+    },
+    "aura_clash_miss": {
+      "part": "aura"
+    },
+    "aura_clash_perfect": {
+      "part": "aura"
+    },
+    "aura_clash_win": {
+      "part": "aura"
+    },
     "aura_crimson_art": {
       "part": "aura"
     },
@@ -489,6 +510,27 @@
     "aura_intent": {
       "part": "aura"
     },
+    "aura_lineage_ask": {
+      "part": "aura"
+    },
+    "aura_lineage_bind": {
+      "part": "aura"
+    },
+    "aura_lineage_graduate": {
+      "part": "aura"
+    },
+    "aura_lineage_lesson": {
+      "part": "aura"
+    },
+    "aura_lineage_release": {
+      "part": "aura"
+    },
+    "aura_lineage_seal": {
+      "part": "aura"
+    },
+    "aura_lineage_share": {
+      "part": "aura"
+    },
     "aura_momentum_peak": {
       "part": "aura"
     },
@@ -511,6 +553,27 @@
       "part": "aura"
     },
     "aura_slash": {
+      "part": "aura"
+    },
+    "aura_spar_begin": {
+      "part": "aura"
+    },
+    "aura_spar_count": {
+      "part": "aura"
+    },
+    "aura_spar_end": {
+      "part": "aura"
+    },
+    "aura_spar_out": {
+      "part": "aura"
+    },
+    "aura_spar_ring": {
+      "part": "aura"
+    },
+    "aura_spar_salute": {
+      "part": "aura"
+    },
+    "aura_spar_win": {
       "part": "aura"
     },
     "aura_spellblade": {

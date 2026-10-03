@@ -838,6 +838,10 @@ public final class Techniques {
 				return;
 			}
 			boolean first = struck.add(foe.getUUID());
+			if (Spars.partners(player, foe)) {
+				// A sparring partner teaches a technique nothing: a spar's lesson comes at its end.
+				return;
+			}
 			boolean practice = Momentum.practice(player, foe);
 			double worth = practice ? 1.0 : AuraCombat.worth(player, foe);
 			if (worth <= 0 || !practice && Momentum.helpless(foe)) {

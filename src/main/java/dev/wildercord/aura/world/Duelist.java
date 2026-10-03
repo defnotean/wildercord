@@ -68,6 +68,8 @@ public class Duelist extends AuraFighter {
 	@Nullable BlockPos camp;
 	/** Whether to raise its guard next tick (it learned the rhythm of the last blow). */
 	private boolean guardNext;
+	/** The last crescent of its challenger's it decided whether to answer (once a crescent). */
+	private dev.wildercord.aura.Crescents.Flight considered;
 	/** A dash: when its crouch ends and the dash goes, when the dash is over, and its way. */
 	private long dashAt;
 	private long dashUntil;
@@ -373,6 +375,10 @@ public class Duelist extends AuraFighter {
 			}
 			return;
 		}
+		// A crescent of its challenger's coming at it, its own slash ready: now and then it answers with one of its own, and the two clash.
+		if (stage >= AuraRules.EDGE && now >= nextSlashAt && answer(target)) {
+			return;
+		}
 		if (stage >= AuraRules.EDGE && now >= nextSlashAt && d > 5.5 && d < AuraWorldRules.DUELIST_SLASH_RANGE - 2 && hasLineOfSight(target)) {
 			windUp(target, AuraWorldRules.duelistSlashWindup(stage), AuraWorldRules.duelistSlashCooldown(stage));
 			return;
@@ -385,6 +391,31 @@ public class Duelist extends AuraFighter {
 		if (stage >= AuraRules.FLOW && d < 3.5 && now % 10 == 0 && getRandom().nextDouble() < 0.18) {
 			raiseGuard();
 		}
+	}
+
+	/**
+	 * Whether it answers a crescent of {@code target}'s coming at it with a slash of its own (its blade snapping up, a moment's tell), so the two
+	 * meet in the air: decided once a crescent, by its stage's chance.
+	 */
+	private boolean answer(LivingEntity target) {
+		Vec3 chest = position().add(0, 1.2, 0);
+		for (dev.wildercord.aura.Crescents.Flight f : dev.wildercord.aura.Crescents.inFlight()) {
+			if (f.caster() != target || f.done() || f.held() || f == considered) {
+				continue;
+			}
+			Vec3 to = chest.subtract(f.front());
+			double d = to.length();
+			if (d < AuraWorldRules.ANSWER_NEAR || d > AuraWorldRules.ANSWER_FAR || f.aim().dot(to.scale(1 / d)) < AuraWorldRules.ANSWER_ONCOMING) {
+				continue;
+			}
+			considered = f;
+			if (getRandom().nextDouble() >= AuraWorldRules.duelistAnswerChance(stage())) {
+				return false;
+			}
+			windUp(target, AuraWorldRules.ANSWER_WINDUP, AuraWorldRules.duelistSlashCooldown(stage()));
+			return true;
+		}
+		return false;
 	}
 
 	/** Outside a duel: it sits by its fire when nobody is close, and moves on once its time is up. */

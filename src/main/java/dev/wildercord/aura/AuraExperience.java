@@ -25,6 +25,8 @@ public final class AuraExperience {
 			return 0;
 		}
 		if (!practice) {
+			// A disciple near their master learns faster.
+			xp = Lineage.near(player, xp);
 			// A Way chosen after a change settles by what's earned walking it (before the stage's cap: one waiting at a threshold still does).
 			Ways.earned(player, xp * rate);
 		}

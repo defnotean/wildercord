@@ -61,6 +61,8 @@ public final class Config {
 		public static final int BONDS = 32;
 		/** An Awakened blade's trait works: the reader's prices and rests, the HUD's slash price. */
 		public static final int BLADE_TRAITS = 64;
+		/** Sparring works (a salute with the blade challenges): the swordsman's own client takes the salute for itself, not for the item. */
+		public static final int SPARRING = 128;
 		private static final int AWAKENING_MOMENTUM_SHIFT = 8;
 		public static final Sync DEFAULT = new Sync(1.0F, 1.0F, true, WildercordConfig.DefenceSettings.DEFAULTS, true, true, true, true,
 			(float) WildercordConfig.AuraSettings.DEFAULTS.slashCost(), true, (float) WildercordConfig.AuraWorldSettings.DEFAULTS.sashCapacity(), true,
@@ -91,7 +93,7 @@ public final class Config {
 			int needed = (int) Math.round(Math.max(0, Math.min(100, aura.awakening().awakeningMomentum())));
 			return (aura.momentum().momentum() ? MOMENTUM : 0) | (aura.momentum().stance() ? STANCE : 0) | (aura.awakening().awakening() ? AWAKENING : 0)
 				| (aura.ways().ways() ? WAYS : 0) | (aura.techniques().techniques() ? TECHNIQUES : 0) | (aura.bonds().bonds() ? BONDS : 0)
-				| (aura.bonds().traits() ? BLADE_TRAITS : 0) | needed << AWAKENING_MOMENTUM_SHIFT;
+				| (aura.bonds().traits() ? BLADE_TRAITS : 0) | (aura.sparring().sparring() ? SPARRING : 0) | needed << AWAKENING_MOMENTUM_SHIFT;
 		}
 
 		/** The momentum an awakening asks for, as the bits carry it. */
@@ -272,6 +274,11 @@ public final class Config {
 	/** Whether an Awakened blade's trait works: the server's own setting, or on a client the one it was sent. */
 	public static boolean bladeTraits(Player player) {
 		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.BLADE_TRAITS) != 0 : get().aura().bonds().traits();
+	}
+
+	/** Whether swordsmen can spar (a salute answered opens the ring): the server's own setting, or on a client the one it was sent. */
+	public static boolean sparring(Player player) {
+		return player != null && player.level().isClientSide() ? (synced.combat() & Sync.SPARRING) != 0 : get().aura().sparring().sparring();
 	}
 
 	/** The momentum an awakening asks for: the server's own setting, or on a client the one it was sent. */

@@ -220,8 +220,8 @@ def _nodes():
     nodes = {
         "blade_edge": ("Keen Edge",
                        "Clean hits build momentum a third faster.",
-                       "it pierces: it cuts on through a held guard instead of stopping there, through ten foes instead of six, and when it meets "
-                       "another crescent it cuts it apart and flies on at half its strength."),
+                       "it pierces: it cuts on through a held guard instead of stopping there, through ten foes instead of six, and in a clash "
+                       "it has an edge: a little more time on each beat, and an even struggle is its."),
         "blade_form": ("Cascade",
                        "Finishers add two fifths more (a player's cap still holds).",
                        "a finisher opens the nearest creature within five blocks whose stance is half worn or more (never a player or a boss), so a "

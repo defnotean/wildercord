@@ -73,6 +73,11 @@ import java.util.function.Predicate;
  *       swordsman bonds one blade in a ceremony at a ley crossing; it gathers resonance in every real fight, takes a name and then a
  *       trait drawn from how it was used, is kept through death and is only ever its swordsman's. A master passes it to a disciple in
  *       a ceremony of its own, when a passing rule ({@link #allowBladePassing}) says the disciple may receive it.</li>
+ *   <li><b>Sparring, masters and disciples, the clash</b> ({@link #spar}, {@link #onSpar}, {@link #masterOf}, {@link #takeDisciple},
+ *       {@link #endMentorship}, {@link #onMentorship}, {@link #onClash}): two swordsmen salute each other with their blades and spar in a ring
+ *       of light, nobody dying or losing anything, both learning a little; a swordsman from Form takes disciples two stages below in a ceremony
+ *       (a disciple learns faster near their master and can break through by besting them in a spar, the master earns a share of each road a
+ *       disciple walks); and two strikes meeting lock into a struggle won on timing, the winner's carrying on.</li>
  *   <li><b>Feel</b> ({@link AuraFx}, {@link #registerSounds}): how aura looks and sounds, shared by every technique: a blade's
  *       trail, an impact (a flash, and a brief hit-stop for the striker and a struck player), a technique's banner, a burst of light,
  *       the body's aura flaring, and each method's own swing, impact and technique sounds. Each client draws them as it sees them,
@@ -1349,8 +1354,8 @@ public final class AuraApi {
 
 	/**
 	 * Lets {@code rule} say who may receive a master's bonded blade: the passing ceremony (the master in the breathing stance with their
-	 * blade, the disciple kneeling before them) begins only when a rule says yes. None is registered by the mod itself: step 10's masters
-	 * and disciples register "the disciple is this master's". An operator can always pass one ({@code /wildercord aura blade pass}).
+	 * blade, the disciple kneeling before them) begins only when a rule says yes. The mod's masters and disciples register "the disciple is this
+	 * master's" ({@code aura.Lineage}). An operator can always pass one ({@code /wildercord aura blade pass}).
 	 */
 	public static void allowBladePassing(BladePassing rule) {
 		BLADE_PASSING.add(rule);
@@ -1438,6 +1443,152 @@ public final class AuraApi {
 	 */
 	public static void registerBladeTrait(dev.wildercord.aura.BladeRules.Trait trait) {
 		dev.wildercord.aura.BladeRules.register(trait);
+	}
+
+	// ------------------------------------------------------------------ sparring
+
+	/**
+	 * Hears of spars: one beginning (the count-in starting), and one ending, with its winner and loser (null for an even spar or one called off,
+	 * or one who has gone), how it ended, and whether it counted (taught either of them aura experience today).
+	 */
+	public interface SparHook {
+		default void began(ServerPlayer a, ServerPlayer b) {}
+
+		default void ended(ServerPlayer winner, ServerPlayer loser, dev.wildercord.duel.DuelRules.Ending ending, boolean counted) {}
+	}
+
+	private static final List<SparHook> SPAR_HOOKS = new CopyOnWriteArrayList<>();
+
+	public static void onSpar(SparHook hook) {
+		SPAR_HOOKS.add(hook);
+	}
+
+	public static List<SparHook> sparHooks() {
+		return SPAR_HOOKS;
+	}
+
+	/**
+	 * Begins a spar between {@code a} and {@code b} at once, the ring round the point between them (an add-on's own challenge, a tournament's
+	 * bracket), with every check but the salute ({@link #sparRefusal}, and the duel's own: neither hurt just now nor fresh from a fight with a
+	 * player). Returns whether it began. It's fought, ends and teaches exactly as a saluted spar does.
+	 */
+	public static boolean spar(ServerPlayer a, ServerPlayer b) {
+		return dev.wildercord.aura.Spars.start(a, b);
+	}
+
+	/** Why {@code a} and {@code b} can't spar now ({@code aura.SparRules.Refusal}; its {@code key()} is the line), or null when they can. */
+	public static dev.wildercord.aura.SparRules.Refusal sparRefusal(ServerPlayer a, ServerPlayer b) {
+		return dev.wildercord.aura.Spars.refusal(a, b);
+	}
+
+	/** Whether {@code player} is in a spar now (its count-in too). Both sides (a client knows only its own player's). */
+	public static boolean sparring(Player player) {
+		return dev.wildercord.aura.Spars.sparring(player);
+	}
+
+	/** Who {@code player} is sparring now (server), if anyone. */
+	public static Optional<java.util.UUID> sparPartner(Player player) {
+		return Optional.ofNullable(dev.wildercord.aura.Spars.partner(player));
+	}
+
+	/** Calls {@code player}'s spar off, for nobody (both are put back as they began; nothing is taught or recorded). */
+	public static void endSpar(ServerPlayer player) {
+		dev.wildercord.aura.Spars.callOff(player);
+	}
+
+	/** {@code player}'s sparring record: wins, losses and evens. Both sides (a client knows its own). */
+	public static dev.wildercord.aura.SparRules.Log sparRecord(Player player) {
+		return dev.wildercord.aura.Spars.log(player);
+	}
+
+	// ------------------------------------------------------------------ masters and disciples
+
+	/**
+	 * Hears of masters and disciples: a disciple taken, a bond ended ({@code how}: "released" by either of them, or "graduated" when the disciple
+	 * reached their master's stage), a master's share of a road a disciple walked (paid now, or kept for them if they're away: {@code master} is
+	 * an id for that reason), and a master bested by their disciple in a spar.
+	 */
+	public interface MentorHook {
+		default void bonded(ServerPlayer master, ServerPlayer disciple) {}
+
+		default void ended(java.util.UUID master, java.util.UUID disciple, String how) {}
+
+		default void shared(java.util.UUID master, ServerPlayer disciple, double xp) {}
+
+		default void bested(ServerPlayer master, ServerPlayer disciple) {}
+	}
+
+	private static final List<MentorHook> MENTOR_HOOKS = new CopyOnWriteArrayList<>();
+
+	public static void onMentorship(MentorHook hook) {
+		MENTOR_HOOKS.add(hook);
+	}
+
+	public static List<MentorHook> mentorHooks() {
+		return MENTOR_HOOKS;
+	}
+
+	/** {@code player}'s master's id, if they have one. Both sides (a client knows only its own player's). */
+	public static Optional<java.util.UUID> masterOf(Player player) {
+		return dev.wildercord.aura.Lineage.masterOf(player);
+	}
+
+	/** {@code player}'s disciples' ids. Both sides (a client knows only its own player's). */
+	public static List<java.util.UUID> disciplesOf(Player player) {
+		return dev.wildercord.aura.Lineage.disciplesOf(player);
+	}
+
+	/** Whether {@code disciple} is {@code master}'s disciple (server). */
+	public static boolean isDisciple(ServerPlayer master, ServerPlayer disciple) {
+		return dev.wildercord.aura.Lineage.isDisciple(master, disciple);
+	}
+
+	/**
+	 * Makes {@code disciple} {@code master}'s at once, for an add-on's own rite, with every rule but the ceremony ({@link #discipleRefusal}): the
+	 * seal's moment, the master's method taught (or their manual given), and the bond as a ceremony makes it. Returns whether it was made.
+	 */
+	public static boolean takeDisciple(ServerPlayer master, ServerPlayer disciple) {
+		return dev.wildercord.aura.Lineage.take(master, disciple, true);
+	}
+
+	/** Why {@code master} can't take {@code disciple} now ({@code aura.LineageRules.Refusal}; its {@code key()} is the line), or null. */
+	public static dev.wildercord.aura.LineageRules.Refusal discipleRefusal(ServerPlayer master, ServerPlayer disciple) {
+		return dev.wildercord.aura.Lineage.refusal(master, disciple);
+	}
+
+	/** Ends the bond between {@code player} and {@code other} (their master, or a disciple of theirs), at no cost, both told. Returns whether there was one. */
+	public static boolean endMentorship(ServerPlayer player, java.util.UUID other) {
+		return dev.wildercord.aura.Lineage.end(player, other);
+	}
+
+	// ------------------------------------------------------------------ the clash
+
+	/**
+	 * Hears of clashes: two strikes locking ({@code kind}: two crescents, an art into a crescent, or an art answering an art; {@code a} and
+	 * {@code b} a player or a swordsman of the world), and the end: the winner and loser with their scores, or {@link #even} when they broke
+	 * each other.
+	 */
+	public interface ClashHook {
+		default void locked(LivingEntity a, LivingEntity b, dev.wildercord.aura.ClashRules.Kind kind) {}
+
+		default void resolved(LivingEntity winner, LivingEntity loser, dev.wildercord.aura.ClashRules.Kind kind, int winnerScore, int loserScore) {}
+
+		default void even(LivingEntity a, LivingEntity b, dev.wildercord.aura.ClashRules.Kind kind) {}
+	}
+
+	private static final List<ClashHook> CLASH_HOOKS = new CopyOnWriteArrayList<>();
+
+	public static void onClash(ClashHook hook) {
+		CLASH_HOOKS.add(hook);
+	}
+
+	public static List<ClashHook> clashHooks() {
+		return CLASH_HOOKS;
+	}
+
+	/** Whether {@code entity} is locked in a clash now (server). */
+	public static boolean clashing(net.minecraft.world.entity.Entity entity) {
+		return dev.wildercord.aura.Clashes.clashing(entity);
 	}
 
 	// ------------------------------------------------------------------ feel

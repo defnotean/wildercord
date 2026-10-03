@@ -78,7 +78,7 @@ public final class AuraStandard extends SingleQuadParticle implements SigilGroup
 	@Override public void extract(QuadParticleRenderState state, Camera camera, float partial) {
 		Minecraft mc = Minecraft.getInstance();
 		// A rally standard above your own head stays outside first-person sight.
-		if (scale < 0.9F && mc.player != null && key.owner() == mc.player.getId() && mc.getCameraEntity() == mc.player
+		if (scale < 0.9F && key.way().equals(WayRules.BANNER) && mc.player != null && key.owner() == mc.player.getId() && mc.getCameraEntity() == mc.player
 			&& mc.options.getCameraType().isFirstPerson()) return;
 		float fade = Math.min(1, (age + partial) / 8F) * Mth.clamp((keep + 8 - quiet - partial) / 8F, 0, 1);
 		if (fade <= 0.01F) return;

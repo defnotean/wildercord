@@ -4,6 +4,19 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Sparring, masters and timed clashes
+
+- A deliberate sneak-and-use blade salute now asks another swordsman for a spar. Their answering salute begins a three-second count-in on grounds marked by cloth standards and fractured floors. Blades and Aura reach a partner; spells, projectiles and pets do not.
+- Spars finish at one heart without killing either participant. Walking out concedes, the timer ends evenly, and outside harm calls the spar off. Both players regain their partner's damage and spent Aura; awakenings stay paid and end, and momentum starts and ends at zero.
+- Real two-sided spars teach Aura experience with a daily cap per partner. Quick or one-sided bouts grant nothing. Sparring does not grow bonded blades, mastery, technique ranks or ordinary combat trials.
+- Form masters can take disciples at least two stages below them through a cancellable breathing-and-kneeling ceremony. New disciples learn their master's method; disciples with another method receive a manual they may choose to read.
+- Daily lessons teach unknown technique parts or help eligible disciples find their crossroads. Nearby disciples learn ordinary Aura experience faster; their breakthroughs return a configurable share to their master, saved while the master is offline.
+- Besting a master by knockout in a real spar can meet a waiting trial for a stage below the master's own. Reaching their stage graduates with honour. Either person can release a bond, including offline bonds, through two clicks in the new Lineage tab.
+- Opposing crescents and eligible arts now enter timed clashes. Attack becomes a rhythm press during the lock; three server-judged beats award perfect/good grades, misses and fumbles. The Blade widens timing windows and wins equal scores rather than automatically winning. Winning crescents carry reduced damage.
+- Added compact consent/progress/rhythm HUDs, paginated lineage records, 21 authored sounds, player text, operator commands, addon hooks and server settings.
+- Fixed lag allowance closing clash windows too early, lessons continuing after release, interrupted ceremony attachments remaining on a disciple, outside creature/environmental damage failing to call off a spar, and stale clash/salute cooldown records accumulating.
+- Added a client/server interaction suite and a player guide covering the controls, rewards, limitations and configuration.
+
 ### Feathered Soar wings
 
 - Soar now grows a pair of articulated feathered wings with layered shoulder feathers and long flight feathers. They fold on the ground, spread in flight, beat faster while moving, and fold and fade as flight ends.

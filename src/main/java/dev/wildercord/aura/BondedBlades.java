@@ -413,7 +413,7 @@ public final class BondedBlades {
 
 	/** Whether {@code foe} is a worthy foe for {@code player}'s blade: something to learn from, not practice, not helpless. */
 	private static boolean worthy(ServerPlayer player, LivingEntity foe) {
-		return foe != null && !Momentum.practice(player, foe) && !Momentum.helpless(foe) && AuraCombat.worth(player, foe) > 0;
+		return foe != null && !Momentum.practice(player, foe) && !Momentum.helpless(foe) && AuraCombat.worth(player, foe) > 0 && !Spars.partners(player, foe);
 	}
 
 	/** A foe felled by {@code player}'s blade (a blow or aura off it), from {@code AuraCombat.landed}. */

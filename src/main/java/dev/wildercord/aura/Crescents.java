@@ -25,12 +25,14 @@ import java.util.function.Predicate;
 
 /**
  * Crescents of aura in flight: every Aura Slash, whoever loosed it (a player, a duelist, a fallen knight), flies here, a step
- * a tick, the Crescent shape's flight in the aura's colour. They're kept together so that two meeting in the air clash (both
- * break in a burst, harming nobody), a held guard facing one catches it (it cuts the guard and goes no further), and a perfect
- * guard sends one back at whoever loosed it.
+ * a tick, the Crescent shape's flight in the aura's colour. They're kept together so that two meeting in the air clash (they lock
+ * into a struggle won on timing, see {@link Clashes}: the winner flies on, the loser breaks; with clashes off, or the same two just
+ * clashed, both break in a burst harming nobody, as they always did; two allies' pass through each other), a held guard facing one
+ * catches it (it cuts the guard and goes no further), and a perfect guard sends one back at whoever loosed it.
  *
  * <p>Each tick every crescent moves first, then any two of different owners that met on the way clash, then the rest cut what
- * they reached: so the order crescents were loosed in never decides a clash.</p>
+ * they reached: so the order crescents were loosed in never decides a clash. A crescent locked in a clash is <b>held</b>: it neither
+ * flies nor cuts nor meets another until its clash lets it go.</p>
  */
 public final class Crescents {
 	private Crescents() {}
@@ -89,8 +91,10 @@ public final class Crescents {
 		BlockPos blockedAt;
 		/** Whether it pierces (the Way of the Blade): a held guard doesn't stop it, and it cuts through a crescent it meets. */
 		boolean pierce;
-		/** What's left of its harm (a piercing crescent that won a clash flies on weaker). */
+		/** What's left of its harm (a crescent that won a clash flies on a little spent). */
 		double scale = 1.0;
+		/** Locked in a clash ({@link Clashes}): it neither flies nor cuts nor meets another until the clash lets it go or breaks it. */
+		boolean held;
 
 		Flight(LivingEntity caster, Vec3 origin, Vec3 aim, int color, double damage, double bonus, double speed, double range, double width, int targets,
 				boolean weak, Predicate<Entity> mayCut, Cut cut) {
@@ -125,7 +129,7 @@ public final class Crescents {
 			return damage * scale;
 		}
 
-		/** Makes it pierce (the Way of the Blade's slash): a held guard doesn't stop it, and it cuts through a crescent it meets. */
+		/** Makes it pierce (the Way of the Blade's slash): a held guard doesn't stop it, and it has an edge in a clash. */
 		public Flight pierce() {
 			this.pierce = true;
 			return this;
@@ -173,6 +177,11 @@ public final class Crescents {
 
 		public boolean done() {
 			return done;
+		}
+
+		/** Whether it's locked in a clash now. */
+		public boolean held() {
+			return held;
 		}
 
 		/** Stops it where it is (a guard caught it, or it was sent back). */
@@ -244,6 +253,10 @@ public final class Crescents {
 				flight.done = true;
 				continue;
 			}
+			// Locked in a clash: it waits where it met (its clash draws it, and lets it go or breaks it).
+			if (flight.held) {
+				continue;
+			}
 			// A crescent loosed this tick takes its first step next tick, as it always has.
 			if (server.getTickCount() <= flight.launched) {
 				continue;
@@ -253,31 +266,33 @@ public final class Crescents {
 				moving.add(flight);
 			}
 		}
-		// Two crescents of different owners that met on the way this tick: both break, in a burst.
+		// Two crescents of different owners that met on the way this tick: they lock into a clash (or break each other, or, allies', pass).
 		for (int i = 0; i < moving.size(); i++) {
 			Flight a = moving.get(i);
-			for (int j = i + 1; j < moving.size() && !a.done; j++) {
+			for (int j = i + 1; j < moving.size() && !a.done && !a.held; j++) {
 				Flight b = moving.get(j);
-				if (b.done || a.level != b.level || a.caster == b.caster) {
+				if (b.done || b.held || a.level != b.level || a.caster == b.caster) {
 					continue;
 				}
 				if (AuraWorldRules.meets(xyz(a.prev), xyz(a.front), xyz(b.prev), xyz(b.front), AuraWorldRules.clashReach(a.width, b.width))) {
-					clash(a, b);
+					if (Clashes.meet(a, b) == Clashes.Meeting.BREAK) {
+						clash(a, b);
+					}
 				}
 			}
 		}
 		for (Flight flight : moving) {
-			if (!flight.done) {
+			if (!flight.done && !flight.held) {
 				cutFrom(flight);
 			}
 		}
 		// Every flight that ended this tick, however it ended, is told so once.
 		for (Flight flight : List.copyOf(FLIGHTS)) {
-			if (flight.done || flight.step >= flight.steps) {
+			if (flight.done || flight.step >= flight.steps && !flight.held) {
 				end(flight);
 			}
 		}
-		FLIGHTS.removeIf(f -> f.done || f.step >= f.steps);
+		FLIGHTS.removeIf(f -> f.done || f.step >= f.steps && !f.held);
 	}
 
 	/** A flight is over: told once, where it ended. */
@@ -370,17 +385,13 @@ public final class Crescents {
 	// ------------------------------------------------------------------ meeting
 
 	/**
-	 * Two crescents meeting in the air: both break in a burst of their colours, shoving creatures back and harming nobody. A piercing
-	 * crescent (the Way of the Blade's) meeting one that doesn't cuts it apart and flies on, weaker.
+	 * Two crescents breaking each other in the air (clashes off, one of them already in a clash, or the same two just clashed): both break in
+	 * a burst of their colours, shoving creatures back and harming nobody. The Way of the Blade's piercing slash has its edge in a clash
+	 * ({@link ClashRules#EDGE}), never an automatic win here.
 	 */
 	static void clash(Flight a, Flight b) {
-		Flight winner = a.pierce && !b.pierce ? a : b.pierce && !a.pierce ? b : null;
 		a.done = true;
 		b.done = true;
-		if (winner != null) {
-			winner.done = false;
-			winner.scale *= WayRules.BLADE_CLASH_CARRY;
-		}
 		ServerLevel level = a.level;
 		Vec3 at = a.front.add(b.front).scale(0.5);
 		AuraVfx.clash(level, at, a.aim, a.color, b.color);

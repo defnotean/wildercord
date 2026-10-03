@@ -1148,23 +1148,20 @@ blade: `aura.BladeBond` (the `wildercord:bonded_blade` component); the world's r
   the felling blow. The ceremony's front view needs a negative pitch to look down on the ring. A tier moment's spectacle is filtered by
   the camera when it arrives, so switch to third person before the tier is reached.
 
-### Step 10, partly built (branch `aura-step10-wip`, not merged)
+### Step 10, completed: masters, sparring and timed clashes (2026-10-02)
 
-Work on step 10 stopped partway, on 2026-10-02, when the project was handed over. The branch holds two commits on top of
-the step 9 merge (e5a23153):
+The two commits preserved on `aura-step10-wip` were rebased onto main in `aura-step10-complete`. The rules/server work is now joined by the client controls, authored sounds, player text, physical visuals, guide and interaction suite.
 
-- **The rules**, with unit tests: `ClashRules` (a clash judged over a rhythm of three beats, presses judged early, on
-  time or late, fumbles), `SparRules`, `LineageRules`, plus changes to `WayRules` and `AuraWorldRules`, and
-  `SocialRulesTest`.
-- **The server**: `Spars` (the salute challenge and its answer; the ring fought on the existing duel system in
-  `duel/`), `Lineage` and `LineageRegistry` (master and disciple), `Clashes` (wired into `Crescents`), and hooks in
-  `AuraApi`, `AuraBreakthroughs`, `AuraExperience`, `BondedBlades`, `Techniques`, `WayEffects`, `Duelist` and the
-  config.
+- **Clashes:** `AuraSocialClient` receives Begin/Mark/End, turns the real Attack key into a Press during a lock, and shows three converging tick pairs, authoritative grades/scores and the outcome clear of the crosshair and vanilla action bar. Shorter viewports place the compact panel above the aiming area. Extra or out-of-window presses fumble. The server applies the same bounded connection allowance when judging a press and closing its window, then waits for the last allowed delayed packet before resolving. It retains authority over participants, timing, scores and carried damage.
+- **Spars:** reciprocal blade-use salutes, count-in, one-heart knockouts, free concession by leaving, timeout, outside-harm cancellation, restoration and per-pair experience limits use `Duels.Watcher`. Four cloth standards and fracture/gouge impressions mark the bounds; the new spar visuals do not draw ritual circles. The small standards remain visible to their owner in first person; only the overhead Rallying Cry standard is suppressed there.
+- **Lineage:** cancellable master/disciple and lesson ceremonies, nearby ordinary-experience bonus, saved offline shares, master spar trials, graduation and release are wired into the stage/experience/blade systems. Releasing a bond cancels its active lesson. Interrupted and disabled ceremonies clear both progress attachments.
+- **The Aura page:** a sixth Lineage tab, bounded names, nearby/online markers, master and next lesson, spar records, paginated disciples/honoured graduates, and a five-second two-click release confirmation. Existing tabs retain their controls.
+- **Sound/text/guide:** 21 authored social sound events, human-readable HUD/command/refusal messages, and `wiki/progression/lineage.md`, exported into GitBook. The Aura guide points to the new clash rules.
+- **Cleanup:** expired clash pair cooldowns and art-answer records are pruned even while other clashes remain active; salute cooldowns expire after offers disappear. Client cues expire after resolution and clear on disconnect.
 
-Not built yet: the client side (clash rhythm HUD, ring and lineage visuals, the Aura page's lineage panel), sounds,
-language strings, the game test, the guide page and the changelog. Whether the branch builds and its unit tests pass
-was not verified at handover. Whoever continues should first rebase it on main, build it, read
-its rules classes against the step 10 spec above, then build the client, test, document and merge.
+Verification uses `dev.wildercord.aura.AuraSocialTest` with a real integrated server/client and a fake second swordsman. It exercises breathing/sneak consent and cancellation, an actual taught technique part, the real release packet and Attack-key clash presses, forbidden spell/projectile damage, safe knockout and restoration, outside-creature interruption, experience and records after meaningful fighting, all three clash kinds, losing art payment, one-time winning art release, answering-art damage restoration, offline shares, saved-data round-trip, graduation, and offline release. The unit rules test timing windows/fumbles, connection allowances, daily spar caps, mentor eligibility and rewards. Targeted Ways and bonded-blade regressions accompany the suite.
+
+The fake player does not receive ordinary player ticks: its damage cooldown is reset explicitly between bouts. This is not a two-client network-latency measurement; the allowance race is covered by deterministic timing tests. Physical ground marks fade without excavating terrain. Steps 11 and 12 remain planned.
 
 
 ## Visual revision: cloth standards and rune-free Aura (2026-10-02)

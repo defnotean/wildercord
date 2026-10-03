@@ -20,6 +20,21 @@ class AuraWorldRulesTest {
 	}
 
 	@Test
+	void aDuelistAnswersACrescentWithItsOwnNowAndThen() {
+		assertEquals(0, AuraWorldRules.duelistAnswerChance(AuraRules.FLOW), 1e-9, "no slash below Edge, so no answer");
+		assertEquals(0.35, AuraWorldRules.duelistAnswerChance(AuraRules.EDGE), 1e-9);
+		assertTrue(AuraWorldRules.duelistAnswerChance(AuraRules.FORM) > AuraWorldRules.duelistAnswerChance(AuraRules.EDGE));
+		assertEquals(0.65, AuraWorldRules.duelistAnswerChance(AuraRules.SOVEREIGN), 1e-9, "never always: a crescent can still be guarded or stepped from");
+		assertTrue(AuraWorldRules.ANSWER_WINDUP < AuraWorldRules.SLASH_LOCK, "its aim is fixed the moment its blade comes up");
+		assertTrue(AuraWorldRules.ANSWER_WINDUP < AuraWorldRules.duelistSlashWindup(AuraRules.SOVEREIGN), "a quick answer, not its full tell");
+		// From as far as it answers, a player's crescent and its own meet before either has flown its whole way.
+		double closing = AuraRules.SLASH_SPEED + AuraWorldRules.DUELIST_SLASH_SPEED;
+		double flown = AuraRules.SLASH_SPEED * AuraWorldRules.ANSWER_WINDUP;
+		assertTrue((AuraWorldRules.ANSWER_FAR - flown) / closing < AuraWorldRules.DUELIST_SLASH_RANGE / AuraWorldRules.DUELIST_SLASH_SPEED);
+		assertTrue(AuraWorldRules.ANSWER_NEAR < AuraWorldRules.ANSWER_FAR);
+	}
+
+	@Test
 	void aDuelistGrowsWithTheStageItFightsAt() {
 		for (int s = AuraRules.FLOW; s <= AuraRules.MAX_STAGE; s++) {
 			assertTrue(AuraWorldRules.duelistHealth(s) > AuraWorldRules.duelistHealth(s - 1));

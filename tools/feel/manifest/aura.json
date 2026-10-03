@@ -575,6 +575,55 @@
       ],
       "subtitle": "tell"
     },
+    "aura_clash_beat": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_clash_beat"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_clash_even": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_clash_even"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_clash_good": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_clash_good"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_clash_lock": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_clash_lock"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_clash_miss": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_clash_miss"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_clash_perfect": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_clash_perfect"
+      ],
+      "subtitle": "hit"
+    },
+    "aura_clash_win": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_clash_win"
+      ],
+      "subtitle": "hit"
+    },
     "aura_crimson_art": {
       "attenuation": 24,
       "files": [
@@ -812,6 +861,55 @@
       ],
       "subtitle": "tell"
     },
+    "aura_lineage_ask": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_lineage_ask"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_lineage_bind": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_lineage_bind"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_lineage_graduate": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_lineage_graduate"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_lineage_lesson": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_lineage_lesson"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_lineage_release": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_lineage_release"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_lineage_seal": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_lineage_seal"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_lineage_share": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_lineage_share"
+      ],
+      "subtitle": "tell"
+    },
     "aura_momentum_peak": {
       "attenuation": 24,
       "files": [
@@ -872,6 +970,55 @@
         "kit/aura/aura_slash_2"
       ],
       "subtitle": "cast"
+    },
+    "aura_spar_begin": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spar_begin"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_spar_count": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spar_count"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_spar_end": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spar_end"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_spar_out": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spar_out"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_spar_ring": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spar_ring"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_spar_salute": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spar_salute"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_spar_win": {
+      "attenuation": 24,
+      "files": [
+        "kit/aura/aura_spar_win"
+      ],
+      "subtitle": "tell"
     },
     "aura_spellblade": {
       "attenuation": 0,
