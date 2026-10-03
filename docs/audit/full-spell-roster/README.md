@@ -17,6 +17,8 @@ stages, trigger placement, a paid Delay and paid projectile-impact cast. Full ch
 [Storm projectile bodies](storm-flights.md) covers twenty evolving recipes and paid alternate/mixed flight examples.
 These phase-specific records do not establish complete release, impact or aftermath choreography.
 
+[Wind preparations and projectile bodies](wind-choreography.md) covers twenty-five explicit airflow recipes and a dedicated world-lit curved-stream renderer. Complete per-effect choreography remains open.
+
 ## Runtime inventory
 
 The built-in runtime registry contains 350 runes: 258 effects, 39 shapes, 36 modifiers and 17 links. All 258 effects have registered signatures. The signature registry contains 17 phase hooks and 182 cue sound entries. Visuals and sounds also dispatch through other source files; absent registry hooks do not establish missing presentation.

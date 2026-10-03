@@ -373,6 +373,8 @@ def main():
     mote_art.main()
     import material_art
     material_art.main()
+    import wind_art
+    wind_art.main()
     import physical_art
     physical_art.main()
     import circle_art  # Every rune's own ring and emblem for magic circles (imported here: it reads the runes from this file).

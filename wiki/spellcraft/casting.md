@@ -521,3 +521,29 @@ uses warm sunlight rather than electrical fragments. Minimal settings retain sup
 These are distant frames from actual paid Survival casts on a review platform. Bodies are compact;
 preparations remain near the caster. Full release, impact and aftermath for the complete spell roster
 are still being reviewed.
+
+## Wind carries air
+
+Wind spells now gather their own translucent air currents. Windcut peels away a cutting shear;
+Disarm hooks an empty grip; Push compresses a broad front. Launch opens a rising jet, Levitate
+holds a calm pocket, and Feather Fall rocks a long vane with fine barbs.
+
+Cyclone winds a narrowing funnel, Dust Devil carries actual grit, and Razorgale combines opposing
+shear with a bleeding score. Recoil crosses outgoing and returning flow around time fragments.
+Downdraft carries stone downward; Zephyr fans warm currents around living leaves. In flight,
+the stream crests continue moving along the actual projectile. Minimal settings keep the flow
+and supporting materials with fewer segments.
+
+Fully authored wind projectiles no longer gather inside the old glowing orb/arc preparation.
+Your rune glyph stays behind you; fields retain their location cues. Existing effects, costs,
+flight physics, wings and impacts still follow each delivery.
+
+![Windcut gathers a cutting air shear]({{ '/assets/images/wind-formation-windcut.png' | relative_url }})
+
+![Dust Devil gathers grit inside its currents]({{ '/assets/images/wind-view-dust-devil.png' | relative_url }})
+
+![Feather Fall carries a fine vane through the air]({{ '/assets/images/wind-view-feather-fall.png' | relative_url }})
+
+The close views use a diagnostic side camera and isolate production flight particles from actual
+paid Survival casts. They show the material body, not the complete cast or its impact. Other
+families, all delivery combinations, dark-location readability and multiplayer remain under review.

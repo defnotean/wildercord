@@ -1333,6 +1333,12 @@
     "constant": "CUSHION",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          118
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           676,
@@ -1355,6 +1361,12 @@
     "constant": "CYCLONE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          135
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           765
@@ -1373,6 +1385,12 @@
     "id": "wildercord:dash",
     "constant": "DASH",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          170
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -1412,6 +1430,12 @@
     "constant": "DEFLECT",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          182
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           677,
@@ -1450,6 +1474,12 @@
     "id": "wildercord:disarm",
     "constant": "DISARM",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          70
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -1527,6 +1557,13 @@
     "id": "wildercord:downdraft",
     "constant": "DOWNDRAFT",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          21,
+          100
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [
@@ -1612,6 +1649,13 @@
     "id": "wildercord:dust_devil",
     "constant": "DUST_DEVIL",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          21,
+          144
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [
@@ -1857,6 +1901,12 @@
     "constant": "FEATHER_FALL",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          124
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           256
@@ -1910,8 +1960,8 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          184,
-          194
+          193,
+          204
         ]
       },
       {
@@ -2205,8 +2255,8 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          185,
-          196
+          194,
+          206
         ]
       },
       {
@@ -2382,6 +2432,12 @@
     "id": "wildercord:gale_mantle",
     "constant": "GALE_MANTLE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          175
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -3284,6 +3340,12 @@
     "constant": "LAUNCH",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          83
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           313
@@ -3302,6 +3364,12 @@
     "id": "wildercord:leap",
     "constant": "LEAP",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          164
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -3340,6 +3408,12 @@
     "id": "wildercord:levitate",
     "constant": "LEVITATE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          89
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -4194,6 +4268,12 @@
     "constant": "PRUNE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          194
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           683
@@ -4237,6 +4317,12 @@
     "id": "wildercord:push",
     "constant": "PUSH",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          59
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -4346,6 +4432,13 @@
     "constant": "RAZORGALE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          23,
+          151
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [
           49
@@ -4371,6 +4464,13 @@
     "id": "wildercord:recoil",
     "constant": "RECOIL",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          25,
+          76
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [
@@ -4468,6 +4568,12 @@
     "id": "wildercord:repel",
     "constant": "REPEL",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          65
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -5188,6 +5294,13 @@
     "constant": "SKYGLYPH",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          24,
+          113
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [
           41
@@ -5276,6 +5389,12 @@
     "id": "wildercord:soar",
     "constant": "SOAR",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          130
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -5782,6 +5901,12 @@
     "constant": "SUMMIT_WIND",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          106
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [
           104
@@ -5927,6 +6052,12 @@
     "id": "wildercord:swift",
     "constant": "SWIFT",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          158
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -6615,6 +6746,12 @@
     "constant": "UPDRAFT",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          94
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [
           38
@@ -6887,6 +7024,12 @@
     "constant": "WIND_STEPS",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          201
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [
           27
@@ -6899,6 +7042,12 @@
     "id": "wildercord:windcut",
     "constant": "WINDCUT",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          53
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -6956,6 +7105,13 @@
     "id": "wildercord:zephyr",
     "constant": "ZEPHYR",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/WindForms.java",
+        "lines": [
+          22,
+          188
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/WindFeels.java",
         "lines": [

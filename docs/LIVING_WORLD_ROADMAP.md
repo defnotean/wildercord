@@ -200,3 +200,46 @@ Full buildup/release/impact/aftermath, remaining elemental families, all deliver
 combinations, dynamic/addon runes, reflected/homing/linked visuals, close third-person beauty,
 shaders, real multiplayer, natural combat and sustained profiling remain open. Adds no new content
 target count. Goal remains active; user requires custom elemental behavior beyond recolored shapes.
+
+
+## Wind carries pressure and flow — 2026-10-03
+
+Twenty-five runtime wind effects now have individually authored preparation and moving-body
+recipes using a dedicated AirflowParticle renderer and an original striated filament texture.
+Quadratic current bands use world lighting, transparency, moving crests and taper instead of
+LightOption/LightParticle rays, arcs or rings. Each recipe specifies its current direction,
+pressure, timing and supporting material. Dust Devil/Downdraft carry stone, Razorgale blood,
+Recoil time, Skyglyph arcane, Zephyr/Prune leaves and Summit Wind vapor. Preparations gather the
+same current identity that flight carries. Fully wind-authored projectile preparations suppress
+old luminous shape bodies and duplicate covered ingredient layers; other delivery markers stay.
+Rear glyph/caster-centered placement remains. Minimal explicitly selects six curve segments
+instead of sixteen; reduced flash lowers alpha. A camera-aligned vertical fallback-axis bug was
+fixed and checked for finite orientations. Matching client/server builds are required.
+
+Native final preparation suite passed in 68s: all 25 encoded Full/Minimal fixtures, rear/front
+placement, no LightParticle in wind-only Bolt preparations, bounded/distinct/evolving recipes,
+ingredients and wire roundtrip, plus paid Bolt/Windcut and Self/Swift with its Speed effect.
+Flight suite passed in 109s: fifty paid Survival Bolt casts, exact synchronized identities,
+actual movement, production airflow particles, clear/recovery and removed-ID cleanup. Six paid
+Arc/Pierce/Frugal/covered Windcut-Shock/unsupported Windcut-Umbra variants passed in 43s.
+The shared initial/linked staging regression passed in 52s. An initial Arc/Feather Fall later
+frame had only eight high-contrast pixels at its distant position; variant later captures now
+use the same two-tick interval as the main suite, preserving movement/particle checks.
+
+Review: artifacts/review/wind-choreography. 147 original native PNGs: 28 preparation,
+51 ordinary flight, 50 isolated close flight/matched empty references and 18 variants. All
+25 preparations, 25 main later frames, 25 close bodies and twelve variant spell frames inspected
+through unscaled region sheets. Close captures use a diagnostic camera, clear unrelated particles,
+and re-admit the actual paid projectile's production particles for matched framebuffer evidence;
+they are not the complete unedited cast. Airflow remains faint/compact in some flight frames.
+Player guide validates/exports 114 pages; textual source index covers 350 runes/75 candidate files.
+
+This changes existing spells and adds no new content target counts. Full release/impact/aftermath,
+remaining elemental families, every delivery/modifier/rank/fusion, reflected/homing/linked visuals,
+dark-location readability, natural combat, shaders, remote multiplayer and measured performance
+remain open. Shared curve emission is a technical utility, with explicit per-spell behavior;
+full goal remains active and the user's requirement for custom element effects remains in force.
+
+Final wind evidence: frost variants 40s, storm variants 34s; full build 17s, 950 tests with zero
+failures/errors/skips; CRC clean, 4864 resources/1630 classes byte-match. SHA-256:
+8d691e90316019f8dd0feb96578ec2dc70dc7d8ac6c65b85fa0438b716c72c27.

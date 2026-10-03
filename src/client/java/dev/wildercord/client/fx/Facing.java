@@ -28,7 +28,8 @@ final class Facing {
 		Vector3f z = Z.set(-mx, -my, -mz);
 		z.sub(T.set(d).mul(z.dot(d)));
 		if (z.lengthSquared() < 1.0E-6F) {
-			z.set(0, 1, 0);
+			z.set(0, 1, 0).sub(T.set(d).mul(d.y()));
+			if (z.lengthSquared() < 1.0E-6F) z.set(1, 0, 0).sub(T.set(d).mul(d.x()));
 		}
 		z.normalize();
 		Vector3f y = Y.set(z).cross(d).normalize();

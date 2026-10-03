@@ -4,6 +4,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Wind as air: preparations and projectile bodies
+
+- Added twenty-five explicit wind recipes with their own shear, lift, compression, return, snatch, slipstream, vortex and feather motion. A dedicated airflow renderer uses original fine filaments, translucent world-lit curves and traveling crests instead of shared glowing beam primitives.
+- Fully authored wind projectiles prepare their air body without an overlapping luminous orb/arc. Field delivery cues and the rear casting glyph remain. Supporting stone, leaves, blood, arcane, time and vapor retain their identities; covered wind-only fusion layers avoid duplicate generic material presentation.
+- Extended flight coverage to wind while preserving unknown/omitted/foreign fallback. Added owner-selected curve quality and a finite orientation for camera-aligned vertical tangents.
+- Added native full preparation/paid flight/variant suites and matched close flight captures. Complete release/impact/aftermath, all delivery combinations, dark-location readability, shaders, multiplayer and measured performance remain open. New particle registration requires the same client/server build.
+
 ### Authored storm projectile bodies
 
 - Added twenty explicit moving storm recipes with individually timed contact switching, traveling leaders, expanding pressure, pulsing lobes, sequential copper terminals, inward-pulling filings, falling rain, circulating wind and charged feathers. Supporting materials remain in Full/Minimal; Ripple carries sunlight without electrical fragments.

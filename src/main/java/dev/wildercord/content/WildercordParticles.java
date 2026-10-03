@@ -34,6 +34,10 @@ public final class WildercordParticles {
 	public static final ParticleType<RitualOption> RITUAL = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("ritual"),
 		FabricParticleTypes.complex(true, RitualOption.CODEC, RitualOption.STREAM_CODEC));
 
+	/** Curved wind streams carry pressure and drift without luminous beam primitives. */
+	public static final ParticleType<AirflowOption> AIRFLOW = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("airflow"),
+		FabricParticleTypes.complex(true, AirflowOption.CODEC, AirflowOption.STREAM_CODEC));
+
 	public static void init() {}
 	public static final ParticleType<MaterialOption> MATERIAL = Registry.register(BuiltInRegistries.PARTICLE_TYPE, Wildercord.id("material"),
 		FabricParticleTypes.complex(false, MaterialOption.CODEC, MaterialOption.STREAM_CODEC));
