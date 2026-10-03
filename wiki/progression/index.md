@@ -25,6 +25,7 @@ things that feed your magic.
 | **Ways** | At the Edge breakthrough a swordsman chooses the Blade, the Bulwark, the Shadowstep or the Banner, which changes how they fight at Edge, Form and Sovereign. | [Ways]({{ '/progression/ways/' | relative_url }}) |
 | **Techniques of your own** | From Edge a swordsman writes their own techniques from a stroke, a release and an intent found in the world, names them, and ranks them up by using them. | [Techniques of your own]({{ '/progression/techniques/' | relative_url }}) |
 | **Rune-etched blades** | Carry one effect in your weapon; an art or finisher wakes it using mana, with a shared rest. | [Rune-Etched Blades]({{ '/progression/rune-etched-blades/' | relative_url }}) |
+| **Unity** | At Form and five working Circles, paid mana and Aura briefly feed each other within fixed limits. | [Unity]({{ '/progression/unity/' | relative_url }}) |
 | **Your affinities** | An affinity with each of the ten elements, grown by casting it and by everyday things that fit it (smelting, fishing, mining...): up to +15% power with it, a resistance to it from level III, cheaper spells at V. | [Your Affinities]({{ '/progression/affinity/' | relative_url }}) |
 | **Advancements** | Wildercord's own advancement tab: experience, Blank Runes and Mana Crystals. | [Advancements]({{ '/progression/advancements/' | relative_url }}) |
 | **Mana** | Max mana and regeneration from your Cord, Mana Crystals, potions, meditation and more. | [Mana]({{ '/progression/mana/' | relative_url }}) |

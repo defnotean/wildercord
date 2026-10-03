@@ -5084,6 +5084,24 @@
       "wildercord:kit/aura/aura_tournament_victory"
     ]
   },
+  "aura_unity_begin": {
+    "subtitle": "subtitles.wildercord.kit.unity.begin",
+    "sounds": [
+      "wildercord:kit/aura/aura_unity_begin"
+    ]
+  },
+  "aura_unity_end": {
+    "subtitle": "subtitles.wildercord.kit.unity.end",
+    "sounds": [
+      "wildercord:kit/aura/aura_unity_end"
+    ]
+  },
+  "aura_unity_flow": {
+    "subtitle": "subtitles.wildercord.kit.unity.flow",
+    "sounds": [
+      "wildercord:kit/aura/aura_unity_flow"
+    ]
+  },
   "aura_verdant_art": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [

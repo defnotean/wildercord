@@ -58,6 +58,7 @@ public final class RuneEtchings {
 		p.setAttached(READY,now+rest);
 		// Creative still pays the same price: the inscription has no separate free-resource mode.
 		Spellbooks.setMana(p,mana-price);
+		Unity.manaSpent(p,price);
 		waking=true;
 		try {
 			Cast cast=new Cast(p,1,dev.wildercord.player.Heart.Bonuses.NONE,false,null,

@@ -1582,6 +1582,27 @@
       ],
       "subtitle": "tournament.victory"
     },
+    "aura_unity_begin": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_unity_begin"
+      ],
+      "subtitle": "unity.begin"
+    },
+    "aura_unity_end": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_unity_end"
+      ],
+      "subtitle": "unity.end"
+    },
+    "aura_unity_flow": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_unity_flow"
+      ],
+      "subtitle": "unity.flow"
+    },
     "aura_verdant_art": {
       "attenuation": 24,
       "files": [

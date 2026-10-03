@@ -48,8 +48,12 @@ public final class RuneEtchingsTest implements FabricClientGameTest {
 				check(RuneEtchings.etch(p.getMainHandItem(),RuneItem.stack(Runes.TOUCH),p).isEmpty(),"Shape rejected");
 				check(RuneEtchings.etch(p.getMainHandItem(),RuneItem.stack(Runes.HARM,2),p).isEmpty(),"Ranked rune preserved instead of discarded");
 				foe=EntityTypes.HUSK.create(s.overworld(),EntitySpawnReason.COMMAND);foe.getAttribute(Attributes.MAX_HEALTH).setBaseValue(200);foe.setHealth(200);((net.minecraft.world.entity.Mob)foe).setNoAi(true);foe.snapTo(.5,101,1,180,0);s.overworld().addFreshEntity(foe);
-				float before=Spellbooks.mana(p);ArtKit.hits(p,AuraFx.art(p)).raw(foe,4,null);
-				check(foe.getHealth()<196,"Inscription deals native Harm beyond the art hit");
+				float before=Spellbooks.mana(p), healthBefore=foe.getHealth();
+				float artDamage=ArtKit.hits(p,AuraFx.art(p)).raw(foe,4,null);
+				// Compare against the actual art damage: method bonuses and world conditions can change its base four.
+				check(artDamage>0 && healthBefore-foe.getHealth()>artDamage,
+					"Inscription deals native Harm beyond the art hit: before="+healthBefore+", health="+foe.getHealth()+", art="+artDamage
+					+", mana="+Spellbooks.mana(p)+", tier="+Spellbooks.tier(p)+", stage="+Aura.stage(p)+", alive="+p.isAlive()+", rest="+p.getAttachedOrElse(RuneEtchings.READY,0L));
 				check(Spellbooks.mana(p)==before-RuneEtchingRules.price(Runes.HARM),"Actual art charges exactly one effect");
 				check(p.getAttachedOrElse(RuneEtchings.READY,0L)>s.overworld().getGameTime(),"Rest saved on player");
 				check(!RuneEtchings.wake(p,foe,4),"No immediate repeat");

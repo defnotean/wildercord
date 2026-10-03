@@ -4,6 +4,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Unity: two paths, one breath
+
+- Added a hybrid technique for Form and five working Heart Circles, activated from the Aura page. Twelve mana plus twelve Aura open twelve seconds of exchange, with a two-minute rest from activation.
+- Actual paid Cord/inscription mana returns 25% Aura, at most twelve; actual Aura payment returns 50% mana, at most twenty-four. Rest and delivered allowances persist together. Activation, restoration, Blood Price, creative casting, unpaid echoes and synthetic cast events cannot feed it; backlash and spent Awakening cannot convert resources.
+- Putting away the weapon, losing a prerequisite, silence, Aura lessons/sparring, disconnect and death end the window without clearing rest. Dimensions retain the same window and budgets. Fixed allowances and lossy conversion prevent resource circulation from becoming a free-energy loop.
+- Added a woven insignia, compact Aura-page control/HUD marker, open rear/side strand formation and transfer strokes, and three authored sound cues. No magic circles or first-person veil. Visual transfers are throttled to one per four ticks and voices to one per twenty ticks.
+- Added pure rule tests, a native GUI/packet/payment/lifecycle client suite and player documentation. Final Aura integration, real two-client/restart verification, broader matchups and the larger living-world roadmap remain open.
+
 ### Rune-etched blades
 
 - Anvil inscription: an eligible weapon plus one rank I effect rune, consuming one rune and five experience levels. Replacing an inscription deliberately loses the old one; shapes, links, modifiers, innates, duplicate inscriptions and foreign bonded blades are refused.

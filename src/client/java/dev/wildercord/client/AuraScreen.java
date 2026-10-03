@@ -190,6 +190,11 @@ public class AuraScreen extends Screen {
 			float s = scale();
 			int mx = (int) Math.floor((event.x() - left()) / s);
 			int my = (int) Math.floor((event.y() - top()) / s);
+			if (!lineage && !bladeOpen() && !writingOpen() && inside(mx,my,14,86,W-28,14) && minecraft.player!=null) {
+				net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(new dev.wildercord.aura.Unity.Activate());
+				minecraft.gui.setScreen(null);
+				return true;
+			}
 			if (my >= tabsY - 2 && my < tabsY + 10) {
 				boolean toArts = mx >= artsLeft && mx < artsRight;
 				boolean toTech = mx >= techLeft && mx < techRight;
@@ -315,6 +320,10 @@ public class AuraScreen extends Screen {
 	public double[] lineageTabPoint() {
 		if (tabsY < 0 || lineageRight <= lineageLeft) return null;
 		return new double[] {left() + (lineageLeft + lineageRight) / 2.0 * scale(), top() + (tabsY + 4) * scale()};
+	}
+	/** Center of the rendered Unity control, used by actual mouse interaction tests. */
+	public double[] unityPoint() {
+		return lineage || bladeOpen() || writingOpen()?null:new double[]{left()+W*.5*scale(),top()+93*scale()};
 	}
 	public double[] lineagePoint(String key) {
 		int[] r = lineagePage == null ? null : lineagePage.targets.get(key);
@@ -518,7 +527,18 @@ public class AuraScreen extends Screen {
 		}
 
 		// ---- the road to the next stage.
-		int y = 92;
+		var unity=dev.wildercord.aura.Unity.state(player);
+		String refusal=dev.wildercord.aura.Unity.refusal(player);
+		boolean together=dev.wildercord.aura.Unity.active(player);
+		g.blitSprite(RenderPipelines.GUI_TEXTURED,SPR_INSET,14,86,W-28,14);
+		g.blitSprite(RenderPipelines.GUI_TEXTURED,Wildercord.id("aura/unity"),17,87,12,12);
+		Component unityText=together?Component.translatable("screen.wildercord.unity.active",(unity.until()-now+19)/20)
+			: now<unity.readyAt()?Component.translatable("screen.wildercord.unity.rest",(unity.readyAt()-now+19)/20)
+			: Component.translatable("screen.wildercord.unity.start");
+		g.text(font,unityText,33,89,together || refusal==null?GOLD:DIM,true);
+		if(inside(mx,my,14,86,W-28,14))tooltip=List.of(Component.translatable("screen.wildercord.unity.desc"),
+			Component.translatable(refusal==null?"message.wildercord.unity.ready":"message.wildercord.unity."+refusal).withStyle(ChatFormatting.GRAY));
+		int y = 108;
 		int next = stage + 1;
 		int cap = AuraStages.cap(stage);
 		boolean open = AuraStages.canBreakThrough(stage);

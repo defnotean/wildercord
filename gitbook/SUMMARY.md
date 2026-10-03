@@ -70,6 +70,7 @@
   * [Village Tournaments](progression/village-tournaments.md)
   * [Resonant Strikes](progression/resonant-strikes.md)
   * [Rune-Etched Blades](progression/rune-etched-blades.md)
+  * [Unity](progression/unity.md)
 * [The Fusion Altar](fusion-altar/index.md)
   * [Ranks](fusion-altar/ranks.md)
   * [Combining](fusion-altar/combining.md)

@@ -797,6 +797,9 @@ def write_lang(runes):
     lang.update(resonant_art.LANG)
     import rune_etching_art
     lang.update(rune_etching_art.LANG)
+    import unity_art
+    lang.update(unity_art.LANG)
+    unity_art.write(sys.modules[__name__])
     import aura_beasts_art
     lang.update(aura_beasts_art.LANG)
     aura_beasts_art.write(sys.modules[__name__])

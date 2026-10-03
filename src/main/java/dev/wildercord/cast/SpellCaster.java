@@ -194,6 +194,8 @@ public final class SpellCaster {
 				Spellbooks.setMana(player, mana - cost);
 			}
 		}
+		if (!player.isCreative() && !free && !compiled.paysInHealth())
+			dev.wildercord.aura.Unity.manaSpent(player, Math.max(0, mana - Spellbooks.mana(player)));
 		int cooldown = Heart.cooldownTicks(player, compiled, secretCooldown * Mastery.cooldownFactor(player, runes));
 		Spellbooks.setReadyAt(player, spell, now + cooldown);
 		HeartCircles.condense(player, spent);

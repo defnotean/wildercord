@@ -140,6 +140,10 @@ public final class AuraHud {
 		}
 		// The awakening's mark, after the diamonds.
 		px += AwakeningHud.mark(g, player, px, py, color, now, partial);
+		if(dev.wildercord.aura.Unity.active(player)) {
+			g.blitSprite(RenderPipelines.GUI_TEXTURED,dev.wildercord.Wildercord.id("aura/unity"),px,py-1,9,9);
+			px+=10;
+		}
 		int pipsRight = px;
 		dev.wildercord.aura.Awakening.State waking = dev.wildercord.aura.Awakening.state(player);
 		boolean awakened = waking.awakened(now);

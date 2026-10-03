@@ -16,6 +16,7 @@
             "dev.wildercord.aura.world.VillageTournamentTest",
             "dev.wildercord.cast.ResonantStrikesTest",
             "dev.wildercord.aura.RuneEtchingsTest",
+            "dev.wildercord.aura.UnityTest",
 			"dev.wildercord.cast.ControlMatchupsTest",
 			"dev.wildercord.cast.PerformanceProfilesTest",
 			"dev.wildercord.familiar.ContentSystemsTest",
