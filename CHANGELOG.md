@@ -4,6 +4,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Sword tombs and the Buried Keeper
+
+- Added rare grass-covered sword tombs with descending stairs, buried blade galleries, two intent thresholds, a physical duel chamber and alternate burial details. Flow opens the outer gate; Edge opens the inner gate and challenges the reliquary. The galleries and encounter rooms use the existing dungeon wards.
+- Added the Buried Keeper, a custom blindfolded stone effigy with segmented arms, burial cloth and a long bound blade. Its sweep and thrust lock direction through distinct 1.8-second preparations; its forward guard can be flanked or broken with an axe. Recovery windows are vulnerable. Its effects use sword strokes, stone dust and ground gouges without magic circles.
+- Added a saved one-keeper-per-site encounter and participant reward ledger. Eligible participants claim two different technique scrolls, three Aura Shards and a three-page illustrated Testament once per tomb. Reloading cannot duplicate the rewards or resume a dangerous stale attack.
+- Added ten authored sounds with individual action subtitles, custom gate/reliquary art, a bestiary entry, player guide, configuration migration and integrated runtime tests. New generation and interactions can be disabled with aura_world.sword_tombs.
+- Updated the older Aura-world regression checks for timed crescent clashes: both flights must lock, harm nobody during the contest, and resolve exactly once after the server's network-delay allowance.
+- Registered the keeper with shared boss classification so boss control protections and bonded-blade boss progression apply to it.
+
 ### The Marchkeeper battlefields
 
 - Fixed Windows line-ending drift in generated physical terrain block assets so regeneration remains byte-identical across platforms.

@@ -681,6 +681,36 @@
     "aura_thunder_swing": {
       "part": "aura"
     },
+    "aura_tomb_awake": {
+      "part": "aura"
+    },
+    "aura_tomb_brace": {
+      "part": "aura"
+    },
+    "aura_tomb_break": {
+      "part": "aura"
+    },
+    "aura_tomb_fall": {
+      "part": "aura"
+    },
+    "aura_tomb_gate": {
+      "part": "aura"
+    },
+    "aura_tomb_reward": {
+      "part": "aura"
+    },
+    "aura_tomb_sweep": {
+      "part": "aura"
+    },
+    "aura_tomb_sweep_ready": {
+      "part": "aura"
+    },
+    "aura_tomb_thrust": {
+      "part": "aura"
+    },
+    "aura_tomb_thrust_ready": {
+      "part": "aura"
+    },
     "aura_verdant_art": {
       "part": "aura"
     },

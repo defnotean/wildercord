@@ -9,6 +9,8 @@ import dev.wildercord.aura.AuraSlash;
 import dev.wildercord.aura.BreathingManualItem;
 import dev.wildercord.aura.BreathingMethods;
 import dev.wildercord.aura.Crescents;
+import dev.wildercord.aura.Clashes;
+import dev.wildercord.aura.ClashRules;
 import dev.wildercord.aura.world.AuraFighter;
 import dev.wildercord.aura.world.AuraWorld;
 import dev.wildercord.aura.world.AuraWorldRules;
@@ -93,7 +95,7 @@ import java.util.function.Function;
  *   <li>a fallen knight: rising in a dark spawner room at rank 1; its slash, telegraphed by a raised blade, lands through the
  *       spell defences, and stepping aside dodges it; a perfect guard sends its crescent back; its own guard staggers a rushed blow,
  *       halves a held one, and breaks to an axe; its loot always has a page of its method and sometimes an Aura Shard;</li>
- *   <li>two crescents meeting head on clash, harming nothing behind either;</li>
+ *   <li>two crescents meeting head on lock into a timing contest, harm nobody while locked and resolve exactly once;</li>
  *   <li>the slash by day, against the sky.</li>
  * </ul>
  * Screenshots: {@code aura_world_*}: the duelists by method, each pose, the camp, the knight and its poses, the items, the forged
@@ -809,6 +811,7 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 			return null;
 		});
 		context.waitTicks(5);
+		int resolved = on(world, player -> Clashes.resolvedCount(ClashRules.Kind.CRESCENTS));
 		on(world, player -> {
 			FallenKnight knight = (FallenKnight) tagged(player, "wildercord.clash_knight");
 			Vec3 from = knight.getEyePosition().subtract(0, 0.45, 0);
@@ -820,7 +823,7 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		boolean met = false;
 		for (int t = 0; t < 14 && !met; t++) {
 			context.waitTicks(1);
-			met = on(world, player -> Crescents.inFlight().isEmpty());
+			met = on(world, player -> Clashes.clashing(player) && Crescents.inFlight().stream().filter(Crescents.Flight::held).count() == 2);
 		}
 		context.waitTicks(20);
 		String clashed = on(world, player -> {
@@ -829,12 +832,16 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 			FallenKnight knight = (FallenKnight) tagged(player, "wildercord.clash_knight");
 			if (a.getHealth() < a.getMaxHealth() || b.getHealth() < b.getMaxHealth() || player.getHealth() < player.getMaxHealth()
 					|| knight.getHealth() < knight.getMaxHealth()) {
-				return "two crescents meeting head on should both break, harming nobody (player " + player.getHealth() + ", knight " + knight.getHealth() + ")";
+				return "locked crescents should harm nobody during the timing contest (player " + player.getHealth() + ", knight " + knight.getHealth() + ")";
 			}
 			return Heart.grimoire(player).contains("aura:clash") ? null : "a first clash should go into the Grimoire";
 		});
-		check(met, "both crescents should be gone once they meet");
+		check(met, "opposing crescents should enter a timing lock when they meet");
 		check(clashed == null, clashed);
+		context.waitTicks(ClashRules.serverLength() + 2);
+		check(on(world, player -> !Clashes.clashing(player) && Clashes.resolvedCount(ClashRules.Kind.CRESCENTS) == resolved + 1),
+			"the player/knight timing contest should resolve exactly once");
+		context.waitTicks(20);
 	}
 
 	// ------------------------------------------------------------------ the slash by day
@@ -876,6 +883,7 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		});
 		director(context, world, at(0, -1.5).add(0, 2.2, 0), at(0, 8).add(0, 1.3, 0));
 		context.waitTicks(4);
+		int resolved = on(world, player -> Clashes.resolvedCount(ClashRules.Kind.CRESCENTS));
 		on(world, player -> {
 			for (String tag : List.of("wildercord.clash_a", "wildercord.clash_b")) {
 				FallenKnight k = (FallenKnight) tagged(player, tag);
@@ -889,11 +897,18 @@ public class WildercordAuraWorldTest implements FabricClientGameTest {
 		boolean met = false;
 		for (int t = 0; t < 12 && !met; t++) {
 			context.waitTicks(1);
-			met = on(world, player -> Crescents.inFlight().isEmpty());
+			met = on(world, player -> Clashes.clashing(tagged(player, "wildercord.clash_a"))
+				&& Clashes.clashing(tagged(player, "wildercord.clash_b"))
+				&& Crescents.inFlight().stream().filter(Crescents.Flight::held).count() == 2);
 		}
 		shot(context, "aura_world_clash");
 		cut(context);
-		check(met, "the two knights' crescents should meet and break");
+		check(met, "the two knights' crescents should meet and enter a timing lock");
+		context.waitTicks(ClashRules.serverLength() + 2);
+		check(on(world, player -> !Clashes.clashing(tagged(player, "wildercord.clash_a"))
+			&& !Clashes.clashing(tagged(player, "wildercord.clash_b"))
+			&& Clashes.resolvedCount(ClashRules.Kind.CRESCENTS) == resolved + 1),
+			"the two knights' timing contest should resolve exactly once");
 	}
 
 	/** Watches from a camera of its own at {@code eye}, looking at {@code target} (the HUD hidden). */

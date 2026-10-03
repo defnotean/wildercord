@@ -1288,6 +1288,76 @@
       ],
       "subtitle": "cast"
     },
+    "aura_tomb_awake": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_awake"
+      ],
+      "subtitle": "gravekeeper.awake"
+    },
+    "aura_tomb_brace": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_brace"
+      ],
+      "subtitle": "gravekeeper.brace"
+    },
+    "aura_tomb_break": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_break"
+      ],
+      "subtitle": "gravekeeper.break"
+    },
+    "aura_tomb_fall": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_fall"
+      ],
+      "subtitle": "gravekeeper.fall"
+    },
+    "aura_tomb_gate": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_gate"
+      ],
+      "subtitle": "gravekeeper.gate"
+    },
+    "aura_tomb_reward": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_reward"
+      ],
+      "subtitle": "gravekeeper.reward"
+    },
+    "aura_tomb_sweep": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_sweep"
+      ],
+      "subtitle": "gravekeeper.sweep"
+    },
+    "aura_tomb_sweep_ready": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_sweep_ready"
+      ],
+      "subtitle": "gravekeeper.sweep_ready"
+    },
+    "aura_tomb_thrust": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_thrust"
+      ],
+      "subtitle": "gravekeeper.thrust"
+    },
+    "aura_tomb_thrust_ready": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_tomb_thrust_ready"
+      ],
+      "subtitle": "gravekeeper.thrust_ready"
+    },
     "aura_verdant_art": {
       "attenuation": 24,
       "files": [

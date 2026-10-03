@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 202610022,
+    "spacing": 76,
+    "separation": 28
+  },
+  "structures": [
+    {
+      "structure": "wildercord:sword_tomb",
+      "weight": 1
+    }
+  ]
+}

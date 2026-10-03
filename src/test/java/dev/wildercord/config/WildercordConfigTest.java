@@ -1360,6 +1360,13 @@ class WildercordConfigTest {
 		assertEquals(parsed.config().auraWorld(), WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
 	}
 
+	@Test void swordTombSettingsMigrateAndRoundTrip() {
+		assertTrue(WildercordConfig.parse("{}").config().auraWorld().swordTombs());
+		var parsed=WildercordConfig.parse("{\"aura_world\":{\"sword_tombs\":false}}");
+		assertFalse(parsed.config().auraWorld().swordTombs());
+		assertTrue(parsed.warnings().isEmpty());
+		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
+	}
 	@Test void battlefieldSettingsMigrateAndRoundTrip() {
 		assertTrue(WildercordConfig.parse("{}").config().auraWorld().battlefields());
 		var parsed=WildercordConfig.parse("{\"aura_world\":{\"battlefields\":false}}");

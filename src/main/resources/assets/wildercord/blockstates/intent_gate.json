@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=north,stage=2": {
+      "model": "wildercord:block/intent_gate_2"
+    },
+    "facing=north,stage=3": {
+      "model": "wildercord:block/intent_gate_3"
+    },
+    "facing=south,stage=2": {
+      "model": "wildercord:block/intent_gate_2"
+    },
+    "facing=south,stage=3": {
+      "model": "wildercord:block/intent_gate_3"
+    },
+    "facing=east,stage=2": {
+      "model": "wildercord:block/intent_gate_2"
+    },
+    "facing=east,stage=3": {
+      "model": "wildercord:block/intent_gate_3"
+    },
+    "facing=west,stage=2": {
+      "model": "wildercord:block/intent_gate_2"
+    },
+    "facing=west,stage=3": {
+      "model": "wildercord:block/intent_gate_3"
+    }
+  }
+}

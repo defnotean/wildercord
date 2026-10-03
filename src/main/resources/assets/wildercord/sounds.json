@@ -4832,6 +4832,66 @@
       "wildercord:kit/aura/aura_thunder_swing_3"
     ]
   },
+  "aura_tomb_awake": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.awake",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_awake"
+    ]
+  },
+  "aura_tomb_brace": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.brace",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_brace"
+    ]
+  },
+  "aura_tomb_break": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.break",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_break"
+    ]
+  },
+  "aura_tomb_fall": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.fall",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_fall"
+    ]
+  },
+  "aura_tomb_gate": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.gate",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_gate"
+    ]
+  },
+  "aura_tomb_reward": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.reward",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_reward"
+    ]
+  },
+  "aura_tomb_sweep": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.sweep",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_sweep"
+    ]
+  },
+  "aura_tomb_sweep_ready": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.sweep_ready",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_sweep_ready"
+    ]
+  },
+  "aura_tomb_thrust": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.thrust",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_thrust"
+    ]
+  },
+  "aura_tomb_thrust_ready": {
+    "subtitle": "subtitles.wildercord.kit.gravekeeper.thrust_ready",
+    "sounds": [
+      "wildercord:kit/aura/aura_tomb_thrust_ready"
+    ]
+  },
   "aura_verdant_art": {
     "subtitle": "subtitles.wildercord.kit.cast",
     "sounds": [

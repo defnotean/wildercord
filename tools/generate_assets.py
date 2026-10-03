@@ -784,6 +784,9 @@ def write_lang(runes):
     import battlefield_art
     lang.update(battlefield_art.LANG)
     battlefield_art.write(sys.modules[__name__])
+    import sword_tomb_art
+    lang.update(sword_tomb_art.LANG)
+    sword_tomb_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
     import way_art

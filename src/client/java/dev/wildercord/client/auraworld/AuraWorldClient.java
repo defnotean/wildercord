@@ -36,6 +36,8 @@ public final class AuraWorldClient {
 		ModelLayerRegistry.registerModelLayer(FALLEN_KNIGHT, FallenKnightModel::createLayer);
 		EntityRendererRegistry.register(AuraWorld.DUELIST, AuraWorldClient::duelist);
 		EntityRendererRegistry.register(AuraWorld.FALLEN_KNIGHT, AuraWorldClient::knight);
+		ModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.aura.world.SwordTombs.KEEPER,GravekeeperRenderer::new);
 		// An aura-forged weapon says what it carries, under its name.
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			List<Component> extra = ForgedGear.describe(stack);

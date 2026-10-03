@@ -617,11 +617,19 @@ public record WildercordConfig(
 	 */
 	public record AuraWorldSettings(boolean duelists, double duelistSpawnRate, int maxDuelists, boolean duelistCamps, boolean knights,
 			double knightSpawnRate, int maxKnightsNearby, boolean forgedGear, double lumenedgeGain, double skyrendSlash, double bulwarkGuardCost,
-			double sashCapacity, boolean trainingGrounds, double trainingGain, double trainingPractice, boolean battlefields) {
+			double sashCapacity, boolean trainingGrounds, double trainingGain, double trainingPractice, boolean battlefields, boolean swordTombs) {
 		public static final AuraWorldSettings DEFAULTS = new AuraWorldSettings(true, 1.0, 2, true, true, 1.0, 2, true,
 			dev.wildercord.aura.world.AuraWorldRules.LUMENEDGE_GAIN, dev.wildercord.aura.world.AuraWorldRules.SKYREND_SLASH,
 			dev.wildercord.aura.world.AuraWorldRules.BULWARK_GUARD_COST, dev.wildercord.aura.world.AuraWorldRules.SASH_CAPACITY, true,
-			dev.wildercord.aura.world.TrainingRules.GAIN, dev.wildercord.aura.world.TrainingRules.PRACTICE, true);
+			dev.wildercord.aura.world.TrainingRules.GAIN, dev.wildercord.aura.world.TrainingRules.PRACTICE, true, true);
+
+		/** Existing battlefield callers retain sword tomb generation at its default. */
+		public AuraWorldSettings(boolean duelists, double duelistSpawnRate, int maxDuelists, boolean duelistCamps, boolean knights,
+				double knightSpawnRate, int maxKnightsNearby, boolean forgedGear, double lumenedgeGain, double skyrendSlash,
+				double bulwarkGuardCost, double sashCapacity, boolean trainingGrounds, double trainingGain, double trainingPractice, boolean battlefields) {
+			this(duelists,duelistSpawnRate,maxDuelists,duelistCamps,knights,knightSpawnRate,maxKnightsNearby,forgedGear,lumenedgeGain,skyrendSlash,
+				bulwarkGuardCost,sashCapacity,trainingGrounds,trainingGain,trainingPractice,battlefields,true);
+		}
 
 		/** Terrain-training callers retain battlefield discovery at its default. */
 		public AuraWorldSettings(boolean duelists, double duelistSpawnRate, int maxDuelists, boolean duelistCamps, boolean knights,
@@ -858,7 +866,8 @@ public record WildercordConfig(
 				r.bool("aura_world", "training_grounds", d.auraWorld.trainingGrounds()),
 				r.number("aura_world", "training_gain", d.auraWorld.trainingGain(), 1, 2),
 				r.number("aura_world", "training_practice", d.auraWorld.trainingPractice(), 0, 2),
-				r.bool("aura_world", "battlefields", d.auraWorld.battlefields())));
+				r.bool("aura_world", "battlefields", d.auraWorld.battlefields()),
+				r.bool("aura_world", "sword_tombs", d.auraWorld.swordTombs())));
 		r.unknown();
 		return new Parsed(config, warnings);
 	}
@@ -909,7 +918,7 @@ public record WildercordConfig(
 			"sparring", "spar_ring_radius", "spars_per_day", "spar_xp", "mentorship", "max_disciples", "disciple_gain", "master_share", "clashes",
 			"clash_carry"));
 		KEYS.put("aura_world", Set.of("duelists", "duelist_spawn_rate", "max_duelists", "duelist_camps", "knights", "knight_spawn_rate",
-			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity", "training_grounds", "training_gain", "training_practice", "battlefields"));
+			"max_knights_nearby", "forged_gear", "lumenedge_gain", "skyrend_slash", "bulwark_guard_cost", "sash_capacity", "training_grounds", "training_gain", "training_practice", "battlefields", "sword_tombs"));
 	}
 
 	/** Reads fields out of the sections, falling back and clamping with a warning for each problem. */
@@ -1335,7 +1344,7 @@ public record WildercordConfig(
 			+ "scales how often and max_knights_nearby caps them round each player. forged_gear switches what the aura-forged weapons and the Breath Sash "
 			+ "do for aura: Lumenedge's aura from blows (lumenedge_gain), Skyrend Glaive's slash (skyrend_slash), Bulwark Maul's guard cost "
 			+ "(bulwark_guard_cost) and the sash's aura capacity (sash_capacity). training_grounds enables waterfall and summit breathing: "
-			+ "training_gain multiplies passive recovery; training_practice is experience per full breath within the shared lifetime practice allowance. battlefields enables new old-battlefield generation and memory discovery.");
+			+ "training_gain multiplies passive recovery; training_practice is experience per full breath within the shared lifetime practice allowance. battlefields enables new old-battlefield generation and memory discovery. sword_tombs enables new tomb generation, intent gates and keeper reliquary interactions.");
 		auraWorldSection.addProperty("duelists", auraWorld.duelists());
 		auraWorldSection.addProperty("duelist_spawn_rate", auraWorld.duelistSpawnRate());
 		auraWorldSection.addProperty("max_duelists", auraWorld.maxDuelists());
@@ -1352,6 +1361,7 @@ public record WildercordConfig(
 		auraWorldSection.addProperty("training_gain", auraWorld.trainingGain());
 		auraWorldSection.addProperty("training_practice", auraWorld.trainingPractice());
 		auraWorldSection.addProperty("battlefields", auraWorld.battlefields());
+		auraWorldSection.addProperty("sword_tombs", auraWorld.swordTombs());
 		root.add("aura_world", auraWorldSection);
 		return GSON.toJson(root) + "\n";
 	}

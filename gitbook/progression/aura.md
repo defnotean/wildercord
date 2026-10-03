@@ -826,3 +826,5 @@ By day the slash's crescent has a dark rim under its light, so it's easy to see 
 ## Old sword traditions
 
 Search the [Marchkeeper battlefields](battlefields.md) for three histories and technique intents. Hold the breathing stance beside an old memorial, then use it to recover its lesson.
+
+The [Sword Tombs](sword-tombs.md) preserve their buried blades. Flow and Edge open the intent gates; an Edge blade challenges the Buried Keeper for technique scrolls, Aura Shards and its testament.

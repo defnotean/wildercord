@@ -169,7 +169,8 @@ public final class Spirits {
 	public static boolean isBoss(Entity target) {
 		return target.getType() == EntityTypes.ENDER_DRAGON || target.getType() == EntityTypes.WITHER
 			|| target.getType() == EntityTypes.WARDEN || target.getType() == EntityTypes.ELDER_GUARDIAN
-			|| target.getType() == WildercordEntities.ARCHIVIST || target instanceof DungeonBoss;
+			|| target.getType() == WildercordEntities.ARCHIVIST || target instanceof DungeonBoss
+			|| target instanceof dev.wildercord.aura.world.Gravekeeper;
 	}
 
 	/** Freeze: {@link #hold} plus ice, which sets up Shatter. */
