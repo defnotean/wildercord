@@ -95,8 +95,8 @@ off"*, and you start again from nothing.
 
 If nothing happens, the Blank Rune tells you why (at most once every 30 seconds):
 
-- *"The land here holds a rune, but it isn't the time for it"*: right land, wrong moment.
-- *"The Blank Rune stays quiet here"*: this land holds no rune.
+- **Rune attunement: …** gives the condition still needed in this biome, such as height 200 or higher, snowfall or a full moon.
+- **The Blank Rune stays quiet: …, height …** names your current biome and height when it has no attunement. A high tower in a plains biome does not count as a mountain.
 
 ### Once a day
 
@@ -122,7 +122,7 @@ Grimoire)"*.
 | **Lush Caves** | Any time | [Glowvine](../runes/world.md#glowvine) | I | *"Beneath the green, where berries glow on hanging vines."* |
 | **Mangrove Swamp** | Any time | [Rootsnare](../runes/world.md#rootsnare) | II | *"Where the trees stand on their own tangled roots in the water."* |
 | **Dripstone Caves** | Any time | [Stalactite](../runes/world.md#stalactite) | II | *"Under stone teeth that drip, slowly, forever."* |
-| **Jagged Peaks** or **Frozen Peaks** | Standing at **height 200** or higher | [Summit Wind](../runes/world.md#summit_wind) | III | *"Climb until the mountain has nothing left above you but wind."* |
+| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, or **Windswept Hills / Gravelly Hills / Forests** | Standing at **height 200** or higher | [Summit Wind](../runes/world.md#summit_wind) | III | *"Climb until the mountain has nothing left above you but wind."* |
 | **Soul Sand Valley** | Any time | [Soulfire](../runes/world.md#soulfire) | III | *"In the valley of sighing sand, where the fires burn blue."* |
 | **Warped Forest** | Any time | [Warp Step](../runes/world.md#warp_step) | II | *"Among the teal fungus, where the tall wanderers walk in peace."* |
 | **Crimson Forest** | Any time | [Blood Moss](../runes/world.md#blood_moss) | II | *"In the red wood of the burning world, where the moss is the colour of blood."* |
@@ -286,7 +286,7 @@ treasure rune, but Tidehook and Current are likelier: each about 1 in 6.
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starlight_tether.png) | [Starlight Tether](../runes/world.md#starlight_tether) | III | Arcane effect | Attunement: the End's outer islands |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starmaw.png) | [Starmaw](../runes/world.md#starmaw) | IV | Void effect | The Star-Eater |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/starshard.png) | [Starshard](../runes/world.md#starshard) | III | Arcane effect | Fallen stars |
-| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/summit_wind.png) | [Summit Wind](../runes/world.md#summit_wind) | III | Wind effect | Attunement: jagged or frozen peaks, above height 200 |
+| ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/summit_wind.png) | [Summit Wind](../runes/world.md#summit_wind) | III | Wind effect | Attunement: mountain peaks, slopes, groves or windswept hills, at height 200 or higher |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/sunscorch.png) | [Sunscorch](../runes/world.md#sunscorch) | III | Fire effect | Attunement: badlands |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidecall.png) | [Tidecall](../runes/world.md#tidecall) | III | Frost effect | Ocean monuments (Elder Guardians) |
 | ![](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/runes/tidehook.png) | [Tidehook](../runes/world.md#tidehook) | II | Frost effect | Fishing in open water |

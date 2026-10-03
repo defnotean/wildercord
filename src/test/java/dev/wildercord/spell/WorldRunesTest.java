@@ -168,6 +168,13 @@ class WorldRunesTest {
 		assertEquals(SUMMIT_WIND, attuned(place("minecraft:jagged_peaks", 6000, 3, "none", true, false, 210)));
 		assertEquals(SUMMIT_WIND, attuned(place("minecraft:frozen_peaks", 6000, 3, "snow", true, false, 200)));
 		assertNull(attuned(place("minecraft:jagged_peaks", 6000, 3, "none", true, false, 150)));
+		for (String mountain : List.of("minecraft:jagged_peaks", "minecraft:frozen_peaks", "minecraft:stony_peaks",
+			"minecraft:snowy_slopes", "minecraft:grove", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest")) {
+			assertEquals(SUMMIT_WIND, attuned(place(mountain, 6000, 3, "none", true, false, 254)), mountain);
+			assertEquals(SUMMIT_WIND, attuned(place(mountain, 6000, 3, "none", true, false, 200)), mountain);
+			assertNull(attuned(place(mountain, 6000, 3, "none", true, false, 199)), mountain);
+		}
+		assertNull(attuned(place("minecraft:plains", 6000, 3, "none", true, false, 254)), "a plains tower is not a mountain");
 	}
 
 	@Test

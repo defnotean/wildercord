@@ -1898,6 +1898,8 @@
   "message.wildercord.attune_stage.3": "The rune brightens: almost there",
   "message.wildercord.attuned": "Attuned! The Blank Rune became %s",
   "message.wildercord.attune_broken": "The attunement breaks off",
+  "message.wildercord.attune_conditions": "Rune attunement: %s.",
+  "message.wildercord.attune_quiet_details": "The Blank Rune stays quiet: %s, height %s.",
   "message.wildercord.attune_quiet": "The Blank Rune stays quiet here",
   "message.wildercord.attune_not_now": "The land here holds a rune, but it isn't the time for it",
   "message.wildercord.attune_resting": "This land gave you its rune today: it rests for about %s more minutes",

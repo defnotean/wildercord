@@ -27,6 +27,7 @@
 			"dev.wildercord.cast.HomeProjectsTest",
 			"dev.wildercord.player.ResearchLibraryTest",
 			"dev.wildercord.world.dungeons.ExpeditionsTest",
+            "dev.wildercord.world.dungeons.MountainStormTest",
 			"dev.wildercord.cast.ArmorResponsesTest",
 			"dev.wildercord.cast.NewEncountersTest",
 			"dev.wildercord.cast.PracticeRoomTest",

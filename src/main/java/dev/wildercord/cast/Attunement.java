@@ -75,8 +75,11 @@ public final class Attunement {
 			long quiet = state == null ? 0 : state.quietUntil();
 			if (now >= quiet) {
 				// Say it once a meditation (at most every half minute): a biome that holds a rune says so.
-				player.sendOverlayMessage(Component.translatable(Attunements.biomeHolds(place.biome())
-					? "message.wildercord.attune_not_now" : "message.wildercord.attune_quiet").withStyle(ChatFormatting.GRAY));
+				var possible=Attunements.RULES.stream().filter(r->r.biomes().contains(place.biome())).findFirst();
+				var message=possible.isPresent()
+					? Component.translatable("message.wildercord.attune_conditions",possible.get().needs())
+					: Component.translatable("message.wildercord.attune_quiet_details",Component.translatableWithFallback("biome."+place.biome().replace(':','.'),place.biome()),place.y());
+				player.sendOverlayMessage(message.withStyle(ChatFormatting.GRAY));
 				quiet = now + 600;
 			}
 			STATES.put(player.getUUID(), new State("", 0, quiet));

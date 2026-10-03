@@ -101,8 +101,8 @@ off"*, and you start again from nothing.
 
 If nothing happens, the Blank Rune tells you why (at most once every 30 seconds):
 
-- *"The land here holds a rune, but it isn't the time for it"*: right land, wrong moment.
-- *"The Blank Rune stays quiet here"*: this land holds no rune.
+- **Rune attunement: …** gives the condition still needed in this biome, such as height 200 or higher, snowfall or a full moon.
+- **The Blank Rune stays quiet: …, height …** names your current biome and height when it has no attunement. A high tower in a plains biome does not count as a mountain.
 
 ### Once a day
 
@@ -128,7 +128,7 @@ Grimoire)"*.
 | **Lush Caves** | Any time | [Glowvine]({{ '/runes/world/#glowvine' | relative_url }}) | I | *"Beneath the green, where berries glow on hanging vines."* |
 | **Mangrove Swamp** | Any time | [Rootsnare]({{ '/runes/world/#rootsnare' | relative_url }}) | II | *"Where the trees stand on their own tangled roots in the water."* |
 | **Dripstone Caves** | Any time | [Stalactite]({{ '/runes/world/#stalactite' | relative_url }}) | II | *"Under stone teeth that drip, slowly, forever."* |
-| **Jagged Peaks** or **Frozen Peaks** | Standing at **height 200** or higher | [Summit Wind]({{ '/runes/world/#summit_wind' | relative_url }}) | III | *"Climb until the mountain has nothing left above you but wind."* |
+| **Jagged, Frozen or Stony Peaks**, **Snowy Slopes**, **Groves**, or **Windswept Hills / Gravelly Hills / Forests** | Standing at **height 200** or higher | [Summit Wind]({{ '/runes/world/#summit_wind' | relative_url }}) | III | *"Climb until the mountain has nothing left above you but wind."* |
 | **Soul Sand Valley** | Any time | [Soulfire]({{ '/runes/world/#soulfire' | relative_url }}) | III | *"In the valley of sighing sand, where the fires burn blue."* |
 | **Warped Forest** | Any time | [Warp Step]({{ '/runes/world/#warp_step' | relative_url }}) | II | *"Among the teal fungus, where the tall wanderers walk in peace."* |
 | **Crimson Forest** | Any time | [Blood Moss]({{ '/runes/world/#blood_moss' | relative_url }}) | II | *"In the red wood of the burning world, where the moss is the colour of blood."* |
@@ -292,7 +292,7 @@ treasure rune, but Tidehook and Current are likelier: each about 1 in 6.
 | <img src="{{ '/assets/runes/starlight_tether.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starlight Tether]({{ '/runes/world/#starlight_tether' | relative_url }}) | III | Arcane effect | Attunement: the End's outer islands |
 | <img src="{{ '/assets/runes/starmaw.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starmaw]({{ '/runes/world/#starmaw' | relative_url }}) | IV | Void effect | The Star-Eater |
 | <img src="{{ '/assets/runes/starshard.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Starshard]({{ '/runes/world/#starshard' | relative_url }}) | III | Arcane effect | Fallen stars |
-| <img src="{{ '/assets/runes/summit_wind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Summit Wind]({{ '/runes/world/#summit_wind' | relative_url }}) | III | Wind effect | Attunement: jagged or frozen peaks, above height 200 |
+| <img src="{{ '/assets/runes/summit_wind.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Summit Wind]({{ '/runes/world/#summit_wind' | relative_url }}) | III | Wind effect | Attunement: mountain peaks, slopes, groves or windswept hills, at height 200 or higher |
 | <img src="{{ '/assets/runes/sunscorch.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Sunscorch]({{ '/runes/world/#sunscorch' | relative_url }}) | III | Fire effect | Attunement: badlands |
 | <img src="{{ '/assets/runes/tidecall.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidecall]({{ '/runes/world/#tidecall' | relative_url }}) | III | Frost effect | Ocean monuments (Elder Guardians) |
 | <img src="{{ '/assets/runes/tidehook.png' | relative_url }}" alt="" width="24" height="24" class="rune-icon"> | [Tidehook]({{ '/runes/world/#tidehook' | relative_url }}) | II | Frost effect | Fishing in open water |
