@@ -1367,6 +1367,13 @@ class WildercordConfigTest {
 		assertTrue(parsed.warnings().isEmpty());
 		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
 	}
+	@Test void sleepingBladeSettingsMigrateAndRoundTrip() {
+		assertTrue(WildercordConfig.parse("{}").config().auraWorld().sleepingBlades());
+		var parsed=WildercordConfig.parse("{\"aura_world\":{\"sleeping_blades\":false}}");
+		assertFalse(parsed.config().auraWorld().sleepingBlades());
+		assertTrue(parsed.warnings().isEmpty());
+		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
+	}
 	@Test void battlefieldSettingsMigrateAndRoundTrip() {
 		assertTrue(WildercordConfig.parse("{}").config().auraWorld().battlefields());
 		var parsed=WildercordConfig.parse("{\"aura_world\":{\"battlefields\":false}}");

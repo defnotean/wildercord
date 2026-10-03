@@ -11,6 +11,7 @@
 			"dev.wildercord.aura.TrainingGroundsTest",
 			"dev.wildercord.world.dungeons.BattlefieldsTest",
 			"dev.wildercord.world.dungeons.SwordTombTest",
+			"dev.wildercord.world.dungeons.SleepingBladeTest",
 			"dev.wildercord.cast.ControlMatchupsTest",
 			"dev.wildercord.cast.PerformanceProfilesTest",
 			"dev.wildercord.familiar.ContentSystemsTest",

@@ -65,6 +65,7 @@
   * [Research Notebook](progression/research.md)
   * [The Marchkeeper Battlefields](progression/battlefields.md)
   * [The Sword Tombs](progression/sword-tombs.md)
+  * [The Sleeping Blade](progression/sleeping-blade.md)
 * [The Fusion Altar](fusion-altar/index.md)
   * [Ranks](fusion-altar/ranks.md)
   * [Combining](fusion-altar/combining.md)

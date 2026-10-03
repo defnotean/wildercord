@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 202610023,
+    "spacing": 92,
+    "separation": 36
+  },
+  "structures": [
+    {
+      "structure": "wildercord:sleeping_blade",
+      "weight": 1
+    }
+  ]
+}

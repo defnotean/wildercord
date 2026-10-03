@@ -3946,6 +3946,24 @@
       "wildercord:kit/aura/aura_backlash"
     ]
   },
+  "aura_blade_stone_draw": {
+    "subtitle": "subtitles.wildercord.kit.sleeping_blade.draw",
+    "sounds": [
+      "wildercord:kit/aura/aura_blade_stone_draw"
+    ]
+  },
+  "aura_blade_stone_listen": {
+    "subtitle": "subtitles.wildercord.kit.sleeping_blade.listen",
+    "sounds": [
+      "wildercord:kit/aura/aura_blade_stone_listen"
+    ]
+  },
+  "aura_blade_stone_strain": {
+    "subtitle": "subtitles.wildercord.kit.sleeping_blade.strain",
+    "sounds": [
+      "wildercord:kit/aura/aura_blade_stone_strain"
+    ]
+  },
   "aura_bond_fail": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
@@ -4469,6 +4487,12 @@
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
       "wildercord:kit/aura/aura_momentum_rise"
+    ]
+  },
+  "aura_oathkeeper_answer": {
+    "subtitle": "subtitles.wildercord.kit.sleeping_blade.answer",
+    "sounds": [
+      "wildercord:kit/aura/aura_oathkeeper_answer"
     ]
   },
   "aura_perfect_guard": {

@@ -490,6 +490,27 @@
       ],
       "subtitle": "tell"
     },
+    "aura_blade_stone_draw": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_blade_stone_draw"
+      ],
+      "subtitle": "sleeping_blade.draw"
+    },
+    "aura_blade_stone_listen": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_blade_stone_listen"
+      ],
+      "subtitle": "sleeping_blade.listen"
+    },
+    "aura_blade_stone_strain": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_blade_stone_strain"
+      ],
+      "subtitle": "sleeping_blade.strain"
+    },
     "aura_bond_fail": {
       "attenuation": 0,
       "files": [
@@ -951,6 +972,13 @@
         "kit/aura/aura_momentum_rise"
       ],
       "subtitle": "tell"
+    },
+    "aura_oathkeeper_answer": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_oathkeeper_answer"
+      ],
+      "subtitle": "sleeping_blade.answer"
     },
     "aura_perfect_guard": {
       "attenuation": 24,

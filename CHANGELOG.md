@@ -4,6 +4,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### The sleeping blade and Oathkeeper
+
+- Added rare Marchkeeper resting places in dry highland/open-country habitats, with three surrounding ruin details and a custom cracked stone socket. Only generated sockets hold a blade. The first completed draw permanently claims that site's weapon.
+- From Form, kneel with an empty main hand and no standing blade bond, then use the stone. Steel rises through three lift poses over six seconds. Movement, damage, interrupted kneeling, changed intent or an occupied hand cancels the draw; orphan lift poses settle after loading through scheduled checks.
+- Added Oathkeeper, a custom shaped diamond-grade sword with wrapped grip, brass guard and an automatic ownership bond. Its origin and modest resonance head start use the existing bond system. While bonded and held, guard costs 15% less and perfect guards build 30% more momentum, while ordinary hits build 20% less.
+- Added four distinct sounds with individual subtitles, physical stone-strain cuts, a three-page Last Oath history, player guide and configuration migration. Later visitors receive the empty stone's history once without another weapon. aura_world.sleeping_blades controls new generation and socket interactions; acquired blades retain their bond behavior.
+
 ### Sword tombs and the Buried Keeper
 
 - Added rare grass-covered sword tombs with descending stairs, buried blade galleries, two intent thresholds, a physical duel chamber and alternate burial details. Flow opens the outer gate; Edge opens the inner gate and challenges the reliquary. The galleries and encounter rooms use the existing dungeon wards.

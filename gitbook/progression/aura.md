@@ -828,3 +828,5 @@ By day the slash's crescent has a dark rim under its light, so it's easy to see 
 Search the [Marchkeeper battlefields](battlefields.md) for three histories and technique intents. Hold the breathing stance beside an old memorial, then use it to recover its lesson.
 
 The [Sword Tombs](sword-tombs.md) preserve their buried blades. Flow and Edge open the intent gates; an Edge blade challenges the Buried Keeper for technique scrolls, Aura Shards and its testament.
+
+The [Sleeping Blade](sleeping-blade.md) waits in rare highland resting places. From Form, kneel with an empty main hand to draw Oathkeeper and bond it. It favours perfect guards over ordinary hits.

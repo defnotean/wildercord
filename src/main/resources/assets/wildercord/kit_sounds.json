@@ -360,6 +360,15 @@
     "aura_backlash": {
       "part": "aura"
     },
+    "aura_blade_stone_draw": {
+      "part": "aura"
+    },
+    "aura_blade_stone_listen": {
+      "part": "aura"
+    },
+    "aura_blade_stone_strain": {
+      "part": "aura"
+    },
     "aura_bond_fail": {
       "part": "aura"
     },
@@ -547,6 +556,9 @@
       "part": "aura"
     },
     "aura_momentum_rise": {
+      "part": "aura"
+    },
+    "aura_oathkeeper_answer": {
       "part": "aura"
     },
     "aura_perfect_guard": {

@@ -92,7 +92,8 @@ public final class ForgedGear {
 
 	/** Bulwark Maul: what the guard costs, raised and held, times this. */
 	public static double guardCost(LivingEntity player) {
-		return working(player, AuraWorldRules.Forged.BULWARK_MAUL) ? Config.get().auraWorld().bulwarkGuardCost() : 1.0;
+		double forged = working(player, AuraWorldRules.Forged.BULWARK_MAUL) ? Config.get().auraWorld().bulwarkGuardCost() : 1.0;
+		return forged * (player instanceof Player p ? SleepingBlades.guardCost(p) : 1);
 	}
 
 	// ------------------------------------------------------------------ the Breath Sash
