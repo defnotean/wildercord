@@ -42,6 +42,8 @@ public class RuneBolt extends Projectile {
 	public static final EntityDataAccessor<Integer> DATA_SECONDARY = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.INT);
 	/** What the bolt's modifiers make it look like, for the comet each client draws (see {@link #style}). */
 	public static final EntityDataAccessor<Integer> DATA_STYLE = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.INT);
+	/** Bounded built-in effect identities for authored flight; gameplay stays in the server group. */
+	public static final EntityDataAccessor<String> DATA_EFFECTS = SynchedEntityData.defineId(RuneBolt.class, EntityDataSerializers.STRING);
 	/** Style bits: how much stronger it is (0 to 3: Amplify, Overcharge), thin (Frugal), a needle (Pierce), seeking (Homing). */
 	public static final int STYLE_POWER = 0x3, STYLE_FRUGAL = 0x4, STYLE_PIERCE = 0x8, STYLE_HOMING = 0x10;
 	private static final double RANGE = 48.0;
@@ -115,6 +117,7 @@ public class RuneBolt extends Projectile {
 		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());
 		bolt.getEntityData().set(DATA_SECONDARY, bolt.theme.secondary());
 		bolt.getEntityData().set(DATA_STYLE, style(group));
+		bolt.getEntityData().set(DATA_EFFECTS, group.effects.stream().map(e -> e.effect.id()).filter(id -> id.startsWith("wildercord:") && id.length() <= 128).distinct().limit(8).collect(java.util.stream.Collectors.joining(",")));
 		bolt.setOwner(cast.caster);
 		bolt.setPos(origin);
 		bolt.setDeltaMovement(dir.normalize().scale(bolt.speed));
@@ -178,6 +181,7 @@ public class RuneBolt extends Projectile {
 		builder.define(DATA_COLOR, 0xFFFFFF);
 		builder.define(DATA_SECONDARY, 0xFFFFFF);
 		builder.define(DATA_STYLE, 0);
+		builder.define(DATA_EFFECTS, "");
 	}
 
 	@Override

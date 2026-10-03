@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Authored fire projectile bodies
+
+- Ember, Fire, Firestorm, Steam, Meteor, Soulfire, Starfire and Phoenix Pyre now carry distinct moving bodies on actual Bolt/Arc entities. Wind/flame, water/vapor, stone/heat, void/flame, stars/fire and living feathers participate in flight.
+- Added bounded effect identity synchronization and client reconstruction. Fully covered groups replace the shared comet; mixed unsupported groups retain fallback presentation. Server collision, payment, reflection, speed and effects are preserved.
+- Added paid native Full/Minimal flight coverage and early/later game captures. The remaining effects, complete release/impact choreography, modifiers, other deliveries and real multiplayer remain open.
+
 ### Authored storm preparations
 
 - Added twenty individually authored preparations: conductor forks, interruption clamps, meeting leaders, magnetic filings, charged birds, sunlight fans, copper terminals, living stems, rifts, threaded nodes and timed charge.

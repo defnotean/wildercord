@@ -455,3 +455,15 @@ These forms prepare according to the delivery: Self stays on you, aimed ground e
 ![Stormclock advances between timed marks]({{ '/assets/images/storm-formation-stormclock.png' | relative_url }})
 
 ![Thunderbird spreads its branching feather preparation]({{ '/assets/images/storm-formation-thunderbird.png' | relative_url }})
+
+## Fire in flight
+
+Eight effects now carry their own moving projectile bodies: Ember is a small coal with loose sparks; Fire has split flame tongues; Firestorm carries flame inside rotating wind rails; Steam leads with water and leaves heated vapor. Meteor carries stone under heat, Soulfire trails a split blue flame, Starfire turns a four-point star and Phoenix Pyre beats swept feather blades.
+
+These bodies follow the projectile's actual movement. Preparations fade behind the traveling spell. Existing collision, shields, reflections and impacts still decide what the spell does. Other effects and deliveries are still being reviewed.
+
+![Firestorm carries flame inside moving wind]({{ '/assets/images/fire-flight-firestorm.png' | relative_url }})
+
+![Steam travels with water and heated vapor]({{ '/assets/images/fire-flight-steam.png' | relative_url }})
+
+![Phoenix Pyre carries swept feather blades]({{ '/assets/images/fire-flight-phoenix_pyre.png' | relative_url }})

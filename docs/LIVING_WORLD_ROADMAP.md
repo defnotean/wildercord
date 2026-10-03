@@ -147,3 +147,11 @@ Twenty runtime storm effects now have explicit two-beat recipes: forks, clamps, 
 Full build: 946 tests, zero failures/errors/skips; 114 guide pages validate/export. Review: artifacts/review/storm-formations, 23 actual screenshots and tested JAR. JAR CRC clean; 4,862 resources and 1,618 classes byte-match. SHA-256: 6b855fbc8228abe8996fcd6f23f9372553cd92e88652921c5cf331ec503dfcb0.
 
 Preparation phase only; existing sounds, gameplay and impact/aftermath preserved. Complete launch/travel/impact choreography, remaining element families, dynamic/add-on spells, all delivery/link combinations, shaders, real multiplayer and profiling remain open. No new creature/item/ability/fusion/lore count. Full goal remains active.
+
+## Authored fire projectile bodies — 2026-10-03
+
+Eight effects now carry explicit authored bodies during actual projectile movement: Ember, Fire, Firestorm, Steam, Meteor, Soulfire, Starfire and Phoenix Pyre. Server entity data synchronizes up to eight distinct bounded built-in IDs; fully covered groups replace the generic comet, while mixed unsupported groups retain fallback. Existing server mechanics, voices/motes, impacts and reflection remain in charge. Same client/server build required.
+
+Native flight suite passed in 46s for real paid Survival casts of all eight in Full/Minimal, exact client IDs, actual motion/material particles, finite/distinct recipes and framebuffer visibility. Seventeen captures include background, eight early and eight later flight frames; all sixteen inspected. Native parry regression passed in 52s. Full build: 946 tests, zero failures/errors/skips; 114 guide pages validate/export. Review: artifacts/review/fire-flights. JAR CRC clean, 4,862 resources/1,620 classes byte-match; SHA-256: c9d5b9c91ac84e972de35d62dbd43c1f2afe32260f21299d2814f56f64ef9356.
+
+This is flight progress, not complete launch/impact/aftermath choreography. Remaining effects/families, Arc native coverage, all modifier/rank/delivery/link pairings, mixed fallback groups, reflected visual identity, close side/third-person review, shaders, real multiplayer and profiling remain open. No new content target counts. Full objective stays active.

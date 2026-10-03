@@ -103,6 +103,13 @@ public final class BoltComets {
 			y = at.y;
 			z = at.z;
 			trail.addFirst(at);
+            if(age % 2 == 0 && age < 1200) {
+                var mc=Minecraft.getInstance();
+                var quality=bolt.getOwner()==mc.player?MagicQuality.own:MagicQuality.others;
+                for(String id:bolt.getEntityData().get(RuneBolt.DATA_EFFECTS).split(","))
+                    FireFlights.draw(id,age,girth(),at,bolt.getDeltaMovement(),quality==MagicQuality.Level.MINIMAL,
+                        (option,pos)->level.addParticle(option,pos.x,pos.y,pos.z,0,0,0));
+            }
 			while (trail.size() > TRAIL) {
 				trail.removeLast();
 			}
@@ -138,7 +145,9 @@ public final class BoltComets {
 
 		@Override
 		public void extract(QuadParticleRenderState state, Camera camera, float partial) {
-			Vec3 cam = camera.position();
+			// Authored fire flights replace the generic comet rather than layering another full comet over it.
+            if(java.util.Arrays.stream(bolt.getEntityData().get(RuneBolt.DATA_EFFECTS).split(",")).allMatch(FireFlights::supports))return;
+            Vec3 cam = camera.position();
 			Vec3 head = bolt.isRemoved() ? (trail.isEmpty() ? bolt.position() : trail.peekFirst()) : bolt.getPosition(partial);
 			float fade = gone >= 0 ? Math.max(0, gone / (float) TRAIL) : Mth.clamp((age + partial) / 2F, 0, 1);
 			Vector3f h = new Vector3f((float) (head.x - cam.x), (float) (head.y - cam.y), (float) (head.z - cam.z));

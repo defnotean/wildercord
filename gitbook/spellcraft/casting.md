@@ -446,3 +446,15 @@ These forms prepare according to the delivery: Self stays on you, aimed ground e
 ![Stormclock advances between timed marks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-formation-stormclock.png)
 
 ![Thunderbird spreads its branching feather preparation](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-formation-thunderbird.png)
+
+## Fire in flight
+
+Eight effects now carry their own moving projectile bodies: Ember is a small coal with loose sparks; Fire has split flame tongues; Firestorm carries flame inside rotating wind rails; Steam leads with water and leaves heated vapor. Meteor carries stone under heat, Soulfire trails a split blue flame, Starfire turns a four-point star and Phoenix Pyre beats swept feather blades.
+
+These bodies follow the projectile's actual movement. Preparations fade behind the traveling spell. Existing collision, shields, reflections and impacts still decide what the spell does. Other effects and deliveries are still being reviewed.
+
+![Firestorm carries flame inside moving wind](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/fire-flight-firestorm.png)
+
+![Steam travels with water and heated vapor](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/fire-flight-steam.png)
+
+![Phoenix Pyre carries swept feather blades](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/fire-flight-phoenix_pyre.png)
