@@ -49,6 +49,8 @@ Windreed grows in small patches in **meadows and windswept hills, forests and gr
 
 Stonehorns and adult Rimehares approach mature plants and graze. They clip the plant back one stage without producing items. `mob_griefing false` preserves the crop. Herbivores pause between meals; their panic, predator avoidance, shelter and combat behavior take priority.
 
+Keep food reachable and shelter entrances clear. Animals check nearby ground gradually and follow ordinary paths; they cannot eat through a wall or create an entrance. Offering wheat to an approaching Stonehorn interrupts its crop search for its own meal animation. An unsafe approach can still provoke its warning while it travels toward food.
+
 Life magic hitting an existing patch advances nearby roots one stage, subject to the usual building and claim permissions. Wind rustles visible fronds without producing a harvest. Neither interaction creates new plants.
 
 ### Field equipment

@@ -31,11 +31,7 @@ public final class Stonehorn extends AuraBeast {
 			}
 			return;
 		}
-		if(getTarget()==null && calm==0 && tickCount%10==0) {
-			var p=level.getEntitiesOfClass(net.minecraft.server.level.ServerPlayer.class,getBoundingBox().inflate(8),e->valid(e) && !dev.wildercord.wildlife.HighlandContent.quiet(e) && e.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && hasLineOfSight(e)
-				&& BeastRules.wary(distanceTo(e),e.isShiftKeyDown(),e.getMainHandItem().is(Items.WHEAT) || e.getOffhandItem().is(Items.WHEAT))).stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
-			if(p!=null) setTarget(p);
-		}
+		noticeThreat(level);
 		var target=getTarget();
 		if(target!=null) {
 			if(distanceTo(target)>7) { getNavigation().moveTo(target,1); return; }
@@ -43,5 +39,13 @@ public final class Stonehorn extends AuraBeast {
 		}
 		// Grazing changes its pose and sheds no automatic items or terrain. Wheat provides the deliberate reward.
 		if(tickCount%100==0 && level.getBlockState(blockPosition().below()).is(Blocks.GRASS_BLOCK)) { pose(BeastRules.FORAGE,50); sound("forage"); }
+	}
+	/** Crop navigation still notices an unsafe approach; resting and deliberately fed calm retain their rules. */
+	void noticeThreat(ServerLevel level) {
+		if(getTarget()==null && calm==0 && home!=null && tickCount%10==0) {
+			var p=level.getEntitiesOfClass(net.minecraft.server.level.ServerPlayer.class,getBoundingBox().inflate(8),e->valid(e) && !dev.wildercord.wildlife.HighlandContent.quiet(e) && e.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && hasLineOfSight(e)
+				&& BeastRules.wary(distanceTo(e),e.isShiftKeyDown(),e.getMainHandItem().is(Items.WHEAT) || e.getOffhandItem().is(Items.WHEAT))).stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+			if(p!=null) setTarget(p);
+		}
 	}
 }

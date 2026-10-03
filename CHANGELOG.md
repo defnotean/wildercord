@@ -4,6 +4,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Highland travel and interruption fixes
+
+- Replaced random food/cover probing with finite nearest-first local sweeps. Eight columns are considered each second, with three footing heights, at most two search path attempts and loaded-cell checks. Ordinary wandering retains the sweep cursor so distant nearby resources are not repeatedly missed.
+- Food and shelter goals now follow the exact reachable native path selected by the search. The convenience movement call previously changed the path's allowed destination distance and could stop a Stonehorn just short of its food. Interrupted movement can retry at most four times, one second apart, within the existing travel deadline.
+- Natural crop grazing yields to timed feeding and recovery poses. Feeding an approaching Stonehorn keeps its complete authored meal animation and calm period. An unsafe player approach can interrupt crop navigation with the ordinary warning and charge counterplay.
+- Chewing requires two consecutive seconds near a visible crop; a solid obstruction blocks feeding. Shelter settlement requires the animal to stand under cover. Neither behavior moves entities through obstacles, forces chunks, generates rewards or destroys terrain.
+- Added a native travel suite for separate food and shelter, a wall detour, Rimehare travel, actual player feeding, proximity interruption, sealed-food refusal and a complete Galeclaw satiety server restart.
+
 ### Highland resources and field equipment
 
 - Added three-stage Windreed, small biome-specific patches, daylight regrowth, two-tassel harvesting that retains roots and replanting on dirt. Life impacts advance existing roots with ordinary claim/build permissions; Wind rustles them without minting items or plants.

@@ -55,14 +55,14 @@ public abstract class AuraBeast extends PathfinderMob {
 	@Override protected void registerGoals() {
 		goalSelector.addGoal(0,new FloatGoal(this));
 		shelter=new dev.wildercord.wildlife.HighlandShelterGoal(this,
-			() -> Config.get().auraWorld().auraBeasts() && level().getDifficulty()!=Difficulty.PEACEFUL && getTarget()==null && (pose()==BeastRules.IDLE || pose()==BeastRules.REST),
+			() -> Config.get().auraWorld().auraBeasts() && level().getDifficulty()!=Difficulty.PEACEFUL && getTarget()==null && left==0 && (pose()==BeastRules.IDLE || pose()==BeastRules.REST),
 			() -> dev.wildercord.wildlife.HighlandRules.wantsCover(gale(),level().getOverworldClockTime(),level().isRaining()),
 			settled -> {if(settled && pose()!=BeastRules.REST)pose(BeastRules.REST,0);else if(!settled && pose()==BeastRules.REST)pose(BeastRules.IDLE,0);});
 		goalSelector.addGoal(2,shelter);
 		if(!gale()) {
 			reedForage=new dev.wildercord.wildlife.WindreedForageGoal(this,
-				() -> Config.get().auraWorld().auraBeasts() && level().getDifficulty()!=Difficulty.PEACEFUL && getTarget()==null && (pose()==BeastRules.IDLE || pose()==BeastRules.FORAGE),
-				feeding -> {if(feeding && pose()!=BeastRules.FORAGE)pose(BeastRules.FORAGE,0);else if(!feeding && pose()==BeastRules.FORAGE)pose(BeastRules.IDLE,0);});
+				() -> Config.get().auraWorld().auraBeasts() && level().getDifficulty()!=Difficulty.PEACEFUL && getTarget()==null && left==0 && (pose()==BeastRules.IDLE || pose()==BeastRules.FORAGE),
+				feeding -> {if(left==0) {if(feeding && pose()!=BeastRules.FORAGE)pose(BeastRules.FORAGE,0);else if(!feeding && pose()==BeastRules.FORAGE)pose(BeastRules.IDLE,0);}});
 			goalSelector.addGoal(3,reedForage);
 		}
 		goalSelector.addGoal(5,new WaterAvoidingRandomStrollGoal(this,.7) {
@@ -137,7 +137,10 @@ public abstract class AuraBeast extends PathfinderMob {
 		}
 		if(!valid(getTarget()) || getTarget()!=null && (getTarget().distanceToSqr(Vec3.atBottomCenterOf(home))>32*32 || distanceToSqr(getTarget())>28*28)) setTarget(null);
 		if(getTarget()==null && shelter.running())return;
-		if(getTarget()==null && reedForage!=null && reedForage.running())return;
+		if(getTarget()==null && reedForage!=null && reedForage.running()) {
+			if(this instanceof Stonehorn grazer)grazer.noticeThreat(level);
+			if(getTarget()==null)return;
+		}
 		if(getTarget()==null && pose()==BeastRules.IDLE && distanceToSqr(Vec3.atBottomCenterOf(home))>16*16 && tickCount%40==0)
 			getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.8);
 		act(level);
