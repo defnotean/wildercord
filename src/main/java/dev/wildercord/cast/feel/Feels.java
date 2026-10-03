@@ -143,6 +143,15 @@ public final class Feels {
 		run(Phase.CUE, feel, theme, cast.level, hand, caster.getLookAngle(), null, cast, 0);
 	}
 
+	/** Retain the travel voice when an authored client body replaces the signature's particle hook. */
+	public static void travelSound(ServerLevel level, Vfx.Theme theme, Vec3 at) {
+		Feel feel = theme.feel();
+		if (feel == null) return;
+		Signature signature = Signatures.of(feel);
+		Signature.Cue cue = signature == null ? null : signature.soundOf(Phase.TRAVEL);
+		if (cue != null) sound(level, at, feel, cue.name(), cue.volume(), cue.pitch());
+	}
+
 	/** TRAVEL: one tick of a projectile's flight. Returns whether the shape's own trail should still be drawn. */
 	public static boolean travel(ServerLevel level, Vfx.Theme theme, Vec3 from, Vec3 to, int tick) {
 		Feel feel = theme.feel();

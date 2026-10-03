@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Every bolt in flight, drawn by the client as a comet: a white-hot core in a coloured glow, and a
- * trail of light behind it that tapers and fades. It follows the bolt's smoothed position every
+ * Authored effect bodies follow live bolts; uncovered groups retain a comet with a
+ * coloured core and a trail that tapers and fades. The fallback follows the smoothed position every
  * frame, so it glides at any distance instead of stepping from tick to tick.
  */
 public final class BoltComets {
@@ -43,9 +43,22 @@ public final class BoltComets {
 		if (level == null) {
 			return;
 		}
+		DRAWN.removeIf(id -> level.getEntity(id) == null || level.getEntity(id).isRemoved());
 		for (Entity e : level.entitiesForRendering()) {
-			if (e instanceof RuneBolt bolt && DRAWN.add(bolt.getId())) {
-				mc.particleEngine.add(new Comet(level, bolt));
+			if (e instanceof RuneBolt bolt) {
+				if (DRAWN.add(bolt.getId())) mc.particleEngine.add(new Comet(level, bolt));
+				if (bolt.tickCount % 2 == 0) {
+					var quality = bolt.getOwner() == mc.player ? MagicQuality.own : MagicQuality.others;
+					int style = bolt.getEntityData().get(RuneBolt.DATA_STYLE);
+					float width = 1 + .18F * (style & RuneBolt.STYLE_POWER);
+					if ((style & RuneBolt.STYLE_FRUGAL) != 0) width *= .7F;
+					if ((style & RuneBolt.STYLE_PIERCE) != 0) width *= .65F;
+					for (String id : bolt.getEntityData().get(RuneBolt.DATA_EFFECTS).split(",")) {
+						FireFlights.draw(id, bolt.tickCount, width, (style & RuneBolt.STYLE_PIERCE) != 0 ? 1.8 : 1,
+							bolt.position(), bolt.getDeltaMovement(), quality == MagicQuality.Level.MINIMAL,
+							(option, pos) -> level.addParticle(option, pos.x, pos.y, pos.z, 0, 0, 0));
+					}
+				}
 			}
 		}
 	}
@@ -63,6 +76,8 @@ public final class BoltComets {
 		private int secondary;
 		private int style;
 		private int gone = -1;
+		private String effects = "";
+		private boolean authored;
 
 		Comet(ClientLevel level, RuneBolt bolt) {
 			super(level, bolt.getX(), bolt.getY(), bolt.getZ(), SpellCircleParticle.particleSprite("sigil_beam"));
@@ -84,6 +99,11 @@ public final class BoltComets {
 			color = bolt.getEntityData().get(RuneBolt.DATA_COLOR);
 			secondary = bolt.getEntityData().get(RuneBolt.DATA_SECONDARY);
 			style = bolt.getEntityData().get(RuneBolt.DATA_STYLE);
+			String current = bolt.getEntityData().get(RuneBolt.DATA_EFFECTS);
+			if (!current.equals(effects)) {
+				effects = current;
+				authored = dev.wildercord.cast.FlightBodies.covers(current);
+			}
 			if (bolt.isRemoved()) {
 				// The trail catches up with where the bolt ended, then the comet goes.
 				if (gone < 0) {
@@ -103,13 +123,7 @@ public final class BoltComets {
 			y = at.y;
 			z = at.z;
 			trail.addFirst(at);
-            if(age % 2 == 0 && age < 1200) {
-                var mc=Minecraft.getInstance();
-                var quality=bolt.getOwner()==mc.player?MagicQuality.own:MagicQuality.others;
-                for(String id:bolt.getEntityData().get(RuneBolt.DATA_EFFECTS).split(","))
-                    FireFlights.draw(id,age,girth(),at,bolt.getDeltaMovement(),quality==MagicQuality.Level.MINIMAL,
-                        (option,pos)->level.addParticle(option,pos.x,pos.y,pos.z,0,0,0));
-            }
+
 			while (trail.size() > TRAIL) {
 				trail.removeLast();
 			}
@@ -146,8 +160,8 @@ public final class BoltComets {
 		@Override
 		public void extract(QuadParticleRenderState state, Camera camera, float partial) {
 			// Authored fire flights replace the generic comet rather than layering another full comet over it.
-            if(java.util.Arrays.stream(bolt.getEntityData().get(RuneBolt.DATA_EFFECTS).split(",")).allMatch(FireFlights::supports))return;
-            Vec3 cam = camera.position();
+			if (authored) return;
+			Vec3 cam = camera.position();
 			Vec3 head = bolt.isRemoved() ? (trail.isEmpty() ? bolt.position() : trail.peekFirst()) : bolt.getPosition(partial);
 			float fade = gone >= 0 ? Math.max(0, gone / (float) TRAIL) : Mth.clamp((age + partial) / 2F, 0, 1);
 			Vector3f h = new Vector3f((float) (head.x - cam.x), (float) (head.y - cam.y), (float) (head.z - cam.z));

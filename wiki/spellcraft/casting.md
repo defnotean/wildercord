@@ -458,12 +458,22 @@ These forms prepare according to the delivery: Self stays on you, aimed ground e
 
 ## Fire in flight
 
-Eight effects now carry their own moving projectile bodies: Ember is a small coal with loose sparks; Fire has split flame tongues; Firestorm carries flame inside rotating wind rails; Steam leads with water and leaves heated vapor. Meteor carries stone under heat, Soulfire trails a split blue flame, Starfire turns a four-point star and Phoenix Pyre beats swept feather blades.
+All twenty-eight fire effects now have individually authored moving projectile bodies. For example, Ember is a small coal with loose sparks; Fire has split flame tongues; Firestorm carries flame inside rotating wind rails; Steam leads with water and leaves heated vapor. Meteor carries stone under heat, Soulfire trails a split blue flame, Starfire turns a four-point star and Phoenix Pyre beats swept feather blades.
 
-These bodies follow the projectile's actual movement. Preparations fade behind the traveling spell. Existing collision, shields, reflections and impacts still decide what the spell does. Other effects and deliveries are still being reviewed.
+These bodies follow the projectile's actual movement. Preparations fade behind the traveling spell. Fully authored fire projectiles replace older overlapping travel particles so their shape stays visible; their travel voice remains. Existing collision, shields, reflections and impacts still decide what the spell does. Other effects and deliveries are still being reviewed.
 
 ![Firestorm carries flame inside moving wind]({{ '/assets/images/fire-flight-firestorm.png' | relative_url }})
 
 ![Steam travels with water and heated vapor]({{ '/assets/images/fire-flight-steam.png' | relative_url }})
 
 ![Phoenix Pyre carries swept feather blades]({{ '/assets/images/fire-flight-phoenix_pyre.png' | relative_url }})
+
+The remaining fire bodies have their own forms too: a heat shutter for Flashfire, pressure ribs for Explode, a fuse for Primer, wooden splinters for Kindling, an ash curtain for Ashen Veil, a shield for Fireward and a grate for Smelt. Everburn carries a broken time fork; Seethe travels in heated water; Cinder Bulwark carries stone courses joined by ember mortar. Pierce makes the body narrower and longer.
+
+![Fireward carries a pointed shield body]({{ '/assets/images/fire-flight-fireward.png' | relative_url }})
+
+![Seethe carries a water envelope with escaping vapor]({{ '/assets/images/fire-flight-seethe.png' | relative_url }})
+
+![Cinder Bulwark carries stone with ember mortar]({{ '/assets/images/fire-flight-cinder-bulwark.png' | relative_url }})
+
+These are distant travel frames from real Survival casts on a review platform. The forms are compact, and some cast preparations remain visible near the player.

@@ -147,6 +147,12 @@
     "constant": "ASHEN_VEIL",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          94
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           14,
@@ -351,6 +357,12 @@
     "id": "wildercord:blazecall",
     "constant": "BLAZECALL",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          86
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -589,6 +601,12 @@
     "id": "wildercord:boiling_surge",
     "constant": "BOILING_SURGE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          139
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -840,6 +858,12 @@
     "constant": "CINDER_BULWARK",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          135
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           15,
@@ -859,6 +883,12 @@
     "id": "wildercord:cinderbrand",
     "constant": "CINDERBRAND",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          90
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -886,6 +916,12 @@
     "id": "wildercord:cinderheart",
     "constant": "CINDERHEART",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          98
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -1065,6 +1101,12 @@
     "id": "wildercord:conflagration",
     "constant": "CONFLAGRATION",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          122
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -1583,6 +1625,12 @@
     "constant": "EMBER",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          25
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           13,
@@ -1641,6 +1689,12 @@
     "constant": "EVERBURN",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          118
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           15,
@@ -1685,6 +1739,12 @@
     "id": "wildercord:explode",
     "constant": "EXPLODE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          66
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -1775,6 +1835,12 @@
     "constant": "FIRE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          29
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           13,
@@ -1817,7 +1883,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/feel/Feels.java",
         "lines": [
-          205
+          214
         ]
       },
       {
@@ -1847,6 +1913,12 @@
     "constant": "FIRESTORM",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          34
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           14,
@@ -1872,6 +1944,12 @@
     "id": "wildercord:fireward",
     "constant": "FIREWARD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          106
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -1924,6 +2002,12 @@
     "id": "wildercord:flashfire",
     "constant": "FLASHFIRE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          62
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -2072,7 +2156,7 @@
       {
         "file": "src/main/java/dev/wildercord/cast/feel/Feels.java",
         "lines": [
-          206
+          215
         ]
       },
       {
@@ -2584,6 +2668,12 @@
     "constant": "HELLMOUTH",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          114
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           15,
@@ -2857,6 +2947,12 @@
     "constant": "INFERNO",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          70
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           13,
@@ -2953,6 +3049,12 @@
     "id": "wildercord:kindling",
     "constant": "KINDLING",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          78
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -3302,6 +3404,12 @@
     "id": "wildercord:meteor",
     "constant": "METEOR",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          43
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -3700,6 +3808,12 @@
     "constant": "PHOENIX_PYRE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          57
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           15,
@@ -3809,6 +3923,12 @@
     "id": "wildercord:primer",
     "constant": "PRIMER",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          74
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -4567,6 +4687,12 @@
     "constant": "SEARING_EDGE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          102
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           14,
@@ -4605,6 +4731,12 @@
     "id": "wildercord:seethe",
     "constant": "SEETHE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          126
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -4832,6 +4964,12 @@
     "constant": "SKYBURST",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          130
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           15,
@@ -4864,6 +5002,12 @@
     "id": "wildercord:smelt",
     "constant": "SMELT",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          110
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -4985,6 +5129,12 @@
     "id": "wildercord:soulfire",
     "constant": "SOULFIRE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          48
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -5133,6 +5283,12 @@
     "constant": "STARFIRE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          52
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
           15,
@@ -5228,6 +5384,12 @@
     "id": "wildercord:steam",
     "constant": "STEAM",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          38
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [
@@ -5441,6 +5603,12 @@
     "id": "wildercord:sunscorch",
     "constant": "SUNSCORCH",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FireFlights.java",
+        "lines": [
+          82
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/FireFormations.java",
         "lines": [

@@ -14,7 +14,7 @@ for file in sorted((ROOT / 'src').rglob('*.java')):
     relative = file.relative_to(ROOT).as_posix()
     if not ('/main/' in relative or '/client/' in relative):
         continue
-    if not any(word in file.stem for word in ['Vfx', 'Fx', 'Feels', 'Effects', 'Shapes', 'Formations', 'Circle']):
+    if not any(word in file.stem for word in ['Vfx', 'Fx', 'Feels', 'Effects', 'Shapes', 'Formations', 'Flights', 'Comets', 'Circle']):
         continue
     files.append((relative, file.read_text(encoding='utf-8').splitlines()))
 rows = []

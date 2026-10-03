@@ -62,6 +62,7 @@ public class RuneBolt extends Projectile {
 	private boolean homing;
 	private double speed;
 	private boolean arc;
+	private boolean authoredFlight;
 	private int lifeLeft;
 	/** How much further a (straight, not lobbed) bolt may fly: {@link #RANGE} blocks in all, however fast it goes. */
 	private double travelLeft;
@@ -117,7 +118,11 @@ public class RuneBolt extends Projectile {
 		bolt.getEntityData().set(DATA_COLOR, bolt.theme.primary());
 		bolt.getEntityData().set(DATA_SECONDARY, bolt.theme.secondary());
 		bolt.getEntityData().set(DATA_STYLE, style(group));
-		bolt.getEntityData().set(DATA_EFFECTS, group.effects.stream().map(e -> e.effect.id()).filter(id -> id.startsWith("wildercord:") && id.length() <= 128).distinct().limit(8).collect(java.util.stream.Collectors.joining(",")));
+		var effects = group.effects.stream().map(e -> e.effect.id()).distinct().toList();
+		var visual = effects.stream().filter(id -> id.startsWith("wildercord:") && id.length() <= 128).limit(8).toList();
+		// An omitted member must keep fallback presentation, even when the retained members have authored bodies.
+		bolt.getEntityData().set(DATA_EFFECTS, String.join(",", visual) + (visual.size() < effects.size() ? ",!" : ""));
+		bolt.authoredFlight = FlightBodies.covers(bolt.getEntityData().get(DATA_EFFECTS));
 		bolt.setOwner(cast.caster);
 		bolt.setPos(origin);
 		bolt.setDeltaMovement(dir.normalize().scale(bolt.speed));
@@ -385,7 +390,12 @@ public class RuneBolt extends Projectile {
 		if (owner != null && to.distanceToSqr(owner.getEyePosition()) < 2.25) {
 			return;
 		}
-		// The comet itself is drawn by each client; here just a few of the element's motes (and a signature's own trail).
+		if (authoredFlight) {
+			// The authored body already contains every ingredient; a second trail obscures its silhouette.
+			dev.wildercord.cast.feel.Feels.travelSound(server, theme, to);
+			return;
+		}
+		// Uncovered groups retain the old travel hooks and supporting motes.
 		boolean own = dev.wildercord.cast.feel.Feels.travel(server, theme, from, to, tickCount);
 		if (!own) {
 			return;

@@ -4,6 +4,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Complete fire projectile body roster
+
+- Added twenty further individually authored flight bodies, covering all twenty-eight runtime fire effects. New forms include heat shutters, pressure ribs, crowns, fuses, wood splinters, solar lenses, brands, ash curtains, hearts, bevels, shields, grates, jaws, time forks, heated water and stone mortar.
+- Authored emission now follows live entities independently of comet particles. Removed entity IDs retire independently, omitted effect metadata preserves fallback, and Pierce narrows and elongates authored bodies. Starfire retains its arcane material in Minimal settings.
+- Fully authored fire groups replace duplicate server travel particles as well as the generic comet; travel voices remain. Unsupported mixed groups retain their previous travel layer. A shared coverage contract keeps server and client decisions aligned.
+- Expanded paid native coverage to the full fire roster and particle-clear recovery. Complete release/impact choreography, other deliveries, modifier combinations, shaders and remote multiplayer remain open.
+
 ### Authored fire projectile bodies
 
 - Ember, Fire, Firestorm, Steam, Meteor, Soulfire, Starfire and Phoenix Pyre now carry distinct moving bodies on actual Bolt/Arc entities. Wind/flame, water/vapor, stone/heat, void/flame, stars/fire and living feathers participate in flight.

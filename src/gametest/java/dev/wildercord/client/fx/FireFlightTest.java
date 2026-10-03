@@ -23,17 +23,37 @@ public final class FireFlightTest implements FabricClientGameTest {
    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.setGameMode(GameType.SURVIVAL);p.teleportTo(s.overworld(),.5,101,.5,Set.<Relative>of(),0,0,false);Spellbooks.setCord(p,new ItemStack(WildercordItems.ECHO_CORD));var b=Spellbooks.get(p).withStarterGiven();for(var r:Runes.all())b=b.learn(r.id());Spellbooks.set(p,b);});c.waitTicks(15);
    c.runOnClient(mc->{mc.getWindow().setWindowed(1280,720);mc.resizeGui();if(!mc.gui.hud.isHidden())mc.gui.hud.toggle();mc.gui.toastManager().clear();recipes();});
    var empty=c.computeOnClient(mc->snapshot(mc,"fire_flight_background"));c.waitFor(mc->empty.isDone());empty.join();
+   check(FireFlights.RUNES.size()==28,"Explicit complete fire roster");
+   check(Runes.all().stream().filter(r->r.family()==dev.wildercord.spell.RuneFamily.EFFECT && r.element().equals("fire")).map(r->r.path()).collect(java.util.stream.Collectors.toSet()).equals(new HashSet<>(FireFlights.RUNES)),"Authored runtime fire roster matches");
    for(var q:List.of(MagicQuality.Level.FULL,MagicQuality.Level.MINIMAL))for(String rune:FireFlights.RUNES) {
-    c.waitTicks(12);w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});
+    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(12);
     c.runOnClient(mc->{mc.particleEngine.clearParticles();MagicQuality.own=q;});
-    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();SpellCaster.edit(p,0,List.of(Runes.BOLT.id(),"wildercord:"+rune));Spellbooks.setMana(p,100);Spellbooks.setReadyAt(p,0,0);float before=Spellbooks.mana(p);SpellCaster.cast(p,0);check(Spellbooks.mana(p)<before,"Paid Bolt/"+rune);});
+    w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();check(SpellCaster.edit(p,0,List.of(Runes.BOLT.id(),"wildercord:"+rune))==null,"Accepted edit: "+rune);Spellbooks.setMana(p,100);Spellbooks.setReadyAt(p,0,0);float before=Spellbooks.mana(p);
+    if(Runes.innate(Runes.get("wildercord:"+rune).orElseThrow())) {
+     p.setAttached(dev.wildercord.player.WildercordAttachments.INNATE,"");SpellCaster.cast(p,0);check(Spellbooks.mana(p)==before,"Foreign innate refused before payment");
+     p.setAttached(dev.wildercord.player.WildercordAttachments.INNATE,"wildercord:"+rune);
+    }
+    boolean free=WildSurge.freeRecast(p,p.level().getGameTime());var active=SpellCaster.activeRunes(Spellbooks.get(p),0,Spellbooks.tier(p));var plan=dev.wildercord.spell.SpellCompiler.compile(active);int price=dev.wildercord.player.Heart.manaCost(p,plan);SpellCaster.cast(p,0);check(Spellbooks.mana(p)<before,"Paid Bolt/"+rune+" alive="+p.isAlive()+" locked="+CastLock.locked(p)+" free="+free+" cost="+price+" empty="+plan.isEmpty()+" active="+active+" ready="+Spellbooks.readyAt(p,0)+" now="+p.level().getGameTime()+" mana="+Spellbooks.mana(p)+" runes="+Spellbooks.get(p).spells().get(0));});
     c.waitTicks(8);
-    c.runOnClient(mc->{var bolts=new ArrayList<RuneBolt>();for(var e:mc.level.entitiesForRendering())if(e instanceof RuneBolt b)bolts.add(b);check(!bolts.isEmpty(),"Live actual Bolt for "+rune);var b=bolts.getFirst();check(b.getEntityData().get(RuneBolt.DATA_EFFECTS).equals("wildercord:"+rune),"Synced exact flight identity");check(b.position().distanceTo(mc.player.position())>2,"Actual flight advances");check(particles(mc.particleEngine).stream().anyMatch(p->p.isAlive() && p instanceof MaterialParticle && at(p).distanceTo(b.position())<3),"Authored material follows real projectile "+rune);});
+    c.runOnClient(mc->{var bolts=new ArrayList<RuneBolt>();for(var e:mc.level.entitiesForRendering())if(e instanceof RuneBolt b)bolts.add(b);check(!bolts.isEmpty(),"Live actual Bolt for "+rune);var b=bolts.getFirst();check(b.getEntityData().get(RuneBolt.DATA_EFFECTS).equals("wildercord:"+rune),"Synced exact flight identity");check(b.position().distanceTo(mc.player.position())>2,"Actual flight advances");check(authoredNear(mc,b),"Authored five-tick material follows real projectile "+rune);});
     if(q==MagicQuality.Level.FULL){var shot=c.computeOnClient(mc->snapshot(mc,"fire_flight_"+rune));c.waitFor(mc->shot.isDone());shot.join();c.waitTicks(6);var travel=c.computeOnClient(mc->snapshot(mc,"fire_flight_travel_"+rune));c.waitFor(mc->travel.isDone());travel.join();}
+    c.runOnClient(mc->mc.particleEngine.clearParticles());c.waitTicks(4);
+    c.runOnClient(mc->{var b=mc.level.entitiesForRendering().iterator();RuneBolt live=null;while(b.hasNext()){var e=b.next();if(e instanceof RuneBolt bolt)live=bolt;}check(live!=null,"Live after particle clear");check(authoredNear(mc,live),"Live entity restarts authored emission after particle clear: "+rune);});
    }
+   w.getServer().runOnServer(s->{var p=s.getPlayerList().getPlayers().getFirst();p.level().getEntitiesOfClass(RuneBolt.class,p.getBoundingBox().inflate(64)).forEach(net.minecraft.world.entity.Entity::discard);});c.waitTicks(8);
+   c.runOnClient(mc->check(((Set<?>)field(null,BoltComets.class,"DRAWN")).isEmpty(),"Removed entity IDs retire independently of particle lifetime"));
   }finally{c.runOnClient(mc->MagicQuality.own=previous);}
  }
+ private static boolean authoredNear(net.minecraft.client.Minecraft mc,RuneBolt bolt){
+  // Two emission ticks plus the authored body offset; network movement may arrive after the latest client emission.
+  double reach=1+2*bolt.getDeltaMovement().length();
+  return particles(mc.particleEngine).stream().anyMatch(p->p.isAlive() && p instanceof MaterialParticle
+   && ((Number)field(p,Particle.class,"lifetime")).intValue()==5 && at(p).distanceTo(bolt.position())<reach);
+ }
  private static void recipes(){
+  check(FlightBodies.covers("wildercord:fire,wildercord:steam"),"Complete authored mixed group");
+  for(String ids:List.of("","wildercord:fire,!","wildercord:fire,wildercord:frost","other:fire","wildercord:fire,"))
+   check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);
   var prints=new HashSet<String>();
   for(String rune:FireFlights.RUNES)for(boolean minimal:new boolean[]{false,true}) {
    var traces=new ArrayList<String>();
