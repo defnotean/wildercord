@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Authored storm projectile bodies
+
+- Added twenty explicit moving storm recipes with individually timed contact switching, traveling leaders, expanding pressure, pulsing lobes, sequential copper terminals, inward-pulling filings, falling rain, circulating wind and charged feathers. Supporting materials remain in Full/Minimal; Ripple carries sunlight without electrical fragments.
+- Extended shared flight coverage to storm. Covered Frost/Shock now keeps both authored schools; unsupported mixed groups preserve fallback. Existing gameplay and travel voices remain.
+- Added paid Full/Minimal roster coverage, three-age evolving-motion checks, actual flight captures and six Arc/modifier/mixed-group examples. Complete release/impact, other deliveries, close visual review, shaders and remote multiplayer remain open.
+
 ### Authored frost and water projectile bodies
 
 - Added thirty individually authored moving bodies: needles, forks, plates, biting jaws, panes, cold fronts, snow/stone, living ice petals, water membranes, channels, hooks, wave crests and sediment bores. Water effects retain water; fused ingredients remain in Full and Minimal quality.

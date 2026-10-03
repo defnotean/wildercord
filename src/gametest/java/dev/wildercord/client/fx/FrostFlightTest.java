@@ -53,7 +53,7 @@ public final class FrostFlightTest implements FabricClientGameTest {
  }
  private static void recipes(){
   check(FlightBodies.covers("wildercord:frost,wildercord:tidebreath"),"Complete authored mixed group");
-  for(String ids:List.of("","wildercord:frost,!","wildercord:frost,wildercord:shock","other:frost","wildercord:frost,"))
+  for(String ids:List.of("","wildercord:frost,!","wildercord:frost,wildercord:windcut","other:frost","wildercord:frost,"))
    check(!FlightBodies.covers(ids),"Incomplete or foreign identity retains fallback: "+ids);
   check(!FrostFlights.supports("other:frost") && !FrostFlights.supports("wildercord:fire"),"Exact frost dispatch");
   var prints=new HashSet<String>();

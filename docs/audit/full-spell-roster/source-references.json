@@ -2343,6 +2343,12 @@
     "constant": "FROSTWIRE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          149
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           13,
@@ -2395,6 +2401,12 @@
     "id": "wildercord:galvanize",
     "constant": "GALVANIZE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          79
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -3144,6 +3156,12 @@
     "constant": "JOLT",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          33
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           13,
@@ -3393,6 +3411,12 @@
     "constant": "LIGHTNING",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          41
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           13,
@@ -3445,6 +3469,12 @@
     "id": "wildercord:magnetize",
     "constant": "MAGNETIZE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          108
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -4010,6 +4040,12 @@
     "id": "wildercord:plasma",
     "constant": "PLASMA",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          93
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -4598,6 +4634,12 @@
     "constant": "RIFTBOLT",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          117
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           13,
@@ -4721,6 +4763,12 @@
     "id": "wildercord:ripple",
     "constant": "RIPPLE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          56
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -5009,6 +5057,12 @@
     "id": "wildercord:shock",
     "constant": "SHOCK",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          27
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -5612,6 +5666,12 @@
     "constant": "STORMCLOCK",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          133
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           14,
@@ -5631,6 +5691,12 @@
     "id": "wildercord:stormheart",
     "constant": "STORMHEART",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          72
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -5657,6 +5723,12 @@
     "id": "wildercord:stormweave",
     "constant": "STORMWEAVE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          124
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -5780,6 +5852,12 @@
     "constant": "SURGE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          100
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           14,
@@ -5869,6 +5947,12 @@
     "constant": "TEMPEST",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          87
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           14,
@@ -5916,6 +6000,12 @@
     "constant": "THUNDER_TIDE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          162
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           14,
@@ -5936,6 +6026,12 @@
     "constant": "THUNDER_WALK",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          171
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           14,
@@ -5955,6 +6051,12 @@
     "id": "wildercord:thunderbird",
     "constant": "THUNDERBIRD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          64
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -5982,6 +6084,12 @@
     "constant": "THUNDERCLAP",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          48
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
           15,
@@ -6007,6 +6115,12 @@
     "id": "wildercord:thunderhead",
     "constant": "THUNDERHEAD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          141
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [
@@ -6040,6 +6154,12 @@
     "id": "wildercord:thunderstep",
     "constant": "THUNDERSTEP",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/StormFlights.java",
+        "lines": [
+          155
+        ]
+      },
       {
         "file": "src/client/java/dev/wildercord/client/fx/StormFormations.java",
         "lines": [

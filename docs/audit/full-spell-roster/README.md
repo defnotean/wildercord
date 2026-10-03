@@ -10,7 +10,12 @@ stages, trigger placement, a paid Delay and paid projectile-impact cast. Full ch
 
 [Storm preparations](storm-formations.md) records twenty authored recipes, mixed materials and native coverage. Full launch/travel/impact choreography remains open.
 
-[Fire projectile bodies](fire-flights.md) follows eight effects through real paid Bolt flight, beyond the preparation phase.
+[Fire projectile bodies](fire-flights.md) follows all twenty-eight fire effects through real paid Bolt flight.
+
+[Frost and water projectile bodies](frost-flights.md) covers thirty moving recipes.
+
+[Storm projectile bodies](storm-flights.md) covers twenty evolving recipes and paid alternate/mixed flight examples.
+These phase-specific records do not establish complete release, impact or aftermath choreography.
 
 ## Runtime inventory
 

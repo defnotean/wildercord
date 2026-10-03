@@ -491,3 +491,24 @@ Minimal quality keeps those ingredients with fewer detail particles.
 
 These are actual distant flight frames from paid Survival casts. Existing impacts and gameplay
 still follow the spell's delivery; other families and full release/impact sequences are being reviewed.
+
+## Charge in flight
+
+All twenty storm-family effects have authored moving bodies. Lightning advances a leader; Shock
+switches contacts; Jolt opens and closes its clamp. Magnetize pulls filings inward, Galvanize steps
+charge through copper terminals, and Thunderbird beats branching feathers.
+
+Fused materials have their own motion: Plasma carries an advancing hot core between electrical
+rails, Tempest circulates wind around charge, Thunderhead sheds staggered rain, Frostwire runs a
+current over crystalline contacts, and Stormclock advances a hand between time marks. Ripple
+uses warm sunlight rather than electrical fragments. Minimal settings retain supporting materials.
+
+![Thunderbird carries charged beating feathers](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-flight-thunderbird.png)
+
+![Thunderhead carries cloud, rain and a lightning leader](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-flight-thunderhead.png)
+
+![Plasma retains heat inside its electrical rails](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/storm-flight-plasma.png)
+
+These are distant frames from actual paid Survival casts on a review platform. Bodies are compact;
+preparations remain near the caster. Full release, impact and aftermath for the complete spell roster
+are still being reviewed.

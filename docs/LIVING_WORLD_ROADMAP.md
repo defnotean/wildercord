@@ -175,3 +175,28 @@ Native frost roster suite passed in 119s: sixty paid Survival Bolt casts, runtim
 Review: artifacts/review/frost-flights. Seventy-nine original captures include the main reference, thirty early/later pairs, and six matched variant references with early/later pairs. All thirty roster later frames and twelve variant spell frames inspected through unscaled region contact sheets. Early variants include substantial preparation; later frames separate more of the flight. Distant bodies are compact. Frost/Shock intentionally retains prominent fallback until storm flight is authored. Full release/impact, every shape/rank/modifier, homing/reflected/linked choreography, dynamic/addon runes, close side/third-person beauty review, natural combat, shaders, remote multiplayer and sustained profiling remain open. No new ability/fusion/item/creature/lore count; full living-world goal remains active.
 
 Final evidence: 946 unit tests with zero failures/errors/skips; full build 16s; 114 validated/exported guide pages; all 4,862 packaged asset/data resources and 1,623 compiled main/client classes match build outputs. SHA-256: facef361046e0ab2c9f786da5cb3950b63995e3dd0e10dff1e7f151412c2f173.
+
+## Storm projectile bodies — 2026-10-03
+
+Twenty runtime storm effects now have explicit age-driven flight recipes: alternating contacts,
+interruption gaps, advancing leaders, expanding pressure, pulsing lobes, sequential copper
+terminals, circulating wind, advancing heat, inward filings, opening void, out-of-phase threads,
+time hands, falling rain, running crystalline current, arriving steps and charged water/footings.
+Shared emitters/material primitives remain; this is not complete bespoke release/impact choreography.
+Supporting materials persist in Full/Minimal; Ripple carries warm sunlight without STORM fragments.
+Fully covered fire/frost/storm groups replace generic comet and duplicate server travel particles,
+keeping voices. Frost/Shock now carries both authored schools; unsupported Windcut groups keep fallback.
+
+Native full roster passed in 82s (forty paid casts), six paid variants in 32s, full frost regression
+in 108s and adjusted frost variants in 32s. New evolving-motion checks sample three ages in both
+quality modes; they caught Shock's contact-cycle aliasing before its cadence was fixed and rerun.
+59 original screenshots; all twenty main later and twelve variant spell frames inspected. Bodies
+are distant/compact and preparations can remain near the caster. Full build 13s: 946
+unit tests, zero failures/errors/skips; 114 guide pages; 74 candidate source files/350 indexed runes.
+Review: artifacts/review/storm-flights. All 4862 resources/1625 classes byte-match
+packaged tested outputs, CRC clean. SHA-256: 0c023c3ca96572ba9bc5e9ed5d3318ea0ab8d5722ba8320c29723db78ccda7ad.
+
+Full buildup/release/impact/aftermath, remaining elemental families, all delivery/modifier/rank/fusion
+combinations, dynamic/addon runes, reflected/homing/linked visuals, close third-person beauty,
+shaders, real multiplayer, natural combat and sustained profiling remain open. Adds no new content
+target count. Goal remains active; user requires custom elemental behavior beyond recolored shapes.
