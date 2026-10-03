@@ -274,6 +274,7 @@ public final class Aura {
 			stance.anchor = player.position();
 		}
 		AuraBreakthroughs.broken(player);
+		dev.wildercord.aura.world.TrainingGrounds.broken(player);
 		// A bonded blade's ceremony asks the stance unbroken to its end, and so do a master's rites.
 		BladeCeremony.broken(player);
 		Lineage.broken(player);
@@ -337,6 +338,7 @@ public final class Aura {
 			gain(player, AuraRules.BREATH_GAIN / 4, "stance");
 		}
 		if (held > 0 && held % AuraRules.BREATH_PERIOD == 0) {
+			dev.wildercord.aura.world.TrainingGrounds.breathe(player);
 			AuraSense.pulse(player);
 			AuraVfx.breathe(player, color(player));
 		}

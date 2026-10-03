@@ -94,13 +94,15 @@ public final class AuraBreakthroughs {
 	 * the tempest's ({@link #TEMPEST}: a ley crossing under a thunderstorm, open to the sky). Null when neither can be met here.
 	 */
 	static String stillTrial(ServerPlayer player) {
-		if (!ready(player) || !PowerPlaces.isPlaceOfPower(player.level(), player.blockPosition())) {
+		if (!ready(player)) {
 			return null;
 		}
-		if (allowed(player, STILLNESS)) {
+		boolean power = PowerPlaces.isPlaceOfPower(player.level(), player.blockPosition());
+		if (allowed(player, STILLNESS) && (power || dev.wildercord.aura.world.TrainingGrounds.ground(player)
+			!= dev.wildercord.aura.world.TrainingRules.Ground.NONE)) {
 			return STILLNESS;
 		}
-		if (allowed(player, TEMPEST) && tempest(player)) {
+		if (power && allowed(player, TEMPEST) && tempest(player)) {
 			return TEMPEST;
 		}
 		return null;

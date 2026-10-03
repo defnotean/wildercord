@@ -96,6 +96,16 @@ Edge, 110 at Form and 160 at Sovereign.
 ![The aura bar on top of the spell panel: three stage diamonds, a bar in the aura's colour with a gold mark, and the number 47](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/aura-bar.jpg)
 <span>The aura bar: your stages, your aura in your method's colour, and a gold mark at the slash's price.</span>
 
+## Training with the landscape
+
+A **waterfall bank** or **exposed mountain summit** makes passive breathing recovery 25% faster by default. Each full two-second breath also grants 0.5 Aura experience, sharing the existing **40-point lifetime practice allowance** with training dummies and the arena. Combat remains necessary for sustained progression; this does not grant mastery, technique ranks or blade resonance.
+
+For a waterfall, stand on dry, solid footing within three blocks of a falling water column at least six blocks tall. A shallow stream or source pool does not qualify. For a summit, find mountain terrain at least 64 blocks above sea level, open to the sky, with the land dropping away around it. A high flat platform or sheltered cliff ledge is not enough. Player-built terrain can qualify if it meets the same conditions.
+
+Hold the ordinary breathing stance: keep your blade in hand, sneak and stay still. A brief action-bar message identifies the terrain. At the experience threshold, these locations can meet the **stillness trial for Flow and Edge**, held for the normal duration. Moving or losing the qualifying terrain resets progress. Higher-stage tempest trials still require a ley crossing and a thunderstorm.
+
+Servers can disable this with `aura_world.training_grounds`, adjust recovery with `training_gain` (1–2), or set practice per breath with `training_practice` (0–2). Habitat checks refresh within two seconds and do not load chunks.
+
 ## The stages
 
 Aura climbs in leaps, and each stage keeps everything below it. Your weapon shows how far you've come: a haze at Glow,

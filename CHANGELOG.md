@@ -4,6 +4,13 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Training with the landscape
+
+- Dry waterfall banks and exposed mountain summits now reward the breathing stance with faster passive Aura recovery and a little practice experience within the existing lifetime allowance.
+- Both landscapes can satisfy the early stillness breakthroughs. Higher-stage tempest trials retain their ley-crossing and thunderstorm requirements.
+- Terrain checks are bounded, run at most once every two seconds per breathing player, and do not load chunks. Added server switches and recovery/practice tuning with defaults for older configuration files.
+- Began the living-world expansion roadmap covering creatures, ecosystems, magical items, locations, lore, progression and the remaining Aura overhaul. These broader additions are still pending.
+
 ### Sparring, masters and timed clashes
 
 - A deliberate sneak-and-use blade salute now asks another swordsman for a spar. Their answering salute begins a three-second count-in on grounds marked by cloth standards and fractured floors. Blades and Aura reach a partner; spells, projectiles and pets do not.

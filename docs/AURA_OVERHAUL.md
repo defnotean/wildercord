@@ -76,8 +76,8 @@ and documented, not a first draft.
 | 7 | Ways | done |
 | 8 | Your own techniques | done |
 | 9 | The bonded blade | done |
-| 10 | Masters, disciples, sparring and the clash | in progress: server side on branch `aura-step10-wip`, not merged |
-| 11 | The world of the sword | planned |
+| 10 | Masters, disciples, sparring and the clash | done; merged and tested |
+| 11 | The world of the sword | in progress: terrain training; other features pending |
 | 12 | Mage and swordsman together | planned |
 
 ### 1. Sword strings: the input language
@@ -1199,3 +1199,11 @@ The Dominion screenshot pass also found indirect spell seals inside shared eleme
 for elemental impacts, frost creep, clock strokes and pressure rings. Each method keeps distinct cuts and timing while using floor
 fractures, gouges or crater impressions. The shared helpers remain available to actual spells. Floor block and lighting samples are
 cached and refreshed every five ticks rather than sampled on every rendered frame.
+
+### Step 11 progress: terrain training (2026-10-02)
+
+`aura.world.TrainingGrounds` samples a dry waterfall bank or exposed mountain summit while breathing. Falling columns need six blocks within three blocks; summits require the mountain biome tag, sky, altitude sea+64 and eight relief samples. The weak-keyed cache lives at most as long as its player, refreshes in 40 ticks, invalidates on stance break/movement/dimension change, and never requests unloaded chunks. Server settings are in aura_world; older callers/configs retain defaults.
+
+Recovery is multiplied 1.25 by default and each full breath earns 0.5 practice inside the existing lifetime 40-point cap. No new repeatable idle progression loop. The early STILLNESS trial accepts these terrain grounds; TEMPEST still requires the ley crossing. TrainingRulesTest covers habitat boundaries and practice caps; TrainingGroundsTest covers real fluids, mountain biome/relief, actual sneak input, rewards, interruption and breakthrough.
+
+Battlefields, sword tombs/guardian, sleeping blade, Aura beasts and tournaments are still pending. Step 12 remains pending. The broader goal is tracked in LIVING_WORLD_ROADMAP.md.

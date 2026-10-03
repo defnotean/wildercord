@@ -8,6 +8,7 @@
 		"fabric-client-gametest": [
 			"dev.wildercord.gametest.WildercordMeditationTest",
 			"dev.wildercord.aura.AuraSocialTest",
+			"dev.wildercord.aura.TrainingGroundsTest",
 			"dev.wildercord.cast.ControlMatchupsTest",
 			"dev.wildercord.cast.PerformanceProfilesTest",
 			"dev.wildercord.familiar.ContentSystemsTest",

@@ -1344,4 +1344,19 @@ class WildercordConfigTest {
 		assertEquals(1.0, fixed.knightSpawnRate(), 1e-9);
 		assertEquals(5, fixed.maxDuelists());
 	}
+
+	@Test
+	void terrainTrainingDefaultsMigrationAndBounds() {
+		var old = WildercordConfig.parse("{\"aura_world\":{\"max_duelists\":5}}").config().auraWorld();
+		assertTrue(old.trainingGrounds());
+		assertEquals(1.25, old.trainingGain());
+		assertEquals(0.5, old.trainingPractice());
+		assertEquals(5, old.maxDuelists());
+		var parsed = WildercordConfig.parse("{\"aura_world\":{\"training_grounds\":false,\"training_gain\":9,\"training_practice\":-1}}");
+		assertFalse(parsed.config().auraWorld().trainingGrounds());
+		assertEquals(2, parsed.config().auraWorld().trainingGain());
+		assertEquals(0, parsed.config().auraWorld().trainingPractice());
+		assertFalse(parsed.warnings().isEmpty());
+		assertEquals(parsed.config().auraWorld(), WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
+	}
 }
