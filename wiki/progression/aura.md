@@ -839,3 +839,5 @@ Search the [Marchkeeper battlefields]({{ '/progression/battlefields/' | relative
 The [Sword Tombs]({{ '/progression/sword-tombs/' | relative_url }}) preserve their buried blades. Flow and Edge open the intent gates; an Edge blade challenges the Buried Keeper for technique scrolls, Aura Shards and its testament.
 
 The [Sleeping Blade]({{ '/progression/sleeping-blade/' | relative_url }}) waits in rare highland resting places. From Form, kneel with an empty main hand to draw Oathkeeper and bond it. It favours perfect guards over ordinary hits.
+
+The [Highland Beasts]({{ '/progression/aura-beasts/' | relative_url }}) resist damaging spells, but their warnings and recovery leave deliberate openings. Learn their habits, collect materials peacefully, or combine mage support with a swordsman's approach.

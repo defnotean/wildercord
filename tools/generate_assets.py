@@ -790,6 +790,9 @@ def write_lang(runes):
     import sleeping_blade_art
     lang.update(sleeping_blade_art.LANG)
     sleeping_blade_art.write(sys.modules[__name__])
+    import aura_beasts_art
+    lang.update(aura_beasts_art.LANG)
+    aura_beasts_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
     import way_art

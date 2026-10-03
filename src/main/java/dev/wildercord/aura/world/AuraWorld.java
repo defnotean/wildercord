@@ -108,6 +108,7 @@ public final class AuraWorld {
 		Battlefields.init();
 		SwordTombs.init();
 		SleepingBlades.init();
+		AuraBeasts.init();
 		FabricDefaultAttributeRegistry.register(DUELIST, Duelist.createAttributes());
 		FabricDefaultAttributeRegistry.register(FALLEN_KNIGHT, FallenKnight.createAttributes());
 		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("manual_pages"), ManualPagesRecipe.SERIALIZER);

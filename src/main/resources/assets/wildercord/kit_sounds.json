@@ -495,6 +495,27 @@
     "aura_gale_swing": {
       "part": "aura"
     },
+    "aura_galeclaw_call": {
+      "part": "aura"
+    },
+    "aura_galeclaw_death": {
+      "part": "aura"
+    },
+    "aura_galeclaw_hurt": {
+      "part": "aura"
+    },
+    "aura_galeclaw_land": {
+      "part": "aura"
+    },
+    "aura_galeclaw_leap": {
+      "part": "aura"
+    },
+    "aura_galeclaw_warn": {
+      "part": "aura"
+    },
+    "aura_galeclaw_whistle": {
+      "part": "aura"
+    },
     "aura_guard": {
       "part": "aura"
     },
@@ -637,6 +658,27 @@
       "part": "aura"
     },
     "aura_stone_swing": {
+      "part": "aura"
+    },
+    "aura_stonehorn_charge": {
+      "part": "aura"
+    },
+    "aura_stonehorn_death": {
+      "part": "aura"
+    },
+    "aura_stonehorn_forage": {
+      "part": "aura"
+    },
+    "aura_stonehorn_grumble": {
+      "part": "aura"
+    },
+    "aura_stonehorn_hurt": {
+      "part": "aura"
+    },
+    "aura_stonehorn_impact": {
+      "part": "aura"
+    },
+    "aura_stonehorn_warn": {
       "part": "aura"
     },
     "aura_string_complete": {

@@ -818,6 +818,55 @@
       ],
       "subtitle": "cast"
     },
+    "aura_galeclaw_call": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_galeclaw_call"
+      ],
+      "subtitle": "galeclaw.call"
+    },
+    "aura_galeclaw_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_galeclaw_death"
+      ],
+      "subtitle": "galeclaw.death"
+    },
+    "aura_galeclaw_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_galeclaw_hurt"
+      ],
+      "subtitle": "galeclaw.hurt"
+    },
+    "aura_galeclaw_land": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_galeclaw_land"
+      ],
+      "subtitle": "galeclaw.land"
+    },
+    "aura_galeclaw_leap": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_galeclaw_leap"
+      ],
+      "subtitle": "galeclaw.leap"
+    },
+    "aura_galeclaw_warn": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_galeclaw_warn"
+      ],
+      "subtitle": "galeclaw.warn"
+    },
+    "aura_galeclaw_whistle": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_galeclaw_whistle"
+      ],
+      "subtitle": "galeclaw.whistle"
+    },
     "aura_guard": {
       "attenuation": 0,
       "files": [
@@ -1179,6 +1228,55 @@
         "kit/aura/aura_stone_swing_3"
       ],
       "subtitle": "cast"
+    },
+    "aura_stonehorn_charge": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_stonehorn_charge"
+      ],
+      "subtitle": "stonehorn.charge"
+    },
+    "aura_stonehorn_death": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_stonehorn_death"
+      ],
+      "subtitle": "stonehorn.death"
+    },
+    "aura_stonehorn_forage": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_stonehorn_forage"
+      ],
+      "subtitle": "stonehorn.forage"
+    },
+    "aura_stonehorn_grumble": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_stonehorn_grumble"
+      ],
+      "subtitle": "stonehorn.grumble"
+    },
+    "aura_stonehorn_hurt": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_stonehorn_hurt"
+      ],
+      "subtitle": "stonehorn.hurt"
+    },
+    "aura_stonehorn_impact": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_stonehorn_impact"
+      ],
+      "subtitle": "stonehorn.impact"
+    },
+    "aura_stonehorn_warn": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_stonehorn_warn"
+      ],
+      "subtitle": "stonehorn.warn"
     },
     "aura_string_complete": {
       "attenuation": 0,

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:stonehorn_plate",
+    "minecraft:clay_ball",
+    "minecraft:wheat"
+  ],
+  "result": {
+    "id": "wildercord:bastion_poultice"
+  }
+}

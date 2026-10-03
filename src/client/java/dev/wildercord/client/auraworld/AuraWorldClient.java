@@ -38,6 +38,12 @@ public final class AuraWorldClient {
 		EntityRendererRegistry.register(AuraWorld.FALLEN_KNIGHT, AuraWorldClient::knight);
 		ModelLayerRegistry.registerModelLayer(GravekeeperRenderer.LAYER,GravekeeperModel::createLayer);
 		EntityRendererRegistry.register(dev.wildercord.aura.world.SwordTombs.KEEPER,GravekeeperRenderer::new);
+		var stonehorn=new ModelLayerLocation(Wildercord.id("stonehorn"),"main");
+		var galeclaw=new ModelLayerLocation(Wildercord.id("galeclaw"),"main");
+		ModelLayerRegistry.registerModelLayer(stonehorn,StonehornModel::createLayer);
+		ModelLayerRegistry.registerModelLayer(galeclaw,GaleclawModel::createLayer);
+		EntityRendererRegistry.register(dev.wildercord.aura.world.AuraBeasts.STONEHORN,c->new BeastRenderer<>(c,new StonehornModel(c.bakeLayer(stonehorn)),"stonehorn",.65F));
+		EntityRendererRegistry.register(dev.wildercord.aura.world.AuraBeasts.GALECLAW,c->new BeastRenderer<>(c,new GaleclawModel(c.bakeLayer(galeclaw)),"galeclaw",.45F));
 		// An aura-forged weapon says what it carries, under its name.
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			List<Component> extra = ForgedGear.describe(stack);

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:galeclaw_plume",
+    "minecraft:copper_ingot",
+    "minecraft:string"
+  ],
+  "result": {
+    "id": "wildercord:ridge_whistle"
+  }
+}

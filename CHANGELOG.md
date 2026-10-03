@@ -4,6 +4,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Highland beasts and useful field tools
+
+- Added Stonehorn, a custom rock-armoured grazer with layered shoulders, moss, cloven feet and curved horns. Quiet approaches and wheat avoid its territorial warning. A two-second stamp precedes a straight charge, followed by a vulnerable recovery; wall impacts leave a longer opening.
+- Added Galeclaw, a custom feathered ridge runner with hooked beak, fan tail, talons and articulated wings. It follows recent casting, hunts Rimehares and scavenges raw rabbit/chicken. Its crouch marks a fixed landing before a leap. Highland habitats include shared snowy slopes/groves, suitable ground/open-sky checks, one-animal groups and a two-per-species local cap.
+- Added posture-dependent spell resistance through the common damage pipeline. Physical blades/Aura retain normal damage, control magic remains useful, and recovery admits substantially more spell damage. Distinct warnings, physical dust/ground cuts, model poses, fourteen authored sound voices and individual subtitles communicate the encounters.
+- Peaceful feeding gives Stonehorn Plates or Galeclaw Plumes on a saved two-minute cooldown. Craft a Bastion Poultice for ten seconds of Resistance I with Slowness I, or a reusable Ridge Whistle to distract stalking Galeclaws. Committed attacks and retaliation resist distraction; cooldowns and consumption are enforced.
+- Added two bestiary entries, spawn eggs, item art, recipes/advancements, a player-guide chapter, configurable spawning/aggression and safe entity reload into recovery. The runtime suite verifies resistance, actual attack/evasion, feeding/save-load limits, recipes, tools, control recovery, ecology and habitat registration.
+
 ### The sleeping blade and Oathkeeper
 
 - Added rare Marchkeeper resting places in dry highland/open-country habitats, with three surrounding ruin details and a custom cracked stone socket. Only generated sockets hold a blade. The first completed draw permanently claims that site's weapon.

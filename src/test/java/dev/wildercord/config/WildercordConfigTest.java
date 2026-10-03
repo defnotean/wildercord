@@ -1381,4 +1381,11 @@ class WildercordConfigTest {
 		assertTrue(parsed.warnings().isEmpty());
 		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
 	}
+	@Test void auraBeastsSettingsMigrateAndRoundTrip() {
+		assertTrue(WildercordConfig.parse("{}").config().auraWorld().auraBeasts());
+		var parsed=WildercordConfig.parse("{\"aura_world\":{\"aura_beasts\":false}}");
+		assertFalse(parsed.config().auraWorld().auraBeasts());
+		assertTrue(parsed.warnings().isEmpty());
+		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
+	}
 }

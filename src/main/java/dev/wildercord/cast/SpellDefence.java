@@ -127,6 +127,9 @@ public final class SpellDefence {
 
 	private static boolean hurt(ServerLevel level, LivingEntity target, DamageSource source, float amount, Object castIdentity) {
 		DamageSource spell = spellSource(level, source);
+		if (target instanceof dev.wildercord.aura.world.AuraBeast beast) {
+			return beast.hurtBySpell(level, spell, amount);
+		}
 		if (!(target instanceof Player player)) {
 			return target.hurtServer(level, spell, amount);
 		}

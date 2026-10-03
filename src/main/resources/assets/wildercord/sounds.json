@@ -4325,6 +4325,48 @@
       "wildercord:kit/aura/aura_gale_swing_3"
     ]
   },
+  "aura_galeclaw_call": {
+    "subtitle": "subtitles.wildercord.kit.galeclaw.call",
+    "sounds": [
+      "wildercord:kit/aura/aura_galeclaw_call"
+    ]
+  },
+  "aura_galeclaw_death": {
+    "subtitle": "subtitles.wildercord.kit.galeclaw.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_galeclaw_death"
+    ]
+  },
+  "aura_galeclaw_hurt": {
+    "subtitle": "subtitles.wildercord.kit.galeclaw.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_galeclaw_hurt"
+    ]
+  },
+  "aura_galeclaw_land": {
+    "subtitle": "subtitles.wildercord.kit.galeclaw.land",
+    "sounds": [
+      "wildercord:kit/aura/aura_galeclaw_land"
+    ]
+  },
+  "aura_galeclaw_leap": {
+    "subtitle": "subtitles.wildercord.kit.galeclaw.leap",
+    "sounds": [
+      "wildercord:kit/aura/aura_galeclaw_leap"
+    ]
+  },
+  "aura_galeclaw_warn": {
+    "subtitle": "subtitles.wildercord.kit.galeclaw.warn",
+    "sounds": [
+      "wildercord:kit/aura/aura_galeclaw_warn"
+    ]
+  },
+  "aura_galeclaw_whistle": {
+    "subtitle": "subtitles.wildercord.kit.galeclaw.whistle",
+    "sounds": [
+      "wildercord:kit/aura/aura_galeclaw_whistle"
+    ]
+  },
   "aura_guard": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [
@@ -4709,6 +4751,48 @@
       "wildercord:kit/aura/aura_stone_swing_1",
       "wildercord:kit/aura/aura_stone_swing_2",
       "wildercord:kit/aura/aura_stone_swing_3"
+    ]
+  },
+  "aura_stonehorn_charge": {
+    "subtitle": "subtitles.wildercord.kit.stonehorn.charge",
+    "sounds": [
+      "wildercord:kit/aura/aura_stonehorn_charge"
+    ]
+  },
+  "aura_stonehorn_death": {
+    "subtitle": "subtitles.wildercord.kit.stonehorn.death",
+    "sounds": [
+      "wildercord:kit/aura/aura_stonehorn_death"
+    ]
+  },
+  "aura_stonehorn_forage": {
+    "subtitle": "subtitles.wildercord.kit.stonehorn.forage",
+    "sounds": [
+      "wildercord:kit/aura/aura_stonehorn_forage"
+    ]
+  },
+  "aura_stonehorn_grumble": {
+    "subtitle": "subtitles.wildercord.kit.stonehorn.grumble",
+    "sounds": [
+      "wildercord:kit/aura/aura_stonehorn_grumble"
+    ]
+  },
+  "aura_stonehorn_hurt": {
+    "subtitle": "subtitles.wildercord.kit.stonehorn.hurt",
+    "sounds": [
+      "wildercord:kit/aura/aura_stonehorn_hurt"
+    ]
+  },
+  "aura_stonehorn_impact": {
+    "subtitle": "subtitles.wildercord.kit.stonehorn.impact",
+    "sounds": [
+      "wildercord:kit/aura/aura_stonehorn_impact"
+    ]
+  },
+  "aura_stonehorn_warn": {
+    "subtitle": "subtitles.wildercord.kit.stonehorn.warn",
+    "sounds": [
+      "wildercord:kit/aura/aura_stonehorn_warn"
     ]
   },
   "aura_string_complete": {
