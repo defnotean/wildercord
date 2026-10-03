@@ -1,10 +1,10 @@
 # Installation and updates
 
-**This guide describes Wildercord 0.9.1-alpha for Minecraft Java 26.3.** Use the matching mod on the server and every player's client.
+**This guide describes Wildercord 0.9.1-alpha.1 for Minecraft Java 26.3.** Use the matching mod on the server and every player's client.
 
 ## Pick your download
 
-Download the release from [GitHub Releases](https://github.com/defnotean/wildercord/releases). The ordinary mod file is **`wildercord-0.9.1-alpha+mc26.3.jar`**. The sources jar is for developers and does not go in your mods folder.
+Download the release from [GitHub Releases](https://github.com/defnotean/wildercord/releases). The ordinary mod file is **`wildercord-0.9.1-alpha.1+mc26.3.jar`**. The sources jar is for developers and does not go in your mods folder.
 
 | Download | Use it when | Included dependencies |
 |---|---|---|

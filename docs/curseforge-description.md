@@ -18,7 +18,7 @@ Thread runes onto a Cord. Shape a spell, find its rhythm, and make it yours.
 
 ![A Reedback Crab warns before its committed sweep](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/reedback-warning.png)
 
-[Read the full 0.9.1 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha). The broader living-world expansion and complete all-element release/impact choreography are still in progress.
+[Read the full 0.9.1 release notes](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha.1). The broader living-world expansion and complete all-element release/impact choreography are still in progress.
 
 ## The 0.9 foundation: the wilds and the sword
 
@@ -82,7 +82,7 @@ Familiars can work as companions, scouts, guardians or gardeners. Completed worl
 
 ![Cinnamon taking a little rest](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/images/cinnamon-resting.jpg)
 
-## Install 0.9.1-alpha
+## Install 0.9.1-alpha.1
 
 1. Use **Minecraft Java 26.3**, **Java 25**, and **Fabric Loader 0.19.5 or newer**.
 2. Install **Fabric API 0.161.0+26.3 or newer** and the ordinary Wildercord JAR.

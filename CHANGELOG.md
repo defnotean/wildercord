@@ -4,6 +4,11 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+## [0.9.1-alpha.1] — 2026-10-03
+
+- Regenerated five stale modifier descriptions so in-game tooltips show their stacking limits and the asset reproducibility gate passes. Supersedes the initial 0.9.1-alpha upload.
+
+
 ## [0.9.1-alpha] — 2026-10-03
 
 ### Administrator fusion discovery

@@ -3,7 +3,7 @@ title: What's New
 nav_order: 1.1
 ---
 
-# What's new in 0.9.1-alpha
+# What's new in 0.9.1-alpha.1
 
 This release brings the expanded Aura path, living highland and wetland interactions, authored fire/frost/storm/wind preparations and projectile bodies, and fixes for extreme spell damage. **Update the server and every client together.** Spell packets and particle registration have changed since 0.9.0.
 
@@ -21,7 +21,7 @@ Preparations and moving projectile bodies now cover 28 fire, 30 frost/water, 20 
 
 Learn sword strings, breathing-method arts, momentum, openings, awakenings, Ways and authored techniques. Bond a blade, teach a disciple, spar by consent and meet another strike in a timed clash. Physical Aura standards, ground fractures and Soar's feathered wings accompany the path.
 
-Explore [Marchkeeper battlefields]({{ '/progression/aura/' | relative_url }}), sword tombs and the sleeping blade; meet highland beasts and enter village tournaments. Resonant strikes, rune-etched blades and Unity connect the swordsman and mage. See [Aura]({{ '/progression/aura/' | relative_url }}) and the [full release notes](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha).
+Explore [Marchkeeper battlefields]({{ '/progression/aura/' | relative_url }}), sword tombs and the sleeping blade; meet highland beasts and enter village tournaments. Resonant strikes, rune-etched blades and Unity connect the swordsman and mage. See [Aura]({{ '/progression/aura/' | relative_url }}) and the [full release notes](https://github.com/defnotean/wildercord/releases/tag/v0.9.1-alpha.1).
 
 ## Useful fixes
 
