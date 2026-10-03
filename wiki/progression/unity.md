@@ -41,4 +41,4 @@ Two open strands form at your back: one warm strand tinted by your Aura school, 
 
 Use Unity before a brief sequence that needs both pools: pay for a control spell to recover some Aura, then spend Aura on positioning or a blade art to recover some mana. It gives a hybrid build flexibility without extending the window or circulating resources indefinitely. A dedicated spellcaster or swordsman still has a simpler progression path.
 
-Rest and consumed allowances are saved together. A remaining window carried through a server save keeps its original deadlines and budgets; it does not become a fresh activation.
+Rest and consumed allowances are saved together. An ordinary save during play keeps the same deadlines and budgets. Leaving the world or shutting down the server ends the window; joining again preserves its rest and used allowances. A saved active window from an interrupted shutdown is also closed at join.

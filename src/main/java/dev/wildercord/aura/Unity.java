@@ -106,6 +106,10 @@ public final class Unity {
 			}
 		});
 		ServerPlayConnectionEvents.DISCONNECT.register((h,s) -> {stop(h.player);packets.forget(h.player.getUUID());});
+		// An integrated shutdown can save the player before its disconnect callback. Stop before that save,
+		// and also close a loaded window at join (including an abrupt shutdown's last autosave).
+		ServerLifecycleEvents.SERVER_STOPPING.register(s -> s.getPlayerList().getPlayers().forEach(Unity::stop));
+		ServerPlayConnectionEvents.JOIN.register((h,sender,s) -> stop(h.player));
 		ServerPlayerEvents.AFTER_RESPAWN.register(Aura.AFTER_COPY,(old,p,alive) -> {if(!alive)stop(p);});
 		ServerLifecycleEvents.SERVER_STOPPED.register(s -> packets.clear());
 	}

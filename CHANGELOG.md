@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Aura cooperation and lifecycle integration
+
+- Fixed Unity resuming an active window after an integrated-server shutdown/reconnect. The old disconnect callback could run after the player had already been saved. Server stopping now closes active windows before saving, and joining closes any loaded active window while retaining exact rest and delivered allowances.
+- Added an integrated client suite combining native elemental effects, projected art, resonance, a bonded fire inscription and Unity. It checks one reaction, exact combined payments, independent inscription rest and refusal of repeated bonuses.
+- Added actual client-requested death/respawn checks with both inventory rules, plus closing and reopening the saved world in another integrated server. These verify the same owned inscribed blade, exactly one inventory copy, retained Unity budgets/rest, inscription cooldown, activation refusal and owner-client synchronization. Real two-client/dedicated-server sessions and broader balance/performance remain open.
+
 ### Unity: two paths, one breath
 
 - Added a hybrid technique for Form and five working Heart Circles, activated from the Aura page. Twelve mana plus twelve Aura open twelve seconds of exchange, with a two-minute rest from activation.
