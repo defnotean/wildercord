@@ -4,6 +4,14 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### The Marchkeeper battlefields
+
+- Fixed Windows line-ending drift in generated physical terrain block assets so regeneration remains byte-identical across platforms.
+- Added three authored outdoor ruins: broken barricades, a shelter garden, and retreat cairns with a ruined watchtower. They appear rarely in open-country biomes and reject flooded or steep ground.
+- Generated memorials retain a sword tradition. Hold the breathing stance and use one to recover its history and Sunder, Bind or Echo lesson. Each tradition rewards each player once; repeated visits retell all pages without minting more rewards.
+- Added three distinct weathered memorial models, three illustrated field-book covers, nine short lore pages, four authored memory sounds, discovery messages and a player guide. The books connect the Marchkeepers' history to the landscape and technique lessons.
+- Memories cancel when the stance, blade, range, view or memorial is lost. Only requested rites tick, with no scans of all memorial blocks or forced chunk loads. Added a server switch and old-configuration defaults.
+
 ### Training with the landscape
 
 - Dry waterfall banks and exposed mountain summits now reward the breathing stance with faster passive Aura recovery and a little practice experience within the existing lifetime allowance.

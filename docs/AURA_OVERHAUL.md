@@ -1206,4 +1206,12 @@ cached and refreshed every five ticks rather than sampled on every rendered fram
 
 Recovery is multiplied 1.25 by default and each full breath earns 0.5 practice inside the existing lifetime 40-point cap. No new repeatable idle progression loop. The early STILLNESS trial accepts these terrain grounds; TEMPEST still requires the ley crossing. TrainingRulesTest covers habitat boundaries and practice caps; TrainingGroundsTest covers real fluids, mountain biome/relief, actual sneak input, rewards, interruption and breakthrough.
 
-Battlefields, sword tombs/guardian, sleeping blade, Aura beasts and tournaments are still pending. Step 12 remains pending. The broader goal is tracked in LIVING_WORLD_ROADMAP.md.
+At this terrain-training checkpoint, battlefields, sword tombs/guardian, sleeping blade, Aura beasts and tournaments were pending. Battlefield progress is recorded below. Step 12 remains pending. The broader goal is tracked in LIVING_WORLD_ROADMAP.md.
+
+### Step 11 progress: the Marchkeeper battlefields
+
+OldBattlefieldPiece adds three rotated outdoor layouts on gentle, dry terrain; worldgen spacing is 64 chunks, separation 24, with open-country biome tags. They are not in the dungeon monster/ward tags. Generated memorial block entities persist their provenance; an ordinary placed marker cannot award a memory. Server setting aura_world.battlefields gates new placement and interactions without removing existing ruins.
+
+Battlefields listens only to requested player rites, validates breathing/blade/range/dimension/view/marker throughout eight seconds, and cancels on interruption. The discovery key is per player and tradition, using the saved Grimoire. Three traditions teach Sunder, Bind and Echo and give three different portable written books (nine short pages). Repeated visits retell all pages without rewards and are rate-limited. Four memory sounds and generated memorial/book models share each tradition's crest. Rites clear on disconnect/stop without ticking every memorial or loading remote chunks.
+
+BattlefieldsTest covers all three layouts in four orientations, generated provenance save/load, actual client use packets, cancellation, teaching, finite books, new-marker rejection, the real reading screen and normal-terrain /place generation. BattlefieldRulesTest and configuration tests cover terrain, stance bounds and migration. Sword tombs, the sleeping blade, Aura beasts and tournaments remain pending.

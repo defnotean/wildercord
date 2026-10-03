@@ -1359,4 +1359,12 @@ class WildercordConfigTest {
 		assertFalse(parsed.warnings().isEmpty());
 		assertEquals(parsed.config().auraWorld(), WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
 	}
+
+	@Test void battlefieldSettingsMigrateAndRoundTrip() {
+		assertTrue(WildercordConfig.parse("{}").config().auraWorld().battlefields());
+		var parsed=WildercordConfig.parse("{\"aura_world\":{\"battlefields\":false}}");
+		assertFalse(parsed.config().auraWorld().battlefields());
+		assertTrue(parsed.warnings().isEmpty());
+		assertEquals(parsed.config().auraWorld(),WildercordConfig.parse(parsed.config().toJson()).config().auraWorld());
+	}
 }

@@ -105,6 +105,7 @@ public final class AuraWorld {
 	}
 
 	public static void init() {
+		Battlefields.init();
 		FabricDefaultAttributeRegistry.register(DUELIST, Duelist.createAttributes());
 		FabricDefaultAttributeRegistry.register(FALLEN_KNIGHT, FallenKnight.createAttributes());
 		Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, Wildercord.id("manual_pages"), ManualPagesRecipe.SERIALIZER);
@@ -118,6 +119,7 @@ public final class AuraWorld {
 				output.accept(ManualPageItem.of(MANUAL_PAGE, method.id()));
 			}
 			output.accept(AURA_SHARD);
+			for (int i=0;i<3;i++) output.accept(Battlefields.book(i));
 			for (AuraWorldRules.Forged forged : AuraWorldRules.Forged.values()) {
 				output.accept(forged(forged, false));
 				output.accept(forged(forged, true));

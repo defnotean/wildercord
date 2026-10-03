@@ -1,0 +1,8 @@
+{
+  "type": "wildercord:dungeon",
+  "dungeon": "old_battlefield",
+  "biomes": "#wildercord:has_structure/old_battlefield",
+  "spawn_overrides": {},
+  "step": "surface_structures",
+  "terrain_adaptation": "none"
+}

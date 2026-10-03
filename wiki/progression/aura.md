@@ -831,3 +831,7 @@ same cap. Server owners can turn aura off or tune it.
 - **Two opposing slashes can lock into a timed clash.** Answer three beats with Attack; the winning crescent continues with reduced damage. See [Sparring and Lineage]({{ '/progression/lineage/' | relative_url }}) for clashes, safe practice bouts, and masters and disciples.
 
 By day the slash's crescent has a dark rim under its light, so it's easy to see against a bright sky.
+
+## Old sword traditions
+
+Search the [Marchkeeper battlefields]({{ '/progression/battlefields/' | relative_url }}) for three histories and technique intents. Hold the breathing stance beside an old memorial, then use it to recover its lesson.

@@ -4432,6 +4432,30 @@
       }
     ]
   },
+  "aura_memory_begin": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_memory_begin"
+    ]
+  },
+  "aura_memory_broken_line": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_memory_broken_line"
+    ]
+  },
+  "aura_memory_last_shelter": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_memory_last_shelter"
+    ]
+  },
+  "aura_memory_returned_step": {
+    "subtitle": "subtitles.wildercord.kit.tell",
+    "sounds": [
+      "wildercord:kit/aura/aura_memory_returned_step"
+    ]
+  },
   "aura_momentum_peak": {
     "subtitle": "subtitles.wildercord.kit.tell",
     "sounds": [

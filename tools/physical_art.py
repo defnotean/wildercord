@@ -19,7 +19,7 @@ GLYPHS={
  'thunder_walk':['....##.','...##..','....#..','..##.#.','.##....','..#....','##.....'],
 }
 def write(path,value):
- path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,indent=2)+'\n')
+ path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8',newline='\n')
 def main():
  colors={'raised_strata':(113,106,98),'cinder_bulwark':(67,45,37),'root_bulwark':(64,88,43),'lifted_water':(41,124,164),'wind_step':(61,147,141),'rime_step':(89,161,186),'thunder_step':(108,99,57)}
  for name,color in colors.items():

@@ -24,7 +24,7 @@ These targets are additions to the baseline, subject to documented design adjust
 
 | Milestone | Scope | State | Required evidence |
 | --- | --- | --- | --- |
-| A | Audit/player journey; finish Aura world and cooperation | Started: terrain training | Runtime terrain checks/trials; all step 11/12 encounters/items; solo/cooperative balance; pictures/JAR |
+| A | Audit/player journey; finish Aura world and cooperation | Started: terrain training; Marchkeeper battlefields | Runtime terrain checks/trials; all step 11/12 encounters/items; solo/cooperative balance; pictures/JAR |
 | B | Visual identity and full ability roster audit | Pending | Per-ability matrix; first/third-person captures; reduced effects/shaders; fusion behavior |
 | C | Four ecosystems and twelve creatures | Pending | Habitat/AI/spawning/persistence tests; custom art and animation; observation gameplay |
 | D | Locations, items, acquisition and counterplay | Pending | Generation/loot/recipe tests; combat matchups; equipment/inventory verification |
@@ -42,3 +42,9 @@ Use existing systems when useful, but preserve authored identities. No uncontrol
 ## Completion audit
 
 For every numbered goal requirement and every target above, record the implementation paths and authoritative evidence. Verify actual behavior, persistence, packaged assets, gameplay readability and performance where applicable. Distinguish source inventory, unit checks, integrated client tests and real multi-client evidence. Missing evidence means incomplete. A tested foundation feature does not complete a milestone or the whole goal.
+
+## Increment ledger
+
+- Existing expedition client regression also passes after the battlefield addition. The physical terrain art writer now uses explicit UTF-8/LF output to prevent Windows regeneration drift.
+- Terrain training: pushed at `828c3fc2`, 895 passing unit tests and dedicated runtime/Aura regression suites. Review package: artifacts/review/living-world-training.
+- Marchkeeper battlefields: three outdoor landmark layouts, three lore entries (nine pages), three discovered technique intents, custom memorial/book art and four memory sounds. Full build: 899 passing unit tests. Dedicated runtime suite passes all three layouts in four orientations, provenance save/load, actual player interaction/interruption, technique teaching, finite rewards, real book reading and registered structure placement on normal terrain. Assets: 4,621 generated paths verified; guide: 103 pages validated. Review package: artifacts/review/living-world-battlefields. Natural spawn frequency across seeds and a real two-client session remain unmeasured. This does not complete Aura step 11, the six additional dungeon locations, or the larger lore target.

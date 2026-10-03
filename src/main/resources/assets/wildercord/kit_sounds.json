@@ -531,6 +531,18 @@
     "aura_lineage_share": {
       "part": "aura"
     },
+    "aura_memory_begin": {
+      "part": "aura"
+    },
+    "aura_memory_broken_line": {
+      "part": "aura"
+    },
+    "aura_memory_last_shelter": {
+      "part": "aura"
+    },
+    "aura_memory_returned_step": {
+      "part": "aura"
+    },
     "aura_momentum_peak": {
       "part": "aura"
     },

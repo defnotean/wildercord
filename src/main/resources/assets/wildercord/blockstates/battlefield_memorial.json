@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "kind=0": {
+      "model": "wildercord:block/battlefield_memorial_0"
+    },
+    "kind=1": {
+      "model": "wildercord:block/battlefield_memorial_1"
+    },
+    "kind=2": {
+      "model": "wildercord:block/battlefield_memorial_2"
+    }
+  }
+}

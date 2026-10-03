@@ -63,6 +63,7 @@
   * [Defensive Foci](progression/defensive-foci.md)
   * [Practice and Trials](progression/practice.md)
   * [Research Notebook](progression/research.md)
+  * [The Marchkeeper Battlefields](progression/battlefields.md)
 * [The Fusion Altar](fusion-altar/index.md)
   * [Ranks](fusion-altar/ranks.md)
   * [Combining](fusion-altar/combining.md)

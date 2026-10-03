@@ -24,7 +24,8 @@ public class DungeonStructure extends Structure {
 		STORM_SPIRE,
 		CLOCKWORK_CRYPT,
 		LIVING_GREENHOUSE,
-		MOVING_SKY_RUIN;
+		MOVING_SKY_RUIN,
+		OLD_BATTLEFIELD;
 
 		public static final Codec<Kind> CODEC = StringRepresentable.fromEnum(Kind::values);
 
@@ -57,6 +58,7 @@ public class DungeonStructure extends Structure {
 			case CLOCKWORK_CRYPT -> ClockworkCryptPiece.locate(context);
 			case LIVING_GREENHOUSE -> LivingGreenhousePiece.locate(context);
 			case MOVING_SKY_RUIN -> MovingSkyRuinPiece.locate(context);
+			case OLD_BATTLEFIELD -> OldBattlefieldPiece.locate(context);
 		};
 	}
 

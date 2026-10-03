@@ -58,4 +58,7 @@ public final class DungeonWorldgen {
 	}
 
 	public static void init() {}
+	public static final StructurePieceType BATTLEFIELD_PIECE=Registry.register(BuiltInRegistries.STRUCTURE_PIECE,Wildercord.id("old_battlefield"),
+		(StructurePieceType.ContextlessType)OldBattlefieldPiece::new);
+	public static final ResourceKey<LootTable> BATTLEFIELD_SUPPLIES=loot("chests/old_battlefield");
 }

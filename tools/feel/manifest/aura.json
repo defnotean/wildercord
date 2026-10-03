@@ -910,6 +910,34 @@
       ],
       "subtitle": "tell"
     },
+    "aura_memory_begin": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_memory_begin"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_memory_broken_line": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_memory_broken_line"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_memory_last_shelter": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_memory_last_shelter"
+      ],
+      "subtitle": "tell"
+    },
+    "aura_memory_returned_step": {
+      "attenuation": 0,
+      "files": [
+        "kit/aura/aura_memory_returned_step"
+      ],
+      "subtitle": "tell"
+    },
     "aura_momentum_peak": {
       "attenuation": 24,
       "files": [
