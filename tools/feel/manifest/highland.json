@@ -1,0 +1,26 @@
+{
+  "events": {
+    "highland_braid_rustle": {
+      "attenuation": 0,
+      "files": [
+        "kit/highland/highland_braid_rustle"
+      ],
+      "subtitle": "highland.braid"
+    },
+    "highland_kite_open": {
+      "attenuation": 0,
+      "files": [
+        "kit/highland/highland_kite_open"
+      ],
+      "subtitle": "highland.kite"
+    },
+    "highland_reed_harvest": {
+      "attenuation": 0,
+      "files": [
+        "kit/highland/highland_reed_harvest"
+      ],
+      "subtitle": "highland.harvest"
+    }
+  },
+  "part": "highland"
+}

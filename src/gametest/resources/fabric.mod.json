@@ -14,6 +14,7 @@
 			"dev.wildercord.world.dungeons.SleepingBladeTest",
 			"dev.wildercord.aura.world.AuraBeastsTest",
 			"dev.wildercord.aura.world.HighlandEcologyTest",
+			"dev.wildercord.aura.world.HighlandResourcesTest",
             "dev.wildercord.aura.world.VillageTournamentTest",
             "dev.wildercord.cast.ResonantStrikesTest",
             "dev.wildercord.aura.RuneEtchingsTest",

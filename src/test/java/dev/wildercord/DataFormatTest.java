@@ -256,9 +256,47 @@ class DataFormatTest {
 
 	/** Every data file is one of the kinds checked above. */
 	@Test
+	void vegetationFeatureFormats() throws IOException {
+		// Compared with 26.3's feature/berry_bush.json and placed_feature/patch_berry_common.json.
+		for(Path file:files("wildercord/worldgen/feature")) {
+			var feature=read(file);allowed(feature,file,"type","to_place","schedule_tick");required(feature,file,"type","to_place");
+			assertEquals("minecraft:simple_block",feature.get("type").getAsString());
+			var state=feature.getAsJsonObject("to_place");allowed(state,file+" state","id","properties");required(state,file,"id");
+		}
+		for(Path file:files("wildercord/worldgen/placed_feature")) {
+			var feature=read(file);allowed(feature,file,"feature","placement");required(feature,file,"feature","placement");
+			for(var e:feature.getAsJsonArray("placement")) {
+				var modifier=e.getAsJsonObject();required(modifier,file,"type");
+				switch(modifier.get("type").getAsString()) {
+					case "minecraft:rarity_filter" -> {allowed(modifier,file,"type","chance");required(modifier,file,"chance");assertTrue(modifier.get("chance").getAsInt()>0);}
+					case "minecraft:in_square","minecraft:biome" -> allowed(modifier,file,"type");
+					case "minecraft:heightmap" -> {allowed(modifier,file,"type","heightmap");required(modifier,file,"heightmap");}
+					case "minecraft:count" -> {allowed(modifier,file,"type","count");required(modifier,file,"count");assertTrue(modifier.get("count").getAsInt()>0);}
+					case "minecraft:offset" -> {
+						allowed(modifier,file,"type","x","y","z");required(modifier,file,"x","y","z");
+						for(String axis:List.of("x","y","z")) {var provider=modifier.getAsJsonObject(axis);allowed(provider,file,"type","min","max","plateau");required(provider,file,"type","min","max","plateau");assertEquals("minecraft:trapezoid",provider.get("type").getAsString());assertTrue(provider.get("min").getAsInt()<=provider.get("max").getAsInt());}
+					}
+					case "minecraft:block_predicate_filter" -> {allowed(modifier,file,"type","predicate");required(modifier,file,"predicate");vegetationPredicate(modifier.getAsJsonObject("predicate"),file);}
+					default -> fail(file+": unsupported vegetation placement modifier "+modifier);
+				}
+			}
+		}
+	}
+	private static void vegetationPredicate(JsonObject predicate,Object where) {
+		required(predicate,where,"type");
+		switch(predicate.get("type").getAsString()) {
+			case "minecraft:all_of" -> {allowed(predicate,where,"type","predicates");required(predicate,where,"predicates");for(var child:predicate.getAsJsonArray("predicates"))vegetationPredicate(child.getAsJsonObject(),where);}
+			case "minecraft:matching_block_tag" -> {allowed(predicate,where,"type","tag","offset");required(predicate,where,"tag");if(predicate.has("offset"))assertEquals(3,predicate.getAsJsonArray("offset").size());}
+			default -> fail(where+": unsupported vegetation predicate "+predicate);
+		}
+	}
+
+	/** Every data file is one of the kinds checked above. */
+	@Test
 	void everyKindOfDataIsChecked() throws IOException {
 		Set<String> checked = Set.of("wildercord/advancement", "wildercord/loot_table", "wildercord/enchantment", "wildercord/recipe",
 			"wildercord/villager_trade", "wildercord/trade_set", "wildercord/worldgen/structure", "wildercord/worldgen/structure_set",
+			"wildercord/worldgen/feature", "wildercord/worldgen/placed_feature",
 			"wildercord/tags", "minecraft/tags", "wildercord/dimension", "wildercord/damage_type");
 		List<Path> all = files("");
 		assertTrue(!all.isEmpty(), "there should be data files to check");

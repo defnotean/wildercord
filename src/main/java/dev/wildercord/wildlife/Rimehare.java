@@ -59,6 +59,7 @@ public class Rimehare extends Animal {
 		goalSelector.addGoal(3, new TemptGoal(this, 1.0, this::isFood, true));
 		goalSelector.addGoal(4, new FleeGoal(this, this::boltsFrom, WildlifeRules.HARE_NOTICE, 2.0, 2.6));
 		goalSelector.addGoal(5, new FollowParentGoal(this, 1.2));
+		goalSelector.addGoal(5, new WindreedForageGoal(this,() -> !isBaby(),feeding -> {}));
 		goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 0.7));
 		goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 8.0F));
 		goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -70,6 +71,7 @@ public class Rimehare extends Animal {
 		if (!(who instanceof Player player) || player.isSpectator()) {
 			return false;
 		}
+		if(HighlandContent.quiet(player) && distanceTo(player)>=2)return false;
 		boolean berries = isFood(player.getMainHandItem()) || isFood(player.getOffhandItem());
 		return WildlifeRules.hareBolts(distanceTo(player), berries, player.isSprinting());
 	}

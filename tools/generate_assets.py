@@ -803,6 +803,9 @@ def write_lang(runes):
     import aura_beasts_art
     lang.update(aura_beasts_art.LANG)
     aura_beasts_art.write(sys.modules[__name__])
+    import highland_art
+    lang.update(highland_art.LANG)
+    highland_art.write(sys.modules[__name__])
     import aura_world_art
     lang.update(aura_world_art.LANG)
     import way_art

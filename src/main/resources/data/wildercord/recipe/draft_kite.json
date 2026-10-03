@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:windreed",
+    "wildercord:galeclaw_plume",
+    "minecraft:leather",
+    "minecraft:string",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "wildercord:draft_kite"
+  }
+}

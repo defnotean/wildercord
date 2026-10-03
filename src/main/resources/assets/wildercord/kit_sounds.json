@@ -1221,6 +1221,15 @@
     "gesture_slash": {
       "part": "neutral"
     },
+    "highland_braid_rustle": {
+      "part": "highland"
+    },
+    "highland_kite_open": {
+      "part": "highland"
+    },
+    "highland_reed_harvest": {
+      "part": "highland"
+    },
     "incant_whisper": {
       "part": "neutral"
     },

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "wildercord:windreed",
+    "minecraft:string",
+    "minecraft:sweet_berries"
+  ],
+  "result": {
+    "id": "wildercord:windreed_braid"
+  }
+}

@@ -34,6 +34,7 @@ public abstract class AuraBeast extends PathfinderMob {
 	private long nextShed;
 	private boolean spellHit;
 	private dev.wildercord.wildlife.HighlandShelterGoal shelter;
+	private dev.wildercord.wildlife.WindreedForageGoal reedForage;
 	private final Set<UUID> struck=new HashSet<>();
 	protected AuraBeast(EntityType<? extends AuraBeast> type,Level level) { super(type,level); xpReward=9; }
 	public abstract boolean gale();
@@ -58,6 +59,12 @@ public abstract class AuraBeast extends PathfinderMob {
 			() -> dev.wildercord.wildlife.HighlandRules.wantsCover(gale(),level().getOverworldClockTime(),level().isRaining()),
 			settled -> {if(settled && pose()!=BeastRules.REST)pose(BeastRules.REST,0);else if(!settled && pose()==BeastRules.REST)pose(BeastRules.IDLE,0);});
 		goalSelector.addGoal(2,shelter);
+		if(!gale()) {
+			reedForage=new dev.wildercord.wildlife.WindreedForageGoal(this,
+				() -> Config.get().auraWorld().auraBeasts() && level().getDifficulty()!=Difficulty.PEACEFUL && getTarget()==null && (pose()==BeastRules.IDLE || pose()==BeastRules.FORAGE),
+				feeding -> {if(feeding && pose()!=BeastRules.FORAGE)pose(BeastRules.FORAGE,0);else if(!feeding && pose()==BeastRules.FORAGE)pose(BeastRules.IDLE,0);});
+			goalSelector.addGoal(3,reedForage);
+		}
 		goalSelector.addGoal(5,new WaterAvoidingRandomStrollGoal(this,.7) {
 			@Override public boolean canUse() { return pose()==BeastRules.IDLE && getTarget()==null && super.canUse(); }
 			@Override public boolean canContinueToUse() { return pose()==BeastRules.IDLE && getTarget()==null && super.canContinueToUse(); }
@@ -130,6 +137,7 @@ public abstract class AuraBeast extends PathfinderMob {
 		}
 		if(!valid(getTarget()) || getTarget()!=null && (getTarget().distanceToSqr(Vec3.atBottomCenterOf(home))>32*32 || distanceToSqr(getTarget())>28*28)) setTarget(null);
 		if(getTarget()==null && shelter.running())return;
+		if(getTarget()==null && reedForage!=null && reedForage.running())return;
 		if(getTarget()==null && pose()==BeastRules.IDLE && distanceToSqr(Vec3.atBottomCenterOf(home))>16*16 && tickCount%40==0)
 			getNavigation().moveTo(home.getX()+.5,home.getY(),home.getZ()+.5,.8);
 		act(level);

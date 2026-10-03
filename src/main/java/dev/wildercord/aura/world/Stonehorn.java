@@ -32,7 +32,7 @@ public final class Stonehorn extends AuraBeast {
 			return;
 		}
 		if(getTarget()==null && calm==0 && tickCount%10==0) {
-			var p=level.getEntitiesOfClass(net.minecraft.server.level.ServerPlayer.class,getBoundingBox().inflate(8),e->valid(e) && e.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && hasLineOfSight(e)
+			var p=level.getEntitiesOfClass(net.minecraft.server.level.ServerPlayer.class,getBoundingBox().inflate(8),e->valid(e) && !dev.wildercord.wildlife.HighlandContent.quiet(e) && e.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && hasLineOfSight(e)
 				&& BeastRules.wary(distanceTo(e),e.isShiftKeyDown(),e.getMainHandItem().is(Items.WHEAT) || e.getOffhandItem().is(Items.WHEAT))).stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			if(p!=null) setTarget(p);
 		}

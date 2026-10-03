@@ -41,7 +41,7 @@ public final class Galeclaw extends AuraBeast {
 			return;
 		}
 		if(getTarget()==null && calm==0 && tickCount%20==0) {
-			var caster=level.getEntitiesOfClass(ServerPlayer.class,getBoundingBox().inflate(18),p->valid(p) && p.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && distanceToSqr(p)<18*18 && hasLineOfSight(p) && Wildlife.castRecently(p,160)).stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
+			var caster=level.getEntitiesOfClass(ServerPlayer.class,getBoundingBox().inflate(18),p->valid(p) && !dev.wildercord.wildlife.HighlandContent.quiet(p) && p.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && distanceToSqr(p)<18*18 && hasLineOfSight(p) && Wildlife.castRecently(p,160)).stream().min(java.util.Comparator.comparingDouble(this::distanceToSqr)).orElse(null);
 			if(caster!=null) setTarget(caster);
 			else if(hungry() && tickCount%100==0) { var prey=level.getEntitiesOfClass(Rimehare.class,getBoundingBox().inflate(10),p->p.isAlive() && p.distanceToSqr(Vec3.atBottomCenterOf(home))<32*32 && hasLineOfSight(p)); if(!prey.isEmpty()) setTarget(prey.getFirst()); }
 		}

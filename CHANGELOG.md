@@ -4,6 +4,15 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Highland resources and field equipment
+
+- Added three-stage Windreed, small biome-specific patches, daylight regrowth, two-tassel harvesting that retains roots and replanting on dirt. Life impacts advance existing roots with ordinary claim/build permissions; Wind rustles them without minting items or plants.
+- Added bounded native Stonehorn/adult Rimehare forage goals. Grazing clips one crop stage, respects mob griefing and pauses between meals, producing no items or experience. Panic, courtship, predator avoidance, shelter and combat can preempt grazing.
+- Added a reusable Draft Kite: one tassel fuels eight seconds of Slow Falling, with a twenty-second cooldown. Windreed, a Galeclaw plume, leather, string and a stick craft it.
+- Added consumable Windreed Braids: thirty seconds of Downwind with ten percent slower movement. Calm approaches frighten fewer hares, avoid provoking Stonehorns and hide recent-casting attraction from unprovoked Galeclaws. Sprinting, very close hare approaches, acquired targets, committed attacks and retaliation still matter.
+- Both tool rest periods persist as shared player deadlines; joining restores their native indicators, and swapping copies or clearing an indicator cannot bypass the server deadline.
+- Authored three plant stages, detailed field-item textures, a native status icon and three short physical sound cues. Added recipes, recipe discoveries, bestiary hints and player-guide coverage.
+
 ### Highland shelter and predator–prey behavior
 
 - Rimehares now use a real predator-avoidance goal for hungry Galeclaws, alongside their existing player fear, panic and breeding behavior.

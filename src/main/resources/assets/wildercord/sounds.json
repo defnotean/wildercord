@@ -5311,5 +5311,23 @@
     "sounds": [
       "wildercord:kit/duelist/duelist_yield"
     ]
+  },
+  "highland_braid_rustle": {
+    "subtitle": "subtitles.wildercord.kit.highland.braid",
+    "sounds": [
+      "wildercord:kit/highland/highland_braid_rustle"
+    ]
+  },
+  "highland_kite_open": {
+    "subtitle": "subtitles.wildercord.kit.highland.kite",
+    "sounds": [
+      "wildercord:kit/highland/highland_kite_open"
+    ]
+  },
+  "highland_reed_harvest": {
+    "subtitle": "subtitles.wildercord.kit.highland.harvest",
+    "sounds": [
+      "wildercord:kit/highland/highland_reed_harvest"
+    ]
   }
 }

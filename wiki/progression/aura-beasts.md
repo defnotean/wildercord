@@ -41,6 +41,29 @@ Rimehares now flee hungry Galeclaws. A runner that consumes one dropped raw rabb
 
 Satiety is not taming: recent casting can still attract an awake runner, and retaliation or an already committed attack remains dangerous. The existing two-minute material-shedding cooldown remains separate from the one-minute meal.
 
+## Windreed: the living pass
+
+![Three Windreed growth stages on a controlled field platform]({{ '/assets/images/highland-windreed-stages.png' | relative_url }})
+
+Windreed grows in small patches in **meadows and windswept hills, forests and gravelly hills**. Its green shoots develop pale tassels in open daylight. Use a mature plant to gather **two tassels**, leaving its roots to regrow. A tassel can be planted on dirt or grass; breaking a plant gives one replantable tassel. It does not spread on its own.
+
+Stonehorns and adult Rimehares approach mature plants and graze. They clip the plant back one stage without producing items. `mob_griefing false` preserves the crop. Herbivores pause between meals; their panic, predator avoidance, shelter and combat behavior take priority.
+
+Life magic hitting an existing patch advances nearby roots one stage, subject to the usual building and claim permissions. Wind rustles visible fronds without producing a harvest. Neither interaction creates new plants.
+
+### Field equipment
+
+| Item | Make it with | Use and tradeoff |
+| --- | --- | --- |
+| **Draft Kite** | Windreed, Galeclaw Plume, leather, string and a stick | Use for **8 seconds of Slow Falling**, spending one tassel from your inventory. The kite remains reusable and rests for **20 seconds**. It slows a descent; it does not lift you upward. |
+| **Windreed Braid** | Windreed, string and sweet berries | Consumed for **30 seconds of Downwind**: calm approaches frighten fewer Rimehares, do not provoke wary Stonehorns and hide the attraction of recent casting from unprovoked Galeclaws. Movement is **10% slower**. Sprinting reveals you; approaching within two blocks still alarms a hare. |
+
+Both item rest periods are saved and shared across copies. Reconnecting or swapping a tool will not give another immediate use.
+
+Downwind is an observation aid. It never clears an acquired target, cancels a committed attack or prevents defensive retaliation. Its finite native effect is saved normally and milk removes it.
+
+![The Draft Kite held above a controlled descent platform, with its native finite lift effect active]({{ '/assets/images/highland-draft-kite.png' | relative_url }})
+
 ## Choose the opening
 
 | Damage source | Stonehorn, normally / recovering | Galeclaw, normally / recovering |
