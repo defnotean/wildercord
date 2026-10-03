@@ -2,6 +2,9 @@
 
 This is an evidence index for milestone B, not a claim that every spell has unique completed art.
 
+[Frost and water preparations](frost-formations.md) records all thirty authored recipes and
+the native fixture/paid-cast scope. This is a formation-phase follow-up, not full-roster completion.
+
 Latest follow-up: [linked formation origins](linked-formations.md) covers admitted continuation
 stages, trigger placement, a paid Delay and paid projectile-impact cast. Full choreography remains open.
 

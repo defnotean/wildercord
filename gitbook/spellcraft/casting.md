@@ -23,6 +23,37 @@ Mixed fire effects also show their ingredients: Firestorm braids wind around fla
 
 These pictures show the short preparation in a controlled stage. The selected shape still determines delivery: the decoration does not change a Bolt into wings, summon a creature, or grant a shield by itself. The rear casting circle stays behind you. Minimal formation quality keeps each authored outline with less midpoint detail.
 
+## Reading ice and water
+
+Cold spells prepare with edges and changing structures. Chill gathers a fine crust from a low breath;
+Frost grows branches, Freeze closes opposed plates, and Icicle welds a forward needle. Mirrorfrost
+turns an incoming ray off a faceted mirror. Hoarfrost grows like a fern, while Absolute Zero draws
+four cold fronts into a frozen point.
+
+Water spells in the frost family have their own motion. Bubble rounds a membrane, Tidebreath opens
+two watery lung lobes, Tidehook reaches out from a coiled tether, and Current aligns three flow lanes.
+Tidal Lift raises source beads along an arc; Tidewrit prepares courses of water beneath a folding lip.
+
+| Mixed spell | What to look for |
+|---|---|
+| Hail | Staggered ice pellets with a crackling storm lane. |
+| Glacier | Ice columns locking over stone footings. |
+| Blizzard | Snow spiraling through a crosswind. |
+| Frostbloom | Ice petals around a green living bud. |
+| Black Ice | Dark facets cut by a pale icy edge. |
+| Rime Seal | A forked floor lattice around an arcane center. |
+| Cryostasis | Ice capsule with opposed gold time ticks. |
+| Frostbite | Teeth closing around blood and ice. |
+
+![Blizzard's snow and crosswind preparation](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/frost-formations/frost_formation_blizzard.png)
+
+![Cryostasis's ice capsule and time ticks](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/frost-formations/frost_formation_cryostasis.png)
+
+![Tidehook's water hook and coiled tether](https://raw.githubusercontent.com/defnotean/wildercord/main/wiki/assets/frost-formations/frost_formation_tidehook.png)
+
+These are preparations on a controlled demonstration stage. Your shape still decides where the
+spell goes, and Minimal formation quality retains its outline with fewer detail particles.
+
 ## Where the preparation happens
 
 Each initial group prepares its own shape and effects. In `Bolt · Ember · Self · Fireward`, Ember gathers ahead for the bolt while Fireward prepares on you. Both groups share one rear casting glyph.

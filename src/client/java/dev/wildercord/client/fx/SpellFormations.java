@@ -169,17 +169,19 @@ public final class SpellFormations {
     case LATCH -> { slash(point(-.2,0,0),q*.6,Math.PI*1.4,0); slash(point(.2,0,0),q*.6,Math.PI*1.4,Math.PI); line(point(-.2,0,0),point(.2,0,0),false); }
    }
    boolean authoredFire=FireFormations.draw(this,beat);
-   materials(beat,authoredFire);
+   boolean authoredFrost=FrostFormations.draw(this,beat);
+   materials(beat,authoredFire,authoredFrost);
   }
   Vec3 assembly() {
    if(event.placement()==FormationPayload.CASTER || event.placement()==FormationPayload.AIMED || event.placement()==FormationPayload.FIXED)return focus;
    return switch(ShapeFormation.of(event.shape())) {case SELF,DOMAIN,ORBIT,TRAIL -> caster.position().add(0,.7,0);default -> focus;};
   }
-  void materials(int beat,boolean authoredFire) {
+  void materials(int beat,boolean authoredFire,boolean authoredFrost) {
    // Materials change the geometry as well as the colour. Each fused ingredient gets its own layer.
    for(int i=0;i<event.elements().size();i++) {
     String element=event.elements().get(i); double a=i*2.39996+beat*.9;
     if(authoredFire && element.equals("fire")) continue;
+    if(authoredFrost && element.equals("frost")) continue;
     // Caster-centered deliveries must not leave their elemental assembly at the front focus.
     Vec3 anchor=assembly();
     Vec3 at=anchor.add(right.scale(Math.cos(a)*.4)).add(up.scale(Math.sin(a)*.4));

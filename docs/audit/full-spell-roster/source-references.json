@@ -4,6 +4,13 @@
     "constant": "ABSOLUTE_ZERO",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          13,
+          108
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
           43
@@ -166,6 +173,13 @@
     "constant": "AVALANCHE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          13,
+          120
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
           42
@@ -279,6 +293,13 @@
     "id": "wildercord:black_ice",
     "constant": "BLACK_ICE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          13,
+          90
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
@@ -432,6 +453,13 @@
     "id": "wildercord:blizzard",
     "constant": "BLIZZARD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          13,
+          82
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
@@ -697,6 +725,13 @@
     "constant": "BUBBLE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          13,
+          51
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           650
@@ -746,6 +781,13 @@
     "id": "wildercord:chill",
     "constant": "CHILL",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          13,
+          31
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -927,6 +969,13 @@
     "id": "wildercord:coldsnap",
     "constant": "COLDSNAP",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          64
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -1140,6 +1189,13 @@
     "constant": "CRYOSTASIS",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          99
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
           50
@@ -1152,6 +1208,13 @@
     "id": "wildercord:current",
     "constant": "CURRENT",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          148
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [
@@ -1401,6 +1464,13 @@
     "id": "wildercord:drowning_word",
     "constant": "DROWNING_WORD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          136
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [
@@ -1714,8 +1784,8 @@
       {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          182,
-          190
+          183,
+          192
         ]
       },
       {
@@ -1829,6 +1899,13 @@
     "constant": "FLASH_FREEZE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          152
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           767
@@ -1931,6 +2008,13 @@
     "constant": "FREEZE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          39
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           505
@@ -1950,9 +2034,17 @@
     "constant": "FROST",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          35
+        ]
+      },
+      {
         "file": "src/client/java/dev/wildercord/client/fx/SpellFormations.java",
         "lines": [
-          192
+          184,
+          194
         ]
       },
       {
@@ -2004,6 +2096,13 @@
     "constant": "FROSTBITE",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          104
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
           35
@@ -2017,6 +2116,13 @@
     "constant": "FROSTBLOOM",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          14,
+          86
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
           66
@@ -2029,6 +2135,13 @@
     "id": "wildercord:frostward",
     "constant": "FROSTWARD",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          56
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -2146,6 +2259,13 @@
     "id": "wildercord:glacier",
     "constant": "GLACIER",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          77
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
@@ -2301,6 +2421,13 @@
     "id": "wildercord:hail",
     "constant": "HAIL",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          73
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
@@ -2495,6 +2622,13 @@
     "constant": "HOARFROST",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          132
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [
           96
@@ -2559,6 +2693,13 @@
     "constant": "ICEPATH",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          48
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
           614
@@ -2577,6 +2718,13 @@
     "id": "wildercord:icicle",
     "constant": "ICICLE",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          60
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -3191,6 +3339,13 @@
     "id": "wildercord:mirrorfrost",
     "constant": "MIRRORFROST",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          68
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -4182,6 +4337,13 @@
     "constant": "RIME_CAUSEWAY",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          116
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
           30
@@ -4194,6 +4356,13 @@
     "id": "wildercord:rime_seal",
     "constant": "RIME_SEAL",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          15,
+          94
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
@@ -5440,6 +5609,13 @@
     "constant": "TIDAL_LIFT",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          16,
+          112
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/feel/FrostFeels.java",
         "lines": [
           29
@@ -5452,6 +5628,13 @@
     "id": "wildercord:tidebreath",
     "constant": "TIDEBREATH",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          16,
+          44
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/Effects.java",
         "lines": [
@@ -5472,6 +5655,13 @@
     "constant": "TIDECALL",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          16,
+          124
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [
           80
@@ -5491,6 +5681,13 @@
     "constant": "TIDEHOOK",
     "candidates": [
       {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          16,
+          144
+        ]
+      },
+      {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [
           123
@@ -5509,6 +5706,13 @@
     "id": "wildercord:tidewrit",
     "constant": "TIDEWRIT",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          16,
+          140
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [
@@ -5763,6 +5967,13 @@
     "id": "wildercord:undertow",
     "constant": "UNDERTOW",
     "candidates": [
+      {
+        "file": "src/client/java/dev/wildercord/client/fx/FrostFormations.java",
+        "lines": [
+          16,
+          128
+        ]
+      },
       {
         "file": "src/main/java/dev/wildercord/cast/ExplorerEffects.java",
         "lines": [

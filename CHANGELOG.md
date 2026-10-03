@@ -4,6 +4,12 @@ All notable changes to Wildercord. The format follows [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Authored frost and water preparations
+
+- Added thirty individually authored preparation recipes: branching rime, latching plates, forward needles, mirrors, cages, ice petals, teeth, cold fronts, water membranes, lung lobes, hooks, flow lanes and moving water courses. Frost's water effects use water motion rather than generic ice recolors.
+- Fused preparations combine their materials: storm-charged hail, stone-supported glacier, wind/snow, life/ice petals, void/black ice, arcane lattice, time/ice capsule and blood/frost teeth. Existing gameplay, cue sounds and impacts remain unchanged.
+- Added native Full/Minimal packet fixtures, recipe evolution/uniqueness/material checks, actual framebuffer evidence and paid Bolt/Frost plus Self/Tidebreath casts. Full all-delivery launch/travel/fusion/Aura/shader/multiplayer review remains open.
+
 ### Linked formation origins
 
 - Linked stages now emit their own isolated formation when the casting engine admits the segment. Delays and successful conditions form at execution; rejected conditions and cancelled casts emit nothing. Continuations do not open another rear glyph.
